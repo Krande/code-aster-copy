@@ -25,7 +25,6 @@ subroutine ajlipa(modelz, base, kdis, sd_partit1z)
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/gcncon.h"
 #include "asterc/getres.h"
 #include "asterfort/fetcrf.h"
 #include "asterfort/fetskp.h"
@@ -143,7 +142,7 @@ subroutine ajlipa(modelz, base, kdis, sd_partit1z)
 ! ----------------------------------------------------------------------
     dist0 = 0
 
-    call gcncon('_', partit)
+    partit = modele
     zk8(jpart-1+1) = partit
 
 

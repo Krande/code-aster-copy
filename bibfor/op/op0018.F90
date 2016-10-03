@@ -58,7 +58,6 @@ implicit none
 #include "asterfort/modelPrint.h"
 #include "asterfort/modelGetFEType.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/gcncon.h"
 #include "asterfort/fetcrf.h"
 #include "asterfort/fetskp.h"
 !
@@ -403,12 +402,14 @@ implicit none
     nbproc = to_aster_int(msize)
     call getvtx('DISTRIBUTION', 'METHODE', iocc=1, scal=kdis, nbret=n1)
     ASSERT(n1.eq.1)
-    if (nbproc.eq.1) kdis='CENTRALISE'
-    if ((lparallel_mesh) .and. (kdis.ne.'CENTRALISE')) then
+    if (nbproc.eq.1) then
+        kdis='CENTRALISE'
+    endif
+    if (lparallel_mesh .and. kdis.ne.'CENTRALISE') then
         call utmess('F','MODELE1_99', nk = 2, valk = [kdis, mesh])
-    end if
+    endif
     if (kdis.eq.'SOUS_DOMAINE') then
-        call gcncon('_', sd_partit1)
+        sd_partit1 = model
         call getvtx('DISTRIBUTION', 'PARTITIONNEUR', iocc=1, scal=methode, nbret=n1)
         ASSERT(n1.eq.1)
         call getvis('DISTRIBUTION', 'NB_SOUS_DOMAINE', iocc=1, scal=nbpart, nbret=n1)
