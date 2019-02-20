@@ -227,16 +227,17 @@ character(len=8), intent(out) :: fapg(*)
     else if (elrefa.eq.'P13') then
         vol = 2.d0/3.d0
 !
-        nbfpg = 7
-        nbpg(1:nbfpg) = [nno, nnos, 1, 5, 6, 27, 10]
+        nbfpg = 8
+        nbpg(1:nbfpg) = [nno, nnos, 1, 5, 6, 10, 27, 10]
 !
         fapg(1) = 'NOEU'
         fapg(2) = 'NOEU_S'
         fapg(3) = 'FPG1'
         fapg(4) = 'FPG5'
         fapg(5) = 'FPG6'
-        fapg(6) = 'FPG27'
-        fapg(7) = 'FPG5NOS'
+        fapg(6) = 'FPG10'
+        fapg(7) = 'FPG27'
+        fapg(8) = 'FPG5NOS'
 !
     else if (elrefa.eq.'P19') then
         vol = 2.d0/3.d0
