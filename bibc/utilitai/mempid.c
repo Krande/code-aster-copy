@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -21,13 +21,15 @@
 
 #if defined ASTER_PLATFORM_FREEBSD
 #include <err.h>
+#include <fcntl.h>
 #include <kvm.h>
 #include <sys/param.h>
 #include <sys/sysctl.h>
 #include <sys/user.h>
 #elif defined ASTER_PLATFORM_MINGW
-#include <psapi.h>
 #include <windows.h>
+#
+#include <psapi.h>
 #else
 #include <fcntl.h>
 #endif
