@@ -37,7 +37,18 @@ void exportSimpleFieldOnNodesToPython() {
         .def( "__init__", py::make_constructor(
                               &initFactoryPtr< SimpleFieldOnNodesRealClass, std::string >))
         .def( "getValue", &SimpleFieldOnNodesRealClass::getValue,
-              py::return_value_policy< py::return_by_value >() )
+              py::return_value_policy< py::return_by_value >())
+        .def( "getValues", &SimpleFieldOnNodesRealClass::getValues,
+              py::return_value_policy< py::return_by_value >(), R"(
+Return a list of the field values as (x1, y1, z1, x2, y2, z2...)
+
+Returns:
+    list[float]: List of values of the field on nodes.
+        )", ( py::arg("self" )))
+        .def( "getNumberOfComponents", &SimpleFieldOnNodesRealClass::getNumberOfComponents )
+        .def( "getNumberOfNodes", &SimpleFieldOnNodesRealClass::getNumberOfNodes )
+        .def( "getNameOfComponents", &SimpleFieldOnNodesRealClass::getNameOfComponents )
+        .def( "getNameOfComponent", &SimpleFieldOnNodesRealClass::getNameOfComponent )
         .def( "updateValuePointers", &SimpleFieldOnNodesRealClass::updateValuePointers );
     py::class_< SimpleFieldOnNodesComplexClass, SimpleFieldOnNodesComplexPtr,
                 py::bases< DataStructure > >( "SimpleFieldOnNodesComplex", py::no_init )
@@ -47,5 +58,11 @@ void exportSimpleFieldOnNodesToPython() {
                               &initFactoryPtr< SimpleFieldOnNodesComplexClass, std::string >))
         .def( "getValue", &SimpleFieldOnNodesComplexClass::getValue,
               py::return_value_policy< py::return_by_value >() )
+        .def( "getValues", &SimpleFieldOnNodesComplexClass::getValues,
+              py::return_value_policy< py::return_by_value >() )
+        .def( "getNumberOfComponents", &SimpleFieldOnNodesComplexClass::getNumberOfComponents )
+        .def( "getNumberOfNodes", &SimpleFieldOnNodesComplexClass::getNumberOfNodes )
+        .def( "getNameOfComponents", &SimpleFieldOnNodesComplexClass::getNameOfComponents )
+        .def( "getNameOfComponent", &SimpleFieldOnNodesComplexClass::getNameOfComponent )
         .def( "updateValuePointers", &SimpleFieldOnNodesComplexClass::updateValuePointers );
 };

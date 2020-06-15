@@ -277,6 +277,31 @@ FieldOnCellsRealPtr ResultClass::getRealFieldOnCells( const std::string name,
     return toReturn;
 };
 
+VectorString ResultClass::getFieldsOnNodesNames() const
+{
+  VectorString names;
+  names.reserve( _dictOfVectorOfFieldsNodes.size());
+  
+  for ( auto& it : _dictOfVectorOfFieldsNodes ) {
+    std::string name = it.first;
+    names.push_back(trim(name)) ;
+  }
+  return names;
+};
+
+VectorString ResultClass::getFieldsOnCellsNames() const
+{
+  VectorString names;
+  names.reserve( _dictOfVectorOfFieldsCells.size());
+  
+  for ( auto& it : _dictOfVectorOfFieldsCells ) {
+    std::string name = it.first;
+    names.push_back(trim(name)) ;
+  }
+  return names;
+};
+  
+
 FieldOnNodesRealPtr ResultClass::getRealFieldOnNodes( const std::string name,
                                                                      const int rank ) const
 {

@@ -73,6 +73,18 @@ void exportResultToPython() {
         .def( "getModel", c3 )
         .def( "getModel", c4 )
         .def( "getNumberOfRanks", &ResultClass::getNumberOfRanks )
+        .def( "getFieldsOnNodesNames", &ResultClass::getFieldsOnNodesNames, R"(
+Return the names of the fields on nodes as Python list.
+
+Returns:
+    list[str]: List of names of the fields on nodes.
+        )", ( py::arg("self" )))
+        .def( "getFieldsOnCellsNames", &ResultClass::getFieldsOnCellsNames, R"(
+Return the names of the fields on cells as Python list.
+
+Returns:
+    list[str]: List of names of the fields on cells.
+        )", ( py::arg("self" )))
         .def( "getRanks", &ResultClass::getRanks )
         .def( "getRealFieldOnNodes", &ResultClass::getRealFieldOnNodes )
         .def( "getRealFieldOnCells", &ResultClass::getRealFieldOnCells )

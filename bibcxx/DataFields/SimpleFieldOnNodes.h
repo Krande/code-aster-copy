@@ -28,6 +28,7 @@
 
 #include <string>
 #include <assert.h>
+#include "Utilities/Tools.h"
 
 #include "astercxx.h"
 
@@ -101,10 +102,70 @@ template < class ValueType > class SimpleFieldOnNodesClass : public DataStructur
         if ( _nbNodes == 0 || _nbComp == 0 )
             throw std::runtime_error( "First call of updateValuePointers is mandatory" );
 #endif
+
+	if ( nodeNumber < 0 || nodeNumber > _nbNodes) {
+	  throw std::runtime_error("Out of range");
+	};
+	if ( compNumber < 0 || compNumber > _nbComp) {
+	  throw std::runtime_error("Out of range");
+	};
+	
         const long position = nodeNumber * _nbComp + compNumber;
         return ( *_values )[position];
     };
+    
+    /**
+     * @brief Get number of components
+     */
+    int getNumberOfComponents() const { return _nbComp; }
 
+    /**
+     * @brief Get number of nodes
+     */
+    int getNumberOfNodes() const { return _nbNodes; }
+
+    /**
+     * @brief Return a pointer to the vector of data
+     */
+    const ValueType *getDataPtr() const { return _values->getDataPtr(); }
+
+    /**
+     * @brief Get values
+     */
+    std::vector< ValueType > getValues() const {
+      const ValueType *ptr = _values->getDataPtr();
+      std::vector< ValueType > vect( ptr, ptr + _values->size() );
+      return vect;
+    }
+
+    /**
+     * @brief Get the name of the i-th component
+     */
+    std::string getNameOfComponent( const int& i ) const {
+
+      if ( i < 0 || i >= _nbComp) {
+	throw std::runtime_error( "Out of range");
+      };
+      
+      std::string name = trim(( *_component )[i].toString());
+      return name;
+    };
+
+
+    /**
+     * @Brief Get the names of all the components
+     */
+    VectorString getNameOfComponents() const {
+
+      int size = this->getNumberOfComponents();
+      VectorString names;
+      names.reserve(size);
+      for ( int i = 0 ; i < size; i++ ) {
+	names.push_back(this->getNameOfComponent(i));
+      }
+      return names;
+    }
+ 
     /**
      * @brief Mise a jour des pointeurs Jeveux
      * @return renvoie true si la mise a jour s'est bien deroulee, false sinon

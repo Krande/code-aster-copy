@@ -312,6 +312,18 @@ class ResultClass : public DataStructure, public ListOfTablesClass {
         ;
 
     /**
+    * @brief Get the list of fields on nodes
+    * @return std::vector< string >
+    */
+    VectorString getFieldsOnNodesNames() const;
+
+    /**
+    * @brief Get the list of fields on elements
+    * @return std::vector< string >
+    */
+    VectorString getFieldsOnCellsNames() const;
+    
+    /**
      * @brief Obtenir un champ aux noeuds réel à partir de son nom et de son numéro d'ordre
      * @param name nom Aster du champ
      * @param rank numéro d'ordre
