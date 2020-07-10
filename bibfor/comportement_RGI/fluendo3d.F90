@@ -250,7 +250,7 @@ implicit none
              real(kind=8) :: CNa
              real(kind=8) :: nrjp,ttrd,tfid,ttdd
              real(kind=8) :: tdid,exmd,exnd,cnab,cnak,ssad
-             real(kind=8) :: At,St,M1,E1,M2,E2,AtF,StF,M1F,E1F,M2F,E2F 
+             real(kind=8) :: At,St,M1,E1,M2,E2,AtF,StF,M1F,E1F,M2F,E2F,ttkf,nrjf 
 !            valuer fluage debut de pas
              real(kind=8) ::  epsk006(6),epsm006(6)
 !            Def thermiques transitoires (si Dtheta sous charge)
@@ -588,6 +588,8 @@ implicit none
      E1F=0.d0
      M2F=0.d0
      E2F=0.d0
+     ttkf=0.d0
+     nrjf=0.d0
      epsk006(:)=0.d0
      epsm006(:)=0.d0
      depstt6(:)=0.d0
@@ -747,7 +749,9 @@ implicit none
 !     calcul de la vitesse de saturation moyenne
       if (fl3d) then
           vsrw=(vw2-var0(58))/(0.5d0*(poro2+var0(59))) 
-      end if        
+      end if   
+!     energie de fixation des alus en HG (RSI)
+      nrjf=xmat(nbelas3d+24)     
 !     contrainte caracteristique pour l endo capillaire
       sfld=xmat(nbelas3d+25)
 !     exposant de Van Genuchten pour la pression capillaire
@@ -831,6 +835,8 @@ implicit none
       nrjd=xmat(nbelas3d+54) 
 !     temperature de reference pour la precipitation de la def
       ttrd=xmat(nbelas3d+55)
+!     température seuil de fixation des alus en HG (RSI)
+      ttkf=xmat(nbelas3d+56)
 !       on peut traiter le endommagement pre pic iso de traction
 !       si ept > Rt/E
         ept00=dmax1(rt00/young00,ept00)
@@ -1332,7 +1338,7 @@ implicit none
         phivg,pglim,brgi,dpg_depsa6,dpg_depspg6,taar,nrjg,trag,aar0,&
         srw,srsrag,teta,dt1,vrag00,aar1,tdef,nrjd,def0,srsdef,vdef00,&
         def1,cna,nrjp,ttrd,tfid,ttdd,tdid,exmd,exnd,cnab,cnak,ssad,&
-        At,St,M1,E1,M2,E2,AtF,StF,M1F,E1F,M2F,E2F,vrgi0)
+        At,St,M1,E1,M2,E2,AtF,StF,M1F,E1F,M2F,E2F,vrgi0,ttkf,nrjf)
 !       stockage avancement et pression     
         varf(62)=aar1
         varf(63)=def1
@@ -1940,7 +1946,7 @@ end if
            phivg,pglim,brgi,dpg_depsa6,dpg_depspg6,taar,nrjg,trag,aar0,&
            srw,srsrag,teta,0.d0,vrag00,aar1,tdef,nrjd,def0,srsdef,vdef00,&
            def1,cna,nrjp,ttrd,tfid,ttdd,tdid,exmd,exnd,cnab,cnak,ssad,&
-           At,St,M1,E1,M2,E2,AtF,StF,M1F,E1F,M2F,E2F,vrgi0)
+           At,St,M1,E1,M2,E2,AtF,StF,M1F,E1F,M2F,E2F,vrgi0,ttkf,nrjf)
 !          stockage avancement rag    
         end if
 !       stockage de la pression RGI

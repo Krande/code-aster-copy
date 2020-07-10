@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine bgpg3d(ppas,bg,pg,mg,phig,treps,&
                                           def1,cna,nrjp,ttrd,tfid,ttdd,&
                                           tdid,exmd,exnd,cnab,cnak,ssad,&
                                           at,st,m1,e1,m2,e2,atf,stf,&
-                                          m1f,e1f,m2f,e2f,phig0)
+                                          m1f,e1f,m2f,e2f,phig0,ttkf,nrjf)
         aster_logical :: ppas
         real(kind=8) :: bg
         real(kind=8) :: pg
@@ -84,5 +84,7 @@ subroutine bgpg3d(ppas,bg,pg,mg,phig,treps,&
         real(kind=8) :: m2f
         real(kind=8) :: e2f
         real(kind=8) :: phig0
+        real(kind=8) :: ttkf
+        real(kind=8) :: nrjf
     end subroutine bgpg3d
 end interface 

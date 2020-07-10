@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine bgpg3d(ppas,bg,pg,mg,phig,treps,&
                                           def1,cna,nrjp,ttrd,tfid,ttdd,&
                                           tdid,exmd,exnd,cnab,cnak,ssad,&
                                           at,st,m1,e1,m2,e2,atf,stf,&
-                                          m1f,e1f,m2f,e2f,phig0)
+                                          m1f,e1f,m2f,e2f,phig0,ttkf,nrjf)
 
 
 ! person_in_charge: etienne.grimal@edf.fr
@@ -50,7 +50,7 @@ subroutine bgpg3d(ppas,bg,pg,mg,phig,treps,&
       real(kind=8) :: tdef,nrjd,def0,srsdef      
       real(kind=8) :: cna
       real(kind=8) :: nrjp,ttrd,tfid,ttdd
-      real(kind=8) :: tdid,exmd,exnd,cnab,cnak,ssad
+      real(kind=8) :: tdid,exmd,exnd,cnab,cnak,ssad,ttkf,nrjf
       real(kind=8) :: at,st,m1,e1,m2,e2,atf,stf,m1f,e1f,m2f,e2f,phig0
 
       coeff1=0.d0
@@ -66,12 +66,12 @@ subroutine bgpg3d(ppas,bg,pg,mg,phig,treps,&
          phig=0.d0
          aar1=0.d0
        end if   
-      
 !      calcul de l'avancement de la def et du volume créé
        if(vdef00.gt.0.) then
          call def3d(ppas,tdef,nrjd,tref0,def0,sr1,srsdef,teta1,dt,&
          vdef00,def1,vdef1,cna,nrjp,ttrd,tfid,ttdd,tdid,exmd,exnd,&
-         cnab,cnak,ssad,at,st,m1,e1,m2,e2,atf,stf,m1f,e1f,m2f,e2f)
+         cnab,cnak,ssad,at,st,m1,e1,m2,e2,atf,stf,m1f,e1f,m2f,e2f,&
+         ttkf,nrjf)
 !        on additionne les volumes de rag et de def    
          phig=phig+vdef1
        else

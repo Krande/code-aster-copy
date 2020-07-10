@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,8 @@
 
 subroutine def3d(ppas,tdef,nrjd,tref0,def0,sr1,srsdef,teta1,dt,&
       vdef00,def1,vdef1,CNa,nrjp,ttrd,tfid,ttdd,tdid,exmd,exnd,&
-      cnab,cnak,ssad,At,St,M1,E1,M2,E2,AtF,StF,M1F,E1F,M2F,E2F)
+      cnab,cnak,ssad,At,St,M1,E1,M2,E2,AtF,StF,M1F,E1F,M2F,E2F,&
+      ttkf,nrjf)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
 !    sous programme de calcul de l avancement chimique de DEF
@@ -43,7 +44,7 @@ implicit none
       real(kind=8) :: VMaft,VMafm,Sc,Ac
       real(kind=8) :: taudis,taupre,taufix,kfd
       real(kind=8) :: a1f,cA1,coeff1,coeff2,coeff3,coeff4
-      real(kind=8) :: e200,m200,tempd,tempr
+      real(kind=8) :: e200,m200,tempd,tempr,ttkf,tempf,ctf,nrjf
       
 !      print*,"tdef,nrjd,tref0,def0,sr1,srsdef,teta1,dt"
 !      print*,tdef,nrjd,tref0,def0,sr1,srsdef,teta1,dt     
@@ -74,6 +75,8 @@ implicit none
       tempr = 0.0
       tref0 = 0.0
       def0 = 0.0
+      tempf=0.0
+      ctf=0.0
 
 !     teneur en aluminium et sulfates en fonction de VDEF et SSAD
       VMaft=715.d-6
@@ -110,7 +113,7 @@ implicit none
             E2=0.d0
             M2=0.d0
             At=0.d0
-            St=SC-E1
+            St=SC-3*E1
          else if (Sc.le.Ac) then
             E1=0.d0
             M1=Sc
@@ -140,17 +143,22 @@ implicit none
       
 !     temperature seuil de destabilisation fonction de la concentration en Na
       CNamin1=cnak
-      tempd=273.15d0+ttdd/max(CNa,CNamin1)**exnd
+!      tempd=273.15d0+ttdd/max(CNa,CNamin1)**exnd
+      tempd=273.15d0+ttdd*((cnak/CNa)**exnd)
 !      print*,'CNa,CNamin1,tempd'
 !      print*,CNa,CNamin1,tempd-273.15               
      
-      
+!     temperature minimale pour la fixation des alu
+      tempf=273.15d0+ttkf
+     
       if(temp1.gt.tempd) then
 !      dissolution des phases sulfo alumineuse
 !      coeff cinetique de dissolution precipitation
 !      influence de la temperature
        coeff1=(exp(-(nrjd/8.31d0)*(1.d0/temp1-1.d0/tempd)))-1.d0
 !       print*,'def3d,dissolution coeff1',coeff1
+!      influence de la temperature sur la fixation des alu
+       ctf=max((exp(-(nrjf/8.31d0)*(1.d0/temp1-1.d0/tempf)))-1.d0,0.001)
        if(coeff1.gt.0.) then
 !       influence des alcalins sur la dissolution
         coeff2=exp(-CNa/Cnak)   
@@ -158,13 +166,14 @@ implicit none
 !        print*,'taudis',taudis
 !       influence des alcalins sur la fixation des alu ds les HG        
         coeff3=1.d0-exp(-CNa/Cnak)         
-        taufix=tfid*coeff3/coeff1
+!        taufix=tfid*coeff3/coeff1
+        taufix=tfid*coeff3/ctf
 !       rapport des temps caractéristiques        
         kfd=taufix/taudis
-        if(kfd-1.lt.r8prem()) then
-             kfd=0.99d0
-             taufix=kfd*taudis 
-        end if
+!        if(kfd-1.lt.r8prem()) then
+!             kfd=0.99d0
+!             taufix=kfd*taudis 
+!        end if
 !        print*,'taufix',taufix       
 !       actualisation de l aluminium ds les phases sulfates
         A1F=A1*exp(-dt/taudis)

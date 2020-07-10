@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,8 @@
 interface 
       subroutine def3d(ppas,tdef,nrjd,tref0,def0,sr1,srsdef,teta1,dt,&
       vdef00,def1,vdef1,CNa,nrjp,ttrd,tfid,ttdd,tdid,exmd,exnd,&
-      cnab,cnak,ssad,At,St,M1,E1,M2,E2,AtF,StF,M1F,E1F,M2F,E2F)
+      cnab,cnak,ssad,At,St,M1,E1,M2,E2,AtF,StF,M1F,E1F,M2F,E2F,&
+      ttkf,nrjf)
         aster_logical :: ppas
         real(kind=8) :: tdef
         real(kind=8) :: nrjd
@@ -57,5 +58,7 @@ interface
         real(kind=8) :: E1F
         real(kind=8) :: M2F
         real(kind=8) :: E2F
+        real(kind=8) :: ttkf
+        real(kind=8) :: nrjf
     end subroutine def3d
 end interface 

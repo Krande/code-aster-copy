@@ -49,10 +49,10 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     real(kind=8), intent(in) :: carcri(*)
 !
 ! DECLARATIONS LOCALES
-    character(len=8) :: nomres(55),nomres1(4)
-    real(kind=8) :: valres(55), xmat(59), rbid,valres1(4)
+    character(len=8) :: nomres(56),nomres1(4)
+    real(kind=8) :: valres(56), xmat(60), rbid,valres1(4)
     integer :: nvari, nstrs, mfr, i, j
-    integer :: retour(55),retour1(4), iteflumax
+    integer :: retour(56),retour1(4), iteflumax
     real(kind=8) :: d(6, 6), e, nu, coef, coef1, coef2, coef3
     real(kind=8) :: zero, un, deux, rac2,var0(6),sig0(6)
 !
@@ -66,7 +66,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
       
     integer :: nbelas3d
       parameter (nbelas3d=4)
-      parameter (NMATFLU=55)
+      parameter (NMATFLU=56)
       parameter (NMATAILX=0)
       parameter (NVARFLU=108)
 
@@ -268,7 +268,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     nomres(21)= 'MSHR'
     nomres(22)= 'PORO'
     nomres(23)= 'VRAG'
-    nomres(24)= 'VW'
+    nomres(24)= 'NRJF'
     nomres(25)= 'SFLD'
     nomres(26)= 'MVGN'
     nomres(27)= 'EPC'
@@ -300,17 +300,18 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     nomres(53)= 'TFID'
     nomres(54)= 'NRJD'
     nomres(55)= 'TTRD'
+    nomres(56)= 'TTKF'
 !
     rbid = 0.d0
 
 !
     call rcvalb(fami, kpg, ksp, '-', imate,&
                 ' ', compor(1), 0, ' ', [rbid],&
-                55, nomres, valres, retour, 0, nan='NON')
+                56, nomres, valres, retour, 0, nan='NON')
 !
 !
-! --- ON REMPLIT XMAT DE nbelas+1 A nbelas+44
-    do i = (nbelas3d+1), (nbelas3d+55)
+! --- ON REMPLIT XMAT DE nbelas+1 A nbelas+56
+    do i = (nbelas3d+1), (nbelas3d+56)
         xmat(i) = valres(i-nbelas3d)
     end do
 !
