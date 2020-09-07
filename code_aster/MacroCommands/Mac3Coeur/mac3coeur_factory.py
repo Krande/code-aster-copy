@@ -64,8 +64,7 @@ class Mac3Factory(object):
         with open(fname) as f:
             exec(compile(f.read(), fname, 'exec'), ctxt)
         obj = ctxt.get(objname)
-        assert obj, "No object named '%s' has been defined in the " \
-                    "catalog '%s'" % (objname, fname)
+        assert obj, "No object named '%s' has been defined in the catalog '%s'"%(objname, fname)
         self.cata[objname] = ctxt[objname]
 
     def get(self, objname):

@@ -81,8 +81,7 @@ def definir_chargement_transverse(cote, epaisseur, pos_thyc, force, prod):
     for k in range(kk, pos_thyc[0]):
         som_l = som_l + float(epaisseur[k])
         som_f = som_f + prod * float(force[k])
-    som_feq = som_f / \
-        (som_l + 0.25 * float(epaisseur[pos_thyc[0]]))
+    som_feq = som_f / (som_l + 0.25 * float(epaisseur[pos_thyc[0]]))
     defi_fonc.append(
         float(cote[kk]) - 0.5 * float(epaisseur[kk]) - eps)
     defi_fonc.append(som_feq)
@@ -101,9 +100,7 @@ def definir_chargement_transverse(cote, epaisseur, pos_thyc, force, prod):
             #print('epaisseur = %s'%epaisseur[k])
             som_f = som_f + prod * float(force[k])
         #print('som_l = %f ; som_f = %f'%(som_l,som_f))
-        som_feq = som_f / \
-            (som_l + 0.25 *
-             (float(epaisseur[pos_thyc[j]]) + float(epaisseur[pos_thyc[j + 1]])))
+        som_feq = som_f / (som_l + 0.25 * (float(epaisseur[pos_thyc[j]]) + float(epaisseur[pos_thyc[j + 1]])))
         #print('epaisseur avant = %s ; epaisseur apres = %s'%(epaisseur[pos_thyc[j]],epaisseur[pos_thyc[j + 1]]))
         #print('cote grille avant = %s ; cote grille apres = %s'%(cote[pos_thyc[j]],cote[pos_thyc[j + 1]]))
         defi_fonc.append(
@@ -121,8 +118,7 @@ def definir_chargement_transverse(cote, epaisseur, pos_thyc, force, prod):
     for k in range(pos_thyc[len(pos_thyc) - 1] + 1, len(cote)):
         som_l = som_l + float(epaisseur[k])
         som_f = som_f + prod * float(force[k])
-    som_feq = som_f / \
-        (som_l + 0.25 * float(epaisseur[len(cote) - 1]))
+    som_feq = som_f / (som_l + 0.25 * float(epaisseur[len(cote) - 1]))
     defi_fonc.append(float(cote[pos_thyc[len(pos_thyc) - 1]]) + 0.5 * float(
         epaisseur[pos_thyc[len(pos_thyc) - 1]]) - eps)
     defi_fonc.append(som_feq)
@@ -248,8 +244,7 @@ def lire_resu_thyc(coeur, MODELE, nom_fic):
         #print(list(coeur.collAC.keys()))
 
         ac = coeur.collAC[idAC]
-        KTOT = ac.K_GRM * \
-            (ac.NBGR - 2) + ac.K_GRE * 2 + ac.K_EBSU + ac.K_TUB + ac.K_EBIN
+        KTOT = ac.K_GRM * (ac.NBGR - 2) + ac.K_GRE * 2 + ac.K_EBSU + ac.K_TUB + ac.K_EBIN
 
         # Force axiale pour une grille extremite (inf)
         mtmp = (_F(GROUP_NO='G_' + posi_aster + '_' + str(1),
@@ -278,9 +273,7 @@ def lire_resu_thyc(coeur, MODELE, nom_fic):
         mcp.extend(mtmp)
 
         # Force axiale pour les crayons (appel a DEFI_FONCTION)
-        vale = float(line[2]) / FOHYCH_1 * \
-            ac.K_TUB / KTOT * ac.NBCR / \
-            (ac.NBCR + ac.NBTG) / ac.LONCR
+        vale = float(line[2]) / FOHYCH_1 * ac.K_TUB / KTOT * ac.NBCR / (ac.NBCR + ac.NBTG) / ac.LONCR
         _FXC = DEFI_FONCTION(
             NOM_PARA='X', PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
             VALE=(ac.XINFC, vale, ac.XSUPC, vale))

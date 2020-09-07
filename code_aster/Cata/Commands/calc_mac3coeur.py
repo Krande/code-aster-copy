@@ -80,11 +80,12 @@ CALC_MAC3COEUR = MACRO(nom="CALC_MAC3COEUR",
                        
                        # choix du maintien dans le cas d'un coeur à plusieurs assemblages
                        b_maintien_coeur = BLOC(condition = """exists("TYPE_COEUR") and not TYPE_COEUR.startswith('MONO')""",
-                                               DEFORMATION  = FACT(statut='f',max=1,
+                                               DEFORMATION  = FACT(statut='f', max=1,
                                                                    fr=tr("Estimation des deformations des AC"),
-                                                                   RESU_INIT    = SIMP(statut='f',typ=resultat_sdaster),
+                                                                   RESU_INIT = SIMP(statut='f',typ=resultat_sdaster),
+                                                                   TEMP_IMPO = SIMP(statut='f', typ='R', max=1),
                                                                    NIVE_FLUENCE = SIMP(statut='o',typ='R',max=1), # FLUENCE MAXIMALE DANS LE COEUR
-                                                                   UNITE_THYC      = SIMP(statut='o',typ=UnitType(), max=1, inout='in'),                   # Unite Logique du fichier THYC
+                                                                   UNITE_THYC = SIMP(statut='o',typ=UnitType(), max=1, inout='in'), # Unite Logique du fichier THYC
                                                                    MAINTIEN_GRILLE = SIMP(statut='f',typ='TXM',into=("OUI", "NON"),defaut="NON" ),
                                                                    TYPE_MAINTIEN = SIMP(statut='f',typ='TXM',into=("DEPL_PSC",),defaut="DEPL_PSC" ),
                                                                    ARCHIMEDE = SIMP(statut='f',typ='TXM',into=("OUI", ),defaut="OUI" ),

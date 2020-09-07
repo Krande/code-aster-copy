@@ -536,12 +536,13 @@ class PostAC():
     @staticmethod
     def fleche_parameters_types():
 
-        para = ['POS', 'Cycle', 'T5', 'T6', 'Repere', 'Ro', 'EinfXgg', 'EinfYgg'] + \
-               ['XG%d'%(d+1) for d in range(10)] + ['YG%d'%(d+1) for d in range(10)] + \
-               ['Milieu', 'Min X', 'Max X', 'CC X', 'Min Y', 'Max Y', 'CC Y', 'Forme X', 'Forme Y', 'Forme']
-        types = ['K8', 'I', 'R', 'R', 'K16', 'R', 'R', 'R'] + \
-                ['R']*20 + \
-                ['K16', 'R', 'R', 'R', 'R', 'R', 'R', 'K8', 'K8', 'K8']
+        para = ['POS', 'Cycle', 'T5', 'T6', 'Repere', 'Ro', 'EinfXgg', 'EinfYgg']
+        para+= ['XG%d'%(d+1) for d in range(10)] + ['YG%d'%(d+1) for d in range(10)]
+        para+= ['Milieu', 'Min X', 'Max X', 'CC X', 'Min Y', 'Max Y', 'CC Y', 'Forme X', 'Forme Y', 'Forme']
+
+        types = ['K16', 'I', 'R', 'R', 'K16', 'R', 'R', 'R']
+        types+= ['R']*20
+        types+= ['K16', 'R', 'R', 'R', 'R', 'R', 'R', 'K8', 'K8', 'K8']
 
         return para, types
 
@@ -751,8 +752,7 @@ def post_mac3coeur_ops(self, **args):
 
                 # liste des parametres a afficher (dans l'ordre)
                 # Rq : on affiche la premiere occurence de 'COOR_X'
-                l_para = ['COOR_X', ] + \
-                    _coeur.get_contactAssLame() + _coeur.get_contactCuve()
+                l_para = ['COOR_X', ] + _coeur.get_contactAssLame() + _coeur.get_contactCuve()
 
                 IMPR_TABLE(UNITE=_unit, TABLE=_TAB3, NOM_PARA=l_para,FORMAT_R='E12.6',)
 
@@ -868,8 +868,7 @@ def post_mac3coeur_ops(self, **args):
 
                 # liste des parametres a afficher (dans l'ordre)
                 # Rq : on affiche la premiere occurence de 'COOR_X'
-                l_para = ['COOR_X', ] + \
-                    _coeur.get_contactAssLame() + _coeur.get_contactCuve()
+                l_para = ['COOR_X', ] + _coeur.get_contactAssLame() + _coeur.get_contactCuve()
 
                 IMPR_TABLE(UNITE=_unit, TABLE=_TAB3, NOM_PARA=l_para,FORMAT_R='E12.6',)
 

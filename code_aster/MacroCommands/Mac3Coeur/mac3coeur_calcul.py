@@ -126,6 +126,7 @@ class Mac3CoeurCalcul(object):
         self.calc_res_def = False
         self.res_def = None
         self.res_def_keyw = None
+        self._dilat_only = None
 
         # cached properties
         self._init_properties()
@@ -381,7 +382,7 @@ class Mac3CoeurCalcul(object):
     def vessel_dilatation_load(self):
         """Return the loading due to the vessel dilatation"""
         char_dilat = self.coeur.dilatation_cuve(self.model, self.mesh,
-                               (self.char_init is not None),self._maintien_grille)
+                               (self.char_init is not None),self._maintien_grille, T_CONST_CUVE=self._dilat_only)
         return [_F(CHARGE=char_dilat,), ]
 
     @property
@@ -588,6 +589,8 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         self.niv_fluence = self.mcf['NIVE_FLUENCE']
         if self.keyw['TYPE_COEUR'][:4] == "MONO":
             self.subdivis = 5
+        if self.mcf['TEMP_IMPO'] :
+            self._dilat_only = self.mcf['TEMP_IMPO']
         self.use_archimede = self.mcf['ARCHIMEDE']
         self._maintien_grille = (self.mcf['MAINTIEN_GRILLE'] == 'OUI')
         super()._prepare_data(noresu)
@@ -681,9 +684,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
             chmat_contact = self.cham_mater_free
         else:
             chmat_contact = self.cham_mater_contact
-        constant_load = self.archimede_load + \
-            self.gravity_load + self.vessel_dilatation_load + \
-            self.symetric_cond
+        constant_load = self.archimede_load + self.gravity_load + self.vessel_dilatation_load + self.symetric_cond
         nbRatio = 9
         # T0 - T8
         if (self.char_init) :
@@ -694,12 +695,9 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                             PRECISION=1.E-08,
                                             INST_FIN=coeur.temps_simu['T5']),
                                COMPORTEMENT=self.char_ini_comp,
-                               EXCIT=constant_load + self.vessel_head_load + \
-                                      self.thyc_load[0]+self.kinematic_cond,
+                               EXCIT=constant_load + self.vessel_head_load + self.thyc_load[0]+self.kinematic_cond,
                                ))
-            constant_load = self.archimede_load + \
-                self.gravity_load + self.vessel_dilatation_load_full + \
-                self.symetric_cond + self.periodic_cond + self.rigid_load
+            constant_load = self.archimede_load + self.gravity_load + self.vessel_dilatation_load_full + self.symetric_cond + self.periodic_cond + self.rigid_load
             __RESULT = STAT_NON_LINE(**self.snl(
                                reuse=__RESULT,
                                RESULTAT=__RESULT,
@@ -730,13 +728,22 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                                PRECISION=1.E-08),
                                   COMPORTEMENT=self.char_ini_comp,
                                   ))
+        elif (self._dilat_only) :
+            # sans contact, sans effort hydro, jusqu'a T4 uniquement
+            constant_load += self.periodic_cond + self.rigid_load
+            loads = constant_load + self.vessel_head_load
+
+            __RESULT = STAT_NON_LINE(**self.snl(
+                CHAM_MATER=self.cham_mater_free,
+                INCREMENT=_F(LIST_INST=self.times,
+                             INST_INIT=0.,
+                             INST_FIN=coeur.temps_simu['T4']),
+                EXCIT=loads))
 
         else :
 
             constant_load += self.periodic_cond + self.rigid_load
-            loads = constant_load \
-                    + self.vessel_head_load \
-                    + self.thyc_load[0] + self.thyc_load[1]
+            loads = constant_load + self.vessel_head_load + self.thyc_load[0] + self.thyc_load[1]
             keywords=[]
             mater=[]
             ratio = 1.

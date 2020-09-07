@@ -1205,7 +1205,7 @@ class Coeur(object):
         mcf.extend(mtmp)
         return mcf
 
-    def dilatation_cuve(self, MODEL, MAILL,is_char_ini=False,maintien_grille=False):
+    def dilatation_cuve(self, MODEL, MAILL, is_char_ini=False, maintien_grille=False, T_CONST_CUVE=None):
         """Retourne les déplacements imposés aux noeuds modélisant les internes de cuves
         (supports inférieur (PIC ou FSC), supérieur (PSC) et cloisons)
         et traduisant les dilatations thermiques des internes et leurs deformations de natures mecaniques"""
@@ -1222,10 +1222,10 @@ class Coeur(object):
                                        self.temps_simu['T0'],   self.TP_REF,
                                        self.temps_simu['T1'],   self.TP_REF,
                                        self.temps_simu['T2'],   self.ARRET_FR,
-                                       self.temps_simu['T3'],   self.ARRET_CH,
-                                       self.temps_simu['T4'],   self.TINFCUVE,
-                                       self.temps_simu['T5'],   self.TINFCUVE,
-                                       self.temps_simu['T6'],   self.ARRET_CH,
+                                       self.temps_simu['T3'],   T_CONST_CUVE or self.ARRET_CH,
+                                       self.temps_simu['T4'],   T_CONST_CUVE or self.TINFCUVE,
+                                       self.temps_simu['T5'],   T_CONST_CUVE or self.TINFCUVE,
+                                       self.temps_simu['T6'],   T_CONST_CUVE or self.ARRET_CH,
                                        self.temps_simu['T7'],   self.ARRET_FR,
                                        self.temps_simu['T8'],   self.TP_REF,
                                        self.temps_simu['T9'],   self.TP_REF,),
@@ -1239,10 +1239,10 @@ class Coeur(object):
                                        self.temps_simu['T0'],   self.TP_REF,
                                        self.temps_simu['T1'],   self.TP_REF,
                                        self.temps_simu['T2'],   self.ARRET_FR,
-                                       self.temps_simu['T3'],   self.ARRET_CH,
-                                       self.temps_simu['T4'],   self.TSUPCUVE,
-                                       self.temps_simu['T5'],   self.TSUPCUVE,
-                                       self.temps_simu['T6'],   self.ARRET_CH,
+                                       self.temps_simu['T3'],   T_CONST_CUVE or self.ARRET_CH,
+                                       self.temps_simu['T4'],   T_CONST_CUVE or self.TSUPCUVE,
+                                       self.temps_simu['T5'],   T_CONST_CUVE or self.TSUPCUVE,
+                                       self.temps_simu['T6'],   T_CONST_CUVE or self.ARRET_CH,
                                        self.temps_simu['T7'],   self.ARRET_FR,
                                        self.temps_simu['T8'],   self.TP_REF,
                                        self.temps_simu['T9'],   self.TP_REF,),
@@ -1256,10 +1256,10 @@ class Coeur(object):
                                        self.temps_simu['T0'],   self.TP_REF,
                                        self.temps_simu['T1'],   self.TP_REF,
                                        self.temps_simu['T2'],   self.ARRET_FR,
-                                       self.temps_simu['T3'],   self.ARRET_CH,
-                                       self.temps_simu['T4'],   self.TENVELOP,
-                                       self.temps_simu['T5'],   self.TENVELOP,
-                                       self.temps_simu['T6'],   self.ARRET_CH,
+                                       self.temps_simu['T3'],   T_CONST_CUVE or self.ARRET_CH,
+                                       self.temps_simu['T4'],   T_CONST_CUVE or self.TENVELOP,
+                                       self.temps_simu['T5'],   T_CONST_CUVE or self.TENVELOP,
+                                       self.temps_simu['T6'],   T_CONST_CUVE or self.ARRET_CH,
                                        self.temps_simu['T7'],   self.ARRET_FR,
                                        self.temps_simu['T8'],   self.TP_REF,
                                        self.temps_simu['T9'],   self.TP_REF,),
@@ -1454,8 +1454,7 @@ class Coeur(object):
                                        PROL_DROITE='CONSTANT',
                                        PROL_GAUCHE='CONSTANT',)
 
-        f_DthXpic = '( (_DthXpicPeriph(INST) -_DthXpicCentre(INST) ) /(%(Rpsc)f)**2   )*('+\
-            L + ')**2   +_DthXpicCentre(INST)'
+        f_DthXpic = '( (_DthXpicPeriph(INST) -_DthXpicCentre(INST) ) /(%(Rpsc)f)**2   )*(' + L + ')**2   +_DthXpicCentre(INST)'
         _DthXpic = FORMULE(
             NOM_PARA=('X', 'Y', 'Z', 'INST'), VALE=f_DthXpic % locals(),
             _DthXpicPeriph=_DthXpicPeriph,_DthXpicCentre=_DthXpicCentre)
@@ -1466,9 +1465,7 @@ class Coeur(object):
         #---------------------------------------------------------------
         XINFCUVElocal = self.XINFCUVE
         XSUPCUVElocal = self.XSUPCUVE
-        f_DthX = '(-1.*_DthXpicPeriph' + \
-            '(INST)/(%(XSUPCUVElocal)f-%(XINFCUVElocal)f) * X  +'  + \
-            '_DthXpicPeriph(INST))'
+        f_DthX = '(-1.*_DthXpicPeriph' + '(INST)/(%(XSUPCUVElocal)f-%(XINFCUVElocal)f) * X  +' + '_DthXpicPeriph(INST))'
         _DthX = FORMULE(NOM_PARA=('X', 'INST'), VALE=f_DthX % locals(),
                         _DthXpicPeriph=_DthXpicPeriph,
                         XSUPCUVElocal=XSUPCUVElocal,

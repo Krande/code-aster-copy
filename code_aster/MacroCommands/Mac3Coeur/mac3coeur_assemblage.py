@@ -178,8 +178,7 @@ class Assemblage(object):
                     fcheck()
         assert self.typeAC, "typeAC must be set by the subclass."
         assert self.mate, "'mate' not set."
-        assert self._position_toaster and self._position_todamac, \
-            "'position' functions not registered."
+        assert (self._position_toaster and self._position_todamac), "'position' functions not registered."
         self._checked = True
 
     def set_materiau(self, mate):
