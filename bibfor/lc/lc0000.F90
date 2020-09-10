@@ -141,6 +141,7 @@ implicit none
 #include "asterfort/lc7041.h"
 #include "asterfort/lc7043.h"
 #include "asterfort/lc7045.h"
+#include "asterfort/lc7046.h"
 #include "asterfort/lc7048.h"
 #include "asterfort/lc7049.h"
 #include "asterfort/lc7051.h"
@@ -1089,6 +1090,13 @@ integer :: codret
                     nvi, dsidep, codret)
     case (7045)
         call lc7045(BEHinteg,&
+                    fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (7046)
+        call lc7046(BEHinteg,&
                     fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
                     deps, sigm, vim, option, angmas,&

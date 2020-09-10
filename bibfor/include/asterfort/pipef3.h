@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine pipef3(ndim, nno, nddl, npg, lgpg,&
                       wref, vff, dfde, mate, geom,&
                       vim, ddepl, deplm, ddepl0, ddepl1,&
-                      dtau, copilo, typmod)
+                      dtau, typmod, compor, copilo)
         integer :: lgpg
         integer :: npg
         integer :: nddl
@@ -41,5 +41,6 @@ interface
         real(kind=8) :: dtau
         real(kind=8) :: copilo(5, npg)
         character(len=8) :: typmod(2)
+        character(len=16) :: compor
     end subroutine pipef3
 end interface

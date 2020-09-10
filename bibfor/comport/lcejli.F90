@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,6 +94,8 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
 ! INITIALISATION
 !
     ka = max(k0,vim(1))
+    write(6,*) ''
+    write(6,*) 'vim(1)', vim(1)
     rtan = 0.d0
     do 10 i = 2, ndim
         rtan=rtan+a(i)**2
@@ -160,6 +162,16 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
         endif
 !
     endif
+    write(6,*) ''
+    write(6,*) 'sigm',''
+    write(6,*) 'sigp',sigma
+    write(6,*) 'd',''
+    write(6,*) 'k',''
+    write(6,*) 'ddelta',da
+    write(6,*) 'delta', a
+    write(6,*) 'epsm', ''
+    write(6,*) 'deps', ''
+    write(6,*) 'option', option
 !
 ! ACTUALISATION DES VARIABLES INTERNES
 !   V1 :  SEUIL, PLUS GRANDE NORME DU SAUT

@@ -87,6 +87,10 @@ ZVARIPG  = LocatedComponents(phys=PHY.VARI_R, type='ELGA', location='RIGI',
     components=('VARI',))
 
 
+ECOPILO  = LocatedComponents(phys=PHY.PILO_R, type='ELGA', location='RIGI',
+    components=('A0','A[3]','ETA',))
+
+
 MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 MMATUUR  = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
@@ -287,6 +291,19 @@ class MEFI_HEXA20(EJHYME_HEXA20):
             ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9',), mater=('RIGI',),),
             ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG9',),),
         )
+    calculs =(
+
+            OP.PILO_PRED_ELAS(te=208,
+            para_in=((SP.PBORNPI, LC.CBORNPI), (SP.PCDTAU, LC.CCDTAU),
+                     (OP.PILO_PRED_ELAS.PCOMPOR, LC.CCOMPOR), (OP.PILO_PRED_ELAS.PCONTMR, ECONTPG),
+                     (SP.PDDEPLR, DDL_MECA), (SP.PDEPL0R, DDL_MECA), (SP.PCARCRI, LC.CCARCRI),
+                     (SP.PDEPL1R, DDL_MECA), (SP.PDEPLMR, DDL_MECA),
+                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (SP.PTYPEPI, LC.CTYPEPI), (OP.PILO_PRED_ELAS.PVARIMR, ZVARIPG),
+                     ),
+            para_out=((OP.PILO_PRED_ELAS.PCOPILO, ECOPILO), ),
+        ),
+    )
 
 
 #------------------------------------------------------------

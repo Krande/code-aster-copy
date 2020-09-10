@@ -138,4 +138,7 @@ Par défaut, on affecte le comportement élastique en petites déformations sur 
 Conseils: vérifier que ce comportement est voulu (pas d'oubli dans AFFE_MODELE).
 """),
 
+    73: _("""
+Utilisation de la loi CZM_TURON : il est recommandé de commencer le calcul par un pas de chargement purement élastique.
+"""),
 }

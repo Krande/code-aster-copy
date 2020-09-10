@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2019 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,8 @@ subroutine te0208(option, nomte)
 !
 !
     integer :: igeom, imater, ideplm, ivarim, npg, jtab(7), iret, lgpg
-    integer :: iddepl, idepl0, idepl1, ictau, icopil, ndim, nno, nnos, nddl
+    integer :: iddepl, idepl0, idepl1, ictau, icompo, icopil
+    integer :: ndim, nno, nnos, nddl
     integer :: ipoids, ivf, idfde, jgano
     character(len=8) :: typmod(2)
 !
@@ -56,6 +57,7 @@ subroutine te0208(option, nomte)
     call jevech('PDEPL0R', 'L', idepl0)
     call jevech('PDEPL1R', 'L', idepl1)
     call jevech('PCDTAU', 'L', ictau)
+    call jevech('PCOMPOR', 'L', icompo)
 !
     typmod(1) = '3D'
     typmod(2) = 'ELEMJOIN'
@@ -71,7 +73,7 @@ subroutine te0208(option, nomte)
     call pipef3(ndim, nno, nddl, npg, lgpg,&
                 zr(ipoids), zr(ivf), zr(idfde), zi(imater), zr(igeom),&
                 zr(ivarim), zr(iddepl), zr(ideplm), zr(idepl0), zr(idepl1),&
-                zr(ictau), zr(icopil), typmod)
+                zr(ictau), typmod, zk16(icompo), zr(icopil))
 !
 !
 end subroutine

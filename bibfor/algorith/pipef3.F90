@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2019 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 subroutine pipef3(ndim, nno, nddl, npg, lgpg,&
                   wref, vff, dfde, mate, geom,&
                   vim, ddepl, deplm, ddepl0, ddepl1,&
-                  dtau, copilo, typmod)
+                  dtau, typmod, compor, copilo)
 !
 !
 ! aslint: disable=W1306
@@ -28,14 +28,18 @@ subroutine pipef3(ndim, nno, nddl, npg, lgpg,&
 #include "asterc/r8vide.h"
 #include "asterfort/nmfici.h"
 #include "asterfort/pipeba.h"
+#include "asterfort/pipetu.h"
 #include "asterfort/r8inir.h"
+#include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
     integer :: mate, npg, lgpg, nno, ndim, nddl
     real(kind=8) :: geom(nddl), vim(lgpg, npg), ddepl(nddl), deplm(nddl)
     real(kind=8) :: wref(npg), vff(nno, npg), dfde(2, nno, npg)
-    real(kind=8) :: ddepl0(nddl), ddepl1(nddl), dtau, copilo(5, npg)
+    real(kind=8) :: ddepl0(nddl), ddepl1(nddl), dtau
     character(len=8) :: typmod(2)
+    character(len=16) :: compor
+    real(kind=8) :: copilo(5, npg)
 !
 !-----------------------------------------------------------------------
 !
@@ -81,8 +85,15 @@ subroutine pipef3(ndim, nno, nddl, npg, lgpg,&
         copilo(5,kpg) = r8vide()
 !
 !      APPEL DU PILOTAGE PRED_ELAS SPECIFIQUE A LA LOI DE COMPORTEMENT
-        call pipeba(3, mate, sup, sud, vim(1, kpg),&
-                    dtau, copilo(1, kpg))
+        if ((compor .eq. 'CZM_LIN_REG') .or. (compor .eq. 'CZM_EXP_REG')) then
+            call pipeba(3, mate, sup, sud, vim(1, kpg),&
+                        dtau, copilo(1, kpg))
+        else if (compor .eq. 'CZM_TURON') then
+            call pipetu(3, mate, sup, sud, vim(1, kpg),&
+                        dtau, copilo(1, kpg))
+        else 
+            call utmess('F', 'MECANONLINE_59')
+        endif
 !
 10  end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine pipefi(npg, lgpg, mate, geom, vim,&
                   ddepl, deplm, ddepl0, ddepl1, dtau,&
-                  copilo, typmod)
+                  typmod, compor, copilo)
 !
 !
     implicit none
@@ -26,13 +26,17 @@ subroutine pipefi(npg, lgpg, mate, geom, vim,&
 #include "asterc/r8vide.h"
 #include "asterfort/nmfisa.h"
 #include "asterfort/pipeba.h"
+#include "asterfort/pipetu.h"
 #include "asterfort/r8inir.h"
+#include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
     integer :: mate, npg, lgpg
     real(kind=8) :: geom(2, 4), vim(lgpg, npg), ddepl(2, 4), deplm(2, 4)
-    real(kind=8) :: ddepl0(2, 4), ddepl1(2, 4), dtau, copilo(5, npg)
+    real(kind=8) :: ddepl0(2, 4), ddepl1(2, 4), dtau
     character(len=8) :: typmod(2)
+    character(len=16) :: compor
+    real(kind=8) :: copilo(5, npg)
 !
 !-----------------------------------------------------------------------
 !  PILOTAGE PRED_ELAS POUR LES ELEMENTS DE JOINT 2D
@@ -78,8 +82,15 @@ subroutine pipefi(npg, lgpg, mate, geom, vim,&
         copilo(5,kpg) = r8vide()
 !
 !      APPEL DU PILOTAGE PRED_ELAS SPECIFIQUE A LA LOI DE COMPORTEMENT
-        call pipeba(2, mate, sup, sud, vim(1, kpg),&
-                    dtau, copilo(1, kpg))
+        if ((compor .eq. 'CZM_LIN_REG') .or. (compor .eq. 'CZM_EXP_REG')) then
+            call pipeba(2, mate, sup, sud, vim(1, kpg),&
+                        dtau, copilo(1, kpg))
+        else if (compor .eq. 'CZM_TURON') then
+            call pipetu(2, mate, sup, sud, vim(1, kpg),&
+                        dtau, copilo(1, kpg))
+        else 
+            call utmess('F', 'MECANONLINE_59')
+        endif
 !
  10 end do
 !

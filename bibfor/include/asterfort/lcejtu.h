@@ -15,25 +15,21 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine pipefi(npg, lgpg, mate, geom, vim,&
-                      ddepl, deplm, ddepl0, ddepl1, dtau,&
-                      typmod, compor, copilo)
-        integer :: lgpg
-        integer :: npg
-        integer :: mate
-        real(kind=8) :: geom(2, 4)
-        real(kind=8) :: vim(lgpg, npg)
-        real(kind=8) :: ddepl(2, 4)
-        real(kind=8) :: deplm(2, 4)
-        real(kind=8) :: ddepl0(2, 4)
-        real(kind=8) :: ddepl1(2, 4)
-        real(kind=8) :: dtau
-        real(kind=8) :: copilo(5, npg)
-        character(len=8) :: typmod(2)
-        character(len=16) :: compor
-    end subroutine pipefi
+    subroutine lcejtu(BEHinteg,&
+                      fami, kpg, ksp, ndim, imate,&
+                      option, epsm, deps, sigm, sigp,&
+                      dsidep, vim, vip, typmod,&
+                      instam, instap)
+            use Behaviour_type
+            type(Behaviour_Integ), intent(in) :: BEHinteg
+            integer, intent(in) :: imate, ndim, kpg, ksp
+            real(kind=8), intent(in) :: epsm(ndim), deps(ndim), sigm(6), vim(*)
+            real(kind=8), intent(in) :: instam, instap
+            character(len=8), intent(in) :: typmod(*)
+            character(len=16), intent(in) :: option
+            character(len=*), intent(in) :: fami
+            real(kind=8), intent(out) :: vip(*), sigp(6), dsidep(6, 6)
+            end subroutine lcejtu
 end interface

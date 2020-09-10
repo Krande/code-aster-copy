@@ -17,29 +17,29 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: kyrylo.kazymyrenko at edf.fr
+# person_in_charge: astrid.filiot at edf.fr
 
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'CZM_EXP_REG',
+    nom            = 'CZM_TURON',
     lc_type        = ('MECANIQUE',),
-    doc            =   """Relation de comportement cohésive (Cohesive Zone Model EXPonentielle REGularisée) (Cf. [R7.02.11]) modélisant l'ouverture d'une fissure.
-   Cette loi est utilisable avec l'élément fini de type joint (Cf. [R3.06.09]) et permet d'introduire une force de cohésion entre les lèvres de la fissure.
-   Par ailleurs l'utilisation de ce modèle requiert souvent la présence du pilotage par PRED_ELAS (cf. [U4.51.03])."""              ,
-    num_lc         = 10,
-    nb_vari        = 9,
-    nom_vari       = ('SEUILDEP','INDIDISS','INDIENDO','PCENERDI','DISSIP',
-        'ENEL_RES','SAUT_N','SAUT_T1','SAUT_T2',),
-    mc_mater       = ('RUPT_FRAG',),
-    modelisation   = ('3D','PLAN','AXIS','ELEMJOINT','JHMS',
-        'AXIS_JHMS',),
+    doc            =   """Relation de comportement de type CZM pour modéliser
+             le comportement d'une interface isotrope transverse. 
+             Basée sur le modèle de Turon 2006""",
+    num_lc         = 46,
+    nb_vari        = 16,
+    nom_vari       = ('SAUT_MAX','VARSEUIL','VARIENDO','INDIDISS','INDIENDO',
+        'SAUT_N','SAUT_T1','SAUT_T2','SAUTEQUI','SAUTTANG',
+        'PCENERDI', 'ENERDISS','MIXITE_S','MIXITE_G','SAUTINIT','SAUTRUPT',
+        ),
+    mc_mater       = ('RUPT_TURON',),
+    modelisation   = ('ELEMJOINT',),
     deformation    = ('PETIT',),
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
-    proprietes     = ('COMP_ELAS',),
+    proprietes     = ('COMP_INCR'),
     syme_matr_tang = ('Yes',),
     exte_vari      = None,
     deform_ldc     = ('OLD',),
-    regu_visc      = ('No',),
 )
