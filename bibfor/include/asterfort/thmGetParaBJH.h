@@ -17,10 +17,11 @@
 ! --------------------------------------------------------------------
 !
 interface 
-    subroutine dspdp1(ds_thm, signe, tbiot, satur, dsdp1,phi0,ep,surf,sbjh,wbjh)
+    subroutine thmGetParaBJH(ds_thm,j_mater, p1)
         use THM_type
-        type(THM_DS), intent(in) :: ds_thm
-        real(kind=8), intent(in) :: signe, tbiot(6), satur,phi0,ep,surf,sbjh,wbjh
-        real(kind=8), intent(out) :: dsdp1(6)
-    end subroutine dspdp1
+        type(THM_DS), intent(inout) :: ds_thm
+        integer, intent(in) :: j_mater
+        real(kind=8), intent(in) :: p1
+
+    end subroutine thmGetParaBJH
 end interface 

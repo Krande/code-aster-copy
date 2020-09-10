@@ -131,6 +131,8 @@ integer, intent(out)  :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
+
+
     phi    = 0.d0
     rho11  = 0.d0
     satur  = 0.d0
@@ -249,6 +251,7 @@ integer, intent(out)  :: retcom
                        vintm , vintp    , dsde  ,&
                        retcom)
     case (LIQU_AD_GAZ_VAPE)
+
         call thmCpl009(ds_thm ,&
                        lMatr, lSigm, lVari, angl_naut,&
                        j_mater,&
@@ -265,6 +268,8 @@ integer, intent(out)  :: retcom
                        congem , congep   ,&
                        vintm  , vintp    , dsde  ,&
                        retcom)
+                       
+                       
     case (LIQU_AD_GAZ)
         call thmCpl010(ds_thm ,&
                        lMatr, lSigm, lVari, angl_naut,&

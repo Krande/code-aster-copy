@@ -33,7 +33,7 @@ interface
                          vintm  , vintp  , dsde  ,&
                          retcom)
         use THM_type
-        type(THM_DS), intent(in) :: ds_thm
+        type(THM_DS), intent(inout) :: ds_thm
         aster_logical, intent(in) :: lMatr, lSigm, lVari
         real(kind=8), intent(in) :: angl_naut(3)
         integer, intent(in) :: j_mater, ndim, nbvari

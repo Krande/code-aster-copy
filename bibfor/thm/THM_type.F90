@@ -193,6 +193,19 @@ implicit none
         real(kind=8) :: cp    = 0.d0
     end type THM_Solid
 
+
+! - Calcul BJH pour la loi 'HYDR_TABBAL'
+
+    type THM_BJH
+        real(kind=8) :: epai  
+        real(kind=8) :: A0 
+        real(kind=8) :: shuttle 
+        real(kind=8) :: SBJH 
+        real(kind=8) :: wBJH
+                       
+    end type THM_BJH
+
+
 ! - Material parameters
     type THM_Material
 ! ----- For Biot coefficient (evolution of porosity)
@@ -218,6 +231,11 @@ implicit none
 ! ----- For solid
         aster_logical     :: l_r_gaz  = ASTER_FALSE
         type(THM_Solid)   :: solid
+        
+! ----- For BJH approach
+        aster_logical     :: l_bjh
+        type(THM_BJH)     :: bjh        
+        
     end type THM_Material
 ! - All parameters
     type THM_DS
@@ -227,4 +245,5 @@ implicit none
         type(THM_Material)  :: ds_material
     end type THM_DS
 !
+
 end module

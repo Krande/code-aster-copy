@@ -90,6 +90,7 @@ integer, intent(out) :: retcom
 !
 ! In  ds_thm           : datastructure for THM
 ! In  perman           : .true. for no-transient problem
+! In  option           : option to compute
 ! In  angl_naut        : nautical angles
 !                        (1) Alpha - clockwise around Z0
 !                        (2) Beta  - counterclockwise around Y1
@@ -139,7 +140,8 @@ integer, intent(out) :: retcom
     real(kind=8) :: dpad, dp2, signe
     real(kind=8) :: dmdeps(6), sigmp(6), dsdp1(6)
     real(kind=8) :: dqeps(6)
-    integer :: advico, advihy, vihrho, vicphi
+    integer      :: advico, advihy, vihrho, vicphi
+    real(kind=8) :: ep,surf,shut,sbjh,wbjh,dpi 
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -158,6 +160,12 @@ integer, intent(out) :: retcom
     satur  = 0.d0
     dp2    = 0.d0
     dpad   = 0.d0
+    dpi    = 0.d0
+    ep     = 0.d0
+    surf   = 0.d0
+    shut   = 0.d0
+    sbjh   = 0.d0
+    wbjh   = 0.d0   
 !
 ! - Get storage parameters for behaviours
 !
@@ -319,7 +327,7 @@ integer, intent(out) :: retcom
     if (lSigm) then
         if (ds_thm%ds_elem%l_dof_meca .and. .not. ds_thm%ds_elem%l_jhms) then
             call sigmap(ds_thm,&
-                        satur, signe, tbiot, dp2, dp1,&
+                        satur, signe, tbiot, dp2, dp1,dpi,&
                         sigmp)
             do i = 1, 3
                 congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)
@@ -355,13 +363,13 @@ integer, intent(out) :: retcom
 !
         if (ds_thm%ds_elem%l_dof_meca .and. .not. ds_thm%ds_elem%l_jhms) then
 ! --------- Derivative of _pressure part_ of stresses by capillary pressure
-            call dspdp1(ds_thm, signe, tbiot, satur, dsdp1)
+            call dspdp1(ds_thm, signe, tbiot, satur, dsdp1,phi0,ep,surf,sbjh,wbjh)
             do i = 1, 3
-                dsde(adcome+6+i-1,addep1) = dsde(adcome+6+i-1,addep1)+&
+                dsde(adcome+6+i-1,addep1) = dsde(adcome+6+i-1,addep1) +&
                                             dsdp1(i)
             end do
             do i = 4, 6
-                dsde(adcome+6+i-1,addep1) = dsde(adcome+6+i-1,addep1)+&
+                dsde(adcome+6+i-1,addep1) = dsde(adcome+6+i-1,addep1) +&
                                             dsdp1(i)*rac2
             end do
 ! --------- Derivative of quantity of mass by volumic mass - Mechanical part (strains)

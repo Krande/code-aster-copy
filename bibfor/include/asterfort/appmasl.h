@@ -16,11 +16,17 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-interface 
-    subroutine dspdp1(ds_thm, signe, tbiot, satur, dsdp1,phi0,ep,surf,sbjh,wbjh)
+interface
+    function appmasl(ds_thm,appmasm,&
+                    phi    , phim  ,&
+                    satur  , saturm,&
+                    rho    , rhom)
         use THM_type
         type(THM_DS), intent(in) :: ds_thm
-        real(kind=8), intent(in) :: signe, tbiot(6), satur,phi0,ep,surf,sbjh,wbjh
-        real(kind=8), intent(out) :: dsdp1(6)
-    end subroutine dspdp1
-end interface 
+        real(kind=8), intent(in) :: appmasm
+        real(kind=8), intent(in) :: phi, phim
+        real(kind=8), intent(in) :: satur, saturm
+        real(kind=8), intent(in) :: rho, rhom
+        real(kind=8) :: appmasl
+    end function appmasl
+end interface

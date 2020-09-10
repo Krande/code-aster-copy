@@ -85,10 +85,17 @@ real(kind=8) :: dsde(dimcon, dimenr)
     real(kind=8) :: dmdeps(6), dsdp1(6), sigmp(6)
     aster_logical :: emmag
     integer :: advico, advihy, vicphi, vihrho
+    real(kind=8) :: ep,surf,shut,sbjh,wbjh,dpi
+    
 !
 ! --------------------------------------------------------------------------------------------------
 !
-
+    dpi    = 0.d0
+    ep     = 0.d0
+    surf   = 0.d0
+    shut   = 0.d0
+    sbjh   = 0.d0
+    wbjh   = 0.d0
 !
 ! - Get material parameters
 !
@@ -117,7 +124,7 @@ real(kind=8) :: dsde(dimcon, dimenr)
     dt = 0.0d0
     dpad = 0.0d0
     signe = -1.0d0
-
+    dpi =0.0d0
     alpha0 = 0.d0
     alphfi = 0.d0
     m11m = congem(adcp11)
@@ -192,7 +199,7 @@ real(kind=8) :: dsde(dimcon, dimenr)
 ! --- CALCUL DES CONTRAINTES DE PRESSIONS ------------------------------
 ! ======================================================================
         if (ds_thm%ds_elem%l_dof_meca) then
-            call sigmap(ds_thm, satur, signe, tbiot, dp2, dp1, sigmp)
+            call sigmap(ds_thm, satur, signe, tbiot, dp2, dp1,dpi, sigmp)
             do i = 1, 3
                 congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)
             end do
@@ -217,7 +224,7 @@ real(kind=8) :: dsde(dimcon, dimenr)
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DE SIGMAP ------------------------------------
 ! ======================================================================
-            call dspdp1(ds_thm, signe, tbiot, satur, dsdp1)
+            call dspdp1(ds_thm,signe, tbiot, satur, dsdp1,phi0,ep,surf,sbjh,wbjh)
             do i = 1, 3
                 dsde(adcome+6+i-1,addep1)=dsde(adcome+6+i-1,addep1) + dsdp1(i)
             end do

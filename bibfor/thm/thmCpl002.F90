@@ -138,7 +138,8 @@ integer, intent(out) :: retcom
     real(kind=8) :: dp1_, dp2, p2, signe
     real(kind=8) :: dmdeps(6), sigmp(6), dsdp2(6)
     real(kind=8) :: dqeps(6)
-    integer :: advico, vicphi
+    integer      :: advico, vicphi   
+    real(kind=8) ::dpi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -157,6 +158,7 @@ integer, intent(out) :: retcom
     phi    = 0.d0
     satur  = 0.d0
     saturm = 0.d0
+    dpi    = 0.d0   
 !
 ! - Pressures: invert DP2 <= 0 and P2 <= P1
 !
@@ -210,13 +212,13 @@ integer, intent(out) :: retcom
                 epsv     , depsv ,&
                 epsvm    , cs    , mdal , dalal,&
                 alpha0   , alphfi, cbiot, unsks)
-!
+! 
 ! ==================================================================================================
 !
 ! Internal state variables
 !
 ! ==================================================================================================
-!
+! 
 ! - Evaluation of porosity and save it in internal variables
 !
     if (lVari) then
@@ -286,7 +288,7 @@ integer, intent(out) :: retcom
     if (lSigm) then
         if (ds_thm%ds_elem%l_dof_meca .and. .not. ds_thm%ds_elem%l_jhms) then
             call sigmap(ds_thm,&
-                        satur, signe, tbiot, dp2, dp1_,&
+                        satur, signe, tbiot, dp2, dp1,dpi,&
                         sigmp)
             do i = 1, 3
                 congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)
@@ -331,7 +333,7 @@ integer, intent(out) :: retcom
 ! --------- Derivative of quantity of mass by volumic mass - Mechanical part (strains)
             call dmdepv(rho21, 1.d0-satur, tbiot, dmdeps)
             do i = 1, 6
-                dsde(adcp11,addeme+ndim-1+i) = dsde(adcp11,addeme+ndim-1+i) +&
+                dsde(adcp11,addeme+ndim-1+i) = dsde(adcp11,addeme+ ndim-1+i) + &
                                                dmdeps(i)
             end do
         endif

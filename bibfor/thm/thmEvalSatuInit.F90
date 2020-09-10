@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,7 +83,8 @@ integer, intent(out) :: retcom
         ASSERT(ds_thm%ds_behaviour%satur_type .eq. UNSATURATED)
 !
     else if (ds_thm%ds_behaviour%rela_hydr.eq.'HYDR_UTIL' .or.&
-             ds_thm%ds_behaviour%rela_hydr.eq.'HYDR_ENDO') then
+             ds_thm%ds_behaviour%rela_hydr.eq.'HYDR_ENDO' .or.&
+             ds_thm%ds_behaviour%rela_hydr.eq.'HYDR_TABBAL') then
         if (ds_thm%ds_behaviour%satur_type .eq. SATURATED) then
             satm  = 1.d0
             satur = 1.d0

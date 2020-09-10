@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,7 +89,8 @@ real(kind=8), optional, intent(out) :: krg_, dkrg_dsatur_, dkrg_dp2_
         call permvc(ds_thm, satur,&
                     krl   , dkrl_dsatur, krg_, dkrg_dsatur_)
         dkrg_dp2_ = 0.d0
-    else if (ds_thm%ds_behaviour%rela_hydr .eq. 'HYDR_UTIL') then
+    else if ((ds_thm%ds_behaviour%rela_hydr .eq. 'HYDR_UTIL') &
+    .or. (ds_thm%ds_behaviour%rela_hydr .eq. 'HYDR_TABBAL')) then
         para_vale(1) = satur
         para_vale(2) = p2
         para_vale(3) = temp

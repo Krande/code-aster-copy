@@ -185,14 +185,19 @@ integer, intent(out) :: codret
 ! - Get parameters for behaviour
 !
     call thmGetBehaviour(compor, ds_thm)
+ 
+    
 !
 ! - Get parameters for internal variables
 !
     call thmGetBehaviourVari(ds_thm)
+    
 !
 ! - Some checks between behaviour and model
 !
     call thmGetBehaviourChck(ds_thm)
+    
+    
 !
 ! - Get storage parameters for behaviours
 !
@@ -330,6 +335,7 @@ integer, intent(out) :: codret
                     drdsr(i,j)=drds(i,j)
                 end do
             end do
+!
             if (ds_thm%ds_elem%l_dof_ther) then
                 do i = 1, dimcon
                     drdsr(addete,i) = ak(1)*drds(addete,i) + ak(2)* drds(dimdef+1,i)

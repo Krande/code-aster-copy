@@ -79,8 +79,12 @@ implicit none
 #include "asterfort/virhol.h"
 #include "asterfort/visatu.h"
 #include "asterfort/thmEvalSatuInit.h"
+#include "asterfort/thmGetParaBJH.h"
+#include "asterfort/varpi.h"
+#include "asterfort/viporol.h"
+#include "asterfort/appmasl.h"
 !
-type(THM_DS), intent(in) :: ds_thm
+type(THM_DS), intent(inout) :: ds_thm
 aster_logical, intent(in) :: lMatr, lSigm, lVari
 real(kind=8), intent(in) :: angl_naut(3)
 integer, intent(in) :: j_mater, ndim, nbvari
@@ -176,6 +180,8 @@ integer, intent(out)  :: retcom
     real(kind=8) :: dp21t, dp21p1, dp21p2
     integer :: advihy, advico
     integer :: vihrho, vicphi, vicpvp, vicsat
+    real(kind=8) :: ep,surf,shut,sbjh,wbjh,dpi
+    real(kind=8) :: sbjhm,wbjhm,epm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -195,6 +201,12 @@ integer, intent(out)  :: retcom
     alp12  = 0.d0
     alp21  = 0.d0
     retcom = 0
+    dpi    = 0.d0
+    ep     = 0.d0
+    surf   = 0.d0
+    shut   = 0.d0
+    sbjh   = 0.d0
+    wbjh   = 0.d0
 !
 ! - Get storage parameters for behaviours
 !
@@ -275,15 +287,53 @@ integer, intent(out)  :: retcom
     if (lVari) then
 ! ----- Compute standard porosity
         if (ds_thm%ds_elem%l_dof_meca) then
-            call viporo(ds_thm, nbvari,&
-                        advico, vicphi,&
-                        dtemp , dp1   , dp2   ,&
-                        deps  , depsv ,&
-                        signe , satur , unsks , phi0,&
-                        cs    , tbiot , cbiot ,&
-                        alpha0, alphfi,&
-                        vintm , vintp ,&
-                        phi   , phim  , retcom)
+            if ((ds_thm%ds_behaviour%rela_hydr).eq.'HYDR_TABBAL') then
+!
+!--------------Get BJH parameters
+!
+                call thmGetParaBJH(ds_thm,j_mater,p1)
+!
+!--------------Evaluate the variation of hydraulic pressure
+!
+                ep   =  ds_thm%ds_material%bjh%epai
+                surf   =  ds_thm%ds_material%bjh%A0
+                shut   =  ds_thm%ds_material%bjh%shuttle
+                sbjh =  ds_thm%ds_material%bjh%SBJH
+                wbjh =  ds_thm%ds_material%bjh%WBJH
+
+
+                call varpi (ds_thm,j_mater,p1 , p1m , dp1,dp2 ,&
+                             ep , surf, shut ,&
+                             phi0 , dpi,sbjhm,&
+                             wbjhm,epm,sbjh,wbjh)
+
+!
+!--------------Evaluate the Lagrangian porosity
+!
+                call viporol(ds_thm,nbvari,&
+                            advico, vicphi,&
+                            dtemp , dpi   ,&
+                            deps  , depsv ,&
+                            signe , satur , unsks , phi0,&
+                            cs    , tbiot , cbiot ,&
+                            alpha0, alphfi,&
+                            vintm , vintp ,&
+                            phi   , phim  , retcom)
+            else
+                call viporo(ds_thm,nbvari,&
+                            advico, vicphi,&
+                            dtemp , dp1   , dp2   ,&
+                            deps  , depsv ,&
+                            signe , satur , unsks , phi0,&
+                            cs    , tbiot , cbiot ,&
+                            alpha0, alphfi,&
+                            vintm , vintp ,&
+                            phi   , phim  , retcom)
+
+
+
+
+            end if
         endif
 ! ----- Compute porosity with storage coefficient
         if (l_emmag) then
@@ -404,7 +454,7 @@ integer, intent(out)  :: retcom
 !
     if (lSigm) then
         if (ds_thm%ds_elem%l_dof_meca) then
-            call sigmap(ds_thm, satur, signe, tbiot, dp2, dp1,&
+            call sigmap(ds_thm, satur, signe, tbiot, dp2, dp1,dpi,&
                         sigmp)
             do i = 1, 3
                 congep(adcome+6+i-1)=congep(adcome+6+i-1)+sigmp(i)
@@ -418,22 +468,43 @@ integer, intent(out)  :: retcom
 ! - Update quantity of mass
 !
     if (lSigm) then
-        congep(adcp11) = appmas(m11m ,&
-                                phi  , phim  ,&
-                                satur, saturm,&
-                                rho11, rho11m,&
-                                epsv , epsvm)
-        congep(adcp12) = 0.d0
-        congep(adcp21) = appmas(m21m,&
-                                phi       , phim,&
-                                1.d0-satur, 1.d0-saturm,&
-                                rho21     , rho21m,&
-                                epsv      , epsvm)
-        congep(adcp22) = appmas(m22m,&
-                                phi  , phim  ,&
-                                satur, saturm,&
-                                rho22, rho22m,&
-                                epsv , epsvm)
+        if ((ds_thm%ds_behaviour%rela_hydr).eq.'HYDR_TABBAL') then
+            congep(adcp11) = appmasl(ds_thm,m11m ,&
+                                    phi  , phim  ,&
+                                    satur, saturm,&
+                                    rho11, rho11m)
+
+            congep(adcp12) = 0.d0
+            congep(adcp21) = appmasl(ds_thm,m21m,&
+                                    phi       , phim,&
+                                    1.d0-satur, 1.d0-saturm,&
+                                    rho21     , rho21m)
+
+            congep(adcp22) = appmasl(ds_thm,m22m,&
+                                    phi  , phim  ,&
+                                    satur, saturm,&
+                                    rho22, rho22m)
+
+        else
+            congep(adcp11) = appmas(m11m ,&
+                                    phi  , phim  ,&
+                                    satur, saturm,&
+                                    rho11, rho11m,&
+                                    epsv , epsvm)
+            congep(adcp12) = 0.d0
+            congep(adcp21) = appmas(m21m,&
+                                    phi       , phim,&
+                                    1.d0-satur, 1.d0-saturm,&
+                                    rho21     , rho21m,&
+                                    epsv      , epsvm)
+            congep(adcp22) = appmas(m22m,&
+                                    phi  , phim  ,&
+                                    satur, saturm,&
+                                    rho22, rho22m,&
+                                    epsv , epsvm)
+        end if
+
+
     endif
 !
 ! ==================================================================================================
@@ -457,7 +528,7 @@ integer, intent(out)  :: retcom
 !
         if (ds_thm%ds_elem%l_dof_meca) then
 ! --------- Derivative of _pressure part_ of stresses by capillary pressure
-            call dspdp1(ds_thm, signe, tbiot, satur, dsdp1)
+            call dspdp1(ds_thm,signe, tbiot, satur, dsdp1,phi0,ep,surf,sbjh,wbjh)
 ! --------- Derivative of _pressure part_ of stress by total gaz pressure
             call dspdp2(ds_thm, tbiot, dsdp2)
             do i = 1, 3

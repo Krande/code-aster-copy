@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,8 @@ integer, intent(out) :: retcom
     retcom       = 0
     para_vale(:) = 0.d0
     if (ds_thm%ds_behaviour%rela_hydr .eq. 'HYDR_UTIL' .or.&
-        ds_thm%ds_behaviour%rela_hydr .eq. 'HYDR_ENDO') then
+        ds_thm%ds_behaviour%rela_hydr .eq. 'HYDR_ENDO' .or.&
+        ds_thm%ds_behaviour%rela_hydr.eq.'HYDR_TABBAL') then
         call rcvala(j_mater, ' '      , 'THM_DIFFU',&
                     1      , 'PCAP'   , [p1]       ,&
                     nb_para, para_name, para_vale  , icodre,&

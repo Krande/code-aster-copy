@@ -134,6 +134,8 @@ integer, intent(out) :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
+
+
     retcom = 0
 !
 ! - Update unknowns
@@ -146,6 +148,7 @@ integer, intent(out) :: retcom
                 p1    , dp1    , grad_p1  ,&
                 p2    , dp2    , grad_p2  ,&
                 retcom)
+                
     if (retcom .ne. 0) then
         goto 99
     endif
@@ -192,6 +195,8 @@ integer, intent(out) :: retcom
                 congem   , congep   ,&
                 vintm    , vintp    , dsde  ,& 
                 retcom)
+                
+
     if (retcom .ne. 0) then
         goto 99
     endif
@@ -232,6 +237,8 @@ integer, intent(out) :: retcom
 !
 ! - Get permeability tensor
 !
+
+
     call thmGetPermeabilityTensor(ds_thm, ndim , angl_naut, j_mater, phi, vintp(1),&
                                   tperm)
 !

@@ -2061,6 +2061,8 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",
                                                             'PERM_GAZ','D_PERM_SATU_GAZ','D_PERM_PRES_GAZ',),
                                            ENSEMBLE('VG_N','VG_SR','VG_PR','VG_SMAX','VG_SATUR',),
                                            UN_PARMI('VG_N','SATU_PRES'),
+                                           ENSEMBLE('A0','SHUTTLE','EPAI','S_BJH','W_BJH',),
+                                           
                                            ),
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES OBLIGATOIRE   -------------------------------------
@@ -2089,6 +2091,13 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",
                                            VG_SMAX = SIMP(statut='f',typ='R'),
                                            VG_SATUR = SIMP(statut='f',typ='R'),
                                            VG_PENTR = SIMP(statut='f',typ='R',defaut= 0.),
+
+# ---Paramètres BJH-------------------------------------------------------------------------------------------
+                                           A0       = SIMP(statut='f',typ='R'),
+                                           SHUTTLE  = SIMP(statut='f',typ='R'),
+                                           EPAI           = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           S_BJH          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           W_BJH          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),                                              
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES FACULTATIVES   ------------------------------------
 # ---------------------------------------------------------------------------------
@@ -2403,6 +2412,8 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",
                                             PRESENT_PRESENT('LAMB_TN','PERMIN_N',),
                                             PRESENT_PRESENT('LAMB_TL','PERMIN_L',),
                                             PRESENT_PRESENT('LAMB_TT','PERMIN_T',),
+                                            ENSEMBLE('A0','SHUTTLE','EPAI','S_BJH','W_BJH',),
+
                                             ),
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES OBLIGATOIRE   -------------------------------------
@@ -2448,6 +2459,13 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",
                                            LAMB_C_L   = SIMP(statut='f',typ='R'),
                                            LAMB_C_N   = SIMP(statut='f',typ='R'),
                                            LAMB_C_T   = SIMP(statut='f',typ='R'),
+                                           
+# ---Paramètres BJH-------------------------------------------------------------------------------------------
+                                           A0       = SIMP(statut='f',typ='R'),
+                                           SHUTTLE  = SIMP(statut='f',typ='R'),
+                                           EPAI           = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           S_BJH          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           W_BJH          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),                                              
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES INUTILES   ----------------------------------------
 # ---------------------------------------------------------------------------------
@@ -2573,6 +2591,8 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",
                                                             'PERM_GAZ','D_PERM_SATU_GAZ','D_PERM_PRES_GAZ',),
                                            ENSEMBLE('VG_N','VG_SR','VG_PR','VG_SMAX','VG_SATUR',),
                                            UN_PARMI('VG_N','SATU_PRES'),
+                                           ENSEMBLE('A0','SHUTTLE','EPAI','S_BJH','W_BJH',),
+
                                            ),
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES OBLIGATOIRE   -------------------------------------
@@ -2603,6 +2623,18 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",
 #
                                            FICKV_T          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKA_T          = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           
+                                           
+                                           
+# ---Paramètres BJH-------------------------------------------------------------------------------------------
+                                           A0       = SIMP(statut='f',typ='R'),
+                                           SHUTTLE  = SIMP(statut='f',typ='R'),
+                                           EPAI           = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           S_BJH          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           W_BJH          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),                                                                                    
+                                           
+                                           
+                                           
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES FACULTATIVES   ------------------------------------
 # ---------------------------------------------------------------------------------
@@ -2778,6 +2810,14 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",
                                            VG_SMAX  = SIMP(statut='f',typ='R'),
                                            VG_SATUR = SIMP(statut='f',typ='R'),
                                            VG_PENTR  = SIMP(statut='f',typ='R',defaut= 0.),
+# ---Paramètres BJH-------------------------------------------------------------------------------------------
+                                           A0       = SIMP(statut='f',typ='R'),
+                                           SHUTTLE  = SIMP(statut='f',typ='R'),
+                                           EPAI           = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           S_BJH          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           W_BJH          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),                                                                                    
+                                                                                      
+
 #
                                            FICKV_T          = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
 # ---------------------------------------------------------------------------------
@@ -2841,6 +2881,9 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",
                                                             'PERM_GAZ','D_PERM_SATU_GAZ','D_PERM_PRES_GAZ',),
                                             ENSEMBLE('VG_N','VG_SR','VG_PR','VG_SMAX','VG_SATUR',),
                                             UN_PARMI('VG_N','SATU_PRES'),
+                                            ENSEMBLE('A0','SHUTTLE','EPAI','S_BJH','W_BJH',),
+                                            
+                                            
                                            ),
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES FACULTATIVE   ----------------------------------
@@ -2967,6 +3010,14 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",
                                            VG_SMAX  = SIMP(statut='f',typ='R'),
                                            VG_SATUR = SIMP(statut='f',typ='R'),
                                            VG_PENTR  = SIMP(statut='f',typ='R',defaut= 0.),
+# ---Paramètres BJH-------------------------------------------------------------------------------------------
+                                           A0       = SIMP(statut='f',typ='R'),
+                                           SHUTTLE  = SIMP(statut='f',typ='R'),
+                                           EPAI           = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           S_BJH          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           W_BJH          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),                                                                                    
+                                                               
+
 #
                                            FICKV_T          = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKA_T          = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
@@ -3031,6 +3082,8 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",
                                                             'PERM_GAZ','D_PERM_SATU_GAZ','D_PERM_PRES_GAZ',),
                                             ENSEMBLE('VG_N','VG_SR','VG_PR','VG_SMAX','VG_SATUR',),
                                             UN_PARMI('VG_N','SATU_PRES'),
+                                            ENSEMBLE('A0','SHUTTLE','EPAI','S_BJH','W_BJH',),
+                                            
                                            ),
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES FACULTATIVES   ------------------------------------

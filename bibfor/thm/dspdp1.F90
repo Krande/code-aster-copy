@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine dspdp1(ds_thm, signe, tbiot, satur, dsdp1)
+subroutine dspdp1(ds_thm, signe, tbiot, satur, dsdp1,phi0,ep,surf,sbjh,wbjh)
 !
 use THM_type
 !
@@ -27,6 +27,7 @@ implicit none
 type(THM_DS), intent(in) :: ds_thm
 real(kind=8), intent(in) :: signe, tbiot(6), satur
 real(kind=8), intent(out) :: dsdp1(6)
+real(kind=8), intent(in)  :: phi0,ep,surf,sbjh,wbjh
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,7 +42,11 @@ real(kind=8), intent(out) :: dsdp1(6)
 ! In  tbiot            : tensor of Biot
 ! In  satur            : value of saturation
 ! Out dsdp1            : derivative of pressure part of stress by capillary pressure
-!
+! In  phi0             : initial porosity (THM_INIT)
+! In  ep               : thickness of the adsorbed water layer 
+! In  surf             : specific surface of the material
+! In  sbjh             : saturated pores volume fraction from BJH - At end of current step
+! In  wbjh             : unsaturatred pores surface fraction from BJH - At end of current step
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i
@@ -50,7 +55,12 @@ real(kind=8), intent(out) :: dsdp1(6)
 !
     do i = 1, 6
         if (ds_thm%ds_behaviour%l_stress_bishop) then
-            dsdp1(i) = signe*tbiot(i)*satur
+            if ((ds_thm%ds_behaviour%rela_hydr).eq.'HYDR_TABBAL') then
+                dsdp1(i) = -tbiot(i)*(-sbjh-((2./3.)*(surf/phi0)*wbjh*ep))
+                
+            else       
+                dsdp1(i) = signe*tbiot(i)*satur
+            endif
         else
             dsdp1(i) = 0.d0
         endif

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,6 +56,7 @@ type(THM_DS), intent(inout) :: ds_thm
     read (compor(MECA_NUME),'(I16)') ds_thm%ds_behaviour%nume_meca
     read (compor(THER_NUME),'(I16)') ds_thm%ds_behaviour%nume_ther
     read (compor(HYDR_NUME),'(I16)') ds_thm%ds_behaviour%nume_hydr
+    
     read (compor(NVAR),'(I16)')      ds_thm%ds_behaviour%nb_vari
 !
 ! - For coupling law

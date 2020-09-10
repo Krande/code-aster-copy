@@ -16,54 +16,43 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine sigmap(ds_thm,&
-                  satur , signe, tbiot, dp2, dp1,dpi,&
-                  sigmp )
+function appmasl(ds_thm,appmasm,&
+                phi    , phim  ,&
+                satur  , saturm,&
+                rho    , rhom  )
 !
 use THM_type
 !
 implicit none
 !
-#include "asterf_types.h"
+#include "asterfort/assert.h"
 !
 type(THM_DS), intent(in) :: ds_thm
-real(kind=8), intent(in) :: signe, tbiot(6), satur, dp1, dp2,dpi
-real(kind=8), intent(out) :: sigmp(6)
+real(kind=8), intent(in) :: appmasm
+real(kind=8), intent(in) :: phi, phim
+real(kind=8), intent(in) :: satur, saturm
+real(kind=8), intent(in) :: rho, rhom
+real(kind=8) :: appmasl
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! THM
 !
-! Compute mechanical stresses from pressures
+! Compute quantity of mass from change of volume, porosity and saturation
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  ds_thm           : datastructure for THM
-! In  signe            : sign for saturation
-! In  tbiot            : tensor of Biot
-! In  satur            : value of saturation
-! In  dp1              : increment of capillary pressure
-! In  dp2              : increment of gaz pressure
-! In  dpi              : variation of the hydraulic pressure at end of current time
-! Out sigmp            : stress component for pressure
+! In  appmasm          : initial quantity of mass
+! In  phi              : porosity at end of current time step
+! In  phim             : porosity at beginning of current time step
+! In  satur            : saturation at end of current time step
+! In  saturm           : saturation at beginning of current time step
+! In  rho              : volumic mass at end of current time step
+! In  rhom             : volumic mass at beginning of current time step
+! Out appmasl           : quantity of mass at end of current time step 
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i
+    appmasl = appmasm + phi*satur*rho - phim*saturm*rhom
 !
-! --------------------------------------------------------------------------------------------------
-!
-    do i = 1, 6
-        if (ds_thm%ds_behaviour%l_stress_bishop) then
-            if ((ds_thm%ds_behaviour%rela_hydr).eq.'HYDR_TABBAL') then
-                sigmp(i) = -tbiot(i)*dpi
-
-            else              
-                sigmp(i) = tbiot(i)*satur*signe*dp1 - tbiot(i)*dp2
-            end if
-        else
-            sigmp(i) = - tbiot(i)*dp2
-        endif
-    end do
-!
-end subroutine
+end function

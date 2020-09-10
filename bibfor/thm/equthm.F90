@@ -154,6 +154,7 @@ integer, intent(out) :: retcom
 !
 ! - Compute generalized stresses and derivatives at current Gauss point
 !
+
     call comthm(ds_thm   , l_steady ,&
                 lMatr    , lSigm    ,&
                 lVari    , lMatrPred,&
@@ -170,6 +171,8 @@ integer, intent(out) :: retcom
                 vintm    , vintp    ,& 
                 time_prev, time_curr,&
                 dsde     , gravity  , retcom)
+                
+
     if (retcom .ne. 0) then
         goto 99
     endif
