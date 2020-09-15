@@ -46,9 +46,10 @@ implicit none
     character(len=*), intent(in) :: fami
     real(kind=8), intent(out) :: vip(*), sigp(6), dsidep(6, 6)
 !-----------------------------------------------------------------------
-!     LOI DE COMPORTEMENT CZM_TURON PRENANT EN COMPTE LA MIXITE
-!     DES MODES DE CHARGEMENT (OU ANGLE DE CHARGEMENT)
-!     D'UN JOINT ANISOTROPE (MODE NORMAL N / MODE TANGENTIEL T)
+!     LOI DE COMPORTEMENT CZM_TURON D'UN JOINT ANISOTROPE
+!     COMPORTEMENTS NORMAL ET TANGENTIEL DIFFERENTS
+!     CRITERE D'INITIATION DE L'ENDO DE TYPE BENZEGGAGH-KENANE (BK) OU YE
+!     CRITERE DE PROPAGATION DE LA FISSURE DE TYPE BK
 !     MODELE DE TURON 2006 (university of Girona, Spain)
 !     Référence : Turon et al. / Mechanics of Materials 38 (2006) 1072-1089
 !
@@ -59,22 +60,27 @@ implicit none
 ! OUT : SIGMA , DSIDEP , VIP
 !-----------------------------------------------------------------------
     integer :: nbpa
-    parameter (nbpa=7)
+    parameter (nbpa=8)
     integer :: cod(nbpa)
+    character(len=16) :: nom(nbpa)
+    real(kind=8) :: val(nbpa)
     integer :: i, j, diss, cass
     real(kind=8) :: inst, delta(ndim), ddelta(ndim)
-    real(kind=8) :: val(nbpa)
     real(kind=8) :: k, c, eta
     real(kind=8) :: delta_N_0, delta_T_0
     real(kind=8) :: delta_N_f, delta_T_f
     real(kind=8) :: delta_N_pos, delta_T, lambda
-    real(kind=8) :: beta, b, delta_0, delta_f, r, d, g
+    real(kind=8) :: beta, b, t, delta_0, delta_f, r, d, g
     real(kind=8) :: delta_f_N, delta_f_T
     real(kind=8) :: quot, a(6,6), aa(6,6)
-    real(kind=8) :: zero
-    character(len=16) :: nom(nbpa), type_comp
+    real(kind=8) :: zero, pi
+    character(len=16) :: type_comp
     character(len=1) :: poum
     aster_logical :: resi, rigi, elas, pred, l_lambda0
+!
+    data nom / 'K', 'SIGM_C_N', 'SIGM_C_T', 'GC_N', 'GC_T', 'C_RUPT', &
+                'ETA_BK', 'CRIT_INIT' /
+!
 !-----------------------------------------------------------------------
 ! RQ SUR LES NOTATIONS :
 !   - delta_N_0 et delta_N_f : sauts norm pour init et prop en mode N pur
@@ -88,6 +94,7 @@ implicit none
 ! INITIALISATIONS
     type_comp = 'COMP_ELAS'
     zero = r8prem()
+    pi = 3.14159265
     resi = .false.
     rigi = .false.
     elas = .false.
@@ -125,14 +132,6 @@ implicit none
     if (resi) call daxpy(ndim, 1.d0, ddelta, 1, delta,1)
 !
 ! RECUPERATION DES PARAMETRES PHYSIQUES
-    nom(1) = 'K'
-    nom(2) = 'SIGM_C_N'
-    nom(3) = 'SIGM_C_T'
-    nom(4) = 'GC_N'
-    nom(5) = 'GC_T'
-    nom(6) = 'C_RUPT'
-    nom(7) = 'ETA_BK'   
-!
     if (option .eq. 'RIGI_MECA_TANG') then
         poum = '-'
     else
@@ -143,12 +142,18 @@ implicit none
                 ' ', 'RUPT_TURON', 0, ' ', [0.d0],&
                 nbpa, nom, val, cod, 2)
 !
+!   * VERIFICATION
+    if (val(1)*val(2)*val(3)*val(4)*val(5) .lt. r8prem()) then
+        call utmess('F','COMPOR4_74', nk=5, valk=nom(1:5))
+    endif
+!
 !   * RIGIDITE DE PENALISATION (IDENTIQUE POUR TOUS LES MODES)
     k = val(1)
 !
 !   * CALCUL DES SEUILS D'INITIATION DE L'ENDOMMAGEMENT POUR LES MODES PURS
     delta_N_0 = val(2)/k
     delta_T_0 = val(3)/k
+    ! METTRE UN MESSAGE D'ERREUR SI LES VALEURS SONT NULLES
 !
 !   * CALCUL DES SEUILS DE PROPAGATION DE LA FISSURE POUR LES MODES PURS
     delta_N_f = 2*val(4)/(k*delta_N_0)
@@ -169,44 +174,43 @@ implicit none
 ! SAUT EQUIVALENT TOTAL
     lambda = sqrt(delta_N_pos**2 + delta_T**2)
     l_lambda0 = (lambda .lt. r8prem())
-
-! TAUX DE MIXITE, SEUILS D'INITIATION ET DE PROPAGATION
-
+!
     if (.not. l_lambda0) then
-! CALCUL DU TAUX DE MIXITE A T+ (PAR LES SAUTS)
+! TAUX DE MIXITE A T+ (BETA A PARTIR DES SAUTS, B A PARTIR DES TAUX DE RESTIT G) 
         beta = delta_T / (delta_T + delta_N_pos)
-!
-! CALCUL DU TAUX DE MIXITE A T+ (PAR LES TAUX DE RESTITUTION D'ENERGIE)
         b = beta**2/(1-2*beta+2*beta**2)
-!
-! CALCUL DU SEUIL D'INITIATION DE L'ENDOMMAGEMENT EN MODE MIXTE A T+
-        delta_0 = sqrt(delta_N_0**2 + (delta_T_0**2-delta_N_0**2)*b**eta)
-        ASSERT(delta_0 .gt. r8prem())
-!   * version alternative (critère de Ye) --> à implémenter
-!
-! CALCUL DU SEUIL DE PROPAGATION DE LA FISSURE EN MODE MIXTE A T+ 
+! SEUILS D'INITIATION DE L'ENDOMMAGEMENT A T+
+        if (nint(val(8)) .eq. 1) then
+! * CRITERE DE TURON (DE TYPE BK, FONCTION DU TAUX DE MIXITE)
+            delta_0 = sqrt(delta_N_0**2 + (delta_T_0**2-delta_N_0**2)*b**eta)
+            ASSERT(delta_0 .gt. r8prem())
+        elseif (nint(val(8)) .eq. 2) then
+! * CRITERE DE YE (DE TYPE ELLIPTIQUE)
+            t = atan(delta_N_0/delta_T_0*delta_T/delta_N_pos)
+            if (delta_N_pos .lt. r8prem()) t = pi/2
+            delta_0 = sqrt((delta_N_0*cos(t))**2+(delta_T_0*sin(t))**2)
+            ASSERT(delta_0 .gt. r8prem())
+        else
+            ASSERT(.False.)
+        endif
+! SEUIL DE PROPAGATION DE LA FISSURE A T+ (DE TYPE BK)
         delta_f = 1/delta_0 * (delta_N_0*delta_N_f + &
                 (delta_T_0*delta_T_f - delta_N_0*delta_N_f )*b**eta)
         ASSERT(delta_f .gt. r8prem())
     else
-!   * CAS PARTICULIERS SI ON (RE)PASSE PAR UN ETAT DE SAUT NUL :
-!   * ON RESTE AVEC LES VALEURS PRECEDENTES
+! CAS PARTICULIERS SI ON (RE)PASSE PAR UN ETAT DE SAUT NUL :
+! ON RESTE AVEC LES VALEURS PRECEDENTES
         beta = vim(13)
         b = vim(14)
         delta_0 = vim(15)
         delta_f = vim(16)
-!   * POUR LE PREMIER PAS DE TEMPS SANS ETAT INIT
+! POUR LE PREMIER PAS DE TEMPS SANS ETAT INIT
         if (delta_0 .lt. r8prem()) then
             call utmess('A', 'COMPOR4_73')
             delta_0 = min(delta_N_0, delta_T_0)
             delta_f = min(delta_N_f, delta_T_f)
-!            delta_0 = delta_N_0
-!            delta_f = delta_N_f
         endif
     endif
-    
-!    delta_0 = delta_N_0
-!    delta_f = delta_N_f
 !
 ! ESTIMATION DE LA VARIABLE SEUIL ACTUELLE
     r = max(delta_0, vim(1))
