@@ -62,6 +62,7 @@ enum ConstitutiveLawEnum {
     Czm_Tac_Mix,
     Czm_Lab_Mix,
     Czm_Tra_Mix,
+    Czm_Turon,
     Dis_Bili_Elas,
     Dis_Choc,
     Dis_Ecro_Cine,
