@@ -66,7 +66,7 @@ implicit none
     real(kind=8) :: val(nbpa)
     integer :: i, j, diss, cass
     real(kind=8) :: inst, delta(ndim), ddelta(ndim)
-    real(kind=8) :: k, c, eta
+    real(kind=8) :: k, c, eta, crit
     real(kind=8) :: delta_N_0, delta_T_0
     real(kind=8) :: delta_N_f, delta_T_f
     real(kind=8) :: delta_N_pos, delta_T, lambda
@@ -165,6 +165,10 @@ implicit none
 !   * PARAMETRE PUISSANCE DE LA FORMULE DE BENZEGGAGH ET KENANE
     eta = val(7)
 !
+!   * CRITERE D'INITIATION DE L'ENDOMMAGEMENT
+!     CRIT = 0 : TURON, CRIT = 1 :YE
+    crit = val(8)
+!
 ! PARTIE POSITIVE DU SAUT NORMAL
     delta_N_pos = max(0.d0,delta(1))
 !
@@ -180,14 +184,17 @@ implicit none
         beta = delta_T / (delta_T + delta_N_pos)
         b = beta**2/(1-2*beta+2*beta**2)
 ! SEUILS D'INITIATION DE L'ENDOMMAGEMENT A T+
-        if (nint(val(8)) .eq. 1) then
 ! * CRITERE DE TURON (DE TYPE BK, FONCTION DU TAUX DE MIXITE)
+        if (crit .eq. 0) then
             delta_0 = sqrt(delta_N_0**2 + (delta_T_0**2-delta_N_0**2)*b**eta)
             ASSERT(delta_0 .gt. r8prem())
-        elseif (nint(val(8)) .eq. 2) then
 ! * CRITERE DE YE (DE TYPE ELLIPTIQUE)
-            t = atan(delta_N_0/delta_T_0*delta_T/delta_N_pos)
-            if (delta_N_pos .lt. r8prem()) t = pi/2
+        elseif (crit .eq. 1) then
+            if (delta_N_pos .lt. r8prem()) then
+                t = pi/2
+            else 
+                t = atan(delta_N_0/delta_T_0*delta_T/delta_N_pos)
+            endif
             delta_0 = sqrt((delta_N_0*cos(t))**2+(delta_T_0*sin(t))**2)
             ASSERT(delta_0 .gt. r8prem())
         else
