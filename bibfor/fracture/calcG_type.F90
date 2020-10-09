@@ -47,8 +47,10 @@ private
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/medomg.h"
 #include "asterfort/rsadpa.h"
@@ -168,8 +170,10 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_InfoTe, CalcG_Table
     type CalcG_Theta
 ! ----- name of theta field
         character(len=24)       :: theta_field = ' '
-! ----- name of factors necessary to createtheta field in te
+! ----- name of factors necessary to create theta field in te
         character(len=24)       :: theta_factors = ' '
+! ----- name of the matrix from A*G(s)=g(theta)
+        character(len=24)       :: matrix = ' '
 ! ----- number of theta field
         integer                 :: nb_theta_field = 0
 ! ----- name of crack
@@ -202,6 +206,8 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_InfoTe, CalcG_Table
         aster_logical           :: l_closed = ASTER_FALSE
 ! ----- name of the courbature
         character(len=24)       :: courbature = ' '
+! ----- name of the curvilinear abscissa of crack nodes
+        character(len=24)       :: absfond = ' '
 ! ----- member function
         contains
         procedure, pass    :: initialize => initialize_theta
@@ -211,6 +217,7 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_InfoTe, CalcG_Table
         procedure, pass    :: getAbscurv
         procedure, pass    :: getBaseLoc
         procedure, pass    :: getFondTailleR
+        procedure, pass    :: getFondNoeu
     end type CalcG_Theta
 !
 !===================================================================================================
@@ -661,16 +668,20 @@ contains
 !   In this     : theta type
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ier, j
+        integer :: ier, j, ibasf, i, num
         character(len=8) :: typfon
         real(kind=8) :: maxtai, mintai
         aster_logical :: l_disc
         real(kind=8), pointer :: fondTailleR(:) => null()
+        real(kind=8), pointer :: abscur(:)  => null()
+        character(len=8), pointer :: fondNoeud(:)  => null()
 !
         call jemarq()
 ! --- get automatic name
         call gcncon("_", this%theta_field)
         call gcncon("_", this%theta_factors)
+        call gcncon("_", this%matrix)
+        call gcncon("_", this%absfond)
 !
 ! --- get informations about the crack
 !
@@ -756,6 +767,20 @@ contains
                 call utmess('A', 'RUPTURE1_16', nr=2, valr=[mintai, maxtai])
             endif
         endif
+
+        
+! --- Get AbsFond = Abscurv for nodes of the crack front
+! extraction à modifier lors de la résolution de issue30288 (NB_POINT_FOND)
+        call wkvect(this%absfond, 'V V R8', this%nb_fondNoeud, ibasf)
+        call this%getAbscurv(abscur)
+        call this%getFondNoeu(fondNoeud)
+!
+        do i = 1, this%nb_fondNoeud
+!          Récupération du numéro de noeud
+            call jenonu(jexnom(this%nomNoeud, fondNoeud(i)), num)
+!          Extraction de l'abscisse curviligne pour ce numéro de noeud
+            zr(ibasf-1+i)=abscur(num)
+        enddo
 !
         call jedema()
 !
@@ -878,6 +903,28 @@ contains
 !
     end subroutine
 !
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine getFondNoeu(this, v_fondnoeu)
+!
+    implicit none
+!
+        class(CalcG_Theta), intent(in)  :: this
+        character(len=8), pointer :: v_fondnoeu(:)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Get pointer on baseloc
+!   In this     : theta type
+! --------------------------------------------------------------------------------------------------
+!
+        call jemarq()
+        call jeveuo(this%crack//'.FOND.NOEU', 'L', vk8=v_fondnoeu)
+        call jedema()
+!
+    end subroutine
 !===================================================================================================
 !
 !===================================================================================================

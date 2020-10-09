@@ -26,6 +26,7 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cgComputeGtheta.h"
+#include "asterfort/cgComputeMatrix.h"
 #include "asterfort/cgComputeTheta.h"
 #include "asterfort/cgExportTableG.h"
 #include "asterfort/cgVerification.h"
@@ -73,6 +74,10 @@ implicit none
 !
 !-- Compute Theta factors
     call cgComputeTheta(cgField, cgTheta)
+!
+! --- Compute A Matrix from equation A*G(s)=g(theta)
+!
+    call cgComputeMatrix(cgField, cgTheta)
 !
 !-- Loop on option
     do i_nume = 1, cgField%nb_nume
