@@ -109,7 +109,7 @@ implicit none
     character(len=24) :: lisk
     character(len=24) :: nomg, valk(2), nogma, gpptnm, gpptnn
     character(len=24) :: prfn1, prfn2, nume2, iadr, nume1, momuto, prfn
-    integer :: nn1, iaa, iagma, iatyma, ii, ima, in, ino, inumol, j, nfi
+    integer :: nn1, iaa, iagma, iatyma, ii, ima, in, ino, inumol, j
     integer :: jcrgno, jcrgnu, jgg, jlii, jlik, jmail
     integer :: jmomtu, jnoeu, jnono, jnpt, jopt, jtom, jtrno, jvale, jvg, kvale
     integer :: nbcrp1, nbgma, nbgrma, nbgrmn, nbgrmt, nbgrmv
@@ -120,7 +120,7 @@ implicit none
     integer :: nbmaiv, nbmoma, nbnoaj, nbnoev, ndinit, niv, k, jgeofi
     integer :: dimcon, decala, iocct
     integer :: nbField
-    integer :: nbOccDecoupeLac, nbOccEclaPg
+    integer :: nbOccDecoupeLac, nbOccEclaPg, nbGeomFibre
     real(kind=8) :: shrink, lonmin
     aster_logical :: lpb, l_modi_maille
     character(len=16), pointer :: listField(:) => null()
@@ -142,6 +142,7 @@ implicit none
 ! - Keywords
 !
     call getfac('ECLA_PG', nbOccEclaPg)
+    call getvid(' ', 'GEOM_FIBRE', scal=geofi, nbret=nbGeomFibre)
     call getfac('DECOUPE_LAC', nbOccDecoupeLac)
 !
 ! - Main datastructure
@@ -181,8 +182,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call getvid(' ', 'GEOM_FIBRE', scal=geofi, nbret=nfi)
-    if (nfi .ne. 0) then
+    if (nbGeomFibre .ne. 0) then
         call jeveuo(geofi//'.GFMA', 'L', jgeofi)
         call copisd('MAILLAGE', 'G', zk8(jgeofi), meshOut)
         goto 350
