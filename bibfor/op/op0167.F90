@@ -89,17 +89,18 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, lgno, lgnu, nbecla, nbmc, iret, iad, nbma, iqtr, nbvolu
+    integer :: i, lgno, lgnu, nbmc, iret, iad, nbma, iqtr, nbvolu
     integer :: n1, numma, nbjoin, nbrest, n1a, n1b
     parameter(nbmc=5)
     real(kind=8) :: epais
     character(len=4) :: cdim, repk
-    character(len=8) :: meshIn, meshOut, newmai, prefix, mo, geofi
+    character(len=8) :: meshIn, meshOut, newmai, prefix, model, geofi
     character(len=8) :: nomori, knume, prfno, prfma, plan, trans
-    character(len=16) :: option
+    character(len=16) :: option, keywfact
     character(len=16) :: kbi1, kbi2
     character(len=16) :: motfac, tymocl(nbmc), motcle(nbmc)
-    character(len=19) :: table, ligrel, cham1
+    character(len=19) :: table, ligrel
+    character(len=19), parameter :: k19void = ' '
     character(len=24) :: nommai, grpmai, typmai, connex, nodime, grpnoe, nomnoe
     character(len=24) :: cooval, coodsc, cooref, nomjv
     character(len=24) :: nommav, grpmav, typmav, connev, nodimv, grpnov, nomnov
@@ -114,13 +115,15 @@ implicit none
     integer :: nbcrp1, nbgma, nbgrma, nbgrmn, nbgrmt, nbgrmv
     integer :: nbgrno, nbmain, nbmaj2, nbmaj3, nbno, nbnot
     integer :: nbpt, nbptt, nori, nrep, ntab, ntpoi
-    integer :: ibid, icham, ifm, iocc, jdime, jiad, jlima, jma, jmomno, jmomnu
+    integer :: ibid, ifm, iocc, jdime, jiad, jlima, jma, jmomno, jmomnu
     integer :: jnommc, jnu2, jnum, joccmc, jpr2, jpro, jrefe, jtypmv
-    integer :: nbmaiv, nbmoma, nbnoaj, nbnoev, nch, ndinit, niv, k, jgeofi
+    integer :: nbmaiv, nbmoma, nbnoaj, nbnoev, ndinit, niv, k, jgeofi
     integer :: dimcon, decala, iocct
-    integer :: nbOccDecoupeLac
+    integer :: nbField
+    integer :: nbOccDecoupeLac, nbOccEclaPg
     real(kind=8) :: shrink, lonmin
     aster_logical :: lpb, l_modi_maille
+    character(len=16), pointer :: listField(:) => null()
     integer, pointer :: adrjvx(:) => null()
     integer, pointer :: nbnoma(:) => null()
     integer, pointer :: nbnomb(:) => null()
@@ -138,6 +141,7 @@ implicit none
 !
 ! - Keywords
 !
+    call getfac('ECLA_PG', nbOccEclaPg)
     call getfac('DECOUPE_LAC', nbOccDecoupeLac)
 !
 ! - Main datastructure
@@ -150,24 +154,24 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call getfac('ECLA_PG', nbecla)
-    if (nbecla .gt. 0) then
-        call getvid('ECLA_PG', 'MODELE', iocc=1, scal=mo, nbret=ibid)
-        ASSERT(ibid.eq.1)
-        call getvr8('ECLA_PG', 'SHRINK', iocc=1, scal=shrink, nbret=ibid)
-        call getvr8('ECLA_PG', 'TAILLE_MIN', iocc=1, scal=lonmin, nbret=ibid)
-        call getvtx('ECLA_PG', 'NOM_CHAM', iocc=1, nbval=0, nbret=nch)
-        if (nch .lt. 0) then
-            nch=-nch
-            call wkvect('&&OP0167.NOMCHAMP', 'V V K16', nch, icham)
-            call getvtx('ECLA_PG', 'NOM_CHAM', iocc=1, nbval=nch, vect=zk16(icham))
+    if (nbOccEclaPg .gt. 0) then
+        keywfact = 'ECLA_PG'
+        ASSERT(nbOccEclaPg .eq. 1)
+        call getvid(keywfact, 'MODELE', iocc=1, scal=model)
+        call getvr8(keywfact, 'SHRINK', iocc=1, scal=shrink)
+        call getvr8(keywfact, 'TAILLE_MIN', iocc=1, scal=lonmin)
+        call getvtx(keywfact, 'NOM_CHAM', iocc=1, nbval=0, nbret=nbField)
+        if (nbField .lt. 0) then
+            nbField = -nbField
+            AS_ALLOCATE(vk16 = listField, size = nbField)
+            call getvtx(keywfact, 'NOM_CHAM', iocc=1, nbval=nbField, vect=listField)
         else
-            icham=1
+            AS_ALLOCATE(vk16 = listField, size = 1)
         endif
-        call exlima('ECLA_PG', 1, 'V', mo, ligrel)
-        cham1=' '
-        call eclpgm(meshOut, mo, cham1, ligrel, shrink,&
-                    lonmin, nch, zk16( icham))
+        call exlima(keywfact, 1, 'V', model, ligrel)
+        call eclpgm(meshOut, model  , k19void  , ligrel, shrink,&
+                    lonmin , nbField, listField)
+        AS_DEALLOCATE(vk16 = listField)
         goto 350
     endif
 !
