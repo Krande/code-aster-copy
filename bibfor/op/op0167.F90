@@ -91,7 +91,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i, lgno, lgnu, nbmc, iret, iad, nbma, iqtr
-    integer :: n1, nbrest
+    integer :: n1
     integer :: n1b, jlima, ndinit
     parameter(nbmc=5)
     real(kind=8) :: epais
@@ -129,7 +129,7 @@ implicit none
     integer :: nbCell
     integer :: nbField
     integer :: nbOccDecoupeLac, nbOccEclaPg, nbGeomFibre, nbOccCreaFiss, nbOccLineQuad
-    integer :: nbOccQuadLine, nbOccModiMaille, nbOccCoquVolu
+    integer :: nbOccQuadLine, nbOccModiMaille, nbOccCoquVolu, nbOccRestreint
     integer :: iOccQuadTria
     real(kind=8) :: shrink, lonmin
     aster_logical :: lpb, l_modi_maille
@@ -161,6 +161,7 @@ implicit none
     call getfac('QUAD_LINE', nbOccQuadLine)
     call getfac('MODI_MAILLE', nbOccModiMaille)
     call getfac('COQU_VOLU', nbOccCoquVolu)
+    call getfac('RESTREINT', nbOccRestreint)
     call getfac('DECOUPE_LAC', nbOccDecoupeLac)
 !
 ! - Main datastructure
@@ -438,14 +439,10 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call getfac('RESTREINT', nbrest)
-    if (nbrest .ne. 0) then
-        call rdtmai(meshIn, meshOut, 'G', meshOut//'.CRNO', meshOut// '.CRMA',&
-                    'G', 0, [0])
-! ---    VERIFICATIONS DU MAILLAGE
+    if (nbOccRestreint .ne. 0) then
+        call rdtmai(meshIn, meshOut, 'G', meshOut//'.CRNO', meshOut// '.CRMA', 'G', 0, [0])
         call chckma(meshOut, 1.0d-03)
         goto 350
-!
     endif
 !
 ! ----------------------------------------------------------------------
