@@ -195,9 +195,9 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
             hooknl(2,1) = hooknl(1,2)
             hooknl(3,1) = hooknl(1,3)
             hooknl(3,2) = hooknl(2,3)
-            hooknl(4,4) = g1
-            hooknl(5,5) = g2
-            hooknl(6,6) = g3
+            hooknl(4,4) = g1*2.d0
+            hooknl(5,5) = g2*2.d0
+            hooknl(6,6) = g3*2.d0
 !
         else
             ASSERT(ASTER_FALSE)

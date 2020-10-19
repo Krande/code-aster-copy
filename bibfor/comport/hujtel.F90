@@ -106,9 +106,9 @@ subroutine hujtel(mod, mater, sig, hook)
             hook(2,1) = hook(1,2)
             hook(3,1) = hook(1,3)
             hook(3,2) = hook(2,3)
-            hook(4,4) = g1
-            hook(5,5) = g2
-            hook(6,6) = g3
+            hook(4,4) = g1*2.d0
+            hook(5,5) = g2*2.d0
+            hook(6,6) = g3*2.d0
 !
         else
             ASSERT(ASTER_FALSE)
