@@ -106,16 +106,16 @@ implicit none
     character(len=19) :: table, ligrel
     character(len=19), parameter :: k19void = ' '
     integer :: nbMeshIn
-    character(len=24) :: nommai, typmai, connex, nodime, grpnoe, nomnoe
+    character(len=24) :: nommai, typmai, connex, nodime, nomnoe
     character(len=24) :: cooval, coodsc, cooref
-    character(len=24) :: nommav, typmav, connev, nodimv, grpnov, nomnov
+    character(len=24) :: nommav, typmav, connev, nodimv, nomnov
     character(len=24) :: coovav, coodsv, coorev
     character(len=24) :: crgrnu, crgrno
-    character(len=24) :: grCellName, grNodeName, gpptnn
-    integer :: iagma, iatyma, ino, j
+    character(len=24) :: grCellName, grNodeName
+    integer :: iagma, iatyma, ino
     integer :: jgg
     integer :: jnpt, jopt, jtom, jvale, jvg, kvale
-    integer :: nbgrno, nbmain, nbno
+    integer :: nbmain
     integer :: nbpt, nbptt, nori, ntab
     integer :: ibid, ifm, jdime
     integer :: jrefe, jtypmv
@@ -123,13 +123,15 @@ implicit none
     integer :: dimcon, decala
     integer :: cellNume, creaCellNume, cellType, cellTypeToModify
     integer :: nodeNume
-    integer :: iCell, iNode, iCellModi, iGrCell
+    integer :: iCell, iNode, iCellModi, iGrCell, iGrNode
     integer :: shiftCell
     integer :: iocc, nbOcc
     character(len=24), parameter :: jvCellNume = '&&OP0167.LISTCELL'
     character(len=24), parameter :: jvNodeNume = '&&OP0167.LISTNODE'
     integer :: nbCell, nbCellCrea, nbCellModi, nbCellType, nbCellAddPoi1
     integer :: nbGrCellFromCreaCell, nbGrCellFromCreaPoi1, nbGrCellIn, nbGrCellOut
+    integer :: nbGrNodeIn, nbGrNodeOut
+    integer :: nbNodeInGrOut, nbNodeInGrIn
     integer :: nbNodeCrea, nbNodeIn, nbNodeOut, nbNode
     integer :: nbField
     integer :: nbOccDecoupeLac, nbOccEclaPg, nbGeomFibre, nbOccCreaFiss, nbOccLineQuad
@@ -162,6 +164,7 @@ implicit none
     integer, pointer :: creaGrPoi1NbCell(:) => null()
     character(len=24), pointer :: creaGrPoi1GrName(:) => null()
     integer, pointer :: cellInGroup(:) => null()
+    integer, pointer :: nodeInGrIn(:) => null(), nodeInGrOut(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -172,6 +175,10 @@ implicit none
 ! - Check Includes
 !
     call checkInclude()
+!
+! - Initializations
+!
+    nbGrNodeIn = 0
 !
 ! - Keywords
 !
@@ -196,6 +203,10 @@ implicit none
         if (isParallelMesh(meshIn)) then
             call utmess('F', 'MESH1_22')
         end if
+        call jeexin(meshIn//'.GROUPENO', iret)
+        if (iret .ne. 0) then
+            call jelira(meshIn//'.GROUPENO', 'NOMUTI', nbGrNodeIn)
+        endif
     endif
 !
 ! - MAILLAGE is required except for GEOM_FIBRE and ECLA_PG
@@ -479,7 +490,6 @@ implicit none
     nomnov=meshIn//'.NOMNOE         '
     typmav=meshIn//'.TYPMAIL        '
     connev=meshIn//'.CONNEX         '
-    grpnov=meshIn//'.GROUPENO       '
     nodimv=meshIn//'.DIME           '
     coovav=meshIn//'.COORDO    .VALE'
     coodsv=meshIn//'.COORDO    .DESC'
@@ -489,12 +499,10 @@ implicit none
     nomnoe=meshOut//'.NOMNOE         '
     typmai=meshOut//'.TYPMAIL        '
     connex=meshOut//'.CONNEX         '
-    grpnoe=meshOut//'.GROUPENO       '
     nodime=meshOut//'.DIME           '
     cooval=meshOut//'.COORDO    .VALE'
     coodsc=meshOut//'.COORDO    .DESC'
     cooref=meshOut//'.COORDO    .REFE'
-    gpptnn=meshOut//'.PTRNOMNOE'
 !
 !
     call jedupo(nodimv, 'G', nodime, .false._1)
@@ -1028,32 +1036,34 @@ implicit none
         endif
 
     end do
+!
+! ==================================================================================================
+!
+!   Modification of groups of nodes
+!
+! ==================================================================================================
+!
+    nbGrNodeOut = nbGrNodeIn
+    if (nbGrNodeOut .ne. 0) then
+        call jecreo(meshOut//'.PTRNOMNOE', 'G N K24')
+        call jeecra(meshOut//'.PTRNOMNOE', 'NOMMAX', nbGrNodeOut, ' ')
+        call jecrec(meshOut//'.GROUPENO', 'G V I', 'NO '//meshOut//'.PTRNOMNOE',&
+                    'DISPERSE', 'VARIABLE', nbGrNodeout)
+        do iGrNode = 1, nbGrNodeIn
+! --------- Get group from input mesh
+            call jenuno(jexnum(meshIn//'.GROUPENO', iGrNode), grNodeName)
+            call jeveuo(jexnum(meshIn//'.GROUPENO', iGrNode), 'L', vi = nodeInGrIn)
+            call jelira(jexnum(meshIn//'.GROUPENO', iGrNode), 'LONUTI', nbNodeInGrIn)
 
-    call jeexin(grpnov, iret)
-    if (iret .eq. 0) then
-        nbgrno=0
-    else
-        call jelira(grpnov, 'NOMUTI', nbgrno)
-        call jecreo(gpptnn, 'G N K24')
-        call jeecra(gpptnn, 'NOMMAX', nbgrno, ' ')
-        call jecrec(grpnoe, 'G V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE',&
-                    nbgrno)
-        do i = 1, nbgrno
-            call jenuno(jexnum(grpnov, i), grNodeName)
-            call jeveuo(jexnum(grpnov, i), 'L', jvg)
-            call jelira(jexnum(grpnov, i), 'LONUTI', nbno)
-            call jeexin(jexnom(grpnoe, grCellName), iret)
-            if (iret .eq. 0) then
-                call jecroc(jexnom(grpnoe, grNodeName))
-            else
-                call utmess('F', 'ALGELINE4_11', sk=grNodeName)
-            endif
-            call jeecra(jexnom(grpnoe, grNodeName), 'LONMAX', max(nbno, 1))
-            call jeecra(jexnom(grpnoe, grNodeName), 'LONUTI', nbno)
-            call jeveuo(jexnom(grpnoe, grNodeName), 'E', jgg)
-            do j = 0, nbno-1
-                zi(jgg+j)=zi(jvg+j)
-            end do
+! --------- Create group in output mesh
+            nbNodeInGrOut = nbNodeInGrIn
+            call jeexin(jexnom(meshOut//'.GROUPENO', grNodeName), iret)
+            ASSERT(iret .eq. 0)
+            call jecroc(jexnom(meshOut//'.GROUPENO', grNodeName))
+            call jeecra(jexnom(meshOut//'.GROUPENO', grNodeName), 'LONMAX', max(nbNodeInGrOut, 1))
+            call jeecra(jexnom(meshOut//'.GROUPENO', grNodeName), 'LONUTI', nbNodeInGrOut)
+            call jeveuo(jexnom(meshOut//'.GROUPENO', grNodeName), 'E', vi = nodeInGrOut)
+            nodeInGrOut(1:nbNodeInGrOut) = nodeInGrIn(1:nbNodeInGrIn)
         end do
     endif
 !
