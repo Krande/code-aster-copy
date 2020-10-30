@@ -21,12 +21,6 @@ from ..Utilities import _
 
 cata_msg = {
 
-
-    5: _("""
- Sous le mot-clé "NOM_ORIG" du mot-clé facteur "REPERE",
- on ne peut donner que les mots "CDG" ou "TORSION".
-"""),
-
     6: _("""
  Maille non créée  %(k1)s
 """),

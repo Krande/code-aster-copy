@@ -119,7 +119,7 @@ implicit none
     integer :: jmomtu, jnoeu, jnono, jnpt, jopt, jtom, jtrno, jvale, jvg, kvale
     integer :: nbcrp1, nbgma, nbgrma, nbgrmn, nbgrmt, nbgrmv
     integer :: nbgrno, nbmain, nbmaj2, nbmaj3, nbno, nbnot
-    integer :: nbpt, nbptt, nori, nrep, ntab, ntpoi
+    integer :: nbpt, nbptt, nori, ntab, ntpoi
     integer :: ibid, ifm, jdime, jiad, jmomno, jmomnu
     integer :: jnu2, jnum, jpr2, jpro, jrefe, jtypmv
     integer :: nbmaiv, nbmoma, nbnoaj, nbnoev, niv, k, jgeofi
@@ -129,7 +129,7 @@ implicit none
     integer :: nbCell
     integer :: nbField
     integer :: nbOccDecoupeLac, nbOccEclaPg, nbGeomFibre, nbOccCreaFiss, nbOccLineQuad
-    integer :: nbOccQuadLine, nbOccModiMaille, nbOccCoquVolu, nbOccRestreint
+    integer :: nbOccQuadLine, nbOccModiMaille, nbOccCoquVolu, nbOccRestreint, nbOccRepere
     integer :: iOccQuadTria
     real(kind=8) :: shrink, lonmin
     aster_logical :: lpb, l_modi_maille
@@ -162,6 +162,7 @@ implicit none
     call getfac('MODI_MAILLE', nbOccModiMaille)
     call getfac('COQU_VOLU', nbOccCoquVolu)
     call getfac('RESTREINT', nbOccRestreint)
+    call getfac('REPERE', nbOccRepere)
     call getfac('DECOUPE_LAC', nbOccDecoupeLac)
 !
 ! - Main datastructure
@@ -733,45 +734,6 @@ implicit none
         call jedupo(coovav, 'G', cooval, .false._1)
     endif
 !
-! --- CAS OU L'ON FOURNIT UNE TABLE.
-! --- IL S'AGIT DE DEFINIR LES COORDONNEES DES NOEUDS DU MAILLAGE
-! --- EN SORTIE DANS UN NOUVEAU REPERE.
-! --- CETTE FONCTIONNALITE SERT DANS LE CAS OU L'ON CALCULE LES
-! --- CARACTERISTIQUES DE CISAILLEMENT D'UNE POUTRE A PARTIR DE LA
-! --- DONNEE D'UNE SECTION DE CETTE POUTRE MAILLEE AVEC DES ELEMENTS
-! --- MASSIFS 2D.
-! --- LA TABLE OBTENUE PAR POST_ELEM (OPTION : CARA_GEOM)  CONTIENT
-! --- LES COORDONNEES DE LA NOUVELLE ORIGINE  (I.E. LE CENTRE DE
-! --- GRAVITE) ET L'ANGLE FORME PAR LES AXES PRINCIPAUX D'INERTIE
-! --- (LES NOUVEAUX AXES) AVEC LES AXES GLOBAUX :
-! --- ON DEFINIT LE MAILLAGE EN SORTIE DANS CE NOUVEAU REPERE
-! --- POUR LE CALCUL DU CENTRE DE CISAILLEMENT TORSION ET DES
-! --- COEFFICIENTS DE CISAILLEMENT.
-! --- DANS LE CAS OU L'ON DONNE LE MOT-CLE ORIG_TORSION
-! --- LA TABLE CONTIENT LES COORDONNEES DU CENTRE DE CISAILLEMENT-
-! --- TORSION ET ON DEFINIT LE NOUVEAU MAILLAGE EN PRENANT COMME
-! --- ORIGINE CE POINT. CETTE OPTION EST UTILISEE POUR LE CALCUL
-! --- DE L'INERTIE DE GAUCHISSEMENT :
-!     -----------------------------
-    call getfac('REPERE', nrep)
-    if (nrep .ne. 0) then
-        call getvid('REPERE', 'TABLE', iocc=1, nbval=0, nbret=ntab)
-        if (ntab .ne. 0) then
-            call getvid('REPERE', 'TABLE', iocc=1, scal=table, nbret=ntab)
-            call getvtx('REPERE', 'NOM_ORIG', iocc=1, nbval=0, nbret=nori)
-            if (nori .ne. 0) then
-                call getvtx('REPERE', 'NOM_ORIG', iocc=1, scal=nomori, nbret=nori)
-                if (nomori .eq. 'CDG') then
-                    call chcoma(table, meshOut)
-                else if (nomori.eq.'TORSION') then
-                    call chcomb(table, meshOut)
-                else
-                    call utmess('F', 'ALGELINE3_5')
-                endif
-            endif
-        endif
-    endif
-!
 ! ----------------------------------------------------------------------
 !         ON AGRANDIT LE '.NOMMAI' ET LE '.CONNEX'
 ! ----------------------------------------------------------------------
@@ -1093,7 +1055,32 @@ implicit none
     if (nbOccDecoupeLac .gt. 0) then
         ASSERT(nbOccDecoupeLac.eq.1)
         call cm_dclac(meshIn, meshOut)
-        goto 350
+    endif
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   For "REPERE"
+!
+! --------------------------------------------------------------------------------------------------
+!
+    if (nbOccRepere .ne. 0) then
+        ASSERT(nbOccRepere .eq. 1)
+        keywfact = 'REPERE'
+        call getvid(keywfact, 'TABLE', iocc=1, nbval=0, nbret=ntab)
+        ntab = abs(ntab)
+        ASSERT(ntab .eq. 1)
+        call getvid(keywfact, 'TABLE', iocc=1, scal=table)
+        call getvtx(keywfact, 'NOM_ORIG', iocc=1, nbval=0, nbret=nori)
+        if (nori .ne. 0) then
+            call getvtx(keywfact, 'NOM_ORIG', iocc=1, scal=nomori)
+            if (nomori .eq. 'CDG') then
+                call chcoma(table, meshOut)
+            else if (nomori.eq.'TORSION') then
+                call chcomb(table, meshOut)
+            else
+                ASSERT(ASTER_FALSE)
+            endif
+        endif
     endif
 !
 350 continue
