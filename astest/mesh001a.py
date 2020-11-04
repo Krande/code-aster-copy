@@ -27,7 +27,7 @@ test = code_aster.TestCase()
 
 # from MED format
 mesh = code_aster.Mesh()
-mesh.readMedFile("test001f.mmed")
+mesh.readMedFile("zzzz503a.mmed")
 
 test.assertFalse(mesh.isParallel())
 test.assertEqual(mesh.getDimension(), 3)

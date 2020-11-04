@@ -27,7 +27,7 @@ test = code_aster.TestCase()
 monMaillage = code_aster.Mesh()
 
 # Relecture du fichier MED
-monMaillage.readMedFile("test001d.mmed")
+monMaillage.readMedFile("zzzz502a.mmed")
 
 # Definition du modele Aster
 monModel = code_aster.Model(monMaillage)

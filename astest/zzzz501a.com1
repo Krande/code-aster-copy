@@ -21,7 +21,6 @@ import code_aster
 from code_aster.Commands import *
 
 code_aster.init("--test", "--continue")
-# POURSUITE()
 
 test = code_aster.TestCase()
 
@@ -43,4 +42,4 @@ test.assertIsNotNone(support)
 
 test.printSummary()
 
-FIN()
+code_aster.close()

@@ -27,7 +27,7 @@ test = code_aster.TestCase()
 
 
 mesh = code_aster.Mesh()
-mesh.readMedFile("test001f.mmed")
+mesh.readMedFile("zzzz503a.mmed")
 
 
 model = code_aster.Model(mesh)

@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist submit ci verification sequential
 
 F comm xxLinearMechanics002a.py D 1
-F nom test001f.mmed D 0
+F nom zzzz503a.mmed D 0

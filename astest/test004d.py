@@ -24,7 +24,7 @@ code_aster.init("--test")
 test = code_aster.TestCase()
 
 monMaillage = code_aster.Mesh()
-monMaillage.readMedFile( "test001f.mmed" )
+monMaillage.readMedFile( "zzzz503a.mmed" )
 
 monModel = code_aster.Model(monMaillage)
 monModel.addModelingOnMesh( code_aster.Physics.Mechanics, code_aster.Modelings.Tridimensional )

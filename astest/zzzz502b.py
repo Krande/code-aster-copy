@@ -18,28 +18,34 @@
 # --------------------------------------------------------------------
 
 import code_aster
-from code_aster.Commands import *
-
-code_aster.init("--test", "--continue")
+code_aster.init("--test")
 
 test = code_aster.TestCase()
 
-# 'mesh' has been deleted
-with test.assertRaises(NameError):
-    mesh
+# Creation du maillage
+monMaillage = code_aster.Mesh()
 
-# 'coord' has been deleted: not yet supported
-with test.assertRaises(NameError):
-    coord
+# Relecture du fichier MED
+monMaillage.readMedFile("zzzz503a.mmed")
 
-test.assertTrue("Tout" in mesh2.getGroupsOfCells())
-test.assertTrue("Tout" not in mesh2.getGroupsOfNodes())
-test.assertTrue("POINT" not in mesh2.getGroupsOfCells())
-test.assertTrue("POINT" in mesh2.getGroupsOfNodes())
+# Definition du modele Aster
+monModel = code_aster.Model(monMaillage)
+monModel.addModelingOnMesh(code_aster.Physics.Mechanics,
+                              code_aster.Modelings.Tridimensional)
 
-support = model.getMesh()
-test.assertIsNotNone(support)
+monModel.build()
 
-test.printSummary()
+charCine = code_aster.KinematicsMechanicalLoad()
+charCine.setModel(monModel)
+charCine.addImposedMechanicalDOFOnCells(code_aster.PhysicalQuantityComponent.Dx,
+                                           0., "Bas")
+test.assertEqual( charCine.getType(), "CHAR_CINE_MECA" )
+
+# Impossible d'affecter un blocage en temperature sur un DEPL
+with test.assertRaises( RuntimeError ):
+    charCine.addImposedMechanicalDOFOnCells(code_aster.PhysicalQuantityComponent.Temp,
+                                               0., "Haut")
+
+charCine.build()
 
 code_aster.close()
