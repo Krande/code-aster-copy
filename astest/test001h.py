@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 """
-Identical to test001a except that it calls legacy commands DEBUT/POURSUITE/FIN
+Identical to zzzz501a except that it calls legacy commands DEBUT/POURSUITE/FIN
 to check the restarting of a computation.
 """
 
@@ -34,7 +34,7 @@ mesh = code_aster.Mesh()
 test.assertEqual(mesh.getType(), 'MAILLAGE_SDASTER')
 
 # Relecture du fichier MED
-mesh.readMedFile("test001a.mmed")
+mesh.readMedFile("zzzz501a.mmed")
 
 # help(mesh)
 

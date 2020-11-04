@@ -1,8 +1,8 @@
-P time_limit 60
+P time_limit 123
 P memory_limit 128
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
 P testlist submit ci verification sequential
 
-F comm supervis07a.py D 1
+F comm supv003f.py D 1

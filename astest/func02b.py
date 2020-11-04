@@ -17,33 +17,33 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-
 import code_aster
 from code_aster.Commands import *
 
-code_aster.init("--test", "--continue")
+test = code_aster.TestCase()
+
+code_aster.init("--test")
+
+func = [None, None]
+
+func[0] = DEFI_FONCTION(VALE=(0, 0, 1, 1), NOM_PARA='X')
+func[1] = DEFI_FONCTION(VALE=(0, 0, 1, 2), NOM_PARA='X')
 
 test.assertEqual(func[0](1), 1)
 test.assertEqual(func[1](1), 2)
 
-test.assertEqual(tup[0](1), 1)
-test.assertEqual(tup[1](1), 2)
+results = dict(
+    one=DEFI_FONCTION(VALE=(0, 0, 1, 1), NOM_PARA='X'),
+    two=DEFI_FONCTION(VALE=(0, 0, 1, 2), NOM_PARA='X')
+)
 
 test.assertEqual(results["one"](1), 1)
 test.assertEqual(results["two"](1), 2)
 
-test.assertEqual(dfunc["flist"][0](1), 1)
-test.assertEqual(dfunc["flist"][1](1), 2)
-
-test.assertEqual(ldfunc[0]["flist"][0](1), 1)
-test.assertEqual(ldfunc[0]["flist"][1](1), 2)
-
-dtest = l12dfunc
-for _ in range(12):
-    dtest = dtest[0]
-test.assertEqual(dtest["flist"][0](1), 1)
-test.assertEqual(dtest["flist"][1](1), 2)
+tup = tuple(func)
 
 code_aster.saveObjects()
 
 test.printSummary()
+
+FIN()
