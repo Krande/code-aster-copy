@@ -120,6 +120,4 @@ test.assertTrue(syntax.getexm("EXCIT", "D_FONC_DT"))
 
 test.printSummary()
 
-code_aster.close(exit=True)
-
-raise RuntimeError("no should pass here!")
+code_aster.close()
