@@ -261,10 +261,11 @@ subroutine getMatrTypeCorr(l_dischoc, sddisc, nume_inst, ds_algopara, matrType, 
     character(len=16), intent(out) :: matrType
     integer, intent(out) :: reac_iter
 ! - Local
-    aster_logical :: l_swap
+    aster_logical :: l_swap, l_swapToElastic
 !   ------------------------------------------------------------------------------------------------
-    matrType  = ds_algopara%matrix_corr
-    reac_iter = ds_algopara%reac_iter
+    matrType        = ds_algopara%matrix_corr
+    reac_iter       = ds_algopara%reac_iter
+    l_swapToElastic = ds_algopara%l_swapToElastic
 !
 ! - Swap matrix to secant ?
 !
@@ -278,6 +279,13 @@ subroutine getMatrTypeCorr(l_dischoc, sddisc, nume_inst, ds_algopara, matrType, 
 !
     if (l_dischoc) then
         matrType = 'TANGENTE'
+    endif
+
+!
+! - Swap matrix to elastic if contact is not stabilized and PRED_CONTACT = OUI
+!
+    if (l_swapToElastic) then
+        matrType = 'ELASTIQUE'
     endif
 !   ------------------------------------------------------------------------------------------------
 end subroutine

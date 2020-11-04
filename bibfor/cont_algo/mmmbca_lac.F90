@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -106,6 +106,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 !
     loop_cont_conv = ASTER_TRUE
     loop_cont_vali = 0
+    ds_contact%lContStab = ASTER_FALSE
 !
 ! - Get parameters
 !
@@ -218,6 +219,13 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     loop_cont_vale = real(loop_cont_vali, kind=8)
     call mmbouc(ds_contact, 'Cont', 'Set_Vale' , loop_vale_ = loop_cont_vale)
 !
+! - Is contact stabilized ?
+!
+    if (loop_cont_vali .eq. 0) then
+        ds_contact%iContStab = ds_contact%iContStab + 1
+    else
+        ds_contact%iContStab = 0
+    endif
 ! - Cleaning
 !
     call jedetr(newgeo)

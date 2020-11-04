@@ -64,6 +64,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT", op=30, sd_prod   = char_contact, r
            b_bouc_geom_mailc=BLOC(condition = """equal_to("FORMULATION", 'CONTINUE')""",
                                   ALGO_RESO_GEOM = SIMP(statut='f', typ='TXM',
                                                         into=("POINT_FIXE","NEWTON",), defaut="POINT_FIXE"),
+                                  CONT_STAT_ELAS = SIMP(statut='f', typ='I',val_min=0, defaut = 0),
                                   b_algo_reso_geomNE = BLOC(condition = """equal_to("ALGO_RESO_GEOM", 'NEWTON')""",
                                     RESI_GEOM      = SIMP(statut='f',typ='R',defaut=0.000001),
                                   ),

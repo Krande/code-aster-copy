@@ -39,7 +39,7 @@ interface
         character(len=19) :: sdcrit
         character(len=24) :: sderro
         type(NL_DS_InOut), intent(in) :: ds_inout
-        type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+        type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
         character(len=19) :: matass
         character(len=19) :: solveu
         type(NL_DS_System), intent(in) :: ds_system

@@ -82,7 +82,7 @@ character(len=24), intent(in) :: cara_elem
 type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
 character(len=19), intent(in) :: list_load
 type(NL_DS_System), intent(in) :: ds_system
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
 integer :: fonact(*)
 type(NL_DS_Measure), intent(inout) :: ds_measure
 type(HHO_Field), intent(in) :: hhoField

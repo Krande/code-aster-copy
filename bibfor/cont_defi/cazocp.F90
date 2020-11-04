@@ -48,7 +48,7 @@ character(len=8), intent(in) :: model
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: sdcont_defi
-    integer :: geom_nbiter, nb_resol, gcp_maxi, gcp_pre_maxi
+    integer :: geom_nbiter, nb_resol, gcp_maxi, gcp_pre_maxi, cont_stat_elas
     integer :: cont_mult, frot_maxi, geom_maxi
     character(len=16) :: gcp_rech_line, gcp_precond, reac_geom, cont_type, stop_singular, elim_edge
     character(len=16) :: algo_reso_cont, algo_reso_frot, algo_reso_geom
@@ -221,6 +221,13 @@ character(len=8), intent(in) :: model
         v_sdcont_paraci(27) = ALGO_NEWT
     else
         ASSERT(ASTER_FALSE)
+    endif
+!
+! - Contact status stabilisation with MATRICE="ELASTQUE"
+!
+    if (l_cont_cont .or. l_cont_lac) then
+        call getvis(' ', 'CONT_STAT_ELAS', scal=cont_stat_elas)
+        v_sdcont_paraci(31)  = cont_stat_elas
     endif
 !
 ! - Check

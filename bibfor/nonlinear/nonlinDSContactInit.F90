@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,6 +36,7 @@ implicit none
 #include "asterfort/xrela_elim.h"
 #include "asterfort/lac_rela.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/jeveuo.h"
 !
 character(len=8), intent(in) :: mesh
 character(len=8), intent(in) :: model
@@ -66,6 +67,8 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     integer :: nt_patch
     integer :: i_exist
     character(len=8), pointer :: v_load_type(:) => null()
+    character(len=24) :: sdcont_paraci
+    integer, pointer :: v_sdcont_paraci(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -81,7 +84,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
     l_form_lac  = ASTER_FALSE
     l_iden_rela = ASTER_FALSE
     iden_rela   = '&&CFMXR0.IDEN_RELA'
-! 
+!
     if (ds_contact%l_contact) then
 !
 ! ----- Print
@@ -93,11 +96,13 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 ! ----- Datastructure from DEFI_CONTACT
 !
         sdcont                 = ds_contact%sdcont
+        sdcont_paraci          = sdcont(1:8)//'.PARACI'
         ds_contact%sdcont_defi = sdcont(1:8)//'.CONTACT'
         ds_contact%sdunil_defi = sdcont(1:8)//'.UNILATE'
+        call jeveuo(sdcont_paraci, 'E', vi = v_sdcont_paraci)
 !
 ! ----- Contact formulation
-! 
+!
         cont_form      = cfdisi(ds_contact%sdcont_defi, 'FORMULATION')
         ASSERT(cont_form.ge.1 .and. cont_form.le.5)
         l_form_disc    = cont_form .eq. 1
@@ -130,6 +135,16 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
             ds_contact%fields_cont_elem = '&&CFMXR0.CESINR'
             ds_contact%l_cont_elem      = ASTER_TRUE
         endif
+
+!
+! ----- Special for contact stabilization with elastic matrix
+!
+        if (l_form_lac .or. l_form_cont) then
+            ds_contact%sContStab = v_sdcont_paraci(31)
+            if (ds_contact%sContStab .gt. 0) then
+                ds_contact%lContStab = ASTER_TRUE
+            endif
+        endif
 !
 ! ----- Special for discrete contact
 !
@@ -140,7 +155,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
             if (i_exist .gt. 0) then
                 ds_contact%ligrel_dof_rela = sdcont
             endif
-        endif 
+        endif
 !
 ! ----- Special for continue contact
 !
@@ -169,7 +184,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
                     ds_contact%ligrel_dof_rela = sdcont
                 endif
             endif
-            if (l_cont_xfem_gg) then  
+            if (l_cont_xfem_gg) then
                 ds_contact%ligrel_elem_cont = model(1:8)//'.MODELE'
             endif
             ds_contact%l_elem_cont      = ASTER_FALSE
@@ -178,7 +193,7 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! ----- Special for xfem contact (large sliding)
 !
-        if (l_cont_xfem_gg) then          
+        if (l_cont_xfem_gg) then
             ds_contact%l_elem_cont      = ASTER_TRUE
             ds_contact%ligrel_elem_cont = '&&LIGRXF.CHME.LIGRE'
             call wkvect(ds_contact%ligrel_elem_cont(1:8)//'.TYPE', 'V V K8', 1, vk8 = v_load_type)

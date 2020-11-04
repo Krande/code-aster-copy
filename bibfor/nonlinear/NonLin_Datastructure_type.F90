@@ -179,6 +179,8 @@ implicit none
         character(len=8)       :: result_prev_disp = ' '
         aster_logical          :: l_matr_rigi_syme = ASTER_FALSE
         aster_logical          :: l_precalc_hho    = ASTER_FALSE
+! ----- Flag for swap to elastic matrix (PRED_CONTACT)
+        aster_logical          :: l_swapToElastic  = ASTER_FALSE
     end type NL_DS_AlgoPara
 !
 ! - Type: fields for input/output management
@@ -369,6 +371,10 @@ implicit none
         aster_logical     :: l_cneltf                = ASTER_FALSE
         character(len=19) :: cneltf                  = ' '
         character(len=19) :: veeltf                  = ' '
+! ----- Flag for stabilized contact
+        logical           :: lContStab               = ASTER_FALSE
+        integer           :: iContStab               = 0
+        integer           :: sContStab               = 0
     end type NL_DS_Contact
 !
 ! - Type: timer management

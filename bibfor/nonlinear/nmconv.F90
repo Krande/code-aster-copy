@@ -61,7 +61,7 @@ implicit none
 !
 integer :: fonact(*)
 integer :: iterat, numins
-type(NL_DS_AlgoPara), intent(in) :: ds_algopara
+type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
 real(kind=8) :: eta
 character(len=19) :: sdcrit, sddisc, sddyna, sdnume
 character(len=19) :: matass, solveu
@@ -107,7 +107,7 @@ type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
 ! IN  ETA    : COEFFICIENT DE PILOTAGE
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  SDERRO : GESTION DES ERREURS
-! In  ds_algopara      : datastructure for algorithm parameters
+! IO  ds_algopara      : datastructure for algorithm parameters
 ! In  ds_algorom       : datastructure for ROM parameters
 ! In  ds_system        : datastructure for non-linear system management
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
@@ -141,6 +141,7 @@ type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
     lerror = .false.
     cvnewt = .false.
     pasmin = ds_algopara%pas_mini_elas
+    ds_algopara%l_swapToElastic = ASTER_FALSE
     line_sear_coef = r8vide()
     line_sear_iter = -1
 !
@@ -195,7 +196,7 @@ type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
                     ds_inout, ds_algorom, ds_system  ,&
                     matass  , numins    , eta        ,&
                     valinc  , solalg    ,&
-                    veasse  , measse    ,& 
+                    veasse  , measse    ,&
                     vresi   , vchar)
 !
 ! ----- Evaluate convergence of residuals
@@ -209,12 +210,17 @@ type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
             call nmeceb(sderro, 'RESI', 'CONV')
         endif
 !
-! ----- Evaluate convergence of contact
+! ----- Evaluate convergence of contact and PRED_CONTACT
 !
         if (lcont) then
             call cfmmcv(noma  , modele    , fonact    , iterat, numins,&
                         sddyna, ds_measure, sddisc    , sderro, valinc,&
                         solalg, ds_print  , ds_contact)
+            if (ds_contact%lContStab) then
+                if (ds_contact%iContStab .lt. ds_contact%sContStab) then
+                    ds_algopara%l_swapToElastic = ASTER_TRUE
+                endif
+            endif
         endif
 !
 ! ----- Set value of informations in convergence table (residuals are in nmimre)
