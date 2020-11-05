@@ -61,12 +61,6 @@ MODI_REPERE / CHAMP_GD
     Le mot clé CARA_ELEM est obligatoire.
 """),
 
-    8: _("""
- Erreur utilisateur dans CREA_MAILLAGE / QUAD_LINE :
-  Vous avez demandé de transformer des mailles quadratiques en mailles linéaires.
-  Mais il n'y a aucune maille quadratique à transformer.
-"""),
-
     9: _("""
  le mot clé "TRAN" sous le mot clé facteur %(k1)s  n"admet que 3 valeurs
 """),
@@ -152,12 +146,6 @@ MODI_REPERE / RESULTAT / concept réentrant
  erreur pour extension de la carte  %(k1)s
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
-"""),
-
-    44: _("""
- Erreur utilisateur dans CREA_MAILLAGE / LINE_QUAD :
-  Vous avez demandé de transformer des mailles linéaires en mailles quadratiques.
-  Mais il n'y a aucune maille linéaire à transformer.
 """),
 
     60: _("""

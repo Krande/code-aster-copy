@@ -145,7 +145,7 @@ real(kind=8), intent(out) :: mgano2(nbpgmx, nbnomx)
         endif
 !
 !
-    else if ((elrefa.eq.'P15').or.(elrefa.eq.'P18')) then
+    else if ((elrefa.eq.'P15').or.(elrefa.eq.'P18').or.(elrefa.eq.'P21')) then
         ASSERT(nnos.eq.6)
         nosom(7,1) = demi
         nosom(7,2) = demi
@@ -166,7 +166,7 @@ real(kind=8), intent(out) :: mgano2(nbpgmx, nbnomx)
         nosom(15,4) = demi
         nosom(15,6) = demi
 !
-        if (elrefa .eq. 'P18') then
+        if (elrefa .eq. 'P18' .or.(elrefa.eq.'P21')) then
 !
             nosom(16,2) = quart
             nosom(16,1) = quart
@@ -185,27 +185,7 @@ real(kind=8), intent(out) :: mgano2(nbpgmx, nbnomx)
 !
         endif
 !
-    else if (elrefa.eq.'TE9') then
-        ASSERT(nnos.eq.4)
-        nosom(5,1) = quart
-        nosom(5,2) = quart
-        nosom(5,3) = quart
-!
-        nosom(6,1) = quart
-        nosom(6,2) = quart
-        nosom(6,4) = quart
-!
-        nosom(7,1) = quart
-        nosom(7,3) = quart
-        nosom(7,4) = quart
-!
-        nosom(8,2) = quart
-        nosom(8,3) = quart
-        nosom(8,4) = quart
-!
-        nosom(9,1:4) = demi/4.d0
-!
-    else if (elrefa.eq.'T10') then
+    else if (elrefa.eq.'T10' .or. elrefa.eq.'T15') then
         ASSERT(nnos.eq.4)
         nosom(5,1) = demi
         nosom(5,2) = demi
@@ -221,7 +201,7 @@ real(kind=8), intent(out) :: mgano2(nbpgmx, nbnomx)
         nosom(10,4) = demi
 !
 !
-    else if (elrefa.eq.'P13') then
+    else if (elrefa.eq.'P13' .or. elrefa.eq.'P19') then
         ASSERT(nnos.eq.5)
         nosom(6,1) = demi
         nosom(6,2) = demi
@@ -239,12 +219,6 @@ real(kind=8), intent(out) :: mgano2(nbpgmx, nbnomx)
         nosom(12,5) = demi
         nosom(13,4) = demi
         nosom(13,5) = demi
-!
-!
-    else if (elrefa.eq.'TR4') then
-        ASSERT(nnos.eq.3)
-        nosom(4,1) = quart
-        nosom(4,2) = quart
 !
 !
     else if (elrefa.eq.'TR6') then

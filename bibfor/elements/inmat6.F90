@@ -78,13 +78,13 @@ real(kind=8), intent(out) :: mganos(nbpgmx, nbnomx)
 !
     if ((elrefa.eq.'H20') .or. (elrefa.eq.'H27')) then
         elref2 = 'HE8'
-    else if ((elrefa.eq.'P15').or.(elrefa.eq.'P18')) then
+    else if ((elrefa.eq.'P15').or.(elrefa.eq.'P18').or.(elrefa.eq.'P21')) then
         elref2 = 'PE6'
-    else if (elrefa.eq.'P13') then
+    else if (elrefa.eq.'P13' .or. elrefa.eq.'P19') then
         elref2 = 'PY5'
-    else if ((elrefa.eq.'T10') .or. (elrefa.eq.'TE9')) then
+    else if ((elrefa.eq.'T10') .or. (elrefa.eq.'T15')) then
         elref2 = 'TE4'
-    else if ((elrefa.eq.'TR4') .or. (elrefa.eq.'TR6') .or. (elrefa.eq.'TR7')) then
+    else if ((elrefa.eq.'TR6') .or. (elrefa.eq.'TR7')) then
         elref2 = 'TR3'
     else if ((elrefa.eq.'QU8') .or. (elrefa.eq.'QU9')) then
         elref2 = 'QU4'

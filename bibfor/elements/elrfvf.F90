@@ -234,6 +234,38 @@ implicit none
             ff(18) = quatre*y0*(x0-un)*(x0+un)*(z0+y0-un)
 !
 !         ------------------------------------------------------------------
+        case('P21')
+!
+            x0 = x(1)
+            y0 = x(2)
+            z0 = x(3)
+!
+            ff(1) = x0*y0*(x0-un)*(deux*y0-un)/deux
+            ff(2) = x0*z0*(x0-un)*(deux*z0-un)/deux
+            ff(3) = x0*(x0-un)*(z0+y0-un)*(deux*z0+deux*y0-un)/deux
+            ff(4) = x0*y0*(x0+un)*(deux*y0-un)/deux
+            ff(5) = x0*z0*(x0+un)*(deux*z0-un)/deux
+            ff(6) = x0*(x0+un)*(z0+y0-un)*(deux*z0+deux*y0-un)/deux
+!
+            ff(7) = deux*x0*y0*z0*(x0-un)
+            ff(8) = -deux*x0*z0*(x0-un)*(z0+y0-un)
+            ff(9) = -deux*x0*y0*(x0-un)*(z0+y0-un)
+!
+            ff(10) = -y0*(x0-un)*(x0+un)*(deux*y0-un)
+            ff(11) = -z0*(x0-un)*(x0+un)*(deux*z0-un)
+            ff(12) = -(x0-un)*(x0+un)*(z0+y0-un)*(deux*z0+deux*y0-un)
+!
+            ff(13) = deux*x0*y0*z0*(x0+un)
+            ff(14) = -deux*x0*z0*(x0+un)*(z0+y0-un)
+            ff(15) = -deux*x0*y0*(x0+un)*(z0+y0-un)
+!
+            ff(16) = -quatre*y0*z0*(x0-un)*(x0+un)
+            ff(17) = quatre*z0*(x0-un)*(x0+un)*(z0+y0-un)
+            ff(18) = quatre*y0*(x0-un)*(x0+un)*(z0+y0-un)
+!
+            ff(19:21) = 0.d0
+!
+!         ------------------------------------------------------------------
         case('TE4')
 !
             x0 = x(1)
@@ -244,19 +276,6 @@ implicit none
             ff(2) = z0
             ff(3) = un - x0 - y0 - z0
             ff(4) = x0
-!
-!     ------------------------------------------------------------------
-        case('TE9')
-!
-            x0 = x(1)
-            y0 = x(2)
-            z0 = x(3)
-!
-            ff(1) = y0
-            ff(2) = z0
-            ff(3) = un - x0 - y0 - z0
-            ff(4) = x0
-            ff(5:9) = 0.d0
 !
 !     ------------------------------------------------------------------
         case('T10')
@@ -276,6 +295,27 @@ implicit none
             ff(8) = quatre*x0*y0
             ff(9) = quatre*x0*z0
             ff(10) = quatre*x0*al
+!
+!         ------------------------------------------------------------------
+        case('T15')
+!
+            x0 = x(1)
+            y0 = x(2)
+            z0 = x(3)
+            al = un - x0 - y0 - z0
+!
+            ff(1) = (deux*y0-un)*y0
+            ff(2) = (deux*z0-un)*z0
+            ff(3) = (deux*al-un)*al
+            ff(4) = (deux*x0-un)*x0
+            ff(5) = quatre*z0*y0
+            ff(6) = quatre*z0*al
+            ff(7) = quatre*al*y0
+            ff(8) = quatre*x0*y0
+            ff(9) = quatre*x0*z0
+            ff(10) = quatre*x0*al
+!
+            ff(11:15) = 0.d0
 !
 !         ------------------------------------------------------------------
         case('PY5')
@@ -340,6 +380,45 @@ implicit none
             endif
 !
 !         ------------------------------------------------------------------
+        case('P19')
+!
+            x0 = x(1)
+            y0 = x(2)
+            z0 = x(3)
+            z01 = un - z0
+            z02 = (un-z0)*deux
+!
+            pface1 = x0 + y0 + z0 - un
+            pface2 = -x0 + y0 + z0 - un
+            pface3 = -x0 - y0 + z0 - un
+            pface4 = x0 - y0 + z0 - un
+!
+            pmili1 = x0 - undemi
+            pmili2 = y0 - undemi
+            pmili3 = -x0 - undemi
+            pmili4 = -y0 - undemi
+!
+            if (abs(z0-un) .lt. 1.0d-6) then
+                ff(1:13) = zero
+                ff(5) = un
+            else
+                ff(1) = pface2*pface3*pmili1/z02
+                ff(2) = pface3*pface4*pmili2/z02
+                ff(3) = pface4*pface1*pmili3/z02
+                ff(4) = pface1*pface2*pmili4/z02
+                ff(5) = deux*z0* (z0-undemi)
+                ff(6) = -pface2*pface3*pface4/z02
+                ff(7) = -pface3*pface4*pface1/z02
+                ff(8) = -pface4*pface1*pface2/z02
+                ff(9) = -pface1*pface2*pface3/z02
+                ff(10) = z0*pface2*pface3/z01
+                ff(11) = z0*pface3*pface4/z01
+                ff(12) = z0*pface4*pface1/z01
+                ff(13) = z0*pface1*pface2/z01
+            endif
+            ff(14:19) = 0.d0
+!
+!         ------------------------------------------------------------------
         case('TR3')
 !
             x0 = x(1)
@@ -348,18 +427,6 @@ implicit none
             ff(1) = un - x0 - y0
             ff(2) = x0
             ff(3) = y0
-!
-!     ------------------------------------------------------------------
-        case('TR4')
-!
-            x0 = x(1)
-            y0 = x(2)
-            nno = 4
-!
-            ff(1) = un - x0 - y0
-            ff(2) = x0
-            ff(3) = y0
-            ff(4) = 0.d0
 !
 !     ------------------------------------------------------------------
         case('TR6')

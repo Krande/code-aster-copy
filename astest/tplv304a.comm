@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -234,14 +234,14 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N1',
                       VALE_CALC=20.326895969,
                       VALE_REFE=20.329000000000001,
                       REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='NS41',
+                   _F(NOEUD='NS48',
                       NOM_CMP='TEMP',
                       PRECISION=1.E-2,
                       CHAM_GD=TPR,
                       VALE_CALC=20.358654405,
                       VALE_REFE=20.329000000000001,
                       REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='NS41',
+                   _F(NOEUD='NS48',
                       CRITERE='ABSOLU',
                       NOM_CMP='TEMP',
                       PRECISION=0.5,

@@ -200,14 +200,14 @@ class MECA3DQU9_HHO1_F(Element):
         ),
     )
 #------------------------------------------------------------
-class MECA3DTR4_HHO1_F(MECA3DQU9_HHO1_F):
+class MECA3DTR7_HHO1_F(MECA3DQU9_HHO1_F):
    """Please document this element"""
-   meshType = MT.TRIA4
+   meshType = MT.TRIA7
    nodes = (
-           SetOfNodes('EN1', (4,)),
-           SetOfNodes('EN2', (1,2,3,)),
+           SetOfNodes('EN1', (7,)),
+           SetOfNodes('EN2', (1,2,3,4,5,6)),
        )
    attrs = ((AT.BORD_ISO,'OUI'),)
    elrefe =(
-           ElrefeLoc(MT.TR4, gauss = ('RIGI=FPG3',), mater=('RIGI',),),
+           ElrefeLoc(MT.TR7, gauss = ('RIGI=FPG3',), mater=('RIGI',),),
        )

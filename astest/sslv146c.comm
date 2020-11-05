@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ MATAF=AFFE_MATERIAU(    MAILLAGE=MAILTOT,
 # AFFECTATION DES MODELES
 # -------------------------------------------------
 #
-LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     
+LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,
                         AFFE=(
                               _F(  GROUP_MA = ('GEOX','GEOY','GEOZ'),
                                PHENOMENE = 'MECANIQUE',
@@ -195,7 +195,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    MAILLE='MA3',),
                 _F(INST=1.0,
                    REFERENCE='ANALYTIQUE',
-                   POINT=1,
+                   POINT=2,
                    RESULTAT=LEDEP,
                    NOM_CHAM='EPSI_ELGA',
                    NOM_CMP='EXX',
@@ -285,7 +285,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    MAILLE='MA3',),
                 _F(INST=1.0,
                    REFERENCE='ANALYTIQUE',
-                   POINT=1,
+                   POINT=2,
                    RESULTAT=LEDEP,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIXX',
@@ -375,7 +375,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    MAILLE='MA3',),
                 _F(INST=0.0,
                    REFERENCE='ANALYTIQUE',
-                   POINT=1,
+                   POINT=2,
                    RESULTAT=RESU0,
                    NOM_CHAM='EPSI_ELGA',
                    NOM_CMP='EXX',
@@ -465,7 +465,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    MAILLE='MA3',),
                 _F(INST=0.0,
                    REFERENCE='ANALYTIQUE',
-                   POINT=1,
+                   POINT=2,
                    RESULTAT=RESU0,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIXX',

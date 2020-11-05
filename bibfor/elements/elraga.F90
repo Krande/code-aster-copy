@@ -211,7 +211,7 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
         end do
 
 !     ------------------------------------------------------------------
-    else if (elrefa.eq.'PE6' .or. elrefa.eq.'P15' .or. elrefa.eq.'P18') then
+    else if (elrefa.eq.'PE6' .or. elrefa.eq.'P15' .or. elrefa.eq.'P18' .or. elrefa.eq.'P21') then
 !
         if (fapg .eq. 'FPG6') then
             npx = 2
@@ -361,7 +361,7 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
         end do
 !
 !     ------------------------------------------------------------------
-    else if (elrefa.eq.'TE4' .or. elrefa.eq.'TE9' .or. elrefa.eq.'T10') then
+    else if (elrefa.eq.'TE4' .or. elrefa.eq.'T10' .or. elrefa.eq.'T15') then
 !
         if (fapg .eq. 'FPG4') then
 !
@@ -682,7 +682,7 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
         endif
 !
 !     ------------------------------------------------------------------
-    else if (elrefa.eq.'PY5' .or. elrefa.eq.'P13') then
+    else if (elrefa.eq.'PY5' .or. elrefa.eq.'P13' .or. elrefa.eq.'P19') then
 !
         if (fapg .eq. 'FPG5') then
 !       ORDRE 2
@@ -923,7 +923,7 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
         endif
 !
 !     ------------------------------------------------------------------
-    else if (elrefa.eq.'TR3' .or. elrefa.eq.'TR4' .or. elrefa.eq.'TR6' .or. elrefa.eq.'TR7') then
+    else if (elrefa.eq.'TR3'.or. elrefa.eq.'TR6' .or. elrefa.eq.'TR7') then
 !
         if (fapg .eq. 'FPG1') then
             xpg(1) = un/3.d0

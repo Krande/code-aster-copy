@@ -29,7 +29,7 @@ DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),)
 
 mesh0 = LIRE_MAILLAGE(FORMAT='MED')
 
-mesh = CREA_MAILLAGE(MAILLAGE=mesh0, HEXA20_27=_F(TOUT='OUI'))
+mesh = CREA_MAILLAGE(MAILLAGE=mesh0, MODI_HHO=_F(TOUT='OUI'))
 
 mesh = MODI_MAILLAGE(reuse=mesh, MAILLAGE=mesh,
                      ORIE_PEAU_3D=_F(GROUP_MA=('Encast', 'load',),),)

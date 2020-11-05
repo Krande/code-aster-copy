@@ -326,10 +326,13 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx,&
                         else if (ktype .eq. 'PENTA18') then
                             nnoe = nnoe - 3
                             lnocen = ASTER_TRUE
+                        else if (ktype .eq. 'PENTA21') then
+                            nnoe = nnoe - 6
+                            lnocen = ASTER_TRUE
                         else if (ktype .eq. 'HEXA27') then
                             nnoe = nnoe - 7
                             lnocen = ASTER_TRUE
-                        else if (ktype .eq. 'TETRA9') then
+                        else if (ktype .eq. 'TETRA15') then
                             nnoe = nnoe - 5
                             lnocen = ASTER_TRUE
                         else if (ktype .eq. 'SEG4') then

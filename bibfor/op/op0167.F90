@@ -35,9 +35,9 @@ implicit none
 #include "asterfort/chckma.h"
 #include "asterfort/chcoma.h"
 #include "asterfort/chcomb.h"
-#include "asterfort/cm0409.h"
 #include "asterfort/cm1518.h"
 #include "asterfort/cm2027.h"
+#include "asterfort/cmhho.h"
 #include "asterfort/cmcovo.h"
 #include "asterfort/cmcrea.h"
 #include "asterfort/cmlqlq.h"
@@ -245,13 +245,12 @@ implicit none
     endif
 !
 ! ----------------------------------------------------------------------
-!          TRAITEMENT DES MOTS CLES "PENTA15_18","HEXA20_27","TETRA4_9"
+!          TRAITEMENT DES MOTS CLES "PENTA15_18","HEXA20_27"
 ! ----------------------------------------------------------------------
 !
-    do k = 1, 3
+    do k = 1, 2
         if (k .eq. 1) motfac='HEXA20_27'
         if (k .eq. 2) motfac='PENTA15_18'
-        if (k .eq. 3) motfac='TETRA4_9'
         call getfac(motfac, nbmoma)
         if (nbmoma .gt. 0) then
             if (nn1 .eq. 0) then
@@ -297,9 +296,6 @@ implicit none
             else if (motfac.eq.'PENTA15_18') then
                 call cm1518(nomain, nomaou, nbma, zi(jlima), prefix,&
                             ndinit)
-            else if (motfac.eq.'TETRA4_9') then
-                call cm0409(nomain, nomaou, nbma, zi(jlima), prefix,&
-                            ndinit)
             endif
             goto 350
         endif
@@ -339,6 +335,47 @@ implicit none
         endif
 !
         call cmqlql(nomain, nomaou, nbma, zi(jlima))
+!
+        goto 350
+!
+    endif
+!
+    !
+! ----------------------------------------------------------------------
+!          TRAITEMENT DU MOT CLE "MODI_HHO"
+! ----------------------------------------------------------------------
+!
+    call getfac('MODI_HHO', nbmoma)
+    if (nbmoma .gt. 0) then
+        ASSERT(nbmoma.eq.1)
+        if (nn1 .eq. 0) then
+            call utmess('F', 'ALGELINE2_93')
+        endif
+!
+        call getvtx('MODI_HHO', 'GROUP_MA', iocc=1, nbval=0, nbret=n1b)
+        if (n1b .lt. 0) then
+            call utmess('A', 'MODELISA4_1', sk='MODI_HHO')
+        endif
+!
+        call getvtx("MODI_HHO", 'PREF_NOEUD', iocc=1, scal=prefix, nbret=n1)
+        call getvis("MODI_HHO", 'PREF_NUME', iocc=1, scal=ndinit, nbret=n1)
+!
+        motcle(1)='GROUP_MA'
+        motcle(2)='TOUT'
+        nomjv='&&OP0167.LISTE_MA'
+        call reliem(' ', nomain, 'NU_MAILLE', 'MODI_HHO', 1,&
+                    2, motcle, motcle, nomjv, nbma)
+        call jeveuo(nomjv, 'L', jlima)
+        call jeexin(nomain//'.NOMACR', iret)
+        if (iret .ne. 0) then
+            call utmess('F', 'ALGELINE2_94')
+        endif
+        call jeexin(nomain//'.ABSC_CURV', iret)
+        if (iret .ne. 0) then
+            call utmess('F', 'ALGELINE2_95')
+        endif
+!
+        call cmhho(nomain, nomaou, nbma, zi(jlima), prefix, ndinit)
 !
         goto 350
 !

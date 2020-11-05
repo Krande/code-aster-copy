@@ -484,11 +484,14 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx,&
                                 else if (ktype .eq. 'TRIA7') then
                                     nnoe = nnoe - 1
                                     lnocen=.true.
-                                else if (ktype .eq. 'TETRA9') then
+                                else if (ktype .eq. 'TETRA15') then
                                     nnoe = nnoe - 5
                                     lnocen=.true.
                                 else if (ktype .eq. 'PENTA18') then
                                     nnoe = nnoe - 3
+                                    lnocen=.true.
+                                else if (ktype .eq. 'PENTA21') then
+                                    nnoe = nnoe - 6
                                     lnocen=.true.
                                 else if (ktype .eq. 'QUAD9') then
                                     nnoe = nnoe - 1

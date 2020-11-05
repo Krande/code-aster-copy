@@ -952,8 +952,6 @@ contains
 !
         if(typma2 == 'H27' .or. typma2 == 'HEXA27') then
             hhoDiriDeca = 21
-        elseif(typma2 == 'TE9' .or. typma2 == 'TETRA9') then
-            hhoDiriDeca = 5
         elseif(typma2 == 'T15' .or. typma2 == 'TETRA15') then
             hhoDiriDeca = 11
         elseif(typma2 == 'P21' .or. typma2 == 'PENTA21') then

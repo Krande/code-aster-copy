@@ -21,16 +21,6 @@ from ..Utilities import _
 
 cata_msg = {
 
-    11 : _("""
-Plus de %(i1)d faces touchent le noeud %(k1)s.
-
-Risque & conseils :
-   Vérifier la validité de votre maillage autour de ce point.
-   Dans une grille, un noeud est commun à 12 faces.
-"""),
-
-
-
 
 
     14 : _("""

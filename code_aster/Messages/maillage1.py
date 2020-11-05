@@ -47,14 +47,6 @@ très faiblement négative ( > -1.d-6 * X_MAX)
     dans le demi espace  X >= 0
 """),
 
-    4: _("""
-Il n'est pas possible de linéariser le maillage %(k1)s.
-Ce maillage possède des mailles dont certains noeuds linéaires reposent sur des
-noeuds quadratiques d'autres mailles. Exemple : le noeud %(k2)s.
-
-Il n'est donc pas possible de supprimer ces noeuds quadratiques sans compromettre
-l'intégrité du maillage.
-"""),
 
     5: _("""
 Le maillage parallèle %(k1)s ne contient pas de joints pour définir le raccord entre les différents sous-domaines. Ceci peut arriver si vos différents sous-domaines ne sont pas connectés les uns aux autres.

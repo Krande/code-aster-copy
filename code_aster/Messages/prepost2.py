@@ -129,7 +129,7 @@ Le filtre TYPE_MAILLE a éliminée %(i1)d mailles .
 """),
 
     79 : _("""
- tria7 élément inexistant dans IDEAS, converti en tria6
+ TRIA7 élément inexistant dans IDEAS, converti en TRIA6
 """),
 
     80 : _("""
@@ -153,7 +153,11 @@ Le filtre TYPE_MAILLE a éliminée %(i1)d mailles .
 """),
 
     86 : _("""
- L'élément TETRA9 est inexistant dans IDEAS, il est converti en TETRA4.
+ L'élément TETRA15 est inexistant dans IDEAS, il est converti en TETRA4.
+"""),
+
+    87 : _("""
+ L'élément PENTA21 est inexistant dans IDEAS, il est converti en PENTA15.
 """),
 
     93 : _("""

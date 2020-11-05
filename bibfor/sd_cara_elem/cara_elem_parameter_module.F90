@@ -221,8 +221,8 @@ character(len=16),parameter :: ACE_NM_ELEMENT(ACE_NB_ELEMENT) =[ &
         'THER_PYRAM13    ','THAXTR3         ','THAXQU4         ','THAXTR6         ',&
         'THAXQU8         ','THAXQU9         ','THPLTR3         ','THPLQU4         ',&
         'THPLTR6         ','THPLQU8         ','THPLQU9         ','MET3SEG3        ',&
-        'MET6SEG3        ','MET3SEG4        ','MECA3DH27_HHO121','MECA3DTE9_HHO121',&
-        'MECA3DH27_HHO222','MECA3DTE9_HHO222','MECA_DPQ9_HHO121','MECA_DPT7_HHO121',&
+        'MET6SEG3        ','MET3SEG4        ','MECA3DH27_HHO121','MECA3DT15_HHO121',&
+        'MECA3DH27_HHO222','MECA3DT15_HHO222','MECA_DPQ9_HHO121','MECA_DPT7_HHO121',&
         'MECA_DPQ9_HHO121','MECA_DPT7_HHO121']
 !
 ! --------------------------------------------------------------------------------------------------

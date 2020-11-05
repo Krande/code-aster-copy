@@ -24,11 +24,8 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MA0 = LIRE_MAILLAGE(FORMAT='MED',)
 
-MA1 = CREA_MAILLAGE(MAILLAGE=MA0,
-                    LINE_QUAD=_F(TOUT='OUI',),)
-
-MA = CREA_MAILLAGE(MAILLAGE=MA1,
-                   HEXA20_27=_F(TOUT='OUI',
+MA = CREA_MAILLAGE(MAILLAGE=MA0,
+                   MODI_HHO=_F(TOUT='OUI',
                                 PREF_NOEUD='NV',
                                 PREF_NUME=1,),
                    INFO=1,)

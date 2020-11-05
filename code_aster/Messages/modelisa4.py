@@ -37,15 +37,6 @@ des TRIA6 dans le maillage.
 Ceci est dangereux car cela peut produire un maillage non conforme.
 """),
 
-    3: _("""
- Erreur utilisateur dans CREA_MAILLAGE / QUAD_LINE :
-  Vous avez demandé de transformer des mailles quadratiques en mailles linéaires.
-  Mais il n'y a aucun noeud qu'il est possible de supprimer car ils appartiennent
-  tous à d'autres mailles quadratiques.
-"""),
-
-
-
     6 : _("""
   -> Phase de vérification du maillage : présence de noeuds orphelins.
      Les noeuds orphelins sont des noeuds qui n'appartiennent à aucune maille.

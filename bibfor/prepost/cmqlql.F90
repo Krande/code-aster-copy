@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,23 +17,11 @@
 ! --------------------------------------------------------------------
 
 subroutine cmqlql(main, maout, nbma, lima)
+use crea_maillage_module
+!
     implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/cmqlma.h"
-#include "asterfort/cmqlnm.h"
-#include "asterfort/cmqlno.h"
-#include "asterfort/cpclma.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jedupo.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 !
     integer :: nbma, lima(nbma)
     character(len=8) :: main, maout
@@ -46,7 +34,7 @@ subroutine cmqlql(main, maout, nbma, lima)
 !               TETRA10         --> TETRA4
 !               PYRAM13         --> PYRMA5
 !               PENTA15,PENTA18 --> PENTA6
-!               HEXA20,HEXA27   --> HEWA8
+!               HEXA20,HEXA27   --> HEXA8
 ! ----------------------------------------------------------------------
 ! IN        MAIN   K8  NOM DU MAILLAGE INITIAL
 ! IN/JXOUT  MAOUT  K8  NOM DU MAILLAGE TRANSFORME
@@ -55,100 +43,55 @@ subroutine cmqlql(main, maout, nbma, lima)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: nbtyma
-    parameter (nbtyma=27)
-    integer :: i, jmq, icount, ityp, jnm, jdim, iret, tymaq(nbtyma), nbnm, jtyp
-    character(len=8) :: nom, nomast(nbtyma)
-    character(len=24) :: dimeq, nom1, nom2
-    character(len=32) :: typma
+    type(Mmesh) :: mesh_conv
+    character(len=8) :: conv_type(2)
 !
-!     TYMAQ: TYPE DES MAILLES QUADRATIQUES (CF. CATALOGUE TYPE_MAILLE__)
-!     NOMAST: NOM DES TYPES DE MAILLES     (CF. CATALOGUE TYPE_MAILLE__)
-    data tymaq   /3*0,4,4*0,9,4*0,14,0,16,2*0,19,0,21,22,0,24,0,26,27/
-    data nomast / 'POI1    ', 'SEG2    ', 'SEG22   ', 'SEG3    ',&
-     &              'SEG33   ', 'SEG4    ', 'TRIA3   ', 'TRIA33  ',&
-     &              'TRIA6   ', 'TRIA66  ', 'TRIA7   ', 'QUAD4   ',&
-     &              'QUAD44  ', 'QUAD8   ', 'QUAD88  ', 'QUAD9   ',&
-     &              'QUAD99  ', 'TETRA4  ', 'TETRA10 ', 'PENTA6  ',&
-     &              'PENTA15 ', 'PENTA18 ', 'PYRAM5  ', 'PYRAM13 ',&
-     &              'HEXA8   ', 'HEXA20  ', 'HEXA27  '/
-!     ------------------------------------------------------------------
     call jemarq()
 !
-!     =========================================================
-!     VERIFICATION QUE LE CATALOGUE DES TYPES DE MAILLE N'A PAS
-!     ETE MODIFIE
-!     =========================================================
+! - Create new mesh
 !
-    do 10 ityp = 1, nbtyma
-        call jenuno(jexnum('&CATA.TM.NOMTM', ityp), nom)
-! VERIFICATION COHERENCE CATALOGUE FORTRAN
-        ASSERT(nomast(ityp) .eq. nom)
-10  end do
+    call mesh_conv%init(main)
 !
-!     =========================================================
-!     - ON VERIFIE SI DES MAILLES FOURNIES SONT QUADRATIQUES
-!     - ON FILTRE EN NE RECUPERANT QUE LES MAILLES : SEG3,TRIA6,
-!       QUAD8,QUAD9,TETRA10,PYRAM13,PENTA15,HEXA20,HEXA27.
-!     =========================================================
-!     ON RECUPERE LES NUMEROS DES MAILLES QUADRATIQUES:
-    nom1 = '&&CMQLQL.MAIL_QUAD'
-    call wkvect(nom1, 'V V I', nbma, jmq)
-    typma=main//'.TYPMAIL'
-    call jeveuo(typma, 'L', jtyp)
-    icount=0
-    do 20 i = 1, nbma
-        if (tymaq(zi(jtyp+lima(i)-1)) .ne. 0) then
-            icount=icount+1
-            zi(jmq+icount-1)=lima(i)
-        endif
-20  end do
+! - Add conversion
 !
-!     NOMBRE DE MAILLES QUADRATIQUES :
-    nbma = icount
-    if (nbma .eq. 0) then
-        call utmess('F', 'MODELISA3_8')
-    endif
+    conv_type = ["SEG3", "SEG2"]
+    call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+    conv_type = ["TRIA6", "TRIA3"]
+    call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+    conv_type = ["TRIA7", "TRIA3"]
+    call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+    conv_type = ["QUAD8", "QUAD4"]
+    call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+    conv_type = ["QUAD9", "QUAD4"]
+    call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+    conv_type = ["TETRA10", "TETRA4 "]
+    call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+    conv_type = ["PENTA15", "PENTA6 "]
+    call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+    conv_type = ["PENTA18", "PENTA6 "]
+    call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+    conv_type = ["PYRAM13", "PYRAM5 "]
+    call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+    conv_type = ["HEXA20", "HEXA8 "]
+    call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
+    conv_type = ["HEXA27", "HEXA8 "]
+    call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
 !
-!     ===============================
-!     RECUPERATION DES NOEUDS MILIEUX
-!     ===============================
-    nom2 = '&&CMQLQL.NOEUD_MILIEU'
-    call cmqlnm(main, nom1, nbma, nom2, nbnm)
-    call jeveuo(nom2, 'L', jnm)
+! - Convert cells
 !
-!     =========================================================
-!     DUPLICATION DE CERTAINS OBJETS DE LA SD MAILLAGE INITIALE
-!     AVANT REACTUALISATION
-!     =========================================================
-    call jedupo(main//'.NOMMAI', 'G', maout//'.NOMMAI', .false._1)
-    call jedupo(main//'.DIME', 'G', maout//'.DIME', .false._1)
-    call jedupo(main//'.TYPMAIL', 'G', maout//'.TYPMAIL', .false._1)
+    call mesh_conv%convert_cells(nbma, lima)
 !
-    call jeexin(main//'.GROUPEMA', iret)
-    if (iret .ne. 0) then
-        call cpclma(main, maout, 'GROUPEMA', 'G')
-    endif
+! - Copy mesh
 !
-!     ACTUALISATION DE '.DIME'
-    dimeq=maout//'.DIME'
-    call jeveuo(dimeq, 'E', jdim)
-    zi(jdim)=zi(jdim)-nbnm
+    call mesh_conv%copy_mesh(maout)
 !
-!     ==================================================================
-!     MISE A JOUR DES NOEUDS ('.COORDO','.NOMNOE','.GROUPENO')
-!     ==================================================================
+! - Create joints for parallel mesh
 !
-    call cmqlno(main, maout, nbnm, zi(jnm))
+    call mesh_conv%create_joints(maout)
 !
-!     =============================================
-!     MISE A JOUR DES MAILLES ('.CONNEX','.TYPMAI')
-!     =============================================
+! - Cleaning
 !
-    call cmqlma(main, maout, nbma, zi(jmq))
-!
-    call jedetr('&&CMQLQL.MAIL_QUAD')
-    call jedetr('&&CMQLQL.NOEUD_MILIEU')
+    call mesh_conv%clean()
 !
     call jedema()
 !

@@ -78,7 +78,7 @@ integer, intent(out), optional :: numnoa(MT_NTYMAX, MT_NNOMAX)
                                                          'TETRA10 ','PENTA6  ','PENTA15 ',&
                                                          'PENTA18 ','PYRAM5  ','PYRAM13 ',&
                                                          'HEXA8   ','HEXA20  ','HEXA27  ',&
-                                                         'TETRA9  ','TRIA4   ',           &
+                                                         'TETRA15 ','PENTA21 ','PYRAM19 ',&
                                                          'TR3QU4  ','QU4TR3  ','TR6TR3  ',&
                                                          'TR3TR6  ','TR6QU4  ','QU4TR6  ',&
                                                          'TR6QU8  ','QU8TR6  ','TR6QU9  ',&
@@ -102,7 +102,7 @@ integer, intent(out), optional :: numnoa(MT_NTYMAX, MT_NNOMAX)
                                                 310, 306, 315,&
                                                 318, 305, 313,&
                                                 308, 320, 327,&
-                                                0  , 0  ,     &
+                                                0  , 0  , 0  ,&
                                                 0  , 0  , 0  ,&
                                                 0  , 0  , 0  ,&
                                                 0  , 0  , 0  ,&

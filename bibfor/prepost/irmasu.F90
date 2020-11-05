@@ -77,7 +77,7 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
     integer :: maxnod, connex(*), typma(*), point(*), typel(*)
     integer :: nodsup(32), nodast(32), permut(maxnod, *), codgra(*), codphy(*)
     integer :: icodno, icodma, versio, codphd(*)
-    integer :: itri7, iqua9, iseg4, ihex27, ipen18, ite9
+    integer :: itri7, iqua9, iseg4, ihex27, ipen18, it15, ipen21
     aster_logical :: lmasu, lpout, lmod
 ! ---------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -98,7 +98,8 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
     iseg4 = 0
     ihex27 = 0
     ipen18 = 0
-    ite9 = 0
+    ipen21 = 0
+    it15 = 0
 !
 !     RECHERCHE DE LA PRESENCE DE POUTRES
 !
@@ -223,12 +224,18 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma,&
             endif
             ipen18 = 1
             nnoe = nnoe - 3
-        else if (nomtm .eq. 'TETRA9') then
-            if (ite9 .eq. 0) then
+        else if (nomtm .eq. 'TETRA15') then
+            if (it15 .eq. 0) then
                 call utmess('I', 'PREPOST2_86')
             endif
-            ite9 = 1
+            it15 = 1
             nnoe = nnoe - 5
+        else if (nomtm .eq. 'PENTA21') then
+            if (ipen21 .eq. 0) then
+                call utmess('I', 'PREPOST2_87')
+            endif
+            ipen21 = 1
+            nnoe = 15
         else if (nomtm .eq. 'QUAD9') then
             if (iqua9 .eq. 0) then
                 call utmess('I', 'PREPOST2_80')

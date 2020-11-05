@@ -164,11 +164,40 @@ real(kind=8), optional, intent(out) :: coorno(3,27)
                 coorno(2,7:15) = [0.5d0,  0.d0, 0.5d0, +1.d0,  0.d0,  0.d0, 0.5d0,  0.d0,  0.5d0]
                 coorno(3,7:15) = [0.5d0, 0.5d0,  0.d0,  0.d0, +1.d0,  0.d0, 0.5d0,  0.5d0, 0.d0]
 !
-!    NOEUDS MILIEUX DES FACES ET BARYCENTRE
+!    NOEUDS MILIEUX DES FACES
 !
                 coorno(1,16:18) = [ 0.d0,   0.d0,   0.d0]
                 coorno(2,16:18) = [ 0.5d0,  0.d0,   0.5d0]
                 coorno(3,16:18) = [ 0.5d0,  0.5d0,  0.d0]
+            end if
+        case('P21')
+            nno   = 21
+            nnos_ = 6
+            ndim_ = 3
+!
+            if(present(coorno)) then
+!
+!   NOEUDS SOMMETS
+!
+                coorno(1,1:6) = [-1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0]
+                coorno(2,1:6) = [+1.d0,  0.d0,  0.d0, +1.d0,  0.d0,  0.d0]
+                coorno(3,1:6) = [ 0.d0, +1.d0,  0.d0,  0.d0, +1.d0,  0.d0]
+!
+!   NOEUDS MILIEUX DES ARETES
+!
+                coorno(1,7:15) = [-1.d0, -1.d0, -1.d0,  0.d0,  0.d0,  0.d0, +1.d0, +1.d0, +1.d0]
+                coorno(2,7:15) = [0.5d0,  0.d0, 0.5d0, +1.d0,  0.d0,  0.d0, 0.5d0,  0.d0,  0.5d0]
+                coorno(3,7:15) = [0.5d0, 0.5d0,  0.d0,  0.d0, +1.d0,  0.d0, 0.5d0,  0.5d0, 0.d0]
+!
+!    NOEUDS MILIEUX DES FACES ET BARYCENTRE
+!
+                coorno(1,16:20) = [ 0.d0,   0.d0,   0.d0, -1.d0, 1.d0]
+                coorno(2,16:20) = [ 0.5d0,  0.d0,   0.5d0, untiers, untiers]
+                coorno(3,16:20) = [ 0.5d0,  0.5d0,  0.d0, untiers, untiers]
+!
+!    NOEUDS BARYCENTRE
+!
+                coorno(1:3,21) = [ 0.d0,  untiers, untiers]
             end if
         case('TE4')
             nno   = 4
@@ -202,8 +231,8 @@ real(kind=8), optional, intent(out) :: coorno(3,27)
                 coorno(2,5:10) = [ 0.5d0,  0.d0,  0.5d0, 0.5d0, 0.d0,  0.d0]
                 coorno(3,5:10) = [ 0.5d0,  0.5d0, 0.d0,  0.d0,  0.5d0, 0.d0]
             end if
-        case('TE9')
-            nno   = 9
+        case('T15')
+            nno   = 15
             nnos_ = 4
             ndim_ = 3
 !
@@ -215,15 +244,21 @@ real(kind=8), optional, intent(out) :: coorno(3,27)
                 coorno(2,1:4)=[+1.d0,  0.d0,  0.d0,  0.d0]
                 coorno(3,1:4)=[ 0.d0, +1.d0,  0.d0,  0.d0]
 !
+!   NOEUDS MILIEUX DES ARETES
+!
+                coorno(1,5:10) = [ 0.d0,   0.d0,  0.d0,  0.5d0, 0.5d0, 0.5d0]
+                coorno(2,5:10) = [ 0.5d0,  0.d0,  0.5d0, 0.5d0, 0.d0,  0.d0]
+                coorno(3,5:10) = [ 0.5d0,  0.5d0, 0.d0,  0.d0,  0.5d0, 0.d0]
+!
 !   NOEUDS MILIEUX DES FACES
 !
-                coorno(1,5:8) = [    0.d0,  untiers,  untiers,  untiers]
-                coorno(2,5:8) = [ untiers,  untiers,  untiers,     0.d0]
-                coorno(3,5:8) = [ untiers,  untiers,     0.d0,  untiers]
+                coorno(1,11:14) = [    0.d0,  untiers,  untiers,  untiers]
+                coorno(2,11:14) = [ untiers,  untiers,  untiers,     0.d0]
+                coorno(3,11:14) = [ untiers,  untiers,     0.d0,  untiers]
 !
 !   NOEUDS BARYCENTRE
 !
-                coorno(1:3,9) = [ 0.25d0,  0.25d0,  0.25d0]
+                coorno(1:3,15) = [ 0.25d0,  0.25d0,  0.25d0]
             end if
         case('PY5')
             nno   = 5
@@ -257,6 +292,35 @@ real(kind=8), optional, intent(out) :: coorno(3,27)
                 coorno(2,6:13) = [ 0.5d0,  0.5d0, -0.5d0, -0.5d0,  0.d0,   0.5d0,  0.d0,  -0.5d0]
                 coorno(3,6:13) = [ 0.d0,   0.d0,   0.d0,   0.d0,   0.5d0,  0.5d0,  0.5d0,  0.5d0]
             end if
+        case('P19')
+            nno   = 19
+            nnos_ = 6
+            ndim_ = 3
+!
+            if(present(coorno)) then
+!
+!   NOEUDS SOMMETS
+!
+                coorno(1,1:5) = [+1.d0,  0.d0, -1.d0,  0.d0,  0.d0]
+                coorno(2,1:5) = [ 0.d0, +1.d0,  0.d0, -1.d0,  0.d0]
+                coorno(3,1:5) = [ 0.d0,  0.d0,  0.d0,  0.d0, +1.d0]
+!
+!   NOEUDS MILIEUX DES ARETES
+!
+                coorno(1,6:13) = [ 0.5d0, -0.5d0, -0.5d0,  0.5d0,  0.5d0,  0.d0,  -0.5d0,  0.d0]
+                coorno(2,6:13) = [ 0.5d0,  0.5d0, -0.5d0, -0.5d0,  0.d0,   0.5d0,  0.d0,  -0.5d0]
+                coorno(3,6:13) = [ 0.d0,   0.d0,   0.d0,   0.d0,   0.5d0,  0.5d0,  0.5d0,  0.5d0]
+!
+!   NOEUDS MILIEUX DES FACE
+!
+                coorno(1,14:18) = [0.d0, untiers, -untiers, -untiers,  untiers]
+                coorno(2,14:18) = [0.d0, untiers,  untiers, -untiers, -untiers]
+                coorno(3,14:18) = [0.d0, untiers,  untiers,  untiers,  untiers]
+!
+!   NOEUD BARYCENTRE
+!
+                coorno(1:3,19) = [0.d0, 0.d0, 0.2d0]
+            end if
         case('TR3')
             nno   = 3
             nnos_ = 3
@@ -265,15 +329,6 @@ real(kind=8), optional, intent(out) :: coorno(3,27)
             if(present(coorno)) then
                 coorno(1,1:nno) = [0.d0, +1.d0,  0.d0]
                 coorno(2,1:nno) = [0.d0,  0.d0, +1.d0]
-            end if
-        case('TR4')
-            nno   = 4
-            nnos_ = 3
-            ndim_ = 2
-!
-            if(present(coorno)) then
-                coorno(1,1:nno) = [0.d0, +1.d0,  0.d0, untiers]
-                coorno(2,1:nno) = [0.d0,  0.d0, +1.d0, untiers]
             end if
         case('TR6')
             nno   = 6

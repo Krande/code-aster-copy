@@ -523,17 +523,17 @@ class MECA3DH27_HHO222(Element):
         ),
     )
 #------------------------------------------------------------
-class MECA3DTE9_HHO222(MECA3DH27_HHO222):
+class MECA3DT15_HHO222(MECA3DH27_HHO222):
     """Please document this element"""
-    meshType = MT.TETRA9
+    meshType = MT.TETRA15
     nodes = (
-           SetOfNodes('EN1', (5,6,7,8)),
-           SetOfNodes('EN2', (1,2,3,4,)),
-           SetOfNodes('EN3', (9,)),
+           SetOfNodes('EN1', (11,12,13,14)),
+           SetOfNodes('EN2', (1,2,3,4,5,6,7,8,9,10)),
+           SetOfNodes('EN3', (15,)),
        )
     elrefe =(
-           ElrefeLoc(MT.TE9, gauss = ('RIGI=FPG11','FPG1=FPG1','MTGA=FPG11',), mater=('RIGI', 'FPG1','MTGA',),),
-           ElrefeLoc(MT.TR4, gauss = ('RIGI=FPG6',),),
+           ElrefeLoc(MT.T15, gauss = ('RIGI=FPG11','FPG1=FPG1','MTGA=FPG11',), mater=('RIGI', 'FPG1','MTGA',),),
+           ElrefeLoc(MT.TR7, gauss = ('RIGI=FPG6',),),
        )
 
     calculs = (

@@ -90,7 +90,7 @@ character(len=*) :: nomamd
     integer :: codret
     integer :: ipoin, ityp, letype
     integer :: ino
-    integer :: ima, ite04, ite09, itr03, itr04
+    integer :: ima, ite10, ite15, ipy13, ipy19, ipe18, ipe21
     integer :: jnomma(MT_NTYMAX), jnumma(MT_NTYMAX), jcnxma(MT_NTYMAX)
     integer :: ifm, niv
     character(len=8) :: saux08
@@ -116,23 +116,27 @@ character(len=*) :: nomamd
         nmatyp(typma(ima)) = nmatyp(typma(ima)) + 1
     end do
 !
-!     ON TRAITE LE TETRA9, ON OUBLIE LES 5 DERNIERS NOEUDS
+!     ON TRAITE LE TETRA15 -> TETRA10, ON OUBLIE LES 5 DERNIERS NOEUDS
 !     ON L'IMPRIME COMME UN TETRA4
-!     POUR LE TRIA4, ON OUBLIE LE NOEUD CENTRAL (LE DERNIER)
-!     ON L'IMPRIME COMME UN TRIA3
+!     PYRAM19 -> PYRAM13 et PENTA21 -> PENTA18
     lnocen = ASTER_FALSE
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA9'), ite09)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA4'), ite04)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA4'), itr04)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3'), itr03)
-    if (nmatyp(ite09) .ne. 0) then
-        nmatyp(ite04)=nmatyp(ite04)+nmatyp(ite09)
-        nmatyp(ite09)=0
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA10'), ite10)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA15'), ite15)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM13'), ipy13)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM19'), ipy19)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA18'), ipe18)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA21'), ipe21)
+    if (nmatyp(ite15) .ne. 0) then
+        nmatyp(ite10)=nmatyp(ite10)+nmatyp(ite15)
+        nmatyp(ite15)=0
         lnocen = ASTER_TRUE
-    endif
-    if (nmatyp(itr04) .ne. 0) then
-        nmatyp(itr03)=nmatyp(itr03)+nmatyp(itr04)
-        nmatyp(itr04)=0
+    elseif (nmatyp(ipy19) .ne. 0) then
+        nmatyp(ipy13)=nmatyp(ipy13)+nmatyp(ipy19)
+        nmatyp(ipy19)=0
+        lnocen = ASTER_TRUE
+    elseif (nmatyp(ipe21) .ne. 0) then
+        nmatyp(ipe18)=nmatyp(ipe18)+nmatyp(ipe21)
+        nmatyp(ipe21)=0
         lnocen = ASTER_TRUE
     endif
     if (lnocen) then
@@ -177,12 +181,10 @@ character(len=*) :: nomamd
 !
     do ima = 1, nbmail
         ityp = typma(ima)
-!     POUR LE TETRA9, ON OUBLIE LES 5 DERNIERS NOEUDS
-!     ON L'IMPRIME COMME UN TETRA4
-!     POUR LE TRIA4, ON OUBLIE LE NOEUD CENTRAL (LE DERNIER)
-!     ON L'IMPRIME COMME UN TRIA3
-        if (ityp .eq. ite09) ityp=ite04
-        if (ityp .eq. itr04) ityp=itr03
+!       CAS PARTICULIER - MAILLE NON SUPPORTEE PAR MED
+        if (ityp .eq. ite15) ityp=ite10
+        if (ityp .eq. ipy19) ityp=ipy13
+        if (ityp .eq. ipe21) ityp=ipe18
         ipoin = point(ima)
         nmatyp(ityp) = nmatyp(ityp) + 1
 !       NOM DE LA MAILLE DE TYPE ITYP DANS VECT NOM MAILLES

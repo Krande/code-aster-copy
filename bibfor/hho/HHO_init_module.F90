@@ -242,39 +242,35 @@ contains
         call teattr('S', 'TYPMA', typma, iret)
         ASSERT(iret == 0)
 !
-        if(typma(1:3) == 'H27') then
+        if(typma == 'H27') then
             typma = 'HEXA27'
             nbnodes = 27
             elem_dim = 3
-        elseif(typma(1:3) == 'QU8') then
+        elseif(typma == 'QU8') then
             typma = 'QUAD8'
             nbnodes = 8
             elem_dim = 2
-        elseif(typma(1:3) == 'QU9') then
+        elseif(typma == 'QU9') then
             typma = 'QUAD9'
             nbnodes = 9
             elem_dim = 2
-        elseif(typma(1:3) == 'TR6') then
+        elseif(typma == 'TR6') then
             typma = 'TRIA6'
             nbnodes = 6
             elem_dim = 2
-        elseif(typma(1:3) == 'TR7') then
+        elseif(typma == 'TR7') then
             typma = 'TRIA7'
             nbnodes = 7
             elem_dim = 2
-        elseif(typma(1:3) == 'TE9') then
-            typma = 'TETRA9'
-            nbnodes = 9
-            elem_dim = 3
-        elseif(typma(1:3) == 'T15') then
+        elseif(typma == 'T15') then
             typma = 'TETRA15'
             nbnodes = 15
             elem_dim = 3
-        elseif(typma(1:3) == 'P19') then
+        elseif(typma == 'P19') then
             typma = 'PYRAM19'
             nbnodes = 19
             elem_dim = 3
-        elseif(typma(1:3) == 'P21') then
+        elseif(typma == 'P21') then
             typma = 'PENTA21'
             nbnodes = 21
             elem_dim = 3
@@ -358,19 +354,15 @@ contains
         call teattr('S', 'TYPMA', typma, iret)
         ASSERT(iret == 0)
 !
-        if(typma(1:3) == 'QU9') then
+        if(typma == 'QU9') then
             typma = 'QUAD4'
             nbnodes = 4
             elem_dim = 2
-        elseif(typma(1:3) == 'TR4') then
+        elseif(typma == 'TR7') then
             typma = 'TRIA3'
             nbnodes = 3
             elem_dim = 2
-        elseif(typma(1:3) == 'TR7') then
-            typma = 'TRIA3'
-            nbnodes = 3
-            elem_dim = 2
-        elseif(typma(1:3) == 'SE3') then
+        elseif(typma == 'SE3') then
             typma = 'SEG2'
             nbnodes = 2
             elem_dim = 1
@@ -515,7 +507,7 @@ contains
         coor_face = 0.d0
         numnodes_face = 0
 !
-        if(typma(1:6) == 'HEXA27') then
+        if(typma == 'HEXA27') then
             hhoCell%typema = 'HEXA8'
             hhoCell%nbnodes = 8
             hhoCell%ndim = 3
@@ -547,7 +539,7 @@ contains
             nbnodes_faces(6) = 4
             type_faces(6) = 'QUAD4'
 !
-        else if(typma(1:6) == 'TETRA9' .or. typma(1:6) == 'TETRA15') then
+        else if(typma == 'TETRA15') then
             hhoCell%typema = 'TETRA4'
             hhoCell%nbnodes = 4
             hhoCell%ndim = 3
@@ -571,7 +563,7 @@ contains
             nbnodes_faces(4) = 3
             type_faces(4) = 'TRIA3'
 !
-        else if(typma(1:6) == 'PYRAM19') then
+        else if(typma == 'PYRAM19') then
             hhoCell%typema = 'PYRAM5'
             hhoCell%nbnodes = 5
             hhoCell%ndim = 3
@@ -599,7 +591,7 @@ contains
             nbnodes_faces(5) = 3
             type_faces(5) = 'TRIA3'
 !
-        else if(typma(1:6) == 'PENTA21') then
+        else if(typma == 'PENTA21') then
             hhoCell%typema = 'PENTA6'
             hhoCell%nbnodes = 6
             hhoCell%ndim = 3
@@ -627,7 +619,7 @@ contains
             nbnodes_faces(5) = 3
             type_faces(5) = 'TRIA3'
 !
-        else if(typma(1:5) == 'QUAD8' .or. typma(1:5) == 'QUAD9') then
+        else if(typma == 'QUAD8' .or. typma == 'QUAD9') then
             hhoCell%typema = 'QUAD4'
             hhoCell%nbnodes = 4
             hhoCell%ndim = 2
@@ -651,7 +643,7 @@ contains
             nbnodes_faces(4) = 2
             type_faces(4) = 'SEG2'
 !
-        else if(typma(1:5) == 'TRIA6' .or. typma(1:5) == 'TRIA7') then
+        else if(typma == 'TRIA6' .or. typma == 'TRIA7') then
             hhoCell%typema = 'TRIA3'
             hhoCell%nbnodes = 3
             hhoCell%ndim = 2
