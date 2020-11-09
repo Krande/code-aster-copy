@@ -71,8 +71,8 @@ def post_roche_ops(self, **kwargs):
         calcul.coef_abattement()
         calcul.buildOutput()
         
-        # calcul sur les moments de séisme inertiel dyn (msi)
-        calculS2 = PostRocheCalc(PRCommon, PRCommon.msi, numeOrdre)
+        # calcul sur les moments de séisme inertiel
+        calculS2 = PostRocheCalc(PRCommon, PRCommon.MSI_tot, numeOrdre)
         calculS2.contraintesRef()
         calculS2.epsiMp()
         calculS2.reversibilite_locale()
@@ -423,8 +423,9 @@ class PostRocheCommon():
         asse_Mnope = []
         asse_mnope = [] # Dépl imposés aux ancrages
         asse_msi = []
+        asse_MSI_tot = []
 
-        __FIELD = [None]*2*len(self.dResuMeca)
+        __FIELD = [None]*3*len(self.dResuMeca)
         nbfield = 0
         
         iocc = 0
@@ -470,7 +471,7 @@ class PostRocheCommon():
                                     valk=['CHAM_MATER',self.mcf, self.chammaterName, chmat2.getName()])
                 else:
                     self.chammater=chmat2
-                    if self.caraelem:
+                    if self.chammater:
                         self.chammaterName = self.chammater.getName()
                 
 
@@ -483,11 +484,35 @@ class PostRocheCommon():
                 typeres = charg.get('TYPE_RESU')
                 ind = self.dirDisp.index(dire) + 1
                 
+                # réponse totale
+                if typeres == 'DYN_QS' :
+                    iordr = ind
+
+                    __FIELD[nbfield] = CREA_CHAMP (OPERATION = 'EXTR',
+                                                   TYPE_CHAM = 'ELNO_SIEF_R',
+                                                   RESULTAT  = resin, 
+                                                   NOM_CHAM  = 'EFGE_ELNO',
+                                                   NUME_ORDRE= iordr)
+                    
+                    oc_asse = {'CHAM_GD' : __FIELD[nbfield],
+                               'TOUT' : 'OUI',
+                               'CUMUL': 'OUI',
+                               'COEF_R' : 1,  
+                               'NOM_CMP' : self.listCmp,
+                               'NOM_CMP_RESU' : ("X1",'X2','X3'),
+                              }
+                    asse_MSI_tot.append(oc_asse)
+                    nbfield+=1
+
+                # partie dynamique de la réponse
                 if typeres in ['DYN_QS','DYN'] :
-                
-#                   msi : part dynamique de la réponse
-#                   nume_ordre 11, 12, 13 et 14
-                    iordr = 10+ind
+
+                    if typeres =='DYN_QS' :
+#                       msi : part dynamique de la réponse
+#                       nume_ordre 11, 12, 13 et 14
+                        iordr = 10+ind
+                    else:                    
+                        iordr = ind
 
                     __FIELD[nbfield] = CREA_CHAMP (OPERATION = 'EXTR',
                                                    TYPE_CHAM = 'ELNO_SIEF_R',
@@ -503,13 +528,19 @@ class PostRocheCommon():
                                'NOM_CMP_RESU' : ("X1",'X2','X3'),
                               }
                     asse_msi.append(oc_asse)
+                    if typeres =='DYN': 
+                        asse_MSI_tot.append(oc_asse)
                     nbfield+=1
 
+                # partie quasi-statique de la réponse
                 if typeres in ['DYN_QS','QS'] :
                 
-#                   MSI  : part quasi-statique de la réponse
-#                   nume_ordre 21, 22, 23 et 24
-                    iordr = 20+ind
+                    if typeres =='DYN_QS' :
+#                       MSI  : part quasi-statique de la réponse
+#                       nume_ordre 21, 22, 23 et 24
+                        iordr = 20+ind
+                    else:
+                        iordr = ind
 
                     __FIELD[nbfield] = CREA_CHAMP (OPERATION = 'EXTR',
                                                    TYPE_CHAM = 'ELNO_SIEF_R',
@@ -525,6 +556,8 @@ class PostRocheCommon():
                                'NOM_CMP_RESU' : ("X1",'X2','X3'),
                               }
                     asse_Mnope.append(oc_asse)
+                    if typeres =='QS': 
+                        asse_MSI_tot.append(oc_asse)
                     nbfield+=1
             
             elif typchar == 'SISM_INER_TRAN':
@@ -623,11 +656,21 @@ class PostRocheCommon():
                                PROL_ZERO = 'OUI',
                                ASSE      = asse_msi)
         
+        if asse_MSI_tot == []:
+            __MSItot = None
+        else:
+            __MSItot = CREA_CHAMP(OPERATION = 'ASSE',
+                               MODELE    = self.model, 
+                               TYPE_CHAM = 'ELNO_NEUT_R',
+                               PROL_ZERO = 'OUI',
+                               ASSE      = asse_MSI_tot)
+        
         self.Mperm = __Mperm
         self.mperm = __mperm
         self.Mnope = __Mnope
         self.mnope = __mnope
         self.msitmp = __msitmp
+        self.MSI_tot_tmp = __MSItot
 
     def sismInerTran(self,):
         """
@@ -728,13 +771,25 @@ class PostRocheCommon():
                                                    COEF_R=-1.0),
                                                ),
                                   )
+            
+            chSINeut = CREA_CHAMP( OPERATION = 'ASSE',
+                                   MODELE    = self.model, 
+                                   TYPE_CHAM = 'ELNO_NEUT_R',
+                                   PROL_ZERO = 'OUI',
+                                   ASSE      = (_F(CHAM_GD = chCorr,
+                                                   TOUT = 'OUI',
+                                                   NOM_CMP = self.listCmp,
+                                                   NOM_CMP_RESU = ('X1', 'X2', 'X3'),),
+                                               ),
+                                  )
 
-            self.Mnope  = chStaNeut
+            self.Mnope   = chStaNeut
+            self.MSI_tot_tmp = chSINeut
             # DETRUIRE(CONCEPT=_F(NOM=chCorr))
             del chCorr
         else:
             self.Mnope  = None
-            
+            self.MSI_tot_tmp = chDynNeut
         # DETRUIRE(CONCEPT=_F(NOM=chDyn))
         del chDyn
         
@@ -1026,6 +1081,7 @@ class PostRocheCommon():
         self.M   = self.combi(self.Mperm, self.Mnope )
         self.m   = self.combi(self.mperm, self.mnope )
         self.msi = self.combi(None      , self.msitmp)
+        self.MSI_tot = self.combi(None      , self.MSI_tot_tmp)
     
     def combi(self, chPerm, chNope):
         """

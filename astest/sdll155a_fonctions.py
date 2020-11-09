@@ -49,13 +49,15 @@ class PostRocheAnalytic(object):
     _D_21 = 0.712
     _D_22 = 0.429*(max(0.02/0.005, 0.01/0.0025))**0.16
     _D_23 = _D_22
-    def __init__(self, mfy_poids_propre, mt_deplacement_impose, mfy_sismique_dyn, mfz_sismique_dyn, mfy_sismique_qs, mfz_sismique_qs):
+    def __init__(self, mfy_poids_propre, mt_deplacement_impose, mfy_sismique_dyn, mfz_sismique_dyn, mfy_sismique_qs, mfz_sismique_qs,  mfy_sismique, mfz_sismique):
         self._mfy_poids_propre = mfy_poids_propre
         self._mt_deplacement_impose = mt_deplacement_impose
         self._mfy_sismique_dyn = mfy_sismique_dyn
         self._mfz_sismique_dyn = mfz_sismique_dyn
         self._mfy_sismique_qs = mfy_sismique_qs
         self._mfz_sismique_qs = mfz_sismique_qs
+        self._mfy_sismique = mfy_sismique
+        self._mfz_sismique = mfz_sismique
     def _epsi_p(self, sigma):
         """epsi plastique pour Ranberg osgood"""
         return self._K*(sigma/self._E)**(1/self._n)
@@ -63,7 +65,7 @@ class PostRocheAnalytic(object):
         """calcule self._sigma_deplacement_ref, self._sigma_sismique_ref, self._t, self._ts, self._T, self._T_s, self._r_m et self._r_s"""
         # moments en deplacements à abattres
         mt_deplacement = np.abs(self._mt_deplacement_impose)
-        mf_sismique = np.sqrt(self._mfy_sismique_dyn**2+self._mfz_sismique_dyn**2)
+        mf_sismique = np.sqrt(self._mfy_sismique**2+self._mfz_sismique**2)
         # sigma ref
         self._sigma_deplacement_ref = 0.87*mt_deplacement/self._Z
         self._sigma_sismique_ref = 0.79*self._B_2*mf_sismique/self._Z
@@ -99,8 +101,22 @@ class PostRocheAnalytic(object):
             sigma_sismique.append(root)
         self._sigma_sismique = np.array(sigma_sismique)
         # abbatements
-        self._g = (self._sigma_deplacement-self._pression) / (self._sigma_deplacement_ref-self._pression)
-        self._g_s = (self._sigma_sismique-self._pression) / (self._sigma_sismique_ref-self._pression)
+        self._g = []
+        for sigma_ref, sigma_vrai in zip(self._sigma_deplacement_ref, self._sigma_deplacement):
+            if sigma_vrai < self._pression:
+                g = 1.
+            else:
+                g = (sigma_vrai-self._pression) / (sigma_ref-self._pression)
+            self._g.append(g)
+        self._g = np.array(self._g)
+        self._g_s = []
+        for sigma_ref, sigma_vrai in zip(self._sigma_sismique_ref, self._sigma_sismique):
+            if sigma_vrai < self._pression:
+                g = 1.
+            else:
+                g = (sigma_vrai-self._pression) / (sigma_ref-self._pression)
+            self._g_s.append(g)
+        self._g_s = np.array(self._g_s)
         return self._g, self._g_s
     def calcul_sigma_eq(self):
         """calcule le sigma equivalent"""

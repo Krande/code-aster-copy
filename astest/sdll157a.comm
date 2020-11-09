@@ -175,7 +175,7 @@ dilatation_thermique = CALC_CHAMP(reuse=dilatation_thermique,
                                   RESULTAT=dilatation_thermique,
                                   CONTRAINTE='EFGE_ELNO')
 
-sismique = COMB_SISM_MODAL(MODE_MECA=modes_dyn,
+sismique_tot = COMB_SISM_MODAL(MODE_MECA=modes_dyn,
                            AMOR_REDUIT=0.02,
                            CORR_FREQ='NON',
                            MODE_CORR=modes_sta,
@@ -188,7 +188,7 @@ sismique = COMB_SISM_MODAL(MODE_MECA=modes_dyn,
                            OPTION=('EFGE_ELNO')
                           )
 
-sismique2 = COMB_SISM_MODAL(MODE_MECA=modes_dyn,
+sismique_qs = COMB_SISM_MODAL(MODE_MECA=modes_dyn,
                            AMOR_REDUIT=0.99,
                            CORR_FREQ='NON',
                            MODE_CORR=modes_sta,
@@ -200,6 +200,45 @@ sismique2 = COMB_SISM_MODAL(MODE_MECA=modes_dyn,
                            COMB_DIRECTION=_F(TYPE='QUAD'),
                            OPTION=('EFGE_ELNO')
                           )
+
+# sismique_dyn = sismique_tot - sismique_qs
+
+ch_tot= CREA_CHAMP (OPERATION = 'EXTR',
+                       TYPE_CHAM = 'ELNO_SIEF_R',
+                       RESULTAT  = sismique_tot, 
+                       NOM_CHAM  = 'EFGE_ELNO',
+                       NUME_ORDRE=4,)
+
+ch_qs= CREA_CHAMP (OPERATION = 'EXTR',
+                       TYPE_CHAM = 'ELNO_SIEF_R',
+                       RESULTAT  = sismique_qs, 
+                       NOM_CHAM  = 'EFGE_ELNO',
+                       NUME_ORDRE=4,)
+
+
+ch_dyn = CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
+                     OPERATION='ASSE',
+                     MODELE=modele,
+                     ASSE=(_F(TOUT="OUI",
+                              CHAM_GD=ch_tot,
+                              CUMUL="OUI"),
+                           _F(TOUT="OUI",
+                              CHAM_GD=ch_qs,
+                              CUMUL="OUI",
+                              COEF_R=-1.))
+                              )
+
+# on affecte le champ 4 fois pour obtenir un numero d'ordre 4
+# NUME_ORDRE n'est pas disponible dans CREA_RESU
+sismique_dyn=CREA_RESU(OPERATION='AFFE',
+                    TYPE_RESU='MODE_MECA',
+                    NOM_CHAM='EFGE_ELNO',
+                    AFFE=(_F(CHAM_GD=ch_dyn,NUME_MODE=1,MODELE=modele),
+                          _F(CHAM_GD=ch_dyn,NUME_MODE=2,MODELE=modele),
+                          _F(CHAM_GD=ch_dyn,NUME_MODE=3,MODELE=modele),
+                          _F(CHAM_GD=ch_dyn,NUME_MODE=4,MODELE=modele),
+                          ),
+                    )
 
 # appel à POST_ROCHE
 
@@ -222,12 +261,12 @@ chPostRocheTout = POST_ROCHE(ZONE_ANALYSE=(_F(
                                  NUME_ORDRE=1,
                                  ),
                                 _F(TYPE_CHAR='SISM_INER_SPEC',
-                                 RESULTAT=sismique,
+                                 RESULTAT=sismique_dyn,
                                  DIRECTION='COMBI',
                                  TYPE_RESU='DYN'
                                  ),
                                 _F(TYPE_CHAR='SISM_INER_SPEC',
-                                 RESULTAT=sismique2,
+                                 RESULTAT=sismique_qs,
                                  DIRECTION='COMBI',
                                  TYPE_RESU='QS'
                                  ),
@@ -277,7 +316,7 @@ TEST_RESU(CHAM_ELEM=(
                         REFERENCE="SOURCE_EXTERNE",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X2',
-                        VALE_CALC=438043471.4142695,
+                        VALE_CALC=438204716.4853147,
                         PRECISION=0.01,
                         VALE_REFE=441.9e6),
                     # X3 = réversibilité locale t
@@ -289,7 +328,7 @@ TEST_RESU(CHAM_ELEM=(
                      _F(TYPE_TEST="MAX",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X4',
-                        VALE_CALC=6.288279607881528),
+                        VALE_CALC=6.270055579409988),
                     # X5 = réversibilité totale T
                      _F(TYPE_TEST="MAX",
                         CHAM_GD=chPostRocheTout,
@@ -299,7 +338,7 @@ TEST_RESU(CHAM_ELEM=(
                      _F(TYPE_TEST="MAX",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X6',
-                        VALE_CALC=0.0006982580850394795),
+                        VALE_CALC=0.0006976230682976864),
                     # X7 = facteur d'effet de ressort r_M
                      _F(TYPE_TEST="MAX",
                         CHAM_GD=chPostRocheTout,
@@ -310,7 +349,7 @@ TEST_RESU(CHAM_ELEM=(
                         REFERENCE="SOURCE_EXTERNE",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X8',
-                        VALE_CALC=5.745545770638011,
+                        VALE_CALC=5.756885902039125,
                         PRECISION=0.11,
                         VALE_REFE=5.21),
                     # X9 = facteur d'effet de ressort maximal r_M_Max
@@ -322,7 +361,7 @@ TEST_RESU(CHAM_ELEM=(
                      _F(TYPE_TEST="MAX",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X10',
-                        VALE_CALC=5.745545770638011),
+                        VALE_CALC=5.756885902039125),
                     # X11 = coefficient d'abattement g
                      _F(TYPE_TEST="MAX",
                         CHAM_GD=chPostRocheTout,
@@ -332,7 +371,7 @@ TEST_RESU(CHAM_ELEM=(
                      _F(TYPE_TEST="MAX",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X12',
-                        VALE_CALC=0.9999871124380207),
+                        VALE_CALC=0.9999871458465225),
                     # X13 = coefficient d'abattement optimisé gOpt
                      _F(TYPE_TEST="MAX",
                         CHAM_GD=chPostRocheTout,
@@ -348,23 +387,23 @@ TEST_RESU(CHAM_ELEM=(
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X15',
-                        VALE_CALC=350428159.9299071,
-                        PRECISION=0.5,
+                        VALE_CALC=317470752.6180332,
+                        PRECISION=0.33,
                         VALE_REFE=240.2e6),
                      _F(TYPE_TEST="MAX",
                         REFERENCE="SOURCE_EXTERNE",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X15',
-                        VALE_CALC=350428159.9299071,
-                        PRECISION=0.05,
+                        VALE_CALC=317470752.6180332,
+                        PRECISION=0.15,
                         VALE_REFE=366.2e6),
                     # X16 = contrainte équivalente optimisée
                      _F(TYPE_TEST="MAX",
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X16',
-                        VALE_CALC=349392227.2613443,
-                        PRECISION=0.5,
+                        VALE_CALC=314969838.9116381,
+                        PRECISION=0.32,
                         VALE_REFE=240.2e6),
                     )
         )
