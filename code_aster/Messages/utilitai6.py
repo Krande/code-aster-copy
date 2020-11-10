@@ -160,10 +160,10 @@ cata_msg = {
 
 
     60 : _("""
- homogénéité du champ de matériaux pour WEIBULL
- nombre de RC WEIBULL trouvées =  %(i1)d
- les calculs sont valables pour  un seul comportement WEIBULL %(k1)s
- on choisit la première relation du type WEIBULL %(k2)s
+ Homogénéité du champ de matériaux pour WEIBULL
+ Nombre des relations de comportement WEIBULL trouvées =  %(i1)d. 
+ Les calculs sont valables pour un seul comportement WEIBULL.
+ On choisit la première relation du type WEIBULL %(k1)s.
 """),
 
     61 : _("""

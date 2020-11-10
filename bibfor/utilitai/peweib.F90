@@ -210,9 +210,9 @@ subroutine peweib(resu, modele, mate, mateco, cara, chmat,&
         call jenonu(jexnom(resul//'           .NOVA', 'INST'), iret)
         if (iret .ne. 0) then
             do iord = 1, nbordr
-                numord = zi(jord+iord-1)
+                numord = zi(jord+iord-1) 
                 call rsadpa(resul, 'L', 1, 'INST', numord,&
-                            0, sjv=iainst, styp=k8b)
+                            0, sjv=iainst, styp=k8b)         
                 zr(jins+iord-1) = zr(iainst)
             end do
         endif
@@ -232,9 +232,7 @@ subroutine peweib(resu, modele, mate, mateco, cara, chmat,&
     call chmrck(chmat, nomrc, l_nom_mat, nbmtrc)
     if (nbmtrc .gt. 1) then
         vali = nbmtrc
-        valk (1) = k8b
-        valk (2) = k8b
-        call utmess('A', 'UTILITAI6_60', nk=2, valk=valk, si=vali)
+        call utmess('A', 'UTILITAI6_60', sk=l_nom_mat(1), si=vali)
     else if (nbmtrc .eq. 0) then
         valk (1) = nomrc
         valk (2) = chmat
