@@ -175,6 +175,9 @@ cata_msg = {
  calcul de 1-DT non vérifié
 """),
 
+    40 : _("""
+ Avec la loi de comportement %(k1)s, le paramètre %(k2)s de ELAS doit être nul.
+"""),
 
     83 : _("""
  Vous utilisez le modèle BETON_UMLV avec un modèle d'endommagement.

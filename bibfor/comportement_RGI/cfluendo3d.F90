@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -171,12 +171,25 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
 !
 ! ------------------------------------------------
 !
+!   vérification que B_ENDOGE et K_DESSIC sont nuls
+    nomres1(1)='B_ENDOGE'
+    nomres1(2)='K_DESSIC'
+
+    call rcvalb(fami, kpg, ksp, '+', imate,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
+                2, nomres1, valres1, retour1, 0)
+    do i=1,2
+        if (retour1(i) .eq. 0)then
+            if (valres1(i) .ne. 0.d0)then
+                call utmess('F', 'COMPOR3_40', nk=2, valk=[compor(1), nomres1(i)])
+            endif
+        endif
+    enddo
+    
     nomres1(1)='E'
     nomres1(2)='NU'
     nomres1(3)='RHO'
     nomres1(4)='ALPHA'
-
-
 !
     call rcvalb(fami, kpg, ksp, '-', imate,&
                 ' ', 'ELAS', 0, ' ', [0.d0],&
