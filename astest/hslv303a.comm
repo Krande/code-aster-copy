@@ -1,0 +1,2069 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),
+      INFO=1,);
+
+
+
+#====================================================================================
+#   Modelisation A : Calcul par multiplication d'un resultat unitaire, cas 3D
+#====================================================================================
+
+
+################   Calculs unitaires   #######################################################
+
+# --- Conditions aux limites thermiques
+#
+#     - Flux de chaleur nul dans la direction axiale
+#     - Temperature imposee sur la paroi exterieure du tube (Extrados)
+#     - Echange convectif entre le fluide et la paroi interne (Intrados) du tube
+#       et une temperature de fluide imposee egale au Choc Thermique + Temperature initiale
+#
+# --- Unites :SI
+#
+#
+# --- Caracteristiques geometriques du tube
+#
+Diametre_exterieur = 0.024 # m
+Epaisseur          = 0.006 # m
+Longueur           = 0.100 # m
+
+#
+# --- Conditions thermiques initiales
+#
+
+Temp_initiale  =  20.              # C 
+
+#
+# --- Conditions aux limites thermiques 
+#
+Temp_Choc      =  1.  # C 
+Temp_Fluide_1C =  Temp_Choc + Temp_initiale
+Coef_H         =  20000.           # W/m/m/C
+#
+# --- Proprietes thermiques et mecaniques
+#
+Young       =     2.e11   # Pa
+Poisson     =     0.3     # -
+Dilatation  =     15.e-6  # /C
+
+Lambda             =   15.     # W/M/C
+Diffusivite        =   3.8e-6  # m.m/C
+Chaleur_specifique = 500.      # J/Kg/m
+
+Densite = Lambda/(Diffusivite*Chaleur_specifique)
+
+Rho_Cp = Chaleur_specifique * Densite  
+
+#-------------------------------------
+#
+# --- Decoupage temporel
+#
+#
+#     - Constante de temps tau
+#     - tau = Epaisseur*Epaisseur / (pi*pi*Diffusivite)
+#     - tau = 0.959884897664 s
+
+tau = 1.  # s 
+
+#           -------------------------
+#          /    .     .      .      .
+#         /.    .     .      .      .
+#        / .    .     .      .      .
+#       /  .    .     .      .      .
+#      /   .    .     .      .      .
+#     /    .    .     .      .      .
+#
+#     t0   t1   t2    t3     t4    tf
+#------------------------------------
+
+t0      =  0.       # s
+t1     =   0.1*tau  # s
+t2      =  0.5*tau  # s
+t3      =  3.*tau   # s
+t4      =  5.*tau   # s
+tf      = 10.*tau   # s
+
+coef = 1
+
+Nb_decoupe_t0_t1  = 5*coef
+Nb_decoupe_t1_t2  = 4*coef 
+Nb_decoupe_t2_t3  = 4*coef 
+Nb_decoupe_t3_t4  =  coef
+Nb_decoupe_t4_tf  =  coef
+
+lis_inst = DEFI_LIST_REEL(DEBUT=t0,
+                          INTERVALLE=(_F(JUSQU_A=t1,NOMBRE=Nb_decoupe_t0_t1),
+                                      _F(JUSQU_A=t2,NOMBRE=Nb_decoupe_t1_t2),
+                                      _F(JUSQU_A=t3,NOMBRE=Nb_decoupe_t2_t3),
+                                      _F(JUSQU_A=t4,NOMBRE=Nb_decoupe_t3_t4),
+                                      _F(JUSQU_A=tf,NOMBRE=Nb_decoupe_t4_tf),                                                                     )
+                         )
+
+mesh = LIRE_MAILLAGE(FORMAT='MED',
+                     UNITE=20)
+
+mesh=DEFI_GROUP(reuse =mesh,
+              MAILLAGE=mesh,
+              CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',
+                               NOM='Epaisseur',
+                               GROUP_MA='Epaisseur',
+                               GROUP_NO_ORIG='Point_Intrados',),);
+
+model = AFFE_MODELE(AFFE=_F(MODELISATION=('3D_DIAG', ),
+                            PHENOMENE='THERMIQUE',
+                            TOUT='OUI'),
+                            MAILLAGE=mesh)
+
+mater = DEFI_MATERIAU(ELAS=_F(E=Young,
+                      NU=Poisson,
+                      ALPHA=Dilatation),
+                      THER=_F(LAMBDA=Lambda,
+                              RHO_CP=Rho_Cp))
+
+chmat = AFFE_MATERIAU(AFFE=_F(MATER=(mater, ),
+                              TOUT='OUI'),
+                      MAILLAGE=mesh)
+
+Convec= DEFI_FONCTION(NOM_PARA='INST',
+                      VALE=(t0, Coef_H,
+                            tf, Coef_H,))
+
+Tflu_1C  = DEFI_FONCTION(NOM_PARA='INST',
+                         VALE=(t0,  Temp_initiale, 
+                               t1,  Temp_Fluide_1C,
+                               tf,  Temp_Fluide_1C,))
+
+Echange = AFFE_CHAR_THER_F(ECHANGE=_F(COEF_H  =  Convec,
+                                     GROUP_MA = 'Intrados',
+                                     TEMP_EXT =  Tflu_1C),
+                           MODELE=model)
+
+Temp_imp = AFFE_CHAR_CINE(THER_IMPO =_F(GROUP_MA = 'Extrados',
+                                        TEMP =  Temp_initiale),
+                          MODELE=model)
+
+Ther_1C = THER_LINEAIRE(CHAM_MATER=chmat,
+                         ETAT_INIT=_F(VALE=Temp_initiale),
+                         EXCIT=(_F(CHARGE=Echange),
+                                _F(CHARGE=Temp_imp)),
+                         INCREMENT=_F(LIST_INST=lis_inst),
+                         MODELE=model)
+
+Reference = 'AUTRE_ASTER'
+
+
+#-------------------------------------------------------------------
+#
+# Verification des resultats
+#
+# --- Choc Thermique = 1C
+#
+#    - aux instants t1=0.1s  t3 = 3.s
+#    - aux points Intrados, A, B C et D
+#
+#-------------------------------------------------------------------
+#
+#                      Intrados            A                    B                   C                 D           
+#
+Vale_Calc_t1  = [ 20.444586903746544, 20.120224491977194,  20.037416988310188, 20.000946452644143, 20.000000649769955]
+Vale_Calc_t3  = [ 20.929464429086305, 20.825959516890702,  20.7471788673637,  20.543299339575817,  20.23012292274559 ]
+
+   
+TEST_RESU(RESU=( _F(INST=t1,
+                    GROUP_NO='Point_Intrados',
+                    RESULTAT=Ther_1C,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t1[0],),
+                _F(INST=t1,
+                    GROUP_NO='A',
+                    RESULTAT=Ther_1C,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t1[1],),
+                 _F(INST=t1,
+                    GROUP_NO='B',
+                    RESULTAT=Ther_1C,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t1[2],),
+                 _F(INST=t1,
+                    GROUP_NO='C',
+                    RESULTAT=Ther_1C,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t1[3],),
+                 _F(INST=t1,
+                    GROUP_NO='D',
+                    RESULTAT=Ther_1C,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t1[4],),
+
+                 _F(INST=t3,
+                    GROUP_NO='Point_Intrados',
+                    RESULTAT=Ther_1C,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t3[0],),
+                 _F(INST=t3,
+                    GROUP_NO='A',
+                    RESULTAT=Ther_1C,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t3[1],),
+                 _F(INST=t3,
+                    GROUP_NO='B',
+                    RESULTAT=Ther_1C,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t3[2],),
+                  _F(INST=t3,
+                    GROUP_NO='C',
+                    RESULTAT=Ther_1C,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t3[3],),
+                 _F(INST=t3,
+                    GROUP_NO='D',
+                    RESULTAT=Ther_1C,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t3[4],)
+                       ))
+
+#--------------------------------------------------------------------------
+#
+#  --- Analyse mecanique d'un cylindre soumis a un choc thermique unitaire
+#
+#     - Choc Thermique =   1C
+#
+#     - Modelisation mecanique 3D , maille HEXA20
+#
+#--------------------------------------------------------------------------
+
+mesh_MEC=LIRE_MAILLAGE(FORMAT='MED',UNITE=21)
+                   
+ModMeca = AFFE_MODELE(AFFE=_F(MODELISATION=('3D', ),
+                              PHENOMENE='MECANIQUE',
+                              TOUT='OUI'),
+                      MAILLAGE=mesh_MEC)
+
+
+                
+resthe= PROJ_CHAMP(PROJECTION='OUI',
+                   RESULTAT=Ther_1C,
+                   MODELE_1=model,
+                   MODELE_2=ModMeca,);
+                   
+chmMECA = AFFE_MATERIAU(AFFE=_F(MATER=(mater, ),
+                                 TOUT='OUI'),
+                         AFFE_VARC=_F(EVOL=resthe,
+                                      NOM_VARC='TEMP',
+                                      TOUT='OUI',
+                                      VALE_REF=Temp_initiale),
+                         MAILLAGE=mesh_MEC)
+
+
+Syme = AFFE_CHAR_CINE(MODELE=ModMeca,
+                          MECA_IMPO=(_F(GROUP_MA='Plan_XOZ',DY=0.),
+                                              _F(GROUP_MA='Plan_YOZ',DX=0.)),
+                          )
+Encas = AFFE_CHAR_CINE(MODELE=ModMeca,
+                          MECA_IMPO=_F(GROUP_MA='Bas', DZ=0.,),
+                          )
+
+
+reslin = MECA_STATIQUE(CHAM_MATER=chmMECA,
+                       OPTION='SANS',
+                              EXCIT=(_F(CHARGE=Encas),
+                                     _F(CHARGE=Syme)),
+                       LIST_INST=lis_inst,
+                       MODELE=ModMeca)
+
+reslin=CALC_CHAMP(reuse=reslin,
+                  RESULTAT=reslin,
+                  CRITERES=('SIEQ_NOEU'),
+                  CONTRAINTE='SIGM_NOEU')
+
+      
+# ------------------------------------- Tests de non-regression
+
+Nb_Points=61
+
+SIGM_1C=MACR_LIGN_COUPE(RESULTAT=reslin,
+                      NOM_CHAM='SIGM_NOEU',
+                      LIGN_COUPE=_F(TYPE='SEGMENT',
+                                    NB_POINTS=Nb_Points,
+                                    COOR_ORIG=(0.018,0,0,),
+                                    COOR_EXTR=(0.024,0,0,),),)
+                                    
+                                
+SIEQ_1C=MACR_LIGN_COUPE(RESULTAT=reslin,
+                      NOM_CHAM='SIEQ_NOEU',
+                      LIGN_COUPE=_F(TYPE='SEGMENT',
+                                    NB_POINTS=Nb_Points,
+                                    COOR_ORIG=(0.018,0,0,),
+                                    COOR_EXTR=(0.024,0,0,),),);
+                                    
+
+#                             Intrados                         A                              B                      C              D                Extrados          
+#
+
+Val_Calc_t1_1C_SIXX = [  749.7859710845597,    -27478.196406310184, -30290.314224405145, -23242.903398812643, -9851.128558495577, -360.5297303185917  ]
+Val_Calc_t1_1C_SIYY = [ -1815274.8517324745,   -432237.8255895016,  -10434.881322874342,  111980.31192856305,  105607.57473987724,  97222.91404138351      ]
+Val_Calc_t1_1C_SIZZ = [ -1796709.34370783,   -441569.59679968597,  -24627.97425208143,  102219.84030089364,    108026.89365387669,   110700.71001471273      ]
+Val_Calc_t1_1C_VMIS = [  1807069.6306590592,   409569.34995904996,   21179.72214175191,  130746.42981459787,   116706.5654903566,    104973.85377194454     ]
+
+ 
+# --- Intrados (SIXX)
+TEST_TABLE(
+           CRITERE='ABSOLU',
+           VALE_CALC=Val_Calc_t1_1C_SIXX[0],
+           NOM_PARA='SIXX',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.018,))
+           )
+           
+# --- Point A (SIXX)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIXX[1],
+           NOM_PARA='SIXX',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.0185,)),
+           )           
+
+# --- Point B (SIXX)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIXX[2],
+           NOM_PARA='SIXX',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.019,)),
+           )
+
+# --- Point C (SIXX)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIXX[3],
+           NOM_PARA='SIXX',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.02,)),
+           )
+
+# --- Point D (SIXX)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIXX[4],
+           NOM_PARA='SIXX',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.022,)),
+           )
+
+# --- Extrados (SIXX)
+
+TEST_TABLE(
+           CRITERE='ABSOLU',
+           VALE_CALC=Val_Calc_t1_1C_SIXX[5],
+           NOM_PARA='SIXX',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.024,)),
+           )
+
+           
+# --- Intrados (SIYY)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIYY[0],
+           NOM_PARA='SIYY',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.018,)),
+           )
+
+# --- Point A (SIYY)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIYY[1],
+           NOM_PARA='SIYY',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.0185,)),
+           )           
+
+# --- Point B (SIYY)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIYY[2],
+           NOM_PARA='SIYY',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.019,)),
+           )
+
+# --- Point C (SIYY)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIYY[3],
+           NOM_PARA='SIYY',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.02,)),
+           )
+
+# --- Point D (SIYY)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIYY[4],
+           NOM_PARA='SIYY',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.022,)),
+           )
+
+# --- Extrados (SIYY)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIYY[5],
+           NOM_PARA='SIYY',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.024,)),
+           )
+                      
+# --- Intrados (SIZZ)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIZZ[0],
+           NOM_PARA='SIZZ',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.018,)),
+           )
+
+# --- Point A (SIZZ)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIZZ[1],
+           NOM_PARA='SIZZ',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.0185,)),
+           )           
+
+# --- Point B (SIZZ)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIZZ[2],
+           NOM_PARA='SIZZ',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.019,)),
+           )
+
+# --- Point C (SIZZ)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIZZ[3],
+           NOM_PARA='SIZZ',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.02,)),
+           )
+
+# --- Point D (SIZZ)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIZZ[4],
+           NOM_PARA='SIZZ',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.022,)),
+           )
+
+# --- Extrados (SIZZ)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIZZ[5],
+           NOM_PARA='SIZZ',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.024,)),
+           )
+
+# --- Intrados (VMIS)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_VMIS[0],
+           NOM_PARA='VMIS',
+           TABLE=SIEQ_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.018,)),
+           )
+# --- Point A (VMIS)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_VMIS[1],
+           NOM_PARA='VMIS',
+           TABLE=SIEQ_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.0185,)),
+           )           
+
+# --- Point B (VMIS)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_VMIS[2],
+           NOM_PARA='VMIS',
+           TABLE=SIEQ_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.019,)),
+           )
+
+# --- Point C (VMIS)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_VMIS[3],
+           NOM_PARA='VMIS',
+           TABLE=SIEQ_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.02,)),
+           )
+
+# --- Point D (VMIS)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_VMIS[4],
+           NOM_PARA='VMIS',
+           TABLE=SIEQ_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.022,)),
+           )
+
+# --- Extrados (VMIS)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_VMIS[5],
+           NOM_PARA='VMIS',
+           TABLE=SIEQ_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.024,)),
+           )
+
+
+################################################################
+#
+#        MULTIPLICATION AVEC LA MACRO CALC_THERMECA_MULT
+#
+#################################################################
+
+temp_init = 20.0
+temp_cible = 50.0
+
+
+
+#appel a la macro avec calcul thermique et mecanique
+resmMec = CALC_THERMECA_MULT(TEMP_FIN = temp_cible,
+                        TEMP_INIT = temp_init,
+                        RESU_MECA_UNIT = reslin,
+                        RESU_SUPL_THER = 'OUI',
+                        RESU_THER_UNIT = Ther_1C,
+                        RESU_THER=CO('resmT'),
+)
+
+
+#TEST RESULTATS THERMIQUES
+#-------------------------------------------------------------------
+#
+# Verification des resultats
+#
+# --- Choc Thermique = 50C
+#
+#    - aux instants t1=0.1s  t3 = 3.s
+#    - aux points Intrados, A, B C et D
+#
+#-------------------------------------------------------------------
+#
+#                              Intrados                    A                        B                C                 D
+#
+Vale_Refe_t1_50C  = [ 42.22934518732506,  26.01122459885759,  21.870849415508467, 20.0473226322084, 20.000032488497183]
+Vale_Refe_t3_50C  = [ 66.47322145431414, 61.29797584453274,  57.358943368182715 ,  47.16496697879001,  31.506146137279625]
+
+Vale_Calc_t1_50C  = [ 42.229345187327176, 26.011224598859677,  21.87084941550939, 20.04732263220717, 20.00003248849776]
+Vale_Calc_t3_50C  = [ 66.47322145431528,  61.297975844535095,  57.35894336818504,  47.16496697879087, 31.506146137279494]
+
+Reference = 'AUTRE_ASTER'
+TEST_RESU(RESU=( _F(INST=t1,
+                    GROUP_NO='Point_Intrados',
+                    RESULTAT=resmT,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    REFERENCE=Reference,
+                    VALE_CALC=Vale_Calc_t1_50C[0],
+                    VALE_REFE=Vale_Refe_t1_50C[0],
+                    PRECISION=0.01),
+                _F(INST=t1,
+                    GROUP_NO='A',
+                    RESULTAT=resmT,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    REFERENCE=Reference,
+                    VALE_CALC=Vale_Calc_t1_50C[1],
+                    VALE_REFE=Vale_Refe_t1_50C[1],
+                    PRECISION=0.01),
+                 _F(INST=t1,
+                    GROUP_NO='B',
+                    RESULTAT=resmT,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    REFERENCE=Reference,
+                    VALE_CALC=Vale_Calc_t1_50C[2],
+                    VALE_REFE=Vale_Refe_t1_50C[2],
+                    PRECISION=0.01),
+                 _F(INST=t1,
+                    GROUP_NO='C',
+                    RESULTAT=resmT,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    REFERENCE=Reference,
+                    VALE_CALC=Vale_Calc_t1_50C[3],
+                    VALE_REFE=Vale_Refe_t1_50C[3],
+                    PRECISION=0.01),
+                 _F(INST=t1,
+                    GROUP_NO='D',
+                    RESULTAT=resmT,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t1_50C[4],
+                    VALE_REFE=Vale_Refe_t1_50C[4],
+                    REFERENCE=Reference,
+                    PRECISION=0.01),
+
+                 _F(INST=t3,
+                    GROUP_NO='Point_Intrados',
+                    RESULTAT=resmT,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t3_50C[0],
+                    VALE_REFE=Vale_Refe_t3_50C[0],
+                    REFERENCE=Reference,
+                    PRECISION=0.01),
+                 _F(INST=t3,
+                    GROUP_NO='A',
+                    RESULTAT=resmT,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t3_50C[1],
+                    VALE_REFE=Vale_Refe_t3_50C[1],
+                    REFERENCE=Reference,
+                    PRECISION=0.01),
+                 _F(INST=t3,
+                    GROUP_NO='B',
+                    RESULTAT=resmT,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t3_50C[2],
+                    VALE_REFE=Vale_Refe_t3_50C[2],
+                    REFERENCE=Reference,
+                    PRECISION=0.01),
+                  _F(INST=t3,
+                    GROUP_NO='C',
+                    RESULTAT=resmT,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t3_50C[3],
+                    VALE_REFE=Vale_Refe_t3_50C[3],
+                    REFERENCE=Reference,
+                    PRECISION=0.01),
+                 _F(INST=t3,
+                    GROUP_NO='D',
+                    RESULTAT=resmT,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t3_50C[4],
+                    VALE_REFE=Vale_Refe_t3_50C[4],
+                    REFERENCE=Reference,
+                    PRECISION=0.01)
+                       ))
+
+
+#TEST RESULTATS MECANIQUES
+Nb_Points=61
+
+#====================================================================================================================
+#
+# --- Choc Thermique = 50C
+# 
+#  - Extraction de l'evolution des contraintes SIXX, SIYY, SIZZ et VMIS
+#    en fonction du temps aux points intrados, A, B, C, D et extrados
+#  - Extraction de l'evolution des contraintes SIXX, SIYY, SIZZ et VMIS
+#    suivant l epaisseur aux instants t1, t2, t3, t4 et tf
+#
+#====================================================================================================================
+
+
+
+SIG_50C=MACR_LIGN_COUPE(RESULTAT=resmMec,
+                      NOM_CHAM='SIGM_NOEU',
+                      LIGN_COUPE=_F(TYPE='SEGMENT',
+                                    NB_POINTS=Nb_Points,
+                                    COOR_ORIG=(0.018,0,0,),
+                                    COOR_EXTR=(0.024,0,0,),),)
+                                                                      
+SIE_50C=MACR_LIGN_COUPE(RESULTAT=resmMec,
+                      NOM_CHAM='SIEQ_NOEU',
+                      LIGN_COUPE=_F(TYPE='SEGMENT',
+                                    NB_POINTS=Nb_Points,
+                                    COOR_ORIG=(0.018,0,0,),
+                                    COOR_EXTR=(0.024,0,0,),),)
+
+
+
+                
+#-----------------------------------------------------------------------------------------------------------------------------------
+#
+# Verification des resultats mecaniques
+#
+# --- Choc Thermique = 50C
+#
+#    - SIXX, SIYY, SIZZ et VMIS
+#    - a l'instant t1=0.1s
+#    - aux points Intrados, A, B C, D et Extrados
+#
+#
+#-----------------------------------------------------------------------------------------------------------------------------------
+
+#                             Intrados                 A                              B                      C                              D                Extrados          
+#
+
+Val_Refe_t1_50C_SIXX = [  37489.29855405912,   -1373909.820313106,  -1514515.7112189943, -1162145.1699433196, -492556.42792592593, -18026.48651457746 ]
+Val_Refe_t1_50C_SIYY = [ -90763742.58663052,   -21611891.279474393,  -521744.0661440513, 5599015.596422898,  5280378.736995371,   4861145.702066543  ]
+Val_Refe_t1_50C_SIZZ = [ -89835467.18538839  ,  -22078479.83997749,  -1231398.7126009488, 5110992.015038196,  5401344.682695183,  5535035.500733721  ]
+Val_Refe_t1_50C_VMIS = [ 90353481.53295466,    20478467.497951064,   1058986.1070860107,    6537321.490726789,  5835328.274520403,   5248692.688594596   ]
+
+
+Val_Calc_t1_50C_SIXX = [ 37489.29855422799, -1373909.820315509, -1514515.7112202572,  -1162145.1699406323,  -492556.4279247789,    -18026.48651457746  ]
+Val_Calc_t1_50C_SIYY = [ -90763742.58662374,  -21611891.279475078, -521744.06614371703,  5599015.596428153,  5280378.736993862,  4861145.702069176    ]
+Val_Calc_t1_50C_SIZZ = [ -89835467.1853915,  -22078479.839984298 ,  -1231398.7126040715,   5110992.015044683, 5401344.682693834,  5535035.500735636      ]
+Val_Calc_t1_50C_VMIS = [ 90353481.53295295, 20478467.4979525, 1058986.1070875954,   6537321.490729894,  5835328.27451783,  5248692.688597228     ]
+
+# --- Intrados (SIXX)
+
+TEST_TABLE(PRECISION=200.,
+           CRITERE='ABSOLU',
+           VALE_CALC=Val_Calc_t1_50C_SIXX[0],
+           VALE_REFE=Val_Refe_t1_50C_SIXX[0],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIXX',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.018,))
+                   )
+
+# --- Point A (SIXX)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIXX[1],
+           VALE_REFE=Val_Refe_t1_50C_SIXX[1],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIXX',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.0185,)),
+           )           
+
+# --- Point B (SIXX)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIXX[2],
+           VALE_REFE=Val_Refe_t1_50C_SIXX[2],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIXX',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.019,)),
+           )
+
+# --- Point C (SIXX)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIXX[3],
+           VALE_REFE=Val_Refe_t1_50C_SIXX[3],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIXX',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.02,)),
+           )
+
+# --- Point D (SIXX)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIXX[4],
+           VALE_REFE=Val_Refe_t1_50C_SIXX[4],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIXX',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.022,)),
+           )
+
+# --- Extrados (SIXX)
+
+TEST_TABLE(PRECISION=400.,
+           CRITERE='ABSOLU',
+           VALE_CALC=Val_Calc_t1_50C_SIXX[5],
+           VALE_REFE=Val_Refe_t1_50C_SIXX[5],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIXX',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.024,)),
+           )
+          
+# --- Intrados (SIYY)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIYY[0],
+           VALE_REFE=Val_Refe_t1_50C_SIYY[0],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIYY',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.018,)),
+           )
+
+# --- Point A (SIYY)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIYY[1],
+           VALE_REFE=Val_Refe_t1_50C_SIYY[1],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIYY',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.0185,)),
+           )           
+
+# --- Point B (SIYY)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIYY[2],
+           VALE_REFE=Val_Refe_t1_50C_SIYY[2],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIYY',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.019,)),
+           )
+
+# --- Point C (SIYY)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIYY[3],
+           VALE_REFE=Val_Refe_t1_50C_SIYY[3],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIYY',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.02,)),
+           )
+
+# --- Point D (SIYY)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIYY[4],
+           VALE_REFE=Val_Refe_t1_50C_SIYY[4],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIYY',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.022,)),
+           )
+
+# --- Extrados (SIYY)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIYY[5],
+           VALE_REFE=Val_Refe_t1_50C_SIYY[5],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIYY',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.024,)),
+           )
+                      
+# --- Intrados (SIZZ)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIZZ[0],
+           VALE_REFE=Val_Refe_t1_50C_SIZZ[0],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIZZ',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.018,)),
+           )
+
+# --- Point A (SIZZ)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIZZ[1],
+           VALE_REFE=Val_Refe_t1_50C_SIZZ[1],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIZZ',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.0185,)),
+           )           
+
+# --- Point B (SIZZ)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIZZ[2],
+           VALE_REFE=Val_Refe_t1_50C_SIZZ[2],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIZZ',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.019,)),
+           )
+
+# --- Point C (SIZZ)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIZZ[3],
+           VALE_REFE=Val_Refe_t1_50C_SIZZ[3],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIZZ',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.02,)),
+           )
+
+# --- Point D (SIZZ)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIZZ[4],
+           VALE_REFE=Val_Refe_t1_50C_SIZZ[4],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIZZ',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.022,)),
+           )
+
+# --- Extrados (SIZZ)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIZZ[5],
+           VALE_REFE=Val_Refe_t1_50C_SIZZ[5],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIZZ',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.024,)),
+           )
+
+# --- Intrados (VMIS)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_VMIS[0],
+           VALE_REFE=Val_Refe_t1_50C_VMIS[0],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='VMIS',
+           TABLE=SIE_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.018,)),
+           )
+# --- Point A (VMIS)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_VMIS[1],
+           VALE_REFE=Val_Refe_t1_50C_VMIS[1],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='VMIS',
+           TABLE=SIE_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.0185,)),
+           )           
+
+# --- Point B (VMIS)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_VMIS[2],
+           VALE_REFE=Val_Refe_t1_50C_VMIS[2],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='VMIS',
+           TABLE=SIE_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.019,)),
+           )
+
+# --- Point C (VMIS)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_VMIS[3],
+           VALE_REFE=Val_Refe_t1_50C_VMIS[3],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='VMIS',
+           TABLE=SIE_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.02,)),
+           )
+
+# --- Point D (VMIS)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_VMIS[4],
+           VALE_REFE=Val_Refe_t1_50C_VMIS[4],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='VMIS',
+           TABLE=SIE_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.022,)),
+           )
+
+# --- Extrados (VMIS)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_VMIS[5],
+           VALE_REFE=Val_Refe_t1_50C_VMIS[5],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='VMIS',
+           TABLE=SIE_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.024,)),
+           )
+
+
+
+#======================================================================================
+#        Modelisation B : Calcul par multiplication d'un resultat unitaire, cas 2D_Axis
+#======================================================================================
+
+#
+#  --- Analyse thermique d'un cylindre soumis a un choc thermique unitaire (1C)
+#
+#     - Modelisation AXIS_DIAG , maille QUAD4
+#
+# --- Carateristiques geometriques du cylindre
+#
+#     - Diametre exterieur = 0.024 m
+#     - Epaisseur          = 0.006 m
+#     - Longueur           = 0.100 m
+
+#
+# --- Conditions aux limites thermiques
+#
+#     - Flux de chaleur nul dans la direction axiale
+#     - Temperature imposee sur la paroi exterieure du tube (Extrados)
+#     - Echange convectif entre le fluide et la paroi interne (Intrados) du tube
+#       et une temperature de fluide imposee egale au Choc Thermique + Temperature initiale
+#
+# --- Unites :SI
+#
+#
+# --- Caracteristiques geometriques du tube
+#
+Diametre_exterieur = 0.024 # m
+Epaisseur          = 0.006 # m
+Longueur           = 0.100 # m
+
+#
+# --- Conditions thermiques initiales
+#
+
+Temp_initiale  =  20.              # C 
+
+#
+# --- Conditions aux limites thermiques 
+#
+Temp_Choc      =  1.  # C 
+Temp_Fluide_1C =  Temp_Choc + Temp_initiale
+Coef_H         =  20000.           # W/m/m/C
+#
+# --- Proprietes thermiques et mecaniques
+#
+Young       =     2.e11   # Pa
+Poisson     =     0.3     # -
+Dilatation  =     15.e-6  # /C
+
+Lambda             =   15.     # W/M/C
+Diffusivite        =   3.8e-6  # m.m/C
+Chaleur_specifique = 500.      # J/Kg/m
+
+Densite = Lambda/(Diffusivite*Chaleur_specifique)
+
+Rho_Cp = Chaleur_specifique * Densite
+
+
+#-------------------------------------
+#
+# --- Decoupage temporel
+#
+#
+#     - Constante de temps tau
+#     - tau = Epaisseur*Epaisseur / (pi*pi*Diffusivite)
+#     - tau = 0.959884897664 s
+
+tau = 1.  # s 
+
+#           -------------------------
+#          /    .     .      .      .
+#         /.    .     .      .      .
+#        / .    .     .      .      .
+#       /  .    .     .      .      .
+#      /   .    .     .      .      .
+#     /    .    .     .      .      .
+#
+#     t0   t1   t2    t3     t4    tf
+#------------------------------------
+
+t0      =  0.       # s
+t1     =   0.1*tau  # s
+t2      =  0.5*tau  # s
+t3      =  3.*tau   # s
+t4      =  5.*tau   # s
+tf      = 10.*tau   # s
+
+coef = 1
+
+Nb_decoupe_t0_t1  = 5*coef
+Nb_decoupe_t1_t2  = 4*coef 
+Nb_decoupe_t2_t3  = 4*coef 
+Nb_decoupe_t3_t4  =  coef
+Nb_decoupe_t4_tf  =  coef
+
+lis_inst = DEFI_LIST_REEL(DEBUT=t0,
+                          INTERVALLE=(_F(JUSQU_A=t1,NOMBRE=Nb_decoupe_t0_t1),
+                                      _F(JUSQU_A=t2,NOMBRE=Nb_decoupe_t1_t2),
+                                      _F(JUSQU_A=t3,NOMBRE=Nb_decoupe_t2_t3),
+                                      _F(JUSQU_A=t4,NOMBRE=Nb_decoupe_t3_t4),
+                                      _F(JUSQU_A=tf,NOMBRE=Nb_decoupe_t4_tf),                                                                                     )
+                         )
+
+mesh3 = LIRE_MAILLAGE(FORMAT='MED',UNITE=22)
+
+mesh3=DEFI_GROUP(reuse =mesh3,
+              MAILLAGE=mesh3,
+              CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',
+                               NOM='Epaisseur',
+                               GROUP_MA='Bas',
+                               GROUP_NO_ORIG='Point_Intrados',),);
+
+model3 = AFFE_MODELE(AFFE=_F(MODELISATION=('AXIS_DIAG', ),
+                            PHENOMENE='THERMIQUE',
+                            TOUT='OUI'),
+                            MAILLAGE=mesh3)
+
+mater3 = DEFI_MATERIAU(ELAS=_F(E=Young,
+                              NU=Poisson,
+                              ALPHA=Dilatation),
+                      THER=_F(LAMBDA=Lambda,
+                              RHO_CP=Rho_Cp))
+
+chmat3 = AFFE_MATERIAU(AFFE=_F(MATER=(mater3, ),
+                              TOUT='OUI'),
+                      MAILLAGE=mesh3)
+
+Convec3= DEFI_FONCTION(NOM_PARA='INST',
+                      VALE=(t0, Coef_H,
+                            tf, Coef_H,))
+
+Tflu_1C3  = DEFI_FONCTION(NOM_PARA='INST',
+                         VALE=(t0,  Temp_initiale, 
+                               t1,  Temp_Fluide_1C,
+                               tf,  Temp_Fluide_1C,))
+
+Echange3 = AFFE_CHAR_THER_F(ECHANGE=_F(COEF_H  =  Convec3,
+                                     GROUP_MA = 'Intrados',
+                                     TEMP_EXT =  Tflu_1C3),
+                           MODELE=model3)
+
+TempImp3 = AFFE_CHAR_CINE(THER_IMPO =_F(GROUP_MA = 'Extrados',
+                                        TEMP =  Temp_initiale),
+                          MODELE=model3)
+
+Ther_1C3 = THER_LINEAIRE(CHAM_MATER=chmat3,
+                         ETAT_INIT=_F(VALE=Temp_initiale),
+                         EXCIT=(_F(CHARGE=Echange3),
+                                _F(CHARGE=TempImp3)),
+                         INCREMENT=_F(LIST_INST=lis_inst),
+                         MODELE=model3)
+
+
+Reference = 'AUTRE_ASTER'
+
+
+#-------------------------------------------------------------------
+#
+# Verification des resultats - NON REGRESSION
+#
+# --- Choc Thermique = 1C
+#
+#    - aux instants t1=0.1s  t3 = 3.s
+#    - aux points Intrados, A, B C et D
+#
+#-------------------------------------------------------------------
+#
+#                      Intrados            A                B                C                 D           
+#
+Vale_Calc_t1  = [ 20.39208782975281,  20.12114849029057,   20.042546217604002, 20.00145862752828, 20.000001484672758]
+Vale_Calc_t3  = [ 20.855839825930662, 20.75828952110889,  20.685329056357336,  20.500418193359607,  20.220496644006]
+
+   
+TEST_RESU(RESU=( _F(INST=t1,
+                    GROUP_NO='Point_Intrados',
+                    RESULTAT=Ther_1C3,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t1[0],),
+                _F(INST=t1,
+                    GROUP_NO='A',
+                    RESULTAT=Ther_1C3,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t1[1],),
+                 _F(INST=t1,
+                    GROUP_NO='B',
+                    RESULTAT=Ther_1C3,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t1[2],),
+                 _F(INST=t1,
+                    GROUP_NO='C',
+                    RESULTAT=Ther_1C3,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t1[3],),
+                 _F(INST=t1,
+                    GROUP_NO='D',
+                    RESULTAT=Ther_1C3,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t1[4],),
+
+                 _F(INST=t3,
+                    GROUP_NO='Point_Intrados',
+                    RESULTAT=Ther_1C3,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t3[0],),
+                 _F(INST=t3,
+                    GROUP_NO='A',
+                    RESULTAT=Ther_1C3,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t3[1],),
+                 _F(INST=t3,
+                    GROUP_NO='B',
+                    RESULTAT=Ther_1C3,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t3[2],),
+                  _F(INST=t3,
+                    GROUP_NO='C',
+                    RESULTAT=Ther_1C3,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t3[3],),
+                 _F(INST=t3,
+                    GROUP_NO='D',
+                    RESULTAT=Ther_1C3,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t3[4],)
+                       ))
+
+#-----------------------------------------------------------------
+#
+#  --- Analyse mecanique d'un cylindre soumis a un choc thermique
+#
+#     - Choc Thermique =   1C
+#
+#     - Modelisation mecanique AXIS , maille QUAD8
+#
+#-----------------------------------------------------------------
+
+
+meshMEC3=CREA_MAILLAGE(MAILLAGE=mesh3,
+                   LINE_QUAD=_F(TOUT='OUI',))
+                   
+ModMeca3 = AFFE_MODELE(AFFE=_F(MODELISATION=('AXIS', ),
+                              PHENOMENE='MECANIQUE',
+                              TOUT='OUI'),
+                      MAILLAGE=meshMEC3)
+
+
+                
+resthe3= PROJ_CHAMP(PROJECTION='OUI',
+                   RESULTAT=Ther_1C3,
+                   MODELE_1=model3,
+                   MODELE_2=ModMeca3,);
+                   
+chmMECA3 = AFFE_MATERIAU(AFFE=_F(MATER=(mater3, ),
+                                 TOUT='OUI'),
+                         AFFE_VARC=_F(EVOL=resthe3,
+                                      NOM_VARC='TEMP',
+                                      TOUT='OUI',
+                                      VALE_REF=Temp_initiale),
+                         MAILLAGE=meshMEC3)
+
+
+Encas3 = AFFE_CHAR_CINE(MODELE=ModMeca3,
+                          MECA_IMPO=_F(GROUP_MA='Bas', DY=0.,),
+                          )
+
+reslin3 = MECA_STATIQUE(CHAM_MATER=chmMECA3,
+                       OPTION='SANS',
+                       EXCIT=_F(CHARGE=Encas3),
+                       LIST_INST=lis_inst,
+                       MODELE=ModMeca3)
+
+reslin3=CALC_CHAMP(reuse=reslin3,
+                  RESULTAT=reslin3,
+                  CRITERES=('SIEQ_NOEU'),
+                  CONTRAINTE='SIGM_NOEU')
+
+      
+# -------------------------------------NON REGRESSION
+
+Nb_Points=61
+
+SIGM_1C=MACR_LIGN_COUPE(RESULTAT=reslin3,
+                      NOM_CHAM='SIGM_NOEU',
+                      LIGN_COUPE=_F(TYPE='SEGMENT',
+                                    NB_POINTS=Nb_Points,
+                                    COOR_ORIG=(0.018,0,0,),
+                                    COOR_EXTR=(0.024,0,0,),),)
+                                    
+                                
+SIEQ_1C=MACR_LIGN_COUPE(RESULTAT=reslin3,
+                      NOM_CHAM='SIEQ_NOEU',
+                      LIGN_COUPE=_F(TYPE='SEGMENT',
+                                    NB_POINTS=Nb_Points,
+                                    COOR_ORIG=(0.018,0,0,),
+                                    COOR_EXTR=(0.024,0,0,),),);
+                                    
+
+#                             Intrados                         A                      B                              C                      D                        Extrados          
+#
+Val_Calc_t1_1C_SIXX = [      -44.46646254802788,    -24514.243570970862, -28568.561800147134, -23042.80977699317,    -9992.344237891943,   28.749508519784893  ]
+Val_Calc_t1_1C_SIYY = [ -1575112.1309370068,       -443924.4525456539,  -46580.13449532009,   98012.01605269095,  105263.29663049105,   105274.33737823222     ]
+Val_Calc_t1_1C_SIZZ = [ -1575071.1578113157,       -419419.5790981874,  -18016.92800189917, 121058.50162323998,   115260.18215115108,  105249.57786881988      ]
+Val_Calc_t1_1C_VMIS = [  1575047.1783113435,         407712.1384396183,    24951.390015635538, 134071.94869213543,    120565.34780363756,  105233.2102995682      ]
+
+ 
+# --- Intrados (SIXX)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIXX[0],
+           NOM_PARA='SIXX',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.018,))
+           )
+
+# --- Point A (SIXX)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIXX[1],
+           NOM_PARA='SIXX',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.0185,)),
+           )           
+
+# --- Point B (SIXX)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIXX[2],
+           NOM_PARA='SIXX',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.019,)),
+           )
+
+# --- Point C (SIXX)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIXX[3],
+           NOM_PARA='SIXX',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.02,)),
+           )
+
+# --- Point D (SIXX)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIXX[4],
+           NOM_PARA='SIXX',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.022,)),
+           )
+
+# --- Extrados (SIXX)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIXX[5],
+           NOM_PARA='SIXX',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.024,)),
+           )
+           
+# --- Intrados (SIYY)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIYY[0],
+           NOM_PARA='SIYY',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.018,)),
+           )
+
+# --- Point A (SIYY)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIYY[1],
+           NOM_PARA='SIYY',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.0185,)),
+           )           
+
+# --- Point B (SIYY)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIYY[2],
+           NOM_PARA='SIYY',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.019,)),
+           )
+
+# --- Point C (SIYY)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIYY[3],
+           NOM_PARA='SIYY',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.02,)),
+           )
+
+# --- Point D (SIYY)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIYY[4],
+           NOM_PARA='SIYY',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.022,)),
+           )
+
+# --- Extrados (SIYY)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIYY[5],
+           NOM_PARA='SIYY',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.024,)),
+           )
+                      
+# --- Intrados (SIZZ)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIZZ[0],
+           NOM_PARA='SIZZ',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.018,)),
+           )
+
+# --- Point A (SIZZ)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIZZ[1],
+           NOM_PARA='SIZZ',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.0185,)),
+           )           
+
+# --- Point B (SIZZ)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIZZ[2],
+           NOM_PARA='SIZZ',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.019,)),
+           )
+
+# --- Point C (SIZZ)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIZZ[3],
+           NOM_PARA='SIZZ',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.02,)),
+           )
+
+# --- Point D (SIZZ)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIZZ[4],
+           NOM_PARA='SIZZ',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.022,)),
+           )
+
+# --- Extrados (SIZZ)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_SIZZ[5],
+           NOM_PARA='SIZZ',
+           TABLE=SIGM_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.024,)),
+           )
+
+# --- Intrados (VMIS)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_VMIS[0],
+           NOM_PARA='VMIS',
+           TABLE=SIEQ_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.018,)),
+           )
+# --- Point A (VMIS)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_VMIS[1],
+           NOM_PARA='VMIS',
+           TABLE=SIEQ_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.0185,)),
+           )           
+
+# --- Point B (VMIS)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_VMIS[2],
+           NOM_PARA='VMIS',
+           TABLE=SIEQ_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.019,)),
+           )
+
+# --- Point C (VMIS)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_VMIS[3],
+           NOM_PARA='VMIS',
+           TABLE=SIEQ_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.02,)),
+           )
+
+# --- Point D (VMIS)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_VMIS[4],
+           NOM_PARA='VMIS',
+           TABLE=SIEQ_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.022,)),
+           )
+
+# --- Extrados (VMIS)
+
+TEST_TABLE(
+           VALE_CALC=Val_Calc_t1_1C_VMIS[5],
+           NOM_PARA='VMIS',
+           TABLE=SIEQ_1C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.024,)),
+           )
+
+################################################################
+#
+#        MULTIPLICATION AVEC LA MACRO CALC_THERMECA_MULT
+#
+#################################################################
+
+temp_init = 20.0
+temp_cible = 50.0
+
+#appel a la macro pour produire resultats thermique et mecanique
+resmMec = CALC_THERMECA_MULT(TEMP_FIN = temp_cible,
+                        TEMP_INIT = temp_init,
+                        RESU_MECA_UNIT = reslin3,
+                        RESU_SUPL_THER = 'OUI',
+                        RESU_THER_UNIT=Ther_1C3,
+                        RESU_THER = CO('resmT2D')
+)
+
+
+#TEST RESULTAT THERMIQUE
+#-------------------------------------------------------------------
+#
+# Verification des resultats
+#
+# --- Choc Thermique = 50C
+#
+#    - aux instants t1=0.1s  t3 = 3.s
+#    - aux points Intrados, A, B C et D
+#
+#-------------------------------------------------------------------
+#
+#                      Intrados            A                B                C                 D           
+#
+Vale_Refe_t1_50C  = [ 39.60439148764347,  26.057424514530002,  22.127310880200298, 20.072931376414274,   20.000074233637914]
+Vale_Refe_t3_50C  = [ 62.791991296545994, 57.91447605545711,  54.26645281787711,  45.020909667984306,  31.02483220030017]
+
+Vale_Calc_t1_50C  = [ 39.60439148764053, 26.057424514528442,  22.127310880200106 ,  20.072931376413976, 20.000074233637903]
+Vale_Calc_t3_50C  = [ 62.791991296533105, 57.914476055444446,  54.2664528178668, 45.02090966798036, 31.02483220030006]
+
+   
+TEST_RESU(RESU=( _F(INST=t1,
+                    GROUP_NO='Point_Intrados',
+                    RESULTAT=resmT2D,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    REFERENCE=Reference,
+                    VALE_CALC=Vale_Calc_t1_50C[0],
+                    VALE_REFE=Vale_Refe_t1_50C[0],
+                    PRECISION=0.01),
+                _F(INST=t1,
+                    GROUP_NO='A',
+                    RESULTAT=resmT2D,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    REFERENCE=Reference,
+                    VALE_CALC=Vale_Calc_t1_50C[1],
+                    VALE_REFE=Vale_Refe_t1_50C[1],
+                    PRECISION=0.01),
+                 _F(INST=t1,
+                    GROUP_NO='B',
+                    RESULTAT=resmT2D,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    REFERENCE=Reference,
+                    VALE_CALC=Vale_Calc_t1_50C[2],
+                    VALE_REFE=Vale_Refe_t1_50C[2],
+                    PRECISION=0.01),
+                 _F(INST=t1,
+                    GROUP_NO='C',
+                    RESULTAT=resmT2D,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    REFERENCE=Reference,
+                    VALE_CALC=Vale_Calc_t1_50C[3],
+                    VALE_REFE=Vale_Refe_t1_50C[3],
+                    PRECISION=0.01),
+                 _F(INST=t1,
+                    GROUP_NO='D',
+                    RESULTAT=resmT2D,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t1_50C[4],
+                    VALE_REFE=Vale_Refe_t1_50C[4],
+                    REFERENCE=Reference,
+                    PRECISION=0.01),
+
+                 _F(INST=t3,
+                    GROUP_NO='Point_Intrados',
+                    RESULTAT=resmT2D,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t3_50C[0],
+                    VALE_REFE=Vale_Refe_t3_50C[0],
+                    REFERENCE=Reference,
+                    PRECISION=0.01),
+                 _F(INST=t3,
+                    GROUP_NO='A',
+                    RESULTAT=resmT2D,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t3_50C[1],
+                    VALE_REFE=Vale_Refe_t3_50C[1],
+                    REFERENCE=Reference,
+                    PRECISION=0.01),
+                 _F(INST=t3,
+                    GROUP_NO='B',
+                    RESULTAT=resmT2D,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t3_50C[2],
+                    VALE_REFE=Vale_Refe_t3_50C[2],
+                    REFERENCE=Reference,
+                    PRECISION=0.01),
+                  _F(INST=t3,
+                    GROUP_NO='C',
+                    RESULTAT=resmT2D,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t3_50C[3],
+                    VALE_REFE=Vale_Refe_t3_50C[3],
+                    REFERENCE=Reference,
+                    PRECISION=0.01),
+                 _F(INST=t3,
+                    GROUP_NO='D',
+                    RESULTAT=resmT2D,
+                    NOM_CHAM='TEMP',NOM_CMP='TEMP',
+                    VALE_CALC=Vale_Calc_t3_50C[4],
+                    VALE_REFE=Vale_Refe_t3_50C[4],
+                    REFERENCE=Reference,
+                    PRECISION=0.01)
+                       ))
+
+
+
+
+
+
+
+
+
+
+#TEST RESULTAT MECANIQUE
+Nb_Points=61
+
+#====================================================================================================================
+#
+# --- Choc Thermique = 50C
+# 
+#  - Extraction de l'evolution des contraintes SIXX, SIYY, SIZZ et VMIS
+#    en fonction du temps aux points intrados, A, B, C, D et extrados
+#  - Extraction de l'evolution des contraintes SIXX, SIYY, SIZZ et VMIS
+#    suivant l epaisseur aux instants t1, t2, t3, t4 et tf
+#
+#====================================================================================================================
+
+
+SIG_50C=MACR_LIGN_COUPE(RESULTAT=resmMec,
+                      NOM_CHAM='SIGM_NOEU',
+                      LIGN_COUPE=_F(TYPE='SEGMENT',
+                                    NB_POINTS=Nb_Points,
+                                    COOR_ORIG=(0.018,0,0,),
+                                    COOR_EXTR=(0.024,0,0,),),)
+                                                                      
+SIE_50C=MACR_LIGN_COUPE(RESULTAT=resmMec,
+                      NOM_CHAM='SIEQ_NOEU',
+                      LIGN_COUPE=_F(TYPE='SEGMENT',
+                                    NB_POINTS=Nb_Points,
+                                    COOR_ORIG=(0.018,0,0,),
+                                    COOR_EXTR=(0.024,0,0,),),)
+
+#-----------------------------------------------------------------------------------------------------------------------------------
+#
+# Verification des resultats mecaniques
+#
+# --- Choc Thermique = 50C
+#
+#    - SIXX, SIYY, SIZZ et VMIS
+#    - a l'instant t1=0.1s
+#    - aux points Intrados, A, B C, D et Extrados
+#
+#-----------------------------------------------------------------------------------------------------------------------------------
+
+#                             Intrados                 A              B              C              D                Extrados          
+#
+
+Val_Refe_t1_50C_SIXX = [      -2223.323126038972,   -1225712.1785479188, -1428428.090007163,  -1152140.4888492671,   -499617.21189450816,      1437.4754262985766 ]
+Val_Refe_t1_50C_SIYY = [  -78755606.54685567,       -22196222.627284177,  -2329006.724762771,   4900600.802635529,  5263164.8315241365,  5263716.868909629     ]
+Val_Refe_t1_50C_SIZZ = [ -78753557.89057745,        -20970978.954915553,   -900846.4000951699,  6052925.081161121,   5763009.107557128,  5262478.893439884    ]
+Val_Refe_t1_50C_VMIS = [ 78752358.91557704,        20385606.92198515,     1247569.5007786928,   6703597.4346061945,  6028267.390181367,  5261660.514976556     ]
+
+
+Val_Calc_t1_50C_SIXX = [ -2223.323127401394,    -1225712.1785485432,   -1428428.0900073566,  -1152140.4888496585,  -499617.21189459704,    1437.4754259892447  ]
+Val_Calc_t1_50C_SIYY = [ -78755606.54685035,    -22196222.627282694,   -2329006.7247660044,   4900600.8026345465,  5263164.831524553,  5263716.868911611     ]
+Val_Calc_t1_50C_SIZZ = [ -78753557.89056578,     -20970978.95490937,  -900846.4000949586,  6052925.081162,  5763009.107557555,   5262478.8934409935     ]
+Val_Calc_t1_50C_VMIS = [  78752358.91556717,     20385606.921980914,   1247569.5007817768,   6703597.434606772,  6028267.390181877,  5261660.514978411     ]
+
+# --- Intrados (SIXX)
+
+TEST_TABLE(PRECISION=100,
+           CRITERE='ABSOLU',
+           VALE_CALC=Val_Calc_t1_50C_SIXX[0],
+           VALE_REFE=Val_Refe_t1_50C_SIXX[0],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIXX',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.018,))
+                   )
+# --- Point A (SIXX)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIXX[1],
+           VALE_REFE=Val_Refe_t1_50C_SIXX[1],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIXX',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.0185,)),
+           )           
+
+# --- Point B (SIXX)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIXX[2],
+           VALE_REFE=Val_Refe_t1_50C_SIXX[2],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIXX',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.019,)),
+           )
+
+# --- Point C (SIXX)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIXX[3],
+           VALE_REFE=Val_Refe_t1_50C_SIXX[3],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIXX',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.02,)),
+           )
+
+# --- Point D (SIXX)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIXX[4],
+           VALE_REFE=Val_Refe_t1_50C_SIXX[4],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIXX',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.022,)),
+           )
+           
+# --- Extrados (SIXX)
+
+TEST_TABLE(PRECISION=100,
+           CRITERE='ABSOLU',
+           VALE_CALC=Val_Calc_t1_50C_SIXX[5],
+           VALE_REFE=Val_Refe_t1_50C_SIXX[5],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIXX',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.024,)),
+           )
+           
+# --- Intrados (SIYY)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIYY[0],
+           VALE_REFE=Val_Refe_t1_50C_SIYY[0],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIYY',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.018,)),
+           )
+
+# --- Point A (SIYY)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIYY[1],
+           VALE_REFE=Val_Refe_t1_50C_SIYY[1],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIYY',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.0185,)),
+           )           
+
+# --- Point B (SIYY)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIYY[2],
+           VALE_REFE=Val_Refe_t1_50C_SIYY[2],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIYY',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.019,)),
+           )
+
+# --- Point C (SIYY)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIYY[3],
+           VALE_REFE=Val_Refe_t1_50C_SIYY[3],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIYY',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.02,)),
+           )
+
+# --- Point D (SIYY)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIYY[4],
+           VALE_REFE=Val_Refe_t1_50C_SIYY[4],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIYY',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.022,)),
+           )
+
+# --- Extrados (SIYY)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIYY[5],
+           VALE_REFE=Val_Refe_t1_50C_SIYY[5],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIYY',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.024,)),
+           )
+                      
+# --- Intrados (SIZZ)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIZZ[0],
+           VALE_REFE=Val_Refe_t1_50C_SIZZ[0],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIZZ',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.018,)),
+           )
+
+# --- Point A (SIZZ)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIZZ[1],
+           VALE_REFE=Val_Refe_t1_50C_SIZZ[1],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIZZ',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.0185,)),
+           )           
+
+# --- Point B (SIZZ)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIZZ[2],
+           VALE_REFE=Val_Refe_t1_50C_SIZZ[2],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIZZ',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.019,)),
+           )
+
+# --- Point C (SIZZ)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIZZ[3],
+           VALE_REFE=Val_Refe_t1_50C_SIZZ[3],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIZZ',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.02,)),
+           )
+
+# --- Point D (SIZZ)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIZZ[4],
+           VALE_REFE=Val_Refe_t1_50C_SIZZ[4],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIZZ',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.022,)),
+           )
+
+# --- Extrados (SIZZ)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_SIZZ[5],
+           VALE_REFE=Val_Refe_t1_50C_SIZZ[5],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='SIZZ',
+           TABLE=SIG_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.024,)),
+           )
+
+# --- Intrados (VMIS)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_VMIS[0],
+           VALE_REFE=Val_Refe_t1_50C_VMIS[0],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='VMIS',
+           TABLE=SIE_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.018,)),
+           )
+# --- Point A (VMIS)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_VMIS[1],
+           VALE_REFE=Val_Refe_t1_50C_VMIS[1],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='VMIS',
+           TABLE=SIE_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.0185,)),
+           )           
+
+# --- Point B (VMIS)
+
+TEST_TABLE(PRECISION=0.011,
+           VALE_CALC=Val_Calc_t1_50C_VMIS[2],
+           VALE_REFE=Val_Refe_t1_50C_VMIS[2],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='VMIS',
+           TABLE=SIE_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.019,)),
+           )
+
+# --- Point C (VMIS)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_VMIS[3],
+           VALE_REFE=Val_Refe_t1_50C_VMIS[3],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='VMIS',
+           TABLE=SIE_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.02,)),
+           )
+
+# --- Point D (VMIS)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_VMIS[4],
+           VALE_REFE=Val_Refe_t1_50C_VMIS[4],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='VMIS',
+           TABLE=SIE_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.022,)),
+           )
+
+# --- Extrados (VMIS)
+
+TEST_TABLE(PRECISION=0.01,
+           VALE_CALC=Val_Calc_t1_50C_VMIS[5],
+           VALE_REFE=Val_Refe_t1_50C_VMIS[5],
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='VMIS',
+           TABLE=SIE_50C,
+           FILTRE=(_F(NOM_PARA='INST'  ,VALE=t1,),
+                   _F(NOM_PARA='COOR_X',VALE=0.024,)),
+           )
+
+
+FIN();
