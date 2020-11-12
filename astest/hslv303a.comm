@@ -327,7 +327,6 @@ Val_Calc_t1_1C_VMIS = [  1807069.6306590592,   409569.34995904996,   21179.72214
  
 # --- Intrados (SIXX)
 TEST_TABLE(
-           CRITERE='ABSOLU',
            VALE_CALC=Val_Calc_t1_1C_SIXX[0],
            NOM_PARA='SIXX',
            TABLE=SIGM_1C,
@@ -378,7 +377,6 @@ TEST_TABLE(
 # --- Extrados (SIXX)
 
 TEST_TABLE(
-           CRITERE='ABSOLU',
            VALE_CALC=Val_Calc_t1_1C_SIXX[5],
            NOM_PARA='SIXX',
            TABLE=SIGM_1C,
@@ -756,7 +754,6 @@ Val_Calc_t1_50C_VMIS = [ 90353481.53295295, 20478467.4979525, 1058986.1070875954
 # --- Intrados (SIXX)
 
 TEST_TABLE(PRECISION=200.,
-           CRITERE='ABSOLU',
            VALE_CALC=Val_Calc_t1_50C_SIXX[0],
            VALE_REFE=Val_Refe_t1_50C_SIXX[0],
            REFERENCE='AUTRE_ASTER',
@@ -817,7 +814,6 @@ TEST_TABLE(PRECISION=0.01,
 # --- Extrados (SIXX)
 
 TEST_TABLE(PRECISION=400.,
-           CRITERE='ABSOLU',
            VALE_CALC=Val_Calc_t1_50C_SIXX[5],
            VALE_REFE=Val_Refe_t1_50C_SIXX[5],
            REFERENCE='AUTRE_ASTER',
@@ -1780,7 +1776,6 @@ Val_Calc_t1_50C_VMIS = [  78752358.91556717,     20385606.921980914,   1247569.5
 # --- Intrados (SIXX)
 
 TEST_TABLE(PRECISION=100,
-           CRITERE='ABSOLU',
            VALE_CALC=Val_Calc_t1_50C_SIXX[0],
            VALE_REFE=Val_Refe_t1_50C_SIXX[0],
            REFERENCE='AUTRE_ASTER',
@@ -1840,7 +1835,6 @@ TEST_TABLE(PRECISION=0.01,
 # --- Extrados (SIXX)
 
 TEST_TABLE(PRECISION=100,
-           CRITERE='ABSOLU',
            VALE_CALC=Val_Calc_t1_50C_SIXX[5],
            VALE_REFE=Val_Refe_t1_50C_SIXX[5],
            REFERENCE='AUTRE_ASTER',
