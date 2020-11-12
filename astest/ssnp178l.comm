@@ -177,7 +177,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   RESULTAT=resnonl,
                   NOM_CHAM='EPSP_ELGA',
                   NOM_CMP='EPXY',
-                  VALE_CALC=0.017873549902726188,
+                  VALE_CALC=0.017857207796499505,
                   CRITERE='RELATIF',),
           )
 
@@ -187,7 +187,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   RESULTAT=resnonl,
                   NOM_CHAM='EPSI_ELGA',
                   NOM_CMP='EPXY',
-                  VALE_CALC=0.020905977711118767,
+                  VALE_CALC=0.020889635604888546,
                   CRITERE='RELATIF',),
           )
 
