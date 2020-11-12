@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,46 +21,46 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='NON',),);
+      DEBUG=_F(SDVERI='NON',),)
 
 #......................................................................
 # MODELISATION F : IDEM MODELISATION A AVEC UTILISATION D'UN CRITERE
 #                  DE RE-DECOUPAGE DU PAS DE TEMPS PAR EVENT-DRIVEN
 #......................................................................
 
-MA=LIRE_MAILLAGE(FORMAT="ASTER",);
+MA=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
 
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D',),)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=195000.,
                             NU=0.3,),
                     ECRO_LINE=_F(D_SIGM_EPSI=1930.,
                                  SY=181.,),
-                    PRAGER=_F(C=0.,),);
+                    PRAGER=_F(C=0.,),)
 
 CM=AFFE_MATERIAU(MAILLAGE=MA,
                  AFFE=_F(TOUT='OUI',
-                         MATER=ACIER,),);
+                         MATER=ACIER,),)
 
 SIGMA_F=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                             1.0,151.2,
                             2.0,257.2,
                             3.0,0.0,
-                            ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',);
+                            ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',)
 
 TAU_F=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                           1.0,93.1,
                           2.0,33.1,
                           3.0,0.0,
-                          ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',);
+                          ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',)
 
 TRACTION=AFFE_CHAR_MECA(MODELE=MO,
                         FORCE_FACE=_F(MAILLE='GAUCHE',
-                                      FX=-1.,),);
+                                      FX=-1.,),)
 
 CISAIL=AFFE_CHAR_MECA(MODELE=MO,
                       FORCE_FACE=(_F(MAILLE='GAUCHE',
@@ -70,10 +70,10 @@ CISAIL=AFFE_CHAR_MECA(MODELE=MO,
                                   _F(MAILLE='HAUT',
                                      FX=1.,),
                                   _F(MAILLE='BAS',
-                                     FX=-1.,),),);
+                                     FX=-1.,),),)
 
-LIAISON=AFFE_CHAR_MECA(MODELE=MO,
-                       DDL_IMPO=(_F(NOEUD='NO4',
+LIAISON=AFFE_CHAR_CINE(MODELE=MO,
+                       MECA_IMPO=(_F(NOEUD='NO4',
                                     DX=0.,
                                     DY=0.,),
                                  _F(NOEUD='NO8',
@@ -83,7 +83,7 @@ LIAISON=AFFE_CHAR_MECA(MODELE=MO,
                                  _F(NOEUD='NO2',
                                     DX=0.,),
                                  _F(NOEUD='NO6',
-                                    DX=0.,),),);
+                                    DX=0.,),),)
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=0.1,
@@ -95,17 +95,17 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                   _F(JUSQU_A=2.0,
                                      NOMBRE=1,),
                                   _F(JUSQU_A=3.0,
-                                     NOMBRE=1,),),);
+                                     NOMBRE=1,),),)
 
 # gestion manuelle avec event-driven
 
-DEFLIST=DEFI_LIST_INST(METHODE='MANUEL', 
+DEFLIST=DEFI_LIST_INST(METHODE='MANUEL',
                        DEFI_LIST=_F(LIST_INST=L_INST,),
                        ECHEC=_F(EVENEMENT='DELTA_GRANDEUR',
-                                SUBD_NIVEAU=10,
+                                SUBD_NIVEAU=15,
                                 VALE_REF=0.1e-2,
                                 NOM_CHAM='VARI_ELGA',
-                                NOM_CMP='V1',),);
+                                NOM_CMP='V1',),)
 
 U=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CM,
@@ -119,6 +119,8 @@ U=STAT_NON_LINE(MODELE=MO,
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=3,),
                 RECH_LINEAIRE=_F(RHO_MAX=150),
+                CONVERGENCE=_F(ITER_GLOB_MAXI=15),
+                SOLVEUR=_F(POSTTRAITEMENTS='FORCE'),
                 )
 
 # gestion manuelle avec critere sur radialite
@@ -135,14 +137,14 @@ L_INST2=DEFI_LIST_REEL(DEBUT=0.0,
                                   _F(JUSQU_A=2.0,
                                      NOMBRE=nbincr,),
                                   _F(JUSQU_A=3.0,
-                                     NOMBRE=nbincr,),),);
+                                     NOMBRE=nbincr,),),)
 
 # gestion manuelle avec event-driven
 
-DEFLIST2=DEFI_LIST_INST(METHODE='MANUEL', 
+DEFLIST2=DEFI_LIST_INST(METHODE='MANUEL',
                         DEFI_LIST=_F(LIST_INST=L_INST2,),
-                        ECHEC=_F(SUBD_NIVEAU=10,),
-                       );
+                        ECHEC=_F(SUBD_NIVEAU=15,),
+                       )
 
 U2=STAT_NON_LINE(MODELE=MO,
                  CHAM_MATER=CM,
@@ -156,6 +158,8 @@ U2=STAT_NON_LINE(MODELE=MO,
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=3,),
                  RECH_LINEAIRE=_F(RHO_MAX=150),
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=15),
+                 SOLVEUR=_F(POSTTRAITEMENTS='FORCE'),
                  )
 
 U3=STAT_NON_LINE(MODELE=MO,
@@ -168,8 +172,10 @@ U3=STAT_NON_LINE(MODELE=MO,
                  COMPORTEMENT=_F(RELATION='VMIS_ECMI_LINE',RESI_RADI_RELA=0.02),
                  INCREMENT=_F(LIST_INST=DEFLIST2,),
                  NEWTON=_F(MATRICE='TANGENTE',
-                           REAC_ITER=3,),
+                           REAC_ITER=2,),
                  RECH_LINEAIRE=_F(RHO_MAX=150),
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=15),
+                SOLVEUR=_F(POSTTRAITEMENTS='FORCE'),
                  )
 
 U=CALC_CHAMP(reuse=U,RESULTAT=U,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO','EPSP_ELGA'))
@@ -186,7 +192,7 @@ VARI=CREA_CHAMP(TYPE_CHAM='ELNO_VARI_R',
                 OPERATION='EXTR',
                 RESULTAT=U,
                 NOM_CHAM='VARI_ELNO',
-                INST=1.,);
+                INST=1.,)
 
 TEST_RESU(CHAM_ELEM=_F(NOEUD='NO2',
                        NOM_CMP='V1',
@@ -695,7 +701,7 @@ RADI1=RECU_FONCTION(RESULTAT=U,
                    MAILLE='CUBE',
                    NOEUD='NO2',
                    NOM_RESU='X',
-                  );
+                  )
 
 RADI2=RECU_FONCTION(RESULTAT=U2,
                    NOM_CHAM='DERA_ELNO',
@@ -703,7 +709,7 @@ RADI2=RECU_FONCTION(RESULTAT=U2,
                    MAILLE='CUBE',
                    NOEUD='NO2',
                    NOM_RESU='X',
-                  );
+                  )
 
 RADI3=RECU_FONCTION(RESULTAT=U3,
                    NOM_CHAM='DERA_ELNO',
@@ -711,7 +717,7 @@ RADI3=RECU_FONCTION(RESULTAT=U3,
                    MAILLE='CUBE',
                    NOEUD='NO2',
                    NOM_RESU='X',
-                  );
+                  )
 
 
 # pour quantifier THETA (ou RADI) par rapport a l'iso-erreur
@@ -725,6 +731,6 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                         ),
               TITRE='Radi et iso-erreur',
               LEGENDE_X='Inst',
-              LEGENDE_Y='crit erreur',);
+              LEGENDE_Y='crit erreur',)
 
-FIN();
+FIN()
