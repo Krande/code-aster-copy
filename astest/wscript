@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -88,5 +88,9 @@ def build(self):
             astest_path = osp.relpath(osp.join(env.validation_path, 'astest'),
                                       self.path.get_src().abspath())
             astest_node = self.path.get_src().find_node(astest_path)
-            files = astest_node.ant_glob('**/*')
-            self.install_files(dest, files, cwd=astest_node, relative_trick=True)
+            if astest_node:
+                files = astest_node.ant_glob('**/*')
+                self.install_files(dest,
+                                   files,
+                                   cwd=astest_node,
+                                   relative_trick=True)
