@@ -80,6 +80,7 @@ implicit none
     integer :: lonc2, ltrav, j, inume, jddl, jddr, lacce, jvPara
     integer :: cret
     real(kind=8) :: etan, time, partps(3), omega2, coef(3)
+    real(kind=8) :: freq
     character(len=1) :: stop
     character(len=2) :: codret
     character(len=6) :: nompro
@@ -423,6 +424,8 @@ implicit none
                 call ascova('D', vacgmp, fomult, 'INST', time,&
                         'R', cncgmp)
             else
+                call rsadpa(resuin, 'L', 1, 'FREQ', iordr, 0, sjv=jvPara, styp=ctyp)
+                freq=zr(jvPara)
                 if (ligrel(1:8) .ne. modele) then
 !pour les DYNA_HARMO
 !pour l instant je ne fais le calcul de REAC_NODA que sur le modele en entier
@@ -446,7 +449,7 @@ implicit none
                 call vtcreb(cnchmpc, 'V', 'C',&
                             nume_ddlz = nume,&
                             nb_equa_outz = neq)
-                call ascomb(infcha, vechmp, 'C', para, time, cnchmpc)
+                call ascomb(list_load, vechmp, 'C', para, freq, cnchmpc)
             endif
 !
 ! --- POUR UN EVOL_NOLI, PRISE EN COMPTE DES FORCES PILOTEES
