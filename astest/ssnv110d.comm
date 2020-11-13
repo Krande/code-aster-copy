@@ -1,0 +1,165 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# VERIFICATION DE LA LOI CZM_TURON SUR ELEMENTS 'JOINT'
+# MODELISATION D : D_PLAN, CHARGEMENT EN MODE MIXTE (MMB)
+# CHARGEMENT EN DEPLACEMENT IMPOSE
+# MAILLAGE QUADRATIQUE, EN MM
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+
+##########################################################################
+# PARAMETRES
+##########################################################################
+
+tfin = 5
+nbarch = 10*tfin
+
+young = 100
+nu = 0.
+tenac = 0.2
+sigc  = 1
+pen = 0.00001
+
+deply = 1.0
+deply_h = deply/4.
+deply_b = -deply/4.
+deplx = 0.0
+deplz = 0.0
+
+# Paramètres de la loi CZM_TURON pour être équivalent forma08a (DCB avec CZM_LIN_REG)
+k = sigc**2 * (1 - pen) / (2 * tenac * pen)
+sigc1 = sigc * (1 - pen)
+sigc2 = sigc1 * 0.5
+Gc1 = tenac * (1 - pen)
+Gc2 = Gc1 * 0.8
+
+##########################################################################
+# DEFINITIONS DU MODELE
+##########################################################################
+
+# LECTURE DU MAILLAGE
+MA = LIRE_MAILLAGE(FORMAT='MED',)
+
+#AFFECTATION DU MODELE
+MO = AFFE_MODELE(MAILLAGE=MA,
+                 AFFE=(_F(GROUP_MA = ('COMP'),
+                          PHENOMENE = 'MECANIQUE',
+                          MODELISATION = 'D_PLAN'),
+                       _F(GROUP_MA = 'COLLE',
+                          PHENOMENE = 'MECANIQUE',
+                          MODELISATION = 'PLAN_JOINT'),
+                ),)
+
+#DEFINITION ET AFFECTATION DU MATERIAU
+MAT = DEFI_MATERIAU(
+                      ELAS=_F(E =  young,
+                              NU = nu),
+                      RUPT_FRAG = _F(GC = tenac,
+                                     SIGM_C = sigc,
+                                     PENA_ADHERENCE=pen,
+                                                ),
+                      RUPT_TURON = _F(GC_N = Gc1, 
+                                      GC_T = Gc2,
+                                      SIGM_C_N = sigc1,
+                                      SIGM_C_T = sigc2,
+                                      K = k,
+                                      ETA_BK = 2,
+                                      C_RUPT = 0.001,
+                                      CRIT_INIT = 'TURON',
+                                          ),
+                            )
+                    
+CM=AFFE_MATERIAU(MAILLAGE=MA,
+                 AFFE=_F(GROUP_MA = ('TOUT'),
+                         MATER = MAT),
+                      )
+
+CHAR = AFFE_CHAR_CINE(MODELE = MO,
+                      MECA_IMPO = (_F(GROUP_NO = 'OUV_HAUT', DY = deply_h),
+                                   _F(GROUP_NO = 'OUV_BAS', DY = 0.0),
+                                   _F(GROUP_NO = 'APPUI_CENTRE', DY = deply_b),),)
+                      
+BLOC = AFFE_CHAR_CINE(MODELE = MO,
+                      MECA_IMPO = _F(GROUP_NO = 'APPUI_GAUCHE', DX = 0.0, DY = 0.0),) 
+
+#DEFINITION DES INSTANTS DE CALCUL
+DEF_LIST = DEFI_LIST_REEL(DEBUT = 0,
+                          INTERVALLE=_F(JUSQU_A = tfin, NOMBRE = 200),)
+
+L_INST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = DEF_LIST ,),
+                        ECHEC=_F(SUBD_METHODE='MANUEL',SUBD_PAS=10,),)
+
+INS_ARCH = DEFI_LIST_REEL(DEBUT = 0,
+                          INTERVALLE=_F(JUSQU_A = tfin, NOMBRE = nbarch),)
+
+FCT = DEFI_FONCTION(NOM_PARA = 'INST',
+                    VALE = (-1, 0, 0, 0.0001, tfin, tfin),)
+
+##########################################################################
+# CALCUL
+##########################################################################
+
+U = STAT_NON_LINE(MODELE        = MO,
+                  CHAM_MATER    = CM,
+                  EXCIT         = (_F(CHARGE = BLOC),
+                                   _F(CHARGE = CHAR, FONC_MULT=FCT,),),
+                  COMPORTEMENT  = (_F(RELATION = 'ELAS', GROUP_MA = ('COMP')),
+                                   _F(RELATION = 'CZM_TURON', GROUP_MA = 'COLLE', ),),
+                  INCREMENT     = _F(LIST_INST = L_INST, INST_FIN = tfin,),
+                  NEWTON        = _F(MATRICE = 'TANGENTE', REAC_ITER=1,),
+                  CONVERGENCE   = _F(RESI_GLOB_RELA = 5.E-5,
+                                     ITER_GLOB_MAXI = 20,),
+                  SOLVEUR       = _F(METHODE = 'MUMPS',),
+                  ARCHIVAGE     = _F(LIST_INST = INS_ARCH))
+
+
+##########################################################################
+# POST-TRAITEMENT
+##########################################################################
+
+U = CALC_CHAMP(reuse = U,
+               RESULTAT = U,
+               FORCE='FORC_NODA',
+               GROUP_MA='COMP')
+               
+#IMPR_RESU(FORMAT= 'MED', RESU=_F(RESULTAT=U), UNITE=80,)
+
+##########################################################################
+# TEST (NON-REGRESSION)
+##########################################################################
+           
+           
+TEST_RESU(RESU=_F(GROUP_NO        = 'NO_HAUT',
+                  INST            = tfin,
+                  RESULTAT        = U,
+                  NOM_CHAM        = 'DEPL',
+                  NOM_CMP         = 'DY',
+                  VALE_CALC       = 1.2197128358869604,
+                        ),)
+           
+TEST_RESU(RESU=_F(GROUP_NO        = 'OUV_HAUT',
+                  INST            = tfin,
+                  RESULTAT        = U,
+                  NOM_CHAM        = 'FORC_NODA',
+                  NOM_CMP         = 'DY',
+                  VALE_CALC       = 0.5205019997694427,
+                        ),)
+
+FIN()
