@@ -116,6 +116,11 @@ private
         aster_logical :: keep = ASTER_FALSE
         aster_logical :: orphelan = ASTER_FALSE
         character(len=8) :: name = ' '
+! used to improve search of edges and faces
+! it could be improved a lot to decrease memory consumption
+        integer :: max_faces = 65, nb_faces = 0
+        integer :: max_edges = 60, nb_edges = 0
+        integer :: faces(65) = 0, edges(60) = 0
     end type
 !
     type Mmesh
@@ -139,6 +144,7 @@ private
 !
         integer, pointer :: v_typema(:) => null()
         aster_logical :: debug = ASTER_FALSE
+        integer :: info = 0
 ! ----- member functions
         contains
         procedure, public, pass :: init => init_mesh
@@ -213,27 +219,31 @@ contains
 !
 ! Find edge_id of edges
 !
-            integer :: i_edge
+            integer :: i_edge, nb_edges, edge_i
             aster_logical :: ok
 !
             find = ASTER_FALSE
             edge_id = 0
 !
-            do i_edge = 1, this%nb_edges
-                ok = ASTER_TRUE
-                if( nnos_sort(1) .ne. this%edges(i_edge)%nnos_sort(1)) then
-                    ok = ASTER_FALSE
-                else
-                    if( nnos_sort(2) .ne. this%edges(i_edge)%nnos_sort(2)) then
+            nb_edges = this%nodes(nnos_sort(1))%nb_edges
+            if(nb_edges > 0) then
+                do i_edge = 1, nb_edges
+                    edge_i = this%nodes(nnos_sort(1))%edges(i_edge)
+                    ok = ASTER_TRUE
+                    if( nnos_sort(1) .ne. this%edges(edge_i)%nnos_sort(1)) then
                         ok = ASTER_FALSE
+                    else
+                        if( nnos_sort(2) .ne. this%edges(edge_i)%nnos_sort(2)) then
+                            ok = ASTER_FALSE
+                        end if
                     end if
-                end if
-                if(ok) then
-                    find = ASTER_TRUE
-                    edge_id = i_edge
-                    exit
-                end if
-            end do
+                    if(ok) then
+                        find = ASTER_TRUE
+                        edge_id = edge_i
+                        exit
+                    end if
+                end do
+            end if
 !
     end subroutine
 !
@@ -253,30 +263,34 @@ contains
 !
 ! Find face_id of face
 !
-            integer :: i_face, i_node
+            integer :: i_face, i_node, nb_faces, face_i
             aster_logical :: ok
 !
             find = ASTER_FALSE
             face_id = 0
 !
-            do i_face = 1, this%nb_faces
-                if(nnos == this%faces(i_face)%nnos) then
-                    ok = ASTER_TRUE
-                    do i_node = 1, nnos
-                        if( nnos_sort(i_node) .ne. this%faces(i_face)%nnos_sort(i_node)) then
-                            ok = ASTER_FALSE
-                            exit
-                        end if
-                    end do
-                else
-                    ok = ASTER_FALSE
-                end if
-                if(ok) then
-                    find = ASTER_TRUE
-                    face_id = i_face
-                    exit
-                end if
-            end do
+            nb_faces = this%nodes(nnos_sort(1))%nb_faces
+            if(nb_faces > 0) then
+                do i_face = 1, nb_faces
+                    face_i = this%nodes(nnos_sort(1))%faces(i_face)
+                    if(nnos == this%faces(face_i)%nnos) then
+                        ok = ASTER_TRUE
+                        do i_node = 1, nnos
+                            if( nnos_sort(i_node) .ne. this%faces(face_i)%nnos_sort(i_node)) then
+                                ok = ASTER_FALSE
+                                exit
+                            end if
+                        end do
+                    else
+                        ok = ASTER_FALSE
+                    end if
+                    if(ok) then
+                        find = ASTER_TRUE
+                        face_id = face_i
+                        exit
+                    end if
+                end do
+            end if
 !
     end subroutine
 !
@@ -434,12 +448,13 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine init_mesh(this, mesh_in)
+    subroutine init_mesh(this, mesh_in, info)
 !
         implicit none
 !
             class(Mmesh), intent(inout) :: this
             character(len=8), intent(in) :: mesh_in
+            integer, optional :: info
 ! --------------------------------------------------------------------------------------------------
 ! The idea is to read a given mesh (mesh_in). Internally, all the cells are stored with all nodes
 ! possibles for a cell. The internal cells stored are POI1, SEG3, SEG4, TRIA7, QUAD9,
@@ -451,9 +466,19 @@ contains
             character(len=8) :: name
             integer :: nb_elem_mesh, nb_node_mesh, i_node
             integer :: i_cell, nno, node_id
+            real(kind=8):: start, end
 !
             call jemarq()
             call this%converter%init()
+!
+            if(present(info)) then
+                this%info = info
+            end if
+!
+            if(this%info >= 2) then
+                print*, "Creating mesh..."
+                call cpu_time(start)
+            end if
 !
             call jeveuo(mesh_in//'.DIME', 'L', vi = v_mesh_dime)
             this%dim_mesh = v_mesh_dime(6)
@@ -500,6 +525,11 @@ contains
                 end do
             end do
 !
+            if(this%info >= 2) then
+                call cpu_time(end)
+                print*, "... in ", end-start, " seconds."
+            end if
+!
             call jedema()
 !
     end subroutine
@@ -511,6 +541,10 @@ contains
         implicit none
 !
             class(Mmesh), intent(inout) :: this
+!
+            if(this%info >= 2) then
+                print*, "Cleaning objects..."
+            end if
 !
             deallocate(this%nodes)
             deallocate(this%edges)
@@ -952,6 +986,10 @@ contains
                     this%faces(face_id)%edges(i_edge) = edge_id
                 end do
 !
+                ASSERT(this%nodes(nnos_sort(1))%nb_faces < this%nodes(nnos_sort(1))%max_faces)
+                this%nodes(nnos_sort(1))%nb_faces = this%nodes(nnos_sort(1))%nb_faces + 1
+                this%nodes(nnos_sort(1))%faces(this%nodes(nnos_sort(1))%nb_faces) = face_id
+!
                 call this%convert_face(face_id)
             end if
 !
@@ -1005,6 +1043,10 @@ contains
                 this%edges(edge_id)%type = type
                 this%edges(edge_id)%nodes(1:nno) = nodes(1:nno)
                 this%edges(edge_id)%nnos_sort = nnos_sort
+!
+                ASSERT(this%nodes(nnos_sort(1))%nb_edges < this%nodes(nnos_sort(1))%max_edges)
+                this%nodes(nnos_sort(1))%nb_edges = this%nodes(nnos_sort(1))%nb_edges + 1
+                this%nodes(nnos_sort(1))%edges(this%nodes(nnos_sort(1))%nb_edges) = edge_id
 !
                 call this%convert_edge(edge_id)
             end if
@@ -1093,6 +1135,7 @@ contains
             character(len=24) :: gpptnn, grpmai, gpptnm, connex, titre, typmai, adapma
             character(len=4) :: dimesp
             integer :: i_node, nno, i_cell, ntgeo, nbnoma, node_id
+            real(kind=8):: start, end
             real(kind=8), pointer :: v_coor(:) => null()
             integer, pointer :: v_int(:) => null()
             integer, pointer :: v_connex(:) => null()
@@ -1101,6 +1144,11 @@ contains
             call jemarq()
 !
             call this%check_mesh()
+!
+            if(this%info >= 2) then
+                print*, "Copying mesh..."
+                call cpu_time(start)
+            end if
 !
             call sdmail(mesh_out, nommai, nomnoe, cooval, coodsc,&
                         cooref, grpnoe, gpptnn, grpmai, gpptnm,&
@@ -1181,6 +1229,11 @@ contains
             v_int(3)= this%nb_cells
             v_int(6)= this%dim_mesh
 !
+            if(this%info >= 2) then
+                call cpu_time(end)
+                print*, "... in ", end-start, " seconds."
+            end if
+!
             call jedema()
 !
     end subroutine
@@ -1198,6 +1251,12 @@ contains
 ! ------------------------------------------------------------------
             integer :: i_cell, cell_id, cell_dim, object_id, nno, cell_type
             integer :: i_node, nodes_loc(27)
+            real(kind=8):: start, end
+!
+            if(this%info >= 2) then
+                print*, "Converting cells..."
+                call cpu_time(start)
+            end if
 !
             if(present(prefix)) then
                 this%node_prefix = prefix
@@ -1246,6 +1305,11 @@ contains
             end do
 ! --- Keep only necessary nodes
             call this%update_nodes()
+!
+            if(this%info >= 2) then
+                call cpu_time(end)
+                print*, "... in ", end-start, " seconds."
+            end if
 !
     end subroutine
 !
