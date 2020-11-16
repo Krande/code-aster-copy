@@ -449,7 +449,7 @@ implicit none
                 call vtcreb(cnchmpc, 'V', 'C',&
                             nume_ddlz = nume,&
                             nb_equa_outz = neq)
-                call ascomb(list_load, vechmp, 'C', para, freq, cnchmpc)
+                call ascomb(infcha, vechmp, 'C', para, freq, cnchmpc)
             endif
 !
 ! --- POUR UN EVOL_NOLI, PRISE EN COMPTE DES FORCES PILOTEES
