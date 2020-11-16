@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine nmarex(motfac, sdarch)
-        character(len=16) :: motfac
-        character(len=19) :: sdarch
+    subroutine nmarex(keywfact, sdarch, lDyna_)
+        character(len=19), intent(in) :: sdarch
+        character(len=16), intent(in) :: keywfact
+        aster_logical, optional, intent(in) :: lDyna_
     end subroutine nmarex
 end interface

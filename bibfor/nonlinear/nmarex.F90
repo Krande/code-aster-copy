@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,58 +15,66 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nmarex(motfac, sdarch)
-!
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/wkvect.h"
-    character(len=19) :: sdarch
-    character(len=16) :: motfac
+subroutine nmarex(keywfact, sdarch, lDyna_)
 !
-! ----------------------------------------------------------------------
+implicit none
+!
+#include "asterfort/getvtx.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/utmess.h"
+!
+character(len=19), intent(in) :: sdarch
+character(len=16), intent(in) :: keywfact
+aster_logical, optional, intent(in) :: lDyna_
+!
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE *_NON_LINE (ARCHIVAGE)
 !
 ! CONSTRUCTION CHAMPS EXCLUS DE L'ARCHIVAGE
 !
-! ----------------------------------------------------------------------
-!
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MOTFAC : MOT-FACTEUR POUR LIRE <CHAM_EXCL>
 ! IN  SDARCH : NOM DE LA SD ARCHIVAGE
 !
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: nbFieldExcl, iFieldExcl
+    aster_logical :: lDyna, lAcce, lSigm
+    character(len=16), pointer :: fieldExcl(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: ibid
-    integer :: nb
-    character(len=24) :: arcexc
-    integer :: jarexc
-!
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- NOM DE LA SD
-!
-    arcexc = sdarch(1:19)//'.AEXC'
-!
-! --- CONSTRUCTION CHAMPS EXCLUS DE L'ARCHIVAGE
-!
-    call getvtx(motfac, 'CHAM_EXCLU', iocc=1, nbval=0, nbret=nb)
-    nb = -nb
-    if (nb .ne. 0) then
-        call wkvect(arcexc, 'V V K16', nb, jarexc)
-        call getvtx(motfac, 'CHAM_EXCLU', iocc=1, nbval=nb, vect=zk16(jarexc),&
-                    nbret=ibid)
+    lDyna = ASTER_FALSE
+    if (present(lDyna_)) then
+        lDyna = lDyna_
     endif
 !
-    call jedema()
+    call getvtx(keywfact, 'CHAM_EXCLU', iocc=1, nbval=0, nbret=nbFieldExcl)
+    nbFieldExcl = -nbFieldExcl
+    if (nbFieldExcl .ne. 0) then
+        call wkvect(sdarch(1:19)//'.AEXC', 'V V K16', nbFieldExcl, vk16 = fieldExcl)
+        call getvtx(keywfact, 'CHAM_EXCLU', iocc=1, nbval = nbFieldExcl, vect = fieldExcl)
+    endif
+!
+    if (lDyna) then
+        lSigm = ASTER_TRUE
+        lAcce = ASTER_TRUE
+        do iFieldExcl = 1, nbFieldExcl
+            if (fieldExcl(iFieldExcl) .eq. 'SIEF_ELGA') then
+                lSigm = ASTER_FALSE
+            endif
+            if (fieldExcl(iFieldExcl) .eq. 'ACCE') then
+                lAcce = ASTER_FALSE
+            endif
+        end do
+        if (lSigm .and. .not. lAcce) then
+            call utmess('A', 'MECANONLINE5_26')
+        endif
+    endif
+
 !
 end subroutine

@@ -153,6 +153,8 @@ Dynamique non-linéaire
 Le pilotage n'est pas possible.
 """),
 
+    26 : _("""Vous avez exclu l'archivage des champs d'accélération tout en conservant celui des contraintes. Le calcul des réactions nodales (REAC_NODA) dans CALC_CHAMP sera faux."""),
+
     28 : _("""
 Dynamique non-linéaire
 La méthode XFEM n'est pas possible.
