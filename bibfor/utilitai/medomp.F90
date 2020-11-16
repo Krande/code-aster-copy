@@ -87,6 +87,7 @@ implicit none
     modele = ' '
     nbordr = 0
     numord = 0
+    l_ther = ASTER_FALSE
 !
     if (result(1:1) .eq. ' ') then
 !
@@ -97,7 +98,6 @@ implicit none
             call utmess('F', 'POSTELEM_20')
         endif
         call dismoi('PHENOMENE', modele, 'MODELE', repk=phen)
-        l_ther = ASTER_FALSE
         if (phen .eq. 'THERM') then
             l_ther = ASTER_TRUE
         endif

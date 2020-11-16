@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -92,7 +92,7 @@ aster_logical, intent(out) :: l_obsv
                 else
                     v_extr_flag(i_keyw_fact) = .false.
                 endif
-                l_obsv = l_select.or.l_obse_init
+                l_obsv = l_obsv.or.l_obse_init
             end do
             goto 99
         endif

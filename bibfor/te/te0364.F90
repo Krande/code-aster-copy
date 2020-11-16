@@ -233,18 +233,18 @@ character(len=16), intent(in) :: option, nomte
         coefaf_prev = coefaf
     endif
 !
-! - Get projections datas
-!
-    call mmGetProjection(i_reso_geom, wpg     ,&
-                         xpc        , ypc     , xpr     , ypr     , tau1     , tau2     ,&
-                         xpc_prev   , ypc_prev, xpr_prev, ypr_prev, tau1_prev, tau2_prev,wpg_prev)
-!
 ! - Get algorithms
 !
     call mmGetAlgo(l_large_slip, ndexfr  , jeusup, lambds,&
                    ialgoc      , ialgof  , i_reso_fric, i_reso_geom,&
                    lpenac      , lpenaf  ,&
                    lambds_prev , jeu_prev)
+!
+! - Get projections datas
+!
+    call mmGetProjection(i_reso_geom, wpg     ,&
+                         xpc        , ypc     , xpr     , ypr     , tau1     , tau2     ,&
+                         xpc_prev   , ypc_prev, xpr_prev, ypr_prev, tau1_prev, tau2_prev,wpg_prev)
 !
 ! - Get shape functions
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -145,7 +145,7 @@ subroutine oriem0(kdim, type, coor, lino1, nbno1,&
 !
 !   -- position de la maille 2 par rapport a la maille de peau  => ps2
     do 60 ino = 1, nbno2
-        indi=indiis(lino3(1),lino2(ino),1,nbno2)
+        indi=indiis(lino3(1),lino2(ino),1,nbno3)
         if (indi .eq. 0) then
             n2=lino2(ino)
             n1=lino3(1)

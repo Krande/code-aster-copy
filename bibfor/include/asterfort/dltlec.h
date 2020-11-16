@@ -29,7 +29,7 @@ interface
         character(len=8) :: result
         character(len=24) :: modele
         character(len=24) :: numedd
-        character(len=8) :: materi
+        character(len=24) :: materi
         character(len=24) :: mate
         character(len=8) :: carael
         character(len=24) :: carele

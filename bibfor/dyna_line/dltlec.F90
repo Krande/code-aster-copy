@@ -98,9 +98,9 @@ implicit none
     aster_logical :: lamort
     character(len=8) :: result
     character(len=8) :: masse, rigid, amort
-    character(len=8) :: materi, carael
+    character(len=8) :: carael
     character(len=19) :: lischa, solveu
-    character(len=24) :: modele, numedd, mate, carele, mater
+    character(len=24) :: modele, numedd, mate, carele, mater, materi
     character(len=24) :: charge, infoch, fomult
     integer :: niv, ifm
     integer :: nr, nm, na, nvect, ivec, n1

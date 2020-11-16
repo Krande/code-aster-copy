@@ -144,16 +144,16 @@ character(len=16), intent(in) :: option, nomte
 !
     call mmGetCoefficients(coefff, coefac, coefaf, alpha_cont)
 !
-! - Get projections datas
-!
-    call mmGetProjection(i_reso_geom, wpg,&
-                         xpc   , ypc, xpr, ypr, tau1, tau2)
-!
 ! - Get algorithms
 !
     call mmGetAlgo(l_large_slip, ndexfr, jeusup, lambds,&
                    ialgoc      , ialgof, i_reso_fric, i_reso_geom,&
                    l_pena_cont , l_pena_fric)
+!
+! - Get projections datas
+!
+    call mmGetProjection(i_reso_geom, wpg,&
+                         xpc   , ypc, xpr, ypr, tau1, tau2)
 !
 ! - Get status
 !
