@@ -50,10 +50,8 @@ subroutine pipetu(ndim, mate, sup, sud, vim,&
     real(kind=8) :: lc, k0, ka, kref, c, val(nbpa), etasol(4), xn
     real(kind=8) :: k, delta_N_0, delta_T_0, delta_N_f, delta_T_f, para_bk
     real(kind=8) :: delta_0, delta_f
-    real(kind=8) :: sud_T, sud_N_pos, beta, b
-    aster_logical :: l_sud0
     integer :: cod(nbpa), kpg, spt
-    character(len=16) :: nom(nbpa) 
+    character(len=16) :: nom(nbpa)
     character(len=8) :: fami, poum
 !
     data nom /'K','SIGM_C_N','SIGM_C_T','GC_N','GC_T','ETA_BK'/
@@ -66,7 +64,7 @@ subroutine pipetu(ndim, mate, sup, sud, vim,&
     ok(3) = 0
     ok(4) = 0
     fami='FPG1'
-    kpg=1 
+    kpg=1
     spt=1
     poum='+'
 !
@@ -98,7 +96,7 @@ subroutine pipetu(ndim, mate, sup, sud, vim,&
 !        ASSERT(delta_0 .gt. r8prem())
 !!   * version alternative (critère de Ye) --> à implémenter
 !!
-!! CALCUL DU SEUIL DE PROPAGATION DE LA FISSURE EN MODE MIXTE A T+ 
+!! CALCUL DU SEUIL DE PROPAGATION DE LA FISSURE EN MODE MIXTE A T+
 !        delta_f = 1/delta_0 * (delta_N_0*delta_N_f + &
 !                (delta_T_0*delta_T_f - delta_N_0*delta_N_f )*b**para_bk)
 !        ASSERT(delta_f .gt. r8prem())
