@@ -68,8 +68,8 @@ type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     aster_logical :: l_vibr_mode, l_buckling, lexpl, lxfem, lmodim, l_mult_front
     aster_logical :: l_cont_gcp, lpetsc, lamg, limpex, l_matr_distr, lgcpc
     aster_logical :: londe, l_dyna, l_grot_gdep, l_newt_krylov, l_mumps, l_rom
-    aster_logical :: l_energy, lproj, lmatdi, lldsp, l_comp_rela, lammo, lthms, limpl
-    aster_logical :: l_unil_pena, l_cont_acti
+    aster_logical :: l_energy, lproj, lmatdi, lldsp, lResiCompRela, lResiRefeRela
+    aster_logical :: l_unil_pena, l_cont_acti, lammo, lthms, limpl
     character(len=24) :: typilo, metres, char24
     character(len=16) :: reli_meth, matrix_pred, partit
     character(len=3) :: mfdet
@@ -107,7 +107,8 @@ type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     lproj           = isfonc(list_func_acti,'PROJ_MODAL')
     lmatdi          = isfonc(list_func_acti,'MATR_DISTRIBUEE')
     leltc           = isfonc(list_func_acti,'ELT_CONTACT')
-    l_comp_rela     = isfonc(list_func_acti,'RESI_COMP')
+    lResiCompRela   = isfonc(list_func_acti,'RESI_COMP')
+    lResiRefeRela   = isfonc(list_func_acti,'RESI_REFE')
     lgcpc           = isfonc(list_func_acti,'GCPC')
     lpetsc          = isfonc(list_func_acti,'PETSC')
     lldsp           = isfonc(list_func_acti,'LDLT_SP')
@@ -200,10 +201,15 @@ type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         l_iden_rela = ds_contact%l_iden_rela
         if (l_iden_rela .and. l_mult_front) then
             call utmess('F', 'MECANONLINE3_99')
-        elseif (l_matr_distr) then
+        endif
+        if (l_matr_distr) then
             call utmess('F', 'CONTACT2_19')
-        elseif ((lpetsc .or. lgcpc).and. .not. lldsp) then
+        endif
+        if ((lpetsc .or. lgcpc).and. .not. lldsp) then
             call utmess('F', 'MECANONLINE3_87')
+        endif
+        if (lResiRefeRela) then
+            call utmess('F', 'CONTACT2_21')
         endif
     endif
 !
@@ -286,7 +292,7 @@ type(NL_DS_AlgoPara), intent(in) :: ds_algopara
 ! - Dynamic
 !
     if (l_dyna) then
-        if (l_comp_rela) then
+        if (lResiCompRela) then
             call utmess('F', 'MECANONLINE5_53')
         endif
         if (l_pilo) then
