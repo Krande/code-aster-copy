@@ -188,19 +188,16 @@ character(len=*), optional, intent(in) :: sddynz_
 ! - Prepare vector and matrix
 !
     if (l_merigi) then
-        call jeexin(ds_system%merigi//'.RELR', iret)
-        if (iret .eq. 0) then
-            call jeexin(ds_system%merigi//'.RERR', ires)
-            if (ires .eq. 0) then
-                call memare(base, ds_system%merigi, model, ds_material%mater, cara_elem,&
-                            'RIGI_MECA')
-            endif
-            if (l_macr_elem) then
-                call jeveuo(ds_system%merigi//'.RERR', 'E', vk24=v_rerr)
-                v_rerr(3) = 'OUI_SOUS_STRUC'
-            endif
+        call detrsd('MATR_ELEM', ds_system%merigi)
+        call jeexin(ds_system%merigi//'.RERR', ires)
+        if (ires .eq. 0) then
+            call memare(base, ds_system%merigi, model, ds_material%mater, cara_elem,&
+                        'RIGI_MECA')
         endif
-        call jedetr(ds_system%merigi//'.RELR')
+        if (l_macr_elem) then
+            call jeveuo(ds_system%merigi//'.RERR', 'E', vk24=v_rerr)
+            v_rerr(3) = 'OUI_SOUS_STRUC'
+        endif
         call reajre(ds_system%merigi, ' ', base)
     endif
 !
@@ -221,7 +218,7 @@ character(len=*), optional, intent(in) :: sddynz_
     lpaout(2) = 'PCACO3D'
     lchout(2) = caco3d(1:19)
     lpaout(3) = 'PSTRXPR'
-    lchout(3) = strx_curr(1:19)
+    lchout(3) = strx_curr(1:19) 
     nbout = 3
     if (l_merigi) then
         nbout = nbout+1
