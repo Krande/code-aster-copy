@@ -39,6 +39,7 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+import traceback
 
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
@@ -101,8 +102,11 @@ class JunitXml(object):
         """ returns a string representation of the junit xml tree. """
         out = ET.tostring(self.root)
         if pretty:
-            dom = xml.dom.minidom.parseString(out)
-            out = dom.toprettyxml()
+            try:
+                dom = xml.dom.minidom.parseString(out)
+                out = dom.toprettyxml()
+            except Exception:
+                traceback.print_exc()
         return out
 
 
