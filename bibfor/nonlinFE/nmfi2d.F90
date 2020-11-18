@@ -142,7 +142,7 @@ aster_logical, intent(in) :: lMatr, lVect, lSigm
                     mate, compor, carcri, tm, tp,&
                     2, sum, dsu, 1, sigmo(1, kpg),&
                     vim(1, kpg), option, angmas, &
-                    sigma(1, kpg), vip(1, kpg), 36, dsidep, ibid)
+                    sigma(1, kpg), vip(1, kpg), 36, dsidep, codret)
 ! ----- Internal forces
         if (lVect) then
 !       Il faudrait séparer les deux => petit travail de réflexion

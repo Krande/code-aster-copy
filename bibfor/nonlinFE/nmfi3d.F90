@@ -144,7 +144,7 @@ aster_logical, intent(in) :: lMatr, lVect, lSigm
                     mate, compor, carcri, tm, tp,&
                     3, sum, dsu, 6, sigmo,&
                     vim(1, kpg), option, angmas, &
-                    sigma, vip(1, kpg), 36, dsidep, ibid)
+                    sigma, vip(1, kpg), 36, dsidep, codret)
 ! ----- Stresses
         if (lSigm) then
             do n = 1, 3
