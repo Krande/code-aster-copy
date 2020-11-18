@@ -437,7 +437,7 @@ Commande FACTORISER :
 
     76 : _("""
    Solveur GCPC :
-   la création du préconditionneur 'LDLT_SP' a échoué car on manque de mémoire.
+   la création du préconditionneur %(k1)s a échoué car on manque de mémoire.
 
    Conseil :
    augmenter la valeur du paramètre PCENT_PIVOT sous le mot-clé facteur SOLVEUR.

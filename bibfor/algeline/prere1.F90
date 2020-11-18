@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -185,10 +185,10 @@ subroutine prere1(solvez, base, iret, matpre, matass,&
         if (precon .eq. 'LDLT_INC') then
             niremp = zi(islvi-1+4)
             call pcldlt(maprec, matas, niremp, base)
-        else if (precon.eq.'LDLT_SP') then
+        else if ((precon.eq.'LDLT_SP') .or. (precon.eq.'LDLT_DP') )then
             call pcmump(matas, solveu, iretgc)
             if (iretgc .ne. 0) then
-                call utmess('F', 'ALGELINE5_76')
+                call utmess('F', 'ALGELINE5_76', sk=precon)
             endif
         endif
         iret=0

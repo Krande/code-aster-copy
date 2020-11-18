@@ -193,7 +193,7 @@ subroutine op0014()
 !           -- appel a la construction du preconditionneur
             call pcmump(mass, solveu, iret)
             if (iret .ne. 0) then
-                call utmess('F', 'ALGELINE5_76')
+                call utmess('F', 'ALGELINE5_76', sk=precon)
             endif
         endif
         goto 999
