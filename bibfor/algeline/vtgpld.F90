@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine vtgpld(cumul , geomiz, alpha, deplaz, base,&
-                  geomfz)
+                  geomfz, tridim)
 !
 implicit none
 !
@@ -74,6 +74,7 @@ implicit none
     integer :: nb_cmp_gd, nb_node_mesh, nb_cmp_node, nb_ec
     integer :: length_prno
     integer :: i_cmp_glob, i_ec, i_equ, i_node, i_dof
+    integer, optional :: tridim
     real(kind=8) :: rdepla
     character(len=8) :: mesh, nomgd, ktype
     character(len=19) :: geomi, depla, geomf, prof_chno
@@ -152,6 +153,7 @@ implicit none
 !
 ! - Update
 !
+  
     do i_node = 1, nb_node_mesh
         i_dof       = v_prno((nb_ec+2)*(i_node-1)+1) - 1
         nb_cmp_node = v_prno((nb_ec+2)*(i_node-1)+2)
@@ -160,11 +162,18 @@ implicit none
             do i_ec = 1, nb_ec
                 desc_gran(i_ec) = v_prno((nb_ec+2)*(i_node-1)+2+i_ec)
             end do
+
             do i_cmp_glob = 1, 3
                 if (exisdg(desc_gran,i_cmp_glob)) then
                     i_dof  = i_dof + 1
                     i_equ  = v_nueq(i_dof)
                     rdepla = v_depla(i_equ)
+! verifier si les deplacements sont tridimensionels (redepla_z ne vaut pas zero) 
+                    if (present(tridim) .and. tridim .ne. 1) then           
+                        if(i_cmp_glob .eq. 3 .and. abs(rdepla) .ge. 1e-6) then
+                            tridim = 1
+                        endif
+                    endif    
                     if (cumul .eq. 'CUMU') then
                         v_geomf(3*(i_node-1)+i_cmp_glob) = &
                             v_geomi(3*(i_node-1)+i_cmp_glob)+alpha*rdepla

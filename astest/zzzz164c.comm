@@ -1,0 +1,152 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
+      DEBUG=_F( SDVERI     = 'NON',),
+)
+
+# lecture du maillage
+MA_INI = LIRE_MAILLAGE ( FORMAT="ASTER", UNITE = 21 )
+MA = [None]*3
+CH = [None]*3
+CHD = [None]*3
+RES = [None]*3
+for i in range (0,3):
+    MA[i] = COPIER(CONCEPT=MA_INI)
+ 
+IMPR_RESU(FORMAT='RESULTAT',
+          RESU=_F(MAILLAGE=MA_INI, IMPR_COOR = 'OUI',),)
+
+depldnl = CREA_CHAMP(
+    OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R',
+    MAILLAGE= MA[0],
+    AFFE=_F(
+        TOUT='OUI',
+        NOM_CMP=('DX','DY','DZ',),
+        VALE   =(1.0, 2.0, 3.0, ),
+    ),
+)
+
+# On déplace le maillage
+MA[0] = MODI_MAILLAGE(
+    MAILLAGE=MA[0],
+    DEFORME=_F(OPTION='TRAN', DEPL=depldnl,),
+)
+
+MA[1] = MODI_MAILLAGE(
+    MAILLAGE=MA[1],
+    TRANSLATION = ( 1.0 , 2.0 , 3.0 )
+)
+
+MA[2] = MODI_MAILLAGE(
+    MAILLAGE=MA[2],
+    ROTATION =_F ( POIN_1 = ( 0. , 0 , 0 ) ,
+                     ANGLE= 45 ,
+                     POIN_2 = ( 1 , 0 , 0. ) , ) ,
+
+)
+
+for i in range(0,3):
+    IMPR_RESU(FORMAT='RESULTAT',RESU=_F(MAILLAGE=MA[i]),)
+
+    CH[i] = CREA_CHAMP ( OPERATION = 'EXTR' ,
+                         TYPE_CHAM = 'NOEU_GEOM_R' ,
+                         NOM_CHAM = 'GEOMETRIE' ,
+                         MAILLAGE = MA[i] ,
+                         INFO = 2 , )
+    #
+    CHD[i] = CREA_CHAMP ( OPERATION = 'ASSE' ,
+                         MAILLAGE = MA[i] ,
+                         TYPE_CHAM = 'NOEU_DEPL_R' ,
+                         ASSE = _F ( TOUT = 'OUI' ,
+                                     CHAM_GD = CH[i] ,
+                                     NOM_CMP = ( 'X' , 'Y'  ,'Z'  , ) ,
+                                     NOM_CMP_RESU = ('DX' , 'DY' , 'DZ' , )
+                                     , ) , )
+    
+    #
+    RES[i] = CREA_RESU ( OPERATION  = 'AFFE' ,
+                       TYPE_RESU = 'EVOL_ELAS' ,
+                       NOM_CHAM  = 'DEPL' ,
+                       AFFE = _F ( INST = 1.0 ,
+    #                        NUME_ORDRE_INIT = 1 ,
+                                   CHAM_GD = CHD[i] , ) , )
+                                   
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='P1',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RES[0],
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.,
+                   VALE_REFE=1.,
+                   CRITERE='ABSOLU',
+                   PRECISION=1E-8,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='P1',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RES[0],
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=2.,
+                   VALE_REFE=2.,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.0,),
+                 _F(NUME_ORDRE=1,
+                   GROUP_NO='P1',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RES[0],
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=3.,
+                   VALE_REFE=3.,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.0,),))
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='P1',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RES[1],
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.,
+                   VALE_REFE=1.,
+                   CRITERE='ABSOLU',
+                   PRECISION=1E-8,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='P1',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RES[1],
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=2.,
+                   VALE_REFE=2.,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.0,),
+                 _F(NUME_ORDRE=1,
+                   GROUP_NO='P1',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RES[1],
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=3.,
+                   VALE_REFE=3.,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.0,),))
+                   
+FIN()
