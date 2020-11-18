@@ -60,7 +60,7 @@ template < typename T1 > struct is_vector;
 
 /**
  * @struct is_vector
- * @brief Spécialisation du template dans le cas général
+ * @brief Spécialisation du template dans le cas  *général
  */
 template < class T > struct is_vector {
     static bool const value = false;
@@ -171,11 +171,10 @@ class GenericCapyConvertibleValue {
     /**
      * @brief Fonction permettant de convertir le mot-clé en GenParam
      * @return Pointeur vers un GenParam
-     * @warning la gestion du pointeur est déléguée à l'appelant !!
      */
-    virtual GenParam *getValueOfKeyWord() const {
+    virtual GenParamPtr getValueOfKeyWord() const {
         throw std::runtime_error( "Programming error" );
-        return new GenParam( "Base class", true );
+        return boost::make_shared<GenParam>( "Base class", true );
     };
 
   public:
@@ -291,7 +290,6 @@ class CapyConvertibleValue : public GenericCapyConvertibleValue {
      * doubles
      * @todo à modifier pour prendre en compte la traduction
      * @return Pointeur vers un GenParam
-     * @warning la gestion du pointeur est déléguée à l'appelant !!
      */
     template < typename T = Type, typename M = MatchingType >
     typename std::enable_if< ( std::is_same< T, ASTERINTEGER >::value ||
@@ -301,30 +299,29 @@ class CapyConvertibleValue : public GenericCapyConvertibleValue {
                                std::is_same< T, VectorComplex >::value ||
                                std::is_same< T, VectorLong >::value ) &&
                                  !std::is_same< M, std::string >::value,
-                             GenParam * >::type
+                             GenParamPtr >::type
     virtualGetValueOfKeyWord() const {
         if ( _isSet )
-            return new GenParam( _name, _value, _isMandatory );
+            return boost::make_shared<GenParam>( _name, _value, _isMandatory );
         else
-            return new GenParam( _name, _isMandatory );
+            return boost::make_shared<GenParam>( _name, _isMandatory );
     };
 
     template < typename T = Type, typename M = MatchingType >
     typename std::enable_if<
         ( std::is_same< T, ASTERINTEGER >::value || std::is_same< T, double >::value ) &&
             std::is_same< M, std::string >::value,
-        GenParam * >::type
+        GenParamPtr >::type
     virtualGetValueOfKeyWord() const {
         MapConstIterator curIter = _matchingValues.find( _value );
         if ( curIter == _matchingValues.end() )
             throw std::runtime_error( "Programming error" );
-        return new GenParam( _name, ( *curIter ).second, _isMandatory );
+        return boost::make_shared<GenParam>( _name, ( *curIter ).second, _isMandatory );
     };
 
     /**
      * @brief Traducteur du mot-clé dans le cas vecteur
      * @return Pointeur vers un GenParam
-     * @warning la gestion du pointeur est déléguée à l'appelant !!
      */
     template < typename T = Type, typename M = MatchingType >
     typename std::enable_if<
@@ -336,7 +333,7 @@ class CapyConvertibleValue : public GenericCapyConvertibleValue {
                                 typename is_vector_of_shared_ptr< T >::value_type >::value ) &&
             !std::is_same< T, std::vector< MeshEntityPtr > >::value &&
             !std::is_same< T, VectorString >::value,
-        GenParam * >::type
+        GenParamPtr >::type
     virtualGetValueOfKeyWord() const {
         MatchingType toReturn;
         for ( const auto &curIter : _value ) {
@@ -346,74 +343,70 @@ class CapyConvertibleValue : public GenericCapyConvertibleValue {
             toReturn.push_back( ( *curIter2 ).second );
         }
         if ( _isSet )
-            return new GenParam( _name, toReturn, _isMandatory );
+            return boost::make_shared<GenParam>( _name, toReturn, _isMandatory );
         else
-            return new GenParam( _name, _isMandatory );
+            return boost::make_shared<GenParam>( _name, _isMandatory );
     };
 
     /**
      * @brief Traducteur du mot-clé dans le cas vecteur de std::string
      * @return Pointeur vers un GenParam
-     * @warning la gestion du pointeur est déléguée à l'appelant !!
      */
     template < typename T = Type, typename M = MatchingType >
     typename std::enable_if< std::is_same< T, VectorString >::value,
-                             GenParam * >::type
+                             GenParamPtr >::type
     virtualGetValueOfKeyWord() const {
         MatchingType toReturn;
         for ( const auto &curIter : _value )
             toReturn.push_back( curIter );
 
         if ( _isSet )
-            return new GenParam( _name, toReturn, _isMandatory );
+            return boost::make_shared<GenParam>( _name, toReturn, _isMandatory );
         else
-            return new GenParam( _name, _isMandatory );
+            return boost::make_shared<GenParam>( _name, _isMandatory );
     };
 
     /**
      * @brief Traducteur du mot-clé dans le cas vecteur de DataStructurePtr ou de MeshEntityPtr
      * @return Pointeur vers un GenParam
-     * @warning la gestion du pointeur est déléguée à l'appelant !!
      */
     template < typename T = Type, typename M = MatchingType >
     typename std::enable_if< std::is_same< T, std::vector< MeshEntityPtr > >::value ||
                                  ( is_vector< T >::value &&
                                    std::is_base_of< DataStructure, typename is_vector_of_shared_ptr<
                                                                        T >::value_type >::value ),
-                             GenParam * >::type
+                             GenParamPtr >::type
     virtualGetValueOfKeyWord() const {
         MatchingType toReturn;
         for ( const auto &curIter : _value )
             toReturn.push_back( ( curIter )->getName() );
 
         if ( _isSet )
-            return new GenParam( _name, toReturn, _isMandatory );
+            return boost::make_shared<GenParam>( _name, toReturn, _isMandatory );
         else
-            return new GenParam( _name, _isMandatory );
+            return boost::make_shared<GenParam>( _name, _isMandatory );
     };
 
     /**
      * @brief Traducteur du mot-clé dans le cas d'un DataStructurePtr
      * @return Pointeur vers un GenParam
-     * @warning la gestion du pointeur est déléguée à l'appelant !!
      */
     template < typename T = Type, typename M = MatchingType >
     typename std::enable_if<
         std::is_same< T, MeshEntityPtr >::value ||
             ( is_shared_ptr< T >::value &&
               std::is_base_of< DataStructure, typename is_shared_ptr< T >::value_type >::value ),
-        GenParam * >::type
+        GenParamPtr >::type
     virtualGetValueOfKeyWord() const {
         if ( _isSet )
-            return new GenParam( _name, ( _value )->getName(), _isMandatory );
+            return boost::make_shared<GenParam>( _name, ( _value )->getName(), _isMandatory );
         else
-            return new GenParam( _name, _isMandatory );
+            return boost::make_shared<GenParam>( _name, _isMandatory );
     };
 
     /**
      * @brief Traducteur du mot-clé dans les cas restants
      * @return Pointeur vers un GenParam
-     * @warning la gestion du pointeur est déléguée à l'appelant !!
      */
     template < typename T = Type, typename M = MatchingType >
     typename std::enable_if<
@@ -429,31 +422,29 @@ class CapyConvertibleValue : public GenericCapyConvertibleValue {
             !( is_shared_ptr< T >::value &&
                std::is_base_of< DataStructure, typename is_shared_ptr< T >::value_type >::value ) &&
             !std::is_same< T, MeshEntityPtr >::value && !std::is_same< T, std::string >::value,
-        GenParam * >::type
+        GenParamPtr >::type
     virtualGetValueOfKeyWord() const {
         MapConstIterator curIter = _matchingValues.find( _value );
         if ( curIter == _matchingValues.end() )
             throw std::runtime_error( "Programming error" );
-        return new GenParam( _name, ( *curIter ).second, _isMandatory );
+        return boost::make_shared<GenParam>( _name, ( *curIter ).second, _isMandatory );
     };
 
     /**
      * @brief Traducteur du mot-clé dans les cas des std::string
      * @return Pointeur vers un GenParam
-     * @warning la gestion du pointeur est déléguée à l'appelant !!
      */
     template < typename T = Type, typename M = MatchingType >
-    typename std::enable_if< std::is_same< T, std::string >::value, GenParam * >::type
+    typename std::enable_if< std::is_same< T, std::string >::value, GenParamPtr >::type
     virtualGetValueOfKeyWord() const {
-        return new GenParam( _name, _value, _isMandatory );
+        return boost::make_shared<GenParam>( _name, _value, _isMandatory );
     };
 
     /**
      * @brief Traducteur du mot-clé
      * @return Pointeur vers un GenParam
-     * @warning la gestion du pointeur est déléguée à l'appelant !!
      */
-    GenParam *getValueOfKeyWord() const {
+    GenParamPtr getValueOfKeyWord() const {
         return virtualGetValueOfKeyWord< Type, MatchingType >();
     };
 };
@@ -565,8 +556,8 @@ class CapyConvertibleContainer {
 
         SyntaxMapContainer toReturn = buildSyntaxMapFromParamList( lParam );
 
-        for ( auto curIter : lParam )
-            delete curIter;
+        // for ( auto curIter : lParam )
+        //     delete curIter;
         return toReturn;
     };
 };

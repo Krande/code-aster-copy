@@ -50,16 +50,16 @@ class NonLinearMethodClass {
     /** @brief Iteration Matrix */
     MatrixEnum _mat;
     // mot-clé simple METHODE
-    GenParam _methode;
+    GenParamPtr _methode;
     // mot-cle facteur NEWTON
-    GenParam _prediction;
+    GenParamPtr _prediction;
     // evol_noli
-    GenParam _matr_rigi_syme;
-    GenParam _matrice;
-    GenParam _reac_incr;
-    GenParam _reac_iter;
-    GenParam _reac_iter_elas;
-    GenParam _pas_mini_elas;
+    GenParamPtr _matr_rigi_syme;
+    GenParamPtr _matrice;
+    GenParamPtr _reac_incr;
+    GenParamPtr _reac_iter;
+    GenParamPtr _reac_iter_elas;
+    GenParamPtr _pas_mini_elas;
 
     ListGenParam _listOfMethodParameters;
     ListGenParam _listOfNewtonParameters;
@@ -69,29 +69,33 @@ class NonLinearMethodClass {
      * @brief Constructeur
      */
     NonLinearMethodClass( const NonLinearMethodEnum curNLMethod = NewtonMethod )
-        : _nonLinearMethod( curNLMethod ), _methode( "METHODE", false ),
-          _prediction( "PREDICTION", false ), _matr_rigi_syme( "MATR_RIGI_SYME", false ),
-          _matrice( "MATRICE", false ), _reac_incr( "REAC_INCR", false ),
-          _reac_iter( "REAC_ITER", false ), _reac_iter_elas( "REAC_ITER_ELAS", false ),
-          _pas_mini_elas( "PAS_MINI_ELAS", false ) {
-        _methode = std::string( NonLinearMethodNames[(int)_nonLinearMethod] );
-        _listOfMethodParameters.push_back( &_methode );
+        : _nonLinearMethod( curNLMethod ),
+          _methode(boost::make_shared<GenParam>( "METHODE", false )),
+          _prediction(boost::make_shared<GenParam>( "PREDICTION", false )),
+          _matr_rigi_syme(boost::make_shared<GenParam>( "MATR_RIGI_SYME", false )),
+          _matrice(boost::make_shared<GenParam>( "MATRICE", false )),
+          _reac_incr(boost::make_shared<GenParam>( "REAC_INCR", false )),
+          _reac_iter(boost::make_shared<GenParam>( "REAC_ITER", false )),
+          _reac_iter_elas(boost::make_shared<GenParam>( "REAC_ITER_ELAS", false )),
+          _pas_mini_elas(boost::make_shared<GenParam>( "PAS_MINI_ELAS", false )) {
+        _methode->setValue( std::string( NonLinearMethodNames[(int)_nonLinearMethod]) );
+        _listOfMethodParameters.push_back( _methode );
 
         if ( ( _nonLinearMethod == NewtonMethod ) or ( _nonLinearMethod == NewtonKrylov ) ) {
-            _prediction = "TANGENTE";
-            _matrice = "TANGENTE";
-            _reac_incr = (ASTERINTEGER)1;
-            _reac_iter = (ASTERINTEGER)0;
-            _reac_iter_elas = (ASTERINTEGER)0;
-            _pas_mini_elas = (ASTERINTEGER)0;
-            _matr_rigi_syme = "NON";
-            _listOfNewtonParameters.push_back( &_prediction );
-            _listOfNewtonParameters.push_back( &_matrice );
-            _listOfNewtonParameters.push_back( &_reac_incr );
-            _listOfNewtonParameters.push_back( &_reac_iter );
-            _listOfNewtonParameters.push_back( &_reac_iter_elas );
-            _listOfNewtonParameters.push_back( &_pas_mini_elas );
-            _listOfNewtonParameters.push_back( &_matr_rigi_syme );
+            _prediction->setValue( "TANGENTE");
+            _matrice->setValue( "TANGENTE");
+            _reac_incr->setValue( (ASTERINTEGER)1);
+            _reac_iter->setValue( (ASTERINTEGER)0);
+            _reac_iter_elas->setValue( (ASTERINTEGER)0);
+            _pas_mini_elas->setValue( (ASTERINTEGER)0);
+            _matr_rigi_syme->setValue( "NON");
+            _listOfNewtonParameters.push_back( _prediction );
+            _listOfNewtonParameters.push_back( _matrice );
+            _listOfNewtonParameters.push_back( _reac_incr );
+            _listOfNewtonParameters.push_back( _reac_iter );
+            _listOfNewtonParameters.push_back( _reac_iter_elas );
+            _listOfNewtonParameters.push_back( _pas_mini_elas );
+            _listOfNewtonParameters.push_back( _matr_rigi_syme );
         }
     };
 
@@ -100,7 +104,7 @@ class NonLinearMethodClass {
     */
     void setPrediction( PredictionEnum pred ) {
         _pred = pred;
-        _prediction = std::string( PredictionNames[(int)_pred] );
+        _prediction->setValue(std::string( PredictionNames[(int)_pred] ));
     };
 
     /**
@@ -108,16 +112,16 @@ class NonLinearMethodClass {
     */
     void setMatrix( MatrixEnum matrix ) {
         _mat = matrix;
-        _matrice = std::string( MatrixNames[(int)_mat] );
+        _matrice->setValue(std::string( MatrixNames[(int)_mat] ));
     };
     /**
     * @brief Force Symetry of the stiffness matrix during Newton iterations
     */
     void forceStiffnessSymetry( bool force_symetry ) {
         if ( force_symetry )
-            _matr_rigi_syme = "OUI";
+            _matr_rigi_syme->setValue("OUI");
         else
-            _matr_rigi_syme = "NON";
+            _matr_rigi_syme->setValue("NON");
     };
 
     /**

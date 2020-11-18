@@ -41,14 +41,14 @@ class LineSearchMethodClass {
     /** @brief Contrôle de la convergence de la méthode  */
     SolverControlPtr _control;
     /** LineSearch method name */
-    GenParam _methode;
+    GenParamPtr _methode;
     /** Intervalle de recherche de rho */
-    GenParam _rhoMin;
-    GenParam _rhoMax;
-    GenParam _rhoExcl;
+    GenParamPtr _rhoMin;
+    GenParamPtr _rhoMax;
+    GenParamPtr _rhoExcl;
     /** Control */
-    GenParam _resi_line_rela;
-    GenParam _iter_line_maxi;
+    GenParamPtr _resi_line_rela;
+    GenParamPtr _iter_line_maxi;
 
     ListGenParam _listOfParameters;
 
@@ -58,49 +58,52 @@ class LineSearchMethodClass {
      */
     LineSearchMethodClass( LineSearchEnum curLineSearch = Corde )
         : _lineSearchMethod( curLineSearch ),
-          _control( SolverControlPtr( new SolverControlClass() ) ), _methode( "METHODE", false ),
-          _rhoMin( "RHO_MIN", 1.e-2, false ), _rhoMax( "RHO_MAX", 1.e1, false ),
-          _rhoExcl( "RHO_EXCL", 9.e-3, false ), _resi_line_rela( "RESI_LINE_RELA", false ),
-          _iter_line_maxi( "ITER_LINE_MAXI", false ) {
+          _control( SolverControlPtr( new SolverControlClass() ) ),
+          _methode(boost::make_shared<GenParam>( "METHODE", false )),
+          _rhoMin(boost::make_shared<GenParam>( "RHO_MIN", 1.e-2, false )),
+          _rhoMax(boost::make_shared<GenParam>( "RHO_MAX", 1.e1, false )),
+          _rhoExcl(boost::make_shared<GenParam>( "RHO_EXCL", 9.e-3, false )),
+          _resi_line_rela(boost::make_shared<GenParam>( "RESI_LINE_RELA", false )),
+          _iter_line_maxi(boost::make_shared<GenParam>( "ITER_LINE_MAXI", false )) {
         _control->setRelativeTolerance( 1.e-1 );
         _control->setMaximumNumberOfIterations( 3 );
 
-        _methode = std::string( LineSearchNames[(int)curLineSearch] );
+        _methode->setValue( std::string( LineSearchNames[(int)curLineSearch]) );
 
-        _resi_line_rela = _control->getRelativeTolerance();
-        _iter_line_maxi = _control->getMaximumNumberOfIterations();
+        _resi_line_rela->setValue( _control->getRelativeTolerance());
+        _iter_line_maxi->setValue( _control->getMaximumNumberOfIterations());
 
-        _listOfParameters.push_back( &_methode );
-        _listOfParameters.push_back( &_rhoMin );
-        _listOfParameters.push_back( &_rhoMax );
-        _listOfParameters.push_back( &_rhoExcl );
-        _listOfParameters.push_back( &_resi_line_rela );
-        _listOfParameters.push_back( &_iter_line_maxi );
+        _listOfParameters.push_back( _methode );
+        _listOfParameters.push_back( _rhoMin );
+        _listOfParameters.push_back( _rhoMax );
+        _listOfParameters.push_back( _rhoExcl );
+        _listOfParameters.push_back( _resi_line_rela );
+        _listOfParameters.push_back( _iter_line_maxi );
     };
     /**
     @brief set minimum value of rho
     */
-    void setMinimumRhoValue( double rhoMin ) { _rhoMin = rhoMin; };
+    void setMinimumRhoValue( double rhoMin ) { _rhoMin->setValue( rhoMin); };
     /**
     @brief set maximum value of rho
     */
-    void setMaximumRhoValue( double rhoMax ) { _rhoMax = rhoMax; };
+    void setMaximumRhoValue( double rhoMax ) { _rhoMax->setValue( rhoMax); };
     /**
     @brief
     */
-    void setExclRhoValue( double rhoExcl ) { _rhoExcl = rhoExcl; };
+    void setExclRhoValue( double rhoExcl ) { _rhoExcl->setValue( rhoExcl); };
     /**
     @brief set maximum number of iterations
     */
     void setMaximumNumberOfIterations( ASTERINTEGER nIterMax ) {
-        _iter_line_maxi = nIterMax;
+        _iter_line_maxi->setValue( nIterMax);
         _control->setMaximumNumberOfIterations( nIterMax );
     };
     /**
     @brief set the relative tolerance
     */
     void setRelativeTolerance( double reslin ) {
-        _resi_line_rela = reslin;
+        _resi_line_rela->setValue( reslin);
         _control->setRelativeTolerance( reslin );
     };
     /**

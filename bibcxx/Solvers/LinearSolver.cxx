@@ -60,113 +60,126 @@ BaseLinearSolverClass::BaseLinearSolverClass( const std::string name,
         _renumber( currentRenumber ), _isEmpty( true ), _preconditioning( Without ),
         _charValues( JeveuxVectorChar24( getName() + ".SLVK" ) ),
         _doubleValues( JeveuxVectorReal( getName() + ".SLVR" ) ),
-        _integerValues( JeveuxVectorLong( getName() + ".SLVI" ) ), _algo( "ALGORITHME", false ),
-        _lagr( "ELIM_LAGR", false ), _matrFilter( "FILTRAGE_MATRICE", false ),
-        _memory( "GESTION_MEMOIRE", false ), _lowRankThreshold( "LOW_RANK_SEUIL", false ),
-        _lowRankSize( "LOW_RANK_TAILLE", false ), _distMatrix( "MATR_DISTRIBUEE", false ),
-        _method( "METHODE", false ), _precision( "MIXER_PRECISION", false ),
-        _fillingLevel( "NIVE_REMPLISSAGE", false ), _iterNumber( "NMAX_ITER", false ),
-        _nPrec( "NPREC", false ), _pivotPourcent( "PCENT_PIVOT", false ),
-        _postPro( "POSTTRAITEMENTS", false ), _precond( "PRE_COND", false ),
-        _prePro( "PRETRAITEMENTS", false ), _reac( "REAC_PRECOND", false ),
-        _filling( "REMPLISSAGE", false ), _renum( "RENUM", false ),
-        _residual( "RESI_RELA", false ), _precondResidual( "RESI_RELA_PC", false ),
-        _stopSingular( "STOP_SINGULIER", false ), _resolutionType( "TYPE_RESOL", false ),
-        _acceleration( "ACCELERATION", false ), _optionPetsc("OPTION_PETSC", false ),
+        _integerValues( JeveuxVectorLong( getName() + ".SLVI" ) ),
+        _acceleration(boost::make_shared<GenParam>( "ACCELERATION", false) ),
+        _algo(boost::make_shared<GenParam>( "ALGORITHME", false) ),
+        _distMatrix(boost::make_shared<GenParam>( "MATR_DISTRIBUEE", false )),
+        _filling(boost::make_shared<GenParam>( "REMPLISSAGE", false) ),
+        _fillingLevel(boost::make_shared<GenParam>( "NIVE_REMPLISSAGE", false) ),
+        _iterNumber(boost::make_shared<GenParam>( "NMAX_ITER", false) ),
+        _lagr(boost::make_shared<GenParam>( "ELIM_LAGR", false) ),
+        _lowRankSize(boost::make_shared<GenParam>( "LOW_RANK_TAILLE", false) ),
+        _lowRankThreshold(boost::make_shared<GenParam>( "LOW_RANK_SEUIL", false) ),
+        _matrFilter(boost::make_shared<GenParam>( "FILTRAGE_MATRICE", false) ),
+        _memory(boost::make_shared<GenParam>( "GESTION_MEMOIRE", false) ),
+        _method(boost::make_shared<GenParam>( "METHODE", false) ),
+        _nPrec(boost::make_shared<GenParam>( "NPREC", false) ),
+        _optionPetsc(boost::make_shared<GenParam>("OPTION_PETSC", false) ),
+        _pivotPourcent(boost::make_shared<GenParam>( "PCENT_PIVOT", false) ),
+        _postPro(boost::make_shared<GenParam>( "POSTTRAITEMENTS", false) ),
+        _precision(boost::make_shared<GenParam>( "MIXER_PRECISION", false) ),
+        _precond(boost::make_shared<GenParam>( "PRE_COND", false) ),
+        _precondResidual(boost::make_shared<GenParam>( "RESI_RELA_PC", false) ),
+        _prePro(boost::make_shared<GenParam>( "PRETRAITEMENTS", false) ),
+        _reac(boost::make_shared<GenParam>( "REAC_PRECOND", false) ),
+        _renum(boost::make_shared<GenParam>( "RENUM", false) ),
+        _residual(boost::make_shared<GenParam>( "RESI_RELA", false) ),
+        _resolutionType(boost::make_shared<GenParam>( "TYPE_RESOL", false) ),
+        _stopSingular(boost::make_shared<GenParam>( "STOP_SINGULIER", false) ),
         _matrixPrec( new AssemblyMatrixDisplacementRealClass(
             ResultNaming::getNewResultName() + ".PREC" ) ),
         _commandName( "SOLVEUR" ),
         _xfem( false )
     {
-        _renum = RenumberingNames[(int)_renumber];
+        _renum->setValue( RenumberingNames[(int)_renumber]);
 
-        _method = std::string( LinearSolverNames[(int)_linearSolver] );
-        _lagr = "NON";
+        _method->setValue( std::string( LinearSolverNames[(int)_linearSolver] ));
+        _lagr->setValue( "NON");
         if ( currentBaseLinearSolver == Petsc ) {
-            _algo = "FGMRES";
-            _distMatrix = "NON";
-            _iterNumber = (ASTERINTEGER)0;
-            _preconditioning = SimplePrecisionLdlt;
-            _precond = PreconditioningNames[(int)_preconditioning];
-            _residual = 1.e-6;
-            _precondResidual = -1.0;
-            _reac = (ASTERINTEGER)30;
-            _pivotPourcent = (ASTERINTEGER)20;
-            _memory = "AUTO";
-            _optionPetsc = "";
+            _algo->setValue( "FGMRES" );
+            _distMatrix->setValue( "NON" );
+            _iterNumber->setValue( (ASTERINTEGER)0 );
+            _preconditioning = SimplePrecisionLdlt ;
+            _precond->setValue( PreconditioningNames[(int)_preconditioning] );
+            _residual->setValue( 1.e-6 );
+            _precondResidual->setValue( -1.0 );
+            _reac->setValue( (ASTERINTEGER)30 );
+            _pivotPourcent->setValue( (ASTERINTEGER)20 );
+            _memory->setValue( "AUTO" );
+            _optionPetsc->setValue( "" );
         }
         if ( currentBaseLinearSolver == Mumps ) {
-            _lagr = "LAGR2";
-            _memory = "AUTO";
-            _lowRankThreshold = 0.;
-            _lowRankSize = -1.0;
-            _distMatrix = "NON";
-            _precision = "NON";
-            _nPrec = (ASTERINTEGER)8;
-            _pivotPourcent = (ASTERINTEGER)20;
-            _postPro = "AUTO";
-            _prePro = "AUTO";
-            _residual = -1.0;
-            _stopSingular = "OUI";
-            _resolutionType = "AUTO";
-            _acceleration = "AUTO";
+            _lagr->setValue( "LAGR2" );
+            _memory->setValue( "AUTO" );
+            _lowRankThreshold->setValue( 0. );
+            _lowRankSize->setValue( -1.0 );
+            _distMatrix->setValue( "NON" );
+            _precision->setValue( "NON" );
+            _nPrec->setValue( (ASTERINTEGER)8) ;
+            _pivotPourcent->setValue( (ASTERINTEGER)20 );
+            _postPro->setValue( "AUTO" );
+            _prePro->setValue( "AUTO" );
+            _residual->setValue( -1.0 );
+            _stopSingular->setValue( "OUI" );
+            _resolutionType->setValue( "AUTO" );
+            _acceleration->setValue( "AUTO" );
         }
         if ( currentBaseLinearSolver == MultFront ) {
-            _nPrec = (ASTERINTEGER)8;
-            _stopSingular = "OUI";
+            _nPrec->setValue( (ASTERINTEGER)8 );
+            _stopSingular->setValue( "OUI" );
         }
         if ( currentBaseLinearSolver == Ldlt ) {
-            _nPrec = (ASTERINTEGER)8;
-            _stopSingular = "OUI";
+            _nPrec->setValue( (ASTERINTEGER)8 );
+            _stopSingular->setValue( "OUI" );
         }
         if ( currentBaseLinearSolver == Gcpc ) {
-            _iterNumber = (ASTERINTEGER)0;
-            _preconditioning = IncompleteLdlt;
-            _precond = PreconditioningNames[(int)_preconditioning];
-            _residual = 1.e-6;
+            _iterNumber->setValue( (ASTERINTEGER)0 );
+            _preconditioning = IncompleteLdlt ;
+            _precond->setValue( PreconditioningNames[(int)_preconditioning] );
+            _residual->setValue( 1.e-6 );
         }
-        _listOfParameters.push_back( &_algo );
-        _listOfParameters.push_back( &_lagr );
-        _listOfParameters.push_back( &_matrFilter );
-        _listOfParameters.push_back( &_memory );
-        _listOfParameters.push_back( &_lowRankThreshold );
-        _listOfParameters.push_back( &_lowRankSize );
-        _listOfParameters.push_back( &_distMatrix );
-        _listOfParameters.push_back( &_method );
-        _listOfParameters.push_back( &_precision );
-        _listOfParameters.push_back( &_fillingLevel );
-        _listOfParameters.push_back( &_iterNumber );
-        _listOfParameters.push_back( &_nPrec );
-        _listOfParameters.push_back( &_pivotPourcent );
-        _listOfParameters.push_back( &_postPro );
-        _listOfParameters.push_back( &_precond );
-        _listOfParameters.push_back( &_prePro );
-        _listOfParameters.push_back( &_reac );
-        _listOfParameters.push_back( &_filling );
-        _listOfParameters.push_back( &_renum );
-        _listOfParameters.push_back( &_residual );
-        _listOfParameters.push_back( &_precondResidual );
-        _listOfParameters.push_back( &_stopSingular );
-        _listOfParameters.push_back( &_resolutionType );
-        _listOfParameters.push_back( &_acceleration );
-        _listOfParameters.push_back( &_optionPetsc );
+        _listOfParameters.push_back( _algo );
+        _listOfParameters.push_back( _lagr );
+        _listOfParameters.push_back( _matrFilter );
+        _listOfParameters.push_back( _memory );
+        _listOfParameters.push_back( _lowRankThreshold );
+        _listOfParameters.push_back( _lowRankSize );
+        _listOfParameters.push_back( _distMatrix );
+        _listOfParameters.push_back( _method );
+        _listOfParameters.push_back( _precision );
+        _listOfParameters.push_back( _fillingLevel );
+        _listOfParameters.push_back( _iterNumber );
+        _listOfParameters.push_back( _nPrec );
+        _listOfParameters.push_back( _pivotPourcent );
+        _listOfParameters.push_back( _postPro );
+        _listOfParameters.push_back( _precond );
+        _listOfParameters.push_back( _prePro );
+        _listOfParameters.push_back( _reac );
+        _listOfParameters.push_back( _filling );
+        _listOfParameters.push_back( _renum );
+        _listOfParameters.push_back( _residual );
+        _listOfParameters.push_back( _precondResidual );
+        _listOfParameters.push_back( _stopSingular );
+        _listOfParameters.push_back( _resolutionType );
+        _listOfParameters.push_back( _acceleration );
+        _listOfParameters.push_back( _optionPetsc );
 };
 
 void BaseLinearSolverClass::setPreconditioning( Preconditioning precond ) {
         if ( _linearSolver != Petsc && _linearSolver != Gcpc )
             throw std::runtime_error( "Preconditionong only allowed with Gcpc or Petsc" );
         _preconditioning = precond;
-        _precond = PreconditioningNames[(int)_preconditioning];
+        _precond->setValue( PreconditioningNames[(int)_preconditioning]);
         if ( _preconditioning == IncompleteLdlt ) {
-            _fillingLevel = (ASTERINTEGER)0;
+            _fillingLevel->setValue( (ASTERINTEGER)0);
             if ( _linearSolver == Petsc )
-                _filling = 1.0;
+                _filling->setValue(1.0);
         }
         if ( _preconditioning == SimplePrecisionLdlt ) {
-            _pivotPourcent = (ASTERINTEGER)20;
-            _reac = (ASTERINTEGER)30;
+            _pivotPourcent->setValue( (ASTERINTEGER)20);
+            _reac->setValue( (ASTERINTEGER)30);
             _renumber = Sans;
-            _renum = std::string( RenumberingNames[(int)Sans] );
+            _renum->setValue( std::string( RenumberingNames[(int)Sans] ));
         }
 };
 

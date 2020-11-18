@@ -86,7 +86,7 @@ extern const char *ErrorNames[nbErrors];
 class GenericActionClass {
   private:
     /** @brief Nom (capy) de l'action */
-    GenParam _actionName;
+    GenParamPtr _actionName;
     /** @brief Type de l'erreur */
     const ActionTypeEnum _type;
 
@@ -100,15 +100,18 @@ class GenericActionClass {
      * @param type Type de l'action
      */
     GenericActionClass( ActionTypeEnum type )
-        : _actionName( "ACTION", std::string( ActionNames[type] ), true ), _type( type ) {
-        _listParam.push_back( &_actionName );
+        : _actionName(boost::make_shared<GenParam>( "ACTION", std::string( ActionNames[type] ),
+                true )),
+        _type( type ) {
+        _listParam.push_back( _actionName );
     };
 
     /**
      * @brief Constructeur par défaut
      */
     GenericActionClass()
-        : _actionName( "ACTION", std::string( ActionNames[NoActionType] ), true ),
+        : _actionName(boost::make_shared<GenParam>("ACTION",
+                std::string( ActionNames[NoActionType] ), true )),
           _type( NoActionType ){};
 
     /**
@@ -154,13 +157,13 @@ class ContinueOnErrorClass : public GenericActionClass {
 class GenericSubstepingOnErrorClass : public GenericActionClass {
   private:
     /** @brief Paramètre SUBD_METHODE */
-    GenParam _isAuto;
+    GenParamPtr _isAuto;
     /** @brief Paramètre SUBD_PAS */
-    GenParam _step;
+    GenParamPtr _step;
     /** @brief Paramètre SUBD_NIVEAU */
-    GenParam _level;
+    GenParamPtr _level;
     /** @brief Paramètre SUBD_PAS_MINI */
-    GenParam _minimumStep;
+    GenParamPtr _minimumStep;
 
   protected:
     /**
@@ -168,14 +171,15 @@ class GenericSubstepingOnErrorClass : public GenericActionClass {
      * @param type ActionTypeEnum
      */
     GenericSubstepingOnErrorClass( ActionTypeEnum type )
-        : GenericActionClass( type ), _isAuto( "SUBD_METHODE", std::string( "MANUEL" ), false ),
-          _step( "SUBD_PAS", (ASTERINTEGER)4, false ),
-          _level( "SUBD_NIVEAU", (ASTERINTEGER)3, false ),
-          _minimumStep( "SUBD_PAS_MINI", 0., false ) {
-        _listParam.push_back( &_isAuto );
-        _listParam.push_back( &_step );
-        _listParam.push_back( &_level );
-        _listParam.push_back( &_minimumStep );
+        : GenericActionClass( type ),
+          _isAuto( boost::make_shared<GenParam>("SUBD_METHODE", std::string( "MANUEL" ), false) ),
+          _step( boost::make_shared<GenParam>("SUBD_PAS", (ASTERINTEGER)4, false) ),
+          _level(boost::make_shared<GenParam>( "SUBD_NIVEAU", (ASTERINTEGER)3, false) ),
+          _minimumStep( boost::make_shared<GenParam>("SUBD_PAS_MINI", 0., false) ) {
+        _listParam.push_back( _isAuto );
+        _listParam.push_back( _step );
+        _listParam.push_back( _level );
+        _listParam.push_back( _minimumStep );
     };
 
   public:
@@ -190,13 +194,13 @@ class GenericSubstepingOnErrorClass : public GenericActionClass {
      */
     void setAutomatic( const bool &isAuto ) {
         if ( isAuto ) {
-            _isAuto = "AUTO";
-            _step.setIsSet( false );
-            _level.setIsSet( false );
+            _isAuto->setValue("AUTO");
+            _step->setIsSet( false );
+            _level->setIsSet( false );
         } else {
-            _isAuto = "MANUEL";
-            _step.setValueIfUnset( (ASTERINTEGER)4 );
-            _level.setValueIfUnset( (ASTERINTEGER)3 );
+            _isAuto->setValue("MANUEL");
+            _step->setValueIfUnset( (ASTERINTEGER)4 );
+            _level->setValueIfUnset( (ASTERINTEGER)3 );
         }
     };
 
@@ -204,18 +208,18 @@ class GenericSubstepingOnErrorClass : public GenericActionClass {
      * @brief Fixer le niveau de sous-découpage
      * @param level niveau
      */
-    void setLevel( const ASTERINTEGER &level ) { _level = level; };
+    void setLevel( const ASTERINTEGER &level ) { _level->setValue(level); };
 
     /**
      * @brief Fixer le pas minimum
      * @param minimumStep valeur pour SUBD_PAS_MINI
      */
-    void setMinimumStep( const double &minimumStep ) { _minimumStep = minimumStep; };
+    void setMinimumStep( const double &minimumStep ) { _minimumStep->setValue(minimumStep); };
 
     /**
      * @brief Fixer le nombre de découpage d'un pas de temps
      */
-    void setStep( const ASTERINTEGER &step ) { _step = step; };
+    void setStep( const ASTERINTEGER &step ) { _step->setValue(step); };
 };
 
 /**
@@ -237,13 +241,13 @@ class SubstepingOnErrorClass : public GenericSubstepingOnErrorClass {
 class AddIterationOnErrorClass : public GenericSubstepingOnErrorClass {
   private:
     /** @brief Paramètre PCENT_ITER_PLUS */
-    GenParam _pcent;
+    GenParamPtr _pcent;
 
   public:
     AddIterationOnErrorClass()
         : GenericSubstepingOnErrorClass( AddIterationOnErrorType ),
-          _pcent( "PCENT_ITER_PLUS", 50., false ) {
-        _listParam.push_back( &_pcent );
+          _pcent(boost::make_shared<GenParam>( "PCENT_ITER_PLUS", 50., false )) {
+        _listParam.push_back( _pcent );
     };
 
     ~AddIterationOnErrorClass(){};
@@ -252,7 +256,7 @@ class AddIterationOnErrorClass : public GenericSubstepingOnErrorClass {
      * @brief Fixer PCENT_ITER_PLUS
      * @param pcent double précisant le pourcentage
      */
-    void setPourcentageOfAddedIteration( const double &pcent ) { _pcent = pcent; };
+    void setPourcentageOfAddedIteration( const double &pcent ) { _pcent->setValue( pcent); };
 };
 
 /**
@@ -263,31 +267,34 @@ class AddIterationOnErrorClass : public GenericSubstepingOnErrorClass {
 class SubstepingOnContactClass : public GenericActionClass {
   private:
     /** @brief Paramètre SUBD_METHODE */
-    GenParam _isAuto;
+    GenParamPtr _isAuto;
     /** @brief Paramètre SUBD_PAS */
-    GenParam _step;
+    GenParamPtr _step;
     /** @brief Paramètre SUBD_NIVEAU */
-    GenParam _level;
+    GenParamPtr _level;
     /** @brief Paramètre SUBD_PAS_MINI */
-    GenParam _minimumStep;
+    GenParamPtr _minimumStep;
     /** @brief Paramètre SUBD_INST */
-    GenParam _timeStepSubstep;
+    GenParamPtr _timeStepSubstep;
     /** @brief Paramètre SUBD_DUREE */
-    GenParam _substepDuration;
+    GenParamPtr _substepDuration;
 
   public:
     /** @brief Constructeur */
     SubstepingOnContactClass()
         : GenericActionClass( SubstepingOnContactType ),
-          _isAuto( "SUBD_METHODE", std::string( "AUTO" ), false ), _step( "SUBD_PAS", false ),
-          _level( "SUBD_NIVEAU", false ), _minimumStep( "SUBD_PAS_MINI", false ),
-          _timeStepSubstep( "SUBD_INST", 0., true ), _substepDuration( "SUBD_DUREE", 0., true ) {
-        _listParam.push_back( &_isAuto );
-        _listParam.push_back( &_step );
-        _listParam.push_back( &_level );
-        _listParam.push_back( &_minimumStep );
-        _listParam.push_back( &_timeStepSubstep );
-        _listParam.push_back( &_substepDuration );
+          _isAuto(boost::make_shared<GenParam>( "SUBD_METHODE", std::string( "AUTO" ), false )),
+          _step(boost::make_shared<GenParam>( "SUBD_PAS", false )),
+          _level(boost::make_shared<GenParam>( "SUBD_NIVEAU", false )),
+          _minimumStep(boost::make_shared<GenParam>( "SUBD_PAS_MINI", false )),
+          _timeStepSubstep(boost::make_shared<GenParam>( "SUBD_INST", 0., true )),
+          _substepDuration(boost::make_shared<GenParam>( "SUBD_DUREE", 0., true )) {
+        _listParam.push_back( _isAuto );
+        _listParam.push_back( _step );
+        _listParam.push_back( _level );
+        _listParam.push_back( _minimumStep );
+        _listParam.push_back( _timeStepSubstep );
+        _listParam.push_back( _substepDuration );
     };
 
     ~SubstepingOnContactClass(){};
@@ -298,25 +305,25 @@ class SubstepingOnContactClass : public GenericActionClass {
      */
     void setAutomatic( const bool &isAuto ) {
         if ( isAuto ) {
-            _isAuto = "AUTO";
+            _isAuto->setValue( "AUTO");
 
-            _step.setIsSet( false );
-            _level.setIsSet( false );
-            _minimumStep.setIsSet( false );
+            _step->setIsSet( false );
+            _level->setIsSet( false );
+            _minimumStep->setIsSet( false );
 
-            _timeStepSubstep.setMandatory( true );
-            _substepDuration.setMandatory( true );
+            _timeStepSubstep->setMandatory( true );
+            _substepDuration->setMandatory( true );
         } else {
-            _isAuto = "MANUEL";
+            _isAuto->setValue( "MANUEL");
 
-            _step.setValueIfUnset( (ASTERINTEGER)4 );
-            _level.setValueIfUnset( (ASTERINTEGER)3 );
-            _minimumStep.setValueIfUnset( 0. );
+            _step->setValueIfUnset( (ASTERINTEGER)4 );
+            _level->setValueIfUnset( (ASTERINTEGER)3 );
+            _minimumStep->setValueIfUnset( 0. );
 
-            _timeStepSubstep.setMandatory( false );
-            _timeStepSubstep.setIsSet( false );
-            _substepDuration.setMandatory( false );
-            _substepDuration.setIsSet( false );
+            _timeStepSubstep->setMandatory( false );
+            _timeStepSubstep->setIsSet( false );
+            _substepDuration->setMandatory( false );
+            _substepDuration->setIsSet( false );
         }
     };
 
@@ -324,30 +331,30 @@ class SubstepingOnContactClass : public GenericActionClass {
      * @brief Fixer le niveau de sous-découpage
      * @param level niveau
      */
-    void setLevel( const ASTERINTEGER &level ) { _level = level; };
+    void setLevel( const ASTERINTEGER &level ) { _level->setValue( level); };
 
     /**
      * @brief Fixer le pas minimum
      * @param minimumStep valeur pour SUBD_PAS_MINI
      */
-    void setMinimumStep( const double &minimumStep ) { _minimumStep = minimumStep; };
+    void setMinimumStep( const double &minimumStep ) { _minimumStep->setValue( minimumStep); };
 
     /**
      * @brief Fixer le nombre de découpage d'un pas de temps
      */
-    void setStep( const ASTERINTEGER &step ) { _step = step; };
+    void setStep( const ASTERINTEGER &step ) { _step->setValue( step); };
 
     /**
      * @brief Fixer la durée du sous-découage
      * @param duration double contenant la durée
      */
-    void setSubstepDuration( const double &duration ) { _substepDuration = duration; };
+    void setSubstepDuration( const double &duration ) { _substepDuration->setValue( duration); };
 
     /**
      * @brief Fixer l'instant du sous-découpage
      * @param time double contenant l'instant
      */
-    void setTimeStepSubstep( const double &time ) { _timeStepSubstep = time; };
+    void setTimeStepSubstep( const double &time ) { _timeStepSubstep->setValue( time); };
 };
 
 /**
@@ -368,20 +375,20 @@ class PilotageErrorClass : public GenericSubstepingOnErrorClass {
  */
 class ChangePenalisationOnErrorClass : public GenericActionClass {
   private:
-    GenParam _coefMax;
+    GenParamPtr _coefMax;
 
   public:
     /** @brief Constructeur */
     ChangePenalisationOnErrorClass()
         : GenericActionClass( ChangePenalisationOnErrorType ),
-          _coefMax( "COEF_MAXI", 1e12, false ) {
-        _listParam.push_back( &_coefMax );
+          _coefMax( boost::make_shared<GenParam>("COEF_MAXI", 1e12, false ) ){
+        _listParam.push_back( _coefMax );
     };
 
     ~ChangePenalisationOnErrorClass(){};
 
     /** @brief Fixer COEF_MAXI */
-    void setMaximumPenalisationCoefficient( const double &coef ) { _coefMax = coef; };
+    void setMaximumPenalisationCoefficient( const double &coef ) { _coefMax->setValue( coef); };
 };
 
 /** @typedef Pointeur intelligent vers un GenericActionClass */
@@ -417,7 +424,7 @@ class GenericEventErrorClass {
 
   protected:
     /** @brief Paramètre EVENEMENT */
-    GenParam _eventName;
+    GenParamPtr _eventName;
     /** @brief Liste des Paramètres attachés à l'événement */
     ListGenParam _listSyntaxParam;
 
@@ -426,14 +433,16 @@ class GenericEventErrorClass {
      * @param type EventErrorTypeEnum décrivant le type de l'erreur
      */
     GenericEventErrorClass( EventErrorTypeEnum type )
-        : _eventName( "EVENEMENT", std::string( ErrorNames[type] ), true ) {
-        _listSyntaxParam.push_back( &_eventName );
+        : _eventName(boost::make_shared<GenParam>( "EVENEMENT",
+            std::string( ErrorNames[type] ), true )) {
+        _listSyntaxParam.push_back( _eventName );
     };
 
   public:
     /** @brief Constructeur par défaut */
     GenericEventErrorClass()
-        : _eventName( "EVENEMENT", std::string( ErrorNames[NoErrorType] ), true ){};
+        : _eventName(boost::make_shared<GenParam>( "EVENEMENT",
+            std::string( ErrorNames[NoErrorType] ), true )){};
 
     ~GenericEventErrorClass(){};
 
@@ -535,11 +544,11 @@ class ResidualDivergenceErrorClass : public GenericEventErrorClass {
 class IncrementOverboundErrorClass : public GenericEventErrorClass {
   private:
     /** @brief Paramètre VALE_REF */
-    GenParam _value;
+    GenParamPtr _value;
     /** @brief Paramètre NOM_CHAM */
-    GenParam _fieldName;
+    GenParamPtr _fieldName;
     /** @brief Paramètre NOM_CMP */
-    GenParam _component;
+    GenParamPtr _component;
 
     /**
      * @brief Fonction permettant de vérifier qu'une action est bien autorisée
@@ -555,11 +564,12 @@ class IncrementOverboundErrorClass : public GenericEventErrorClass {
     /** @brief Constructeur */
     IncrementOverboundErrorClass()
         : GenericEventErrorClass( IncrementOverboundErrorType ),
-          _value( "VALE_REF", true ), _fieldName( "NOM_CHAM", "", true ),
-          _component( "NOM_CMP", true ) {
-        _listSyntaxParam.push_back( &_value );
-        _listSyntaxParam.push_back( &_fieldName );
-        _listSyntaxParam.push_back( &_component );
+          _value(boost::make_shared<GenParam>( "VALE_REF", true )),
+          _fieldName(boost::make_shared<GenParam>( "NOM_CHAM", "", true )),
+          _component(boost::make_shared<GenParam>( "NOM_CMP", true )) {
+        _listSyntaxParam.push_back( _value );
+        _listSyntaxParam.push_back( _fieldName );
+        _listSyntaxParam.push_back( _component );
     };
 
     ~IncrementOverboundErrorClass(){};
@@ -572,9 +582,9 @@ class IncrementOverboundErrorClass : public GenericEventErrorClass {
      */
     void setValueToInspect( const double &value, const std::string &fieldName,
                             const PhysicalQuantityComponent &component ) {
-        _value = value;
-        _fieldName.setValue( fieldName );
-        _component = ComponentNames.find( component )->second;
+        _value->setValue( value);
+        _fieldName->setValue( fieldName );
+        _component->setValue( ComponentNames.find( component )->second);
     };
 };
 
@@ -611,7 +621,7 @@ class ContactDetectionErrorClass : public GenericEventErrorClass {
 class InterpenetrationErrorClass : public GenericEventErrorClass {
   private:
     /** @brief Paramètre PENE_MAXI */
-    GenParam _maxPenetration;
+    GenParamPtr _maxPenetration;
 
     /**
      * @brief Fonction permettant de vérifier qu'une action est bien autorisée
@@ -627,8 +637,8 @@ class InterpenetrationErrorClass : public GenericEventErrorClass {
     /** @brief Constructeur */
     InterpenetrationErrorClass()
         : GenericEventErrorClass( InterpenetrationErrorType ),
-          _maxPenetration( "PENE_MAXI", true ) {
-        _listSyntaxParam.push_back( &_maxPenetration );
+          _maxPenetration( boost::make_shared<GenParam>("PENE_MAXI", true) ) {
+        _listSyntaxParam.push_back( _maxPenetration );
     };
 
     ~InterpenetrationErrorClass(){};
@@ -637,7 +647,7 @@ class InterpenetrationErrorClass : public GenericEventErrorClass {
      * @brief Fixer la valeur maximale de l'interpénétration
      * @param value Valeur maximale
      */
-    void setMaximalPenetration( const double &value ) { _maxPenetration = value; };
+    void setMaximalPenetration( const double &value ) { _maxPenetration->setValue(value); };
 };
 
 /**

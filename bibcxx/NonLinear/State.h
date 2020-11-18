@@ -53,12 +53,12 @@ class StateClass {
     /** @brief Champ de variables internes */
     // _vari
 
-    GenParam _evolParam;
-    GenParam _sourceStepParam;
-    GenParam _sourceIndexParam;
-    GenParam _DirichletSourceIndexParam;
-    GenParam _currentStepParam;
-    GenParam _precisionParam;
+    GenParamPtr _currentStepParam;
+    GenParamPtr _DirichletSourceIndexParam;
+    GenParamPtr _evolParam;
+    GenParamPtr _precisionParam;
+    GenParamPtr _sourceIndexParam;
+    GenParamPtr _sourceStepParam;
 
     ListGenParam _listOfParameters;
 
@@ -68,18 +68,20 @@ class StateClass {
      * @param step index (default value 0)
      */
     StateClass( ASTERINTEGER index = 0, double step = 0.0 )
-        : _currentIndex( index ), _currentStep( step ), _evolParam( "EVOL_NOLI", false ),
-          _sourceStepParam( "INST", false ), _sourceIndexParam( "NUME_ORDRE", false ),
-          _DirichletSourceIndexParam( "NUME_DIDI", false ),
-          _currentStepParam( "INST_ETAT_INIT", false ), _precisionParam( "PRECISION", false )
-
+        : _currentIndex( index ), _currentStep( step ),
+          _currentStepParam( boost::make_shared<GenParam>("INST_ETAT_INIT", false )),
+          _DirichletSourceIndexParam( boost::make_shared<GenParam>("NUME_DIDI", false )),
+          _evolParam(boost::make_shared<GenParam>( "EVOL_NOLI", false )),
+          _precisionParam(boost::make_shared<GenParam>( "PRECISION", false )),
+          _sourceIndexParam(boost::make_shared<GenParam>( "NUME_ORDRE", false )),
+          _sourceStepParam(boost::make_shared<GenParam>( "INST", false ))
     {
-        _listOfParameters.push_back( &_evolParam );
-        _listOfParameters.push_back( &_sourceStepParam );
-        _listOfParameters.push_back( &_sourceIndexParam );
-        _listOfParameters.push_back( &_DirichletSourceIndexParam );
-        _listOfParameters.push_back( &_currentStepParam );
-        _listOfParameters.push_back( &_precisionParam );
+        _listOfParameters.push_back( _evolParam );
+        _listOfParameters.push_back( _sourceStepParam );
+        _listOfParameters.push_back( _sourceIndexParam );
+        _listOfParameters.push_back( _DirichletSourceIndexParam );
+        _listOfParameters.push_back( _currentStepParam );
+        _listOfParameters.push_back( _precisionParam ) ;
     };
 
     /**
@@ -93,9 +95,9 @@ class StateClass {
     */
     void setFromNonLinearResult( const NonLinearResultPtr &evol_noli,
                                     double sourceStep, double precision = 1.E-06 ) {
-        _evolParam = evol_noli->getName();
-        _sourceStepParam = sourceStep;
-        _precisionParam = precision;
+        _evolParam->setValue( evol_noli->getName());
+        _sourceStepParam->setValue( sourceStep);
+        _precisionParam->setValue( precision);
         // set default value of currentStepParam (INST_ETAT_INIT)
         // this-> setCurrentStep( sourceStep );
     };
@@ -104,8 +106,8 @@ class StateClass {
 
     void setFromNonLinearResult( const NonLinearResultPtr &evol_noli,
                                     ASTERINTEGER sourceIndex ) {
-        _evolParam = evol_noli->getName();
-        _sourceIndexParam = sourceIndex;
+        _evolParam->setValue( evol_noli->getName());
+        _sourceIndexParam->setValue( sourceIndex);
         // set default value of currentStepParam & currentStepParam(INST_ETAT_INIT)
         // this-> setCurrentStep( sourceIndex );
         _depl = evol_noli->getRealFieldOnNodes( "DEPL", sourceIndex );
@@ -123,7 +125,7 @@ class StateClass {
     */
     void setCurrentStep( double step ) {
         _currentStep = step;
-        _currentStepParam = step;
+        _currentStepParam->setValue( step);
     };
 
     /**

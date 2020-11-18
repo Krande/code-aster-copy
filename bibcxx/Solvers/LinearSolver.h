@@ -151,31 +151,32 @@ class BaseLinearSolverClass : public DataStructure {
     JeveuxVectorReal _doubleValues;
     JeveuxVectorLong _integerValues;
 
-    GenParam _algo;
-    GenParam _lagr;
-    GenParam _matrFilter;
-    GenParam _memory;
-    GenParam _lowRankThreshold;
-    GenParam _lowRankSize;
-    GenParam _distMatrix;
-    GenParam _method;
-    GenParam _precision;
-    GenParam _fillingLevel;
-    GenParam _iterNumber;
-    GenParam _nPrec;
-    GenParam _pivotPourcent;
-    GenParam _postPro;
-    GenParam _precond;
-    GenParam _prePro;
-    GenParam _reac;
-    GenParam _filling;
-    GenParam _renum;
-    GenParam _residual;
-    GenParam _precondResidual;
-    GenParam _stopSingular;
-    GenParam _resolutionType;
-    GenParam _acceleration;
-    GenParam _optionPetsc;
+    GenParamPtr _acceleration;
+    GenParamPtr _algo;
+    GenParamPtr _distMatrix;
+    GenParamPtr _filling;
+    GenParamPtr _fillingLevel;
+    GenParamPtr _iterNumber;
+    GenParamPtr _lagr;
+    GenParamPtr _lowRankSize;
+    GenParamPtr _lowRankThreshold;
+    GenParamPtr _matrFilter;
+    GenParamPtr _memory;
+    GenParamPtr _method;
+    GenParamPtr _nPrec;
+    GenParamPtr _optionPetsc;
+    GenParamPtr _pivotPourcent;
+    GenParamPtr _postPro;
+    GenParamPtr _precision;
+    GenParamPtr _precond;
+    GenParamPtr _precondResidual;
+    GenParamPtr _prePro;
+    GenParamPtr _reac;
+    GenParamPtr _renum;
+    GenParamPtr _residual;
+    GenParamPtr _resolutionType;
+    GenParamPtr _stopSingular;
+
     ListGenParam _listOfParameters;
     AssemblyMatrixDisplacementRealPtr _matrixPrec;
     std::string _commandName;
@@ -307,41 +308,41 @@ class BaseLinearSolverClass : public DataStructure {
     void disablePreprocessing() {
         if ( _linearSolver != Mumps )
             throw std::runtime_error( "Algorithm only allowed with Mumps" );
-        _prePro = "SANS";
+        _prePro->setValue( "SANS");
     };
 
     void setAcceleration( MumpsAcceleration post ) {
         if ( _linearSolver != Mumps )
             throw std::runtime_error( "Only allowed with Mumps" );
-        _acceleration = MumpsAccelerationNames[(int)post];
+        _acceleration->setValue( MumpsAccelerationNames[(int)post]);
     };
 
     void setAlgorithm( IterativeSolverAlgorithm algo ) {
         if ( _linearSolver != Petsc )
             throw std::runtime_error( "Algorithm only allowed with Petsc" );
-        _algo = std::string( IterativeSolverAlgorithmNames[(int)algo] );
+        _algo->setValue( std::string( IterativeSolverAlgorithmNames[(int)algo] ));
     };
 
     void setPetscOption( std::string option ) {
         if ( _linearSolver != Petsc )
             throw std::runtime_error( "Options only allowed with Petsc" );
-        _optionPetsc = option;
+        _optionPetsc->setValue( option);
     };
 
     void setDistributedMatrix( bool matDist ) {
         if ( _linearSolver != Petsc && _linearSolver != Mumps )
             throw std::runtime_error( "Distributed matrix only allowed with Mumps or Petsc" );
         if ( matDist )
-            _distMatrix = "OUI";
+            _distMatrix->setValue( "OUI");
         else
-            _distMatrix = "NON";
+            _distMatrix->setValue( "NON");
     };
 
     void setErrorOnMatrixSingularity( bool error ) {
         if ( error )
-            _stopSingular = "OUI";
+            _stopSingular->setValue( "OUI");
         else
-            _stopSingular = "NON";
+            _stopSingular->setValue( "NON");
     };
 
     void setFilling( double filLevel ) {
@@ -349,7 +350,7 @@ class BaseLinearSolverClass : public DataStructure {
             throw std::runtime_error( "Filling level only allowed with Gcpc or Petsc" );
         if ( _preconditioning != IncompleteLdlt )
             throw std::runtime_error( "Filling level only allowed with IncompleteLdlt" );
-        _filling = filLevel;
+        _filling->setValue( filLevel);
     };
 
     void setFillingLevel( ASTERINTEGER filLevel ) {
@@ -357,59 +358,60 @@ class BaseLinearSolverClass : public DataStructure {
             throw std::runtime_error( "Filling level only allowed with Gcpc or Petsc" );
         if ( _preconditioning != IncompleteLdlt )
             throw std::runtime_error( "Filling level only allowed with IncompleteLdlt" );
-        _fillingLevel = filLevel;
+        _fillingLevel->setValue( filLevel);
     };
 
     void setLagrangeElimination( LagrangeTreatment lagrTreat ) {
-        _lagr = std::string( LagrangeTreatmentNames[(int)lagrTreat] );
+        _lagr->setValue( std::string( LagrangeTreatmentNames[(int)lagrTreat] ));
     };
 
-    void setLowRankSize( double size ) { _lowRankSize = size; };
+    void setLowRankSize( double size ) { _lowRankSize->setValue( size); };
 
-    void setLowRankThreshold( double threshold ) { _lowRankThreshold = threshold; };
+    void setLowRankThreshold( double threshold ) { _lowRankThreshold->setValue( threshold); };
 
-    void setMatrixFilter( double filter ) { _matrFilter = filter; };
+    void setMatrixFilter( double filter ) { _matrFilter->setValue( filter); };
 
-    void setMatrixType( MatrixType matType ) { _resolutionType = MatrixTypeNames[(int)matType]; };
+    void setMatrixType( MatrixType matType ) {
+        _resolutionType->setValue( MatrixTypeNames[(int)matType]); };
 
     void setMaximumNumberOfIteration( ASTERINTEGER number ) {
         if ( _linearSolver != Petsc && _linearSolver != Gcpc )
             throw std::runtime_error( "Only allowed with Gcpc or Petsc" );
-        _iterNumber = number;
+        _iterNumber->setValue( number);
     };
 
     void setMemoryManagement( MemoryManagement memManagt ) {
-        _memory = MemoryManagementNames[(int)memManagt];
+        _memory->setValue( MemoryManagementNames[(int)memManagt]);
     };
 
-    void setPivotingMemory( ASTERINTEGER mem ) { _pivotPourcent = mem; };
+    void setPivotingMemory( ASTERINTEGER mem ) { _pivotPourcent->setValue( mem); };
 
     void setPostTreatment( MumpsPostTreatment post ) {
         if ( _linearSolver != Mumps )
             throw std::runtime_error( "Only allowed with Mumps" );
-        _postPro = MumpsPostTreatmentNames[(int)post];
+        _postPro->setValue( MumpsPostTreatmentNames[(int)post]);
     };
 
     void setPrecisionMix( bool precMix ) {
         if ( _linearSolver != Petsc && _linearSolver != Mumps )
             throw std::runtime_error( "Precision mixing only allowed with Mumps or Petsc" );
         if ( precMix )
-            _precision = "OUI";
+            _precision->setValue( "OUI");
         else
-            _precision = "NON";
+            _precision->setValue( "NON");
     };
 
     void setPreconditioning( Preconditioning precond ) ;
 
-    void setPreconditioningResidual( double residual ) { _precondResidual = residual; };
+    void setPreconditioningResidual( double residual ) { _precondResidual->setValue( residual); };
 
     void setRenumbering( Renumbering reum ) { _renumber = reum; };
 
-    void setSingularityDetectionThreshold( ASTERINTEGER nprec ) { _nPrec = nprec; };
+    void setSingularityDetectionThreshold( ASTERINTEGER nprec ) { _nPrec->setValue(nprec); };
 
     void setSolverResidual( double residual )
     {
-        _residual = residual;
+        _residual->setValue( residual);
     };
 
     void setUpdatePreconditioningParameter( ASTERINTEGER value ) {
@@ -418,7 +420,7 @@ class BaseLinearSolverClass : public DataStructure {
         if ( _preconditioning != SimplePrecisionLdlt )
             throw std::runtime_error(
                 "Update preconditioning parameter only allowed with IncompleteLdlt" );
-        _reac = value;
+        _reac->setValue( value);
     };
 
     friend class LinearStaticAnalysisClass;

@@ -143,8 +143,10 @@ typedef GenericParameter<
                     VectorLong, VectorComplex,
                     VectorString > > GenParam;
 
+/** @typedef Definition d'un shared_prt sur GenParam */
+typedef boost::shared_ptr< GenParam > GenParamPtr;
 /** @typedef Definition d'une list de GenParam */
-typedef std::list< GenParam * > ListGenParam;
+typedef std::list< GenParamPtr > ListGenParam;
 /** @typedef Definition d'un itérateur sur ListGenParam */
 typedef ListGenParam::iterator ListGenParamIter;
 /** @typedef Definition d'un itérateur constant sur ListGenParam */
