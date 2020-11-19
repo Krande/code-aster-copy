@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,6 +57,7 @@ CHAR_MECA_HYDR_R = Option(
         CondCalcul('-', ((AT.PHENO, 'ME'), (AT.MODELI, '3FI'),)),
         CondCalcul('-', ((AT.PHENO, 'ME'), (AT.MODELI, 'AFI'),)),
         CondCalcul('-', ((AT.PHENO, 'ME'), (AT.MODELI, 'PFI'),)),
+        CondCalcul('-', ((AT.PHENO, 'ME'), (AT.MODELI, 'D2D'),)),
     ),
     comment=""" CHAR_MECA_HYDR_R (mot-cle: HYDR_CALCULEE) : calcul du second
            membre correspondant a un champ d hydratation et de temperature""",
