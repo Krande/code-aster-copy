@@ -127,6 +127,7 @@ implicit none
     integer :: nbCell
     integer :: nbField
     integer :: nbOccDecoupeLac, nbOccEclaPg, nbGeomFibre, nbOccCreaFiss, nbOccLineQuad
+    integer :: nbOccQuadLine
     real(kind=8) :: shrink, lonmin
     aster_logical :: lpb, l_modi_maille
     integer :: prefNume
@@ -154,6 +155,7 @@ implicit none
     call getvid(' ', 'GEOM_FIBRE', scal=geofi, nbret=nbGeomFibre)
     call getfac('CREA_FISS', nbOccCreaFiss)
     call getfac('LINE_QUAD', nbOccLineQuad)
+    call getfac('QUAD_LINE', nbOccQuadLine)
     call getfac('DECOUPE_LAC', nbOccDecoupeLac)
 !
 ! - Main datastructure
@@ -302,36 +304,24 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call getfac('QUAD_LINE', nbmoma)
-    if (nbmoma .gt. 0) then
-        ASSERT(nbmoma.eq.1)
-!
-        call getvtx('QUAD_LINE', 'MAILLE', iocc=1, nbval=0, nbret=n1a)
-        call getvtx('QUAD_LINE', 'GROUP_MA', iocc=1, nbval=0, nbret=n1b)
-        if (n1a+n1b .lt. 0) then
-            call utmess('A', 'MODELISA4_1', sk='QUAD_LINE')
-        endif
-!
-        motcle(1)='MAILLE'
-        motcle(2)='GROUP_MA'
-        motcle(3)='TOUT'
-        nomjv='&&OP0167.LISTE_MA'
-        call reliem(' ', meshIn, 'NU_MAILLE', 'QUAD_LINE', 1,&
-                    3, motcle, motcle, nomjv, nbma)
-        call jeveuo(nomjv, 'L', jlima)
+    if (nbOccQuadLine .gt. 0) then
+        ASSERT(nbOccQuadLine .eq. 1)
         call jeexin(meshIn//'.NOMACR', iret)
         if (iret .ne. 0) then
-            call utmess('F', 'ALGELINE2_94')
+            call utmess('F', 'MESH1_7')
         endif
         call jeexin(meshIn//'.ABSC_CURV', iret)
         if (iret .ne. 0) then
-            call utmess('F', 'ALGELINE2_95')
+            call utmess('F', 'MESH1_8')
         endif
-!
-        call cmqlql(meshIn, meshOut, nbma, zi(jlima))
-!
+        keywfact = 'QUAD_LINE'
+        call getelem(meshIn, keywfact, 1, 'F', jvCellNume, nbCell)
+        if (nbCell .ne. nbmaiv) then
+            call utmess('A', 'MESH1_4', sk=keywfact)
+        endif
+        call jeveuo(jvCellNume, 'L', vi = listCellNume)
+        call cmqlql(meshIn, meshOut, nbCell, listCellNume)
         goto 350
-!
     endif
 !
 ! --------------------------------------------------------------------------------------------------
