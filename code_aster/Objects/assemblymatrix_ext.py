@@ -30,7 +30,6 @@ from libaster import (AssemblyMatrixDisplacementComplex,
 
 from ..SD.sd_stoc_morse import sd_stoc_morse
 from ..Utilities import injector
-from .datastructure_ext import get_depends, set_depends
 
 _orig_getType = AssemblyMatrixDisplacementReal.getType
 
@@ -45,7 +44,7 @@ class ExtendedAssemblyMatrixDisplacementReal(object):
         Returns:
             list: Internal state.
         """
-        return get_depends(self) + [self.getDOFNumbering(), ]
+        return [self.getDOFNumbering(), ]
 
     def __setstate__(self, state):
         """Restore internal state.
@@ -53,7 +52,6 @@ class ExtendedAssemblyMatrixDisplacementReal(object):
         Arguments:
             state (list): Internal state.
         """
-        set_depends(self, state)
         if state[0]:
             self.setDOFNumbering(state[0])
 

@@ -27,7 +27,6 @@ import aster
 from libaster import MaterialField, Model, Result
 
 from ..Utilities import injector
-from .datastructure_ext import get_depends, set_depends
 
 
 @injector(Result)
@@ -56,7 +55,7 @@ class ExtendedResult(object):
             models = []
         if len(ranks) != len(materials):
             materials = []
-        state = get_depends(self)
+        state = []
         state.append(len(ranks))
         state.extend(ranks)
         state.append(len(models))
@@ -71,7 +70,6 @@ class ExtendedResult(object):
         Arguments:
             state (list): Internal state.
         """
-        set_depends(self, state)
         nbranks = state.pop(0)
         ranks = []
         for _ in range(nbranks):

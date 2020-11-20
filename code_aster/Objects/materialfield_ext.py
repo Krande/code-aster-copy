@@ -27,7 +27,6 @@ import aster
 from libaster import EntityType, MaterialField
 
 from ..Utilities import injector
-from .datastructure_ext import get_depends, set_depends
 
 
 @injector(MaterialField)
@@ -46,7 +45,7 @@ class ExtendedMaterialField(object):
         Returns:
             list: Internal state.
         """
-        state = get_depends(self)
+        state = []
         for part in self.getVectorOfPartOfMaterialField():
             vecOfMater = part.getVectorOfMaterial()
             partState = [len(vecOfMater)]
@@ -70,7 +69,6 @@ class ExtendedMaterialField(object):
         Arguments:
             state (list): Internal state.
         """
-        set_depends(self, state)
         if state:
             nbMater = len(state)
 

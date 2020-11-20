@@ -29,7 +29,6 @@ from pickle import dumps, loads
 from libaster import Formula
 
 from ..Utilities import force_list, initial_context, injector, logger
-from .datastructure_ext import get_depends, set_depends
 
 
 @injector(Formula)
@@ -47,7 +46,7 @@ class ExtendedFormula(object):
         for key, val in self.getContext().items():
             if val is not init.get(key):
                 user_ctxt[key] = val
-        return get_depends(self) + [self.getExpression(), dumps(user_ctxt)]
+        return [self.getExpression(), dumps(user_ctxt)]
 
     def __setstate__(self, state):
         """Restore internal state.
@@ -55,7 +54,6 @@ class ExtendedFormula(object):
         Arguments:
             state (list): Internal state.
         """
-        set_depends(self, state)
         assert len(state) == 2, state
         self.setExpression(state[0])
         # try to load the context
