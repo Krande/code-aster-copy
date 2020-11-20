@@ -35,6 +35,11 @@ Ceci est dangereux car cela peut produire un maillage non conforme."""),
 
     8 : _("""L'opération ne traite pas les ABSC_CURV."""),
 
+    9 : _("""L'opération MODI_MAILLE ne peut traiter qu'une seule occurrence de QUAD_TRIA3."""),
+
+    10: _("""Pour le mot clé facteur QUAD_TRIA3, vous voulez modifier certains quadrangles en TRIA3, mais il existe des TRIA6 dans le maillage.
+Ceci est dangereux car cela peut produire un maillage non conforme."""),
+
     11: _("""Pour le mot clé facteur %(k1)s, vous voulez transformer certaines mailles en ajoutant des noeuds au centre des faces quadrangulaires.
 Mais il existe d'autres mailles ayant des faces quadrangulaires à 8 noeuds qui ne sont pas modifiées.
 Ceci est dangereux car cela peut produire un maillage non conforme."""),

@@ -91,12 +91,12 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i, lgno, lgnu, nbmc, iret, iad, nbma, iqtr, nbvolu
-    integer :: n1, numma, nbrest, n1a, n1b
+    integer :: n1, numma, nbrest, n1b
     parameter(nbmc=5)
     real(kind=8) :: epais
     character(len=4) :: answer
-    character(len=4) :: cdim, repk
-    character(len=8) :: meshIn, meshOut, newmai, prefix, model, geofi
+    character(len=4) :: cdim
+    character(len=8) :: meshIn, meshOut, newmai, model, geofi, prefix
     character(len=8) :: nomori, knume, prfno, prfma, plan, trans
     character(len=16) :: option, keywfact
     character(len=16) :: kbi1, kbi2
@@ -118,20 +118,21 @@ implicit none
     integer :: nbcrp1, nbgma, nbgrma, nbgrmn, nbgrmt, nbgrmv
     integer :: nbgrno, nbmain, nbmaj2, nbmaj3, nbno, nbnot
     integer :: nbpt, nbptt, nori, nrep, ntab, ntpoi
-    integer :: ibid, ifm, jdime, jiad, jlima, jma, jmomno, jmomnu
+    integer :: ibid, ifm, jdime, jiad, jma, jmomno, jmomnu, jlima
     integer :: jnu2, jnum, jpr2, jpro, jrefe, jtypmv
-    integer :: nbmaiv, nbmoma, nbnoaj, nbnoev, ndinit, niv, k, jgeofi
-    integer :: dimcon, decala, iocct
+    integer :: nbmaiv, nbmoma, nbnoaj, nbnoev, niv, k, jgeofi, ndinit
+    integer :: dimcon, decala
     integer :: iocc, nbOcc
     character(len=24), parameter :: jvCellNume = '&&OP0167.LISTCELL'
     integer :: nbCell
     integer :: nbField
     integer :: nbOccDecoupeLac, nbOccEclaPg, nbGeomFibre, nbOccCreaFiss, nbOccLineQuad
-    integer :: nbOccQuadLine
+    integer :: nbOccQuadLine, nbOccModiMaille
+    integer :: iOccQuadTria
     real(kind=8) :: shrink, lonmin
     aster_logical :: lpb, l_modi_maille
     integer :: prefNume
-    character(len=8) :: prefNode
+    character(len=8) :: prefCell, prefNode
     integer, pointer :: listCellNume(:) => null()
     character(len=16), pointer :: listField(:) => null()
     integer, pointer :: adrjvx(:) => null()
@@ -156,6 +157,7 @@ implicit none
     call getfac('CREA_FISS', nbOccCreaFiss)
     call getfac('LINE_QUAD', nbOccLineQuad)
     call getfac('QUAD_LINE', nbOccQuadLine)
+    call getfac('MODI_MAILLE', nbOccModiMaille)
     call getfac('DECOUPE_LAC', nbOccDecoupeLac)
 !
 ! - Main datastructure
@@ -335,9 +337,6 @@ implicit none
         ASSERT(nbmoma.eq.1)
 !
         call getvtx('MODI_HHO', 'GROUP_MA', iocc=1, nbval=0, nbret=n1b)
-        if (n1b .lt. 0) then
-            call utmess('A', 'MODELISA4_1', sk='MODI_HHO')
-        endif
 !
         call getvtx("MODI_HHO", 'PREF_NOEUD', iocc=1, scal=prefix, nbret=n1)
         call getvis("MODI_HHO", 'PREF_NUME', iocc=1, scal=ndinit, nbret=n1)
@@ -347,6 +346,11 @@ implicit none
         nomjv='&&OP0167.LISTE_MA'
         call reliem(' ', meshIn, 'NU_MAILLE', 'MODI_HHO', 1,&
                     2, motcle, motcle, nomjv, nbma)
+
+        if (nbma .ne. nbmaiv) then
+            call utmess('A', 'MESH1_4', sk='MODI_HHO')
+        endif
+
         call jeveuo(nomjv, 'L', jlima)
         call jeexin(meshIn//'.NOMACR', iret)
         if (iret .ne. 0) then
@@ -369,51 +373,36 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call getfac('MODI_MAILLE', nbmoma)
-    if (nbmoma .gt. 0) then
-        iqtr=0
-        do iocc = 1, nbmoma
-            call getvtx('MODI_MAILLE', 'OPTION', iocc=iocc, scal=option, nbret=n1)
+    if (nbOccModiMaille .gt. 0) then
+        keywfact = 'MODI_MAILLE'
+        iqtr = 0
+        do iocc = 1, nbOccModiMaille
+            call getvtx(keywfact, 'OPTION', iocc=iocc, scal=option)
             if (option .eq. 'QUAD_TRIA3') then
-                iqtr=iqtr+1
-                iocct=iocc
+                iqtr         = iqtr + 1
+                iOccQuadTria = iocc
             endif
         end do
-!
-        if (iqtr .eq. 0) then
-            goto 30
-        else if (iqtr.gt.1) then
-            call utmess('F', 'ALGELINE2_97')
-        else
-            call getvtx('MODI_MAILLE', 'MAILLE', iocc=iocct, nbval=0, nbret=n1a)
-            call getvtx('MODI_MAILLE', 'GROUP_MA', iocc=iocct, nbval=0, nbret=n1b)
-            if (n1a+n1b .lt. 0) then
-                call utmess('A', 'MODELISA4_1', sk='QUAD_TRIA3')
-            endif
-            call dismoi('EXI_TRIA6', meshIn, 'MAILLAGE', repk=repk)
-            if (repk .eq. 'OUI') then
-                call utmess('A', 'MODELISA4_2')
-            endif
+        if (iqtr .gt. 1) then
+            call utmess('F', 'MESH1_9')
         endif
-!
-        call getvtx('MODI_MAILLE', 'PREF_MAILLE', iocc=1, scal=prefix, nbret=n1)
-        call getvis('MODI_MAILLE', 'PREF_NUME', iocc=1, scal=ndinit, nbret=n1)
-!
-        motcle(1)='MAILLE'
-        motcle(2)='GROUP_MA'
-        motcle(3)='TOUT'
-        nomjv='&&OP0167.LISTE_MA'
-        call reliem(' ', meshIn, 'NU_MAILLE', 'MODI_MAILLE', iocct,&
-                    3, motcle, motcle, nomjv, nbma)
-        call jeveuo(nomjv, 'L', jlima)
-!
-        call cmqutr('G', meshIn, meshOut, nbma, zi(jlima),&
-                    prefix, ndinit)
-!
-        goto 350
-!
+        if (iqtr .eq. 1) then
+            call dismoi('EXI_TRIA6', meshIn, 'MAILLAGE', repk=answer)
+            if (answer .eq. 'OUI') then
+                call utmess('A', 'MESH1_10')
+            endif
+            call getvtx(keywfact, 'PREF_MAILLE', iocc=iOccQuadTria, scal=prefCell)
+            call getvis(keywfact, 'PREF_NUME', iocc=iOccQuadTria, scal=prefNume)
+            call getelem(meshIn, keywfact, iOccQuadTria, 'F', jvCellNume, nbCell)
+            if (nbCell .ne. nbmaiv) then
+                call utmess('A', 'MESH1_4', sk=keywfact)
+            endif
+            call jeveuo(jvCellNume, 'L', vi = listCellNume)
+            call cmqutr('G', meshIn, meshOut, nbCell, listCellNume,&
+                        prefCell, prefNume)
+            goto 350
+        endif
     endif
- 30 continue
 !
 ! --------------------------------------------------------------------------------------------------
 !

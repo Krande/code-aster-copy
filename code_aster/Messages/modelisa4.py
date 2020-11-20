@@ -21,22 +21,6 @@ from ..Utilities import _
 
 cata_msg = {
 
-    1: _("""
-Alarme dans CREA_MAILLAGE pour le mot clé facteur %(k1)s :
-Vous avez avez utilisé le mot clé GROUP_MA (ou MAILLE) pour modifier
-certaines mailles d'un maillage (que l'on suppose conforme).
-
-Ceci est dangereux car cela peut produire un maillage non conforme.
-"""),
-
-    2: _("""
-Alarme dans CREA_MAILLAGE pour le mot clé facteur QUAD_TRIA3 :
-Vous voulez modifier certains quadrangles en TRIA3, mais il existe
-des TRIA6 dans le maillage.
-
-Ceci est dangereux car cela peut produire un maillage non conforme.
-"""),
-
     6 : _("""
   -> Phase de vérification du maillage : présence de noeuds orphelins.
      Les noeuds orphelins sont des noeuds qui n'appartiennent à aucune maille.

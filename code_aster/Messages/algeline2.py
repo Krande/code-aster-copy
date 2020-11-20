@@ -422,7 +422,4 @@ Erreur utilisateur dans COMB_MATR_ASSE:
     Instrumenter la routine de destruction pour déterminer la routine coupable.
 """),
 
-    97 : _("""
- une seule occurrence de "QUAD_TRIA3"
-"""),
 }
