@@ -206,7 +206,8 @@ subroutine op0100()
 !
 !
         call gver2d(1, noeud,rinf, rsup)
-        call gcou2d('G', theta, noma, nomno, noeud,zr(iadrco), rinf, rsup)
+        call gcou2d('G', theta, noma, nomno, noeud,zr(iadrco), rinf, &
+                    rsup, config)
     endif
 !
 !     DETERMINATION AUTOMATIQUE DE THETA (CAS 3D)

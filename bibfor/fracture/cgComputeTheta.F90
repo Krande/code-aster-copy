@@ -238,7 +238,8 @@ use calcG_type
     if (cgField%ndim .eq. 2) then
 !
        call gcou2d('G', cgTheta%theta_field, cgTheta%mesh, cgTheta%nomNoeud, cgTheta%fondNoeud(1), &
-                    cgTheta%coorNoeud, cgTheta%r_inf, cgTheta%r_sup, ASTER_TRUE)
+                    cgTheta%coorNoeud, cgTheta%r_inf, cgTheta%r_sup, cgTheta%config_init, &
+                     ASTER_TRUE)
         cgTheta%nb_theta_field = 1
     elseif (cgField%ndim .eq. 3) then
         !

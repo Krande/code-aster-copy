@@ -45,6 +45,7 @@ CALC_G=OPER(nom="CALC_G",
            R_SUP           =SIMP(statut='f',typ='R'),
            R_INF_FO        =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
            R_SUP_FO        =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+           DIRECTION       =SIMP(statut='f',typ='R',max=2,min=2),
             ),
 
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,evol_noli,dyna_trans,mode_meca),),

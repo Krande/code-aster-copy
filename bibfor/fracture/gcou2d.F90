@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine gcou2d(base, resu, noma, nomno, noeud,&
-                  coor, rinf, rsup, l_new_fiss)
+                  coor, rinf, rsup, config, l_new_fiss)
     implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -28,6 +28,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
@@ -42,7 +43,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !
     real(kind=8) :: rinf, rsup, coor(*)
     character(len=1) :: base
-    character(len=8) :: noma, noeud
+    character(len=8) :: noma, noeud, config
     character(len=24) :: resu, nomno
     aster_logical, optional :: l_new_fiss
 !
@@ -66,6 +67,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !        COOR   : COORDONNEES DES NOEUDS
 !        RINF   : RAYON INFERIEURE DE LA COURONNE
 !        RSUP   : RAYON SUPERIEURE DE LA COURONNE
+!        CONFIG : FISSURE COLLEE OU DECOLLEE
 !        L_NEW_FISS : nouvelle SD FISSURE (provisoire)
 !
 ! SORTIE:
@@ -73,7 +75,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !     ------------------------------------------------------------------
 !
 !
-    integer :: itheta, i, irefe, idesc, num, nbel, numa
+    integer :: itheta, i, irefe, idesc, num, nbel, numa, iret
     integer :: nec, ibid, numfon, n1, n2, ndim, jgtl, estbf
     parameter     (ndim=2)
     real(kind=8) :: xm, ym, xi, yi, eps, d, norme, alpha, valx, valy, dir(3)
@@ -102,7 +104,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
 !   CAS CLASSIQUE (N1 NON NUL) OU CAS X-FEM (N2 NON NUL)
     call getvid('THETA', 'FOND_FISS', iocc=1, scal=fonfis, nbret=n1)
     call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=n2)
-
+    
 !   TEST DU TYPE DE FISSURE ET RECUPERATION DU NUMERO DE NOEUD DU FOND DE FISSURE FEM
     estfem=.true.
     if (n1 .ne. 0 .or. l_new_fissure) then
@@ -111,6 +113,8 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
     else if (n2 .ne. 0) then
         estfem=.false.
         num = 0
+    else
+        ASSERT(.FALSE.)
     end if
 !
 !     DANS LE CAS X-FEM, SI LA DIRECTION A ETE DONNEE, ON LA GARDE FIXE
@@ -125,10 +129,21 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
     if (estfem) then
         if (estbf .eq. 0 .and. (.not.l_new_fissure)) then
            ! basefond n'existe pas
-            call utmess('F', 'RUPTURE0_58')
-        end if
+           ! Ce cas ne doit exister que si on est en CONFIG_INIT=DECOLLEE et en 2D
+            ASSERT(config.eq.'DECOLLEE')
 
-        if(.not.l_new_fissure) then
+           !Dans ce cas uniquement, on entendant le remplacement par l'opérateur CALC_H
+           !on réintroduit la possibilité de remlir la direction dans le fichier de
+           !commande
+
+            call getvr8('THETA', 'DIRECTION', iocc=1, nbval=2, vect=dir,&
+                        nbret=iret)
+            dir(3)=0.d0
+            if(iret.eq.0) then
+                call utmess('F', 'RUPTURE0_58')
+            endif
+
+        elseif(.not.l_new_fissure) then
             call jeveuo(fonfis//'.BASEFOND', 'L', vr=vbasfd)
             if (size(vbasfd).gt.4) then
             ! le front ne doit contenir qu'un noeud, donc 4 composantes dans basefond
