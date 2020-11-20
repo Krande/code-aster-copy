@@ -78,6 +78,7 @@ implicit none
 #include "asterfort/palim2.h"
 #include "asterfort/palim3.h"
 #include "asterfort/rdtmai.h"
+#include "asterfort/getelem.h"
 #include "asterfort/reliem.h"
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
@@ -120,10 +121,15 @@ implicit none
     integer :: jnu2, jnum, jpr2, jpro, jrefe, jtypmv
     integer :: nbmaiv, nbmoma, nbnoaj, nbnoev, ndinit, niv, k, jgeofi
     integer :: dimcon, decala, iocct
+    character(len=24), parameter :: jvCellNume = '&&OP0167.LISTCELL'
+    integer :: nbCell
     integer :: nbField
-    integer :: nbOccDecoupeLac, nbOccEclaPg, nbGeomFibre, nbOccCreaFiss
+    integer :: nbOccDecoupeLac, nbOccEclaPg, nbGeomFibre, nbOccCreaFiss, nbOccLineQuad
     real(kind=8) :: shrink, lonmin
     aster_logical :: lpb, l_modi_maille
+    integer :: prefNume
+    character(len=8) :: prefNode
+    integer, pointer :: listCellNume(:) => null()
     character(len=16), pointer :: listField(:) => null()
     integer, pointer :: adrjvx(:) => null()
     integer, pointer :: nbnoma(:) => null()
@@ -145,6 +151,7 @@ implicit none
     call getfac('ECLA_PG', nbOccEclaPg)
     call getvid(' ', 'GEOM_FIBRE', scal=geofi, nbret=nbGeomFibre)
     call getfac('CREA_FISS', nbOccCreaFiss)
+    call getfac('LINE_QUAD', nbOccLineQuad)
     call getfac('DECOUPE_LAC', nbOccDecoupeLac)
 !
 ! - Main datastructure
@@ -219,40 +226,26 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call getfac('LINE_QUAD', nbmoma)
-    if (nbmoma .gt. 0) then
-        ASSERT(nbmoma.eq.1)
-!
-        call getvtx('LINE_QUAD', 'PREF_NOEUD', iocc=1, scal=prefix, nbret=n1)
-        call getvis('LINE_QUAD', 'PREF_NUME', iocc=1, scal=ndinit, nbret=n1)
-!
-        call getvtx('LINE_QUAD', 'MAILLE', iocc=1, nbval=0, nbret=n1a)
-        call getvtx('LINE_QUAD', 'GROUP_MA', iocc=1, nbval=0, nbret=n1b)
-        if (n1a+n1b .lt. 0) then
-            call utmess('A', 'MODELISA4_1', sk='LINE_QUAD')
-        endif
-!
-        motcle(1)='MAILLE'
-        motcle(2)='GROUP_MA'
-        motcle(3)='TOUT'
-        nomjv='&&OP0167.LISTE_MA'
-        call reliem(' ', meshIn, 'NU_MAILLE', 'LINE_QUAD', 1,&
-                    3, motcle, motcle, nomjv, nbma)
-        call jeveuo(nomjv, 'L', jlima)
+    if (nbOccLineQuad .gt. 0) then
+        ASSERT(nbOccLineQuad .eq. 1)
         call jeexin(meshIn//'.NOMACR', iret)
         if (iret .ne. 0) then
-            call utmess('F', 'ALGELINE2_91')
+            call utmess('F', 'MESH1_7')
         endif
         call jeexin(meshIn//'.ABSC_CURV', iret)
         if (iret .ne. 0) then
-            call utmess('F', 'ALGELINE2_92')
+            call utmess('F', 'MESH1_8')
         endif
-!
-        call cmlqlq(meshIn, meshOut, nbma, zi(jlima), prefix,&
-                    ndinit)
-!
+        keywfact = 'LINE_QUAD'
+        call getvtx(keywfact, 'PREF_NOEUD', iocc=1, scal=prefNode)
+        call getvis(keywfact, 'PREF_NUME', iocc=1, scal=prefNume)
+        call getelem(meshIn, keywfact, 1, 'F', jvCellNume, nbCell)
+        if (nbCell .ne. nbmaiv) then
+            call utmess('A', 'MESH1_4', sk=keywfact)
+        endif
+        call jeveuo(jvCellNume, 'L', vi = listCellNume)
+        call cmlqlq(meshIn, meshOut, nbCell, listCellNume, prefNode, prefNume)
         goto 350
-!
     endif
 !
 ! --------------------------------------------------------------------------------------------------
@@ -375,11 +368,11 @@ implicit none
         call jeveuo(nomjv, 'L', jlima)
         call jeexin(meshIn//'.NOMACR', iret)
         if (iret .ne. 0) then
-            call utmess('F', 'ALGELINE2_94')
+            call utmess('F', 'MESH1_7')
         endif
         call jeexin(meshIn//'.ABSC_CURV', iret)
         if (iret .ne. 0) then
-            call utmess('F', 'ALGELINE2_95')
+            call utmess('F', 'MESH1_8')
         endif
 !
         call cmhho(meshIn, meshOut, nbma, zi(jlima), prefix, ndinit)

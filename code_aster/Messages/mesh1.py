@@ -28,6 +28,13 @@ Pour créer un champ de déplacement adapté au maillage, on peut utiliser la co
 
     3 : _("""Pour l'opération DECOUPE_LAC. Groupe de mailles %(i1)d - Nombre de mailles %(i2)d."""),
 
+    4 : _("""Pour le mot clé facteur %(k1)s, vous nous modifiez qu'une partie des mailles du maillage.
+Ceci est dangereux car cela peut produire un maillage non conforme."""),
+
+    7 : _("""L'opération ne traite pas les macro-éléments."""),
+
+    8 : _("""L'opération ne traite pas les ABSC_CURV."""),
+
     12: _("""Vous essayez de modifier la topologie du maillage après avoir fait CREA_MAILLAGE/DECOUPE_LAC sur ce même maillage.
 C'est interdit, vous ne pouvez modifier que les coordonnées des noeuds comme dans les mots clés DEFORME et TRANSLATION.
 Effectuez toutes les opérations MODI_MAILLAGE avant d'effectuer CREA_MAILLAGE/DECOUPE_LAC sur votre maillage."""),

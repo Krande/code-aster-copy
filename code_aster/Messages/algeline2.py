@@ -422,13 +422,6 @@ Erreur utilisateur dans COMB_MATR_ASSE:
     Instrumenter la routine de destruction pour déterminer la routine coupable.
 """),
 
-    91 : _("""
- CREA_MAILLAGE : l'option LINE_QUAD ne traite pas les macro-commandes mailles
-"""),
-
-    92 : _("""
- CREA_MAILLAGE : l'option LINE_QUAD ne traite pas les ABSC_CURV
-"""),
 
     94 : _("""
  CREA_MAILLAGE : l'option QUAD_LINE ne traite pas les macro-commandes mailles
