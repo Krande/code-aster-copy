@@ -123,6 +123,16 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
                 nodeCoor(3,1:6) = [ 0.d0, +1.d0,  0.d0,  0.d0, +1.d0,  0.d0]
             end if
 
+        case('PE7')
+            nno_  = 7
+            nnos_ = 6
+            ndim_ = 3
+            if (present(nodeCoor)) then
+                nodeCoor(1,1:7) = [ 0.d0,  1.d0, 0.d0,  0.d0,  1.d0,  0.d0, untiers]
+                nodeCoor(2,1:7) = [ 0.d0,  0.d0, 1.d0,  0.d0,  0.d0,  1.d0, untiers]
+                nodeCoor(3,1:7) = [-1.d0, -1.d0,-1.d0, +1.d0, +1.d0, +1.d0, 0.d0   ]
+            end if
+
         case('P15')
             nno_  = 15
             nnos_ = 6

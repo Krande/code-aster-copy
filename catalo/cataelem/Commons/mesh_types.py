@@ -646,6 +646,18 @@ HE9.addLocation('LOB7', 7)
 HE9.addLocation('FPG1', 1)
 HEXA9.addElrefe(HE9)
 
+
+#------------------------------------------------------------
+PENTA7 = MeshType(nbno=7, dim=3, code='PE7')
+PE7 = Elrefe()
+PE7.addLocation('NOEU', 7)
+PE7.addLocation('NOEU_S', 6)
+PE7.addLocation('LOB5', 5)
+PE7.addLocation('LOB7', 7)
+PE7.addLocation('FPG1', 1)
+PENTA7.addElrefe(PE7)
+
+
 # store all MeshType objects
 ELREFS = objects_from_context(globals(), Elrefe)
 MESHTYPES = objects_from_context(globals(), MeshType)

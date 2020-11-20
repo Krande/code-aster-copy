@@ -92,7 +92,7 @@ integer, intent(out), optional :: numnoa(MT_NTYMAX, MT_NNOMAX)
                                                          'SE2QU9  ','SE3TR3  ','SE3TR6  ',&
                                                          'SE3QU4  ','SE3QU8  ','SE3QU9  ',&
                                                          'H20H20  ','P15P15  ','T10T10  ',&
-                                                         'HEXA9   '/)
+                                                         'HEXA9   ','PENTA7  '/)
     integer, parameter :: nummed(MT_NTYMAX) = (/1  , 102, 0  ,&
                                                 103, 0  , 104,&
                                                 203, 0  , 206,&
@@ -117,7 +117,7 @@ integer, intent(out), optional :: numnoa(MT_NTYMAX, MT_NNOMAX)
                                                 0  , 0  , 0  ,&
                                                 0  , 0  , 0  ,&
                                                 0  , 0  , 0  ,&
-                                                0  /)
+                                                0  , 0/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
