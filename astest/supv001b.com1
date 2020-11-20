@@ -20,6 +20,7 @@
 #
 POURSUITE(CODE='OUI', )
 
+print("EVAL form(0) =", form(0.))
 print('COUCHE INIT = ', COUCHE)
 
 tab = CREA_TABLE(LISTE=_F(PARA='COUCHE', LISTE_I=COUCHE))
@@ -45,9 +46,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 DETRUIRE(CONCEPT=_F(NOM=tab))
 
-import os
-os.rename('fort.50', 'fort50.py')
-from fort50 import include_function
+from supv001b_imp import include_function
+
 COUCHE = include_function(COUCHE)
 
 print('COUCHE APRES INCLUDE = ', COUCHE)

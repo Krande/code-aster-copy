@@ -17,16 +17,23 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
+from code_aster.Commands import DEFI_CONSTANTE
 
-from code_aster.Utilities import logger
-logger.setLevel("DEBUG")
 
-from supv001b_imp import one
+def include_function(COUCHE):
 
-form = FORMULE(NOM_PARA='INST', VALE="one(INST)", one=one)
+    print('COUCHE DEBUT INCLUDE = ', COUCHE)
 
-COUCHE = 1
+    COUCHE = COUCHE + 1
+    print('COUCHE FIN INCLUDE = ', COUCHE)
 
-del logger
-FIN()
+    return COUCHE
+
+
+def one(_):
+    return 1.
+
+# WARNING: it is not recommended to create objects in the global namespace
+# of an imported module (may be it never destroyed)
+# Here it is to check reloading.
+two = DEFI_CONSTANTE(VALE=2.)

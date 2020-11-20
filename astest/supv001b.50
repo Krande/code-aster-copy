@@ -1,8 +1,0 @@
-def include_function(COUCHE):
-
-    print('COUCHE DEBUT INCLUDE = ', COUCHE)
-
-    COUCHE = COUCHE + 1
-    print('COUCHE FIN INCLUDE = ', COUCHE)
-
-    return COUCHE

@@ -206,6 +206,8 @@ class Serializer(object):
             # add management objects on the stack
             objList = pickle.load(pick)
             lastId = int(pickle.load(pick), 16)
+        # restore the objects counter
+        ResultNaming.initCounter(lastId)
 
         should_fail = ExecutionParameter().option & Options.StrictUnpickling
         pool = objList[:]
@@ -256,8 +258,6 @@ class Serializer(object):
             self._ctxt[name] = obj
             logger.info(f"{name:<24s} {type(obj)}")
             assert not isinstance(obj, AsterUnpickler.BufferObject)
-        # restore the objects counter
-        ResultNaming.initCounter(lastId)
 
 
 def _restore(name, obj):
