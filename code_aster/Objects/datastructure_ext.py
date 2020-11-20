@@ -33,7 +33,9 @@ from ..Utilities import deprecated, import_object, injector
 class ExtendedDataStructure(object):
     """This class defines the base class of the DataStructures.
     """
-    # __getstate_manages_dict__ = 1
+    # Tell Boost that __get_state__/__set_state__ must manage __dict__
+    # Search for python reference guide at https://www.boost.org/doc/libs/
+    __getstate_manages_dict__ = 1
     cata_sdj = None
     ptr_class_sdj = None
     ptr_sdj = None
