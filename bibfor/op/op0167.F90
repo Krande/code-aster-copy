@@ -90,14 +90,16 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, lgno, lgnu, nbmc, iret, iad, nbma, iqtr, nbvolu
-    integer :: n1, numma, nbrest, n1b
+    integer :: i, lgno, lgnu, nbmc, iret, iad, nbma, iqtr
+    integer :: n1, nbrest
+    integer :: n1b, jlima, ndinit
     parameter(nbmc=5)
     real(kind=8) :: epais
     character(len=4) :: answer
     character(len=4) :: cdim
-    character(len=8) :: meshIn, meshOut, newmai, model, geofi, prefix
-    character(len=8) :: nomori, knume, prfno, prfma, plan, trans
+    character(len=8) :: prefix
+    character(len=8) :: meshIn, meshOut, newmai, model, geofi
+    character(len=8) :: nomori, knume, plan, trans
     character(len=16) :: option, keywfact
     character(len=16) :: kbi1, kbi2
     character(len=16) :: motfac, tymocl(nbmc), motcle(nbmc)
@@ -118,16 +120,16 @@ implicit none
     integer :: nbcrp1, nbgma, nbgrma, nbgrmn, nbgrmt, nbgrmv
     integer :: nbgrno, nbmain, nbmaj2, nbmaj3, nbno, nbnot
     integer :: nbpt, nbptt, nori, nrep, ntab, ntpoi
-    integer :: ibid, ifm, jdime, jiad, jma, jmomno, jmomnu, jlima
+    integer :: ibid, ifm, jdime, jiad, jmomno, jmomnu
     integer :: jnu2, jnum, jpr2, jpro, jrefe, jtypmv
-    integer :: nbmaiv, nbmoma, nbnoaj, nbnoev, niv, k, jgeofi, ndinit
+    integer :: nbmaiv, nbmoma, nbnoaj, nbnoev, niv, k, jgeofi
     integer :: dimcon, decala
     integer :: iocc, nbOcc
     character(len=24), parameter :: jvCellNume = '&&OP0167.LISTCELL'
     integer :: nbCell
     integer :: nbField
     integer :: nbOccDecoupeLac, nbOccEclaPg, nbGeomFibre, nbOccCreaFiss, nbOccLineQuad
-    integer :: nbOccQuadLine, nbOccModiMaille
+    integer :: nbOccQuadLine, nbOccModiMaille, nbOccCoquVolu
     integer :: iOccQuadTria
     real(kind=8) :: shrink, lonmin
     aster_logical :: lpb, l_modi_maille
@@ -158,6 +160,7 @@ implicit none
     call getfac('LINE_QUAD', nbOccLineQuad)
     call getfac('QUAD_LINE', nbOccQuadLine)
     call getfac('MODI_MAILLE', nbOccModiMaille)
+    call getfac('COQU_VOLU', nbOccCoquVolu)
     call getfac('DECOUPE_LAC', nbOccDecoupeLac)
 !
 ! - Main datastructure
@@ -410,30 +413,23 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call getfac('COQU_VOLU', nbvolu)
-    if (nbvolu .ne. 0) then
-        call getvr8('COQU_VOLU', 'EPAIS', iocc=1, scal=epais, nbret=n1)
-        call getvtx('COQU_VOLU', 'PREF_NOEUD', iocc=1, scal=prfno, nbret=n1)
-        call getvtx('COQU_VOLU', 'PREF_MAILLE', iocc=1, scal=prfma, nbret=n1)
-        call getvis('COQU_VOLU', 'PREF_NUME', iocc=1, scal=numma, nbret=n1)
-        call getvtx('COQU_VOLU', 'PLAN', iocc=1, scal=plan, nbret=n1)
-!
+    if (nbOccCoquVolu .ne. 0) then
+        ASSERT(nbOccCoquVolu .eq. 1)
+        keywfact = 'COQU_VOLU'
+        call getvr8(keywfact, 'EPAIS', iocc=1, scal=epais)
+        call getvtx(keywfact, 'PREF_NOEUD', iocc=1, scal=prefNode)
+        call getvtx(keywfact, 'PREF_MAILLE', iocc=1, scal=prefCell)
+        call getvis(keywfact, 'PREF_NUME', iocc=1, scal=prefNume)
+        call getvtx(keywfact, 'PLAN', iocc=1, scal=plan)
         if (plan .eq. 'MOY') then
-            trans='INF'
-            call getvtx('COQU_VOLU', 'TRANSLATION', iocc=1, scal=trans, nbret=n1)
+            trans = 'INF'
+            call getvtx(keywfact, 'TRANSLATION', iocc=1, scal=trans)
         endif
-!
-        nomjv='&&OP0167.LISTE_MAV'
-        call reliem(' ', meshIn, 'NU_MAILLE', 'COQU_VOLU', 1,&
-                    1, 'GROUP_MA', 'GROUP_MA', nomjv, nbma)
-        call jeveuo(nomjv, 'L', jma)
-!
-        call cmcovo(meshIn, meshOut, nbma, zi(jma), prfno,&
-                    prfma, numma, epais, plan, trans)
-!
-!
+        call getelem(meshIn, keywfact, 1, 'F', jvCellNume, nbCell)
+        call jeveuo(jvCellNume, 'L', vi = listCellNume)
+        call cmcovo(meshIn, meshOut, nbCell, listCellNume, prefNode,&
+                    prefCell, prefNume, epais, plan, trans)
         goto 350
-!
     endif
 !
 ! --------------------------------------------------------------------------------------------------
