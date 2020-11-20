@@ -36,5 +36,12 @@ class MeshModification(ExecuteCommand):
         """
         self._result = keywords["MAILLAGE"]
 
+    def add_dependencies(self, keywords):
+        """Register input *DataStructure* objects as dependencies.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+
 
 MODI_MAILLAGE = MeshModification.run

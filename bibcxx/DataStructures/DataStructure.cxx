@@ -56,15 +56,18 @@ DataStructure::DataStructure( const std::string type, const JeveuxMemory memType
                                     nameLength, type, memType ) {}
 
 DataStructure::~DataStructure() {
+    // user/main datastructures aka 'concept' (== without ".").
+    bool mainDs = _name.find(".") == std::string::npos && _name[0] != '&';
     std::string nameWithoutBlanks = trim( _name );
     // empty name or no memory manager : skip silently
     if ( nameWithoutBlanks == "" || get_sh_jeveux_status() != 1 )
         return;
     // Allow to see when the datastructure is really deleted.
-    // Only for user datastructures aka 'concept' (== without ".").
-    // Too low-level to call UTMESS.
-    if ( _name.find(".") == std::string::npos ) {
-        std::cout << "Deleting <" << trim( this->getName() ) << "> "
+    // In case of embraced datastructures, '_tco' is deallocated the first time (no type)
+    if ( mainDs && this->getType() != "not_found" ) {
+        // Too low-level to call UTMESS.
+        std::cout << "Deleting " << trim( this->getName() )
+            << " <" << this->getType() << "> "
             << this->getUserName() << std::endl;
     }
     _tco->deallocate();
