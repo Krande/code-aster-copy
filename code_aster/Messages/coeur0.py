@@ -33,28 +33,12 @@ Assemblage des %(i1)d permutations
 Permutation de l'assemblage %(k1)s en position %(k2)s
 """),
 
-    4 : _("""
-Récupération des jeux entre les assemblages
-"""),
-
-    5 : _("""
-Récupération des jeux entre les assemblages de bord et le cloisonnement
-"""),
-
     6 : _("""
 Post-traitement des déformations des assemblages combustibles
 """),
 
     7 : _("""
 Il faut renseigner au moins un des mots-clés MAILLAGE_N ou RESU_INIT.
-"""),
-
-    8 : _("""
-Récupération des efforts de contact entre les assemblages
-"""),
-
-    9 : _("""
-Récupération des efforts de contact entre les assemblages de bord et le cloisonnement
 """),
 
 }

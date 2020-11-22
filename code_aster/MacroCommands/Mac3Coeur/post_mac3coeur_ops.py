@@ -22,6 +22,7 @@ import os.path as osp
 from math import sqrt
 
 import numpy as np
+from collections import OrderedDict
 import numpy.linalg as LA
 
 import aster
@@ -34,7 +35,7 @@ from ...Objects.table_py import Table
 from ...Utilities import ExecutionParameter
 from .mac3coeur_coeur import CoeurFactory
 
-UL=UniteAster()
+UL = UniteAster()
 
 round_post = lambda s : round(s,4)
 
@@ -339,6 +340,73 @@ def makeXMGRACEdeforme(unit, name, typeAC, coeur, valdefac):
                    'uteur (m))"\n@DEVICE \"JPEG\" PAGE SIZE 1200,1200\n@autoscale\n@redraw\n' % (name))
     xmgrfile.close()
 
+class CollectionDiscretChoc():
+
+    @property
+    def keys(self):
+        return self._collection.keys()
+
+    @property
+    def values(self):
+        return np.array(tuple(self._collection.values()))
+
+    @property
+    def values_internal(self):
+        return np.array(tuple(item for j, item in self._collection.items() if "RES" in j))
+
+    @property
+    def values_external(self):
+        return np.array(tuple(item for j, item in self._collection.items() if "CU_" in j))
+    
+    def __init__(self):
+        self._collection = OrderedDict()
+
+    def __getitem__(self, key):
+        return self._collection[key]
+
+    def __setitem__(self, key, item):
+        self._collection[key] = item
+
+    def analyse(self, prec=1.e-8):
+        quantiles = [70, 80, 90, 95, 99]
+
+        values = {}
+        
+        for i in quantiles :
+            values['QuanLE_CU_%d'%i] = np.percentile(self.values_external, i)
+            values['QuanLE_AC_%d'%i] = np.percentile(self.values_internal, i)
+            values['QuanLE_%d'%i] = np.percentile(self.values, i)
+            
+            qu_cu_grids_i = np.percentile(self.values_external, i, axis=0)           
+            qu_ac_grids_i = np.percentile(self.values_internal, i, axis=0)
+            qu_grids_i = np.percentile(self.values, i, axis=0)
+            
+            nb_grids = qu_cu_grids_i.size
+            for j in range(nb_grids):
+                values['QuanLE_CU_G%d_%d'%(j+1,i)] = qu_cu_grids_i[j]
+                values['QuanLE_AC_G%d_%d'%(j+1,i)] = qu_ac_grids_i[j]
+                values['QuanLE_G%d_%d'%(j+1,i)] = qu_grids_i[j]
+
+        values = {key : round_post(item) for key, item in values.items()}
+        return values
+
+    def extr_table(self):
+        nb_grids = self.values.shape[1]
+
+        listdic = [{key : self[key][i] for key in self.keys} for i in range(nb_grids)]
+        listpara = self.keys
+        listtype = ['R']*len(listpara)
+        return Table(listdic, listpara, listtype)
+
+    def extr_table_analyse(self):
+        values = self.analyse()
+
+        listdic = [values]
+        listpara = sorted(values.keys())
+        listtype = ['R']*len(listpara)
+        return Table(listdic, listpara, listtype)
+
+
 class CollectionPostAC():
 
     def __init__(self):
@@ -403,21 +471,27 @@ class CollectionPostAC():
         self.analyse()
         
         dico = {
-            'moyRhoCoeur' : round_post(self.moyenneRho),
-            'maxRhoCoeur' : round_post(self.maxRho),
-            'moyGravCoeur' : round_post(self.moyenneGravite),
-            'maxGravCoeur' : round_post(self.maxGravite),
-            'sigGravCoeur' : round_post(self.sigmaGravite),
+            'moyRhoCoeur' : self.moyenneRho,
+            'maxRhoCoeur' : self.maxRho,
+            'moyGravCoeur' : self.moyenneGravite,
+            'maxGravCoeur' : self.maxGravite,
+            'sigGravCoeur' : self.sigmaGravite,
             'locMaxRho' : self.locMaxRho,
             'locMaxGrav' : self.locMaxGravite,
         }
 
-        dico.update({'moR%s'%typ : round_post(value) for typ, value in self.moyenneRhoParType.items()})
-        dico.update({'maR%s'%typ : round_post(value) for typ, value in self.maxRhoParType.items()})
-        dico.update({'maG%s'%typ : round_post(value) for typ, value in self.maxGraviteParType.items()})
-        dico.update({'moG%s'%typ : round_post(value) for typ, value in self.moyenneGraviteParType.items()})
+        dico.update({'moR%s'%typ : value for typ, value in self.moyenneRhoParType.items()})
+        dico.update({'maR%s'%typ : value for typ, value in self.maxRhoParType.items()})
+        dico.update({'maG%s'%typ : value for typ, value in self.maxGraviteParType.items()})
+        dico.update({'moG%s'%typ : value for typ, value in self.moyenneGraviteParType.items()})
         dico.update({'locMaxDeplG%i'%(i+1) : value for i, value in enumerate(self.locMaxDeplGrille) if value != ''})
-        dico.update({'maxDeplGrille%i'%(i+1) : round_post(self.maxDeplGrille[i]) for i, value in enumerate(self.locMaxDeplGrille) if value != ''})
+        dico.update({'maxDeplGrille%i'%(i+1) : self.maxDeplGrille[i] for i, value in enumerate(self.locMaxDeplGrille) if value != ''})
+
+        for key, item in dico.items():
+            try:
+                dico[key] = round_post(item)
+            except TypeError:
+                pass
 
         print('table_post = ', dico)
         
@@ -446,7 +520,7 @@ class PostAC():
         return K_star*sum_of_squared_sin
 
     def _compute_forme(self, fx, fy):
-        crit = 500.0 #mm
+        crit = 0.5
         
         A1x = abs(min(fx))
         A2x = abs(max(fx))
@@ -578,165 +652,49 @@ def post_mac3coeur_ops(self, **args):
     # "
 
     if (POST_LAME is not None):
+        collection = CollectionDiscretChoc()
+        
+        for name in (_coeur.get_contactAssLame() + _coeur.get_contactCuve()):
 
-        valjeuac = {}
-        valjeucu = {}
-        post_table = 0
-        for attr in POST_LAME:
-            _typ_post = attr['FORMAT']
-            if (_typ_post == 'TABLE'):
-                post_table = 1
+            _TMP = CREA_TABLE(RESU=_F(RESULTAT=_RESU,
+                                     NOM_CMP='V8',
+                                     GROUP_MA=name,
+                                     NOM_CHAM='VARI_ELGA',
+                                     INST=_inst,
+                                     PRECISION=1.E-08))
 
-        _formule = FORMULE(NOM_PARA='V8', VALE='1000.*V8')
+            vals = np.stack((_TMP.EXTR_TABLE().values()[i] for i in ('COOR_X', 'V8')))
+            vals = np.mean(vals.reshape(2,vals.shape[1]//2,2),axis=2) # Moyenne sur les 2 noeuds du discret (qui portent tous la meme valeur)
 
-        # formule qui permet d'associer les COOR_X "presque" identiques (suite a
-        # un calcul LAME)
-        _indicat = FORMULE(NOM_PARA='COOR_X', VALE='int(10*COOR_X)')
+            coor_x, v8 = np.around(1000.*vals[:, vals[0].argsort()], 12)
+            if 'COOR_X' not in collection.keys :
+                collection['COOR_X'] = coor_x/1000.0 #FIXME : dont like
+            collection[name] = v8
 
-        UTMESS('I', 'COEUR0_5')
-        k = 0
-        dim = len(_coeur.get_contactCuve())
-
-        for name in _coeur.get_contactCuve() :
-
-            _TAB2 = CREA_TABLE(
-                RESU=_F(RESULTAT=_RESU,
-                        NOM_CMP='V8',
-                        GROUP_MA=name,
-                        NOM_CHAM='VARI_ELGA',
-                        INST=_inst,
-                        PRECISION=1.E-08))
-
-            _TAB2 = CALC_TABLE(reuse=_TAB2, TABLE=_TAB2,
-                               ACTION=(
-                               _F(OPERATION='FILTRE', NOM_PARA='POINT',
-                                  CRIT_COMP='EQ', VALE_I=1),
-                               _F(OPERATION='TRI', NOM_PARA='COOR_X',
-                                  ORDRE='CROISSANT'),
-                               _F(OPERATION='OPER',
-                                  FORMULE=_formule, NOM_PARA=name),
-                               _F(OPERATION='OPER', FORMULE=_indicat,
-                                  NOM_PARA='INDICAT'),
-                               )
-                               )
-
-            if (post_table == 1):
-
-                # a la premiere occurence, on cree la table qui sera imprimee
-                # (_TAB3), sinon, on concatene les tables
-                if k == 0:
-                    _TAB3 = CALC_TABLE(TABLE=_TAB2,
-                                       ACTION=(_F(OPERATION='EXTR', NOM_PARA=('COOR_X', 'INDICAT', name))))
-                else:
-
-                    _TABTMP = CALC_TABLE(TABLE=_TAB2,
-                                         ACTION=(_F(OPERATION='EXTR', NOM_PARA=('INDICAT', name))))
-                    _TAB3 = CALC_TABLE(TABLE=_TAB3,
-                                       ACTION=(_F(OPERATION='COMB', TABLE=_TABTMP, NOM_PARA='INDICAT')))
-
-            tab2 = _TAB2.EXTR_TABLE()
-            tab2.Renomme(name, 'P_LAME')
-            valjeucu[name] = tab2.P_LAME.values()
-            k = k + 1
-
-        UTMESS('I', 'COEUR0_4')
-        k = 0
-        dim = len(_coeur.get_contactAssLame())
-
-        if dim != 0:
-            for name in _coeur.get_contactAssLame():
-                _TAB1 = CREA_TABLE(
-                    RESU=_F(RESULTAT=_RESU,
-                            NOM_CMP='V8',
-                            GROUP_MA=name,
-                            NOM_CHAM='VARI_ELGA',
-                            INST=_inst,
-                            PRECISION=1.E-08))
                 
-                _TAB1 = CALC_TABLE(reuse=_TAB1, TABLE=_TAB1,
-                                   ACTION=(
-                                   _F(OPERATION='FILTRE', NOM_PARA='POINT',
-                                      CRIT_COMP='EQ', VALE_I=1),
-                                   _F(OPERATION='TRI',
-                                      NOM_PARA='COOR_X', ORDRE='CROISSANT'),
-                                   _F(OPERATION='OPER',
-                                      FORMULE=_formule, NOM_PARA=name),
-                                   _F(OPERATION='OPER',
-                                      FORMULE=_indicat, NOM_PARA='INDICAT'),
-                                   )
-                                   )
-                if (post_table == 1):
-                    _TABTMP = CALC_TABLE(TABLE=_TAB1,
-                                         ACTION=(_F(OPERATION='EXTR', NOM_PARA=('INDICAT', name))))
-                    _TAB3 = CALC_TABLE(TABLE=_TAB3,
-                                       ACTION=(_F(OPERATION='COMB', TABLE=_TABTMP, NOM_PARA='INDICAT')))
-                tab1 = _TAB1.EXTR_TABLE()
-                tab1.Renomme(name, 'P_LAME')
-                valjeuac[name] = tab1.P_LAME.values()
-                k = k + 1
+        tabanalyse= collection.extr_table_analyse()
+        tabanalyse.titr = 'RESU_GLOB_{}'.format(nameCoeur)
+        if not tableCreated: 
+            __TAB_OUT = CREA_TABLE(**tabanalyse.dict_CREA_TABLE())
 
-        valContactCuve = []
-        valContactAssLame = []
-        # pour table globale
-        for name in _coeur.get_contactCuve() :
-            valContactCuve.append(valjeucu[name])
-        for name in _coeur.get_contactAssLame() :
-            valContactAssLame.append(valjeuac[name])
-        valContactCuve=np.array(valContactCuve)
-        valContactAssLame=np.array(valContactAssLame)
-        nb_grilles = valContactCuve.shape[1]
-        valQuantile=[70,80,90,95,99]
-
-        liste_out=[]
-
-        for i in range(nb_grilles) :
-            valContactCuveGrille    = valContactCuve[:,i]
-            valContactAssLameGrille = valContactAssLame[:,i]
-            valContactGrille        = valContactCuveGrille.tolist()
-            valContactGrille.extend(valContactAssLameGrille)
-            for quant in valQuantile :
-                liste_out.append({
-                    'LISTE_R' : round_post(np.percentile(valContactCuveGrille,quant)),
-                    'PARA'    : 'QuanLE_CU_G%d_%d'%(i+1,quant)
-                    })
-                liste_out.append({
-                    'LISTE_R' : round_post(np.percentile(valContactAssLameGrille,quant)),
-                    'PARA'    : 'QuanLE_AC_G%d_%d'%(i+1,quant)
-                    })
-                liste_out.append({
-                    'LISTE_R' : round_post(np.percentile(valContactGrille,quant)),
-                    'PARA'    : 'QuanLE_G%d_%d'%(i+1,quant)
-                    })
-        valContact = valContactCuve.ravel().tolist()
-        valContact.extend(valContactAssLame.ravel())
-        for quant in valQuantile :
-            liste_out.append({
-                'LISTE_R' : round_post(np.percentile(valContactCuve.ravel(),quant)),
-                'PARA'    : 'QuanLE_CU_%d'%(quant,)
-                })
-            liste_out.append({
-                'LISTE_R' : round_post(np.percentile(valContactAssLame.ravel(),quant)),
-                'PARA'    : 'QuanLE_AC_%d'%(quant,)
-                })
-            liste_out.append({
-                'LISTE_R' : round_post(np.percentile(valContact,quant)),
-                'PARA'    : 'QuanLE_%d'%(quant,)
-                })
-
-
-        __TAB_OUT = CREA_TABLE(TITRE='RESU_GLOB_'+nameCoeur,
-                             LISTE=liste_out
-                             )
-
+        else :
+            _TAB_A = CREA_TABLE(**tabanalyse.dict_CREA_TABLE())
+            __TAB_OUT = CALC_TABLE(reuse=__TAB_OUT,
+                                   TABLE=__TAB_OUT,
+                                   ACTION=_F(OPERATION='COMB',TABLE=_TAB_A))
+            
+        tabvalues = collection.extr_table()
+        _TAB3 = CREA_TABLE(**tabvalues.dict_CREA_TABLE())
+        
         tableCreated = True
-
+        
         for attr in POST_LAME:
             _unit = attr['UNITE']
             _typ_post = attr['FORMAT']
-
-            #DEFI_FICHIER(ACTION='LIBERER', UNITE=_unit)
-
+            
             if (_typ_post == 'GRACE'):
+                valjeuac = {key : collection[key] for key in collection.keys if 'RES_' in key}
+                valjeucu = {key : collection[key] for key in collection.keys if 'CU_' in key}
 
                 _num_grille = attr['NUME_GRILLE']
                 _extremum = attr['TYPE_RESU']
@@ -750,132 +708,55 @@ def post_mac3coeur_ops(self, **args):
 
             elif (_typ_post == 'TABLE'):
 
-                # liste des parametres a afficher (dans l'ordre)
-                # Rq : on affiche la premiere occurence de 'COOR_X'
-                l_para = ['COOR_X', ] + _coeur.get_contactAssLame() + _coeur.get_contactCuve()
-
-                IMPR_TABLE(UNITE=_unit, TABLE=_TAB3, NOM_PARA=l_para,FORMAT_R='E12.6',)
+                IMPR_TABLE(UNITE=_unit, TABLE=_TAB3,FORMAT_R='E12.6',)
 
     # "
     #                                          MOT-CLE FACTEUR FORCE_CONTACT
     # "
 
     if (POST_EFFORT is not None):
+        collection = CollectionDiscretChoc()
+        
+        for name in (_coeur.get_contactAssLame() + _coeur.get_contactCuve()):
 
-        valeffortac = {}
-        valeffortcu = {}
-        post_table = 0
-        for attr in POST_EFFORT:
-            _typ_post = attr['FORMAT']
-            if (_typ_post == 'TABLE'):
-                post_table = 1
+            _TMP = CREA_TABLE(RESU=_F(RESULTAT=_RESU,
+                                     NOM_CMP='N',
+                                     GROUP_MA=name,
+                                     NOM_CHAM='SIEF_ELGA',
+                                     INST=_inst,
+                                     PRECISION=1.E-08))
 
-        _formule = FORMULE(NOM_PARA='N', VALE='abs(1.*N)')
+            vals = np.abs(np.stack((_TMP.EXTR_TABLE().values()[i] for i in ('COOR_X', 'N'))))
+            vals = np.mean(vals.reshape(2,vals.shape[1]//2,2),axis=2) # Moyenne sur les 2 noeuds du discret (qui portent tous la meme valeur)
 
-        # formule qui permet d'associer les COOR_X "presque" identiques (suite a
-        # un calcul LAME)
-        _indicat = FORMULE(NOM_PARA='COOR_X', VALE='int(10*COOR_X)')
+            coor_x, v8 = np.around(1000.*vals[:, vals[0].argsort()], 12)
+            if 'COOR_X' not in collection.keys :
+                collection['COOR_X'] = coor_x/1000.0 #FIXME : dont like
+            collection[name] = v8
 
-        UTMESS('I', 'COEUR0_9')
-        k = 0
-        dim = len(_coeur.get_contactCuve())
-
-        for name in _coeur.get_contactCuve() :
-
-            _TAB2 = CREA_TABLE(
-                RESU=_F(RESULTAT=_RESU,
-                        NOM_CMP='N',
-                        GROUP_MA=name,
-                        NOM_CHAM='SIEF_ELGA',
-                        INST=_inst,
-                        PRECISION=1.E-08))
-
-            _TAB2 = CALC_TABLE(reuse=_TAB2, TABLE=_TAB2,
-                               ACTION=(
-                               _F(OPERATION='FILTRE', NOM_PARA='POINT',
-                                  CRIT_COMP='EQ', VALE_I=1),
-                               _F(OPERATION='TRI', NOM_PARA='COOR_X',
-                                  ORDRE='CROISSANT'),
-                               _F(OPERATION='OPER',
-                                  FORMULE=_formule, NOM_PARA=name),
-                               _F(OPERATION='OPER', FORMULE=_indicat,
-                                  NOM_PARA='INDICAT'),
-                               )
-                               )
-
-            if (post_table == 1):
-
-                # a la premiere occurence, on cree la table qui sera imprimee
-                # (_TAB3), sinon, on concatene les tables
-                if k == 0:
-                    _TAB3 = CALC_TABLE(TABLE=_TAB2,
-                                       ACTION=(_F(OPERATION='EXTR', NOM_PARA=('COOR_X', 'INDICAT', name))))
-                else:
-
-                    _TABTMP = CALC_TABLE(TABLE=_TAB2,
-                                         ACTION=(_F(OPERATION='EXTR', NOM_PARA=('INDICAT', name))))
-                    _TAB3 = CALC_TABLE(TABLE=_TAB3,
-                                       ACTION=(_F(OPERATION='COMB', TABLE=_TABTMP, NOM_PARA='INDICAT')))
-
-            tab2 = _TAB2.EXTR_TABLE()
-            tab2.Renomme(name, 'P_EFFORT')
-            valeffortcu[name] = tab2.P_EFFORT.values()
-            k = k + 1
-
-        UTMESS('I', 'COEUR0_8')
-        k = 0
-        dim = len(_coeur.get_contactAssLame())
-
-        if dim != 0:
-            for name in _coeur.get_contactAssLame():
-                _TAB1 = CREA_TABLE(
-                    RESU=_F(RESULTAT=_RESU,
-                            NOM_CMP='N',
-                            GROUP_MA=name,
-                            NOM_CHAM='SIEF_ELGA',
-                            INST=_inst,
-                            PRECISION=1.E-08,))
-
-                _TAB1 = CALC_TABLE(reuse=_TAB1, TABLE=_TAB1,
-                                   ACTION=(
-                                   _F(OPERATION='FILTRE', NOM_PARA='POINT',
-                                      CRIT_COMP='EQ', VALE_I=1),
-                                   _F(OPERATION='TRI',
-                                      NOM_PARA='COOR_X', ORDRE='CROISSANT'),
-                                   _F(OPERATION='OPER',
-                                      FORMULE=_formule, NOM_PARA=name),
-                                   _F(OPERATION='OPER',
-                                      FORMULE=_indicat, NOM_PARA='INDICAT'),
-                                   )
-                                   )
-                if (post_table == 1):
-                    _TABTMP = CALC_TABLE(TABLE=_TAB1,
-                                         ACTION=(_F(OPERATION='EXTR', NOM_PARA=('INDICAT', name))))
-                    _TAB3 = CALC_TABLE(TABLE=_TAB3,
-                                       ACTION=(_F(OPERATION='COMB', TABLE=_TABTMP, NOM_PARA='INDICAT')))
-                tab1 = _TAB1.EXTR_TABLE()
-                tab1.Renomme(name, 'P_EFFORT')
-                valeffortac[name] = tab1.P_EFFORT.values()
-                k = k + 1
-
-
-
+        tabanalyse= collection.extr_table_analyse()
+        tabanalyse.titr = 'RESU_GLOB_{}'.format(nameCoeur)
+        if not tableCreated: 
+            __TAB_OUT = CREA_TABLE(**tabanalyse.dict_CREA_TABLE())
+            
+        else :
+            _TAB_A = CREA_TABLE(**tabanalyse.dict_CREA_TABLE())
+            __TAB_OUT = CALC_TABLE(reuse=__TAB_OUT,
+                                   TABLE=__TAB_OUT,
+                                   ACTION=_F(OPERATION='COMB',TABLE=_TAB_A))
+            
+        tabvalues = collection.extr_table()
+        _TAB3 = CREA_TABLE(**tabvalues.dict_CREA_TABLE())
+        
+        tableCreated = True
+            
         for attr in POST_EFFORT:
             _unit = attr['UNITE']
             _typ_post = attr['FORMAT']
 
             if (_typ_post == 'TABLE'):
-
-                # liste des parametres a afficher (dans l'ordre)
-                # Rq : on affiche la premiere occurence de 'COOR_X'
-                l_para = ['COOR_X', ] + _coeur.get_contactAssLame() + _coeur.get_contactCuve()
-
-                IMPR_TABLE(UNITE=_unit, TABLE=_TAB3, NOM_PARA=l_para,FORMAT_R='E12.6',)
-
-        # FIXME to be fixed by issue29787
-        __TAB_OUT = CREA_TABLE(TITRE='BIDON',
-                               LISTE=(_F(LISTE_R=(0., 0.), PARA='BIDON')))
-
+                IMPR_TABLE(UNITE=_unit, TABLE=_TAB3, FORMAT_R='E12.6',)
+     
     # "
     #                                          MOT-CLE FACTEUR DEFORMATION
     # "
@@ -899,7 +780,6 @@ def post_mac3coeur_ops(self, **args):
             vals = np.mean(vals.reshape(vals.shape[0], vals.shape[1]//4, 4),axis=2)
             # Passage en mm et arrondi
             coor_x, dy, dz = np.around(1000.0*vals[:, vals[0].argsort()],12)
-
             post_coeur.add(PostAC(coor_x, dy, dz, AC))
             
         table_analyse = post_coeur.extr_table_analyse()
