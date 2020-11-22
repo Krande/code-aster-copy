@@ -17,49 +17,26 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-#
-POURSUITE(CODE='OUI', )
+import code_aster
+from code_aster.Commands import *
 
-print("EVAL form(0) =", form(0.))
-print('COUCHE INIT = ', COUCHE)
+POURSUITE(CODE='OUI')
 
-tab = CREA_TABLE(LISTE=_F(PARA='COUCHE', LISTE_I=COUCHE))
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=1,
-           VALE_REFE_I=1,
-           NOM_PARA='COUCHE',
-           TABLE=tab,)
-
-DETRUIRE(CONCEPT=_F(NOM=tab))
+test = code_aster.TestCase()
+test.assertEqual(COUCHE, 1, msg="reload COUCHE")
 
 COUCHE = COUCHE + 1
-print('COUCHE INCREMENT = ', COUCHE)
-
-tab = CREA_TABLE(LISTE=_F(PARA='COUCHE', LISTE_I=COUCHE))
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=2,
-           VALE_REFE_I=2,
-           NOM_PARA='COUCHE',
-           TABLE=tab,)
-
-DETRUIRE(CONCEPT=_F(NOM=tab))
+test.assertEqual(COUCHE, 2, msg="increment COUCHE")
 
 from supv001b_imp import include_function
-
 COUCHE = include_function(COUCHE)
 
-print('COUCHE APRES INCLUDE = ', COUCHE)
+test.assertEqual(COUCHE, 3, msg="after include_function")
 
-tab = CREA_TABLE(LISTE=_F(PARA='COUCHE', LISTE_I=COUCHE))
+test.assertEqual(form_one(0.), 1., msg="evaluate form_one")
+test.assertEqual(four(0.), 4., msg="evaluate four")
+test.assertEqual(feval(0.), 4., msg="evaluate feval")
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC_I=3,
-           VALE_REFE_I=3,
-           NOM_PARA='COUCHE',
-           TABLE=tab,)
-
-DETRUIRE(CONCEPT=_F(NOM=tab))
+test.printSummary()
 
 FIN()

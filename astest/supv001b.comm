@@ -24,7 +24,16 @@ logger.setLevel("DEBUG")
 
 from supv001b_imp import one
 
-form = FORMULE(NOM_PARA='INST', VALE="one(INST)", one=one)
+form_one = FORMULE(NOM_PARA='INST', VALE="one(INST)", one=one)
+
+three = DEFI_CONSTANTE(VALE=3.)
+
+four = FORMULE(NOM_PARA='INST',
+               VALE="three(INST) + one(INST)",
+               one=one,
+               three=three,)
+
+feval = CALC_FONC_INTERP(NOM_PARA='INST', FONCTION=four, VALE_PARA=0.)
 
 COUCHE = 1
 
