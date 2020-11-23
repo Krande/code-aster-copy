@@ -8,4 +8,4 @@ P testlist ci verification sequential
 F comm sdll156b.comm D 1
 F comm sdll156b.com1 D 1
 F mmed sdll156a.mmed D 20
-F nom sdll156a_fonctions.py D 0
+F rmed sdll156b.81 D 81

@@ -236,11 +236,15 @@ resu_corr=CREA_RESU(OPERATION='AFFE',
 
 # appel à POST_ROCHE
 
+                          
 resuPostRoche = POST_ROCHE(ZONE_ANALYSE=(_F(
                                      GROUP_MA='TUYAU',
                                      GROUP_NO_ORIG = 'A',
                                     ),
                                   ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,   
                     RESU_MECA_TRAN=(
                                _F(TYPE_CHAR='SISM_INER_TRAN',
                                  RESULTAT=resu_dyna,
@@ -270,4 +274,295 @@ resuPostRoche = POST_ROCHE(ZONE_ANALYSE=(_F(
                     )
 
 
+
+# Tests cas de calcul
+# 4- seisme inertiel (S)
+# 5- seisme inertiel + pression (SP)
+# 6- seisme inertiel + pression + poids propre (SPG)
+# 7- seisme inertiel + deplacement (SD)
+
+# 4- seisme inertiel (S)
+resuPostRoche_S = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     GROUP_MA='TUYAU',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,                                  
+                    RESU_MECA_TRAN=(
+                               _F(TYPE_CHAR='SISM_INER_TRAN',
+                                 RESULTAT=resu_dyna,
+                                 RESU_CORR=resu_corr,
+                                 INST=(1,2),
+                                 #NUME_ORDRE=(1,2),
+                                 #TOUT_ORDRE='OUI',
+                                 ),
+                                ),
+                    )
+
+# 5- seisme inertiel + pression (SP)
+resuPostRoche_SP = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     GROUP_MA='TUYAU',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,                                  
+                    RESU_MECA_TRAN=(
+                               _F(TYPE_CHAR='SISM_INER_TRAN',
+                                 RESULTAT=resu_dyna,
+                                 RESU_CORR=resu_corr,
+                                 INST=(1,2),
+                                 #NUME_ORDRE=(1,2),
+                                 #TOUT_ORDRE='OUI',
+                                 ),
+                                ),
+                     PRESSION=(_F(
+                                     GROUP_MA='TUYAU',
+                                     VALE = 1E6,
+                                    ),
+                                  ),
+                    )
+                    
+                    
+# 6- seisme inertiel + pression + poids propre (SPG)
+resuPostRoche_SPG = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     GROUP_MA='TUYAU',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,
+                    RESU_MECA_TRAN=(
+                               _F(TYPE_CHAR='SISM_INER_TRAN',
+                                 RESULTAT=resu_dyna,
+                                 RESU_CORR=resu_corr,
+                                 INST=(1,2),
+                                 #NUME_ORDRE=(1,2),
+                                 #TOUT_ORDRE='OUI',
+                                 ),
+                               _F(TYPE_CHAR='POIDS',
+                                 RESULTAT=poids_propre,
+                                 NUME_ORDRE=1,
+                                 ),
+                                ),
+                     PRESSION=(_F(
+                                     GROUP_MA='TUYAU',
+                                     VALE = 1E6,
+                                    ),
+                                  ),
+                    )
+                    
+# 7- seisme inertiel + deplacement (SD)
+resuPostRoche_SD = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     GROUP_MA='TUYAU',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,
+                    RESU_MECA_TRAN=(
+                               _F(TYPE_CHAR='SISM_INER_TRAN',
+                                 RESULTAT=resu_dyna,
+                                 RESU_CORR=resu_corr,
+                                 INST=(1,2),
+                                 #NUME_ORDRE=(1,2),
+                                 #TOUT_ORDRE='OUI',
+                                 ),
+                               _F(TYPE_CHAR='DEPLACEMENT',
+                                 RESULTAT=deplacement_impose,
+                                 NUME_ORDRE=1,
+                                 ),
+                                ),
+                    ) 
+
+
+##Importation de fichier resu format 'MED' sauve au prealable
+
+poids_propre_lu = LIRE_RESU(TYPE_RESU='EVOL_ELAS', FORMAT='MED', UNITE=81,
+                         MODELE=modele, TOUT_ORDRE='OUI',
+                         FORMAT_MED=(
+                         # _F(NOM_RESU='poids_propre', NOM_CHAM=('DEPL','EFGE_ELNO','SIEF_ELGA',),),)
+                         _F(NOM_RESU='poids_propre', NOM_CHAM=('EFGE_ELNO'),),)
+                         )
+                         
+deplacement_impose_lu = LIRE_RESU(TYPE_RESU='EVOL_ELAS', FORMAT='MED', UNITE=81,
+                         MODELE=modele, TOUT_ORDRE='OUI',
+                         FORMAT_MED=(
+                         # _F(NOM_RESU='deplacement_impose', NOM_CHAM=('DEPL','EFGE_ELNO','SIEF_ELGA',),),)
+                         _F(NOM_RESU='deplacement_impose', NOM_CHAM=('EFGE_ELNO',),),)
+                         )
+
+
+                       
+dilatation_thermique_lu = LIRE_RESU(TYPE_RESU='EVOL_ELAS', FORMAT='MED', UNITE=81,
+                         MODELE=modele, TOUT_ORDRE='OUI',
+                         FORMAT_MED=(
+                         # _F(NOM_RESU='dilatation_thermique', NOM_CHAM=('DEPL','EFGE_ELNO','SIEF_ELGA',),),)
+                         _F(NOM_RESU='dilatation_thermique', NOM_CHAM=('EFGE_ELNO',),),)
+                         )                         
+
+resu_dyna_lu = LIRE_RESU(TYPE_RESU='DYNA_TRANS', FORMAT='MED', UNITE=81,
+                         MODELE=modele, TOUT_ORDRE='OUI',
+                         FORMAT_MED=(
+                         _F(NOM_RESU='resu_dyna', NOM_CHAM=('EFGE_ELNO',),),)
+                          )       
+
+resu_corr_lu = LIRE_RESU(TYPE_RESU='DYNA_TRANS', FORMAT='MED', UNITE=81,
+                         MODELE=modele, TOUT_ORDRE='OUI',
+                         FORMAT_MED=(
+                         _F(NOM_RESU='resu_corr', NOM_CHAM=('EFGE_ELNO',),),)
+                          ) 
+
+                          
+# 2nd appel à POST_ROCHE
+
+                          
+resuLuPostRoche = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     GROUP_MA='TUYAU',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,   
+                    RESU_MECA_TRAN=(
+                               _F(TYPE_CHAR='SISM_INER_TRAN',
+                                 RESULTAT=resu_dyna,
+                                 RESU_CORR=resu_corr,
+                                 INST=(1,2),
+                                 #NUME_ORDRE=(1,2),
+                                 #TOUT_ORDRE='OUI',
+                                 ),
+                               _F(TYPE_CHAR='POIDS',
+                                 RESULTAT=poids_propre,
+                                 NUME_ORDRE=1,
+                                 ),
+                               _F(TYPE_CHAR='DILAT_THERM',
+                                 RESULTAT=dilatation_thermique,
+                                 NUME_ORDRE=1,
+                                 ),
+                               _F(TYPE_CHAR='DEPLACEMENT',
+                                 RESULTAT=deplacement_impose,
+                                 NUME_ORDRE=1,
+                                 ),
+                                ),
+                     PRESSION=(_F(
+                                     GROUP_MA='TUYAU',
+                                     VALE = 1E6,
+                                    ),
+                                  ),
+                    )
+
+
+
+# Tests cas de calcul
+# 4- seisme inertiel (S)
+# 5- seisme inertiel + pression (SP)
+# 6- seisme inertiel + pression + poids propre (SPG)
+# 7- seisme inertiel + deplacement (SD)
+
+# 4- seisme inertiel (S)
+resuLuPostRoche_S = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     GROUP_MA='TUYAU',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,                                  
+                    RESU_MECA_TRAN=(
+                               _F(TYPE_CHAR='SISM_INER_TRAN',
+                                 RESULTAT=resu_dyna,
+                                 RESU_CORR=resu_corr,
+                                 INST=(1,2),
+                                 #NUME_ORDRE=(1,2),
+                                 #TOUT_ORDRE='OUI',
+                                 ),
+                                ),
+                    )
+
+# 5- seisme inertiel + pression (SP)
+resuLuPostRoche_SP = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     GROUP_MA='TUYAU',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,                                  
+                    RESU_MECA_TRAN=(
+                               _F(TYPE_CHAR='SISM_INER_TRAN',
+                                 RESULTAT=resu_dyna,
+                                 RESU_CORR=resu_corr,
+                                 INST=(1,2),
+                                 #NUME_ORDRE=(1,2),
+                                 #TOUT_ORDRE='OUI',
+                                 ),
+                                ),
+                     PRESSION=(_F(
+                                     GROUP_MA='TUYAU',
+                                     VALE = 1E6,
+                                    ),
+                                  ),
+                    )
+                    
+                    
+# 6- seisme inertiel + pression + poids propre (SPG)
+resuLuPostRoche_SPG = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     GROUP_MA='TUYAU',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,
+                    RESU_MECA_TRAN=(
+                               _F(TYPE_CHAR='SISM_INER_TRAN',
+                                 RESULTAT=resu_dyna,
+                                 RESU_CORR=resu_corr,
+                                 INST=(1,2),
+                                 #NUME_ORDRE=(1,2),
+                                 #TOUT_ORDRE='OUI',
+                                 ),
+                               _F(TYPE_CHAR='POIDS',
+                                 RESULTAT=poids_propre,
+                                 NUME_ORDRE=1,
+                                 ),
+                                ),
+                     PRESSION=(_F(
+                                     GROUP_MA='TUYAU',
+                                     VALE = 1E6,
+                                    ),
+                                  ),
+                    )
+                    
+# 7- seisme inertiel + deplacement (SD)
+resuLuPostRoche_SD = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     GROUP_MA='TUYAU',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,
+                    RESU_MECA_TRAN=(
+                               _F(TYPE_CHAR='SISM_INER_TRAN',
+                                 RESULTAT=resu_dyna,
+                                 RESU_CORR=resu_corr,
+                                 INST=(1,2),
+                                 #NUME_ORDRE=(1,2),
+                                 #TOUT_ORDRE='OUI',
+                                 ),
+                               _F(TYPE_CHAR='DEPLACEMENT',
+                                 RESULTAT=deplacement_impose,
+                                 NUME_ORDRE=1,
+                                 ),
+                                ),
+                    ) 
+                          
 FIN()

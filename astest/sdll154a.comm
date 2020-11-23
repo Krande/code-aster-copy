@@ -160,6 +160,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),
            )
+           
 
 dilatation_thermique = MECA_STATIQUE(MODELE=modele,
                                      CHAM_MATER=ch_mater,
@@ -184,6 +185,10 @@ sismique = COMB_SISM_MODAL(MODE_MECA=modes_dyn,
                            OPTION=('EFGE_ELNO')
                           )
 
+                          
+                      
+                        
+                    
 # appel à POST_ROCHE
 
 chPostRocheTout = POST_ROCHE(ZONE_ANALYSE=(_F(
@@ -191,6 +196,9 @@ chPostRocheTout = POST_ROCHE(ZONE_ANALYSE=(_F(
                                      GROUP_NO_ORIG = 'A',
                                     ),
                                   ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,
                     RESU_MECA=(
                                _F(TYPE_CHAR='POIDS',
                                  RESULTAT=poids_propre,
@@ -227,6 +235,9 @@ chPostRocheGrMa = POST_ROCHE(ZONE_ANALYSE=(_F(
                                      GROUP_NO_ORIG = 'A',
                                     ),
                                   ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,
                     RESU_MECA=(
                                _F(TYPE_CHAR='POIDS',
                                  RESULTAT=poids_propre,
@@ -252,4 +263,436 @@ chPostRocheGrMa = POST_ROCHE(ZONE_ANALYSE=(_F(
                                   ),
                     )
 
+# Tests cas de calcul
+# 1- deplacement (D)
+# 2- deplacement + pression (DP)
+# 3- deplacement + pression + poids propre (DPG)
+# 4- seisme inertiel (S)
+# 5- seisme inertiel + pression (SP)
+# 6- seisme inertiel + pression + poids propre (SPG)
+# 7- seisme inertiel + deplacement (SD)
+
+
+# 1- deplacement (D)
+chPostRocheTout_D = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     TOUT='OUI',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,
+                    RESU_MECA=(
+                               _F(TYPE_CHAR='DEPLACEMENT',
+                                 RESULTAT=deplacement_impose,
+                                 NUME_ORDRE=1,
+                                 ),
+                                ),
+                    )
+
+# 2- deplacement + pression (DP)                    
+chPostRocheTout_DP = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     TOUT='OUI',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,
+                    RESU_MECA=(
+                               _F(TYPE_CHAR='DEPLACEMENT',
+                                 RESULTAT=deplacement_impose,
+                                 NUME_ORDRE=1,
+                                 ),
+                                ),
+                     PRESSION=(_F(
+                                     TOUT='OUI',
+                                     VALE = 1E6,
+                                    ),
+                                  ),
+                    )                    
+
+# 3- deplacement + pression + poids propre (DPG)                   
+chPostRocheTout_DPG = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     TOUT='OUI',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,
+                    RESU_MECA=(
+                               _F(TYPE_CHAR='POIDS',
+                                 RESULTAT=poids_propre,
+                                 NUME_ORDRE=1,
+                                 ),
+                               _F(TYPE_CHAR='DEPLACEMENT',
+                                 RESULTAT=deplacement_impose,
+                                 NUME_ORDRE=1,
+                                 ),
+                                ),
+                     PRESSION=(_F(
+                                     TOUT='OUI',
+                                     VALE = 1E6,
+                                    ),
+                                  ),
+                    )         
+ 
+# 4- seisme inertiel (S)               
+chPostRocheTout_S = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     TOUT='OUI',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,
+                    RESU_MECA=(
+                                _F(TYPE_CHAR='SISM_INER_SPEC',
+                                 RESULTAT=sismique,
+                                 DIRECTION='COMBI',
+                                 ),
+                                ),
+                    )         
+
+# 5- seisme inertiel + pression (SP)
+chPostRocheTout_SP = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     TOUT='OUI',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,
+                    RESU_MECA=(
+                                _F(TYPE_CHAR='SISM_INER_SPEC',
+                                 RESULTAT=sismique,
+                                 DIRECTION='COMBI',
+                                 ),
+                                ),
+                     PRESSION=(_F(
+                                     TOUT='OUI',
+                                     VALE = 1E6,
+                                    ),
+                                  ),
+                    )  
+
+# 6- seisme inertiel + pression + poids propre (SPG)
+chPostRocheTout_SPG = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     TOUT='OUI',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,
+                    RESU_MECA=(
+                               _F(TYPE_CHAR='POIDS',
+                                 RESULTAT=poids_propre,
+                                 NUME_ORDRE=1,
+                                 ),
+                                _F(TYPE_CHAR='SISM_INER_SPEC',
+                                 RESULTAT=sismique,
+                                 DIRECTION='COMBI',
+                                 ),
+                                ),
+                     PRESSION=(_F(
+                                     TOUT='OUI',
+                                     VALE = 1E6,
+                                    ),
+                                  ),
+                    )  
+                    
+# 7- seisme inertiel + deplacement (SD)
+chPostRocheTout_SD = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     TOUT='OUI',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,
+                    RESU_MECA=(
+
+                               _F(TYPE_CHAR='DEPLACEMENT',
+                                 RESULTAT=deplacement_impose,
+                                 NUME_ORDRE=1,
+                                 ),
+                                _F(TYPE_CHAR='SISM_INER_SPEC',
+                                 RESULTAT=sismique,
+                                 DIRECTION='COMBI',
+                                 ),
+                                ),
+
+                    )                    
+
+##Importation de fichier resu format 'MED' sauve au prealable
+                    
+poids_propre_lu = LIRE_RESU(TYPE_RESU='EVOL_ELAS', FORMAT='MED', UNITE=81,
+                         MODELE=modele, TOUT_ORDRE='OUI',
+                         FORMAT_MED=(
+                         # _F(NOM_RESU='poids_propre', NOM_CHAM=('DEPL','EFGE_ELNO','SIEF_ELGA',),),)
+                         _F(NOM_RESU='poids_propre', NOM_CHAM=('EFGE_ELNO'),),)
+                         )
+                         
+deplacement_impose_lu = LIRE_RESU(TYPE_RESU='EVOL_ELAS', FORMAT='MED', UNITE=81,
+                         MODELE=modele, TOUT_ORDRE='OUI',
+                         FORMAT_MED=(
+                         # _F(NOM_RESU='deplacement_impose', NOM_CHAM=('DEPL','EFGE_ELNO','SIEF_ELGA',),),)
+                         _F(NOM_RESU='deplacement_impose', NOM_CHAM=('EFGE_ELNO',),),)
+                         )
+
+                         
+                       
+dilatation_thermique_lu = LIRE_RESU(TYPE_RESU='EVOL_ELAS', FORMAT='MED', UNITE=81,
+                         MODELE=modele, TOUT_ORDRE='OUI',
+                         FORMAT_MED=(
+                         # _F(NOM_RESU='dilatation_thermique', NOM_CHAM=('DEPL','EFGE_ELNO','SIEF_ELGA',),),)
+                         _F(NOM_RESU='dilatation_thermique', NOM_CHAM=('EFGE_ELNO',),),)
+                         )                         
+
+sismique_lu = LIRE_RESU(TYPE_RESU='MODE_MECA', FORMAT='MED', UNITE=81,
+                         MODELE=modele, TOUT_ORDRE='OUI',
+                         FORMAT_MED=(
+                         _F(NOM_RESU='sismique', NOM_CHAM=('EFGE_ELNO',),),)
+                          ) 
+
+# 2nd appel à POST_ROCHE
+
+chLuPostRocheTout = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     TOUT='OUI',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,
+                    RESU_MECA=(
+                               _F(TYPE_CHAR='POIDS',
+                                 RESULTAT=poids_propre,
+                                 NUME_ORDRE=1,
+                                 ),
+                               _F(TYPE_CHAR='DILAT_THERM',
+                                 RESULTAT=dilatation_thermique,
+                                 NUME_ORDRE=1,
+                                 ),
+                               _F(TYPE_CHAR='DEPLACEMENT',
+                                 RESULTAT=deplacement_impose,
+                                 NUME_ORDRE=1,
+                                 ),
+                                _F(TYPE_CHAR='SISM_INER_SPEC',
+                                 RESULTAT=sismique,
+                                 DIRECTION='COMBI',
+                                 ),
+                                ),
+                     PRESSION=(_F(
+                                     TOUT='OUI',
+                                     VALE = 1E6,
+                                    ),
+                                  ),
+                    )
+
+IMPR_RESU(UNITE=6, FORMAT='RESULTAT', 
+           RESU=_F(CHAM_GD=chLuPostRocheTout, 
+                   NOM_CMP=('X1','X2','X3','X4','X5','X6',
+                            'X7','X8','X9','X10','X11','X12',
+                            'X13','X14','X15','X16','X17','X18','X19','X20')))
+
+chLuPostRocheGrMa = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     GROUP_MA='TUYAU',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,
+                    RESU_MECA=(
+                               _F(TYPE_CHAR='POIDS',
+                                 RESULTAT=poids_propre,
+                                 NUME_ORDRE=1,
+                                 ),
+                               _F(TYPE_CHAR='DILAT_THERM',
+                                 RESULTAT=dilatation_thermique,
+                                 NUME_ORDRE=1,
+                                 ),
+                               _F(TYPE_CHAR='DEPLACEMENT',
+                                 RESULTAT=deplacement_impose,
+                                 NUME_ORDRE=1,
+                                 ),
+                                _F(TYPE_CHAR='SISM_INER_SPEC',
+                                 RESULTAT=sismique,
+                                 DIRECTION='COMBI',
+                                 ),
+                                ),
+                     PRESSION=(_F(
+                                     GROUP_MA='TUYAU',
+                                     VALE = 1E6,
+                                    ),
+                                  ),
+                    )
+
+# Tests cas de calcul
+# 1- deplacement (D)
+# 2- deplacement + pression (DP)
+# 3- deplacement + pression + poids propre (DPG)
+# 4- seisme inertiel (S)
+# 5- seisme inertiel + pression (SP)
+# 6- seisme inertiel + pression + poids propre (SPG)
+# 7- seisme inertiel + deplacement (SD)
+
+
+# 1- deplacement (D)
+chLuPostRocheTout_D = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     TOUT='OUI',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,
+                    RESU_MECA=(
+                               _F(TYPE_CHAR='DEPLACEMENT',
+                                 RESULTAT=deplacement_impose,
+                                 NUME_ORDRE=1,
+                                 ),
+                                ),
+                    )
+
+# 2- deplacement + pression (DP)                    
+chLuPostRocheTout_DP = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     TOUT='OUI',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,
+                    RESU_MECA=(
+                               _F(TYPE_CHAR='DEPLACEMENT',
+                                 RESULTAT=deplacement_impose,
+                                 NUME_ORDRE=1,
+                                 ),
+                                ),
+                     PRESSION=(_F(
+                                     TOUT='OUI',
+                                     VALE = 1E6,
+                                    ),
+                                  ),
+                    )                    
+
+# 3- deplacement + pression + poids propre (DPG)                   
+chLuPostRocheTout_DPG = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     TOUT='OUI',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,
+                    RESU_MECA=(
+                               _F(TYPE_CHAR='POIDS',
+                                 RESULTAT=poids_propre,
+                                 NUME_ORDRE=1,
+                                 ),
+                               _F(TYPE_CHAR='DEPLACEMENT',
+                                 RESULTAT=deplacement_impose,
+                                 NUME_ORDRE=1,
+                                 ),
+                                ),
+                     PRESSION=(_F(
+                                     TOUT='OUI',
+                                     VALE = 1E6,
+                                    ),
+                                  ),
+                    )         
+ 
+# 4- seisme inertiel (S)               
+chLuPostRocheTout_S = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     TOUT='OUI',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,
+                    RESU_MECA=(
+                                _F(TYPE_CHAR='SISM_INER_SPEC',
+                                 RESULTAT=sismique,
+                                 DIRECTION='COMBI',
+                                 ),
+                                ),
+                    )         
+
+# 5- seisme inertiel + pression (SP)
+chLuPostRocheTout_SP = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     TOUT='OUI',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,
+                    RESU_MECA=(
+                                _F(TYPE_CHAR='SISM_INER_SPEC',
+                                 RESULTAT=sismique,
+                                 DIRECTION='COMBI',
+                                 ),
+                                ),
+                     PRESSION=(_F(
+                                     TOUT='OUI',
+                                     VALE = 1E6,
+                                    ),
+                                  ),
+                    )  
+
+# 6- seisme inertiel + pression + poids propre (SPG)
+chLuPostRocheTout_SPG = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     TOUT='OUI',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,
+                    RESU_MECA=(
+                               _F(TYPE_CHAR='POIDS',
+                                 RESULTAT=poids_propre,
+                                 NUME_ORDRE=1,
+                                 ),
+                                _F(TYPE_CHAR='SISM_INER_SPEC',
+                                 RESULTAT=sismique,
+                                 DIRECTION='COMBI',
+                                 ),
+                                ),
+                     PRESSION=(_F(
+                                     TOUT='OUI',
+                                     VALE = 1E6,
+                                    ),
+                                  ),
+                    )  
+                    
+# 7- seisme inertiel + deplacement (SD)
+chLuPostRocheTout_SD = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     TOUT='OUI',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,
+                    RESU_MECA=(
+
+                               _F(TYPE_CHAR='DEPLACEMENT',
+                                 RESULTAT=deplacement_impose,
+                                 NUME_ORDRE=1,
+                                 ),
+                                _F(TYPE_CHAR='SISM_INER_SPEC',
+                                 RESULTAT=sismique,
+                                 DIRECTION='COMBI',
+                                 ),
+                                ),
+
+                    )                    
+
+                   
 FIN()
