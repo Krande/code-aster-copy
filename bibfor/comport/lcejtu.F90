@@ -347,18 +347,22 @@ implicit none
 !
 !   * RIGIDITE ARTIFICIELLE POST-RUPTURE 
         if (cass .eq. 2) then
-            if (delta(1) .gt. r8prem()) dsidep(1,1) = c*val(2)/delta_N_f
+            if (delta(1) .gt. r8prem()) then
+                dsidep(1,1) = c*val(2)/delta_N_f
+            else
+                dsidep(1,1) = k
+            endif
             do i = 2, ndim
                 dsidep(i,i) = c*val(3)/delta_T_f
             enddo
         else
 !
-            if (delta(1) .gt. r8prem()) then
+            if (abs(delta(1)) .gt. r8prem()) then
                 quot = max(0.d0, - delta(1))/abs(delta(1))
 !   * VAUT 1 si delta(1) < 0 et 0 si delta(1) > 0
             else 
                 quot = 1.d0
-!   * VAUT 1 si delta(1) = 0
+!   * VAUT 1 si delta(1) = 0 (prolongement à gauche)
             endif
 !
             if ((diss .eq. 0) .or. elas) then
