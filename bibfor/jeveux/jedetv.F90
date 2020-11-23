@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,8 +58,8 @@ subroutine jedetv()
     common /nomcje/  nomuti , nomos , nomco , nomoc , bl32
     integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common /iadmje/  ipgc,kdesma,   lgd,lgduti,kposma,   lgp,lgputi
-    integer :: ifnivo, nivo
-    common /jvnivo/  ifnivo, nivo
+    integer :: nivo
+    common /jvnivo/ nivo
     common /jindir/  jindir(n)
     common /jiacce/  jiacce(n),nbacce(2*n)
     integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
@@ -92,11 +92,11 @@ subroutine jedetv()
         call utmess('A', 'JEVEUX1_64', nr=3, valr=valr)
     endif
 !
-    do 150 jido = 1, nremax(ic)
+    do jido = 1, nremax(ic)
         ido = indir(jindir(ic)+jido)
-        if (ido .le. lidbas) goto 150
+        if (ido .le. lidbas) cycle
         crnom = rnom(jrnom(ic)+ido)
-        if (crnom(1:1) .eq. '?' .or. crnom(25:32) .ne. '     ') goto 150
+        if (crnom(1:1) .eq. '?' .or. crnom(25:32) .ne. '     ') cycle
         cgenr = genr(jgenr(ic)+ido)
         if (cgenr .eq. 'X') then
 !
@@ -181,13 +181,13 @@ subroutine jedetv()
             call jjmzat(ic, ido)
             nomco = '$$$$$$$$$$$$$$$$$$$$$$$$'
         endif
-150  end do
+    end do
 !
-    do 250 jido = 1, nremax(ic)
+    do jido = 1, nremax(ic)
         ido = indir(jindir(ic)+jido)
-        if (ido .le. lidbas) goto 250
+        if (ido .le. lidbas) cycle
         crnom = rnom(jrnom(ic)+ido)
-        if (crnom(1:1) .eq. '?' .or. crnom(25:32) .ne. '      ') goto 250
+        if (crnom(1:1) .eq. '?' .or. crnom(25:32) .ne. '      ') cycle
         cgenr = genr(jgenr(ic)+ido)
 !
 !    ON TRAITE LES OBJETS SIMPLES
@@ -209,6 +209,6 @@ subroutine jedetv()
             nomos = '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
             call jjmzat(ic, ido)
         endif
-250  end do
+    end do
 ! FIN ------------------------------------------------------------------
 end subroutine

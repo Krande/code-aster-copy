@@ -23,7 +23,9 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
+AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",
+                   op=None,
+                   sd_prod=cham_mater,
                    fr=tr("Affecter des matériaux à des zones géométriques d'un maillage"),
                          reentrant='n',
          regles=(AU_MOINS_UN('MAILLAGE','MODELE',),),

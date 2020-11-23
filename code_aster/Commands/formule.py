@@ -27,7 +27,6 @@ from ..Utilities import force_list, initial_context
 class FormulaDefinition(ExecuteCommand):
     """Execute legacy operator FORMULE."""
     command_name = "FORMULE"
-    command_op = 5
     _ctxt = None
 
     def __init__(self):

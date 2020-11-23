@@ -34,7 +34,9 @@ def defi_fonction_prod(VALE,VALE_PARA,VALE_C,NOEUD_PARA,ABSCISSE,**args):
   if NOEUD_PARA is not None  : return fonction_sdaster
   raise AsException("type de concept resultat non prevu")
 
-DEFI_FONCTION=OPER(nom="DEFI_FONCTION",op=3,sd_prod=defi_fonction_prod,
+DEFI_FONCTION=OPER(nom="DEFI_FONCTION",
+                   op=3,
+                   sd_prod=defi_fonction_prod,
                    fr=tr("Définit une fonction réelle ou complexe d'une variable réelle"),
                    reentrant='n',
          regles=(UN_PARMI('VALE','VALE_C','VALE_PARA','NOEUD_PARA','ABSCISSE'),),

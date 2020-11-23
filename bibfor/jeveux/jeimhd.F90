@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,8 +80,8 @@ subroutine jeimhd(fichdf, clas)
     character(len=24) :: nomco
     character(len=32) :: nomuti, nomos, nomoc, bl32
     common /nomcje/  nomuti , nomos , nomco , nomoc , bl32
-    integer :: ifnivo, nivo
-    common /jvnivo/  ifnivo, nivo
+    integer :: nivo
+    common /jvnivo/ nivo
     integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common /iadmje/  ipgc,kdesma,   lgd,lgduti,kposma,   lgp,lgputi
 ! ----------------------------------------------------------------------

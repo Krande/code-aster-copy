@@ -36,19 +36,22 @@ subroutine debut()
 #include "asterfort/ibdbgs.h"
 #include "asterfort/ibfhdf.h"
 #include "asterfort/ibtcpu.h"
+#include "asterfort/jvinfo.h"
 #include "asterfort/onerrf.h"
 #include "asterfort/ulopen.h"
 #include "asterfort/utmess.h"
     character(len=8) :: k8b, repons
     character(len=16) :: nomcmd, k16b
     character(len=80) :: fichdf
-    integer :: ier, n
+    integer :: ier, n, dummy
     integer, save :: ipass=0
 !
     if (ipass .ne. 0) then
         call utmess('F', 'SUPERVIS_2')
     endif
     ipass = 1
+!   to be set by 'ExecutionParameter().enable(Options.Debug)' or similar
+    dummy = jvinfo(0)
 !
     fichdf=' '
 !

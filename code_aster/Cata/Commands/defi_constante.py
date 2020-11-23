@@ -23,7 +23,9 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-DEFI_CONSTANTE=OPER(nom="DEFI_CONSTANTE",op=   2,sd_prod=fonction_sdaster,
+DEFI_CONSTANTE=OPER(nom="DEFI_CONSTANTE",
+                    op=None,
+                    sd_prod=fonction_sdaster,
                     fr=tr("Définir la valeur d'une grandeur invariante"),
                     reentrant='n',
          NOM_RESU        =SIMP(statut='f',typ='TXM',defaut="TOUTRESU"),

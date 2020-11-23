@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,8 +64,8 @@ subroutine jedetc(clas, souch, ipos)
      &                 dn2(n)
     integer :: nrhcod, nremax, nreuti
     common /icodje/  nrhcod(n) , nremax(n) , nreuti(n)
-    integer :: ifnivo, nivo
-    common /jvnivo/  ifnivo, nivo
+    integer :: nivo
+    common /jvnivo/ nivo
     integer :: ldyn, lgdyn, nbdyn, nbfree
     common /idynje/  ldyn , lgdyn , nbdyn , nbfree
 !     ------------------------------------------------------------------
@@ -89,11 +89,13 @@ subroutine jedetc(clas, souch, ipos)
         ncla1 = index ( classe , kclas)
         ncla2 = ncla1
     endif
-    do 100 ic = ncla1, ncla2
-        do 160 kk = 1, 2
-            do 150 j = 1, nremax(ic)
+    do ic = ncla1, ncla2
+        do kk = 1, 2
+            do j = 1, nremax(ic)
                 crnom = rnom(jrnom(ic)+j)
-                if (crnom(1:1) .eq. '?' .or. crnom(25:32) .ne. '        ') goto 150
+                if (crnom(1:1) .eq. '?' .or. crnom(25:32) .ne. '        ') then
+                    cycle
+                endif
                 if (souch .eq. crnom(ipos:ipos+l-1)) then
                     call jjcren(crnom(1:24), 0, iret)
                     if (iret .eq. 1 .and. kk .eq. 2) then
@@ -124,7 +126,7 @@ subroutine jedetc(clas, souch, ipos)
                             ibiadd = iadm ( jiadm(ic) + 2*ixiadd-1 )
                             ibmarq = iadm ( jiadm(ic) + 2*ixmarq-1 )
                             nmax = iszon(jiszon+ibacol+ivnmax )
-                            do 10 k = 1, nmax
+                            do k = 1, nmax
                                 iadmar = iszon( jiszon + ibmarq -1 + 2*k )
                                 if (iadmar .ne. 0) then
                                     iszon(jiszon+kdesma(1)+iadmar-1) =&
@@ -146,9 +148,9 @@ subroutine jedetc(clas, souch, ipos)
                                     endif
                                     call jxlibd(idatco, k, ic, iaddi, lonoi)
                                 endif
-10                          continue
+                            end do
                         endif
-                        do 1 k = 1, idnum
+                        do k = 1, idnum
                             id(k) = iszon ( jiszon + ibacol + k )
                             if (id(k) .gt. 0) then
                                 nom32 = rnom ( jrnom(ic) + id(k) )
@@ -168,8 +170,8 @@ subroutine jedetc(clas, souch, ipos)
                                     id(k) = 0
                                 endif
                             endif
- 1                      continue
-                        do 2 k = 1, idnum
+                        end do
+                        do k = 1, idnum
                             if (id(k) .gt. 0) then
                                 nom32 = rnom ( jrnom(ic) + id(k) )
                                 if (nivo .ge. 2) then
@@ -178,7 +180,7 @@ subroutine jedetc(clas, souch, ipos)
                                 call jjcren(nom32, -2, iret)
                                 call jjmzat(ic, id(k))
                             endif
- 2                      continue
+                        end do
                         crnom = rnom ( jrnom(ic) + idatco )
                         iadyn = iadm (jiadm(ic) + 2*idatco )
                         call jjlidy(iadyn, ibacol)
@@ -196,8 +198,8 @@ subroutine jedetc(clas, souch, ipos)
                         nomco = '$$$$$$$$$$$$$$$$$$$$$$$$'
                     endif
                 endif
-150          continue
-160      continue
-100  end do
+            end do
+        end do
+     end do
 ! FIN ------------------------------------------------------------------
 end subroutine

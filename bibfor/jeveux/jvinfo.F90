@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,36 +16,26 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-function jvinfo(kactio, info)
+function jvinfo(info)
     implicit none
     integer :: jvinfo
-    character(len=*) :: kactio
     integer :: info
 ! ----------------------------------------------------------------------
-! DEFINITION DU NIVEAU DES IMPRESSIONS JEVEUX
+! Define the JEVEUX logging level (only used by jedet* and jeimhd)
 !
-! IN  KACTIO  = AFFECT AFFECTATION DU NIVEAU DES IMPRESSIONS
-!             = INIT   MISE A 0
-!             = RECUP  RECUPERATION DU NIVEAU DES IMPRESSIONS
-! IN  INFO   VALEUR DU NIVEAU DES IMPRESSIONS (AFFECT UNIQUEMENT)
+! The level must be initialized at startup.
+! The level is stored in a common for performance reasons.
+!
+! IN  info   Logging level
+!            if info >= 0, use 'info" as the new level.
+!            if info < 0, return the current level.
 ! ----------------------------------------------------------------------
-    integer :: ifnivo, nivo
-    common /jvnivo/  ifnivo, nivo
-! DEB ------------------------------------------------------------------
-    character(len=8) :: k8ch
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-    k8ch=kactio
-    if (ifnivo .ne. 22021986) then
-        nivo = 0
-        ifnivo = 22021986
-    endif
-    if (k8ch(1:6) .eq. 'AFFECT') then
+
+    integer :: nivo
+    common /jvnivo/ nivo
+
+    if (info .ge. 0) then
         nivo = info
-    else if (k8ch(1:4) .eq. 'INIT') then
-        nivo = 0
-    else if (k8ch(1:5) .eq. 'RECUP') then
     endif
     jvinfo = nivo
-! FIN ------------------------------------------------------------------
 end function

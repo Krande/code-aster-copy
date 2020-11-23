@@ -19,8 +19,6 @@
 subroutine opsexe(nuoper)
     implicit none
 #include "asterfort/debut.h"
-#include "asterfort/ops005.h"
-#include "asterfort/ops007.h"
 #include "asterfort/ops026.h"
 #include "asterfort/poursu.h"
 #include "asterfort/utmess.h"
@@ -34,12 +32,6 @@ subroutine opsexe(nuoper)
 
     case (-2)
         call poursu()
-
-    case (5)
-        call ops005()
-
-    case (7)
-        call ops007()
 
     case (26)
         call ops026()

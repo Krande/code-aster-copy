@@ -57,8 +57,8 @@ subroutine jedetr(nomlu)
     common /jkatje/  jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
     integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common /iadmje/  ipgc,kdesma,   lgd,lgduti,kposma,   lgp,lgputi
-    integer :: ifnivo, nivo
-    common /jvnivo/  ifnivo, nivo
+    integer :: nivo
+    common /jvnivo/ nivo
 !     ------------------------------------------------------------------
     integer :: ivnmax, iddeso, idiadd, idiadm, idmarq, idnom, idlong, idlono
     integer :: idnum
@@ -77,7 +77,7 @@ subroutine jedetr(nomlu)
     call jjvern(noml32, icre, iret)
 !
     if (iret .eq. 0) then
-        goto 9999
+        goto 999
     else if (iret .eq. 1) then
         ic = iclaos
         iadmi = iadm (jiadm(ic) + 2*idatos-1 )
@@ -228,6 +228,6 @@ subroutine jedetr(nomlu)
             nomoc = '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
         endif
     endif
-9999  continue
+999  continue
 ! FIN ------------------------------------------------------------------
 end subroutine

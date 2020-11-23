@@ -137,7 +137,7 @@ class MaterialAssignment(ExecuteCommand):
             externalVariableConverter.addConverter(name1, comp1, name2, comp2)
 
         self._result = MaterialFieldBuilder.build(self._result, externalVarOnMesh,
-                                                   externalVariableConverter)
+                                                  externalVariableConverter)
 
     def _addBehaviour(self, fkw):
         kwTout = fkw.get("TOUT")

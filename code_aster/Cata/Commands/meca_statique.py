@@ -23,7 +23,9 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-MECA_STATIQUE=OPER(nom="MECA_STATIQUE",op=46,sd_prod=evol_elas,
+MECA_STATIQUE=OPER(nom="MECA_STATIQUE",
+                   op=None,
+                   sd_prod=evol_elas,
                    fr=tr("Résoudre un problème de mécanique statique linéaire"),
                    reentrant='f:RESULTAT',
          regles=(EXCLUS("INST","LIST_INST"),
