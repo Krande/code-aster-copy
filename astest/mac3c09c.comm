@@ -20,30 +20,31 @@
 # VALIDATION CALC_MAC3COEUR DEFORMATION LIGNE (N4)
 # person_in_charge: pierre.badel at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'),IMPR_MACRO='OUI',)
+DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'), IMPR_MACRO='NON')
 
-tabn = LIRE_TABLE(UNITE      = 38,
+tabn = LIRE_TABLE(UNITE      = 38, 
                   FORMAT     = 'LIBRE',
                   SEPARATEUR = '\t')
 
-MA1=LIRE_MAILLAGE(FORMAT='MED',UNITE=20);
+MA1=LIRE_MAILLAGE(UNITE=20,
+                  FORMAT='MED')
 
 RESUL = CALC_MAC3COEUR(TYPE_COEUR  = 'LIGNEN4',
                        NB_ASSEMBLAGE=11,
-                      TABLE_N     =  tabn,
-                      MAILLAGE_N  =  MA1,
-                      DEFORMATION = _F(
-                                       UNITE_THYC   = 32,
-                                       NIVE_FLUENCE = 33))
+                       TABLE_N     =  tabn,
+                       MAILLAGE_N  =  MA1,
+                       DEFORMATION = _F(UNITE_THYC   = 32,
+                                        NIVE_FLUENCE = 33))
 
 post_i = RESUL.LIST_PARA()['INST'][-1]
-TAB=POST_MAC3COEUR(RESULTAT   = RESUL,
-               TYPE_COEUR = 'LIGNEN4',
-               NB_ASSEMBLAGE=11,
-               INST       = post_i,
-               TABLE      = tabn,
-               DEFORMATION = _F(FORMAT = 'TABLE', UNITE = 31, NOM_SITE = 'BIDON')
-              )
+
+TAB = POST_MAC3COEUR(RESULTAT    =  RESUL,
+                     TYPE_COEUR  = 'LIGNEN4',
+                     NB_ASSEMBLAGE=11,
+                     INST        =  post_i,
+                     TABLE       = tabn,
+                     TYPE_CALCUL = 'DEFORMATION',
+                     OPERATION   = 'ANALYSE')
 
 TEST_TABLE(TABLE=TAB, NOM_PARA='maxGravCoeur', VALE_CALC=0.34788573508581777, VALE_REFE=0.34788573508581777, REFERENCE='AUTRE_ASTER', CRITERE='ABSOLU')
 TEST_TABLE(TABLE=TAB, NOM_PARA='maxRhoCoeur', VALE_CALC=2.9583184828317264, VALE_REFE=2.9583184828317264, REFERENCE='AUTRE_ASTER', CRITERE='ABSOLU')

@@ -20,29 +20,30 @@
 # VALIDATION CALC_MAC3COEUR LAME LIGNE (900)
 # person_in_charge: pierre.badel at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'),IMPR_MACRO='OUI',)
+DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'), IMPR_MACRO='NON')
 
-tabn = LIRE_TABLE(UNITE      = 38,
+tabn = LIRE_TABLE(UNITE      = 38, 
                   FORMAT     = 'LIBRE',
                   SEPARATEUR = '\t')
 
-MA1=LIRE_MAILLAGE(FORMAT='MED',UNITE=20);
+MA1=LIRE_MAILLAGE(UNITE=20,
+                  FORMAT='MED')
 
 RESUL = CALC_MAC3COEUR(TYPE_COEUR  = 'LIGNE1300',
                        NB_ASSEMBLAGE=13,
-                      TABLE_N     =  tabn,
-                      MAILLAGE_N  =  MA1,
-                      LAME = _F(
-                                       UNITE_THYC   = 32,))
+                       TABLE_N     =  tabn,
+                       MAILLAGE_N  =  MA1,
+                       LAME = _F(UNITE_THYC = 32))
 
 post_i = RESUL.LIST_PARA()['INST'][-1]
-TAB=POST_MAC3COEUR(RESULTAT   = RESUL,
-               TYPE_COEUR = 'LIGNE1300',
-               NB_ASSEMBLAGE=13,
-               INST       = post_i,
-               TABLE      = tabn,
-               LAME = _F(FORMAT = 'TABLE', UNITE = 30,)
-              )
+
+TAB = POST_MAC3COEUR(RESULTAT    =  RESUL,
+                     TYPE_COEUR  = 'LIGNE1300',
+                     NB_ASSEMBLAGE=13,
+                     INST        =  post_i,
+                     TABLE       = tabn,
+                     TYPE_CALCUL = 'LAME',
+                     OPERATION   = 'ANALYSE')
 
 TEST_TABLE(TABLE=TAB, NOM_PARA='QuanLE_CU_G4_70', VALE_CALC=3.1115695815763, VALE_REFE=3.1115695815763, REFERENCE='AUTRE_ASTER', CRITERE='ABSOLU')
 TEST_TABLE(TABLE=TAB, NOM_PARA='QuanLE_CU_G4_90', VALE_CALC=3.4725004739857006, VALE_REFE=3.4725004739857006, REFERENCE='AUTRE_ASTER', CRITERE='ABSOLU')

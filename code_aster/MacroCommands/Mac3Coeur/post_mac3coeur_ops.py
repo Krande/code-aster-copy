@@ -52,8 +52,9 @@ class CollectionDiscretChoc():
     def values_external(self):
         return np.array(tuple(item for j, item in self._collection.items() if "CU_" in j))
     
-    def __init__(self):
+    def __init__(self, label):
         self._collection = OrderedDict()
+        self.label = label
 
     def __getitem__(self, key):
         return self._collection[key]
@@ -92,8 +93,9 @@ class CollectionDiscretChoc():
         listtype = [f(i) for i in listpara]
         return Table(listdic, listpara, listtype)
 
-    def extr_analysis_table(self, label):
-        values = self.analysis(label)
+    def extr_analysis_table(self):
+        
+        values = self.analysis(self.label)
 
         listdic = [values]
         listpara = sorted(values.keys())
@@ -110,8 +112,9 @@ class CollectionPostAC():
     def keys(self):
         return self._collection.keys()
     
-    def __init__(self):
+    def __init__(self, label):
         self._collection = OrderedDict()
+        self.label = label
         
         self.maxRho = 0.
         self.maxGravite = 0.
@@ -163,8 +166,8 @@ class CollectionPostAC():
 
     def extr_table(self):
 
-        listdic = [AC.get_fleche_props() for pos, AC in sorted(self._collection.items())]
-        listpara, listtype = PostAC.fleche_parameters_types()
+        listdic = [AC.get_fleche_props(self.label) for pos, AC in sorted(self._collection.items())]
+        listpara, listtype = PostAC.fleche_parameters_types(self.label)
         return Table(listdic,listpara,listtype)
 
     def extr_analysis_table(self, prec=1.e-8):
@@ -278,10 +281,10 @@ class PostAC():
         
         return shape_x, shape_y, shape_global
         
-    def get_fleche_props(self):
+    def get_fleche_props(self, label):
 
         fleche_props = {
-            'POS' : self['PositionDAMAC'],
+            label : self['PositionDAMAC'],
             'Cycle' : self['Cycle'],
             'T5' : 0.,
             'T6' : 0.,
@@ -307,9 +310,9 @@ class PostAC():
 
 
     @staticmethod
-    def fleche_parameters_types():
+    def fleche_parameters_types(label):
 
-        para = ['POS', 'Cycle', 'T5', 'T6', 'Repere', 'Ro', 'EinfXgg', 'EinfYgg']
+        para = [label, 'Cycle', 'T5', 'T6', 'Repere', 'Ro', 'EinfXgg', 'EinfYgg']
         para+= ['XG%d'%(d+1) for d in range(10)] + ['YG%d'%(d+1) for d in range(10)]
         para+= ['Milieu', 'Min X', 'Max X', 'CC X', 'Min Y', 'Max Y', 'CC Y', 'Forme X', 'Forme Y', 'Forme']
 
@@ -322,38 +325,38 @@ class PostAC():
 def post_mac3coeur_ops(self, **args):
     """Corps principal de la macro de post-traitement de MAC3COEUR"""
 
-    analysis_table_created = False
-
     rcdir = ExecutionParameter().get_option("rcdir")
     datg = osp.join(rcdir, "datg")
     coeur_factory = CoeurFactory(datg)
-
+    
     RESU = args['RESULTAT']
     inst = args['INST']
 
     core_type = args['TYPE_COEUR']
     row_size = args['NB_ASSEMBLAGE'] if 'LIGNE' in core_type else None
 
-    POST_LAME = args.get('LAME')
-    POST_EFFORT = args.get('FORCE_CONTACT')
-    POST_DEF = args.get('DEFORMATION')
-
+    TYPE_CALCUL = args.get('TYPE_CALCUL')
+    OPERATION = args.get('OPERATION')
+    
     DATAMAC = args['TABLE']
     datamac = DATAMAC.EXTR_TABLE()
     core_name = datamac.para[0]
+    label_type, label_calcul = datamac.titr.split()
+    nb_grids = 8 if '900' in label_type else 10
+
     datamac.Renomme(core_name, 'idAC')
     core_mac3 = coeur_factory.get(core_type)(core_name, core_type, self, datg, row_size)
     core_mac3.init_from_table(datamac, mater=False)
     
     #
-    # MOT-CLE FACTEUR LAME
+    # LAME
     #
-
-    if POST_LAME:
-        unit = POST_LAME[0]['UNITE']
-        post_type = POST_LAME[0]['FORMAT']
+    
+    if TYPE_CALCUL in ('LAME',):
         
-        collection = CollectionDiscretChoc()
+        collection = CollectionDiscretChoc('LE')
+        collection['GRILLE'] = ['G%s'%(i+1) for i in range(nb_grids)]
+
         for name in (core_mac3.get_contactAssLame() + core_mac3.get_contactCuve()):
             
             TMP = CREA_TABLE(RESU=_F(RESULTAT=RESU,
@@ -367,40 +370,17 @@ def post_mac3coeur_ops(self, **args):
             vals = np.mean(vals.reshape(2, vals.shape[1]//2, 2), axis=2) # Moyenne sur les 2 noeuds du discret (qui portent tous la meme valeur)
 
             coor_x, v8 = np.around(1000.*vals[:, vals[0].argsort()], 12)
-            if 'GRILLE' not in collection.keys :
-                collection['GRILLE'] = ['G%s'%(i+1) for i in range(coor_x.size)]
             collection[name] = v8
-            
-        analysis_table = collection.extr_analysis_table('LE')
-
-        if not analysis_table_created: 
-            TAB_OUT = CREA_TABLE(**analysis_table.dict_CREA_TABLE())
-            
-        else :
-            TMP = CREA_TABLE(**analysis_table.dict_CREA_TABLE())
-            TAB_OUT = CALC_TABLE(reuse=TAB_OUT,
-                                 TABLE=TAB_OUT,
-                                 ACTION=_F(OPERATION='COMB', TABLE=TMP))
-
-        analysis_table_created = True
-        
-        values_table = collection.extr_table()
-        TAB_VAL = CREA_TABLE(**values_table.dict_CREA_TABLE())
-              
-        if post_type in ('TABLE',):
-            IMPR_TABLE(TABLE=TAB_VAL,
-                       UNITE=unit,
-                       FORMAT_R='E12.5')
-                
+   
     #
-    # MOT-CLE FACTEUR FORCE_CONTACT
+    # FORCE_CONTACT
     #
 
-    if POST_EFFORT:
-        unit = POST_EFFORT[0]['UNITE']
-        post_type = POST_EFFORT[0]['FORMAT']
+    elif TYPE_CALCUL in ('FORCE_CONTACT',):
         
-        collection = CollectionDiscretChoc()
+        collection = CollectionDiscretChoc('N')
+        collection['GRILLE'] = ['G%s'%(i+1) for i in range(nb_grids)]
+
         for name in (core_mac3.get_contactAssLame() + core_mac3.get_contactCuve()):
             
             TMP = CREA_TABLE(RESU=_F(RESULTAT=RESU,
@@ -414,41 +394,15 @@ def post_mac3coeur_ops(self, **args):
             vals = np.mean(vals.reshape(2,vals.shape[1]//2,2),axis=2) # Moyenne sur les 2 noeuds du discret (qui portent tous la meme valeur)
 
             coor_x, force = np.around(vals[:, vals[0].argsort()], 12)
-            if 'GRILLE' not in collection.keys :
-                collection['GRILLE'] = ['G%s'%(i+1) for i in range(coor_x.size)]
             collection[name] = force
-
-        analysis_table = collection.extr_analysis_table('N')
-        
-        if not analysis_table_created: 
-            TAB_OUT = CREA_TABLE(**analysis_table.dict_CREA_TABLE())
             
-        else :
-            TMP = CREA_TABLE(**analysis_table.dict_CREA_TABLE())
-            TAB_OUT = CALC_TABLE(reuse=TAB_OUT,
-                                 TABLE=TAB_OUT,
-                                 ACTION=_F(OPERATION='COMB', TABLE=TMP))
-
-        analysis_table_created = True
-
-        values_table = collection.extr_table()
-        TAB_VAL = CREA_TABLE(**values_table.dict_CREA_TABLE())
-        
-        if post_type in ('TABLE',):
-            IMPR_TABLE(TABLE=TAB_VAL,
-                       UNITE=unit,
-                       FORMAT_R='E12.5')
-                       
     #
-    # MOT-CLE FACTEUR DEFORMATION
+    # DEFORMATION
     #
     
-    if POST_DEF:
-        unit = POST_DEF[0]['UNITE']
-        post_type = POST_DEF[0]['FORMAT']
-        site_name = POST_DEF[0]['NOM_SITE']
-            
-        collection = CollectionPostAC()
+    elif TYPE_CALCUL in ('DEFORMATION',):
+        
+        collection = CollectionPostAC(label_calcul)
         for AC in core_mac3.collAC.values():
             
             TMP = CREA_TABLE(RESU=_F(RESULTAT=RESU,
@@ -466,28 +420,14 @@ def post_mac3coeur_ops(self, **args):
 
             post_ac = PostAC(coor_x, dy, dz, AC)
             collection[post_ac['PositionDAMAC']] = post_ac
-            
-        analysis_table = collection.extr_analysis_table()
 
-        if not analysis_table_created: 
-            TAB_OUT = CREA_TABLE(**analysis_table.dict_CREA_TABLE())
-            
-        else :
-            TMP = CREA_TABLE(**analysis_table.dict_CREA_TABLE())
-            TAB_OUT = CALC_TABLE(reuse=TAB_OUT,
-                                 TABLE=TAB_OUT,
-                                 ACTION=_F(OPERATION='COMB', TABLE=TMP))
-            
-        analysis_table_created = True
+    #
+    # POST PROCESSING
+    #
 
-        values_table = collection.extr_table()
-        values_table.Renomme('POS', site_name)
-        TAB_VAL = CREA_TABLE(**values_table.dict_CREA_TABLE())
-        
-        if post_type in ('TABLE',):
-            IMPR_TABLE(TABLE=TAB_VAL,
-                       UNITE=unit,
-                       FORMAT_R='E12.5',
-                       SEPARATEUR='\t')
-                  
-    return TAB_OUT
+    if OPERATION in ('EXTRACTION',):
+        table = collection.extr_table()     
+    else:
+        table = collection.extr_analysis_table()
+
+    return CREA_TABLE(**table.dict_CREA_TABLE())

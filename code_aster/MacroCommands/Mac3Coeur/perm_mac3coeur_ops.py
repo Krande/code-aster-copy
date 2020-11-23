@@ -17,10 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: samuel.geniaut at edf.fr
+# person_in_charge: francesco.bettonte at edf.fr
 
 import os.path as osp
-from pprint import pformat
 
 import aster
 
@@ -234,11 +233,9 @@ def perm_mac3coeur_ops(self, **args):
             if nom in _coeur.nameAC:
                 #print 'index z : ',_coeurp1.get_index(_coeurp1.nameAC[nom][0]),_coeurp1.get_index(_coeur.nameAC[nom][0])
                 #print 'index y : ',_coeurp1.get_index(_coeurp1.nameAC[nom][2]),_coeurp1.get_index(_coeur.nameAC[nom][2])
-                tran_z = _coeurp1.pas_assemblage * \
-                    (_coeurp1.get_index(_coeurp1.nameAC[nom][
+                tran_z = _coeurp1.pas_assemblage * (_coeurp1.get_index(_coeurp1.nameAC[nom][
                     0]) - _coeurp1.get_index(_coeur.nameAC[nom][0]))
-                tran_y = _coeurp1.pas_assemblage * \
-                    (_coeurp1.get_index(_coeurp1.nameAC[nom][
+                tran_y = _coeurp1.pas_assemblage * (_coeurp1.get_index(_coeurp1.nameAC[nom][
                     2]) - _coeurp1.get_index(_coeur.nameAC[nom][2]))
                 #print 'tran_z, tran_y, tran_x = ',tran_z, tran_y, tran_x
                 #print 'AC init, AC_fin = ',_coeur.nameAC[nom],_coeurp1.nameAC[nom]

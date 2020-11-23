@@ -20,21 +20,21 @@
 # VALIDATION CALC_MAC3COEUR DEFORMATION LIGNE (1300)
 # person_in_charge: pierre.badel at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'),IMPR_MACRO='NON',)
+DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'), IMPR_MACRO='NON')
 
-tabn = LIRE_TABLE(UNITE      = 38,
+tabn = LIRE_TABLE(UNITE      = 38, 
                   FORMAT     = 'LIBRE',
                   SEPARATEUR = '\t')
 
-MA1=LIRE_MAILLAGE(FORMAT='MED',UNITE=20);
+MA1=LIRE_MAILLAGE(UNITE=20,
+                  FORMAT='MED')
 
 INI_C = CALC_MAC3COEUR(TYPE_COEUR  = 'LIGNE1300',
                        NB_ASSEMBLAGE=13,
                        TABLE_N     =  tabn,
                        MAILLAGE_N  =  MA1,
-                       DEFORMATION = _F(
-                           UNITE_THYC   = 32,
-                           NIVE_FLUENCE = 33))
+                       DEFORMATION = _F(UNITE_THYC   = 32,
+                                        NIVE_FLUENCE = 33))
 
 RESUL = PERM_MAC3COEUR( TYPE_COEUR_N   = 'LIGNE1300',
                         TYPE_COEUR_NP1   = 'LIGNE1300',
@@ -46,13 +46,14 @@ RESUL = PERM_MAC3COEUR( TYPE_COEUR_N   = 'LIGNE1300',
                         MAILLAGE_NP1 = MA1,)
 
 post_i = RESUL.LIST_PARA()['INST'][-1]
-TAB=POST_MAC3COEUR(RESULTAT   = RESUL,
-                   TYPE_COEUR = 'LIGNE1300',
-                   NB_ASSEMBLAGE=13,
-                   INST       = post_i,
-                   TABLE      = tabn,
-                   DEFORMATION = _F(FORMAT = 'TABLE', UNITE = 31, NOM_SITE = 'BIDON')
-)
+
+TAB = POST_MAC3COEUR(RESULTAT    =  RESUL,
+                     TYPE_COEUR  = 'LIGNE1300',
+                     NB_ASSEMBLAGE=13,
+                     INST        =  post_i,
+                     TABLE       = tabn,
+                     TYPE_CALCUL = 'DEFORMATION',
+                     OPERATION   = 'ANALYSE')
 
 TEST_TABLE(TABLE=TAB, NOM_PARA='maxGravCoeur', VALE_CALC=0.14813311576267196, VALE_REFE=0.14813311576267196, REFERENCE='AUTRE_ASTER', CRITERE='ABSOLU')
 TEST_TABLE(TABLE=TAB, NOM_PARA='maxRhoCoeur', VALE_CALC=2.1254166408400192, VALE_REFE=2.1254166408400192, REFERENCE='AUTRE_ASTER', CRITERE='ABSOLU')

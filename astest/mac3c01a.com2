@@ -21,32 +21,26 @@
 
 POURSUITE(CODE='OUI',IMPR_MACRO='OUI')
 
-# LE BUT DE CET AJOUT EST DE TESTER
-# POST_MAC3COEUR / DEFORMATION / FORMAT = 'TABLE'
+TABP2 = POST_MAC3COEUR(RESULTAT    =  RESU_C1,
+                       TYPE_COEUR  = 'TEST',
+                       INST        =  post_i,
+                       TABLE      = tabn,
+                       TYPE_CALCUL = 'DEFORMATION',
+                       OPERATION   = 'ANALYSE')
 
-TABP2=POST_MAC3COEUR(RESULTAT    =  RESU_C1,
-               TYPE_COEUR  = 'TEST',
-               TABLE       = tabn,
-               INST        =  post_i,
-               DEFORMATION = _F(FORMAT='TABLE', NOM_SITE='NOM_AC',UNITE = 56)
-               )
+TAB56 = POST_MAC3COEUR(RESULTAT    =  RESU_C1,
+                       TYPE_COEUR  = 'TEST',
+                       INST        =  post_i,
+                       TABLE      = tabn,
+                       TYPE_CALCUL = 'DEFORMATION')
 
-TAB56=LIRE_TABLE(UNITE=56,
-                 SEPARATEUR = '\t'
-                 )
-
-# TEST ETAT INITIAL
-
-
-#IMPR_TABLE(TABLE=TAB2_CB)
-#IMPR_TABLE(TABLE=TAB56)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC= 2.9,
-           VALE_REFE= 2.9,
+           VALE_CALC= 2.91416547935476,
+           VALE_REFE= 2.91416547935476,
            NOM_PARA ='Ro',
            TABLE=TAB56,
-           FILTRE=_F(NOM_PARA='NOM_AC',
+           FILTRE=_F(NOM_PARA='TEST',
                      VALE_K='B02',),
            )
 
@@ -55,7 +49,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE_K= '2C',
            NOM_PARA ='Forme',
            TABLE=TAB56,
-           FILTRE=_F(NOM_PARA='NOM_AC',
+           FILTRE=_F(NOM_PARA='TEST',
                      VALE_K='B02',),
             )
 

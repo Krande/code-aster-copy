@@ -45,56 +45,78 @@ TABP1 = POST_MAC3COEUR(RESULTAT    =  RESU,
                        TYPE_COEUR  = 'TEST',
                        INST        =  post_i,
                        TABLE       = tabn,
-                       LAME        = _F( FORMAT = 'TABLE', UNITE = 30))
+                       TYPE_CALCUL = 'LAME',
+                       OPERATION   = 'ANALYSE')
 
 TABP2 = POST_MAC3COEUR(RESULTAT    =  RES_LM,
                        TYPE_COEUR  = 'TEST',
                        INST        =  post_i,
                        TABLE      = tabn,
-                       DEFORMATION = _F( FORMAT = 'TABLE', UNITE = 46, NOM_SITE='BIDON'))
-
+                       TYPE_CALCUL = 'DEFORMATION',
+                       OPERATION   = 'ANALYSE')
+                       
 TABP3 = POST_MAC3COEUR(RESULTAT    =  RESU,
                        TYPE_COEUR  = 'TEST',
                        INST        =  post_i,
                        TABLE       = tabn,
-                       FORCE_CONTACT  = _F( FORMAT = 'TABLE', UNITE = 48))
+                       TYPE_CALCUL = 'FORCE_CONTACT',
+                       OPERATION   = 'ANALYSE')
+
+
+TAB30 = POST_MAC3COEUR(RESULTAT    =  RESU,
+                       TYPE_COEUR  = 'TEST',
+                       INST        =  post_i,
+                       TABLE       = tabn,
+                       TYPE_CALCUL = 'LAME',
+                       OPERATION   = 'EXTRACTION')
+
+TAB46 = POST_MAC3COEUR(RESULTAT    =  RES_LM,
+                       TYPE_COEUR  = 'TEST',
+                       INST        =  post_i,
+                       TABLE      = tabn,
+                       TYPE_CALCUL = 'DEFORMATION',
+                       OPERATION   = 'EXTRACTION')
+                       
+TAB48 = POST_MAC3COEUR(RESULTAT    =  RESU,
+                       TYPE_COEUR  = 'TEST',
+                       INST        =  post_i,
+                       TABLE       = tabn,
+                       TYPE_CALCUL = 'FORCE_CONTACT',
+                       OPERATION   = 'EXTRACTION')
 
 
 # Tests formats table
-TAB30 = LIRE_TABLE(UNITE=30)
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=0.328711,
-           VALE_REFE=0.328711,
+           VALE_CALC=0.328710690402,
+           VALE_REFE=0.328710690402,
            NOM_PARA ='RES_ABBB',
            TABLE=TAB30,
            FILTRE=_F(NOM_PARA='GRILLE',
                      VALE_K='G5'))
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=1.48161,
-           VALE_REFE= 1.48161,
+           VALE_CALC=1.481613790292,
+           VALE_REFE= 1.481613790292,
            NOM_PARA ='CU_AB_E',
            TABLE=TAB30,
            FILTRE=_F(NOM_PARA='GRILLE',
                      VALE_K='G5'))
 
-TAB46 = LIRE_TABLE(UNITE=46,SEPARATEUR='\t')
 TEST_TABLE(
-    VALE_CALC=2.46418,
+    VALE_CALC=2.4641798777192845,
     TABLE = TAB46,
     NOM_PARA = 'XG5',
     FILTRE=_F(
         NOM_PARA='Repere',
         VALE_K='FX0RH3'))
 
-TAB48 = LIRE_TABLE(UNITE=48)
-TEST_TABLE(VALE_CALC=54.0744,
+TEST_TABLE(VALE_CALC=54.07441169131,
            NOM_PARA ='CU_BA_W',
            TABLE=TAB48,
            FILTRE=_F(NOM_PARA='GRILLE',
                      VALE_K='G5'))
 
-TEST_TABLE(VALE_CALC=133.532,
+TEST_TABLE(VALE_CALC=133.532237717041,
            NOM_PARA ='RES_BCBB',
            TABLE=TAB48,
            FILTRE=_F(NOM_PARA='GRILLE',
