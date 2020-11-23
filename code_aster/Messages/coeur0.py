@@ -33,11 +33,7 @@ Assemblage des %(i1)d permutations
 Permutation de l'assemblage %(k1)s en position %(k2)s
 """),
 
-    6 : _("""
-Post-traitement des déformations des assemblages combustibles
-"""),
-
-    7 : _("""
+    4 : _("""
 Il faut renseigner au moins un des mots-clés MAILLAGE_N ou RESU_INIT.
 """),
 

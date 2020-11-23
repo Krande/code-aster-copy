@@ -35,320 +35,17 @@ from ...Objects.table_py import Table
 from ...Utilities import ExecutionParameter
 from .mac3coeur_coeur import CoeurFactory
 
-UL = UniteAster()
-
-round_post = lambda s : round(s,4)
-
-def NodePos(coeur,k):
-    return coeur.get_XYOut('%s_%s'%(k[0],k[1]))
-
-def makeXMGRACE_entete(coeur,xmgrfile) :
-    length   = coeur.get_length()
-    xmgrfile.write('@focus on\n@g0 on\n@with g0\n')
-    xmgrfile.write('@VIEW 0.1,0.1,0.85,0.85\n')
-    for val_abs in range(0, length):
-        xmgrfile.write('@with string\n@string on\n@string loctype world\n@string color '
-                       '(0,0,0)\n@string char size 0.8\n@string just 2\n@string %f, %f\n'
-                       '@string def \"%s\"\n'
-                       % (val_abs - (length - 1) / 2., (length - 1) / 2. + 1.2,
-                          coeur.get_enumerateOut_X(val_abs)))
-    for val_ord in range(0, length):
-        xmgrfile.write('@with string\n@string on\n@string loctype world\n@string color (0,0,0)\n'
-                       '@string char size 0.8\n@string just 2\n@string %f, %f\n'
-                       '@string def \"%s\"\n'
-                       % (-(length - 1) / 2. - 1.5,  val_ord - (length - 1) / 2. - 0.2,
-                          coeur.get_enumerateOut_Y(val_ord)))
-    xmgrfile.write('@kill s0\n@s0 line pattern 0\n@s0 symbol fill pattern 0\n%f %f\n%f %f\n'
-                   % (-(length - 1) / 2. - 1.02, -(length - 1) / 2. - 0.4,
-                      (length - 1) / 2. + 0.5, (length - 1) / 2. + 1.05))
-
-def makeXMGRACEjeu(unit, post, coeur, valjeuac, valjeucu):
-    def computeColor(value):
-        valmin = 0.
-        valmax = 0.7
-        if (value <= valmin):
-            redF = 255
-            greenF = 0
-            blueF = 0
-            lame = 'c'
-            size = 0.8
-        elif (value > valmax):
-            redF = 0
-            greenF = 0
-            blueF = 0
-            lame = '%.1f' % value
-            size = 0.6
-        else:
-            redF = 0
-            greenF = 0
-            blueF = 255
-            lame = '%.1f' % value
-            size = 0.6
-
-        return (redF, greenF, blueF, lame, size)
-
-
-    def NodePosCu(position):
-        #x = 0.
-        #y = 0.
-        #if (position == 'W'):
-            #x = -0.5
-        #elif (position == 'N'):
-            #y = -0.5
-        #elif (position == 'E'):
-            #x = +0.5
-        #elif (position == 'S'):
-            #y = +0.5
-
-        (x,y) = coeur.get_bordXY(position)
-
-        return (x, y)
-
-    POSITION = coeur.get_geom_coeur()
-
-    #filename = './fort.%d' % (unit)
-    filename = UL.Nom(unit)
-
-    xmgrfile = open(filename, 'w')
-
-    makeXMGRACE_entete(coeur,xmgrfile)
-
-    ind = 0
-    for k in POSITION:
-        ind = ind + 1
-        (x,y) = NodePos(coeur,k)
-        #print '(x,y) = ',x,y
-        xmgrfile.write('@kill s%d\n@s%d symbol 2\n@s%d symbol pattern 1\n@s%d symbol size 0.4\n'
-                       '@s%d symbol color 1\n@s%d symbol fill pattern 1\n@s%d symbol fill color 1\n'
-                       '@type xy\n%10.8f %10.8f\n' % (ind, ind, ind, ind, ind, ind, ind, x, y))
-
-    for name in list(valjeucu.keys()):
-        position1 = name[3:5]
-        position2 = name[6:7]
-        #print 'position 1 = ',position1
-        #print 'position 2 = ',position2
-        (x1, y1) = NodePos(coeur,position1)
-        (x2, y2) = NodePosCu(position2)
-        if (post == 'MAXI'):
-            (redF, greenF, blueF, lame, size) = computeColor(
-                max(valjeucu[name]))
-            titre = 'maximaux'
-        elif (post == 'MINI'):
-            (redF, greenF, blueF, lame, size) = computeColor(
-                min(valjeucu[name]))
-            titre = 'minimaux'
-        else:
-            (redF, greenF, blueF, lame, size) = computeColor(
-                valjeucu[name][post - 1])
-            titre = 'au niveau des grilles %s' % post
-        xmgrfile.write('@with string\n@string on\n@string loctype world\n'
-                       '@string color (%d,%d,%d)\n@string char size %f\n@string just 2\n@string %f, %f\n'
-                       '@string def \"%s\"\n' % (redF, greenF, blueF, size, (x1 + x2), (y1 + y2) - 0.1, lame))
-
-    if len(valjeuac) != 0:
-        for name in list(valjeuac.keys()):
-            position1 = name[4:6]
-            position2 = name[6:8]
-            (x1, y1) = NodePos(coeur,position1)
-            (x2, y2) = NodePos(coeur,position2)
-            if (post == 'MAXI'):
-                (redF, greenF, blueF, lame, size) = computeColor(
-                    max(valjeuac[name]))
-            elif (post == 'MINI'):
-                (redF, greenF, blueF, lame, size) = computeColor(
-                    min(valjeuac[name]))
-            else:
-                (redF, greenF, blueF, lame, size) = computeColor(
-                    valjeuac[name][post - 1])
-            xmgrfile.write('@with string\n@string on\n@string loctype world\n'
-                           '@string color (%d,%d,%d)\n@string char size %f\n@string just 2\n@string %f, %f\n'
-                           '@string def \"%s\"\n' % (redF, greenF, blueF, size, (x1 + x2) / 2.0, (y1 + y2) / 2.0 - 0.1, lame))
-
-    xmgrfile.write('&\n@xaxis ticklabel off\n@yaxis ticklabel off\n@xaxis tick off\n'
-                   '@yaxis tick off\n@subtitle \"Jeux %s entre les ACs du Coeur (en mm)"\n'
-                   '@DEVICE \"JPEG\" PAGE SIZE 1200,1200\n@autoscale\n@redraw\n' % (titre))
-    xmgrfile.close()
-
-
-def makeXMGRACEdef_amp(unit, post, coeur, valdefac):
-
-    def computeColor(value):
-        if (value <= 10.):
-            redF = 0
-            greenF = 255 * value / 10
-            blueF = 255 * (1 - value / 10)
-            size = value / 20.
-        elif (value <= 20.):
-            redF = 255 * (value - 10) / 10
-            greenF = 255 * (1 - (value - 10) / 10)
-            blueF = 0
-            size = value / 20.
-        else:
-            redF = 0
-            greenF = 0
-            blueF = 0
-            size = 1.0
-
-        return (redF, greenF, blueF, size)
-
-    #filename = './fort.%d' % (unit)
-    filename = UL.Nom(unit)
-
-    xmgrfile = open(filename, 'w')
-    makeXMGRACE_entete(coeur,xmgrfile)
-    ind = 0
-    for name in list(valdefac.keys()):
-        ind = ind + 1
-        position = name[0:3]
-        #print 'position = ',position
-        (x,y) = coeur.get_XYOut(position)
-        if (post == 'MAXI'):
-            (redF, greenF, blueF, size) = computeColor(max(valdefac[name]))
-            titre = 'maximale'
-        elif (post == 'MINI'):
-            (redF, greenF, blueF, size) = computeColor(min(valdefac[name]))
-            titre = 'minimale'
-        else:
-            (redF, greenF, blueF, size) = computeColor(
-                valdefac[name][post - 1])
-            titre = 'au niveau des grilles %s' % post
-        xmgrfile.write('@kill s%d\n@s%d symbol fill pattern %d\n'
-                       '@s%d symbol fill color (%d, %d, %d)\n@s%d symbol 1\n@s%d symbol size %f\n'
-                       '@s%d symbol color (%d, %d, %d)\n%d %d\n' % (ind, ind, 1, ind, redF, greenF, blueF, ind,
-                                                                    ind, 2. * size, ind, redF, greenF, blueF, x, y))
-
-    xmgrfile.write('&\n@xaxis ticklabel off\n@yaxis ticklabel off\n@xaxis tick off\n'
-                   '@yaxis tick off\n@subtitle \"Deformation residuelle %s entre les ACs du Coeur (en mm)"\n'
-                   '@DEVICE \"JPEG\" PAGE SIZE 1200,1200\n@autoscale\n@redraw\n' % (titre))
-    xmgrfile.close()
-
-
-def makeXMGRACEdef_mod(unit, post, coeur, valdefac):
-    def computeColor(value):
-        redF = 0
-        greenF = 0
-        blueF = 0
-
-        return (redF, greenF, blueF, value)
-
-    filename = UL.Nom(unit)
-    #filename = './fort.%d' % (unit)
-
-    xmgrfile = open(filename, 'w')
-    makeXMGRACE_entete(coeur,xmgrfile)
-    ind = 0
-    for name in list(valdefac.keys()):
-        ind = ind + 1
-        position = name[0:3]
-        (x,y) = coeur.get_XYOut(position)
-        if (post == 'MAXI'):
-            (redF, greenF, blueF, value) = computeColor(max(valdefac[name]))
-            titre = 'maximales'
-        elif (post == 'MINI'):
-            (redF, greenF, blueF, value) = computeColor(min(valdefac[name]))
-            titre = 'minimales'
-        else:
-            (redF, greenF, blueF, value) = computeColor(
-                valdefac[name][post - 1])
-            titre = 'au niveau des grilles %s' % post
-        xmgrfile.write('@kill s%d\n@s%d symbol 2\n@s%d symbol pattern 1\n@s%d symbol size 2\n'
-                       '@s%d symbol color 1\n@s%d symbol fill pattern 1\n'
-                       '@s%d symbol fill color (248,248,252)\n@type xy\n%10.8f %10.8f\n'
-                       % (ind, ind, ind, ind, ind, ind, ind, x, y))
-        xmgrfile.write('@with string\n@string on\n@string loctype world\n'
-                       '@string color(%d,%d,%d)\n@string char size %f\n@string just 2\n@string %f, %f\n'
-                       '@string def \"%10.1f\"\n' % (redF, greenF, blueF, 0.7, x - 0.37, y - 0.15, value))
-
-    xmgrfile.write('&\n@xaxis ticklabel off\n@yaxis ticklabel off\n@xaxis tick off\n'
-                   '@yaxis tick off\n@subtitle \"Module des deformations residuelles %s entre les ACs'
-                   ' du Coeur (en mm)"\n@DEVICE \"JPEG\" PAGE SIZE 1200,1200\n@autoscale\n@redraw\n' % (titre))
-    xmgrfile.close()
-
-
-def makeXMGRACEdef_vec(unit, post, coeur, valdefac, valdirYac, valdirZac):
-
-    outGraceXY = coeur.get_outGraceXY()
-
-    def computeVector(value, Y, Z):
-        Rvec = value / 20.
-
-        vec = {'X' : Y / 20., 'Y' : Z / 20.}
-        Xvec = vec[outGraceXY['X'][0]]*outGraceXY['X'][1]
-        Yvec = vec[outGraceXY['Y'][0]]*outGraceXY['Y'][1]
-
-        return (Xvec, Yvec, Rvec)
-
-    #filename = './fort.%d' % (unit)
-    filename = UL.Nom(unit)
-
-    xmgrfile = open(filename, 'w')
-    makeXMGRACE_entete(coeur,xmgrfile)
-    ind = 0
-    for name in list(valdefac.keys()):
-        ind = ind + 1
-        position = name[0:3]
-        (x,y) = coeur.get_XYOut(position)
-        if (post == 'MAXI'):
-            pos = valdefac[name].index(max(valdefac[name]))
-            (Xvec, Yvec, Rvec) = computeVector(
-                valdefac[name][pos], valdirYac[name][pos], valdirZac[name][pos])
-            titre = 'maximale'
-        elif (post == 'MINI'):
-            pos = valdefac[name].index(min(valdefac[name]))
-            (Xvec, Yvec, Rvec) = computeVector(
-                valdefac[name][pos], valdirYac[name][pos], valdirZac[name][pos])
-            titre = 'minimale'
-        else:
-            (Xvec, Yvec, Rvec) = computeVector(
-                valdefac[name][post - 1], valdirYac[name][post - 1], valdirZac[name][post - 1])
-            titre = 'au niveau des grilles %s' % post
-        xmgrfile.write('@kill s%d\n@s%d errorbar on\n@s%d errorbar color (%d, %d, %d)\n'
-                       '@s%d errorbar place both\n@s%d errorbar pattern 1\n@s%d errorbar size %f\n'
-                       '@s%d errorbar linewidth %f\n@s%d errorbar linestyle 1\n'
-                       '@s%d errorbar riser linewidth %f\n@s%d errorbar riser clip off\n@type xyvmap\n'
-                       '%d %d %10.8f %10.8f\n'
-                       % (ind, ind, ind, 0, 0, 0, ind, ind, ind, 0.6 * Rvec, ind, 2.5 * Rvec, ind, ind, 2.5 * Rvec,
-                          ind, x, y, 0.03 * Xvec, 0.03 * Yvec))
-
-    xmgrfile.write('&\n@xaxis ticklabel off\n@yaxis ticklabel off\n@xaxis tick off\n'
-                   '@yaxis tick off\n@subtitle \"Orientation des deformations %s entre les ACs'
-                   ' du Coeur (en mm)"\n@DEVICE \"JPEG\" PAGE SIZE 1200,1200\n@autoscale\n@redraw\n' % (titre))
-    xmgrfile.close()
-
-
-def makeXMGRACEdeforme(unit, name, typeAC, coeur, valdefac):
-    ac = coeur.factory.get(typeAC)(coeur.typ_coeur)
-    filename = UL.Nom(unit)
-    #filename = './fort.%d' % (unit)
-
-    xmgrfile = open(filename, 'w')
-    xmgrfile.write('@focus off\n@g0 on\n@with g0\n@kill s0\n@s0 symbol 9\n'
-                   '@s0 symbol linewidth 3\n@s0 linewidth 3\n')
-    xmgrfile.write('@VIEW 0.1,0.1,0.85,0.85\n')
-
-    for k in range(0, len(ac.altitude)):
-        xmgrfile.write('@with string\n@string on\n@string loctype world\n'
-                       '@string color (0,50,120)\n@string char size %f\n@string just 2\n'
-                       '@string %f, %f\n@string def \"%10.1f\"\n'
-                       % (0.7, valdefac[name][k] + 1.0, ac.altitude[k] - 0.035, valdefac[name][k]))
-    for k in range(0, len(ac.altitude)):
-        xmgrfile.write('%10.8f %10.8f\n' % (valdefac[name][k], ac.altitude[k]))
-
-    xmgrfile.write(
-        '&\n@s2 on\n@with s2\n-20.0 -0.1\n&\n@s3 on\n@with s3\n20.0 4.6\n')
-    xmgrfile.write('&\n@subtitle \"D\éform\ée de l\'assemblage %s (amplitudes (mm)/ha'
-                   'uteur (m))"\n@DEVICE \"JPEG\" PAGE SIZE 1200,1200\n@autoscale\n@redraw\n' % (name))
-    xmgrfile.close()
+ROUND_DIGITS = 4
 
 class CollectionDiscretChoc():
-
+    
     @property
     def keys(self):
         return self._collection.keys()
 
     @property
     def values(self):
-        return np.array(tuple(self._collection.values()))
+        return np.array(tuple(item for j, item in self._collection.items() if "COOR_X" not in j))
 
     @property
     def values_internal(self):
@@ -367,15 +64,15 @@ class CollectionDiscretChoc():
     def __setitem__(self, key, item):
         self._collection[key] = item
 
-    def analyse(self, prec=1.e-8):
-        quantiles = [70, 80, 90, 95, 99]
-
+    def analysis(self, label):
+        quantiles = (70, 80, 90, 95, 99)
+        
         values = {}
         
         for i in quantiles :
-            values['QuanLE_CU_%d'%i] = np.percentile(self.values_external, i)
-            values['QuanLE_AC_%d'%i] = np.percentile(self.values_internal, i)
-            values['QuanLE_%d'%i] = np.percentile(self.values, i)
+            values['Quan%s_CU_%d'%(label, i)] = np.percentile(self.values_external, i)
+            values['Quan%s_AC_%d'%(label, i)] = np.percentile(self.values_internal, i)
+            values['Quan%s_%d'%(label, i)] = np.percentile(self.values, i)
             
             qu_cu_grids_i = np.percentile(self.values_external, i, axis=0)           
             qu_ac_grids_i = np.percentile(self.values_internal, i, axis=0)
@@ -383,23 +80,23 @@ class CollectionDiscretChoc():
             
             nb_grids = qu_cu_grids_i.size
             for j in range(nb_grids):
-                values['QuanLE_CU_G%d_%d'%(j+1,i)] = qu_cu_grids_i[j]
-                values['QuanLE_AC_G%d_%d'%(j+1,i)] = qu_ac_grids_i[j]
-                values['QuanLE_G%d_%d'%(j+1,i)] = qu_grids_i[j]
+                values['Quan%s_CU_G%d_%d'%(label, j+1,i)] = qu_cu_grids_i[j]
+                values['Quan%s_AC_G%d_%d'%(label, j+1,i)] = qu_ac_grids_i[j]
+                values['Quan%s_G%d_%d'%(label, j+1,i)] = qu_grids_i[j]
 
-        values = {key : round_post(item) for key, item in values.items()}
+        values = {key : round(item, ROUND_DIGITS) for key, item in values.items()}
         return values
 
     def extr_table(self):
         nb_grids = self.values.shape[1]
-
+        
         listdic = [{key : self[key][i] for key in self.keys} for i in range(nb_grids)]
         listpara = self.keys
         listtype = ['R']*len(listpara)
         return Table(listdic, listpara, listtype)
 
-    def extr_table_analyse(self):
-        values = self.analyse()
+    def extr_analysis_table(self, label):
+        values = self.analysis(label)
 
         listdic = [values]
         listpara = sorted(values.keys())
@@ -409,9 +106,13 @@ class CollectionDiscretChoc():
 
 class CollectionPostAC():
 
+    @property
+    def keys(self):
+        return self._collection.keys()
+    
     def __init__(self):
-        self._collection = {}
-
+        self._collection = OrderedDict()
+        
         self.maxRho = 0.
         self.maxGravite = 0.
         self.locMaxRho = ''
@@ -425,50 +126,50 @@ class CollectionPostAC():
         self.moyenneRhoParType = {}
         self.moyenneGraviteParType = {}
         
-    def add(self, ac):
-        self._collection[ac.get('PositionDAMAC')] = ac
+    def __getitem__(self, key):
+        return self._collection[key]
 
-    def get(self, pos):
-        return self._collection[pos]
+    def __setitem__(self, key, item):
+        self._collection[key] = item
 
-    def analyse(self, prec=1.e-8):
+    def analysis(self, prec):
      
-        for pos_damac in sorted(self._collection.keys()) : 
-            AC = self.get(pos_damac)
+        for pos_damac in sorted(self.keys) : 
+            AC = self[pos_damac]
             
-            if AC.get('Rho') - self.maxRho > prec :
-                self.maxRho = AC.get('Rho')
+            if AC['Rho'] - self.maxRho > prec :
+                self.maxRho = AC['Rho']
                 self.locMaxRho = pos_damac
                 
-            if AC.get('Gravite') - self.maxGravite > prec :
-                self.maxGravite = AC.get('Gravite')
+            if AC['Gravite'] - self.maxGravite > prec :
+                self.maxGravite = AC['Gravite']
                 self.locMaxGravite = pos_damac
 
             for g in range(AC.nb_grilles):
-                if AC.get('NormF')[g] - self.maxDeplGrille[g] > prec:
-                    self.maxDeplGrille[g] = AC.get('NormF')[g]
+                if AC['NormF'][g] - self.maxDeplGrille[g] > prec:
+                    self.maxDeplGrille[g] = AC['NormF'][g]
                     self.locMaxDeplGrille[g] = pos_damac
                     
-        self.moyenneRho = np.mean(tuple(AC.get('Rho') for AC in self._collection.values()))
-        self.moyenneGravite = np.mean(tuple(AC.get('Gravite') for AC in self._collection.values()))
+        self.moyenneRho = np.mean(tuple(AC['Rho'] for AC in self._collection.values()))
+        self.moyenneGravite = np.mean(tuple(AC['Gravite'] for AC in self._collection.values()))
 
-        self.sigmaGravite = np.sqrt(np.mean((np.array(tuple(AC.get('Gravite') for AC in self._collection.values()))-self.moyenneGravite)**2))
+        self.sigmaGravite = np.sqrt(np.mean((np.array(tuple(AC['Gravite'] for AC in self._collection.values()))-self.moyenneGravite)**2))
 
-        types = set((AC.get('TypeAC') for AC in self._collection.values()))
-        self.maxRhoParType = {i : max((AC.get('Rho') for AC in self._collection.values() if i == AC.get('TypeAC'))) for i in types}
-        self.maxGraviteParType = {i : max((AC.get('Gravite') for AC in self._collection.values() if i == AC.get('TypeAC'))) for i in types}
-        self.moyenneRhoParType = {i : np.mean(tuple(AC.get('Rho') for AC in self._collection.values() if i == AC.get('TypeAC'))) for i in types}
-        self.moyenneGraviteParType = {i : np.mean(tuple(AC.get('Gravite') for AC in self._collection.values() if i == AC.get('TypeAC'))) for i in types}
+        types = set((AC['TypeAC'] for AC in self._collection.values()))
+        self.maxRhoParType = {i : max((AC['Rho'] for AC in self._collection.values() if i == AC['TypeAC'])) for i in types}
+        self.maxGraviteParType = {i : max((AC['Gravite'] for AC in self._collection.values() if i == AC['TypeAC'])) for i in types}
+        self.moyenneRhoParType = {i : np.mean(tuple(AC['Rho'] for AC in self._collection.values() if i == AC['TypeAC'])) for i in types}
+        self.moyenneGraviteParType = {i : np.mean(tuple(AC['Gravite'] for AC in self._collection.values() if i == AC['TypeAC'])) for i in types}
 
-    def extr_table_fleche(self):
+    def extr_table(self):
 
         listdic = [AC.get_fleche_props() for pos, AC in sorted(self._collection.items())]
         listpara, listtype = PostAC.fleche_parameters_types()
         return Table(listdic,listpara,listtype)
 
-    def extr_table_analyse(self):
+    def extr_analysis_table(self, prec=1.e-8):
 
-        self.analyse()
+        self.analysis(prec)
         
         dico = {
             'moyRhoCoeur' : self.moyenneRho,
@@ -489,7 +190,7 @@ class CollectionPostAC():
 
         for key, item in dico.items():
             try:
-                dico[key] = round_post(item)
+                dico[key] = round(item, ROUND_DIGITS)
             except TypeError:
                 pass
 
@@ -503,7 +204,53 @@ class CollectionPostAC():
     
 
 class PostAC():
+
+    def __getitem__(self, key):
+        return self._props[key]
     
+    def __setitem__(self, key, item):
+        self._props[key] = item
+        
+    def __init__(self, coor_x, dy, dz, AC):
+
+        fy = dy - dy[0] - (dy[-1] - dy[0])/(coor_x[-1] - coor_x[0])*(coor_x - coor_x[0])
+        fz = dz - dz[0] - (dz[-1] - dz[0])/(coor_x[-1] - coor_x[0])*(coor_x - coor_x[0])
+        FormeY, FormeZ, Forme = self._compute_forme(fy,fz)
+
+        self.nb_grilles = len(coor_x)
+        
+        self._props = {
+            'PositionDAMAC' : AC.idDAM,
+            'PositionASTER' : AC.idAST,
+            'Cycle' : AC._cycle,
+            'Repere' : AC.name,
+            'Rho' : max([np.sqrt((fy[i] - fy[j]) ** 2 + (fz[i] - fz[j]) ** 2)
+                         for i in range(self.nb_grilles - 1) for j in range(i + 1, self.nb_grilles)]),
+            'DepY' : dy[0] - dy[-1],
+            'DepZ' : dz[0] - dz[-1],
+            'TypeAC' : AC.typeAC,
+            'MinY' : fy.min(),
+            'MaxY' : fy.max(),
+            'CCY' : fy.max() - fy.min(),
+            'MinZ' : fz.min(),
+            'MaxZ' : fz.max(),
+            'CCZ' : fz.max() - fz.min(),
+            'FormeY' : FormeY,
+            'FormeZ' : FormeZ,
+            'Forme' : Forme,
+            'Gravite' : self._compute_gravite(coor_x, fy, fz),
+            'NormF' : np.sqrt(fy**2+fz**2),
+            'FY' : fy,
+            'FZ' : fz,
+        }
+        
+        self._props.update({'XG%d'%(i+1) : 0. for i in range(10)})
+        self._props.update({'YG%d'%(i+1) : 0. for i in range(10)})
+        
+        self._props.update({'XG%d'%(i+1) : val for i, val in enumerate(fy)})
+        self._props.update({'YG%d'%(i+1) : val for i, val in enumerate(fz)})
+
+        
     def _compute_gravite(self, coor_x, fy, fz):
 
         K_star = 100000.
@@ -536,73 +283,31 @@ class PostAC():
         shape_global = '2%s'%letters if len(letters) == 1 else letters
         
         return shape_x, shape_y, shape_global
-
-    def get(self, kw):
-        return self.props[kw]
-
-    def __init__(self, coor_x, dy, dz, AC):
-
-        fy = dy - dy[0] - (dy[-1] - dy[0])/(coor_x[-1] - coor_x[0])*(coor_x - coor_x[0])
-        fz = dz - dz[0] - (dz[-1] - dz[0])/(coor_x[-1] - coor_x[0])*(coor_x - coor_x[0])
-        FormeY, FormeZ, Forme = self._compute_forme(fy,fz)
-
-        self.nb_grilles = len(coor_x)
-        
-        self.props = {
-            'PositionDAMAC' : AC.idDAM,
-            'PositionASTER' : AC.idAST,
-            'Cycle' : AC._cycle,
-            'Repere' : AC.name,
-            'Rho' : max([np.sqrt((fy[i] - fy[j]) ** 2 + (fz[i] - fz[j]) ** 2)
-                         for i in range(self.nb_grilles - 1) for j in range(i + 1, self.nb_grilles)]),
-            'DepY' : dy[0] - dy[-1],
-            'DepZ' : dz[0] - dz[-1],
-            'TypeAC' : AC.typeAC,
-            'MinY' : fy.min(),
-            'MaxY' : fy.max(),
-            'CCY' : fy.max() - fy.min(),
-            'MinZ' : fz.min(),
-            'MaxZ' : fz.max(),
-            'CCZ' : fz.max() - fz.min(),
-            'FormeY' : FormeY,
-            'FormeZ' : FormeZ,
-            'Forme' : Forme,
-            'Gravite' : self._compute_gravite(coor_x, fy, fz),
-            'NormF' : np.sqrt(fy**2+fz**2),
-            'FY' : fy,
-            'FZ' : fz,
-        }
-        
-        self.props.update({'XG%d'%(i+1) : 0. for i in range(10)})
-        self.props.update({'YG%d'%(i+1) : 0. for i in range(10)})
-        
-        self.props.update({'XG%d'%(i+1) : val for i, val in enumerate(fy)})
-        self.props.update({'YG%d'%(i+1) : val for i, val in enumerate(fz)})
         
     def get_fleche_props(self):
 
         fleche_props = {
-            'POS' : self.get('PositionDAMAC'),
-            'Cycle' : self.get('Cycle'),
+            'POS' : self['PositionDAMAC'],
+            'Cycle' : self['Cycle'],
             'T5' : 0.,
             'T6' : 0.,
-            'Repere' : self.get('Repere'),
-            'Ro' : self.get('Rho'),
-            'EinfXgg' : self.get('DepY'),
-            'EinfYgg' : self.get('DepZ'),
-            'Milieu' : self.get('TypeAC'),
-            'Min X' : self.get('MinY'),
-            'Max X' : self.get('MaxY'),
-            'CC X' : self.get('CCY'),
-            'Min Y' : self.get('MinZ'),
-            'Max Y' : self.get('MaxZ'),
-            'CC Y' : self.get('CCZ'),
-            'Forme X' : self.get('FormeY'),
-            'Forme Y' : self.get('FormeZ'),
-            'Forme' : self.get('Forme'),
+            'Repere' : self['Repere'],
+            'Ro' : self['Rho'],
+            'EinfXgg' : self['DepY'],
+            'EinfYgg' : self['DepZ'],
+            'Milieu' : self['TypeAC'],
+            'Min X' : self['MinY'],
+            'Max X' : self['MaxY'],
+            'CC X' : self['CCY'],
+            'Min Y' : self['MinZ'],
+            'Max Y' : self['MaxZ'],
+            'CC Y' : self['CCZ'],
+            'Forme X' : self['FormeY'],
+            'Forme Y' : self['FormeZ'],
+            'Forme' : self['Forme'],
         }
-        fleche_props.update({'XG%d'%(i+1) : self.get('XG%d'%(i+1)) for i in range(10)})
-        fleche_props.update({'YG%d'%(i+1) : self.get('YG%d'%(i+1)) for i in range(10)})
+        fleche_props.update({'XG%d'%(i+1) : self['XG%d'%(i+1)] for i in range(10)})
+        fleche_props.update({'YG%d'%(i+1) : self['YG%d'%(i+1)] for i in range(10)})
 
         return fleche_props
 
@@ -622,232 +327,185 @@ class PostAC():
 
 def post_mac3coeur_ops(self, **args):
     """Corps principal de la macro de post-traitement de MAC3COEUR"""
+
+    analysis_table_created = False
+
     rcdir = ExecutionParameter().get_option("rcdir")
     datg = osp.join(rcdir, "datg")
     coeur_factory = CoeurFactory(datg)
 
-    _RESU = args.get('RESULTAT')
-    _typ_coeur = args.get('TYPE_COEUR')
+    RESU = args['RESULTAT']
+    inst = args['INST']
+
+    core_type = args['TYPE_COEUR']
+    row_size = args['NB_ASSEMBLAGE'] if 'LIGNE' in core_type else None
+
     POST_LAME = args.get('LAME')
     POST_EFFORT = args.get('FORCE_CONTACT')
     POST_DEF = args.get('DEFORMATION')
-    _inst = args.get('INST')
-    _TAB_N = args.get('TABLE')
-    if _typ_coeur[:5] == 'LIGNE' :
-      _longueur = args.get('NB_ASSEMBLAGE')
-    else :
-      _longueur=None
 
-    _table = _TAB_N.EXTR_TABLE()
-    nameCoeur = _table.para[0]
+    DATAMAC = args['TABLE']
+    datamac = DATAMAC.EXTR_TABLE()
+    core_name = datamac.para[0]
+    datamac.Renomme(core_name, 'idAC')
+    core_mac3 = coeur_factory.get(core_type)(core_name, core_type, self, datg, row_size)
+    core_mac3.init_from_table(datamac, mater=False)
+    
+    #
+    # MOT-CLE FACTEUR LAME
+    #
 
-    # et on renomme la colonne qui identifie les assemblages
-    _table.Renomme(nameCoeur, 'idAC')
-    _coeur = coeur_factory.get(_typ_coeur)(nameCoeur, _typ_coeur, self, datg,_longueur)
-    _coeur.init_from_table(_table,mater=False)
-    tableCreated = False
-
-    # "
-    #                                          MOT-CLE FACTEUR LAME
-    # "
-
-    if (POST_LAME is not None):
-        collection = CollectionDiscretChoc()
+    if POST_LAME:
+        unit = POST_LAME[0]['UNITE']
+        post_type = POST_LAME[0]['FORMAT']
         
-        for name in (_coeur.get_contactAssLame() + _coeur.get_contactCuve()):
-
-            _TMP = CREA_TABLE(RESU=_F(RESULTAT=_RESU,
+        collection = CollectionDiscretChoc()
+        for name in (core_mac3.get_contactAssLame() + core_mac3.get_contactCuve()):
+            
+            TMP = CREA_TABLE(RESU=_F(RESULTAT=RESU,
                                      NOM_CMP='V8',
                                      GROUP_MA=name,
                                      NOM_CHAM='VARI_ELGA',
-                                     INST=_inst,
+                                     INST=inst,
                                      PRECISION=1.E-08))
-
-            vals = np.stack((_TMP.EXTR_TABLE().values()[i] for i in ('COOR_X', 'V8')))
-            vals = np.mean(vals.reshape(2,vals.shape[1]//2,2),axis=2) # Moyenne sur les 2 noeuds du discret (qui portent tous la meme valeur)
+            
+            vals = np.stack((TMP.EXTR_TABLE().values()[i] for i in ('COOR_X', 'V8')))
+            vals = np.mean(vals.reshape(2, vals.shape[1]//2,2), axis=2) # Moyenne sur les 2 noeuds du discret (qui portent tous la meme valeur)
 
             coor_x, v8 = np.around(1000.*vals[:, vals[0].argsort()], 12)
             if 'COOR_X' not in collection.keys :
-                collection['COOR_X'] = coor_x/1000.0 #FIXME : dont like
+                collection['COOR_X'] = coor_x
             collection[name] = v8
+            
+        analysis_table = collection.extr_analysis_table('LE')
+        analysis_table.titr = 'RESU_GLOB_{}'.format(core_name)
 
-                
-        tabanalyse= collection.extr_table_analyse()
-        tabanalyse.titr = 'RESU_GLOB_{}'.format(nameCoeur)
-        if not tableCreated: 
-            __TAB_OUT = CREA_TABLE(**tabanalyse.dict_CREA_TABLE())
-
+        if not analysis_table_created: 
+            TAB_OUT = CREA_TABLE(**analysis_table.dict_CREA_TABLE())
+            
         else :
-            _TAB_A = CREA_TABLE(**tabanalyse.dict_CREA_TABLE())
-            __TAB_OUT = CALC_TABLE(reuse=__TAB_OUT,
-                                   TABLE=__TAB_OUT,
-                                   ACTION=_F(OPERATION='COMB',TABLE=_TAB_A))
-            
-        tabvalues = collection.extr_table()
-        _TAB3 = CREA_TABLE(**tabvalues.dict_CREA_TABLE())
+            TMP = CREA_TABLE(**analysis_table.dict_CREA_TABLE())
+            TAB_OUT = CALC_TABLE(reuse=TAB_OUT,
+                                 TABLE=TAB_OUT,
+                                 ACTION=_F(OPERATION='COMB', TABLE=TMP))
+
+        analysis_table_created = True
         
-        tableCreated = True
+        values_table = collection.extr_table()
+        TAB_VAL = CREA_TABLE(**values_table.dict_CREA_TABLE())
+              
+        if post_type in ('TABLE',):
+            IMPR_TABLE(TABLE=TAB_VAL,
+                       UNITE=unit,
+                       FORMAT_R='E12.5')
+                
+    #
+    # MOT-CLE FACTEUR FORCE_CONTACT
+    #
+
+    if POST_EFFORT:
+        unit = POST_EFFORT[0]['UNITE']
+        post_type = POST_EFFORT[0]['FORMAT']
         
-        for attr in POST_LAME:
-            _unit = attr['UNITE']
-            _typ_post = attr['FORMAT']
-            
-            if (_typ_post == 'GRACE'):
-                valjeuac = {key : collection[key] for key in collection.keys if 'RES_' in key}
-                valjeucu = {key : collection[key] for key in collection.keys if 'CU_' in key}
-
-                _num_grille = attr['NUME_GRILLE']
-                _extremum = attr['TYPE_RESU']
-
-                if (_extremum is None):
-                    post = _num_grille
-                else:
-                    post = _extremum
-
-                makeXMGRACEjeu(_unit, post, _coeur, valjeuac, valjeucu)
-
-            elif (_typ_post == 'TABLE'):
-
-                IMPR_TABLE(UNITE=_unit, TABLE=_TAB3,FORMAT_R='E12.6',)
-
-    # "
-    #                                          MOT-CLE FACTEUR FORCE_CONTACT
-    # "
-
-    if (POST_EFFORT is not None):
         collection = CollectionDiscretChoc()
-        
-        for name in (_coeur.get_contactAssLame() + _coeur.get_contactCuve()):
-
-            _TMP = CREA_TABLE(RESU=_F(RESULTAT=_RESU,
+        for name in (core_mac3.get_contactAssLame() + core_mac3.get_contactCuve()):
+            
+            TMP = CREA_TABLE(RESU=_F(RESULTAT=RESU,
                                      NOM_CMP='N',
                                      GROUP_MA=name,
                                      NOM_CHAM='SIEF_ELGA',
-                                     INST=_inst,
+                                     INST=inst,
                                      PRECISION=1.E-08))
 
-            vals = np.abs(np.stack((_TMP.EXTR_TABLE().values()[i] for i in ('COOR_X', 'N'))))
+            vals = np.abs(np.stack((TMP.EXTR_TABLE().values()[i] for i in ('COOR_X', 'N'))))
             vals = np.mean(vals.reshape(2,vals.shape[1]//2,2),axis=2) # Moyenne sur les 2 noeuds du discret (qui portent tous la meme valeur)
 
-            coor_x, v8 = np.around(1000.*vals[:, vals[0].argsort()], 12)
+            coor_x, force = np.around(vals[:, vals[0].argsort()], 12)
             if 'COOR_X' not in collection.keys :
-                collection['COOR_X'] = coor_x/1000.0 #FIXME : dont like
-            collection[name] = v8
+                collection['COOR_X'] = 1000.0*coor_x
+            collection[name] = force
 
-        tabanalyse= collection.extr_table_analyse()
-        tabanalyse.titr = 'RESU_GLOB_{}'.format(nameCoeur)
-        if not tableCreated: 
-            __TAB_OUT = CREA_TABLE(**tabanalyse.dict_CREA_TABLE())
+        analysis_table = collection.extr_analysis_table('N')
+        analysis_table.titr = 'RESU_GLOB_{}'.format(core_name)
+        
+        if not analysis_table_created: 
+            TAB_OUT = CREA_TABLE(**analysis_table.dict_CREA_TABLE())
             
         else :
-            _TAB_A = CREA_TABLE(**tabanalyse.dict_CREA_TABLE())
-            __TAB_OUT = CALC_TABLE(reuse=__TAB_OUT,
-                                   TABLE=__TAB_OUT,
-                                   ACTION=_F(OPERATION='COMB',TABLE=_TAB_A))
-            
-        tabvalues = collection.extr_table()
-        _TAB3 = CREA_TABLE(**tabvalues.dict_CREA_TABLE())
+            TMP = CREA_TABLE(**analysis_table.dict_CREA_TABLE())
+            TAB_OUT = CALC_TABLE(reuse=TAB_OUT,
+                                 TABLE=TAB_OUT,
+                                 ACTION=_F(OPERATION='COMB', TABLE=TMP))
+
+        analysis_table_created = True
+
+        values_table = collection.extr_table()
+        TAB_VAL = CREA_TABLE(**values_table.dict_CREA_TABLE())
         
-        tableCreated = True
+        if post_type in ('TABLE',):
+            IMPR_TABLE(TABLE=TAB_VAL,
+                       UNITE=unit,
+                       FORMAT_R='E12.5')
+                       
+    #
+    # MOT-CLE FACTEUR DEFORMATION
+    #
+    
+    if POST_DEF:
+        unit = POST_DEF[0]['UNITE']
+        post_type = POST_DEF[0]['FORMAT']
+        site_name = POST_DEF[0]['NOM_SITE']
             
-        for attr in POST_EFFORT:
-            _unit = attr['UNITE']
-            _typ_post = attr['FORMAT']
-
-            if (_typ_post == 'TABLE'):
-                IMPR_TABLE(UNITE=_unit, TABLE=_TAB3, FORMAT_R='E12.6',)
-     
-    # "
-    #                                          MOT-CLE FACTEUR DEFORMATION
-    # "
-    if (POST_DEF is not None):
-
-        UTMESS('I', 'COEUR0_6')
-
-        post_coeur = CollectionPostAC()
-        for AC in _coeur.collAC.values():
+        collection = CollectionPostAC()
+        for AC in core_mac3.collAC.values():
             
-            _TAB1 = CREA_TABLE(RESU=_F(RESULTAT=_RESU,
+            TMP = CREA_TABLE(RESU=_F(RESULTAT=RESU,
                                        NOM_CMP=('DY', 'DZ'),
                                        GROUP_MA='GR_%s'%AC.idAST,
                                        NOM_CHAM='DEPL',
-                                       INST=_inst,
+                                       INST=inst,
                                        PRECISION=1.E-08))
             # Extraction des valeurs
-            vals = np.stack((_TAB1.EXTR_TABLE().values()[i] for i in ('COOR_X', 'DY', 'DZ')))
-            
+            vals = np.stack((TMP.EXTR_TABLE().values()[i] for i in ('COOR_X', 'DY', 'DZ')))
             # Moyenne sur les 4 discrets de la grille (qui portent tous la meme valeur)
             vals = np.mean(vals.reshape(vals.shape[0], vals.shape[1]//4, 4),axis=2)
             # Passage en mm et arrondi
             coor_x, dy, dz = np.around(1000.0*vals[:, vals[0].argsort()],12)
-            post_coeur.add(PostAC(coor_x, dy, dz, AC))
-            
-        table_analyse = post_coeur.extr_table_analyse()
-        motcles = table_analyse.dict_CREA_TABLE()
-        
-        if not tableCreated: 
-            __TAB_OUT = CREA_TABLE(**motcles)
 
+            post_ac = PostAC(coor_x, dy, dz, AC)
+            collection[post_ac['PositionDAMAC']] = post_ac
+            
+        analysis_table = collection.extr_analysis_table()
+        analysis_table.titr = 'RESU_GLOB_{}'.format(core_name)
+
+        if not analysis_table_created: 
+            TAB_OUT = CREA_TABLE(**analysis_table.dict_CREA_TABLE())
+            
         else :
-            _TAB_A = CREA_TABLE(**motcles)
-            __TAB_OUT = CALC_TABLE(reuse=__TAB_OUT,
-                                   TABLE=__TAB_OUT,
-                                   ACTION=_F(OPERATION='COMB',TABLE=_TAB_A))
-
-        for attr in POST_DEF:
-            _unit = attr['UNITE']
-            _typ_post = attr['FORMAT']
+            TMP = CREA_TABLE(**analysis_table.dict_CREA_TABLE())
+            TAB_OUT = CALC_TABLE(reuse=TAB_OUT,
+                                 TABLE=TAB_OUT,
+                                 ACTION=_F(OPERATION='COMB', TABLE=TMP))
             
-            if (_typ_post == 'GRACE'):
+        analysis_table_created = True
+
+        values_table = collection.extr_table()
+        values_table.Renomme('POS', site_name)
+        TAB_VAL = CREA_TABLE(**values_table.dict_CREA_TABLE())
+            
+        if post_type in ('TABLE',):
+            format_standard = POST_DEF[0]['FORMAT_R'] == 'STANDARD'
+            fmt = 'E12.5' if format_standard else 'F5.1'
+            # IMPR_TABLE(TABLE=TAB_VAL,
+            #            FORMAT_R='E12.5',
+            #            SEPARATEUR='\t',
+            #            UNITE=unit)
+            IMPR_TABLE(TABLE=TAB_VAL,
+                       TITRE='---',
+                       FORMAT_R=fmt,
+                       UNITE=unit,
+                       COMMENTAIRE='',
+                       SEPARATEUR='\t',
+                       FIN_LIGNE='\r\n')
                 
-                _num_grille = attr['NUME_GRILLE']
-                _extremum = attr['TYPE_RESU']
-                _autre = attr['TYPE_VISU']
-
-                if (_extremum is None):
-                    post = _num_grille
-                else:
-                    post = _extremum
-
-                valdefac = {AC.get('PositionASTER') : list(AC.get('NormF')) for AC in post_coeur._collection.values()}
-                valdirYac = {AC.get('PositionASTER') : list(AC.get('FY')) for AC in post_coeur._collection.values()}
-                valdirZac = {AC.get('PositionASTER') : list(AC.get('FZ')) for AC in post_coeur._collection.values()}
-                
-                if (_autre == 'AMPLITUDE'):
-                    makeXMGRACEdef_amp(_unit, post, _coeur, valdefac)
-                elif (_autre == 'MODULE'):
-                    makeXMGRACEdef_mod(_unit, post, _coeur, valdefac)
-                elif (_autre == 'VECTEUR'):
-                    makeXMGRACEdef_vec(
-                        _unit, post, _coeur, valdefac, valdirYac, valdirZac)
-                elif (_autre == 'DEFORME'):
-                    name = attr['POSITION']
-                    typeAC = attr['CONCEPTION']
-                    makeXMGRACEdeforme(_unit, name, typeAC, _coeur, valdefac)
-
-            elif (_typ_post == 'TABLE'):
-                _format_standard = attr['FORMAT_R'] == 'STANDARD'
-                _nom_site = attr['NOM_SITE']
-
-                # creation de la table de sortie
-                tab_extr = post_coeur.extr_table_fleche()
-                tab_extr.Renomme('POS', _nom_site)
-                tab_extr.titr = _typ_coeur
-                motcles = tab_extr.dict_CREA_TABLE()
-                _TABOUT = CREA_TABLE(**motcles)
-
-                # impression de la table de sortie
-                if _format_standard :
-                    formt = 'E12.5'
-                else :
-                    formt = 'F5.1'
-                IMPR_TABLE(TABLE=_TABOUT,
-                           TITRE='---',
-                           FORMAT_R=formt,
-                           UNITE=_unit,
-                           COMMENTAIRE='',
-                           SEPARATEUR='\t',
-                           FIN_LIGNE='\r\n',
-                           )
-
-    return __TAB_OUT
+    return TAB_OUT

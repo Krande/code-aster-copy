@@ -20,7 +20,7 @@
 #          POUR LE CALCUL DES LAMES D'EAU.
 # person_in_charge: pierre.badel at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'),IMPR_MACRO='OUI',DEBUG=_F(SDVERI='NON'),)
+DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'),IMPR_MACRO='NON', DEBUG=_F(SDVERI='NON'),)
 
 tabn = LIRE_TABLE(UNITE      = 38,
                   FORMAT      = 'LIBRE',
@@ -46,17 +46,11 @@ TABP1 = POST_MAC3COEUR(RESULTAT    =  RESU,
                        INST        =  post_i,
                        TABLE      = tabn,
                        LAME        = (
-                           _F( FORMAT = 'TABLE', UNITE = 30,                 ),
-                           _F( FORMAT = 'GRACE', UNITE = 31, NUME_GRILLE =  5),
+                           _F( FORMAT = 'TABLE', UNITE = 30),
                        ),
                        DEFORMATION = (
-                           _F( FORMAT = 'GRACE', UNITE = 32, TYPE_RESU   = 'MAXI', TYPE_VISU = 'AMPLITUDE',),
-                           _F( FORMAT = 'GRACE', UNITE = 33, TYPE_RESU   = 'MAXI', TYPE_VISU = 'MODULE',),
-                           _F( FORMAT = 'GRACE', UNITE = 34, TYPE_RESU   = 'MAXI', TYPE_VISU = 'VECTEUR',),
-                           _F( FORMAT = 'GRACE', UNITE = 35, POSITION = 'A_B', CONCEPTION = 'AFAXL_N4', TYPE_VISU = 'DEFORME',),
-                        _F( FORMAT = 'TABLE', UNITE = 36, NOM_SITE='BIDON'),
-                       )
-)
+                           _F( FORMAT = 'TABLE', UNITE = 36, NOM_SITE='BIDON'),
+                       ))
 
 TABP2 = POST_MAC3COEUR(RESULTAT    =  RES_LM,
                        TYPE_COEUR  = 'TEST',
@@ -64,7 +58,6 @@ TABP2 = POST_MAC3COEUR(RESULTAT    =  RES_LM,
                        TABLE      = tabn,
                        DEFORMATION = (
                            _F( FORMAT = 'TABLE', UNITE = 46, NOM_SITE='BIDON'),
-                           _F( FORMAT = 'TABLE', UNITE = 47, NOM_SITE='BIDON', FORMAT_R='STANDARD'),
                        ))
 
 TABP3 = POST_MAC3COEUR(RESULTAT    =  RESU,
@@ -72,6 +65,14 @@ TABP3 = POST_MAC3COEUR(RESULTAT    =  RESU,
                        INST        =  post_i,
                        TABLE       = tabn,
                        FORCE_CONTACT  = ( _F( FORMAT = 'TABLE', UNITE = 48,)
+                       ))
+
+TABP4 = POST_MAC3COEUR(RESULTAT    =  RES_LM,
+                       TYPE_COEUR  = 'TEST',
+                       INST        =  post_i,
+                       TABLE      = tabn,
+                       DEFORMATION = (
+                           _F( FORMAT = 'TABLE', UNITE = 47, NOM_SITE='BIDON', FORMAT_R='STANDARD'),
                        ))
 
 # tests de la sortie de CALC_MAC3COEUR / LAME
@@ -319,7 +320,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            NOM_PARA ='RES_ABBB',
            TABLE=TAB30,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=2.18074),
+                     VALE=2180.74),
 )
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
@@ -328,7 +329,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            NOM_PARA ='CU_AB_E',
            TABLE=TAB30,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=2.18074),
+                     VALE=2180.74),
 )
 
 TEST_TABLE(VALE_CALC=-0.0009980376599879053,
@@ -420,13 +421,13 @@ TEST_TABLE(VALE_CALC=54.07441,
            NOM_PARA ='CU_BA_W',
            TABLE=TAB48,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=2.18074))
+                     VALE=2180.74))
 
 TEST_TABLE(VALE_CALC=133.5322,
            NOM_PARA ='RES_BCBB',
            TABLE=TAB48,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=1.675500),
+                     VALE=1675.50),
            )
 
 FIN()

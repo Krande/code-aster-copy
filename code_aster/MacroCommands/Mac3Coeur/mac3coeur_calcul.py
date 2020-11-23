@@ -606,7 +606,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         else :
             resu_init = self.mcf['RESU_INIT']
         if not (mesh or resu_init or char_init):
-            UTMESS('F', 'COEUR0_7')
+            UTMESS('F', 'COEUR0_4')
         elif resu_init:
             if mesh:
                 UTMESS('A', 'COEUR0_1')
