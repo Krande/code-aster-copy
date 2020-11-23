@@ -41,7 +41,7 @@ POST_MAC3COEUR = MACRO(nom="POST_MAC3COEUR",
                                                           fr=tr("Numéro de l'unité logique pour le post-traitement")),
                                       FORMAT       = SIMP(statut='o',typ='TXM',into=("TABLE", )),
                                       b_lame_table  = BLOC(condition = """equal_to("FORMAT", 'TABLE') """,fr=tr("Paramètres pour le format TABLE"),
-                                      ),
+                                      )
                                       
                        ),
 
@@ -52,7 +52,7 @@ POST_MAC3COEUR = MACRO(nom="POST_MAC3COEUR",
                                                FORMAT       = SIMP(statut='o',typ='TXM',into=("TABLE",)),
                                                
                                                b_effort_table  = BLOC(condition = """equal_to("FORMAT", 'TABLE') """,fr=tr("Paramètres pour le format TABLE"),
-                                               ),
+                                               )
                        ),
                        
                        DEFORMATION = FACT(statut='f',max=1,
@@ -62,7 +62,5 @@ POST_MAC3COEUR = MACRO(nom="POST_MAC3COEUR",
                                           
                                           b_def_table  = BLOC(condition = """equal_to("FORMAT", 'TABLE') """,fr=tr("Paramètres pour le format TABLE"),
                                                               NOM_SITE     = SIMP(statut='o',typ='TXM', max=1),
-                                                              FORMAT_R     = SIMP(statut='f',typ='TXM', into=("DAMAC","STANDARD"), defaut="DAMAC")
-                                                              
                                           )
                        ))

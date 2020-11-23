@@ -18,12 +18,11 @@
 # --------------------------------------------------------------------
 
 # person_in_charge: francesco.bettonte at edf.fr
+
 import os.path as osp
-from math import sqrt
+from collections import OrderedDict
 
 import numpy as np
-from collections import OrderedDict
-import numpy.linalg as LA
 
 import aster
 
@@ -35,8 +34,6 @@ from ...Objects.table_py import Table
 from ...Utilities import ExecutionParameter
 from .mac3coeur_coeur import CoeurFactory
 
-ROUND_DIGITS = 4
-
 class CollectionDiscretChoc():
     
     @property
@@ -45,7 +42,7 @@ class CollectionDiscretChoc():
 
     @property
     def values(self):
-        return np.array(tuple(item for j, item in self._collection.items() if "COOR_X" not in j))
+        return np.array(tuple(item for j, item in self._collection.items() if any(key in j for key in ("RES", "CU_"))))
 
     @property
     def values_internal(self):
@@ -84,7 +81,6 @@ class CollectionDiscretChoc():
                 values['Quan%s_AC_G%d_%d'%(label, j+1,i)] = qu_ac_grids_i[j]
                 values['Quan%s_G%d_%d'%(label, j+1,i)] = qu_grids_i[j]
 
-        values = {key : round(item, ROUND_DIGITS) for key, item in values.items()}
         return values
 
     def extr_table(self):
@@ -92,7 +88,8 @@ class CollectionDiscretChoc():
         
         listdic = [{key : self[key][i] for key in self.keys} for i in range(nb_grids)]
         listpara = self.keys
-        listtype = ['R']*len(listpara)
+        f = lambda s : 'K24' if s.startswith('GRILLE') else 'R'
+        listtype = [f(i) for i in listpara]
         return Table(listdic, listpara, listtype)
 
     def extr_analysis_table(self, label):
@@ -101,6 +98,9 @@ class CollectionDiscretChoc():
         listdic = [values]
         listpara = sorted(values.keys())
         listtype = ['R']*len(listpara)
+
+        print('STATS_POSTMAC3 = ', values)
+
         return Table(listdic, listpara, listtype)
 
 
@@ -171,7 +171,7 @@ class CollectionPostAC():
 
         self.analysis(prec)
         
-        dico = {
+        values = {
             'moyRhoCoeur' : self.moyenneRho,
             'maxRhoCoeur' : self.maxRho,
             'moyGravCoeur' : self.moyenneGravite,
@@ -181,26 +181,20 @@ class CollectionPostAC():
             'locMaxGrav' : self.locMaxGravite,
         }
 
-        dico.update({'moR%s'%typ : value for typ, value in self.moyenneRhoParType.items()})
-        dico.update({'maR%s'%typ : value for typ, value in self.maxRhoParType.items()})
-        dico.update({'maG%s'%typ : value for typ, value in self.maxGraviteParType.items()})
-        dico.update({'moG%s'%typ : value for typ, value in self.moyenneGraviteParType.items()})
-        dico.update({'locMaxDeplG%i'%(i+1) : value for i, value in enumerate(self.locMaxDeplGrille) if value != ''})
-        dico.update({'maxDeplGrille%i'%(i+1) : self.maxDeplGrille[i] for i, value in enumerate(self.locMaxDeplGrille) if value != ''})
-
-        for key, item in dico.items():
-            try:
-                dico[key] = round(item, ROUND_DIGITS)
-            except TypeError:
-                pass
-
-        print('table_post = ', dico)
-        
-        listpara = sorted(dico.keys())
-        f = lambda s : 'K16' if s.startswith('loc') else 'R'
+        values.update({'moR%s'%typ : value for typ, value in self.moyenneRhoParType.items()})
+        values.update({'maR%s'%typ : value for typ, value in self.maxRhoParType.items()})
+        values.update({'maG%s'%typ : value for typ, value in self.maxGraviteParType.items()})
+        values.update({'moG%s'%typ : value for typ, value in self.moyenneGraviteParType.items()})
+        values.update({'locMaxDeplG%i'%(i+1) : value for i, value in enumerate(self.locMaxDeplGrille) if value != ''})
+        values.update({'maxDeplGrille%i'%(i+1) : self.maxDeplGrille[i] for i, value in enumerate(self.locMaxDeplGrille) if value != ''})
+           
+        listpara = sorted(values.keys())
+        f = lambda s : 'K24' if s.startswith('loc') else 'R'
         listtype = [f(i) for i in listpara]
-        
-        return Table([dico],listpara,listtype)
+
+        print('STATS_POSTMAC3 = ', values)
+
+        return Table([values],listpara,listtype)
     
 
 class PostAC():
@@ -319,9 +313,9 @@ class PostAC():
         para+= ['XG%d'%(d+1) for d in range(10)] + ['YG%d'%(d+1) for d in range(10)]
         para+= ['Milieu', 'Min X', 'Max X', 'CC X', 'Min Y', 'Max Y', 'CC Y', 'Forme X', 'Forme Y', 'Forme']
 
-        types = ['K16', 'I', 'R', 'R', 'K16', 'R', 'R', 'R']
+        types = ['K24', 'I', 'R', 'R', 'K24', 'R', 'R', 'R']
         types+= ['R']*20
-        types+= ['K16', 'R', 'R', 'R', 'R', 'R', 'R', 'K8', 'K8', 'K8']
+        types+= ['K24', 'R', 'R', 'R', 'R', 'R', 'R', 'K8', 'K8', 'K8']
 
         return para, types
 
@@ -368,17 +362,16 @@ def post_mac3coeur_ops(self, **args):
                                      NOM_CHAM='VARI_ELGA',
                                      INST=inst,
                                      PRECISION=1.E-08))
-            
+           
             vals = np.stack((TMP.EXTR_TABLE().values()[i] for i in ('COOR_X', 'V8')))
-            vals = np.mean(vals.reshape(2, vals.shape[1]//2,2), axis=2) # Moyenne sur les 2 noeuds du discret (qui portent tous la meme valeur)
+            vals = np.mean(vals.reshape(2, vals.shape[1]//2, 2), axis=2) # Moyenne sur les 2 noeuds du discret (qui portent tous la meme valeur)
 
             coor_x, v8 = np.around(1000.*vals[:, vals[0].argsort()], 12)
-            if 'COOR_X' not in collection.keys :
-                collection['COOR_X'] = coor_x
+            if 'GRILLE' not in collection.keys :
+                collection['GRILLE'] = ['G%s'%(i+1) for i in range(coor_x.size)]
             collection[name] = v8
             
         analysis_table = collection.extr_analysis_table('LE')
-        analysis_table.titr = 'RESU_GLOB_{}'.format(core_name)
 
         if not analysis_table_created: 
             TAB_OUT = CREA_TABLE(**analysis_table.dict_CREA_TABLE())
@@ -421,12 +414,11 @@ def post_mac3coeur_ops(self, **args):
             vals = np.mean(vals.reshape(2,vals.shape[1]//2,2),axis=2) # Moyenne sur les 2 noeuds du discret (qui portent tous la meme valeur)
 
             coor_x, force = np.around(vals[:, vals[0].argsort()], 12)
-            if 'COOR_X' not in collection.keys :
-                collection['COOR_X'] = 1000.0*coor_x
+            if 'GRILLE' not in collection.keys :
+                collection['GRILLE'] = ['G%s'%(i+1) for i in range(coor_x.size)]
             collection[name] = force
 
         analysis_table = collection.extr_analysis_table('N')
-        analysis_table.titr = 'RESU_GLOB_{}'.format(core_name)
         
         if not analysis_table_created: 
             TAB_OUT = CREA_TABLE(**analysis_table.dict_CREA_TABLE())
@@ -476,7 +468,6 @@ def post_mac3coeur_ops(self, **args):
             collection[post_ac['PositionDAMAC']] = post_ac
             
         analysis_table = collection.extr_analysis_table()
-        analysis_table.titr = 'RESU_GLOB_{}'.format(core_name)
 
         if not analysis_table_created: 
             TAB_OUT = CREA_TABLE(**analysis_table.dict_CREA_TABLE())
@@ -492,20 +483,11 @@ def post_mac3coeur_ops(self, **args):
         values_table = collection.extr_table()
         values_table.Renomme('POS', site_name)
         TAB_VAL = CREA_TABLE(**values_table.dict_CREA_TABLE())
-            
+        
         if post_type in ('TABLE',):
-            format_standard = POST_DEF[0]['FORMAT_R'] == 'STANDARD'
-            fmt = 'E12.5' if format_standard else 'F5.1'
-            # IMPR_TABLE(TABLE=TAB_VAL,
-            #            FORMAT_R='E12.5',
-            #            SEPARATEUR='\t',
-            #            UNITE=unit)
             IMPR_TABLE(TABLE=TAB_VAL,
-                       TITRE='---',
-                       FORMAT_R=fmt,
                        UNITE=unit,
-                       COMMENTAIRE='',
-                       SEPARATEUR='\t',
-                       FIN_LIGNE='\r\n')
-                
+                       FORMAT_R='E12.5',
+                       SEPARATEUR='\t')
+                  
     return TAB_OUT

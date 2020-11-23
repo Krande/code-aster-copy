@@ -42,340 +42,65 @@ RESU = CALC_MAC3COEUR( TYPE_COEUR    = 'TEST',
 post_i = RESU.LIST_PARA()['INST'][-1]
 
 TABP1 = POST_MAC3COEUR(RESULTAT    =  RESU,
-                    TYPE_COEUR  = 'TEST',
+                       TYPE_COEUR  = 'TEST',
                        INST        =  post_i,
-                       TABLE      = tabn,
-                       LAME        = (
-                           _F( FORMAT = 'TABLE', UNITE = 30),
-                       ),
-                       DEFORMATION = (
-                           _F( FORMAT = 'TABLE', UNITE = 36, NOM_SITE='BIDON'),
-                       ))
+                       TABLE       = tabn,
+                       LAME        = _F( FORMAT = 'TABLE', UNITE = 30))
 
 TABP2 = POST_MAC3COEUR(RESULTAT    =  RES_LM,
                        TYPE_COEUR  = 'TEST',
                        INST        =  post_i,
                        TABLE      = tabn,
-                       DEFORMATION = (
-                           _F( FORMAT = 'TABLE', UNITE = 46, NOM_SITE='BIDON'),
-                       ))
+                       DEFORMATION = _F( FORMAT = 'TABLE', UNITE = 46, NOM_SITE='BIDON'))
 
 TABP3 = POST_MAC3COEUR(RESULTAT    =  RESU,
                        TYPE_COEUR  = 'TEST',
                        INST        =  post_i,
                        TABLE       = tabn,
-                       FORCE_CONTACT  = ( _F( FORMAT = 'TABLE', UNITE = 48,)
-                       ))
+                       FORCE_CONTACT  = _F( FORMAT = 'TABLE', UNITE = 48))
 
-TABP4 = POST_MAC3COEUR(RESULTAT    =  RES_LM,
-                       TYPE_COEUR  = 'TEST',
-                       INST        =  post_i,
-                       TABLE      = tabn,
-                       DEFORMATION = (
-                           _F( FORMAT = 'TABLE', UNITE = 47, NOM_SITE='BIDON', FORMAT_R='STANDARD'),
-                       ))
 
-# tests de la sortie de CALC_MAC3COEUR / LAME
-TAB1 = CREA_TABLE(RESU=_F(RESULTAT=RESU,NOM_CHAM='VARI_ELGA',
-                          NOM_CMP='V8',
-                          GROUP_MA=('RES_ABBB',)))
-
-TAB2 = CREA_TABLE(RESU=_F(RESULTAT=RESU,NOM_CHAM='VARI_ELGA',
-                          NOM_CMP='V8',
-                          GROUP_MA=('RES_BBCB',)))
-
-TAB3 = CREA_TABLE(RESU=_F(RESULTAT=RESU,NOM_CHAM='VARI_ELGA',
-                          NOM_CMP='V8',
-                          GROUP_MA=('RES_BBBA',)))
-
-TAB4 = CREA_TABLE(RESU=_F(RESULTAT=RESU,NOM_CHAM='VARI_ELGA',
-                          NOM_CMP='V8',
-                          GROUP_MA=('RES_BCBB',)))
-
-TAB5 = CREA_TABLE(RESU=_F(RESULTAT=RESU,NOM_CHAM='VARI_ELGA',
-                          NOM_CMP='V8',
-                          GROUP_MA=('CU_AB_W')))
-
-TAB6 = CREA_TABLE(RESU=_F(RESULTAT=RESU,NOM_CHAM='VARI_ELGA',
-                          NOM_CMP='V8',
-                          GROUP_MA=('CU_AB_N')))
-
-TAB7 = CREA_TABLE(RESU=_F(RESULTAT=RESU,NOM_CHAM='VARI_ELGA',
-                          NOM_CMP='V8',
-                          GROUP_MA=('CU_AB_E')))
-
-TAB2_CB = CREA_TABLE(RESU=_F(RESULTAT=RES_LM,NOM_CHAM='DEPL',INST=post_i,NOM_CMP=('DZ'),
-                            GROUP_MA=('TG_C_B')))
-
-TAB3_CB = CREA_TABLE(RESU=_F(RESULTAT=RES_LM,NOM_CHAM='DEPL',INST=post_i,NOM_CMP=('DZ'),
-                            GROUP_MA=('TG_C_B')))
-
-post_i=0.001
-
-# tests de la sortie de CALC_MAC3COEUR / LAME
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-           VALE_CALC=-5.710400347101307E-08,
-           VALE_REFE=0.0,
-           NOM_PARA='V8',
-           TABLE=TAB1,
-           FILTRE=(_F(NOM_PARA='MAILLE',
-                      VALE_K='M1305',),
-                   _F(NOM_PARA='POINT',
-                      VALE_I=1,),
-                   _F(NOM_PARA='INST',
-                      VALE=1.E-3,),
-           ),
-)
-
-TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=0.00032871069040165367,
-           NOM_PARA='V8',
-           TABLE=TAB1,
-           FILTRE=(_F(NOM_PARA='MAILLE',
-                      VALE_K='M1305',),
-                   _F(NOM_PARA='POINT',
-                      VALE_I=1,),
-                   _F(NOM_PARA='INST',
-                      VALE=4.E-3,),
-                   ),
-           )
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-           VALE_CALC=-5.710400347231411E-08,
-           VALE_REFE=0.0,
-           NOM_PARA='V8',
-           TABLE=TAB2,
-           FILTRE=(_F(NOM_PARA='MAILLE',
-                      VALE_K='M1315',),
-                   _F(NOM_PARA='POINT',
-                      VALE_I=1,),
-                   _F(NOM_PARA='INST',
-                      VALE=1.E-3,),
-                   ),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=0.00033105464491578853,
-           NOM_PARA='V8',
-           TABLE=TAB2,
-           FILTRE=(_F(NOM_PARA='MAILLE',
-                      VALE_K='M1315',),
-                   _F(NOM_PARA='POINT',
-                      VALE_I=1,),
-                   _F(NOM_PARA='INST',
-                      VALE=4.E-3,),
-                   ),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.002780211250569196,
-           VALE_REFE=2.78E-3,
-           NOM_PARA='V8',
-           TABLE=TAB3,
-           FILTRE=(_F(NOM_PARA='MAILLE',
-                      VALE_K='M1325',),
-                   _F(NOM_PARA='POINT',
-                      VALE_I=1,),
-                   _F(NOM_PARA='INST',
-                      VALE=1.E-3,),
-                   ),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=0.006417416971313412,
-           NOM_PARA='V8',
-           TABLE=TAB3,
-           FILTRE=(_F(NOM_PARA='MAILLE',
-                      VALE_K='M1325',),
-                   _F(NOM_PARA='POINT',
-                      VALE_I=1,),
-                   _F(NOM_PARA='INST',
-                      VALE=4.E-3,),
-                   ),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.0027802112505693243,
-           VALE_REFE= 2.78E-3,
-           NOM_PARA='V8',
-           TABLE=TAB4,
-           FILTRE=(_F(NOM_PARA='MAILLE',
-                      VALE_K='M1335',),
-                   _F(NOM_PARA='POINT',
-                      VALE_I=1,),
-                   _F(NOM_PARA='INST',
-                      VALE=1.E-3,),
-                   ),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=0.0013073301608164988,
-           NOM_PARA='V8',
-           TABLE=TAB4,
-           FILTRE=(_F(NOM_PARA='MAILLE',
-                      VALE_K='M1335',),
-                   _F(NOM_PARA='POINT',
-                      VALE_I=1,),
-                   _F(NOM_PARA='INST',
-                      VALE=4.E-3,),
-                   ),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.0011199999985,
-           VALE_REFE= 1.12E-3,
-           NOM_PARA='V8',
-           TABLE=TAB5,
-           FILTRE=(_F(NOM_PARA='MAILLE',
-                      VALE_K='M5',),
-                   _F(NOM_PARA='POINT',
-                      VALE_I=1,),
-                   _F(NOM_PARA='INST',
-                      VALE=1.E-3,),
-                   ),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=0.0014816136774979244,
-           NOM_PARA='V8',
-           TABLE=TAB5,
-           FILTRE=(_F(NOM_PARA='MAILLE',
-                      VALE_K='M5',),
-                   _F(NOM_PARA='POINT',
-                      VALE_I=1,),
-                   _F(NOM_PARA='INST',
-                      VALE=4.E-3,),
-                   ),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.0027801713644995583,
-           VALE_REFE= 2.78E-3,
-           NOM_PARA='V8',
-           TABLE=TAB6,
-           FILTRE=(_F(NOM_PARA='MAILLE',
-                      VALE_K='M25',),
-                   _F(NOM_PARA='POINT',
-                      VALE_I=1,),
-                   _F(NOM_PARA='INST',
-                      VALE=1.E-3,),
-                   ),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=0.0035332945052965513,
-           NOM_PARA='V8',
-           TABLE=TAB6,
-           FILTRE=(_F(NOM_PARA='MAILLE',
-                      VALE_K='M25',),
-                   _F(NOM_PARA='POINT',
-                      VALE_I=1,),
-                   _F(NOM_PARA='INST',
-                      VALE=4.E-3,),
-                   ),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.0011200000000549473,
-           VALE_REFE= 1.12E-3,
-           NOM_PARA='V8',
-           TABLE=TAB7,
-           FILTRE=(_F(NOM_PARA='MAILLE',
-                      VALE_K='M15',),
-                   _F(NOM_PARA='POINT',
-                      VALE_I=1,),
-                   _F(NOM_PARA='INST',
-                      VALE=1.E-3,),
-                   ),
-           )
-
-TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=0.00148161372907183,
-           NOM_PARA='V8',
-           TABLE=TAB7,
-           FILTRE=(_F(NOM_PARA='MAILLE',
-                      VALE_K='M15',),
-                   _F(NOM_PARA='POINT',
-                      VALE_I=1,),
-                   _F(NOM_PARA='INST',
-                      VALE=4.E-3,),
-                   ),
-           )
-
-# tests de la table creee par POST_MAC3COEUR / LAME / FORMAT = 'TABLE'
-# les valeurs de reference sont celles issues de l'evol_noli
-# facteur 1000 car les lames d'eau sont donnees en mm dans la table creee par POST_MAC3COEUR
+# Tests formats table
 TAB30 = LIRE_TABLE(UNITE=30)
-
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=0.3287107,
-           VALE_REFE=0.3287107,
+           VALE_CALC=0.328711,
+           VALE_REFE=0.328711,
            NOM_PARA ='RES_ABBB',
            TABLE=TAB30,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=2180.74),
-)
+           FILTRE=_F(NOM_PARA='GRILLE',
+                     VALE_K='G5'))
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=1.481614,
-           VALE_REFE= 1.481614,
+           VALE_CALC=1.48161,
+           VALE_REFE= 1.48161,
            NOM_PARA ='CU_AB_E',
            TABLE=TAB30,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=2180.74),
-)
-
-TEST_TABLE(VALE_CALC=-0.0009980376599879053,
-           NOM_PARA='DZ',
-           TYPE_TEST='MIN',
-           TABLE=TAB2_CB,
-)
-
-TEST_TABLE(VALE_CALC=0.0012910373448349454,
-           NOM_PARA='DZ',
-           TYPE_TEST='MAX',
-           TABLE=TAB2_CB,
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_REFE=-0.0009980376599879053,
-           VALE_CALC=-0.0009980376599879053,
-           NOM_PARA='DZ',
-           TYPE_TEST='MIN',
-           TABLE=TAB3_CB,
-           )
+           FILTRE=_F(NOM_PARA='GRILLE',
+                     VALE_K='G5'))
 
 TAB46 = LIRE_TABLE(UNITE=46,SEPARATEUR='\t')
-
-IMPR_TABLE(TABLE=TAB46)
-
 TEST_TABLE(
-    VALE_CALC=2.5,
+    VALE_CALC=2.46418,
     TABLE = TAB46,
     NOM_PARA = 'XG5',
     FILTRE=_F(
         NOM_PARA='Repere',
         VALE_K='FX0RH3'))
 
-TAB47 = LIRE_TABLE(UNITE=47,SEPARATEUR='\t')
+TAB48 = LIRE_TABLE(UNITE=48)
+TEST_TABLE(VALE_CALC=54.0744,
+           NOM_PARA ='CU_BA_W',
+           TABLE=TAB48,
+           FILTRE=_F(NOM_PARA='GRILLE',
+                     VALE_K='G5'))
 
-IMPR_TABLE(TABLE=TAB47)
+TEST_TABLE(VALE_CALC=133.532,
+           NOM_PARA ='RES_BCBB',
+           TABLE=TAB48,
+           FILTRE=_F(NOM_PARA='GRILLE',
+                     VALE_K='G4'))
 
-TEST_TABLE(
-    VALE_CALC=2.46418,
-    TABLE = TAB47,
-    NOM_PARA = 'XG5',
-    FILTRE=_F(
-        NOM_PARA='Repere',
-        VALE_K='FX0RH3'))
-
+# Tests analyse
 TEST_TABLE(TABLE=TABP1, NOM_PARA='QuanLE_CU_G4_70', VALE_CALC=1.484)
 TEST_TABLE(TABLE=TABP1, NOM_PARA='QuanLE_CU_G4_80', VALE_CALC=1.484)
 TEST_TABLE(TABLE=TABP1, NOM_PARA='QuanLE_CU_G4_90', VALE_CALC=1.6049)
@@ -414,20 +139,5 @@ TEST_TABLE(TABLE=TABP2, NOM_PARA='locMaxGrav', VALE_CALC_K='B03')
 TEST_TABLE(TABLE=TABP2, NOM_PARA='locMaxDeplG2', VALE_CALC_K='B02')
 TEST_TABLE(TABLE=TABP2, NOM_PARA='locMaxDeplG5', VALE_CALC_K='B02')
 TEST_TABLE(TABLE=TABP2, NOM_PARA='locMaxDeplG9', VALE_CALC_K='B02')
-
-TAB48 = LIRE_TABLE(UNITE=48)
-
-TEST_TABLE(VALE_CALC=54.07441,
-           NOM_PARA ='CU_BA_W',
-           TABLE=TAB48,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=2180.74))
-
-TEST_TABLE(VALE_CALC=133.5322,
-           NOM_PARA ='RES_BCBB',
-           TABLE=TAB48,
-           FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=1675.50),
-           )
 
 FIN()
