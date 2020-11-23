@@ -132,6 +132,10 @@ character(len=*) :: nomamd
         nbCellType(MT_HEXA8) = nbCellType(MT_HEXA8) + nbCellType(MT_HEXA9)
         nbCellType(MT_HEXA9) = 0
         lnocen           = ASTER_TRUE
+    elseif (nbCellType(MT_PENTA7) .ne. 0) then
+        nbCellType(MT_PENTA6) = nbCellType(MT_PENTA6) + nbCellType(MT_PENTA7)
+        nbCellType(MT_PENTA7) = 0
+        lnocen           = ASTER_TRUE
     endif
     if (lnocen) then
         call utmess('I', 'PREPOST_86')
@@ -182,6 +186,7 @@ character(len=*) :: nomamd
         if (iCellType .eq. MT_TETRA15) iCellType = MT_TETRA10
         if (iCellType .eq. MT_PYRAM19) iCellType = MT_PYRAM13
         if (iCellType .eq. MT_PENTA21) iCellType = MT_PENTA18
+        if (iCellType .eq. MT_PENTA7)  iCellType = MT_PENTA6
         ipoin = point(iCell)
         nbCellType(iCellType) = nbCellType(iCellType) + 1
 !       NOM DE LA MAILLE DE TYPE ITYP DANS VECT NOM MAILLES
