@@ -25,7 +25,7 @@ from ..Language.Syntax import *
 
 DETRUIRE=MACRO(nom="DETRUIRE",
                op=None,
-               fr=tr("Détruit des concepts utilisateurs dans le contexte courant"),
+               fr=tr("Détruit des concepts utilisateurs du contexte courant"),
     CONCEPT=FACT(statut='o', max='**',
         NOM=SIMP(statut='o', typ=assd, validators=NoRepeat(), max='**'),
     ),

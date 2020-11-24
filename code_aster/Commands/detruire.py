@@ -22,7 +22,7 @@ import gc
 import inspect
 
 from ..Objects import DataStructure, Function
-from ..Utilities import deprecate
+from ..Utilities import deprecate, force_list
 from ..Supervis import ExecuteCommand
 
 
@@ -37,7 +37,7 @@ class Deleter(ExecuteCommand):
             keywords (dict): User's keywords, changed in place.
         """
         if keywords.pop("OBJET", None):
-            deprecate("DETRUIRE/OBJET", case=4, level=6,
+            deprecate("DETRUIRE/OBJET", case=4, level=5,
                       help="Use DETRUIRE/CONCEPT instead.")
             keywords.setdefault("CONCEPT", {"NOM": Function()})
 
@@ -45,10 +45,11 @@ class Deleter(ExecuteCommand):
         """Execute the command.
 
         Arguments:
-            keywords (dict): User's keywords.
+            keywords (dict): User's keywords, changed in place to force
+                deletion. "CONCEPT" will not be available for 'post_exec'.
         """
         to_del = []
-        kwlist = keywords.get("CONCEPT", [])
+        kwlist = keywords.pop("CONCEPT", [])
         for occ in kwlist:
             for obj in occ["NOM"]:
                 to_del.append(obj.getName())
