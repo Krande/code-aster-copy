@@ -41,7 +41,7 @@ To show the list of labels, use:
 
 .. code-block:: sh
 
-    bin/run_ctest --resutest=None --print-labels
+    bin/run_ctest --print-labels
 
 .. note::
 
@@ -54,7 +54,7 @@ To show the list of labels, use:
 
     .. code-block:: sh
 
-        bin/run_ctest --resutest=None -L verification -L ci -N
+        bin/run_ctest -L verification -L ci -N
 
     the ctest command will be:
 
@@ -94,7 +94,11 @@ The label 'sequential' is automatically added for a sequential version.
 
 To show the list of labels, use:
 
-    run_ctest --resutest=None --print-labels
+    run_ctest --print-labels
+
+To execute all sslp01* and zzzz100a/f testcases, use:
+
+    run_ctest -R 'sslp01|zzzz100[af]'
 
 Note:
   Difference from 'ctest': all values passed to '-L' option are sorted and joined
@@ -103,7 +107,7 @@ Note:
   Example:
 
     Using:
-        run_ctest --resutest=None -L verification -L ci -N
+        run_ctest -L verification -L ci -N
 
     the ctest command will be:
 
@@ -119,29 +123,33 @@ def parse_args(argv):
     """
     # command arguments parser
     parser = argparse.ArgumentParser(
-        usage=USAGE,
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        usage=USAGE)
+    jobs = max(1, get_nbcores() - 2)
     parser.add_argument('-j', '--jobs', action='store',
-                        type=int, default=max(1, get_nbcores() - 2),
+                        type=int, default=jobs,
                         help="run the tests in parallel using the given "
-                             "number of jobs")
+                             f"number of jobs (default: {jobs})")
     parser.add_argument('--testlist', action='store',
                         metavar="FILE",
                         help="list of testcases to run")
     parser.add_argument('--resutest', action='store',
+                        metavar="DIR",
                         help="directory to write the results of the testcases "
-                             "(relative to the current directory). "
-                             "Use 'None' not to keep result files.")
+                             "(relative to the current directory)")
+    parser.add_argument('--no-resutest', action='store_const',
+                        dest="resutest", const="none",
+                        help="do not keep result files")
     parser.add_argument('--clean', action='store_true', default='auto',
                         help="remove the content of 'resutest' directory "
-                             "before starting (default: auto)")
+                             "before starting")
     parser.add_argument('--no-clean', action='store_false', default='auto',
                         dest="clean",
                         help="do not remove the content of 'resutest' "
-                             "directory")
+                             "directory at startup")
     parser.add_argument('--timefactor', action='store', type=float, default=1.0,
                         help="multiplicative factor applied to the time limit, "
-                             "passed through environment to run_aster")
+                             "passed through environment to run_aster "
+                             "(default: 1.0)")
     group = parser.add_argument_group('ctest options')
     group.add_argument('--rerun-failed', action='store_true',
                        help="run only the tests that failed previously")
@@ -153,6 +161,9 @@ def parse_args(argv):
                        help="print all available test labels")
 
     args, others = parser.parse_known_args(argv)
+    # resutest needed or not?
+    if args.print_labels or "-N" in others or "--show-only" in others:
+        args.resutest = "none"
     if not args.resutest:
         parser.error("'--resutest' argument is required")
 
@@ -162,6 +173,7 @@ def parse_args(argv):
     if args.rerun_failed:
         others.append("--rerun-failed")
     others.extend(["-j", str(args.jobs)])
+
     return args, others
 
 
