@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -141,7 +141,8 @@ subroutine coefmo(typflu, zrigi, nbm, nmode, indic,&
                 val1 = cd*vecr2(1)*vecr1(1)*vecr3(imode+1)*vecr3( imode+1)
             else
                 val2 = cd*vecr2(i)*vecr1(i)*vecr3(imode+i)*vecr3( imode+i)
-                aire = aire + (vecr5(i)-vecr5(i-1))* (val2+val1)/2.d0
+                j = i-1
+                aire = aire + (vecr5(i)-vecr5(j))* (val2+val1)/2.d0
                 val1 = val2
             endif
 !

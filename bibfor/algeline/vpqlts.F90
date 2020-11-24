@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine vpqlts(diag, surdia, neq, vecpro, mxcmp,&
     implicit none
 #include "asterc/r8prem.h"
     integer :: neq, mxcmp, mxiter, ier, nitqr
-    real(kind=8) :: diag(1), surdia(1), vecpro(mxcmp, 1)
+    real(kind=8) :: diag(neq), surdia(neq), vecpro(mxcmp, neq)
 !     CALCUL DE TOUTES LES VALEURS PROPRES ET DES VECTEURS PROPRES
 !     ASSOCIES PAR LA METHODE QL-IMPLICITE POUR UNE MATRICE TRIDIAGONALE
 !     SYMETRIQUE

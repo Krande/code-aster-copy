@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,13 +47,12 @@ implicit none
           call chrep6(eps6,v33t,faux,epsp6) 
           call chrep6(epsp6,vcc33,faux,eps6) 
 !         on affecte les consolidations
-          do j=1,6
-            if(j.le.3) then
-                 eps6(j)=eps6(j)/cc3(j)
-            else
-                 call indice0(j,k,l)
-                 eps6(j)=eps6(j)/dmin1(cc3(k),cc3(l))
-            end if
+          do j=1,3
+              eps6(j)=eps6(j)/cc3(j)
+          end do
+          do j=4,6
+             call indice0(j,k,l)
+             eps6(j)=eps6(j)/dmin1(cc3(k),cc3(l))
           end do
 !         retour en base principale actuelle
           call chrep6(eps6,vcc33t,faux,epsp6) 

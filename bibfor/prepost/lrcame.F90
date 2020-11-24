@@ -359,16 +359,13 @@ real(kind=8) :: inst, prec
 !
 ! 2.2.1. ==> LES BONS TYPES
 !
-        if (letype .eq. 0) then
-            iaux = letype
-        else
-            iaux = renumd(letype)
-        endif
+        iaux = letype
 !
         if (iaux .eq. 0) then
             typent = ednoeu
             tygeom = typnoe
         else
+            iaux = renumd(iaux)
             typent = typen
             tygeom = typgeo(iaux)
         endif

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -371,9 +371,9 @@ subroutine te0412(option, nomte)
                 do isig = 1, nbsm
                     eps(isig) = degpg((ipg-1)*8 + isig)
                     khi(isig) = degpg((ipg-1)*8 + isig +3)
-                    if (isig .le. 2) then
-                        gam(isig) = degpg((ipg-1)*8 + isig +6)
-                    endif
+                end do
+                do isig = 1, 2
+                    gam(isig) = degpg((ipg-1)*8 + isig +6)
                 end do
 !
 ! --- CALCUL DES PRODUITS :
@@ -394,9 +394,9 @@ subroutine te0412(option, nomte)
                 do isig = 1, nbsm
                     enelm(ipg) = enelm(ipg) + 0.5d0*eps(isig)*dmeps( isig)
                     enelf(ipg) = enelf(ipg) + 0.5d0*khi(isig)*dfkhi( isig)
-                    if (isig .le. 2) then
-                        enelc(ipg) = enelc(ipg) + 0.5d0*gam(isig)* dcgam(isig)
-                    endif
+                end do
+                do isig = 1, 2
+                    enelc(ipg) = enelc(ipg) + 0.5d0*gam(isig)* dcgam(isig)
                 end do
 !
 ! --- COUPLAGE MEMBRANE - FLEXION (ELAS_COQUE)

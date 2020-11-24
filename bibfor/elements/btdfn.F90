@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,12 +41,15 @@ subroutine btdfn(ind, nb1, nb2, ksi3s2, intsn,&
         l3=423
     endif
 !
-    do 15 i = 1, 9
-        do 16 j = 1, 5*nb1+2
+    do 16 j = 1, 5*nb1+2
+        do 15 i = 1, 9
             dnsdsf(i,j)=0.d0
-            if (i .le. 3) btdf(i,j)=0.d0
-16      end do
-15  end do
+15      end do
+        do i = 1, 3
+            btdf(i,j)=0.d0
+        end do
+16  end do
+
 !
     intsn1=9*(intsn-1)
 !

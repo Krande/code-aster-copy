@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine dxefgt(pgl, sigt)
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
-    real(kind=8) :: pgl(3, 3), sigt(1)
+    real(kind=8) :: pgl(3, 3), sigt(32)
 ! --- EFFORTS GENERALISES N, M, V D'ORIGINE THERMIQUE AUX POINTS
 ! --- D'INTEGRATION POUR LES ELEMENTS COQUES A FACETTES PLANES :
 ! --- DST, DKT, DSQ, DKQ, Q4G DUS :
@@ -36,7 +36,7 @@ subroutine dxefgt(pgl, sigt)
 !     ------------------------------------------------------------------
 !     IN  PGL(3,3)     : MATRICE DE PASSAGE DU REPERE GLOBAL AU REPERE
 !                        LOCAL
-!     OUT SIGT(1)      : EFFORTS  GENERALISES D'ORIGINE THERMIQUE
+!     OUT SIGT(32)     : EFFORTS  GENERALISES D'ORIGINE THERMIQUE
 !                        AUX POINTS D'INTEGRATION
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
     integer :: multic, ipg, nbcou, npgh, somire

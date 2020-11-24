@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine dxefg2(pgl, sigt)
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
 #include "asterfort/assert.h"
-    real(kind=8) :: pgl(3, 3), sigt(1)
+    real(kind=8) :: pgl(3, 3), sigt(32)
 ! --- EFFORTS GENERALISES N, M, V D'ORIGINE THERMIQUE AUX POINTS
 ! --- D'INTEGRATION POUR LES ELEMENTS COQUES A FACETTES PLANES :
 ! --- DKTG DUS :

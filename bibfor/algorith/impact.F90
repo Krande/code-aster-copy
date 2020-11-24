@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -125,7 +125,8 @@ subroutine impact(nmtab, nbpt, fn, vn, wk3,&
             if (i .eq. 1) then
                 impuls = impuls + fn(i)*t(i)/2.d0
             else if (i.lt.nbpt) then
-                impuls = impuls + fn(i)*(t(i+1)-t(i-1))/2.d0
+                j=i-1
+                impuls = impuls + fn(i)*(t(i+1)-t(j))/2.d0
             else
                 impuls = impuls + fn(i)*t(i)/2.d0
             endif

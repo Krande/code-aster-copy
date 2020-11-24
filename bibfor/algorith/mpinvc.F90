@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -207,7 +207,8 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
  70         continue
 !
             if ((regul .eq. 'TIK_RELA') .and. (iabs .gt. 1)) then
-                cval = ceta(imod,iabs-1)
+                ibid = iabs-1
+                cval = ceta(imod,ibid)
 ! TRAITEMENT PARTIE REELLE / PARTIE IMAGINAIRE
                 zr(lsecmb-1 +imod) = zr(lsecmb-1 +imod)+alpha*dble( cval)
                 zr(lsecmb-1 +nbmode+imod) = zr(lsecmb-1 +nbmode+imod) +alpha*dimag(cval)

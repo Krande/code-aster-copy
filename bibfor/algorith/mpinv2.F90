@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,6 +43,7 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
+#include "asterfort/assert.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
@@ -199,7 +200,8 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu,&
  70         continue
 !
             if ((regul .eq. 'TIK_RELA') .and. (iabs .gt. 1)) then
-                zr(lscdmb-1 +imod) = zr(lscdmb-1 +imod) + alpha*reta( imod,iabs-1)
+                ibid = iabs-1
+                zr(lscdmb-1 +imod) = zr(lscdmb-1 +imod) + alpha*reta( imod,ibid)
             endif
 !
 ! FIN DE LA BOUCLE SUR LES MODES
@@ -309,39 +311,36 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu,&
 ! CALCUL DE LA VITESSE GENERALISEE : RETAP
 ! ========================================
 !
-    do 200 iabs = 1, nbabs
-        if (iabs .ne. nbabs) then
-            do 210 imod = 1, nbmode
-                retap(imod,iabs) = (&
-                                   reta(imod,iabs+1) - reta(imod, iabs)) / (xabs(iabs+1) - xabs(i&
-                                   &abs)&
-                                   )
-210         continue
-        else
-            do 220 imod = 1, nbmode
-                retap(imod,iabs) = retap(imod,iabs-1)
-220         continue
-        endif
+    ASSERT(nbabs.gt.1)
+    do 200 iabs = 1, nbabs-1
+        do 210 imod = 1, nbmode
+            retap(imod,iabs) = (&
+                               reta(imod,iabs+1) - reta(imod, iabs)) / (xabs(iabs+1) - xabs(i&
+                               &abs)&
+                               )
+210     continue
 200 end do
+        do 220 imod = 1, nbmode
+            retap(imod,nbabs) = retap(imod,nbabs-1)
+220     continue
+
 !
 ! =============================================
 ! CALCUL DE L'ACCELERATION GENERALISEE : RETA2P
 ! =============================================
 !
-    do 300 iabs = 1, nbabs
-        if (iabs .ne. nbabs) then
-            do 310 imod = 1, nbmode
-                reta2p(imod,iabs) = (&
-                                    retap(imod,iabs+1) - retap(imod, iabs)) / (xabs(iabs+1) - xab&
-                                    &s(iabs)&
-                                    )
-310         continue
-        else
-            do 320 imod = 1, nbmode
-                reta2p(imod,iabs) = reta2p(imod,iabs-1)
-320         continue
-        endif
+    do 300 iabs = 1, nbabs-1
+        do 310 imod = 1, nbmode
+            reta2p(imod,iabs) = (&
+                                retap(imod,iabs+1) - retap(imod, iabs)) / (xabs(iabs+1) - xab&
+                                &s(iabs)&
+                                )
+310     continue
 300 end do
+    do 320 imod = 1, nbmode
+        reta2p(imod,nbabs) = reta2p(imod,nbabs-1)
+320 continue
+
 !
     if (nomcha .eq. 'VITE') then
         do 101 iabs = 1, nbabs
@@ -349,20 +348,18 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu,&
                 retap(imod,iabs) = reta(imod,iabs)
 102         continue
 101     continue
-        do 103 iabs = 1, nbabs
-            if (iabs .ne. nbabs) then
-                do 104 imod = 1, nbmode
-                    reta2p(imod,iabs) = (&
-                                        retap(imod,iabs+1)-retap( imod,iabs)) / (xabs(iabs+1) - x&
-                                        &abs(iabs)&
-                                        )
-104             continue
-            else
-                do 105 imod = 1, nbmode
-                    reta2p(imod,iabs) = reta2p(imod,iabs-1)
-105             continue
-            endif
+        do 103 iabs = 1, nbabs-1
+            do 104 imod = 1, nbmode
+                reta2p(imod,iabs) = (&
+                                    retap(imod,iabs+1)-retap( imod,iabs)) / (xabs(iabs+1) - x&
+                                    &abs(iabs)&
+                                    )
+104         continue
 103     continue
+        do 105 imod = 1, nbmode
+            reta2p(imod,nbabs) = reta2p(imod,nbabs-1)
+105     continue
+
 ! ON FAIT L HYPOTHESE QUE LE DEPLACEMENT INITIAL EST NUL
         do 106 imod = 1, nbmode
             reta(imod,1) = 0.d0

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -414,14 +414,13 @@ implicit none
            beta1=beta
 !          calcul du deviateur           
            taue2=0.d0
-           do j=1,6
-             if (j.le.3) then
-                sigd6(j)=x3(j)-sigs_3
-                taue2=taue2+sigd6(j)**2                
-             else
-                sigd6(j)=sig16p(j)
-                taue2=taue2+2.d0*(sigd6(j)**2)
-             end if
+           do j=1,3
+              sigd6(j)=x3(j)-sigs_3
+              taue2=taue2+sigd6(j)**2
+           end do
+           do j=4,6
+              sigd6(j)=sig16p(j)
+              taue2=taue2+2.d0*(sigd6(j)**2)
            end do
            taue=dsqrt(taue2/2.d0) 
 !          fonction seuil pour drucker prager 
@@ -471,33 +470,30 @@ implicit none
                  valr(2) = x2
                  call utmess('A', 'COMPOR3_21', nr=2, valr=valr)
               end if 
-!             calcul des derivees dans les 6 directions              
-              do k=1,6                
-!               termes de la diagonale                   
-                if (k.le.3) then 
-                   x0=x2*sigd6(k)
-!                  definition des derivees du potentiel / sigma 
-                   dpfa_ds(ia,k)=(x0+delta1/3.d0)*indict3(k)
-!                  definition des derives du pseudo potentiel
-!                  reste non associee meme si perte de l effet du confinement
-!                  sur le critere
-                   dgfa_ds(ia,k)=(x0+beta1/3.d0)*indict3(k)
-!                  derivee / pression de gel
-                   dfc_dpg=dfc_dpg-dpfa_ds(ia,k)*bg                                               
-                else 
-!                  potentiel
-                   x0=x2*sigd6(k)
-                   dpfa_ds(ia,k)=x0
-!                  direction d ecoulement             
-!                  calcul de la direction de l ecoulement 
-!                  gama (et pas epsilon !)                     
-                   dgfa_ds(ia,k)=2.d0*x0                  
-                end if
-                if (k.gt.3) then
-                    depleq_dl=depleq_dl+sig16p(k)*dgfa_ds(ia,k)
-                else
-                    depleq_dl=depleq_dl+x3(k)*dgfa_ds(ia,k)
-                end if
+!             calcul des derivees dans les 6 directions
+              do k=1,3
+!               termes de la diagonale
+                x0=x2*sigd6(k)
+!               definition des derivees du potentiel / sigma 
+                dpfa_ds(ia,k)=(x0+delta1/3.d0)*indict3(k)
+!               definition des derives du pseudo potentiel
+!               reste non associee meme si perte de l effet du confinement
+!               sur le critere
+                dgfa_ds(ia,k)=(x0+beta1/3.d0)*indict3(k)
+!               derivee / pression de gel
+                dfc_dpg=dfc_dpg-dpfa_ds(ia,k)*bg
+                depleq_dl=depleq_dl+x3(k)*dgfa_ds(ia,k)
+              end do
+              do k=4,6
+!               termes de la diagonale
+!               potentiel
+                x0=x2*sigd6(k)
+                dpfa_ds(ia,k)=x0
+!               direction d ecoulement             
+!               calcul de la direction de l ecoulement 
+!               gama (et pas epsilon !)                     
+                dgfa_ds(ia,k)=2.d0*x0
+                depleq_dl=depleq_dl+sig16p(k)*dgfa_ds(ia,k)
               end do
 !             derivee de la fonction / pression de gel              
               dpfa_dpg(ia)=dfc_dpg              

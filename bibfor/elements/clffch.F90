@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,8 +51,8 @@ subroutine clffch(alias, type, nno, xi, yi,&
     implicit none
 #include "asterfort/utmess.h"
     character(len=6) :: alias, type
-    real(kind=8) :: tn(1), ajx(1), ajy(1), ajz(1), xin(1), yin(1), zin(1)
-    real(kind=8) :: bjxx(1), bjyy(1), bjzz(1), bjxy(1), bjxz(1), bjyz(1), xi, yi
+    real(kind=8) :: tn(*), ajx(*), ajy(*), ajz(*), xin(20), yin(20), zin(20)
+    real(kind=8) :: bjxx(*), bjyy(*), bjzz(*), bjxy(*), bjxz(*), bjyz(*), xi, yi
     real(kind=8) :: zi
     integer :: ider, nno
 !----------------------------------------------------------------------

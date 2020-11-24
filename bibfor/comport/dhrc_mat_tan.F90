@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,13 +83,15 @@ subroutine dhrc_mat_tan(a, ap1, ap2, b,&
     dsida(:,:) = 0.d0
 !
     do k = 1, 6
-        do i = 1, 6
+        do i = 1, 2
             dsida(k,1) = dsida(k,1)+ap1(k,i)*eps(i)
             dsida(k,2) = dsida(k,2)+ap2(k,i)*eps(i)
-            if (i .lt. 3) then
-                dsida(k,1) = dsida(k,1)+bp1(k,i)*vint(i+2)
-                dsida(k,2) = dsida(k,2)+bp2(k,i)*vint(i+4)
-            endif
+            dsida(k,1) = dsida(k,1)+bp1(k,i)*vint(i+2)
+            dsida(k,2) = dsida(k,2)+bp2(k,i)*vint(i+4)
+        end do
+        do i = 3, 6
+            dsida(k,1) = dsida(k,1)+ap1(k,i)*eps(i)
+            dsida(k,2) = dsida(k,2)+ap2(k,i)*eps(i)
         end do
         dsida(k,3) = b(k,1,1)
         dsida(k,4) = b(k,2,1)

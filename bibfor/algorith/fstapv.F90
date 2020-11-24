@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -91,19 +91,16 @@ subroutine fstapv(nbpt, fn, t, offset, fnmoyt,&
 !
 ! --- RECHERCHE DES EXTREMAS RELATIFS
 !
-    do 20 i = 1, nbpt
-        if ((i.gt.1) .and. (i.lt.nbpt)) then
+    do 20 i = 2, nbpt-1
 !
-            if ((fn(i).gt.fn(i-1)) .and. (fn(i).gt.fn(i+1))) then
-                smaxr = smaxr + fn(i)
-                nbmaxr = nbmaxr + 1
-            endif
+        if ((fn(i).gt.fn(i-1)) .and. (fn(i).gt.fn(i+1))) then
+            smaxr = smaxr + fn(i)
+            nbmaxr = nbmaxr + 1
+        endif
 !
-            if ((fn(i).lt.fn(i-1)) .and. (fn(i).lt.fn(i+1))) then
-                sminr = sminr + fn(i)
-                nbminr = nbminr + 1
-            endif
-!
+        if ((fn(i).lt.fn(i-1)) .and. (fn(i).lt.fn(i+1))) then
+            sminr = sminr + fn(i)
+            nbminr = nbminr + 1
         endif
 20  end do
 !

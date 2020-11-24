@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -188,6 +188,7 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/ar_dlaln2.h"
+#include "asterfort/assert.h"
 #include "asterfort/xerbla.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
@@ -325,7 +326,8 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !
             if (ip .eq. 1) goto 130
             if (ki .eq. 1) goto 40
-            if (t( ki, ki-1 ) .eq. zero) goto 40
+            jnxt = ki-1
+            if (t( ki, jnxt ) .eq. zero) goto 40
             ip = -1
 !
  40         continue
@@ -333,7 +335,7 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                 if (ip .eq. 0) then
                     if (.not.select( ki )) goto 130
                 else
-                    if (.not.select( ki-1 )) goto 130
+                    if (.not.select( jnxt )) goto 130
                 endif
             endif
 !
@@ -341,7 +343,10 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !
             wr = t( ki, ki )
             wi = zero
-            if (ip .ne. 0) wi = sqrt( abs(t( ki, ki-1 ) ) )* sqrt( abs( t( ki-1, ki ) ) )
+            if (ip .ne. 0) then
+                ASSERT(ki .gt. 1)
+            endif
+            if (ip .ne. 0) wi = sqrt( abs(t( ki, jnxt ) ) )* sqrt( abs( t( jnxt, ki ) ) )
             smin = max( ulp*( abs( wr )+abs( wi ) ), smlnum )
 !
             if (ip .eq. 0) then
@@ -366,8 +371,8 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                     j2 = j
                     jnxt = j - 1
                     if (j .gt. 1) then
-                        if (t( j, j-1 ) .ne. zero) then
-                            j1 = j - 1
+                        if (t( j, jnxt ) .ne. zero) then
+                            j1 = jnxt
                             jnxt = j - 2
                         endif
                     endif
@@ -406,7 +411,7 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !                    2-BY-2 DIAGONAL BLOCK
 !
                         call ar_dlaln2(.false._1, 2, 1, smin, one,&
-                                    t( j-1, j-1 ), ldt, one, one, work( j-1+n ),&
+                                    t( j1, j1 ), ldt, one, one, work( j-1+n ),&
                                     n, wr, zero, x, 2,&
                                     scale, xnorm, ierr)
 !
@@ -414,7 +419,7 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !                    UPDATING THE RIGHT-HAND SIDE.
 !
                         if (xnorm .gt. one) then
-                            beta = max( work( j-1 ), work( j ) )
+                            beta = max( work( j1 ), work( j ) )
                             if (beta .gt. bignum / xnorm) then
                                 x( 1, 1 ) = x( 1, 1 ) / xnorm
                                 x( 2, 1 ) = x( 2, 1 ) / xnorm
@@ -430,7 +435,7 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !
 !                    UPDATE RIGHT-HAND SIDE
 !
-                        call daxpy(j-2, -x( 1, 1 ), t( 1, j-1 ), 1, work( 1+n ),&
+                        call daxpy(j-2, -x( 1, 1 ), t( 1, j1 ), 1, work( 1+n ),&
                                    1)
                         call daxpy(j-2, -x( 2, 1 ), t( 1, j ), 1, work( 1+n ),&
                                    1)
@@ -467,11 +472,12 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !                ( (T(KI-1,KI-1) T(KI-1,KI) ) - (WR + I* WI))*X = 0.
 !                ( (T(KI,KI-1)   T(KI,KI)   )               )
 !
-                if (abs( t( ki-1, ki ) ) .ge. abs( t( ki, ki-1 ) )) then
+                jnxt = ki-1
+                if (abs( t( jnxt, ki ) ) .ge. abs( t( ki, jnxt ) )) then
                     work( ki-1+n ) = one
-                    work( ki+n2 ) = wi / t( ki-1, ki )
+                    work( ki+n2 ) = wi / t( jnxt, ki )
                 else
-                    work( ki-1+n ) = -wi / t( ki, ki-1 )
+                    work( ki-1+n ) = -wi / t( ki, jnxt )
                     work( ki+n2 ) = one
                 endif
                 work( ki+n ) = zero
@@ -480,7 +486,7 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !              FORM RIGHT-HAND SIDE
 !
                 do 80 k = 1, ki - 2
-                    work( k+n ) = -work( ki-1+n )*t( k, ki-1 )
+                    work( k+n ) = -work( ki-1+n )*t( k, jnxt )
                     work( k+n2 ) = -work( ki+n2 )*t( k, ki )
  80             continue
 !
@@ -494,8 +500,8 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
                     j2 = j
                     jnxt = j - 1
                     if (j .gt. 1) then
-                        if (t( j, j-1 ) .ne. zero) then
-                            j1 = j - 1
+                        if (t( j, jnxt ) .ne. zero) then
+                            j1 = jnxt
                             jnxt = j - 2
                         endif
                     endif
@@ -541,7 +547,7 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !                    2-BY-2 DIAGONAL BLOCK
 !
                         call ar_dlaln2(.false._1, 2, 2, smin, one,&
-                                    t( j-1, j-1 ), ldt, one, one, work( j-1+n ),&
+                                    t( j1, j1 ), ldt, one, one, work( j-1+n ),&
                                     n, wr, wi, x, 2,&
                                     scale, xnorm, ierr)
 !
@@ -549,7 +555,7 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !                    THE RIGHT-HAND SIDE.
 !
                         if (xnorm .gt. one) then
-                            beta = max( work( j-1 ), work( j ) )
+                            beta = max( work( j1 ), work( j ) )
                             if (beta .gt. bignum / xnorm) then
                                 rec = one / xnorm
                                 x( 1, 1 ) = x( 1, 1 )*rec
@@ -573,11 +579,11 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !
 !                    UPDATE THE RIGHT-HAND SIDE
 !
-                        call daxpy(j-2, -x( 1, 1 ), t( 1, j-1 ), 1, work( 1+n ),&
+                        call daxpy(j-2, -x( 1, 1 ), t( 1, j1 ), 1, work( 1+n ),&
                                    1)
                         call daxpy(j-2, -x( 2, 1 ), t( 1, j ), 1, work( 1+n ),&
                                    1)
-                        call daxpy(j-2, -x( 1, 2 ), t( 1, j-1 ), 1, work( 1+n2 ),&
+                        call daxpy(j-2, -x( 1, 2 ), t( 1, j1 ), 1, work( 1+n2 ),&
                                    1)
                         call daxpy(j-2, -x( 2, 2 ), t( 1, j ), 1, work( 1+n2 ),&
                                    1)
@@ -606,24 +612,25 @@ subroutine ar_dtrevc(side, howmny, select, n, t,&
 !
                 else
 !
+                    jnxt = ki-1
                     if (ki .gt. 2) then
                         call dgemv('N', n, ki-2, one, vr,&
-                                   ldvr, work( 1+n ), 1, work( ki-1+n ), vr( 1, ki-1 ),&
+                                   ldvr, work( 1+n ), 1, work( ki-1+n ), vr( 1, jnxt ),&
                                    1)
                         call dgemv('N', n, ki-2, one, vr,&
                                    ldvr, work( 1+n2 ), 1, work( ki+n2 ), vr( 1, ki ),&
                                    1)
                     else
-                        call dscal(n, work( ki-1+n ), vr( 1, ki-1 ), 1)
+                        call dscal(n, work( ki-1+n ), vr( 1, jnxt ), 1)
                         call dscal(n, work( ki+n2 ), vr( 1, ki ), 1)
                     endif
 !
                     emax = zero
                     do 120 k = 1, n
-                        emax = max( emax, abs( vr( k, ki-1 ) )+ abs( vr( k, ki ) ))
+                        emax = max( emax, abs( vr( k, jnxt ) )+ abs( vr( k, ki ) ))
 120                 continue
                     remax = one / emax
-                    call dscal(n, remax, vr( 1, ki-1 ), 1)
+                    call dscal(n, remax, vr( 1, jnxt ), 1)
                     call dscal(n, remax, vr( 1, ki ), 1)
                 endif
             endif

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -147,7 +147,6 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
     call afretu(iprno, lonlis, klisno, noepou, noma,&
                 valech, nbcoef, idec, coef, nomddl,&
                 typlag, lisrel)
-!        FIN IMOD=0
 !
 !   RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE
 !   DDL UIM, UOM, VIM, VOM, WIM, WOM, M VARIANT DE 2 A NBMODE
@@ -165,7 +164,66 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
     nocmp(11) = 'VO3'
     nocmp(12) = 'WO3'
 !
-    do imod = 1, nbmode
+    imod = 1
+    if (info .eq. 2) then
+        write (ifm,*) 'RELATIONS SUR LE MODE ',imod
+    endif
+    call mecact('V', lchin(5), 'LIGREL', ligrel, 'NUMMOD',&
+                ncmp=1, nomcmp='NUM', si=imod)
+    call calcul('S', 'CARA_SECT_POUT5', ligrel, 5, lchin,&
+                lpain, 6, lchout, lpaout, 'V',&
+                'OUI')
+!
+!     RELATIONS ENTRE LES NOEUDS DE SURFACE ET LE NOEUD POUTRE DDL WIM
+!     OU SI IMOD=1 LE DDL DZ DANS REPERE LOCAL DU TUYAU ET WI1
+!     IDEC=0 SIGNIFIE QUE ON UTILISE LES TERMES EN COS(M*PHI)
+!
+    call jedetr('&&RATU3D           .RELR')
+    call reajre('&&RATU3D', lchout(3), 'V')
+    call assvec('V', 'CH_DEPL_3', 1, '&&RATU3D           .RELR', [1.d0],&
+                numddl, ' ', 'ZERO', 1)
+    valech = 'CH_DEPL_3          .VALE'
+    idec = 0
+!
+    nbcoef = 4
+    nomddl(1) = 'DX'
+    nomddl(2) = 'DY'
+    nomddl(3) = 'DZ'
+    nomddl(4) = 'WI1'
+    coef(1) = eg3(1)*sectio/2.d0
+    coef(2) = eg3(2)*sectio/2.d0
+    coef(3) = eg3(3)*sectio/2.d0
+    coef(4) = -sectio/2.d0
+
+    call afretu(iprno, lonlis, klisno, noepou, noma,&
+                valech, nbcoef, idec, coef, nomddl,&
+                typlag, lisrel)
+!
+!     RELATIONS ENTRE LES NOEUDS DE SURFACE ET LE NOEUD POUTRE DDL WOM
+!     OU SI IMOD=1 LE DDL DY DANS REPERE LOCAL DU TUYAU ET WO1
+!
+    call jedetr('&&RATU3D           .RELR')
+    call reajre('&&RATU3D', lchout(6), 'V')
+    call assvec('V', 'CH_DEPL_6', 1, '&&RATU3D           .RELR', [1.d0],&
+                numddl, ' ', 'ZERO', 1)
+    valech = 'CH_DEPL_6          .VALE'
+    idec = 0
+!
+    nbcoef = 4
+    nomddl(1) = 'DX'
+    nomddl(2) = 'DY'
+    nomddl(3) = 'DZ'
+    nomddl(4) = 'WO1'
+    coef(1) = eg2(1)*sectio/2.d0
+    coef(2) = eg2(2)*sectio/2.d0
+    coef(3) = eg2(3)*sectio/2.d0
+    coef(4) = -sectio/2.d0
+!
+    call afretu(iprno, lonlis, klisno, noepou, noma,&
+                valech, nbcoef, idec, coef, nomddl,&
+                typlag, lisrel)
+!
+    do imod = 2, nbmode
         if (info .eq. 2) then
             write (ifm,*) 'RELATIONS SUR LE MODE ',imod
         endif
@@ -183,15 +241,12 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
                     numddl, ' ', 'ZERO', 1)
         valech = 'CH_DEPL_1          .VALE'
         idec = 0
-        if (imod .ne. 1) then
-            nbcoef = 1
-            nomddl(1) = nocmp(6* (imod-2)+1)
-            coef(1) = -sectio/2.d0
-            call afretu(iprno, lonlis, klisno, noepou, noma,&
-                        valech, nbcoef, idec, coef, nomddl,&
-                        typlag, lisrel)
-!
-        endif
+        nbcoef = 1
+        nomddl(1) = nocmp(6* (imod-2)+1)
+        coef(1) = -sectio/2.d0
+        call afretu(iprno, lonlis, klisno, noepou, noma,&
+                    valech, nbcoef, idec, coef, nomddl,&
+                    typlag, lisrel)
 !
 !     RELATIONS ENTRE LES NOEUDS DE SURFACE ET LE NOEUD POUTRE DDL UOM
 !
@@ -201,14 +256,12 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
                     numddl, ' ', 'ZERO', 1)
         valech = 'CH_DEPL_4          .VALE'
         idec = 0
-        if (imod .ne. 1) then
-            nbcoef = 1
-            nomddl(1) = nocmp(6* (imod-2)+4)
-            coef(1) = -sectio/2.d0
-            call afretu(iprno, lonlis, klisno, noepou, noma,&
-                        valech, nbcoef, idec, coef, nomddl,&
-                        typlag, lisrel)
-        endif
+        nbcoef = 1
+        nomddl(1) = nocmp(6* (imod-2)+4)
+        coef(1) = -sectio/2.d0
+        call afretu(iprno, lonlis, klisno, noepou, noma,&
+                    valech, nbcoef, idec, coef, nomddl,&
+                    typlag, lisrel)
 !
 !     RELATIONS ENTRE LES NOEUDS DE SURFACE ET LE NOEUD POUTRE DDL VOM
 !
@@ -218,14 +271,12 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
                     numddl, ' ', 'ZERO', 1)
         valech = 'CH_DEPL_2          .VALE'
         idec = 0
-        if (imod .ne. 1) then
-            nbcoef = 1
-            nomddl(1) = nocmp(6* (imod-2)+5)
-            coef(1) = -sectio/2.d0
-            call afretu(iprno, lonlis, klisno, noepou, noma,&
-                        valech, nbcoef, idec, coef, nomddl,&
-                        typlag, lisrel)
-        endif
+        nbcoef = 1
+        nomddl(1) = nocmp(6* (imod-2)+5)
+        coef(1) = -sectio/2.d0
+        call afretu(iprno, lonlis, klisno, noepou, noma,&
+                    valech, nbcoef, idec, coef, nomddl,&
+                    typlag, lisrel)
 !
 !     RELATIONS ENTRE LES NOEUDS DE SURFACE ET LE NOEUD POUTRE DDL VIM
 !
@@ -235,14 +286,12 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
                     numddl, ' ', 'ZERO', 1)
         valech = 'CH_DEPL_5          .VALE'
         idec = 0
-        if (imod .ne. 1) then
-            nbcoef = 1
-            nomddl(1) = nocmp(6* (imod-2)+2)
-            coef(1) = -sectio/2.d0
-            call afretu(iprno, lonlis, klisno, noepou, noma,&
-                        valech, nbcoef, idec, coef, nomddl,&
-                        typlag, lisrel)
-        endif
+        nbcoef = 1
+        nomddl(1) = nocmp(6* (imod-2)+2)
+        coef(1) = -sectio/2.d0
+        call afretu(iprno, lonlis, klisno, noepou, noma,&
+                    valech, nbcoef, idec, coef, nomddl,&
+                    typlag, lisrel)
 !
 !     RELATIONS ENTRE LES NOEUDS DE SURFACE ET LE NOEUD POUTRE DDL WIM
 !     OU SI IMOD=1 LE DDL DZ DANS REPERE LOCAL DU TUYAU ET WI1
@@ -255,22 +304,10 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
         valech = 'CH_DEPL_3          .VALE'
         idec = 0
 !
-        if (imod .eq. 1) then
-            nbcoef = 4
-            nomddl(1) = 'DX'
-            nomddl(2) = 'DY'
-            nomddl(3) = 'DZ'
-            nomddl(4) = 'WI1'
-            coef(1) = eg3(1)*sectio/2.d0
-            coef(2) = eg3(2)*sectio/2.d0
-            coef(3) = eg3(3)*sectio/2.d0
-            coef(4) = -sectio/2.d0
-        else
-!         IF (IMOD.NE.1) THEN
-            nbcoef = 1
-            nomddl(1) = nocmp(6* (imod-2)+3)
-            coef(1) = -sectio/2.d0
-        endif
+        nbcoef = 1
+        nomddl(1) = nocmp(6* (imod-2)+3)
+        coef(1) = -sectio/2.d0
+!
         call afretu(iprno, lonlis, klisno, noepou, noma,&
                     valech, nbcoef, idec, coef, nomddl,&
                     typlag, lisrel)
@@ -285,26 +322,14 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
                     numddl, ' ', 'ZERO', 1)
         valech = 'CH_DEPL_6          .VALE'
         idec = 0
-        if (imod .eq. 1) then
-            nbcoef = 4
-            nomddl(1) = 'DX'
-            nomddl(2) = 'DY'
-            nomddl(3) = 'DZ'
-            nomddl(4) = 'WO1'
-            coef(1) = eg2(1)*sectio/2.d0
-            coef(2) = eg2(2)*sectio/2.d0
-            coef(3) = eg2(3)*sectio/2.d0
-            coef(4) = -sectio/2.d0
-        else
-!         IF (IMOD.NE.1) THEN
-            nbcoef = 1
-            nomddl(1) = nocmp(6* (imod-2)+6)
-            coef(1) = -sectio/2.d0
-        endif
+!
+        nbcoef = 1
+        nomddl(1) = nocmp(6* (imod-2)+6)
+        coef(1) = -sectio/2.d0
+!
         call afretu(iprno, lonlis, klisno, noepou, noma,&
                     valech, nbcoef, idec, coef, nomddl,&
                     typlag, lisrel)
-!         ENDIF
 !
 !     FIN DE LA BOUCLE SUR LES MODES
 !

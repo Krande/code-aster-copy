@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,14 +84,12 @@ subroutine vectan(nb1, nb2, xi, xr, vecta,&
     do 40 ib = 1, nb2
         l=9*(ib-1)
         do 50 j = 1, 3
-            do 60 i = 1, 3
+            do 60 i = 1, 2
                 k=l+(j-1)*3+i
-                if (i .le. 2) then
-                    xr(1090+k)=vectpt(ib,i,j)
-                else
-                    xr(1090+k)=vectn(ib,j)
-                endif
+                xr(1090+k)=vectpt(ib,i,j)
 60          end do
+            k=l+(j-1)*3+3
+            xr(1090+k)=vectn(ib,j)
 50      end do
 40  end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -232,15 +232,16 @@ subroutine wp2ini(appr, lmasse, lamor, lraide, lmatra,&
                 yb(i,j) = yb(i,j) - a*yb(i,j-1)
 220         continue
         else
+            k = j-2
             b = 0.d0
             do 225 ips = 1, neq
-                b = b + zr(abayh+ips-1)*yh(ips,j-2) + zr(abayb+ips-1)* yb(ips,j-2)
+                b = b + zr(abayh+ips-1)*yh(ips,k) + zr(abayb+ips-1)* yb(ips,k)
 225         continue
-            d2 = signe(j-2)
+            d2 = signe(k)
             b = d2*b
             do 230 i = 1, neq
-                yh(i,j) = yh(i,j) - a*yh(i,j-1) - b*yh(i,j-2)
-                yb(i,j) = yb(i,j) - a*yb(i,j-1) - b*yb(i,j-2)
+                yh(i,j) = yh(i,j) - a*yh(i,j-1) - b*yh(i,k)
+                yb(i,j) = yb(i,j) - a*yb(i,j-1) - b*yb(i,k)
 230         continue
         endif
 !

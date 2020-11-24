@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -162,7 +162,7 @@ subroutine ctetax(basmod, numa, nbsec, teta, nbtet)
 !
 !    VERIFICATION SUR COHERENCE DES DDL INTERFACES
 !
-        do j = 1, nta
+        do j = 1, 6
             if (xta(j) .gt. 0.d0 .and. xa(j) .eq. 0.d0) then
                 noer=zi(lldesc+inoa-1)
                 call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)

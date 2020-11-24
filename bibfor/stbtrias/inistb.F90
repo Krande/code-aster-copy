@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -248,7 +248,7 @@ subroutine inistb(maxnod, nbtyma, nomail, indic, permut,&
 !
     nbtyma=35
 !
-    do 5 i = 1, nbtyma
+    do 5 i = 3, nbtyma
         if (indic(i) .eq. 1) then
 !
             do 6 j = 1, nbnoma(i)
@@ -274,7 +274,7 @@ subroutine inistb(maxnod, nbtyma, nomail, indic, permut,&
         indicf(i)=0
 40  end do
 !
-    do 50 i = 1, nbtyma
+    do 50 i = 14, nbtyma
         if (indicf(i) .eq. 1) then
             do 60 j = 1, nbnomf(i)
                 permuf(j,i)=permu3(j,i)

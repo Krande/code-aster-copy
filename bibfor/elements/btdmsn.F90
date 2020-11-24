@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,13 +66,13 @@ subroutine btdmsn(ind, nb1, intsn, npgsr, xr,&
 !              BTDS           BTDM, BTDS INTEGRATION REDUITE
 !
 !
-        do 10 i = 1, 3
-            do 20 j = 1, 5*nb1+2
+        do 20 j = 1, 5*nb1+2
+            do 10 i = 1, 2
                 btdm1=0.d0
-                if (i .le. 2) btds1=0.d0
+                btds1=0.d0
                 do 30 k = 1, npgsr
                     btdm1=btdm1+xr(i1+k)*btdm(k,i,j)
-                    if (i .le. 2) btds1=btds1+xr(i1+k)*btds(k,i,j)
+                    btds1=btds1+xr(i1+k)*btds(k,i,j)
 30              end do
 !
 !                               BTILDMN + BTILDFN
@@ -81,9 +81,20 @@ subroutine btdmsn(ind, nb1, intsn, npgsr, xr,&
 !
 !
                 btild(i,j)=btdm1+btdf(i,j)
-                if (i .le. 2) btild(i+3,j)=btds1
-20          end do
-10      end do
+                btild(i+3,j)=btds1
+10          end do
+            btdm1=0.d0
+            do k = 1, npgsr
+                btdm1=btdm1+xr(i1+k)*btdm(k,3,j)
+            end do
+!
+!                               BTILDMN + BTILDFN
+!     CONSTRUCTION DE BTILD =
+!                               BTILDSN
+!
+!
+            btild(3,j)=btdm1+btdf(3,j)
+20      end do
 !
     endif
 !

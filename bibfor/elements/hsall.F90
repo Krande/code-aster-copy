@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,10 +60,11 @@ subroutine hsall(vectt, hstout)
 !
 !
     do 100 j = 1, 9
-        do 110 i = 1, 3
+        do 110 i = 1, 2
             hstout ( i , j ) = hsfm ( i , j )
-            if (i .le. 2) hstout ( i + 3 , j ) = hss ( i , j )
-110      continue
+            hstout ( i + 3 , j ) = hss ( i , j )
+110     continue
+        hstout ( 3 , j ) = hsfm ( 3 , j )
 100  end do
 !
 !

@@ -153,7 +153,72 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
     nocmp(11) = 'VO3'
     nocmp(12) = 'WO3'
 !
-    do imod = 1, nbmode
+    imod = 1
+    if (info .eq. 2) then
+        write (ifm,*) 'RELATIONS SUR LE MODE ',imod
+    endif
+    call mecact('V', lchin(6), 'LIGREL', ligrel, 'NUMMOD',&
+                ncmp=1, nomcmp='NUM', si=imod)
+    call calcul('S', 'CARA_SECT_POUT5', ligrel, 6, lchin,&
+                lpain, 3, lchout, lpaout, 'V',&
+                'OUI')
+!    call jedetr('&&RAPOTU           .RELR')
+!    call reajre('&&RAPOTU', lchout(1), 'V')
+!    call assvec('V', 'CH_DEPL_1', 1, '&&RAPOTU           .RELR', [1.d0],&
+!                numddl, ' ', 'ZERO', 1)
+!
+!    RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL VOM
+!    call jedetr('&&RAPOTU           .RELR')
+!    call reajre('&&RAPOTU', lchout(2), 'V')
+!    call assvec('V', 'CH_DEPL_2', 1, '&&RAPOTU           .RELR', [1.d0],&
+!                numddl, ' ', 'ZERO', 1)
+!
+!    RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL WIM
+!    OU SI IMOD=1 LE DDL DZ DANS REPERE LOCAL DU TUYAU ET WI1
+!    IDEC=0 SIGNIFIE QUE ON UTILISE LES TERMES EN COS(M*PHI)
+!
+    call jedetr('&&RAPOTU           .RELR')
+    call reajre('&&RAPOTU', lchout(3), 'V')
+    call assvec('V', 'CH_DEPL_3', 1, '&&RAPOTU           .RELR', [1.d0],&
+                numddl, ' ', 'ZERO', 1)
+    valech = 'CH_DEPL_3          .VALE'
+    idec = 0
+!
+    nbcoef = 4
+    nomddl(1) = 'DX'
+    nomddl(2) = 'DY'
+    nomddl(3) = 'DZ'
+    nomddl(4) = 'WI1'
+    coef(1) = eg3(1)
+    coef(2) = eg3(2)
+    coef(3) = eg3(3)
+    coef(4) = -1.d0
+!
+    call afretu(iprno, lonlis, klisno, noepou, noma,&
+                valech, nbcoef, idec, coef, nomddl,&
+                typlag, lisrel)
+!
+!     RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL WOM
+!     OU SI IMOD=1 LE DDL DY DANS REPERE LOCAL DU TUYAU ET WO1
+!     IDEC=3 SIGNIFIE QUE ON UTILISE LES TERMES EN SIN(M*PHI)
+!
+    idec = 3
+!
+    nbcoef = 4
+    nomddl(1) = 'DX'
+    nomddl(2) = 'DY'
+    nomddl(3) = 'DZ'
+    nomddl(4) = 'WO1'
+    coef(1) = eg2(1)
+    coef(2) = eg2(2)
+    coef(3) = eg2(3)
+    coef(4) = -1.d0
+!
+    call afretu(iprno, lonlis, klisno, noepou, noma,&
+                valech, nbcoef, idec, coef, nomddl,&
+                typlag, lisrel)
+!
+    do imod = 2, nbmode
         if (info .eq. 2) then
             write (ifm,*) 'RELATIONS SUR LE MODE ',imod
         endif
@@ -171,27 +236,22 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 !        RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL UIM
 !
         idec = 0
-        if (imod .ne. 1) then
-            nbcoef = 1
-            nomddl(1) = nocmp(6* (imod-2)+1)
-            coef(1) = -1.d0
-            call afretu(iprno, lonlis, klisno, noepou, noma,&
-                        valech, nbcoef, idec, coef, nomddl,&
-                        typlag, lisrel)
-!
-        endif
+        nbcoef = 1
+        nomddl(1) = nocmp(6* (imod-2)+1)
+        coef(1) = -1.d0
+        call afretu(iprno, lonlis, klisno, noepou, noma,&
+                    valech, nbcoef, idec, coef, nomddl,&
+                    typlag, lisrel)
 !
 !        RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL UOM
 !
         idec = 3
-        if (imod .ne. 1) then
-            nbcoef = 1
-            nomddl(1) = nocmp(6* (imod-2)+4)
-            coef(1) = -1.d0
-            call afretu(iprno, lonlis, klisno, noepou, noma,&
-                        valech, nbcoef, idec, coef, nomddl,&
-                        typlag, lisrel)
-        endif
+        nbcoef = 1
+        nomddl(1) = nocmp(6* (imod-2)+4)
+        coef(1) = -1.d0
+        call afretu(iprno, lonlis, klisno, noepou, noma,&
+                    valech, nbcoef, idec, coef, nomddl,&
+                    typlag, lisrel)
 !
 !        RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL VOM
         call jedetr('&&RAPOTU           .RELR')
@@ -200,27 +260,23 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
                     numddl, ' ', 'ZERO', 1)
         valech = 'CH_DEPL_2          .VALE'
         idec = 0
-        if (imod .ne. 1) then
-            nbcoef = 1
-            nomddl(1) = nocmp(6* (imod-2)+5)
-            coef(1) = -1.d0
-            call afretu(iprno, lonlis, klisno, noepou, noma,&
-                        valech, nbcoef, idec, coef, nomddl,&
-                        typlag, lisrel)
-        endif
+        nbcoef = 1
+        nomddl(1) = nocmp(6* (imod-2)+5)
+        coef(1) = -1.d0
+        call afretu(iprno, lonlis, klisno, noepou, noma,&
+                    valech, nbcoef, idec, coef, nomddl,&
+                    typlag, lisrel)
 !
 !        RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL VIM
 !        IDEC=3 SIGNIFIE QUE ON UTILISE LES TERMES EN SIN(M*PHI)
 !
         idec = 3
-        if (imod .ne. 1) then
-            nbcoef = 1
-            nomddl(1) = nocmp(6* (imod-2)+2)
-            coef(1) = -1.d0
-            call afretu(iprno, lonlis, klisno, noepou, noma,&
-                        valech, nbcoef, idec, coef, nomddl,&
-                        typlag, lisrel)
-        endif
+        nbcoef = 1
+        nomddl(1) = nocmp(6* (imod-2)+2)
+        coef(1) = -1.d0
+        call afretu(iprno, lonlis, klisno, noepou, noma,&
+                    valech, nbcoef, idec, coef, nomddl,&
+                    typlag, lisrel)
 !
 !        RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL WIM
 !        OU SI IMOD=1 LE DDL DZ DANS REPERE LOCAL DU TUYAU ET WI1
@@ -233,21 +289,10 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
         valech = 'CH_DEPL_3          .VALE'
         idec = 0
 !
-        if (imod .eq. 1) then
-            nbcoef = 4
-            nomddl(1) = 'DX'
-            nomddl(2) = 'DY'
-            nomddl(3) = 'DZ'
-            nomddl(4) = 'WI1'
-            coef(1) = eg3(1)
-            coef(2) = eg3(2)
-            coef(3) = eg3(3)
-            coef(4) = -1.d0
-        else
-            nbcoef = 1
-            nomddl(1) = nocmp(6* (imod-2)+3)
-            coef(1) = -1.d0
-        endif
+        nbcoef = 1
+        nomddl(1) = nocmp(6* (imod-2)+3)
+        coef(1) = -1.d0
+!
         call afretu(iprno, lonlis, klisno, noepou, noma,&
                     valech, nbcoef, idec, coef, nomddl,&
                     typlag, lisrel)
@@ -257,21 +302,10 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 !        IDEC=3 SIGNIFIE QUE ON UTILISE LES TERMES EN SIN(M*PHI)
 !
         idec = 3
-        if (imod .eq. 1) then
-            nbcoef = 4
-            nomddl(1) = 'DX'
-            nomddl(2) = 'DY'
-            nomddl(3) = 'DZ'
-            nomddl(4) = 'WO1'
-            coef(1) = eg2(1)
-            coef(2) = eg2(2)
-            coef(3) = eg2(3)
-            coef(4) = -1.d0
-        else
-            nbcoef = 1
-            nomddl(1) = nocmp(6* (imod-2)+6)
-            coef(1) = -1.d0
-        endif
+        nbcoef = 1
+        nomddl(1) = nocmp(6* (imod-2)+6)
+        coef(1) = -1.d0
+!
         call afretu(iprno, lonlis, klisno, noepou, noma,&
                     valech, nbcoef, idec, coef, nomddl,&
                     typlag, lisrel)

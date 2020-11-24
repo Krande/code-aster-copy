@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -259,14 +259,14 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     k1 = k
                     k2 = k
                 else
-                    if (a( k, k-1 ) .ne. zero) then
-                        k1 = k - 1
+                    knext = k - 1
+                    if (a( k, knext ) .ne. zero) then
+                        k1 = knext
                         k2 = k
                         knext = k - 2
                     else
                         k1 = k
                         k2 = k
-                        knext = k - 1
                     endif
                 endif
 !
@@ -583,14 +583,14 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                 l1 = l
                 l2 = l
             else
-                if (b( l, l-1 ) .ne. zero) then
-                    l1 = l - 1
+                lnext = l - 1
+                if (b( l, lnext ) .ne. zero) then
+                    l1 = lnext
                     l2 = l
                     lnext = l - 2
                 else
                     l1 = l
                     l2 = l
-                    lnext = l - 1
                 endif
             endif
 !
@@ -755,14 +755,14 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                 l1 = l
                 l2 = l
             else
-                if (b( l, l-1 ) .ne. zero) then
-                    l1 = l - 1
+                lnext = l - 1
+                if (b( l, lnext ) .ne. zero) then
+                    l1 = lnext
                     l2 = l
                     lnext = l - 2
                 else
                     l1 = l
                     l2 = l
-                    lnext = l - 1
                 endif
             endif
 !
@@ -776,14 +776,14 @@ subroutine ar_dlrsyl(trana, tranb, isgn, m, n,&
                     k1 = k
                     k2 = k
                 else
-                    if (a( k, k-1 ) .ne. zero) then
-                        k1 = k - 1
+                    knext = k - 1
+                    if (a( k, knext ) .ne. zero) then
+                        k1 = knext
                         k2 = k
                         knext = k - 2
                     else
                         k1 = k
                         k2 = k
-                        knext = k - 1
                     endif
                 endif
 !

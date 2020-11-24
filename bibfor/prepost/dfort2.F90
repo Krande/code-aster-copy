@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,9 +84,9 @@ subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt,&
 ! 2 - CALCUL DES RAYONS DES COUCHES 1,2 ET 3
 !
     nedep=0
-    nefin=nbnozo(1)
     do 10 j = 1, 3
         delta(j) = 1.d+10
+        nefin=nedep+nbnozo(j)
         do 20 inno = nedep+1, nefin
             noeu2=tbnozo(inno)
             if (noeu2 .ne. noeu1) then
@@ -94,10 +94,7 @@ subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt,&
                 delta(j) = min(delta(j),dist)
             endif
 20      continue
-        if (j .ne. 3) then
-            nedep=nefin
-            nefin=nedep+nbnozo(j+1)
-        endif
+        nedep=nefin
 10  end do
 !
 ! 3 - CALCUL DE L ENERGIE POUR DIFFERENTS RAYONS RAYZ
@@ -220,7 +217,8 @@ subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt,&
 ! LISSAGE DE LA COURBE ENERGI=F(RAYON) POUR IDENTIFIER PE
 !
         if (iint .ge. 2) then
-            ener(iint) = min(ener(iint),ener(iint-1))
+            i = iint-1
+            ener(iint) = min(ener(iint),ener(i))
         endif
 !
 ! 3 - FIN DE LA BOUCLE SUR LE CALCUL DE L ENERGIE

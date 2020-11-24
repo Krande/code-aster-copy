@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,19 +29,19 @@ interface
         real(kind=8) :: xi
         real(kind=8) :: yi
         real(kind=8) :: zi
-        real(kind=8) :: xin(1)
-        real(kind=8) :: yin(1)
-        real(kind=8) :: zin(1)
-        real(kind=8) :: tn(1)
-        real(kind=8) :: ajx(1)
-        real(kind=8) :: ajy(1)
-        real(kind=8) :: ajz(1)
-        real(kind=8) :: bjxx(1)
-        real(kind=8) :: bjyy(1)
-        real(kind=8) :: bjzz(1)
-        real(kind=8) :: bjxy(1)
-        real(kind=8) :: bjxz(1)
-        real(kind=8) :: bjyz(1)
+        real(kind=8) :: xin(20)
+        real(kind=8) :: yin(20)
+        real(kind=8) :: zin(20)
+        real(kind=8) :: tn(*)
+        real(kind=8) :: ajx(*)
+        real(kind=8) :: ajy(*)
+        real(kind=8) :: ajz(*)
+        real(kind=8) :: bjxx(*)
+        real(kind=8) :: bjyy(*)
+        real(kind=8) :: bjzz(*)
+        real(kind=8) :: bjxy(*)
+        real(kind=8) :: bjxz(*)
+        real(kind=8) :: bjyz(*)
         integer :: ider
     end subroutine clffch
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -231,7 +231,8 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
 ! LISSAGE DE LA COURBE ENERGI=F(RAYON) POUR IDENTIFIER PE
 !
         if (iint .ge. 2) then
-            ener(iint) = min(ener(iint),ener(iint-1))
+            i = iint-1
+            ener(iint) = min(ener(iint),ener(i))
         endif
 !
 ! 3 - FIN DE LA BOUCLE SUR LE CALCUL DE L ENERGIE

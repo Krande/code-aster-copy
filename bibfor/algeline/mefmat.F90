@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -175,7 +175,7 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
 !
         do 30 imod = 1, nbmod
             do 37 igrp = 1, nbgrp
-                do 32 i = 1, nbz
+                do 32 i = 2, nbz
                     do 33 j = 1, nbgtot
                         ecart = (z(i)-zg(j))*(z(i-1)-zg(j))
                         if (ecart .le. 0.d0) then

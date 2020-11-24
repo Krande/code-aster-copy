@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,13 +60,15 @@ subroutine dhrc_calc_n(eps, vint, b, c, neta1, neta2)
 !
     do k = 1, 2
 !     CALCUL DE NETA1 ET NETA2
-        do i = 1, 6
+        do i = 1, 2
             neta1(k) = neta1(k)-eps(i)*b(i,k,1)
             neta2(k) = neta2(k)-eps(i)*b(i,k,2)
-            if (i .lt. 3) then
-                neta1(k) = neta1(k)-vint(i+2)*c(i,k,1)
-                neta2(k) = neta2(k)-vint(i+4)*c(i,k,2)
-            endif
+            neta1(k) = neta1(k)-vint(i+2)*c(i,k,1)
+            neta2(k) = neta2(k)-vint(i+4)*c(i,k,2)
+        end do
+        do i = 3, 6
+            neta1(k) = neta1(k)-eps(i)*b(i,k,1)
+            neta2(k) = neta2(k)-eps(i)*b(i,k,2)
         end do
     end do
 !

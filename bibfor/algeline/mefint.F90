@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -126,7 +126,12 @@ subroutine mefint(nbz, nbgrp, nbmod, nbnoe, nbddl,&
         do 190 j = 1, nbz
 ! ---       RECHERCHE DU NOEUDS REEL LE PLUS PROCHE DU POINT DE
 ! ---       DISCRETISATION DE COTE J
-            do 130 k = 1, nbnog(i)
+            if (zint(num(1),i) .gt. z(j)) then
+                ind1 = num(1)
+                ind2 = num(1+1)
+                goto 140
+            endif
+            do 130 k = 2, nbnog(i)
                 if (zint(num(k),i) .gt. z(j)) then
                     if (k .gt. 1) then
                         ind1 = num(k-1)
@@ -137,10 +142,10 @@ subroutine mefint(nbz, nbgrp, nbmod, nbnoe, nbddl,&
                     endif
                     goto 140
                 endif
-130          continue
+130         continue
             ind1 = num(nbnog(i)-1)
             ind2 = num(nbnog(i))
-140          continue
+140         continue
 !
             nno1 = zi(numnog(i)+ind1-1)
             nno2 = zi(numnog(i)+ind2-1)

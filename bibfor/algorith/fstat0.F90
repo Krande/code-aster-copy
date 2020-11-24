@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,26 +82,31 @@ subroutine fstat0(nbpt, fn, offset, fnmoyt, fnmoyc,&
 !
             if (fn(i) .gt. fnmax) fnmax = fn(i)
             if (fn(i) .lt. fnmin) fnmin = fn(i)
+
+        endif
+!
+10  end do
+
+    do i = 2, nbpt-1
+!
+        if ((abs(fn(i))) .gt. offset) then
 !
 !           RECHERCHE DES EXTREMAS RELATIFS
 !
-            if ((i.gt.1) .and. (i.lt.nbpt)) then
+            if ((fn(i).gt.fn(i-1)) .and. (fn(i).gt.fn(i+1))) then
+                smaxr = smaxr + fn(i)
+                nbmaxr = nbmaxr + 1
+            endif
 !
-                if ((fn(i).gt.fn(i-1)) .and. (fn(i).gt.fn(i+1))) then
-                    smaxr = smaxr + fn(i)
-                    nbmaxr = nbmaxr + 1
-                endif
-!
-                if ((fn(i).lt.fn(i-1)) .and. (fn(i).lt.fn(i+1))) then
-                    sminr = sminr + fn(i)
-                    nbminr = nbminr + 1
-                endif
-!
+            if ((fn(i).lt.fn(i-1)) .and. (fn(i).lt.fn(i+1))) then
+                sminr = sminr + fn(i)
+                nbminr = nbminr + 1
             endif
 !
         endif
 !
-10  end do
+    end do
+
 !
     if (ncount .ne. 0) then
         fnmoyc = sfn/dble(ncount)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,18 +94,19 @@ subroutine nmrep2(n, r, g, gu, rmin,&
 !
 ! ---    INTERPOLATION QUADRATIQUE POUR UN POINT INTERMEDIAIRE
 !
-            det = - (r(i-1)-r(i))* (r(i)-r(i+1))* (r(i+1)-r(i-1))
+            j = i-1
+            det = - (r(j)-r(i))* (r(i)-r(i+1))* (r(i+1)-r(j))
 !
             if (abs(det) .lt. 1.d0/r8gaem()) then
                 goto 50
             else
-                a = ( (g(i-1)-g(i))* (r(i)-r(i+1))- (g(i)-g(i+1))* (r( i-1)-r(i)) )/det
+                a = ( (g(j)-g(i))* (r(i)-r(i+1))- (g(i)-g(i+1))* (r(j)-r(i)) )/det
             endif
 !
             if (a .le. 0) then
                 goto 50
             else
-                b = (( g(i)-g(i+1))* (r(i-1)**2-r(i)**2)- (g(i-1)-g(i)) * (r(i)**2-r(i+1)**2 )&
+                b = (( g(i)-g(i+1))* (r(j)**2-r(i)**2)- (g(j)-g(i)) * (r(i)**2-r(i+1)**2 )&
                     )/det
                 x = -b/(2*a)
             endif
@@ -113,7 +114,8 @@ subroutine nmrep2(n, r, g, gu, rmin,&
 ! ---    LE MINIMUM N'EST PAS DANS UN VOISINAGE DES 3 POINTS
 !
             if (i-2 .ge. 1) then
-                if (x .le. r(i-2)) goto 50
+                j = i-2
+                if (x .le. r(j)) goto 50
             endif
             if (i+2 .le. n) then
                 if (x .ge. r(i+2)) goto 50

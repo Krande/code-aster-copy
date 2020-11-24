@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,9 +58,12 @@ subroutine hsaco(vectt, dudxnc, hsc)
 !
         do 110 i = 1, 3
             hsc ( i , j ) = hsm2 ( i , j )
-            if (i .le. 2) hsc ( i + 3 , j ) = hss2 ( i , j )
 !
-110      continue
+110     continue
+        do  i = 1, 2
+            hsc ( i + 3 , j ) = hss2 ( i , j )
+!
+        end do
 !
 100  end do
 !

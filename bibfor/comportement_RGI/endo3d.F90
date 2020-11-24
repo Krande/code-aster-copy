@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -245,13 +245,12 @@ subroutine endo3d(wpl3,vwpl33,vwpl33t,wplx3,vwplx33,vwplx33t,&
           call chrep6(sigft61,vepspg33,faux,sigft6p)  
 !         application du tenseur d endommagement aux
 !         contraintes de tractions
-          do i=1,6
-                if(i.le.3) then
-                    sigft6d(i)=(1.d0-dgt3(i))*sigft6p(i)
-                else
-                    call indice0(i,k,l)
-                    sigft6d(i)=(1.d0-dmax1(dgt3(k),dgt3(l)))*sigft6p(i)
-                end if
+          do i=1,3
+                sigft6d(i)=(1.d0-dgt3(i))*sigft6p(i)
+          end do
+          do i=4,6
+                call indice0(i,k,l)
+                sigft6d(i)=(1.d0-dmax1(dgt3(k),dgt3(l)))*sigft6p(i)
           end do
 !         retour des contraintes positives en base fixe
           call chrep6(sigft6d,vepspg33t,faux,sigft61)
@@ -262,13 +261,12 @@ subroutine endo3d(wpl3,vwpl33,vwpl33t,wplx3,vwplx33,vwplx33t,&
 !         passage  des contraintes effectives dans la base prin des endo
           call chrep6(sigfc61,vepspg33,faux,sigfc6p)  
 !         application du tenseur d endommagement aux contraintes de tractions
-          do i=1,6
-                if(i.le.3) then
-                    sigfc6d(i)=(1.d0-dgc3(i))*sigfc6p(i)
-                else
-                    call indice0(i,k,l)
-                    sigfc6d(i)=(1.d0-dmax1(dgc3(k),dgc3(l)))*sigfc6p(i)
-                end if
+          do i=1,3
+                sigfc6d(i)=(1.d0-dgc3(i))*sigfc6p(i)
+          end do
+          do i=4,6
+                call indice0(i,k,l)
+                sigfc6d(i)=(1.d0-dmax1(dgc3(k),dgc3(l)))*sigfc6p(i)
           end do
 !         retour des contraintes positives en base fixe
           call chrep6(sigfc6d,vepspg33t,faux,sigfc61)       

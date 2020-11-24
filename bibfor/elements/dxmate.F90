@@ -663,8 +663,10 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
                     xab1, dmf)
     endif
 !
-    do k = 1, 9
-        if (abs(dmf(k,1)) .gt. 1.d-10) coupmf = .true.
+    do i = 1, 3
+        do j = 1, 3
+            if (abs(dmf(i,j)) .gt. 1.d-10) coupmf = .true.
+        end do
     end do
 !
 999 continue

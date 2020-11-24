@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -193,7 +193,8 @@ subroutine mpinvr(nbmesu, nbmode, nbabs, phi, rmesu,&
  70         continue
 !
             if ((regul .eq. 'TIK_RELA') .and. (iabs .gt. 1)) then
-                zr(lsecmb-1 +imod) = zr(lsecmb-1 +imod) + alpha*reta( imod,iabs-1)
+                ibid = iabs-1
+                zr(lsecmb-1 +imod) = zr(lsecmb-1 +imod) + alpha*reta( imod,ibid)
             endif
 !
 ! FIN DE LA BOUCLE SUR LES MODES

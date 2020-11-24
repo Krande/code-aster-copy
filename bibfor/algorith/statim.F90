@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -142,12 +142,14 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
                     wk1, ndec)
 !
         valek(3) = tvar(3)
-        do idec = 1, ndec
-            if (idec .eq. 1) then
-                para(1) = fmin
-            else
-                para(1) = wk2(idec-1)
-            endif
+!
+        para(1) = fmin
+        para(2) = wk2(1)
+        para(3) = wk1(1)
+        call tbajli(nomres, nparp, lparp, [1], para,&
+                    [c16b], valek, 0)
+        do idec = 2, ndec
+            para(1) = wk2(idec-1)
             para(2) = wk2(idec)
             para(3) = wk1(idec)
             call tbajli(nomres, nparp, lparp, [idec], para,&

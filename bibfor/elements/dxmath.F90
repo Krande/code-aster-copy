@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -440,8 +440,10 @@ subroutine dxmath(fami, epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1v
 !
     endif
 !
-    do k = 1, 9
-        if (abs(dmf(k,1)) .gt. 1.d-10) multic = 2
+    do i = 1, 3
+        do j = 1, 3
+            if (abs(dmf(i,j)) .gt. 1.d-10) multic = 2
+        end do
     end do
 !
 90  continue

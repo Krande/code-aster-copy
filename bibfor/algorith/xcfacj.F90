@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -104,10 +104,11 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
             do 120 i = 1, nnof
                 na = fa(ifq,i)
                 if (i .eq. 1) then
-                    nb = fa(ifq,nnof)
+                    j = nnof
                 else
-                    nb = fa(ifq,i-1)
+                    j = i-1
                 endif
+                nb = fa(ifq,j)
                 lsna=lsn((na-1)*nfiss+ifiss)
                 lsnb=lsn((nb-1)*nfiss+ifiss)
                 lsja=lsn((na-1)*nfiss+fisco(2*ifisc-1))*fisco(2*ifisc)

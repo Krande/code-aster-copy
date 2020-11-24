@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,11 +54,12 @@ subroutine dhrc_sig(eps, vint, a, b, sig)
 !
     do k = 1, 6
 !     CALCUL DE SIG
-        do i = 1, 6
+        do i = 1, 2
             sig(k) = sig(k)+a(k,i)*eps(i)
-            if (i .lt. 3) then
-                sig(k) = sig(k)+(b(k,i,1)*vint(i+2) +b(k,i,2)*vint(i+4))
-            endif
+            sig(k) = sig(k)+(b(k,i,1)*vint(i+2) +b(k,i,2)*vint(i+4))
+        end do
+        do i = 3, 6
+            sig(k) = sig(k)+a(k,i)*eps(i)
         end do
     end do
 !

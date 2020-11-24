@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -91,7 +91,7 @@ subroutine coef_infl(prodef, londef, lrev, matrev, matmdb,&
 !=========================================================================== 
 ! --- recherche des bornes x1 et x2 encadrant (x=a/c) ----------------------
 !=========================================================================== 
-   do i=1,6
+   do i=2,6
       if(x.ge.asc(i)) then
          x1  = asc(i-1)
          x2  = asc(i)
@@ -104,7 +104,7 @@ subroutine coef_infl(prodef, londef, lrev, matrev, matmdb,&
 !=========================================================================== 
 ! --- recherche des bornes y1 et y2 encadrant (y=a/r) ----------------------
 !=========================================================================== 
-   do i=1,9
+   do i=2,9
       if(y.le.asr(i)) then
          y1=asr(i-1)
          y2=asr(i)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -103,20 +103,36 @@ subroutine dhrc_jacob(eps, vint, c, bp1,&
 !
     call matini(6, 6, 0.0d0, jacobt)
 !
-    do k = 1, 6
-        do i = 1, 6
+    do k = 1, 2
+        do i = 1, 2
             jacobt(1,1)=jacobt(1,1)- eps(k)* as1(k,i)* eps(i)*0.5d0
             jacobt(2,2)=jacobt(2,2)- eps(k)* as2(k,i)* eps(i)*0.5d0
 !
-            if (i .lt. 3) then
-                jacobt(1,1)=jacobt(1,1)- eps(k)* bs1(k,i)* vint(i+2)
-                jacobt(2,2)=jacobt(2,2)- eps(k)* bs2(k,i)* vint(i+4)
-                if (k .lt. 3) then
-                    jacobt(1,1)=jacobt(1,1)- vint(k+2)* cs1(k,i)*vint(i+2)*0.5d0
-                    jacobt(2,2)=jacobt(2,2)- vint(k+4)* cs2(k,i)*vint(i+4)*0.5d0
-                endif
-            endif
+            jacobt(1,1)=jacobt(1,1)- eps(k)* bs1(k,i)* vint(i+2)
+            jacobt(2,2)=jacobt(2,2)- eps(k)* bs2(k,i)* vint(i+4)
+!
+            jacobt(1,1)=jacobt(1,1)- vint(k+2)* cs1(k,i)*vint(i+2)*0.5d0
+            jacobt(2,2)=jacobt(2,2)- vint(k+4)* cs2(k,i)*vint(i+4)*0.5d0
         end do
+        do i = 3, 6
+            jacobt(1,1)=jacobt(1,1)- eps(k)* as1(k,i)* eps(i)*0.5d0
+            jacobt(2,2)=jacobt(2,2)- eps(k)* as2(k,i)* eps(i)*0.5d0
+        end do
+    end do
+    do k = 3, 6
+        do i = 1, 2
+            jacobt(1,1)=jacobt(1,1)- eps(k)* as1(k,i)* eps(i)*0.5d0
+            jacobt(2,2)=jacobt(2,2)- eps(k)* as2(k,i)* eps(i)*0.5d0
+!
+            jacobt(1,1)=jacobt(1,1)- eps(k)* bs1(k,i)* vint(i+2)
+            jacobt(2,2)=jacobt(2,2)- eps(k)* bs2(k,i)* vint(i+4)
+        end do
+        do i = 3, 6
+            jacobt(1,1)=jacobt(1,1)- eps(k)* as1(k,i)* eps(i)*0.5d0
+            jacobt(2,2)=jacobt(2,2)- eps(k)* as2(k,i)* eps(i)*0.5d0
+        end do
+    end do
+    do k = 1, 6
 !
 !       jacobt(1,2)=0.d0 par construction du modèle
 !
@@ -147,21 +163,22 @@ subroutine dhrc_jacob(eps, vint, c, bp1,&
         jacobt(5,2)=jacobt(5,2)- eps(k)*bp2(k,1)
         jacobt(6,2)=jacobt(6,2)- eps(k)*bp2(k,2)
 !
-        if (k .lt. 3) then
-            jacobt(1,3)=jacobt(1,3)- vint(k+2)*cp1(k,1)
-            jacobt(1,4)=jacobt(1,4)- vint(k+2)*cp1(k,2)
+    end do
+    do k = 1, 2
+        jacobt(1,3)=jacobt(1,3)- vint(k+2)*cp1(k,1)
+        jacobt(1,4)=jacobt(1,4)- vint(k+2)*cp1(k,2)
 !
-            jacobt(2,5)=jacobt(2,5)- vint(k+4)*cp2(k,1)
-            jacobt(2,6)=jacobt(2,6)- vint(k+4)*cp2(k,2)
+        jacobt(2,5)=jacobt(2,5)- vint(k+4)*cp2(k,1)
+        jacobt(2,6)=jacobt(2,6)- vint(k+4)*cp2(k,2)
 !
-            jacobt(3,1)=jacobt(3,1)- vint(k+2)*cp1(k,1)
+        jacobt(3,1)=jacobt(3,1)- vint(k+2)*cp1(k,1)
 !
-            jacobt(4,1)=jacobt(4,1)- vint(k+2)*cp1(k,2)
+        jacobt(4,1)=jacobt(4,1)- vint(k+2)*cp1(k,2)
 !
-            jacobt(5,2)=jacobt(5,2)- vint(k+4)*cp2(k,1)
+        jacobt(5,2)=jacobt(5,2)- vint(k+4)*cp2(k,1)
 !
-            jacobt(6,2)=jacobt(6,2)- vint(k+4)*cp2(k,2)
-        endif
+        jacobt(6,2)=jacobt(6,2)- vint(k+4)*cp2(k,2)
+
     end do
 !
     jacobt(3,3)=jacobt(3,3)- c(1,1,1)

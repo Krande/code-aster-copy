@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,7 +76,8 @@ subroutine pasfre(disc, freq, pasf, dim, nbm,&
         endif
 !
         if (im .gt. 1) then
-            disc(1,(im-1)*4+1) = disc(2,(im-1)*4)
+            ip = im-1
+            disc(1,ip*4+1) = disc(2,ip*4)
         endif
 !
         if (im .lt. dim) then

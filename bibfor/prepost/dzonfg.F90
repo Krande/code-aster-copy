@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -120,9 +120,9 @@ subroutine dzonfg(nsommx, icnc, nelcom, numeli, inno,&
     nbnoco = 1
 !
     nedep=0
-    nefin=nbelzo(1)
 !
     do 70 j = 1, 3
+        nefin=nedep+nbelzo(j)
         do 80 inel = nedep+1, nefin
             nuef = tbelzo(inel)
             do 90 ind = 1, icnc(1, nuef)
@@ -143,10 +143,7 @@ subroutine dzonfg(nsommx, icnc, nelcom, numeli, inno,&
                 endif
  90         continue
  80     continue
-        if (j .ne. 3) then
-            nedep=nefin
-            nefin=nedep+nbelzo(j+1)
-        endif
+        nedep=nefin
  70 end do
 !
     nbelzo(2)=nbelzo(1)+nbelzo(2)

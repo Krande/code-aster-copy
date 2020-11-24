@@ -669,38 +669,48 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
         crit =zero
 !
         if (conv) then
-           det  =abs(trace(3,deps0))
-           do i = 1, 8
+            det  =abs(trace(3,deps0))
+            do i = 1, 3
 !
 ! On normalise les seuils de la meme facon que dans hujjid
 ! i.e. par le module d'Young materf(1,1)/Pcr0
 ! pour assurer la coherence du controle avec RESI_INTE_RELA
-              if (i.lt.4) then
-
-                 call hujcrd(i, materf, sigf, vinf, seuil, iret)
-                 if (iret .ne. 0) then
+                call hujcrd(i, materf, sigf, vinf, seuil, iret)
+                if (iret .ne. 0) then
                     goto 999
-                 endif
-                 seuil   = seuil*det
+                endif
+                seuil   = seuil*det
 
-                 if (seuil.gt.zero) then
-                   bid16(i)=un
-                 else
-                   bid16(i)=zero
-                 endif
+                if (seuil.gt.zero) then
+                    bid16(i)=un
+                else
+                    bid16(i)=zero
+                endif
+                crit = max(seuil,crit)
+!
+            enddo
+!
+! On normalise les seuils de la meme facon que dans hujjid
+! i.e. par le module d'Young materf(1,1)/Pcr0
+! pour assurer la coherence du controle avec RESI_INTE_RELA
+!
+            call hujcri(materf, sigf, vinf, seuil)
+            seuil   = seuil/materf(1,1)*abs(materf(7,2))
 
-              elseif (i.eq.4) then
-
-                 call hujcri(materf, sigf, vinf, seuil)
-                 seuil   = seuil/materf(1,1)*abs(materf(7,2))
-
-                 if (seuil.gt.zero) then
-                   bid16(4)=un
-                 else
-                   bid16(4)=zero
-                 endif
-
-              elseif (i.lt.8 .and. bid16(i-4).eq.zero) then
+            if (seuil.gt.zero) then
+                bid16(4)=un
+            else
+                bid16(4)=zero
+            endif
+            crit = max(seuil,crit)
+!
+           do i = 5, 8
+!
+! On normalise les seuils de la meme facon que dans hujjid
+! i.e. par le module d'Young materf(1,1)/Pcr0
+! pour assurer la coherence du controle avec RESI_INTE_RELA
+!
+              if (i.lt.8 .and. bid16(i-4).eq.zero) then
 
                  call hujcdc(i-4, materf, sigf, vinf, seuil)
                  seuil = seuil*det
@@ -710,7 +720,6 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
                  call hujcic(materf, sigf, vinf, seuil)
                  seuil = seuil/materf(1,1)*abs(materf(7,2))
               endif
-
               crit = max(seuil,crit)
 !
            enddo

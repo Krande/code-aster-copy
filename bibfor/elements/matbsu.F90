@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -86,20 +86,23 @@ subroutine matbsu(nb1, xr, npgsr, intsn, b1mnc,&
                 b2su ( i , j ) = b2su ( i , j ) + xr ( i1 + k ) *&
                 b2mri ( i , j , k )
 !
-                if (i .le. 2) then
+120         continue
+110     continue
+        do i = 1, 2
+            do k = 1, npgsr
 !
 !------------------- OPERATEURS DE SHEAR
 !
-                    b1su ( i + 3 , j ) = b1su ( i + 3 , j ) + xr ( i1&
-                    + k ) * b1src ( i , j , k )
+                b1su ( i + 3 , j ) = b1su ( i + 3 , j ) + xr ( i1&
+                + k ) * b1src ( i , j , k )
 !
-                    b2su ( i + 3 , j ) = b2su ( i + 3 , j ) + xr ( i1&
-                    + k ) * b2src ( i , j , k )
+                b2su ( i + 3 , j ) = b2su ( i + 3 , j ) + xr ( i1&
+                + k ) * b2src ( i , j , k )
 !
-                endif
-!
-120          continue
-110      continue
+             end do
+         end do
+
+
 100  end do
 !
 !

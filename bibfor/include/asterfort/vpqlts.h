@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ interface
     subroutine vpqlts(diag, surdia, neq, vecpro, mxcmp,&
                       mxiter, ier, nitqr)
         integer :: mxcmp
-        real(kind=8) :: diag(1)
-        real(kind=8) :: surdia(1)
         integer :: neq
-        real(kind=8) :: vecpro(mxcmp, 1)
+        real(kind=8) :: diag(neq)
+        real(kind=8) :: surdia(neq)
+        real(kind=8) :: vecpro(mxcmp, neq)
         integer :: mxiter
         integer :: ier
         integer :: nitqr

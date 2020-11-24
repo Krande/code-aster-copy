@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,14 +39,18 @@ subroutine btdmsr(nb1, nb2, ksi3s2, intsr, xr,&
     l4=387
     l5=423
 !
-    do 15 i = 1, 9
-        do 16 j = 1, 5*nb1+2
+    do 16 j = 1, 5*nb1+2
+        do 15 i = 1, 9
             dnsdsm(i,j)=0.d0
             dnsds(i,j)=0.d0
-            if (i .le. 3) btdm(intsr,i,j)=0.d0
-            if (i .le. 2) btds(intsr,i,j)=0.d0
-16      end do
-15  end do
+15      end do
+        do i = 1, 3
+            btdm(intsr,i,j)=0.d0
+        end do
+        do i = 1, 2
+            btds(intsr,i,j)=0.d0
+        end do
+16  end do
 !
     intsr1=8*(intsr-1)
     intsr2=9*(intsr-1)
