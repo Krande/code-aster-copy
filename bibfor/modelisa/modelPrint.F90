@@ -153,6 +153,11 @@ character(len=8), intent(in) :: model
                         modelisa = modelisa(1:isharp-1)
                     endif
                 endif
+! ------------- To have "right" format in logger
+                if (type_elem .eq. ' ') type_elem = '_'
+                if (modelisa .eq. ' ') modelisa = '_'
+                if (formul .eq. ' ') formul = '_'
+                if (type_geom .eq. ' ') type_geom = '_'
                 p_type_elem(nume_type_elem) = type_elem
                 p_modeli(nume_type_elem)    = modelisa
                 p_formul(nume_type_elem)    = formul
