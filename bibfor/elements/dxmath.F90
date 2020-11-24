@@ -46,7 +46,7 @@ subroutine dxmath(fami, epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1v
 !     CONTRAINTES THERMIQUES
 !     ------------------------------------------------------------------
     integer :: jcoqu, jmate, iret
-    integer :: nbv, i, j, k, nbpar, elasco, indalf
+    integer :: nbv, i, j, nbpar, elasco, indalf
     real(kind=8) :: cdf, cdm, valres(56)
     real(kind=8) :: young, nu, epais, valpar, excent
     real(kind=8) :: xab1(3, 3), dh(3, 3)
@@ -198,7 +198,7 @@ subroutine dxmath(fami, epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1v
             nomres(34) = 'ALPHA   '
         endif
     else if (phenom.eq.'ELAS_ORTH') then
-        call utmess('F', 'ELEMENTS_91', sk=phenom) 
+        call utmess('F', 'ELEMENTS_91', sk=phenom)
     else if (phenom.eq.'ELAS_ISTR') then
         call utmess('F', 'ELEMENTS_92', sk=phenom)
     else

@@ -77,7 +77,7 @@ aster_logical, intent(in) :: lMatr, lVect, lSigm
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: code(9), ni, mj, kk, p, q, kpg, ibid, n
+    integer :: code(9), ni, mj, kk, p, q, kpg, n
     real(kind=8) :: b(3, 60), sigmo(6), sigma(6)
     real(kind=8) :: sum(3), dsu(3), dsidep(6, 6), poids
     real(kind=8) :: angmas(3)

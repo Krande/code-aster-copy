@@ -71,7 +71,7 @@ aster_logical, intent(in) :: lMatr, lVect, lSigm
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: axi
-    integer :: code(9), i, j, q, s, ibid, kpg
+    integer :: code(9), i, j, q, s, kpg
     integer :: ndim, nno, nnos, ipoids, ivf, idfde, jgano
 !     COORDONNEES POINT DE GAUSS + POIDS : X,Y,W => 1ER INDICE
     real(kind=8) :: coopg(3, npg)
