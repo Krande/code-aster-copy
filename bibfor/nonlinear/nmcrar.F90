@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,19 +17,17 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmcrar(result, sddisc, fonact)
+subroutine nmcrar(result, sddisc, fonact, sddyna)
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
+#include "asterfort/ndynlo.h"
 #include "asterfort/nmarex.h"
 #include "asterfort/nmarnr.h"
 #include "asterfort/nmarpr.h"
@@ -38,61 +36,58 @@ implicit none
 #include "asterfort/wkvect.h"
 !
 character(len=19) :: sddisc
+character(len=19), intent(in) :: sddyna
 character(len=8) :: result
 integer :: fonact(*)
 !
-! ----------------------------------------------------------------------
+! ------------------------------------------------------------------------------------------------
 !
 ! ROUTINE *_NON_LINE (STRUCTURES DE DONNES)
 !
 ! CREATION SD ARCHIVAGE
 !
-! ----------------------------------------------------------------------
+! ------------------------------------------------------------------------------------------------
 !
 !
 ! IN  RESULT : NOM DE LA SD RESULTAT
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  SDDISC : SD DISCRETISATION
 !
-! ----------------------------------------------------------------------
+! ------------------------------------------------------------------------------------------------
 !
-    integer :: nocc, iocc
-    integer :: numder, numrep
-    character(len=16) :: motfac, motpas
-    integer :: numarc, numreo
-    character(len=24) :: arcinf
-    integer :: jarinf
-    character(len=19) :: sdarch
     integer :: ifm, niv
-    aster_logical :: lreuse
-    character(len=1) :: base
+    character(len=16), parameter :: keywfact = 'ARCHIVAGE', keywStep = 'PAS_ARCH'
+    character(len=1), parameter :: base ='V'
+    integer :: nocc, iocc
+    integer :: numder, numrep, numarc, numreo
+    character(len=19) :: sdarch
+    character(len=24) :: arcinf
+    integer, pointer :: storeArcinf(:) => null()
+    aster_logical :: lreuse, lDyna
     real(kind=8) :: insder
 !
-! ----------------------------------------------------------------------
+! ------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('MECANONLINE', ifm, niv)
     if (niv .ge. 2) then
         call utmess('I','MECANONLINE13_14')
     endif
 !
-! --- FONCTIONNALITES ACTIVEES
+! - Initializaions
 !
-    lreuse = isfonc(fonact,'REUSE')
-!
-! --- INITIALISATIONS
-!
-    motfac = 'ARCHIVAGE'
-    motpas = 'PAS_ARCH'
-    base = 'V'
-    iocc = 1
+    iocc   = 1
     numarc = -1
     numreo = -1
     numrep = -1
-    call getfac(motfac, nocc)
-    ASSERT(nocc.le.1)
+    call getfac(keywfact, nocc)
+    ASSERT(nocc .le. 1)
 !
-! --- NOM SD ARCHIVAGE
+! - Active functionnalites
+!
+    lreuse = isfonc(fonact, 'REUSE')
+    lDyna  = ndynlo(sddyna, 'DYNAMIQUE')
+!
+! - Name of datastructures to store
 !
     sdarch = sddisc(1:14)//'.ARCH'
     arcinf = sdarch(1:19)//'.AINF'
@@ -103,16 +98,15 @@ integer :: fonact(*)
 !
 ! --- LECTURE LISTE INSTANTS D'ARCHIVAGE
 !
-    call nmcrpx(motfac, motpas, iocc, sdarch, base)
+    call nmcrpx(keywfact, keywStep, iocc, sdarch, base)
 !
 ! --- CONSTRUCTION CHAMPS EXCLUS DE L'ARCHIVAGE
 !
-    call nmarex(motfac, sdarch)
+    call nmarex(keywfact, sdarch, lDyna)
 !
 ! --- RECUPERATION DU PREMIER NUMERO A ARCHIVER
 !
-    call nmarpr(result, sddisc, lreuse, numder, insder,&
-                numarc)
+    call nmarpr(result, sddisc, lreuse, numder, insder, numarc)
 !
 ! --- RECUPERATION NUMERO REUSE - TABLE OBSERVATION
 !
@@ -124,14 +118,12 @@ integer :: fonact(*)
 !
 ! --- NUMERO D'ARCHIVE COURANT ET NUMERO DE REUSE
 !
-    ASSERT(numarc.ge.0)
-    ASSERT(numreo.ge.0)
-    ASSERT(numrep.ge.0)
-    call wkvect(arcinf, 'V V I', 3, jarinf)
-    zi(jarinf-1+1) = numarc
-    zi(jarinf-1+2) = numreo
-    zi(jarinf-1+3) = numrep
-!
-    call jedema()
+ASSERT(numarc .ge. 0)
+ASSERT(numreo .ge. 0)
+ASSERT(numrep .ge. 0)
+call wkvect(arcinf, 'V V I', 3, vi = storeArcinf)
+storeArcinf(1) = numarc
+storeArcinf(2) = numreo
+storeArcinf(3) = numrep
 !
 end subroutine
