@@ -131,7 +131,6 @@ class ASTER_TIMER:
                 self._oversize = True
                 self.Start(
                     self._oversize_name, num=num, name=self._oversize_name)
-            return
         name = name or str(timer)
         isnew = self.timers.get(timer) is None
         if not num:
@@ -215,6 +214,8 @@ class ASTER_TIMER:
         cpu_dt = self.timers[timer]['cpu_dt']
         sys_dt = self.timers[timer]['sys_dt']
         tot_dt = self.timers[timer]['tot_dt']
+        if len(self.timers) > self.MaxSize:
+            del self.timers[timer]
         return cpu_dt, sys_dt, tot_dt
 
     def StopAndGetTotal(self):
