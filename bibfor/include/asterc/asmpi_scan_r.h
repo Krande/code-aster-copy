@@ -16,22 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-#ifndef ASTERF_PETSC_H
-#define ASTERF_PETSC_H
-
-#include "asterf_types.h"
-
-#ifdef _HAVE_PETSC
-#include <petscversion.h>
-
-! Inclusion des interfaces Fortran de PETSc
-
-#include <petsc/finclude/petscsys.h>
-#include <petsc/finclude/petscvec.h>
-#include <petsc/finclude/petscmat.h>
-#include <petsc/finclude/petscpc.h>
-#include <petsc/finclude/petscksp.h>
-#include <petsc/finclude/petscviewer.h>
 !
-#endif
-#endif
+!
+#include "asterf_types.h"
+interface
+subroutine asmpi_scan_r(sendbuf, recvbuf, count, op, comm)
+    real(kind=8), intent(in) :: sendbuf(*)
+    real(kind=8), intent(out) :: recvbuf(*)
+    mpi_int, intent(in) :: count
+    mpi_int, intent(in) :: op
+    mpi_int, intent(in) :: comm
+end subroutine asmpi_scan_r
+end interface

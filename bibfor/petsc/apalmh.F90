@@ -148,12 +148,9 @@ use petsc_data_module
                      ierr)
     ASSERT(ierr.eq.0)
 !
-#ifndef ASTER_PETSC_VERSION_LEQ_32
-!   AVEC PETSc >= 3.3
 !   IL FAUT APPELER MATSETBLOCKSIZE *AVANT* MAT*SETPREALLOCATION
     call MatSetBlockSize(a, to_petsc_int(bs), ierr)
     ASSERT(ierr.eq.0)
-#endif
 
     call MatSetType(a, MATMPIAIJ, ierr)
     ASSERT(ierr.eq.0)
@@ -230,27 +227,17 @@ use petsc_data_module
     call MatMPIAIJSetPreallocation(a, unused_nz, zi4(jidxd),&
                                    unused_nz, zi4(jidxo), ierr)
     ASSERT(ierr.eq.0)
-!
-#ifdef ASTER_PETSC_VERSION_LEQ_32
-!      LE BS DOIT ABSOLUMENT ETRE DEFINI ICI
-    call MatSetBlockSize(a, to_petsc_int(bs), ierr)
-    ASSERT(ierr.eq.0)
-!   RQ : A PARTIR DE LA VERSION V 3.3 IL DOIT PRECEDER LA PREALLOCATION
-#endif
-!
+
     ap(kptsc)=a
 
-
-    1000 format(i6,' ',i6,' ',i6,' ',i6,' ',i6,' ',i6,' ',1pe20.13)
-!
     call jedetr(idxd)
     call jedetr(idxo)
-!
+
     call jedema()
-!
+
 #else
     integer :: idummy
     idummy = kptsc
 #endif
-!
+
 end subroutine

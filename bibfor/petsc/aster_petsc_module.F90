@@ -33,43 +33,43 @@ use petscksp
 !
 implicit none
 !
-interface 
+interface
     subroutine PetscObjectSetName( obj, description, ierr)
         use petscsysdef
         type(*) :: obj
         character(len=*) :: description
-        PetscErrorCode, intent(out) :: ierr  
+        PetscErrorCode, intent(out) :: ierr
     end subroutine PetscObjectSetName
 end interface
-interface 
+interface
     subroutine PetscLogDefaultBegin(ierr)
         use petscsysdef
-        PetscErrorCode, intent(out) :: ierr  
+        PetscErrorCode, intent(out) :: ierr
     end subroutine PetscLogDefaultBegin
-end interface 
-interface 
+end interface
+interface
     subroutine PetscViewerAndFormatCreate(viewer, format, vf, ierr)
         use petscsysdef
         PetscViewer:: viewer
         PetscViewerFormat :: format
         PetscViewerAndFormat :: vf
-        PetscErrorCode, intent(out) :: ierr  
-    end subroutine  PetscViewerAndFormatCreate   
-end interface 
+        PetscErrorCode, intent(out) :: ierr
+    end subroutine  PetscViewerAndFormatCreate
+end interface
 !
-! Vec routines 
+! Vec routines
 !
-interface 
+interface
     subroutine VecDuplicateVecs( v, m, vtab, ierr)
           use petscvecdef
           Vec, intent(in)  :: v
           PetscInt, intent(in) :: m
           Vec  :: vtab(*)
-          PetscErrorCode, intent(out) :: ierr 
+          PetscErrorCode, intent(out) :: ierr
     end subroutine VecDuplicateVecs
-end interface 
+end interface
 interface
-    subroutine VecGetArray(x,x_array,i_x,ierr)
+    subroutine VecGetArray(x, x_array, i_x, ierr)
          use petscvecdef
          Vec :: x
          PetscScalar :: x_array(*)
@@ -89,17 +89,17 @@ end interface
 !
 ! Mat routines
 !
-interface 
+interface
     subroutine MatConvert( mat, newtype, reuse, matnew, ierr)
         use petscmatdef
         Mat :: mat
         character(*) :: newtype
         MatReuse :: reuse
         Mat :: matnew
-        PetscErrorCode, intent(out) :: ierr  
+        PetscErrorCode, intent(out) :: ierr
     end subroutine MatConvert
 end interface
-interface 
+interface
     subroutine MatCreateSubMatrices( mat,n,irow,icol,scall, submat, ierr)
         use petscmatdef
         Mat :: mat
@@ -107,70 +107,70 @@ interface
         IS :: irow, icol
         PetscInt :: scall
         Mat :: submat(*)
-        PetscErrorCode, intent(out) :: ierr  
+        PetscErrorCode, intent(out) :: ierr
     end subroutine MatCreateSubMatrices
-end interface  
-interface 
+end interface
+interface
     subroutine MatCreateVecs( a, vright, vleft, ierr )
-         use petscmatdef
-         Mat, intent(in) :: a
-         Vec :: vright, vleft
-         PetscErrorCode, intent(out) :: ierr  
-    end subroutine MatCreateVecs    
+        use petscmatdef
+        Mat, intent(in) :: a
+        Vec :: vright, vleft
+        PetscErrorCode, intent(out) :: ierr
+    end subroutine MatCreateVecs
 end interface
-interface 
-     subroutine  MatGetRowIJ(mat,shift,symmetric,inodecompressed,n, ia, iia, ja, jja, done, ierr)
-         use petscmatdef
-         Mat :: mat
-         PetscInt :: shift
-         PetscBool :: symmetric, inodecompressed
-         PetscInt :: n
-         PetscInt :: ia(*), ja(*) 
-         PetscOffset :: iia, jja
-         PetscBool :: done 
-         PetscErrorCode, intent(out) :: ierr  
-     end subroutine MatGetRowIJ
+interface
+    subroutine  MatGetRowIJ(mat,shift,symmetric,inodecompressed,n, ia, iia, ja, jja, done, ierr)
+        use petscmatdef
+        Mat :: mat
+        PetscInt :: shift
+        PetscBool :: symmetric, inodecompressed
+        PetscInt :: n
+        PetscInt :: ia(*), ja(*)
+        PetscOffset :: iia, jja
+        PetscBool :: done
+        PetscErrorCode, intent(out) :: ierr
+    end subroutine MatGetRowIJ
 end interface
-interface 
+interface
     subroutine MatRestoreRowIJ( mat,shift,symmetric,inodecompressed,n, ia, iia, ja, jja, done, ierr)
-         use petscmatdef
-         Mat :: mat
-         PetscInt :: shift
-         PetscBool :: symmetric, inodecompressed
-         PetscInt :: n
-         PetscInt :: ia(*), ja(*)
-         PetscOffset :: iia, jja
-         PetscBool :: done 
-         PetscErrorCode, intent(out) :: ierr  
+        use petscmatdef
+        Mat :: mat
+        PetscInt :: shift
+        PetscBool :: symmetric, inodecompressed
+        PetscInt :: n
+        PetscInt :: ia(*), ja(*)
+        PetscOffset :: iia, jja
+        PetscBool :: done
+        PetscErrorCode, intent(out) :: ierr
      end subroutine MatRestoreRowIJ
 end interface
 interface
     subroutine MatShellSetOperation(mat, operation, myop, ierr)
-         use petscmatdef 
+         use petscmatdef
          Mat :: mat
          PetscInt :: operation
          external :: myop
-         PetscErrorCode, intent(out) :: ierr  
+         PetscErrorCode, intent(out) :: ierr
     end subroutine  MatShellSetOperation
 end interface
 !
 ! PC and KSP routines
-!    
+!
 interface
     subroutine PCBJacobiGetSubKSP(pc, nlocal, first, subksp, ierr)
         use petsckspdef
         PC :: pc
         PetscInt :: nlocal, first
         KSP :: subksp(*)
-        PetscErrorCode, intent(out) :: ierr  
+        PetscErrorCode, intent(out) :: ierr
     end subroutine PCBJacobiGetSubKSP
 end interface
-interface 
+interface
      subroutine PCFactorSetMatOrderingType( pc, ordering, ierr)
          use petsckspdef
          PC :: pc
          character(*) :: ordering
-         PetscErrorCode, intent(out) :: ierr  
+         PetscErrorCode, intent(out) :: ierr
      end subroutine PCFactorSetMatOrderingType
 end interface
 interface
@@ -230,12 +230,12 @@ interface
         PetscErrorCode, intent(out) :: ierr
     end subroutine PCShellSetName
 end interface
-interface 
+interface
      subroutine PCFactorSetMatSolverType(pc, solvertype ,ierr)
          use petsckspdef
          PC :: pc
          character(*):: solvertype
-         PetscErrorCode, intent(out) :: ierr  
+         PetscErrorCode, intent(out) :: ierr
      end subroutine PCFactorSetMatSolverType
 end interface
 interface
@@ -244,7 +244,7 @@ interface
         KSP :: ksp
         PetscViewerAndFormat:: vf
         external :: mykspmonitor, mydestroy
-        PetscErrorCode, intent(out) :: ierr  
+        PetscErrorCode, intent(out) :: ierr
     end subroutine KSPMonitorSet
 end interface
 #endif

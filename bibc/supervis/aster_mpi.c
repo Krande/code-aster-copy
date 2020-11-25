@@ -739,6 +739,66 @@ void DEFPPPP(ASMPI_BCAST_I4, asmpi_bcast_i4, ASTERINTEGER4 *buffer,
 }
 
 /*
+ * Wrappers around MPI_Scan
+ * Do not check returncode because all errors raise
+ */
+void DEFPPPPP(ASMPI_SCAN_R, asmpi_scan_r, ASTERDOUBLE *sendbuf,
+              ASTERDOUBLE *recvbuf, ASTERINTEGER4 *count, MPI_Fint *op,
+              MPI_Fint *comm) {
+    MPI_Comm mpicom;
+    MPI_Op mpiop;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c(*comm);
+    mpiop = MPI_Op_f2c( *op );
+    AS_ASSERT(MPI_Scan((void *)sendbuf, (void *)recvbuf, *count,
+                       MPI_DOUBLE_PRECISION, mpiop, mpicom) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+void DEFPPPPP(ASMPI_SCAN_C, asmpi_scan_c, ASTERDOUBLE *sendbuf,
+              ASTERDOUBLE *recvbuf, ASTERINTEGER4 *count, MPI_Fint *op,
+              MPI_Fint *comm) {
+    MPI_Comm mpicom;
+    MPI_Op mpiop;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c(*comm);
+    mpiop = MPI_Op_f2c( *op );
+    AS_ASSERT(MPI_Scan((void *)sendbuf, (void *)recvbuf, *count,
+                       MPI_DOUBLE_COMPLEX, mpiop, mpicom) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+void DEFPPPPP(ASMPI_SCAN_I, asmpi_scan_i, ASTERINTEGER *sendbuf,
+              ASTERINTEGER *recvbuf, ASTERINTEGER4 *count, MPI_Fint *op,
+              MPI_Fint *comm) {
+    MPI_Comm mpicom;
+    MPI_Op mpiop;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c(*comm);
+    mpiop = MPI_Op_f2c( *op );
+    AS_ASSERT(MPI_Scan((void *)sendbuf, (void *)recvbuf, *count,
+                       MPI_INTEGER8, mpiop, mpicom) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+void DEFPPPPP(ASMPI_SCAN_I4, asmpi_scan_i4, ASTERINTEGER4 *sendbuf,
+              ASTERINTEGER4 *recvbuf, ASTERINTEGER4 *count, MPI_Fint *op,
+              MPI_Fint *comm) {
+    MPI_Comm mpicom;
+    MPI_Op mpiop;
+#ifdef _USE_MPI
+    mpicom = MPI_Comm_f2c(*comm);
+    mpiop = MPI_Op_f2c( *op );
+    AS_ASSERT(MPI_Scan((void *)sendbuf, (void *)recvbuf, *count,
+                       MPI_INTEGER4, mpiop, mpicom) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+/*
  * Define a dedicated function to abort a Code_Aster execution.
  */
 int gErrFlg = 0;

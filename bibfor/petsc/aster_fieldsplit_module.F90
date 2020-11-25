@@ -43,6 +43,7 @@ module aster_fieldsplit_module
     private
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
+#include "asterc/asmpi_scan_i4.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -511,7 +512,7 @@ contains
 !   Local variables
 !
         mpi_int :: rang, nbproc, mpicomm
-        PetscInt :: nab_local, high_ab, low_ab, n_ab
+        PetscInt :: nab_local(1), high_ab(1), low_ab, n_ab
         PetscErrorCode :: ierr
         PetscInt, parameter :: izero = 0, ione=1
         IS :: is_ind_ab, is_a_in_ab_local
@@ -527,24 +528,23 @@ contains
 !   l'ensemble des processeurs)
 !   -----------------------------------------------------
 !   Chaque processeur possède nab_local entrées de is_ab
-        call ISGetLocalSize(is_ab, nab_local, ierr)
+        call ISGetLocalSize(is_ab, nab_local(1), ierr)
         ASSERT( ierr == 0 )
 !   Chaque processeur possède la section d'indice global C
 !   [low_ab:high_ab-1] de is_ab
-        high_ab = izero
-        call MPI_Scan(nab_local, high_ab, ione, MPI_INT, MPI_SUM,&
-                      mpicomm, ierr)
+        high_ab(1) = izero
+        call asmpi_scan_i4(nab_local, high_ab, ione, MPI_SUM, mpicomm)
         ASSERT(ierr == 0)
-        low_ab = high_ab - nab_local
+        low_ab = high_ab(1) - nab_local(1)
 !   Vérification de cohérence
         call ISGetSize(is_ab, n_ab, ierr)
         ASSERT( ierr == 0 )
         if (rang == nbproc - 1) then
-            ASSERT( high_ab == n_ab )
+            ASSERT( high_ab(1) == n_ab )
         endif
 !   Index Set représentant les indices de is_ab, c'est à
 !   dire la section [low_ab:high_ab-1] sur chaque processeur
-        call ISCreateStride(mpicomm, nab_local, low_ab, ione, is_ind_ab,&
+        call ISCreateStride(mpicomm, nab_local(1), low_ab, ione, is_ind_ab,&
                             ierr)
         ASSERT(ierr == 0)
 !   is_ind_ab est utilisé pour construire le mapping qui permettra
@@ -568,7 +568,7 @@ contains
         ASSERT( ierr == 0 )
 !
         if (present( is_b_in_ab )) then
-            call ISComplement(is_a_in_ab, low_ab, high_ab, is_b_in_ab, ierr)
+            call ISComplement(is_a_in_ab, low_ab, high_ab(1), is_b_in_ab, ierr)
             ASSERT( ierr == 0 )
         endif
 !

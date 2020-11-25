@@ -256,6 +256,9 @@ class Serializer(object):
                 logger.error(f"can not restore object: {name} <{obj}>")
                 continue
             self._ctxt[name] = obj
+            if not name:
+                logger.warning(f"restoring {type(obj)} with name 'None'!")
+                continue
             logger.info(f"{name:<24s} {type(obj)}")
             assert not isinstance(obj, AsterUnpickler.BufferObject)
 
