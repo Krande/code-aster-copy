@@ -165,8 +165,8 @@ class ExecuteCommand(object):
 
         ExecuteCommand.level += 1
         self._counter = ExecutionParameter().incr_command_counter()
-        timer.Start(str(self._counter), name=self.command_name,
-                    hide=not self.show_syntax())
+        if self.show_syntax():
+            timer.Start(str(self._counter), name=self.command_name)
         timer.Start(" . check syntax", num=1.1e6)
         self.adapt_syntax(keywords)
         self._cata.addDefaultKeywords(keywords)
@@ -364,10 +364,11 @@ class ExecuteCommand(object):
 
     def _print_stats(self):
         """Print the memory and timer informations."""
+        # not called if not show_syntax()
         timer = ExecutionParameter().timer
         logger.info(command_memory())
-        logger.info(command_time(self._counter,
-                                 *timer.StopAndGet(str(self._counter))))
+        logger.info(
+            command_time(self._counter, *timer.StopAndGet(str(self._counter))))
         logger.info(command_separator())
 
     def check_syntax(self, keywords):
