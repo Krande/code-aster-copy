@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/inical.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -174,18 +175,15 @@ character(len=*), optional, intent(in) :: sddynz_
 ! - Prepare vector and matrix
 !
     if (l_merigi) then
-        call jeexin(merigi//'.RELR', iret)
-        if (iret .eq. 0) then
-            call jeexin(merigi//'.RERR', ires)
-            if (ires .eq. 0) then
-                call memare(base, merigi, model, mate, cara_elem, 'RIGI_MECA')
-            endif
-            if (l_macr_elem) then
-                call jeveuo(merigi//'.RERR', 'E', vk24=v_rerr)
-                v_rerr(3) = 'OUI_SOUS_STRUC'
-            endif
+        call detrsd('MATR_ELEM', merigi)
+        call jeexin(merigi//'.RERR', ires)
+        if (ires .eq. 0) then
+            call memare(base, merigi, model, mate, cara_elem, 'RIGI_MECA')
         endif
-        call jedetr(merigi//'.RELR')
+        if (l_macr_elem) then
+            call jeveuo(merigi//'.RERR', 'E', vk24=v_rerr)
+            v_rerr(3) = 'OUI_SOUS_STRUC'
+        endif
         call reajre(merigi, ' ', base)
     endif
 !
