@@ -26,7 +26,6 @@ code_aster.init("--test")
 
 # list of DataStructures
 func = [None, None]
-
 func[0] = DEFI_FONCTION(VALE=(0, 0, 1, 1), NOM_PARA='X')
 func[1] = DEFI_FONCTION(VALE=(0, 0, 1, 2), NOM_PARA='X')
 
@@ -61,3 +60,4 @@ code_aster.saveObjects()
 test.printSummary()
 
 FIN()
+

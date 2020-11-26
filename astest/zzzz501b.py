@@ -151,3 +151,4 @@ test.assertEqual(len(deps), 0)
 test.printSummary()
 
 code_aster.close()
+
