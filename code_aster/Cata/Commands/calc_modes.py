@@ -273,7 +273,7 @@ CALC_MODES=MACRO(nom="CALC_MODES",
                 ),
 # ------------- How to select eigenvalues
                 OPTION          = SIMP(statut='f',typ='TXM',defaut="PLUS_PETITE",
-                                       into=("PLUS_PETITE","PLUS_GRANDE","BANDE","CENTRE","TOUT","SEPARE","AJUSTE","PROCHE"),
+                                       into=("PLUS_PETITE","BANDE","CENTRE","TOUT","SEPARE","AJUSTE","PROCHE"),
                                        fr=tr("Choix de la zone de recherche"),),
 # ------------- Select all eigenvalues
                 b_all           = BLOC(condition = """equal_to("OPTION", 'TOUT')""",
@@ -331,7 +331,7 @@ CALC_MODES=MACRO(nom="CALC_MODES",
                 ),
 
 # ------------- Options of eigen solver
-                b_EigenSolv1      = BLOC(condition = """is_in("OPTION", ('PLUS_PETITE','PLUS_GRANDE','BANDE','CENTRE','TOUT'))""",
+                b_EigenSolv1      = BLOC(condition = """is_in("OPTION", ('PLUS_PETITE','BANDE','CENTRE','TOUT'))""",
                     SOLVEUR_MODAL     = FACT(statut='d',
                         METHODE         = SIMP(statut='f',typ='TXM',defaut="SORENSEN", into=("TRI_DIAG","JACOBI","SORENSEN","QZ"),),
                         b_tri_diag      = BLOC(condition = """equal_to("METHODE", 'TRI_DIAG')""",
@@ -378,12 +378,12 @@ CALC_MODES=MACRO(nom="CALC_MODES",
                 b_linSolv_Inv3    = BLOC(condition = """is_in("OPTION", ('SEPARE','AJUSTE', 'PROCHE'))""",
                     SOLVEUR         = C_SOLVEUR('MODE_ITER_INV'),
                 ),
-                b_linSolv_Simu    = BLOC(condition = """is_in("OPTION", ('PLUS_PETITE','PLUS_GRANDE','BANDE','CENTRE', 'TOUT'))""",
+                b_linSolv_Simu    = BLOC(condition = """is_in("OPTION", ('PLUS_PETITE','BANDE','CENTRE', 'TOUT'))""",
                     SOLVEUR         = C_SOLVEUR('MODE_ITER_SIMULT'),
                 ),
 
 # ------------- Sturm
-                b_sturm_simult    = BLOC(condition = """is_in("OPTION", ('PLUS_PETITE','PLUS_GRANDE','CENTRE','TOUT', 'BANDE'))""",
+                b_sturm_simult    = BLOC(condition = """is_in("OPTION", ('PLUS_PETITE','CENTRE','TOUT', 'BANDE'))""",
                     VERI_MODE       = FACT(statut='d',
                         STOP_ERREUR     = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
                         SEUIL           = SIMP(statut='f',typ='R',val_min=0.E+0,defaut=1.e-6, fr=tr("Valeur limite admise pour l'erreur a posteriori des modes")),
@@ -415,7 +415,7 @@ CALC_MODES=MACRO(nom="CALC_MODES",
                 ),
 
 # ------------- How to select eigenvalues
-                OPTION          = SIMP(statut='f',typ='TXM',defaut="PLUS_PETITE",into=("PLUS_PETITE","PLUS_GRANDE","BANDE","CENTRE","TOUT","SEPARE","AJUSTE","PROCHE"),
+                OPTION          = SIMP(statut='f',typ='TXM',defaut="PLUS_PETITE",into=("PLUS_PETITE","BANDE","CENTRE","TOUT","SEPARE","AJUSTE","PROCHE"),
                                        fr=tr("Choix de la zone de recherche"),),
 
 # ------------- Select all eigenvalues
@@ -474,7 +474,7 @@ CALC_MODES=MACRO(nom="CALC_MODES",
                 ),
 
 # ------------- Options of eigen solver
-                b_EigenSolv1      = BLOC(condition = """is_in("OPTION", ('PLUS_PETITE','PLUS_GRANDE','BANDE','CENTRE','TOUT'))""",
+                b_EigenSolv1      = BLOC(condition = """is_in("OPTION", ('PLUS_PETITE','BANDE','CENTRE','TOUT'))""",
                     SOLVEUR_MODAL     = FACT(statut='d',
                         METHODE         = SIMP(statut='f',typ='TXM',defaut="SORENSEN", into=("TRI_DIAG","JACOBI","SORENSEN","QZ"),),
                         b_tri_diag      = BLOC(condition = """equal_to("METHODE", 'TRI_DIAG')""",
@@ -521,12 +521,12 @@ CALC_MODES=MACRO(nom="CALC_MODES",
                 b_linSolv_Inv3    = BLOC(condition = """is_in("OPTION", ('SEPARE','AJUSTE', 'PROCHE'))""",
                     SOLVEUR         = C_SOLVEUR('MODE_ITER_INV'),
                 ),
-                b_linSolv_Simu    = BLOC(condition = """is_in("OPTION", ('PLUS_PETITE','PLUS_GRANDE','BANDE','CENTRE', 'TOUT'))""",
+                b_linSolv_Simu    = BLOC(condition = """is_in("OPTION", ('PLUS_PETITE','BANDE','CENTRE', 'TOUT'))""",
                     SOLVEUR         = C_SOLVEUR('MODE_ITER_SIMULT'),
                 ),
 
 # ------------- Sturm
-                b_sturm_simult    = BLOC(condition = """is_in("OPTION", ('PLUS_PETITE','PLUS_GRANDE','CENTRE','TOUT', 'BANDE'))""",
+                b_sturm_simult    = BLOC(condition = """is_in("OPTION", ('PLUS_PETITE','CENTRE','TOUT', 'BANDE'))""",
                     VERI_MODE       = FACT(statut='d',
                         STOP_ERREUR     = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
                         SEUIL           = SIMP(statut='f',typ='R',val_min=0.E+0,defaut=1.e-6, fr=tr("Valeur limite admise pour l'erreur a posteriori des modes")),
