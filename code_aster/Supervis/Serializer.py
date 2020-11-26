@@ -667,7 +667,7 @@ def _filteringContext(context):
     ignored = ("code_aster", "DETRUIRE", "FIN", "VARIABLE")
     ctxt = {}
     for name, obj in list(context.items()):
-        if name in ignored or name.startswith('__'):
+        if name in ignored:
             continue
         if getattr(numpy, name, None) is obj: # see issue29282
             continue

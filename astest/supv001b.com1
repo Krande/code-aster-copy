@@ -20,7 +20,7 @@
 import code_aster
 from code_aster.Commands import *
 
-POURSUITE(CODE='OUI')
+code_aster.init("--test", "--continue", debug=True)
 
 test = code_aster.TestCase()
 test.assertEqual(COUCHE, 1, msg="reload COUCHE")
@@ -36,6 +36,7 @@ test.assertEqual(COUCHE, 3, msg="after include_function")
 test.assertEqual(form_one(0.), 1., msg="evaluate form_one")
 test.assertEqual(four(0.), 4., msg="evaluate four")
 test.assertEqual(feval(0.), 4., msg="evaluate feval")
+test.assertEqual(six(0.), 6., msg="evaluate six")
 
 test.printSummary()
 

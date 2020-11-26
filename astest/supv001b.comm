@@ -17,10 +17,10 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
+import code_aster
+from code_aster.Commands import *
 
-from code_aster.Utilities import logger
-logger.setLevel("DEBUG")
+code_aster.init("--test", debug=True)
 
 from supv001b_imp import one
 
@@ -37,5 +37,12 @@ feval = CALC_FONC_INTERP(NOM_PARA='INST', FONCTION=four, VALE_PARA=0.)
 
 COUCHE = 1
 
-del logger
+__five = DEFI_CONSTANTE(VALE=5.)
+
+const_context = { 'func': [__five] }
+
+six = FORMULE(NOM_PARA='INST',
+               VALE="func[0](INST) + 1",
+               **const_context)
+
 FIN()
