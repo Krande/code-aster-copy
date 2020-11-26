@@ -36,19 +36,6 @@ subroutine jeveuoc(nomlu, cel, pc)
 
     character(len=*), intent(in) :: nomlu
     character(len=*), intent(in) :: cel
-!    integer, optional :: jadr
-
-    aster_logical,     pointer :: vl(:)
-    integer,           pointer :: vi(:)
-    integer(kind=4),   pointer :: vi4(:)
-    real(kind=8),      pointer :: vr(:)
-    complex(kind=8),   pointer :: vc(:)
-    character(len=8),  pointer :: vk8(:)
-    character(len=16), pointer :: vk16(:)
-    character(len=24), pointer :: vk24(:)
-    character(len=32), pointer :: vk32(:)
-    character(len=80), pointer :: vk80(:)
-
 
 !   ==================================================================
     integer :: lk1zon, jk1zon, liszon, jiszon
@@ -82,7 +69,7 @@ subroutine jeveuoc(nomlu, cel, pc)
 
     integer :: jad, n1, jctab
     character(len=8) :: ktyp
-    type(c_ptr) :: pc, tmp
+    type(c_ptr) :: pc
 
 !   ==================================================================
     noml32 = nomlu

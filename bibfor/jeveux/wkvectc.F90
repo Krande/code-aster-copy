@@ -32,41 +32,19 @@ subroutine wkvectc(nom, carac, dim, pc)
     character(len=*), intent(in) :: nom
     character(len=*), intent(in) :: carac
     integer, intent(in) :: dim
-    integer :: jadr
 !
-    aster_logical,     pointer :: vl(:)
-    integer,           pointer :: vi(:)
-    integer(kind=4),   pointer :: vi4(:)
-    real(kind=8),      pointer :: vr(:)
-    complex(kind=8),   pointer :: vc(:)
-    character(len=8),  pointer :: vk8(:)
-    character(len=16), pointer :: vk16(:)
-    character(len=24), pointer :: vk24(:)
-    character(len=32), pointer :: vk32(:)
-    character(len=80), pointer :: vk80(:)
-!
-!
-! ------------------------------------------------------------------
+! --------------------------------------------------------------------
 ! Creation d'un vecteur jeveux
-! ------------------------------------------------------------------
+! --------------------------------------------------------------------
 ! in  nom   : ch*24 : nom du vecteur jeveux
 ! in  carac : ch    : descrivion des caracteristiques pour jecreo
 ! in  dim   : is    : taille du vecteur
-! out jadr  : is    : adresse de l'objet dans ZI, ZR ...
-! out vl   : l     : vecteur de logiques
-! out vi   : i     : vecteur d'entiers
-! ...
-! Deux usages differents :
-! ------------------------
-! 1) recuperation de l'adresse de l'objet 'XXX' (jxxx) dans les COMMON zi, zr, ... :
-!    call wkvect('XXX', 'V V R', 10, jxxx)
-! 2) recuperation du contenu de l'objet 'XXX' dans le vecteur XXX
-!    call wkvect('XXX', 'V V R', 10, vr=XXX)
-!-----------------------------------------------------------------------
+! out pc    : c_ptr : pointeur C vers le vecteur de valeurs
+! --------------------------------------------------------------------
     integer :: jad
     character(len=8) :: ktyp
     type(c_ptr) :: pc
-!---------------------------------------------------------------------------
+! --------------------------------------------------------------------
     call jecreo(nom, carac)
     call jeecra(nom, 'LONMAX', ival=dim)
     call jeecra(nom, 'LONUTI', ival=dim)

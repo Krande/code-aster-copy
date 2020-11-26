@@ -157,10 +157,6 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
 9999 continue
     call jedema()
 !
-#else
-    integer :: idummy
-    aster_logical :: ldummy
-    real(kind=8) :: rdummy
 #endif
 !
 end subroutine

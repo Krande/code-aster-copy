@@ -114,11 +114,13 @@ use petsc_data_module
                 0, ibid, ierror)
 !   Destruction du solveur bidon
     call detrsd('SOLVEUR', solvbd)
-    iret = 0 
+    iret = 0
 
 999 continue
     call jedema()
 #else
+    petscMatz = 0
+    iret = 0
     call utmess('F', 'FERMETUR_10')
 #endif
 end subroutine
