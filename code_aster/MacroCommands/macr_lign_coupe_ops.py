@@ -521,25 +521,25 @@ def crea_mail_lig_coup(dimension, lignes, groups, arcs):
                 x = pt1[0] + j * (pt2[0] - pt1[0]) / (nbp_lig_coupe - 1)
                 y = pt1[1] + j * (pt2[1] - pt1[1]) / (nbp_lig_coupe - 1)
                 nbno = nbno + 1
-                noeud = '  N%d   %21.14E    %21.14E' % (nbno, x, y)
+                noeud = 'N%d %21.14E %21.14E' % (nbno, x, y)
                 resu.append(noeud)
             elif dimension == 3:
                 x = pt1[0] + j * (pt2[0] - pt1[0]) / (nbp_lig_coupe - 1)
                 y = pt1[1] + j * (pt2[1] - pt1[1]) / (nbp_lig_coupe - 1)
                 z = pt1[2] + j * (pt2[2] - pt1[2]) / (nbp_lig_coupe - 1)
                 nbno = nbno + 1
-                noeud = '  N%d   %21.14E    %21.14E    %21.14E' % (
+                noeud = 'N%d %21.14E %21.14E %21.14E' % (
                     nbno, x, y, z)
                 resu.append(noeud)
     for i in range(nbngr):
         for pt in groups[i][1:]:
             if dimension == 2:
                 nbno = nbno + 1
-                noeud = '  N%d   %21.14E    %21.14E' % (nbno, pt[0], pt[1])
+                noeud = 'N%d %21.14E %21.14E' % (nbno, pt[0], pt[1])
                 resu.append(noeud)
             elif dimension == 3:
                 nbno = nbno + 1
-                noeud = '  N%d   %21.14E    %21.14E    %21.14E' % (
+                noeud = 'N%d %21.14E %21.14E %21.14E' % (
                     nbno, pt[0], pt[1], pt[2])
                 resu.append(noeud)
     angles = [None] * nbarc
@@ -561,12 +561,12 @@ def crea_mail_lig_coup(dimension, lignes, groups, arcs):
             if dimension == 2:
                 nbno = nbno + 1
                 x, y = crea_noeu_lig_coup(dimension, pt1, pt2, anglj, dnor=[])
-                noeud = '  N%d   %21.14E    %21.14E' % (nbno, x, y)
+                noeud = 'N%d %21.14E %21.14E' % (nbno, x, y)
                 resu.append(noeud)
             elif dimension == 3:
                 nbno = nbno + 1
                 x, y, z = crea_noeu_lig_coup(dimension, pt1, pt2, anglj, dnor)
-                noeud = '  N%d   %21.14E    %21.14E    %21.14E' % (
+                noeud = 'N%d %21.14E %21.14E %21.14E' % (
                     nbno, x, y, z)
                 resu.append(noeud)
     resu.append('FINSF')
@@ -578,14 +578,14 @@ def crea_mail_lig_coup(dimension, lignes, groups, arcs):
         resu.append('SEG2')
         for j in range(nbp_lig_coupe - 1):
             nbma = nbma + 1
-            maille = '  M%d N%d N%d' % (nbma, nbma + i, nbma + 1 + i)
+            maille = 'M%d N%d N%d' % (nbma, nbma + i, nbma + 1 + i)
             resu.append(maille)
         resu.append('FINSF')
     for i in range(nbngr):
         resu.append('SEG2')
         for pt in groups[i][1:-1]:
             nbma = nbma + 1
-            maille = '  M%d N%d N%d' % (
+            maille = 'M%d N%d N%d' % (
                 nbma, nbma + nblig + i, nbma + nblig + 1 + i)
             resu.append(maille)
         resu.append('FINSF')
@@ -598,12 +598,12 @@ def crea_mail_lig_coup(dimension, lignes, groups, arcs):
         nbmai = nbma + nblig + nbngr + nprec + i + 1
         for j in range(nbp_lig_coupe - 1):
             nbma = nbma + 1
-            maille = '  M%d N%d N%d' % (
+            maille = 'M%d N%d N%d' % (
                 nbma, nbma + nblig + nbngr + nprec + i, nbma + nblig + nbngr + nprec + 1 + i)
             resu.append(maille)
         if abs(angle - 360.) < epsi:
             nbma = nbma + 1
-            maille = '  M%d N%d N%d' % (
+            maille = 'M%d N%d N%d' % (
                 nbma, nbma + nblig + nbngr + nprec + i, nbmai)
             nprec = nprec - 1
             resu.append(maille)
