@@ -100,6 +100,19 @@ interface
     end subroutine MatConvert
 end interface
 interface
+    subroutine MatCreateShell(comm, m, n, mg, ng, ctxt, a_mat, ierr)
+        use petscmatdef
+        PetscMPIInt, intent(in) :: comm
+        PetscInt, intent(in) :: m
+        PetscInt, intent(in) :: n
+        PetscInt, intent(in) :: mg
+        PetscInt, intent(in) :: ng
+        PetscInt, intent(in) :: ctxt(*)
+        Mat, intent(out) :: a_mat
+        PetscErrorCode, intent(out) :: ierr
+    end subroutine MatCreateShell
+end interface
+interface
     subroutine MatCreateSubMatrices( mat,n,irow,icol,scall, submat, ierr)
         use petscmatdef
         Mat :: mat
