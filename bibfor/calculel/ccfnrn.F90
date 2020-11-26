@@ -37,6 +37,7 @@ implicit none
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/exlima.h"
 #include "asterfort/infniv.h"
 #include "asterfort/ischar.h"
@@ -328,6 +329,7 @@ implicit none
           else
             call calcop(optio2, ' ', resuin, resuou, lisord, nbordr, chtype, typesd, cret, 'V')
           endif
+          call rsexch(' ', resuou, 'SIEF_ELGA', iordr, sigma, iret)
         endif
         if (lstr) then
           call rsexch(' ', resuin, 'STRX_ELGA', iordr, strx, iret)
@@ -338,6 +340,7 @@ implicit none
             else
               call calcop(optio2, ' ', resuin, resuou, lisord, nbordr, chtype, typesd, cret, 'V')
             endif
+            call rsexch(' ', resuou, 'STRX_ELGA', iordr, strx, iret)
          endif
         endif
 !

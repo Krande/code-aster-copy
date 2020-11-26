@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -71,6 +71,7 @@ FMULT=DEFI_FONCTION(NOM_PARA='INST',
 
 RESU=MECA_STATIQUE(MODELE=MODE,
                    CHAM_MATER=MATE,
+                   OPTION='SANS',
                    EXCIT=(
                           _F(CHARGE=CLDIR),
                           _F(CHARGE=CLNEU1),
@@ -78,8 +79,29 @@ RESU=MECA_STATIQUE(MODELE=MODE,
                           ),
                    LIST_INST=LINST)
 
-RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CRITERES=('SIEQ_ELNO'),CONTRAINTE=('SIGM_ELNO'))
+# test de CALC_CHAMP/FORC_NODA avec SIEF_ELGA absent du résultat d'entrée et sans reuse
+RESU1=CALC_CHAMP(RESULTAT=RESU,FORCE=('FORC_NODA'))
 
+RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CRITERES=('SIEQ_ELNO'),CONTRAINTE=('SIGM_ELNO'),
+                                         FORCE='FORC_NODA')
+
+
+TEST_RESU(RESU=(_F(INST=1,
+                   RESULTAT=RESU,
+                   NOM_CHAM='FORC_NODA',
+                   NOEUD='N1807',
+                   NOM_CMP='DY',
+                   VALE_CALC=4.21986603405171E+05,),
+                _F(INST=1,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='FORC_NODA',
+                   NOEUD='N1807',
+                   NOM_CMP='DY',
+                   VALE_CALC=4.21986603405171E+05,
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=4.21986603405171E+05,),
+                ),
+          )
 
 RESU=CALC_CHAMP(reuse =RESU,
              RESULTAT=RESU,
