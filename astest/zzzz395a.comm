@@ -102,7 +102,6 @@ thnl = CREA_RESU(OPERATION='ASSE',
 
 # Create base (TEMP)
 base_p=DEFI_BASE_REDUITE(RESULTAT = thnl,
-                         MODELE   = model,
                          INFO     = 2,
                          SNAPSHOT = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11),
                          NOM_CHAM = 'TEMP',
@@ -113,7 +112,6 @@ coorredp=RECU_TABLE(CO=base_p,NOM_TABLE='COOR_REDUIT',);
 
 # Create base (FLUX_NOEU)
 base_d=DEFI_BASE_REDUITE(RESULTAT = thnl,
-                         MODELE   = model,
                          INFO     = 2,
                          NOM_CHAM = 'FLUX_NOEU',
                          TOLE_SVD = 1.E-3,);

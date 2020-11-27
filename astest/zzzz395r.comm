@@ -186,7 +186,6 @@ stnl=STAT_NON_LINE(MODELE=model,
 
 # Cosntruction sur SIXX uniquement
 baseSIEF_SIXX = DEFI_BASE_REDUITE(INFO      = 2,
-                            MODELE    = model,
                             OPERATION = 'POD',
                             RESULTAT  = stnl,
                             NOM_CHAM  = 'SIEF_ELGA',
