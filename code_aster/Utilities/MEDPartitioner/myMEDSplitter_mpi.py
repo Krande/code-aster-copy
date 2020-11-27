@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,16 +33,15 @@ from distutils.version import StrictVersion
 import med
 import medcoupling as mc
 import numpy as np
+from mpi4py import MPI
 
 try:
     from ..logger import logger
 except:
     pass
 
-from mpi4py import MPI
-
-BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(30,38)
 class ColoredFormatter(logging.Formatter):
+    BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(30,38)
     COLORS = { 'WARNING': YELLOW, 'INFO': WHITE, 'DEBUG': BLUE, 'CRITICAL': YELLOW, 'ERROR': RED }
     def __init__(self, *args, **kwargs):
         logging.Formatter.__init__(self, *args, **kwargs)
@@ -68,7 +67,6 @@ def setVerbose(verbose=1, code_aster=False):
     verbose_map = { 0: logging.WARNING, 1: logging.INFO, 2: logging.DEBUG}
     logger.setLevel(verbose_map[verbose])
 
-
 def memory_peak(mess=None, debug=False):
     # memory peak in Mo
     mem_used = int(getrusage(RUSAGE_SELF).ru_maxrss / 1024)
@@ -82,29 +80,34 @@ def memory_peak(mess=None, debug=False):
     else:
         logger.info(pat)
 
-class ChronoCtxMg:
-    def __init__(self,what, debug=False):
+class ChronoCtxMgGen:
+    def __init__(self,what):
         self._what = what
-        self._debug = debug
     def __enter__(self):
         pat = "Start de \"{}\"".format(self._what)
-        if self._debug:
-            logger.debug(pat)
-        else:
-            logger.info(pat)
+        self(pat)
         self.start = datetime.now()
 
     def __exit__(self, exctype, exc, tb):
         self.stop = datetime.now()
         pat = "Fin de \"{}\"".format(self._what)
+        self(pat)
         delta = self.stop - self.start
-        if self._debug:
-            logger.debug(pat)
-            logger.debug("Time spent for \"{}\" : {}".format(self._what,delta))
-        else:
-            logger.info(pat)
-            logger.info("Time spent for \"{}\" : {}".format(self._what,delta))
+        self("Time spent for \"{}\" : {}".format(self._what,delta))
         memory_peak(self._what)
+
+class ChronoCtxMg(ChronoCtxMgGen):
+    def __init__(self,what):
+        ChronoCtxMgGen.__init__(self,what)
+    def __call__(self,pat):
+        global logger
+        logger.info(pat)
+
+class ChronoCtxMgDbg(ChronoCtxMgGen):
+    def __init__(self,what):
+        ChronoCtxMgGen.__init__(self,what)
+    def __call__(self,pat):
+        logger.debug(pat)
 
 class MasterChronoCtxMg:
     def __init__(self,what):
@@ -265,15 +268,10 @@ class PartialMedFileUMesh:
         return self._presence_of_point1.getFamilyFieldAtLevel(0)
 
     def getParaUMeshAtLevelZero(self):
-        fni = self._presence_of_point1.computeFetchedNodeIds()
         zeMesh = self._presence_of_point1[0] ; zeMesh.zipCoords()
         zeCells = self.cellsGen(-self.getMeshDimension())
-        zeNodes = fni + self.nodalOffset
-        paramesh = mc.ParaUMesh(zeMesh,zeCells,zeNodes)
-        nodeFamIds = None
-        if self.getMEDFileUMesh().getFamilyFieldAtLevel(1):
-            nodeFamIds = self.getMEDFileUMesh().getFamilyFieldAtLevel(1)[fni]
-        return paramesh, nodeFamIds
+        paramesh = mc.ParaUMesh(zeMesh,zeCells,self._fni_lev_0)
+        return paramesh, self._presence_of_point1_fam_node_ids
 
     def getMEDFileUMesh(self):
         """return a MEDFileUMesh by loading a part of mesh named self._medFileDataContext.getMeshName()
@@ -292,22 +290,31 @@ class PartialMedFileUMesh:
                 params+=[slc.start, slc.stop, slc.step]
                 cts.append(cellType)
                 pass
-        self._medFileUMesh = mc.MEDFileUMesh.LoadPartOf(self._medFileDataContext.getFileName(), self._medFileDataContext.getMeshName(), cts, params)
+        mrs = mc.MEDFileMeshReadSelector()
+        mrs.setNumberOfCoordsLoadSessions(10)
+        self._medFileUMesh = mc.MEDFileUMesh.LoadPartOf(self._medFileDataContext.getFileName(), self._medFileDataContext.getMeshName(), cts, params, -1, -1, mrs)
 
         self._presence_of_point1 = None
         # detect orphan nodes in parallel
-
         # si on a des MED_POINT1 on les retire.
         if -self._medFileUMesh.getMeshDimension() in self._medFileUMesh.getNonEmptyLevels():
             self._presence_of_point1 = mc.MEDFileUMesh()
-            self._presence_of_point1[0] = self._medFileUMesh[-self.getMeshDimension()]
+            mc_mesh_lev_0 = self._medFileUMesh[-self.getMeshDimension()]
+            fni_tmp = mc_mesh_lev_0.computeFetchedNodeIds()
+            self._fni_lev_0 = fni_tmp.deepCopy()
+            self._fni_lev_0.transformWithIndArr(self.getMEDFileUMesh().getPartDefAtLevel(1).toDAI())
+            self._presence_of_point1[0] = mc_mesh_lev_0
             famFieldLev0 = self._medFileUMesh.getFamilyFieldAtLevel(-self.getMeshDimension())
             if famFieldLev0:
                 self._presence_of_point1.setFamilyFieldArr(0,famFieldLev0)
+            self._presence_of_point1_fam_node_ids = None
+            if self._medFileUMesh.getFamilyFieldAtLevel(1):
+                self._presence_of_point1_fam_node_ids = self._medFileUMesh.getFamilyFieldAtLevel(1)[fni_tmp]
             del self._medFileUMesh[-self.getMeshDimension()]
+            self._medFileUMesh.zipCoords()
+        self._fni = self.getMEDFileUMesh().getPartDefAtLevel(1).toDAI()
 
         # detect orphan nodes in parallel
-        self._fni = self._medFileUMesh.computeFetchedNodeIds() + self.nodalOffset
         pda = mc.ParaDataArrayInt(self._fni)
         res = pda.buildComplement( self._medFileDataContext.getGlobalNumberOfNodes() )
         if rank == 0:
@@ -316,11 +323,6 @@ class PartialMedFileUMesh:
 
     def getFetchedNodeIds(self):
         return self._fni
-
-    @property
-    def nodalOffset(self):
-        """return the offset to retrieve the global node id"""
-        return self.getMEDFileUMesh().getPartDefAtLevel(1).getSlice().start
 
     def umeshAtLevel(self,lev):
         return self.getMEDFileUMesh()[lev]
@@ -331,14 +333,13 @@ class PartialMedFileUMesh:
         return self.umeshAtLevel(0)
 
     def getParaUMeshAtLevel(self,lev):
-        zeMesh = self.umeshAtLevel(lev).deepCopy() ; zeMesh.zipCoords()
+        zeMesh = self.umeshAtLevel(lev).deepCopy()
         zeCells = self.cellsGen(lev)
-        fni = self.umeshAtLevel(lev).computeFetchedNodeIds()
-        zeNodes = fni + self.nodalOffset
+        zeNodes = self.getMEDFileUMesh().getPartDefAtLevel(1).toDAI()
         paramesh = mc.ParaUMesh(zeMesh,zeCells,zeNodes)
         nodeFamIds = None
         if self.getMEDFileUMesh().getFamilyFieldAtLevel(1):
-            nodeFamIds = self.getMEDFileUMesh().getFamilyFieldAtLevel(1)[fni]
+            nodeFamIds = self.getMEDFileUMesh().getFamilyFieldAtLevel(1)
         return paramesh, nodeFamIds
 
 class NeighborsOfNodes(metaclass=abc.ABCMeta):
@@ -359,7 +360,7 @@ class IncompleteNeighborsOfNodes(NeighborsOfNodes):
         sks = []
         for lev in partialMedFileUMesh._medFileUMesh.getNonEmptyLevels():
             neighbors, neighborsIdx = partialMedFileUMesh._medFileUMesh[lev].computeEnlargedNeighborsOfNodes()
-            neighbors += partialMedFileUMesh.nodalOffset
+            neighbors.transformWithIndArr(self._nodes)
             sks.append(mc.MEDCouplingSkyLineArray(neighborsIdx, neighbors))
         sk = mc.MEDCouplingSkyLineArray.AggregatePacks(sks)
         sk.uniqueNotSortedByPack()
@@ -672,14 +673,17 @@ class MedJoints:
         self.__getMedFileUmesh().setGlobalNumFieldAtLevel(1, self.__getNodes())
 
 def GetUMeshFrom(paramesh,cellFamIds,nodeFamIds,cellsPartition):
-    pm2 = paramesh.redistributeCells(cellsPartition)
+    with ChronoCtxMgDbg("paramesh.redistributeCells"):
+        pm2 = paramesh.redistributeCells(cellsPartition)
     mergeMesh = mc.MEDFileUMesh()
     mergeMesh[0] = pm2.getMesh()
     if cellFamIds is not None:
-        arr = paramesh.redistributeCellField(cellsPartition,cellFamIds)
+        with ChronoCtxMgDbg("paramesh.redistributeCellField"):
+            arr = paramesh.redistributeCellField(cellsPartition,cellFamIds)
         mergeMesh.setFamilyFieldArr(0,arr)
     if nodeFamIds is not None:
-        arrn = paramesh.redistributeNodeField(cellsPartition, nodeFamIds )
+        with ChronoCtxMgDbg("paramesh.redistributeNodeField"):
+            arrn = paramesh.redistributeNodeField(cellsPartition, nodeFamIds )
         mergeMesh.setFamilyFieldArr(1,arrn)
     mergeMesh.setGlobalNumFieldAtLevel(1,pm2.getGlobalNodeIds())
     return mergeMesh
@@ -733,60 +737,54 @@ def MakeThePartition(fileName, meshName, MyPartitioner):
     with ChronoCtxMg("lecture partielle du maillage"):
         partialMedFileUMesh = PartialMedFileUMesh(medFileContext)
 
-    logger.debug("récupération des voisins du maillage partiel")
-    neighborsOfNodes = CompleteNeighborsOfNodes(partialMedFileUMesh, medFileContext.getGlobalNumberOfNodes() )
+    with ChronoCtxMg("récupération des voisins du maillage partiel"):
+        neighborsOfNodes = CompleteNeighborsOfNodes(partialMedFileUMesh, medFileContext.getGlobalNumberOfNodes() )
 
     with ChronoCtxMg("création de la partition via ptscotch"):
         nodesPartition = NodesPartition(neighborsOfNodes, MyPartitioner)
 
+    logger.debug("récupération des elements de la partition")
 
     # on rajoute tous les levels
+    mm_levs = { }
+    for lev in partialMedFileUMesh.getMEDFileUMesh().getNonEmptyLevels():
+        pm_lev, fam_field_node = partialMedFileUMesh.getParaUMeshAtLevel(lev)
+        if lev == 0:
+            with ChronoCtxMgDbg("getCellIdsLyingOnNodes False"):
+                cellsPartition_lev = pm_lev.getCellIdsLyingOnNodes(nodesPartition.nodes,False)
+        else:
+            with ChronoCtxMgDbg("getCellIdsLyingOnNodes True"):
+                cellsPartition_lev = pm_lev.getCellIdsLyingOnNodes(globalNodeIdsOfRk0,True)
+        #  connaissant les cells du niveau lev dont j ai besoin j appelle la communauté pour me donner mon morceau
+        mm_lev = GetUMeshFrom(pm_lev, partialMedFileUMesh.getMEDFileUMesh().getFamilyFieldAtLevel(lev) , fam_field_node, cellsPartition_lev)
+        #
+        if lev == 0:
+            globalNodeIdsOfRk0 = mm_lev.getGlobalNumFieldAtLevel(1)[mm_lev[0].computeFetchedNodeIds()]
+            globalNodeIdsOfRk0 = globalNodeIdsOfRk0.buildUnion(nodesPartition.nodes)
+        #
+        mm_levs [lev] = mm_lev
+        pass
 
-    with ChronoCtxMg("récupération des elements de la partition"):
-        mm_levs = { }
-        for lev in partialMedFileUMesh.getMEDFileUMesh().getNonEmptyLevels():
-            with ChronoCtxMg("ajout du niveau: "+str(lev), True):
-                pm_lev, fam_field_node = partialMedFileUMesh.getParaUMeshAtLevel(lev)
-
-            with ChronoCtxMg("récupération des cells du niveau: "+str(lev), True):
-                if lev == 0:
-                    cellsPartition_lev = pm_lev.getCellIdsLyingOnNodes(nodesPartition.nodes,False)
-                else:
-                    cellsPartition_lev = pm_lev.getCellIdsLyingOnNodes(globalNodeIdsOfRk0,True)
-            #  connaissant les cells du niveau lev dont j ai besoin j appelle la communauté pour me donner mon morceau
-            with ChronoCtxMg("creation du maillage unitaire avec les cells du niveau "+str(lev), True):
-                mm_lev = GetUMeshFrom(pm_lev, partialMedFileUMesh.getMEDFileUMesh().getFamilyFieldAtLevel(lev) , fam_field_node, cellsPartition_lev)
-            #
-            if lev == 0:
-                logger.debug("recuperation nodes id")
-                globalNodeIdsOfRk0 = mm_lev.getGlobalNumFieldAtLevel(1)[mm_lev[0].computeFetchedNodeIds()]
-                globalNodeIdsOfRk0 = globalNodeIdsOfRk0.buildUnion(nodesPartition.nodes)
-            #
-            mm_levs[lev] = mm_lev
-            pass
-
-    with ChronoCtxMg("ajout des POINT1"):
-        if partialMedFileUMesh.presenceOfPoint1():
-            pm_lev, fam_field_node = partialMedFileUMesh.getParaUMeshAtLevelZero()
+    if partialMedFileUMesh.presenceOfPoint1():
+        pm_lev, fam_field_node = partialMedFileUMesh.getParaUMeshAtLevelZero()
+        with ChronoCtxMgDbg("getCellIdsLyingOnNodes False : presence of point 1"):
             cellsPartition_lev = pm_lev.getCellIdsLyingOnNodes(nodesPartition.nodes,False)
-            mm_lev = GetUMeshFrom(pm_lev, partialMedFileUMesh.getFamilyFieldAtLevelZero() , fam_field_node, cellsPartition_lev)
-            mm_levs[-partialMedFileUMesh.getMeshDimension()] = mm_lev
+        mm_lev = GetUMeshFrom(pm_lev, partialMedFileUMesh.getFamilyFieldAtLevelZero() , fam_field_node, cellsPartition_lev)
+        mm_levs[-partialMedFileUMesh.getMeshDimension()] = mm_lev
 
     meshResult = FuseLevels(mm_levs)
-
     # on rajoute les noms des familles/groupes attachés aux ids
-    with ChronoCtxMg("ajout des groupes"):
-        famsPy,grpsPy = RetrieveFamGrpsMap(medFileContext)
-        for fam,famid in famsPy.items():
-            meshResult.addFamily(fam,famid)
-            meshResult.setGroupsOnFamily(fam,grpsPy[fam])
-            pass
 
-    # on rajouter les joints
-    with ChronoCtxMg("ajout des raccords"):
-        medJoints = MedJoints(meshResult, nodesPartition.nodes)
-        medJoints.setGlobalNumField()
-        medJoints.write()
+    famsPy,grpsPy = RetrieveFamGrpsMap(medFileContext)
+    for fam,famid in famsPy.items():
+        meshResult.addFamily(fam,famid)
+        meshResult.setGroupsOnFamily(fam,grpsPy[fam])
+        pass
+
+    logger.debug("ajout des raccords")
+    medJoints = MedJoints(meshResult, nodesPartition.nodes)
+    medJoints.setGlobalNumField()
+    medJoints.write()
 
     # on rajoute sur le noeud 0 les noeuds orphelins s'il y en avait
 
