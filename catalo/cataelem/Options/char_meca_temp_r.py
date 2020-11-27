@@ -128,6 +128,7 @@ CHAR_MECA_TEMP_R = Option(
       CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'3FI'),)),
       CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'AFI'),)),
       CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'PFI'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'D2D'),)),
     ),
     comment=""" CHAR_MECA_TEMP_R (MOT-CLE : TEMP_CALCULEE): CALCUL DU SECOND MEMBRE
            ELEMENTAIRE CORRESPONDANT A UN CHAMP DE TEMPERATURE""",
