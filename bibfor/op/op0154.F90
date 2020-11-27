@@ -40,6 +40,7 @@ subroutine op0154()
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
+#include "asterfort/mai2a3.h"
 #include "asterfort/momaba.h"
 #include "asterfort/orilgm.h"
 #include "asterfort/rotama.h"
@@ -51,19 +52,15 @@ subroutine op0154()
 #include "asterfort/assert.h"
 #include "asterfort/modi_alea.h"
 #include "asterfort/exipat.h"
-#include "asterfort/jeveuo.h"
 !
     integer :: n1, n2, nbocc, i, dim, ier
-    aster_logical :: l_check_lac
+    aster_logical :: bidim, l_check_lac
     character(len=8) :: ma, ma2, depla, mab
     character(len=16) :: kbi1, kbi2, option
     character(len=19) :: geomi, geomf
     character(len=24) :: valk(3)
     real(kind=8) :: ltchar, pt(3), pt2(3), dir(3), angl
     real(kind=8) :: axe1(3), axe2(3), perp(3), alea
-    integer, pointer :: dime(:) => null()
-    aster_logical :: bidim
-    integer :: tridim
 !
 ! -DEB------------------------------------------------------------------
 !
@@ -121,16 +118,8 @@ subroutine op0154()
             call chpver('F', depla, 'NOEU', 'DEPL_R', ier)
             geomi = ma//'.COORDO'
             geomf = ma//'.COORD2'
-            tridim = 0
             call vtgpld('CUMU', geomi, 1.d0, depla, 'V',&
-                        geomf, tridim)
-
-! si le depla est tridimensionnel, on met le maillage dans un espace 3d
-            if (tridim .eq. 1) then
-                call jeveuo(ma//'.DIME', 'E', vi=dime)
-                dime(6) = 3
-            endif
-
+                        geomf)
             call detrsd('CHAMP_GD', geomi)
             call copisd('CHAMP_GD', 'G', geomf, geomi)
             call detrsd('CHAMP_GD', geomf)
@@ -153,8 +142,6 @@ subroutine op0154()
             bidim = .true.
         else
             call getvr8(' ', 'TRANSLATION', nbval=3, vect=dir, nbret=n1)
-            call jeveuo(ma//'.DIME', 'E', vi=dime)
-            dime(6) = 3
         endif
         call tranma(geomi, dir, bidim)
     endif
@@ -310,6 +297,9 @@ subroutine op0154()
 !     --- on complete le maillage avec quelques objets :
 !     ---------------------------------------------------
     call cargeo(ma)
+    
+! VERIFIER SI UN MAILLAGE INITIALEMENT 2D EST DEVENU 3D    
+    call mai2a3(ma)
 !
 !
 end subroutine

@@ -22,11 +22,12 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
 
 # lecture du maillage
 MA_INI = LIRE_MAILLAGE ( FORMAT="ASTER", UNITE = 21 )
-MA = [None]*3
-CH = [None]*3
-CHD = [None]*3
-RES = [None]*3
-for i in range (0,3):
+ntest = 5
+MA = [None]*ntest
+CH = [None]*ntest
+CHD = [None]*ntest
+RES = [None]*ntest
+for i in range (0,ntest):
     MA[i] = COPIER(CONCEPT=MA_INI)
  
 IMPR_RESU(FORMAT='RESULTAT',
@@ -60,8 +61,22 @@ MA[2] = MODI_MAILLAGE(
                      POIN_2 = ( 1 , 0 , 0. ) , ) ,
 
 )
+MA[3] = MODI_MAILLAGE(
+    MAILLAGE=MA[3],
+    MODI_BASE = _F( VECT_X = ( 1 , 0 , 0. , ) ,
+    VECT_Y = ( 0 , 1.0 , 1.0 , ) ,) ,
+)
 
-for i in range(0,3):
+MA[4] = MODI_MAILLAGE(
+    MAILLAGE=MA[4],
+    SYMETRIE=_F(POINT = ( 0.0,  0.0,  0,),
+              AXE_1 = ( 1.0,  0.,  0.0,),
+              AXE_2 = ( 0.0,  1.0, 1.0,),
+             ),
+)
+
+
+for i in range(0,ntest):
     IMPR_RESU(FORMAT='RESULTAT',RESU=_F(MAILLAGE=MA[i]),)
 
     CH[i] = CREA_CHAMP ( OPERATION = 'EXTR' ,
@@ -106,7 +121,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=2.,
                    VALE_REFE=2.,
                    CRITERE='ABSOLU',
-                   PRECISION=0.0,),
+                   PRECISION=1E-8,),
                  _F(NUME_ORDRE=1,
                    GROUP_NO='P1',
                    REFERENCE='ANALYTIQUE',
@@ -116,7 +131,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=3.,
                    VALE_REFE=3.,
                    CRITERE='ABSOLU',
-                   PRECISION=0.0,),))
+                   PRECISION=1E-8,),))
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='P1',
@@ -137,7 +152,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=2.,
                    VALE_REFE=2.,
                    CRITERE='ABSOLU',
-                   PRECISION=0.0,),
+                   PRECISION=1E-8,),
                  _F(NUME_ORDRE=1,
                    GROUP_NO='P1',
                    REFERENCE='ANALYTIQUE',
@@ -147,6 +162,99 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=3.,
                    VALE_REFE=3.,
                    CRITERE='ABSOLU',
-                   PRECISION=0.0,),))
-                   
+                   PRECISION=1E-8,),))
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='P3',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RES[2],
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.,
+                   VALE_REFE=1.,
+                   CRITERE='ABSOLU',
+                   PRECISION=1E-8,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='P3',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RES[2],
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=2.1213203436,
+                   VALE_REFE=2.1213203436,
+                   CRITERE='ABSOLU',
+                   PRECISION=1E-8,),
+                 _F(NUME_ORDRE=1,
+                   GROUP_NO='P3',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RES[2],
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=2.1213203436,
+                   VALE_REFE=2.1213203436,
+                   CRITERE='ABSOLU',
+                   PRECISION=1E-8,),))
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='P3',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RES[3],
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.0,
+                   VALE_REFE=1.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=1E-8,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='P3',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RES[3],
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC= 2.12132034355964,
+                   VALE_REFE= 2.12132034355964,
+                   CRITERE='ABSOLU',
+                   PRECISION=1E-8,),
+                 _F(NUME_ORDRE=1,
+                   GROUP_NO='P3',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RES[3],
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-2.12132034355964,
+                   VALE_REFE=-2.12132034355964,
+                   CRITERE='ABSOLU',
+                   PRECISION=1E-8,),))
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='P3',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RES[4],
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=1.0,
+                   VALE_REFE=1.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=1E-8,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='P3',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RES[4],
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC= 0,
+                   VALE_REFE= 0,
+                   CRITERE='ABSOLU',
+                   PRECISION=1E-8,),
+                 _F(NUME_ORDRE=1,
+                   GROUP_NO='P3',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=RES[4],
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=3,
+                   VALE_REFE=3,
+                   CRITERE='ABSOLU',
+                   PRECISION=1E-8,),))
+
 FIN()

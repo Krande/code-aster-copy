@@ -19,13 +19,7 @@
 !
 !
 interface
-    subroutine vtgpld(cumul , geomiz, alpha, deplaz, base,&
-                      geomfz)
-        character(len=4), intent(in) :: cumul
-        character(len=*), intent(in) :: geomiz
-        real(kind=8), intent(in) :: alpha
-        character(len=*), intent(in) :: deplaz
-        character(len=1), intent(in) :: base
-        character(len=*), intent(in) :: geomfz
-    end subroutine vtgpld
+    subroutine mai2a3(mailla)
+        character(len=*) :: mailla
+    end subroutine mai2a3
 end interface
