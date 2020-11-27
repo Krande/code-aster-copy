@@ -25,9 +25,9 @@ Detailed description
    :show-inheritance:
    :members:
 
-.. automodule:: code_aster.Objects.listoffloats
+.. automodule:: code_aster.Objects.listoffloats_ext
 
-.. autoclass:: code_aster.Objects.listoffloats.ListOfFloats
+.. autoclass:: code_aster.Objects.listoffloats_ext.ListOfFloats
    :show-inheritance:
    :members:
 

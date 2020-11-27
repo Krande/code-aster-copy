@@ -53,7 +53,7 @@ from .generalizedassemblymatrix_ext import (GeneralizedAssemblyMatrixComplex,
 from .generalizedassemblyvector_ext import (GeneralizedAssemblyVectorComplex,
                                             GeneralizedAssemblyVectorReal)
 from .generalizedmodel_ext import GeneralizedModel
-from .listoffloats import ListOfFloats
+from .listoffloats_ext import ListOfFloats
 from .listofintegers_ext import ListOfIntegers
 from .material_ext import Material
 from .materialfield_ext import MaterialField

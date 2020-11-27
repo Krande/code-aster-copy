@@ -21,6 +21,12 @@
 """
 :py:class:`ListOfFloats` --- List of floats
 *******************************************
+
+This object stores a list of floats. A *numpy* object can be retrieved using
+:py:func:`ListOfFloats.getValuesAsArray`.
+
+For convenience, you can use on this object the same methods than on a *numpy*
+array.
 """
 
 import numpy as np
@@ -28,7 +34,7 @@ import numpy as np
 import aster
 from libaster import ListOfFloats
 
-from ..Utilities import accept_array, injector
+from ..Utilities import accept_array, deprecated, injector
 
 
 @injector(ListOfFloats)
@@ -67,3 +73,8 @@ class ExtendedListOfFloats(object):
             list: The :py:class:`numpy.array` containing the values (by
                 reference).
         """
+
+    @deprecated(case=3, help="Use 'getValues()' instead")
+    def Valeurs(self):
+        """Deprecated: Use 'getValues()' instead."""
+        return self.getValues()
