@@ -27,12 +27,13 @@ from .config import CFG
 from .utils import run_command
 
 
-def make_shared(lib, src):
+def make_shared(lib, src, *args):
     """Build a shared library from a fortran source file.
 
     Arguments:
         lib (str): Result library.
         src (str): Fortran source file.
+        args (list[str]): Optional arguments passed to the linker.
 
     Returns:
         int: exit code.
@@ -40,4 +41,6 @@ def make_shared(lib, src):
     cmd = [CFG.get("FC")]
     cmd.extend(CFG.get("FCFLAGS"))
     cmd.extend(["-shared", "-o", lib, src])
+    cmd.extend(args)
+    print("INFO make_shared command line:", " ".join(cmd))
     return run_command(cmd)
