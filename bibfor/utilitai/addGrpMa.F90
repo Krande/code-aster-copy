@@ -30,12 +30,14 @@ subroutine addGrpMa(mesh, group_ma, listCells, nbCells, l_added_grpma)
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/juveca.h"
 #include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 !
     character(len=8), intent(in)  :: mesh
     character(len=24), intent(in) :: group_ma
@@ -58,7 +60,7 @@ subroutine addGrpMa(mesh, group_ma, listCells, nbCells, l_added_grpma)
 !
 !---------------------------------------------------------------------------------------------------
     character(len=24) :: grmama, grmamap
-    integer :: nbGrp
+    integer :: nbGrp, iret
     aster_logical :: l_parallel_mesh, l_exi_in_grp, l_exi_in_grp_p, l_added
     integer, pointer :: v_cells(:) => null()
     character(len=24), pointer :: v_grpp(:) => null()
@@ -97,10 +99,16 @@ subroutine addGrpMa(mesh, group_ma, listCells, nbCells, l_added_grpma)
 !
         if(l_parallel_mesh) then
             if(.not.l_exi_in_grp_p) then
-                call jeveuo(grmamap, 'L', vk24=v_grpp)
-                nbGrp = size(v_grpp)
-                call juveca(grmamap, nbGrp+1)
-                call jeveuo(grmamap, 'L', vk24=v_grpp)
+                call jeexin(grmamap, iret)
+                if(iret == 0) then
+                    call wkvect(grmamap, 'G V K24', 1, vk24=v_grpp)
+                    nbGrp = 0
+                else
+                    call jeveuo(grmamap, 'L', vk24=v_grpp)
+                    nbGrp = size(v_grpp)
+                    call juveca(grmamap, nbGrp+1)
+                    call jeveuo(grmamap, 'L', vk24=v_grpp)
+                end if
                 v_grpp(nbGrp+1) = group_ma
 !
 ! --- Becarefull, there are not yet shared by all meshes
