@@ -99,7 +99,7 @@ integer, intent(inout) :: codret
     real(kind=8) :: f(3, 3), eps(6), ftf, detf
     real(kind=8) :: dsidep(6, 6), sigma(6), sigp(6)
     real(kind=8) :: poids, tmp1, tmp2
-    real(kind=8), parameter :: rac2 = 1.4142135623731d0
+    real(kind=8), parameter :: rac2 = sqrt(2.d0)
     type(Behaviour_Integ) :: BEHinteg
     integer, parameter :: indi(sz_tens) = (/ 1 , 2 , 3 , 1 , 1 , 2 /)
     integer, parameter :: indj(sz_tens) = (/ 1 , 2 , 3 , 2 , 3 , 3 /)
