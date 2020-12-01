@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,6 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 CHA1=DEFI_CONTACT(MODELE=MO,
                  FORMULATION    = 'CONTINUE',
                  FROTTEMENT     = 'COULOMB',
-                 #ITER_GEOM_MAXI = 2,
                  ALGO_RESO_FROT = 'NEWTON',RESI_FROT=1.E-4,
                  ALGO_RESO_GEOM = 'POINT_FIXE',REAC_GEOM='CONTROLE',NB_ITER_GEOM=2,
                  ALGO_RESO_CONT = 'NEWTON',
@@ -85,11 +84,8 @@ CHA1=DEFI_CONTACT(MODELE=MO,
                          ALGO_CONT='PENALISATION',
                          ALGO_FROT='STANDARD',
                          # ADAPTATION Fonctionne mais sensibilite 1.E-4% machine
-                         #ADAPTATION='TOUT',
-                         #PENE_MAXI=1.E-9,
-                         ADAPTATION='CYCLAGE',
+                         ADAPTATION='NON',
                          COEF_PENA_CONT=1.E+14,
-                         #COEF_PENA_FROT=1.E+8,
                  ),);
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_NO = 'NENCA',  DX = 0., DY = 0., DZ=0.),
