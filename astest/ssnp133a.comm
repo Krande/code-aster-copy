@@ -17,14 +17,17 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'), )
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 # NB DE PAS DE TEMPS DE CALCUL ET NOMBRE DE PAS DE TEMPS ARCHIVE
-tfin=200
+tfin=1000
 nbpas=tfin
 nbpas_arch = tfin
-c_mult_pilo = 10
+c_mult_pilo = 20
+
+# Valeurs de ETA (= de FORCE_CONTOUR/DY imposé) aux points testés
+f = [1000, 5000, 5500, 2370]
 
 # DONNEES MATERIAU
 young = 30000.E6
@@ -65,7 +68,6 @@ MA=MODI_MAILLAGE(reuse =MA,
                    ORIE_FISSURE=_F(GROUP_MA='JOINT'),
                    INFO=1
                    )
-
 
 MO = AFFE_MODELE(
        MAILLAGE = MA,
@@ -139,6 +141,15 @@ TRACTION = AFFE_CHAR_MECA(
 # REALISATION DU CALCUL
 #--------------------------------------------------------------
 
+INST0 = DEFI_LIST_REEL(
+                          DEBUT = 0.,
+                          INTERVALLE = (_F(JUSQU_A =  1, NOMBRE = 2)),
+                          )
+                          
+FONC0 = DEFI_FONCTION(NOM_PARA = 'INST',
+                      VALE     = (0, 0, 1, f[0]),
+                      PROL_DROITE = 'LINEAIRE')
+
 INSTANTS = DEFI_LIST_REEL(
                           DEBUT = 0.,
                           INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas)),
@@ -157,41 +168,138 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INSTANTS ),
                   SUBD_NIVEAU=10,
                                  ))
 
-EVOL = STAT_NON_LINE(
-  MODELE = MO,
-  CHAM_MATER = CHMAT,
-  EXCIT = (
-    _F(CHARGE = RIGIDE),
-    _F(CHARGE = SYMETRIE),
-    _F(CHARGE = TRACTION,
-       TYPE_CHARGE = 'FIXE_PILO',
-      )),
-  COMPORTEMENT = (
-    _F(RELATION = 'ELAS'      , GROUP_MA = 'MATIERE'),
-    _F(RELATION = 'CZM_LIN_REG', GROUP_MA = 'JOINT'  ),
-    ),
-  INCREMENT = _F(LIST_INST = DEFLIST),
-  PILOTAGE  = _F (
-    TYPE           = 'PRED_ELAS',
-    GROUP_MA       = 'JOINT',
-    COEF_MULT      = c_mult_pilo,
-    ETA_PILO_MIN   = 0.01,
-    ETA_PILO_R_MIN = 0,
-    PROJ_BORNES    = 'OUI'
-    ),
-  NEWTON  = _F(
-    MATRICE   = 'TANGENTE',
-    REAC_ITER = 1,
-    ),
-  CONVERGENCE = _F(
-    RESI_GLOB_RELA = 1.E-6,
-    ITER_GLOB_MAXI = 12,
-    ),
-  SOLVEUR    = _F(METHODE = 'MUMPS'),
-  ARCHIVAGE = _F(
-    LIST_INST      = INS_ARCH
-    )
-  )
+inst=[]
+
+#SNL0 : TRACTION de 0 à 1000
+EVOL = STAT_NON_LINE(MODELE = MO,
+                     CHAM_MATER = CHMAT,
+                     EXCIT = (_F(CHARGE = RIGIDE),
+                              _F(CHARGE = SYMETRIE),
+                              _F(CHARGE = TRACTION,
+                                 FONC_MULT = FONC0,),),
+                     COMPORTEMENT = (_F(RELATION = 'ELAS'      , GROUP_MA = 'MATIERE'),
+                                     _F(RELATION = 'CZM_LIN_REG', GROUP_MA = 'JOINT'  ),),
+                     INCREMENT = _F(LIST_INST = INST0),
+                     NEWTON = _F(MATRICE   = 'TANGENTE',
+                                 REAC_ITER = 1,),
+                     CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-6,
+                                      ITER_GLOB_MAXI = 12,),
+                     SOLVEUR = _F(METHODE = 'MUMPS'),
+              )
+              
+dico = EVOL.LIST_VARI_ACCES()
+l_inst = dico['INST']
+inst.append(l_inst[-1])
+   
+#SNL 1 : TRACTION jusqu'à 5000 (en décharge)
+EVOL = STAT_NON_LINE(reuse = EVOL,
+                     ETAT_INIT = _F(EVOL_NOLI = EVOL),
+                     RESULTAT = EVOL,
+                     MODELE = MO,
+                     CHAM_MATER = CHMAT,
+                     EXCIT = (_F(CHARGE = RIGIDE),
+                              _F(CHARGE = SYMETRIE),
+                              _F(CHARGE = TRACTION,
+                                 TYPE_CHARGE = 'FIXE_PILO',)),
+                     COMPORTEMENT = (_F(RELATION = 'ELAS'      , GROUP_MA = 'MATIERE'),
+                                     _F(RELATION = 'CZM_LIN_REG', GROUP_MA = 'JOINT'  ),),
+                     INCREMENT = _F(LIST_INST = DEFLIST),
+                     PILOTAGE = _F (
+                        TYPE           = 'PRED_ELAS',
+                        GROUP_MA       = 'JOINT',
+                        COEF_MULT      = c_mult_pilo,
+                        #ETA_PILO_MIN   = 0.01,
+                        ETA_PILO_MIN   = f[1],
+                        ETA_PILO_R_MIN = 0,
+                        PROJ_BORNES    = 'OUI'
+                                    ),
+                     NEWTON = _F(MATRICE   = 'TANGENTE',
+                                 REAC_ITER = 1,),
+                     CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-6,
+                                      ITER_GLOB_MAXI = 12,),
+                     SOLVEUR = _F(METHODE = 'MUMPS'),
+                     ARCHIVAGE = _F(LIST_INST = INS_ARCH)
+              )
+              
+dico = EVOL.LIST_VARI_ACCES()
+l_inst = dico['INST']
+inst.append(l_inst[-1])
+              
+#SNL 2 : TRACTION jusqu'à 5500 (en charge)
+EVOL = STAT_NON_LINE(reuse = EVOL,
+                     ETAT_INIT = _F(EVOL_NOLI = EVOL),
+                     RESULTAT = EVOL,
+                     MODELE = MO,
+                     CHAM_MATER = CHMAT,
+                     EXCIT = (_F(CHARGE = RIGIDE),
+                              _F(CHARGE = SYMETRIE),
+                              _F(CHARGE = TRACTION,
+                                 TYPE_CHARGE = 'FIXE_PILO',)),
+                     COMPORTEMENT = (_F(RELATION = 'ELAS'      , GROUP_MA = 'MATIERE'),
+                                     _F(RELATION = 'CZM_LIN_REG', GROUP_MA = 'JOINT'  ),),
+                     INCREMENT = _F(LIST_INST = DEFLIST),
+                     PILOTAGE = _F (
+                        TYPE           = 'PRED_ELAS',
+                        GROUP_MA       = 'JOINT',
+                        COEF_MULT      = c_mult_pilo,
+                        #ETA_PILO_MIN   = 0.01,
+                        ETA_PILO_MAX   = f[2],
+                        ETA_PILO_R_MIN = 0,
+                        PROJ_BORNES    = 'OUI'
+                                    ),
+                     NEWTON = _F(MATRICE   = 'TANGENTE',
+                                 REAC_ITER = 1,),
+                     CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-6,
+                                      ITER_GLOB_MAXI = 12,),
+                     SOLVEUR = _F(METHODE = 'MUMPS'),
+                     ARCHIVAGE = _F(LIST_INST = INS_ARCH)
+              )
+              
+dico = EVOL.LIST_VARI_ACCES()
+l_inst = dico['INST']
+inst.append(l_inst[-1])
+              
+#SNL 3 : TRACTION jusqu'à 2370 (en décharge)
+EVOL = STAT_NON_LINE(reuse = EVOL,
+                     ETAT_INIT = _F(EVOL_NOLI = EVOL),
+                     RESULTAT = EVOL,
+                     MODELE = MO,
+                     CHAM_MATER = CHMAT,
+                     EXCIT = (_F(CHARGE = RIGIDE),
+                              _F(CHARGE = SYMETRIE),
+                              _F(CHARGE = TRACTION,
+                                 TYPE_CHARGE = 'FIXE_PILO',)),
+                     COMPORTEMENT = (_F(RELATION = 'ELAS'      , GROUP_MA = 'MATIERE'),
+                                     _F(RELATION = 'CZM_LIN_REG', GROUP_MA = 'JOINT'  ),),
+                     INCREMENT = _F(LIST_INST = DEFLIST),
+                     PILOTAGE = _F (
+                        TYPE           = 'PRED_ELAS',
+                        GROUP_MA       = 'JOINT',
+                        COEF_MULT      = c_mult_pilo,
+                        #ETA_PILO_MIN   = 0.01,
+                        ETA_PILO_MIN   = f[3],
+                        ETA_PILO_R_MIN = 0,
+                        PROJ_BORNES    = 'OUI'
+                                    ),
+                     NEWTON = _F(MATRICE   = 'TANGENTE',
+                                 REAC_ITER = 1,),
+                     CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-6,
+                                      ITER_GLOB_MAXI = 12,),
+                     SOLVEUR = _F(METHODE = 'MUMPS'),
+                     ARCHIVAGE = _F(LIST_INST = INS_ARCH)
+              )
+              
+dico = EVOL.LIST_VARI_ACCES()
+l_inst = dico['INST']
+inst.append(l_inst[-1])
+           
+tab_eta = RECU_TABLE(CO=EVOL,
+                     NOM_PARA=('ETA_PILOTAGE', ))
+
+IMPR_TABLE(
+           FORMAT='NUMPY',
+           TABLE=tab_eta,
+           UNITE=8)
 
 #--------------------------------------------------------------
 # POST-TRAITEMENT
@@ -224,6 +332,18 @@ TAB_U = POST_RELEVE_T(
                                   NOEUD      = 'N2',
                                  ),
                      )
+                     
+
+lF=FORCE.EXTR_TABLE().values()['DY']
+lU=TAB_U.EXTR_TABLE().values()['DY']
+
+f_vs_ouv=CREA_TABLE(LISTE=(_F(LISTE_R=lU,PARA='Deplacement'),
+                           _F(LISTE_R =lF,PARA='Force')))
+           
+IMPR_TABLE(
+           FORMAT='NUMPY',
+           TABLE=f_vs_ouv,
+           UNITE=9,)
 
 UY = RECU_FONCTION ( TABLE  = TAB_U,
                      PARA_X = 'INST',
@@ -240,67 +360,51 @@ FY = RECU_FONCTION ( TABLE  = FORCE,
 #--------------------------------------------------------------
 
 TEST_TABLE(
-           VALE_CALC=3.3165984661801E-03,
+           VALE_CALC=0.0011579178336925742,
            NOM_PARA='DY',
            TABLE=TAB_U,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=50,),
+                     VALE=inst[1],),
            )
 
 TEST_TABLE(
-           VALE_CALC=4.2615323048389E+07,
+           VALE_CALC=10000000.00000002,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=50,),
+                     VALE=inst[1],),
            )
 
 TEST_TABLE(
-           VALE_CALC=1.294882780642E-03,
+           VALE_CALC=0.005201653527858274,
            NOM_PARA='DY',
            TABLE=TAB_U,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=100,),
+                     VALE=inst[2],),
            )
 
 TEST_TABLE(
-           VALE_CALC=2.7387267685285E+06,
+           VALE_CALC=10999999.999999644,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=100,),
+                     VALE=inst[2],),
            )
 
 TEST_TABLE(
-           VALE_CALC=6.4575154375402E-03,
+           VALE_CALC=0.007724411928978959,
            NOM_PARA='DY',
            TABLE=TAB_U,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=150,),
+                     VALE=inst[3],),
            )
 
 TEST_TABLE(
-           VALE_CALC=7.8720645690555E+06,
+           VALE_CALC=4740000.000000002,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=150,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=0.010475353383401,
-           NOM_PARA='DY',
-           TABLE=TAB_U,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=200,),
-           )
-
-TEST_TABLE(
-           VALE_CALC=2.1618944323847E+06,
-           NOM_PARA='DY',
-           TABLE=FORCE,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=200,),
+                     VALE=inst[3],),
            )
 
 FIN()
