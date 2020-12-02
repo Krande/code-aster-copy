@@ -1,0 +1,516 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# VERIFICATION DE LA LOI CZM_TURON SUR ELEMENTS 'JOINT'
+# MODELISATION E : D_PLAN, CHARGEMENT EN MODE II (ENF)
+# CHARGEMENT EN DEPLACEMENT IMPOSE
+# MAILLAGE QUADRATIQUE, EN MM
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+
+##########################################################################
+# PARAMETRES
+##########################################################################
+
+b = 0.025  #largeur eprouvette
+
+nu = 0
+E = 10000.E5
+
+k = 1.40833E+09 / 0.001  #Enn=3694MPa  Ess=3000 MPa
+sigc1 = 10.E6  #37.1E6
+Gc1 = 200.
+Gc2 = 1000.
+sigc2 = 30.E6
+rigi_rupt = 0.001
+eta = 2.3
+
+# Propriétés pour CZM_LIN_REG
+sigreg = sigc2
+Gcreg = Gc2
+pen = 0.077
+
+# Propriétés équivalentes pour CZM_TURON
+kTuron = sigreg**2 * (1 - pen) / (2 * Gcreg * pen)
+GcN = Gc1
+sigcN = sigc1
+GcT = Gcreg * (1 - pen)
+sigcT = sigreg * (1 - pen)
+
+e_L = 36.17E9     #E11
+e_T = 13.15E9     #E22
+e_N = 13.15E9     #E33
+nu_LT = 0.25      #nu12   #0.73
+g_LT  = 4.06E9    #G12    #13.15E9/2/(1+nu_LT)
+nu_LN = 0.25      #nu12   #0.09 
+nu_TN = nu_LN     #nu23 ?
+g_LN  = g_LT      #G13
+g_TN  = 3.8E9     #G23
+
+n_time = 50
+steps = 100
+tfin = 0.55
+
+
+##########################################################################
+# DEFINITIONS DU MODELE
+##########################################################################
+
+mesh = LIRE_MAILLAGE(UNITE=20)
+
+mesh = DEFI_GROUP(reuse=mesh,
+                  MAILLAGE=mesh,
+                  CREA_GROUP_NO=_F(GROUP_MA='Enc_3'),
+                  CREA_GROUP_MA=_F(NOM='edgeInf2Tot', UNION=('edgeInf2','charniere_inf')))
+
+mesh = MODI_MAILLAGE(reuse=mesh,
+                      MAILLAGE=mesh,
+                      ORIE_PEAU_2D=(_F(GROUP_MA='Cont_1'),
+                                    _F(GROUP_MA='Cont_2'),
+                                    _F(GROUP_MA='Cont_3'),
+                                    _F(GROUP_MA='edgeInf1'),
+                                    _F(GROUP_MA='edgeInf2'),
+                                    _F(GROUP_MA='edgeSup'),
+                                    _F(GROUP_MA='charniere_inf'),
+                                    _F(GROUP_MA='charniere_sup'),
+                                    _F(GROUP_MA='LevreInf'),
+                                    _F(GROUP_MA='LevreSup'),
+                                    _F(GROUP_MA='ContInsert'),
+                                   ))
+
+mesh = MODI_MAILLAGE(reuse=mesh,
+                      MAILLAGE=mesh,
+                      ORIE_FISSURE=_F(GROUP_MA=('colle')))
+
+model = AFFE_MODELE(AFFE=(_F(GROUP_MA=('adh_sup','adh_inf'),
+                             MODELISATION=('D_PLAN'),
+                             PHENOMENE='MECANIQUE'),
+
+                          _F(GROUP_MA=('colle'),
+                             MODELISATION=('PLAN_JOINT'),
+                             PHENOMENE='MECANIQUE'),
+
+                          _F(GROUP_MA=('appui_1','appui_2', 'appui_3'),
+                             MODELISATION=('D_PLAN'),
+                             PHENOMENE='MECANIQUE'),
+
+                          _F(GROUP_MA='insert',
+                             MODELISATION=('D_PLAN'),
+                             PHENOMENE='MECANIQUE'),
+                         ),
+                    # DISTRIBUTION=_F(METHODE='CENTRALISE',),   # a verifier pour le mpi
+                    MAILLAGE=mesh)
+
+elemprop = AFFE_CARA_ELEM(
+                          MASSIF=_F(ANGL_EULER=(0., 0., 0.),
+                                     GROUP_MA=('adh_inf','adh_sup')),
+                          MODELE=model)
+
+composit = DEFI_MATERIAU(ELAS_ORTH=_F(
+                                     E_L=e_L,
+                                     E_T=e_T,
+                                     E_N=e_N,
+                                     G_LN=g_LN,
+                                     G_LT=g_LT,
+                                     G_TN=g_TN,
+                                     NU_LN=nu_LN,
+                                     NU_LT=nu_LT,
+                                     NU_TN=nu_TN,
+                                     ))
+
+colleczm = DEFI_MATERIAU(
+                         ELAS=_F(E=E,
+                                 NU=nu),
+                         RUPT_TURON=_F(
+                                       CRIT_INIT='TURON',
+                                       C_RUPT=rigi_rupt,
+                                       ETA_BK=eta,
+                                       GC_N=GcN,
+                                       GC_T=GcT,
+                                       K=kTuron,
+                                       SIGM_C_N=sigcN,
+                                       SIGM_C_T=sigcT),
+                         RUPT_FRAG=_F(GC=Gcreg,
+                                      PENA_ADHERENCE=pen,
+                                      PENA_CONTACT=1.0,
+                                      SIGM_C=sigreg)
+                                          )
+                                       
+acier = DEFI_MATERIAU(ELAS=_F(E=2.E+11,
+                              NU=0.3))
+
+fieldmat = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=('colle'),
+                                  MATER=colleczm),
+                               _F(GROUP_MA=('adh_sup', 'adh_inf'),
+                                  MATER=composit),
+                               _F(GROUP_MA=('appui_1','appui_2', 'appui_3'),
+                                  MATER=acier),
+                               _F(GROUP_MA='insert',
+                                  MATER=acier),
+                              ),
+                         MAILLAGE=mesh)
+
+listr = DEFI_LIST_REEL(DEBUT=0.,
+                       INTERVALLE=(_F(JUSQU_A=0.001,
+                                      NOMBRE=1),
+                                   _F(JUSQU_A=0.1,
+                                      PAS=0.05),
+                                   _F(JUSQU_A=0.3,
+                                      PAS=0.1),
+                                   _F(JUSQU_A=0.38,
+                                      PAS=0.01),
+                                   _F(JUSQU_A=0.55,
+                                      PAS=0.01),
+                                 #   _F(JUSQU_A=1.,
+                                 #      PAS=0.01),
+                                      ))
+listpo = DEFI_LIST_REEL(DEBUT=0.,
+                       INTERVALLE=(_F(JUSQU_A=0.001,
+                                      NOMBRE=1),
+                                   _F(JUSQU_A=0.1,
+                                      PAS=0.05),
+                                   _F(JUSQU_A=0.3,
+                                      PAS=0.1),
+                                   _F(JUSQU_A=0.38,
+                                      PAS=0.01),
+                                   _F(JUSQU_A=0.55,
+                                      PAS=0.01),
+                                 #   _F(JUSQU_A=1.,
+                                 #      PAS=0.01),
+                                      ))
+
+func = DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0., 0., 1., 1.))
+
+times = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=listr),
+                       ECHEC=_F(SUBD_NIVEAU=10),
+                       METHODE='MANUEL')
+
+load = AFFE_CHAR_MECA(DDL_IMPO=_F(DY=-0.004,
+                                  GROUP_MA='Enc_3'),
+                      MODELE=model)
+
+liaisons = AFFE_CHAR_MECA(LIAISON_DDL=(
+                                       _F(GROUP_NO=('NoCont1_AdhInf','NoCont_1'),DDL=('DX','DX'),COEF_MULT=(1,-1),COEF_IMPO=0),
+                                       _F(GROUP_NO=('NoCont1_AdhInf','NoCont_1'),DDL=('DY','DY'),COEF_MULT=(1,-1),COEF_IMPO=0),  #
+                                       _F(GROUP_NO=('NoCont2_AdhInf','NoCont_2'),DDL=('DY','DY'),COEF_MULT=(1,-1),COEF_IMPO=0),  #
+                                       _F(GROUP_NO=('NoCont3_AdhSup','NoCont_3'),DDL=('DX','DX'),COEF_MULT=(1,-1),COEF_IMPO=0),  #
+                                       _F(GROUP_NO=('NoCont3_AdhSup','NoCont_3'),DDL=('DY','DY'),COEF_MULT=(1,-1),COEF_IMPO=0),  #
+
+                                       _F(GROUP_NO=('adh_inf_contInsert','insertContInf'),DDL=('DX','DX'),COEF_MULT=(1,-1),COEF_IMPO=0),  #
+                                       _F(GROUP_NO=('adh_inf_contInsert','insertContInf'),DDL=('DY','DY'),COEF_MULT=(1,-1),COEF_IMPO=0),  #
+
+                                       _F(GROUP_NO=('adh_sup_contInsert','insertContSup'),DDL=('DY','DY'),COEF_MULT=(1,-1),COEF_IMPO=0),  #
+
+                                       _F(GROUP_NO=('insertLat','insertContInf'),DDL=('DX','DX'),COEF_MULT=(1,-1),COEF_IMPO=0),  #
+                                       ),   
+                          MODELE=model)
+
+blocage = AFFE_CHAR_CINE(MECA_IMPO=(_F(DX=0.,
+                                       GROUP_MA=('Enc_1','Enc_2', 'Enc_3')),
+                                    _F(DY=0.,
+                                       GROUP_MA=('Enc_1','Enc_2')),
+                                    ),
+                         MODELE=model)
+
+
+chcont=DEFI_CONTACT(MODELE=model,
+                    FORMULATION='CONTINUE',
+                  #   LISSAGE='OUI',
+                    ZONE=(
+                        #   _F(GROUP_MA_ESCL = 'edgeInf1',
+                        #      GROUP_MA_MAIT = 'Cont_1'),
+                        #   _F(GROUP_MA_ESCL = 'edgeInf2Tot',
+                        #      GROUP_MA_MAIT = 'Cont_2'),
+                        #   _F(GROUP_MA_ESCL = 'edgeSup',
+                        #      GROUP_MA_MAIT = 'Cont_3'),
+                          _F(GROUP_MA_ESCL = 'ContInsert',
+                             GROUP_MA_MAIT = 'LevreSup'),
+                    ))
+
+##########################################################################
+# CALCUL DE REFERENCE (CZM_LIN_REG)
+##########################################################################
+
+resnonl0 = STAT_NON_LINE(CARA_ELEM=elemprop,
+                        CHAM_MATER=fieldmat,
+                        COMPORTEMENT=(_F(GROUP_MA=('adh_sup', 'adh_inf'),
+                                         RELATION='ELAS'),
+                                      _F(GROUP_MA=('appui_1','appui_2', 'appui_3'),
+                                         RELATION='ELAS'),
+                                      _F(GROUP_MA='insert',
+                                         RELATION='ELAS'),
+                                      _F(GROUP_MA='colle',
+                                         RELATION='CZM_LIN_REG')),
+                        EXCIT=(_F(CHARGE=blocage),
+                               _F(CHARGE=liaisons),
+                               _F(CHARGE=load,
+                                  FONC_MULT=func)),
+                        # CONTACT=chcont,
+                        INCREMENT=_F(LIST_INST=times,
+                                     INST_FIN = tfin),
+                        ARCHIVAGE=_F(LIST_INST=listr),
+                        MODELE=model,
+                        CONVERGENCE=_F(ITER_GLOB_MAXI=10,
+                                       # RESI_GLOB_RELA=5.E-6,
+                                       ),
+                        SOLVEUR=_F(MATR_DISTRIBUEE='OUI',
+                                   METHODE='MUMPS'))
+
+##########################################################################
+# POST-TRAITEMENTS (CZM_LIN_REG)
+##########################################################################
+
+resnonl0 = CALC_CHAMP(reuse=resnonl0,
+                     DEFORMATION=('EPSI_ELGA'),
+                     GROUP_MA=('adh_sup','adh_inf'),
+                     RESULTAT=resnonl0)
+
+resnonl0 = CALC_CHAMP(reuse=resnonl0,
+                     FORCE=('REAC_NODA'),
+                     RESULTAT=resnonl0)
+
+TBREAC0=POST_RELEVE_T( ACTION = _F(RESULTAT=resnonl0,
+                      NOM_CHAM='REAC_NODA',
+                      INTITULE='RESULTANTE',
+                      REPERE='GLOBAL',
+                      OPERATION='EXTRACTION',
+                      GROUP_NO='Enc_3',
+                      RESULTANTE= 'DY'))
+
+TBDEPL10=POST_RELEVE_T( ACTION = _F(RESULTAT=resnonl0,
+                      NOM_CHAM='DEPL',
+                      INTITULE='',
+                      REPERE='GLOBAL',
+                      OPERATION='EXTRACTION',
+                      GROUP_NO='Enc_3',
+                      NOM_CMP= 'DY'))
+
+# Courbe force - déplacement globale
+
+TBDEPL0=CALC_TABLE(TABLE  = TBDEPL10,
+               ACTION =_F(OPERATION='FILTRE',
+                          NOM_PARA='ABSC_CURV',CRIT_COMP='EQ',VALE=0.))
+
+lF0=TBREAC0.EXTR_TABLE().values()['DY']
+lD0=TBDEPL0.EXTR_TABLE().values()['DY']
+
+lF0 = [i * -b for i in lF0]
+lD0= [i * -1000. for i in lD0]
+
+resucal0=CREA_TABLE(LISTE=(_F(LISTE_R=lD0,PARA='Deplacement'),
+                           _F(LISTE_R =lF0,PARA='Force')))
+
+IMPR_TABLE(TABLE=resucal0,
+           UNITE=8,)
+           
+##########################################################################
+# TEST (NON-REGRESSION)
+##########################################################################
+
+TEST_TABLE(
+           VALE_CALC=-45633.76400670127,
+           NOM_PARA='DY',
+           TABLE=TBREAC0,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.3,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-0.0012,
+           NOM_PARA='DY',
+           TABLE=TBDEPL0,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.3,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-46108.35645711704,
+           NOM_PARA='DY',
+           TABLE=TBREAC0,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.4,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-0.0016,
+           NOM_PARA='DY',
+           TABLE=TBDEPL0,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.4,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-46463.08275406287,
+           NOM_PARA='DY',
+           TABLE=TBREAC0,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.5,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-0.0020000000000000005,
+           NOM_PARA='DY',
+           TABLE=TBDEPL0,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.5,),
+           )
+           
+##########################################################################
+# CALCUL (CZM_TURON)
+##########################################################################
+
+resnonl = STAT_NON_LINE(CARA_ELEM=elemprop,
+                        CHAM_MATER=fieldmat,
+                        COMPORTEMENT=(_F(GROUP_MA=('adh_sup', 'adh_inf'),
+                                         RELATION='ELAS'),
+                                      _F(GROUP_MA=('appui_1','appui_2', 'appui_3'),
+                                         RELATION='ELAS'),
+                                      _F(GROUP_MA='insert',
+                                         RELATION='ELAS'),
+                                      _F(GROUP_MA='colle',
+                                         RELATION='CZM_TURON')),
+                        EXCIT=(_F(CHARGE=blocage),
+                               _F(CHARGE=liaisons),
+                               _F(CHARGE=load,
+                                  FONC_MULT=func)),
+                        # CONTACT=chcont,
+                        INCREMENT=_F(LIST_INST=times,
+                                     INST_FIN = tfin),
+                        ARCHIVAGE=_F(LIST_INST=listr),
+                        MODELE=model,
+                        CONVERGENCE=_F(ITER_GLOB_MAXI=10,
+                                       # RESI_GLOB_RELA=5.E-6,
+                                       ),
+                        SOLVEUR=_F(MATR_DISTRIBUEE='OUI',
+                                   METHODE='MUMPS'))
+
+##########################################################################
+# POST-TRAITEMENTS
+##########################################################################
+
+resnonl = CALC_CHAMP(reuse=resnonl,
+                     DEFORMATION=('EPSI_ELGA'),
+                     GROUP_MA=('adh_sup','adh_inf'),
+                     RESULTAT=resnonl)
+
+resnonl = CALC_CHAMP(reuse=resnonl,
+                     FORCE=('REAC_NODA'),
+                     RESULTAT=resnonl)
+
+TBREAC=POST_RELEVE_T( ACTION = _F(RESULTAT=resnonl,
+                      NOM_CHAM='REAC_NODA',
+                      INTITULE='RESULTANTE',
+                      REPERE='GLOBAL',
+                      OPERATION='EXTRACTION',
+                      GROUP_NO='Enc_3',
+                      RESULTANTE= 'DY'))
+
+TBDEPL1=POST_RELEVE_T( ACTION = _F(RESULTAT=resnonl,
+                      NOM_CHAM='DEPL',
+                      INTITULE='',
+                      REPERE='GLOBAL',
+                      OPERATION='EXTRACTION',
+                      GROUP_NO='Enc_3',
+                      NOM_CMP= 'DY'))
+
+# Courbe force - déplacement globale
+
+TBDEPL=CALC_TABLE(TABLE  = TBDEPL1,
+               ACTION =_F(OPERATION='FILTRE',
+                          NOM_PARA='ABSC_CURV',CRIT_COMP='EQ',VALE=0.))
+
+lF=TBREAC.EXTR_TABLE().values()['DY']
+lD=TBDEPL.EXTR_TABLE().values()['DY']
+
+lF = [i * -b for i in lF]
+lD= [i * -1000. for i in lD]
+
+resucal=CREA_TABLE(LISTE=(_F(LISTE_R=lD,PARA='Deplacement'),
+                           _F(LISTE_R =lF,PARA='Force')))
+
+IMPR_TABLE(TABLE=resucal,
+           UNITE=9,)
+
+##########################################################################
+# TEST (NON-REGRESSION + REFERENCE)
+##########################################################################
+
+TEST_TABLE(
+           VALE_CALC=-45633.763173963685,
+           VALE_REFE=-45633.76400670127,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='DY',
+           TABLE=TBREAC,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.3,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-0.0012,
+           VALE_REFE=-0.0012,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='DY',
+           TABLE=TBDEPL,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.3,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-46047.68577379771,
+           VALE_REFE=-46108.35645711704,
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.002,
+           NOM_PARA='DY',
+           TABLE=TBREAC,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.4,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-0.0016,
+           VALE_REFE=-0.0016,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='DY',
+           TABLE=TBDEPL,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.4,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-46459.94746557082,
+           VALE_REFE=-46463.08275406287,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='DY',
+           TABLE=TBREAC,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.5,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-0.0020000000000000005,
+           VALE_REFE=-0.0020000000000000005,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='DY',
+           TABLE=TBDEPL,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.5,),
+           )
+
+FIN()
