@@ -21,6 +21,8 @@
 # MODELISATION D : D_PLAN, CHARGEMENT EN MODE MIXTE (MMB)
 # CHARGEMENT EN DEPLACEMENT IMPOSE
 # MAILLAGE QUADRATIQUE, EN MM
+# Premier calcul : CRIT_INIT = 'TURON' (CRITERE ELLIPTIQUE MODULE PAR LE TAUX DE MIXITE)
+# Second calcul : CRIT_INIT = 'YE' (CRITERE ELLIPTIQUE SIMPLE)
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
 
@@ -43,12 +45,11 @@ deply_b = -deply/4.
 deplx = 0.0
 deplz = 0.0
 
-# Paramètres de la loi CZM_TURON pour être équivalent forma08a (DCB avec CZM_LIN_REG)
 k = sigc**2 * (1 - pen) / (2 * tenac * pen)
 sigc1 = sigc * (1 - pen)
-sigc2 = sigc1 * 0.5
+sigc2 = sigc1 * 1.5
 Gc1 = tenac * (1 - pen)
-Gc2 = Gc1 * 0.8
+Gc2 = Gc1 * 1.2
 
 ##########################################################################
 # DEFINITIONS DU MODELE
@@ -66,30 +67,6 @@ MO = AFFE_MODELE(MAILLAGE=MA,
                           PHENOMENE = 'MECANIQUE',
                           MODELISATION = 'PLAN_JOINT'),
                 ),)
-
-#DEFINITION ET AFFECTATION DU MATERIAU
-MAT = DEFI_MATERIAU(
-                      ELAS=_F(E =  young,
-                              NU = nu),
-                      RUPT_FRAG = _F(GC = tenac,
-                                     SIGM_C = sigc,
-                                     PENA_ADHERENCE=pen,
-                                                ),
-                      RUPT_TURON = _F(GC_N = Gc1, 
-                                      GC_T = Gc2,
-                                      SIGM_C_N = sigc1,
-                                      SIGM_C_T = sigc2,
-                                      K = k,
-                                      ETA_BK = 2,
-                                      C_RUPT = 0.001,
-                                      CRIT_INIT = 'TURON',
-                                          ),
-                            )
-                    
-CM=AFFE_MATERIAU(MAILLAGE=MA,
-                 AFFE=_F(GROUP_MA = ('TOUT'),
-                         MATER = MAT),
-                      )
 
 CHAR = AFFE_CHAR_CINE(MODELE = MO,
                       MECA_IMPO = (_F(GROUP_NO = 'OUV_HAUT', DY = deply_h),
@@ -113,11 +90,31 @@ FCT = DEFI_FONCTION(NOM_PARA = 'INST',
                     VALE = (-1, 0, 0, 0.0001, tfin, tfin),)
 
 ##########################################################################
-# CALCUL
+# CALCUL - CRIT_INIT = 'TURON'
 ##########################################################################
 
-U = STAT_NON_LINE(MODELE        = MO,
-                  CHAM_MATER    = CM,
+#DEFINITION ET AFFECTATION DU MATERIAU
+MAT_TU = DEFI_MATERIAU(
+                      ELAS=_F(E =  young,
+                              NU = nu),
+                      RUPT_TURON = _F(GC_N = Gc1, 
+                                      GC_T = Gc2,
+                                      SIGM_C_N = sigc1,
+                                      SIGM_C_T = sigc2,
+                                      K = k,
+                                      ETA_BK = 2,
+                                      C_RUPT = 0.001,
+                                      CRIT_INIT = 'TURON',
+                                          ),
+                            )
+                    
+CM_TU=AFFE_MATERIAU(MAILLAGE=MA,
+                 AFFE=_F(GROUP_MA = ('TOUT'),
+                         MATER = MAT_TU),
+                      )
+
+U_TU = STAT_NON_LINE(MODELE     = MO,
+                  CHAM_MATER    = CM_TU,
                   EXCIT         = (_F(CHARGE = BLOC),
                                    _F(CHARGE = CHAR, FONC_MULT=FCT,),),
                   COMPORTEMENT  = (_F(RELATION = 'ELAS', GROUP_MA = ('COMP')),
@@ -131,35 +128,106 @@ U = STAT_NON_LINE(MODELE        = MO,
 
 
 ##########################################################################
-# POST-TRAITEMENT
+# POST-TRAITEMENT - CRIT_INIT = 'TURON'
 ##########################################################################
 
-U = CALC_CHAMP(reuse = U,
-               RESULTAT = U,
-               FORCE='FORC_NODA',
-               GROUP_MA='COMP')
+U_TU = CALC_CHAMP(reuse = U_TU,
+                  RESULTAT = U_TU,
+                  FORCE='FORC_NODA',
+                  GROUP_MA='COMP')
                
 #IMPR_RESU(FORMAT= 'MED', RESU=_F(RESULTAT=U), UNITE=80,)
 
 ##########################################################################
-# TEST (NON-REGRESSION)
+# TEST (NON-REGRESSION) - CRIT_INIT = 'TURON'
 ##########################################################################
            
            
 TEST_RESU(RESU=_F(GROUP_NO        = 'NO_HAUT',
                   INST            = tfin,
-                  RESULTAT        = U,
+                  RESULTAT        = U_TU,
                   NOM_CHAM        = 'DEPL',
                   NOM_CMP         = 'DY',
-                  VALE_CALC       = 1.2197128358869604,
+                  VALE_CALC       = 1.214799307607657,
                         ),)
            
 TEST_RESU(RESU=_F(GROUP_NO        = 'OUV_HAUT',
                   INST            = tfin,
-                  RESULTAT        = U,
+                  RESULTAT        = U_TU,
                   NOM_CHAM        = 'FORC_NODA',
                   NOM_CMP         = 'DY',
-                  VALE_CALC       = 0.5205019997694427,
+                  VALE_CALC       = 0.604943746250424,
+                        ),)
+                        
+##########################################################################
+# CALCUL - CRIT_INIT = 'YE'
+##########################################################################
+                            
+#DEFINITION ET AFFECTATION DU MATERIAU
+MAT_YE = DEFI_MATERIAU(
+                      ELAS=_F(E =  young,
+                              NU = nu),
+                      RUPT_TURON = _F(GC_N = Gc1, 
+                                      GC_T = Gc2,
+                                      SIGM_C_N = sigc1,
+                                      SIGM_C_T = sigc2,
+                                      K = k,
+                                      ETA_BK = 2,
+                                      C_RUPT = 0.001,
+                                      CRIT_INIT = 'YE',
+                                          ),
+                            )
+                            
+                      
+CM_YE=AFFE_MATERIAU(MAILLAGE=MA,
+                 AFFE=_F(GROUP_MA = ('TOUT'),
+                         MATER = MAT_YE),
+                      )
+
+U_YE = STAT_NON_LINE(MODELE     = MO,
+                  CHAM_MATER    = CM_YE,
+                  EXCIT         = (_F(CHARGE = BLOC),
+                                   _F(CHARGE = CHAR, FONC_MULT=FCT,),),
+                  COMPORTEMENT  = (_F(RELATION = 'ELAS', GROUP_MA = ('COMP')),
+                                   _F(RELATION = 'CZM_TURON', GROUP_MA = 'COLLE', ),),
+                  INCREMENT     = _F(LIST_INST = L_INST, INST_FIN = tfin,),
+                  NEWTON        = _F(MATRICE = 'TANGENTE', REAC_ITER=1,),
+                  CONVERGENCE   = _F(RESI_GLOB_RELA = 5.E-5,
+                                     ITER_GLOB_MAXI = 20,),
+                  SOLVEUR       = _F(METHODE = 'MUMPS',),
+                  ARCHIVAGE     = _F(LIST_INST = INS_ARCH))
+
+
+##########################################################################
+# POST-TRAITEMENT - CRIT_INIT = 'YE'
+##########################################################################
+
+U_YE = CALC_CHAMP(reuse = U_YE,
+                  RESULTAT = U_YE,
+                  FORCE='FORC_NODA',
+                  GROUP_MA='COMP')
+               
+#IMPR_RESU(FORMAT= 'MED', RESU=_F(RESULTAT=U), UNITE=80,)
+
+##########################################################################
+# TEST (NON-REGRESSION) - CRIT_INIT = 'YE'
+##########################################################################
+           
+           
+TEST_RESU(RESU=_F(GROUP_NO        = 'NO_HAUT',
+                  INST            = tfin,
+                  RESULTAT        = U_YE,
+                  NOM_CHAM        = 'DEPL',
+                  NOM_CMP         = 'DY',
+                  VALE_CALC       = 1.2274042022495133,
+                        ),)
+           
+TEST_RESU(RESU=_F(GROUP_NO        = 'OUV_HAUT',
+                  INST            = tfin,
+                  RESULTAT        = U_YE,
+                  NOM_CHAM        = 'FORC_NODA',
+                  NOM_CMP         = 'DY',
+                  VALE_CALC       = 0.3883215322981994,
                         ),)
 
 FIN()
