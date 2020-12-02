@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ implicit none
 ! In  mesh             : name of mesh
 ! In  model            : name of model
 ! In  varc_cata        : datastructure for catalog of external state variables
-! In  varc_affe        : datastructure for external state variables affected
+! In  varc_affe        : datastructure for assigned external state variables
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -142,7 +142,7 @@ implicit none
         varc_name = varc_cata%list_cata_varc(indx_cata)%name
         nb_cmp    = varc_cata%list_cata_varc(indx_cata)%nb_cmp
         vale_refe = varc_affe%list_affe_varc(i_affe_varc)%vale_refe
-        cart1     = chmate//'.'//varc_name//'.1'  
+        cart1     = chmate//'.'//varc_name//'.1'
         cart2     = chmate//'.'//varc_name//'.2'
         call jeveuo(cart1//'.VALV', 'E', vr   = v_cart_valv1)
         call jeveuo(cart2//'.VALV', 'E', vk16 = v_cart_valv2)
@@ -152,7 +152,7 @@ implicit none
         type_affe      = varc_affe%list_affe_varc(i_affe_varc)%type_affe
         vale_phys_para = varc_affe%list_affe_varc(i_affe_varc)%vale_phys_para
         type_phys_para = varc_cata%list_cata_varc(indx_cata)%type_phys_para
-        
+
         evol           = varc_affe%list_affe_varc(i_affe_varc)%evol
         evol_func      = varc_affe%list_affe_varc(i_affe_varc)%evol_func
         evol_prol_l    = varc_affe%list_affe_varc(i_affe_varc)%evol_prol_l

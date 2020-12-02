@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,14 +44,14 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  chmate           : name of material field (CHAM_MATER)
-! In  varc_affe        : datastructure for external state variables affected
+! In  varc_affe        : datastructure for assigned external state variables
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_varc_cmp, nb_suppr, nb_cmp, n1
     integer :: i_varc_cmp
     integer :: nbgdmx, nbgdut, ico
-    character(len=19) :: cart2 
+    character(len=19) :: cart2
     character(len=24) :: cvnom, cvvar, cvgd, cvcmp
     character(len=8), pointer :: v_cvnom(:) => null()
     character(len=8), pointer :: v_cvvar(:) => null()

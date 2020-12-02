@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,10 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  varc_cata        : datastructure for catalog of external state variables
-! Out varc_affe        : datastructure for external state variables affected
+! Out varc_affe        : datastructure for assigned external state variables
+!
+!   /!\ The caller is responsible to deallocate the 'varc_affe'
+!       content with 'afvarc_free'.
 !
 ! --------------------------------------------------------------------------------------------------
 !

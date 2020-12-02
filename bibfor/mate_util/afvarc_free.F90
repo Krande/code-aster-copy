@@ -16,57 +16,38 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine afvarc(chmate, mesh, model)
+subroutine afvarc_free(varc_cata, varc_affe)
 !
 use Material_Datastructure_type
 !
 implicit none
 !
-#include "asterfort/afvarc_free.h"
-#include "asterfort/afvarc_obje_affe.h"
-#include "asterfort/afvarc_obje_crea.h"
-#include "asterfort/afvarc_read.h"
-#include "asterfort/afvarc_shrink.h"
-!
-    character(len=8), intent(in) :: chmate
-    character(len=8), intent(in) :: mesh
-    character(len=8), intent(in) :: model
+    type(Mat_DS_VarcListCata), intent(inout) :: varc_cata
+    type(Mat_DS_VarcListAffe), intent(inout) :: varc_affe
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Material - External state variables (VARC)
 !
-! For AFFE_MATERIAU/AFFE_VARC
+! Free allocated object
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  chmate           : name of material field (CHAM_MATER)
-! In  mesh             : name of mesh
-! In  model            : name of model
+! InOut varc_cata      : datastructure for catalog of external state variables
+! InOut varc_affe      : datastructure for assigned external state variables
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    type(Mat_DS_VarcListCata) :: varc_cata
-    type(Mat_DS_VarcListAffe) :: varc_affe
-    integer :: nb_affe_varc
+    integer :: i
 !
-! --------------------------------------------------------------------------------------------------
+    do i = 1, varc_cata%nb_varc
+        deallocate(varc_cata%list_cata_varc(i)%list_cmp)
+    end do
 !
-! - Read data
+    deallocate(varc_cata%list_cata_varc)
 !
-    call afvarc_read(varc_cata, varc_affe)
-    nb_affe_varc = varc_affe%nb_affe_varc
-!
-    if (nb_affe_varc .ne. 0) then
-!       Create objects
-        call afvarc_obje_crea('G', chmate, mesh, varc_cata, varc_affe)
-!       Affect values in objects
-        call afvarc_obje_affe('G', chmate, mesh, model, varc_cata, varc_affe)
-!       Shrink number of components to save memory
-        call afvarc_shrink(chmate, varc_affe)
+    if (varc_affe%nb_varc_cmp .ne. 0) then
+        deallocate(varc_affe%list_affe_varc)
     endif
-
-!   Free objects allocated in 'afvarc_read'
-    call afvarc_free(varc_cata, varc_affe)
 !
 end subroutine

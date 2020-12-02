@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,9 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! Out varc_cata        : datastructure for catalog of external state variables
+!
+!   /!\ The caller is responsible to deallocate the 'varc_cata'
+!       content with 'afvarc_free'.
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -86,7 +89,7 @@ implicit none
                 list_cmpgd(i_cmp)
             varc_cata%list_cata_varc(i_varc_cata)%list_cmp(i_cmp)%varc_cmp      = &
                 list_cmpvarc(i_cmp)
-        end do   
+        end do
         if (varc_name .eq. 'SECH') then
             field_type = 'TEMP'
         else if (varc_name .eq. 'HYDR') then
@@ -116,11 +119,11 @@ implicit none
             write(6,*) '> NB_CMP   :', varc_cata%list_cata_varc(i_varc_cata)%nb_cmp
             do i_cmp = 1, varc_cata%list_cata_varc(i_varc_cata)%nb_cmp
                 write(6,*) '> Nombre de composantes :', i_cmp
-                write(6,*) '>> CMP_GD   :',& 
+                write(6,*) '>> CMP_GD   :',&
                   varc_cata%list_cata_varc(i_varc_cata)%list_cmp(i_cmp)%phys_para_cmp
-                write(6,*) '>> CMP_VARC :',& 
+                write(6,*) '>> CMP_VARC :',&
                   varc_cata%list_cata_varc(i_varc_cata)%list_cmp(i_cmp)%varc_cmp
-            end do 
+            end do
         end do
          write(6,*) 'Nombre total de variables de commande :', varc_cata%nb_varc
     endif

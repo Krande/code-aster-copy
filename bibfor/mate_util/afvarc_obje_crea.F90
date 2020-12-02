@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ implicit none
 ! In  chmate           : name of material field (CHAM_MATER)
 ! In  mesh             : name of mesh
 ! In  varc_cata        : datastructure for catalog of external state variables
-! In  varc_affe        : datastructure for external state variables affected
+! In  varc_affe        : datastructure for assigned external state variables
 !
 ! --------------------------------------------------------------------------------------------------
 !
