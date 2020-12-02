@@ -23,12 +23,12 @@
 
 /* person_in_charge: mathieu.courtois@edf.fr */
 
-#include "astercxx.h"
+#include "PythonBindings/Fortran.h"
 #include "aster_fort_superv.h"
 #include "aster_fort_utils.h"
 #include "aster_utils.h"
+#include "astercxx.h"
 #include "shared_vars.h"
-#include "PythonBindings/Fortran.h"
 
 void jeveux_init() {
     ASTERINTEGER dbg = 0;
@@ -95,7 +95,7 @@ void call_print( const std::string &text ) { call_affich( "MESSAGE", text ); }
 std::string onFatalError( const std::string value ) {
     ASTERINTEGER lng = 16;
     char *tmp = MakeBlankFStr( lng );
-    std::string blank = " ";
+    std::string blank( " " );
 
     if ( value == "ABORT" || value == "EXCEPTION" ||
          value == "EXCEPTION+VALID" | value == "INIT" ) {
@@ -103,7 +103,9 @@ std::string onFatalError( const std::string value ) {
     } else {
         CALL_ONERRF( (char *)blank.c_str(), tmp, &lng );
     }
-    return std::string( tmp, lng );
+    std::string state( tmp, lng );
+    FreeStr( tmp );
+    return state;
 }
 
 extern "C" void _reset_tpmax();

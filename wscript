@@ -61,7 +61,7 @@ def options(self):
         '  CFLAGS         : extra C compilation options',
         '  FCFLAGS        : extra Fortran compilation options',
         '  LIBPATH_x, LIB_x, INCLUDES_x, PYPATH_x : paths for component "x" for libs, '
-        'incudes, python modules',
+        'includes, python modules',
         '  CONFIG_PARAMETERS_name=value: extra configuration parameters '
         '(for config.json)',
         '  WAFBUILD_ENV   : environment file to be included in runtime '

@@ -401,7 +401,6 @@ bool ResultClass::update()
                                 "No mesh, can not build FieldOnCells" );
                         FieldOnCellsRealPtr result =
                             _fieldBuidler.buildFieldOnCells< double >( name, curMesh );
-                        ( new FieldOnCellsRealClass( name ) );
                         _dictOfVectorOfFieldsCells[nomSymb][rank] = result;
                     }
                 }

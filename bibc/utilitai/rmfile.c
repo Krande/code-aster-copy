@@ -39,7 +39,6 @@ void DEFSPP( RMFILE, rmfile, char *nom1, STRING_SIZE lnom1, ASTERINTEGER *info,
     if ( !( fp = fopen( fname, "r" ) ) ) {
         // file does not exist
         iret = 0;
-        return;
     }
     else {
         *iret = (ASTERINTEGER)remove( fname );
