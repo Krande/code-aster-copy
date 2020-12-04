@@ -1,0 +1,432 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#                       AVEC LA LOI DE HUJEUX
+# PRESSION DE CONSOLIDATION P0 = 100KPA
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', ),
+      DEBUG=_F(SDVERI='OUI'));
+
+# modules mecaniques [kPa]
+K=148.E6
+G=68.E6
+# =>
+YOUNG = 9.*K*G /(3.*K+G)
+POISSON = (3.*K-2.*G) /(6.*K+2.*G)
+
+# pression de preconsolidation [en kPa]
+P0=1.E5
+
+
+#***********************************************************************
+#    MAILLAGE + MODELE
+#***********************************************************************
+MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER", );
+
+MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                   AFFE=_F(TOUT         = 'OUI',
+                           PHENOMENE    = 'MECANIQUE',
+                           MODELISATION = 'D_PLAN'));
+
+MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
+                       MAILLAGE=MAILLAGE,
+                       ORIE_PEAU_2D=_F(GROUP_MA=('DROIT','GAUCHE',
+                                                 'BAS','HAUT')),
+                       INFO=1);
+
+
+#***********************************************************************
+#    INCREMENTS DE TEMPS
+#***********************************************************************
+TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=(_F(JUSQU_A =  2., NOMBRE = 20),
+                                  _F(JUSQU_A = 10., NOMBRE = 80),
+                                )
+                                );
+
+TEMPS2=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=(_F(JUSQU_A =  1., NOMBRE = 10),
+                                  _F(JUSQU_A =  7., NOMBRE = 60),
+                                  _F(JUSQU_A = 10., NOMBRE = 30)));
+
+#***********************************************************************
+#    MATERIAU : SOL
+#***********************************************************************
+SOL=DEFI_MATERIAU(ELAS=_F(E = YOUNG, NU = POISSON),
+                  HUJEUX=_F(N        = 0.,
+                            BETA     = 30.,
+                            D        = 2.5,
+                            B        = .2,
+                            PHI      = 33.,
+                            ANGDIL   = 33.,
+                            PCO      = -0.4E6,
+                            PREF     = -1.E6,
+                            AMON     = 0.017,
+                            ACYC     = 0.0001,
+                            CMON     = 0.08,
+                            CCYC     = 0.04,
+                            RD_ELA   = 0.01,
+                            RI_ELA   = 0.0001,
+                            RHYS     = 0.05,
+                            RMOB     = 0.9,
+                            XM       = 1.,
+                            RD_CYC   = 0.01,
+                            RI_CYC   = 0.0001,
+                            DILA     = 1.0,));
+
+SOL_ORTH=DEFI_MATERIAU(ELAS_ORTH=_F(E_L = YOUNG,
+                        E_T = YOUNG,
+                        E_N = YOUNG,
+                        NU_LT = POISSON,
+                        NU_TN = POISSON,
+                        NU_LN = POISSON,
+                        G_LT = G,
+                        G_LN = G,
+                        G_TN = G,),
+                  HUJEUX=_F(N        = 0.,
+                            BETA     = 30.,
+                            D        = 2.5,
+                            B        = .2,
+                            PHI      = 33.,
+                            ANGDIL   = 33.,
+                            PCO      = -0.4E6,
+                            PREF     = -1.E6,
+                            AMON     = 0.017,
+                            ACYC     = 0.0001,
+                            CMON     = 0.08,
+                            CCYC     = 0.04,
+                            RD_ELA   = 0.01,
+                            RI_ELA   = 0.0001,
+                            RHYS     = 0.05,
+                            RMOB     = 0.9,
+                            XM       = 1.,
+                            RD_CYC   = 0.01,
+                            RI_CYC   = 0.0001,
+                            DILA     = 1.0,));
+
+CHMATISO=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                    AFFE=_F(TOUT='OUI', MATER=SOL));
+
+CHMATORT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                    AFFE=_F(TOUT='OUI', MATER=SOL_ORTH));
+
+#***********************************************************************
+#    CHARGEMENT MECANIQUE : FORCE DE COMPRESSION + DDL IMPOSES
+#***********************************************************************
+CHAR_U1=AFFE_CHAR_MECA(MODELE=MODELE,
+                       PRES_REP=_F(GROUP_MA=('DROIT','GAUCHE','HAUT'),
+                                   PRES = 1.));
+
+CHAR_U2=AFFE_CHAR_MECA(MODELE=MODELE,
+                       FACE_IMPO=_F(GROUP_MA='HAUT',DY = -1.));
+
+CHAR_U3=AFFE_CHAR_MECA(MODELE=MODELE,
+                       FACE_IMPO=_F(GROUP_MA='HAUT',DX = -1.));
+
+DEPL_1=AFFE_CHAR_MECA(MODELE=MODELE,
+                FACE_IMPO=(_F(GROUP_MA='BAS',DY = 0.,DX=0.),
+                            ),
+                            );
+
+COEF1=DEFI_FONCTION(NOM_PARA='INST',
+                    PROL_DROITE='CONSTANT',
+                    VALE=(-1.0, 0.0,
+                           0. , P0 ));
+
+COEF2=DEFI_FONCTION(NOM_PARA='INST',
+                    PROL_DROITE='CONSTANT',
+                    VALE=( 0.0, 0.0,
+                          10.0, .001));
+
+DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS1),
+                        ECHEC=_F(ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
+                                 SUBD_PAS      = 2,
+                                 SUBD_NIVEAU   = 6),)
+
+#***********************************************************************
+#    PRECONSOLIDATION ELASTIQUE JUSQU'A 100KPA
+#***********************************************************************
+SIEF=CREA_CHAMP(INFO=2,
+                TYPE_CHAM='ELGA_SIEF_R',
+                OPERATION='AFFE',
+                MODELE=MODELE,
+                PROL_ZERO='OUI',
+                AFFE=_F(GROUP_MA='BLOC',
+                        NOM_CMP=('SIXX','SIYY','SIZZ'),
+                        VALE=(-P0,-P0,-P0)));
+
+###***********************************************************************
+###    ESSAI DE CISAILLEMENT DRAINE ELAS
+###***********************************************************************
+#UISO=STAT_NON_LINE(MODELE=MODELE,
+#                 CHAM_MATER=CHMATISO,
+#                 EXCIT=(_F(CHARGE      = CHAR_U1,
+#                           FONC_MULT   = COEF1),
+#                        _F(CHARGE      = CHAR_U3,
+#                           TYPE_CHARGE ='DIDI',
+#                           FONC_MULT   = COEF2),
+#                        _F(CHARGE      = DEPL_1)),
+#                 ETAT_INIT=_F(SIGM=SIEF,),
+#                 COMPORTEMENT=_F(RELATION = 'HUJEUX',
+#                              ALGO_INTE='SPECIFIQUE',
+#                              RESI_INTE_RELA = 1.E-8,
+#                              ITER_INTE_MAXI = 20,
+#                              ITER_INTE_PAS = -20),
+#                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER=1),
+#                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-4,
+#                                ITER_GLOB_MAXI = 10),
+#                 ARCHIVAGE =_F(LIST_INST=TEMPS2,),
+#                 INCREMENT=_F(LIST_INST = DEFLIST1,
+#                              INST_INIT=0.0,
+#                              INST_FIN =10.));
+
+##****************************************
+##   POST-TRAITEMENT
+##****************************************
+#UISO = CALC_CHAMP(reuse=UISO,
+#           CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU',DEFORMATION='EPSI_NOEU',
+#           RESULTAT=UISO);
+
+#TAB_SIGI=POST_RELEVE_T(ACTION=_F(INTITULE='EQUI_NOEU_DEPL',
+#                                GROUP_NO='C',
+#                                RESULTAT=UISO,
+#                                NOM_CHAM='SIGM_NOEU',
+#                                NOM_CMP=('SIXX','SIYY','SIZZ','SIXY'),
+#                                OPERATION='EXTRACTION'));
+
+
+
+#TAB_VARI=POST_RELEVE_T(ACTION=_F(INTITULE='VARI_NOEU',
+#                                GROUP_NO='C',
+#                                RESULTAT=UISO,
+#                                NOM_CHAM='VARI_NOEU',
+#                                NOM_CMP=('V1','V2','V3','V4',
+#                                         'V5','V6','V7','V8','V23','V32'),
+#                                OPERATION='EXTRACTION'));
+
+#TAB_EXYI=POST_RELEVE_T(ACTION=_F(INTITULE='EPSI_NOEU',
+#                                GROUP_NO='C',
+#                                RESULTAT=UISO,
+#                                NOM_CHAM='EPSI_NOEU',
+#                                NOM_CMP='EPXY',
+#                                OPERATION='EXTRACTION'));
+
+#TAB_EVI=POST_RELEVE_T(ACTION=_F(INTITULE='EPSI_VOLU',
+#                                GROUP_NO='C',
+#                                RESULTAT=UISO,
+#                                NOM_CHAM='EPSI_NOEU',
+#                                INVARIANT='OUI',
+#                                OPERATION='EXTRACTION'));
+
+
+#TAB_EVI=CALC_TABLE(reuse=TAB_EVI,
+#                    TABLE=TAB_EVI,
+#                    ACTION=_F(OPERATION='COMB',
+#                              TABLE=TAB_EXYI,
+#                              NOM_PARA='INST'));
+
+#TAB_VARI=CALC_TABLE(reuse=TAB_VARI,
+#                    TABLE=TAB_VARI,
+#                    ACTION=_F(OPERATION='COMB',
+#                              TABLE=TAB_EXYI,
+#                              NOM_PARA='INST'));
+
+#TAB_SIGI=CALC_TABLE(reuse=TAB_SIGI,
+#                   TABLE=TAB_SIGI,
+#                   ACTION=_F(OPERATION='COMB',
+#                             TABLE=TAB_EXYI,
+#                             NOM_PARA='INST'));
+
+#IMPR_TABLE(TABLE=TAB_SIGI,UNITE=6)
+
+#IMPR_TABLE(TABLE=TAB_EVI,UNITE=6)
+
+#IMPR_TABLE(TABLE=TAB_VARI,UNITE=6)
+
+#***********************************************************************
+#    ESSAI DE CISAILLEMENT DRAINE ELAS_ORTH
+#***********************************************************************
+UORT=STAT_NON_LINE(MODELE=MODELE,
+                 CHAM_MATER=CHMATORT,
+                 EXCIT=(_F(CHARGE      = CHAR_U1,
+                           FONC_MULT   = COEF1),
+                        _F(CHARGE      = CHAR_U3,
+                           TYPE_CHARGE ='DIDI',
+                           FONC_MULT   = COEF2),
+                        _F(CHARGE      = DEPL_1)),
+                 ETAT_INIT=_F(SIGM=SIEF,),
+                 COMPORTEMENT=_F(RELATION = 'HUJEUX',
+                              ALGO_INTE='SPECIFIQUE',
+                              RESI_INTE_RELA = 1.E-8,
+                              ITER_INTE_MAXI = 20,
+                              ITER_INTE_PAS = -20),
+                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER=1),
+                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-4,
+                                ITER_GLOB_MAXI = 10),
+                 ARCHIVAGE =_F(LIST_INST=TEMPS2,),
+                 INCREMENT=_F(LIST_INST = DEFLIST1,
+                              INST_INIT=0.0,
+                              INST_FIN =10.));
+
+UORT = CALC_CHAMP(reuse=UORT,
+           CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU',DEFORMATION='EPSI_NOEU',
+           RESULTAT=UORT);
+
+TAB_SIGO=POST_RELEVE_T(ACTION=_F(INTITULE='EQUI_NOEU_DEPL',
+                                GROUP_NO='C',
+                                RESULTAT=UORT,
+                                NOM_CHAM='SIGM_NOEU',
+                                NOM_CMP=('SIXX','SIYY','SIZZ','SIXY'),
+                                OPERATION='EXTRACTION'));
+
+TAB_VARO=POST_RELEVE_T(ACTION=_F(INTITULE='VARI_NOEU',
+                                GROUP_NO='C',
+                                RESULTAT=UORT,
+                                NOM_CHAM='VARI_NOEU',
+                                NOM_CMP=('V1','V2','V3','V4',
+                                         'V5','V6','V7','V8','V23','V32'),
+                                OPERATION='EXTRACTION'));
+
+TAB_EXYO=POST_RELEVE_T(ACTION=_F(INTITULE='EPSI_NOEU',
+                                GROUP_NO='C',
+                                RESULTAT=UORT,
+                                NOM_CHAM='EPSI_NOEU',
+                                NOM_CMP='EPXY',
+                                OPERATION='EXTRACTION'));
+
+TAB_EVO=POST_RELEVE_T(ACTION=_F(INTITULE='EPSI_VOLU',
+                                GROUP_NO='C',
+                                RESULTAT=UORT,
+                                NOM_CHAM='EPSI_NOEU',
+                                INVARIANT='OUI',
+                                OPERATION='EXTRACTION'));
+
+TAB_EVO=CALC_TABLE(reuse=TAB_EVO,
+                    TABLE=TAB_EVO,
+                    ACTION=_F(OPERATION='COMB',
+                              TABLE=TAB_EXYO,
+                              NOM_PARA='INST'));
+
+TAB_VARO=CALC_TABLE(reuse=TAB_VARO,
+                    TABLE=TAB_VARO,
+                    ACTION=_F(OPERATION='COMB',
+                              TABLE=TAB_EXYO,
+                              NOM_PARA='INST'));
+
+TAB_SIGO=CALC_TABLE(reuse=TAB_SIGO,
+                   TABLE=TAB_SIGO,
+                   ACTION=_F(OPERATION='COMB',
+                             TABLE=TAB_EXYO,
+                             NOM_PARA='INST'));
+
+IMPR_TABLE(TABLE=TAB_SIGO,UNITE=6)
+
+IMPR_TABLE(TABLE=TAB_EVO,UNITE=6)
+
+IMPR_TABLE(TABLE=TAB_VARO,UNITE=6)
+
+
+##**********************************#
+##       TEST_RESU AU POINT C       #
+##**********************************#
+
+##---------------------------------------------------------------
+## TEST SUR LA CONTRAINTE DE CISAILLEMENT ENTRE ELAS_ORTH ET ELAS
+##---------------------------------------------------------------
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+#           PRECISION=1.E-2,
+           VALE_CALC=-9905.407021974279,
+           VALE_REFE=-9.90541E+03,
+           NOM_PARA='SIXY',
+           TABLE=TAB_SIGO,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     NOM_PARA='INST',
+                     VALE=1.00000E+01,),
+           )
+
+##----------------------------------------------------------------
+## TEST DE LA DEFORMATION VOLUMIQUE TOTALE ENTRE ELAS_ORTH ET ELAS
+##----------------------------------------------------------------
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+#           PRECISION=1.E-2,
+           VALE_CALC=-6.604371230407128E-05,
+           VALE_REFE=-6.60437E-05,
+           NOM_PARA='TRACE',
+           TABLE=TAB_EVO,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     NOM_PARA='INST',
+                     VALE=1.00000E+01,),
+           )
+
+##-------------------------------------------------------
+## TEST DU COEF D ECROUISSAGE DEVIATOIRE (YZ) 
+##-------------------------------------------------------
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+#           PRECISION=0.02,
+           VALE_CALC=0.016973201202213486,
+           VALE_REFE=1.69732E-02,
+           NOM_PARA='V1',
+           TABLE=TAB_VARO,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     NOM_PARA='INST',
+                     VALE=1.00000E+01,),
+           )
+
+##-------------------------------------------------------
+## TEST DU COEF D ECROUISSAGE DEVIATOIRE (XY)
+##-------------------------------------------------------
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+#           PRECISION=0.02,
+           VALE_CALC=0.1431228050634153,
+           VALE_REFE=1.43123E-01,
+           NOM_PARA='V3',
+           TABLE=TAB_VARO,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     NOM_PARA='INST',
+                     VALE=1.00000E+01,),
+           )
+
+
+##------------------------------------------------
+## TEST DU COEF D ECROUISSAGE ISOTROPE 
+##------------------------------------------------
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+#           PRECISION=1.E-2,
+           VALE_CALC=0.10010680501461072,
+           VALE_REFE=1.00107E-01,
+           NOM_PARA='V4',
+           TABLE=TAB_VARO,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     NOM_PARA='INST',
+                     VALE=1.00000E+01,),
+           )
+
+FIN();
