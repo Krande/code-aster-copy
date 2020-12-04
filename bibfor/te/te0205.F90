@@ -105,6 +105,7 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - Loop on Gauss points
 !
+    pres_pg = 0.d0
     do ipg = 1, npg
         ldec = (ipg-1)*nno
 ! ----- Get value of pressure
