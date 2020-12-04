@@ -1767,13 +1767,13 @@ def post_k1_k2_k3_ops(self, RESULTAT, FOND_FISS =None, FISSURE=None, MATER=None,
     if FISSURE is not None:
         nom_fiss = FISSURE.getName()
     assert nom_fiss != ''
-    mater, MODELISATION = aster.postkutil(RESULTAT.getName(), nom_fiss)
 
     # si le MCS MATER n'est pas renseigne, on considere le materiau
     # present dans la sd_resultat. Si MATER est renseigne, on ecrase
     # le materiau et on emet une alarme.
     CHAM_MATER = None
     if MATER is None:
+        mater, MODELISATION = aster.postkutil(1, RESULTAT.getName(), nom_fiss)
         if RESULTAT.getNumberOfRanks() == 0:
             RESULTAT.update()
         if RESULTAT.getNumberOfRanks() > 0:
@@ -1795,7 +1795,8 @@ def post_k1_k2_k3_ops(self, RESULTAT, FOND_FISS =None, FISSURE=None, MATER=None,
                 MATER = curMater
                 break
     else:
-        UTMESS('A', 'RUPTURE0_1', valk=[mater, MATER.getName()])
+        bid, MODELISATION = aster.postkutil(0, RESULTAT.getName(), nom_fiss)
+        UTMESS('A', 'RUPTURE0_1', valk=[MATER.getName()])
 
 
     # Affectation de ndim selon le type de modelisation

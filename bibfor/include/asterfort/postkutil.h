@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,8 @@
 
 !
 interface 
-    subroutine postkutil(nomres, nomfis, repmat, repmod)
+    subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
+        integer, intent(in) :: imater
         character(len=*), intent(in) :: nomres
         character(len=*), intent(in) :: nomfis
         character(len=*), intent(out) :: repmat

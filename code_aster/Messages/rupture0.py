@@ -23,7 +23,7 @@ cata_msg = {
 
     1: _("""
 Vous avez renseigné le mot clé simple MATER de la commande POST_K1_K2_K3.
-Le matériau %(k1)s présent dans la structure de données résultat va être surchargée par le matériau %(k2)s .
+Le matériau présent dans la structure de données résultat va être surchargée par le matériau %(k1)s .
 """),
 
     2: _("""

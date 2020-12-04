@@ -1847,7 +1847,8 @@ PyObject *args;
 /* ---------------------------------------------------------------------- */
 static char postkutil_doc[] =
 "Interface d'appel a la routine fortran postkutil.\n"
-"   usage: materiau, modelisa = aster.postkutil(resu, fiss) \n\n"
+"   usage: materiau, modelisa = aster.postkutil(imater,resu, fiss) \n\n"
+"     imater : 1 si on veut chercher un materiau, sinon 0"
 "     resu : nom d'une sd_resultat\n"
 "     fiss : nom d'une sd_fond_fiss ou d'une sd_fiss_xfem\n"
 "   Retourne :\n"
@@ -1859,18 +1860,21 @@ static PyObject * aster_postkutil(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
+    int ilmater;
     char *nomres, *nomfis, *repmod, *nommat;
+    ASTERINTEGER lmater;
     char *Fres, *Ffis, *Fmod, *Fmat;
     PyObject *res;
 
     repmod = MakeBlankFStr(8);
     nommat = MakeBlankFStr(8);
-    if (!PyArg_ParseTuple(args, "ss", &nomres, &nomfis))
+    if (!PyArg_ParseTuple(args, "iss", &ilmater, &nomres, &nomfis))
         return NULL;
 
     Fres = MakeFStrFromCStr(nomres, 8);
     Ffis = MakeFStrFromCStr(nomfis, 8);
-    CALL_POSTKUTIL(Fres, Ffis, nommat, repmod);
+    lmater = (ASTERINTEGER)ilmater;
+    CALL_POSTKUTIL(&lmater, Fres, Ffis, nommat, repmod);
     Fmat = MakeCStrFromFStr(nommat, 8);
     Fmod = MakeCStrFromFStr(repmod, 8);
 

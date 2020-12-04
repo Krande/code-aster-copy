@@ -102,6 +102,14 @@ En FEM (fissure représentée dans le maillage), il doit être de type ELNO, NOE
 En X-FEM (fissure non représentée dans le maillage), il doit être de type ELGA.
 """),
 
+    13: _("""
+La recherche du matériau associé au front de fissure a échouée. Cela arrive notamment quand
+des noeuds du front du fissure sont situés à la frontière entre plusieurs matériaux.
+
+Solution : Renseigner le mot-clé MATER de POST_K1_K2_K3 avec le matériau souhaité.
+
+"""),
+
     15: _("""
 Le résultat n'est pas un EVOL_NOLI.
 """),

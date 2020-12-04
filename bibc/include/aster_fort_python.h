@@ -35,9 +35,9 @@ extern "C" {
 extern void DEFSSP(GMARDM, gmardm, const char *,STRING_SIZE,
                        const char *,STRING_SIZE, ASTERINTEGER *);
 
-#define CALL_POSTKUTIL(a,b,c,d) CALLSSSS(POSTKUTIL,postkutil,a,b,c,d)
-extern void DEFSSSS(POSTKUTIL,postkutil,char *,STRING_SIZE,char *,STRING_SIZE,
-                    char *,STRING_SIZE,char *,STRING_SIZE);
+#define CALL_POSTKUTIL(a,b,c,d,e) CALLPSSSS(POSTKUTIL,postkutil,a,b,c,d,e)
+extern void DEFPSSSS(POSTKUTIL,postkutil, ASTERINTEGER *,char *,STRING_SIZE,
+                     char *,STRING_SIZE,char *,STRING_SIZE,char *,STRING_SIZE);
 
 #ifdef __cplusplus
 }
