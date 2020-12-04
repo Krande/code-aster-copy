@@ -114,7 +114,9 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 """),
 
     19 : _("""
- On ne peut extraire qu'un numéro d'ordre. Vous en avez spécifié plusieurs.
+On ne peut pas extraire le champ avec l'accès donné pour la SD_RESULTAT.
+Merci de vérifier si un seul numéro d'ordre est spécifié, 
+ou si l'instant spécifié existe.
 """),
 
     24 : _("""
