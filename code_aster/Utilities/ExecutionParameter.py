@@ -120,6 +120,8 @@ class ExecutionParameter(metaclass=Singleton):
         self._args['repmat'] = '.'
         self._args['repdex'] = '.'
 
+        self._args['hook_post_exec'] = None
+
         self._computed()
 
     def _computed(self):
@@ -282,6 +284,10 @@ class ExecutionParameter(metaclass=Singleton):
         parser.add_argument('--slave', dest='SlaveMode',
             action='store_const', const=1, default=0,
             help="slave mode, try not to exit in case of error")
+
+        parser.add_argument('--hook_post_exec',
+            action='store', default=None,
+            help="[for debugging only] path to a function called by 'post_exec'")
 
         parser.add_argument('--dbgjeveux',
             action='store_const', const=1, default=0,

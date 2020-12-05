@@ -50,7 +50,8 @@ from ..Supervis import CommandSyntax, ExecuteCommand, Serializer, loadObjects
 from ..Supervis.code_file import track_coverage
 from ..Supervis.ctopy import checksd, print_header
 from ..Supervis.TestResult import testresu_print
-from ..Utilities import ExecutionParameter, Options, deprecate, logger
+from ..Utilities import (ExecutionParameter, Options, deprecate, import_object,
+                         logger)
 from ..Utilities.i18n import localization
 
 try:
@@ -194,6 +195,10 @@ class Starter(ExecuteCommand):
             iwarn = iwarn or jxveri or sdveri or dbgjeveux
         if iwarn:
             UTMESS('I', 'SUPERVIS_22', valk=("--test", "code_aster.init()"))
+        if ExecutionParameter().get_option("hook_post_exec"):
+            path = ExecutionParameter().get_option("hook_post_exec")
+            hook = import_object(path)
+            self.register_hook(hook)
 
         if keywords.get('IMPR_MACRO') == 'OUI':
             ExecutionParameter().enable(Options.ShowChildCmd)

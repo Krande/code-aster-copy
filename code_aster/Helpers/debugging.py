@@ -29,14 +29,14 @@ be used in production**.
 Check for dependency between datastructures
 ===========================================
 
-To enable a hook called after each command add this line
-in :file:`code_aster/Commands/operator.py`:
+Use the ``--hook_post_exec`` command line argument to enable a hook called
+after each command.
 
-.. code-block:: python
+For example: use in the ``.export`` file:
 
-    # replace "hook_function" by the function to be used
-    from ..Helpers.debugging import hook_function
-    ExecuteCommand.register_hook(hook_function)
+.. code-block:: none
+
+    A args --hook_post_exec=code_aster.Helpers.debugging.check_dependencies
 
 """
 

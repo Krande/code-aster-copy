@@ -229,15 +229,15 @@ class ExecuteCommand(object):
         """
         return self._exc
 
-    @classmethod
-    def register_hook(cls, func):
+    @staticmethod
+    def register_hook(func):
         """Register a hook for *post_exec* step.
 
         Arguments:
             func (function): Function with signature: *ExecuteCommand*, *dict*
                 of keywords.
         """
-        cls.hook = func
+        ExecuteCommand.hook = func
 
     @classmethod
     def show_syntax(cls):
