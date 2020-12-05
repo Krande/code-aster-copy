@@ -61,6 +61,6 @@ def define_operators(store):
         elif isinstance(command, Macro):
             store[name] = legacy_command_factory(ExecuteMacro, name)
 
-# only for debugging:
+# # only for debugging:
 # from ..Helpers.debugging import check_dependencies
 # ExecuteCommand.register_hook(check_dependencies)

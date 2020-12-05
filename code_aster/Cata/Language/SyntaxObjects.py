@@ -39,7 +39,6 @@ to import command files that contain it. But it is always optional (see
 `checkMandatory`) because it is removed during import.
 """
 
-import inspect
 import types
 from collections import OrderedDict
 

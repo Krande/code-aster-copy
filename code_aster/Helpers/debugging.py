@@ -46,6 +46,7 @@ import re
 
 from ..Cata.Language.SyntaxUtils import force_list
 from ..Objects import DataStructure
+from ..Utilities import get_caller_context
 from .LogicalUnit import LogicalUnitFile
 
 SKIPPED = object()
@@ -185,14 +186,16 @@ def check_dependencies(inst, _):
     """
     if not hasattr(check_dependencies, "_storage"):
         check_dependencies._storage = {}
+    if inst.command_name == "POURSUITE":
+        context = get_caller_context(5)
+        register_context(context, check_dependencies._storage)
 
     result = inst._result
     if not isinstance(result, DataStructure):
         return
 
     # keep all created DS
-    # TODO use regular expression instead '[0-9a-f]{8}'
-    # and check if they still exist?
+    # TODO check if they still exist?
     name = result.getName()
     typ = result.getType()
     if not check_dependencies._storage.get(name):
@@ -234,6 +237,22 @@ def check_dependencies(inst, _):
         print("#27406:", name, typ, "unnecessary direct dep to", nodirect)
     if not printed:
         print("#27406:", name, typ)
+
+
+def register_context(ctxt, storage):
+    """Register context as existing objects.
+
+    Arguments:
+        ctxt (dict): Context/dict containing objects to be registered.
+        storage (dict): Dict that stores the type of each object.
+    """
+    for result in ctxt.values():
+        if not isinstance(result, DataStructure):
+            continue
+        name = result.getName()
+        typ = result.getType()
+        if not storage.get(name):
+            storage[name] = typ
 
 
 # used to force to show children commands

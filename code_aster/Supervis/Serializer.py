@@ -49,7 +49,6 @@ if the ``--continue`` argument is passed.
 The command :func:`~code_aster.Commands.debut.POURSUITE` does also the same.
 """
 
-import inspect
 import os.path as osp
 import pickle
 import traceback
@@ -57,14 +56,13 @@ import types
 from hashlib import sha256
 from io import IOBase
 
-import numpy
-
 import libaster
+import numpy
 
 from .. import Objects
 from ..Objects import DataStructure, ResultNaming
-from ..Utilities import (DEBUG, ExecutionParameter, Options, logger,
-                         no_new_attributes)
+from ..Utilities import (DEBUG, ExecutionParameter, Options,
+                         get_caller_context, logger, no_new_attributes)
 
 ARGS = '_MARK_DS_ARGS_'
 NOARGS = '_MARK_DS_NOARGS_'
@@ -285,13 +283,7 @@ def saveObjects(level=1, delete=True):
         level (int): Number of frames to go back to find the user context.
         delete (bool): If *True* the saved objects are deleted from the context.
     """
-    caller = inspect.currentframe()
-    for _ in range(level):
-        caller = caller.f_back
-    try:
-        context = caller.f_globals
-    finally:
-        del caller
+    context = get_caller_context(level)
 
     # if ExecutionParameter().option & Options.Debug:
     #     libaster.debugJeveuxContent("Saved jeveux objects:")
@@ -317,13 +309,8 @@ def loadObjects(level=1):
     Arguments:
         level (int): Number of frames to go back to find the user context.
     """
-    caller = inspect.currentframe()
-    for _ in range(level):
-        caller = caller.f_back
-    try:
-        context = caller.f_globals
-    finally:
-        del caller
+    context = get_caller_context(level)
+
     # if ExecutionParameter().option & Options.Debug:
     #     libaster.debugJeveuxContent("Reloaded jeveux objects:")
     # orig = logger.getEffectiveLevel()

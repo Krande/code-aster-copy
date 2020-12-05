@@ -26,6 +26,7 @@
 This modules gives some basic utilities.
 """
 
+import inspect
 import sys
 from array import array
 from decimal import Decimal
@@ -81,6 +82,25 @@ def import_object(uri):
                              "Module content is: {2}"
                              .format(objname, modname, tuple(dir(mod))))
     return obj
+
+def get_caller_context(level):
+    """Return the context some levels upper.
+
+    Arguments:
+        level (int): Number of parents in the calling stack. 0 means where
+            `get_caller_context` is called.
+
+    Returns:
+        dict: 'globals' context at this level.
+    """
+    caller = inspect.currentframe()
+    for _ in range(level + 1):
+        caller = caller.f_back
+    try:
+        context = caller.f_globals
+    finally:
+        del caller
+    return context
 
 def force_list(values):
     """Ensure `values` is iterable (list, tuple, array...) and return it as

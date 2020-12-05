@@ -22,12 +22,11 @@
 # C4007: INCLUDE() is also discouraged
 # C4009: in a string, imported here
 
-import inspect
 import os.path as osp
 
 from ..Messages import UTMESS
 from ..Supervis import ExecuteCommand
-from ..Utilities import ExecutionParameter, Options
+from ..Utilities import ExecutionParameter, Options, get_caller_context
 
 
 AUTO_IMPORT = """
@@ -44,14 +43,7 @@ class Include(ExecuteCommand):
 
     def exec_(self, keywords):
         """Execute the file to be included in the parent context."""
-        level = 3
-        caller = inspect.currentframe()
-        for _ in range(level):
-            caller = caller.f_back
-        try:
-            context = caller.f_globals
-        finally:
-            del caller
+        context = get_caller_context(3)
 
         if keywords.get("ALARME", "OUI"):
             UTMESS('A', 'SUPERVIS_25', valk=("AsterStudy", "import"))

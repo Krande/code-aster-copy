@@ -19,10 +19,9 @@
 
 # person_in_charge: mathieu.courtois@edf.fr
 import gc
-import inspect
 
 from ..Objects import DataStructure, Function
-from ..Utilities import deprecate, force_list
+from ..Utilities import deprecate, force_list, get_caller_context
 from ..Supervis import ExecuteCommand
 
 
@@ -56,14 +55,8 @@ class Deleter(ExecuteCommand):
         if not to_del:
             return
 
-        # calling stack
-        caller = inspect.currentframe()
-        for _ in range(3):
-            caller = caller.f_back
-        try:
-            context = caller.f_globals
-        finally:
-            del caller
+        # calling context
+        context = get_caller_context(3)
 
         for name in list(context.keys()):
             if isinstance(context[name], DataStructure):

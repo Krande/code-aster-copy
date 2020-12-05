@@ -23,13 +23,12 @@ Implémentation de la macro CALC_ESSAI
 Ce module contient la partie controle de la macro CALC_ESSAI
 """
 
-import inspect
-
 from libaster import onFatalError
 
+from ..Messages import UTMESS
+from ..Utilities import get_caller_context
 from .CalcEssai.cata_ce import CalcEssaiObjects
 from .CalcEssai.ce_test import MessageBox, TestCalcEssai
-from ..Messages import UTMESS
 
 
 def calc_essai_ops(self,
@@ -46,11 +45,8 @@ def calc_essai_ops(self,
     if MODIFSTRUCT:
         UTMESS('F', 'CALCESSAI0_2')
 
-    caller = inspect.currentframe()
     # 1: exec_, 2: run_, 3: run, 4: user
-    for _ in range(4):
-        caller = caller.f_back
-        context = caller.f_globals
+    context = get_caller_context(4)
 
     prev = onFatalError()
 

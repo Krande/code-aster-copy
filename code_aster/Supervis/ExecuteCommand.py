@@ -480,7 +480,6 @@ class ExecuteCommand(object):
             self._caller["filename"] = caller.f_code.co_filename
             self._caller["lineno"] = caller.f_lineno
             self._caller["context"] = caller.f_globals
-
         finally:
             del caller
 
