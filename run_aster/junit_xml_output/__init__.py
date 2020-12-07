@@ -100,13 +100,13 @@ class JunitXml(object):
 
     def dump(self, pretty=True):
         """ returns a string representation of the junit xml tree. """
-        out = ET.tostring(self.root)
+        out = ET.tostring(self.root, encoding="utf-8")
         if pretty:
             try:
                 dom = xml.dom.minidom.parseString(out)
-                out = dom.toprettyxml()
+                out = dom.toprettyxml(encoding="utf-8")
             except Exception:
-                traceback.print_exc()
+                out = out.decode("utf-8", errors="replace")
         return out
 
 
