@@ -91,6 +91,7 @@ implicit none
 #include "asterfort/nonlinDSPrintSepLine.h"
 #include "asterfort/nonlinDSDynamicInit.h"
 #include "asterfort/nonlinDSErrorIndicInit.h"
+#include "asterfort/verins.h"
 !
 character(len=8), intent(in) :: mesh
 character(len=24), intent(in) :: model
@@ -330,6 +331,9 @@ type(HHO_Field), intent(inout) :: hhoField
 !
     numins = 0
     instin = diinst(sddisc,numins)
+    
+! - Vérifier les instants des calculs attachés à _NON_LINE (eg. MODE_VIBR)
+    call verins(ds_posttimestep,instin)
 !
 ! - Initializations for material parameters management
 !

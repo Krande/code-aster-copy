@@ -273,4 +273,10 @@ Réduisez la zone de calcul par le mot-clé GROUP_MA/MAILLE."""),
  On attend des données fréquentielles.
 """),
 
+    75 : _("""
+ MODE_VIBR : Il existe un ou plusieurs instants égaux ou antérieurs à l'instant 
+             initial de DYNA_NON_LINE (T_INI = %(r1)f).
+            Les modes de ces instants ne pourront pas être calculés.              
+"""),
+
 }
