@@ -73,11 +73,22 @@ class VibrationDynamics(ExecuteCommand):
         if keywords["BASE_CALCUL"] == "GENE":
             stiffnessMatrix = keywords["MATR_RIGI"]
             dofGeneNum = stiffnessMatrix.getGeneralizedDOFNumbering()
-            if isinstance(self._result, HarmoGeneralizedResult) or \
-               isinstance(self._result, TransientGeneralizedResult):
+            if isinstance(self._result, (HarmoGeneralizedResult,
+                                         TransientGeneralizedResult)):
                 self._result.setGeneralizedDOFNumbering(dofGeneNum)
             else:
                 raise Exception("Unknown result type")
+
+    def add_dependencies(self, keywords):
+        """Register input *DataStructure* objects as dependencies.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+        self._result.resetDependencies()
+        for key in ('MATR_MATR', 'MATR_RIGI', 'MATR_AMOR'):
+            if keywords.get(key):
+                self._result.addDependency(keywords[key])
 
 
 DYNA_VIBRA = VibrationDynamics.run

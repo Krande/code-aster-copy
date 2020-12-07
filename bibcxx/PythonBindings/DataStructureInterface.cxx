@@ -56,6 +56,12 @@ Arguments:
         )",
             ( py::arg( "self" ), py::arg( "ds" ) ) )
 
+        .def( "resetDependencies", &DataStructure::resetDependencies,
+        R"(
+Clear the list of explicit dependencies.
+        )",
+            ( py::arg( "self" ) ) )
+
         .def( "getDependencies", &DataStructure::getDependencies,
         R"(
 Return the explicit dependencies.

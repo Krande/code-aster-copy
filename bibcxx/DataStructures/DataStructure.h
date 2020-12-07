@@ -97,6 +97,8 @@ class DataStructure {
      */
     void removeDependency( const DataStructurePtr & );
 
+    void resetDependencies();
+
     std::vector< DataStructurePtr > getDependencies() const;
 
     /**

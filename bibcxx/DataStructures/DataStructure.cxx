@@ -120,6 +120,10 @@ void DataStructure::removeDependency( const DataStructurePtr &ds ) {
     }
 }
 
+void DataStructure::resetDependencies() {
+    _depsVector.clear();
+}
+
 std::vector< DataStructure::DataStructurePtr > DataStructure::getDependencies() const {
     return _depsVector;
 }
