@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -163,6 +163,45 @@ TAB_CONT=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
                                  OPERATION='EXTRACTION',),);
 
 
+#---------couvrir RECU_FONCTION
+
+RN_la=RECU_FONCTION(RESULTAT=RESU, GROUP_NO='LRESU',
+                      NOM_CHAM='CONT_NOEU', NOM_CMP='RN',
+                      TOUT_ORDRE='OUI', NOM_PARA='INST',
+                      PROL_DROITE='CONSTANT',
+                      PROL_GAUCHE='CONSTANT');
+
+RN_lat = CREA_TABLE(FONCTION=_F(FONCTION=RN_la));
+
+RN_ma0 = RECU_FONCTION(TABLE=RN_lat, PARA_X='INST', PARA_Y='RN',
+                         FILTRE=(_F(NOM_PARA='INST', CRIT_COMP='LT',
+                                   VALE=3.0),
+                                  _F(NOM_PARA='INST', CRIT_COMP='GT',
+                                   VALE=1.0)));
+
+RN_ma0t = CREA_TABLE(FONCTION=_F(FONCTION=RN_ma0));
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC=2.75,
+           VALE_REFE=2.75,
+           NOM_PARA='INST',
+           TYPE_TEST='MAX',
+           TABLE=RN_ma0t,)
+
+RN_ma1 = RECU_FONCTION(TABLE=RN_lat, PARA_X='INST', PARA_Y='RN',
+                         FILTRE=_F(NOM_PARA='INST',
+                                   CRIT_COMP='MAXI'));
+
+RN_ma1t = CREA_TABLE(FONCTION=_F(FONCTION=RN_ma1));
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-2,
+           VALE_CALC=4.,
+           VALE_REFE=4.,
+           NOM_PARA='INST',
+           TYPE_TEST='MAX',
+           TABLE=RN_ma1t,)
 
 #------- TEST DES RESULTATS --------------
 # TEST REFERENCE

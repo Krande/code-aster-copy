@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -210,15 +210,15 @@ BAMO1_CL=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODES_1),
                                       NMAX_MODE = 999)),
                            ORTHO='OUI',
                            MATRICE=MASS_1,
-                           INTERF_DYNA=LINT1_CL,
-                           NUME_REF=NUMDDL_1)
+                           INTERF_DYNA=LINT1_CL,)
+                           #NUME_REF=NUMDDL_1)
 
 #
 BAMO2_CL=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODES_2),
                                   _F( MODE_INTF = MODESTA2,
                                       NMAX_MODE = 999)),
-                           INTERF_DYNA=LINT2_CL,
-                           NUME_REF=NUMDDL_2)
+                           INTERF_DYNA=LINT2_CL,)
+                           #NUME_REF=NUMDDL_2)
 #
 #  CALCUL DES MACRO-ELEMENTS
 #

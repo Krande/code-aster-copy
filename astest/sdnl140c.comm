@@ -103,7 +103,21 @@ evol1=DYNA_NON_LINE(MODELE=modele,
                    SCHEMA_TEMPS=_F(SCHEMA='HHT',ALPHA=-0.3, MODI_EQUI='OUI',
                                    FORMULATION='DEPLACEMENT',),);
 
+#-----------couvrir C_PLAN / ECIN_ELEMIN_ELEM
+tab_ecin=POST_ELEM(ENER_CIN=_F(GROUP_MA='Poutre'),
+                   MODELE=modele,
+                   CHAM_MATER=affe_mat,
+                   RESULTAT=evol1);
 
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.0e-6,
+           VALE_CALC=434861.4201976741,
+           VALE_REFE=434861.420,
+           NOM_PARA='TOTALE',
+           TYPE_TEST='MAX',
+           TABLE=tab_ecin,)
+
+#--------------------------------------------
 TEST_RESU(RESU=_F(INST      =  lfin1,
                   NOM_CHAM  =  'DEPL',
                   NOM_CMP   =  'DY',
