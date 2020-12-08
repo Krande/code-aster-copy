@@ -121,7 +121,10 @@ class XUnitReport:
                                self.legend,
                                self.junit_test)
         with open(osp.join(self.base, filename), "w") as fobj:
-            fobj.write(junit.dump())
+            dump = junit.dump()
+            if isinstance(dump, bytes):
+                dump = dump.decode("utf-8", errors="replace")
+            fobj.write(dump)
 
 
 RE_STATE = re.compile("DIAGNOSTIC JOB : (.*)", re.M)

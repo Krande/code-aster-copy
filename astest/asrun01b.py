@@ -649,35 +649,37 @@ class TestUtils(unittest.TestCase):
 
     def test_copy(self):
         previous = os.getcwd()
-        with tempfile.TemporaryDirectory() as tmpdir:
-            os.chdir(tmpdir)
-            os.system("echo data1 > data1")
-            os.system("mkdir datadir")
-            os.system("echo data2 > datadir/data2")
-            os.system("echo data3 > datadir/data3")
-            copy("data1", "resudir1/resu1", verbose=True)
-            self.assertTrue(osp.isfile(osp.join(tmpdir, "resudir1", "resu1")))
-            copy("data1", "resudir1/resu1.1", verbose=True)
-            self.assertTrue(osp.isfile(osp.join(tmpdir, "resudir1", "resu1.1")))
-            copy("data1", "resudir1", verbose=True)
-            self.assertTrue(osp.isfile(osp.join(tmpdir, "resudir1", "data1")))
+        try:
+            with tempfile.TemporaryDirectory() as tmpdir:
+                os.chdir(tmpdir)
+                os.system("echo data1 > data1")
+                os.system("mkdir datadir")
+                os.system("echo data2 > datadir/data2")
+                os.system("echo data3 > datadir/data3")
+                copy("data1", "resudir1/resu1", verbose=True)
+                self.assertTrue(osp.isfile(osp.join(tmpdir, "resudir1", "resu1")))
+                copy("data1", "resudir1/resu1.1", verbose=True)
+                self.assertTrue(osp.isfile(osp.join(tmpdir, "resudir1", "resu1.1")))
+                copy("data1", "resudir1", verbose=True)
+                self.assertTrue(osp.isfile(osp.join(tmpdir, "resudir1", "data1")))
 
-            copy("datadir", "resudir2")
-            self.assertTrue(osp.isdir(osp.join(tmpdir, "resudir2")))
-            self.assertTrue(osp.isfile(osp.join(tmpdir, "resudir2", "data2")))
-            self.assertTrue(osp.isfile(osp.join(tmpdir, "resudir2", "data3")))
-            with open(osp.join(tmpdir, "resudir2", "data3")) as fobj:
-                self.assertTrue("data3" in fobj.read())
-            os.system("echo change3 > datadir/data3")
-            copy("datadir", "resudir2")
-            self.assertTrue(osp.isdir(osp.join(tmpdir, "resudir2")))
-            self.assertTrue(osp.isfile(osp.join(tmpdir, "resudir2", "data2")))
-            self.assertTrue(osp.isfile(osp.join(tmpdir, "resudir2", "data3")))
-            self.assertFalse(osp.isdir(osp.join(tmpdir, "resudir2", "datadir")))
-            with open(osp.join(tmpdir, "resudir2", "data3")) as fobj:
-                self.assertTrue("change3" in fobj.read())
-            # os.system("find")
-        os.chdir(previous)
+                copy("datadir", "resudir2")
+                self.assertTrue(osp.isdir(osp.join(tmpdir, "resudir2")))
+                self.assertTrue(osp.isfile(osp.join(tmpdir, "resudir2", "data2")))
+                self.assertTrue(osp.isfile(osp.join(tmpdir, "resudir2", "data3")))
+                with open(osp.join(tmpdir, "resudir2", "data3")) as fobj:
+                    self.assertTrue("data3" in fobj.read())
+                os.system("echo change3 > datadir/data3")
+                copy("datadir", "resudir2")
+                self.assertTrue(osp.isdir(osp.join(tmpdir, "resudir2")))
+                self.assertTrue(osp.isfile(osp.join(tmpdir, "resudir2", "data2")))
+                self.assertTrue(osp.isfile(osp.join(tmpdir, "resudir2", "data3")))
+                self.assertFalse(osp.isdir(osp.join(tmpdir, "resudir2", "datadir")))
+                with open(osp.join(tmpdir, "resudir2", "data3")) as fobj:
+                    self.assertTrue("change3" in fobj.read())
+                # os.system("find")
+        finally:
+            os.chdir(previous)
 
     def test_timer(self):
         timer = Timer("Global")
@@ -699,14 +701,16 @@ class TestCTest2Junit(unittest.TestCase):
 
     def test_convert(self):
         previous = os.getcwd()
-        with tempfile.TemporaryDirectory() as tmpdir:
-            os.chdir(tmpdir)
-            with tarfile.open(osp.join(previous, "fort.11")) as tar:
-                tar.extractall()
-            report = XUnitReport(tmpdir)
-            report.read_ctest()
-            report.write_xml("run_testcases.xml")
-        os.chdir(previous)
+        try:
+            with tempfile.TemporaryDirectory() as tmpdir:
+                os.chdir(tmpdir)
+                with tarfile.open(osp.join(previous, "fort.11")) as tar:
+                    tar.extractall()
+                report = XUnitReport(tmpdir)
+                report.read_ctest()
+                report.write_xml("run_testcases.xml")
+        finally:
+            os.chdir(previous)
 
 
 class TestFromShell(unittest.TestCase):
