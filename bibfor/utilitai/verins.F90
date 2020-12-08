@@ -17,25 +17,75 @@
 ! --------------------------------------------------------------------
 !
 !
-subroutine verins(ds_posttimestep,instin)
+subroutine verins(sddisc,ds_posttimestep)
 use NonLin_Datastructure_type
 implicit none
 #include "asterfort/utmess.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utacli.h"
+!    
     type(NL_DS_PostTimeStep) :: ds_posttimestep
-    real(kind=8) :: instin, valr(1)
+    character(len=19) :: sddisc
+    real(kind=8) :: vibr_inst, inst_init, valr(1)
     type(NL_DS_SelectList) :: selectList
-    integer :: iinst
+    integer :: iinst, nb_nl_inst, nb_found, alarm(2)
+    real(kind=8), pointer :: nl_inst_val(:) => null()
+    real(kind=8), pointer :: nl_inst_info(:) => null()
+    character(len=15) :: mess_alarm(2)
+!   
+! Vérifier les instants demandés par MODE_VIBR sont dans la liste d'instant 
+! du calcul DYNA_NON_LINE
 !
-! Vérifier les instants demandés par MODE_VIBR sont postérieurs 
-! à instant initial de DYNA_NON_LINE 
-!
-        if (ds_posttimestep%l_mode_vibr) then
-            selectList = ds_posttimestep%mode_vibr%selector
-            valr(1) = instin
-            do iinst = 1, selectList%nb_value
-                if (selectList%list_value(iinst) <= instin) then
-                    call utmess('A', 'UTILITAI8_75',nr=1,valr=valr)
-                endif
-            end do
-        endif  
+    call jemarq()
+    if (ds_posttimestep%l_mode_vibr .or. ds_posttimestep%l_crit_stab) then
+! Obtenir les instants obligatoire de DYNA_NON_LINE       
+        call jeveuo(sddisc(1:19)//'.LIPO', 'L', vr = nl_inst_val)
+        call jeveuo(sddisc(1:19)//'.LINF', 'L',vr = nl_inst_info)
+        inst_init = nl_inst_val(1)
+        nb_nl_inst = nint(nl_inst_info(8))
+    endif
+
+    alarm = 0
+! Vérifier les instants demandés par CRIT_STAB
+    if (ds_posttimestep%l_crit_stab) then        
+        selectList = ds_posttimestep%crit_stab%selector
+        do iinst = 1, selectList%nb_value
+            vibr_inst = selectList%list_value(iinst)
+            call utacli(vibr_inst, nl_inst_val, nb_nl_inst, &
+                        vibr_inst*selectList%precision, nb_found)
+!!!! Si un instant est antérieur à l'instant initial 
+!!!! ou s'il n'est pas dans la lsite de DNL                   
+            if (vibr_inst <= inst_init .or. nb_found == -1) then
+                alarm(1) = alarm(1) + 1
+            endif
+        end do
+    endif
+
+! Vérifier les instants demandés par MODE_VIBR
+    if (ds_posttimestep%l_mode_vibr) then        
+        selectList = ds_posttimestep%mode_vibr%selector
+        do iinst = 1, selectList%nb_value
+            vibr_inst = selectList%list_value(iinst)
+            call utacli(vibr_inst, nl_inst_val, nb_nl_inst, &
+                        vibr_inst*selectList%precision, nb_found)
+!!!! Si un instant est antérieur à l'instant initial 
+!!!! ou s'il n'est pas dans la lsite de DNL                   
+            if (vibr_inst <= inst_init .or. nb_found == -1) then
+                alarm(2) = alarm(2) + 1
+            endif
+        end do
+    endif
+
+! Emettre le message d'alarme
+    mess_alarm = (/' ',' '/)
+    valr(1)=inst_init
+    if (alarm(1).ne.0) mess_alarm(1) = 'CRIT_STAB'
+    if (alarm(2).ne.0) mess_alarm(2) = 'MODE_VIBR'
+    if (alarm(1).ne.0 .or. alarm(2).ne.0) then
+        call utmess('A', 'UTILITAI8_75',nk=2, valk=mess_alarm, nr=1, valr = valr)
+    endif
+!    
+    call jedema()    
 end subroutine

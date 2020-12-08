@@ -326,14 +326,15 @@ type(HHO_Field), intent(inout) :: hhoField
     call diinit(mesh          , model , ds_inout, mater      , mateco, cara_elem,&
                 list_func_acti, sddyna, ds_conv , ds_algopara, solver,&
                 ds_contact    , sddisc)
-!
+
+!! - Vérifier les instants des calculs attachés à _NON_LINE (eg. MODE_VIBR)
+    call verins(sddisc, ds_posttimestep)
+    
 ! - Initial time
 !
     numins = 0
     instin = diinst(sddisc,numins)
     
-! - Vérifier les instants des calculs attachés à _NON_LINE (eg. MODE_VIBR)
-    call verins(ds_posttimestep,instin)
 !
 ! - Initializations for material parameters management
 !

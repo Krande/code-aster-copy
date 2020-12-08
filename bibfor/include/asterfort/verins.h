@@ -19,9 +19,9 @@
 !
 !
 interface
-    subroutine verins(ds_posttimestep,instin)
+    subroutine verins(sddisc,ds_posttimestep)
     use NonLin_Datastructure_type
+        character(len=19) :: sddisc
         type(NL_DS_PostTimeStep) :: ds_posttimestep
-        real(kind=8) :: instin
     end subroutine verins
 end interface
