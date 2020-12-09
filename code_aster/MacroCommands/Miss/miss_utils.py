@@ -42,7 +42,7 @@ from ...Messages import ASSERT, UTMESS
 
 from ...Helpers.UniteAster import UniteAster
 from ...Utilities import force_list, transpose
-from ...Utilities.misc import _printDBG
+from ...Utilities.misc import _printDBG, get_shared_tmpdir
 
 dict_format = {
     'R': "15.6E",
@@ -68,7 +68,7 @@ class MISS_PARAMETER(object):
         # defauts hors du mot-clé PARAMETRE
         self._defaults = {
             '_INIDIR': initial_dir,
-            '_WRKDIR': osp.join(initial_dir, 'tmp_miss3d'),
+            '_WRKDIR': get_shared_tmpdir('tmp_miss3d', initial_dir),
             'NBM_TOT': None,
             'NBM_DYN': None,
             'NBM_STA': None,
