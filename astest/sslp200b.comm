@@ -185,29 +185,43 @@ MAT2=DEFI_MATERIAU(ELAS_FO=_F(E=FO1,
                    THER=_F(LAMBDA=0.9,
                            RHO_CP=1.2,),);
 
-MAT3=DEFI_MATERIAU(ELAS_ISTR=_F(E_L=1.5,
-                                E_N=0.4,
-                                NU_LT=0.25,
-                                NU_LN=0.4,
-                                G_LN=3.1E1,
-                                RHO=8500.,
-                                ALPHA_L=2.1,
-                                ALPHA_N=0.8,),
-                   THER=_F(LAMBDA=1.9,
-                           RHO_CP=2.2,),);
+
+nutn = 0.4
+glt = 1.5/(2*(1+0.25)) 
+MAT3=DEFI_MATERIAU(    ELAS_ORTH=_F(  E_L = 1.5,
+                                      E_T = 1.5,
+                                      E_N = 0.4,
+                                     NU_LT = 0.25,
+                                     NU_LN = 0.4,
+                                     NU_TN = nutn,
+                                     G_LT = glt,
+                                     G_LN = 3.1E1,
+                                     G_TN = 3.1E1,
+                                     RHO = 8500.,
+                                     ALPHA_L = 2.1,
+                                     ALPHA_T = 2.1,
+                                     ALPHA_N = 0.8),
+                         THER=_F(  RHO_CP = 2.2,
+                                LAMBDA = 1.9) )
 
 RHOF4=DEFI_CONSTANTE(VALE = 6700.0,)
-MAT4=DEFI_MATERIAU(ELAS_ISTR_FO=_F(E_L=FO1,
-                                   E_N=FO13,
-                                   NU_LT=FO2,
-                                   NU_LN=FO14,
-                                   G_LN=FO16,
-                                   RHO=RHOF4,
-                                   TEMP_DEF_ALPHA=11.7,
-                                   ALPHA_L=FO3,
-                                   ALPHA_N=FO15,),
-                   THER=_F(LAMBDA=0.4,
-                           RHO_CP=2.7,),);
+GLTFO = FORMULE(NOM_PARA='TEMP', VALE='E(TEMP)/(2*(1+NU(TEMP)))', E=FO1, NU=FO2)
+MAT4=DEFI_MATERIAU(ELAS_ORTH_FO=_F(  E_L = FO1,
+                                           E_T = FO1,
+                                           E_N = FO13,
+                                        NU_LT = FO2,
+                                        NU_LN = FO14,
+                                        NU_TN = FO14,
+                                        G_LT = GLTFO,
+                                        G_LN = FO16,
+                                        G_TN = FO16,
+                                        RHO = RHOF4,
+                                        ALPHA_L = FO3,
+                                        ALPHA_T = FO3,
+                                        ALPHA_N = FO15,
+                                        TEMP_DEF_ALPHA=11.7),
+                         THER=_F(  RHO_CP = 2.7,
+                                LAMBDA = 0.4) )
 
 MAT5=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=1.6,
                                 E_T=0.8,

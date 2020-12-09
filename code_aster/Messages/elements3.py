@@ -24,6 +24,11 @@ cata_msg = {
  On ne peut pas affecter des moments répartis sur des éléments de type %(k1)s.
 """),
 
+    2 : _("""
+ Le comportement ELAS_ISTR est interdit en 2D. Il faut utiliser ELAS_ORTH pour
+ prendre en compte l'anisotropie.
+"""),
+
     3 : _("""
 
  L'option MASS_FLUI_STRU n'est pas disponible pour les POU_D_TGM en multi-matériaux.

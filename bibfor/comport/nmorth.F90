@@ -75,6 +75,10 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom,&
 !
     k2bid = '  '
 !
+    if (phenom.eq.'ELAS_ISTR' .and. ndim.eq.2)then
+        call utmess('F', 'ELEMENTS3_2')
+    endif
+    
     rac2=sqrt(2.d0)
     nbsigm=ndim*2
     call r8inir(36, 0.d0, dsidep, 1)

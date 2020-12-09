@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,6 +71,15 @@ subroutine ortrep(ndim, coor, repere)
         repere(i) = 0.0d0
 10  end do
 !
+! - RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM
+!   -------------------------------------------------
+    call jevech('PMATERC', 'L', imate)
+    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
+
+    if (ndim .eq. 2 .and. phenom .eq. 'ELAS_ISTR') then
+        call utmess('F', 'ELEMENTS3_2')
+    endif
+!
     call tecach('NNO', 'PCAMASS', 'L', iret, iad=icamas)
 !
     if (iret .ne. 0) then
@@ -79,15 +88,9 @@ subroutine ortrep(ndim, coor, repere)
 !
     else
 !     ----
-!
-        call jevech('PMATERC', 'L', imate)
 ! ---- TRAITEMENT DU CAS 3D :
 !      ====================
-        if (ndim .eq. 3) then
-!
-! ----   RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM
-!        -------------------------------------------------
-            call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
+        if (ndim .eq. 3) then     
 !
             if (phenom .eq. 'ELAS_ORTH' .or. phenom .eq. 'ELAS_ISTR') then
 !
@@ -131,10 +134,6 @@ subroutine ortrep(ndim, coor, repere)
 ! ---- TRAITEMENT DU CAS 2D :
 !      ====================
         else if (ndim.eq.2) then
-!
-! ----   RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM
-!        -------------------------------------------------
-            call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
 !
             if (phenom .eq. 'ELAS_ORTH' .or. phenom .eq. 'ELAS_ISTR') then
 !
