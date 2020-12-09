@@ -21,7 +21,7 @@ from ..Utilities import _
 
 cata_msg = {
 
-    1 : _("""Quand on utilise une BASE_MODALE, il faut également donner les modes d'interface par MODE_INTF."""),
+    1 : _("""L'unique occurence de RITZ doit obligatoirement contenir MODE_MECA. Si BASE_MODALE est utilisée, il faut aussi donner les modes d'interface par MODE_INTF. Et si on veut MODE_INTF uniquement, il faut quand même ajouter une 2ème occurence de RITZ avec MODE_MECA et NMAX_MODE mis à 0."""),
 
     9 : _("""Le mot-clé NUME_REF est obligatoire quand DEFI_BASE_MODALE n'est pas ré-entrant."""),
 
@@ -33,5 +33,5 @@ cata_msg = {
 
     50 : _("""Le total des modes défini dans RITZ est nul. Il faut au moins un mode."""),
 
-    51 : _("""Il faut au moins un MODE_MECA a la première occurrence de RITZ."""),
+    51 : _("""Deux occurences de RITZ doivent obligatoirement et exactement contenir une fois le mot-clé MODE_INTF. Les autres possibilités ne sont pas autorisées."""),
 }

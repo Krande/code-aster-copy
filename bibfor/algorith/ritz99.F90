@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -96,12 +96,14 @@ character(len=8), intent(in) :: nomres
 !
     call getfac('RITZ', nbocc_ritz)
     ASSERT(nbocc_ritz .le. 2)
-    iocc_modeintf = 2
-    iocc_basemo   = 1
+    iocc_basemo    = 1
+    iocc_modeintf  = 1
+    nbocc_modeintf = 0
     do iocc_ritz = 1, nbocc_ritz
         call getvid('RITZ', 'MODE_MECA'  , iocc=iocc_ritz, nbval=0, nbret=nbmm)
         call getvid('RITZ', 'BASE_MODALE', iocc=iocc_ritz, nbval=0, nbret=nbbm)
         call getvid('RITZ', 'MODE_INTF'  , iocc=iocc_ritz, nbval=0, nbret=nbmi)
+        nbocc_modeintf = nbocc_modeintf - nbmi
         if (nbmi .ne. 0) then
             iocc_modeintf = iocc_ritz
         endif
@@ -109,6 +111,16 @@ character(len=8), intent(in) :: nomres
             iocc_basemo   = iocc_ritz
         endif
     end do
+!
+    if (nbocc_ritz .eq. 2) then
+        if (nbocc_modeintf .ne. 1) then
+            call utmess('F', 'DEFIBASEMODALE1_51')
+        endif
+    else
+        if (nbmm .eq. 0) then
+            call utmess('F', 'DEFIBASEMODALE1_1')
+        endif
+    endif
 !
 ! - DETERMINATION DU NOMBRE DE CONCEPT(S) MODE_* de BASE_MODALE
 !
@@ -119,14 +131,6 @@ character(len=8), intent(in) :: nomres
 !
     nbocc_modeintf = 0
     call getvid('RITZ', 'MODE_INTF', iocc=iocc_modeintf,scal=resu_modeintf,nbret=nbocc_modeintf)
-!
-! - Requirement
-!
-    if (nbocc_basemo .ne. 0) then
-        if (nbocc_modeintf .eq. 0) then
-            call utmess('F', 'DEFIBASEMODALE1_1')
-        endif
-    endif
 !
 ! - DEBUT DE LA BOUCLE DE TRAITEMENT DE "BASE_MODALE"
 !
@@ -194,9 +198,6 @@ character(len=8), intent(in) :: nomres
 !
     call getvid('RITZ', 'MODE_MECA', iocc=iocc_basemo, nbval=0, nbret=nbgl)
     nbgl = -nbgl
-    if (nbgl .eq. 0) then
-        call utmess('F', 'DEFIBASEMODALE1_51')
-    endif
     if (nbgl .eq. 1) then
         call getvid('RITZ', 'MODE_MECA', iocc=iocc_basemo, scal=resu_basemo)
     endif

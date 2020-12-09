@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -172,16 +172,32 @@ subroutine refe99(nomres)
 !
     if (ioc3 .gt. 0) then
 !
-    ASSERT(ioc3.le.2)
-    ioccbase=1
-    ioccmi=2
-    do i = 1, ioc3
-        call getvid('RITZ', 'MODE_MECA'  , iocc=i, nbval=0, nbret=nbmm)
-        call getvid('RITZ', 'BASE_MODALE', iocc=i, nbval=0, nbret=nbbm)
-        call getvid('RITZ', 'MODE_INTF'  , iocc=i, nbval=0, nbret=nbmi)
-        if (nbmi .ne. 0) ioccmi=i
-        if ((nbmm .ne. 0) .or. (nbbm .ne. 0)) ioccbase=i
-    end do
+        ASSERT(ioc3 .le. 2)
+        nbg      = 0
+        ioccmi   = 1
+        ioccbase = 1
+        do i = 1, ioc3
+            call getvid('RITZ', 'MODE_MECA'  , iocc=i, nbval=0, nbret=nbmm)
+            call getvid('RITZ', 'BASE_MODALE', iocc=i, nbval=0, nbret=nbbm)
+            call getvid('RITZ', 'MODE_INTF'  , iocc=i, nbval=0, nbret=nbmi)
+            nbg = nbg - nbmi
+            if (nbmi .ne. 0) then
+                ioccmi   = i
+            endif
+            if ((nbmm .ne. 0) .or. (nbbm .ne. 0)) then
+                ioccbase = i
+            endif
+        end do
+!
+        if (ioc3 .eq. 2) then
+            if (nbg .ne. 1) then
+                 call utmess('F', 'DEFIBASEMODALE1_51')
+            endif
+        else
+            if (nbmm .eq. 0) then
+                 call utmess('F', 'DEFIBASEMODALE1_1')
+            endif
+        endif
 !
         noseul=.false.
         call getvid('RITZ', 'MODE_MECA', iocc=ioccbase, nbval=0, nbret=nbg)
