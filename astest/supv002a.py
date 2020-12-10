@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ import time
 import traceback
 from functools import partial
 from glob import glob
-from subprocess import PIPE, Popen
+from subprocess import PIPE, CalledProcessError, Popen, check_call
 
 import code_aster.Messages
 from code_aster.Messages import UTMESS, MessageLog
@@ -147,6 +147,21 @@ def read_file(stream, queue):
 
 class AspellCall(object):
     """A pipe to call aspell"""
+
+    @staticmethod
+    def check_aspell():
+        """Check that aspell is available.
+
+        Returns:
+            bool: *True* if aspell seems available, *False* otherwise.
+        """
+        try:
+            check_call(["aspell", "--version"])
+            isok = True
+        except (CalledProcessError, FileNotFoundError):
+            isok = False
+        return isok
+
     def __init__(self, personal_dict, lang, encoding):
         """Open the pipe"""
         cmd = ['aspell', 'pipe',
@@ -377,12 +392,11 @@ def supv002_ops(self, ERREUR, **kwargs):
     do_check = True
     try:
         MPR.Queue()
+        do_check = AspellCall.check_aspell()
     except ImportError as exc:
         if 'sem_open implementation' in str(exc):
             do_check = False
             print("\n  <A> Problem detected ! supv002a can not run on this machine\n\n")
-    # FIXME temporarly disabled!
-    # do_check = False
     if do_check:
         try:
             aspell = AspellCall(get_personal_dict(), 'fr', ENCODING)
