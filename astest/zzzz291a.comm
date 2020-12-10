@@ -70,11 +70,19 @@ CHARG=AFFE_CHAR_MECA(MODELE=MO,
                      FACE_IMPO=_F(GROUP_MA='BCGF', SANS_GROUP_NO=('B'), DNOR=1),
                      DDL_IMPO=_F(GROUP_NO=('A','B','D','E'),
                                   DX=0.0, DY=0.0, DZ=0.0,),)
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=1,),)
 
-RESU=MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHMAT, EXCIT=_F(CHARGE=CHARG,),);
+RESU=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=_F(CHARGE=CHARG,),
+                   INCREMENT=_F(LIST_INST=LINST,),)
+
+
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'))
 
-RESU=CALC_CHAMP(reuse=RESU, RESULTAT=RESU, CONTRAINTE='SIGM_NOEU')
+RESU=CALC_CHAMP(reuse=RESU, RESULTAT=RESU, CONTRAINTE='SIGM_NOEU', DEFORMATION=('EPSP_NOEU','EPSP_ELNO','EPSP_ELGA'))
 
 
 # Extraction des champs (DEPL, SIGM_ELNO, SIEF_ELGA)
@@ -276,7 +284,108 @@ NSIEGA=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                         CHAM_GD=SIGA,
                         TYPE_MAILLE='3D',
                         MODELE=MO),)
+#Coverage POST_ELEM
 
+TEST1 = POST_ELEM(MINMAX=(_F(NOM_CHAM='SIEF_ELGA', 
+                             NOM_CMP=('SIYY', ), 
+                             RESULTAT=RESU, 
+                             TOUT='OUI'),
+                          _F(NOM_CHAM='EPSP_ELGA', 
+                             NOM_CMP=('EPYY', ), 
+                             RESULTAT=RESU, 
+                             GROUP_MA='CUBE'),
+                          _F(NOM_CHAM='VARI_ELGA', 
+                             NOM_CMP=('V1', ), 
+                             RESULTAT=RESU,
+                             NUME_ORDRE= 1, 
+                             GROUP_MA='CUBE'),),) 
+TEST2 = POST_ELEM(RESULTAT=RESU,
+                  CHAM_MATER=CHMAT,
+                  MODELE=MO,
+                  INTEGRALE=(_F(NOM_CHAM='EPSP_ELNO',NOM_CMP='EPXX',TOUT='OUI',
+                               TYPE_MAILLE='3D'),
+                             _F(NOM_CHAM='EPSP_NOEU',NOM_CMP='EPXX',TOUT='OUI',
+                               TYPE_MAILLE='3D'),))
+TEST3 =  POST_ELEM(INST=(1.0), 
+                   RESULTAT=RESU, 
+                   VOLUMOGRAMME=(_F(GROUP_MA=('CUBE', ), 
+                                    NOM_CHAM='EPSP_ELGA',
+                                    NOM_CMP='EPXX',  
+                                    SEUIL=0.1),
+                                 _F(GROUP_MA=('CUBE', ), 
+                                    NOM_CHAM='EPSP_ELNO',
+                                    NOM_CMP='EPXX',  
+                                    SEUIL=0.1),
+                                 _F(GROUP_MA=('CUBE', ), 
+                                    NOM_CHAM='EPSP_ELNO',
+                                    NOM_CMP='EPXX',  
+                                    SEUIL=0.1),),) 
+
+TEST_TABLE(FILTRE=(_F(CRITERE='RELATIF',
+                      CRIT_COMP='EQ',
+                      NOM_PARA='CHAMP_GD',
+                      PRECISION=0.001,
+                      VALE_K='SIEF_ELGA'),
+                   _F(CRITERE='RELATIF',
+                      CRIT_COMP='EQ',
+                      NOM_PARA='NUME_ORDRE',
+                      PRECISION=0.001,
+                      VALE_I=1)),
+           NOM_PARA='MAX_SIYY',
+           TABLE=TEST1,
+           VALE_CALC=(177077342499.198, ))
+
+TEST_TABLE(CRITERE='ABSOLU',
+           FILTRE=(_F(CRITERE='RELATIF',
+                      CRIT_COMP='EQ',
+                      NOM_PARA='CHAMP_GD',
+                      PRECISION=0.001,
+                      VALE_K='EPSP_ELGA'),
+                   _F(CRITERE='RELATIF',
+                      CRIT_COMP='EQ',
+                      NOM_PARA='NUME_ORDRE',
+                      PRECISION=0.001,
+                      VALE_I=1)),
+           NOM_PARA='MAX_EPYY',
+           ORDRE_GRANDEUR=1.0,
+           REFERENCE='AUTRE_ASTER',
+           TABLE=TEST1,
+           VALE_ABS='OUI',
+           VALE_CALC=(0.0, ),
+           VALE_REFE=(0.0, ))
+
+TEST_TABLE(CRITERE='ABSOLU',
+           FILTRE=(_F(CRITERE='RELATIF',
+                      CRIT_COMP='EQ',
+                      NOM_PARA='NOM_CHAM',
+                      PRECISION=0.001,
+                      VALE_K='EPSP_NOEU'),
+                   _F(CRITERE='RELATIF',
+                      CRIT_COMP='EQ',
+                      NOM_PARA='NUME_ORDRE',
+                      PRECISION=0.001,
+                      VALE_I=1)),
+           NOM_PARA='INTE_EPXX',
+           ORDRE_GRANDEUR=1.0,
+           REFERENCE='AUTRE_ASTER',
+           TABLE=TEST2,
+           VALE_ABS='OUI',
+           VALE_CALC=(0.0, ),
+           VALE_REFE=(0.0, ))
+
+TEST_TABLE(FILTRE=(_F(CRITERE='RELATIF',
+                      CRIT_COMP='EQ',
+                      NOM_PARA='NOM_CHAM',
+                      PRECISION=0.001,
+                      VALE_K='EPSP_ELGA'),
+                   _F(CRITERE='RELATIF',
+                      CRIT_COMP='EQ',
+                      NOM_PARA='INTERVALLE',
+                      PRECISION=0.001,
+                      VALE_I=1)),
+           NOM_PARA='DISTRIBUTION',
+           TABLE=TEST3,
+           VALE_CALC=(100.0, ))
 
 # champ SIGM_ELNO
 
@@ -336,6 +445,8 @@ TBC1=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                         GROUP_MA='CUBE',
                         MODELE=MO,
                         COEF_MULT=(1.,1.,1.,2.,2.,2.)),)
+
+
 
 #  tests
 # =======
