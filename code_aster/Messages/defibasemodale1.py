@@ -21,11 +21,18 @@ from ..Utilities import _
 
 cata_msg = {
 
-    1 : _("""L'unique occurence de RITZ doit obligatoirement contenir MODE_MECA. Si BASE_MODALE est utilisée, il faut aussi donner les modes d'interface par MODE_INTF. Et si on veut MODE_INTF uniquement, il faut quand même ajouter une 2ème occurence de RITZ avec MODE_MECA et NMAX_MODE mis à 0."""),
+    1 : _("""
+L'unique occurrence de RITZ doit obligatoirement contenir MODE_MECA.
+Si BASE_MODALE est utilisée, il faut aussi donner les modes d'interface par MODE_INTF.
+Et si on veut MODE_INTF uniquement, il faut quand même ajouter une 2ème occurrence
+de RITZ avec MODE_MECA et NMAX_MODE mis à 0.
+"""),
 
     9 : _("""Le mot-clé NUME_REF est obligatoire quand DEFI_BASE_MODALE n'est pas ré-entrant."""),
 
-    31 : _("""Il y a un problème de cohérence entre le nombre de concepts MODE_MECA et la liste des NMAX_MODE:
+    31 : _("""
+Il y a un problème de cohérence entre le nombre de concepts MODE_MECA et la liste
+des NMAX_MODE:
  Nombre de concepts MODE_MECA dans la liste MODE_MECA     : %(i1)d
  Nombre de valeurs de la liste NMAX_MODE                  : %(i2)d
  Les deux listes doivent avoir la même taille.
@@ -33,5 +40,8 @@ cata_msg = {
 
     50 : _("""Le total des modes défini dans RITZ est nul. Il faut au moins un mode."""),
 
-    51 : _("""Deux occurences de RITZ doivent obligatoirement et exactement contenir une fois le mot-clé MODE_INTF. Les autres possibilités ne sont pas autorisées."""),
+    51 : _("""
+Deux occurrences de RITZ doivent obligatoirement et exactement contenir une fois
+le mot-clé MODE_INTF. Les autres possibilités ne sont pas autorisées.
+"""),
 }
