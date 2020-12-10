@@ -477,7 +477,6 @@ aster_logical, intent(out) :: mmcvca
              v_sdcont_cychis(n_cychis*(i_cont_poin-1)+59) = 0.99
              v_sdcont_cychis(n_cychis*(i_cont_poin-1)+56) = 1.0
              v_sdcont_cychis(n_cychis*(i_cont_poin-1)+51) = 4.0
-             v_sdcont_cychis(n_cychis*(i_cont_poin-1)+52) = 4.0
              v_sdcont_cyceta(4*(i_cont_poin-1)+1)   = 10
              if (.not. l_pena_cont) then
                 !coef_tmp =max(1.d0/ds_contact%arete_min,&

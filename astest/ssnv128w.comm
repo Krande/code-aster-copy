@@ -84,7 +84,7 @@ CHA1=DEFI_CONTACT(MODELE=MO,
                          ALGO_CONT='PENALISATION',
                          ALGO_FROT='STANDARD',
                          # ADAPTATION Fonctionne mais sensibilite 1.E-4% machine
-                         ADAPTATION='NON',
+                         ADAPTATION='CYCLAGE',
                          COEF_PENA_CONT=1.E+14,
                  ),);
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
