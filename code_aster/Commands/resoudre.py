@@ -35,5 +35,18 @@ class SolveLinearSystem(ExecuteCommand):
         """
         self._result = FieldOnNodesReal()
 
+    def add_dependencies(self, keywords):
+        """Register input *DataStructure* objects as dependencies.
+        Add dependency to DOFNumbering instead of all Matrix object
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+        super().add_dependencies(keywords)
+
+        Matr = keywords.get("MATR")
+        Nume = Matr.getDOFNumbering()
+        self._result.addDependency(Nume)
+
+        self.remove_dependencies(keywords, "MATR")
 
 RESOUDRE = SolveLinearSystem.run
