@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -418,14 +418,6 @@ m=%(r1)f et p=%(r2)f ne respectent pas la contrainte m>p+2.
 
     95 : _("""
 ITER_INTE_PAS ne peut admettre qu'une valeur positive pour un comportement MFRONT.
- """),
-
-    96 : _("""
-Loi de comportement BETON_RAG :
-Au temps %(r1)f, une grandeur liée au séchage est inférieure au seuil %(r2)f, ce qui n'a pas de sens physique.
-    Séchage au temps précédent : %(r3)f
-    Séchage au temps actuel    : %(r4)f
-    Séchage de référence       : %(r5)f
  """),
 
     97 : _("""

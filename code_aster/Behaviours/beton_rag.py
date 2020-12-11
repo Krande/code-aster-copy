@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ loi = LoiComportement(
     nom            = 'BETON_RAG',
     doc            =   """Loi RAG pour le beton""",
     num_lc         = 145,
-    nb_vari        = 33,
+    nb_vari        = 34,
     nom_vari       = (
         # 01:07 : Contraintes seuils d'endommagement : Tenseur traction + compression
         'BR_SUT11','BR_SUT22','BR_SUT33','BR_SUT12','BR_SUT13','BR_SUT23','BR_SIGDP',
@@ -38,9 +38,9 @@ loi = LoiComportement(
         'BR_DVRAG1','BR_DVRAG2','BR_DVRAG3',
         # 26:31  : Déformations viscoplastique due à la RAG
         'BR_EPV11','BR_EPV22','BR_EPV33','BR_EPV12','BR_EPV13','BR_EPV23',
-        # 32 : Pression du gel
-        'BR_PRGEL',
-        # 33 : Étude réalisée
+        # 32:33 : Pression du gel et capilaire
+        'BR_PRGEL','BR_PRCAP',
+        # 34 : Étude réalisée
         'BR_ETUDE',
     ),
     mc_mater       = ('ELAS','BETON_RAG',),

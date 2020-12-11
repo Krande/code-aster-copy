@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ cata_msg = {
     6 : _("""Dans le KIT_DDI, la loi de fluage %(k1)s n'est pas autorisée."""),
 
     8 : _("""Vous avez demandé à utiliser un comportement avec des phases métallurgiques de type %(k1)s, mais le matériau est défini avec des variables de commande de type %(k2)s."""),
-    
+
     9 : _("""La valeur du séchage de référence doit être nulle pour la loi de comportement %(k1)s."""),
 
     11 : _("""
@@ -180,6 +180,36 @@ cata_msg = {
     40 : _("""
  Avec la loi de comportement %(k1)s, le paramètre %(k2)s de ELAS doit être nul.
 """),
+
+
+    50 : _("""
+Loi de comportement BETON_RAG :
+Au temps %(r1)f, une grandeur liée au séchage est inférieure à %(r2)f, ce qui n'a pas de sens physique.
+    Séchage au temps précédent : %(r3)f
+    Séchage au temps actuel    : %(r4)f
+ """),
+
+    51 : _("""
+Loi de comportement BETON_RAG :
+Vous avez activé le phénomène de RAG lors d'un précédent calcul.
+Vous ne pouvez pas poursuivre avec un calcul sans RAG.
+ """),
+
+    52 : _("""
+Loi de comportement BETON_RAG :
+Vous voulez activer le phénomène de RAG, il faut donner un champ de séchage ET de température .
+ """),
+
+    53 : _("""
+Loi de comportement BETON_RAG :
+Le coefficient %(k1)s vaut %(r1)f. Il doit être dans l'intervalle [%(r2)f , %(r3)f]
+ """),
+
+    54 : _("""
+Loi de comportement BETON_RAG :
+Le(s) paramètre(s) %(k1)s est/sont hors du domaine de validité.
+ """),
+
 
     83 : _("""
  Vous utilisez le modèle BETON_UMLV avec un modèle d'endommagement.

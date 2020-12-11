@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,8 +72,11 @@ use tenseur_meca_module
 !
     integer       :: ii, jj, iret, jcret, nbres
     real(kind=8)  :: epsmeca(6), perturb ,vperturb(6), NormSigm, numerateur
-    real(kind=8)  :: sigptb(6), viptb(1), dsideptb(6, 6), valr(5)
-    aster_logical :: rigi, resi, elas
+    real(kind=8)  :: sigptb(6), viptb(1), dsideptb(6, 6)
+    aster_logical :: rigi, resi, elas, isnogood
+!
+    real(kind=8)        :: valr(8)
+    character(len=30)   :: valk(5)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -150,21 +153,18 @@ use tenseur_meca_module
         param_bet_rag%dhydrat = param_bet_rag%hydratp - param_bet_rag%hydratm
     endif
     if ( param_bet_rag%issechag ) then
-        call rcvarc('F', 'SECH', '-',   fami, kpg, ksp, param_bet_rag%sechagm,   iret)
-        call rcvarc('F', 'SECH', '+',   fami, kpg, ksp, param_bet_rag%sechagp,   iret)
-        call rcvarc('F', 'SECH', 'REF', fami, kpg, ksp, param_bet_rag%sechagref, iret)
-        param_bet_rag%dsechag = param_bet_rag%sechagp - param_bet_rag%sechagm
+        call rcvarc('F', 'SECH', '-',   fami, kpg, ksp, param_bet_rag%sechagm, iret)
+        call rcvarc('F', 'SECH', '+',   fami, kpg, ksp, param_bet_rag%sechagp, iret)
         ! En dessous de BR_SECHAGE_MINI cela ne veut plus rien dire
-        if ( (param_bet_rag%sechagm   < BR_SECHAGE_MINI) .or. &
-             (param_bet_rag%sechagp   < BR_SECHAGE_MINI) .or. &
-             (param_bet_rag%sechagref < BR_SECHAGE_MINI) ) then
-             valr(1) = instap
-             valr(2) = BR_SECHAGE_MINI
-             valr(3) = param_bet_rag%sechagm
-             valr(4) = param_bet_rag%sechagp
-             valr(5) = param_bet_rag%sechagref
-            call utmess('F', 'COMPOR1_96', nr=5, valr=valr)
+        if ( (param_bet_rag%sechagm < BR_SECHAGE_MINI) .or. &
+             (param_bet_rag%sechagp < BR_SECHAGE_MINI) ) then
+            valr(1) = instap
+            valr(2) = 0.10
+            valr(3) = param_bet_rag%sechagm
+            valr(4) = param_bet_rag%sechagp
+            call utmess('F', 'COMPOR3_50', nr=4, valr=valr)
         endif
+        param_bet_rag%dsechag = param_bet_rag%sechagp - param_bet_rag%sechagm
     endif
     !
     nomres(1) = 'COMP_BETON'
@@ -177,14 +177,23 @@ use tenseur_meca_module
                 6, nomres, valres, icodre, 1)
     !
     param_bet_rag%loi_integre = nint( valres(1) )
+    ! protection développeur
     ASSERT( (param_bet_rag%loi_integre>=1) .and. (param_bet_rag%loi_integre<=3) )
     !
+    ! Si on a fait de la RAG on doit continuer à faire de la RAG
     if (param_bet_rag%loi_integre<=2) then
-        ASSERT( nint(vim(BR_VARI_LOI_INTEGRE))<=2 )
+        ! ASSERT( nint(vim(BR_VARI_LOI_INTEGRE))<=2 )
+        if ( nint(vim(BR_VARI_LOI_INTEGRE))>2 ) then
+            call utmess('F', 'COMPOR3_51')
+        endif
     endif
     !
+    ! Si on fait de la RAG il faut les champs Temper et Sech
     if (param_bet_rag%loi_integre == 3 ) then
-        ASSERT( param_bet_rag%issechag .and. param_bet_rag%istemper )
+        ! ASSERT( param_bet_rag%issechag .and. param_bet_rag%istemper )
+        if (.not. (param_bet_rag%issechag .and. param_bet_rag%istemper) ) then
+            call utmess('F', 'COMPOR3_52')
+        endif
     endif
     !
     mater_bet_rag%mc    = valres(2)
@@ -192,6 +201,12 @@ use tenseur_meca_module
     mater_bet_rag%mt    = valres(4)
     mater_bet_rag%sigut = valres(5)
     mater_bet_rag%dhom  = valres(6)
+    ! vérification des données
+    isnogood = (valres(2)<=0.0).or.(valres(4)<=0.0).or.(valres(6)<0.0)
+    if ( isnogood ) then
+        valk(1) = 'ENDO_MC ENDO_MT ENDO_DRUPRA'
+        call utmess('F', 'COMPOR3_54', nk=1, valk=valk)
+    endif
     !
     if ( param_bet_rag%loi_integre == 2 .or. &
          param_bet_rag%loi_integre == 3 ) then
@@ -215,6 +230,13 @@ use tenseur_meca_module
         mater_bet_rag%fluage_dev%k2 = valres(6)
         mater_bet_rag%fluage_dev%n1 = valres(7)
         mater_bet_rag%fluage_dev%n2 = valres(8)
+        ! vérification des données
+        isnogood = (valres(1)<=0.0).or.(valres(2)<=0.0).or.(valres(5)<=0.0).or.(valres(6)<=0.0)
+        isnogood = isnogood.or.(valres(3)*valres(4)<=0.0).or.(valres(7)*valres(8)<=0.0)
+        if ( isnogood ) then
+            valk(1) = 'FLUA_SPH_* FLUA_DEV_*'
+            call utmess('F', 'COMPOR3_54', nk=1, valk=valk)
+        endif
     endif
     !
     if ( param_bet_rag%loi_integre == 3 ) then
@@ -236,18 +258,58 @@ use tenseur_meca_module
         mater_bet_rag%gel%tref   = valres(2)
         mater_bet_rag%gel%ear    = valres(3)
         mater_bet_rag%gel%sr0    = valres(4)
-        ASSERT( (mater_bet_rag%gel%sr0>0.0) .and. (mater_bet_rag%gel%sr0<1.0) )
+        ! vérification des données
+        isnogood = (valres(1)<0.0).or.(valres(2)<=-273.15).or.(valres(3)<=0.0)
+        if ( isnogood ) then
+            valk(1) = 'GEL_ALPHA0 GEL_TREF GEL_EAR'
+            call utmess('F', 'COMPOR3_54', nk=1, valk=valk)
+        endif
+        ! Protection sur les valeurs de séchage initial
+        isnogood = (valres(4)< BR_SECHAGE_MINI ).or.(valres(4)>=BR_SECHAGE_MAXI)
+        if ( isnogood ) then
+            valr(1) = valres(4)
+            valr(2) = BR_SECHAGE_MINI
+            valr(3) = BR_SECHAGE_MAXI
+            valk(1) = 'GEL_SR0'
+            call utmess('F', 'COMPOR3_53', nr=3, valr=valr, nk=1, valk=valk)
+        endif
         ! Pression du gel
         mater_bet_rag%gel%vg     = valres(5)
         mater_bet_rag%gel%mg     = valres(6)
         mater_bet_rag%gel%bg     = valres(7)
         mater_bet_rag%gel%a0     = valres(8)
-        ASSERT( (mater_bet_rag%gel%a0>0.0) .and. (mater_bet_rag%gel%a0<1.0) )
+        ! vérification des données
+        isnogood = (valres(5)<=0.0).or.(valres(6)<=0.0).or.(valres(7)<0.0)
+        if ( isnogood ) then
+            valk(1) = 'GEL_VG GEL_MG GEL_BG'
+            call utmess('F', 'COMPOR3_54', nk=1, valk=valk)
+        endif
+        ! Protection sur les valeurs du seuil d'avancement
+        isnogood = (valres(8)<0.0).or.(valres(8)>=0.9999)
+        if ( isnogood ) then
+            valr(1) = valres(8)
+            valr(2) = 0.0
+            valr(3) = 0.9999
+            valk(1) = 'GEL_A0'
+            call utmess('F', 'COMPOR3_53', nr=3, valr=valr, nk=1, valk=valk)
+        endif
         ! Déformation visqueuse RAG
         mater_bet_rag%gel%epsi0  = valres(9)
+        ! vérification des données
+        isnogood = (valres(9)<0.0)
+        if ( isnogood ) then
+            valk(1) = 'RAG_EPSI0'
+            call utmess('F', 'COMPOR3_54', nk=1, valk=valk)
+        endif
         ! Coefficients Van Genuchten
         mater_bet_rag%pw%a       = valres(10)
         mater_bet_rag%pw%b       = valres(11)
+        ! vérification des données
+        isnogood = (valres(10)<0.0).or.(valres(11)<=1.0)
+        if ( isnogood ) then
+            valk(1) = 'PW_A PW_B'
+            call utmess('F', 'COMPOR3_54', nk=1, valk=valk)
+        endif
     endif
     !
     if ( resi ) then

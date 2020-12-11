@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -135,9 +135,10 @@ module beton_rag_module
     integer, parameter, private :: BR_VARI_RAG_ENDOMMAGEMENT    = 23
     integer, parameter, private :: BR_VARI_EPSI_VISC_RAG        = 26
     integer, parameter, private :: BR_VARI_PRESSION_GEL         = 32
+    integer, parameter, private :: BR_VARI_PRESSION_CAPIL       = 33
     !
-    integer, parameter          :: BR_VARI_LOI_INTEGRE          = 33
-    integer, parameter          :: BR_VARI_NOMBRE               = 33
+    integer, parameter          :: BR_VARI_LOI_INTEGRE          = 34
+    integer, parameter          :: BR_VARI_NOMBRE               = 34
 
 contains
 
@@ -197,7 +198,9 @@ contains
         vaux1 = epsm(1) + epsm(2) + epsm(3)
         vaux1 = max( 0.0 , mater_br%gel%a0*mater_br%gel%vg + mater_br%gel%bg*vaux1 )
         vaux1 = max( 0.0 , Avc*mater_br%gel%vg - vaux1)
-        X%Pgel = mater_br%gel%mg*vaux1
+        ! Contrainte effective du gel : *bg
+        ! X%Pgel = mater_br%gel%mg*vaux1
+        X%Pgel = mater_br%gel%bg*(mater_br%gel%mg*vaux1)
         ! Calcul de la pression capillaire !! Elle est <=0.
         if      ( Sr >= BR_SECHAGE_MAXI ) then
             X%Pcap = 0.0d0
@@ -360,25 +363,26 @@ contains
             ! SigmaRP : tenseur propre et base propre du tenseur d'endommagement
             SigmaRP = basevecteurpropre( SigmaR, NormSigm )
             ! Calcul des bi. On se protège des VP légèrement négatives, numériquement possible
-            xx1 = (max( 0.0, SigmaRP%valep%vect(1)/sigut )**mt)/mt
-            xx2 = (max( 0.0, SigmaRP%valep%vect(2)/sigut )**mt)/mt
-            xx3 = (max( 0.0, SigmaRP%valep%vect(3)/sigut )**mt)/mt
-            ! On protège contre un argument trop grand, on limite donc l'endommagement.
-            ! Avec 10 c'est d <= 0.999955
-            b1 = exp( min(10.0,xx1) ); b2 = exp( min(10.0,xx2) ); b3 = exp( min(10.0,xx3) )
             if ( isendomtrac ) then
-                UnMoinsDt = [b1,b2,b3]
+                xx1 = (max( 0.0, SigmaRP%valep%vect(1)/sigut )**mt)/mt
+                xx2 = (max( 0.0, SigmaRP%valep%vect(2)/sigut )**mt)/mt
+                xx3 = (max( 0.0, SigmaRP%valep%vect(3)/sigut )**mt)/mt
+                ! On protège contre un argument trop grand, on limite donc l'endommagement.
+                ! Avec 10 c'est d <= 0.999955
+                b1 = exp( min(10.0,xx1) ); b2 = exp( min(10.0,xx2) ); b3 = exp( min(10.0,xx3) )
             else
-                UnMoinsDt = [1.0d0,1.0d0,1.0d0]
+                b1=1.0d0; b2=1.0d0; b3=1.0d0
             endif
+            UnMoinsDt = [b1,b2,b3]
             ! Dans le cas d'un calcul avec RAG
             if ( param_br%loi_integre == 3 ) then
-                xx1  = (max( 0.0, mater_br%gel%bg*grd_press%Pgel/sigut )**mt)/mt
+                ! xx1  = (max( 0.0, mater_br%gel%bg*grd_press%Pgel/sigut )**mt)/mt
+                xx1  = (max( 0.0, grd_press%Pgel/sigut )**mt)/mt
                 bgel = exp( min(10.0,xx1) )
                 Dommage_Rag(1) = max( Dommage_Rag(1) , min(b1,bgel) - 1.0 )
                 Dommage_Rag(2) = max( Dommage_Rag(2) , min(b2,bgel) - 1.0 )
                 Dommage_Rag(3) = max( Dommage_Rag(3) , min(b3,bgel) - 1.0 )
-                TEpsiVRAG      = [ Dommage_Rag(1) , Dommage_Rag(2), Dommage_Rag(3) ]
+                TEpsiVRAG      = [ Dommage_Rag(1), Dommage_Rag(2), Dommage_Rag(3) ]
                 ! Passage de TEpsiVRAGloc dans le repère initial des contraintes
                 TEpsiVRAG = VersBaseInitiale(SigmaRP,TEpsiVRAG)
                 EpsiVRAG  = mater_br%gel%epsi0*TenseurVecteur( TEpsiVRAG )
@@ -424,7 +428,7 @@ contains
         !
         ! On met à jour à t+, si :
         !   on ne fait pas de calcul par perturbation
-        !   on ne fait pas de calcul de fluage
+        !   le calcul du fluage est en cours, la mise à jour est faite à la fin du calcul
         if (.not. perturb .and. .not. fluage ) then
             if ( param_br%rigi ) then
                 dsidep = KElas0
@@ -433,7 +437,8 @@ contains
             if ( param_br%resi ) then
                 sigp = TenseurVecteurAster( TSigma )
                 ! Ajout de la pression du gel et pression capillaire
-                sigp(1:3) = sigp(1:3) + grd_press%Pgel + grd_press%Pcap
+                !sigp(1:3) = sigp(1:3) + grd_press%Pgel - grd_press%Pcap
+                sigp(1:3) = sigp(1:3) - grd_press%Pgel - grd_press%Pcap
                 ! Variables internes pour la mécanique
                 vip(BR_VARI_SEUIL_ENDOMMAGEMENT:BR_VARI_SEUIL_ENDOMMAGEMENT+5)  = SigmaR
                 vip(BR_VARI_SEUIL_ENDOMMAGEMENT+6)                              = sigdp
@@ -547,6 +552,11 @@ contains
         ! déformation
         ! Pression de gel
         grandeur_press = beton_rag_grd(epsm, mater_br, resu(24), resu(9))
+        ! Si calcul du résidu, on met à jour les variables internes du gel
+        if ( param_br%resi ) then
+            vip(BR_VARI_PRESSION_GEL)   = grandeur_press%Pgel
+            vip(BR_VARI_PRESSION_CAPIL) = grandeur_press%Pcap
+        endif
         ! Déformation mécanique
         epsmeca = epsm + epsanel - epsflua - epsvrag
         call BR_Mecanique(epsmeca, deps, vim, mater_br, param_br, grandeur_press, sigp, vip, dsidep)
@@ -579,6 +589,7 @@ contains
         type(SpheDev)  :: TSpheDev
         type(beton_rag_parametres) :: param_br_loc
         integer, parameter :: iflu = 10
+        aster_logical      :: nofluag
         ! ------------------------------------------------------------------------------------------
         epsmeca(:)=0.d0
         epsflua(:)=0.d0
@@ -628,21 +639,33 @@ contains
         TSpheDev = DeviaSpher( VecteurAsterVecteur(sigma_m) )
         ! Fluage déviatorique
         sigma_m = TSpheDev%deviateur
-        k1 = mater_br%fluage_dev%k1
-        k2 = mater_br%fluage_dev%k2
-        n1 = mater_br%fluage_dev%n1
-        n2 = mater_br%fluage_dev%n2
-        dyy(iflu:iflu+5)    = (sigma_m(1:6) - k1*yy0(iflu+7:iflu+12))/n1
-        dyy(iflu+7:iflu+12) = (k2*(yy0(iflu:iflu+5) - yy0(iflu+7:iflu+12)) &
-                               - k1*yy0(iflu+7:iflu+12))/n2 + dyy(iflu:iflu+5)
+        k1 = abs(mater_br%fluage_dev%k1)
+        k2 = abs(mater_br%fluage_dev%k2)
+        n1 = abs(mater_br%fluage_dev%n1)
+        n2 = abs(mater_br%fluage_dev%n2)
+        nofluag = (mater_br%fluage_dev%n1 < 0.0).and.(mater_br%fluage_dev%n2 < 0.0)
+        if ( nofluag ) then
+            dyy(iflu:iflu+5)    = 0.0
+            dyy(iflu+7:iflu+12) = 0.0
+        else
+            dyy(iflu:iflu+5)    = (sigma_m(1:6) - k1*yy0(iflu+7:iflu+12))/n1
+            dyy(iflu+7:iflu+12) = (k2*(yy0(iflu:iflu+5) - yy0(iflu+7:iflu+12)) &
+                                 - k1*yy0(iflu+7:iflu+12))/n2 + dyy(iflu:iflu+5)
+        endif
         ! Fluage sphérique
         sigma_sph = TSpheDev%spherique
-        k1 = mater_br%fluage_sph%k1
-        k2 = mater_br%fluage_sph%k2
-        n1 = mater_br%fluage_sph%n1
-        n2 = mater_br%fluage_sph%n2
-        dyy(iflu+6)  = (sigma_sph - k1*yy0(iflu+13))/n1
-        dyy(iflu+13) = (k2*(yy0(iflu+6) - yy0(iflu+13)) - k1*yy0(iflu+13))/n2 + dyy(iflu+6)
+        k1 = abs(mater_br%fluage_sph%k1)
+        k2 = abs(mater_br%fluage_sph%k2)
+        n1 = abs(mater_br%fluage_sph%n1)
+        n2 = abs(mater_br%fluage_sph%n2)
+        nofluag = (mater_br%fluage_sph%n1 < 0.0).and.(mater_br%fluage_sph%n2 < 0.0)
+        if ( nofluag ) then
+            dyy(iflu+6)  = 0.0
+            dyy(iflu+13) = 0.0
+        else
+            dyy(iflu+6)  = (sigma_sph - k1*yy0(iflu+13))/n1
+            dyy(iflu+13) = (k2*(yy0(iflu+6) - yy0(iflu+13)) - k1*yy0(iflu+13))/n2 + dyy(iflu+6)
+        endif
         !
         ! Avancement chimique
         dyy(24) = 0.0d0
@@ -832,9 +855,9 @@ contains
         ! initialisation des tables de cash-karp
         ! taba : ( 0.0 , 0.2 , 0.3, 0.6, 1.0 , 7/8 ). remarque  taba(i)= somme( tabb(i,:) )
         tabc = [9.78835978835978781642524d-02, 0.0d0, 4.02576489533011283583619d-01, &
-            2.10437710437710451261140d-01, 0.0d0, 2.89102202145680386990989d-01]
+                2.10437710437710451261140d-01, 0.0d0, 2.89102202145680386990989d-01]
         tabe = [1.02177372685185188783130d-01, 0.0d0, 3.83907903439153430635855d-01, &
-            2.44592737268518517490534d-01, 1.93219866071428561515866d-02, 0.25d0]
+                2.44592737268518517490534d-01, 1.93219866071428561515866d-02, 0.25d0]
         !
         tabb(:,:) = 0.0d0
         tabb(2, 1) = 0.20d0

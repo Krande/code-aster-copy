@@ -97,6 +97,7 @@ DICT_NOM_VARI = {
     "BR_EPV33": _("BETON_RAG : Déformation viscoplastique de la RAG, composante 3"),
     "BR_ETUDE": _("BETON_RAG : Niveau des études réalisées"),
     "BR_PRGEL": _("BETON_RAG : Pression du gel"),
+    "BR_PRCAP": _("BETON_RAG : Pression du capilaire"),
     "BR_SIGDP": _("BETON_RAG : contrainte seuil d'endommagement de compression"),
     "BR_SUT11": _("BETON_RAG : contrainte seuil d'endommagement de traction, composante 1"),
     "BR_SUT12": _("BETON_RAG : contrainte seuil d'endommagement de traction, composante 4"),
