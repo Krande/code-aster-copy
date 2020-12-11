@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ real(kind=8) :: drde(dimdef, dimdef), ouvh
 !
     call rcvalb(fami, kpg, spt, poum, imate,&
                 ' ', 'JOINT_BANDIS', 0, ' ', [0.d0],&
-                4, ncra1(1), para(1), icodre, 1)
+                4, ncra1, para, icodre, 1)
     kni = para(1)
     umc = para(2)
     gamma = para(3)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -147,6 +147,9 @@ real(kind=8), intent(out) :: res(dimdef), drde(dimdef, dimdef)
     deltat       = time_curr-time_prev
     tperm(:,:)   = 0.d0
     angl_naut(:) = 0.d0
+    grat(:) = 0.d0
+    grap1(:) = 0.d0
+    grap2(:) = 0.d0
     if (lVari) then
         varip(1:nbvari) = 0.d0
     endif
@@ -160,7 +163,7 @@ real(kind=8), intent(out) :: res(dimdef), drde(dimdef, dimdef)
         dsde(1:dimcon,1:dimdef) = 0.d0
         drde(1:dimdef,1:dimdef) = 0.d0
     endif
-    lMatrPred = option .eq. 'RIGI_MECA_TANG' 
+    lMatrPred = option .eq. 'RIGI_MECA_TANG'
 !
 ! - Get storage parameters for behaviours
 !
@@ -233,7 +236,7 @@ real(kind=8), intent(out) :: res(dimdef), drde(dimdef, dimdef)
                 phi     , rho11    , satur ,&
                 pad     , pvp      , h11   , h12   ,&
                 sigm    , sigp     ,&
-                varim   , varip    , dsde  ,& 
+                varim   , varip    , dsde  ,&
                 retcom)
     if (retcom .ne. 0) then
         goto 99
@@ -272,13 +275,13 @@ real(kind=8), intent(out) :: res(dimdef), drde(dimdef, dimdef)
     end do
     if (ds_thm%ds_elem%l_dof_pre1) then
         call calcfh(ds_thm,&
-                    lMatr    , lSigm  , l_steady, ndim  , j_mater,&
+                    lMatr    , lSigm  , l_steady, ndim - 1, j_mater,&
                     dimdef, dimcon,&
                     addep1, addep2,&
                     adcp11, adcp12, adcp21 , adcp22,&
                     addeme, addete, &
                     t     , p1    , p2     , pvp   , pad,&
-                    grat  , grap1 , grap2  ,& 
+                    grat  , grap1 , grap2  ,&
                     rho11 , h11   , h12    ,&
                     sat   , dsatur, pesa   , tperm,&
                     sigp  , dsde)
