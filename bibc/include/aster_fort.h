@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -50,9 +50,9 @@ extern void DEFSSSPSSP(DISMOI, dismoi, const char *,STRING_SIZE,
                        const char *,STRING_SIZE, const char *,STRING_SIZE, ASTERINTEGER *,
                        char *,STRING_SIZE, const char *,STRING_SIZE, ASTERINTEGER *);
 
-#define CALL_POSTKUTIL(a,b,c,d) CALLSSSS(POSTKUTIL,postkutil,a,b,c,d)
-extern void DEFSSSS(POSTKUTIL,postkutil,char *,STRING_SIZE,char *,STRING_SIZE,
-                    char *,STRING_SIZE,char *,STRING_SIZE);
+#define CALL_POSTKUTIL(a,b,c,d,e) CALLPSSSS(POSTKUTIL,postkutil,a,b,c,d,e)
+extern void DEFPSSSS(POSTKUTIL,postkutil,ASTERINTEGER *,char *,STRING_SIZE,
+                     char *,STRING_SIZE,char *,STRING_SIZE,char *,STRING_SIZE);
 
 #define CALL_MATFPE(a) CALLP(MATFPE,matfpe,a)
 extern void DEFP(MATFPE, matfpe, ASTERINTEGER *);

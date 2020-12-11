@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine postkutil(nomres, nomfis, repmat, repmod)
+subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
     implicit none
 #include "jeveux.h"
 #include "asterc/indik8.h"
@@ -42,6 +42,7 @@ subroutine postkutil(nomres, nomfis, repmat, repmod)
 #include "asterfort/lteatt.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xtmafi.h"
+    integer, intent(in) :: imater
     character(len=*), intent(in) :: nomres
     character(len=*), intent(in) :: nomfis
     character(len=*), intent(out) :: repmat
@@ -53,6 +54,8 @@ subroutine postkutil(nomres, nomfis, repmat, repmod)
 ! in:
 !   resu   : nom d'une sd_resultat
 !   nomfis : nom d'une sd_fond_fiss ou d'une sd_fiss_xfem
+!   imater : 1 => on cherche une sd_mater
+!            0 => on ne cherche pas
 ! out:
 !   repmat : nom d'une sd_mater
 !   repmod : "nom" d'une modelisation parmi '3D', 'AXIS', 'D_PLAN', 'C_PLAN'
@@ -355,11 +358,15 @@ subroutine postkutil(nomres, nomfis, repmat, repmod)
 !
 !       verif que toutes les mailles de vmafon sont affectees avec
 !       le meme materiau
-        do icmp = 1, nbcmp
-            call cesexi('S', jcesd, jcesl, imaf, 1, 1, icmp, iad)
-            ASSERT( iad .gt. 0 )
-            ASSERT( vk8_mater(icmp) .eq. vcesv(iad) )
-        enddo
+        if (imater.eq.1) then
+            do icmp = 1, nbcmp
+                call cesexi('S', jcesd, jcesl, imaf, 1, 1, icmp, iad)
+                ASSERT( iad .gt. 0 )
+                if (vk8_mater(icmp) .ne. vcesv(iad)) then
+                    call utmess('F', 'RUPTURE1_13')
+                endif
+            enddo
+        endif
 !
     enddo
 !
@@ -367,7 +374,11 @@ subroutine postkutil(nomres, nomfis, repmat, repmod)
 !   variables out
 !   --------------------------------------------------------------------
 !
-    repmat = k8mater
+    if (imater.eq.1) then
+        repmat = k8mater
+    else
+        repmat = ' '
+    endif
     repmod = k8model
 !
 !   --------------------------------------------------------------------

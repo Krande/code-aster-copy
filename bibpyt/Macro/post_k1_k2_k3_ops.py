@@ -1899,16 +1899,17 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
     if FISSURE is not None:
         nom_fiss = FISSURE.nom
     assert nom_fiss != ''
-    mater, MODELISATION = aster.postkutil(RESULTAT.nom, nom_fiss)
 
     # si le MCS MATER n'est pas renseigne, on considere le materiau
     # present dans la sd_resultat. Si MATER est renseigne, on ecrase
     # le materiau et on emet une alarme.
     MATER = args['MATER']
     if MATER is None:
+        mater, MODELISATION = aster.postkutil(1, RESULTAT.nom, nom_fiss)
         MATER = self.get_concept(mater)
     else:
-        UTMESS('A', 'RUPTURE0_1', valk=[mater, MATER.nom])
+        bid, MODELISATION = aster.postkutil(0, RESULTAT.nom, nom_fiss)
+        UTMESS('A', 'RUPTURE0_1', valk=[MATER.nom])
 
     # Affectation de ndim selon le type de modelisation
     assert MODELISATION in ["3D", "AXIS", "D_PLAN", "C_PLAN"]
