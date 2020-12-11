@@ -33,18 +33,18 @@ waf_main()
     if [ -z "${DEVTOOLS_COMPUTER_ID}" ]; then
         host=$(detect_host)
         if [ ! -z "${host}" ]; then
-            export WAFBUILD_ENV="${prefix}/env.d/${host}_${WAF_SUFFIX}.sh"
+            export WAFBUILD_ENV="$(get_wafbuild_env ${host})"
             if [ -e ${WAFBUILD_ENV} ]; then
                 . ${WAFBUILD_ENV}
                 echo "loading ${WAFBUILD_ENV}"
             else
-                unset WAFBUILD_ENV
                 echo "no found"
+                unset WAFBUILD_ENV
             fi
         fi
     else
         if [ -z "${WAFBUILD_ENV}" ]; then
-            export WAFBUILD_ENV="${prefix}/env.d/${DEVTOOLS_COMPUTER_ID}_${WAF_SUFFIX}.sh"
+            export WAFBUILD_ENV="$(get_wafbuild_env ${DEVTOOLS_COMPUTER_ID})"
         fi
         if [ -e ${WAFBUILD_ENV} ]; then
             echo "already set: ${WAFBUILD_ENV}"
@@ -74,14 +74,27 @@ detect_host()
         printf scibian9
     elif [ -f /home/aster/clap0f0q ]; then
         printf clap0f0q
-    elif [ ! -z "${SINGULARITY_NAME}" ]; then
-        if egrep -q "Ubuntu" /etc/issue; then
-            printf singularity_ubuntu
+    else
+        local wbe=$(ls /opt/public/*_${WAF_SUFFIX}.sh 2> /dev/null)
+        if [ ! -z "${wbe}" ]; then
+            plt=$(basename "${wbe}" | sed -e "s%_${WAF_SUFFIX}\.sh$%%")
+            printf "${plt}"
         fi
     fi
     printf ""
 }
 
+get_wafbuild_env()
+{
+    # usage: get_wafbuild_env platform
+    local plt="${1}"
+    local wbe="${prefix}/env.d/${plt}_${WAF_SUFFIX}.sh"
+    if [ ! -f "${wbe}" ]; then
+        wbe="/opt/public/${plt}_${WAF_SUFFIX}.sh"
+        [ ! -f "${wbe}" ] && wbe=""
+    fi
+    printf "${wbe}"
+}
 
 waf_main "${@}"
 exit $?
