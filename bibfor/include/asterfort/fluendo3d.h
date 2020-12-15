@@ -23,7 +23,7 @@ interface
                nstrs,var0,varf,nvari,nbelas3d,&
                teta1,teta2,dt,vrgi,ierr1,&
                iso,mfr,end3d,fl3d,local,&
-               ndim,iteflumax)
+               ndim,iteflumax,sech)
         real(kind=8) :: xmat(:)
         real(kind=8) :: sig0(:)
         real(kind=8) :: sigf(:)
@@ -45,5 +45,6 @@ interface
         aster_logical :: local
         integer :: ndim
         integer :: iteflumax
+        real(kind=8) :: sech
     end subroutine fluendo3d
 end interface

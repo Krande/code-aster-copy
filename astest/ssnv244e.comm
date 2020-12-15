@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -119,7 +119,6 @@ mat=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
                      HYDR            = 1.,
                      HYDS            = 0.2,
                      PORO            =  0.3,
-                     VW              =  0.25,
                      BSHR            =  0.3,
                      MSHR            =  10.,
                      MVGN            =  0.5,
@@ -200,14 +199,14 @@ SECHI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                  MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          NOM_CMP='TEMP',
-                         VALE=0.12,),);
+                         VALE=0.25,),);
 
 SECHF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                  OPERATION='AFFE',
                  MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          NOM_CMP='TEMP',
-                         VALE=0.12,),);
+                         VALE=0.25,),);
 
 SECH=CREA_RESU(OPERATION='AFFE',
                TYPE_RESU='EVOL_THER',
@@ -249,11 +248,11 @@ afmat=AFFE_MATERIAU(MAILLAGE=M,
                                     # NOM_VARC='HYDR',
                                     # EVOL=HYDR,
                                     # NOM_CHAM='HYDR_NOEU',),
-                                 # _F(TOUT='OUI',
-                                    # NOM_VARC='SECH',
-                                    # EVOL=SECH,
-                                    # NOM_CHAM='TEMP',
-                                    # VALE_REF=0.12,),
+                                 _F(TOUT='OUI',
+                                    NOM_VARC='SECH',
+                                    EVOL=SECH,
+                                    NOM_CHAM='TEMP',
+                                    VALE_REF=0.0,),
                                  _F(TOUT='OUI',
                                     NOM_VARC='TEMP',
                                     EVOL=RESUTHER,

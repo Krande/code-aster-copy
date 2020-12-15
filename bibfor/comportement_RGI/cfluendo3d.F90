@@ -57,7 +57,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: zero, un, deux, rac2,var0(6),sig0(6)
 !
     real(kind=8) :: hydrm, hydrp, sechp, sechm, sref, vgm, vgp
-    real(kind=8) :: alpham, alphap, deps(6),teta13d,teta23d
+    real(kind=8) :: alpham, alphap, deps(6),teta13d,teta23d, sech
 
 
 !   variables de transfert de donnees ( a declarer suivant idvar4 et idvisc)
@@ -146,13 +146,19 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     call rcvarc(' ', 'SECH', '+', fami, kpg,&
                 ksp, sechp, iret)
     if (iret .ne. 0) sechp=0.d0
-    call rcvarc(' ', 'SECH', '-', fami, kpg,&
-                ksp, sechm, iret)
-    if (iret .ne. 0) sechm=0.d0
+!    call rcvarc(' ', 'SECH', '-', fami, kpg,&
+!                ksp, sechm, iret)
+!    if (iret .ne. 0) sechm=0.d0
+    sechm=0.d0
     call rcvarc(' ', 'SECH', 'REF', fami, kpg,&
                 ksp, sref, iret)
     if (iret .ne. 0) sref=0.d0
-
+    
+    sech = sechp
+!
+!   le séchage de référence doit être nul
+!
+    if (sref .ne. 0.d0) call utmess('F', 'COMPOR3_9', sk=compor(1))
 !
 ! -----------------------------------------------
 !     RECUPERATION DU VOLUME DE GEL DEBUT DE PAS
@@ -308,14 +314,6 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
         xmat(i) = valres(i-nbelas3d)
     end do
 !
-! --- VOLUME D'EAU
-!
-    if (abs(var03d(64)-1.d0).ge.r8prem()) then
-        xmat(nbelas3d+24) = valres(24)
-    else
-        xmat(nbelas3d+24) = sechp
-    endif
-!
 !-----VALEUR FIXEE PROVISOIREMENT POUR MFR
         mfr = 1
 !-----------------------------------------
@@ -421,7 +419,7 @@ phig3d=0.d0
                       nstrs3d,var03d,varf3d,nvari3d,nbelas3d,&
                       teta13d,teta23d,dt3d,phig3d,ierr1,&
                       iso1, mfr11,end3d,fl3d,local11,&
-                      ndim, iteflumax)
+                      ndim, iteflumax,sech)
 
        do i=1,3
             sigp(i) = sigf3d(i)

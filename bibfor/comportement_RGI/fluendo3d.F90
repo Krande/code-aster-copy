@@ -20,7 +20,7 @@ subroutine fluendo3d(xmat,sig0,sigf,deps,&
                      nstrs,var0,varf,nvari,nbelas3d,&
                      teta1,teta2,dt,vrgi,ierr1,&
                      iso,mfr,end3d,fl3d,local,&
-                     ndim,iteflumax)
+                     ndim,iteflumax,sech)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
  
@@ -179,6 +179,8 @@ implicit none
              real(kind=8) ::  sigke06(6),sigke16(6)
 !            porosite
              real(kind=8) ::  poro2,poro1,dporo
+!            grandeur liée à la quantité d'eau
+             real(kind=8) ::  sech
 !            contraintes integrant l effet pickett
 !            contrainte caracteristique pour l effet pickett
              real(kind=8) ::  sfld
@@ -730,12 +732,13 @@ implicit none
       biotw00=xmat(nbelas3d+20)
 !     module de biot pour le non sature
       xnsat00=xmat(nbelas3d+21)
-!     porosite      
+!     porosite ou grandeur permettant de passer du champ sech au degrès de saturation     
       poro2=xmat(nbelas3d+22)
 !     volume maximal de rgi
       vrag00=xmat(nbelas3d+23)
 !     volume d eau pour le non sature
-      vw2=xmat(nbelas3d+24)
+!      vw2=xmat(nbelas3d+24)
+      vw2=sech
 !     initialisation des variables internes associee a la saturation si premier pas
       if (abs(var0(64)-1.d0).ge.r8prem()) then
          var0(58)=vw2
