@@ -858,28 +858,28 @@ integer :: codret
     case (165)
 !     FLUA_PORO_BETON
         call lc0165(fami  , kpg   , ksp   , ndim  , imate,&
-                    compor, instam, instap, epsm  ,&
+                    compor, carcri, instam, instap, epsm  ,&
                     deps  , sigm  , vim   , option,&
                     sigp  , vip   , typmod, &
                     dsidep, codret)
     case (166)
 !     ENDO_PORO_BETON
         call lc0166(fami  , kpg   , ksp   , ndim  , imate,&
-                    compor, instam, instap, epsm  ,&
+                    compor, carcri, instam, instap, epsm  ,&
                     deps  , sigm  , vim   , option,&
                     sigp  , vip   , typmod,&
                     dsidep, codret)
     case (167)
 !     FLUA_ENDO_PORO
         call lc0167(fami  , kpg   , ksp   , ndim  , imate,&
-                    compor, instam, instap, epsm  ,&
+                    compor, carcri, instam, instap, epsm  ,&
                     deps  , sigm  , vim   , option,&
                     sigp  , vip   , typmod,&
                     dsidep, codret)
     case (168)
 !     RGI_BETON
         call lc0168(fami  , kpg   , ksp   , ndim  , imate,&
-                    compor, instam, instap, epsm  ,&
+                    compor, carcri, instam, instap, epsm  ,&
                     deps  , sigm  , vim   , option,&
                     sigp  , vip   , typmod,&
                     dsidep, codret)

@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
-                  compor, instam, instap, epsm,&
+                  compor, carcri, instam, instap, epsm,&
                   deps, sigm, vim, option,&
                   sigp, vip, typmod,&
                   dsidep, codret)
@@ -46,12 +46,13 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     character(len=16) :: compor(*), option
     character(len=8) :: typmod(*)
     character(len=*) :: fami
+    real(kind=8), intent(in) :: carcri(*)
 !
 ! DECLARATIONS LOCALES
     character(len=8) :: nomres(55),nomres1(4)
     real(kind=8) :: valres(55), xmat(59), rbid,valres1(4)
     integer :: nvari, nstrs, mfr, i, j
-    integer :: retour(55),retour1(4)
+    integer :: retour(55),retour1(4), iteflumax
     real(kind=8) :: d(6, 6), e, nu, coef, coef1, coef2, coef3
     real(kind=8) :: zero, un, deux, rac2,var0(6),sig0(6)
 !
@@ -109,6 +110,8 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
     depst3d(:) = 0.d0
     valres1(:)=0.d0
     valres(:)=0.d0
+    
+    iteflumax = int(carcri(1))
 
 !
 ! APPEL DE RCVARC POUR LE CALCUL DE LA TEMPERATURE
@@ -418,7 +421,7 @@ phig3d=0.d0
                       nstrs3d,var03d,varf3d,nvari3d,nbelas3d,&
                       teta13d,teta23d,dt3d,phig3d,ierr1,&
                       iso1, mfr11,end3d,fl3d,local11,&
-                      ndim)
+                      ndim, iteflumax)
 
        do i=1,3
             sigp(i) = sigf3d(i)

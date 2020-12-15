@@ -20,7 +20,7 @@ subroutine fluendo3d(xmat,sig0,sigf,deps,&
                      nstrs,var0,varf,nvari,nbelas3d,&
                      teta1,teta2,dt,vrgi,ierr1,&
                      iso,mfr,end3d,fl3d,local,&
-                     ndim)
+                     ndim,iteflumax)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
  
@@ -49,6 +49,9 @@ implicit none
 #include "asterfort/majw3d.h"
 #include "asterfort/utmess.h"
 
+!    nombre maximal de sous-itération de fluage
+     integer      :: iteflumax
+     
      
      real(kind=8) ::  beta, beta00,bg0,biotw,biotw00,brgi,ccmin0,dim3,brgi00
      real(kind=8) ::  ccmin1,cthp,cthp1,cthv,cthv1,cthvm,cwtauk0,cwtauk1,depleqc
@@ -1002,6 +1005,9 @@ implicit none
         if (dtmaxi.lt.dt) then
             xpas1=dt/dtmaxi
             npas1=int(xpas1)+1
+            if (iteflumax.gt.0.d0) then
+                npas1=min(npas1,int(iteflumax))
+            end if
         else
             npas1=1
         end if

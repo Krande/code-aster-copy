@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -263,5 +263,56 @@ TEST_RESU(RESU=(_F(INST=1,
                    MAILLE='M1',),
                 ),
           )
+
+
+RESU2=STAT_NON_LINE(MODELE=mod,
+                   CHAM_MATER=afmat,
+                   EXCIT=(_F(CHARGE=char1,
+                               FONC_MULT=Fonc1,),
+                          _F(CHARGE=CL,),),
+                   COMPORTEMENT=_F(RELATION ='FLUA_ENDO_PORO',
+                                   ITER_INTE_MAXI = 2),
+                   INCREMENT=_F(LIST_INST=litps,
+                                INST_INIT=0,),
+                   NEWTON=_F(PREDICTION='ELASTIQUE',
+                             MATRICE='TANGENTE',),
+                  CONVERGENCE=_F(ITER_GLOB_MAXI=100,
+                                 ARRET='OUI',),
+                  ARCHIVAGE=_F(LIST_INST = liarc),);
+
+
+# VALEURS DE NON REGRESSION
+TEST_RESU(RESU=(_F(INST=1,
+                   RESULTAT=RESU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N7',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-0.00551702250559,
+                   MAILLE='M1',),
+                _F(INST=50,
+                   RESULTAT=RESU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N7',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-0.03443572387280919,
+                   MAILLE='M1',),
+                _F(INST=200,
+                   RESULTAT=RESU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N7',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-0.06414531780293342,
+                   MAILLE='M1',),
+                _F(INST=350,
+                   RESULTAT=RESU2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N7',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-0.0779182892908627,
+                   MAILLE='M1',),
+                ),
+          )
+
+
 
 FIN();

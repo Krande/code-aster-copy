@@ -18,7 +18,7 @@
 ! person_in_charge: etienne.grimal at edf.fr
 !
 subroutine lc0165(fami  , kpg   , ksp   , ndim  , imate ,&
-                  compor, instam, instap, epsm  ,&
+                  compor, carcri, instam, instap, epsm  ,&
                   deps  , sigm  , vim   , option,&
                   sigp  , vip   , typmod,&
                   dsidep, codret)
@@ -30,6 +30,7 @@ implicit none
 character(len=*), intent(in) :: fami
 integer, intent(in) :: kpg, ksp, ndim, imate
 character(len=16), intent(in) :: compor(*)
+real(kind=8), intent(in) :: carcri(*)
 real(kind=8), intent(in) :: instam, instap
 real(kind=8), intent(in) :: epsm(6), deps(6), sigm(6)
 real(kind=8), intent(in) :: vim(*)
@@ -48,7 +49,7 @@ integer, intent(out) :: codret
 ! --------------------------------------------------------------------------------------------------
 !
     call cfluendo3d(fami  , kpg   , ksp   , ndim  , imate,&
-                    compor, instam, instap, epsm  ,&
+                    compor, carcri, instam, instap, epsm  ,&
                     deps  , sigm  , vim   , option,&
                     sigp  , vip   , typmod,&
                     dsidep, codret) 

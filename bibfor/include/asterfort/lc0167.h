@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 interface
     subroutine lc0167(fami  , kpg   , ksp   , ndim  , imate,&
-                      compor, instam, instap, epsm  ,&
+                      compor, carcri, instam, instap, epsm  ,&
                       deps  , sigm  , vim   , option,&
                       sigp  , vip   , typmod, &
                       dsidep, codret)
@@ -29,6 +29,7 @@ interface
         real(kind=8), intent(in)  :: sigm(6), vim(*)
         real(kind=8), intent(out) :: vip(*), sigp(6), dsidep(6, 6)
         character(len=16), intent(in) :: compor(*), option
+        real(kind=8), intent(in) :: carcri(*)
         character(len=8), intent(in) :: typmod(*)
         integer, intent(out) :: codret
     end subroutine lc0167
