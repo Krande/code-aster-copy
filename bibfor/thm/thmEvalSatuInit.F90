@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine thmEvalSatuInit(ds_thm, j_mater, p1m   , p1    ,&
+subroutine thmEvalSatuInit(ds_thm, j_mater, p1m   , p1    ,tempm,temp,&
                            satm  , satur  , dsatur, retcom)
 !
 use THM_type
@@ -32,7 +32,7 @@ implicit none
 !
 type(THM_DS), intent(in) :: ds_thm
 integer, intent(in) :: j_mater
-real(kind=8), intent(in) :: p1m, p1
+real(kind=8), intent(in) :: p1m, p1,tempm, temp
 real(kind=8), intent(out) :: satm, satur, dsatur
 integer, intent(out) :: retcom
 !
@@ -60,6 +60,7 @@ integer, intent(out) :: retcom
     real(kind=8) :: para_vale(nb_para)
     integer :: icodre(nb_para)
     character(len=16), parameter :: para_name(nb_para) = (/'SATU_PRES  ', 'D_SATU_PRES' /)
+    character(len=16), parameter :: npar(2) = (/'PCAP', 'TEMP' /)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -90,18 +91,18 @@ integer, intent(out) :: retcom
             satur = 1.d0
         elseif (ds_thm%ds_behaviour%satur_type .eq. SATURATED_SPEC) then
             call rcvala(j_mater, ' '      , 'THM_DIFFU',&
-                        1      , 'PCAP'   , [p1m]      ,&
+                        2      , npar   , [p1m,tempm]       ,&
                         1      , para_name, para_vale  , icodre,&
                         1)
             satm = para_vale(1)
         else
             call rcvala(j_mater, ' '      , 'THM_DIFFU',&
-                        1      , 'PCAP'   , [p1m]      ,&
+                        2      , npar   , [p1m,tempm]       ,&
                         1      , para_name, para_vale  , icodre,&
                         1)
             satm = para_vale(1)
             call rcvala(j_mater, ' '      , 'THM_DIFFU',&
-                        1      , 'PCAP'   , [p1]       ,&
+                        2      , npar   , [p1,temp]      ,&
                         nb_para, para_name, para_vale  , icodre,&
                         1)
             satur  = para_vale(1)

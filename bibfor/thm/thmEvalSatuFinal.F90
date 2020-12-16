@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine thmEvalSatuFinal(ds_thm , j_mater, p1    ,&
+subroutine thmEvalSatuFinal(ds_thm , j_mater, p1 , temp, &
                             satur  , dsatur , retcom)
 !
 use THM_type
@@ -31,7 +31,7 @@ implicit none
 !
 type(THM_DS), intent(in) :: ds_thm
 integer, intent(in) :: j_mater
-real(kind=8), intent(in) :: p1
+real(kind=8), intent(in) :: p1,temp
 real(kind=8), intent(out) :: satur, dsatur
 integer, intent(out) :: retcom
 !
@@ -57,6 +57,7 @@ integer, intent(out) :: retcom
     real(kind=8) :: para_vale(nb_para)
     integer :: icodre(nb_para)
     character(len=16), parameter :: para_name(nb_para) = (/'SATU_PRES  ', 'D_SATU_PRES' /)
+    character(len=16), parameter :: npar(2) = (/'PCAP', 'TEMP' /)
     character(len=16) :: hydr
 !
 ! --------------------------------------------------------------------------------------------------
@@ -73,8 +74,12 @@ integer, intent(out) :: retcom
             satur  = 1.d0
             dsatur = 0.d0
         else
+!            call rcvala(j_mater, ' '      , 'THM_DIFFU',&
+!                        1      , 'PCAP'   , [p1]       ,&
+!                        nb_para, para_name, para_vale  , icodre,&
+!                        1)
             call rcvala(j_mater, ' '      , 'THM_DIFFU',&
-                        1      , 'PCAP'   , [p1]       ,&
+                        2      , npar   , [p1,temp]       ,&
                         nb_para, para_name, para_vale  , icodre,&
                         1)
             satur  = para_vale(1)

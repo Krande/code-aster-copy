@@ -244,7 +244,7 @@ real(kind=8), intent(out) :: res(dimdef), drde(dimdef, dimdef)
 !
 ! - Evaluation of final saturation
 !
-    call thmEvalSatuFinal(ds_thm, j_mater, p1    ,&
+    call thmEvalSatuFinal(ds_thm, j_mater, p1 ,t, &
                           satur , dsatur , retcom)
 !
 ! - Evaluate thermal conductivity

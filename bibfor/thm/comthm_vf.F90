@@ -248,7 +248,7 @@ real(kind=8), intent(inout) :: valfac(maxfa, 14, 6)
 !
 ! - Evaluation of final saturation
 !
-    call thmEvalSatuFinal(ds_thm, j_mater, p1    ,&
+    call thmEvalSatuFinal(ds_thm, j_mater, p1    , temp,&
                           satur , dsatur , retcom)
 !
 ! - Evaluate thermal conductivity

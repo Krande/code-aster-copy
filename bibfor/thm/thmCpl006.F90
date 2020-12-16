@@ -203,7 +203,7 @@ integer, intent(out)  :: retcom
 !
 ! - Evaluation of initial saturation
 !
-    call thmEvalSatuInit(ds_thm, j_mater, p1m   , p1    ,&
+    call thmEvalSatuInit(ds_thm, j_mater, p1m   , p1 ,temp-dtemp,temp,&
                          saturm, satur  , dsatur, retcom)
 !
 ! - Evaluation of initial porosity
