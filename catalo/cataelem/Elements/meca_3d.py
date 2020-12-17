@@ -140,6 +140,9 @@ EFORCER  = LocatedComponents(phys=PHY.FORC_R, type='ELGA', location='RIGI',
 EKTHETA  = LocatedComponents(phys=PHY.G, type='ELEM',
     components=('GTHETA','FIC[3]','K[3]','BETA',))
 
+NEWTHETA  = LocatedComponents(phys=PHY.G, type='ELEM',
+    components=('GTHETA','K[3]',))
+
 
 NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
     components=('X','Y','Z',))
@@ -212,6 +215,8 @@ ECOEQPG  = LocatedComponents(phys=PHY.SIEF_R, type='ELGA', location='RIGI',
 ESOURCR  = LocatedComponents(phys=PHY.SOUR_R, type='ELGA', location='RIGI',
     components=('SOUR',))
 
+E6NEUTR = LocatedComponents(phys=PHY.NEUT_R, type='ELNO',
+    components=('X[6]',))
 
 ZVARIPG  = LocatedComponents(phys=PHY.VARI_R, type='ELGA', location='RIGI',
     components=('VARI',))
@@ -301,6 +306,62 @@ class MECA_HEXA20(Element):
                      (SP.PVARCRR, LC.ZVARCPG), (OP.CALC_G_F.PVARIPR, LC.ZVARINO),
                      (SP.PVITESS, DDL_MECA), ),
             para_out=((SP.PGTHETA, LC.EGTHETA), ),
+        ),
+
+        OP.CALCH_G(te=222,
+            para_in=((SP.PACCELE, DDL_MECA), (OP.CALCH_G.PCOMPOR, LC.CCOMPOR),
+                     (SP.PCONTGR, ECONTPG), (OP.CALCH_G.PCONTRR, ECONTPG),
+                     (SP.PDEFOPL, EDEFONO), (SP.PDEPLAR, DDL_MECA),
+                     (SP.PEPSINR, CEPSINO), (SP.PFRVOLU, NFORCER),
+                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (SP.PPESANR, LC.CPESANR), (SP.PROTATR, LC.CROTATR),
+                     (SP.PSIGINR, ECONTNO), (OP.CALCH_G.PTHETAR, E6NEUTR),
+                     (OP.CALCH_G.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
+                     (OP.CALCH_G.PVARIPR, LC.ZVARINO), (SP.PVITESS, DDL_MECA),
+                     ),
+            para_out=((SP.PGTHETA, NEWTHETA), ),
+        ),
+
+        OP.CALCH_G_F(te=222,
+            para_in=((SP.PACCELE, DDL_MECA), (OP.CALCH_G_F.PCOMPOR, LC.CCOMPOR),
+                     (SP.PCONTGR, ECONTPG), (OP.CALCH_G_F.PCONTRR, ECONTPG),
+                     (SP.PDEFOPL, EDEFONO), (SP.PDEPLAR, DDL_MECA),
+                     (SP.PEPSINF, CEPSINF), (SP.PFFVOLU, CFORCEF),
+                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (SP.PPESANR, LC.CPESANR), (SP.PROTATR, LC.CROTATR),
+                     (SP.PSIGINR, ECONTNO), (SP.PTEMPSR, CTEMPSR),
+                     (OP.CALCH_G_F.PTHETAR, E6NEUTR), (OP.CALCH_G_F.PVARCPR, LC.ZVARCPG),
+                     (SP.PVARCRR, LC.ZVARCPG), (OP.CALCH_G_F.PVARIPR, LC.ZVARINO),
+                     (SP.PVITESS, DDL_MECA), ),
+            para_out=((SP.PGTHETA, NEWTHETA), ),
+        ),
+
+        OP.CALCH_K_G(te=222,
+            para_in=((OP.CALCH_K_G.PBASLOR, LC.N9NEUT_R), (OP.CALCH_K_G.PCOMPOR, LC.CCOMPOR),
+                     (SP.PCOURB, LC.G27NEUTR),
+                     (SP.PDEPLAR, DDL_MECA), (SP.PEPSINR, CEPSINO),
+                     (SP.PFRVOLU, NFORCER), (SP.PGEOMER, NGEOMER),
+#                     (OP.CALCH_K_G.PLSN, LC.N1NEUT_R), (OP.CALCH_K_G.PLST, LC.N1NEUT_R),
+                     (SP.PMATERC, LC.CMATERC), (SP.PPESANR, LC.CPESANR),
+                     (SP.PPULPRO, LC.CFREQR), (SP.PROTATR, LC.CROTATR),
+                     (SP.PSIGINR, ECONTNO), (OP.CALCH_K_G.PTHETAR, E6NEUTR),
+                     (OP.CALCH_K_G.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
+                     ),
+            para_out=((SP.PGTHETA, NEWTHETA), ),
+        ),
+
+        OP.CALCH_K_G_F(te=222,
+            para_in=((OP.CALC_K_G_F.PBASLOR, LC.N9NEUT_R), (OP.CALC_K_G_F.PCOMPOR, LC.CCOMPOR),
+                     (SP.PCOURB, LC.G27NEUTR),
+                     (SP.PDEPLAR, DDL_MECA), (SP.PEPSINF, CEPSINF),
+                     (SP.PFFVOLU, CFORCEF), (SP.PGEOMER, NGEOMER),
+#                     (OP.CALCH_K_G_F.PLSN, LC.N1NEUT_R), (OP.CALCH_K_G_F.PLST, LC.N1NEUT_R),
+                     (SP.PMATERC, LC.CMATERC), (SP.PPESANR, LC.CPESANR),
+                     (SP.PPULPRO, LC.CFREQR), (SP.PROTATR, LC.CROTATR),
+                     (SP.PSIGINR, ECONTNO), (SP.PTEMPSR, CTEMPSR),
+                     (OP.CALCH_K_G_F.PTHETAR, E6NEUTR), (OP.CALCH_K_G_F.PVARCPR, LC.ZVARCPG),
+                     (SP.PVARCRR, LC.ZVARCPG), ),
+            para_out=((SP.PGTHETA, NEWTHETA), ),
         ),
 
         OP.CALC_K_G(te=295,

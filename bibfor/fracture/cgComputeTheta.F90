@@ -93,7 +93,7 @@ use calcG_type
     call jemarq()
 !
     eps = 1.d-06
-    lonfis=0
+    lonfis = 0.d0
 !
     call jeveuo(cgTheta%crack//'.BASLOC    .VALE', 'L', ibas)
 !
@@ -165,7 +165,7 @@ use calcG_type
 !           COORDONNEES DU NOEUD COURANT M
             xm = cgTheta%coorNoeud((i-1)*3+1)
             ym = cgTheta%coorNoeud((i-1)*3+2)
-            zm =0
+            zm = 0.d0
 !
             if(cgField%ndim .eq. 3) then
                 zm= cgTheta%coorNoeud((i-1)*3+3)
@@ -174,7 +174,7 @@ use calcG_type
 !           COORDONNEES DU PROJETE N DE CE NOEUD SUR LE FRONT DE FISSURE 
             xn = zr(ibas-1+3*cgField%ndim*(i-1)+1)
             yn = zr(ibas-1+3*cgField%ndim*(i-1)+2)
-            zn =0
+            zn = 0.d0
             if(cgField%ndim .eq. 3) then
                 zn= zr(ibas-1+3*cgField%ndim*(i-1)+3)
             endif
@@ -198,18 +198,18 @@ use calcG_type
             zl(jcnsl-1+6*(i-1)+2)=.true.
             zl(jcnsl-1+6*(i-1)+3)=.true.
             zl(jcnsl-1+6*(i-1)+4)=.true.
-            zr(itheta-1+(i-1)*6+2) = zr(ibas-1+ 3*cgField%ndim*(i-1)+2*cgField%ndim+1)
-            zr(itheta-1+(i-1)*6+3) = zr(ibas-1+ 3*cgField%ndim*(i-1)+2*cgField%ndim+2)
+            zr(itheta-1+(i-1)*6+2) = zr(ibas-1+ 3*cgField%ndim*(i-1)+cgField%ndim+1)
+            zr(itheta-1+(i-1)*6+3) = zr(ibas-1+ 3*cgField%ndim*(i-1)+cgField%ndim+2)
             if(cgField%ndim .eq. 2) then
-                zr(itheta-1+(i-1)*6+4) = 0
+                zr(itheta-1+(i-1)*6+4) = 0.d0
             else
-                zr(itheta-1+(i-1)*6+4) = zr(ibas-1+ 3*cgField%ndim*(i-1)+2*cgField%ndim+3)
+                zr(itheta-1+(i-1)*6+4) = zr(ibas-1+ 3*cgField%ndim*(i-1)+cgField%ndim+3)
             endif
 !
 !           stockage de l'abscisse curviligne s, pour le noeud i en 3D
             zl(jcnsl-1+6*(i-1)+5)=.true.
             if(cgField%ndim .eq. 2) then
-                zr(itheta-1+(i-1)*6+5) = 0 
+                zr(itheta-1+(i-1)*6+5) = 0.d0
             else
                 zr(itheta-1+(i-1)*6+5) = cgTheta%abscur(i)
             endif
@@ -217,7 +217,7 @@ use calcG_type
 !           stockage de la longueur de la fissure, utile en 3D seulement
             zl(jcnsl-1+6*(i-1)+6)=.true.
             if(cgField%ndim .eq. 2) then
-                zr(itheta-1+(i-1)*6+6) = 0
+                zr(itheta-1+(i-1)*6+6) = 0.d0
             else
                 zr(itheta-1+(i-1)*6+6) = lonfis
             endif
@@ -229,7 +229,7 @@ use calcG_type
     cgTheta%theta_factors = cgTheta%theta_factors(1:8)//'_CHAM_THETA_FACT'
     call cnscno(cnstet,' ','OUI','V',cgTheta%theta_factors,'F',iret)
     call detrsd('CHAM_NO_S',cnstet)
-!~     call imprsd('CHAMP', cgTheta%theta_factors, 6, ' VECTEUR THETA FACTORS')
+!    call imprsd('CHAMP', cgTheta%theta_factors, 6, ' VECTEUR THETA FACTORS')
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !   ECRITURE OLD SCHOOL CONSERVEE POUR LINSTANT > CHAMPS STOCKES DANS cgTheta%theta_field

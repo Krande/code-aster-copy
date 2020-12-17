@@ -46,6 +46,10 @@ implicit none
         character(len=24)  :: table_g = ' '
 ! ----- CARTE for behavior
         character(len=24)  :: compor = ' '
+! ----- Incremental behavior or not ?
+        aster_logical      :: l_incr
+! ----- recalculate stresses :yes or no
+        character(len=8)   :: stresses
 ! ----- topological dimension
         integer            :: ndim      = 0
 ! ----- name of list of NUME
@@ -87,6 +91,8 @@ implicit none
         integer            :: nume_ordre = -1
 ! ----- option to compute
         character(len=8)   :: option    = ' '
+!------ linear or quadratic
+        aster_logical      :: milieu = ASTER_FALSE
 ! ----- member function
         contains
         procedure, pass    :: initialize => initialize_study
@@ -135,12 +141,16 @@ implicit none
         integer                 :: nb_couche_inf = 0, nb_couche_sup = 0
 ! ----- type of discretization
         character(len=8)        :: discretization = ' '
-! ----- nubmer of nodes (for linear discretization)
+! ----- nubmer of nodes if nb_pts_fond is defined (for linear discretization)
         integer                 :: nb_point_fond = 0
+! ----- number of nodes (for linear discretization)
+        integer                 :: nnof = 0
 ! ----- nubmer of nodes (for legendre discretization)
         integer                 :: degree = 0
 ! ----- nume_fond for XFem only
         integer                 :: nume_fond = 0
+!-------the crack is symetric ?
+        character(len=8)        :: symech = 'NON'
 ! ----- the crack is closed ?
         aster_logical           :: l_closed = ASTER_FALSE
 ! ----- member function
@@ -149,6 +159,24 @@ implicit none
         procedure, pass    :: print => print_theta
     end type CalcG_Theta
 !
+!===================================================================================================
+!
+!===================================================================================================
+!
+    type CalcG_InfoTe
+! ----- number of nodes in the crack
+        integer                 :: nb_fond = 0
+! ----- type of discretization
+        character(len=8)        :: discretisation = ' '
+! ----- number of points (for linear discretization)
+        integer                 :: nnof = 0
+! ----- nubmer of nodes (for legendre discretization)
+        integer                 :: ndeg = 0
+! ----- member function
+        contains
+        procedure, pass    :: initialize => initialize_InfoTe
+        procedure, pass    :: print => print_InfoTe
+    end type CalcG_InfoTe
 !
 contains
 !
@@ -167,6 +195,7 @@ contains
 #include "asterfort/assert.h"
 #include "asterfort/cgcrio.h"
 #include "asterfort/cgReadCompor.h"
+#include "asterfort/cgStresses.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gettco.h"
 #include "asterfort/getvid.h"
@@ -187,7 +216,7 @@ contains
         integer :: ier, ifm
         character(len=16) :: k16bid
         character(len=8)  :: modele
-        aster_logical     :: l_incr
+
 !
         call jemarq()
 !
@@ -225,13 +254,17 @@ contains
 !
 ! --- List of nume
 !
-        this%list_nume_name = '&&OP0100.VECTORDR'
+        this%list_nume_name = '&&OP0027.VECTORDR'
         call cgcrio(this%result_in, this%list_nume_name, this%nb_nume)
         call jeveuo(this%list_nume_name, 'L', vi=this%list_nume)
 !
 ! --- Read <CARTE> COMPORTEMENT
 !
-        call cgReadCompor(this%result_in, this%compor, this%list_nume(1), l_incr)
+        call cgReadCompor(this%result_in, this%compor, this%list_nume(1), this%l_incr)
+!
+! --- Recalculates stresses
+!
+        call cgStresses(this%result_in, this%list_nume_name, this%stresses)
 !
         call jedema()
 !
@@ -326,8 +359,16 @@ contains
 !
     implicit none
 !
+#include "jeveux.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/ismali.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/medomg.h"
+
 !
         class(CalcG_Study), intent(inout)  :: this
         character(len=8), intent(in)       :: result_in
@@ -340,11 +381,25 @@ contains
 !   In nume_index : index nume
 ! --------------------------------------------------------------------------------------------------
 !
+        character(len=8) :: typma
+        integer :: jma
+
+        call jemarq()
+
         this%nume_ordre = nume_index
         this%loading    = "&&STUDY.CHARGES"
         call medomg(result_in, nume_index, this%model, this%material, this%mateco, this%loading)
         call dismoi('NOM_MAILLA', this%model,'MODELE', repk=this%mesh)
 !
+!       Maillage linéaire ou quadratique
+        call jeveuo(this%mesh//'.TYPMAIL', 'L', jma)
+        call jenuno(jexnum('&CATA.TM.NOMTM', zi(jma)), typma)
+        if (.not. ismali(typma)) then
+            this%milieu = ASTER_TRUE
+        endif
+
+        call jedema()
+
     end subroutine
 !
 !===================================================================================================
@@ -372,6 +427,7 @@ contains
         print*, "Coded material: ", this%mateco
         print*, "Loading: ", this%loading
         print*, "Nume index: ", this%nume_ordre
+        PRINT*, "linear or quadratic", this%milieu
         print*, "----------------------------------------------------------------------"
 !
     end subroutine
@@ -454,6 +510,7 @@ contains
             call dismoi('NOM_MAILLA',this%crack,'FOND_FISS', arret='F', repk=this%mesh)
             call dismoi('TYPE_FOND', this%crack,'FOND_FISS', arret='F', repk=typfon)
             call dismoi('CONFIG_INIT', this%crack, 'FOND_FISS', repk=this%config_init)
+            call dismoi('SYME', this%crack, 'FOND_FISS', repk=this%symech)
         end if
 ! --- the crack is closed ?
         if (typfon .eq. 'FERME') then
@@ -471,8 +528,16 @@ contains
         ASSERT(l_disc)
 !
         call getvis('THETA', 'DEGRE', iocc=1, scal=this%degree, nbret=ier)
-        call getvis('THETA', 'NB_POINT_FOND', iocc=1, scal=this%nb_point_fond, nbret=ier)
+        call jelira(this%crack//'.FOND.NOEU', 'LONMAX', this%nnof)
+!        call getvis('THETA', 'NB_POINT_FOND', iocc=1, scal=this%nb_point_fond, nbret=ier)
+
 !
+        if ( this%discretization == "LINEAIRE") then
+            this%nb_theta_field = this%nnof
+        else
+           this%nb_theta_field = this%degree
+        endif
+
         if(this%discretization == "LINEAIRE") then
             ASSERT(this%nb_point_fond >= 0)
             ASSERT(this%degree == 0)
@@ -579,14 +644,17 @@ contains
         print*, "----------------------------------------------------------------------"
         print*, "Informations about CalcG_Theta"
         print*, "Field theta: ", this%theta_field
+        print*, "theta_factors: ", this%theta_factors
         print*, "Crack: ", this%crack, " of type ", this%crack_type
         print*, "Number of nodes in the crack: ", this%nb_fondNoeud
         print*, "Mesh support: ", this%mesh
         print*, "Initial configuration: ", this%config_init
+        print*, "the crack is symetric: ", this%symech
         print*, "The crack is closed ?: ", this%l_closed
-        print*, "XFEM ?: ", this%lxfem, " with discontinuity: ", this%XfemDisc_type
+        print*, "Nombre de champs THETA: ", this%nb_theta_field   
+!        print*, "XFEM ?: ", this%lxfem, " with discontinuity: ", this%XfemDisc_type
         print*, "Discretization : ", this%discretization,  " with number/degree ", &
-                this%nb_point_fond, this%degree
+                this%nnof, this%degree
         print*, "Radius:"
         print*, "*** Inferior: ", this%r_inf
         print*, "*** Superior: ", this%r_sup
@@ -597,4 +665,78 @@ contains
 !
     end subroutine
 !
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine initialize_InfoTe(this)
+!
+    implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/gettco.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/utmess.h"
+!
+        class(CalcG_InfoTe), intent(inout)  :: this
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Informations for TE
+!   In this     : theta type
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: ier
+        character(len=8) :: crack
+!
+        call jemarq()
+!
+        call getvtx('THETA', 'FISSURE', iocc=1, scal=crack, nbret=ier)
+
+! ---   Get informations about theta discretization
+        call getvtx('THETA', 'DISCRETISATION', iocc=1, scal=this%discretisation, nbret=ier)
+        call getvis('THETA', 'DEGRE', iocc=1, scal=this%ndeg, nbret=ier)
+        call jelira(crack//'.FOND.NOEU', 'LONMAX', this%nnof)
+
+!       si npoint fond est activé travail à faire 3
+!        call getvis('THETA', 'NB_POINT_FOND', iocc=1, scal=this%nnof, nbret=ier)
+
+        call jedema()
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine print_InfoTe(this)
+!
+    implicit none
+!
+        class(CalcG_InfoTe), intent(in)  :: this
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   print informations of a CalcG_Theta type
+!   In this     : theta type
+! --------------------------------------------------------------------------------------------------
+!
+        print*, "----------------------------------------------------------------------"
+        print*, "Discretization : ", this%discretisation,  " with number/degree ", &
+                this%nnof, this%ndeg
+        print*, "----------------------------------------------------------------------"
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
 end module

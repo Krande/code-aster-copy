@@ -174,11 +174,11 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, nbnoff, absfon,&
 !               STOCKAGE COORDONNEES DU PROJETE
                 gsv(3*ndim*(ino-1)+k) = n(k)
                 zl(jgsl-1+3*ndim*(ino-1)+k) = .true.
-!               STOCKAGE VECTEUR NORMAL
-                gsv(3*ndim*(ino-1)+k+2) = zr(jbas-1+k)
-                zl(jgsl-1+3*ndim*(ino-1)+k+2) = .true.
 !               STOCKAGE VECTEUR DIRECTION
-                gsv(3*ndim*(ino-1)+k+4) = zr(jbas-1+k+ndim)
+                gsv(3*ndim*(ino-1)+k+2) = zr(jbas-1+k+ndim)
+                zl(jgsl-1+3*ndim*(ino-1)+k+2) = .true.
+!               STOCKAGE VECTEUR NORMAL
+                gsv(3*ndim*(ino-1)+k+4) = zr(jbas-1+k)
                 zl(jgsl-1+3*ndim*(ino-1)+k+4) = .true.
             end do
 !
@@ -279,11 +279,11 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, nbnoff, absfon,&
 !               STOCKAGE COORDONNEES DU PROJETE
                 gsv(3*ndim*(ino-1)+k) = n(k)
                 zl(jgsl-1+3*ndim*(ino-1)+k) = .true.
-!               STOCKAGE VECTEUR NORMAL
-                gsv(3*ndim*(ino-1)+k+3) = vnorn(k)
-                zl(jgsl-1+3*ndim*(ino-1)+k+3) = .true.
 !               STOCKAGE VECTEUR DIRECTION
-                gsv(3*ndim*(ino-1)+k+6) = vdirn(k)
+                gsv(3*ndim*(ino-1)+k+3) = vdirn(k)
+                zl(jgsl-1+3*ndim*(ino-1)+k+3) = .true.
+!               STOCKAGE VECTEUR NORMAL
+                gsv(3*ndim*(ino-1)+k+6) = vnorn(k)
                 zl(jgsl-1+3*ndim*(ino-1)+k+6) = .true.
 !
             end do

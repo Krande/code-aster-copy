@@ -15,17 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+
 !
 !
 interface
-    subroutine cgTableG(cgField, cgTheta, nume_ordre, option, time, lmoda, gth)
-    use calcG_type
-        type(CalcG_field), intent(inout) :: cgField
-        type(CalcG_theta), intent(in) :: cgTheta
-        integer                       :: nume_ordre
-        character(len=8)              :: option
-        real(kind=8)                  :: time
-        aster_logical                 :: lmoda
-        real(kind=8)                  :: gth(4)
-    end subroutine cgTableG
+    subroutine thetapdg(ndim, nno, ff, dfdi, ndimte, ithet, dtdm)
+        integer, intent(in)       :: ndim
+        integer, intent(in)       :: nno
+        integer, intent(in)       :: ndimte
+        integer, intent(in)       :: ithet
+        real(kind=8), intent(in)  :: ff(nno)
+        real(kind=8), intent(in)  :: dfdi(nno, ndim)
+        real(kind=8), intent(out) :: dtdm(3, 4)
+    end subroutine thetapdg
 end interface

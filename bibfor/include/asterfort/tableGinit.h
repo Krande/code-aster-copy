@@ -15,17 +15,21 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+
 !
+!
+#include "asterf_types.h"
 !
 interface
-    subroutine cgTableG(cgField, cgTheta, nume_ordre, option, time, lmoda, gth)
-    use calcG_type
-        type(CalcG_field), intent(inout) :: cgField
-        type(CalcG_theta), intent(in) :: cgTheta
-        integer                       :: nume_ordre
-        character(len=8)              :: option
-        real(kind=8)                  :: time
-        aster_logical                 :: lmoda
-        real(kind=8)                  :: gth(4)
-    end subroutine cgTableG
+    subroutine tableGinit(table, option, ndim, nxpara,&
+                      lmoda, nbpara, linopa, litypa)
+        integer :: nbpara
+        character(len=8) :: table
+        character(len=8) :: option
+        integer :: ndim
+        integer :: nxpara
+        aster_logical :: lmoda
+        character(len=*) :: linopa(nxpara)
+        character(len=*) :: litypa(nxpara)
+    end subroutine tableGinit
 end interface

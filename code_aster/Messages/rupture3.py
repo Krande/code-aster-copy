@@ -41,10 +41,6 @@ Le nombre de couches d'élément inférieur et supérieur pour le calcul de thê
     Nombre de couches supérieur: %(i2)d
 """),
 
-    5 : _("""
-Calcul de l'option: %(k1)s
-"""),
-
     6: _("""
 Dans le cas d'une structure de données résultat de type DYNA_TRANS ou MODE_MECA,
 le mot-clé EXCIT est obligatoire.

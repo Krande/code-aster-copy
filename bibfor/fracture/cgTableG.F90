@@ -18,7 +18,7 @@
 !
 ! person_in_charge: nicolas.pignet at edf.fr
 !
-subroutine cgTableG(cgField, cgTheta)
+subroutine cgTableG(cgField, cgTheta, nume_ordre, option, time, lmoda, gth)
 !
 use calcG_type
 !
@@ -26,25 +26,22 @@ use calcG_type
 !
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/utmess.h"
 #include "asterfort/utimsd.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajvi.h"
 #include "asterfort/tbajvk.h"
 #include "asterfort/tbajvr.h"
 #include "asterfort/titre.h"
-#include "asterfort/assert.h"
-#include "asterfort/cgcrtb.h"
-! #include "asterfort/dismoi.h"
-! #include "asterfort/getvid.h"
+#include "asterfort/tableGinit.h"
 #include "asterfort/getvis.h"
-! #include "asterfort/getvtx.h"
 
-! #include "asterfort/wkvect.h"
 !
-    type(CalcG_field), intent(in) :: cgField
+    type(CalcG_field), intent(inout) :: cgField
     type(CalcG_theta), intent(in) :: cgTheta
-!
+    integer           :: nume_ordre
+    real(kind=8)      :: time, gth(4)
+    character(len=8)  :: option
+    aster_logical     :: lmoda
 ! --------------------------------------------------------------------------------------------------
 !
 !     CALC_G --- Utilities
@@ -53,48 +50,64 @@ use calcG_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
     integer, parameter :: nxpara = 15, nbmxpa = 20
-    character(len=8) :: litypa(nxpara), typfis, k8bid
+    integer            :: nbpara
+    integer            :: livi(nbmxpa)
+    real(kind=8)       :: livr(nbmxpa)
+    complex(kind=8)    :: livc(nbmxpa)
+    character(len=8)   :: litypa(nxpara), k8bid
+    character(len=24)  :: livk(nbmxpa), basloc
+    character(len=16)  :: linopa(nxpara)
 !
-    integer :: livi(nbmxpa), iord
-    real(kind=8) :: livr(nbmxpa), time, g(1)
-    complex(kind=8) :: livc(nbmxpa)
-    character(len=24) :: livk(nbmxpa)
-!
-    character(len=16) :: option, linopa(nxpara)
-    integer :: nbpara, numfon, ibid, lfond
-    aster_logical :: lmoda
+!   A EFFACER
+    real(kind=8)       :: temp, coor_x, coor_y, coor_z, abs_curv
 !
     call jemarq()
 !
-    lmoda = cgField%isModeMeca()
+    call tableGinit(cgField%table_g, option, cgField%ndim, nxpara, &
+                    lmoda, nbpara, linopa, litypa)
 !
-    option = "G"
-    call cgcrtb(cgField%table_g, option, cgField%ndim, typfis, nxpara, &
-                lmoda, nbpara, linopa, litypa)
+!   Récupération des coord des pts du fond
+    basloc=cgTheta%crack//'.BASLOC'
 !
+!====== VALEURS BIDON A EFFACER ==========
     k8bid = 'K8_BIDON'
-   ! call tbajvk(cgField%table_g, nbpara, 'ABSC_CURV_NORM', 0.0, livr)
-   ! call tbajvk(cgField%table_g, nbpara, 'TEMP', 0.0, livr)
-   ! call tbajvk(cgField%table_g, nbpara, 'COMPORTEMENT', k8bid, livk)
+    temp = 0.d0
+    coor_x = 0.d0
+    coor_y = 0.d0
+    coor_z = 0.d0
+    abs_curv = 0.d0
+!   Pour coor_x, coor_y, coor_z , il faut
+!   récupérer les valeurs de basloc en 2D
+!   et identifier les pts du fond de basloc
+!   pour le cas 3D : A FAIRE  
+!=========================================
 !
-    ! iord = 1
-    ! call tbajvi(cgField%table_g, nbpara, 'NUME_ORDRE', iord, livi)
-    ! time = 2.0
-    ! call tbajvr(cgField%table_g, nbpara, 'INST', time, livr)
+    call tbajvr(cgField%table_g, nbpara, 'TEMP', temp, livr)
+    call tbajvk(cgField%table_g, nbpara, 'COMPORTEMENT', k8bid, livk)
 !
-    ! call tbajvr(cgField%table_g, nbpara, 'COOR_X', cgTheta%coorNoeud(1),   livr)
-    ! call tbajvr(cgField%table_g, nbpara, 'COOR_Y', cgTheta%coorNoeud(2), livr)
+    call tbajvi(cgField%table_g, nbpara, 'NUME_ORDRE', NUME_ORDRE, livi)
+    call tbajvr(cgField%table_g, nbpara, 'INST', time, livr)
+!
+    call tbajvr(cgField%table_g, nbpara, 'COOR_X', coor_x, livr)
+    call tbajvr(cgField%table_g, nbpara, 'COOR_Y', coor_y, livr)
 
-    g(1)= 123456789.0
-    call tbajvr(cgField%table_g, nbpara, 'G', g(1), livr)
+    if (cgField%ndim.eq.3) then
+        call tbajvr(cgField%table_g, nbpara, 'COOR_Z', coor_z, livr)
+        call tbajvr(cgField%table_g, nbpara, 'ABSC_CURV_NORM', abs_curv, livr)
+    endif
+
+    call tbajvr(cgField%table_g, nbpara, 'G', gth(1), livr)
+!
+    if (option .eq. "K") then
+        call tbajvr(cgField%table_g, nbpara, 'K1', gth(2), livr)
+        call tbajvr(cgField%table_g, nbpara, 'K2', gth(3), livr)
+        if (cgField%ndim .eq. 3) then
+            call tbajvr(cgField%table_g, nbpara, 'K3', gth(4), livr)
+        endif
+    endif
+!
     call tbajli(cgField%table_g, nbpara, linopa, livi, livr, livc, livk, 0)
-!
-    !call utimsd(6, 2, .true._1, .true._1,cgField%table_g, 1, ' ')
-
-!
-!    call titre()
 !
     call jedema()
 !

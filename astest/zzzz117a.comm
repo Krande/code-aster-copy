@@ -54,10 +54,10 @@ for i in range(0,len(baseloc0)//6):
   ndfon.append(i+1)
   xproj.append(baseloc0[6*i])
   yproj.append(baseloc0[6*i+1])
-  vnorX.append(baseloc0[6*i+2])
-  vnorY.append(baseloc0[6*i+3])
-  vdirX.append(baseloc0[6*i+4])
-  vdirY.append(baseloc0[6*i+5])
+  vdirX.append(baseloc0[6*i+2])
+  vdirY.append(baseloc0[6*i+3])
+  vnorX.append(baseloc0[6*i+4])
+  vnorY.append(baseloc0[6*i+5])
 
 TABL0=CREA_TABLE(LISTE=(_F(LISTE_I=ndfon,PARA='ND_FOND'),
                         _F(LISTE_R=xproj,PARA='XPROJ'),

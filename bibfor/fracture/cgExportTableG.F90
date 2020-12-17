@@ -69,6 +69,12 @@ use calcG_type
         obje_sdname(nb_objet) = " "
         nb_objet              = nb_objet + 1
         obje_name(nb_objet)   = "CHAM_THETA"
+!
+!======== ON UTILISE cgTheta%theta_field POUR LE MOMENT======
+!========= A REMPLACER PAR cgTheta%theta_factors QUI =========
+!=========CONTIENT LES PARAMETRES DE CREATION DU CHAMP THETA====
+!==== SUPPRIMER cgTheta%theta_field et le bloc dans cgComputeTheta===
+!
         obje_sdname(nb_objet) = cgTheta%theta_field
     else if (cgField%ndim == 3) then
         ASSERT(cgTheta%nb_theta_field == 0)

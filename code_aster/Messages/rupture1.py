@@ -435,5 +435,8 @@ Veuillez revoir le type de lissage utilisé
 POST_K1_K2_K3 : Cet opérateur est incompatible avec les modélisations incompressibles. En effet, il n'est valide qu'en élasticité linéaire, où les modélisations incompressibles ne sont pas nécessaires.
 """),
 
+    75: _("""
+CALC_G : On ne peut pas calculer les dérivées des fonctions singulières car on se trouve sur le fond de fissure. 
+"""),
 
 }
