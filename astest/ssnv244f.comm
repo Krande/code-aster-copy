@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ Nu=DEFI_CONSTANTE(VALE=0.2,);
 ALPHA=DEFI_CONSTANTE(VALE=0,);
 
 
-#Les propriétés matériaux entrées ne sont pas Toutes physiques. 
+#Les propriétés matériaux entrées ne sont pas Toutes physiques.
 #Il est nécessaire d'identifier les paramètres à partir d'essais expérimentaux
 
 RHOF=DEFI_CONSTANTE(VALE = 2300.,)
@@ -70,29 +70,6 @@ MATERIAU=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
                      TSTH            =  83.,
                      DIM3            =  3.,),);
 
-HYDRI=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
-                 OPERATION='AFFE',
-                 MAILLAGE=MAIL,
-                 AFFE=_F(TOUT='OUI',
-                         NOM_CMP='HYDR',
-                         VALE=1.0,),);
-
-HYDRF=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
-                 OPERATION='AFFE',
-                 MAILLAGE=MAIL,
-                 AFFE=_F(TOUT='OUI',
-                         NOM_CMP='HYDR',
-                         VALE=1.0,),);
-
-HYDR=CREA_RESU(OPERATION='AFFE',
-               TYPE_RESU='EVOL_VARC',
-               NOM_CHAM='HYDR_NOEU',
-               AFFE=(
-               _F(CHAM_GD=HYDRI,
-                  INST=0.0,),
-               _F(CHAM_GD=HYDRF,
-                  INST=100.0,),),);
-
 TEMPI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                  OPERATION='AFFE',
                  MAILLAGE=MAIL,
@@ -114,29 +91,6 @@ TEMP=CREA_RESU(OPERATION='AFFE',
                _F(CHAM_GD=TEMPI,
                   INST=0.0,),
                _F(CHAM_GD=TEMPF,
-                  INST=100.0,),),);
-
-SECHI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
-                 OPERATION='AFFE',
-                 MAILLAGE=MAIL,
-                 AFFE=_F(TOUT='OUI',
-                         NOM_CMP='TEMP',
-                         VALE=1.0,),);
-
-SECHF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
-                 OPERATION='AFFE',
-                 MAILLAGE=MAIL,
-                 AFFE=_F(TOUT='OUI',
-                         NOM_CMP='TEMP',
-                         VALE=1.0,),);
-
-SECH=CREA_RESU(OPERATION='AFFE',
-               TYPE_RESU='EVOL_THER',
-               NOM_CHAM='TEMP',
-               AFFE=(
-               _F(CHAM_GD=SECHI,
-                  INST=0.0,),
-               _F(CHAM_GD=SECHF,
                   INST=100.0,),),);
 
 L_THER=DEFI_LIST_REEL(DEBUT=0,
@@ -165,15 +119,7 @@ VG=CREA_RESU(OPERATION='AFFE',
 CAR_MAT=AFFE_MATERIAU(AFFE=_F(MATER=MATERIAU,
                               TOUT='OUI'),
                               MAILLAGE=MAIL,
-                      AFFE_VARC=(_F(TOUT='OUI',
-                                    NOM_VARC='HYDR',
-                                    EVOL=HYDR,
-                                    NOM_CHAM='HYDR_NOEU',),
-                                 _F(TOUT='OUI',
-                                    NOM_VARC='SECH',
-                                    EVOL=SECH,
-                                    NOM_CHAM='TEMP',
-                                    VALE_REF=1.0,),
+                      AFFE_VARC=(
                                  _F(TOUT='OUI',
                                     NOM_VARC='TEMP',
                                     EVOL=TEMP,
