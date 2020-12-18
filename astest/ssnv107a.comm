@@ -1,0 +1,406 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+ 
+
+#  TEST PRISE EN COMPTE DE FIXATION ALUS EN RSI
+
+# -----------------------------------------------------
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+
+M=LIRE_MAILLAGE(FORMAT='MED',);
+
+mod=AFFE_MODELE(MAILLAGE=M,
+                AFFE=_F(TOUT='OUI',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='3D',),);
+
+youn1=30000.;
+nu1=0.2;
+
+E=DEFI_CONSTANTE(VALE=youn1,);
+
+Nu=DEFI_CONSTANTE(VALE=nu1,);
+
+ALPHA=DEFI_CONSTANTE(VALE=0.0,);
+
+RHOF=DEFI_CONSTANTE(VALE = 0.,)
+mat2=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
+                                   NU    = Nu,
+                                   TEMP_DEF_ALPHA=20.,
+                                   ALPHA   =ALPHA,
+                                   K_DESSIC=0.,
+                                   B_ENDOGE=0.,RHO=RHOF),
+                                 RGI_BETON=_F(
+
+# HYDRATATION
+
+                                                                    HYDR            = 1.,
+                                                                    HYDS            = 0.,
+# RETRAIT / VOLUME D'EAU
+                                                                    PORO            =  164,
+                                                                    BSHR            =  0.5,
+                                                                    MSHR            =  0.000,
+                                                                    MVGN            =  0.5,
+                                                                    SFLD            =  14,
+# MECANIQUE
+                                                                    RT              =  2.5,
+                                                                    EPT             =  1.1e-4,
+                                                                    RC              =  25.,
+                                                                    EPC             =  1.1e-3,
+                                                                    DELT            =  1.,
+                                                                    BETA            =  0.15,
+                                                                    REF             =  4.,
+                                                                    EKDC            =  2.0e-3,
+                                                                    GFT             =  350e-6,
+                                                                    GFR             =  700e-6,
+# ENDOMMAGEMENT THERMIQUE
+                                                                    DT80            =  0.0,
+                                                                    TSTH            =  45.,
+# FLUAGE
+                                                                    TREF            =  13.,
+                                                                    TAUK            =  100.,
+                                                                    YKSY            =  1.0,
+                                                                    TAUM            =  800.,
+                                                                    EKFL            =  0.9e-4,
+                                                                    XFLU            =  2,
+                                                                    NRJM            =  25000.,
+                                                                    DFMX            =  0.,
+# RGI
+                                                                    VVRG            = 0.0005,
+                                                                    BRGI            =  0.25,
+                                                                    MRGI            =  27700.,
+                                                                    KRGI            =  0.5,
+                                                                    HRGI            =  0.03,
+                                                                    EKRG            =  0.3e-2,
+# RAG
+                                                                    VRAG            =  0.00,
+                                                                    TAUG            =  3500.,
+                                                                    SRSG            =  0.5,
+                                                                    NRJG            =  40000,
+                                                                    TRAG            =  38.,
+# RSI
+                                                                    TDEF            =  30,
+                                                                    NRJP            =  40000,
+                                                                    VDEF            =  0.01,
+                                                                    SRSD            =  0.95,
+                                                                    CNAD            =  0.3,
+                                                                    SSAD            =  0.7,
+                                                                    CNAK            =  0.28,
+                                                                    CNAB            =  0.6,
+                                                                    EXND            =  0.18,
+                                                                    EXMD            =  2.5,
+                                                                    TTDD            =  64,
+                                                                    TDID            =  3.92,
+                                                                    TFID            =  1.5,
+                                                                    NRJD            =  53750.,
+                                                                    TTRD            =  20.,
+                                                                    TTKF            =  70.,
+                                                                    NRJF            =  180000.,
+# 3eme dimension si calcul 2D ou AXIS
+                                                                    DIM3            = 0.4,),);  
+
+
+ 
+
+HYDRI=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='HYDR',
+                         VALE=1.0,),);
+
+HYDRF=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='HYDR',
+                         VALE=1.0,),);
+
+HYDR=CREA_RESU(OPERATION='AFFE',
+               TYPE_RESU='EVOL_VARC',
+               NOM_CHAM='HYDR_NOEU',
+               AFFE=(
+               _F(CHAM_GD=HYDRI,
+                  INST=0.0,),
+               _F(CHAM_GD=HYDRF,
+
+                  INST=350000.,),),);
+
+ 
+
+SECHI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE=164,),);
+
+SECHF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE=164,),);
+
+SECH=CREA_RESU(OPERATION='AFFE',
+               TYPE_RESU='EVOL_THER',
+               NOM_CHAM='TEMP',
+               AFFE=(
+               _F(CHAM_GD=SECHI,
+                  INST=0.0,),
+               _F(CHAM_GD=SECHF,
+                  INST=35000.0,),),);
+
+TEMPI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE=20,),);
+
+TEMP70=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE=70,),);
+
+TEMPF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE=20,),);
+
+TEMP=CREA_RESU(OPERATION='AFFE',
+               TYPE_RESU='EVOL_THER',
+               NOM_CHAM='TEMP',
+               AFFE=(
+               _F(CHAM_GD=TEMPI,
+                  INST=0.0,),
+               _F(CHAM_GD=TEMP70,
+                  INST=1.0,),
+               _F(CHAM_GD=TEMP70,
+                  INST=4.0,),
+               _F(CHAM_GD=TEMPF,
+                  INST=5.0,),
+               _F(CHAM_GD=TEMPF,
+                  INST=500.,),),);
+
+afmat=AFFE_MATERIAU(MAILLAGE=M,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=mat2,),
+                      AFFE_VARC=(
+                                 _F(TOUT='OUI',
+                                    NOM_VARC='TEMP',
+                                    EVOL=TEMP,
+                                    NOM_CHAM='TEMP',
+                                    VALE_REF=20.,),
+                                 _F(TOUT='OUI',
+                                    NOM_VARC='SECH',
+                                    EVOL=SECH,
+                                    NOM_CHAM='TEMP',
+                                    VALE_REF=0.,),
+                                ),
+                                    );
+
+
+CL=AFFE_CHAR_MECA(MODELE=mod,
+                  DDL_IMPO=(_F(GROUP_NO='SYMX',
+                               DX=0,),
+                            _F(GROUP_NO='SYMY',
+                               DY=0,),
+                            _F(GROUP_NO='SYMZ',
+                               DZ=0,),),
+);
+litps=DEFI_LIST_REEL(DEBUT=0,
+                     INTERVALLE=(_F(JUSQU_A=1,
+                                    PAS=0.1),
+                                 _F(JUSQU_A=15,
+                                    PAS=0.1),
+                                 ),);
+
+liarc=DEFI_LIST_REEL(DEBUT=0,
+                     INTERVALLE=(_F(JUSQU_A=1,
+                                    PAS=0.1),
+                                 _F(JUSQU_A=15,
+                                    PAS=0.1),
+                                 ),);
+
+RESU=STAT_NON_LINE(MODELE=mod,
+                   CHAM_MATER=afmat,
+                   EXCIT=(
+                          _F(CHARGE=CL,),),
+                   COMPORTEMENT=_F(RELATION ='RGI_BETON'),
+                   INCREMENT=_F(LIST_INST=litps,
+                                INST_INIT=0,),
+                   NEWTON=_F(PREDICTION='ELASTIQUE',
+                             MATRICE='TANGENTE',),
+                  CONVERGENCE=_F(ITER_GLOB_MAXI=100,
+                                 ARRET='OUI',
+                                 RESI_GLOB_MAXI=1.E-8),
+                  RECH_LINEAIRE=_F(METHODE='MIXTE',
+                                   ITER_LINE_MAXI=5,),
+                  ARCHIVAGE=_F(LIST_INST = liarc),);
+
+RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,
+                VARI_INTERNE=('VARI_NOEU',),);
+
+IMPR_RESU(FORMAT='RESULTAT',
+          UNITE=8,
+          RESU=(_F(RESULTAT=RESU,           
+                   NOM_CHAM=('VARI_NOEU',),
+                   NOM_CMP=('V101',),),
+                               ),
+                 );
+
+TEST_RESU(RESU=(_F(INST=15.,
+                   RESULTAT=RESU,
+                   NOM_CHAM='VARI_NOEU',
+                   NOEUD='N7',
+                   NOM_CMP='V101',
+                   VALE_CALC=43.7968631459,
+                   MAILLE='M1',),
+                ),
+          )
+
+
+mat3=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
+                                   NU    = Nu,
+                                   TEMP_DEF_ALPHA=20.,
+                                   ALPHA   =ALPHA,
+                                   K_DESSIC=0.,
+                                   B_ENDOGE=0.,RHO=RHOF),
+                       RGI_BETON=_F(
+# HYDRATATION
+                                                                    HYDR            = 1.,
+                                                                    HYDS            = 0.,
+# RETRAIT / VOLUME D'EAU
+                                                                    PORO            =  164,
+                                                                    BSHR            =  0.5,
+                                                                    MSHR            =  0.000,
+                                                                    MVGN            =  0.5,
+                                                                    SFLD            =  14,
+# MECANIQUE
+                                                                    RT              =  2.5,
+                                                                    EPT             =  1.1e-4,
+                                                                    RC              =  25.,
+                                                                    EPC             =  1.1e-3,
+                                                                    DELT            =  1.,
+                                                                    BETA            =  0.15,
+                                                                    REF             =  4.,
+                                                                    EKDC            =  2.0e-3,
+                                                                    GFT             =  350e-6,
+                                                                    GFR             =  700e-6,
+# ENDOMMAGEMENT THERMIQUE
+                                                                    DT80            =  0.0,
+                                                                    TSTH            =  45.,
+# FLUAGE
+                                                                    TREF            =  13.,
+                                                                    TAUK            =  100.,
+                                                                    YKSY            =  1.0,
+                                                                    TAUM            =  800.,
+                                                                    EKFL            =  0.9e-4,
+                                                                    XFLU            =  2,
+                                                                    NRJM            =  25000.,
+                                                                    DFMX            =  0.,
+# RGI
+                                                                    VVRG            = 0.0005,#0.0010,
+                                                                    BRGI            =  0.25,#0.25,
+                                                                    MRGI            =  27700.,
+                                                                    KRGI            =  0.5,
+                                                                    HRGI            =  0.03,
+                                                                    EKRG            =  0.3e-2,
+# RAG
+                                                                    VRAG            =  0.00,
+                                                                    TAUG            =  3500.,
+                                                                    SRSG            =  0.5,
+                                                                    NRJG            =  40000,
+                                                                    TRAG            =  38.,
+# RSI
+                                                                    TDEF            =  30,
+                                                                    NRJP            =  40000,
+                                                                    VDEF            =  0.01,
+                                                                    SRSD            =  0.95,
+                                                                    CNAD            =  0.3,
+                                                                    SSAD            =  0.7,
+                                                                    CNAK            =  0.28,
+                                                                    CNAB            =  0.6,
+                                                                    EXND            =  0.18,
+                                                                    EXMD            =  2.5,
+                                                                    TTDD            =  64,
+                                                                    TDID            =  3.92,
+                                                                    TFID            =  1.5,
+                                                                    NRJD            =  53750.,
+                                                                    TTRD            =  20.,
+                                                                    TTKF            =  65.,
+                                                                    NRJF            =  180000.,
+# 3eme dimension si calcul 2D ou AXIS
+                                                                    DIM3            = 0.4,),);  
+
+afmat3=AFFE_MATERIAU(MAILLAGE=M,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=mat3,),
+                      AFFE_VARC=(
+                                 _F(TOUT='OUI',
+                                    NOM_VARC='TEMP',
+                                    EVOL=TEMP,
+                                    NOM_CHAM='TEMP',
+                                    VALE_REF=20.,),
+                                 _F(TOUT='OUI',
+                                    NOM_VARC='SECH',
+                                    EVOL=SECH,
+                                    NOM_CHAM='TEMP',
+                                    VALE_REF=0.,),
+                                ),
+                                    );
+
+RESU3=STAT_NON_LINE(MODELE=mod,
+                   CHAM_MATER=afmat3,
+                   EXCIT=(
+                          _F(CHARGE=CL,),),
+                   COMPORTEMENT=_F(RELATION ='RGI_BETON'),
+                   INCREMENT=_F(LIST_INST=litps,
+                                INST_INIT=0,),
+                   NEWTON=_F(PREDICTION='ELASTIQUE',
+                             MATRICE='TANGENTE',),
+                  CONVERGENCE=_F(RESI_GLOB_MAXI=1e-8,
+                                 ITER_GLOB_MAXI=100,
+                                 ARRET='OUI',),
+                  RECH_LINEAIRE=_F(METHODE='MIXTE',
+                                    ITER_LINE_MAXI=5,),
+                  ARCHIVAGE=_F(LIST_INST = liarc),);
+
+RESU3=CALC_CHAMP(reuse=RESU3,RESULTAT=RESU3,
+                 
+                VARI_INTERNE=('VARI_NOEU',),);
+
+
+TEST_RESU(RESU=(_F(INST=15.,
+                   RESULTAT=RESU3,
+                   NOM_CHAM='VARI_NOEU',
+                   NOEUD='N7',
+                   NOM_CMP='V101',
+                   VALE_CALC=3.9247566585,
+                   MAILLE='M1',),
+                ),
+          )
+
+FIN();

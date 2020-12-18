@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -154,7 +154,7 @@ mat=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
                      SRSG            =  0.,
                      NRJG            =  1,
                      TRAG            =  20.,
-                     TDEF            =  50.,
+                     TDEF            =  120.,
                      NRJP            =  60000,
                      VDEF            =  0.08,
                      SRSD            =  0.95,
@@ -199,14 +199,14 @@ SECHI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                  MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          NOM_CMP='TEMP',
-                         VALE=0.25,),);
+                         VALE=0.28,),);
 
 SECHF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                  OPERATION='AFFE',
                  MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          NOM_CMP='TEMP',
-                         VALE=0.25,),);
+                         VALE=0.28,),);
 
 SECH=CREA_RESU(OPERATION='AFFE',
                TYPE_RESU='EVOL_THER',
@@ -308,8 +308,8 @@ RESU=STAT_NON_LINE(MODELE=mod,
                    COMPORTEMENT=_F(RELATION ='RGI_BETON'),
                    INCREMENT=_F(LIST_INST=litps,
                                 INST_INIT=0,),
-                   NEWTON=_F(PREDICTION='EXTRAPOLE',
-                             MATRICE='TANGENTE',),
+                   NEWTON=_F(PREDICTION='ELASTIQUE',
+                             MATRICE='ELASTIQUE',),
                   CONVERGENCE=_F(ITER_GLOB_MAXI=100,
                                  ARRET='OUI',),
                   ARCHIVAGE=_F(LIST_INST = liarc),);
@@ -334,28 +334,28 @@ TEST_RESU(RESU=(_F(INST=1,
                    NOM_CHAM='DEPL',
                    NOEUD='N7',
                    NOM_CMP='DZ',
-                   VALE_CALC=-1.58374434341E-05,
+                   VALE_CALC=-1.0464540411439697E-05,
                    MAILLE='M1',),
                 _F(INST=50,
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOEUD='N7',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.000903703125054,
+                   VALE_CALC=0.00019835966103696237,
                    MAILLE='M1',),
                 _F(INST=200,
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOEUD='N7',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.00450918329505,
+                   VALE_CALC=0.0009311591949203674,
                    MAILLE='M1',),
                 _F(INST=300,
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOEUD='N7',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.00659525707754,
+                   VALE_CALC=0.0011548513244347546,
                    MAILLE='M1',),
                 ),
           )
