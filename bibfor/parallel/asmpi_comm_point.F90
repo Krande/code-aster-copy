@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,6 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
-#include "asterc/loisem.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -80,7 +79,7 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval,&
 ! DECLARATION VARIABLES LOCALES
     character(len=2) :: typsc1
     integer :: nbv
-    mpi_int :: lr8, lint, lint4, nbv4, nbpro4, nudes4, numes4
+    mpi_int :: nbv4, nbpro4, nudes4, numes4
     mpi_int :: mpicou
     aster_logical :: scal
     real(kind=8) :: wkr(1)
@@ -92,16 +91,6 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval,&
     call asmpi_comm('GET', mpicou)
 ! --- COMPTEUR
     call uttcpu('CPU.CMPI.1', 'DEBUT', ' ')
-!
-!     -- INITIALISATIONS :
-!     --------------------
-    if (loisem() .eq. 8) then
-        lint=MPI_INTEGER8
-    else
-        lint=MPI_INTEGER
-    endif
-    lint4=MPI_INTEGER4
-    lr8 = MPI_DOUBLE_PRECISION
 !
 !     -- S'IL N'Y A QU'UN SEUL PROC, IL N'Y A RIEN A FAIRE :
     call asmpi_info(mpicou, size=nbpro4)

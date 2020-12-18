@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -316,7 +316,7 @@ subroutine mefrot(ndim, som, vit0, promas, provis,&
             zr(idhg+k-1)=4.d0*(afluid-axg(k))/(pm+xig(k))
 86      continue
 !
-        do 81 i = 1, nbz
+        do 81 i = 2, nbz
             do 82 j = 1, nbgtot
                 ecart=(z(i)-zg(j))*(z(i-1)-zg(j))
 !

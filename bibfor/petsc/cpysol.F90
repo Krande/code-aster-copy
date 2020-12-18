@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,6 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 !
     integer(kind=4) :: n4r, n4e, iaux4, num4, numpr4
     mpi_int :: mrank, msize, iermpi, mpicou
-    mpi_int :: lr8, lint, lint4, nbv4, nbpro4, nudes4, numes4
 !
     character(len=4) :: chnbjo
     character(len=8) :: k8bid, noma
@@ -82,13 +81,6 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
     ldebug=.false.
 !
     call asmpi_comm('GET', mpicou)
-    if (loisem() .eq. 8) then
-        lint=MPI_INTEGER8
-    else
-        lint=MPI_INTEGER
-    endif
-    lint4=MPI_INTEGER4
-    lr8 = MPI_DOUBLE_PRECISION
 !
     call asmpi_info(rank = mrank, size = msize)
     rang = to_aster_int(mrank)
