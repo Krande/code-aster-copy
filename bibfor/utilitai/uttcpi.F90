@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,8 @@ subroutine uttcpi(nommes, ifm, typimp)
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
@@ -46,12 +48,11 @@ subroutine uttcpi(nommes, ifm, typimp)
 ! REMARQUE : LES VALEURS STOCKEES SONT ACCUMUEES VIA UTTCPU
     aster_logical :: ljev
     integer :: indi, jvalms, k, nbfois, jvalmi
-    integer :: rang, nbproc, npromx, i1
-    parameter (npromx=1000)
+    integer :: rang, nbproc, i1
     character(len=8) :: numes
     character(len=50) :: nommel
     real(kind=8) :: xtota, xuser, xsyst, xelap, moyenn(3), ectype(3)
-    real(kind=8) :: xtotap(npromx), xsystp(npromx), xelapp(npromx)
+    real(kind=8), pointer :: xtotap(:) => null(), xsystp(:) => null(), xelapp(:) => null()
     aster_logical :: lmesur
 !
 !
@@ -177,13 +178,15 @@ subroutine uttcpi(nommes, ifm, typimp)
         call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)
         nbproc = to_aster_int(msize)
-        ASSERT(nbproc.le.npromx)
         if (nbproc .gt. 1) then
-            do k = 1, nbproc
-                xtotap(k)=0.d0
-                xsystp(k)=0.d0
-                xelapp(k)=0.d0
-            end do
+            AS_ALLOCATE(vr=xtotap, size=nbproc)
+            AS_ALLOCATE(vr=xsystp, size=nbproc)
+            AS_ALLOCATE(vr=xelapp, size=nbproc)
+!
+            xtotap(:)=0.d0
+            xsystp(:)=0.d0
+            xelapp(:)=0.d0
+!
             xtotap(rang+1)=xtota
             xsystp(rang+1)=xsyst
             xelapp(rang+1)=xelap
@@ -201,6 +204,9 @@ subroutine uttcpi(nommes, ifm, typimp)
                 write(ifm,1003) numes,nommel,ectype(1),ectype(2),&
                 ectype(3)
             endif
+            AS_DEALLOCATE(vr=xtotap)
+            AS_DEALLOCATE(vr=xsystp)
+            AS_DEALLOCATE(vr=xelapp)
         endif
     endif
 !
