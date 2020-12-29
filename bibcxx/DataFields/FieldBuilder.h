@@ -88,7 +88,7 @@ class FieldBuilder {
             curDesc = FEDDescP( new FEDDesc( name2, mesh, result->getMemoryType() ) );
             _mapLigrel[name2] = curDesc;
         }
-        result->setDescription( curDesc );
+        result->setFieldOnCellsDescription( curDesc );
 
         return result;
     };
@@ -115,7 +115,7 @@ class FieldBuilder {
             curDesc = FONDescP( new FONDesc( name2, result->getMemoryType() ) );
             _mapProfChno[name2] = curDesc;
         }
-        result->setDescription( curDesc );
+        result->setFieldOnNodesDescription( curDesc );
 
         return result;
     };

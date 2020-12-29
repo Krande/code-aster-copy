@@ -40,7 +40,7 @@ void exportFieldOnCellsToPython() {
         .def( "exportToSimpleFieldOnCells",
               &FieldOnCellsRealClass::exportToSimpleFieldOnCells )
         .def( "getModel", &FieldOnCellsRealClass::getModel )
-        .def( "setDescription", &FieldOnCellsRealClass::setDescription )
+        .def( "setFieldOnCellsDescription", &FieldOnCellsRealClass::setFieldOnCellsDescription )
         .def( "setModel", &FieldOnCellsRealClass::setModel )
         .def( "update", &FieldOnCellsRealClass::update )
         .def( "printMedFile", &FieldOnCellsRealClass::printMedFile, R"(

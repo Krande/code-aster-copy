@@ -82,7 +82,7 @@ class FieldCreator(ExecuteCommand):
                 if isinstance(resultat, FullResult):
                     try:
                         dofNum = resultat.getDOFNumbering()
-                        self._result.setDescription(dofNum.getFiniteElementDescriptors()[0])
+                        self._result.setFieldOnCellsDescription(dofNum.getFiniteElementDescriptors()[0])
                     except:
                         pass
                 if resultat.getModel() is not None:

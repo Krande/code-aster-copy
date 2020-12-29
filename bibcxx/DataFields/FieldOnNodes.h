@@ -220,7 +220,7 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
      * @brief Set FieldOnNodes description
      * @param desc object FieldOnNodesDescriptionPtr
      */
-    void setDescription( const FieldOnNodesDescriptionPtr &desc ) {
+    void setFieldOnNodesDescription( const FieldOnNodesDescriptionPtr &desc ) {
         if ( _dofDescription )
             throw std::runtime_error( "FieldOnNodesDescription already set" );
         _dofDescription = desc;
@@ -241,6 +241,15 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
                 throw std::runtime_error( "Meshes inconsistents" );
         }
     };
+
+    BaseDOFNumberingPtr getDOFNumbering( void ) {
+        return _dofNum;
+    };
+
+    FieldOnNodesDescriptionPtr getFieldOnNodesDescription( void ) {
+        return _dofDescription;
+    };
+
 
     /**
      * @brief Update field and build FieldOnNodesDescription if necessary
