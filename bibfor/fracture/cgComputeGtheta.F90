@@ -18,9 +18,7 @@
 !
 ! person_in_charge: matthieu-m.le-cren at edf.fr
 !
-subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, nume_ordre,&
-                           depla, chvite, chacce, time, courb, option, &
-                           puls, lmoda, gth)
+subroutine cgComputeGtheta(cgField, cgTheta, cgStudy)
 !
 use calcG_type
 !
@@ -48,13 +46,7 @@ use calcG_type
 
     type(CalcG_field), intent(in) :: cgField
     type(CalcG_theta), intent(in) :: cgTheta
-    type(CalcG_Study), intent(in) :: cgStudy
-    aster_logical     :: lmoda
-!
-    integer :: nume_ordre
-    real(kind=8)      :: time, puls
-    character(len=8)  :: option
-    character(len=24) :: depla, chvite, chacce, courb
+    type(CalcG_Study), intent(inout) :: cgStudy
 ! --------------------------------------------------------------------------------------------------
 !
 !     CALC_G --- Utilities
@@ -64,7 +56,7 @@ use calcG_type
 !----------------------------------------------
     integer :: nres, iret, nsig, ino1, ino2, inga, ibid
     integer :: nchin
-    real(kind=8)      :: gth(4)
+    real(kind=8) :: gth(4)
     character(len=2)  :: codret
     character(len=8)  :: resu, k8b, lpain(50), lpaout(1)
     character(len=16) :: opti
@@ -75,12 +67,12 @@ use calcG_type
     character(len=24) :: pavolu, papres, pa2d3d, pepsin, pa1d2d
     character(len=24) :: lchin(50), lchout(1)
     aster_logical     :: lfonc
-!----------------------------------------------   
+!----------------------------------------------
 !
     call jemarq()
 !
 !   Initialisation des champs et des paramètres
-    chvarc  = '&&cgtheta.VARC' 
+    chvarc  = '&&cgtheta.VARC'
     chvref  = '&&cgtheta.VARC.REF'
     chsigi  = '&&cgtheta.CHSIGI'
     celmod  = '&&cgtheta.CELMOD'
@@ -112,9 +104,9 @@ use calcG_type
             call utmess('F', 'RUPTURE1_15')
         endif
 !
-        call rsexch('F', resu, 'SIEF_ELGA', nume_ordre, chsig, iret)
-        call rsexch('F', resu, 'EPSP_ELNO', nume_ordre, chepsp, iret)
-        call rsexch('F', resu, 'VARI_ELNO', nume_ordre, chvari, iret)
+        call rsexch('F', resu, 'SIEF_ELGA', cgStudy%nume_ordre, chsig, iret)
+        call rsexch('F', resu, 'EPSP_ELNO', cgStudy%nume_ordre, chepsp, iret)
+        call rsexch('F', resu, 'VARI_ELNO', cgStudy%nume_ordre, chvari, iret)
     endif
 !
 !-- Recuperation de l'etat initial
@@ -150,22 +142,22 @@ use calcG_type
     endif
 !
 !-- Recuperation des champs de temperature (T,TREF)
-    call vrcins(cgStudy%model, cgStudy%material, k8b, time, chvarc, codret)
+    call vrcins(cgStudy%model, cgStudy%material, k8b, cgStudy%time, chvarc, codret)
     call vrcref(cgStudy%model, cgStudy%material(1:8), k8b, chvref(1:19))
 !
 !-- Traitement des charges
     call gcharg(cgStudy%model, cgStudy%loading, chvolu, cf1d2d, cf2d3d, chpres,&
-                chepsi, chpesa, chrota, lfonc, time, nume_ordre)
+                chepsi, chpesa, chrota, lfonc, cgStudy%time, cgStudy%nume_ordre)
 !
     if (lfonc) then
         if (cgField%ndim .eq. 2) then
             pavolu = 'PFFVOLU'
             pa1d2d = 'PFF1D2D'
-            papres = 'PPRESSF' 
+            papres = 'PPRESSF'
             pepsin = 'PEPSINF'
-            if (option .eq. 'K') then
+            if (cgStudy%option .eq. 'K') then
                 opti   = 'CALCH_K_G_F'
-            else if (option .eq. 'G') then
+            else if (cgStudy%option .eq. 'G') then
                 opti   = 'CALCH_G_F'
             else
                 opti   = 'BIDON'
@@ -175,9 +167,9 @@ use calcG_type
             pa2d3d = 'PFF2D3D'
             papres = 'PPRESSF'
             pepsin = 'PEPSINF'
-            if (option .eq. 'K') then
+            if (cgStudy%option .eq. 'K') then
                 opti   = 'CALCH_K_G_F'
-            else if (option .eq. 'G') then
+            else if (cgStudy%option .eq. 'G') then
                 opti   = 'CALCH_G_F'
             else
                 opti   = 'BIDON'
@@ -189,9 +181,9 @@ use calcG_type
             pa1d2d = 'PFR1D2D'
             papres = 'PPRESSR'
             pepsin = 'PEPSINR'
-            if (option .eq. 'K') then
+            if (cgStudy%option .eq. 'K') then
                 opti   = 'CALCH_K_G'
-            else if (option .eq. 'G') then
+            else if (cgStudy%option .eq. 'G') then
                 opti   = 'CALCH_G'
             else
                 opti   = 'BIDON'
@@ -201,9 +193,9 @@ use calcG_type
             pa2d3d = 'PFR2D3D'
             papres = 'PPRESSR'
             pepsin = 'PEPSINR'
-            if (option .eq. 'K') then
+            if (cgStudy%option .eq. 'K') then
                 opti   = 'CALCH_K_G'
-            else if (option .eq. 'G') then
+            else if (cgStudy%option .eq. 'G') then
                 opti   = 'CALCH_G'
             else
                 opti   = 'BIDON'
@@ -218,7 +210,7 @@ use calcG_type
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom
     lpain(2) = 'PDEPLAR'
-    lchin(2) = depla
+    lchin(2) = cgStudy%depl
     lpain(3) = 'PTHETAR'
     lchin(3) = cgTheta%theta_factors
     lpain(4) = 'PMATERC'
@@ -229,7 +221,7 @@ use calcG_type
     lchin(6) = chvref
     lpain(7) = pavolu(1:8)
     lchin(7) = chvolu
-    if (cgField%ndim .eq. 2) then    
+    if (cgField%ndim .eq. 2) then
         lpain(8) = pa1d2d(1:8)
         lchin(8) = cf1d2d
     else
@@ -251,9 +243,9 @@ use calcG_type
 !
     nchin = 14
 !
-    if (option .eq. 'K') then
+    if (cgStudy%option .eq. 'K') then
         lpain(nchin+1) = 'PCOURB'
-        lchin(nchin+1) = courb
+        lchin(nchin+1) = cgTheta%courbature
         lpain(nchin+2) = 'PLSN'
         lchin(nchin+2) = cgTheta%crack//'.LNNO'
         lpain(nchin+3) = 'PLST'
@@ -264,15 +256,15 @@ use calcG_type
 !
     if (opti .eq. 'CALCH_G_F' .or. opti .eq. 'CALCH_K_G_F') then
         call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R',&
-                    ncmp=1, nomcmp='INST', sr=time)
+                    ncmp=1, nomcmp='INST', sr=cgStudy%time)
         lpain(nchin+1) = 'PTEMPSR'
         lchin(nchin+1) = chtime
         nchin = nchin + 1
     endif
 !
-    if (lmoda) then
+    if (cgStudy%l_modal) then
         call mecact('V', chpuls, 'MODELE', ligrmo, 'FREQ_R  ',&
-                    ncmp=1, nomcmp='FREQ   ', sr=puls)
+                    ncmp=1, nomcmp='FREQ   ', sr=cgStudy%pulse)
         nchin = nchin + 1
         lpain(nchin) = 'PPULPRO'
         lchin(nchin) = chpuls
@@ -303,20 +295,20 @@ use calcG_type
         endif
     endif
 !
-    if (option .eq. 'G') then
-        if (chvite .ne. ' ') then
+    if (cgStudy%option .eq. 'G') then
+        if (cgStudy%vitesse .ne. ' ') then
             lpain(nchin+1) = 'PVITESS'
-            lchin(nchin+1) = chvite
+            lchin(nchin+1) = cgStudy%vitesse
             lpain(nchin+2) = 'PACCELE'
-            lchin(nchin+2) = chacce
+            lchin(nchin+2) = cgStudy%acce
             nchin = nchin + 2
         endif
     endif
 !
-!   NOUVELLE OPTION DE CALCUL G_EPSI : A RAJOUTER   
-    if (cgField%stresses .eq. 'NON' .and. option .eq. 'G') then
+!   NOUVELLE OPTION DE CALCUL G_EPSI : A RAJOUTER
+    if (cgField%stresses .eq. 'NON' .and. cgStudy%option .eq. 'G') then
         call getvid(' ', 'RESULTAT', scal=resu, nbret=iret)
-        call rsexch(' ', resu, 'SIEF_ELGA', nume_ordre, chsig, iret)
+        call rsexch(' ', resu, 'SIEF_ELGA', cgStudy%nume_ordre, chsig, iret)
         lpain(nchin+1) = 'PCONTGR'
         lchin(nchin+1) = chsig
         nchin = nchin + 1
@@ -324,8 +316,7 @@ use calcG_type
 !
 !-- Sommation des G élémentaires
     call calcul('S', opti, ligrmo, nchin, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
-                'OUI')
+                lpain, 1, lchout, lpaout, 'V', 'OUI')
 !
 !******************* A PARTIR DE LA ********************
 !******************A MODIFIER POUR DU 3D *************
@@ -335,11 +326,9 @@ use calcG_type
 !-- G, K1, K2, K3 en 2D
     call mesomm(lchout(1), 4, vr=gth)
 !
+    cgStudy%gth = 0.d0
     if (cgTheta%symech .eq. 'OUI') then
-        gth(1) = 2.d0*gth(1)
-        gth(2) = 2.d0*gth(2)
-        gth(3) = 0.d0
-        gth(4) = 0.d0
+        cgStudy%gth(1:4) = [ 2.d0*gth(1), 2.d0*gth(2), 0.d0, 0.d0 ]
     endif
 !
     call detrsd('CHAMP_GD', chvarc)

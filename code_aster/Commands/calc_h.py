@@ -50,37 +50,15 @@ def calc_h_with_co(self, **args):
         )
 
     # On fait quoi de theta ?
+    _cham_theta_no = EXTR_TABLE(TYPE_RESU='CHAM_NO_SDASTER',
+                TABLE=_result_calc_g, NOM_PARA='NOM_SD',
+                FILTRE=_F(NOM_PARA='NOM_OBJET', VALE_K='CHAM_THETA'),
+            )
     if "CHAM_THETA" in args["THETA"]:
         # number of CHAM_THETA fields
-        _nb_cham_theta = EXTR_TABLE(TYPE_RESU='ENTIER',
-                TABLE=_result_calc_g, NOM_PARA='NUME_ORDRE',
-                FILTRE=_F(NOM_PARA='NOM_OBJET', VALE_K='NB_CHAM_THETA'),
-            )
-
-        for i_cham in range(0, _nb_cham_theta):
-            # get i-th CHAM_THETA field
-            _cham_theta_no = EXTR_TABLE(TYPE_RESU='CHAM_NO_SDASTER',
-                    TABLE=_result_calc_g, NOM_PARA='NOM_SD',
-                    FILTRE=(_F(NOM_PARA='NOM_OBJET', VALE_K='CHAM_THETA'),
-                            _F(NOM_PARA='NUME_ORDRE', VALE_I=i_cham+1))
-                )
-
-            if (i_cham == 0):
-                _cham_theta = CREA_RESU(OPERATION='AFFE',
-                                    TYPE_RESU='EVOL_NOLI',
-                                    NOM_CHAM='DEPL',
-                                    AFFE=(_F(CHAM_GD=_cham_theta_no,INST=i_cham,),),)
-            else:
-                _cham_theta = CREA_RESU(reuse=_cham_theta,
-                                    RESULTAT=_cham_theta,
-                                    OPERATION='AFFE',
-                                    TYPE_RESU='EVOL_NOLI',
-                                    NOM_CHAM='DEPL',
-                                    AFFE=(_F(CHAM_GD=_cham_theta_no,INST=i_cham,),),)
-
-            DETRUIRE(CONCEPT=_F(NOM=_cham_theta_no,))
-
-        self.register_result(_cham_theta, args["THETA"]["CHAM_THETA"])
+        self.register_result(_cham_theta_no, args["THETA"]["CHAM_THETA"])
+    else:
+        del _cham_theta_no
 
     return _table_g
 

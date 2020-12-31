@@ -215,9 +215,6 @@ ECOEQPG  = LocatedComponents(phys=PHY.SIEF_R, type='ELGA', location='RIGI',
 ESOURCR  = LocatedComponents(phys=PHY.SOUR_R, type='ELGA', location='RIGI',
     components=('SOUR',))
 
-E6NEUTR = LocatedComponents(phys=PHY.NEUT_R, type='ELNO',
-    components=('X[6]',))
-
 ZVARIPG  = LocatedComponents(phys=PHY.VARI_R, type='ELGA', location='RIGI',
     components=('VARI',))
 
@@ -315,7 +312,7 @@ class MECA_HEXA20(Element):
                      (SP.PEPSINR, CEPSINO), (SP.PFRVOLU, NFORCER),
                      (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                      (SP.PPESANR, LC.CPESANR), (SP.PROTATR, LC.CROTATR),
-                     (SP.PSIGINR, ECONTNO), (OP.CALCH_G.PTHETAR, E6NEUTR),
+                     (SP.PSIGINR, ECONTNO), (OP.CALCH_G.PTHETAR, LC.ETHETA),
                      (OP.CALCH_G.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
                      (OP.CALCH_G.PVARIPR, LC.ZVARINO), (SP.PVITESS, DDL_MECA),
                      ),
@@ -330,7 +327,7 @@ class MECA_HEXA20(Element):
                      (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                      (SP.PPESANR, LC.CPESANR), (SP.PROTATR, LC.CROTATR),
                      (SP.PSIGINR, ECONTNO), (SP.PTEMPSR, CTEMPSR),
-                     (OP.CALCH_G_F.PTHETAR, E6NEUTR), (OP.CALCH_G_F.PVARCPR, LC.ZVARCPG),
+                     (OP.CALCH_G_F.PTHETAR, LC.ETHETA), (OP.CALCH_G_F.PVARCPR, LC.ZVARCPG),
                      (SP.PVARCRR, LC.ZVARCPG), (OP.CALCH_G_F.PVARIPR, LC.ZVARINO),
                      (SP.PVITESS, DDL_MECA), ),
             para_out=((SP.PGTHETA, NEWTHETA), ),
@@ -344,7 +341,7 @@ class MECA_HEXA20(Element):
 #                     (OP.CALCH_K_G.PLSN, LC.N1NEUT_R), (OP.CALCH_K_G.PLST, LC.N1NEUT_R),
                      (SP.PMATERC, LC.CMATERC), (SP.PPESANR, LC.CPESANR),
                      (SP.PPULPRO, LC.CFREQR), (SP.PROTATR, LC.CROTATR),
-                     (SP.PSIGINR, ECONTNO), (OP.CALCH_K_G.PTHETAR, E6NEUTR),
+                     (SP.PSIGINR, ECONTNO), (OP.CALCH_K_G.PTHETAR, LC.ETHETA),
                      (OP.CALCH_K_G.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
                      ),
             para_out=((SP.PGTHETA, NEWTHETA), ),
@@ -359,7 +356,7 @@ class MECA_HEXA20(Element):
                      (SP.PMATERC, LC.CMATERC), (SP.PPESANR, LC.CPESANR),
                      (SP.PPULPRO, LC.CFREQR), (SP.PROTATR, LC.CROTATR),
                      (SP.PSIGINR, ECONTNO), (SP.PTEMPSR, CTEMPSR),
-                     (OP.CALCH_K_G_F.PTHETAR, E6NEUTR), (OP.CALCH_K_G_F.PVARCPR, LC.ZVARCPG),
+                     (OP.CALCH_K_G_F.PTHETAR, LC.ETHETA), (OP.CALCH_K_G_F.PVARCPR, LC.ZVARCPG),
                      (SP.PVARCRR, LC.ZVARCPG), ),
             para_out=((SP.PGTHETA, NEWTHETA), ),
         ),
@@ -857,13 +854,13 @@ class MECA_HEXA20(Element):
         ),
 
         OP.MATE_ELGA(te=142,
-            para_in=((SP.PMATERC, LC.CMATERC),(SP.PGEOMER, NGEOMER), 
+            para_in=((SP.PMATERC, LC.CMATERC),(SP.PGEOMER, NGEOMER),
                      (OP.MATE_ELGA.PVARCPR, LC.ZVARCPG), ),
             para_out=((OP.MATE_ELGA.PMATERR, LC.EGMATE_R), ),
         ),
 
         OP.MATE_ELEM(te=142,
-            para_in=((SP.PMATERC, LC.CMATERC),(SP.PGEOMER, NGEOMER), 
+            para_in=((SP.PMATERC, LC.CMATERC),(SP.PGEOMER, NGEOMER),
                      (OP.MATE_ELEM.PVARCPR, LC.ZVARCPG), ),
             para_out=((OP.MATE_ELEM.PMATERR, LC.EEMATE_R), ),
         ),

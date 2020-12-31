@@ -18,14 +18,10 @@
 !
 !
 interface
-    subroutine cgTableG(cgField, cgTheta, nume_ordre, option, time, lmoda, gth)
+    subroutine cgTableG(cgField, cgTheta, cgStudy)
     use calcG_type
         type(CalcG_field), intent(inout) :: cgField
         type(CalcG_theta), intent(in) :: cgTheta
-        integer                       :: nume_ordre
-        character(len=8)              :: option
-        real(kind=8)                  :: time
-        aster_logical                 :: lmoda
-        real(kind=8)                  :: gth(4)
+        type(CalcG_study), intent(in) :: cgStudy
     end subroutine cgTableG
 end interface

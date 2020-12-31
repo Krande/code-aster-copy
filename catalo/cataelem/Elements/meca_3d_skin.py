@@ -33,9 +33,6 @@ import cataelem.Commons.attributes as AT
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
                              components=('DX', 'DY', 'DZ',))
 
-E6NEUTR = LocatedComponents(phys=PHY.NEUT_R, type='ELNO',
-    components=('X[6]',))
-
 MMATUNS  = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
@@ -75,7 +72,7 @@ class MECA_FACE3(Element):
             para_in  = ((SP.PACCELE, DDL_MECA), (SP.PDEPLAR, DDL_MECA),
                         (SP.PFR2D3D, LC.NFOR3DR), (SP.PGEOMER, LC.EGEOM3D),
                         (SP.PPRESSR, LC.EPRE3DR),
-                        (OP.CALCH_G.PTHETAR, E6NEUTR), (OP.CALCH_G.PVARCPR, LC.ZVARCPG),
+                        (OP.CALCH_G.PTHETAR, LC.ETHETA), (OP.CALCH_G.PVARCPR, LC.ZVARCPG),
                         (SP.PVITESS, DDL_MECA),(SP.PMATERC, LC.CMATERC),),
             para_out = ((SP.PGTHETA, NEWTHETA),),
         ),
@@ -85,7 +82,7 @@ class MECA_FACE3(Element):
                         (SP.PFF2D3D, LC.CFOR3DF), (SP.PPRESSF, LC.CPRE3DF),
                         (SP.PSIGINR, LC.ESIG3DR),(SP.PMATERC, LC.CMATERC),
                         (SP.PGEOMER, LC.EGEOM3D),
-                        (SP.PTEMPSR, LC.MTEMPSR), (OP.CALCH_G_F.PTHETAR, E6NEUTR),
+                        (SP.PTEMPSR, LC.MTEMPSR), (OP.CALCH_G_F.PTHETAR, LC.ETHETA),
                         (OP.CALCH_G_F.PVARCPR, LC.ZVARCPG), (SP.PVITESS, DDL_MECA),),
             para_out = ((SP.PGTHETA, NEWTHETA),),
         ),
@@ -96,10 +93,10 @@ class MECA_FACE3(Element):
                         (SP.PEPSINR, LC.CEPS3DR), (SP.PFR2D3D, LC.NFOR3DR),
                         (SP.PFRVOLU, LC.NFOR3DR), (SP.PGEOMER, LC.EGEOM3D),
                         (OP.CALCH_K_G.PLSN, LC.N1NEUT_R), (OP.CALCH_K_G.PLST, LC.N1NEUT_R),
-                        (SP.PPESANR, LC.CPESANR), (SP.PPRESSR, LC.EPRE3DR), 
+                        (SP.PPESANR, LC.CPESANR), (SP.PPRESSR, LC.EPRE3DR),
                         (SP.PROTATR, LC.CROTATR), (SP.PSIGINR, LC.ESIG3DR),
                         (SP.PMATERC, LC.CMATERC), (SP.PPULPRO, LC.CFREQR),
-                        (OP.CALCH_K_G.PTHETAR, E6NEUTR), (OP.CALCH_K_G.PVARCPR, LC.ZVARCPG),
+                        (OP.CALCH_K_G.PTHETAR, LC.ETHETA), (OP.CALCH_K_G.PVARCPR, LC.ZVARCPG),
                         (SP.PVARCRR, LC.ZVARCPG),),
             para_out = ((SP.PGTHETA, NEWTHETA),),
         ),
@@ -113,7 +110,7 @@ class MECA_FACE3(Element):
                         (SP.PMATERC, LC.CMATERC), (SP.PPESANR, LC.CPESANR),
                         (SP.PPRESSF, LC.CPRE3DF), (SP.PPULPRO, LC.CFREQR),
                         (SP.PROTATR, LC.CROTATR), (SP.PSIGINR, LC.ESIG3DR),
-                        (SP.PTEMPSR, LC.MTEMPSR), (OP.CALCH_K_G_F.PTHETAR, E6NEUTR),
+                        (SP.PTEMPSR, LC.MTEMPSR), (OP.CALCH_K_G_F.PTHETAR, LC.ETHETA),
                         (OP.CALCH_K_G_F.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),),
             para_out = ((SP.PGTHETA, NEWTHETA),),
         ),
@@ -124,7 +121,7 @@ class MECA_FACE3(Element):
                         (SP.PEPSINR, LC.CEPS3DR), (SP.PFR2D3D, LC.NFOR3DR),
                         (SP.PFRVOLU, LC.NFOR3DR), (SP.PGEOMER, LC.EGEOM3D),
                         (OP.CALC_K_G.PLSN, LC.N1NEUT_R), (OP.CALC_K_G.PLST, LC.N1NEUT_R),
-                        (SP.PPESANR, LC.CPESANR), (SP.PPRESSR, LC.EPRE3DR), 
+                        (SP.PPESANR, LC.CPESANR), (SP.PPRESSR, LC.EPRE3DR),
                         (SP.PROTATR, LC.CROTATR), (SP.PSIGINR, LC.ESIG3DR),
                         (SP.PMATERC, LC.CMATERC), (SP.PPULPRO, LC.CFREQR),
                         (SP.PTHETAR, DDL_MECA), (OP.CALC_K_G.PVARCPR, LC.ZVARCPG),

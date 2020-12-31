@@ -18,7 +18,7 @@
 !
 ! person_in_charge: nicolas.pignet at edf.fr
 !
-subroutine cgTableG(cgField, cgTheta, nume_ordre, option, time, lmoda, gth)
+subroutine cgTableG(cgField, cgTheta, cgStudy)
 !
 use calcG_type
 !
@@ -38,10 +38,7 @@ use calcG_type
 !
     type(CalcG_field), intent(inout) :: cgField
     type(CalcG_theta), intent(in) :: cgTheta
-    integer           :: nume_ordre
-    real(kind=8)      :: time, gth(4)
-    character(len=8)  :: option
-    aster_logical     :: lmoda
+    type(CalcG_study), intent(in) :: cgStudy
 ! --------------------------------------------------------------------------------------------------
 !
 !     CALC_G --- Utilities
@@ -64,8 +61,8 @@ use calcG_type
 !
     call jemarq()
 !
-    call tableGinit(cgField%table_g, option, cgField%ndim, nxpara, &
-                    lmoda, nbpara, linopa, litypa)
+    call tableGinit(cgField%table_g, cgStudy%option, cgField%ndim, nxpara, &
+                    cgStudy%l_modal, nbpara, linopa, litypa)
 !
 !   Récupération des coord des pts du fond
     basloc=cgTheta%crack//'.BASLOC'
@@ -80,14 +77,14 @@ use calcG_type
 !   Pour coor_x, coor_y, coor_z , il faut
 !   récupérer les valeurs de basloc en 2D
 !   et identifier les pts du fond de basloc
-!   pour le cas 3D : A FAIRE  
+!   pour le cas 3D : A FAIRE
 !=========================================
 !
     call tbajvr(cgField%table_g, nbpara, 'TEMP', temp, livr)
     call tbajvk(cgField%table_g, nbpara, 'COMPORTEMENT', k8bid, livk)
 !
-    call tbajvi(cgField%table_g, nbpara, 'NUME_ORDRE', NUME_ORDRE, livi)
-    call tbajvr(cgField%table_g, nbpara, 'INST', time, livr)
+    call tbajvi(cgField%table_g, nbpara, 'NUME_ORDRE', cgStudy%nume_ordre, livi)
+    call tbajvr(cgField%table_g, nbpara, 'INST', cgStudy%time, livr)
 !
     call tbajvr(cgField%table_g, nbpara, 'COOR_X', coor_x, livr)
     call tbajvr(cgField%table_g, nbpara, 'COOR_Y', coor_y, livr)
@@ -97,13 +94,13 @@ use calcG_type
         call tbajvr(cgField%table_g, nbpara, 'ABSC_CURV_NORM', abs_curv, livr)
     endif
 
-    call tbajvr(cgField%table_g, nbpara, 'G', gth(1), livr)
+    call tbajvr(cgField%table_g, nbpara, 'G', cgStudy%gth(1), livr)
 !
-    if (option .eq. "K") then
-        call tbajvr(cgField%table_g, nbpara, 'K1', gth(2), livr)
-        call tbajvr(cgField%table_g, nbpara, 'K2', gth(3), livr)
+    if (cgStudy%option .eq. "K") then
+        call tbajvr(cgField%table_g, nbpara, 'K1', cgStudy%gth(2), livr)
+        call tbajvr(cgField%table_g, nbpara, 'K2', cgStudy%gth(3), livr)
         if (cgField%ndim .eq. 3) then
-            call tbajvr(cgField%table_g, nbpara, 'K3', gth(4), livr)
+            call tbajvr(cgField%table_g, nbpara, 'K3', cgStudy%gth(4), livr)
         endif
     endif
 !

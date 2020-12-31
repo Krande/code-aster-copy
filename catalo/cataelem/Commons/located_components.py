@@ -474,6 +474,9 @@ EERREURT = LocatedComponents(phys=PHY.ERRE_R, type='ELEM',
 EGMATE_R = LocatedComponents(phys=PHY.MATE_R, type='ELGA', location='RIGI',
                              components=('E','NU','RHO',))
 
+ETHETA = LocatedComponents(phys=PHY.THETAR, type='ELNO',
+                            components=('MODULE', "DIR_X", "DIR_Y", "DIR_Z", "ABSC_CUR", "LONG"))
+
 EGTHETA = LocatedComponents(phys=PHY.G, type='ELEM',
                             components=('GTHETA',))
 

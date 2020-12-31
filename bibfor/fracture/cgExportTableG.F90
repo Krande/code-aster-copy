@@ -25,15 +25,15 @@ use calcG_type
     implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
-#include "asterfort/cgtabl.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
 #include "asterfort/titre.h"
+#include "jeveux.h"
 !
     type(CalcG_field), intent(in) :: cgField
     type(CalcG_theta), intent(in) :: cgTheta
@@ -47,56 +47,81 @@ use calcG_type
 ! --------------------------------------------------------------------------------------------------
 !
 !
-    integer :: nb_objet, icham
-    character(len=16), pointer :: obje_name(:) => null()
-    character(len=24), pointer :: obje_sdname(:) => null()
-    character(len=24), pointer :: v_chtheta(:) => null()
+    integer, parameter :: nb_objet = 2
+    character(len=16) :: obje_name(nb_objet)
+    character(len=24) :: obje_sdname(nb_objet)
+!
+    integer, parameter :: nbpara = 3
+    character(len=19), parameter :: nompar(nbpara) = (/&
+        'NOM_OBJET ', 'TYPE_OBJET', 'NOM_SD    '/)
+    character(len=19), parameter :: typpar(nbpara) = (/&
+        'K16', 'K16', 'K24'/)
+!
+    integer, parameter :: l_nb_obje = 2
+    character(len=16), parameter :: l_obje_name(l_nb_obje) = (/&
+        'TABLE_G         ', 'CHAM_THETA      '/)
+    character(len=16), parameter :: l_obje_type(l_nb_obje) = (/&
+        'TABLE           ', 'CHAM_NO         '/)
+!
+    integer :: i_l_obj, i_obj
+    character(len=24) :: vk(3)
+    character(len=16) :: obje_type
+    aster_logical, parameter :: debug = ASTER_FALSE
 !
     call jemarq()
 !
 ! --- Create table_container to store (calc_g and cham_theta)
 !
-    AS_ALLOCATE(vk16=obje_name, size=cgTheta%nb_theta_field+2)
-    AS_ALLOCATE(vk24=obje_sdname, size=cgTheta%nb_theta_field+2)
-!
     obje_name(1)   = "TABLE_G"
     obje_sdname(1) = cgField%table_g
-    nb_objet       = 1
 !
-    if (cgField%ndim == 2) then
-        nb_objet              = nb_objet + 1
-        obje_name(nb_objet)   = "NB_CHAM_THETA"
-        obje_sdname(nb_objet) = " "
-        nb_objet              = nb_objet + 1
-        obje_name(nb_objet)   = "CHAM_THETA"
+    obje_name(2)   = "CHAM_THETA"
+    obje_sdname(2) = cgTheta%theta_factors
 !
-!======== ON UTILISE cgTheta%theta_field POUR LE MOMENT======
-!========= A REMPLACER PAR cgTheta%theta_factors QUI =========
-!=========CONTIENT LES PARAMETRES DE CREATION DU CHAMP THETA====
-!==== SUPPRIMER cgTheta%theta_field et le bloc dans cgComputeTheta===
+! - Create new table_container
 !
-        obje_sdname(nb_objet) = cgTheta%theta_field
-    else if (cgField%ndim == 3) then
-        ASSERT(cgTheta%nb_theta_field == 0)
-        !call jeveuo(cgTheta%theta_field, 'L', vk24=v_chtheta)
-        nb_objet              = nb_objet + 1
-        obje_name(nb_objet)   = "NB_CHAM_THETA"
-        obje_sdname(nb_objet) = " "
-        do icham = 1, cgTheta%nb_theta_field
-            nb_objet              = nb_objet + 1
-            obje_name(nb_objet)   = "CHAM_THETA"
-            obje_sdname(nb_objet) = v_chtheta(icham)
-        end do
-    else
-        ASSERT(ASTER_FALSE)
+    call detrsd('TABLE_CONTAINER', cgField%table_out)
+    call tbcrsd(cgField%table_out, 'G')
+    call tbajpa(cgField%table_out, nbpara, nompar, typpar)
+!
+! - Loop on objects to add new one
+!
+    if(debug) then
+        print*, "Create table_container in CALC_G"
+        print*, "Number of object: ", nb_objet
     end if
 !
-    call cgtabl(cgField%table_out, nb_objet, obje_name, obje_sdname, cgTheta%nb_theta_field)
-    AS_DEALLOCATE(vk16=obje_name)
-    AS_DEALLOCATE(vk24=obje_sdname)
+    do i_obj = 1, nb_objet
 !
-    call titre()
+! ----- Find the type of object
+!
+        obje_type = ' '
+        do i_l_obj = 1, l_nb_obje
+            if (l_obje_name(i_l_obj) .eq. obje_name(i_obj)) then
+                obje_type = l_obje_type(i_l_obj)
+                exit
+            endif
+        end do
+        ASSERT(obje_type .ne. ' ')
+!
+! ----- Add object (new line)
+!
+        if(debug) then
+            print*, "OBJET NAME", i_obj, " : ", obje_name(i_obj)
+            print*, "OBJET TYPE", i_obj, " : ", obje_type
+            print*, "SD NAME   ", i_obj, " : ", obje_sdname(i_obj)
+        end if
+!
+        vk(1) = obje_name(i_obj)
+        vk(2) = obje_type
+        vk(3) = obje_sdname(i_obj)
+!
+        call tbajli(cgField%table_out, nbpara, nompar, &
+                    [0], [0.d0], [dcmplx(0., 0.)], vk, 0)
+    end do
 !
     call jedema()
+!
+    call titre()
 !
 end subroutine

@@ -39,7 +39,7 @@ PCONTRR = InputParameter(phys=PHY.SIEF_R)
 PVARIPR = InputParameter(phys=PHY.VARI_R)
 
 
-PTHETAR = InputParameter(phys=PHY.NEUT_R)
+PTHETAR = InputParameter(phys=PHY.THETAR)
 
 
 CALCH_G = Option(

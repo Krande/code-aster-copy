@@ -20,10 +20,25 @@ module calcG_type
 !
 implicit none
 !
+private
 #include "asterf_types.h"
 #include "asterfort/calcG_type.h"
 #include "asterfort/gcncon.h"
-
+#include "asterfort/detrsd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/rsmena.h"
+#include "asterfort/rsrusd.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/xcourb.h"
+#include "jeveux.h"
+!
+public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_InfoTe
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -38,6 +53,8 @@ implicit none
         aster_logical      :: l_debug = ASTER_FALSE
 ! ----- name of result (in)
         character(len=8)   :: result_in = ' '
+! ----- name of temproray result (out)
+        character(len=8)   :: result_out = ' '
 ! ----- type of result (in)
         character(len=16)  :: result_in_type = ' '
 ! ----- name of table container (out)
@@ -69,6 +86,8 @@ implicit none
         procedure, pass    :: print      => print_field
         procedure, pass    :: isModeMeca
         procedure, pass    :: isDynaTrans
+        procedure, pass    :: clean => clean_field
+
 !
     end type CalcG_Field
 !
@@ -93,11 +112,27 @@ implicit none
         character(len=8)   :: option    = ' '
 !------ linear or quadratic
         aster_logical      :: milieu = ASTER_FALSE
+!------ modal analysis ?
+        aster_logical      :: l_modal = ASTER_FALSE
+! ----- displacement field
+        character(len=24)  :: depl   = ' '
+! ----- speed field
+        character(len=24)  :: vitesse   = ' '
+! ----- acceleration field
+        character(len=24)  :: acce   = ' '
+! ----- time
+        real(kind=8)       :: time   = 0.d0
+! ----- pulse
+        real(kind=8)       :: pulse   = 0.d0
+! ----- computed values (G, K1, K2, K3)
+        real(kind=8)       :: gth(4)   = 0.d0
 ! ----- member function
         contains
         procedure, pass    :: initialize => initialize_study
         procedure, pass    :: print => print_study
         procedure, pass    :: setOption
+        procedure, pass    :: getField
+        procedure, pass    :: getParameter
     end type CalcG_Study
 !
 !===================================================================================================
@@ -153,10 +188,13 @@ implicit none
         character(len=8)        :: symech = 'NON'
 ! ----- the crack is closed ?
         aster_logical           :: l_closed = ASTER_FALSE
+! ----- name of the courbature
+        character(len=24)       :: courbature = ' '
 ! ----- member function
         contains
         procedure, pass    :: initialize => initialize_theta
         procedure, pass    :: print => print_theta
+        procedure, pass    :: compute_courbature
     end type CalcG_Theta
 !
 !===================================================================================================
@@ -227,6 +265,7 @@ contains
 ! --- Table pour les valeurs (table)
 !
         call gcncon("_", this%table_g)
+        call tbcrsd(this%table_g, 'G')
 !
 ! --- Get name and type of result (in)
 !
@@ -350,6 +389,45 @@ contains
             lmode = ASTER_FALSE
         end if
     end function
+
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine clean_field(this)
+!
+    implicit none
+!
+        class(CalcG_Field), intent(inout)  :: this
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Clean objects
+!   In this     : calG field
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: iret
+    integer, pointer :: ordr(:) => null()
+!
+    call jemarq()
+!
+    if (this%l_incr) then
+!
+        call jeexin(this%result_out//'           .ORDR', iret)
+        if (iret .ne. 0) then
+            call jeveuo(this%result_out//'           .ORDR', 'L', vi=ordr)
+            call rsrusd(this%result_out, ordr(1))
+            call detrsd('RESULTAT', this%result_out)
+        endif
+!
+        call jedetr(this%list_nume_name)
+        call jedetr(this%result_out)
+        call rsmena(this%result_in)
+    endif
+!
+    call jedema()
+!
+    end subroutine
 !
 !===================================================================================================
 !
@@ -450,6 +528,71 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         this%option = option
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine getField(this, result_in)
+!
+    implicit none
+!
+        class(CalcG_Study), intent(inout)  :: this
+        character(len=8), intent(in)       :: result_in
+!
+! --------------------------------------------------------------------------------------------------
+!   print informations of a CalcG_Study type
+!   In this     : study type
+!   In result_in   : name of result field
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: iret
+!
+        call rsexch('F', result_in, 'DEPL', this%nume_ordre, this%depl, iret)
+        call rsexch(' ', result_in, 'VITE', this%nume_ordre, this%vitesse, iret)
+        if (iret .ne. 0) then
+            this%vitesse = ' '
+            this%acce = ' '
+        else
+            call rsexch(' ', result_in, 'ACCE', this%nume_ordre, this%acce, iret)
+        endif
+!
+    end subroutine
+!
+    !
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine getParameter(this, result_in)
+!
+    implicit none
+!
+        class(CalcG_Study), intent(inout)  :: this
+        character(len=8), intent(in)       :: result_in
+!
+! --------------------------------------------------------------------------------------------------
+!   print informations of a CalcG_Study type
+!   In this     : study type
+!   In result_in   : name of result field
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: ipuls, jinst
+        character(len=8)  :: k8bid
+
+!
+        if (this%l_modal) then
+            call rsadpa(result_in, 'L', 1, 'OMEGA2', this%nume_ordre,&
+                        0, sjv=ipuls, styp=k8bid)
+            this%pulse = sqrt(zr(ipuls))
+            this%time = 0.d0
+        else
+            call rsadpa(result_in, 'L', 1, 'INST', this%nume_ordre,&
+                        0, sjv=jinst, styp=k8bid)
+            this%time = zr(jinst)
+        endif
 !
     end subroutine
 !
@@ -629,6 +772,31 @@ contains
 !
 !===================================================================================================
 !
+    subroutine compute_courbature(this, model)
+!
+    implicit none
+!
+        class(CalcG_Theta), intent(inout)  :: this
+        character(len=8), intent(in) :: model
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Compute the courbature in 3D
+!   In this     : theta type
+! --------------------------------------------------------------------------------------------------
+!
+        character(len=24) :: baseloc
+!
+        baseloc = this%crack//'.BASLOC'
+        this%courbature = '&&cgtheta.COURB'
+        call xcourb(baseloc, this%mesh, model, this%courbature)
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
     subroutine print_theta(this)
 !
     implicit none
@@ -651,7 +819,7 @@ contains
         print*, "Initial configuration: ", this%config_init
         print*, "the crack is symetric: ", this%symech
         print*, "The crack is closed ?: ", this%l_closed
-        print*, "Nombre de champs THETA: ", this%nb_theta_field   
+        print*, "Nombre de champs THETA: ", this%nb_theta_field
 !        print*, "XFEM ?: ", this%lxfem, " with discontinuity: ", this%XfemDisc_type
         print*, "Discretization : ", this%discretization,  " with number/degree ", &
                 this%nnof, this%degree

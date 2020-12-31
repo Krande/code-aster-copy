@@ -3632,6 +3632,24 @@ TEMP_R   = PhysicalQuantity(type='R',
        HHO : degres de liberté HHO - HHO[6]: 1, X, Y, X2, Y2,XY (X,Y plan face)
 """)
 
+THETAR   = PhysicalQuantity(type='R',
+    components=(
+       'MODULE',
+       'DIR_X',
+       'DIR_Y',
+       'DIR_Z',
+       'ABSC_CUR',
+       'LONG',
+    ),
+    comment="""  THETA Type:R Champ THETA pour la mecanique de la rupture
+       MODULE : norme du champ theta
+       DIR_X : projection du champ theta dans la direction X
+       DIR_Y : projection du champ theta dans la direction Y
+       DIR_Z : projection du champ theta dans la direction Z
+       ABSC_CUR : abscisse curviligne du point projeté
+       LONG : longueur de la fissure
+""")
+
 
 VALO_R   = PhysicalQuantity(type='R',
     components=(

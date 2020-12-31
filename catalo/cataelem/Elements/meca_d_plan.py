@@ -77,9 +77,6 @@ EDEFOPG  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
 EDEFONO  = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
     components=('EPXX','EPYY','EPZZ','EPXY',))
 
-E6NEUTR = LocatedComponents(phys=PHY.NEUT_R, type='ELNO',
-    components=('X[6]',))
-
 CEPSINR  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
     components=('EPXX','EPYY','EPZZ','EPXY',))
 
@@ -289,7 +286,7 @@ class MEDPQS8(Element):
                      (SP.PEPSINR, CEPSINO), (SP.PFRVOLU, NFORCER),
                      (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                      (SP.PPESANR, LC.CPESANR), (SP.PROTATR, LC.CROTATR),
-                     (SP.PSIGINR, ECONTNO), (OP.CALCH_G.PTHETAR, E6NEUTR),
+                     (SP.PSIGINR, ECONTNO), (OP.CALCH_G.PTHETAR, LC.ETHETA),
                      (OP.CALCH_G.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
                      (OP.CALCH_G.PVARIPR, LC.ZVARINO), (SP.PVITESS, DDL_MECA),
                      ),
@@ -304,7 +301,7 @@ class MEDPQS8(Element):
                      (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                      (SP.PPESANR, LC.CPESANR), (SP.PROTATR, LC.CROTATR),
                      (SP.PSIGINR, ECONTNO), (SP.PTEMPSR, CTEMPSR),
-                     (OP.CALCH_G_F.PTHETAR, E6NEUTR), (OP.CALCH_G_F.PVARCPR, LC.ZVARCPG),
+                     (OP.CALCH_G_F.PTHETAR, LC.ETHETA), (OP.CALCH_G_F.PVARCPR, LC.ZVARCPG),
                      (SP.PVARCRR, LC.ZVARCPG), (OP.CALCH_G_F.PVARIPR, LC.ZVARINO),
                      (SP.PVITESS, DDL_MECA), ),
             para_out=((SP.PGTHETA, NEWTHETA), ),
@@ -318,7 +315,7 @@ class MEDPQS8(Element):
                      (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                      (SP.PPESANR, LC.CPESANR), (SP.PPULPRO, LC.CFREQR),
                      (SP.PROTATR, LC.CROTATR), (SP.PSIGINR, ECONTNO),
-                     (OP.CALCH_K_G.PTHETAR, E6NEUTR), (OP.CALCH_K_G.PVARCPR, LC.ZVARCPG),
+                     (OP.CALCH_K_G.PTHETAR, LC.ETHETA), (OP.CALCH_K_G.PVARCPR, LC.ZVARCPG),
                      (SP.PVARCRR, LC.ZVARCPG), ),
             para_out=((SP.PGTHETA, NEWTHETA), ),
         ),
@@ -331,7 +328,7 @@ class MEDPQS8(Element):
                      (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                      (SP.PPESANR, LC.CPESANR), (SP.PPULPRO, LC.CFREQR),
                      (SP.PROTATR, LC.CROTATR), (SP.PSIGINR, ECONTNO),
-                     (SP.PTEMPSR, CTEMPSR), (OP.CALCH_K_G_F.PTHETAR, E6NEUTR),
+                     (SP.PTEMPSR, CTEMPSR), (OP.CALCH_K_G_F.PTHETAR, LC.ETHETA),
                      (OP.CALCH_K_G_F.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
                      ),
             para_out=((SP.PGTHETA, NEWTHETA), ),
@@ -819,13 +816,13 @@ class MEDPQS8(Element):
         ),
 
         OP.MATE_ELGA(te=142,
-            para_in=((SP.PMATERC, LC.CMATERC),(SP.PGEOMER, NGEOMER), 
+            para_in=((SP.PMATERC, LC.CMATERC),(SP.PGEOMER, NGEOMER),
                      (OP.MATE_ELGA.PVARCPR, LC.ZVARCPG), ),
             para_out=((OP.MATE_ELGA.PMATERR, LC.EGMATE_R), ),
         ),
 
         OP.MATE_ELEM(te=142,
-            para_in=((SP.PMATERC, LC.CMATERC),(SP.PGEOMER, NGEOMER), 
+            para_in=((SP.PMATERC, LC.CMATERC),(SP.PGEOMER, NGEOMER),
                      (OP.MATE_ELEM.PVARCPR, LC.ZVARCPG), ),
             para_out=((OP.MATE_ELEM.PMATERR, LC.EEMATE_R), ),
         ),

@@ -31,7 +31,7 @@ PVARCPR = InputParameter(phys=PHY.VARI_R)
 PCOMPOR = InputParameter(phys=PHY.COMPOR)
 
 
-PTHETAR = InputParameter(phys=PHY.NEUT_R)
+PTHETAR = InputParameter(phys=PHY.THETAR)
 
 
 PVARIPR = InputParameter(phys=PHY.VARI_R)

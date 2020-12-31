@@ -46,9 +46,6 @@ ENEU1_R  = LocatedComponents(phys=PHY.NEUT_R, type='ELEM',
 ELNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type='ELEM',
                              components=('X[30]',))
 
-E6NEUTR = LocatedComponents(phys=PHY.NEUT_R, type='ELNO',
-    components=('X[6]',))
-
 NEWTHETA  = LocatedComponents(phys=PHY.G, type='ELEM',
             components=('GTHETA','K[3]',))
 #---------------------------------------------------------------------------------------------------
@@ -63,7 +60,7 @@ class MEPLSE2(Element):
         OP.CALC_G(te=282,
             para_in  = ((SP.PACCELE, DDL_MECA), (SP.PDEPLAR, DDL_MECA),
                         (SP.PFR1D2D, LC.NFOR2DR), (SP.PGEOMER, LC.EGEOM2D),
-                        (SP.PPRESSR, LC.EPRE2DR), 
+                        (SP.PPRESSR, LC.EPRE2DR),
                         (SP.PTHETAR, DDL_MECA), (OP.CALC_G.PVARCPR, LC.ZVARCPG),
                         (SP.PVITESS, DDL_MECA),),
             para_out = ((SP.PGTHETA, LC.EGTHETA),),
@@ -82,7 +79,7 @@ class MEPLSE2(Element):
             para_in  = ((SP.PACCELE, DDL_MECA), (SP.PDEPLAR, DDL_MECA),
                         (SP.PFR1D2D, LC.NFOR2DR), (SP.PGEOMER, LC.EGEOM2D),
                         (SP.PPRESSR, LC.EPRE2DR), (SP.PMATERC, LC.CMATERC),
-                        (OP.CALCH_G.PTHETAR, E6NEUTR), (OP.CALCH_G.PVARCPR, LC.ZVARCPG),
+                        (OP.CALCH_G.PTHETAR, LC.ETHETA), (OP.CALCH_G.PVARCPR, LC.ZVARCPG),
                         (SP.PVITESS, DDL_MECA),),
             para_out = ((SP.PGTHETA, NEWTHETA),),
         ),
@@ -91,7 +88,7 @@ class MEPLSE2(Element):
             para_in  = ((SP.PACCELE, DDL_MECA), (SP.PDEPLAR, DDL_MECA),
                         (SP.PFF1D2D, LC.CFOR2DF),  (SP.PPRESSF, LC.CPRE2DF),
                         (SP.PGEOMER, LC.EGEOM2D),(SP.PMATERC, LC.CMATERC),
-                        (SP.PTEMPSR, LC.MTEMPSR), (OP.CALCH_G_F.PTHETAR, E6NEUTR),
+                        (SP.PTEMPSR, LC.MTEMPSR), (OP.CALCH_G_F.PTHETAR, LC.ETHETA),
                         (OP.CALCH_G_F.PVARCPR, LC.ZVARCPG), (SP.PVITESS, DDL_MECA),),
             para_out = ((SP.PGTHETA, NEWTHETA),),
         ),
@@ -102,7 +99,7 @@ class MEPLSE2(Element):
                         (SP.PPRESSR, LC.EPRE2DR),
                         (OP.CALCH_K_G.PLSN, LC.N1NEUT_R), (OP.CALCH_K_G.PLST, LC.N1NEUT_R),
                         (SP.PMATERC, LC.CMATERC), (SP.PPULPRO, LC.CFREQR),
-                        (OP.CALCH_K_G.PTHETAR, E6NEUTR), (OP.CALCH_K_G.PVARCPR, LC.ZVARCPG),
+                        (OP.CALCH_K_G.PTHETAR, LC.ETHETA), (OP.CALCH_K_G.PVARCPR, LC.ZVARCPG),
                         (SP.PVARCRR, LC.ZVARCPG),),
             para_out = ((SP.PGTHETA, NEWTHETA),),
         ),
@@ -113,7 +110,7 @@ class MEPLSE2(Element):
                         (SP.PMATERC, LC.CMATERC), (SP.PPRESSF, LC.CPRE2DF),
                         (SP.PPULPRO, LC.CFREQR),
                         (OP.CALCH_K_G_F.PLSN, LC.N1NEUT_R), (OP.CALCH_K_G_F.PLST, LC.N1NEUT_R),
-                        (SP.PTEMPSR, LC.MTEMPSR), (OP.CALCH_K_G_F.PTHETAR, E6NEUTR),
+                        (SP.PTEMPSR, LC.MTEMPSR), (OP.CALCH_K_G_F.PTHETAR, LC.ETHETA),
                         (OP.CALCH_K_G_F.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),),
             para_out = ((SP.PGTHETA, NEWTHETA),),
         ),
