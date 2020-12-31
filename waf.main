@@ -1,6 +1,6 @@
 #!/bin/bash
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,9 @@ waf_main()
 # detect for supported host for automatic configuration
 detect_host()
 {
-    if [ -f /projets/simumeca/eole ]; then
+    if [ -f /software/rd/simumeca/cronos ]; then
+        printf cronos
+    elif [ -f /projets/simumeca/eole ]; then
         printf eole
     elif [ -f /projets/simumeca/gaia ]; then
         printf gaia
