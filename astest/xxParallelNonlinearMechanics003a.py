@@ -52,8 +52,7 @@ affectMat = code_aster.MaterialField(monMaillage)
 affectMat.addMaterialsOnMesh(acier)
 affectMat.buildWithoutExternalVariable()
 
-charMeca1 = code_aster.KinematicsMechanicalLoad()
-charMeca1.setModel(monModel)
+charMeca1 = code_aster.KinematicsMechanicalLoad(monModel)
 charMeca1.addImposedMechanicalDOFOnNodes(
     code_aster.PhysicalQuantityComponent.Dx, 0., "Surf6N")
 charMeca1.addImposedMechanicalDOFOnNodes(

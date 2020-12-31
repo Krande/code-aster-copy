@@ -386,6 +386,11 @@ class GenericMechanicalLoadClass : public DataStructure, public ListOfTablesClas
     /**
      * @brief Constructor
      */
+    GenericMechanicalLoadClass( void ) = delete;
+
+    /**
+     * @brief Constructor
+     */
     GenericMechanicalLoadClass( const ModelPtr &currentModel )
         : GenericMechanicalLoadClass( ResultNaming::getNewResultName(), currentModel ){};
 

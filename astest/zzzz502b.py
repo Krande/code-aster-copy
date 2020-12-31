@@ -35,8 +35,7 @@ monModel.addModelingOnMesh(code_aster.Physics.Mechanics,
 
 monModel.build()
 
-charCine = code_aster.KinematicsMechanicalLoad()
-charCine.setModel(monModel)
+charCine = code_aster.KinematicsMechanicalLoad(monModel)
 charCine.addImposedMechanicalDOFOnCells(code_aster.PhysicalQuantityComponent.Dx,
                                            0., "Bas")
 test.assertEqual( charCine.getType(), "CHAR_CINE_MECA" )

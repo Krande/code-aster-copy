@@ -66,14 +66,21 @@ void exportKinematicsLoadToPython() {
         // fake initFactoryPtr: created by subclasses
         // fake initFactoryPtr: created by subclasses
         .def( "build", &KinematicsLoadClass::build )
-        .def( "setModel", &KinematicsLoadClass::setModel );
+        .def( "getModel", &KinematicsLoadClass::getModel, R"(
+Return the model
+
+Returns:
+    ModelPtr: a pointer to the model
+        )",
+              ( py::arg( "self" ) )  );
 
     py::class_< KinematicsMechanicalLoadClass,
                 KinematicsMechanicalLoadClass::KinematicsMechanicalLoadPtr,
                 py::bases< KinematicsLoadClass > >( "KinematicsMechanicalLoad", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< KinematicsMechanicalLoadClass >))
         .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< KinematicsMechanicalLoadClass, std::string >))
+            &initFactoryPtr< KinematicsMechanicalLoadClass, ModelPtr >))
+        .def( "__init__", py::make_constructor(
+            &initFactoryPtr< KinematicsMechanicalLoadClass, std::string, ModelPtr >))
         .def( "addImposedMechanicalDOFOnCells", c1 )
         .def( "addImposedMechanicalDOFOnCells", c2 )
         .def( "addImposedMechanicalDOFOnNodes", c3 )
@@ -82,9 +89,10 @@ void exportKinematicsLoadToPython() {
     py::class_< KinematicsThermalLoadClass,
                 KinematicsThermalLoadClass::KinematicsThermalLoadPtr,
                 py::bases< KinematicsLoadClass > >( "KinematicsThermalLoad", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< KinematicsThermalLoadClass >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< KinematicsThermalLoadClass, std::string >))
+        .def( "__init__", py::make_constructor(
+            &initFactoryPtr< KinematicsThermalLoadClass, ModelPtr >))
+        .def( "__init__", py::make_constructor(
+            &initFactoryPtr< KinematicsThermalLoadClass, std::string, ModelPtr >))
         .def( "addImposedThermalDOFOnCells", c5 )
         .def( "addImposedThermalDOFOnCells", c6 )
         .def( "addImposedThermalDOFOnNodes", c7 )
@@ -94,7 +102,8 @@ void exportKinematicsLoadToPython() {
     py::class_< KinematicsAcousticLoadClass,
                 KinematicsAcousticLoadClass::KinematicsAcousticLoadPtr,
                 py::bases< KinematicsLoadClass > >( "KinematicsAcousticLoad", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< KinematicsAcousticLoadClass >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< KinematicsAcousticLoadClass, std::string >));
+        .def( "__init__", py::make_constructor(
+            &initFactoryPtr< KinematicsAcousticLoadClass, ModelPtr >))
+        .def( "__init__", py::make_constructor(
+            &initFactoryPtr< KinematicsAcousticLoadClass, std::string, ModelPtr >));
 };

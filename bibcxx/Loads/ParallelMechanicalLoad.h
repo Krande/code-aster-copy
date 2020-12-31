@@ -54,9 +54,9 @@ protected:
     /** @brief Vecteur Jeveux '.LIGRE' */
     ParallelFiniteElementDescriptorPtr _FEDesc;
     /** @brief Carte '.CIMPO' */
-    ConstantFieldOnCellsRealPtr             _cimpo;
+    ConstantFieldOnCellsRealPtr        _cimpo;
     /** @brief Carte '.CMULT' */
-    ConstantFieldOnCellsRealPtr             _cmult;
+    ConstantFieldOnCellsRealPtr        _cmult;
     /** @brief Vecteur Jeveux '.TYPE' */
     JeveuxVectorChar8                  _type;
     /** @brief Vecteur Jeveux '.MODEL.NOMO' */
@@ -64,6 +64,12 @@ protected:
 
 public:
     /**
+     * @brief Constructeur
+     */
+    ParallelMechanicalLoadClass( void ) = delete;
+
+    /**
+     *
      * @brief Constructeur
      */
     ParallelMechanicalLoadClass( const GenericMechanicalLoadPtr& load,

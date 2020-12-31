@@ -55,6 +55,8 @@ from .generalizedassemblyvector_ext import (GeneralizedAssemblyVectorComplex,
 from .generalizedmodel_ext import GeneralizedModel
 from .listoffloats_ext import ListOfFloats
 from .listofintegers_ext import ListOfIntegers
+from .kinematicsload_ext import (KinematicsMechanicalLoad,
+                                 KinematicsThermalLoad, KinematicsAcousticLoad)
 from .material_ext import Material
 from .materialfield_ext import MaterialField
 from .mechanicalload_ext import GenericMechanicalLoad

@@ -48,8 +48,7 @@ MODT=AFFE_MODELE(MAILLAGE=MAIL,
 
 #MODT = code_aster.Model(MAIL))
 
-charCine = code_aster.KinematicsMechanicalLoad()
-charCine.setModel(MODT)
+charCine = code_aster.KinematicsMechanicalLoad(MODT)
 charCine.addImposedMechanicalDOFOnNodes(code_aster.PhysicalQuantityComponent.Dx, 0., "EncastN")
 charCine.addImposedMechanicalDOFOnNodes(code_aster.PhysicalQuantityComponent.Dy, 0., "EncastN")
 charCine.build()

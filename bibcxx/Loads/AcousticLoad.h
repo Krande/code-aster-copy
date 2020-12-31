@@ -140,6 +140,11 @@ class AcousticLoadClass : public DataStructure {
     /**
      * @brief Constructeur
      */
+    AcousticLoadClass( void ) = delete;
+
+    /**
+     * @brief Constructeur
+     */
     AcousticLoadClass( const ModelPtr &model )
         : AcousticLoadClass( ResultNaming::getNewResultName(), model ){};
 

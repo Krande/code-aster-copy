@@ -66,15 +66,17 @@ class KinematicsLoadClass : public DataStructure {
     /** @brief La SD est-elle vide ? */
     bool _isEmpty;
 
-    /**
-     * @brief Constructeur
-     */
-    KinematicsLoadClass( const std::string &type );
+    KinematicsLoadClass( void ) = delete;
 
     /**
      * @brief Constructeur
      */
-    KinematicsLoadClass( const std::string &name, const std::string &type );
+    KinematicsLoadClass( const std::string &type, const ModelPtr& model );
+
+    /**
+     * @brief Constructeur
+     */
+    KinematicsLoadClass( const std::string &name, const std::string &type, const ModelPtr& model );
 
   public:
     /**
@@ -89,11 +91,17 @@ class KinematicsLoadClass : public DataStructure {
      */
     bool build() ;
 
+    ModelPtr getModel() const
+    {
+        return _model;
+    }
+
+  private:
     /**
      * @brief Definition du modele
      * @param currentModel objet Model sur lequel la charge reposera
      */
-    bool setModel( ModelPtr &currentModel ) {
+    bool setModel( const ModelPtr &currentModel ) {
         if ( currentModel->isEmpty() )
             throw std::runtime_error( "Model is empty" );
         _model = currentModel;
@@ -111,13 +119,17 @@ class KinematicsMechanicalLoadClass : public KinematicsLoadClass {
     /**
      * @brief Constructeur
      */
-    KinematicsMechanicalLoadClass() : KinematicsLoadClass( "_MECA" ){};
+    KinematicsMechanicalLoadClass( void ) = delete;
+
+
+    KinematicsMechanicalLoadClass( const ModelPtr& model)
+        : KinematicsLoadClass( "_MECA", model ){};
 
     /**
      * @brief Constructeur
      */
-    KinematicsMechanicalLoadClass( const std::string name )
-        : KinematicsLoadClass( name, "_MECA" ){};
+    KinematicsMechanicalLoadClass( const std::string name, const ModelPtr& model )
+        : KinematicsLoadClass( name, "_MECA", model ){};
 
     /**
      * @typedef KinematicsMechanicalLoadPtr
@@ -134,10 +146,6 @@ class KinematicsMechanicalLoadClass : public KinematicsLoadClass {
     bool addImposedMechanicalDOFOnCells(
         const PhysicalQuantityComponent &coordinate, const double &value,
         const std::string &nameOfGroup ) {
-        // On verifie que le pointeur vers le modele ET que le modele lui-meme
-        // ne sont pas vides
-        if ( ( !_model ) || _model->isEmpty() )
-            throw std::runtime_error( "The model is empty" );
         if ( !_model->getMesh()->hasGroupOfCells( nameOfGroup ) )
             throw std::runtime_error( nameOfGroup + " not in mesh" );
 
@@ -171,10 +179,6 @@ class KinematicsMechanicalLoadClass : public KinematicsLoadClass {
     addImposedMechanicalDOFOnNodes( const PhysicalQuantityComponent &coordinate,
                                     const double &value,
                                     const std::string &nameOfGroup ) {
-        // On verifie que le pointeur vers le modele ET que le modele lui-meme
-        // ne sont pas vides
-        if ( ( !_model ) || _model->isEmpty() )
-            throw std::runtime_error( "The model is empty" );
         if ( !_model->getMesh()->hasGroupOfNodes( nameOfGroup ) )
             throw std::runtime_error( nameOfGroup + " not in mesh" );
 
@@ -209,13 +213,19 @@ class KinematicsThermalLoadClass : public KinematicsLoadClass {
     /**
      * @brief Constructeur
      */
-    KinematicsThermalLoadClass() : KinematicsLoadClass( "_THER" ){};
+    KinematicsThermalLoadClass( void ) = delete;
 
     /**
      * @brief Constructeur
      */
-    KinematicsThermalLoadClass( const std::string name )
-        : KinematicsLoadClass( name, "_THER" ){};
+    KinematicsThermalLoadClass(const ModelPtr& model)
+        : KinematicsLoadClass( "_THER", model ){};
+
+    /**
+     * @brief Constructeur
+     */
+    KinematicsThermalLoadClass( const std::string name, const ModelPtr& model )
+        : KinematicsLoadClass( name, "_THER", model ){};
 
     /**
      * @typedef KinematicsThermalLoadPtr
@@ -233,10 +243,6 @@ class KinematicsThermalLoadClass : public KinematicsLoadClass {
     addImposedThermalDOFOnCells( const PhysicalQuantityComponent &coordinate,
                                     const double &value,
                                     const std::string &nameOfGroup ) {
-        // On verifie que le pointeur vers le modele ET que le modele lui-meme
-        // ne sont pas vides
-        if ( ( !_model ) || _model->isEmpty() )
-            throw std::runtime_error( "The model is empty" );
         if ( !_model->getMesh()->hasGroupOfCells( nameOfGroup ) )
             throw std::runtime_error( nameOfGroup + " not in mesh" );
 
@@ -269,10 +275,6 @@ class KinematicsThermalLoadClass : public KinematicsLoadClass {
     bool addImposedThermalDOFOnNodes( const PhysicalQuantityComponent &coordinate,
                                       const double &value,
                                       const std::string &nameOfGroup ) {
-        // On verifie que le pointeur vers le modele ET que le modele lui-meme
-        // ne sont pas vides
-        if ( ( !_model ) || _model->isEmpty() )
-            throw std::runtime_error( "The model is empty" );
         if ( !_model->getMesh()->hasGroupOfNodes( nameOfGroup ) )
             throw std::runtime_error( nameOfGroup + " not in mesh" );
 
@@ -305,10 +307,6 @@ class KinematicsThermalLoadClass : public KinematicsLoadClass {
     bool addImposedThermalDOFOnNodes( const PhysicalQuantityComponent &coordinate,
                                       const FunctionPtr &function,
                                       const std::string &nameOfGroup ) {
-        // On verifie que le pointeur vers le modele ET que le modele lui-meme
-        // ne sont pas vides
-        if ( ( !_model ) || _model->isEmpty() )
-            throw std::runtime_error( "The model is empty" );
         if ( !_model->getMesh()->hasGroupOfNodes( nameOfGroup ) )
             throw std::runtime_error( nameOfGroup + " not in mesh" );
 
@@ -340,16 +338,23 @@ class KinematicsThermalLoadClass : public KinematicsLoadClass {
  */
 class KinematicsAcousticLoadClass : public KinematicsLoadClass {
   public:
-    /**
+
+  /**
      * @brief Constructeur
      */
-    KinematicsAcousticLoadClass() : KinematicsLoadClass( "_ACOU" ){};
+    KinematicsAcousticLoadClass( void ) = delete;
 
     /**
      * @brief Constructeur
      */
-    KinematicsAcousticLoadClass( const std::string name )
-        : KinematicsLoadClass( name, "_ACOU" ){};
+    KinematicsAcousticLoadClass(const ModelPtr& model)
+        : KinematicsLoadClass( "_ACOU", model ){};
+
+    /**
+     * @brief Constructeur
+     */
+    KinematicsAcousticLoadClass( const std::string name, const ModelPtr& model )
+        : KinematicsLoadClass( name, "_ACOU", model ){};
 
     /**
      * @typedef KinematicsAcousticLoadPtr

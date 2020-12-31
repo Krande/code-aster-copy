@@ -34,24 +34,24 @@ class KinematicsLoadDefinition(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
+        model = keywords["MODELE"]
         if keywords.get( "MECA_IMPO" ) is not None:
-            self._result = KinematicsMechanicalLoad()
+            self._result = KinematicsMechanicalLoad(model)
         elif keywords.get( "THER_IMPO" ) is not None:
-            self._result = KinematicsThermalLoad()
+            self._result = KinematicsThermalLoad(model)
         elif keywords.get( "ACOU_IMPO" ) is not None:
-            self._result = KinematicsAcousticLoad()
+            self._result = KinematicsAcousticLoad(model)
         elif keywords.get( "EVOL_IMPO" ) is not None:
             if (keywords.get( "EVOL_IMPO" ).getType() in ('EVOL_ELAS', 'EVOL_NOLI') ):
-                self._result = KinematicsMechanicalLoad()
+                self._result = KinematicsMechanicalLoad(model)
             elif keywords.get( "EVOL_IMPO" ).getType() == 'EVOL_THER':
-                self._result = KinematicsThermalLoad()
+                self._result = KinematicsThermalLoad(model)
             elif keywords.get( "EVOL_IMPO" ).getType() == 'EVOL_ACOU':
-                self._result = KinematicsAcousticLoad()
+                self._result = KinematicsAcousticLoad(model)
             else:
                 raise NotImplementedError("Must be implemented")
         else:
             raise NotImplementedError("Must be implemented")
-        self._result.setModel(keywords["MODELE"])
 
 
 AFFE_CHAR_CINE = KinematicsLoadDefinition.run

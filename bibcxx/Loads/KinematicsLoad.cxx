@@ -31,17 +31,25 @@
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/ResultNaming.h"
 
-KinematicsLoadClass::KinematicsLoadClass( const std::string &type )
+KinematicsLoadClass::KinematicsLoadClass( const std::string &type, const ModelPtr& model )
     : DataStructure( ResultNaming::getNewResultName(), 19, "CHAR_CINE" + type ),
-      _model( ModelPtr() ), _intParam( JeveuxVectorLong( getName() + ".AFCI" ) ),
-      _charParam( JeveuxVectorChar8( getName() + ".AFCK" ) ),
-      _doubleParam( JeveuxVectorReal( getName() + ".AFCV" ) ), _isEmpty( true ){};
-
-KinematicsLoadClass::KinematicsLoadClass( const std::string &name, const std::string &type )
-    : DataStructure( name, 19, "CHAR_CINE" + type ), _model( ModelPtr() ),
       _intParam( JeveuxVectorLong( getName() + ".AFCI" ) ),
       _charParam( JeveuxVectorChar8( getName() + ".AFCK" ) ),
-      _doubleParam( JeveuxVectorReal( getName() + ".AFCV" ) ), _isEmpty( true ){};
+      _doubleParam( JeveuxVectorReal( getName() + ".AFCV" ) ), _isEmpty( true )
+      {
+          this->setModel(model);
+      };
+
+KinematicsLoadClass::KinematicsLoadClass(   const std::string &name,
+                                            const std::string &type,
+                                            const ModelPtr& model )
+    : DataStructure( name, 19, "CHAR_CINE" + type ),
+      _intParam( JeveuxVectorLong( getName() + ".AFCI" ) ),
+      _charParam( JeveuxVectorChar8( getName() + ".AFCK" ) ),
+      _doubleParam( JeveuxVectorReal( getName() + ".AFCV" ) ), _isEmpty( true )
+      {
+          this->setModel(model);
+      };
 
 bool KinematicsLoadClass::build() {
     std::string cmd = "AFFE_CHAR_CINE";

@@ -122,6 +122,11 @@ class ThermalLoadClass : public DataStructure {
     /**
      * @brief Constructeur
      */
+    ThermalLoadClass( void ) = delete;
+
+    /**
+     * @brief Constructeur
+     */
     ThermalLoadClass( const ModelPtr &currentModel )
         : ThermalLoadClass( ResultNaming::getNewResultName(), currentModel ){};
 
