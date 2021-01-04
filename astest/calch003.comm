@@ -158,13 +158,13 @@ OPTION='G',
                           R_INF=10.,
                           R_SUP=40.,
                           FISSURE=FOND_NEW,),
-                 EXCIT=_F(CHARGE=CH,),)
+                 )
 
 GK1=CALC_H(        RESULTAT=RESU,
                    THETA=_F(R_INF = 10.,
                               R_SUP = 40.,
                               FISSURE=FOND_NEW),
-                    EXCIT=_F(CHARGE=CH,),
+                    
                     OPTION='K')
 
 G2=CALC_H(        OPTION='G',
@@ -173,13 +173,13 @@ G2=CALC_H(        OPTION='G',
                            R_INF=15.,
                            R_SUP=45.,
                            FISSURE=FOND_NEW,),
-                  EXCIT=_F(CHARGE=CH,),)
+                  )
 
 GK2=CALC_H(          RESULTAT=RESU,
                      THETA=_F(R_INF = 15.,
                               R_SUP = 45.,
                               FISSURE=FOND_NEW),
-                    EXCIT=_F(CHARGE=CH,),
+                    
                     OPTION='K')
 
 G3=CALC_H(         OPTION='G',
@@ -188,13 +188,13 @@ G3=CALC_H(         OPTION='G',
                             R_INF=5.0,
                             R_SUP=47.,
                             FISSURE=FOND_NEW,),
-                   EXCIT=_F(CHARGE=CH,),)
+                   )
 
 GK3=CALC_H(          RESULTAT=RESU,
                      THETA=_F(R_INF = 5.0,
                               R_SUP = 47.,
                               FISSURE=FOND_NEW),
-                     EXCIT=_F(CHARGE=CH,),
+                     
                      OPTION='K')
 
 G4=CALC_H(        OPTION='G',
@@ -204,14 +204,14 @@ G4=CALC_H(        OPTION='G',
                            R_INF=3.0,
                            R_SUP=48.,
                            FISSURE=FOND_NEW,),
-                  EXCIT=_F(CHARGE=CH,),)
+                  )
 
 GK4=CALC_H(         RESULTAT=RESU,
                     NUME_ORDRE=1,
                     THETA=_F(R_INF = 3.0,
                               R_SUP = 48.,
                               FISSURE=FOND_NEW),
-                    EXCIT=_F(CHARGE=CH,),
+                    
                     OPTION='K')
 
 
@@ -219,7 +219,7 @@ GK5=CALC_H(         RESULTAT=RESU,
                     NUME_ORDRE=1,
                     THETA=_F( FISSURE=FOND_NEW,
                              ),
-                    EXCIT=_F(CHARGE=CH,),
+                    
                     OPTION='K')
 
 
