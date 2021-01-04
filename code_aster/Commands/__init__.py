@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -132,6 +132,7 @@ from .info_exec_aster import INFO_EXEC_ASTER
 from .info_mode import INFO_MODE
 from .info_resu import INFO_RESU
 from .lire_champ import LIRE_CHAMP
+from .lire_fonction import LIRE_FONCTION
 from .lire_forc_miss import LIRE_FORC_MISS
 from .lire_impe_miss import LIRE_IMPE_MISS
 from .lire_maillage import LIRE_MAILLAGE

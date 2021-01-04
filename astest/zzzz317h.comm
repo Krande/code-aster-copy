@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ amor = 0.05                     # Amortissement de l'accélérogramme cible
 #----------------------------------------------------------------------------------
 # Lecture du fichier de spectre grossier + INTERPOL LIN
 SPECTRE0=LIRE_FONCTION(UNITE=29,
-                   SEPAR=',',
+                   SEPARATEUR=',',
                    NOM_PARA='FREQ',
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='LINEAIRE',
@@ -49,7 +49,7 @@ SPECTRE0=LIRE_FONCTION(UNITE=29,
 
 # Lecture du fichier de spectre grossier + INTERPOL LOG
 SPECTRE1=LIRE_FONCTION(UNITE=29,
-                   SEPAR=',',
+                   SEPARATEUR=',',
                    NOM_PARA='FREQ',
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='LINEAIRE',
@@ -60,7 +60,7 @@ SPECTRE1=LIRE_FONCTION(UNITE=29,
 #----------------------------------------------------------------------------------
 # Lecture du fichier de spectre fin => référence
 SPECTRE2=LIRE_FONCTION(UNITE=30,
-                   SEPAR=',',
+                   SEPARATEUR=',',
                    NOM_PARA='FREQ',
                    PROL_DROITE='CONSTANT',
                    PROL_GAUCHE='LINEAIRE',

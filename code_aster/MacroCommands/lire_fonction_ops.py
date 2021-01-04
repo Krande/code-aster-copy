@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ class LectureBlocError(Exception):
     pass
 
 
-def lire_blocs(nomfich, SEPAR, INFO=1):
+def lire_blocs(nomfich, SEPARATEUR, INFO=1):
     """Retourne la liste des blocs
     """
     def info(ib, nlig, ncol):
@@ -47,8 +47,8 @@ def lire_blocs(nomfich, SEPAR, INFO=1):
         print("   . Bloc %2d : %6d lignes, %6d colonnes" % (ib, nlig, ncol))
     print("  Lecture des blocs du fichier '%s'..." % nomfich)
     fich = open(nomfich, 'r')
-    if SEPAR == 'None':
-        SEPAR = None
+    if SEPARATEUR == 'None':
+        SEPARATEUR = None
     blocs = []
     lignes = []
     llen = 0
@@ -59,7 +59,7 @@ def lire_blocs(nomfich, SEPAR, INFO=1):
             line = line.strip()
             if line == '':
                 raise ValueError
-            splin = [i for i in line.split(SEPAR) if i != '']
+            splin = [i for i in line.split(SEPARATEUR) if i != '']
             lignes.append(list(map(float, splin)))
             if llen == 0:
                 llen = len(splin)
@@ -81,7 +81,7 @@ def lire_blocs(nomfich, SEPAR, INFO=1):
     return blocs
 
 
-def liste_double(nomfich, INDIC_PARA, INDIC_RESU, SEPAR, INFO=1):
+def liste_double(nomfich, INDIC_PARA, INDIC_RESU, SEPARATEUR, INFO=1):
     """Méthode de construction du VALE pour le format libre
     format LIBRE
     Les lignes contenant autre chose que des séquences de nombres
@@ -91,7 +91,7 @@ def liste_double(nomfich, INDIC_PARA, INDIC_RESU, SEPAR, INFO=1):
     INDIC_PARA et INDIC_RESU est l indice permettant de pointer sur la
     fonction voulue, au sens de ce découpage.
     """
-    blocs = lire_blocs(nomfich, SEPAR, INFO)
+    blocs = lire_blocs(nomfich, SEPARATEUR, INFO)
 
     # vérifications de cohérences lignes et colonnes
     nb_blocs = len(blocs)
@@ -134,10 +134,10 @@ def liste_double(nomfich, INDIC_PARA, INDIC_RESU, SEPAR, INFO=1):
     return liste_vale
 
 
-def liste_simple(nomfich, INDIC_PARA, SEPAR, INFO=1):
+def liste_simple(nomfich, INDIC_PARA, SEPARATEUR, INFO=1):
     """recherche d'une liste simple
     """
-    blocs = lire_blocs(nomfich, SEPAR, INFO)
+    blocs = lire_blocs(nomfich, SEPARATEUR, INFO)
 
     # vérifications de cohérences lignes et colonnes
     nb_blocs = len(blocs)
@@ -235,7 +235,7 @@ def complex_values(filename, idbx, idbr, idbi, module_phase=False):
     return cols.ravel()
 
 
-def lire_fonction_ops(self, UNITE, NOM_PARA, FORMAT=None, TYPE=None, SEPAR=None, INDIC_PARA=None,
+def lire_fonction_ops(self, UNITE, NOM_PARA, FORMAT=None, TYPE=None, SEPARATEUR=None, INDIC_PARA=None,
                       NOM_RESU=None, INTERPOL=None, PROL_DROITE=None,
                       PROL_GAUCHE=None, VERIF=None, INFO=None, TITRE=None, **args):
     """Méthode corps de la macro
@@ -255,7 +255,7 @@ def lire_fonction_ops(self, UNITE, NOM_PARA, FORMAT=None, TYPE=None, SEPAR=None,
 
     if TYPE == 'FONCTION':
         values = function_values(FORMAT, nomfich, INDIC_PARA,
-                                 args['INDIC_RESU'], SEPAR, INFO)
+                                 args['INDIC_RESU'], SEPARATEUR, INFO)
         # création de la fonction ASTER :
         ut_fonc = DEFI_FONCTION(NOM_PARA=NOM_PARA,
                                 NOM_RESU=NOM_RESU,
@@ -277,12 +277,12 @@ def lire_fonction_ops(self, UNITE, NOM_PARA, FORMAT=None, TYPE=None, SEPAR=None,
                 indic1 = args['INDIC_MODU']
                 indic2 = args['INDIC_PHAS']
             try:
-                liste_vale_r = liste_double(nomfich, INDIC_PARA, indic1, SEPAR, INFO)
+                liste_vale_r = liste_double(nomfich, INDIC_PARA, indic1, SEPARATEUR, INFO)
             except LectureBlocError as exc:
                 UTMESS('F', 'FONCT0_42', valk=exc.args)
 
             try:
-                liste_vale_i = liste_double(nomfich, INDIC_PARA, indic2, SEPAR, INFO)
+                liste_vale_i = liste_double(nomfich, INDIC_PARA, indic2, SEPARATEUR, INFO)
             except LectureBlocError as exc:
                 UTMESS('F', 'FONCT0_42', valk=exc.args)
 
@@ -318,7 +318,7 @@ def lire_fonction_ops(self, UNITE, NOM_PARA, FORMAT=None, TYPE=None, SEPAR=None,
         motscles['DEFI_FONCTION'] = []
         for elem in mc_DEFI_FONCTION:
             values = function_values(FORMAT, nomfich, args['INDIC_ABSCISSE'],
-                                     elem['INDIC_RESU'], SEPAR, INFO)
+                                     elem['INDIC_RESU'], SEPARATEUR, INFO)
 
             motscles['DEFI_FONCTION'].append(
                 _F(INTERPOL=args['INTERPOL_FONC'],
@@ -326,7 +326,7 @@ def lire_fonction_ops(self, UNITE, NOM_PARA, FORMAT=None, TYPE=None, SEPAR=None,
                    PROL_GAUCHE=args['PROL_GAUCHE_FONC'],
                    VALE=values))
 
-        vale_para = column_values(FORMAT, nomfich, INDIC_PARA, SEPAR, INFO)
+        vale_para = column_values(FORMAT, nomfich, INDIC_PARA, SEPARATEUR, INFO)
         # création de la nappe
         ut_fonc = DEFI_NAPPE(PARA=vale_para,
                              NOM_PARA=NOM_PARA,

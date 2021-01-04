@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,6 +63,11 @@ Erreur lors de l'interpolation de la fonction '%(k1)s'.
 """),
 
     10 : _("""sur la maille '%(k1)s'
+"""),
+
+    11 : _("""
+Les mot-clés simples SEPAR et SEPARATEUR ne peuvent être utilisés ensemble dans LIRE_FONCTION.
+Veuillez supprimer l'appel à SEPAR qui est désormais obsolète et doit être remplacé par SEPARATEUR.
 """),
 
     12 : _("""
@@ -160,6 +165,13 @@ traitées par %(k3)s.
 
   -> Débogage :
       le type est '%(k2)s'
+"""),
+
+    26 : _("""
+L'usage de SEPAR est encore toléré dans LIRE_FONCTION à condition que son ancienne
+règle d'usage soit respectée, ce qui n'est pas le cas ici. En effet, SEPAR devrait
+obligatoirement être un des séparateurs suivants: "None" ou "," ou ";" ou "/". Cette
+restriction peut être levée avec l'usage correct du mot-clé simple actuel SEPARATEUR.
 """),
 
     27 : _("""
