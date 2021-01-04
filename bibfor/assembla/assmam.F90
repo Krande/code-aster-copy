@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -512,7 +512,9 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
             if (lmasym) then
                 ASSERT(lmesym)
             endif
-
+!
+            call jeveuo(resu//'.DESC', 'L', jdesc)
+!
 !           -- boucle sur les grels du ligrel
 !           ==================================
             do igr = 1, zzngel(ilima)
@@ -522,7 +524,6 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
                 call jaexin(jexnum(resu//'.RESL', igr), iexi)
                 if (iexi .eq. 0) goto 60
 
-                call jeveuo(resu//'.DESC', 'L', jdesc)
                 mode=zi(jdesc+igr+1)
                 if (mode .gt. 0) then
                     nnoe=nbno(mode)

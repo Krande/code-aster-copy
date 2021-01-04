@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -151,7 +151,6 @@ subroutine adalig(ligrz,sd_partit1)
 1       continue
     end do
 
-
 !   -- si sd_partit1 est fourni, il faut utiliser un autre algorithme :
 !   ---------------------------------------------------------------
     if (present(sd_partit1)) then
@@ -174,12 +173,15 @@ subroutine adalig(ligrz,sd_partit1)
         if (lhpc) then
             nspaq=nbel/nbelmx
             ASSERT((nspaq*nbelmx.le.nbel))
+            if (nspaq*nbelmx .lt. nbel) nspaq=nspaq+1
+            nbg = nspaq
         else
             nspaq=(nbel/nbproc)/nbelmx
             ASSERT((nspaq*nbproc*nbelmx.le.nbel))
+            if (nspaq*nbproc*nbelmx .lt. nbel) nspaq=nspaq+1
+            nbg = nspaq*nbproc
         endif
-        if (nspaq*nbproc*nbelmx .lt. nbel) nspaq=nspaq+1
-        nbg = nspaq*nbproc
+!
         gteut(ktype) = nbg
         nbgrel = nbgrel + nbg
         lont = lont + nbel + nbg

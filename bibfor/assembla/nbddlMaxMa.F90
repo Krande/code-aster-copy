@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -252,6 +252,8 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat) result(maxDDLMa)
 
                         call jenonu(jexnom(matr_asse//'.LILI', nomligrel), ilima)
                         call jenonu(jexnom(nume_ddl//'.NUME.LILI', nomligrel), ilinu)
+
+                        call jeveuo(resu_elem//'.DESC', 'L', jdesc)
 !
 ! --- boucle sur les grels du ligrel
 !
@@ -262,7 +264,6 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat) result(maxDDLMa)
                             call jaexin(jexnum(resu_elem//'.RESL', igrel), iret)
                             if (iret .eq. 0) goto 100
 !
-                            call jeveuo(resu_elem//'.DESC', 'L', jdesc)
                             mode=zi(jdesc+igrel+1)
                             if (mode .gt. 0) then
                                 nnoe=nbno(mode)
