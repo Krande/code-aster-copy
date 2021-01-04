@@ -161,6 +161,12 @@ FISS = DEFI_FOND_FISS(CONFIG_INIT='COLLEE',
                        LEVRE_INF=_F(GROUP_MA=('LEVRE_INF', )),
                        MAILLAGE=MESH,
                        SYME='NON')
+FISS_NEW = DEFI_FISSURE(CONFIG_INIT='COLLEE',
+                       FOND_FISS=_F(GROUP_NO=('FOND_FISS', )),
+                       LEVRE_SUP=_F(GROUP_MA=('LEVRE_SUP', )),
+                       LEVRE_INF=_F(GROUP_MA=('LEVRE_INF', )),
+                       MAILLAGE=MESH,
+                       SYME='NON')
                        
 # A PROXIMITE DE LA FISSURE, LES CARACTERISTIQUES MATERIAUX A UTILISER  
 # PAR POST_K1_K2_K3 NE SONT PAS CELLES DE L'ELASTICITE LINEAIRE
@@ -177,26 +183,23 @@ T_FIC = POST_K1_K2_K3(ABSC_CURV_MAXI=4e-6,
                       
 #CALCUL DE G PAR CALC_G               
 # ON CALCULE G POUR TROIS COURONNES D'INTEGRATIONS
-T_G1 = CALC_G(OPTION='CALC_G',
-             RESULTAT=RESU,
-             COMPORTEMENT=_F(RELATION='ELAS_VMIS_LINE',),
-             THETA=_F(FOND_FISS=FISS,
+T_G1 = CALC_H(OPTION='G_EPSI',
+              RESULTAT=RESU,
+             THETA=_F(FISSURE=FISS_NEW,
                       R_INF=20.0e-3,
                       R_SUP=25.0e-3),
              TOUT_ORDRE='OUI')
 
-T_G2 = CALC_G(OPTION='CALC_G',
-             RESULTAT=RESU,
-             COMPORTEMENT=_F(RELATION='ELAS_VMIS_LINE',),
-             THETA=_F(FOND_FISS=FISS,
+T_G2 = CALC_H(OPTION='G_EPSI',
+              RESULTAT=RESU,
+             THETA=_F(FISSURE=FISS_NEW,
                       R_INF=15e-3,
                       R_SUP=20.0e-3),
              TOUT_ORDRE='OUI')
 
-T_G3 = CALC_G(OPTION='CALC_G',
-             RESULTAT=RESU,
-             COMPORTEMENT=_F(RELATION='ELAS_VMIS_LINE',),
-             THETA=_F(FOND_FISS=FISS,
+T_G3 = CALC_H(OPTION='G_EPSI',
+              RESULTAT=RESU,
+             THETA=_F(FISSURE=FISS_NEW,
                       R_INF=10e-3,
                       R_SUP=15.0e-3),
              TOUT_ORDRE='OUI')

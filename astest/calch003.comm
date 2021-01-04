@@ -147,72 +147,80 @@ FOND=DEFI_FOND_FISS( MAILLAGE=MA,
                      FOND_FISS=_F( GROUP_NO = 'GN3'),
                      SYME='OUI',
                      LEVRE_SUP=_F(MAILLE='M388'))
-G1=CALC_G(
+FOND_NEW=DEFI_FISSURE( MAILLAGE=MA,
+                     FOND_FISS=_F( GROUP_NO = 'GN3'),
+                     SYME='OUI',
+                     LEVRE_SUP=_F(MAILLE='M388'))
+G1=CALC_H(
+OPTION='G',
                  RESULTAT=RESU,
                  THETA=_F(
                           R_INF=10.,
                           R_SUP=40.,
-                          FOND_FISS=FOND,),
+                          FISSURE=FOND_NEW,),
                  EXCIT=_F(CHARGE=CH,),)
 
-GK1=CALC_G(        RESULTAT=RESU,
+GK1=CALC_H(        RESULTAT=RESU,
                    THETA=_F(R_INF = 10.,
                               R_SUP = 40.,
-                              FOND_FISS=FOND),
+                              FISSURE=FOND_NEW),
                     EXCIT=_F(CHARGE=CH,),
-                    OPTION='CALC_K_G')
+                    OPTION='K')
 
-G2=CALC_G(        RESULTAT=RESU,
+G2=CALC_H(        OPTION='G',
+                  RESULTAT=RESU,
                   THETA=_F(
                            R_INF=15.,
                            R_SUP=45.,
-                           FOND_FISS=FOND,),
+                           FISSURE=FOND_NEW,),
                   EXCIT=_F(CHARGE=CH,),)
 
-GK2=CALC_G(          RESULTAT=RESU,
+GK2=CALC_H(          RESULTAT=RESU,
                      THETA=_F(R_INF = 15.,
                               R_SUP = 45.,
-                              FOND_FISS=FOND),
+                              FISSURE=FOND_NEW),
                     EXCIT=_F(CHARGE=CH,),
-                    OPTION='CALC_K_G')
+                    OPTION='K')
 
-G3=CALC_G(         RESULTAT=RESU,
+G3=CALC_H(         OPTION='G',
+                   RESULTAT=RESU,
                    THETA=_F(
                             R_INF=5.0,
                             R_SUP=47.,
-                            FOND_FISS=FOND,),
+                            FISSURE=FOND_NEW,),
                    EXCIT=_F(CHARGE=CH,),)
 
-GK3=CALC_G(          RESULTAT=RESU,
+GK3=CALC_H(          RESULTAT=RESU,
                      THETA=_F(R_INF = 5.0,
                               R_SUP = 47.,
-                              FOND_FISS=FOND),
+                              FISSURE=FOND_NEW),
                      EXCIT=_F(CHARGE=CH,),
-                     OPTION='CALC_K_G')
+                     OPTION='K')
 
-G4=CALC_G(        RESULTAT=RESU,
+G4=CALC_H(        OPTION='G',
+                  RESULTAT=RESU,
                   NUME_ORDRE=1,
                   THETA=_F(
                            R_INF=3.0,
                            R_SUP=48.,
-                           FOND_FISS=FOND,),
+                           FISSURE=FOND_NEW,),
                   EXCIT=_F(CHARGE=CH,),)
 
-GK4=CALC_G(         RESULTAT=RESU,
+GK4=CALC_H(         RESULTAT=RESU,
                     NUME_ORDRE=1,
                     THETA=_F(R_INF = 3.0,
                               R_SUP = 48.,
-                              FOND_FISS=FOND),
+                              FISSURE=FOND_NEW),
                     EXCIT=_F(CHARGE=CH,),
-                    OPTION='CALC_K_G')
+                    OPTION='K')
 
 
-GK5=CALC_G(         RESULTAT=RESU,
+GK5=CALC_H(         RESULTAT=RESU,
                     NUME_ORDRE=1,
-                    THETA=_F( FOND_FISS=FOND,
+                    THETA=_F( FISSURE=FOND_NEW,
                              ),
                     EXCIT=_F(CHARGE=CH,),
-                    OPTION='CALC_K_G')
+                    OPTION='K')
 
 
 TEST_TABLE(PRECISION=0.080000000000000002,

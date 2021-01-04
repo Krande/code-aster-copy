@@ -85,6 +85,11 @@ FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
                         SYME='OUI',
                         LEVRE_SUP=_F(MAILLE='M458'),
                       )
+FOND_NEW=DEFI_FISSURE(    MAILLAGE=MA,
+                        FOND_FISS=_F( GROUP_NO = ('P0',)),
+                        SYME='OUI',
+                        LEVRE_SUP=_F(MAILLE='M458'),
+                      )
 
 
 
@@ -104,9 +109,10 @@ CHAMDEP=STAT_NON_LINE( MODELE=MO,
 
                      );
 
-G_0=CALC_G( THETA=_F(
+G_0=CALC_H( OPTION='G',
+            THETA=_F(
                      R_INF=0.15,
-                     FOND_FISS=FOND,
+                     FISSURE=FOND_NEW,
                      R_SUP=0.6,),
                      RESULTAT=CHAMDEP,
                      TOUT_ORDRE='OUI',
@@ -240,9 +246,10 @@ CHAMDEP2=STAT_NON_LINE( MODELE=MO,
 
                      );
 
-G_0_2=CALC_G( THETA=_F(
+G_0_2=CALC_H( OPTION='G',
+              THETA=_F(
                        R_INF=0.15,
-                       FOND_FISS=FOND,
+                       FISSURE=FOND_NEW,
                        R_SUP=0.6,),
                        RESULTAT=CHAMDEP2,
                        TOUT_ORDRE='OUI',
@@ -380,9 +387,10 @@ CHAMDEP3=STAT_NON_LINE( MODELE=MO,
 #################"
 
 
-G_0_3=CALC_G( THETA=_F(
+G_0_3=CALC_H( OPTION='G',
+              THETA=_F(
                        R_INF=0.15,
-                       FOND_FISS=FOND,
+                       FISSURE=FOND_NEW,
                        R_SUP=0.6,),
                        RESULTAT=CHAMDEP3,
                        TOUT_ORDRE='OUI',
@@ -551,9 +559,10 @@ CHAMDEP4=STAT_NON_LINE( MODELE=MO,
 #################"
 
 
-G_0_4=CALC_G( THETA=_F(
+G_0_4=CALC_H( OPTION='G',
+              THETA=_F(
                        R_INF=0.15,
-                       FOND_FISS=FOND,
+                       FISSURE=FOND_NEW,
                        R_SUP=0.6,),
                        RESULTAT=CHAMDEP4,
                        TOUT_ORDRE='OUI',
@@ -683,9 +692,10 @@ CHAMDEP5=STAT_NON_LINE( MODELE=MO,
 #################"
 
 
-G_0_5=CALC_G(THETA=_F(
+G_0_5=CALC_H(OPTION='G',
+             THETA=_F(
                       R_INF=0.15,
-                      FOND_FISS=FOND,
+                      FISSURE=FOND_NEW,
                       R_SUP=0.6,),
                       RESULTAT=CHAMDEP5,
             )
@@ -812,23 +822,22 @@ RESUINCR=STAT_NON_LINE(MODELE=MO,
                        )
 
 # calcul Incr, post-traitement ELAS -> Genl
-G_I_E=CALC_G(RESULTAT=RESUINCR,
+G_I_E=CALC_H(OPTION='G_EPSI',
+             RESULTAT=RESUINCR,
              THETA=_F(
                       R_INF=0.15,
-                      FOND_FISS=FOND,
-                      R_SUP=0.6,),
-                      COMPORTEMENT=_F(RELATION='ELAS_VMIS_PUIS'))
+                      FISSURE=FOND_NEW,
+                      R_SUP=0.6,),)
 
 IMPR_TABLE(TABLE=G_I_E)
 
 # calcul Incr, post-traitement ELAS, sans re-calcul des contraintes
-G_I_E2=CALC_G(RESULTAT=RESUINCR,
+G_I_E2=CALC_H(RESULTAT=RESUINCR,
               THETA=_F(
                        R_INF=0.15,
-                       FOND_FISS=FOND,
+                       FISSURE=FOND_NEW,
                        R_SUP=0.6,),
-                       COMPORTEMENT=_F(RELATION='ELAS_VMIS_PUIS'),
-                       CALCUL_CONTRAINTE='NON',)
+                       OPTION='G',)
 
 IMPR_TABLE(TABLE=G_I_E2)
 

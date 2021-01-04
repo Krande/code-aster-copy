@@ -155,6 +155,12 @@ FOND=DEFI_FOND_FISS( MAILLAGE=M, SYME='NON',
                         LEVRE_INF=_F(GROUP_MA='LEVRE_INF',),
 
                        )
+FOND_NEW=DEFI_FISSURE( MAILLAGE=M, SYME='NON',
+                       FOND_FISS=_F(GROUP_NO = 'O'),
+                        LEVRE_SUP=_F(GROUP_MA='LEVRE_SUP',),
+                        LEVRE_INF=_F(GROUP_MA='LEVRE_INF',),
+
+                       )
 
 #---------------------------------------------------------------------
 #          MODELISATION ET CALCUL EN CONTRAINTES PLANES
@@ -176,18 +182,19 @@ ELASCP=MECA_STATIQUE( MODELE=MOCP,
 
 
 
-GCP=CALC_G(RESULTAT=ELASCP,
+GCP=CALC_H(OPTION='G',
+           RESULTAT=ELASCP,
            THETA=_F(
                     R_INF=10.,
                     R_SUP=20.,
-                    FOND_FISS=FOND,),
+                    FISSURE=FOND_NEW,),
            )
 
-K1K2CP=CALC_G(RESULTAT=ELASCP,
-              THETA=_F(FOND_FISS=FOND,
+K1K2CP=CALC_H(RESULTAT=ELASCP,
+              THETA=_F(FISSURE=FOND_NEW,
                        R_INF = 10.,
                        R_SUP = 20.,),
-              OPTION='CALC_K_G')
+              OPTION='K')
 
 
 #---------------------------------------------------------------------
@@ -210,18 +217,19 @@ ELASDP=MECA_STATIQUE( MODELE=MODP,
 
 
 
-GDP=CALC_G(RESULTAT=ELASDP,
+GDP=CALC_H(OPTION='G',
+           RESULTAT=ELASDP,
            THETA=_F(
                     R_INF=10.,
                     R_SUP=20.,
-                    FOND_FISS=FOND,),
+                    FISSURE=FOND_NEW,),
             )
 
-K1K2DP=CALC_G(RESULTAT=ELASDP,
-              THETA=_F(FOND_FISS=FOND,
+K1K2DP=CALC_H(RESULTAT=ELASDP,
+              THETA=_F(FISSURE=FOND_NEW,
                        R_INF = 10.,
                        R_SUP = 20.,),
-              OPTION='CALC_K_G')
+              OPTION='K')
 
 #--------------------------------------------------------------------
 #            TEST DES RESULTATS DE G, K1 ET K2   EN CP

@@ -214,6 +214,11 @@ FOND=DEFI_FOND_FISS(    MAILLAGE=MA, SYME='NON',
                             LEVRE_SUP=_F(GROUP_MA = 'LEVR_SUP',),
                             LEVRE_INF=_F(GROUP_MA = 'LEVR_INF',),
                       )
+FOND_NEW=DEFI_FISSURE(    MAILLAGE=MA, SYME='NON',
+                           FOND_FISS=_F( GROUP_NO = ('P0',)),
+                            LEVRE_SUP=_F(GROUP_MA = 'LEVR_SUP',),
+                            LEVRE_INF=_F(GROUP_MA = 'LEVR_INF',),
+                      )
 
 #
 # CALC_G POUR LES INSTANTS 22, 36, 50, 64
@@ -225,178 +230,178 @@ FOND=DEFI_FOND_FISS(    MAILLAGE=MA, SYME='NON',
 # que le chargement est monotone
 # proportionnel.
 
-G220=CALC_G(        RESULTAT=CHAMDEPL,
-                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
+G220=CALC_H(        OPTION='G_EPSI',
+                    RESULTAT=CHAMDEPL,
                     THETA=_F(
                              R_INF=1.00,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND_NEW,
                              R_SUP=2.00,
                             ),
                     NUME_ORDRE=22
               )
 
 #
-G360=CALC_G(        RESULTAT=CHAMDEPL,
+G360=CALC_H(        OPTION='G_EPSI',
+                    RESULTAT=CHAMDEPL,
                     THETA=_F(
                              R_INF=1.00,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND_NEW,
                              R_SUP=2.00,
                             ),
-                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=36
               )
 
 #
-G500=CALC_G(        RESULTAT=CHAMDEPL,
+G500=CALC_H(        OPTION='G_EPSI',
+                    RESULTAT=CHAMDEPL,
                     THETA=_F(
                              R_INF=1.00,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND_NEW,
                              R_SUP=2.00,
                              ),
-                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=50
               )
 
 #
-G640=CALC_G(        RESULTAT=CHAMDEPL,
+G640=CALC_H(        OPTION='G_EPSI',
+                    RESULTAT=CHAMDEPL,
                     THETA=_F(
                              R_INF=1.00,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND_NEW,
                              R_SUP=2.00,
                              ),
-                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=64
               )
 
 #
-G221=CALC_G(        RESULTAT=CHAMDEPL,
+G221=CALC_H(        OPTION='G_EPSI',
+                    RESULTAT=CHAMDEPL,
                     THETA=_F(
                              R_INF=2.00,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND_NEW,
                              R_SUP=3.00,
                              ),
-                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=22
               )
 
 #
-G361=CALC_G(        RESULTAT=CHAMDEPL,
+G361=CALC_H(        OPTION='G_EPSI',
+                    RESULTAT=CHAMDEPL,
                     THETA=_F(
                              R_INF=2.00,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND_NEW,
                              R_SUP=3.00,
                             ),
-                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=36
               )
 
 #
-G501=CALC_G(        RESULTAT=CHAMDEPL,
+G501=CALC_H(        OPTION='G_EPSI',
+                    RESULTAT=CHAMDEPL,
                     THETA=_F(
                              R_INF=2.00,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND_NEW,
                              R_SUP=3.00,
                              ),
-                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=50
               )
 
 #
-G641=CALC_G(        RESULTAT=CHAMDEPL,
+G641=CALC_H(        OPTION='G_EPSI',
+                    RESULTAT=CHAMDEPL,
                     THETA=_F(
                              R_INF=2.00,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND_NEW,
                              R_SUP=3.00,
                              ),
-                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=64
               )
 
 #
-G222=CALC_G(        RESULTAT=CHAMDEPL,
+G222=CALC_H(        OPTION='G_EPSI',
+                    RESULTAT=CHAMDEPL,
                     THETA=_F(
                              R_INF=3.00,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND_NEW,
                              R_SUP=4.00,
                              ),
-                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=22
               )
 
 #
-G362=CALC_G(        RESULTAT=CHAMDEPL,
+G362=CALC_H(        OPTION='G_EPSI',
+                    RESULTAT=CHAMDEPL,
                     THETA=_F(
                              R_INF=3.00,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND_NEW,
                              R_SUP=4.00,
                              ),
-                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=36
               )
 
 #
-G502=CALC_G(        RESULTAT=CHAMDEPL,
+G502=CALC_H(        OPTION='G_EPSI',
+                    RESULTAT=CHAMDEPL,
                     THETA=_F(
                              R_INF=3.00,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND_NEW,
                              R_SUP=4.00,
                              ),
-                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=50
               )
 
 #
-G642=CALC_G(        RESULTAT=CHAMDEPL,
+G642=CALC_H(        OPTION='G_EPSI',
+                    RESULTAT=CHAMDEPL,
                     THETA=_F(
                              R_INF=3.00,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND_NEW,
                              R_SUP=4.00,
                              ),
-                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=64
               )
 
 #
-G223=CALC_G(        RESULTAT=CHAMDEPL,
+G223=CALC_H(        OPTION='G_EPSI',
+                    RESULTAT=CHAMDEPL,
                     THETA=_F(
                              R_INF=4.00,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND_NEW,
                              R_SUP=5.00,
                              ),
-                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
-                  NUME_ORDRE=22
+                    NUME_ORDRE=22
               )
 
 #
-G363=CALC_G(        RESULTAT=CHAMDEPL,
+G363=CALC_H(        OPTION='G_EPSI',
+                    RESULTAT=CHAMDEPL,
                     THETA=_F(
                              R_INF=4.00,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND_NEW,
                              R_SUP=5.00,
                              ),
-                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=36
               )
 
 #
-G503=CALC_G(        RESULTAT=CHAMDEPL,
+G503=CALC_H(        OPTION='G_EPSI',
+                    RESULTAT=CHAMDEPL,
                     THETA=_F(
                              R_INF=4.00,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND_NEW,
                              R_SUP=5.00,
                              ),
-                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=50
               )
 
 #
-G643=CALC_G(        RESULTAT=CHAMDEPL,
+G643=CALC_H(        OPTION='G_EPSI',
+                    RESULTAT=CHAMDEPL,
                     THETA=_F(
                              R_INF=4.00,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND_NEW,
                              R_SUP=5.00,
                              ),
-                    COMPORTEMENT=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     NUME_ORDRE=64
               )
 

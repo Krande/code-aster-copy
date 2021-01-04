@@ -143,23 +143,28 @@ FOND1=DEFI_FOND_FISS(MAILLAGE=MAILLAGE, SYME='NON',
                      LEVRE_SUP=_F( GROUP_MA = 'LEVSUP',),
                      LEVRE_INF=_F( GROUP_MA = 'LEVINF',),
                        )
+FOND1_NEW=DEFI_FISSURE(MAILLAGE=MAILLAGE, SYME='NON',
+                     FOND_FISS=_F( GROUP_NO = 'PFON',),
+                     LEVRE_SUP=_F( GROUP_MA = 'LEVSUP',),
+                     LEVRE_INF=_F( GROUP_MA = 'LEVINF',),
+                       )
 
-TABSIF=CALC_G(RESULTAT=UTOT,
-              THETA=_F( R_INF = 0.01,
+TABSIF=CALC_H(RESULTAT=UTOT,
+              THETA=_F(CHAM_THETA=CO('cham_theta_no0'),
+                        R_INF = 0.01,
                         R_SUP = 0.05,
-                        FOND_FISS=FOND1),
-              OPTION='CALC_K_G',
-              CHAM_THETA=CO('cham_theta_no0'),
+                        FISSURE=FOND1_NEW),
+              OPTION='K',
               )
 
 IMPR_TABLE(TABLE=TABSIF,);
 
-TABG=CALC_G(RESULTAT=UTOT,
-              THETA=_F( R_INF = 0.01,
+TABG=CALC_H(OPTION='G',
+            RESULTAT=UTOT,
+              THETA=_F(CHAM_THETA=CO('cham_theta_no1'),
+                        R_INF = 0.01,
                         R_SUP = 0.05,
-                        FOND_FISS=FOND1),
-              OPTION='CALC_G',
-              CHAM_THETA=CO('cham_theta_no1'),
+                        FISSURE=FOND1_NEW),
               )
 
 IMPR_TABLE(TABLE=TABG,);

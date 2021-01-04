@@ -191,82 +191,86 @@ FOND=DEFI_FOND_FISS( MAILLAGE=MA,
                      FOND_FISS=_F( GROUP_NO = 'FOND_FISS'),
                      SYME='OUI',
                      LEVRE_SUP=_F(GROUP_MA='LEVRE_SUP'))
+FOND_NEW=DEFI_FISSURE( MAILLAGE=MA,
+                     FOND_FISS=_F( GROUP_NO = 'FOND_FISS'),
+                     SYME='OUI',
+                     LEVRE_SUP=_F(GROUP_MA='LEVRE_SUP'))
 
-GTH1=CALC_G(RESULTAT=RESUTH,
+GTH1=CALC_H(OPTION='G_EPSI',
+            RESULTAT=RESUTH,
             NUME_ORDRE=1,
             THETA=_F(
-                FOND_FISS=FOND,
+                FISSURE=FOND_NEW,
                 R_INF=1.,
                 R_SUP=5.),
-            COMPORTEMENT=_F(RELATION='ELAS_VMIS_TRAC',),
             );
 
-GTH2=CALC_G(RESULTAT=RESUTH,
+GTH2=CALC_H(OPTION='G_EPSI',
+            RESULTAT=RESUTH,
             NUME_ORDRE=1,
             THETA=_F(
-                    FOND_FISS=FOND,
+                    FISSURE=FOND_NEW,
                     R_INF=5.,
                     R_SUP=10.),
-            COMPORTEMENT=_F(RELATION='ELAS_VMIS_TRAC',),
-                    );
+            );
 
-GTH3=CALC_G(RESULTAT=RESUTH,
+GTH3=CALC_H(OPTION='G_EPSI',
+            RESULTAT=RESUTH,
             NUME_ORDRE=1,
             THETA=_F(
-                    FOND_FISS=FOND,
+                    FISSURE=FOND_NEW,
                     R_INF=10.,
                     R_SUP=20.),
-            COMPORTEMENT=_F(RELATION='ELAS_VMIS_TRAC',),
-                    );
+            );
 
-GTH4=CALC_G(RESULTAT=RESUTH,
+GTH4=CALC_H(OPTION='G_EPSI',
+            RESULTAT=RESUTH,
             NUME_ORDRE=1,
             THETA=_F(
-                     FOND_FISS=FOND,
+                     FISSURE=FOND_NEW,
                      R_INF=20.,
                      R_SUP=30.),
-            COMPORTEMENT=_F(RELATION='ELAS_VMIS_TRAC',),
-                     );
+            );
 
 #--------------------------------------------------------------------
 #  CALCUL DE G AVEC DEFORMATIONS INITIALES
 #--------------------------------------------------------------------
 
-GINI1=CALC_G(RESULTAT=RESUINI,
+GINI1=CALC_H(OPTION='G_EPSI',
+             RESULTAT=RESUINI,
              NUME_ORDRE=1,
              THETA=_F(
-                    FOND_FISS=FOND,
+                    FISSURE=FOND_NEW,
                     R_INF=1.,
                     R_SUP=5.),
-            COMPORTEMENT=_F(RELATION='ELAS_VMIS_TRAC',),
             );
 
-GINI2=CALC_G(RESULTAT=RESUINI,
+GINI2=CALC_H(OPTION='G_EPSI',
+             RESULTAT=RESUINI,
              NUME_ORDRE=1,
             THETA=_F(
-                FOND_FISS=FOND,
+                FISSURE=FOND_NEW,
                 R_INF=5.,
                 R_SUP=10.),
-            COMPORTEMENT=_F(RELATION='ELAS_VMIS_TRAC',),
-                );
+            );
 
-GINI3=CALC_G(RESULTAT=RESUINI,
+GINI3=CALC_H(OPTION='G_EPSI',
+             RESULTAT=RESUINI,
              NUME_ORDRE=1,
              THETA=_F(
-                FOND_FISS=FOND,
+                FISSURE=FOND_NEW,
                 R_INF=10.,
                 R_SUP=20.),
-            COMPORTEMENT=_F(RELATION='ELAS_VMIS_TRAC',),
-                );
+            );
 
-GINI4=CALC_G(RESULTAT=RESUINI,
+GINI4=CALC_H(OPTION='G_EPSI',
+             RESULTAT=RESUINI,
              NUME_ORDRE=1,
              THETA=_F(
-                    FOND_FISS=FOND,
+                    FISSURE=FOND_NEW,
                     R_INF=20.,
                     R_SUP=30.),
-            COMPORTEMENT=_F(RELATION='ELAS_VMIS_TRAC',),
-                    );
+            );
                     
 #--------------------------------------------------------------------
 #                TESTS DES RESULTATS                                #

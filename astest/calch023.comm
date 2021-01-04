@@ -52,6 +52,10 @@ FISS = DEFI_FOND_FISS(FOND_FISS=_F(GROUP_NO=('FOND_FISS', )),
                       LEVRE_SUP=_F(GROUP_MA=('LEVRE_SUP', )),
                       MAILLAGE=mesh,
                       SYME='OUI')
+FISS_NEW = DEFI_FISSURE(FOND_FISS=_F(GROUP_NO=('FOND_FISS', )),
+                      LEVRE_SUP=_F(GROUP_MA=('LEVRE_SUP', )),
+                      MAILLAGE=mesh,
+                      SYME='OUI')
 
 RES0 = CREA_RESU(AFFE=_F(CHAM_GD=CHAM0,
                          CHAM_MATER=fieldmat,
@@ -61,9 +65,10 @@ RES0 = CREA_RESU(AFFE=_F(CHAM_GD=CHAM0,
                  OPERATION='AFFE',
                  TYPE_RESU='EVOL_ELAS')
 
-G0 = CALC_G(RESULTAT=RES0,
-            CHAM_THETA=CO('cham_theta_no'),
-            THETA=_F(FOND_FISS=FISS,
+G0 = CALC_H(OPTION='G',
+            RESULTAT=RES0,
+            THETA=_F(CHAM_THETA=CO('cham_theta_no'),
+                     FISSURE=FISS_NEW,
                      R_INF=0.0203282,
                      R_SUP=0.025))
 

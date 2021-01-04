@@ -108,6 +108,11 @@ FOND=DEFI_FOND_FISS( MAILLAGE=M,SYME='NON',
                         LEVRE_SUP=_F(GROUP_MA='LEVRE_SUP',),
                         LEVRE_INF=_F(GROUP_MA='LEVRE_INF',),
                        )
+FOND_NEW=DEFI_FISSURE( MAILLAGE=M,SYME='NON',
+                       FOND_FISS=_F( GROUP_NO = 'O'),
+                        LEVRE_SUP=_F(GROUP_MA='LEVRE_SUP',),
+                        LEVRE_INF=_F(GROUP_MA='LEVRE_INF',),
+                       )
 
 #---------------------------------------------------------------------
 #          MODELISATION ET CALCUL EN DEFORMATIONS PLANES
@@ -152,19 +157,20 @@ for i in range(2):
                   ),
                         NEWTON     =_F ( REAC_INCR    = 1 ,REAC_ITER=0))
 
-   GDP[i]=CALC_G(RESULTAT=ELADP[i],
+   GDP[i]=CALC_H(OPTION='G',
+                 RESULTAT=ELADP[i],
                  INST = 1,
                  THETA=_F(
                           R_INF=10.,
-                          FOND_FISS=FOND,
+                          FISSURE=FOND_NEW,
                           R_SUP=20.,))
 
-   K1K2[i]=CALC_G(RESULTAT=ELADP[i],
+   K1K2[i]=CALC_H(RESULTAT=ELADP[i],
                   INST = 1,
-                  THETA=_F(FOND_FISS=FOND,
+                  THETA=_F(FISSURE=FOND_NEW,
                            R_INF = 10.,
                            R_SUP = 20.),
-                  OPTION='CALC_K_G')
+                  OPTION='K')
 
 #--------------------------------------------------------------------
 #            TEST DES RESULTATS DE G, K1 ET K2   EN DP

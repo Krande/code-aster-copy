@@ -121,43 +121,52 @@ FOND=DEFI_FOND_FISS(MAILLAGE=MAIL,
                     SYME='OUI',
                     LEVRE_SUP=_F(GROUP_MA='LP1P2',),
                     )
+FOND_NEW=DEFI_FISSURE(MAILLAGE=MAIL,
+                    FOND_FISS=_F( GROUP_NO = ('P2',)),
+                    SYME='OUI',
+                    LEVRE_SUP=_F(GROUP_MA='LP1P2',),
+                    )
 
 
 
-G1=CALC_G(          RESULTAT=evol,
+G1=CALC_H(          OPTION='G',
+                    RESULTAT=evol,
                     TOUT_ORDRE='OUI',
                     THETA=_F(
                              R_INF=3.,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND_NEW,
                              R_SUP=10.),
                     EXCIT=_F(CHARGE=CH_PF,
                              FONC_MULT=FONC,),
                   )
 
-G2=CALC_G(          RESULTAT=evol,
+G2=CALC_H(          OPTION='G',
+                    RESULTAT=evol,
                     TOUT_ORDRE='OUI',
                     THETA=_F(
                              R_INF=5.,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND_NEW,
                              R_SUP=15.),
                     EXCIT=_F(CHARGE=CH_PF,
                              FONC_MULT=FONC,),
                   )
 
-G3=CALC_G(          RESULTAT=evol,
+G3=CALC_H(          OPTION='G',
+                    RESULTAT=evol,
                     TOUT_ORDRE='OUI',
                     THETA=_F(
                              R_INF=5.,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND_NEW,
                              R_SUP=18.),
                     EXCIT=_F(CHARGE=CH_PF,
                              FONC_MULT=FONC,),
                   )
 
 
-G4=CALC_G(          THETA=_F(
+G4=CALC_H(          OPTION='G',
+                    THETA=_F(
                              R_INF=3.,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND_NEW,
                              R_SUP=10.),
                     RESULTAT=evol,
                     NUME_ORDRE=5,
@@ -185,11 +194,12 @@ CH_P=AFFE_CHAR_MECA(MODELE=MODELE,
                         PRES_REP=_F(GROUP_MA='LP1P2',
                                     PRES=100000000.,),);
 
-G5=CALC_G(          RESULTAT=evol,
+G5=CALC_H(          OPTION='G',
+                    RESULTAT=evol,
                     TOUT_ORDRE='OUI',
                     THETA=_F(
                              R_INF=5.,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND_NEW,
                              R_SUP=15.),
                     EXCIT=_F(CHARGE=CH_P,
                              FONC_MULT=F_UNIT,),
