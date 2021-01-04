@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -228,7 +228,7 @@ class MEAXQS8(Element):
             para_out=((SP.PEPCON3, ECONTPG), ),
         ),
 
-        OP.AMOR_MECA(te=50,
+        OP.AMOR_MECA(te=121,
             para_in=((SP.PGEOMER, NGEOMER), (SP.PMASSEL, MMATUUR),
                      (SP.PMATERC, LC.CMATERC), (SP.PRIGIEL, MMATUUR),
                      (OP.AMOR_MECA.PVARCPR, LC.ZVARCPG), ),

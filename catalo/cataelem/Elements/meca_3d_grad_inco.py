@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -199,7 +199,7 @@ class GVI_3D_HE20(Element):
         )
     calculs = (
 
-        OP.AMOR_MECA(te=50,
+        OP.AMOR_MECA(te=121,
             para_in=((SP.PGEOMER, NGEOMER), (SP.PMASSEL, MMATUUR),
                      (SP.PMATERC, LC.CMATERC), (SP.PRIGINS, MMATUNS),
                      (OP.AMOR_MECA.PVARCPR, LC.ZVARCPG), ),

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine te0324(option, nomte)
 !    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
 !                          OPTION : 'AMOR_MECA'
 !                                OU 'RIGI_MECA_HYST'
-!        POUR TOUS LES TYPES D'ELEMENTS (SAUF LES ELEMENTS DISCRETS)
+!        POUR LES ELEMENTS 3D JOINT ET JOINT_HYME
 !
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL

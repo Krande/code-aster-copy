@@ -253,7 +253,7 @@ class MECA_HEXA20(Element):
             para_out=((SP.PEPCON3, ECONTPG), ),
         ),
 
-        OP.AMOR_MECA(te=50,
+        OP.AMOR_MECA(te=121,
             para_in=((SP.PGEOMER, NGEOMER), (SP.PMASSEL, MMATUUR),
                      (SP.PMATERC, LC.CMATERC), (SP.PRIGIEL, MMATUUR),
                      (OP.AMOR_MECA.PVARCPR, LC.ZVARCPG), ),

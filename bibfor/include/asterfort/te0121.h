@@ -19,8 +19,8 @@
 !
 !
 interface
-    subroutine te0121(nomopt, nomte)
-        character(len=16) :: nomopt
+    subroutine te0121(option, nomte)
+        character(len=16) :: option
         character(len=16) :: nomte
     end subroutine te0121
 end interface
