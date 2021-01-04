@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,6 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
     integer :: rang, nbproc, jnequ, numglo, jnulg
     integer :: iloc, nloc, nglo, ndprop, nval, jvale
     integer, dimension(:), pointer         :: pddl => null()
-    integer(kind=4), dimension(:), pointer :: ig_petsc_c => null()
     real(kind=8) :: value
 
     mpi_int :: mpicomm
@@ -75,6 +74,8 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
     PetscScalar :: xx(1)
     PetscOffset :: xidx
     PetscBool :: done
+    PetscInt, dimension(:), pointer :: ig_petsc_c => null()
+
 !----------------------------------------------------------------
     call jemarq()
 !
@@ -87,7 +88,7 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
     call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=nommai)
     call gettco(nommai(1:8), typsd)
     if( typsd.ne.'MAILLAGE_P' ) then
-        goto 9999
+        goto 999
     endif
     call jeveuo(numddl//'.NUME.NULG', 'L', jnulg)
     call jeveuo(numddl//'.NUME.PDDL', 'L', vi=pddl)
@@ -154,7 +155,7 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
     call VecDestroy(assembly, ierr)
     ASSERT(ierr.eq.0)
 !
-9999 continue
+999 continue
     call jedema()
 !
 #endif

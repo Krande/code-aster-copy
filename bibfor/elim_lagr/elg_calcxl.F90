@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ use elg_data_module
     real(kind=8) :: norm
     aster_logical :: info, debug
     PetscInt :: n1, n2, n3
-    PetscInt :: reason
+    KSPConvergedReason :: reason
     PetscErrorCode :: ierr
     PetscScalar, parameter :: neg_rone=-1.d0
     PetscOffset :: xidxay, xidxl

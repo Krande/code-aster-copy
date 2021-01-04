@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -96,11 +96,11 @@ use lmp_module, only : lmp_update
 !
 !     VARIABLES LOCALES
     integer :: ifm, niv, ierd, ibid, nmaxit, ptserr, jnequ
-    integer :: lmat, idvalc, jslvi, jslvk, jslvr, jindic, jcoll, icode
+    integer :: lmat, idvalc, jslvi, jslvk, jslvr, jcoll, icode
     integer :: jnugll, jprddl, nloc, tbloc, jvaleu, ndprop
     mpi_int :: mrank, msize
     integer, dimension(:), pointer :: slvi => null()
-    integer(kind=4) :: ndprop4, iterm, nglo
+    integer :: ndprop4, iterm, nglo
     mpi_int :: rang, nbproc
     mpi_int :: mpicomm
 !
@@ -117,15 +117,15 @@ use lmp_module, only : lmp_update
 !
     aster_logical :: lmd, lmhpc
     aster_logical, parameter :: dbg=.false.
-
 !
 !----------------------------------------------------------------
 !     Variables PETSc
 !
     PetscInt :: its, maxits
     PetscErrorCode ::  ierr
-    PetscInt :: neq, i, low, high, ndpro2
+    PetscInt :: neq, i, low, high, ndpro2, nn
     PetscInt :: bs
+    PetscInt, pointer :: v_indic(:) => null()
     PetscReal :: rtol, atol, dtol
     Vec :: r
     PetscScalar :: xx(1), ires, fres
@@ -280,16 +280,16 @@ use lmp_module, only : lmp_update
             ASSERT(ierr .eq. 0)
             call VecSetBlockSize(b, to_petsc_int(bs), ierr)
             ASSERT(ierr .eq. 0)
-            call VecSetSizes(b, ndprop4, nglo, ierr)
+            call VecSetSizes(b, to_petsc_int(ndprop4), to_petsc_int(nglo), ierr)
             ASSERT(ierr .eq. 0)
             call VecSetType(b, VECMPI, ierr)
             ASSERT(ierr .eq. 0)
-            call wkvect('&&APMAIN.INDICES', 'V V S', ndprop, jindic)
+            call wkvect('&&APMAIN.INDICES', 'V V S', ndprop, vi4=v_indic)
             call wkvect('&&APMAIN.VALEURS', 'V V R', ndprop, jvaleu)
             iterm = 0
             do jcoll = 0, nloc - 1
                 if ( zi(jprddl + jcoll) .eq. rang ) then
-                    zi4(jindic + iterm) = zi(jnugll + jcoll)
+                    v_indic(iterm + 1) = zi(jnugll + jcoll)
                     zr(jvaleu + iterm) = rsolu(jcoll + 1)
                     iterm = iterm + 1
 ! nsellenet
@@ -297,8 +297,8 @@ use lmp_module, only : lmp_update
 ! nsellenet
                 endif
             end do
-            call VecSetValues(b, iterm, zi4(jindic), zr(jvaleu), &
-                              INSERT_VALUES, ierr)
+            nn = to_petsc_int(iterm)
+            call VecSetValues(b, nn, v_indic(1), zr(jvaleu), INSERT_VALUES, ierr)
             call jedetr('&&APMAIN.INDICES')
             call jedetr('&&APMAIN.VALEURS')
             call VecAssemblyBegin(b, ierr)

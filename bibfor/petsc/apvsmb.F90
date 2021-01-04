@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
     integer :: bs, i, neq, ieq
     integer, dimension(:), pointer         :: nulg => null()
     integer, dimension(:), pointer         :: nlgp => null(), pddl => null()
-    integer(kind=4), dimension(:), pointer :: ig_petsc_c => null()
+    PetscInt, dimension(:), pointer :: ig_petsc_c => null()
 
     mpi_int :: mpicomm
 !

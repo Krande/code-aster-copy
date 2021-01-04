@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MatrixStorage
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -101,7 +101,7 @@ class MorseStorageClass : public MatrixStorageClass {
     /** @brief Objet Jeveux '.SMDE' */
     JeveuxVectorLong _smde;
     /** @brief Objet Jeveux '.SMHC' */
-    JeveuxVectorLong _smhc;
+    JeveuxVectorShort _smhc;
 
   public:
     /**
@@ -110,7 +110,7 @@ class MorseStorageClass : public MatrixStorageClass {
     MorseStorageClass( const std::string &name )
         : MatrixStorageClass( name ), _smdi( JeveuxVectorLong( getName() + ".SMDI" ) ),
           _smde( JeveuxVectorLong( getName() + ".SMDE" ) ),
-          _smhc( JeveuxVectorLong( getName() + ".SMHC" ) ){};
+          _smhc( JeveuxVectorShort( getName() + ".SMHC" ) ){};
 };
 
 /**

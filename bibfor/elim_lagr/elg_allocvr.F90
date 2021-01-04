@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,14 +36,14 @@ implicit none
 !
 !================================================================
     PetscErrorCode :: ierr
-    integer :: bs
+    PetscInt :: bs
     mpi_int :: mpicomm
 !----------------------------------------------------------------
     bs=1
 !    call asmpi_comm('GET_WORLD', mpicomm)
     mpicomm=PETSC_COMM_SELF
     call VecCreate(mpicomm, vect1, ierr)
-    call VecSetBlockSize(vect1, to_petsc_int(bs), ierr)
+    call VecSetBlockSize(vect1, bs, ierr)
     call VecSetType(vect1, VECSEQ, ierr)
     call VecSetSizes(vect1, PETSC_DECIDE, to_petsc_int(n1), ierr)
 #else

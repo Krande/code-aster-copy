@@ -1,5 +1,5 @@
 !  --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,26 +55,21 @@ private
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 
-public :: qsort, qsort_i4
+public :: qsort_i4, qsort
+
+interface qsort
+!  Generic function for the default integer size
+!  Use `qsort_i4` to explicitly work on short integers
+    module procedure qsort_i4
+!
+    module procedure qsort_i8
+!
+end interface qsort
 
 integer(kind=4), parameter, private :: un = 1
 integer(kind=8), parameter, private :: un8 = 1
 
 contains
-
-subroutine qsort(a,pv)
-!  Generic function for the default integer size
-!  Use `qsort_i4` to explicitly work on short integers
-   integer, dimension(:), intent(inout) :: a
-   integer, dimension(:), intent(inout), optional :: pv
-
-#if ASTER_INT_SIZE == 4
-   call qsort_i4(a, pv)
-#else
-   call qsort_i8(a, pv)
-#endif
-
-end subroutine qsort
 
 
 subroutine qsort_i4(a,pv)
