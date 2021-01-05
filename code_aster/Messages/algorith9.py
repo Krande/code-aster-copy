@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -156,17 +156,6 @@ Les matrices ne possèdent pas toutes la même numérotation.
  les numéros d'ordre fournis ne correspondent pas à des modes non perturbés
 """),
 
-    62 : _("""
- option symétrie : la dimension de POINT et AXE_1 doit être identique.
-"""),
-
-    63 : _("""
- option symétrie : AXE_2 est inutile en 2D, il est ignoré.
-"""),
-
-    64 : _("""
- option symétrie : la dimension de POINT et AXE_2 doit être identique.
-"""),
     65 : _("""
  La dimension de la matrice de norme n'est pas compatible
  avec la dimension de l'espace d'observation. Vérifiez la

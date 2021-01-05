@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,26 +17,9 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: thomas.de-soza at edf.fr
-
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""
-Erreur utilisateur dans MODI_MAILLAGE / DEFORME :
-  Le fichier de déplacement fourni est associé au maillage : %(k2)s
-  Alors que le maillage à déformer est : %(k1)s
-
-  Il faut que ces 2 maillages soient les mêmes.
-
-Conseils :
-  Pour créer un champ de déplacement adapté au maillage %(k1)s, on peut utiliser
-  la commande PROJ_CHAMP.
-"""),
-
-
-
 
     3 : _("""
  Erreur d'utilisation de POST_CHAMP :
@@ -165,13 +148,13 @@ Contactez le support technique.
 """),
 
     47 : _("""
- PROJ_CHAMP, occurrence %(i1)d de VIS_A_VIS :
-
+ PROJ_CHAMP, occurrence %(i1)d de VIS_A_VIS : 
+ 
  Le noeud %(k1)s est jugé distant de la maille sur laquelle il devrait être
- projeté. Comme la projection de ce noeud a déjà été faite lors d'une occurrence
+ projeté. Comme la projection de ce noeud a déjà été faite lors d'une occurrence 
  précédente, on ne tient pas compte de cette projection distante.
-
- Conseil : il est cependant recommandé de vérifier l'affectation des groupes dans VIS_A_VIS.
+ 
+ Conseil : il est cependant recommandé de vérifier l'affectation des groupes dans VIS_A_VIS. 
 """),
 
     48 : _("""
