@@ -2,7 +2,7 @@
 # --------------------------------------------------------------------
 # Copyright (C) 2018 Aether Engineering Solutions - www.aethereng.com
 # Copyright (C) 2018 Kobe Innovation Engineering - www.kobe-ie.com
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ import string
 
 import aster
 from ..Cata.Syntax import _F
-from ..Commands import CALC_FERRAILLAGE, CREA_CHAMP, CREA_RESU, DETRUIRE, FORMULE
+from ..Commands import CALC_FERRAILLAGE, CREA_CHAMP, CREA_RESU, FORMULE
 from ..Messages import UTMESS
 
 
@@ -158,7 +158,7 @@ def combinaison_ferraillage_ops(self, **args):
     #   DNST :
     # EPSIBE :
     # SIGMBE :
-    
+
     if not TEST_TOUT:
         groupSelection = lGroupSelec[0]
 
@@ -211,8 +211,6 @@ def combinaison_ferraillage_ops(self, **args):
                           CHAM_F=__CHFMU,
                           CHAM_PARA=(__maxifer,__CHORD2),
                           )
-
-        DETRUIRE(CONCEPT=(_F(NOM=(__CHORD2,__FDNSXI,__CHFMU)),),)
 
     # Bug il n y a pas de paramètre  INOUT  associe a la grandeur: FER2_R  dans l option: TOU_INI_ELEM
     # see https://www.code-aster.org/forum2/viewtopic.php?id=21005
@@ -323,7 +321,7 @@ def algo_2D (_resfer, affe, lst_nume_ordre, code, type_combo):
                 i_affe_for_cf.pop('GAMMA_S_FOND')
                 i_affe_for_cf.pop('GAMMA_C_ACCI')
                 i_affe_for_cf.pop('GAMMA_S_ACCI')
-            
+
                 lst_tmp_affe.append(_F(**i_affe_for_cf),)
 
         dic_type_comb['AFFE']=tuple(lst_tmp_affe)

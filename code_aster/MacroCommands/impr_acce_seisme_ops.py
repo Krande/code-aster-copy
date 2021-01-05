@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ import numpy as np
 
 import aster
 from ..Cata.Syntax import _F
-from ..Commands import (CALC_FONCTION, CREA_TABLE, DEFI_FICHIER, DEFI_FONCTION, DETRUIRE,
+from ..Commands import (CALC_FONCTION, CREA_TABLE, DEFI_FICHIER, DEFI_FONCTION,
                                  IMPR_FONCTION, IMPR_TABLE, INFO_EXEC_ASTER, INFO_FONCTION,
                                  RECU_FONCTION)
 from ..Messages import UTMESS
@@ -74,7 +74,6 @@ def get_unite_libre():
     """
     _UL = INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
     unite = _UL['UNITE_LIBRE', 1]
-    DETRUIRE(CONCEPT=(_F(NOM=_UL),), INFO=1)
     return unite
 
 
@@ -266,7 +265,6 @@ def impr_acce_seisme_ops(self, **args):
                            GRILLE_X = gx,
                            GRILLE_Y = gy,
                           )
-                DETRUIRE(CONCEPT=_F(NOM=__FONC_D))
             else:
 
                 gx = (l_inst[-1] - l_inst[0])/ngrid
@@ -350,8 +348,6 @@ def impr_acce_seisme_ops(self, **args):
             amaxi.extend(tab.values()["ACCE_MAX"])
             asv.extend(tab.values()["ACCE_SUR_VITE"])
 
-
-            DETRUIRE( CONCEPT = _F(NOM = (__intea, __duree, __maxi, __cav )) )
 
         # impressions de tous les acceleros
 
@@ -483,10 +479,6 @@ def impr_acce_seisme_ops(self, **args):
         DEFI_FICHIER (ACTION='LIBERER',UNITE = unite)
         os.remove(chem_fic+'.hardcopy')
         os.remove(chem_fic+'.wrk')
-
-        if vale_refe !=[]:
-            DETRUIRE( CONCEPT = _F(NOM = (__refe,)) )
-        DETRUIRE( CONCEPT = _F(NOM = (__calc,)) )
 
         # tableau de statistiques
         # moyenne, mediane, valeurs +-1 sigma
@@ -702,8 +694,6 @@ def impr_acce_seisme_ops(self, **args):
             os.remove(chem_fic+'.hardcopy')
             os.remove(chem_fic+'.wrk')
 
-            DETRUIRE( CONCEPT = _F(NOM = (__PSIG, __MSIG, __SPMSIG, __MEDI, __spec1s)) )
-
         if FREQ_MIN:
 
 
@@ -782,15 +772,7 @@ def impr_acce_seisme_ops(self, **args):
                 os.remove(chem_fic+'.hardcopy')
                 os.remove(chem_fic+'.wrk')
 
-
-                DETRUIRE( CONCEPT = _F(NOM = (__SPCOR)) )
-
                 UTMESS('I','SEISME_87',valr=coef_mult)
-
-        DETRUIRE( CONCEPT = _F(NOM = (__TAB)) )
-        for ii in range(nb_tirage):
-            DETRUIRE( CONCEPT = _F(NOM = (__F_ACCE[ii],__F_VITE[ii], __F_DEPL[ii],
-                                          __F_SRO[ii])) )
 
     #    moyenne géométrique des moyennes des spectres horizontaux
     if dim>=2:
@@ -844,13 +826,5 @@ def impr_acce_seisme_ops(self, **args):
         DEFI_FICHIER (ACTION='LIBERER',UNITE = unite)
         os.remove(chem_fic+'.hardcopy')
         os.remove(chem_fic+'.wrk')
-
-
-        DETRUIRE( CONCEPT = _F(NOM = (__F_MOYG, __F_PROG)) )
-
-    DETRUIRE( CONCEPT = _F(NOM = (__specci,)) )
-
-    for idi in range(dim):
-        DETRUIRE( CONCEPT = _F(NOM = (__MOY[idi])) )
 
     return

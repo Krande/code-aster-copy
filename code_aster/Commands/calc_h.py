@@ -21,8 +21,6 @@
 
 from ..Objects import Table
 from .extr_table import EXTR_TABLE
-from .crea_resu import CREA_RESU
-from .detruire import DETRUIRE
 from ..Supervis import ExecuteCommand, UserMacro
 from ..Cata.Commands.calc_h import CALC_H as calc_h_cata
 from ..Cata.Syntax import _F
@@ -41,6 +39,15 @@ class ComputeH(ExecuteCommand):
         self._result = Table()
 
 def calc_h_with_co(self, **args):
+    """Wrapper around the original CALC_G command to return an additional
+    result.
+
+    Arguments:
+        args (dict): Keywords arguments of user's keywords.
+
+    Returns:
+        Table: Result of the command.
+    """
     _result_calc_g = ComputeH.run(**args)
 
     # Extraction de la table qui contient G

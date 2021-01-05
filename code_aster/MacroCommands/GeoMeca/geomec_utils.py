@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ from ...Messages import UTMESS
 from ...Behaviours import catalc
 from ...Cata.Syntax import _F
 from ...Commands import (CREA_TABLE, DEFI_FICHIER, DEFI_FONCTION,
-                         DEFI_LIST_INST, DEFI_LIST_REEL, DETRUIRE,
+                         DEFI_LIST_INST, DEFI_LIST_REEL,
                          IMPR_FONCTION, INFO_EXEC_ASTER, SIMU_POINT_MAT)
 from ..Utils.calc_point_mat import CALC_POINT_MAT
 
@@ -1313,9 +1313,7 @@ def impr_graphique(self, DicoEssai, Courbes, NomsFich,
         __ULINFO = INFO_EXEC_ASTER(LISTE_INFO='ETAT_UNITE', UNITE=iul)
         if __ULINFO['ETAT_UNITE', 1] == 'FERME   ':
             unite = iul
-            DETRUIRE(CONCEPT=_F(NOM=__ULINFO), INFO=1)
             break
-        DETRUIRE(CONCEPT=_F(NOM=__ULINFO), INFO=1)
 
     assert type(unite) is int
 
@@ -2068,10 +2066,6 @@ def Calc_Gs_max(self, GAMMA_ELAS, PRES_CONF, KZERO, MATER, COMPORTEMENT, CONVERG
     sig_xy = TabRes['SIXY'][-1]
     eps_xy = TabRes['EPXY'][-1]
 
-    DETRUIRE(CONCEPT=_F(NOM=(__CHAR1, __CHAR2, __CHAR3, __EVOL,
-                             __RLIST, __DLIST),),
-             INFO=1)
-
     return 0.5 * sig_xy / eps_xy
 
 
@@ -2139,9 +2133,6 @@ def Calc_Es_max(self, EPSI_ELAS, PRES_CONF, KZERO, MATER, COMPORTEMENT, CONVERGE
     sig_zz = NP.array(TabRes['SIZZ'])
     sig_xx = NP.array(TabRes['SIXX'])
     q      = sig_zz - sig_xx
-
-    DETRUIRE(CONCEPT=_F(NOM=(__CHAR1, __CHAR2, __EVOL,__RLIST, __DLIST),),
-             INFO=1,)
 
     return 0.5*abs(q[inst.index(5.)] - q[inst.index(3.)]) / EPSI_ELAS
 
@@ -2267,8 +2258,5 @@ def essai_TRIA_ND_C_D_mono(self, inst_init, sigm, epsi, vari, DicoEssai,
 
       calc_ok = False
       __EVOLM = self.get_last_concept()
-
-    else:
-      DETRUIRE(CONCEPT=_F(NOM=(__rlist,__dlist,__CHARV,__CHARH,)), INFO=1)
 
     return __EVOLM,calc_ok,

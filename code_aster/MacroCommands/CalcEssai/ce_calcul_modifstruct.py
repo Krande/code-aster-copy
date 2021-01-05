@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ from ...Cata.Syntax import _F
 from ...Commands import (AFFE_CARA_ELEM, AFFE_CHAR_MECA, AFFE_MATERIAU,
                          AFFE_MODELE, ASSE_MAILLAGE, ASSE_MATRICE,
                          CALC_MATR_ELEM, CREA_MAILLAGE, DEFI_MAILLAGE,
-                         DEPL_INTERNE, DETRUIRE, EXTR_MODE, MAC_MODES,
+                         DEPL_INTERNE, EXTR_MODE, MAC_MODES,
                          MACR_ELEM_STAT, MODE_STATIQUE, NUME_DDL,
                          NUME_DDL_GENE, PROJ_CHAMP, PROJ_MATR_BASE,
                          PROJ_MESU_MODAL, REST_GENE_PHYS)
@@ -311,8 +311,6 @@ class CalcEssaiModifStruct:
         """
 
         grnocapt = opt_grnocapt or self._get_grp_sensors_tot()
-
-        clear_concept(self.x_bsmo)
         self.x_bsmo = None
 
         _MODST = MODE_STATIQUE(MATR_RIGI=self.matr_rig,
@@ -362,7 +360,6 @@ class CalcEssaiModifStruct:
             message = "ERREUR ASTER : " + err.message
             self.mess.disp_mess(message)
 
-        clear_concept(self.x_resgen)
         self.x_resgen = None
         __RESGEN = REST_GENE_PHYS(RESU_GENE=__MODGEN,
                                   TOUT_ORDRE='OUI',
@@ -370,11 +367,6 @@ class CalcEssaiModifStruct:
 
         self.x_resgen = ModeMeca(None, __RESGEN.nom, __RESGEN, self.mess)
         self.base_expansion = self.x_resgen
-
-        clear_concept(__NUMGEN)
-        clear_concept(__KPROJ)
-        clear_concept(__MPROJ)
-        clear_concept(__MODGEN)
 
         return self.x_resgen
 
@@ -392,7 +384,6 @@ class CalcEssaiModifStruct:
         noeuds_interface = [grp["NOM"] for grp in self.interface_groups]
 
         # Reduction des modes mesures
-        clear_concept(self.x_mide)
         self.x_mide = None
         __MIDE = EXTR_MODE(FILTRE_MODE=_F(MODE=modmesu.obj,
                                           NUME_MODE=modes_mesure_retenus,
@@ -401,7 +392,6 @@ class CalcEssaiModifStruct:
         name = obj_get_name(self.x_mide)
         self.objects.update(name, self.x_mide)
 
-        clear_concept(self.x_mexp)
         self.x_mexp = None
         # cas LMME, une fonction existe pour calculer la base d'expansion
         if self.method_name == "LMME":
@@ -423,7 +413,6 @@ class CalcEssaiModifStruct:
             _MEXP = self.base_expansion.obj
         self.x_mexp = _MEXP
 
-        clear_concept(self.x_proj)
         self.x_proj = None
         try:
             _PROJ = PROJ_MESU_MODAL(MODELE_CALCUL=_F(MODELE=modlsup.obj,
@@ -440,7 +429,6 @@ class CalcEssaiModifStruct:
         self.x_proj = _PROJ
 
         # Condensation de la mesure sur les DDL INTERFACES
-        clear_concept(self.x_ssexp)
         self.x_ssexp = None
         try:
             _SSEXP = MACR_ELEM_STAT(DEFINITION=_F(MODELE=modlsup.obj,
@@ -461,7 +449,6 @@ class CalcEssaiModifStruct:
             return
         self.x_ssexp = _SSEXP
 
-        clear_concept(self.x_mailcond)
         self.x_mailcond = None
         __MAILCD = DEFI_MAILLAGE(
             DEFI_SUPER_MAILLE=_F(MACR_ELEM=self.x_ssexp,
@@ -516,7 +503,6 @@ class CalcEssaiModifStruct:
                                 MAILLAGE_2=__MAIL,
                                 OPERATION='SOUS_STR',)
 
-        clear_concept(self.i_modlint)
         self.i_modlint = None
         __MODL = AFFE_MODELE(MAILLAGE=__MAILM,
                              AFFE=_F(GROUP_MA=self.group_ma_int,
@@ -546,33 +532,26 @@ class CalcEssaiModifStruct:
                                CARA_ELEM=__CARA,
                                )
 
-        clear_concept(self.i_numint)
         self.i_numint = None
 
         __NUM = NUME_DDL(MATR_RIGI=__KEL,)
         self.i_numint = __NUM
 
-        clear_concept(self.i_kas)
         self.i_kas = None
         __KAS = ASSE_MATRICE(MATR_ELEM=__KEL, NUME_DDL=self.i_numint,)
         self.i_kas = __KAS
 
-        clear_concept(self.i_mas)
         self.i_mas = None
         __MAS = ASSE_MATRICE(MATR_ELEM=__MEL, NUME_DDL=self.i_numint,)
         self.i_mas = __MAS
 
     def indicateur_choix_base_expansion(self):
         """Expansion statique du champ de deplacements aux interfaces"""
-
-
-        clear_concept(self.modstint)
         self.modstint
         __MODSTI = MODE_STATIQUE(MATR_RIGI=self.kassup,
                                  FORCE_NODALE=self._get_force_nodale())
         self.modstint = __MODSTI
 
-        clear_concept(self.projmsint)
         self.projmsint = None
         try:
             __PROJMS = PROJ_MESU_MODAL(
@@ -590,14 +569,12 @@ class CalcEssaiModifStruct:
             return
 
         self.projmsint = __PROJMS
-        clear_concept(self.i_deplpr)
         self.i_deplpr = None
         __DEPLPR = REST_GENE_PHYS(RESU_GENE=self.projmsint,
                                   TOUT_ORDRE='OUI',
                                   NOM_CHAM='DEPL')
         self.i_deplpr = __DEPLPR
 
-        clear_concept(self.i_deplint)
         self.i_deplint = None
         try:
             __DEPINT = PROJ_CHAMP(METHODE='COLLOCATION',
@@ -614,7 +591,6 @@ class CalcEssaiModifStruct:
             return
         self.i_deplint = ModeMeca(None, __DEPINT.nom, __DEPINT)
 
-        clear_concept(self.i_deplxint)
         self.i_deplxint = None
         # CHAMP DE DEPL AUX INTERFACES SUR LE MODELE COUPLE
         try:
@@ -643,7 +619,6 @@ class CalcEssaiModifStruct:
         else:
             self.mat_ponder = None
 
-        clear_concept(self.mac_int)
         self.mac_int = None
         if self.crit_method == 'MAC':
             if self.mat_ponder:
@@ -687,7 +662,6 @@ class CalcEssaiModifStruct:
         mcouple = cpl.mat_mass[0]
 # acouple = cpl.mat_amor[0]
 
-        clear_concept(self.modes_couple)
         self.modes_couple = None
         if mode_simult:
             try:
@@ -719,7 +693,6 @@ class CalcEssaiModifStruct:
         self.objects.update(_MODCPL.nom, self.modes_couple)
 
         # RETROPROJECTION SUR LE MODELE EXPERIMENTAL (INTERFACE -> DDL MESURE)
-        clear_concept(self.modes_retr)
         self.modes_retr = None
         # XXX Should not we return the DEPL_INTERNE in the DeclareOut?
         try:
@@ -849,7 +822,6 @@ class CopyModelMeca:
 
     def create_modele(self, affe):
         """Creation du modele"""
-        clear_concept(self.modele.obj)
         affe = convert_args(affe, self.concepts)
         _MDLCPL = AFFE_MODELE(MAILLAGE=self.maillage,
                               AFFE=affe)
@@ -1015,7 +987,6 @@ class CreateModeleCouple(CopyModelMeca):
 
     def create_maillage(self):
         """Creation du maillage"""
-        clear_concept(self.maillage)
         self.maillage = None
         # Concept de sortie, ne pas changer de nom sans changer le DeclareOut
         _MLCPL = ASSE_MAILLAGE(MAILLAGE_1=self.mail1,
@@ -1027,7 +998,6 @@ class CreateModeleCouple(CopyModelMeca):
 
     def create_modele(self, affe):
         """Creation du modele"""
-        clear_concept(self.modele)
         self.modele = None
         # Concept de sortie, ne pas changer de nom sans changer le DeclareOut
         _MDLCPL = AFFE_MODELE(MAILLAGE=self.maillage,
@@ -1043,8 +1013,6 @@ class CreateModeleCouple(CopyModelMeca):
             raise RuntimeError("Plusieurs, ou aucun, NUME_DDL presents, "
                                "on ne peut en avoir qu'un")
         args, sd = args_lst[0]
-        for nume in self.nume_lst:
-            clear_concept(nume)
         self.nume_lst = []
         args = convert_args(args, self.concepts)
         _NUMCPL = NUME_DDL(**args)
@@ -1054,8 +1022,6 @@ class CreateModeleCouple(CopyModelMeca):
 
     def asse_matrice(self, args_lst):
         # cleanup:
-        for c in self.mat_rigi + self.mat_mass + self.mat_amor:
-            clear_concept(c)
         self.mat_rigi = []
         self.mat_mass = []
         self.mat_amor = []
@@ -1082,19 +1048,6 @@ class CreateModeleCouple(CopyModelMeca):
 # PETITS UTILITAIRES #
 #
 #
-
-def clear_concept(objet):
-    """!Detruit un concept aster directement, ou encapsule
-        une classe CALC_ESSAI"""
-
-    if objet is None:
-        return
-    try:
-        cpt = objet.obj
-    except AttributeError:
-        cpt = objet
-    DETRUIRE(CONCEPT=_F(NOM=cpt), INFO=1)
-
 
 def convert_args(mc, concepts):
     """convertit un (ensemble) de mot-clefs en remplacant les

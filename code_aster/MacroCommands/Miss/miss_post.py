@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,6 @@
 
 """
 Module permettant le post-traitement d'un calcul MISS3D
-
-Les concepts temporaires de calcul sont nommés "__xxxx" (soit .9000001)
-automatiquement supprimés en sortie de la macro.
-Les concepts dont on garde une référence dans les résultats sont nommés
-avec "_xxxx" (soit _9000002).
 """
 
 import os
@@ -43,7 +38,7 @@ from ...Cata.Syntax import _F
 from ...Commands import (AFFE_CHAR_MECA_F, CALC_FONC_INTERP, CALC_FONCTION,
                          COMB_MATR_ASSE, CREA_CHAMP, CREA_TABLE,
                          DEFI_CONSTANTE, DEFI_FICHIER, DEFI_FONCTION,
-                         DEFI_LIST_REEL, DETRUIRE, DYNA_VIBRA, FORMULE,
+                         DEFI_LIST_REEL, DYNA_VIBRA, FORMULE,
                          LIRE_FONCTION, LIRE_FORC_MISS, LIRE_IMPE_MISS,
                          NUME_DDL_GENE, PROJ_MATR_BASE, PROJ_VECT_BASE,
                          RECU_FONCTION, REST_SPEC_TEMP)
@@ -71,8 +66,6 @@ class PostMiss(object):
         self.param = param
         self.verbose = param['INFO'] >= 2
         self.debug = self.verbose
-        # liste de concepts intermédiaires à supprimer à la fin
-        self._to_delete = []
         self.initco()
         if self.debug:
             set_debug(True)
@@ -241,14 +234,6 @@ class PostMiss(object):
             UTMESS('I', 'MISS0_12', valr=(0., freq_max, df), vali=len(lfreq))
         self.list_freq_DLH = lfreq
 
-    def suppr_acce_fft(self):
-        """Marque pour suppression les accéléros interpolés et leur FFT."""
-        if self.param['INST_FIN'] is not None:
-            for co in (self.acce_x, self.acce_y, self.acce_z,
-                       self.depl_x, self.depl_y, self.depl_z,
-                       self.xff, self.yff, self.zff):
-                if co:
-                    self._to_delete.append(co)
 
     def initco(self):
         """Deux fonctions :
@@ -261,8 +246,6 @@ class PostMiss(object):
         self.acce_x = self.acce_y = self.acce_z = None
         self.depl_x = self.depl_y = self.depl_z = None
         self.xff = self.yff = self.zff = None
-        if len(self._to_delete) > 0:
-            DETRUIRE(CONCEPT=_F(NOM=tuple(self._to_delete),),)
         # variables autres que concepts
         self._tkeys = self._torder = self._tline = None
         self.tab = None
@@ -311,7 +294,6 @@ class PostMissTran(PostMiss):
         """Initialisation."""
         super(PostMissTran, self).__init__(parent, param)
         self.methode_fft = 'PROL_ZERO'
-        self._suppr_matr = True
         self.excit_harmo = []
 
     def argument(self):
@@ -319,7 +301,6 @@ class PostMissTran(PostMiss):
         super(PostMissTran, self).argument()
         # s'assurer que les unités logiques sont libérées (rewind)
         self.check_datafile_exist()
-        self.suppr_acce_fft()
 
     def execute(self):
         """Lance le post-traitement"""
@@ -329,7 +310,6 @@ class PostMissTran(PostMiss):
 
     def sortie(self):
         """Prépare et produit les concepts de sortie."""
-        self._to_delete.append(self.dyge)
         # XXX on pensait qu'il fallait utiliser PROL_ZERO mais miss01a
         #    devient alors NOOK. A clarifier/vérifier en passant
         #    d'autres tests avec ce post-traitement.
@@ -366,10 +346,6 @@ class PostMissTran(PostMiss):
             if not first:
                 opts = { 'RESULTAT' : self.dyge, 'reuse' : self.dyge }
             self.dyge = self.iteration_dlh(_rito, freq, opts)
-
-            DETRUIRE(CONCEPT=_F(NOM=__impe,),)
-            if self._suppr_matr:
-                self._to_delete.append(_rito)
             first = False
 
 
@@ -472,7 +448,6 @@ class PostMissHarm(PostMissTran):
         """Initialisation."""
         super(PostMissHarm, self).__init__(parent, param)
         self.methode_fft = 'COMPLET'
-        self._suppr_matr = False
         self.sd = None
 
     def argument(self):
@@ -581,9 +556,6 @@ class PostMissTabl(PostMiss):
                 if not first:
                     opts = { 'RESULTAT' : self.dyge_z, 'reuse' : self.dyge_z }
                 self.dyge_z = self.iteration_dlh('DZ', _rito, freq, opts)
-
-            DETRUIRE(CONCEPT=_F(NOM=__impe,),)
-            self._to_delete.append(_rito)
             first = False
 
     def iteration_dlh(self, dir, rigtot, freq, opts):
@@ -604,7 +576,6 @@ class PostMissTabl(PostMiss):
                                 EXCIT=_F(VECT_ASSE_GENE=__fosx,
                                          COEF_MULT=1.0),
                                 **opts)
-        DETRUIRE(CONCEPT=_F(NOM=__fosx),)
         return __dyge
 
     def recombinaison(self):
@@ -641,7 +612,6 @@ class PostMissTabl(PostMiss):
         sur les fréquences 'lfreq'."""
         _printDBG("Calcul de la réponse en %s, direction %s" % (gno, dir))
         tfc = 0.
-        to_del = []
         if self.acce_x:
             _repx = RECU_FONCTION(RESU_GENE=self.dyge_x,
                                    NOM_CHAM=cham,
@@ -650,7 +620,6 @@ class PostMissTabl(PostMiss):
                                    INTERPOL='LIN',
                                    PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',)
             tfc = _repx.convert('complex') * self.tf_xff + tfc
-            to_del.append(_repx)
         if self.acce_y:
             _repy = RECU_FONCTION(RESU_GENE=self.dyge_y,
                                    NOM_CHAM=cham,
@@ -659,7 +628,6 @@ class PostMissTabl(PostMiss):
                                    INTERPOL='LIN',
                                    PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',)
             tfc = _repy.convert('complex') * self.tf_yff + tfc
-            to_del.append(_repy)
         if self.acce_z:
             _repz = RECU_FONCTION(RESU_GENE=self.dyge_z,
                                    NOM_CHAM=cham,
@@ -668,7 +636,6 @@ class PostMissTabl(PostMiss):
                                    INTERPOL='LIN',
                                    PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',)
             tfc = _repz.convert('complex') * self.tf_zff + tfc
-            to_del.append(_repz)
 
         tffr = tfc.evalfonc(self.list_freq_DLH)
         tffr.para['NOM_PARA'] = 'FREQ'
@@ -685,7 +652,6 @@ class PostMissTabl(PostMiss):
                                            NORME=self.param['NORME'],
                                            AMOR_REDUIT=self.param['AMOR_SPEC_OSCI'],
                                            **opts),)
-        DETRUIRE(CONCEPT=_F(NOM=tuple(to_del),),)
         self.add_line(gno, cham, 'INST', **{ FKEY[dir] : _reptemp })
         self.add_line(gno, cham, 'FREQ', **{ FKEY[dir] : _repfreq })
         self.add_line(gno, cham, 'SPEC_OSCI', **{ FKEY[dir] : _spec })
@@ -988,7 +954,6 @@ class PostMissFichierTemps(PostMissFichier):
             for mode in range(0, nbmod):
                 F_sism_temps1[mode,:] = self.calc_forc_comp_temps(unit,
                                               __linst, __fdpx, mode + 1)
-            DETRUIRE(CONCEPT=_F(NOM=__fdpx))
 
         if self.param['EXCIT_SOL']['CHAM_Y']:
             deply_aster = self.calc_depl('CHAM_Y', __linst)
@@ -996,7 +961,6 @@ class PostMissFichierTemps(PostMissFichier):
             for mode in range(0, nbmod):
                 F_sism_temps2[mode,:] = self.calc_forc_comp_temps(unit,
                                               __linst, __fdpy, nbmod + mode + 1)
-            DETRUIRE(CONCEPT=_F(NOM=__fdpy))
 
         if self.param['EXCIT_SOL']['CHAM_Z']:
             deplz_aster = self.calc_depl('CHAM_Z', __linst)
@@ -1004,7 +968,6 @@ class PostMissFichierTemps(PostMissFichier):
             for mode in range(0, nbmod):
                 F_sism_temps3[mode,:] = self.calc_forc_comp_temps(unit,
                                               __linst, __fdpz, 2*nbmod + mode + 1)
-            DETRUIRE(CONCEPT=_F(NOM=__fdpz))
 
         self.Fs_temps = F_sism_temps1 + F_sism_temps2 + F_sism_temps3
 
@@ -1054,7 +1017,6 @@ class PostMissFichierTemps(PostMissFichier):
                         LIST_PARA=linst)
 
         force = __fT1.Valeurs()[1]
-        DETRUIRE(CONCEPT=_F(NOM=(__fHr, __fHi, __fH, __fF, __fT0, __fTT, __fTTF, __fT1, __lfreq)))
         return force
 
 
@@ -1291,8 +1253,6 @@ class PostMissChar(PostMiss):
                                    MY= fry,
                                    MZ= frz,),)
 
-        DETRUIRE(CONCEPT=_F(NOM=__fdep))
-
     def calc_forc_comp_temps(self, unit, linst, fdepl, indice):
         """???"""
 
@@ -1349,7 +1309,6 @@ class PostMissChar(PostMiss):
                               PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
                          )
 
-        DETRUIRE(CONCEPT=_F(NOM=(__fHr, __fHi, __fH, __fT0, __fTT, __fTC, __lfreq)))
         return _fT1
 
     def calc_forc_vari_temps(self, FSIST, linst, fdepl, indice):
@@ -1402,7 +1361,6 @@ class PostMissChar(PostMiss):
                               PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
                          )
 
-        DETRUIRE(CONCEPT=_F(NOM=(__fH, __fT0, __fTT, __fTC, __lfreq)))
         return _fT1
 
 class ListPost(list):

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 from ..Cata.Syntax import _F
 from ..Commands import (AFFE_CARA_ELEM, AFFE_CHAR_MECA, AFFE_MATERIAU,
                         AFFE_MODELE, CALC_CHAMP, CREA_CHAMP, CREA_TABLE,
-                        DEFI_GROUP, DETRUIRE, LIRE_MAILLAGE, MECA_STATIQUE)
+                        DEFI_GROUP, LIRE_MAILLAGE, MECA_STATIQUE)
 from ..Helpers.UniteAster import UniteAster
 from .Utils import partition
 from .Utils.griddata_local import griddata
@@ -2077,12 +2077,6 @@ def calc_bt_ops(self,
         __forc_i = __EFA.EXTR_COMP('N', [], 0)
 
         a = __forc_i.valeurs
-
-        DETRUIRE(
-                  CONCEPT=_F(
-                            NOM=(__resu1, __EFA, __carael)
-                            )
-                )
 
         return a
 

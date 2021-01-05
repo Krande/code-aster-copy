@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,22 +21,21 @@
 # POST_NEWMARK : calcul de stabilite ouvrage en remblai au seisme
 #-------------------------------------------------------
 
+import aster
 #import sys
 import numpy as np
 
-import aster
 from ..Cata.Syntax import _F
-from ..Objects.table_py import Table
-from ..Commands import (CALC_CHAMP, CALC_FONCTION, CALC_TABLE,
-                                 CREA_TABLE, DEFI_FONCTION, DEFI_GROUP,
-                                 MACR_LIGN_COUPE, POST_ELEM, POST_RELEVE_T,
-                                 PROJ_CHAMP,MODI_MAILLAGE,CREA_CHAMP,
-                                 CREA_RESU,PROJ_CHAMP,IMPR_RESU,IMPR_TABLE,
-                                 AFFE_MODELE,DEFI_MATERIAU,AFFE_MATERIAU,
-                                 CALC_MATR_ELEM,NUME_DDL,ASSE_MATRICE,DETRUIRE,
-                                 FORMULE,CREA_MAILLAGE,DEFI_FICHIER)
-from ..Messages import ASSERT, UTMESS, MasquerAlarme, RetablirAlarme
+from ..Commands import (AFFE_MATERIAU, AFFE_MODELE, ASSE_MATRICE, CALC_CHAMP,
+                        CALC_FONCTION, CALC_MATR_ELEM, CALC_TABLE, CREA_CHAMP,
+                        CREA_MAILLAGE, CREA_RESU, CREA_TABLE, DEFI_FICHIER,
+                        DEFI_FONCTION, DEFI_GROUP, DEFI_MATERIAU, FORMULE,
+                        IMPR_RESU, IMPR_TABLE, MACR_LIGN_COUPE, MODI_MAILLAGE,
+                        NUME_DDL, POST_ELEM, POST_RELEVE_T, PROJ_CHAMP)
 from ..Helpers import LogicalUnitFile
+from ..Messages import ASSERT, UTMESS, MasquerAlarme, RetablirAlarme
+from ..Objects.table_py import Table
+
 
 def get_static_shear(sign_static,sigt_static,phi,cohesion):
     tanphi = np.tan(np.pi*np.array(phi)/180.)
@@ -68,7 +67,7 @@ def get_dynamic_shear(sigt1_dyn,inst):
       dynamic_shear.append(np.sum(np.array(sigt1_dyn[jj].valeurs)))
 
     dynamic_shear = np.array(dynamic_shear)
-    
+
     return dynamic_shear
 
 def get_dynamic_shear_vector(sigt1_dyn,inst):
@@ -94,7 +93,7 @@ def get_local_FS(sign,sigt,phi,cohesion,):
       FS = static_shear / sigt
     except:
       FS = 0.
-    
+
     return FS
 
 
@@ -112,7 +111,7 @@ def post_newmark_ops(self,**args):
   args = _F(args)
 
   ONLY_FS=False
-  if args['RESULTAT'] is not None : 
+  if args['RESULTAT'] is not None :
     RESULTAT = args['RESULTAT']
     __model = None
     ### RECUPERATION DU MAILLAGE DANS LE RESULTAT DYNAMIQUE
@@ -131,7 +130,7 @@ def post_newmark_ops(self,**args):
   else:
     ONLY_FS=True
 
-  if args['RESULTAT_PESANTEUR'] is not None : 
+  if args['RESULTAT_PESANTEUR'] is not None :
     RESULTAT_PESANTEUR = args['RESULTAT_PESANTEUR']
     __modST = None
     try:
@@ -173,7 +172,7 @@ def post_newmark_ops(self,**args):
     r = args['RAYON']
     posx = args['CENTRE_X']
     posy = args['CENTRE_Y']
-  else : 
+  else :
     TYPE = "MAILLAGE"
     __mail_1 = args['MAILLAGE_GLIS']
 
@@ -256,7 +255,7 @@ def post_newmark_ops(self,**args):
                        ORIE_PEAU_2D =_F(GROUP_MA=('LIGNE_',),),);
 
     ##### ON RESTREINT LE MAILLAGE PATCH A LA ZONE COMMUNE AVEC LE MAILLAGE DU
-    ##### RESULTAT A CONSIDERER 
+    ##### RESULTAT A CONSIDERER
     __mail_2 = CREA_MAILLAGE(MAILLAGE=__mail_1,#INFO=2,
                              RESTREINT=_F(GROUP_MA=('LIGNE_','DOMAIN_','RUPTURE'),
                                           GROUP_NO=('LIGNE_','DOMAIN_',),
@@ -277,7 +276,7 @@ def post_newmark_ops(self,**args):
 ####
 ###############################################################################
 
-  if args['RESULTAT_PESANTEUR'] is not None : 
+  if args['RESULTAT_PESANTEUR'] is not None :
 
     #### ASSERT A CREER SI MODELE D'ORIGINE PLUS COMPLEXE QUE D_PLAN
     ##### MODELE SUR LE MAILLAGE PATCH
@@ -293,15 +292,15 @@ def post_newmark_ops(self,**args):
                               MODELISATION = 'D_PLAN',),),
                   VERI_JACOBIEN = 'NON',);
 
-    # CREATION D'UN MATERIAU BIDON POUR CREA_RESU 
+    # CREATION D'UN MATERIAU BIDON POUR CREA_RESU
     __MATBID = DEFI_MATERIAU(ELAS=_F(E = 1.,NU = 0.3,RHO = 1. ))
 
     __MATST = AFFE_MATERIAU(MAILLAGE = __mail_2,
                             AFFE=_F(MATER=__MATBID,TOUT='OUI',),
                             )
-                               
 
-    # OBTENTION DU CHAMP DES CONTRAINTES STATIQUE SUR LE MODELE AUXILAIRE 
+
+    # OBTENTION DU CHAMP DES CONTRAINTES STATIQUE SUR LE MODELE AUXILAIRE
     # CREATION D'UN RESULTAT AVEC MATERIAU BIDON POUR CALCUL DE SIRO_ELEM
 
     __instFS = RESULTAT_PESANTEUR.LIST_PARA()['INST'][-1]
@@ -317,7 +316,7 @@ def post_newmark_ops(self,**args):
                    CHAM_GD = __CSTPGO,
                     MODELE_1 = __modST,
                     MODELE_2 = __MODST,
-                    CAS_FIGURE='2D', 
+                    CAS_FIGURE='2D',
                     PROL_ZERO='OUI',
 #                     DISTANCE_MAX=0.1,
                    )
@@ -456,10 +455,10 @@ def post_newmark_ops(self,**args):
         FSpL.append(0.)
 
     #### PREPARATION TABLE DU FACTEUR DE SECURITE
-    if args['RESULTAT'] is None : 
+    if args['RESULTAT'] is None :
       tabini = Table(para=["INST", "FS"],
                  typ=["R", "R"])
-      if args['RESULTAT'] is None : 
+      if args['RESULTAT'] is None :
         tabini.append({'INST': 0.0, 'FS': FSp})
         self.register_result(__chSTSL, args["CHAM_FS"])
 
@@ -472,10 +471,10 @@ def post_newmark_ops(self,**args):
 ####
 ###############################################################################
 
-  if args['RESULTAT'] is not None : 
+  if args['RESULTAT'] is not None :
 
 ##### OPERATIONS SUR LE MAILLAGE DYNAMIQUE POUR CALCUL DU CENTRE DE MASSE DE LA ZONE
-##### QUI GLISSE 
+##### QUI GLISSE
 
      ### AJOUT DU GROUPE GLISSE DANS LE MAILLAGE
     if TYPE == 'CERCLE':
@@ -569,7 +568,7 @@ def post_newmark_ops(self,**args):
     #### UTILISE POUR CALCUL DE L'ACCELERATION MOYENNE
       __tabitm = POST_RELEVE_T(ACTION=_F(
                                         INTITULE = 'RESU',
-                                        OPERATION = 'EXTRACTION', 
+                                        OPERATION = 'EXTRACTION',
                                         GROUP_NO = 'LIGNE_',
                                         RESULTANTE   = ('DX','DY'),
                                         RESULTAT = __recou,
@@ -600,7 +599,7 @@ def post_newmark_ops(self,**args):
 
 
 ##### CETTE PARTIE MARCHE UNIQUMENT AVEC MAILLAGE PATCH POUR L'INSTANT
-    if args['RESULTAT_PESANTEUR'] is not None : 
+    if args['RESULTAT_PESANTEUR'] is not None :
 
     ### BOUCLE POUR CREATION DU RESULTAT DYNAMIQUE PROJETE DANS LES PG
     ### DU MODELE AUXILIAIRE (MAILLAGE PATCH)
@@ -611,13 +610,13 @@ def post_newmark_ops(self,**args):
                               MODELISATION = 'D_PLAN',),),
                   VERI_JACOBIEN = 'NON',);
 
-      # CREATION D'UN MATERIAU BIDON POUR CREA_RESU 
+      # CREATION D'UN MATERIAU BIDON POUR CREA_RESU
       __MATBIDD = DEFI_MATERIAU(ELAS=_F(E = 1.,NU = 0.3,RHO = 1. ))
 
       __MATDYN = AFFE_MATERIAU(MAILLAGE = __mail_2,
                               AFFE=_F(MATER=__MATBIDD,TOUT='OUI',),
                               )
-                               
+
 
       __instSD = RESULTAT.LIST_PARA()['INST']
 
@@ -632,7 +631,7 @@ def post_newmark_ops(self,**args):
                      CHAM_GD = __CSDPGI,
                       MODELE_1 = __model,
                       MODELE_2 = __MODYN,
-                      CAS_FIGURE='2D', 
+                      CAS_FIGURE='2D',
                       PROL_ZERO='OUI',
 #                     DISTANCE_MAX=0.1,
                      )
@@ -644,8 +643,6 @@ def post_newmark_ops(self,**args):
                             CHAM_MATER = __MATDYN,
                             CHAM_GD=__CSDPGF,
                             INST=__instSD[0],),),);
-
-      DETRUIRE(INFO=1,CONCEPT=_F(NOM=(__CSDPGI,__CSDPGF)));
 
       for inst in __instSD[1:]:
 
@@ -660,7 +657,7 @@ def post_newmark_ops(self,**args):
                          CHAM_GD = __CSDPGI,
                           MODELE_1 = __model,
                           MODELE_2 = __MODYN,
-                          CAS_FIGURE='2D', 
+                          CAS_FIGURE='2D',
                           PROL_ZERO='OUI',
     #                     DISTANCE_MAX=0.1,
                          )
@@ -675,8 +672,6 @@ def post_newmark_ops(self,**args):
                             CHAM_GD=__CSDPGF,
                             INST=inst,),),);
 
-        DETRUIRE(INFO=1,CONCEPT=_F(NOM=(__CSDPGI,__CSDPGF)));
-
     #### CALCUL DES CHAMPS SIRO_ELEM DANS LA LIGNE DE RUPTURE
     #### UTILISE POUR ESTIMATION DES CONTRAINTES RESISTANTES ET MOBILISEES
 
@@ -687,7 +682,7 @@ def post_newmark_ops(self,**args):
                CONTRAINTE = ('SIRO_ELEM',),
                );
 
-    
+
     #### TABLE AVEC CONTRAINTES CALCUL DYNAMIQUE DANS LA LIGNE DE RUPTURE DANS LE REPERE LOCAL
     #### UTILISE POUR CALCUL DE LA CONTRAINTE DE CISAILLEMENT MOBILISEE
 
@@ -710,8 +705,6 @@ def post_newmark_ops(self,**args):
 
         SIGN_dyn.append(SIGN_dyna)
         SIGT_dyn.append(SIGTN_dyna)
-
-        DETRUIRE(INFO=1,CONCEPT=_F(NOM=(__CSISD,)));
 
       #### CALCUL DE LA CONTRAINTE DE CISAILLEMENT MOBILISEE DU CALCUL DYNAMIQUE
       dynamic_shear = get_dynamic_shear(SIGT_dyn,__instSD)
@@ -852,7 +845,7 @@ def post_newmark_ops(self,**args):
     tabout = CALC_TABLE(reuse=tabout , TABLE=tabout ,
                         ACTION=act_table)
 
-    if args['RESULTAT_PESANTEUR'] is not None : 
+    if args['RESULTAT_PESANTEUR'] is not None :
       tabout = CALC_TABLE(TABLE=tabout ,
                         ACTION=_F(OPERATION='COMB',
                                   TABLE=__TFS, NOM_PARA='INST'),)
@@ -862,8 +855,8 @@ def post_newmark_ops(self,**args):
   __mail = DEFI_GROUP(reuse = __mail,
                 MAILLAGE = __mail,
                 DETR_GROUP_MA = _F(NOM = ('ALL',),),)
-                
-  if args['RESULTAT'] is not None : 
+
+  if args['RESULTAT'] is not None :
     __mail = DEFI_GROUP(reuse = __mail,
                   MAILLAGE = __mail,
                   DETR_GROUP_MA = _F(NOM = ('GLISSE_','GLISSE',),),

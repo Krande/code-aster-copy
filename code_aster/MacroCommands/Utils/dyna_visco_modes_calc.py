@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,11 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import aster
 import numpy as NP
 
-import aster
-
 from ...Cata.Syntax import _F
-from ...Commands import (CALC_MODES, COMB_MATR_ASSE, CREA_CHAMP, CREA_RESU,
-                         DETRUIRE)
+from ...Commands import CALC_MODES, COMB_MATR_ASSE, CREA_CHAMP, CREA_RESU
 
 
 def dyna_visco_modes_calc( self, TYPE_MODE, freq1, nmode, RESI_RELA, i, j,
@@ -174,7 +172,4 @@ def dyna_visco_modes_calc( self, TYPE_MODE, freq1, nmode, RESI_RELA, i, j,
 
 
     freq1=freq2[__numod+1]
-
-    DETRUIRE(CONCEPT = _F (NOM = __modtmp,) , )
-
     return _modes, freq1, nmode

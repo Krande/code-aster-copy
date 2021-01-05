@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ import aster
 from ...Messages import UTMESS
 
 from ...Cata.Syntax import _F
-from ...Commands import DEFI_BASE_MODALE, DETRUIRE, EXTR_MODE
+from ...Commands import DEFI_BASE_MODALE, EXTR_MODE
 from .dyna_visco_modes_calc import dyna_visco_modes_calc
 
 
@@ -63,7 +63,6 @@ def dyna_visco_modes(self, TYPE_RESU, TYPE_MODE, list_FREQ, fmax, RESI_RELA,
     if TYPE_MODE in ['REEL','BETA_REEL']:
         __modes_temp = EXTR_MODE( FILTRE_MODE=_F( MODE=_modes,
                                                   TOUT_ORDRE='OUI'), );
-        DETRUIRE( CONCEPT=_F(NOM = _modes) )
         _modes = DEFI_BASE_MODALE( ORTHO_BASE=_F( BASE=__modes_temp,
                                                   MATRICE=__asseMg,), );
 

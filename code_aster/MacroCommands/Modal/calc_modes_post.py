@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 from ...Cata.Syntax import _F
-from ...Commands import DETRUIRE, EXTR_MODE, IMPR_RESU, NORM_MODE
+from ...Commands import EXTR_MODE, IMPR_RESU, NORM_MODE
 
 
 def calc_modes_post(self, modes, lmatphys, norme_mode, filtre_mode, impression):
@@ -45,8 +45,6 @@ def calc_modes_post(self, modes, lmatphys, norme_mode, filtre_mode, impression):
     # copy the modes concept in a temporary concept, in order to free its name
         __modes_temp = EXTR_MODE(FILTRE_MODE=_F(MODE=modes,
                                                 TOUT_ORDRE='OUI'))
-        DETRUIRE(CONCEPT=_F(NOM=modes),
-                 INFO=1)
 
         impr_tout = False
         if filtre_mode is not None:

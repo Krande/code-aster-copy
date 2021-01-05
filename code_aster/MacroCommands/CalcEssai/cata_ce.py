@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,9 +31,8 @@
 # crees par defaut.
 
 
-import numpy
-
 import aster
+import numpy
 
 from ...Cata.DataStructure import (cara_elem, cham_mater, dyna_harmo,
                                    interspectre, maillage_sdaster,
@@ -41,7 +40,7 @@ from ...Cata.DataStructure import (cara_elem, cham_mater, dyna_harmo,
                                    mode_meca, modele_sdaster, nume_ddl_sdaster,
                                    table_fonction, table_sdaster)
 from ...Cata.Syntax import _F
-from ...Commands import (CREA_CHAMP, DEFI_FONCTION, DEFI_INTE_SPEC, DETRUIRE,
+from ...Commands import (CREA_CHAMP, DEFI_FONCTION, DEFI_INTE_SPEC,
                          RECU_FONCTION)
 from ...Messages import UTMESS
 from ...Objects import DataStructure
@@ -586,8 +585,6 @@ class InterSpectre:
             else:
                 self.matr_inte_spec[:, ind_l, ind_c] = ordo
 
-            DETRUIRE(CONCEPT=_F(NOM=__fonc))
-
     def extr_freq(self):
         """Extraction des frequences d'etude dans la tabl_intsp qui contient
         les inter-spectres mesures"""
@@ -682,7 +679,6 @@ class Tempo:
                                    NOM_PARA='FONCTION', VALE_K=nom_fonc)
                                )
         temps = __FONC.Absc()
-        DETRUIRE(CONCEPT=_F(NOM=__FONC), INFO=1)
         self.t = temps
         self.tempo = 1
 
@@ -934,8 +930,6 @@ def crea_champ(resu, ind_mod):
     champy = __CHANO.EXTR_COMP(topo=1)
     vale = champy.valeurs
 
-    DETRUIRE(CONCEPT=_F(NOM=(__CHANO,),), INFO=1,)
-
     return vale
 
 
@@ -956,8 +950,6 @@ def nume_ddl_phy(resu):
     for ind in range(nb_ddl):
         nom_no = maya.sdj.NOMNOE.get()[num_no[ind] - 1]
         nume.append(nom_no.strip() + '_' + comp[ind].strip())
-
-    DETRUIRE(CONCEPT=_F(NOM=(__CHAMP0,),), INFO=1,)
 
     return nume
 

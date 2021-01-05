@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ import aster_core
 from ...Messages import UTMESS
 
 from ...Cata.Syntax import _F
-from ...Commands import (COMB_MATR_ASSE, CREA_CHAMP, DETRUIRE, DYNA_VIBRA,
+from ...Commands import (COMB_MATR_ASSE, CREA_CHAMP, DYNA_VIBRA,
                          LIRE_FORC_MISS, LIRE_IMPE_MISS)
 from ..Utils.signal_correlation_utils import CALC_COHE
 
@@ -157,7 +157,6 @@ def compute_mecmode(NOM_CMP, GROUP_NO_INTER, resultat, nbmods, nbmodd):
         dict_modes['som'].append(som)
         dict_modes['maxm'].append(maxm)
         dict_modes['MCMP'].append(MCMP)
-        DETRUIRE(CONCEPT = _F(NOM = (__CHAM)), INFO=1)
     dict_modes['PHI'] = PHI
     return dict_modes
 
@@ -286,8 +285,5 @@ def compute_freqk_quelconque(self, k, RESU, VEC, dict_modes):
                              COEF_MULT = 1.0,),  )
     #  recuperer le vecteur modal depl calcule par dyge
     RS = NP.array(__dyge.sdj.DEPL.get())
-    DETRUIRE(CONCEPT = _F(NOM=(__dyge)), INFO=1)
     VECRES = self.append_Vec(RS, k, RESU)
-    if k > 0:
-        DETRUIRE(CONCEPT = _F(NOM = (__impe, __fosi, __rito)), INFO=1)
     return VECRES

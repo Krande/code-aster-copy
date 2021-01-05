@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ from ...Cata.DataStructure import (dyna_harmo, maillage_sdaster,
                                    matr_asse_depl_r, mode_meca, modele_sdaster)
 from ...Cata.Syntax import _F
 from ...Commands import (AFFE_MODELE, CREA_CHAMP, CREA_RESU, DEFI_FICHIER,
-                         DETRUIRE, IMPR_RESU, INFO_EXEC_ASTER, LIRE_MAILLAGE,
+                         IMPR_RESU, INFO_EXEC_ASTER, LIRE_MAILLAGE,
                          MAC_MODES, MACRO_EXPANS)
 from ...Messages import UTMESS
 from ...Messages import MessageLog as mess
@@ -180,5 +180,4 @@ class CalcEssaiExpansion:
             return
         self.mess.disp_mess(("      "))
         mac = extract_mac_array(__MAC, 'MAC')
-        DETRUIRE(CONCEPT=_F(NOM=(__MAC,)), INFO = 1)
         return mac

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ import re
 
 import aster
 from ..Cata.Syntax import _F
-from ..Commands import DETRUIRE, RECU_FONCTION
+from ..Commands import RECU_FONCTION
 from ..Helpers import LogicalUnitFile, ReservedUnitUsed
 from ..Utilities.misc import fmtF2PY
 from ..Messages import UTMESS
@@ -201,6 +201,5 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
                     )
                     with ReservedUnitUsed(args['UNITE']):
                         __fonc.Trace(**kfonc)
-                    DETRUIRE(CONCEPT=_F(NOM=(__fonc,),), INFO=1,)
 
     return

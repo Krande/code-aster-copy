@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,6 @@ from ...Messages import UTMESS
 
 from ...Utilities.ExecutionParameter import ExecutionParameter
 from ...Cata.Syntax import _F
-from ...Commands import DETRUIRE
 from ...Utilities.misc import get_shared_tmpdir
 from ..Utils.TableReader import TableReaderFactory
 from . import reca_algo, reca_interp
@@ -560,7 +559,6 @@ class CALCULS_ASTER:
             Lrep = []
             for i in range(len(liste_reponses)):
                 reponse = liste_reponses[i]
-                DETRUIRE(OBJET=_F(CHAINE='VEXTR___'), INFO=1)  # Faudrait proteger ce nom ici (VEXTR___ peut etre deja utilise dans l'etude)
                 VEXTR___ = ctxt[reponse].EXTR_TABLE()
                 list_para = VEXTR___.para
                 tab_lue   = VEXTR___.values()
@@ -568,14 +566,6 @@ class CALCULS_ASTER:
                 Lrep.append(F)
 
             Lcalc.append( Lrep )
-
-
-            # Destruction des concepts Aster
-            #liste_concepts = list(self.jdc.g_context.keys())
-            liste_concepts = []
-            for c in liste_concepts:
-                DETRUIRE(OBJET=_F(CHAINE=c), INFO=1);
-
 
         # ----------------------------------------------------------------------------
         # Calcul de la fonctionnelle et du gradient
@@ -762,7 +752,6 @@ class CALCULS_ASTER:
                         t.append( "     ii_p= list_exp_pour_freq.index(list_num_pour_freq[ii])\n" )
                         t.append( "     val_freq_permute.append(val_freq[ii_p])\n" )
 
-                        t.append( "DETRUIRE(CONCEPT=_F(NOM="+str(reponses[ind_rep][0])+"),)\n" )
                         t.append( reponses[ind_rep][0]+"=CREA_TABLE(LISTE=(_F(PARA='"+reponses[ind_rep][1]+"',LISTE_I=nume_freq,),_F(PARA='FREQ',LISTE_R=val_freq_permute,),),)\n" )
 
         # number of threads to follow execution
@@ -995,7 +984,6 @@ class CALCULS_ASTER:
         txt.append( "l_mac=[]" )
         txt.append( "nb_freq=_mac.shape[1]" )
         txt.append( "for i in range(nb_freq): l_mac.append(_mac[i,i])" )
-        txt.append( "DETRUIRE(CONCEPT=_F(NOM="+str(reponse[0])+"),)" )
         txt.append( str(reponse[0]) + "=CREA_TABLE(LISTE=(_F(PARA='NUME_ORDRE',LISTE_I=list(range(1,nb_freq+1)),),_F(PARA='MAC',LISTE_R=l_mac,),),)" )
         return '\n'.join(txt)
 

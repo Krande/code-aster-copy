@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -22,7 +22,6 @@
 from ..Objects import Table
 from .extr_table import EXTR_TABLE
 from .crea_resu import CREA_RESU
-from .detruire import DETRUIRE
 from ..Supervis import ExecuteCommand, UserMacro
 from ..Cata.Commands.calc_g import CALC_G as calc_g_cata
 from ..Cata.Syntax import _F
@@ -41,6 +40,15 @@ class ComputeG(ExecuteCommand):
         self._result = Table()
 
 def calc_g_with_co(self, **args):
+    """Wrapper around the original CALC_G command to return an additional
+    result.
+
+    Arguments:
+        args (dict): Keywords arguments of user's keywords.
+
+    Returns:
+        Table: Result of the command.
+    """
     _result_calc_g = ComputeG.run(**args)
 
     # Extraction de la table qui contient G
@@ -77,8 +85,6 @@ def calc_g_with_co(self, **args):
                                     TYPE_RESU='EVOL_NOLI',
                                     NOM_CHAM='DEPL',
                                     AFFE=(_F(CHAM_GD=_cham_theta_no,INST=i_cham,),),)
-
-            DETRUIRE(CONCEPT=_F(NOM=_cham_theta_no,))
 
         self.register_result(_cham_theta, args["CHAM_THETA"])
 

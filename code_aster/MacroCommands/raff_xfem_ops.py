@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ import aster
 from ..Messages import UTMESS
 
 from ..Cata.Syntax import _F
-from ..Commands import CREA_CHAMP, DETRUIRE, FORMULE
+from ..Commands import CREA_CHAMP, FORMULE
 from ..SD.sd_xfem import sd_fiss_xfem
 from .Fracture.raff_xfem_zone import RAFF_XFEM_ZONE
 
@@ -114,8 +114,6 @@ def raff_xfem_ops(self, FISSURE, TYPE, **args):
                                             NOM_CMP_RESU='X2',),
                                     )
 
-                DETRUIRE(CONCEPT=_F(NOM=__CHLTB), INFO=1)
-
             # On affecte à chaque noeud du maillage MA la formule __MDISTF ou
             # __MDISTI
             if typ_ds == 'FISSURE':
@@ -142,16 +140,11 @@ def raff_xfem_ops(self, FISSURE, TYPE, **args):
                                      CHAM_F=__CHFOR,
                                      CHAM_PARA=(__CHLN, __CHLT,))
 
-                DETRUIRE(CONCEPT=_F(NOM=__CHLT), INFO=1)
-
             elif typ_ds == 'INTERFACE':
                 __CERRB = CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                                      OPERATION='EVAL',
                                      CHAM_F=__CHFOR,
                                      CHAM_PARA=(__CHLN,))
-
-            DETRUIRE(CONCEPT=_F(NOM=__CHLN), INFO=1)
-            DETRUIRE(CONCEPT=_F(NOM=__CHFOR), INFO=1)
 
             # champ d'Erreur de la fissure i
             __CERR[i] = CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
@@ -167,8 +160,6 @@ def raff_xfem_ops(self, FISSURE, TYPE, **args):
             list_err.append(__CERR[i])
             list_nom_cmp.append('X' + str(i + 1))
             for_max = for_max + 'X' + str(i + 1) + ','
-
-            DETRUIRE(CONCEPT=_F(NOM=__CERRB), INFO=1)
 
         # si nbfiss = 1, c'est directement X1
         # si nbfiss > 1 : on prend le max des erreurs de chaque fissure
@@ -193,14 +184,6 @@ def raff_xfem_ops(self, FISSURE, TYPE, **args):
                              OPERATION='EVAL',
                              CHAM_F=__CHFORM,
                              CHAM_PARA=(list_err))
-
-        for i in range(0, nbfiss):
-            DETRUIRE(CONCEPT=_F(NOM=__CERR[i]), INFO=1)
-
-        DETRUIRE(CONCEPT=_F(NOM=__MDISTF), INFO=1)
-        DETRUIRE(CONCEPT=_F(NOM=__MDISTI), INFO=1)
-        DETRUIRE(CONCEPT=_F(NOM=__Erreur), INFO=1)
-        DETRUIRE(CONCEPT=_F(NOM=__CHFORM), INFO=1)
 
     # indicateur de type 'ZONE'
     elif TYPE == 'ZONE':

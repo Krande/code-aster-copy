@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ import aster
 
 from ..Cata.DataStructure import dyna_harmo, dyna_trans, evol_elas, mode_meca
 from ..Cata.Syntax import _F
-from ..Commands import CREA_CHAMP, CREA_RESU, DEFI_GROUP, DETRUIRE
+from ..Commands import CREA_CHAMP, CREA_RESU, DEFI_GROUP
 from ..Commands import MODI_REPERE as MODI_REPERE_CMD
 from ..Commands import POST_RELEVE_T, PROJ_CHAMP, RECU_TABLE
 from ..Messages import UTMESS
@@ -228,8 +228,6 @@ def observation_ops(self,
                 **argsi)
 
             table = _tepsi.EXTR_TABLE()
-
-            DETRUIRE(CONCEPT=_F(NOM=_tepsi), INFO=1)
 
             mcfact2 = {}
             __chame = [None] * len(indice)
@@ -503,7 +501,6 @@ def observation_ops(self,
                                                   REPERE='UTILISATEUR',
                                                   NUME_ORDRE=num_ordr,
                                                   **argsm)
-                        DETRUIRE(CONCEPT=_F(NOM=__proj), INFO=1)
                         __proj = __bidon
 
                     if modi_rep['REPERE'] == 'NORMALE':
@@ -584,7 +581,6 @@ def observation_ops(self,
                         __bidon = MODI_REPERE_CMD(RESULTAT=__proj,
                                                   CRITERE='RELATIF',
                                                   **argsm)
-                        DETRUIRE(CONCEPT=_F(NOM=__proj), INFO=1)
                         __proj = __bidon
 
 #*************************************************
@@ -700,8 +696,6 @@ def observation_ops(self,
                         mcfact2['CARA_ELEM'] = cara_elem
 
                     liste.append(mcfact2)
-
-                DETRUIRE(CONCEPT=_F(NOM=__chamex), INFO=1)
 
             if len(filtres) > 0 and len(liste) > 0:
                 resu_filtre = nomcham

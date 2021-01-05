@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ from ..Objects.table_py import Table
 from ..Messages import UTMESS
 
 from ..Cata.Syntax import _F
-from ..Commands import CREA_TABLE, DETRUIRE, EXTR_TABLE
+from ..Commands import CREA_TABLE, EXTR_TABLE
 from .CalcEssai.cata_ce import crea_champ
 
 
@@ -170,9 +170,6 @@ def calc_stabilite_ops(self, **args):
         t_res.rows = []
         for i in range(nbord):
             t_res.rows.append(t_mnl.rows[i])
-
-        DETRUIRE(CONCEPT=_F(NOM=args['MODE_NON_LINE']), INFO=1)
-
 
     tab = t_res.dict_CREA_TABLE()
     t_resu = CREA_TABLE(TYPE_TABLE='TABLE_CONTAINER', **tab)

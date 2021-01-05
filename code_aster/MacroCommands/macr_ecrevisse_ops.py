@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 import copy
 
 from ..Cata.Syntax import _F
-from ..Commands import (AFFE_MATERIAU, CREA_TABLE, DEFI_LIST_REEL, DETRUIRE,
+from ..Commands import (AFFE_MATERIAU, CREA_TABLE, DEFI_LIST_REEL,
                         PROJ_CHAMP, STAT_NON_LINE, THER_LINEAIRE)
 from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 from ..Objects import EntityType
@@ -390,13 +390,6 @@ def macr_ecrevisse_ops(self, **args):
                     INFO=InfoAster,
                     **motclefs
                 )
-                # Destruction des concepts
-                #  Thermique projete
-                #  Liste des pas
-                DETRUIRE(CONCEPT=(_F(NOM=_RTHMPJ),
-                                  _F(NOM=__pas),),
-                         INFO=1)
-
             else:
                 #      CAS OU LA MACRO EST REENTRANTE : ON RELANCE ECREVISSE POUR CONNAITRE
                 # LES CHARGEMENT A UTILISER POUR LES PROBLEMES THERMIQUES ET
@@ -407,17 +400,6 @@ def macr_ecrevisse_ops(self, **args):
             # -----------------------------------------------------------------------
             #        ECREVISSE : ATTENTION SI REPRISE CALCUL, ON RECALCULE LE DERNIER INSTANT
             # -------------------------------------------------------------------------
-            # Si Ecrevisse a deja ete fait une fois.
-            #   ==> Efface les concepts qui sont en sortie
-            if (EcrevisseExe):
-                DETRUIRE(
-                    CONCEPT=(
-                        _F(NOM=MECAECR1),
-                        _F(NOM=FLU1ECR1),
-                        _F(NOM=FLU2ECR1),
-                        _F(NOM=TABLECR1),
-                        _F(NOM=DEBIECR1),
-                    ), INFO=1)
 
             # On remplace FONC_XXX par la valeur XXX correspondante a l'instant
             # inst_p_un
@@ -507,22 +489,6 @@ def macr_ecrevisse_ops(self, **args):
             EcrevisseExe = (T_TABL_TMP1.values()['COTES'][0] != -1)
             #
             if (not EcrevisseExe):
-                # Destruction des concepts de sortie, et on arrete tout
-                DETRUIRE(
-                    CONCEPT=(_F(NOM=MECAECR1),
-                             _F(NOM=FLU1ECR1),
-                             _F(NOM=FLU2ECR1),
-                             _F(NOM=TABLECR1),
-                             _F(NOM=DEBIECR1),),
-                    INFO=1)
-                if (not IsInit):
-                    DETRUIRE(
-                        CONCEPT=(_F(NOM=MECAECR0),
-                                 _F(NOM=FLU1ECR0),
-                                 _F(NOM=FLU2ECR0),
-                                 _F(NOM=TABLECR0),
-                                 _F(NOM=DEBIECR0),),
-                        INFO=1)
                 FinBoucle = True
                 break
             #
@@ -676,24 +642,6 @@ def macr_ecrevisse_ops(self, **args):
         debprod = T_DEB_RES.dict_CREA_TABLE()
         DEB_RES = CREA_TABLE(**debprod)
         self.register_result(DEB_RES, DEBIT)
-
-    # Destruction des concepts temporaires
-    DETRUIRE(
-        CONCEPT=(_F(NOM=MECAECR1),
-                 _F(NOM=FLU1ECR1),
-                 _F(NOM=FLU2ECR1),
-                 _F(NOM=TABLECR1),
-                 _F(NOM=DEBIECR1),),
-        INFO=1,)
-
-    if (nume_ordre != 0):
-        DETRUIRE(
-            CONCEPT=(_F(NOM=MECAECR0),
-                     _F(NOM=FLU1ECR0),
-                     _F(NOM=FLU2ECR0),
-                     _F(NOM=TABLECR0),
-                     _F(NOM=DEBIECR0),),
-            INFO=1,)
 
     RetablirAlarme('COMPOR4_70')
     return MECANIC

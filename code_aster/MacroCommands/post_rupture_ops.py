@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,13 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import aster
 import numpy as NP
 
-import aster
-from ..Messages import UTMESS
-
 from ..Cata.Syntax import _F
-from ..Commands import (CALC_TABLE, CREA_TABLE, DETRUIRE, FORMULE,
-                        POST_FATIGUE, RECU_FONCTION)
+from ..Commands import (CALC_TABLE, CREA_TABLE, FORMULE, POST_FATIGUE,
+                        RECU_FONCTION)
+from ..Messages import UTMESS
 from ..SD.sd_mater import sd_compor1
 
 
@@ -635,8 +634,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
                         _F(OPERATION='SUPPRIME', NOM_PARA=q)),
                     **mostcles)
 
-                DETRUIRE(CONCEPT=_F(NOM=__delta_unit), INFO=1)
-
             # suppression des colonnes INST et NUME_ORDRE si elles existent
             tabout = CALC_TABLE(TABLE=tabout, reuse=tabout,
                                 ACTION=_F(
@@ -779,7 +776,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
                                 TITRE=tabout.getName(),
                                 ACTION=_F(OPERATION='SUPPRIME', NOM_PARA='&BIDON&'))
 
-            DETRUIRE(CONCEPT=_F(NOM=__COPIE_TABIN), INFO=1)
     #-----------------------------------------------------------------------
     if OPERATION == 'LOI_PROPA':
 

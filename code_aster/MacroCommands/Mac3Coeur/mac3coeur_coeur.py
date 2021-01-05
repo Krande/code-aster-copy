@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ from ...Commands import (AFFE_CARA_ELEM, AFFE_CHAR_CINE, AFFE_CHAR_MECA,
                          CREA_CHAMP, CREA_MAILLAGE, CREA_RESU, DEFI_COMPOR,
                          DEFI_FONCTION, DEFI_GEOM_FIBRE, DEFI_GROUP,
                          DEFI_LIST_INST, DEFI_LIST_REEL, DEFI_MATERIAU,
-                         DEFI_NAPPE, DETRUIRE, FORMULE, INCLUDE_MATERIAU,
+                         DEFI_NAPPE, FORMULE, INCLUDE_MATERIAU,
                          RECU_TABLE)
 from .mac3coeur_assemblage import ACFactory
 from .mac3coeur_factory import Mac3Factory
@@ -607,15 +607,11 @@ class Coeur(object):
             MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA='EBOINF',),)
         _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE='CARA_GEOM',)
         self.XINFCUVE = _TAB_tmp['X_MIN', 1]
-        DETRUIRE(CONCEPT=_F(NOM=_ma_tmp), INFO=1,)
-        DETRUIRE(CONCEPT=_F(NOM=_TAB_tmp), INFO=1,)
 
         _ma_tmp = CREA_MAILLAGE(
             MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA='MAINTIEN',),)
         _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE='CARA_GEOM',)
         self.XSUPCUVE = _TAB_tmp['X_MAX', 1]
-        DETRUIRE(CONCEPT=_F(NOM=_ma_tmp), INFO=1,)
-        DETRUIRE(CONCEPT=_F(NOM=_TAB_tmp), INFO=1,)
 
         # altitudes mini et maxi, et longueur de l'ensemble des crayons
         _ma_tmp = CREA_MAILLAGE(
@@ -624,8 +620,6 @@ class Coeur(object):
         self.XINFC = _TAB_tmp['X_MIN', 1]
         self.XSUPC = _TAB_tmp['X_MAX', 1]
         self.LONCR = _TAB_tmp['X_MAX', 1] - _TAB_tmp['X_MIN', 1]
-        DETRUIRE(CONCEPT=_F(NOM=_ma_tmp), INFO=1,)
-        DETRUIRE(CONCEPT=_F(NOM=_TAB_tmp), INFO=1,)
 
         # altitudes mini et maxi, et longueur de l'ensemble des tubes
         _ma_tmp = CREA_MAILLAGE(
@@ -634,8 +628,6 @@ class Coeur(object):
         self.XINFT = _TAB_tmp['X_MIN', 1]
         self.XSUPT = _TAB_tmp['X_MAX', 1]
         self.LONTU = _TAB_tmp['X_MAX', 1] - _TAB_tmp['X_MIN', 1]
-        DETRUIRE(CONCEPT=_F(NOM=_ma_tmp), INFO=1,)
-        DETRUIRE(CONCEPT=_F(NOM=_TAB_tmp), INFO=1,)
 
         # altitudes moyennes des grilles
         self.altitude = []
@@ -643,8 +635,6 @@ class Coeur(object):
             MAILLAGE=MAILL, RESTREINT=_F(GROUP_MA='ELA',),)
         _TAB_tmp = RECU_TABLE(CO=_ma_tmp, NOM_TABLE='CARA_GEOM',)
         altimax = _TAB_tmp['X_MAX', 1]
-        DETRUIRE(CONCEPT=_F(NOM=_ma_tmp), INFO=1,)
-        DETRUIRE(CONCEPT=_F(NOM=_TAB_tmp), INFO=1,)
         altimaxtmp = 0
         while altimaxtmp != altimax:  # tant que l'on ne dépasse pas la grille la plus haute
             _ma_tmp = CREA_MAILLAGE(MAILLAGE=MAILL, RESTREINT=_F(
@@ -653,10 +643,6 @@ class Coeur(object):
             altimintmp = _TAB_tmp['X_MAX', 1]
             altimaxtmp = _TAB_tmp['X_MAX', 1]
             self.altitude.append((altimintmp + altimaxtmp) / 2.)
-            DETRUIRE(CONCEPT=_F(NOM=_ma_tmp), INFO=1,)
-            DETRUIRE(CONCEPT=_F(NOM=_TAB_tmp), INFO=1,)
-
-        return
 
     def cl_rigidite_grille(self):
 
@@ -715,7 +701,7 @@ class Coeur(object):
                                         SUBD_PAS=4,
                                         SUBD_NIVEAU=nbSubdEchec)
                                  )
-                             )                  
+                             )
             return _TE
 
     def definition_time_arch(self,fluence, subdivis):
@@ -926,14 +912,14 @@ class Coeur(object):
             if all([i==0. for i in _dilatbu]):
                 groups_ma_tini.extend(['DI_%s%d'%(ac.idAST, (igr + 1))
                                        for igr in range(ac._para['NBGR'])])
-            else :              
+            else :
                 for igr in range(0, ac._para['NBGR']):
                     Ttmp_val = self.TP_REF - _dilatbu[igr]/_alpha
                     mtmp =  (_F(NOM_CMP='TEMP',
                                 GROUP_MA='DI_%s%d'%(ac.idAST, (igr + 1)),
                                 VALE = Ttmp_val)),
                     mcf.extend(mtmp)
-                    
+
         if groups_ma_tini :
             Ttmp_val = self.TP_REF
             mtmp =  (_F(NOM_CMP='TEMP',
@@ -1136,7 +1122,7 @@ class Coeur(object):
                        PROL_DROITE='CONSTANT',
                        VALE_REF=self.TP_REF))
         mcf.extend(_VARCIRR)
-      
+
         for ac in self.collAC.values():
             try :
                 _alpha = ac._para['AL_DIL']
@@ -1151,7 +1137,7 @@ class Coeur(object):
                                     PROL_DROITE='CONSTANT',
                                     VALE_REF=Ttmp)),
                         mcf.extend(mtmp)
-                     
+
             except KeyError :
               pass
 

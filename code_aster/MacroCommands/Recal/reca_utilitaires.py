@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ import numpy as NP
 from ...Messages import UTMESS
 
 from ...Cata.Syntax import _F
-from ...Commands import DEFI_FICHIER, DETRUIRE, IMPR_FONCTION, INFO_EXEC_ASTER
+from ...Commands import DEFI_FICHIER, IMPR_FONCTION, INFO_EXEC_ASTER
 
 try:
     import Gnuplot
@@ -89,7 +89,6 @@ def temps_CPU(restant_old, temps_iter_old):
     """
     __cpu = INFO_EXEC_ASTER(LISTE_INFO=("TEMPS_RESTANT",))
     TEMPS = __cpu['TEMPS_RESTANT', 1]
-    DETRUIRE(CONCEPT=_F(NOM=__cpu), INFO=1)
     err = 0
     # Indique une execution interactive
     if (TEMPS > 1.E+9):

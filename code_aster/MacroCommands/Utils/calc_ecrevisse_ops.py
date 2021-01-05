@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ import aster
 
 from ...Cata.Syntax import _F
 from ...Commands import (AFFE_CHAR_MECA_F, AFFE_CHAR_THER_F, CREA_TABLE,
-                         DEFI_FICHIER, DEFI_FONCTION, DEFI_GROUP, DETRUIRE,
+                         DEFI_FICHIER, DEFI_FONCTION, DEFI_GROUP,
                          IMPR_TABLE, POST_RELEVE_T)
 from ...Messages import UTMESS, MasquerAlarme, RetablirAlarme
 from ...Objects.table_py import Table, merge
@@ -322,10 +322,8 @@ def calc_ecrevisse_ops(self, **args):
         # Extraction des tables Temperatures + deplacement levres fissure
         _tbl_temp = _T_TEMP.EXTR_TABLE()
         _tbl_dpl = _T_DPL.EXTR_TABLE()
-        DETRUIRE(CONCEPT=_F(NOM=(_T_DPL, _T_TEMP,)), INFO=1)
         _tbl_dpl_b = _T_DPL_B.EXTR_TABLE()
         _tbl_temp_b = _T_TEMPB.EXTR_TABLE()
-        DETRUIRE(CONCEPT=_F(NOM=(_T_DPL_B, _T_TEMPB,)), INFO=1)
 
         # --Determination des cotes a donner a ecrevisse--
         #   a partir des resultats mecanique et thermique :
@@ -529,8 +527,6 @@ def calc_ecrevisse_ops(self, **args):
 
             motscle2 = {'ECOULEMENT': txt, 'MODELE_ECRE': txt2}
 
-            DETRUIRE(OBJET=_F(CHAINE='TAB2'), INFO=1)
-            DETRUIRE(OBJET=_F(CHAINE='DEB2'), INFO=1)
             __TAB_i = CO('TAB2')
             __DEB_i = CO('DEB2')
 
@@ -593,9 +589,6 @@ def calc_ecrevisse_ops(self, **args):
                 _F(PARA="COEF_CONV", LISTE_R=dictTab[
                                4]['LISTE_R'],),
             ),)
-
-            DETRUIRE(OBJET=_F(CHAINE='__TAB_i'), INFO=1)
-            DETRUIRE(OBJET=_F(CHAINE='__DEB_i'), INFO=1)
 
             if (debug):
                 os.system(

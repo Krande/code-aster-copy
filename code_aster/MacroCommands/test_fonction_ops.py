@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ import os
 import aster
 
 from ..Cata.Syntax import _F
-from ..Commands import CALC_FONCTION, DETRUIRE
+from ..Commands import CALC_FONCTION
 from ..Messages import UTMESS
 from ..Objects.function_py import t_fonction_c
 from ..SD.sd_fonction import sd_fonction
@@ -423,8 +423,6 @@ def test_fonction_ops(self, **args):
 
                 res1 = __fInt(intervalle[0])
                 res2 = __fInt(intervalle[1])
-
-                DETRUIRE(CONCEPT=_F(NOM=__fInt), INFO=1)
 
                 res = (res2 - res1) / (intervalle[1] - intervalle[0])
                 valpu[0] = intervalle[0]

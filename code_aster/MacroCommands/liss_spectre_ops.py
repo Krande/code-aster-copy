@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ import os
 import aster
 
 from ..Cata.Syntax import _F
-from ..Commands import (CALC_FONCTION, DEFI_FICHIER, DEFI_NAPPE, DETRUIRE,
+from ..Commands import (CALC_FONCTION, DEFI_FICHIER, DEFI_NAPPE,
                         IMPR_FONCTION, INFO_EXEC_ASTER)
 from ..Messages import UTMESS
 
@@ -66,7 +66,6 @@ def get_unite_libre():
     """
     _UL = INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
     unite = _UL['UNITE_LIBRE', 1]
-    DETRUIRE(CONCEPT=(_F(NOM=_UL),), INFO=1)
     return unite
 
 #-----------------------------------------------------------------------
@@ -338,8 +337,3 @@ def liss_spectre_ops(
                            **args
                           )
             DEFI_FICHIER (ACTION='LIBERER',UNITE = unite)
-
-        DETRUIRE(CONCEPT=(_F(NOM=__Naplis),
-                          _F(NOM=__Napver),
-                         ),
-                 INFO=1)

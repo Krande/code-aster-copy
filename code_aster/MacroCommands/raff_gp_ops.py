@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,11 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import aster
 from numpy import cos, pi, sin
 
-import aster
-
 from ..Cata.Syntax import _F
-from ..Commands import (AFFE_MODELE, CREA_CHAMP, DETRUIRE, FORMULE,
-                        MACR_ADAP_MAIL)
+from ..Commands import AFFE_MODELE, CREA_CHAMP, FORMULE, MACR_ADAP_MAIL
 from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 from ..Supervis import CO
 
@@ -143,12 +141,6 @@ def raff_gp_ops(self, **args):
                              CRIT_RAFF_ABS=0.01,
                              MAILLAGE_N=currentMesh,
                              MAILLAGE_NP1=CO("fineMesh"))
-        DETRUIRE(CONCEPT=(_F(NOM=__COPEAUX,),
-                          _F(NOM=__MO,),
-                 _F(NOM=__CHXN),
-            _F(NOM=__CHXG),
-            _F(NOM=__f_seuil),
-            _F(NOM=__seuil),),)
         currentMesh = res.fineMesh
 
     RetablirAlarme('CALCCHAMP_1')

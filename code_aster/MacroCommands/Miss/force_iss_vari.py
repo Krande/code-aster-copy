@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ from ...Objects.table_py import Table
 from ...Messages import UTMESS
 
 from ...Cata.Syntax import _F
-from ...Commands import (COMB_MATR_ASSE, CREA_CHAMP, DETRUIRE, DYNA_VIBRA,
+from ...Commands import (COMB_MATR_ASSE, CREA_CHAMP, DYNA_VIBRA,
                          LIRE_FORC_MISS, LIRE_IMPE_MISS)
 from ..Utils.signal_correlation_utils import (CALC_COHE, calc_dist2,
                                               get_group_nom_coord)
@@ -145,9 +145,6 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
 
 
         #----Impedances + force sismique.-----------------------------------------------------------------
-      if k>0:
-         DETRUIRE(CONCEPT=_F(NOM=(__impe,__fosi)),INFO=1)
-
       __impe = LIRE_IMPE_MISS(BASE=resultat,
                                 TYPE=TYPE,
                                 NUME_DDL_GENE=nume_ddlgene,

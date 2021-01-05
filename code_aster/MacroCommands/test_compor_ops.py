@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 from ..Cata.Syntax import _F
 from ..Commands import (CALC_FONCTION, CALC_TABLE, DEBUG, DEFI_CONSTANTE,
                         DEFI_FONCTION, DEFI_LIST_INST, DEFI_LIST_REEL,
-                        DEFI_MATERIAU, DETRUIRE, FORMULE, IMPR_FONCTION,
+                        DEFI_MATERIAU, FORMULE, IMPR_FONCTION,
                         IMPR_TABLE, SIMU_POINT_MAT, TEST_TABLE)
 from .Utils.testcomp_utils import relative_error, vect_prod_rot
 from .Utils.veri_matr_tang import VERI_MATR_TANG
@@ -66,7 +66,6 @@ def rename_components_tmp(i, N_pas, label_cal, ch_param, RESU, __RS_I):
                                  ACTION=(_F(OPERATION='COMB',
                                             TABLE=__TMP_S, NOM_PARA='INST',),
                                          ),)
-            DETRUIRE(CONCEPT=_F(NOM=__TMP_S,),)
 
     return __RS_I
 
@@ -119,7 +118,6 @@ def TEST_ECART(self, ch_param2, label_cal, N_pas, Ncal, ch_param, __RSI, prec_ec
                                     _F(OPERATION='OPER', NOM_PARA=ch_err,
                                        FORMULE=__errrel),
                                     ),)
-            DETRUIRE(CONCEPT=_F(NOM=__errrel,), INFO=1)
         ersi.append(__ersi)
     return ersi
 
@@ -525,9 +523,6 @@ def test_compor_ops(self, **args):
                 for j in range(NB_VARI):
                     Vim[j] = __RES[i]['V' + str(j + 1), 1]
 
-            DETRUIRE(CONCEPT=_F(NOM=__epsimp), INFO=1)
-            DETRUIRE(CONCEPT=_F(NOM=__list), INFO=1)
-
             # On ne peut pas faire de non régression puisqu'on ne connait pas ici
             # la valeur obtenue sur la machine de référence
             MasquerAlarme('TEST0_12')
@@ -570,8 +565,6 @@ def test_compor_ops(self, **args):
                                        FILTRE=_F(NOM_PARA='INST', VALE=time),
                                        REFERENCE='AUTRE_ASTER',)
             RetablirAlarme('TEST0_12')
-        for i in range(NCAL):
-            DETRUIRE(CONCEPT=_F(NOM=__RES[i]), INFO=1)
 
     elif OPTION == "MECA":
         TEST_TANGENTE = args.get('TEST_TANGENTE')
@@ -710,8 +703,6 @@ def test_compor_ops(self, **args):
 
         # On renomme les composantes en fonction de  l'ordre de discretisation
             rename_components_tmp(i, LIST_NPAS, label_cal, ch_param, __RES, __RSI)
-
-            DETRUIRE(CONCEPT=_F(NOM=__temps,), INFO=1)
 
         # TEST_RESU sur les erreurs relatives
         # les quantites (invariants...) sur lequels portent les calculs

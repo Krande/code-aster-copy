@@ -2,7 +2,7 @@
 # --------------------------------------------------------------------
 # Copyright (C) 2019 Aether Engineering Solutions - www.aethereng.com
 # Copyright (C) 2019 Kobe Innovation Engineering - www.kobe-ie.com
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,6 @@ def calc_comb_modes(__tbresul, myintitule_by_num, comb_modes, resu, b_extrac, re
     # ~ __nresu=NORM_MODE(reuse=__nresu, MODE=__nresu,NORME='MASS_GENE',)
     __tbmodpar=RECU_TABLE(CO=__nresu,NOM_PARA = ('FREQ','FACT_PARTICI_DX','FACT_PARTICI_DY','FACT_PARTICI_DZ'))
     resu_partab = __tbmodpar.EXTR_TABLE().values()
-    DETRUIRE(CONCEPT=_F(NOM=(__nresu, __tbmodpar)))
     l_freq = resu_partab['FREQ']
     l_omega = [2 * math.pi * f for f in l_freq]
     pytbcoup = __tbresul.EXTR_TABLE()
@@ -159,7 +158,6 @@ def calc_resultante(lign_num, __tbresul, __tbextr, myintitule_by_num, resu_nume_
                                 _F(OPERATION='OPER', FORMULE=__abscnyy, NOM_PARA='ABSC*NYY'),
                           )
                   )
-    DETRUIRE(CONCEPT=_F(NOM=(__fmidabs, __abscnyy)))
     for nume_ordre in resu_nume_ordre:
         paras = ['INTITULE','NOM_CHAM','TYPE','NUME_ORDRE']
         vales = [myintitule_by_num[lign_num],"EFGE_NOEU","RESULTANTE",nume_ordre]
@@ -181,7 +179,6 @@ def calc_resultante(lign_num, __tbresul, __tbextr, myintitule_by_num, resu_nume_
             inte = __finte.Ordo()[-1]
             paras.append(inte_comp)
             vales.append(inte)
-            DETRUIRE(CONCEPT=_F(NOM=(__fcomp, __finte)))
         if __tbresul is None:
             pytbresul=Table()
             pytbresul.append(dict(zip(paras, vales)))
@@ -300,10 +297,8 @@ def calc_coupure_ops(self, **args):
                                       _F(OPERATION='COMB',NOM_PARA=('INTITULE','TYPE','NUME_ORDRE'),TABLE=__tbextr),
                                      )
                               )
-                DETRUIRE(CONCEPT=_F(NOM=(__tbextr)))
         else:
             __tbresul = calc_resultante(lign_num, __tbresul, __tbextr, myintitule_by_num, resu_nume_ordre)
-            DETRUIRE(CONCEPT=_F(NOM=(__tbextr)))
 
     # Combinaison modale
     if len(comb_modes) >= 1:
@@ -323,11 +318,9 @@ def calc_coupure_ops(self, **args):
         else:
             __tblign = CALC_TABLE(TABLE=__tbresul, ACTION=commands)
             __tbcoup2 = CALC_TABLE(TABLE=__tbcoup2, reuse=__tbcoup2, ACTION=_F(OPERATION='COMB', TABLE=__tblign))
-            DETRUIRE(CONCEPT=_F(NOM=(__tblign)))
 
     # Table finale (pour garantir l'ordre des colonnes)
     res_data = __tbcoup2.EXTR_TABLE()
-    DETRUIRE(CONCEPT=_F(NOM=(__tbresul,__tbcoup2)))
 
     order_columns = ['INTITULE', 'COMB', 'TYPE', 'NOM_CHAM']
     order_columns.extend(sorted(filter_columns))

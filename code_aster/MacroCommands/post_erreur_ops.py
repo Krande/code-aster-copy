@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,10 @@ import math
 import os
 
 import aster
+
 from ..Cata.Language.SyntaxObjects import _F
-from ..Commands import (CALC_TABLE, CREA_CHAMP, CREA_RESU, CREA_TABLE, DETRUIRE, FORMULE,
-                                 POST_ELEM)
+from ..Commands import (CALC_TABLE, CREA_CHAMP, CREA_RESU, CREA_TABLE, FORMULE,
+                        POST_ELEM)
 from ..Messages import ASSERT, UTMESS
 
 
@@ -295,10 +296,6 @@ def post_erreur_ops(self, OPTION, CHAM_GD, MODELE, GROUP_MA, **args):
             # ajout e la contribution du groupe courant a la norme L2 du deplacement difference totale
             diff_norm_tot+=diff**2
 
-            # liberation des objets temporaires pour la prochaine iteration
-            DETRUIRE(CONCEPT=_F(NOM=__TanaDEP), INFO=1)
-            DETRUIRE(CONCEPT=_F(NOM=__TdiffDEP), INFO=1)
-
         # ajout de normes en energie pour l'ensemble des groupes
         ref_norm_tot=math.sqrt(ref_norm_tot)
         l_ref_norm.append(ref_norm_tot)
@@ -308,13 +305,6 @@ def post_erreur_ops(self, OPTION, CHAM_GD, MODELE, GROUP_MA, **args):
 
         # creation de la variable TITRE
         TITRE="ERREUR EN NORME L2 DU DEPLACEMENT"
-
-        # destruction des objets temporaires pour le calcul de l'erreur en deplacement
-        DETRUIRE(CONCEPT=_F(NOM=__UanaFG), INFO=1)
-        DETRUIRE(CONCEPT=_F(NOM=__UanaG), INFO=1)
-        DETRUIRE(CONCEPT=_F(NOM=__UanaR), INFO=1)
-        DETRUIRE(CONCEPT=_F(NOM=__UcalG), INFO=1)
-        DETRUIRE(CONCEPT=_F(NOM=__UdiffG), INFO=1)
 
     if(OPTION=='ENER_RELA'):
 
@@ -578,18 +568,6 @@ def post_erreur_ops(self, OPTION, CHAM_GD, MODELE, GROUP_MA, **args):
         # creation de la variable TITRE
         TITRE="ERREUR EN NORME ENERGIE"
 
-        # destruction des objets temporaires pour le calcul de l'erreur en energie
-        DETRUIRE(CONCEPT=_F(NOM=__SI_ana_F), INFO=1)
-        DETRUIRE(CONCEPT=_F(NOM=__SanaCHAM), INFO=1)
-        DETRUIRE(CONCEPT=_F(NOM=__SI_ana_R), INFO=1)
-        DETRUIRE(CONCEPT=_F(NOM=__SI_diff), INFO=1)
-        DETRUIRE(CONCEPT=_F(NOM=__U), INFO=1)
-        DETRUIRE(CONCEPT=_F(NOM=__SIanaRES), INFO=1)
-        DETRUIRE(CONCEPT=_F(NOM=__SI_DIFFR), INFO=1)
-        DETRUIRE(CONCEPT=_F(NOM=__TanaSIG), INFO=1)
-        DETRUIRE(CONCEPT=_F(NOM=__TdiffSIG), INFO=1)
-
-
     if(OPTION=='LAGR_RELA'):
         # le calcul de la norme L2 de la pression de contact sur une fissure XFEM n'est
         # pas encore diponible
@@ -778,10 +756,6 @@ def post_erreur_ops(self, OPTION, CHAM_GD, MODELE, GROUP_MA, **args):
             # ajout e la contribution du groupe courant a la norme L2 du deplacement difference totale
             diff_norm_tot+=diff**2
 
-            # liberation des objets temporaires pour la prochaine iteration
-            DETRUIRE(CONCEPT=_F(NOM=__TanaP), INFO=1)
-            DETRUIRE(CONCEPT=_F(NOM=__TdiffP), INFO=1)
-
         # ajout de normes en energie pour l'ensemble des groupes
         ref_norm_tot=math.sqrt(ref_norm_tot)
         l_ref_norm.append(ref_norm_tot)
@@ -791,14 +765,6 @@ def post_erreur_ops(self, OPTION, CHAM_GD, MODELE, GROUP_MA, **args):
 
         # creation de la variable TITRE
         TITRE="ERREUR EN NORME L2 DE LA PRESSION"
-
-        # destruction des objets temporaires pour le calcul de l'erreur en deplacement
-        DETRUIRE(CONCEPT=_F(NOM=__PanaFG), INFO=1)
-        DETRUIRE(CONCEPT=_F(NOM=__PanaG), INFO=1)
-        DETRUIRE(CONCEPT=_F(NOM=__PanaR), INFO=1)
-        DETRUIRE(CONCEPT=_F(NOM=__PcalN), INFO=1)
-        DETRUIRE(CONCEPT=_F(NOM=__PcalG), INFO=1)
-        DETRUIRE(CONCEPT=_F(NOM=__PdiffG), INFO=1)
 
     # ici, quelle que soit la norme considérée, les objets suivants sont définis :
     #  * l_diff_norm : liste des normes du champ différence, pour chaque groupe +
@@ -845,12 +811,5 @@ def post_erreur_ops(self, OPTION, CHAM_GD, MODELE, GROUP_MA, **args):
                                     NOM_PARA="GROUP_MA"),
                          TITRE=TITRE,
                         )
-
-    # destruction des objets temporaires generiques
-    # N.B.: __MA est une reference au maillage, il ne faut pas le detruire !
-    DETRUIRE(CONCEPT=_F(NOM=__CHXN), INFO=1)
-    DETRUIRE(CONCEPT=_F(NOM=__CHXG), INFO=1)
-    DETRUIRE(CONCEPT=_F(NOM=__ZERO), INFO=1)
-
 
     return tabout

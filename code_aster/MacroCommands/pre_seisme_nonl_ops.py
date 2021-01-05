@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ from ..Commands import (AFFE_CARA_ELEM, AFFE_CHAR_MECA, AFFE_MATERIAU,
                         CALC_MATR_ELEM, CALC_MODES, COMB_MATR_ASSE, CREA_CHAMP,
                         CREA_MAILLAGE, DEFI_BASE_MODALE, DEFI_FONCTION,
                         DEFI_GROUP, DEFI_INTERF_DYNA, DEFI_LIST_INST,
-                        DEFI_LIST_REEL, DEFI_MAILLAGE, DETRUIRE, DYNA_NON_LINE,
+                        DEFI_LIST_REEL, DEFI_MAILLAGE, DYNA_NON_LINE,
                         LIRE_IMPE_MISS, LIRE_MAILLAGE, MACR_ELEM_DYNA,
                         MODE_STATIQUE, NUME_DDL, NUME_DDL_GENE, PROD_MATR_CHAM,
                         STAT_NON_LINE)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ import aster
 from ..Cata.Syntax import _F
 from ..Commands import (AFFE_CHAR_MECA, AFFE_CHAR_MECA_F, CALC_FONCTION, CALC_TABLE,
                                  CREA_MAILLAGE, CREA_RESU, DEFI_FONCTION, DEFI_GROUP, DEFI_NAPPE,
-                                 DETRUIRE, IMPR_FONCTION, LIRE_FONCTION, LIRE_MAILLAGE,
+                                 IMPR_FONCTION, LIRE_FONCTION, LIRE_MAILLAGE,
                                  MODI_MAILLAGE)
 from ..Objects.table_py import Table
 from ..Helpers.UniteAster import UniteAster
@@ -156,7 +156,6 @@ def defi_char_sol_ops(self, TITRE=None, INFO=None, **args):
                        _F(FONCTION=__faccex0,COEF=coef2,),
                              ),
                        );
-          DETRUIRE(CONCEPT=_F(NOM=(__faccex0,),), INFO = 1);
 
           l_foncy1.append(__ffy1)
           l_foncy2.append(__ffy2)

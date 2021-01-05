@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ from ..Commands import (AFFE_CHAR_THER, AFFE_CHAR_THER_F,
                                  CALC_CHAMP, CALC_MATR_ELEM, CALC_TABLE,
                                  CALC_VECT_ELEM, COPIER, CREA_MAILLAGE,
                                  CREA_TABLE, DEFI_CONSTANTE, DEFI_FONCTION,
-                                 DEFI_GROUP, DEFI_MATERIAU, DETRUIRE,
+                                 DEFI_GROUP, DEFI_MATERIAU,
                                  IMPR_TABLE, LIRE_MAILLAGE, MACR_LIGN_COUPE,
                                  NUME_DDL, POST_ELEM, THER_LINEAIRE)
 from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
@@ -824,7 +824,6 @@ def macr_cara_poutre_ops(self, MAILLAGE=None, SYME_Y=None, SYME_Z=None, GROUP_MA
         )
         TabTmp = nomres.EXTR_TABLE().dict_CREA_TABLE()
 
-    DETRUIRE(CONCEPT=_F(NOM=nomres), INFO=1)
     nomres = CREA_TABLE(**TabTmp)
 
     #

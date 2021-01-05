@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ from ...Messages import UTMESS
 from ...Behaviours import catalc
 from ...Cata.Syntax import _F
 from ...Commands import (CREA_TABLE, DEFI_FONCTION, DEFI_LIST_INST,
-                         DEFI_LIST_REEL, DETRUIRE, IMPR_TABLE, SIMU_POINT_MAT)
+                         DEFI_LIST_REEL, IMPR_TABLE, SIMU_POINT_MAT)
 from ..Utils.calc_point_mat import CalcPointMat
 from .geomec_utils import *
 
@@ -216,12 +216,8 @@ def essai_TRIA_DR_M_D(self, str_n_essai, DicoEssai,
            __EVPOST = self.get_last_concept()
            TabRes   = __EVPOST.EXTR_TABLE().values()
 
-           DETRUIRE(CONCEPT=_F(NOM=__EVPOST), INFO=1)
-
         else:
            TabRes = __EVOL.EXTR_TABLE().values()
-
-           DETRUIRE(CONCEPT=_F(NOM=__EVOL), INFO=1)
 
         # ---
         # Post-traitements
@@ -312,7 +308,6 @@ def essai_TRIA_DR_M_D(self, str_n_essai, DicoEssai,
                                  MARQUEUR_NIV2[i],
                                  STYLE_NIV2[i],)
 
-        DETRUIRE(CONCEPT=_F(NOM=(__CHAR1, __CHAR2,),), INFO=1)
 # ---
 # Fin boucle sur les pressions de confinement PRES_CONF
 # ---
@@ -328,8 +323,6 @@ def essai_TRIA_DR_M_D(self, str_n_essai, DicoEssai,
     # --------------------------------------------------------
     impr_graphique(self, DicoEssai, Courbes, NomsFich, Leg_x, Leg_y,
                   {}, {}, typessai,)
-
-    DETRUIRE(CONCEPT=_F(NOM=(__RLIST, __DLIST),), INFO=1)
 
 
 # ----------------------------------------------------------------------- #
@@ -516,12 +509,9 @@ def essai_TRIA_ND_M_D(self, str_n_essai, DicoEssai,\
            __EVPOST = self.get_last_concept()
            TabRes   = __EVPOST.EXTR_TABLE().values()
 
-           DETRUIRE(CONCEPT=_F(NOM=__EVPOST), INFO=1)
-
         else:
            TabRes = __EVOL.EXTR_TABLE().values()
 
-           DETRUIRE(CONCEPT=_F(NOM=__EVOL), INFO=1)
         # ---
         # Post-traitements
         # ---
@@ -613,7 +603,6 @@ def essai_TRIA_ND_M_D(self, str_n_essai, DicoEssai,\
                                  MARQUEUR_NIV2[i],
                                  STYLE_NIV2[i],)
 
-        DETRUIRE(CONCEPT=_F(NOM=(__CHAR1, __CHAR2,),), INFO=1)
 # ---
 # Fin boucle sur les pressions de confinement PRES_CONF
 # ---
@@ -629,8 +618,6 @@ def essai_TRIA_ND_M_D(self, str_n_essai, DicoEssai,\
     # --------------------------------------------------------
     impr_graphique(self, DicoEssai, Courbes, NomsFich, Leg_x, Leg_y,
                   {}, {}, typessai,)
-
-    DETRUIRE(CONCEPT=_F(NOM=(__RLIST, __DLIST),), INFO=1)
 
 
 # ----------------------------------------------------------------------- #
@@ -915,12 +902,8 @@ def essai_CISA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                __EVPOST = self.get_last_concept()
                TabRes   = __EVPOST.LIST_VARI_ACCES()
 
-               DETRUIRE(CONCEPT=_F(NOM=__EVPOST), INFO=1)
-
             else:
                TabRes = __EVOL.EXTR_TABLE().values()
-
-               DETRUIRE(CONCEPT=_F(NOM=__EVOL), INFO=1)
 
             # ---
             # Post-traitements.
@@ -1057,8 +1040,6 @@ def essai_CISA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
                                      MARQUEUR_NIV2[j],
                                      STYLE_NIV2[j],)
 
-            DETRUIRE(CONCEPT=_F(NOM=(__CHAR1, __CHAR2, __CHAR3,),),
-                     INFO=1)
     # ---
     # Fin boucle sur les amplitudes de cisaillement EPSI_IMPOSE [j]
     # ---
@@ -1110,8 +1091,6 @@ def essai_CISA_DR_C_D(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERG
     impr_graphique(self, DicoEssai, Courbes_niv1, NomsFich_niv1,
                    Leg_x_niv1, Leg_y_niv1, Ech_x_niv1, Ech_y_niv1,
                    typessai,graph=len(PRES_CONF)*len(Courbes_niv2),)
-
-    DETRUIRE(CONCEPT=_F(NOM=(__RLIST, __DLIST),), INFO=1)
 
 
 # ----------------------------------------------------------------------- #
@@ -1738,8 +1717,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT,
               qcalc1=__TabResm['SIZZ'][-1] - __TabResm['SIXX'][-1]
               qcalc2=__TabResm['SIZZ'][-2] - __TabResm['SIXX'][-2]
 
-              DETRUIRE(CONCEPT=_F(NOM=(__EVOLM)), INFO=1)
-
               if info_dbg:
                 print('\n   + Q_ESSAI[-1]               = %e' %(qcalc1))
                 print('   + Q_ESSAI[-2]               = %e' %(qcalc2))
@@ -1844,8 +1821,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT,
 
                 q =__TabResm['SIZZ'][-1] - __TabResm['SIXX'][-1]
 
-                DETRUIRE(CONCEPT=_F(NOM=(__EVOLM)), INFO=1)
-
                 if abs(q-q0) < abs(.95*dsig):
 
                    if info_dbg:
@@ -1865,8 +1840,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT,
                    INFO, nombre=nb_redec2, inst_epsi=20., epsi_max=coef_gamma*gamma)
 
                    __TabResm = __EVOLM.EXTR_TABLE().values()
-
-                   DETRUIRE(CONCEPT=_F(NOM=(__EVOLM,)), INFO=1)
 
                 # ========================================================
                 #
@@ -2430,7 +2403,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT,
                affiche_alarm_TRIA_ND_C_F('1', sig0, -dsig, codret, NB_CYCLE,\
                                 ncycrit, ncyerro,)
 
-            DETRUIRE(CONCEPT=_F(NOM=(__CHAR1, __CHAR2)), INFO=1)
    # ---
    # Fin boucle NIVEAU2 sur les amplitudes de variation SIGM_IMPOSE
    # ---
@@ -2471,7 +2443,6 @@ def essai_TRIA_ND_C_F(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT,
     else:
        remplir_tables(self, typessai, '1', DicoEssai, Resu_Essai)
 
-    DETRUIRE(CONCEPT=_F(NOM=(__RLIST, __DLIST),), INFO=1)
 
 # ----------------------------------------------------------------------- #
 # ----------------------------------------------------------------------- #
@@ -2774,12 +2745,8 @@ def essai_TRIA_DR_C_D(self, str_n_essai, DicoEssai,
                __EVPOST = self.get_last_concept()
                TabRes   = __EVPOST.EXTR_TABLE().values()
 
-               DETRUIRE(CONCEPT=_F(NOM=__EVPOST), INFO=1)
-
             else:
                TabRes = __EVOL.EXTR_TABLE().values()
-
-               DETRUIRE(CONCEPT=_F(NOM=__EVOL), INFO=1)
 
             # post-traitements
             # ----------------------------------------
@@ -2918,7 +2885,6 @@ def essai_TRIA_DR_C_D(self, str_n_essai, DicoEssai,
                                      MARQUEUR_NIV2[j],
                                      STYLE_NIV2[j],)
 
-            DETRUIRE(CONCEPT=_F(NOM=(__CHAR1, __CHAR2,)), INFO=1)
     # ---
     # Fin boucle NIVEAU 2 sur les amplitudes de variation EPSI_IMPOSE
     # ---
@@ -2964,8 +2930,6 @@ def essai_TRIA_DR_C_D(self, str_n_essai, DicoEssai,
        remplir_tables(self, typessai, str_n_essai, DicoEssai, Resu_Essai)
     else:
        remplir_tables(self, typessai, '1', DicoEssai, Resu_Essai)
-
-    DETRUIRE(CONCEPT=_F(NOM=(__RLIST, __DLIST),), INFO=1)
 
 
 # ----------------------------------------------------------------------- #
@@ -3292,12 +3256,8 @@ def essai_TRIA_ND_C_D(self, str_n_essai, DicoEssai,
                __EVPOST = self.get_last_concept()
                TabRes   = __EVPOST.EXTR_TABLE().values()
 
-               DETRUIRE(CONCEPT=_F(NOM=__EVPOST), INFO=1)
-
             else:
                TabRes = __EVOL.EXTR_TABLE().values()
-
-               DETRUIRE(CONCEPT=_F(NOM=__EVOL), INFO=1)
 
             # post-traitements
             # ----------------------------------------
@@ -3463,7 +3423,6 @@ def essai_TRIA_ND_C_D(self, str_n_essai, DicoEssai,
                                      MARQUEUR_NIV2[j],
                                      STYLE_NIV2[j],)
 
-            DETRUIRE(CONCEPT=_F(NOM=(__CHAR1, __CHAR2,)), INFO=1)
     # ---
     # Fin boucle NIVEAU 2 sur les amplitudes de variation EPSI_IMPOSE
     # ---
@@ -3528,8 +3487,6 @@ def essai_TRIA_ND_C_D(self, str_n_essai, DicoEssai,
        remplir_tables(self, typessai, str_n_essai, DicoEssai, Resu_Essai)
     else:
        remplir_tables(self, typessai, '1', DicoEssai, Resu_Essai)
-
-    DETRUIRE(CONCEPT=_F(NOM=(__RLIST, __DLIST),), INFO=1)
 
 
 # ----------------------------------------------------------------------- #
@@ -3823,12 +3780,8 @@ def essai_OEDO_DR_C_F(self, str_n_essai, DicoEssai, MATER,
            __EVPOST = self.get_last_concept()
            TabRes   = __EVPOST.EXTR_TABLE().values()
 
-           DETRUIRE(CONCEPT=_F(NOM=__EVPOST), INFO=1)
-
         else:
            TabRes = __EVOL.EXTR_TABLE().values()
-
-           DETRUIRE(CONCEPT=_F(NOM=__EVOL), INFO=1)
 
         # ---
         # Post-traitements.

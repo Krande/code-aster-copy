@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ from ...Messages import UTMESS, MasquerAlarme, RetablirAlarme
 from ...Cata.DataStructure import mode_meca
 from ...Cata.Syntax import _F
 from ...Commands import (AFFE_MODELE, CALC_TABLE, CREA_MAILLAGE, CREA_TABLE,
-                         DEFI_GROUP, DETRUIRE, LIRE_MAILLAGE, MACR_LIGN_COUPE,
+                         DEFI_GROUP, LIRE_MAILLAGE, MACR_LIGN_COUPE,
                          POST_RELEVE_T, PROJ_CHAMP)
 from ...Objects.table_py import Table, merge
 from ...SD.sd_mater import sd_compor1
@@ -117,10 +117,7 @@ def InterpolBaseFiss(s0, Basefo, Coorfo):
 #-------------------------------------------------------------------------
 def expand_values(self, tabout, liste_noeu_a_extr, titre, type_para):
 
-
-
     extrtabout = tabout.EXTR_TABLE()
-    DETRUIRE(CONCEPT=_F(NOM=tabout), INFO=1)
 
     points_expand = extrtabout.values()['NUM_PT']
     abscisses_expand = extrtabout.values()['ABSC_CURV']
@@ -317,7 +314,6 @@ def get_coor_libre(self, Lnoff, RESULTAT, ndim):
                   OPERATION='EXTRACTION',),)
 
     tcoorf = __NCOFON.EXTR_TABLE()
-    DETRUIRE(CONCEPT=_F(NOM=__NCOFON), INFO=1)
     nbt = len(tcoorf['NOEUD'].values()['NOEUD'])
     xs = NP.array(tcoorf['COOR_X'].values()['COOR_X'][:nbt])
     ys = NP.array(tcoorf['COOR_Y'].values()['COOR_Y'][:nbt])
@@ -878,7 +874,6 @@ def affiche_xfem(self, INFO, Nnoff, VNOR, VDIR):
         __resu2 = CREA_TABLE(LISTE=mcfact,
                              TITRE=' ' * 13 + 'VECTEUR NORMAL A LA FISSURE    -   DIRECTION DE PROPAGATION')
         aster.affiche('MESSAGE', __resu2.EXTR_TABLE().__repr__())
-        DETRUIRE(CONCEPT=_F(NOM=__resu2), INFO=1)
 
 #-------------------------------------------------------------------------
 def affiche_traitement(FOND_FISS, Lnofon, ino):
@@ -1439,7 +1434,6 @@ def get_saut(self, pgl, ds, Ss, di, Si, Sh, Sv, Sq, INFO, FISSURE, syme_char, ab
 
         __resu0 = CREA_TABLE(LISTE=mcfact, TITRE='--> SAUTS')
         aster.affiche('MESSAGE', __resu0.EXTR_TABLE().__repr__())
-        DETRUIRE(CONCEPT=_F(NOM=__resu0), INFO=1)
 
     return (saut,sautt,sauttt)
 
@@ -1521,7 +1515,6 @@ def get_meth1(self, abscs, absch, abscq, coetd, isig, tgsig,isigt,ttgsig, isigtt
         mcfact.append(_F(PARA='Td', LISTE_R=vt[1].tolist()))
         __resu1 = CREA_TABLE(LISTE=mcfact, TITRE='--> METHODE 1')
         aster.affiche('MESSAGE', __resu1.EXTR_TABLE().__repr__())
-        DETRUIRE(CONCEPT=_F(NOM=__resu1), INFO=1)
 
     return (tg1)
 
@@ -2003,10 +1996,6 @@ def post_t_q_ops(self, **args):
         Lnofon = []
         Nbnofo = Nnoff
 
-#     menage du resultat projete si contact
-        if xcont[0] == 3:
-            DETRUIRE(CONCEPT=_F(NOM=__RESX), INFO=1)
-
         affiche_xfem(self, INFO, Nnoff, VNOR, VDIR)
 
 #  ------------------------------------------------------------------
@@ -2066,7 +2055,6 @@ def post_t_q_ops(self, **args):
                                        OPERATION='EXTRACTION',),)
 
         tabtemp = __TEMP.EXTR_TABLE()
-        DETRUIRE(CONCEPT=_F(NOM=__TEMP), INFO=1)
 
 #  ------------------------------------------------------------------
 #  V. BOUCLE SUR NOEUDS DU FOND

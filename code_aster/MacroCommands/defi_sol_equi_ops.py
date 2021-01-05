@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ from ..Commands import (AFFE_CARA_ELEM, AFFE_CHAR_MECA, AFFE_CHAR_MECA_F,
                         CALC_CHAR_SEISME, CALC_FONC_INTERP, CALC_FONCTION,
                         CALC_MATR_ELEM, CALC_TABLE, CREA_MAILLAGE, CREA_RESU,
                         CREA_TABLE, DEFI_FONCTION, DEFI_GROUP, DEFI_INTE_SPEC,
-                        DEFI_LIST_REEL, DEFI_MATERIAU, DEFI_NAPPE, DETRUIRE,
+                        DEFI_LIST_REEL, DEFI_MATERIAU, DEFI_NAPPE,
                         DYNA_VIBRA, FORMULE, GENE_FONC_ALEA, IMPR_FONCTION,
                         IMPR_RESU, IMPR_TABLE, LIRE_FONCTION, MODI_MAILLAGE,
                         NUME_DDL, POST_DYNA_ALEA, RECU_FONCTION,
@@ -732,8 +732,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                 __tabfdg = CALC_TABLE(reuse=__tabfdg, TABLE=__tabfdg,
                                       ACTION=_F(OPERATION='COMB', TABLE=__tabtmpdg, NOM_PARA='EPSI'))
 
-                DETRUIRE(CONCEPT=_F(NOM=(__tabtmpgg, __tabtmpdg,),))
-
         IMPR_TABLE(TABLE=__tabfgg, UNITE=6,
                    TITRE=('Table des fonctions G_GMAX de Gamma par materiau'),)
         IMPR_TABLE(TABLE=__tabfdg, UNITE=6,
@@ -988,7 +986,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
            l_para.append(0.0)
          if lmassp == 'OUI':
            __faccX=CALC_FONCTION(COMB=_F(FONCTION=__faccex0,COEF=1.0*args['MASS_PENA'],),)
-           DETRUIRE(CONCEPT=_F(NOM=(__faccex0,),), INFO = 1)
            l_foncx.append(__faccX)
          else:
            l_vitex.append(__fvitex)
@@ -1973,7 +1970,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                     COMB=_F(FONCTION=__AX_RAf[n], COEF=1.), LIST_PARA=__linst,
                     INTERPOL='LIN',
                     PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT', )
-                DETRUIRE(CONCEPT=_F(NOM=__AX_RAf[n],))
 
                 if "LIST_FREQ_SPEC_OSCI" in args:
                   __SAX_RA[n] = CALC_FONCTION(
@@ -1988,7 +1984,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
               __PAX_RA = CALC_FONCTION(
                 PUISSANCE=_F(FONCTION=__AHX_RAf, EXPOSANT = 2),
                 PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT', )
-              DETRUIRE(CONCEPT=_F(NOM= __AHX_RAf,))
 
               if "LIST_FREQ_SPEC_OSCI" in args:
                 __SAX_RA[n] = CALC_FONCTION(
@@ -2062,7 +2057,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
               __PAX_BH = CALC_FONCTION( PUISSANCE=_F(FONCTION=__AHXBHf, EXPOSANT = 2),
                             PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT', )
 
-              DETRUIRE(CONCEPT=_F(NOM= (__AHXCLf, __AHXBHf), ),)
 
             else:
                 __AXrCL[n] = CALC_FONCTION(
@@ -2243,13 +2237,11 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
           __accxcla = POST_DYNA_ALEA( INTERSPECTRE=_F( INTE_SPEC = __DSP_CL,
                              NUME_ORDRE_I = 1, NUME_ORDRE_J = 1,   DUREE = TSM, ) ,)
           maccxcl[0] = __accxcla.EXTR_TABLE().MAX_MOY[0] / 9.81
-          DETRUIRE(CONCEPT=_F(NOM=(__DSP_CL,__accxcla)), INFO = 1)
 
         else:
           for n in range(num_dime):
             __accxcla = CALC_FONCTION(ABS=_F(FONCTION=__AX_CL[n]))
             maccxcl[n] = max(__accxcla.Ordo()) / 9.81
-            DETRUIRE(CONCEPT=_F(NOM=(__accxcla)), INFO = 1)
 
         if dime == "2D":
             __axa = [None] * (NCOU + 1)
@@ -2433,7 +2425,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                   __accxa = POST_DYNA_ALEA( INTERSPECTRE=_F( INTE_SPEC = __DSP,
                          NUME_ORDRE_I = 1, NUME_ORDRE_J = 1,    DUREE = TSM, ) ,)
                   maccx = __accxa.EXTR_TABLE().MAX_MOY[0]
-                  DETRUIRE(CONCEPT=_F(NOM=(  __DSP,)), INFO = 1)
 
                   __gamf = CALC_FONCTION( EXTRACTION=_F(FONCTION= __gam[k], PARTIE='MODULE'), )
 
@@ -2449,7 +2440,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                   __gama = POST_DYNA_ALEA( INTERSPECTRE=_F( INTE_SPEC = __DSP,
                               NUME_ORDRE_I = 1, NUME_ORDRE_J = 1,  DUREE = TSM, ) ,)
                   mgam = __gama.EXTR_TABLE().MAX_MOY[0]
-                  DETRUIRE(CONCEPT=_F(NOM=(  __DSP, __pgam )), INFO = 1)
 
                 else:
                   __accxa = CALC_FONCTION(ABS=_F(FONCTION=__axa[k]))
@@ -2459,17 +2449,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
 
                 lmaccx.append(maccx / 9.81)
                 gamax.append(mgam)
-
-                if 'DSP' in args:
-                  DETRUIRE(CONCEPT=_F(NOM=(__accxa, __axaf,  __gama,__gamf,
-                                         __axhr,  __eph, __ftep, __fthr,
-                                         )), INFO = 1)
-
-                else:
-                  DETRUIRE(CONCEPT=_F(NOM=(__accxa, __gama,
-                                         __axhr, __axr, __eph,
-                                         __ftep, __fthr,
-                                         )), INFO = 1)
 
             elif dime == "3D":
                 for n in range(num_dime):
@@ -2499,9 +2478,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
 
                     __accxa = CALC_FONCTION(ABS=_F(FONCTION=__axa[n]))
                     maccx[n] = max(__accxa.Ordo())
-                    DETRUIRE(CONCEPT=_F(NOM=(__accxa,
-                             __axhr, __axr,
-                             )), INFO = 1)
 
                     if ldevi == 'OUI':
 
@@ -2517,10 +2493,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
 
                         __dex[n]=CALC_FONCTION(INTEGRE=_F(FONCTION=__vix[n],),
                          PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
-
-                    DETRUIRE(CONCEPT=_F(NOM=(
-                                       __fthr,
-                                       )), INFO = 1)
 
                 __axaX[k] = __axa[0]
                 __axaY[k] = __axa[1]
@@ -2582,11 +2554,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                 __eph = CALC_FONCTION(
                     FFT=_F(FONCTION=__epxy[k], METHODE='COMPLET',),PROL_DROITE='CONSTANT',)
 
-                DETRUIRE(CONCEPT=_F(NOM=(__ephYYt, __ephXYt,
-                                         __ephYZt,
-                                         __epsXYt,
-                          )), INFO = 1)
-
                 coef = (2./3.)*sqrt(3.)
                 __gam[k] = CALC_FONCTION(
                     LIST_PARA=__linst, COMB=(_F(FONCTION=__epxy[k], COEF=coef,),
@@ -2608,13 +2575,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                 lmaccxY.append(maccx[1] / 9.81)
                 lmaccxZ.append(maccx[2] / 9.81)
                 gamax.append(mgam)
-
-                DETRUIRE(CONCEPT=_F(NOM=(__gama,
-                                         __eph,
-                                         __qh,
-                                         __ephYY,__ephYZ,__ephXY,
-                                         __ftepYY,__ftepYZ,__ftepXY,
-                                         )), INFO = 1)
 
             #===================================
             # APPLICATION DE LA FONCTION BYRNE
@@ -2753,72 +2713,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                                     _F(OPERATION='COMB',
                                        TABLE=__TAHnew, NOM_PARA='Y'),
                                     ))
-              if 'DSP' in args:
-                DETRUIRE(CONCEPT=_F(NOM=(
-                    __NUMEDDL, __RIGIHYST, __RIGH_ELH, __RIGIDITE,
-                    __SOLHSUBS, __CHAMPMAH, __RIGI_ELH, __MASS_ELH, __MASSEH, __AMOR_ELH, __AMORTIH,
-                    __VECASX, __DYNHARM,
-                    __PAX_RA, __PAX_CL,
-                    __PAX_BH,
-                    __pgamax,
-                    __rGnew, __rGold,
-                    __Enew, __AHnew, __TEnew, __TAHnew,
-                ),), INFO = 1)
-                for n in range(num_dime):
-                    DETRUIRE(CONCEPT=_F(NOM=(
-                    __ONDEX[n],
-                    __formFDT[n], __FDT_RACL[n], __mFDTRACL[n],
-                    __formFDT2[n], __FDT_CLBH[n], __mFDTCLBH[n],
-                    __AHuXrCL[n], __AHuXrBH[n], __mAHuXrCL[n], __mAHuXrBH[n],
-                    __AHX_RA[n], __SAX_RA[n],
-                    __AHXrCL[n], __SAX_CL[n],
-                    __paccx[n],
-                ),), INFO = 1)
-
-              else:
-                DETRUIRE(CONCEPT=_F(NOM=(
-                    __NUMEDDL, __RIGIHYST, __RIGH_ELH, __RIGIDITE,
-                    __SOLHSUBS, __CHAMPMAH, __RIGI_ELH, __MASS_ELH, __MASSEH, __AMOR_ELH, __AMORTIH,
-                    __VECASX, __DYNHARM,
-                    __pgamax,
-                    __rGnew, __rGold,
-                    __Enew, __AHnew, __TEnew, __TAHnew,
-                  ),), INFO = 1)
-
-                for n in range(num_dime):
-                    DETRUIRE(CONCEPT=_F(NOM=(
-                    __ONDEX[n],
-                    __formFDT[n], __FDT_RACL[n], __mFDTRACL[n],
-                    __formFDT2[n], __FDT_CLBH[n], __mFDTCLBH[n],
-                    __AHuXrCL[n], __AHuXrBH[n], __mAHuXrCL[n], __mAHuXrBH[n],
-                    __AHX_RA[n], __AX_RA[n], __SAX_RA[n],
-                    __AX_CL[n], __AHXrCL[n], __AXrCL[n], __SAX_CL[n],
-                    __AX_BH[n], __AHXrBH[n], __AXrBH[n], __SAX_BH[n],
-                    __paccx[n],
-                ),), INFO = 1)
-
-              if args['CHARGEMENT'] == 'ONDE_PLANE':
-                DETRUIRE(CONCEPT=_F(NOM=(
-                    __CHA_ON, __CHAONF,
-                  ),), INFO = 1)
-
-              for k in range(1, NCOU + 1):
-                    DETRUIRE(
-                        CONCEPT=_F(NOM=(__SOLH[k], __gam[k], __tau[k]),), INFO = 1)
-                    if 'DSP' not in args:
-                        DETRUIRE( CONCEPT=_F(NOM=( __epxy[k],),), )
-                        if dime == "2D" :
-                          if ldevi == 'OUI':
-                            DETRUIRE( CONCEPT=_F(NOM=(__foy[k],),), )
-
-              if dime == "2D":
-                for k in range(1, NCOU + 1):
-                    DETRUIRE(
-                        CONCEPT=_F(NOM=(__axa[k] ),), INFO = 1)
-              elif dime == "3D":
-                for k in range(num_dime):
-                    DETRUIRE(
-                        CONCEPT=_F(NOM=(__axa[k],  ),), INFO = 1)
 
         if deltaE < tole:
             etat = 'fin'
@@ -2894,13 +2788,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
             __TMAT = CALC_TABLE(reuse=__TMAT, TABLE=__TMAT,
                                 ACTION=act_table)
 
-            if dime == "2D":
-                DETRUIRE(
-                CONCEPT=_F(NOM=(__tabacc),))
-            elif dime == "3D":
-                DETRUIRE(
-                CONCEPT=_F(NOM=(__tabaccX,__tabaccY,__tabaccZ,),))
-
             if iter == 1 :
               __TMAT = CALC_TABLE(reuse=__TMAT, TABLE=__TMAT,
                             ACTION=(
@@ -2910,8 +2797,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                                        FORMULE=__fAHf, NOM_PARA = 'AH0',),
                                 ))
 
-            DETRUIRE(
-                CONCEPT=_F(NOM=(__tabred, __tabgam, __fAA, __fAB),))
             # Recuperation des historiques d acceleration et deformation dans
             # chaque couche
 
@@ -3595,74 +3480,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
                                  LEGENDE='SAX_RA' + legende + 'deltaE =' + str(deltaE),),
                               ))
 
-                DETRUIRE(CONCEPT=_F(NOM=(
-                    __NUMEDDLR, __RIGIDITE,
-                    __SOLRSUBS, __CHAMPMAR, __RIGI_ELR,
-                    __MASS_ELR, __MASSER, __AMOR_ELR, __AMORTIR,
-                    __VECASXR,
-                    __DYNTEMP,
-                    __AXrCLv, __AX_CLv, __SAX_CLv,
-                ),), INFO = 1)
-
-                for k in range(1, NCOU + 2):
-                    DETRUIRE(CONCEPT=_F(NOM=__SOLR[k],), INFO=1)
-
-            DETRUIRE(CONCEPT=_F(NOM=(
-                            __NUMEDDL,
-                            __RIGIHYST, __RIGH_ELH,
-                            __SOLHSUBS, __CHAMPMAH, __RIGI_ELH, __MASS_ELH, __MASSEH,
-                            __AMOR_ELH, __AMORTIH,
-                            __VECASX,
-                            __DYNHARM,
-                            __pgamax, __rGnew, __rGold,
-                            __Enew, __AHnew,
-                            ),), INFO = 1)
-
-            for n in range(num_dime):
-                if 'DSP' in args:
-                    DETRUIRE(CONCEPT=_F(NOM=(
-                                    __formFDT[n], __FDT_RACL[n], __mFDTRACL[n],
-                                    __formFDT2[n], __FDT_CLBH[n], __mFDTCLBH[n],
-                                    __AHuXrCL[n], __AHuXrBH[n], __mAHuXrCL[n], __mAHuXrBH[n],
-                                    __AHX_RA[n], __SAX_RA[n],
-                                    __AHXrCL[n], __SAX_CL[n],
-                                    __paccx[n],
-                                    ),), INFO = 1)
-                else:
-                    DETRUIRE(CONCEPT=_F(NOM=(
-                                    __formFDT[n], __FDT_RACL[n], __mFDTRACL[n],
-                                    __formFDT2[n], __FDT_CLBH[n], __mFDTCLBH[n],
-                                    __AHuXrCL[n], __AHuXrBH[n], __mAHuXrCL[n], __mAHuXrBH[n],
-                                    __AHX_RA[n], __AX_RA[n], __SAX_RA[n],
-                                    __AX_CL[n], __AHXrCL[n], __AXrCL[n], __SAX_CL[n],
-                                    __paccx[n],
-                                    ),), INFO = 1)
-
-            for k in range(1, NCOU + 1):
-                    DETRUIRE(
-                        CONCEPT=_F(NOM=(__gam[k], __tau[k]),), INFO = 1)
-            if dime == "2D":
-                for k in range(1, NCOU + 1):
-                    if ldevi == 'OUI':
-                      DETRUIRE(
-                        CONCEPT=_F(NOM=(__vix[k], __dex[k], __foy[k],),), INFO = 1)
-                    DETRUIRE(
-                            CONCEPT=_F(NOM=(__SPEC[k],__axa[k]),), INFO = 1)
-                    if 'DSP' not in args:
-                        DETRUIRE( CONCEPT=_F(NOM=(__epxy[k],)), INFO = 1)
-            elif dime == "3D":
-                for k in range(1, NCOU + 1):
-                    DETRUIRE(
-                        CONCEPT=_F(NOM=(__epxy[k],),), INFO = 1)
-                for k in range(num_dime):
-                    if ldevi == 'OUI':
-                      DETRUIRE(
-                        CONCEPT=_F(NOM=(__vix[k], __dex[k], ),), INFO = 1)
-                    DETRUIRE(
-                        CONCEPT=_F(NOM=(__axa[k],),), INFO = 1)
-
-            for k in range(1, NCOU + 2):
-                DETRUIRE(CONCEPT=_F(NOM=__SOLH[k],), INFO=1)
 
             if deltaE > tole:
                 text = ('CONVERGENCE NON ATTEINTE NOMBRE ITERATIONS=' + str(iter) + ' deltaE=' + str(deltaE))
@@ -3840,7 +3657,6 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
              'EPAIS': 0.0, 'SOURCE': 'NON',
              'RECEPTEUR': 'NON', 'AMOR_HYST': __TMAT['AH0', k]})
 
-    DETRUIRE(CONCEPT=_F(NOM=__TMAT), INFO=1)
     IMPR_RESU(RESU=_F(MAILLAGE=__mailla,),FORMAT='ASTER',UNITE=6)
 
     # creation de la table

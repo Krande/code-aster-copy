@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ from ..Messages import UTMESS
 
 from ..Cata.Syntax import _F
 from ..Commands import (CALC_FONCTION, COMB_MATR_ASSE, DEFI_FONCTION,
-                        DEFI_INTE_SPEC, DETRUIRE, DYNA_VIBRA, LIRE_FORC_MISS,
+                        DEFI_INTE_SPEC, DYNA_VIBRA, LIRE_FORC_MISS,
                         LIRE_IMPE_MISS, REST_SPEC_TEMP)
 from ..SD.sd_maillage import sd_maillage
 from .Miss.calc_miss_vari import calc_miss_vari, compute_force_vari
@@ -498,11 +498,7 @@ class GeneratorTRANS(Generator):
                              COEF_MULT = 1.0,),  )
       #  recuperer le vecteur modal depl calcule par dyge
         RS = NP.array(__dyge.sdj.DEPL.get())
-        DETRUIRE(CONCEPT = _F(NOM=(__dyge)), INFO=1)
         VECRES = self.append_Vec(RS, k, RESU)
-        if k > 0:
-            DETRUIRE(CONCEPT = _F(NOM = (__impe, __fosi, __rito)), INFO=1)
-#
         return VECRES
 
 
@@ -587,11 +583,9 @@ class GeneratorSPEC(Generator):
                              COEF_MULT = 1.0,),)
             #  recuperer le vecteur modal depl calcule par dyge
             RS = NP.array(__dyge.sdj.DEPL.get())
-            DETRUIRE(CONCEPT = _F(NOM = (__dyge)), INFO=1)
             # stockage des matrices résultats: sum(s_q s_q* )
             SP = SP + RS * NP.conj(RS[:, NP.newaxis])
         SPEC = self.append_Vec(SP, k, RESU)
-        DETRUIRE(CONCEPT = _F(NOM = (__impe, __fosi, __rito)), INFO=1)
         return SPEC
 
 

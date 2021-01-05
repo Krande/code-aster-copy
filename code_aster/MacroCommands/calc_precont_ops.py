@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -126,8 +126,6 @@ def calc_precont_ops(self, MODELE, CHAM_MATER, CARA_ELEM, EXCIT,
         elif ii != 0 and __adher != adher:
             UTMESS('F', 'CABLE0_3')
         ii += 1
-
-        # DETRUIRE(CONCEPT=_F(NOM=__TCAB1))
 
     adher = adher.strip()
 
@@ -621,8 +619,6 @@ def calc_precont_ops(self, MODELE, CHAM_MATER, CARA_ELEM, EXCIT,
                     info['GROUP_NO'] = __nom_noeu[0].strip()
 
                     info_actif_actif.append(info)
-
-            # DETRUIRE(CONCEPT=_F(NOM=__TCAB1))
 
         dExcit = []
         for j in EXCIT:

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 
 from ..Cata.Syntax import _F
 from ..Commands import (AFFE_MODELE, CALC_TABLE, CREA_MAILLAGE, CREA_TABLE,
-                        DETRUIRE, FORMULE, MACR_LIGN_COUPE, POST_RELEVE_T,
+                        FORMULE, MACR_LIGN_COUPE, POST_RELEVE_T,
                         PROJ_CHAMP)
 from ..Messages import UTMESS
 from ..Objects import ModeResult
@@ -157,7 +157,6 @@ def expand_values(self, tabout, liste_noeu_a_extr, titre, type_para):
 
 
     extrtabout = tabout.EXTR_TABLE()
-    DETRUIRE(CONCEPT=_F(NOM=tabout), INFO=1)
 
     # Recuperation des points
     points_expand = extrtabout.values()['NUM_PT']
@@ -380,7 +379,6 @@ def get_coor_libre(self, Lnoff, RESULTAT, ndim):
                   OPERATION='EXTRACTION',),)
 
     tcoorf = __NCOFON.EXTR_TABLE()
-    DETRUIRE(CONCEPT=_F(NOM=__NCOFON), INFO=1)
     nbt = len(tcoorf['NOEUD'].values()['NOEUD'])
     xs = NP.array(tcoorf['COOR_X'].values()['COOR_X'][:nbt])
     ys = NP.array(tcoorf['COOR_Y'].values()['COOR_Y'][:nbt])
@@ -820,7 +818,6 @@ def affiche_xfem(self, INFO, Nnoff, VNOR, VDIR):
         __resu2 = CREA_TABLE(LISTE=mcfact,
                              TITRE=' ' * 13 + 'VECTEUR NORMAL A LA FISSURE    -   DIRECTION DE PROPAGATION')
         aster.affiche('MESSAGE', __resu2.EXTR_TABLE().__repr__())
-        DETRUIRE(CONCEPT=_F(NOM=__resu2), INFO=1)
 
 #-------------------------------------------------------------------------
 
@@ -1075,8 +1072,6 @@ def get_propmat_varc_fem(self, RESULTAT, MAILLAGE, MATER, MODELISATION, Lnofon, 
                        CHAM_GD=__CHNOVRC,
                        OPERATION='EXTRACTION',),)
     tabvarc = __VARC.EXTR_TABLE()
-    DETRUIRE(CONCEPT=_F(NOM=__CHNOVRC))
-    DETRUIRE(CONCEPT=_F(NOM=__VARC))
 
     # valeur de la varc en ino
     nompar = nomgd_2_nompar[nomgd]
@@ -1135,7 +1130,6 @@ def get_propmat_varc_xfem(self, args, RESULTAT, MAILLAGE, MATER, MODELISATION, F
     _, _, nomgd = aster.dismoi('NOM_GD', __CHNOVRC.getName(), 'CHAM_NO', 'F')
     assert nomgd in list(nomgd_2_nompar.keys())
     ChnoVrcExtr = __CHNOVRC.EXTR_COMP(topo=1)
-    DETRUIRE(CONCEPT=_F(NOM=__CHNOVRC))
     ChnoVrcVale = ChnoVrcExtr.valeurs
     ChnoVrcNoeu = ChnoVrcExtr.noeud
     ChnoVrcComp = ChnoVrcExtr.comp
@@ -1411,7 +1405,6 @@ def get_saut(self, pgl, ds, di, INFO, FISSURE, syme_char, abscs, ndim):
             mcfact.append(_F(PARA='SAUT_3', LISTE_R=saut[2].tolist()))
         __resu0 = CREA_TABLE(LISTE=mcfact, TITRE='--> SAUTS')
         aster.affiche('MESSAGE', __resu0.EXTR_TABLE().__repr__())
-        DETRUIRE(CONCEPT=_F(NOM=__resu0), INFO=1)
 
     return saut
 
@@ -1463,7 +1456,6 @@ def get_meth1(self, abscs, coefg, coefg3, kgsig, isig, saut2, INFO, ndim):
         mcfact.append(_F(PARA='G', LISTE_R=g.tolist()))
         __resu1 = CREA_TABLE(LISTE=mcfact, TITRE='--> METHODE 1')
         aster.affiche('MESSAGE', __resu1.EXTR_TABLE().__repr__())
-        DETRUIRE(CONCEPT=_F(NOM=__resu1), INFO=1)
 
     return kg1
 #-------------------------------------------------------------------------
@@ -1492,7 +1484,6 @@ def get_meth2(self, abscs, coefg, coefg3, kgsig, isig, saut2, INFO, ndim):
         mcfact.append(_F(PARA='G', LISTE_R=g.tolist()))
         __resu2 = CREA_TABLE(LISTE=mcfact, TITRE='--> METHODE 2')
         aster.affiche('MESSAGE', __resu2.EXTR_TABLE().__repr__())
-        DETRUIRE(CONCEPT=_F(NOM=__resu2), INFO=1)
 
     return kg2
 #-------------------------------------------------------------------------
@@ -1523,7 +1514,6 @@ def get_meth3(self, abscs, coefg, coefg3, kgsig, isig, saut2, INFO, ndim):
         mcfact.append(_F(PARA='G', LISTE_R=g))
         __resu3 = CREA_TABLE(LISTE=mcfact, TITRE='--> METHODE 3')
         aster.affiche('MESSAGE', __resu3.EXTR_TABLE().__repr__())
-        DETRUIRE(CONCEPT=_F(NOM=__resu3), INFO=1)
 
     return kg3
 
@@ -2128,9 +2118,8 @@ def post_k1_k2_k3_ops(self, RESULTAT, FOND_FISS =None, FISSURE=None, MATER=None,
         Lnofon = []
         Nbnofo = Nnoff
 
-#     menage du resultat projete si contact
-        if xcont[0] == 3:
-            DETRUIRE(CONCEPT=_F(NOM=__RESX), INFO=1)
+#     menage du resultat projete
+        del __RESX
 
         affiche_xfem(self, INFO, Nnoff, VNOR, VDIR)
 

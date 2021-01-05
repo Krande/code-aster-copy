@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ from ..Messages import UTMESS
 from ..Cata.DataStructure import *
 from ..Cata.DataStructure import table_container, table_fonction
 from ..Cata.Syntax import _F
-from ..Commands import CREA_TABLE, DETRUIRE
+from ..Commands import CREA_TABLE
 from ..Objects.table_py import Table, merge, remove_twins
 from ..Utilities import force_list
 from ..Utilities.misc import get_titre_concept
@@ -59,7 +59,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
 
     args = _F(args)
 
-    new_table, typ_tabout = calc_table_prod(TABLE, ACTION)
+    _, typ_tabout = calc_table_prod(TABLE, ACTION)
 
     tab = TABLE.EXTR_TABLE()
 
@@ -264,10 +264,6 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
 
 
     # 99. Création de la table_sdaster résultat
-    # cas réentrant : il faut détruire l'ancienne table_sdaster
-    if args['reuse'] is not None:
-        DETRUIRE(CONCEPT=_F(NOM=TABLE), INFO=1)
-
     dprod = tab.dict_CREA_TABLE()
     if INFO == 2:
         echo_mess = ['']

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,13 @@
 
 from math import acos, atan, atan2, cos, log, pi, sin, sqrt
 
+import aster
 import numpy as NP
 
-import aster
-from ..Messages import UTMESS
-
 from ..Cata.Syntax import _F
-from ..Commands import (ASSE_MAILLAGE, CALC_TABLE, DEFI_GROUP, DETRUIRE,
-                        LIRE_MAILLAGE, MODI_MODELE_XFEM, POST_RUPTURE)
+from ..Commands import (ASSE_MAILLAGE, CALC_TABLE, DEFI_GROUP, LIRE_MAILLAGE,
+                        MODI_MODELE_XFEM, POST_RUPTURE)
+from ..Messages import UTMESS
 from .Fracture.detec_front import DETEC_FRONT
 from .Fracture.propa_xfem import PROPA_XFEM
 from .Utils.partition import MAIL_PY
@@ -716,9 +715,6 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                                            for j in range(n)]
                     tab_VIT[numfis][1] = [[absc[j], table_vit[j]]
                                           for j in range(n)]
-            if OPERATION != 'PROPA_COHESIF':
-                DETRUIRE(CONCEPT=_F(NOM=__TAB_DKEQ_VIT), INFO=1)
-            DETRUIRE(CONCEPT=_F(NOM=__COPIE_SIF), INFO=1)
 
 #   verification que la vitesse maximale est superieure a 0
         if max(Vmfiss.values()) < eps:
@@ -732,8 +728,6 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                                       DELTA_A_MAX=Damax)
 
             NBCYCLE = __TAB_PILO.EXTR_TABLE().DELTA_CYCLE.values()[0]
-
-            DETRUIRE(CONCEPT=_F(NOM=__TAB_PILO), INFO=1)
 
 #
 # PROPAGATION
@@ -887,7 +881,6 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
 
 # DEUXIEME BOUCLE SUR LES FISSURES : PROPAGATION
         for numfis, Fiss in enumerate(Fissures):
-            DETRUIRE(CONCEPT=_F(NOM=__TAB_CUMUL[numfis]), INFO=1)
             fiss0 = Fiss['FISS_ACTUELLE']
             print('-------------------------------------------')
             print('TRAITEMENT DE LA FISSURE ', fiss0.getName())
