@@ -1,7 +1,7 @@
 # copie du cas test zzzz116a
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -74,14 +74,12 @@ G0 = CALC_H(OPTION='G',
 
 
 TEST_RESU(
-    RESU=(_F(
+    CHAM_NO=(_F(
         CRITERE=('RELATIF', ),
         REFERENCE = 'ANALYTIQUE',
         GROUP_NO=('NO_TEST', ),
-        NOM_CHAM='DEPL',
-        NOM_CMP='DX',
-        INST=0,
-        RESULTAT=cham_theta_no,
+        NOM_CMP='MODULE',
+        CHAM_GD=cham_theta_no,
         VALE_REFE=4.2484695E-01,
         VALE_CALC=0.42485725,
         ),
@@ -89,22 +87,17 @@ TEST_RESU(
         CRITERE=('ABSOLU', ),
         GROUP_NO=('NO_TEST', ),
         REFERENCE = 'ANALYTIQUE',
-        NOM_CHAM='DEPL',
-        NOM_CMP='DY',
-        INST=0,
-        RESULTAT=cham_theta_no,
-        ORDRE_GRANDEUR= 1.0,
-        VALE_REFE=0.0,
-        VALE_CALC=0.0,
+        NOM_CMP='DIR_X',
+        CHAM_GD=cham_theta_no,
+        VALE_REFE=1.0,
+        VALE_CALC=1.0,
         ),
         _F(
         CRITERE=('RELATIF', ),
         REFERENCE = 'ANALYTIQUE',
         GROUP_NO=('NO_ZERO', ),
-        NOM_CHAM='DEPL',
-        NOM_CMP='DX',
-        INST=0,
-        RESULTAT=cham_theta_no,
+        NOM_CMP='DIR_Y',
+        CHAM_GD=cham_theta_no,
         ORDRE_GRANDEUR= 1.0,
         VALE_REFE=0.0,
         VALE_CALC=0.0,
@@ -113,10 +106,8 @@ TEST_RESU(
         CRITERE=('ABSOLU', ),
         GROUP_NO=('NO_ZERO', ),
         REFERENCE = 'ANALYTIQUE',
-        NOM_CHAM='DEPL',
-        NOM_CMP='DY',
-        INST=0,
-        RESULTAT=cham_theta_no,
+        NOM_CMP='DIR_Z',
+        CHAM_GD=cham_theta_no,
         ORDRE_GRANDEUR= 1.0,
         VALE_REFE=0.0,
         VALE_CALC=0.0,
@@ -125,10 +116,8 @@ TEST_RESU(
         CRITERE=('RELATIF', ),
         REFERENCE = 'ANALYTIQUE',
         GROUP_NO=('NO_UN', ),
-        NOM_CHAM='DEPL',
-        NOM_CMP='DX',
-        INST=0,
-        RESULTAT=cham_theta_no,
+        NOM_CMP='MODULE',
+        CHAM_GD=cham_theta_no,
         VALE_REFE=1.0,
         VALE_CALC=1.0,
         ),
@@ -136,13 +125,10 @@ TEST_RESU(
         CRITERE=('ABSOLU', ),
         GROUP_NO=('NO_UN', ),
         REFERENCE = 'ANALYTIQUE',
-        NOM_CHAM='DEPL',
-        NOM_CMP='DY',
-        INST=0,
-        RESULTAT=cham_theta_no,
-        ORDRE_GRANDEUR= 1.0,
-        VALE_REFE=0.0,
-        VALE_CALC=0.0,
+        NOM_CMP='DIR_X',
+        CHAM_GD=cham_theta_no,
+        VALE_REFE=1.0,
+        VALE_CALC=1.0,
         ),
         )
 )
@@ -164,14 +150,12 @@ H0 = CALC_H(RESULTAT=RES0,
 
 
 TEST_RESU(
-    RESU=(_F(
+    CHAM_NO=(_F(
         CRITERE=('RELATIF', ),
         REFERENCE = 'ANALYTIQUE',
         GROUP_NO=('NO_TEST', ),
-        NOM_CHAM='DEPL',
-        NOM_CMP='DX',
-        INST=0,
-        RESULTAT=cham_theta_no2,
+        NOM_CMP='MODULE',
+        CHAM_GD=cham_theta_no2,
         VALE_REFE=4.2484695E-01,
         VALE_CALC=0.42485725,
         ),
@@ -179,22 +163,17 @@ TEST_RESU(
         CRITERE=('ABSOLU', ),
         GROUP_NO=('NO_TEST', ),
         REFERENCE = 'ANALYTIQUE',
-        NOM_CHAM='DEPL',
-        NOM_CMP='DY',
-        INST=0,
-        RESULTAT=cham_theta_no2,
-        ORDRE_GRANDEUR= 1.0,
-        VALE_REFE=0.0,
-        VALE_CALC=0.0,
+        NOM_CMP='DIR_X',
+        CHAM_GD=cham_theta_no2,
+        VALE_REFE=1.0,
+        VALE_CALC=1.0,
         ),
         _F(
         CRITERE=('RELATIF', ),
         REFERENCE = 'ANALYTIQUE',
         GROUP_NO=('NO_ZERO', ),
-        NOM_CHAM='DEPL',
-        NOM_CMP='DX',
-        INST=0,
-        RESULTAT=cham_theta_no2,
+        NOM_CMP='DIR_Y',
+        CHAM_GD=cham_theta_no2,
         ORDRE_GRANDEUR= 1.0,
         VALE_REFE=0.0,
         VALE_CALC=0.0,
@@ -203,10 +182,8 @@ TEST_RESU(
         CRITERE=('ABSOLU', ),
         GROUP_NO=('NO_ZERO', ),
         REFERENCE = 'ANALYTIQUE',
-        NOM_CHAM='DEPL',
-        NOM_CMP='DY',
-        INST=0,
-        RESULTAT=cham_theta_no2,
+        NOM_CMP='DIR_Z',
+        CHAM_GD=cham_theta_no2,
         ORDRE_GRANDEUR= 1.0,
         VALE_REFE=0.0,
         VALE_CALC=0.0,
@@ -215,10 +192,8 @@ TEST_RESU(
         CRITERE=('RELATIF', ),
         REFERENCE = 'ANALYTIQUE',
         GROUP_NO=('NO_UN', ),
-        NOM_CHAM='DEPL',
-        NOM_CMP='DX',
-        INST=0,
-        RESULTAT=cham_theta_no2,
+        NOM_CMP='MODULE',
+        CHAM_GD=cham_theta_no2,
         VALE_REFE=1.0,
         VALE_CALC=1.0,
         ),
@@ -226,19 +201,16 @@ TEST_RESU(
         CRITERE=('ABSOLU', ),
         GROUP_NO=('NO_UN', ),
         REFERENCE = 'ANALYTIQUE',
-        NOM_CHAM='DEPL',
-        NOM_CMP='DY',
-        INST=0,
-        RESULTAT=cham_theta_no2,
-        ORDRE_GRANDEUR= 1.0,
-        VALE_REFE=0.0,
-        VALE_CALC=0.0,
+        NOM_CMP='DIR_X',
+        CHAM_GD=cham_theta_no2,
+        VALE_REFE=1.0,
+        VALE_CALC=1.0,
         ),
         )
 )
 
-IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=cham_theta_no))
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(CHAM_GD=cham_theta_no))
 
-IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(RESULTAT=cham_theta_no2))
+IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(CHAM_GD=cham_theta_no2))
 
 FIN()
