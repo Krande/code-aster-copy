@@ -26,6 +26,7 @@ use calcG_type
 !
 #include "asterf_types.h"
 #include "asterfort/alchml.h"
+#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/chpchd.h"
 #include "asterfort/chpver.h"
@@ -33,7 +34,6 @@ use calcG_type
 #include "asterfort/dismoi.h"
 #include "asterfort/gcharg.h"
 #include "asterfort/getvid.h"
-#include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/mecact.h"
@@ -43,6 +43,7 @@ use calcG_type
 #include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
+#include "jeveux.h"
 
     type(CalcG_field), intent(in) :: cgField
     type(CalcG_theta), intent(in) :: cgTheta
@@ -149,31 +150,26 @@ use calcG_type
     call gcharg(cgStudy%model, cgStudy%loading, chvolu, cf1d2d, cf2d3d, chpres,&
                 chepsi, chpesa, chrota, lfonc, cgStudy%time, cgStudy%nume_ordre)
 !
+! -- Select name of option
     if (lfonc) then
         if (cgField%ndim .eq. 2) then
             pavolu = 'PFFVOLU'
             pa1d2d = 'PFF1D2D'
             papres = 'PPRESSF'
             pepsin = 'PEPSINF'
-            if (cgStudy%option .eq. 'K') then
-                opti   = 'CALCH_K_G_F'
-            else if (cgStudy%option .eq. 'G') then
-                opti   = 'CALCH_G_F'
-            else
-                opti   = 'BIDON'
-            endif
         else
             pavolu = 'PFFVOLU'
             pa2d3d = 'PFF2D3D'
             papres = 'PPRESSF'
             pepsin = 'PEPSINF'
-            if (cgStudy%option .eq. 'K') then
-                opti   = 'CALCH_K_G_F'
-            else if (cgStudy%option .eq. 'G') then
-                opti   = 'CALCH_G_F'
-            else
-                opti   = 'BIDON'
-            endif
+        endif
+!
+        if (cgStudy%option .eq. 'K') then
+            opti   = 'CALCH_K_G_F'
+        else if (cgStudy%option .eq. 'G') then
+            opti   = 'CALCH_G_F'
+        else
+            ASSERT(ASTER_FALSE)
         endif
     else
         if (cgField%ndim .eq. 2) then
@@ -181,27 +177,20 @@ use calcG_type
             pa1d2d = 'PFR1D2D'
             papres = 'PPRESSR'
             pepsin = 'PEPSINR'
-            if (cgStudy%option .eq. 'K') then
-                opti   = 'CALCH_K_G'
-            else if (cgStudy%option .eq. 'G') then
-                opti   = 'CALCH_G'
-            else
-                opti   = 'BIDON'
-            endif
         else
             pavolu = 'PFRVOLU'
             pa2d3d = 'PFR2D3D'
             papres = 'PPRESSR'
             pepsin = 'PEPSINR'
-            if (cgStudy%option .eq. 'K') then
-                opti   = 'CALCH_K_G'
-            else if (cgStudy%option .eq. 'G') then
-                opti   = 'CALCH_G'
-            else
-                opti   = 'BIDON'
-            endif
         endif
-
+!
+        if (cgStudy%option .eq. 'K') then
+            opti   = 'CALCH_K_G'
+        else if (cgStudy%option .eq. 'G') then
+            opti   = 'CALCH_G'
+        else
+            ASSERT(ASTER_FALSE)
+        endif
     endif
 !
 !-- Declaration des entrees/sorties pour l'appel à calcul
