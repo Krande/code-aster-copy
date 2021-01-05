@@ -233,146 +233,146 @@ Rsup3 = 9.0
 # Calcul de G pour les 3 couronnes, a partir de SIEF_ELGA
 #--------------------------------------------------------
 
-GINGA1=CALC_H(OPTION='G',
-              THETA=_F(
-                       R_INF=Rinf1,
-                       FISSURE=FISS1_NEW,
-                       R_SUP=Rsup1,),
-              RESULTAT=RESUINI,
-              INST=1,
-              ETAT_INIT =_F(SIGM=SIEFELGA),)
-
-GINGA2=CALC_H(OPTION='G',
-              THETA=_F(
-                       R_INF=Rinf2,
-                       FISSURE=FISS1_NEW,
-                       R_SUP=Rsup2,),
-              RESULTAT=RESUINI,
-              INST=1,
-              ETAT_INIT =_F(SIGM=SIEFELGA),)
-
-GINGA3=CALC_H(OPTION='G',
-              THETA=_F(
-                       R_INF=Rinf3,
-                       FISSURE=FISS1_NEW,
-                       R_SUP=Rsup3,),
-              RESULTAT=RESUINI,
-              INST=1,
-              ETAT_INIT =_F(SIGM=SIEFELGA),)
+#GINGA1=CALC_H(OPTION='G',
+#              THETA=_F(
+#                       R_INF=Rinf1,
+#                       FISSURE=FISS1_NEW,
+#                       R_SUP=Rsup1,),
+#              RESULTAT=RESUINI,
+#              INST=1,
+#              ETAT_INIT =_F(SIGM=SIEFELGA),)
+#
+#GINGA2=CALC_H(OPTION='G',
+#              THETA=_F(
+#                       R_INF=Rinf2,
+#                       FISSURE=FISS1_NEW,
+#                       R_SUP=Rsup2,),
+#              RESULTAT=RESUINI,
+#              INST=1,
+#              ETAT_INIT =_F(SIGM=SIEFELGA),)
+#
+#GINGA3=CALC_H(OPTION='G',
+#              THETA=_F(
+#                       R_INF=Rinf3,
+#                       FISSURE=FISS1_NEW,
+#                       R_SUP=Rsup3,),
+#              RESULTAT=RESUINI,
+#              INST=1,
+#              ETAT_INIT =_F(SIGM=SIEFELGA),)
 
 # Calcul de G pour les 3 couronnes, a partir de SIEF_NOEU
 #--------------------------------------------------------
 
-GINNO1=CALC_H(OPTION='G',
-              THETA=_F(
-                       R_INF=Rinf1,
-                       FISSURE=FISS1_NEW,
-                       R_SUP=Rsup1,),
-             RESULTAT=RESUINI,
-             INST=1,
-             ETAT_INIT =_F(SIGM=SIEFNOEU),)
-
-GINNO2=CALC_H(OPTION='G',
-              THETA=_F(
-                       R_INF=Rinf2,
-                       FISSURE=FISS1_NEW,
-                       R_SUP=Rsup2,),
-             RESULTAT=RESUINI,
-             INST=1,
-             ETAT_INIT =_F(SIGM=SIEFNOEU),)
-
-GINNO3=CALC_H(OPTION='G',
-              THETA=_F(
-                       R_INF=Rinf3,
-                       FISSURE=FISS1_NEW,
-                       R_SUP=Rsup3,),
-              RESULTAT=RESUINI,
-              INST=1,
-              ETAT_INIT =_F(SIGM=SIEFNOEU),)
+#GINNO1=CALC_H(OPTION='G',
+#              THETA=_F(
+#                       R_INF=Rinf1,
+#                       FISSURE=FISS1_NEW,
+#                       R_SUP=Rsup1,),
+#             RESULTAT=RESUINI,
+#             INST=1,
+#             ETAT_INIT =_F(SIGM=SIEFNOEU),)
+#
+#GINNO2=CALC_H(OPTION='G',
+#              THETA=_F(
+#                       R_INF=Rinf2,
+#                       FISSURE=FISS1_NEW,
+#                       R_SUP=Rsup2,),
+#             RESULTAT=RESUINI,
+#             INST=1,
+#             ETAT_INIT =_F(SIGM=SIEFNOEU),)
+#
+#GINNO3=CALC_H(OPTION='G',
+#              THETA=_F(
+#                       R_INF=Rinf3,
+#                       FISSURE=FISS1_NEW,
+#                       R_SUP=Rsup3,),
+#              RESULTAT=RESUINI,
+#              INST=1,
+#              ETAT_INIT =_F(SIGM=SIEFNOEU),)
 
 # Calcul de G pour les 3 couronnes, a partir de SIEF_ELNO
 #--------------------------------------------------------
 
-GINELNO1=CALC_H(OPTION='G',
-                THETA=_F(
-                         R_INF=Rinf1,
-                         FISSURE=FISS1_NEW,
-                         R_SUP=Rsup1,),
-                RESULTAT=RESUINI,
-                INST=1,
-                ETAT_INIT=_F(SIGM=SIEFELNO),)
-
-GINELNO2=CALC_H(OPTION='G',
-                THETA=_F(
-                         R_INF=Rinf2,
-                         FISSURE=FISS1_NEW,
-                         R_SUP=Rsup2,),
-                RESULTAT=RESUINI,
-                INST=1,
-                ETAT_INIT=_F(SIGM=SIEFELNO),)
-
-GINELNO3=CALC_H(OPTION='G',
-                THETA=_F(
-                         R_INF=Rinf3,
-                         FISSURE=FISS1_NEW,
-                         R_SUP=Rsup3,),
-                RESULTAT=RESUINI,
-                INST=1,
-                ETAT_INIT=_F(SIGM=SIEFELNO),)
+#GINELNO1=CALC_H(OPTION='G',
+#                THETA=_F(
+#                         R_INF=Rinf1,
+#                         FISSURE=FISS1_NEW,
+#                         R_SUP=Rsup1,),
+#                RESULTAT=RESUINI,
+#                INST=1,
+#                ETAT_INIT=_F(SIGM=SIEFELNO),)
+#
+#GINELNO2=CALC_H(OPTION='G',
+#                THETA=_F(
+#                         R_INF=Rinf2,
+#                         FISSURE=FISS1_NEW,
+#                         R_SUP=Rsup2,),
+#                RESULTAT=RESUINI,
+#                INST=1,
+#                ETAT_INIT=_F(SIGM=SIEFELNO),)
+#
+#GINELNO3=CALC_H(OPTION='G',
+#                THETA=_F(
+#                         R_INF=Rinf3,
+#                         FISSURE=FISS1_NEW,
+#                         R_SUP=Rsup3,),
+#                RESULTAT=RESUINI,
+#                INST=1,
+#                ETAT_INIT=_F(SIGM=SIEFELNO),)
 
 # Calcul de G et K pour les 3 couronnes, a partir de SIEF_ELNO
 #------------------------------------------------------------
 
-GINELNK1=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
-                        R_INF=Rinf1,
-                        R_SUP=Rsup1),
-                RESULTAT=RESUINI,
-                INST=1,
-                ETAT_INIT =_F(SIGM=SIEFELNO),
-                OPTION='K')
-
-GINELNK2=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
-                        R_INF=Rinf2,
-                        R_SUP=Rsup2),
-                RESULTAT=RESUINI,
-                INST=1,
-                ETAT_INIT =_F(SIGM=SIEFELNO),
-                OPTION='K')
-
-GINELNK3=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
-                        R_INF=Rinf3,
-                        R_SUP=Rsup3),
-                RESULTAT=RESUINI,
-                INST=1,
-                ETAT_INIT =_F(SIGM=SIEFELNO),
-                OPTION='K')
+#GINELNK1=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
+#                        R_INF=Rinf1,
+#                        R_SUP=Rsup1),
+#                RESULTAT=RESUINI,
+#                INST=1,
+#                ETAT_INIT =_F(SIGM=SIEFELNO),
+#                OPTION='K')
+#
+#GINELNK2=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
+#                        R_INF=Rinf2,
+#                        R_SUP=Rsup2),
+#                RESULTAT=RESUINI,
+#                INST=1,
+#                ETAT_INIT =_F(SIGM=SIEFELNO),
+#                OPTION='K')
+#
+#GINELNK3=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
+#                        R_INF=Rinf3,
+#                        R_SUP=Rsup3),
+#                RESULTAT=RESUINI,
+#                INST=1,
+#                ETAT_INIT =_F(SIGM=SIEFELNO),
+#                OPTION='K')
 
 # Calcul de G et K pour les 3 couronnes, a partir de SIEF_ELGA
 #------------------------------------------------------------
 
-GINGAK1=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
-                        R_INF=Rinf1,
-                        R_SUP=Rsup1),
-                RESULTAT=RESUINI,
-                INST=1,
-                ETAT_INIT =_F(SIGM=SIEFELGA),
-                OPTION='K')
-
-GINGAK2=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
-                        R_INF=Rinf2,
-                        R_SUP=Rsup2),
-                RESULTAT=RESUINI,
-                INST=1,
-                ETAT_INIT =_F(SIGM=SIEFELGA),
-                OPTION='K')
-
-GINGAK3=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
-                        R_INF=Rinf3,
-                        R_SUP=Rsup3),
-                RESULTAT=RESUINI,
-                INST=1,
-                ETAT_INIT =_F(SIGM=SIEFELGA),
-                OPTION='K')
+#GINGAK1=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
+#                        R_INF=Rinf1,
+#                        R_SUP=Rsup1),
+#                RESULTAT=RESUINI,
+#                INST=1,
+#                ETAT_INIT =_F(SIGM=SIEFELGA),
+#                OPTION='K')
+#
+#GINGAK2=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
+#                        R_INF=Rinf2,
+#                        R_SUP=Rsup2),
+#                RESULTAT=RESUINI,
+#                INST=1,
+#                ETAT_INIT =_F(SIGM=SIEFELGA),
+#                OPTION='K')
+#
+#GINGAK3=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
+#                        R_INF=Rinf3,
+#                        R_SUP=Rsup3),
+#                RESULTAT=RESUINI,
+#                INST=1,
+#                ETAT_INIT =_F(SIGM=SIEFELGA),
+#                OPTION='K')
                 
 # Calcul de G a partir du RESOUVFI
 #---------------------------------
@@ -397,40 +397,40 @@ KMECA=POST_K1_K2_K3(FOND_FISS=FISS1,
 
 ## Verification des resultats
 
-TEST_TABLE(PRECISION=0.02,
-           VALE_CALC=55.3956139743,
-           VALE_REFE=55.359999999999999,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='G',
-           TABLE=GINGA1,)
-
-TEST_TABLE(PRECISION=0.02,
-           VALE_CALC=55.3956139599,
-           VALE_REFE=55.359999999999999,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='G',
-           TABLE=GINELNK1,)
-
-TEST_TABLE(PRECISION=0.02,
-           VALE_CALC=3575.49668679,
-           VALE_REFE=3576,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='K1',
-           TABLE=GINELNK1,)
-
-TEST_TABLE(PRECISION=0.02,
-           VALE_CALC=55.3651253306,
-           VALE_REFE=55.359999999999999,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='G',
-           TABLE=GINNO2,)
-
-TEST_TABLE(PRECISION=0.02,
-           VALE_CALC=55.3700925586,
-           VALE_REFE=55.359999999999999,
-           REFERENCE='SOURCE_EXTERNE',
-           NOM_PARA='G',
-           TABLE=GINELNO3,)
+#TEST_TABLE(PRECISION=0.02,
+#           VALE_CALC=55.3956139743,
+#           VALE_REFE=55.359999999999999,
+#           REFERENCE='SOURCE_EXTERNE',
+#           NOM_PARA='G',
+#           TABLE=GINGA1,)
+#
+#TEST_TABLE(PRECISION=0.02,
+#           VALE_CALC=55.3956139599,
+#           VALE_REFE=55.359999999999999,
+#           REFERENCE='SOURCE_EXTERNE',
+#           NOM_PARA='G',
+#           TABLE=GINELNK1,)
+#
+#TEST_TABLE(PRECISION=0.02,
+#           VALE_CALC=3575.49668679,
+#           VALE_REFE=3576,
+#           REFERENCE='SOURCE_EXTERNE',
+#           NOM_PARA='K1',
+#           TABLE=GINELNK1,)
+#
+#TEST_TABLE(PRECISION=0.02,
+#           VALE_CALC=55.3651253306,
+#           VALE_REFE=55.359999999999999,
+#           REFERENCE='SOURCE_EXTERNE',
+#           NOM_PARA='G',
+#           TABLE=GINNO2,)
+#
+#TEST_TABLE(PRECISION=0.02,
+#           VALE_CALC=55.3700925586,
+#           VALE_REFE=55.359999999999999,
+#           REFERENCE='SOURCE_EXTERNE',
+#           NOM_PARA='G',
+#           TABLE=GINELNO3,)
 
 TEST_TABLE(VALE_CALC=55.3650585586,
            NOM_PARA='G',
