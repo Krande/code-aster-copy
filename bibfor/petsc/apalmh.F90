@@ -40,7 +40,7 @@ use petsc_data_module
     implicit none
 
 #include "jeveux.h"
-#include "asterc/loisem.h"
+#include "asterc/ismaem.h"
 #include "asterfort/apbloc.h"
 #include "asterfort/assert.h"
 #include "asterc/asmpi_comm.h"
@@ -134,7 +134,7 @@ use petsc_data_module
     ndprop = 0
 !
     num_ddl_max = 0
-    num_ddl_min = 999999999
+    num_ddl_min = ismaem()
     do jcoll = 1, nloc
         procol = zi(jprddl - 1 + jcoll)
         if (procol .eq. rang) then
