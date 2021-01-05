@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -348,8 +348,12 @@ class ExecutionParameter(metaclass=Singleton):
             help="use (=1) or not (=0) the legacy mode for macro-commands "
                  "results. (default: 1)")
         parser.add_argument('--deprecated', dest='ShowDeprecated',
-            action='store_const', const=1,
+            action='store_const', const=1, default=1,
             help="turn on deprecation warnings")
+
+        parser.add_argument('--no-deprecated', dest='ShowDeprecated',
+            action='store_const', const=0,
+            help="turn off deprecation warnings (default: on)")
 
         parser.add_argument('--max_check',
             action='store', type=int, default=500,

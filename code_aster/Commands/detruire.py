@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -47,6 +47,10 @@ class Deleter(ExecuteCommand):
             keywords (dict): User's keywords, changed in place to force
                 deletion. "CONCEPT" will not be available for 'post_exec'.
         """
+        if self.level > 1:
+            deprecate("DETRUIRE should be used in a macro-command", case=9,
+                      level=5)
+            return
         to_del = []
         kwlist = keywords.pop("CONCEPT", [])
         for occ in kwlist:
