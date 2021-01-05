@@ -34,6 +34,7 @@ implicit none
 #include "asterfort/chckma.h"
 #include "asterfort/chcoma.h"
 #include "asterfort/chcomb.h"
+#include "asterfort/cm_dclac.h"
 #include "asterfort/cm1518.h"
 #include "asterfort/cm2027.h"
 #include "asterfort/cmhho.h"
@@ -43,24 +44,17 @@ implicit none
 #include "asterfort/cmmoma.h"
 #include "asterfort/cmqlql.h"
 #include "asterfort/cmqutr.h"
-#include "asterfort/cnmpmc.h"
 #include "asterfort/cocali.h"
 #include "asterfort/codent.h"
 #include "asterfort/copisd.h"
 #include "asterfort/cpclma.h"
-#include "asterfort/cpifpa.h"
-#include "asterfort/cppagn.h"
-#include "asterfort/def_list_test.h"
-#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/eclpgm.h"
 #include "asterfort/exlima.h"
-#include "asterfort/getelem.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/gtgrma.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/infoma.h"
@@ -95,14 +89,14 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, lgno, lgnu, nbecla, nbmc, iret, iad, nbma, iqtr, nbvolu, nbma_izone
-    integer :: n1, numma, nbjoin, nbrest, n1a, n1b, izone, jlgrma, jnompat, jcninv
+    integer :: i, lgno, lgnu, nbecla, nbmc, iret, iad, nbma, iqtr, nbvolu
+    integer :: n1, numma, nbjoin, nbrest, n1a, n1b
     parameter(nbmc=5)
     real(kind=8) :: epais
     character(len=4) :: cdim, repk
-    character(len=8) :: meshIn, meshOut, nomaax, newmai, prefix, mo, geofi
+    character(len=8) :: meshIn, meshOut, newmai, prefix, mo, geofi
     character(len=8) :: nomori, knume, prfno, prfma, plan, trans
-    character(len=16) :: option, ligrma
+    character(len=16) :: option
     character(len=16) :: kbi1, kbi2
     character(len=16) :: motfac, tymocl(nbmc), motcle(nbmc)
     character(len=19) :: table, ligrel, cham1
@@ -111,27 +105,26 @@ implicit none
     character(len=24) :: nommav, grpmav, typmav, connev, nodimv, grpnov, nomnov
     character(len=24) :: coovav, coodsv, coorev
     character(len=24) :: momanu, momano, crgrnu, crgrno, lisi
-    character(len=24) :: lisk, typ_dec_lac, cninv
+    character(len=24) :: lisk
     character(len=24) :: nomg, valk(2), nogma, gpptnm, gpptnn
     character(len=24) :: prfn1, prfn2, nume2, iadr, nume1, momuto, prfn
     integer :: nn1, iaa, iagma, iatyma, ii, ima, in, ino, inumol, j, nfi
     integer :: jcrgno, jcrgnu, jgg, jlii, jlik, jmail
     integer :: jmomtu, jnoeu, jnono, jnpt, jopt, jtom, jtrno, jvale, jvg, kvale
     integer :: nbcrp1, nbgma, nbgrma, nbgrmn, nbgrmt, nbgrmv
-    integer :: nbgrno, nbmain, nbmaj2, nbmaj3, nbno, nbnot, nbtrav
-    integer :: nbpt, nbptt, nori, nrep, ntab, ntpoi, nb_ma_test
+    integer :: nbgrno, nbmain, nbmaj2, nbmaj3, nbno, nbnot
+    integer :: nbpt, nbptt, nori, nrep, ntab, ntpoi
     integer :: ibid, icham, ifm, iocc, jdime, jiad, jlima, jma, jmomno, jmomnu
     integer :: jnommc, jnu2, jnum, joccmc, jpr2, jpro, jrefe, jtypmv
     integer :: nbmaiv, nbmoma, nbnoaj, nbnoev, nch, ndinit, niv, k, jgeofi
-    integer :: dimcon, decala, iocct, typ_dec
+    integer :: dimcon, decala, iocct
+    integer :: nbOccDecoupeLac
     real(kind=8) :: shrink, lonmin
-    aster_logical :: lpb, same_zone, l_modi_maille
+    aster_logical :: lpb, l_modi_maille
     integer, pointer :: adrjvx(:) => null()
     integer, pointer :: nbnoma(:) => null()
     integer, pointer :: nbnomb(:) => null()
     integer, pointer :: nomnum(:) => null()
-    integer, pointer :: lima(:) => null()
-    integer, pointer :: li_trav(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -142,6 +135,10 @@ implicit none
 ! - Check Includes
 !
     call checkInclude()
+!
+! - Keywords
+!
+    call getfac('DECOUPE_LAC', nbOccDecoupeLac)
 !
 ! - Main datastructure
 !
@@ -1174,90 +1171,10 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call getfac('DECOUPE_LAC', nbmoma)
-!---------nbmoma > 1 --> PRESENCE DE CREA_MAILLE_LAC (OCCURENCE DOIT ETRE 1)
-    if (nbmoma .gt. 0) then
-        ASSERT(nbmoma.eq.1)
-        nomaax='MAILAUX'
-        ligrma='&&OP0167.LIMA'
-        nbgrma = 0
-! ------ GROUPE MAILLE A TRAITER ------------------------------------------------------------------
-        call getvtx('DECOUPE_LAC', 'GROUP_MA_ESCL' , iocc=1, nbval=0, nbret=nbgrma)
-        nbgrma = -nbgrma
-        call wkvect(ligrma, 'V V K24', nbgrma, jlgrma)
-        call getvtx('DECOUPE_LAC', 'GROUP_MA_ESCL' , &
-                    iocc=1, nbval=nbgrma,vect=zk24(jlgrma),nbret=n1b)
-        ASSERT(n1b.eq.nbgrma)
-! ------ TYPE DE DECOUPE ------------------------------------------------------------------
-        call getvtx('DECOUPE_LAC', 'DECOUPE_HEXA' , iocc=1,scal=typ_dec_lac,nbret=n1b)
-        if (typ_dec_lac=="PYRA") then
-            typ_dec = 1
-        elseif (typ_dec_lac=="HEXA") then
-            typ_dec = 0
-        endif
-        ASSERT(n1b.eq.1)
-! ------ INITIALISATION ---------------------------------------------------------------------------
-        call copisd('MAILLAGE', 'V', meshIn, nomaax)
-! ------ BOUCLE SUR LES GROUP_MA ------------------------------------------------------------------
-        do izone = 1,nbgrma
-! ------ LISTE DE MAILLE DU GROUP_MA
-            same_zone=.false.
-            nb_ma_test = 0
-            nbtrav = 0
-            call gtgrma(meshIn, nomaax, zk24(jlgrma+izone-1), lima, nbma)
-            nbma_izone = nbma
-            AS_ALLOCATE(vi=li_trav, size=nbma)
-! ------ Gestion du cas avec des mailles surfaciques possédant des mailles volumiques communes
-            do while (nb_ma_test .lt. nbma)
-                cninv='&&CPPAGN.CNINV'
-                call wkvect(cninv,'V V I', nbma, jcninv)
-                call cnmpmc(nomaax,nbma, lima,zi(jcninv))
-                call def_list_test(nbma, jcninv, lima, li_trav, nbtrav)
-! ------ CREATION DES PATCHS ET RAFFINEMENT LOCAL
-                call cppagn(nomaax, meshOut,  nbtrav, li_trav, izone, typ_dec, jcninv,&
-                            same_zone, nb_ma_test)
-! ------ COPIE DES DONNEES DANS LE MAILLAGE AUXILIAIRE
-                call detrsd('MAILLAGE', nomaax)
-                call copisd('MAILLAGE', 'V', meshOut, nomaax)
-                call cpifpa(meshOut, nomaax)
-                same_zone = .true.
-                nbtrav = nb_ma_test
-                call jedetr(cninv)
-                AS_DEALLOCATE(vi=lima)
-                AS_DEALLOCATE(vi=li_trav)
-                call gtgrma(meshIn, nomaax, zk24(jlgrma+izone-1), lima, nbma)
-                AS_ALLOCATE(vi=li_trav, size=nbma)
-            enddo
-            AS_DEALLOCATE(vi=lima)
-            AS_DEALLOCATE(vi=li_trav)
-! ------ IMPRESSIONS
-            if (niv .ge. 1) then
-               write (ifm,904)izone
-               write (ifm,905)nbma_izone
-            endif
-! ------ NETTOYAGE
-            AS_DEALLOCATE(vi=li_trav)
-        enddo
-! ------ CREATION DU POINTEUR VERS LES NOMS -------------------------------------------------------
-        call wkvect(meshOut//'.PTRNOMPAT', 'G V K24',nbgrma,jnompat)
-        do izone=1, nbgrma
-           zk24(jnompat+izone-1)=zk24(jlgrma+izone-1)
-! ------ IMPRESSIONS
-           if (.false.) then
-               write (*,*)izone
-               write (*,*)zk24(jnompat+izone-1)
-           endif
-        end do
-
-
-        call jedetr(nomaax//'.PATCH')
-        call jedetr(nomaax//'.CONOPA')
-        call jedetr(nomaax//'.COMAPA')
-        call jedetr(nomaax)
-        call jedetr(ligrma)
-
-        go to 350
-!
+    if (nbOccDecoupeLac .gt. 0) then
+        ASSERT(nbOccDecoupeLac.eq.1)
+        call cm_dclac(meshIn, meshOut)
+        goto 350
     endif
 !
 350 continue
@@ -1277,7 +1194,5 @@ implicit none
 901 format ('  MODIFICATION DE ',i6,' MAILLES ',a8,' EN ',a8)
 902 format ('MOT CLE FACTEUR "CREA_POI1", OCCURRENCE ',i4)
 903 format ('  CREATION DU GROUP_MA ',a8,' DE ',i6,' MAILLES POI1')
-904 format ('MOT CLE FACTEUR "DECOUPE_LAC", GROUP_MA occurence ',i4)
-905 format ('  TRAITEMENT DE ',i6,' MAILLES ')
 !
 end subroutine
