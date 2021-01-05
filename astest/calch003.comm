@@ -215,12 +215,12 @@ GK4=CALC_H(         RESULTAT=RESU,
                     OPTION='K')
 
 
-GK5=CALC_H(         RESULTAT=RESU,
-                    NUME_ORDRE=1,
-                    THETA=_F( FISSURE=FOND_NEW,
-                             ),
-                    
-                    OPTION='K')
+#GK5=CALC_H(         RESULTAT=RESU,
+#                    NUME_ORDRE=1,
+#                    THETA=_F( FISSURE=FOND_NEW,
+#                             ),
+#                    
+#                    OPTION='K')
 
 
 TEST_TABLE(PRECISION=0.080000000000000002,
@@ -325,32 +325,32 @@ TEST_TABLE(CRITERE='ABSOLU',
            NOM_PARA='K2',
            TABLE=GK3,)
 
-TEST_TABLE(PRECISION=0.080000000000000002,
-           VALE_CALC=0.361844542614,
-           VALE_REFE=0.38985999999999998,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=GK5,)
-
-TEST_TABLE(PRECISION=0.080000000000000002,
-           VALE_CALC=0.361357632422,
-           VALE_REFE=0.38985999999999998,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G_IRWIN',
-           TABLE=GK5,)
-
-TEST_TABLE(PRECISION=0.040000000000000001,
-           VALE_CALC=89.1174841841,
-           VALE_REFE=92.566000000000003,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='K1',
-           TABLE=GK5,)
-
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.,
-
-           NOM_PARA='K2',
-           TABLE=GK5,)
+#TEST_TABLE(PRECISION=0.080000000000000002,
+#           VALE_CALC=0.361844542614,
+#           VALE_REFE=0.38985999999999998,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='G',
+#           TABLE=GK5,)
+#
+#TEST_TABLE(PRECISION=0.080000000000000002,
+#           VALE_CALC=0.361357632422,
+#           VALE_REFE=0.38985999999999998,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='G_IRWIN',
+#           TABLE=GK5,)
+#
+#TEST_TABLE(PRECISION=0.040000000000000001,
+#           VALE_CALC=89.1174841841,
+#           VALE_REFE=92.566000000000003,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='K1',
+#           TABLE=GK5,)
+#
+#TEST_TABLE(CRITERE='ABSOLU',
+#           VALE_CALC=0.,
+#
+#           NOM_PARA='K2',
+#           TABLE=GK5,)
 
 FIN( )
 #
