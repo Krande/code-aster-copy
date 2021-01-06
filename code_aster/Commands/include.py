@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -22,6 +22,7 @@
 # C4007: INCLUDE() is also discouraged
 # C4009: in a string, imported here
 
+import traceback
 import os.path as osp
 
 from ..Messages import UTMESS
@@ -61,8 +62,8 @@ class Include(ExecuteCommand):
         try:
             with open(filename) as fobj:
                 exec(compile(AUTO_IMPORT + fobj.read(), filename, 'exec'), context)
-        except Exception as exc:
-            UTMESS('F', 'FICHIER_2', valk=(filename, str(exc)))
+        except Exception:
+            UTMESS('F', 'FICHIER_2', valk=(filename, traceback.format_exc()))
         finally:
             if show:
                 ExecutionParameter().disable(Options.ShowChildCmd)
