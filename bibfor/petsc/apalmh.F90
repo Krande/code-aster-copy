@@ -124,7 +124,11 @@ use petsc_data_module
     nglo = zi(jnequ+1)
     neqg = nglo
     neql = nloc
-
+!
+#if ASTER_PETSC_INT_SIZE == 4
+! maximum number of equation with short integer - use long int to remove this limit
+    ASSERT(neqg <= huge(neqg) )
+#endif
 !
 !     -- RECUPERE LE RANG DU PROCESSUS ET LE NB DE PROCS
     call asmpi_info(rank=mrank, size=msize)

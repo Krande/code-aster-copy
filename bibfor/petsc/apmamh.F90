@@ -90,7 +90,7 @@ use petsc_data_module
 !----------------------------------------------------------------
 !     Variables PETSc
     PetscErrorCode ::  ierr
-    PetscInt :: low, high, neql, neqg, mm, nn, tmp
+    PetscInt :: low, high, mm, nn, tmp
     PetscInt, parameter :: un = 1
     Mat :: a
 !----------------------------------------------------------------
@@ -115,9 +115,6 @@ use petsc_data_module
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
     nloc = zi(jnequ)
-    nglo = zi(jnequ+1)
-    neql = nloc
-    neqg = nglo
     nz = zi(jsmdi-1+nloc)
 !
 !   Adresses needed to get the stiffness matrix wrt nodes and dof numbers (see below)
