@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -325,13 +325,13 @@ for i in range(NCAL):
                              REAC_ITER=1,),
                             );
 
-              DETRUIRE ( CONCEPT =  _F (NOM =EM),);
-              DETRUIRE ( CONCEPT =  _F (NOM =SM),);
-              DETRUIRE ( CONCEPT =  _F (NOM =VM),);
-              DETRUIRE ( CONCEPT =  _F (NOM =NOR),);
-              DETRUIRE ( CONCEPT =  _F (NOM =SIG1),);
-              DETRUIRE ( CONCEPT =  _F (NOM =SIG2),);
-              DETRUIRE ( CONCEPT =  _F (NOM =SM1),);
+              DETRUIRE(NOM =EM);
+              DETRUIRE(NOM =SM);
+              DETRUIRE(NOM =VM);
+              DETRUIRE(NOM =NOR);
+              DETRUIRE(NOM =SIG1);
+              DETRUIRE(NOM =SIG2);
+              DETRUIRE(NOM =SM1);
 
           RESU[i]=CALC_CHAMP(reuse=RESU[i],RESULTAT=RESU[i],CRITERES=('SIEQ_ELNO'),CONTRAINTE=('SIEF_ELNO'))
 
@@ -357,11 +357,11 @@ for i in range(NCAL):
                            NOM_CHAM='VARI_ELGA',
                            NUME_ORDRE=1,  );
 
-          DETRUIRE ( CONCEPT =  _F (NOM =epsimp),);
-          DETRUIRE ( CONCEPT =  _F (NOM =Ei),);
-          DETRUIRE ( CONCEPT =  _F (NOM =listinst),);
-          DETRUIRE ( CONCEPT =  _F (NOM =CHRGE[i]),);
-          DETRUIRE ( CONCEPT =  _F (NOM =LIAISON2),);
+          DETRUIRE(NOM =epsimp);
+          DETRUIRE(NOM =Ei);
+          DETRUIRE(NOM =listinst);
+          DETRUIRE(NOM =CHRGE[i]);
+          DETRUIRE(NOM =LIAISON2);
 
           SVMIS[i]=POST_RELEVE_T(ACTION=_F(INTITULE='VMIS_N1',
                                 NOEUD='N1',

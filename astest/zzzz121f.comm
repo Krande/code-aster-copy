@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -91,7 +91,7 @@ for num_mail in range(nb_mail_max) :
 # 4.1. Menage prealable
 #
   if num_mail>0 :
-    DETRUIRE(CONCEPT=(_F(NOM=(MODELE, CHMAT, CHAR, RESU, CHARDUAL, RESUDUAL, DEPL_P),)),INFO=1)
+    DETRUIRE(NOM=(MODELE, CHMAT, CHAR, RESU, CHARDUAL, RESUDUAL, DEPL_P))
 #
 # 4.2. Modele mecanique
 #
@@ -215,7 +215,7 @@ for num_mail in range(nb_mail_max) :
                 ##RESU=_F(RESULTAT=RESU, NOM_CHAM='QIRE_ELEM', NOM_CMP='ERREST') ) ;
 #
     if num_mail > 0 :
-      DETRUIRE(CONCEPT=(_F(NOM=(NIVEAUCA, DIAMCA),)),INFO=1)
+      DETRUIRE(NOM=(NIVEAUCA, DIAMCA))
 #
     M[num_mail+1]=CO('M_%d' % (num_mail+1))
 #

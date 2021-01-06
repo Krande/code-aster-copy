@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -410,9 +410,9 @@ if calcul_complet == True:
                         EXCIT=_F(VECT_ASSE=for_asse,
                                  COEF_MULT=1.0,),);
 
-        DETRUIRE(CONCEPT=_F(NOM=(mat_visc, chmat, M_elem, K_elem, Kh_elem, for_elem, M_asse, K_asse, Kh_asse, for_asse)));
+        DETRUIRE(NOM=(mat_visc, chmat, M_elem, K_elem, Kh_elem, for_elem, M_asse, K_asse, Kh_asse, for_asse));
         if i != len(listfr.Valeurs())-1:
-            DETRUIRE(CONCEPT=_F(NOM=num_ddl));
+            DETRUIRE(NOM=num_ddl);
 
     TEST_RESU(RESU=(
                     _F(RESULTAT=dyna,

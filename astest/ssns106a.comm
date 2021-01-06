@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -548,7 +548,7 @@ D_FX_1=CALC_TABLE(TABLE=TFX_R1,
                              FORMULE=D_REL_FX,
                              NOM_PARA='FXG_FX',),),);
 
-DETRUIRE(CONCEPT=_F(NOM=(TFXA2_R1,TFXA2_G1,TFXA4_R1,TFXA4_G1,TFXA6_R1,TFXA6_G1,TFX_R1,TFX_G1,),),);
+DETRUIRE(NOM=(TFXA2_R1,TFXA2_G1,TFXA4_R1,TFXA4_G1,TFXA6_R1,TFXA6_G1,TFX_R1,TFX_G1,),);
 
 TDY_R1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='A4DY',
@@ -609,7 +609,7 @@ D_DY_1=CALC_TABLE(reuse =D_DY_1,
                             FORMULE=D_REL_DY,
                             NOM_PARA='DYG_DY',),);
 
-DETRUIRE(CONCEPT=_F(NOM=(TDY_R1,TDY_G1,),),);
+DETRUIRE(NOM=(TDY_R1,TDY_G1,),);
 
 IMPR_TABLE(TABLE=D_FX_1,);
 
@@ -1046,7 +1046,7 @@ D_FX_2=CALC_TABLE(TABLE=TFX_R2,
                              FORMULE=D_REL_FX,
                              NOM_PARA='FXG_FX',),),);
 
-DETRUIRE(CONCEPT=_F(NOM=(TFXA2_R2,TFXA2_G2,TFXA4_R2,TFXA4_G2,TFXA6_R2,TFXA6_G2,TFX_R2,TFX_G2,),),);
+DETRUIRE(NOM=(TFXA2_R2,TFXA2_G2,TFXA4_R2,TFXA4_G2,TFXA6_R2,TFXA6_G2,TFX_R2,TFX_G2,),);
 
 TDY_R2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='A4DY',
@@ -1115,7 +1115,7 @@ D_DY_2=CALC_TABLE(reuse =D_DY_2,
                             FORMULE=D_REL_DY,
                             NOM_PARA='DYG_DY',),);
 
-DETRUIRE(CONCEPT=_F(NOM=(TDY_R2,TDY_G2,),),);
+DETRUIRE(NOM=(TDY_R2,TDY_G2,),);
 
 IMPR_TABLE(TABLE=D_FX_2,);
 

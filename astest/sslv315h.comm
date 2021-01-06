@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -173,10 +173,10 @@ PROPA_FISS(MODELE=MODELE,
            DA_MAX=da_max,
            INFO=2,);
 
-DETRUIRE(CONCEPT=_F(NOM=CHIN),INFO=1);
-DETRUIRE(CONCEPT=_F(NOM=FISB),INFO=1);
-DETRUIRE(CONCEPT=_F(NOM=RESUIN),INFO=1);
-DETRUIRE(CONCEPT=_F(NOM=FONDFI),INFO=1);
+DETRUIRE(NOM=CHIN);
+DETRUIRE(NOM=FISB);
+DETRUIRE(NOM=RESUIN);
+DETRUIRE(NOM=FONDFI);
 #----------------------------------------------
 #         PROPAGATION SUR 3 PAS DE TEMPS
 #----------------------------------------------

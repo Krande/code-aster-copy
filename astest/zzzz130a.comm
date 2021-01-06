@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -99,7 +99,7 @@ SIGINI=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_SIEF_R',
             NOM_CMP = ('X1',  'X2',  'X3',),
             NOM_CMP_RESU = ('SIXX','SIYY','SIZZ',)))
 
-DETRUIRE(CONCEPT=_F( NOM = (SIG1,SIG2,)))
+DETRUIRE(NOM = (SIG1,SIG2,))
 
 # LE 2EME POINT DE GAUSS DE L'HEXA8 A POUR COORDONNEES (CF R3.01.01)
 #  X= -A ; Y=-A ; Z=A AVEC A=SQRT(3)/3

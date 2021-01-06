@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -67,19 +67,19 @@ XX=CREA_CHAMP(OPERATION='AFFE',TYPE_CHAM='NOEU_TEMP_F', MAILLAGE=MA2D,
                   AFFE=_F(GROUP_MA='CARRE1', NOM_CMP=('TEMP',), VALE_F=(FTEMP,))  )
 T_CARRE1=CREA_RESU(OPERATION='AFFE', TYPE_RESU='EVOL_THER', NOM_CHAM='TEMP',
                  AFFE=_F(INST=1., CHAM_GD = XX)  )
-DETRUIRE(CONCEPT=_F(NOM=XX))
+DETRUIRE(NOM=XX)
 
 XX=CREA_CHAMP(OPERATION='AFFE',TYPE_CHAM='NOEU_TEMP_F', MAILLAGE=MA2D,
                   AFFE=_F(GROUP_MA='CARRE2', NOM_CMP=('TEMP',), VALE_F=(FTEMP,))  )
 T_CARRE2=CREA_RESU(OPERATION='AFFE', TYPE_RESU='EVOL_THER', NOM_CHAM='TEMP',
                  AFFE=_F(INST=1., CHAM_GD = XX)  )
-DETRUIRE(CONCEPT=_F(NOM=XX))
+DETRUIRE(NOM=XX)
 
 XX=CREA_CHAMP(OPERATION='AFFE',TYPE_CHAM='NOEU_TEMP_F', MAILLAGE=MA2D,
                   AFFE=_F(GROUP_MA='AC', NOM_CMP=('TEMP',), VALE_F=(FTEMP,))  )
 T_AC=CREA_RESU(OPERATION='AFFE', TYPE_RESU='EVOL_THER', NOM_CHAM='TEMP',
                  AFFE=_F(INST=1., CHAM_GD = XX)  )
-DETRUIRE(CONCEPT=_F(NOM=XX))
+DETRUIRE(NOM=XX)
 
 
 #=================================================================================
@@ -126,7 +126,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   VALE_REFE=4.6666600000000003,),
           )
 
-DETRUIRE(CONCEPT=_F(NOM=XX))
+DETRUIRE(NOM=XX)
 
 
 #=================================================================================
@@ -178,7 +178,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   VALE_REFE=3.75,),
           )
 
-DETRUIRE(CONCEPT=_F(NOM=XX))
+DETRUIRE(NOM=XX)
 
 
 #=================================================================================
@@ -222,7 +222,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   VALE_REFE=4.0,),
           )
 
-DETRUIRE(CONCEPT=_F(NOM=(XX,FX,FY)))
+DETRUIRE(NOM=(XX,FX,FY))
 
 
 
@@ -270,7 +270,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   VALE_REFE=3.3333330000000001,),
           )
 
-DETRUIRE(CONCEPT=_F(NOM=XX))
+DETRUIRE(NOM=XX)
 
 
 
@@ -298,7 +298,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   VALE_REFE=3.6937099999999998,),
           )
 
-DETRUIRE(CONCEPT=_F(NOM=XX))
+DETRUIRE(NOM=XX)
 
 # 3.2) la meme chose avec VIS_A_VIS :
 #-------------------------------------
@@ -314,12 +314,12 @@ TEST_RESU(RESU=_F(INST=1.0,
                   VALE_REFE=3.6937099999999998,),
           )
 
-DETRUIRE(CONCEPT=_F(NOM=XX))
+DETRUIRE(NOM=XX)
 
 
 # 3.3) Projection d'un champ de contraintes (probleme du changement de repere) :
 #--------------------------------------------------------------------------------
-DETRUIRE(CONCEPT=_F(NOM=(CARRE2,CUBE1)))
+DETRUIRE(NOM=(CARRE2,CUBE1))
 CARRE2=AFFE_MODELE(MAILLAGE=MA2D, AFFE=_F( GROUP_MA='CARRE2',PHENOMENE='MECANIQUE',MODELISATION='D_PLAN'))
 CUBE1 =AFFE_MODELE(MAILLAGE=MA3D, AFFE=_F( GROUP_MA='CUBE1' ,PHENOMENE='MECANIQUE',MODELISATION='3D'))
 
@@ -528,7 +528,7 @@ TEST_RESU(CHAM_ELEM=_F(NOEUD='N282',
                        VALE_REFE=0.66666666666666663,),
           )
 
-DETRUIRE(CONCEPT=_F(NOM=(XX1,XX2,XX2a,XX3,XX4,XX5,XX6,XX7,XX8,XXG2,XXG3,XXGN,XXGN2)))
+DETRUIRE(NOM=(XX1,XX2,XX2a,XX3,XX4,XX5,XX6,XX7,XX8,XXG2,XXG3,XXGN,XXGN2))
 
 
 FIN()

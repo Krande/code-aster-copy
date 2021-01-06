@@ -2,7 +2,7 @@
 # --------------------------------------------------------------------
 # Copyright (C) 2019 Aether Engineering Solutions - www.aethereng.com
 # Copyright (C) 2019 Kobe Innovation Engineering - www.kobe-ie.com
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -203,7 +203,7 @@ tbcoup = CALC_COUPURE(RESULTAT=reslin,
                                  # ~ )
                          # ~ )
 
-            # ~ DETRUIRE(CONCEPT=_F(NOM=(fonc)))
+            # ~ DETRUIRE(NOM=(fonc))
 
 # ===================================== #
 # TEST COUPE RESULTANTE
@@ -614,7 +614,7 @@ TEST_TABLE(  TABLE=tbextr,
              PRECISION=1.E-6,
              )
 
-DETRUIRE( CONCEPT = _F( NOM = tbextr),)
+DETRUIRE(NOM = tbextr)
 
 tbextr = CALC_COUPURE(RESULTAT=reslin,
                       OPERATION='EXTRACTION',

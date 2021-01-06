@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ def TEST_ECART(ch_param2, label_cal, N_pas, Ncal, nbequi, R_SI, prec_ecart, prec
             R_SI[i] = CALC_TABLE(
                 TABLE=R_SI[i], reuse=R_SI[i], TITRE='R_SI' + str(j),
                       ACTION=(_F(OPERATION='OPER', NOM_PARA=ch_err, FORMULE=ERR_REL),),)
-            DETRUIRE(CONCEPT=_F(NOM=ERR_REL,),)
+            DETRUIRE(NOM=ERR_REL,)
         for j in range(Ncal):
             ch_cal = ch + label_cal[j] + str(N_pas[j])
             ch_err = 'ER_' + ch_cal

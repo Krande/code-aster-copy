@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -144,7 +144,7 @@ _BZ=CALC_FONCTION(INVERSE=_F(FONCTION=_AZ,),);
 _CZ=CALC_FONCTION(COMB=_F(FONCTION = _BZ,
                          COEF     =  coef_unit(-6)
                          ),);
-DETRUIRE( CONCEPT =_F( NOM=_AZ), )
+DETRUIRE(NOM=_AZ)
 _AZ=CALC_FONCTION(INVERSE=_F(FONCTION=_CZ,),);
 
 

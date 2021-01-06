@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 
 POURSUITE( CODE='OUI' )
 
-DETRUIRE ( CONCEPT=_F(NOM=(FAT12,FAT12b, FAT12c, FAT12MIX) ) )
+DETRUIRE(NOM=(FAT12,FAT12b, FAT12c, FAT12MIX) )
 
 # VALIDATION DU CALCUL DE FATIGUE SITUATIONS 1 et 2
 FAT12=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
@@ -31,7 +31,7 @@ FAT12=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                 MATER=MAT,
                 TITRE='FATIGUE (MAX), SITUATIONS 1 et 2, NOCC1 = 1',
                 TRANSITOIRE=(_F( TABL_RESU_MECA = T_TOT1,
-                                 TABL_SIGM_THER = T_TH1, 
+                                 TABL_SIGM_THER = T_TH1,
                                   NB_OCCUR=1,
                                    TOUT_INST='OUI',),
                              _F( TABL_RESU_MECA = T_TOT2,
@@ -49,7 +49,7 @@ FAT12b=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                 MATER=MAT,
                 TITRE='FATIGUE (MAX), SITUATIONS 1 et 2, NOCC1=10',
                 TRANSITOIRE=(_F( TABL_RESU_MECA = T_TOT1,
-                                 TABL_SIGM_THER = T_TH1, 
+                                 TABL_SIGM_THER = T_TH1,
                                   NB_OCCUR=10,
                                    TOUT_INST='OUI',),
                              _F( TABL_RESU_MECA = T_TOT2,
@@ -67,7 +67,7 @@ FAT12c=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                 MATER=MAT2,
                 TITRE='FATIGUE (MAX) SECOND MATERIAU, SITUATIONS 1 et 2, NOCC1 = 10',
                 TRANSITOIRE=(_F( TABL_RESU_MECA = T_TOT1,
-                                 TABL_SIGM_THER = T_TH1, 
+                                 TABL_SIGM_THER = T_TH1,
                                   NB_OCCUR=10,
                                    TOUT_INST='OUI',),
                              _F( TABL_RESU_MECA = T_TOT2,
@@ -86,7 +86,7 @@ FAT12MIX=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                 MATER=MAT2,
                 TITRE='FATIGUE (MAX) EN KE MIXTE, SITUATIONS 1 et 2',
                 TRANSITOIRE=(_F( TABL_RESU_MECA = T_TOT1,
-                                 TABL_SIGM_THER = T_TH1, 
+                                 TABL_SIGM_THER = T_TH1,
                                   NB_OCCUR=1,
                                    TOUT_INST='OUI',),
                              _F( TABL_RESU_MECA = T_TOT2,
@@ -271,7 +271,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),
           TABLE=FAT12b,)
-          
+
 # DOMMAGE
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.000100000,

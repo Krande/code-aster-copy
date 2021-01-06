@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -226,7 +226,7 @@ for i in range(0,2):
                #FORMAT_R='E12.10',
                #NOM_PARA=('MAILLE','POINT','RAYON','SIH_N','SIH_A','P_N','P_A'),);
 
-    #DETRUIRE(CONCEPT=_F(NOM=(TRESUPA,FINTEG,FAINTEG),),
+    #DETRUIRE(NOM=(TRESUPA,FINTEG,FAINTEG),
              #INFO=1,);
 #Fin des instructions pour calculer la solution analytique
 
@@ -276,7 +276,7 @@ for i in range(0,2):
                      DEFORME=_F(OPTION='TRAN',
                                 DEPL=DEPLM),);
 
-    DETRUIRE(CONCEPT=_F(NOM=(P_N,CHAR,CL,DEPL,DEPLM,SIG,TRESU,TRESUP),),
+    DETRUIRE(NOM=(P_N,CHAR,CL,DEPL,DEPLM,SIG,TRESU,TRESUP),
              INFO=1,);
 
 for i in range(2,3):
@@ -414,7 +414,7 @@ for i in range(2,3):
                #FORMAT_R='E12.10',
                #NOM_PARA=('MAILLE','POINT','RAYON','SIH_N','SIH_A','P_N','P_A'),);
 
-    #DETRUIRE(CONCEPT=_F(NOM=(TRESUPA,FINTEG,FAINTEG),),
+    #DETRUIRE(NOM=(TRESUPA,FINTEG,FAINTEG),
              #INFO=1,);
 #Fin des instructions pour calculer la solution analytique
 
@@ -464,7 +464,7 @@ for i in range(2,3):
                      DEFORME=_F(OPTION='TRAN',
                                 DEPL=DEPLM),);
 
-    DETRUIRE(CONCEPT=_F(NOM=(P_N,CHAR,CL,DEPL,DEPLM,SIG,TRESU,TRESUP),),
+    DETRUIRE(NOM=(P_N,CHAR,CL,DEPL,DEPLM,SIG,TRESU,TRESUP),
              INFO=1,);
 
 FIN();

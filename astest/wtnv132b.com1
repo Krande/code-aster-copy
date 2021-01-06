@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -83,7 +83,7 @@ for n in range(nbcouche):
 
   # <--30: fin boucle for
 
-  #DETRUIRE(CONCEPT=_F(NOM=(v)));
+  #DETRUIRE(NOM=(v));
 
 # <--20: fin boucle for
 
@@ -172,7 +172,7 @@ for n in range(n_pas_temps):
                 COURBE =_F(FONCTION=tass[n]));
 
   del(def_courbe);
-  DETRUIRE(CONCEPT=_F(NOM=(l_cote,l_tass)));
+  DETRUIRE(NOM=(l_cote,l_tass));
 
 # <--200: fin boucle for
 

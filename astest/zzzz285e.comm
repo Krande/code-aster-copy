@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ for bord in ('BDRO', 'BCOU',):
           MA2_1=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=22)
           MA1 = CREA_MAILLAGE( MAILLAGE  = MA1_1,  LINE_QUAD = _F(TOUT = 'OUI', PREF_NOEUD='NS' ))
           MA2 = CREA_MAILLAGE( MAILLAGE  = MA2_1,  LINE_QUAD = _F(TOUT = 'OUI', PREF_NOEUD='NS' ))
-          DETRUIRE(CONCEPT=_F(NOM=(MA1_1,MA2_1,),),)
+          DETRUIRE(NOM=(MA1_1,MA2_1,),)
        elif typmail=='QUP' :
           MA1_1=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20)
           MA2_1=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=22)
@@ -80,7 +80,7 @@ for bord in ('BDRO', 'BCOU',):
           MA2_3 = CREA_MAILLAGE(MAILLAGE=MA2_2, HEXA20_27=_F(TOUT = 'OUI',PREF_NOEUD='NX'))
           MA1   = CREA_MAILLAGE(MAILLAGE=MA1_3, PENTA15_18=_F(TOUT = 'OUI',PREF_NOEUD='NY'))
           MA2   = CREA_MAILLAGE(MAILLAGE=MA2_3, PENTA15_18=_F(TOUT = 'OUI',PREF_NOEUD='NY'))
-          DETRUIRE(CONCEPT=_F(NOM=(MA1_1,MA1_2,MA1_3,MA2_1,MA2_2,MA2_3),),)
+          DETRUIRE(NOM=(MA1_1,MA1_2,MA1_3,MA2_1,MA2_2,MA2_3),)
        else :
           assert 0,typmail
 
@@ -100,7 +100,7 @@ for bord in ('BDRO', 'BCOU',):
            DEFO2 = CREA_CHAMP ( OPERATION = 'ASSE' , MAILLAGE = MA1 , TYPE_CHAM = 'NOEU_DEPL_R' , INFO=1,
                                   ASSE = _F ( NOM_CMP=('X1','X2'), NOM_CMP_RESU=('DX','DY'), TOUT = 'OUI' , CHAM_GD = DEFO1))
            MA1=MODI_MAILLAGE( reuse=MA1,MAILLAGE=MA1, DEFORME=_F( OPTION = 'TRAN', DEPL = DEFO2))
-           DETRUIRE(CONCEPT=_F(NOM=(CHXN,CHFD,DEFO1,DEFO2)))
+           DETRUIRE(NOM=(CHXN,CHFD,DEFO1,DEFO2))
 
            #2.2   MA2 :
            CHFD=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_NEUT_F', MAILLAGE=MA2,    INFO=1,
@@ -115,7 +115,7 @@ for bord in ('BDRO', 'BCOU',):
            DEFO2 = CREA_CHAMP ( OPERATION = 'ASSE' , MAILLAGE = MA2 , TYPE_CHAM = 'NOEU_DEPL_R' , INFO=1,
                                   ASSE = _F ( NOM_CMP=('X1','X2'), NOM_CMP_RESU=('DX','DY'), TOUT = 'OUI' , CHAM_GD = DEFO1))
            MA2=MODI_MAILLAGE( reuse=MA2,MAILLAGE=MA2, DEFORME=_F( OPTION = 'TRAN', DEPL = DEFO2))
-           DETRUIRE(CONCEPT=_F(NOM=(CHXN,CHFD,DEFO1,DEFO2)))
+           DETRUIRE(NOM=(CHXN,CHFD,DEFO1,DEFO2))
 
 
 
@@ -186,7 +186,7 @@ for bord in ('BDRO', 'BCOU',):
                      REFERENCE='ANALYTIQUE', CRITERE='ABSOLU',
                       PRECISION=toler[legende]);
 
-          DETRUIRE(CONCEPT=_F(NOM=(U1,U2,U1B,EABSO,ERELA,TERR,F1,CHF1)))
-       DETRUIRE(CONCEPT=_F(NOM=(MA1,MA2,MO1,CHF2,CHXN,)))
+          DETRUIRE(NOM=(U1,U2,U1B,EABSO,ERELA,TERR,F1,CHF1))
+       DETRUIRE(NOM=(MA1,MA2,MO1,CHF2,CHXN,))
 
 FIN( )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -464,8 +464,8 @@ D_MY_1=CALC_TABLE(reuse =D_MY_1,
                             FORMULE=D_REL_MY,
                             NOM_PARA='MYG_MY',),);
 
-# DETRUIRE(CONCEPT=_F(NOM=(TMYA2_R1,TMYA2_G1,TMYA4_R1,TMYA4_G1,TMYA6_R1,TMYA6_G1,TMY_R1,TMY_G1,),),);
-DETRUIRE(CONCEPT=_F(NOM=(TMYA2_R1,TMYA2_G1,TMYA4_R1,TMYA4_G1,TMYA6_R1,TMYA6_G1,),),);
+# DETRUIRE(NOM=(TMYA2_R1,TMYA2_G1,TMYA4_R1,TMYA4_G1,TMYA6_R1,TMYA6_G1,TMY_R1,TMY_G1,),);
+DETRUIRE(NOM=(TMYA2_R1,TMYA2_G1,TMYA4_R1,TMYA4_G1,TMYA6_R1,TMYA6_G1,),);
 
 TRX_R1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                INTITULE='A4RX',
@@ -526,7 +526,7 @@ D_RX_1=CALC_TABLE(TABLE=TRX_R1,
                              FORMULE=D_REL_RX,
                              NOM_PARA='RXG_RX',),),);
 
-# DETRUIRE(CONCEPT=_F(NOM=(TRX_R1,TRX_G1,),),);
+# DETRUIRE(NOM=(TRX_R1,TRX_G1,),);
 
 # IMPR_TABLE(TABLE=D_MY_1,);
 
@@ -900,8 +900,8 @@ D_MY_2=CALC_TABLE(reuse =D_MY_2,
                             FORMULE=D_REL_MY,
                             NOM_PARA='MYG_MY',),);
 
-# DETRUIRE(CONCEPT=_F(NOM=(TMYA2_R2,TMYA2_G2,TMYA4_R2,TMYA4_G2,TMYA6_R2,TMYA6_G2,TMY_R2,TMY_G2,),),);
-DETRUIRE(CONCEPT=_F(NOM=(TMYA2_R2,TMYA2_G2,TMYA4_R2,TMYA4_G2,TMYA6_R2,TMYA6_G2,),),);
+# DETRUIRE(NOM=(TMYA2_R2,TMYA2_G2,TMYA4_R2,TMYA4_G2,TMYA6_R2,TMYA6_G2,TMY_R2,TMY_G2,),);
+DETRUIRE(NOM=(TMYA2_R2,TMYA2_G2,TMYA4_R2,TMYA4_G2,TMYA6_R2,TMYA6_G2,),);
 
 TRX_R2=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                INTITULE='A4RX',
@@ -961,7 +961,7 @@ D_RX_2=CALC_TABLE(TABLE=TRX_R2,
                              FORMULE=D_REL_RX,
                              NOM_PARA='RXG_RX',),),);
 
-# DETRUIRE(CONCEPT=_F(NOM=(TRX_R2,TRX_G2,),),);
+# DETRUIRE(NOM=(TRX_R2,TRX_G2,),);
 
 # IMPR_TABLE(TABLE=D_MY_2,);
 
@@ -1330,8 +1330,8 @@ D_MY_3=CALC_TABLE(reuse =D_MY_3,
                             FORMULE=D_REL_MY,
                             NOM_PARA='MYG_MY',),);
 
-# DETRUIRE(CONCEPT=_F(NOM=(TMYA2_R3,TMYA2_G3,TMYA4_R3,TMYA4_G3,TMYA6_R3,TMYA6_G3,TMY_R3,TMY_G3,),),);
-DETRUIRE(CONCEPT=_F(NOM=(TMYA2_R3,TMYA2_G3,TMYA4_R3,TMYA4_G3,TMYA6_R3,TMYA6_G3),),);
+# DETRUIRE(NOM=(TMYA2_R3,TMYA2_G3,TMYA4_R3,TMYA4_G3,TMYA6_R3,TMYA6_G3,TMY_R3,TMY_G3,),);
+DETRUIRE(NOM=(TMYA2_R3,TMYA2_G3,TMYA4_R3,TMYA4_G3,TMYA6_R3,TMYA6_G3),);
 
 TRX_R3=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                INTITULE='A4RX',
@@ -1391,7 +1391,7 @@ D_RX_3=CALC_TABLE(TABLE=TRX_R3,
                              FORMULE=D_REL_RX,
                              NOM_PARA='RXG_RX',),),);
 
-# DETRUIRE(CONCEPT=_F(NOM=(TRX_R3,TRX_G3,),),);
+# DETRUIRE(NOM=(TRX_R3,TRX_G3,),);
 
 # IMPR_TABLE(TABLE=D_MY_3,);
 
@@ -1525,5 +1525,5 @@ TEST_TABLE(CRITERE='ABSOLU',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=3.5,),
            )
-             
+
 FIN();

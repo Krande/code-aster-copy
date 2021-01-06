@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -128,7 +128,7 @@ for itirage in range(ntirage):
 
         # extract max of (Sig-Clivage - Sig-Griffith)
         MDIF=POST_ELEM(MINMAX=_F(MODELE=MODEL2,NOM_CMP='V79',TOUT='OUI',CHAM_GD=DIF))
-        DETRUIRE(CONCEPT=_F(NOM=DIF,),);
+        DETRUIRE(NOM=DIF,);
 
         maxdif2=MDIF['MAX_V79',1]
         if maxdif2 >= 0 :
@@ -137,26 +137,26 @@ for itirage in range(ntirage):
            # equivalent plastic strain at point pg_diff2 for wich Sig_Cliv > Sig_Griffith
            feps2 = RECU_FONCTION(CHAM_GD=VAR2, NOM_CMP='V80',MAILLE=ma_dif2,POINT=pg_dif2)
            epspeq=feps2(t2)
-           DETRUIRE(CONCEPT=_F(NOM=feps2,),);
-           DETRUIRE(CONCEPT=_F(NOM=VAR2,),);
-           DETRUIRE(CONCEPT=_F(NOM=MDIF,),);
+           DETRUIRE(NOM=feps2,);
+           DETRUIRE(NOM=VAR2,);
+           DETRUIRE(NOM=MDIF,);
            if epspeq > epspmin :
                fcliv=RECU_FONCTION(RESULTAT=RESUV2,NOM_CHAM='VARI_ELGA',NOM_CMP='V79',
                                    MAILLE=ma_dif2,POINT=pg_dif2)
                scliv1=fcliv(t1)
                scliv2=fcliv(t2)
-               DETRUIRE(CONCEPT=_F(NOM=fcliv,),);
+               DETRUIRE(NOM=fcliv,);
                sgrif=scliv2-maxdif2
                maxdif1=scliv1-sgrif
                tr=-maxdif1*(t2-t1)/(maxdif2-maxdif1)+t1
                listrup.append(tr)
                break
         else:
-           DETRUIRE(CONCEPT=_F(NOM=VAR2,),);
-           DETRUIRE(CONCEPT=_F(NOM=MDIF,),);
+           DETRUIRE(NOM=VAR2,);
+           DETRUIRE(NOM=MDIF,);
         # fin de la boucle sur les instants
-    DETRUIRE(CONCEPT=_F(NOM=SIGRIF,),);
-    DETRUIRE(CONCEPT=_F(NOM=CHGRIR,),);
+    DETRUIRE(NOM=SIGRIF,);
+    DETRUIRE(NOM=CHGRIR,);
     # fin de la boucle sur les tirages
 
 print('list of rupture time',listrup)

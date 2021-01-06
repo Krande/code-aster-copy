@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -92,7 +92,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='INTE_PRES',
            TABLE=XXX3,)
 
-DETRUIRE(CONCEPT=_F(NOM=(XXX2, XXX3),),)
+DETRUIRE(NOM=(XXX2, XXX3),)
 
 XXX3=POST_ELEM(MODELE=MO2, INST=1., CHAM_GD=X6,
                 INTEGRALE=_F( NOM_CMP=('PRES'), TOUT='OUI', TYPE_MAILLE='2D'),)
@@ -103,7 +103,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='INTE_PRES',
            TABLE=XXX3,)
 
-DETRUIRE(CONCEPT=_F(NOM=(XXX3),),)
+DETRUIRE(NOM=(XXX3),)
 
 
 #  CAS 'ELNO' :
@@ -121,7 +121,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='INTE_PRES',
            TABLE=XXX3,)
 
-DETRUIRE(CONCEPT=_F(NOM=(XXX2, XXX3),),)
+DETRUIRE(NOM=(XXX2, XXX3),)
 
 XXX3=POST_ELEM(MODELE=MO2, INST=1., CHAM_GD=X4,
                 INTEGRALE=_F(NOM_CMP=('PRES'), TOUT='OUI', TYPE_MAILLE='2D'),)
@@ -132,7 +132,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='INTE_PRES',
            TABLE=XXX3,)
 
-DETRUIRE(CONCEPT=_F(NOM=(XXX3),),)
+DETRUIRE(NOM=(XXX3),)
 
 #  CAS 'ELEM' + DEJA_INTEGRE='NON' :
 #  ----------------------------------------------------------------------------------------
@@ -149,7 +149,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='INTE_PRES',
            TABLE=XXX3,)
 
-DETRUIRE(CONCEPT=_F(NOM=(XXX2, XXX3),),)
+DETRUIRE(NOM=(XXX2, XXX3),)
 
 XXX3=POST_ELEM(MODELE=MO2, INST=1., CHAM_GD=X5,
                 INTEGRALE=_F(DEJA_INTEGRE='NON', NOM_CMP=('PRES'), TOUT='OUI', TYPE_MAILLE='2D'),)
@@ -160,7 +160,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='INTE_PRES',
            TABLE=XXX3,)
 
-DETRUIRE(CONCEPT=_F(NOM=(XXX3),),)
+DETRUIRE(NOM=(XXX3),)
 
 #  CAS 'ELEM' + DEJA_INTEGRE='OUI' :
 #  ----------------------------------------------------------------------------------------
@@ -180,7 +180,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='INTE_PRES',
            TABLE=XXX3,)
 
-DETRUIRE(CONCEPT=_F(NOM=(XXX2, XXX3),),)
+DETRUIRE(NOM=(XXX2, XXX3),)
 
 XXX3=POST_ELEM(MODELE=MO2, INST=1., CHAM_GD=X5,
                 INTEGRALE=_F(DEJA_INTEGRE='OUI', NOM_CMP=('PRES'), TOUT='OUI', TYPE_MAILLE='2D'),)
@@ -194,6 +194,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='INTE_PRES',
            TABLE=XXX3,)
 
-DETRUIRE(CONCEPT=_F(NOM=(XXX3),),)
+DETRUIRE(NOM=(XXX3),)
 
 FIN()

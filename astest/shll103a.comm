@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -223,11 +223,11 @@ for i, RPM in enumerate(VIT):
                          TABLE=TABMODZ,
                          ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
                          TITRE="Table DZ")
-    DETRUIRE(CONCEPT=_F(NOM=(tdxi, tdzi),),)
+    DETRUIRE(NOM=(tdxi, tdzi),)
 
-  DETRUIRE(CONCEPT=_F(NOM=DHAM))
-  DETRUIRE(CONCEPT=_F(NOM=DX_DIS2))
-  DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))
+  DETRUIRE(NOM=DHAM)
+  DETRUIRE(NOM=DX_DIS2)
+  DETRUIRE(NOM=DZ_DIS2)
 
 
 TABMODX = CALC_TABLE(reuse=TABMODX,
@@ -374,8 +374,8 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            )
 
 
-DETRUIRE(CONCEPT=_F(NOM=TABMODX))
-DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
+DETRUIRE(NOM=TABMODX)
+DETRUIRE(NOM=TABMODZ)
 
 
 for i, RPM in enumerate(VIT):
@@ -416,11 +416,11 @@ for i, RPM in enumerate(VIT):
                          TABLE=TABMODZ,
                          ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
                          TITRE="Table DZ")
-    DETRUIRE(CONCEPT=_F(NOM=(tdxi, tdzi),),)
+    DETRUIRE(NOM=(tdxi, tdzi),)
 
-  DETRUIRE(CONCEPT=_F(NOM=DHAM))
-  DETRUIRE(CONCEPT=_F(NOM=DX_DIS2))
-  DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))
+  DETRUIRE(NOM=DHAM)
+  DETRUIRE(NOM=DX_DIS2)
+  DETRUIRE(NOM=DZ_DIS2)
 
 
 TABMODX = CALC_TABLE(reuse=TABMODX,
@@ -573,9 +573,9 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            )
 
 
-DETRUIRE(CONCEPT=_F(NOM=TABMODX))
-DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
-DETRUIRE(CONCEPT=_F(NOM=GYOM2))
+DETRUIRE(NOM=TABMODX)
+DETRUIRE(NOM=TABMODZ)
+DETRUIRE(NOM=GYOM2)
 
 # ROTOR TOURNANT A LA VITESSE DE ROTATION DE 40000 TR/MIN
 RPM2 = 40000.0
@@ -622,11 +622,11 @@ for i, RPM in enumerate(VIT):
                          TABLE=TABMODZ,
                          ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
                          TITRE="Table DZ")
-    DETRUIRE(CONCEPT=_F(NOM=(tdxi, tdzi),),)
+    DETRUIRE(NOM=(tdxi, tdzi),)
 
-  DETRUIRE(CONCEPT=_F(NOM=DHAM))
-  DETRUIRE(CONCEPT=_F(NOM=DX_DIS2))
-  DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))
+  DETRUIRE(NOM=DHAM)
+  DETRUIRE(NOM=DX_DIS2)
+  DETRUIRE(NOM=DZ_DIS2)
 
 
 TABMODX = CALC_TABLE(reuse=TABMODX,
@@ -769,8 +769,8 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=250.0,),
            )
 
-DETRUIRE(CONCEPT=_F(NOM=TABMODX))
-DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
+DETRUIRE(NOM=TABMODX)
+DETRUIRE(NOM=TABMODZ)
 
 
 for i, RPM in enumerate(VIT):
@@ -811,11 +811,11 @@ for i, RPM in enumerate(VIT):
                          TABLE=TABMODZ,
                          ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
                          TITRE="Table DZ")
-    DETRUIRE(CONCEPT=_F(NOM=(tdxi, tdzi),),)
+    DETRUIRE(NOM=(tdxi, tdzi),)
 
-  DETRUIRE(CONCEPT=_F(NOM=DHAM))
-  DETRUIRE(CONCEPT=_F(NOM=DX_DIS2))
-  DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))
+  DETRUIRE(NOM=DHAM)
+  DETRUIRE(NOM=DX_DIS2)
+  DETRUIRE(NOM=DZ_DIS2)
 
 
 TABMODX = CALC_TABLE(reuse=TABMODX,
@@ -957,9 +957,9 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=250.0,),
            )
 
-DETRUIRE(CONCEPT=_F(NOM=TABMODX))
-DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
-DETRUIRE(CONCEPT=_F(NOM=GYOM2))
+DETRUIRE(NOM=TABMODX)
+DETRUIRE(NOM=TABMODZ)
+DETRUIRE(NOM=GYOM2)
 
 
 # ROTOR TOURNANT A LA VITESSE DE ROTATION DE 50000 TR/MIN
@@ -1007,11 +1007,11 @@ for i, RPM in enumerate(VIT):
                          TABLE=TABMODZ,
                          ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
                          TITRE="Table DZ")
-    DETRUIRE(CONCEPT=_F(NOM=(tdxi, tdzi),),)
+    DETRUIRE(NOM=(tdxi, tdzi),)
 
-  DETRUIRE(CONCEPT=_F(NOM=DHAM))
-  DETRUIRE(CONCEPT=_F(NOM=DX_DIS2))
-  DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))
+  DETRUIRE(NOM=DHAM)
+  DETRUIRE(NOM=DX_DIS2)
+  DETRUIRE(NOM=DZ_DIS2)
 
 
 TABMODX = CALC_TABLE(reuse=TABMODX,
@@ -1153,8 +1153,8 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=250.0,),
            )
 
-DETRUIRE(CONCEPT=_F(NOM=TABMODX))
-DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
+DETRUIRE(NOM=TABMODX)
+DETRUIRE(NOM=TABMODZ)
 
 for i, RPM in enumerate(VIT):
 
@@ -1194,11 +1194,11 @@ for i, RPM in enumerate(VIT):
                          TABLE=TABMODZ,
                          ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
                          TITRE="Table DZ")
-    DETRUIRE(CONCEPT=_F(NOM=(tdxi, tdzi),),)
+    DETRUIRE(NOM=(tdxi, tdzi),)
 
-  DETRUIRE(CONCEPT=_F(NOM=DHAM))
-  DETRUIRE(CONCEPT=_F(NOM=DX_DIS2))
-  DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))
+  DETRUIRE(NOM=DHAM)
+  DETRUIRE(NOM=DX_DIS2)
+  DETRUIRE(NOM=DZ_DIS2)
 
 
 TABMODX = CALC_TABLE(reuse=TABMODX,
@@ -1340,9 +1340,9 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=250.0,),
            )
 
-DETRUIRE(CONCEPT=_F(NOM=TABMODX))
-DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
-DETRUIRE(CONCEPT=_F(NOM=GYOM2))
+DETRUIRE(NOM=TABMODX)
+DETRUIRE(NOM=TABMODZ)
+DETRUIRE(NOM=GYOM2)
 
 # ROTOR TOURNANT A LA VITESSE DE ROTATION DE 60000 TR/MIN
 RPM2 = 60000.0
@@ -1389,11 +1389,11 @@ for i, RPM in enumerate(VIT):
                          TABLE=TABMODZ,
                          ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
                          TITRE="Table DZ")
-    DETRUIRE(CONCEPT=_F(NOM=(tdxi, tdzi),),)
+    DETRUIRE(NOM=(tdxi, tdzi),)
 
-  DETRUIRE(CONCEPT=_F(NOM=DHAM))
-  DETRUIRE(CONCEPT=_F(NOM=DX_DIS2))
-  DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))
+  DETRUIRE(NOM=DHAM)
+  DETRUIRE(NOM=DX_DIS2)
+  DETRUIRE(NOM=DZ_DIS2)
 
 
 TABMODX = CALC_TABLE(reuse=TABMODX,
@@ -1544,8 +1544,8 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            )
 
 
-DETRUIRE(CONCEPT=_F(NOM=TABMODX))
-DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
+DETRUIRE(NOM=TABMODX)
+DETRUIRE(NOM=TABMODZ)
 
 
 for i, RPM in enumerate(VIT):
@@ -1586,11 +1586,11 @@ for i, RPM in enumerate(VIT):
                          TABLE=TABMODZ,
                          ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
                          TITRE="Table DZ")
-    DETRUIRE(CONCEPT=_F(NOM=(tdxi, tdzi),),)
+    DETRUIRE(NOM=(tdxi, tdzi),)
 
-  DETRUIRE(CONCEPT=_F(NOM=DHAM))
-  DETRUIRE(CONCEPT=_F(NOM=DX_DIS2))
-  DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))
+  DETRUIRE(NOM=DHAM)
+  DETRUIRE(NOM=DX_DIS2)
+  DETRUIRE(NOM=DZ_DIS2)
 
 
 TABMODX = CALC_TABLE(reuse=TABMODX,
@@ -1744,8 +1744,8 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            )
 
 
-DETRUIRE(CONCEPT=_F(NOM=TABMODX))
-DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
-DETRUIRE(CONCEPT=_F(NOM=GYOM2))
+DETRUIRE(NOM=TABMODX)
+DETRUIRE(NOM=TABMODZ)
+DETRUIRE(NOM=GYOM2)
 
 FIN();

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -419,7 +419,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC= 0.74208265240925,
 #              + TEST INIT_ALEA=0
 #################################################################
 #
-DETRUIRE(CONCEPT=_F(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,)),INFO=1)
+DETRUIRE(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,),INFO=1)
 
 ##############################
 # GENERATION DES FCT ALEATOIRES,
@@ -464,7 +464,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #              + TEST INIT_ALEA=100000000
 #################################################################
 #
-DETRUIRE(CONCEPT=_F(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,)),INFO=1)
+DETRUIRE(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,),INFO=1)
 
 ##############################
 # GENERATION DES FCT ALEATOIRES,
@@ -508,7 +508,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #              + NB_POIN IMPOSE ET DUREE IMPOSEE
 #################################################################
 #
-DETRUIRE(CONCEPT=_F(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,)),INFO=1)
+DETRUIRE(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,),INFO=1)
 
 ##############################
 # GENERATION DES FCT ALEATOIRES,
@@ -552,7 +552,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 # 5.  CAS GENERATION AVEC INTERPOLATION SANS RIEN D'IMPOSE
 #################################################################
 #
-DETRUIRE(CONCEPT=_F(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,)),INFO=1)
+DETRUIRE(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,),INFO=1)
 
 ##############################
 # GENERATION DES FCT ALEATOIRES,
@@ -592,7 +592,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 # 6.  CAS GENERATION SANS INTERPOLATION
 #################################################################
 #
-DETRUIRE(CONCEPT=_F(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,)),INFO=1)
+DETRUIRE(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,),INFO=1)
 
 ##############################
 # GENERATION DES FCT ALEATOIRES,
@@ -643,7 +643,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #              + NB_POIN IMPOSE
 #################################################################
 #
-DETRUIRE(CONCEPT=_F(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,)),INFO=1)
+DETRUIRE(NOM=(VECT1,FONCT1,FONCT2,RMS1,RMS2,),INFO=1)
 
 ##############################
 # GENERATION DES FCT ALEATOIRES,

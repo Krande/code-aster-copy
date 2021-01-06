@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -222,25 +222,6 @@ def NormeAster(RESULTAT, Depl_Ana, P_ana, MAIL, MODELE, GROUP_MA_VOL, GROUP_MA_S
                             ),)
      NormeL2ErreurU_Volu=tabU_VOL['VALE_NORM',1]
      IMPR_TABLE(TABLE=tabU_VOL)
-
-
-     DETRUIRE(CONCEPT=(_F(NOM=CHXN),
-                       _F(NOM=TEMP1),
-                       _F(NOM=TEMP1P),
-                       _F(NOM=TEMP2),
-                       _F(NOM=TEMP2P),
-                       _F(NOM=TEMP3),
-                       _F(NOM=TEMP3P),
-                       _F(NOM=CHXG),
-                       _F(NOM=UanaG),
-                       _F(NOM=PanaG),
-                       _F(NOM=Ucalc1),
-                       _F(NOM=DIFFUG),
-                       _F(NOM=tabU_SUR),
-                       _F(NOM=tabU_VOL),
-                       ),
-               INFO=1,
-              );
 
      return {'NormeL2ErreurU_Surf':NormeL2ErreurU_Surf,'NormeL2ErreurU_Volu':NormeL2ErreurU_Volu,'Ucalc':Ucalc,'Uana':Uana,'Pana':Pana, 'DIFFUN':DIFFUN}
 # ================================================================================================================================================================================

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -376,9 +376,9 @@ TFYA4_G2=CALC_TABLE(TABLE=TFYA4,
                               TABLE=TFYA4_G1,
                               NOM_PARA='INST',),);
 
-DETRUIRE(CONCEPT=_F(NOM=TDXA4_G1,),);
+DETRUIRE(NOM=TDXA4_G1,);
 
-DETRUIRE(CONCEPT=_F(NOM=TFYA4_G1,),);
+DETRUIRE(NOM=TFYA4_G1,);
 
 D_DXA4=CALC_TABLE(TABLE=TDXA4_G2,
                   ACTION=_F(OPERATION='OPER',
@@ -390,9 +390,9 @@ D_FYA4=CALC_TABLE(TABLE=TFYA4_G2,
                             FORMULE=FORM_Y,
                             NOM_PARA='DY_DYG',),);
 
-DETRUIRE(CONCEPT=_F(NOM=TDXA4_G2,),);
+DETRUIRE(NOM=TDXA4_G2,);
 
-DETRUIRE(CONCEPT=_F(NOM=TFYA4_G2,),);
+DETRUIRE(NOM=TFYA4_G2,);
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='AUTRE_ASTER',

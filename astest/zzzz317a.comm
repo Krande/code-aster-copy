@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -271,7 +271,7 @@ INTERS=CALC_INTE_SPEC( INST_INIT=0.0,
                        INST_FIN=TT, NB_POIN=nbp, FONCTION=( FONCT2 ),  )
 
 FOM[iii]=RECU_FONCTION(INTE_SPEC=INTERS,NUME_ORDRE_I=1,),
-DETRUIRE(CONCEPT=_F(NOM=(INTERS)))
+DETRUIRE(NOM=(INTERS))
 
 ## --------------------------------
 nbp=int(TT/DT+1)
@@ -295,8 +295,8 @@ for iii in range(1, Nsim+1):
    FOM[iii]=CALC_FONCTION(COMB=(_F( FONCTION = FOM[iii-1], COEF = 1.0),
                                 _F( FONCTION = FO2[iii], COEF = 1.0),), )
 
-   DETRUIRE(CONCEPT=_F(NOM=(VECT, INTERS)))
-   DETRUIRE(CONCEPT=_F(NOM=(TRI1)))
+   DETRUIRE(NOM=(VECT, INTERS))
+   DETRUIRE(NOM=(TRI1))
 
 
 FONCMF=CALC_FONCTION(  COMB=_F( FONCTION = FOM[iii],

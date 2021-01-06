@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 
 POURSUITE( CODE='OUI' )
 
-DETRUIRE ( CONCEPT=_F(NOM=(PMPB3,PMPB4,) ) )
+DETRUIRE(NOM=(PMPB3,PMPB4,) )
 
 #--------------------------------------------------------------------------------
 # VALIDATION DE LA METHODE UNITAIRE
@@ -72,7 +72,7 @@ PMPB3=POST_RCCM( MATER=MAT,
                      PRES_A=1.0,
                      PRES_B=10.0,),),);
 
-IMPR_TABLE(    TABLE=PMPB3,) 
+IMPR_TABLE(    TABLE=PMPB3,)
 
 PMPB4=POST_RCCM( MATER=MAT,
                  TITRE='PM_PB (DETAILS), SITUATION 4, UNITAIRE, CORPS/TUBU',
@@ -117,12 +117,12 @@ PMPB4=POST_RCCM( MATER=MAT,
                      PRES_A=0.4,
                      PRES_B=1.0,),),);
 
-IMPR_TABLE(    TABLE=PMPB4,) 
+IMPR_TABLE(    TABLE=PMPB4,)
 
 #--------------------------------------------------------------------------------
 #   TEST SUR UNITAIRE (SOLUTION DE REFERENCE ANALYTIQUE)
 #--------------------------------------------------------------------------------
-# SITUATION 3 
+# SITUATION 3
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=37.500000000,
            VALE_REFE=37.5,

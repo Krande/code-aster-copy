@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -317,8 +317,6 @@ list_noeu_haut=list_no_later_dro[:2]
 # -->10: Boucle sur la pose des couches 3 a nbcouche
 for n in range(1,nbcouche-1):
 
-    DETRUIRE(CONCEPT=_F(NOM=(CHLAT, PHAUT, SIEF, CHPAR, PES)))
-
     n_couche = n+2
     print(' > n_couche          =',n_couche)
 
@@ -507,10 +505,6 @@ for n in range(1,nbcouche-1):
                  CONVERGENCE=_F(ITER_GLOB_MAXI=50,
                                 ITER_GLOB_ELAS=300,
                                 RESI_GLOB_RELA=1.E-8));
-
-    DETRUIRE(INFO=1,CONCEPT=_F(NOM=(INIVAR,INIDEP,INISIG,DEPL_PJ,FX,FY,
-                             CH_FONC,CH_EVAL,DEPL_IN,CH_GEOM,DXN,DYN,
-                             CH_DEPL,CH_BID)));
 
     DEP[n]=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                       OPERATION='EXTR',

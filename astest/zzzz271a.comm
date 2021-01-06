@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,11 +63,6 @@ CHSIEFR=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_SIEF_R',
               NOM_CMP= ('X1' ),
            NOM_CMP_RESU=('SIXX'),))
 
-DETRUIRE(CONCEPT=(_F(NOM=CHFONC),
-                  _F(NOM=CHXN),
-                  _F(NOM=CHXG1),
-                  _F(NOM=CHREEL),))
-
 
 # 3.2. Projection du champ de contraintes
 #----------------------------------------
@@ -120,13 +115,6 @@ CHVARIR=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_VARI_R',
              NOM_CMP= 'X1',
            NOM_CMP_RESU= 'V1'))
 
-DETRUIRE(CONCEPT=(_F(NOM=CHFONC),
-                  _F(NOM=CHFON2),
-                  _F(NOM=CHXN),
-                  _F(NOM=CHXG1),
-                  _F(NOM=CHREEL),))
-
-
 
 # 4.2. Projection du champ de variables internes
 #-----------------------------------------------
@@ -156,13 +144,6 @@ TEST_RESU(CHAM_ELEM=(_F(REFERENCE='ANALYTIQUE',
                         VALE_REFE=1.16906,),
                      ),
           )
-
-DETRUIRE(CONCEPT=(_F(NOM=PJSIEF),
-                  _F(NOM=PJVARI),
-                  _F(NOM=CHSIEFR),
-                  _F(NOM=CHVARIR),
-                  _F(NOM=FONC)))
-
 
 
 ##########
@@ -209,11 +190,6 @@ CHSIEFR=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_SIEF_R',
           MODELE=MO3 , PROL_ZERO='OUI',
            ASSE=_F(TOUT='OUI', CHAM_GD=CHREEL,
               NOM_CMP= ('X1' ), NOM_CMP_RESU=('SIXX'),))
-
-DETRUIRE(CONCEPT=(_F(NOM=CHFONC),
-                  _F(NOM=CHXN),
-                  _F(NOM=CHXG1),
-                  _F(NOM=CHREEL),))
 
 
 # 3.2. Projection du champ de contraintes
@@ -343,13 +319,13 @@ CHVARIT=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_VARI_R',
              NOM_CMP= 'X1',
            NOM_CMP_RESU= 'V1'))
 
-# on ajoute 199 composantes pour valider qu'ECLA_PG peut traiter des champs 
+# on ajoute 199 composantes pour valider qu'ECLA_PG peut traiter des champs
 # jusqu'a 200 composantes
 
 nom_cmp = ['V%s'%i for i in range(1,201)]
 vale = [i for i in range(1,201)]
 
-V199=  CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='ELGA_VARI_R', MODELE=MO3, 
+V199=  CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='ELGA_VARI_R', MODELE=MO3,
                  AFFE=_F( TOUT = 'OUI', NOM_CMP = nom_cmp, VALE  = vale))
 
 
@@ -360,16 +336,6 @@ CHVARIR=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_VARI_R',
                  _F(TOUT='OUI', CHAM_GD=V199,
                     NOM_CMP= nom_cmp[1:],),
              ))
-
-
-DETRUIRE(CONCEPT=(_F(NOM=CHFONC),
-                  _F(NOM=CHFON2),
-                  _F(NOM=CHXN),
-                  _F(NOM=CHXG1),
-                  _F(NOM=CHREEL),
-                  _F(NOM=CHVARIT),
-                  _F(NOM=V199),))
-
 
 
 # 4.2. Projection du champ de variables internes

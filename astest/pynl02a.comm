@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -185,8 +185,8 @@ for i_inst in range(1,len(l_inst)) :
                    COMB=(_F(CHAM_GD=U, COEF_R=1.),
                          _F(CHAM_GD=DU,COEF_R=1.),),)
 
-      DETRUIRE(CONCEPT=_F(NOM=DELTA_U),INFO=1)
-      DETRUIRE(CONCEPT=_F(NOM=(SIGMA,VARI),),INFO=1)
+      DETRUIRE(NOM=DELTA_U)
+      DETRUIRE(NOM=(SIGMA,VARI),)
 
       SIG_TEMP=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
                           TABLE=CONT,
@@ -214,7 +214,7 @@ for i_inst in range(1,len(l_inst)) :
                       ASSE  = _F(TOUT       ='OUI',
                                  CHAM_GD    =VAR_TEMP))
 
-      DETRUIRE(CONCEPT=_F(NOM=(SIG_TEMP,VAR_TEMP),),INFO=1)
+      DETRUIRE(NOM=(SIG_TEMP,VAR_TEMP),)
 
 
       # STOCKAGE DE LA CHARGE DU PAS DE TEMPS PRECEDENT
@@ -250,7 +250,7 @@ for i_inst in range(1,len(l_inst)) :
    # charge assemblee : attention : ca ne doit etre que des LAGR
    CHARB_AS=ASSE_VECTEUR(VECT_ELEM=CHARB_EL,NUME_DDL=NU,)
 
-   DETRUIRE(CONCEPT=_F(NOM=CHARB_EL),INFO=1)
+   DETRUIRE(NOM=CHARB_EL)
 
    # multiplication de la charge par la rampe
    CHARB_AS=CREA_CHAMP(reuse=CHARB_AS,
@@ -265,7 +265,7 @@ for i_inst in range(1,len(l_inst)) :
                       COMB=_F(CHAM_GD=CHARB_AS, COEF_R=1.),)
    else :
 
-      DETRUIRE(CONCEPT=_F(NOM=F_AS),INFO=1)
+      DETRUIRE(NOM=F_AS)
       F_AS=CREA_CHAMP(OPERATION='COMB',
                       TYPE_CHAM='NOEU_DEPL_R',
                       COMB=(_F(CHAM_GD=CHARB_AS, COEF_R=1.),
@@ -293,7 +293,7 @@ for i_inst in range(1,len(l_inst)) :
                       TYPE_CHAM='NOEU_DEPL_R',
                       COMB=_F(CHAM_GD=DU, COEF_R=1.),)
 
-   DETRUIRE(CONCEPT=_F(NOM=(MT_EL,MT_AS,F_AS)),INFO=1)
+   DETRUIRE(NOM=(MT_EL,MT_AS,F_AS),INFO=1)
 
    #=========================================================
    #               BOUCLE DE NEWTON
@@ -366,7 +366,7 @@ for i_inst in range(1,len(l_inst)) :
          FIN()
 
 
-      DETRUIRE(CONCEPT=_F(NOM=CODE),INFO=1)
+      DETRUIRE(NOM=CODE)
 
 
       #=========================================================
@@ -412,7 +412,7 @@ for i_inst in range(1,len(l_inst)) :
       FORIN_AS=ASSE_VECTEUR(VECT_ELEM=FORIN_EL,
                             NUME_DDL=NU,)
 
-      DETRUIRE(CONCEPT=_F(NOM=FORIN_EL),INFO=1)
+      DETRUIRE(NOM=FORIN_EL)
 
       # Bt.La elem
       BTLA_EL=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
@@ -428,7 +428,7 @@ for i_inst in range(1,len(l_inst)) :
       BTLA_AS=ASSE_VECTEUR(VECT_ELEM=BTLA_EL,
                            NUME_DDL=NU,)
 
-      DETRUIRE(CONCEPT=_F(NOM=BTLA_EL),INFO=1)
+      DETRUIRE(NOM=BTLA_EL)
 
       # f_v : sommes des 2nds membres
       F_AS=CREA_CHAMP(OPERATION='COMB',
@@ -450,7 +450,7 @@ for i_inst in range(1,len(l_inst)) :
       tmp_x = RESB.EXTR_COMP('DX',[]).valeurs
       tmp_y = RESB.EXTR_COMP('DY',[]).valeurs
       tmp_z = RESB.EXTR_COMP('DZ',[]).valeurs
-      DETRUIRE(CONCEPT=_F(NOM=RESB),INFO=1)
+      DETRUIRE(NOM=RESB)
 
       residu_bas = max( max(abs(tmp_x)) , max(abs(tmp_y)) , max(abs(tmp_z)) )
 
@@ -470,7 +470,7 @@ for i_inst in range(1,len(l_inst)) :
       #   resolution M_AS . DU = FEXT - FORIN_AS - BTLA_AS
       #=========================================================
 
-      DETRUIRE(CONCEPT=_F(NOM=DU),INFO=1)
+      DETRUIRE(NOM=DU)
       DU=RESOUDRE(MATR=M_AS,
                   CHAM_NO=F_AS,)
 
@@ -481,7 +481,7 @@ for i_inst in range(1,len(l_inst)) :
                          COMB=(_F(CHAM_GD=DELTA_U, COEF_R=1.),
                                _F(CHAM_GD=DU,      COEF_R=1.),),)
 
-      DETRUIRE(CONCEPT=_F(NOM=(MT_EL,MT_AS,M_AS,F_AS),),INFO=1)
+      DETRUIRE(NOM=(MT_EL,MT_AS,M_AS,F_AS),)
 
    print('instant ',inst)
    print('IterNewton | Resi_Glob_rela   | Resi_Glob_Maxi  | Convergence')
@@ -514,7 +514,7 @@ VAR_REF=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_VARI_R',
 #          EXTRACTION DES CHAMPS CALCULES
 #=========================================================
 
-DETRUIRE(CONCEPT=_F(NOM=(SIGMA,VARI),),INFO=1)
+DETRUIRE(NOM=(SIGMA,VARI),)
 
 SIG_TEMP=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
                     TABLE=CONT,
@@ -548,7 +548,7 @@ VARI=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
                 ASSE  = _F(TOUT       ='OUI',
                            CHAM_GD    =VAR_TEMP))
 
-DETRUIRE(CONCEPT=_F(NOM=(SIG_TEMP,VAR_TEMP),),INFO=1)
+DETRUIRE(NOM=(SIG_TEMP,VAR_TEMP),)
 
 #=========================================================
 #            REALISATION DES TESTS

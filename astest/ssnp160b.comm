@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -223,7 +223,7 @@ for k in range(1,NBPAS+1):
                    );
    tinit = tfin
 
-   DETRUIRE(INFO=1,CONCEPT=_F(NOM=(CHTH,NEUTG,CMTH)))
+   DETRUIRE(NOM=(CHTH,NEUTG,CMTH))
 
 
 

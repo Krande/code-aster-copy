@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),IGNORE_ALARM=('XFEM_69'),
 
 # XFEM_69 EST IGNORE PARCE QUE CETTE ALARME NE S'APPLIQUE PAS A CE CAS TEST
 # COMME DECRIT DANS LE MESSAGE D'ALARME LUI-MEME
-      
+
 # METHODE GEOMETRIQUE
 
 #  MAILLAGE 10X10
@@ -94,7 +94,7 @@ FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MeshSEB,
                                   PFON=(30.,4.,5.),
                                   NORMALE=(0.,0.,1.),
                                   DTAN=(0.,1.,0.),
-                       ),);  
+                       ),);
 
 #----------------------------------------------
 #                  PROPAGATION
@@ -215,8 +215,8 @@ for i in range(nbcalc) :
                                   CHAM_MAJ = LSTHT[j+1]),
                                _F(TYPE_CHAM='NOEU_NEUT_R',
                                   CHAM_GD  = CHERR[j],
-                                  CHAM_MAJ = CHERR[j+1]),), 
-                       );     
+                                  CHAM_MAJ = CHERR[j+1]),),
+                       );
 
       else:
 
@@ -238,7 +238,7 @@ for i in range(nbcalc) :
                                   _F(CHAM_GD=LSTHT[j],
                                      TYPE_CHAM='NOEU_NEUT_R',
                                      CHAM_MAJ=LSTH[i],),),
-                       );   
+                       );
 
          ModH[i] = AFFE_MODELE(MAILLAGE=MeshH[i],
                                AFFE=(_F(
@@ -251,13 +251,13 @@ for i in range(nbcalc) :
                                                 CHAM_NO_LST=LSTH[i],),
                                    GROUP_MA_ENRI='Vol',);
 
-   DETRUIRE(CONCEPT=_F(NOM=CHERR[0],))          
+   DETRUIRE(NOM=CHERR[0],)
 
    for j in range(1,infit) :
-      DETRUIRE(CONCEPT=_F(NOM=MeH[j],))
-      DETRUIRE(CONCEPT=_F(NOM=LSNHT[j],))
-      DETRUIRE(CONCEPT=_F(NOM=LSTHT[j],))
-      DETRUIRE(CONCEPT=_F(NOM=CHERR[j],))
+      DETRUIRE(NOM=MeH[j],)
+      DETRUIRE(NOM=LSNHT[j],)
+      DETRUIRE(NOM=LSTHT[j],)
+      DETRUIRE(NOM=CHERR[j],)
 
 #  STEP 2: RESOLUTION OF THE REFINED MODEL
 
@@ -270,7 +270,7 @@ for i in range(nbcalc) :
    MODX[i]=MODI_MODELE_XFEM(MODELE_IN=ModH[i],FISSURE=FISSH[i],INFO=1,);
 
 
-   DETRUIRE(CONCEPT=_F(NOM=MatRaf,),INFO=1,)
+   DETRUIRE(NOM=MatRaf,)
 
 # STEP 3: CRACK PROPAGATION ON THE REFINED MODEL
 
@@ -285,7 +285,7 @@ for i in range(nbcalc) :
                             NB_POINT_FOND=(10,10,10,10),
                             TABLE=SIF40,
                            ),
-                 METHODE_PROPA='SIMPLEXE',                 
+                 METHODE_PROPA='SIMPLEXE',
                  DA_MAX=da,
                  ZONE_MAJ='TOUT',
                  LOI_PROPA=_F(LOI='PARIS',
@@ -306,7 +306,7 @@ for i in range(nbcalc) :
                             NB_POINT_FOND=10,
                             TABLE=SIF10,
                            ),
-                 METHODE_PROPA='SIMPLEXE',              
+                 METHODE_PROPA='SIMPLEXE',
                  DA_MAX=da,
                  ZONE_MAJ='TOUT',
                  LOI_PROPA=_F(LOI='PARIS',
@@ -327,11 +327,11 @@ for i in range(nbcalc) :
                         OPERATION='EXTR',
                         FISSURE=FISS[i+1],
                         NOM_CHAM='LTNO',);
-                        
-                                     
+
+
       CHERR[0] = RAFF_XFEM(FISSURE=FISS[i+1])
-      DETRUIRE(CONCEPT=_F(NOM=MODX[i],))
-      DETRUIRE(CONCEPT=_F(NOM=ModH[i],))
+      DETRUIRE(NOM=MODX[i],)
+      DETRUIRE(NOM=ModH[i],)
 
 #----------------------------------------------
 #         POST TRAITEMENT
@@ -355,7 +355,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
            PRECISION=1.E-2,
-           VALE_CALC=16.0, 
+           VALE_CALC=16.0,
            VALE_REFE=16.0,
            NOM_PARA='COOR_Y',
            TYPE_TEST='MAX',

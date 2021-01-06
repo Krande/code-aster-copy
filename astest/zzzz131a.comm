@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -596,10 +596,10 @@ RESU12=EXTR_RESU(RESULTAT=RESU1,
 RESU12=EXTR_RESU(reuse=RESU12, RESULTAT=RESU12,
                 ARCHIVAGE=_F(LIST_INST=LINST11),)
 
-DETRUIRE(INFO=1,CONCEPT = _F(NOM=RESU12),)
+DETRUIRE(NOM=RESU12)
 
 
-DETRUIRE(INFO=1,CONCEPT = _F(NOM=RESU1),)
+DETRUIRE(NOM=RESU1)
 
 CALC_CHAMP(reuse=RESU11,
            RESULTAT=RESU11,

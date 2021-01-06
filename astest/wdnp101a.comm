@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -323,7 +323,7 @@ def PROJ(x,Hauteur) :
 # -->10: Boucle sur la pose des couches 3 a nbcouche
 for n in range(1,nbcouche-1):
 
-    DETRUIRE(CONCEPT=_F(NOM=(CHLAT, PHAUT, SIEF, CHPAR)))
+    DETRUIRE(NOM=(CHLAT, PHAUT, SIEF, CHPAR))
 
     n_couche = n+2
     print(' > n_couche          =',n_couche)
@@ -585,10 +585,10 @@ for n in range(1,nbcouche-1):
                     VARI_INTERNE=('VARI_ELNO'),
                     RESULTAT=U[n],);
 
-    DETRUIRE(INFO=1,CONCEPT=_F(NOM=(INIVAR,INISIG,INIDEP,DEPL_PJ,FX,FY,
-                             CH_FONC,CH_EVAL,DEPL_IN,CH_GEOM,DXN,DYN,
-                             CH_DEPL,CH_BID,FONCH,MAT1_f,PESHAU,PESBAS,
-                             AFFMAT2),),);
+    DETRUIRE(NOM=(INIVAR,INISIG,INIDEP,DEPL_PJ,FX,FY,
+                  CH_FONC,CH_EVAL,DEPL_IN,CH_GEOM,DXN,DYN,
+                  CH_DEPL,CH_BID,FONCH,MAT1_f,PESHAU,PESBAS,
+                  AFFMAT2),)
 
 #    IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=DEP[n]));
 #    IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=VAR[n]));
@@ -596,8 +596,7 @@ for n in range(1,nbcouche-1):
 
 # <--10: fin boucle for
 
-DETRUIRE(INFO=1,
-         CONCEPT=_F(NOM=(CHLAT,PHAUT,CHPAR,SIEF,),),);
+DETRUIRE(NOM=(CHLAT,PHAUT,CHPAR,SIEF))
 
 PESA=AFFE_CHAR_MECA(MODELE=MOD[9],
                    PESANTEUR=_F(GRAVITE=9.81,

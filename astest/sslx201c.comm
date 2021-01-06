@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,7 @@ CHME_REF=AFFE_CHAR_MECA(MODELE=MO_REF,
                     DDL_IMPO=_F(GROUP_MA='GAUCHE',
                                 DX=0.0,
                                 DY=0.0,),
-                    PRES_REP=_F(PRES=-100/surf_racc, 
+                    PRES_REP=_F(PRES=-100/surf_racc,
                                 GROUP_MA='ELEM_BORD_SUP',
                                 ),
                                     );
@@ -87,7 +87,7 @@ CHME=AFFE_CHAR_MECA(MODELE=MO,
                     FORCE_NODALE=_F(GROUP_NO='EXTREM',
                                     FY = 100.,
                                     ),
-                                    
+
                                     );
 
 RES_REF=MECA_STATIQUE(MODELE=MO_REF,
@@ -99,7 +99,7 @@ RES_REF=MECA_STATIQUE(MODELE=MO_REF,
 
 CALC_CHAMP(reuse=RES_REF, RESULTAT=RES_REF, FORCE='FORC_NODA')
 
-IMPR_RESU(FORMAT='RESULTAT', RESU=_F(RESULTAT=RES_REF, NOM_CHAM=('DEPL','FORC_NODA'), 
+IMPR_RESU(FORMAT='RESULTAT', RESU=_F(RESULTAT=RES_REF, NOM_CHAM=('DEPL','FORC_NODA'),
                                      GROUP_MA='ELEM_BORD_SUP'))
 TEST_RESU(RESU=(   _F(NUME_ORDRE=1,
                       NOEUD='N82',
@@ -127,7 +127,7 @@ RES=MECA_STATIQUE(MODELE=MO,
 
 CALC_CHAMP(reuse=RES, RESULTAT=RES, FORCE='FORC_NODA')
 
-IMPR_RESU(FORMAT='RESULTAT', RESU=_F(RESULTAT=RES, NOM_CHAM=('DEPL','FORC_NODA'), 
+IMPR_RESU(FORMAT='RESULTAT', RESU=_F(RESULTAT=RES, NOM_CHAM=('DEPL','FORC_NODA'),
                                      GROUP_MA='ELEM_BORD_SUP'))
 TEST_RESU(RESU=(   _F(NUME_ORDRE=1,
                       NOEUD='N82',
@@ -148,7 +148,7 @@ TEST_RESU(RESU=(   _F(NUME_ORDRE=1,
                    ),
           )
 
-DETRUIRE(CONCEPT=_F(NOM=(CHME_REF,CHME, RES_REF, RES )))
+DETRUIRE(NOM=(CHME_REF,CHME, RES_REF, RES ))
 
 
 # CISAILLEMENT
@@ -157,7 +157,7 @@ CHME_REF=AFFE_CHAR_MECA(MODELE=MO_REF,
                     DDL_IMPO=_F(GROUP_MA='GAUCHE',
                                 DX=0.0,
                                 DY=0.0,),
-                    PRES_REP=_F(CISA_2D=-1000/surf_racc, 
+                    PRES_REP=_F(CISA_2D=-1000/surf_racc,
                                 GROUP_MA='ELEM_BORD_SUP',
                                 ),
                                     );
@@ -172,7 +172,7 @@ CHME=AFFE_CHAR_MECA(MODELE=MO,
                     FORCE_NODALE=_F(GROUP_NO='EXTREM',
                                     FX = 1000,
                                     ),
-                                    
+
                                     );
 
 RES_REF=MECA_STATIQUE(MODELE=MO_REF,
@@ -184,7 +184,7 @@ RES_REF=MECA_STATIQUE(MODELE=MO_REF,
 
 CALC_CHAMP(reuse=RES_REF, RESULTAT=RES_REF, FORCE='FORC_NODA')
 
-IMPR_RESU(FORMAT='RESULTAT', RESU=_F(RESULTAT=RES_REF, NOM_CHAM=('DEPL','FORC_NODA'), 
+IMPR_RESU(FORMAT='RESULTAT', RESU=_F(RESULTAT=RES_REF, NOM_CHAM=('DEPL','FORC_NODA'),
                                      GROUP_MA='ELEM_BORD_SUP'))
 TEST_RESU(RESU=(   _F(NUME_ORDRE=1,
                       NOEUD='N82',
@@ -212,7 +212,7 @@ RES=MECA_STATIQUE(MODELE=MO,
 
 CALC_CHAMP(reuse=RES, RESULTAT=RES, FORCE='FORC_NODA')
 
-IMPR_RESU(FORMAT='RESULTAT', RESU=_F(RESULTAT=RES, NOM_CHAM=('DEPL','FORC_NODA'), 
+IMPR_RESU(FORMAT='RESULTAT', RESU=_F(RESULTAT=RES, NOM_CHAM=('DEPL','FORC_NODA'),
                                      GROUP_MA='ELEM_BORD_SUP'))
 TEST_RESU(RESU=(   _F(NUME_ORDRE=1,
                       NOEUD='N82',
@@ -233,7 +233,7 @@ TEST_RESU(RESU=(   _F(NUME_ORDRE=1,
                    ),
           )
 
-DETRUIRE(CONCEPT=_F(NOM=(CHME_REF,CHME, RES_REF, RES )))
+DETRUIRE(NOM=(CHME_REF,CHME, RES_REF, RES ))
 
 
 # MOMENT
@@ -262,7 +262,7 @@ CHME=AFFE_CHAR_MECA(MODELE=MO,
                     FORCE_NODALE=_F(GROUP_NO='EXTREM',
                                     MZ = 1000.,
                                     ),
-                                    
+
                                     );
 
 RES_REF=MECA_STATIQUE(MODELE=MO_REF,
@@ -275,7 +275,7 @@ RES_REF=MECA_STATIQUE(MODELE=MO_REF,
 
 CALC_CHAMP(reuse=RES_REF, RESULTAT=RES_REF, FORCE='FORC_NODA')
 
-IMPR_RESU(FORMAT='RESULTAT', RESU=_F(RESULTAT=RES_REF, NOM_CHAM=('DEPL','FORC_NODA'), 
+IMPR_RESU(FORMAT='RESULTAT', RESU=_F(RESULTAT=RES_REF, NOM_CHAM=('DEPL','FORC_NODA'),
                                      GROUP_MA='ELEM_BORD_SUP'))
 TEST_RESU(RESU=(   _F(NUME_ORDRE=1,
                       NOEUD='N82',
@@ -303,7 +303,7 @@ RES=MECA_STATIQUE(MODELE=MO,
 
 CALC_CHAMP(reuse=RES, RESULTAT=RES, FORCE='FORC_NODA')
 
-IMPR_RESU(FORMAT='RESULTAT', RESU=_F(RESULTAT=RES, NOM_CHAM=('DEPL','FORC_NODA'), 
+IMPR_RESU(FORMAT='RESULTAT', RESU=_F(RESULTAT=RES, NOM_CHAM=('DEPL','FORC_NODA'),
                                      GROUP_MA='ELEM_BORD_SUP'))
 TEST_RESU(RESU=(   _F(NUME_ORDRE=1,
                       NOEUD='N82',

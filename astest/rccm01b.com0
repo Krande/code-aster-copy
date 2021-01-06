@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,18 +22,18 @@
 
 POURSUITE( CODE='OUI' )
 
-DETRUIRE ( CONCEPT=_F(NOM=SN1 ) )
-DETRUIRE ( CONCEPT=_F(NOM=SN2 ) )
-DETRUIRE ( CONCEPT=_F(NOM=SN12 ) )
+DETRUIRE(NOM=SN1 )
+DETRUIRE(NOM=SN2 )
+DETRUIRE(NOM=SN12 )
 
 #--------------------------------------------------------------------------------
 # VALIDATION DE LA METHODE B3200 avec MOMENTS SOUS FORME DE TRANSITOIRES
 #--------------------------------------------------------------------------------
-# SITUATION 1 : CONTRAINTES MECANIQUES (MOMENTS ET EFFORTS)                               
+# SITUATION 1 : CONTRAINTES MECANIQUES (MOMENTS ET EFFORTS)
 T_MEC1 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=4,)
 
-# SITUATION 2 : CONTRAINTES MECANIQUES (MOMENTS ET EFFORTS)                               
+# SITUATION 2 : CONTRAINTES MECANIQUES (MOMENTS ET EFFORTS)
 T_MEC2 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=8,)
 
@@ -45,14 +45,14 @@ SN1=POST_RCCM(TYPE_RESU_MECA='B3200',
                 METHODE='TOUT_INST',
                 MATER=MAT,
                 TITRE='CALCUL DE SN/SN*/ROCHET (TOUT_INST), SITUATION 1, B3200, MOMENTS TRANSITOIRES',
-                RESU_MECA = (_F(NUME_RESU_MECA = 1, 
-                                TABL_RESU_MECA = T_MEC1), 
+                RESU_MECA = (_F(NUME_RESU_MECA = 1,
+                                TABL_RESU_MECA = T_MEC1),
                             ),
-                RESU_PRES = (_F(NUME_RESU_PRES = 1, 
-                                TABL_RESU_PRES = T_PR1), 
+                RESU_PRES = (_F(NUME_RESU_PRES = 1,
+                                TABL_RESU_PRES = T_PR1),
                             ),
-                RESU_THER = (_F(NUME_RESU_THER = 1, 
-                                TABL_RESU_THER = T_TH1), 
+                RESU_THER = (_F(NUME_RESU_THER = 1,
+                                TABL_RESU_THER = T_TH1),
                             ),
                 SITUATION=_F(  NUME_SITU=1,
                                NUME_GROUPE=1,
@@ -63,7 +63,7 @@ SN1=POST_RCCM(TYPE_RESU_MECA='B3200',
                                NUME_RESU_THER = 1,),
               )
 
-IMPR_TABLE(    TABLE=SN1,)   
+IMPR_TABLE(    TABLE=SN1,)
 
 # CALCUL DE SN/SN*/ROCHET POUR LA SITUATION 2, TOUT_INST
 SN2=POST_RCCM(TYPE_RESU_MECA='B3200',
@@ -72,14 +72,14 @@ SN2=POST_RCCM(TYPE_RESU_MECA='B3200',
                 METHODE='TOUT_INST',
                 MATER=MAT,
                 TITRE='CALCUL DE SN/SN*/ROCHET (TOUT_INST), SITUATION 2, B3200, MOMENTS TRANSITOIRES',
-                RESU_MECA = (_F(NUME_RESU_MECA = 1, 
-                                TABL_RESU_MECA = T_MEC2), 
+                RESU_MECA = (_F(NUME_RESU_MECA = 1,
+                                TABL_RESU_MECA = T_MEC2),
                             ),
-                RESU_PRES = (_F(NUME_RESU_PRES = 1, 
-                                TABL_RESU_PRES = T_PR2), 
+                RESU_PRES = (_F(NUME_RESU_PRES = 1,
+                                TABL_RESU_PRES = T_PR2),
                             ),
-                RESU_THER = (_F(NUME_RESU_THER = 1, 
-                                TABL_RESU_THER = T_TH2), 
+                RESU_THER = (_F(NUME_RESU_THER = 1,
+                                TABL_RESU_THER = T_TH2),
                             ),
                 SITUATION=_F(  NUME_SITU=2,
                                NUME_GROUPE=1,
@@ -98,14 +98,14 @@ SN2b=POST_RCCM(TYPE_RESU_MECA='B3200',
                 TYPE_RESU='DETAILS',
                 MATER=MAT,
                 TITRE='CALCUL DE SN/SN*/ROCHET (TRESCA), SITUATION 2, B3200, MOMENTS TRANSITOIRES',
-                RESU_MECA = (_F(NUME_RESU_MECA = 1, 
-                                TABL_RESU_MECA = T_MEC2), 
+                RESU_MECA = (_F(NUME_RESU_MECA = 1,
+                                TABL_RESU_MECA = T_MEC2),
                             ),
-                RESU_PRES = (_F(NUME_RESU_PRES = 1, 
-                                TABL_RESU_PRES = T_PR2), 
+                RESU_PRES = (_F(NUME_RESU_PRES = 1,
+                                TABL_RESU_PRES = T_PR2),
                             ),
-                RESU_THER = (_F(NUME_RESU_THER = 1, 
-                                TABL_RESU_THER = T_TH2), 
+                RESU_THER = (_F(NUME_RESU_THER = 1,
+                                TABL_RESU_THER = T_TH2),
                             ),
                 SITUATION=_F(  NUME_SITU=2,
                                NUME_GROUPE=1,
@@ -125,20 +125,20 @@ SN12=POST_RCCM(TYPE_RESU_MECA='B3200',
                 METHODE='TOUT_INST',
                 MATER=MAT,
                 TITRE='SN/SN*/ROCHET (TOUT_INST), SITUATIONS 1 ET 2, B3200, MOMENTS TRANSITOIRES',
-                RESU_MECA = (_F(NUME_RESU_MECA = 1, 
-                                TABL_RESU_MECA = T_MEC1), 
-                             _F(NUME_RESU_MECA = 2, 
-                                TABL_RESU_MECA = T_MEC2), 
+                RESU_MECA = (_F(NUME_RESU_MECA = 1,
+                                TABL_RESU_MECA = T_MEC1),
+                             _F(NUME_RESU_MECA = 2,
+                                TABL_RESU_MECA = T_MEC2),
                             ),
-                RESU_PRES = (_F(NUME_RESU_PRES = 1, 
-                                TABL_RESU_PRES = T_PR1), 
-                             _F(NUME_RESU_PRES = 2, 
-                                TABL_RESU_PRES = T_PR2), 
+                RESU_PRES = (_F(NUME_RESU_PRES = 1,
+                                TABL_RESU_PRES = T_PR1),
+                             _F(NUME_RESU_PRES = 2,
+                                TABL_RESU_PRES = T_PR2),
                             ),
-                RESU_THER = (_F(NUME_RESU_THER = 1, 
+                RESU_THER = (_F(NUME_RESU_THER = 1,
                                 TABL_RESU_THER = T_TH1),
-                             _F(NUME_RESU_THER = 2, 
-                                TABL_RESU_THER = T_TH2),  
+                             _F(NUME_RESU_THER = 2,
+                                TABL_RESU_THER = T_TH2),
                             ),
                 SITUATION=(_F(  NUME_SITU=1,
                                NUME_GROUPE=1,
@@ -157,20 +157,20 @@ SN12=POST_RCCM(TYPE_RESU_MECA='B3200',
               )
 
 IMPR_TABLE(    TABLE=SN12,)
-  
+
 #--------------------------------------------------------------------------------
 # VALIDATION DE LA METHODE B3200 avec MOMENTS INTERPOLES SUR LA TEMPERATURE
 #--------------------------------------------------------------------------------
 
-# TEMPERATURE PENDANT LA SITUATION 5          
+# TEMPERATURE PENDANT LA SITUATION 5
 T_TEMP5 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=13,)
 
-# TEMPERATURE PENDANT LA SITUATION 5b          
+# TEMPERATURE PENDANT LA SITUATION 5b
 T_TEMP5b = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=15,)
 
-# TEMPERATURE PENDANT LA SITUATION 6        
+# TEMPERATURE PENDANT LA SITUATION 6
 T_TEMP6 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=14,)
 
@@ -210,7 +210,7 @@ SN5=POST_RCCM( MATER=MAT,
                      PRES_A=0.0,
                      PRES_B=0.0,),),);
 
-IMPR_TABLE(    TABLE=SN5,) 
+IMPR_TABLE(    TABLE=SN5,)
 
 # CALCUL DE SN/SN*/ROCHET POUR LA SITUATION 5 sans transitoire thermique
 SN5b=POST_RCCM( MATER=MAT,
@@ -244,7 +244,7 @@ SN5b=POST_RCCM( MATER=MAT,
                      PRES_A=0.0,
                      PRES_B=0.0,),),);
 
-IMPR_TABLE(    TABLE=SN5b,) 
+IMPR_TABLE(    TABLE=SN5b,)
 
 # CALCUL DE SN/SN*/ROCHET POUR LA SITUATION 6
 SN6=POST_RCCM( MATER=MAT,
@@ -282,7 +282,7 @@ SN6=POST_RCCM( MATER=MAT,
                      PRES_A=10.0,
                      PRES_B=20.0,),),);
 
-IMPR_TABLE(    TABLE=SN6,) 
+IMPR_TABLE(    TABLE=SN6,)
 
 # CALCUL DE SN/SN*/ROCHET POUR LES SITUATIONS 5 et 6
 SN56=POST_RCCM( MATER=MAT,
@@ -340,7 +340,7 @@ SN56=POST_RCCM( MATER=MAT,
                      PRES_A=10.0,
                      PRES_B=20.0,),),);
 
-IMPR_TABLE(    TABLE=SN56,) 
+IMPR_TABLE(    TABLE=SN56,)
 
 #--------------------------------------------------------------------------------
 #   TEST SUR B3200, MOMENTS TRANSITOIRES (SOLUTION DE REFERENCE ANALYTIQUE)
@@ -380,7 +380,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='EXTR',),
            TABLE=SN1,)
 
-#ROCHET THERMIQUE 
+#ROCHET THERMIQUE
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=52.500000000,
            VALE_REFE=52.5,
@@ -464,7 +464,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='EXTR',),
            TABLE=SN2,)
 
-#ROCHET THERMIQUE 
+#ROCHET THERMIQUE
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=52.500000000,
            VALE_REFE=52.5,
@@ -500,7 +500,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.000000000,
            VALE_REFE=0.0,
-           ORDRE_GRANDEUR=1.0e-6, 
+           ORDRE_GRANDEUR=1.0e-6,
            NOM_PARA='SN_THER_MAX',
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),
@@ -549,7 +549,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='EXTR',),
            TABLE=SN2b,)
 
-#ROCHET THERMIQUE 
+#ROCHET THERMIQUE
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=25.000000000,
            VALE_REFE=25.0,
@@ -585,7 +585,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.000000000,
            VALE_REFE=0.0,
-           ORDRE_GRANDEUR=1.0e-6, 
+           ORDRE_GRANDEUR=1.0e-6,
            NOM_PARA='SN_THER_MAX',
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),
@@ -635,7 +635,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='EXTR',),
            TABLE=SN12,)
 
-#ROCHET THERMIQUE 
+#ROCHET THERMIQUE
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=52.500000000,
            VALE_REFE=52.5,
@@ -722,11 +722,11 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='EXTR',),
            TABLE=SN5,)
 
-#ROCHET THERMIQUE 
+#ROCHET THERMIQUE
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.000000000,
            VALE_REFE=0.0,
-           ORDRE_GRANDEUR=1.0e-6, 
+           ORDRE_GRANDEUR=1.0e-6,
            NOM_PARA='SIGM_M_PRES',
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),
@@ -735,7 +735,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.000000000,
            VALE_REFE=0.0,
-           ORDRE_GRANDEUR=1.0e-6, 
+           ORDRE_GRANDEUR=1.0e-6,
            NOM_PARA='SIGM_M_PRES',
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),
@@ -744,7 +744,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.000000000,
            VALE_REFE=0.0,
-           ORDRE_GRANDEUR=1.0e-6, 
+           ORDRE_GRANDEUR=1.0e-6,
            NOM_PARA='SN_THER',
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),
@@ -811,7 +811,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='EXTR',),
            TABLE=SN6,)
 
-#ROCHET THERMIQUE 
+#ROCHET THERMIQUE
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=250.0000000000,
            VALE_REFE=250.0,
@@ -880,7 +880,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='EXTR',),
            TABLE=SN56,)
 
-#ROCHET THERMIQUE 
+#ROCHET THERMIQUE
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=250.0000000000,
            VALE_REFE=250.0,

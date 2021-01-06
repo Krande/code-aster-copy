@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -92,7 +92,7 @@ for i_raff in range(nb_raff) :
                   MAILLAGE_N         = MA[i_raff],
                   MAILLAGE_NP1       = MA[i_raff+1])
 
-   DETRUIRE(CONCEPT=_F(NOM=l_fiss),INFO=1)
+   DETRUIRE(NOM=l_fiss)
 
 assert(nb_raff == i_raff+1)
 
@@ -158,7 +158,7 @@ IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RE_VISU))
 NB_FOND=RECU_TABLE(CO=fiss_1,NOM_TABLE='NB_FOND_FISS')
 values = NB_FOND.EXTR_TABLE().values()
 nb_fond = values['NOMBRE'][0]
-DETRUIRE(CONCEPT=_F(NOM=NB_FOND),INFO=1)
+DETRUIRE(NOM=NB_FOND)
 
 GK1 = [None]*nb_fond
 GK2 = [None]*nb_fond
@@ -204,7 +204,7 @@ for i in range(nb_fond) :
                 CHAM_THETA=CO('cham_theta_no'),
                 RESULTAT=RESU,)
 
-   DETRUIRE(CONCEPT=_F(NOM=cham_theta_no,))
+   DETRUIRE(NOM=cham_theta_no,)
 
 #----------------------------------------------------------------------
 #              TEST

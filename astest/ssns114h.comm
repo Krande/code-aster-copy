@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -85,7 +85,7 @@ MAT_G=DEFI_MATERIAU(
                                 SYC  = 35e6,
                                 EPSC = 0.002,
                                 N = 2
-                                ),                   );     
+                                ),                   );
 
 
 #=====================================================================================
@@ -156,7 +156,7 @@ TEMPLI1 = CREA_RESU(OPERATION='PREP_VRC2',
                                             GROUP_MA = 'DALLE'
                                             ),
                                );
-                               
+
 MATER2=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(GROUP_MA='DALLE',  MATER=MAT_G,),
                     AFFE_VARC=_F(TOUT='OUI',EVOL=TEMPLI1,NOM_VARC='TEMP',
@@ -185,7 +185,7 @@ TEMPLI2 = CREA_RESU(OPERATION='PREP_VRC2',
                                             GROUP_MA = 'DALLE'
                                             ),
                                );
-                               
+
 MATER3=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(GROUP_MA='DALLE',  MATER=MAT_G,),
                     AFFE_VARC=_F(TOUT='OUI',EVOL=TEMPLI2,NOM_VARC='TEMP',
@@ -273,7 +273,7 @@ TEST_RESU(RESU=_F( RESULTAT=RESU_G2, NOM_CHAM='EFGE_ELNO', INST=1.,
                    MAILLE='M8', NOEUD='N7', NOM_CMP='NXX',  REFERENCE = 'AUTRE_ASTER',
                    VALE_CALC=278768.0, VALE_REFE=278768.0,  ))
 
-DETRUIRE(INFO=1, CONCEPT=_F(NOM=(RESU_G1, RESU_G2)))
+DETRUIRE(NOM=(RESU_G1, RESU_G2))
 
 
 #---------------------------------------------
@@ -326,7 +326,7 @@ TEST_RESU(RESU=_F( RESULTAT=RESU_G2, NOM_CHAM='EFGE_ELNO', INST=1.,
                    MAILLE='M8', NOEUD='N7', NOM_CMP='MXX',  REFERENCE = 'AUTRE_ASTER',
                    VALE_CALC=8366.7994577 , VALE_REFE=8366.7994577 ,  ))
 
-DETRUIRE(INFO=1, CONCEPT=_F(NOM=(RESU_G1, RESU_G2)))
+DETRUIRE(NOM=(RESU_G1, RESU_G2))
 
 
 FIN()

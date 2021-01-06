@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -300,7 +300,7 @@ TFX_G1=CALC_TABLE(TABLE=TFXA2_G1,
 
 IMPR_TABLE(TABLE=TFX_G1,);
 
-DETRUIRE(CONCEPT=_F(NOM=(TFXA2_G1,TFXA4_G1,TFXA6_G1,),),);
+DETRUIRE(NOM=(TFXA2_G1,TFXA4_G1,TFXA6_G1,),);
 
 TDY_G1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='A4DY',
@@ -330,7 +330,7 @@ D_DY_1=CALC_TABLE(TABLE=TDY_G1,
                           _F(OPERATION='EXTR',
                              NOM_PARA=('INST','DYG',),),),);
 
-DETRUIRE(CONCEPT=_F(NOM=(TDY_G1,),),);
+DETRUIRE(NOM=(TDY_G1,),);
 
 IMPR_TABLE(TABLE=D_DY_1,);
 

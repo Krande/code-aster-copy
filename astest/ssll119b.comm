@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -407,25 +407,5 @@ for mode in ['POU_D_E','POU_D_T','POU_D_TG','POU_D_EM','POU_D_TGM',]:
                     ),
                     ),
             )
-    DETRUIRE(INFO = 1,CONCEPT=(_F(NOM = MODELE,),
-                      _F(NOM = CAREL,),
-                      _F(NOM = CLX,),
-                      _F(NOM = CLY,),
-                      _F(NOM = CLZ,),
-                      _F(NOM = MORE_MX,),
-                      _F(NOM = MORE_MT,),
-                      _F(NOM = MORE_MY,),
-                      _F(NOM = MORE_MFY,),
-                      _F(NOM = MORE_MZ,),
-                      _F(NOM = MORE_MFZ,),
-                      _F(NOM = RES_MX,),
-                      _F(NOM = RES_MT,),
-                      _F(NOM = RES_MY,),
-                      _F(NOM = RES_MFY,),
-                      _F(NOM = RES_MZ,),
-                      _F(NOM = RES_MFZ,),
-                      _F(NOM = RES_MX,),
-                      _F(NOM = CHMAT,),
-                     )
-            )
+
 FIN()

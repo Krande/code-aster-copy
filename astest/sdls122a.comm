@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -465,16 +465,8 @@ CALC_ENR=CALC_CORR_SSD(MODELE_GENE=MODEGE,
 
 
 #-- MENAGE DANS LES CONCEPTS PRECEDENTS--#
-DETRUIRE(CONCEPT=(_F(NOM=MACEL1,),
-                  _F(NOM=MACEL2,),
-                  _F(NOM=MODEGE,),
-                  _F(NOM=RESGEN,),
-                  _F(NOM=NUMEGE,),
-                  _F(NOM=MASGEN,),
-                  _F(NOM=RIGGEN,),
-                  _F(NOM=BAMO1_CL,),
-                  _F(NOM=BAMO2_CL,),
-                  ),);
+DETRUIRE(NOM=(MACEL1, MACEL2, MODEGE, RESGEN, NUMEGE, MASGEN, RIGGEN,
+              BAMO1_CL, BAMO2_CL))
 
 
 #-- EXTRACTION DES VECTEURS DE CORRECTIONS

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -146,7 +146,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='VALEUR  ',),
            )
 
-DETRUIRE(CONCEPT=_F(NOM=(TAB1),),)
+DETRUIRE(NOM=(TAB1),)
 
 # 2.2 ETAT_INIT / EVOL_NOLI + DEPL, SIGM, VARI :
 #--------------------------------------------------------------------
@@ -189,6 +189,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='VALEUR  ',),
            )
 
-DETRUIRE(CONCEPT=_F(NOM=(TAB1),),)
+DETRUIRE(NOM=(TAB1),)
 
 FIN()

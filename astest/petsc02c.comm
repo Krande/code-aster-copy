@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -90,7 +90,7 @@ for partition in ('GROUP_ELEM', 'SOUS_DOMAINE', 'MAIL_CONTIGU', 'MAIL_DISPERSE',
                VALE_CALC=0.162925870541,
                )
 
-    DETRUIRE(CONCEPT=_F(NOM=(MO, MAT1, AFMAT, AFCIN, MESTAT1, INT_DZ, INT_DEPX, INT_DEPY)),INFO=1)
+    DETRUIRE(NOM=(MO, MAT1, AFMAT, AFCIN, MESTAT1, INT_DZ, INT_DEPX, INT_DEPY),INFO=1)
 
 
 FIN();

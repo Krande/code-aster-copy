@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -91,9 +91,9 @@ for nopartit in lparallel :
                   TEST_RESU(OBJET=_F(NOM=RESU1.getName()[:8]+'.001.000000.VALE',
                              VALE_CALC=478.957868591, ))
 
-              DETRUIRE(CONCEPT=_F(NOM=(RESU1)),INFO=1)
-        DETRUIRE(CONCEPT=_F(NOM=(CL1)),INFO=1)
-    DETRUIRE(CONCEPT=_F(NOM=(MO, CARELEM, CL2)),INFO=1)
+              DETRUIRE(NOM=(RESU1),INFO=1)
+        DETRUIRE(NOM=(CL1),INFO=1)
+    DETRUIRE(NOM=(MO, CARELEM, CL2),INFO=1)
 
 
 
@@ -122,11 +122,11 @@ for nopartit in lparallel :
         MODI_MODELE(  reuse=MO, MODELE=MO, DISTRIBUTION=_F(METHODE=nopartit2),)
         RESU2=CALC_CHAMP(RESULTAT = RESU1, DEFORMATION = ('EPSI_ELGA',),)
         TEST_RESU(OBJET=_F(NOM=RESU2.getName()[:8]+'.009.000000.CELV', VALE_CALC=577.172255332, ))
-        DETRUIRE(CONCEPT=_F(NOM=(RESU2)),INFO=1)
+        DETRUIRE(NOM=(RESU2),INFO=1)
 
 #   -- on remet la partition en etat pour la boucle principale :
     MODI_MODELE(  reuse=MO, MODELE=MO, DISTRIBUTION=_F(METHODE=nopartit),)
 
-    DETRUIRE(CONCEPT=_F(NOM=(MO, CARELEM, CL2, CL1, RESU1)),INFO=1)
+    DETRUIRE(NOM=(MO, CARELEM, CL2, CL1, RESU1),INFO=1)
 
 FIN()

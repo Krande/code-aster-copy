@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -131,7 +131,7 @@ for num_calc in range(nb_raff+1):
                    MAILLAGE_N = MA[num_calc],
                    MAILLAGE_NP1 = MA[num_calc+1])
 
-    DETRUIRE(CONCEPT=_F( NOM=(MO,FISS1,FISS2,FISS3,FISS4,FISS5,FISS6,FISS7,FISS8)));
+    DETRUIRE(NOM=(MO,FISS1,FISS2,FISS3,FISS4,FISS5,FISS6,FISS7,FISS8));
 
 #=====================
 # Definition du modele

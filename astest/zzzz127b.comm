@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -67,11 +67,11 @@ MEST11=MECA_STATIQUE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
 # --------------------
 
 CH12=AFFE_CHAR_MECA(  MODELE=MO,  INFO=2,
-    LIAISON_MAIL=_F( MAILLE_MAIT = ('Q1','Q2',),   
+    LIAISON_MAIL=_F( MAILLE_MAIT = ('Q1','Q2',),
                      NOEUD_ESCL = ('E','E2',),
                      DISTANCE_MAX = 1.E-6 ,
-                     TRAN = ( -5., 0., 0.,), 
-                     CENTRE = (10., 0., 0.,), 
+                     TRAN = ( -5., 0., 0.,),
+                     CENTRE = (10., 0., 0.,),
                      ANGL_NAUT = (90.,0.,0.,)) )
 
 MEST12=MECA_STATIQUE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
@@ -122,13 +122,13 @@ MEST21=MECA_STATIQUE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
 # --------------------
 
 CH22=AFFE_CHAR_MECA( INFO=2, MODELE=MO,
-      LIAISON_MAIL=_F( MAILLE_MAIT = ('Q1','Q2',),   
+      LIAISON_MAIL=_F( MAILLE_MAIT = ('Q1','Q2',),
                        MAILLE_ESCL = 'S1',
                        DISTANCE_MAX = 1.E-6 ,
-                       TRAN = ( 5., 10., 0.,), 
-                       CENTRE = (10., 0., 0.,), 
+                       TRAN = ( 5., 10., 0.,),
+                       CENTRE = (10., 0., 0.,),
                        ANGL_NAUT = (180.,0.,0.,),
-                       DDL_MAIT = 'DNOR', 
+                       DDL_MAIT = 'DNOR',
                        DDL_ESCL = 'DNOR') )
 
 MEST22=MECA_STATIQUE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
@@ -159,21 +159,21 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 #======================================================
 
 
-DETRUIRE(CONCEPT=_F( NOM = MO))
+DETRUIRE(NOM = MO)
 
-DETRUIRE(CONCEPT=_F( NOM = CH0))
+DETRUIRE(NOM = CH0)
 
-DETRUIRE(CONCEPT=_F( NOM = MAT))
+DETRUIRE(NOM = MAT)
 
-DETRUIRE(CONCEPT=_F( NOM = CHMAT))
+DETRUIRE(NOM = CHMAT)
 
-DETRUIRE(CONCEPT=_F( NOM = CH11))
+DETRUIRE(NOM = CH11)
 
-DETRUIRE(CONCEPT=_F( NOM = MEST11))
+DETRUIRE(NOM = MEST11)
 
-DETRUIRE(CONCEPT=_F( NOM = CH12))
+DETRUIRE(NOM = CH12)
 
-DETRUIRE(CONCEPT=_F( NOM = MEST12))
+DETRUIRE(NOM = MEST12)
 
 MO=AFFE_MODELE(  MAILLAGE=MA,
                    AFFE=_F(  TOUT = 'OUI',  PHENOMENE = 'THERMIQUE',
@@ -211,8 +211,8 @@ CH12=AFFE_CHAR_THER(  MODELE=MO,   INFO=2,
             LIAISON_MAIL=_F( MAILLE_MAIT = ('Q1','Q2',),
                              NOEUD_ESCL = ('E','E2',),
                              DISTANCE_MAX = 1.E-6 ,
-                             TRAN = ( -5., 0., 0.), 
-                             CENTRE = (10., 0., 0.), 
+                             TRAN = ( -5., 0., 0.),
+                             CENTRE = (10., 0., 0.),
                              ANGL_NAUT = (90., 0., 0.)) )
 
 MEST12=THER_LINEAIRE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(

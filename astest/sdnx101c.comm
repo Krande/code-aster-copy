@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# Pour des raisons de performances, on force SDVERI='NON'. 
+# Pour des raisons de performances, on force SDVERI='NON'.
 DEBUT(   CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'));
 
 MAIL0=LIRE_MAILLAGE(FORMAT='MED',);
@@ -799,7 +799,7 @@ for k in range(1,NF):
                              ),
                        );
 
-    DETRUIRE(INFO=1,CONCEPT=_F(NOM=EVOL));
+    DETRUIRE(NOM=EVOL)
     EVOL=DYNA_VIBRA(TYPE_CALCUL='TRAN',
                     BASE_CALCUL='PHYS',
                     MATR_MASS=MATRMASB, MATR_RIGI=MATRRIGB,
@@ -819,7 +819,7 @@ for k in range(1,NF):
                                ),
                        );
 
-    DETRUIRE(INFO=1,CONCEPT=_F(NOM=resunl));
+    DETRUIRE(NOM=resunl)
 
 
 ## fin boucle NF

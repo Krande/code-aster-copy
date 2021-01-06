@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -213,13 +213,13 @@ for i in range(nbcalc) :
                                                 CHAM_NO_LST=LSTH[i],),
                                    GROUP_MA_ENRI='Vol',);
 
-   DETRUIRE(CONCEPT=_F(NOM=CHERR[0],))
+   DETRUIRE(NOM=CHERR[0],)
 
    for j in range(1,infit) :
-      DETRUIRE(CONCEPT=_F(NOM=MeH[j],))
-      DETRUIRE(CONCEPT=_F(NOM=LSNHT[j],))
-      DETRUIRE(CONCEPT=_F(NOM=LSTHT[j],))
-      DETRUIRE(CONCEPT=_F(NOM=CHERR[j],))
+      DETRUIRE(NOM=MeH[j],)
+      DETRUIRE(NOM=LSNHT[j],)
+      DETRUIRE(NOM=LSTHT[j],)
+      DETRUIRE(NOM=CHERR[j],)
 
 # STEP 2: CRACKED REFINED MODEL
 
@@ -237,7 +237,7 @@ for i in range(nbcalc) :
                             FISS_PROPAGEE=FISS[i+1],
                             NB_POINT_FOND=(10,10,10,10),
                             TABLE=SIF40,
-                           ),                                
+                           ),
                  METHODE_PROPA='UPWIND',
                  DA_MAX=da,
                  ZONE_MAJ='TOUT',
@@ -284,8 +284,8 @@ for i in range(nbcalc) :
                         NOM_CHAM='LTNO',);
 
       CHERR[0] = RAFF_XFEM(FISSURE=FISS[i+1])
-      DETRUIRE(CONCEPT=_F(NOM=MODX[i],))
-      DETRUIRE(CONCEPT=_F(NOM=ModH[i],))
+      DETRUIRE(NOM=MODX[i],)
+      DETRUIRE(NOM=ModH[i],)
 
 #----------------------------------------------
 #         POST TRAITEMENT

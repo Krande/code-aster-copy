@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ CHME_REF=AFFE_CHAR_MECA(MODELE=MO_REF,
                     DDL_IMPO=_F(GROUP_MA='GAUCHE',
                                 DX=0.0,
                                 DY=0.0,),
-                    PRES_REP=_F(PRES=-50000/surf_racc, 
+                    PRES_REP=_F(PRES=-50000/surf_racc,
                                 #GROUP_MA='DROIT',
                                 GROUP_MA='DROIT2',
                                 ),
@@ -84,7 +84,7 @@ CHME=AFFE_CHAR_MECA(MODELE=MO,
                     FORCE_NODALE=_F(GROUP_NO='EXTREM',
                                     FX = 50000.,
                                     ),
-                                    
+
                                     );
 
 RES_REF=MECA_STATIQUE(MODELE=MO_REF,
@@ -145,7 +145,7 @@ TEST_RESU(RESU=(   _F(NUME_ORDRE=1,
                    ),
           )
 
-DETRUIRE(CONCEPT=_F(NOM=(CHME_REF,CHME, RES_REF, RES )))
+DETRUIRE(NOM=(CHME_REF,CHME, RES_REF, RES ))
 
 # FLEXION
 # -------
@@ -153,7 +153,7 @@ CHME_REF=AFFE_CHAR_MECA(MODELE=MO_REF,
                     DDL_IMPO=_F(GROUP_MA='GAUCHE',
                                 DX=0.0,
                                 DY=0.0,),
-                    PRES_REP=_F(CISA_2D=-0.5/surf_racc, 
+                    PRES_REP=_F(CISA_2D=-0.5/surf_racc,
                                 #GROUP_MA='DROIT',
                                 GROUP_MA='DROIT2',
                                 ),
@@ -170,7 +170,7 @@ CHME=AFFE_CHAR_MECA(MODELE=MO,
                     FORCE_NODALE=_F(GROUP_NO='EXTREM',
                                     FY = -0.5,
                                     ),
-                                    
+
                                     );
 
 RES_REF=MECA_STATIQUE(MODELE=MO_REF,
@@ -231,7 +231,7 @@ TEST_RESU(RESU=(   _F(NUME_ORDRE=1,
                    ),
           )
 
-DETRUIRE(CONCEPT=_F(NOM=(CHME_REF,CHME, RES_REF, RES )))
+DETRUIRE(NOM=(CHME_REF,CHME, RES_REF, RES ))
 
 
 # MOMENT
@@ -261,7 +261,7 @@ CHME=AFFE_CHAR_MECA(MODELE=MO,
                     FORCE_NODALE=_F(GROUP_NO='EXTREM',
                                     MZ = 1000.,
                                     ),
-                                    
+
                                     );
 
 RES_REF=MECA_STATIQUE(MODELE=MO_REF,

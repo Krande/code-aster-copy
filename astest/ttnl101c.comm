@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ SOURCE = DEFI_FONCTION( NOM_PARA    = 'TEMP',
                         PROL_GAUCHE = 'LINEAIRE',
                       )
 
-  
+
 # Usual data setting
 
 FAKE_MAT = DEFI_MATERIAU(THER_NL = _F(LAMBDA=LAMBDA, RHO_CP=RHO_CP),
@@ -69,11 +69,11 @@ TIME = DEFI_LIST_REEL(DEBUT      =  0.0,
 MAT_T3 = AFFE_MATERIAU(MAILLAGE = MESH_T3,
                         AFFE     = _F(GROUP_MA = 'ROD', MATER = FAKE_MAT),
                       )
-  
+
 MODEL_T3 = AFFE_MODELE(MAILLAGE = MESH_T3,
                        AFFE     = _F(GROUP_MA='ROD',PHENOMENE='THERMIQUE',MODELISATION='AXIS'),
                        )
-  
+
 BND_T3 = AFFE_CHAR_THER(MODELE    = MODEL_T3,
                         TEMP_IMPO = _F(GROUP_MA = 'END', TEMP=0),
                        )
@@ -81,7 +81,7 @@ BND_T3 = AFFE_CHAR_THER(MODELE    = MODEL_T3,
 # Non linear heating source
 
 HEAT_T3 = AFFE_CHAR_THER_F(MODELE  = MODEL_T3,
-                           SOUR_NL = _F(GROUP_MA='ROD', SOUR=SOURCE),    
+                           SOUR_NL = _F(GROUP_MA='ROD', SOUR=SOURCE),
                            )
 
 # Initial temperature field
@@ -91,8 +91,8 @@ ND_COOR = CREA_CHAMP(OPERATION = 'EXTR',
                      MAILLAGE  =  MESH_T3,
                      NOM_CHAM  = 'GEOMETRIE',
                     )
-  
-TEMP_1 = CREA_CHAMP(OPERATION ='AFFE', 
+
+TEMP_1 = CREA_CHAMP(OPERATION ='AFFE',
                     TYPE_CHAM ='NOEU_NEUT_F',
                     MAILLAGE  = MESH_T3,
                     AFFE      =_F(TOUT='OUI', NOM_CMP='X1', VALE_F=T_INI),
@@ -100,19 +100,19 @@ TEMP_1 = CREA_CHAMP(OPERATION ='AFFE',
 
 TEMP_2 = CREA_CHAMP(OPERATION ='EVAL',
                     TYPE_CHAM ='NOEU_NEUT_R',
-                    CHAM_F    = TEMP_1 , 
+                    CHAM_F    = TEMP_1 ,
                     CHAM_PARA = ND_COOR,
                    )
 
-INI_TEMP = CREA_CHAMP(OPERATION ='ASSE', 
+INI_TEMP = CREA_CHAMP(OPERATION ='ASSE',
                       TYPE_CHAM ='NOEU_TEMP_R',
                       MAILLAGE  = MESH_T3,
                       ASSE      =_F(TOUT='OUI', CHAM_GD=TEMP_2, NOM_CMP='X1', NOM_CMP_RESU='TEMP'),
                      )
 
 # Computation
- 
-  
+
+
 EVOL_T3 = THER_NON_LINE( MODELE      = MODEL_T3,
                          INCREMENT   = _F(LIST_INST = TIME),
                          CHAM_MATER  = MAT_T3,
@@ -143,11 +143,11 @@ TEST_RESU(RESU=_F(GROUP_NO='PROBE',
 MAT_T3D = AFFE_MATERIAU(MAILLAGE = MESH_T3,
                         AFFE     = _F(GROUP_MA = 'ROD', MATER = FAKE_MAT),
                       )
-  
+
 MODL_T3D = AFFE_MODELE(MAILLAGE = MESH_T3,
                        AFFE     = _F(GROUP_MA='ROD',PHENOMENE='THERMIQUE',MODELISATION='AXIS_DIAG'),
                        )
-  
+
 BND_T3D = AFFE_CHAR_THER(MODELE    = MODL_T3D,
                         TEMP_IMPO = _F(GROUP_MA = 'END', TEMP=0),
                        )
@@ -155,7 +155,7 @@ BND_T3D = AFFE_CHAR_THER(MODELE    = MODL_T3D,
 # Non linear heating source
 
 HEAT_T3D = AFFE_CHAR_THER_F(MODELE  = MODL_T3D,
-                           SOUR_NL = _F(GROUP_MA='ROD', SOUR=SOURCE),    
+                           SOUR_NL = _F(GROUP_MA='ROD', SOUR=SOURCE),
                            )
 
 # Computation
@@ -184,7 +184,7 @@ TEST_RESU(RESU=_F(GROUP_NO='PROBE',
                   VALE_REFE=0.25897382948803593,),
           )
 
-DETRUIRE( CONCEPT = _F(NOM = (ND_COOR,TEMP_1,TEMP_2,INI_TEMP)))
+DETRUIRE(NOM = (ND_COOR,TEMP_1,TEMP_2,INI_TEMP))
 
 #===================================================================
 # Verification des mailles de type TRIA6 avec une modelisation AXIS
@@ -193,11 +193,11 @@ DETRUIRE( CONCEPT = _F(NOM = (ND_COOR,TEMP_1,TEMP_2,INI_TEMP)))
 MAT_T6 = AFFE_MATERIAU(MAILLAGE = MESH_T6,
                         AFFE     = _F(GROUP_MA = 'ROD', MATER = FAKE_MAT),
                       )
-  
+
 MODEL_T6 = AFFE_MODELE(MAILLAGE = MESH_T6,
                        AFFE     = _F(GROUP_MA='ROD',PHENOMENE='THERMIQUE',MODELISATION='AXIS'),
                        )
-  
+
 BND_T6 = AFFE_CHAR_THER(MODELE    = MODEL_T6,
                         TEMP_IMPO = _F(GROUP_MA = 'END', TEMP=0),
                        )
@@ -205,7 +205,7 @@ BND_T6 = AFFE_CHAR_THER(MODELE    = MODEL_T6,
 # Non linear heating source
 
 HEAT_T6 = AFFE_CHAR_THER_F(MODELE  = MODEL_T6,
-                           SOUR_NL = _F(GROUP_MA='ROD', SOUR=SOURCE),    
+                           SOUR_NL = _F(GROUP_MA='ROD', SOUR=SOURCE),
                            )
 
 # Initial temperature field
@@ -215,8 +215,8 @@ ND_COOR = CREA_CHAMP(OPERATION = 'EXTR',
                      MAILLAGE  =  MESH_T6,
                      NOM_CHAM  = 'GEOMETRIE',
                     )
-  
-TEMP_1 = CREA_CHAMP(OPERATION ='AFFE', 
+
+TEMP_1 = CREA_CHAMP(OPERATION ='AFFE',
                     TYPE_CHAM ='NOEU_NEUT_F',
                     MAILLAGE  = MESH_T6,
                     AFFE      =_F(TOUT='OUI', NOM_CMP='X1', VALE_F=T_INI),
@@ -224,18 +224,18 @@ TEMP_1 = CREA_CHAMP(OPERATION ='AFFE',
 
 TEMP_2 = CREA_CHAMP(OPERATION ='EVAL',
                     TYPE_CHAM ='NOEU_NEUT_R',
-                    CHAM_F    = TEMP_1 , 
+                    CHAM_F    = TEMP_1 ,
                     CHAM_PARA = ND_COOR,
                    )
 
-INI_TEMP = CREA_CHAMP(OPERATION ='ASSE', 
+INI_TEMP = CREA_CHAMP(OPERATION ='ASSE',
                       TYPE_CHAM ='NOEU_TEMP_R',
                       MAILLAGE  = MESH_T6,
                       ASSE      =_F(TOUT='OUI', CHAM_GD=TEMP_2, NOM_CMP='X1', NOM_CMP_RESU='TEMP'),
                      )
 
 # Computation
-  
+
 EVOL_T6 = THER_NON_LINE( MODELE      = MODEL_T6,
                          INCREMENT   = _F(LIST_INST = TIME),
                          CHAM_MATER  = MAT_T6,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -315,7 +315,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-DETRUIRE(CONCEPT=_F(NOM=TEMP0))
+DETRUIRE(NOM=TEMP0)
 
 TEMP0=LIRE_RESU(TYPE_RESU='EVOL_THER',
                 FORMAT='MED',
@@ -413,7 +413,7 @@ TEST_TABLE(VALE_CALC=73.333,
            NOM_PARA='TEMP',
            TABLE=TB02,)
 
-DETRUIRE(CONCEPT=_F(NOM=TEMP0))
+DETRUIRE(NOM=TEMP0)
 
 #---------------------------------------------------------------------------------
 
@@ -706,7 +706,7 @@ for numordre,maille,point,X,Y,V1 in PourTest:
    )
 
 
-DETRUIRE(CONCEPT=_F(NOM=UUU0))
+DETRUIRE(NOM=UUU0)
 
 # ----------------------------------------------------------------------------
 

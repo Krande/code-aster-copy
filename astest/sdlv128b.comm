@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ MAINUM = CREA_MAILLAGE(  MAILLAGE  = MAINtemp,
                                      ),
                         );
 
-DETRUIRE( CONCEPT = _F( NOM = MAINtemp ), INFO = 1 );
+DETRUIRE(NOM = MAINtemp );
 
 
 MODELNUM = AFFE_MODELE( MAILLAGE = MAINUM,
@@ -148,7 +148,7 @@ MASNUM      = ASSE_MATRICE( MATR_ELEM = MELNUM,
 
 masse = 0
 #pour casser la symetrie, je rajoute une masse ponctuelle egale au quart de la masse des elements autour du noeud N303
-# soit 0.01% de la masse totale 
+# soit 0.01% de la masse totale
 # noeud N303 == group_ma SOU_DIS1
 # noeud N353 == group_ma SOU_DIS2
 if masse:

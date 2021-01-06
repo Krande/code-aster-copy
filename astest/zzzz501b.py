@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ test.assertTrue(libaster.debugJeveuxExists(tc0), msg="mesh / " + tc0)
 
 # del mesh
 # gc.collect()
-DETRUIRE(CONCEPT=_F(NOM=mesh))
+DETRUIRE(NOM=mesh)
 test.assertFalse(libaster.debugJeveuxExists(tc0), msg="mesh / " + tc0)
 
 # mesh < model
@@ -54,12 +54,12 @@ test.assertTrue(libaster.debugJeveuxExists(tc1), msg="model / " + tc1)
 
 # del mesh
 # gc.collect()
-DETRUIRE(CONCEPT=_F(NOM=mesh))
+DETRUIRE(NOM=mesh)
 test.assertTrue(libaster.debugJeveuxExists(tc0), msg="mesh / " + tc0)
 
 # del model
 # gc.collect()
-DETRUIRE(CONCEPT=_F(NOM=model))
+DETRUIRE(NOM=model)
 test.assertFalse(libaster.debugJeveuxExists(tc0), msg="mesh / " + tc0)
 test.assertFalse(libaster.debugJeveuxExists(tc1), msg="model / " + tc1)
 
@@ -89,23 +89,23 @@ test.assertTrue(libaster.debugJeveuxExists(tc3), msg="fieldmat / " + tc3)
 
 # del mesh
 # gc.collect()
-DETRUIRE(CONCEPT=_F(NOM=mesh))
+DETRUIRE(NOM=mesh)
 test.assertTrue(libaster.debugJeveuxExists(tc0), msg="mesh / " + tc0)
 
 # del model
 # gc.collect()
-DETRUIRE(CONCEPT=_F(NOM=model))
+DETRUIRE(NOM=model)
 test.assertTrue(libaster.debugJeveuxExists(tc0), msg="mesh / " + tc0)
 test.assertTrue(libaster.debugJeveuxExists(tc1), msg="model / " + tc1)
 
 # del material
 # gc.collect()
-DETRUIRE(CONCEPT=_F(NOM=material))
+DETRUIRE(NOM=material)
 test.assertTrue(libaster.debugJeveuxExists(tc2), msg="material / " + tc2)
 
 # del fieldmat
 # gc.collect()
-DETRUIRE(CONCEPT=_F(NOM=fieldmat))
+DETRUIRE(NOM=fieldmat)
 test.assertFalse(libaster.debugJeveuxExists(tc0), msg="mesh / " + tc0)
 test.assertFalse(libaster.debugJeveuxExists(tc1), msg="model / " + tc1)
 test.assertFalse(libaster.debugJeveuxExists(tc2), msg="material / " + tc2)
@@ -151,4 +151,3 @@ test.assertEqual(len(deps), 0)
 test.printSummary()
 
 code_aster.close()
-

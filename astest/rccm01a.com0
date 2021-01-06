@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 # OPTION PM_PB en B3200 AVEC TYPE_RESU='VALE_MAX'
 POURSUITE( CODE='OUI' )
 
-DETRUIRE ( CONCEPT=_F(NOM=PMPB1 ) )
-DETRUIRE ( CONCEPT=_F(NOM=PMPB2 ) )
-DETRUIRE ( CONCEPT=_F(NOM=PMPB1ath ) )
-DETRUIRE ( CONCEPT=_F(NOM=PMPB3 ) )
-DETRUIRE ( CONCEPT=_F(NOM=PMPB4 ) )
+DETRUIRE(NOM=PMPB1 )
+DETRUIRE(NOM=PMPB2 )
+DETRUIRE(NOM=PMPB1ath )
+DETRUIRE(NOM=PMPB3 )
+DETRUIRE(NOM=PMPB4 )
 
 #--------------------------------------------------------------------------------
 # VALIDATION DE LA METHODE EVOLUTION
@@ -42,7 +42,7 @@ PMPB1=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                                    )
                  )
 
-IMPR_TABLE(    TABLE=PMPB1,)        
+IMPR_TABLE(    TABLE=PMPB1,)
 
 # CALCUL DE PM ET PB POUR LA SITUATION 2
 PMPB2=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
@@ -56,7 +56,7 @@ PMPB2=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                                    )
                  )
 
-IMPR_TABLE(    TABLE=PMPB2,)         
+IMPR_TABLE(    TABLE=PMPB2,)
 
 # CALCUL DE PM ET PB EN SUPPOSANT QUE LA SITUATION 1 N'A PAS DE THERMIQUE
 PMPB1ath=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
@@ -69,8 +69,8 @@ PMPB1ath=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                  )
                  )
 
-IMPR_TABLE(    TABLE=PMPB1ath,)        
- 
+IMPR_TABLE(    TABLE=PMPB1ath,)
+
 #--------------------------------------------------------------------------------
 # VALIDATION DE LA METHODE UNITAIRE
 #--------------------------------------------------------------------------------
@@ -103,7 +103,7 @@ PMPB3=POST_RCCM( MATER=MAT,
                      PRES_A=1.0,
                      PRES_B=10.0,),),);
 
-IMPR_TABLE(    TABLE=PMPB3,) 
+IMPR_TABLE(    TABLE=PMPB3,)
 
 # CALCUL DE PM ET PB POUR LA SITUATION 4
 PMPB4=POST_RCCM( MATER=MAT,
@@ -134,12 +134,12 @@ PMPB4=POST_RCCM( MATER=MAT,
                      PRES_A=0.4,
                      PRES_B=1.0,),),);
 
-IMPR_TABLE(    TABLE=PMPB4,) 
+IMPR_TABLE(    TABLE=PMPB4,)
 
 #--------------------------------------------------------------------------------
 #   TEST SUR EVOLUTION (SOLUTION DE REFERENCE ANALYTIQUE)
 #--------------------------------------------------------------------------------
-# SITUATION 1 
+# SITUATION 1
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=37.500000000,
            VALE_REFE=37.5,
@@ -281,7 +281,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='EXTR',),),
            )
 
-# SITUATION 1 SANS THERMIQUE 
+# SITUATION 1 SANS THERMIQUE
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=100.000000000,
            VALE_REFE=100.0,
@@ -355,7 +355,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #--------------------------------------------------------------------------------
 #   TEST SUR UNITAIRE (SOLUTION DE REFERENCE ANALYTIQUE)
 #--------------------------------------------------------------------------------
-# SITUATION 3 
+# SITUATION 3
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=37.500000000,

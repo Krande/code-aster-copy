@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -110,7 +110,7 @@ for icomp,comp in enumerate(compor) :
                    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,PREDICTION='ELASTIQUE',),
                              );
     DIFF_MAT=VERI_MATR_TANG()
-    DETRUIRE(CONCEPT=_F(NOM=(DIFF_MAT)),INFO=1)
+    DETRUIRE(NOM=(DIFF_MAT),INFO=1)
     DEBUG(SDVERI='OUI')
 
     # increments de rotation puis traction
@@ -134,7 +134,7 @@ for icomp,comp in enumerate(compor) :
                            INCREMENT=_F(LIST_INST=DEFLIST2,),
                            NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=reaciter,PREDICTION='ELASTIQUE',),
                            );
-        DETRUIRE(CONCEPT=_F(NOM=(Linst2,DEFLIST2)),INFO=1)
+        DETRUIRE(NOM=(Linst2,DEFLIST2),INFO=1)
         # nouvelle traction
         Trac2[icl]=AFFE_CHAR_MECA(MODELE=modele,LIAISON_OBLIQUE= (
                             _F(GROUP_NO='FSUP',ANGL_NAUT=(angle_degres*(incr+1),0.,0.),DY=DYMAX2),
@@ -156,8 +156,8 @@ for icomp,comp in enumerate(compor) :
                            NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=reaciter,PREDICTION='ELASTIQUE',),
                                            );
         DIFF_MAT=VERI_MATR_TANG()
-        DETRUIRE(CONCEPT=_F(NOM=(DIFF_MAT)),INFO=1)
-        DETRUIRE(CONCEPT=_F(NOM=(Linst2,DEFLIST2)),INFO=1)
+        DETRUIRE(NOM=(DIFF_MAT),INFO=1)
+        DETRUIRE(NOM=(Linst2,DEFLIST2),INFO=1)
         DEBUG(SDVERI='OUI')
 
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -157,7 +157,7 @@ for i in range(nbcalc) :
                         ),
             );
 
-   DETRUIRE(CONCEPT=_F(NOM=cham_theta_no,))
+   DETRUIRE(NOM=cham_theta_no,)
 
 #----------------------------------------------
 #   TEST DE NON-REGRESSION SUR LA POSITION FINALE DE LA FISSURE

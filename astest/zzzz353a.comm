@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ RESSORT=DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1e+13,
                                      COULOMB=0.4,
                                      DIST_1=1.0,),);
 
-L_INST=DEFI_LIST_INST(METHODE='AUTO', 
+L_INST=DEFI_LIST_INST(METHODE='AUTO',
                       DEFI_LIST=_F(
                                    VALE=(0.0,1.0,),
                                    PAS_MINI=1e-06,
@@ -278,9 +278,6 @@ IMPR_TABLE(TABLE=TA_DEPL,
 """Deplacements de la CF - Depl X - Depl Y - Depl Z - et module - selon l abscisse curviligne pour les differents cas de charge;
 """,);
 
-DETRUIRE(CONCEPT=_F(NOM=TA_DEPL,),
-         INFO=1,);
-
 VMIS4=CREA_TABLE(RESU=_F(RESULTAT=CFP_TMOY,
                          NOM_CHAM='SIEQ_ELGA',
                          INST=2.0,
@@ -292,10 +289,6 @@ TRESCA4=CREA_TABLE(RESU=_F(RESULTAT=CFP_TMOY,
                            INST=2.0,
                            NOM_CMP='TRESCA',
                            GROUP_MA='CF_all',),);
-
-DETRUIRE(CONCEPT=(_F(NOM=TRESCA4,),
-                  _F(NOM=VMIS4,),),
-         INFO=1,);
 
 SIXXMAX4=CREA_TABLE(RESU=_F(RESULTAT=CFP_TMOY,
                             NOM_CHAM='SIGM_ELGA',

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -244,7 +244,7 @@ for k in range (1,NBPAS):
                                   CUMUL='OUI',
                                   COEF_R=l_para['INST'][2]-l_para['INST'][1],),),);
 
-      DETRUIRE(CONCEPT=_F(NOM=(__chnu1,__chnu2,),),
+      DETRUIRE(NOM=(__chnu1,__chnu2,),
                INFO=1,);
 
       for NUME_ORDRE in range (3,nb_nu_ord):
@@ -260,7 +260,7 @@ for k in range (1,NBPAS):
                            ASSE=_F(CHAM_GD=__chtot,
                                    TOUT='OUI',),);
 
-        DETRUIRE(CONCEPT=_F(NOM=(__chtot,),),
+        DETRUIRE(NOM=(__chtot,),
                  INFO=1,);
 
         __chtot=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
@@ -274,7 +274,7 @@ for k in range (1,NBPAS):
                                     CUMUL='OUI',
                                     TOUT='OUI',),),);
 
-        DETRUIRE(CONCEPT=_F(NOM=(__chnu1,__chnu2,),),
+        DETRUIRE(NOM=(__chnu1,__chnu2,),
                  INFO=1,);
 
       __ch1=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
@@ -284,7 +284,7 @@ for k in range (1,NBPAS):
                                TOUT='OUI',
                                COEF_R=1./(L_REEL.getValues()[k]-L_REEL.getValues()[k-1]),),);
 
-      DETRUIRE(CONCEPT=_F(NOM=(__chtot,),),
+      DETRUIRE(NOM=(__chtot,),
                INFO=1,);
 
 #2.1.7 Creation d'un champ de type source thermique par assemblage
@@ -353,7 +353,7 @@ for k in range (1,NBPAS):
 #2.2 Pas de chargement suivant
   if (k>1) and (k<NBPAS):
 
-    DETRUIRE(CONCEPT=_F(NOM=(__ch1,__ch2,__champ,__a,__b,),),
+    DETRUIRE(NOM=(__ch1,__ch2,__champ,__a,__b,),
              INFO=1,);
 
 #2.2.1 Creation d un champ de deplacement par combinaison correspondant a l inverse
@@ -402,7 +402,7 @@ for k in range (1,NBPAS):
                            EXCIT=_F(CHARGE=CH_MEC,
                                     FONC_MULT=Fcond,),);
 
-    DETRUIRE(CONCEPT=_F(NOM=(__dep,__depth,),),
+    DETRUIRE(NOM=(__dep,__depth,),
              INFO=1,);
 
 #2.2.6 Creation d'un champ de deplacement par extraction
@@ -468,7 +468,7 @@ for k in range (1,NBPAS):
                                   CUMUL='OUI',
                                   COEF_R=(l_para['INST'][-dnb_nu_or+1]-l_para['INST'][-dnb_nu_or]),),),);
 
-      DETRUIRE(CONCEPT=_F(NOM=(__chnu1,__chnu2,),),
+      DETRUIRE(NOM=(__chnu1,__chnu2,),
                INFO=1,);
 
       for NUME_ORDRE in range (3,dnb_nu_or+1):
@@ -484,7 +484,7 @@ for k in range (1,NBPAS):
                            ASSE=_F(CHAM_GD=__chtot,
                                    TOUT='OUI',),);
 
-        DETRUIRE(CONCEPT=_F(NOM=(__chtot,),),
+        DETRUIRE(NOM=(__chtot,),
                  INFO=1,);
 
         __chtot=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
@@ -498,7 +498,7 @@ for k in range (1,NBPAS):
                                     TOUT='OUI',
                                     CUMUL='OUI',),),);
 
-        DETRUIRE(CONCEPT=_F(NOM=(__chnu1,__chnu2,),),
+        DETRUIRE(NOM=(__chnu1,__chnu2,),
                  INFO=1,);
 
       __ch1=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
@@ -508,7 +508,7 @@ for k in range (1,NBPAS):
                                TOUT='OUI',
                                COEF_R=1./(L_REEL.getValues()[k]-L_REEL.getValues()[k-1]),),);
 
-      DETRUIRE(CONCEPT=_F(NOM=(__chtot,),),
+      DETRUIRE(NOM=(__chtot,),
                INFO=1,);
 
 #2.2.9 Creation d'un champ de type source thermique par assemblage
@@ -521,7 +521,7 @@ for k in range (1,NBPAS):
                                NOM_CMP=VARI_DISS,
                                NOM_CMP_RESU=('SOUR'),),);
 
-    DETRUIRE(CONCEPT=_F(NOM=(__source,__demth,__t0,__t1,__thd),),
+    DETRUIRE(NOM=(__source,__demth,__t0,__t1,__thd),
              INFO=1,);
 
 #2.2.10 Projection du champ source definit sur le maillage mecanique

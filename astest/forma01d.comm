@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -104,7 +104,7 @@ for i_raff in range(nb_iter) :
                                 CHAM_CAT='DIAMETRE'),
                   )
 
-   DETRUIRE(CONCEPT=_F(NOM=(FISS,CHERR)),INFO=1)
+   DETRUIRE(NOM=(FISS,CHERR),INFO=1)
 
 # impression du dernier maillage
 IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MA[nb_iter]))

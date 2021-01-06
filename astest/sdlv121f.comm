@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -417,7 +417,7 @@ FIN();
 #         legend=Noeud[i],
 #         color=0,);
 #
-#    DETRUIRE(CONCEPT=_F(NOM=(ACCE,DEPL,VITE,),),);
+#    DETRUIRE(NOM=(ACCE,DEPL,VITE,),);
 #
 # Courbes = [co_acce,co_depl,co_vite,];
 # Nom_Fichier= ['co_acce.agr','co_depl.agr','co_vite.agr',];

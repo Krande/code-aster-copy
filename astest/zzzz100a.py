@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from code_aster.Commands import FORMULE 
+from code_aster.Commands import FORMULE
 
 def F_FORMULE(NAP):
 
@@ -29,5 +29,5 @@ def F_FORMULE(NAP):
                   NOM_PARA=['INST', 'AMOR'],)
    aaa=NAP1(2.,3.)
 
-   DETRUIRE(CONCEPT=_F(NOM=NAP1))
+   DETRUIRE(NOM=NAP1)
 return aaa

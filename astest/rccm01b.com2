@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ POURSUITE( CODE='OUI' )
 #--------------------------------------------------------------------------------
 # VALIDATION DE LA METHODE B3200 avec MOMENTS SOUS FORMAT UNITAIRE
 #--------------------------------------------------------------------------------
-DETRUIRE ( CONCEPT=_F(NOM=(SN3ath,SN3,SN4, SN34) ) )
+DETRUIRE(NOM=(SN3ath,SN3,SN4, SN34) )
 
 # CALCUL DE SN POUR LA SITUATION 3 sans thermique
 SN3ath=POST_RCCM( MATER=MAT,
@@ -72,7 +72,7 @@ SN3ath=POST_RCCM( MATER=MAT,
                      PRES_A=1.0,
                      PRES_B=10.0,),),);
 
-IMPR_TABLE(    TABLE=SN3ath,) 
+IMPR_TABLE(    TABLE=SN3ath,)
 
 SN3=POST_RCCM( MATER=MAT,
                  TITRE='SN/SN*/ROCHET (DETAILS), SITUATION 3, UNITAIRE, CORPS/TUBU',
@@ -121,7 +121,7 @@ SN3=POST_RCCM( MATER=MAT,
                      PRES_A=1.0,
                      PRES_B=10.0,),),);
 
-IMPR_TABLE(    TABLE=SN3,) 
+IMPR_TABLE(    TABLE=SN3,)
 
 
 # CALCUL DE SN/SN*/ROCHET POUR LA SITUATION 4
@@ -173,7 +173,7 @@ SN4=POST_RCCM( MATER=MAT,
                      PRES_A=0.4,
                      PRES_B=1.0,),),);
 
-IMPR_TABLE(    TABLE=SN4,) 
+IMPR_TABLE(    TABLE=SN4,)
 
 # CALCUL DE SN/SN*/ROCHET POUR LES SITUATIONS 3 et 4
 # METHODE TOUT_INST
@@ -247,12 +247,12 @@ SN34=POST_RCCM( MATER=MAT,
                      PRES_A=0.4,
                      PRES_B=1.0,),),);
 
-IMPR_TABLE(    TABLE=SN34,) 
+IMPR_TABLE(    TABLE=SN34,)
 
 #--------------------------------------------------------------------------------
 # VALIDATION DE LA METHODE B3200 avec MOMENTS INTERPOLES SUR LA TEMPERATURE
 #--------------------------------------------------------------------------------
-DETRUIRE ( CONCEPT=_F(NOM=(SN5, SN5b, SN6, SN56) ) )
+DETRUIRE(NOM=(SN5, SN5b, SN6, SN56) )
 
 # CALCUL DE SN/SN*/ROCHET POUR LA SITUATION 5
 SN5=POST_RCCM( MATER=MAT,
@@ -305,7 +305,7 @@ SN5=POST_RCCM( MATER=MAT,
                      PRES_A=0.0,
                      PRES_B=0.0,),),);
 
-IMPR_TABLE(    TABLE=SN5,) 
+IMPR_TABLE(    TABLE=SN5,)
 
 # CALCUL DE SN/SN*/ROCHET POUR LA SITUATION 5 sans transitoire thermique
 SN5b=POST_RCCM( MATER=MAT,
@@ -355,7 +355,7 @@ SN5b=POST_RCCM( MATER=MAT,
                      PRES_A=0.0,
                      PRES_B=0.0,),),);
 
-IMPR_TABLE(    TABLE=SN5b,) 
+IMPR_TABLE(    TABLE=SN5b,)
 
 # CALCUL DE SN/SN*/ROCHET POUR LA SITUATION 6
 SN6=POST_RCCM( MATER=MAT,
@@ -408,7 +408,7 @@ SN6=POST_RCCM( MATER=MAT,
                      PRES_A=10.0,
                      PRES_B=20.0,),),);
 
-IMPR_TABLE(    TABLE=SN6,) 
+IMPR_TABLE(    TABLE=SN6,)
 
 
 # CALCUL DE SN/SN*/ROCHET POUR LES SITUATIONS 5 et 6
@@ -488,7 +488,7 @@ SN56=POST_RCCM( MATER=MAT,
                      PRES_A=10.0,
                      PRES_B=20.0,),),);
 
-IMPR_TABLE(    TABLE=SN56,) 
+IMPR_TABLE(    TABLE=SN56,)
 
 #--------------------------------------------------------------------------------
 #   TEST SUR UNITAIRE (SOLUTION DE REFERENCE ANALYTIQUE)
@@ -546,7 +546,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='EXTR',),
            TABLE=SN3,)
 
-#ROCHET THERMIQUE 
+#ROCHET THERMIQUE
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=125.000000000,
            VALE_REFE=125.0,
@@ -632,7 +632,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='EXTR',),
            TABLE=SN4,)
 
-#ROCHET THERMIQUE 
+#ROCHET THERMIQUE
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=12.5000000000,
            VALE_REFE=12.50,
@@ -718,7 +718,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='EXTR',),
            TABLE=SN34,)
 
-#ROCHET THERMIQUE 
+#ROCHET THERMIQUE
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=125.000000000,
            VALE_REFE=125.0,
@@ -807,11 +807,11 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='EXTR',),
            TABLE=SN5,)
 
-#ROCHET THERMIQUE 
+#ROCHET THERMIQUE
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.000000000,
            VALE_REFE=0.0,
-           ORDRE_GRANDEUR=1.0e-6, 
+           ORDRE_GRANDEUR=1.0e-6,
            NOM_PARA='SIGM_M_PRES',
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),
@@ -820,7 +820,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.000000000,
            VALE_REFE=0.0,
-           ORDRE_GRANDEUR=1.0e-6, 
+           ORDRE_GRANDEUR=1.0e-6,
            NOM_PARA='SIGM_M_PRES',
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),
@@ -829,7 +829,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.000000000,
            VALE_REFE=0.0,
-           ORDRE_GRANDEUR=1.0e-6, 
+           ORDRE_GRANDEUR=1.0e-6,
            NOM_PARA='SN_THER',
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),
@@ -896,7 +896,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='EXTR',),
            TABLE=SN6,)
 
-#ROCHET THERMIQUE 
+#ROCHET THERMIQUE
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=250.0000000000,
            VALE_REFE=250.0,
@@ -965,7 +965,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='EXTR',),
            TABLE=SN56,)
 
-#ROCHET THERMIQUE 
+#ROCHET THERMIQUE
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=250.0000000000,
            VALE_REFE=250.0,

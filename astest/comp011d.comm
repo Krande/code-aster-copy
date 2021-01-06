@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -215,13 +215,13 @@ for i in range(NCAL):
 
           #IMPR_TABLE(TABLE=RESU[i]);
 
-          DETRUIRE ( CONCEPT =  _F (NOM = epsimp))
-          DETRUIRE ( CONCEPT =  _F (NOM = listinst))
-          DETRUIRE ( CONCEPT =  _F (NOM = FC_T ))
-          DETRUIRE ( CONCEPT =  _F (NOM = FT_T )),
-          DETRUIRE ( CONCEPT =  _F (NOM = BETA_T ))
-          DETRUIRE ( CONCEPT =  _F (NOM = GC_T ))
-          DETRUIRE ( CONCEPT =  _F (NOM = GT_T ))
+          DETRUIRE(NOM = epsimp)
+          DETRUIRE(NOM = listinst)
+          DETRUIRE(NOM = FC_T )
+          DETRUIRE(NOM = FT_T ),
+          DETRUIRE(NOM = BETA_T )
+          DETRUIRE(NOM = GC_T )
+          DETRUIRE(NOM = GT_T )
 
           TEST_TABLE(TABLE=RESU[i],
                      NOM_PARA='VMIS',

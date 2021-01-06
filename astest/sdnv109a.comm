@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ GYELEM=CALC_MATR_ELEM(OPTION='MECA_GYRO',
 
 GYASS=ASSE_MATRICE(MATR_ELEM=GYELEM,
                    NUME_DDL=NUMEDDL,);
-                                 
+
 # CALCUL DES MODES A L'ARRET
 MODES0=CALC_MODES(MATR_RIGI=RIGID,
                   VERI_MODE=_F(STOP_ERREUR='NON',
@@ -185,7 +185,7 @@ for i in range(nbV):
     RIGIDi=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=RIGID,COEF_R=1.0,),
                               _F(MATR_ASSE=RIGIDR,COEF_R=OM**2,),),)
     GYASSi=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=AMOR,COEF_R=1.0,),
-                                  _F(MATR_ASSE=GYASS,COEF_R=OM,),),),                            
+                                  _F(MATR_ASSE=GYASS,COEF_R=OM,),),),
     # CALCUL DES MODES AVEC GYROSCOPIE ET SANS RAIDEUR CENTRIFUGE
     lmod1[i]=CALC_MODES(MATR_RIGI=RIGID,
                             VERI_MODE=_F(STOP_ERREUR='NON',
@@ -220,8 +220,8 @@ for i in range(nbV):
                                              ),
                             TYPE_RESU='DYNAMIQUE',
                             )
-    DETRUIRE(CONCEPT=_F(NOM=RIGIDi),INFO=1)
-    DETRUIRE(CONCEPT=_F(NOM=GYASSi),INFO=1)
+    DETRUIRE(NOM=RIGIDi)
+    DETRUIRE(NOM=GYASSi)
 
 # VITESSE DE ROTATION OMEGA=10000 TR/MIN
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,

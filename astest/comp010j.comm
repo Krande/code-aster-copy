@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -386,18 +386,18 @@ for i in range(NCAL):
                                         ITER_GLOB_MAXI = 25,
                                        ),
                          )
-            DETRUIRE ( CONCEPT =  _F (NOM =DEPINI),);
-            DETRUIRE ( CONCEPT =  _F (NOM =SIGEXT),);
-            DETRUIRE ( CONCEPT =  _F (NOM =VARINI),);
-            DETRUIRE ( CONCEPT =  _F (NOM =SIGINI),);
+            DETRUIRE(NOM =DEPINI);
+            DETRUIRE(NOM =SIGEXT);
+            DETRUIRE(NOM =VARINI);
+            DETRUIRE(NOM =SIGINI);
 
 
-          DETRUIRE ( CONCEPT =  _F (NOM =epsimp),);
-          DETRUIRE ( CONCEPT =  _F (NOM =listinst),);
-          DETRUIRE ( CONCEPT =  _F (NOM =(tempi)),);
-          DETRUIRE ( CONCEPT =  _F (NOM =TIMP2),);
-          DETRUIRE ( CONCEPT =  _F (NOM =TEMP2),);
-          DETRUIRE ( CONCEPT =  _F (NOM =CM2),);
+          DETRUIRE(NOM =epsimp);
+          DETRUIRE(NOM =listinst);
+          DETRUIRE(NOM =(tempi));
+          DETRUIRE(NOM =TIMP2);
+          DETRUIRE(NOM =TEMP2);
+          DETRUIRE(NOM =CM2);
 
           if i==19 :
 
@@ -429,8 +429,8 @@ for i in range(NCAL):
                                _F(NOM_PARA='POINT',VALE_I=1)),
                        REFERENCE='AUTRE_ASTER',);
 
-            DETRUIRE ( CONCEPT =  _F (NOM =TRE1),);
-            DETRUIRE ( CONCEPT =  _F (NOM =TRE2),);
+            DETRUIRE(NOM =TRE1);
+            DETRUIRE(NOM =TRE2);
 
 
 FIN();

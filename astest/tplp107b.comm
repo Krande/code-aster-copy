@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -126,21 +126,6 @@ def NormeAster(RESULTAT, Sol_Ana, MAIL, MODELE, GROUP_MA):
                             ),)
      NormeL2Erreur=tab['VALE_NORM',1]
 
-
-     DETRUIRE(CONCEPT=(_F(NOM=CHXN),
-                        _F(NOM=TEMP1),
-                        _F(NOM=TEMP2),
-                        _F(NOM=CHXG),
-                        _F(NOM=TEMP3),
-                        _F(NOM=UanaG),
-                        _F(NOM=Ucalc1),
-                        _F(NOM=UcalcG),
-                        _F(NOM=DIFFG),
-                        _F(NOM=tab),
-                       ),
-               INFO=1,
-              );
-
      return {'NormeL2Erreur':NormeL2Erreur,'Ucalc':Ucalc,'Uana':Uana, 'DIFFN':DIFFN}
 # ================================================================================================================================================================================
 
@@ -248,21 +233,6 @@ for remail in range(0,nb_remail):
                         MAILLAGE_N =MA[remail],
                         MAILLAGE_NP1 =MA[remail+1],
                          );
-
-
-
-         # Destruction des concepts inutilises dans les prochaines etapes de la boucle
-         DETRUIRE(CONCEPT=(_F(NOM=MO,),
-                           _F(NOM=CHMAT),
-                           _F(NOM=CLIMIT),
-                           _F(NOM=resolut),
-                           _F(NOM=dicResu['Uana']),
-                           _F(NOM=dicResu['Ucalc']),
-                           _F(NOM=dicResu['DIFFN']),
-                           ),
-                   INFO=1,
-                  );
-
 
 print('Norme L2 de l erreur= %e' %dicResu['NormeL2Erreur'])
 

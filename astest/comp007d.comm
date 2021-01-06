@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -234,9 +234,9 @@ for i in range(1,NCAL+1):
 
           # IMPR_TABLE(TABLE=RESU[i]);
 
-          DETRUIRE ( CONCEPT =  _F (NOM =epsimp),);
-          DETRUIRE ( CONCEPT =  _F (NOM =listinst),);
-          DETRUIRE ( CONCEPT =  _F (NOM =COU_TRAC),);
+          DETRUIRE(NOM =epsimp);
+          DETRUIRE(NOM =listinst);
+          DETRUIRE(NOM =COU_TRAC);
 
 
           # Tests des differences entre les deux resultats : U et RESU[I]
@@ -256,7 +256,7 @@ for i in range(1,NCAL+1):
               VALE_CALC = 0., VALE_REFE=0.,
               CRITERE   = 'ABSOLU',PRECISION = 1.E-6,
               REFERENCE = 'AUTRE_ASTER',)
-          DETRUIRE ( CONCEPT =  _F (NOM =TCOMPR),INFO=1);
+          DETRUIRE(NOM =TCOMPR);
 
           NOMPARA='TRACE'
           TCOMPR =CALC_TABLE(TABLE=U,ACTION=(
@@ -274,7 +274,7 @@ for i in range(1,NCAL+1):
               VALE_CALC = 0., VALE_REFE=0.,
               CRITERE   = 'ABSOLU',PRECISION = 1.E-6,
               REFERENCE = 'AUTRE_ASTER',)
-          DETRUIRE ( CONCEPT =  _F (NOM =TCOMPR),INFO=1);
+          DETRUIRE(NOM =TCOMPR);
 
           NOMPARA='V1'
           TCOMPR =CALC_TABLE(TABLE=U,ACTION=(
@@ -292,6 +292,6 @@ for i in range(1,NCAL+1):
               VALE_CALC = 0., VALE_REFE=0.,
               CRITERE   = 'ABSOLU',PRECISION = 1.E-6,
               REFERENCE = 'AUTRE_ASTER',)
-          DETRUIRE ( CONCEPT =  _F (NOM =TCOMPR),INFO=1);
+          DETRUIRE(NOM =TCOMPR);
 
 FIN();

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -357,7 +357,7 @@ for k in range(1,NF):
                            RESU=resunl, TYPE_VECT='FORC'),
              )
 
-    DETRUIRE(INFO=1,CONCEPT=_F(NOM=(EVOL,EVOLgen)))
+    DETRUIRE(NOM=(EVOL,EVOLgen))
 
 
     EVOLgen=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
@@ -378,7 +378,7 @@ for k in range(1,NF):
 
     EVOL=REST_GENE_PHYS(RESU_GENE=EVOLgen,NOM_CHAM='DEPL')
 
-    DETRUIRE(INFO=1,CONCEPT=_F(NOM=resunl))
+    DETRUIRE(NOM=resunl)
 
     resunlt = CALC_FORC_NONL( RESULTAT = EVOLT , TOUT_ORDRE = 'OUI',
                        CHAM_MATER=chmat, CARA_ELEM=cara, MODELE=mode,
@@ -390,7 +390,7 @@ for k in range(1,NF):
                                         ) ,
                        )
 
-    DETRUIRE(INFO=1,CONCEPT=_F(NOM=EVOLH))
+    DETRUIRE(NOM=EVOLH)
 
     resunlf = REST_SPEC_TEMP( RESULTAT = resunlt ,
                           METHODE = 'PROL_ZERO' ,
@@ -411,16 +411,16 @@ for k in range(1,NF):
                                  ),
                         )
 
-    DETRUIRE(INFO=1,CONCEPT=_F(NOM=EVOLT))
+    DETRUIRE(NOM=EVOLT)
 
     EVOLT = REST_SPEC_TEMP( RESULTAT = EVOLH ,
                           METHODE = 'PROL_ZERO' ,
                           SYMETRIE = 'NON' ,
                           TOUT_CHAM = 'OUI'  )
 
-    DETRUIRE(INFO=1,CONCEPT=_F(NOM=resunlt))
+    DETRUIRE(NOM=resunlt)
 
-    DETRUIRE(INFO=1,CONCEPT=_F(NOM=resunlf))
+    DETRUIRE(NOM=resunlf)
 
 
 ## fin boucle NF

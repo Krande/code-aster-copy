@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ for i in range(Ncal):
                                               EPXY=eps_def[3],
                                               EPXZ=eps_def[4],
                                               EPYZ=eps_def[5]))
-        DETRUIRE(CONCEPT=_F(NOM=temps))
+        DETRUIRE(NOM=temps)
         # On renomme les composantes en fonction de  l'ordre de discretisation
         R_SI=rename_components(i, N_pas, label_cal, ch_param, RESU, R_SI)
 

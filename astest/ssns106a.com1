@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -157,7 +157,7 @@ TEST_TABLE(
                      VALE_K='AMOR_BET',),
            )
 
-DETRUIRE(CONCEPT=_F(NOM=(TAB_G_RA),),);
+DETRUIRE(NOM=(TAB_G_RA),);
 
 
 
@@ -330,7 +330,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='AMOR_BET',),
            )
 
-DETRUIRE(CONCEPT=_F(NOM=(TAB_G_PA),),);
+DETRUIRE(NOM=(TAB_G_PA),);
 matph = MAT_G_PA.sdj.NOMRC.get()
 phenom=None
 ind=0
@@ -497,7 +497,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='AMOR_BET',),
            )
 
-DETRUIRE(CONCEPT=_F(NOM=(TAB_G_UT),),);
+DETRUIRE(NOM=(TAB_G_UT),);
 matph = MAT_G_UT.sdj.NOMRC.get()
 phenom=None
 ind=0
@@ -666,7 +666,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='AMOR_BET',),
            )
 
-DETRUIRE(CONCEPT=_F(NOM=(TAB_G_CI),),);
+DETRUIRE(NOM=(TAB_G_CI),);
 
 matph = MAT_G_CI.sdj.NOMRC.get()
 phenom=None

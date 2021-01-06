@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -277,7 +277,7 @@ for i in range(0,nbc) :
                  INFO=2);
 
    IMPR_TABLE(TABLE=SIF[i]);
-   DETRUIRE(CONCEPT=_F(NOM=cham_theta_no,))
+   DETRUIRE(NOM=cham_theta_no,)
 
 # SOLUTION ANALYTIQUE (MODE III PUR)
 K1REF=0.

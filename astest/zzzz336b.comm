@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -100,7 +100,7 @@ for i,inst in enumerate(l_inst):
                             NOM_CMP_RESU = ('TEMP',),
                         )
                 )
-    DETRUIRE(CONCEPT=_F(NOM=(TEMP2,INSTN,)))
+    DETRUIRE(NOM=(TEMP2,INSTN,))
 
     l_affe_temp.append(_F( CHAM_GD = TEMP[i],  MODELE = MOTHER, INST = inst,))
 
@@ -445,7 +445,7 @@ for i,inst in enumerate(l_inst):
                          ),
                         )
 
-    DETRUIRE(CONCEPT=_F(NOM=(TEMP2_H,TEMP2_B,TEMP_H,TEMP_B,INSTN,TEMPSP_H,TEMPSP_B)))
+    DETRUIRE(NOM=(TEMP2_H,TEMP2_B,TEMP_H,TEMP_B,INSTN,TEMPSP_H,TEMPSP_B))
 
     l_affe_temp.append(_F( CHAM_GD = TEMPSP[i],  MODELE = MOPOU, INST = inst,))
 

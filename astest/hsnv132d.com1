@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,23 +19,23 @@
 
 POURSUITE(CODE='OUI', DEBUG=_F(SDVERI='OUI'), IGNORE_ALARM=('MODELE1_63','CALCULEL_28'))
 
-DETRUIRE(CONCEPT=_F(NOM=LN))
-DETRUIRE(CONCEPT=_F(NOM=LT))
-DETRUIRE(CONCEPT=_F(NOM=FISS))
-DETRUIRE(CONCEPT=_F(NOM=MOTH))
-DETRUIRE(CONCEPT=_F(NOM=MATH))
-DETRUIRE(CONCEPT=_F(NOM=CMTH))
-DETRUIRE(CONCEPT=_F(NOM=CHTH))
-DETRUIRE(CONCEPT=_F(NOM=MODELE))
-DETRUIRE(CONCEPT=_F(NOM=MODELEK))
-DETRUIRE(CONCEPT=_F(NOM=ACIER))
-DETRUIRE(CONCEPT=_F(NOM=CHAMPMAT))
-DETRUIRE(CONCEPT=_F(NOM=CHARBLO))
-DETRUIRE(CONCEPT=_F(NOM=L_INST))
-DETRUIRE(CONCEPT=_F(NOM=UTOT))
-DETRUIRE(CONCEPT=_F(NOM=MA_XFEM))
-DETRUIRE(CONCEPT=_F(NOM=MOD_VISU))
-DETRUIRE(CONCEPT=_F(NOM=RES_XFEM))
+DETRUIRE(NOM=LN)
+DETRUIRE(NOM=LT)
+DETRUIRE(NOM=FISS)
+DETRUIRE(NOM=MOTH)
+DETRUIRE(NOM=MATH)
+DETRUIRE(NOM=CMTH)
+DETRUIRE(NOM=CHTH)
+DETRUIRE(NOM=MODELE)
+DETRUIRE(NOM=MODELEK)
+DETRUIRE(NOM=ACIER)
+DETRUIRE(NOM=CHAMPMAT)
+DETRUIRE(NOM=CHARBLO)
+DETRUIRE(NOM=L_INST)
+DETRUIRE(NOM=UTOT)
+DETRUIRE(NOM=MA_XFEM)
+DETRUIRE(NOM=MOD_VISU)
+DETRUIRE(NOM=RES_XFEM)
 
 #--------------------------------------------------------------------
 #               DEFINITION DE LA FISSURE                            #
@@ -46,7 +46,7 @@ LN = FORMULE(VALE='Y-0.5',
 LT = FORMULE(VALE='-X+0.5',
              NOM_PARA=['X', 'Y'],)
 
-FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,  
+FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
                     INFO=1,
                     );
@@ -134,7 +134,7 @@ MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELEK,
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),) 
+                              MODELISATION='3D',),)
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT,
@@ -189,7 +189,7 @@ TEST_TABLE(CRITERE='RELATIF',
 
 # CLe bareau est libre de dilation thermique.
 
-# On note que G_IRWIN est très différent de G calculé par CALC_G. C'est un problème purement thermique. Le fait qu'on utilise les solutions 
+# On note que G_IRWIN est très différent de G calculé par CALC_G. C'est un problème purement thermique. Le fait qu'on utilise les solutions
 # singulières d'un problème thermo-mécanique a entrainé des valuers des K mauvais. Cependant, les valeurs de G est juste.
 # Voir les documents pour plus d'information.
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -97,7 +97,7 @@ for czero in (False, True,) :
                                   REFERENCE='AUTRE_ASTER', VALE_REFE=VREF ,
                                   VALE_CALC=vcalc))
 
-                  DETRUIRE(CONCEPT=_F(NOM=RESU1b),INFO=1,)
+                  DETRUIRE(NOM=RESU1b)
 
 
                # Calcul STAT_NON_LINE :
@@ -112,11 +112,11 @@ for czero in (False, True,) :
                               REFERENCE='AUTRE_ASTER', VALE_REFE=VREF ,
                               VALE_CALC=vcalc))
 
-                  DETRUIRE(CONCEPT=_F(NOM=RESU3a),INFO=1,)
+                  DETRUIRE(NOM=RESU3a)
 
 
-      DETRUIRE(CONCEPT=_F(NOM=CHAR1),INFO=1,)
-      DETRUIRE(CONCEPT=_F(NOM=REREF1),INFO=1,)
-      DETRUIRE(CONCEPT=_F(NOM=TN1),INFO=1,)
+      DETRUIRE(NOM=CHAR1)
+      DETRUIRE(NOM=REREF1)
+      DETRUIRE(NOM=TN1)
 
 FIN()

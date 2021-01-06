@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -300,9 +300,9 @@ for icalc in range(Npos):
                             _F(NOM_PARA = 'INST',
                                VALE     = duree_inj,),),)
 
-    DETRUIRE(CONCEPT = _F(NOM = DEBECR))
-    DETRUIRE(CONCEPT = _F(NOM = TEMPECR))
-    DETRUIRE(CONCEPT = _F(NOM = TABLECR))
+    DETRUIRE(NOM = DEBECR)
+    DETRUIRE(NOM = TEMPECR)
+    DETRUIRE(NOM = TABLECR)
 
 
 # User defined friction coefficient
@@ -391,8 +391,8 @@ for icalc in range(Npos,Npos+Nneg):
                             _F(NOM_PARA = 'INST',
                                VALE     = duree_inj,), ),)
 
-    DETRUIRE(CONCEPT = _F(NOM = DEBECR))
-    DETRUIRE(CONCEPT = _F(NOM = TEMPECR))
-    DETRUIRE(CONCEPT = _F(NOM = TABLECR))
+    DETRUIRE(NOM = DEBECR)
+    DETRUIRE(NOM = TEMPECR)
+    DETRUIRE(NOM = TABLECR)
 
 FIN();

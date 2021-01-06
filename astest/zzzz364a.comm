@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -262,7 +262,7 @@ for modeli in lmodeli :
         DEFI_GROUP(reuse=MA1, MAILLAGE=MA1, CREA_GROUP_NO=_F(NOM=solide, GROUP_MA=solide))
         MA=CREA_MAILLAGE(MAILLAGE=MA1,
                        MODI_MAILLE= _F(OPTION='QUAD8_9',GROUP_MA=(solide,),PREF_NOEUD='NQ'))
-        DETRUIRE(CONCEPT=_F(NOM=(MA0,MA1,)),INFO=1,)
+        DETRUIRE(NOM=(MA0,MA1,),INFO=1,)
     else :
         MA=LIRE_MAILLAGE(FORMAT="GIBI", UNITE=19)
         DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(NOM=solide, GROUP_MA=solide))
@@ -401,7 +401,7 @@ for modeli in lmodeli :
                           _F(TYPE_TEST='MAX', CHAM_GD=CHDIFF,  NOM_CMP=cmp,
                              REFERENCE='ANALYTIQUE', VALE_REFE=0., VALE_CALC=0. , CRITERE='ABSOLU',
                              PRECISION=preci,  )))
-               DETRUIRE(CONCEPT=_F(NOM=(CHDIFF)),INFO=1,)
+               DETRUIRE(NOM=(CHDIFF),INFO=1,)
 
 
            # Contraintes :
@@ -426,10 +426,10 @@ for modeli in lmodeli :
                              PRECISION=preci,  )))
 
 
-           DETRUIRE(CONCEPT=_F(NOM=(UR2,CHTIME,UR1)),INFO=1,)
+           DETRUIRE(NOM=(UR2,CHTIME,UR1),INFO=1,)
 
-    DETRUIRE(CONCEPT=_F(NOM=(MA,CHXN,MO,MAT,CM,CAREL,UIMP,L_INST1,U1,UF)),INFO=1,)
-    if modeli in ('POU_D_EM', 'POU_D_TGM') : DETRUIRE(CONCEPT=_F(NOM=(MASEC,GF,COMPF)),INFO=1,)
+    DETRUIRE(NOM=(MA,CHXN,MO,MAT,CM,CAREL,UIMP,L_INST1,U1,UF),INFO=1,)
+    if modeli in ('POU_D_EM', 'POU_D_TGM') : DETRUIRE(NOM=(MASEC,GF,COMPF),INFO=1,)
 
 
 

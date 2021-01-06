@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -198,7 +198,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='VALEUR  ',),
            )
 
-DETRUIRE(CONCEPT=_F(NOM=TAB1,),)
+DETRUIRE(NOM=TAB1,)
 
 
 # 3.2) RESOUDRE+ AFFE_CHAR_CINE : Il ne faut pas oublier le mot cle CHAM_CINE :
@@ -224,7 +224,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='VALEUR  ',),
            )
 
-DETRUIRE(CONCEPT=_F(NOM=TAB1,),)
+DETRUIRE(NOM=TAB1,)
 
 
 # 3.3) COMB_MATR_ASSE + 2 AFFE_CHAR_CINE incompatibles  :
@@ -254,7 +254,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='VALEUR  ',),
            )
 
-DETRUIRE(CONCEPT=_F(NOM=TAB1,),)
+DETRUIRE(NOM=TAB1,)
 
 
 # 3.4) RESOUDRE +  AFFE_CHAR_CINE incompatibles  :
@@ -287,7 +287,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='VALEUR  ',),
            )
 
-DETRUIRE(CONCEPT=_F(NOM=(TAB1),),)
+DETRUIRE(NOM=(TAB1),)
 
 #***************************************************************************************************
 # 4) On verifie que les chargements cinématiques sont bien pris en compte par EXTR_MATR
@@ -320,7 +320,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
                      VALE_K='VALEUR  ',),
            )
 
-DETRUIRE(CONCEPT=_F(NOM=(TAB2),),)
+DETRUIRE(NOM=(TAB2),)
 
 
 # 4.2) On fait la même modélisation mais uniquement avec des conditions de Dirichlet
@@ -359,6 +359,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
                      VALE_K='VALEUR  ',),
            )
 
-DETRUIRE(CONCEPT=_F(NOM=(TAB2),),)
+DETRUIRE(NOM=(TAB2),)
 
 FIN();

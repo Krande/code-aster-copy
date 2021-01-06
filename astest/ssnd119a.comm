@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -98,7 +98,7 @@ Deplace = FORMULE(
                   Amplitude=Amplitude,
                   Pulsation=Pulsation,
                   NOM_PARA='INST',)
-                  
+
 zero=DEFI_CONSTANTE(VALE=0.0,);
 
 DEPLX=AFFE_CHAR_MECA_F(MODELE=Modele,
@@ -239,7 +239,7 @@ DiffF1 = CALC_TABLE(TABLE=TabF1,ACTION=(_F(OPERATION='COMB',TABLE=Tab2Ana,
                                            NOM_PARA = 'INST',),))
 DiffF1 = CALC_TABLE(reuse=DiffF1, TABLE=DiffF1, ACTION=(_F(OPERATION='OPER',
                               FORMULE=fDiff,NOM_PARA = 'DIFF',),))
-                              
+
 DiffF2 = CALC_TABLE(TABLE=TabF2,ACTION=(_F(OPERATION='COMB',TABLE=Tab2Ana,
                                            NOM_PARA = 'INST',),))
 DiffF2 = CALC_TABLE(reuse=DiffF2, TABLE=DiffF2, ACTION=(_F(OPERATION='OPER',
@@ -273,7 +273,7 @@ TEST_TABLE(TABLE=DiffF1,
            PRECISION=1.E-5,
            VALE_REFE=0.,
            VALE_CALC= 1.2917528820835522E-06)
-           
+
 TEST_TABLE(TABLE=DiffF2,
            TYPE_TEST='MAX',
            NOM_PARA='DIFF',
@@ -291,7 +291,7 @@ TEST_TABLE(TABLE=DiffF3,
            PRECISION=1.E-5,
            VALE_REFE=0.,
            VALE_CALC= 1.2917528820835522E-06)
-           
+
 TEST_TABLE(TABLE=DiffF4,
            TYPE_TEST='MAX',
            NOM_PARA='DIFF',
@@ -302,7 +302,7 @@ TEST_TABLE(TABLE=DiffF4,
            VALE_CALC= 1.2917528820835522E-06)
 
 
-         
+
 TEST_TABLE(TABLE=DiffF5,
            TYPE_TEST='MAX',
            NOM_PARA='DIFF',
@@ -313,9 +313,9 @@ TEST_TABLE(TABLE=DiffF5,
            VALE_CALC= 1.2917528820835522E-06)
 
 
-DETRUIRE(CONCEPT=_F(NOM=(Linst,Linst2,fx2An,Tab2Ana,Resultat,
-                         Force2,Force3,Force4,TabF1,TabF2,TabF3,TabF4,
-                         DiffF1,DiffF2,DiffF3,DiffF4)))
+DETRUIRE(NOM=(Linst,Linst2,fx2An,Tab2Ana,Resultat,
+              Force2,Force3,Force4,TabF1,TabF2,TabF3,TabF4,
+              DiffF1,DiffF2,DiffF3,DiffF4))
 
 
 # second calcul avec grands incréments
@@ -425,7 +425,7 @@ DiffF1 = CALC_TABLE(TABLE=TabF1,ACTION=(_F(OPERATION='COMB',TABLE=Tab2Ana,
                                            NOM_PARA = 'INST',),))
 DiffF1 = CALC_TABLE(reuse=DiffF1, TABLE=DiffF1, ACTION=(_F(OPERATION='OPER',
                               FORMULE=fDiff,NOM_PARA = 'DIFF',),))
-                              
+
 DiffF2 = CALC_TABLE(TABLE=TabF2,ACTION=(_F(OPERATION='COMB',TABLE=Tab2Ana,
                                            NOM_PARA = 'INST',),))
 DiffF2 = CALC_TABLE(reuse=DiffF2, TABLE=DiffF2, ACTION=(_F(OPERATION='OPER',
@@ -454,7 +454,7 @@ TEST_TABLE(TABLE=DiffF1,
            PRECISION=2.E-3,
            VALE_REFE=0.,
            VALE_CALC= 0.0012744491100895594)
-           
+
 TEST_TABLE(TABLE=DiffF2,
            TYPE_TEST='MAX',
            NOM_PARA='DIFF',
@@ -472,7 +472,7 @@ TEST_TABLE(TABLE=DiffF3,
            PRECISION=2.E-3,
            VALE_REFE=0.,
            VALE_CALC= 0.0012744491100895594)
-           
+
 TEST_TABLE(TABLE=DiffF4,
            TYPE_TEST='MAX',
            NOM_PARA='DIFF',

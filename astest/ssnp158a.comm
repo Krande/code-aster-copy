@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -218,11 +218,6 @@ for iNumPas in range(0,NbIncr):
                                   NOM_CHAM='DEPL',
                                   NUME_ORDRE=1,),),);
 
-      DETRUIRE(CONCEPT=(_F(NOM=RESUNL),
-                        _F(NOM=CM),
-                        _F(NOM=CH1),
-               ),INFO=1)
-
       #  PROJECTION DES CHAMPS (ON A BESOIN DU MODELE SUR LE NOUVEAU MAILLAGE)
       # ----------------------------------------------------------------------
       MO[iNumPas+1]=AFFE_MODELE(MAILLAGE=MA[iNumPas+1],
@@ -246,9 +241,6 @@ for iNumPas in range(0,NbIncr):
                                     _F(GROUP_MA='gauche', DX=0.0,),
                                     _F(GROUP_MA='haut',   DY=Depl,)),);
 
-      if iNumPas>0:
-         DETRUIRE(CONCEPT=_F(NOM=EQUILIB),INFO=1,)
-
       EQUILIB=STAT_NON_LINE(MODELE=MO[iNumPas+1],
                             CHAM_MATER=CM,
                             EXCIT=(_F(CHARGE=CH1,
@@ -265,18 +257,6 @@ for iNumPas in range(0,NbIncr):
                             NEWTON=_F(REAC_ITER=1,PREDICTION='ELASTIQUE'),
                             SOLVEUR=_F(METHODE='GCPC',PRE_COND='LDLT_SP',),
                             );
-
-
-      # -----------------------------------------------------------------------------
-      #  NETTOYAGE
-      # -----------------------------------------------------------------------------
-      DETRUIRE(CONCEPT=(_F(NOM=SIGM1),
-                        _F(NOM=SIGM2),
-                        _F(NOM=VARI1),
-                        _F(NOM=VARI2),
-                        _F(NOM=DEPL2),
-                        ),
-               INFO=1,)
 
 
 EQUILIB=CALC_CHAMP(reuse=EQUILIB,

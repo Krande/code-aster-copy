@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 
 POURSUITE( CODE='OUI' )
 
-DETRUIRE ( CONCEPT=_F(NOM=(PMPB3,) ) )
+DETRUIRE(NOM=(PMPB3,) )
 #--------------------------------------------------------------------------------
 # VALIDATION POUR UN COMPOSANT SIMPLE
 #--------------------------------------------------------------------------------
@@ -61,11 +61,11 @@ PMPB3=POST_RCCM( MATER=MAT,
                  SEISME=(
                   _F(NB_OCCUR=1,
                      NUME_SITU=7,
-                     NB_CYCL_SEISME = 10, 
+                     NB_CYCL_SEISME = 10,
                      NOM_SITU='Seisme',
                      CHAR_ETAT=11,),),);
 
-IMPR_TABLE(    TABLE=PMPB3,) 
+IMPR_TABLE(    TABLE=PMPB3,)
 
 # CALCUL DE PMPB POUR LA SITUATION 3 AVEC SEISME
 PMPB3s=POST_RCCM( MATER=MAT,
@@ -101,11 +101,11 @@ PMPB3s=POST_RCCM( MATER=MAT,
                  SEISME=(
                   _F(NB_OCCUR=1,
                      NUME_SITU=7,
-                     NB_CYCL_SEISME = 10, 
+                     NB_CYCL_SEISME = 10,
                      NOM_SITU='Seisme',
                      CHAR_ETAT=11,),),);
 
-IMPR_TABLE(    TABLE=PMPB3s,) 
+IMPR_TABLE(    TABLE=PMPB3s,)
 
 #--------------------------------------------------------------------------------
 # VALIDATION POUR UNE JONCTION DE TUYAUTERIE
@@ -159,11 +159,11 @@ PMPB3Js=POST_RCCM( MATER=MAT,
                  SEISME=(
                   _F(NB_OCCUR=1,
                      NUME_SITU=7,
-                     NB_CYCL_SEISME = 10, 
+                     NB_CYCL_SEISME = 10,
                      NOM_SITU='Seisme',
                      CHAR_ETAT=11,),),);
 
-IMPR_TABLE(    TABLE=PMPB3Js,) 
+IMPR_TABLE(    TABLE=PMPB3Js,)
 
 #--------------------------------------------------------------------------------
 #   TEST SUR UNITAIRE (SOLUTION DE REFERENCE ANALYTIQUE)

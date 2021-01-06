@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -155,7 +155,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='VALEUR  ',),
            )
 
-#DETRUIRE(CONCEPT=_F(NOM=(res2L_A, TAB1),),)
+#DETRUIRE(NOM=(res2L_A, TAB1),)
 
 #
 #  On teste avec l'absence d'arret sur valeur de charge critique -1 :
@@ -194,6 +194,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='VALEUR  ',),
            )
 
-#DETRUIRE(CONCEPT=_F(NOM=(res2L_A, TAB1),),)
+#DETRUIRE(NOM=(res2L_A, TAB1),)
 
 FIN();

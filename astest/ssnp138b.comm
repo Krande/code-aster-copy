@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -259,7 +259,7 @@ for i in range(nbcalc) :
                    )
 
 
-  DETRUIRE(CONCEPT=_F(NOM=(cham_theta_no1, cham_theta_no2),))
+  DETRUIRE(NOM=(cham_theta_no1, cham_theta_no2),)
 
   TG1CH2[i]=CALC_G(RESULTAT=UTOT2[i],
                    INST=0.,

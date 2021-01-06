@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ NU = DEFI_CONSTANTE(VALE=0.20)
 #beton = DEFI_MATERIAU( ELAS=_F( E= YOUNG, RHO= RHO , NU= NU,
 #                               )
 #                      ) ;
-beton  = DEFI_MATERIAU(ELAS_FO= _F(E=YOUNG_F, NU=NU, RHO=RHO),); 
+beton  = DEFI_MATERIAU(ELAS_FO= _F(E=YOUNG_F, NU=NU, RHO=RHO),);
 #
 # Pour la roche, on va utiliser les frontieres absorbantes avec raideur
 # LONG_CARA sert a definir la raideur equivalente et represente
@@ -342,17 +342,17 @@ for k in range(1,NF):
                   MATR_MASS=masse,
                   NOM_CHAM='DEPL',
                   AFFE=(_F(CHAM_GD=VECAT,INST=(k-1)*dt,),),);
-#  DETRUIRE(INFO=1,CONCEPT=_F(NOM=(VECT_EL1,VECA1)));
-  DETRUIRE(INFO=1,CONCEPT=_F(NOM=(VECT_EL2,VECA2)));
-#  DETRUIRE(INFO=1,CONCEPT=_F(NOM=(VECT_EL3,VECA3)));
-  DETRUIRE(INFO=1,CONCEPT=_F(NOM=(VECAT)));
+#  DETRUIRE(NOM=(VECT_EL1,VECA1))
+  DETRUIRE(NOM=(VECT_EL2,VECA2))
+#  DETRUIRE(NOM=(VECT_EL3,VECA3))
+  DETRUIRE(NOM=(VECAT))
 
 CHAONF = REST_SPEC_TEMP( RESULTAT = CHA_ON ,
                           METHODE = 'PROL_ZERO' ,
                           SYMETRIE = 'NON' ,
-                          NOM_CHAM = 'DEPL' , 
+                          NOM_CHAM = 'DEPL' ,
                           INFO=1,
-                          ACCELERATION_MPI='OUI', 
+                          ACCELERATION_MPI='OUI',
                           );
 
 
@@ -448,7 +448,7 @@ dyna = REST_SPEC_TEMP( RESULTAT = dynah ,
                           SYMETRIE = 'NON' ,
                           TOUT_CHAM = 'OUI',
                           INFO=1,
-                          ACCELERATION_MPI='OUI', 
+                          ACCELERATION_MPI='OUI',
                           );
 # Point au sommet du barrage
 

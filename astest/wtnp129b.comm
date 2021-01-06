@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -262,7 +262,7 @@ for k in range(1,lenlinst) :
 
     IMPR_RESU(RESU=_F(RESULTAT=PRELIN,INST=linst[0]),FORMAT='MED',UNITE=81);
 
-    DETRUIRE(INFO=1,CONCEPT=_F(NOM=(PRELIN)));
+    DETRUIRE(NOM=(PRELIN))
 
   else :
 
@@ -288,10 +288,10 @@ for k in range(1,lenlinst) :
 
   IMPR_RESU(RESU=_F(RESULTAT=PRELIN,INST=linst[k]),FORMAT='MED',UNITE=81);
 
-  DETRUIRE(INFO=1,CONCEPT=_F(NOM=(PRELIN)));
+  DETRUIRE(NOM=(PRELIN))
 
   if (k>1) :
-    DETRUIRE(INFO=1,CONCEPT=_F(NOM=(REPTOT,MATEME)));
+    DETRUIRE(NOM=(REPTOT,MATEME))
 
   REPTOT=CHAINAGE_THM(RESU_HYDR=PRELIQ,
                       MODELE_MECA=MODMEC,
@@ -506,7 +506,7 @@ for k in range(1,lenlinst) :
   IMPR_RESU(RESU=_F(RESULTAT=SIGEFF,INST=linst[k]),FORMAT='MED',UNITE=83);
   IMPR_RESU(RESU=_F(RESULTAT=SIGEFFNO,INST=linst[k]),FORMAT='MED',UNITE=84);
 
-  DETRUIRE(INFO=1,CONCEPT=_F(NOM=(SIG,SIGNO,PJNOEU,SIPNO,SIEFFNO,DEP_P,DEP_PP,DEPPGA,SIPGA,SIGEFFCH)));
+  DETRUIRE(NOM=(SIG,SIGNO,PJNOEU,SIPNO,SIEFFNO,DEP_P,DEP_PP,DEPPGA,SIPGA,SIGEFFCH))
 
 #########
 # Fin manipulation
@@ -515,9 +515,9 @@ for k in range(1,lenlinst) :
   IMPR_RESU(RESU=_F(RESULTAT=DEPLA,INST=linst[k]),FORMAT='MED',UNITE=80);
 
   if (k>1) :
-    DETRUIRE(INFO=1,CONCEPT=_F(NOM=(DEFVHY)));
+    DETRUIRE(NOM=(DEFVHY))
 
-  DETRUIRE(INFO=1,CONCEPT=_F(NOM=(UNPAS,UNPASSUB,MATEHY)));
+  DETRUIRE(NOM=(UNPAS,UNPASSUB,MATEHY))
 
 #########################
 # Tests de non-regression

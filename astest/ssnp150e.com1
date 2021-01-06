@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -242,29 +242,6 @@ def NormeAster(RESULTAT, Depl_Ana, P_ana, MAIL, MODELE, GROUP_MA_VOL, GROUP_MA_S
      NormeL2ErreurP=tabP['VALE_NORM',1]
      IMPR_TABLE(TABLE=tabP)
 
-
-     DETRUIRE(CONCEPT=(_F(NOM=CHXN),
-                       _F(NOM=TEMP1),
-                       _F(NOM=TEMP1P),
-                       _F(NOM=TEMP2),
-                       _F(NOM=TEMP2P),
-                       _F(NOM=TEMP3),
-                       _F(NOM=TEMP3P),
-                       _F(NOM=CHXG),
-                       _F(NOM=UanaG),
-                       _F(NOM=PanaG),
-                       _F(NOM=Ucalc1),
-                       _F(NOM=Pcalc1),
-                       _F(NOM=UcalcG),
-                       _F(NOM=PcalcG),
-                       _F(NOM=DIFFUG),
-                       _F(NOM=tabU),
-                       _F(NOM=tabP),
-                       ),
-               INFO=1,
-              );
-
-     #return {'NormeL2ErreurU':NormeL2ErreurU,'NormeL2ErreurP':NormeL2ErreurP,'Ucalc':Ucalc,'Uana':Uana,'Pcalc':Pcalc,'Pana':Pana, 'DIFFUN':DIFFUN, 'DIFFPN':DIFFPN}
      return {'NormeL2ErreurU':NormeL2ErreurU,'NormeL2ErreurP':NormeL2ErreurP,'Ucalc':Ucalc,'Uana':Uana,'Pcalc':Pcalc,'Pana':Pana, 'DIFFUN':DIFFUN, 'DIFFPG':DIFFPG }
 # ================================================================================================================================================================================
 
@@ -427,25 +404,6 @@ for Raff in range(0,Nb_Raffinement):
                             DECOUPE_LAC=_F(GROUP_MA_ESCL='BAS',),);
 
 
-     # DESTRUCTION DES CONCEPTS INUTILISES DANS LES PROCHAINES ETAPES DE LA BOUCLE
-        DETRUIRE(CONCEPT=(_F(NOM=modl,),
-                          _F(NOM=chmat),
-                          _F(NOM=BlocBase),
-                          _F(NOM=Neumann),
-                          _F(NOM=Dirich),
-                          _F(NOM=Contact),
-                          _F(NOM=ForceInt),
-                          _F(NOM=EVOLNOLI),
-                          _F(NOM=dicResu['Uana']),
-                          _F(NOM=dicResu['Ucalc']),
-                          _F(NOM=dicResu['DIFFUN']),
-                          _F(NOM=dicResu['Pana']),
-                          _F(NOM=dicResu['Pcalc']),
-                          _F(NOM=dicResu['DIFFPG']),
-                         ),
-                  INFO=1,
-                    );
-
 #================================================================================================
 # Impression de la courbe de convergence
 #================================================================================================
@@ -543,34 +501,5 @@ IMPR_RESU(FORMAT='MED',
                 _F(CHAM_GD=dicResu['DIFFPG'],GROUP_MA='BAS',NOM_CMP=('DX'),),
                 _F(RESULTAT=EVOLNOLI,
                    NOM_CHAM=('CONT_ELEM','SIEF_NOEU'),),),);
-
-DETRUIRE(CONCEPT=(_F(NOM=modl,),
-                  _F(NOM=chmat),
-                  _F(NOM=BlocBase),
-                  _F(NOM=Neumann),
-                  _F(NOM=Dirich),
-                  _F(NOM=Contact),
-                  _F(NOM=ForceInt),
-                  _F(NOM=EVOLNOLI),
-                  _F(NOM=dicResu['Uana']),
-                  _F(NOM=dicResu['Ucalc']),
-                  _F(NOM=dicResu['DIFFUN']),
-                  _F(NOM=dicResu['Pana']),
-                  _F(NOM=dicResu['Pcalc']),
-                  _F(NOM=dicResu['DIFFPG']),
-                  _F(NOM=RAMPE),
-                  _F(NOM=LINST),
-                  _F(NOM=acier),
-                  ),
-           INFO=1,);
-for n in range(0,Nb_Raffinement):
-
-    DETRUIRE(CONCEPT=(_F(NOM=MA0[n],),
-                      _F(NOM=MALine[n]),
-                      _F(NOM=MA[n]),
-                      ),
-             INFO=1,);
-
-
 
 FIN();

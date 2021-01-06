@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -274,7 +274,7 @@ RESU_G=STAT_NON_LINE(MODELE=MO_G,
                                   PRECISION=0.1,),
                      NEWTON=_F(REAC_ITER=2,),
                      CONVERGENCE=_F(ITER_GLOB_MAXI=25,),);
-                     
+
 
 RESU_G=CALC_CHAMP(reuse =RESU_G,RESULTAT=RESU_G,PRECISION=1.E-3,
              FORCE=('FORC_NODA',),)
@@ -379,9 +379,9 @@ TFXA4_G2=CALC_TABLE(TABLE=TFXA4,
                               TABLE=TFXA4_G1,
                               NOM_PARA='INST',),);
 
-DETRUIRE(CONCEPT=_F(NOM=TDYA4_G1,),);
+DETRUIRE(NOM=TDYA4_G1,);
 
-DETRUIRE(CONCEPT=_F(NOM=TFXA4_G1,),);
+DETRUIRE(NOM=TFXA4_G1,);
 
 D_DYA4=CALC_TABLE(TABLE=TDYA4_G2,
                   ACTION=_F(OPERATION='OPER',
@@ -393,9 +393,9 @@ D_FXA4=CALC_TABLE(TABLE=TFXA4_G2,
                             FORMULE=FORM_X,
                             NOM_PARA='DX_DXG',),);
 
-DETRUIRE(CONCEPT=_F(NOM=TDYA4_G2,),);
+DETRUIRE(NOM=TDYA4_G2,);
 
-DETRUIRE(CONCEPT=_F(NOM=TFXA4_G2,),);
+DETRUIRE(NOM=TFXA4_G2,);
 
 ttel = (2 * dt);
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -314,17 +314,17 @@ for i in range(1,NCAL+1):
                              REAC_ITER=1,),
                             );
 
-              DETRUIRE ( CONCEPT =  _F (NOM =EM),);
-              DETRUIRE ( CONCEPT =  _F (NOM =SM1),);
-              DETRUIRE ( CONCEPT =  _F (NOM =SM),);
-              DETRUIRE ( CONCEPT =  _F (NOM =VM),);
-              DETRUIRE ( CONCEPT =  _F (NOM =NOR),);
-              DETRUIRE ( CONCEPT =  _F (NOM =SIG1),);
-              DETRUIRE ( CONCEPT =  _F (NOM =SIG2),);
-              DETRUIRE ( CONCEPT =  _F (NOM =CORCIN),);
-              DETRUIRE ( CONCEPT =  _F (NOM =VINT1),);
-              DETRUIRE ( CONCEPT =  _F (NOM =VINT2),);
-              DETRUIRE ( CONCEPT =  _F (NOM =VM1),);
+              DETRUIRE(NOM =EM);
+              DETRUIRE(NOM =SM1);
+              DETRUIRE(NOM =SM);
+              DETRUIRE(NOM =VM);
+              DETRUIRE(NOM =NOR);
+              DETRUIRE(NOM =SIG1);
+              DETRUIRE(NOM =SIG2);
+              DETRUIRE(NOM =CORCIN);
+              DETRUIRE(NOM =VINT1);
+              DETRUIRE(NOM =VINT2);
+              DETRUIRE(NOM =VM1);
 
           RESU[i]=CALC_CHAMP(reuse=RESU[i],RESULTAT=RESU[i],CONTRAINTE=('SIEF_ELNO'))
 
@@ -351,10 +351,10 @@ for i in range(1,NCAL+1):
                            NOM_CHAM='VARI_ELGA',
                            NUME_ORDRE=1,  );
 
-          DETRUIRE ( CONCEPT =  _F (NOM =epsimp),);
-          DETRUIRE ( CONCEPT =  _F (NOM =listinst),);
-          DETRUIRE ( CONCEPT =  _F (NOM =CHRGE[i]),);
-          DETRUIRE ( CONCEPT =  _F (NOM =LIAISON2),);
+          DETRUIRE(NOM =epsimp);
+          DETRUIRE(NOM =listinst);
+          DETRUIRE(NOM =CHRGE[i]);
+          DETRUIRE(NOM =LIAISON2);
 
           IMPR_RESU(FORMAT="RESULTAT",RESU=(_F(RESULTAT=RESU[i])))
 
@@ -389,7 +389,7 @@ for i in range(1,NCAL+1):
               VALE_CALC = 0., VALE_REFE=0.,
               CRITERE   = 'ABSOLU',PRECISION = 1.E-6,
               REFERENCE = 'AUTRE_ASTER',)
-          DETRUIRE ( CONCEPT =  _F (NOM =TCOMPR),);
+          DETRUIRE(NOM =TCOMPR);
 
           NOMPARA='V1'
           TCOMPR =CALC_TABLE(TABLE=TABU_VAR,ACTION=(
@@ -407,6 +407,6 @@ for i in range(1,NCAL+1):
               VALE_CALC = 0., VALE_REFE=0.,
               CRITERE   = 'ABSOLU',PRECISION = 1.E-6,
               REFERENCE = 'AUTRE_ASTER',)
-          DETRUIRE ( CONCEPT =  _F (NOM =TCOMPR),);
+          DETRUIRE(NOM =TCOMPR);
 
 FIN();

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -223,7 +223,7 @@ ACCE_X2=CALC_FONCTION(COMB=_F(FONCTION=ACCE2,
 #
 # tt, vale_s=ACCE_X.Valeurs()
 #
-# #DETRUIRE(CONCEPT=_F(NOM=(ACCE_X)),INFO=1)
+# #DETRUIRE(NOM=(ACCE_X),INFO=1)
 #
 # Nb_pas=int(2**6)
 # DT=tt[1]-tt[0]
@@ -298,7 +298,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            NOM_PARA='ECART_TYPE ',
            TABLE=testr_1,)
 
-DETRUIRE(CONCEPT=_F(NOM=(ssi_1_a)),INFO=1)
+DETRUIRE(NOM=(ssi_1_a),INFO=1)
 
 
 #-----------------------------------------------------------------
@@ -369,7 +369,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            NOM_PARA='ECART_TYPE ',
            TABLE=testr_1b,)
 
-DETRUIRE(CONCEPT=_F(NOM=(ssi_1_b)),INFO=1)
+DETRUIRE(NOM=(ssi_1_b),INFO=1)
 
 #---------------------------------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------------------------------

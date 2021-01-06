@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -109,9 +109,9 @@ for i in range(Ncal):
                                         ACTION=( _F(OPERATION='COMB',
                                         TABLE=TMP_S,NOM_PARA='INST',),
                                                 ),);
-                        DETRUIRE ( CONCEPT = _F (NOM = TMP_S,),)
+                        DETRUIRE(NOM = TMP_S,)
                 #IMPR_TABLE(TABLE=R_SI[j]);
-        DETRUIRE ( CONCEPT = _F (NOM = temps,),)
+        DETRUIRE(NOM = temps,)
 
 # TEST_RESU sur les erreurs relatives
 # label_cal=['_Pa_','_Th_','_sym_','_rot_'] + 6* ['_N']

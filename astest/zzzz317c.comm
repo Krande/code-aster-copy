@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -162,7 +162,7 @@ for iii in range(Nsim):
 
    tab2 = N2.EXTR_TABLE()
    l_PGA2.append(tab2.ACCE_MAX[0])
-   DETRUIRE(CONCEPT =_F(NOM=(ACCE2, FONCT2, N2)))
+   DETRUIRE(NOM=(ACCE2, FONCT2, N2))
 
 PGA_MED2 = NP.median(NP.array(l_PGA2))/9.81
 #print "median PGA", PGA_MED2
@@ -186,7 +186,7 @@ for iii in range(Nsim):
                               FONCTION = FONCT1, OPTION = ('MAXI')) )
    tab1 = N1.EXTR_TABLE()
    l_PGA1.append(tab1.ACCE_MAX[0])
-   DETRUIRE(CONCEPT=_F(NOM=(ACCE1, FONCT1, N1)))
+   DETRUIRE(NOM=(ACCE1, FONCT1, N1))
 
 PGA_MED1 = NP.median(NP.array(l_PGA1))/9.81
 #print "median PGA", PGA_MED1
@@ -198,7 +198,7 @@ PGA_MED1 = NP.median(NP.array(l_PGA1))/9.81
 #
 l_PGA3=[]
 for iii in range(Nsim):
-   DETRUIRE(CONCEPT=_F(NOM=(ACCE3, FONCT3, N3)))
+   DETRUIRE(NOM=(ACCE3, FONCT3, N3))
    ACCE3=GENE_ACCE_SEISME( INIT_ALEA = ini_alea[iii],
               PAS_INST = DT,PESANTEUR = 9.81,DUREE_PHASE_FORTE = TSM,
               DSP        = _F(AMOR_REDUIT = amor,FREQ_FOND = frr,),

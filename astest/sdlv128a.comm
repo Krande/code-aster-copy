@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ MAINUM = CREA_MAILLAGE(  MAILLAGE  = MAINtemp,
                                      ),
                         )
 
-DETRUIRE( CONCEPT = _F( NOM = MAINtemp ), INFO = 1 )
+DETRUIRE(NOM = MAINtemp )
 
 
 MODELNUM = AFFE_MODELE( MAILLAGE = MAINUM,

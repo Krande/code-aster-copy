@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -348,7 +348,7 @@ FORCT=CREA_RESU(OPERATION='AFFE',
                       NOM_CHAM='DEPL',
                       AFFE=(_F(CHAM_GD=VECAB,INST=0.0,),),)
 
-DETRUIRE(INFO=1,CONCEPT=_F(NOM=(VECAB)))
+DETRUIRE(NOM=(VECAB))
 
 ACCE1=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=
@@ -521,7 +521,7 @@ for k in range(1,N):
                       NOM_CHAM='DEPL',
                       AFFE=(_F(CHAM_GD=VECAB,INST=instk,),),)
 
-    DETRUIRE(INFO=1,CONCEPT=_F(NOM=(VECAB)))
+    DETRUIRE(NOM=(VECAB))
 
 
 MODE1=CALC_MODES( OPTION='BANDE',

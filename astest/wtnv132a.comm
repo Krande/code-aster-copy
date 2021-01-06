@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -316,7 +316,7 @@ for i, noeud in enumerate(list_noeu_haut):
                                    TABLE=T_TMP,
                                    NOM_PARA='INST'),);
 
-   DETRUIRE(CONCEPT=_F(NOM=T_TMP),);
+   DETRUIRE(NOM=T_TMP);
 
 # <--9: fin boucle for
 
@@ -380,9 +380,9 @@ list_noeu_haut=list_no_later_dro[:2]
 # -->10: Boucle sur la pose des couches 3 a nbcouche
 for n in range(1,nbcouche-1):
 
-    DETRUIRE(CONCEPT=_F(NOM=(CHLAT, PHAUT, SIEF, CHPAR)))
+    DETRUIRE(NOM=(CHLAT, PHAUT, SIEF, CHPAR))
     if n > 1:
-       DETRUIRE(CONCEPT=_F(NOM=(INIDEP, INISIG)))
+       DETRUIRE(NOM=(INIDEP, INISIG))
 
     n_couche = n+2
     print(' > n_couche          =',n_couche)
@@ -688,7 +688,7 @@ for n in range(1,nbcouche-1):
 #                                      TABLE=T_TMP,
 #                                      NOM_PARA='INST'),);
 #
-#        DETRUIRE(CONCEPT=_F(NOM=T_TMP),);
+#        DETRUIRE(NOM=T_TMP);
 #
 # # <--15: fin boucle for
 #
@@ -715,15 +715,6 @@ for n in range(1,nbcouche-1):
                                        NOM_CHAM='VARI_ELNO',
                                        NOM_CMP=('V1','V2','V3','V4','V23','V33','V34'),
                                        OPERATION='EXTRACTION'),);
-
-#     IMPR_TABLE(TABLE=T_DEP[n+1]);
-#     IMPR_TABLE(TABLE=T_SIG[n+1]);
-#     IMPR_TABLE(TABLE=T_VAR[n+1]);
-
-    DETRUIRE(CONCEPT=_F(NOM=(INIVAR,FONCH,PESHAU,PESBAS,
-                             DEPL_IN,DEPL_PJ,FX,FY,FZ,
-                             CH_FONC,CH_EVAL,CH_GEOM,DXN,DYN,DZN,
-                             CH_DEPL,CH_BID,),),);
 
 # <--10: fin boucle for
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -337,7 +337,7 @@ for k in range(p_npas+1) :
                     AFFE=_F(CHAM_GD=FORF,
                             INST=eval(instant),),);
 
-  DETRUIRE(CONCEPT=_F(NOM=(FMX,FMY,FORF,),),);
+  DETRUIRE(NOM=(FMX,FMY,FORF,),);
 
 CHARME=AFFE_CHAR_MECA(MODELE=MODE_00,
                       EVOL_CHAR=CHAME,);

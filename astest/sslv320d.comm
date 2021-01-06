@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -176,7 +176,7 @@ for i in range(nbcalc) :
            list_FISS.append('FISS_'+str(k))
            list_FOND.append('FOND_'+str(k))
            for l in range(NBFOND[i]) :
-             list_FOND.append('FD_'+str(k)+'_'+str(l)) 
+             list_FOND.append('FD_'+str(k)+'_'+str(l))
 # destruction des groupes surfaciques et lineiques correspondants a la fissure
          MATOT[i]=DEFI_GROUP(reuse=MATOT[i],
                              MAILLAGE=MATOT[i],
@@ -206,11 +206,11 @@ for i in range(nbcalc) :
                                _F(CHAM_GD=CHERR[j],
                                   TYPE_CHAM='NOEU_NEUT_R',
                                   CHAM_MAJ=CHERR[j+1],),),
-                     ); 
- 
+                     );
+
    MeshH[i] = ASSE_MAILLAGE(MAILLAGE_1 = MeH[j+1],
                             MAILLAGE_2 = MaFi[i],
-                            OPERATION='SUPERPOSE')    
+                            OPERATION='SUPERPOSE')
 
    ModH[i] = AFFE_MODELE(MAILLAGE=MeshH[i],
                          AFFE=(_F(
@@ -233,10 +233,10 @@ for i in range(nbcalc) :
                        NOM_CHAM='LTNO',);
 
    for j in range(0,infit+1) :
-      DETRUIRE(CONCEPT=_F(NOM=MeH[j],))
-      DETRUIRE(CONCEPT=_F(NOM=LSNHT[j],))
-      DETRUIRE(CONCEPT=_F(NOM=LSTHT[j],))
-      DETRUIRE(CONCEPT=_F(NOM=CHERR[j],))
+      DETRUIRE(NOM=MeH[j],)
+      DETRUIRE(NOM=LSNHT[j],)
+      DETRUIRE(NOM=LSTHT[j],)
+      DETRUIRE(NOM=CHERR[j],)
 
 
 #  STEP 2: RESOLUTION OF THE REFINED MODEL
@@ -249,7 +249,7 @@ for i in range(nbcalc) :
    MODX[i]=MODI_MODELE_XFEM(MODELE_IN=ModH[i],FISSURE=FISSH[i],INFO=1,);
 
 
-   DETRUIRE(CONCEPT=_F(NOM=MatRaf,),INFO=1,)
+   DETRUIRE(NOM=MatRaf,)
 
 
 
@@ -298,8 +298,8 @@ for i in range(nbcalc) :
                               COEF_MULT_MAXI=1.,),
                  CRIT_ANGL_BIFURCATION = 'PLAN',
                  INFO=1,);
-      
-   DETRUIRE(CONCEPT=_F(NOM=Mod,)); 
+
+   DETRUIRE(NOM=Mod,);
    Mod=AFFE_MODELE(MAILLAGE=MATOT[i+1],
                    AFFE=_F(GROUP_MA='Vol',
                            PHENOMENE='MECANIQUE',
@@ -311,7 +311,7 @@ for i in range(nbcalc) :
                                             GROUP_MA_FOND='FOND_'+str(i+1)),
                                );
 
-      
+
       LSN[i+1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                           OPERATION='EXTR',
                           FISSURE=FISS[i+1],

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -247,14 +247,14 @@ for calc in [1,2]:
                 ),
             )
         #
-        DETRUIRE(INFO=1,CONCEPT=(_F(NOM=TABDEPLi,),_F(NOM=TABVITEi,),_F(NOM=TABACCEi,),),)
+        DETRUIRE(NOM=TABACCEi,),)
     #
     lefic = repout+'sdnd102c%d.dat' % calc
     unite=DEFI_FICHIER(FICHIER=lefic, ACTION='ASSOCIER', TYPE='LIBRE', ACCES='NEW')
     IMPR_TABLE(UNITE=unite,TABLE=TABRES1,FORMAT_R='E17.10')
     DEFI_FICHIER(UNITE=unite, ACTION='LIBERER',)
     #
-    DETRUIRE(INFO=1,CONCEPT=(_F(NOM=TABDEPL1,),_F(NOM=TABVITE1,),_F(NOM=TABACCE1,),_F(NOM=TABRES1,),),)
+    DETRUIRE(NOM=TABRES1,),)
     #
 """
 FIN( )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -232,7 +232,7 @@ TEST_RESU(
                   ),
            );
 
-      
+
 
 NT = 202
 
@@ -256,7 +256,7 @@ for k in range(1,NT):
                   MATR_MASS=MASSE,
                   NOM_CHAM='DEPL',
                   AFFE=(_F(CHAM_GD=VECA1,INST=(k-1)*0.005,),),);
-  DETRUIRE(INFO=1,CONCEPT=_F(NOM=(VECT_EL1,VECA1)));
+  DETRUIRE(NOM=(VECT_EL1,VECA1))
 
 for k in range(1,NT):
 
@@ -278,7 +278,7 @@ for k in range(1,NT):
                   MATR_MASS=MASSE,
                   NOM_CHAM='DEPL',
                   AFFE=(_F(CHAM_GD=VECA1,INST=(k-1)*0.005,),),);
-  DETRUIRE(INFO=1,CONCEPT=_F(NOM=(VECT_EL1,VECA1)));
+  DETRUIRE(NOM=(VECT_EL1,VECA1))
 
 
 
@@ -336,7 +336,7 @@ TEST_RESU(
                       VALE_CALC=1.32707035331,
                       ),
                   ),
-           );      
+           );
 
 BlancS=DYNA_VIBRA(BASE_CALCUL='PHYS',
                   TYPE_CALCUL='TRAN',
@@ -411,9 +411,9 @@ sinus1=CALC_FONC_INTERP(FONCTION=fsin1,
                         NOM_RESU='EVOL',
                         LIST_PARA=LINSTB)
 
-DETRUIRE(CONCEPT=_F(NOM=sinus));
+DETRUIRE(NOM=sinus);
 
-DETRUIRE(CONCEPT=_F(NOM=d_sinus));
+DETRUIRE(NOM=d_sinus);
 
 sinus=CALC_FONCTION(COMB=_F(FONCTION=sinus1,
                                COEF=1.0,),
@@ -461,7 +461,7 @@ CHAONSB=CREA_RESU(OPERATION='CONV_CHAR',
 CHAONSC=CREA_RESU(OPERATION='CONV_RESU',
                   TYPE_RESU='EVOL_CHAR',
                   CONV_RESU=_F(
-                          MATR_RIGI=RIGI, 
+                          MATR_RIGI=RIGI,
                           NOM_CHAM_INIT='DEPL',
                           COEF=1.0,
                           PRECISION=1.E-6,CRITERE='RELATIF',

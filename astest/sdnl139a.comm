@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -609,19 +609,19 @@ for i in range(nbpas):
          elif pas==Tb_2:
             U2.append([PUp[i][0]+TC.DX[i], PUp[i][1]+TC.DY[i], PUp[i][2]+TC.DZ[i], PUp[i][3]+TC.DRX[i], PUp[i][4]+TC.DRY[i], PUp[i][5]+TC.DRZ[i]]);
 
-   DETRUIRE (CONCEPT=_F(NOM=DEP),);
-   DETRUIRE (CONCEPT=_F(NOM=ACC),);
-   DETRUIRE (CONCEPT=_F(NOM=TD),);
-   DETRUIRE (CONCEPT=_F(NOM=DeplPUp),);
-   DETRUIRE (CONCEPT=_F(NOM=TA),);
-   DETRUIRE (CONCEPT=_F(NOM=AccIni),);
-   DETRUIRE (CONCEPT=_F(NOM=FORCE1),);
-   DETRUIRE (CONCEPT=_F(NOM=TBLf1),);
-   DETRUIRE (CONCEPT=_F(NOM=FORCE2),);
-   DETRUIRE (CONCEPT=_F(NOM=TBLf2),);
-   DETRUIRE (CONCEPT=_F(NOM=CHARGE3D),);
-   DETRUIRE (CONCEPT=_F(NOM=Mstat),);
-   DETRUIRE (CONCEPT=_F(NOM=tableUc),);
+   DETRUIRE(NOM=DEP);
+   DETRUIRE(NOM=ACC);
+   DETRUIRE(NOM=TD);
+   DETRUIRE(NOM=DeplPUp);
+   DETRUIRE(NOM=TA);
+   DETRUIRE(NOM=AccIni);
+   DETRUIRE(NOM=FORCE1);
+   DETRUIRE(NOM=TBLf1);
+   DETRUIRE(NOM=FORCE2);
+   DETRUIRE(NOM=TBLf2);
+   DETRUIRE(NOM=CHARGE3D);
+   DETRUIRE(NOM=Mstat);
+   DETRUIRE(NOM=tableUc);
 
 #dictionnaire des deplacements au moment de la bascule
 dictDeplx = []
