@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -126,7 +126,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",
                            'MFRONT','MFRONT_FO','UMAT','UMAT_FO','CRIT_RUPT','REST_ECRO',
                            'BETON_GLRC',
                            'VISC_ELAS','RAMBERG_OSGOOD',
-                           'NORTON', 'NORTON_FO', 'GTN', 'VISC_SINH_REG',
+                           'NORTON', 'NORTON_FO', 'GTN', 
                            # MFront
                            'META_LEMA_ANI', 'META_LEMA_ANI_FO',
                            'BETON_BURGER', 'BETON_BURGER_FO',
@@ -3386,12 +3386,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",
              NUCL_CRAN_FIN   = SIMP(statut='f',typ='R',defaut= 0.15),
              NUCL_EPSI_PENTE = SIMP(statut='f',typ='R',defaut= 0.00),
              NUCL_EPSI_INIT  = SIMP(statut='f',typ='R',defaut= 0.80),
-           ),
-           VISC_SINH_REG       =FACT(statut='f',
-             SIGM_0          =SIMP(statut='o',typ='R'),
-             EPSI_0          =SIMP(statut='o',typ='R'),
-             M               =SIMP(statut='o',typ='R'),
-             DELTA           =SIMP(statut='f',typ='R',defaut=1.0),
            ),
            RUPT_FRAG       =FACT(statut='f',
              GC              =SIMP(statut='o',typ='R'),
