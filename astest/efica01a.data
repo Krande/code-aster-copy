@@ -144,7 +144,6 @@ _BZ=CALC_FONCTION(INVERSE=_F(FONCTION=_AZ,),);
 _CZ=CALC_FONCTION(COMB=_F(FONCTION = _BZ,
                          COEF     =  coef_unit(-6)
                          ),);
-DETRUIRE(NOM=_AZ)
 _AZ=CALC_FONCTION(INVERSE=_F(FONCTION=_CZ,),);
 
 

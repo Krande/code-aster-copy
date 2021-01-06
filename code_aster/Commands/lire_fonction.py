@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
-# person_in_charge: nicolas.sellenet@edf.fr
+# person_in_charge: mathieu.courtois@edf.fr
 
 
 from ..Messages import UTMESS
@@ -37,17 +37,14 @@ class ReadFunctionProperly(ExecuteMacro):
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
-
-        # SEPAR=SIMP(statut='f',typ='TXM',into=("None",",",";","/"),defaut="None")
-        # is an old deprecated but tolerated syntax replaced by SEPARATEUR
-        if "SEPAR" in keywords:
-            deprecate("SEPAR", case=3, help="""
-Le mot-clé simple SEPAR est désormais obsolète et sera remplacé par SEPARATEUR dans LIRE_FONCTION.
-""")
+        # SEPAR is deprecated but tolerated syntax replaced by SEPARATEUR
+        separ = keywords.pop("SEPAR", None)
+        if separ:
+            deprecate("LIRE_FONCTION/SEPAR", case=3,
+                      help="Prefer use SEPARATEUR=... instead.")
             if "SEPARATEUR" not in keywords:
-                if keywords["SEPAR"] in ("None",",",";","/"):
-                    keywords["SEPARATEUR"]=keywords["SEPAR"]
-                    del keywords["SEPAR"]
+                if separ in ("None", ",", ";", "/"):
+                    keywords["SEPARATEUR"] = separ
                 else:
                     UTMESS('F', 'FONCT0_26')
             else:

@@ -487,15 +487,16 @@ class InterSpectre:
         coupl_ddl = []
 
         # Cas ou l'inter-spectre est defini par ses noeuds et composantes
-        noeudi = aster.getvectjev(self.obj.nom.ljust(8) + '.NOEI')
-        noeudj = aster.getvectjev(self.obj.nom.ljust(8) + '.NOEJ')
-        cmpi = aster.getvectjev(self.obj.nom.ljust(8) + '.CMPI')
-        cmpj = aster.getvectjev(self.obj.nom.ljust(8) + '.CMPJ')
+        name = self.obj.getName()
+        noeudi = aster.getvectjev(name.ljust(8) + '.NOEI')
+        noeudj = aster.getvectjev(name.ljust(8) + '.NOEJ')
+        cmpi = aster.getvectjev(name.ljust(8) + '.CMPI')
+        cmpj = aster.getvectjev(name.ljust(8) + '.CMPJ')
 
         # l'inter-spectre n'est defini qu'avec des numeros d'ordre independants
         # du modele
-        numi = aster.getvectjev(self.obj.nom.ljust(8) + '.NUMI')
-        numj = aster.getvectjev(self.obj.nom.ljust(8) + '.NUMJ')
+        numi = aster.getvectjev(name.ljust(8) + '.NUMI')
+        numj = aster.getvectjev(name.ljust(8) + '.NUMJ')
 
         if noeudi:
             self.isnume = 1
@@ -588,7 +589,7 @@ class InterSpectre:
     def extr_freq(self):
         """Extraction des frequences d'etude dans la tabl_intsp qui contient
         les inter-spectres mesures"""
-        freq = aster.getvectjev(self.obj.nom.ljust(8) + '.DISC')
+        freq = aster.getvectjev(self.obj.getName().ljust(8) + '.DISC')
         self.f = freq
         self.intsp = 1
 
