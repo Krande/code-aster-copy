@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,6 +51,7 @@ The command :func:`~code_aster.Commands.debut.POURSUITE` does also the same.
 
 import os.path as osp
 import pickle
+import re
 import traceback
 import types
 from hashlib import sha256
@@ -652,9 +653,10 @@ def _filteringContext(context):
     """
     # functions to be ignored
     ignored = ("code_aster", "DETRUIRE", "FIN", "VARIABLE")
+    re_system = re.compile("^__.*__$")
     ctxt = {}
     for name, obj in list(context.items()):
-        if name in ignored:
+        if name in ignored or re_system.search(name):
             continue
         if getattr(numpy, name, None) is obj: # see issue29282
             continue

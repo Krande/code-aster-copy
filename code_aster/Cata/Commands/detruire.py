@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,10 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-DETRUIRE=MACRO(nom="DETRUIRE",
-               op=None,
-               fr=tr("Détruit des concepts utilisateurs du contexte courant"),
-    CONCEPT=FACT(statut='o', max='**',
-        NOM=SIMP(statut='o', typ=assd, validators=NoRepeat(), max='**'),
-    ),
+DETRUIRE = MACRO(
+    nom="DETRUIRE",
+    op=None,
+    fr=tr("Détruit des concepts utilisateurs du contexte courant"),
+    NOM=SIMP(statut='o', typ=assd, validators=NoRepeat(), max='**'),
     INFO=SIMP(statut='f', typ='I', into=(1, 2), defaut=1),
 )

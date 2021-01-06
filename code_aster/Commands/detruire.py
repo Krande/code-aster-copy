@@ -35,27 +35,33 @@ class Deleter(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords, changed in place.
         """
+        to_del = []
+        kwlist = force_list(keywords.pop("CONCEPT", []))
+        if kwlist:
+            deprecate("DETRUIRE/CONCEPT/NOM", case=4, level=5,
+                      help="Just use DETRUIRE/NOM=... instead.")
+            for occ in kwlist:
+                to_del.extend(force_list(occ["NOM"]))
+            keywords["NOM"] = to_del
         if keywords.pop("OBJET", None):
             deprecate("DETRUIRE/OBJET", case=4, level=5,
-                      help="Use DETRUIRE/CONCEPT instead.")
-            keywords.setdefault("CONCEPT", {"NOM": Function()})
+                      help="Use DETRUIRE/NOM=... instead.")
+            # to have at least one object
+            keywords.setdefault("NOM", Function())
 
     def exec_(self, keywords):
         """Execute the command.
 
         Arguments:
             keywords (dict): User's keywords, changed in place to force
-                deletion. "CONCEPT" will not be available for 'post_exec'.
+                deletion. "NOM" will not be available for 'post_exec'.
         """
         if self.level > 1:
             deprecate("DETRUIRE should be used in a macro-command", case=9,
                       level=5)
             return
-        to_del = []
-        kwlist = keywords.pop("CONCEPT", [])
-        for occ in kwlist:
-            for obj in occ["NOM"]:
-                to_del.append(obj.getName())
+
+        to_del = [obj.getName() for obj in keywords.pop("NOM")]
         if not to_del:
             return
 
