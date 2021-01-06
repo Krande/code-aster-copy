@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine epsimc(option, xyz, nno, npg, ndim,&
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
     character(len=16) :: option
-    real(kind=8) :: xyz(1), ni(1), eps(1)
+    real(kind=8) :: xyz(*), ni(*), eps(*)
 ! -----  VARIABLES LOCALES
     character(len=8) :: nompar(4)
     real(kind=8) :: valpar(4)
@@ -62,9 +62,7 @@ subroutine epsimc(option, xyz, nno, npg, ndim,&
     zero = 0.0d0
     deux = 2.0d0
 !
-    do i = 1, nbsig*npg
-        eps(i) = zero
-    end do
+    eps(1:nbsig*npg) = zero
 !
 !      -------
 ! ---- CAS 2D
@@ -149,14 +147,14 @@ subroutine epsimc(option, xyz, nno, npg, ndim,&
 ! ---  BOUCLE SUR LES POINTS D'INTEGRATION
 !      -----------------------------------
             do igau = 1, npg
-                
+
                 exx=zr(idefi+nbsig*(igau-1)-1+1)
                 eyy=zr(idefi+nbsig*(igau-1)-1+2)
                 ezz=zr(idefi+nbsig*(igau-1)-1+3)
                 exy=zr(idefi+nbsig*(igau-1)-1+4)
                 exz=zr(idefi+nbsig*(igau-1)-1+5)
                 eyz=zr(idefi+nbsig*(igau-1)-1+6)
-                
+
                 eps(1+nbsig*(igau-1)) = exx
                 eps(2+nbsig*(igau-1)) = eyy
                 eps(3+nbsig*(igau-1)) = ezz

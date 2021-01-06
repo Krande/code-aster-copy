@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ interface
         integer, intent(in) :: ipg
         integer, intent(in) :: ipoids
         integer, intent(in) :: idfde
-        real(kind=8), intent(in) :: coor(1)
+        real(kind=8), intent(in) :: coor(*)
         real(kind=8), intent(out) :: nx
         real(kind=8), intent(out) :: ny
         real(kind=8), intent(out) :: jac

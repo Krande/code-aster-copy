@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ interface
         character(len=16) :: nomte
         real(kind=8) :: xyzl(3, 1)
         real(kind=8) :: pgl(3, 3)
-        real(kind=8) :: sigma(1)
-        real(kind=8) :: bsigma(1)
+        real(kind=8) :: sigma(*)
+        real(kind=8) :: bsigma(*)
         character(len=*) :: option
     end subroutine dxbsig
 end interface

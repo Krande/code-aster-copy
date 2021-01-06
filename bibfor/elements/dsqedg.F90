@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,21 +90,21 @@ subroutine dsqedg(xyzl, option, pgl, depl, edgl)
                 dci, dmc, dfc, nno, pgl,&
                 multic, coupmf, t2iu, t2ui, t1ve)
 !     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
-    do 20 j = 1, nno
-        do 10 i = 1, 2
+    do j = 1, nno
+        do i = 1, 2
             depm(i+2*(j-1)) = depl(i+6*(j-1))
- 10     continue
+        end do
         depf(1+3* (j-1)) = depl(1+2+6*(j-1))
         depf(2+3* (j-1)) = depl(3+2+6*(j-1))
         depf(3+3* (j-1)) = -depl(2+2+6*(j-1))
- 20 continue
+    end do
 !     ---- CALCUL DE LA MATRICE AN -------------------------------------
     call dsqdi2(xyzl, df, dci, dmf, dfc,&
                 dmc, an, am)
 !
     if (option(1:4) .eq. 'DEGE') then
 !         ---------------------
-        do 180 ie = 1, ne
+        do ie = 1, ne
 !
 ! ---     COORDONNEES DU POINT D'INTEGRATION COURANT :
             qsi = zr(icoopg-1+ndim*(ie-1)+1)
@@ -127,69 +127,62 @@ subroutine dsqedg(xyzl, option, pgl, depl, edgl)
                         bcm, bcb, bca)
 !
 !           ------ BC = BCB + BCA.AN -----------------------------------
-            do 30 k = 1, 24
-                bcn(k,1) = 0.d0
- 30         continue
-            do 60 i = 1, 2
-                do 50 j = 1, 12
-                    do 40 k = 1, 4
+            bcn(:,:) = 0.d0
+            do i = 1, 2
+                do j = 1, 12
+                    do k = 1, 4
                         bcn(i,j) = bcn(i,j) + bca(i,k)*an(k,j)
- 40                 continue
+                    end do
                     bc(i,j) = bcb(i,j) + bcn(i,j)
- 50             continue
- 60         continue
+                end do
+            end do
 !           ------ VT = BC.DEPF ---------------------------------------
-            vt(1) = 0.d0
-            vt(2) = 0.d0
-            do 80 i = 1, 2
-                do 70 j = 1, 12
+            vt(1:2) = 0.d0
+            do i = 1, 2
+                do j = 1, 12
                     vt(i) = vt(i) + bc(i,j)*depf(j)
- 70             continue
- 80         continue
+                end do
+            end do
 !           ----- CALCUL DE LA MATRICE BFB AU POINT QSI ETA -----------
             call dsqbfb(qsi, eta, jacob(2), bfb)
 !           ----- CALCUL DE LA MATRICE BFA AU POINT QSI ETA -----------
             call dsqbfa(qsi, eta, jacob(2), caraq4, bfa)
 !           ------ BF = BFB + BFA.AN ----------------------------------
-            do 90 k = 1, 36
-                bfn(k,1) = 0.d0
- 90         continue
-            do 120 i = 1, 3
-                do 110 j = 1, 12
-                    do 100 k = 1, 4
+            bfn(:,:) = 0.d0
+            do i = 1, 3
+                do j = 1, 12
+                    do k = 1, 4
                         bfn(i,j) = bfn(i,j) + bfa(i,k)*an(k,j)
-100                 continue
+                    end do
                     bf(i,j) = bfb(i,j) + bfn(i,j)
-110             continue
-120         continue
-            do 130 k = 1, 3
-                bdf(k) = 0.d0
-                bdm(k) = 0.d0
-130         continue
-            do 160 i = 1, 3
-                do 140 j = 1, 12
+                end do
+            end do
+            bdf(:) = 0.d0
+            bdm(:) = 0.d0
+            do i = 1, 3
+                do j = 1, 12
                     bdf(i) = bdf(i) + bf(i,j)*depf(j)
-140             continue
-                do 150 j = 1, 8
+                end do
+                do j = 1, 8
                     bdm(i) = bdm(i) + bm(i,j)*depm(j)
-150             continue
-160         continue
+                end do
+            end do
 !           ------ DCIS = DCI.VT --------------------------------------
             dcis(1) = dci(1,1)*vt(1) + dci(1,2)*vt(2)
             dcis(2) = dci(2,1)*vt(1) + dci(2,2)*vt(2)
-            do 170 i = 1, 3
+            do i = 1, 3
                 edgl(i+8* (ie-1)) = bdm(i)
                 edgl(i+3+8* (ie-1)) = bdf(i)
-170         continue
+            end do
 !           --- PASSAGE DE LA DISTORSION A LA DEFORMATION DE CIS. ------
             edgl(3+8* (ie-1)) = edgl(3+8* (ie-1))/2.d0
             edgl(6+8* (ie-1)) = edgl(6+8* (ie-1))/2.d0
             edgl(7+8* (ie-1)) = dcis(1)/2.d0
             edgl(8+8* (ie-1)) = dcis(2)/2.d0
-180     continue
+        end do
 !
     else
-        do 360 ie = 1, ne
+        do ie = 1, ne
 !
 ! ---     COORDONNEES DU POINT D'INTEGRATION COURANT :
             qsi = zr(icoopg-1+ndim*(ie-1)+1)
@@ -212,45 +205,43 @@ subroutine dsqedg(xyzl, option, pgl, depl, edgl)
                         bcm, bcb, bca)
 !
 !           ------ BC = BCB + BCA.AN -----------------------------------
-            do 190 k = 1, 24
-                bcn(k,1) = 0.d0
-                bfam(k,1) = 0.d0
-190         continue
-            do 191 k = 1, 16
-                btm(k,1) = 0.d0
-                bcam(k,1) = 0.d0
-191         continue
-            do 220 i = 1, 2
-                do 210 j = 1, 12
-                    do 200 k = 1, 4
+            bcn(:,:) = 0.d0
+            bfam(:,:) = 0.d0
+
+            btm(:,:) = 0.d0
+            bcam(:,:) = 0.d0
+
+            do i = 1, 2
+                do  j = 1, 12
+                    do  k = 1, 4
                         bcn(i,j) = bcn(i,j) + bca(i,k)*an(k,j)
-200                 continue
+                    end do
                     bc(i,j) = bcb(i,j) + bcn(i,j)
-210             continue
-220         continue
+                end do
+            end do
 !           ------ VT = BC.DEPF ---------------------------------------
             vt(1) = 0.d0
             vt(2) = 0.d0
-            do 240 i = 1, 2
-                do 230 j = 1, 12
+            do  i = 1, 2
+                do j = 1, 12
                     vt(i) = vt(i) + bc(i,j)*depf(j)
-230             continue
-240         continue
+                end do
+            end do
 !
             if (excen) then
-                do 221 i = 1, 2
-                    do 211 j = 1, 8
-                        do 201 k = 1, 4
+                do  i = 1, 2
+                    do  j = 1, 8
+                        do  k = 1, 4
                             bcam(i,j) = bcam(i,j) + bca(i,k)*am(k,j)
-201                     continue
+                        end do
                         btm(i,j) = bcm(i,j) + bcam(i,j)
-211                 continue
-221             continue
-                do 241 i = 1, 2
-                    do 231 j = 1, 8
+                    end do
+                end do
+                do  i = 1, 2
+                    do j = 1, 8
                         vt(i) = vt(i) + btm(i,j)*depm(j)
-231                 continue
-241             continue
+                    end do
+                end do
             endif
 !
 !           ----- CALCUL DE LA MATRICE BFB AU POINT QSI ETA -----------
@@ -258,25 +249,23 @@ subroutine dsqedg(xyzl, option, pgl, depl, edgl)
 !           ----- CALCUL DE LA MATRICE BFA AU POINT QSI ETA -----------
             call dsqbfa(qsi, eta, jacob(2), caraq4, bfa)
 !           ------ BF = BFB + BFA.AN ----------------------------------
-            do 250 k = 1, 36
-                bfn(k,1) = 0.d0
-250         continue
-            do 280 i = 1, 3
-                do 270 j = 1, 12
-                    do 260 k = 1, 4
+            bfn(:,:) = 0.d0
+            do i = 1, 3
+                do j = 1, 12
+                    do k = 1, 4
                         bfn(i,j) = bfn(i,j) + bfa(i,k)*an(k,j)
-260                 continue
+                    end do
                     bf(i,j) = bfb(i,j) + bfn(i,j)
-270             continue
-280         continue
-            do 281 i = 1, 3
-                do 271 j = 1, 8
-                    do 261 k = 1, 4
+                end do
+            end do
+            do i = 1, 3
+                do j = 1, 8
+                    do k = 1, 4
                         bfam(i,j) = bfam(i,j) + bfa(i,k)*am(k,j)
-261                 continue
-271             continue
-281         continue
-            do 290 k = 1, 3
+                    end do
+                end do
+            end do
+            do  k = 1, 3
                 bdf(k) = 0.d0
                 bdf2(k)= 0.0d0
                 bdfm(k) = 0.d0
@@ -288,38 +277,38 @@ subroutine dsqedg(xyzl, option, pgl, depl, edgl)
                 vmf(k) = 0.d0
                 vmc(k) = 0.0d0
                 vfc(k) = 0.0d0
-290         continue
+            end do
             vcm(1) = 0.0d0
             vcm(2) = 0.0d0
             vcf(1) = 0.0d0
             vcf(2) = 0.0d0
 !           ------ VF = DF.BF.DEPF , VFM = DMF.BM.DEPM ----------------
 !           ------ VM = DM.BM.DEPM , VMF = DMF.BF.DEPF ----------------
-            do 320 i = 1, 3
-                do 300 j = 1, 12
+            do i = 1, 3
+                do j = 1, 12
                     bdf(i) = bdf(i) + bf(i,j)*depf(j)
                     bdf2(i) = bdf2(i) +bfb(i,j)*depf(j)
-300             continue
-                do 310 j = 1, 8
+                end do
+                do j = 1, 8
                     bdfm(i) = bdfm(i) + bfam(i,j)*depm(j)
                     bdm(i) = bdm(i) + bm(i,j)*depm(j)
                     bdm1(i) = bdm1(i) + (bm(i,j)+excent*bfam(i,j))* depm(j)
-310             continue
-320         continue
-            do 340 i = 1, 3
-                do 330 j = 1, 3
+                end do
+            end do
+            do i = 1, 3
+                do j = 1, 3
                     vf(i) = vf(i) + df(i,j)*bdf(j)
                     vfm(i) = vfm(i) + dmf(i,j)*bdm(j)
                     vm(i) = vm(i) + dm(i,j)*bdm1(j)
                     vmf(i) = vmf(i) + dmf(i,j)*bdf2(j)
-330             continue
-340         continue
+                end do
+            end do
             if (excen) then
-                do 341 i = 1, 3
-                    do 331 j = 1, 3
+                do i = 1, 3
+                    do j = 1, 3
                         vfm(i) = vfm(i) + df(i,j)*bdfm(j)
-331                 continue
-341             continue
+                    end do
+                end do
             endif
 !
             dcis(1) = dci(1,1)*vt(1) + dci(1,2)*vt(2)
@@ -339,13 +328,13 @@ subroutine dsqedg(xyzl, option, pgl, depl, edgl)
             vcf(1) = dfc(1,1)*vf(1) + dfc(2,1)*vf(2) + dfc(3,1)*vf(3)
             vcf(2) = dfc(1,2)*vf(1) + dfc(2,2)*vf(2) + dfc(3,2)*vf(3)
 !
-            do 350 i = 1, 3
+            do i = 1, 3
                 edgl(i+8* (ie-1)) = vm(i) + vmf(i) + vmc(i)
                 edgl(i+3+8* (ie-1)) = vf(i) + vfm(i) + vfc(i)
-350         continue
+            end do
             edgl(7+8* (ie-1)) = vt(1) + vcm(1) + vcf(1)
             edgl(8+8* (ie-1)) = vt(2) + vcm(2) + vcf(2)
-360     continue
+        end do
     endif
 !
 end subroutine

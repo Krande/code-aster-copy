@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -255,12 +255,8 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
 !
 ! --- INITIALISATIONS :
 !     ---------------
-    do k = 1, 96
-        mefl(k,1) = zero
-    end do
-    do k = 1, 144
-        flex(k,1) = zero
-    end do
+    mefl(:,:) = zero
+    flex(:,:) = zero
 
 !======================================
 ! ---  CALCUL DE LA MATRICE DE MASSE  =
@@ -271,9 +267,7 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
 !=====================================================================
 !
     coefm = caraq4(21) * roe / neuf
-    do k = 1, 64
-        amemb(k) = zero
-    end do
+    amemb(:) = zero
     do k = 1, 8
         amemb(ii(k)) = un
         amemb(jj(k)) = unquar
@@ -281,8 +275,10 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
     do k = 1, 16
         amemb(ll(k)) = undemi
     end do
-    do k = 1, 64
-        memb(k,1) = coefm * amemb(k)
+    do j = 1, 8
+        do i = 1, 8
+            memb(i,j) = coefm * amemb((j-1)*8+i)
+        end do
     end do
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :

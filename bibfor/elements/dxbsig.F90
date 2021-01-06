@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine dxbsig(nomte, xyzl, pgl, sigma, bsigma,&
     character(len=16) :: nomte
     character(len=*) ::  option
     real(kind=8) :: xyzl(3, 1), pgl(3, 3)
-    real(kind=8) :: sigma(1), bsigma(1)
+    real(kind=8) :: sigma(*), bsigma(*)
 !     ------------------------------------------------------------------
 ! --- CALCUL DES FORCES INTERNES B*SIGMA AUX NOEUDS DE L'ELEMENT
 ! --- DUES AU CHAMP DE CONTRAINTES SIGMA DEFINI AUX POINTS
@@ -85,18 +85,18 @@ subroutine dxbsig(nomte, xyzl, pgl, sigma, bsigma,&
 !
 ! --- INITIALISATIONS :
 !     -----------------
-    do 10 i = 1, lgligb
+    do  i = 1, lgligb
         bsiloc(i) = zero
         bsigma(i) = zero
-        do 20 j = 1, nbsig
+        do j = 1, nbsig
             bmat(j,i) = zero
-20      continue
-10  end do
+        end do
+    end do
 !
 ! --- CALCUL DE SOMME_ELEMENT(BT_SIGMA) :
 ! ---  BOUCLE SUR LES POINTS D'INTEGRATION
 !      -----------------------------------
-    do 30 igau = 1, npg
+    do igau = 1, npg
 !
 !  --      CALCUL DE LA MATRICE B RELIANT LES DEFORMATIONS DU
 !  --      PREMIER ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION
@@ -118,16 +118,16 @@ subroutine dxbsig(nomte, xyzl, pgl, sigma, bsigma,&
         else
             ASSERT(.false.)
         endif
-30  end do
+    end do
 !
 ! --- PERMUTATION DES COMPOSANTES EN BETA_X ET  BETA_Y
 ! ---                             EN TETA_Y ET -TETA_X
 !     -----------------------------------------------
-    do 40 i = 1, nno
+    do i = 1, nno
         bsivar = bsiloc(4+6*(i-1))
         bsiloc(4+6*(i-1)) = -bsiloc(5+6*(i-1))
         bsiloc(5+6*(i-1)) = bsivar
-40  end do
+    end do
 !
 ! --- PASSAGE DU VECTEUR(BT_SIGMA) DU REPERE LOCAL AU REPERE GLOBAL :
 ! --- (LE RESULTAT EST ICI LE VECTEUR BSIGMA)

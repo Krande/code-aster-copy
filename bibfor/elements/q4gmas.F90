@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,7 +82,7 @@ subroutine q4gmas(xyzl, option, pgl, mas, ener)
     call r8inir(144, zero, flex, 1)
     call r8inir(96, zero, mefl, 1)
 !
-    do 50 int = 1, npg
+    do int = 1, npg
 !
         qsi = zr(icoopg-1+ndim*(int-1)+1)
         eta = zr(icoopg-1+ndim*(int-1)+2)
@@ -99,28 +99,28 @@ subroutine q4gmas(xyzl, option, pgl, mas, ener)
         detj = jacob(1)
         wgt = zr(ipoids+int-1)*detj*roe
 !
-        do 40 i = 1, 12
-            do 30 j = 1, 12
+        do i = 1, 12
+            do j = 1, 12
                 flex(i,j) = flex(i,j) + wq4(i)*wq4(j)*wgt
-30          continue
-40      continue
-50  continue
+            end do
+        end do
+    end do
 !
 !     ----- CALCUL DE LA MATRICE MASSE EN MEMBRANE ---------------------
     coefm = caraq4(21)*roe/9.d0
-    do 60 k = 1, 64
-        amemb(k) = 0.d0
-60  continue
-    do 70 k = 1, 8
+    amemb(:) = 0.d0
+    do  k = 1, 8
         amemb(ii(k)) = 1.d0
         amemb(jj(k)) = 0.25d0
-70  continue
-    do 80 k = 1, 16
+    end do
+    do k = 1, 16
         amemb(ll(k)) = 0.5d0
-80  continue
-    do 90 k = 1, 64
-        memb(k,1) = coefm*amemb(k)
-90  continue
+    end do
+    do j = 1, 8
+        do i = 1, 8
+            memb(i,j) = coefm*amemb( (j-1)*8 + i)
+        end do
+    end do
 !
     if (( option .eq. 'MASS_MECA' ) .or. (option.eq.'M_GAMMA')) then
         call dxqloc(flex, memb, mefl, ctor, mas)

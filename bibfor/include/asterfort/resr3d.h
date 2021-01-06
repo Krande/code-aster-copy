@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine resr3d(rota, coor, ff, rho, nno,&
                       npg, frx, fry, frz)
         real(kind=8) :: rota(*)
-        real(kind=8) :: coor(1)
-        real(kind=8) :: ff(1)
+        real(kind=8) :: coor(*)
+        real(kind=8) :: ff(*)
         real(kind=8) :: rho
         integer :: nno
         integer :: npg

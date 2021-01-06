@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 #include "asterfort/vectrn.h"
     character(len=16) :: nomte
     integer :: ncmp, jnbspi
-    real(kind=8) :: pk2(ncmp, 1), sigma(ncmp, 1)
+    real(kind=8) :: pk2(ncmp, *), sigma(ncmp, *)
 ! -----  VARIABLES LOCALES
 !-----------------------------------------------------------------------
     integer :: i, icara, icompo, icou, idepl, igeom, ii
@@ -128,7 +128,7 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
             enddo
         enddo
 !
-        goto 9999
+        goto 999
     endif
 !
 ! --- RECUPERATION DES COORDONNEES DES NOEUDS DANS LA GEOMETRIE
@@ -354,6 +354,6 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
  60     continue
  50 continue
 !
-9999 continue
+999 continue
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

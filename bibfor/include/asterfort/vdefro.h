@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine vdefro(np, matev, tensel, tenloc)
         integer :: np
         real(kind=8) :: matev(2, 2, 1)
-        real(kind=8) :: tensel(1)
-        real(kind=8) :: tenloc(1)
+        real(kind=8) :: tensel(*)
+        real(kind=8) :: tenloc(*)
     end subroutine vdefro
 end interface

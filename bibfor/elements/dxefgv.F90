@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,8 +27,8 @@ subroutine dxefgv(nomte, option, xyzl, pgl, depl, effgt)
     character(len=16) :: nomte
     character(len=*) :: option
     real(kind=8) :: xyzl(3, 1), pgl(3, 3)
-    real(kind=8) :: depl(1)
-    real(kind=8) :: effgt(1)
+    real(kind=8) :: depl(*)
+    real(kind=8) :: effgt(*)
 !     ------------------------------------------------------------------
 ! --- EFFORTS GENERALISES 'VRAIS' (I.E. EFFOR_MECA - EFFOR_THERM)
 ! --- AUX POINTS D'INTEGRATION POUR LES ELEMENTS COQUES A

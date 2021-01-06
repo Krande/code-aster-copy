@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine dxefgi(nomte, pgl, epsini, sigt)
     character(len=16) :: nomte
     real(kind=8) :: pgl(3, 3)
     real(kind=8) :: epsini(6)
-    real(kind=8) :: sigt(1)
+    real(kind=8) :: sigt(*)
 !     ------------------------------------------------------------------
 ! --- EFFORTS GENERALISES D'ORIGINE THERMIQUE AUX POINTS D'INTEGRATION
 ! --- POUR LES ELEMENTS COQUES A FACETTES PLANES :
@@ -84,7 +84,7 @@ subroutine dxefgi(nomte, pgl, epsini, sigt)
                 dci, dmc, dfc, nno, pgl,&
                 multic, coupmf, t2iu, t2ui, t1ve)
 
-    
+
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION
 !     -----------------------------------

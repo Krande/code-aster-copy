@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,15 +79,9 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
     exce = .false.
     excent = zero
 !
-    do 10 k = 1, 54
-        mefl(k,1) = zero
- 10 end do
-    do 20 k = 1, 81
-        flex(k,1) = zero
- 20 end do
-    do 30 k = 1, 36
-        memb(k,1) = zero
- 30 end do
+    mefl(:,:) = zero
+    flex(:,:) = zero
+    memb(:,:) = zero
 !
     call r8inir(18, zero, am, 1)
 !
@@ -154,7 +148,7 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !     ===================================
 !
-    do 40 int = 1, npg
+    do  int = 1, npg
         qsi = zr(icoopg-1+ndim*(int-1)+1)
         eta = zr(icoopg-1+ndim*(int-1)+2)
 !
@@ -288,7 +282,7 @@ subroutine dstmas(xyzl, option, pgl, mas, ener)
         endif
 ! ---   FIN DU TRAITEMENT DU CAS D'UN ELEMENT EXCENTRE
 !       ----------------------------------------------
- 40 end do
+     end do
 ! --- FIN DE LA BOUCLE SUR LES POINTS D'INTEGRATION
 !     ---------------------------------------------
 !

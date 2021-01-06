@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -147,23 +147,25 @@ subroutine dsqmas(xyzl, option, pgl, mas, ener)
 ! --- EN U*U ET V*V :
 !     -------------
     coefm = caraq4(21)*roe/neuf
-    do 30 k = 1, 64
+    do   k = 1, 64
         amemb(k) = zero
- 30 end do
-    do 40 k = 1, 8
+     end do
+    do k = 1, 8
         amemb(ii(k)) = un
         amemb(jj(k)) = unquar
- 40 end do
-    do 50 k = 1, 16
+    end do
+    do   k = 1, 16
         amemb(ll(k)) = undemi
- 50 end do
-    do 60 k = 1, 64
-        memb(k,1) = coefm*amemb(k)
- 60 end do
+    end do
+    do  j = 1, 8
+        do i=1,8
+            memb(i,j) = coefm*amemb((j-1)*8+i)
+        end do
+   end do
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION :
 !     ===================================
-    do 70 int = 1, npg
+    do   int = 1, npg
         qsi = zr(icoopg-1+ndim*(int-1)+1)
         eta = zr(icoopg-1+ndim*(int-1)+2)
 !
@@ -213,11 +215,11 @@ subroutine dsqmas(xyzl, option, pgl, mas, ener)
 ! ---   CALCUL DE LA PARTIE FLEXION DE LA MATRICE DE MASSE
 ! ---   DUE AUX SEULS TERMES DE LA FLECHE W :
 !       -----------------------------------
-        do 80 i = 1, 12
-            do 90 j = 1, 12
+        do i = 1, 12
+            do j = 1, 12
                 flex(i,j) = flex(i,j) + wsq(i)*wsq(j)*wgt
- 90         continue
- 80     continue
+            end do
+        end do
 !
 ! ---   LA MASSE VOLUMIQUE RELATIVE AUX TERMES DE FLEXION BETA
 ! ---   EST EGALE A RHO_F = RHO*EPAIS**3/12 + D**2*EPAIS*RHO :
@@ -226,11 +228,11 @@ subroutine dsqmas(xyzl, option, pgl, mas, ener)
 !
 ! ---   PRISE EN COMPTE DES TERMES DE FLEXION DUS AUX ROTATIONS :
 !       -------------------------------------------------------
-        do 100 i = 1, 12
-            do 110 j = 1, 12
+        do  i = 1, 12
+            do  j = 1, 12
                 flex(i,j) = flex(i,j)+(nfx(i)*nfx(j)+nfy(i)*nfy(j))* wgtf
-110         continue
-100     continue
+            end do
+        end do
 !==============================================================
 ! ---   CAS D'UN ELEMENT EXCENTRE : IL APPARAIT DE TERMES DE  =
 ! ---   COUPLAGE MEMBRANE-FLEXION ET DE NOUVEAUX TERMES POUR  =
@@ -262,22 +264,22 @@ subroutine dsqmas(xyzl, option, pgl, mas, ener)
 !
 ! ---      1) TERMES DE COUPLAGE MEMBRANE-FLEXION U*BETA :
 !             ------------------------------------------
-            do 120 k = 1, 4
+            do k = 1, 4
                 i1 = 2*(k-1)+1
                 i2 = i1 +1
-                do 130 j = 1, 12
+                do  j = 1, 12
                     mefl(i1,j) = mefl(i1,j)+nmi(k)*nfx(j)*wgtmf
                     mefl(i2,j) = mefl(i2,j)+nmi(k)*nfy(j)*wgtmf
-130             continue
-120         continue
+                end do
+            end do
 ! ---      2) TERMES DE COUPLAGE MEMBRANE-FLEXION W*W ET BETA*BETA :
 !             ----------------------------------------------------
-            do 140 i = 1, 8
-                do 150 j = 1, 12
+            do  i = 1, 8
+                do  j = 1, 12
                     mefl(i,j) = mefl(i,j) + wmesq(i)*wsq(j)*wgtm + (nmx(i)*nfx(j) + nmy(i)*nfy(j)&
                                 &)*wgtf
-150             continue
-140         continue
+                            end do
+                        end do
 !
 !===========================================================
 ! ---  AJOUT DE NOUVEAUX TERMES A LA PARTIE MEMBRANE       =
@@ -293,31 +295,31 @@ subroutine dsqmas(xyzl, option, pgl, mas, ener)
 !
 ! ---      1) TERMES DE MEMBRANE U*BETA :
 !             -------------------------
-            do 160 k = 1, 4
+            do  k = 1, 4
                 i1 = 2*(k-1)+1
                 i2 = i1 +1
-                do 170 p = 1, 4
+                do  p = 1, 4
                     j1 = 2*(p-1)+1
                     j2 = j1 +1
                     memb(i1,j1) = memb(i1,j1)+ (nmi(k)*nmx(j1)+nmi(p)* nmx(i1))*wgtmf
                     memb(i1,j2) = memb(i1,j2)+ (nmi(k)*nmx(j2)+nmi(p)* nmy(i1))*wgtmf
                     memb(i2,j1) = memb(i2,j1)+ (nmi(k)*nmy(j1)+nmi(p)* nmx(i2))*wgtmf
                     memb(i2,j2) = memb(i2,j2)+ (nmi(k)*nmy(j2)+nmi(p)* nmy(i2))*wgtmf
-170             continue
-160         continue
+                end do
+            end do
 ! ---      2) TERMES DE MEMBRANE WMESQ*WMESQ ET BETA*BETA :
 !           -------------------------------------------
-            do 180 i = 1, 8
-                do 190 j = 1, 8
+            do  i = 1, 8
+                do  j = 1, 8
                     memb(i,j) = memb(i,j) + wmesq(i)*wmesq(j)*wgtm + (nmx(i)*nmx(j) + nmy(i)*nmy(&
                                 &j))*wgtf
-190             continue
-180         continue
+                end do
+            end do
 !
         endif
 ! ---   FIN DU TRAITEMENT DU CAS D'UN ELEMENT EXCENTRE
 !       ----------------------------------------------
- 70 end do
+     end do
 ! --- FIN DE LA BOUCLE SUR LES POINTS D'INTEGRATION
 !     ---------------------------------------------
 !

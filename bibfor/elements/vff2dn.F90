@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine vff2dn(ndim, nno, ipg, ipoids, idfde,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
     integer, intent(in) :: ndim, nno, ipoids, idfde, ipg
-    real(kind=8), intent(in) :: coor(1)
+    real(kind=8), intent(in) :: coor(*)
     real(kind=8), intent(out) :: nx, ny, jac
 ! ......................................................................
 !    - BUT:  CALCULER LA VALEUR DU POIDS D'INTEGRATION EN 1 POINT DE
@@ -51,12 +51,12 @@ subroutine vff2dn(ndim, nno, ipg, ipoids, idfde,&
     ASSERT(ndim.eq.1)
     dxds = 0.d0
     dyds = 0.d0
-    do 1 i = 1, nno
+    do i = 1, nno
         k = nno*(ipg-1)
         dx = zr(idfde-1+k+i)
         dxds = dxds + dx * coor(2*i-1)
         dyds = dyds + dx * coor(2*i)
- 1  end do
+    end do
     jac = sqrt(dxds**2 + dyds**2)
     nx = dyds/jac
     ny = -dxds/jac

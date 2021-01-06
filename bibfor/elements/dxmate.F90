@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -200,10 +200,8 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
 !
 !      ---- CALCUL DE LA MATRICE DE RIGIDITE EN FLEXION --------------
         cdf = young*epais*epais*epais/12.d0/ (1.d0-nu*nu)
-        do k = 1, 9
-            df(k,1) = 0.d0
-            dmf(k,1) = 0.d0
-        end do
+        df(:,:) = 0.d0
+        dmf(:,:) = 0.d0
         df(1,1) = cdf
         df(1,2) = cdf*nu
         df(2,1) = df(1,2)
@@ -211,9 +209,7 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
         df(3,3) = cdf* (1.d0-nu)/2.d0
 !      ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
         cdm = epais*young/ (1.d0-nu*nu)
-        do k = 1, 9
-            dm(k,1) = 0.d0
-        end do
+        dm(:,:) = 0.d0
         dm(1,1) = cdm
         dm(1,2) = cdm*nu
         dm(2,1) = dm(1,2)
@@ -273,10 +269,8 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
 !
 !      ---- CALCUL DE LA MATRICE DE RIGIDITE EN FLEXION --------------
         cdf = ef*epais*epais*epais/12.d0/ (1.d0-nuf*nuf)
-        do k = 1, 9
-            df(k,1) = 0.d0
-            dmf(k,1) = 0.d0
-        end do
+        df(:,:) = 0.d0
+        dmf(:,:) = 0.d0
         df(1,1) = cdf
         df(1,2) = cdf*nuf
         df(2,1) = df(1,2)
@@ -284,9 +278,7 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
         df(3,3) = cdf* (1.d0-nuf)/2.d0
 !      ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
         cdm = epais*em/ (1.d0-num*num)
-        do k = 1, 9
-            dm(k,1) = 0.d0
-        end do
+        dm(:,:) = 0.d0
         dm(1,1) = cdm
         dm(1,2) = cdm*num
         dm(2,1) = dm(1,2)

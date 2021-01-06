@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine dkqsie(option, fami, xyzl, pgl, depl,&
     parameter  (nddlfl=3)
 !
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: jcaco, i, j, k, ie, icpg, ig, icou, iniv, multic
+    integer :: jcaco, i, j, ie, icpg, ig, icou, iniv, multic
     real(kind=8) :: zic, epais, excen
     real(kind=8) :: depf(nddlfl*nnomai), depm(nddlme*nnomai)
     real(kind=8) :: vt(2), lambda(4)
@@ -90,9 +90,7 @@ subroutine dkqsie(option, fami, xyzl, pgl, depl,&
         epais = zr(jcaco)
         hicou = epais/nbcou
         excen = zr(jcaco-1+5)
-        do k = 1, 9
-            h(k,1) = dm(k,1)/epais
-        end do
+        h = dm/epais
     endif
 !
 !     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
@@ -113,7 +111,7 @@ subroutine dkqsie(option, fami, xyzl, pgl, depl,&
     else
         lcalct=.true.
     endif
-    
+
 !   coefficients pour calcul de sixz et siyz
     if (multic .eq. 0) then
         zmin = excen - epais/2.d0

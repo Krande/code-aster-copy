@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine dfdm2j(nno, ipg, idfde, coor, jac)
     implicit none
 #include "jeveux.h"
     integer :: nno, ipg, idfde
-    real(kind=8) :: coor(1), jac
+    real(kind=8) :: coor(*), jac
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DU JACOBIEN (AVEC SIGNE)
 !               POUR LES ELEMENTS 2D
@@ -41,7 +41,7 @@ subroutine dfdm2j(nno, ipg, idfde, coor, jac)
     dxdk = 0.d0
     dyde = 0.d0
     dydk = 0.d0
-    do 100 i = 1, nno
+    do  i = 1, nno
         k = 2*nno*(ipg-1)
         ii = 2*(i-1)
         de = zr(idfde-1+k+ii+1)
@@ -50,7 +50,7 @@ subroutine dfdm2j(nno, ipg, idfde, coor, jac)
         dxdk = dxdk + coor(2*i-1)*dk
         dyde = dyde + coor(2*i )*de
         dydk = dydk + coor(2*i )*dk
-100  end do
+    end do
 !
     jac = dxde*dydk - dxdk*dyde
 !

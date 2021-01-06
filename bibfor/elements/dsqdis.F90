@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,9 +62,7 @@ subroutine dsqdis(xyzl, caraq4, df, dci, an)
     y(3) = caraq4(7)
     y(4) = caraq4(8)
 !
-    do 100 k = 1, 72
-        tb(k,1) = 0.d0
-100  end do
+    tb(:,:) = 0.d0
     tb(3,2) = 0.25d0
     tb(3,5) = - 0.25d0
     tb(3,8) = 0.25d0
@@ -74,16 +72,11 @@ subroutine dsqdis(xyzl, caraq4, df, dci, an)
     tb(6,9) = 0.25d0
     tb(6,12) = - 0.25d0
 !
-    do 300 ic = 1, nc
+    do ic = 1, nc
 !
-        do 105 k = 1, 24
-            dib(k,1) = 0.d0
-105      continue
-        do 110 k = 1, 8
-            dia(k,1) = 0.d0
-110      continue
-!
-        do 250 int = 1, 2
+        dib(:,:) = 0.d0
+        dia(:,:) = 0.d0
+        do int = 1, 2
 !
             if (ic .eq. 1) then
                 qsi = -zr(icoopg-1+ndim*(int-1)+1)
@@ -106,9 +99,7 @@ subroutine dsqdis(xyzl, caraq4, df, dci, an)
             pqsi = 1.d0 + qsi
             mqsi = 1.d0 - qsi
 !
-            do 120 k = 1, 24
-                ta(k,1) = 0.d0
-120          continue
+            ta(:,:) = 0.d0
             ta(1,1) = - meta * c(1)
             ta(1,3) = - peta * c(3)
             ta(2,2) = - pqsi * c(2)
@@ -129,41 +120,39 @@ subroutine dsqdis(xyzl, caraq4, df, dci, an)
             call dsxhft(df, jacob(2), hft2)
 !
 !           -------- PRODUIT DCI.HFT2 ----------------------------------
-            do 130 k = 1, 12
-                dt(k,1) = 0.d0
-130          continue
-            do 140 j = 1, 6
+            dt(:,:) = 0.d0
+            do j = 1, 6
                 dt(1,j) = dt(1,j)+dci(1,1)*hft2(1,j)+dci(1,2)*hft2(2, j)
                 dt(2,j) = dt(2,j)+dci(2,1)*hft2(1,j)+dci(2,2)*hft2(2, j)
-140          continue
+            end do
 !           -------- PRODUIT DT.TB -------------------------------------
-            do 160 j = 1, 12
-                do 160 k = 1, 6
+            do j = 1, 12
+                do k = 1, 6
                     dib(1,j) = dib(1,j) + dt(1,k) * tb(k,j)
                     dib(2,j) = dib(2,j) + dt(2,k) * tb(k,j)
-160              continue
+                end do
+            end do
 !           -------- PRODUIT DT.TA -------------------------------------
-            do 180 j = 1, 4
-                do 180 k = 1, 6
+            do  j = 1, 4
+                do  k = 1, 6
                     dia(1,j) = dia(1,j) + dt(1,k) * ta(k,j)
                     dia(2,j) = dia(2,j) + dt(2,k) * ta(k,j)
-180              continue
-250      continue
-        do 260 j = 1, 12
+                end do
+            end do
+        end do
+        do j = 1, 12
             aw(ic,j) = (c(ic)*dib(1,j) + s(ic)*dib(2,j)) * l(ic)/2.d0
-260      continue
-        do 270 j = 1, 4
+        end do
+        do j = 1, 4
             aa(ic,j) = - (c(ic)*dia(1,j) + s(ic)*dia(2,j)) * l(ic)/ 2.d0
-270      continue
+        end do
         aa(ic,ic) = aa(ic,ic) + 2.d0 / 3.d0 * l(ic)
-300  end do
+    end do
 !     -------------- INVERSION DE AA -----------------------------------
-    do 310 k = 1, 16
-        aai(k,1) = 0.d0
-310  end do
-    do 320 i = 1, 4
+    aai(:,:) = 0.d0
+    do i = 1, 4
         aai(i,i) = 1.d0
-320  end do
+    end do
     call mgauss('NFVP', aa, aai, 4, 4,&
                 4, det, iret)
 !
@@ -193,13 +182,13 @@ subroutine dsqdis(xyzl, caraq4, df, dci, an)
     aw(4,12) = aw(4,12) - y(4)/2.d0
 !
 !     -------------- AN = AAI.AW ---------------------------------------
-    do 410 k = 1, 48
-        an(k,1) = 0.d0
-410  end do
-    do 420 i = 1, 4
-        do 420 k = 1, 4
-            do 420 j = 1, 12
+    an(:,:) = 0.d0
+    do i = 1, 4
+        do k = 1, 4
+            do j = 1, 12
                 an(i,j) = an(i,j) + aai(i,k) * aw(k,j)
-420          continue
+            end do
+        end do
+    end do
 !
 end subroutine

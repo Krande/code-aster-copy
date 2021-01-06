@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
         integer :: nno
         integer :: ipg
         integer :: idfde
-        real(kind=8) :: coor(1)
+        real(kind=8) :: coor(*)
         real(kind=8) :: jac
     end subroutine dfdm2j
 end interface

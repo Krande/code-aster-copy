@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine vdefro(np, matev, tensel, tenloc)
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
 #include "asterfort/utbtab.h"
-    real(kind=8) :: matev(2, 2, 1), tensel(1), tenloc(1)
+    real(kind=8) :: matev(2, 2, 1), tensel(*), tenloc(*)
 ! -----  VARIABLES LOCALES
     real(kind=8) :: nelem(4), melem(4), xab(2, 2)
     real(kind=8) :: nlocal(4), mlocal(4)
@@ -65,7 +65,7 @@ subroutine vdefro(np, matev, tensel, tenloc)
 !-----------------------------------------------------------------------
     integer :: i, np
 !-----------------------------------------------------------------------
-    do 10 i = 1, np
+    do i = 1, np
 !
         nelem(1) = tensel(1+8*(i-1))
         nelem(2) = tensel(3+8*(i-1))
@@ -95,7 +95,7 @@ subroutine vdefro(np, matev, tensel, tenloc)
         tenloc(8+8*(i-1)) = tensel(&
                             7+8*(i-1)) * matev(1, 2, i) + tensel(8+8*(i-1)) * matev(2, 2, i)
 !
-10  end do
+    end do
 !
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

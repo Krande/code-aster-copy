@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -93,9 +93,7 @@ subroutine dstsie(option, fami, xyzl, pgl, depl,&
         epais = zr(jcaco)
         hicou = epais/nbcou
         excen = zr(jcaco-1+5)
-        do k = 1, 9
-            h(k,1) = dm(k,1)/epais
-        end do
+        h = dm/epais
     endif
 !
 !     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
