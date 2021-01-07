@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -121,10 +121,10 @@ subroutine echmat(matz, ldist, rmin, rmax)
     rmax=-1.d0
 !     CALCUL DE RMIN : PLUS PETIT TERME NON NUL DE LA DIAGONALE
 !     CALCUL DE RMAX : PLUS GRAND TERME DE LA DIAGONALE
-    do 10 jcol = 1, n
+    do jcol = 1, n
 ! si le dl est un multiplicateur de Lagrange on passe
         if (zi(jdelgl-1+jcol) .lt. 0) then
-            goto 10
+            cycle
         endif
 !   Indice dans la matrice globale Aster de la colonne locale jcol
         if (imatd .ne. 0) then
@@ -139,9 +139,9 @@ subroutine echmat(matz, ldist, rmin, rmax)
             zdiag(jcolg)=zdiag(jcolg)+zc(jvalm1-1+smdi(jcol))
         endif
 !
- 10 end do
+    end do
 !
-!     -- SI EXECUTION PARALLELE, IL FAUT COMMUNIQUER 
+!     -- SI EXECUTION PARALLELE, IL FAUT COMMUNIQUER
 !
     if (ldist) then
         if (ktyp .eq. 'R') then
@@ -151,8 +151,8 @@ subroutine echmat(matz, ldist, rmin, rmax)
         endif 
     endif
 !
-!   Tous les procs possèdent les termes qui correspondent à des ddls physiques. 
-!   On calcule les valeurs min et max des modules des termes de la diagonale.    
+!   Tous les procs possèdent les termes qui correspondent à des ddls physiques.
+!   On calcule les valeurs min et max des modules des termes de la diagonale.
 !
     if (ktyp .eq. 'R') then
         rmax = maxval(abs(rdiag))
