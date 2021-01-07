@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,6 +88,7 @@ implicit none
 #include "asterfort/infdbg.h"
 #include "asterfort/nonlinDSPrintSepLine.h"
 #include "asterfort/nonlinDSDynamicInit.h"
+#include "asterfort/verins.h"
 !
 character(len=8), intent(in) :: mesh
 character(len=24), intent(in) :: model
@@ -305,11 +306,16 @@ type(NL_DS_System), intent(inout) :: ds_system
     call diinit(mesh          , model , ds_inout, mate       , cara_elem,&
                 list_func_acti, sddyna, ds_conv , ds_algopara, solver,&
                 ds_contact    , sddisc)
+
+! - Vérifier les instants des calculs attachés à _NON_LINE (eg. MODE_VIBR)
+    call verins(sddisc, ds_posttimestep)
+
 !
 ! - Initial time
 !
     numins = 0
     instin = diinst(sddisc,numins)
+
 !
 ! - Initializations for material parameters management
 !
