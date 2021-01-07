@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -150,7 +150,7 @@ subroutine t3grig(nomte, xyzl, option, pgl, rig,&
                     depl, ener)
         call bsthpl(nomte, bsigth, indith)
         if (indith) then
-            do i = 1, 24
+            do i = 1, 18
                 enerth = enerth + depl(i)*bsigth(i)
             end do
             ener(1) = ener(1) - enerth
