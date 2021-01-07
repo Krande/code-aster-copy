@@ -130,7 +130,7 @@ int main(void){
     try:
         ret = self.check_cc(fragment=fragment, use='PETSC MPI', uselib='SCOTCH Z',
                             mandatory=True, execute=True, define_ret=True)
-        mat = re.search('PETSCVER: *(?P<vers>[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)', ret)
+        mat = re.search(r'PETSCVER: *(?P<vers>[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)', ret)
         vers = mat and mat.group('vers')
         major, minor, sub, patch = [int(i) for i in vers.split('.')]
         vers = '%d.%d.%dp%d' % (major, minor, sub, patch)
@@ -165,12 +165,12 @@ def check_sizeof_petsc_int(self):
 #include <stdio.h>
 #include <petscconf.h>
 int main(void) {
-    printf("%d", (int)PETSC_SIZEOF_INT);
+    printf("%d", PETSC_SIZEOF_INT);
     return 0;
 }'''
     self.code_checker('PETSC_INT_SIZE', self.check_cc, fragment,
                       'Checking size of PETSc integer',
-                      'unexpected value for sizeof(petsc_int): %s',
+                      'unexpected value for sizeof(petsc_int): %(size)s',
                       into=(4, 8), use='PETSC')
 
 @Configure.conf
@@ -181,12 +181,12 @@ def check_petsc_conf(self, petsc_var, aster_var):
 int main(void) {{
 #ifdef {name}
     printf("%d", {name});
-    return 0;
 #else
     printf("0");
     return 1;
 #endif
+    return 0;
 }}'''.format(name=petsc_var)
     self.code_checker(aster_var, self.check_cc, fragment,
                       'Checking value of ' + aster_var, 'failure',
-                      mandatory=False, setbool=True, use='PETSC')
+                      optional=True, setbool=True, use='PETSC')

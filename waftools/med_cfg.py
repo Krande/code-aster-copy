@@ -175,7 +175,7 @@ int main(void){
 }'''
     self.code_checker('HDF_HID_SIZE', self.check_cc, fragment,
                       'Checking size of hid_t integers',
-                      'unexpected value for sizeof(hid_t): %s',
+                      'unexpected value for sizeof(hid_t): %(size)s',
                       into=(4, 8), use='HDF5')
 
 @Configure.conf
@@ -305,5 +305,5 @@ int main(void){
 }'''
     self.code_checker('MED_IDT_SIZE', self.check_cc, fragment,
                       'Checking size of med_idt integers',
-                      'unexpected value for sizeof(med_idt): %s',
+                      'unexpected value for sizeof(med_idt): %(size)s',
                       into=(4, 8), use='MED HDF5')

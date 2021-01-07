@@ -159,13 +159,15 @@ def check_fortran_preprocessor(self):
 
 @Configure.conf
 def code_checker(self, define, check, fragment, start_msg, error_msg,
-                 into=None, mandatory=True, setbool=False, use=''):
+                 into=None, optional=False, setbool=False, use=''):
     """Check the size of a type compiling 'fragment' code with 'check',
     add 'define' macro."""
+    # @conf decorator use 'mandatory=True' argument to raise exception
+    # so it should not be used here
     self.start_msg(start_msg)
     try:
-        size = check(fragment=fragment,
-                     mandatory=mandatory, execute=True, define_ret=True, use=use)
+        size = check(fragment=fragment, mandatory=not optional, execute=True,
+                     define_ret=True, use=use)
         if size is None:
             raise RuntimeError
         try:
@@ -410,15 +412,15 @@ def check_optimization_fcflags(self):
 def check_optional_features(self):
     """Check for optional features depending on compiler type or version"""
     fragment = "\n".join(["call backtrace", "print *, 'yes'", "end"])
-    code_checker(self, 'HAVE_BACKTRACE', self.check_fc, fragment,
-                 'Check for backtrace feature',
-                 'failure', mandatory=False, setbool=True)
+    self.code_checker('HAVE_BACKTRACE', self.check_fc, fragment,
+                      'Check for backtrace feature',
+                      'failure', optional=True, setbool=True)
 
     fragment = "\n".join(["use ifcore", "call tracebackqq(USER_EXIT_CODE=-1)",
                           "print *, 'yes'", "end"])
-    code_checker(self, 'HAVE_TRACEBACKQQ', self.check_fc, fragment,
-                 'Check for tracebackqq feature',
-                 'failure', mandatory=False, setbool=True)
+    self.code_checker('HAVE_TRACEBACKQQ', self.check_fc, fragment,
+                      'Check for tracebackqq feature',
+                      'failure', optional=True, setbool=True)
 
 # code fragments
 fragment_with_volatile = """
