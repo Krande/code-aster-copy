@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -241,24 +241,24 @@ SIXX_PP = CREA_TABLE(LISTE = (_F(PARA='SIXX',LISTE_R = SIXX[ipp])))
 
 
 TEST_TABLE(TABLE = SIXX_PL,
-       NOM_PARA = 'SIXX',
-           TYPE_TEST = 'MAX',
-           VALE_CALC = 457.2847179852035,
-           TOLE_MACHINE = 2.e-5,
-           #REFERENCE= 'SOURCE_EXTERNE',
-           #VALE_REFE= 4.099964e+02,
-       #PRECISION = 0.01,
-           )
+        NOM_PARA = 'SIXX',
+        TYPE_TEST = 'MAX',
+        VALE_CALC = 457.2847179852035,
+        TOLE_MACHINE = 2.e-5,
+        REFERENCE= 'SOURCE_EXTERNE',
+        VALE_REFE= 4.573060e+02 ,
+        PRECISION = 0.01,
+        )
 
 TEST_TABLE(TABLE = SIXX_PP,
-       NOM_PARA = 'SIXX',
-           TYPE_TEST = 'MAX',
-           VALE_CALC = 848.6540545143135,
-           TOLE_MACHINE = 2.e-5,
-           #REFERENCE= 'SOURCE_EXTERNE',
-           #VALE_REFE=7.586364e+02,
-       #PRECISION = 0.01,
-           )
+        NOM_PARA = 'SIXX',
+        TYPE_TEST = 'MAX',
+        VALE_CALC = 848.6540545143135 ,
+        TOLE_MACHINE = 2.e-5,
+        REFERENCE= 'SOURCE_EXTERNE',
+        VALE_REFE=8.486553e+02,
+        PRECISION = 0.01,
+        )
 
 
 #   VARIABLE D'ECROUISSAGE
@@ -272,7 +272,7 @@ TEST_TABLE(TABLE = PLAS_PL,
            TYPE_TEST = 'MAX',
            VALE_CALC = 1.2817944954466234,
            REFERENCE= 'SOURCE_EXTERNE',
-           VALE_REFE= 1.280017e+00,
+           VALE_REFE= 1.281799e+00,
        PRECISION = 0.01,
            )
 
@@ -281,7 +281,7 @@ TEST_TABLE(TABLE = PLAS_PP,
            TYPE_TEST = 'MAX',
            VALE_CALC = 1.3545931184283075,
            REFERENCE= 'SOURCE_EXTERNE',
-           VALE_REFE= 1.350605e+00,
+           VALE_REFE= 1.354594e+00,
        PRECISION = 0.01,
            )
 
@@ -297,7 +297,7 @@ TEST_TABLE(TABLE = PORO_PL,
            TYPE_TEST = 'MAX',
            VALE_CALC = 0.11727045362262208,
            REFERENCE= 'SOURCE_EXTERNE',
-           VALE_REFE= 1.174330e-01,
+           VALE_REFE= 1.172660e-01,
        PRECISION = 0.01,
            )
            
@@ -306,7 +306,10 @@ TEST_TABLE(TABLE = PORO_PP,
            TYPE_TEST = 'MAX',
            VALE_CALC = 0.012538556894467786,
            REFERENCE= 'SOURCE_EXTERNE',
-           VALE_REFE= 1.256342e-02,
+           VALE_REFE= 1.253826e-02 ,
        PRECISION = 0.01,
            )
+
+         
+
 FIN()
