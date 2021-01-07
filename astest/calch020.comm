@@ -230,180 +230,180 @@ FOND_NEW=DEFI_FISSURE(    MAILLAGE=MA, SYME='NON',
 # que le chargement est monotone
 # proportionnel.
 
-G220=CALC_H(        OPTION='G_EPSI',
-                    RESULTAT=CHAMDEPL,
-                    THETA=_F(
-                             R_INF=1.00,
-                             FISSURE=FOND_NEW,
-                             R_SUP=2.00,
-                            ),
-                    NUME_ORDRE=22
-              )
-
+#G220=CALC_H(        OPTION='G_EPSI',
+#                    RESULTAT=CHAMDEPL,
+#                    THETA=_F(
+#                             R_INF=1.00,
+#                             FISSURE=FOND_NEW,
+#                             R_SUP=2.00,
+#                            ),
+#                    NUME_ORDRE=22
+#              )
 #
-G360=CALC_H(        OPTION='G_EPSI',
-                    RESULTAT=CHAMDEPL,
-                    THETA=_F(
-                             R_INF=1.00,
-                             FISSURE=FOND_NEW,
-                             R_SUP=2.00,
-                            ),
-                    NUME_ORDRE=36
-              )
-
+##
+#G360=CALC_H(        OPTION='G_EPSI',
+#                    RESULTAT=CHAMDEPL,
+#                    THETA=_F(
+#                             R_INF=1.00,
+#                             FISSURE=FOND_NEW,
+#                             R_SUP=2.00,
+#                            ),
+#                    NUME_ORDRE=36
+#              )
 #
-G500=CALC_H(        OPTION='G_EPSI',
-                    RESULTAT=CHAMDEPL,
-                    THETA=_F(
-                             R_INF=1.00,
-                             FISSURE=FOND_NEW,
-                             R_SUP=2.00,
-                             ),
-                    NUME_ORDRE=50
-              )
-
+##
+#G500=CALC_H(        OPTION='G_EPSI',
+#                    RESULTAT=CHAMDEPL,
+#                    THETA=_F(
+#                             R_INF=1.00,
+#                             FISSURE=FOND_NEW,
+#                             R_SUP=2.00,
+#                             ),
+#                    NUME_ORDRE=50
+#              )
 #
-G640=CALC_H(        OPTION='G_EPSI',
-                    RESULTAT=CHAMDEPL,
-                    THETA=_F(
-                             R_INF=1.00,
-                             FISSURE=FOND_NEW,
-                             R_SUP=2.00,
-                             ),
-                    NUME_ORDRE=64
-              )
-
+##
+#G640=CALC_H(        OPTION='G_EPSI',
+#                    RESULTAT=CHAMDEPL,
+#                    THETA=_F(
+#                             R_INF=1.00,
+#                             FISSURE=FOND_NEW,
+#                             R_SUP=2.00,
+#                             ),
+#                    NUME_ORDRE=64
+#              )
 #
-G221=CALC_H(        OPTION='G_EPSI',
-                    RESULTAT=CHAMDEPL,
-                    THETA=_F(
-                             R_INF=2.00,
-                             FISSURE=FOND_NEW,
-                             R_SUP=3.00,
-                             ),
-                    NUME_ORDRE=22
-              )
-
+##
+#G221=CALC_H(        OPTION='G_EPSI',
+#                    RESULTAT=CHAMDEPL,
+#                    THETA=_F(
+#                             R_INF=2.00,
+#                             FISSURE=FOND_NEW,
+#                             R_SUP=3.00,
+#                             ),
+#                    NUME_ORDRE=22
+#              )
 #
-G361=CALC_H(        OPTION='G_EPSI',
-                    RESULTAT=CHAMDEPL,
-                    THETA=_F(
-                             R_INF=2.00,
-                             FISSURE=FOND_NEW,
-                             R_SUP=3.00,
-                            ),
-                    NUME_ORDRE=36
-              )
-
+##
+#G361=CALC_H(        OPTION='G_EPSI',
+#                    RESULTAT=CHAMDEPL,
+#                    THETA=_F(
+#                             R_INF=2.00,
+#                             FISSURE=FOND_NEW,
+#                             R_SUP=3.00,
+#                            ),
+#                    NUME_ORDRE=36
+#              )
 #
-G501=CALC_H(        OPTION='G_EPSI',
-                    RESULTAT=CHAMDEPL,
-                    THETA=_F(
-                             R_INF=2.00,
-                             FISSURE=FOND_NEW,
-                             R_SUP=3.00,
-                             ),
-                    NUME_ORDRE=50
-              )
-
+##
+#G501=CALC_H(        OPTION='G_EPSI',
+#                    RESULTAT=CHAMDEPL,
+#                    THETA=_F(
+#                             R_INF=2.00,
+#                             FISSURE=FOND_NEW,
+#                             R_SUP=3.00,
+#                             ),
+#                    NUME_ORDRE=50
+#              )
 #
-G641=CALC_H(        OPTION='G_EPSI',
-                    RESULTAT=CHAMDEPL,
-                    THETA=_F(
-                             R_INF=2.00,
-                             FISSURE=FOND_NEW,
-                             R_SUP=3.00,
-                             ),
-                    NUME_ORDRE=64
-              )
-
+##
+#G641=CALC_H(        OPTION='G_EPSI',
+#                    RESULTAT=CHAMDEPL,
+#                    THETA=_F(
+#                             R_INF=2.00,
+#                             FISSURE=FOND_NEW,
+#                             R_SUP=3.00,
+#                             ),
+#                    NUME_ORDRE=64
+#              )
 #
-G222=CALC_H(        OPTION='G_EPSI',
-                    RESULTAT=CHAMDEPL,
-                    THETA=_F(
-                             R_INF=3.00,
-                             FISSURE=FOND_NEW,
-                             R_SUP=4.00,
-                             ),
-                    NUME_ORDRE=22
-              )
-
+##
+#G222=CALC_H(        OPTION='G_EPSI',
+#                    RESULTAT=CHAMDEPL,
+#                    THETA=_F(
+#                             R_INF=3.00,
+#                             FISSURE=FOND_NEW,
+#                             R_SUP=4.00,
+#                             ),
+#                    NUME_ORDRE=22
+#              )
 #
-G362=CALC_H(        OPTION='G_EPSI',
-                    RESULTAT=CHAMDEPL,
-                    THETA=_F(
-                             R_INF=3.00,
-                             FISSURE=FOND_NEW,
-                             R_SUP=4.00,
-                             ),
-                    NUME_ORDRE=36
-              )
-
+##
+#G362=CALC_H(        OPTION='G_EPSI',
+#                    RESULTAT=CHAMDEPL,
+#                    THETA=_F(
+#                             R_INF=3.00,
+#                             FISSURE=FOND_NEW,
+#                             R_SUP=4.00,
+#                             ),
+#                    NUME_ORDRE=36
+#              )
 #
-G502=CALC_H(        OPTION='G_EPSI',
-                    RESULTAT=CHAMDEPL,
-                    THETA=_F(
-                             R_INF=3.00,
-                             FISSURE=FOND_NEW,
-                             R_SUP=4.00,
-                             ),
-                    NUME_ORDRE=50
-              )
-
+##
+#G502=CALC_H(        OPTION='G_EPSI',
+#                    RESULTAT=CHAMDEPL,
+#                    THETA=_F(
+#                             R_INF=3.00,
+#                             FISSURE=FOND_NEW,
+#                             R_SUP=4.00,
+#                             ),
+#                    NUME_ORDRE=50
+#              )
 #
-G642=CALC_H(        OPTION='G_EPSI',
-                    RESULTAT=CHAMDEPL,
-                    THETA=_F(
-                             R_INF=3.00,
-                             FISSURE=FOND_NEW,
-                             R_SUP=4.00,
-                             ),
-                    NUME_ORDRE=64
-              )
-
+##
+#G642=CALC_H(        OPTION='G_EPSI',
+#                    RESULTAT=CHAMDEPL,
+#                    THETA=_F(
+#                             R_INF=3.00,
+#                             FISSURE=FOND_NEW,
+#                             R_SUP=4.00,
+#                             ),
+#                    NUME_ORDRE=64
+#              )
 #
-G223=CALC_H(        OPTION='G_EPSI',
-                    RESULTAT=CHAMDEPL,
-                    THETA=_F(
-                             R_INF=4.00,
-                             FISSURE=FOND_NEW,
-                             R_SUP=5.00,
-                             ),
-                    NUME_ORDRE=22
-              )
-
+##
+#G223=CALC_H(        OPTION='G_EPSI',
+#                    RESULTAT=CHAMDEPL,
+#                    THETA=_F(
+#                             R_INF=4.00,
+#                             FISSURE=FOND_NEW,
+#                             R_SUP=5.00,
+#                             ),
+#                    NUME_ORDRE=22
+#              )
 #
-G363=CALC_H(        OPTION='G_EPSI',
-                    RESULTAT=CHAMDEPL,
-                    THETA=_F(
-                             R_INF=4.00,
-                             FISSURE=FOND_NEW,
-                             R_SUP=5.00,
-                             ),
-                    NUME_ORDRE=36
-              )
-
+##
+#G363=CALC_H(        OPTION='G_EPSI',
+#                    RESULTAT=CHAMDEPL,
+#                    THETA=_F(
+#                             R_INF=4.00,
+#                             FISSURE=FOND_NEW,
+#                             R_SUP=5.00,
+#                             ),
+#                    NUME_ORDRE=36
+#              )
 #
-G503=CALC_H(        OPTION='G_EPSI',
-                    RESULTAT=CHAMDEPL,
-                    THETA=_F(
-                             R_INF=4.00,
-                             FISSURE=FOND_NEW,
-                             R_SUP=5.00,
-                             ),
-                    NUME_ORDRE=50
-              )
-
+##
+#G503=CALC_H(        OPTION='G_EPSI',
+#                    RESULTAT=CHAMDEPL,
+#                    THETA=_F(
+#                             R_INF=4.00,
+#                             FISSURE=FOND_NEW,
+#                             R_SUP=5.00,
+#                             ),
+#                    NUME_ORDRE=50
+#              )
 #
-G643=CALC_H(        OPTION='G_EPSI',
-                    RESULTAT=CHAMDEPL,
-                    THETA=_F(
-                             R_INF=4.00,
-                             FISSURE=FOND_NEW,
-                             R_SUP=5.00,
-                             ),
-                    NUME_ORDRE=64
-              )
+##
+#G643=CALC_H(        OPTION='G_EPSI',
+#                    RESULTAT=CHAMDEPL,
+#                    THETA=_F(
+#                             R_INF=4.00,
+#                             FISSURE=FOND_NEW,
+#                             R_SUP=5.00,
+#                             ),
+#                    NUME_ORDRE=64
+#              )
 
 #
 ##
@@ -411,45 +411,45 @@ G643=CALC_H(        OPTION='G_EPSI',
 ## -----------------------------------
 #
 
-TEST_TABLE(PRECISION=0.050000000000000003,
-           VALE_CALC=7.00560471438,
-           VALE_REFE=6.7450999999999999,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=G220,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=22,),
-           )
-
-TEST_TABLE(PRECISION=0.070000000000000007,
-           VALE_CALC=13.0691795062,
-           VALE_REFE=12.473000000000001,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=G360,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=36,),
-           )
-
-TEST_TABLE(PRECISION=0.089999999999999997,
-           VALE_CALC=19.4936432248,
-           VALE_REFE=18.433,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=G500,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=50,),
-           )
-
-TEST_TABLE(PRECISION=0.10000000000000001,
-           VALE_CALC=26.8409189023,
-           VALE_REFE=24.600999999999999,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=G640,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=64,),
-           )
+#TEST_TABLE(PRECISION=0.050000000000000003,
+#           VALE_CALC=7.00560471438,
+#           VALE_REFE=6.7450999999999999,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='G',
+#           TABLE=G220,
+#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+#                     VALE_I=22,),
+#           )
+#
+#TEST_TABLE(PRECISION=0.070000000000000007,
+#           VALE_CALC=13.0691795062,
+#           VALE_REFE=12.473000000000001,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='G',
+#           TABLE=G360,
+#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+#                     VALE_I=36,),
+#           )
+#
+#TEST_TABLE(PRECISION=0.089999999999999997,
+#           VALE_CALC=19.4936432248,
+#           VALE_REFE=18.433,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='G',
+#           TABLE=G500,
+#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+#                     VALE_I=50,),
+#           )
+#
+#TEST_TABLE(PRECISION=0.10000000000000001,
+#           VALE_CALC=26.8409189023,
+#           VALE_REFE=24.600999999999999,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='G',
+#           TABLE=G640,
+#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+#                     VALE_I=64,),
+#           )
 
 #
 ##
@@ -457,45 +457,45 @@ TEST_TABLE(PRECISION=0.10000000000000001,
 ## -----------------------------------
 #
 
-TEST_TABLE(PRECISION=0.050000000000000003,
-           VALE_CALC=6.99728327307,
-           VALE_REFE=6.7450999999999999,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=G221,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=22,),
-           )
-
-TEST_TABLE(PRECISION=0.070000000000000007,
-           VALE_CALC=13.0937504928,
-           VALE_REFE=12.473000000000001,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=G361,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=36,),
-           )
-
-TEST_TABLE(PRECISION=0.089999999999999997,
-           VALE_CALC=19.5729034281,
-           VALE_REFE=18.433,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=G501,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=50,),
-           )
-
-TEST_TABLE(PRECISION=0.10000000000000001,
-           VALE_CALC=26.9768183278,
-           VALE_REFE=24.600999999999999,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=G641,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=64,),
-           )
+#TEST_TABLE(PRECISION=0.050000000000000003,
+#           VALE_CALC=6.99728327307,
+#           VALE_REFE=6.7450999999999999,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='G',
+#           TABLE=G221,
+#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+#                     VALE_I=22,),
+#           )
+#
+#TEST_TABLE(PRECISION=0.070000000000000007,
+#           VALE_CALC=13.0937504928,
+#           VALE_REFE=12.473000000000001,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='G',
+#           TABLE=G361,
+#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+#                     VALE_I=36,),
+#           )
+#
+#TEST_TABLE(PRECISION=0.089999999999999997,
+#           VALE_CALC=19.5729034281,
+#           VALE_REFE=18.433,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='G',
+#           TABLE=G501,
+#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+#                     VALE_I=50,),
+#           )
+#
+#TEST_TABLE(PRECISION=0.10000000000000001,
+#           VALE_CALC=26.9768183278,
+#           VALE_REFE=24.600999999999999,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='G',
+#           TABLE=G641,
+#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+#                     VALE_I=64,),
+#           )
 
 #
 ##
@@ -503,45 +503,45 @@ TEST_TABLE(PRECISION=0.10000000000000001,
 ## -----------------------------------
 #
 
-TEST_TABLE(PRECISION=0.050000000000000003,
-           VALE_CALC=6.99640833836,
-           VALE_REFE=6.7450999999999999,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=G222,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=22,),
-           )
-
-TEST_TABLE(PRECISION=0.070000000000000007,
-           VALE_CALC=13.0825764373,
-           VALE_REFE=12.473000000000001,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=G362,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=36,),
-           )
-
-TEST_TABLE(PRECISION=0.10000000000000001,
-           VALE_CALC=19.5765168454,
-           VALE_REFE=18.433,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=G502,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=50,),
-           )
-
-TEST_TABLE(PRECISION=0.10000000000000001,
-           VALE_CALC=26.9805011279,
-           VALE_REFE=24.600999999999999,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=G642,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=64,),
-           )
+#TEST_TABLE(PRECISION=0.050000000000000003,
+#           VALE_CALC=6.99640833836,
+#           VALE_REFE=6.7450999999999999,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='G',
+#           TABLE=G222,
+#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+#                     VALE_I=22,),
+#           )
+#
+#TEST_TABLE(PRECISION=0.070000000000000007,
+#           VALE_CALC=13.0825764373,
+#           VALE_REFE=12.473000000000001,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='G',
+#           TABLE=G362,
+#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+#                     VALE_I=36,),
+#           )
+#
+#TEST_TABLE(PRECISION=0.10000000000000001,
+#           VALE_CALC=19.5765168454,
+#           VALE_REFE=18.433,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='G',
+#           TABLE=G502,
+#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+#                     VALE_I=50,),
+#           )
+#
+#TEST_TABLE(PRECISION=0.10000000000000001,
+#           VALE_CALC=26.9805011279,
+#           VALE_REFE=24.600999999999999,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='G',
+#           TABLE=G642,
+#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+#                     VALE_I=64,),
+#           )
 
 #
 ##
@@ -549,44 +549,44 @@ TEST_TABLE(PRECISION=0.10000000000000001,
 ## -----------------------------------
 #
 
-TEST_TABLE(PRECISION=0.050000000000000003,
-           VALE_CALC=6.99801155905,
-           VALE_REFE=6.7450999999999999,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=G223,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=22,),
-           )
-
-TEST_TABLE(PRECISION=0.070000000000000007,
-           VALE_CALC=13.0710808167,
-           VALE_REFE=12.473000000000001,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=G363,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=36,),
-           )
-
-TEST_TABLE(PRECISION=0.10000000000000001,
-           VALE_CALC=19.5746554654,
-           VALE_REFE=18.433,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=G503,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=50,),
-           )
-
-TEST_TABLE(PRECISION=0.10000000000000001,
-           VALE_CALC=26.9833859116,
-           VALE_REFE=24.600999999999999,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=G643,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=64,),
-           )
+#TEST_TABLE(PRECISION=0.050000000000000003,
+#           VALE_CALC=6.99801155905,
+#           VALE_REFE=6.7450999999999999,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='G',
+#           TABLE=G223,
+#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+#                     VALE_I=22,),
+#           )
+#
+#TEST_TABLE(PRECISION=0.070000000000000007,
+#           VALE_CALC=13.0710808167,
+#           VALE_REFE=12.473000000000001,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='G',
+#           TABLE=G363,
+#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+#                     VALE_I=36,),
+#           )
+#
+#TEST_TABLE(PRECISION=0.10000000000000001,
+#           VALE_CALC=19.5746554654,
+#           VALE_REFE=18.433,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='G',
+#           TABLE=G503,
+#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+#                     VALE_I=50,),
+#           )
+#
+#TEST_TABLE(PRECISION=0.10000000000000001,
+#           VALE_CALC=26.9833859116,
+#           VALE_REFE=24.600999999999999,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='G',
+#           TABLE=G643,
+#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+#                     VALE_I=64,),
+#           )
 
 FIN()

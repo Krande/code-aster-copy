@@ -822,43 +822,43 @@ RESUINCR=STAT_NON_LINE(MODELE=MO,
                        )
 
 # calcul Incr, post-traitement ELAS -> Genl
-G_I_E=CALC_H(OPTION='G_EPSI',
-             RESULTAT=RESUINCR,
-             THETA=_F(
-                      R_INF=0.15,
-                      FISSURE=FOND_NEW,
-                      R_SUP=0.6,),)
-
-IMPR_TABLE(TABLE=G_I_E)
-
-# calcul Incr, post-traitement ELAS, sans re-calcul des contraintes
-G_I_E2=CALC_H(RESULTAT=RESUINCR,
-              THETA=_F(
-                       R_INF=0.15,
-                       FISSURE=FOND_NEW,
-                       R_SUP=0.6,),
-                       OPTION='G',)
-
-IMPR_TABLE(TABLE=G_I_E2)
-
-# test de G_I_E (non regression)
-TEST_TABLE(VALE_CALC=349.872598141,
-           NOM_PARA='G',
-           TABLE=G_I_E,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=10,),
-           )
-
-# test de G_I_E2 (par rapport a la valeur de G_I_E)
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=0.01,
-           VALE_REFE=349.87259814109,
-           VALE_CALC=346.714373266,
-           NOM_PARA='G',
-           TABLE=G_I_E2,
-           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=10,),
-           )
+#G_I_E=CALC_H(OPTION='G_EPSI',
+#             RESULTAT=RESUINCR,
+#             THETA=_F(
+#                      R_INF=0.15,
+#                      FISSURE=FOND_NEW,
+#                      R_SUP=0.6,),)
+#
+#IMPR_TABLE(TABLE=G_I_E)
+#
+## calcul Incr, post-traitement ELAS, sans re-calcul des contraintes
+#G_I_E2=CALC_H(RESULTAT=RESUINCR,
+#              THETA=_F(
+#                       R_INF=0.15,
+#                       FISSURE=FOND_NEW,
+#                       R_SUP=0.6,),
+#                       OPTION='G',)
+#
+#IMPR_TABLE(TABLE=G_I_E2)
+#
+## test de G_I_E (non regression)
+#TEST_TABLE(VALE_CALC=349.872598141,
+#           NOM_PARA='G',
+#           TABLE=G_I_E,
+#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+#                     VALE_I=10,),
+#           )
+#
+## test de G_I_E2 (par rapport a la valeur de G_I_E)
+#TEST_TABLE(REFERENCE='AUTRE_ASTER',
+#           PRECISION=0.01,
+#           VALE_REFE=349.87259814109,
+#           VALE_CALC=346.714373266,
+#           NOM_PARA='G',
+#           TABLE=G_I_E2,
+#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+#                     VALE_I=10,),
+#           )
 
 # ======================================================================
 
