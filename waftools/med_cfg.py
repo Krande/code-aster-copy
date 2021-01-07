@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,6 +55,7 @@ def configure(self):
         self.env.stash()
         self.check_hdf5()
     except Errors.ConfigurationError:
+        self.reset_msg()
         self.env.revert()
         if opts.enable_hdf5 == True:
             raise
@@ -69,6 +70,7 @@ def configure(self):
         self.env.stash()
         self.check_med()
     except Errors.ConfigurationError:
+        self.reset_msg()
         self.env.revert()
         if opts.enable_med == True:
             raise
@@ -284,7 +286,7 @@ int main(void){
 }'''
     self.code_checker('MED_INT_SIZE', self.check_cc, fragment,
                       'Checking size of med_int integers',
-                      'unexpected value for sizeof(med_int): %s',
+                      'unexpected value for sizeof(med_int): %(size)s',
                       into=(4, 8), use='MED HDF5')
     #XXX compatibility
     if self.env['MED_INT_SIZE'] == 4 and self.is_defined('_USE_64_BITS'):

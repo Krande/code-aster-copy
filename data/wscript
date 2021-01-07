@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -507,7 +507,6 @@ def _extract_keys(self, var_prefix):
 def _check_prog(self, name, programs, mandatory=True, add_paths=None,
                 var_prefix="PROG_"):
     """Search for the first available program from 'programs'."""
-    opts = self.options
     paths0 = self.environ.get('PATH', '').split(os.pathsep)
     paths1 = [i for i in paths0 if 'outils' not in i]
     # try first without 'outils' in $PATH

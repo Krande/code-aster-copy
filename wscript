@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -311,6 +311,13 @@ class DocContext(Build.BuildContext):
     """build the documentation files"""
     cmd = 'doc'
     fun = 'build_doc'
+
+@Configure.conf
+def reset_msg(self):
+    """Reset message level"""
+    if self.in_msg:
+        self.end_msg("cancelled", "YELLOW")
+    self.in_msg = 0
 
 @Configure.conf
 def set_installdirs(self):

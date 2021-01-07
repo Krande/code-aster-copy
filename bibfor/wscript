@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -167,6 +167,8 @@ def code_checker(self, define, check, fragment, start_msg, error_msg,
     try:
         size = check(fragment=fragment,
                      mandatory=mandatory, execute=True, define_ret=True, use=use)
+        if size is None:
+            raise RuntimeError
         try:
             size = size.strip() # raise AttributeError if size is None
             if size.isdigit():
@@ -177,11 +179,11 @@ def code_checker(self, define, check, fragment, start_msg, error_msg,
             self.define(define, val, quote=False)
             # for easy access to the value in other wscripts
             self.env[define] = val
-        except AttributeError:
-            raise
         except ValueError:
             raise Errors.ConfigurationError(error_msg % locals())
-    except AttributeError:
+        except:
+            raise RuntimeError
+    except RuntimeError:
         self.end_msg('no', 'YELLOW')
         if setbool:
             self.undefine(define)
