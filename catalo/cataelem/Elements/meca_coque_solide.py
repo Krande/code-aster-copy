@@ -52,6 +52,11 @@ class MESSHELL_SB9(Element):
         ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4', 'MASS=FPG4',),),
     )
     calculs = (
+        OP.COOR_ELGA(te=488,
+            para_in  = ((SP.PGEOMER, LC.EGEOM3D),),
+            para_out = ((OP.COOR_ELGA.PCOORPG, LC.EGGAU3D),),
+        ),
+
         OP.EPSI_ELGA(te=125,
             para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
                         (SP.PDEPLAR, DDL_MECA)  , (SP.PVARCPR, LC.ZVARCPG),
