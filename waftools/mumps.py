@@ -58,16 +58,13 @@ def check_mumps(self):
         raise Errors.ConfigurationError('MUMPS disabled')
     self.check_mumps_headers()
     self.check_mumps_version()
+    self.check_sizeof_mumps_integer()
     if opts.mumps_libs is None:
         opts.mumps_libs = 'dmumps zmumps smumps cmumps mumps_common pord'
     if not self.env.BUILD_MPI:
         opts.mumps_libs += ' mpiseq'
     if opts.mumps_libs:
         self.check_mumps_libs()
-    self.set_define_from_env('MUMPS_INT_SIZE',
-                             'Setting size of Mumps integers',
-                             'unexpected value for mumps int: %(size)s',
-                             into=(4, 8), default=4)
 
 @Configure.conf
 def check_mumps_libs(self):
@@ -133,3 +130,22 @@ int main(void){
     else:
         self.define('ASTER_MUMPS_VERSION', ret)
         self.end_msg( self.env['MUMPS_VERSION'] )
+
+@Configure.conf
+def check_sizeof_mumps_integer(self):
+    """Check Mumps integer size
+include "dmumps_struc.h"
+type(dmumps_struc) :: dmpsk
+print *, sizeof(i)
+end
+    """
+    fragment = '\n'.join([
+        'include "dmumps_struc.h"',
+        "type(dmumps_struc) :: dmpsk",
+        "print *, sizeof(dmpsk%n)",
+        "end"])
+    self.code_checker('MUMPS_INT_SIZE', self.check_fc, fragment,
+                      'Checking size of Mumps integer',
+                      'unexpected value for sizeof(mumps_int): %(size)s',
+                      into=(4, 8),
+                      use="MUMPS")

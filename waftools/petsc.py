@@ -77,8 +77,14 @@ def check_petsc(self):
     if opts.petsc_libs:
         self.check_petsc_libs(optlibs)
 
-    self.check_petsc_headers()
+    self.check_petsc_headers("petsc.h")
+    self.check_petsc_headers("petscconf.h")
     self.check_petsc_version()
+    self.check_sizeof_petsc_int()
+    self.check_petsc_conf("PETSC_HAVE_ML", "HAVE_PETSC_ML")
+    self.check_petsc_conf("PETSC_HAVE_HYPRE", "HAVE_PETSC_HYPRE")
+    self.check_petsc_conf("PETSC_HAVE_SUPERLU", "HAVE_PETSC_SUPERLU")
+    self.check_petsc_conf("PETSC_HAVE_MUMPS", "HAVE_PETSC_MUMPS")
 
 @Configure.conf
 def check_petsc_libs(self, optlibs):
@@ -92,11 +98,11 @@ def check_petsc_libs(self, optlibs):
                       mandatory=True, **{ keylib: lib})
 
 @Configure.conf
-def check_petsc_headers(self):
-    check = partial(self.check, header_name='petsc.h', use='PETSC MPI', uselib='SCOTCH Z',
+def check_petsc_headers(self, filename):
+    check = partial(self.check, header_name=filename, use='PETSC MPI', uselib='SCOTCH Z',
                     uselib_store='PETSC')
 
-    self.start_msg('Checking for header petsc.h')
+    self.start_msg('Checking for header ' + filename)
     try:
         if not check(mandatory=False):
             if not check(includes=[osp.join(self.env.INCLUDEDIR, 'petsc')], mandatory=False):
@@ -152,3 +158,35 @@ def check_petsc4py(self):
     else:
         self.undefine('_DISABLE_PETSC4PY')
         self.define('_HAVE_PETSC4PY', 1)
+
+@Configure.conf
+def check_sizeof_petsc_int(self):
+    fragment = r'''
+#include <stdio.h>
+#include <petscconf.h>
+int main(void) {
+    printf("%d", (int)PETSC_SIZEOF_INT);
+    return 0;
+}'''
+    self.code_checker('PETSC_INT_SIZE', self.check_cc, fragment,
+                      'Checking size of PETSc integer',
+                      'unexpected value for sizeof(petsc_int): %s',
+                      into=(4, 8), use='PETSC')
+
+@Configure.conf
+def check_petsc_conf(self, petsc_var, aster_var):
+    fragment = r'''
+#include <stdio.h>
+#include <petscconf.h>
+int main(void) {{
+#ifdef {name}
+    printf("%d", {name});
+    return 0;
+#else
+    printf("0");
+    return 1;
+#endif
+}}'''.format(name=petsc_var)
+    self.code_checker(aster_var, self.check_cc, fragment,
+                      'Checking value of ' + aster_var, 'failure',
+                      mandatory=False, setbool=True, use='PETSC')

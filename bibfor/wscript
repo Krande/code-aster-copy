@@ -26,7 +26,6 @@ import sys
 
 def options(self):
     self.load('compiler_fc')
-    group = self.get_option_group("code_aster options")
 
 def configure(self):
     self.load('compiler_fc')
