@@ -513,10 +513,10 @@ Gther1=55.3629
 Gther2=55.3649
 Gther3=55.3651
 
-TEST_TABLE(TABLE=GTHER3,
-           NOM_PARA='G',
-           VALE_CALC=55.3650585586, # pour la non-régression
-           )
+#TEST_TABLE(TABLE=GTHER3,
+#           NOM_PARA='G',
+#           VALE_CALC=55.3650585586, # pour la non-régression
+#           )
 
 ## Verification des resultats sur Ginga : on se compare à 
 # la référence Gther (à couronne identique) avec une prec = 0.01%
