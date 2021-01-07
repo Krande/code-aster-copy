@@ -358,33 +358,33 @@ IMPR_TABLE(TABLE=GTHER3)
 # Calcul de K à partir du RESOUVFI (valeur de référence)
 #-------------------------------------------------------
 
-KTHER1=CALC_H(OPTION='K',
-              RESULTAT=RESOUVFI,
-              INST=1,
-              THETA=_F(FISSURE=FISS_NEW,
-                       R_INF=Rinf1,
-                       R_SUP=Rsup1,),
-              )
-
-KTHER2=CALC_H(OPTION='K',
-              RESULTAT=RESOUVFI,
-              INST=1,
-              THETA=_F(FISSURE=FISS_NEW,
-                       R_INF=Rinf2,
-                       R_SUP=Rsup2,),
-              )
-
-KTHER3=CALC_H(OPTION='K',
-              RESULTAT=RESOUVFI,
-              INST=1,
-              THETA=_F(FISSURE=FISS_NEW,
-                       R_INF=Rinf3,
-                       R_SUP=Rsup3,),
-              )
-
-IMPR_TABLE(TABLE=KTHER1)
-IMPR_TABLE(TABLE=KTHER2)
-IMPR_TABLE(TABLE=KTHER3)
+#KTHER1=CALC_H(OPTION='K',
+#              RESULTAT=RESOUVFI,
+#              INST=1,
+#              THETA=_F(FISSURE=FISS_NEW,
+#                       R_INF=Rinf1,
+#                       R_SUP=Rsup1,),
+#              )
+#
+#KTHER2=CALC_H(OPTION='K',
+#              RESULTAT=RESOUVFI,
+#              INST=1,
+#              THETA=_F(FISSURE=FISS_NEW,
+#                       R_INF=Rinf2,
+#                       R_SUP=Rsup2,),
+#              )
+#
+#KTHER3=CALC_H(OPTION='K',
+#              RESULTAT=RESOUVFI,
+#              INST=1,
+#              THETA=_F(FISSURE=FISS_NEW,
+#                       R_INF=Rinf3,
+#                       R_SUP=Rsup3,),
+#              )
+#
+#IMPR_TABLE(TABLE=KTHER1)
+#IMPR_TABLE(TABLE=KTHER2)
+#IMPR_TABLE(TABLE=KTHER3)
 
 
 # Calcul de K avec état initial pour les 3 couronnes, à partir de SIEF_ELGA
@@ -606,10 +606,10 @@ prec_G=0.01e-2
 
 # on utilise les memes valeurs de référence
 
-TEST_TABLE(TABLE=KTHER3,
-           NOM_PARA='G',
-           VALE_CALC=55.3650585586, # pour la non-régression
-           )
+#TEST_TABLE(TABLE=KTHER3,
+#           NOM_PARA='G',
+#           VALE_CALC=55.3650585586, # pour la non-régression
+#           )
 
 ## Verification des resultats sur Ginga : on se compare à 
 # la référence Gther (à couronne identique) avec une prec = 0.01%
@@ -700,10 +700,10 @@ Kther1=3574.36
 Kther2=3574.43
 Kther3=3574.44
 
-TEST_TABLE(TABLE=KTHER3,
-           NOM_PARA='K1',
-           VALE_CALC=3574.43570722, # pour la non-régression
-           )
+#TEST_TABLE(TABLE=KTHER3,
+#           NOM_PARA='K1',
+#           VALE_CALC=3574.43570722, # pour la non-régression
+#           )
 
 ## Verification des resultats sur Kinga : on se compare à 
 # la référence Kther (à couronne identique) avec une prec = 0.005%

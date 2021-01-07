@@ -190,11 +190,11 @@ GCP=CALC_H(OPTION='G',
                     FISSURE=FOND_NEW,),
            )
 
-K1K2CP=CALC_H(RESULTAT=ELASCP,
-              THETA=_F(FISSURE=FOND_NEW,
-                       R_INF = 10.,
-                       R_SUP = 20.,),
-              OPTION='K')
+#K1K2CP=CALC_H(RESULTAT=ELASCP,
+#              THETA=_F(FISSURE=FOND_NEW,
+#                       R_INF = 10.,
+#                       R_SUP = 20.,),
+#              OPTION='K')
 
 
 #---------------------------------------------------------------------
@@ -225,11 +225,11 @@ GDP=CALC_H(OPTION='G',
                     FISSURE=FOND_NEW,),
             )
 
-K1K2DP=CALC_H(RESULTAT=ELASDP,
-              THETA=_F(FISSURE=FOND_NEW,
-                       R_INF = 10.,
-                       R_SUP = 20.,),
-              OPTION='K')
+#K1K2DP=CALC_H(RESULTAT=ELASDP,
+#              THETA=_F(FISSURE=FOND_NEW,
+#                       R_INF = 10.,
+#                       R_SUP = 20.,),
+#              OPTION='K')
 
 #--------------------------------------------------------------------
 #            TEST DES RESULTATS DE G, K1 ET K2   EN CP
@@ -243,30 +243,30 @@ TEST_TABLE(PRECISION=1.E-2,
            NOM_PARA='G',
            TABLE=GCP,)
 
-TEST_TABLE(PRECISION=1.E-2,
-           VALE_CALC=2.00670383183,
-           VALE_REFE=2.0,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='K1',
-           TABLE=K1K2CP,)
-
-TEST_TABLE(PRECISION=0.0123,
-           VALE_CALC=0.987774042837,
-           VALE_REFE=1.0,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='K2',
-           TABLE=K1K2CP,)
-
-TEST_TABLE(PRECISION=1.E-2,
-           VALE_CALC=2.52132274802E-05,
-           VALE_REFE=2.5000000000000001E-05,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=K1K2CP,)
-
-TEST_TABLE(VALE_CALC=2.5012789142E-05,
-           NOM_PARA='G_IRWIN',
-           TABLE=K1K2CP,)
+#TEST_TABLE(PRECISION=1.E-2,
+#           VALE_CALC=2.00670383183,
+#           VALE_REFE=2.0,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='K1',
+#           TABLE=K1K2CP,)
+#
+#TEST_TABLE(PRECISION=0.0123,
+#           VALE_CALC=0.987774042837,
+#           VALE_REFE=1.0,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='K2',
+#           TABLE=K1K2CP,)
+#
+#TEST_TABLE(PRECISION=1.E-2,
+#           VALE_CALC=2.52132274802E-05,
+#           VALE_REFE=2.5000000000000001E-05,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='G',
+#           TABLE=K1K2CP,)
+#
+#TEST_TABLE(VALE_CALC=2.5012789142E-05,
+#           NOM_PARA='G_IRWIN',
+#           TABLE=K1K2CP,)
 
 #--------------------------------------------------------------------
 #            TEST DES RESULTATS DE G, K1 ET K2   EN DP
@@ -280,30 +280,30 @@ TEST_TABLE(PRECISION=1.E-2,
            NOM_PARA='G',
            TABLE=GDP,)
 
-TEST_TABLE(PRECISION=1.E-2,
-           VALE_CALC=2.0030182618,
-           VALE_REFE=2.0,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='K1',
-           TABLE=K1K2DP,)
-
-TEST_TABLE(PRECISION=1.E-2,
-           VALE_CALC=0.996040826717,
-           VALE_REFE=1.0,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='K2',
-           TABLE=K1K2DP,)
-
-TEST_TABLE(PRECISION=1.E-2,
-           VALE_CALC=2.29684382606E-05,
-           VALE_REFE=2.2750000000000001E-05,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=K1K2DP,)
-
-TEST_TABLE(VALE_CALC=2.27690166595E-05,
-           NOM_PARA='G_IRWIN',
-           TABLE=K1K2DP,)
+#TEST_TABLE(PRECISION=1.E-2,
+#           VALE_CALC=2.0030182618,
+#           VALE_REFE=2.0,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='K1',
+#           TABLE=K1K2DP,)
+#
+#TEST_TABLE(PRECISION=1.E-2,
+#           VALE_CALC=0.996040826717,
+#           VALE_REFE=1.0,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='K2',
+#           TABLE=K1K2DP,)
+#
+#TEST_TABLE(PRECISION=1.E-2,
+#           VALE_CALC=2.29684382606E-05,
+#           VALE_REFE=2.2750000000000001E-05,
+#           REFERENCE='NON_DEFINI',
+#           NOM_PARA='G',
+#           TABLE=K1K2DP,)
+#
+#TEST_TABLE(VALE_CALC=2.27690166595E-05,
+#           NOM_PARA='G_IRWIN',
+#           TABLE=K1K2DP,)
 
 FIN()
 #
