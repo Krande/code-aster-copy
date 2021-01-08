@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 2016 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 2016 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -168,6 +168,7 @@ subroutine set_precond_data( ctxt )
         ASSERT(ierr.eq.0)
 
     else if ( pre_type == mumps_pre ) then
+#ifdef HAVE_PETSC_MUMPS
     ! Ou encore  mumps mais à partir du moment où petsc est compilée
     ! avec support de l'interface MUMPS
        call PCSetType(ctxt%pcphy, PCLU, ierr)
@@ -193,6 +194,10 @@ subroutine set_precond_data( ctxt )
 !  CNTL(3) (absolute pivoting threshold):      1e-06
        call MatMumpsSetCntl(F,to_petsc_int(3),1.D-6,ierr)
        ASSERT(ierr.eq.0)
+#else
+       ! should not pass here
+       ASSERT(.false.)
+#endif
     else
         ASSERT(.false.)
     endif

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -206,7 +206,8 @@ subroutine build_elg_context( full_matas )
         endif
     endif
     if ( elg_ctxt%ksp == PETSC_NULL_KSP ) then
-    !  Create linear solver context
+#ifdef HAVE_PETSC_MUMPS
+        !  Create linear solver context
         call KSPCreate(PETSC_COMM_SELF,elg_ctxt%ksp,ierr)
         ASSERT( ierr == 0 )
     !  Set operators. Here the matrix that defines the linear system
@@ -246,6 +247,10 @@ subroutine build_elg_context( full_matas )
         ASSERT( ierr == 0 )
         call KSPSetUp(elg_ctxt%ksp,ierr)
         ASSERT( ierr == 0 )
+#else
+        ! should be pass here
+        ASSERT(.false.)
+#endif
     endif
     !
     ! Projection T'*(MatB*T)
