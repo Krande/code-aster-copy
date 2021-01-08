@@ -28,7 +28,7 @@
 #include "aster.h"
 #include <stdio.h>
 
-#if defined _DISABLE_MATHLIB_FPE
+#if defined DISABLE_MATHLIB_FPE
 #include <signal.h>
 #define _GNU_SOURCE 1
 #include <fenv.h>
@@ -39,7 +39,7 @@ static int compteur_fpe = 1;
 
 void DEFP(MATFPE, matfpe, ASTERINTEGER *enable)
 {
-#if defined _DISABLE_MATHLIB_FPE
+#if defined DISABLE_MATHLIB_FPE
 
    /* permet juste de vérifier où on en est si besoin ! */
    if (*enable == 0) {

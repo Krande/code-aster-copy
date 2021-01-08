@@ -59,8 +59,6 @@ def configure(self):
         self.env.revert()
         if opts.enable_hdf5 == True:
             raise
-        self.define('_DISABLE_HDF5', 1)
-        self.define('_DISABLE_MED', 1)
         self.undefine('HAVE_HDF5')
         self.undefine('HAVE_MED')
     else:
@@ -74,7 +72,6 @@ def configure(self):
         self.env.revert()
         if opts.enable_med == True:
             raise
-        self.define('_DISABLE_MED', 1)
         self.undefine('HAVE_MED')
     else:
         self.define('HAVE_MED', 1)

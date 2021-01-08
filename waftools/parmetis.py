@@ -37,7 +37,6 @@ def options(self):
 
 def configure(self):
     if not self.env.BUILD_MPI:
-        self.define('_DISABLE_PARMETIS', 1)
         self.undefine('HAVE_PARMETIS')
         return
     try:
@@ -46,7 +45,6 @@ def configure(self):
     except Errors.ConfigurationError:
         self.reset_msg()
         self.env.revert()
-        self.define('_DISABLE_PARMETIS', 1)
         self.undefine('HAVE_PARMETIS')
         if self.options.enable_parmetis:
             raise

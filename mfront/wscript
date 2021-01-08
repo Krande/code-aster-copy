@@ -48,7 +48,6 @@ def configure(self):
         self.env.revert()
         if opts.enable_mfront == True:
             raise
-        self.define('_DISABLE_MFRONT', 1)
         self.undefine('HAVE_MFRONT')
         self.env.TFELSUFFIX = ''
     else:

@@ -42,7 +42,6 @@ def configure(self):
     except Errors.ConfigurationError:
         self.reset_msg()
         self.env.revert()
-        self.define('_DISABLE_MUMPS', 1)
         self.undefine('HAVE_MUMPS')
         if self.options.enable_mumps == True:
             raise

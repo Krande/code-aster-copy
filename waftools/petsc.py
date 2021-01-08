@@ -40,7 +40,6 @@ def options(self):
 
 def configure(self):
     if not self.env.BUILD_MPI:
-        self.define('_DISABLE_PETSC', 1)
         self.undefine('HAVE_PETSC')
         self.define('_HAVE_PETSC4PY',0)
         return
@@ -50,7 +49,6 @@ def configure(self):
     except Errors.ConfigurationError:
         self.reset_msg()
         self.env.revert()
-        self.define('_DISABLE_PETSC', 1)
         self.undefine('HAVE_PETSC')
         self.define('_HAVE_PETSC4PY',0)
         if self.options.enable_petsc:

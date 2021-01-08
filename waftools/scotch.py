@@ -41,13 +41,11 @@ def configure(self):
     except Errors.ConfigurationError:
         self.reset_msg()
         self.env.revert()
-        self.define('_DISABLE_SCOTCH', 1)
         self.undefine('HAVE_SCOTCH')
         if self.options.enable_scotch == True:
             raise
     else:
         self.define('HAVE_SCOTCH', 1)
-        self.undefine('_DISABLE_SCOTCH')
 
 ###############################################################################
 

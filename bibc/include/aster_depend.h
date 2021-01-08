@@ -106,14 +106,14 @@
 /* On non GNU/Linux systems, FPE are always enabled */
 #ifdef GNU_LINUX
 #   ifndef _ENABLE_MATHLIB_FPE
-#       ifndef _DISABLE_MATHLIB_FPE
-#           define _DISABLE_MATHLIB_FPE
+#       ifndef DISABLE_MATHLIB_FPE
+#           define DISABLE_MATHLIB_FPE
 #       endif
 #   else
-#       undef _DISABLE_MATHLIB_FPE
+#       undef DISABLE_MATHLIB_FPE
 #   endif
 #else
-#   undef _DISABLE_MATHLIB_FPE
+#   undef DISABLE_MATHLIB_FPE
 #endif /* GNU_LINUX */
 
 /* Valeurs par défaut pour les répertoires */
