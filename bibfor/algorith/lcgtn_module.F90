@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -87,7 +87,8 @@ module lcgtn_module
     end type CONSTITUTIVE_LAW
 
        
-    logical:: DBG = .FALSE.
+    aster_logical:: DBG = ASTER_FALSE
+    real(kind=8) :: dbg_tmp1, dbg_tmp2, dbg_tmp3, dbg_tmp4, dbg_tmp5
     
 contains
 
@@ -300,6 +301,9 @@ subroutine Integrate(self, eps, vim, sig, vip, deps_sig, dphi_sig, deps_vi, dphi
 ! --------------------------------------------------------------------------------------------------
 
     if (DBG) write(6,*) 'START Integrate'
+    if (DBG) write(6,*) 'eps = ',eps
+    if (DBG) write(6,*) 'vim = ',vim
+    
     
     ASSERT (present(dphi_sig) .eqv. self%grvi)
     ASSERT (present(deps_vi)  .eqv. self%grvi)
@@ -390,7 +394,7 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
     real(kind=8):: tsm, tss, tshmin, tshmax
     real(kind=8):: kml1, kml2, lbd, lbd1, lbd2
     real(kind=8):: equint,equext,d_equint,d_equext,p,q,ts
-    real(kind=8):: p1,p2,fg1,fg2,fgmax,sgn,dts_p,dkv_ts,dka_ts
+    real(kind=8):: p1,p2,fg1,fg2,sgn,dts_p,dkv_ts,dka_ts
     real(kind=8):: lambda_bar,deuxmu_bar
     real(kind=8):: mat(2,2),vec(2)
     real(kind=8):: djac_p,dteh_p,dteq_p,dphi_p,deps_p(size(eps))
@@ -456,7 +460,6 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
     self%q1f  = q1f
     self%jac  = jac
 
-
     ! Frontieres des regimes elastique et singulier
     gamm1 = (1-q1f)**2 / (2*q1f)
     desh  = telh/self%mat%troisk
@@ -472,6 +475,13 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
     tsm  = f_ts_hat(self,dka=0.d0)
     tss  = f_ts_hat(self,dka=dkas)
     
+    if (DBG) write (6,*) 'telh  = ',telh
+    if (DBG) write (6,*) 'telq  = ',telq
+    if (DBG) write (6,*) 'jac   = ',jac
+    if (DBG) write (6,*) 'dkas  = ',dkas
+    if (DBG) write (6,*) 'tsm   = ',tsm
+    if (DBG) write (6,*) 'tss   = ',tss
+    
     
     ! Valeurs de transition entre viscosite dominante et viscosite faible
     if (self%visco%visc) then
@@ -485,6 +495,7 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
 
     if (DBG) write(6,*) 'INTEGRATION'
     if (DBG) write(6,*) 'rigi = ',self%rigi
+    if (DBG) write(6,*) 'vari = ',self%vari
     
     
     
@@ -493,6 +504,20 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
 ! --------------------------------------------------------------------------------------------------
 
 
+! ----------------------------------------------------------------------
+!  REGIME SINGULIER SANS PLASTICITE
+! ----------------------------------------------------------------------
+
+    ! Elasticite (avec marge) si tels < T(kam) + cvsigm
+    if (abs(tsm).le.cvsigm) then
+        state = 2
+        ep    = eps
+        t     = 0
+        goto 500
+    end if
+
+
+    
 ! ----------------------------------------------------------------------
 !  REGIME ELASTIQUE
 ! ----------------------------------------------------------------------
@@ -709,22 +734,18 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
         !     --> borne max de l'encadrement de la solution exacte
         if (DBG) write(6,*) '3.3'
 
-        ! Test de la borne p=1
-        fgmax = f_g_hat(self,1.d0,ts)
-        ASSERT(fgmax.ge.0.d0)
-        if ((fgmax).le.cv_g) then
-            p2 = 1.d0
-            fg2 = fgmax
-        else
-            p2 = Solve_g_hat(self,ts,0.5d0*cv_g,0.5d0*cv_g,p_ini=p1)
-            if (self%exception .eq. 1) goto 999
-            fg2 = f_g_hat(self,p2,ts)
-        end if
+        p2 = Solve_g_hat(self,ts,0.5d0*cv_g,0.5d0*cv_g,p_ini=p1)
+        if (self%exception .eq. 1) goto 999
+        fg2 = f_g_hat(self,p2,ts)
+        
         lbd2 = f_lbd_hat(self,p2,ts)
         kml2 = dka - lbd2
-        if (DBG) write (6,*) 'p2=',p2,'  lbd2=',lbd2,'=',f_lbd_hat(self,p2,ts),' kml2=',kml2, &
-                            '  fg2=',fg2,'=',f_g_hat(self,p2,ts)
-      
+        if (DBG) then
+            dbg_tmp1 = f_lbd_hat(self,p2,ts)
+            dbg_tmp2 = f_g_hat(self,p2,ts)
+            write (6,*) 'p2=',p2,'  lbd2=',lbd2,'=',dbg_tmp1,' kml2=',kml2, &
+                            '  fg2=',fg2,'=',dbg_tmp2
+        end if
 
         ! Test de convergence de la boucle exterieure sur la seconde borne
         if (abs(ts - f_ts_hat(self,dka=lbd2)).le.cvsigm) then
@@ -750,14 +771,20 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
         !   -> recherche de p
         if (DBG) write(6,*) '3.4'
         if (kml1*kml2.lt.0) then
-            if (DBG) write (6,*) '3.4 -> GO'
-            if (DBG) write (6,*) 'dka = ',dka,'  ts = ',ts
-            if (DBG) write (6,*) 'lbd1 = ',lbd1,' = ',f_lbd_hat(self,p1,ts)
-            if (DBG) write (6,*) 'lbd2 = ',lbd2,' = ',f_lbd_hat(self,p2,ts)
-            if (DBG) write (6,*) 'p1=',p1,' kml1=',kml1,'=',dka-lbd1,'  fg1=',&
-                                    fg1,'=',f_g_hat(self,p1,ts)
-            if (DBG) write (6,*) 'p2=',p2,' kml2=',kml2,'=',dka-lbd2,'  fg2=',&
-                                    fg2,'=',f_g_hat(self,p2,ts)
+            if (DBG) then
+                write (6,*) '3.4 -> GO'
+                dbg_tmp1 = f_g_hat(self,p1,ts)
+                dbg_tmp2 = f_g_hat(self,p2,ts)
+                dbg_tmp3 = f_lbd_hat(self,p1,ts)
+                dbg_tmp4 = f_lbd_hat(self,p2,ts)
+                write (6,*) 'dka = ',dka,'  ts = ',ts
+                write (6,*) 'lbd1 = ',lbd1,' = ',dbg_tmp3
+                write (6,*) 'lbd2 = ',lbd2,' = ',dbg_tmp4
+                write (6,*) 'p1=',p1,' kml1=',kml1,'=',dka-lbd1,'  fg1=',&
+                                    fg1,'=',dbg_tmp1
+                write (6,*) 'p2=',p2,' kml2=',kml2,'=',dka-lbd2,'  fg2=',&
+                                    fg2,'=',dbg_tmp2
+            end if
             
             ! croissance ou decroissance de KML(p,ts,ka) par rapport a p dans l'intervalle (p1,p2)
             sgn = sign(1.d0,kml2-kml1)
@@ -770,7 +797,10 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
                 d_equint = -sgn * dp_lbd_hat(self,p,ts)
                 if (DBG) write (6,*) 'ite = ',iteint,'  p = ',p,'  lbd = ',lbd,'  equ = ',&
                                         equint,'  d_equ = ',d_equint
-                if (DBG) write (6,*) 'cvg = ',ts-f_ts_hat(self,dka=lbd)
+                if (DBG) then
+                    dbg_tmp1 = f_ts_hat(self,dka=lbd)
+                    write (6,*) 'cvg = ',ts-dbg_tmp1
+                end if
                 if (abs(ts-f_ts_hat(self,dka=lbd)).le.cvsigm) then
                     dka = lbd
                     exit
@@ -795,7 +825,10 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
         d_equext = dkv_dka(self%visco,kv) - (dp_lbd_hat(self,p,ts)*dts_p &
                     + dts_lbd_hat(self,p,ts))*dkv_ts
         if (DBG) write (6,*) 'iteext=',iteext,'  kv=',kv,'  equext=',equext,'  d_equext=',d_equext
-        if (DBG) write (6,*) 'dka=',dka,'  lambda=',f_lbd_hat(self,p,ts),'  p=',p,'  ts=',ts
+        if (DBG) then 
+            dbg_tmp1 = f_lbd_hat(self,p,ts)
+            write (6,*) 'dka=',dka,'  lambda=',dbg_tmp1,'  p=',p,'  ts=',ts
+        end if
         if (DBG) write (6,*) 'utnewt 4B'
 !        kv = utnewt(kv,equext,d_equext,iteext,memext,xmin=kvmin,xmax=kvmax,usemin=ASTER_FALSE)
         kv = utnewt(kv,equext,d_equext,iteext,memext,xmin=kvmin,xmax=kvmax)
@@ -806,7 +839,7 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
         self%exception = 1
         goto 999
     end if        
-
+    if (DBG) write (6,*) 'Calcul de q'
     q = f_q_hat(self,p,ts)
     state = 1
 
@@ -830,6 +863,15 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
         call Update_porosity(self,epm,ep,ka,epcum,f,fnuc)      
     end if
 
+    if (DBG) write(6,*) 'ka=',ka,'  dka=',dka
+    if (DBG) write(6,*) 'state=',state
+    if (DBG) write(6,*) 'tau=',t
+    if (DBG) write(6,*) 'deph=',deph
+    if (DBG) write(6,*) 'depd=',depd
+    if (DBG) write(6,*) 'ep=',ep
+    if (DBG) write(6,*) 'tsm=',tsm
+    
+
 
 
 ! ======================================================================
@@ -844,44 +886,19 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
     deps_ka = 0
     dphi_ka = 0
 
-
-!    if (self%pred) then
-!        p  = 1.d0
-!        q  = 1.d0
-!        ts = tsm
-!        t  = tel
-!    end if
-
-
-!    ! Etat pour choisir l'operateur tangent en phase de prediction
-!    if (self%pred) then
-        
-!        ! En regime de frontiere, le choix de la matrice est guide par le pas precedent
-!        ! Sinon, on evalue par rapport a mve et mvs
-        
-!        if (is_tels_less_than(self,tsm-cvsigm)) then
-!            state = 0
-!        else if (is_tels_less_than(self,cvsigm) .or. tss.le.-cvsigm) then
-!            state = 2
-!        else if (.not. is_tels_less_than(self,tsm+cvsigm) .and. tss.gt.cvsigm) then
-!            state = 1
-!        end if
-        
-!    end if
     
     ! Correction eventuelle pour choisir l'operateur tangent en phase de prediction
     ! Si elastique mais presque plastique -> plastique
     
     if (self%pred .and. state.eq.0 .and. .not. self%elas) then
-        
         if (.not. is_tels_less_than(self,tsm-cvsigm)) then
+            if (DBG) write(6,*) 'Matrice tangente plastique forcee'
             state = 1
             p  = 1.d0
             q  = 1.d0
             ts = tsm
             t  = tel
         end if
-        
     end if
 
 
@@ -1109,19 +1126,37 @@ function Solve_g_hat(self,ts,cvg,g0,p_ini) result(p)
 ! cvg    accuracy
 ! --------------------------------------------------------------------------------------------------
     integer     :: ite
-    real(kind=8):: equ, d_equ, pmin
+    real(kind=8):: equ, d_equ, pmin, pmax, equ_min, equ_max
     type(newton_state):: mem
 ! --------------------------------------------------------------------------------------------------
-    if (DBG) write(6,*) 'BEGIN Solve_g_hat'
-    pmin = bnd_pmin(self,ts,g0)
-    ASSERT(pmin.lt.1.d0)
-    if (DBG) write(6,*) 'pmin = ',pmin,'gmin-g0=',f_g_hat(self,pmin,ts)-g0
+    if (DBG) write(6,*) 'BEGIN Solve_g_hat ',ts,g0
+    
+    ! Test des valeurs aux bornes
+    pmax    = bnd_pmax(self,ts,g0)
+    p       = pmax
+    equ_max = f_g_hat(self,pmax,ts)-g0
+    if (abs(equ_max) .le. cvg) goto 999
+    ASSERT (equ_max.ge.0)
+    
+    pmin    = bnd_pmin(self,ts,g0)
+    p       = pmin
+    equ_min = f_g_hat(self,pmin,ts)-g0
+    if (abs(equ_min) .le. cvg) goto 999
+    ASSERT (equ_min.le.0)
+    
+    ASSERT(pmin.le.pmax)
+    
+    if (DBG) then
+        write (6,*) 'pmin = ',pmin,'  pmax = ',pmax
+        write (6,*) 'gmin-g0=',equ_min,  'gmax-g0=',equ_max
+    end if
     
     ! Point initial
     if (present(p_ini)) then
         p = max(p_ini,pmin)
+        p = min(p,pmax)
     else
-        p   = 1.d0
+        p   = pmax
     end if
     
     if (DBG) write (6,*) 'utnewt 1B'
@@ -1130,7 +1165,7 @@ function Solve_g_hat(self,ts,cvg,g0,p_ini) result(p)
         d_equ = dp_g_hat(self,p,ts)
         if (abs(equ).le.cvg) exit
         if (DBG) write(6,*) p,equ,d_equ,ite
-        p = utnewt(p,equ,d_equ,ite,mem,xmin=pmin,xmax=1.d0)
+        p = utnewt(p,equ,d_equ,ite,mem,xmin=pmin,xmax=pmax)
     end do
     if (DBG) write (6,*) 'utnewt 1E'
     if (ite.gt.self%itemax) then
@@ -1153,9 +1188,10 @@ function bnd_pmin(self,ts,g0) result(pmin)
     real(kind=8),intent(in)::ts,g0
     real(kind=8)::pmin
 ! --------------------------------------------------------------------------------------------------
-    real(kind=8):: re,al,a,l0,b,c0,fmin,p0,dmin,coef,sh
+    real(kind=8):: re,al,a,l0,b,c0,fmin,p0,dmin,coef,sh,gmin
 ! --------------------------------------------------------------------------------------------------
 
+    if (DBG) write (6,*) 'BEGIN bnd_pmin'
     ! G(0,ts)-g0 < 0
     ASSERT(g0.ge.-(1-self%q1f)**2)
 
@@ -1167,22 +1203,85 @@ function bnd_pmin(self,ts,g0) result(pmin)
     b   = 1.5d0*self%mat%q2*re
     c0  = (4*al)/(3*self%mat%q2**2*self%q1f)
     
+    if (DBG) then
+        write (6,*) 'ts   = ',ts
+        write (6,*) 'g0   = ',g0
+        write (6,*) 'telh = ',self%telh
+        write (6,*) 're   = ',re
+        write (6,*) 'al   = ',al
+        write (6,*) 'l0   = ',l0
+        write( 6,*) 'b    = ',b
+        write (6,*) 'c0   = ',c0
+    end if
+    
     ! Denominateur minimal
     if (c0.le.1) then
         fmin = 0.d0
-    else if ( c0.ge.cosh(b)) then
+    else if ( acosh(c0).ge.b) then
         fmin = l0*sinh(b)-a
     else
         p0 = acosh(c0)/b
         fmin = l0*sinh(b*p0)-a*p0
     end if
+    if (DBG) write (6,*) 'fmin = ',fmin
+    
     dmin = a + fmin
         
     coef = ((0.5d0*self%telq*self%mat%q2*self%q1f)/(ts*dmin))**2 + self%q1f
     sh   = sqrt((g0+(1-self%q1f)**2)/coef)
     pmin = asinh(sh)/b
+    if (DBG) write (6,*) 'pmin=',pmin
 
+    if (DBG .and. pmin.ge.1) then
+        dbg_tmp1 = f_g_hat(self,0.99999999d0,ts)
+        write (6,*) 'g(1)=',dbg_tmp1
+    end if
+    
+    ASSERT (pmin.lt.1.d0)
+    gmin = f_g_hat(self,pmin,ts)
+    if (DBG) write (6,*) 'gmin=',gmin
+    
+    ASSERT (gmin.le.g0)
+    
+    if (DBG) write (6,*) 'END bnd_pmin'
 end function bnd_pmin
+
+
+
+
+! --------------------------------------------------------------------------------------------------
+! Maximal bound pmax for equation G_hat(p,ts) = g0
+! --------------------------------------------------------------------------------------------------
+
+function bnd_pmax(self,ts,g0) result(pmax)
+    implicit none
+    type(CONSTITUTIVE_LAW),intent(inout):: self
+    real(kind=8),intent(in)::ts,g0
+    real(kind=8)::pmax
+! --------------------------------------------------------------------------------------------------
+    real(kind=8):: chm,arg,p
+! --------------------------------------------------------------------------------------------------
+
+    if (DBG) write (6,*) 'BEGIN bnd_pmax'
+    ! G(0,ts)-g0 < 0
+    ASSERT(g0.ge.-(1-self%q1f)**2)
+
+    chm  = (g0+(1-self%q1f)**2)/(2*self%q1f)
+    arg  = acosh(1+chm)
+    p    = (2.d0*ts*arg)/(3*self%mat%q2*abs(self%telh))
+    pmax = min(1.d0,p)
+
+    if (DBG) then
+        dbg_tmp1 = f_g(self,0.d0,p,ts)
+        dbg_tmp2 = f_g_hat(self,pmax,ts)
+        write (6,*) 'p = ',p
+        write (6,*) 'pmax = ',pmax
+        write (6,*) 'gapp-g0 = ',dbg_tmp1-g0
+        write (6,*) 'gmax-g0 = ',dbg_tmp2-g0
+    end if
+    
+    if (DBG) write (6,*) 'END bnd_pmax'
+end function bnd_pmax
 
 
 
@@ -1207,7 +1306,7 @@ subroutine Solve_Mises(self,cv_ts,dkaz,flow_type,dka)
 ! --------------------------------------------------------------------------------------------------
     aster_logical:: buffer
     integer     :: ite
-    real(kind=8):: dkasvm, equ, d_equ, c0, c1, tsm, kv, kvmin, kvmax
+    real(kind=8):: dkasvm, equ, d_equ, c0, c1, tsm, tss, kv, kvmin, kvmax
     type(newton_state):: mem
 ! --------------------------------------------------------------------------------------------------
     if (DBG) write(6,*) 'BEGIN Solve_Mises'
@@ -1232,10 +1331,10 @@ subroutine Solve_Mises(self,cv_ts,dkaz,flow_type,dka)
     
     ! Valeur de transition regulier / singulier pour von Mises
     dkasvm = -c0/c1
-
+    tss    = f_ts_hat(self,dka=dkasvm)
 
     ! Regime singulier pour von Mises (GTN regulier)
-    if (f_ts_hat(self,dka=dkasvm) .le. -cv_ts) then
+    if (tss .le. cv_ts) then
         flow_type = 2
         dka = dkaz
         goto 999
@@ -1258,10 +1357,11 @@ subroutine Solve_Mises(self,cv_ts,dkaz,flow_type,dka)
         kvmax = dkasvm
     else
         self%visco%active = ASTER_FALSE
-        kv    = -(tsm+c0)/c1
+        kv    = -(tsm+c0)/(tss-tsm-c0)*dkasvm
         kvmin = 0.d0
         kvmax = dkasvm  
     end if
+    if (DBG) write(6,*) 'kvmin=',kvmin,'  kv=',kv,'  kvmax=',kvmax,'  v_active=',self%visco%active
     ASSERT(kvmin.le.kv .and. kv.le.kvmax)
     
     
@@ -1309,41 +1409,85 @@ function Compute_Star(self,p,q,cv_ts) result(ts)
 ! On assure in fine G(p,q,ts) > 0 et G(p,q,ts+cv_ts) < 0
 ! --------------------------------------------------------------------------------------------------
     integer     :: ite
-    real(kind=8):: ts1, ts2, x, equ, d_equ, ofsm, ofsp
+    real(kind=8):: ts1, ts2, tsmin, x, equ, d_equ, ts_m, ts_p, equ2
     type(newton_state):: mem
 ! --------------------------------------------------------------------------------------------------
     if (DBG) write(6,*) 'BEGIN Compute_Star'
+    if (DBG) write(6,*) 'th=',p*self%telh,'  tq=',q*self%telq,'  cv_ts=',cv_ts
+    
 
     ! Cas d'un tenseur nul
-    if (p.eq.0.d0 .and. q.eq.0.d0) then
+    if (p*self%telh .eq. 0.d0 .and. q*self%telq .eq. 0.d0) then
         ts = 0.d0
         goto 999
     end if
     
-    ! Borne max et point de depart de la methode de Newton
-    ts1 = sqrt((q*self%telq)**2 + self%q1f*(1.5d0*self%mat%q2*p*self%telh)**2)/(1-self%q1f)
-    ts2 = 1.5d0*self%mat%q2*abs(p*self%telh)/acosh(1+0.5d0*(1-self%q1f)**2/self%q1f)
-    x   = 1.d0 / max(ts1,ts2)
+    ! Borne min sur ts ---> G(tsmin) > 0  (rappel: G(0)=+inf)
+    ts1   = sqrt((q*self%telq)**2 + self%q1f*(1.5d0*self%mat%q2*p*self%telh)**2)/(1-self%q1f)
+    ts2   = 1.5d0*self%mat%q2*abs(p*self%telh)/acosh(1+0.5d0*(1-self%q1f)**2/self%q1f)
+    tsmin = max(ts1,ts2)
 
-    if (DBG) write (6,*) 'telh=',self%telh,'  telq=',self%telq
-    if (DBG) write (6,*) 'ts1: ',ts1, f_g(self,p,q,ts1)
-    if (DBG) write (6,*) 'ts1: ',ts1, f_g(self,p,q,ts1)
-    if (DBG) write (6,*) 'ts2: ',ts2, f_g(self,p,q,ts2)
-    if (DBG) write (6,*) 'x  : ',x
+    if (DBG) then
+        dbg_tmp1 = f_g(self,p,q,ts1)
+        dbg_tmp2 = f_g(self,p,q,ts2)
+        write (6,*) 'ts1: ',ts1, dbg_tmp1
+        write (6,*) 'ts2: ',ts2, dbg_tmp2
+        write (6,*) 'x  : ',x
+    end if
+
+    ! Correction de la borne min pour des raisons d'arrondis si G(tsmin) < 0
+    equ = f_g(self,p,q,tsmin)
+    if (equ.le.0) then
     
-    ! Resolution G(p,q,1/x)=0
+        ! Essai d'un encadrement simple
+        ts_p = tsmin
+        ts_m = max(tsmin-cv_ts,0.5d0*tsmin)
+        equ2 = f_g(self,p,q,ts_m)
+        if (equ2.ge.0) goto 500
+        
+        ! Recherche de la borne min sur ts par dichotomie (car G(0)=+inf)
+        do ite = 1,self%itemax
+            ts_m = 0.5d0*ts_m
+            equ2 = f_g(self,p,q,ts_m)
+            if (equ2.ge.0) exit
+        end do
+        if (ite.gt.self%itemax) then
+            self%exception = 1
+            goto 999
+        end if     
+        
+        ! Est-ce un intervalle satisfaisant ?
+        if (ts_p-ts_m .le. cv_ts) goto 500
+        
+        ! Sinon c'est simplement une borne min sur ts
+        tsmin = ts_m
+    end if
+    
+    
+    
+    ! Resolution G(p,q,1/x)=0 pour tirer profit de la convexite de G par rapport a x
+    x = 1.d0 / tsmin
     do ite = 1,self%itemax
         ts  = 1.d0/x
         equ = f_g(self,p,q,ts)
         if (DBG) write(6,*) 'ite = ',ite,'   x = ',x,'   ts = ',ts,'   equ = ',equ
         
         ! Construction de l'encadrement et test (monotonie de la fonction)
-        ofsp = f_g(self,p,q,ts + 0.5d0*cv_ts)
-        ofsm = f_g(self,p,q,ts - 0.5d0*cv_ts)
-        if (DBG) write(6,*) 'ofsp=',ofsp,'  ofsm=',ofsm
-        ASSERT(ofsm.ge.0)
-        if (ofsp.le.0.d0) exit
-        
+        if (equ.ge.0) then
+            ts_m = ts
+            ts_p = ts+cv_ts
+            equ2 = f_g(self,p,q,ts_p)
+            if (DBG) write(6,*) 'ts_p=',ts_p,'  equ2=',equ2
+            if (equ2 .le. 0) exit
+        else
+            ts_p = ts
+            ts_m = max(ts-cv_ts,tsmin)
+            equ2 = f_g(self,p,q,ts_m)
+            if (DBG) write(6,*) 'ts_m=',ts_m,'  equ2=',equ2
+            if (equ2 .ge. 0) exit
+        end if
+
+        ! Itere de Newton
         d_equ = -dts_g(self,p,q,ts)*ts**2
         if (DBG) write (6,*) 'utnewt 7B'
         x = utnewt(x,equ,d_equ,ite,mem)
@@ -1355,7 +1499,8 @@ function Compute_Star(self,p,q,cv_ts) result(ts)
     end if     
     
     ! On fournit la borne inferieure de l'encadrement (inferieure a la valeur reelle)   
-    ts = ts - 0.5d0*cv_ts
+500 continue
+    ts = ts_m
 
 999 continue
     if (DBG) write(6,*) 'END Compute_Star'
@@ -1510,22 +1655,28 @@ real(kind=8) function dp_g(self,q,p,ts)
     implicit none
     type(CONSTITUTIVE_LAW),intent(inout):: self
     real(kind=8)::q,p,ts
+    if (DBG) write (6,*) 'dp_g: ',q,p,ts
     dp_g = 3*self%q1f*self%mat%q2*self%telh/ts*sinh(1.5d0*self%mat%q2*self%telh*p/ts)
+    if (DBG) write (6,*) 'dp_g ok'
 end function dp_g
 
 real(kind=8) function dts_g(self,q,p,ts)
     implicit none
     type(CONSTITUTIVE_LAW),intent(inout):: self
     real(kind=8)::q,p,ts
+    if (DBG) write (6,*) 'dts_g: ',q,p,ts
     dts_g = -2*(self%telq*q)**2/ts**3 - 3*self%q1f*self%mat%q2*self%telh*p/ts**2 &
                                         *sinh(1.5d0*self%mat%q2*self%telh*p/ts)
+    if (DBG) write (6,*) 'dts_g ok'
 end function dts_g
 
 real(kind=8) function dteh_g(self,q,p,ts)
     implicit none
     type(CONSTITUTIVE_LAW),intent(inout):: self
     real(kind=8)::q,p,ts
+    if (DBG) write (6,*) 'dteh_g: ',q,p,ts
     dteh_g = 3*self%q1f*self%mat%q2*p/ts*sinh(1.5d0*self%mat%q2*self%telh*p/ts)
+    if (DBG) write (6,*) 'dteh_g ok'
 end function dteh_g
 
 real(kind=8) function dteq_g(self,q,p,ts)
@@ -1623,7 +1774,9 @@ real(kind=8) function f_lambda(self,x)
     implicit none
     type(CONSTITUTIVE_LAW),intent(inout):: self
     real(kind=8)::x
+    if (DBG) write (6,*) 'f_lambda: ',x
     f_lambda = 0.5d0*self%q1f*self%mat%q2*sinh(1.5d0*self%mat%q2*x)
+    if (DBG) write (6,*) 'f_lambda ok'    
 end function f_lambda
 
 real(kind=8) function dx_lambda(self,x)
@@ -1639,6 +1792,7 @@ real(kind=8) function f_theta(self,x,y)
     implicit none
     type(CONSTITUTIVE_LAW),intent(inout):: self
     real(kind=8)::x,y
+    if (DBG) write (6,*) 'f_theta'
     f_theta = 1.d0/(y**2 + 3*x*f_lambda(self,x))
 end function f_theta
 
@@ -1647,6 +1801,7 @@ real(kind=8) function dx_theta(self,x,y)
     type(CONSTITUTIVE_LAW),intent(inout):: self
     real(kind=8)::x,y
     real(kind=8)::lbd
+    if (DBG) write (6,*) 'dx_theta'
     lbd = f_lambda(self,x)
     dx_theta = -3*(lbd + x*dx_lambda(self,x))/(y**2 + 3*x*lbd)**2
 end function dx_theta
@@ -1655,6 +1810,7 @@ real(kind=8) function dy_theta(self,x,y)
     implicit none
     type(CONSTITUTIVE_LAW),intent(inout):: self
     real(kind=8)::x,y
+    if (DBG) write (6,*) 'dy_theta'
     dy_theta = -(2*y)/(y**2 + 3*x*f_lambda(self,x))**2
 end function dy_theta
 
@@ -1665,6 +1821,7 @@ real(kind=8) function f_q_hat(self,p,ts)
     type(CONSTITUTIVE_LAW),intent(inout):: self
     real(kind=8)::p,ts
     real(kind=8)::muk,num,den
+    if (DBG) write (6,*) 'f_q_hat: ',p,ts,self%telh
     muk = self%mat%troismu/self%mat%troisk
     num = ts*f_lambda(self,self%telh*p/ts)
     den = num + muk*self%telh*(1-p)
@@ -1676,6 +1833,7 @@ real(kind=8) function dp_q_hat(self,p,ts)
     type(CONSTITUTIVE_LAW),intent(inout):: self
     real(kind=8)::p,ts
     real(kind=8)::muk,num,den,d_num,d_den
+    if (DBG) write (6,*) 'dp_q_hat'
     muk = self%mat%troismu/self%mat%troisk
     num = ts*f_lambda(self,self%telh*p/ts)
     den = num + muk*self%telh*(1-p)
@@ -1689,6 +1847,7 @@ real(kind=8) function dts_q_hat(self,p,ts)
     type(CONSTITUTIVE_LAW),intent(inout):: self
     real(kind=8)::p,ts
     real(kind=8)::muk,num,den,lbd,d_num,d_den
+    if (DBG) write (6,*) 'dts_q_hat'
     muk = self%mat%troismu/self%mat%troisk
     lbd = f_lambda(self,self%telh*p/ts)
     num = ts*lbd
@@ -1703,6 +1862,7 @@ real(kind=8) function dteh_q_hat(self,p,ts)
     type(CONSTITUTIVE_LAW),intent(inout):: self
     real(kind=8)::p,ts
     real(kind=8)::muk,w,num,d_num,den,d_den,lbd0,a0p,seuil
+    if (DBG) write (6,*) 'dteh_q_hat'
     muk = self%mat%troismu/self%mat%troisk
     w   = 1.5d0*self%mat%q2*self%telh*p/ts
     seuil = (r8prem()*1200)**0.25d0
@@ -1729,6 +1889,7 @@ real(kind=8) function f_g_hat(self,p,ts)
     type(CONSTITUTIVE_LAW),intent(inout):: self
     real(kind=8)::p,ts
     real(kind=8)::q
+    if (DBG) write (6,*) 'f_g_hat'
     q = f_q_hat(self,p,ts)
     f_g_hat = f_g(self,q,p,ts)
 end function f_g_hat
@@ -1777,6 +1938,7 @@ real(kind=8) function f_lbd_hat(self,p,ts)
     type(CONSTITUTIVE_LAW),intent(inout):: self
     real(kind=8)::p,ts
     real(kind=8)::jk,q,num,den,lbd,the
+    if (DBG) write (6,*) 'f_lbd_hat'
     jk = self%jac/self%mat%troisk
     q  = f_q_hat(self,p,ts)
     lbd = f_lambda(self,self%telh*p/ts)
@@ -1791,6 +1953,7 @@ real(kind=8) function dp_lbd_hat(self,p,ts)
     type(CONSTITUTIVE_LAW),intent(inout):: self
     real(kind=8)::p,ts
     real(kind=8)::jk,q,d_q,lbd,d_lbd,the,d_the,num,d_num,den,d_den
+    if (DBG) write (6,*) 'dp_lbd_hat'
     jk = self%jac/self%mat%troisk
     q = f_q_hat(self,p,ts)
     d_q = dp_q_hat(self,p,ts)
@@ -1811,6 +1974,7 @@ real(kind=8) function dts_lbd_hat(self,p,ts)
     type(CONSTITUTIVE_LAW),intent(inout):: self
     real(kind=8)::p,ts
     real(kind=8)::jk,q,d_q,lbd,d_lbd,the,d_the,num,den,d_den
+    if (DBG) write (6,*) 'dts_lbd_hat'
     jk = self%jac/self%mat%troisk
     q = f_q_hat(self,p,ts)
     d_q = dts_q_hat(self,p,ts)
@@ -1830,6 +1994,7 @@ real(kind=8) function djac_lbd_hat(self,p,ts)
     type(CONSTITUTIVE_LAW),intent(inout):: self
     real(kind=8)::p,ts
     real(kind=8)::jk,d_jk,q,num,d_num,den,lbd,the
+    if (DBG) write (6,*) 'djac_lbd_hat'
     jk = self%jac/self%mat%troisk
     d_jk = 1/self%mat%troisk
     q  = f_q_hat(self,p,ts)
@@ -1846,6 +2011,7 @@ real(kind=8) function dteh_lbd_hat(self,p,ts)
     type(CONSTITUTIVE_LAW),intent(inout):: self
     real(kind=8)::p,ts
     real(kind=8)::jk,q,d_q,num,d_num,den,d_den,lbd,d_lbd,the,d_the
+    if (DBG) write (6,*) 'dteh_lbd_hat'
     jk = self%jac/self%mat%troisk
     q = f_q_hat(self,p,ts)
     d_q = dteh_q_hat(self,p,ts)
@@ -1866,6 +2032,7 @@ real(kind=8) function dteq_lbd_hat(self,p,ts)
     type(CONSTITUTIVE_LAW),intent(inout):: self
     real(kind=8)::p,ts
     real(kind=8)::jk,q,num,den,d_den,lbd,the,d_the
+    if (DBG) write (6,*) 'dteq_lbd_hat'
     jk = self%jac/self%mat%troisk
     q  = f_q_hat(self,p,ts)
     lbd = f_lambda(self,self%telh*p/ts)
