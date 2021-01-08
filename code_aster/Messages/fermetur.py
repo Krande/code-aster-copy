@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,11 @@ La bibliothèque "MED" n'est pas installée dans cette version de Code_Aster.
 
     3: _("""
 La bibliothèque "HDF5" n'est pas installée dans cette version de Code_Aster.
+"""),
+
+    4: _("""
+Cette fonctionnalité nécessite que la bibliothèque "PETSc" ait été construite
+avec le support du solveur "%(k1)s".
 """),
 
     5: _("""

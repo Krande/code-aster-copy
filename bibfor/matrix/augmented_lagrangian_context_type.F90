@@ -195,8 +195,8 @@ subroutine set_precond_data( ctxt )
        call MatMumpsSetCntl(F,to_petsc_int(3),1.D-6,ierr)
        ASSERT(ierr.eq.0)
 #else
-       ! should not pass here
-       ASSERT(.false.)
+        ! should not pass here
+        call utmess('F', 'FERMETUR_4', sk='MUMPS')
 #endif
     else
         ASSERT(.false.)

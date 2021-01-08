@@ -248,8 +248,8 @@ subroutine build_elg_context( full_matas )
         call KSPSetUp(elg_ctxt%ksp,ierr)
         ASSERT( ierr == 0 )
 #else
-        ! should be pass here
-        ASSERT(.false.)
+        ! should not pass here
+        call utmess('F', 'FERMETUR_4', sk='MUMPS')
 #endif
     endif
     !

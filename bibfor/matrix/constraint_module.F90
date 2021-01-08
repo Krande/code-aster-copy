@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,8 +42,6 @@ private
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 !
-#ifdef _HAVE_PETSC
-!
   public ::  get_nullbasis_trans, get_columnspace_basis
 !
   contains
@@ -59,6 +57,7 @@ subroutine get_nullbasis_trans( b, z )
     type(csc_matrix), intent(inout)  :: b
     type(csc_matrix), intent(out) :: z
     !
+#ifdef HAVE_PETSC_SUPERLU
     ! Local variables
     type(csc_matrix) :: l, l1, l2, l2t, t, id
     integer :: nnz_l, ldrhs, nrhs
@@ -214,6 +213,10 @@ subroutine get_nullbasis_trans( b, z )
     call free_csc_matrix( l1 )
     call free_csc_matrix( l2t )
 !
+#else
+    ! should not pass here
+    call utmess('F', 'FERMETUR_4', sk='SuperLU')
+#endif
 end subroutine get_nullbasis_trans
 !
 ! On entry, a is a csc_matrix
@@ -226,6 +229,8 @@ subroutine get_columnspace_basis( a, b )
     ! Dummy arguments
     type(csc_matrix), intent(in)           :: a
     type(csc_matrix), intent(out)          :: b
+
+#ifdef HAVE_PETSC_SUPERLU
     ! Local variables
     !
     integer                                :: n_b, nnz_b
@@ -329,7 +334,10 @@ subroutine get_columnspace_basis( a, b )
     AS_DEALLOCATE(vl=is_indep)
     call slu_free_factors( factors, info )
     !
+#else
+    ! should not pass here
+    call utmess('F', 'FERMETUR_4', sk='SuperLU')
+#endif
 end subroutine get_columnspace_basis
 !
-#endif
 end module constraint_module

@@ -18,10 +18,10 @@
 /* aslint:disable=W3004
 /*! \file
 Copyright (c) 2003, The Regents of the University of California, through
-Lawrence Berkeley National Laboratory (subject to receipt of any required 
-approvals from U.S. Dept. of Energy) 
+Lawrence Berkeley National Laboratory (subject to receipt of any required
+approvals from U.S. Dept. of Energy)
 
-All rights reserved. 
+All rights reserved.
 
 The source code is distributed under BSD license, see the file License.txt
 at the top-level directory.
@@ -34,8 +34,8 @@ at the top-level directory.
  * October 15, 2003
  *
  */
-#include "aster.h" 
-#ifdef _HAVE_PETSC
+#include "aster.h"
+#ifdef HAVE_PETSC_SUPERLU
 #include "slu_ddefs.h"
 
 #define HANDLE_SIZE  8
@@ -52,9 +52,9 @@ typedef struct {
 } factors_t;
 
 /* Compute the LU decomposition of matrix */
-void DEFPPPPPPPP(SLU_FACTORIZE, slu_factorize, ASTERINTEGER4 *m, ASTERINTEGER4 *n, 
+void DEFPPPPPPPP(SLU_FACTORIZE, slu_factorize, ASTERINTEGER4 *m, ASTERINTEGER4 *n,
                      ASTERINTEGER4 *nnz,  ASTERDOUBLE *values,
-                     ASTERINTEGER4 *rowind, ASTERINTEGER4 *colptr, 
+                     ASTERINTEGER4 *rowind, ASTERINTEGER4 *colptr,
                      fptr *f_factors, ASTERINTEGER4 *info)
 {
     SuperMatrix A, AC, B;
@@ -67,12 +67,12 @@ void DEFPPPPPPPP(SLU_FACTORIZE, slu_factorize, ASTERINTEGER4 *m, ASTERINTEGER4 *
     int i;
     int panel_size, permc_spec, relax;
     superlu_options_t options;
-    SuperLUStat_t stat;    
+    SuperLUStat_t stat;
     mem_usage_t   mem_usage;
     factors_t *LUfactors;
     GlobalLU_t Glu;   /* Not needed on return. */
     int    *rowind0;  /* counter 1-based indexing from Fortran arrays. */
-    int    *colptr0;  
+    int    *colptr0;
 
 /* Set the default input options. */
     set_default_options(&options);
@@ -97,7 +97,7 @@ void DEFPPPPPPPP(SLU_FACTORIZE, slu_factorize, ASTERINTEGER4 *m, ASTERINTEGER4 *
 
 /*
 * Get column permutation vector perm_c[], according to permc_spec:
-*   permc_spec = 0: natural ordering 
+*   permc_spec = 0: natural ordering
 *   permc_spec = 1: minimum degree on structure of A'*A
 *   permc_spec = 2: minimum degree on structure of A'+A
 *   permc_spec = 3: approximate minimum degree for unsymmetric matrices
@@ -114,10 +114,10 @@ void DEFPPPPPPPP(SLU_FACTORIZE, slu_factorize, ASTERINTEGER4 *m, ASTERINTEGER4 *
     dgstrf(&options, &AC, relax, panel_size, etree,
                 NULL, 0, perm_c, perm_r, L, U, &Glu, &stat, info);
 /* Analyze info return code */
-    if ( *info != 0 ) 
+    if ( *info != 0 )
     {
         printf("dgstrf() error returns INFO= %d\n", *info);
-        if ( *info <= *n ) 
+        if ( *info <= *n )
         { /* factorization completes */
             dQuerySpace(L, U, &mem_usage);
             printf("L\\U MB %.3f\ttotal MB needed %.3f\n",
@@ -141,7 +141,7 @@ void DEFPPPPPPPP(SLU_FACTORIZE, slu_factorize, ASTERINTEGER4 *m, ASTERINTEGER4 *
     StatFree(&stat);
 }
 /*
-/* Get the number of non-zero terms in L factor 
+/* Get the number of non-zero terms in L factor
 */
 void DEFPPP(SLU_GET_NNZ_OF_LOWER_FACTOR, slu_get_nnz_of_lower_factor,
             fptr *f_factors, ASTERINTEGER *nnz_l, ASTERINTEGER4 *info)
@@ -155,12 +155,12 @@ void DEFPPP(SLU_GET_NNZ_OF_LOWER_FACTOR, slu_get_nnz_of_lower_factor,
     Lstore = (SCformat *) L->Store;
 /* Returns the number of nonzeros in L*/
     *nnz_l= (ASTERINTEGER)(Lstore->nnz);
-*info = 0; 
+*info = 0;
 }
 /*
-/* Get the number of non-zero terms in U factor 
+/* Get the number of non-zero terms in U factor
 */
-void DEFPPP(SLU_GET_NNZ_OF_UPPER_FACTOR, slu_get_nnz_of_upper_factor, 
+void DEFPPP(SLU_GET_NNZ_OF_UPPER_FACTOR, slu_get_nnz_of_upper_factor,
              fptr *f_factors, ASTERINTEGER *nnz_u, ASTERINTEGER4 *info)
 {
    factors_t *LUfactors;
@@ -172,11 +172,11 @@ void DEFPPP(SLU_GET_NNZ_OF_UPPER_FACTOR, slu_get_nnz_of_upper_factor,
     Ustore = (NCformat *) U->Store;
 /* Returns the number of nonzeros in U*/
     *nnz_u= (ASTERINTEGER)(Ustore->nnz);
-*info = 0; 
+*info = 0;
 }
 /*
-/* Obtain L  from LUfactors 
-/* L is returned as a CSC matrix, stored in values, rowind, colptr arrays 
+/* Obtain L  from LUfactors
+/* L is returned as a CSC matrix, stored in values, rowind, colptr arrays
 */
 void DEFPPPPP(SLU_GET_LOWER_FACTOR, slu_get_lower_factor,
               fptr *f_factors, ASTERDOUBLE *values,
@@ -185,7 +185,7 @@ void DEFPPPPP(SLU_GET_LOWER_FACTOR, slu_get_lower_factor,
     SuperMatrix *L, *U;
     double *dp;
     int *col_to_sup, *sup_to_col, *rowind_colptr;
-    int *sc_rowind; /*compressed rowind SC format*/ 
+    int *sc_rowind; /*compressed rowind SC format*/
     SCformat *Lstore;
     int i, j, k, c, d, p, nsup, ncol;
     factors_t *LUfactors;
@@ -202,7 +202,7 @@ void DEFPPPPP(SLU_GET_LOWER_FACTOR, slu_get_lower_factor,
     sc_rowind = Lstore->rowind;
     /* On veut récupérer la matrice L au format CSC */
     /* L est stockée au formet SuperLU */
-    /* Initialisation de l'indice "position" dans les 
+    /* Initialisation de l'indice "position" dans les
     tableaux rowind et values*/
     p=0;
     /* On parcourt les superblocs*/
@@ -213,11 +213,11 @@ void DEFPPPPP(SLU_GET_LOWER_FACTOR, slu_get_lower_factor,
         nsup = sup_to_col[k+1] - c;
         /* On parcourt chaque colonne*/
         for (j = c; j < c + nsup; ++j) {
-        /* d est la position dans le tableau de valeurs nzval_colptr 
+        /* d est la position dans le tableau de valeurs nzval_colptr
         du premier terme de la colonne courante */
             d = Lstore->nzval_colptr[j];
-            colptr[j]= p; 
-            /* rowind_colptr[c] est la position dans le tableau des indices 
+            colptr[j]= p;
+            /* rowind_colptr[c] est la position dans le tableau des indices
             lignes rowind du premier terme de la colonne courante */
             for (i = rowind_colptr[c]; i < rowind_colptr[c+1]; ++i) {
                 if ( sc_rowind[i] < j ) {
@@ -228,7 +228,7 @@ void DEFPPPPP(SLU_GET_LOWER_FACTOR, slu_get_lower_factor,
                 values[p]=1.0;
                 rowind[p]=sc_rowind[i];
                 ++p;
-                } 
+                }
                 else
                 {
                 values[p]=dp[d];
@@ -245,12 +245,12 @@ void DEFPPPPP(SLU_GET_LOWER_FACTOR, slu_get_lower_factor,
   for (i = 0; i < Lstore->nnz; ++i) ++rowind[i];
   for (i = 0; i <= L->ncol ; ++i) ++colptr[i];
 
-  *info = 0; 
+  *info = 0;
 }
 /*
-/* Obtain perm_row  from LUfactors 
+/* Obtain perm_row  from LUfactors
 */
-void DEFPPP( SLU_GET_PERM_ROW, slu_get_perm_row, 
+void DEFPPP( SLU_GET_PERM_ROW, slu_get_perm_row,
             fptr *f_factors, ASTERINTEGER4* perm_row, ASTERINTEGER4 *info )
 {
     SuperMatrix *L;
@@ -263,16 +263,16 @@ void DEFPPP( SLU_GET_PERM_ROW, slu_get_perm_row,
     LUfactors = (factors_t*) *f_factors;
     L = LUfactors->L;
     perm_r = LUfactors->perm_r;
-/* Copy row permutation  (using 1-based-indexing) */ 
+/* Copy row permutation  (using 1-based-indexing) */
     for ( i = 0; i < L->nrow ; i++) {
       perm_row[i]=perm_r[i]+1;
     }
-    *info = 0; 
+    *info = 0;
 }
 /*
-/* Obtain perm_col  from LUfactors 
+/* Obtain perm_col  from LUfactors
 */
-void DEFPPP( SLU_GET_PERM_COL, slu_get_perm_col, fptr *f_factors, 
+void DEFPPP( SLU_GET_PERM_COL, slu_get_perm_col, fptr *f_factors,
                         ASTERINTEGER4* perm_col, ASTERINTEGER4 *info)
 {
     SuperMatrix *L;
@@ -284,23 +284,23 @@ void DEFPPP( SLU_GET_PERM_COL, slu_get_perm_col, fptr *f_factors,
     LUfactors = (factors_t*) *f_factors;
     L = LUfactors->L;
     perm_c = LUfactors->perm_c;
-/* Copy column permutation  (using 1-indexing) */ 
+/* Copy column permutation  (using 1-indexing) */
     for ( i = 0; i < L->ncol ; i++) {
       perm_col[i]=perm_c[i]+1;
  //     printf(" Permc[%d]=%d\n",i,perm_c[i]);
     }
-    *info = 0; 
+    *info = 0;
 }
 /*
-/* Obtain diagonal of upper factor U from LUFactors 
+/* Obtain diagonal of upper factor U from LUFactors
 */
-void DEFPPP(SLU_GET_DIAG_OF_UPPER_FACTOR, slu_get_diag_of_upper_factor, 
+void DEFPPP(SLU_GET_DIAG_OF_UPPER_FACTOR, slu_get_diag_of_upper_factor,
             fptr *f_factors, ASTERDOUBLE *diag_u, ASTERINTEGER4 *info)
 {
     SuperMatrix *L, *U;
     double *dp;
     int *col_to_sup, *sup_to_col, *rowind_colptr;
-    int *sc_rowind; /*compressed rowind SC format*/ 
+    int *sc_rowind; /*compressed rowind SC format*/
     SCformat *Lstore;
     int i, j, k, c, d, p, nsup, ncol;
     factors_t *LUfactors;
@@ -317,10 +317,10 @@ void DEFPPP(SLU_GET_DIAG_OF_UPPER_FACTOR, slu_get_diag_of_upper_factor,
     sup_to_col = Lstore->sup_to_col;
     rowind_colptr = Lstore->rowind_colptr;
     sc_rowind = Lstore->rowind;
-    /* On veut récupérer diag(U), qui est stockée 
+    /* On veut récupérer diag(U), qui est stockée
       dans la partie "L" des facteurs */
     /* L est stockée au format SuperLU */
-    /* Initialisation de l'indice "position" dans les 
+    /* Initialisation de l'indice "position" dans les
     tableaux rowind et values*/
     p=0;
     /* On parcourt les superblocs*/
@@ -331,10 +331,10 @@ void DEFPPP(SLU_GET_DIAG_OF_UPPER_FACTOR, slu_get_diag_of_upper_factor,
         nsup = sup_to_col[k+1] - c;
         /* On parcourt chaque colonne*/
         for (j = c; j < c + nsup; ++j) {
-        /* d est la position dans le tableau de valeurs nzval_colptr 
+        /* d est la position dans le tableau de valeurs nzval_colptr
         du premier terme de la colonne courante */
             d = Lstore->nzval_colptr[j];
-            /* rowind_colptr[c] est la position dans le tableau des indices 
+            /* rowind_colptr[c] est la position dans le tableau des indices
             lignes rowind du premier terme de la colonne courante */
             for (i = rowind_colptr[c]; i < rowind_colptr[c+1]; ++i) {
                 if ( sc_rowind[i] == j ) {
@@ -342,31 +342,31 @@ void DEFPPP(SLU_GET_DIAG_OF_UPPER_FACTOR, slu_get_diag_of_upper_factor,
                    diag_u[sc_rowind[i]]=dp[d];
           //      printf(" U[%d,%d]=%f\n",sc_rowind[i],j,dp[d]);
                 ++p;
-                } 
+                }
             ++d;
             }
         }
     }
-*info = 0; 
+*info = 0;
 }
 /*
-/* Obtain  upper factor U from LUFactors 
-/* U is returned as a CSC matrix, stored in values, rowind, colptr arrays 
+/* Obtain  upper factor U from LUFactors
+/* U is returned as a CSC matrix, stored in values, rowind, colptr arrays
 */
-void DEFPPPPP(SLU_GET_UPPER_FACTOR, slu_get_upper_factor, 
-              fptr *f_factors, ASTERDOUBLE *values, ASTERINTEGER4 *rowind, 
+void DEFPPPPP(SLU_GET_UPPER_FACTOR, slu_get_upper_factor,
+              fptr *f_factors, ASTERDOUBLE *values, ASTERINTEGER4 *rowind,
                             ASTERINTEGER4 *colptr, ASTERINTEGER4 *info )
 {
     SuperMatrix *L, *U;
     double *dp;
     int *col_to_sup, *sup_to_col, *rowind_colptr;
-    int *sc_rowind; /*compressed rowind SC format*/ 
+    int *sc_rowind; /*compressed rowind SC format*/
     SCformat *Lstore;
     NCformat *Ustore;
     int i, j, k, c, d, p,n, nsup, ncol;
     factors_t *LUfactors;
 
-/* colptr[j+1] = nombre de termes non-nuls dans la colonne j */ 
+/* colptr[j+1] = nombre de termes non-nuls dans la colonne j */
 /* on parcourt L  */
     LUfactors = (factors_t*) *f_factors;
     L = LUfactors->L;
@@ -376,7 +376,7 @@ void DEFPPPPP(SLU_GET_UPPER_FACTOR, slu_get_upper_factor,
     col_to_sup = Lstore->col_to_sup;
     sup_to_col = Lstore->sup_to_col;
     rowind_colptr = Lstore->rowind_colptr;
-    sc_rowind = Lstore->rowind;    
+    sc_rowind = Lstore->rowind;
     colptr[0]=0;
     /* On parcourt les superblocs*/
     for (k = 0; k <= Lstore->nsuper; ++k) {
@@ -386,7 +386,7 @@ void DEFPPPPP(SLU_GET_UPPER_FACTOR, slu_get_upper_factor,
         nsup = sup_to_col[k+1] - c;
         /* On parcourt chaque colonne*/
         for (j = c; j < c + nsup; ++j) {
-            /* rowind_colptr[c] est la position dans le tableau des indices 
+            /* rowind_colptr[c] est la position dans le tableau des indices
             lignes rowind du premier terme de la colonne courante */
             for (i = rowind_colptr[c]; i < rowind_colptr[c+1]; ++i) {
                 if ( sc_rowind[i] <= j ) {
@@ -403,13 +403,13 @@ void DEFPPPPP(SLU_GET_UPPER_FACTOR, slu_get_upper_factor,
     dp = (double *) Ustore->nzval;
     /* On parcourt chaque colonne*/
     for (j = 0; j < ncol; ++j) {
-        /* d est la position dans le tableau de valeurs nzval 
+        /* d est la position dans le tableau de valeurs nzval
         du premier terme de la colonne courante */
         for (d = Ustore->colptr[j]; d<Ustore->colptr[j+1]; d++)  {
              ++colptr[j+1];
         }
     }
-/* puis on somme pour que colptr[j] désigne l'indice du premier terme de la 
+/* puis on somme pour que colptr[j] désigne l'indice du premier terme de la
 la colonne j dans values et rowind */
     for (i=1; i<= ncol; ++i ) {
        colptr[i]+=colptr[i-1];
@@ -424,7 +424,7 @@ la colonne j dans values et rowind */
     col_to_sup = Lstore->col_to_sup;
     sup_to_col = Lstore->sup_to_col;
     rowind_colptr = Lstore->rowind_colptr;
-    sc_rowind = Lstore->rowind;    
+    sc_rowind = Lstore->rowind;
     /* On parcourt les superblocs*/
     for (k = 0; k <= Lstore->nsuper; ++k) {
     /* c est la première colonne du superbloc courant*/
@@ -433,10 +433,10 @@ la colonne j dans values et rowind */
         nsup = sup_to_col[k+1] - c;
         /* On parcourt chaque colonne*/
         for (j = c; j < c + nsup; ++j) {
-        /* d est la position dans le tableau de valeurs nzval_colptr 
+        /* d est la position dans le tableau de valeurs nzval_colptr
         du premier terme de la colonne courante */
             d = Lstore->nzval_colptr[j];
-            /* rowind_colptr[c] est la position dans le tableau des indices 
+            /* rowind_colptr[c] est la position dans le tableau des indices
             lignes rowind du premier terme de la colonne courante */
             for (i = rowind_colptr[c]; i < rowind_colptr[c+1]; ++i) {
                 if ( sc_rowind[i] <= j ) {
@@ -446,7 +446,7 @@ la colonne j dans values et rowind */
                 values[colptr[j]]=dp[d];
                 ++colptr[j];
                 }
-            ++d; 
+            ++d;
             }
         }
     }
@@ -458,7 +458,7 @@ la colonne j dans values et rowind */
     /* On parcourt chaque colonne*/
     for (j = 0; j < ncol; ++j) {
          /*printf("\n colonne: %d", j );*/
-        /* d est la position dans le tableau de valeurs nzval 
+        /* d est la position dans le tableau de valeurs nzval
         du premier terme de la colonne courante */
         for (d = Ustore->colptr[j]; d<Ustore->colptr[j+1]; d++)  {
              rowind[colptr[j]]= Ustore->rowind[d];
@@ -468,7 +468,7 @@ la colonne j dans values et rowind */
         }
     }
 /* On décale colptr vers la droite*/
-    
+
     for (i=ncol;i>0; --i){
     colptr[i]=colptr[i-1];
     }
@@ -477,12 +477,12 @@ la colonne j dans values et rowind */
   for (i = 0; i < Ustore->nnz; ++i) ++rowind[i];
   for (i = 0; i <= U->ncol ; ++i) ++colptr[i];
 
-*info = 0; 
+*info = 0;
 }
 /*
-/* Free memory 
+/* Free memory
 */
-void DEFPP( SLU_FREE_FACTORS, slu_free_factors, fptr *f_factors, 
+void DEFPP( SLU_FREE_FACTORS, slu_free_factors, fptr *f_factors,
             ASTERINTEGER4 *info)
 {
     factors_t *LUfactors;
@@ -498,21 +498,21 @@ void DEFPP( SLU_FREE_FACTORS, slu_free_factors, fptr *f_factors,
     *info = 0;
 }
 /*
-/* Solve linear system using LU decomposition stored in LUfactors 
-/* On exit, right-hand-side b is overwritten with solution x 
+/* Solve linear system using LU decomposition stored in LUfactors
+/* On exit, right-hand-side b is overwritten with solution x
 */
-void DEFPPPPPP( SLU_SOLVE, slu_solve, fptr *f_factors, 
-                ASTERINTEGER4 *trans_option, 
-                ASTERINTEGER4 *nrhs, ASTERDOUBLE *b, ASTERINTEGER4 *ldb,  
-                ASTERINTEGER4 *info ) 
+void DEFPPPPPP( SLU_SOLVE, slu_solve, fptr *f_factors,
+                ASTERINTEGER4 *trans_option,
+                ASTERINTEGER4 *nrhs, ASTERDOUBLE *b, ASTERINTEGER4 *ldb,
+                ASTERINTEGER4 *info )
 {
     SuperLUStat_t stat;
-    SuperMatrix B; 
+    SuperMatrix B;
     factors_t *LUfactors;
     SuperMatrix *L, *U;
-    int *perm_r, *perm_c; 
+    int *perm_r, *perm_c;
     trans_t  trans;
-    int ncol; 
+    int ncol;
 
 /* Triangular solve */
 /* Initialize the statistics variables. */
@@ -530,7 +530,7 @@ void DEFPPPPPP( SLU_SOLVE, slu_solve, fptr *f_factors,
            trans = NOTRANS;
         }
     else if ( *trans_option == 1 ) {
-           trans = TRANS; 
+           trans = TRANS;
     }
     dCreate_Dense_Matrix(&B, ncol, *nrhs, b, *ldb, SLU_DN, SLU_D, SLU_GE);
 
