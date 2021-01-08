@@ -74,6 +74,11 @@
 #define blas_int integer(kind=blas_int_kind)
 #define to_blas_int(a) int(a, BLAS_INT_SIZE)
 !
-#define to_petsc_int(a) int(a, 4)
+#ifndef HAVE_PETSC
+#   define PETSC_INT_SIZE 4
+#endif
+#define petsc_int_kind PETSC_INT_SIZE
+#define petsc_int integer(kind=petsc_int_kind)
+#define to_petsc_int(a) int(a, PETSC_INT_SIZE)
 !
 #endif
