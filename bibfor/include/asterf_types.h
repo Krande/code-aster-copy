@@ -74,7 +74,9 @@
 #define blas_int integer(kind=blas_int_kind)
 #define to_blas_int(a) int(a, BLAS_INT_SIZE)
 !
-#ifndef HAVE_PETSC
+#ifdef HAVE_PETSC_64BIT_INDICES
+#   define PETSC_INT_SIZE 8
+#else
 #   define PETSC_INT_SIZE 4
 #endif
 #define petsc_int_kind PETSC_INT_SIZE

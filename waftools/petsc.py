@@ -77,6 +77,7 @@ def check_petsc(self):
     self.check_petsc_headers("petscconf.h")
     self.check_petsc_version()
     self.check_sizeof_petsc_int()
+    self.check_petsc_conf("PETSC_USE_64BIT_INDICES", "HAVE_PETSC_64BIT_INDICES")
     self.check_petsc_conf("PETSC_HAVE_ML", "HAVE_PETSC_ML")
     self.check_petsc_conf("PETSC_HAVE_HYPRE", "HAVE_PETSC_HYPRE")
     self.check_petsc_conf("PETSC_HAVE_SUPERLU", "HAVE_PETSC_SUPERLU")
@@ -155,6 +156,8 @@ def check_petsc4py(self):
 
 @Configure.conf
 def check_sizeof_petsc_int(self):
+    # PETSC_SIZEOF_INT used for PetscFortranInt
+    # PETSC_USE_64BIT_INDICES is used for PetscInt
     fragment = r'''
 #include <stdio.h>
 #include <petscconf.h>
@@ -162,9 +165,9 @@ int main(void) {
     printf("%d", PETSC_SIZEOF_INT);
     return 0;
 }'''
-    self.code_checker('PETSC_INT_SIZE', self.check_cc, fragment,
+    self.code_checker('PETSC_FORTRANINT_SIZE', self.check_cc, fragment,
                       'Checking size of PETSc integer',
-                      'unexpected value for sizeof(petsc_int): %(size)s',
+                      'unexpected value for PETSC_SIZEOF_INT: %(size)s',
                       into=(4, 8), use='PETSC')
 
 @Configure.conf
