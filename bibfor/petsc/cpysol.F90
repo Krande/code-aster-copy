@@ -17,30 +17,36 @@
 ! --------------------------------------------------------------------
 subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
     implicit none
+#include "asterc/asmpi_comm.h"
+#include "asterc/asmpi_recv_r.h"
+#include "asterc/asmpi_send_r.h"
+#include "asterc/loisem.h"
 #include "asterf_config.h"
-#include "asterf.h"
+#include "asterf_petsc.h"
 #include "asterf_types.h"
-#include "jeveux.h"
+#include "asterf.h"
+#include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mrconl.h"
-#include "asterc/loisem.h"
 #include "asterfort/wkvect.h"
-#include "asterc/asmpi_comm.h"
-#include "asterfort/asmpi_comm_vect.h"
-#include "asterfort/asmpi_info.h"
-#include "asterc/asmpi_recv_r.h"
-#include "asterc/asmpi_send_r.h"
+#include "jeveux.h"
+!
+#ifdef _HAVE_PETSC
+    PetscInt :: debglo, nbval
+#else
     integer(kind=4) :: debglo, nbval
+#endif
     real(kind=8) :: rsolu(*), vecpet(*)
     character(len=14) :: numddl
     character(len=19) :: nomat

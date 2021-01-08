@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe AssemblyMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -43,10 +43,8 @@
 #include "Supervis/CommandSyntax.h"
 #include "Utilities/Tools.h"
 
-#ifdef _HAVE_PETSC4PY
-#if _HAVE_PETSC4PY == 1
+#if HAVE_PETSC4PY == 1
 #include <petscmat.h>
-#endif
 #endif
 
 #include "Loads/PhysicalQuantity.h"
@@ -240,14 +238,12 @@ class AssemblyMatrixClass : public DataStructure {
      */
     int getNumberOfElementaryMatrix() const { return _elemMatrix.size(); };
 
-#ifdef _HAVE_PETSC4PY
-#if _HAVE_PETSC4PY == 1
+#if HAVE_PETSC4PY == 1
     /**
      * @brief Conversion to petsc4py
      * @return converted matrix
      */
     Mat toPetsc4py();
-#endif
 #endif
 
     /**
@@ -310,7 +306,7 @@ class AssemblyMatrixClass : public DataStructure {
 };
 
 /** @typedef Definition d'une matrice assemblee de double */
-template <> void AssemblyMatrixClass< double, Displacement >::setValues(const VectorLong idx, 
+template <> void AssemblyMatrixClass< double, Displacement >::setValues(const VectorLong idx,
             const VectorLong jdx, const VectorReal values);
 typedef AssemblyMatrixClass< double, Displacement > AssemblyMatrixDisplacementRealClass;
 
@@ -319,12 +315,12 @@ template class AssemblyMatrixClass< RealComplex, Displacement >;
 typedef AssemblyMatrixClass< RealComplex, Displacement > AssemblyMatrixDisplacementComplexClass;
 
 /** @typedef Definition d'une matrice assemblee de double temperature */
-template <> void AssemblyMatrixClass< double, Temperature >::setValues(const VectorLong idx, 
+template <> void AssemblyMatrixClass< double, Temperature >::setValues(const VectorLong idx,
             const VectorLong jdx, const VectorReal values);
 typedef AssemblyMatrixClass< double, Temperature > AssemblyMatrixTemperatureRealClass;
 
 /** @typedef Definition d'une matrice assemblee de double pression */
-template <> void AssemblyMatrixClass< double, Pressure >::setValues(const VectorLong idx, 
+template <> void AssemblyMatrixClass< double, Pressure >::setValues(const VectorLong idx,
             const VectorLong jdx, const VectorReal values);
 typedef AssemblyMatrixClass< double, Pressure > AssemblyMatrixPressureRealClass;
 
@@ -336,17 +332,17 @@ typedef AssemblyMatrixClass< RealComplex, Temperature > AssemblyMatrixTemperatur
 template class AssemblyMatrixClass< RealComplex, Pressure >;
 typedef AssemblyMatrixClass< RealComplex, Pressure > AssemblyMatrixPressureComplexClass;
 
-typedef boost::shared_ptr< AssemblyMatrixDisplacementRealClass > 
+typedef boost::shared_ptr< AssemblyMatrixDisplacementRealClass >
     AssemblyMatrixDisplacementRealPtr;
 typedef boost::shared_ptr< AssemblyMatrixDisplacementComplexClass >
     AssemblyMatrixDisplacementComplexPtr;
-typedef boost::shared_ptr< AssemblyMatrixTemperatureRealClass > 
+typedef boost::shared_ptr< AssemblyMatrixTemperatureRealClass >
     AssemblyMatrixTemperatureRealPtr;
 typedef boost::shared_ptr< AssemblyMatrixTemperatureComplexClass >
     AssemblyMatrixTemperatureComplexPtr;
-typedef boost::shared_ptr< AssemblyMatrixPressureRealClass > 
+typedef boost::shared_ptr< AssemblyMatrixPressureRealClass >
     AssemblyMatrixPressureRealPtr;
-typedef boost::shared_ptr< AssemblyMatrixPressureComplexClass > 
+typedef boost::shared_ptr< AssemblyMatrixPressureComplexClass >
     AssemblyMatrixPressureComplexPtr;
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
@@ -422,8 +418,7 @@ bool AssemblyMatrixClass< ValueType, PhysicalQuantity >::build() {
     return true;
 };
 
-#ifdef _HAVE_PETSC4PY
-#if _HAVE_PETSC4PY == 1
+#if HAVE_PETSC4PY == 1
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 Mat AssemblyMatrixClass< ValueType, PhysicalQuantity >::toPetsc4py() {
@@ -439,7 +434,6 @@ Mat AssemblyMatrixClass< ValueType, PhysicalQuantity >::toPetsc4py() {
 
     return myMat;
 };
-#endif
 #endif
 
 #endif /* ASSEMBLYMATRIX_H_ */

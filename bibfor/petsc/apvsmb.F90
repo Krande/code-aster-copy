@@ -115,7 +115,11 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
         call VecSetType(b, VECMPI, ierr)
         ASSERT(ierr.eq.0)
 !
+#if PETSC_INT_SIZE == 4
         AS_ALLOCATE( vi4=ig_petsc_c, size=nloc )
+#else
+        AS_ALLOCATE( vi=ig_petsc_c, size=nloc )
+#endif
         AS_ALLOCATE( vr=val, size=nloc )
         do iloc = 1, nloc
             ! Indice global PETSc (convention C)
@@ -130,7 +134,11 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
         call VecAssemblyEnd(b, ierr)
         ASSERT(ierr.eq.0)
         !
+#if PETSC_INT_SIZE == 4
         AS_DEALLOCATE( vi4=ig_petsc_c )
+#else
+        AS_DEALLOCATE( vi=ig_petsc_c )
+#endif
         AS_DEALLOCATE( vr=val )
 !
     else

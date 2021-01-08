@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,8 +44,12 @@ integer, parameter :: nmax_ctxt = 5
 !     KE est l'indice à utiliser dans le tableau elg_ctxt(:)
 !     C'est la variable "sensible" que l'on doit "positionner" avec
 !     beaucoup de soins.
-!     Aujourd'hui, KE est positionné au début de preres.f 
-integer(kind=4), public :: ke
+!     Aujourd'hui, KE est positionné au début de preres.f
+#ifdef _HAVE_PETSC
+    PetscInt, public :: ke
+#else
+    integer(kind=4), public :: ke
+#endif
 !     Tableau d'objets de type elim_lagr_ctxt.
 !     Chaque objet contient toutes les données nécessaires pour
 !     procéder à l'élimination des multiplicateurs de Lagrange.
@@ -66,8 +70,8 @@ public :: elg_gest_data
 !             ! A    0  !   (L)    (c)
 !
 !   1) on calcule T = noyau de A
-!   2) on calcule X0 solution particulière de : A*X=c, 
-!       on cherche ensuite X sous la forme X=X0+TY 
+!   2) on calcule X0 solution particulière de : A*X=c,
+!       on cherche ensuite X sous la forme X=X0+TY
 !   3) On résoud le sytème "réduit" :
 !       [T'*B*T]*Y = T'*(b - B*X0)
 !   4) On peut alors calculer X=X0 + T*Y
@@ -160,20 +164,20 @@ subroutine elg_gest_data (action, mat1, mat2, rigi1)
     endif
 !
     if (action .eq. 'NOTE') then
-!       La matrice mat1 a-t-elle déjà été enregistrée ? 
+!       La matrice mat1 a-t-elle déjà été enregistrée ?
         kpos=1
         do while ((trim(mat1)/=elg_context(kpos)%full_matas).and.(kpos<=nmax_ctxt))
            kpos=kpos+1
         enddo
-        if ( kpos<= nmax_ctxt) then 
+        if ( kpos<= nmax_ctxt) then
            ke = kpos
 !          On vérifie que la matrice de rigidité enregistrée a bien le même nom
-!          que la matrice rigi1 fournie en entrée de la routine 
+!          que la matrice rigi1 fournie en entrée de la routine
            ASSERT( elg_context(ke)%k_matas==rigi1)
-!          La matrice réduite n'est pas forcément la même 
+!          La matrice réduite n'est pas forcément la même
            elg_context(ke)%reduced_matas=mat2
-        elseif (kpos > nmax_ctxt) then 
-!           la matrice n'a jamais été rencontrée 
+        elseif (kpos > nmax_ctxt) then
+!           la matrice n'a jamais été rencontrée
             ktrou=0
 !       -- on cherche une place libre
             do k = 1, nmax_ctxt

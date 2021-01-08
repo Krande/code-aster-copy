@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ use petsc_data_module
 !
 !     VARIABLES LOCALES
     integer :: nsmdi, nsmhc, nz, nvalm, nlong
-    integer :: jsmdi, jsmhc, jdxi1, jdxi2, jdval1, jdval2, jvalm, jvalm2
+    integer :: jsmdi, jsmhc, jdval1, jdval2, jvalm, jvalm2
     integer :: k, iligl, jcoll, nzdeb, nzfin
     integer :: iterm, jterm, jcolg, iligg, jnugll
     integer :: jnequ, nloc, nglo, jnequl
@@ -83,6 +83,9 @@ use petsc_data_module
     aster_logical :: lmnsy
 !
     real(kind=8) :: valm
+!
+    PetscInt, pointer :: v_dxi1(:) => null()
+    PetscInt, pointer :: v_dxi2(:) => null()
 !
 !
 !----------------------------------------------------------------
@@ -134,8 +137,13 @@ use petsc_data_module
         ASSERT(nlong.eq.nz)
     endif
 !
-    call wkvect(idxi1, 'V V S', nloc, jdxi1)
-    call wkvect(idxi2, 'V V S', nloc, jdxi2)
+#if PETSC_INT_SIZE == 4
+    call wkvect(idxi1, 'V V S', nloc, vi4=v_dxi1)
+    call wkvect(idxi2, 'V V S', nloc, vi4=v_dxi2)
+#else
+    call wkvect(idxi1, 'V V I', nloc, vi=v_dxi1)
+    call wkvect(idxi2, 'V V I', nloc, vi=v_dxi2)
+#endif
     call wkvect(trans1, 'V V R', nloc, jdval1)
     call wkvect(trans2, 'V V R', nloc, jdval2)
 !
@@ -165,7 +173,7 @@ use petsc_data_module
 ! Stockage dans val1 de A(iligg,jcolg)
             zr(jdval1+iterm-1)=valm
 ! et de son indice ligne global (C)
-            zi4(jdxi1+iterm-1)=iligg-1
+            v_dxi1(iterm)=iligg-1
 ! On passe à la *ligne* jcoll
             if (iligg .ne. jcolg) then
 ! Attention, il ne faut pas stocker le terme diagonal A(jcolg, jcolg)
@@ -185,17 +193,17 @@ use petsc_data_module
 ! on stocke dans val2
                 zr(jdval2+jterm-1)=valm
 ! avec l'indice colonne global (C) correspondant
-                zi4(jdxi2+jterm-1)=iligg-1
+                v_dxi2(jterm)=iligg-1
             endif
         end do
 ! Envoi de la colonne jcolg
         mm = to_petsc_int(iterm)
-        call MatSetValues(a, mm, zi4(jdxi1-1+1:jdxi1-1+mm), one, [to_petsc_int(jcolg-1)],&
+        call MatSetValues(a, mm, v_dxi1(1:mm), one, [to_petsc_int(jcolg-1)],&
                           zr(jdval1-1+1:jdval1-1+mm), ADD_VALUES, ierr)
         ASSERT(ierr==0)
 ! Envoi de la ligne jcolg
         nn = to_petsc_int(jterm)
-        call MatSetValues(a, one, [to_petsc_int(jcolg-1)], nn , zi4(jdxi2-1+1:jdxi2-1+nn),&
+        call MatSetValues(a, one, [to_petsc_int(jcolg-1)], nn , v_dxi2(1:nn),&
                           zr(jdval2-1+1:jdval2-1+nn), ADD_VALUES, ierr)
         ASSERT(ierr==0)
         iterm=0

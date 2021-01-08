@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,11 +54,17 @@ use petsc_data_module
 !     VARIABLES LOCALES
     integer :: rang, nbproc, jnbjoi, nbjoin, jnequ, jnequl, jnugll
     integer :: nsmdi, nsmhc, nz, jprddl, nloc, nglo, jcoll
-    integer :: jsmdi, jsmhc, jidxd, jidxo, ndprop, procol, jidxdc, jidxoc
+    integer :: jsmdi, jsmhc, ndprop, procol
     integer :: k, nzdeb, nzfin, jcolg, iligl, jaux
     integer :: prolig, iligg, iaux, numpro, jjoint, jvaleu, numloc
     integer :: lgenvo, numglo, comple
     mpi_int :: mpicou
+!
+    PetscInt, pointer :: v_idxd(:) => null()
+    PetscInt, pointer :: v_idxo(:) => null()
+    PetscInt, pointer :: v_idxdc(:) => null()
+    PetscInt, pointer :: v_idxoc(:) => null()
+    PetscInt, pointer :: v_valeur(:) => null()
 !
 !
     character(len=4) :: chnbjo
@@ -132,16 +138,23 @@ use petsc_data_module
     call VecDestroy(tmp, ierr)
     ASSERT(ierr.eq.0)
 !
-    call wkvect(idxd, 'V V S', ndprop, jidxd)
-    call wkvect(idxo, 'V V S', ndprop, jidxo)
-    call wkvect(idxdc, 'V V S', nloc, jidxdc)
-    call wkvect(idxoc, 'V V S', nloc, jidxoc)
+#if PETSC_INT_SIZE == 4
+    call wkvect(idxd, 'V V S', ndprop, vi4=v_idxd)
+    call wkvect(idxo, 'V V S', ndprop, vi4=v_idxo)
+    call wkvect(idxdc, 'V V S', nloc, vi4=v_idxdc)
+    call wkvect(idxoc, 'V V S', nloc, vi4=v_idxoc)
+#else
+    call wkvect(idxd, 'V V I', ndprop, vi=v_idxd)
+    call wkvect(idxo, 'V V I', ndprop, vi=v_idxo)
+    call wkvect(idxdc, 'V V I', nloc, vi=v_idxdc)
+    call wkvect(idxoc, 'V V I', nloc, vi=v_idxoc)
+#endif
 !
     jcolg = zi(jnugll)
     if (zi(jprddl) .eq. rang) then
-        zi4(jidxd+jcolg-low-1) = zi4(jidxd+jcolg-low-1)+1
+        v_idxd(jcolg-low) = v_idxd(jcolg-low)+1
     else
-        zi4(jidxdc) = zi4(jidxdc)+1
+        v_idxdc(1) = v_idxdc(1)+1
     endif
 !
 !     ON COMMENCE PAR NOTER DDL PAR DDL LE NOMBRE DE TERMES POSSEDES
@@ -158,22 +171,22 @@ use petsc_data_module
 !         SOIT LA COLONNE ET LA LIGNE APPARTIENNENT AU PROC COURANT
 !         AUQUEL CAS, ON S'EN PREOCCUPE POUR L'ALLOCATION
             if (procol .eq. rang .and. prolig .eq. rang) then
-                zi4(jidxd+iligg-low-1) = zi4(jidxd+iligg-low-1)+1
+                v_idxd(iligg-low) = v_idxd(iligg-low)+1
                 if (iligg .ne. jcolg) then
-                    zi4(jidxd+jcolg-low-1) = zi4(jidxd+jcolg-low-1)+1
+                    v_idxd(jcolg-low) = v_idxd(jcolg-low)+1
                 endif
 !           SOIT ILS N'APPARTIENNENT PAS AU PROC COURANT TOUS LES
 !         DEUX, DANS CE CAS ON LES OUBLIE
             else if (procol.ne.rang.and.prolig.ne.rang) then
                 if (procol .eq. prolig) then
-                    zi4(jidxdc+iligl-1) = zi4(jidxdc+iligl-1)+1
+                    v_idxdc(iligl) = v_idxdc(iligl)+1
                     if (iligg .ne. jcolg) then
-                        zi4(jidxdc+jcoll-1) = zi4(jidxdc+jcoll-1)+1
+                        v_idxdc(jcoll) = v_idxdc(jcoll)+1
                     endif
                 else
-                    zi4(jidxoc+iligl-1) = zi4(jidxoc+iligl-1)+1
+                    v_idxoc(iligl) = v_idxoc(iligl)+1
                     if (iligg .ne. jcolg) then
-                        zi4(jidxoc+jcoll-1) = zi4(jidxoc+jcoll-1)+1
+                        v_idxoc(jcoll) = v_idxoc(jcoll)+1
                     endif
                 endif
 !         SOIT L'UN DES DEUX APPARTIENT AU PROC COURANT
@@ -181,11 +194,11 @@ use petsc_data_module
 !         OU ON PREVIENT L'AUTRE PROC
             else
                 if (procol .eq. rang) then
-                    zi4(jidxo+jcolg-low-1) = zi4(jidxo+jcolg-low-1)+1
-                    zi4(jidxoc+iligl-1) = zi4(jidxoc+iligl-1)+1
+                    v_idxo(jcolg-low) = v_idxo(jcolg-low)+1
+                    v_idxoc(iligl) = v_idxoc(iligl)+1
                 else
-                    zi4(jidxo+iligg-low-1) = zi4(jidxo+iligg-low-1)+1
-                    zi4(jidxoc+jcoll-1) = zi4(jidxoc+jcoll-1)+1
+                    v_idxo(iligg-low) = v_idxo(iligg-low)+1
+                    v_idxoc(jcoll) = v_idxoc(jcoll)+1
                 endif
             endif
         end do
@@ -200,40 +213,62 @@ use petsc_data_module
             call jeveuo(nojoin, 'L', jjoint)
             call jelira(nojoin, 'LONMAX', lgenvo)
             if (lgenvo .gt. 0) then
-                call wkvect(cpysol, 'V V S', lgenvo, jvaleu)
+#if PETSC_INT_SIZE == 4
+                call wkvect(cpysol, 'V V S', lgenvo, vi4=v_valeur)
+#else
+                call wkvect(cpysol, 'V V I', lgenvo, vi=v_valeur)
+#endif
 !
                 if (numpro .gt. rang) then
+#if PETSC_INT_SIZE == 4
                     call asmpi_comm_point('MPI_RECV', 'I4', numpro, iaux, nbval=lgenvo,&
-                                          vi4=zi4(jvaleu))
+                                          vi4=v_valeur)
+#else
+                    call asmpi_comm_point('MPI_RECV', 'I', numpro, iaux, nbval=lgenvo,&
+                            vi=v_valeur)
+#endif
                     do jaux = 1, lgenvo
                         numloc=zi(jjoint+jaux-1)
                         numglo=zi(jnugll+numloc-1)
-                        zi4(jidxo+numglo-low-1)=zi4(jidxo+numglo-low-1)+zi4(jvaleu+jaux-1)
+                        v_idxo(numglo-low)=v_idxo(numglo-low)+v_valeur(jaux)
                     enddo
 !
+#if PETSC_INT_SIZE == 4
                     call asmpi_comm_point('MPI_RECV', 'I4', numpro, iaux, nbval=lgenvo,&
-                                          vi4=zi4(jvaleu))
+                                          vi4=v_valeur)
+#else
+                    call asmpi_comm_point('MPI_RECV', 'I', numpro, iaux, nbval=lgenvo,&
+                                            vi=v_valeur)
+#endif
                     do jaux = 1, lgenvo
                         numloc=zi(jjoint+jaux-1)
                         numglo=zi(jnugll+numloc-1)
-                        zi4(jidxd+numglo-low-1)=zi4(jidxd+numglo-low-1)+zi4(jvaleu+jaux-1)
+                        v_idxd(numglo-low)=v_idxd(numglo-low)+v_valeur(jaux)
                     enddo
                 else if (numpro.lt.rang) then
                     do jaux = 1, lgenvo
                         numloc=zi(jjoint+jaux-1)
-                        numglo=zi(jnugll+numloc-1)
-                        zi4(jvaleu+jaux-1)=zi4(jidxoc+numloc-1)
+                        v_valeur(jaux)=v_idxoc(numloc)
                     enddo
+#if PETSC_INT_SIZE == 4
                     call asmpi_comm_point('MPI_SEND', 'I4', numpro, iaux, nbval=lgenvo,&
-                                          vi4=zi4(jvaleu))
+                                          vi4=v_valeur)
+#else
+                    call asmpi_comm_point('MPI_SEND', 'I', numpro, iaux, nbval=lgenvo,&
+                    vi=v_valeur)
+#endif
 !
                     do jaux = 1, lgenvo
                         numloc=zi(jjoint+jaux-1)
-                        numglo=zi(jnugll+numloc-1)
-                        zi4(jvaleu+jaux-1)=zi4(jidxdc+numloc-1)
+                        v_valeur(jaux)=v_idxdc(numloc)
                     enddo
+#if PETSC_INT_SIZE == 4
                     call asmpi_comm_point('MPI_SEND', 'I4', numpro, iaux, nbval=lgenvo,&
-                                          vi4=zi4(jvaleu))
+                                          vi4=v_valeur)
+#else
+                    call asmpi_comm_point('MPI_SEND', 'I', numpro, iaux, nbval=lgenvo,&
+                    vi=v_valeur)
+#endif
                 else
                     ASSERT(.false.)
                 endif
@@ -244,8 +279,8 @@ use petsc_data_module
 !
     comple=nglo-ndprop
     do iaux = 1, ndprop
-        zi4(jidxd+iaux-1)=min(zi4(jidxd+iaux-1),ndprop)
-        zi4(jidxo+iaux-1)=min(zi4(jidxo+iaux-1),comple)
+        v_idxd(iaux)=min(v_idxd(iaux),ndprop)
+        v_idxo(iaux)=min(v_idxo(iaux),comple)
     enddo
 !
     call MatCreate(mpicou, ap(kptsc), ierr)
@@ -258,12 +293,12 @@ use petsc_data_module
 !
     call MatSetBlockSize(ap(kptsc), to_petsc_int(bs), ierr)
     ASSERT(ierr.eq.0)
-    !
+!
     unused_nz = -1
-    call MatMPIAIJSetPreallocation(ap(kptsc), unused_nz, zi4(jidxd-1+1:jidxd-1+ndprop),&
-                                      unused_nz, zi4(jidxo-1+1:jidxo-1+ndprop), ierr)
+    call MatMPIAIJSetPreallocation(ap(kptsc), unused_nz, v_idxd(1:ndprop),&
+                                      unused_nz, v_idxo(1:ndprop), ierr)
     ASSERT(ierr.eq.0)
-    !
+!
 !
     call jedetr(idxd)
     call jedetr(idxo)

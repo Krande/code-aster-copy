@@ -19,14 +19,14 @@
 
 include "astercython_config.pxi"
 
-IF _HAVE_PETSC4PY == 1:
+IF HAVE_PETSC4PY == 1:
     from petsc4py cimport PETSc
     from petsc4py.PETSc cimport Mat
     from petsc4py.PETSc cimport PetscMat
 
 
 def AssemblyMatrixToPetsc4Py(assemblyMatrix):
-    IF _HAVE_PETSC4PY == 1:
+    IF HAVE_PETSC4PY == 1:
         name = assemblyMatrix.getName().encode()
         cdef char* charName = name
         cdef PetscMat retour

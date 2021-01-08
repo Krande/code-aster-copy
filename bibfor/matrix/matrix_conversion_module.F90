@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ private
 #include "asterfort/utmess.h"
 !
 public :: csc2dense, csc2csr, matas2csc
-#ifdef  _HAVE_PETSC
+#ifdef _HAVE_PETSC
 public :: csc2matseq , matseq2csr
 #endif
 !
@@ -280,7 +280,7 @@ subroutine csc2csr( a, values, ia, ja )
 
 end subroutine csc2csr
 !
-#ifdef  _HAVE_PETSC
+#ifdef _HAVE_PETSC
 ! Conversion de a_csc (format CSC) en une matrice
 ! PETSc a_mat
 ! On utilise fonctionnellement une routine PETSc permettant

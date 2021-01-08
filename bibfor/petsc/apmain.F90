@@ -284,7 +284,11 @@ use lmp_module, only : lmp_update
             ASSERT(ierr .eq. 0)
             call VecSetType(b, VECMPI, ierr)
             ASSERT(ierr .eq. 0)
+#if PETSC_INT_SIZE == 4
             call wkvect('&&APMAIN.INDICES', 'V V S', ndprop, vi4=v_indic)
+#else
+            call wkvect('&&APMAIN.INDICES', 'V V I', ndprop, vi=v_indic)
+#endif
             call wkvect('&&APMAIN.VALEURS', 'V V R', ndprop, jvaleu)
             iterm = 0
             do jcoll = 0, nloc - 1

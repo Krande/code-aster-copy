@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,6 +43,7 @@ module aster_fieldsplit_module
     private
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
+#include "asterc/asmpi_scan_i.h"
 #include "asterc/asmpi_scan_i4.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
@@ -533,7 +534,11 @@ contains
 !   Chaque processeur possède la section d'indice global C
 !   [low_ab:high_ab-1] de is_ab
         high_ab(1) = izero
-        call asmpi_scan_i4(nab_local, high_ab, ione, MPI_SUM, mpicomm)
+#if PETSC_INT_SIZE == 4
+        call asmpi_scan_i4(nab_local, high_ab, to_mpi_int(ione), MPI_SUM, mpicomm)
+#else
+        call asmpi_scan_i(nab_local, high_ab, to_mpi_int(ione), MPI_SUM, mpicomm)
+#endif
         ASSERT(ierr == 0)
         low_ab = high_ab(1) - nab_local(1)
 !   Vérification de cohérence

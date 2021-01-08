@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,16 +64,15 @@ use petsc_data_module
 !
 !     VARIABLES LOCALES
     integer :: nsmdi, nsmhc, ndprop, nz, bs, numpro, iaux, jjoint
-    integer :: jsmdi, jsmhc, jidxd, procol, prolig, lgenvo, jvaleu
-    integer :: i, k, nzdeb, nzfin, jidxo, jaux, jdelg, jmdla
+    integer :: jsmdi, jsmhc, procol, prolig, lgenvo, jvaleu
+    integer :: i, k, nzdeb, nzfin, jaux, jdelg, jmdla
     integer :: jnequ, iligl, jcoll, iligg, jcolg, numloc, numglo
-    integer :: rang, nbproc, jprddl, jnugll, nloc, nglo, jidxdc
+    integer :: rang, nbproc, jprddl, jnugll, nloc, nglo
     integer :: nuno1, nuno2, num_ddl_max, imult, ipos, ibid
     integer :: num_ddl_min, jslvi, tbloc, iret, nblag, jdeeq
     integer :: imults
 !
-    integer(kind=4) :: mpicou
-    mpi_int :: mrank, msize
+    mpi_int :: mrank, msize, mpicou
 !
     character(len=19) :: nomat, nosolv
     character(len=16) :: idxo, idxd
@@ -84,9 +83,13 @@ use petsc_data_module
     parameter   (idxo  ='&&APALMC.IDXO___')
     parameter   (idxd  ='&&APALMC.IDXD___')
 !
+    PetscInt, pointer :: v_idxd(:) => null()
+    PetscInt, pointer :: v_idxo(:) => null()
+!
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: low, high, neql, neqg, ierr, unused_nz
+    PetscErrorCode  :: ierr
+    PetscInt :: low, high, neql, neqg, unused_nz
     PetscScalar :: xx(1)
     PetscOffset :: xidx
     Mat :: a
@@ -157,12 +160,17 @@ use petsc_data_module
     low=num_ddl_min
     high=num_ddl_max+1
 !
-    call wkvect(idxd, 'V V S', ndprop, jidxd)
-    call wkvect(idxo, 'V V S', ndprop, jidxo)
-
+#if PETSC_INT_SIZE == 4
+    call wkvect(idxo, 'V V S', ndprop, vi4=v_idxo)
+    call wkvect(idxd, 'V V S', ndprop, vi4=v_idxd)
+#else
+    call wkvect(idxo, 'V V I', ndprop, vi=v_idxo)
+    call wkvect(idxd, 'V V I', ndprop, vi=v_idxd)
+#endif
+!
     jcolg = zi(jnugll)
     if (zi(jprddl) .eq. rang) then
-        zi4(jidxd + jcolg - low) = zi4(jidxd + jcolg - low) + 1
+        v_idxd(jcolg - low +1) = v_idxd(jcolg - low +1) + 1
     endif
 !
 !   On commence par s'occuper du nombre de NZ par ligne
@@ -185,14 +193,14 @@ use petsc_data_module
                 nuno1 = 1
             endif
             if (procol .eq. rang .and. prolig .eq. rang) then
-                zi4(jidxd + iligg - low) = zi4(jidxd + iligg - low) + 1
+                v_idxd(iligg - low +1) = v_idxd(iligg - low +1) + 1
                 if (iligg .ne. jcolg) then
-                    zi4(jidxd + jcolg - low) = zi4(jidxd + jcolg - low) + 1
+                    v_idxd(jcolg - low +1) = v_idxd(jcolg - low +1) + 1
                 endif
             else if (procol .ne. rang .and. prolig .eq. rang) then
-                zi4(jidxo + iligg - low) = zi4(jidxo + iligg - low) + 1
+                v_idxo(iligg - low +1) = v_idxo(iligg - low +1) + 1
             else if (procol .eq. rang .and. prolig .ne. rang) then
-                zi4(jidxo + jcolg - low) = zi4(jidxo + jcolg - low) + 1
+                v_idxo(jcolg - low +1) = v_idxo(jcolg - low +1) + 1
             endif
         end do
     end do
@@ -215,17 +223,17 @@ use petsc_data_module
 !           que le proc courant)
 !           On suppose qu'un ddl de Lagrange sera connecte aux autres ddl de la
 !           même maniere que sur le proc qui les possede
-!           C'est pour cette raison qu'on utilise zi4(jidxd + jcolg - low)
+!           C'est pour cette raison qu'on utilise v_idxd(jcolg - low +1)
 !           divise par le nombre de fois qu'apparait un noeud de Lagrange sur le
 !           proc courant
-            ibid = (zi4(jidxd + jcolg - low)/imults)*(imult)
-            zi4(jidxo + jcolg - low) = zi4(jidxo + jcolg - low) + ibid
+            ibid = (v_idxd(jcolg - low -1)/imults)*(imult)
+            v_idxo(jcolg - low +1) = v_idxo(jcolg - low +1) + ibid
         enddo
     endif
 
     unused_nz = -1
-    call MatMPIAIJSetPreallocation(a, unused_nz, zi4(jidxd),&
-                                   unused_nz, zi4(jidxo), ierr)
+    call MatMPIAIJSetPreallocation(a, unused_nz, v_idxd,&
+                                   unused_nz, v_idxo, ierr)
     ASSERT(ierr.eq.0)
 
     ap(kptsc)=a

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ use petsc_data_module
 !
 !     VARIABLES LOCALES
     integer :: nsmdi, nsmhc, nz, nvalm, nlong
-    integer :: jdxi1, jdxi2, jdval1, jdval2, jvalm, jvalm2
+    integer :: jdval1, jdval2, jvalm, jvalm2
     integer :: k, ilig, nzdeb, nzfin,bs, ieq1, ieq2
     integer :: iterm, jterm, nbterm, neq2
     integer :: nbloc, kbloc, k1, k2, k3
@@ -79,6 +79,9 @@ use petsc_data_module
     real(kind=8) :: valm
     integer, pointer :: smdi(:) => null()
     integer(kind=4), pointer :: smhc(:) => null()
+!
+    PetscInt, pointer :: v_dxi1(:) => null()
+    PetscInt, pointer :: v_dxi2(:) => null()
 !
 !----------------------------------------------------------------
 !     Variables PETSc
@@ -154,8 +157,13 @@ use petsc_data_module
     call MatGetOwnershipRange(a, low2, high2, ierr)
     ASSERT(ierr.eq.0)
 !
-    call wkvect(idxi1, 'V V S', neq2, jdxi1)
-    call wkvect(idxi2, 'V V S', neq2, jdxi2)
+#if PETSC_INT_SIZE == 4
+    call wkvect(idxi1, 'V V S', neq2, vi4=v_dxi1)
+    call wkvect(idxi2, 'V V S', neq2, vi4=v_dxi2)
+#else
+    call wkvect(idxi1, 'V V I', neq2, vi=v_dxi1)
+    call wkvect(idxi2, 'V V I', neq2, vi=v_dxi2)
+#endif
     call wkvect(trans1, 'V V R', neq2, jdval1)
     call wkvect(trans2, 'V V R', neq2, jdval2)
 
@@ -214,7 +222,7 @@ use petsc_data_module
             zr(jdval2+jterm-1)=valm
 !           -- on stocke l'indice C de la ligne, c'est
 !              l'indice de la colonne transposee
-            zi4(jdxi2+jterm-1)=ilig-1
+            v_dxi2(jterm)=ilig-1
 !           Writings to get the stiffness matrix wrt nodes and dof numbers
             if (ldebug) then
                 numno1 = zi(jdeeq+2*(ilig-1))
@@ -237,7 +245,7 @@ use petsc_data_module
                 valm=zr(jvalm-1+k)
                 zr(jdval1+iterm-1)=valm
 !               -- on stocke l'indice C de la ligne
-                zi4(jdxi1+iterm-1)=ilig-1
+                v_dxi1(iterm)=ilig-1
 !               Writings to get the stiffness matrix wrt nodes and dof numbers
                 if (ldebug) then
                     numno1 = zi(jdeeq+2*(ilig-1))
@@ -260,13 +268,13 @@ use petsc_data_module
 
 !       -- Valeurs de D => on envoie les valeurs de la colonne jcol2
         mm = to_petsc_int(iterm)
-        call MatSetValues(a, mm, zi4(jdxi1-1+1:jdxi1-1+mm), ione, [to_petsc_int(jcol2)],&
+        call MatSetValues(a, mm, v_dxi1(1:mm), ione, [to_petsc_int(jcol2)],&
                           zr(jdval1-1+1:jdval1-1+mm), INSERT_VALUES, ierr)
         ASSERT(ierr.eq.0)
 
 !       -- Valeurs de C => on envoie les valeurs de la ligne jcol2
         nn = to_petsc_int(jterm)
-        call MatSetValues(a, ione, [to_petsc_int(jcol2)], nn , zi4(jdxi2-1+1:jdxi2-1+nn),&
+        call MatSetValues(a, ione, [to_petsc_int(jcol2)], nn , v_dxi2(1:nn),&
                               zr(jdval2-1+1:jdval2-1+nn), INSERT_VALUES, ierr)
         ASSERT(ierr.eq.0)
 !
@@ -295,7 +303,7 @@ use petsc_data_module
                 iterm=iterm+1
                 valm=zr(jvalm-1+k)
                 zr(jdval1+iterm-1)=valm
-                zi4(jdxi1+iterm-1)=ilig-1
+                v_dxi1(iterm)=ilig-1
 !               Writings to get the stiffness matrix wrt nodes and dof numbers
                 if (ldebug) then
                     numno1 = zi(jdeeq+2*(ilig-1))
@@ -316,7 +324,7 @@ use petsc_data_module
 !       -- Valeurs de E => on envoie les valeurs de la colonne jcol2
         mm = to_petsc_int(iterm)
         nn = to_petsc_int(jcol2)
-        call MatSetValues(a, mm , zi4(jdxi1-1+1:jdxi1-1+mm), ione, [nn],&
+        call MatSetValues(a, mm , v_dxi1(1:mm), ione, [nn],&
                           zr(jdval1-1+1:jdval1-1+nn), INSERT_VALUES, ierr)
     end do
 

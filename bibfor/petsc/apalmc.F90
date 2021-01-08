@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,9 +52,8 @@ use petsc_data_module
 !     VARIABLES LOCALES
     integer :: rang, nbproc
     integer :: nsmdi, nsmhc, nz, bs, nblloc2
-    integer :: jidxd, jidxo
     integer :: i, k, ilig, jcol1,jcol2,nbo, nbd, nzdeb, nzfin, nbterm
-    PetscInt :: mm 
+    PetscInt :: mm
     mpi_int :: mpicou
     integer, pointer :: smdi(:) => null()
     integer(kind=4), pointer :: smhc(:) => null()
@@ -65,6 +64,9 @@ use petsc_data_module
 !
     parameter   (idxo  ='&&APALMC.IDXO___')
     parameter   (idxd  ='&&APALMC.IDXD___')
+!
+    PetscInt, pointer :: v_idxd(:) => null()
+    PetscInt, pointer :: v_idxo(:) => null()
 !
 !----------------------------------------------------------------
 !     Variables PETSc
@@ -128,11 +130,14 @@ use petsc_data_module
     nblloc2 = high2 - low2
 
 !   -- CES DEUX VECTEURS SONT LES D_NNZ ET O_NNZ A PASSER A PETSc
-    call wkvect(idxo, 'V V S', nblloc2, jidxo)
-    call wkvect(idxd, 'V V S', nblloc2, jidxd)
-
-
-
+#if PETSC_INT_SIZE == 4
+    call wkvect(idxo, 'V V S', nblloc2, vi4=v_idxo)
+    call wkvect(idxd, 'V V S', nblloc2, vi4=v_idxd)
+#else
+    call wkvect(idxo, 'V V I', nblloc2, vi=v_idxo)
+    call wkvect(idxd, 'V V I', nblloc2, vi=v_idxd)
+#endif
+!
 !   -- On commence par s'occuper du nombre de nz par ligne dans le bloc diagonal
 !      Indices C : jcol2
 !      Indices F : jcol1, ilig
@@ -154,11 +159,11 @@ use petsc_data_module
                nbo = nbo + 1
            else
                nbd = nbd + 1
-               zi4(jidxd-1+(ilig-low2)) = zi4(jidxd-1+(ilig-low2)) + 1
+               v_idxd(ilig-low2) = v_idxd(ilig-low2) + 1
            endif
        end do
-       zi4(jidxd-1+(jcol2+1-low2)) = zi4(jidxd-1+(jcol2+1-low2)) + nbd - 1
-       zi4(jidxo-1+(jcol2+1-low2)) = zi4(jidxo-1+(jcol2+1-low2)) + nbo
+       v_idxd(jcol2+1-low2) = v_idxd(jcol2+1-low2) + nbd - 1
+       v_idxo(jcol2+1-low2) = v_idxo(jcol2+1-low2) + nbo
     end do
 !   -- Ensuite on complete le tableau du bloc hors diagonal
 !      Indices C : jcol2
@@ -174,7 +179,7 @@ use petsc_data_module
             if (ilig .lt. (low2+1)) then
                 continue
             else if (ilig.le.high2) then
-                zi4(jidxo-1+(ilig-low2)) = zi4(jidxo-1+(ilig-low2)) + 1
+                v_idxo(ilig-low2) = v_idxo(ilig-low2) + 1
             else
                 exit
             endif
@@ -196,15 +201,15 @@ use petsc_data_module
         ASSERT(ierr.eq.0)
         mm = to_petsc_int(nblloc2)
         unused_nz = -1
-        call MatSeqAIJSetPreallocation(a, unused_nz, zi4(jidxd-1+1:jidxd-1+mm), ierr)
+        call MatSeqAIJSetPreallocation(a, unused_nz, v_idxd(1:mm), ierr)
         ASSERT(ierr.eq.0)
     else
         call MatSetType(a, MATMPIAIJ, ierr)
         ASSERT(ierr.eq.0)
         mm = to_petsc_int(nblloc2)
         unused_nz = -1
-        call MatMPIAIJSetPreallocation(a, unused_nz, zi4(jidxd-1+1:jidxd-1+mm),&
-                                       unused_nz, zi4(jidxo-1+1:jidxd-1+mm), ierr)
+        call MatMPIAIJSetPreallocation(a, unused_nz, v_idxd(1:mm),&
+                                       unused_nz, v_idxo(1:mm), ierr)
         ASSERT(ierr.eq.0)
     endif
 !

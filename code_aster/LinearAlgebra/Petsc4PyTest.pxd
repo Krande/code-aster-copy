@@ -21,17 +21,17 @@ from libcpp.string cimport string
 
 include "astercython_config.pxi"
 
-IF _HAVE_PETSC4PY == 1:
+IF HAVE_PETSC4PY == 1:
     from petsc4py cimport PETSc
     from petsc4py.PETSc cimport Mat
     from petsc4py.PETSc cimport PetscMat
 
-IF _HAVE_PETSC4PY == 1:
+IF HAVE_PETSC4PY == 1:
     cdef extern from "petscmat.h":
 
         ctypedef int PetscErrorCode
 
     cdef extern from "aster_fort_petsc.h":
 
-        IF _HAVE_PETSC4PY == 1:
+        IF HAVE_PETSC4PY == 1:
             cdef void CALL_MATASS2PETSC(const char*, PetscMat*, PetscErrorCode*)

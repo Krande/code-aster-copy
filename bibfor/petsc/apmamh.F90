@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,11 +60,11 @@ use petsc_data_module
 !
 !     VARIABLES LOCALES
     integer :: nsmdi, nsmhc, nz, nvalm, nlong
-    integer :: jsmdi, jsmhc, jdxi1, jdxi2, jdval1, jdval2, jvalm, jvalm2
+    integer :: jsmdi, jsmhc, jdval1, jdval2, jvalm, jvalm2
     integer :: k, iligl, jcoll, nzdeb, nzfin, nuno1, nucmp1, nuno2, nbproc, numno1,numno2
     integer :: jcolg, iligg, jnugll, nucmp2, procol, jprddl
     integer :: jnequ, nloc, nglo, jdeeq, prolig, rang, ibid, ieq1, ieq2
-    integer(kind=4) :: tmp, jterm, un, jcolg4(1), iterm
+    integer :: jterm, jcolg4(1), iterm
     integer :: jrefn, jmlogl
     character(len=8) :: noma
     character(len=24) :: nonulg
@@ -79,6 +79,9 @@ use petsc_data_module
 !
     real(kind=8) :: valm, valm2
 !
+    PetscInt, pointer :: v_dxi1(:) => null()
+    PetscInt, pointer :: v_dxi2(:) => null()
+!
     parameter (idxi1 ='&&APMAMC.IDXI1__')
     parameter (idxi2 ='&&APMAMC.IDXI2__')
     parameter (trans1='&&APMAMC.TRANS1_')
@@ -86,7 +89,9 @@ use petsc_data_module
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: low, high, neql, neqg, ierr, mm, nn
+    PetscErrorCode ::  ierr
+    PetscInt :: low, high, neql, neqg, mm, nn, tmp
+    PetscInt, parameter :: un = 1
     Mat :: a
 !----------------------------------------------------------------
     call jemarq()
@@ -147,8 +152,13 @@ use petsc_data_module
     call MatGetOwnershipRange(a, low, high, ierr)
     ASSERT(ierr.eq.0)
 !
-    call wkvect(idxi1, 'V V S', nloc, jdxi1)
-    call wkvect(idxi2, 'V V S', nloc, jdxi2)
+#if PETSC_INT_SIZE == 4
+    call wkvect(idxi1, 'V V S', nloc, vi4=v_dxi1)
+    call wkvect(idxi2, 'V V S', nloc, vi4=v_dxi2)
+#else
+    call wkvect(idxi1, 'V V I', nloc, vi=v_dxi1)
+    call wkvect(idxi2, 'V V I', nloc, vi=v_dxi2)
+#endif
     call wkvect(trans1, 'V V R', nloc, jdval1)
     call wkvect(trans2, 'V V R', nloc, jdval2)
 !
@@ -193,7 +203,6 @@ use petsc_data_module
 !   On commence par s'occuper du nombres de NZ par ligne
 !   dans le bloc diagonal
 !    call MatSetOption(a, MAT_NEW_NONZERO_ALLOCATION_ERR, PETSC_FALSE, ierr)
-    un = 1
     do jcoll = 2, nloc
         nzdeb = zi(jsmdi + jcoll - 2) + 1
         nzfin = zi(jsmdi + jcoll - 1)
@@ -218,7 +227,7 @@ use petsc_data_module
                 if( prolig .eq. rang ) then
                     jterm = jterm + 1
                     zr(jdval2 + jterm - 1) = valm
-                    zi4(jdxi2 + jterm - 1) = iligg
+                    v_dxi2(jterm) = iligg
 !                   Writings to get the stiffness matrix wrt nodes and dof numbers
                     if (ldebug) then
                         numno1 = zi(jdeeq+2*(iligl-1))
@@ -237,7 +246,7 @@ use petsc_data_module
                         if( iligg .ne. jcolg ) then
                             iterm = iterm + 1
                             zr(jdval1 + iterm - 1) = valm2
-                            zi4(jdxi1 + iterm - 1) = iligg
+                            v_dxi1(iterm) = iligg
 !                           Writings to get the stiffness matrix wrt nodes and dof numbers
                             if (ldebug) then
                                 numno1 = zi(jdeeq+2*(iligl-1))
@@ -257,7 +266,7 @@ use petsc_data_module
                 else if( procol .eq. rang ) then
                     iterm = iterm + 1
                     zr(jdval1 + iterm - 1) = valm2
-                    zi4(jdxi1 + iterm - 1) = iligg
+                    v_dxi1(iterm) = iligg
 !                   Writings to get the stiffness matrix wrt nodes and dof numbers
                     if (ldebug) then
                         numno1 = zi(jdeeq+2*(iligl-1))
@@ -282,7 +291,7 @@ use petsc_data_module
                 if( lgive ) then
                     jterm = jterm + 1
                     zr(jdval2 + jterm - 1) = valm
-                    zi4(jdxi2 + jterm - 1) = iligg
+                    v_dxi2(jterm) = iligg
 !                   Writings to get the stiffness matrix wrt nodes and dof numbers
                     if (ldebug) then
                         numno1 = zi(jdeeq+2*(iligl-1))
@@ -300,7 +309,7 @@ use petsc_data_module
                     if( iligg .ne. jcolg ) then
                         iterm = iterm + 1
                         zr(jdval1 + iterm - 1) = valm2
-                        zi4(jdxi1 + iterm - 1) = iligg
+                        v_dxi1(iterm) = iligg
 !                        Writings to get the stiffness matrix wrt nodes and dof numbers
                         if (ldebug) then
                             numno1 = zi(jdeeq+2*(iligl-1))
@@ -323,11 +332,11 @@ use petsc_data_module
         mm = to_petsc_int(jterm)
 !       Ici zi4(jdxi2) donne le numero de ligne
 !       Donc on donne ici le bloc triangulaire superieur
-        call MatSetValues(a, jterm, zi4(jdxi2:jdxi2+mm), un, [to_petsc_int(jcolg4)],&
+        call MatSetValues(a, mm, v_dxi2(1:mm), un, [to_petsc_int(jcolg4)],&
                           zr(jdval2:jdval2+mm), ADD_VALUES, ierr)
         nn = to_petsc_int(iterm)
 !       on donne ici le bloc triangulaire inferieur
-        call MatSetValues(a, un, [to_petsc_int(jcolg4)], iterm, zi4(jdxi1:jdxi1+nn),&
+        call MatSetValues(a, un, [to_petsc_int(jcolg4)], nn, v_dxi1(1:nn),&
                           zr(jdval1:jdval1+nn), ADD_VALUES, ierr)
         iterm = 0
         jterm = 0
