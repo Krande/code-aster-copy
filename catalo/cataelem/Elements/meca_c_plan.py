@@ -128,7 +128,7 @@ EKTHETA  = LocatedComponents(phys=PHY.G, type='ELEM',
     components=('GTHETA','FIC[2]','K[2]',))
 
 NEWTHETA  = LocatedComponents(phys=PHY.G, type='ELEM',
-    components=('GTHETA','K[3]',))
+    components=('GTHETA','FIC[3]','K[3]',))
 
 NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
     components=('X','Y',))

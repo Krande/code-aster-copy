@@ -57,7 +57,7 @@ use calcG_type
 !----------------------------------------------
     integer :: nres, iret, nsig, ino1, ino2, inga, ibid
     integer :: nchin
-    real(kind=8) :: gth(4)
+    real(kind=8) :: gth(7)
     character(len=2)  :: codret
     character(len=8)  :: resu, k8b, lpain(50), lpaout(1)
     character(len=16) :: opti
@@ -312,12 +312,13 @@ use calcG_type
 !******** PRENDRE EN COMPTE LA DISCRETISATION **********
 !***************** LAGRANGE OU LEGENDRE*****************
 !
-!-- G, K1, K2, K3 en 2D
-    call mesomm(lchout(1), 4, vr=gth)
+!-- G, K1, K2, K3, FIC1, FIC2, FIC3 en 2D
+    call mesomm(lchout(1), 7, vr=gth)
 !
     cgStudy%gth = 0.d0
     if (cgTheta%symech .eq. 'OUI') then
-        cgStudy%gth(1:4) = [ 2.d0*gth(1), 2.d0*gth(2), 0.d0, 0.d0 ]
+        cgStudy%gth(1:7) = [ 2.d0*gth(1), 2.d0*gth(2), 0.d0, 0.d0,&
+                                          2.d0*gth(5), 0.d0, 0.d0]
     endif
 !
     call detrsd('CHAMP_GD', chvarc)

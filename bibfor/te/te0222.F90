@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -921,12 +921,19 @@ implicit none
 !-- Fin boucle points de Gauss
     enddo   
 !    
-!-- Assemblage final des termes de G et K*
+!-- Assemblage final des termes de G, K* et des K* réduits pour le 
+!-- calcul de G_IRWIN
 !
     zr(igthet)   = tthe + tcla + tfor + tini
+    
     zr(igthet+1) = k1 * coeff_K1K2
     zr(igthet+2) = k2 * coeff_K1K2
     zr(igthet+3) = k3 * coeff_K3
+    
+    zr(igthet+4) = k1 * sqrt(coeff_K1K2)
+    zr(igthet+5) = k2 * sqrt(coeff_K1K2)
+    zr(igthet+6) = k3 * sqrt(coeff_K3)
+
 !
 !-- Exit sur valeur de theta nulle sur element
     999 continue

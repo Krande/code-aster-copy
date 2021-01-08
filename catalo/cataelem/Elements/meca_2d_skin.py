@@ -47,7 +47,7 @@ ELNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type='ELEM',
                              components=('X[30]',))
 
 NEWTHETA  = LocatedComponents(phys=PHY.G, type='ELEM',
-            components=('GTHETA','K[3]',))
+            components=('GTHETA','FIC[3]','K[3]',))
 #---------------------------------------------------------------------------------------------------
 class MEPLSE2(Element):
     """Skin element for 2D isoparametric elements - On SE2"""

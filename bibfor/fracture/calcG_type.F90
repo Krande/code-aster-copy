@@ -124,8 +124,8 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_InfoTe
         real(kind=8)       :: time   = 0.d0
 ! ----- pulse
         real(kind=8)       :: pulse   = 0.d0
-! ----- computed values (G, K1, K2, K3)
-        real(kind=8)       :: gth(4)   = 0.d0
+! ----- computed values (G, K1, K2, K3, FIC1, FIC2, FIC3)
+        real(kind=8)       :: gth(7)   = 0.d0
 ! ----- member function
         contains
         procedure, pass    :: initialize => initialize_study

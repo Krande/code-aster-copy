@@ -38,7 +38,7 @@ MMATUNS  = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 NEWTHETA  = LocatedComponents(phys=PHY.G, type='ELEM',
-            components=('GTHETA','K[3]',))
+            components=('GTHETA','FIC[3]','K[3]',))
 
 #---------------------------------------------------------------------------------------------------
 class MECA_FACE3(Element):

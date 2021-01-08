@@ -50,7 +50,7 @@ use calcG_type
     integer, parameter :: nxpara = 15, nbmxpa = 20
     integer            :: nbpara
     integer            :: livi(nbmxpa)
-    real(kind=8)       :: livr(nbmxpa)
+    real(kind=8)       :: livr(nbmxpa), g_irwin
     complex(kind=8)    :: livc(nbmxpa)
     character(len=8)   :: litypa(nxpara), k8bid
     character(len=24)  :: livk(nbmxpa), basloc
@@ -66,6 +66,10 @@ use calcG_type
 !
 !   Récupération des coord des pts du fond
     basloc=cgTheta%crack//'.BASLOC'
+
+!   Application de la formule d'Irwin
+    g_irwin= cgStudy%gth(5)*cgStudy%gth(5)+cgStudy%gth(6)*cgStudy%gth(6)&
+            + cgStudy%gth(7)*cgStudy%gth(7)
 !
 !====== VALEURS BIDON A EFFACER ==========
     k8bid = 'K8_BIDON'
@@ -102,6 +106,7 @@ use calcG_type
         if (cgField%ndim .eq. 3) then
             call tbajvr(cgField%table_g, nbpara, 'K3', cgStudy%gth(4), livr)
         endif
+        call tbajvr(cgField%table_g, nbpara, 'G_IRWIN', g_irwin, livr)        
     endif
 !
     call tbajli(cgField%table_g, nbpara, linopa, livi, livr, livc, livk, 0)

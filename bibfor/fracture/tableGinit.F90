@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -99,10 +99,11 @@ subroutine tableGinit(table, option, ndim, nxpara,&
     if (option.eq.'K') then
         call cgajpa('K1', 'R', nbpara, linopa, litypa, nxpara)
         call cgajpa('K2', 'R', nbpara, linopa, litypa, nxpara)
-!            call cgajpa('G_IRWIN', 'R', nbpara, linopa, litypa, nxpara)
+
         if (ndim.eq.3) then
             call cgajpa('K3', 'R', nbpara, linopa, litypa, nxpara)
         endif
+        call cgajpa('G_IRWIN', 'R', nbpara, linopa, litypa, nxpara)
     endif
 
 !   --------------------

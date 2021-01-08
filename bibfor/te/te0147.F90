@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -584,6 +584,10 @@ implicit none
     zr(igthet+1) = tcla1 * coeff_K1K2
     zr(igthet+2) = tcla2 * coeff_K1K2
     zr(igthet+3) = tcla3 * coeff_K3
+
+    zr(igthet+4) = tcla1 * sqrt(coeff_K1K2)
+    zr(igthet+5) = tcla2 * sqrt(coeff_K1K2)
+    zr(igthet+6) = tcla3 * sqrt(coeff_K3)
 !
     AS_DEALLOCATE(vr=presn)
     AS_DEALLOCATE(vr=forcn)
