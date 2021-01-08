@@ -59,11 +59,9 @@ def check_scotch(self):
     self.check_scotch_version()
 
     if opts.scotch_libs is None:
-        if self.env.SCOTCH_VERSION and self.env.SCOTCH_VERSION[0] < 5:
-            opts.scotch_libs = 'scotch scotcherr scotcherrexit'
-        else:
-            # default or SCOTCH_VERSION >= 5
-            opts.scotch_libs = 'esmumps scotch scotcherr'
+        opts.scotch_libs = 'esmumps scotch scotcherr'
+        if self.env.BUILD_MPI:
+            opts.scotch_libs += ' ptscotch ptscotcherr'
 
     # code_aster v11.0.1: FICHE 016627
     if 'scotchmetis' in opts.scotch_libs:
@@ -118,7 +116,11 @@ int main(void){
     try:
         ret = self.check_cc(fragment=fragment, use='SCOTCH', uselib_store='SCOTCH',
                             mandatory=True, execute=True, define_ret=True)
-        self.env.append_value('SCOTCH_VERSION', eval(ret))
+        vers = eval(ret)
+        if vers[0] < 5:
+            raise Errors.ConfigurationError(
+                "Scotch version >= 5 is required, unexpected version: {0}"
+                .format(ret))
     except:
         self.end_msg('no', 'YELLOW')
         raise

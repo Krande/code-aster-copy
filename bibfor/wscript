@@ -105,8 +105,6 @@ def check_fortran_compiler_options(self, options):
 @Configure.conf
 def check_fortran_types(self):
     """Check fortran types and their matching C type"""
-    # to help in case of error in aster_depend.h or aster_types.h
-    self.define('HAVE_ASTER_TYPES', 1)
     self.check_sizeof_integer4()
     self.check_sizeof_integer()
     self.check_sizeof_logical()
