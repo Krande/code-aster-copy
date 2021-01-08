@@ -319,6 +319,8 @@ use calcG_type
     if (cgTheta%symech .eq. 'OUI') then
         cgStudy%gth(1:7) = [ 2.d0*gth(1), 2.d0*gth(2), 0.d0, 0.d0,&
                                           2.d0*gth(5), 0.d0, 0.d0]
+    else
+        cgStudy%gth(1:7) = gth(1:7)
     endif
 !
     call detrsd('CHAMP_GD', chvarc)

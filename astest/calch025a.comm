@@ -125,15 +125,15 @@ G=CALC_H(OPTION='G',
 
 IMPR_TABLE(TABLE=G)
 
-#GK=CALC_H(OPTION='K',
-#          RESULTAT=RESU,
-#          THETA=_F(FISSURE=FISS_NEW,
-#                   R_INF=RINF,
-#                   R_SUP=RSUP,
-#                   ),
-#          )
-#
-#IMPR_TABLE(TABLE=GK),
+GK=CALC_H(OPTION='K',
+          RESULTAT=RESU,
+          THETA=_F(FISSURE=FISS_NEW,
+                   R_INF=RINF,
+                   R_SUP=RSUP,
+                   ),
+          )
+
+IMPR_TABLE(TABLE=GK),
 
 
 # POST_K1_K2_K3
@@ -145,26 +145,26 @@ IMPR_TABLE(TABLE=K )
 # tests sur G
 Gref = 192
 
-#TEST_TABLE(REFERENCE='ANALYTIQUE',
-#           PRECISION=3.0000000000000001E-3,
-#           VALE_CALC=192.511256986,
-#           VALE_REFE=192,
-#           NOM_PARA='G',
-#           TABLE=G,)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=3.0000000000000001E-3,
+           VALE_CALC=192.511256986,
+           VALE_REFE=192,
+           NOM_PARA='G',
+           TABLE=G,)
 
-#TEST_TABLE(REFERENCE='ANALYTIQUE',
-#           PRECISION=3.0000000000000001E-3,
-#           VALE_CALC=192.511256986,
-#           VALE_REFE=192,
-#           NOM_PARA='G',
-#           TABLE=GK,)
-#
-#TEST_TABLE(REFERENCE='ANALYTIQUE',
-#           PRECISION=3.0000000000000001E-3,
-#           VALE_CALC=192.527315126,
-#           VALE_REFE=192,
-#           NOM_PARA='G_IRWIN',
-#           TABLE=GK,)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=3.0000000000000001E-3,
+           VALE_CALC=192.511256986,
+           VALE_REFE=192,
+           NOM_PARA='G',
+           TABLE=GK,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=3.0000000000000001E-3,
+           VALE_CALC=192.527315126,
+           VALE_REFE=192,
+           NOM_PARA='G_IRWIN',
+           TABLE=GK,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.012,
@@ -176,12 +176,12 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 # tests sur K1
 K1ref = 6.65e6
 
-#TEST_TABLE(REFERENCE='ANALYTIQUE',
-#           PRECISION=3.0000000000000001E-3,
-#           VALE_CALC=6665536.76861,
-#           VALE_REFE=6.650000E6,
-#           NOM_PARA='K1',
-#           TABLE=GK,)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=3.0000000000000001E-3,
+           VALE_CALC=6665536.76861,
+           VALE_REFE=6.650000E6,
+           NOM_PARA='K1',
+           TABLE=GK,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=5.0000000000000001E-3,
