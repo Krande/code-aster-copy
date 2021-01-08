@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,11 +51,11 @@ subroutine haslib(libraz, iret)
         iret=1
 #endif
     else if (librai.eq.'HDF5') then
-#ifndef _DISABLE_HDF5
+#ifdef HAVE_HDF5
         iret=1
 #endif
     else if (librai.eq.'MED') then
-#ifndef _DISABLE_MED
+#ifdef HAVE_MED
         iret=1
 #endif
     else

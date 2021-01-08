@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine as_msdcrr(fid,lmname,jname,numdt,numit,entlcl,&
     aster_int :: numdt,numit,entlcl,geolcl,entdst
     aster_int :: geodst,ncorr,corrtab(*),cret
 
-#ifdef _DISABLE_MED
+#ifndef HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 

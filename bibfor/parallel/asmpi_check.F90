@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine asmpi_check(iret)
 !       EN CAS DE PROBLEME, ON RETOURNE IRET != 0, CAR IL NE FAUT ALORS
 !       PAS INITIER DE NOUVELLES COMMUNICATIONS.
 !-----------------------------------------------------------------------
-#if defined(_USE_MPI) && !defined(ASTER_DISABLE_MPI_CHECK)
+#if defined(_USE_MPI) && !defined(DISABLE_MPI_CHECK)
 
 #include "mpif.h"
 #include "asterc/asmpi_irecv_i4.h"

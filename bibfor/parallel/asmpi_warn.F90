@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine asmpi_warn(iexc)
 !
 ! Si on désactive le controle des erreurs entre processeurs, on fait abort
 !
-# ifdef ASTER_DISABLE_MPI_CHECK
+# ifdef DISABLE_MPI_CHECK
     call asabrt(6)
 # else
 !

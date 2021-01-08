@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,19 +60,19 @@ subroutine entete()
     call utmess('I', 'SUPERVIS2_13', si=maxThreads)
 #endif
 ! --- LIBRARIES HDF5 ET MED
-#ifndef _DISABLE_HDF5
+#ifdef HAVE_HDF5
     call lihdfv(vali(1), vali(2), vali(3))
     call utmess('I', 'SUPERVIS2_14', ni=3, vali=vali)
 #else
     call utmess('I', 'SUPERVIS2_15')
 #endif
-#ifndef _DISABLE_MED
+#ifdef HAVE_MED
     call limedv(vali(1), vali(2), vali(3))
     call utmess('I', 'SUPERVIS2_16', ni=3, vali=vali)
 #else
     call utmess('I', 'SUPERVIS2_17')
 #endif
-#ifndef _DISABLE_MFRONT
+#ifdef HAVE_MFRONT
 #   define vers0 MFRONT_VERSION
     call utmess('I', 'SUPERVIS2_27', sk=vers0)
 #else
@@ -97,7 +97,7 @@ subroutine entete()
 #else
     call utmess('I', 'SUPERVIS2_26')
 #endif
-#ifndef _DISABLE_SCOTCH
+#ifdef HAVE_SCOTCH
     call liscov(vali(1), vali(2), vali(3))
     call utmess('I', 'SUPERVIS2_20', ni=3, vali=vali)
 #else

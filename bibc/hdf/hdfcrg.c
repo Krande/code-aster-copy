@@ -27,7 +27,7 @@
 /  Résultats :
 /     identificateur du groupe, -1 sinon (hid_t = int)
 /-----------------------------------------------------------------------------*/
-#ifndef _DISABLE_HDF5
+#ifdef HAVE_HDF5
 #include <hdf5.h>
 #endif
 
@@ -35,7 +35,7 @@ hid_t DEFPSS(HDFCRG, hdfcrg, hid_t *idf, char *nomgp, STRING_SIZE lp,
                char *nomgr, STRING_SIZE ln)
 {
   hid_t iret=-1;
-#ifndef _DISABLE_HDF5
+#ifdef HAVE_HDF5
   hid_t  idgrp,idfic,lcpl_id,gcpl_id;
   char *nomd;
   int k,lg2;

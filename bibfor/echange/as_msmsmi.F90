@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine as_msmsmi(fid, iterat, nom, dim, desc,&
     character(len=16) :: nocomp(3), unit(3)
     med_idt :: fid
     aster_int :: dim, cret, typrep, iterat
-#ifdef _DISABLE_MED
+#ifndef HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

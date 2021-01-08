@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,12 +26,12 @@ subroutine as_msmnsm(fid, nbmasu, cret)
 #include "asterfort/utmess.h"
 #include "med/msmnsm.h"
     aster_int :: nbmasu, cret
-    med_idt :: fid 
-#ifdef _DISABLE_MED
+    med_idt :: fid
+#ifndef HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind 
+#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
     med_idt :: fidm
     med_int :: nbmas4, cret4
     fidm = to_med_idt(fid)

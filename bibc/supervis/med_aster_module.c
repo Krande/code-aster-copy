@@ -21,7 +21,7 @@
 
 #include "aster_utils.h"
 
-#ifndef _DISABLE_MED
+#ifdef HAVE_MED
 #include "med.h"
 
 /* ---------------------------------------------------------------------- */

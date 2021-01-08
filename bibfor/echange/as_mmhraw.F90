@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,13 +27,13 @@ subroutine as_mmhraw(fid, nomail, typgeo, nomatt, nbrval,&
 #include "asterfort/utmess.h"
 #include "med/mmhraw.h"
     character(len=*) :: nomail, nomatt
-    med_idt :: fid 
+    med_idt :: fid
     aster_int :: typgeo, nbrval, codret
     real(kind=8) :: tabval(*)
     aster_int :: numdt, numit
     parameter    (numdt = -1)
     parameter    (numit = -1)
-#ifdef _DISABLE_MED
+#ifndef HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

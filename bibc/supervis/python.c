@@ -61,7 +61,7 @@ void initAsterModules()
 
     /* Module définissant des opérations sur les objets fonction_sdaster */
     PyImport_AppendInittab("aster_fonctions", PyInit_aster_fonctions);
-#ifndef _DISABLE_MED
+#ifdef HAVE_MED
     PyImport_AppendInittab("med_aster", PyInit_med_aster);
 #endif
 }

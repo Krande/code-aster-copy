@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine as_mfdonp(fid, cha, numdt, numo, typent,&
     character(len=*) :: nompro, nomloc, cha, noma
     character(len=20) :: numdtchar, numochar
     character(len=73) :: oname
-#ifdef _DISABLE_MED
+#ifndef HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

@@ -29,7 +29,7 @@
 /  Résultats :
 /     =0 OK, =-1 problème
 /-----------------------------------------------------------------------------*/
-#ifndef _DISABLE_HDF5
+#ifdef HAVE_HDF5
 #include <hdf5.h>
 #endif
 
@@ -37,7 +37,7 @@ ASTERINTEGER DEFPSPS(HDFWAT, hdfwat, hid_t *iddat, char *nomat, STRING_SIZE ln,
                                 ASTERINTEGER *nbv, char *valat, STRING_SIZE lv)
 {
   ASTERINTEGER iret=-1;
-#ifndef _DISABLE_HDF5
+#ifdef HAVE_HDF5
   hid_t ida,aid,aty,att;
   herr_t ret,retc;
   hsize_t dimsf[1];

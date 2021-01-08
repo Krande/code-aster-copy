@@ -25,13 +25,13 @@
 /  Résultats :
 /     0 = fermeture OK, -1 sinon (long)
 /-----------------------------------------------------------------------------*/
-#ifndef _DISABLE_HDF5
+#ifdef HAVE_HDF5
 #include <hdf5.h>
 #endif
 
 ASTERINTEGER DEFP(HDFCLD, hdfcld, hid_t *idd)
 {
-#ifndef _DISABLE_HDF5
+#ifdef HAVE_HDF5
     hid_t id;
     herr_t icode;
 

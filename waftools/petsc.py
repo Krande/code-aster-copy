@@ -42,7 +42,6 @@ def configure(self):
     if not self.env.BUILD_MPI:
         self.define('_DISABLE_PETSC', 1)
         self.undefine('HAVE_PETSC')
-        self.define('_DISABLE_PETSC4PY', 1)
         self.define('_HAVE_PETSC4PY',0)
         return
     try:
@@ -53,7 +52,6 @@ def configure(self):
         self.env.revert()
         self.define('_DISABLE_PETSC', 1)
         self.undefine('HAVE_PETSC')
-        self.define('_DISABLE_PETSC4PY', 1)
         self.define('_HAVE_PETSC4PY',0)
         if self.options.enable_petsc:
             raise
@@ -153,11 +151,9 @@ def check_petsc4py(self):
                                                   ['import petsc4py'])[0]
         self.env.append_unique('CYTHONFLAGS', '-I{0}'.format(pymodule_path))
     except Errors.ConfigurationError:
-        self.define('_DISABLE_PETSC4PY', 1)
-        self.define('_HAVE_PETSC4PY',0)
+        self.undefine('HAVE_PETSC4PY')
     else:
-        self.undefine('_DISABLE_PETSC4PY')
-        self.define('_HAVE_PETSC4PY', 1)
+        self.define('HAVE_PETSC4PY', 1)
 
 @Configure.conf
 def check_sizeof_petsc_int(self):

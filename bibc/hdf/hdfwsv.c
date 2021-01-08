@@ -29,7 +29,7 @@
 /  Résultats :
 /     identificateur du fichier, -1 sinon (hid_t = int)
 /-----------------------------------------------------------------------------*/
-#ifndef _DISABLE_HDF5
+#ifdef HAVE_HDF5
 #include <hdf5.h>
 #endif
 #include <stdlib.h>
@@ -38,7 +38,7 @@ ASTERINTEGER DEFPSSSPSP(HDFWSV, hdfwsv, hid_t *idf, char *nomg, STRING_SIZE lg,
                         char *nomdts, STRING_SIZE ln, char *type, STRING_SIZE lt,
                         ASTERINTEGER *ltype, char *sv, STRING_SIZE toto, ASTERINTEGER *lsv)
 {
-#ifndef _DISABLE_HDF5
+#ifdef HAVE_HDF5
   hid_t idfic,datatype,dataspace,dataset,type_id;
   herr_t iret;
   hsize_t dimsf[1];

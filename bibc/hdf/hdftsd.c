@@ -29,7 +29,7 @@
 /  Résultats :
 /    =O OK, -1 sinon
 /-----------------------------------------------------------------------------*/
-#ifndef _DISABLE_HDF5
+#ifdef HAVE_HDF5
 #include <hdf5.h>
 #endif
 #define FALSE   0
@@ -38,7 +38,7 @@ ASTERINTEGER DEFPSPP(HDFTSD, hdftsd, hid_t *iddat, char *type, STRING_SIZE lt,
                 ASTERINTEGER *ltype, ASTERINTEGER *lv)
 {
   ASTERINTEGER iret=-1;
-#ifndef _DISABLE_HDF5
+#ifdef HAVE_HDF5
   hid_t id,datatype,class,dataspace;
   hsize_t dims_out[1];
   int k,rank,status;

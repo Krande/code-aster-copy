@@ -28,14 +28,14 @@
 /  Résultats :
 /     nombre de datasets et de groups
 /-----------------------------------------------------------------------------*/
-#ifndef _DISABLE_HDF5
+#ifdef HAVE_HDF5
 #include <hdf5.h>
 #endif
 
 ASTERINTEGER DEFPS(HDFNBO, hdfnbo, hid_t *idf, char *nomgr, STRING_SIZE ln)
 {
   ASTERINTEGER nbobj=0;
-#ifndef _DISABLE_HDF5
+#ifdef HAVE_HDF5
   hid_t idfic, bidon=0;
   char *nomg;
   int k;
@@ -88,7 +88,7 @@ ASTERINTEGER DEFPS(HDFNBO, hdfnbo, hid_t *idf, char *nomgr, STRING_SIZE ln)
           failure. The iterator can be restarted at the next group member.
 */
 
-#ifndef _DISABLE_HDF5
+#ifdef HAVE_HDF5
 herr_t indiceNbName(hid_t id,const char *nom,  const H5L_info_t *info, void *opdata)
 {
   int *compteur;

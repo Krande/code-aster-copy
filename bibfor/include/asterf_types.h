@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,14 +37,14 @@
 #define ASTER_TRUE to_aster_logical(.true.)
 #define ASTER_FALSE to_aster_logical(.false.)
 !
-#ifdef _DISABLE_HDF5
+#ifndef HAVE_HDF5
 #define HDF_HID_SIZE 4
 #endif
 #define hdf_int_kind HDF_HID_SIZE
 #define hid_t integer(kind=hdf_int_kind)
 #define to_hid_t(a) int(a, HDF_HID_SIZE)
 !
-#ifdef _DISABLE_MED
+#ifndef HAVE_MED
 #define MED_INT_SIZE 4
 #define MED_IDT_SIZE 4
 #endif
@@ -63,7 +63,7 @@
 #define mpi_bool logical(kind=mpi_int_kind)
 #define to_mpi_int(a) int(a, MPI_INT_SIZE)
 !
-#ifdef _DISABLE_MUMPS
+#ifndef HAVE_MUMPS
 #   define MUMPS_INT_SIZE 4
 #endif
 #define mumps_int_kind MUMPS_INT_SIZE

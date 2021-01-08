@@ -28,7 +28,7 @@
 /  Résultats :
 /     =0 OK, -1 sinon
 /-----------------------------------------------------------------------------*/
-#ifndef _DISABLE_HDF5
+#ifdef HAVE_HDF5
 #include <hdf5.h>
 #endif
 
@@ -36,7 +36,7 @@ ASTERINTEGER DEFPPPP(HDFRSV, hdfrsv, hid_t *idat, ASTERINTEGER *lsv,
                      void *sv, ASTERINTEGER *icv)
 {
   ASTERINTEGER iret=-1;
-#ifndef _DISABLE_HDF5
+#ifdef HAVE_HDF5
   hid_t ida,datatype,dasp,bidon=0;
   herr_t ier;
   hsize_t dims[1];
