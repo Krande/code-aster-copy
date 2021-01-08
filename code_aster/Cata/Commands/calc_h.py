@@ -77,7 +77,6 @@ CALC_H=OPER(nom="CALC_H",op=27,sd_prod=table_container,
             NB_COUCHE_SUP   =SIMP(statut='f',typ='I', min=1),
 
             regles=(
-                    AU_MOINS_UN('R_INF','R_SUP', 'NB_COUCHE_INF','NB_COUCHE_SUP'),
                     PRESENT_PRESENT('R_INF','R_SUP'),
                     PRESENT_PRESENT('NB_COUCHE_INF','NB_COUCHE_SUP'),
                     EXCLUS('R_INF','NB_COUCHE_INF',), EXCLUS('R_SUP','NB_COUCHE_INF',),
