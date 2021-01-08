@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
-                  linoeu)
+                  linoeu)            
     implicit none
 #include "jeveux.h"
 #include "asterfort/getvem.h"
@@ -34,6 +34,8 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
 #include "asterfort/oreino.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
     integer :: iocc, nbtrou, linoeu(*)
     character(len=*) :: mcf
@@ -64,6 +66,7 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
     character(len=17) :: nrepgn
     integer :: iarg
     real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: list_n(:) => null()
 !
 !==================== CORPS DE LA ROUTINE =============================
 !
@@ -87,8 +90,8 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
         call getvem(nmaila, 'GROUP_NO', mcf, 'GROUP_NO', iocc,&
                     iarg, nbrgpn, zk24(agrpn), n1)
         do 10, i = 1, nbrgpn, 1
-        call jelira(jexnom(nrepgn, zk24(agrpn+i-1)), 'LONUTI', n1)
-        nbtnd = nbtnd + n1
+            call jelira(jexnom(nrepgn, zk24(agrpn+i-1)), 'LONUTI', n1)
+            nbtnd = nbtnd + n1
 10      continue
     endif
     if (nbneud .ne. 0) then
@@ -100,8 +103,8 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
 !
     call wkvect('&OP0051.LIST.ND.TEMP', 'V V I', nbtnd, alndtp)
     do 20, i = 1, nbtnd, 1
-    zi(alndtp + i-1) = 0
-    20 end do
+        zi(alndtp + i-1) = 0
+20  continue
 !
     if (nbneud .ne. 0) then
         do 200, i = 1, nbneud, 1
@@ -110,65 +113,71 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
 200      continue
     endif
     libre = nbneud + 1
+
     if (nbrgpn .ne. 0) then
         do 100, i = 1, nbrgpn, 1
-        nomgrn = zk24(agrpn + i-1)
-        call jelira(jexnom(nrepgn, nomgrn), 'LONMAX', nbn)
-        call jeveuo(jexnom(nrepgn, nomgrn), 'L', agneud)
-        do 110, j = 1, nbn, 1
-        zi(alndtp + libre-1 + j-1) = zi(agneud + j-1)
-110      continue
-        libre = libre + nbn
-100      continue
+            nomgrn = zk24(agrpn + i-1)
+            call jelira(jexnom(nrepgn, nomgrn), 'LONMAX', nbn)
+            call jeveuo(jexnom(nrepgn, nomgrn), 'L', agneud)
+            do 110, j = 1, nbn, 1
+                zi(alndtp + libre-1 + j-1) = zi(agneud + j-1)
+110         continue
+            libre = libre + nbn
+100     continue
     endif
-!
+
+    AS_ALLOCATE(vi=list_n,size=libre-1)
+    
     nbtnd = 0
     if (nbtrou .eq. 0) then
-        do 250, i = 1, libre-1, 1
-        nbtnd = nbtnd + min(1,abs(zi(alndtp+i-1)-zi(alndtp+i)))
-250      continue
+        list_n(1)=zi(alndtp)
+        nbtnd = nbtnd +1
+        do 250, i = 1, libre-2, 1
+            do 251, j = 1, nbtnd, 1
+                if (zi(alndtp+i) .eq. list_n(j) ) goto 250
+251         continue     
+            nbtnd = nbtnd +1 
+            list_n(nbtnd) = zi(alndtp+i)
+250     continue
+        libre = nbtnd + 1
     else
         do 252, i = 1, nbtrou, 1
-        do 254, j = 1, libre-1, 1
-        if (linoeu(i) .eq. zi(alndtp+j-1)) then
-            nbtnd = nbtnd + 1
-            goto 252
-        endif
-254      continue
-252      continue
+            do 254, j = 1, libre-1, 1
+                if (linoeu(i) .eq. zi(alndtp+j-1)) then
+                    nbtnd = nbtnd + 1
+                    goto 252
+                endif
+254         continue
+252     continue
     endif
 !
     if (nbtnd .eq. 0) then
         call utmess('F', 'POSTRELE_64')
     endif
     call wkvect(nlstnd, 'V V I', nbtnd, alstnd)
-    nbtnd = libre - 1
+    
     if (nbtrou .eq. 0) then
-        libre = 2
-        numnd = zi(alndtp)
-        zi(alstnd) = numnd
-        do 300, i = 2, nbtnd, 1
-        if (numnd .ne. zi(alndtp + i-1)) then
-            numnd = zi(alndtp + i-1)
-            zi(alstnd + libre-1) = numnd
-            libre = libre + 1
-        endif
-300      continue
+        do 300, i = 1, nbtnd, 1
+            zi(alstnd + i -1) = list_n(i)
+300     continue        
     else
+        nbtnd = libre - 1
         libre = 1
         do 302, i = 1, nbtnd, 1
-        numnd = zi(alndtp+i-1)
-        do 304, j = 1, nbtrou, 1
-        if (linoeu(j) .eq. numnd) then
-            do 306, k = 1, libre-1, 1
-            if (numnd .eq. zi(alstnd+k-1)) goto 302
-306          continue
-            zi(alstnd + libre-1) = numnd
-            libre = libre + 1
-        endif
-304      continue
-302      continue
+            numnd = zi(alndtp+i-1)
+            do 304, j = 1, nbtrou, 1
+                if (linoeu(j) .eq. numnd) then
+                    do 306, k = 1, libre-1, 1
+                        if (numnd .eq. zi(alstnd+k-1)) goto 302
+306                 continue
+                    zi(alstnd + libre-1) = numnd
+                    libre = libre + 1
+                endif
+304         continue
+302     continue
     endif
+
+    AS_DEALLOCATE( vi=list_n )
 !
 ! --- CAS PARTICULIER
 !

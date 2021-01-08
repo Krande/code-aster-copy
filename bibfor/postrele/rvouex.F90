@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -156,7 +156,7 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac,&
                     do j = 1, nbr
                         if (zk8(jcmp1) .eq. 'VARI') then
                             call codent(j, 'G', num)
-                            nomvar = 'V'//num
+                            nomvar = 'V'//num(1:7)
                             if (zk8(jcmp-1+i) .eq. nomvar) goto 102
                         else
                             if (zk8(jcmp-1+i) .eq. zk8(jcmp1-1+j)) goto 102
