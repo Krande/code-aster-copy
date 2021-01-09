@@ -109,4 +109,9 @@ Conseil : Vérifiez que l'environnement est correctement défini,
 La bibliothèque "METIS" n'est pas installée dans cette version de Code_Aster.
 """),
 
+    16: _("""
+Cette fonctionnalité nécessite que la bibliothèque "PETSc" ait été construite
+avec le support du préconditionneur "%(k1)s".
+"""),
+
 }

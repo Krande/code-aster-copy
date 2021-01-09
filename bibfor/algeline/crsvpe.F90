@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ subroutine crsvpe(motfac, solveu,  kellag )
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
+#include "asterfort/utmess.h"
 !
     character(len=3) :: kellag
     character(len=16) :: motfac
@@ -118,12 +119,19 @@ subroutine crsvpe(motfac, solveu,  kellag )
 
 !   PARAMETRES OPTIONNELS LIES AU MULTIGRILLE ALGEBRIQUE ML
     case ('ML')
+#ifndef HAVE_PETSC_ML
+        call utmess('F', 'FERMETUR_16', sk='ML')
+#endif
 
 !   PARAMETRES OPTIONNELS LIES AU MULTIGRILLE ALGEBRIQUE BOOMERAMG
     case ('BOOMER')
-!
+#ifndef HAVE_PETSC_HYPRE
+        call utmess('F', 'FERMETUR_16', sk='HYPRE')
+#endif
+
 !   PARAMETRES OPTIONNELS LIES AU MULTIGRILLE ALGEBRIQUE BOOMERAMG
     case ('GAMG')
+
 !   PARAMETRES OPTIONNELS LIES AU PRECONDITIONNEUR LAGRANGIEN AUGMENTE
     case ('BLOC_LAGR')
 
