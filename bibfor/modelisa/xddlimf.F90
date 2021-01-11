@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -448,7 +448,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
              nterm = 2*nbnomac
              call afrela(coef, [cbid], ddl, noeud, dimens,&
                          [0.d0], nterm, valimr, valimc, fenri,&
-                         'REEL', fonree, '12', 0.d0, lisrel)
+                         'REEL', fonree, 0.d0, lisrel)
           elseif (motcle(1:8) .eq. 'DEPL    ') then
              do j = 1, ndim
                 do i = 1, nbnomac
@@ -464,7 +464,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
              nterm = nbnomac*2*ndim
              call afrela(coef, [cbid], ddl, noeud, dimens,&
                          [0.d0], nterm, deplmi, valimc, valimf,&
-                         'REEL', 'REEL', '12', 0.d0, lisrel)
+                         'REEL', 'REEL', 0.d0, lisrel)
           elseif (motcle .eq. 'PRE1') then
              do i = 1, nbnomac
                 ddl(2*i-1) = 'PRE1'
@@ -477,7 +477,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
              nterm = 2*nbnomac
              call afrela(coef, [cbid], ddl, noeud, dimens,&
                          [0.d0], nterm, deplmi, valimc, valimf,&
-                         'REEL', 'REEL', '12', 0.d0, lisrel)
+                         'REEL', 'REEL', 0.d0, lisrel)
           endif
        endif
     endif
@@ -495,7 +495,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
           nterm = i
           call afrela(coef, [cbid], ddl, noeud, dimens,&
                       [0.d0], nterm, valimr, valimc, fclas,&
-                      'REEL', fonree, '12', 0.d0, lisrel)
+                      'REEL', fonree, 0.d0, lisrel)
        endif
        i = 0
        do j = 1, ndim
@@ -506,7 +506,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
        nterm = i
        call afrela(coef, [cbid], ddl, noeud, dimens,&
                    [0.d0], nterm, valimr, valimc, fenri,&
-                   'REEL', fonree, '12', 0.d0, lisrel)
+                   'REEL', fonree, 0.d0, lisrel)
 !      CAS DDL_IMPO DX DY DZ (ET/OU PRE1 => POUR HM-XFEM ONLY)
     elseif ((motcle.eq.'DX'.or.motcle.eq.'DY'.or.motcle.eq.'DZ') .and.&
             .not.passe) then
@@ -517,14 +517,14 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
           nterm = 1
           call afrela(coef, [cbid], ddl, noeud, dimens,&
                       [0.d0], nterm, valimr, valimc, fclas,&
-                      'REEL', fonree, '12', 0.d0, lisrel)
+                      'REEL', fonree, 0.d0, lisrel)
        endif
        nterm = 1
        ddl(1) = 'H1'//motcle(2:2)
        coef(1)= 1.d0
        call afrela(coef, [cbid], ddl, noeud, dimens,&
                    [0.d0], nterm, valimr, valimc, fenri,&
-                   'REEL', fonree, '12', 0.d0, lisrel)
+                   'REEL', fonree, 0.d0, lisrel)
     elseif (motcle.eq.'PRE1' .and. .not.passe) then
 !          COEFFICIENTS ET DDLS DE LA RELATION
        if (lsn(1) .eq. 0.d0) then
@@ -533,14 +533,14 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
           nterm= 1
           call afrela(coef, [cbid], ddl, noeud, dimens,&
                       [0.d0], nterm, valimr, valimc, fclas,&
-                      'REEL', fonree, '12', 0.d0, lisrel)
+                      'REEL', fonree, 0.d0, lisrel)
        endif
        nterm = 1
        ddl(1) = 'H1'//motcle(1:4)
        coef(1) = 1.d0
        call afrela(coef, [cbid], ddl, noeud, dimens,&
                    [0.d0], nterm, valimr, valimc, fenri,&
-                   'REEL', fonree, '12', 0.d0, lisrel)
+                   'REEL', fonree, 0.d0, lisrel)
     endif
 !
 !    call jedetr(fclas//'.PROL')

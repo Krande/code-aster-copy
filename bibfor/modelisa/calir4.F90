@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,6 @@ subroutine calir4(noma, lisrel, nono2, ino2, v1,&
 ! ======================================================================
 !
     real(kind=8) :: beta
-    character(len=2) :: typlag
     character(len=4) :: fonree
     character(len=4) :: typcoe
 !
@@ -58,7 +57,6 @@ subroutine calir4(noma, lisrel, nono2, ino2, v1,&
     kbeta=' '
     typcoe='REEL'
     fonree='REEL'
-    typlag='12'
 !
     n1=zi(jconb1-1+ino2)
     n2=zi(jconb2-1+ino2)
@@ -124,7 +122,7 @@ subroutine calir4(noma, lisrel, nono2, ino2, v1,&
 !
     call afrela(coefr, [cbid], ddl, noeud, dimens,&
                 direct, nbterm, beta, betac, kbeta,&
-                typcoe, fonree, typlag, 1.d-6, lisrel)
+                typcoe, fonree, 1.d-6, lisrel)
     call imprel('LIAISON_MAIL-COQUE_MASSIF', nbterm, coefr, ddl, noeud,&
                 beta)
 !
@@ -178,7 +176,7 @@ subroutine calir4(noma, lisrel, nono2, ino2, v1,&
 !
     call afrela(coefr, [cbid], ddl, noeud, dimens,&
                 direct, nbterm, beta, betac, kbeta,&
-                typcoe, fonree, typlag, 1.d-6, lisrel)
+                typcoe, fonree, 1.d-6, lisrel)
     call imprel('LIAISON_MAIL-COQUE_MASSIF', nbterm, coefr, ddl, noeud,&
                 beta)
 !

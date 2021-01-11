@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,9 +84,8 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 ! --------- VARIABLES LOCALES ---------------------------
     integer :: nmocl
     parameter (nmocl=300)
-    character(len=2) :: typlag
     character(len=4) :: typval, typcoe
-    character(len=8) :: betaf, mod, nomg, k8bid, poslag, cara
+    character(len=8) :: betaf, mod, nomg, k8bid, cara
     character(len=8) :: noma, nomcmp(nmocl), option
     character(len=8) :: noepou, nocmp(3), kcmp(3), cmp(6)
     character(len=8) :: lpain(4), lpaout(2)
@@ -95,10 +94,10 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     character(len=19) :: ligrmo, ligrel
     character(len=24) :: lchin(4), lchout(2), nolili, lismai, valk(2)
     character(len=24) :: lisnoe, noeuma, vale1, grnoma, vale2, nogrno
-    integer :: ntypel(nmocl), dg, icmp(6), niv, ifm, iop, numnop, nliai, nrl
+    integer :: ntypel(nmocl), dg, icmp(6), niv, ifm, iop, numnop, nliai
     integer :: vali(2), nlili, nbterm, ncara, nddla, nbma, nbno, nno, nbec
     integer :: nbcmp
-    integer :: narl, naxe, lonlis, k, j, in, ino,  i, ival, n1
+    integer :: naxe, lonlis, k, j, in, ino,  i, ival, n1
     integer :: nbgno
     integer ::   jlisma,     jgro
     integer ::  iaprno, idch2, idch1, ilisno, inom
@@ -175,25 +174,6 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     motcle(2) = 'MAILLE_1'
     typmcl(1) = 'GROUP_MA'
     typmcl(2) = 'MAILLE'
-!
-! --- ON REGARDE SI LES MULTIPLICATEURS DE LAGRANGE SONT A METTRE
-! --- APRES LES NOEUDS PHYSIQUES LIES PAR LA RELATION DANS LA MATRICE
-! --- ASSEMBLEE :
-! --- SI OUI TYPLAG = '22'
-! --- SI NON TYPLAG = '12' :
-!     -------------------
-!
-    call getvtx(motfac, 'NUME_LAGR', iocc=iocc, nbval=0, nbret=narl)
-    if (narl .ne. 0) then
-        call getvtx(motfac, 'NUME_LAGR', iocc=iocc, scal=poslag, nbret=nrl)
-        if (poslag(1:5) .eq. 'APRES') then
-            typlag = '22'
-        else
-            typlag = '12'
-        endif
-    else
-        typlag = '12'
-    endif
 !
 ! --- MODELE ASSOCIE AU LIGREL DE CHARGE :
 !     ----------------------------------
@@ -615,7 +595,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !
     call afrela(coer, coec, lisddl, lisno, dime,&
                 direct, nbterm, beta, betac, betaf,&
-                typcoe, typval, typlag, 0.d0, lisrel)
+                typcoe, typval, 0.d0, lisrel)
     call imprel(motfac, nbterm, coer, lisddl, lisno,&
                 beta)
 !
@@ -642,7 +622,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !
     call afrela(coer, coec, lisddl, lisno, dime,&
                 direct, nbterm, beta, betac, betaf,&
-                typcoe, typval, typlag, 0.d0, lisrel)
+                typcoe, typval, 0.d0, lisrel)
     call imprel(motfac, nbterm, coer, lisddl, lisno,&
                 beta)
 !
@@ -669,7 +649,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !
     call afrela(coer, coec, lisddl, lisno, dime,&
                 direct, nbterm, beta, betac, betaf,&
-                typcoe, typval, typlag, 0.d0, lisrel)
+                typcoe, typval, 0.d0, lisrel)
     call imprel(motfac, nbterm, coer, lisddl, lisno,&
                 beta)
 !
@@ -718,7 +698,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !
     call afrela(coer, coec, lisddl, lisno, dime,&
                 direct, nbterm, beta, betac, betaf,&
-                typcoe, typval, typlag, 0.d0, lisrel)
+                typcoe, typval, 0.d0, lisrel)
     call imprel(motfac, nbterm, coer, lisddl, lisno,&
                 beta)
 !
@@ -764,7 +744,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !
     call afrela(coer, coec, lisddl, lisno, dime,&
                 direct, nbterm, beta, betac, betaf,&
-                typcoe, typval, typlag, 0.d0, lisrel)
+                typcoe, typval, 0.d0, lisrel)
     call imprel(motfac, nbterm, coer, lisddl, lisno,&
                 beta)
 !
@@ -810,14 +790,13 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
 !
     call afrela(coer, coec, lisddl, lisno, dime,&
                 direct, nbterm, beta, betac, betaf,&
-                typcoe, typval, typlag, 0.d0, lisrel)
+                typcoe, typval, 0.d0, lisrel)
     call imprel(motfac, nbterm, coer, lisddl, lisno,&
                 beta)
 !
     if ((option.eq.'COQ_TUYA')) then
         call racotu(zi(iaprno), lonlis, zk8(ilisno), noepou, noma,&
-                    ligrel, mod, cara, numddl, typlag,&
-                    lisrel, coorig)
+                    ligrel, mod, cara, numddl, lisrel, coorig)
     endif
 !
 ! --- DESTRUCTION DES OBJETS DE TRAVAIL

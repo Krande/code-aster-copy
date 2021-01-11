@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,6 @@ subroutine arlcp3(nbma1 ,nbma2 ,numno1,numno2,m3dea , &
 !-----------------------------------------------------------------------
     integer          :: nbterm
     complex(kind=8)  :: betac,coefc(3*len1+6*len2)
-    character(len=2) :: typlag
     character(len=4) :: typcoe,typval
     integer          :: jdime(3*len1+6*len2,3)
     real(kind=8)     :: beta,direct(3*len1+6*len2,3)
@@ -165,13 +164,12 @@ subroutine arlcp3(nbma1 ,nbma2 ,numno1,numno2,m3dea , &
     betac = (1.0d0,0.0d0)
     typcoe = 'REEL'
     typval = 'REEL'
-    typlag = '12'
 
     do 90 i = 1,6*len2
         coefri=mmixe1(i,:)
         call afrela(coefri(1:nbterm),coefc(1:nbterm),&
                     ddl1(1:nbterm),noeud1(1:nbterm),jdime(1:nbterm,:),direct(1:nbterm,:),&
-                    nbterm,beta,betac,' ',typcoe,typval,typlag,0.d0,lisrel)
+                    nbterm,beta,betac,' ',typcoe,typval,0.d0,lisrel)
     90 end do
 
     call jedema()

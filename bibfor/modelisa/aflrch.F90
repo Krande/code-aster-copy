@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -117,7 +117,6 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
     character(len=8), pointer :: lgrf(:) => null()
     integer, pointer :: rlnr(:) => null()
     character(len=8), pointer :: rltc(:) => null()
-    character(len=8), pointer :: rlla(:) => null()
     integer, pointer :: rlnt(:) => null()
     integer, pointer :: rlsu(:) => null()
     integer, pointer :: nbno(:) => null()
@@ -317,7 +316,6 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
     call jeveuo(lisrel//'.RLPO', 'L', jrlpo)
     call jeveuo(lisrel//'.RLSU', 'L', vi=rlsu)
     call jeveuo(lisrel//'.RLBE', 'L', jrlbe)
-    call jeveuo(lisrel//'.RLLA', 'L', vk8=rlla)
 !
     call jeexin(ligrch//'.LGNS', iexi)
     if (iexi.gt.0) then
@@ -383,7 +381,7 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
             if (numel .ne. 0) then
                 igrel=igrel+1
                 call noligr(ligrch, igrel, numel, in,&
-                            3,inema, nbno(1), rlla(irela),jlgns,&
+                            3,inema, nbno(1), jlgns,&
                             rapide=rapide,jliel0=jliel0,jlielc=jlielc,&
                             jnema0=jnema0,jnemac=jnemac,l_lag1=l_lag1)
             else
@@ -509,7 +507,6 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
         call jedetr(lisrel//'.RLNR')
         call jedetr(lisrel//'.RLTC')
         call jedetr(lisrel//'.RLTV')
-        call jedetr(lisrel//'.RLLA')
     endif
 !
 999 continue

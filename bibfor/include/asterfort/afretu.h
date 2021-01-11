@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine afretu(iprno, lonlis, klisno, noepou, noma,&
                       vale1, nbcoef, idec, coef, nomddl,&
-                      typlag, lisrel)
+                      lisrel)
         integer :: nbcoef
         integer :: lonlis
         integer :: iprno(*)
@@ -32,7 +32,6 @@ interface
         integer :: idec
         real(kind=8) :: coef(nbcoef)
         character(len=8) :: nomddl(nbcoef)
-        character(len=2) :: typlag
         character(len=19) :: lisrel
     end subroutine afretu
 end interface

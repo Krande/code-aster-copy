@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
           interface 
             subroutine noligr(ligrz,igrel,numel,nunoeu,code,inema, &
-                       &nbno,typlaz,jlgns,rapide,jliel0,jlielc,jnema0,jnemac,l_lag1)
+                       &nbno,jlgns,rapide,jliel0,jlielc,jnema0,jnemac,l_lag1)
               character(len=*), intent(in) :: ligrz
               integer, intent(in) :: igrel
               integer, intent(in) :: numel
@@ -28,7 +28,6 @@
               integer, intent(in) :: code
               integer, intent(inout) :: inema
               integer, intent(inout) :: nbno
-              character(len=*), intent(in) :: typlaz
               integer, intent(in) :: jlgns
               character(len=3) ,optional, intent(in) :: rapide
               integer ,optional, intent(in) :: jliel0

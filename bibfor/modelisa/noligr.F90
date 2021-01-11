@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 
 subroutine noligr(ligrz, igrel, numel, nunoeu,&
-                  code, inema, nbno, typlaz,jlgns,&
-                  rapide, jliel0, jlielc, jnema0, jnemac, l_lag1)
+                  code, inema, nbno, jlgns, rapide,&
+                  jliel0, jlielc, jnema0, jnemac, l_lag1)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -31,7 +31,6 @@ subroutine noligr(ligrz, igrel, numel, nunoeu,&
 #include "asterfort/jexnum.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jeimpo.h"
-#include "asterfort/poslag.h"
 #include "asterfort/utmess.h"
 #include "asterfort/assert.h"
 !
@@ -42,7 +41,6 @@ subroutine noligr(ligrz, igrel, numel, nunoeu,&
     integer,intent(in) :: code
     integer,intent(inout) :: inema
     integer,intent(inout) :: nbno
-    character(len=*),intent(in) :: typlaz
     integer,intent(in) :: jlgns
 
 !   -- arguments optionnels pour gagner du temps CPU :
@@ -74,12 +72,6 @@ subroutine noligr(ligrz, igrel, numel, nunoeu,&
 !                   (typiquement: liaison_ddl )
 !      inema:numero  de la derniere maille tardive dans ligr
 !      nbno : numero du dernier noeud tardif dans ligr
-!      typlag:type des multiplicateurs de lagrange associes a la
-!             relation
-!          : '12'  ==>  le premier lagrange est avant le noeud physique
-!                       le second lagrange est apres
-!          : '22'  ==>  le premier lagrange est apres le noeud physique
-!                       le second lagrange est apres
 !
 !     Les arguments suivants sont facultatifs :
 !     ---------------------------------------------
@@ -98,10 +90,9 @@ subroutine noligr(ligrz, igrel, numel, nunoeu,&
 ! arguments de sortie:
 !        on enrichit le contenu du ligrel
 !------------------------------------------------------------------------
-    character(len=8) :: typlag
     character(len=19) :: ligr
     character(len=24) :: liel, nema
-    integer :: ilag1, ilag2,jnema, jnema02, jnemac2
+    integer :: jnema, jnema02, jnemac2
     integer :: jliel, jliel02, jlielc2
     integer :: kligr, lonigr, lgnema
     aster_logical :: lrapid, l_lag1c
@@ -121,9 +112,6 @@ subroutine noligr(ligrz, igrel, numel, nunoeu,&
             call jenonu(jexnom('&CATA.TM.NBNO', 'SEG3'), numse3)
         endif
     endif
-
-    typlag = typlaz
-    call poslag(typlag, ilag1, ilag2)
 
     ligr=ligrz
     liel=ligr//'.LIEL'
@@ -203,13 +191,13 @@ subroutine noligr(ligrz, igrel, numel, nunoeu,&
         if(l_lag1c) then
             zi(jnema-1+2) = -nbno
             zi(jnema-1+3) = numse3
-            zi(jlgns+nbno-1) = ilag1
+            zi(jlgns+nbno-1) = 1
         else
             zi(jnema-1+2) = -nbno+1
             zi(jnema-1+3) = -nbno
             zi(jnema-1+4) = numse3
-            zi(jlgns+nbno-2) = ilag1
-            zi(jlgns+nbno-1) = ilag2
+            zi(jlgns+nbno-2) = 1
+            zi(jlgns+nbno-1) = -2
         endif
     else
         ASSERT(.false.)

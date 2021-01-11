@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -239,7 +239,7 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !
     call afrela(coemur, [cbid], nomddl, nomnoe, dimens,&
                 direct, nbterm, zero, cbid, k8b,&
-                'REEL', 'REEL', '12', 0.d0, lirela)
+                'REEL', 'REEL', 0.d0, lirela)
 !
 !.... COEFFICIENTS PAR DIRECTIONS POUR LA DEUXIEME RELATION (DDL DY)
 !.... PUIS AFFECTATION
@@ -252,7 +252,7 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !
     call afrela(coemur, [cbid], nomddl, nomnoe, dimens,&
                 direct, nbterm, zero, cbid, k8b,&
-                'REEL', 'REEL', '12', 0.d0, lirela)
+                'REEL', 'REEL', 0.d0, lirela)
 !
 !.... COEFFICIENTS PAR DIRECTIONS POUR LA TROISIEME RELATION (DDL DZ)
 !.... PUIS AFFECTATION
@@ -265,7 +265,7 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !
     call afrela(coemur, [cbid], nomddl, nomnoe, dimens,&
                 direct, nbterm, zero, cbid, k8b,&
-                'REEL', 'REEL', '12', 0.d0, lirela)
+                'REEL', 'REEL', 0.d0, lirela)
 !
  60 continue
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,19 +66,16 @@ implicit none
 !                                   CI-DESSUS.
 ! -------------------------------------------------------
 !
-
-    character(len=2) :: typlag
     character(len=4) :: tych, typval, typcoe
     character(len=8) :: chamno, noma, nomcmp, nomnoe, betaf
-    character(len=8) :: charge, poslag, nomgd
+    character(len=8) :: charge, nomgd
     character(len=16) :: motfac
     character(len=19) :: lisrel, cham19, prchno
     character(len=24) :: noeuma
-!
     complex(kind=8) :: betac
-
+!
 !-----------------------------------------------------------------------
-    integer :: i, ibid
+    integer :: i
     integer ::    iequa, ino, inocmp
     integer :: iocc, iret, k, nb, nbcmp, nbec, nbnoeu
     integer :: nbterm, nequa, nliai, nucmp
@@ -102,6 +99,7 @@ implicit none
 ! --- INITIALISATIONS :
 !     ---------------
     zero = 0.0d0
+!
 ! --- BETA, BETAC ET BETAF SONT LES VALEURS DU SECOND MEMBRE DE LA
 ! --- RELATION LINEAIRE SUIVANT QUE C'EST UN REEL, UN COMPLEXE OU
 ! --- UNE FONCTION, DANS NOTRE CAS C'EST UN REEL
@@ -128,19 +126,6 @@ implicit none
 ! --- BOUCLE SUR LES OCCURENCES DU MOT-FACTEUR LIAISON_CHAMNO :
 !     -------------------------------------------------------
     do iocc = 1, nliai
-!
-! ---   ON REGARDE SI LES MULTIPLICATEURS DE LAGRANGE SONT A METTRE
-! ---   APRES LES NOEUDS PHYSIQUES LIES PAR LA RELATION DANS LA MATRICE
-! ---   ASSEMBLEE :
-! ---   SI OUI TYPLAG = '22'
-! ---   SI NON TYPLAG = '12'
-!
-        call getvtx(motfac, 'NUME_LAGR', iocc=iocc, scal=poslag, nbret=ibid)
-        if (poslag .eq. 'APRES') then
-            typlag = '22'
-        else
-            typlag = '12'
-        endif
 !
 ! ---   RECUPERATION DU CHAMNO
 !       ----------------------
@@ -290,7 +275,7 @@ implicit none
 !       ------------------------------------------
         call afrela(coer, coec, lisddl, lisno, dime,&
                     direct, nbterm, beta, betac, betaf,&
-                    typcoe, typval, typlag, 0.d0, lisrel)
+                    typcoe, typval, 0.d0, lisrel)
 !
 ! ---   MENAGE :
 !       ------

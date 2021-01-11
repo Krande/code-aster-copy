@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -95,7 +95,6 @@ implicit none
     character(len=24) :: list_node, list_elem
     integer :: jlino, jlima
     integer :: nb_node, nb_elem
-    character(len=2) :: lagr_type
     character(len=4) :: coef_type
     character(len=8) :: model, nomg
     character(len=8) :: name_node, dof_name
@@ -127,7 +126,6 @@ implicit none
 ! - Initializations
 !
     list_rela = '&&CAFACI.RLLISTE'
-    lagr_type = '12'
     coef_cplx_unit = (1.d0,0.d0)
     coef_real_unit = 1.d0
     dof_name = 'DEPL'
@@ -252,7 +250,7 @@ implicit none
                 repe_type = ndim
                 call afrela([coef_real_unit], [coef_cplx_unit], dof_name, name_node, [repe_type],&
                             repe_defi, val_nb_dnor, val_r_dnor, val_c_dnor, val_f_dnor,&
-                            coef_type, vale_type, lagr_type, 0.d0, list_rela)
+                            coef_type, vale_type, 0.d0, list_rela)
 !
 105             continue
             enddo
@@ -281,7 +279,7 @@ implicit none
                 repe_type = ndim
                 call afrela([coef_real_unit], [coef_cplx_unit], dof_name, name_node, [ndim],&
                             repe_defi, val_nb_dtan, val_r_dtan, val_c_dtan, val_f_dtan,&
-                            coef_type, vale_type, lagr_type, 0.d0, list_rela)
+                            coef_type, vale_type, 0.d0, list_rela)
 !
 115             continue
             enddo

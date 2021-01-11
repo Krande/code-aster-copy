@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,7 +82,6 @@ character(len=8), intent(in) :: mesh
     real(kind=8) :: r8b
     real(kind=8) :: coef11, coef12, coef3
     complex(kind=8) :: betac
-    character(len=2) :: typlag
     character(len=4) :: fonree
     character(len=4) :: typcoe, typlia
     character(len=8) :: model, m8blan
@@ -137,7 +136,6 @@ character(len=8), intent(in) :: mesh
     beta = 0.0d0
     betac = (0.0d0,0.0d0)
     kbeta = ' '
-    typlag = '12'
     m8blan = '        '
     ndim1 = 3
     lreori = .false.
@@ -414,7 +412,7 @@ character(len=8), intent(in) :: mesh
                         end do
                         call afrela(coef, coemuc, nomddl, nomnoe, dim,&
                                     direct, nno11+ nno12+1, beta, betac, kbeta,&
-                                    typcoe, fonree, typlag, 1.d-6, lisrel)
+                                    typcoe, fonree, 1.d-6, lisrel)
                     else
                         do k = 1, ndim
                             if (k .eq. 1) cmp = 'DX'
@@ -425,7 +423,7 @@ character(len=8), intent(in) :: mesh
                             end do
                             call afrela(coef, coemuc, nomddl, nomnoe, dim,&
                                         direct, nno11+nno12+1, beta, betac, kbeta,&
-                                        typcoe, fonree, typlag, 1.d-6, lisrel)
+                                        typcoe, fonree, 1.d-6, lisrel)
                             call imprel(motfac, nno11+nno12+1, coef, nomddl, nomnoe,&
                                         beta)
                         end do
@@ -524,7 +522,7 @@ character(len=8), intent(in) :: mesh
                         end do
                         call afrela(coef, coemuc, nomddl, nomnoe, dim,&
                                     direct, nno11+ nno12+1, beta, betac, kbeta,&
-                                    typcoe, fonree, typlag, 1.d-6, lisrel)
+                                    typcoe, fonree, 1.d-6, lisrel)
                     else
                         do k = 1, ndim
                             if (k .eq. 1) cmp = 'DX'
@@ -546,7 +544,7 @@ character(len=8), intent(in) :: mesh
                             end do
                             call afrela(coef, coemuc, nomddl, nomnoe, dim,&
                                         direct, nno11+nno12+ndim, beta, betac, kbeta,&
-                                        typcoe, fonree, typlag, 1.d-6, lisrel)
+                                        typcoe, fonree, 1.d-6, lisrel)
                             call imprel(motfac, nno11+nno12+ndim, coef, nomddl, nomnoe,&
                                         beta)
                         end do
@@ -598,7 +596,7 @@ character(len=8), intent(in) :: mesh
                 end do
                 call afrela(coef, coemuc, nomddl, nomnoe, dim,&
                             direct, nno11+nno12+1, beta, betac, kbeta,&
-                            typcoe, fonree, typlag, 1.d-6, lisrel)
+                            typcoe, fonree, 1.d-6, lisrel)
                 call imprel(motfac, nno11+nno12+1, coef, nomddl, nomnoe,&
                             beta)
                 idcal1 = idcal1 + nno11

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,7 +75,6 @@ subroutine calipj(chargz)
     real(kind=8) :: xyzom(3), coeffi
     complex(kind=8) :: zeroc
     character(len=1) :: k1bid
-    character(len=2) :: typlag
     character(len=3) :: ddlrot(3)
     character(len=4) :: fonree, typcoe
     character(len=8) :: noma0, noma1, noma2, model, k8bid, relats, kbeta, nomg
@@ -115,7 +114,6 @@ subroutine calipj(chargz)
     lisrel = '&&CALIPJ.RLLISTE'
     zeroc = (0.0d0,0.0d0)
     kbeta = ' '
-    typlag = '12'
 !
     call dismoi('NOM_MODELE', charge(1:8), 'CHARGE', ibid, model)
     ligrmo=model//'.MODELE'
@@ -305,7 +303,7 @@ subroutine calipj(chargz)
                 endif
                 call afrela(idcoef, [zeroc], idnomd, idnomn, idimen,&
                             idirec, nbno1+1+iexc, zeror, zeroc, kbeta,&
-                            typcoe, fonree, typlag, coenul, lisrel)
+                            typcoe, fonree, coenul, lisrel)
                 call imprel(motfac, nbno1+1+iexc, idcoef, idnomd, idnomn, zeror)
             enddo
 130         continue

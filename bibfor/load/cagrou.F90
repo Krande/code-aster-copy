@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,8 +68,6 @@ implicit none
     integer :: node_nume(nb_term)
     integer :: repe_type(nb_term)
     real(kind=8) :: repe_defi(3, nb_term)
-!
-    character(len=2) :: lagr_type
     character(len=4) :: coef_type
     character(len=16) :: keywordfact
     character(len=19) :: list_rela
@@ -110,7 +108,6 @@ implicit none
 !
 ! - Initializations of types
 !
-    lagr_type = '12'
     if (vale_type .eq. 'COMP') then
         ASSERT(.false.)
     else if (vale_type.eq.'REEL') then
@@ -157,7 +154,7 @@ implicit none
                 call jenuno(jexnum(mesh//'.NOMNOE', node_nume(2)), node_name(2))
                 call afrela(coef_real_unit, coef_cplx_unit, dof_name, node_name, repe_type,&
                             repe_defi, nb_term, vale_real_zero, vale_cplx_zero, vale_func_zero,&
-                            coef_type, vale_type, lagr_type, 0.d0, list_rela)
+                            coef_type, vale_type, 0.d0, list_rela)
             enddo
         enddo
 !

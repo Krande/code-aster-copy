@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -86,8 +86,7 @@ implicit none
     character(len=24) :: list_node
     integer :: jlino, numnoe
     integer :: nb_node
-    character(len=2) :: type_lagr
-    character(len=8) :: nomg, poslag, model
+    character(len=8) :: nomg, model
     real(kind=8) :: dist_mini, dist
     integer :: dim, k
     character(len=1) :: kdim
@@ -114,7 +113,7 @@ implicit none
 ! - Initializations
 !
     list_rela = '&&CALISO.RLLISTE'
-    type_lagr = '12'
+!
     l_rota_2d = .false.
     l_rota_3d = .false.
 !
@@ -177,20 +176,6 @@ implicit none
     do iocc = 1, nbocc
         nom_noeuds_tmp(1:4)=' '
 !
-! ----- Definition of position for lagrange multipliers
-!
-        call getvtx(keywordfact, 'NUME_LAGR', iocc=iocc, nbval=0, nbret=n1)
-        if (n1 .eq. 0) then
-            type_lagr = '12'
-        else
-            call getvtx(keywordfact, 'NUME_LAGR', iocc=iocc, scal=poslag, nbret=n1)
-            if (poslag .eq. 'APRES') then
-                type_lagr = '22'
-            else
-                type_lagr = '12'
-            endif
-        endif
-!
 ! ----- Minimum distance
 !
         call getvr8(keywordfact, 'DIST_MIN', iocc=iocc, scal=dist_mini, nbret=n1)
@@ -230,11 +215,11 @@ implicit none
 !
             if (l_rota_2d) then
                 call drz12d(mesh, ligrmo, vale_type, nb_node, list_node,&
-                            cmp_index_drz, type_lagr, list_rela, nom_noeuds_tmp)
+                            cmp_index_drz, list_rela, nom_noeuds_tmp)
                 type_rela = "ROTA2D"
             else
                 call solide_tran('2D',mesh, vale_type, dist_mini, nb_node, list_node,&
-                                 type_lagr, list_rela, nom_noeuds_tmp, dim)
+                                 list_rela, nom_noeuds_tmp, dim)
                 if (dim.eq.0) then
                     type_rela = "LIN"
                 else
@@ -267,11 +252,11 @@ implicit none
             if (l_rota_3d) then
                 call drz13d(mesh, ligrmo, vale_type, nb_node, list_node,&
                             cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx,&
-                            cmp_index_dry, cmp_index_drz, type_lagr, list_rela, nom_noeuds_tmp)
+                            cmp_index_dry, cmp_index_drz, list_rela, nom_noeuds_tmp)
                 type_rela = "ROTA3D"
             else
                 call solide_tran('3D',mesh, vale_type, dist_mini, nb_node, list_node,&
-                                 type_lagr, list_rela, nom_noeuds_tmp, dim)
+                                 list_rela, nom_noeuds_tmp, dim)
                 if (dim.eq.0) then
                     type_rela = "LIN"
                 else

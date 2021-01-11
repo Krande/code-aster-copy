@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -91,7 +91,6 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
 !                      If 2/3 -> local reference system give by repe_defi
 ! In  repe_defi      : local reference system
 ! In  coef_type      : type of coefficient (real or complex)
-! In  lagr_type      : type of lagrange multpilers (position of Lagrange and physical dof)
 ! In  cmp_nb         : number of components
 ! In  cmp_name       : name of components
 ! In  cmp_acti       : 1 if component affected, 0 else
@@ -113,7 +112,6 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ndim, i_cmp, cmp_index
-    character(len=2) :: lagr_type
     real(kind=8) :: coef_real_unit, rbid(3)
     complex(kind=8) :: coef_cplx_unit
 !
@@ -125,7 +123,6 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
 !
     coef_real_unit = 1.d0
     coef_cplx_unit = dcmplx(1.d0,0.d0)
-    lagr_type = '12'
     call dismoi('DIM_GEOM', model, 'MODELE', repi=ndim)
 !
 ! - Loop on components
@@ -166,7 +163,7 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
         if (cmp_acti(i_cmp) .eq. 1) then
             call afrela([coef_real_unit], [coef_cplx_unit], cmp_name(i_cmp)(1:8), node_name,&
                         [repe_type], repe_defi, 1, vale_real(i_cmp), vale_cplx(i_cmp),&
-                        vale_func(i_cmp), coef_type, vale_type, lagr_type, 0.d0,&
+                        vale_func(i_cmp), coef_type, vale_type, 0.d0,&
                         list_rela)
         endif
 !

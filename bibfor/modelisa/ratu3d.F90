@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
-                  ligrel, mod, cara, numddl, typlag,&
+                  ligrel, mod, cara, numddl, &
                   lisrel, coorig, sectio)
     implicit none
 #include "jeveux.h"
@@ -38,7 +38,6 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
     integer :: lonlis, iprno(*)
-    character(len=2) :: typlag
     character(len=8) :: klisno(lonlis), noepou, noma, cara, mod
     character(len=14) :: numddl
     character(len=19) :: ligrel, lisrel
@@ -146,7 +145,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
     coef(1) = -1.d0*sectio
     call afretu(iprno, lonlis, klisno, noepou, noma,&
                 valech, nbcoef, idec, coef, nomddl,&
-                typlag, lisrel)
+                lisrel)
 !
 !   RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE
 !   DDL UIM, UOM, VIM, VOM, WIM, WOM, M VARIANT DE 2 A NBMODE
@@ -197,7 +196,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 
     call afretu(iprno, lonlis, klisno, noepou, noma,&
                 valech, nbcoef, idec, coef, nomddl,&
-                typlag, lisrel)
+                lisrel)
 !
 !     RELATIONS ENTRE LES NOEUDS DE SURFACE ET LE NOEUD POUTRE DDL WOM
 !     OU SI IMOD=1 LE DDL DY DANS REPERE LOCAL DU TUYAU ET WO1
@@ -221,7 +220,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 !
     call afretu(iprno, lonlis, klisno, noepou, noma,&
                 valech, nbcoef, idec, coef, nomddl,&
-                typlag, lisrel)
+                lisrel)
 !
     do imod = 2, nbmode
         if (info .eq. 2) then
@@ -246,7 +245,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
         coef(1) = -sectio/2.d0
         call afretu(iprno, lonlis, klisno, noepou, noma,&
                     valech, nbcoef, idec, coef, nomddl,&
-                    typlag, lisrel)
+                    lisrel)
 !
 !     RELATIONS ENTRE LES NOEUDS DE SURFACE ET LE NOEUD POUTRE DDL UOM
 !
@@ -261,7 +260,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
         coef(1) = -sectio/2.d0
         call afretu(iprno, lonlis, klisno, noepou, noma,&
                     valech, nbcoef, idec, coef, nomddl,&
-                    typlag, lisrel)
+                    lisrel)
 !
 !     RELATIONS ENTRE LES NOEUDS DE SURFACE ET LE NOEUD POUTRE DDL VOM
 !
@@ -276,7 +275,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
         coef(1) = -sectio/2.d0
         call afretu(iprno, lonlis, klisno, noepou, noma,&
                     valech, nbcoef, idec, coef, nomddl,&
-                    typlag, lisrel)
+                    lisrel)
 !
 !     RELATIONS ENTRE LES NOEUDS DE SURFACE ET LE NOEUD POUTRE DDL VIM
 !
@@ -291,7 +290,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
         coef(1) = -sectio/2.d0
         call afretu(iprno, lonlis, klisno, noepou, noma,&
                     valech, nbcoef, idec, coef, nomddl,&
-                    typlag, lisrel)
+                    lisrel)
 !
 !     RELATIONS ENTRE LES NOEUDS DE SURFACE ET LE NOEUD POUTRE DDL WIM
 !     OU SI IMOD=1 LE DDL DZ DANS REPERE LOCAL DU TUYAU ET WI1
@@ -310,7 +309,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 !
         call afretu(iprno, lonlis, klisno, noepou, noma,&
                     valech, nbcoef, idec, coef, nomddl,&
-                    typlag, lisrel)
+                    lisrel)
 !         ENDIF
 !
 !     RELATIONS ENTRE LES NOEUDS DE SURFACE ET LE NOEUD POUTRE DDL WOM
@@ -329,7 +328,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 !
         call afretu(iprno, lonlis, klisno, noepou, noma,&
                     valech, nbcoef, idec, coef, nomddl,&
-                    typlag, lisrel)
+                    lisrel)
 !
 !     FIN DE LA BOUCLE SUR LES MODES
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -95,7 +95,6 @@ implicit none
     integer :: n1, iocc, iret, ibid
     integer :: nbrela
     character(len=19) :: list_rela, list_rela_tmp, list_rela_old
-    character(len=2) :: lagr_type
     character(len=8) :: cmp_name
     integer :: dim
     integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
@@ -172,7 +171,6 @@ implicit none
 !
 ! - Initializations of types
 !
-    lagr_type = '12'
     ASSERT(vale_type.eq.'REEL')
 !
 ! - Minimum distance
@@ -376,12 +374,10 @@ implicit none
 !
                                     if (l_rota_2d) then
                                         call drz12d(mesh, ligrmo, vale_type, nb_node, list_node,&
-                                                    cmp_index_drz, lagr_type, list_rela,&
-                                                    nom_noeuds_tmp)
+                                                    cmp_index_drz, list_rela, nom_noeuds_tmp)
                                     else
                                         call solide_tran('2D',mesh, vale_type, dist_mini, nb_node,&
-                                                         list_node, lagr_type, list_rela,&
-                                                         nom_noeuds_tmp, dim)
+                                                         list_node, list_rela, nom_noeuds_tmp, dim)
                                     endif
 !
 ! ----------------------------- Set LIAISON_SOLIDE for ndim = 3
@@ -419,12 +415,11 @@ implicit none
                                         call drz13d(mesh, ligrmo, vale_type, nb_node, list_node,&
                                                     cmp_index_dx, cmp_index_dy, cmp_index_dz,&
                                                     cmp_index_drx, cmp_index_dry, cmp_index_drz,&
-                                                    lagr_type, list_rela, nom_noeuds_tmp)
+                                                    list_rela, nom_noeuds_tmp)
                                     else
                                         
                                         call solide_tran('3D',mesh, vale_type, dist_mini, nb_node,&
-                                                         list_node, lagr_type, list_rela,&
-                                                         nom_noeuds_tmp, dim)
+                                                         list_node, list_rela, nom_noeuds_tmp, dim)
                                     endif
                                 else
                                     ASSERT(.false.)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -395,7 +395,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
         nterm = i
         call afrela(coef, [cbid], ddl, noeud, dimens,&
                     [0.d0], nterm, valimr, valimc, valimf,&
-                    'REEL', fonree, '12', 0.d0, lisrel)
+                    'REEL', fonree, 0.d0, lisrel)
        end do
 !
     endif

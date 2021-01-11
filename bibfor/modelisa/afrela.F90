@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
                   repe_defi, nbterm, vale_real, vale_cplx, vale_func,&
-                  type_coef, vale_type, type_lagr, epsi, lisrez)
+                  type_coef, vale_type, epsi, lisrez)
 !
     implicit none
 !
@@ -49,7 +49,6 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
     character(len=*), intent(in) :: vale_func
     character(len=4), intent(in) :: type_coef
     character(len=4), intent(in) :: vale_type
-    character(len=2), intent(in) :: type_lagr
     real(kind=8), intent(in) :: epsi
     character(len=*), intent(in) :: lisrez
 !
@@ -86,9 +85,6 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
 ! In  vale_func : affected value if function
 ! In  vale_cplx : affected value if complex
 ! In  coef_type : type of coefficient (real or complex)
-! In  lagr_type : type of lagrange multpilers (position of Lagrange and physical dof)
-!                   if '12' - First Lagrange multiplier before physical dof, second after
-!                   if '22' - First Lagrange multiplier after physical dof, second after too
 ! In  epsi      : tolerance to detect "zero" coefficient
 ! In  lisrel    : JEVEUX object list_rela for relations list management
 ! --------------------------------------------------------------------------------------------------
@@ -104,7 +100,6 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
     integer :: nbrela, nbrmax, nbterr, niv, k
     real(kind=8) :: norm_coef
     aster_logical :: l_rota
-    character(len=8), pointer :: rlla(:) => null()
     integer, pointer :: rlnt(:) => null()
     character(len=8), pointer :: rlno(:) => null()
     character(len=8), pointer :: rldd(:) => null()
@@ -274,7 +269,6 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
         call juveca(lisrel//'.RLNT', imult*nbrmax)
         call juveca(lisrel//'.RLPO', imult*nbrmax)
         call juveca(lisrel//'.RLSU', imult*nbrmax)
-        call juveca(lisrel//'.RLLA', imult*nbrmax)
     endif
 !
 ! - Linear relation access
@@ -287,12 +281,10 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
     call jeveuo(lisrel//'.RLNT', 'E', vi=rlnt)
     call jeveuo(lisrel//'.RLPO', 'E', idpoin)
     call jeveuo(lisrel//'.RLSU', 'E', idsurc)
-    call jeveuo(lisrel//'.RLLA', 'E', vk8=rlla)
 !
 ! - New length
 !
     zi(idnbre) = nbrela
-    rlla(nbrela) (1:2) = type_lagr
     if (nbrel0 .eq. 0) then
         ipoint = 0
     else

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,&
-                  cmp_index_drz, type_lagr, lisrel, nom_noeuds)
+                  cmp_index_drz, lisrel, nom_noeuds)
 !
     implicit none
 !
@@ -43,7 +43,6 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,&
     character(len=4), intent(in) :: type_vale
     integer, intent(in) :: nb_node
     character(len=24), intent(in) :: list_node
-    character(len=2), intent(in) :: type_lagr
     integer, intent(in) :: cmp_index_drz
     character(len=19), intent(in) :: lisrel
     character(len=8), intent(out) :: nom_noeuds(:)
@@ -63,7 +62,6 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,&
 ! In  list_node     : list of nodes applying translation
 ! In  tran          : vector defining translation
 ! In  cmp_index_drz : index in DEPL_R <GRANDEUR> for DRZ
-! In  type_lagr     : choosing lagrange multipliers position
 ! In  lisrel        : list of relations
 ! Out nom_noeuds    : nom des noeuds "maitres" pour la relation
 !
@@ -175,7 +173,7 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,&
 !
             call afrela(coer, coec, lisddl, lisno, dime,&
                         direct, nb_term, vale_real, vale_cplx, vale_fonc,&
-                        type_coef, type_vale, type_lagr, 0.d0, lisrel)
+                        type_coef, type_vale, 0.d0, lisrel)
 !
 ! --------- Second relation: DY(M) - DY(A) - X*DRZ(A) = 0
 !
@@ -194,7 +192,7 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,&
 !
             call afrela(coer, coec, lisddl, lisno, dime,&
                         direct, nb_term, vale_real, vale_cplx, vale_fonc,&
-                        type_coef, type_vale, type_lagr, 0.d0, lisrel)
+                        type_coef, type_vale, 0.d0, lisrel)
 !
 ! --------- Third relation: DRZ(M) - DRZ(A)  = 0
 !
@@ -211,7 +209,7 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node,&
 !
                 call afrela(coer, coec, lisddl, lisno, dime,&
                             direct, nb_term, vale_real, vale_cplx, vale_fonc,&
-                            type_coef, type_vale, type_lagr, 0.d0, lisrel)
+                            type_coef, type_vale, 0.d0, lisrel)
             endif
         endif
     end do

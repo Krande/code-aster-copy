@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,12 +64,11 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=8) :: k8dummy, poslag, model, nom_noeuds(3)
-    character(len=2) :: type_lagr
+    character(len=8) :: k8dummy, model, nom_noeuds(3)
     character(len=16) :: keywordfact
     character(len=19) :: list_rela
     integer :: iocc, i_error, icoupl
-    integer :: ndim, nliai, n1, nbec
+    integer :: ndim, nliai, nbec
     character(len=8) :: cmp_name, nomg
     integer :: jnom, jprnm, nb_cmp
     integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
@@ -97,7 +96,7 @@ implicit none
     list_node_o1 = '&&CALICP.LIST_NODE_O1'
     list_node_o2 = '&&CALICP.LIST_NODE_O2'
     list_pair = '&&CALICP.LIST_PAIR'
-    type_lagr = '12'
+!
     call wkvect(list_pair, 'V V I', 2, j_list_pair)
 !
 ! - Type
@@ -148,20 +147,6 @@ implicit none
 !
     do iocc = 1, nliai
 !
-! ----- Definition of position for lagrange multipliers
-!
-        call getvtx(keywordfact, 'NUME_LAGR', iocc=iocc, nbval=0, nbret=n1)
-        if (n1 .eq. 0) then
-            type_lagr = '12'
-        else
-            call getvtx(keywordfact, 'NUME_LAGR', iocc=iocc, scal=poslag, nbret=n1)
-            if (poslag .eq. 'APRES') then
-                type_lagr = '22'
-            else
-                type_lagr = '12'
-            endif
-        endif
-!
 ! ----- Read nodes - First list
 !
         suffix = '_1'
@@ -201,11 +186,11 @@ implicit none
             zi(j_list_pair-1+2) = nume_node_2
             if (ndim .eq. 2) then
                 call drz12d(mesh, ligrmo, vale_type, 2, list_pair,&
-                            cmp_index_drz, type_lagr, list_rela, nom_noeuds)
+                            cmp_index_drz, list_rela, nom_noeuds)
             else if (ndim .eq. 3) then
                 call drz13d(mesh, ligrmo, vale_type, 2, list_pair,&
                             cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx,&
-                            cmp_index_dry, cmp_index_drz, type_lagr, list_rela, nom_noeuds)
+                            cmp_index_dry, cmp_index_drz, list_rela, nom_noeuds)
             endif
         enddo
         call jedetr(list_node_i1)

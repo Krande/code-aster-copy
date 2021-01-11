@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -138,11 +138,6 @@ Solution : Il faut dédoubler le noeud.
     29 : _("""
  Une maille des groupes modélisant la dalle a une dimension topologique différente
  de 1 et 2.
-"""),
-
-    30 : _("""
- L'indicateur : %(k1)s de position des multiplicateurs de Lagrange associés à
- une relation linéaire n'est pas correct.
 """),
 
     31 : _("""

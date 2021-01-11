@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -255,7 +255,7 @@ implicit none
                   endif
                   call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_name, repe_type,&
                               [0.d0]   , 2, vale_real, value_cplx_dumm, vale_func_dumm,&
-                              'REEL', 'REEL', '12', 0.d0, list_rela_line)
+                              'REEL', 'REEL', 0.d0, list_rela_line)
                   nb_rela_line = nb_rela_line + 1
               end do
            else
@@ -269,7 +269,7 @@ implicit none
                   endif
                   call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_name, repe_type,&
                               [0.d0]   , 2, vale_real, value_cplx_dumm, vale_func_dumm,&
-                              'REEL', 'REEL', '12', 0.d0, list_rela_line)
+                              'REEL', 'REEL', 0.d0, list_rela_line)
                   nb_rela_line = nb_rela_line + 1
               end do
            endif
@@ -284,7 +284,7 @@ implicit none
                  call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(1)), node_nameb(2))
                  call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_nameb, repe_type,&
                              [0.d0]   , 2, vale_real, value_cplx_dumm, vale_func_dumm,&
-                             'REEL', 'REEL', '12', 0.d0, list_rela_line)
+                             'REEL', 'REEL', 0.d0, list_rela_line)
                  nb_rela_line = nb_rela_line + 1
               elseif (v_rela_cmp(2*i_edge).eq.2.and.jonc1.gt.0) then
                  cmp_name(1) = ddlc3(1)
@@ -293,7 +293,7 @@ implicit none
                  call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(2)), node_nameb(2))
                  call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_nameb, repe_type,&
                              [0.d0]   , 2, vale_real, value_cplx_dumm, vale_func_dumm,&
-                             'REEL', 'REEL', '12', 0.d0, list_rela_line)
+                             'REEL', 'REEL', 0.d0, list_rela_line)
                  nb_rela_line = nb_rela_line + 1
               endif
               if (v_rela_cmp(2*(i_edge-1)+1).eq.3.and.jonc1.gt.0) then
@@ -303,7 +303,7 @@ implicit none
                  call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(1)), node_nameb(2))
                  call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_nameb, repe_type,&
                              [0.d0]   , 2, vale_real, value_cplx_dumm, vale_func_dumm,&
-                             'REEL', 'REEL', '12', 0.d0, list_rela_line)
+                             'REEL', 'REEL', 0.d0, list_rela_line)
                  nb_rela_line = nb_rela_line + 1
               elseif (v_rela_cmp(2*i_edge).eq.3.and.jonc1.gt.0) then
                  cmp_name(1) = ddlc3(1)
@@ -312,7 +312,7 @@ implicit none
                  call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(2)), node_nameb(2))
                  call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_nameb, repe_type,&
                              [0.d0]   , 2, vale_real, value_cplx_dumm, vale_func_dumm,&
-                             'REEL', 'REEL', '12', 0.d0, list_rela_line)
+                             'REEL', 'REEL', 0.d0, list_rela_line)
                  nb_rela_line = nb_rela_line + 1
               endif
            endif
@@ -333,7 +333,7 @@ implicit none
                endif
                call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_name, repe_type,&
                            [0.d0]   , 2, vale_real, value_cplx_dumm, vale_func_dumm,&
-                           'REEL', 'REEL', '12', 0.d0, list_rela_line)
+                           'REEL', 'REEL', 0.d0, list_rela_line)
                nb_rela_line = nb_rela_line + 1
            end do
         endif

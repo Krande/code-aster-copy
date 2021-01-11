@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -101,7 +101,7 @@ CH=AFFE_CHAR_MECA(    MODELE=MOD, DOUBLE_LAGRANGE='NON',
                        DDL = ('DY','DY',),
                        COEF_MULT = (1.,-1.,),
                        COEF_IMPO = 0.)),
-           LIAISON_CHAMNO=_F( CHAM_NO = CHADEP,  # NUME_LAGR = 'APRES',
+           LIAISON_CHAMNO=_F( CHAM_NO = CHADEP,
                            COEF_IMPO = 0.)               )
 
 #

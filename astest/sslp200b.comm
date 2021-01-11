@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -379,10 +379,11 @@ CHMEC=AFFE_CHAR_MECA(VERI_NORM='NON',
                                       COEF_MULT_2=0.7,
                                       COEF_IMPO=-5.22,
                                       TRAN=(1.6,1.1,),),
-                     LIAISON_SOLIDE=(_F(MAILLE=('M31','M135',),
-                                        NUME_LAGR='NORMAL',),
-                                     _F(NOEUD=('N37','N195',),
-                                        NUME_LAGR='NORMAL',),),
+                     LIAISON_SOLIDE=(_F(  MAILLE=('M31','M135',),
+                                       ),
+                                     _F(  NOEUD=('N37','N195',),
+                                       ),
+                                    ),
                      LIAISON_UNIF=_F(MAILLE='M24',
                                      DDL=('DX','DY',),),
                      FORCE_NODALE=_F(NOEUD='N30',

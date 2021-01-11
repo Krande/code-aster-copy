@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -450,7 +450,6 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
              SANS_MAILLE_2   =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
              SANS_GROUP_NO_2 =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
              SANS_NOEUD_2    =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
-             NUME_LAGR       =SIMP(statut='f',typ='TXM',defaut="NORMAL",into=("NORMAL","APRES",) ),
          ),
 
 

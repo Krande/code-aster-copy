@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine afretu(iprno, lonlis, klisno, noepou, noma,&
                   vale1, nbcoef, idec, coef, nomddl,&
-                  typlag, lisrel)
+                  lisrel)
     implicit none
 #include "jeveux.h"
 #include "asterfort/afrela.h"
@@ -37,7 +37,6 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma,&
 !
     integer :: lonlis, iprno(*), idec, nbcoef
     real(kind=8) :: coef(nbcoef)
-    character(len=2) :: typlag
     character(len=8) :: klisno(lonlis), noepou, noma, nomddl(nbcoef)
     character(len=24) :: vale1
     character(len=19) :: lisrel
@@ -120,7 +119,7 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma,&
 !
     call afrela(coer, coec, lisddl, lisno, dime,&
                 direct, nbterm, beta, betac, betaf,&
-                'REEL', 'REEL', typlag, 0.d0, lisrel)
+                'REEL', 'REEL', 0.d0, lisrel)
     call imprel(motfac, nbterm, coer, lisddl, lisno,&
                 beta)
 !

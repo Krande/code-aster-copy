@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,7 +83,6 @@ implicit none
     real(kind=8) :: beta
     complex(kind=8) :: betac
     aster_logical :: dnor
-    character(len=2) :: typlag
     character(len=4) :: fonree, typcoe
     character(len=7) :: typcha
     character(len=8) :: nomno1, nomno2, charge, nomg, noma, mod, nomdep
@@ -119,7 +118,6 @@ implicit none
     lisin2 = '&&CALIAG.LISNO2'
     betac = (1.0d0,0.0d0)
     nomdep = 'DEPL'
-    typlag = '12'
 !
 ! --- MODELE ASSOCIE AU LIGREL DE CHARGE ---
 !
@@ -453,7 +451,7 @@ implicit none
 !
             call afrela(coef, coemuc, nomddl, nomnoe, dim,&
                         direct, nbterm, beta, betac, kbeta,&
-                        typcoe, fonree, typlag, 0.d0, lisrel)
+                        typcoe, fonree, 0.d0, lisrel)
 !
 ! --- FIN DE LA BOUCLE SUR LES RELATIONS                       ---
 ! --- (I.E. LES COUPLES DE NOEUDS EN VIS A VIS POUR LE MOT-CLE ---

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,11 +56,10 @@ subroutine carbe3(charge)
 ! ----------------------------------------------------------------------
     integer :: vali(2)
 !
-    character(len=2) :: typlag
     character(len=4) :: typcoe, typval
     character(len=7) :: typcha
     character(len=8) :: k8bid, mode, noma, nomres, noemai, nomnoe, ddltrr(6)
-    character(len=8) :: ddlcod, ddlmac(6), betaf, numlag
+    character(len=8) :: ddlcod, ddlmac(6), betaf
     character(len=15) :: coordo
     character(len=16) :: motfac, concep, nomcmd
     character(len=19) :: lisrel
@@ -92,6 +91,7 @@ subroutine carbe3(charge)
 !
     beta = 0.0d0
     betac = (1.0d0,0.0d0)
+!
     typcoe = 'REEL'
     typval = 'REEL'
     ddltrr(1) = 'DX'
@@ -563,25 +563,6 @@ subroutine carbe3(charge)
 !
         AS_DEALLOCATE(vr=xab)
 !
-! --- ON REGARDE SI LES MULTIPLICATEURS DE LAGRANGE SONT A METTRE
-! --- APRES LES NOEUDS PHYSIQUES LIES PAR LA RELATION DANS LA MATRICE
-! --- ASSEMBLEE :
-! --- SI OUI TYPLAG = '22'
-! --- SI NON TYPLAG = '12'
-!
-        call getvtx(motfac, 'NUME_LAGR', iocc=idxrbe, nbval=0, nbret=nbent)
-!
-        if (nbent .ne. 0) then
-            call getvtx(motfac, 'NUME_LAGR', iocc=idxrbe, scal=numlag, nbret=nbent)
-            if (numlag(1:5) .eq. 'APRES') then
-                typlag = '22'
-            else
-                typlag = '12'
-            endif
-        else
-            typlag = '12'
-        endif
-!
         do idxlig = 1, 6
             if (ddlmai(idxlig)) then
                 idxter = 1
@@ -601,7 +582,7 @@ subroutine carbe3(charge)
                 enddo
                 call afrela(zr(jcmur), zc(jcmuc), zk8(jnzddl), zk8( jnznor), zi(jdime),&
                             zr(jdirec), idxter, beta, betac, betaf,&
-                            typcoe, typval, typlag, 0.d0, lisrel)
+                            typcoe, typval, 0.d0, lisrel)
             endif
         enddo
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
-                      ligrel, mod, cara, numddl, typlag,&
-                      lisrel, coorig, sectio)
+                      ligrel, mod, cara, numddl, lisrel,&
+                      coorig, sectio)
         integer :: lonlis
         integer :: iprno(*)
         character(len=8) :: klisno(lonlis)
@@ -31,7 +31,6 @@ interface
         character(len=8) :: mod
         character(len=8) :: cara
         character(len=14) :: numddl
-        character(len=2) :: typlag
         character(len=19) :: lisrel
         real(kind=8) :: coorig(3)
         real(kind=8) :: sectio

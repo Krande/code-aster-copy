@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -144,7 +144,6 @@ implicit none
         k191 = sd1
         k192 = sd2
 !
-        call jedup1(k191//'.RLLA', bas2, k192//'.RLLA')
         call jedup1(k191//'.RLBE', bas2, k192//'.RLBE')
         call jedup1(k191//'.RLSU', bas2, k192//'.RLSU')
         call jedup1(k191//'.RLTC', bas2, k192//'.RLTC')

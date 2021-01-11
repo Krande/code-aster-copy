@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 interface
     subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type,&
                       repe_defi, nbterm, vale_real, vale_cplx, vale_func,&
-                      type_coef, vale_type, type_lagr, epsi, lisrez)
+                      type_coef, vale_type, epsi, lisrez)
         integer, intent(in) :: nbterm
         real(kind=8), intent(in) :: coef_real(nbterm)
         complex(kind=8), intent(in) :: coef_cplx(nbterm)
@@ -33,7 +33,6 @@ interface
         character(len=*), intent(in) :: vale_func
         character(len=4), intent(in) :: type_coef
         character(len=4), intent(in) :: vale_type
-        character(len=2), intent(in) :: type_lagr
         real(kind=8), intent(in) :: epsi
         character(len=*), intent(in) :: lisrez
     end subroutine afrela

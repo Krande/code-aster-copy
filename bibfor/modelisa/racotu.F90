@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
-                  ligrel, mod, cara, numddl, typlag,&
+                  ligrel, mod, cara, numddl,&
                   lisrel, coorig)
     implicit none
 #include "jeveux.h"
@@ -39,7 +39,6 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 #include "asterfort/reajre.h"
 !
     integer :: lonlis, iprno(*)
-    character(len=2) :: typlag
     character(len=8) :: klisno(lonlis), noepou, noma, cara, mod
     character(len=14) :: numddl
     character(len=19) :: ligrel, lisrel
@@ -135,7 +134,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
     coef(1) = -2.d0
     call afretu(iprno, lonlis, klisno, noepou, noma,&
                 valech, nbcoef, idec, coef, nomddl,&
-                typlag, lisrel)
+                lisrel)
 !
 !   RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE
 !   DDL UIM, UOM, VIM, VOM, WIM, WOM, M VARIANT DE 2 A NBMODE
@@ -196,7 +195,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 !
     call afretu(iprno, lonlis, klisno, noepou, noma,&
                 valech, nbcoef, idec, coef, nomddl,&
-                typlag, lisrel)
+                lisrel)
 !
 !     RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL WOM
 !     OU SI IMOD=1 LE DDL DY DANS REPERE LOCAL DU TUYAU ET WO1
@@ -216,7 +215,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 !
     call afretu(iprno, lonlis, klisno, noepou, noma,&
                 valech, nbcoef, idec, coef, nomddl,&
-                typlag, lisrel)
+                lisrel)
 !
     do imod = 2, nbmode
         if (info .eq. 2) then
@@ -241,7 +240,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
         coef(1) = -1.d0
         call afretu(iprno, lonlis, klisno, noepou, noma,&
                     valech, nbcoef, idec, coef, nomddl,&
-                    typlag, lisrel)
+                    lisrel)
 !
 !        RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL UOM
 !
@@ -251,7 +250,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
         coef(1) = -1.d0
         call afretu(iprno, lonlis, klisno, noepou, noma,&
                     valech, nbcoef, idec, coef, nomddl,&
-                    typlag, lisrel)
+                    lisrel)
 !
 !        RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL VOM
         call jedetr('&&RAPOTU           .RELR')
@@ -265,7 +264,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
         coef(1) = -1.d0
         call afretu(iprno, lonlis, klisno, noepou, noma,&
                     valech, nbcoef, idec, coef, nomddl,&
-                    typlag, lisrel)
+                    lisrel)
 !
 !        RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL VIM
 !        IDEC=3 SIGNIFIE QUE ON UTILISE LES TERMES EN SIN(M*PHI)
@@ -276,7 +275,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
         coef(1) = -1.d0
         call afretu(iprno, lonlis, klisno, noepou, noma,&
                     valech, nbcoef, idec, coef, nomddl,&
-                    typlag, lisrel)
+                    lisrel)
 !
 !        RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL WIM
 !        OU SI IMOD=1 LE DDL DZ DANS REPERE LOCAL DU TUYAU ET WI1
@@ -295,7 +294,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 !
         call afretu(iprno, lonlis, klisno, noepou, noma,&
                     valech, nbcoef, idec, coef, nomddl,&
-                    typlag, lisrel)
+                    lisrel)
 !
 !        RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL WOM
 !        OU SI IMOD=1 LE DDL DY DANS REPERE LOCAL DU TUYAU ET WO1
@@ -308,7 +307,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 !
         call afretu(iprno, lonlis, klisno, noepou, noma,&
                     valech, nbcoef, idec, coef, nomddl,&
-                    typlag, lisrel)
+                    lisrel)
     end do
 !
 ! --- DESTRUCTION DES OBJETS DE TRAVAIL

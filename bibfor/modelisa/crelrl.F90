@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,8 +59,8 @@ subroutine crelrl(typcoz, typvaz, basez, lisrez)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: idbeta, idcoef, iddl, idlagr, idnbre, idnoeu, idpoin
-    integer :: idsurc, idterm, idtyco, idtyva, iret, lvecrl, nbrela
+    integer :: idbeta, idcoef, iddl, idnbre, idnoeu, idpoin, idsurc
+    integer :: idterm, idtyco, idtyva, iret, lvecrl, nbrela
 !
 !-----------------------------------------------------------------------
     parameter (lvecrl = 10000)
@@ -88,7 +88,6 @@ subroutine crelrl(typcoz, typvaz, basez, lisrez)
         call jedetr(lisrel//'.RLTC')
         call jedetr(lisrel//'.RLTV')
         call jedetr(lisrel//'.RLBE')
-        call jedetr(lisrel//'.RLLA')
     endif
 !
 ! ---  VECTEUR DES COEFFICIENTS DES TERMES DES RELATIONS
@@ -131,11 +130,6 @@ subroutine crelrl(typcoz, typvaz, basez, lisrez)
 ! ---  ( SERT A APPLIQUER LA REGLE DE SURCHARGE)
 !
     call wkvect(lisrel//'.RLSU', base//' V I', nbrela, idsurc)
-!
-! ---  VECTEUR DE K8 INDIQUANT LA POSITION DES LAGRANGE
-! ---  ASSOCIES A LA RELATION COURANTE
-!
-    call wkvect(lisrel//'.RLLA', base//' V K8', nbrela, idlagr)
 !
 ! ---  NOMBRE DE RELATIONS
 !

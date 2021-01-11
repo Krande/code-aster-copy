@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -104,24 +104,24 @@ subroutine xtempc(nfiss, fiss, fonree, char)
                 if (istan .eq. 1) then
                     call afrela(coefr, [cbid], ddlh, nomnoe, ndim,&
                                 [0.d0], 1, betar, cbid, betaf,&
-                                'REEL', typval, '12', 0.d0, lisrel)
+                                'REEL', typval, 0.d0, lisrel)
                     nrel = nrel + 1
 !
 !           MISE A ZERO DDL CRACK-TIP
                 else if (istan.eq.2) then
                     call afrela(coefr, [cbid], ddle, nomnoe, ndim,&
                                 [0.d0], 1, betar, cbid, betaf,&
-                                'REEL', typval, '12', 0.d0, lisrel)
+                                'REEL', typval, 0.d0, lisrel)
                     nrel = nrel + 1
 !
 !           MISE A ZERO DDLS HEAVISIDE ET CRACK-TIP
                 else if (istan.eq.3) then
                     call afrela(coefr, [cbid], ddlh, nomnoe, ndim,&
                                 [0.d0], 1, betar, cbid, betaf,&
-                                'REEL', typval, '12', 0.d0, lisrel)
+                                'REEL', typval, 0.d0, lisrel)
                     call afrela(coefr, [cbid], ddle, nomnoe, ndim,&
                                 [0.d0], 1, betar, cbid, betaf,&
-                                'REEL', typval, '12', 0.d0, lisrel)
+                                'REEL', typval, 0.d0, lisrel)
                     nrel = nrel + 2
                 else
                     ASSERT(.false.)

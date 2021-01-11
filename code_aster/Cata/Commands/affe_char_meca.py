@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -277,7 +277,6 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
 #  type de cham_no_sdaster CO()
              CHAM_NO         =SIMP(statut='o',typ=cham_no_sdaster), #CO()
              COEF_IMPO       =SIMP(statut='o',typ='R' ),
-             NUME_LAGR       =SIMP(statut='f',typ='TXM',defaut="NORMAL",into=("NORMAL","APRES") ),
            ),
 
          ARETE_IMPO       =FACT(statut='f',max='**',
@@ -456,7 +455,6 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
              SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
              SANS_NOEUD      =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
              DIST_MIN        =SIMP(statut='f',typ='R'),
-             NUME_LAGR       =SIMP(statut='f',typ='TXM',defaut="NORMAL",into=("NORMAL","APRES") ),
            ),
 
          LIAISON_ELEM    =FACT(statut='f',max='**',
@@ -487,8 +485,6 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                AXE_POUTRE  =SIMP(statut='o',typ='R',max=3),
             ),
 
-
-            NUME_LAGR   =SIMP(statut='f',typ='TXM',defaut="NORMAL",into=("NORMAL","APRES") ),
             ANGL_MAX    =SIMP(statut='f',typ='R',defaut= 1. ),
 
          ),
@@ -514,7 +510,6 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
 #  type de cham_no_sdaster CO()
              CHAM_NO         =SIMP(statut='o',typ=cham_no_sdaster), #CO()
              COEF_IMPO       =SIMP(statut='o',typ='R' ),
-             NUME_LAGR       =SIMP(statut='f',typ='TXM',defaut="NORMAL",into=("NORMAL","APRES") ),
            ),
 
          LIAISON_RBE3    =FACT(statut='f',max='**',
@@ -528,7 +523,6 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
             NOEUD_ESCL      =SIMP(statut='c',typ=no  ,validators=NoRepeat(),min=1,max='**'),
             DDL_ESCL        =SIMP(statut='o',typ='TXM',min=1,max='**'),
             COEF_ESCL       =SIMP(statut='f',typ='R',min=1,max='**'),
-            NUME_LAGR       =SIMP(statut='f',typ='TXM',defaut="NORMAL",into=("NORMAL","APRES") ),
          ),
 
          LIAISON_INTERF  =FACT(statut='f',max='**',
@@ -794,7 +788,6 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
              SANS_MAILLE_2   =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
              SANS_GROUP_NO_2 =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
              SANS_NOEUD_2    =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
-             NUME_LAGR       =SIMP(statut='f',typ='TXM',defaut="NORMAL",into=("NORMAL","APRES") ),
            ),
 
          RELA_CINE_BP    =FACT(statut='f',max='**',

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -89,20 +89,22 @@ CHCAR=AFFE_CARA_ELEM(MODELE=MO,
                                 VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),);
 
 # ----------- CONDITIONS AUX LIMITES -------------------------------
-CH_CL=AFFE_CHAR_MECA(MODELE=MO,
-                     DDL_IMPO=_F(GROUP_NO='P2',
-                                 DX=0.0,
-                                 DY=0.0,
-                                 DZ=0.0,
-                                 DRX=0.0,
-                                 DRY=0.0,
-                                 DRZ=0.0,),
-                     LIAISON_ELEM=_F(OPTION='3D_POU',
-                                     GROUP_MA_1='CLGV',
-                                     GROUP_NO_2='P2',
-                                     NUME_LAGR='NORMAL',
-                                     ANGL_MAX=1.0,),
-                     INFO=1,);
+CH_CL=AFFE_CHAR_MECA(  MODELE=MO,
+                       DDL_IMPO=_F(  GROUP_NO='P2',
+                                     DX=0.0,
+                                     DY=0.0,
+                                     DZ=0.0,
+                                     DRX=0.0,
+                                     DRY=0.0,
+                                     DRZ=0.0,
+                                  ),
+                       LIAISON_ELEM=_F(  OPTION='3D_POU',
+                                         GROUP_MA_1='CLGV',
+                                         GROUP_NO_2='P2',
+                                         ANGL_MAX=1.0,
+                                      ),
+                       INFO=1,
+                    );
 
 # ----------- CHARGEMENT PERMANENT ----------------------------------
 

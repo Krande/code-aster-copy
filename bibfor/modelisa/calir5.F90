@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,6 @@ subroutine calir5(noma, lisrel, nono2, nuno2, jcoor,&
 ! ======================================================================
 !
     real(kind=8) :: beta
-    character(len=2) :: typlag
     character(len=4) :: fonree
     character(len=4) :: typcoe
 !
@@ -55,7 +54,6 @@ subroutine calir5(noma, lisrel, nono2, nuno2, jcoor,&
     kbeta=' '
     typcoe='REEL'
     fonree='REEL'
-    typlag='12'
     ndim=3
 !
 !     N1 : NOMBRE DE NOEUDS DE LA MAILLE "COQUE" EN FACE DE N2
@@ -150,7 +148,7 @@ subroutine calir5(noma, lisrel, nono2, nuno2, jcoor,&
 !
         call afrela(coefr, [cbid], ddl, noeud, dimens,&
                     direct, nbterm, beta, betac, kbeta,&
-                    typcoe, fonree, typlag, 1.d-6, lisrel)
+                    typcoe, fonree, 1.d-6, lisrel)
         call imprel('LIAISON_MAIL-MASSIF_COQUE', nbterm, coefr, ddl, noeud,&
                     beta)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,6 @@ implicit none
     integer :: vali(2)
 !
     complex(kind=8) :: betac
-    character(len=2) :: typlag
     character(len=4) :: typcoe, typval, typco2
     character(len=7) :: typcha
     character(len=8) :: betaf
@@ -99,7 +98,6 @@ implicit none
     motfac = 'LIAISON_DDL     '
     motcle = 'NOEUD'
     mogrou = 'GROUP_NO'
-    typlag = '12'
     typco2='REEL'
 !
     lisrel = '&&CALIAI.RLLISTE'
@@ -269,7 +267,7 @@ implicit none
 !
             call afrela(coemur, coemuc, zk8(jddl), liste2, dimension,&
                         direct, indnoe, beta, betac, betaf,&
-                        typcoe, typval, typlag, 0.d0, lisrel)
+                        typcoe, typval, 0.d0, lisrel)
 !
         else
 !
@@ -304,7 +302,7 @@ implicit none
             endif
             call afrela(coemur, coemuc, zk8(jddl), liste2, dimension,&
                         direct, nbno, beta, betac, betaf,&
-                        typcoe, typval, typlag, 0.d0, lisrel)
+                        typcoe, typval, 0.d0, lisrel)
         endif
 !
     end do

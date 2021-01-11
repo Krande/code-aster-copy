@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -108,7 +108,6 @@ character(len=8), intent(in) :: mesh
     complex(kind=8) :: betac
     complex(kind=8), parameter :: cbid = dcmplx(0.d0, 0.d0)
 
-    character(len=2)    :: typlag
     character(len=4)    :: fonree, typcoe, typlia
     character(len=8)    :: model, m8blan, kelim
     character(len=8)    :: kbeta, nono1, nono2, cmp, ddl2, listyp(8), elem_error
@@ -163,7 +162,6 @@ character(len=8), intent(in) :: mesh
     beta=0.0d0
     betac=(0.0d0,0.0d0)
     kbeta=' '
-    typlag='12'
     m8blan='        '
 !
     call dismoi('NOM_MODELE', load, 'CHARGE', repk=model)
@@ -573,7 +571,7 @@ character(len=8), intent(in) :: mesh
                         enddo
                         call afrela(coef, [cbid], nomddl, nomnoe, dimens, &
                                     direct, nno1+1, beta, betac, kbeta, &
-                                    typcoe, fonree, typlag, 1.0d-06, lisrel)
+                                    typcoe, fonree, 1.0d-06, lisrel)
                     else
 !
 !                       RELATIONS CONCERNANT LES TRANSLATIONS (DX/DY/DZ) :
@@ -588,7 +586,7 @@ character(len=8), intent(in) :: mesh
                                 enddo
                                 call afrela(coef, [cbid], nomddl, nomnoe, dimens, &
                                             direct, nno1+1, beta, betac, kbeta, &
-                                            typcoe, fonree, typlag, 1.0d-06, lisrel)
+                                            typcoe, fonree, 1.0d-06, lisrel)
                                 call imprel(motfac, nno1+1, coef, nomddl, nomnoe, beta, 1.0d-06)
                             enddo
 !
@@ -610,7 +608,7 @@ character(len=8), intent(in) :: mesh
                                 enddo
                                 call afrela(coef, [cbid], nomddl, nomnoe, dimens, &
                                             direct, nno1+1, beta, betac, kbeta, &
-                                            typcoe, fonree, typlag, 1.0d-06, lisrel)
+                                            typcoe, fonree, 1.0d-06, lisrel)
                                 call imprel(motfac, nno1+1, coef, nomddl, nomnoe, beta, 1.0d-06)
                             enddo
 !
@@ -689,7 +687,7 @@ character(len=8), intent(in) :: mesh
                         enddo
                         call afrela(coef, [cbid], nomddl, nomnoe, dimens, &
                                     direct, nno1+1, beta, betac, kbeta, &
-                                    typcoe, fonree, typlag, 1.0d-06, lisrel)
+                                    typcoe, fonree, 1.0d-06, lisrel)
                     else
                         do k = 1, ndim
                             if (k .eq. 1) cmp='DX'
@@ -708,7 +706,7 @@ character(len=8), intent(in) :: mesh
                             enddo
                             call afrela(coef, [cbid], nomddl, nomnoe, dimens, &
                                         direct, nno1+ ndim, beta, betac, kbeta, &
-                                        typcoe, fonree, typlag, 1.0d-06, lisrel)
+                                        typcoe, fonree, 1.0d-06, lisrel)
                             call imprel(motfac, nno1+ndim, coef, nomddl, nomnoe, beta, 1.0d-06)
                         enddo
                     endif
@@ -754,7 +752,7 @@ character(len=8), intent(in) :: mesh
                 nomddl(1:nno1+1)=cmp
                 call afrela(coef, [cbid], nomddl, nomnoe, dimens, &
                             direct, nno1+1, beta, betac, kbeta, &
-                            typcoe, fonree, typlag, 1.0d-06, lisrel)
+                            typcoe, fonree, 1.0d-06, lisrel)
                 call imprel(motfac, nno1+1, coef, nomddl, nomnoe, beta, 1.0d-06)
 !
 290             continue

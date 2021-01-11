@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,9 +71,8 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 ! --------- VARIABLES LOCALES ---------------------------
     integer :: nmocl
     parameter (nmocl=300)
-    character(len=2) :: typlag
     character(len=4) :: typval, typcoe
-    character(len=8) :: betaf, mod, nomg, poslag
+    character(len=8) :: betaf, mod, nomg
     character(len=8) :: noma, nomcmp(nmocl)
     character(len=8) :: noepou, nocmp(3), kcmp(3)
     character(len=8) :: lpain(2), lpaout(2)
@@ -86,7 +85,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     character(len=14) :: numddl
     character(len=19) :: lisrel
     integer :: ntypel(nmocl), icmp(6), niv, ifm, vali(2)
-    integer :: iop, nliai, i, narl, nrl,   inom
+    integer :: iop, nliai, i, inom
     integer :: nbcmp, nddla, nbec, jprnm, nlili, k, iaprno, lonlis, ilisno
     integer :: jlisma, nbma, nbno, numnop
     integer :: ino,  idch1, idch2, nbterm, jno2
@@ -156,24 +155,6 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     motcle(2) = 'MAILLE_1'
     typmcl(1) = 'GROUP_MA'
     typmcl(2) = 'MAILLE'
-!
-! --- ON REGARDE SI LES MULTIPLICATEURS DE LAGRANGE SONT A METTRE
-! --- APRES LES NOEUDS PHYSIQUES LIES PAR LA RELATION DANS LA MATRICE
-! --- ASSEMBLEE :
-! --- SI OUI TYPLAG = '22'
-! --- SI NON TYPLAG = '12'
-!     -------------------
-    call getvtx(motfac, 'NUME_LAGR', iocc=iocc, nbval=0, nbret=narl)
-    if (narl .ne. 0) then
-        call getvtx(motfac, 'NUME_LAGR', iocc=iocc, scal=poslag, nbret=nrl)
-        if (poslag(1:5) .eq. 'APRES') then
-            typlag = '22'
-        else
-            typlag = '12'
-        endif
-    else
-        typlag = '12'
-    endif
 !
 ! --- -----------------------------------------------------------------
 ! --- MODELE ASSOCIE AU LIGREL DE CHARGE
@@ -445,7 +426,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 !
     call afrela(coer, coec, lisddl, lisno, dime,&
                 direct, nbterm, beta, betac, betaf,&
-                typcoe, typval, typlag, 0.d0, lisrel)
+                typcoe, typval, 0.d0, lisrel)
     call imprel(motfac, nbterm, coer, lisddl, lisno,&
                 beta)
 !
@@ -469,7 +450,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 !
     call afrela(coer, coec, lisddl, lisno, dime,&
                 direct, nbterm, beta, betac, betaf,&
-                typcoe, typval, typlag, 0.d0, lisrel)
+                typcoe, typval, 0.d0, lisrel)
     call imprel(motfac, nbterm, coer, lisddl, lisno,&
                 beta)
 !
@@ -504,7 +485,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 !
     call afrela(coer, coec, lisddl, lisno, dime,&
                 direct, nbterm, beta, betac, betaf,&
-                typcoe, typval, typlag, 0.d0, lisrel)
+                typcoe, typval, 0.d0, lisrel)
     call imprel(motfac, nbterm, coer, lisddl, lisno,&
                 beta)
 !

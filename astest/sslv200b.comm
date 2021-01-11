@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -429,22 +429,27 @@ CHMEC=AFFE_CHAR_MECA(           MODELE=MO,
                                          FX = 0.87)),
 #  ----  MAILLES DE TYPE QUELCONQUE
                            LIAISON_GROUP=_F(  MAILLE_1 = 'M599',
-                                           GROUP_MA_2 = 'GMA13',
-                                           DDL_1 = 'DZ',
-                                           COEF_MULT_1 = 1.8,
-                                           DDL_2 = 'DY',
-                                           COEF_MULT_2 = 0.7,
-                                           COEF_IMPO = -5.22,),
-                           LIAISON_UNIF=(
-                           _F(  GROUP_MA = 'GMA14',
-                                          DDL = ('DX', 'DY',)),
-                           _F(  NOEUD = ('N34', 'N128',),
-                                          DDL = ('DX', 'DZ',))),LIAISON_SOLIDE=(
-                           _F(  MAILLE = ('M488', 'M598',),
-                                            NUME_LAGR = 'NORMAL'),
-                           _F(  GROUP_NO = ('GNO11', 'GNO12',),
-                                            NUME_LAGR = 'NORMAL')),DDL_IMPO=(
+                                              GROUP_MA_2 = 'GMA13',
+                                              DDL_1 = 'DZ',
+                                              COEF_MULT_1 = 1.8,
+                                              DDL_2 = 'DY',
+                                              COEF_MULT_2 = 0.7,
+                                              COEF_IMPO = -5.22,
+                                           ),
+                           LIAISON_UNIF=(_F(  GROUP_MA = 'GMA14',
+                                              DDL = ('DX', 'DY',),
+                                           ),
+                                         _F(  NOEUD = ('N34', 'N128',),
+                                              DDL = ('DX', 'DZ',),
+                                           ),
+                                        ),
+                           LIAISON_SOLIDE=(_F(  MAILLE = ('M488', 'M598',),
+                                             ),
+                                           _F(  GROUP_NO = ('GNO11', 'GNO12',),
+                                             ),
+                                          ),
 #  ----  NOEUDS
+                           DDL_IMPO=(
                            _F(  GROUP_NO = 'GNO1',
                                       DX = 6.3),
                            _F(  NOEUD = 'N620',

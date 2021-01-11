@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,7 +88,6 @@ implicit none
     real(kind=8) :: coefr, val_r, direct(3)
     character(len=8) :: ddl, coeff, val_f
     complex(kind=8) :: coefc, val_c
-    character(len=2) :: typlag
     character(len=4) :: typcoe
     character(len=8) :: model, nomg
     character(len=8) :: name_node
@@ -113,7 +112,6 @@ implicit none
 !
     lisrel = '&&CALIOB.RLLISTE'
     zero = 0.d0
-    typlag = '12'
     coefc = (1.0d0,0.0d0)
     coefr = 1.0d0
     coeff = ' '
@@ -212,7 +210,7 @@ implicit none
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
                 call afrela([coefr], [coefc], ddl, name_node, [ndim],&
                             direct, 1, val_r, val_c, val_f,&
-                            typcoe, vale_type, typlag, 0.d0, lisrel)
+                            typcoe, vale_type, 0.d0, lisrel)
             enddo
         enddo
 !

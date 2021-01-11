@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine solide_tran(type_geo , noma  , type_vale, dist_mini, nb_node, list_node,&
-                       type_lagr, lisrel, nom_noeuds, dim)
+                       lisrel, nom_noeuds, dim)
 !
 implicit none
 !
@@ -49,7 +49,6 @@ implicit none
     real(kind=8), intent(in)      :: dist_mini
     integer, intent(in)           :: nb_node
     character(len=24), intent(in) :: list_node
-    character(len=2), intent(in)  :: type_lagr
     character(len=19), intent(in) :: lisrel
     character(len=8), intent(out) :: nom_noeuds(:)
     integer, intent(out)          :: dim
@@ -68,7 +67,6 @@ implicit none
 ! In  dist_mini     : minimum distance to detect nodes in same place
 ! In  nb_node       : number of nodes  applying translation
 ! In  list_node     : list of nodes applying translation
-! In  type_lagr     : choosing lagrange multipliers position
 ! In  lisrel        : list of relations
 ! Out nom_noeuds    : nom des (dim+1) noeuds "maitres"
 ! Out dim           : "dimension" du solide : 0/1/2/3
@@ -204,7 +202,7 @@ implicit none
 !
             call afrela(coer, coec, lisddl, lisno, dime,&
                         direct, nb_term, vale_real, vale_cplx, vale_fonc,&
-                        type_coef, type_vale, type_lagr, -1.d0, lisrel)
+                        type_coef, type_vale, -1.d0, lisrel)
         enddo
 
     enddo
@@ -250,20 +248,20 @@ implicit none
         lisddl(1:dim+2)='DX'
         call afrela(coer, coec, lisddl, lisno, dime,&
                         direct, nb_term, vale_real, vale_cplx, vale_fonc,&
-                        type_coef, type_vale, type_lagr, 0.d0, lisrel)
+                        type_coef, type_vale, 0.d0, lisrel)
 
 !       -- relation pour DY :
         lisddl(1:dim+2)='DY'
         call afrela(coer, coec, lisddl, lisno, dime,&
                         direct, nb_term, vale_real, vale_cplx, vale_fonc,&
-                        type_coef, type_vale, type_lagr, 0.d0, lisrel)
+                        type_coef, type_vale, 0.d0, lisrel)
 
 !       -- relation pour DZ :
         if (l3d) then
             lisddl(1:dim+2)='DZ'
             call afrela(coer, coec, lisddl, lisno, dime,&
                         direct, nb_term, vale_real, vale_cplx, vale_fonc,&
-                        type_coef, type_vale, type_lagr, 0.d0, lisrel)
+                        type_coef, type_vale, 0.d0, lisrel)
         endif
 
     enddo

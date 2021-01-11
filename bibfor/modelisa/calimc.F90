@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,6 @@ subroutine calimc(chargz)
 !      CHARACTER*8 NOMA
 ! ------ VARIABLES LOCALES
     complex(kind=8) :: betac, cbid
-    character(len=2) :: typlag
     character(len=4) :: typval, typcoe
     character(len=8) :: nomcmp, nomnoe, betaf, nmcmp2, nmnoe2
     character(len=6) :: typlia
@@ -117,6 +116,7 @@ subroutine calimc(chargz)
 ! --- INITIALISATIONS :
 !     ---------------
     zero = 0.0d0
+!
 ! --- BETA, BETAC ET BETAF SONT LES VALEURS DU SECOND MEMBRE DE LA
 ! --- RELATION LINEAIRE SUIVANT QUE C'EST UN REEL, UN COMPLEXE OU
 ! --- UNE FONCTION, DANS NOTRE CAS C'EST UN REEL
@@ -142,20 +142,6 @@ subroutine calimc(chargz)
 ! --- BOUCLE SUR LES OCCURENCES DU MOT-FACTEUR LIAISON_MACREL :
 !     -------------------------------------------------------
     do iocc = 1, nliai
-!
-! ---   ON REGARDE SI LES MULTIPLICATEURS DE LAGRANGE SONT A METTRE
-! ---   APRES LES NOEUDS PHYSIQUES LIES PAR LA RELATION DANS LA MATRICE
-! ---   ASSEMBLEE :
-! ---   SI OUI TYPLAG = '22'
-! ---   SI NON TYPLAG = '12'
-!
-!        CALL GETVTX(MOTFAC,'NUME_LAGR',IOCC,IARG,1,POSLAG,IBID)
-!        IF (POSLAG.EQ.'APRES') THEN
-!          TYPLAG = '22'
-!        ELSE
-!          TYPLAG = '12'
-!        ENDIF
-        typlag = '12'
         call getvid(motfac, 'MACR_ELEM_DYNA', iocc=iocc, scal=macrel, nbret=nmc)
         call jeveuo(macrel//'.MAEL_REFE', 'L', vk24=mael_refe)
         basemo = mael_refe(1)(1:8)
@@ -289,7 +275,7 @@ subroutine calimc(chargz)
 !       ------------------------------------------
                 call afrela(coer, coec, lisddl, lisno, dime,&
                             direct, nbterm, beta, betac, betaf,&
-                            typcoe, typval, typlag, 0.d0, lisrel)
+                            typcoe, typval, 0.d0, lisrel)
 !
  26             continue
             end do
@@ -355,7 +341,7 @@ subroutine calimc(chargz)
 !       ------------------------------------------
                 call afrela(coer, coec, lisddl, lisno, dime,&
                             direct, nbterm, beta, betac, betaf,&
-                            typcoe, typval, typlag, 0.d0, lisrel)
+                            typcoe, typval, 0.d0, lisrel)
             end do
         end do
 !

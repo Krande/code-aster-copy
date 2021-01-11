@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ subroutine cafono(char, ligrcz, mesh, ligrmz, vale_type)
     integer :: ntypel(nmocl), forimp(nmocl)
     real(kind=8) :: dgrd, valfor(nmocl)
     aster_logical :: verif, l_occu_void
-    character(len=8) :: nomn, typmcl(2), typlag, valfof(nmocl)
+    character(len=8) :: nomn, typmcl(2), valfof(nmocl)
     character(len=16) :: motcle(nmocl), keywordfact, motcls(2)
     character(len=19) :: carte, ligrmo, ligrch
     character(len=24) :: liel, nomnoe, nomele, mesnoe
@@ -93,7 +93,6 @@ subroutine cafono(char, ligrcz, mesh, ligrmz, vale_type)
     if (nfono .eq. 0) goto 999
 !
     ligrch = ligrcz
-    typlag(1:2) = '12'
     igrel = 0
     inema = 0
     motcls(1) = 'GROUP_NO'
@@ -344,7 +343,7 @@ subroutine cafono(char, ligrcz, mesh, ligrmz, vale_type)
             igrel = igrel + 1
             call jenuno(jexnum('&CATA.TE.NOMTE', numel), nomele)
             call noligr(ligrch, igrel, numel, in,&
-                        1, inema, zi(jnbno), typlag, jlgns)
+                        1, inema, zi(jnbno), jlgns)
 !
             call jeveuo(jexnum(liel, igrel), 'E', jl)
             if (vale_type .eq. 'REEL') then
