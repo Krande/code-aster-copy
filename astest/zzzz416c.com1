@@ -1,0 +1,50 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+POURSUITE(CODE='OUI')
+
+
+# Test new mesh
+fileName = './REPE_OUT/mesh_convert.mail'
+fileUnit = DEFI_FICHIER(ACTION='ASSOCIER',
+                        FICHIER=fileName)
+IMPR_RESU(UNITE=fileUnit,
+          FORMAT='ASTER',
+          RESU=_F(MAILLAGE=MESH,),)
+
+DEFI_FICHIER(ACTION='LIBERER',
+             UNITE=fileUnit)
+
+TEST_FICHIER(FICHIER=fileName,
+             NB_VALE_I=1656,
+             VALE_CALC_I=109403,
+             NB_VALE=492,
+             VALE_CALC=9.1020000000e+02,
+             VALE_CALC_K="c99691ad4f9639fe1afec49991a6dfae",
+             EXPR_IGNORE=('ASTER',),)
+
+# Print new mesh
+IMPR_RESU(UNITE=80,
+          FORMAT='ASTER',
+          RESU=_F(MAILLAGE=MESH,),)
+
+IMPR_RESU(UNITE=81,
+          FORMAT='MED',
+          RESU=_F(MAILLAGE=MESH,),)
+
+FIN();
