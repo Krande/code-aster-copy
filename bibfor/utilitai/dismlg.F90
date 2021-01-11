@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dismlg(questi, nomobz, repi, repkz, ierd)
-    implicit none
+!
+implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -39,9 +41,15 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
 !
-    integer :: repi, ierd
-    character(len=*) :: questi, repkz, nomobz
+integer :: repi, ierd
+character(len=*) :: questi, repkz, nomobz
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     --     DISMOI(LIGREL)
+!
+! --------------------------------------------------------------------------------------------------
+!
 !    IN:
 !       QUESTI : TEXTE PRECISANT LA QUESTION POSEE
 !       NOMOBZ : NOM D'UN OBJET DE TYPE LIGREL
@@ -50,7 +58,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 !       REPKZ  : REPONSE ( SI CHAINE DE CARACTERES )
 !       IERD   : CODE RETOUR (0--> OK, 1 --> PB)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: dimge(3)
     aster_logical :: melang
@@ -68,7 +76,8 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
     character(len=8), pointer :: typema(:) => null()
     integer, pointer :: nbno(:) => null()
     character(len=8), pointer :: partit(:) => null()
-! DEB ------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     repk = ' '
@@ -137,6 +146,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
     elseif ((questi.eq.'EXI_RDM') .or. (questi.eq.'EXI_POUX') .or.&
             (questi(1:7).eq.'EXI_THM') .or. (questi.eq.'EXI_TUYAU') .or. &
             (questi.eq.'EXI_COQ3D') .or. (questi.eq.'EXI_COQ1D') .or.&
+            (questi.eq.'EXI_COQSOL').or.&
             (questi.eq.'EXI_GRILLE') .or. (questi.eq.'EXI_PLAQUE') .or.&
             (questi.eq.'EXI_COQUE') .or. (questi.eq.'CALC_RIGI') .or.&
             (questi.eq.'EXI_STRX') .or. (questi.eq.'EXI_STR2') .or.&
@@ -283,6 +293,11 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                         repk='NON'
                     endif
 !
+                else if (questi.eq.'EXI_COQSOL') then
+                     if ((nomte.eq.'MESSHELL_SB9' .or. nomte.eq.'MESSHELL_SB7')) then
+                        repk='OUI'
+                        exit
+                     endif
                 else
                     ASSERT(ASTER_FALSE)
                 endif

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine dismmo(questi, nomobz, repi, repkz, ierd)
-    implicit none
-#include "jeveux.h"
 !
+subroutine dismmo(questi, nomobz, repi, repkz, ierd)
+!
+implicit none
+!
+#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismlg.h"
 #include "asterfort/dismma.h"
@@ -33,8 +34,12 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-    integer :: repi, ierd
-    character(len=*) :: questi, nomobz, repkz
+!
+integer :: repi, ierd
+character(len=*) :: questi, nomobz, repkz
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     --     DISMOI(MODELE)
 !    IN:
 !       QUESTI : TEXTE PRECISANT LA QUESTION POSEE
@@ -43,11 +48,11 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
 !       REPI   : REPONSE ( SI ENTIERE )
 !       REPKZ  : REPONSE ( SI CHAINE DE CARACTERES )
 !       IERD   : CODE RETOUR (0--> OK, 1 --> PB)
-! ----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ialiel,  ico, igrel
     integer :: iret, itypel, nbgrel, nel
-!
     character(len=4) :: tytm
     character(len=8) :: ma, nomob
     character(len=16) :: nomte, nomodl, nomod2
@@ -55,7 +60,8 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
     character(len=32) :: repk
     character(len=8), pointer :: lgrf(:) => null(), k8cond(:) => null()
     integer, pointer :: nfis(:) => null()
-! DEB ------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     repk = ' '
@@ -90,7 +96,7 @@ subroutine dismmo(questi, nomobz, repi, repkz, ierd)
             .or. (questi.eq.'EXI_COQUE') .or. (questi.eq.'EXI_GRILLE')&
             .or. (questi.eq.'EXI_STRX') .or. (questi.eq.'EXI_STR2')&
             .or. (questi.eq.'PARTITION') .or. (questi(1:7).eq.'EXI_HHO')&
-            .or. (questi.eq.'EXI_NO_HHO')) then
+            .or. (questi.eq.'EXI_NO_HHO').or. (questi.eq.'EXI_COQSOL')) then
 !     -----------------------------------
         call dismlg(questi, nolig, repi, repk, ierd)
 !
