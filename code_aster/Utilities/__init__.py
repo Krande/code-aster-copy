@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,11 +26,11 @@ No external import of other :py:mod:`code_aster` packages.
 """
 
 from .as_timer import ASTER_TIMER
-from .base_utils import (Singleton, accept_array, array_to_list, force_list,
-                         force_tuple, get_caller_context, import_object,
-                         is_complex, is_float, is_float_or_int, is_int,
-                         is_number, is_sequence, is_str, no_new_attributes,
-                         value_is_sequence)
+from .base_utils import (ReadOnlyDict, Singleton, accept_array, array_to_list,
+                         force_list, force_tuple, get_caller_context,
+                         import_object, is_complex, is_float, is_float_or_int,
+                         is_int, is_number, is_sequence, is_str,
+                         no_new_attributes, value_is_sequence)
 from .compatibility import (compat_listr8, deprecate, deprecated,
                             remove_keyword, required, unsupported)
 from .ExecutionParameter import ExecutionParameter
@@ -48,8 +48,14 @@ from .Tester import TestCase
 from .transpose import transpose
 from .version import get_version, get_version_desc
 
-# aster_pkginfo will only be available after installation
+# aster_pkginfo/aster_config will only be available after installation
 try:
     from .aster_pkginfo import version_info
 except ImportError:
     version_info = ()
+try:
+    from .aster_config import config as _cfg
+    config = ReadOnlyDict(**_cfg)
+    del _cfg
+except ImportError:
+    config = {}

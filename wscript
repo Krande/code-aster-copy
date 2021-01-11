@@ -259,6 +259,12 @@ def build(self):
     self.recurse('data')
     self.recurse('astest')
 
+    self.install_as(
+        osp.join(self.env.ASTERLIBDIR, "code_aster", "Utilities",
+                 "aster_config.py"),
+        ['aster_config.py']
+    )
+
 def build_elements(self):
     self.recurse('catalo')
 
@@ -388,6 +394,7 @@ class ConfigHelper(object):
         return {
             'C': '/* {0} */',
             'Fortran': '! {0}',
+            'Python': '# {0}',
             'Cython': '# {0}'
         }[self._lang].format(text)
 
@@ -396,6 +403,7 @@ class ConfigHelper(object):
         return {
             'C': 'asterc_config.h',
             'Fortran': 'asterf_config.h',
+            'Python': 'aster_config.py',
             'Cython': 'astercython_config.pxi'
         }[self._lang]
 
@@ -412,12 +420,16 @@ class ConfigHelper(object):
             return ["#ifndef {0}_".format(guard),
                     self.define(guard),
                     ""]
+        elif self._lang == 'Python':
+            return ["config = dict("]
         return [""]
 
     @property
     def guard_end(self):
         if self._lang in ('C', 'Fortran'):
             return ["#endif", ""]
+        elif self._lang == 'Python':
+            return [")"]
         return [""]
 
     def support(self, var):
@@ -430,7 +442,9 @@ class ConfigHelper(object):
         return True
 
     def define(self, var, value=""):
-        if self._lang == 'Cython':
+        if self._lang == 'Python':
+            fmt = '   {0}=' + '{1},' if value else 'True'
+        elif self._lang == 'Cython':
             fmt = 'DEF {0}' + '={1}' if value else ''
         else:
             fmt = '#define {0} {1}'
@@ -449,6 +463,7 @@ def write_config_headers(self):
         self.setenv(variant)
         self.write_config_h('Fortran', variant)
         self.write_config_h('C', variant)
+        self.write_config_h('Python', variant)
         if self.env.BUILD_CYTHON:
             self.write_config_h('Cython', variant)
         for key in self.env[DEFKEYS]:

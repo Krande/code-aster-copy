@@ -1,6 +1,6 @@
 # coding: utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ This modules gives some basic utilities.
 import inspect
 import sys
 from array import array
+from collections import UserDict
 from decimal import Decimal
 from functools import wraps
 
@@ -198,3 +199,20 @@ class Singleton(type):
         if cls_id not in cls.__inst:
             cls.__inst[cls_id] = super(Singleton, cls).__call__(*args, **kws)
         return cls.__inst[cls_id]
+
+
+class ReadOnlyDict(UserDict):
+    """Read-only dict object with default value to *None*.
+
+    Items can be added but their values can not be changed later.
+    """
+
+    def __getitem__(self, key):
+        """Disable setitem"""
+        return self.data.get(key)
+
+    def __setitem__(self, key, value):
+        """Disable __setitem__"""
+        if key in self:
+            raise AttributeError("ReadOnlyDict: values can not be changed!")
+        super().__setitem__(key, value)
