@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ character(len=16), intent(in) :: option, nomte
     integer :: ipoids, ivf, idfde
     integer :: nno, npg, ndim, ndofbynode, ndof
     integer :: iret, kpg, idof, i, j, k
-    real(kind=8) :: vect(mxvect), matr(mxmatr), geom_reac(mxvect)
+    real(kind=8) :: vect(mxvect), matr(mxmatr), geomCurr(mxvect)
     real(kind=8) :: pres, pres_pg(mxnpg)
     real(kind=8) :: cisa, cisa_pg(mxnpg)
 !
@@ -108,7 +108,7 @@ character(len=16), intent(in) :: option, nomte
 ! - Update geometry
 !
     do idof = 1, ndof
-        geom_reac(idof) = zr(jv_geom+idof-1) + zr(jv_depm+idof-1) + zr(jv_depp+idof-1)
+        geomCurr(idof) = zr(jv_geom+idof-1) + zr(jv_depm+idof-1) + zr(jv_depp+idof-1)
     end do
 !
 ! - Evaluation of pressure (and shear) at Gauss points (from nodes)
@@ -117,7 +117,7 @@ character(len=16), intent(in) :: option, nomte
         call evalPressure(l_func, l_time , time     ,&
                           nno   , ndim   , kpg      ,&
                           ivf   , jv_geom, jv_pres  ,&
-                          pres  , cisa   , geom_reac)
+                          pres  , cisa   , geomCurr)
         pres_pg(kpg) = pres
         cisa_pg(kpg) = cisa
     end do
@@ -128,14 +128,14 @@ character(len=16), intent(in) :: option, nomte
         call jevech('PVECTUR', 'E', jv_vect)
         call nmpr2d(l_axis    , nno    , npg      ,&
                     zr(ipoids), zr(ivf), zr(idfde),&
-                    geom_reac , pres_pg, cisa_pg  ,&
+                    geomCurr , pres_pg, cisa_pg  ,&
                     vect)
         call dcopy(ndof, vect, 1, zr(jv_vect), 1)
     else if (option(1:9) .eq. 'RIGI_MECA') then
         call jevech('PMATUNS', 'E', jv_matr)
         call nmpr2d(l_axis    , nno    , npg      ,&
                     zr(ipoids), zr(ivf), zr(idfde),&
-                    geom_reac , pres_pg, cisa_pg  ,&
+                    geomCurr , pres_pg, cisa_pg  ,&
                     matr_ = matr)
         k = 0
         do i = 1, ndof

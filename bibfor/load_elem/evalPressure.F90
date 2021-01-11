@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine evalPressure(l_func , l_time , time      ,&
-                        nb_node, ndim   , ipg       ,&
-                        jv_shap, jv_geom, jv_pres   ,&
-                        pres   , cisa_  , geom_reac_)
+subroutine evalPressure(lFunc     , lTime   , time     ,&
+                        nbNode    , cellDime, ipg      ,&
+                        jvShapFunc, jvGeom  , jvPres   ,&
+                        pres      , cisa_   , geomCurr_)
 !
 implicit none
 !
@@ -28,114 +28,76 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/fointe.h"
+#include "asterfort/evalPressureSetFuncPara.h"
 !
-aster_logical, intent(in) :: l_func, l_time
-integer, intent(in) :: ndim, nb_node, ipg
-integer, intent(in) :: jv_geom, jv_shap, jv_pres
+aster_logical, intent(in) :: lFunc, lTime
+integer, intent(in) :: cellDime, nbNode, ipg
+integer, intent(in) :: jvGeom, jvShapFunc, jvPres
 real(kind=8), intent(in) :: time
 real(kind=8), intent(out) :: pres
 real(kind=8), optional, intent(out) :: cisa_
-real(kind=8), optional, intent(in) :: geom_reac_(*)
+real(kind=8), optional, intent(in) :: geomCurr_(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Utilities for fluid
+! Load - Compute vector - PRES_REP
 !
 ! Evaluation of pressure at Gauss point
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  l_func           : flag if CHAR_MECA_VNOR is function
-! In  l_time           : flag if have time for function
-! In  time             : value of current time
-! In  nb_node          : total number of nodes
-! In  ndim             : dimension of cell (2 or 3)
-! In  ipg              : current index of Gauss point
-! In  jv_shap          : JEVEUX adress for shape functions
-! In  jv_geom          : JEVEUX adress for geometry (coordinates of nodes)
-! In  jv_pres          : JEVEUX adress for pressure
-! In  geom_reac        : updated geometry
-! Out pres             : normal pressure
-! Out cisa             : "tangent" pressure (shear, only in 2D !)
+! In  lFunc           : flag if load is function
+! In  lTime           : flag if have time for function
+! In  time            : value of current time
+! In  nbNode          : total number of nodes
+! In  cellDime        : dimension of cell (2 or 3)
+! In  ipg             : current index of Gauss point
+! In  jvShapFunc      : JEVEUX adress for shape functions
+! In  jvGeom          : JEVEUX adress for geometry (coordinates of nodes)
+! In  jvPres          : JEVEUX adress for pressure
+! Out pres            : normal pressure
+! Out cisa            : "tangent" pressure (shear, only in 2D !)
+! In  geomCurr_       : cuurent geometry
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: x, y, z, xf, yf, zf
-    integer :: i_node, ldec, iret
-    integer :: nb_para
-    character(len=8) :: para_name(7)
-    real(kind=8) :: para_vale(7)
+    integer, parameter :: paraNbMax = 7
+    character(len=8) :: paraName(paraNbMax)
+    real(kind=8) :: paraVale(paraNbMax)
+    integer :: iNode, ldec, iret, paraNb
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    para_name = ' '
     pres = 0.d0
     if (present(cisa_)) then
         cisa_ = 0.d0
     endif
 !
-    ldec = (ipg-1)*nb_node
+    ldec = (ipg-1)*nbNode
 !
-    if (l_func) then
-! ----- Coordinates of current Gauss point
-        x  = 0.d0
-        y  = 0.d0
-        z  = 0.d0
-        xf = 0.d0
-        yf = 0.d0
-        zf = 0.d0
-        do i_node = 1, nb_node
-            x  = x + zr(jv_geom+(ndim+1)*(i_node-1)-1+1) * zr(jv_shap+ldec-1+i_node)
-            y  = y + zr(jv_geom+(ndim+1)*(i_node-1)-1+2) * zr(jv_shap+ldec-1+i_node)
-            if (present(geom_reac_)) then
-                xf = xf + geom_reac_((ndim+1)*(i_node-1)+1) * zr(jv_shap+ldec-1+i_node)
-                yf = yf + geom_reac_((ndim+1)*(i_node-1)+2) * zr(jv_shap+ldec-1+i_node)
-            endif
-            if (ndim .eq. 2) then
-                z  = z + zr(jv_geom+(ndim+1)*(i_node-1)-1+3) * zr(jv_shap+ldec-1+i_node)
-                if (present(geom_reac_)) then
-                    zf = zf + geom_reac_((ndim+1)*(i_node-1)+3) * zr(jv_shap+ldec-1+i_node)
-                endif
-            endif
-        end do
-! ----- Evaluation of function
-        nb_para = 4
-        para_vale(1) = x
-        para_name(1) = 'X'
-        para_vale(2) = xf
-        para_name(2) = 'XF'
-        para_vale(3) = y
-        para_name(3) = 'Y'
-        para_vale(4) = yf
-        para_name(4) = 'YF'
-        if (ndim .eq. 2) then
-            nb_para = nb_para + 1
-            para_vale(nb_para) = z
-            para_name(nb_para) = 'Z'
-            nb_para = nb_para + 1
-            para_vale(nb_para) = zf
-            para_name(nb_para) = 'ZF'
-        endif
-        if (l_time) then
-            nb_para = nb_para + 1
-            para_vale(nb_para) = time
-            para_name(nb_para) = 'INST'
-        endif
-        call fointe('FM', zk8(jv_pres-1+1), nb_para, para_name, para_vale,&
-                    pres, iret)
+    if (lFunc) then
+
+! ----- Prepare parameters when pressure is function
+        call evalPressureSetFuncPara(lTime     , time    ,&
+                                     nbNode    , cellDime, ipg,&
+                                     jvShapFunc, jvGeom  , &
+                                     paraNbMax , paraNb  , paraName, paraVale,&
+                                     geomCurr_)
+
+! ----- Evaluate function
+        call fointe('FM', zk8(jvPres-1+1), paraNb, paraName, paraVale, pres, iret)
         if (present(cisa_)) then
-            call fointe('FM', zk8(jv_pres-1+2), nb_para, para_name, para_vale,&
-                        cisa_, iret)
+            call fointe('FM', zk8(jvPres-1+2),paraNb, paraName, paraVale, cisa_, iret)
         endif
     else
         if (present(cisa_)) then
-            do i_node = 1, nb_node
-                pres  = pres  + zr(jv_pres+2*(i_node-1)-1+1) * zr(jv_shap+ldec-1+i_node)
-                cisa_ = cisa_ + zr(jv_pres+2*(i_node-1)-1+2) * zr(jv_shap+ldec-1+i_node)
+            do iNode = 1, nbNode
+                pres  = pres  + zr(jvPres+2*(iNode-1)-1+1) * zr(jvShapFunc+ldec-1+iNode)
+                cisa_ = cisa_ + zr(jvPres+2*(iNode-1)-1+2) * zr(jvShapFunc+ldec-1+iNode)
             end do
         else
-            do i_node = 1, nb_node
-                pres  = pres  + zr(jv_pres+(i_node-1)-1+1) * zr(jv_shap+ldec-1+i_node)
+            do iNode = 1, nbNode
+                pres  = pres  + zr(jvPres+(iNode-1)-1+1) * zr(jvShapFunc+ldec-1+iNode)
             end do
         endif
     endif

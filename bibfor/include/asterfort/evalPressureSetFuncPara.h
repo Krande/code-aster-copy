@@ -17,16 +17,19 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine evalPressure(lFunc     , lTime   , time     ,&
-                            nbNode    , cellDime, ipg      ,&
-                            jvShapFunc, jvGeom  , jvPres   ,&
-                            pres      , cisa_   , geomCurr_)
-        aster_logical, intent(in) :: lFunc, lTime
-        integer, intent(in) :: cellDime, nbNode, ipg
-        integer, intent(in) :: jvGeom, jvShapFunc, jvPres
+    subroutine evalPressureSetFuncPara(lTime     , time    ,&
+                                       nbNode    , cellDime, ipg,&
+                                       jvShapFunc, jvGeom  , &
+                                       paraNbMax , paraNb  , paraName, paraVale,&
+                                       geomCurr_)
+        aster_logical, intent(in) :: lTime
         real(kind=8), intent(in) :: time
-        real(kind=8), intent(out) :: pres
-        real(kind=8), optional, intent(out) :: cisa_
+        integer, intent(in) :: nbNode, cellDime, ipg
+        integer, intent(in) :: jvShapFunc, jvGeom
+        integer, intent(in) :: paraNbMax
+        integer, intent(out) :: paraNb
+        character(len=8) :: paraName(paraNbMax)
+        real(kind=8) :: paraVale(paraNbMax)
         real(kind=8), optional, intent(in) :: geomCurr_(*)
-    end subroutine evalPressure
+    end subroutine evalPressureSetFuncPara
 end interface
