@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,8 @@ import tempfile
 import time
 import unittest
 from glob import glob
+
+from code_aster.Utilities import config
 
 from run_aster.command_files import add_import_commands, stop_at_end
 from run_aster.config import CFG, VERSION_PARAMS, Config
@@ -717,6 +719,8 @@ class TestFromShell(unittest.TestCase):
     """Check execution of run_aster script"""
 
     def test(self):
+        if config["ASTER_HAVE_MPI"]:
+            return
         iret = os.system("bash fort.88 > asrun01b.88.o 2> asrun01b.88.e")
         if iret != 0:
             print("STDOUT:")
