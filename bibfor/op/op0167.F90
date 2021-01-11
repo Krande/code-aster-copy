@@ -48,7 +48,6 @@ implicit none
 #include "asterfort/cmqutr.h"
 #include "asterfort/codent.h"
 #include "asterfort/copisd.h"
-#include "asterfort/cpclma.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/eclpgm.h"
 #include "asterfort/exlima.h"
@@ -57,7 +56,6 @@ implicit none
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
-#include "asterfort/infniv.h"
 #include "asterfort/infoma.h"
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/jecrec.h"
@@ -93,9 +91,6 @@ implicit none
 !
     integer :: nori, ntab, n1
     integer :: k, iret, iqtr
-    integer :: n1b, jlima, nbmoma, nbma
-    character(len=16) :: motcle(5)
-    character(len=24) :: nomjv
     real(kind=8) :: epais, shrink, lonmin
     character(len=4) :: answer
     character(len=4) :: cdim
@@ -127,7 +122,7 @@ implicit none
     integer :: nbOccDecoupeLac, nbOccEclaPg, nbGeomFibre, nbOccCreaFiss, nbOccLineQuad
     integer :: nbOccQuadLine, nbOccModiMaille, nbOccCoquVolu, nbOccRestreint, nbOccRepere
     integer :: iOccQuadTria, iad
-    integer :: nbOccCreaPoi1, nbOccCreaMaille
+    integer :: nbOccCreaPoi1, nbOccCreaMaille, nbOccModiHHO
     aster_logical :: lpb
     character(len=8) :: cellNameIn, cellNameOut, nodeNameIn, nodeNameOut
     aster_logical :: lPrefCellName, lPrefCellNume, lPrefNodeName, lPrefNodeNume
@@ -189,6 +184,7 @@ implicit none
     call getfac('DECOUPE_LAC', nbOccDecoupeLac)
     call getfac('CREA_MAILLE', nbOccCreaMaille)
     call getfac('CREA_POI1', nbOccCreaPoi1)
+    call getfac('MODI_HHO', nbOccModiHHO)
 !
 ! - Main datastructure
 !
@@ -374,26 +370,8 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call getfac('MODI_HHO', nbmoma)
-    if (nbmoma .gt. 0) then
-        ASSERT(nbmoma.eq.1)
-!
-        call getvtx('MODI_HHO', 'GROUP_MA', iocc=1, nbval=0, nbret=n1b)
-!
-        call getvtx("MODI_HHO", 'PREF_NOEUD', iocc=1, scal=prefNodeName)
-        call getvis("MODI_HHO", 'PREF_NUME', iocc=1, scal=prefNodeNume)
-!
-        motcle(1)='GROUP_MA'
-        motcle(2)='TOUT'
-        nomjv='&&OP0167.LISTE_MA'
-        call reliem(' ', meshIn, 'NU_MAILLE', 'MODI_HHO', 1,&
-                    2, motcle, motcle, nomjv, nbma)
-
-        if (nbma .ne. nbCellIn) then
-            call utmess('A', 'MESH1_4', sk='MODI_HHO')
-        endif
-
-        call jeveuo(nomjv, 'L', jlima)
+    if (nbOccModiHHO .gt. 0) then
+        ASSERT(nbOccModiHHO .eq. 1)
         call jeexin(meshIn//'.NOMACR', iret)
         if (iret .ne. 0) then
             call utmess('F', 'MESH1_7')
@@ -402,11 +380,16 @@ implicit none
         if (iret .ne. 0) then
             call utmess('F', 'MESH1_8')
         endif
-!
-        call cmhho(meshIn, meshOut, nbma, zi(jlima), prefNodeName, prefNodeNume)
-!
+        keywfact = 'MODI_HHO'
+        call getelem(meshIn, keywfact, 1, 'F', jvCellNume, nbCell)
+        if (nbCell .ne. nbCellIn) then
+            call utmess('A', 'MESH1_4', sk=keywfact)
+        endif
+        call jeveuo(jvCellNume, 'L', vi = listCellNume)
+        call getvtx(keywfact, 'PREF_NOEUD', iocc=1, scal=prefNodeName)
+        call getvis(keywfact, 'PREF_NUME', iocc=1, scal=prefNodeNume)
+        call cmhho(meshIn, meshOut, nbCell, listCellNume, prefNodeName, prefNodeNume)
         goto 350
-!
     endif
 !
 ! --------------------------------------------------------------------------------------------------
