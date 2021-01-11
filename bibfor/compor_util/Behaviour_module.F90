@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -656,15 +656,18 @@ subroutine getESVA(fami, kpg, ksp, imate, neps, BEHesva)
 !
     do k = 1, neps
         call rcvarc(' ', epsa(k), '-', fami, kpg, ksp, BEHesva%anel_prev(k), iret)
-        if (iret .eq. 0) then
+        if (iret .ne. 0) then
             BEHesva%anel_prev(k) = 0.d0
-        endif
-        call rcvarc(' ', epsa(k), '+', fami, kpg, ksp, BEHesva%anel_curr(k), iret)
-        if (iret .eq. 0) then
-            BEHesva%anel_curr(k) = 0.d0
-            BEHesva%anel_incr(k) = BEHesva%anel_curr(k) - BEHesva%anel_prev(k)
+        else
             BEHesva%l_anel       = ASTER_TRUE
         endif
+        call rcvarc(' ', epsa(k), '+', fami, kpg, ksp, BEHesva%anel_curr(k), iret)
+        if (iret .ne. 0) then
+            BEHesva%anel_curr(k) = 0.d0
+        else
+            BEHesva%l_anel       = ASTER_TRUE 
+        endif
+        BEHesva%anel_incr(k) = BEHesva%anel_curr(k) - BEHesva%anel_prev(k)
     enddo
 !
 ! - Debug

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,6 +47,9 @@ nrz =  0.5
 
 
 # Parametres du materiau
+E_Func  = DEFI_CONSTANTE(VALE= 195000.)
+NU_Func = DEFI_CONSTANTE(VALE= 0.3)
+
 E  = 195000.
 NU = 0.3
 R0 = 490
@@ -90,7 +93,7 @@ MO = AFFE_MODELE(
 
 
 ACIER = DEFI_MATERIAU(
-    ELAS    = _F(E=E, NU=NU),
+    ELAS_FO = _F(E=E_Func, NU=NU_Func, K_DESSIC=1.,),
     ECRO_NL = _F(R0=R0, RH=RH, GAMMA_1=G1, R1=R1, GAMMA_2=G2, R2=R2, RK=RK, P0=P0, GAMMA_M=GM),
     )
 
@@ -214,5 +217,75 @@ TEST_RESU(
         ),
     )
 
+
+# -----------------------------------------------------------------------------
+# TEST EPSA pour DEFORM_LDC = 'MECANIQUE'
+# -----------------------------------------------------------------------------
+# Parametres du materiau
+E_Func  = DEFI_CONSTANTE(VALE= 195000.)
+NU_Func = DEFI_CONSTANTE(VALE= 0.3)
+
+ACIER_Func = DEFI_MATERIAU(
+    ELAS_FO = _F(E=E_Func, NU=NU_Func, K_DESSIC=1.,),
+    ECRO_NL = _F(R0=R0, RH=RH, GAMMA_1=G1, R1=R1, GAMMA_2=G2, R2=R2, RK=RK, P0=P0, GAMMA_M=GM),
+    )
+
+EPSA = CREA_CHAMP(
+    TYPE_CHAM='ELNO_EPSI_R',
+    OPERATION='AFFE',
+    MODELE=MO,
+    AFFE=_F(TOUT='OUI',
+                        NOM_CMP=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ',),
+                        VALE=(-1.,-1.,-1.,0.,0.,0.),),);
+
+
+SECH=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_TEMP_R', MAILLAGE=MA,
+               AFFE=( _F(TOUT='OUI', NOM_CMP= 'TEMP', VALE= 1)))
+
+
+CM_Func = AFFE_MATERIAU(
+    MAILLAGE = MA,
+    AFFE     = _F(TOUT='OUI', MATER=ACIER_Func),
+    AFFE_VARC=(_F(TOUT='OUI',
+                                CHAM_GD=EPSA,
+                                NOM_VARC='EPSA',),
+                             _F(TOUT='OUI',
+                                CHAM_GD=SECH,VALE_REF=0.,
+                                NOM_VARC='SECH',),
+),);
+
+EVOL2 = STAT_NON_LINE(
+    MODELE=MO,
+    CHAM_MATER=CM_Func,
+    EXCIT = (
+        _F(CHARGE=RIGIDE),
+        _F(CHARGE=CH_VOLU, FONC_MULT=RAMPE),
+        _F(CHARGE=CH_BORD, FONC_MULT=RAMPE),
+        ),
+    COMPORTEMENT = _F(RELATION='VMIS_ISOT_NL'),
+    INCREMENT    = _F(LIST_INST=L_INST),
+    NEWTON       = _F(REAC_ITER=1),
+    )
+
+EVOL = CALC_CHAMP(reuse=EVOL2,
+    RESULTAT     = EVOL2, 
+    CONTRAINTE   = 'SIEF_NOEU',
+    VARI_INTERNE = 'VARI_NOEU',
+    DEFORMATION  = 'EPSI_NOEU',
+    )
+
+TEST_RESU(
+    RESU = (
+        _F(
+            INST=1.0, 
+            RESULTAT=EVOL2, 
+            NOM_CHAM='SIEF_NOEU', 
+            NOM_CMP='SIXX',
+            GROUP_NO='SUP_EXT', 
+            VALE_REFE=q*srr, 
+            VALE_CALC = 138.39401017274753,
+            REFERENCE='ANALYTIQUE',
+            PRECISION=1.E-3,
+            ),),)
 
 FIN()
