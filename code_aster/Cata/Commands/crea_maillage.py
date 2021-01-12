@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage_sdaster,
          regles=(UN_PARMI('COQU_VOLU', 'CREA_FISS', 'CREA_MAILLE', 'CREA_POI1',
                          'ECLA_PG', 'HEXA20_27', 'LINE_QUAD', 'MODI_MAILLE',
                         'QUAD_LINE', 'REPERE','RESTREINT','PENTA15_18','GEOM_FIBRE',
-                        'DECOUPE_LAC', "MODI_HHO"),),
+                        'DECOUPE_LAC', "MODI_HHO", "COQUE_SOLIDE"),),
 
 
 
@@ -128,6 +128,12 @@ CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage_sdaster,
            GROUP_MA        =SIMP(statut='f',typ=grma  ,validators=NoRepeat(),max='**'),
            PREF_NOEUD      =SIMP(statut='f',typ='TXM',defaut="NS"),
            PREF_NUME       =SIMP(statut='f',typ='I',defaut= 1 ),
+         ),
+         COQUE_SOLIDE =FACT(statut='f',fr=tr("Création maillage pour COQUE_SOLIDE"),
+           GROUP_MA        =SIMP(statut='f',typ=grma  ,validators=NoRepeat(),max='**'),
+           PREF_NOEUD      =SIMP(statut='f',typ='TXM',defaut="NS"),
+           PREF_NUME       =SIMP(statut='f',typ='I',defaut= 1 ),
+           GROUP_MA_SURF   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
          ),
          QUAD_LINE     =FACT(statut='f',fr=tr("Passage quadratique -> linéaire"),
            regles=(AU_MOINS_UN('TOUT','MAILLE','GROUP_MA' ),),

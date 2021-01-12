@@ -21,20 +21,9 @@ from ..Utilities import _
 
 cata_msg = {
 
-    1  : _("""Pour nommer le nouvel élément, le nom est trop long, il faut changer PREF_NUME ou PREF_MAILLE."""),
+    1 : _("""Erreur lors de l'orientation des mailles de coque solide: il faut que le groupe de mailles volumiques ne contienne que des HEXA8 et que le groupe surfacique ne contienne que des QUAD4."""),
 
-    2  : _("""La commande CREA_MAILLAGE tente de créer une maille appelée %(k1)s mais cette maille existe déjà dans le maillage.
-  Pour éviter cette erreur, vous pouvez changer la valeur de PREF_MAILLE ou PREF_NUME.
-  """),
+    2 : _("""Erreur lors de la création des mailles de coque solide: on doit orienter les hexaèdres, il faut utiliser GROUP_MA_SURF."""),
 
-    3  : _("""La commande CREA_MAILLAGE tente de créer un noeud appelé %(k1)s mais ce noeud existe déjà dans le maillage.
-  Pour éviter cette erreur, vous pouvez changer la valeur de PREF_NOEUD ou PREF_NUME.
-  """),
-
-    4  : _("""Vous avez demandé la transformation de certaines mailles de type %(k1)s mais il n'y a aucune maille à transformer."""),
-
-    5  : _("""Vous avez demandé la transformation de certaines mailles mais il n'y a aucune maille à transformer."""),
-
-    23 : _("""Le noeud central d'un élément SEG3 n'est pas au milieu de la maille."""),
-
+    3 : _("""Erreur lors de la création des mailles de coque solide: il n'y a que des pentaèdres, il est inutile d'utiliser GROUP_MA_SURF."""),
 }

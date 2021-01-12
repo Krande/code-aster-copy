@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -373,12 +373,14 @@ contains
             this%name(MT_TETRA10)  = "TETRA10"
             this%name(MT_TETRA15)  = "TETRA15"
             this%name(MT_HEXA8)    = "HEXA8"
+            this%name(MT_HEXA9)    = "HEXA9"
             this%name(MT_HEXA20)   = "HEXA20"
             this%name(MT_HEXA27)   = "HEXA27"
             this%name(MT_PYRAM5)   = "PYRAM5"
             this%name(MT_PYRAM13)  = "PYRAM13"
             this%name(MT_PYRAM19)  = "PYRAM19"
             this%name(MT_PENTA6)   = "PENTA6"
+            this%name(MT_PENTA7)   = "PENTA7"
             this%name(MT_PENTA15)  = "PENTA15"
             this%name(MT_PENTA18)  = "PENTA18"
             this%name(MT_PENTA21)  = "PENTA21"
@@ -397,12 +399,14 @@ contains
             this%short_name(MT_TETRA10)  = "T10"
             this%short_name(MT_TETRA15)  = "T15"
             this%short_name(MT_HEXA8)    = "HE8"
+            this%short_name(MT_HEXA9)    = "HE9"
             this%short_name(MT_HEXA20)   = "H20"
             this%short_name(MT_HEXA27)   = "H27"
             this%short_name(MT_PYRAM5)   = "PY5"
             this%short_name(MT_PYRAM13)  = "P13"
             this%short_name(MT_PYRAM19)  = "P19"
             this%short_name(MT_PENTA6)   = "PE6"
+            this%short_name(MT_PENTA7)   = "PE7"
             this%short_name(MT_PENTA15)  = "P15"
             this%short_name(MT_PENTA18)  = "P18"
             this%short_name(MT_PENTA21)  = "P21"
@@ -421,12 +425,14 @@ contains
             this%convert_max(MT_TETRA10)  = MT_TETRA15
             this%convert_max(MT_TETRA15)  = MT_TETRA15
             this%convert_max(MT_HEXA8)    = MT_HEXA27
+            this%convert_max(MT_HEXA9)    = MT_HEXA27
             this%convert_max(MT_HEXA20)   = MT_HEXA27
             this%convert_max(MT_HEXA27)   = MT_HEXA27
             this%convert_max(MT_PYRAM5)   = MT_PYRAM19
             this%convert_max(MT_PYRAM13)  = MT_PYRAM19
             this%convert_max(MT_PYRAM19)  = MT_PYRAM19
             this%convert_max(MT_PENTA6)   = MT_PENTA21
+            this%convert_max(MT_PENTA7)   = MT_PENTA21
             this%convert_max(MT_PENTA15)  = MT_PENTA21
             this%convert_max(MT_PENTA18)  = MT_PENTA21
             this%convert_max(MT_PENTA21)  = MT_PENTA21
@@ -825,6 +831,14 @@ contains
         do i_node = 1, nno
             nodes_loc(i_node) = i_node
         end do
+        if (cell_type .eq. MT_HEXA9) then
+            nodes_loc(1:8) = [1, 2, 3, 4, 5, 6, 7, 8]
+            nodes_loc(9)   = 27
+        endif
+        if (cell_type .eq. MT_PENTA7) then
+            nodes_loc(1:6) = [1, 2, 3, 4, 5, 6]
+            nodes_loc(7)   = 21
+        endif
 !
     end subroutine
 !

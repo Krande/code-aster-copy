@@ -21,6 +21,8 @@ subroutine op0167()
 !
 use mesh_module, only : checkInclude, createNameOfCell,&
                         getCellOptionForName, getNodeOptionForName
+use SolidShell_Mesh_module, only : orieHexa9
+use crea_maillage_module
 !
 implicit none
 !
@@ -122,7 +124,7 @@ implicit none
     integer :: nbOccDecoupeLac, nbOccEclaPg, nbGeomFibre, nbOccCreaFiss, nbOccLineQuad
     integer :: nbOccQuadLine, nbOccModiMaille, nbOccCoquVolu, nbOccRestreint, nbOccRepere
     integer :: iOccQuadTria, iad
-    integer :: nbOccCreaPoi1, nbOccCreaMaille, nbOccModiHHO
+    integer :: nbOccCreaPoi1, nbOccCreaMaille, nbOccModiHHO, nbOccCoqueSolide
     aster_logical :: lpb
     character(len=8) :: cellNameIn, cellNameOut, nodeNameIn, nodeNameOut
     aster_logical :: lPrefCellName, lPrefCellNume, lPrefNodeName, lPrefNodeNume
@@ -150,6 +152,8 @@ implicit none
     integer, pointer :: meshTypmailIn(:) => null(), meshTypmailOut(:) => null()
     character(len=24), pointer :: meshRefeOut(:) => null()
     real(kind=8), pointer :: meshValeIn(:) => null(), meshValeOut(:) => null()
+    type(Mmesh) :: meshSolidShell
+    character(len=8) :: convType(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -185,6 +189,7 @@ implicit none
     call getfac('CREA_MAILLE', nbOccCreaMaille)
     call getfac('CREA_POI1', nbOccCreaPoi1)
     call getfac('MODI_HHO', nbOccModiHHO)
+    call getfac('COQUE_SOLIDE', nbOccCoqueSolide)
 !
 ! - Main datastructure
 !
@@ -337,6 +342,56 @@ implicit none
             goto 350
         endif
     end do
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   For "COQUE_SOLIDE"
+!
+! --------------------------------------------------------------------------------------------------
+!
+    if (nbOccCoqueSolide .gt. 0) then
+        call jeexin(meshIn//'.NOMACR', iret)
+        if (iret .ne. 0) then
+            call utmess('F', 'MESH1_7')
+        endif
+        call jeexin(meshIn//'.ABSC_CURV', iret)
+        if (iret .ne. 0) then
+            call utmess('F', 'MESH1_8')
+        endif
+        keywfact = 'COQUE_SOLIDE'
+
+! ----- Create mesh to convert
+        call meshSolidShell%init(meshIn)
+
+! ----- Add conversions
+        convType = ["HEXA8", "HEXA9"]
+        call meshSolidShell%converter%add_conversion(convType(1), convType(2))
+        convType = ["PENTA6", "PENTA7"]
+        call meshSolidShell%converter%add_conversion(convType(1), convType(2))
+
+        do iocc = 1, nbOccCoqueSolide
+
+! --------- Get parameters
+            call getelem(meshIn, keywfact, iocc, 'F', jvCellNume, nbCell)
+            call jeveuo(jvCellNume, 'L', vi = listCellNume)
+            call getvtx(keywfact, 'PREF_NOEUD', iocc = iocc, scal = prefNodeName)
+            call getvis(keywfact, 'PREF_NUME' , iocc = iocc, scal = prefNodeNume)
+
+! --------- Convert cells
+            call meshSolidShell%convert_cells(nbCell, listCellNume, prefNodeName, prefNodeNume)
+
+! --------- Orient HEXA9
+            call orieHexa9(iOcc, nbCell, listCellNume, meshIn)
+
+            call jedetr(jvCellNume)
+        end do
+! ----- Copy mesh
+        call meshSolidShell%copy_mesh(meshOut)
+        call meshSolidShell%create_joints(meshOut)
+        call meshSolidShell%clean()
+        goto 350
+    endif
+
 !
 ! --------------------------------------------------------------------------------------------------
 !

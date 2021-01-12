@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,6 +52,10 @@ est présent.
     6 : _("""
 Le champ fourni à PRE_EPSI via la mot-clé EPSI contient une composante non autorisée : %(k1)s.
 """),
+
+    9 : _("""La maille %(k1)s n'est pas un quadrangle, il n'est pas possible d'y affecter une pression."""),
+
+    10 : _("""On n'a pas trouvé l'élément volumique rattaché à la maille de surface sur laquelle on veut appliquer une pression."""),
 
     20 : _("""
 La charge %(k1)s n'est pas compatible avec FONC_MULT.
