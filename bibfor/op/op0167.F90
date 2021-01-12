@@ -80,6 +80,7 @@ implicit none
 #include "asterfort/rdtmai.h"
 #include "asterfort/getelem.h"
 #include "asterfort/reliem.h"
+#include "asterfort/getnode.h"
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
@@ -90,10 +91,11 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, nbmc, iret, nbma, iqtr
+    integer :: i, iret, iqtr
     integer :: n1
-    integer :: n1b, jlima, nbmoma
-    parameter(nbmc=5)
+    integer :: n1b, jlima, nbmoma, nbma
+    character(len=16) :: motcle(5)
+    character(len=24) :: nomjv
     real(kind=8) :: epais
     character(len=4) :: answer
     character(len=4) :: cdim
@@ -101,22 +103,20 @@ implicit none
     character(len=8) :: nomori, plan, trans, knume
     character(len=16) :: option, keywfact
     character(len=16) :: kbi1, kbi2
-    character(len=16) :: motfac, tymocl(nbmc), motcle(nbmc)
     character(len=19) :: table, ligrel
     character(len=19), parameter :: k19void = ' '
     integer :: nbMeshIn
-    character(len=24) :: nommai, grpmai, typmai, connex, nodime, grpnoe, nomnoe
-    character(len=24) :: cooval, coodsc, cooref, nomjv
-    character(len=24) :: nommav, grpmav, typmav, connev, nodimv, grpnov, nomnov
+    character(len=24) :: nommai, typmai, connex, nodime, grpnoe, nomnoe
+    character(len=24) :: cooval, coodsc, cooref
+    character(len=24) :: nommav, typmav, connev, nodimv, grpnov, nomnov
     character(len=24) :: coovav, coodsv, coorev
     character(len=24) :: crgrnu, crgrno
-    character(len=24) :: grCellName, grNodeName, valk(2), nogma, gpptnm, gpptnn
+    character(len=24) :: grCellName, grNodeName, gpptnn
     integer :: iagma, iatyma, ino, j
-    integer :: jgg, jmail
-    integer :: jnoeu, jnono, jnpt, jopt, jtom, jtrno, jvale, jvg, kvale
-    integer :: nbgma, nbgrmt
-    integer :: nbgrno, nbmain, nbmaj3, nbno
-    integer :: nbpt, nbptt, nori, ntab, ntpoi
+    integer :: jgg
+    integer :: jnpt, jopt, jtom, jvale, jvg, kvale
+    integer :: nbgrno, nbmain, nbno
+    integer :: nbpt, nbptt, nori, ntab
     integer :: ibid, ifm, jdime
     integer :: jrefe, jtypmv
     integer :: nbmaiv, niv, k, jgeofi
@@ -127,9 +127,10 @@ implicit none
     integer :: shiftCell
     integer :: iocc, nbOcc
     character(len=24), parameter :: jvCellNume = '&&OP0167.LISTCELL'
-    integer :: nbCell, nbCellCrea, nbCellModi, nbCellType
-    integer :: nbGrCellIn, nbGrCellOut
-    integer :: nbNodeCrea, nbNodeIn, nbNodeOut
+    character(len=24), parameter :: jvNodeNume = '&&OP0167.LISTNODE'
+    integer :: nbCell, nbCellCrea, nbCellModi, nbCellType, nbCellAddPoi1
+    integer :: nbGrCellFromCreaCell, nbGrCellFromCreaPoi1, nbGrCellIn, nbGrCellOut
+    integer :: nbNodeCrea, nbNodeIn, nbNodeOut, nbNode
     integer :: nbField
     integer :: nbOccDecoupeLac, nbOccEclaPg, nbGeomFibre, nbOccCreaFiss, nbOccLineQuad
     integer :: nbOccQuadLine, nbOccModiMaille, nbOccCoquVolu, nbOccRestreint, nbOccRepere
@@ -144,8 +145,10 @@ implicit none
     integer, pointer :: modiCellNume(:) => null()
     integer, pointer :: modiCellType(:) => null()
     character(len=8), pointer :: addNodeName(:) => null()
+    character(len=8), pointer :: creaPoi1Name(:) => null(), creaGrPoi1CellName(:) => null()
+    aster_logical, pointer :: creaPoi1Flag(:) => null()
     integer, pointer :: addNodeNume(:) => null()
-    integer, pointer :: listCellNume(:) => null()
+    integer, pointer :: listCellNume(:) => null(), listNodeNume(:) => null()
     character(len=16), pointer :: listField(:) => null()
     integer, pointer :: adrjvx(:) => null()
     integer, pointer :: nbnoma(:) => null()
@@ -156,6 +159,9 @@ implicit none
     integer, pointer :: listCreaOccNb(:) => null()
     character(len=24), pointer :: listCreaOccGrName(:) => null()
     integer :: listCreaLength
+    integer, pointer :: creaGrPoi1NbCell(:) => null()
+    character(len=24), pointer :: creaGrPoi1GrName(:) => null()
+    integer, pointer :: cellInGroup(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -473,7 +479,6 @@ implicit none
     nomnov=meshIn//'.NOMNOE         '
     typmav=meshIn//'.TYPMAIL        '
     connev=meshIn//'.CONNEX         '
-    grpmav=meshIn//'.GROUPEMA       '
     grpnov=meshIn//'.GROUPENO       '
     nodimv=meshIn//'.DIME           '
     coovav=meshIn//'.COORDO    .VALE'
@@ -484,13 +489,11 @@ implicit none
     nomnoe=meshOut//'.NOMNOE         '
     typmai=meshOut//'.TYPMAIL        '
     connex=meshOut//'.CONNEX         '
-    grpmai=meshOut//'.GROUPEMA       '
     grpnoe=meshOut//'.GROUPENO       '
     nodime=meshOut//'.DIME           '
     cooval=meshOut//'.COORDO    .VALE'
     coodsc=meshOut//'.COORDO    .DESC'
     cooref=meshOut//'.COORDO    .REFE'
-    gpptnm=meshOut//'.PTRNOMMAI'
     gpptnn=meshOut//'.PTRNOMNOE'
 !
 !
@@ -674,57 +677,74 @@ implicit none
         end do
     endif
 !
+! - Each CREA_MAILLE create a group of cells
+!
+    nbGrCellFromCreaCell = nbOccCreaMaille
+!
 ! --------------------------------------------------------------------------------------------------
 !
 !   For "CREA_POI1"
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbmaj3=0
+    nbCellAddPoi1        = 0
+    nbGrCellFromCreaPoi1 = 0
+    shiftCell            = 0
     if (nbOccCreaPoi1 .ne. 0) then
-        call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), ntpoi)
-!
-!        -- RECUPERATION DE LA LISTE DES NOEUD :
-        nomjv='&&OP0167.LISTE_NO'
-        motfac='CREA_POI1'
-        motcle(1)='NOEUD'
-        tymocl(1)='NOEUD'
-        motcle(2)='GROUP_NO'
-        tymocl(2)='GROUP_NO'
-        motcle(3)='MAILLE'
-        tymocl(3)='MAILLE'
-        motcle(4)='GROUP_MA'
-        tymocl(4)='GROUP_MA'
-        motcle(5)='TOUT'
-        tymocl(5)='TOUT'
-!
-        call wkvect('&&OP0167.IND_NOEUD', 'V V I', nbNodeIn, jtrno)
-        call wkvect('&&OP0167.NOM_NOEUD', 'V V K8', nbNodeIn, jnono)
-!
+        keywfact = 'CREA_POI1'
+        AS_ALLOCATE(vi = creaGrPoi1NbCell, size = nbOccCreaPoi1)
+        AS_ALLOCATE(vk24 = creaGrPoi1GrName, size = nbOccCreaPoi1)
+        AS_ALLOCATE(vk8 = creaGrPoi1CellName, size = nbOccCreaPoi1*nbNodeIn)
+        AS_ALLOCATE(vl = creaPoi1Flag, size = nbNodeIn)
+        AS_ALLOCATE(vk8 = creaPoi1Name, size = nbNodeIn)
         do iocc = 1, nbOccCreaPoi1
-            call reliem(' ', meshIn, 'NO_NOEUD', motfac, iocc,&
-                        nbmc, motcle, tymocl, nomjv, nbno)
-            call jeveuo(nomjv, 'L', jnoeu)
-            do i = 0, nbno-1
-                call jenonu(jexnom(nomnov, zk8(jnoeu+i)), ino)
-                zi(jtrno-1+ino)=1
+
+! --------- Get list of nodes to create POI1
+            call getnode(meshIn, keywfact, iocc, 'F', jvNodeNume, nbNode)
+            call jeveuo(jvNodeNume, 'L', vi = listNodeNume)
+            do iNode = 1, nbNode
+                nodeNume = listNodeNume(iNode)
+                call jenuno(jexnum(meshIn//'.NOMNOE', nodeNume), nodeName)
+                if (.not. creaPoi1Flag(nodeNume)) then
+                    creaPoi1Flag(nodeNume) = ASTER_TRUE
+                endif
             end do
-        end do
-!
-!        --- VERIFICATION QUE LE NOM N'EXISTE PAS ET COMPTAGE---
-        do iCell = 1, nbNodeIn
-            if (zi(jtrno+iCell-1) .eq. 0) goto 110
-            call jenuno(jexnum(nomnov, iCell), cellName)
-            call jenonu(jexnom(nommav, cellName), ibid)
-            if (ibid .eq. 0) then
-                nbmaj3=nbmaj3+1
-                zk8(jnono-1+nbmaj3)=cellName
-            else
-                valk(1)=cellName
-                call utmess('F', 'ALGELINE4_43', nk=1, valk=valk)
+
+! --------- Get list of nodes to create GROUP_MA for POI1
+            call getvtx(keywfact, 'NOM_GROUP_MA', iocc=iocc, nbval=0, nbret=n1)
+            if (n1 .ne. 0) then
+                call getvtx(keywfact, 'NOM_GROUP_MA', iocc=iocc, scal = grCellName)
+                creaGrPoi1GrName(iOcc)   = grCellName
+                nbGrCellFromCreaPoi1   = nbGrCellFromCreaPoi1 + 1
+                creaGrPoi1NbCell(iOcc) = nbNode
+                do iNode = 1, nbNode
+                    nodeNume = listNodeNume(iNode)
+                    call jenuno(jexnum(meshIn//'.NOMNOE', nodeNume), nodeName)
+                    cellName = nodeName
+                    creaGrPoi1CellName(shiftCell+iNode) = cellName
+                end do
+                shiftCell = shiftCell + nbNode
             endif
-110         continue
+            call jedetr(jvNodeNume)
         end do
+! ----- Prepare objects for POI1 to add
+        do iNode = 1, nbNodeIn
+            nodeNume = iNode
+            if (.not. creaPoi1Flag(nodeNume)) then
+                cycle
+            else
+                nbCellAddPoi1 = nbCellAddPoi1 + 1
+            endif
+            call jenuno(jexnum(meshIn//'.NOMNOE', iNode), nodeName)
+            cellName = nodeName
+            call jenonu(jexnom(meshIn//'.NOMMAI', cellName), cellNume)
+            if (cellNume .eq. 0) then
+                creaPoi1Name(nbCellAddPoi1) = cellName
+            else
+                call utmess('F', 'MESH1_14', sk = cellName)
+            endif
+        end do
+        AS_DEALLOCATE(vl = creaPoi1Flag)
     endif
 !
 ! ----------------------------------------------------------------------
@@ -781,7 +801,7 @@ implicit none
 !         ON AGRANDIT LE '.NOMMAI' ET LE '.CONNEX'
 ! ----------------------------------------------------------------------
 !
-    nbmain=nbmaiv+nbCellCrea+nbmaj3
+    nbmain=nbmaiv+nbCellCrea+nbCellAddPoi1
 !
     zi(jdime+3-1)=nbmain
     call jecreo(nommai, 'G N K8')
@@ -860,7 +880,7 @@ implicit none
         nomnum(1+decala+iCell-1) = creaCellNume
     end do
 !
-    dimcon = dimcon+nbmaj3
+    dimcon = dimcon+nbCellAddPoi1
     call jeecra(connex, 'LONT', dimcon)
 !
     decala = 0
@@ -889,29 +909,27 @@ implicit none
         end do
     end do
 
-!
-    do iCell = 1, nbmaj3
-        cellName=zk8(jnono+iCell-1)
-        call jenonu(jexnom(nommai, cellName), ibid)
-        if (ibid .ne. 0) goto 230
-        call jeexin(jexnom(nommai, cellName), iret)
-        if (iret .eq. 0) then
-            call jecroc(jexnom(nommai, cellName))
-        else
-            valk(1)=cellName
-            call utmess('F', 'ALGELINE4_7', sk=valk(1))
+! - Add new cells for CREA_POI1
+    do iCell = 1, nbCellAddPoi1
+        cellName = creaPoi1Name(iCell)
+        nodeName = cellName
+        call jenonu(jexnom(meshOut//'.NOMMAI', cellName), cellNume)
+        if (cellNume .ne. 0) then
+            cycle
         endif
-!
-        call jenonu(jexnom(nommai, cellName), ibid)
-        if (ibid .eq. 0) then
-            call utmess('F', 'ALGELINE3_6', sk=cellName)
-        endif
-        zi(iatyma-1+ibid)=ntpoi
-!
-        call jeecra(jexnum(connex, ibid), 'LONMAX', 1)
-        call jeveuo(jexnum(connex, ibid), 'E', jnpt)
-        call jenonu(jexnom(nomnoe, cellName), zi(jnpt))
-230     continue
+        call jecroc(jexnom(meshOut//'.NOMMAI', cellName))
+        call jenonu(jexnom(meshOut//'.NOMMAI', cellName), cellNume)
+        ASSERT(cellNume .ne. 0)
+
+! ----- Set type of cell
+        zi(iatyma-1+cellNume) = MT_POI1
+
+! ----- Set connectivity
+        call jeecra(jexnum(meshOut//'.CONNEX', cellNume), 'LONMAX', 1)
+        call jeveuo(jexnum(meshOut//'.CONNEX', cellNume), 'E', jnpt)
+        call jenonu(jexnom(meshOut//'.NOMNOE', nodeName), nodeNume)
+        zi(jnpt-1+1) = nodeNume
+
     end do
     AS_DEALLOCATE(vi=nbnoma)
     AS_DEALLOCATE(vi=nbnomb)
@@ -930,7 +948,7 @@ implicit none
     else
         call jelira(meshIn//'.GROUPEMA', 'NOMUTI', nbGrCellIn)
     endif
-    nbGrCellOut = nbGrCellIn + nbOccCreaMaille
+    nbGrCellOut = nbGrCellIn + nbGrCellFromCreaCell + nbGrCellFromCreaPoi1
 
 ! - Create repertory of names for groups of cells
     if (nbGrCellOut .ne. 0) then
@@ -984,6 +1002,33 @@ implicit none
     end do
     ASSERT(shiftCell .eq. nbCellCrea)
 
+! - Create new groups of cells for CREA_POI1
+    shiftCell = 0
+    do iOcc = 1, nbOccCreaPoi1
+        grCellName = creaGrPoi1GrName(iOcc)
+        nbCell     = creaGrPoi1NbCell(iOcc)
+        if (grCellName .ne. ' ') then
+
+! --------- Create name of group in repertory
+            call jeexin(jexnom(meshOut//'.GROUPEMA', grCellName), iret)
+            if (iret .eq. 0) then
+                call jecroc(jexnom(meshOut//'.GROUPEMA', grCellName))
+            else
+                call utmess('F', 'MESH1_20', sk = grCellName)
+            endif
+            call jeecra(jexnom(meshOut//'.GROUPEMA', grCellName), 'LONMAX', max(nbCell, 1))
+            call jeecra(jexnom(meshOut//'.GROUPEMA', grCellName), 'LONUTI', nbCell)
+            call jeveuo(jexnom(meshOut//'.GROUPEMA', grCellName), 'E', vi = cellInGroup)
+            do iCell = 1, nbCell
+                cellName = creaGrPoi1CellName(iCell+shiftCell)
+                call jenonu(jexnom(meshOut//'.NOMMAI', cellName), cellNume)
+                cellInGroup(iCell) = cellNume
+            end do
+            shiftCell = shiftCell + nbCell
+        endif
+
+    end do
+
     call jeexin(grpnov, iret)
     if (iret .eq. 0) then
         nbgrno=0
@@ -1016,88 +1061,6 @@ implicit none
 !
     if (nbCellModi .ne. 0) then
         call cmmoma(meshOut, nbCellModi, modiCellNume, modiCellType, nbNodeIn)
-    endif
-!
-! ----------------------------------------------------------------------
-!         CREATION DES GROUP_MA ASSOCIE AU MOT CLE "CREA_POI1"
-! ----------------------------------------------------------------------
-!
-    if (nbOccCreaPoi1 .ne. 0) then
-        nbOccCreaMaille=0
-        do iocc = 1, nbOccCreaPoi1
-            call getvtx('CREA_POI1', 'NOM_GROUP_MA', iocc=iocc, nbval=0, nbret=n1)
-            if (n1 .ne. 0) nbOccCreaMaille=nbOccCreaMaille+1
-        end do
-        if (nbOccCreaMaille .ne. 0) then
-            call jeexin(grpmai, iret)
-            if (iret .eq. 0) then
-                call jecreo(gpptnm, 'G N K24')
-                call jeecra(gpptnm, 'NOMMAX', nbOccCreaMaille, ' ')
-                call jecrec(grpmai, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
-                            nbOccCreaMaille)
-            else
-                grpmav='&&OP0167.GROUPEMA'
-                call jelira(grpmai, 'NOMUTI', nbgma)
-                nbgrmt=nbgma+nbOccCreaMaille
-                call cpclma(meshOut, '&&OP0167', 'GROUPEMA', 'V')
-                call jedetr(grpmai)
-                call jedetr(gpptnm)
-                call jecreo(gpptnm, 'G N K24')
-                call jeecra(gpptnm, 'NOMMAX', nbgrmt, ' ')
-                call jecrec(grpmai, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
-                            nbgrmt)
-                do i = 1, nbgma
-                    call jenuno(jexnum(grpmav, i), grCellName)
-                    call jeexin(jexnom(grpmai, grCellName), iret)
-                    if (iret .eq. 0) then
-                        call jecroc(jexnom(grpmai, grCellName))
-                    else
-                        valk(1)=grCellName
-                        call utmess('F', 'ALGELINE4_9', sk=valk(1))
-                    endif
-                    call jeveuo(jexnum(grpmav, i), 'L', jvg)
-                    call jelira(jexnum(grpmav, i), 'LONMAX', nbma)
-                    call jeecra(jexnom(grpmai, grCellName), 'LONMAX', max(1, nbma))
-                    call jelira(jexnum(grpmav, i), 'LONUTI', nbma)
-                    call jeecra(jexnom(grpmai, grCellName), 'LONUTI', nbma)
-                    call jeveuo(jexnom(grpmai, grCellName), 'E', jgg)
-                    do j = 0, nbma-1
-                        zi(jgg+j)=zi(jvg+j)
-                    end do
-                end do
-            endif
-            do iocc = 1, nbOccCreaPoi1
-                call getvtx('CREA_POI1', 'NOM_GROUP_MA', iocc=iocc, nbval=0, nbret=n1)
-                if (n1 .ne. 0) then
-                    call getvtx('CREA_POI1', 'NOM_GROUP_MA', iocc=iocc, scal=nogma, nbret=n1)
-                    call jenonu(jexnom(grpmai, nogma), ibid)
-                    if (ibid .gt. 0) then
-                        call utmess('F', 'ALGELINE3_7', sk=nogma)
-                    endif
-                    call reliem(' ', meshIn, 'NO_NOEUD', motfac, iocc,&
-                                nbmc, motcle, tymocl, nomjv, nbma)
-                    call jeveuo(nomjv, 'L', jmail)
-!
-                    call jeexin(jexnom(grpmai, nogma), iret)
-                    if (iret .eq. 0) then
-                        call jecroc(jexnom(grpmai, nogma))
-                    else
-                        valk(1)=nogma
-                        call utmess('F', 'ALGELINE4_9', sk=valk(1))
-                    endif
-                    call jeecra(jexnom(grpmai, nogma), 'LONMAX', max(nbma, 1))
-                    call jeecra(jexnom(grpmai, nogma), 'LONUTI', nbma)
-                    call jeveuo(jexnom(grpmai, nogma), 'E', iagma)
-                    do iCell = 0, nbma-1
-                        call jenonu(jexnom(nommai, zk8(jmail+iCell)), zi( iagma+iCell))
-                    end do
-                    if (niv .ge. 1) then
-                        write (ifm,902)iocc
-                        write (ifm,903)nogma,nbma
-                    endif
-                endif
-            end do
-        endif
     endif
 !
 ! --------------------------------------------------------------------------------------------------
@@ -1157,10 +1120,11 @@ implicit none
     AS_DEALLOCATE(vi = addNodeNume)
     AS_DEALLOCATE(vi = listCreaOccNb)
     AS_DEALLOCATE(vk24 = listCreaOccGrName)
+    AS_DEALLOCATE(vi = creaGrPoi1NbCell)
+    AS_DEALLOCATE(vk24 = creaGrPoi1GrName)
+    AS_DEALLOCATE(vk8 = creaGrPoi1CellName)
+    AS_DEALLOCATE(vk8 = creaPoi1Name)
 !
     call jedema()
-!
-902 format ('MOT CLE FACTEUR "CREA_POI1", OCCURRENCE ',i4)
-903 format ('  CREATION DU GROUP_MA ',a8,' DE ',i6,' MAILLES POI1')
 !
 end subroutine

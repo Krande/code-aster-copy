@@ -21,10 +21,6 @@ from ..Utilities import _
 
 cata_msg = {
 
-    6: _("""
- Maille non créée  %(k1)s
-"""),
-
     7: _("""
  Le groupe de mailles '%(k1)s' existe déjà.
 

@@ -48,7 +48,14 @@ Ceci est dangereux car cela peut produire un maillage non conforme."""),
 C'est interdit, vous ne pouvez modifier que les coordonnées des noeuds comme dans les mots clés DEFORME et TRANSLATION.
 Effectuez toutes les opérations MODI_MAILLAGE avant d'effectuer CREA_MAILLAGE/DECOUPE_LAC sur votre maillage."""),
 
+    14: _("""Erreur utilisateur dans CREA_POI1 : on cherche à créer une maille de type POI1 de nom %(k1)s, mais il existe déjà dans le maillage une maille de même nom."""),
+
     15: _("""Le mot-clef MAILLAGE est obligatoire."""),
+
+    20: _("""Échec lors de la création du GROUP_MA (%(k1)s), il existe déjà.
+Conseil :
+    Si vous souhaitez utiliser un nom de groupe existant, il suffit
+    de le détruire avec DEFI_GROUP / DETR_GROUP_MA."""),
 
     22: _("""Le maillage utilisé dans la commande CREA_MAILLAGE est de type MAILLAGE_P (maillage parallèle), ce n'est pas possible pour cette commande."""),
 

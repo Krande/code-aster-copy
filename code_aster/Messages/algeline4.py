@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -233,12 +233,6 @@ Contactez le support technique.
     42 : _("""
  pas de produit car les valeurs de la MATRICE sont  %(k1)s
  et celles du CHAM_NO sont  %(k2)s
-"""),
-
-    43 : _("""
-Erreur utilisateur dans CREA_MAILLAGE / CREA_POI1 :
- On cherche à créer une maille de type POI1 de nom %(k1)s.
- Mais il existe déjà dans le maillage une maille de même nom.
 """),
 
     44 : _("""
