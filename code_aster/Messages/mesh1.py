@@ -34,6 +34,8 @@ Effectuez toutes les opérations MODI_MAILLAGE avant d'effectuer CREA_MAILLAGE/D
 
     15: _("""Le mot-clef MAILLAGE est obligatoire."""),
 
+    22: _("""Le maillage utilisé dans la commande CREA_MAILLAGE est de type MAILLAGE_P (maillage parallèle), ce n'est pas possible pour cette commande."""),
+
     62: _("""Erreur utilisateur dans SYMETRIE : la dimension de POINT et AXE_1 doit être identique."""),
 
     63: _("""Erreur utilisateur dans SYMETRIE : l'AXE_2 est inutile en 2D, il est ignoré."""),

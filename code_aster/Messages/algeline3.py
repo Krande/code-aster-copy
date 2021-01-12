@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,20 +21,6 @@ from ..Utilities import _
 
 cata_msg = {
 
-
-
-
-    2: _("""
- Le mot-clé MAILLAGE est obligatoire avec le mot-clé CREA_GROUP_MA.
-"""),
-
-    3: _("""
- Le mot-clé MAILLAGE est obligatoire avec le mot-clé CREA_POI1.
-"""),
-
-    4: _("""
- Le mot-clé MAILLAGE est obligatoire avec le mot-clé REPERE.
-"""),
 
     5: _("""
  Sous le mot-clé "NOM_ORIG" du mot-clé facteur "REPERE",

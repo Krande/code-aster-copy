@@ -422,20 +422,12 @@ Erreur utilisateur dans COMB_MATR_ASSE:
     Instrumenter la routine de destruction pour déterminer la routine coupable.
 """),
 
-    90 : _("""
- le mot-clé MAILLAGE est obligatoire avec le mot-clé LINE_QUAD.
-"""),
-
     91 : _("""
  CREA_MAILLAGE : l'option LINE_QUAD ne traite pas les macro-commandes mailles
 """),
 
     92 : _("""
  CREA_MAILLAGE : l'option LINE_QUAD ne traite pas les ABSC_CURV
-"""),
-
-    93 : _("""
- le mot-clé MAILLAGE est obligatoire avec le mot-clé QUAD_LINE.
 """),
 
     94 : _("""
@@ -446,17 +438,7 @@ Erreur utilisateur dans COMB_MATR_ASSE:
  CREA_MAILLAGE : l'option QUAD_LINE ne traite pas les ABSC_CURV
 """),
 
-    96 : _("""
- le mot-clé MAILLAGE est obligatoire avec le mot-clé MODI_MAILLE.
-"""),
-
     97 : _("""
  une seule occurrence de "QUAD_TRIA3"
 """),
-
-    98 : _("""
- le mot-clé MAILLAGE est obligatoire avec le mot-clé COQU_VOLU.
-"""),
-
-
 }

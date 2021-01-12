@@ -101,6 +101,7 @@ implicit none
     character(len=16) :: motfac, tymocl(nbmc), motcle(nbmc)
     character(len=19) :: table, ligrel
     character(len=19), parameter :: k19void = ' '
+    integer :: nbMeshIn
     character(len=24) :: nommai, grpmai, typmai, connex, nodime, grpnoe, nomnoe
     character(len=24) :: cooval, coodsc, cooref, nomjv
     character(len=24) :: nommav, grpmav, typmav, connev, nodimv, grpnov, nomnov
@@ -109,7 +110,7 @@ implicit none
     character(len=24) :: lisk
     character(len=24) :: nomg, valk(2), nogma, gpptnm, gpptnn
     character(len=24) :: prfn1, prfn2, nume2, iadr, nume1, momuto, prfn
-    integer :: nn1, iaa, iagma, iatyma, ii, ima, in, ino, inumol, j
+    integer :: iaa, iagma, iatyma, ii, ima, in, ino, inumol, j
     integer :: jcrgno, jcrgnu, jgg, jlii, jlik, jmail
     integer :: jmomtu, jnoeu, jnono, jnpt, jopt, jtom, jtrno, jvale, jvg, kvale
     integer :: nbcrp1, nbgma, nbgrma, nbgrmn, nbgrmt, nbgrmv
@@ -149,6 +150,18 @@ implicit none
 ! - Main datastructure
 !
     call getres(meshOut, kbi1, kbi2)
+    call getvid(' ', 'MAILLAGE', scal = meshIn, nbret = nbMeshIn)
+    if (nbMeshIn .ne. 0) then
+        if (isParallelMesh(meshIn)) then
+            call utmess('F', 'MESH1_22')
+        end if
+    endif
+!
+! - MAILLAGE is required except for GEOM_FIBRE and ECLA_PG
+!
+    if (nbMeshIn .eq. 0 .and. nbGeomFibre .eq. 0 .and. nbOccEclaPg .eq. 0) then
+        call utmess('F', 'MESH1_15')
+    endif
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -189,15 +202,6 @@ implicit none
         goto 350
     endif
 !
-!
-    call getvid(' ', 'MAILLAGE', scal=meshIn, nbret=nn1)
-    if (nn1 .eq. 0) then
-        call utmess('F', 'CALCULEL5_10')
-    endif
-    if (isParallelMesh(meshIn)) then
-        call utmess('F', 'CALCULEL5_11')
-    end if
-!
 ! --------------------------------------------------------------------------------------------------
 !
 !   For "CREA_FISS"
@@ -218,9 +222,6 @@ implicit none
     call getfac('LINE_QUAD', nbmoma)
     if (nbmoma .gt. 0) then
         ASSERT(nbmoma.eq.1)
-        if (nn1 .eq. 0) then
-            call utmess('F', 'ALGELINE2_90')
-        endif
 !
         call getvtx('LINE_QUAD', 'PREF_NOEUD', iocc=1, scal=prefix, nbret=n1)
         call getvis('LINE_QUAD', 'PREF_NUME', iocc=1, scal=ndinit, nbret=n1)
@@ -265,9 +266,6 @@ implicit none
         if (k .eq. 2) motfac='PENTA15_18'
         call getfac(motfac, nbmoma)
         if (nbmoma .gt. 0) then
-            if (nn1 .eq. 0) then
-                call utmess('F', 'MAIL0_14', sk=motfac)
-            endif
 !
             call getvtx(motfac, 'MAILLE', iocc=1, nbval=0, nbret=n1a)
             call getvtx(motfac, 'GROUP_MA', iocc=1, nbval=0, nbret=n1b)
@@ -322,9 +320,6 @@ implicit none
     call getfac('QUAD_LINE', nbmoma)
     if (nbmoma .gt. 0) then
         ASSERT(nbmoma.eq.1)
-        if (nn1 .eq. 0) then
-            call utmess('F', 'ALGELINE2_93')
-        endif
 !
         call getvtx('QUAD_LINE', 'MAILLE', iocc=1, nbval=0, nbret=n1a)
         call getvtx('QUAD_LINE', 'GROUP_MA', iocc=1, nbval=0, nbret=n1b)
@@ -363,9 +358,6 @@ implicit none
     call getfac('MODI_HHO', nbmoma)
     if (nbmoma .gt. 0) then
         ASSERT(nbmoma.eq.1)
-        if (nn1 .eq. 0) then
-            call utmess('F', 'ALGELINE2_93')
-        endif
 !
         call getvtx('MODI_HHO', 'GROUP_MA', iocc=1, nbval=0, nbret=n1b)
         if (n1b .lt. 0) then
@@ -404,10 +396,6 @@ implicit none
 !
     call getfac('MODI_MAILLE', nbmoma)
     if (nbmoma .gt. 0) then
-        if (nn1 .eq. 0) then
-            call utmess('F', 'ALGELINE2_96')
-        endif
-!
         iqtr=0
         do iocc = 1, nbmoma
             call getvtx('MODI_MAILLE', 'OPTION', iocc=iocc, scal=option, nbret=n1)
@@ -460,10 +448,6 @@ implicit none
 !
     call getfac('COQU_VOLU', nbvolu)
     if (nbvolu .ne. 0) then
-        if (nn1 .eq. 0) then
-            call utmess('F', 'ALGELINE2_98')
-        endif
-!
         call getvr8('COQU_VOLU', 'EPAIS', iocc=1, scal=epais, nbret=n1)
         call getvtx('COQU_VOLU', 'PREF_NOEUD', iocc=1, scal=prfno, nbret=n1)
         call getvtx('COQU_VOLU', 'PREF_MAILLE', iocc=1, scal=prfma, nbret=n1)
@@ -496,9 +480,6 @@ implicit none
 !
     call getfac('RESTREINT', nbrest)
     if (nbrest .ne. 0) then
-        if (nn1 .eq. 0) then
-            call utmess('F', 'ALGELINE2_98')
-        endif
         call rdtmai(meshIn, meshOut, 'G', meshOut//'.CRNO', meshOut// '.CRMA',&
                     'G', 0, [0])
 ! ---    VERIFICATIONS DU MAILLAGE
@@ -563,9 +544,6 @@ implicit none
     call getfac('MODI_MAILLE', nbmoma)
     nbnoaj=0
     if (nbmoma .ne. 0) then
-        if (nn1 .eq. 0) then
-            call utmess('F', 'ALGELINE2_96')
-        endif
         momanu='&&OP0167.MO_MA.NUM'
         momano='&&OP0167.MO_MA.NOM'
 !
@@ -672,9 +650,6 @@ implicit none
     call getfac('CREA_MAILLE', nbgrma)
     nbmaj2=0
     if (nbgrma .ne. 0) then
-        if (nn1 .eq. 0) then
-            call utmess('F', 'ALGELINE3_2')
-        endif
         crgrnu='&&OP0167.CR_GR.NUM'
         crgrno='&&OP0167.CR_GR.NOM'
         call wkvect(crgrnu, 'V V I', nbmaiv, jcrgnu)
@@ -697,9 +672,6 @@ implicit none
     call getfac('CREA_POI1', nbcrp1)
     nbmaj3=0
     if (nbcrp1 .ne. 0) then
-        if (nn1 .eq. 0) then
-            call utmess('F', 'ALGELINE3_3')
-        endif
         call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), ntpoi)
 !
 !        -- RECUPERATION DE LA LISTE DES NOEUD :
@@ -826,9 +798,6 @@ implicit none
 !     -----------------------------
     call getfac('REPERE', nrep)
     if (nrep .ne. 0) then
-        if (nn1 .eq. 0) then
-            call utmess('F', 'ALGELINE3_4')
-        endif
         call getvid('REPERE', 'TABLE', iocc=1, nbval=0, nbret=ntab)
         if (ntab .ne. 0) then
             call getvid('REPERE', 'TABLE', iocc=1, scal=table, nbret=ntab)
