@@ -19,7 +19,7 @@
 !
 
 ! Total number of mesh types
-#define MT_NTYMAX  72
+#define MT_NTYMAX  73
 ! Maximum number of nodes of all elements
 #define MT_NNOMAX  27
 ! Index of TYPE_ELEM (geometric)
@@ -46,3 +46,4 @@
 #define MT_HEXA8   25
 #define MT_HEXA20  26
 #define MT_HEXA27  27
+#define MT_HEXA9   73

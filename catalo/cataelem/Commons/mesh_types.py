@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -390,7 +390,6 @@ POHOH8 = Elrefe()
 POHOH8.addLocation('FPG8', 8)
 HEXA8.addElrefe(POHOH8)
 
-
 #------------------------------------------------------------
 HEXA20 = MeshType(nbno=20, dim=3, code='H20')
 
@@ -636,6 +635,16 @@ P15P15 = MeshType(nbno=30, dim=3, code='PPQ')
 #------------------------------------------------------------
 T10T10 = MeshType(nbno=20, dim=3, code='TTD')
 
+
+#------------------------------------------------------------
+HEXA9 = MeshType(nbno=9, dim=3, code='HE9')
+HE9 = Elrefe()
+HE9.addLocation('NOEU', 9)
+HE9.addLocation('NOEU_S', 8)
+HE9.addLocation('LOB5', 5)
+HE9.addLocation('LOB7', 7)
+HE9.addLocation('FPG1', 1)
+HEXA9.addElrefe(HE9)
 
 # store all MeshType objects
 ELREFS = objects_from_context(globals(), Elrefe)

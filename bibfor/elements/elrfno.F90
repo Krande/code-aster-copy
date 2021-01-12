@@ -68,6 +68,16 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
                 nodeCoor(3,1:8) = [-1.d0, -1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0, +1.d0]
             end if
 
+        case('HE9')
+            nno_  = 9
+            nnos_ = 8
+            ndim_ = 3
+            if (present(nodeCoor)) then
+                nodeCoor(1,1:9) = [-1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0, -1.d0, 0.d0]
+                nodeCoor(2,1:9) = [-1.d0, -1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0, 0.d0]
+                nodeCoor(3,1:9) = [-1.d0, -1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0, +1.d0, 0.d0]
+            end if
+
         case('H20')
             nno_  = 20
             nnos_ = 8

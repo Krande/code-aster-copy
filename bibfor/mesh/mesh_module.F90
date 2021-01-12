@@ -433,6 +433,8 @@ subroutine checkInclude()
     ASSERT(elemTypeNume .eq. MT_HEXA20)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA27'), elemTypeNume)
     ASSERT(elemTypeNume .eq. MT_HEXA27)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA9'), elemTypeNume)
+    ASSERT(elemTypeNume .eq. MT_HEXA9)
 !   ------------------------------------------------------------------------------------------------
 end subroutine
 ! --------------------------------------------------------------------------------------------------

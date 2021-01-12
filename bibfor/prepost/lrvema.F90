@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: nicolas.sellenet at edf.fr
 ! aslint: disable=W1502
 !
 subroutine lrvema(nomail, mfich, nochmd)
 !
-    use as_med_module, only: as_med_open
-    implicit none
+use as_med_module, only: as_med_open
+implicit none
 !
 #include "asterf_types.h"
 #include "MeshTypes_type.h"
@@ -99,7 +98,8 @@ character(len=64) :: nochmd
                                                          'SE2TR6  ','SE2QU4  ','SE2QU8  ',&
                                                          'SE2QU9  ','SE3TR3  ','SE3TR6  ',&
                                                          'SE3QU4  ','SE3QU8  ','SE3QU9  ',&
-                                                         'H20H20  ','P15P15  ','T10T10  '/)
+                                                         'H20H20  ','P15P15  ','T10T10  ',&
+                                                         'HEXA9   '/)
     integer, parameter :: nummed(MT_NTYMAX) = (/1  , 102, 0  ,&
                                                 103, 0  , 104,&
                                                 203, 0  , 206,&
@@ -123,7 +123,8 @@ character(len=64) :: nochmd
                                                 0  , 0  , 0  ,&
                                                 0  , 0  , 0  ,&
                                                 0  , 0  , 0  ,&
-                                                0  , 0  , 0  /)
+                                                0  , 0  , 0  ,&
+                                                0  /)
 !
 ! --------------------------------------------------------------------------------------------------
 !
