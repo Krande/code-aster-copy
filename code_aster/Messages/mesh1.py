@@ -35,6 +35,10 @@ Ceci est dangereux car cela peut produire un maillage non conforme."""),
 
     8 : _("""L'opération ne traite pas les ABSC_CURV."""),
 
+    11: _("""Pour le mot clé facteur %(k1)s, vous voulez transformer certaines mailles en ajoutant des noeuds au centre des faces quadrangulaires.
+Mais il existe d'autres mailles ayant des faces quadrangulaires à 8 noeuds qui ne sont pas modifiées.
+Ceci est dangereux car cela peut produire un maillage non conforme."""),
+
     12: _("""Vous essayez de modifier la topologie du maillage après avoir fait CREA_MAILLAGE/DECOUPE_LAC sur ce même maillage.
 C'est interdit, vous ne pouvez modifier que les coordonnées des noeuds comme dans les mots clés DEFORME et TRANSLATION.
 Effectuez toutes les opérations MODI_MAILLAGE avant d'effectuer CREA_MAILLAGE/DECOUPE_LAC sur votre maillage."""),

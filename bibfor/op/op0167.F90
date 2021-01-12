@@ -94,6 +94,7 @@ implicit none
     integer :: n1, numma, nbrest, n1a, n1b
     parameter(nbmc=5)
     real(kind=8) :: epais
+    character(len=4) :: answer
     character(len=4) :: cdim, repk
     character(len=8) :: meshIn, meshOut, newmai, prefix, model, geofi
     character(len=8) :: nomori, knume, prfno, prfma, plan, trans
@@ -117,10 +118,11 @@ implicit none
     integer :: nbcrp1, nbgma, nbgrma, nbgrmn, nbgrmt, nbgrmv
     integer :: nbgrno, nbmain, nbmaj2, nbmaj3, nbno, nbnot
     integer :: nbpt, nbptt, nori, nrep, ntab, ntpoi
-    integer :: ibid, ifm, iocc, jdime, jiad, jlima, jma, jmomno, jmomnu
+    integer :: ibid, ifm, jdime, jiad, jlima, jma, jmomno, jmomnu
     integer :: jnu2, jnum, jpr2, jpro, jrefe, jtypmv
     integer :: nbmaiv, nbmoma, nbnoaj, nbnoev, ndinit, niv, k, jgeofi
     integer :: dimcon, decala, iocct
+    integer :: iocc, nbOcc
     character(len=24), parameter :: jvCellNume = '&&OP0167.LISTCELL'
     integer :: nbCell
     integer :: nbField
@@ -255,50 +257,40 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     do k = 1, 2
-        if (k .eq. 1) motfac='HEXA20_27'
-        if (k .eq. 2) motfac='PENTA15_18'
-        call getfac(motfac, nbmoma)
-        if (nbmoma .gt. 0) then
-!
-            call getvtx(motfac, 'MAILLE', iocc=1, nbval=0, nbret=n1a)
-            call getvtx(motfac, 'GROUP_MA', iocc=1, nbval=0, nbret=n1b)
-            if (n1a+n1b .lt. 0) then
-                call utmess('A', 'MODELISA4_1', sk=motfac)
-            endif
+        if (k .eq. 1) keywfact='HEXA20_27'
+        if (k .eq. 2) keywfact='PENTA15_18'
+        call getfac(keywfact, nbOcc)
+        if (nbOcc .gt. 0) then
 !
             lpb=.false.
-            if (motfac .eq. 'HEXA20_27') then
-                call dismoi('EXI_PENTA15', meshIn, 'MAILLAGE', repk=repk)
-                if (repk .eq. 'OUI') lpb=.true.
-                call dismoi('EXI_PYRAM13', meshIn, 'MAILLAGE', repk=repk)
-                if (repk .eq. 'OUI') lpb=.true.
-            else if (motfac.eq.'PENTA15_18') then
-                call dismoi('EXI_HEXA20', meshIn, 'MAILLAGE', repk=repk)
-                if (repk .eq. 'OUI') lpb=.true.
-                call dismoi('EXI_PYRAM13', meshIn, 'MAILLAGE', repk=repk)
-                if (repk .eq. 'OUI') lpb=.true.
+            if (keywfact .eq. 'HEXA20_27') then
+                call dismoi('EXI_PENTA15', meshIn, 'MAILLAGE', repk=answer)
+                if (answer .eq. 'OUI') lpb=.true.
+                call dismoi('EXI_PYRAM13', meshIn, 'MAILLAGE', repk=answer)
+                if (answer .eq. 'OUI') lpb=.true.
+            else if (keywfact.eq.'PENTA15_18') then
+                call dismoi('EXI_HEXA20', meshIn, 'MAILLAGE', repk=answer)
+                if (answer .eq. 'OUI') lpb=.true.
+                call dismoi('EXI_PYRAM13', meshIn, 'MAILLAGE', repk=answer)
+                if (answer .eq. 'OUI') lpb=.true.
             endif
             if (lpb) then
-                call utmess('A', 'MODELISA4_11', sk=motfac)
+                call utmess('A', 'MESH1_11', sk=keywfact)
             endif
 !
-            call getvtx(motfac, 'PREF_NOEUD', iocc=1, scal=prefix, nbret=n1)
-            call getvis(motfac, 'PREF_NUME', iocc=1, scal=ndinit, nbret=n1)
+            call getvtx(keywfact, 'PREF_NOEUD', iocc=1, scal=prefNode)
+            call getvis(keywfact, 'PREF_NUME', iocc=1, scal=prefNume)
 !
-            motcle(1)='MAILLE'
-            motcle(2)='GROUP_MA'
-            motcle(3)='TOUT'
-            nomjv='&&OP0167.LISTE_MA'
-            call reliem(' ', meshIn, 'NU_MAILLE', motfac, 1,&
-                        3, motcle, motcle, nomjv, nbma)
-            call jeveuo(nomjv, 'L', jlima)
+            call getelem(meshIn, keywfact, 1, 'F', jvCellNume, nbCell)
+            call jeveuo(jvCellNume, 'L', vi = listCellNume)
+            if (nbCell .ne. nbmaiv) then
+                call utmess('A', 'MESH1_4', sk=keywfact)
+            endif
 !
-            if (motfac .eq. 'HEXA20_27') then
-                call cm2027(meshIn, meshOut, nbma, zi(jlima), prefix,&
-                            ndinit)
-            else if (motfac.eq.'PENTA15_18') then
-                call cm1518(meshIn, meshOut, nbma, zi(jlima), prefix,&
-                            ndinit)
+            if (keywfact .eq. 'HEXA20_27') then
+                call cm2027(meshIn, meshOut, nbCell, listCellNume, prefNode, prefNume)
+            else if (keywfact.eq.'PENTA15_18') then
+                call cm1518(meshIn, meshOut, nbCell, listCellNume, prefNode, prefNume)
             endif
             goto 350
         endif

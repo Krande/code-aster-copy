@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -71,21 +71,6 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 Phase de vérification du maillage - mailles dégénérées
 """),
 
-    11: _("""
-Alarme dans CREA_MAILLAGE pour le mot clé facteur %(k1)s :
-Vous voulez transformer certaines mailles en ajoutant des noeuds au
-centre des faces quadrangulaires.
-Mais il existe d'autres mailles ayant des faces quadrangulaires à 8 noeuds
-qui ne sont pas modifiées.
-
-Ceci est dangereux car cela peut produire un maillage non conforme.
-"""),
-
-
-
-
-
-
     13 : _("""
  seule la grandeur NEUT_F est traitée actuellement.
 """),
@@ -93,11 +78,6 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
     14 : _("""
  les champs de CHAM_F et CHAM_PARA n'ont pas la même discrétisation NOEU/CART/ELGA/ELNO/ELEM.
 """),
-
-
-
-
-
 
     16 : _("""
  avec "NOEUD_CMP", il faut donner un nom et une composante.
