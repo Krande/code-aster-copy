@@ -38,7 +38,7 @@ subroutine as_mfdfdi(fid, ind, cha, type, comp,&
     call utmess('F', 'FERMETUR_2')
 #else
 !
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     med_idt :: fidm
     med_int :: ind4, type4, cret4, nseqc4, lmai4
     fidm = to_med_idt(fid)

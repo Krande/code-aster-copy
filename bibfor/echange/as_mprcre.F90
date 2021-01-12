@@ -35,7 +35,7 @@ subroutine as_mprcre(fid, nom, type, desc, dtunit,&
     call utmess('F', 'FERMETUR_2')
 #else
 !
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     med_idt :: fidm
     med_int :: cret4, typ4
     fidm = to_med_idt(fid)

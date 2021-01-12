@@ -34,7 +34,7 @@ subroutine as_mmhnme(fid, maa, quoi, typent, typgeo,&
     call utmess('F', 'FERMETUR_2')
 #else
 !
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     med_idt :: fidm
     med_int :: typen4, typge4, cret4, typco4, n4, quoi4
     med_int :: mdnon4, mdnoi4, chtse4, chttr4

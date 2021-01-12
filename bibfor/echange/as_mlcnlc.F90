@@ -31,7 +31,7 @@ subroutine as_mlcnlc(fid, ngauss, cret)
     call utmess('F', 'FERMETUR_2')
 #else
 !
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     med_idt :: fidm
     med_int :: ngaus4, cret4
     fidm = to_med_idt(fid)

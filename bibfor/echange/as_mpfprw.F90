@@ -34,7 +34,7 @@ subroutine as_mpfprw(fid, pflval, nbval, pro, cret)
     call utmess('F', 'FERMETUR_2')
 #else
 !
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     med_idt :: fidm
     med_int :: nbval4, cret4
     med_int, allocatable :: pflva4(:)

@@ -34,7 +34,7 @@ subroutine as_mlclci(fid, nordr, k64, ityp, nbn,&
     call utmess('F', 'FERMETUR_2')
 #else
 !
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     med_idt :: fidm
     med_int :: nordr4, ityp4, nbn4, cret4, ndim4, tymas4, nbmas4
     fidm = to_med_idt(fid)

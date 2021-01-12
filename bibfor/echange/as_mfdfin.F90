@@ -37,7 +37,7 @@ subroutine as_mfdfin(fid, cha, ma, n, cunit,&
     call utmess('F', 'FERMETUR_2')
 #else
 !
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     med_idt :: fidm
     med_int :: n4, cret4, lmesh4, typen4
     med_int :: oexist4, class4

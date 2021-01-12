@@ -36,7 +36,7 @@ subroutine as_mfdrpr(fid, cha, val, intlac, numco,&
     call utmess('F', 'FERMETUR_2')
 #else
 !
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     med_idt :: fidm
     med_int :: typen4, typge4, cret4
     med_int :: intla4, numco4, numdt4, numo4, pflmo4

@@ -36,7 +36,7 @@ subroutine as_mmhmii(fid, indice, maa, dim, type,&
     call utmess('F', 'FERMETUR_2')
 #else
 !
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     med_idt :: fidm
     med_int :: dim4, cret4, indic4, type4, dimb4, typtr4
     med_int :: nbseq4, typre4

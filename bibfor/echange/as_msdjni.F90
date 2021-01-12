@@ -39,7 +39,7 @@ subroutine as_msdjni(fid,lmname,ind,jname,des,dom,rmname,nstep,ncor,cret)
     write(6,*) '=== as_msdjni ind=',ind
 #endif
 
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     med_idt :: fid4
     med_int :: ind4,dom4,nstep4,ncor4,cret4
     fid4=to_med_idt(fid)

@@ -50,7 +50,7 @@ subroutine as_msdcrr(fid,lmname,jname,numdt,numit,entlcl,&
     write(6,*) '=== as_msdcrr ncorr=',ncorr
 #endif
 
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     med_idt :: fid4
     med_int :: numdt4,numit4,entlcl4,geolcl4,entdst4,geodst4,cret4
     med_int, allocatable :: corrtab4(:)

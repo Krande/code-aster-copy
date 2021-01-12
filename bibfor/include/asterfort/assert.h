@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 ! aslint: disable=C1509
 #include "asterf_types.h"
 
-#define ASSERT(cond) call assert(to_aster_logical(cond), TO_STRING(cond), __FILE__, __LINE__)
+#define ASSERT(cond) call assert(to_aster_logical(cond), ASTER_TO_STRING(cond), __FILE__, __LINE__)
 
 #define absent(a)   (.not.present(a))
 

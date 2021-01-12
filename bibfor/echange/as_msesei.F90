@@ -35,7 +35,7 @@ subroutine as_msesei(fid, imasup, nomaes, nvtymd, dimest,&
     call utmess('F', 'FERMETUR_2')
 #else
 !
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     med_idt :: fidm
     med_int :: imasu4, nvtym4, dimes4, medce4, nbnos4
     med_int :: nbmss4, tygem4, nbatc4, presp4, nbatv4, codre4

@@ -28,7 +28,7 @@ subroutine trabck(cmess, iexit)
 !
 #include "asterf.h"
 !
-#if ASTER_HAVE_INTEL_IFORT && ASTER_HAVE_TRACEBACKQQ == 1 && !defined(IGNORE_DURING_ASLINT)
+#if ASTER_HAVE_INTEL_IFORT && ASTER_HAVE_TRACEBACKQQ == 1 && !defined(ASTER_IGNORE_WITH_ASLINT)
     use ifcore
     implicit none
     character(len=*) :: cmess
@@ -36,7 +36,7 @@ subroutine trabck(cmess, iexit)
 !
     call tracebackqq(string=cmess, user_exit_code=iexit)
 !
-#elif ASTER_HAVE_BACKTRACE == 1 && !defined(IGNORE_DURING_ASLINT)
+#elif ASTER_HAVE_BACKTRACE == 1 && !defined(ASTER_IGNORE_WITH_ASLINT)
     implicit none
 #include "asterc/print_trace.h"
     character(len=*) :: cmess

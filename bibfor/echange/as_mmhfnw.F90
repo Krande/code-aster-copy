@@ -34,7 +34,7 @@ subroutine as_mmhfnw(fid, maa, fam, n, typent,&
     call utmess('F', 'FERMETUR_2')
 #else
 !
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     med_idt :: fidm
     med_int :: n4, typen4, typge4, cret4
     med_int :: mdnon4, mdnoi4

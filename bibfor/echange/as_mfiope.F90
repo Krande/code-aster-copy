@@ -34,13 +34,13 @@ subroutine as_mfiope(fid, nom, acces, cret)
     call utmess('F', 'FERMETUR_2')
 #else
 !
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     med_idt :: fidm
     med_int :: acces4, cret4
 #endif
     cret = 0
     if (cret.eq.0) then
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
         acces4 = acces
         call mfiope(fidm, nom, acces4, cret4)
         fid = fidm

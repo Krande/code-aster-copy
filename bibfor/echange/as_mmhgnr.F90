@@ -35,7 +35,7 @@ subroutine as_mmhgnr(fid, nomail, typent, typgeo, tblogl,&
     call utmess('F', 'FERMETUR_2')
 #else
 
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     med_idt :: fid4
     med_int :: typen4, typge4, cret4, numdt4, numo4
     med_int, allocatable :: tblog4(:)

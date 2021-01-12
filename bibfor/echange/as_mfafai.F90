@@ -33,7 +33,7 @@ subroutine as_mfafai(fid, maa, ind, fam, num,&
     call utmess('F', 'FERMETUR_2')
 #else
 !
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     med_idt :: fidm
     med_int :: num4
     med_int :: cret4, ind4

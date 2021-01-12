@@ -30,7 +30,7 @@
 #endif
 
 ! To have a syntax similar to the standard DEALLOCATE
-#define AS_DEALLOCATE(arg) DEBUG_LOC_DEALLOCATE("free ", __FILE__, __LINE__) ; call as_deallocate(arg, strdbg=TO_STRING(arg))
+#define AS_DEALLOCATE(arg) DEBUG_LOC_DEALLOCATE("free ", __FILE__, __LINE__) ; call as_deallocate(arg, strdbg=ASTER_TO_STRING(arg))
 !
 #include "asterf_types.h"
 !

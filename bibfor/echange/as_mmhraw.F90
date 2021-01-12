@@ -37,7 +37,7 @@ subroutine as_mmhraw(fid, nomail, typgeo, nomatt, nbrval,&
     call utmess('F', 'FERMETUR_2')
 #else
 !
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     med_idt :: fidm
     med_int :: typge4, nbrva4, codre4, numdt4, numit4
     fidm = to_med_idt(fid)

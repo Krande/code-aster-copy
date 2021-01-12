@@ -35,7 +35,7 @@ subroutine as_mficom(nom, hdfok, medok, cret)
     call utmess('F', 'FERMETUR_2')
 #else
 !
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     med_int :: cret4, hdfok4, medok4
 #endif
     cret = 0
@@ -51,7 +51,7 @@ subroutine as_mficom(nom, hdfok, medok, cret)
         medok = 0
     endif
     if (cret.eq.0) then
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
         call mficom(nom, hdfok4, medok4, cret4)
         cret = to_aster_int(cret4)
         hdfok = to_aster_int(hdfok4)

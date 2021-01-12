@@ -26,11 +26,11 @@
 
 ! The fortran preprocessor is compiler dependent
 #if  ASTER_STRINGIFY_USE_QUOTES == 1
-#   define TO_STRING(name)  "name"
+#   define ASTER_TO_STRING(name)  "name"
 #elif ASTER_STRINGIFY_USE_OPERATOR == 1
-#   define TO_STRING(name)  #name
+#   define ASTER_TO_STRING(name)  #name
 #else
-#   define TO_STRING(name)  "?"
+#   define ASTER_TO_STRING(name)  "?"
 #endif
 
 ! Exceptions identifiers - keep consistency with astercxx.h

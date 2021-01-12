@@ -38,7 +38,7 @@ subroutine as_msdnjn(fid,maa,n,cret)
     write(6,*) '=== as_msdnjn maa=',maa
 #endif
 
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     med_idt :: fid4
     med_int :: n4, cret4
     fid4=to_med_idt(fid)

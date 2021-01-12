@@ -30,7 +30,7 @@
 #endif
 
 ! To have a syntax similar to the standard ALLOCATE
-#define AS_ALLOCATE(arg, size) DEBUG_LOC_ALLOCATE("alloc", __FILE__, __LINE__) ; call as_allocate(arg, size, strdbg=TO_STRING((arg, size)))
+#define AS_ALLOCATE(arg, size) DEBUG_LOC_ALLOCATE("alloc", __FILE__, __LINE__) ; call as_allocate(arg, size, strdbg=ASTER_TO_STRING((arg, size)))
 !
 #include "asterf_types.h"
 !

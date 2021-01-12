@@ -43,7 +43,7 @@ subroutine as_msdszi(fid,mname,jname,numdt,numit,it,letype,lgtype,&
     write(6,*) '=== as_msdszi it=',it
 #endif
 
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     med_idt :: fid4
     med_int :: numdt4,numit4,it4,letype4,lgtype4,&
                retype4,rgtype4,ncor4,cret4

@@ -41,7 +41,7 @@ subroutine as_mfdonp(fid, cha, numdt, numo, typent,&
     call utmess('F', 'FERMETUR_2')
 #else
 !
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     med_idt :: fidm
     med_int :: typen4, typge4, n4, cret4, numdt4, numo4, iterm4
     med_int :: oexist4, class4
@@ -62,7 +62,7 @@ subroutine as_mfdonp(fid, cha, numdt, numo, typent,&
         ! On verifie uniquement le nom du champ si la version < 3.2
         oname = trim(cha)
     endif
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     fidm = to_med_idt(fid)
     numdt4 = numdt
     numo4 = numo

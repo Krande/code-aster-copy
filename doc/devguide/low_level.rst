@@ -20,7 +20,7 @@ Precompilation variables are always named in uppercase letters by convention.
 
 To tell that a feature is available, a variable ``ASTER_HAVE_<feature-name>`` is
 to ``1``.
-To tell that a feature is disabled, we set ``DISABLE_<feature-name>`` to ``1``.
+To tell that a feature is disabled, we set ``ASTER_DISABLE_<feature-name>`` to ``1``.
 But **only one is used**, depending of the default behavior.
 
 If ``ASTER_HAVE_xxx`` is defined (don't check the value, use ``#ifdef``, not

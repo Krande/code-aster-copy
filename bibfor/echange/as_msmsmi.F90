@@ -35,7 +35,7 @@ subroutine as_msmsmi(fid, iterat, nom, dim, desc,&
     call utmess('F', 'FERMETUR_2')
 #else
 !
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     med_idt :: fidm
     med_int :: dim4, cret4, typre4, itera4
     fidm = to_med_idt(fid)

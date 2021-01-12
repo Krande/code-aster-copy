@@ -32,7 +32,7 @@ subroutine as_mfinvr(fid, maj, mini, rel, cret)
     call utmess('F', 'FERMETUR_2')
 #else
 !
-#if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
+#if !ASTER_MED_SAME_INT_IDT
     med_idt :: fidm
     med_int :: maj4, min4, rel4
     med_int :: cret4
