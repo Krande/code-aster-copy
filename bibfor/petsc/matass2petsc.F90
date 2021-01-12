@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine matass2petsc(matasz, petscMatz, iret)
 ! person_in_charge: natacha.bereux at edf.fr
 !
 #include "asterf_types.h"
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 #include "asterf_petsc.h"
 #endif
 use aster_petsc_module
@@ -51,7 +51,7 @@ use petsc_data_module
 !
 ! arguments
     character(len=*), intent(in) :: matasz
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
     PetscErrorCode, intent(out) :: iret
     Mat, intent(out) :: petscMatz
 #else
@@ -68,7 +68,7 @@ use petsc_data_module
 ! OUT : IRET       (I) : CODE_RETOUR
 !-----------------------------------------------------------------------
 !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 !
 !----------------------------------------------------------------
 !

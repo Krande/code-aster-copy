@@ -3,7 +3,7 @@
  * @brief Implementation de ListOfLoads
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -52,7 +52,7 @@ bool ListOfLoadsClass::build() {
         ++pos;
         listeExcit.push_back( dict2 );
     }
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
     pos = 0;
     for ( const auto &curIter : _listOfParallelMechanicalLoads ) {
         SyntaxMapContainer dict2;
@@ -62,7 +62,7 @@ bool ListOfLoadsClass::build() {
         ++pos;
         listeExcit.push_back( dict2 );
     }
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */
     pos = 0;
     for ( const auto &curIter : _listOfKinematicsLoads ) {
         SyntaxMapContainer dict2;
@@ -99,7 +99,7 @@ ListSyntaxMapContainer ListOfLoadsClass::buildListExcit() {
         ++pos;
         listeExcit.push_back( dict2 );
     }
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
     pos = 0;
     for ( const auto &curIter : _listOfParallelMechanicalLoads ) {
         SyntaxMapContainer dict2;
@@ -109,7 +109,7 @@ ListSyntaxMapContainer ListOfLoadsClass::buildListExcit() {
         ++pos;
         listeExcit.push_back( dict2 );
     }
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */
     pos = 0;
     for ( ListKineLoadCIter curIter = _listOfKinematicsLoads.begin();
           curIter != _listOfKinematicsLoads.end(); ++curIter ) {

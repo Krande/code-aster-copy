@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ExternalVariablesClass
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -354,9 +354,9 @@ class ExternalVariablesFieldClass {
 
     ExternalVariablesFieldClass( const SkeletonPtr &mesh ) : _mesh( mesh ){};
 
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
     ExternalVariablesFieldClass( const ParallelMeshPtr &mesh ) : _mesh( mesh ){};
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */
 
     /**
      * @brief Add an input variable on all mesh

@@ -40,9 +40,9 @@ def options(self):
 
 def configure(self):
     if not self.env.BUILD_MPI:
-        self.undefine('HAVE_PETSC')
+        self.undefine('ASTER_HAVE_PETSC')
         # can not be undefined for Cython
-        self.define('HAVE_PETSC4PY', 0)
+        self.define('ASTER_HAVE_PETSC4PY', 0)
         return
     try:
         self.env.stash()
@@ -50,15 +50,14 @@ def configure(self):
     except Errors.ConfigurationError:
         self.reset_msg()
         self.env.revert()
-        self.undefine('HAVE_PETSC')
+        self.undefine('ASTER_HAVE_PETSC')
         # can not be undefined for Cython
-        self.define('HAVE_PETSC4PY', 0)
+        self.define('ASTER_HAVE_PETSC4PY', 0)
         if self.options.enable_petsc:
             raise
     else:
-        self.define('_HAVE_PETSC', 1)
-        self.define('HAVE_PETSC', 1)
-        self.define('HAVE_PETSC4PY', 1)
+        self.define('ASTER_HAVE_PETSC', 1)
+        self.define('ASTER_HAVE_PETSC4PY', 1)
         self.check_petsc4py()
 
 ###############################################################################
@@ -80,11 +79,12 @@ def check_petsc(self):
     self.check_petsc_headers("petscconf.h")
     self.check_petsc_version()
     self.check_sizeof_petsc_int()
-    self.check_petsc_conf("PETSC_USE_64BIT_INDICES", "HAVE_PETSC_64BIT_INDICES")
-    self.check_petsc_conf("PETSC_HAVE_ML", "HAVE_PETSC_ML")
-    self.check_petsc_conf("PETSC_HAVE_HYPRE", "HAVE_PETSC_HYPRE")
-    self.check_petsc_conf("PETSC_HAVE_SUPERLU", "HAVE_PETSC_SUPERLU")
-    self.check_petsc_conf("PETSC_HAVE_MUMPS", "HAVE_PETSC_MUMPS")
+    self.check_petsc_conf("PETSC_USE_64BIT_INDICES",
+                          "ASTER_PETSC_64BIT_INDICES")
+    self.check_petsc_conf("PETSC_HAVE_ML", "ASTER_PETSC_HAVE_ML")
+    self.check_petsc_conf("PETSC_HAVE_HYPRE", "ASTER_PETSC_HAVE_HYPRE")
+    self.check_petsc_conf("PETSC_HAVE_SUPERLU", "ASTER_PETSC_HAVE_SUPERLU")
+    self.check_petsc_conf("PETSC_HAVE_MUMPS", "ASTER_PETSC_HAVE_MUMPS")
 
 @Configure.conf
 def check_petsc_libs(self, optlibs):
@@ -153,9 +153,9 @@ def check_petsc4py(self):
                                                   ['import petsc4py'])[0]
         self.env.append_unique('CYTHONFLAGS', '-I{0}'.format(pymodule_path))
     except Errors.ConfigurationError:
-        self.define('HAVE_PETSC4PY' ,0)
+        self.define('ASTER_HAVE_PETSC4PY' ,0)
     else:
-        self.define('HAVE_PETSC4PY', 1)
+        self.define('ASTER_HAVE_PETSC4PY', 1)
 
 @Configure.conf
 def check_sizeof_petsc_int(self):
@@ -168,7 +168,7 @@ int main(void) {
     printf("%d", PETSC_SIZEOF_INT);
     return 0;
 }'''
-    self.code_checker('PETSC_FORTRANINT_SIZE', self.check_cc, fragment,
+    self.code_checker('ASTER_PETSC_FORTRANINT_SIZE', self.check_cc, fragment,
                       'Checking size of PETSc integer',
                       'unexpected value for PETSC_SIZEOF_INT: %(size)s',
                       into=(4, 8), use='PETSC')

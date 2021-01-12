@@ -29,7 +29,7 @@ subroutine as_msecre(fid, nomes, dim, nomms, tycell,&
     character(len=*) :: nomes, nomms
     med_idt :: fid
     aster_int :: dim, tycell, tygems, tygees, cret
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

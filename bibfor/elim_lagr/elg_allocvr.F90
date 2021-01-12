@@ -30,7 +30,7 @@ implicit none
 #include "asterc/asmpi_comm.h"
 #include "asterfort/utmess.h"
 !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
     Vec :: vect1
     integer :: n1
 !

@@ -27,7 +27,7 @@ subroutine as_msmnsm(fid, nbmasu, cret)
 #include "med/msmnsm.h"
     aster_int :: nbmasu, cret
     med_idt :: fid
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

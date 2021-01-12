@@ -21,13 +21,13 @@
 #include "aster.h"
 #include "aster_utils.h"
 
-#ifdef HAVE_HDF5
+#ifdef ASTER_HAVE_HDF5
 #include "hdf5.h"
 #endif
-#ifdef HAVE_MED
+#ifdef ASTER_HAVE_MED
 #include "med.h"
 #endif
-#ifdef HAVE_SCOTCH
+#ifdef ASTER_HAVE_SCOTCH
 /* scotch.h may use int64_t without including <sys/types.h> */
 #include <sys/types.h>
 #include "scotch.h"
@@ -39,7 +39,7 @@ void DEFPPP(LIHDFV,lihdfv, _OUT ASTERINTEGER *major, _OUT ASTERINTEGER *minor,
     /* Retourne la version de HDF5 */
     int ier = 0;
     unsigned int n1=0, n2=0, n3=0;
-#ifdef HAVE_HDF5
+#ifdef ASTER_HAVE_HDF5
     ier = (int)H5get_libversion( &n1, &n2, &n3 );
 #endif
     *major = (ASTERINTEGER)n1;
@@ -53,7 +53,7 @@ void DEFPPP(LIMEDV,limedv, _OUT ASTERINTEGER *major, _OUT ASTERINTEGER *minor,
 {
     /* Retourne la version de MED */
     int ier = 0;
-#ifdef HAVE_MED
+#ifdef ASTER_HAVE_MED
     med_int n1=0, n2=0, n3=0;
     ier = (int)MEDlibraryNumVersion( &n1, &n2, &n3 );
 #else
@@ -69,7 +69,7 @@ void DEFPPP(LISCOV,liscov, _OUT ASTERINTEGER *major, _OUT ASTERINTEGER *minor,
             _OUT ASTERINTEGER *patch )
 {
     /* Retourne la version de SCOTCH */
-#ifdef HAVE_SCOTCH
+#ifdef ASTER_HAVE_SCOTCH
     *major = (ASTERINTEGER)SCOTCH_VERSION;
     *minor = (ASTERINTEGER)SCOTCH_RELEASE;
     *patch = (ASTERINTEGER)SCOTCH_PATCHLEVEL;

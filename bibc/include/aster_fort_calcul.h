@@ -16,8 +16,8 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-#ifndef ASTER_FORT_CALCUL_H
-#define ASTER_FORT_CALCUL_H
+#ifndef ASTER_FORT_CALCUL_H_
+#define ASTER_FORT_CALCUL_H_
 
 #include "aster.h"
 

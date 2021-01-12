@@ -21,11 +21,11 @@
 
 #include "definition.h"
 
-#ifndef DEFINITION_PT_H
-#define DEFINITION_PT_H
+#ifndef DEFINITION_PT_H_
+#define DEFINITION_PT_H_
 
 /* Appels et signatures avec strlen en fin de liste */
-#ifdef _STRLEN_AT_END
+#ifdef ASTER_STRLEN_AT_END
 #define DEF_P_PPPPSPSP(NAME,a,b,c,d,e,le,f,g,lg,h)               (NAME)(a,b,c,d,e,f,g,h,le,lg)
 #define CALL_P_PPPPSPSP(NAME,a,b,c,d,e,f,g,h)                    (NAME)(a,b,c,d,e,f,g,h,strlen(e),strlen(g))
 #define DEF_P_PPPPSPPP(NAME,a,b,c,d,e,le,f,g,h)               (NAME)(a,b,c,d,e,f,g,h,le)

@@ -32,7 +32,7 @@ subroutine as_mfdrpr(fid, cha, val, intlac, numco,&
     aster_int :: typent, typgeo, cret
     aster_int :: intlac, numco, numdt, numo, pflmod
     real(kind=8) :: val(*)
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

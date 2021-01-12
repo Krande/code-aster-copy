@@ -57,7 +57,7 @@ private
 !
 type, public :: augm_lagr_ctxt
     !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
     type(saddlepoint_ctxt), pointer :: sp_ctxt =>null()
     !
     ! Preconditioner data section
@@ -76,7 +76,7 @@ end type augm_lagr_ctxt
 !
 public :: new_augmented_lagrangian_context, free_augm_lagrangian_context
 !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 PetscErrorCode :: ierr
 !
 contains
@@ -168,7 +168,7 @@ subroutine set_precond_data( ctxt )
         ASSERT(ierr.eq.0)
 
     else if ( pre_type == mumps_pre ) then
-#ifdef HAVE_PETSC_MUMPS
+#ifdef ASTER_PETSC_HAVE_MUMPS
     ! Ou encore  mumps mais à partir du moment où petsc est compilée
     ! avec support de l'interface MUMPS
        call PCSetType(ctxt%pcphy, PCLU, ierr)

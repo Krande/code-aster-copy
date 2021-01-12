@@ -29,11 +29,11 @@ subroutine as_msdnjn(fid,maa,n,cret)
     character(len=*) :: maa
     aster_int :: n, cret
 
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 
-#ifdef _DEBUG_MED
+#ifdef ASTER_DEBUG_MED
     write(6,*) '=== as_msdnjn fid=',fid
     write(6,*) '=== as_msdnjn maa=',maa
 #endif
@@ -49,7 +49,7 @@ subroutine as_msdnjn(fid,maa,n,cret)
     call msdnjn(fid,maa,n,cret)
 #endif
 
-#ifdef _DEBUG_MED
+#ifdef ASTER_DEBUG_MED
     write(6,*) '=== as_msdnjn n4=',n4
     write(6,*) '=== as_msdnjn cret4=',cret4
 #endif

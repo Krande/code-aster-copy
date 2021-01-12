@@ -31,7 +31,7 @@ subroutine as_mpfprr(fid, pflval, n, pro, cret)
     aster_int :: n, cret
     aster_int :: pflval(*)
     character(len=*) :: pro
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

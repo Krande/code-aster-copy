@@ -31,7 +31,7 @@ subroutine as_mmhear(fid, maa, nom, typent, typgeo,&
     med_idt :: fid
     aster_int :: typent, typgeo, cret
     aster_int :: mdnont, mdnoit
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

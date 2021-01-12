@@ -18,8 +18,8 @@
 
 /* person_in_charge: mathieu.courtois at edf.fr */
 
-#ifndef SHARED_VARS_H
-#define SHARED_VARS_H
+#ifndef SHARED_VARS_H_
+#define SHARED_VARS_H_
 
 #ifdef __cplusplus
 extern "C" {

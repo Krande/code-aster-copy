@@ -1,7 +1,7 @@
 
 #include "astercxx.h"
 
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
 
 #ifndef PARALLELMECHANICALLOAD_H_
 #define PARALLELMECHANICALLOAD_H_
@@ -107,4 +107,4 @@ typedef ListParaMecaLoad::const_iterator ListParaMecaLoadCIter;
 
 #endif /* PARALLELMECHANICALLOAD_H_ */
 
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -838,7 +838,7 @@ subroutine op0044()
                 nbrss, precsh)
 !
     if ((ctyp.eq.'E') .and. (ierx.ne.0)) then
-        call utmess('Z', 'ALGELINE2_74', num_except=SOLVER_ERROR)
+        call utmess('Z', 'ALGELINE2_74', num_except=ASTER_SOLVER_ERROR)
     endif
 !
 ! --- ON REMET LE MECANISME D'EXCEPTION A SA VALEUR INITIALE

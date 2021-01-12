@@ -27,11 +27,11 @@
 #include "dll_register.h"
 #include "dll_mfront.h"
 
-#ifdef HAVE_MFRONT
+#ifdef ASTER_HAVE_MFRONT
 #include "MFrontBehaviour.h"
 #endif
 
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
 #include <dlfcn.h>
 #endif
 PyObject* get_dll_register_dict();
@@ -48,7 +48,7 @@ void DEFSSSSP(MFRONT_SET_DOUBLE_PARAMETER, mfront_set_double_parameter,
     char* nommod, STRING_SIZE lnommod,
     char* nomparam, STRING_SIZE lnomparam, ASTERDOUBLE* value)
 {
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
     /* MFRONT Wrapper : wrapper to the MFRONT set function through the function pointer
      * Load the library if necessary (at the first call).
     */
@@ -83,7 +83,7 @@ void DEFSSSSP(MFRONT_SET_INTEGER_PARAMETER, mfront_set_integer_parameter,
     char* nommod, STRING_SIZE lnommod,
     char* nomparam, STRING_SIZE lnomparam, ASTERINTEGER* value)
 {
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
     /* MFRONT Wrapper : wrapper to the MFRONT set function through the function pointer
      * Load the library if necessary (at the first call).
     */
@@ -118,7 +118,7 @@ void DEFPPSP(MFRONT_GET_EXTERNAL_STATE_VARIABLE,
              ASTERINTEGER* pliesv, ASTERINTEGER* pnbesv,
              char* txval, STRING_SIZE ltx, ASTERINTEGER* nbvarc)
 {
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
     /* MFRONT Wrapper
     */
 
@@ -143,7 +143,7 @@ int mfront_get_number_of_internal_state_variables(char* nomlib, STRING_SIZE lnom
                                                   char* nomsub, STRING_SIZE lnomsub,
                                                   char* nommod, STRING_SIZE lnommod)
 {
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
     /* MFRONT Wrapper
     */
     char *libname, *symbol, *model, *symbname=NULL;
@@ -184,7 +184,7 @@ int mfront_get_strain_model(char* nomlib, STRING_SIZE lnomlib,
                             char* nomsub, STRING_SIZE lnomsub,
                             char* nommod, STRING_SIZE lnommod)
 {
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
     /* MFRONT Wrapper
     */
     char *libname, *symbol, *model, *symbname=NULL;
@@ -228,7 +228,7 @@ void DEFSSSP(MFRONT_GET_NUMBER_OF_INTERNAL_STATE_VARIABLES,
              char* nommod, STRING_SIZE lnommod,
              ASTERINTEGER* nbvari)
 {
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
     /* MFRONT Wrapper
     */
     int nbvari2 = mfront_get_number_of_internal_state_variables(nomlib, lnomlib,
@@ -248,7 +248,7 @@ void DEFSSSP(MFRONT_GET_STRAIN_MODEL,
              char* nommod, STRING_SIZE lnommod,
              ASTERINTEGER* strain_model)
 {
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
     /* MFRONT Wrapper
     */
     int strain_model2 = mfront_get_strain_model(nomlib, lnomlib,
@@ -268,7 +268,7 @@ void DEFSSSS(MFRONT_GET_INTERNAL_STATE_VARIABLES_TYPES,
               char* nommod, STRING_SIZE lnommod,
               char* txval, STRING_SIZE ltx)
 {
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
     /* MFRONT Wrapper
     */
     char *libname, *symbol, *model, *symbname=NULL;
@@ -342,7 +342,7 @@ void DEFSSSSP(MFRONT_GET_INTERNAL_STATE_VARIABLES,
               char* nommod, STRING_SIZE lnommod,
               char* txval, STRING_SIZE ltx, ASTERINTEGER* nbintvar)
 {
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
 #define MIN(A,B)  ((A) < (B) ? (A) : (B))
 
     /* MFRONT Wrapper
@@ -399,7 +399,7 @@ void DEFSSSPPPPP(MFRONT_GET_POINTERS,
                  ASTERINTEGER* pliesv, ASTERINTEGER* pnbesv, ASTERINTEGER* pfcmfr,
                  ASTERINTEGER* pmatprop, ASTERINTEGER* pnbprop)
 {
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
     /* MFRONT Wrapper
     */
     char *libname, *symbol, *model, *symbname=NULL;
@@ -469,7 +469,7 @@ void DEFSSSP(MFRONT_SET_OUTOFBOUNDS_POLICY,
     char* nomlib, STRING_SIZE lnomlib, char* nomsub, STRING_SIZE lnomsub,
     char* nommod, STRING_SIZE lnommod, ASTERINTEGER* value)
 {
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
     char *libname, *symbol, *model, *symbname=NULL, *name1;
     int retour = 0;
     FUNC_MFRONT_SET_OUTOFBOUNDS_POLICY(f_mfront) = NULL;
@@ -509,7 +509,7 @@ void DEFSSSPP(MFRONT_GET_NBVARI, mfront_get_nbvari,
     char* nommod, STRING_SIZE lnommod,
     ASTERINTEGER* ndim, ASTERINTEGER* nbvari)
 {
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
     /* MFRONT Wrapper
     */
     char *libname, *symbol, *model, *symbname=NULL, *name1;
@@ -594,7 +594,7 @@ void DEFPPPPPPPPPPPPPPPPPP(MFRONT_BEHAVIOUR, mfront_behaviour,
     ASTERINTEGER* nstatv, ASTERDOUBLE* props, ASTERINTEGER* nprops,
     ASTERDOUBLE* drot, ASTERDOUBLE* pnewdt, ASTERINTEGER* nummod)
 {
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
     /* MFRONT Wrapper : wrapper to the MFRONT function through the function pointer
      * Load the library if necessary (at the first call).
     */
@@ -625,11 +625,11 @@ void DEFSPS(MFRONT_GET_MATER_PROP,
             _OUT ASTERINTEGER* nbval,
             _OUT char* txval, STRING_SIZE ltx)
 {
-#ifdef HAVE_MFRONT
+#ifdef ASTER_HAVE_MFRONT
     /* MFRONT Wrapper
     */
     char *crela;
-    char library[] = "lib" ASTERBEHAVIOUR;
+    char library[] = "lib" ASTER_BEHAVIOUR_LIB;
     unsigned int i, size;
     char **props;
     AS_ASSERT(ltx == 16);

@@ -22,7 +22,7 @@
                            + temps elapsed (depuis epoch)
 */
 
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
 #include <sys/times.h>
 #include <sys/time.h>
 #include <unistd.h>
@@ -52,7 +52,7 @@ void DEFP(UTTCSM, uttcsm, ASTERDOUBLE *t_csm)
 {
     ASTERDOUBLE elaps;
 
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
 /* calcul de elaps avec gettimeofday  */
     struct timeval tv;
     struct timezone tz;
@@ -79,7 +79,7 @@ void DEFP(UTTCSM, uttcsm, ASTERDOUBLE *t_csm)
     t_csm[2] = elaps - _cache_t0;
 
 
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
    struct tms temps;
    times (&temps);
    t_csm[0]=(ASTERDOUBLE)temps.tms_utime/(ASTERDOUBLE)CLOCKS_PER_SEC_VALUE;

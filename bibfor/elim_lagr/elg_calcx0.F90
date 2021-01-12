@@ -50,7 +50,7 @@ use elg_data_module
 !     * Vec Vx0  (solution)
 !       Vx0 utilisé est ELIMLG/Vx0
 !----------------------------------------------------------------
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
     Vec :: vy, y0
     integer :: ifm, niv
     mpi_int :: mpicomm, rang, nbproc

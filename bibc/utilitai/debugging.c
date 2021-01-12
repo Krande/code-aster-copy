@@ -32,7 +32,7 @@
 /* Obtain a backtrace and print it to stdout. */
 void DEF0(PRINT_TRACE,print_trace)
 {
-#ifdef HAVE_BACKTRACE
+#ifdef ASTER_HAVE_BACKTRACE
 
     void *array[LEVEL];
     size_t size;

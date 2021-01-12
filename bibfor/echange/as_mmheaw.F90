@@ -31,7 +31,7 @@ subroutine as_mmheaw(fid, maa, nom, n, typent,&
     med_idt :: fid
     aster_int :: typent, typgeo, cret, mdnont, mdnoit
     aster_int :: n
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

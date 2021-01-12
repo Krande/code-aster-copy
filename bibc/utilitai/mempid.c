@@ -19,7 +19,7 @@
 /* person_in_charge: j-pierre.lefebvre at edf.fr */
 #include "aster.h"
 
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
 # ifdef __FreeBSD__
 #   include <kvm.h>
 #   include <sys/param.h>
@@ -47,12 +47,12 @@ ASTERINTEGER DEFP (MEMPID, mempid, ASTERINTEGER *val)
     ASTERINTEGER iret;
     pid_t numpro;
 
-#if defined _POSIX && defined ENABLE_PROC_STATUS
+#if defined ASTER_PLATFORM_POSIX && defined ASTER_ENABLE_PROC_STATUS
 
     pid_t getpid(void);
     numpro = getpid();
 
-# if defined FREEBSD
+# if defined ASTER_PLATFORM_FREEBSD
 /*
 ** FreeBSD and some others without /proc ?
 */
@@ -82,7 +82,7 @@ ASTERINTEGER DEFP (MEMPID, mempid, ASTERINTEGER *val)
     val[1] = -1;
     iret = 0;
 
-# elif defined DARWIN
+# elif defined ASTER_PLATFORM_DARWIN
 
 /*
 OS X does not support retrieving memory consumptions through /proc or kvm library

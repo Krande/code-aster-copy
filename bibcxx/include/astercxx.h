@@ -54,10 +54,10 @@ extern "C" {
 
 // Exceptions identifiers - keep consistency with asterf.h
 #define ASTER_ERROR 1
-#define CONVERGENCE_ERROR 2
-#define INTEGRATION_ERROR 3
-#define SOLVER_ERROR 4
-#define CONTACT_ERROR 5
-#define TIMELIMIT_ERROR 6
+#define ASTER_CONVERGENCE_ERROR 2
+#define ASTER_INTEGRATION_ERROR 3
+#define ASTER_SOLVER_ERROR 4
+#define ASTER_CONTACT_ERROR 5
+#define ASTER_TIMELIMIT_ERROR 6
 
 #endif // ASTERCXX_H_

@@ -119,13 +119,13 @@ subroutine crsvpe(motfac, solveu,  kellag )
 
 !   PARAMETRES OPTIONNELS LIES AU MULTIGRILLE ALGEBRIQUE ML
     case ('ML')
-#ifndef HAVE_PETSC_ML
+#ifndef ASTER_PETSC_HAVE_ML
         call utmess('F', 'FERMETUR_16', sk='ML')
 #endif
 
 !   PARAMETRES OPTIONNELS LIES AU MULTIGRILLE ALGEBRIQUE BOOMERAMG
     case ('BOOMER')
-#ifndef HAVE_PETSC_HYPRE
+#ifndef ASTER_PETSC_HAVE_HYPRE
         call utmess('F', 'FERMETUR_16', sk='HYPRE')
 #endif
 

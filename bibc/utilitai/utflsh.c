@@ -22,7 +22,7 @@
 
 void DEFP(UTFLSH, utflsh, ASTERINTEGER *codret)
 {
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
   *codret = fflush(0) ;
 
 #else

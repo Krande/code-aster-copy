@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 !
 ! person_in_charge: mathieu.courtois@edf.fr
 !
-#ifndef ASTERF_H
-#define ASTERF_H
+#ifndef ASTERF_H_
+#define ASTERF_H_
 
 #include "asterf_config.h"
 
 ! The fortran preprocessor is compiler dependent
-#if  STRINGIFY_USE_QUOTES == 1
+#if  ASTER_STRINGIFY_USE_QUOTES == 1
 #   define TO_STRING(name)  "name"
-#elif STRINGIFY_USE_OPERATOR == 1
+#elif ASTER_STRINGIFY_USE_OPERATOR == 1
 #   define TO_STRING(name)  #name
 #else
 #   define TO_STRING(name)  "?"
@@ -35,10 +35,10 @@
 
 ! Exceptions identifiers - keep consistency with astercxx.h
 #define ASTER_ERROR 1
-#define CONVERGENCE_ERROR 2
-#define INTEGRATION_ERROR 3
-#define SOLVER_ERROR 4
-#define CONTACT_ERROR 5
-#define TIMELIMIT_ERROR 6
+#define ASTER_CONVERGENCE_ERROR 2
+#define ASTER_INTEGRATION_ERROR 3
+#define ASTER_SOLVER_ERROR 4
+#define ASTER_CONTACT_ERROR 5
+#define ASTER_TIMELIMIT_ERROR 6
 
 #endif

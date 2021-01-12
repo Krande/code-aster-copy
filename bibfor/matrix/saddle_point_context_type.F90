@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 2016 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 2016 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,15 +54,15 @@ private
 !
 !
 type, public :: saddlepoint_ctxt
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
     !
     ! Double Lagrange scaling coefficient (from .conl)
     real(kind=8) :: alpha
     !
-    ! Two modes are available : distributed/replicated  
-    ! distributed -> the full matrix is distributed among the 
-    ! available processors 
-    ! replicated -> the full matrix is replicated on all the 
+    ! Two modes are available : distributed/replicated
+    ! distributed -> the full matrix is distributed among the
+    ! available processors
+    ! replicated -> the full matrix is replicated on all the
     ! processors which participate to the computation
     integer :: data_model
     !
@@ -97,7 +97,7 @@ type, public :: saddlepoint_ctxt
     ! whereas d_mat is obtained from is_lag2 x is_phys
     ! They are identical on a single proc, but they have different parallel layout
     Mat :: c_mat,  d_mat
-    ! 
+    !
     !
     ! Work Space
     ! ==========
@@ -118,7 +118,7 @@ integer, parameter, public :: distributed_data=0, replicated_data=1
 !
 public :: new_saddle_point_context, free_saddle_point_context, get_num_of_constraints
 !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 !
 PetscErrorCode  :: ierr
 !
@@ -126,7 +126,7 @@ contains
 !
 function new_saddle_point_context( full_matas, data_model, a_mat, ak_mat ) result ( ctxt )
     !
-    ! Dummy arguments 
+    ! Dummy arguments
     !
     character(len=19), intent(in)                :: full_matas
     integer, intent(in)                          :: data_model
@@ -138,8 +138,8 @@ function new_saddle_point_context( full_matas, data_model, a_mat, ak_mat ) resul
     !
     real(kind=8) :: un_sur_alpha
     !
-    ! Modèle de données en parallèle 
-    ASSERT( ( data_model == distributed_data ).or.( data_model == replicated_data ) ) 
+    ! Modèle de données en parallèle
+    ASSERT( ( data_model == distributed_data ).or.( data_model == replicated_data ) )
     ctxt%data_model = data_model
     ! On récupère l'inverse du paramètre alpha
     call conlag( full_matas, un_sur_alpha )
@@ -162,22 +162,22 @@ function new_saddle_point_context( full_matas, data_model, a_mat, ak_mat ) resul
     !
 end function new_saddle_point_context
 !
-function get_num_of_constraints( ctxt ) result ( nlag ) 
-! 
-!   Dummy arguments 
+function get_num_of_constraints( ctxt ) result ( nlag )
+!
+!   Dummy arguments
     type(saddlepoint_ctxt), intent(in)         :: ctxt
-    integer                                    :: nlag 
-    ASSERT( ctxt%nlag1 == ctxt%nlag2 ) 
+    integer                                    :: nlag
+    ASSERT( ctxt%nlag1 == ctxt%nlag2 )
     nlag =  ctxt%nlag1
 !
-end function get_num_of_constraints 
+end function get_num_of_constraints
 !
 ! This routine initializes the Index sets section of the context object
 !
 subroutine set_is( matas , ctxt )
     !
-    ! Dummy arguments 
-    ! 
+    ! Dummy arguments
+    !
     character(len=19), intent(in)                  :: matas
     type(saddlepoint_ctxt), intent(inout)          :: ctxt
     !
@@ -218,7 +218,7 @@ end subroutine set_is
 ! The IS section is supposed to be OK
 ! a_mat contains the (double Lagrange) matrix from which k_mat and
 ! c_mat are extracted.
-! The way the submatrix is extracted depends on the parallel data 
+! The way the submatrix is extracted depends on the parallel data
 ! model : distributed_data/replicated_data
 !
 subroutine set_matrix_data( a_mat, ak_mat,  ctxt)
@@ -228,73 +228,73 @@ subroutine set_matrix_data( a_mat, ak_mat,  ctxt)
     Mat, intent(in)                                :: a_mat
     Mat, intent(in)                                :: ak_mat
     type(saddlepoint_ctxt), intent(inout)          :: ctxt
-    ! 
+    !
     ! Local variables
     !
     Mat, dimension(2) :: submat
     PetscInt :: nsub
     !
-    ASSERT( ( ctxt%data_model == distributed_data ).or.( ctxt%data_model == replicated_data ) )  
+    ASSERT( ( ctxt%data_model == distributed_data ).or.( ctxt%data_model == replicated_data ) )
     ASSERT( ctxt%is_setup )
     ASSERT( .not. ctxt%data_setup )
     ! Définition du bloc k_mat : nouvelle matrice PETSc contenant
     ! les interactions des ddls "physiques" du modèle
-    if ( ctxt%data_model == distributed_data ) then 
+    if ( ctxt%data_model == distributed_data ) then
        call MatCreateSubMatrix(a_mat, ctxt%is_phys, ctxt%is_phys, &
-           MAT_INITIAL_MATRIX, ctxt%k_mat, ierr) 
+           MAT_INITIAL_MATRIX, ctxt%k_mat, ierr)
            ASSERT(ierr == 0)
-    else if ( ctxt%data_model == replicated_data ) then 
+    else if ( ctxt%data_model == replicated_data ) then
        nsub =  to_petsc_int(1)
        call MatCreateSubMatrices( a_mat, nsub, &
            ctxt%is_phys, ctxt%is_phys, MAT_INITIAL_MATRIX, &
-           submat, ierr) 
+           submat, ierr)
        ASSERT(ierr == 0)
        call MatConvert( submat(1), MATSAME, MAT_INITIAL_MATRIX, &
-           ctxt%k_mat, ierr) 
+           ctxt%k_mat, ierr)
        ASSERT(ierr == 0)
-    end if  
+    end if
     !
     ! Définition du bloc c_mat des contraintes: nouvelle matrice PETSc
     ! contenant les interactions des ddls lagrange1 (lignes) avec les ddls
     ! physiques (colonnes)
     ! Attention ! il faut peut-être utiliser la matrice de rigidité
     !
-    if ( ctxt%data_model == distributed_data ) then 
+    if ( ctxt%data_model == distributed_data ) then
         call MatCreateSubMatrix(ak_mat, ctxt%is_lag1, ctxt%is_phys, &
         MAT_INITIAL_MATRIX, ctxt%c_mat, ierr)
         ASSERT(ierr == 0)
-    else if ( ctxt%data_model == replicated_data ) then 
+    else if ( ctxt%data_model == replicated_data ) then
        nsub =  to_petsc_int(1)
        call MatCreateSubMatrices( ak_mat, nsub, &
            ctxt%is_lag1, ctxt%is_phys, MAT_INITIAL_MATRIX, &
-           submat, ierr) 
+           submat, ierr)
        ASSERT(ierr == 0)
        call MatConvert( submat(1), MATSAME, MAT_INITIAL_MATRIX, &
-           ctxt%c_mat, ierr) 
+           ctxt%c_mat, ierr)
        ASSERT(ierr == 0)
-    end if  
+    end if
     !
-    if ( ctxt%data_model == distributed_data ) then 
+    if ( ctxt%data_model == distributed_data ) then
         call MatCreateSubMatrix(ak_mat, ctxt%is_lag2, ctxt%is_phys, &
         MAT_INITIAL_MATRIX, ctxt%d_mat, ierr)
         ASSERT(ierr == 0)
-    else if ( ctxt%data_model == replicated_data ) then 
+    else if ( ctxt%data_model == replicated_data ) then
        nsub =  to_petsc_int(1)
        call MatCreateSubMatrices( ak_mat, nsub, &
            ctxt%is_lag2, ctxt%is_phys, MAT_INITIAL_MATRIX, &
-           submat, ierr) 
+           submat, ierr)
        ASSERT(ierr == 0)
        call MatConvert( submat(1), MATSAME, MAT_INITIAL_MATRIX, &
-           ctxt%d_mat, ierr) 
+           ctxt%d_mat, ierr)
        ASSERT(ierr == 0)
-    end if  
+    end if
     !
-    if ( ctxt%data_model == replicated_data ) then 
-       call MatDestroy(submat(1), ierr ) 
+    if ( ctxt%data_model == replicated_data ) then
+       call MatDestroy(submat(1), ierr )
               ASSERT(ierr == 0)
-       call MatDestroy(submat(1), ierr ) 
+       call MatDestroy(submat(1), ierr )
               ASSERT(ierr == 0)
-    endif 
+    endif
     ctxt%data_setup = .true.
     !
 end subroutine set_matrix_data
@@ -376,7 +376,7 @@ subroutine free_saddle_point_context( ctxt )
     ASSERT( ierr == 0 )
     call MatDestroy( ctxt%c_mat, ierr )
     ASSERT( ierr == 0 )
-    if ( ctxt%d_mat /= PETSC_NULL_MAT ) then 
+    if ( ctxt%d_mat /= PETSC_NULL_MAT ) then
        call MatDestroy( ctxt%d_mat, ierr )
     ASSERT( ierr == 0 )
     endif
@@ -418,7 +418,7 @@ function build_is_for_type_of_dof( matas, type_of_dof, data_model ) result ( is 
     PetscInt,dimension(:), allocatable    :: my_idof
     Vec :: vtmp
     !
-    ASSERT( ( data_model == distributed_data ).or.( data_model == replicated_data ) ) 
+    ASSERT( ( data_model == distributed_data ).or.( data_model == replicated_data ) )
     ! Récupération du communicateur MPI
     call asmpi_comm('GET', mpicomm)
     call asmpi_info(rank=rank, size=nbproc)
@@ -434,9 +434,9 @@ function build_is_for_type_of_dof( matas, type_of_dof, data_model ) result ( is 
     idof(:) = idof(:) - 1
     !
     ! On distingue à présent deux types de distributions de données
-    ! - distributed_data : on veut construire des matrices (rigidité, masse, contraintes ...) 
+    ! - distributed_data : on veut construire des matrices (rigidité, masse, contraintes ...)
     !                     de type MPIAIJ, réparties sur tous les processeurs.
-    ! - replicated_data : on veut construire des matrices (rigidité, masse, contraintes ...) 
+    ! - replicated_data : on veut construire des matrices (rigidité, masse, contraintes ...)
     !                     de type MATSEQ, répliquées sur tous les processeurs.
     ! Détermination de istart et iend
     if ( data_model == replicated_data ) then
@@ -506,9 +506,9 @@ subroutine free_saddle_point_context( ctxt )
     ctxt%idummy = 0
 end subroutine free_saddle_point_context
 !
-function get_num_of_constraints( ctxt ) result ( nlag ) 
+function get_num_of_constraints( ctxt ) result ( nlag )
     type(saddlepoint_ctxt), intent(in)         :: ctxt
-    integer                                    :: nlag 
+    integer                                    :: nlag
     nlag = ctxt%idummy
 end function get_num_of_constraints
 !

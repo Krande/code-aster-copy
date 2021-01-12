@@ -3,7 +3,7 @@
  * @brief Interface python de BaseExternalVariables
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -213,11 +213,11 @@ void exportExternalVariablesToPython() {
             py::make_constructor(&initFactoryPtr< ExternalVariablesFieldClass, const MeshPtr & >));
     c3.def( "__init__", py::make_constructor(
                             &initFactoryPtr< ExternalVariablesFieldClass, const SkeletonPtr & >));
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
     c3.def( "__init__",
             py::make_constructor(
                 &initFactoryPtr< ExternalVariablesFieldClass, const ParallelMeshPtr & >));
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */
     c3.def(
         "addExternalVariableOnMesh",
         &ExternalVariablesFieldClass::addExternalVariableOnMesh<

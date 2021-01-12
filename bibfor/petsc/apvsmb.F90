@@ -48,7 +48,7 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
 !  CREATION ET REMPLISSAGE DU SECOND MEMBRE
 !
 !----------------------------------------------------------------
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 !
 !     VARIABLES LOCALES
     integer :: nsmdi, rang, nbproc, jnequ, jnequl
@@ -115,7 +115,7 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
         call VecSetType(b, VECMPI, ierr)
         ASSERT(ierr.eq.0)
 !
-#if PETSC_INT_SIZE == 4
+#if ASTER_PETSC_INT_SIZE == 4
         AS_ALLOCATE( vi4=ig_petsc_c, size=nloc )
 #else
         AS_ALLOCATE( vi=ig_petsc_c, size=nloc )
@@ -134,7 +134,7 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
         call VecAssemblyEnd(b, ierr)
         ASSERT(ierr.eq.0)
         !
-#if PETSC_INT_SIZE == 4
+#if ASTER_PETSC_INT_SIZE == 4
         AS_DEALLOCATE( vi4=ig_petsc_c )
 #else
         AS_DEALLOCATE( vi=ig_petsc_c )

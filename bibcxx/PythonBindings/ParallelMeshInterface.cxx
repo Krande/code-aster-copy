@@ -3,7 +3,7 @@
  * @brief Interface python de ParallelMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,7 +29,7 @@ namespace py = boost::python;
 #include <PythonBindings/factory.h>
 #include "PythonBindings/ParallelMeshInterface.h"
 
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
 
 void exportParallelMeshToPython() {
 
@@ -290,4 +290,4 @@ Returns:
               ( py::arg( "self" ), py::arg("filename")) ) ;
 };
 
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */

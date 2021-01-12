@@ -68,7 +68,7 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval,&
     integer(kind=4), intent(inout), optional :: sci4
     real(kind=8), intent(inout), optional :: scr
 !
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
 #include "mpif.h"
 #include "asterc/asmpi_recv_r.h"
 #include "asterc/asmpi_recv_i.h"

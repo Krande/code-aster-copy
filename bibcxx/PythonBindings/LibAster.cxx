@@ -3,7 +3,7 @@
  * @brief Création de LibAster
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -169,25 +169,27 @@ BOOST_PYTHON_MODULE( libaster ) {
     ErrorPy[ASTER_ERROR] = createPyException( "AsterError" );
     py::register_exception_translator< ErrorCpp< ASTER_ERROR > >( &translateError< ASTER_ERROR > );
 
-    ErrorPy[CONVERGENCE_ERROR] = createPyException( "ConvergenceError", ErrorPy[ASTER_ERROR] );
-    py::register_exception_translator< ErrorCpp< CONVERGENCE_ERROR > >(
-        &translateError< CONVERGENCE_ERROR > );
+    ErrorPy[ASTER_CONVERGENCE_ERROR] =
+        createPyException( "ConvergenceError", ErrorPy[ASTER_ERROR] );
+    py::register_exception_translator< ErrorCpp< ASTER_CONVERGENCE_ERROR > >(
+        &translateError< ASTER_CONVERGENCE_ERROR > );
 
-    ErrorPy[INTEGRATION_ERROR] = createPyException( "IntegrationError", ErrorPy[ASTER_ERROR] );
-    py::register_exception_translator< ErrorCpp< INTEGRATION_ERROR > >(
-        &translateError< INTEGRATION_ERROR > );
+    ErrorPy[ASTER_INTEGRATION_ERROR] =
+        createPyException( "IntegrationError", ErrorPy[ASTER_ERROR] );
+    py::register_exception_translator< ErrorCpp< ASTER_INTEGRATION_ERROR > >(
+        &translateError< ASTER_INTEGRATION_ERROR > );
 
-    ErrorPy[SOLVER_ERROR] = createPyException( "SolverError", ErrorPy[ASTER_ERROR] );
-    py::register_exception_translator< ErrorCpp< SOLVER_ERROR > >(
-        &translateError< SOLVER_ERROR > );
+    ErrorPy[ASTER_SOLVER_ERROR] = createPyException( "SolverError", ErrorPy[ASTER_ERROR] );
+    py::register_exception_translator< ErrorCpp< ASTER_SOLVER_ERROR > >(
+        &translateError< ASTER_SOLVER_ERROR > );
 
-    ErrorPy[CONTACT_ERROR] = createPyException( "ContactError", ErrorPy[ASTER_ERROR] );
-    py::register_exception_translator< ErrorCpp< CONTACT_ERROR > >(
-        &translateError< CONTACT_ERROR > );
+    ErrorPy[ASTER_CONTACT_ERROR] = createPyException( "ContactError", ErrorPy[ASTER_ERROR] );
+    py::register_exception_translator< ErrorCpp< ASTER_CONTACT_ERROR > >(
+        &translateError< ASTER_CONTACT_ERROR > );
 
-    ErrorPy[TIMELIMIT_ERROR] = createPyException( "TimeLimitError", ErrorPy[ASTER_ERROR] );
-    py::register_exception_translator< ErrorCpp< TIMELIMIT_ERROR > >(
-        &translateError< TIMELIMIT_ERROR > );
+    ErrorPy[ASTER_TIMELIMIT_ERROR] = createPyException( "TimeLimitError", ErrorPy[ASTER_ERROR] );
+    py::register_exception_translator< ErrorCpp< ASTER_TIMELIMIT_ERROR > >(
+        &translateError< ASTER_TIMELIMIT_ERROR > );
 
     py::def( "raiseAsterError", &raiseAsterError, raiseAsterError_overloads() );
 
@@ -291,13 +293,13 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportFluidStructureModalBasisToPython();
     exportGeneralizedModeResultToPython();
 
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
     /* These objects must be declared in Objects/__init__.py as
        OnlyParallelObject for sequential version. */
     exportParallelMeshToPython();
     exportParallelDOFNumberingToPython();
     exportParallelMechanicalLoadToPython();
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */
     exportMPIInfosToPython();
 
     exportConnectionMeshToPython();

@@ -33,7 +33,7 @@ subroutine as_mmhraw(fid, nomail, typgeo, nomatt, nbrval,&
     aster_int :: numdt, numit
     parameter    (numdt = -1)
     parameter    (numit = -1)
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

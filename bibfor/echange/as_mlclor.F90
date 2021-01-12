@@ -30,7 +30,7 @@ subroutine as_mlclor(fid, tr1, tr2, tr3, nbt,&
     med_idt :: fid
     aster_int :: nbt, cret
     character(len=64) :: k64
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

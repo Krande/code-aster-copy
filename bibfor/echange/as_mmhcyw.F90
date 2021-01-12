@@ -33,7 +33,7 @@ subroutine as_mmhcyw(fid, maa, conn, csize, switch,&
     aster_int :: conn(*), csize, typent, typgeo, typcon, cret
     aster_int :: n, switch, mdnont, mdnoit
     real(kind=8) :: mdnodt
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

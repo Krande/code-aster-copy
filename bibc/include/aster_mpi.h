@@ -18,11 +18,11 @@
 
 /* person_in_charge: mathieu.courtois at edf.fr */
 
-#ifndef ASTER_MPI_H
-#define ASTER_MPI_H
+#ifndef ASTER_MPI_H_
+#define ASTER_MPI_H_
 
 #include "aster.h"
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
 #   include "mpi.h"
 #else
 #   define MPI_COMM_WORLD       0
@@ -70,7 +70,7 @@ struct aster_comm_t {
     char name[NAME_LENGTH];
 };
 
-//#define UNITTEST
+//#define ASTER_UNITTEST_MPI
 
 /*
  *   PUBLIC FUNCTIONS
@@ -112,7 +112,7 @@ extern void DEFP( ASABRT, asabrt, _IN ASTERINTEGER * );
 extern void errhdlr_func(MPI_Comm *, int *, ... );
 extern aster_comm_t* _search_id(aster_comm_t *, MPI_Comm *);
 aster_comm_t* get_node_by_id(MPI_Comm *);
-#ifdef UNITTEST
+#ifdef ASTER_UNITTEST_MPI
 extern void _unittest_aster_mpi();
 #endif
 

@@ -49,7 +49,7 @@ use petsc_data_module
 !
 !----------------------------------------------------------------
 !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 !
 !     VARIABLES LOCALES
     integer :: rang, nbproc, jnbjoi, nbjoin, jnequ, jnequl, jnugll
@@ -138,7 +138,7 @@ use petsc_data_module
     call VecDestroy(tmp, ierr)
     ASSERT(ierr.eq.0)
 !
-#if PETSC_INT_SIZE == 4
+#if ASTER_PETSC_INT_SIZE == 4
     call wkvect(idxd, 'V V S', ndprop, vi4=v_idxd)
     call wkvect(idxo, 'V V S', ndprop, vi4=v_idxo)
     call wkvect(idxdc, 'V V S', nloc, vi4=v_idxdc)
@@ -213,14 +213,14 @@ use petsc_data_module
             call jeveuo(nojoin, 'L', jjoint)
             call jelira(nojoin, 'LONMAX', lgenvo)
             if (lgenvo .gt. 0) then
-#if PETSC_INT_SIZE == 4
+#if ASTER_PETSC_INT_SIZE == 4
                 call wkvect(cpysol, 'V V S', lgenvo, vi4=v_valeur)
 #else
                 call wkvect(cpysol, 'V V I', lgenvo, vi=v_valeur)
 #endif
 !
                 if (numpro .gt. rang) then
-#if PETSC_INT_SIZE == 4
+#if ASTER_PETSC_INT_SIZE == 4
                     call asmpi_comm_point('MPI_RECV', 'I4', numpro, iaux, nbval=lgenvo,&
                                           vi4=v_valeur)
 #else
@@ -233,7 +233,7 @@ use petsc_data_module
                         v_idxo(numglo-low)=v_idxo(numglo-low)+v_valeur(jaux)
                     enddo
 !
-#if PETSC_INT_SIZE == 4
+#if ASTER_PETSC_INT_SIZE == 4
                     call asmpi_comm_point('MPI_RECV', 'I4', numpro, iaux, nbval=lgenvo,&
                                           vi4=v_valeur)
 #else
@@ -250,7 +250,7 @@ use petsc_data_module
                         numloc=zi(jjoint+jaux-1)
                         v_valeur(jaux)=v_idxoc(numloc)
                     enddo
-#if PETSC_INT_SIZE == 4
+#if ASTER_PETSC_INT_SIZE == 4
                     call asmpi_comm_point('MPI_SEND', 'I4', numpro, iaux, nbval=lgenvo,&
                                           vi4=v_valeur)
 #else
@@ -262,7 +262,7 @@ use petsc_data_module
                         numloc=zi(jjoint+jaux-1)
                         v_valeur(jaux)=v_idxdc(numloc)
                     enddo
-#if PETSC_INT_SIZE == 4
+#if ASTER_PETSC_INT_SIZE == 4
                     call asmpi_comm_point('MPI_SEND', 'I4', numpro, iaux, nbval=lgenvo,&
                                           vi4=v_valeur)
 #else

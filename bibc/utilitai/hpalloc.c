@@ -22,9 +22,9 @@
 // <malloc.h> is linux-specific
 // http://stackoverflow.com/questions/12973311/difference-between-stdlib-h-and-malloc-h
 // <stdlib.h> should now be used instead
-#ifdef GNU_LINUX
+#ifdef ASTER_PLATFORM_LINUX
 #include <malloc.h>
-#endif /* GNU_LINUX */
+#endif
 
 /*
 This function uses mmap() to prevent memory fragmentation with malloc() on Linux.
@@ -35,15 +35,15 @@ void DEFPPPP(HPALLOC, hpalloc, void **addr,ASTERINTEGER *length,
              ASTERINTEGER *errcode, ASTERINTEGER *abrt)
 {
     void abort();
-#ifdef GNU_LINUX
+#ifdef ASTER_PLATFORM_LINUX
     int ir;
-#endif /* GNU_LINUX */
+#endif
     if ( *length <= 0 ) {
         *errcode = -1;
     }
     else
     {
-#ifdef GNU_LINUX
+#ifdef ASTER_PLATFORM_LINUX
         ir=mallopt(M_MMAP_THRESHOLD,0);
         *addr = (void *)malloc(*length * sizeof(ASTERINTEGER));
         ir=mallopt(M_MMAP_THRESHOLD,128*1024);
@@ -51,7 +51,7 @@ void DEFPPPP(HPALLOC, hpalloc, void **addr,ASTERINTEGER *length,
 #else
         *addr = (void *)malloc(*length * sizeof(ASTERINTEGER));
         if ( *addr == (void *)0 )
-#endif /* GNU_LINUX */
+#endif
         {
             *errcode = -2;
         }

@@ -3,7 +3,7 @@
  * @brief Implementation de ParallelDOFNumberingClass
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -25,6 +25,6 @@
 
 #include "Numbering/ParallelDOFNumbering.h"
 
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
 
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */

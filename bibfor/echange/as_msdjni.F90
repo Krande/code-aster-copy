@@ -29,11 +29,11 @@ subroutine as_msdjni(fid,lmname,ind,jname,des,dom,rmname,nstep,ncor,cret)
     med_idt :: fid
     aster_int :: ind,dom,nstep,ncor,cret
 
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 
-#ifdef _DEBUG_MED
+#ifdef ASTER_DEBUG_MED
     write(6,*) '=== as_msdjni fid=',fid
     write(6,*) '=== as_msdjni lmname=',lmname
     write(6,*) '=== as_msdjni ind=',ind
@@ -53,7 +53,7 @@ subroutine as_msdjni(fid,lmname,ind,jname,des,dom,rmname,nstep,ncor,cret)
     call msdjni(fid,lmname,ind,jname,des,dom,rmname,nstep,ncor,cret)
 #endif
 
-#ifdef _DEBUG_MED
+#ifdef ASTER_DEBUG_MED
     write(6,*) '=== as_msdjni jname=',jname
     write(6,*) '=== as_msdjni rmname=',rmname
     write(6,*) '=== as_msdjni des=',des

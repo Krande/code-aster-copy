@@ -19,7 +19,7 @@
 #include "aster.h"
 #include "aster_fort_utils.h"
 
-#ifdef _HAVE_METIS
+#ifdef ASTER_HAVE_METIS
 #include "programs/metisbin.h"
 
 /* Prototypes of internal functions */
@@ -42,7 +42,7 @@ void DEFPPPPPPPPPPPPP(ONMETL,onmetl,nbnd,nadj,xadjd,adjncy,
      ASTERINTEGER4 *fctnzs, *lgind;
      ASTERINTEGER  *niv;
 {
-#ifdef _HAVE_METIS
+#ifdef ASTER_HAVE_METIS
   /*
 Donnees (allouees ds vecteurs JEVEUX via preml1)
 --------
@@ -206,7 +206,7 @@ lgind  : longueur de tableaux de pointeurs
 }
 
 
-#ifdef _HAVE_METIS
+#ifdef ASTER_HAVE_METIS
 
 
  /*************************************************************************

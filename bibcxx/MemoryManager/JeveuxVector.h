@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe JeveuxVector
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -60,7 +60,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      * @brief Destructeur
      */
     ~JeveuxVectorClass() {
-// #ifdef _DEBUG_CXX
+// #ifdef ASTER_DEBUG_CXX
 //         std::cout << "DEBUG: JeveuxVector.destr: " << _name << std::endl;
 // #endif
         _valuePtr = nullptr;
@@ -98,7 +98,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      */
     inline const ValueType &operator[]( const int &i ) const
     {
-#ifdef _DEBUG_CXX
+#ifdef ASTER_DEBUG_CXX
         if( _valuePtr == nullptr )
             throw std::runtime_error("Vector not allocated " + _name);
 #endif
@@ -112,7 +112,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      */
     inline ValueType &operator[]( const int &i )
     {
-#ifdef _DEBUG_CXX
+#ifdef ASTER_DEBUG_CXX
         if( _valuePtr == nullptr )
             throw std::runtime_error("Vector not allocated " + _name);
 #endif

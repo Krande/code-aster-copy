@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,14 +36,14 @@ subroutine fin999(isave)
     integer, intent(in) :: isave
 
     integer :: ichk
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
     integer :: iret
 #endif
 !-----------------------------------------------------------------------
 !
 ! --- FERMETURE DE PETSC
 !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
     call apetsc('FIN', ' ', ' ', [0.d0], ' ',&
                 0, 0, iret)
 #endif

@@ -18,8 +18,8 @@
 
 /* person_in_charge: mathieu.courtois at edf.fr */
 
-#ifndef ASTER_CORE_H
-#define ASTER_CORE_H
+#ifndef ASTER_CORE_H_
+#define ASTER_CORE_H_
 
 #include "Python.h"
 #include "aster.h"

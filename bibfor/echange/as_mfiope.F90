@@ -30,7 +30,7 @@ subroutine as_mfiope(fid, nom, acces, cret)
     character(len=*), intent(in) :: nom
     aster_int, intent(in) :: acces
     aster_int, intent(out) :: cret
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

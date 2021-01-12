@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,7 +79,7 @@ use superv_module, only: superv_before, superv_after
 !
     call uttrst(tpres)
     if (tpres .lt. 0.d0) then
-        call utmess('Z', 'SUPERVIS_63', sr=-tpres, num_except=TIMELIMIT_ERROR)
+        call utmess('Z', 'SUPERVIS_63', sr=-tpres, num_except=ASTER_TIMELIMIT_ERROR)
     endif
 !
 !     -- CONTROLE DE L'APPARIEMMENT DES JEMARQ/JEDEMA

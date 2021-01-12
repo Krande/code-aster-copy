@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -99,12 +99,11 @@ def load_compilers_mpi(self):
         del self.env['LINKFLAGS_MPI']
 
     if not icc:
-        self.check_cc(header_name='mpi.h', use='MPI', define_name='_USE_MPI')
+        self.check_cc(header_name='mpi.h', use='MPI')
 
-    self.define('HAVE_MPI', 1)
-    self.define('_USE_MPI', 1)
+    self.define('ASTER_HAVE_MPI', 1)
     self.env.BUILD_MPI = 1
-    self.env.HAVE_MPI = 1
+    self.env.ASTER_HAVE_MPI = 1
 
 @Configure.conf
 def check_openmp(self):
@@ -123,7 +122,7 @@ def check_openmp(self):
         self.env['CCLINKFLAGS_OPENMP'] = self.env['FCLINKFLAGS_OPENMP']
         self.env['CXXFLAGS_OPENMP'] = self.env['FCFLAGS_OPENMP']
         self.env['CXXLINKFLAGS_OPENMP'] = self.env['FCLINKFLAGS_OPENMP']
-        self.env.HAVE_OPENMP = 1
+        self.env.ASTER_HAVE_OPENMP = 1
         self.msg('Checking for OpenMP flag -qopenmp for Intel compilers', 'Yes', color='GREEN')
     elif not (ifort or icc):
         for x in ('-fopenmp', '-openmp', '-mp', '-xopenmp', '-omp', '-qsmp=omp'):
@@ -147,14 +146,14 @@ def check_openmp(self):
             self.fatal('Could not set OpenMP')
     else:
         self.fatal('Could not set OpenMP due to incompatible compilers...')
-    self.define('_USE_OPENMP', 1)
+    self.define('ASTER_HAVE_OPENMP', 1)
     self.env.BUILD_OPENMP = 1
 
 
 @Configure.conf
 def check_sizeof_mpi_int(self):
     """Check size of MPI_Fint"""
-    if self.get_define('HAVE_MPI'):
+    if self.get_define('ASTER_HAVE_MPI'):
         fragment = '\n'.join([
             '#include <stdio.h>',
             '#include "mpi.h"',
@@ -164,7 +163,7 @@ def check_sizeof_mpi_int(self):
             '    return 0;',
             '}',
             ''])
-        self.code_checker('MPI_INT_SIZE', self.check_cc, fragment,
+        self.code_checker('ASTER_MPI_INT_SIZE', self.check_cc, fragment,
                           'Checking size of MPI_Fint integers',
                           'unexpected value for sizeof(MPI_Fint): %(size)s',
                           into=(4, 8), use='MPI')
@@ -172,7 +171,7 @@ def check_sizeof_mpi_int(self):
 @Configure.conf
 def check_vmsize(self):
     """Check for VmSize 'bug' with MPI."""
-    is_ok = not self.get_define('HAVE_MPI')
+    is_ok = not self.get_define('ASTER_HAVE_MPI')
     if not is_ok:
         self.start_msg("Checking measure of VmSize during MPI_Init")
         try:
@@ -192,7 +191,7 @@ def check_vmsize(self):
             self.end_msg("ok (%s)" % size)
             is_ok = True
     if is_ok:
-        self.define('ENABLE_PROC_STATUS', 1)
+        self.define('ASTER_ENABLE_PROC_STATUS', 1)
 
 
 fragment_failure_vmsize = r"""

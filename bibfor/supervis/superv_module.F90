@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -145,7 +145,7 @@ contains
     function asthread_getmax()
         implicit none
         integer :: asthread_getmax
-#ifdef _USE_OPENMP
+#ifdef ASTER_HAVE_OPENMP
         asthread_getmax = omp_get_max_threads()
 #else
         asthread_getmax = 1
@@ -160,7 +160,7 @@ contains
         implicit none
         integer, intent(in) :: nbThreads
         integer, intent(in), optional :: blas_max
-#ifdef _USE_OPENMP
+#ifdef ASTER_HAVE_OPENMP
         call omp_set_num_threads( nbThreads )
 #endif
         if (present(blas_max)) then
@@ -177,11 +177,11 @@ contains
     subroutine asthread_blasset( nbThreads )
         implicit none
         integer, intent(in) :: nbThreads
-#ifdef _USE_OPENMP
-# ifdef _USE_OPENBLAS
+#ifdef ASTER_HAVE_OPENMP
+# ifdef ASTER_HAVE_OPENBLAS
         call openblas_set_num_threads( nbThreads )
 # endif
-# ifdef _USE_MKL
+# ifdef ASTER_HAVE_MKL
         call mkl_set_num_threads( nbThreads )
 # endif
 #endif
@@ -194,7 +194,7 @@ contains
     function asthread_getnum()
         implicit none
         integer :: asthread_getnum
-#ifdef _USE_OPENMP
+#ifdef ASTER_HAVE_OPENMP
         asthread_getnum = omp_get_thread_num()
 #else
         asthread_getnum = 0

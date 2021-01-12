@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ElementaryVector
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -124,12 +124,12 @@ class ElementaryVectorClass : public DataStructure {
  * @param currentNumerotation objet DOFNumbering
  * @todo prendre en compte les fonctions multiplicatrices
  */
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
     FieldOnNodesRealPtr assembleVector(
         const ParallelDOFNumberingPtr &currentNumerotation ) {
         return assembleVector( currentNumerotation, 0., Permanent );
     };
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */
 
     /**
      * @brief Assembler les vecteurs elementaires en se fondant sur currentNumerotation

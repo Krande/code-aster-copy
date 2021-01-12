@@ -32,7 +32,7 @@ subroutine as_mmhmii(fid, indice, maa, dim, type,&
     character(len=200) :: desc
     character(len=16) :: descdt
     character(len=16) :: nom(3), unit(3)
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

@@ -30,11 +30,11 @@ subroutine as_msdszi(fid,mname,jname,numdt,numit,it,letype,lgtype,&
     character(len=*) :: mname,jname
     aster_int :: numdt,numit,it,letype,lgtype,retype,rgtype,ncor,cret
 
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 
-#ifdef _DEBUG_MED
+#ifdef ASTER_DEBUG_MED
     write(6,*) '=== as_msdszi fid=',fid
     write(6,*) '=== as_msdszi mname=',mname
     write(6,*) '=== as_msdszi jname=',jname
@@ -66,7 +66,7 @@ subroutine as_msdszi(fid,mname,jname,numdt,numit,it,letype,lgtype,&
                 retype,rgtype,ncor,cret)
 #endif
 
-#ifdef _DEBUG_MED
+#ifdef ASTER_DEBUG_MED
     write(6,*) '=== as_msdszi letype=',letype
     write(6,*) '=== as_msdszi lgtype=',lgtype
     write(6,*) '=== as_msdszi retype=',retype

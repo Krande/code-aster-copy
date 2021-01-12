@@ -27,7 +27,7 @@ void DEFSSS(CPFILE, cpfile, char *action, STRING_SIZE la,
    char nomcmd[165];char *ncmd;
    long i,l,ldeb,num;
    int ier;
-#ifdef _WINDOWS
+#ifdef ASTER_PLATFORM_WINDOWS
    num = _flushall();
    ldeb = 5;
    if ( *action == 'C' ) {ncmd = "copy ";}
@@ -77,8 +77,8 @@ void DEFSSS(CPFILE, cpfile, char *action, STRING_SIZE la,
    ier=system(nomcmd);
    if ( ier == -1 ) {
         perror("\n<cpfile> code retour system");
-   } 
-#ifdef _WINDOWS
+   }
+#ifdef ASTER_PLATFORM_WINDOWS
    num = _flushall();
 #else
    num = fflush(stderr);

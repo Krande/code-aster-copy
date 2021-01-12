@@ -146,7 +146,7 @@ static PyObject* _INFO( PyObject* self, PyObject* args )
 
 
 
-#ifndef _WITHOUT_PYMOD_
+#ifndef ASTER_WITHOUT_PYMOD
 static PyMethodDef methods[] = {
    { "SPEC_OSCI", SPEC_OSCI, METH_VARARGS, "Operation SPEC_OSCI de CALC_FONCTION" },
 #ifdef __DEBUG_ASTER_FONCTIONS__

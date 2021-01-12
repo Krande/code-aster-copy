@@ -30,7 +30,7 @@
 /  Résultats :
 /     nombre de datasets et de groups
 /-----------------------------------------------------------------------------*/
-#ifdef HAVE_HDF5
+#ifdef ASTER_HAVE_HDF5
 #include <hdf5.h>
 #endif
 #define FALSE   0
@@ -38,7 +38,7 @@
 ASTERINTEGER DEFPSPS(HDFTYP, hdftyp, hid_t *idf, char *nomgr, STRING_SIZE ln,
                                 ASTERINTEGER *nbnom, char *typ, STRING_SIZE ltp)
 {
-#ifdef HAVE_HDF5
+#ifdef ASTER_HAVE_HDF5
   hid_t idfic, bidon=0;
   herr_t indx;
   hsize_t ind;
@@ -105,7 +105,7 @@ ASTERINTEGER DEFPSPS(HDFTYP, hdftyp, hid_t *idf, char *nomgr, STRING_SIZE ln,
           failure. The iterator can be restarted at the next group member.
 */
 
-#ifdef HAVE_HDF5
+#ifdef ASTER_HAVE_HDF5
 herr_t indiceType(hid_t id, const char *nom, const H5L_info_t *info, void *donnees)
 {
   herr_t status;

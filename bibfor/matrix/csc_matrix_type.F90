@@ -35,7 +35,7 @@ private
 !
 character(len=7), parameter, public :: zero_based="0-based", one_based="1-based"
 !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 PetscInt, parameter, private :: un = 1, zero =0
 #else
 integer(kind=4), parameter, private :: un = 1, zero =0
@@ -51,14 +51,14 @@ type, public :: csc_matrix
    ! Number of non-zero elements
    integer :: nnz=0
    ! rowind(i) is the row index of the ith non zero element
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
    PetscInt, dimension(:), pointer :: rowind=> null()
 #else
    integer(kind=4), dimension(:), pointer :: rowind=> null()
 #endif
    ! colptr(i) is the starting index in rowind and values
    ! column i
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
    PetscInt, dimension(:), pointer :: colptr=> null()
 #else
    integer(kind=4), dimension(:), pointer :: colptr=> null()
@@ -136,7 +136,7 @@ subroutine create_csc_matrix_from_csc_store(name, cs, m, a )
   type(csc_matrix), intent(out) :: a
   !
   integer :: ii, jj, pos
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
     PetscInt :: nnz
 #else
     integer(kind=4) :: nnz
@@ -165,7 +165,7 @@ subroutine define_csc_matrix_from_array( name, indexing, mm, rowind, &
     integer, intent(in)  :: mm
     real(kind=8), dimension(:), pointer :: values
     type(csc_matrix), intent(out) :: a
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
     PetscInt, dimension(:), pointer :: rowind , colptr
 #else
     integer(kind=4), dimension(:), pointer :: rowind , colptr
@@ -228,7 +228,7 @@ end subroutine  copy_csc_matrix
 subroutine to_one_based_indexing( a )
   !
   type(csc_matrix), intent(inout) :: a
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
     PetscInt, parameter :: un=1
 #else
     integer(kind=4), parameter :: un=1
@@ -248,7 +248,7 @@ end subroutine to_one_based_indexing
 subroutine to_zero_based_indexing( a )
   !
   type(csc_matrix), intent(inout) :: a
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
   PetscInt, parameter :: un=1
 #else
   integer(kind=4), parameter :: un=1
@@ -387,7 +387,7 @@ integer :: b_nrow, b_ncol, nnz
 integer :: a_icol, b_icol
 integer ::  pass
 !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
     PetscInt :: ii, jj
     PetscInt, dimension(:), pointer :: colptr => null()
 #else
@@ -406,8 +406,8 @@ ASSERT( maxval(icol) <= a_csc%n )
 ! On utilise un tableau temporaire colptr
 ! car le tableau colptr de b_csc ne
 ! sera alloué qu'à la seconde passe
-#ifdef _HAVE_PETSC
-#if PETSC_INT_SIZE == 4
+#ifdef ASTER_HAVE_PETSC
+#if ASTER_PETSC_INT_SIZE == 4
     AS_ALLOCATE( vi4=colptr, size=b_ncol+1 )
 #else
     AS_ALLOCATE( vi=colptr, size=b_ncol+1 )
@@ -466,8 +466,8 @@ enddo
       enddo
       b_csc%colptr(un) = un
 ! Free memory
-#ifdef _HAVE_PETSC
-#if PETSC_INT_SIZE == 4
+#ifdef ASTER_HAVE_PETSC
+#if ASTER_PETSC_INT_SIZE == 4
     AS_DEALLOCATE (vi4 = colptr)
 #else
     AS_DEALLOCATE (vi = colptr)
@@ -489,7 +489,7 @@ type(csc_matrix), intent(out) :: at
 character(len=*), intent(in), optional :: name
 !
 integer :: i,j,k
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
     PetscInt :: next
 #else
     integer(kind=4) :: next
@@ -593,7 +593,7 @@ function concat_csc_matrix( a, b, name ) result( c )
    type(csc_matrix )                      :: c
 !  Local variables
    character(24) :: cname
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
     PetscInt :: pos_a,pos_b,pos_c,j,k, nnz_a, nnz_b, ncol_c
     PetscInt :: nrow_a
 #else
@@ -643,7 +643,7 @@ end function concat_csc_matrix
 subroutine permute_rows_of_csc_matrix( perm, a )
 !
  type(csc_matrix), intent(inout)  :: a
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
     PetscInt, dimension(:), intent(in) :: perm
 #else
     integer(kind=4), dimension(:), intent(in) :: perm
@@ -660,13 +660,13 @@ end subroutine permute_rows_of_csc_matrix
 subroutine permute_cols_of_csc_matrix( perm, a_csc )
 !
  type(csc_matrix), intent(inout)  :: a_csc
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
  PetscInt, dimension(:), intent(in) :: perm
 #else
  integer(kind=4), dimension(:), intent(in) :: perm
 #endif
 !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
     PetscInt, dimension(a_csc%n) :: length
     PetscInt :: astart, bstart,jb,ja,ii, ncolb, nnzb
 #else
@@ -716,7 +716,7 @@ subroutine permute_cols_of_csc_matrix( perm, a_csc )
 end subroutine permute_cols_of_csc_matrix
 
 subroutine inverse_permutation( perm , perminv )
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
     PetscInt, dimension(:), intent(in) :: perm
     PetscInt, dimension(:), intent(inout) :: perminv
 #else
@@ -724,7 +724,7 @@ subroutine inverse_permutation( perm , perminv )
     integer(kind=4), dimension(:), intent(inout) :: perminv
 #endif
 !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
     PetscInt :: n, i
 #else
     integer(kind=4) :: n, i
@@ -796,7 +796,7 @@ subroutine sort_rows_of_csc_matrix( a_csc )
     integer :: nrow_max , icol, istart, iend, ierr
     integer :: nrow_cur
     real(kind=8), dimension(:), pointer :: values => null()
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
     PetscInt, dimension(:), pointer :: rowind => null()
     PetscInt, dimension(:), pointer :: pv => null()
     PetscInt, dimension(:), allocatable, target :: ibuffer

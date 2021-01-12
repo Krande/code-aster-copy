@@ -3,7 +3,7 @@
  * @brief Implementation de ParallelMeshClass
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,7 +24,7 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 #include "astercxx.h"
 
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
 
 #include "aster_fort_mesh.h"
 #include "Meshes/ParallelMesh.h"
@@ -251,4 +251,4 @@ const VectorLong ParallelMeshClass::getNodes( const std::string name, const bool
 };
 
 
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */

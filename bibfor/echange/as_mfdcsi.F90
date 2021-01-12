@@ -30,7 +30,7 @@ subroutine as_mfdcsi(fid, cha, ind, numdt, numo,&
     aster_int :: ind, numdt, numo, cret
     character(len=*) :: cha
     real(kind=8) :: dt
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

@@ -29,7 +29,7 @@ subroutine as_mfafai(fid, maa, ind, fam, num,&
     med_idt :: fid
     aster_int :: num, cret, ind
     character(len=*) :: maa, fam, gro(*)
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

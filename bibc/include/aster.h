@@ -16,8 +16,8 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-#ifndef ASTER_H
-#define ASTER_H
+#ifndef ASTER_H_
+#define ASTER_H_
 
 #include "Python.h"
 #include <stdio.h>
@@ -45,7 +45,7 @@ typedef int Py_ssize_t;
             INTERRUPT(17); }
 
 /* deprecated functions on Windows */
-#ifdef _WINDOWS
+#ifdef ASTER_PLATFORM_WINDOWS
 #define strdup _strdup
 #endif
 

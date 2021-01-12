@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 2007 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 !
-#ifdef _HAVE_MUMPS
+#ifdef ASTER_HAVE_MUMPS
 interface
     subroutine dmumps(cmpsk)
 #       include "dmumps_struc.h"

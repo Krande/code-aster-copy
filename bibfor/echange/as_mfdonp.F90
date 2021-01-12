@@ -37,7 +37,7 @@ subroutine as_mfdonp(fid, cha, numdt, numo, typent,&
     character(len=*) :: nompro, nomloc, cha, noma
     character(len=20) :: numdtchar, numochar
     character(len=73) :: oname
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

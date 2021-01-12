@@ -27,7 +27,7 @@ subroutine as_mpfnpf(fid, n, cret)
 #include "med/mpfnpf.h"
     med_idt :: fid
     aster_int ::  n, cret
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

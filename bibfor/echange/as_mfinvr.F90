@@ -28,7 +28,7 @@ subroutine as_mfinvr(fid, maj, mini, rel, cret)
     med_idt :: fid
     aster_int :: maj, mini, rel
     aster_int :: cret
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

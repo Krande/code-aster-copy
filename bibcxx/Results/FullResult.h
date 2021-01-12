@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FullResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -62,7 +62,7 @@ class FullResultClass : public ResultClass {
 
     bool _setDOFNumbering( const BaseDOFNumberingPtr & );
     bool setDOFNumbering( const DOFNumberingPtr & );
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
     bool setParallelDOFNumbering( const ParallelDOFNumberingPtr & );
 #endif
 };

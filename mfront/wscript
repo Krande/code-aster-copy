@@ -48,10 +48,10 @@ def configure(self):
         self.env.revert()
         if opts.enable_mfront == True:
             raise
-        self.undefine('HAVE_MFRONT')
+        self.undefine('ASTER_HAVE_MFRONT')
         self.env.TFELSUFFIX = ''
     else:
-        self.define('HAVE_MFRONT', 1)
+        self.define('ASTER_HAVE_MFRONT', 1)
         self.env.BUILD_MFRONT = True
 
 def build(self):
@@ -67,7 +67,7 @@ def build(self):
                 name = 'asterbehaviour',
               source = lmfront,
             includes = [osp.join(osp.splitext(i)[0], "include") for i in lst],
-              target = env['_ASTERBEHAVIOUR'],
+              target = env['ASTER_BEHAVIOUR_LIB'],
         install_path = env.ASTERLIBDIR,
                  env = env.derive(),
                  use = ['MFRONT', 'MFRONT_ONLY', 'CXX'],
@@ -140,7 +140,7 @@ def check_mfront(self):
                    args='--cppflags --includes --oflags0 ' \
                         '--libs --material --utilities --system',
                    package='', uselib_store='MFRONT', mandatory=True)
-    if self.get_define('_USE_64_BITS'):
+    if self.get_define('ASTER_HAVE_64_BITS'):
         arch = 'ASTER_ARCH=64'
     else:
         arch = 'ASTER_ARCH=32'
@@ -178,7 +178,7 @@ def check_mfront_version(self, minver=None):
     self.msg("Checking for mfront version >= %s" % minver_str, mfrver,
              result and 'GREEN' or 'YELLOW')
     if result:
-        self.define('MFRONT_VERSION', mfrver)
+        self.define('ASTER_MFRONT_VERSION', mfrver)
     else:
         raise Errors.ConfigurationError('The Mfront version is too old, required >= %r' % minver_str)
 

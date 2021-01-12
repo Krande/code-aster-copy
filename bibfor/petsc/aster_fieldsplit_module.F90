@@ -33,7 +33,7 @@ module aster_fieldsplit_module
 !
 #include "asterf_types.h"
 #include "asterf_petsc.h"
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
     use petscksp
     use petscpc
     use petsc_data_module
@@ -534,7 +534,7 @@ contains
 !   Chaque processeur possède la section d'indice global C
 !   [low_ab:high_ab-1] de is_ab
         high_ab(1) = izero
-#if PETSC_INT_SIZE == 4
+#if ASTER_PETSC_INT_SIZE == 4
         call asmpi_scan_i4(nab_local, high_ab, to_mpi_int(ione), MPI_SUM, mpicomm)
 #else
         call asmpi_scan_i(nab_local, high_ab, to_mpi_int(ione), MPI_SUM, mpicomm)
@@ -733,7 +733,7 @@ contains
 !
     end subroutine get_is_of_field
 !
-!#IFDEF _HAVE_PETSC
+!#IFDEF ASTER_HAVE_PETSC
 #else
 !
   public :: mfield_setup

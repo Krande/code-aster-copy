@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe Model
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -112,9 +112,9 @@ class ModelClass : public DataStructure, public ListOfTablesClass {
  * @brief Maillage sur lequel repose la modelisation
  * @todo a supprimer en templatisant Model etc.
  */
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
     ConnectionMeshPtr _connectionMesh;
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */
     /** @brief Méthode de parallélisation du modèle */
     ModelSplitingMethod _splitMethod;
     /** @brief Graph partitioning */
@@ -150,14 +150,14 @@ class ModelClass : public DataStructure, public ListOfTablesClass {
           _ligrel( new FiniteElementDescriptorClass( getName() + ".MODELE", _baseMesh ) ) {
         if ( _baseMesh->isEmpty() )
             throw std::runtime_error( "Mesh is empty" );
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
         _connectionMesh = nullptr;
 #endif
     };
 
     ModelClass( const BaseMeshPtr mesh ) : ModelClass( ResultNaming::getNewResultName(), mesh ){};
 
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
     ModelClass( const std::string name, const ConnectionMeshPtr mesh )
         : DataStructure( name, 8, "MODELE" ),
           _typeOfCells( JeveuxVectorLong( getName() + ".MAILLE    " ) ),
@@ -174,7 +174,7 @@ class ModelClass : public DataStructure, public ListOfTablesClass {
 
     ModelClass( const ConnectionMeshPtr mesh )
         : ModelClass( ResultNaming::getNewResultName(), mesh ){};
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */
 
     /**
      * @brief Ajout d'une nouvelle modelisation sur tout le maillage
@@ -236,13 +236,13 @@ class ModelClass : public DataStructure, public ListOfTablesClass {
      */
     GraphPartitioner getGraphPartitioner() const { return _graphPartitioner; };
 
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
     ConnectionMeshPtr getConnectionMesh() const {
         if ( ( !_connectionMesh ) || _connectionMesh->isEmpty() )
             throw std::runtime_error( "Mesh of model is empty" );
         return _connectionMesh;
     };
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */
 
     /**
      * @brief Get the sane base model
@@ -283,10 +283,10 @@ class ModelClass : public DataStructure, public ListOfTablesClass {
      * @brief Definition de la methode de partition
      */
     void setSplittingMethod( ModelSplitingMethod split ) {
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
         if ( _connectionMesh && !_connectionMesh->isEmpty() && split != Centralized )
             throw std::runtime_error( "For Parallel mesh, Centralized splitting is mandatory" );
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */
 
         _splitMethod = split;
     };

@@ -32,7 +32,7 @@ subroutine as_mmhenw(fid, maa, num, n, typent,&
     med_idt :: fid
     aster_int :: typent, typgeo, cret
     aster_int :: n, mdnont, mdnoit
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

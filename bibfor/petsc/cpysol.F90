@@ -42,7 +42,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 #include "asterfort/wkvect.h"
 #include "jeveux.h"
 !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
     PetscInt :: debglo, nbval
 #else
     integer(kind=4) :: debglo, nbval
@@ -50,7 +50,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
     real(kind=8) :: rsolu(*), vecpet(*)
     character(len=14) :: numddl
     character(len=19) :: nomat
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
 #include "mpif.h"
 !
     integer :: rang, nbproc, jnbjoi, nbjoin, numpro, jjointr, jjointe,lmat

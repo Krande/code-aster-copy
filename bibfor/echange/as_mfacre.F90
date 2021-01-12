@@ -30,7 +30,7 @@ subroutine as_mfacre(fid, maa, fam, num, ngro,&
     aster_int :: num, ngro, cret
     character(len=*) :: maa, fam
     character(len=80) :: gro(*)
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

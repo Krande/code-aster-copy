@@ -33,21 +33,21 @@ void abort();
 
 void hancpu (int sig);
 
-#if defined SOLARIS
+#if defined ASTER_PLATFORM_SOLARIS
 #include <siginfo.h>
 #include <ucontext.h>
   void hanfpe(int sig, siginfo_t *sip, ucontext_t *uap);
 
-#elif defined _WINDOWS
+#elif defined ASTER_PLATFORM_WINDOWS
 #include <float.h>
   void hanfpe(int sig);
 
-#elif defined _POSIX
+#elif defined ASTER_PLATFORM_POSIX
   void hanfpe(int sig);
   void stpusr1(int sig);
 #endif
 
-#if defined GNU_LINUX
+#if defined ASTER_PLATFORM_LINUX
 #   define _GNU_SOURCE 1
 #   include <fenv.h>
 #endif
@@ -55,7 +55,7 @@ void hancpu (int sig);
 
 void DEF0(INISIG, inisig)
 {
-#if defined _POSIX
+#if defined ASTER_PLATFORM_POSIX
     struct sigaction action_CPU_LIM;
 #else
     unsigned int cw, cwOrig;
@@ -64,7 +64,7 @@ void DEF0(INISIG, inisig)
 /*            */
 /* CPU LIMITE */
 /*            */
-#if defined _POSIX
+#if defined ASTER_PLATFORM_POSIX
    action_CPU_LIM.sa_handler=hancpu;
    sigemptyset(&action_CPU_LIM.sa_mask);
    action_CPU_LIM.sa_flags=0;
@@ -74,18 +74,18 @@ void DEF0(INISIG, inisig)
 /*                          */
 /* Floating point exception */
 /*                          */
-#if defined SOLARIS
+#if defined ASTER_PLATFORM_SOLARIS
    ieee_handler("set","common",hanfpe);
    ieee_handler("clear","invalid",hanfpe);
 
-#elif defined GNU_LINUX
+#elif defined ASTER_PLATFORM_LINUX
 
    /* Enable some exceptions. At startup all exceptions are masked. */
    feenableexcept(FE_DIVBYZERO|FE_OVERFLOW|FE_INVALID);
 
    signal(SIGFPE,  hanfpe);
 
-#elif defined _WINDOWS
+#elif defined ASTER_PLATFORM_WINDOWS
     _clearfp();
     cw = _controlfp(0, 0);
     cw &=~( EM_OVERFLOW | EM_ZERODIVIDE );
@@ -101,7 +101,7 @@ void DEF0(INISIG, inisig)
 /*                          */
 /* Note : l'arret par SIGUSR1 ne fonctionne pas sous MSVC,
    il faudra essayer de trouver autre chose... */
-#if defined _POSIX
+#if defined ASTER_PLATFORM_POSIX
    signal(SIGUSR1,  stpusr1);
 #endif
 }

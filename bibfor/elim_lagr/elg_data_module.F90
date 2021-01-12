@@ -45,7 +45,7 @@ integer, parameter :: nmax_ctxt = 5
 !     C'est la variable "sensible" que l'on doit "positionner" avec
 !     beaucoup de soins.
 !     Aujourd'hui, KE est positionné au début de preres.f
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
     PetscInt, public :: ke
 #else
     integer(kind=4), public :: ke
@@ -139,7 +139,7 @@ subroutine elg_gest_data (action, mat1, mat2, rigi1)
 !
 !   Dummy arguments
     character(len=*), intent(in)  :: action, mat1, mat2, rigi1
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 !   Local variables
     integer :: k, ktrou, iprem, kpos
 !

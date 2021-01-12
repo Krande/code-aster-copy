@@ -3,7 +3,7 @@
  * @brief Implementation de ParallelMeshClass
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,7 +28,7 @@
 
 #include "Solvers/PetscInitializeFinalize.h"
 
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 void petscFinalize()
 {
     std::string off="OFF", foo=" ";

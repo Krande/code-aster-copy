@@ -16,8 +16,8 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-#ifndef ASTER_FORT_DS_H
-#define ASTER_FORT_DS_H
+#ifndef ASTER_FORT_DS_H_
+#define ASTER_FORT_DS_H_
 
 #include "aster.h"
 
@@ -92,7 +92,7 @@ void DEFSPPSSPSPS( NOCART_C, nocart_c, const char *, STRING_SIZE, const ASTERINT
                    const ASTERINTEGER *, const char *, STRING_SIZE, const ASTERINTEGER *,
                    const char *, STRING_SIZE );
 
-#ifdef _STRLEN_AT_END
+#ifdef ASTER_STRLEN_AT_END
 #define CALL_RSACCH( nomsd, numch, nomch, nbord, liord, nbcmp, liscmp )                            \
     F_FUNC( RSACCH, rsacch )                                                                       \
     ( nomsd, numch, nomch, nbord, liord, nbcmp, liscmp, strlen( nomsd ), 16, 8 )

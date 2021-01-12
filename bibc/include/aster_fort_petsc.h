@@ -16,8 +16,8 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-#ifndef ASTER_FORT_PETSC_H
-#define ASTER_FORT_PETSC_H
+#ifndef ASTER_FORT_PETSC_H_
+#define ASTER_FORT_PETSC_H_
 
 #include "aster.h"
 
@@ -27,7 +27,7 @@
  *
  * ******************************************************/
 
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 #include "petscmat.h"
 #endif
 
@@ -35,7 +35,7 @@
 extern "C" {
 #endif
 
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 #define CALLO_MATASS2PETSC( a, b, c ) CALLOPP( MATASS2PETSC, matass2petsc, a, b, c )
 #define CALL_MATASS2PETSC( a, b, c ) CALLSPP( MATASS2PETSC, matass2petsc, a, b, c )
 void DEFSPP( MATASS2PETSC, matass2petsc, const char *, STRING_SIZE, Mat *, PetscErrorCode * );

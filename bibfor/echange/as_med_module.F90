@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine as_med_open(fid, nom, acces, cret)
     aster_int, intent(in) :: acces
     aster_int, intent(out) :: cret
 !
-#if (MED_NUM_MAJOR == 4 && MED_NUM_MINOR == 0)
+#if (ASTER_MED_VERSION_MAJOR == 4 && ASTER_MED_VERSION_MINOR == 0)
     integer, parameter :: med_acc_rdwr = 1
 #endif
     integer, parameter :: med_acc_creat = 3
@@ -61,7 +61,7 @@ subroutine as_med_open(fid, nom, acces, cret)
     mode = acces
     vers = bkwd_vers
 !
-#if (MED_NUM_MAJOR >= 4)
+#if (ASTER_MED_VERSION_MAJOR >= 4)
     if (mode .eq. med_acc_creat) then
         if (getexm(' ', 'VERSION_MED') .eq. 1) then
             call getvtx(' ', 'VERSION_MED', nbval=1, scal=tvers, nbret=nbret)
@@ -76,7 +76,7 @@ subroutine as_med_open(fid, nom, acces, cret)
         if (vers(1) .eq. 4 .and. (vers(2) .eq. 0 .or. vers(2) .eq. 1)) then
 !               pass
         elseif (vers(1) .eq. 3 .and. vers(2) .eq. 3) then
-#if (MED_NUM_MAJOR == 4 && MED_NUM_MINOR == 0)
+#if (ASTER_MED_VERSION_MAJOR == 4 && ASTER_MED_VERSION_MINOR == 0)
             call write33header(nom)
             mode = med_acc_rdwr
 #endif

@@ -28,7 +28,7 @@
 /  Résultats :
 /     nombre de datasets et de groups
 /-----------------------------------------------------------------------------*/
-#ifdef HAVE_HDF5
+#ifdef ASTER_HAVE_HDF5
 #include <hdf5.h>
 #endif
 
@@ -36,7 +36,7 @@ ASTERINTEGER DEFPSS(HDFNOM, hdfnom, hid_t *idf, char *nomgr, STRING_SIZE ln,
                char *nom, STRING_SIZE lnm)
 {
   ASTERINTEGER nbobj=0;
-#ifdef HAVE_HDF5
+#ifdef ASTER_HAVE_HDF5
   hid_t idfic , bidon=0;
   hsize_t ind;
   char *nomg, *pnomdts, *pnom;
@@ -105,7 +105,7 @@ ASTERINTEGER DEFPSS(HDFNOM, hdfnom, hid_t *idf, char *nomgr, STRING_SIZE ln,
           failure. The iterator can be restarted at the next group member.
 */
 
-#ifdef HAVE_HDF5
+#ifdef ASTER_HAVE_HDF5
 herr_t indiceName(hid_t id, const char *nom, const H5L_info_t *info, void *donnees)
 {
   char *p;

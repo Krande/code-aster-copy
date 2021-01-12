@@ -41,11 +41,11 @@ subroutine asmpi_warn(iexc)
 !       iexc = 0 (stop with abort)
 !       iexc = 1 (raise an exception)
 !-----------------------------------------------------------------------
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
 !
 ! Si on désactive le controle des erreurs entre processeurs, on fait abort
 !
-# ifdef DISABLE_MPI_CHECK
+# ifdef ASTER_DISABLE_MPI_CHECK
     call asabrt(6)
 # else
 !

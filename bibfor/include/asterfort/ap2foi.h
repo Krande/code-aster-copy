@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
                 character(len=19) :: nosolv
                 aster_logical :: lmd
 
-# ifdef _HAVE_PETSC
+# ifdef ASTER_HAVE_PETSC
                 KSPConvergedReason :: indic
                 PetscInt :: its
 # else

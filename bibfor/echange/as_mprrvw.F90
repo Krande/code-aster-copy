@@ -30,7 +30,7 @@ subroutine as_mprrvw(fid, nom, numdt, numit, dt,&
     med_idt :: fid
     aster_int :: numdt, numit, cret
     real(kind=8) :: dt, val
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

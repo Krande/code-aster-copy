@@ -33,11 +33,11 @@ subroutine as_msdcrr(fid,lmname,jname,numdt,numit,entlcl,&
     aster_int :: numdt,numit,entlcl,geolcl,entdst
     aster_int :: geodst,ncorr,corrtab(*),cret
 
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 
-#ifdef _DEBUG_MED
+#ifdef ASTER_DEBUG_MED
     write(6,*) '=== as_msdcrr fid=',fid
     write(6,*) '=== as_msdcrr lmname=',lmname
     write(6,*) '=== as_msdcrr jname=',jname
@@ -76,7 +76,7 @@ subroutine as_msdcrr(fid,lmname,jname,numdt,numit,entlcl,&
                 geolcl,entdst,geodst,corrtab,cret)
 #endif
 
-#ifdef _DEBUG_MED
+#ifdef ASTER_DEBUG_MED
     write(6,*) '=== as_msdcrr corrtab(1:min(3,ncorr))=',corrtab(1:min(3,ncorr))
     write(6,*) '=== as_msdcrr cret=',cret
 #endif

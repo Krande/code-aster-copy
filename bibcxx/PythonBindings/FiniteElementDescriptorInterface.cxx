@@ -3,7 +3,7 @@
  * @brief Interface python de FiniteElementDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -36,9 +36,9 @@ void exportFiniteElementDescriptorToPython() {
                 py::bases< DataStructure > >( "FiniteElementDescriptor", py::no_init )
 // fake initFactoryPtr: not directly created by user
 // fake initFactoryPtr: not directly created by user
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
         .def( "transferDofDescriptorFrom",
               &FiniteElementDescriptorClass::transferDofDescriptorFrom )
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */
         ;
 };

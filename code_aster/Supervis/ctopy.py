@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,7 @@ def _print_header():
     pyvers = '%s.%s.%s' % tuple(sys.version_info[:3])
     UTMESS('I', 'SUPERVIS2_9', valk=(pyvers, numpy.__version__))
     # avertissement si la version a plus de 15 mois
-    if aster_core._NO_EXPIR == 0:
+    if aster_core.ASTER_NO_EXPIR == 0:
         try:
             d0, m0, y0 = list(map(int, date_build.split('/')))
             tbuild = datetime(y0, m0, d0)

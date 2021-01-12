@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine asmpi_barrier(comm)
 !   Set a MPI Barrier on the given communicator or the current one.
 !
     mpi_int :: comm2, idummy
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
 #include "asterc/asmpi_barrier_wrap.h"
     if (.not. present(comm)) then
         call asmpi_comm('GET', comm2)

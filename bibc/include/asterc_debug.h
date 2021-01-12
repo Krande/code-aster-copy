@@ -16,8 +16,8 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-#ifndef ASTERC_DEBUG_H
-#define ASTERC_DEBUG_H
+#ifndef ASTERC_DEBUG_H_
+#define ASTERC_DEBUG_H_
 
 #include "Python.h"
 #include <stdlib.h>
@@ -29,10 +29,10 @@ If the flag is defined, a function prints informations on stdout.
 If the flag is not defined, the function must be empty macro.
 
 to enable DEBUG_ASSERT
-#define __DEBUG_ASSERT__
+#define ASTER_DEBUG_ASSERT
 
 to add all traces
-#define __DEBUG_ALL__
+#define ASTER_DEBUG_ALL
 */
 
 /*! print the filename and line where the error occurred */
@@ -54,14 +54,14 @@ to add all traces
 
 
 /*! enable DEBUG_ASSERT */
-#if defined(__DEBUG_ASSERT__) || defined(__DEBUG_ALL__)
+#if defined(ASTER_DEBUG_ASSERT) || defined(ASTER_DEBUG_ALL)
 #   define DEBUG_ASSERT(cond)  AS_ASSERT(cond)
 #else
 #   define DEBUG_ASSERT(cond)
 #endif
 
 /*! enable DEBUG_DLL */
-#if defined(__DEBUG_DLL__) || defined(__DEBUG_ALL__)
+#if defined(ASTER_DEBUG_DLL) || defined(ASTER_DEBUG_ALL)
 #   define DEBUG_DLL_PYOB(label, pyobj)  PYDBG(label, pyobj)
 #   define DEBUG_DLL_VV(fmt, a, b)  DBGVV(fmt, a, b)
 #else
@@ -69,15 +69,15 @@ to add all traces
 #   define DEBUG_DLL_VV(fmt, a, b)
 #endif
 
-/*! enable DEBUG_EXCEPT, not in __DEBUG_ALL__ */
-#if defined(__DEBUG_EXCEPT__)
+/*! enable DEBUG_EXCEPT, not in ASTER_DEBUG_ALL */
+#if defined(ASTER_DEBUG_EXCEPT)
 #   define DEBUG_EXCEPT(fmt, a)  DBGV(fmt, a)
 #else
 #   define DEBUG_EXCEPT(fmt, a)
 #endif
 
 /*! debug MPI communicator as aster_comm_t */
-#if defined(__DEBUG_MPICOM__) || defined(__DEBUG_ALL__)
+#if defined(ASTER_DEBUG_MPICOM) || defined(ASTER_DEBUG_ALL)
 #   define COMM_DEBUG(c) { DEBUG_LOC; \
            printf("%-8s #%d (%d/@", (c).name, (int)MPI_Comm_c2f((c).id), (c).level); \
            if ((c).parent) { printf("%-8s", (c).parent->name); } \
@@ -88,19 +88,19 @@ to add all traces
 #endif
 
 /*! debug MPI communications */
-#if defined(__DEBUG_MPI__) || defined(__DEBUG_ALL__)
+#if defined(ASTER_DEBUG_MPI) || defined(ASTER_DEBUG_ALL)
 #   define DEBUG_MPI(fmt, a, b) DBGVV(fmt, a, b)
 #else
 #   define DEBUG_MPI(fmt, a, b)
 #endif
 
 /*! enable DEBUG_ASTER_FONCTIONS */
-#if defined(__DEBUG_ALL__)
+#if defined(ASTER_DEBUG_ALL)
 #   define __DEBUG_ASTER_FONCTIONS__
 #endif
 
 /*! enable DEBUG_IODR */
-#if defined(__DEBUG_IODR__) || defined(__DEBUG_ALL__)
+#if defined(ASTER_DEBUG_IODR) || defined(ASTER_DEBUG_ALL)
 #   define DEBUG_IODR(fmt, a, b) DBGVV(fmt, a, b)
 #else
 #   define DEBUG_IODR

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ def configure(self):
         self.env.append_value('LINKFLAGS_fcprogram', ['-nofor_main'])
         if opts.embed_all or opts.embed_aster:
             self.env.append_value('LINKFLAGS_fcprogram', ['-static-intel'])
-            if self.get_define('HAVE_MPI'):
+            if self.get_define('ASTER_HAVE_MPI'):
                 self.env.append_value('LINKFLAGS_fcprogram', ['-static_mpi'])
     self.check_cflags()
 
@@ -124,7 +124,7 @@ def build_libaster(self, env):
             name = 'asterlib',
           target = 'aster',
           source = PYMAIN,
-         defines = '_MAIN_=_unused_main_', #'_WITHOUT_PYMOD_',
+         defines = '_MAIN_=_unused_main_', #'ASTER_WITHOUT_PYMOD',
              env = env.derive(),
              use = use,
     install_path = env.ASTERLIBDIR

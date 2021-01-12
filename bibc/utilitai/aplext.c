@@ -23,13 +23,13 @@
 #include "aster.h"
 
 
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <signal.h>
 
-#elif defined(_WINDOWS)
+#elif defined ASTER_PLATFORM_WINDOWS
 #include <process.h>
 
 #endif
@@ -42,7 +42,7 @@ void DEFPPSP(APLEXT, aplext, ASTERINTEGER *niv, ASTERINTEGER *nbd ,char *nom,
    char nomcmd[256+1];
    char *ncmd,*msg;
    long i,k,l;
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
    pid_t pid;
 #else
    long ipid,num;
@@ -52,7 +52,7 @@ void DEFPPSP(APLEXT, aplext, ASTERINTEGER *niv, ASTERINTEGER *nbd ,char *nom,
       fprintf(stderr,"\nLe nombre d'arguments d'appel (%ld) est superieur a 99\n",*nbd);
       fprintf(stdout,"\nLe nombre d'arguments d'appel (%ld) est superieur a 99\n",*nbd);
       *ier = 1;
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
       fflush(stderr);
       fflush(stdout);
 #else
@@ -99,7 +99,7 @@ void DEFPPSP(APLEXT, aplext, ASTERINTEGER *niv, ASTERINTEGER *nbd ,char *nom,
 
    args[*nbd+1] = NULL;
 
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
    fflush(stderr);
    fflush(stdout);
    if ( (pid=fork()) < 0 ) {
@@ -124,11 +124,11 @@ void DEFPPSP(APLEXT, aplext, ASTERINTEGER *niv, ASTERINTEGER *nbd ,char *nom,
 /*
    Attente de la fin de l'execution de la commande
 
-*/     do {errno = 0; 
+*/     do {errno = 0;
           pidr=wait(&errnoSTAT);
        } while (errno==EINTR) ;
        if (pidr == -1) {
-                perror("wait"); 
+                perror("wait");
                 *ier=1;
                 msg=(char *)strerror(errno);
                 fprintf(stdout,"\n%s\n",msg);
@@ -187,7 +187,7 @@ void DEFPPSP(APLEXT, aplext, ASTERINTEGER *niv, ASTERINTEGER *nbd ,char *nom,
       fprintf(stdout,"\nRetour au Code_Aster \n\n");
    }
 
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
    fflush(stderr);
    fflush(stdout);
 #else

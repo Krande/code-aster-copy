@@ -3,7 +3,7 @@
  * @brief Definition of code_aster exceptions
  * @author Mathieu Courtois
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -104,20 +104,20 @@ extern "C" void DEFPSPSPPPP( UEXCEP, uexcep, _IN ASTERINTEGER *exc_id, _IN char 
     std::string idm( trim( std::string( idmess, lidmess ) ) );
 
     switch ( *exc_id ) {
-    case CONVERGENCE_ERROR:
-        throw ErrorCpp< CONVERGENCE_ERROR >( idm, argk, argi, argr );
+    case ASTER_CONVERGENCE_ERROR:
+        throw ErrorCpp< ASTER_CONVERGENCE_ERROR >( idm, argk, argi, argr );
 
-    case INTEGRATION_ERROR:
-        throw ErrorCpp< INTEGRATION_ERROR >( idm, argk, argi, argr );
+    case ASTER_INTEGRATION_ERROR:
+        throw ErrorCpp< ASTER_INTEGRATION_ERROR >( idm, argk, argi, argr );
 
-    case SOLVER_ERROR:
-        throw ErrorCpp< SOLVER_ERROR >( idm, argk, argi, argr );
+    case ASTER_SOLVER_ERROR:
+        throw ErrorCpp< ASTER_SOLVER_ERROR >( idm, argk, argi, argr );
 
-    case CONTACT_ERROR:
-        throw ErrorCpp< CONTACT_ERROR >( idm, argk, argi, argr );
+    case ASTER_CONTACT_ERROR:
+        throw ErrorCpp< ASTER_CONTACT_ERROR >( idm, argk, argi, argr );
 
-    case TIMELIMIT_ERROR:
-        throw ErrorCpp< TIMELIMIT_ERROR >( idm, argk, argi, argr );
+    case ASTER_TIMELIMIT_ERROR:
+        throw ErrorCpp< ASTER_TIMELIMIT_ERROR >( idm, argk, argi, argr );
 
     default:
         throw AsterErrorCpp( idm, argk, argi, argr );

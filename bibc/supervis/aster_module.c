@@ -40,7 +40,7 @@
 #include "aster_utils.h"
 #include "shared_vars.h"
 
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 #include "petsc.h"
 
 void charToPetscArgcArgv(char *buffer, char * delim, char ** Output, int* index) {
@@ -2306,7 +2306,7 @@ void DEFSS(LCDEFORMLDC, lcdeformldc, _IN char *compor, STRING_SIZE lcompor,
    Py_XDECREF(catalc);
 }
 
-void DEFSS(LCREGUVISC, lcreguvisc, 
+void DEFSS(LCREGUVISC, lcreguvisc,
            _IN char *compor      , STRING_SIZE lcompor,
            _OUT char *reguvisc   , STRING_SIZE lreguvisc)
 {
@@ -2408,7 +2408,7 @@ static PyMethodDef aster_methods[] = {
                 {NULL,                NULL}/* sentinel */
 };
 
-#ifndef _WITHOUT_PYMOD_
+#ifndef ASTER_WITHOUT_PYMOD
 /* Initialization function for the module (*must* be called initaster) */
 static char aster_module_documentation[] =
 "C implementation of the Python aster module\n"

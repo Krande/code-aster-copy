@@ -25,13 +25,13 @@
 /* Définition des constantes */
 
 /* undef entier et réel */
-#ifdef _USE_64_BITS
+#ifdef ASTER_HAVE_64_BITS
 static long   ISUND    = 0x7FFFFFFFFFFFFFFF ;
 #else
 static long   ISUND    = LONG_MAX ;
 #endif
 
-#ifdef _USE_64_BITS
+#ifdef ASTER_HAVE_64_BITS
 static int    R8UND[2] = { 0x00000000 , 0x7ff80000 };
 #else
 static long   R8UND[2] = { 0x00000000 , 0x7ff80000 };
@@ -49,7 +49,7 @@ static float  R4PREC   = FLT_EPSILON ;
 /* taille max d'une base */
 static ASTERINTEGER   ISMFIC   = 50331648;
 /* taille max d'un fichier "extend" */
-#ifdef _USE_64_BITS
+#ifdef ASTER_HAVE_64_BITS
 static ASTERINTEGER   ISLFIC   = 12582912;
 #else
 static ASTERINTEGER   ISLFIC   = 2000*1024;
@@ -156,7 +156,7 @@ ASTERDOUBLE DEF0(R8DGRD,r8dgrd) { return (ASTERDOUBLE)((ASTERDOUBLE)R8_PI/(ASTER
 ASTERDOUBLE DEF0(R8RDDG,r8rddg) { return (ASTERDOUBLE)((ASTERDOUBLE)180./(ASTERDOUBLE)R8_PI); }
 
 /* ------------------------------------ LONGUEUR de BLOC pour MULT_FRONT */
-ASTERINTEGER DEF0(LLBLOC,llbloc) { return OPT_TAILLE_BLOC_MULT_FRONT; }
+ASTERINTEGER DEF0(LLBLOC,llbloc) { return ASTER_MULT_FRONT_BLOCK_SIZE; }
 
 /* -------------------------------------- VALEUR MAXIMALE REELLE R4*/
 ASTERDOUBLE DEF0(R4MAEM,r4maem) { return R4MAX; }

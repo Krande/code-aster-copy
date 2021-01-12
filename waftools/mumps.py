@@ -42,12 +42,11 @@ def configure(self):
     except Errors.ConfigurationError:
         self.reset_msg()
         self.env.revert()
-        self.undefine('HAVE_MUMPS')
+        self.undefine('ASTER_HAVE_MUMPS')
         if self.options.enable_mumps == True:
             raise
     else:
-        self.define('_HAVE_MUMPS', 1)
-        self.define('HAVE_MUMPS', 1)
+        self.define('ASTER_HAVE_MUMPS', 1)
 
 ###############################################################################
 @Configure.conf
@@ -85,7 +84,7 @@ def check_mumps_headers(self):
       END PROGRAM MAIN
 '''
     headers = [i + 'mumps_struc.h' for i in 'sdcz'] + ['mpif.h']
-    if self.get_define('HAVE_MPI'):
+    if self.get_define('ASTER_HAVE_MPI'):
         for path in self.env['INCLUDES'][:]:
             if "include_seq" in path:
                 self.env['INCLUDES'].remove(path)
@@ -143,7 +142,7 @@ end
         "type(dmumps_struc) :: dmpsk",
         "print *, sizeof(dmpsk%n)",
         "end"])
-    self.code_checker('MUMPS_INT_SIZE', self.check_fc, fragment,
+    self.code_checker('ASTER_MUMPS_INT_SIZE', self.check_fc, fragment,
                       'Checking size of Mumps integer',
                       'unexpected value for sizeof(mumps_int): %(size)s',
                       into=(4, 8),

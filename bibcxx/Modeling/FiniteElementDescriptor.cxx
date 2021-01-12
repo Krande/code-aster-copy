@@ -3,7 +3,7 @@
  * @brief Implementation de FiniteElementDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -47,7 +47,7 @@ FiniteElementDescriptorClass::FiniteElementDescriptorClass( const std::string &n
           ConnectivityDelayedElementsExplorer( _delayedNumberedConstraintElementsDescriptor ) ),
       _explorer2( ConnectivityDelayedElementsExplorer( _listOfGroupOfCells ) ){};
 
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
 void FiniteElementDescriptorClass::transferDofDescriptorFrom( FiniteElementDescriptorPtr &other ) {
     if ( !getMesh()->isPartial() )
         throw std::runtime_error(
@@ -81,4 +81,4 @@ void FiniteElementDescriptorClass::transferDofDescriptorFrom( FiniteElementDescr
             ( *_dofDescriptor )[i * nec + j] = buffer[j];
     }
 };
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */

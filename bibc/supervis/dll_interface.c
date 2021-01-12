@@ -23,7 +23,7 @@
 
 #include "dll_register.h"
 
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
 #include <dlfcn.h>
 #endif
 
@@ -56,7 +56,7 @@ PyObject* get_dll_register_dict()
 
 void DEF0(DLLCLS, dllcls)
 {
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
     /* Unload all components
      */
     dll_init();

@@ -27,7 +27,7 @@ subroutine as_mfdnfd(fid, n, cret)
 #include "med/mfdnfd.h"
     med_idt :: fid
     aster_int :: cret, n
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

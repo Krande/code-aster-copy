@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 2016 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 2016 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ private
 !
 public ::  convert_mat_to_saddle_point, update_double_lagrange, convert_rhs_to_saddle_point
 !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 PetscErrorCode :: ierr
 !
 !

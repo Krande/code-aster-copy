@@ -32,7 +32,7 @@ subroutine as_mfivop(fid, nom, acces, major, minor, rel, cret)
     aster_int, intent(in) :: minor
     aster_int, intent(in) :: rel
     aster_int, intent(out) :: cret
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

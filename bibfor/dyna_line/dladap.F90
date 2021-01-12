@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -597,7 +597,7 @@ implicit none
         valr(2) = nbpasc*tps1(4)
         valr(3) = tps1(1)
         call utmess('Z', 'DYNAMIQUE_11', ni=3, vali=vali, nr=3,&
-                    valr=valr, num_except=TIMELIMIT_ERROR)
+                    valr=valr, num_except=ASTER_TIMELIMIT_ERROR)
     endif
 !
     vali(1) = ipas

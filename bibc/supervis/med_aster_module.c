@@ -21,7 +21,7 @@
 
 #include "aster_utils.h"
 
-#ifdef HAVE_MED
+#ifdef ASTER_HAVE_MED
 #include "med.h"
 
 /* ---------------------------------------------------------------------- */
@@ -95,7 +95,7 @@ static struct PyModuleDef med_aster_def = {
         NULL
 };
 
-#ifndef _WITHOUT_PYMOD_
+#ifndef ASTER_WITHOUT_PYMOD
 PyObject* PyInit_med_aster(void)
 {
     PyObject* med_aster = PyModule_Create(&med_aster_def);

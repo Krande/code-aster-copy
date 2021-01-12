@@ -47,7 +47,7 @@ use petsc_data_module
 !
 !----------------------------------------------------------------
 !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 !
 !     VARIABLES LOCALES
     integer :: rang, nbproc
@@ -130,7 +130,7 @@ use petsc_data_module
     nblloc2 = high2 - low2
 
 !   -- CES DEUX VECTEURS SONT LES D_NNZ ET O_NNZ A PASSER A PETSc
-#if PETSC_INT_SIZE == 4
+#if ASTER_PETSC_INT_SIZE == 4
     call wkvect(idxo, 'V V S', nblloc2, vi4=v_idxo)
     call wkvect(idxd, 'V V S', nblloc2, vi4=v_idxd)
 #else

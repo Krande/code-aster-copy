@@ -37,7 +37,7 @@ def options(self):
 
 def configure(self):
     if not self.env.BUILD_MPI:
-        self.undefine('HAVE_PARMETIS')
+        self.undefine('ASTER_HAVE_PARMETIS')
         return
     try:
         self.env.stash()
@@ -45,12 +45,11 @@ def configure(self):
     except Errors.ConfigurationError:
         self.reset_msg()
         self.env.revert()
-        self.undefine('HAVE_PARMETIS')
+        self.undefine('ASTER_HAVE_PARMETIS')
         if self.options.enable_parmetis:
             raise
     else:
-        self.define('_HAVE_PARMETIS', 1)
-        self.define('HAVE_PARMETIS', 1)
+        self.define('ASTER_HAVE_PARMETIS', 1)
 
 ###############################################################################
 @Configure.conf

@@ -27,10 +27,10 @@
 /  Résultats :
 /     identificateur du dataset, -1 sinon (hid_t = int)
 /-----------------------------------------------------------------------------*/
-#ifdef HAVE_HDF5
+#ifdef ASTER_HAVE_HDF5
 #include <hdf5.h>
 #endif
-#ifdef HAVE_MED
+#ifdef ASTER_HAVE_MED
 #include "med.h"
 #endif
 
@@ -38,7 +38,7 @@ hid_t DEFPSS(HDFOPD, hdfopd, hid_t *idf, char *nomg,
                     STRING_SIZE lg, char *nomd, STRING_SIZE ln)
 {
   hid_t iret=-1;
-#ifdef HAVE_HDF5
+#ifdef ASTER_HAVE_HDF5
   hid_t id,idfic,dapl_id;
   int k,lg2;
   char *nom;

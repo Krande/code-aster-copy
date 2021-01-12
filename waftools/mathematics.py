@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ def check_opts_math_lib(self):
 @Configure.conf
 def check_sizeof_blas_int(self):
     """Check size of blas integers"""
-    self.set_define_from_env('BLAS_INT_SIZE',
+    self.set_define_from_env('ASTER_BLAS_INT_SIZE',
                              'Setting size of blas/lapack integers',
                              'unexpected value for blas int: %(size)s',
                              into=(4, 8), default=4)
@@ -97,8 +97,6 @@ def detect_mkl(self):
     # or with Intel compiler. In both cases MKLROOT is/must be defined
     if os.environ.get('MKLROOT') is None:
         return False
-    opts = self.options
-    embed = opts.embed_math or opts.embed_all
     self.start_msg('Detecting MKL libraries')
     suffix = '_lp64' if self.env.DEST_CPU.endswith('64') else ''
     scalapack  = []
@@ -107,15 +105,15 @@ def detect_mkl(self):
     core = 'mkl_core'
     libs =[]
     # http://software.intel.com/en-us/articles/intel-mkl-link-line-advisor/
-    if self.get_define('HAVE_MPI'):
+    if self.get_define('ASTER_HAVE_MPI'):
         scalapack  = 'mkl_scalapack' + suffix
         blacs = 'mkl_blacs_intelmpi' + suffix
     if ('ifort' in self.env.FC_NAME.lower()) or ('icc' in self.env.CC_NAME.lower()):
-        if self.get_define('HAVE_OPENMP'):
+        if self.get_define('ASTER_HAVE_OPENMP'):
             thread  = 'mkl_intel_thread'
         interf = 'mkl_intel' + suffix
     else:
-        if self.get_define('HAVE_OPENMP'):
+        if self.get_define('ASTER_HAVE_OPENMP'):
             thread  = 'mkl_gnu_thread'
         interf = 'mkl_gf' + suffix
     if scalapack:
@@ -135,6 +133,7 @@ def detect_mkl(self):
         self.end_msg('no', color='YELLOW')
         return False
     else:
+        self.define('ASTER_HAVE_MKL', 1)
         self.env.commit()
         self.end_msg(self.env.LIBPATH_MATH + self.env.LIB_MATH)
         return True
@@ -142,7 +141,7 @@ def detect_mkl(self):
 @Configure.conf
 def detect_math_lib(self):
     opts = self.options
-    embed = opts.embed_math or (opts.embed_all and not self.get_define('HAVE_MPI'))
+    embed = opts.embed_math or (opts.embed_all and not self.get_define('ASTER_HAVE_MPI'))
     varlib = ('ST' if embed else '') + 'LIB_MATH'
 
     # blas
@@ -186,7 +185,7 @@ def detect_math_lib(self):
         self.check_math_libs('optional', OPTIONAL_DEPS, embed, optional=True)
 
     # parallel
-    if self.get_define('HAVE_MPI'):
+    if self.get_define('ASTER_HAVE_MPI'):
         self.env.stash()
         try:
             # try first without blacs since now embedded by scalapack
@@ -206,14 +205,14 @@ def detect_math_lib(self):
 
     self.start_msg('Detected math libraries')
     self.end_msg(self.env[varlib])
-    if self.get_define('HAVE_MPI') and embed:
+    if self.get_define('ASTER_HAVE_MPI') and embed:
         msg = "WARNING:\n"\
               "    Static link with MPI libraries is not recommended.\n"\
               "    Remove the option --embed-maths in case of link error.\n"\
               "    See http://www.open-mpi.org/faq/?category=mpi-apps#static-mpi-apps"
         Logs.warn(msg)
     if 'openblas' in self.env[varlib]:
-        self.define('_USE_OPENBLAS', 1)
+        self.define('ASTER_HAVE_OPENBLAS', 1)
 
 @Configure.conf
 def check_math_libs(self, name, libs, embed, optional=False):
@@ -317,7 +316,7 @@ def check_math_libs_call_blas_lapack(self, color='RED'):
 @Configure.conf
 def check_math_libs_call_blacs(self, color='RED'):
     """Compile and run a minimal blacs program"""
-    if self.get_define('HAVE_MPI'):
+    if self.get_define('ASTER_HAVE_MPI'):
         self.start_msg('Checking for a program using blacs')
         try:
             ret = self.check_fc(fragment=blacs_fragment, use='MPI OPENMP MATH',

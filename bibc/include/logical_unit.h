@@ -18,8 +18,8 @@
 
 /* person_in_charge: mathieu.courtois at edf.fr */
 
-#ifndef LOGICAL_UNIT_H
-#define LOGICAL_UNIT_H
+#ifndef LOGICAL_UNIT_H_
+#define LOGICAL_UNIT_H_
 
 #include "Python.h"
 #include "aster.h"

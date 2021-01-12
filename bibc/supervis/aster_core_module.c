@@ -848,7 +848,7 @@ PyObject *args;
 
     if ( !PyArg_ParseTuple(args, "s#i:MPI_GatherStr", &instr, &count, &root) ) return NULL;
 
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
     // root gathers the size of the string on each processor
     node = aster_get_current_comm();
     aster_get_mpi_info(node, &rank, &size);
@@ -950,7 +950,7 @@ static struct PyModuleDef aster_core_def = {
         NULL
 };
 
-#ifndef _WITHOUT_PYMOD_
+#ifndef ASTER_WITHOUT_PYMOD
 PyObject* PyInit_aster_core(void)
 {
     aster_core = PyModule_Create(&aster_core_def);
@@ -958,30 +958,15 @@ PyObject* PyInit_aster_core(void)
     fileOut = stderr;
 
     // Add macro constant for dependance
-#ifdef _USE_MPI
-    PyModule_AddIntConstant(aster_core, "_USE_MPI", 1);
+#ifdef ASTER_HAVE_MPI
+    PyModule_AddIntConstant(aster_core, "ASTER_HAVE_MPI", 1);
 #else
-    PyModule_AddIntConstant(aster_core, "_USE_MPI", 0);
+    PyModule_AddIntConstant(aster_core, "ASTER_HAVE_MPI", 0);
 #endif
-#ifdef _USE_OPENMP
-    PyModule_AddIntConstant(aster_core, "_USE_OPENMP", 1);
+#ifdef ASTER_NO_EXPIR
+    PyModule_AddIntConstant(aster_core, "ASTER_NO_EXPIR", 1);
 #else
-    PyModule_AddIntConstant(aster_core, "_USE_OPENMP", 0);
-#endif
-#ifdef _USE_64_BITS
-    PyModule_AddIntConstant(aster_core, "_USE_64_BITS", 1);
-#else
-    PyModule_AddIntConstant(aster_core, "_USE_64_BITS", 0);
-#endif
-#ifdef _POSIX
-    PyModule_AddIntConstant(aster_core, "_POSIX", 1);
-#else
-    PyModule_AddIntConstant(aster_core, "_POSIX", 0);
-#endif
-#ifdef _NO_EXPIR
-    PyModule_AddIntConstant(aster_core, "_NO_EXPIR", 1);
-#else
-    PyModule_AddIntConstant(aster_core, "_NO_EXPIR", 0);
+    PyModule_AddIntConstant(aster_core, "ASTER_NO_EXPIR", 0);
 #endif
     PyModule_AddIntMacro(aster_core, ASTER_INT_SIZE);
     return aster_core;

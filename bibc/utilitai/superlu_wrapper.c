@@ -35,7 +35,7 @@ at the top-level directory.
  *
  */
 #include "aster.h"
-#ifdef HAVE_PETSC_SUPERLU
+#ifdef ASTER_PETSC_HAVE_SUPERLU
 #include "slu_ddefs.h"
 
 #define HANDLE_SIZE  8

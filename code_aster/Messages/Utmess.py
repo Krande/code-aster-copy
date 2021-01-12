@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -115,7 +115,7 @@ class MESSAGE_LOGGER(metaclass=Singleton):
 
     def init_mpi_error(self):
         """Stocke les informations nécessaires pour la gestion des erreurs en MPI."""
-        if not aster_core._USE_MPI:
+        if not aster_core.ASTER_HAVE_MPI:
             return
         self._mpi_rank, self._mpi_nbcpu = aster_core.MPI_CommRankSize()
 

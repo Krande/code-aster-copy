@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,8 +66,8 @@ subroutine tresu_tole(tole, prec, mcf, iocc)
         ASSERT(np .eq. 0)
     endif
 !
-#ifdef TEST_STRICT
-!   Does not use TOLE_MACHINE (except for the parameter) if TEST_STRICT
+#ifdef ASTER_TEST_STRICT
+!   Does not use TOLE_MACHINE (except for the parameter) if ASTER_TEST_STRICT
     epsir(1) = 1.d-6
     if (.not. ipass) then
         call utmess('I', 'TEST0_6', sr=epsir(1))

@@ -31,7 +31,7 @@ subroutine as_mlclow(fid, typgeo, refcoo, modeco, ngauss,&
     aster_int :: typgeo, modeco, ngauss, cret, ndim
     real(kind=8) :: refcoo(*), gscoo(*), wg(*)
     character(len=*) :: locname, nomasu
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

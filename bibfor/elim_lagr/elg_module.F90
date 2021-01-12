@@ -49,7 +49,7 @@ public ::  build_elg_context
 !
 contains
 
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 !
 ! The routine builds a elg_context that is a container
 ! with everything needed for the elimination of
@@ -206,7 +206,7 @@ subroutine build_elg_context( full_matas )
         endif
     endif
     if ( elg_ctxt%ksp == PETSC_NULL_KSP ) then
-#ifdef HAVE_PETSC_MUMPS
+#ifdef ASTER_PETSC_HAVE_MUMPS
         !  Create linear solver context
         call KSPCreate(PETSC_COMM_SELF,elg_ctxt%ksp,ierr)
         ASSERT( ierr == 0 )

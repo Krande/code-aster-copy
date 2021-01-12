@@ -18,7 +18,7 @@
 
 #include "aster.h"
 
-#ifdef HAVE_SCOTCH
+#ifdef ASTER_HAVE_SCOTCH
 /* scotch.h may use int64_t without including <sys/types.h> */
 #include <sys/types.h>
 #include "scotch.h"
@@ -31,7 +31,7 @@ void DEFPPPPPPPPPP(FETSCO,fetsco, ASTERINTEGER *nbmato, ASTERINTEGER *nblien,
                                   ASTERINTEGER4 *edlo, ASTERINTEGER4 *velo,
                                   ASTERINTEGER *numver, ASTERINTEGER *ier)
 {
-#ifdef HAVE_SCOTCH
+#ifdef ASTER_HAVE_SCOTCH
   int err,numv;
   int version=0;
   int release=0;

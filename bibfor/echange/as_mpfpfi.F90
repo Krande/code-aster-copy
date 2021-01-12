@@ -28,7 +28,7 @@ subroutine as_mpfpfi(fid, indice, pro, n, cret)
     med_idt :: fid
     aster_int :: n, cret, indice
     character(len=*) :: pro
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

@@ -3,7 +3,7 @@
  * @brief Implementation de MaterialField
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -59,7 +59,7 @@ MaterialFieldClass::MaterialFieldClass( const std::string &name, const SkeletonP
       _cvrcVarc( JeveuxVectorChar8( getName() + ".CVRCVARC" ) ),
       _cvrcCmp( JeveuxVectorChar8( getName() + ".CVRCCMP" ) ){};
 
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
 MaterialFieldClass::MaterialFieldClass( const std::string &name, const ParallelMeshPtr &mesh )
     : _mesh( mesh ), _model( nullptr ), DataStructure( name, 8, "CHAM_MATER" ),
       _listOfMaterials( ConstantFieldOnCellsChar8Ptr(
@@ -72,7 +72,7 @@ MaterialFieldClass::MaterialFieldClass( const std::string &name, const ParallelM
       _cvrcGd( JeveuxVectorChar8( getName() + ".CVRCGD" ) ),
       _cvrcVarc( JeveuxVectorChar8( getName() + ".CVRCVARC" ) ),
       _cvrcCmp( JeveuxVectorChar8( getName() + ".CVRCCMP" ) ){};
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */
 
 bool MaterialFieldClass::buildWithoutExternalVariable() {
     MaterialFieldBuilderClass::buildClass( *this );

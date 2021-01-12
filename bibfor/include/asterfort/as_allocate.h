@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 #include "asterf.h"
 #include "asterf_debug.h"
 
-#ifdef __DEBUG_ALLOCATE__
+#ifdef ASTER_DEBUG_ALLOCATE
 #   define DEBUG_LOC_ALLOCATE(a, b, c) DEBUG_LOC(a, b, c)
 #else
 #   define DEBUG_LOC_ALLOCATE(a, b, c) continue

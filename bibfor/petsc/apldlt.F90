@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ use petsc_data_module
 !  + renumerotation de vcine
 !----------------------------------------------------------------
 !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 !----------------------------------------------------------------
     integer :: k,isol,neq
     character(len=24) :: precon,kperm
@@ -91,7 +91,7 @@ use petsc_data_module
     precon = slvk(2)
     if (precon.ne.'LDLT_INC') goto 999
     call dismoi('MATR_DISTRIBUEE', nomat_courant, 'MATR_ASSE', repk=matd)
-    if ( matd == 'OUI' ) then 
+    if ( matd == 'OUI' ) then
        call utmess( 'F', 'PETSC_17')
     endif
 

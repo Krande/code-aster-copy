@@ -30,7 +30,7 @@ subroutine as_mmhnme(fid, maa, quoi, typent, typgeo,&
     med_idt :: fid
     aster_int :: typent, typgeo, cret, typcon, n, quoi, mdnont, mdnoit
     aster_int :: chtseq, chttra
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

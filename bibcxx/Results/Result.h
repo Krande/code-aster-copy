@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe Result
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -235,9 +235,9 @@ class ResultClass : public DataStructure, public ListOfTablesClass {
  * @brief Obtenir un DOFNumbering à remplir
  * @return DOFNumbering à remplir
  */
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
     BaseDOFNumberingPtr getEmptyParallelDOFNumbering();
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */
 
     /**
      * @brief Obtenir un champ aux noeuds réel vide à partir de son nom et de son numéro d'ordre

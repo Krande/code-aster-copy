@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,12 +38,12 @@ private
 !----------------------------------------------------------------------
 
 type, public ::  elim_lagr_ctxt
-!    
+!
 integer :: nphys
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 ! Projection de la matrice B sur le noyau de la matrice
 ! des contraintes C
-! Kproj = tTfinal B Tfinal 
+! Kproj = tTfinal B Tfinal
     Mat :: kproj
 ! Matrice des contraintes
     Mat :: matc
@@ -53,7 +53,7 @@ integer :: nphys
     KSP :: ksp
 ! Matrice contenant la base du noyau de la matrice des contraintes
     Mat :: tfinal
-! Matrice initiale B (c'est la matr_asse convertie au format PETSc) 
+! Matrice initiale B (c'est la matr_asse convertie au format PETSc)
     Mat :: matb
     Vec :: vx0
     Vec :: vecb
@@ -75,7 +75,7 @@ end type elim_lagr_ctxt
 !
 public :: new_elg_context, free_elg_context
 !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 PetscErrorCode  :: ierr
 !
 contains
@@ -102,21 +102,21 @@ end function new_elg_context
 !
 ! Free object elg_ctxt
 ! If keep_basis == .true., PETSc matrix tfinal
-! is not freed, and may be use for further computations 
-! 
+! is not freed, and may be use for further computations
+!
 subroutine free_elg_context( elg_ctxt, keep_basis )
 !   Dummy argument
     type(elim_lagr_ctxt), intent(inout) :: elg_ctxt
     logical, optional, intent(in)       :: keep_basis
 !
-    logical :: free_all 
+    logical :: free_all
 !
     free_all = .true.
-    if ( present(keep_basis) ) then 
+    if ( present(keep_basis) ) then
         free_all = .not. keep_basis
-     endif 
+     endif
 !
-    if ( elg_ctxt%kproj /= PETSC_NULL_MAT ) then 
+    if ( elg_ctxt%kproj /= PETSC_NULL_MAT ) then
     call MatDestroy(elg_ctxt%kproj, ierr)
     ASSERT( ierr == 0 )
     endif
@@ -148,7 +148,7 @@ subroutine free_elg_context( elg_ctxt, keep_basis )
   elg_ctxt%vecb=PETSC_NULL_VEC
   elg_ctxt%vecc=PETSC_NULL_VEC
 !
-   if ( free_all ) then 
+   if ( free_all ) then
     elg_ctxt%full_matas=' '
     elg_ctxt%k_matas=' '
     elg_ctxt%reduced_matas=' '
@@ -168,7 +168,7 @@ subroutine free_elg_context( elg_ctxt, keep_basis )
    elg_ctxt%tfinal=PETSC_NULL_MAT
    elg_ctxt%cct=PETSC_NULL_MAT
    elg_ctxt%ksp=PETSC_NULL_KSP
-   endif 
+   endif
 !
 end subroutine free_elg_context
 !

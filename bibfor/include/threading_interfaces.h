@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-#ifndef THREADING_INTERFACES_H
-#define THREADING_INTERFACES_H
+#ifndef THREADING_INTERFACES_H_
+#define THREADING_INTERFACES_H_
 ! personne_in_charge: mathieu.courtois@edf.fr
 !
 interface
-#ifdef _USE_OPENMP
+#ifdef ASTER_HAVE_OPENMP
     subroutine omp_set_num_threads(a)
         integer, intent(in) :: a
     end subroutine
@@ -35,13 +35,13 @@ interface
     end function
 #endif
 
-#ifdef _USE_OPENBLAS
+#ifdef ASTER_HAVE_OPENBLAS
     subroutine openblas_set_num_threads(a)
         integer, intent(in) :: a
     end subroutine
 #endif
 
-#ifdef _USE_MKL
+#ifdef ASTER_HAVE_MKL
     subroutine mkl_set_num_threads(a)
         integer, intent(in) :: a
     end subroutine

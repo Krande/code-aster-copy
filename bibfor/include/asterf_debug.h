@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,8 @@
 !
 ! person_in_charge: mathieu.courtois@edf.fr
 !
-#ifndef ASTERF_DEBUG_H
-#define ASTERF_DEBUG_H
+#ifndef ASTERF_DEBUG_H_
+#define ASTERF_DEBUG_H_
 
 #include "asterf_config.h"
 !
@@ -30,32 +30,32 @@
 ! with the MARKER (to make grep easy).
 ! If the flag is not defined, the function must be empty macro.
 !
-! to add all traces, define __DEBUG_ALL__
-#ifdef __DEBUG_ALL__
-#   define __DEBUG_ALLOCATE__
-#   define __DEBUG_MPI__
-#   define __DEBUG_LOC__
+! to add all traces, define ASTER_DEBUG_ALL
+#ifdef ASTER_DEBUG_ALL
+#   define ASTER_DEBUG_ALLOCATE
+#   define ASTER_DEBUG_MPI
+#   define ASTER_DEBUG_LOC
 #endif
 
 ! all prints should start with the same marker
 #define MARKER "DEBUG: "
 
 ! trace AS_ALLOCATE / AS_DEALLOCATE
-#ifdef __DEBUG_ALLOCATE__
+#ifdef ASTER_DEBUG_ALLOCATE
 #   define DEBUG_ALLOCATE(a, b, c) print *, MARKER, a, ':', b, c
 #else
 #   define DEBUG_ALLOCATE(a, b, c) continue
 #endif
 
 ! trace MPI communications
-#ifdef __DEBUG_MPI__
+#ifdef ASTER_DEBUG_MPI
 #   define DEBUG_MPI(a, b, c) print *, MARKER, a, ':', b, c
 #else
 #   define DEBUG_MPI(a, b, c) continue
 #endif
 
 ! print localization
-#ifdef __DEBUG_LOC__
+#ifdef ASTER_DEBUG_LOC
 #   define DEBUG_LOC(label, a, b) write(6,"(1X,A,A,'@',A,':',I4)") MARKER, label, a, b
 #else
 #   define DEBUG_LOC(label, a, b) continue

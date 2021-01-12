@@ -18,8 +18,8 @@
 
 /* person_in_charge: mathieu.courtois at edf.fr */
 
-#ifndef ASTER_FONCTIONS_MODULE_H
-#define ASTER_FONCTIONS_MODULE_H
+#ifndef ASTER_FONCTIONS_MODULE_H_
+#define ASTER_FONCTIONS_MODULE_H_
 
 #include "Python.h"
 /*

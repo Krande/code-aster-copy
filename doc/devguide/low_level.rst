@@ -18,37 +18,37 @@ Precompilation variables
 
 Precompilation variables are always named in uppercase letters by convention.
 
-To tell that a feature is available, a variable ``HAVE_<feature-name>`` is
+To tell that a feature is available, a variable ``ASTER_HAVE_<feature-name>`` is
 to ``1``.
 To tell that a feature is disabled, we set ``DISABLE_<feature-name>`` to ``1``.
 But **only one is used**, depending of the default behavior.
 
-If ``HAVE_xxx`` is defined (don't check the value, use ``#ifdef``, not
-``#if HAVE_xxx == 1``), the feature *xxx* is available.
-The exception is for ``HAVE_PETSC4PY`` because Cython requires that the variable
+If ``ASTER_HAVE_xxx`` is defined (don't check the value, use ``#ifdef``, not
+``#if ASTER_HAVE_xxx == 1``), the feature *xxx* is available.
+The exception is for ``ASTER_HAVE_PETSC4PY`` because Cython requires that the variable
 is always defined.
 
-Examples: ``HAVE_PETSC`` (feature is installed), ``DISABLE_MPI_CHECK`` (in most
+Examples: ``ASTER_HAVE_PETSC`` (feature is installed), ``ASTER_DISABLE_MPI_CHECK`` (in most
 cases it is enabled).
 
 List of supported variables:
 
-- ``DISABLE_MATHLIB_FPE``
-- ``DISABLE_MPI_CHECK``
-- ``HAVE_BACKTRACE``
-- ``HAVE_GETLINE`` (only for Metis interface)
-- ``HAVE_HDF5``
-- ``HAVE_MED``
-- ``HAVE_METIS``
-- ``HAVE_MFRONT``
-- ``HAVE_MPI``
-- ``HAVE_MUMPS``
-- ``HAVE_PETSC4PY``
-- ``HAVE_PETSC``
-- ``HAVE_SCOTCH``
-- ``HAVE_TRACEBACKQQ``
+- ``ASTER_HAVE_SUPPORT_FPE``
+- ``ASTER_DISABLE_MPI_CHECK``
+- ``ASTER_HAVE_BACKTRACE``
+- ``ASTER_HAVE_GETLINE`` (only for Metis interface)
+- ``ASTER_HAVE_HDF5``
+- ``ASTER_HAVE_MED``
+- ``ASTER_HAVE_METIS``
+- ``ASTER_HAVE_MFRONT``
+- ``ASTER_HAVE_MPI``
+- ``ASTER_HAVE_MUMPS``
+- ``ASTER_HAVE_PETSC4PY``
+- ``ASTER_HAVE_PETSC``
+- ``ASTER_HAVE_SCOTCH``
+- ``ASTER_HAVE_TRACEBACKQQ``
 
 
-.. todo ::
-    List all other precompilation variables. Remove old ``_HAVE_xxx`` and
-    ``_USE_xxx``.
+aster_core.HAVE_MPI/NO_EXPIR
+code_checker
+ASTER_TEST_STRICT

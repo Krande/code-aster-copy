@@ -53,7 +53,7 @@ use elg_data_module
 !       L = (R'*R) \ A*(b - B*x)
 !----------------------------------------------------------------
 !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 !
     Vec :: x1, vlag
 !

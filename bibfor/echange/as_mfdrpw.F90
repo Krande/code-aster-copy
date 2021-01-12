@@ -33,7 +33,7 @@ subroutine as_mfdrpw(fid, cha, val, intlac, n,&
     aster_int :: intlac, numco, numdt, numo
     real(kind=8) :: dt
     real(kind=8) :: val(*)
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

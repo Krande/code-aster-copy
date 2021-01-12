@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ use elg_data_module
 !            matas2.
 !---------------------------------------------------------------
 !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 !
 !================================================================
     character(len=1) :: kbid
@@ -116,7 +116,7 @@ use elg_data_module
 !       nnz2 : nombre de termes dans .VALM(1)
     call MatGetSize( elg_context(ke)%kproj, mm, nn, ierr)
     ASSERT( ierr == 0)
-    neq2=to_aster_int( mm ) 
+    neq2=to_aster_int( mm )
     if (neq2 .eq. 0) call utmess('F', 'ELIMLAGR_7')
 !
 !     -- on parcourt la matrice Kproj pour repérer ses termes non nuls

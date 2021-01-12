@@ -33,7 +33,7 @@ subroutine as_mfdfin(fid, cha, ma, n, cunit,&
     character(len=16) :: cunit, cname
     character(len=*) :: ma
     character(len=80) :: dtunit
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,9 @@ from . import TensorModule
 try:
     import sympy
     X, Y, Z = sympy.symbols('X Y Z')
-    HAVE_SYMPY = True
+    ASTER_HAVE_SYMPY = True
 except ImportError:
-    HAVE_SYMPY = False
+    ASTER_HAVE_SYMPY = False
 
 
 def kron(i, j):
@@ -161,23 +161,23 @@ def HookeOrthotropicOrienteQuelconque(E_L, E_T, E_N, NU_LT, NU_LN, NU_TN, G_LT, 
 class TensorUnitTest(unittest.TestCase):
 
     def setUp(self):
-        if not HAVE_SYMPY:
+        if not ASTER_HAVE_SYMPY:
             return
         self.U = TensorModule.Tensor(N.array(([X ** 3, Y ** 3, Z ** 3])))
 
     def testType(self):
-        if not HAVE_SYMPY:
+        if not ASTER_HAVE_SYMPY:
             return
         self.assertEqual(TensorModule.isTensor(self.U), 1)
 
     def testRank(self):
-        if not HAVE_SYMPY:
+        if not ASTER_HAVE_SYMPY:
             return
         self.assertEqual(self.U.rank, 1)
         self.assertEqual(TensorModule.grad(self.U).rank, 2)
 
     def testProduitDoubleContracte(self):
-        if not HAVE_SYMPY:
+        if not ASTER_HAVE_SYMPY:
             return
         tensDiff = (HookeOrthotropic(200., 100., 150., 0.4, 0.2, 0.3, 100., 100., 200.).produitDoubleContracte(TensorModule.Tensor(N.ones((3, 3))))
                     - TensorModule.Tensor(N.array([[375.52155772, 200., 200.], [200., 273.99165508, 400.], [200., 400., 329.62447844]])))

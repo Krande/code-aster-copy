@@ -35,7 +35,7 @@ subroutine as_mfaofi(fid, maa, ind, fam, num,&
     aster_int :: num, attid(*), attval(*), natt, cret, ind
     character(len=*) :: maa, fam, attdes(*), gro(*)
 !
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

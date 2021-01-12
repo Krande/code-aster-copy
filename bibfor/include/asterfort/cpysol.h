@@ -21,7 +21,7 @@
 !
 interface
     subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
         PetscInt :: debglo, nbval
 #else
         integer(kind=4) :: debglo, nbval

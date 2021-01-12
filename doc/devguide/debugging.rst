@@ -12,7 +12,7 @@ This section gives some tips about debugging code_aster.
 
 .. note::
 
-    ``waf install_debug`` turns on ``_DEBUG_CXX`` flag that prints some
+    ``waf install_debug`` turns on ``ASTER_DEBUG_CXX`` flag that prints some
     informations about objects live-cycle.
     Please ask a guru before adding new blocks under this flag!
 

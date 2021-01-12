@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -86,7 +86,7 @@ def check_cxx_compiler_flags(self):
 @Configure.conf
 def check_optimization_cxxflags(self):
     self.setenv('debug')
-    self.define('_DEBUG_CXX', 1)
+    self.define('ASTER_DEBUG_CXX', 1)
     self.remove_optflags("CXXFLAGS")
     flags = ['-g', '-O0'] + Utils.to_list(self.env['CXXFLAGS_ASTER_DEBUG'])
     self.start_msg('Setting C++ debug flags')

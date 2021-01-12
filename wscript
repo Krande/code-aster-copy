@@ -68,9 +68,9 @@ def options(self):
         'environment file',
         '  PREFIX         : default installation prefix to be used, '
         'if no --prefix option is given.',
-        '  BLAS_INT_SIZE  : kind of integers to use in the fortran blas/lapack '
+        '  ASTER_BLAS_INT_SIZE  : kind of integers to use in the fortran blas/lapack '
         'calls (4 or 8, default is 4)',
-        '  MUMPS_INT_SIZE : kind of integers to use in the fortran mumps calls '
+        '  ASTER_MUMPS_INT_SIZE : kind of integers to use in the fortran mumps calls '
         ' (4 or 8, default is 4)',
         '  CATALO_CMD     : command line used to build the elements catalog. '
         'It is just inserted before the executable '
@@ -227,7 +227,7 @@ def configure(self):
     self.recurse('astest')
 
     # keep compatibility for as_run
-    if self.get_define('HAVE_MPI'):
+    if self.get_define('ASTER_HAVE_MPI'):
         self.env.ASRUN_MPI_VERSION = 1
     # variants
     self.check_optimization_options()
@@ -333,7 +333,7 @@ def set_installdirs(self):
 @Configure.conf
 def check_platform(self):
     self.start_msg('Getting platform')
-    # convert to code_aster terminology
+    # convert waf (sys.plaform) to code_aster terminology
     os_name = self.env.DEST_OS
     if os_name == 'cygwin':
         os_name = 'linux'
@@ -341,15 +341,15 @@ def check_platform(self):
         os_name = 'solaris'
     if self.env.DEST_CPU.endswith('64'):
         os_name += '64'
-        self.define('_USE_64_BITS', 1)
-    os_name = os_name.upper()
+        self.define('ASTER_HAVE_64_BITS', 1)
+    os_name = 'ASTER_PLATFORM_' + os_name.upper()
     if not os_name.startswith('win'):
-        self.define('_POSIX', 1)
-        self.undefine('_WINDOWS')
+        self.define('ASTER_PLATFORM_POSIX', 1)
+        self.undefine('ASTER_PLATFORM_WINDOWS')
         self.define(os_name, 1)
     else:
-        self.define('_WINDOWS', 1)
-        self.undefine('_POSIX')
+        self.define('ASTER_PLATFORM_WINDOWS', 1)
+        self.undefine('ASTER_PLATFORM_POSIX')
     self.end_msg(os_name)
 
 @Configure.conf
@@ -369,12 +369,12 @@ def check_optimization_options(self):
 @Configure.conf
 def check_variant_vars(self):
     self.setenv('debug')
-    self.env['_ASTERBEHAVIOUR'] = 'AsterMFrOfficialDebug'
-    self.define('ASTERBEHAVIOUR', self.env['_ASTERBEHAVIOUR'])
+    self.env['ASTER_BEHAVIOUR_LIB'] = 'AsterMFrOfficialDebug'
+    self.define('ASTER_BEHAVIOUR_LIB', self.env['ASTER_BEHAVIOUR_LIB'])
 
     self.setenv('release')
-    self.env['_ASTERBEHAVIOUR'] = 'AsterMFrOfficial'
-    self.define('ASTERBEHAVIOUR', self.env['_ASTERBEHAVIOUR'])
+    self.env['ASTER_BEHAVIOUR_LIB'] = 'AsterMFrOfficial'
+    self.define('ASTER_BEHAVIOUR_LIB', self.env['ASTER_BEHAVIOUR_LIB'])
 
 # same idea than waflib.Tools.c_config.write_config_header
 # but defines are not removed from `env`
@@ -409,7 +409,7 @@ class ConfigHelper(object):
     def guard_begin(self):
         if self._lang in ('C', 'Fortran'):
             guard = Utils.quote_define_name(self.filename)
-            return ["#ifndef {0}".format(guard),
+            return ["#ifndef {0}_".format(guard),
                     self.define(guard),
                     ""]
         return [""]
@@ -422,7 +422,8 @@ class ConfigHelper(object):
 
     def support(self, var):
         """Tell if the language supports the variable name."""
-        if self._lang != 'C' and var.startswith('ASTERC'):
+        # ASTER_C_* defines will be used if language='C', not 'Fortran'.
+        if self._lang != 'C' and var.startswith('ASTER_C_'):
             return False
         if self._lang == 'Cython' and 'PETSC4PY' not in var:
             return False
@@ -457,7 +458,6 @@ def write_config_headers(self):
 @Configure.conf
 def write_config_h(self, language, variant, configfile=None, env=None):
     # Write a configuration header containing defines
-    # ASTERC defines will be used if language='C', not 'Fortran'.
     self.start_msg('Write config file')
     cfg = ConfigHelper(language)
     configfile = configfile or cfg.filename

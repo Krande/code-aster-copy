@@ -27,7 +27,7 @@ subroutine as_msense(fid, nbmasu, cret)
 #include "med/msense.h"
     med_idt :: fid
     aster_int :: nbmasu, cret
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

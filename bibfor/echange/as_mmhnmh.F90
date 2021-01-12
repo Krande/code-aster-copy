@@ -30,7 +30,7 @@ subroutine as_mmhnmh(fid, n, cret)
     med_idt :: fid
     med_int :: nm, cretm
 !
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
     call mmhnmh(fid, nm, cretm)

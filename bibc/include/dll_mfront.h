@@ -18,8 +18,8 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#ifndef DLL_MFRONT_H
-#define DLL_MFRONT_H
+#ifndef DLL_MFRONT_H_
+#define DLL_MFRONT_H_
 
 #include "aster.h"
 

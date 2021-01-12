@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine trabck(cmess, iexit)
 !
 #include "asterf.h"
 !
-#if _USE_INTEL_IFORT && HAVE_TRACEBACKQQ == 1 && !defined(IGNORE_DURING_ASLINT)
+#if ASTER_HAVE_INTEL_IFORT && ASTER_HAVE_TRACEBACKQQ == 1 && !defined(IGNORE_DURING_ASLINT)
     use ifcore
     implicit none
     character(len=*) :: cmess
@@ -36,12 +36,12 @@ subroutine trabck(cmess, iexit)
 !
     call tracebackqq(string=cmess, user_exit_code=iexit)
 !
-#elif HAVE_BACKTRACE == 1 && !defined(IGNORE_DURING_ASLINT)
+#elif ASTER_HAVE_BACKTRACE == 1 && !defined(IGNORE_DURING_ASLINT)
     implicit none
 #include "asterc/print_trace.h"
     character(len=*) :: cmess
     integer(kind=4) :: iexit
-!   Dummy argument if HAVE_TRACEBACKQQ is not defined
+!   Dummy argument if ASTER_HAVE_TRACEBACKQQ is not defined
     integer :: dummy
     dummy = len(cmess) + iexit
 !
@@ -51,7 +51,7 @@ subroutine trabck(cmess, iexit)
     implicit none
     character(len=*) :: cmess
     integer(kind=4) :: iexit
-!   Dummy argument if HAVE_TRACEBACKQQ is not defined
+!   Dummy argument if ASTER_HAVE_TRACEBACKQQ is not defined
     integer :: dummy
     dummy = len(cmess) + iexit
 !   do not call utmess (recursivity)

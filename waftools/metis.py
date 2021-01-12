@@ -42,12 +42,11 @@ def configure(self):
     except Errors.ConfigurationError:
         self.reset_msg()
         self.env.revert()
-        self.undefine('HAVE_METIS')
+        self.undefine('ASTER_HAVE_METIS')
         if self.options.enable_metis:
             raise
     else:
-        self.define('_HAVE_METIS', 1)
-        self.define('HAVE_METIS', 1)
+        self.define('ASTER_HAVE_METIS', 1)
 
 ###############################################################################
 @Configure.conf

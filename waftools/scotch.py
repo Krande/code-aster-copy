@@ -41,11 +41,11 @@ def configure(self):
     except Errors.ConfigurationError:
         self.reset_msg()
         self.env.revert()
-        self.undefine('HAVE_SCOTCH')
+        self.undefine('ASTER_HAVE_SCOTCH')
         if self.options.enable_scotch == True:
             raise
     else:
-        self.define('HAVE_SCOTCH', 1)
+        self.define('ASTER_HAVE_SCOTCH', 1)
 
 ###############################################################################
 

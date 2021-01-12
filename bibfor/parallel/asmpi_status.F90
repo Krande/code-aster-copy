@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine asmpi_status(istat, resp0)
 !       ENVOIE L'ETAT OK OU ERREUR AU PROC #0 ET RETOURNE LA REPONSE
 !       DU PROC #0.
 !-----------------------------------------------------------------------
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
 !
 #include "mpif.h"
 #include "asterc/asmpi_irecv_i4.h"

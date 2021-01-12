@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine uttcp0(indi, para, nbv, temps)
     character(len=*) :: para
 ! ----------------------------------------------------------------------
 !  ROUTINE DE MESURE DU TEMPS CPU.
-!  UTILISE LES ROUTINES C SUIVANTES (ADHERENCE CRAY/SOLARIS)
+!  UTILISE LES ROUTINES C SUIVANTES (ADHERENCE CRAY/ASTER_PLATFORM_SOLARIS)
 !     UTTCSM  : RENVOI LE  TEMPS CONSOMME TOTAL DU PROCESSUS (SEC)
 !     UTTRST  : RENVOI LES TEMPS RESTANT  TOTAL DU PROCESSUS (SEC)
 !

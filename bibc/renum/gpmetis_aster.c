@@ -20,7 +20,7 @@
 #include "aster.h"
 #include "aster_fort_utils.h"
 
-#ifdef _HAVE_METIS
+#ifdef ASTER_HAVE_METIS
 #include "programs/metisbin.h"
 #include "libmetis/rename.h"
 #include "libmetis/proto.h"
@@ -42,7 +42,7 @@ void DEFPPPPPP(GPMETIS_ASTER, gpmetis_aster, ASTERINTEGER *nbnd, ASTERINTEGER *n
                ASTERINTEGER4 *xadjd, ASTERINTEGER4 *adjncy, ASTERINTEGER *nbpart,
                ASTERINTEGER *partout )
 {
-#ifdef _HAVE_METIS
+#ifdef ASTER_HAVE_METIS
 
   idx_t i;
   char *curptr, *newptr;
@@ -281,7 +281,7 @@ graph_t *AffectGraph(ASTERINTEGER *nbnd,ASTERINTEGER *nadj,ASTERINTEGER4 *xadjd,
 }
 
 
-#ifdef _HAVE_METIS
+#ifdef ASTER_HAVE_METIS
 /*************************************************************************/
 /*! This function reads in the target partition weights. If no file is
     specified the weights are set to 1/nparts */
@@ -406,7 +406,7 @@ void ReadTPwgts(params_t *params, idx_t ncon)
             (params->tpwgts[i*ncon+j] < 0 ? awgt : params->tpwgts[i*ncon+j]);
     }
   }
-  #ifdef HAVE_GETLINE
+  #ifdef ASTER_HAVE_GETLINE
   free(line);
   line = NULL; /* set to null to match behavior of gk_free() */
   #else

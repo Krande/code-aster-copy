@@ -29,7 +29,7 @@ subroutine as_msevac(fid, nomest, nomatt, tyatmd, nbrcmp,&
     character(len=*) :: nomest, nomatt
     med_idt :: fid
     aster_int :: tyatmd, nbrcmp, cret
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

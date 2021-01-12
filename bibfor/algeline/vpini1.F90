@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -292,7 +292,7 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo,&
             if (mod45(1:4).eq.'OP45') then
               if (nfreq .le. 0) then
                 if (arret(1:3) .eq. 'OUI') then
-                  call utmess('Z', 'MODAL_1', num_except=SOLVER_ERROR)
+                  call utmess('Z', 'MODAL_1', num_except=ASTER_SOLVER_ERROR)
                 else
                   nfreq = 1
                   call rscrsd('G', modes, typcon, nfreq)

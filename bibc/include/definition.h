@@ -19,8 +19,8 @@
 /* disable the message "line too long" because the code is generated  */
 /* aslint: disable=C3001 */
 
-#ifndef DEFINITION_H
-#define DEFINITION_H
+#ifndef DEFINITION_H_
+#define DEFINITION_H_
 
 #include "aster_depend.h"
 
@@ -57,9 +57,9 @@
 #define  _(A,B)   A##B
 
 /* Appels : minuscules/majuscules, avec/sans underscore */
-#if defined _POSIX
+#if defined ASTER_PLATFORM_POSIX
 #   define F_FUNC(UN,LN)           _(LN,_)
-#   if defined _NO_UNDERSCORE
+#   if defined ASTER_NO_UNDERSCORE
 #       define F_FUNC(UN,LN)           LN
 #   endif
 #else
@@ -76,14 +76,14 @@
 #define S_FUNC(UN,LN)           xstr(F_FUNC(UN,LN))
 
 /* STDCALL for "old" windows version */
-#ifdef _USE_STDCALL
+#ifdef ASTER_ADD_STDCALL
 #   define STDCALL(UN,LN)   __stdcall F_FUNC(UN,LN)
 #else
 #   define STDCALL(UN,LN)   F_FUNC(UN,LN)
 #endif
 
 /* Appels et signatures avec strlen en fin de liste */
-#ifdef _STRLEN_AT_END
+#ifdef ASTER_STRLEN_AT_END
 
 #define DEFS(UN,LN,a,la)               STDCALL(UN,LN)(a,la)
 #define CALLS(UN,LN,a)                 F_FUNC(UN,LN)(a,strlen(a))

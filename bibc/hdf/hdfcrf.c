@@ -25,14 +25,14 @@
 /  Résultats :
 /     identificateur du fichier, -1 sinon (hid_t = int)
 /-----------------------------------------------------------------------------*/
-#ifdef HAVE_HDF5
+#ifdef ASTER_HAVE_HDF5
 #include <hdf5.h>
 #endif
 
 hid_t DEFS(HDFCRF, hdfcrf, char *nomfic, STRING_SIZE ln)
 {
   hid_t iret=-1;
-#ifdef HAVE_HDF5
+#ifdef ASTER_HAVE_HDF5
   hid_t idfic;
   int k;
   char *nomf;

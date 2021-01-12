@@ -28,7 +28,7 @@ subroutine as_mficor(fid, descfi, cret)
     med_idt :: fid
     aster_int :: cret
     character(len=*) :: descfi
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

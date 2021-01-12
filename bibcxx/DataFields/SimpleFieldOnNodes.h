@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe SimpleFieldOnNodes
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -97,7 +97,7 @@ template < class ValueType > class SimpleFieldOnNodesClass : public DataStructur
 
     const ValueType &getValue( int nodeNumber, int compNumber ) const
     {
-#ifdef _DEBUG_CXX
+#ifdef ASTER_DEBUG_CXX
         if ( _nbNodes == 0 || _nbComp == 0 )
             throw std::runtime_error( "First call of updateValuePointers is mandatory" );
 #endif

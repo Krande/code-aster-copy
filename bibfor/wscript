@@ -37,9 +37,9 @@ def configure(self):
     self.check_fortran_compiler_flags()
     self.check_fortran_mangling()
     if self.env.FORTRAN_MANGLING and self.env.FORTRAN_MANGLING[0] == '':
-        self.define('_NO_UNDERSCORE', 1)
+        self.define('ASTER_NO_UNDERSCORE', 1)
     else:
-        self.undefine('_NO_UNDERSCORE')
+        self.undefine('ASTER_NO_UNDERSCORE')
     self.check_fortran_types()
     self.check_fortran_preprocessor()
     self.check_optional_features()
@@ -83,10 +83,11 @@ def check_fortran_compiler_flags(self):
         if self.env.DEST_CPU == 'x86_64':
             self.check_fortran_compiler_options(['-i8', '-r8'])
         self.check_fortran_compiler_options(['-nogen-interfaces', '-xAVX'])
-        # all Intel specific features must use: _USE_INTEL_IFORT && HAVE_xxx
+        # all Intel specific features must use:
+        #   ASTER_HAVE_INTEL_IFORT && ASTER_HAVE_xxx
         # this marker must be specified on command line (using -D)
         # because it must not be enabled by aslint
-        self.env.append_unique('DEFINES', '_USE_INTEL_IFORT')
+        self.env.append_unique('DEFINES', 'ASTER_HAVE_INTEL_IFORT')
     self.start_msg('Setting fortran compiler flags')
     self.end_msg(self.env['FCFLAGS'])
 
@@ -139,8 +140,8 @@ def check_fortran_preprocessor(self):
             self.undefine(define)
         self.end_msg('yes' if ok else 'no')
 
-    _check('STRINGIFY_USE_OPERATOR', '#', '#define str(arg) #arg')
-    _check('STRINGIFY_USE_QUOTES', '""', '#define str(arg) "arg"')
+    _check('ASTER_STRINGIFY_USE_OPERATOR', '#', '#define str(arg) #arg')
+    _check('ASTER_STRINGIFY_USE_QUOTES', '""', '#define str(arg) "arg"')
     # preprocessing may create long lines, test with more than 500 columns
     fragment = '\n'.join([
         'program main',
@@ -288,9 +289,9 @@ def check_sizeof_string_size(self):
     else:
         typ = "unsigned int"
     # because win64
-    if self.is_defined('_USE_LONG_LONG_INT'):
+    if self.is_defined('ASTER_HAVE_LONG_LONG'):
         typ = "size_t"
-    self.define('ASTERC_STRING_SIZE', typ, quote=False)
+    self.define('ASTER_C_STRING_SIZE', typ, quote=False)
     self.end_msg(typ)
 
 def _test_type(size, values):
@@ -315,12 +316,12 @@ def check_c_fortran_integer(self):
     assert self.env['ASTER_INT_SIZE'], "ASTER_INT_SIZE must be computed before"
     into = ("int", "long", "long long")
     fragment = _test_type(self.env['ASTER_INT_SIZE'], into)
-    self.code_checker('ASTERC_FORTRAN_INT', self.check_cc, fragment,
+    self.code_checker('ASTER_C_FORTRAN_INT', self.check_cc, fragment,
                       'Checking the matching C type',
                       'unexpected value for C integer type: %(size)s',
                       into=into)
-    if self.env['ASTERC_FORTRAN_INT'] == "long long":
-        self.define('_USE_LONG_LONG_INT', 1)
+    if self.env['ASTER_C_FORTRAN_INT'] == "long long":
+        self.define('ASTER_HAVE_LONG_LONG', 1)
 
 @Configure.conf
 def check_c_fortran_integer4(self):
@@ -328,7 +329,7 @@ def check_c_fortran_integer4(self):
     assert self.env['ASTER_INT4_SIZE'], "ASTER_INT4_SIZE must be computed before"
     into = ("int", "short int", "long")
     fragment = _test_type(self.env['ASTER_INT4_SIZE'], into)
-    self.code_checker('ASTERC_FORTRAN_INT4', self.check_cc, fragment,
+    self.code_checker('ASTER_C_FORTRAN_INT4', self.check_cc, fragment,
                       'Checking the matching C type',
                       'unexpected value for C short int type: %(size)s',
                       into=into)
@@ -339,7 +340,7 @@ def check_c_fortran_real4(self):
     assert self.env['ASTER_REAL4_SIZE'], "ASTER_REAL4_SIZE must be computed before"
     into = ("float", "double")
     fragment = _test_type(self.env['ASTER_REAL4_SIZE'], into)
-    self.code_checker('ASTERC_FORTRAN_REAL4', self.check_cc, fragment,
+    self.code_checker('ASTER_C_FORTRAN_REAL4', self.check_cc, fragment,
                       'Checking the matching C type',
                       'unexpected value for C float type: %(size)s',
                       into=into)
@@ -350,7 +351,7 @@ def check_c_fortran_real8(self):
     assert self.env['ASTER_REAL8_SIZE'], "ASTER_REAL8_SIZE must be computed before"
     into = ("double", "float")
     fragment = _test_type(self.env['ASTER_REAL8_SIZE'], into)
-    self.code_checker('ASTERC_FORTRAN_REAL8', self.check_cc, fragment,
+    self.code_checker('ASTER_C_FORTRAN_REAL8', self.check_cc, fragment,
                       'Checking the matching C type',
                       'unexpected value for C double type: %(size)s',
                       into=into)
@@ -395,9 +396,8 @@ def check_optimization_fcflags(self):
                 optflag = opts
                 if code is fragment_with_volatile:
                     # should be used in jeveux*.h in future
-                    DEF = 'USE_VOLATILE_COMMON'
                     legend = 'VOLATILE is required'
-                    self.define(DEF, 1)
+                    self.define('ASTER_USE_VOLATILE_COMMON', 1)
                 else:
                     legend = 'VOLATILE not required'
                 break
@@ -410,13 +410,13 @@ def check_optimization_fcflags(self):
 def check_optional_features(self):
     """Check for optional features depending on compiler type or version"""
     fragment = "\n".join(["call backtrace", "print *, 'yes'", "end"])
-    self.code_checker('HAVE_BACKTRACE', self.check_fc, fragment,
+    self.code_checker('ASTER_HAVE_BACKTRACE', self.check_fc, fragment,
                       'Check for backtrace feature',
                       'failure', optional=True, setbool=True)
 
     fragment = "\n".join(["use ifcore", "call tracebackqq(USER_EXIT_CODE=-1)",
                           "print *, 'yes'", "end"])
-    self.code_checker('HAVE_TRACEBACKQQ', self.check_fc, fragment,
+    self.code_checker('ASTER_HAVE_TRACEBACKQQ', self.check_fc, fragment,
                       'Check for tracebackqq feature',
                       'failure', optional=True, setbool=True)
 

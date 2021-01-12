@@ -57,7 +57,7 @@ subroutine get_nullbasis_trans( b, z )
     type(csc_matrix), intent(inout)  :: b
     type(csc_matrix), intent(out) :: z
     !
-#ifdef HAVE_PETSC_SUPERLU
+#ifdef ASTER_PETSC_HAVE_SUPERLU
     ! Local variables
     type(csc_matrix) :: l, l1, l2, l2t, t, id
     integer :: nnz_l, ldrhs, nrhs
@@ -230,7 +230,7 @@ subroutine get_columnspace_basis( a, b )
     type(csc_matrix), intent(in)           :: a
     type(csc_matrix), intent(out)          :: b
 
-#ifdef HAVE_PETSC_SUPERLU
+#ifdef ASTER_PETSC_HAVE_SUPERLU
     ! Local variables
     !
     integer                                :: n_b, nnz_b

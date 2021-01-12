@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,14 +66,14 @@ subroutine check_homo_ratio(cara, vale, nval)
     if (tcar(4)(1:1) .eq. ' ') then
         tval(4) = tval(2)
     endif
-#ifdef __DEBUG_ALL__
+#ifdef ASTER_DEBUG_ALL
     write(6,*) MARKER, "POUT/CERCL/CARA:", tval(1), tval(2), tval(3), tval(4)
 #endif
 !
     rratio = tval(2) / tval(1)
     eratio = tval(4) / tval(3)
     homo = abs((rratio - eratio) / rratio)
-#ifdef __DEBUG_ALL__
+#ifdef ASTER_DEBUG_ALL
     write(6,*) MARKER, "POUT/CERCL/HOMO:", rratio, eratio, homo
 #endif
     if (homo .gt. 1.0d-2) then

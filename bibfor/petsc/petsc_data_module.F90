@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 2016 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 2016 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ use aster_petsc_module
 implicit none
 ! aslint:disable=
 private
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -51,7 +51,7 @@ private
  integer, parameter, public :: nmxins=5
  character(len=19), public  :: nomats(nmxins), nosols(nmxins), nomat_courant
  character(len=14), public  :: nonus(nmxins),nonu_courant
- Mat, public :: ap(nmxins) 
+ Mat, public :: ap(nmxins)
  KSP, public :: kp(nmxins)
  Vec, public :: b, x
 

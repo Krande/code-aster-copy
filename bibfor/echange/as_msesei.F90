@@ -31,7 +31,7 @@ subroutine as_msesei(fid, imasup, nomaes, nvtymd, dimest,&
     med_idt :: fid
     aster_int :: imasup, nvtymd, dimest, medcel, nbnosu
     aster_int :: nbmssu, tygems, nbattc, prespr, nbattv, codret
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

@@ -27,7 +27,7 @@ subroutine as_mficlo(fid, cret)
 #include "med/mficlo.h"
     med_idt :: fid
     aster_int :: cret
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

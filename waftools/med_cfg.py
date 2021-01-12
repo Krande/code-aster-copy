@@ -59,10 +59,10 @@ def configure(self):
         self.env.revert()
         if opts.enable_hdf5 == True:
             raise
-        self.undefine('HAVE_HDF5')
-        self.undefine('HAVE_MED')
+        self.undefine('ASTER_HAVE_HDF5')
+        self.undefine('ASTER_HAVE_MED')
     else:
-        self.define('HAVE_HDF5', 1)
+        self.define('ASTER_HAVE_HDF5', 1)
 
     try:
         self.env.stash()
@@ -72,9 +72,9 @@ def configure(self):
         self.env.revert()
         if opts.enable_med == True:
             raise
-        self.undefine('HAVE_MED')
+        self.undefine('ASTER_HAVE_MED')
     else:
-        self.define('HAVE_MED', 1)
+        self.define('ASTER_HAVE_MED', 1)
         self.env.BUILD_MED = True
 
 ###############################################################################
@@ -170,7 +170,7 @@ int main(void){
     printf("%d", (int)sizeof(integer));
     return 0;
 }'''
-    self.code_checker('HDF_HID_SIZE', self.check_cc, fragment,
+    self.code_checker('ASTER_HDF_HID_SIZE', self.check_cc, fragment,
                       'Checking size of hid_t integers',
                       'unexpected value for sizeof(hid_t): %(size)s',
                       into=(4, 8), use='HDF5')
@@ -241,9 +241,9 @@ int main(void){
         raise
     else:
         major, minor, release = ret.strip().split(".")
-        self.define("MED_NUM_MAJOR", int(major))
-        self.define("MED_NUM_MINOR", int(minor))
-        self.define("MED_NUM_RELEASE", int(release))
+        self.define("ASTER_MED_VERSION_MAJOR", int(major))
+        self.define("ASTER_MED_VERSION_MINOR", int(minor))
+        self.define("ASTER_MED_VERSION_RELEASE", int(release))
         self.end_msg(ret)
 
 @Configure.conf
@@ -281,13 +281,10 @@ int main(void){
     printf("%d", (int)sizeof(integer));
     return 0;
 }'''
-    self.code_checker('MED_INT_SIZE', self.check_cc, fragment,
+    self.code_checker('ASTER_MED_INT_SIZE', self.check_cc, fragment,
                       'Checking size of med_int integers',
                       'unexpected value for sizeof(med_int): %(size)s',
                       into=(4, 8), use='MED HDF5')
-    #XXX compatibility
-    if self.env['MED_INT_SIZE'] == 4 and self.is_defined('_USE_64_BITS'):
-        self.define('_USE_MED_SHORT_INT', 1)
 
 @Configure.conf
 def check_sizeof_med_idt(self):
@@ -300,7 +297,7 @@ int main(void){
     printf("%d", (int)sizeof(integer));
     return 0;
 }'''
-    self.code_checker('MED_IDT_SIZE', self.check_cc, fragment,
+    self.code_checker('ASTER_MED_IDT_SIZE', self.check_cc, fragment,
                       'Checking size of med_idt integers',
                       'unexpected value for sizeof(med_idt): %(size)s',
                       into=(4, 8), use='MED HDF5')

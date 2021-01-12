@@ -91,7 +91,7 @@ use lmp_module, only : lmp_update
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
 !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
@@ -284,7 +284,7 @@ use lmp_module, only : lmp_update
             ASSERT(ierr .eq. 0)
             call VecSetType(b, VECMPI, ierr)
             ASSERT(ierr .eq. 0)
-#if PETSC_INT_SIZE == 4
+#if ASTER_PETSC_INT_SIZE == 4
             call wkvect('&&APMAIN.INDICES', 'V V S', ndprop, vi4=v_indic)
 #else
             call wkvect('&&APMAIN.INDICES', 'V V I', ndprop, vi=v_indic)

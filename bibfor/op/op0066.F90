@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -182,7 +182,8 @@ subroutine op0066()
        if (tps1(4) .gt. .90d0*tps1(1) .and. ifreq .ne. nbfreq) then
            rtab(1) = tps1(4)
            rtab(2) = tps1(1)
-           call utmess('Z', 'DYNAMIQUE_13', si=ifreq, nr=2, valr=rtab,num_except=TIMELIMIT_ERROR)
+           call utmess('Z', 'DYNAMIQUE_13', si=ifreq, nr=2, valr=rtab, &
+                       num_except=ASTER_TIMELIMIT_ERROR)
        endif
 !
     end do

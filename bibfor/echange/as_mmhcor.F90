@@ -30,7 +30,7 @@ subroutine as_mmhcor(fid, maa, coo, modcoo, cret)
     aster_int :: modcoo, cret
     aster_int :: mdnont, mdnoit
     real(kind=8) :: coo(*)
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

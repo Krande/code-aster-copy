@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ListOfLoads
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -80,12 +80,12 @@ class ListOfLoadsClass : public DataStructure {
     ListMecaLoad _listOfMechanicalLoads;
     /** @brief List of functions for MechanicalLoads */
     ListOfLoadFunctions _listOfMechaFun;
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
     /** @brief Chargements Mecaniques paralleles */
     ListParaMecaLoad _listOfParallelMechanicalLoads;
     /** @brief List of functions for ParallelMechanicalLoads */
     ListOfLoadFunctions _listOfParaMechaFun;
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */
     /** @brief .INFC */
     JeveuxVectorLong _loadInformations;
     /** @brief .LCHA */
@@ -169,7 +169,7 @@ class ListOfLoadsClass : public DataStructure {
         _listOfMechaFun.push_back( func );
     };
 
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
     /**
      * @brief Function d'ajout d'une charge mécanique
      * @param currentLoad charge a ajouter a la sd
@@ -203,7 +203,7 @@ class ListOfLoadsClass : public DataStructure {
         _listOfParallelMechanicalLoads.push_back( currentLoad );
         _listOfParaMechaFun.push_back( func );
     };
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */
 
     /**
      * @brief Construction de la liste de charge
@@ -242,7 +242,7 @@ class ListOfLoadsClass : public DataStructure {
      */
     const ListMecaLoad &getListOfMechanicalLoads() const { return _listOfMechanicalLoads; };
 
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
     /**
      * @brief Function de récupération de la liste des charges mécaniques
      * @return _listOfMechanicalLoads
@@ -250,7 +250,7 @@ class ListOfLoadsClass : public DataStructure {
     const ListParaMecaLoad &getListOfParallelMechanicalLoads() const {
         return _listOfParallelMechanicalLoads;
     };
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */
 
     /**
      * @brief Function de récupération de la liste des charges

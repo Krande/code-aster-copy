@@ -3,7 +3,7 @@
  * @brief Interface python de LinearStaticAnalysis
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -40,9 +40,9 @@ void exportLinearStaticAnalysisToPython() {
                                               MaterialFieldPtr, ElementaryCharacteristicsPtr >));
     addKinematicsLoadToInterface( c1 );
     addMechanicalLoadToInterface( c1 );
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
     addParallelMechanicalLoadToInterface( c1 );
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */
     c1.def( "execute", &LinearStaticAnalysisClass::execute );
     c1.def( "setLinearSolver", &LinearStaticAnalysisClass::setLinearSolver );
     c1.def( "setTimeStepManager", &LinearStaticAnalysisClass::setTimeStepManager );

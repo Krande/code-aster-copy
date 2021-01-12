@@ -1,7 +1,7 @@
 
 #include "astercxx.h"
 
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
 
 #ifndef PARALLELFINITEELEMENTDESCRIPTOR_H_
 #define PARALLELFINITEELEMENTDESCRIPTOR_H_
@@ -11,7 +11,7 @@
  * @brief Fichier entete de la classe ParallelFiniteElementDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -105,4 +105,4 @@ typedef boost::shared_ptr< ParallelFiniteElementDescriptorClass >
 
 #endif /* PARALLELFINITEELEMENTDESCRIPTOR_H_ */
 
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */

@@ -34,7 +34,7 @@ subroutine as_mfdfdi(fid, ind, cha, type, comp,&
 !
 !     UNITE DU PAS DE TEMPS EST UN GRANDEUR PAS UTILISEE DANS ASTER
 !     DE MEME QUE LE MAILLAGE QUI EST RELU AVANT LIRE_RESU
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

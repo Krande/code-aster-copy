@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -363,14 +363,14 @@ implicit none
             rtab(1) = tps2(4)
             rtab(2) = tps2(1)
             call utmess('Z', 'DISCRETISATION2_79', si=itab(1), nr=2, valr=rtab,&
-                        num_except=TIMELIMIT_ERROR)
+                        num_except=ASTER_TIMELIMIT_ERROR)
         else
             goto 20
         endif
     else if ((.not.conver) .and. itemax .and. (.not.arret)) then
         itab(1) = nume_inst
         itab(2) = iter_newt
-        call utmess('Z', 'THERNONLINE4_85', ni=2, vali=itab, num_except=CONVERGENCE_ERROR)
+        call utmess('Z', 'THERNONLINE4_85', ni=2, vali=itab, num_except=ASTER_CONVERGENCE_ERROR)
     endif
 !
 ! --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
@@ -452,7 +452,7 @@ implicit none
         rtab(1) = tps2(4)
         rtab(2) = tps2(1)
         call utmess('Z', 'DISCRETISATION2_80', si=itab(1), nr=2, valr=rtab,&
-                    num_except=TIMELIMIT_ERROR)
+                    num_except=ASTER_TIMELIMIT_ERROR)
     endif
 !
     if (finpas) then

@@ -3,7 +3,7 @@
  * @brief Interface python de FullResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -39,7 +39,7 @@ void exportFullResultToPython() {
               py::make_constructor( &initFactoryPtr< FullResultClass, std::string > ) )
         .def( "getDOFNumbering", &FullResultClass::getDOFNumbering )
         .def( "setDOFNumbering", &FullResultClass::setDOFNumbering )
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
         .def( "setDOFNumbering", &FullResultClass::setParallelDOFNumbering )
 #endif
         ;

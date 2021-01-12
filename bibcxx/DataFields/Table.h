@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe Table
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -80,7 +80,7 @@ class TableClass : public DataStructure {
           _parameterDescription( JeveuxVectorChar24( getName() + ".TBLP" ) ) {};
 
     ~TableClass() {
-// #ifdef _DEBUG_CXX
+// #ifdef ASTER_DEBUG_CXX
 //         std::cout << "DEBUG: Table.destr: " << this->getName() << std::endl;
 // #endif
         if ( _parameterDescription->exists() && _description->exists() ) {

@@ -60,7 +60,7 @@ use petsc_data_module
 !
 !----------------------------------------------------------------
 !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 !
 !     VARIABLES LOCALES
     integer :: nsmdi, nsmhc, ndprop, nz, bs, numpro, iaux, jjoint
@@ -160,7 +160,7 @@ use petsc_data_module
     low=num_ddl_min
     high=num_ddl_max+1
 !
-#if PETSC_INT_SIZE == 4
+#if ASTER_PETSC_INT_SIZE == 4
     call wkvect(idxo, 'V V S', ndprop, vi4=v_idxo)
     call wkvect(idxd, 'V V S', ndprop, vi4=v_idxd)
 #else

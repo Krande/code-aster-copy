@@ -1,7 +1,7 @@
 /**
  * @file FullResult.cxx
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -36,7 +36,7 @@ bool FullResultClass::setDOFNumbering( const DOFNumberingPtr &dofNum ) {
    return FullResultClass::_setDOFNumbering( dofNum );
 }
 
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
 bool FullResultClass::setParallelDOFNumbering(
         const ParallelDOFNumberingPtr &dofNum ) {
     return FullResultClass::_setDOFNumbering( dofNum );

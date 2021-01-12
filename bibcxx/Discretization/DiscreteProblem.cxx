@@ -3,7 +3,7 @@
  * @brief Implementation de DiscreteProblem
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -232,11 +232,11 @@ FieldOnNodesRealPtr DiscreteProblemClass::buildKinematicsLoad(
 
 BaseDOFNumberingPtr DiscreteProblemClass::computeDOFNumbering( BaseDOFNumberingPtr dofNum ) {
     if ( !dofNum ) {
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
         if ( _study->getModel()->getMesh()->isParallel() )
             dofNum = ParallelDOFNumberingPtr( new ParallelDOFNumberingClass() );
         else
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */
             dofNum = DOFNumberingPtr( new DOFNumberingClass() );
     }
 

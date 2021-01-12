@@ -31,7 +31,7 @@ subroutine as_msmsmi(fid, iterat, nom, dim, desc,&
     character(len=16) :: nocomp(3), unit(3)
     med_idt :: fid
     aster_int :: dim, cret, typrep, iterat
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

@@ -21,7 +21,7 @@
 double DEFP(ERFCAM, erfcam, ASTERDOUBLE *x)
 {
   ASTERDOUBLE y;
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
   y = (ASTERDOUBLE)erfc(*x);
   return(y);
 #else

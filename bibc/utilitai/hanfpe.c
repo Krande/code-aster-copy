@@ -24,12 +24,12 @@
 **  Il n'y a pas de passage d'argument pour minimiser les problemes
 **  d'interfacage FORTRAN/C et reciproquement
 */
-#if defined _POSIX
+#if defined ASTER_PLATFORM_POSIX
 #include <stdio.h>
 #include <stdlib.h>
 #endif
 
-#if defined SOLARIS
+#if defined ASTER_PLATFORM_SOLARIS
 #include <siginfo.h>
 #include <ucontext.h>
    void hanfpe (int sig, siginfo_t *sip, ucontext_t *uap)
@@ -39,7 +39,7 @@
 {
    void exit (int status);
    void DEF0(UTMFPE, utmfpe);
-   
+
    CALL0(UTMFPE, utmfpe);
    exit(sig);
 }

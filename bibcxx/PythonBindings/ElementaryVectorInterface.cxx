@@ -3,7 +3,7 @@
  * @brief Interface python de ElementaryVector
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -33,10 +33,10 @@ void exportElementaryVectorToPython() {
 
     FieldOnNodesRealPtr ( ElementaryVectorClass::*c1 )( const DOFNumberingPtr & ) =
         &ElementaryVectorClass::assembleVector;
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
     FieldOnNodesRealPtr ( ElementaryVectorClass::*c2 )( const ParallelDOFNumberingPtr & ) =
         &ElementaryVectorClass::assembleVector;
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */
 
     void ( ElementaryVectorClass::*c3 )( const GenericMechanicalLoadPtr & ) =
         &ElementaryVectorClass::addLoad;
@@ -49,9 +49,9 @@ void exportElementaryVectorToPython() {
         .def( "addMechanicalLoad", c3 )
         .def( "assembleVector", c1 )
         .def( "setType", &ElementaryVectorClass::setType )
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
         .def( "assembleVector", c2 )
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */
         .def( "setListOfLoads", &ElementaryVectorClass::setListOfLoads )
         .def( "update", &ElementaryVectorClass::update );
 

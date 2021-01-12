@@ -3,7 +3,7 @@
  * @brief Implementation de Result
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -153,7 +153,7 @@ ResultClass::getEmptyFieldOnNodesReal( const std::string name,
     return result;
 };
 
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
 BaseDOFNumberingPtr ResultClass::getEmptyParallelDOFNumbering() {
     std::string resuName( getName() );
     std::string name( "12345678.00000          " );
@@ -163,7 +163,7 @@ BaseDOFNumberingPtr ResultClass::getEmptyParallelDOFNumbering() {
     _listOfDOFNum.push_back( retour );
     return retour;
 };
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */
 
 ElementaryCharacteristicsPtr ResultClass::getElementaryCharacteristics() {
     std::string name( "" );

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -389,7 +389,7 @@ implicit none
 !
     if (istop .eq. 1) then
         call utmess('Z', 'DYNAMIQUE_10', ni=2, vali=vali, nr=2,&
-                    valr=valr, num_except=TIMELIMIT_ERROR)
+                    valr=valr, num_except=ASTER_TIMELIMIT_ERROR)
     endif
 !
 !     --- DESTRUCTION DES OBJETS DE TRAVAIL ---

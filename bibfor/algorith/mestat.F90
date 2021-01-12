@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -241,7 +241,7 @@ implicit none
             valr (2) = tcpu
             valr (3) = tcpu
             call utmess('Z', 'ALGORITH16_88', si=vali, nr=3, valr=valr,&
-                        num_except=TIMELIMIT_ERROR)
+                        num_except=ASTER_TIMELIMIT_ERROR)
             call utmess('F', 'ALGORITH11_83')
             goto 999
         endif

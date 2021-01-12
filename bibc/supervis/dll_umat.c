@@ -24,7 +24,7 @@
 
 #include "dll_register.h"
 
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
 #include <dlfcn.h>
 PyObject* get_dll_register_dict();
 
@@ -111,7 +111,7 @@ void DEFSSP(UMAT_GET_FUNCTION, umat_get_function,
     char* nomlib, STRING_SIZE lnomlib, char* nomsub, STRING_SIZE lnomsub,
     ASTERINTEGER * pfumat)
 {
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
     /* UMAT WraPper : wrapper to get the UMAT function.
     */
     char *libname, *symbol;
@@ -150,7 +150,7 @@ void DEFPPPPPPPPPPPPPPPPPPPSPPPPPPPPPPPPPPPPPP(UMATWP, umatwp,
     ASTERDOUBLE* dfgrd1, ASTERINTEGER * noel, ASTERINTEGER * npt, ASTERINTEGER * layer,
     ASTERINTEGER * kspt, ASTERINTEGER * kstep, ASTERINTEGER * kinc )
 {
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
     /* UMAT WraPper : wrapper to the UMAT function through the function pointer
      * Load the library if necessary (at the first call).
     */

@@ -16,8 +16,8 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-#ifndef ASTER_FORT_UTILS_H
-#define ASTER_FORT_UTILS_H
+#ifndef ASTER_FORT_UTILS_H_
+#define ASTER_FORT_UTILS_H_
 
 #include "aster.h"
 
@@ -77,7 +77,7 @@ extern void DEFSS( UTMESS_CWRAP, utmess_cwrap, char *, STRING_SIZE, char *, STRI
 extern void DEFSSPSPPPPPS( UTMESS_CORE, utmess_core, char *, STRING_SIZE, char *, STRING_SIZE,
                            ASTERINTEGER *, char *, STRING_SIZE, ASTERINTEGER *, ASTERINTEGER *,
                            ASTERINTEGER *, ASTERDOUBLE *, ASTERINTEGER *, char *, STRING_SIZE );
-#ifdef _STRLEN_AT_END
+#ifdef ASTER_STRLEN_AT_END
 #define CALL_UTMESS_CORE( cod, idmess, nk, valk, ni, vali, nr, valr, nexcep, fname )               \
     F_FUNC( UTMESS_CORE, utmess_core )                                                             \
     ( cod, idmess, nk, valk, ni, vali, nr, valr, nexcep, fname, strlen( cod ), strlen( idmess ),   \

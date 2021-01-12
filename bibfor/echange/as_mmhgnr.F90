@@ -31,7 +31,7 @@ subroutine as_mmhgnr(fid, nomail, typent, typgeo, tblogl,&
     aster_int :: typent, typgeo, n, cret, numdt, numo
     aster_int :: tblogl(n)
     character(len=*) :: nomail
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 

@@ -43,7 +43,7 @@
 #include "Supervis/CommandSyntax.h"
 #include "Utilities/Tools.h"
 
-#if HAVE_PETSC4PY == 1
+#if ASTER_HAVE_PETSC4PY == 1
 #include <petscmat.h>
 #endif
 
@@ -136,7 +136,7 @@ class AssemblyMatrixClass : public DataStructure {
      * @brief Destructeur
      */
     ~AssemblyMatrixClass() {
-#ifdef _DEBUG_CXX
+#ifdef ASTER_DEBUG_CXX
         std::cout << "DEBUG: AssemblyMatrixClass.destr: " << this->getName() << std::endl;
 #endif
         this->deleteFactorizedMatrix();
@@ -238,7 +238,7 @@ class AssemblyMatrixClass : public DataStructure {
      */
     int getNumberOfElementaryMatrix() const { return _elemMatrix.size(); };
 
-#if HAVE_PETSC4PY == 1
+#if ASTER_HAVE_PETSC4PY == 1
     /**
      * @brief Conversion to petsc4py
      * @return converted matrix
@@ -268,12 +268,12 @@ class AssemblyMatrixClass : public DataStructure {
      * @brief Methode permettant de definir la numerotation
      * @param currentNum objet ParallelDOFNumbering
      */
-    // #ifdef _USE_MPI
+    // #ifdef ASTER_HAVE_MPI
     //         void setDOFNumbering( const ParallelDOFNumberingPtr& currentNum )
     //         {
     //             _dofNum = currentNum;
     //         };
-    // #endif /* _USE_MPI */
+    // #endif /* ASTER_HAVE_MPI */
 
     /**
      * @brief Methode permettant de definir la liste de chargement
@@ -418,7 +418,7 @@ bool AssemblyMatrixClass< ValueType, PhysicalQuantity >::build() {
     return true;
 };
 
-#if HAVE_PETSC4PY == 1
+#if ASTER_HAVE_PETSC4PY == 1
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 Mat AssemblyMatrixClass< ValueType, PhysicalQuantity >::toPetsc4py() {

@@ -27,7 +27,7 @@ subroutine as_mlbnuv(maj, mini, rel, cret)
 #include "med/mlbnuv.h"
     aster_int :: maj, mini, rel
     aster_int :: cret
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

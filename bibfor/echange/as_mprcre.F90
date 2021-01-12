@@ -31,7 +31,7 @@ subroutine as_mprcre(fid, nom, type, desc, dtunit,&
     character(len=*) :: dtunit
     med_idt :: fid
     aster_int :: cret, type
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

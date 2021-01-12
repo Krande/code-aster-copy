@@ -16,67 +16,69 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-#ifndef ASTER_DEPEND_H
-#define ASTER_DEPEND_H
+#ifndef ASTER_DEPEND_H_
+#define ASTER_DEPEND_H_
 
 /*
- * Exactly one of _POSIX and _WINDOWS must be defined, they are exclusive.
+ * Exactly one of ASTER_PLATFORM_POSIX and ASTER_PLATFORM_WINDOWS must be
+ * defined, they are exclusive.
  *
- * In the source code, only use _POSIX or _WINDOWS and, when required, _USE_64_BITS.
+ * In the source code, only use ASTER_PLATFORM_POSIX or ASTER_PLATFORM_WINDOWS
+ * and, when required, ASTER_HAVE_64_BITS.
  *
- * The only platform name used is SOLARIS in the signal features.
+ * The only platform name used is ASTER_PLATFORM_SOLARIS in the signal features.
  *
  */
 
 #include "asterc_config.h"
 
 /* test required value */
-#if (! defined _POSIX) && (! defined _WINDOWS)
-#   error ERROR _POSIX or _WINDOWS is required
+#if (! defined ASTER_PLATFORM_POSIX) && (! defined ASTER_PLATFORM_WINDOWS)
+#   error ERROR ASTER_PLATFORM_POSIX or ASTER_PLATFORM_WINDOWS is required
 #endif
-#if (defined _POSIX) && (defined _WINDOWS)
-#   error ERROR only one of _POSIX or _WINDOWS, not both
-#endif
-
-#if (defined LINUX) || (defined LINUX64)
-#   define GNU_LINUX
+#if (defined ASTER_PLATFORM_POSIX) && (defined ASTER_PLATFORM_WINDOWS)
+#   error ERROR only one of ASTER_PLATFORM_POSIX or ASTER_PLATFORM_WINDOWS, not both
 #endif
 
-#if defined DARWIN64
-#   define DARWIN
+#ifdef ASTER_PLATFORM_LINUX64
+#   define ASTER_PLATFORM_LINUX
 #endif
 
-#if (defined FREEBSD64) || (defined __FreeBSD__)
-#   define FREEBSD
+#ifdef ASTER_PLATFORM_DARWIN64
+#   define ASTER_PLATFORM_DARWIN
 #endif
 
-#if (defined SOLARIS64)
-#   define SOLARIS
+#if (defined ASTER_PLATFORM_FREEBSD64) || (defined __FreeBSD__)
+#   define ASTER_PLATFORM_FREEBSD
+#endif
+
+#ifdef ASTER_PLATFORM_SOLARIS64
+#   define ASTER_PLATFORM_SOLARIS
 #endif
 
 /* MS Windows platforms */
-#if (defined _WINDOWS)
+#ifdef ASTER_PLATFORM_WINDOWS
 
 /* win64 - use LLP64 model */
-#   ifdef _USE_64_BITS
-#       define _STRLEN_AT_END
-#       define _USE_LONG_LONG_INT
+#   ifdef ASTER_HAVE_64_BITS
+#       define ASTER_STRLEN_AT_END
+#       define ASTER_HAVE_LONG_LONG
 #       define ASTER_INT_SIZE       8
 #       define ASTER_REAL8_SIZE     8
-#       define ASTERC_FORTRAN_INT   long long
+#       define ASTER_C_FORTRAN_INT   long long
 #   endif
 
 /* stdcall must be defined explicitly because it does not seem required anywhere */
-#   define _STRLEN_AT_END
+#   define ASTER_STRLEN_AT_END
 
 #else
 /* Linux & Unix platforms */
-#   define _STRLEN_AT_END
+#   define ASTER_STRLEN_AT_END
 
 /* end platforms type */
 #endif
 
-#ifdef _USE_64_BITS
+#ifdef ASTER_HAVE_64_BITS
 #   define INTEGER_NB_CHIFFRES_SIGNIFICATIFS 19
 #   define REAL_NB_CHIFFRES_SIGNIFICATIFS    16
 #else
@@ -84,49 +86,32 @@
 #   define REAL_NB_CHIFFRES_SIGNIFICATIFS    16
 #endif
 
-#define STRING_SIZE         ASTERC_STRING_SIZE
-#define ASTERINTEGER4       ASTERC_FORTRAN_INT4
-#define ASTERINTEGER        ASTERC_FORTRAN_INT
-#define ASTERDOUBLE         ASTERC_FORTRAN_REAL8
-#define ASTERREAL4          ASTERC_FORTRAN_REAL4
+#define STRING_SIZE         ASTER_C_STRING_SIZE
+#define ASTERINTEGER4       ASTER_C_FORTRAN_INT4
+#define ASTERINTEGER        ASTER_C_FORTRAN_INT
+#define ASTERDOUBLE         ASTER_C_FORTRAN_REAL8
+#define ASTERREAL4          ASTER_C_FORTRAN_REAL4
 
 /* flags d'optimisation */
 /* taille de bloc dans MULT_FRONT */
-#ifdef _USE_64_BITS
-#   define __OPT_TAILLE_BLOC_MULT_FRONT__ 96
+#ifdef ASTER_HAVE_64_BITS
+#   define ASTER_MULT_FRONT_BLOCK_SIZE__ 96
 #else
-#   define __OPT_TAILLE_BLOC_MULT_FRONT__ 32
+#   define ASTER_MULT_FRONT_BLOCK_SIZE__ 32
 #endif
 
-#ifndef OPT_TAILLE_BLOC_MULT_FRONT
-#   define OPT_TAILLE_BLOC_MULT_FRONT __OPT_TAILLE_BLOC_MULT_FRONT__
+#ifndef ASTER_MULT_FRONT_BLOCK_SIZE
+#   define ASTER_MULT_FRONT_BLOCK_SIZE ASTER_MULT_FRONT_BLOCK_SIZE__
 #endif
 
 /* Comportement par défaut des FPE dans matfpe pour les blas/lapack */
 /* On non GNU/Linux systems, FPE are always enabled */
-#ifdef GNU_LINUX
-#   ifndef _ENABLE_MATHLIB_FPE
-#       ifndef DISABLE_MATHLIB_FPE
-#           define DISABLE_MATHLIB_FPE
-#       endif
-#   else
-#       undef DISABLE_MATHLIB_FPE
+#ifdef ASTER_PLATFORM_LINUX
+#   ifndef ASTER_HAVE_SUPPORT_FPE
+#       define ASTER_HAVE_SUPPORT_FPE
 #   endif
 #else
-#   undef DISABLE_MATHLIB_FPE
-#endif /* GNU_LINUX */
-
-/* Valeurs par défaut pour les répertoires */
-#ifndef REP_MAT
-#   define REP_MAT "/aster/materiau/"
-#endif
-
-#ifndef REP_OUT
-#   define REP_OUT "/aster/outils/"
-#endif
-
-#ifndef REP_DON
-#   define REP_DON "/aster/donnees/"
+#   undef ASTER_HAVE_SUPPORT_FPE
 #endif
 
 #endif

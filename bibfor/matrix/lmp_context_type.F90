@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 2016 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 2016 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ private
 !
 type, public :: lmp_ctxt
     !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
     !
     ! Nombre de vecteurs de Ritz souhaité pour la construction du préconditionneur
     integer  :: ritz
@@ -61,7 +61,7 @@ end type lmp_ctxt
 !
 public :: new_lmp_context, build_lmp_context, free_lmp_context
 !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 PetscErrorCode :: ierr
 !
 contains

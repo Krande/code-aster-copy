@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ use petsc_data_module
 !
 !----------------------------------------------------------------
 !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
@@ -122,7 +122,7 @@ use petsc_data_module
             ASSERT(ierr.eq.0)
             call PCBJacobiGetSubKSP(pcp, nlocal, first, (/PETSC_NULL_KSP/), ierr)
             ASSERT(ierr.eq.0)
-            ASSERT( nlocal == 1 ) 
+            ASSERT( nlocal == 1 )
             call PCBJacobiGetSubKSP(pcp, nlocal, first, subksp, ierr)
             ASSERT(ierr.eq.0)
             ksp=subksp(1)
@@ -153,14 +153,14 @@ use petsc_data_module
         usersm = zk24(jslvk-1+9)
         blreps = zr(jslvr-1+4)
         renum = zk24(jslvk-1+4)
-        if ( precon == 'LDLT_SP' ) then 
+        if ( precon == 'LDLT_SP' ) then
            prec='S'
-        else if ( precon == 'LDLT_DP' ) then 
+        else if ( precon == 'LDLT_DP' ) then
            prec='D'
         endif
-        if ( blreps < r8prem()) then 
+        if ( blreps < r8prem()) then
            rank='F'
-        else 
+        else
            rank='L'
         endif
         call crsvfm(spsomu, nomat, prec, rank, pcpiv, usersm, blreps, renum )

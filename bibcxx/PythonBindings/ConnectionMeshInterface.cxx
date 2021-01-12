@@ -3,7 +3,7 @@
  * @brief Interface python de ConnectionMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,7 +31,7 @@ namespace py = boost::python;
 
 void exportConnectionMeshToPython() {
 
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
     py::class_< ConnectionMeshClass, ConnectionMeshClass::ConnectionMeshPtr,
                 py::bases< BaseMeshClass > >( "ConnectionMesh", py::no_init )
         .def( "__init__",
@@ -39,5 +39,5 @@ void exportConnectionMeshToPython() {
                   &initFactoryPtr< ConnectionMeshClass, ParallelMeshPtr, VectorString >))
         .def( "__init__", py::make_constructor(&initFactoryPtr< ConnectionMeshClass, std::string,
                                                                 ParallelMeshPtr, VectorString >));
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */
 };

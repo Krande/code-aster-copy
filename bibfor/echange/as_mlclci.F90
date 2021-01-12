@@ -30,7 +30,7 @@ subroutine as_mlclci(fid, nordr, k64, ityp, nbn,&
     aster_int :: nordr, ityp, nbn, cret, ndim, nbmasu
     character(len=64) :: k64, giname
     character(len=*) :: nomasu
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

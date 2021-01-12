@@ -53,9 +53,9 @@ def configure(self):
         self.reset_msg()
         if opts.enable_cython is True:
             raise
-        self.undefine('HAVE_CYTHON')
+        self.undefine('ASTER_HAVE_CYTHON')
     else:
-        self.define('HAVE_CYTHON', 1)
+        self.define('ASTER_HAVE_CYTHON', 1)
         self.env.BUILD_CYTHON = True
     self.check_version()
 

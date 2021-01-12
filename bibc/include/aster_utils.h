@@ -18,8 +18,8 @@
 
 /* person_in_charge: mathieu.courtois at edf.fr */
 
-#ifndef ASTER_UTILS_H
-#define ASTER_UTILS_H
+#ifndef ASTER_UTILS_H_
+#define ASTER_UTILS_H_
 
 #include "aster.h"
 

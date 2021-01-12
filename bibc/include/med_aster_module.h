@@ -18,8 +18,8 @@
 
 /* person_in_charge: mathieu.courtois at edf.fr */
 
-#ifndef MED_ASTER_MODULE_H
-#define MED_ASTER_MODULE_H
+#ifndef MED_ASTER_MODULE_H_
+#define MED_ASTER_MODULE_H_
 
 #include "Python.h"
 /*

@@ -43,19 +43,19 @@ subroutine haslib(libraz, iret)
     librai = libraz
     iret=0
     if (librai .eq. 'MUMPS') then
-#ifdef _HAVE_MUMPS
+#ifdef ASTER_HAVE_MUMPS
         iret=1
 #endif
     else if (librai.eq.'PETSC') then
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
         iret=1
 #endif
     else if (librai.eq.'HDF5') then
-#ifdef HAVE_HDF5
+#ifdef ASTER_HAVE_HDF5
         iret=1
 #endif
     else if (librai.eq.'MED') then
-#ifdef HAVE_MED
+#ifdef ASTER_HAVE_MED
         iret=1
 #endif
     else

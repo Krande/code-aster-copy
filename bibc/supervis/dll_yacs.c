@@ -28,7 +28,7 @@
 #include "dll_register.h"
 
 
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
 #include <dlfcn.h>
 PyObject* get_dll_register_dict();
 
@@ -264,7 +264,7 @@ void DEFPPPPSPSP(CPECH,cpech,
         char *fnomvar, STRING_SIZE lnomvar, ASTERINTEGER4 *idim,
         char *fnompal, STRING_SIZE lnompal, ASTERINTEGER4 *info )
 {
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
     char symbol[12];
     char *nomvar, *nompal;
     PyObject* DLL_DICT;
@@ -296,7 +296,7 @@ void DEFPPPPSPPP(CPEDB,cpedb,
         char *fnomvar, STRING_SIZE lnomvar, ASTERINTEGER4 *idim,
         ASTERDOUBLE *paramr, ASTERINTEGER4 *info )
 {
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
     char symbol[12];
     char *nomvar;
     PyObject* DLL_DICT;
@@ -325,7 +325,7 @@ void DEFPPPPSPPP(CPEEN,cpeen,
         char *fnomvar, STRING_SIZE lnomvar, ASTERINTEGER4 *idim,
         ASTERINTEGER4 *parami, ASTERINTEGER4 *info )
 {
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
     char symbol[12];
     char *nomvar;
     PyObject* DLL_DICT;
@@ -355,7 +355,7 @@ void DEFPPPPPSPPSP(CPLCH,cplch,
         char *fnomvar, STRING_SIZE lnomvar, ASTERINTEGER4 *idim, ASTERINTEGER4 *taille,
         char *fnompal, STRING_SIZE lnompal, ASTERINTEGER4 *info )
 {
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
     char symbol[12];
     char *nomvar, *nompal;
     PyObject* DLL_DICT;
@@ -388,7 +388,7 @@ void DEFPPPPPSPPPP(CPLDB,cpldb,
         char *fnomvar, STRING_SIZE lnomvar, ASTERINTEGER4 *idim, ASTERINTEGER4 *taille,
         ASTERDOUBLE *paramr, ASTERINTEGER4 *info )
 {
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
     char symbol[12];
     char *nomvar;
     PyObject* DLL_DICT;
@@ -418,7 +418,7 @@ void DEFPPPPPSPPPP(CPLEN,cplen,
         char *fnomvar, STRING_SIZE lnomvar, ASTERINTEGER4 *idim, ASTERINTEGER4 *taille,
         ASTERINTEGER4 *parami, ASTERINTEGER4 *info )
 {
-#ifdef _POSIX
+#ifdef ASTER_PLATFORM_POSIX
     char symbol[12];
     char *nomvar;
     PyObject* DLL_DICT;

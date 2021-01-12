@@ -25,13 +25,13 @@
 /  Résultats :
 /     0 = fermeture OK, -1 sinon (long)
 /-----------------------------------------------------------------------------*/
-#ifdef HAVE_HDF5
+#ifdef ASTER_HAVE_HDF5
 #include <hdf5.h>
 #endif
 
 hid_t DEFP(HDFCLF, hdfclf, hid_t *idf)
 {
-#ifdef HAVE_HDF5
+#ifdef ASTER_HAVE_HDF5
     hid_t idfic;
     herr_t icode;
 

@@ -28,7 +28,7 @@ subroutine as_mfdncn(fid, cha, n, cret)
     med_idt :: fid
     aster_int :: cret, n
     character(len=*) :: cha
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

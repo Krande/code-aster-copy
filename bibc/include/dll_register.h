@@ -16,12 +16,12 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-#ifndef DLL_REGISTER_H
-#define DLL_REGISTER_H
+#ifndef DLL_REGISTER_H_
+#define DLL_REGISTER_H_
 
 /*
  *   PUBLIC FUNCTIONS
- * 
+ *
  */
 
 // to avoid mistake when casting to pointer on function
@@ -39,7 +39,7 @@ void NULL_FUNCTION();
 
 /*
  *   PRIVATE FUNCTIONS - UTILITIES
- * 
+ *
  */
 
 PyObject* _libsymb_to_key(const char* libname, const char* symbname);

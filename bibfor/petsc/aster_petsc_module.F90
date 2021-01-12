@@ -19,7 +19,7 @@
 module aster_petsc_module
 !
 #include "asterf_petsc.h"
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 use petscsysdef
 use petscvecdef
 use petscmatdef

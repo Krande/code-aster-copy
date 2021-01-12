@@ -56,7 +56,7 @@ use petsc_data_module
 !    matrice PETSc (ie le bloc de lignes A(low:high-1))
 !----------------------------------------------------------------
 !
-#ifdef _HAVE_PETSC
+#ifdef ASTER_HAVE_PETSC
 !
 !     VARIABLES LOCALES
     integer :: nsmdi, nsmhc, nz, nvalm, nlong
@@ -152,7 +152,7 @@ use petsc_data_module
     call MatGetOwnershipRange(a, low, high, ierr)
     ASSERT(ierr.eq.0)
 !
-#if PETSC_INT_SIZE == 4
+#if ASTER_PETSC_INT_SIZE == 4
     call wkvect(idxi1, 'V V S', nloc, vi4=v_dxi1)
     call wkvect(idxi2, 'V V S', nloc, vi4=v_dxi2)
 #else

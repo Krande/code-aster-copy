@@ -30,7 +30,7 @@ subroutine as_mfdonv(fid, cha, typent, typgeo, noma,&
     med_idt :: fid
     aster_int :: typent, typgeo, stm, npr, nip, n, cret, numdt, numo, pit
     character(len=*) :: cha, nompro, nomloc, noma
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !

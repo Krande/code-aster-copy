@@ -18,8 +18,8 @@
 
 /* person_in_charge: mathieu.courtois at edf.fr */
 
-#ifndef ASTER_EXCEPTIONS_H
-#define ASTER_EXCEPTIONS_H
+#ifndef ASTER_EXCEPTIONS_H_
+#define ASTER_EXCEPTIONS_H_
 
 #include <setjmp.h>
 #include "aster.h"

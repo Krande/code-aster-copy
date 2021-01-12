@@ -31,7 +31,7 @@ subroutine as_mficom(nom, hdfok, medok, cret)
     aster_int :: cret, hdfok, medok
     hid_t :: fid
     character(len=*) :: nom
-#ifndef HAVE_MED
+#ifndef ASTER_HAVE_MED
     call utmess('F', 'FERMETUR_2')
 #else
 !
