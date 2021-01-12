@@ -434,6 +434,9 @@ class ConfigHelper(object):
 
     def support(self, var):
         """Tell if the language supports the variable name."""
+        if var.startswith('HAVE_'):
+            # do not keep variables automatically set by waf/check_cfg
+            return False
         # ASTER_C_* defines will be used if language='C', not 'Fortran'.
         if self._lang != 'C' and var.startswith('ASTER_C_'):
             return False

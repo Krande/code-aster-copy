@@ -47,8 +47,3 @@ List of supported variables:
 - ``ASTER_HAVE_PETSC``
 - ``ASTER_HAVE_SCOTCH``
 - ``ASTER_HAVE_TRACEBACKQQ``
-
-
-aster_core.HAVE_MPI/NO_EXPIR
-code_checker
-ASTER_TEST_STRICT

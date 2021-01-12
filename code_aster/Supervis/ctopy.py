@@ -25,14 +25,13 @@ import sys
 import time
 from datetime import datetime
 
-import numpy
-
 import aster
 import aster_core
+import numpy
 
 from ..Messages import UTMESS
-from ..Utilities import (ExecutionParameter, get_version, get_version_desc,
-                         localization, version_info)
+from ..Utilities import (ExecutionParameter, config, get_version,
+                         get_version_desc, localization, version_info)
 
 
 def _print_alarm():
@@ -72,7 +71,7 @@ def _print_header():
     pyvers = '%s.%s.%s' % tuple(sys.version_info[:3])
     UTMESS('I', 'SUPERVIS2_9', valk=(pyvers, numpy.__version__))
     # avertissement si la version a plus de 15 mois
-    if aster_core.ASTER_NO_EXPIR == 0:
+    if config["ASTER_NO_EXPIR"] == 0:
         try:
             d0, m0, y0 = list(map(int, date_build.split('/')))
             tbuild = datetime(y0, m0, d0)

@@ -28,7 +28,7 @@ import aster
 import aster_core
 import libaster
 
-from ..Utilities import (Singleton, _, center, clean_string, convert,
+from ..Utilities import (Singleton, _, center, clean_string, config, convert,
                          copy_text_to, cut_long_lines, force_list, textbox,
                          to_unicode, ufmt)
 from ..Utilities.misc import get_time
@@ -115,7 +115,7 @@ class MESSAGE_LOGGER(metaclass=Singleton):
 
     def init_mpi_error(self):
         """Stocke les informations nécessaires pour la gestion des erreurs en MPI."""
-        if not aster_core.ASTER_HAVE_MPI:
+        if not config["ASTER_HAVE_MPI"]:
             return
         self._mpi_rank, self._mpi_nbcpu = aster_core.MPI_CommRankSize()
 

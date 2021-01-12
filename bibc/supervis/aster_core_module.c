@@ -42,8 +42,6 @@
 #include "aster_utils.h"
 #include "shared_vars.h"
 
-FILE* fileOut = NULL;
-
 /*! aster_core C module */
 static PyObject* aster_core = (PyObject*)0;
 
@@ -83,7 +81,6 @@ ASTERINTEGER DEFS(JDCGET,jdcget,char *attr, STRING_SIZE l_attr)
 
     val = PyObject_CallMethod(get_sh_params(), "get_option", "s#", attr, l_attr);
     if (val == NULL){
-        fprintf(fileOut, "attribut inexistant dans le jdc : '%s'\n\n", attr);
         MYABORT("erreur dans JDCGET");
     }
     if (! PyLong_Check(val) )
@@ -954,21 +951,6 @@ static struct PyModuleDef aster_core_def = {
 PyObject* PyInit_aster_core(void)
 {
     aster_core = PyModule_Create(&aster_core_def);
-    // until all fileOut are removed
-    fileOut = stderr;
-
-    // Add macro constant for dependance
-#ifdef ASTER_HAVE_MPI
-    PyModule_AddIntConstant(aster_core, "ASTER_HAVE_MPI", 1);
-#else
-    PyModule_AddIntConstant(aster_core, "ASTER_HAVE_MPI", 0);
-#endif
-#ifdef ASTER_NO_EXPIR
-    PyModule_AddIntConstant(aster_core, "ASTER_NO_EXPIR", 1);
-#else
-    PyModule_AddIntConstant(aster_core, "ASTER_NO_EXPIR", 0);
-#endif
-    PyModule_AddIntMacro(aster_core, ASTER_INT_SIZE);
     return aster_core;
 }
 #endif
