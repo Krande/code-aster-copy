@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,11 +18,10 @@
 ! aslint: disable=W1501
 !
 subroutine op0167()
+!
+use mesh_module, only : checkInclude
+!
 implicit none
-
-
-!     OPERATEUR CREA_MAILLAGE
-!     ------------------------------------------------------------------
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -90,15 +89,21 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
+! --------------------------------------------------------------------------------------------------
+!
+! CREA_MAILLAGE
+!
+! --------------------------------------------------------------------------------------------------
+!
     integer :: i, lgno, lgnu, nbecla, nbmc, iret, iad, nbma, iqtr, nbvolu, nbma_izone
     integer :: n1, numma, nbjoin, nbrest, n1a, n1b, izone, jlgrma, jnompat, jcninv
-!
     parameter(nbmc=5)
     real(kind=8) :: epais
     character(len=4) :: cdim, repk
-    character(len=8) :: nomain, nomaou, nomaax, newmai, prefix, mo, geofi
+    character(len=8) :: meshIn, meshOut, nomaax, newmai, prefix, mo, geofi
     character(len=8) :: nomori, knume, prfno, prfma, plan, trans
-    character(len=16) :: typcon, nomcmd, option, ligrma
+    character(len=16) :: option, ligrma
+    character(len=16) :: kbi1, kbi2
     character(len=16) :: motfac, tymocl(nbmc), motcle(nbmc)
     character(len=19) :: table, ligrel, cham1
     character(len=24) :: nommai, grpmai, typmai, connex, nodime, grpnoe, nomnoe
@@ -127,18 +132,27 @@ implicit none
     integer, pointer :: nomnum(:) => null()
     integer, pointer :: lima(:) => null()
     integer, pointer :: li_trav(:) => null()
-!     ------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
     call infmaj()
     call infniv(ifm, niv)
 !
-    call getres(nomaou, typcon, nomcmd)
+! - Check Includes
 !
-! ----------------------------------------------------------------------
-!               TRAITEMENT DU MOT CLE "ECLA_PG"
-! ----------------------------------------------------------------------
+    call checkInclude()
+!
+! - Main datastructure
+!
+    call getres(meshOut, kbi1, kbi2)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   For "ECLA_PG"
+!
+! --------------------------------------------------------------------------------------------------
+!
     call getfac('ECLA_PG', nbecla)
     if (nbecla .gt. 0) then
         call getvid('ECLA_PG', 'MODELE', iocc=1, scal=mo, nbret=ibid)
@@ -155,34 +169,39 @@ implicit none
         endif
         call exlima('ECLA_PG', 1, 'V', mo, ligrel)
         cham1=' '
-        call eclpgm(nomaou, mo, cham1, ligrel, shrink,&
+        call eclpgm(meshOut, mo, cham1, ligrel, shrink,&
                     lonmin, nch, zk16( icham))
         goto 350
     endif
 !
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!          TRAITEMENT DU MOT CLE "GEOM_FIBRE"
-! ----------------------------------------------------------------------
+!   For "GEOM_FIBRE"
+!
+! --------------------------------------------------------------------------------------------------
+!
     call getvid(' ', 'GEOM_FIBRE', scal=geofi, nbret=nfi)
     if (nfi .ne. 0) then
         call jeveuo(geofi//'.GFMA', 'L', jgeofi)
-        call copisd('MAILLAGE', 'G', zk8(jgeofi), nomaou)
+        call copisd('MAILLAGE', 'G', zk8(jgeofi), meshOut)
         goto 350
     endif
 !
 !
-    call getvid(' ', 'MAILLAGE', scal=nomain, nbret=nn1)
+    call getvid(' ', 'MAILLAGE', scal=meshIn, nbret=nn1)
     if (nn1 .eq. 0) then
         call utmess('F', 'CALCULEL5_10')
     endif
-    if (isParallelMesh(nomain)) then
+    if (isParallelMesh(meshIn)) then
         call utmess('F', 'CALCULEL5_11')
     end if
 !
-! ----------------------------------------------------------------------
-!          TRAITEMENT DU MOT CLE "CREA_FISS"
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+!   For "CREA_FISS"
+!
+! --------------------------------------------------------------------------------------------------
+!
     call getfac('CREA_FISS', nbjoin)
     if (nbjoin .ne. 0) then
         if (nn1 .eq. 0) then
@@ -195,15 +214,16 @@ implicit none
             zi(joccmc-1+i)=i
         end do
 !
-        call cmcrea(nomain, nomaou, nbjoin, zk16(jnommc), zi(joccmc))
+        call cmcrea(meshIn, meshOut, nbjoin, zk16(jnommc), zi(joccmc))
         goto 350
 !
     endif
 !
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!          TRAITEMENT DU MOT CLE "LINE_QUAD"
-! ----------------------------------------------------------------------
+!   For "LINE_QUAD"
+!
+! --------------------------------------------------------------------------------------------------
 !
     call getfac('LINE_QUAD', nbmoma)
     if (nbmoma .gt. 0) then
@@ -225,28 +245,30 @@ implicit none
         motcle(2)='GROUP_MA'
         motcle(3)='TOUT'
         nomjv='&&OP0167.LISTE_MA'
-        call reliem(' ', nomain, 'NU_MAILLE', 'LINE_QUAD', 1,&
+        call reliem(' ', meshIn, 'NU_MAILLE', 'LINE_QUAD', 1,&
                     3, motcle, motcle, nomjv, nbma)
         call jeveuo(nomjv, 'L', jlima)
-        call jeexin(nomain//'.NOMACR', iret)
+        call jeexin(meshIn//'.NOMACR', iret)
         if (iret .ne. 0) then
             call utmess('F', 'ALGELINE2_91')
         endif
-        call jeexin(nomain//'.ABSC_CURV', iret)
+        call jeexin(meshIn//'.ABSC_CURV', iret)
         if (iret .ne. 0) then
             call utmess('F', 'ALGELINE2_92')
         endif
 !
-        call cmlqlq(nomain, nomaou, nbma, zi(jlima), prefix,&
+        call cmlqlq(meshIn, meshOut, nbma, zi(jlima), prefix,&
                     ndinit)
 !
         goto 350
 !
     endif
 !
-! ----------------------------------------------------------------------
-!          TRAITEMENT DES MOTS CLES "PENTA15_18","HEXA20_27"
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+!   For "PENTA15_18","HEXA20_27"
+!
+! --------------------------------------------------------------------------------------------------
 !
     do k = 1, 2
         if (k .eq. 1) motfac='HEXA20_27'
@@ -265,14 +287,14 @@ implicit none
 !
             lpb=.false.
             if (motfac .eq. 'HEXA20_27') then
-                call dismoi('EXI_PENTA15', nomain, 'MAILLAGE', repk=repk)
+                call dismoi('EXI_PENTA15', meshIn, 'MAILLAGE', repk=repk)
                 if (repk .eq. 'OUI') lpb=.true.
-                call dismoi('EXI_PYRAM13', nomain, 'MAILLAGE', repk=repk)
+                call dismoi('EXI_PYRAM13', meshIn, 'MAILLAGE', repk=repk)
                 if (repk .eq. 'OUI') lpb=.true.
             else if (motfac.eq.'PENTA15_18') then
-                call dismoi('EXI_HEXA20', nomain, 'MAILLAGE', repk=repk)
+                call dismoi('EXI_HEXA20', meshIn, 'MAILLAGE', repk=repk)
                 if (repk .eq. 'OUI') lpb=.true.
-                call dismoi('EXI_PYRAM13', nomain, 'MAILLAGE', repk=repk)
+                call dismoi('EXI_PYRAM13', meshIn, 'MAILLAGE', repk=repk)
                 if (repk .eq. 'OUI') lpb=.true.
             endif
             if (lpb) then
@@ -286,24 +308,26 @@ implicit none
             motcle(2)='GROUP_MA'
             motcle(3)='TOUT'
             nomjv='&&OP0167.LISTE_MA'
-            call reliem(' ', nomain, 'NU_MAILLE', motfac, 1,&
+            call reliem(' ', meshIn, 'NU_MAILLE', motfac, 1,&
                         3, motcle, motcle, nomjv, nbma)
             call jeveuo(nomjv, 'L', jlima)
 !
             if (motfac .eq. 'HEXA20_27') then
-                call cm2027(nomain, nomaou, nbma, zi(jlima), prefix,&
+                call cm2027(meshIn, meshOut, nbma, zi(jlima), prefix,&
                             ndinit)
             else if (motfac.eq.'PENTA15_18') then
-                call cm1518(nomain, nomaou, nbma, zi(jlima), prefix,&
+                call cm1518(meshIn, meshOut, nbma, zi(jlima), prefix,&
                             ndinit)
             endif
             goto 350
         endif
     end do
 !
-! ----------------------------------------------------------------------
-!          TRAITEMENT DU MOT CLE "QUAD_LINE"
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+!   For "QUAD_LINE"
+!
+! --------------------------------------------------------------------------------------------------
 !
     call getfac('QUAD_LINE', nbmoma)
     if (nbmoma .gt. 0) then
@@ -322,28 +346,29 @@ implicit none
         motcle(2)='GROUP_MA'
         motcle(3)='TOUT'
         nomjv='&&OP0167.LISTE_MA'
-        call reliem(' ', nomain, 'NU_MAILLE', 'QUAD_LINE', 1,&
+        call reliem(' ', meshIn, 'NU_MAILLE', 'QUAD_LINE', 1,&
                     3, motcle, motcle, nomjv, nbma)
         call jeveuo(nomjv, 'L', jlima)
-        call jeexin(nomain//'.NOMACR', iret)
+        call jeexin(meshIn//'.NOMACR', iret)
         if (iret .ne. 0) then
             call utmess('F', 'ALGELINE2_94')
         endif
-        call jeexin(nomain//'.ABSC_CURV', iret)
+        call jeexin(meshIn//'.ABSC_CURV', iret)
         if (iret .ne. 0) then
             call utmess('F', 'ALGELINE2_95')
         endif
 !
-        call cmqlql(nomain, nomaou, nbma, zi(jlima))
+        call cmqlql(meshIn, meshOut, nbma, zi(jlima))
 !
         goto 350
 !
     endif
 !
-    !
-! ----------------------------------------------------------------------
-!          TRAITEMENT DU MOT CLE "MODI_HHO"
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+!   For "MODI_HHO"
+!
+! --------------------------------------------------------------------------------------------------
 !
     call getfac('MODI_HHO', nbmoma)
     if (nbmoma .gt. 0) then
@@ -363,27 +388,29 @@ implicit none
         motcle(1)='GROUP_MA'
         motcle(2)='TOUT'
         nomjv='&&OP0167.LISTE_MA'
-        call reliem(' ', nomain, 'NU_MAILLE', 'MODI_HHO', 1,&
+        call reliem(' ', meshIn, 'NU_MAILLE', 'MODI_HHO', 1,&
                     2, motcle, motcle, nomjv, nbma)
         call jeveuo(nomjv, 'L', jlima)
-        call jeexin(nomain//'.NOMACR', iret)
+        call jeexin(meshIn//'.NOMACR', iret)
         if (iret .ne. 0) then
             call utmess('F', 'ALGELINE2_94')
         endif
-        call jeexin(nomain//'.ABSC_CURV', iret)
+        call jeexin(meshIn//'.ABSC_CURV', iret)
         if (iret .ne. 0) then
             call utmess('F', 'ALGELINE2_95')
         endif
 !
-        call cmhho(nomain, nomaou, nbma, zi(jlima), prefix, ndinit)
+        call cmhho(meshIn, meshOut, nbma, zi(jlima), prefix, ndinit)
 !
         goto 350
 !
     endif
 !
-! ----------------------------------------------------------------------
-!          TRAITEMENT DU MOT CLE "MODI_MAILLE", OPTION "QUAD_TRIA3"
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+!   For "MODI_MAILLE", OPTION "QUAD_TRIA3"
+!
+! --------------------------------------------------------------------------------------------------
 !
     call getfac('MODI_MAILLE', nbmoma)
     if (nbmoma .gt. 0) then
@@ -410,7 +437,7 @@ implicit none
             if (n1a+n1b .lt. 0) then
                 call utmess('A', 'MODELISA4_1', sk='QUAD_TRIA3')
             endif
-            call dismoi('EXI_TRIA6', nomain, 'MAILLAGE', repk=repk)
+            call dismoi('EXI_TRIA6', meshIn, 'MAILLAGE', repk=repk)
             if (repk .eq. 'OUI') then
                 call utmess('A', 'MODELISA4_2')
             endif
@@ -423,11 +450,11 @@ implicit none
         motcle(2)='GROUP_MA'
         motcle(3)='TOUT'
         nomjv='&&OP0167.LISTE_MA'
-        call reliem(' ', nomain, 'NU_MAILLE', 'MODI_MAILLE', iocct,&
+        call reliem(' ', meshIn, 'NU_MAILLE', 'MODI_MAILLE', iocct,&
                     3, motcle, motcle, nomjv, nbma)
         call jeveuo(nomjv, 'L', jlima)
 !
-        call cmqutr('G', nomain, nomaou, nbma, zi(jlima),&
+        call cmqutr('G', meshIn, meshOut, nbma, zi(jlima),&
                     prefix, ndinit)
 !
         goto 350
@@ -435,9 +462,11 @@ implicit none
     endif
  30 continue
 !
-! ----------------------------------------------------------------------
-!                 TRAITEMENT DU MOT CLE "COQU_VOLU"
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+!   For "COQU_VOLU"
+!
+! --------------------------------------------------------------------------------------------------
 !
     call getfac('COQU_VOLU', nbvolu)
     if (nbvolu .ne. 0) then
@@ -457,11 +486,11 @@ implicit none
         endif
 !
         nomjv='&&OP0167.LISTE_MAV'
-        call reliem(' ', nomain, 'NU_MAILLE', 'COQU_VOLU', 1,&
+        call reliem(' ', meshIn, 'NU_MAILLE', 'COQU_VOLU', 1,&
                     1, 'GROUP_MA', 'GROUP_MA', nomjv, nbma)
         call jeveuo(nomjv, 'L', jma)
 !
-        call cmcovo(nomain, nomaou, nbma, zi(jma), prfno,&
+        call cmcovo(meshIn, meshOut, nbma, zi(jma), prfno,&
                     prfma, numma, epais, plan, trans)
 !
 !
@@ -469,18 +498,21 @@ implicit none
 !
     endif
 !
-! ----------------------------------------------------------------------
-!                 TRAITEMENT DU MOT CLE "RESTREINT"
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+!   For "RESTREINT"
+!
+! --------------------------------------------------------------------------------------------------
+!
     call getfac('RESTREINT', nbrest)
     if (nbrest .ne. 0) then
         if (nn1 .eq. 0) then
             call utmess('F', 'ALGELINE2_98')
         endif
-        call rdtmai(nomain, nomaou, 'G', nomaou//'.CRNO', nomaou// '.CRMA',&
+        call rdtmai(meshIn, meshOut, 'G', meshOut//'.CRNO', meshOut// '.CRMA',&
                     'G', 0, [0])
 ! ---    VERIFICATIONS DU MAILLAGE
-        call chckma(nomaou, 1.0d-03)
+        call chckma(meshOut, 1.0d-03)
         goto 350
 !
     endif
@@ -489,42 +521,42 @@ implicit none
 !               AURES MOTS CLES :
 ! ----------------------------------------------------------------------
 !
-    nommav=nomain//'.NOMMAI         '
-    nomnov=nomain//'.NOMNOE         '
-    typmav=nomain//'.TYPMAIL        '
-    connev=nomain//'.CONNEX         '
-    grpmav=nomain//'.GROUPEMA       '
-    grpnov=nomain//'.GROUPENO       '
-    nodimv=nomain//'.DIME           '
-    coovav=nomain//'.COORDO    .VALE'
-    coodsv=nomain//'.COORDO    .DESC'
-    coorev=nomain//'.COORDO    .REFE'
+    nommav=meshIn//'.NOMMAI         '
+    nomnov=meshIn//'.NOMNOE         '
+    typmav=meshIn//'.TYPMAIL        '
+    connev=meshIn//'.CONNEX         '
+    grpmav=meshIn//'.GROUPEMA       '
+    grpnov=meshIn//'.GROUPENO       '
+    nodimv=meshIn//'.DIME           '
+    coovav=meshIn//'.COORDO    .VALE'
+    coodsv=meshIn//'.COORDO    .DESC'
+    coorev=meshIn//'.COORDO    .REFE'
 !
-    nommai=nomaou//'.NOMMAI         '
-    nomnoe=nomaou//'.NOMNOE         '
-    typmai=nomaou//'.TYPMAIL        '
-    connex=nomaou//'.CONNEX         '
-    grpmai=nomaou//'.GROUPEMA       '
-    grpnoe=nomaou//'.GROUPENO       '
-    nodime=nomaou//'.DIME           '
-    cooval=nomaou//'.COORDO    .VALE'
-    coodsc=nomaou//'.COORDO    .DESC'
-    cooref=nomaou//'.COORDO    .REFE'
-    gpptnm=nomaou//'.PTRNOMMAI'
-    gpptnn=nomaou//'.PTRNOMNOE'
+    nommai=meshOut//'.NOMMAI         '
+    nomnoe=meshOut//'.NOMNOE         '
+    typmai=meshOut//'.TYPMAIL        '
+    connex=meshOut//'.CONNEX         '
+    grpmai=meshOut//'.GROUPEMA       '
+    grpnoe=meshOut//'.GROUPENO       '
+    nodime=meshOut//'.DIME           '
+    cooval=meshOut//'.COORDO    .VALE'
+    coodsc=meshOut//'.COORDO    .DESC'
+    cooref=meshOut//'.COORDO    .REFE'
+    gpptnm=meshOut//'.PTRNOMMAI'
+    gpptnn=meshOut//'.PTRNOMNOE'
 !
 !
     call jedupo(nodimv, 'G', nodime, .false._1)
     call jedupo(coodsv, 'G', coodsc, .false._1)
     call jedupo(coorev, 'G', cooref, .false._1)
-    call jedupo(nomain//'.NOMACR', 'G', nomaou//'.NOMACR', .false._1)
-    call jedupo(nomain//'.PARA_R', 'G', nomaou//'.PARA_R', .false._1)
-    call jedupo(nomain//'.SUPMAIL', 'G', nomaou//'.SUPMAIL', .false._1)
-    call jedupo(nomain//'.TYPL', 'G', nomaou//'.TYPL', .false._1)
-    call jedupo(nomain//'.ABSC_CURV', 'G', nomaou//'.ABSC_CURV', .false._1)
+    call jedupo(meshIn//'.NOMACR', 'G', meshOut//'.NOMACR', .false._1)
+    call jedupo(meshIn//'.PARA_R', 'G', meshOut//'.PARA_R', .false._1)
+    call jedupo(meshIn//'.SUPMAIL', 'G', meshOut//'.SUPMAIL', .false._1)
+    call jedupo(meshIn//'.TYPL', 'G', meshOut//'.TYPL', .false._1)
+    call jedupo(meshIn//'.ABSC_CURV', 'G', meshOut//'.ABSC_CURV', .false._1)
 !
     call jeveuo(cooref, 'E', jrefe)
-    zk24(jrefe)=nomaou
+    zk24(jrefe)=meshOut
 !
     call jeveuo(nodime, 'E', jdime)
     nbnoev=zi(jdime)
@@ -532,13 +564,14 @@ implicit none
 !
     call jeveuo(typmav, 'L', jtypmv)
 !
-! ----------------------------------------------------------------------
-!               TRAITEMENT DU MOT CLE "MODI_MAILLE"
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+!   For "MODI_MAILLE"
+!
+! --------------------------------------------------------------------------------------------------
 !
     call getfac('MODI_MAILLE', nbmoma)
     nbnoaj=0
-!
     if (nbmoma .ne. 0) then
         if (nn1 .eq. 0) then
             call utmess('F', 'ALGELINE2_96')
@@ -583,7 +616,7 @@ implicit none
                 call getvis('MODI_MAILLE', 'PREF_NUME', iocc=iocc, scal=zi(jnum+iocc-1),&
                             nbret=n1)
             endif
-            call palim2('MODI_MAILLE', iocc, nomain, momanu, momano,&
+            call palim2('MODI_MAILLE', iocc, meshIn, momanu, momano,&
                         zi(jiad+iocc-1))
             if (zi(jiad+iocc-1)-1 .le. 0) then
                 call utmess('A', 'MODELISA3_32', sk=option, si=iocc)
@@ -640,9 +673,11 @@ implicit none
         nbnoaj=iad-1
     endif
 !
-! ----------------------------------------------------------------------
-!                 TRAITEMENT DU MOT CLE "CREA_MAILLE"
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+!   For "CREA_MAILLE"
+!
+! --------------------------------------------------------------------------------------------------
 !
     call getfac('CREA_MAILLE', nbgrma)
     nbmaj2=0
@@ -656,16 +691,18 @@ implicit none
         call wkvect(crgrno, 'V V K8', nbmaiv, jcrgno)
         nbmaj2=0
         do iocc = 1, nbgrma
-            call palim3('CREA_MAILLE', iocc, nomain, crgrnu, crgrno,&
+            call palim3('CREA_MAILLE', iocc, meshIn, crgrnu, crgrno,&
                         nbmaj2)
         end do
         call jeveuo(crgrnu, 'L', jcrgnu)
         call jeveuo(crgrno, 'L', jcrgno)
     endif
 !
-! ----------------------------------------------------------------------
-!                TRAITEMENT DU MOT CLE "CREA_POI1"
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+!   For "CREA_POI1"
+!
+! --------------------------------------------------------------------------------------------------
 !
     call getfac('CREA_POI1', nbcrp1)
     nbmaj3=0
@@ -693,7 +730,7 @@ implicit none
         call wkvect('&&OP0167.NOM_NOEUD', 'V V K8', nbnoev, jnono)
 !
         do iocc = 1, nbcrp1
-            call reliem(' ', nomain, 'NO_NOEUD', motfac, iocc,&
+            call reliem(' ', meshIn, 'NO_NOEUD', motfac, iocc,&
                         nbmc, motcle, tymocl, nomjv, nbno)
             call jeveuo(nomjv, 'L', jnoeu)
             do i = 0, nbno-1
@@ -809,9 +846,9 @@ implicit none
             if (nori .ne. 0) then
                 call getvtx('REPERE', 'NOM_ORIG', iocc=1, scal=nomori, nbret=nori)
                 if (nomori .eq. 'CDG') then
-                    call chcoma(table, nomaou)
+                    call chcoma(table, meshOut)
                 else if (nomori.eq.'TORSION') then
-                    call chcomb(table, nomaou)
+                    call chcomb(table, meshOut)
                 else
                     call utmess('F', 'ALGELINE3_5')
                 endif
@@ -1003,7 +1040,7 @@ implicit none
                 call utmess('F', 'ALGELINE4_9', sk=valk(1))
             endif
             nbmaj2=0
-            call palim3('CREA_MAILLE', i, nomain, crgrnu, crgrno,&
+            call palim3('CREA_MAILLE', i, meshIn, crgrnu, crgrno,&
                         nbmaj2)
             call jeveuo(crgrno, 'L', jcrgno)
             call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(nbmaj2, 1))
@@ -1046,7 +1083,7 @@ implicit none
         end do
     endif
 !
-    if (nbmoma .ne. 0) call cmmoma(nomaou, momuto, nbnoev, nbnoaj)
+    if (nbmoma .ne. 0) call cmmoma(meshOut, momuto, nbnoev, nbnoaj)
 !
 !
 ! ----------------------------------------------------------------------
@@ -1070,7 +1107,7 @@ implicit none
                 grpmav='&&OP0167.GROUPEMA'
                 call jelira(grpmai, 'NOMUTI', nbgma)
                 nbgrmt=nbgma+nbgrma
-                call cpclma(nomaou, '&&OP0167', 'GROUPEMA', 'V')
+                call cpclma(meshOut, '&&OP0167', 'GROUPEMA', 'V')
                 call jedetr(grpmai)
                 call jedetr(gpptnm)
                 call jecreo(gpptnm, 'G N K24')
@@ -1105,7 +1142,7 @@ implicit none
                     if (ibid .gt. 0) then
                         call utmess('F', 'ALGELINE3_7', sk=nogma)
                     endif
-                    call reliem(' ', nomain, 'NO_NOEUD', motfac, iocc,&
+                    call reliem(' ', meshIn, 'NO_NOEUD', motfac, iocc,&
                                 nbmc, motcle, tymocl, nomjv, nbma)
                     call jeveuo(nomjv, 'L', jmail)
 !
@@ -1130,10 +1167,12 @@ implicit none
             end do
         endif
     endif
-
-! ----------------------------------------------------------------------
-!          TRAITEMENT DU MOT CLE "DECOUPE_LAC"
-! ----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   For "DECOUPE_LAC"
+!
+! --------------------------------------------------------------------------------------------------
 !
     call getfac('DECOUPE_LAC', nbmoma)
 !---------nbmoma > 1 --> PRESENCE DE CREA_MAILLE_LAC (OCCURENCE DOIT ETRE 1)
@@ -1158,14 +1197,14 @@ implicit none
         endif
         ASSERT(n1b.eq.1)
 ! ------ INITIALISATION ---------------------------------------------------------------------------
-        call copisd('MAILLAGE', 'V', nomain, nomaax)
+        call copisd('MAILLAGE', 'V', meshIn, nomaax)
 ! ------ BOUCLE SUR LES GROUP_MA ------------------------------------------------------------------
         do izone = 1,nbgrma
 ! ------ LISTE DE MAILLE DU GROUP_MA
             same_zone=.false.
             nb_ma_test = 0
             nbtrav = 0
-            call gtgrma(nomain, nomaax, zk24(jlgrma+izone-1), lima, nbma)
+            call gtgrma(meshIn, nomaax, zk24(jlgrma+izone-1), lima, nbma)
             nbma_izone = nbma
             AS_ALLOCATE(vi=li_trav, size=nbma)
 ! ------ Gestion du cas avec des mailles surfaciques possédant des mailles volumiques communes
@@ -1175,18 +1214,18 @@ implicit none
                 call cnmpmc(nomaax,nbma, lima,zi(jcninv))
                 call def_list_test(nbma, jcninv, lima, li_trav, nbtrav)
 ! ------ CREATION DES PATCHS ET RAFFINEMENT LOCAL
-                call cppagn(nomaax, nomaou,  nbtrav, li_trav, izone, typ_dec, jcninv,&
+                call cppagn(nomaax, meshOut,  nbtrav, li_trav, izone, typ_dec, jcninv,&
                             same_zone, nb_ma_test)
 ! ------ COPIE DES DONNEES DANS LE MAILLAGE AUXILIAIRE
                 call detrsd('MAILLAGE', nomaax)
-                call copisd('MAILLAGE', 'V', nomaou, nomaax)
-                call cpifpa(nomaou, nomaax)
+                call copisd('MAILLAGE', 'V', meshOut, nomaax)
+                call cpifpa(meshOut, nomaax)
                 same_zone = .true.
                 nbtrav = nb_ma_test
                 call jedetr(cninv)
                 AS_DEALLOCATE(vi=lima)
                 AS_DEALLOCATE(vi=li_trav)
-                call gtgrma(nomain, nomaax, zk24(jlgrma+izone-1), lima, nbma)
+                call gtgrma(meshIn, nomaax, zk24(jlgrma+izone-1), lima, nbma)
                 AS_ALLOCATE(vi=li_trav, size=nbma)
             enddo
             AS_DEALLOCATE(vi=lima)
@@ -1200,7 +1239,7 @@ implicit none
             AS_DEALLOCATE(vi=li_trav)
         enddo
 ! ------ CREATION DU POINTEUR VERS LES NOMS -------------------------------------------------------
-        call wkvect(nomaou//'.PTRNOMPAT', 'G V K24',nbgrma,jnompat)
+        call wkvect(meshOut//'.PTRNOMPAT', 'G V K24',nbgrma,jnompat)
         do izone=1, nbgrma
            zk24(jnompat+izone-1)=zk24(jlgrma+izone-1)
 ! ------ IMPRESSIONS
@@ -1220,18 +1259,17 @@ implicit none
         go to 350
 !
     endif
-
-
+!
 350 continue
 
+! - Add title in mesh datastructure
     call titre()
-!
-    call cargeo(nomaou)
-!
-!     IMPRESSIONS DU MOT CLE INFO :
-!     -----------------------------
-    call infoma(nomaou)
-!
+
+! - Update parameters for modified mesh (bounding box and dimensions)
+    call cargeo(meshOut)
+
+! - Verbose
+    call infoma(meshOut)
 !
     call jedema()
 !
