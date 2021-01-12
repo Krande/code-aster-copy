@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -332,11 +332,12 @@ Contactez le support technique.
 """),
 
     86 : _("""
- Cas particulier pour l'impression des mailles suivantes, on traite :
+Cas particulier pour l'impression des mailles suivantes, on traite :
      - les PENTA18 en oubliant le(s) noeud(s) au centre
      - les SEG4 en oubliant les 2 noeuds centraux
      - les TETRA9 en oubliant les 4 noeuds au centre des faces
      - les TRIA4 en oubliant le noeud central
+     - les HEXA9 en oubliant le noeud central
 """),
 
     87 : _("""

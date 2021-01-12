@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: nicolas.sellenet at edf.fr
 !
-subroutine irmmma(fid, nomamd, nbmail, connex, point,&
+subroutine irmmma(fid, nomamd, nbCell, connex, point,&
                   typma, nommai, prefix, nbtyp, typgeo,&
-                  nomtyp, nnotyp, renumd, nmatyp, infmed,&
+                  nomtyp, nnotyp, renumd, nbCellType, infmed,&
                   modnum, nuanom)
 !
 implicit none
@@ -34,15 +33,13 @@ implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 med_idt :: fid
-integer :: nbmail, nbtyp
+integer :: nbCell, nbtyp
 integer :: connex(*), typma(*), point(*)
-integer :: typgeo(*), nnotyp(*), nmatyp(MT_NTYMAX)
+integer :: typgeo(*), nnotyp(*), nbCellType(MT_NTYMAX)
 integer :: renumd(*), modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
 integer :: infmed
 character(len=6) :: prefix
@@ -88,9 +85,8 @@ character(len=*) :: nomamd
     character(len=6), parameter :: nompro = 'IRMMMA'
     integer :: edfuin, edmail, ednoda
     integer :: codret
-    integer :: ipoin, ityp, letype
-    integer :: ino
-    integer :: ima, ite10, ite15, ipy13, ipy19, ipe18, ipe21
+    integer :: ipoin, iCellType, letype
+    integer :: ino, iCell
     integer :: jnomma(MT_NTYMAX), jnumma(MT_NTYMAX), jcnxma(MT_NTYMAX)
     integer :: ifm, niv
     character(len=8) :: saux08
@@ -111,45 +107,43 @@ character(len=*) :: nomamd
     edfuin = 0
     edmail = 0
     ednoda = 0
-    nmatyp(1:) = 0
-    do ima = 1, nbmail
-        nmatyp(typma(ima)) = nmatyp(typma(ima)) + 1
+    nbCellType(1:) = 0
+    do iCell = 1, nbCell
+        nbCellType(typma(iCell)) = nbCellType(typma(iCell)) + 1
     end do
 !
 !     ON TRAITE LE TETRA15 -> TETRA10, ON OUBLIE LES 5 DERNIERS NOEUDS
 !     ON L'IMPRIME COMME UN TETRA4
 !     PYRAM19 -> PYRAM13 et PENTA21 -> PENTA18
     lnocen = ASTER_FALSE
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA10'), ite10)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA15'), ite15)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM13'), ipy13)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM19'), ipy19)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA18'), ipe18)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA21'), ipe21)
-    if (nmatyp(ite15) .ne. 0) then
-        nmatyp(ite10)=nmatyp(ite10)+nmatyp(ite15)
-        nmatyp(ite15)=0
-        lnocen = ASTER_TRUE
-    elseif (nmatyp(ipy19) .ne. 0) then
-        nmatyp(ipy13)=nmatyp(ipy13)+nmatyp(ipy19)
-        nmatyp(ipy19)=0
-        lnocen = ASTER_TRUE
-    elseif (nmatyp(ipe21) .ne. 0) then
-        nmatyp(ipe18)=nmatyp(ipe18)+nmatyp(ipe21)
-        nmatyp(ipe21)=0
-        lnocen = ASTER_TRUE
+    if (nbCellType(MT_TETRA15) .ne. 0) then
+        nbCellType(MT_TETRA10) = nbCellType(MT_TETRA10) + nbCellType(MT_TETRA15)
+        nbCellType(MT_TETRA15) = 0
+        lnocen             = ASTER_TRUE
+    elseif (nbCellType(MT_PYRAM19) .ne. 0) then
+        nbCellType(MT_PYRAM13) = nbCellType(MT_PYRAM13) + nbCellType(MT_PYRAM19)
+        nbCellType(MT_PYRAM19) = 0
+        lnocen             = ASTER_TRUE
+    elseif (nbCellType(MT_PENTA21) .ne. 0) then
+        nbCellType(MT_PENTA18) = nbCellType(MT_PENTA18) + nbCellType(MT_PENTA21)
+        nbCellType(MT_PENTA21) = 0
+        lnocen             = ASTER_TRUE
+    elseif (nbCellType(MT_HEXA9) .ne. 0) then
+        nbCellType(MT_HEXA8) = nbCellType(MT_HEXA8) + nbCellType(MT_HEXA9)
+        nbCellType(MT_HEXA9) = 0
+        lnocen           = ASTER_TRUE
     endif
     if (lnocen) then
-        call utmess('A', 'PREPOST_86')
+        call utmess('I', 'PREPOST_86')
     endif
 !
 ! 2.2. ==> ON VERIFIE QUE L'ON SAIT ECRIRE LES MAILLES PRESENTES DANS
 !          LE MAILLAGE
 !
-    do ityp = 1, MT_NTYMAX
-        if (nmatyp(ityp) .ne. 0) then
-            if (typgeo(ityp) .eq. 0) then
-                call utmess('F', 'PREPOST2_93', sk=nomtyp(ityp))
+    do iCellType = 1, MT_NTYMAX
+        if (nbCellType(iCellType) .ne. 0) then
+            if (typgeo(iCellType) .eq. 0) then
+                call utmess('F', 'PREPOST2_93', sk=nomtyp(iCellType))
             endif
         endif
     end do
@@ -160,12 +154,14 @@ character(len=*) :: nomamd
 !           +  UN VECTEUR CONTENANT LA CONNECTIVITE DES MAILLE/TYPE
 !              (CONNECTIVITE = NOEUDS + UNE VALEUR BIDON(0) SI BESOIN)
 !
-    do ityp = 1, MT_NTYMAX
-        if (nmatyp(ityp) .ne. 0) then
-            call wkvect('&&'//nompro//'.NOM.'//nomtyp(ityp), 'V V K16', nmatyp(ityp), jnomma(ityp))
-            call wkvect('&&'//prefix//'.NUM.'//nomtyp(ityp), 'V V I', nmatyp(ityp), jnumma(ityp))
-            call wkvect('&&'//nompro//'.CNX.'//nomtyp(ityp), 'V V I', nnotyp(ityp)*nmatyp(ityp),&
-                        jcnxma(ityp))
+    do iCellType = 1, MT_NTYMAX
+        if (nbCellType(iCellType) .ne. 0) then
+            call wkvect('&&'//nompro//'.NOM.'//nomtyp(iCellType), 'V V K16', &
+                        nbCellType(iCellType), jnomma(iCellType))
+            call wkvect('&&'//prefix//'.NUM.'//nomtyp(iCellType), 'V V I',&
+                        nbCellType(iCellType), jnumma(iCellType))
+            call wkvect('&&'//nompro//'.CNX.'//nomtyp(iCellType), 'V V I', &
+                        nnotyp(iCellType)*nbCellType(iCellType), jcnxma(iCellType))
         endif
     end do
 !
@@ -177,33 +173,35 @@ character(len=*) :: nomamd
 !          A LA FIN DE CETTE PHASE, NMATYP CONTIENT LE NOMBRE DE MAILLES
 !          POUR CHAQUE TYPE
 !
-    nmatyp(:) = 0
+    nbCellType = 0
 !
-    do ima = 1, nbmail
-        ityp = typma(ima)
+    do iCell = 1, nbCell
+        iCellType = typma(iCell)
 !       CAS PARTICULIER - MAILLE NON SUPPORTEE PAR MED
-        if (ityp .eq. ite15) ityp=ite10
-        if (ityp .eq. ipy19) ityp=ipy13
-        if (ityp .eq. ipe21) ityp=ipe18
-        ipoin = point(ima)
-        nmatyp(ityp) = nmatyp(ityp) + 1
+        if (iCellType .eq. MT_HEXA9)   iCellType = MT_HEXA8
+        if (iCellType .eq. MT_TETRA15) iCellType = MT_TETRA10
+        if (iCellType .eq. MT_PYRAM19) iCellType = MT_PYRAM13
+        if (iCellType .eq. MT_PENTA21) iCellType = MT_PENTA18
+        ipoin = point(iCell)
+        nbCellType(iCellType) = nbCellType(iCellType) + 1
 !       NOM DE LA MAILLE DE TYPE ITYP DANS VECT NOM MAILLES
-        zk16(jnomma(ityp)-1+nmatyp(ityp)) = nommai(ima)//'        '
+        zk16(jnomma(iCellType)-1+nbCellType(iCellType)) = nommai(iCell)//'        '
 !       NUMERO ASTER DE LA MAILLE DE TYPE ITYP DANS VECT NUM MAILLES
-        zi(jnumma(ityp)-1+nmatyp(ityp)) = ima
+        zi(jnumma(iCellType)-1+nbCellType(iCellType)) = iCell
 !       CONNECTIVITE DE LA MAILLE TYPE ITYP DANS VECT CNX:
 !       I) POUR LES TYPES DE MAILLE DONT LA NUMEROTATION DES NOEUDS
 !          ENTRE ASTER ET MED EST IDENTIQUE:
-        if (modnum(ityp) .eq. 0) then
-            do ino = 1, nnotyp(ityp)
-                zi(jcnxma(ityp)-1+(nmatyp(ityp)-1)*nnotyp(ityp)+ino) = connex(ipoin-1+ino)
+        if (modnum(iCellType) .eq. 0) then
+            do ino = 1, nnotyp(iCellType)
+                zi(jcnxma(iCellType)-1+(nbCellType(iCellType)-1)*nnotyp(iCellType)+ino) =&
+                    connex(ipoin-1+ino)
             end do
 !       II) POUR LES TYPES DE MAILLE DONT LA NUMEROTATION DES NOEUDS
 !          ENTRE ASTER ET MED EST DIFFERENTE (CF LRMTYP):
         else
-            do ino = 1, nnotyp(ityp)
-                zi(jcnxma(ityp)-1+(nmatyp(ityp)-1)*nnotyp(ityp)+ino) =&
-                    connex(ipoin-1+nuanom(ityp,ino))
+            do ino = 1, nnotyp(iCellType)
+                zi(jcnxma(iCellType)-1+(nbCellType(iCellType)-1)*nnotyp(iCellType)+ino) =&
+                    connex(ipoin-1+nuanom(iCellType,ino))
             end do
         endif
     end do
@@ -224,22 +222,23 @@ character(len=*) :: nomamd
 !
 ! 3.0. ==> PASSAGE DU NUMERO DE TYPE MED AU NUMERO DE TYPE ASTER
 !
-        ityp = renumd(letype)
+        iCellType = renumd(letype)
 !
         if (infmed .ge. 2) then
-            write (ifm,300) nomtyp(ityp), nmatyp(ityp)
+            write (ifm,300) nomtyp(iCellType), nbCellType(iCellType)
         endif
     300 format('TYPE ',a8,' : ',i10,' MAILLES')
 !
-        if (nmatyp(ityp) .ne. 0) then
+        if (nbCellType(iCellType) .ne. 0) then
 !
 ! 3.1. ==> LES CONNECTIVITES
 !          LA CONNECTIVITE EST FOURNIE EN STOCKANT TOUS LES NOEUDS A
 !          LA SUITE POUR UNE MAILLE DONNEE.
 !          C'EST CE QUE MED APPELLE LE MODE ENTRELACE
 !
-            call as_mmhcyw(fid, nomamd, zi(jcnxma(ityp)), nnotyp(ityp)* nmatyp(ityp), edfuin,&
-                           nmatyp(ityp), edmail, typgeo(ityp), ednoda, codret)
+            call as_mmhcyw(fid, nomamd, zi(jcnxma(iCellType)),&
+                           nnotyp(iCellType)* nbCellType(iCellType), edfuin,&
+                           nbCellType(iCellType), edmail, typgeo(iCellType), ednoda, codret)
             if (codret .ne. 0) then
                 saux08='mmhcyw'
                 call utmess('F', 'DVP_97', sk=saux08, si=codret)
@@ -247,8 +246,8 @@ character(len=*) :: nomamd
 !
 ! 3.2. ==> LE NOM DES MAILLES
 !
-            call as_mmheaw(fid, nomamd, zk16(jnomma(ityp)), nmatyp( ityp), edmail,&
-                           typgeo(ityp), codret)
+            call as_mmheaw(fid, nomamd, zk16(jnomma(iCellType)), nbCellType( iCellType), edmail,&
+                           typgeo(iCellType), codret)
             if (codret .ne. 0) then
                 saux08='mmheaw'
                 call utmess('F', 'DVP_97', sk=saux08, si=codret)
@@ -256,8 +255,8 @@ character(len=*) :: nomamd
 !
 ! 3.3. ==> LE NUMERO DES MAILLES
 !
-            call as_mmhenw(fid, nomamd, zi(jnumma(ityp)), nmatyp(ityp), edmail,&
-                           typgeo(ityp), codret)
+            call as_mmhenw(fid, nomamd, zi(jnumma(iCellType)), nbCellType(iCellType), edmail,&
+                           typgeo(iCellType), codret)
             if (codret .ne. 0) then
                 saux08='mmhenw'
                 call utmess('F', 'DVP_97', sk=saux08, si=codret)
@@ -271,10 +270,10 @@ character(len=*) :: nomamd
 ! 4. LA FIN
 !====
 !
-    do ityp = 1, MT_NTYMAX
-        if (nmatyp(ityp) .ne. 0) then
-            call jedetr('&&'//nompro//'.NOM.'//nomtyp(ityp))
-            call jedetr('&&'//nompro//'.CNX.'//nomtyp(ityp))
+    do iCellType = 1, MT_NTYMAX
+        if (nbCellType(iCellType) .ne. 0) then
+            call jedetr('&&'//nompro//'.NOM.'//nomtyp(iCellType))
+            call jedetr('&&'//nompro//'.CNX.'//nomtyp(iCellType))
         endif
     end do
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,6 +69,8 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
+#include "asterf_types.h"
+#include "MeshTypes_type.h"
 #include "asterc/utflsh.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
@@ -76,10 +78,8 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
 #include "asterfort/ircmpn.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
@@ -108,7 +108,7 @@ character(len=16), intent(in) :: field_type
     parameter ( nompro = 'IRCMPR' )
 !
     integer :: ifm, nivinf, i, j, jco
-    integer :: iaux, ima, nbno, nbma, ite10, ite15, ipy13, ipy19, ipe18, ipe21
+    integer :: iaux, ima, nbno, nbma
     integer :: nbmail, iadcnx, ilcnx
     integer :: codret
     integer ::  adefma
@@ -157,13 +157,6 @@ character(len=16), intent(in) :: field_type
 !
 ! 1.3.1. ==> COMPLEMENTS POUR UN CHAMP AUX NOEUDS
 !
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA10'), ite10)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA15'), ite15)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM13'), ipy13)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM19'), ipy19)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA18'), ipe18)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA21'), ipe21)
-!
     if (typech(1:4) .eq. 'NOEU') then
 !
         nbimpr = 1
@@ -187,17 +180,17 @@ character(len=16), intent(in) :: field_type
         end do
 !
         do i = 1, nbma
-            if (dtyp(i) .eq. ite15) then
+            if (dtyp(i) .eq. MT_TETRA15) then
                 jco=iadcnx+zi(ilcnx+i-1)-1
                 do j = 1, 5
                     noeu_centr(1+zi(jco+10+j-1)-1)=1
                 end do
-            elseif (dtyp(i) .eq. ipy19) then
+            elseif (dtyp(i) .eq. MT_PYRAM19) then
                 jco=iadcnx+zi(ilcnx+i-1)-1
                 do j = 1, 6
                     noeu_centr(1+zi(jco+13+j-1)-1)=1
                 end do
-            elseif (dtyp(i) .eq. ipe21) then
+            elseif (dtyp(i) .eq. MT_PENTA21) then
                 jco=iadcnx+zi(ilcnx+i-1)-1
                 do j = 1, 3
                     noeu_centr(1+zi(jco+18+j-1)-1)=1
@@ -213,12 +206,14 @@ character(len=16), intent(in) :: field_type
         call jelira(nomaas//'.TYPMAIL', 'LONMAX', nbmail)
         call wkvect('&&IRCMPR.TYPMA', 'V V I', nbmail, adtyp2)
         do ima = 1, nbmail
-            if (nadtypm(ima) .eq. ite15) then
-                zi(adtyp2+ima-1)=ite10
-            elseif (nadtypm(ima) .eq. ipy19) then
-                zi(adtyp2+ima-1)=ipy13
-            elseif (nadtypm(ima) .eq. ipe21) then
-                zi(adtyp2+ima-1)=ipe18
+            if (nadtypm(ima) .eq. MT_TETRA15) then
+                zi(adtyp2+ima-1)=MT_TETRA10
+            elseif (nadtypm(ima) .eq. MT_PYRAM19) then
+                zi(adtyp2+ima-1)=MT_PYRAM13
+            elseif (nadtypm(ima) .eq. MT_PENTA21) then
+                zi(adtyp2+ima-1)=MT_PENTA18
+            elseif (nadtypm(ima) .eq. MT_HEXA9) then
+                zi(adtyp2+ima-1)=MT_HEXA8
             else
                 zi(adtyp2+ima-1)=nadtypm(ima)
             endif

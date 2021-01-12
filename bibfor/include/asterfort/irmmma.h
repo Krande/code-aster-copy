@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,26 +18,19 @@
 #include "MeshTypes_type.h"
 !
 interface
-    subroutine irmmma(fid, nomamd, nbmail, connex, point,&
+    subroutine irmmma(fid, nomamd, nbCell, connex, point,&
                       typma, nommai, prefix, nbtyp, typgeo,&
-                      nomtyp, nnotyp, renumd, nmatyp, infmed,&
+                      nomtyp, nnotyp, renumd, nbCellType, infmed,&
                       modnum, nuanom)
         med_idt :: fid
-        character(len=*) :: nomamd
-        integer :: nbmail
-        integer :: connex(*)
-        integer :: point(*)
-        integer :: typma(*)
-        character(len=8) :: nommai(*)
-        character(len=6) :: prefix
-        integer :: nbtyp
-        integer :: typgeo(*)
-        character(len=8) :: nomtyp(*)
-        integer :: nnotyp(*)
-        integer :: renumd(*)
-        integer :: nmatyp(MT_NTYMAX)
+        integer :: nbCell, nbtyp
+        integer :: connex(*), typma(*), point(*)
+        integer :: typgeo(*), nnotyp(*), nbCellType(MT_NTYMAX)
+        integer :: renumd(*), modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
         integer :: infmed
-        integer :: modnum(MT_NTYMAX)
-        integer :: nuanom(MT_NTYMAX, *)
-    end subroutine irmmma
+        character(len=6) :: prefix
+        character(len=8) :: nommai(*)
+        character(len=8) :: nomtyp(*)
+        character(len=*) :: nomamd
+            end subroutine irmmma
 end interface
