@@ -90,7 +90,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i, lgno, lgnu, nbmc, iret, iad, nbma, iqtr, nbvolu
-    integer :: n1, numma, nbjoin, nbrest, n1a, n1b
+    integer :: n1, numma, nbrest, n1a, n1b
     parameter(nbmc=5)
     real(kind=8) :: epais
     character(len=4) :: cdim, repk
@@ -116,11 +116,11 @@ implicit none
     integer :: nbgrno, nbmain, nbmaj2, nbmaj3, nbno, nbnot
     integer :: nbpt, nbptt, nori, nrep, ntab, ntpoi
     integer :: ibid, ifm, iocc, jdime, jiad, jlima, jma, jmomno, jmomnu
-    integer :: jnommc, jnu2, jnum, joccmc, jpr2, jpro, jrefe, jtypmv
+    integer :: jnu2, jnum, jpr2, jpro, jrefe, jtypmv
     integer :: nbmaiv, nbmoma, nbnoaj, nbnoev, ndinit, niv, k, jgeofi
     integer :: dimcon, decala, iocct
     integer :: nbField
-    integer :: nbOccDecoupeLac, nbOccEclaPg, nbGeomFibre
+    integer :: nbOccDecoupeLac, nbOccEclaPg, nbGeomFibre, nbOccCreaFiss
     real(kind=8) :: shrink, lonmin
     aster_logical :: lpb, l_modi_maille
     character(len=16), pointer :: listField(:) => null()
@@ -143,6 +143,7 @@ implicit none
 !
     call getfac('ECLA_PG', nbOccEclaPg)
     call getvid(' ', 'GEOM_FIBRE', scal=geofi, nbret=nbGeomFibre)
+    call getfac('CREA_FISS', nbOccCreaFiss)
     call getfac('DECOUPE_LAC', nbOccDecoupeLac)
 !
 ! - Main datastructure
@@ -203,21 +204,9 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call getfac('CREA_FISS', nbjoin)
-    if (nbjoin .ne. 0) then
-        if (nn1 .eq. 0) then
-            call utmess('F', 'ALGELINE2_89')
-        endif
-        call wkvect('&&OP0167.NOMMC', 'V V K16', nbjoin, jnommc)
-        call wkvect('&&OP0167.OCCMC', 'V V I', nbjoin, joccmc)
-        do i = 1, nbjoin
-            zk16(jnommc-1+i)='CREA_FISS'
-            zi(joccmc-1+i)=i
-        end do
-!
-        call cmcrea(meshIn, meshOut, nbjoin, zk16(jnommc), zi(joccmc))
+    if (nbOccCreaFiss .ne. 0) then
+        call cmcrea(meshIn, meshOut, nbOccCreaFiss)
         goto 350
-!
     endif
 !
 ! --------------------------------------------------------------------------------------------------

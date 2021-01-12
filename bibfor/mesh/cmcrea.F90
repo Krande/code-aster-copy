@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cmcrea(main, maout, nbocc, motfac, numocc)
+subroutine cmcrea(main, maout, nbocc)
 !
     implicit none
 #include "asterf_types.h"
@@ -46,9 +46,8 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbocc, numocc(nbocc)
-    character(len=8) :: main, maout
-    character(len=16) :: motfac(nbocc)
+integer :: nbocc
+character(len=8) :: main, maout
 !
 ! ----------------------------------------------------------------------
 !  CREATION DE NOUVEAU MAILLAGE
@@ -56,18 +55,17 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
 ! IN        MAIN   K8  NOM DU MAILLAGE INITIAL
 ! IN/JXOUT  MAOUT  K8  NOM DU MAILLAGE TRANSFORME
 ! IN        NBOCC   I  NOMBRE D'OCCURENCES DES MOTS-CLES FACTEURS
-! IN        MOTFAC K16 NOM DU MOT-CLE FACTEUR POUR CHAQUE OCCURENCE
-! IN        NUMOCC  I  NUMERO DE L'OCCURENCE DU MOT-CLE MOTFAC(I)
 ! ----------------------------------------------------------------------
 !
 !
+    character(len=16), parameter :: keywfact = 'CREA_FISS'
     integer :: nbnomx, nbmain, nbgmin, nbmaaj, nbgmaj, nbmato, nbgmto
     integer :: numare, numaco, numa, nbma, nbgm, nbno, ma, no, gm
     integer :: jadin, jadout
     integer :: jlnoma, jlconn, jltyma, jlngma, jlgpma
     integer :: jnoma, jtyma, jconn, jngma, jgpma
     integer :: jdim, ityin, ityout
-    integer :: iret, i, ib
+    integer :: iret, iOcc, ib
     aster_logical :: false
 !
     character(len=8) :: knum8, prefix, nomma
@@ -116,13 +114,13 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
     call wkvect(lityma, 'V V K24', nbocc, jltyma)
     call wkvect(lingma, 'V V K24', nbocc, jlngma)
     call wkvect(ligpma, 'V V K24', nbocc, jlgpma)
-    do i = 1, nbocc
-        call codent(i, 'D0', knum8)
-        zk24(jlnoma-1 + i) = linoma(1:15) // '.' // knum8
-        zk24(jlconn-1 + i) = liconn(1:15) // '.' // knum8
-        zk24(jltyma-1 + i) = lityma(1:15) // '.' // knum8
-        zk24(jlngma-1 + i) = lingma(1:15) // '.' // knum8
-        zk24(jlgpma-1 + i) = ligpma(1:15) // '.' // knum8
+    do iOcc = 1, nbocc
+        call codent(iOcc, 'D0', knum8)
+        zk24(jlnoma-1 + iOcc) = linoma(1:15) // '.' // knum8
+        zk24(jlconn-1 + iOcc) = liconn(1:15) // '.' // knum8
+        zk24(jltyma-1 + iOcc) = lityma(1:15) // '.' // knum8
+        zk24(jlngma-1 + iOcc) = lingma(1:15) // '.' // knum8
+        zk24(jlgpma-1 + iOcc) = ligpma(1:15) // '.' // knum8
     end do
 !
 !
@@ -131,24 +129,16 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
 !           PARCOURS DES OCCURENCES DES MOTS-CLES FACTEURS
 ! ----------------------------------------------------------------------
 !
-    do i = 1, nbocc
+    do iOcc = 1, nbocc
+        call getvtx(keywfact, 'PREF_MAILLE', iocc=iOcc, scal=prefix, nbret=ib)
+        call getvis(keywfact, 'PREF_NUME', iocc=iOcc, scal=numare, nbret=ib)
+        call getvtx(keywfact, 'GROUP_NO_1', iocc=iOcc, scal=gno1, nbret=ib)
+        call getvtx(keywfact, 'GROUP_NO_2', iocc=iOcc, scal=gno2, nbret=ib)
+        call getvtx(keywfact, 'NOM', iocc=iOcc, scal=nomgma, nbret=ib)
 !
-        if (motfac(i) .eq. 'CREA_FISS') then
-!
-            call getvtx(motfac(i), 'PREF_MAILLE', iocc=numocc(i), scal=prefix, nbret=ib)
-            call getvis(motfac(i), 'PREF_NUME', iocc=numocc(i), scal=numare, nbret=ib)
-            call getvtx(motfac(i), 'GROUP_NO_1', iocc=numocc(i), scal=gno1, nbret=ib)
-            call getvtx(motfac(i), 'GROUP_NO_2', iocc=numocc(i), scal=gno2, nbret=ib)
-            call getvtx(motfac(i), 'NOM', iocc=numocc(i), scal=nomgma, nbret=ib)
-!
-            call cmfiss(main, gno1, gno2, prefix, numare,&
-                        nomgma, zk24(jlnoma-1+i), zk24(jlconn-1 + i), zk24(jltyma-1 + i),&
-                        zk24(jlngma-1 + i), zk24(jlgpma-1 + i))
-        else
-!
-            call utmess('F', 'ALGELINE_18', sk=motfac(i))
-        endif
-!
+        call cmfiss(main, gno1, gno2, prefix, numare,&
+                    nomgma, zk24(jlnoma-1+iOcc), zk24(jlconn-1 + iOcc), zk24(jltyma-1 + iOcc),&
+                    zk24(jlngma-1 + iOcc), zk24(jlgpma-1 + iOcc))
     end do
 !
 !
@@ -158,19 +148,19 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
 !
     nbmaaj = 0
     nbgmaj = 0
-    do i = 1, nbocc
+    do iOcc = 1, nbocc
 !
 !      NOMBRE DE MAILLES AJOUTEES
-        call jeexin(zk24(jlnoma-1+i), iret)
+        call jeexin(zk24(jlnoma-1+iOcc), iret)
         if (iret .ne. 0) then
-            call jelira(zk24(jlnoma-1+i), 'LONMAX', nbma)
+            call jelira(zk24(jlnoma-1+iOcc), 'LONMAX', nbma)
             nbmaaj = nbmaaj + nbma
         endif
 !
 !      NOMBRE DE GROUP_MA AJOUTES
-        call jeexin(zk24(jlngma-1+i), iret)
+        call jeexin(zk24(jlngma-1+iOcc), iret)
         if (iret .ne. 0) then
-            call jelira(zk24(jlngma-1+i), 'LONMAX', nbgm)
+            call jelira(zk24(jlngma-1+iOcc), 'LONMAX', nbgm)
             nbgmaj = nbgmaj + nbgm
         endif
 !
@@ -269,16 +259,16 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
 ! - AJOUT DES NOUVELLES MAILLES, DES NOUVEAUX GROUP_MA
 !
     numaco = nbmain
-    do i = 1, nbocc
+    do iOcc = 1, nbocc
 !
 !  -    AJOUT DE NOUVELLES MAILLES
         nbma = 0
-        call jeexin(zk24(jlnoma-1+i), iret)
+        call jeexin(zk24(jlnoma-1+iOcc), iret)
         if (iret .ne. 0) then
-            call jelira(zk24(jlnoma-1+i), 'LONMAX', nbma)
-            call jeveuo(zk24(jlnoma-1+i), 'L', jnoma)
-            call jeveuo(zk24(jltyma-1+i), 'L', jtyma)
-            call jeveuo(zk24(jlconn-1+i), 'L', jconn)
+            call jelira(zk24(jlnoma-1+iOcc), 'LONMAX', nbma)
+            call jeveuo(zk24(jlnoma-1+iOcc), 'L', jnoma)
+            call jeveuo(zk24(jltyma-1+iOcc), 'L', jtyma)
+            call jeveuo(zk24(jlconn-1+iOcc), 'L', jconn)
             do ma = 1, nbma
 !
 !          INSERTION DANS LE .NOMMAI
@@ -307,11 +297,11 @@ subroutine cmcrea(main, maout, nbocc, motfac, numocc)
 !
 !
 !   -   AJOUT DE NOUVEAUX GROUP_MA
-        call jeexin(zk24(jlngma-1+i), iret)
+        call jeexin(zk24(jlngma-1+iOcc), iret)
         if (iret .ne. 0) then
-            call jelira(zk24(jlngma-1+i), 'LONMAX', nbgm)
-            call jeveuo(zk24(jlngma-1+i), 'L', jngma)
-            call jeveuo(zk24(jlgpma-1+i), 'L', jgpma)
+            call jelira(zk24(jlngma-1+iOcc), 'LONMAX', nbgm)
+            call jeveuo(zk24(jlngma-1+iOcc), 'L', jngma)
+            call jeveuo(zk24(jlgpma-1+iOcc), 'L', jgpma)
             do gm = 1, nbgm
 !
 !          INSERTION DANS LE .GROUPEMA

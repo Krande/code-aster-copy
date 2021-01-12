@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -420,10 +420,6 @@ Erreur utilisateur dans COMB_MATR_ASSE:
   Solution (pour le programmeur) :
     La matrice globale a été détruite abusivement.
     Instrumenter la routine de destruction pour déterminer la routine coupable.
-"""),
-
-    89 : _("""
- le mot-clé MAILLAGE est obligatoire avec le mot-clé CREA_FISS.
 """),
 
     90 : _("""
