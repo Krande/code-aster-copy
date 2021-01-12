@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,6 +42,9 @@ nb_pas = 500
 
 # NOMBRE DU PAS D'ARCHIVAGE
 nb_arch = 100
+
+# NOMBRE DU PAS DE POST_ELEM
+nb_poel = 10
 
 # INSTANT DE FIN <= DERNIER INSTANT
 inst_fin = 0.100 # max=1
@@ -114,6 +117,9 @@ INST_CAL = DEFI_LIST_INST(DEFI_LIST = _F(LIST_INST=REEL_CAL),METHODE='AUTO')
 REEL_ARC = DEFI_LIST_REEL(DEBUT      = 0,
                           INTERVALLE = _F(JUSQU_A=inst_total, NOMBRE=nb_arch),)
 
+REEL_POE = DEFI_LIST_REEL(DEBUT      = 0,
+                          INTERVALLE = _F(JUSQU_A=inst_fin, NOMBRE=nb_poel),)
+
 FONC = DEFI_FONCTION(NOM_PARA = 'INST',
                      VALE     = (0.0, 0.0 ,inst_total, 1.0),
                      PROL_DROITE = 'LINEAIRE',)
@@ -133,6 +139,25 @@ RESU = STAT_NON_LINE (MODELE       = MODE,
                       ARCHIVAGE    = _F(LIST_INST=REEL_ARC),
             )
 
+TAB_VI = POST_ELEM(INTEGRALE=_F(NOM_CHAM='VARI_ELGA',
+                                 NOM_VARI=('EPSPEQ', 'POROSITE' ),
+#                                 NOM_CMP=('V1','V2'),
+                                 TOUT='OUI',
+                                 TYPE_MAILLE='2D'),
+                    LIST_INST=REEL_POE,
+                    RESULTAT=RESU)
+
+TEST_TABLE(TABLE = TAB_VI,
+       NOM_PARA = 'MOYE_POROSITE',
+           TYPE_TEST = 'MAX',
+           VALE_CALC= 0.0002015086325070597,
+           )
+
+TEST_TABLE(TABLE = TAB_VI,
+       NOM_PARA = 'MOYE_EPSPEQ',
+           TYPE_TEST = 'MAX',
+           VALE_CALC= 0.002148967259229727,
+           )
 
 # COORDONNEES DES POINTS DE GAUSS
 

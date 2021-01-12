@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -105,6 +105,7 @@ character(len=19) :: tableOut
     real(kind=8), pointer :: listTimeStore(:) => null()
     character(len=16), pointer :: variName(:) => null()
     character(len=8), pointer :: cmpName(:) => null(), cellNames(:) => null()
+    character(len=8), pointer :: cmpNameAll(:) => null()
     character(len=24), pointer :: groupCell(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -182,6 +183,7 @@ character(len=19) :: tableOut
         call getvtx(keywFact, 'NOM_CMP', iocc = iocc, nbval = 0, nbret = nbCmp)
         nbCmp     = -nbCmp
         lVariName = ASTER_FALSE
+
         if (nbCmp .eq. 0) then
 ! --------- Get list for internal state variables
             lVariName = ASTER_TRUE
@@ -195,7 +197,6 @@ character(len=19) :: tableOut
             endif
             AS_ALLOCATE(vk16 = variName, size = nbVari)
             call getvtx(keywFact, 'NOM_VARI', iocc = iocc, nbval = nbVari, vect = variName)
-
 ! --------- Get behaviour (only one !)
             if (lFromResult) then
                 call rsGetOneBehaviourFromResult(resultIn, nbStore, listNumeStore, compor)
@@ -211,11 +212,11 @@ character(len=19) :: tableOut
 
 ! --------- Get name of internal state variables
             nbCmp = nbVari
-            AS_ALLOCATE(vk8 = cmpName, size = nbCellFilter*nbCmp)
+            AS_ALLOCATE(vk8 = cmpName, size = nbCmp)
+            AS_ALLOCATE(vk8 = cmpNameAll, size = nbCellFilter*nbCmp)
             call varinonu(model       , compor    ,&
                           nbCellFilter, cellFilter,&
-                          nbVari      , variName  , cmpName)
-
+                          nbVari      , variName  , cmpNameAll)
         else
             AS_ALLOCATE(vk8 = cmpName, size = nbCmp)
             call getvtx(keywFact, 'NOM_CMP', iocc = iocc, nbval = nbCmp, vect=cmpName, nbret=iret)
@@ -226,11 +227,12 @@ character(len=19) :: tableOut
         do iCmp = 1, nbCmp
             if (lVariName) then
                 cmpNameInit(iCmp) = variName(iCmp)(1:8)
+                cmpName(icmp) = cmpNameAll((icmp-1)*nbCellFilter+1)
             else
                 cmpNameInit(iCmp) = cmpName(iCmp)
             endif
         end do
-
+        
 ! ----- No structural elements !
 !       Except POU_D_T, components N, VY, VZ, MFT, MFY, MFZ
         call dismlg('EXI_RDM', ligrel, ibid, lStructElem, iret)
@@ -391,6 +393,7 @@ character(len=19) :: tableOut
         call jedetr(cespoi//'.PDSM')
         AS_DEALLOCATE(vk16 = variName)
         AS_DEALLOCATE(vk8  = cmpName)
+        AS_DEALLOCATE(vk8  = cmpNameAll)
         AS_DEALLOCATE(vk8  = cmpNameInit)
     end do
 !
