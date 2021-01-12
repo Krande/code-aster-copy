@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,25 +22,27 @@ implicit none
 ! ==================================================================================================
 private :: getSignNormalSkinToSupport
 public  :: getCellProperties, getSkinCellSupport,&
-           checkNormalOnSkinCell
-
+           checkNormalOnSkinCell, checkInclude
 ! ==================================================================================================
 private
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "MeshTypes_type.h"
 #include "asterfort/assert.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
+#include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/teattr.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/utmavo.h"
-#include "asterfort/utmasu.h"
-#include "asterfort/jedetr.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
+#include "asterfort/teattr.h"
+#include "asterfort/utmasu.h"
+#include "asterfort/utmavo.h"
 #include "asterfort/utmess.h"
 #include "blas/ddot.h"
 ! ==================================================================================================
@@ -371,6 +373,60 @@ subroutine getSignNormalSkinToSupport(modelDime   ,&
     n1g = xg3d - xgm
     call normev(n1g, norm)
     signNorm = ddot(modelDime, n1g, 1, normal, 1)
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! checkInclude
+!
+! check include for mesh
+!
+! --------------------------------------------------------------------------------------------------
+subroutine checkInclude()
+!   ------------------------------------------------------------------------------------------------
+! - Local
+    integer :: elemTypeNume
+!   ------------------------------------------------------------------------------------------------
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), elemTypeNume)
+    ASSERT(elemTypeNume .eq. MT_POI1)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2'), elemTypeNume)
+    ASSERT(elemTypeNume .eq. MT_SEG2)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG3'), elemTypeNume)
+    ASSERT(elemTypeNume .eq. MT_SEG3)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG4'), elemTypeNume)
+    ASSERT(elemTypeNume .eq. MT_SEG4)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3'), elemTypeNume)
+    ASSERT(elemTypeNume .eq. MT_TRIA3)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA6'), elemTypeNume)
+    ASSERT(elemTypeNume .eq. MT_TRIA6)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA7'), elemTypeNume)
+    ASSERT(elemTypeNume .eq. MT_TRIA7)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD4'), elemTypeNume)
+    ASSERT(elemTypeNume .eq. MT_QUAD4)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD8'), elemTypeNume)
+    ASSERT(elemTypeNume .eq. MT_QUAD8)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD9'), elemTypeNume)
+    ASSERT(elemTypeNume .eq. MT_QUAD9)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA4'), elemTypeNume)
+    ASSERT(elemTypeNume .eq. MT_TETRA4)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA10'), elemTypeNume)
+    ASSERT(elemTypeNume .eq. MT_TETRA10)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA6'), elemTypeNume)
+    ASSERT(elemTypeNume .eq. MT_PENTA6)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA15'), elemTypeNume)
+    ASSERT(elemTypeNume .eq. MT_PENTA15)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA18'), elemTypeNume)
+    ASSERT(elemTypeNume .eq. MT_PENTA18)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM5'), elemTypeNume)
+    ASSERT(elemTypeNume .eq. MT_PYRAM5)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM13'), elemTypeNume)
+    ASSERT(elemTypeNume .eq. MT_PYRAM13)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA8'), elemTypeNume)
+    ASSERT(elemTypeNume .eq. MT_HEXA8)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA20'), elemTypeNume)
+    ASSERT(elemTypeNume .eq. MT_HEXA20)
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA27'), elemTypeNume)
+    ASSERT(elemTypeNume .eq. MT_HEXA27)
 !   ------------------------------------------------------------------------------------------------
 end subroutine
 !

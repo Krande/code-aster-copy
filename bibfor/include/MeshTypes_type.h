@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 !
 
 ! Total number of mesh types
-#define MT_NTYMAX 72
+#define MT_NTYMAX  72
 ! Maximum number of nodes of all elements
-#define MT_NNOMAX 27
+#define MT_NNOMAX  27
 ! Index of TYPE_ELEM (geometric)
 #define MT_POI1    1
 #define MT_SEG2    2

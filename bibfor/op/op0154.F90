@@ -18,6 +18,8 @@
 !
 subroutine op0154()
 !
+use mesh_module, only : checkInclude
+!
 implicit none
 !
 #include "asterf_types.h"
@@ -25,6 +27,7 @@ implicit none
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterfort/abscur.h"
+#include "asterfort/assert.h"
 #include "asterfort/cargeo.h"
 #include "asterfort/chgref.h"
 #include "asterfort/chpver.h"
@@ -33,6 +36,7 @@ implicit none
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/echell.h"
+#include "asterfort/exipat.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
@@ -40,6 +44,7 @@ implicit none
 #include "asterfort/mai2a3.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/modi_alea.h"
 #include "asterfort/momaba.h"
 #include "asterfort/orilgm.h"
 #include "asterfort/rotama.h"
@@ -48,9 +53,6 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/vtgpld.h"
-#include "asterfort/assert.h"
-#include "asterfort/modi_alea.h"
-#include "asterfort/exipat.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,6 +72,10 @@ implicit none
 !
     call jemarq()
     call infmaj()
+!
+! - Check Includes
+!
+    call checkInclude()
 !
 ! - Main datastructure
 !
