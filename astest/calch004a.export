@@ -1,9 +1,10 @@
-P time_limit 100
+P time_limit 120
 P memory_limit 512
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
 P testlist ci verification sequential
 
-F comm calch019.comm D 1
-F mmed ssnp110e.mmed D 20
+F comm calch004a.comm D 1
+F datg hplp310a.datg D 16
+F mmed hplp310a.mmed D 20
