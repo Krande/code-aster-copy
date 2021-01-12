@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine cmmoma(mailla, momanu, nbno, nbnoaj)
-        character(len=*) :: mailla
-        character(len=*) :: momanu
-        integer :: nbno
-        integer :: nbnoaj
+    subroutine cmmoma(meshOutZ, nbCellModi, modiCellNume, modiCellType, nbNodeIn)
+        character(len=*), intent(in) :: meshOutZ
+        integer, intent(in) :: nbNodeIn, nbCellModi
+        integer, pointer :: modiCellNume(:), modiCellType(:)
     end subroutine cmmoma
 end interface

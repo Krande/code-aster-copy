@@ -58,20 +58,11 @@ cata_msg = {
  la maille  %(k1)s  ne fait pas partie du maillage  %(k2)s
 """),
 
-    11 : _("""
- PREF_MAILLE est trop long, PREF_NUME est trop grand
-"""),
-
-    12 : _("""
- PREF_MAILLE est trop long
-"""),
-
     13 : _("""
  Les %(i1)d noeuds imprimés ci-dessus n'appartiennent pas au modèle (c'est à dire
  qu'ils ne portent aucun degré de liberté) et pourtant ils ont été affectés dans
  le mot-clé facteur : %(k1)s
 """),
-
 
     14 : _("""
  DEFI_GEOM_FIBRE

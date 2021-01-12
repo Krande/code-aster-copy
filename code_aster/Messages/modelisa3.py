@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -124,23 +124,6 @@ MODI_REPERE / RESULTAT / concept réentrant
     22: _("""
  pas de normale pour les quadrangles en 2d
 """),
-
-
-    31: _("""
- Alarme utilisateur dans CREA_MAILLAGE/MODI_MAILLE :
-  Occurrence du mot clé facteur MODI_MAILLE : %(i1)d.
-  Vous avez demandé la transformation de certaines mailles.
-  Mais il n'y a aucune maille à transformer.
-"""),
-
-
-    32: _("""
- Alarme utilisateur dans CREA_MAILLAGE/MODI_MAILLE :
-  Occurrence du mot clé facteur MODI_MAILLE : %(i1)d.
-  Vous avez demandé la transformation de type %(k1)s.
-  Mais il n'y a aucune maille à transformer.
-"""),
-
 
     37: _("""
  erreur pour extension de la carte  %(k1)s

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,124 +15,85 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine cmmoma(mailla, momanu, nbno, nbnoaj)
-    implicit none
-#include "jeveux.h"
+!
+subroutine cmmoma(meshOutZ, nbCellModi, modiCellNume, modiCellType, nbNodeIn)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "MeshTypes_type.h"
 #include "asterfort/assert.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
 #include "blas/ddot.h"
 !
-    integer :: nbno, nbnoaj
-    character(len=*) :: mailla, momanu
+character(len=*), intent(in) :: meshOutZ
+integer, intent(in) :: nbNodeIn, nbCellModi
+integer, pointer :: modiCellNume(:), modiCellType(:)
+
 !     OPERATEUR CREA_MAILLAGE   MOT CLE FACTEUR "MODI_MAILLE"
 !     ------------------------------------------------------------------
 !
-    integer :: jmail, im, numa, jtyp, ityp, ino, jpt
-    integer :: ittr6, ittr7, itqu8, itqu9, jvale, nuno, iatyma
-    integer :: itse3, itse4, k
-    real(kind=8) :: valr(3), w
-    character(len=8) :: ma, nomail, nono1, nono2, nono3
-    character(len=24) :: typmai, connex, cooval, canoma, canono
-    character(len=24) :: valk(4)
-!
+    integer :: cellNume, cellType, nodeAddIndx, nodeNume
+    integer :: iDime, iCell
+    real(kind=8) :: w
+    character(len=8) :: meshOut
     real(kind=8) :: coo1(3), coo2(3), coo3(3), theta, epsi, t13(3), t32(3)
     real(kind=8) :: normen, norme1, norme2, n(3), om(3), oc(3), c2, c6, t2, t6
     real(kind=8) :: t12(3)
     real(kind=8) :: n3m(3), mc(3), mp(3), mr(3), x3(3), x4(3), costet, dn1n2
-    integer :: icoude, i, nuno1, nuno2, nuno3, ifm, niv
+    integer :: icoude, iNode, nodeNume1, nodeNume2, nodeNume3, nodeNume4, cellModiType
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: typmail(:) => null()
+    real(kind=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------
 !
-    call jemarq()
+    meshOut = meshOutZ
 !
-    ma = mailla
-    typmai = ma//'.TYPMAIL        '
-    connex = ma//'.CONNEX         '
-    cooval = ma//'.COORDO    .VALE'
-    canoma = ma//'.NOMMAI'
-    canono = ma//'.NOMNOE'
+! - Access to mesh
 !
-    call jeveuo(momanu, 'L', jmail)
-    call jeveuo(cooval, 'E', jvale)
+    call jeveuo(meshOut//'.TYPMAIL', 'E', vi = typmail)
+    call jeveuo(meshOut//'.COORDO    .VALE', 'E', vr = vale)
 !
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA6'), ittr6)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA7'), ittr7)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD8'), itqu8)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD9'), itqu9)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG3'), itse3)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG4'), itse4)
-!
-    do im = 1, nbnoaj
-!
-        numa = zi(jmail+im-1)
-        call jeveuo(typmai, 'E', iatyma)
-        jtyp=iatyma-1+numa
-        ityp = zi(jtyp)
-        if (ityp .eq. ittr6) then
-            zi(jtyp) = ittr7
-            ino = 7
-        else if (ityp .eq. itqu8) then
-            zi(jtyp) = itqu9
-            ino = 9
-        else if (ityp .eq. itse3) then
-            zi(jtyp) = itse4
-            ino = 4
-        endif
-!
-        call jeveuo(jexnum(connex, numa), 'E', jpt)
-!
-        if (ityp .ne. itse3) then
-            nuno = nbno + im
-            zi(jpt+ino-1) = nuno
-!
-            if (ityp .eq. ittr6) then
-!             -- TRIA6_7
-                do k=1,3
-                    w= 0.d0
-                    w= w + zr(jvale+3*(zi(jpt-1+1)-1)-1+k) * (-1.d0/9.d0)
-                    w= w + zr(jvale+3*(zi(jpt-1+2)-1)-1+k) * (-1.d0/9.d0)
-                    w= w + zr(jvale+3*(zi(jpt-1+3)-1)-1+k) * (-1.d0/9.d0)
-                    w= w + zr(jvale+3*(zi(jpt-1+4)-1)-1+k) * (4.d0/9.d0)
-                    w= w + zr(jvale+3*(zi(jpt-1+5)-1)-1+k) * (4.d0/9.d0)
-                    w= w + zr(jvale+3*(zi(jpt-1+6)-1)-1+k) * (4.d0/9.d0)
-                    zr(jvale+3*(nuno-1)-1+k) = w
-                end do
-            else if (ityp.eq.itqu8) then
-!             -- QUAD8_9
-                do k=1,3
-                    w= 0.d0
-                    w= w + zr(jvale+3*(zi(jpt-1+1)-1)-1+k) * (-1.d0/4.d0)
-                    w= w + zr(jvale+3*(zi(jpt-1+2)-1)-1+k) * (-1.d0/4.d0)
-                    w= w + zr(jvale+3*(zi(jpt-1+3)-1)-1+k) * (-1.d0/4.d0)
-                    w= w + zr(jvale+3*(zi(jpt-1+4)-1)-1+k) * (-1.d0/4.d0)
-                    w= w + zr(jvale+3*(zi(jpt-1+5)-1)-1+k) * (1.d0/2.d0)
-                    w= w + zr(jvale+3*(zi(jpt-1+6)-1)-1+k) * (1.d0/2.d0)
-                    w= w + zr(jvale+3*(zi(jpt-1+7)-1)-1+k) * (1.d0/2.d0)
-                    w= w + zr(jvale+3*(zi(jpt-1+8)-1)-1+k) * (1.d0/2.d0)
-                    zr(jvale+3*(nuno-1)-1+k) = w
-                end do
-            else
-                ASSERT(.false.)
-            endif
+    do iCell = 1, nbCellModi
+! ----- Cell to modify
+        cellNume = modiCellNume(iCell)
+        cellType = modiCellType(iCell)
+
+! ----- New type of cell
+        if (cellType .eq. MT_TRIA6) then
+            cellModiType = MT_TRIA7
+            nodeAddIndx  = 7
+        else if (cellType .eq. MT_QUAD8) then
+            cellModiType = MT_QUAD9
+            nodeAddIndx  = 9
+        else if (cellType .eq. MT_SEG3) then
+            cellModiType = MT_SEG4
+            nodeAddIndx  = 4
         else
+            ASSERT(ASTER_FALSE)
+        endif
+        typmail(cellNume) = cellModiType
 !
-            do i = 1, 3
-                nuno1 = zi(jpt+1-1)
-                coo1(i) = zr(jvale-1+3*(nuno1-1)+i )
-                nuno2 = zi(jpt+2-1)
-                coo2(i) = zr(jvale-1+3*(nuno2-1)+i )
-                nuno3 = zi(jpt+3-1)
-                coo3(i) = zr(jvale-1+3*(nuno3-1)+i )
+        call jeveuo(jexnum(meshOut//'.CONNEX', cellNume), 'E', vi = connex)
+
+! ----- Add node
+        nodeNume = nbNodeIn + iCell
+        connex(nodeAddIndx) = nodeNume
+!
+        if (cellType .eq. MT_SEG3) then
+            nodeNume4 = nodeNume
+! --------- Coordinates of nodes
+            do iNode = 1, 3
+                nodeNume1 = connex(1)
+                coo1(iNode) = vale(3*(nodeNume1-1)+iNode)
+                nodeNume2 = connex(2)
+                coo2(iNode) = vale(3*(nodeNume2-1)+iNode)
+                nodeNume3 = connex(3)
+                coo3(iNode) = vale(3*(nodeNume3-1)+iNode)
             end do
 !
             t13 = coo3 - coo1
@@ -148,20 +109,7 @@ subroutine cmmoma(mailla, momanu, nbno, nbnoaj)
 !           VERIF QUE LE 3EME NOEUD EST BIEN AU MILIEU
 !
             if (abs(norme2-norme1) .gt. epsi) then
-                call jenuno(jexnum(canoma, numa), nomail)
-                call jenuno(jexnum(canono, nuno1), nono1)
-                call jenuno(jexnum(canono, nuno2), nono2)
-                call jenuno(jexnum(canono, nuno3), nono3)
-                call infniv(ifm, niv)
-                valr(1) = norme1
-                valr(2) = norme2
-                valr(3) = epsi
-                valk(1) = nono3
-                valk(2) = nono1
-                valk(3) = nono2
-                valk(4) = nomail
-                call utmess('F', 'ALGELINE_23', nk=4, valk=valk, nr=3,&
-                            valr=valr)
+                call utmess('F', 'MESH2_23')
             endif
 !
             if (normen .le. epsi) then
@@ -174,51 +122,60 @@ subroutine cmmoma(mailla, momanu, nbno, nbnoaj)
             endif
 !
             if (icoude .eq. 0) then
-!
-!           CAS DU TUYAU DROIT
-!              SEGMENT N1-N2 DIVISE EN 3
-                do i = 1, 3
-                    x3(i)=coo1(i)+t12(i)*dn1n2/3.d0
-                    x4(i)=coo1(i)+2.d0*t12(i)*dn1n2/3.d0
+                do iNode = 1, 3
+                    x3(iNode)=coo1(iNode)+t12(iNode)*dn1n2/3.d0
+                    x4(iNode)=coo1(iNode)+2.d0*t12(iNode)*dn1n2/3.d0
                 end do
-!
             else
-!
-!           CAS DU COUDE
-!
                 c2=cos(theta/2.d0)
                 c6=cos(theta/6.d0)
                 t2=tan(theta/2.d0)
                 t6=tan(theta/6.d0)
-!
-                do i = 1, 3
-                    om(i)=(coo1(i)+coo2(i))*0.5d0
-                    n3m(i)=om(i)-coo3(i)
-                    mc(i)=n3m(i)*c2/(1.d0-c2)
-                    oc(i)=om(i)+mc(i)
-                    mp(i)=(coo1(i)-om(i))*t6/t2
-                    mr(i)=(coo2(i)-om(i))*t6/t2
-                    x3(i)=oc(i)+(mp(i)-mc(i))*c6/c2
-                    x4(i)=oc(i)+(mr(i)-mc(i))*c6/c2
+                do iNode = 1, 3
+                    om(iNode)=(coo1(iNode)+coo2(iNode))*0.5d0
+                    n3m(iNode)=om(iNode)-coo3(iNode)
+                    mc(iNode)=n3m(iNode)*c2/(1.d0-c2)
+                    oc(iNode)=om(iNode)+mc(iNode)
+                    mp(iNode)=(coo1(iNode)-om(iNode))*t6/t2
+                    mr(iNode)=(coo2(iNode)-om(iNode))*t6/t2
+                    x3(iNode)=oc(iNode)+(mp(iNode)-mc(iNode))*c6/c2
+                    x4(iNode)=oc(iNode)+(mr(iNode)-mc(iNode))*c6/c2
                 end do
             endif
-!
-!
-            nuno = zi(jpt-1+3)
-            zr(jvale+3*(nuno-1) ) = x3(1)
-            zr(jvale+3*(nuno-1)+1) = x3(2)
-            zr(jvale+3*(nuno-1)+2) = x3(3)
-!
-            nuno = nbno + im
-            zr(jvale+3*(nuno-1) ) = x4(1)
-            zr(jvale+3*(nuno-1)+1) = x4(2)
-            zr(jvale+3*(nuno-1)+2) = x4(3)
-!
-            zi(jpt+ino-1) = nuno
-!
+            vale(3*(nodeNume3-1)+1) = x3(1)
+            vale(3*(nodeNume3-1)+2) = x3(2)
+            vale(3*(nodeNume3-1)+3) = x3(3)
+            vale(3*(nodeNume4-1)+1) = x4(1)
+            vale(3*(nodeNume4-1)+2) = x4(2)
+            vale(3*(nodeNume4-1)+3) = x4(3)
+
+        elseif (cellType .eq. MT_TRIA6) then
+            do iDime = 1,3
+                w = 0.d0
+                w = w + vale(3*(connex(1)-1)+iDime) * (-1.d0/9.d0)
+                w = w + vale(3*(connex(2)-1)+iDime) * (-1.d0/9.d0)
+                w = w + vale(3*(connex(3)-1)+iDime) * (-1.d0/9.d0)
+                w = w + vale(3*(connex(4)-1)+iDime) * (4.d0/9.d0)
+                w = w + vale(3*(connex(5)-1)+iDime) * (4.d0/9.d0)
+                w = w + vale(3*(connex(6)-1)+iDime) * (4.d0/9.d0)
+                vale(3*(nodeNume-1)+iDime) = w
+            end do
+        elseif (cellType .eq. MT_QUAD8) then
+            do iDime = 1,3
+                w = 0.d0
+                w = w + vale(3*(connex(1)-1)+iDime) * (-1.d0/4.d0)
+                w = w + vale(3*(connex(2)-1)+iDime) * (-1.d0/4.d0)
+                w = w + vale(3*(connex(3)-1)+iDime) * (-1.d0/4.d0)
+                w = w + vale(3*(connex(4)-1)+iDime) * (-1.d0/4.d0)
+                w = w + vale(3*(connex(5)-1)+iDime) * (1.d0/2.d0)
+                w = w + vale(3*(connex(6)-1)+iDime) * (1.d0/2.d0)
+                w = w + vale(3*(connex(7)-1)+iDime) * (1.d0/2.d0)
+                w = w + vale(3*(connex(8)-1)+iDime) * (1.d0/2.d0)
+                vale(3*(nodeNume-1)+iDime) = w
+            end do
+        else
+            ASSERT(ASTER_FALSE)
         endif
-!
     end do
 !
-    call jedema()
 end subroutine

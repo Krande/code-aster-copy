@@ -114,14 +114,6 @@ Contactez le support technique.
  création QUAD4 dégénéré
 """),
 
-    23: _("""
- le noeud  %(k1)s  n'est pas équidistant des noeuds  %(k2)s  et  %(k3)s  pour la maille : %(k4)s
- Améliorez le  maillage. Le code s'arrête pour éviter des résultats faux.
- - distance n1-n3 = %(r1)g
- - distance n2-n3 = %(r2)g
- - tolérance      = %(r3)g
-"""),
-
     24: _("""
  valeur négative ou nulle pour la puissance quatrième du nombre d'ondes.
  La valeur de l'ordre de coque est mal déterminée.

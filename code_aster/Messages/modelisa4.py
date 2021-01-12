@@ -87,18 +87,6 @@ ou si l'instant spécifié existe.
  arrêt sur erreur(s), normale non sortante
 """),
 
-    25 : _("""
-  la liste : %(k1)s  a concaténer avec la liste  %(k2)s  doit exister
-"""),
-
-    26 : _("""
-  on ne peut pas affecter la liste de longueur nulle %(k1)s  a la liste  %(k2)s  qui n'existe pas
-"""),
-
-    27 : _("""
- la concaténation de listes de type  %(k1)s  n'est pas encore prévue.
-"""),
-
     28 : _("""
 Le numéro de corrélation et/ou le type de réseau passes dans le fichier de commande ne  sont pas cohérents avec le fichier .70
 """),

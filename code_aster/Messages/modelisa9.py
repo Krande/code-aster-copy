@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -239,34 +239,6 @@ Conseil :
  fichier MED :  %(k1)s maillage :  %(k2)s erreur numéro  %(i1)d
 """),
 
-    53 : _("""
-
- l'identifiant d'une maille dépasse les 8 caractères autorisés:
-   %(k1)s
- maille      : %(k2)s
- PREF_MAILLE : %(k3)s
-"""),
-
-    54 : _("""
- l'utilisation de 'PREF_NUME' est recommandée.
-"""),
-
-
-
-
-    57 : _("""
-Erreur d'utilisation pour la commande CREA_MAILLAGE / CREA_GROUP_MA :
-  Le programme tente de créer une maille appelée %(k1)s
-  mais cette maille a déjà été crée par une occurrence précédente de ce mot clé facteur.
-
-Risques et conseils :
-  Pour éviter cette erreur, vous pouvez changer la valeur
-  de PREF_MAILLE pour chaque occurrence du mot clé CREA_GROUP_MA.
-  """),
-
-
-
-
     59 : _("""
  erreur lors de la définition de la courbe de traction : %(k1)s
  le premier point de la courbe de traction %(k2)s a pour abscisse:  %(r1)f
@@ -362,9 +334,6 @@ Conseil:
   elle ne sera pas affectée par %(k2)s
 """),
 
-    82 : _("""
-  GROUP_MA : %(k1)s
-"""),
 
     94 : _("""
      On ne peut pas appliquer un cisaillement 2d sur une modélisation 3D

@@ -22,13 +22,18 @@ implicit none
 ! ==================================================================================================
 private :: getSignNormalSkinToSupport
 public  :: getCellProperties, getSkinCellSupport,&
-           checkNormalOnSkinCell, checkInclude
+           checkNormalOnSkinCell, checkInclude,&
+           getCellOptionForName, createNameOfCell,&
+           getNodeOptionForName, createNameOfNode
 ! ==================================================================================================
 private
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
 #include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -38,6 +43,7 @@ private
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/lxlgut.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 #include "asterfort/teattr.h"
@@ -427,6 +433,184 @@ subroutine checkInclude()
     ASSERT(elemTypeNume .eq. MT_HEXA20)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA27'), elemTypeNume)
     ASSERT(elemTypeNume .eq. MT_HEXA27)
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! getCellOptionForName
+!
+! Get options from user for name of cell
+!
+! In  keywfact         : factor keyword to read parameters
+! In  iocc             : index of factor keyword
+! Out lPrefCellName    : flag if a string was given for name of cell
+! Out lPrefCellNume    : flag if a integer was given for name of cell
+! Out prefCellName     : string for name of cell
+! Out prefCellNume     : integer for name of cell
+!
+! --------------------------------------------------------------------------------------------------
+subroutine getCellOptionForName(keywfact , iocc,&
+                                lPrefCellName, lPrefCellNume,&
+                                prefCellName , prefCellNume)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    character(len=16), intent(in) :: keywfact
+    integer, intent(in) :: iocc
+    aster_logical, intent(out) :: lPrefCellName, lPrefCellNume
+    character(len=8), intent(out) :: prefCellName
+    integer, intent(out) :: prefCellNume
+! - Local
+    integer :: n1
+!   ------------------------------------------------------------------------------------------------
+    lPrefCellName = ASTER_FALSE
+    lPrefCellNume = ASTER_FALSE
+    prefCellName  = ' '
+    prefCellNume  = -1
+    call getvtx(keywfact, 'PREF_MAILLE', iocc=iocc, nbval=0, nbret=n1)
+    if (n1 .ne. 0) then
+        call getvtx(keywfact, 'PREF_MAILLE', iocc=iocc, scal=prefCellName)
+        lPrefCellName = ASTER_TRUE
+    endif
+    call getvis(keywfact, 'PREF_NUME', iocc=iocc, nbval=0, nbret=n1)
+    if (n1 .ne. 0) then
+        lPrefCellNume = ASTER_TRUE
+        call getvis(keywfact, 'PREF_NUME', iocc=iocc, scal=prefCellNume)
+    endif
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! createNameOfCell
+!
+! Create name for cell
+!
+! IO  cellName         : name of cell
+! In  lPrefCellName    : flag if a string was given for name of cell
+! In  lPrefCellNume    : flag if a integer was given for name of cell
+! In  prefCellName     : string for name of cell
+! IO  prefCellNume     : integer for name of cell
+!
+! --------------------------------------------------------------------------------------------------
+subroutine createNameOfCell(cellName     ,&
+                            lPrefCellName, lPrefCellNume,&
+                            prefCellName , prefCellNume)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    character(len=8), intent(inout) :: cellName
+    aster_logical, intent(in) :: lPrefCellName, lPrefCellNume
+    character(len=8), intent(in) :: prefCellName
+    integer, intent(inout) :: prefCellNume
+! - Local
+    integer :: lenPrefName, lenPrefPrev
+    character(len=8) :: knume
+!   ------------------------------------------------------------------------------------------------
+    lenPrefName = lxlgut(prefCellName)
+    if (lPrefCellNume) then
+        call codent(prefCellNume, 'G', knume)
+        prefCellNume = prefCellNume + 1
+        lenPrefPrev = lxlgut(knume)
+        if (lenPrefName + lenPrefPrev .gt. 8) then
+            call utmess('F', 'MESH2_1')
+        endif
+        cellName = prefCellName(1:lenPrefName)//knume
+    elseif (lPrefCellName) then
+        lenPrefPrev = lxlgut(cellName)
+        if (lenPrefName + lenPrefPrev .gt. 8) then
+            call utmess('F', 'MESH2_1')
+        endif
+        cellName = prefCellName(1:lenPrefName)//cellName
+    else
+        ASSERT(ASTER_FALSE)
+    endif
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! getNodeOptionForName
+!
+! Get options from user for name of node
+!
+! In  keywfact         : factor keyword to read parameters
+! In  iocc             : index of factor keyword
+! Out lPrefNodeName    : flag if a string was given for name of node
+! Out lPrefNodeNume    : flag if a integer was given for name of node
+! Out prefNodeName     : string for name of node
+! Out prefNodeNume     : integer for name of node
+!
+! --------------------------------------------------------------------------------------------------
+subroutine getNodeOptionForName(keywfact     , iocc,&
+                                lPrefNodeName, lPrefNodeNume,&
+                                prefNodeName , prefNodeNume)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    character(len=16), intent(in) :: keywfact
+    integer, intent(in) :: iocc
+    aster_logical, intent(out) :: lPrefNodeName, lPrefNodeNume
+    character(len=8), intent(out) :: prefNodeName
+    integer, intent(out) :: prefNodeNume
+! - Local
+    integer :: n1
+!   ------------------------------------------------------------------------------------------------
+    lPrefNodeName = ASTER_FALSE
+    lPrefNodeNume = ASTER_FALSE
+    prefNodeName  = ' '
+    prefNodeNume  = -1
+    call getvtx(keywfact, 'PREF_NOEUD', iocc=iocc, nbval=0, nbret=n1)
+    if (n1 .ne. 0) then
+        lPrefNodeName = ASTER_TRUE
+        call getvtx(keywfact, 'PREF_NOEUD', iocc=iocc, scal=prefNodeName)
+    endif
+    call getvis(keywfact, 'PREF_NUME', iocc=iocc, nbval=0, nbret=n1)
+    if (n1 .ne. 0) then
+        lPrefNodeNume = ASTER_TRUE
+        call getvis(keywfact, 'PREF_NUME', iocc=iocc, scal=prefNodeNume)
+    endif
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! createNameOfNode
+!
+! Create name for node
+!
+! IO  nodeName         : name of node
+! In  lPrefNodeName    : flag if a string was given for name of node
+! In  lPrefNodeNume    : flag if a integer was given for name of node
+! In  prefNodeName     : string for name of node
+! IO  prefNodeNume     : integer for name of node
+!
+! --------------------------------------------------------------------------------------------------
+subroutine createNameOfNode(nodeName     ,&
+                            lPrefNodeName, lPrefNodeNume,&
+                            prefNodeName , prefNodeNume)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    character(len=8), intent(inout) :: nodeName
+    aster_logical, intent(in) :: lPrefNodeName, lPrefNodeNume
+    character(len=8), intent(in) :: prefNodeName
+    integer, intent(inout) :: prefNodeNume
+! - Local
+    integer :: lenPrefName, lenPrefPrev
+    character(len=8) :: knume
+!   ------------------------------------------------------------------------------------------------
+    lenPrefName = lxlgut(prefNodeName)
+    if (lPrefNodeNume) then
+        call codent(prefNodeNume, 'G', knume)
+        prefNodeNume = prefNodeNume + 1
+        lenPrefPrev = lxlgut(knume)
+        if (lenPrefName + lenPrefPrev .gt. 8) then
+            call utmess('F', 'MESH2_1')
+        endif
+        nodeName = prefNodeName(1:lenPrefName)//knume
+    elseif (lPrefNodeName) then
+        lenPrefPrev = lxlgut(nodeName)
+        if (lenPrefName + lenPrefPrev .gt. 8) then
+            call utmess('F', 'MESH2_1')
+        endif
+        nodeName = prefNodeName(1:lenPrefPrev)//nodeName
+    else
+        ASSERT(ASTER_FALSE)
+    endif
 !   ------------------------------------------------------------------------------------------------
 end subroutine
 !
