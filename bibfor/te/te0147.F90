@@ -380,7 +380,7 @@ implicit none
                             press, icode)
                 do j = 1, reeldim
                     call fointe('FM', zk8(iforf+j-1), nbpara, nompar, valpar,&
-                                forcg(reeldim*(i-1)+j), icode)
+                                forcg(j), icode)
                 enddo
 !
 !-------------- Valeurs de la derivée du chargement aux pdg
