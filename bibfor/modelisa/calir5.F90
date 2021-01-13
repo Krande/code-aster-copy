@@ -30,7 +30,7 @@ subroutine calir5(noma, lisrel, nono2, nuno2, jcoor,&
     character(len=19) :: lisrel
     character(len=8) :: nono2, noma
     integer :: nuno2, jconb, jcocf, jconu, j2coco, jcoor
-! person_in_charge: jacques.pellet at edf.fr
+
 ! BUT : ECRIRE LES RELATIONS LINEAIRES LIANT LES TRANSLATIONS D'UN NOEUD
 !       "MASSIF" AVEC LES TRANSLATIONS ET ROTATIONS D'1 NOEUD "COQUE"
 !       (AFFE_CHAR_MECA/LIAISON_MAIL + TYPE_RACCORD='MASSIF_COQUE'
@@ -70,7 +70,7 @@ subroutine calir5(noma, lisrel, nono2, nuno2, jcoor,&
         else
             elrefa='QU8'
         endif
-        call elrfvf(elrefa, xr3, 8, ff, ntr)
+        call elrfvf(elrefa, xr3, ff, ntr)
     else
         ntr = n1
         ff(1:ntr) = zr(jcocf+idecal:jcocf+idecal-1+ntr)

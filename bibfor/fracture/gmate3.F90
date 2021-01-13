@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -103,7 +103,7 @@ implicit none
 
 !       CALCUL DES FONCTIONS DE FORMES ET DERIVEES
         ksi(1)=xpg(ipg)
-        call elrfvf(elrefe, ksi, nbnomx, ff, nno)
+        call elrfvf(elrefe, ksi, ff, nno)
         call elrfdf(elrefe, ksi, 3*nbnomx, dff, nno, ndim)
         
 !       CALCUL DU JACOBIEN (SEGM DE REFERENCE --> SEGM REEL)

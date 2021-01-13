@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine utelvf(elrefa, famil, nomjv, npg, nno)
-    implicit none
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elraca.h"
@@ -25,9 +27,11 @@ subroutine utelvf(elrefa, famil, nomjv, npg, nno)
 #include "asterfort/elrfvf.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: npg, nno
-    character(len=8) :: elrefa, famil
-    character(len=*) :: nomjv
+!
+integer :: npg, nno
+character(len=8) :: elrefa, famil
+character(len=*) :: nomjv
+!
 ! BUT: RECUPERER LES VALEURS DES FONCTIONS DE FORME
 ! ----------------------------------------------------------------------
 !   IN   ELREFA : NOM DE L'ELREFA (K8)
@@ -55,9 +59,9 @@ subroutine utelvf(elrefa, famil, nomjv, npg, nno)
     ASSERT((nno.gt.0) .and. (nno.le.nbnomx))
     ASSERT((nbfpg.gt.0) .and. (nbfpg.le.nbfamx))
 !
-    do 10,ifam = 1,nbfpg
-    if (nofpg(ifam) .eq. famil) goto 12
-    10 end do
+    do ifam = 1,nbfpg
+        if (nofpg(ifam) .eq. famil) goto 12
+    end do
     call utmess('F', 'ELEMENTS4_56', sk=famil)
 12  continue
 !
@@ -74,12 +78,12 @@ subroutine utelvf(elrefa, famil, nomjv, npg, nno)
 !     -- VALEURS DES FONCTIONS DE FORME :
 !     ------------------------------------------------
     decal = 0
-    do 20 ipg = 1, npg
-        call elrfvf(elrefa, xpg(ndim*(ipg-1)+1), nbnomx, ff, nno)
-        do 22 ino = 1, nno
+    do ipg = 1, npg
+        call elrfvf(elrefa, xpg(ndim*(ipg-1)+1), ff, nno)
+        do ino = 1, nno
             decal = decal + 1
             zr(jvr-1+decal) = ff(ino)
-22      continue
-20  end do
+        end do
+    end do
 !
 end subroutine

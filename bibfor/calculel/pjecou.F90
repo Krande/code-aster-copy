@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
-! person_in_charge: nicolas.greffet at edf.fr
+
 ! ======================================================================
 !     COMMANDE:  PROJ_CHAMP  METHODE:'COUPLAGE' (COUPLAGE IFS VIA YACS)
 ! ----------------------------------------------------------------------
@@ -108,7 +108,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
 !     CALCUL DES FONCTIONS DE FORMES DES NOEUDS DU MAILLAGE 2
 !     =======================================================
     flag = 0
-    do 10 inog2 = 1, nbnog2
+    do inog2 = 1, nbnog2
 !
         ino2 = zi(ialin2-1+inog2)
         do 20 ii = 1, 3
@@ -238,7 +238,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
 !-----------------------------------------------------------------------
             if (inmail .and. (normlo.lt.normgl)) then
                 normgl = normlo
-                call elrfvf(elref, ksi, 27, ff, nbpg)
+                call elrfvf(elref, ksi, ff, nbpg)
                 nbpgrf = nbpg
                 mailrf = ima
                 do 120 ii = 1, nbpgrf
@@ -284,7 +284,7 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
             zr(iacocf-1+flag+ii) = coefno(ii)
 160     continue
         flag = flag + nbpgrf
- 10 end do
+    end do
 ! ======================================================================
 ! IMPRESSIONS POUR VERIFICATION
 !      FLAG = 0

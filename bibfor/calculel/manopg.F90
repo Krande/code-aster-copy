@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine manopg(ligrez, optioz, paramz, mnogaz)
-! person_in_charge: jacques.pellet at edf.fr
-    implicit none
+!
+implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/alchml.h"
@@ -386,9 +387,9 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
                         call cesexi('C', jcesgd, jcesgl, ima, kp,&
                                     1, 1, iad1)
                         ASSERT(iad1.gt.0)
-                        call elrfvf(elrefe, zr(jcesgv-1+iad1), nbnomx, ff, nno)
+                        call elrfvf(elrefe, zr(jcesgv-1+iad1), ff, nno)
                     else
-                        call elrfvf(elrefe, xpg(ndim*(kp-1)+1), nbnomx, ff, nno)
+                        call elrfvf(elrefe, xpg(ndim*(kp-1)+1), ff, nno)
                     endif
                     do ino = 1, nno
                         zl(jcesl-1+iad-1+nno*(kp-1)+ino) = .true.

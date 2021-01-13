@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,17 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W1306
+!
 subroutine reerel(elrefp, nnop, ndim, tabar, xe,&
                   xg)
-! aslint: disable=W1306
-    implicit none
+!
+implicit none
 !
 #include "asterfort/elrfvf.h"
-#include "asterfort/vecini.h"
-    integer :: ndim, nnop
-    real(kind=8) :: xe(ndim), xg(ndim), tabar(*)
-    character(len=8) :: elrefp
+!
+integer :: ndim, nnop
+real(kind=8) :: xe(ndim), xg(ndim), tabar(*)
+character(len=8) :: elrefp
 !
 !
 !                      TROUVER LES COORDONNEES REELLES D'UN POINT
@@ -42,19 +43,18 @@ subroutine reerel(elrefp, nnop, ndim, tabar, xe,&
 !......................................................................
 !
     real(kind=8) :: ff(nnop)
-    integer :: i, j, nbnomx, nno
-    parameter   (nbnomx = 27)
+    integer :: i, j
 !
 !......................................................................
 !
-    call vecini(ndim, 0.d0, xg)
+    xg = 0.d0
 !
 ! --- VALEURS DES FONCTIONS DE FORME EN XE: FF
 !
     if (elrefp(1:2) .eq. 'SE') then
-        call elrfvf(elrefp, xe(1), nbnomx, ff, nno)
+        call elrfvf(elrefp, xe(1), ff)
     else
-        call elrfvf(elrefp, xe, nbnomx, ff, nno)
+        call elrfvf(elrefp, xe, ff)
     endif
 !
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL

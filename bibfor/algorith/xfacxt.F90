@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! person_in_charge: daniele.colombo at ifpen.fr
+! aslint: disable=W1501,W1306
+!
 subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
                   ninter, jphe, ndim, ainter,nface,nptf, cface,&
                   igeom, jlsn, jlst, jaint, jgrlsn)
-! aslint: disable=W1501
-    implicit none
+!
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -52,7 +54,7 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
     character(len=8) :: elp
 !
 ! ======================================================================
-! person_in_charge: daniele.colombo at ifpen.fr
+
 !                TROUVER LES PTS D'INTERSECTION ENTRE LES ARETES,
 !                ET LE PLAN DE FISSURE, DECOUPAGE EN FACETTES,
 !                POINT MILIEU DE FISSURE DANS LE CAS QUADRATIQUE (2D ET 3D)
@@ -79,11 +81,10 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
     integer :: iadzi, iazk24, npi, ni, npis, ip1, ip2, n(3), nnose
     integer :: i, j, k, nelttot, ino, noeud(9), nintar, npts, h
     integer :: zxain, ar(12,3), ii, jj, nnos, nno, signe
-    integer :: nbf, f(6,8), ibid2(12,3), ibid, nbnomx, itemax, tempo
+    integer :: nbf, f(6,8), ibid2(12,3), ibid, itemax, tempo
     aster_logical :: deja, mipos
     character(len=8) :: typma, typsma
     parameter   (cridist=1.d-7)
-    parameter   (nbnomx = 27)
 !
 ! --------------------------------------------------------------------
 !
@@ -392,7 +393,7 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
                                         (1.d0-ksi(1))*ptxx(ii+2*ndim)+2.d0*ksi(1)*(ksi(1)-5.d-1)*&
                                         ptxx(ii+ndim)
                            end do
-                           call elrfvf(elp, mref, nbnomx, ff, nno)
+                           call elrfvf(elp, mref, ff, nno)
                            call vecini(ndim, 0.d0, m)
                            do ii = 1, ndim
                               do ino = 1, nno
@@ -460,7 +461,7 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
                                                4.d0*ksi(1)*(1.d0-ksi(1))*ptxx(ii+2*ndim)+&
                                                2.d0*ksi(1)*(ksi(1)-5.d-1)*ptxx(ii+ndim)
                                  end do
-                                 call elrfvf(elp, mref, nbnomx, ff, nno)
+                                 call elrfvf(elp, mref, ff, nno)
                                  call vecini(ndim, 0.d0, m)
                                  do ii = 1, ndim
                                     do ino = 1, nno
@@ -526,7 +527,7 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
                                                4.d0*ksi(1)*(1.d0-ksi(1))*ptxx(ii+2*ndim)+2.d0*&
                                                ksi(1)*(ksi(1)-5.d-1)*ptxx(ii+ndim)
                                  end do
-                                 call elrfvf(elp, mref, nbnomx, ff, nno)
+                                 call elrfvf(elp, mref, ff, nno)
                                  call vecini(ndim, 0.d0, m)
                                  do ii = 1, ndim
                                     do ino = 1, nno

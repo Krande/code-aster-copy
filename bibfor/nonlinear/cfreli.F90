@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! person_in_charge: mickael.abbas at edf.fr
+!
 subroutine cfreli(noma, nummai, nbnom, ksi1, ksi2,&
                   coefno)
 !
-! person_in_charge: mickael.abbas at edf.fr
+implicit none
 !
-    implicit     none
 #include "asterfort/assert.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/mmelty.h"
@@ -49,11 +49,8 @@ subroutine cfreli(noma, nummai, nbnom, ksi1, ksi2,&
 !
 ! ----------------------------------------------------------------------
 !
-    real(kind=8) :: zero, un
-    parameter  ( zero   =  0.0d0  )
-    parameter  ( un     =  1.0d0  )
+    real(kind=8), parameter :: zero = 0.d0, un = 1.d0
     real(kind=8) :: ksi(3)
-    integer :: ibid
     real(kind=8) :: ff(9)
     character(len=8) :: alias
 !
@@ -72,22 +69,22 @@ subroutine cfreli(noma, nummai, nbnom, ksi1, ksi2,&
     ksi(3) = un - ksi1 - ksi2
 !
     if (alias .eq. 'SE2') then
-        call elrfvf('SE2', ksi, 2, ff, ibid)
+        call elrfvf('SE2', ksi, ff)
         coefno(1) = - ff(1)
         coefno(2) = - ff(2)
         coefno(3) = zero
     else if (alias.eq.'SE3') then
-        call elrfvf('SE3', ksi, 3, ff, ibid)
+        call elrfvf('SE3', ksi, ff)
         coefno(1) = - ff(1)
         coefno(2) = - ff(2)
         coefno(3) = - ff(3)
     else if (alias(1:4).eq.'TR3') then
-        call elrfvf('TR3', ksi, 3, ff, ibid)
+        call elrfvf('TR3', ksi, ff)
         coefno(1) = - ff(1)
         coefno(2) = - ff(2)
         coefno(3) = - ff(3)
     else if (alias(1:4).eq.'TR6') then
-        call elrfvf('TR6', ksi, 6, ff, ibid)
+        call elrfvf('TR6', ksi, ff)
         coefno(1) = - ff(1)
         coefno(2) = - ff(2)
         coefno(3) = - ff(3)
@@ -96,7 +93,7 @@ subroutine cfreli(noma, nummai, nbnom, ksi1, ksi2,&
         coefno(6) = - ff(6)
     else if (alias(1:4).eq.'TR7') then
         if (nbnom .eq. 7) then
-            call elrfvf('TR7', ksi, 7, ff, ibid)
+            call elrfvf('TR7', ksi, ff)
             coefno(1) = - ff(1)
             coefno(2) = - ff(2)
             coefno(3) = - ff(3)
@@ -105,7 +102,7 @@ subroutine cfreli(noma, nummai, nbnom, ksi1, ksi2,&
             coefno(6) = - ff(6)
             coefno(7) = - ff(7)
         else if (nbnom.eq.6) then
-            call elrfvf('TR6', ksi, 6, ff, ibid)
+            call elrfvf('TR6', ksi, ff)
             coefno(1) = - ff(1)
             coefno(2) = - ff(2)
             coefno(3) = - ff(3)
@@ -117,20 +114,20 @@ subroutine cfreli(noma, nummai, nbnom, ksi1, ksi2,&
         endif
     else if (alias(1:2).eq.'QU') then
         if (alias .eq. 'QU4') then
-            call elrfvf('QU4', ksi, 4, ff, ibid)
+            call elrfvf('QU4', ksi, ff)
             coefno(1) = - ff(1)
             coefno(2) = - ff(2)
             coefno(3) = - ff(3)
             coefno(4) = - ff(4)
         else if (alias.eq.'QU8') then
-            call elrfvf('QU4', ksi, 4, ff, ibid)
+            call elrfvf('QU4', ksi, ff)
             coefno(1) = - ff(1)
             coefno(2) = - ff(2)
             coefno(3) = - ff(3)
             coefno(4) = - ff(4)
         else if (alias.eq.'QU9') then
             if (nbnom .eq. 9) then
-                call elrfvf('QU9', ksi, 9, ff, ibid)
+                call elrfvf('QU9', ksi, ff)
                 coefno(1) = - ff(1)
                 coefno(2) = - ff(2)
                 coefno(3) = - ff(3)
@@ -141,7 +138,7 @@ subroutine cfreli(noma, nummai, nbnom, ksi1, ksi2,&
                 coefno(8) = - ff(8)
                 coefno(9) = - ff(9)
             else if (nbnom.eq.8) then
-                call elrfvf('QU8', ksi, 8, ff, ibid)
+                call elrfvf('QU8', ksi, ff)
                 coefno(1) = - ff(1)
                 coefno(2) = - ff(2)
                 coefno(3) = - ff(3)

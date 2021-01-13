@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -120,7 +120,7 @@ subroutine te0519(option, nomte)
 !
 ! --- BOUCLE SUR LES FISSURES
 !
-    do 10 ifiss = 1, nfiss
+    do ifiss = 1, nfiss
 !
 ! --- RECUPERATION DU NOMBRE DES POINTS D'INTERSECTION
 !
@@ -131,19 +131,19 @@ subroutine te0519(option, nomte)
 !
 ! --- BOUCLE SUR LES POINTS D'INTERSECTION
 !
-        do 100 ipt = 1, ninter
+        do ipt = 1, ninter
             call vecini(ndim, 0.d0, deple)
             call vecini(ndim, 0.d0, deplm)
-            do 110 i = 1, ndim
+            do i = 1, ndim
 !
 ! --- RECUPERATION DES COORDONNEES DE REFERENCE DU POINT D'INTERSECTION
 !
                 ptref(i)=zr(jpint-1+ncompp*(ifiss-1)+ndim*(ipt-1)+i)
-110          continue
+            end do
 !
 ! --- CALCUL DES FONCTIONS DE FORMES DU POINT D'INTERSECTION
 !
-            call elrfvf(elref, ptref, nno, ff, ibid)
+            call elrfvf(elref, ptref, ff)
 !
             if (nfe .gt. 0) then
               call xkamat(zi(imate), ndim, axi, ka, mu)
@@ -158,41 +158,41 @@ subroutine te0519(option, nomte)
 ! --- CALCUL DES DEPLACEMENTS MAITRES ET ESCLAVES
 ! --- DU POINT D'INTERSECTION
 !
-            do 210 i = 1, nno
+            do i = 1, nno
                 call indent(i, ddls, ddlm, nnos, in)
-                do 220 j = 1, ndim
+                do j = 1, ndim
                     deplm(j)=deplm(j)+ff(i)*zr(jdepl-1+in+j)
                     deple(j)=deple(j)+ff(i)*zr(jdepl-1+in+j)
-220              continue
-                do 230 ifh = 1, nfh
+                end do
+                do ifh = 1, nfh
                     if (nfiss .gt. 1) then
                         jeu(1) = zi(jheafa-1+ncomph*(ifiss-1)+1)
                         jeu(2) = zi(jheafa-1+ncomph*(ifiss-1)+2)
                     endif
-                    do 250 j = 1, ndim
+                    do j = 1, ndim
                         deplm(j)=deplm(j)+xcalc_heav(zi(jheavn-1+ncompn*(i-1)+ifh),jeu(2),&
                                                      zi(jheavn-1+ncompn*(i-1)+ncompn))&
                                          *ff(i)*zr(jdepl-1+in+ndim*ifh+j)
                         deple(j)=deple(j)+xcalc_heav(zi(jheavn-1+ncompn*(i-1)+ifh),jeu(1),&
                                                      zi(jheavn-1+ncompn*(i-1)+ncompn))&
                                          *ff(i)*zr(jdepl-1+in+ndim*ifh+j)
-250                  continue
-230              continue
-                do 240 alp = 1, nfe*ndim
+                    end do
+                end do
+                do alp = 1, nfe*ndim
                   do j = 1, ndim
                     deplm(j)=deplm(j)+fk_mait(i,alp,j)*zr(jdepl-1+in+ndim*(1+&
                     nfh)+alp)
                     deple(j)=deple(j)+fk_escl(i,alp,j)*zr(jdepl-1+in+ndim*(1+&
                     nfh)+alp)
                   enddo
-240              continue
-210          continue
+                end do
+            end do
 !
 ! --- CALCUL DES NOUVELLES COORDONNEES DES POINTS D'INTERSECTIONS
 ! --- MAITRES ET ESCLAVES, ON FAIT :
 ! --- NOUVELLES COORDONNEES = ANCIENNES COORDONEES + DEPLACEMENT
 !
-            do 300 i = 1, ndim
+            do i = 1, ndim
                 zr(jges-1+ncompp*(ifiss-1)+ndim*(ipt-1)+i) = zr(&
                                                              jgeo- 1+ncompp*(ifiss-1)+ndim*(ipt-1&
                                                              &)+i) + deple(i&
@@ -201,9 +201,9 @@ subroutine te0519(option, nomte)
                                                              jgeo- 1+ncompp*(ifiss-1)+ndim*(ipt-1&
                                                              &)+i) + deplm(i&
                                                              )
-300          continue
-100      continue
+            end do
+        end do
 !
-10  end do
+    end do
 !
 end subroutine

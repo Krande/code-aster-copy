@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! person_in_charge: samuel.geniaut at edf.fr
+! aslint: disable=W1306
+!
 subroutine intfac(noma, nmaabs, ifq, fa, nno,&
                   lst, lsn, ndim, grad, jglsn,&
                   jglst, igeom, m, indptf, gln,&
                   glt, codret)
-! aslint: disable=W1306
-    implicit none
+!
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -33,14 +35,13 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/reereg.h"
-#include "asterfort/vecini.h"
-    integer :: ifq, fa(6, 8), nno, ndim, jglsn, jglst, igeom, codret
-    integer :: indptf(3), nmaabs
-    real(kind=8) :: lsn(nno), lst(nno), m(ndim), gln(ndim), glt(ndim)
-    character(len=3) :: grad
-    character(len=8) :: noma
 !
-! person_in_charge: samuel.geniaut at edf.fr
+integer :: ifq, fa(6, 8), nno, ndim, jglsn, jglst, igeom, codret
+integer :: indptf(3), nmaabs
+real(kind=8) :: lsn(nno), lst(nno), m(ndim), gln(ndim), glt(ndim)
+character(len=3) :: grad
+character(len=8) :: noma
+!
 !              TROUVER LES PTS D'INTERSECTION ENTRE LE FOND DE FISSURE
 !                 ET UNE FACE POUR LES ELEMENTS EN FOND DE FISSURE
 !
@@ -68,7 +69,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
 !
 !     ------------------------------------------------------------------
 !
-    integer :: nnof, i, j, k, nne, ino, iret, jconx2, numnoa, numnob
+    integer :: nnof, i, j, k, ino, iret, jconx2, numnoa, numnob
     real(kind=8) :: coorma(8), prec, mp(2), epsi(2), ff(nno), lsta, lsna, lstb
     real(kind=8) :: lsnb, solsn, a(ndim), b(ndim), mem(3), memo, normab, coeffk
     real(kind=8) :: prec2, length(12)
@@ -79,21 +80,20 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
 !
     call jemarq()
 !
-    call vecini(ndim, 0.d0, m)
+    m(1:ndim)   = 0.d0
     if (grad .eq. 'OUI') then
-        call vecini(ndim, 0.d0, gln)
-        call vecini(ndim, 0.d0, glt)
+        gln(1:ndim) = 0.d0
+        glt(1:ndim) = 0.d0
     endif
-    do 100 i = 1, 3
-        indptf(i)=0
-100 continue
+
+    indptf = 0
 !
     prec=r8prem()
     prec2= 1.d-4
     codret = 0
 !
 !     INITIALISATION DES COORDONNéES (LS) DES NOEUDS DE LA FACE
-    call vecini(8, 0.d0, coorma)
+    coorma = 0.d0
     lsta=0.d0
     lsna=0.d0
     lstb=0.d0
@@ -120,12 +120,12 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
 !     SI LA FACE COINCIDE AVEC LA SURFACE DE LA FISSURE, ON SORT
 !     (CAD SI LES LSN DES SOMMETS DE LA FACE SONT TOUS NULS)
     solsn = 0.d0
-    do 200 i = 1, nnof
+    do i = 1, nnof
         solsn = solsn + abs( lsn(fa(ifq,i)) )
-200 continue
+    end do
     if (solsn .eq. 0.d0) goto 999
 !
-    do 220 i = 1, nnof
+    do i = 1, nnof
         if (i .eq. 1) then
             j = nnof
         else
@@ -139,8 +139,9 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
         coorma(2*i)=lsna
 !
 !       SI LE FOND COINCIDE AVEC UN COTE DE LA FACE, ON SORT
-        if (lsna .eq. 0.d0 .and. lsnb .eq. 0.d0 .and. lsta .eq. 0.d0 .and. lstb .eq. 0.d0) &
-        goto 999
+        if (lsna .eq. 0.d0 .and. lsnb .eq. 0.d0 .and. lsta .eq. 0.d0 .and. lstb .eq. 0.d0) then
+            goto 999
+        endif
 !
 !       ON ACCEPTE TOUT DE SUITE LA FACE SI LE FRONT COINCIDE
 !       AVEC L'UN DES NOEUDS DE LA FACE
@@ -148,8 +149,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
             chgsgn = .true.
             indptf(1)=1
             indptf(2)=connex(zi(jconx2+nmaabs-1)+fa(ifq,i)-1)
-            goto 220
-!
+            cycle
         endif
 !
 !       ON ACCEPTE TOUT DE SUITE LA FACE SI LE FRONT COINCIDE
@@ -159,8 +159,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
             indptf(1)=2
             indptf(2)=connex(zi(jconx2+nmaabs-1)+fa(ifq,i)-1)
             indptf(3)=connex(zi(jconx2+nmaabs-1)+fa(ifq,j)-1)
-            goto 220
-!
+            cycle
         endif
 !
 !       ON NE CONSERVE QUE LES FACES COUPEES
@@ -184,8 +183,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
             endif
 !
         endif
-!
-220 continue
+    end do
 !
     if (.not. chgsgn) goto 999
 !
@@ -213,47 +211,47 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
     mp(2)=epsi(2)
 !     ON DOIT MAINTENANT MULTIPLIER LES COORD. PARAM. DE M PAR CHACUNE
 !     DES FF DES NOEUDS DE L'éLéMENT POUR OBTENIR LES COORD. CART.
-    call elrfvf(alias, mp, nnof, ff, nne)
-    do 230 i = 1, ndim
-        do 240 j = 1, nnof
+    call elrfvf(alias, mp, ff)
+    do i = 1, ndim
+        do j = 1, nnof
             ino = fa(ifq,j)
             m(i) = m(i) + zr(igeom-1+ndim*(ino-1)+i) * ff(j)
             if (grad .eq. 'OUI') then
                 glt(i) = glt(i) + zr(jglst-1+ndim*(ino-1)+i) * ff(j)
                 gln(i) = gln(i) + zr(jglsn-1+ndim*(ino-1)+i) * ff(j)
             endif
-240     continue
-230 continue
+        end do
+    end do
 !
 !     TRAITEMENT DES POINTS M PROCHES DES SOMMETS (FIT TO VERTEX)
     if ((indptf(1).eq.2) .or. (indptf(1).eq.3)) then
-        do 555 i = 1, nnof
+        do i = 1, nnof
             memo=0.d0
-            do 556 j = 1, ndim
+            do j = 1, ndim
                 a(j)=zr(igeom-1+ndim*(fa(ifq,i)-1)+j)
                 memo=memo+(a(j)-m(j))**2
-556         continue
+            end do
             length(3*(i-1)+1)=sqrt(memo)
             length(3*(i-1)+2)= connex(zi(jconx2+nmaabs-1)+fa(ifq,&
             i)-1)
             length(3*(i-1)+3)= 0
-555     continue
+        end do
 !       ON TRIE LE VECTEUR LENGTH
-        do 655 i = 1, nnof-1
-            do 755 j = i+1, nnof
+        do i = 1, nnof-1
+            do j = i+1, nnof
                 if (length(3*(j-1)+1) .lt. length(3*(i-1)+1)) then
-                    do 756 k = 1, 3
+                    do k = 1, 3
                         mem(k) = length(3*(i-1)+k)
-756                 continue
-                    do 757 k = 1, 3
+                    end do
+                    do k = 1, 3
                         length(3*(i-1)+k) = length(3*(j-1)+k)
-757                 continue
-                    do 758 k = 1, 3
+                    end do
+                    do k = 1, 3
                         length(3*(j-1)+k) = mem(k)
-758                 continue
+                    end do
                 endif
-755         continue
-655     continue
+            end do
+        end do
 !       M EST PROCHE D'UN SOMMET ? SI OUI, ON LE REPLACE SUR LE SOMMET
         if (length(1) .lt. (prec2*length(4))) then
             indptf(1)= 1
@@ -265,52 +263,52 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
 !
 !     TRAITEMENT DES POINTS M PROCHES DES ARETES (FIT TO VERTEX)
     if (indptf(1) .eq. 3) then
-        do 955 i = 1, nnof
-            do 105 j = 1, ndim
+        do i = 1, nnof
+            do j = 1, ndim
                 a(j)=zr(igeom-1+ndim*(fa(ifq,i)-1)+j)
-105         continue
+            end do
             numnoa=connex(zi(jconx2+nmaabs-1)+fa(ifq,i)-1)
             if (i .eq. nnof) then
-                do 106 j = 1, ndim
+                do j = 1, ndim
                     b(j)=zr(igeom-1+ndim*(fa(ifq,1)-1)+j)
-106             continue
+                end do
                 numnob=connex(zi(jconx2+nmaabs-1)+fa(ifq,1)-1)
             else
-                do 107 j = 1, ndim
+                do j = 1, ndim
                     b(j)=zr(igeom-1+ndim*(fa(ifq,i+1)-1)+j)
-107             continue
+                end do
                 numnob=connex(zi(jconx2+nmaabs-1)+fa(ifq,i+1)-1)
             endif
             normab=0.d0
             coeffk=0.d0
             memo=0.d0
-            do 108 k = 1, ndim
+            do k = 1, ndim
                 normab=normab+(b(k)-a(k))**2
                 coeffk=coeffk+(b(k)-a(k))*(m(k)-a(k))
-108         continue
-            do 109 k = 1, ndim
+            end do
+            do k = 1, ndim
                 memo=memo+ (a(k)-m(k)+(coeffk/normab)*(b(k)-a(k)))**2
-109         continue
+            end do
             length(3*(i-1)+1)= memo
             length(3*(i-1)+2)= numnoa
             length(3*(i-1)+3)= numnob
-955     continue
+        end do
 !       ON TRIE LE VECTEUR LENGTH
-        do 958 i = 1, nnof-1
-            do 959 j = i+1, nnof
+        do i = 1, nnof-1
+            do j = i+1, nnof
                 if (length(3*(j-1)+1) .lt. length(3*(i-1)+1)) then
-                    do 960 k = 1, 3
+                    do k = 1, 3
                         mem(k) = length(3*(i-1)+k)
-960                 continue
-                    do 961 k = 1, 3
+                    end do
+                    do k = 1, 3
                         length(3*(i-1)+k) = length(3*(j-1)+k)
-961                 continue
-                    do 962 k = 1, 3
+                    end do
+                    do k = 1, 3
                         length(3*(j-1)+k) = mem(k)
-962                 continue
+                    end do
                 endif
-959         continue
-958     continue
+            end do
+        end do
 !       M EST PROCHE D'UNE ARETE ? SI OUI, ON LE REPLACE SUR L'ARETE
         if (length(1) .lt. (prec2*length(4))) then
             indptf(1) = 2

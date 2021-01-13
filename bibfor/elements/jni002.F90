@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine jni002(elrefa, nmaxob, liobj, nbobj)
-    implicit none
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -29,8 +31,9 @@ subroutine jni002(elrefa, nmaxob, liobj, nbobj)
 #include "asterfort/inmat4.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/wkvect.h"
-    character(len=8) :: elrefa
-! person_in_charge: jacques.pellet at edf.fr
+!
+character(len=8) :: elrefa
+!
 ! ======================================================================
 ! BUT : INITIALISER LES ELREFA
 ! ======================================================================
@@ -62,7 +65,7 @@ subroutine jni002(elrefa, nmaxob, liobj, nbobj)
 !
 !
     call jeexin('&INEL.'//elrefa//'.ELRA_I', iret)
-    if (iret .gt. 0) goto 150
+    if (iret .gt. 0) goto 999
 !
 !    write (6,*) "elrefa  ", elrefa
     call elraca(elrefa, ndim, nno, nnos, nbfpg,&
@@ -78,110 +81,106 @@ subroutine jni002(elrefa, nmaxob, liobj, nbobj)
     zi(jvi-1+3) = nno
     zi(jvi-1+4) = nnos
     lon2 = 0
-    do 10,ifam = 1,nbfpg
-    npg = nbpg(ifam)
-    ASSERT((npg.gt.0) .and. (npg.le.nbpgmx))
-    zi(jvi-1+4+ifam) = npg
+    do ifam = 1,nbfpg
+        npg = nbpg(ifam)
+        ASSERT((npg.gt.0) .and. (npg.le.nbpgmx))
+        zi(jvi-1+4+ifam) = npg
 !
 !       ON VEUT STOCKER : W(IPG),GEOM(IDIM,IPG)
 !                         FF(INO,IPG) ET
 !                         DFF(IDIM,INO,IPG)
 !                         DFF2(IDIM,JDIM,INO,IPG)
 !                         MAPGNO(INO,IPG)
-    lonfam = npg
-    lonfam = lonfam + npg*ndim
-    lonfam = lonfam + npg*nno
-    lonfam = lonfam + npg*nno*ndim
-    lonfam = lonfam + npg*nno*ndim*ndim
-    lonfam = lonfam + 2 + npg*nno
-!
-    lon2 = lon2 + lonfam
-    10 end do
+        lonfam = npg
+        lonfam = lonfam + npg*ndim
+        lonfam = lonfam + npg*nno
+        lonfam = lonfam + npg*nno*ndim
+        lonfam = lonfam + npg*nno*ndim*ndim
+        lonfam = lonfam + 2 + npg*nno
+        lon2 = lon2 + lonfam
+    end do
 !
     call wkvect(liobj(2), 'V V R', lon2, jvr)
 !
     decal = 0
-    do 140,ifam = 1,nbfpg
+    do ifam = 1,nbfpg
 !
 !       -- COORDONNEES ET POIDS DES POINTS DE GAUSS :
 !       ------------------------------------------------
-    call elraga(elrefa, nofpg(ifam), ndim, npg, xpg,&
-                poipg)
-    do 20,ipg = 1,npg
-    decal = decal + 1
-    zr(jvr-1+decal) = poipg(ipg)
-20  continue
-    do 40,ipg = 1,npg
-    do 30,idim = 1,ndim
-    decal = decal + 1
-    zr(jvr-1+decal) = xpg(ndim* (ipg-1)+idim)
-30  continue
-40  continue
+        call elraga(elrefa, nofpg(ifam), ndim, npg, xpg, poipg)
+        do ipg = 1,npg
+            decal = decal + 1
+            zr(jvr-1+decal) = poipg(ipg)
+        end do
+        do ipg = 1,npg
+            do idim = 1,ndim
+                decal = decal + 1
+                zr(jvr-1+decal) = xpg(ndim* (ipg-1)+idim)
+            end do
+        end do
 !
 !
 !       -- VALEURS DES FONCTIONS DE FORME :
 !       ------------------------------------------------
-    do 60,ipg = 1,npg
-    call elrfvf(elrefa, xpg(ndim* (ipg-1)+1), nbnomx, ff, nno)
-    do 50,ino = 1,nno
-    decal = decal + 1
-    zr(jvr-1+decal) = ff(ino)
-50  continue
-60  continue
+        do ipg = 1,npg
+            call elrfvf(elrefa, xpg(ndim* (ipg-1)+1), ff, nno)
+            do ino = 1,nno
+                decal = decal + 1
+                zr(jvr-1+decal) = ff(ino)
+            end do
+        end do
 !
 !
 !       -- DERIVEES 1ERES DES FONCTIONS DE FORME :
 !       ------------------------------------------------
-    do 90,ipg = 1,npg
-    call elrfdf(elrefa, xpg(ndim* (ipg-1)+1), 3*nbnomx, dff, nno,&
-                nderiv)
-    ASSERT(nderiv.eq.ndim)
-    do 80,ino = 1,nno
-    do 70,idim = 1,ndim
-    decal = decal + 1
-    zr(jvr-1+decal) = dff(idim,ino)
-70  continue
-80  continue
-90  continue
+        do ipg = 1,npg
+            call elrfdf(elrefa, xpg(ndim* (ipg-1)+1), 3*nbnomx, dff, nno, nderiv)
+            ASSERT(nderiv.eq.ndim)
+            do ino = 1,nno
+                do idim = 1,ndim
+                    decal = decal + 1
+                    zr(jvr-1+decal) = dff(idim,ino)
+                end do
+            end do
+        end do
 !
 !
 !       -- DERIVEES 2EMES DES FONCTIONS DE FORME :
 !       ------------------------------------------------
-    do 130,ipg = 1,npg
-    call elrfd2(elrefa, xpg(ndim* (ipg-1)+1), 9*nbnomx, dff2, nno2,&
-                nderiv)
-    if (nderiv .eq. 0) then
-        ASSERT(nno2.eq.0)
-        rvide = r8vide()
-    else
-        ASSERT(nderiv.eq.ndim)
-        ASSERT(nno2.eq.nno)
-    endif
-    do 120,ino = 1,nno
-    do 110,jdim = 1,ndim
-    do 100,idim = 1,ndim
-    decal = decal + 1
-    if (nderiv .ne. 0) then
-        zr(jvr-1+decal) = dff2(idim,jdim,ino)
-    else
-        zr(jvr-1+decal) = rvide
-    endif
-100  continue
-110  continue
-120  continue
-130  continue
+        do ipg = 1,npg
+            call elrfd2(elrefa, xpg(ndim* (ipg-1)+1), 9*nbnomx, dff2, nno2, nderiv)
+            if (nderiv .eq. 0) then
+                ASSERT(nno2.eq.0)
+                rvide = r8vide()
+            else
+                ASSERT(nderiv.eq.ndim)
+                ASSERT(nno2.eq.nno)
+            endif
+            do ino = 1,nno
+                do jdim = 1,ndim
+                    do idim = 1,ndim
+                        decal = decal + 1
+                        if (nderiv .ne. 0) then
+                            zr(jvr-1+decal) = dff2(idim,jdim,ino)
+                        else
+                            zr(jvr-1+decal) = rvide
+                        endif
+                    end do
+                end do
+            end do
+        end do
+
 !
 !
 !       -- MATRICE GAUSS -> NOEUDS : MAPGNO
 !       ------------------------------------------------
 !       ON STOCKE DANS L'ORDRE : NNO,NPG,MAPGNO
-    call inmat4(elrefa, nno, nnos, npg, nofpg(ifam),&
-                zr(jvr-1+decal+1))
-    decal = decal + 2 + npg*nno
+        call inmat4(elrefa, nno, nnos, npg, nofpg(ifam),&
+                    zr(jvr-1+decal+1))
+        decal = decal + 2 + npg*nno
 !
+    end do
 !
-    140 end do
-!
-150  continue
+999 continue
 !
 end subroutine

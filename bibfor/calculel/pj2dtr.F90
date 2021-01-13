@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -309,7 +309,7 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
 !       2.2.2 :
 !       calcul des f. de forme aux noeuds pour le point xr3
 !       ----------------------------------------------------
-        call elrfvf(elrefa, xr3, 27, ff, nno)
+        call elrfvf(elrefa, xr3, ff)
         do ino = 1, nbno
             nuno = connex(1+ zi(ilcnx1-1+ima1)-2+ino)
             zi(i2conu-1+ideca2+ino) = nuno

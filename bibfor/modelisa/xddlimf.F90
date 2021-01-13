@@ -15,12 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! person_in_charge: daniele.colombo at ifpen.fr
+! aslint: disable=W1306
+!
 subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
                    ch2, ndim, lsn, lst, valimr, valimf, valimc,&
                    fonree, lisrel, nomn, direct, class, mesh,&
                    hea_no)
-    implicit none
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/afrela.h"
@@ -55,7 +59,6 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
     character(len=8), intent(in) :: mesh
     character(len=19) :: cnxinv, ch2, lisrel, hea_no
     aster_logical :: class
-! person_in_charge: daniele.colombo at ifpen.fr
 !
 !      TRAITEMENT DE DDL_IMPO SUR UN NOEUD X-FEM
 !             (POUR MOTCLE = DX, DY ,DZ)
@@ -73,7 +76,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
 !
     integer :: nbxcmp, nbnomax
     parameter  (nbxcmp=60, nbnomax=20)
-    integer :: ier, nbno, jconx2, nbmano, jma, adrma, numa, voisin(3), dimens(nbxcmp), nno2
+    integer :: ier, nbno, jconx2, nbmano, jma, adrma, numa, voisin(3), dimens(nbxcmp)
     integer :: itypma, ibid, nbnoma, nno, i, jlsnd, jlsnl, hea_pt, heavm(135), jheavnl
     integer :: iad, ima, j, nuno, nuno2, iadrco, icode, numac, nbnomac, nterm, ncompn, jheavnd
     real(kind=8) :: lsno(3), lsn2, coor(4*ndim), param(1), alpha(1), geom(nbnomax*ndim)
@@ -248,7 +251,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
           if (.not. ismali(typma) .and. lsn(1) .ne. 0.d0 .and. lsno(3) .eq. 0.d0) then
              param(1) = -sign(1.d0,lsn(1))*5.d-1
 !     ON EVALUE LA FONCTION EN PARAM
-             call elrfvf(arete, param, nbnomax, ff, nno2)
+             call elrfvf(arete, param, ff)
              do i = 1, ndim
                 valpar(i)=coor(ndim+i)*ff(1)+coor(2*ndim+i)*ff(2)+coor(3*ndim+i)*ff(3)
              end do
@@ -263,10 +266,10 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
 ! --- QUATRIEME CAS: MAILLLAGE QUADRATIQUE ET NOEUD HORS FISSURE, ET NOEUD
 !     MILIEU PAS SUR LA FISSURE
           if (.not. ismali(typma) .and. lsn(1) .ne. 0.d0 .and. lsno(3) .ne. 0.d0) then
-             call elrfvf(arete, alpha, nbnomax, ff, nno2)
+             call elrfvf(arete, alpha, ff)
              param(1) = (sign(1.d0,alpha(1))*1.d0+alpha(1))/2.d0
 !     ON EVALUE LA FONCTION EN PARAM
-             call elrfvf(arete, param, nbnomax, ffb, nno2)
+             call elrfvf(arete, param, ffb)
              do i = 1, ndim
                 valpar(i)=coor(ndim+i)*ffb(1)+coor(2*ndim+i)*ffb(2)+coor(3*ndim+i)*ffb(3)
              end do
@@ -365,7 +368,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
              endif
 !     ON CHERCHE UN NOEUD DE LA MAILLE TEL QUE LSN SOIT DE SIGNE OPPOSE
              call vecini(ndim, 0.d0, ptp)
-             call elrfvf(elp, ptp, nbnomax, ff, nbnoma)
+             call elrfvf(elp, ptp, ff, nbnoma)
              coorn = noma//'.COORDO    .VALE'
              call jeveuo(coorn, 'L', iadrco)
              do i = 1, nbnoma

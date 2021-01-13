@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -105,7 +105,7 @@ real(kind=8), intent(out) :: mganos(nbpgmx, nbnomx)
         do kdim = 1,ndim
             xg(kdim) = xpg(ndim* (kp-1)+kdim)
         end do
-        call elrfvf(elref2, xg, nbnomx, ff, nno)
+        call elrfvf(elref2, xg, ff)
         ln = (kp-1)*nnos
         do i = 1, nnos
             p(ln+i) = ff(i)

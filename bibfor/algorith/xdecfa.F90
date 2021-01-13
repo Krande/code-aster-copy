@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! person_in_charge: daniele.colombo at ifpen.fr
+! aslint: disable=W1306,W1504
+!
 subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
                   pinter, pinref, ainter, cooree, cooref, rainter,&
                   noeud, npts, nintar, lst ,lonref, ndim, zxain,&
                   jgrlsn, mipos)
-    implicit none
+!
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -47,7 +50,6 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
     aster_logical :: mipos
 !
 ! ======================================================================
-! person_in_charge: daniele.colombo at ifpen.fr
 !            BUT :  TROUVER LES PTS DE LA FISSURE DANS LE TRIA
 !
 !     ENTREE
@@ -255,7 +257,7 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
                        ptxx(ii+ndim)
           end do
           call vecini(27, 0.d0, ff)
-          call elrfvf(elp, xref, nbnomx, ff, nno)
+          call elrfvf(elp, xref, ff, nno)
 !      CALCUL DES COORDONNEES REELES DU FOND DE FISSURE
           call vecini(ndim, 0.d0, x)
           do ii = 1, ndim
@@ -301,7 +303,7 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
                             (1.d0-ksi(1))*ptxx(ii+2*ndim)+2.d0*ksi(1)*(ksi(1)-5.d-1)*&
                             ptxx(ii+ndim)
              end do
-             call elrfvf(elp, miref, nbnomx, ff, nno)
+             call elrfvf(elp, miref, ff, nno)
              call vecini(ndim, 0.d0, mifis)
              do ii = 1, ndim
                 do j = 1, nno
@@ -378,7 +380,7 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
                         pinref((noeud(4)-1)*ndim+j))/2.d0
           end do
           call vecini(ndim, 0.d0, x)
-          call elrfvf(elp, xref, nbnomx, ff, nno)
+          call elrfvf(elp, xref, ff, nno)
           do j = 1, ndim
              do ii = 1, nno
                 x(j) = x(j) + zr(igeom-1+ndim*(ii-1)+j) * ff(ii)
@@ -420,7 +422,7 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
           do j= 1, ndim
              xref(j)=xref(j)+ksi(1)*ptxx(j)
           end do
-          call elrfvf(elp, xref, nbnomx, ff, nno)
+          call elrfvf(elp, xref, ff, nno)
           call vecini(ndim, 0.d0, x)
           do ii = 1, ndim
              do j = 1, nno

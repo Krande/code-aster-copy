@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! person_in_charge: mickael.abbas at edf.fr
+!
 subroutine apdist(elem_type, elem_coor, elem_nbnode, ksi1, ksi2,&
                   poin_coor, dist     , vect_pm)
 !
@@ -23,16 +24,14 @@ implicit none
 !
 #include "asterfort/elrfvf.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=8), intent(in) :: elem_type
-    real(kind=8), intent(in) :: elem_coor(27)
-    integer, intent(in) :: elem_nbnode
-    real(kind=8), intent(in) :: ksi1
-    real(kind=8), intent(in) :: ksi2
-    real(kind=8), intent(in) :: poin_coor(3)
-    real(kind=8), intent(out) :: dist
-    real(kind=8), intent(out) :: vect_pm(3)
+character(len=8), intent(in) :: elem_type
+real(kind=8), intent(in) :: elem_coor(27)
+integer, intent(in) :: elem_nbnode
+real(kind=8), intent(in) :: ksi1
+real(kind=8), intent(in) :: ksi2
+real(kind=8), intent(in) :: poin_coor(3)
+real(kind=8), intent(out) :: dist
+real(kind=8), intent(out) :: vect_pm(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,7 +53,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: poin_proj_coor(3)
-    integer :: i_dime, i_node, ibid
+    integer :: i_dime, i_node
     real(kind=8), parameter :: zero = 0.d0
     real(kind=8) :: ksi(2), ff(9)
 !
@@ -68,7 +67,7 @@ implicit none
 !
 ! - Shape function
 !
-    call elrfvf(elem_type, ksi, elem_nbnode, ff, ibid)
+    call elrfvf(elem_type, ksi, ff)
 !
 ! - Coordinates of projection
 !

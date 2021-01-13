@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
     real(kind=8) :: m(3), somlsn, epsi(2), coorma(8)
     integer :: i, nbf, ibid, ifq, j
     integer :: fa(6, 8), ibid3(12, 3), ifisc, jfisc, ino
-    integer :: nnof, na, nb, iret, nne
+    integer :: nnof, na, nb, iret
     aster_logical :: chgsgn, lajpf, ajout
 ! ----------------------------------------------------------------------
 !
@@ -145,7 +145,7 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
             endif
             mp(1)=epsi(1)
             mp(2)=epsi(2)
-            call elrfvf(alias, mp, nnof, ff, nne)
+            call elrfvf(alias, mp, ff)
             do 130 jfisc = ifisc+1, nfisc
                 lsj = 0
                 do 140 j = 1, nnof

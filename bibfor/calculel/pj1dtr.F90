@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,8 +74,8 @@ subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
     call jeveuo(cortr3//'.PJEF_CF', 'L', vr=pjef_cf)
     call jeveuo(cortr3//'.PJEF_TR', 'L', vi=pjef_tr)
 
-    m1=pjxx_k1(1)
-    m2=pjxx_k1(2)
+    m1=pjxx_k1(1)(1:8)
+    m2=pjxx_k1(2)(1:8)
     call dismoi('NB_NO_MAILLA', m1, 'MAILLAGE', repi=nno1)
     call dismoi('NB_NO_MAILLA', m2, 'MAILLAGE', repi=nno2)
     call dismoi('NB_MA_MAILLA', m1, 'MAILLAGE', repi=nma1)
@@ -160,7 +160,7 @@ subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
 !       2.2.2 :
 !       CALCUL DES F. DE FORME AUX NOEUDS POUR LE POINT KSI
 !       -------------------------------------------------------
-        call elrfvf(elrefa, x, 27, ff, nno)
+        call elrfvf(elrefa, x, ff)
         do ino = 1, nbno
             nuno = connex(1+ zi(ilcnx1-1+ima1)-2+ino)
             zi(i2conu-1+ideca2+ino) = nuno

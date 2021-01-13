@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine mmnonf(ndim, nno, alias, ksi1, ksi2,&
-                  ff)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
+subroutine mmnonf(ndim, nno, alias, ksi1, ksi2, ff)
+!
+implicit none
+!
 #include "asterfort/assert.h"
 #include "asterfort/elrfvf.h"
-    character(len=8) :: alias
-    real(kind=8) :: ksi1, ksi2
-    real(kind=8) :: ff(9)
-    integer :: nno, ndim
+!
+character(len=8) :: alias
+real(kind=8) :: ksi1, ksi2
+real(kind=8) :: ff(9)
+integer :: nno, ndim
 !
 ! ----------------------------------------------------------------------
 !
@@ -48,24 +49,20 @@ subroutine mmnonf(ndim, nno, alias, ksi1, ksi2,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid
     real(kind=8) :: ksi(2)
 !
 ! ----------------------------------------------------------------------
 !
-!
-! --- INITIALISATIONS
-!
     ff(:) = 0.d0
-!
     ksi(1) = ksi1
     ksi(2) = ksi2
-    if ((nno.lt.1) .or. (nno.gt.9) .or. (ndim.lt.1) .or. (ndim.gt.3)) then
-        ASSERT(.false.)
-    endif
+    ASSERT(nno .ge. 1)
+    ASSERT(nno .le. 9)
+    ASSERT(ndim .ge. 1)
+    ASSERT(ndim .le. 3)
 !
 ! --- RECUP FONCTIONS DE FORME
 !
-    call elrfvf(alias, ksi, nno, ff, ibid)
+    call elrfvf(alias, ksi, ff)
 !
 end subroutine

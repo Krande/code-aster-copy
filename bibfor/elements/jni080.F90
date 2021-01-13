@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W1501
 subroutine jni080(elrefe, nmaxob, liobj, nbobj)
-    implicit none
-! person_in_charge: jacques.pellet at edf.fr
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
@@ -31,8 +32,9 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
 #include "asterfort/mamagi.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    character(len=8) :: elrefe
-    integer :: nmaxob, nbobj
+!
+character(len=8) :: elrefe
+integer :: nmaxob, nbobj
 !
 !.......................................................................
 !
@@ -330,11 +332,11 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
         npgsn = 7
         nso = 3
     else
-        call utmess('F', 'ELEMENTS2_31')
+        ASSERT(ASTER_FALSE)
     endif
 !
     call jeexin(desi, iret)
-    if (iret .ne. 0) goto 350
+    if (iret .ne. 0) goto 999
 !
     ldesi = 4
     call wkvect(desi, 'V V I', ldesi, lzi)
@@ -375,21 +377,21 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
 !     VALEURS DES FONCTIONS DE FORME ET DE
 !     LEURS DERIVEES AUX 4 PTS DE GAUSS REDUITS
 !
-        do 20 l = 1, 4
+        do l = 1, 4
             i1 = l
             i2 = 4 + l
             x(1) = zr(lzr-1+i1)
             x(2) = zr(lzr-1+i2)
-            call elrfvf('QU8', x, 9, ff, nno)
+            call elrfvf('QU8', x, ff, nno)
             call elrfdf('QU8', x, 18, dff, nno,&
                         ndim)
             ll = 8* (l-1)
-            do 21 ino = 1, 8
+            do ino = 1, 8
                 zr(lzr-1+12+ll+ino) = ff(ino)
                 zr(lzr-1+44+ll+ino) = dff(1,ino)
                 zr(lzr-1+76+ll+ino) = dff(2,ino)
-21          continue
-20      continue
+            end do
+        end do
 !
 !     DEFINITION DES 9=3*3 PTS DE GAUSS NORMAL
 !     POSITION DES POINTS DE GAUSS DANS LE PLAN
@@ -432,21 +434,21 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
 !     VALEURS DES FONCTIONS DE FORME ET
 !     DERVIVEES AUX 9 PTS DE GAUSS NORMAL
 !
-        do 40 l = 1, 9
+        do l = 1, 9
             i1 = 108 + l
             i2 = 108 + 9 + l
             x(1) = zr(lzr-1+i1)
             x(2) = zr(lzr-1+i2)
-            call elrfvf('QU8', x, 9, ff, nno)
+            call elrfvf('QU8', x, ff, nno)
             call elrfdf('QU8', x, 18, dff, nno,&
                         ndim)
             ll = 8* (l-1)
-            do 22 ino = 1,8
+            do ino = 1,8
                 zr(lzr-1+135+ll+ino) = ff(ino)
                 zr(lzr-1+207+ll+ino) = dff(1,ino)
                 zr(lzr-1+279+ll+ino) = dff(2,ino)
-22          continue
-40      continue
+            end do
+        end do
 !
 !     FONCTIONS DE LAGRANGE - POUR LES TERMES
 !     DE ROTATION
@@ -455,47 +457,47 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
 !     DES FONCTIONS DE FORME ET DE LEURS
 !     DERIVEES
 !
-        do 60 l = 1, 4
+        do l = 1, 4
             i1 = l
             i2 = 4 + l
             x(1) = zr(lzr-1+i1)
             x(2) = zr(lzr-1+i2)
-            call elrfvf('QU9', x, 9, ff, nno)
+            call elrfvf('QU9', x, ff, nno)
             call elrfdf('QU9', x, 18, dff, nno,&
                         ndim)
             ll = 9* (l-1)
-            do 23 ino = 1,9
+            do ino = 1,9
                 zr(lzr-1+ 351 + ll + ino) = ff(ino)
                 zr(lzr-1+ 387 + ll + ino) = dff(1,ino)
                 zr(lzr-1+ 423 + ll + ino) = dff(2,ino)
-23          continue
-60      continue
+            end do
+        end do
 !
 !    VALEURS AUX 9 PTS DE GAUSS NORMAL
 !    DES FONCTIONS DE FORME ET DE LEURS
 !    DERIVEES
 !
-        do 80 l = 1, 9
+        do l = 1, 9
             i1 = 108 + l
             i2 = 108 + 9 + l
             x(1) = zr(lzr-1+i1)
             x(2) = zr(lzr-1+i2)
-            call elrfvf('QU9', x, 9, ff, nno)
+            call elrfvf('QU9', x, ff, nno)
             call elrfdf('QU9', x, 18, dff, nno,&
                         ndim)
             ll = 9* (l-1)
-            do 24 ino = 1,9
+            do ino = 1,9
                 zr(lzr-1+ 459 + ll + ino) = ff(ino)
                 zr(lzr-1+ 540 + ll + ino) = dff(1,ino)
                 zr(lzr-1+ 621 + ll + ino) = dff(2,ino)
-24          continue
-80      continue
+            end do
+        end do
 !
 !    FONCTIONS ASSOCIEES AUX 4 PTS DE GAUSS REDUITS
 !
 !    VALEURS AUX 9 PTS DE GAUSS NORMAL
 !
-        do 100 l = 1, 9
+        do l = 1, 9
             i1 = 108 + l
             i2 = 108 + 9 + l
             x(1) = zr(lzr-1+i1)
@@ -514,15 +516,15 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
             dff(2,3)= 0.75d0*(aa+x(1))
             dff(2,4)= 0.75d0*(aa-x(1))
             ll = 4* (l-1)
-            do 90 l1 = 1, 4
+            do l1 = 1, 4
                 i3 = 702 + ll + l1
                 i4 = 738 + ll + l1
                 i5 = 774 + ll + l1
                 zr(lzr-1+i3) = ff(l1)
                 zr(lzr-1+i4) = dff(1,l1)
                 zr(lzr-1+i5) = dff(2,l1)
-90          continue
-100      continue
+            end do
+        end do
 !
 !     VALEURS DES FONCTIONS DE SERENDIP AUX 9 NOEUDS
 !     ON DONNE LA POSITION DES NOEUDS
@@ -550,7 +552,7 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
 !     VALEURS DES FONCTIONS DE SERENDIP
 !     ET DE LEURS DERIVEES AUX 9 NOEUDS
 !
-        do 120 l = 1, 9
+        do l = 1, 9
             i1 = 810 + l
             i2 = 810 + 9 + l
             x(1) = zr(lzr-1+i1)
@@ -558,11 +560,11 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
             call elrfdf('QU8', x, 18, dff, nno,&
                         ndim)
             ll = 8* (l-1)
-            do 25 ino = 1,8
+            do ino = 1, 8
                 zr(lzr-1+ 828 + ll + ino) = dff(1,ino)
                 zr(lzr-1+ 900 + ll + ino) = dff(2,ino)
-25          continue
-120      continue
+            end do
+        end do
 !
 !     DEFINITION DES 8 FONCTIONS D'INTERPOLATION QUI PERMETTENT
 !     D'EXTRAPOLER LES DEFORMATIONS OU CONTRAINTES AUX NOEUDS
@@ -574,39 +576,37 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
 !
         kompt = 0
 !
-        do 150 m = 1, 3
+        do m = 1, 3
             i3 = 1250 + m
             xi3 = zr(lzr-1+i3)
-            do 140 l = 1, 8
+            do l = 1, 8
                 i1 = 810 + l
                 i2 = 810 + 9 + l
                 xi1 = zr(lzr-1+i1)
                 xi2 = zr(lzr-1+i2)
                 kompt = kompt + 1
                 ll = 8* (kompt-1)
-                call fcesnd(elrefe, 1, xi1, xi2, xi3,&
-                            'LI', vfesnd)
-                do 130 k = 1, 8
+                call fcesnd(elrefe, 1, xi1, xi2, xi3, 'LI', vfesnd)
+                do k = 1, 8
                     i4 = 1260 + ll + k
                     zr(lzr-1+i4) = vfesnd(k)
-130              continue
-140          continue
-150      continue
+                end do
+            end do
+        end do
 !
         xi3 = 0.d0
-        do 170 l = 1, 8
+        do l = 1, 8
             i1 = 810 + l
             i2 = 810 + 9 + l
             xi1 = zr(lzr-1+i1)
             xi2 = zr(lzr-1+i2)
-            call fcesnd(elrefe, 0, xi1, xi2, xi3,&
-                        'LI', vfesnd)
+            call fcesnd(elrefe, 0, xi1, xi2, xi3, 'LI', vfesnd)
             ll = 4* (l-1)
-            do 160 k = 1, 4
+            do k = 1, 4
                 i3 = 1452 + ll + k
                 zr(lzr-1+i3) = vfesnd(k)
-160          continue
-170      continue
+            end do
+        end do
 !
 !     EN NON LINEAIRE, CREATION DE LA MATRICE MAGIQUE DE PASSAGE
 !     PTS DE GAUSS AUX NOEUDS PAR MOINDRES CARRES
@@ -647,13 +647,12 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
 !     DES FONCTIONS DE LAGRANGE ET DE LEURS
 !     DERIVEES
 !
-        do 190 l = 1, 3
+        do l = 1, 3
             i1 = l
             i2 = 4 + l
             xi1 = zr(lzr-1+i1)
             xi2 = zr(lzr-1+i2)
             ll = 8* (l-1)
-!
             ff(1)=(1.d0-xi1-xi2)*(2.d0*(1.d0-xi1-xi2)-1.d0)
             ff(2)= xi1*(2.d0*xi1-1.d0)
             ff(3)= xi2*(2.d0*xi2-1.d0)
@@ -672,16 +671,15 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
             dff(2,4)=-4.d0*xi1
             dff(2,5)= 4.d0*xi1
             dff(2,6)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi2
-!
-            do 180 l1 = 1, 6
+            do l1 = 1, 6
                 i3 = 12 + ll + l1
                 i4 = 44 + ll + l1
                 i5 = 76 + ll + l1
                 zr(lzr-1+i3) = ff(l1)
                 zr(lzr-1+i4) = dff(1,l1)
                 zr(lzr-1+i5) = dff(2,l1)
-180          continue
-190      continue
+            end do
+        end do
 !
 !     DEFINITION DES 7 PTS DE HAMMER NORMAL ET DES POIDS CORRESPONDANTS
 !
@@ -716,13 +714,12 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
 !     DES FONCTIONS DE LAGRANGE ET DE LEURS
 !     DERVIVEEES
 !
-        do 210 l = 1, 7
+        do l = 1, 7
             i1 = 108 + l
             i2 = 108 + 9 + l
             xi1 = zr(lzr-1+i1)
             xi2 = zr(lzr-1+i2)
             ll = 8* (l-1)
-!
             ff(1)=(1.d0-xi1-xi2)*(2.d0*(1.d0-xi1-xi2)-1.d0)
             ff(2)= xi1*(2.d0*xi1-1.d0)
             ff(3)= xi2*(2.d0*xi2-1.d0)
@@ -741,29 +738,27 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
             dff(2,4)=-4.d0*xi1
             dff(2,5)= 4.d0*xi1
             dff(2,6)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi2
-!
-            do 200 l1 = 1, 6
+            do l1 = 1, 6
                 i3 = 135 + ll + l1
                 i4 = 207 + ll + l1
                 i5 = 279 + ll + l1
                 zr(lzr-1+i3) = ff(l1)
                 zr(lzr-1+i4) = dff(1,l1)
                 zr(lzr-1+i5) = dff(2,l1)
-200          continue
-210      continue
+            end do
+        end do
 !
 !     7 FONCTIONS CUBIQUES (6 + 1 :  LA DERNIERE EST LA 10EME
 !                                    FONCTION DE P3)
 !
 !     VALEURS AUX 3 PTS DE HAMMER REDUITS
 !
-        do 230 l = 1, 3
+        do l = 1, 3
             i1 = l
             i2 = 4 + l
             xi1 = zr(lzr-1+i1)
             xi2 = zr(lzr-1+i2)
             ll = 9* (l-1)
-!
             ff(1)=(1.d0-xi1-xi2)*(2.d0*(1.d0-xi1-xi2)-1.d0) +3.d0*xi1*&
             xi2*(1.d0-xi1-xi2)
             ff(2)= xi1*(2.d0*xi1-1.d0)+3.d0*xi1*xi2*(1.d0-xi1-xi2)
@@ -794,78 +789,65 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
             dff(2,6)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi2 -12.d0*xi1*(1.d0-&
             xi1-xi2)+12.d0*xi1*xi2
             dff(2,7)= 27.d0*xi1*(1.d0-xi1-xi2)-27.d0*xi1*xi2
-!
-            do 220 l1 = 1, 7
+            do l1 = 1, 7
                 i3 = 351 + ll + l1
                 i4 = 387 + ll + l1
                 i5 = 423 + ll + l1
                 zr(lzr-1+i3) = ff(l1)
                 zr(lzr-1+i4) = dff(1,l1)
                 zr(lzr-1+i5) = dff(2,l1)
-220          continue
-230      continue
+            end do
+        end do
 !
 !     VALEURS AUX 7 PTS DE HAMMER NORMAL
 !
-        do 250 l = 1, 7
+        do l = 1, 7
             i1 = 108 + l
             i2 = 108 + 9 + l
             xi1 = zr(lzr-1+i1)
             xi2 = zr(lzr-1+i2)
             ll = 9* (l-1)
-!
-            ff(1)=(1.d0-xi1-xi2)*(2.d0*(1.d0-xi1-xi2)-1.d0) +3.d0*xi1*&
-            xi2*(1.d0-xi1-xi2)
-            ff(2)= xi1*(2.d0*xi1-1.d0)+3.d0*xi1*xi2*(1.d0-xi1-xi2)
-            ff(3)= xi2*(2.d0*xi2-1.d0)+3.d0*xi1*xi2*(1.d0-xi1-xi2)
-            ff(4)= 4.d0*xi1*(1.d0-xi1-xi2)-12.d0*xi1*xi2*(1.d0-xi1-&
-            xi2)
-            ff(5)= 4.d0*xi1*xi2-12.d0*xi1*xi2*(1.d0-xi1-xi2)
-            ff(6)= 4.d0*xi2*(1.d0-xi1-xi2)-12.d0*xi1*xi2*(1.d0-xi1-&
-            xi2)
-            ff(7)= 27.d0*xi1*xi2*(1.d0-xi1-xi2)
-            dff(1,1)=-4.d0*(1.d0-xi1-xi2)+1.d0 +3.d0*xi2*(1.d0-xi1-&
-            xi2)-3.d0*xi1*xi2
-            dff(1,2)= 4.d0*xi1-1.d0+3.d0*xi2*(1.d0-xi1-xi2)-3.d0*xi1*&
-            xi2
-            dff(1,3)=3.d0*xi2*(1.d0-xi1-xi2)-3.d0*xi1*xi2
-            dff(1,4)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi1 -12.d0*xi2*(1.d0-&
-            xi1-xi2)+12.d0*xi1*xi2
-            dff(1,5)= 4.d0*xi2-12.d0*xi2*(1.d0-xi1-xi2)+12.d0*xi1*xi2
-            dff(1,6)=-4.d0*xi2-12.d0*xi2*(1.d0-xi1-xi2)+12.d0*xi1*xi2
-            dff(1,7)= 27.d0*xi2*(1.d0-xi1-xi2)-27.d0*xi1*xi2
-            dff(2,1)=-4.d0*(1.d0-xi1-xi2)+1.d0 +3.d0*xi1*(1.d0-xi1-&
-            xi2)-3.d0*xi1*xi2
-            dff(2,2)= 3.d0*xi1*(1.d0-xi1-xi2)-3.d0*xi1*xi2
-            dff(2,3)= 4.d0*xi2-1.d0+3.d0*xi1*(1.d0-xi1-xi2)-3.d0*xi1*&
-            xi2
-            dff(2,4)=-4.d0*xi1-12.d0*xi1*(1.d0-xi1-xi2)+12.d0*xi1*xi2
-            dff(2,5)= 4.d0*xi1-12.d0*xi1*(1.d0-xi1-xi2)+12.d0*xi1*xi2
-            dff(2,6)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi2 -12.d0*xi1*(1.d0-&
-            xi1-xi2)+12.d0*xi1*xi2
-            dff(2,7)= 27.d0*xi1*(1.d0-xi1-xi2)-27.d0*xi1*xi2
-!
-            do 240 l1 = 1, 7
+            ff(1)    = (1.d0-xi1-xi2)*(2.d0*(1.d0-xi1-xi2)-1.d0) +3.d0*xi1*xi2*(1.d0-xi1-xi2)
+            ff(2)    = xi1*(2.d0*xi1-1.d0)+3.d0*xi1*xi2*(1.d0-xi1-xi2)
+            ff(3)    = xi2*(2.d0*xi2-1.d0)+3.d0*xi1*xi2*(1.d0-xi1-xi2)
+            ff(4)    = 4.d0*xi1*(1.d0-xi1-xi2)-12.d0*xi1*xi2*(1.d0-xi1-xi2)
+            ff(5)    = 4.d0*xi1*xi2-12.d0*xi1*xi2*(1.d0-xi1-xi2)
+            ff(6)    = 4.d0*xi2*(1.d0-xi1-xi2)-12.d0*xi1*xi2*(1.d0-xi1-xi2)
+            ff(7)    = 27.d0*xi1*xi2*(1.d0-xi1-xi2)
+            dff(1,1) =-4.d0*(1.d0-xi1-xi2)+1.d0 +3.d0*xi2*(1.d0-xi1-xi2)-3.d0*xi1*xi2
+            dff(1,2) = 4.d0*xi1-1.d0+3.d0*xi2*(1.d0-xi1-xi2)-3.d0*xi1*xi2
+            dff(1,3) = 3.d0*xi2*(1.d0-xi1-xi2)-3.d0*xi1*xi2
+            dff(1,4) = 4.d0*(1.d0-xi1-xi2)-4.d0*xi1 -12.d0*xi2*(1.d0-xi1-xi2)+12.d0*xi1*xi2
+            dff(1,5) = 4.d0*xi2-12.d0*xi2*(1.d0-xi1-xi2)+12.d0*xi1*xi2
+            dff(1,6) =-4.d0*xi2-12.d0*xi2*(1.d0-xi1-xi2)+12.d0*xi1*xi2
+            dff(1,7) = 27.d0*xi2*(1.d0-xi1-xi2)-27.d0*xi1*xi2
+            dff(2,1) =-4.d0*(1.d0-xi1-xi2)+1.d0 +3.d0*xi1*(1.d0-xi1-xi2)-3.d0*xi1*xi2
+            dff(2,2) = 3.d0*xi1*(1.d0-xi1-xi2)-3.d0*xi1*xi2
+            dff(2,3) = 4.d0*xi2-1.d0+3.d0*xi1*(1.d0-xi1-xi2)-3.d0*xi1*xi2
+            dff(2,4) =-4.d0*xi1-12.d0*xi1*(1.d0-xi1-xi2)+12.d0*xi1*xi2
+            dff(2,5) = 4.d0*xi1-12.d0*xi1*(1.d0-xi1-xi2)+12.d0*xi1*xi2
+            dff(2,6) = 4.d0*(1.d0-xi1-xi2)-4.d0*xi2 -12.d0*xi1*(1.d0-xi1-xi2)+12.d0*xi1*xi2
+            dff(2,7) = 27.d0*xi1*(1.d0-xi1-xi2)-27.d0*xi1*xi2
+            do l1 = 1, 7
                 i3 = 459 + ll + l1
                 i4 = 540 + ll + l1
                 i5 = 621 + ll + l1
                 zr(lzr-1+i3) = ff(l1)
                 zr(lzr-1+i4) = dff(1,l1)
                 zr(lzr-1+i5) = dff(2,l1)
-240          continue
-250      continue
+            end do
+        end do
 !
 !    FONCTIONS ASSOCIEES AUX 3 PTS DE HAMMER REDUITS
 !
 !    VALEURS AUX 7 PTS DE HAMMER NORMAL
 !
-        do 270 l = 1, 7
+        do l = 1, 7
             i1 = 108 + l
             i2 = 108 + 9 + l
             x(1) = zr(lzr-1+i1)
             x(2) = zr(lzr-1+i2)
             ll = 4* (l-1)
-!
             a=0.166666666666667d0
             b=0.666666666666667d0
             ff(1)= 2.d0*(-(x(1)-b)-(x(2)-a))
@@ -877,15 +859,15 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
             dff(2,1)=-2.d0
             dff(2,2)= 0.d0
             dff(2,3)= 2.d0
-            do 260 l1 = 1, 3
+            do l1 = 1, 3
                 i3 = 702 + ll + l1
                 i4 = 738 + ll + l1
                 i5 = 774 + ll + l1
                 zr(lzr-1+i3) = ff(l1)
                 zr(lzr-1+i4) = dff(1,l1)
                 zr(lzr-1+i5) = dff(2,l1)
-260          continue
-270      continue
+            end do
+        end do
 !
 !     VALEURS DES FONCTIONS DE LAGRANGE AUX 7 NOEUDS
 !     POSITION DES 7 NOEUDS
@@ -906,13 +888,12 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
         zr(lzr-1+825) = 0.500000000000000d0
         zr(lzr-1+826) = 0.333333333333333d0
 !
-        do 290 l = 1, 7
+        do l = 1, 7
             i1 = 810 + l
             i2 = 810 + 9 + l
             xi1 = zr(lzr-1+i1)
             xi2 = zr(lzr-1+i2)
             ll = 8* (l-1)
-!
             dff(1,1)=-4.d0*(1.d0-xi1-xi2)+1.d0
             dff(1,2)= 4.d0*xi1-1.d0
             dff(1,3)= 0.d0
@@ -925,14 +906,13 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
             dff(2,4)=-4.d0*xi1
             dff(2,5)= 4.d0*xi1
             dff(2,6)= 4.d0*(1.d0-xi1-xi2)-4.d0*xi2
-!
-            do 280 l1 = 1, 6
+            do l1 = 1, 6
                 i3 = 828 + ll + l1
                 i4 = 900 + ll + l1
                 zr(lzr-1+i3) = dff(1,l1)
                 zr(lzr-1+i4) = dff(2,l1)
-280          continue
-290      continue
+            end do
+        end do
 !
 !     DEFINITION DES 6 FONCTIONS D'INTERPOLATION QUI PERMETTENT
 !     D'EXTRAPOLER
@@ -944,39 +924,37 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
         zr(lzr-1+1253) = 1.d0
 !
         kompt = 0
-        do 320 m = 1, 3
+        do m = 1, 3
             i3 = 1250 + m
             xi3 = zr(lzr-1+i3)
-            do 310 l = 1, 6
+            do l = 1, 6
                 i1 = 810 + l
                 i2 = 810 + 9 + l
                 xi1 = zr(lzr-1+i1)
                 xi2 = zr(lzr-1+i2)
                 kompt = kompt + 1
                 ll = 6* (kompt-1)
-                call fcesnd(elrefe, 1, xi1, xi2, xi3,&
-                            'LI', vfesnd)
-                do 300 k = 1, 6
+                call fcesnd(elrefe, 1, xi1, xi2, xi3,'LI', vfesnd)
+                do k = 1, 6
                     i4 = 1260 + ll + k
                     zr(lzr-1+i4) = vfesnd(k)
-300              continue
-310          continue
-320      continue
+                end do
+            end do
+        end do
 !
         xi3 = 0.d0
-        do 340 l = 1, 6
+        do l = 1, 6
             i1 = 810 + l
             i2 = 810 + 9 + l
             xi1 = zr(lzr-1+i1)
             xi2 = zr(lzr-1+i2)
-            call fcesnd(elrefe, 0, xi1, xi2, xi3,&
-                        'LI', vfesnd)
+            call fcesnd(elrefe, 0, xi1, xi2, xi3, 'LI', vfesnd)
             ll = 4* (l-1)
-            do 330 k = 1, 3
+            do k = 1, 3
                 i3 = 1452 + ll + k
                 zr(lzr-1+i3) = vfesnd(k)
-330          continue
-340      continue
+            end do
+        end do
 !
 !     EN NON LINEAIRE, CREATION DE LA MATRICE MAGIQUE DE PASSAGE
 !     PTS DE HAMMER AUX NOEUDS PAR MOINDRES CARRES
@@ -999,21 +977,20 @@ subroutine jni080(elrefe, nmaxob, liobj, nbobj)
 !     LEURS VALEURS AUX POINTS DE HAMMER
 !
         xi3 = 0.d0
-        do 360 l = 1, 7
+        do l = 1, 7
             i1 = 810 + l
             i2 = 810 + 9 + l
             xi1 = zr(lzr-1+i1)
             xi2 = zr(lzr-1+i2)
-            call fcesnd(elrefe, 0, xi1, xi2, xi3,&
-                        'NL', vfesnd)
+            call fcesnd(elrefe, 0, xi1, xi2, xi3,'NL', vfesnd)
             ll = 7* (l-1)
-            do 370 k = 1, 7
+            do k = 1, 7
                 i3 = 1600 + ll + k
                 zr(lzr-1+i3) = vfesnd(k)
-370          continue
-360      continue
+            end do
+        end do
 
     endif
 !
-350  continue
+999 continue
 end subroutine

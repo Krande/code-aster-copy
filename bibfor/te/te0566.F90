@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W0104
 subroutine te0566(nomopt, nomte)
     implicit none
 #include "asterf_types.h"
@@ -36,7 +36,6 @@ subroutine te0566(nomopt, nomte)
 #include "asterfort/xkamat.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/xteini.h"
-! person_in_charge: patrick.massin at edf.fr
 !
 !    - FONCTION REALISEE:  CALCUL DU CHAMP DE DEPLACEMENT RECOMPOSE AUX
 !                          POINTS DE GAUSS DES SOUS-ELEMENTS X-FEM
@@ -164,7 +163,7 @@ subroutine te0566(nomopt, nomte)
           enddo
 !
 !         evaluation des fonctions de forme au point de Gauss courant
-          call elrfvf(elrefp, xg, nbnomx, ff, nnop)
+          call elrfvf(elrefp, xg, ff, nnop)
 !
 !       FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
         if (nfe .gt. 0) then

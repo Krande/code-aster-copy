@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,8 @@ subroutine ndcent(igeom, ndim, lsn, nfiss, tx, txlsn, nnc)
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/elrfvf.h"
-#include "asterfort/matini.h"
 #include "asterfort/reereg.h"
 #include "asterfort/reerel.h"
-#include "asterfort/vecini.h"
     integer :: igeom, nnc, ndim, nfiss
     real(kind=8) :: tx(3, 7), lsn(*), txlsn(28)
 !
@@ -44,15 +42,15 @@ subroutine ndcent(igeom, ndim, lsn, nfiss, tx, txlsn, nnc)
 !
     integer :: nbnomx
     parameter     (nbnomx = 20)
-    integer :: i, j, nnop, ibid, ifiss
+    integer :: i, j, nnop, ifiss
     real(kind=8) :: ff(nbnomx), xlsn, xe(3)
     character(len=8) :: elp
 !
 !
     call elref1(elp)
     call elrefe_info(elrefe=elp,fami='RIGI',nno=nnop)
-    call matini(3, 7, 0.d0, tx)
-    call vecini(28, 0.d0, txlsn)
+    tx    = 0.d0
+    txlsn = 0.d0
 !
 !     INITIALIASATION PAR DEFAUT DU NOMBRE DE NOEUDS CENTRAUX A ZERO
 !     (E.G. TRIANGLES ET TETRAHEDRES)
@@ -119,28 +117,26 @@ subroutine ndcent(igeom, ndim, lsn, nfiss, tx, txlsn, nnc)
 !     CALCUL DE LA LSN DU MILIEU
 !
     do j = 1, nnc
-        do 11 i = 1, ndim
+        do i = 1, ndim
             xe(i)=tx(i,j)
-11      continue
-!
-        call elrfvf(elp, xe, nbnomx, ff, ibid)
+        end do
+        call elrfvf(elp, xe, ff)
         do ifiss = 1, nfiss
            xlsn = 0.d0
-           do 12 i = 1, nnop
+            do i = 1, nnop
                xlsn = xlsn + ff(i)*lsn((i-1)*nfiss+ifiss)
-12         continue
+            end do
            txlsn((j-1)*nfiss+ifiss)=xlsn
         end do
     end do
 !
 !.....................................................................
 !      CALCUL DES COORDONNES DANS L ELEMENT REEL
-    do 20 j = 1, nnc
-        call reerel(elp, nnop, ndim, zr(igeom), tx(1:ndim,j),&
-                    xe)
-        do 21 i = 1, ndim
+    do j = 1, nnc
+        call reerel(elp, nnop, ndim, zr(igeom), tx(1:ndim,j), xe)
+        do i = 1, ndim
             tx(i,j)=xe(i)
-21      continue
-20  continue
+        end do
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! person_in_charge: samuel.geniaut at edf.fr
+! aslint: disable=W1306
+!
 subroutine xcalfev(elrefp, ndim, nnop, basloc, stano, he,&
                    geom, kappa, mu, ff, fk,&
                    dfdi, dkdgl, face,&
                    nnop_lin, ff_lin, dfdi_lin)
 !
-! person_in_charge: samuel.geniaut at edf.fr
-!
-    implicit none
+implicit none
 !
 #include "jeveux.h"
 #include "asterf_types.h"
@@ -167,8 +167,7 @@ subroutine xcalfev(elrefp, ndim, nnop, basloc, stano, he,&
     if (lshift) then
     call xelrex(elrefp, nno, xref, ndime=ndime)
     do ino=1, nnop
-      call elrfvf(elrefp, xref((ndime*(ino-1)+1):(ndime*(ino-1)+ndime)),&
-                  nnop, ff_n, nno)
+      call elrfvf(elrefp, xref((ndime*(ino-1)+1):(ndime*(ino-1)+ndime)), ff_n)
       call coor_cyl(ndim, nnop, basloc, geom, ff_n,&
                     p(ino,1:3,1:3), invp(ino,1:3,1:3),&
                     r_n(ino), t_n(ino), lbid)
@@ -227,8 +226,6 @@ subroutine xcalfev(elrefp, ndim, nnop, basloc, stano, he,&
             do j =1, ndim
               do k =1, ndim
                 dkdgl_g(alp,i,j)=dkdgl_g(alp,i,j)+p_g(i,k)*fkpo_n(ino,alp,k)*dfdi(ino,j)
-!                if (lcourb) dkdgl_g(alp,i,j)=dkdgl_g(alp,i,j)+&
-!                                                 courb(i,k,j)*fkpo_n(ino,alp,k)*ff(ino)
               enddo
             enddo
           enddo
@@ -271,11 +268,6 @@ subroutine xcalfev(elrefp, ndim, nnop, basloc, stano, he,&
              enddo
              dkdgl(ino,alp,i,j)=(dkdgl(ino,alp,i,j)-dkdgl_g(alp,i,j))*ff1(ino)+&
                                 fk_gl(alp,i)*dfdi1(ino,j)
-!             if (lcourb) then
-!               do k =1, ndim
-!                 dkdgl(ino,alp,i,j)=dkdgl(ino,alp,i,j)+fk(ino,alp,k)*ff1(ino)*courb(i,k,j)
-!               enddo
-!             endif
            enddo
         enddo
       enddo

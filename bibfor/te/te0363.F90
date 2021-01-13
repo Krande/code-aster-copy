@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -164,7 +164,7 @@ subroutine te0363(option, nomte)
 !
 ! --- FONCTIONS DE FORMES
 !
-    call xtform(ndim, elrees, elrema, elreco, ndeple,&
+    call xtform(ndim, elrees, elrema, elreco,&
                 nnm(1), nnc, coore, coorm, coorc,&
                 ffe, ffm, dffc)
 !
@@ -205,7 +205,7 @@ subroutine te0363(option, nomte)
     else if (contac.eq.3) then
         nnc = nne(2)
         call elelin(contac, elrees, typmec, ibid, ibid)
-        call elrfvf(typmec, coore, nnc, ffec, ibid)
+        call elrfvf(typmec, coore, ffec)
         call xlacti(typmai, ninter, jpcai, lact, nlact)
         call xmoffc(lact, nlact, nnc, ffec, ffc)
     else

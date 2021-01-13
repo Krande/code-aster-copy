@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -457,24 +457,23 @@ contains
 ! In basis  : evaluation of the basis at the point pt
 ! ---------------------------------------------------------------------------------
 !
-        integer :: nno
         basis = 0.d0
 !
         select case (typema)
             case ('SE2')
-                call elrfvf('SE2', pt, 8, basis, nno)
+                call elrfvf('SE2', pt, basis)
             case ('TRIA3')
-                call elrfvf('TR6', pt, 8, basis, nno)
+                call elrfvf('TR6', pt, basis)
             case ('QUAD4')
-                call elrfvf('QU4', pt, 8, basis, nno)
+                call elrfvf('QU4', pt, basis)
             case ('TETRA4')
-                call elrfvf('TE4', pt, 8, basis, nno)
+                call elrfvf('TE4', pt, basis)
             case ('PYRAM5')
-                call elrfvf('PY5', pt, 8, basis, nno)
+                call elrfvf('PY5', pt, basis)
             case ('PENTA6')
-                call elrfvf('PE6', pt, 8, basis, nno)
+                call elrfvf('PE6', pt, basis)
             case ('HEXA8')
-                call elrfvf('HE8', pt, 8, basis, nno)
+                call elrfvf('HE8', pt, basis)
             case default
                 ASSERT(ASTER_FALSE)
         end select

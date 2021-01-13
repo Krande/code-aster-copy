@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,15 +78,15 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
     real(kind=8) :: ff(27), ksic(3), sc, tabar(9), minlsn, maxlsn
     real(kind=8) :: m(3), lsnm, lstm, ksi, milfi(3), smilfi, lsnabs
     integer :: j, ar(12, 3), nbar, na, nb, ins, n(3)
-    integer :: ia, i, ipt, ibid, nno, k
+    integer :: ia, i, ipt, nno, k
     integer :: iadzi, iazk24, ndim, ptmax
     integer :: zxain
-    integer :: inm, inc, nm, nbnomx, ninter
+    integer :: inm, inc, nm, ninter
     parameter(cridist=1.d-7)
     aster_logical :: cut, ajout, arete
     character(len=8) :: typma, elp, elc
 !
-    parameter       (ptmax=4, elc='SE3',nbnomx=27)
+    parameter       (ptmax=4, elc='SE3')
 ! --------------------------------------------------------------------
 !
 !
@@ -247,7 +247,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
                 call abscvl(ndim, tabar, c, sc)
                 call xinvac(elp, ndim, tabar, sc, ksic)
                 ASSERT(ksic(1).ge.-1 .and. ksic(1).le.1)
-                call elrfvf(elc, ksic(1), nbnomx, ff, ibid)
+                call elrfvf(elc, ksic(1), ff)
                 lstc=ff(1)*lstb+ff(2)*lsta+ff(3)*lstm
                 if (lstc .le. prec) then
                     if (lstc .ge. 0.d0) then

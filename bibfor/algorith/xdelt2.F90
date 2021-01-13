@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,22 +15,24 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W1306
+!
 subroutine xdelt2(elp, n, ndime, ksi,&
                   ptint, ndim, tabco, tabls, ipp, ip,&
                   delta)
-    implicit none
 !
-#   include "jeveux.h"
-#   include "asterc/r8prem.h"
-#   include "asterfort/assert.h"
-#   include "asterfort/elraca.h"
-#   include "asterfort/elrfdf.h"
-#   include "asterfort/elrfvf.h"
-#   include "asterfort/matini.h"
-#   include "asterfort/matinv.h"
-#   include "asterfort/provec.h"
-#   include "asterfort/vecini.h"
+implicit none
+!
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/elraca.h"
+#include "asterfort/elrfdf.h"
+#include "asterfort/elrfvf.h"
+#include "asterfort/matini.h"
+#include "asterfort/matinv.h"
+#include "asterfort/provec.h"
+#include "asterfort/vecini.h"
     integer :: ndime, ndim, ipp, ip, n(3)
     real(kind=8) :: ksi(ndim), delta(ndime), ptint(*), tabco(*), tabls(*)
     character(len=8) :: elp
@@ -82,7 +84,7 @@ subroutine xdelt2(elp, n, ndime, ksi,&
     end do
 !
 !     CALCUL DES FONCTIONS DE FORME DE L'ELEMENT EN KSI
-    call elrfvf(elp, ksi, nbnomx, ff, nno)
+    call elrfvf(elp, ksi, ff, nno)
 !
 !     CALCUL DES DERIVEES FONCTIONS DE FORME DE L'ELEMENT EN KSI
     call elrfdf(elp, ksi, ndime*nbnomx, dff, nno,&
@@ -94,9 +96,9 @@ subroutine xdelt2(elp, n, ndime, ksi,&
 ! ---           R1 : LEVEL SET NORMALE
     do  j = 1, nno
         r(1)=r(1)+ff(j)*tabls(j)
-        do 70 i = 1, ndime
+        do i = 1, ndime
             jac(1,i)=jac(1,i)+dff(i,j)*tabls(j)
-70      continue
+        end do
     end do
 !
     call vecini(ndim, 0.d0, m)

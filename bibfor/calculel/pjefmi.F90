@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pjefmi(elrefp, nnop, coor, xg, ndim,&
                   x1, x2, lext, xmi, distv)
-! person_in_charge: jacques.pellet at edf.fr
-    implicit none
+!
+implicit none
+!
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrfvf.h"
@@ -69,26 +70,26 @@ subroutine pjefmi(elrefp, nnop, coor, xg, ndim,&
 !
 !   -- calcul de xr1 : geometrie reelle de x1 :
 !   --------------------------------------------
-    call elrfvf(elrefp, x1, nbnomx, ff, nno)
+    call elrfvf(elrefp, x1, ff, nno)
     ASSERT(nno.eq.nnop)
     xr1(1:ndim)=0.d0
-    do 20 idim = 1, ndim
-        do 10 ino = 1, nno
+    do idim = 1, ndim
+        do ino = 1, nno
             xr1(idim)=xr1(idim)+ff(ino)*coor(ndim*(ino-1)+idim)
- 10     continue
- 20 end do
+        end do
+    end do
 !
 !
 !   -- calcul de xr2 : geometrie reelle de x2 :
 !   --------------------------------------------
     if (.not.lext) then
-        call elrfvf(elrefp, x2, nbnomx, ff, nno)
+        call elrfvf(elrefp, x2, ff, nno)
         xr2(1:ndim)=0.d0
-        do 40 idim = 1, ndim
-            do 30 ino = 1, nno
+        do idim = 1, ndim
+            do ino = 1, nno
                 xr2(idim)=xr2(idim)+ff(ino)*coor(ndim*(ino-1)+idim)
- 30         continue
- 40     end do
+            end do
+        end do
     endif
 !
 !
@@ -97,10 +98,10 @@ subroutine pjefmi(elrefp, nnop, coor, xg, ndim,&
 !   -------------------------------------------------
     d1=0.d0
     d2=0.d0
-    do 50 k = 1, ndim
+    do k = 1, ndim
         d1=d1+(xr1(k)-xg(k))**2
         if (.not.lext) d2=d2+(xr2(k)-xg(k))**2
- 50 end do
+    end do
 !
     if (lext) then
         xmi(1:ndim)=x1(1:ndim)

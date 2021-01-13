@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,16 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! person_in_charge: samuel.geniaut at edf.fr
+! aslint: disable=W1504, W1501
+!
 subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
                   prefno, nogrfi, maxfem, cns1, cns2,&
                   ces1, ces2, cesvi1, cesvi2, listgr,&
                   dirgrm, nivgrm, resuco, ngfon, comps1,&
                   comps2, pre1, iord)
 !
-! person_in_charge: samuel.geniaut at edf.fr
-! aslint: disable=W1504
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -734,7 +734,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
                  pinter(j) = zr(jcesv(15)-1-1+iad16+ncompi*(nfijon(1)-1)+ndim*(nli-1)+j)
               end do
               call vecini(20,0.d0,ff)
-              call elrfvf(elrefp, pinter, 20, ff, n)
+              call elrfvf(elrefp, pinter, ff, n)
               lsno = 0.d0
               do j = 1, n
                  lsno = lsno+ff(j)*zr(jlsn-1+(j-1)*nfiss+nfijon(2))

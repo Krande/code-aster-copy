@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W1306
+!
 subroutine reereg(stop, elrefp, nnop, coor, xg,&
                   ndim, xe, iret, toler)
 !
+implicit none
 !
-! aslint: disable=W1306
-    implicit none
 #include "asterfort/assert.h"
 #include "asterfort/elrfdf.h"
 #include "asterfort/elrfvf.h"
@@ -30,14 +30,15 @@ subroutine reereg(stop, elrefp, nnop, coor, xg,&
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "blas/ddot.h"
-    character(len=1) :: stop
-    character(len=8) :: elrefp
-    integer :: nnop, ndim
-    real(kind=8) :: coor(ndim*nnop)
-    real(kind=8) :: xg(ndim)
-    real(kind=8) :: xe(ndim)
-    real(kind=8), optional, intent(in) :: toler
-    integer :: iret
+!
+character(len=1) :: stop
+character(len=8) :: elrefp
+integer :: nnop, ndim
+real(kind=8) :: coor(ndim*nnop)
+real(kind=8) :: xg(ndim)
+real(kind=8) :: xe(ndim)
+real(kind=8), optional, intent(in) :: toler
+integer :: iret
 !
 ! ----------------------------------------------------------------------
 !
@@ -93,7 +94,7 @@ subroutine reereg(stop, elrefp, nnop, coor, xg,&
 !
 ! --- VALEURS DES FONCTIONS DE FORME EN XE: FF
 !
-    call elrfvf(elrefp, xe, nbnomx, ff, nno)
+    call elrfvf(elrefp, xe, ff, nno)
     ASSERT(nno.eq.nnop)
 !
 ! --- DERIVEES PREMIERES DES FONCTIONS DE FORME EN XE: DFF
@@ -105,11 +106,11 @@ subroutine reereg(stop, elrefp, nnop, coor, xg,&
 ! --- CALCUL DES COORDONNEES DU POINT: POINT
 !
     call vecini(ndim, zero, point)
-    do 200 idim = 1, ndim
-        do 210 ino = 1, nno
+    do idim = 1, ndim
+        do ino = 1, nno
             point(idim) = point(idim)+ff(ino)*coor(ndim*(ino-1)+idim)
-210      continue
-200  end do
+        end do
+    end do
 !
 ! --- CALCUL DE L'INVERSE DE LA JACOBIENNE EN XE: INVJAC
 !
@@ -128,18 +129,18 @@ subroutine reereg(stop, elrefp, nnop, coor, xg,&
 !
 ! --- UPDATE XE
 !
-    do 220 i = 1, ndim
+    do i = 1, ndim
         xenew(i)=xe(i)
-        do 230 k = 1, ndim
+        do k = 1, ndim
             xenew(i) = xenew(i)-invjac(i,k)*(point(k)-xg(k))
-230      continue
-220  end do
+        end do
+    end do
 !
 ! --- CALCUL DE L'ERREUR: ERR
 !
-    do 240 i = 1, ndim
+    do i = 1, ndim
         etmp(i) = xenew(i) - xe(i)
-240  end do
+    end do
     err = ddot(nderiv,etmp,1,etmp,1)
 !
 ! --- NOUVELLE VALEUR DE XE
@@ -161,6 +162,6 @@ subroutine reereg(stop, elrefp, nnop, coor, xg,&
         endif
     endif
 !
-999  continue
+999 continue
 !
 end subroutine

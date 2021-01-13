@@ -91,7 +91,7 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
 ! ---------
     character(len=19) :: lirela
     character(len=8) :: mailla, nnoeca
-    integer :: noebe, nbcnx, cxma(*), itria, iproj, nno
+    integer :: noebe, nbcnx, cxma(*), itria, iproj
     real(kind=8) :: normal(*), xbar(*), excent
 !
 ! VARIABLES LOCALES
@@ -191,11 +191,11 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
             x(1) = ksi1
             x(2) = ksi2
             if (nbcnx.eq.4) then
-                call elrfvf('QU4', x, 4, ff, nno)
+                call elrfvf('QU4', x, ff)
             else if (nbcnx.eq.8) then
-                call elrfvf('QU8', x, 8, ff, nno)
+                call elrfvf('QU8', x, ff)
             else if (nbcnx.eq.9) then
-                call elrfvf('QU9', x, 9, ff, nno)
+                call elrfvf('QU9', x, ff)
             endif
             ffel2d = ff(1)
             ff(1) = ff(4)

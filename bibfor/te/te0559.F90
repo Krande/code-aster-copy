@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ subroutine te0559(option, nomte)
     character(len=8) :: elrefp, elrefc, enr, enr2
     character(len=16) :: nomte, option
     integer :: ndim, nnop, nnops, iret, nfiss, nfh, ddld, ddlp, ddlm, ddlc
-    integer :: jlsn, itemps, ifluxf, igeom, jheano, ires, nbnomx
+    integer :: jlsn, itemps, ifluxf, igeom, jheano, ires
     integer :: iadzi, iazk24, i, ndime, j, k, ia , ib, im, n(3), ifiss
     integer :: nbf, f(6,8), ibid2(12,3), ibid, contac, nddls
     integer :: nbar, ar(12,3), ninter, exit(2), nlag
@@ -69,7 +69,6 @@ subroutine te0559(option, nomte)
     real(kind=8) :: ff(27), pinter(9), miref(3), mifis(3), rbid(1)
     real(kind=8) :: dxdk, dydk, dzdk, jac, xg(3), xe(3), phi, x(81)
     character(len=8) :: typma, typfa, nompar(4), elc, fpg
-    parameter   (nbnomx = 27)
     aster_logical :: pre1
 !
 !-----------------------------------------------------------------------
@@ -172,7 +171,7 @@ subroutine te0559(option, nomte)
                             flux, iret)
 !         SI LE FLUX EST POSITIF, ON MET LES CLS SUR CETTE ARETE
                 if (flux.gt.0.d0) then
-                   call elrfvf(elrefc, inref, nbnomx, ff, nnops)
+                   call elrfvf(elrefc, inref, ff, nnops)
                    if (nfiss.gt.1) then
                       zr(ires-1+(ia-1)*nddls+(ndim+1)*(1+nfh)+(zi(jheano-1+(ia-1)*nfiss+ifiss)-1)&
                       *(nlag*ndim+3)+1)=zr(ires-1+(ia-1)*nddls+(ndim+1)*(1+nfh)+(zi(jheano-1+&

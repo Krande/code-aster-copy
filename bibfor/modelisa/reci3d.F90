@@ -104,7 +104,6 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
     character(len=8) :: k8b
     character(len=24) :: nonoma
     aster_logical :: notlin
-    integer :: nno
 !
     real(kind=8) :: ffel3d, ff(27), x(3)
     real(kind=8), pointer :: coemur(:) => null()
@@ -193,23 +192,23 @@ subroutine reci3d(lirela, mailla, nnoeca, noebe, nbcnx,&
             x(2) = ksi2
             x(3) = ksi3
             if (nbcnx .eq. 4) then
-                call elrfvf('TE4', x, 4, ff, nno)
+                call elrfvf('TE4', x, ff)
             else if (nbcnx.eq.10) then
-                call elrfvf('T10', x, 10, ff, nno)
+                call elrfvf('T10', x, ff)
             else if (nbcnx.eq.5) then
-                call elrfvf('PY5', x, 5, ff, nno)
+                call elrfvf('PY5', x, ff)
             else if (nbcnx.eq.13) then
-                call elrfvf('P13', x, 13, ff, nno)
+                call elrfvf('P13', x, ff)
             else if (nbcnx.eq.6) then
-                call elrfvf('PE6', x, 6, ff, nno)
+                call elrfvf('PE6', x, ff)
             else if (nbcnx.eq.15) then
-                call elrfvf('P15', x, 15, ff, nno)
+                call elrfvf('P15', x, ff)
             else if (nbcnx.eq.8) then
-                call elrfvf('HE8', x, 8, ff, nno)
+                call elrfvf('HE8', x, ff)
             else if (nbcnx.eq.20) then
-                call elrfvf('H20', x, 20, ff, nno)
+                call elrfvf('H20', x, ff)
             else if (nbcnx.eq.27) then
-                call elrfvf('H27', x, 27, ff, nno)
+                call elrfvf('H27', x, ff)
             endif
             ffel3d = ff(icnx)
             coemur(icnx+1) = -ffel3d

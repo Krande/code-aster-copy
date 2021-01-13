@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,11 +19,11 @@
 subroutine xdelt3(ndim, ksi, tabls, delta)
     implicit none
 !
-#    include "jeveux.h"
-#    include "asterfort/jedema.h"
-#    include "asterfort/jemarq.h"
-#    include "asterfort/elrfdf.h"
-#    include "asterfort/elrfvf.h"
+#include "jeveux.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/elrfdf.h"
+#include "asterfort/elrfvf.h"
     integer :: ndim
     real(kind=8) :: tabls(3), ksi(ndim), delta
 !                 CALCUL DE LA QUANTITE A MINIMISER POUR LE CALCUL
@@ -57,7 +57,7 @@ subroutine xdelt3(ndim, ksi, tabls, delta)
 !
 !
 !     CALCUL DES FONCTIONS DE FORME DE L'ELEMENT EN KSI
-    call elrfvf('SE3', ksi, 3, ff, nno)
+    call elrfvf('SE3', ksi, ff, nno)
 !
 !     CALCUL DES DERIVEES FONCTIONS DE FORME DE L'ELEMENT EN KSI
     call elrfdf('SE3', ksi, ndim*nno, dff, nno,&
@@ -66,10 +66,10 @@ subroutine xdelt3(ndim, ksi, tabls, delta)
 !
 ! --- CALCUL DE FCTG,D1FCTG,D2FCTG EN KSI
 ! ---           FCTG : LEVEL SET NORMALE
-    do 105 i = 1, nno
+    do i = 1, nno
         fctg = fctg + ff(i)*tabls(i)
         dfctg=dfctg+tabls(i)*dff(1,i)
-105  continue
+    end do
 !
 ! --- CALCUL DES QUANTITES A MINIMISER
 !     CALCUL DE DELTAS

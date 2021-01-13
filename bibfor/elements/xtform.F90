@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,22 +15,22 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine xtform(ndim, typmae, typmam, typmac, nne,&
+!
+subroutine xtform(ndim, typmae, typmam, typmac,&
                   nnm, nnc, coore, coorm, coorc,&
                   ffe, ffm, dffc)
 !
-! person_in_charge: mickael.abbas at edf.fr
+implicit none
 !
-    implicit none
 #include "asterfort/elrfdf.h"
 #include "asterfort/elrfvf.h"
-    character(len=8) :: typmae, typmam, typmac
-    real(kind=8) :: coorc(2), coore(3), coorm(3)
-    integer :: ndim, nnm, nnc, nne
-    real(kind=8) :: ffe(20)
-    real(kind=8) :: ffm(20)
-    real(kind=8) :: dffc(3, 9)
+!
+character(len=8) :: typmae, typmam, typmac
+real(kind=8) :: coorc(2), coore(3), coorm(3)
+integer :: ndim, nnm, nnc
+real(kind=8) :: ffe(20)
+real(kind=8) :: ffm(20)
+real(kind=8) :: dffc(3, 9)
 !
 ! ----------------------------------------------------------------------
 !
@@ -47,7 +47,6 @@ subroutine xtform(ndim, typmae, typmam, typmac, nne,&
 ! IN  NDIM   : DIMENSION DU MODELE
 ! IN  NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
 ! IN  NNC    : NOMBRE DE NOEUDS DE LA MAILLE DE CONTACT
-! IN  NNE    : NOMBRE DE NOEUDS DE LA MAILLE ESCLAVE
 ! IN  TYPMAE : TYPE DE LA MAILLE ESCLAVE
 ! IN  TYPMAM : TYPE DE LA MAILLE MAITRE
 ! IN  TYPMAC : TYPE DE LA MAILLE DE CONTACT
@@ -73,11 +72,11 @@ subroutine xtform(ndim, typmae, typmam, typmac, nne,&
 !
 ! --- FONCTIONS DE FORMES DU POINTS DE CONTACT DANS L'ELEMENT PARENT
 !
-    call elrfvf(typmae, coore, nne, ffe, ibid)
+    call elrfvf(typmae, coore, ffe)
 !
 ! --- FONCTIONS DE FORMES DE LA PROJ DU PT DE CONTACT DANS L'ELE PARENT
 !
-    if (nnm .ne. 0) call elrfvf(typmam, coorm, nnm, ffm, ibid)
+    if (nnm .ne. 0) call elrfvf(typmam, coorm, ffm)
 !
 !
 end subroutine
