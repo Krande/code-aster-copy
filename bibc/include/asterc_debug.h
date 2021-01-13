@@ -96,7 +96,7 @@ to add all traces
 
 /*! enable DEBUG_ASTER_FONCTIONS */
 #if defined(ASTER_DEBUG_ALL)
-#   define __DEBUG_ASTER_FONCTIONS__
+#   define ASTER_DEBUG_FONCTIONS
 #endif
 
 /*! enable DEBUG_IODR */

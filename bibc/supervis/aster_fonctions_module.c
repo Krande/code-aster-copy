@@ -89,7 +89,7 @@ static PyObject* SPEC_OSCI( PyObject* self, PyObject* args )
 }
 
 
-#ifdef __DEBUG_ASTER_FONCTIONS__
+#ifdef ASTER_DEBUG_FONCTIONS
 /* utile pour le remplissage des contiguous array */
 static PyObject* _INFO( PyObject* self, PyObject* args )
 {
@@ -149,7 +149,7 @@ static PyObject* _INFO( PyObject* self, PyObject* args )
 #ifndef ASTER_WITHOUT_PYMOD
 static PyMethodDef methods[] = {
    { "SPEC_OSCI", SPEC_OSCI, METH_VARARGS, "Operation SPEC_OSCI de CALC_FONCTION" },
-#ifdef __DEBUG_ASTER_FONCTIONS__
+#ifdef ASTER_DEBUG_FONCTIONS
    { "_INFO",     _INFO,     METH_VARARGS, "Just for test !" },
 #endif
    { NULL, NULL, 0, NULL }
