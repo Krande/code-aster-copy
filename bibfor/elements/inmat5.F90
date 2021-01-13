@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,19 +16,17 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine inmat5(elrefa, nno, nnos, npg, mganos,&
-                  mgano2)
+subroutine inmat5(elrefa, nno, nnos, npg, mganos, mgano2)
 !
 implicit none
 !
-#include "jeveux.h"
+#include "MeshTypes_type.h"
 #include "asterfort/assert.h"
 !
 character(len=8), intent(in) :: elrefa
 integer, intent(in) :: nnos, npg, nno
-integer, parameter :: nbpgmx=1000, nbnomx=27
-real(kind=8), intent(in) :: mganos(nbpgmx, nbnomx)
-real(kind=8), intent(out) :: mgano2(nbpgmx, nbnomx)
+real(kind=8), intent(in) :: mganos(MT_NBPGMX, MT_NNOMAX)
+real(kind=8), intent(out) :: mgano2(MT_NBPGMX, MT_NNOMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,7 +46,7 @@ real(kind=8), intent(out) :: mgano2(nbpgmx, nbnomx)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: kpg, kno, knos, k
-    real(kind=8) :: nosom(nbnomx, nbnomx)
+    real(kind=8) :: nosom(MT_NNOMAX, MT_NNOMAX)
     real(kind=8), parameter :: demi = 0.5d0, quart = 0.25d0
 !
 ! --------------------------------------------------------------------------------------------------
@@ -140,7 +138,7 @@ real(kind=8), intent(out) :: mgano2(nbpgmx, nbnomx)
             nosom(26,8) = quart
 !
             do k = 1,8
-                nosom(nbnomx,k) = demi/4.d0
+                nosom(MT_NNOMAX,k) = demi/4.d0
             end do
         endif
 !

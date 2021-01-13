@@ -27,9 +27,8 @@ implicit none
 #include "asterfort/elrfvf.h"
 #include "asterfort/mgauss.h"
 !
-integer, parameter :: nbpgmx=1000
 character(len=8), intent(in) :: elrefa, fapg
-real(kind=8), intent(out) :: mganos(nbpgmx, MT_NNOMAX)
+real(kind=8), intent(out) :: mganos(MT_NBPGMX, MT_NNOMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,18 +46,16 @@ real(kind=8), intent(out) :: mganos(nbpgmx, MT_NNOMAX)
 !
     integer :: ndim, nno, nnos
     integer :: i, kp, kdim, ln, j, lm, npg, iret
-    real(kind=8) :: ff(MT_NNOMAX), m(nbpgmx*MT_NNOMAX)
-    real(kind=8) :: p(nbpgmx*MT_NNOMAX)
-    real(kind=8) :: xpg(3*nbpgmx), poipg(nbpgmx), xg(3), det
+    real(kind=8) :: ff(MT_NNOMAX), m(MT_NBPGMX*MT_NNOMAX)
+    real(kind=8) :: p(MT_NBPGMX*MT_NNOMAX)
+    real(kind=8) :: xpg(3*MT_NBPGMX), poipg(MT_NBPGMX), xg(3), det
     character(len=8) :: elref2
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call elrfno(elrefa, nno, nnos, ndim)
     call elraga(elrefa, fapg, ndim, npg, xpg, poipg)
-!
-    ASSERT(nno.le.MT_NNOMAX)
-    ASSERT(npg.le.nbpgmx)
+    ASSERT(npg.le.MT_NBPGMX)
 !
 ! - QU4/FIS2 NON INVERSIBLE => not inversible !
 !

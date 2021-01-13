@@ -41,13 +41,11 @@ character(len=8) :: elrefa
 !
 ! ----------------------------------------------------------------------
 !
-    integer, parameter :: nbpgmx = 1000
-!
     integer :: nbpg(MT_NBFAMX), iret, ndim, nno, nnos, nbfpg
     integer :: nmaxob, nbobj, lonfam, ifam, lon2, decal, idim
     integer :: ipg, ino, nderiv, jvi, jvr, npg, nno2, jdim
     real(kind=8) :: rvide
-    real(kind=8) :: xpg(3*nbpgmx), poipg(nbpgmx)
+    real(kind=8) :: xpg(3*MT_NBPGMX), poipg(MT_NBPGMX)
     real(kind=8) :: ff(MT_NNOMAX), dff(3, MT_NNOMAX), dff2(3, 3, MT_NNOMAX)
     character(len=24) :: liobj(nmaxob)
     character(len=8) :: nofpg(MT_NBFAMX)
@@ -85,7 +83,7 @@ character(len=8) :: elrefa
     lon2 = 0
     do ifam = 1, nbfpg
         npg = nbpg(ifam)
-        ASSERT((npg.gt.0) .and. (npg.le.nbpgmx))
+        ASSERT((npg.gt.0) .and. (npg.le.MT_NBPGMX))
         zi(jvi-1+4+ifam) = npg
 !
 !       ON VEUT STOCKER : W(IPG),GEOM(IDIM,IPG)
