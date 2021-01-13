@@ -70,7 +70,7 @@ struct aster_comm_t {
     char name[NAME_LENGTH];
 };
 
-//#define ASTER_UNITTEST_MPI
+//#define ASTER_DEBUG_UNITTEST_MPI
 
 /*
  *   PUBLIC FUNCTIONS
@@ -112,7 +112,7 @@ extern void DEFP( ASABRT, asabrt, _IN ASTERINTEGER * );
 extern void errhdlr_func(MPI_Comm *, int *, ... );
 extern aster_comm_t* _search_id(aster_comm_t *, MPI_Comm *);
 aster_comm_t* get_node_by_id(MPI_Comm *);
-#ifdef ASTER_UNITTEST_MPI
+#ifdef ASTER_DEBUG_UNITTEST_MPI
 extern void _unittest_aster_mpi();
 #endif
 

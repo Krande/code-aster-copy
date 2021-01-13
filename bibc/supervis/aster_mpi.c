@@ -103,7 +103,7 @@ void aster_mpi_init(int argc, char **argv)
     aster_mpi_world.level = 0;
     strncpy(aster_mpi_world.name, "WORLD", NAME_LENGTH);
     aster_mpi_current = &aster_mpi_world;
-#ifdef ASTER_UNITTEST_MPI
+#ifdef ASTER_DEBUG_UNITTEST_MPI
     _unittest_aster_mpi();
 #endif
     return;
@@ -877,8 +877,8 @@ void errhdlr_func(MPI_Comm *comm, int *err, ... ) {
 }
 #endif
 
-/* ASTER_UNITTEST_MPI */
-#ifdef ASTER_UNITTEST_MPI
+/* ASTER_DEBUG_UNITTEST_MPI */
+#ifdef ASTER_DEBUG_UNITTEST_MPI
 void _unittest_aster_mpi() {
     /*! unittest of the functions on aster_comm_t tree */
     int size, rank, npband, npsolv;

@@ -23,56 +23,46 @@ to ``1``.
 To tell that a feature is disabled, we set ``ASTER_DISABLE_<feature-name>`` to ``1``.
 But **only one is used**, depending of the default behavior.
 
-If ``ASTER_HAVE_xxx`` is defined (don't check the value, use ``#ifdef``, not
+Examples: ``ASTER_HAVE_PETSC`` (feature is installed),
+``ASTER_DISABLE_MPI_CHECK`` (in most cases it is enabled).
+
+If ``ASTER_HAVE_xxx`` is defined (use ``#ifdef``, not
 ``#if ASTER_HAVE_xxx == 1``), the feature *xxx* is available.
 The exception is for ``ASTER_HAVE_PETSC4PY`` because Cython requires that the variable
 is always defined.
 
-Examples: ``ASTER_HAVE_PETSC`` (feature is installed), ``ASTER_DISABLE_MPI_CHECK`` (in most
-cases it is enabled).
+Include guards to avoid multiple inclusion must be named ``NAME_OF_HEADER_FILE_H_``.
+Example: ``MATERIAL_H_`` for :file:`Material.h`.
 
-List of supported variables:
-
-- ``ASTER_ADD_STDCALL``
-
-- ``ASTER_DISABLE_MPI_CHECK``: Disable checking before MPI communications.
-- ``ASTER_ENABLE_PROC_STATUS``: Enabled if ``/proc/status`` is available.
-- ``ASTER_HAVE_SUPPORT_FPE``: Enabled
-
-- ``ASTER_HAVE_64_BITS``: Enabled on 64 bits OS, use integer8 as default
-  integers.
-- ``ASTER_HAVE_BACKTRACE``8
+Variables about the availability of prerequisites:
 
 - ``ASTER_HAVE_HDF5``
-- ``ASTER_HAVE_INTEL_IFORT``
 - ``ASTER_HAVE_MED``
 - ``ASTER_HAVE_METIS``
 - ``ASTER_HAVE_MFRONT``
-- ``ASTER_HAVE_MKL``
-- ``ASTER_HAVE_MPI``
 - ``ASTER_HAVE_MUMPS``
-- ``ASTER_HAVE_OPENBLAS``
-- ``ASTER_HAVE_OPENMP``
 - ``ASTER_HAVE_PETSC``
 - ``ASTER_HAVE_PETSC4PY``
 - ``ASTER_HAVE_SCOTCH``
 
-- ``ASTER_HAVE_GETLINE`` (only for Metis interface)
-- ``ASTER_HAVE_TRACEBACKQQ``
-- ``ASTER_IGNORE_WITH_ASLINT``
-- ``ASTER_LOGICAL_SIZE``
-- ``ASTER_MED_SAME_INT_IDT``
-- ``ASTER_MED_VERSION_MAJOR``
-- ``ASTER_MED_VERSION_MINOR``
-- ``ASTER_MULT_FRONT_BLOCK_SIZE``
-- ``ASTER_MUMPS_VERSION``
+Type of compiler and mathematical libraries:
+
+- ``ASTER_HAVE_INTEL_IFORT``
+- ``ASTER_HAVE_MPI``
+- ``ASTER_HAVE_OPENMP``
+- ``ASTER_HAVE_MKL``
+- ``ASTER_HAVE_OPENBLAS``
+
+Use in C/Fortran interfaces:
+
+- ``ASTER_ADD_STDCALL``
 - ``ASTER_NO_UNDERSCORE``
-- ``ASTER_PETSC_64BIT_INDICES``
-- ``ASTER_PETSC_HAVE_HYPRE``
-- ``ASTER_PETSC_HAVE_ML``
-- ``ASTER_PETSC_HAVE_MUMPS``
-- ``ASTER_PETSC_HAVE_SUPERLU``
-- ``ASTER_PETSC_INT_SIZE``
+- ``ASTER_STRINGIFY_USE_OPERATOR``
+- ``ASTER_STRINGIFY_USE_QUOTES``
+- ``ASTER_STRLEN_AT_END``
+
+Platform types:
+
 - ``ASTER_PLATFORM_DARWIN``
 - ``ASTER_PLATFORM_DARWIN64``
 - ``ASTER_PLATFORM_FREEBSD``
@@ -83,12 +73,36 @@ List of supported variables:
 - ``ASTER_PLATFORM_SOLARIS``
 - ``ASTER_PLATFORM_SOLARIS64``
 - ``ASTER_PLATFORM_WINDOWS``
-- ``ASTER_STRINGIFY_USE_OPERATOR``
-- ``ASTER_STRINGIFY_USE_QUOTES``
-- ``ASTER_STRLEN_AT_END``
-- ``ASTER_TEST_STRICT``
-- ``ASTER_UNITTEST_MPI``
-- ``ASTER_WITHOUT_PYMOD``
+
+Datatypes and adjustements to prerequisites datatypes:
+
+- ``ASTER_HAVE_64_BITS``: Enabled on 64 bits OS, use integer8 as default
+  integers.
+- ``ASTER_LOGICAL_SIZE``
+- ``ASTER_MED_SAME_INT_IDT``: *True* if code_aster and Med use same integers
+  types (not conversion needed in arguments passing).
+- ``ASTER_MED_VERSION_MAJOR``
+- ``ASTER_MED_VERSION_MINOR``
+- ``ASTER_MULT_FRONT_BLOCK_SIZE``
+- ``ASTER_MUMPS_VERSION``
+- ``ASTER_PETSC_64BIT_INDICES``: Enabled if PETSc uses integer8 for *PetscInt*.
+- ``ASTER_PETSC_HAVE_HYPRE``
+- ``ASTER_PETSC_HAVE_ML``
+- ``ASTER_PETSC_HAVE_MUMPS``
+- ``ASTER_PETSC_HAVE_SUPERLU``
+- ``ASTER_PETSC_INT_SIZE``: Size of *PetscInt*.
+
+Advanced features:
+
+- ``ASTER_DISABLE_MPI_CHECK``: Disable checking before MPI communications.
+- ``ASTER_ENABLE_PROC_STATUS``: Enabled if ``/proc/status`` is available.
+- ``ASTER_HAVE_SUPPORT_FPE``: Enabled if FPE can be catched.
+- ``ASTER_HAVE_BACKTRACE``: Enabled if GNU traceback function is available.
+- ``ASTER_HAVE_TRACEBACKQQ``: Enabled if Intel traceback function is available.
+- ``ASTER_IGNORE_WITH_ASLINT``: Locally enabled to skip a source block during
+  aslint checkings.
+- ``ASTER_TEST_STRICT``: Used to force ``TOLE_MACHINE`` to 1.e-6.
+- ``ASTER_WITHOUT_PYMOD``: Used to create a *main* entry.
 
 
 To print more debugging informations:
@@ -105,3 +119,13 @@ To print more debugging informations:
 - ``ASTER_DEBUG_MED``
 - ``ASTER_DEBUG_MPI``
 - ``ASTER_DEBUG_MPICOM``
+- ``ASTER_DEBUG_UNITTEST_MPI``: If enabled, a unittest is run just after
+  *MPI_Init*.
+
+System variables used in code_aster source code:
+
+- ``OPEN_MPI``: Enabled if OpenMPI implementation is used.
+- ``HAVE_GETLINE``: Used in Metis interface.
+- ``NDEBUG``: Standard variable for non-debug build, used to skip code for
+  released installations.
+- ``NPY_API_VERSION``

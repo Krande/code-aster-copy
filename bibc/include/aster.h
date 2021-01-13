@@ -35,10 +35,6 @@
 #define _INOUT
 #define _UNUSED
 
-#if (PY_VERSION_HEX < 0x02050000)
-typedef int Py_ssize_t;
-#endif
-
 /* AS_ASSERT is similar to the ASSERT macro used in fortran */
 #define AS_ASSERT(cond) if ( !(cond) ) { \
             DEBUG_LOC; DBGV("Assertion failed: %s", #cond); \

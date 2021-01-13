@@ -406,7 +406,7 @@ void ReadTPwgts(params_t *params, idx_t ncon)
             (params->tpwgts[i*ncon+j] < 0 ? awgt : params->tpwgts[i*ncon+j]);
     }
   }
-  #ifdef ASTER_HAVE_GETLINE
+  #ifdef HAVE_GETLINE
   free(line);
   line = NULL; /* set to null to match behavior of gk_free() */
   #else
