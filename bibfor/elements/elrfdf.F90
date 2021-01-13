@@ -97,6 +97,38 @@ integer, optional, intent(out) :: nno_, ndim_
             dff(2,8) = (un-x0)* (un+z0)*uns8
             dff(3,8) = (un-x0)* (un+y0)*uns8
 
+        case('HE9')
+            x0 = x(1)
+            y0 = x(2)
+            z0 = x(3)
+            dff(1,1) = - (un-y0)* (un-z0)*uns8
+            dff(2,1) = - (un-x0)* (un-z0)*uns8
+            dff(3,1) = - (un-x0)* (un-y0)*uns8
+            dff(1,2) = (un-y0)* (un-z0)*uns8
+            dff(2,2) = - (un+x0)* (un-z0)*uns8
+            dff(3,2) = - (un+x0)* (un-y0)*uns8
+            dff(1,3) = (un+y0)* (un-z0)*uns8
+            dff(2,3) = (un+x0)* (un-z0)*uns8
+            dff(3,3) = - (un+x0)* (un+y0)*uns8
+            dff(1,4) = - (un+y0)* (un-z0)*uns8
+            dff(2,4) = (un-x0)* (un-z0)*uns8
+            dff(3,4) = - (un-x0)* (un+y0)*uns8
+            dff(1,5) = - (un-y0)* (un+z0)*uns8
+            dff(2,5) = - (un-x0)* (un+z0)*uns8
+            dff(3,5) = (un-x0)* (un-y0)*uns8
+            dff(1,6) = (un-y0)* (un+z0)*uns8
+            dff(2,6) = - (un+x0)* (un+z0)*uns8
+            dff(3,6) = (un+x0)* (un-y0)*uns8
+            dff(1,7) = (un+y0)* (un+z0)*uns8
+            dff(2,7) = (un+x0)* (un+z0)*uns8
+            dff(3,7) = (un+x0)* (un+y0)*uns8
+            dff(1,8) = - (un+y0)* (un+z0)*uns8
+            dff(2,8) = (un-x0)* (un+z0)*uns8
+            dff(3,8) = (un-x0)* (un+y0)*uns8
+            dff(1,9) =  zero
+            dff(2,9) =  zero
+            dff(3,9) =  zero
+
         case('H20')
             x0 = x(1)
             y0 = x(2)
@@ -271,6 +303,33 @@ integer, optional, intent(out) :: nno_, ndim_
             dff(1,6) = al*undemi
             dff(2,6) = - (un+x0)*undemi
             dff(3,6) = - (un+x0)*undemi
+
+        case('PE7')
+            x0 = x(1)
+            y0 = x(2)
+            z0 = x(3)
+            al = (un-x0-y0)
+            dff(1,1) =  (un-z0)*undemi
+            dff(2,1) =  zero
+            dff(3,1) = -x0*undemi
+            dff(1,2) =  zero
+            dff(2,2) =  (un-z0)*undemi
+            dff(3,2) = -y0*undemi
+            dff(1,3) = -(un-z0)*undemi
+            dff(2,3) = -(un-z0)*undemi
+            dff(3,3) = -al*undemi
+            dff(1,4) =  (un+z0)*undemi
+            dff(2,4) =  zero
+            dff(3,4) =  x0*undemi
+            dff(1,5) =  zero
+            dff(2,5) =  (un+z0)*undemi
+            dff(3,5) =  y0*undemi
+            dff(1,6) = -(un+z0)*undemi
+            dff(2,6) = -(un+z0)*undemi
+            dff(3,6) =  al*undemi
+            dff(1,7) =  zero
+            dff(2,7) =  zero
+            dff(3,7) =  zero
 
         case('P15')
             x0 = x(1)

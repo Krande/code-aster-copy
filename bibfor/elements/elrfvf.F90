@@ -100,6 +100,20 @@ integer, optional, intent(out) :: nno_
             ff(7) = (un+x0)* (un+y0)* (un+z0)*uns8
             ff(8) = (un-x0)* (un+y0)* (un+z0)*uns8
 
+        case('HE9')
+            x0 = x(1)
+            y0 = x(2)
+            z0 = x(3)
+            ff(1) = (un-x0)* (un-y0)* (un-z0)*uns8
+            ff(2) = (un+x0)* (un-y0)* (un-z0)*uns8
+            ff(3) = (un+x0)* (un+y0)* (un-z0)*uns8
+            ff(4) = (un-x0)* (un+y0)* (un-z0)*uns8
+            ff(5) = (un-x0)* (un-y0)* (un+z0)*uns8
+            ff(6) = (un+x0)* (un-y0)* (un+z0)*uns8
+            ff(7) = (un+x0)* (un+y0)* (un+z0)*uns8
+            ff(8) = (un-x0)* (un+y0)* (un+z0)*uns8
+            ff(9) = (un-(z0**2))
+
         case('H20')
             x0 = x(1)
             y0 = x(2)
@@ -167,6 +181,19 @@ integer, optional, intent(out) :: nno_
             ff(4) = undemi*y0* (un+x0)
             ff(5) = undemi*z0* (un+x0)
             ff(6) = undemi* (un-y0-z0)* (un+x0)
+
+        case('PE7')
+            x0 = x(1)
+            y0 = x(2)
+            z0 = x(3)
+            al = un - x0 - y0
+            ff(1) = undemi*x0*(un-z0)
+            ff(2) = undemi*y0*(un-z0)
+            ff(3) = undemi*al*(un-z0)
+            ff(4) = undemi*x0*(un+z0)
+            ff(5) = undemi*y0*(un+z0)
+            ff(6) = undemi*al*(un+z0)
+            ff(7) = (un-z0*z0)
 
         case('P15')
             x0 = x(1)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,8 @@ integer, intent(out) :: nujni
         elrefe .eq. 'QU4' .or. elrefe .eq. 'QU8' .or. elrefe .eq. 'QU9' .or.&
         elrefe .eq. 'TR3' .or. elrefe .eq. 'TR6' .or. elrefe .eq. 'TR7' .or.&
         elrefe .eq. 'SE2' .or. elrefe .eq. 'SE3' .or. elrefe .eq. 'SE4' .or.&
-        elrefe .eq. 'PO1' .or. elrefe .eq. 'P18') then
+        elrefe .eq. 'PO1' .or. elrefe .eq. 'P18' .or. elrefe .eq. 'HE9' .or.&
+        elrefe .eq. 'PE7') then
         nujni = 2
     else if (elrefe.eq.'CABPOU') then
         nujni = 92

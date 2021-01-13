@@ -53,6 +53,7 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
     real(kind=8) :: xpg(MT_NBPGMX), ypg(MT_NBPGMX), zpg(MT_NBPGMX), hpg(MT_NBPGMX)
     real(kind=8) :: h(4), a(4)
     real(kind=8) :: aty(7), ht(7), atz(7)
+    real(kind=8) :: lobWeight(7), lobCoor(7)
     real(kind=8) :: aa, bb, cc, hh, h1, h2, h3, a1, b1, b6, c1, c8
     real(kind=8) :: d1, d12
     real(kind=8) :: p1, p2, p3, p4, p5
@@ -198,6 +199,55 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
             end do
         end do
 
+    else if (elrefa .eq. 'HE9') then
+        if (fapg .eq. 'LOB5') then
+! --------- FORMULE DE QUADRATURE DE GAUSS A 5 POINTS DANS
+!           L EPAISSEUR AU CENTRE DE L'ELEMENT
+            lobCoor(1) = -1.d0
+            lobCoor(2) = -sqrt(3.d0/7.d0)
+            lobCoor(3) = 0.d0
+            lobCoor(4) = sqrt(3.d0/7.d0)
+            lobCoor(5) = 1.d0
+            lobWeight(1) = 0.1d0
+            lobWeight(2) = 49.d0/90.d0
+            lobWeight(3) = 32.0/45.d0
+            lobWeight(4) = 49.d0/90.d0
+            lobWeight(5) = 0.1d0
+            do iz = 1, 5
+                xpg(iz) = 0.d0
+                ypg(iz) = 0.d0
+                zpg(iz) = lobCoor(iz)
+                hpg(iz) = lobWeight(iz)*4.d0
+            enddo
+
+        else if (fapg .eq. 'LOB7') then
+! --------- FORMULE DE QUADRATURE DE GAUSS A 7 POINTS DANS
+!           L EPAISSEUR AU CENTRE DE L'ELEMENT
+            lobCoor(1) = -1.0
+            lobCoor(2) = -0.83022390d0
+            lobCoor(3) = -0.46884879d0
+            lobCoor(4) = 0.d0
+            lobCoor(5) = 0.46884879d0
+            lobCoor(6) = 0.83022390d0
+            lobCoor(7) = 1.d0
+            lobWeight(1) = 0.04761904d0
+            lobWeight(2) = 0.27682604d0
+            lobWeight(3) = 0.43174538d0
+            lobWeight(4) = 0.48761904d0
+            lobWeight(5) = 0.43174538d0
+            lobWeight(6) = 0.27682604d0
+            lobWeight(7) = 0.04761904d0
+            do iz = 1, 7
+                xpg(iz) = 0.d0
+                ypg(iz) = 0.d0
+                zpg(iz) = lobCoor(iz)
+                hpg(iz) = lobWeight(iz)*4.d0
+            enddo
+
+        else
+            ASSERT(ASTER_FALSE)
+        endif
+
     else if (elrefa .eq. 'PE6' .or. elrefa .eq. 'P15' .or. elrefa .eq. 'P18' .or.&
              elrefa .eq. 'P21') then
         if (fapg .eq. 'FPG6') then
@@ -331,6 +381,56 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
                 hpg(npi) = h(ix)*ht(iy)
             end do
         end do
+
+
+    else if (elrefa .eq. 'PE7') then
+        if (fapg.eq.'LOB5') then
+! --------- FORMULE DE QUADRATURE DE GAUSS A 5 POINTS DANS
+!           L EPAISSEUR AU CENTRE DE L'ELEMENT
+            lobCoor(1) = -1.d0
+            lobCoor(2) = -sqrt(3.d0/7.d0)
+            lobCoor(3) = 0.d0
+            lobCoor(4) = sqrt(3.d0/7.d0)
+            lobCoor(5) = 1.d0
+            lobWeight(1) = 0.1d0
+            lobWeight(2) = 49.d0/90.d0
+            lobWeight(3) = 32.0/45.d0
+            lobWeight(4) = 49.d0/90.d0
+            lobWeight(5) = 0.1d0
+            do iz = 1, 5
+                xpg(iz) = 1.d0/3.d0
+                ypg(iz) = 1.d0/3.d0
+                zpg(iz) = lobCoor(iz)
+                hpg(iz) = lobWeight(iz)*0.5d0
+            enddo
+
+        else if (fapg.eq.'LOB7') then
+! --------- FORMULE DE QUADRATURE DE GAUSS A 7 POINTS DANS
+!           L EPAISSEUR AU CENTRE DE L'ELEMENT
+            lobCoor(1) = -1.0
+            lobCoor(2) = -0.83022390d0
+            lobCoor(3) = -0.46884879d0
+            lobCoor(4) = 0.0d0
+            lobCoor(5) = 0.46884879d0
+            lobCoor(6) = 0.83022390d0
+            lobCoor(7) = 1.0d0
+            lobWeight(1) = 0.04761904d0
+            lobWeight(2) = 0.27682604d0
+            lobWeight(3) = 0.43174538d0
+            lobWeight(4) = 0.48761904d0
+            lobWeight(5) = 0.43174538d0
+            lobWeight(6) = 0.27682604d0
+            lobWeight(7) = 0.04761904d0
+            do iz = 1, 7
+                xpg(iz) = 1.d0/3.d0
+                ypg(iz) = 1.d0/3.d0
+                zpg(iz) = lobCoor(iz)
+                hpg(iz) = lobWeight(iz)
+            enddo
+
+        else
+            ASSERT(ASTER_FALSE)
+        endif
 
     else if (elrefa .eq. 'TE4' .or. elrefa .eq. 'T10' .or. elrefa .eq. 'T15') then
         if (fapg .eq. 'FPG4') then

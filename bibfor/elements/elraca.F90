@@ -85,6 +85,15 @@ character(len=8), optional, intent(out) :: fapg_(MT_NBFAMX)
             fapg(6) = 'FPG8NOS'
             fapg(7) = 'FPG64'
 
+        case('HE9')
+            nbfpg = 5
+            nbpg(1:nbfpg) = [nno, nnos, 1, 5, 7]
+            fapg(1) = 'NOEU'
+            fapg(2) = 'NOEU_S'
+            fapg(3) = 'FPG1'
+            fapg(4) = 'LOB5'
+            fapg(5) = 'LOB7'
+
         case('H20')
             nbfpg = 7
             nbpg(1:nbfpg) = [nno, nnos, 1, 8, 27, 16, 64]
@@ -154,6 +163,15 @@ character(len=8), optional, intent(out) :: fapg_(MT_NBFAMX)
             fapg(6) = 'FPG8'
             fapg(7) = 'FPG21'
             fapg(8) = 'FPG6NOS'
+
+        case('PE7')
+            nbfpg = 5
+            nbpg(1:nbfpg) = [nno, nnos, 1, 5, 7]
+            fapg(1) = 'NOEU'
+            fapg(2) = 'NOEU_S'
+            fapg(3) = 'FPG1'
+            fapg(4) = 'LOB5'
+            fapg(5) = 'LOB7'
 
         case('P15')
             nbfpg = 7

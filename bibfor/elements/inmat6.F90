@@ -57,6 +57,20 @@ real(kind=8), intent(out) :: mganos(MT_NBPGMX, MT_NNOMAX)
     call elraga(elrefa, fapg, ndim, npg, xpg, poipg)
     ASSERT(npg.le.MT_NBPGMX)
 !
+! - Lobatto schemes => not inversible !
+!
+    if (fapg .eq. 'LOB5' .or. fapg .eq. 'LOB7') then
+        mganos = 0.d0
+        do i = 1, nnos/2
+            mganos(1,i) = 1.d0
+        end do
+        do i = nnos/2+1, nnos
+            mganos(5,i) = 1.d0
+        end do
+        elref2 = elrefa
+        goto 100
+    endif
+!
 ! - QU4/FIS2 NON INVERSIBLE => not inversible !
 !
     if (elrefa .eq. 'QU4' .and. fapg .eq. 'FIS2') then
@@ -70,19 +84,23 @@ real(kind=8), intent(out) :: mganos(MT_NBPGMX, MT_NNOMAX)
 !
 ! - Get linear support
 !
-    if ((elrefa.eq.'H20') .or. (elrefa.eq.'H27')) then
+    if ((elrefa .eq. 'H20') .or. (elrefa .eq. 'H27')) then
         elref2 = 'HE8'
-    else if ((elrefa.eq.'P15').or.(elrefa.eq.'P18').or.(elrefa.eq.'P21')) then
+    else if ((elrefa .eq. 'P15') .or. (elrefa .eq. 'P18') .or. (elrefa .eq. 'P21')) then
         elref2 = 'PE6'
-    else if (elrefa.eq.'P13' .or. elrefa.eq.'P19') then
+    else if ((elrefa .eq. 'HE9')) then
+        elref2 = 'HE8'
+    else if ((elrefa .eq. 'PE7')) then
+        elref2 = 'PE6'
+    else if ((elrefa .eq. 'P13') .or. (elrefa .eq. 'P19')) then
         elref2 = 'PY5'
-    else if ((elrefa.eq.'T10') .or. (elrefa.eq.'T15')) then
+    else if ((elrefa .eq. 'T10') .or. (elrefa .eq. 'T15')) then
         elref2 = 'TE4'
-    else if ((elrefa.eq.'TR6') .or. (elrefa.eq.'TR7')) then
+    else if ((elrefa .eq. 'TR6') .or. (elrefa .eq. 'TR7')) then
         elref2 = 'TR3'
-    else if ((elrefa.eq.'QU8') .or. (elrefa.eq.'QU9')) then
+    else if ((elrefa .eq. 'QU8') .or. (elrefa .eq. 'QU9')) then
         elref2 = 'QU4'
-    else if ((elrefa.eq.'SE3') .or. (elrefa.eq.'SE4')) then
+    else if ((elrefa .eq. 'SE3') .or. (elrefa .eq. 'SE4')) then
         elref2 = 'SE2'
     else
         elref2 = elrefa

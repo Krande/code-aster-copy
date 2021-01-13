@@ -283,6 +283,14 @@ real(kind=8), intent(out) :: mgano2(MT_NBPGMX, MT_NNOMAX)
         nosom(4,1) = 1.d0/3.d0
         nosom(4,2) = 2.d0/3.d0
 !
+    elseif (elrefa .eq. 'HE9') then 
+!    Pas besoin de faire un passage 9eme noeud --> Noeud SOMMET
+!    Le neuvieme noeud sert uniquement au calcul du pincement
+
+    elseif (elrefa .eq. 'PE7') then 
+!    Pas besoin de faire un passage 7eme noeud --> Noeud SOMMET
+!    Le septième noeud sert uniquement au calcul du pincement
+
     else
         ASSERT(ASTER_FALSE)
     endif
