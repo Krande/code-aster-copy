@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,10 +37,7 @@ def calc_pression_ops(self, MAILLAGE, RESULTAT, GROUP_MA,
     typ_resu = RESULTAT.getType()
     insts = args.get("INST") or RESULTAT.LIST_VARI_ACCES()['INST']
 
-    model = args.get('MODELE')
-    if model == None:
-        UTMESS('A', 'CALCPRESSION0_1')
-        model = RESULTAT.getModel()
+    model = RESULTAT.getModel()
 
     # BLINDAGE : on poursuit le calcul uniquement que si le groupe n'a pas
     # d'élément de structure

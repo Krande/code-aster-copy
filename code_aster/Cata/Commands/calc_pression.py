@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,6 @@ CALC_PRESSION=MACRO(nom="CALC_PRESSION",
          regles=(UN_PARMI('TOUT_ORDRE','INST',),),
          INST            =SIMP(statut='f',typ='R',max='**'),
          TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-         MODELE          =SIMP(statut='f',typ=modele_sdaster),
          GEOMETRIE       =SIMP(statut='f',typ='TXM',defaut="DEFORMEE",into=("INITIALE","DEFORMEE")),
          CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",) ),
          b_prec_rela = BLOC(condition="""(equal_to("CRITERE", 'RELATIF'))""",
