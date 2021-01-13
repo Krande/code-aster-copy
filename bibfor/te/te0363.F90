@@ -164,8 +164,8 @@ subroutine te0363(option, nomte)
 !
 ! --- FONCTIONS DE FORMES
 !
-    call xtform(ndim, elrees, elrema, elreco,&
-                nnm(1), nnc, coore, coorm, coorc,&
+    call xtform(elrees, elrema, elreco,&
+                nnm(1),coore, coorm, coorc,&
                 ffe, ffm, dffc)
 !
 ! --- CALCUL DES FCTS SINGULIERES

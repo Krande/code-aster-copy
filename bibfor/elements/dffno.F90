@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,27 +29,19 @@ subroutine dffno(elrefe, ndim, nno, nnos, dff)
     integer :: nbnomx, nbfamx
     parameter    ( nbnomx=27, nbfamx=20)
     real(kind=8) :: x(nbnomx*3), vol, tab(3, nbnomx)
-    integer :: dimd, nbfpg, nbpg(nbfamx), ino, ideri, ifonc, ibi1, ibi2
+    integer :: nbfpg, nbpg(nbfamx), ino, ideri, ifonc
     character(len=8) :: fapg(nbfamx)
 ! ----------------------------------------------------------------------
 !
     call elraca(elrefe, ndim, nno, nnos, nbfpg,&
                 fapg, nbpg, x, vol)
-!
-    dimd = ndim*nno
-!
-    do 10 ino = 1, nno
-!
-        call elrfdf(elrefe, x(ndim*(ino-1)+1), dimd, tab, ibi1,&
-                    ibi2)
-!
-        do 20 ideri = 1, ndim
-            do 30 ifonc = 1, nno
-                dff((ino-1)*nno*ndim+(ideri-1)*nno+ifonc)=tab(ideri,&
-                ifonc)
-30          continue
-20      continue
-!
-10  end do
+    do ino = 1, nno
+        call elrfdf(elrefe, x(ndim*(ino-1)+1), tab)
+        do ideri = 1, ndim
+            do ifonc = 1, nno
+                dff((ino-1)*nno*ndim+(ideri-1)*nno+ifonc)=tab(ideri, ifonc)
+            end do
+        end do
+    end do
 !
 end subroutine

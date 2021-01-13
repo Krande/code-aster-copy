@@ -40,7 +40,7 @@ subroutine xdelt3(ndim, ksi, tabls, delta)
 !
 !
     real(kind=8) :: ff(3), dff(3, 3)
-    integer :: i, nderiv, nno
+    integer :: i, nno
     real(kind=8) :: fctg, dfctg
 !
 !
@@ -60,8 +60,7 @@ subroutine xdelt3(ndim, ksi, tabls, delta)
     call elrfvf('SE3', ksi, ff, nno)
 !
 !     CALCUL DES DERIVEES FONCTIONS DE FORME DE L'ELEMENT EN KSI
-    call elrfdf('SE3', ksi, ndim*nno, dff, nno,&
-                nderiv)
+    call elrfdf('SE3', ksi, dff, nno)
 !
 !
 ! --- CALCUL DE FCTG,D1FCTG,D2FCTG EN KSI

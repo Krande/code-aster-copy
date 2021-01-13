@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1501
 !
-subroutine elrfdf(elrefz, x, dimd, dff, nno, ndim)
+subroutine elrfdf(elrefz, x, dff, nno_, ndim_)
 !
 implicit none
 !
@@ -25,33 +25,34 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/elrfno.h"
 !
-character(len=*), intent(in) :: elrefz
-integer, intent(in) :: dimd
-real(kind=8), intent(in) :: x(*)
-integer, intent(out) :: nno, ndim
-real(kind=8), intent(out) :: dff(3, *)
+character(len=*), intent(in)   :: elrefz
+real(kind=8), intent(in)       :: x(*)
+real(kind=8), intent(out)      :: dff(3, *)
+integer, optional, intent(out) :: nno_, ndim_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! BUT:   CALCUL DES FONCTIONS DE FORMES ET DE LEURS DERIVEES
-!        AU POINT DE COORDONNEES XI,YI,ZI
+! Finite elements management
+!
+! Value of derivatives of shape functions at given point
 !
 ! --------------------------------------------------------------------------------------------------
-!   IN   ELREFZ : NOM DE L'elrefz (K8)
-!        X      : POINT DE CALCUL DES F FORMES ET DERIVEES
-!        DIMD   : DIMENSION DE DFF
-!   OUT  DFF    : FONCTIONS DE FORMES EN XI,YI,ZI
-!        NNO    : NOMBRE DE NOEUDS
-!        NDIM : DIMENSION TOPOLOGIQUE DE L'elrefz
+!
+! In  elrefa           : name of geometric support
+! In  x                : coordinates in parametric space to evaluate shape function
+! Out dff              : value of derivatives of shape functions
+! Out nno              : number of nodes of geoemtric support
+! Out ndim             : topological dimension of geoemtric support
+!
 ! --------------------------------------------------------------------------------------------------
 !
+    integer :: nno, ndim
     real(kind=8), parameter :: zero = 0.d0, un = 1.d0, deux = 2.d0, trois = 3.0d0, quatre = 4.d0
     real(kind=8), parameter :: huit = 8.0d0, undemi = 0.5d0, uns4 = 0.25d0, uns8 = 0.125d0
     real(kind=8) :: x0, y0, z0, al, x1, x2, x3, x4, d1, d2, d3, d4
     real(kind=8) :: pface1, pface2, pface3, pface4, z01, z02, z04
     real(kind=8) :: pmili1, pmili2, pmili3, pmili4
 !
-! -----  FONCTIONS FORMULES
 #define al31(u)   0.5d0*(u)*(u-1.0d0)
 #define al32(u)   (-(u+1.0d0)*(u-1.0d0))
 #define al33(u)   0.5d0*(u)*(u+1.0d0)
@@ -59,16 +60,18 @@ real(kind=8), intent(out) :: dff(3, *)
 #define dal32(u)   (-2.0d0*(u))
 #define dal33(u)   0.5d0*(2.0d0*(u)+1.0d0)
 !
-    call elrfno(elrefz, nno, ndim=ndim)
-    ASSERT(dimd.ge.(nno*ndim))
+! --------------------------------------------------------------------------------------------------
 !
+
+! - Get coordinates of nodes for geometric support
+    call elrfno(elrefz, nno, ndim=ndim)
+
+! - Compute derivatives of shape functions 
     select case(elrefz)
         case('HE8')
-!
             x0 = x(1)
             y0 = x(2)
             z0 = x(3)
-!
             dff(1,1) = - (un-y0)* (un-z0)*uns8
             dff(2,1) = - (un-x0)* (un-z0)*uns8
             dff(3,1) = - (un-x0)* (un-y0)*uns8
@@ -93,11 +96,11 @@ real(kind=8), intent(out) :: dff(3, *)
             dff(1,8) = - (un+y0)* (un+z0)*uns8
             dff(2,8) = (un-x0)* (un+z0)*uns8
             dff(3,8) = (un-x0)* (un+y0)*uns8
+
         case('H20')
             x0 = x(1)
             y0 = x(2)
             z0 = x(3)
-!
             dff(1,1) = - (un-y0)* (un-z0)* (-deux*x0-y0-z0-un)*uns8
             dff(2,1) = - (un-x0)* (un-z0)* (-x0-deux*y0-z0-un)*uns8
             dff(3,1) = - (un-x0)* (un-y0)* (-x0-y0-deux*z0-un)*uns8
@@ -158,14 +161,11 @@ real(kind=8), intent(out) :: dff(3, *)
             dff(1,20) = - (un-y0*y0)* (un+z0)*uns4
             dff(2,20) = -deux*y0* (un-x0)* (un+z0)*uns4
             dff(3,20) = (un-x0)* (un-y0*y0)*uns4
-!
-!         ------------------------------------------------------------------
+
         case('H27')
-!
             x0 = x(1)
             y0 = x(2)
             z0 = x(3)
-!
             dff(1,1) = dal31(x0)*al31(y0)*al31(z0)
             dff(2,1) = al31(x0)*dal31(y0)*al31(z0)
             dff(3,1) = al31(x0)*al31(y0)*dal31(z0)
@@ -247,15 +247,12 @@ real(kind=8), intent(out) :: dff(3, *)
             dff(1,27) = dal32(x0)*al32(y0)*al32(z0)
             dff(2,27) = al32(x0)*dal32(y0)*al32(z0)
             dff(3,27) = al32(x0)*al32(y0)*dal32(z0)
-!
-!         ------------------------------------------------------------------
+
         case('PE6')
-!
             x0 = x(1)
             y0 = x(2)
             z0 = x(3)
             al = (un-y0-z0)
-!
             dff(1,1) = -y0*undemi
             dff(2,1) = (un-x0)*undemi
             dff(3,1) = zero
@@ -274,14 +271,12 @@ real(kind=8), intent(out) :: dff(3, *)
             dff(1,6) = al*undemi
             dff(2,6) = - (un+x0)*undemi
             dff(3,6) = - (un+x0)*undemi
-!
+
         case('P15')
-!
             x0 = x(1)
             y0 = x(2)
             z0 = x(3)
             al = un - y0 - z0
-!
             dff(1,1) = (-y0* (deux*y0-deux-x0)-y0* (un-x0))/deux
             dff(2,1) = (un-x0)* (quatre*y0-deux-x0)/deux
             dff(3,1) = zero
@@ -327,14 +322,11 @@ real(kind=8), intent(out) :: dff(3, *)
             dff(1,15) = deux*y0*al
             dff(2,15) = (deux*al-deux*y0)* (un+x0)
             dff(3,15) = -deux*y0* (un+x0)
-!
-!         ------------------------------------------------------------------
+
         case('P18')
-!
             x0 = x(1)
             y0 = x(2)
             z0 = x(3)
-!
             dff(1,1) = y0*(deux*x0-un)*(deux*y0-un)/deux
             dff(2,1) = x0*(x0-un)*(quatre*y0-un)/deux
             dff(3,1) = zero
@@ -389,14 +381,11 @@ real(kind=8), intent(out) :: dff(3, *)
             dff(1,18) = huit*x0*y0*(z0+y0-un)
             dff(2,18) = quatre*(x0-un)*(x0+un)*(deux*y0+z0-un)
             dff(3,18) = quatre*y0*(x0-un)*(x0+un)
-!
-!         ------------------------------------------------------------------
+
         case('P21')
-!
             x0 = x(1)
             y0 = x(2)
             z0 = x(3)
-!
             dff(1,1) = y0*(deux*x0-un)*(deux*y0-un)/deux
             dff(2,1) = x0*(x0-un)*(quatre*y0-un)/deux
             dff(3,1) = zero
@@ -453,14 +442,11 @@ real(kind=8), intent(out) :: dff(3, *)
             dff(3,18) = quatre*y0*(x0-un)*(x0+un)
 !
             dff(1:3,19:21) = 0.d0
-!
-!         ------------------------------------------------------------------
+
         case('TE4')
-!
             x0 = x(1)
             y0 = x(2)
             z0 = x(3)
-!
             dff(1,1) = zero
             dff(2,1) = un
             dff(3,1) = zero
@@ -473,15 +459,12 @@ real(kind=8), intent(out) :: dff(3, *)
             dff(1,4) = un
             dff(2,4) = zero
             dff(3,4) = zero
-!
-!         ------------------------------------------------------------------
+
         case('T10')
-!
             x0 = x(1)
             y0 = x(2)
             z0 = x(3)
             al = un - x0 - y0 - z0
-!
             dff(1,1) = zero
             dff(2,1) = quatre*y0 - un
             dff(3,1) = zero
@@ -512,15 +495,12 @@ real(kind=8), intent(out) :: dff(3, *)
             dff(1,10) = quatre* (al-x0)
             dff(2,10) = -quatre*x0
             dff(3,10) = -quatre*x0
-!
-!         ------------------------------------------------------------------
+
         case('T15')
-!
             x0 = x(1)
             y0 = x(2)
             z0 = x(3)
             al = un - x0 - y0 - z0
-!
             dff(1,1) = zero
             dff(2,1) = quatre*y0 - un
             dff(3,1) = zero
@@ -551,91 +531,71 @@ real(kind=8), intent(out) :: dff(3, *)
             dff(1,10) = quatre* (al-x0)
             dff(2,10) = -quatre*x0
             dff(3,10) = -quatre*x0
-!
             dff(1:3,11:15) = 0.d0
-!
-!         ------------------------------------------------------------------
+
         case('PY5')
-!
             x0 = x(1)
             y0 = x(2)
             z0 = x(3)
             z01 = un - z0
             z04 = (un-z0)*quatre
-!
             pface1 = x0 + y0 + z0 - un
             pface2 = -x0 + y0 + z0 - un
             pface3 = -x0 - y0 + z0 - un
             pface4 = x0 - y0 + z0 - un
-!
             if (abs(z0-un) .lt. 1.0d-6) then
                 dff(1:2,1:5) = zero
-!
                 dff(1,1) = undemi
                 dff(1,3) = -undemi
-!
                 dff(2,2) = undemi
                 dff(2,4) = -undemi
-!
                 dff(3,1) = -1.d0/4.d0
                 dff(3,2) = -1.d0/4.d0
                 dff(3,3) = -1.d0/4.d0
                 dff(3,4) = -1.d0/4.d0
                 dff(3,5) = un
-!
             else
-!
                 dff(1,1) = (-pface2-pface3)/z04
                 dff(1,2) = (pface3-pface4)/z04
                 dff(1,3) = (pface1+pface4)/z04
                 dff(1,4) = (pface2-pface1)/z04
                 dff(1,5) = zero
-!
                 dff(2,1) = (pface3-pface2)/z04
                 dff(2,2) = (-pface3-pface4)/z04
                 dff(2,3) = (pface4-pface1)/z04
                 dff(2,4) = (pface1+pface2)/z04
                 dff(2,5) = zero
-!
                 dff(3,1) = (pface2+pface3+pface2*pface3/z01)/z04
                 dff(3,2) = (pface3+pface4+pface3*pface4/z01)/z04
                 dff(3,3) = (pface4+pface1+pface4*pface1/z01)/z04
                 dff(3,4) = (pface1+pface2+pface1*pface2/z01)/z04
                 dff(3,5) = un
             endif
-!
-!         ------------------------------------------------------------------
+
         case('P13')
-!
             x0 = x(1)
             y0 = x(2)
             z0 = x(3)
             z01 = un - z0
             z02 = (un-z0)*deux
-!
             pface1 = x0 + y0 + z0 - un
             pface2 = -x0 + y0 + z0 - un
             pface3 = -x0 - y0 + z0 - un
             pface4 = x0 - y0 + z0 - un
-!
             pmili1 = x0 - undemi
             pmili2 = y0 - undemi
             pmili3 = -x0 - undemi
             pmili4 = -y0 - undemi
-!
             if (abs(z0-un) .lt. 1.0d-6) then
                 dff(1:2,1:13) = zero
-!
                 dff(1,1) = -undemi
                 dff(1,3) = undemi
                 dff(1,9) = deux
                 dff(1,11) = -deux
-!
                 dff(2,2) = -undemi
                 dff(2,4) = undemi
                 dff(2,10) = deux
                 dff(2,12) = -deux
-!
                 dff(3,1) = un/quatre
                 dff(3,2) = un/quatre
                 dff(3,3) = un/quatre
@@ -646,9 +606,7 @@ real(kind=8), intent(out) :: dff(3, *)
                 dff(3,9) = zero
                 dff(3,10:13) = -un
                 dff(3,5) = trois
-!
             else
-!
                 dff(1,1) = (pface2*pface3- (pface2+pface3)*pmili1)/z02
                 dff(1,2) = (pface3-pface4)*pmili2/z02
                 dff(1,3) = ((pface1+pface4)*pmili3-pface4*pface1)/z02
@@ -662,7 +620,6 @@ real(kind=8), intent(out) :: dff(3, *)
                 dff(1,11) = (pface3-pface4)*z0/z01
                 dff(1,12) = (pface1+pface4)*z0/z01
                 dff(1,13) = (pface2-pface1)*z0/z01
-!
                 dff(2,1) = (pface3-pface2)*pmili1/z02
                 dff(2,2) = (pface3*pface4- (pface3+pface4)*pmili2)/z02
                 dff(2,3) = (pface4-pface1)*pmili3/z02
@@ -676,7 +633,6 @@ real(kind=8), intent(out) :: dff(3, *)
                 dff(2,11) = (-pface4-pface3)*z0/z01
                 dff(2,12) = (pface4-pface1)*z0/z01
                 dff(2,13) = (pface2+pface1)*z0/z01
-!
                 dff(3,1) = (pface2+pface3+pface2*pface3/z01)*pmili1/z02
                 dff(3,2) = (pface3+pface4+pface3*pface4/z01)*pmili2/z02
                 dff(3,3) = (pface1+pface4+pface1*pface4/z01)*pmili3/z02
@@ -695,39 +651,31 @@ real(kind=8), intent(out) :: dff(3, *)
                 dff(3,12) = pface4*pface1/z01/z01 + (pface1+pface4)*z0/ z01
                 dff(3,13) = pface1*pface2/z01/z01 + (pface1+pface2)*z0/ z01
             endif
-!
-!         ------------------------------------------------------------------
+
         case('P19')
-!
             x0 = x(1)
             y0 = x(2)
             z0 = x(3)
             z01 = un - z0
             z02 = (un-z0)*deux
-!
             pface1 = x0 + y0 + z0 - un
             pface2 = -x0 + y0 + z0 - un
             pface3 = -x0 - y0 + z0 - un
             pface4 = x0 - y0 + z0 - un
-!
             pmili1 = x0 - undemi
             pmili2 = y0 - undemi
             pmili3 = -x0 - undemi
             pmili4 = -y0 - undemi
-!
             if (abs(z0-un) .lt. 1.0d-6) then
                 dff(1:2,1:13) = zero
-!
                 dff(1,1) = -undemi
                 dff(1,3) = undemi
                 dff(1,9) = deux
                 dff(1,11) = -deux
-!
                 dff(2,2) = -undemi
                 dff(2,4) = undemi
                 dff(2,10) = deux
                 dff(2,12) = -deux
-!
                 dff(3,1) = un/quatre
                 dff(3,2) = un/quatre
                 dff(3,3) = un/quatre
@@ -738,9 +686,7 @@ real(kind=8), intent(out) :: dff(3, *)
                 dff(3,9) = zero
                 dff(3,10:13) = -un
                 dff(3,5) = trois
-!
             else
-!
                 dff(1,1) = (pface2*pface3- (pface2+pface3)*pmili1)/z02
                 dff(1,2) = (pface3-pface4)*pmili2/z02
                 dff(1,3) = ((pface1+pface4)*pmili3-pface4*pface1)/z02
@@ -754,7 +700,6 @@ real(kind=8), intent(out) :: dff(3, *)
                 dff(1,11) = (pface3-pface4)*z0/z01
                 dff(1,12) = (pface1+pface4)*z0/z01
                 dff(1,13) = (pface2-pface1)*z0/z01
-!
                 dff(2,1) = (pface3-pface2)*pmili1/z02
                 dff(2,2) = (pface3*pface4- (pface3+pface4)*pmili2)/z02
                 dff(2,3) = (pface4-pface1)*pmili3/z02
@@ -768,7 +713,6 @@ real(kind=8), intent(out) :: dff(3, *)
                 dff(2,11) = (-pface4-pface3)*z0/z01
                 dff(2,12) = (pface4-pface1)*z0/z01
                 dff(2,13) = (pface2+pface1)*z0/z01
-!
                 dff(3,1) = (pface2+pface3+pface2*pface3/z01)*pmili1/z02
                 dff(3,2) = (pface3+pface4+pface3*pface4/z01)*pmili2/z02
                 dff(3,3) = (pface1+pface4+pface1*pface4/z01)*pmili3/z02
@@ -787,25 +731,20 @@ real(kind=8), intent(out) :: dff(3, *)
                 dff(3,12) = pface4*pface1/z01/z01 + (pface1+pface4)*z0/ z01
                 dff(3,13) = pface1*pface2/z01/z01 + (pface1+pface2)*z0/ z01
             endif
-!
             dff(1:3, 14:19) = 0.d0
-!
-!         ------------------------------------------------------------------
+
         case('TR3')
-!
             dff(1,1) = -un
             dff(2,1) = -un
             dff(1,2) = +un
             dff(2,2) = zero
             dff(1,3) = zero
             dff(2,3) = +un
-!
+
         case('TR6')
-!
             x0 = x(1)
             y0 = x(2)
             al = un - x0 - y0
-!
             dff(1,1) = un - quatre*al
             dff(1,2) = -un + quatre*x0
             dff(1,3) = zero
@@ -818,13 +757,10 @@ real(kind=8), intent(out) :: dff(3, *)
             dff(2,4) = -quatre*x0
             dff(2,5) = quatre*x0
             dff(2,6) = quatre* (al-y0)
-!
-!         ------------------------------------------------------------------
+
         case('TR7')
-!
             x0 = x(1)
             y0 = x(2)
-!
             dff(1,1) = -trois + 4.0d0*x0 + 7.0d0*y0 - 6.0d0*x0*y0 - 3.0d0* y0*y0
             dff(1,2) = -un + 4.0d0*x0 + 3.0d0*y0 - 6.0d0*x0*y0 - 3.0d0*y0* y0
             dff(1,3) = 3.0d0*y0*( un - 2.0d0*x0 - y0 )
@@ -832,7 +768,6 @@ real(kind=8), intent(out) :: dff(3, *)
             dff(1,5) = 4.0d0*y0*( -2.0d0 + 6.0d0*x0 + 3.0d0*y0 )
             dff(1,6) = 4.0d0*y0*( -4.0d0 + 6.0d0*x0 + 3.0d0*y0 )
             dff(1,7) = 27.d0*y0*( un - 2.0d0*x0 - y0 )
-!
             dff(2,1) = -trois + 4.0d0*y0 + 7.0d0*x0 - 6.0d0*x0*y0 - 3.0d0* x0*x0
             dff(2,2) = 3.0d0*x0*( un - 2.0d0*y0 - x0 )
             dff(2,3) = -un + 4.0d0*y0 + 3.0d0*x0 - 6.0d0*x0*y0 - 3.0d0*x0* x0
@@ -840,13 +775,10 @@ real(kind=8), intent(out) :: dff(3, *)
             dff(2,5) = 4.0d0*x0*( -2.0d0 + 6.0d0*y0 + 3.0d0*x0 )
             dff(2,6) = 4.0d0*(un - 2.0d0*y0 - 4.0d0*x0 + 6.0d0*x0*y0 + 3.0d0*x0*x0)
             dff(2,7) = 27.d0*x0*( un - 2.0d0*y0 - x0 )
-!
-!         ------------------------------------------------------------------
+
         case('QU4')
-!
             x0 = x(1)
             y0 = x(2)
-!
             dff(1,1) = -(un-y0)*uns4
             dff(2,1) = -(un-x0)*uns4
             dff(1,2) = (un-y0)*uns4
@@ -855,12 +787,10 @@ real(kind=8), intent(out) :: dff(3, *)
             dff(2,3) = (un+x0)*uns4
             dff(1,4) = -(un+y0)*uns4
             dff(2,4) = (un-x0)*uns4
-!
+
         case('QU8')
-!
             x0 = x(1)
             y0 = x(2)
-!
             dff(1,1) = -uns4* (un-y0)* (-deux*x0-y0)
             dff(2,1) = -uns4* (un-x0)* (-deux*y0-x0)
             dff(1,2) = uns4* (un-y0)* ( deux*x0-y0)
@@ -877,13 +807,10 @@ real(kind=8), intent(out) :: dff(3, *)
             dff(2,7) = (un-x0*x0)*undemi
             dff(1,8) = - (un-y0*y0)*undemi
             dff(2,8) = -deux*y0* (un-x0)*undemi
-!
-!         ------------------------------------------------------------------
+
         case('QU9')
-!
             x0 = x(1)
             y0 = x(2)
-!
             dff(1,1) = dal31(x0)*al31(y0)
             dff(2,1) = al31(x0)*dal31(y0)
             dff(1,2) = dal33(x0)*al31(y0)
@@ -902,25 +829,21 @@ real(kind=8), intent(out) :: dff(3, *)
             dff(2,8) = al31(x0)*dal32(y0)
             dff(1,9) = dal32(x0)*al32(y0)
             dff(2,9) = al32(x0)*dal32(y0)
-!
-!         ------------------------------------------------------------------
+
         case('PO1')
-!
+
         case('SE2')
             dff(1,1) = -undemi
             dff(1,2) = undemi
-!
-!         ------------------------------------------------------------------
+
         case('SE3')
             x0 = x(1)
-!
             dff(1,1) = x0 - undemi
             dff(1,2) = x0 + undemi
             dff(1,3) = -deux*x0
-!         ------------------------------------------------------------------
+
         case('SE4')
             x0 = x(1)
-!
             x1 = -un
             x2 = un
             x3 = -un/trois
@@ -933,10 +856,17 @@ real(kind=8), intent(out) :: dff(3, *)
             dff(1,3) = ((x0-x1)* (x0-x2)+ (x0-x1)* (x0-x4)+ (x0-x2)* (x0- x4))/d3
             d4 = (x4-x1)* (x4-x2)* (x4-x3)
             dff(1,4) = ((x0-x1)* (x0-x2)+ (x0-x1)* (x0-x3)+ (x0-x2)* (x0- x3))/d4
-!
-!         ------------------------------------------------------------------
+
         case default
             ASSERT(ASTER_FALSE)
+
     end select
+!
+    if (present(nno_)) then
+        nno_ = nno
+    endif
+    if (present(ndim_)) then
+        ndim_ = ndim
+    endif
 !
 end subroutine

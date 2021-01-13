@@ -296,7 +296,7 @@ integer :: nmaxob, nbobj
 ! ======================================================================
     character(len=16) :: elrefl
     character(len=24) :: desi, desr
-    integer :: nno, iret, ndim, nbpg, npgcou, npgsn, npgsr, nso, ino
+    integer :: iret, ndim, nbpg, npgcou, npgsn, npgsr, nso, ino
     integer :: lzi, lzr, i1, i2, i3, i4, i5, k, l, ll, m, nbn1, nbn2, kompt
     integer :: jmas, ldesi, ldesr, ljmas
     real(kind=8) :: a, b, aa
@@ -353,8 +353,7 @@ integer :: nmaxob, nbobj
 !
 !     DEFINITION DES 4=2*2 PTS DE GAUSS REDUIT ET DES POIDS
 !     CORRESPONDANTS
-        call elraga('QU9', 'FPG4    ', ndim, nbpg, xpg,&
-                    poipg)
+        call elraga('QU9', 'FPG4    ', ndim, nbpg, xpg, poipg)
 !
         zr(lzr-1+1) = xpg(1)
         zr(lzr-1+2) = xpg(3)
@@ -382,9 +381,8 @@ integer :: nmaxob, nbobj
             i2 = 4 + l
             x(1) = zr(lzr-1+i1)
             x(2) = zr(lzr-1+i2)
-            call elrfvf('QU8', x, ff, nno)
-            call elrfdf('QU8', x, 18, dff, nno,&
-                        ndim)
+            call elrfvf('QU8', x, ff)
+            call elrfdf('QU8', x, dff)
             ll = 8* (l-1)
             do ino = 1, 8
                 zr(lzr-1+12+ll+ino) = ff(ino)
@@ -439,9 +437,8 @@ integer :: nmaxob, nbobj
             i2 = 108 + 9 + l
             x(1) = zr(lzr-1+i1)
             x(2) = zr(lzr-1+i2)
-            call elrfvf('QU8', x, ff, nno)
-            call elrfdf('QU8', x, 18, dff, nno,&
-                        ndim)
+            call elrfvf('QU8', x, ff)
+            call elrfdf('QU8', x, dff)
             ll = 8* (l-1)
             do ino = 1,8
                 zr(lzr-1+135+ll+ino) = ff(ino)
@@ -462,9 +459,8 @@ integer :: nmaxob, nbobj
             i2 = 4 + l
             x(1) = zr(lzr-1+i1)
             x(2) = zr(lzr-1+i2)
-            call elrfvf('QU9', x, ff, nno)
-            call elrfdf('QU9', x, 18, dff, nno,&
-                        ndim)
+            call elrfvf('QU9', x, ff)
+            call elrfdf('QU9', x, dff)
             ll = 9* (l-1)
             do ino = 1,9
                 zr(lzr-1+ 351 + ll + ino) = ff(ino)
@@ -482,9 +478,8 @@ integer :: nmaxob, nbobj
             i2 = 108 + 9 + l
             x(1) = zr(lzr-1+i1)
             x(2) = zr(lzr-1+i2)
-            call elrfvf('QU9', x, ff, nno)
-            call elrfdf('QU9', x, 18, dff, nno,&
-                        ndim)
+            call elrfvf('QU9', x, ff)
+            call elrfdf('QU9', x, dff)
             ll = 9* (l-1)
             do ino = 1,9
                 zr(lzr-1+ 459 + ll + ino) = ff(ino)
@@ -557,8 +552,7 @@ integer :: nmaxob, nbobj
             i2 = 810 + 9 + l
             x(1) = zr(lzr-1+i1)
             x(2) = zr(lzr-1+i2)
-            call elrfdf('QU8', x, 18, dff, nno,&
-                        ndim)
+            call elrfdf('QU8', x, dff)
             ll = 8* (l-1)
             do ino = 1, 8
                 zr(lzr-1+ 828 + ll + ino) = dff(1,ino)

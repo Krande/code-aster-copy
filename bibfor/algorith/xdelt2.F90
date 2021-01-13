@@ -61,7 +61,7 @@ implicit none
     integer :: ibid, ibid2, nnos, nbfpg, nbpg(nbfamx), nno
     real(kind=8) :: vol, refcoo(3*nbnomx)
     real(kind=8) :: ff(nbnomx), dff(3, nbnomx)
-    integer :: i, j, k, nderiv
+    integer :: i, j, k
     real(kind=8) :: p(ndim), m(ndim), nor(ndim)
     real(kind=8) :: pint1(ndim), pint2(ndim)
     real(kind=8) :: r(ndime), det, dx
@@ -87,8 +87,7 @@ implicit none
     call elrfvf(elp, ksi, ff, nno)
 !
 !     CALCUL DES DERIVEES FONCTIONS DE FORME DE L'ELEMENT EN KSI
-    call elrfdf(elp, ksi, ndime*nbnomx, dff, nno,&
-                nderiv)
+    call elrfdf(elp, ksi, dff, nno)
 !
     call vecini(ndime, 0.d0, r)
     call matini(ndime, ndime, 0.d0, jac)

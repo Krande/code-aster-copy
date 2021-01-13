@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W1306
+ !
 subroutine xcenfi(elrefp, ndim, ndime, nno, geom, lsn,&
                   pinref, pmiref, cenref, cenfi,&
                   nn, exit, jonc, num)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -60,12 +61,11 @@ subroutine xcenfi(elrefp, ndim, ndime, nno, geom, lsn,&
     real(kind=8) :: dff(3,27), gradls(ndime)
     real(kind=8) :: ptxx(2*ndime), ksi(ndime), tole, xmi(ndime)
     integer :: ibid, itemax, i, n(3), j
-    integer :: pi1, pi2, pi3, pi4, m12, m13, m24, m34, nbnomx
+    integer :: pi1, pi2, pi3, pi4, m12, m13, m24, m34
     character(len=6) :: name
     character(len=3) :: edge
     aster_logical :: courbe
     parameter   (tole=1.d-2)
-    parameter (nbnomx = 27)
 !
 ! --------------------------------------------------------------------
 !
@@ -166,8 +166,7 @@ subroutine xcenfi(elrefp, ndim, ndime, nno, geom, lsn,&
        xmi(j) = ptxx(ndime+j)
        ptxx(j) = 0.d0
     end do
-    call elrfdf(elrefp, xmi, ndim*nbnomx, dff, nno,&
-                ndim)
+    call elrfdf(elrefp, xmi, dff, nno, ndim)
 !
     call vecini(ndime,0.d0, gradls)
     do i = 1, nno

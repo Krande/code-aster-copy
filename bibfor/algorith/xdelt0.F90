@@ -50,7 +50,7 @@ implicit none
     integer :: nbfct
     parameter    ( nbfct=27)   
     real(kind=8) :: ff(nbfct), dff(3, nbfct), v(ndime), pt(ndime), ptm(ndime)
-    integer :: i, nderiv, nno, k, nna
+    integer :: i,  nno, k
     real(kind=8) :: fctg, dfctg, x(1), dfft(3,3), norme, rbid
 !
 !
@@ -73,8 +73,7 @@ implicit none
        end do
 !     CALCUL DU VECTEUR TANGENT AU POINT COURANT
        x(1) = 2.d0*ksi-1.d0
-       call elrfdf('SE3', x, 1*3, dfft, nna,&
-                   nderiv)
+       call elrfdf('SE3', x, dfft)
        do k = 1, ndime
           v(k) = ptxx(k)*dfft(1,1)+ptxx(k+ndime)*dfft(1,2)+ptxx(k+2*ndime)*dfft(1,3)
           ptm(k) = ptxx(k+ndime)-ptxx(k)
@@ -96,11 +95,10 @@ implicit none
     endif
 !
 !     CALCUL DES FONCTIONS DE FORME DE L'ELEMENT EN KSI
-    call elrfvf(elrefp, pt, ff, nno)
+    call elrfvf(elrefp, pt, ff)
 !
 !     CALCUL DES DERIVEES FONCTIONS DE FORME DE L'ELEMENT EN KSI
-    call elrfdf(elrefp, pt, ndime*nno, dff, nno,&
-                nderiv)
+    call elrfdf(elrefp, pt, dff, nno)
 !
 ! ---           FCTG : LEVEL SET NORMALE
     do i = 1, nno

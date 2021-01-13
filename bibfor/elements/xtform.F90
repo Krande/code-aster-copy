@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine xtform(ndim, typmae, typmam, typmac,&
-                  nnm, nnc, coore, coorm, coorc,&
+subroutine xtform(typmae, typmam, typmac,&
+                  nnm, coore, coorm, coorc,&
                   ffe, ffm, dffc)
 !
 implicit none
@@ -25,12 +25,10 @@ implicit none
 #include "asterfort/elrfdf.h"
 #include "asterfort/elrfvf.h"
 !
-character(len=8) :: typmae, typmam, typmac
-real(kind=8) :: coorc(2), coore(3), coorm(3)
-integer :: ndim, nnm, nnc
-real(kind=8) :: ffe(20)
-real(kind=8) :: ffm(20)
-real(kind=8) :: dffc(3, 9)
+character(len=8), intent(in) :: typmae, typmam, typmac
+real(kind=8), intent(in) :: coorc(2), coore(3), coorm(3)
+integer, intent(in) :: nnm
+real(kind=8), intent(out) :: ffe(20), ffm(20), dffc(3, 9)
 !
 ! ----------------------------------------------------------------------
 !
@@ -44,9 +42,7 @@ real(kind=8) :: dffc(3, 9)
 ! ----------------------------------------------------------------------
 !
 !
-! IN  NDIM   : DIMENSION DU MODELE
 ! IN  NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
-! IN  NNC    : NOMBRE DE NOEUDS DE LA MAILLE DE CONTACT
 ! IN  TYPMAE : TYPE DE LA MAILLE ESCLAVE
 ! IN  TYPMAM : TYPE DE LA MAILLE MAITRE
 ! IN  TYPMAC : TYPE DE LA MAILLE DE CONTACT
@@ -59,16 +55,12 @@ real(kind=8) :: dffc(3, 9)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid, ibid2
-!
-! ----------------------------------------------------------------------
-!
+
 !
 ! --- DERIVEES DES FONCTIONS DE FORMES POUR LE PT DE CONTACT DANS
 ! --- L'ELEMENT DE CONTACT
 !
-    call elrfdf(typmac, coorc, nnc*ndim, dffc, ibid,&
-                ibid2)
+    call elrfdf(typmac, coorc, dffc)
 !
 ! --- FONCTIONS DE FORMES DU POINTS DE CONTACT DANS L'ELEMENT PARENT
 !
@@ -76,7 +68,9 @@ real(kind=8) :: dffc(3, 9)
 !
 ! --- FONCTIONS DE FORMES DE LA PROJ DU PT DE CONTACT DANS L'ELE PARENT
 !
-    if (nnm .ne. 0) call elrfvf(typmam, coorm, ffm)
+    if (nnm .ne. 0) then
+        call elrfvf(typmam, coorm, ffm)
+    endif
 !
 !
 end subroutine

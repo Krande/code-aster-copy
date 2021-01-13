@@ -134,7 +134,7 @@ character(len=8) :: elrefa
 !       -- DERIVEES 1ERES DES FONCTIONS DE FORME :
 !       ------------------------------------------------
         do ipg = 1,npg
-            call elrfdf(elrefa, xpg(ndim* (ipg-1)+1), 3*nbnomx, dff, nno, nderiv)
+            call elrfdf(elrefa, xpg(ndim* (ipg-1)+1), dff, nno, nderiv)
             ASSERT(nderiv.eq.ndim)
             do ino = 1,nno
                 do idim = 1,ndim

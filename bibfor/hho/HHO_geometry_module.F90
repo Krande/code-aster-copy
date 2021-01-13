@@ -502,22 +502,21 @@ contains
 ! ---------------------------------------------------------------------------------
 !
 !
-        integer :: nno, ndim
         dbasis = 0.d0
 !
         select case (typema)
             case ('SE2')
-                call elrfdf('SE2', pt, 24, dbasis, nno, ndim)
+                call elrfdf('SE2', pt, dbasis)
             case ('TRIA3')
-                call elrfdf('TR3', pt, 24, dbasis, nno, ndim)
+                call elrfdf('TR3', pt, dbasis)
             case ('QUAD4')
-                call elrfdf('QU4', pt, 24, dbasis, nno, ndim)
+                call elrfdf('QU4', pt, dbasis)
             case ('TETRA4')
-                call elrfdf('TE4', pt, 24, dbasis, nno, ndim)
+                call elrfdf('TE4', pt, dbasis)
             case ('PYRAM5')
-                call elrfdf('PY5', pt, 24, dbasis, nno, ndim)
+                call elrfdf('PY5', pt, dbasis)
             case ('HEXA8')
-                call elrfdf('HE8', pt, 24, dbasis, nno, ndim)
+                call elrfdf('HE8', pt, dbasis)
             case default
                 ASSERT(ASTER_FALSE)
         end select

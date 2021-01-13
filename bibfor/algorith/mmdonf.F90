@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine mmdonf(ndim, nno, alias, ksi1, ksi2,&
-                  dff)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
+subroutine mmdonf(ndim, nno, alias, ksi1, ksi2, dff)
+!
+implicit none
+!
 #include "asterfort/assert.h"
 #include "asterfort/elrfdf.h"
-    character(len=8) :: alias
-    real(kind=8) :: ksi1, ksi2
-    real(kind=8) :: dff(2, 9)
-    integer :: nno, ndim
+!
+character(len=8) :: alias
+real(kind=8) :: ksi1, ksi2
+real(kind=8) :: dff(2, 9)
+integer :: nno, ndim
 !
 ! ----------------------------------------------------------------------
 !
@@ -49,33 +50,19 @@ subroutine mmdonf(ndim, nno, alias, ksi1, ksi2,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid, jbid
-    real(kind=8) :: ksi(2)
-    real(kind=8) :: d2f(3, 9)
+    real(kind=8) :: ksi(2), d2f(3, 9)
 !
 ! ----------------------------------------------------------------------
 !
-!
-! --- INITIALISATIONS
-!
     dff(:,:) = 0.d0
     d2f(:,:) = 0.d0
-!
     ksi(1) = ksi1
     ksi(2) = ksi2
-!
-!
-    if ((nno.lt.1) .or. (nno.gt.9) .or. (ndim.lt.1) .or. (ndim.gt.3)) then
-        ASSERT(.false.)
-    endif
-!
-! --- RECUP DERIVEES PREMIERES DES FONCTIONS DE FORME
-!
-    call elrfdf(alias, ksi, nno*ndim, d2f, ibid,&
-                jbid)
-!
-! --- CONVERSION 3D -> 2D
-!
+    ASSERT(nno .ge. 1)
+    ASSERT(nno .le. 9)
+    ASSERT(ndim .ge. 1)
+    ASSERT(ndim .le. 3)
+    call elrfdf(alias, ksi, d2f)
     dff(1:2,:) = d2f(1:2,:)
 !
 end subroutine

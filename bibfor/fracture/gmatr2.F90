@@ -55,7 +55,7 @@ implicit none
     integer, parameter :: npg = 14, nbnomx = 3, ndegmx = 7
     integer            :: nseg, iseg, ipg, i, j, ij, jtabm
     integer            :: jstmp, imatr, js, iadpol
-    integer            :: ino, nno, ndim, conn(3)
+    integer            :: ino, nno, conn(3)
     real(kind=8)       :: ff(nbnomx), dff(3, nbnomx)
     real(kind=8)       :: ksi(1), mele(nbnomx, ndegmx)
     real(kind=8)       :: xpg(npg), wpg(npg), jac
@@ -153,7 +153,7 @@ implicit none
 !             CALCUL DES FONCTIONS DE FORMES ET DERIVEES
               ksi(1) = xpg(ipg)
               call elrfvf(elrefe, ksi, ff, nno)
-              call elrfdf(elrefe, ksi, 3*nbnomx, dff, nno, ndim)
+              call elrfdf(elrefe, ksi, dff)
 
 !             CALCUL DU JACOBIEN (SEGM DE REFERENCE --> SEGM REEL)
               jac = 0.d0

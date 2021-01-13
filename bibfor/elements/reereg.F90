@@ -99,8 +99,7 @@ integer :: iret
 !
 ! --- DERIVEES PREMIERES DES FONCTIONS DE FORME EN XE: DFF
 !
-    call elrfdf(elrefp, xe, ndim*nbnomx, dff, nno,&
-                nderiv)
+    call elrfdf(elrefp, xe, dff, nno, nderiv)
 !      ASSERT(NDERIV.EQ.NDIM)
 !
 ! --- CALCUL DES COORDONNEES DU POINT: POINT

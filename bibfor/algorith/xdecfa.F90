@@ -84,11 +84,10 @@ implicit none
     real(kind=8) :: vectn(ndim), ksi(ndim), dff(3,27)
     real(kind=8) :: epsmax, cridist, a, b, c, ab(ndim), bc(ndim), gradlsn(ndim)
     real(kind=8) :: normfa(ndim), det, tempo, temp1(ndim), temp2(ndim), temp3(4)
-    integer :: k, ii, jj, j, ni, kk, ibid, num(8), nbnomx
+    integer :: k, ii, jj, j, ni, kk, ibid, num(8)
     integer :: n(3), kkk, nn(4), exit(2)
     integer :: itemax
     aster_logical :: deja, jonc
-    parameter   (nbnomx = 27)
     parameter   (cridist=1.d-7)
 !
 ! --------------------------------------------------------------------
@@ -405,7 +404,7 @@ implicit none
           endif
 !   ON RECHERCHE SUR LA MEDIATRICE DU SEGMENT IP1IP2 PORTEE PAR GRADLST
           call vecini(ndim, 0.d0, vectn)
-          call elrfdf(elp, xref, ndim*nbnomx, dff, nno, ndim)
+          call elrfdf(elp, xref, dff, nno, ndim)
           do ii = 1, ndim
              do j = 1, nno
                 vectn(ii) = vectn(ii)+dff(ii,j)*tabls(j)

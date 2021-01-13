@@ -49,7 +49,7 @@ implicit none
 ! ......................................................................
 
     integer, parameter :: npg = 14, nbnomx = 3
-    integer            :: i, j, ipg, js, ndim
+    integer            :: i, j, ipg, js
     real(kind=8)       :: xpg(npg), wpg(npg)
     real(kind=8)       :: ff(nbnomx), dff(3, nbnomx)
     real(kind=8)       :: ksi(1), jac
@@ -104,7 +104,7 @@ implicit none
 !       CALCUL DES FONCTIONS DE FORMES ET DERIVEES
         ksi(1)=xpg(ipg)
         call elrfvf(elrefe, ksi, ff, nno)
-        call elrfdf(elrefe, ksi, 3*nbnomx, dff, nno, ndim)
+        call elrfdf(elrefe, ksi, dff)
         
 !       CALCUL DU JACOBIEN (SEGM DE REFERENCE --> SEGM REEL)
         jac = 0.5d0*(zr(js-1+conn(2)) - zr(js-1+conn(1)))

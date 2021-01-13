@@ -81,7 +81,7 @@ real(kind=8), optional, intent(out) :: dfdi(nnop, ndim)
     if ( present(dfdi) ) then
 !
 ! ------- DERIVEES PREMIERES DES FONCTIONS DE FORME EN XE: DFF
-        call elrfdf(elrefp, xe, ndim*nbnomx, dff, nno, nderiv)
+        call elrfdf(elrefp, xe, dff, nno, nderiv)
 !
 ! ------- CALCUL DE L'INVERSE DE LA JACOBIENNE EN XE: INVJAC
         call invjax('S', nno, ndim, nderiv, dff,&
