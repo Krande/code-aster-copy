@@ -35,11 +35,14 @@ List of supported variables:
 
 - ``ASTER_ADD_STDCALL``
 
-- ``ASTER_DISABLE_MPI_CHECK``
-- ``ASTER_ENABLE_PROC_STATUS``
-- ``ASTER_HAVE_64_BITS``
-- ``ASTER_HAVE_BACKTRACE``
-- ``ASTER_HAVE_GETLINE`` (only for Metis interface)
+- ``ASTER_DISABLE_MPI_CHECK``: Disable checking before MPI communications.
+- ``ASTER_ENABLE_PROC_STATUS``: Enabled if ``/proc/status`` is available.
+- ``ASTER_HAVE_SUPPORT_FPE``: Enabled
+
+- ``ASTER_HAVE_64_BITS``: Enabled on 64 bits OS, use integer8 as default
+  integers.
+- ``ASTER_HAVE_BACKTRACE``8
+
 - ``ASTER_HAVE_HDF5``
 - ``ASTER_HAVE_INTEL_IFORT``
 - ``ASTER_HAVE_MED``
@@ -53,7 +56,8 @@ List of supported variables:
 - ``ASTER_HAVE_PETSC``
 - ``ASTER_HAVE_PETSC4PY``
 - ``ASTER_HAVE_SCOTCH``
-- ``ASTER_HAVE_SUPPORT_FPE``
+
+- ``ASTER_HAVE_GETLINE`` (only for Metis interface)
 - ``ASTER_HAVE_TRACEBACKQQ``
 - ``ASTER_IGNORE_WITH_ASLINT``
 - ``ASTER_LOGICAL_SIZE``

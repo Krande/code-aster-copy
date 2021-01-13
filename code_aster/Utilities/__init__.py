@@ -25,6 +25,8 @@ This module gives common utilities.
 No external import of other :py:mod:`code_aster` packages.
 """
 
+from collections import defaultdict
+
 from .as_timer import ASTER_TIMER
 from .base_utils import (ReadOnlyDict, Singleton, accept_array, array_to_list,
                          force_list, force_tuple, get_caller_context,
@@ -58,4 +60,4 @@ try:
     config = ReadOnlyDict(**_cfg)
     del _cfg
 except ImportError:
-    config = {}
+    config = defaultdict(lambda: None)
