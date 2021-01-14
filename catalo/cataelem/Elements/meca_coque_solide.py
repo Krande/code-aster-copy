@@ -58,6 +58,39 @@ class MESSHELL_SB9(Element):
             para_out = ((SP.PMATUUR, MMATUUR),),
         ),
 
+        OP.SIEF_ELGA(te=125,
+            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
+                        (SP.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
+                        (SP.PDEPLAR, DDL_MECA),),
+            para_out = ((OP.SIEF_ELGA.PCONTRR, LC.EGIG3DR),),
+        ),
+
+        OP.SIEF_ELNO(te=4,
+            para_in  = ((SP.PVARCPR, LC.ZVARCPG),
+                        (OP.SIEF_ELNO.PCONTRR, LC.EGIG3DR),),
+            para_out = ((OP.SIEF_ELNO.PSIEFNOR, LC.ESIG3DR),),
+        ),
+
+        OP.SIEQ_ELGA(te=335,
+            para_in  = ((OP.SIEQ_ELGA.PCONTRR, LC.EGIG3DR),),
+            para_out = ((OP.SIEQ_ELGA.PCONTEQ, LC.ECOEQPG),),
+        ),
+
+        OP.SIEQ_ELNO(te=335,
+            para_in  = ((OP.SIEQ_ELNO.PCONTRR, LC.ESIG3DR),),
+            para_out = ((OP.SIEQ_ELNO.PCONTEQ, LC.ECOEQNO),),
+        ),
+
+        OP.SIGM_ELGA(te=546,
+            para_in  = ((SP.PSIEFR, LC.EGIG3DR),),
+            para_out = ((SP.PSIGMR, LC.EGIG3DR),),
+        ),
+
+        OP.SIGM_ELNO(te=4,
+            para_in  = ((OP.SIGM_ELNO.PCONTRR, LC.EGIG3DR),),
+            para_out = ((OP.SIGM_ELNO.PSIEFNOR, LC.ESIG3DR),),
+        ),
+
         OP.TOU_INI_ELEM(te=99,
             para_out = ((SP.PGEOM_R, LC.CGEOM3D),),
         ),

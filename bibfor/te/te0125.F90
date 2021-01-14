@@ -45,6 +45,8 @@ character(len=16), intent(in) :: option, nomte
 !
     if (option .eq. 'RIGI_MECA') then
         call compRigiMatr()
+    elseif (option .eq. 'SIEF_ELGA') then
+        call compSiefElga()
     else
         ASSERT(ASTER_FALSE)
     endif

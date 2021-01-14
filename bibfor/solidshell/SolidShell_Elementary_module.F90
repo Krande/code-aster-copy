@@ -32,7 +32,7 @@ use SolidShell_Elementary_Hexa_module
 ! ==================================================================================================
 implicit none
 ! ==================================================================================================
-public  :: compRigiMatr
+public  :: compRigiMatr, compSiefElga
 private :: setMateOrientation, compElemElasMatrix,&
            initCellGeom, initMateProp, initElemProp
 ! ==================================================================================================
@@ -301,6 +301,59 @@ subroutine compRigiMatr()
             zr(jvMatr-1+k) = matrRigi(i, j)
         end do
     end do
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compSiefElga
+!
+! Compute stresses - SIEF_ELGA
+!
+! --------------------------------------------------------------------------------------------------
+subroutine compSiefElga()
+!   ------------------------------------------------------------------------------------------------
+! - Local
+    character(len=4), parameter :: inteFami = 'RIGI'
+    type(SSH_CELL_GEOM) :: cellGeom
+    type(SSH_ELEM_PROP) :: elemProp
+    type(SSH_MATE_PARA) :: matePara
+    real(kind=8) :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
+    integer :: jvSigm, jvDisp, i
+!   ------------------------------------------------------------------------------------------------
+!
+    siefElga = 0.d0
+
+! - Initialization of general properties of finite element
+    call initElemProp(inteFami, elemProp)
+    if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
+
+    ASSERT(elemProp%elemInte%nbIntePoint .le. SSH_NBPG_MAX)
+
+! - Initialization of geometric properties of cell
+    call initCellGeom(elemProp, cellGeom)
+    if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
+
+! - Initialization of properties of material
+    call initMateProp(elemProp, cellGeom, matePara)
+    if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
+
+! - Get displacements
+    call jevech('PDEPLAR', 'L', jvDisp)
+
+! - Compute stresses
+    if (elemProp%cellType .eq. SSH_CELL_HEXA) then
+        call compSiefElgaHexa(elemProp, cellGeom, matePara, zr(jvDisp),&
+                              siefElga)
+    else
+        ASSERT(ASTER_FALSE)
+    endif
+
+! - Save stress
+    call jevech('PCONTRR', 'E', jvSigm)
+    do i = 1, SSH_SIZE_TENS*elemProp%elemInte%nbIntePoint
+        zr(jvSigm-1+i) = siefElga(i)
+    enddo
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine
