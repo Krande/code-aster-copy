@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,9 +79,9 @@ real(kind=8), pointer, optional :: v_carcri_(:)
         v_carcri_(PARM_ALPHA_THM)     = parm_alpha_thm
         v_carcri_(13)                 = v_crit(i_comp)%ipostiter
         if (v_crit(i_comp)%l_matr_unsymm) then
-            v_carcri_(17) = 1
+            v_carcri_(CARCRI_MATRSYME) = 1
         else
-            v_carcri_(17) = 0
+            v_carcri_(CARCRI_MATRSYME) = 0
         endif
         v_carcri_(21)                 = v_crit(i_comp)%ipostincr
 ! ----- For external solvers (UMAT / MFRONT)
@@ -113,9 +113,9 @@ real(kind=8), pointer, optional :: v_carcri_(:)
         l_carcri_(PARM_ALPHA_THM)     = parm_alpha_thm
         l_carcri_(13)                 = v_crit(i_comp)%ipostiter
         if (v_crit(i_comp)%l_matr_unsymm) then
-            l_carcri_(17) = 1
+            l_carcri_(CARCRI_MATRSYME) = 1
         else
-            l_carcri_(17) = 0
+            l_carcri_(CARCRI_MATRSYME) = 0
         endif
         l_carcri_(21)                 = v_crit(i_comp)%ipostincr
 ! ----- For external solvers (UMAT / MFRONT)

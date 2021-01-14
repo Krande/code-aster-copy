@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/jevech.h"
+#include "asterfort/Behaviour_type.h"
 !
-!
-    real(kind=8), intent(in) :: carcri(*)
-    aster_logical, intent(out) :: l_matr_symm
-    integer, intent(out) :: jv_matr
+real(kind=8), intent(in) :: carcri(*)
+aster_logical, intent(out) :: l_matr_symm
+integer, intent(out) :: jv_matr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,7 +43,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     l_matr_symm = .true.
-    if (nint(carcri(17)) .gt. 0) then
+    if (nint(carcri(CARCRI_MATRSYME)) .gt. 0) then
         l_matr_symm = .false.
     endif
     if (l_matr_symm) then
