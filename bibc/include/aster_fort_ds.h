@@ -65,6 +65,10 @@ void DEFS( MATR_ASSE_TRANSPOSE, matr_asse_transpose, const char *, STRING_SIZE);
     CALLO( MATR_ASSE_TRANSPOSE_CONJUGATE, matr_asse_transpose_conjugate, a)
 void DEFS( MATR_ASSE_TRANSPOSE_CONJUGATE, matr_asse_transpose_conjugate, const char *, STRING_SIZE);
 
+#define CALLO_MATR_ASSE_PRINT( a, b, c ) CALLOPO( MATIMP, matimp, a, b, c)
+void DEFSPS( MATIMP, matimp, const char *, STRING_SIZE, const ASTERINTEGER *, \
+                             const char *, STRING_SIZE);
+
 #define CALLO_POSDDL( a, b, c, d, e, f ) CALLOOOOPP( POSDDL, posddl, a, b, c, d, e, f)
 void DEFSSSSPP( POSDDL, posddl, const char *, STRING_SIZE, const char *, STRING_SIZE, \
                                 const char *, STRING_SIZE, const char *, STRING_SIZE, \

@@ -204,7 +204,7 @@ class AssemblyMatrixClass : public DataStructure {
         throw std::runtime_error( "Not implemented" );
     };
 
-/**
+    /**
      * @brief Transpose
      */
     void transpose() {
@@ -219,6 +219,36 @@ class AssemblyMatrixClass : public DataStructure {
     void transposeConjugate() {
         if (get_sh_jeveux_status() == 1 ) {
             CALLO_MATR_ASSE_TRANSPOSE_CONJUGATE(getName());
+        }
+    };
+
+    /**
+     * @brief Print the matrix in code_aster format
+     */
+    void print() const {
+        if (get_sh_jeveux_status() == 1 ) {
+            const ASTERINTEGER unit(6);
+            std::string format( " " );
+            CALLO_MATR_ASSE_PRINT(getName(), &unit, format);
+        }
+    };
+
+    /**
+     * @brief Print the matrix in matlab format
+     */
+    void print(const std::string format) const {
+        if (get_sh_jeveux_status() == 1 ) {
+            const ASTERINTEGER unit(6);
+            CALLO_MATR_ASSE_PRINT(getName(), &unit, format);
+        }
+    };
+
+    /**
+     * @brief Print the matrix in matlab format in given logical unit
+     */
+    void print(const ASTERINTEGER unit, const std::string format) const {
+        if (get_sh_jeveux_status() == 1 ) {
+            CALLO_MATR_ASSE_PRINT(getName(), &unit, format);
         }
     };
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@ subroutine matimp(matz, ific, typimz)
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -30,6 +31,7 @@ subroutine matimp(matz, ific, typimz)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/asmpi_info.h"
     character(len=*) :: matz, typimz
     integer :: ific
 ! ---------------------------------------------------------------------
@@ -46,17 +48,19 @@ subroutine matimp(matz, ific, typimz)
 !     ------------------------------------------------------------------
     integer :: iligl, jcoll, kterm, n, nz, nsmdi, jsmhc, nsmhc
     integer :: jdelg, n1, nvale, jvale, nlong, jval2, nuno, nucmp, k, jcmp
-    integer :: iligg, jcolg, jnlogl, coltmp
+    integer :: iligg, jcolg, jnlogl, coltmp, jprddl, rang, nbproc
     character(len=8) :: nomgd, nocmp, noma, nono, typimp
-    character(len=14) :: nonu
+    character(len=14) :: nonu, localOrGhost
     character(len=1) :: ktyp
+    character(len=3) :: mathpc
     character(len=19) :: mat19
-    aster_logical :: ltypr, lsym, lmd
+    aster_logical :: ltypr, lsym, lmd, lmhpc
     real(kind=8) :: dble, dimag
     integer, pointer :: deeq(:) => null()
     integer, pointer :: smdi(:) => null()
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: refn(:) => null()
+    mpi_int :: mrank, msize
 !
 !     ------------------------------------------------------------------
     call jemarq()
@@ -71,6 +75,10 @@ subroutine matimp(matz, ific, typimz)
 !
     lmd= (refa(11) .eq. 'MATR_DISTR')
 !
+    call dismoi('MATR_HPC', mat19, 'MATR_ASSE', repk=mathpc)
+    lmhpc = mathpc.eq.'OUI'
+    localOrGhost = ' '
+!
     call jeveuo(nonu//'.SMOS.SMDI', 'L', vi=smdi)
     call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
     call jeveuo(nonu//'.SMOS.SMHC', 'L', jsmhc)
@@ -83,6 +91,12 @@ subroutine matimp(matz, ific, typimz)
         call jeveuo(nonu//'.NUME.DELG', 'L', jdelg)
         call jelira(nonu//'.NUME.DELG', 'LONMAX', n1)
         jnlogl=0
+        if (lmhpc) then
+            call jeveuo(nonu//'.NUME.PDDL', 'L', jprddl)
+            call asmpi_info(rank=mrank, size=msize)
+            rang = to_aster_int(mrank)
+            nbproc = to_aster_int(msize)
+        endif
     endif
     ASSERT(n1.eq.nsmdi)
 !     --- CALCUL DE N
@@ -124,6 +138,8 @@ subroutine matimp(matz, ific, typimz)
         write(ific,*) 'MATRICE A COEEFICIENTS REELS :',ltypr
         write(ific,*) 'MATRICE SYMETRIQUE :',lsym
         write(ific,*) 'MATRICE DISTRIBUEE :',lmd
+        write(ific,*) 'MATRICE HPC :',lmhpc
+        if (lmhpc) write(ific,*) 'NUMEROTATION LOCALE AU PROCESSUS :',rang,' / ', nbproc
         write(ific,*) ' '
 !     --- ENTETE FORMAT MATLAB
     else if (typimp.eq.'MATLAB') then
@@ -214,29 +230,36 @@ subroutine matimp(matz, ific, typimz)
         do 2 k = 1, n
             nuno=deeq(2*(k-1)+1)
             nucmp=deeq(2*(k-1)+2)
+            if (lmhpc) then
+                if (zi(jprddl - 1 + k).eq.rang) then
+                    localOrGhost='DDL_LOCAL'
+                else
+                    localOrGhost='DDL_GHOST'
+                endif
+            endif
             if (nuno .gt. 0 .and. nucmp .gt. 0) then
                 call jenuno(jexnum(noma//'.NOMNOE', nuno), nono)
                 nocmp=zk8(jcmp-1+nucmp)
-                write(ific,1004) k,nono,nocmp
+                write(ific,1004) k,nono,nocmp,localOrGhost
             else if (nucmp.lt.0) then
                 ASSERT(nuno.gt.0)
                 call jenuno(jexnum(noma//'.NOMNOE', nuno), nono)
                 nocmp=zk8(jcmp-1-nucmp)
                 if (zi(jdelg-1+k) .eq. -1) then
-                    write(ific,1005) k,nono,nocmp,' LAGR1 BLOCAGE'
+                    write(ific,1005) k,nono,nocmp,localOrGhost,' LAGR1 BLOCAGE'
                 else
                     ASSERT(zi(jdelg-1+k).eq.-2)
-                    write(ific,1005) k,nono,nocmp,' LAGR2 BLOCAGE'
+                    write(ific,1005) k,nono,nocmp,localOrGhost,' LAGR2 BLOCAGE'
                 endif
             else
                 ASSERT(nuno.eq.0 .and. nucmp.eq.0)
                 nono=' '
                 nocmp=' '
                 if (zi(jdelg-1+k) .eq. -1) then
-                    write(ific,1005) k,nono,nocmp,' LAGR1 RELATION LINEAIRE'
+                    write(ific,1005) k,nono,nocmp,localOrGhost,' LAGR1 RELATION LINEAIRE '
                 else
                     ASSERT(zi(jdelg-1+k).eq.-2)
-                    write(ific,1005) k,nono,nocmp,' LAGR2 RELATION LINEAIRE'
+                    write(ific,1005) k,nono,nocmp,localOrGhost,' LAGR2 RELATION LINEAIRE '
                 endif
             endif
   2     continue
@@ -251,8 +274,8 @@ subroutine matimp(matz, ific, typimz)
     1001 format(2i12,1(1x,1pe23.15))
     1002 format(2i12,2(1x,1pe23.15,1pe23.15))
     1003 format(3a12,1x,1a14)
-    1004 format(i12,2(1x,a8))
-    1005 format(i12,2(1x,a8),1x,a)
+    1004 format(i12,2(1x,a8),a10)
+    1005 format(i12,2(1x,a8),a10,a)
 !
     call jedema()
 end subroutine
