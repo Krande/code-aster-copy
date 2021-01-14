@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -125,25 +125,27 @@ CHAR_MECA_PRES_F = Option(
         SP.PVECTUR,
     ),
     condition=(
-#     Ce chargement concerne le bord des elements "massifs" :
+#     Pour le bord des elements massifs
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'-1'),)),
 
-#     Ce chargement concerne les elements de coque et tuyau :
+#     Pour les elements XFEM massifs
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.LXFEM,'OUI'),)),
+
+#     Pour les elements coque/plaque ...
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.COQUE,'OUI'),)),
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.TUYAU,'OUI'),)),
+      
+#     ... mais pas pour leurs aretes!
       CondCalcul('-', ((AT.PHENO,'ME'),(AT.BORD,'-1'),(AT.COQUE,'OUI'),)),
 
-#     Les 3 modelisations suivantes (grilles et membranes) sont affectees sur des mailles
-#     duppliquees. Il ne faut pas que le chargement soit pris en compte plusieurs fois :
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'GRM'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'GRC'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'MMB'),)),
+#     Pour les elements tuyau
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.TUYAU,'OUI'),)),
 
-#     On autorise d'appliquer une pression NULLE sur le bord du domaine fluide
-      CondCalcul('+', ((AT.FLUIDE,'OUI'),(AT.BORD,'-1'))),
+#     Pour les elements membrane
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'MMB'),)),
 
-#     Ce chargement concerne les elements XFEM "massifs" :
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.LXFEM,'OUI'),)),
+#     Pour les elements fluide, mais contribution nulle (te0099)
+      CondCalcul('+', ((AT.FLUIDE,'OUI'),(AT.BORD, '-1'),)),
+
     ),
     comment=""" Second membre pour une pression fonction """,
 )
