@@ -26,4 +26,6 @@ cata_msg = {
     2 : _("""Erreur lors de la création des mailles de coque solide: on doit orienter les hexaèdres, il faut utiliser GROUP_MA_SURF."""),
 
     3 : _("""Erreur lors de la création des mailles de coque solide: il n'y a que des pentaèdres, il est inutile d'utiliser GROUP_MA_SURF."""),
+
+    4 : _("""Erreur lors du calcul de l'option FORC_NODA. Nous sommes en grandes transformations mais le champ de déplacement est absent de la structure de données résultat.."""),
 }

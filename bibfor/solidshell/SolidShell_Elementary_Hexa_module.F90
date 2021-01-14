@@ -33,13 +33,17 @@ use SolidShell_Stabilization_Hexa_module
 ! ==================================================================================================
 implicit none
 ! ==================================================================================================
-public  :: compRigiMatrHexa, compSiefElgaHexa
+public  :: compRigiMatrHexa, compSiefElgaHexa, compForcNodaHexa
 ! ==================================================================================================
 private
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "MeshTypes_type.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/SolidShell_type.h"
+#include "asterfort/btsig.h"
+#include "asterfort/tecach.h"
+#include "asterfort/utmess.h"
 ! ==================================================================================================
 contains
 ! ==================================================================================================
@@ -189,6 +193,94 @@ subroutine compSiefElgaHexa(elemProp, cellGeom, matePara, disp,&
 
 ! ----- Compute stresses
         siefElga(1+(kpg-1)*SSH_SIZE_TENS:SSH_SIZE_TENS*kpg) = matmul(matePara%elemHookeMatrix, epsi)
+
+    end do
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compForcNodaHexa
+!
+! Compute nodal forces for HEXA - FORC_NODA
+!
+! In  elemProp         : general properties of element
+! In  cellGeom         : general geometric properties of cell
+! In  siefElga         : stresses at Gauss points
+! Out forcNoda         : nodal forces
+!
+! --------------------------------------------------------------------------------------------------
+subroutine compForcNodaHexa(elemProp, cellGeom,&
+                            siefElga, forcNoda)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    type(SSH_ELEM_PROP), intent(in) :: elemProp
+    type(SSH_CELL_GEOM), intent(in) :: cellGeom
+    real(kind=8), intent(in)        :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
+    real(kind=8), intent(out)       :: forcNoda(SSH_NBDOF_MAX)
+!   ------------------------------------------------------------------------------------------------
+! - Local
+    type(SSH_GEOM_HEXA) :: geomHexa
+    type(SSH_KINE_HEXA) :: kineHexa
+    real(kind=8) :: geomCurr(SSH_NBDOFG_HEXA), disp(SSH_NBDOF_HEXA)
+    real(kind=8) :: zeta, poids, jacob
+    integer :: nbIntePoint, kpg, jvCoor, jvWeight, jvCompor, jvDisp, iretc, iDof
+    character(len=16) :: defoComp
+!   ------------------------------------------------------------------------------------------------
+!
+    nbIntePoint = elemProp%elemInte%nbIntePoint
+    jvCoor      = elemProp%elemInte%jvCoor
+    jvWeight    = elemProp%elemInte%jvWeight
+
+! - Prepare geometric quantities
+    call initGeomCellHexa(cellGeom, geomHexa)
+    if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
+
+! - Select configuration
+    call tecach('ONO', 'PCOMPOR', 'L', iretc, iad = jvCompor)
+    defoComp = 'PETIT'
+    if (iretc .eq. 0) then
+        defoComp = zk16(jvCompor-1+DEFO)
+    endif
+
+! - Update configuration
+    if (defoComp .eq. 'PETIT') then
+        geomCurr = cellGeom%geomInit
+    else
+        call tecach('ONO', 'PDEPLMR', 'L', iretc, iad = jvDisp)
+        if (iretc .eq. 0) then
+            do iDof = 1, SSH_NBDOF_HEXA
+                disp(iDof) = zr(jvDisp-1+iDof)
+            end do
+            geomCurr = cellGeom%geomInit + disp(1:SSH_NBDOFG_HEXA)
+        else
+            call utmess('F', 'SOLIDSHELL1_4')
+        endif
+    endif
+
+! - Compute gradient matrix in covariant basis
+    call compBCovaMatrHexa(geomCurr, kineHexa)
+
+! - Compute gradient matrix in cartesian frame
+    call compBCartMatrHexa(geomHexa, kineHexa)
+    if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallCstPart_ = ASTER_TRUE)
+
+! - Loop on Gauss points
+    do kpg = 1, nbIntePoint
+        zeta  = zr(jvCoor-1+3*kpg)
+        poids = zr(jvWeight-1+kpg)
+        jacob = poids * cellGeom%detJac0
+
+! ----- Compute EAS B matrix in cartesian frame at current Gauss point
+        call compBCartEASMatrHexa(zeta, geomHexa, kineHexa)
+
+! ----- Compute B matrix
+        call compBMatrHexa(zeta, kineHexa)
+        if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallVarPart_ = ASTER_TRUE)
+
+! ----- Product BT . sigma CUMULATED (see btsig subroutine)
+        call btsig(elemProp%nbDof, SSH_SIZE_TENS, jacob,&
+                   kineHexa%B, siefElga(1+SSH_SIZE_TENS*(kpg-1)), forcNoda)
 
     end do
 !

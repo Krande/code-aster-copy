@@ -242,6 +242,10 @@ PCONSTR = InputParameter(phys=PHY.NEUT_R,
                          comment="""  PCONSTR : CARTE CONSTANTE DU COEFFICIENT DE PONDERATION S
 """)
 
+PCONTMR = InputParameter(phys=PHY.SIEF_R,
+                         comment="""Stress tensor at beginning of current time step
+""")
+
 PCONTGM = InputParameter(phys=PHY.SIEF_R,
                          comment="""  PCONTGM : CONTRAINTES INSTANT PRECEDENT (POINTS DE GAUSS)
 """)

@@ -47,6 +47,8 @@ character(len=16), intent(in) :: option, nomte
         call compRigiMatr()
     elseif (option .eq. 'SIEF_ELGA') then
         call compSiefElga()
+    elseif (option .eq. 'FORC_NODA') then
+        call compForcNoda()
     else
         ASSERT(ASTER_FALSE)
     endif

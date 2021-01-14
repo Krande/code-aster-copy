@@ -32,7 +32,7 @@ use SolidShell_Elementary_Hexa_module
 ! ==================================================================================================
 implicit none
 ! ==================================================================================================
-public  :: compRigiMatr, compSiefElga
+public  :: compRigiMatr, compSiefElga, compForcNoda
 private :: setMateOrientation, compElemElasMatrix,&
            initCellGeom, initMateProp, initElemProp
 ! ==================================================================================================
@@ -353,6 +353,54 @@ subroutine compSiefElga()
     call jevech('PCONTRR', 'E', jvSigm)
     do i = 1, SSH_SIZE_TENS*elemProp%elemInte%nbIntePoint
         zr(jvSigm-1+i) = siefElga(i)
+    enddo
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compForcNoda
+!
+! Compute nodal forces - FORC_NODA
+!
+! --------------------------------------------------------------------------------------------------
+subroutine compForcNoda()
+!   ------------------------------------------------------------------------------------------------
+! - Local
+    character(len=4), parameter :: inteFami = 'RIGI'
+    type(SSH_CELL_GEOM) :: cellGeom
+    type(SSH_ELEM_PROP) :: elemProp
+    real(kind=8) :: forcNoda(SSH_NBDOF_MAX)
+    integer :: jvSigm, jvVect, i
+!   ------------------------------------------------------------------------------------------------
+!
+    forcNoda = 0.d0
+
+! - Initialization of general properties of finite element
+    call initElemProp(inteFami, elemProp)
+    if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
+
+    ASSERT(elemProp%elemInte%nbIntePoint .le. SSH_NBPG_MAX)
+
+! - Initialization of geometric properties of cell
+    call initCellGeom(elemProp, cellGeom)
+    if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
+
+! - Get stresses
+    call jevech('PCONTMR', 'L', jvSigm)
+
+! - Compute stresses
+    if (elemProp%cellType .eq. SSH_CELL_HEXA) then
+        call compForcNodaHexa(elemProp  , cellGeom,&
+                              zr(jvSigm), forcNoda)
+    else
+        ASSERT(ASTER_FALSE)
+    endif
+
+! - Save vector
+    call jevech('PVECTUR', 'E', jvVect)
+    do i = 1, elemProp%nbDof
+        zr(jvVect-1+i) = forcNoda(i)
     enddo
 !
 !   ------------------------------------------------------------------------------------------------
