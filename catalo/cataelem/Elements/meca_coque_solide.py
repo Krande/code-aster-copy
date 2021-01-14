@@ -33,6 +33,8 @@ DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
                              components=(('EN1',('DX','DY','DZ',)),
                                          ('EN2',('PINCH',)),))
 
+MMATUUR  = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
+
 #----------------------------------------------------------------------------------------------
 class MESSHELL_SB9(Element):
     """Solid-shell element on HEXA9 geometric support"""
@@ -46,6 +48,16 @@ class MESSHELL_SB9(Element):
         ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4', 'MASS=FPG4',),),
     )
     calculs = (
+        OP.INIT_VARC(te=99,
+            para_out = ((OP.INIT_VARC.PVARCPR, LC.ZVARCPG),),
+        ),
+
+        OP.RIGI_MECA(te=125,
+            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
+                        (SP.PVARCPR, LC.ZVARCPG),),
+            para_out = ((SP.PMATUUR, MMATUUR),),
+        ),
+
         OP.TOU_INI_ELEM(te=99,
             para_out = ((SP.PGEOM_R, LC.CGEOM3D),),
         ),

@@ -1026,6 +1026,9 @@ PVARCMR = InputParameter(phys=PHY.VARI_R, container='VOLA!&&CCPARA.VARI_INT_N',
 PVARCRR = InputParameter(phys=PHY.VARI_R, container='VOLA!&&CCPARA.VARI_INT_REF',
                          comment=""" External state variables for reference values """)
 
+PVARCPR = InputParameter(phys=PHY.VARI_R,
+                         comment=""" External state variables at end of current time step """)
+
 PVARIGR = InputParameter(phys=PHY.VARI_R, container='RESU!VARI_ELGA!N',
                          comment="""  PVARIGR : VARIABLES INTERNES
   PVARIGR : VARIABLES INTERNES AUX POINTS DE GAUSS
