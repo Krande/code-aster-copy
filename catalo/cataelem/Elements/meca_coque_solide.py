@@ -35,6 +35,8 @@ DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
 
 MMATUUR  = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
+MMATUNS  = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
+
 MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 #----------------------------------------------------------------------------------------------
@@ -57,14 +59,68 @@ class MESSHELL_SB9(Element):
             para_out = ((SP.PVECTUR, MVECTUR),),
         ),
 
+        OP.FULL_MECA(te=124,
+            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
+                        (SP.PCARCRI, LC.CCARCRI), (SP.PMULCOM, LC.CMLCOMP),
+                        (SP.PCOMPOR, LC.CCOMPOR),
+                        (SP.PDEPLMR, DDL_MECA)  , (SP.PDEPLPR, DDL_MECA),
+                        (SP.PINSTMR, LC.MTEMPSR), (SP.PINSTPR, LC.MTEMPSR),
+                        (SP.PVARCMR, LC.ZVARCPG), (SP.PVARCPR, LC.ZVARCPG),
+                        (SP.PVARCRR, LC.ZVARCPG),
+                        (SP.PCONTMR, LC.EGIG3DR),
+                        (SP.PVARIMP, LC.ZVARIPG), (SP.PVARIMR, LC.ZVARIPG),),
+            para_out = ((SP.PCODRET, LC.ECODRET), 
+                        (SP.PCONTPR, LC.EGIG3DR), (SP.PVARIPR, LC.ZVARIPG),
+                        (SP.PMATUNS, MMATUNS)   , (SP.PMATUUR, MMATUUR),
+                        (SP.PVECTUR, MVECTUR),),
+        ),
+
         OP.INIT_VARC(te=99,
             para_out = ((OP.INIT_VARC.PVARCPR, LC.ZVARCPG),),
+        ),
+
+        OP.NSPG_NBVA(te=496,
+            para_in  = ((SP.PCOMPOR, LC.CCOMPO2),),
+            para_out = ((SP.PDCEL_I, LC.EDCEL_I),),
         ),
 
         OP.RIGI_MECA(te=125,
             para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
                         (SP.PVARCPR, LC.ZVARCPG),),
             para_out = ((SP.PMATUUR, MMATUUR),),
+        ),
+
+        OP.RIGI_MECA_TANG(te=124,
+            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
+                        (SP.PCARCRI, LC.CCARCRI), (SP.PMULCOM, LC.CMLCOMP),
+                        (SP.PCOMPOR, LC.CCOMPOR),
+                        (SP.PDEPLMR, DDL_MECA)  , (SP.PDEPLPR, DDL_MECA),
+                        (SP.PINSTMR, LC.MTEMPSR), (SP.PINSTPR, LC.MTEMPSR),
+                        (SP.PITERAT, LC.CITERAT),
+                        (SP.PVARCMR, LC.ZVARCPG), (SP.PVARCPR, LC.ZVARCPG),
+                        (SP.PVARCRR, LC.ZVARCPG),
+                        (SP.PCONTMR, LC.EGIG3DR),
+                        (SP.PVARIMP, LC.ZVARIPG), (SP.PVARIMR, LC.ZVARIPG),),
+            para_out = ((SP.PCODRET, LC.ECODRET), (SP.PCOPRED, LC.ECODRET),
+                        (SP.PCONTPR, LC.EGIG3DR), (SP.PVARIPR, LC.ZVARIPG),
+                        (SP.PMATUNS, MMATUNS)   , (SP.PMATUUR, MMATUUR),
+                        (SP.PVECTUR, MVECTUR),),
+        ),
+
+        OP.RAPH_MECA(te=124,
+            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
+                        (SP.PCARCRI, LC.CCARCRI), (SP.PMULCOM, LC.CMLCOMP),
+                        (SP.PCOMPOR, LC.CCOMPOR),
+                        (SP.PDEPLMR, DDL_MECA)  , (SP.PDEPLPR, DDL_MECA),
+                        (SP.PINSTMR, LC.MTEMPSR), (SP.PINSTPR, LC.MTEMPSR),
+                        (SP.PITERAT, LC.CITERAT),
+                        (SP.PVARCMR, LC.ZVARCPG), (SP.PVARCPR, LC.ZVARCPG),
+                        (SP.PVARCRR, LC.ZVARCPG),
+                        (SP.PCONTMR, LC.EGIG3DR),
+                        (SP.PVARIMP, LC.ZVARIPG), (SP.PVARIMR, LC.ZVARIPG),),
+            para_out = ((SP.PCODRET, LC.ECODRET), 
+                        (SP.PCONTPR, LC.EGIG3DR), (SP.PVARIPR, LC.ZVARIPG),
+                        (SP.PVECTUR, MVECTUR),),
         ),
 
         OP.SIEF_ELGA(te=125,

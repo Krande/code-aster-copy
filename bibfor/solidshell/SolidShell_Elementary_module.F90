@@ -24,22 +24,25 @@
 !
 module SolidShell_Elementary_module
 ! ==================================================================================================
+use Behaviour_module
 use SolidShell_type
 use SolidShell_Utilities_module
 use SolidShell_Debug_module
 use SolidShell_Geometry_module
+use SolidShell_NonLinear_Hexa_module
 use SolidShell_Elementary_Hexa_module
 ! ==================================================================================================
 implicit none
 ! ==================================================================================================
-public  :: compRigiMatr, compSiefElga, compForcNoda
+public  :: compRigiMatr, compSiefElga, compForcNoda, compNonLinear
 private :: setMateOrientation, compElemElasMatrix,&
-           initCellGeom, initMateProp, initElemProp
+           initCellGeom, initMateProp, initElemProp, initBehaProp
 ! ==================================================================================================
 private
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "MeshTypes_type.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/SolidShell_type.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -187,6 +190,82 @@ subroutine initMateProp(elemProp, cellGeom, matePara)
 
 !
     if (SSH_DBG_ELEM) SSH_DBG_STRG('< initMateProp')
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! initBehaProp
+!
+! Initialization of properties of behaviour
+!
+! In  option           : name of option to compute
+! In  elemProp         : general properties of element
+! In  cellGeom         : general geometric properties of cell
+! Out behaPara         : parameters of behaviour
+!
+! --------------------------------------------------------------------------------------------------
+subroutine initBehaProp(option, elemProp, cellGeom, behaPara)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    character(len=16), intent(in)    :: option
+    type(SSH_ELEM_PROP), intent(in)  :: elemProp
+    type(SSH_CELL_GEOM), intent(in)  :: cellGeom
+    type(SSH_BEHA_PARA), intent(out) :: behaPara
+! - Local
+    integer :: nno, npg
+    integer :: jvWeight, jvShape, jvDShape
+    aster_logical :: lMatrSyme
+!   ------------------------------------------------------------------------------------------------
+!
+    if (SSH_DBG_ELEM) SSH_DBG_STRG('> initBehaProp')
+
+! - Properties of finite element
+    nno      = elemProp%nbNodeGeom
+    npg      = elemProp%elemInte%nbIntePoint
+    jvWeight = elemProp%elemInte%jvWeight
+    jvShape  = elemProp%elemInte%jvShape
+    jvDShape = elemProp%elemInte%jvDShape
+
+! - Access to fields of behaviours parameters
+    call jevech('PCOMPOR', 'L', behaPara%jvCompor)
+    call jevech('PCARCRI', 'L', behaPara%jvCarcri)
+
+! - Main parameters
+    behaPara%relaComp = zk16(behaPara%jvCompor-1+RELA_NAME)
+    behaPara%typeComp = zk16(behaPara%jvCompor-1+INCRELAS)
+    behaPara%defoComp = zk16(behaPara%jvCompor-1+DEFO)
+    if (behaPara%defoComp .eq. 'PETIT') then
+        behaPara%lLarge = ASTER_FALSE
+    elseif (behaPara%defoComp .eq. 'GDEF_LOG') then
+        behaPara%lLarge = ASTER_TRUE
+    elseif (behaPara%defoComp .eq. 'GROT_GDEP') then
+        behaPara%lLarge = ASTER_TRUE
+    else
+        ASSERT(ASTER_FALSE)
+    endif
+    lMatrSyme = ASTER_TRUE
+    if (nint(zr(behaPara%jvCarcri-1+CARCRI_MATRSYME)) .gt. 0) then
+        lMatrSyme = ASTER_FALSE
+    endif
+    behaPara%lMatrSyme = lMatrSyme
+
+! - Select objects to construct from option name
+    call behaviourOption(option         , zk16(behaPara%jvCompor),&
+                         behaPara%lMatr , behaPara%lVect ,&
+                         behaPara%lVari , behaPara%lSigm)
+
+! - Initialisation of behaviour datastructure
+    call behaviourInit(behaPara%BEHinteg)
+
+! - Prepare external state variables
+    call behaviourPrepESVAElem(zr(behaPara%jvCarcri), typmod  ,&
+                               nno                  , npg     , SSH_NDIM,&
+                               jvWeight             , jvShape , jvDShape,&
+                               cellGeom%geomInit    ,&
+                               behaPara%BEHinteg)
+!
+    if (SSH_DBG_ELEM) SSH_DBG_STRG('< initBehaProp')
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine
@@ -402,6 +481,54 @@ subroutine compForcNoda()
     do i = 1, elemProp%nbDof
         zr(jvVect-1+i) = forcNoda(i)
     enddo
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compNonLinear
+!
+! Compute non-linear options
+!
+! In  option           : name of option to compute
+!
+! --------------------------------------------------------------------------------------------------
+subroutine compNonLinear(option)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    character(len=16), intent(in)    :: option
+! - Local
+    character(len=4), parameter :: inteFami = 'RIGI'
+    type(SSH_CELL_GEOM) :: cellGeom
+    type(SSH_ELEM_PROP) :: elemProp
+    type(SSH_MATE_PARA) :: matePara
+    type(SSH_BEHA_PARA) :: behaPara
+!   ------------------------------------------------------------------------------------------------
+!
+
+! - Initialization of general properties of finite element
+    call initElemProp(inteFami, elemProp)
+    if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
+    ASSERT(elemProp%elemInte%nbIntePoint .le. SSH_NBPG_MAX)
+
+! - Initialization of geometric properties of cell
+    call initCellGeom(elemProp, cellGeom)
+    if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
+
+! - Initialization of properties of material
+    call initMateProp(elemProp, cellGeom, matePara)
+    if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
+
+! - Initialization of properties of behaviour
+    call initBehaProp(option, elemProp, cellGeom, behaPara)
+    if (SSH_DBG_BEHA) call dbgObjBehaPara(behaPara)
+
+! - Compute non-linear options
+    if (elemProp%cellType .eq. SSH_CELL_HEXA) then
+        call compNonLinearHexa(option, elemProp, cellGeom, matePara, behaPara)
+    else
+        ASSERT(ASTER_FALSE)
+    endif
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine

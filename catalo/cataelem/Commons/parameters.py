@@ -1041,6 +1041,9 @@ PVARIGR = InputParameter(phys=PHY.VARI_R, container='RESU!VARI_ELGA!N',
 PVARIMP = InputParameter(phys=PHY.VARI_R,
                          comment=""" Internal state variables at previous Newton iteration """)
 
+PVARIMR = InputParameter(phys=PHY.VARI_R,
+                         comment=""" Internal state variables at beginning of current time step """)
+
 PVARIPG = InputParameter(phys=PHY.VARI_R,
                          comment="""""")
 
@@ -1197,6 +1200,13 @@ PCONTRC = OutputParameter(phys=PHY.SIEF_C, type='ELGA',
 PCONTRT = OutputParameter(phys=PHY.SIEF_R, type='ELGA',
                           comment="""  PCONTRT : CHAMP SPECIFIQUE XFEM
 """)
+
+PCONTPR = OutputParameter(phys=PHY.SIEF_R, type='ELGA',
+                         comment="""Stress tensor at end of current time step
+""")
+
+PVARIPR = OutputParameter(phys=PHY.VARI_R, type='ELGA',
+                         comment=""" Internal state variables at end of current time step """)
 
 PCONTXR = OutputParameter(phys=PHY.SIEF_R, type='ELGA',
                           comment="""""")
