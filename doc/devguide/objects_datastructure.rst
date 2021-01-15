@@ -731,10 +731,10 @@
 
 
 ================================================================================
-:py:class:`~code_aster.Objects.KinematicsAcousticLoad` object
+:py:class:`~code_aster.Objects.AcousticDirichletBC` object
 ================================================================================
 
-.. autoclass:: code_aster.Objects.KinematicsAcousticLoad
+.. autoclass:: code_aster.Objects.AcousticDirichletBC
    :show-inheritance:
    :members:
 

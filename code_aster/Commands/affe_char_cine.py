@@ -19,7 +19,7 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import (KinematicsAcousticLoad, MechanicalDirichletBC,
+from ..Objects import (AcousticDirichletBC, MechanicalDirichletBC,
                        ThermalDirichletBC)
 from ..Supervis import ExecuteCommand
 
@@ -40,14 +40,14 @@ class KinematicsLoadDefinition(ExecuteCommand):
         elif keywords.get( "THER_IMPO" ) is not None:
             self._result = ThermalDirichletBC(model)
         elif keywords.get( "ACOU_IMPO" ) is not None:
-            self._result = KinematicsAcousticLoad(model)
+            self._result = AcousticDirichletBC(model)
         elif keywords.get( "EVOL_IMPO" ) is not None:
             if (keywords.get( "EVOL_IMPO" ).getType() in ('EVOL_ELAS', 'EVOL_NOLI') ):
                 self._result = MechanicalDirichletBC(model)
             elif keywords.get( "EVOL_IMPO" ).getType() == 'EVOL_THER':
                 self._result = ThermalDirichletBC(model)
             elif keywords.get( "EVOL_IMPO" ).getType() == 'EVOL_ACOU':
-                self._result = KinematicsAcousticLoad(model)
+                self._result = AcousticDirichletBC(model)
             else:
                 raise NotImplementedError("Must be implemented")
         else:

@@ -99,11 +99,11 @@ Returns:
         .def( "addImposedThermalDOFOnNodes", c8 )
         .def( "addImposedThermalDOFOnNodes", c9 );
 
-    py::class_< KinematicsAcousticLoadClass,
-                KinematicsAcousticLoadClass::KinematicsAcousticLoadPtr,
-                py::bases< KinematicsLoadClass > >( "KinematicsAcousticLoad", py::no_init )
+    py::class_< AcousticDirichletBCClass,
+                AcousticDirichletBCClass::AcousticDirichletBCPtr,
+                py::bases< KinematicsLoadClass > >( "AcousticDirichletBC", py::no_init )
         .def( "__init__", py::make_constructor(
-            &initFactoryPtr< KinematicsAcousticLoadClass, ModelPtr >))
+            &initFactoryPtr< AcousticDirichletBCClass, ModelPtr >))
         .def( "__init__", py::make_constructor(
-            &initFactoryPtr< KinematicsAcousticLoadClass, std::string, ModelPtr >));
+            &initFactoryPtr< AcousticDirichletBCClass, std::string, ModelPtr >));
 };

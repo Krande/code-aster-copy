@@ -332,35 +332,35 @@ class ThermalDirichletBCClass : public KinematicsLoadClass {
 };
 
 /**
- * @class KinematicsAcousticLoadClass
+ * @class AcousticDirichletBCClass
  * @brief Classe definissant une charge cinematique (issue d'AFFE_CHAR_CINE)
  * @author Nicolas Sellenet
  */
-class KinematicsAcousticLoadClass : public KinematicsLoadClass {
+class AcousticDirichletBCClass : public KinematicsLoadClass {
   public:
 
   /**
      * @brief Constructeur
      */
-    KinematicsAcousticLoadClass( void ) = delete;
+    AcousticDirichletBCClass( void ) = delete;
 
     /**
      * @brief Constructeur
      */
-    KinematicsAcousticLoadClass(const ModelPtr& model)
+    AcousticDirichletBCClass(const ModelPtr& model)
         : KinematicsLoadClass( "_ACOU", model ){};
 
     /**
      * @brief Constructeur
      */
-    KinematicsAcousticLoadClass( const std::string name, const ModelPtr& model )
+    AcousticDirichletBCClass( const std::string name, const ModelPtr& model )
         : KinematicsLoadClass( name, "_ACOU", model ){};
 
     /**
-     * @typedef KinematicsAcousticLoadPtr
-     * @brief Pointeur intelligent vers un KinematicsAcousticLoad
+     * @typedef AcousticDirichletBCPtr
+     * @brief Pointeur intelligent vers un AcousticDirichletBC
      */
-    typedef boost::shared_ptr< KinematicsAcousticLoadClass > KinematicsAcousticLoadPtr;
+    typedef boost::shared_ptr< AcousticDirichletBCClass > AcousticDirichletBCPtr;
 
     /**
      * @brief Ajout d'une valeur acoustique imposee sur un groupe de mailles
@@ -404,10 +404,10 @@ typedef boost::shared_ptr< MechanicalDirichletBCClass > MechanicalDirichletBCPtr
 typedef boost::shared_ptr< ThermalDirichletBCClass > ThermalDirichletBCPtr;
 
 /**
- * @typedef KinematicsAcousticLoadPtr
- * @brief Pointeur intelligent vers un KinematicsAcousticLoad
+ * @typedef AcousticDirichletBCPtr
+ * @brief Pointeur intelligent vers un AcousticDirichletBC
  */
-typedef boost::shared_ptr< KinematicsAcousticLoadClass > KinematicsAcousticLoadPtr;
+typedef boost::shared_ptr< AcousticDirichletBCClass > AcousticDirichletBCPtr;
 
 /** @typedef std::list de KinematicsLoad */
 typedef std::list< KinematicsLoadPtr > ListKineLoad;
