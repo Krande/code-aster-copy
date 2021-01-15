@@ -200,6 +200,9 @@ def configure(self):
     self.load('parallel', tooldir='waftools')
     self.load('python_cfg', tooldir='waftools')
     self.check_platform()
+    # keep compatibility for as_run
+    if self.get_define('ASTER_HAVE_MPI'):
+        self.env.ASRUN_MPI_VERSION = 1
 
     self.load('mathematics', tooldir='waftools')
 
@@ -226,9 +229,6 @@ def configure(self):
     self.recurse('doc')
     self.recurse('astest')
 
-    # keep compatibility for as_run
-    if self.get_define('ASTER_HAVE_MPI'):
-        self.env.ASRUN_MPI_VERSION = 1
     # variants
     self.check_optimization_options()
     self.write_config_headers()

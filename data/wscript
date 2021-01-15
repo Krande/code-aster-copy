@@ -228,10 +228,11 @@ def env2dict(self, src):
                 for comp in self.all_components()]))
     sep = os.pathsep + '\\\n'
     dico = {}
-    dico['DEFINES'] = ' '.join([d.split('=')[0] for d in env['DEFINES']])
+    dico['DEFINES'] = ' '.join([d.split('=')[0] for d in env['DEFINES']
+                                if not d.startswith('HAVE_')])
     # as_run compatibility
     if env.ASRUN_MPI_VERSION:
-        dico['DEFINES'] += ' ASTER_HAVE_MPI'
+        dico['DEFINES'] += ' _USE_MPI'
     dico['PYTHONHOME'] = sys.prefix + ('' if sys.prefix == sys.exec_prefix
                                        else ':' + sys.exec_prefix)
     dico['PYTHON_DIRNAME'] = osp.dirname(env['PYTHON'][0])
