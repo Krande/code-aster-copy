@@ -166,7 +166,7 @@ use calcG_type
 !
         if (cgStudy%option .eq. 'K') then
             opti   = 'CALCH_K_G_F'
-        else if (cgStudy%option .eq. 'G') then
+        else if (cgStudy%option .eq. 'G'.or.cgStudy%option .eq. 'G_EPSI') then
             opti   = 'CALCH_G_F'
         else
             ASSERT(ASTER_FALSE)
@@ -186,7 +186,7 @@ use calcG_type
 !
         if (cgStudy%option .eq. 'K') then
             opti   = 'CALCH_K_G'
-        else if (cgStudy%option .eq. 'G') then
+        else if (cgStudy%option .eq. 'G'.or.cgStudy%option .eq. 'G_EPSI') then
             opti   = 'CALCH_G'
         else
             ASSERT(ASTER_FALSE)
@@ -246,7 +246,7 @@ use calcG_type
     if (opti .eq. 'CALCH_G_F' .or. opti .eq. 'CALCH_K_G_F') then
         call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R',&
                     ncmp=1, nomcmp='INST', sr=cgStudy%time)
-        lpain(nchin+1) = 'PTEMPSR'
+      lpain(nchin+1) = 'PTEMPSR'
         lchin(nchin+1) = chtime
         nchin = nchin + 1
     endif
@@ -284,7 +284,7 @@ use calcG_type
         endif
     endif
 !
-    if (cgStudy%option .eq. 'G') then
+    if (cgStudy%option .eq. 'G'.or.cgStudy%option .eq. 'G_EPSI') then
         if (cgStudy%vitesse .ne. ' ') then
             lpain(nchin+1) = 'PVITESS'
             lchin(nchin+1) = cgStudy%vitesse
@@ -294,10 +294,15 @@ use calcG_type
         endif
     endif
 !
-!   NOUVELLE OPTION DE CALCUL G_EPSI : A RAJOUTER
-    if (cgField%stresses .eq. 'NON' .and. cgStudy%option .eq. 'G') then
+!   RECUPERATION DES CONTRAINTES DU RESULTAT POUR  OPTION G
+    if (cgStudy%option .eq. 'G') then
         call getvid(' ', 'RESULTAT', scal=resu, nbret=iret)
         call rsexch(' ', resu, 'SIEF_ELGA', cgStudy%nume_ordre, chsig, iret)
+        
+        if (iret .ne. 0) then
+!       PROBLEME DANS LA RECUP DE SIEF_ELGA POUR CE NUME_ORDRE
+            call utmess('F', 'RUPTURE0_94', si=cgStudy%nume_ordre)
+        endif
         lpain(nchin+1) = 'PCONTGR'
         lchin(nchin+1) = chsig
         nchin = nchin + 1

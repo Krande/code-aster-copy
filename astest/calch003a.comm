@@ -152,7 +152,7 @@ FOND_NEW=DEFI_FISSURE( MAILLAGE=MA,
                      SYME='OUI',
                      LEVRE_SUP=_F(MAILLE='M388'))
 G1=CALC_H(
-OPTION='G',
+                 OPTION='G_EPSI',
                  RESULTAT=RESU,
                  THETA=_F(
                           R_INF=10.,
@@ -167,7 +167,7 @@ OPTION='G',
 #                    
 #                    OPTION='K')
 
-G2=CALC_H(        OPTION='G',
+G2=CALC_H(        OPTION='G_EPSI',
                   RESULTAT=RESU,
                   THETA=_F(
                            R_INF=15.,
@@ -182,7 +182,7 @@ G2=CALC_H(        OPTION='G',
 #                    
 #                    OPTION='K')
 
-G3=CALC_H(         OPTION='G',
+G3=CALC_H(         OPTION='G_EPSI',
                    RESULTAT=RESU,
                    THETA=_F(
                             R_INF=5.0,
@@ -197,7 +197,7 @@ G3=CALC_H(         OPTION='G',
 #                     
 #                     OPTION='K')
 
-G4=CALC_H(        OPTION='G',
+G4=CALC_H(        OPTION='G_EPSI',
                   RESULTAT=RESU,
                   NUME_ORDRE=1,
                   THETA=_F(
@@ -227,7 +227,7 @@ TEST_TABLE(PRECISION=0.080000000000000002,
            VALE_CALC=0.360203432692,
            VALE_REFE=0.38985999999999998,
            REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=G1,)
 
 #TEST_TABLE(PRECISION=0.080000000000000002,
@@ -261,7 +261,7 @@ TEST_TABLE(PRECISION=0.080000000000000002,
            VALE_CALC=0.3601150977,
            VALE_REFE=0.38985999999999998,
            REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=G2,)
 
 #TEST_TABLE(PRECISION=0.080000000000000002,
@@ -295,7 +295,7 @@ TEST_TABLE(PRECISION=0.080000000000000002,
            VALE_CALC=0.360144312104,
            VALE_REFE=0.38985999999999998,
            REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=G3,)
 
 #TEST_TABLE(PRECISION=0.080000000000000002,

@@ -65,7 +65,7 @@ RES0 = CREA_RESU(AFFE=_F(CHAM_GD=CHAM0,
                  OPERATION='AFFE',
                  TYPE_RESU='EVOL_ELAS')
 
-G0 = CALC_H(OPTION='G',
+G0 = CALC_H(OPTION='G_EPSI',
             RESULTAT=RES0,
             THETA=_F(CHAM_THETA=CO('cham_theta_no'),
                      FISSURE=FISS_NEW,
@@ -141,7 +141,7 @@ FISSH=DEFI_FISSURE(MAILLAGE=mesh, SYME='OUI',
 #~ IMPR_CO(CONCEPT=_F(NOM=FISSH), ATTRIBUT='OUI', NIVEAU=2, UNITE=6)
 
 H0 = CALC_H(RESULTAT=RES0,
-            OPTION=("G",),
+            OPTION=("G_EPSI",),
             THETA=_F(FISSURE=FISSH,
                      CHAM_THETA=CO('cham_theta_no2'),
                      R_INF=0.0203282,

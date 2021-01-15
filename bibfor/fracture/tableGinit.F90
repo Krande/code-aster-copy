@@ -87,14 +87,18 @@ subroutine tableGinit(table, option, ndim, nxpara,&
     endif
 !
 !   --------------------
-!   2. OPTIONS DE CALCUL
+!   2. OPTIONS DE CALCUL > a mettre au propre
 !   --------------------
 !   --------------------
-!   2.1 G COMMUN A TOUTES LES OPTIONS
+!   2.1 G COMMUN OPTION 'G' ET 'K' pour l'instant
 !   ---------------------
     call cgajpa('G', 'R', nbpara, linopa, litypa, nxpara)
+    
+    if (option.eq.'G_EPSI') then
+        call cgajpa('G_EPSI', 'R', nbpara, linopa, litypa, nxpara)
+    endif
 !   --------------------
-!   2.2 CALC_K_G
+!   2.2 OPTION 'K'
 !   ---------------------
     if (option.eq.'K') then
         call cgajpa('K1', 'R', nbpara, linopa, litypa, nxpara)

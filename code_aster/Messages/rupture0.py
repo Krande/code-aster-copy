@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -484,6 +484,16 @@ CALCUL_CONTRAINTE='NON'. Le calcul s'arrête.
 - Vérifiez vote mise en données pour archiver SIEF_ELGA à tous les instants
 demandés dans la commande CALC_G.
 - Ou bien supprimer CALCUL_CONTRAINTE='NON' de la commande CALC_G.
+"""),
+
+    94: _("""
+Accès impossible au champ SIEF_ELGA pour le numéro d'ordre : %(i1)d.
+Or il est nécessaire de connaître SIEF_ELGA car vous calculez l'option 'G'.
+Le calcul s'arrête.
+-> Conseils :
+- Vérifiez vote mise en données pour archiver SIEF_ELGA à tous les instants
+demandés dans la commande CALC_G.
+- Ou bien utilisez l'option 'G_EPSI' de la commande CALC_G.
 """),
 
     95: _("""

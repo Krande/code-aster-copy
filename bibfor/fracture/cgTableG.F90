@@ -97,8 +97,12 @@ use calcG_type
         call tbajvr(cgField%table_g, nbpara, 'COOR_Z', coor_z, livr)
         call tbajvr(cgField%table_g, nbpara, 'ABSC_CURV_NORM', abs_curv, livr)
     endif
-
-    call tbajvr(cgField%table_g, nbpara, 'G', cgStudy%gth(1), livr)
+!
+    if (cgStudy%option .eq. "G_EPSI") then
+        call tbajvr(cgField%table_g, nbpara, 'G_EPSI', cgStudy%gth(1), livr)
+    else
+        call tbajvr(cgField%table_g, nbpara, 'G', cgStudy%gth(1), livr)
+    endif
 !
     if (cgStudy%option .eq. "K") then
         call tbajvr(cgField%table_g, nbpara, 'K1', cgStudy%gth(2), livr)

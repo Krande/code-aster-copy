@@ -158,7 +158,7 @@ FOND_NEW=DEFI_FISSURE( MAILLAGE=MA,
                      SYME='OUI',
                      LEVRE_SUP=_F(GROUP_MA='LEVRE_SUP'))
 
-GTH1=CALC_H(OPTION='G',
+GTH1=CALC_H(OPTION='G_EPSI',
             RESULTAT=RESUTH,
             NUME_ORDRE=1,
             THETA=_F(
@@ -167,7 +167,7 @@ GTH1=CALC_H(OPTION='G',
                 R_SUP=5.),
             );
 
-GTH2=CALC_H(OPTION='G',
+GTH2=CALC_H(OPTION='G_EPSI',
             RESULTAT=RESUTH,
             NUME_ORDRE=1,
             THETA=_F(
@@ -175,7 +175,7 @@ GTH2=CALC_H(OPTION='G',
                     R_INF=5.,
                     R_SUP=10.),);
 
-GTH3=CALC_H(OPTION='G',
+GTH3=CALC_H(OPTION='G_EPSI',
             RESULTAT=RESUTH,
             NUME_ORDRE=1,
             THETA=_F(
@@ -183,7 +183,7 @@ GTH3=CALC_H(OPTION='G',
                     R_INF=10.,
                     R_SUP=20.),);
 
-GTH4=CALC_H(OPTION='G',
+GTH4=CALC_H(OPTION='G_EPSI',
             RESULTAT=RESUTH,
             NUME_ORDRE=1,
             THETA=_F(
@@ -195,7 +195,7 @@ GTH4=CALC_H(OPTION='G',
 #  CALCUL DE G AVEC DEFORMATIONS INITIALES
 #--------------------------------------------------------------------
 
-GINI1=CALC_H(OPTION='G',
+GINI1=CALC_H(OPTION='G_EPSI',
              RESULTAT=RESUINI,
              NUME_ORDRE=1,
              THETA=_F(
@@ -204,7 +204,7 @@ GINI1=CALC_H(OPTION='G',
                     R_SUP=5.),
             );
 
-GINI2=CALC_H(OPTION='G',
+GINI2=CALC_H(OPTION='G_EPSI',
              RESULTAT=RESUINI,
              NUME_ORDRE=1,
             THETA=_F(
@@ -212,7 +212,7 @@ GINI2=CALC_H(OPTION='G',
                 R_INF=5.,
                 R_SUP=10.),);
 
-GINI3=CALC_H(OPTION='G',
+GINI3=CALC_H(OPTION='G_EPSI',
              RESULTAT=RESUINI,
              NUME_ORDRE=1,
              THETA=_F(
@@ -220,7 +220,7 @@ GINI3=CALC_H(OPTION='G',
                 R_INF=10.,
                 R_SUP=20.),);
 
-GINI4=CALC_H(OPTION='G',
+GINI4=CALC_H(OPTION='G_EPSI',
              RESULTAT=RESUINI,
              NUME_ORDRE=1,
              THETA=_F(
@@ -242,7 +242,7 @@ Gther4= 3.5984740577926827
 #NON REGRESSIONS DES G ISSUS DU CALCUL THERMOMECANIQUE
 TEST_TABLE(
            VALE_CALC=Gther1,
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=GTH1,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),
@@ -250,7 +250,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=Gther2,
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=GTH2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),
@@ -258,7 +258,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=Gther3,
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=GTH3,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),
@@ -266,7 +266,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=Gther4,
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=GTH4,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),
@@ -279,7 +279,7 @@ TEST_TABLE(
            PRECISION=1.E-4,
            CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=GINI1,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),
@@ -291,7 +291,7 @@ TEST_TABLE(
            PRECISION=1.E-4,
            CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=GINI2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),
@@ -303,7 +303,7 @@ TEST_TABLE(
            PRECISION=1.E-4,
            CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=GINI3,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),
@@ -315,7 +315,7 @@ TEST_TABLE(
            PRECISION=1.E-4,
            CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=GINI4,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),
