@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ subroutine sfifj(nomres)
     integer :: lnumi, lnumj, lfreq, mxval, nbabs, ij
     real(kind=8) :: fmin, fmax, finit, ffin, df, f, prs
     real(kind=8) :: kste, uflui, dhyd, rho, jc, fcoupu, fmodel
-    real(kind=8) :: dir(3, 3), fcoup
+    real(kind=8) :: dir(3, 3), fcoup, fcoup_red
     real(kind=8) :: deuxpi, puls, uc, ut, long1, long2
     real(kind=8) :: valr
     character(len=8) :: k8b, nomres, is
@@ -169,20 +169,23 @@ subroutine sfifj(nomres)
 ! L UTILISATEUR
 !
         fmodel = 10.d0 * uflui / dhyd
+        fcoup_red = 0.d0
         if (fcoupu .le. fmodel) then
             valr = fcoupu
             call utmess('I', 'MODELISA9_17', sr=valr)
             valr = fmodel
             call utmess('I', 'MODELISA9_18', sr=valr)
             call utmess('I', 'MODELISA9_19')
-            fcoup = fcoupu * dhyd / uflui
+            fcoup = fcoupu
+            fcoup_red = fcoupu * dhyd / uflui
         else
             valr = fcoupu
             call utmess('I', 'MODELISA9_20', sr=valr)
             valr = fmodel
             call utmess('I', 'MODELISA9_21', sr=valr)
             call utmess('I', 'MODELISA9_22')
-            fcoup = 10.d0
+            fcoup = fmodel
+            fcoup_red = 10.0 
         endif
 !
 ! RECUPERATION DE LA METHOD DE LA FONCTION
@@ -319,7 +322,7 @@ subroutine sfifj(nomres)
                                     uflui, jc, dir, uc, ut,&
                                     long1, long2)
                     else
-                        prs = dspprs(kste,uflui,dhyd,rho,f,fcoup)
+                        prs = dspprs(kste,uflui,dhyd,rho,f,fcoup_red)
                         call accept(f, nbm, method, im2, im1,&
                                     uflui, jc, dir, uc, ut,&
                                     long1, long2)
