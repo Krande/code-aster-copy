@@ -42,14 +42,14 @@ affectMat.addMaterialsOnMesh( acier )
 affectMat.buildWithoutExternalVariable()
 
 
-kine1 = code_aster.KinematicsMechanicalLoad(monModel)
+kine1 = code_aster.MechanicalDirichletBC(monModel)
 kine1.addImposedMechanicalDOFOnCells(code_aster.PhysicalQuantityComponent.Dx, 0., "Bas")
 kine1.addImposedMechanicalDOFOnCells(code_aster.PhysicalQuantityComponent.Dy, 0., "Bas")
 kine1.addImposedMechanicalDOFOnCells(code_aster.PhysicalQuantityComponent.Dz, 0., "Bas")
 kine1.build()
 test.assertEqual(kine1.getType(), "CHAR_CINE_MECA")
 
-kine2=code_aster.KinematicsMechanicalLoad(monModel)
+kine2=code_aster.MechanicalDirichletBC(monModel)
 kine2.addImposedMechanicalDOFOnCells(code_aster.PhysicalQuantityComponent.Dz, 0.1, "Haut")
 kine2.build()
 test.assertEqual(kine2.getType(), "CHAR_CINE_MECA")

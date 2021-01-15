@@ -110,32 +110,32 @@ class KinematicsLoadClass : public DataStructure {
 };
 
 /**
- * @class KinematicsMechanicalLoadClass
+ * @class MechanicalDirichletBCClass
  * @brief Classe definissant une charge cinematique (issue d'AFFE_CHAR_CINE)
  * @author Nicolas Sellenet
  */
-class KinematicsMechanicalLoadClass : public KinematicsLoadClass {
+class MechanicalDirichletBCClass : public KinematicsLoadClass {
   public:
     /**
      * @brief Constructeur
      */
-    KinematicsMechanicalLoadClass( void ) = delete;
+    MechanicalDirichletBCClass( void ) = delete;
 
 
-    KinematicsMechanicalLoadClass( const ModelPtr& model)
+    MechanicalDirichletBCClass( const ModelPtr& model)
         : KinematicsLoadClass( "_MECA", model ){};
 
     /**
      * @brief Constructeur
      */
-    KinematicsMechanicalLoadClass( const std::string name, const ModelPtr& model )
+    MechanicalDirichletBCClass( const std::string name, const ModelPtr& model )
         : KinematicsLoadClass( name, "_MECA", model ){};
 
     /**
-     * @typedef KinematicsMechanicalLoadPtr
-     * @brief Pointeur intelligent vers un KinematicsMechanicalLoad
+     * @typedef MechanicalDirichletBCPtr
+     * @brief Pointeur intelligent vers un MechanicalDirichletBC
      */
-    typedef boost::shared_ptr< KinematicsMechanicalLoadClass > KinematicsMechanicalLoadPtr;
+    typedef boost::shared_ptr< MechanicalDirichletBCClass > MechanicalDirichletBCPtr;
 
     /**
      * @brief Ajout d'une valeur mecanique imposee sur un groupe de mailles
@@ -392,10 +392,10 @@ class KinematicsAcousticLoadClass : public KinematicsLoadClass {
 typedef boost::shared_ptr< KinematicsLoadClass > KinematicsLoadPtr;
 
 /**
- * @typedef KinematicsMechanicalLoadPtr
- * @brief Pointeur intelligent vers un KinematicsMechanicalLoad
+ * @typedef MechanicalDirichletBCPtr
+ * @brief Pointeur intelligent vers un MechanicalDirichletBC
  */
-typedef boost::shared_ptr< KinematicsMechanicalLoadClass > KinematicsMechanicalLoadPtr;
+typedef boost::shared_ptr< MechanicalDirichletBCClass > MechanicalDirichletBCPtr;
 
 /**
  * @typedef KinematicsThermalLoadPtr

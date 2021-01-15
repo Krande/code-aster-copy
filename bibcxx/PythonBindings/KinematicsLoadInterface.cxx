@@ -29,19 +29,19 @@ namespace py = boost::python;
 
 void exportKinematicsLoadToPython() {
 
-    bool ( KinematicsMechanicalLoadClass::*c1 )( const PhysicalQuantityComponent &,
+    bool ( MechanicalDirichletBCClass::*c1 )( const PhysicalQuantityComponent &,
                                                     const double &, const std::string & ) =
-        &KinematicsMechanicalLoadClass::addImposedMechanicalDOFOnCells;
-    bool ( KinematicsMechanicalLoadClass::*c2 )(
+        &MechanicalDirichletBCClass::addImposedMechanicalDOFOnCells;
+    bool ( MechanicalDirichletBCClass::*c2 )(
         const PhysicalQuantityComponent &, const double &, const VectorString & ) =
-        &KinematicsMechanicalLoadClass::addImposedMechanicalDOFOnCells;
+        &MechanicalDirichletBCClass::addImposedMechanicalDOFOnCells;
 
-    bool ( KinematicsMechanicalLoadClass::*c3 )( const PhysicalQuantityComponent &,
+    bool ( MechanicalDirichletBCClass::*c3 )( const PhysicalQuantityComponent &,
                                                     const double &, const std::string & ) =
-        &KinematicsMechanicalLoadClass::addImposedMechanicalDOFOnNodes;
-    bool ( KinematicsMechanicalLoadClass::*c4 )(
+        &MechanicalDirichletBCClass::addImposedMechanicalDOFOnNodes;
+    bool ( MechanicalDirichletBCClass::*c4 )(
         const PhysicalQuantityComponent &, const double &, const VectorString & ) =
-        &KinematicsMechanicalLoadClass::addImposedMechanicalDOFOnNodes;
+        &MechanicalDirichletBCClass::addImposedMechanicalDOFOnNodes;
 
     bool ( KinematicsThermalLoadClass::*c5 )( const PhysicalQuantityComponent &, const double &,
                                                  const std::string & ) =
@@ -74,13 +74,13 @@ Returns:
         )",
               ( py::arg( "self" ) )  );
 
-    py::class_< KinematicsMechanicalLoadClass,
-                KinematicsMechanicalLoadClass::KinematicsMechanicalLoadPtr,
-                py::bases< KinematicsLoadClass > >( "KinematicsMechanicalLoad", py::no_init )
+    py::class_< MechanicalDirichletBCClass,
+                MechanicalDirichletBCClass::MechanicalDirichletBCPtr,
+                py::bases< KinematicsLoadClass > >( "MechanicalDirichletBC", py::no_init )
         .def( "__init__", py::make_constructor(
-            &initFactoryPtr< KinematicsMechanicalLoadClass, ModelPtr >))
+            &initFactoryPtr< MechanicalDirichletBCClass, ModelPtr >))
         .def( "__init__", py::make_constructor(
-            &initFactoryPtr< KinematicsMechanicalLoadClass, std::string, ModelPtr >))
+            &initFactoryPtr< MechanicalDirichletBCClass, std::string, ModelPtr >))
         .def( "addImposedMechanicalDOFOnCells", c1 )
         .def( "addImposedMechanicalDOFOnCells", c2 )
         .def( "addImposedMechanicalDOFOnNodes", c3 )

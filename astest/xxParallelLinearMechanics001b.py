@@ -46,13 +46,13 @@ affectMat.buildWithoutExternalVariable()
 testMesh2 = affectMat.getMesh()
 test.assertEqual(testMesh2.getType(), "MAILLAGE_P")
 
-charCine = code_aster.KinematicsMechanicalLoad(monModel)
+charCine = code_aster.MechanicalDirichletBC(monModel)
 charCine.addImposedMechanicalDOFOnNodes(code_aster.PhysicalQuantityComponent.Dx, 0., "COTE_B")
 charCine.addImposedMechanicalDOFOnNodes(code_aster.PhysicalQuantityComponent.Dy, 0., "COTE_B")
 charCine.addImposedMechanicalDOFOnNodes(code_aster.PhysicalQuantityComponent.Dz, 0., "COTE_B")
 charCine.build()
 
-charCine2 = code_aster.KinematicsMechanicalLoad(monModel)
+charCine2 = code_aster.MechanicalDirichletBC(monModel)
 charCine2.addImposedMechanicalDOFOnNodes(code_aster.PhysicalQuantityComponent.Dz, 1., "COTE_H")
 charCine2.build()
 
