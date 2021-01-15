@@ -20,7 +20,7 @@
 # person_in_charge: nicolas.sellenet@edf.fr
 
 from ..Objects import (KinematicsAcousticLoad, MechanicalDirichletBC,
-                       KinematicsThermalLoad)
+                       ThermalDirichletBC)
 from ..Supervis import ExecuteCommand
 
 
@@ -38,14 +38,14 @@ class KinematicsLoadDefinition(ExecuteCommand):
         if keywords.get( "MECA_IMPO" ) is not None:
             self._result = MechanicalDirichletBC(model)
         elif keywords.get( "THER_IMPO" ) is not None:
-            self._result = KinematicsThermalLoad(model)
+            self._result = ThermalDirichletBC(model)
         elif keywords.get( "ACOU_IMPO" ) is not None:
             self._result = KinematicsAcousticLoad(model)
         elif keywords.get( "EVOL_IMPO" ) is not None:
             if (keywords.get( "EVOL_IMPO" ).getType() in ('EVOL_ELAS', 'EVOL_NOLI') ):
                 self._result = MechanicalDirichletBC(model)
             elif keywords.get( "EVOL_IMPO" ).getType() == 'EVOL_THER':
-                self._result = KinematicsThermalLoad(model)
+                self._result = ThermalDirichletBC(model)
             elif keywords.get( "EVOL_IMPO" ).getType() == 'EVOL_ACOU':
                 self._result = KinematicsAcousticLoad(model)
             else:

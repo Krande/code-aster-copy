@@ -758,10 +758,10 @@
 
 
 ================================================================================
-:py:class:`~code_aster.Objects.KinematicsThermalLoad` object
+:py:class:`~code_aster.Objects.ThermalDirichletBC` object
 ================================================================================
 
-.. autoclass:: code_aster.Objects.KinematicsThermalLoad
+.. autoclass:: code_aster.Objects.ThermalDirichletBC
    :show-inheritance:
    :members:
 

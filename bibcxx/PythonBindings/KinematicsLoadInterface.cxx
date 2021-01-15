@@ -43,23 +43,23 @@ void exportKinematicsLoadToPython() {
         const PhysicalQuantityComponent &, const double &, const VectorString & ) =
         &MechanicalDirichletBCClass::addImposedMechanicalDOFOnNodes;
 
-    bool ( KinematicsThermalLoadClass::*c5 )( const PhysicalQuantityComponent &, const double &,
+    bool ( ThermalDirichletBCClass::*c5 )( const PhysicalQuantityComponent &, const double &,
                                                  const std::string & ) =
-        &KinematicsThermalLoadClass::addImposedThermalDOFOnCells;
-    bool ( KinematicsThermalLoadClass::*c6 )( const PhysicalQuantityComponent &, const double &,
+        &ThermalDirichletBCClass::addImposedThermalDOFOnCells;
+    bool ( ThermalDirichletBCClass::*c6 )( const PhysicalQuantityComponent &, const double &,
                                                  const VectorString & ) =
-        &KinematicsThermalLoadClass::addImposedThermalDOFOnCells;
+        &ThermalDirichletBCClass::addImposedThermalDOFOnCells;
 
-    bool ( KinematicsThermalLoadClass::*c7 )( const PhysicalQuantityComponent &, const double &,
+    bool ( ThermalDirichletBCClass::*c7 )( const PhysicalQuantityComponent &, const double &,
                                                  const std::string & ) =
-        &KinematicsThermalLoadClass::addImposedThermalDOFOnNodes;
-    bool ( KinematicsThermalLoadClass::*c8 )( const PhysicalQuantityComponent &, const double &,
+        &ThermalDirichletBCClass::addImposedThermalDOFOnNodes;
+    bool ( ThermalDirichletBCClass::*c8 )( const PhysicalQuantityComponent &, const double &,
                                                  const VectorString & ) =
-        &KinematicsThermalLoadClass::addImposedThermalDOFOnNodes;
-    bool ( KinematicsThermalLoadClass::*c9 )( const PhysicalQuantityComponent &,
+        &ThermalDirichletBCClass::addImposedThermalDOFOnNodes;
+    bool ( ThermalDirichletBCClass::*c9 )( const PhysicalQuantityComponent &,
                                                  const FunctionPtr &,
                                                  const VectorString & ) =
-        &KinematicsThermalLoadClass::addImposedThermalDOFOnNodes;
+        &ThermalDirichletBCClass::addImposedThermalDOFOnNodes;
 
     py::class_< KinematicsLoadClass, KinematicsLoadClass::KinematicsLoadPtr,
                 py::bases< DataStructure > >( "KinematicsLoad", py::no_init )
@@ -86,13 +86,13 @@ Returns:
         .def( "addImposedMechanicalDOFOnNodes", c3 )
         .def( "addImposedMechanicalDOFOnNodes", c4 );
 
-    py::class_< KinematicsThermalLoadClass,
-                KinematicsThermalLoadClass::KinematicsThermalLoadPtr,
-                py::bases< KinematicsLoadClass > >( "KinematicsThermalLoad", py::no_init )
+    py::class_< ThermalDirichletBCClass,
+                ThermalDirichletBCClass::ThermalDirichletBCPtr,
+                py::bases< KinematicsLoadClass > >( "ThermalDirichletBC", py::no_init )
         .def( "__init__", py::make_constructor(
-            &initFactoryPtr< KinematicsThermalLoadClass, ModelPtr >))
+            &initFactoryPtr< ThermalDirichletBCClass, ModelPtr >))
         .def( "__init__", py::make_constructor(
-            &initFactoryPtr< KinematicsThermalLoadClass, std::string, ModelPtr >))
+            &initFactoryPtr< ThermalDirichletBCClass, std::string, ModelPtr >))
         .def( "addImposedThermalDOFOnCells", c5 )
         .def( "addImposedThermalDOFOnCells", c6 )
         .def( "addImposedThermalDOFOnNodes", c7 )

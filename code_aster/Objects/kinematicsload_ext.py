@@ -23,7 +23,7 @@
 *****************************************
 """
 
-from libaster import MechanicalDirichletBC, KinematicsThermalLoad, KinematicsAcousticLoad
+from libaster import MechanicalDirichletBC, ThermalDirichletBC, KinematicsAcousticLoad
 
 from ..Utilities import injector
 
@@ -38,13 +38,13 @@ class ExtendedMechanicalDirichletBC(object):
         """
         return (self.getName(), self.getModel())
 
-@injector(KinematicsThermalLoad)
-class ExtendedKinematicsThermalLoad(object):
+@injector(ThermalDirichletBC)
+class ExtendedThermalDirichletBC(object):
     cata_sdj = "SD.sd_char_cine.sd_char_cine"
 
     def __getinitargs__(self):
         """Returns the argument required to reinitialize a
-        KinematicsThermalLoad object during unpickling.
+        ThermalDirichletBC object during unpickling.
         """
         return (self.getName(), self.getModel())
 
