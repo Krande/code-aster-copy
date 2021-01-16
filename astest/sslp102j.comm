@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -253,10 +253,10 @@ Gther3_elas= 0.6303163185461316
 Gther4_elas= 0.6302366883856664
 
 #VALEURS EN ELASTO PLASTICITE
-Gther1= 0.43660537479220873
-Gther2= 0.43624202822653924
-Gther3= 0.4362042840750644
-Gther4= 0.4362107461436306
+Gther1= 0.43658455211028846
+Gther2= 0.4362212174999188
+Gther3= 0.4361834805516888
+Gther4= 0.4361899190640871
 
 IMPR_TABLE(TABLE=GTH1, UNITE=6)
 IMPR_TABLE(TABLE=GINI1, UNITE=6)
@@ -308,7 +308,7 @@ TEST_TABLE(
 
 #TEST DES G ISSUS DU CALCUL AVEC PRE-DEFORMATION
 TEST_TABLE(
-           VALE_CALC=0.43660265252881486,
+           VALE_CALC=0.43658097380548805,
            VALE_REFE=Gther1,
            PRECISION=1.E-4,
            CRITERE='RELATIF',
@@ -323,7 +323,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.4362383634275874,
+           VALE_CALC=0.43621669691727544,
            VALE_REFE=Gther2,
            PRECISION=1.E-4,
            CRITERE='RELATIF',
@@ -338,7 +338,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.43619988193012726,
+           VALE_CALC=0.43617822227846154,
            VALE_REFE=Gther3,
            PRECISION=1.E-4,
            CRITERE='RELATIF',
@@ -353,7 +353,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.4362066380629259,
+           VALE_CALC=0.4361849547280647,
            VALE_REFE=Gther4,
            PRECISION=1.E-4,
            CRITERE='RELATIF',

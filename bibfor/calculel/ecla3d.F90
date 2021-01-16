@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -2200,7 +2200,7 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
                         0, 0)
 !
 !
-        else if (fapg .eq. 'FPG5' .or. fapg .eq. 'FPG27') then
+        else if (fapg .eq. 'FPG5' .or. fapg .eq. 'FPG10' .or. fapg .eq. 'FPG27') then
 !           -----------------------------------------------
             npoini = 19
             do 710 k = 1, 4
@@ -2438,6 +2438,20 @@ subroutine ecla3d(nomte, elrefa, fapg, npg, npoini,&
         corsel(6)=14
         corsel(7)=15
         corsel(8)=12
+    endif
+!
+!     -- EXCEPTION 4
+    if (lpyram .and. fapg .eq. 'FPG10') then
+        nbsel=8
+        corsel(1)=3
+        corsel(2)=1
+        corsel(3)=2
+        corsel(4)=4
+!
+        corsel(5)=10
+        corsel(6)=10
+        corsel(7)=10
+        corsel(8)=10
     endif
 !
     call jedema()

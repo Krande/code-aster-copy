@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -454,13 +454,13 @@ TEST_TABLE(TABLE=CGleg,
                      PRECISION=1.E-11,
                      VALE=0.0,),
            NOM_PARA='G',
-           VALE_CALC=9.21683395221,
+           VALE_CALC=9.21579547048206,
            )
 TEST_TABLE(TABLE=CGleg,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=0.354497665,),
            NOM_PARA='G',
-           VALE_CALC=7.61774576541,
+           VALE_CALC=7.618233177308481,
            )
 
 TEST_TABLE(TABLE=CGKleg,
@@ -469,13 +469,13 @@ TEST_TABLE(TABLE=CGKleg,
                      PRECISION=1.E-11,
                      VALE=0.0,),
            NOM_PARA='G',
-           VALE_CALC=9.21683395221,
+           VALE_CALC=9.215795470482059,
            )
 TEST_TABLE(TABLE=CGKleg,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=0.354497665,),
            NOM_PARA='G',
-           VALE_CALC=7.61774576541,
+           VALE_CALC=7.618233177308476,
            )
 
 TEST_TABLE(TABLE=CGKleg,
@@ -484,13 +484,13 @@ TEST_TABLE(TABLE=CGKleg,
                      PRECISION=1.E-11,
                      VALE=0.0,),
            NOM_PARA='K1_MPA',
-           VALE_CALC=1.0907130528610693,
+           VALE_CALC=1.0906124205365633,
            )
 TEST_TABLE(TABLE=CGKleg,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=0.354497665,),
            NOM_PARA='K1_MPA',
-           VALE_CALC=1.42884884217,
+           VALE_CALC=1.4288944236131575,
            )
 
 #----------------------------------------------------------------------
@@ -506,7 +506,7 @@ TEST_TABLE(TABLE=CGleg2,
            PRECISION=2.E-4,
            REFERENCE='AUTRE_ASTER',
            VALE_REFE=9.21683395221,
-           VALE_CALC=9.21776645806,
+           VALE_CALC=9.21671801580147,
            )
 TEST_TABLE(TABLE=CGleg2,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -515,7 +515,7 @@ TEST_TABLE(TABLE=CGleg2,
            PRECISION=2.E-4,
            REFERENCE='AUTRE_ASTER',
            VALE_REFE=7.61774576541,
-           VALE_CALC=7.61657902756,
+           VALE_CALC=7.617065382404988,
            )
 
 TEST_TABLE(TABLE=CGKleg2,
@@ -524,10 +524,10 @@ TEST_TABLE(TABLE=CGKleg2,
                      PRECISION=1.E-11,
                      VALE=0.0,),
            NOM_PARA='K1_MPA',
-           PRECISION=8.E-3,
+           PRECISION=9.E-3,
            REFERENCE='AUTRE_ASTER',
            VALE_REFE=1.09075614797,
-           VALE_CALC=1.0821060449096038,
+           VALE_CALC=1.0819351041150367,
            )
 TEST_TABLE(TABLE=CGKleg2,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -536,7 +536,7 @@ TEST_TABLE(TABLE=CGKleg2,
            PRECISION=1.E-3,
            REFERENCE='AUTRE_ASTER',
            VALE_REFE=1.42890497938,
-           VALE_CALC=1.43021048518,
+           VALE_CALC=1.430299297162569,
            )
 
 
@@ -556,7 +556,7 @@ TEST_TABLE(TABLE=CGlagno,
            PRECISION=1.3E-1,
            REFERENCE='AUTRE_ASTER',
            VALE_REFE=9.21683395221,
-           VALE_CALC=8.04320597763,
+           VALE_CALC=8.04222016396086,
            )
 TEST_TABLE(TABLE=CGlagno,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -565,7 +565,7 @@ TEST_TABLE(TABLE=CGlagno,
            PRECISION=3.E-2,
            REFERENCE='AUTRE_ASTER',
            VALE_REFE=7.61774576541,
-           VALE_CALC=7.43595734928,
+           VALE_CALC=7.436415481915232,
            )
 
 TEST_TABLE(TABLE=CGKlano,
@@ -577,7 +577,7 @@ TEST_TABLE(TABLE=CGKlano,
            PRECISION=5.E-2,
            REFERENCE='AUTRE_ASTER',
            VALE_REFE=9.21683395221,
-           VALE_CALC=9.60693844043,
+           VALE_CALC=9.605794567403667,
            )
 TEST_TABLE(TABLE=CGKlano,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -586,7 +586,7 @@ TEST_TABLE(TABLE=CGKlano,
            PRECISION=3.E-2,
            REFERENCE='AUTRE_ASTER',
            VALE_REFE=7.61774576541,
-           VALE_CALC=7.7847371844,
+           VALE_CALC=7.785224938483451,
            )
 
 #----------------------------------------------------------------------
@@ -605,7 +605,7 @@ TEST_TABLE(TABLE=CGlag,
            PRECISION=2.1E-1,
            REFERENCE='AUTRE_ASTER',
            VALE_REFE=9.21683395221,
-           VALE_CALC=7.31114030771,
+           VALE_CALC=7.310228813693165,
            )
 TEST_TABLE(TABLE=CGlag,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -614,7 +614,7 @@ TEST_TABLE(TABLE=CGlag,
            PRECISION=6.E-2,
            REFERENCE='AUTRE_ASTER',
            VALE_REFE=7.61774576541,
-           VALE_CALC=7.23627747521,
+           VALE_CALC=7.236720367498197,
            )
 
 TEST_TABLE(TABLE=CGKlag,
@@ -626,7 +626,7 @@ TEST_TABLE(TABLE=CGKlag,
            PRECISION=4.E-2,
            REFERENCE='AUTRE_ASTER',
            VALE_REFE=9.21683395221,
-           VALE_CALC=8.91600118292,
+           VALE_CALC=8.914971138632737,
            )
 TEST_TABLE(TABLE=CGKlag,
            FILTRE=_F(NOM_PARA='ABSC_CURV',
@@ -635,7 +635,7 @@ TEST_TABLE(TABLE=CGKlag,
            PRECISION=2.E-2,
            REFERENCE='AUTRE_ASTER',
            VALE_REFE=7.61774576541,
-           VALE_CALC=7.48019879988,
+           VALE_CALC=7.480664881175784,
            )
 
 FIN()

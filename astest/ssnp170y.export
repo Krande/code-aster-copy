@@ -5,5 +5,5 @@ P mpi_nbcpu 1
 P mpi_nbnoeud 1
 P testlist ci verification sequential
 
-F comm ssnp170r.comm D 1
+F comm ssnp170y.comm D 1
 F mmed ssnp170y.mmed D 20

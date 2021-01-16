@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -845,9 +845,9 @@ IMPR_FONCTION(FORMAT='XMGRACE',
 # -----------
 
 # valeurs de référence (thermique)
-Gref1=1923020.50827
-Gref2=1922612.72586
-Gref3=1922816.61714
+Gref1=1923008.6597719912
+Gref2=1922600.1811964007
+Gref3=1922804.4205562673
 
 # G de CALC_G Reference pour les 3 couronnes
 TEST_TABLE(TABLE=GREF1,
@@ -885,7 +885,7 @@ TEST_TABLE(TABLE=GINIPG1,
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.02e-2,
            VALE_REFE=Gref1,
-           VALE_CALC=1923369.87866, # pour la non-régression
+           VALE_CALC=1923368.6227764161, # pour la non-régression
            )
 
 TEST_TABLE(TABLE=GINIPG2,
@@ -893,9 +893,9 @@ TEST_TABLE(TABLE=GINIPG2,
            TYPE_TEST='MAX',
            CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
-           PRECISION=0.04e-2,
+           PRECISION=0.05e-2,
            VALE_REFE=Gref2,
-           VALE_CALC=1923362.00723, # pour la non-régression
+           VALE_CALC=1923372.7432996256, # pour la non-régression
            )
 
 TEST_TABLE(TABLE=GINIPG3,
@@ -905,7 +905,7 @@ TEST_TABLE(TABLE=GINIPG3,
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.04e-2,
            VALE_REFE=Gref3,
-           VALE_CALC=1923365.94297, # pour la non-régression
+           VALE_CALC=1923370.68306025, # pour la non-régression
            )          
 
 # G de CALC_G Etat Initial avec Contrainte aux Noeuds par élément, pour les 3 couronnes                     
@@ -916,7 +916,7 @@ TEST_TABLE(TABLE=GINIEL1,
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.02e-2,
            VALE_REFE=Gref1,
-           VALE_CALC=1923369.87866, # pour la non-régression
+           VALE_CALC=1923368.6227764161, # pour la non-régression
            )
 
 TEST_TABLE(TABLE=GINIEL2,
@@ -924,9 +924,9 @@ TEST_TABLE(TABLE=GINIEL2,
            TYPE_TEST='MAX',
            CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
-           PRECISION=0.04e-2,
+           PRECISION=0.05e-2,
            VALE_REFE=Gref2,
-           VALE_CALC=1923362.00723, # pour la non-régression
+           VALE_CALC=1923372.7432996256, # pour la non-régression
            )
 
 TEST_TABLE(TABLE=GINIEL3,
@@ -936,7 +936,7 @@ TEST_TABLE(TABLE=GINIEL3,
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.04e-2,
            VALE_REFE=Gref3,
-           VALE_CALC=1923365.94297, # pour la non-régression
+           VALE_CALC=1923370.68306025, # pour la non-régression
            )         
 
 # G de CALC_G Etat Initial avec Contrainte aux Noeuds, pour les 3 couronnes                     
@@ -947,7 +947,7 @@ TEST_TABLE(TABLE=GININO1,
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.02e-2,
            VALE_REFE=Gref1,
-           VALE_CALC=1923339.06307, # pour la non-régression
+           VALE_CALC=1923330.662016543, # pour la non-régression
            )
 
 TEST_TABLE(TABLE=GININO2,
@@ -957,7 +957,7 @@ TEST_TABLE(TABLE=GININO2,
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.06e-2,
            VALE_REFE=Gref2,
-           VALE_CALC=1923601.95943, # pour la non-régression
+           VALE_CALC=1923597.0716962663, # pour la non-régression
            )
 
 TEST_TABLE(TABLE=GININO3,
@@ -967,7 +967,7 @@ TEST_TABLE(TABLE=GININO3,
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.05e-2,
            VALE_REFE=Gref3,
-           VALE_CALC=1923470.51132, # pour la non-régression
+           VALE_CALC=1923463.8669285013, # pour la non-régression
            )  
 
 
@@ -986,7 +986,7 @@ TEST_TABLE(TABLE=GKREF1,
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.02e-2,
            VALE_REFE=Gref1,
-           VALE_CALC=1923020.50827 , # pour la non-régression
+           VALE_CALC=1923008.6597719905 , # pour la non-régression
            )  
 
 TEST_TABLE(TABLE=GKREF2,
@@ -996,7 +996,7 @@ TEST_TABLE(TABLE=GKREF2,
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.03e-2,
            VALE_REFE=Gref2,
-           VALE_CALC=1922612.72586 , # pour la non-régression
+           VALE_CALC=1922600.1811964002 , # pour la non-régression
            ) 
 
 TEST_TABLE(TABLE=GKREF3,
@@ -1006,7 +1006,7 @@ TEST_TABLE(TABLE=GKREF3,
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.04e-2,
            VALE_REFE=Gref3,
-           VALE_CALC= 1922816.61714, # pour la non-régression
+           VALE_CALC= 1922804.4205562673, # pour la non-régression
            ) 
 
 # G de CALC_K_G Etat Initial avec Contrainte aux Points de Gauss, pour les 3 couronnes
@@ -1015,9 +1015,9 @@ TEST_TABLE(TABLE=GKINIPG1,
            TYPE_TEST='MAX',
            CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
-           PRECISION=0.02e-2,
+           PRECISION=0.03e-2,
            VALE_REFE=Gref1,
-           VALE_CALC=1923395.99936, # pour la non-régression
+           VALE_CALC=1923416.3163279886, # pour la non-régression
            )  
 
 TEST_TABLE(TABLE=GKINIPG2,
@@ -1027,7 +1027,7 @@ TEST_TABLE(TABLE=GKINIPG2,
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.05e-2,
            VALE_REFE=Gref2,
-           VALE_CALC=1923435.22455, # pour la non-régression
+           VALE_CALC=1923518.0090642276, # pour la non-régression
            ) 
 
 TEST_TABLE(TABLE=GKINIPG3,
@@ -1037,7 +1037,7 @@ TEST_TABLE(TABLE=GKINIPG3,
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.04e-2,
            VALE_REFE=Gref3,
-           VALE_CALC=1923415.61198, # pour la non-régression
+           VALE_CALC=1923467.1627183682, # pour la non-régression
            ) 
 
 
@@ -1047,9 +1047,9 @@ TEST_TABLE(TABLE=GKINIEL1,
            TYPE_TEST='MAX',
            CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
-           PRECISION=0.02e-2,
+           PRECISION=0.03e-2,
            VALE_REFE=Gref1,
-           VALE_CALC=1923395.99936, # pour la non-régression
+           VALE_CALC=1923416.3163279886, # pour la non-régression
            )  
 
 TEST_TABLE(TABLE=GKINIEL2,
@@ -1059,7 +1059,7 @@ TEST_TABLE(TABLE=GKINIEL2,
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.05e-2,
            VALE_REFE=Gref2,
-           VALE_CALC=1923435.22455, # pour la non-régression
+           VALE_CALC=1923518.0090642276, # pour la non-régression
            ) 
 
 TEST_TABLE(TABLE=GKINIEL3,
@@ -1069,7 +1069,7 @@ TEST_TABLE(TABLE=GKINIEL3,
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.04e-2,
            VALE_REFE=Gref3,
-           VALE_CALC=1923415.61198, # pour la non-régression
+           VALE_CALC=1923467.1627183682, # pour la non-régression
            ) 
 
 # G de CALC_K_G Etat Initial avec Contrainte aux Noeuds, pour les 3 couronnes
@@ -1080,7 +1080,7 @@ TEST_TABLE(TABLE=GKININO1,
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.02e-2,
            VALE_REFE=Gref1,
-           VALE_CALC=1923130.30252, # pour la non-régression
+           VALE_CALC=1923143.439872442, # pour la non-régression
            )  
 
 TEST_TABLE(TABLE=GKININO2,
@@ -1090,7 +1090,7 @@ TEST_TABLE(TABLE=GKININO2,
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.04e-2,
            VALE_REFE=Gref2,
-           VALE_CALC=1923293.91284, # pour la non-régression
+           VALE_CALC=1923364.3913726436, # pour la non-régression
            ) 
 
 TEST_TABLE(TABLE=GKININO3,
@@ -1100,7 +1100,7 @@ TEST_TABLE(TABLE=GKININO3,
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.04e-2,
            VALE_REFE=Gref3,
-           VALE_CALC=1923212.10775, # pour la non-régression
+           VALE_CALC=1923253.915694648, # pour la non-régression
            )
 
 
@@ -1108,9 +1108,9 @@ TEST_TABLE(TABLE=GKININO3,
 # -------------
 
 # K1 : valeurs de référence (thermique)
-Kref1=663460384.573532
-Kref2=673917231.8458568
-Kref3=668688808.0629863
+Kref1=663459112.7706658
+Kref2=673916230.0928743
+Kref3=668687671.2850593
 
 TEST_TABLE(TABLE=GKREF1,
            NOM_PARA='K1',
@@ -1148,9 +1148,9 @@ TEST_TABLE(TABLE=GKINIPG1,
                      VALE=89.8555,),
            CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
-           PRECISION=0.01e-2,
+           PRECISION=0.02e-2,
            VALE_REFE=Kref1,
-           VALE_CALC=663522635.905865, # pour la non-régression
+           VALE_CALC=663525810.0052992, # pour la non-régression
            ) 
 
 TEST_TABLE(TABLE=GKINIPG2,
@@ -1161,7 +1161,7 @@ TEST_TABLE(TABLE=GKINIPG2,
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.01e-2,
            VALE_REFE=Kref2,
-           VALE_CALC=673964476.183042, # pour la non-régression
+           VALE_CALC=673977301.3582239, # pour la non-régression
            ) 
 
 TEST_TABLE(TABLE=GKINIPG3,
@@ -1172,7 +1172,7 @@ TEST_TABLE(TABLE=GKINIPG3,
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.01e-2,
            VALE_REFE=Kref3,
-           VALE_CALC=668743555.8988272, # pour la non-régression
+           VALE_CALC=668751555.5360945, # pour la non-régression
            )        
 
 
@@ -1182,9 +1182,9 @@ TEST_TABLE(TABLE=GKINIEL1,
                      VALE=89.8555,),
            CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
-           PRECISION=0.01e-2,
+           PRECISION=0.02e-2,
            VALE_REFE=Kref1,
-           VALE_CALC=663522635.905865, # pour la non-régression
+           VALE_CALC=663525810.0052992, # pour la non-régression
            ) 
 
 TEST_TABLE(TABLE=GKINIEL2,
@@ -1195,7 +1195,7 @@ TEST_TABLE(TABLE=GKINIEL2,
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.01e-2,
            VALE_REFE=Kref2,
-           VALE_CALC=673964476.183042, # pour la non-régression
+           VALE_CALC=673977301.3582239, # pour la non-régression
            ) 
 
 TEST_TABLE(TABLE=GKINIEL3,
@@ -1206,7 +1206,7 @@ TEST_TABLE(TABLE=GKINIEL3,
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.01e-2,
            VALE_REFE=Kref3,
-           VALE_CALC=668743555.8988272, # pour la non-régression
+           VALE_CALC=668751555.5360945, # pour la non-régression
            ) 
 
 
@@ -1218,7 +1218,7 @@ TEST_TABLE(TABLE=GKININO1,
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.011e-2,
            VALE_REFE=Kref1,
-           VALE_CALC=663526759.363054, # pour la non-régression
+           VALE_CALC=663528992.029392, # pour la non-régression
            ) 
 
 TEST_TABLE(TABLE=GKININO2,
@@ -1227,9 +1227,9 @@ TEST_TABLE(TABLE=GKININO2,
                      VALE=89.8555,),
            CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
-           PRECISION=0.01e-2,
+           PRECISION=0.02e-2,
            VALE_REFE=Kref2,
-           VALE_CALC=673983060.8835199, # pour la non-régression
+           VALE_CALC=673995041.1367469, # pour la non-régression
            ) 
 
 TEST_TABLE(TABLE=GKININO3,
@@ -1238,9 +1238,9 @@ TEST_TABLE(TABLE=GKININO3,
                      VALE=89.8555,),
            CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
-           PRECISION=0.01e-2,
+           PRECISION=0.02e-2,
            VALE_REFE=Kref3,
-           VALE_CALC=668754909.977671, # pour la non-régression
+           VALE_CALC=668762016.4374267, # pour la non-régression
            ) 
 
 
@@ -1248,7 +1248,7 @@ TEST_TABLE(TABLE=GKININO3,
 # ------------------
 
 # K1 : valeurs de référence pour POST_K1_K2_K3 (thermique)
-Kpk1=621498251.587
+Kpk1=621503720.1125491
 
 TEST_TABLE(TABLE=KREF,
            NOM_PARA='K1',
@@ -1265,7 +1265,7 @@ TEST_TABLE(TABLE=KINI,
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.01e-2,
            VALE_REFE=Kpk1,
-           VALE_CALC=621498251.587, # pour la non-régression
+           VALE_CALC=621503720.1125672, # pour la non-régression
            ) 
 
 

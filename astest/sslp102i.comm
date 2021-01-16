@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -276,7 +276,7 @@ TEST_TABLE(
 
 #TEST DES G ISSUS DU CALCUL AVEC PRE-DEFORMATION
 TEST_TABLE(
-           VALE_CALC=0.630512145607037,
+           VALE_CALC=0.6305130295628567,
            VALE_REFE=Gther1,
            PRECISION=1.E-4,
            CRITERE='RELATIF',
@@ -291,7 +291,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.6304101254323418,
+           VALE_CALC=0.6304110091918044,
            VALE_REFE=Gther2,
            PRECISION=1.E-4,
            CRITERE='RELATIF',
@@ -306,7 +306,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.630332229454678,
+           VALE_CALC=0.6303331115770049,
            VALE_REFE=Gther3,
            PRECISION=1.E-4,
            CRITERE='RELATIF',
@@ -321,7 +321,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.6302529299662593,
+           VALE_CALC=0.6302538257296033,
            VALE_REFE=Gther4,
            PRECISION=1.E-4,
            CRITERE='RELATIF',
