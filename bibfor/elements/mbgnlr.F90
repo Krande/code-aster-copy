@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine mbgnlr(option,vecteu,matric,nno,ncomp,imate,icompo,dff,alpha,beta,h,&
-                  preten,igeom,ideplm,ideplp,kpg,fami,ipoids,icontp,ivectu,imatuu)
 !
-    implicit none
+subroutine mbgnlr(lVect , lMatr ,&
+                  nno   , ncomp , imate , icompo,&
+                  dff   , alpha , beta  , h     ,&
+                  preten, igeom , ideplm, ideplp,&
+                  kpg   , fami  , ipoids, icontp,&
+                  ivectu, imatuu)
+!
+implicit none
+!
 #include "asterfort/r8inir.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
@@ -34,13 +39,13 @@ subroutine mbgnlr(option,vecteu,matric,nno,ncomp,imate,icompo,dff,alpha,beta,h,&
 #include "asterfort/subacv.h"
 #include "asterfort/utmess.h"
 !
-    character(len=4) :: fami
-    character(len=16) :: option
-    integer :: nno, ncomp, kpg
-    integer :: imate, icompo, igeom, ideplm, ideplp, ipoids, icontp, ivectu
-    integer :: imatuu
-    real(kind=8) :: dff(2, nno), alpha, beta, h, preten
-    aster_logical :: vecteu, matric
+aster_logical, intent(in) :: lVect, lMatr
+character(len=4) :: fami
+integer :: nno, ncomp, kpg
+integer :: imate, icompo, igeom, ideplm, ideplp, ipoids, icontp, ivectu
+integer :: imatuu
+real(kind=8) :: dff(2, nno), alpha, beta, h, preten
+!
 ! ----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS DE COMPORTEMENT :
 !                            - FULL_MECA
@@ -48,8 +53,7 @@ subroutine mbgnlr(option,vecteu,matric,nno,ncomp,imate,icompo,dff,alpha,beta,h,&
 !                            - RIGI_MECA_TANG
 !                          POUR LES MEMBRANES EN GRANDES DEFORMATIONS
 ! ----------------------------------------------------------------------
-! IN  OPTION            OPTION DE CALCUL
-!     NOMTE             NOM DU TYPE ELEMENT
+! IN  NOMTE             NOM DU TYPE ELEMENT
 !     VECTEU            BOOL: 1 SI FULL_MECA OU RAPH_MECA
 !     MATRIC            BOOL: 1 SI FULL_MECA OU RIGI_MECA
 !     NNO               NOMBRE DE NOEUDS
@@ -74,8 +78,7 @@ subroutine mbgnlr(option,vecteu,matric,nno,ncomp,imate,icompo,dff,alpha,beta,h,&
 !
 ! OUT ***          ***
 ! ----------------------------------------------------------------------
-! aslint: disable=W1504
-!
+
     integer :: n, nn, c, incm
     real(kind=8) :: posdef(3*nno)
     real(kind=8) :: covaini(3, 3), metrini(2, 2), jacini, cnvaini(3, 2), aini(2, 2)
@@ -84,12 +87,6 @@ subroutine mbgnlr(option,vecteu,matric,nno,ncomp,imate,icompo,dff,alpha,beta,h,&
     real(kind=8) :: ktgt(3*nno,3*nno)
     real(kind=8) :: vecfie(3*nno)
        
-! - ON S'ASSURE QUE L'OPTION UTILISEE EST PRISE EN COMPTE
-!
-    if ((option .ne.'FULL_MECA').and. (option .ne.'RAPH_MECA')&
-                       .and. (option.ne.'RIGI_MECA_TANG')) then
-        ASSERT(.false.)
-    end if
     
 ! - CALCUL DES COORDONNEES COVARIANTES ET CONTRAVARIANTES DE LA SURFACE INITIALE
     call subaco(nno, dff, zr(igeom), covaini)
@@ -127,11 +124,11 @@ subroutine mbgnlr(option,vecteu,matric,nno,ncomp,imate,icompo,dff,alpha,beta,h,&
     
 ! - ON CALCUL LA MATRICE TANGENTE ELEMENTAIRE DUE AUX EFFORTS INTERNES
 !
-    if ((option(1:9).eq.'FULL_MECA').or. (option(1:10).eq.'RIGI_MECA_')) then
+    if (lMatr) then
         call mbtgin(nno,kpg,dff,sigpk2,dsigpk2,ipoids,h,covadef,ktgt)
     end if
     
-    if ((option .eq.'RAPH_MECA').or. (option(1:9).eq.'FULL_MECA')) then
+    if (lVect) then
     
 ! ---   ON EN DEDUIT LES CONTRAINTES INTEGREES (SUR L'EPAISSEUR) DE CAUCHY
 ! ---   SIGMA_CAUCHY = (SIGMA11, SIGMA22, SIGMA12)     
@@ -149,7 +146,7 @@ subroutine mbgnlr(option,vecteu,matric,nno,ncomp,imate,icompo,dff,alpha,beta,h,&
     
 ! - RANGEMENT DES RESULTATS
 !
-    if (vecteu) then
+    if (lVect) then
         do n = 1, 3*nno
             zr(ivectu + n - 1) = zr(ivectu + n - 1) + vecfie(n)*jacini
         end do
@@ -160,7 +157,7 @@ subroutine mbgnlr(option,vecteu,matric,nno,ncomp,imate,icompo,dff,alpha,beta,h,&
     
     
     
-    if (matric) then
+    if (lMatr) then
         incm = 0
         do n = 1, 3*nno
             do nn = 1, n

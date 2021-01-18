@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 !
 interface
-    subroutine mbgnlr(option,vecteu,matric,nno,ncomp,imate,icompo,dff,alpha,beta,&
-                  h,preten,igeom,ideplm,ideplp,kpg,fami,ipoids,icontp,ivectu,imatuu)
-    character(len=4) :: fami
-    character(len=16) :: option
-    integer :: nno, ncomp, kpg
-    integer :: imate, icompo, igeom, ideplm, ideplp, ipoids, icontp, ivectu
-    integer :: imatuu
-    real(kind=8) :: dff(2, nno), alpha, beta, h, preten
-    aster_logical :: vecteu, matric
+    subroutine mbgnlr(lVect , lMatr ,&
+                      nno   , ncomp , imate , icompo,&
+                      dff   , alpha , beta  , h     ,&
+                      preten, igeom , ideplm, ideplp,&
+                      kpg   , fami  , ipoids, icontp,&
+                      ivectu, imatuu)
+        aster_logical, intent(in) :: lVect, lMatr
+        character(len=4) :: fami
+        integer :: nno, ncomp, kpg
+        integer :: imate, icompo, igeom, ideplm, ideplp, ipoids, icontp, ivectu
+        integer :: imatuu
+        real(kind=8) :: dff(2, nno), alpha, beta, h, preten
     end subroutine mbgnlr
 end interface
