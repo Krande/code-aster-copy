@@ -61,7 +61,7 @@ affectMat.addMaterialsOnMesh(acier)
 affectMat.buildWithoutExternalVariable()
 
 charCine = code_aster.MechanicalDirichletBC(model)
-charCine.addImposedMechanicalDOFOnNodes(code_aster.PhysicalQuantityComponent.Dx, 0., "COTE_B")
+charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dx, 0., "COTE_B")
 charCine.build()
 
 study = code_aster.StudyDescription(model, affectMat)

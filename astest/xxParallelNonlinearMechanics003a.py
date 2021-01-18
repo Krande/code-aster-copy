@@ -23,7 +23,7 @@ from code_aster.Commands import *
 code_aster.init("--test")
 
 # test = xxParallelNonlinearMechanics002a mais chargement sur noeuds
-#                                     (addImposedMechanicalDOFOnNodes)
+#                                     (addBCOnNodes)
 
 test = code_aster.TestCase()
 
@@ -53,11 +53,11 @@ affectMat.addMaterialsOnMesh(acier)
 affectMat.buildWithoutExternalVariable()
 
 charMeca1 = code_aster.MechanicalDirichletBC(monModel)
-charMeca1.addImposedMechanicalDOFOnNodes(
+charMeca1.addBCOnNodes(
     code_aster.PhysicalQuantityComponent.Dx, 0., "Surf6N")
-charMeca1.addImposedMechanicalDOFOnNodes(
+charMeca1.addBCOnNodes(
     code_aster.PhysicalQuantityComponent.Dy, 0., "Surf6N")
-charMeca1.addImposedMechanicalDOFOnNodes(
+charMeca1.addBCOnNodes(
     code_aster.PhysicalQuantityComponent.Dz, 0., "Surf6N")
 charMeca1.build()
 test.assertEqual(charMeca1.getType(), "CHAR_CINE_MECA")

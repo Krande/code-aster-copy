@@ -31,35 +31,35 @@ void exportDirichletBCToPython() {
 
     bool ( MechanicalDirichletBCClass::*c1 )( const PhysicalQuantityComponent &,
                                                     const double &, const std::string & ) =
-        &MechanicalDirichletBCClass::addImposedMechanicalDOFOnCells;
+        &MechanicalDirichletBCClass::addBCOnCells;
     bool ( MechanicalDirichletBCClass::*c2 )(
         const PhysicalQuantityComponent &, const double &, const VectorString & ) =
-        &MechanicalDirichletBCClass::addImposedMechanicalDOFOnCells;
+        &MechanicalDirichletBCClass::addBCOnCells;
 
     bool ( MechanicalDirichletBCClass::*c3 )( const PhysicalQuantityComponent &,
                                                     const double &, const std::string & ) =
-        &MechanicalDirichletBCClass::addImposedMechanicalDOFOnNodes;
+        &MechanicalDirichletBCClass::addBCOnNodes;
     bool ( MechanicalDirichletBCClass::*c4 )(
         const PhysicalQuantityComponent &, const double &, const VectorString & ) =
-        &MechanicalDirichletBCClass::addImposedMechanicalDOFOnNodes;
+        &MechanicalDirichletBCClass::addBCOnNodes;
 
     bool ( ThermalDirichletBCClass::*c5 )( const PhysicalQuantityComponent &, const double &,
                                                  const std::string & ) =
-        &ThermalDirichletBCClass::addImposedThermalDOFOnCells;
+        &ThermalDirichletBCClass::addBCOnCells;
     bool ( ThermalDirichletBCClass::*c6 )( const PhysicalQuantityComponent &, const double &,
                                                  const VectorString & ) =
-        &ThermalDirichletBCClass::addImposedThermalDOFOnCells;
+        &ThermalDirichletBCClass::addBCOnCells;
 
     bool ( ThermalDirichletBCClass::*c7 )( const PhysicalQuantityComponent &, const double &,
                                                  const std::string & ) =
-        &ThermalDirichletBCClass::addImposedThermalDOFOnNodes;
+        &ThermalDirichletBCClass::addBCOnNodes;
     bool ( ThermalDirichletBCClass::*c8 )( const PhysicalQuantityComponent &, const double &,
                                                  const VectorString & ) =
-        &ThermalDirichletBCClass::addImposedThermalDOFOnNodes;
+        &ThermalDirichletBCClass::addBCOnNodes;
     bool ( ThermalDirichletBCClass::*c9 )( const PhysicalQuantityComponent &,
                                                  const FunctionPtr &,
                                                  const VectorString & ) =
-        &ThermalDirichletBCClass::addImposedThermalDOFOnNodes;
+        &ThermalDirichletBCClass::addBCOnNodes;
 
     py::class_< DirichletBCClass, DirichletBCClass::DirichletBCPtr,
                 py::bases< DataStructure > >( "DirichletBC", py::no_init )
@@ -81,10 +81,10 @@ Returns:
             &initFactoryPtr< MechanicalDirichletBCClass, ModelPtr >))
         .def( "__init__", py::make_constructor(
             &initFactoryPtr< MechanicalDirichletBCClass, std::string, ModelPtr >))
-        .def( "addImposedMechanicalDOFOnCells", c1 )
-        .def( "addImposedMechanicalDOFOnCells", c2 )
-        .def( "addImposedMechanicalDOFOnNodes", c3 )
-        .def( "addImposedMechanicalDOFOnNodes", c4 );
+        .def( "addBCOnCells", c1 )
+        .def( "addBCOnCells", c2 )
+        .def( "addBCOnNodes", c3 )
+        .def( "addBCOnNodes", c4 );
 
     py::class_< ThermalDirichletBCClass,
                 ThermalDirichletBCClass::ThermalDirichletBCPtr,
@@ -93,11 +93,11 @@ Returns:
             &initFactoryPtr< ThermalDirichletBCClass, ModelPtr >))
         .def( "__init__", py::make_constructor(
             &initFactoryPtr< ThermalDirichletBCClass, std::string, ModelPtr >))
-        .def( "addImposedThermalDOFOnCells", c5 )
-        .def( "addImposedThermalDOFOnCells", c6 )
-        .def( "addImposedThermalDOFOnNodes", c7 )
-        .def( "addImposedThermalDOFOnNodes", c8 )
-        .def( "addImposedThermalDOFOnNodes", c9 );
+        .def( "addBCOnCells", c5 )
+        .def( "addBCOnCells", c6 )
+        .def( "addBCOnNodes", c7 )
+        .def( "addBCOnNodes", c8 )
+        .def( "addBCOnNodes", c9 );
 
     py::class_< AcousticDirichletBCClass,
                 AcousticDirichletBCClass::AcousticDirichletBCPtr,

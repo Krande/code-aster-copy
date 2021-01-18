@@ -53,14 +53,14 @@ affectMat.addMaterialsOnMesh( acier )
 affectMat.buildWithoutExternalVariable()
 
 charMeca1 = code_aster.MechanicalDirichletBC(monModel)
-charMeca1.addImposedMechanicalDOFOnCells(code_aster.PhysicalQuantityComponent.Dx, 0., "COTE_B")
-charMeca1.addImposedMechanicalDOFOnCells(code_aster.PhysicalQuantityComponent.Dy, 0., "COTE_B")
-charMeca1.addImposedMechanicalDOFOnCells(code_aster.PhysicalQuantityComponent.Dz, 0., "COTE_B")
+charMeca1.addBCOnCells(code_aster.PhysicalQuantityComponent.Dx, 0., "COTE_B")
+charMeca1.addBCOnCells(code_aster.PhysicalQuantityComponent.Dy, 0., "COTE_B")
+charMeca1.addBCOnCells(code_aster.PhysicalQuantityComponent.Dz, 0., "COTE_B")
 charMeca1.build()
 
 charMeca2 = code_aster.MechanicalDirichletBC(monModel)
-charMeca2.addImposedMechanicalDOFOnCells(code_aster.PhysicalQuantityComponent.Dy, 0.1, "COTE_H")
-charMeca2.addImposedMechanicalDOFOnCells(code_aster.PhysicalQuantityComponent.Dz, 0.1, "COTE_H")
+charMeca2.addBCOnCells(code_aster.PhysicalQuantityComponent.Dy, 0.1, "COTE_H")
+charMeca2.addBCOnCells(code_aster.PhysicalQuantityComponent.Dz, 0.1, "COTE_H")
 charMeca2.build()
 
 # Define the nonlinear method that will be used

@@ -36,13 +36,13 @@ monModel.addModelingOnMesh(code_aster.Physics.Mechanics,
 monModel.build()
 
 charCine = code_aster.MechanicalDirichletBC(monModel)
-charCine.addImposedMechanicalDOFOnCells(code_aster.PhysicalQuantityComponent.Dx,
+charCine.addBCOnCells(code_aster.PhysicalQuantityComponent.Dx,
                                            0., "Bas")
 test.assertEqual( charCine.getType(), "CHAR_CINE_MECA" )
 
 # Impossible d'affecter un blocage en temperature sur un DEPL
 with test.assertRaises( RuntimeError ):
-    charCine.addImposedMechanicalDOFOnCells(code_aster.PhysicalQuantityComponent.Temp,
+    charCine.addBCOnCells(code_aster.PhysicalQuantityComponent.Temp,
                                                0., "Haut")
 
 charCine.build()

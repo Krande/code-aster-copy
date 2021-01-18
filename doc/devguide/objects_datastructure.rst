@@ -20,6 +20,15 @@
 
 
 ================================================================================
+:py:class:`~code_aster.Objects.AcousticDirichletBC` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.AcousticDirichletBC
+   :show-inheritance:
+   :members:
+
+
+================================================================================
 :py:class:`~code_aster.Objects.AcousticLoad` object
 ================================================================================
 
@@ -213,6 +222,15 @@
 ================================================================================
 
 .. autoclass:: code_aster.Objects.DataField
+   :show-inheritance:
+   :members:
+
+
+================================================================================
+:py:class:`~code_aster.Objects.DirichletBC` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.DirichletBC
    :show-inheritance:
    :members:
 
@@ -731,42 +749,6 @@
 
 
 ================================================================================
-:py:class:`~code_aster.Objects.AcousticDirichletBC` object
-================================================================================
-
-.. autoclass:: code_aster.Objects.AcousticDirichletBC
-   :show-inheritance:
-   :members:
-
-
-================================================================================
-:py:class:`~code_aster.Objects.DirichletBC` object
-================================================================================
-
-.. autoclass:: code_aster.Objects.DirichletBC
-   :show-inheritance:
-   :members:
-
-
-================================================================================
-:py:class:`~code_aster.Objects.MechanicalDirichletBC` object
-================================================================================
-
-.. autoclass:: code_aster.Objects.MechanicalDirichletBC
-   :show-inheritance:
-   :members:
-
-
-================================================================================
-:py:class:`~code_aster.Objects.ThermalDirichletBC` object
-================================================================================
-
-.. autoclass:: code_aster.Objects.ThermalDirichletBC
-   :show-inheritance:
-   :members:
-
-
-================================================================================
 :py:class:`~code_aster.Objects.LdltSolver` object
 ================================================================================
 
@@ -843,6 +825,15 @@
 ================================================================================
 
 .. autoclass:: code_aster.Objects.MaterialField
+   :show-inheritance:
+   :members:
+
+
+================================================================================
+:py:class:`~code_aster.Objects.MechanicalDirichletBC` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.MechanicalDirichletBC
    :show-inheritance:
    :members:
 
@@ -1131,6 +1122,15 @@
 ================================================================================
 
 .. autoclass:: code_aster.Objects.TableOfFunctions
+   :show-inheritance:
+   :members:
+
+
+================================================================================
+:py:class:`~code_aster.Objects.ThermalDirichletBC` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.ThermalDirichletBC
    :show-inheritance:
    :members:
 

@@ -43,9 +43,9 @@ affectMat.addMaterialsOnMesh( acier )
 affectMat.buildWithoutExternalVariable()
 
 charMeca1 = code_aster.MechanicalDirichletBC(monModel)
-charMeca1.addImposedMechanicalDOFOnNodes(code_aster.PhysicalQuantityComponent.Dx, 0., "Bas")
-charMeca1.addImposedMechanicalDOFOnNodes(code_aster.PhysicalQuantityComponent.Dy, 0., "Bas")
-charMeca1.addImposedMechanicalDOFOnNodes(code_aster.PhysicalQuantityComponent.Dz, 0., "Bas")
+charMeca1.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dx, 0., "Bas")
+charMeca1.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dy, 0., "Bas")
+charMeca1.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dz, 0., "Bas")
 charMeca1.build()
 
 imposedPres1 = code_aster.PressureReal()

@@ -143,7 +143,7 @@ class MechanicalDirichletBCClass : public DirichletBCClass {
      * @param value Valeur imposee
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool addImposedMechanicalDOFOnCells(
+    bool addBCOnCells(
         const PhysicalQuantityComponent &coordinate, const double &value,
         const std::string &nameOfGroup ) {
         if ( !_model->getMesh()->hasGroupOfCells( nameOfGroup ) )
@@ -161,11 +161,11 @@ class MechanicalDirichletBCClass : public DirichletBCClass {
      * @param value Valeur imposee
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool addImposedMechanicalDOFOnCells(
+    bool addBCOnCells(
         const PhysicalQuantityComponent &coordinate, const double &value,
         const VectorString &namesOfGroup ) {
         for ( const auto &nameOfGroup : namesOfGroup )
-            addImposedMechanicalDOFOnCells( coordinate, value, nameOfGroup );
+            addBCOnCells( coordinate, value, nameOfGroup );
         return true;
     };
 
@@ -176,7 +176,7 @@ class MechanicalDirichletBCClass : public DirichletBCClass {
      * @return Booleen indiquant que tout s'est bien passe
      */
     bool
-    addImposedMechanicalDOFOnNodes( const PhysicalQuantityComponent &coordinate,
+    addBCOnNodes( const PhysicalQuantityComponent &coordinate,
                                     const double &value,
                                     const std::string &nameOfGroup ) {
         if ( !_model->getMesh()->hasGroupOfNodes( nameOfGroup ) )
@@ -194,11 +194,11 @@ class MechanicalDirichletBCClass : public DirichletBCClass {
      * @param value Valeur imposee
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool addImposedMechanicalDOFOnNodes(
+    bool addBCOnNodes(
         const PhysicalQuantityComponent &coordinate, const double &value,
         const VectorString &namesOfGroup ) {
         for ( const auto &nameOfGroup : namesOfGroup )
-            addImposedMechanicalDOFOnNodes( coordinate, value, nameOfGroup );
+            addBCOnNodes( coordinate, value, nameOfGroup );
         return true;
     };
 };
@@ -240,7 +240,7 @@ class ThermalDirichletBCClass : public DirichletBCClass {
      * @return Booleen indiquant que tout s'est bien passe
      */
     bool
-    addImposedThermalDOFOnCells( const PhysicalQuantityComponent &coordinate,
+    addBCOnCells( const PhysicalQuantityComponent &coordinate,
                                     const double &value,
                                     const std::string &nameOfGroup ) {
         if ( !_model->getMesh()->hasGroupOfCells( nameOfGroup ) )
@@ -258,11 +258,11 @@ class ThermalDirichletBCClass : public DirichletBCClass {
      * @param value Valeur imposee
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool addImposedThermalDOFOnCells(
+    bool addBCOnCells(
         const PhysicalQuantityComponent &coordinate, const double &value,
         const VectorString &namesOfGroup ) {
         for ( const auto &nameOfGroup : namesOfGroup )
-            addImposedThermalDOFOnCells( coordinate, value, nameOfGroup );
+            addBCOnCells( coordinate, value, nameOfGroup );
         return true;
     };
 
@@ -272,7 +272,7 @@ class ThermalDirichletBCClass : public DirichletBCClass {
      * @param value Valeur imposee
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool addImposedThermalDOFOnNodes( const PhysicalQuantityComponent &coordinate,
+    bool addBCOnNodes( const PhysicalQuantityComponent &coordinate,
                                       const double &value,
                                       const std::string &nameOfGroup ) {
         if ( !_model->getMesh()->hasGroupOfNodes( nameOfGroup ) )
@@ -290,11 +290,11 @@ class ThermalDirichletBCClass : public DirichletBCClass {
      * @param value Valeur imposee
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool addImposedThermalDOFOnNodes(
+    bool addBCOnNodes(
         const PhysicalQuantityComponent &coordinate, const double &value,
         const VectorString &namesOfGroup ) {
         for ( const auto &nameOfGroup : namesOfGroup )
-            addImposedThermalDOFOnNodes( coordinate, value, nameOfGroup );
+            addBCOnNodes( coordinate, value, nameOfGroup );
         return true;
     };
 
@@ -304,7 +304,7 @@ class ThermalDirichletBCClass : public DirichletBCClass {
      * @param FunctionPtr function imposee
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool addImposedThermalDOFOnNodes( const PhysicalQuantityComponent &coordinate,
+    bool addBCOnNodes( const PhysicalQuantityComponent &coordinate,
                                       const FunctionPtr &function,
                                       const std::string &nameOfGroup ) {
         if ( !_model->getMesh()->hasGroupOfNodes( nameOfGroup ) )
@@ -322,11 +322,11 @@ class ThermalDirichletBCClass : public DirichletBCClass {
      * @param FunctionPtr function imposee
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool addImposedThermalDOFOnNodes(
+    bool addBCOnNodes(
         const PhysicalQuantityComponent &coordinate, const FunctionPtr &function,
         const VectorString &namesOfGroup ) {
         for ( const auto &nameOfGroup : namesOfGroup )
-            addImposedThermalDOFOnNodes( coordinate, function, nameOfGroup );
+            addBCOnNodes( coordinate, function, nameOfGroup );
         return true;
     };
 };
@@ -368,7 +368,7 @@ class AcousticDirichletBCClass : public DirichletBCClass {
      * @param value Valeur imposee
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool addImposedAcousticDOFOnCells( const std::string &nameOfGroup,
+    bool addBCOnCells( const std::string &nameOfGroup,
                                           const double &value ) {
         throw std::runtime_error( "Not yet implemented" );
     };
@@ -379,7 +379,7 @@ class AcousticDirichletBCClass : public DirichletBCClass {
      * @param value Valeur imposee
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool addImposedAcousticDOFOnNodes( const std::string &nameOfGroup,
+    bool addBCOnNodes( const std::string &nameOfGroup,
                                        double value ) {
         throw std::runtime_error( "Not yet implemented" );
     };
