@@ -73,7 +73,7 @@ implicit none
     real(kind=8)      :: dford1(3), dford2(3), dfor(3), coorg(3), forcg(3)
     real(kind=8)      :: vf, dfde, dxde, dyde, dsde, poids
     real(kind=8)      :: th1, th2, dth1d1, dth2d2, th0, t(3), tcla
-    real(kind=8)      :: gradth0, gradt(3), dfxde, dfyde, fx, fy 
+    real(kind=8)      :: gradth0, gradt(3), dfxde, dfyde, fx, fy
     real(kind=8)      :: press, presg(2), prod, divt, forc, thet
     real(kind=8)      :: a1norm, a3norm, i2norm, dfdx(9), dfdy(9)
     real(kind=8)      :: presno, cisano, p(3,3), invp(3,3), devres(3)
@@ -87,8 +87,8 @@ implicit none
     aster_logical :: axi, fonc, l_not_zero
 !
     real(kind=8), pointer :: presn(:) => null()
-    real(kind=8), pointer :: forcn(:) => null()  
-    real(kind=8), pointer :: ffp(:) => null()  
+    real(kind=8), pointer :: forcn(:) => null()
+    real(kind=8), pointer :: ffp(:) => null()
 !
 ! =====================================================================
 !                       INITIALISATION PARAMETRES
@@ -112,11 +112,13 @@ implicit none
     reeldim = ndim + 1
     nbpara =reeldim + 1
     epsi = r8prem()
-    axi = .false.
+    axi = ASTER_FALSE
     tcla = 0.d0
     tcla1 = 0.d0
     tcla2 = 0.d0
     tcla3 = 0.d0
+    coeff_K1K2 = 0.d0
+    coeff_K3 = 0.d0
     nomres(1) = 'E'
     nomres(2) = 'NU'
     nomres(3) = 'ALPHA'
@@ -126,15 +128,15 @@ implicit none
         AS_ALLOCATE(vr=presn, size=nno)
     else
 !------ Pression/cisaillement
-        AS_ALLOCATE(vr=presn, size=reeldim*nno) 
-    endif       
+        AS_ALLOCATE(vr=presn, size=reeldim*nno)
+    endif
     AS_ALLOCATE(vr=forcn, size=reeldim*nno)
     AS_ALLOCATE(vr=ffp, size= nno)
-! 
+!
 !-- Cas 2D / Element de bord 1D
     if (reeldim .eq. 2) then
-        if (lteatt('AXIS','OUI')) axi = .true.
-    endif    
+        if (lteatt('AXIS','OUI')) axi = ASTER_TRUE
+    endif
 !
 ! =====================================================================
 !                       CALCUL DE THETA
@@ -146,7 +148,7 @@ implicit none
 !-- recuperation du champ de sortie
     call jevech('PGTHETA', 'E', igthet) ! champ de sortie
 !
-!-- Valeur de theta0(r) nulle sur element : pas de calcul 
+!-- Valeur de theta0(r) nulle sur element : pas de calcul
     compt = 0
     do i = 1, nno
         thet = zr(ithet-1+6*(i-1)+1)
@@ -160,15 +162,15 @@ implicit none
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PDEPLAR', 'L', idepl)
-    call jevech('PMATERC', 'L', imate)
     if (option .eq. 'CALCH_K_G' .or. option .eq. 'CALCH_K_G_F') then
+        call jevech('PMATERC', 'L', imate)
         call jevech('PBASLOR', 'L', ibalo)
         call jevech('PLSN', 'L', jlsn)
-        call jevech('PLST', 'L', jlst)        
+        call jevech('PLST', 'L', jlst)
     endif
 !
     if (option .eq. 'CALCH_G_F' .or. option .eq. 'CALCH_K_G_F' ) then
-        fonc = .true.
+        fonc = ASTER_TRUE
         call jevech('PPRESSF', 'L', ipref)
         call jevech('PTEMPSR', 'L', itemps)
         if (reeldim .eq. 3) then
@@ -186,7 +188,7 @@ implicit none
             valpar(3) = zr(itemps)
         endif
     else
-        fonc = .false.
+        fonc = ASTER_FALSE
         call jevech('PPRESSR', 'L', ipres)
         if (reeldim .eq. 3) then
             call jevech('PFR2D3D', 'L', iforc)
@@ -230,7 +232,7 @@ implicit none
 ! =====================================================================
 !
     if (reeldim .eq. 3) then
-!  
+!
         do j = 1, reeldim
             a1(j) = zr(igeom+3*(2-1)+j-1)- zr(igeom+3*(1-1)+j-1)
             a2(j) = zr(igeom+3*(3-1)+j-1)- zr(igeom+3*(1-1)+j-1)
@@ -285,7 +287,7 @@ implicit none
         dford2(:) = 0.d0
         dfor(:)   = 0.d0
         coorg(:)  = 0.d0
-        forcg(:)  = 0.d0    
+        forcg(:)  = 0.d0
         dxde      = 0.d0
         dyde      = 0.d0
         th1       = 0.d0
@@ -323,7 +325,7 @@ implicit none
 !
         if (reeldim .eq. 3) then
             call dfdm2d(nno, kp, ipoids, idfde, coor,&
-                        poids, dfdx, dfdy) 
+                        poids, dfdx, dfdy)
             do i = 1, nno
                 do j=1, reeldim
                     depl(j) = depl(j)+ zr(ivf+k+i-1)*zr(idepl+reeldim*(i-1)+j-1)
@@ -332,7 +334,7 @@ implicit none
         else
             do i = 1, nno
 !-------------- Voir pour utiliser dfdmd1 et mutualiser la routine
-!-------------- 2D : pression/cisaillement donc fointe différent entre les deux 
+!-------------- 2D : pression/cisaillement donc fointe différent entre les deux
                 vf = zr(ivf +k+i-1)
                 dfde = zr(idfde+k+i-1)
                 dxde = dxde + dfde*zr(igeom+2*(i-1))
@@ -357,8 +359,8 @@ implicit none
                     poids = zr(ipoids+kp-1)*coorg(1)
                 endif
             else
-                poids = zr(ipoids+kp-1)               
-            endif              
+                poids = zr(ipoids+kp-1)
+            endif
 !
         endif
 !
@@ -401,12 +403,12 @@ implicit none
                     call fointe('FM', zk8(iforf+j-1), nbpara, nompar, valpar,&
                                 forcg(j), icode)
                 enddo
-!            
+!
 !-------------- Valeurs de la derivée du chargement aux pdg
-                do i = 1, nno 
+                do i = 1, nno
                     dfde = zr(idfde+k+i-1)
                     presno = presn(2*(i-1)+1)
-                    cisano = presn(2*(i-1)+2)                   
+                    cisano = presn(2*(i-1)+2)
                     dfxde = dfxde + dfde * (forcn(2*(i-1)+1) - &
                             (dyde*presno-dxde*cisano) / dsde )
                     dfyde = dfyde + dfde * (forcn(2*(i-1)+2) + &
@@ -433,53 +435,28 @@ implicit none
                         presg(j) = presg(j) + zr(ipres+2*(i-1)+j-1)*zr(ivf+k+i-1)
                         forcg(j) = forcg(j) + zr(iforc+2*(i-1)+j-1)*zr(ivf+k+i-1)
                     enddo
-                enddo         
+                enddo
             endif
 !
         endif
-!  
+!
 !       ! ===========================================
-        !  CONSTRUCTION DE THETA , GRADTHETA AU PDG   
+        !  CONSTRUCTION DE THETA , GRADTHETA AU PDG
         ! ===========================================
 !
-        if (reeldim .eq. 3) then   
+        if (reeldim .eq. 3) then
 !--------- Champ theta A CONSTRUIRE : A FAIRE 2021
 !          th1 = th1 + zr(ivf+k+i-1)*zr(ithet+3*(i-1)+j-1)*i1(j)
 !          th2 = th2 + zr(ivf+k+i-1)*zr(ithet+3*(i-1)+j-1)*i2(j)
 !          dth1d1= dth1d1+ zr(ithet+3*(i-1)+j-1)*i1(j)*dfdx(i)
 !          dth2d2= dth2d2+ zr(ithet+3*(i-1)+j-1)*i2(j)*dfdy(i)
-        else    
+        else
             th1 = ( th0*t(1) * dxde ) /dsde
-            th2 = ( th0*t(2) * dyde ) /dsde    
+            th2 = ( th0*t(2) * dyde ) /dsde
             dth1d1 = ( (gradth0 * t(1) + th0 * gradt(1) ) * dxde ) /dsde
             dth2d2 = ( (gradth0 * t(2) + th0 * gradt(2) ) * dyde ) /dsde
-!              
+!
         endif
-!
-        ! ===========================================
-        !      RECUPERATION DES DONNEES MATERIAU
-        ! ===========================================
-!
-        call rcvad2(fami, kp, 1, '+', zi(imate), 'ELAS', &
-                    3, nomres, valres, devres, icodre)
-
-        if ((icodre(1).ne.0) .or. (icodre(2).ne.0)) then
-            call utmess('F', 'RUPTURE1_25')
-        endif
-!
-        e = valres(1)
-        nu = valres(2)
-        mu = e/(2.d0*(1.d0+nu))
-!
-        if (reeldim .eq.3 .or. lteatt('AXIS','OUI') ) then
-            ka = 3.d0-4.d0*nu
-            coeff_K1K2 = e/(1.d0-nu*nu)
-            coeff_K3 = 2.d0 * mu
-        else
-!------ Contrainte plane
-            ka = (3.d0-nu)/(1.d0+nu)
-            coeff_K1K2 = e
-        endif         
 !
         ! ===========================================
         !         CALCUL DES SIFS ; OPTION K
@@ -487,6 +464,31 @@ implicit none
 !
         if ( option .eq. 'CALCH_K_G' .or. option .eq. 'CALCH_K_G_F' ) then
 !
+            ! ===========================================
+            !      RECUPERATION DES DONNEES MATERIAU
+            ! ===========================================
+!
+            call rcvad2(fami, kp, 1, '+', zi(imate), 'ELAS', &
+                        3, nomres, valres, devres, icodre)
+!
+            if ((icodre(1).ne.0) .or. (icodre(2).ne.0)) then
+                call utmess('F', 'RUPTURE1_25')
+            endif
+!
+            e = valres(1)
+            nu = valres(2)
+            mu = e/(2.d0*(1.d0+nu))
+!
+            if (reeldim .eq.3 .or. lteatt('AXIS','OUI') ) then
+                ka = 3.d0-4.d0*nu
+                coeff_K1K2 = e/(1.d0-nu*nu)
+                coeff_K3 = 2.d0 * mu
+            else
+!----------- Contrainte plane
+                ka = (3.d0-nu)/(1.d0+nu)
+                coeff_K1K2 = e
+            endif
+
            ! ===========================================
            !      CALCUL DES COORDONNEE CYLINDRIQUE
            ! ===========================================
@@ -501,18 +503,18 @@ implicit none
                        p, invp, rg, phig, l_not_zero)
 !
             if (.not. l_not_zero) then
-                call utmess('F', 'RUPTURE1_75')        
+                call utmess('F', 'RUPTURE1_75')
             endif
 !
 !---------- On utilise les level sets pour déterminer le signe de phi
 !---------- On détermine si on est sur levre sup ou sur levre inf
             if ((abs(lsng) .lt. 1.0d-8) .and. (lstg .lt. 0.0d0)) then
 !
-!-------------- Produit scalaire entre vecteur normale au fond de fissures 
+!-------------- Produit scalaire entre vecteur normale au fond de fissures
 !-------------- et la normale de l'element
                 do  i = 1, 3
                     prsc = prsc + p(i,2)*a3(i)
-                enddo 
+                enddo
 !
                 if (prsc .gt. 0.0d0) then
                     phig = -1.0d0 * abs(phig)
@@ -526,7 +528,7 @@ implicit none
            !      CALCUL DES CHAMPS SINGULIERS
            ! ===========================================
 !
-            call xdeffk(ka, mu, rg, phig, reeldim, fkpo)            
+            call xdeffk(ka, mu, rg, phig, reeldim, fkpo)
 !
             do i = 1, reeldim
                 do ind = 1, reeldim
@@ -543,9 +545,9 @@ implicit none
         !   CALCUL DU TAUX DE RESTITUTION G ET K*
         ! ===========================================
 !
-        divt = dth1d1 + dth2d2  
-!                
-        if (axi) divt = divt+((th0*t(1))/coorg(1)) 
+        divt = dth1d1 + dth2d2
+!
+        if (axi) divt = divt+((th0*t(1))/coorg(1))
 !
         if (reeldim .eq. 3) then
             do j = 1, 3
@@ -554,7 +556,7 @@ implicit none
             do j = 1, 3
                 forc = forcg(j) - press*a3(j)
                 tcla = tcla + poids*(forc*divt+dfor(j))*depl(j)
-                if ( option .eq. 'CALCH_K_G' .or. option .eq. 'CALCH_K_G_F' ) then 
+                if ( option .eq. 'CALCH_K_G' .or. option .eq. 'CALCH_K_G_F' ) then
                     tcla1 = tcla1 + 0.5d0*poids*(forc*divt+dfor(j))*u1g(j)
                     tcla2 = tcla2 + 0.5d0*poids*(forc*divt+dfor(j))*u2g(j)
                     tcla3 = tcla3 + 0.5d0*poids*(forc*divt+dfor(j))*u3g(j)
@@ -565,7 +567,7 @@ implicit none
             fy = forcg(2)+(dxde*presg(1)+dyde*presg(2))/dsde
             prod = (divt*fx+dfxde*(th1+th2))*depl(1) + (divt*fy+dfyde*(th1+th2))*depl(2)
             tcla = tcla + prod*poids
-            if ( option .eq. 'CALCH_K_G' .or. option .eq. 'CALCH_K_G_F' ) then 
+            if ( option .eq. 'CALCH_K_G' .or. option .eq. 'CALCH_K_G_F' ) then
                 prod1 = (divt*fx+dfxde*(th1+th2))*u1g(1) + (divt*fy+dfyde*(th1+th2))*u1g(2)
                 prod2 = (divt*fx+dfxde*(th1+th2))*u2g(1) + (divt*fy+dfyde*(th1+th2))*u2g(2)
                 tcla1 = tcla1 + 0.5d0*poids*prod1
@@ -575,7 +577,7 @@ implicit none
 !
     enddo
 !
-!-- Exit sur valeur de theta nulle sur element    
+!-- Exit sur valeur de theta nulle sur element
     999 continue
 !
 !-- Assemblage final
