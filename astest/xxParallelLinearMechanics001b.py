@@ -59,8 +59,8 @@ charCine2.build()
 monSolver = code_aster.MumpsSolver(code_aster.Renumbering.Metis)
 
 mecaStatique = code_aster.LinearStaticAnalysis(monModel, affectMat)
-mecaStatique.addKinematicsLoad(charCine)
-mecaStatique.addKinematicsLoad(charCine2)
+mecaStatique.addDirichletBC(charCine)
+mecaStatique.addDirichletBC(charCine2)
 mecaStatique.setLinearSolver(monSolver)
 
 resu = mecaStatique.execute()

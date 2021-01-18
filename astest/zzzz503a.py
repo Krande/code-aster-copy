@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -147,8 +147,8 @@ else:
 monSolver.matrixFactorization(matrAsse)
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 
-vcine = dProblem.buildKinematicsLoad(numeDDL, 0.)
-resu = monSolver.solveRealLinearSystemWithKinematicsLoad(matrAsse, vcine, retour)
+vcine = dProblem.buildDirichletBC(numeDDL, 0.)
+resu = monSolver.solveRealLinearSystemWithDirichletBC(matrAsse, vcine, retour)
 
 y = resu.EXTR_COMP()
 test.assertEqual(len(y.valeurs), 81)

@@ -29,26 +29,26 @@
 #include <boost/python.hpp>
 
 namespace py = boost::python;
-#include "Loads/KinematicsLoad.h"
+#include "Loads/DirichletBC.h"
 #include "Loads/MechanicalLoad.h"
 #include "Loads/ParallelMechanicalLoad.h"
 
 template < class firstClass, typename... Args >
-void addKinematicsLoadToInterface( py::class_< firstClass, Args... > myInstance ) {
+void addDirichletBCToInterface( py::class_< firstClass, Args... > myInstance ) {
     typedef firstClass myClass;
 
-    void ( myClass::*c1 )( const KinematicsLoadPtr & ) = &myClass::addLoad;
-    void ( myClass::*c2 )( const KinematicsLoadPtr &currentLoad, const FunctionPtr &func ) =
+    void ( myClass::*c1 )( const DirichletBCPtr & ) = &myClass::addLoad;
+    void ( myClass::*c2 )( const DirichletBCPtr &currentLoad, const FunctionPtr &func ) =
         &myClass::addLoad;
-    void ( myClass::*c3 )( const KinematicsLoadPtr &currentLoad, const FormulaPtr &func ) =
+    void ( myClass::*c3 )( const DirichletBCPtr &currentLoad, const FormulaPtr &func ) =
         &myClass::addLoad;
-    void ( myClass::*c4 )( const KinematicsLoadPtr &currentLoad, const Function2DPtr &func ) =
+    void ( myClass::*c4 )( const DirichletBCPtr &currentLoad, const Function2DPtr &func ) =
         &myClass::addLoad;
 
-    myInstance.def( "addKinematicsLoad", c1 );
-    myInstance.def( "addKinematicsLoad", c2 );
-    myInstance.def( "addKinematicsLoad", c3 );
-    myInstance.def( "addKinematicsLoad", c4 );
+    myInstance.def( "addDirichletBC", c1 );
+    myInstance.def( "addDirichletBC", c2 );
+    myInstance.def( "addDirichletBC", c3 );
+    myInstance.def( "addDirichletBC", c4 );
 };
 
 template < class firstClass, typename... Args >

@@ -3,7 +3,7 @@
  * @brief Interface python de DiscreteProblem
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,7 +29,7 @@ namespace py = boost::python;
 #include <PythonBindings/factory.h>
 #include "PythonBindings/DiscreteProblemInterface.h"
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( buildKinematicsLoad_overloads, buildKinematicsLoad, 2, 2 )
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( buildDirichletBC_overloads, buildDirichletBC, 2, 2 )
 
 void exportDiscreteProblemToPython() {
 
@@ -52,8 +52,8 @@ void exportDiscreteProblemToPython() {
               &DiscreteProblemClass::buildElementaryTangentMatrix )
         .def( "buildElementaryJacobianMatrix",
               &DiscreteProblemClass::buildElementaryJacobianMatrix )
-        .def( "buildKinematicsLoad", &DiscreteProblemClass::buildKinematicsLoad,
-              buildKinematicsLoad_overloads() )
+        .def( "buildDirichletBC", &DiscreteProblemClass::buildDirichletBC,
+              buildDirichletBC_overloads() )
         .def( "computeDOFNumbering", &DiscreteProblemClass::computeDOFNumbering )
         .def( "computeMechanicalDampingMatrix",
               &DiscreteProblemClass::computeMechanicalDampingMatrix )

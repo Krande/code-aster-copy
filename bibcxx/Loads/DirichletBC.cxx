@@ -1,6 +1,6 @@
 /**
- * @file KinematicsLoad.cxx
- * @brief Implementation de KinematicsLoad
+ * @file DirichletBC.cxx
+ * @brief Implementation de DirichletBC
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
@@ -27,11 +27,11 @@
 #include "astercxx.h"
 
 #include "aster_fort_superv.h"
-#include "Loads/KinematicsLoad.h"
+#include "Loads/DirichletBC.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/ResultNaming.h"
 
-KinematicsLoadClass::KinematicsLoadClass( const std::string &type, const ModelPtr& model )
+DirichletBCClass::DirichletBCClass( const std::string &type, const ModelPtr& model )
     : DataStructure( ResultNaming::getNewResultName(), 19, "CHAR_CINE" + type ),
       _intParam( JeveuxVectorLong( getName() + ".AFCI" ) ),
       _charParam( JeveuxVectorChar8( getName() + ".AFCK" ) ),
@@ -40,7 +40,7 @@ KinematicsLoadClass::KinematicsLoadClass( const std::string &type, const ModelPt
           this->setModel(model);
       };
 
-KinematicsLoadClass::KinematicsLoadClass(   const std::string &name,
+DirichletBCClass::DirichletBCClass(   const std::string &name,
                                             const std::string &type,
                                             const ModelPtr& model )
     : DataStructure( name, 19, "CHAR_CINE" + type ),
@@ -51,7 +51,7 @@ KinematicsLoadClass::KinematicsLoadClass(   const std::string &name,
           this->setModel(model);
       };
 
-bool KinematicsLoadClass::build() {
+bool DirichletBCClass::build() {
     std::string cmd = "AFFE_CHAR_CINE";
     if ( _listOfFunctionImposedTemperature.size() != 0 )
         cmd += "_F";

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -20,11 +20,11 @@
 # person_in_charge: nicolas.sellenet@edf.fr
 
 from ..Supervis import ExecuteCommand
-from .affe_char_cine import KinematicsLoadDefinition
+from .affe_char_cine import DirichletBCDefinition
 
 
-class AffeCharCineF(KinematicsLoadDefinition):
-    """Command that defines :class:`~code_aster.Objects.KinematicsLoad`.
+class AffeCharCineF(DirichletBCDefinition):
+    """Command that defines :class:`~code_aster.Objects.DirichletBC`.
     """
     command_name = "AFFE_CHAR_CINE_F"
 

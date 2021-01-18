@@ -3,7 +3,7 @@
  * @brief Interface python de LinearSolver
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,8 +29,8 @@ namespace py = boost::python;
 #include <PythonBindings/factory.h>
 #include "PythonBindings/LinearSolverInterface.h"
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( solveRealLinearSystemWithKinematicsLoad_overloads,
-                                        solveRealLinearSystemWithKinematicsLoad, 3, 4 )
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( solveRealLinearSystemWithDirichletBC_overloads,
+                                        solveRealLinearSystemWithDirichletBC, 3, 4 )
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( solveRealLinearSystem_overloads, solveRealLinearSystem,
                                         2, 3 )
 
@@ -111,9 +111,9 @@ void exportLinearSolverToPython() {
         .def( "build", &BaseLinearSolverClass::build )
         .def( "solveRealLinearSystem", &BaseLinearSolverClass::solveRealLinearSystem,
               solveRealLinearSystem_overloads() )
-        .def( "solveRealLinearSystemWithKinematicsLoad",
-              &BaseLinearSolverClass::solveRealLinearSystemWithKinematicsLoad,
-              solveRealLinearSystemWithKinematicsLoad_overloads() )
+        .def( "solveRealLinearSystemWithDirichletBC",
+              &BaseLinearSolverClass::solveRealLinearSystemWithDirichletBC,
+              solveRealLinearSystemWithDirichletBC_overloads() )
         .def( "disablePreprocessing", &BaseLinearSolverClass::disablePreprocessing )
         .def( "matrixFactorization", &BaseLinearSolverClass::matrixFactorization )
         .def( "setAlgorithm", &BaseLinearSolverClass::setAlgorithm )

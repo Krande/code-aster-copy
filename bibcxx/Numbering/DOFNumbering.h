@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -24,7 +24,7 @@
  * @brief Fichier entete de la classe BaseDOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+ *   Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
  *   This file is part of code_aster.
  *
  *   code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@
 #include "DataStructures/DataStructure.h"
 #include "LinearAlgebra/ElementaryMatrix.h"
 #include "LinearAlgebra/MatrixStorage.h"
-#include "Loads/KinematicsLoad.h"
+#include "Loads/DirichletBC.h"
 #include "Loads/ListOfLoads.h"
 #include "Loads/MechanicalLoad.h"
 #include "MemoryManager/JeveuxVector.h"

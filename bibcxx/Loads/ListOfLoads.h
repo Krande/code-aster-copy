@@ -31,7 +31,7 @@
 #include "astercxx.h"
 #include "Loads/MechanicalLoad.h"
 #include "Loads/ParallelMechanicalLoad.h"
-#include "Loads/KinematicsLoad.h"
+#include "Loads/DirichletBC.h"
 #include "Functions/Function.h"
 #include "Functions/Formula.h"
 #include "Functions/Function2D.h"
@@ -73,8 +73,8 @@ typedef std::vector< GenericLoadFunction > ListOfLoadFunctions;
 class ListOfLoadsClass : public DataStructure {
   private:
     /** @brief Chargements cinematiques */
-    ListKineLoad _listOfKinematicsLoads;
-    /** @brief List of functions for KinematicsLoads */
+    ListKineLoad _listOfDirichletBCs;
+    /** @brief List of functions for DirichletBCs */
     ListOfLoadFunctions _listOfKineFun;
     /** @brief Chargements Mecaniques */
     ListMecaLoad _listOfMechanicalLoads;
@@ -106,10 +106,10 @@ class ListOfLoadsClass : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
-    void addLoad( const KinematicsLoadPtr &currentLoad,
+    void addLoad( const DirichletBCPtr &currentLoad,
                   const FunctionPtr &func = emptyRealFunction ) {
         _isEmpty = true;
-        _listOfKinematicsLoads.push_back( currentLoad );
+        _listOfDirichletBCs.push_back( currentLoad );
         _listOfKineFun.push_back( func );
     };
 
@@ -118,9 +118,9 @@ class ListOfLoadsClass : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier formula
      */
-    void addLoad( const KinematicsLoadPtr &currentLoad, const FormulaPtr &func ) {
+    void addLoad( const DirichletBCPtr &currentLoad, const FormulaPtr &func ) {
         _isEmpty = true;
-        _listOfKinematicsLoads.push_back( currentLoad );
+        _listOfDirichletBCs.push_back( currentLoad );
         _listOfKineFun.push_back( func );
     };
 
@@ -129,9 +129,9 @@ class ListOfLoadsClass : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function2d
      */
-    void addLoad( const KinematicsLoadPtr &currentLoad, const Function2DPtr &func ) {
+    void addLoad( const DirichletBCPtr &currentLoad, const Function2DPtr &func ) {
         _isEmpty = true;
-        _listOfKinematicsLoads.push_back( currentLoad );
+        _listOfDirichletBCs.push_back( currentLoad );
         _listOfKineFun.push_back( func );
     };
 
@@ -232,9 +232,9 @@ class ListOfLoadsClass : public DataStructure {
 
     /**
      * @brief Function de récupération de la liste des charges cinématiques
-     * @return _listOfKinematicsLoads
+     * @return _listOfDirichletBCs
      */
-    const ListKineLoad &getListOfKinematicsLoads() const { return _listOfKinematicsLoads; };
+    const ListKineLoad &getListOfDirichletBCs() const { return _listOfDirichletBCs; };
 
     /**
      * @brief Function de récupération de la liste des charges mécaniques
@@ -266,9 +266,9 @@ class ListOfLoadsClass : public DataStructure {
 
     /**
      * @brief Nombre de charges
-     * @return taille de _listOfMechanicalLoads + taille de _listOfKinematicsLoads
+     * @return taille de _listOfMechanicalLoads + taille de _listOfDirichletBCs
      */
-    int size() const { return _listOfMechanicalLoads.size() + _listOfKinematicsLoads.size(); };
+    int size() const { return _listOfMechanicalLoads.size() + _listOfDirichletBCs.size(); };
 };
 
 /**

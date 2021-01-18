@@ -28,7 +28,7 @@
 #include "aster_fort_superv.h"
 #include "Discretization/DiscreteProblem.h"
 #include "Numbering/ParallelDOFNumbering.h"
-#include "Loads/KinematicsLoad.h"
+#include "Loads/DirichletBC.h"
 #include "Loads/MechanicalLoad.h"
 #include "Materials/MaterialField.h"
 #include "MemoryManager/JeveuxVector.h"
@@ -203,7 +203,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteProblemClass::buildElementaryJacobia
     return this->buildElementaryStiffnessMatrix( time );
 };
 
-FieldOnNodesRealPtr DiscreteProblemClass::buildKinematicsLoad(
+FieldOnNodesRealPtr DiscreteProblemClass::buildDirichletBC(
     const BaseDOFNumberingPtr &curDOFNum, const double &time, const JeveuxMemory &memType ) const
     {
     const auto &_listOfLoad = _study->getListOfLoads();

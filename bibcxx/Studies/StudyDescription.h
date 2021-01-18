@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe StudyDescription
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -33,7 +33,7 @@
 #include "Materials/MaterialField.h"
 #include "Materials/CodedMaterial.h"
 #include "Loads/MechanicalLoad.h"
-#include "Loads/KinematicsLoad.h"
+#include "Loads/DirichletBC.h"
 #include "Loads/ListOfLoads.h"
 #include "Numbering/DOFNumbering.h"
 #include "Discretization/ElementaryCharacteristics.h"
@@ -102,8 +102,8 @@ class StudyDescriptionClass {
     /**
      * @brief Obtenir la liste des chargements cinematiques
      */
-    const ListKineLoad &getListOfKinematicsLoads() const {
-        return _listOfLoads->getListOfKinematicsLoads();
+    const ListKineLoad &getListOfDirichletBCs() const {
+        return _listOfLoads->getListOfDirichletBCs();
     };
 
     /**

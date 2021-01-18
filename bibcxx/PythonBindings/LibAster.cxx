@@ -89,7 +89,7 @@
 #include "PythonBindings/GenericFunctionInterface.h"
 #include "PythonBindings/GridInterface.h"
 #include "PythonBindings/InterspectralMatrixInterface.h"
-#include "PythonBindings/KinematicsLoadInterface.h"
+#include "PythonBindings/DirichletBCInterface.h"
 #include "PythonBindings/LineSearchMethodInterface.h"
 #include "PythonBindings/LinearSolverInterface.h"
 #include "PythonBindings/LinearStaticAnalysisInterface.h"
@@ -235,7 +235,7 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportModalBasisToPython();
     exportStructureInterfaceToPython();
     exportAcousticLoadToPython();
-    exportKinematicsLoadToPython();
+    exportDirichletBCToPython();
     exportMechanicalLoadToPython();
     exportPhysicalQuantityToPython();
     exportThermalLoadToPython();

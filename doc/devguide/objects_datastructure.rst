@@ -740,10 +740,10 @@
 
 
 ================================================================================
-:py:class:`~code_aster.Objects.KinematicsLoad` object
+:py:class:`~code_aster.Objects.DirichletBC` object
 ================================================================================
 
-.. autoclass:: code_aster.Objects.KinematicsLoad
+.. autoclass:: code_aster.Objects.DirichletBC
    :show-inheritance:
    :members:
 

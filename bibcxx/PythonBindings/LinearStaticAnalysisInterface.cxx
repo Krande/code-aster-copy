@@ -38,7 +38,7 @@ void exportLinearStaticAnalysisToPython() {
     c1.def( "__init__",
             py::make_constructor(&initFactoryPtr< LinearStaticAnalysisClass, ModelPtr,
                                               MaterialFieldPtr, ElementaryCharacteristicsPtr >));
-    addKinematicsLoadToInterface( c1 );
+    addDirichletBCToInterface( c1 );
     addMechanicalLoadToInterface( c1 );
 #ifdef ASTER_HAVE_MPI
     addParallelMechanicalLoadToInterface( c1 );

@@ -64,7 +64,7 @@ bool ListOfLoadsClass::build() {
     }
 #endif /* ASTER_HAVE_MPI */
     pos = 0;
-    for ( const auto &curIter : _listOfKinematicsLoads ) {
+    for ( const auto &curIter : _listOfDirichletBCs ) {
         SyntaxMapContainer dict2;
         dict2.container["CHARGE"] = curIter->getName();
         if ( _listOfKineFun[pos].getName() != emptyRealFunction->getName() )
@@ -111,8 +111,8 @@ ListSyntaxMapContainer ListOfLoadsClass::buildListExcit() {
     }
 #endif /* ASTER_HAVE_MPI */
     pos = 0;
-    for ( ListKineLoadCIter curIter = _listOfKinematicsLoads.begin();
-          curIter != _listOfKinematicsLoads.end(); ++curIter ) {
+    for ( ListKineLoadCIter curIter = _listOfDirichletBCs.begin();
+          curIter != _listOfDirichletBCs.end(); ++curIter ) {
         SyntaxMapContainer dict2;
         dict2.container["CHARGE"] = ( *curIter )->getName();
         if ( _listOfKineFun[pos].getName() != emptyRealFunction->getName() )

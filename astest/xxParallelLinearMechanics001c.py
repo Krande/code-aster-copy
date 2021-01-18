@@ -59,7 +59,7 @@ charMeca = AFFE_CHAR_MECA(MODELE=monModel, DOUBLE_LAGRANGE="NON",
 monSolver = code_aster.MumpsSolver(code_aster.Renumbering.Metis)
 
 mecaStatique = code_aster.LinearStaticAnalysis(monModel, affectMat)
-mecaStatique.addKinematicsLoad(charCine)
+mecaStatique.addDirichletBC(charCine)
 mecaStatique.addParallelMechanicalLoad(charMeca)
 mecaStatique.setLinearSolver(monSolver)
 

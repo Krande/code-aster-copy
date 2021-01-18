@@ -3,7 +3,7 @@
  * @brief Fichier source contenant le source du solveur de mecanique statique
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -178,7 +178,7 @@ void NonLinearStaticAnalysisClass::addMechanicalExcitation(
     _listOfExcitations.push_back( curExcit );
 };
 
-void NonLinearStaticAnalysisClass::addKinematicExcitation( const KinematicsLoadPtr &currentLoad,
+void NonLinearStaticAnalysisClass::addKinematicExcitation( const DirichletBCPtr &currentLoad,
                                                               ExcitationEnum typeOfExcit,
                                                               const FunctionPtr &scalF ) {
     ExcitationClass *curExcit( new ExcitationClass( typeOfExcit ) );
@@ -197,11 +197,11 @@ void NonLinearStaticAnalysisClass::addStandardScaledExcitation(
     addMechanicalExcitation( currentLoad, StandardExcitation, scalF );
 };
 void
-NonLinearStaticAnalysisClass::addStandardExcitation( const KinematicsLoadPtr &currentLoad ) {
+NonLinearStaticAnalysisClass::addStandardExcitation( const DirichletBCPtr &currentLoad ) {
     addKinematicExcitation( currentLoad, StandardExcitation, nullptr );
 };
 void
-NonLinearStaticAnalysisClass::addStandardScaledExcitation( const KinematicsLoadPtr &currentLoad,
+NonLinearStaticAnalysisClass::addStandardScaledExcitation( const DirichletBCPtr &currentLoad,
                                                               const FunctionPtr &scalF ) {
     addKinematicExcitation( currentLoad, StandardExcitation, scalF );
 };

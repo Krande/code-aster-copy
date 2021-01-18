@@ -7,7 +7,7 @@
  *        This class allows to define a source term for a nonlinear analysis
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,7 +31,7 @@
 #include <vector>
 
 #include "Functions/Function.h"
-#include "Loads/KinematicsLoad.h"
+#include "Loads/DirichletBC.h"
 #include "Loads/MechanicalLoad.h"
 #include "Utilities/CapyConvertibleValue.h"
 #include "astercxx.h"
@@ -58,7 +58,7 @@ extern const VectorString allExcitationNames;
 class ExcitationClass {
   private:
     ExcitationEnum _typeExcit;
-    KinematicsLoadPtr _kinematicLoad;
+    DirichletBCPtr _kinematicLoad;
     GenericMechanicalLoadPtr _mecaLoad;
     FunctionPtr _multFunction;
     CapyConvertibleContainer _toCapyConverter;
@@ -73,10 +73,10 @@ class ExcitationClass {
     /** @function setKinematicLoad
      * @brief sets the kinematicLoad attribut
      */
-    void setKinematicLoad( const KinematicsLoadPtr &kineLoad ) {
+    void setKinematicLoad( const DirichletBCPtr &kineLoad ) {
         _kinematicLoad = kineLoad;
         _toCapyConverter.add(
-            new CapyConvertibleValue< KinematicsLoadPtr >( true, "CHARGE", _kinematicLoad, true ) );
+            new CapyConvertibleValue< DirichletBCPtr >( true, "CHARGE", _kinematicLoad, true ) );
     };
     /** @function setMechanicalLoad
      * @brief sets the mecaLoad attribut

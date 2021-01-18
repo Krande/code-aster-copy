@@ -1,6 +1,6 @@
 /**
- * @file KinematicsLoadInterface.cxx
- * @brief Interface python de KinematicsLoad
+ * @file DirichletBCInterface.cxx
+ * @brief Interface python de DirichletBC
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
@@ -21,13 +21,13 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "PythonBindings/KinematicsLoadInterface.h"
+#include "PythonBindings/DirichletBCInterface.h"
 #include "PythonBindings/factory.h"
 #include <boost/python.hpp>
 
 namespace py = boost::python;
 
-void exportKinematicsLoadToPython() {
+void exportDirichletBCToPython() {
 
     bool ( MechanicalDirichletBCClass::*c1 )( const PhysicalQuantityComponent &,
                                                     const double &, const std::string & ) =
@@ -61,12 +61,12 @@ void exportKinematicsLoadToPython() {
                                                  const VectorString & ) =
         &ThermalDirichletBCClass::addImposedThermalDOFOnNodes;
 
-    py::class_< KinematicsLoadClass, KinematicsLoadClass::KinematicsLoadPtr,
-                py::bases< DataStructure > >( "KinematicsLoad", py::no_init )
+    py::class_< DirichletBCClass, DirichletBCClass::DirichletBCPtr,
+                py::bases< DataStructure > >( "DirichletBC", py::no_init )
         // fake initFactoryPtr: created by subclasses
         // fake initFactoryPtr: created by subclasses
-        .def( "build", &KinematicsLoadClass::build )
-        .def( "getModel", &KinematicsLoadClass::getModel, R"(
+        .def( "build", &DirichletBCClass::build )
+        .def( "getModel", &DirichletBCClass::getModel, R"(
 Return the model
 
 Returns:
@@ -76,7 +76,7 @@ Returns:
 
     py::class_< MechanicalDirichletBCClass,
                 MechanicalDirichletBCClass::MechanicalDirichletBCPtr,
-                py::bases< KinematicsLoadClass > >( "MechanicalDirichletBC", py::no_init )
+                py::bases< DirichletBCClass > >( "MechanicalDirichletBC", py::no_init )
         .def( "__init__", py::make_constructor(
             &initFactoryPtr< MechanicalDirichletBCClass, ModelPtr >))
         .def( "__init__", py::make_constructor(
@@ -88,7 +88,7 @@ Returns:
 
     py::class_< ThermalDirichletBCClass,
                 ThermalDirichletBCClass::ThermalDirichletBCPtr,
-                py::bases< KinematicsLoadClass > >( "ThermalDirichletBC", py::no_init )
+                py::bases< DirichletBCClass > >( "ThermalDirichletBC", py::no_init )
         .def( "__init__", py::make_constructor(
             &initFactoryPtr< ThermalDirichletBCClass, ModelPtr >))
         .def( "__init__", py::make_constructor(
@@ -101,7 +101,7 @@ Returns:
 
     py::class_< AcousticDirichletBCClass,
                 AcousticDirichletBCClass::AcousticDirichletBCPtr,
-                py::bases< KinematicsLoadClass > >( "AcousticDirichletBC", py::no_init )
+                py::bases< DirichletBCClass > >( "AcousticDirichletBC", py::no_init )
         .def( "__init__", py::make_constructor(
             &initFactoryPtr< AcousticDirichletBCClass, ModelPtr >))
         .def( "__init__", py::make_constructor(

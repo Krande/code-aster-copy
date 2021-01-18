@@ -3,7 +3,7 @@
  * @brief Interface python de StudyDescription
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -36,6 +36,6 @@ void exportStudyDescriptionToPython() {
     c1.def( "__init__",
             py::make_constructor(
                 &initFactoryPtr< StudyDescriptionClass, ModelPtr, MaterialFieldPtr >));
-    addKinematicsLoadToInterface( c1 );
+    addDirichletBCToInterface( c1 );
     addMechanicalLoadToInterface( c1 );
 };

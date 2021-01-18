@@ -24,8 +24,8 @@ from ..Objects import (AcousticDirichletBC, MechanicalDirichletBC,
 from ..Supervis import ExecuteCommand
 
 
-class KinematicsLoadDefinition(ExecuteCommand):
-    """Command that defines :class:`~code_aster.Objects.KinematicsLoad`."""
+class DirichletBCDefinition(ExecuteCommand):
+    """Command that defines :class:`~code_aster.Objects.DirichletBC`."""
     command_name = "AFFE_CHAR_CINE"
 
     def create_result(self, keywords):
@@ -54,4 +54,4 @@ class KinematicsLoadDefinition(ExecuteCommand):
             raise NotImplementedError("Must be implemented")
 
 
-AFFE_CHAR_CINE = KinematicsLoadDefinition.run
+AFFE_CHAR_CINE = DirichletBCDefinition.run

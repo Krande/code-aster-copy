@@ -3,7 +3,7 @@
  * @brief Interface python de DOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -164,7 +164,7 @@ Returns:
     bool: *True* if used, *False* otherwise.
         )",
               ( py::arg( "self" ) )   );
-    addKinematicsLoadToInterface( c1 );
+    addDirichletBCToInterface( c1 );
     addMechanicalLoadToInterface( c1 );
 
     py::class_< DOFNumberingClass, DOFNumberingClass::DOFNumberingPtr,

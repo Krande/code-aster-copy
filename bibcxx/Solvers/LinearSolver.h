@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe LinearSolver
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -299,7 +299,7 @@ class BaseLinearSolverClass : public DataStructure {
      * @param result champ aux noeuds résultat (optionnel)
      * @return champ aux noeuds resultat
      */
-    FieldOnNodesRealPtr solveRealLinearSystemWithKinematicsLoad(
+    FieldOnNodesRealPtr solveRealLinearSystemWithDirichletBC(
         const AssemblyMatrixDisplacementRealPtr &currentMatrix,
         const FieldOnNodesRealPtr &kinematicsField, const FieldOnNodesRealPtr &currentRHS,
         FieldOnNodesRealPtr result =

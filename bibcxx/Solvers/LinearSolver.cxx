@@ -3,7 +3,7 @@
  * @brief Initialisation des renumeroteurs autorises pour les solvers
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -262,7 +262,7 @@ FieldOnNodesRealPtr BaseLinearSolverClass::solveRealLinearSystem(
     return result;
 };
 
-FieldOnNodesRealPtr BaseLinearSolverClass::solveRealLinearSystemWithKinematicsLoad(
+FieldOnNodesRealPtr BaseLinearSolverClass::solveRealLinearSystemWithDirichletBC(
     const AssemblyMatrixDisplacementRealPtr &currentMatrix,
     const FieldOnNodesRealPtr &kinematicsField, const FieldOnNodesRealPtr &currentRHS,
     FieldOnNodesRealPtr result ) const {

@@ -3,7 +3,7 @@
  * @brief Implementation de StaticMechanicalAlgorithm
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -81,12 +81,12 @@ void StaticMechanicalAlgorithm::oneStep( const CurrentContext &ctx ) {
     cmdSt.setResult( ctx._results->getName(), ctx._results->getType() );
 
     FieldOnNodesRealPtr kineLoadsFON =
-        ctx._discreteProblem->buildKinematicsLoad( dofNum1, ctx._time, Temporary );
+        ctx._discreteProblem->buildDirichletBC( dofNum1, ctx._time, Temporary );
 
     FieldOnNodesRealPtr resultField =
         ctx._results->getEmptyFieldOnNodesReal( "DEPL", ctx._rank );
 
-    resultField = ctx._linearSolver->solveRealLinearSystemWithKinematicsLoad(
+    resultField = ctx._linearSolver->solveRealLinearSystemWithDirichletBC(
         ctx._aMatrix, kineLoadsFON, chNoDir, resultField );
 
     const auto &study = ctx._discreteProblem->getStudyDescription();

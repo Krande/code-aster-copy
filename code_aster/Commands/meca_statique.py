@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,7 +19,7 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import (GenericMechanicalLoad, KinematicsLoad,
+from ..Objects import (GenericMechanicalLoad, DirichletBC,
                        ParallelMechanicalLoad, LinearStaticAnalysis)
 from ..Supervis import ExecuteCommand
 from ..Utilities import force_list, unsupported
@@ -40,8 +40,8 @@ class MechanicalSolver(ExecuteCommand):
         func = fkw.get("FONC_MULT")
 
         if func !=  None:
-            if isinstance(load, KinematicsLoad):
-                mechaSolv.addKinematicsLoad(load, func)
+            if isinstance(load, DirichletBC):
+                mechaSolv.addDirichletBC(load, func)
             elif isinstance(load, GenericMechanicalLoad):
                 mechaSolv.addMechanicalLoad(load, func)
             elif isinstance(load, ParallelMechanicalLoad):
@@ -49,8 +49,8 @@ class MechanicalSolver(ExecuteCommand):
             else:
                 assert False
         else:
-            if isinstance(load, KinematicsLoad):
-                mechaSolv.addKinematicsLoad(load)
+            if isinstance(load, DirichletBC):
+                mechaSolv.addDirichletBC(load)
             elif isinstance(load, GenericMechanicalLoad):
                 mechaSolv.addMechanicalLoad(load)
             elif isinstance(load, ParallelMechanicalLoad):

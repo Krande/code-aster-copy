@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ vecass    = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R', NUME_DDL=numeddl, OPERATION='AFF
 vcine     = CALC_CHAR_CINE(NUME_DDL=numeddl, CHAR_CINE=bloq)
 
 monSolver.matrixFactorization(matass)
-resu2=monSolver.solveRealLinearSystemWithKinematicsLoad(matass, vcine, vecass)
+resu2=monSolver.solveRealLinearSystemWithDirichletBC(matass, vcine, vecass)
 y2=resu2.EXTR_COMP().valeurs
 
 # Comparaison des 2 solutions
@@ -93,14 +93,14 @@ matass    = ASSE_MATRICE(MATR_ELEM=rigiel , NUME_DDL=numeddl, CHAR_CINE=bloq )
 matass.setValues(idx.tolist(), jdx.tolist(), [10.*v for v in values])
 
 monSolver.matrixFactorization(matass)
-resu3=monSolver.solveRealLinearSystemWithKinematicsLoad(matass, vcine, vecass)
+resu3=monSolver.solveRealLinearSystemWithDirichletBC(matass, vcine, vecass)
 y3=resu3.EXTR_COMP().valeurs
 [test.assertAlmostEqual(y1[i], y3[i]) for i,_ in enumerate(y1)]
 
 matass.setValues(idx.tolist(), jdx.tolist(), [10.*v for v in values])
 monSolver = code_aster.MultFrontSolver( code_aster.Renumbering.Metis )
 monSolver.matrixFactorization(matass)
-resu3=monSolver.solveRealLinearSystemWithKinematicsLoad(matass, vcine, vecass)
+resu3=monSolver.solveRealLinearSystemWithDirichletBC(matass, vcine, vecass)
 y3=resu3.EXTR_COMP().valeurs
 [test.assertAlmostEqual(y1[i], y3[i]) for i,_ in enumerate(y1)]
 

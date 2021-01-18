@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -23,8 +23,8 @@ from ..Objects import FieldOnNodesReal
 from ..Supervis import ExecuteCommand
 
 
-class KinematicsLoadComputation(ExecuteCommand):
-    """Command that computes :class:`~code_aster.Objects.KinematicsLoad`."""
+class DirichletBCComputation(ExecuteCommand):
+    """Command that computes :class:`~code_aster.Objects.DirichletBC`."""
     command_name = "CALC_CHAR_CINE"
 
     def create_result(self, keywords):
@@ -36,4 +36,4 @@ class KinematicsLoadComputation(ExecuteCommand):
         self._result = FieldOnNodesReal()
 
 
-CALC_CHAR_CINE = KinematicsLoadComputation.run
+CALC_CHAR_CINE = DirichletBCComputation.run

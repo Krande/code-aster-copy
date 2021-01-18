@@ -60,8 +60,8 @@ monSolver = code_aster.PetscSolver(code_aster.Renumbering.Sans)
 monSolver.setPreconditioning(code_aster.Preconditioning.Sor)
 
 mecaStatique = code_aster.LinearStaticAnalysis(monModel, affectMat)
-mecaStatique.addKinematicsLoad(charCine)
-mecaStatique.addKinematicsLoad(charCine2)
+mecaStatique.addDirichletBC(charCine)
+mecaStatique.addDirichletBC(charCine2)
 mecaStatique.setLinearSolver(monSolver)
 
 resu = mecaStatique.execute()

@@ -66,10 +66,10 @@ class AssemblyMatrixClass : public DataStructure {
   private:
     typedef boost::shared_ptr< ElementaryMatrixClass< ValueType, PhysicalQuantity > >
         ElementaryMatrixPtr;
-    /** @typedef std::list de KinematicsLoad */
-    typedef std::list< KinematicsLoadPtr > ListKinematicsLoad;
-    /** @typedef Iterateur sur une std::list de KinematicsLoad */
-    typedef ListKinematicsLoad::iterator ListKinematicsLoadIter;
+    /** @typedef std::list de DirichletBC */
+    typedef std::list< DirichletBCPtr > ListDirichletBC;
+    /** @typedef Iterateur sur une std::list de DirichletBC */
+    typedef ListDirichletBC::iterator ListDirichletBCIter;
 
     /** @brief Objet Jeveux '.REFA' */
     JeveuxVectorChar24 _description;

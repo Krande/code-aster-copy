@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe StaticNonLinearAlgorithm
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -185,7 +185,7 @@ template < class Stepper > void StaticNonLinearAlgorithm< Stepper >::oneStep() {
        chNoDir->addFieldOnNodes( *chNoLap );
        chNoDir->addFieldOnNodes( *chNoNeu );
 
-       FieldOnNodesRealPtr kineLoadsFON = _listOfLoads->buildKinematicsLoad( dofNum1, _loadStep,
+       FieldOnNodesRealPtr kineLoadsFON = _listOfLoads->buildDirichletBC( dofNum1, _loadStep,
                                                                                Temporary );
 
 

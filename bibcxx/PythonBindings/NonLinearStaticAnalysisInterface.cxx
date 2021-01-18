@@ -3,7 +3,7 @@
  * @brief Interface python de NonLinearStaticAnalysis
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -35,14 +35,14 @@ void exportNonLinearStaticAnalysisToPython() {
     void ( NonLinearStaticAnalysisClass::*c1 )( const GenericMechanicalLoadPtr & ) =
         &NonLinearStaticAnalysisClass::addStandardExcitation;
 
-    void ( NonLinearStaticAnalysisClass::*c2 )( const KinematicsLoadPtr & ) =
+    void ( NonLinearStaticAnalysisClass::*c2 )( const DirichletBCPtr & ) =
         &NonLinearStaticAnalysisClass::addStandardExcitation;
 
     void ( NonLinearStaticAnalysisClass::*c3 )( const GenericMechanicalLoadPtr &,
                                                    const FunctionPtr &scalF ) =
         &NonLinearStaticAnalysisClass::addStandardScaledExcitation;
 
-    void ( NonLinearStaticAnalysisClass::*c4 )( const KinematicsLoadPtr &,
+    void ( NonLinearStaticAnalysisClass::*c4 )( const DirichletBCPtr &,
                                                    const FunctionPtr &scalF ) =
         &NonLinearStaticAnalysisClass::addStandardScaledExcitation;
 

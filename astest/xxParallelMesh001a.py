@@ -78,7 +78,7 @@ numeDDL.debugPrint(rank+30)
 matrAsse = code_aster.AssemblyMatrixDisplacementReal()
 matrAsse.appendElementaryMatrix(matr_elem)
 matrAsse.setDOFNumbering(numeDDL)
-matrAsse.addKinematicsLoad(charCine)
+matrAsse.addDirichletBC(charCine)
 matrAsse.build()
 matrAsse.debugPrint(rank+30)
 

@@ -3,7 +3,7 @@
  * @brief Interface python de AssemblyMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,9 +31,9 @@ namespace py = boost::python;
 
 void exportAssemblyMatrixToPython() {
 
-    void ( AssemblyMatrixDisplacementRealClass::*c1 )( const KinematicsLoadPtr &currentLoad ) =
+    void ( AssemblyMatrixDisplacementRealClass::*c1 )( const DirichletBCPtr &currentLoad ) =
         &AssemblyMatrixDisplacementRealClass::addLoad;
-    void ( AssemblyMatrixDisplacementRealClass::*c2 )( const KinematicsLoadPtr &currentLoad,
+    void ( AssemblyMatrixDisplacementRealClass::*c2 )( const DirichletBCPtr &currentLoad,
                                                             const FunctionPtr &func ) =
         &AssemblyMatrixDisplacementRealClass::addLoad;
 
@@ -44,8 +44,8 @@ void exportAssemblyMatrixToPython() {
         .def( "__init__",
               py::make_constructor(
                   &initFactoryPtr< AssemblyMatrixDisplacementRealClass, std::string >))
-        .def( "addKinematicsLoad", c1 )
-        .def( "addKinematicsLoad", c2 )
+        .def( "addDirichletBC", c1 )
+        .def( "addDirichletBC", c2 )
         .def( "appendElementaryMatrix",
               &AssemblyMatrixDisplacementRealClass::appendElementaryMatrix )
         .def( "build", &AssemblyMatrixDisplacementRealClass::build )
@@ -97,9 +97,9 @@ Arguments:
         .def( "transpose", &AssemblyMatrixDisplacementRealClass::transpose );
 
     void ( AssemblyMatrixDisplacementComplexClass::*c3 )(
-        const KinematicsLoadPtr &currentLoad ) =
+        const DirichletBCPtr &currentLoad ) =
         &AssemblyMatrixDisplacementComplexClass::addLoad;
-    void ( AssemblyMatrixDisplacementComplexClass::*c4 )( const KinematicsLoadPtr &currentLoad,
+    void ( AssemblyMatrixDisplacementComplexClass::*c4 )( const DirichletBCPtr &currentLoad,
                                                              const FunctionPtr &func ) =
         &AssemblyMatrixDisplacementComplexClass::addLoad;
 
@@ -110,8 +110,8 @@ Arguments:
         .def( "__init__",
               py::make_constructor(
                   &initFactoryPtr< AssemblyMatrixDisplacementComplexClass, std::string >))
-        .def( "addKinematicsLoad", c3 )
-        .def( "addKinematicsLoad", c4 )
+        .def( "addDirichletBC", c3 )
+        .def( "addDirichletBC", c4 )
         .def( "appendElementaryMatrix",
               &AssemblyMatrixDisplacementComplexClass::appendElementaryMatrix )
         .def( "build", &AssemblyMatrixDisplacementComplexClass::build )
@@ -124,9 +124,9 @@ Arguments:
         .def( "setDOFNumbering", &AssemblyMatrixDisplacementComplexClass::setDOFNumbering )
         .def( "setSolverName", &AssemblyMatrixDisplacementComplexClass::setSolverName );
 
-    void ( AssemblyMatrixTemperatureRealClass::*c5 )( const KinematicsLoadPtr &currentLoad ) =
+    void ( AssemblyMatrixTemperatureRealClass::*c5 )( const DirichletBCPtr &currentLoad ) =
         &AssemblyMatrixTemperatureRealClass::addLoad;
-    void ( AssemblyMatrixTemperatureRealClass::*c6 )( const KinematicsLoadPtr &currentLoad,
+    void ( AssemblyMatrixTemperatureRealClass::*c6 )( const DirichletBCPtr &currentLoad,
                                                            const FunctionPtr &func ) =
         &AssemblyMatrixTemperatureRealClass::addLoad;
 
@@ -137,8 +137,8 @@ Arguments:
         .def( "__init__",
               py::make_constructor(
                   &initFactoryPtr< AssemblyMatrixTemperatureRealClass, std::string >))
-        .def( "addKinematicsLoad", c5 )
-        .def( "addKinematicsLoad", c6 )
+        .def( "addDirichletBC", c5 )
+        .def( "addDirichletBC", c6 )
         .def( "appendElementaryMatrix",
               &AssemblyMatrixTemperatureRealClass::appendElementaryMatrix )
         .def( "build", &AssemblyMatrixTemperatureRealClass::build )
@@ -160,9 +160,9 @@ Arguments:
     values (list[float]): List of the values.
         )");
 
-    void ( AssemblyMatrixTemperatureComplexClass::*c7 )( const KinematicsLoadPtr &currentLoad ) =
+    void ( AssemblyMatrixTemperatureComplexClass::*c7 )( const DirichletBCPtr &currentLoad ) =
         &AssemblyMatrixTemperatureComplexClass::addLoad;
-    void ( AssemblyMatrixTemperatureComplexClass::*c8 )( const KinematicsLoadPtr &currentLoad,
+    void ( AssemblyMatrixTemperatureComplexClass::*c8 )( const DirichletBCPtr &currentLoad,
                                                             const FunctionPtr &func ) =
         &AssemblyMatrixTemperatureComplexClass::addLoad;
 
@@ -173,8 +173,8 @@ Arguments:
         .def( "__init__",
               py::make_constructor(
                   &initFactoryPtr< AssemblyMatrixTemperatureComplexClass, std::string >))
-        .def( "addKinematicsLoad", c7 )
-        .def( "addKinematicsLoad", c8 )
+        .def( "addDirichletBC", c7 )
+        .def( "addDirichletBC", c8 )
         .def( "appendElementaryMatrix",
               &AssemblyMatrixTemperatureComplexClass::appendElementaryMatrix )
         .def( "build", &AssemblyMatrixTemperatureComplexClass::build )
@@ -185,9 +185,9 @@ Arguments:
         .def( "setDOFNumbering", &AssemblyMatrixTemperatureComplexClass::setDOFNumbering )
         .def( "setSolverName", &AssemblyMatrixTemperatureComplexClass::setSolverName );
 
-    void ( AssemblyMatrixPressureRealClass::*c9 )( const KinematicsLoadPtr &currentLoad ) =
+    void ( AssemblyMatrixPressureRealClass::*c9 )( const DirichletBCPtr &currentLoad ) =
         &AssemblyMatrixPressureRealClass::addLoad;
-    void ( AssemblyMatrixPressureRealClass::*c10 )( const KinematicsLoadPtr &currentLoad,
+    void ( AssemblyMatrixPressureRealClass::*c10 )( const DirichletBCPtr &currentLoad,
                                                          const FunctionPtr &func ) =
         &AssemblyMatrixPressureRealClass::addLoad;
 
@@ -197,8 +197,8 @@ Arguments:
               py::make_constructor(&initFactoryPtr< AssemblyMatrixPressureRealClass >))
         .def( "__init__", py::make_constructor(
                               &initFactoryPtr< AssemblyMatrixPressureRealClass, std::string >))
-        .def( "addKinematicsLoad", c9 )
-        .def( "addKinematicsLoad", c10 )
+        .def( "addDirichletBC", c9 )
+        .def( "addDirichletBC", c10 )
         .def( "appendElementaryMatrix",
               &AssemblyMatrixPressureRealClass::appendElementaryMatrix )
         .def( "build", &AssemblyMatrixPressureRealClass::build )
@@ -220,9 +220,9 @@ Arguments:
     values (list[float]): List of the values.
         )");
 
-    void ( AssemblyMatrixPressureComplexClass::*c11 )( const KinematicsLoadPtr &currentLoad ) =
+    void ( AssemblyMatrixPressureComplexClass::*c11 )( const DirichletBCPtr &currentLoad ) =
         &AssemblyMatrixPressureComplexClass::addLoad;
-    void ( AssemblyMatrixPressureComplexClass::*c12 )( const KinematicsLoadPtr &currentLoad,
+    void ( AssemblyMatrixPressureComplexClass::*c12 )( const DirichletBCPtr &currentLoad,
                                                           const FunctionPtr &func ) =
         &AssemblyMatrixPressureComplexClass::addLoad;
 
@@ -233,8 +233,8 @@ Arguments:
         .def( "__init__",
               py::make_constructor(
                   &initFactoryPtr< AssemblyMatrixPressureComplexClass, std::string >))
-        .def( "addKinematicsLoad", c11 )
-        .def( "addKinematicsLoad", c12 )
+        .def( "addDirichletBC", c11 )
+        .def( "addDirichletBC", c12 )
         .def( "appendElementaryMatrix",
               &AssemblyMatrixPressureComplexClass::appendElementaryMatrix )
         .def( "build", &AssemblyMatrixPressureComplexClass::build )

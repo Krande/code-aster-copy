@@ -2,8 +2,8 @@
 #define KINEMATICSLOAD_H_
 
 /**
- * @file KinematicsLoad.h
- * @brief Fichier entete de la classe KinematicsLoad
+ * @file DirichletBC.h
+ * @brief Fichier entete de la classe DirichletBC
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
@@ -34,11 +34,11 @@
 #include "Modeling/Model.h"
 
 /**
- * @class KinematicsLoadClass
+ * @class DirichletBCClass
  * @brief Classe definissant une charge cinematique (issue d'AFFE_CHAR_CINE)
  * @author Nicolas Sellenet
  */
-class KinematicsLoadClass : public DataStructure {
+class DirichletBCClass : public DataStructure {
   protected:
     /** @typedef Pointeur intelligent sur un VirtualMeshEntity */
     typedef boost::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
@@ -66,24 +66,24 @@ class KinematicsLoadClass : public DataStructure {
     /** @brief La SD est-elle vide ? */
     bool _isEmpty;
 
-    KinematicsLoadClass( void ) = delete;
+    DirichletBCClass( void ) = delete;
 
     /**
      * @brief Constructeur
      */
-    KinematicsLoadClass( const std::string &type, const ModelPtr& model );
+    DirichletBCClass( const std::string &type, const ModelPtr& model );
 
     /**
      * @brief Constructeur
      */
-    KinematicsLoadClass( const std::string &name, const std::string &type, const ModelPtr& model );
+    DirichletBCClass( const std::string &name, const std::string &type, const ModelPtr& model );
 
   public:
     /**
-     * @typedef KinematicsLoadPtr
-     * @brief Pointeur intelligent vers un KinematicsLoad
+     * @typedef DirichletBCPtr
+     * @brief Pointeur intelligent vers un DirichletBC
      */
-    typedef boost::shared_ptr< KinematicsLoadClass > KinematicsLoadPtr;
+    typedef boost::shared_ptr< DirichletBCClass > DirichletBCPtr;
 
     /**
      * @brief Construction de la charge (appel a OP0101)
@@ -114,7 +114,7 @@ class KinematicsLoadClass : public DataStructure {
  * @brief Classe definissant une charge cinematique (issue d'AFFE_CHAR_CINE)
  * @author Nicolas Sellenet
  */
-class MechanicalDirichletBCClass : public KinematicsLoadClass {
+class MechanicalDirichletBCClass : public DirichletBCClass {
   public:
     /**
      * @brief Constructeur
@@ -123,13 +123,13 @@ class MechanicalDirichletBCClass : public KinematicsLoadClass {
 
 
     MechanicalDirichletBCClass( const ModelPtr& model)
-        : KinematicsLoadClass( "_MECA", model ){};
+        : DirichletBCClass( "_MECA", model ){};
 
     /**
      * @brief Constructeur
      */
     MechanicalDirichletBCClass( const std::string name, const ModelPtr& model )
-        : KinematicsLoadClass( name, "_MECA", model ){};
+        : DirichletBCClass( name, "_MECA", model ){};
 
     /**
      * @typedef MechanicalDirichletBCPtr
@@ -208,7 +208,7 @@ class MechanicalDirichletBCClass : public KinematicsLoadClass {
  * @brief Classe definissant une charge cinematique (issue d'AFFE_CHAR_CINE)
  * @author Nicolas Sellenet
  */
-class ThermalDirichletBCClass : public KinematicsLoadClass {
+class ThermalDirichletBCClass : public DirichletBCClass {
   public:
     /**
      * @brief Constructeur
@@ -219,13 +219,13 @@ class ThermalDirichletBCClass : public KinematicsLoadClass {
      * @brief Constructeur
      */
     ThermalDirichletBCClass(const ModelPtr& model)
-        : KinematicsLoadClass( "_THER", model ){};
+        : DirichletBCClass( "_THER", model ){};
 
     /**
      * @brief Constructeur
      */
     ThermalDirichletBCClass( const std::string name, const ModelPtr& model )
-        : KinematicsLoadClass( name, "_THER", model ){};
+        : DirichletBCClass( name, "_THER", model ){};
 
     /**
      * @typedef ThermalDirichletBCPtr
@@ -336,7 +336,7 @@ class ThermalDirichletBCClass : public KinematicsLoadClass {
  * @brief Classe definissant une charge cinematique (issue d'AFFE_CHAR_CINE)
  * @author Nicolas Sellenet
  */
-class AcousticDirichletBCClass : public KinematicsLoadClass {
+class AcousticDirichletBCClass : public DirichletBCClass {
   public:
 
   /**
@@ -348,13 +348,13 @@ class AcousticDirichletBCClass : public KinematicsLoadClass {
      * @brief Constructeur
      */
     AcousticDirichletBCClass(const ModelPtr& model)
-        : KinematicsLoadClass( "_ACOU", model ){};
+        : DirichletBCClass( "_ACOU", model ){};
 
     /**
      * @brief Constructeur
      */
     AcousticDirichletBCClass( const std::string name, const ModelPtr& model )
-        : KinematicsLoadClass( name, "_ACOU", model ){};
+        : DirichletBCClass( name, "_ACOU", model ){};
 
     /**
      * @typedef AcousticDirichletBCPtr
@@ -386,10 +386,10 @@ class AcousticDirichletBCClass : public KinematicsLoadClass {
 };
 
 /**
- * @typedef KinematicsLoad
- * @brief Pointeur intelligent vers un KinematicsLoadClass
+ * @typedef DirichletBC
+ * @brief Pointeur intelligent vers un DirichletBCClass
  */
-typedef boost::shared_ptr< KinematicsLoadClass > KinematicsLoadPtr;
+typedef boost::shared_ptr< DirichletBCClass > DirichletBCPtr;
 
 /**
  * @typedef MechanicalDirichletBCPtr
@@ -409,11 +409,11 @@ typedef boost::shared_ptr< ThermalDirichletBCClass > ThermalDirichletBCPtr;
  */
 typedef boost::shared_ptr< AcousticDirichletBCClass > AcousticDirichletBCPtr;
 
-/** @typedef std::list de KinematicsLoad */
-typedef std::list< KinematicsLoadPtr > ListKineLoad;
-/** @typedef Iterateur sur une std::list de KinematicsLoad */
+/** @typedef std::list de DirichletBC */
+typedef std::list< DirichletBCPtr > ListKineLoad;
+/** @typedef Iterateur sur une std::list de DirichletBC */
 typedef ListKineLoad::iterator ListKineLoadIter;
-/** @typedef Iterateur constant sur une std::list de KinematicsLoad */
+/** @typedef Iterateur constant sur une std::list de DirichletBC */
 typedef ListKineLoad::const_iterator ListKineLoadCIter;
 
 #endif /* KINEMATICSLOAD_H_ */

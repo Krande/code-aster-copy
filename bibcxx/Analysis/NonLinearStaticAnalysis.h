@@ -6,7 +6,7 @@
  * @brief Definition of the static non linear analysis
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,7 +31,7 @@
 #include "Algorithms/TimeStepper.h"
 #include "Analysis/GenericAnalysis.h"
 #include "Loads/Excitation.h"
-#include "Loads/KinematicsLoad.h"
+#include "Loads/DirichletBC.h"
 #include "Loads/MechanicalLoad.h"
 #include "Materials/MaterialField.h"
 #include "Meshes/BaseMesh.h"
@@ -97,7 +97,7 @@ class NonLinearStaticAnalysisClass : public GenericAnalysis {
      * @function addKinematicExcitation
      * @brief Add a Kinematic Excitation to the analysis
      */
-    void addKinematicExcitation( const KinematicsLoadPtr &currentLoad, ExcitationEnum typeOfExcit,
+    void addKinematicExcitation( const DirichletBCPtr &currentLoad, ExcitationEnum typeOfExcit,
                                  const FunctionPtr &scalF = nullptr );
 
   public:
@@ -180,8 +180,8 @@ class NonLinearStaticAnalysisClass : public GenericAnalysis {
     void addStandardExcitation( const GenericMechanicalLoadPtr &currentLoad );
     void addStandardScaledExcitation( const GenericMechanicalLoadPtr &currentLoad,
                                       const FunctionPtr &scalF );
-    void addStandardExcitation( const KinematicsLoadPtr &currentLoad );
-    void addStandardScaledExcitation( const KinematicsLoadPtr &currentLoad,
+    void addStandardExcitation( const DirichletBCPtr &currentLoad );
+    void addStandardScaledExcitation( const DirichletBCPtr &currentLoad,
                                       const FunctionPtr &scalF );
     void addDrivenExcitation( const GenericMechanicalLoadPtr &currentLoad );
     void addExcitationOnUpdatedGeometry( const GenericMechanicalLoadPtr &currentLoad );

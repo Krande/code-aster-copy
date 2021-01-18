@@ -29,7 +29,7 @@
 
 #include "Algorithms/TimeStepper.h"
 #include "Solvers/LinearSolver.h"
-#include "Loads/KinematicsLoad.h"
+#include "Loads/DirichletBC.h"
 #include "Loads/ListOfLoads.h"
 #include "Loads/MechanicalLoad.h"
 #include "Loads/ParallelMechanicalLoad.h"
@@ -46,9 +46,9 @@ class LinearStaticAnalysisClass : public GenericAnalysis {
     typedef std::list< GenericMechanicalLoadPtr > ListMecaLoad;
     /** @typedef Iterateur sur une std::list de MechanicalLoad */
     typedef ListMecaLoad::iterator ListMecaLoadIter;
-    /** @typedef std::list de KinematicsLoad */
-    typedef std::list< KinematicsLoadPtr > ListKineLoad;
-    /** @typedef Iterateur sur une std::list de KinematicsLoad */
+    /** @typedef std::list de DirichletBC */
+    typedef std::list< DirichletBCPtr > ListKineLoad;
+    /** @typedef Iterateur sur une std::list de DirichletBC */
     typedef ListKineLoad::iterator ListKineLoadIter;
 #ifdef ASTER_HAVE_MPI
     /** @typedef std::list de ParallelMechanicalLoad */
