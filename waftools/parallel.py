@@ -123,7 +123,7 @@ def check_openmp(self):
         self.env['CXXFLAGS_OPENMP'] = self.env['FCFLAGS_OPENMP']
         self.env['CXXLINKFLAGS_OPENMP'] = self.env['FCLINKFLAGS_OPENMP']
         self.env.ASTER_HAVE_OPENMP = 1
-        self.msg('Checking for OpenMP flag -qopenmp for Intel compilers', 'Yes', color='GREEN')
+        self.msg('Checking for OpenMP flag -qopenmp for Intel compilers', 'yes', color='GREEN')
     elif not (ifort or icc):
         for x in ('-fopenmp', '-openmp', '-mp', '-xopenmp', '-omp', '-qsmp=omp'):
             try:

@@ -78,7 +78,7 @@ exclude_patterns = ['_build']
 html_theme = 'sphinx_rtd_theme'
 html_theme_path = ['_extensions']
 html_favicon = "code_aster_favicon.png"
-html_logo = "code_aster.png"
+html_logo = "code_aster_200.png"
 html_static_path = ['_static']
 
 # Add any extra paths that contain custom files (such as robots.txt or
