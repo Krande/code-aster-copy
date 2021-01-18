@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -170,9 +170,10 @@ Erreur utilisateur :
  Il n'y a pas de cohérence.
 """),
 
-
-
-
+    30 : _("""
+ Le numéro de la composante %(i1)d est invalide. Il doit être
+ compris entre 1 et %(i2)d.
+"""),
 
     31 : _("""
  NOM_CMP2 et NOM_CMP de longueur différentes.
@@ -199,7 +200,7 @@ Erreur utilisateur dans la commande CREA_CHAMP.
 
     36 : _("""
 Erreur dans la commande CREA_CHAMP.
- Le champ de sortie ne contient pas de composante %(k1)s. Les valeurs 
+ Le champ de sortie ne contient pas de composante %(k1)s. Les valeurs
  correspondantes ne seront pas prises en compte.
 """),
 
@@ -229,7 +230,7 @@ de la première occurrence qui dans certains cas impose ses composantes.
 Par exemple, si vous souhaitez créer un champ de type ELGA_EPSI_R avec
 les composantes EPXX et EPYY à partir notamment d'un champ EPVC_ELGA
 (extrait d'un résultat), lui aussi de type ELGA_EPSI_R, placé en première
-occurrence, aucune des composantes souhaitées ne sera prise en compte 
+occurrence, aucune des composantes souhaitées ne sera prise en compte
 car elles ne font pas partie des composantes du champ créé.
 
 Conseils :

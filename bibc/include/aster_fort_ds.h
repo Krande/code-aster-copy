@@ -85,6 +85,11 @@ extern void DEFSSPPSP( NUMEDDL_GET_COMPONENTS, numeddl_get_components, const cha
                                 const char *, STRING_SIZE, const ASTERINTEGER *, ASTERINTEGER *, \
                                 char *, STRING_SIZE, const ASTERINTEGER *);
 
+#define CALLO_NUMEDDL_GET_COMPONENT_NAME( a, b, c ) \
+                    CALLOPO( NUMEDDL_GET_COMPONENT_NAME, numeddl_get_component_name, a, b , c)
+extern void DEFSPS( NUMEDDL_GET_COMPONENT_NAME, numeddl_get_component_name, const char *, \
+                                STRING_SIZE, const ASTERINTEGER *, const char *, STRING_SIZE);
+
 #define CALLO_NOCARTC( a, b, c, d, e, f, g, h, i )                                                 \
     CALLOPPOOPOPO( NOCART_C, nocart_c, a, b, c, d, e, f, g, h, i )
 void DEFSPPSSPSPS( NOCART_C, nocart_c, const char *, STRING_SIZE, const ASTERINTEGER *,

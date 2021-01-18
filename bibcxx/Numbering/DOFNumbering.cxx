@@ -3,7 +3,7 @@
  * @brief Implementation de DOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -99,7 +99,7 @@ bool BaseDOFNumberingClass::computeNumbering() {
     return true;
 };
 
-bool BaseDOFNumberingClass::useLagrangeMultipliers(){
+bool DOFNumberingClass::useLagrangeMultipliers() const {
     const std::string typeco( "NUME_DDL" );
     ASTERINTEGER repi = 0, ier = 0;
     JeveuxChar32 repk( " " );
@@ -114,45 +114,49 @@ bool BaseDOFNumberingClass::useLagrangeMultipliers(){
 
 };
 
-VectorLong BaseDOFNumberingClass::getRowsAssociatedToPhysicalDofs(){
-    _globalNumbering->_lagrangianInformations->updateValuePointer();
-    ASTERINTEGER size = _globalNumbering->_lagrangianInformations->size();
+VectorLong DOFNumberingClass::getRowsAssociatedToPhysicalDofs(const bool local) const {
+    getGlobalNumbering()->getLagrangianInformations()->updateValuePointer();
+    ASTERINTEGER size = getGlobalNumbering()->getLagrangianInformations()->size();
     VectorLong physicalRows;
     ASTERINTEGER physicalIndicator;
     for ( int i = 0; i < size; i++ ) {
-        physicalIndicator = (*_globalNumbering->_lagrangianInformations)[i];
+        physicalIndicator = (*getGlobalNumbering()->getLagrangianInformations())[i];
         if (physicalIndicator==0)
             physicalRows.push_back( i+1 ); // 1-based index
     }
     return physicalRows;
 };
 
-VectorLong BaseDOFNumberingClass::getRowsAssociatedToLagrangeMultipliers(){
-    _globalNumbering->_lagrangianInformations->updateValuePointer();
-    ASTERINTEGER size = _globalNumbering->_lagrangianInformations->size();
-    VectorLong physicalRows;
+VectorLong DOFNumberingClass::getRowsAssociatedToLagrangeMultipliers(const bool local) const {
+    getGlobalNumbering()->getLagrangianInformations()->updateValuePointer();
+    ASTERINTEGER size = getGlobalNumbering()->getLagrangianInformations()->size();
+    VectorLong lagrangeRows;
     ASTERINTEGER physicalIndicator;
     for ( int i = 0; i < size; i++ ) {
-        physicalIndicator = (*_globalNumbering->_lagrangianInformations)[i];
+        physicalIndicator = (*getGlobalNumbering()->getLagrangianInformations())[i];
         if (physicalIndicator!=0)
-            physicalRows.push_back( i+1 ); // 1-based index
+            lagrangeRows.push_back( i+1 ); // 1-based index
     }
-    return physicalRows;
+    return lagrangeRows;
 };
 
-std::string BaseDOFNumberingClass::getComponentAssociatedToRow(const ASTERINTEGER row){
+std::string DOFNumberingClass::getComponentAssociatedToRow(const ASTERINTEGER row,
+                                                           const bool local) const {
     if (row<1 or row>getNumberOfDofs())
         throw std::runtime_error("Invalid row index");
-    JeveuxChar8 equaType(" ");
-    JeveuxChar8 nodeName(" ");
-    JeveuxChar8 compoName(" ");
-    JeveuxChar8 ligrel(" ");
-    CALLO_RGNDAS_WRAP(getName(), &row, equaType, nodeName, compoName, ligrel);
-    return compoName.rstrip();
+    JeveuxVectorLong descriptor = getFieldOnNodesDescription()->getNodeAndComponentsNumberFromDOF();
+    descriptor->updateValuePointer();
+    const ASTERINTEGER cmpId = abs((*descriptor)[2*(row-1)+1]);
+    if (cmpId==0) return " "; // Lagrange multiplier of a MPC - no component
+    JeveuxChar8 cmpName(" ");
+    CALLO_NUMEDDL_GET_COMPONENT_NAME( getName(), &cmpId, cmpName);
+
+    return cmpName.rstrip();
 };
 
-ASTERINTEGER BaseDOFNumberingClass::getRowAssociatedToNodeComponent(const ASTERINTEGER node, \
-                                                                    const std::string compoName){
+ASTERINTEGER DOFNumberingClass::getRowAssociatedToNodeComponent(const ASTERINTEGER node,
+                                                            const std::string compoName,
+                                                            const bool local) const {
     if (node<1 or node>getMesh()->getNumberOfNodes())
         throw std::runtime_error("Invalid node index");
     NamesMapChar8 nodeNameMap = getMesh()->getNameOfNodesMap();
@@ -169,20 +173,22 @@ ASTERINTEGER BaseDOFNumberingClass::getRowAssociatedToNodeComponent(const ASTERI
     return row;
 };
 
-ASTERINTEGER BaseDOFNumberingClass::getNodeAssociatedToRow(const ASTERINTEGER row){
-    if (row<1 or row>getNumberOfDofs())
+ASTERINTEGER DOFNumberingClass::getNodeAssociatedToRow(const ASTERINTEGER row,
+                                                            const bool local) const {
+    if (row<1 or row>getNumberOfDofs(local))
         throw std::runtime_error("Invalid row index");
-    JeveuxVectorLong descriptor = getFieldOnNodesDescription()->_nodeAndComponentsNumberFromDOF;
+    JeveuxVectorLong descriptor = getFieldOnNodesDescription()->getNodeAndComponentsNumberFromDOF();
     descriptor->updateValuePointer();
-    return (*descriptor)[2*row];
+    const int isPhysical = ( (*descriptor)[2*(row-1)+1] > 0 ) ? 1 : -1;
+    return isPhysical*(*descriptor)[2*(row-1)];
 };
 
-ASTERINTEGER BaseDOFNumberingClass::getNumberOfDofs(){
-    _globalNumbering->_lagrangianInformations->updateValuePointer();
-    return _globalNumbering->_lagrangianInformations->size();;
+ASTERINTEGER DOFNumberingClass::getNumberOfDofs(const bool local) const {
+    getGlobalNumbering()->getNumberOfEquations()->updateValuePointer();
+    return (*getGlobalNumbering()->getNumberOfEquations())[0];
 };
 
-bool BaseDOFNumberingClass::useSingleLagrangeMultipliers(){
+bool DOFNumberingClass::useSingleLagrangeMultipliers() const {
     const std::string typeco( "NUME_DDL" );
     ASTERINTEGER repi = 0, ier = 0;
     JeveuxChar32 repk( " " );
@@ -196,13 +202,13 @@ bool BaseDOFNumberingClass::useSingleLagrangeMultipliers(){
     return false;
 };
 
-std::string BaseDOFNumberingClass::getPhysicalQuantity() {
+std::string BaseDOFNumberingClass::getPhysicalQuantity() const {
     _globalNumbering->_informations->updateValuePointer();
     JeveuxChar24 physicalQuantity = ( *_globalNumbering->_informations )[1];
     return physicalQuantity.rstrip();
 };
 
-VectorString BaseDOFNumberingClass::getComponents() {
+VectorString DOFNumberingClass::getComponents() const {
     ASTERINTEGER ncmp, maxCmp = 100, ibid=0;
     char *stringArray;
     VectorString stringVector;
@@ -217,7 +223,8 @@ VectorString BaseDOFNumberingClass::getComponents() {
     return stringVector;
 };
 
-VectorString BaseDOFNumberingClass::getComponentsAssociatedToNode(const ASTERINTEGER node) {
+VectorString DOFNumberingClass::getComponentsAssociatedToNode(const ASTERINTEGER node,
+                                                              const bool local) const {
     ASTERINTEGER ncmp, maxCmp = 100;
     char *stringArray;
     VectorString stringVector;

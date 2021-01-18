@@ -38,4 +38,7 @@ void exportStudyDescriptionToPython() {
                 &initFactoryPtr< StudyDescriptionClass, ModelPtr, MaterialFieldPtr >));
     addDirichletBCToInterface( c1 );
     addMechanicalLoadToInterface( c1 );
+#ifdef _USE_MPI
+    addParallelMechanicalLoadToInterface( c1 );
+#endif /* _USE_MPI */
 };

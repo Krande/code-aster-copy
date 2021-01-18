@@ -92,6 +92,27 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
     };
 
     /**
+     * @brief Surcharge de l'operateur =
+     */
+    JeveuxVectorClass &operator==( JeveuxVectorClass< ValueType > &toCompare ) {
+        toCompare.updateValuePointer();
+        for ( int i = 0; i < toCompare.size(); ++i )
+            if (this->operator[]( i ) != toCompare[i])
+                return false;
+        return true;
+    };
+
+    /**
+     * @brief Surcharge de l'operateur ==
+     */
+    JeveuxVectorClass &operator==( const std::vector< ValueType > &toCompare ) {
+        for ( int i = 0; i < int(toCompare.size()); ++i )
+            if (this->operator[]( i ) != toCompare[i])
+                return false;
+        return true;
+    };
+
+    /**
      * @brief Surcharge de l'operateur [] avec des const
      * @param i Indice dans le tableau Jeveux
      * @return la valeur du tableau Jeveux a la position i

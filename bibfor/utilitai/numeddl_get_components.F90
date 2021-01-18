@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,12 +41,19 @@ subroutine numeddl_get_components(nume19, allorone, nodeid, ncmp, stringarray, m
     character(len=8) :: stringarray(maxcmp)
 !
 !     Returns a list of all available components (aka dof) in the
-!     numbering
-!     ------------------------------------------------------------------
+!     numbering or for a given node
+!     -----------------------------------------------------------------------------
+!     In    nume19      : name of numbering
+!     In    allorone    : "ONE" or "ALL" to get components for one or all nodes
+!     In    nodeid      : id of the node (1-based number)
+!     Out   ncmp        : number of components
+!     Out   stringarray : name  of components
+!     In    maxcmp      : max possible number of components (for safety purpose)
+!     -----------------------------------------------------------------------------
 !
     integer :: jprno, gd, nec, tabec(10), j, ino, iec, icmp, ncmpmx
     integer ::  iad, nnoe, idescr
-    character(len=8) :: noma
+    character(len=8) :: noma, exilag
     character(len=19) :: numeddl, prno
     integer, pointer :: vicmp(:) => null()
 !     ------------------------------------------------------------------
@@ -111,6 +118,15 @@ subroutine numeddl_get_components(nume19, allorone, nodeid, ncmp, stringarray, m
     do icmp = 1, ncmp
         stringarray(icmp) = zk8(iad-1+vicmp(icmp))
     end do
+!   handle the case of Lagrange multipliers
+    if (allorone(1:3).eq."ALL") then
+        call dismoi('EXIS_LAGR', numeddl, 'NUME_DDL', repk=exilag)
+        if (exilag.eq.'OUI') then
+            ncmp = ncmp + 1
+            stringarray(ncmp) = 'LAGR'
+        endif
+    endif
+!
     AS_DEALLOCATE(vi=vicmp)
 !
     call jedema()

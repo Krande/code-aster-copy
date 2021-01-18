@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@
 import numpy
 
 import aster
-from libaster import FieldOnNodesReal
+from libaster import FieldOnNodesReal, DOFNumbering
 
 from ..Utilities import injector
 
@@ -77,6 +77,80 @@ class ExtendedFieldOnNodesReal(object):
             aster.prepcompcham(
                 "__DETR__", nchams, ncmp, "NO      ", topo, lgno)
             return post_comp_cham_no(valeurs, noeud)
+
+    def setDirichletBC(self, **kwargs):
+        """ set the values of the Dirichlet boundary conditions of the degrees of freedom
+            on the group of nodes or cells.
+        Arguments:
+            GROUP_MA (str or list(str)): name of the group of cells
+            GROUP_NO (str or list(str)): name of the group of nodes.
+            NOEUD    (int or list(int)): indices of the nodes.
+            DX, DY, ... (float) : name and value of the degree of freedom
+        """
+        ldofNumbering = [dep for dep in self.getDependencies() if isinstance(dep,DOFNumbering)]
+        if not ldofNumbering:
+            raise RuntimeError("Cannot retrieve dofNumbering")
+        dofNumbering = [dep for dep in self.getDependencies() if isinstance(dep,DOFNumbering)][-1]
+        mesh = dofNumbering.getMesh()
+        if mesh.isParallel():
+            raise RuntimeError("No support for ParallelDOFNumbering")
+        # build the indirection table between (nodeid, dof) and row
+        indir = {}
+        for row in dofNumbering.getRowsAssociatedToLagrangeMultipliers():
+            dof = dofNumbering.getComponentAssociatedToRow(row)
+            node = -1 * int(dofNumbering.getNodeAssociatedToRow(row))  # constrained nodes have id < 0
+            if node > 0 and dof != "":
+                indir.setdefault((node,dof), []).append(row)  # there may be 2 Lagrange multipliers per constraint
+        # build the group of nodes to be processed
+        if not ('GROUP_MA' in kwargs.keys() or
+                'GROUP_NO' in kwargs.keys() or
+                'NOEUD' in kwargs.keys()):
+            raise ValueError("a group of cells (GROUP_MA), a group of nodes (GROUP_NO)"
+                             " or a list of nodes (NOEUD) must be provided")
+        lNodes = []
+        if 'GROUP_MA' in kwargs.keys():
+            lGrpMa = kwargs['GROUP_MA']
+            lGrpMa = [lGrpMa] if isinstance(lGrpMa, str) else lGrpMa
+            for grMa in lGrpMa:
+                if mesh.hasGroupOfNodes(grMa):
+                    nodes = mesh.getNodes(grMa)
+                    lNodes += nodes
+                elif mesh.hasGroupOfCells(grMa):
+                    connec = mesh.getConnectivity()
+                    nodes = [node for cell in mesh.getCells(grMa) for node in connec[cell - 1]]
+                    lNodes += nodes
+                else:
+                    raise ValueError("no {} group of cells".format(grMa))
+        if 'GROUP_NO' in kwargs.keys():
+            lgrNo = kwargs['GROUP_NO']
+            lgrNo = [lgrNo] if isinstance(lgrNo, str) else lgrNo
+            for grNo in lgrNo:
+                if mesh.hasGroupOfNodes(grNo):
+                    nodes = mesh.getNodes(grNo)
+                    lNodes += nodes
+                else:
+                    raise ValueError("no {} group of nodes".format(grNo))
+        if 'NOEUD' in kwargs.keys():
+            lNo = kwargs['NOEUD']
+            lNo = [lNo] if isinstance(lNo, int) else lNo
+            lNodes += lNo
+        # keep unique node id
+        lNodes = list(set(lNodes))
+        # change the given values
+        assignedDOF=0
+        self.updateValuePointers()  # update Jeveux pointers before assignment
+        for node in lNodes:
+            for (dof, val) in kwargs.items():
+                if dof in ['GROUP_MA','GROUP_NO','NOEUD']:  # only process DOF here
+                    continue
+                if (node, dof) in indir.keys():
+                    assignedDOF += 1
+                    for row in indir[(node, dof)]:
+                        self[row-1] = val   # row are 1-based
+        if assignedDOF == 0:
+            raise ValueError("No bounday condition has been set - no entity handle the given degree of freedom")
+
+
 
 
 class post_comp_cham_no:

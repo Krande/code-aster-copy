@@ -123,6 +123,83 @@ class ParallelDOFNumberingClass : public BaseDOFNumberingClass {
             throw std::runtime_error( "Mesh must be parallel" );
         BaseDOFNumberingClass::setModel( currentModel );
     };
+
+
+    /**
+     * @brief Are Lagrange Multipliers used for BC or MPC
+     */
+    bool useLagrangeMultipliers() const;
+
+    /**
+     * @brief Are Single Lagrange Multipliers used for BC or MPC
+     */
+    bool useSingleLagrangeMultipliers() const;
+
+    /**
+     * @brief Get The Component Associated To A Given Row
+     */
+    std::string getComponentAssociatedToRow(const ASTERINTEGER row, const bool local) const;
+    std::string getComponentAssociatedToRow(const ASTERINTEGER row) const {
+        return getComponentAssociatedToRow(row, false);
+    };
+
+    /**
+     * @brief Get The Components Associated To A Given Node
+     */
+    VectorString getComponentsAssociatedToNode(const ASTERINTEGER node, const bool local) const;
+    VectorString getComponentsAssociatedToNode(const ASTERINTEGER node) const {
+        return getComponentsAssociatedToNode(node, false);
+    };
+
+    /**
+     * @brief Get The Node Id Associated To A Given Row
+     */
+    ASTERINTEGER getNodeAssociatedToRow(const ASTERINTEGER row, const bool local) const;
+    ASTERINTEGER getNodeAssociatedToRow(const ASTERINTEGER row) const {
+        return getNodeAssociatedToRow(row, false);
+    };
+
+    /**
+     * @brief Get The total number of Dofs
+     */
+    ASTERINTEGER getNumberOfDofs(const bool local) const;
+    ASTERINTEGER getNumberOfDofs() const {
+        return getNumberOfDofs(false);
+    };
+
+    /**
+     * @brief get the Row index Associated To the Component of a Node
+     */
+    ASTERINTEGER getRowAssociatedToNodeComponent(const ASTERINTEGER node, const std::string comp,
+                                                                          const bool local) const;
+    ASTERINTEGER getRowAssociatedToNodeComponent(const ASTERINTEGER node, const std::string comp)
+                                                                                            const {
+        return getRowAssociatedToNodeComponent(node, comp, false);
+    };
+
+    /**
+     * @brief Get Rows Associated to all Physical Dof
+     */
+    VectorLong getRowsAssociatedToPhysicalDofs(const bool local) const;
+    VectorLong getRowsAssociatedToPhysicalDofs() const {
+        return getRowsAssociatedToPhysicalDofs(false);
+    };
+
+    /**
+     * @brief Get Rows Associated to Lagrange Multipliers Dof
+     */
+    VectorLong getRowsAssociatedToLagrangeMultipliers(const bool local) const;
+    VectorLong getRowsAssociatedToLagrangeMultipliers() const {
+        return getRowsAssociatedToLagrangeMultipliers(false);
+    };
+
+    /**
+     * @brief Get Assigned Components
+     */
+    VectorString getComponents() const;
+
+
+
 };
 
 /**

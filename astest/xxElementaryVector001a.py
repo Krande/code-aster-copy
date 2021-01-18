@@ -63,6 +63,26 @@ monSolver.matrixFactorization(matass)
 resu1 = monSolver.solveRealLinearSystem( matass, vecass )
 y1=resu1.EXTR_COMP().valeurs
 
+# Modification des valeurs
+vecass.setDirichletBC(GROUP_MA=('ENCPOS'),DY=30.)
+resu11=monSolver.solveRealLinearSystem(matass, vecass)
+y11=resu11.EXTR_COMP().valeurs
+test.assertAlmostEqual(y11[5], 30.)
+test.assertAlmostEqual(y11[7], 30.)
+
+vecass.setDirichletBC(GROUP_MA=('ENCPOS'),DY=60.)
+resu11=monSolver.solveRealLinearSystem(matass, vecass)
+y11=resu11.EXTR_COMP().valeurs
+test.assertAlmostEqual(y11[5], 60.)
+test.assertAlmostEqual(y11[7], 60.)
+
+vecass.setDirichletBC(NOEUD=(1, 2),DY=1., DX=2.)
+resu11=monSolver.solveRealLinearSystem(matass, vecass)
+y11=resu11.EXTR_COMP().valeurs
+test.assertAlmostEqual(y11[0], 2.)
+test.assertAlmostEqual(y11[1], 1.)
+test.assertAlmostEqual(y11[2], 2.)
+test.assertAlmostEqual(y11[3], 1.)
 
 # 2ème résolution avec élimination des conditions aux limites (charge "cinématique")
 bloq=AFFE_CHAR_CINE(MODELE=MOD,

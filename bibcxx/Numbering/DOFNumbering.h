@@ -92,6 +92,13 @@ class FieldOnNodesDescriptionClass : public DataStructure {
      */
     FieldOnNodesDescriptionClass( const std::string name, const JeveuxMemory memType = Permanent );
 
+    /**
+     * @brief Returns a vector of information of the numbering
+     */
+    const JeveuxVectorLong getNodeAndComponentsNumberFromDOF() const {
+        return _nodeAndComponentsNumberFromDOF;
+    }
+
     friend class BaseDOFNumberingClass;
 };
 typedef boost::shared_ptr< FieldOnNodesDescriptionClass > FieldOnNodesDescriptionPtr;
@@ -202,6 +209,21 @@ class BaseDOFNumberingClass : public DataStructure {
         GlobalEquationNumberingClass( const std::string &DOFNumName )
             : _numberOfEquations( DOFNumName + ".NEQU" ), _informations( DOFNumName + ".REFN" ),
               _lagrangianInformations( DOFNumName + ".DELG" ){};
+
+        public:
+            /**
+             * @brief Returns a vector of information of the Lagrange multipliers
+             */
+            const JeveuxVectorLong getLagrangianInformations() const {
+                return _lagrangianInformations;
+            }
+            /**
+             * @brief Returns a vector of information on the numer of equations
+             */
+            const JeveuxVectorLong getNumberOfEquations() const {
+                return _numberOfEquations;
+            }
+
         friend class BaseDOFNumberingClass;
     };
     typedef boost::shared_ptr< GlobalEquationNumberingClass > GlobalEquationNumberingPtr;
@@ -225,6 +247,20 @@ class BaseDOFNumberingClass : public DataStructure {
               _lagrangianInformations( DOFNumName + ".DELG" ),
               _componentsOnNodes( DOFNumName + ".PRNO" ), _indexationVector( DOFNumName + ".NUEQ" ),
               _globalToLocal( DOFNumName + ".NULG" ), _LocalToGlobal( DOFNumName + ".NUGL" ){};
+
+        public:
+            /**
+             * @brief Returns the vector of local to global numbering
+             */
+            const JeveuxVectorLong getLocalToGlobal() const {
+                return _LocalToGlobal;
+            }
+            /**
+             * @brief Returns the vector of global to local numbering
+             */
+            const JeveuxVectorLong getGlobalToLocal() const {
+                return _globalToLocal;
+            }
         friend class BaseDOFNumberingClass;
     };
     typedef boost::shared_ptr< LocalEquationNumberingClass > LocalEquationNumberingPtr;
@@ -300,69 +336,96 @@ class BaseDOFNumberingClass : public DataStructure {
     };
 
     /**
+     * @brief Returns the GlobalEquationNumberingPtr
+     */
+    const GlobalEquationNumberingPtr getGlobalNumbering() const {
+        return _globalNumbering;
+    }
+
+    /**
+     * @brief Returns the LocalEquationNumberingPtr
+     */
+    const LocalEquationNumberingPtr  getLocalNumbering() const {
+        return _localNumbering;
+    }
+
+    /**
      * @brief Build the Numbering of DOFs
      */
     bool computeNumbering();
 
     /**
+     * @brief Get Physical Quantity
+     */
+    std::string getPhysicalQuantity() const;
+
+    /**
      * @brief Are Lagrange Multipliers used for BC or MPC
      */
-    bool useLagrangeMultipliers();
+    virtual bool useLagrangeMultipliers() const { throw std::runtime_error( "Not allowed" ); };
 
     /**
      * @brief Are Single Lagrange Multipliers used for BC or MPC
      */
-    bool useSingleLagrangeMultipliers();
-
-    /**
-     * @brief Get Physical Quantity
-     */
-    std::string getPhysicalQuantity();
+    virtual bool useSingleLagrangeMultipliers() const {
+        throw std::runtime_error( "Not allowed" ); };
 
     /**
      * @brief Get The Component Associated To A Given Row
      */
-    std::string getComponentAssociatedToRow(const ASTERINTEGER row);
+    virtual std::string getComponentAssociatedToRow(const ASTERINTEGER row) const {
+        throw std::runtime_error( "Not allowed" ); };
 
     /**
      * @brief Get The Components Associated To A Given Node
      */
-    VectorString getComponentsAssociatedToNode(const ASTERINTEGER node);
+    virtual VectorString getComponentsAssociatedToNode(const ASTERINTEGER node) const {
+        throw std::runtime_error( "Not allowed" ); };
 
     /**
      * @brief Get The Node Id Associated To A Given Row
      */
-    ASTERINTEGER getNodeAssociatedToRow(const ASTERINTEGER row);
+    virtual ASTERINTEGER getNodeAssociatedToRow(const ASTERINTEGER row) const {
+        throw std::runtime_error( "Not allowed" ); };
 
     /**
      * @brief Get The total number of Dofs
      */
-    ASTERINTEGER getNumberOfDofs();
+    virtual ASTERINTEGER getNumberOfDofs() const { throw std::runtime_error( "Not allowed" ); };
 
     /**
      * @brief get the Row index Associated To the Component of a Node
      */
-    ASTERINTEGER getRowAssociatedToNodeComponent(const ASTERINTEGER node, const std::string comp);
+    virtual ASTERINTEGER getRowAssociatedToNodeComponent(const ASTERINTEGER node,
+                                                         const std::string comp) const {
+        throw std::runtime_error( "Not allowed" );
+    }
 
     /**
      * @brief Get Rows Associated to all Physical Dof
      */
-    VectorLong getRowsAssociatedToPhysicalDofs();
+    virtual VectorLong getRowsAssociatedToPhysicalDofs() const {
+        throw std::runtime_error( "Not allowed" );
+    }
 
     /**
      * @brief Get Rows Associated to Lagrange Multipliers Dof
      */
-    VectorLong getRowsAssociatedToLagrangeMultipliers();
+    virtual VectorLong getRowsAssociatedToLagrangeMultipliers() const {
+        throw std::runtime_error( "Not allowed" );
+    }
 
     /**
      * @brief Get Assigned Components
      */
-    VectorString getComponents();
+    virtual VectorString getComponents() const {
+        throw std::runtime_error( "Not allowed" );
+    }
 
     /**
      * @brief Get FieldOnNodesDescription
      */
-    FieldOnNodesDescriptionPtr getFieldOnNodesDescription() { return _dofDescription; };
+    FieldOnNodesDescriptionPtr getFieldOnNodesDescription() const { return _dofDescription; };
 
     /**
      * @brief Get all FiniteElementDescriptors
@@ -373,7 +436,7 @@ class BaseDOFNumberingClass : public DataStructure {
     /**
      * @brief Get model
      */
-    ModelPtr getModel() {
+    ModelPtr getModel() const {
         if ( _model != nullptr )
             return _model;
         else {
@@ -387,7 +450,7 @@ class BaseDOFNumberingClass : public DataStructure {
      * @brief Get mesh
      * @return Internal mesh
      */
-    BaseMeshPtr getMesh() {
+    BaseMeshPtr getMesh() const {
         const auto model = this->getModel();
         if ( model != nullptr ) {
             return model->getMesh();
@@ -566,6 +629,81 @@ class DOFNumberingClass : public BaseDOFNumberingClass {
             throw std::runtime_error( "Mesh must not be parallel" );
         BaseDOFNumberingClass::setModel( currentModel );
     };
+
+    /**
+     * @brief Are Lagrange Multipliers used for BC or MPC
+     */
+    bool useLagrangeMultipliers() const;
+
+    /**
+     * @brief Are Single Lagrange Multipliers used for BC or MPC
+     */
+    bool useSingleLagrangeMultipliers() const;
+
+    /**
+     * @brief Get The Component Associated To A Given Row
+     */
+    std::string getComponentAssociatedToRow(const ASTERINTEGER row, const bool local) const;
+    std::string getComponentAssociatedToRow(const ASTERINTEGER row) const {
+        return getComponentAssociatedToRow(row, false);
+    };
+
+    /**
+     * @brief Get The Components Associated To A Given Node
+     */
+    VectorString getComponentsAssociatedToNode(const ASTERINTEGER node, const bool local) const;
+    VectorString getComponentsAssociatedToNode(const ASTERINTEGER node) const {
+        return getComponentsAssociatedToNode(node, false);
+    };
+
+    /**
+     * @brief Get The Node Id Associated To A Given Row
+     */
+    ASTERINTEGER getNodeAssociatedToRow(const ASTERINTEGER row, const bool local) const;
+    ASTERINTEGER getNodeAssociatedToRow(const ASTERINTEGER row) const {
+        return getNodeAssociatedToRow(row, false);
+    };
+
+    /**
+     * @brief Get The total number of Dofs
+     */
+    ASTERINTEGER getNumberOfDofs(const bool local) const;
+    ASTERINTEGER getNumberOfDofs() const {
+        return getNumberOfDofs(false);
+    };
+
+    /**
+     * @brief get the Row index Associated To the Component of a Node
+     */
+    ASTERINTEGER getRowAssociatedToNodeComponent(const ASTERINTEGER node, const std::string comp,
+                                                                          const bool local) const;
+    ASTERINTEGER getRowAssociatedToNodeComponent(const ASTERINTEGER node,
+                                                 const std::string comp) const {
+        return getRowAssociatedToNodeComponent(node, comp, false);
+    };
+
+    /**
+     * @brief Get Rows Associated to all Physical Dof
+     */
+    VectorLong getRowsAssociatedToPhysicalDofs(const bool local) const;
+    VectorLong getRowsAssociatedToPhysicalDofs() const {
+        return getRowsAssociatedToPhysicalDofs(false);
+    };
+
+    /**
+     * @brief Get Rows Associated to Lagrange Multipliers Dof
+     */
+    VectorLong getRowsAssociatedToLagrangeMultipliers(const bool local) const;
+    VectorLong getRowsAssociatedToLagrangeMultipliers() const {
+        return getRowsAssociatedToLagrangeMultipliers(false);
+    };
+
+    /**
+     * @brief Get Assigned Components
+     */
+    VectorString getComponents() const;
+
+
 };
 
 /**

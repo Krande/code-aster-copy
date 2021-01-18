@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -21,7 +21,7 @@
  * @brief Implementation de ElementaryVector
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -79,6 +79,16 @@ ElementaryVectorClass::assembleVector( const BaseDOFNumberingPtr &currentNumerot
             ASTERINTEGER in;
             CALLO_CORICH( detr, vectElem, &i, &in );
         }
+#ifdef ASTER_HAVE_MPI
+        for ( ASTERINTEGER i = 1;
+                         i <= int(_listOfLoads->getListOfParallelMechanicalLoads().size()); ++i ) {
+            std::string detr( "E" );
+            std::string vectElem( ( *_listOfElementaryTerms )[i - 1].c_str() );
+            vectElem.resize( 24, ' ' );
+            ASTERINTEGER in;
+            CALLO_CORICH( detr, vectElem, &i, &in );
+        }
+#endif /* ASTER_HAVE_MPI */
     }
     /**/
 

@@ -91,6 +91,7 @@ extern int aster_mpi_gather(void *, int, MPI_Datatype, void *, int, MPI_Datatype
                             int, aster_comm_t *);
 extern int aster_mpi_allgather(void *, int, MPI_Datatype, void *, int, MPI_Datatype,
                                aster_comm_t *);
+extern int aster_mpi_allreduce(void *, void *, int, MPI_Datatype, MPI_Op, aster_comm_t *);
 extern int aster_mpi_gatherv(void *, int, MPI_Datatype,
                              void *, int *, int *, MPI_Datatype,
                              int, aster_comm_t *);

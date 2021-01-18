@@ -44,6 +44,8 @@ void exportFieldOnNodesToPython() {
         .def( "getMesh", &FieldOnNodesRealClass::getMesh )
         .def( "__getitem__",
               +[]( const FieldOnNodesRealClass &v, int i ) { return v.operator[]( i ); } )
+        .def( "__setitem__",
+              +[]( FieldOnNodesRealClass &v, int i, float f ) { return v.operator[]( i )=f; } )
         .def( "printMedFile", &FieldOnNodesRealClass::printMedFile )
         .def( "setDOFNumbering", &FieldOnNodesRealClass::setDOFNumbering )
         .def( "setMesh", &FieldOnNodesRealClass::setMesh )

@@ -269,9 +269,17 @@ DiscreteProblemClass::buildElementaryMechanicalLoadsVector() {
         VectorString tmp;
         for ( const auto curIter : listOfMechanicalLoad )
             tmp.push_back( curIter->getName() );
-
         dict.container["CHARGE"] = tmp;
     }
+#ifdef ASTER_HAVE_MPI
+    auto listParaMecaLoad = _study->getListOfParallelMechanicalLoads();
+    if ( listParaMecaLoad.size() != 0 ) {
+        VectorString tmp;
+        for ( const auto curIter : listParaMecaLoad )
+            tmp.push_back( curIter->getName() );
+        dict.container["CHARGE"] = tmp;
+    }
+#endif /* ASTER_HAVE_MPI */
     cmdSt.define( dict );
     retour->setListOfLoads( _study->getListOfLoads() );
 
@@ -306,6 +314,15 @@ SyntaxMapContainer DiscreteProblemClass::computeMatrixSyntax( const std::string 
             tmp.push_back( curIter->getName() );
         dict.container["CHARGE"] = tmp;
     }
+#ifdef ASTER_HAVE_MPI
+    auto listParaMecaLoad = _study->getListOfParallelMechanicalLoads();
+    if ( listParaMecaLoad.size() != 0 ) {
+        VectorString tmp;
+        for ( const auto curIter : listParaMecaLoad )
+            tmp.push_back( curIter->getName() );
+        dict.container["CHARGE"] = tmp;
+    }
+#endif /* ASTER_HAVE_MPI */
 
     // Definition du mot cle simple OPTION
     dict.container["OPTION"] = optionName;

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -90,12 +90,13 @@ MEL_MSTR=CALC_MATR_ELEM( MODELE=STRUCT,
 
 NUSTR=NUME_DDL(MATR_RIGI=MEL_KSTR)
 
-test.assertEqual( NUSTR.getComponents(), ['DX', 'DY'] )
+test.assertEqual( NUSTR.getComponents(), ['DX', 'DY', 'LAGR'] )
 for row in NUSTR.getRowsAssociatedToLagrangeMultipliers():
-   test.assertEqual( NUSTR.getComponentAssociatedToRow(row), 'LAGR' )
+   test.assertEqual( NUSTR.getComponentAssociatedToRow(row), 'DY' )
+   test.assertTrue( int(NUSTR.getNodeAssociatedToRow(row) < 0 ) )
 for row in NUSTR.getRowsAssociatedToPhysicalDofs():
    test.assertTrue( NUSTR.getComponentAssociatedToRow(row) in ['DX','DY'])
-test.assertEqual( NUSTR.getNodeAssociatedToRow(1), 1 )
+test.assertEqual( NUSTR.getNodeAssociatedToRow(1), -1 )
 test.assertEqual( NUSTR.getRowAssociatedToNodeComponent(1,'DX'), 2)
 test.assertEqual( len(NUSTR.getRowsAssociatedToLagrangeMultipliers()), 512)
 test.assertEqual( len(NUSTR.getRowsAssociatedToPhysicalDofs()), 514)

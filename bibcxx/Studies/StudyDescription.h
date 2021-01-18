@@ -118,6 +118,15 @@ class StudyDescriptionClass {
         return _listOfLoads->getListOfMechanicalLoads();
     };
 
+#ifdef ASTER_HAVE_MPI
+    /**
+     * @brief Obtenir la liste des chargements mecaniques
+     */
+    const ListParaMecaLoad &getListOfParallelMechanicalLoads() const {
+        return _listOfLoads->getListOfParallelMechanicalLoads();
+    };
+#endif /* ASTER_HAVE_MPI */
+
     /**
      * @brief Obtenir le matériau affecté
      */

@@ -247,6 +247,16 @@ int aster_mpi_bcast(void *buffer, int count, MPI_Datatype datatype, int root, as
     return 0;
 }
 
+int aster_mpi_allreduce(void *sendbuf, void *recvbuf, int count,
+                        MPI_Datatype sendtype, MPI_Op op, aster_comm_t *node) {
+    /*! Reduces a message and distribute the result to all other processes */
+#ifdef _USE_MPI
+    DEBUG_MPI("MPI_Allreduce: send %d values from proc #%d\n", count, root);
+    AS_ASSERT(MPI_Allreduce(sendbuf, recvbuf, count, sendtype, op, node->id) == MPI_SUCCESS);
+#endif
+    return 0;
+}
+
 int aster_mpi_gather(void *sendbuf, int sendcnt, MPI_Datatype sendtype,
                      void *recvbuf, int recvcnt, MPI_Datatype recvtype,
                      int root, aster_comm_t *node) {

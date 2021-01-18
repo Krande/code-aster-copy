@@ -19,6 +19,10 @@
 
 import code_aster
 from code_aster.Commands import *
+from code_aster import LinearAlgebra
+
+# force PETSc to start before solves for testing purpose only - no need in regular study
+LinearAlgebra.petscInitialize("-ksp_view -log_view -ksp_monitor")
 
 code_aster.init("--test")
 
@@ -85,6 +89,24 @@ matrAsse.debugPrint(rank+30)
 retour = matrAsse.getDOFNumbering()
 test.assertEqual(retour.isParallel(), True)
 
+test.assertRaises(RuntimeError, lambda: list(numeDDL.getRowsAssociatedToPhysicalDofs()))
+test.assertRaises(RuntimeError, lambda: list(numeDDL.getRowsAssociatedToLagrangeMultipliers()))
+test.assertRaises(RuntimeError, lambda: list(numeDDL.getComponentsAssociatedToNode(1)))
+test.assertRaises(RuntimeError, lambda: list(numeDDL.getNodeAssociatedToRow(1)))
+
+physicalRows = numeDDL.getRowsAssociatedToPhysicalDofs(local=True)
+test.assertListEqual(physicalRows, list(range(1,3*len(pMesh.getNodes(local=True))+1)))
+multipliersRows = numeDDL.getRowsAssociatedToLagrangeMultipliers(local=True)
+test.assertListEqual(multipliersRows, [])
+test.assertFalse(numeDDL.useLagrangeMultipliers())
+test.assertFalse(numeDDL.useSingleLagrangeMultipliers())
+test.assertEqual(numeDDL.getComponents(), ['DX', 'DY', 'DZ'])
+test.assertEqual(numeDDL.getComponentsAssociatedToNode(1, local=True), ['DX', 'DY', 'DZ'])
+test.assertEqual(numeDDL.getNodeAssociatedToRow(1, local=True), 1)
+test.assertEqual(numeDDL.getNumberOfDofs(local=True), 3*len(pMesh.getNodes(local=True)))
+test.assertEqual(numeDDL.getNumberOfDofs(local=False), 3993)
+test.assertEqual(numeDDL.getPhysicalQuantity(), 'DEPL_R')
+
 test.printSummary()
 
-FIN()
+code_aster.close()
