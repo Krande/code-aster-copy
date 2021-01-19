@@ -124,6 +124,14 @@ resu3=monSolver.solveRealLinearSystemWithDirichletBC(matass, vcine, vecass)
 y3=resu3.EXTR_COMP().valeurs
 [test.assertAlmostEqual(y1[i], y3[i]) for i,_ in enumerate(y1)]
 
+
+# Vérification de la possibilité de consulter et de modifier la valeur d'un champ aux noeuds
+resu3.updateValuePointers()
+test.assertEqual(resu3[12], y3[12])
+
+resu3[12]=5.
+test.assertAlmostEqual(resu3[12], 5.)
+
 test.printSummary()
 
 

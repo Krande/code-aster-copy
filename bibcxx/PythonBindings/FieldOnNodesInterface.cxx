@@ -54,8 +54,8 @@ void exportFieldOnNodesToPython() {
         .def( "getDOFNumbering", &FieldOnNodesRealClass::getDOFNumbering )
         .def( "getMesh", &FieldOnNodesRealClass::getMesh )
         .def( "getFieldOnNodesDescription", &FieldOnNodesRealClass::getFieldOnNodesDescription )
-        .def( "update", &FieldOnNodesRealClass::getFieldOnNodesDescription )
-        .def( "updateValuePointers", &FieldOnNodesRealClass::update );
+        .def( "update", &FieldOnNodesRealClass::update )
+        .def( "updateValuePointers", &FieldOnNodesRealClass::updateValuePointers );
     py::class_< FieldOnNodesComplexClass, FieldOnNodesComplexPtr,
                 py::bases< DataFieldClass > >( "FieldOnNodesComplex", py::no_init )
         .def( "__init__", py::make_constructor(&initFactoryPtr< FieldOnNodesComplexClass >))

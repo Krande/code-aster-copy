@@ -43,11 +43,11 @@ class SolveLinearSystem(ExecuteCommand):
                 in place.
         """
 
-        Nume = keywords.get("MATR").getDOFNumbering()
+        rhs = keywords.get("CHAM_NO")  # Right Hand Side
 
-        self._result.setMesh(Nume.getModel().getMesh())
-        self._result.setDOFNumbering(Nume)
-        self._result.setFieldOnNodesDescription(Nume.getFieldOnNodesDescription())
+        self._result.setMesh(rhs.getMesh())
+        self._result.setDOFNumbering(rhs.getDOFNumbering())
+        self._result.setFieldOnNodesDescription(rhs.getFieldOnNodesDescription())
 
 
     def add_dependencies(self, keywords):
