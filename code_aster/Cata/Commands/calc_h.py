@@ -62,7 +62,7 @@ CALC_H=OPER(nom="CALC_H",op=27,sd_prod=table_container,
 
         # Create theta-field
          THETA          =FACT(statut='o',
-            FISSURE         =SIMP(statut='o',typ=(fiss_xfem, fond_fissure),max=1),
+            FISSURE         =SIMP(statut='o',typ=fond_fissure,max=1),
             CHAM_THETA      =SIMP(statut='f',typ=CO, max=1),
             DISCRETISATION  =SIMP(statut='f',typ='TXM',into=("LINEAIRE","LEGENDRE"), defaut="LINEAIRE" ),
             b_nb_lin=BLOC(condition="""(equal_to("DISCRETISATION", 'LINEAIRE'))""",
@@ -82,9 +82,6 @@ CALC_H=OPER(nom="CALC_H",op=27,sd_prod=table_container,
                     EXCLUS('R_INF','NB_COUCHE_INF',), EXCLUS('R_SUP','NB_COUCHE_INF',),
                     EXCLUS('R_SUP','NB_COUCHE_SUP',), EXCLUS('R_INF','NB_COUCHE_SUP',),
                     ),
-            b_nume        =BLOC(condition="""(is_type("FISSURE") in (fiss_xfem)""",
-                NUME_FOND       =SIMP(statut='f',typ='I',defaut=1, min=0),
-              ),
             ),
 
         # loading
@@ -96,7 +93,7 @@ CALC_H=OPER(nom="CALC_H",op=27,sd_prod=table_container,
               ),
 
         OPTION=SIMP(statut='o',typ='TXM',max='**',
-                               into=("G","G_EPSI","K", "K_EPSI", "KJ", "KJ_EPSI"),
+                               into=("G","G_EPSI","K"),
                              ),
 
          ETAT_INIT       =FACT(statut='f',

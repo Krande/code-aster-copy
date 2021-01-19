@@ -18,7 +18,7 @@
 !
 ! person_in_charge: matthieu-m.le-cren at edf.fr
 !
-subroutine cgComputeGtheta(cgField, cgTheta, cgStudy)
+subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable)
 !
 use calcG_type
 !
@@ -48,6 +48,7 @@ use calcG_type
     type(CalcG_field), intent(in) :: cgField
     type(CalcG_theta), intent(in) :: cgTheta
     type(CalcG_Study), intent(inout) :: cgStudy
+    type(CalcG_Table), intent(inout) :: cgTable
 ! --------------------------------------------------------------------------------------------------
 !
 !     CALC_G --- Utilities
@@ -298,7 +299,7 @@ use calcG_type
     if (cgStudy%option .eq. 'G') then
         call getvid(' ', 'RESULTAT', scal=resu, nbret=iret)
         call rsexch(' ', resu, 'SIEF_ELGA', cgStudy%nume_ordre, chsig, iret)
-        
+
         if (iret .ne. 0) then
 !       PROBLEME DANS LA RECUP DE SIEF_ELGA POUR CE NUME_ORDRE
             call utmess('F', 'RUPTURE0_94', si=cgStudy%nume_ordre)
@@ -327,6 +328,9 @@ use calcG_type
     else
         cgStudy%gth(1:7) = gth(1:7)
     endif
+!
+!--- Ajout des valeurs dans la table de G
+    call cgTable%addValues(cgField, cgStudy)
 !
     call detrsd('CHAMP_GD', chvarc)
     call detrsd('CHAMP_GD', chvref)

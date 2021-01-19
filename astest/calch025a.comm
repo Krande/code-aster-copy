@@ -22,9 +22,9 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 # MODELIDATION B : FEM 2D SANS SYMETRIE
 
-# Ce test correspond au test forma05a, sauf que l'on y decoupe le 
+# Ce test correspond au test forma05a, sauf que l'on y decoupe le
 # chargement issu de AFFE_CHAR_MECA en deux chargements fournis par
-# AFFE_CHAR_MECA et AFFE_CHAR_MECA_F. On définit dans AFFE_CHAR_MECA_F 
+# AFFE_CHAR_MECA et AFFE_CHAR_MECA_F. On définit dans AFFE_CHAR_MECA_F
 # un chargement constant de telle sorte que la combinaison de ces deux
 # charges soit identique à la charge unique de forma05b.
 
@@ -39,13 +39,13 @@ MAILLIN=MODI_MAILLAGE(reuse=MAILLIN,
                    ORIE_PEAU_2D=_F(GROUP_MA=('HAUT','BAS','LEV_SUP','LEV_INF')))
 
 # Passage en quadratique
-# PREF_NOEUD sert a definir le prefix du nom des noeuds milieux. Par defaut 
+# PREF_NOEUD sert a definir le prefix du nom des noeuds milieux. Par defaut
 # c'est NS. Pour les gros maillages, il est preferable de mettre un prefix
 # en une seule lettre. Z est libre donc on peut l'utiliser.
 MAIL=CREA_MAILLAGE(MAILLAGE=MAILLIN,
                    LINE_QUAD=_F(TOUT='OUI',
                                 PREF_NOEUD='Z'))
-                                  
+
 # Barsoum
 MAIL=MODI_MAILLAGE(reuse=MAIL,
                    MAILLAGE=MAIL,
@@ -56,7 +56,7 @@ MODE=AFFE_MODELE(MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
                          MODELISATION= 'D_PLAN'))
-                         
+
 MATE=AFFE_MATERIAU(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            MATER=MA))
@@ -69,7 +69,7 @@ CHAR1=AFFE_CHAR_MECA_F(MODELE=MODE,
                     DDL_IMPO=(_F(GROUP_NO='HAUT_G',DY=ZERO,DX=ZERO),
                               _F(GROUP_NO='HAUT_D',DY=ZERO),),
                     )
-                    
+
 CHAR2=AFFE_CHAR_MECA(MODELE=MODE,
                     PRES_REP=_F(GROUP_MA=('HAUT','BAS'),PRES=-10e6),
                     )
@@ -125,7 +125,7 @@ G=CALC_H(OPTION='G',
 
 IMPR_TABLE(TABLE=G)
 
-GK=CALC_H(OPTION='K',
+GK=CALC_H(OPTION=('G','K'),
           RESULTAT=RESU,
           THETA=_F(FISSURE=FISS_NEW,
                    R_INF=RINF,

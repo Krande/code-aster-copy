@@ -44,7 +44,6 @@ use calcG_type
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/utmess.h"
 #include "asterfort/imprsd.h"
 !
@@ -108,7 +107,7 @@ use calcG_type
         if(cgTheta%abscur(i).ge.lonfis) lonfis=cgTheta%abscur(i)
     enddo
 !
-    if(cgTheta%lxfem) then
+    if(ASTER_FALSE) then
         ! CAS X-FEM NON TRAITE ACTUELLEMENT
         ASSERT(ASTER_FALSE)
     else

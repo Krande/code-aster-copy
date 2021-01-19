@@ -21,26 +21,51 @@ module calcG_type
 implicit none
 !
 private
+#include "asterc/getres.h"
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
 #include "asterfort/calcG_type.h"
+#include "asterfort/ccbcop.h"
+#include "asterfort/cgcrio.h"
+#include "asterfort/cgReadCompor.h"
+#include "asterfort/cgStresses.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/gcncon.h"
+#include "asterfort/gettco.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/infniv.h"
+#include "asterfort/ismali.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/medomg.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsmena.h"
 #include "asterfort/rsrusd.h"
+#include "asterfort/tbajli.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbajvi.h"
+#include "asterfort/tbajvk.h"
+#include "asterfort/tbajvr.h"
 #include "asterfort/tbcrsd.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 #include "asterfort/xcourb.h"
 #include "jeveux.h"
 !
-public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_InfoTe
+public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_InfoTe, CalcG_Table
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,8 +86,6 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_InfoTe
         character(len=16)  :: result_in_type = ' '
 ! ----- name of table container (out)
         character(len=24)  :: table_out = ' '
-! ----- name of table G (out)
-        character(len=24)  :: table_g = ' '
 ! ----- CARTE for behavior
         character(len=24)  :: compor = ' '
 ! ----- Incremental behavior or not ?
@@ -80,7 +103,7 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_InfoTe
 ! ----- number option to compute
         integer            :: nb_option = 0
 ! ----- list of options
-        character(len=8)   :: list_option(MAX_NB_OPT) = ' '
+        character(len=8)   :: list_option(NB_MAX_OPT) = ' '
 ! ----- level information
         integer            :: level_info = 1
         contains
@@ -127,7 +150,7 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_InfoTe
 ! ----- pulse
         real(kind=8)       :: pulse   = 0.d0
 ! ----- computed values (G, K1, K2, K3, FIC1, FIC2, FIC3)
-        real(kind=8)       :: gth(7)   = 0.d0
+        real(kind=8)       :: gth(NB_MAX_TERM)   = 0.d0
 ! ----- member function
         contains
         procedure, pass    :: initialize => initialize_study
@@ -168,10 +191,6 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_InfoTe
         character(len=8), pointer :: fondNoeud(:) => null()
 ! ----- number of nodes in the crack
         integer                 :: nb_fondNoeud = 0
-! ----- xFem crack
-        aster_logical           :: lxfem
-! ----- type of discontinuity (for XFEM)
-        character(len=16)       :: XfemDisc_type = ' '
 ! ----- rayon
         real(kind=8)            :: r_inf = 0.d0, r_sup = 0.d0
 ! ----- number of layer
@@ -184,8 +203,6 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_InfoTe
         integer                 :: nnof = 0
 ! ----- nubmer of nodes (for legendre discretization)
         integer                 :: degree = 0
-! ----- nume_fond for XFem only
-        integer                 :: nume_fond = 0
 !-------the crack is symetric ?
         character(len=8)        :: symech = 'NON'
 ! ----- the crack is closed ?
@@ -218,6 +235,36 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_InfoTe
         procedure, pass    :: print => print_InfoTe
     end type CalcG_InfoTe
 !
+!===================================================================================================
+!
+!===================================================================================================
+!
+    type CalcG_Table
+! ----- name of table G (out)
+        character(len=24)  :: table_g = ' '
+! ----- list of parameters
+        character(len=24)  :: list_name_para(NB_MAX_PARA) = ' '
+        character(len=8)   :: list_type_para(NB_MAX_PARA) = ' '
+        integer            :: nb_para = 0
+! ----- grandeur
+        real(kind=8), pointer :: v_G(:) => null()
+        real(kind=8), pointer :: v_K1(:) => null()
+        real(kind=8), pointer :: v_K2(:) => null()
+        real(kind=8), pointer :: v_K3(:) => null()
+        real(kind=8), pointer :: v_G_IRWIN(:) => null()
+        real(kind=8), pointer :: v_G_EPSI(:) => null()
+! ----- nb point
+        integer :: nb_point = 1
+!
+! ----- member function
+        contains
+        procedure, pass    :: initialize => initialize_table
+        procedure, pass    :: addValues
+        procedure, pass    :: addPara
+        procedure, pass    :: save => save_table
+!
+    end type CalcG_Table
+!
 contains
 !
 !---------------------------------------------------------------------------------------------------
@@ -231,19 +278,6 @@ contains
     subroutine initialize_field(this)
 !
     implicit none
-#include "asterc/getres.h"
-#include "asterfort/assert.h"
-#include "asterfort/cgcrio.h"
-#include "asterfort/cgReadCompor.h"
-#include "asterfort/cgStresses.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/gettco.h"
-#include "asterfort/getvid.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 !
         class(CalcG_Field), intent(inout)  :: this
 !
@@ -253,8 +287,9 @@ contains
 !   In this     : calG field
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ier, ifm
+        integer :: ier, ifm, jopt, nbropt
         character(len=16) :: k16bid
+        character(len=19) :: lisopt
         character(len=8)  :: modele
         integer, pointer :: v_nume(:) => null()
 !
@@ -263,11 +298,6 @@ contains
 ! --- Concept de sortie (table container)
 !
         call getres(this%table_out, k16bid, k16bid)
-!
-! --- Table pour les valeurs (table)
-!
-        call gcncon("_", this%table_g)
-        call tbcrsd(this%table_g, 'G')
 !
 ! --- Get name and type of result (in)
 !
@@ -285,7 +315,7 @@ contains
             call getvtx(' ', 'OPTION', scal=this%list_option(1))
         else
             this%nb_option = -ier
-            ASSERT(this%nb_option <= MAX_NB_OPT)
+            ASSERT(this%nb_option <= NB_MAX_OPT)
             call getvtx(' ', 'OPTION', nbval=this%nb_option, vect=this%list_option)
         end if
 !
@@ -309,6 +339,18 @@ contains
 ! --- Recalculates stresses
 !
         call cgStresses(this%result_in, this%list_nume_name, this%stresses)
+!
+! --- if ELAS_INCR
+!
+        if(this%l_incr) then
+            lisopt = '&&OP0027.LISOPT'
+            nbropt = 2
+            call wkvect(lisopt, 'V V K16', nbropt, jopt)
+            zk16(jopt) = 'VARI_ELNO'
+            zk16(jopt+1) = 'EPSP_ELNO'
+            call ccbcop(this%result_in, this%result_out, this%list_nume_name,&
+                        this%nb_nume, lisopt, nbropt)
+        end if
 !
         call jedema()
 !
@@ -394,7 +436,7 @@ contains
             lmode = ASTER_FALSE
         end if
     end function
-
+!
 !===================================================================================================
 !
 !===================================================================================================
@@ -444,20 +486,9 @@ contains
 !
     implicit none
 !
-#include "jeveux.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/ismali.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/medomg.h"
-
-!
         class(CalcG_Study), intent(inout)  :: this
         character(len=8), intent(in)       :: result_in
-        integer, intent(in)               :: nume_index
+        integer, intent(in)                :: nume_index
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -521,12 +552,13 @@ contains
 !
 !===================================================================================================
 !
-    subroutine setOption(this, option)
+    subroutine setOption(this, option, isModeMeca)
 !
     implicit none
 !
         class(CalcG_Study), intent(inout)  :: this
         character(len=8), intent(in)       :: option
+        aster_logical, intent(in)          :: isModeMeca
 !
 ! --------------------------------------------------------------------------------------------------
 !   print informations of a CalcG_Study type
@@ -535,6 +567,14 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         this%option = option
+!
+        if (isModeMeca) then
+            if (this%option .eq. 'K') then
+                this%l_modal = ASTER_TRUE
+            else
+                call utmess('F', 'RUPTURE0_27')
+            endif
+        endif
 !
     end subroutine
 !
@@ -598,6 +638,7 @@ contains
         else
             call rsadpa(result_in, 'L', 1, 'INST', this%nume_ordre,&
                         0, sjv=jinst, styp=k8bid)
+            this%pulse = 0.d0
             this%time = zr(jinst)
         endif
 !
@@ -611,19 +652,6 @@ contains
 !
     implicit none
 !
-#include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/gettco.h"
-#include "asterfort/getvis.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/utmess.h"
-!
         class(CalcG_Theta), intent(inout)  :: this
 !
 ! --------------------------------------------------------------------------------------------------
@@ -632,7 +660,7 @@ contains
 !   In this     : theta type
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ier, ndim, j
+        integer :: ier, j
         character(len=8) :: typfon
         real(kind=8) :: maxtai, mintai
         aster_logical :: l_disc
@@ -647,21 +675,11 @@ contains
         call getvtx('THETA', 'FISSURE', iocc=1, scal=this%crack, nbret=ier)
         ASSERT(ier==1)
         call gettco(this%crack, this%crack_type, ASTER_TRUE)
-! to do - type of discotinuity if xfem
-        this%lxfem = ASTER_FALSE
-        ASSERT(.not.this%lxfem)
 !
-        if(this%lxfem) then
-            call dismoi('NOM_MAILLA',this%crack,'FISS_XFEM', arret='F', repk=this%mesh)
-            call dismoi('TYPE_FOND', this%crack,'FISS_XFEM', arret='F', repk=typfon)
-            call dismoi('TYPE_DISCONTINUITE', this%crack, 'FISS_XFEM' , repk=this%XfemDisc_type)
-            ASSERT(this%XfemDisc_type.eq.'COHESIF' .or. this%XfemDisc_type.eq.'FISSURE')
-        else
-            call dismoi('NOM_MAILLA',this%crack,'FOND_FISS', arret='F', repk=this%mesh)
-            call dismoi('TYPE_FOND', this%crack,'FOND_FISS', arret='F', repk=typfon)
-            call dismoi('CONFIG_INIT', this%crack, 'FOND_FISS', repk=this%config_init)
-            call dismoi('SYME', this%crack, 'FOND_FISS', repk=this%symech)
-        end if
+        call dismoi('NOM_MAILLA',this%crack,'FOND_FISS', arret='F', repk=this%mesh)
+        call dismoi('TYPE_FOND', this%crack,'FOND_FISS', arret='F', repk=typfon)
+        call dismoi('CONFIG_INIT', this%crack, 'FOND_FISS', repk=this%config_init)
+        call dismoi('SYME', this%crack, 'FOND_FISS', repk=this%symech)
 ! --- the crack is closed ?
         if (typfon .eq. 'FERME') then
             this%l_closed = .true.
@@ -712,10 +730,6 @@ contains
             call utmess('F', 'RUPTURE3_4', ni=2, vali=[this%nb_couche_inf, this%nb_couche_sup])
         end if
 !
-        if(this%lxfem) then
-            call getvis('THETA', 'NUME_FOND', iocc=1, scal=this%nume_fond)
-        end if
-!
 ! --- Get pointers on object
 !
         call jeveuo(this%mesh//'.COORDO    .VALE', 'L', vr=this%coorNoeud)
@@ -751,25 +765,6 @@ contains
                 call utmess('A', 'RUPTURE1_16', nr=2, valr=[mintai, maxtai])
             endif
         endif
-
-
-!
-! --- Some verification
-!
-        call dismoi('DIM_GEOM', this%mesh, 'MAILLAGE', repi=ndim)
-
-        ! if(this%lxfem) then
-        !     call jeexin(this%crack//'.FONDFISS', ier)
-        !     ASSERT(ier.ne.0)
-        !     call jeexin(this%crack//'.BASEFOND', ier)
-        !     ASSERT(ier.ne.0)
-        ! else
-        !     call dismoi('CONFIG_INIT', this%crack, 'FOND_FISS', repk=conf)
-        !     if (conf .eq. 'COLLEE') then
-        !         call jeexin(this%crack//'.BASLOC', ier)
-        !         ASSERT(ier.ne.0)
-        !     endif
-        ! end if
 !
         call jedema()
 !
@@ -827,7 +822,6 @@ contains
         print*, "the crack is symetric: ", this%symech
         print*, "The crack is closed ?: ", this%l_closed
         print*, "Nombre de champs THETA: ", this%nb_theta_field
-!        print*, "XFEM ?: ", this%lxfem, " with discontinuity: ", this%XfemDisc_type
         print*, "Discretization : ", this%discretization,  " with number/degree ", &
                 this%nnof, this%degree
         print*, "Radius:"
@@ -847,19 +841,6 @@ contains
     subroutine initialize_InfoTe(this)
 !
     implicit none
-!
-#include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/gettco.h"
-#include "asterfort/getvis.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/utmess.h"
 !
         class(CalcG_InfoTe), intent(inout)  :: this
 !
@@ -914,4 +895,203 @@ contains
 !===================================================================================================
 !
 !===================================================================================================
+!
+    subroutine addPara(this, name, type)
+!
+    implicit none
+!
+        class(CalcG_Table), intent(inout)  :: this
+        character(len=*), intent(in) :: name, type
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   add a parameter to the table
+!   In this     : calcG Table
+! --------------------------------------------------------------------------------------------------
+        this%nb_para = this%nb_para + 1
+        ASSERT(this%nb_para .le. NB_MAX_PARA)
+!
+        this%list_name_para(this%nb_para) = name
+        this%list_type_para(this%nb_para) = type
+
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine initialize_table(this, cgField)
+!
+    implicit none
+!
+        class(CalcG_Table), intent(inout)  :: this
+        type(CalcG_field), intent(inout) :: cgField
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   initialization of a CalcG_Table type
+!   In this     : calcG Table
+! --------------------------------------------------------------------------------------------------
+        integer :: iopt, nbValues
+        character(len=8) :: option
+!
+! --- Table pour les valeurs (table)
+!
+        call gcncon("_", this%table_g)
+        call tbcrsd(this%table_g, 'G')
+!
+        this%nb_para = 0
+!
+! --- INST or FREQ
+        if (cgField%isModeMeca()) then
+            call this%addPara('NUME_MODE', 'I')
+        else
+            call this%addPara('NUME_ORDRE', 'I')
+            call this%addPara('INST', 'R')
+        endif
+! --- Time and behavior
+        call this%addPara('TEMP', 'R')
+        call this%addPara('COMPORTEMENT', 'K8')
+! --- Coordinates of nodes
+        call this%addPara('COOR_X', 'R')
+        call this%addPara('COOR_Y', 'R')
+        if (cgField%ndim.eq.3) then
+            call this%addPara('COOR_Z', 'R')
+            call this%addPara('ABSC_CURV_NORM', 'R')
+        endif
+! --- Option
+        nbValues = this%nb_point
+        do iopt = 1, cgField%nb_option
+            option = cgField%list_option(iopt)
+
+            if (option == "G" ) then
+                call this%addPara('G', 'R')
+                call wkvect("&&TABLEG.G", 'V V R', nbValues, vr=this%v_G)
+            elseif (option == "K" ) then
+                call this%addPara('K1', 'R')
+                call wkvect("&&TABLEG.K1", 'V V R', nbValues, vr=this%v_K1)
+                call this%addPara('K2', 'R')
+                call wkvect("&&TABLEG.K2", 'V V R', nbValues, vr=this%v_K2)
+                if (cgField%ndim.eq.3) then
+                    call this%addPara('K3', 'R')
+                    call wkvect("&&TABLEG.K3", 'V V R', nbValues, vr=this%v_K3)
+                endif
+                call this%addPara('G_IRWIN', 'R')
+                call wkvect("&&TABLEG.GIR", 'V V R', nbValues, vr=this%v_G_IRWIN)
+            elseif (option == "G_EPSI" ) then
+                call this%addPara('G_EPSI', 'R')
+                call wkvect("&&TABLEG.GEP", 'V V R', nbValues, vr=this%v_G_EPSI)
+            else
+                ASSERT(ASTER_FALSE)
+            end if
+        end do
+!
+! --- create table
+        call tbajpa(this%table_g, this%nb_para, this%list_name_para, this%list_type_para)
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine addValues(this, cgField, cgStudy)
+!
+    implicit none
+!
+        class(CalcG_Table), intent(inout)  :: this
+        type(CalcG_field), intent(in) :: cgField
+        type(CalcG_study), intent(in) :: cgStudy
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   add Values in the table
+!   In this     : calcG Table
+! --------------------------------------------------------------------------------------------------
+!
+        if(cgStudy%option == "G") then
+            this%v_G(1) = cgStudy%gth(1)
+        elseif(cgStudy%option == "K") then
+            this%v_K1(1) = cgStudy%gth(2)
+            this%v_K2(1) = cgStudy%gth(3)
+            if(cgField%ndim == 3) then
+                this%v_K3(1) = cgStudy%gth(4)
+            end if
+            this%v_G_IRWIN(1) = cgStudy%gth(5)**2 + cgStudy%gth(6)**2 + cgStudy%gth(7)**2
+        elseif(cgStudy%option == "G_EPSI") then
+            this%v_G_EPSI(1) = cgStudy%gth(1)
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+!
+    end subroutine addValues
+!
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine save_table(this, cgField, cgTheta, cgStudy)
+!
+    implicit none
+!
+        class(CalcG_Table), intent(in)  :: this
+        type(CalcG_field), intent(in) :: cgField
+        type(CalcG_theta), intent(in) :: cgTheta
+        type(CalcG_study), intent(in) :: cgStudy
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   save values in the table
+!   In this     : calcG Table
+! --------------------------------------------------------------------------------------------------
+!
+        integer            :: livi(NB_MAX_PARA)
+        real(kind=8)       :: livr(NB_MAX_PARA)
+        complex(kind=8)    :: livc(NB_MAX_PARA)
+        character(len=24)  :: livk(NB_MAX_PARA)
+        real(kind=8) :: coor(3)
+        integer :: i_node, iopt
+        character(len=8) :: option
+!
+        call tbajvi(this%table_g, this%nb_para, 'NUME_ORDRE', cgStudy%nume_ordre, livi)
+        call tbajvr(this%table_g, this%nb_para, 'INST', cgStudy%time, livr)
+!
+        do i_node = 1, this%nb_point
+            call tbajvr(this%table_g, this%nb_para, 'TEMP', 0.d0, livr)
+            call tbajvk(this%table_g, this%nb_para, 'COMPORTEMENT', 'K8_BIDON', livk)
+!
+            coor = cgTheta%coorNoeud((i_node-1)*3+1:(i_node-1)*3+3)
+            call tbajvr(this%table_g, this%nb_para, 'COOR_X', coor(1), livr)
+            call tbajvr(this%table_g, this%nb_para, 'COOR_Y', coor(2), livr)
+            if (cgField%ndim.eq.3) then
+                call tbajvr(this%table_g, this%nb_para, 'COOR_Z', coor(3), livr)
+                call tbajvr(this%table_g, this%nb_para, 'ABSC_CURV_NORM', &
+                                cgTheta%abscur(i_node), livr)
+            endif
+!
+            do iopt = 1, cgField%nb_option
+                option = cgField%list_option(iopt)
+                if(option == "G") then
+                    call tbajvr(this%table_g, this%nb_para, 'G', this%v_G(i_node), livr)
+                elseif (option == "K") then
+                    call tbajvr(this%table_g, this%nb_para, 'K1', this%v_K1(i_node), livr)
+                    call tbajvr(this%table_g, this%nb_para, 'K2', this%v_K2(i_node), livr)
+                    if (cgField%ndim .eq. 3) then
+                        call tbajvr(this%table_g, this%nb_para, 'K3', this%v_K3(i_node), livr)
+                    endif
+                    call tbajvr(this%table_g, this%nb_para, 'G_IRWIN', this%v_G_IRWIN(i_node), livr)
+                elseif(option == "G_EPSI") then
+                    call tbajvr(this%table_g, this%nb_para, 'G_EPSI', this%v_G_EPSI(i_node), livr)
+                else
+                    ASSERT(ASTER_TRUE)
+                end if
+            end do
+!
+            call tbajli(this%table_g, this%nb_para, this%list_name_para, livi, livr, livc, livk, 0)
+!
+        end do
+!
+    end subroutine save_table
+!
 end module

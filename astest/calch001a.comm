@@ -102,11 +102,9 @@ G=CALC_H(OPTION='G',
                   ),
          )
 
-#chno_theta.printMedFile("/home/C00976/forma05_theta.med")
-
 IMPR_TABLE(TABLE=G)
 
-GK=CALC_H(OPTION='K',
+GK=CALC_H(OPTION=('G','K'),
           RESULTAT=RESU,
           THETA=_F(FISSURE=FISS_NEW,
                    R_INF=RINF,
@@ -114,7 +112,7 @@ GK=CALC_H(OPTION='K',
                    ),
           )
 
-IMPR_TABLE(TABLE=GK),
+IMPR_TABLE(TABLE=GK, UNITE=6),
 
 
 # POST_K1_K2_K3

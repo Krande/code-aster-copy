@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -53,10 +53,5 @@ le mot-clé EXCIT est interdit. Le chargement sera directement lu dans las struc
 Veuillez l'enlever.
 """),
 
-    8: _("""
-Le modèle et la fissure ne sont pas tout les deux FEM ou XFEM. Un mélange FEM-XFEM n'est pas autorisé.
-
-Conseil: Vérifiez votre mise en donnée
-"""),
 
 }

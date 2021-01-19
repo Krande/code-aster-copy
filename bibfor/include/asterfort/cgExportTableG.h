@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,10 @@
 !
 !
 interface
-    subroutine cgExportTableG(cgField, cgTheta)
+    subroutine cgExportTableG(cgField, cgTheta, cgTable)
     use calcG_type
         type(CalcG_field), intent(in) :: cgField
         type(CalcG_theta), intent(in) :: cgTheta
+        type(CalcG_table), intent(in) :: cgTable
     end subroutine cgExportTableG
 end interface

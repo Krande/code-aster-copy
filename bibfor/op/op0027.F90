@@ -25,18 +25,14 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/ccbcop.h"
 #include "asterfort/cgComputeGtheta.h"
 #include "asterfort/cgComputeTheta.h"
 #include "asterfort/cgExportTableG.h"
-#include "asterfort/cgTableG.h"
 #include "asterfort/cgVerification.h"
 #include "asterfort/deprecated_algom.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 #include "jeveux.h"
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,9 +46,9 @@ implicit none
     type(CalcG_field) :: cgField
     type(CalcG_theta) :: cgTheta
     type(CalcG_study) :: cgStudy
+    type(CalcG_table) :: cgTable
 !
-    integer           :: iopt, istore, jopt, nbropt
-    character(len=19) :: lisopt
+    integer           :: i_opt, i_nume
 !---------------------------------------------------------------------------------------------------
     call jemarq()
     call infmaj()
@@ -64,6 +60,7 @@ implicit none
 !-- Initialisation des champs et des paramètres
     call cgField%initialize()
     call cgTheta%initialize()
+    call cgTable%initialize(cgField)
     call cgStudy%initialize(cgField%result_in, cgField%list_nume(1))
 !
 !-- Calcul de la courbure
@@ -77,64 +74,36 @@ implicit none
 !-- Compute Theta factors
     call cgComputeTheta(cgField, cgTheta)
 !
-!-- ELAS INCR
-    if (cgField%l_incr) then
-
-        lisopt = '&&OP0027.LISOPT'
-        nbropt = 2
-!
-        call wkvect(lisopt, 'V V K16', nbropt, jopt)
-        zk16(jopt) = 'VARI_ELNO'
-        zk16(jopt+1) = 'EPSP_ELNO'
-!
-        call ccbcop(cgField%result_in, cgField%result_out, cgField%list_nume_name,&
-                    cgField%nb_nume, lisopt, nbropt)
-    endif
-!
 !-- Loop on option
-    do iopt = 1, cgField%nb_option
+    do i_nume = 1, cgField%nb_nume
 !
-        call cgStudy%setOption(cgField%list_option(iopt))
+        call cgStudy%initialize(cgField%result_in, cgField%list_nume(i_nume))
 !
-        if (cgField%isModeMeca()) then
-            if (cgStudy%option .eq. 'K') then
-                cgStudy%l_modal = ASTER_TRUE
-            else
-                call utmess('F', 'RUPTURE0_27')
-            endif
-        endif
+! ---  Récupération des champs utiles pour l'appel à calcul
+        call cgStudy%getField(cgField%result_in)
 !
-        do istore = 1, cgField%nb_nume
+! ---  Maillage similaire sd_fond_fissure et sd_resu
+        ASSERT(cgTheta%mesh == cgStudy%mesh)
 !
-            call cgStudy%initialize(cgField%result_in, cgField%list_nume(istore))
+        do i_opt = 1, cgField%nb_option
 !
-! --------  Maillage similaire sd_fond_fissure et sd_resu
-            ASSERT(cgTheta%mesh == cgStudy%mesh)
-!
-! --------  Récupération des champs utiles pour l'appel à calcul
-            call cgStudy%getField(cgField%result_in)
+            call cgStudy%setOption(cgField%list_option(i_opt), cgField%isModeMeca())
 !
             call cgStudy%getParameter(cgField%result_in)
 !
 !---------- Calcul de G(theta) pour les éléments 2D/3D option G et K
-            call cgComputeGtheta(cgField, cgTheta, cgStudy)
-!
-!---------- Création de la table de G et des SIFS
-            call cgTableG(cgField, cgTheta, cgStudy)
-!
+            call cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable)
         end do
 !
-    end do
+        call cgTable%save(cgField, cgTheta, cgStudy)
 !
-!------ Print fields
-    call cgTheta%print()
-    call cgField%print()
+    end do
 !
 ! --- Cleaning
     call cgField%clean()
 !
 !-- Création de la table container
-    call cgExportTableG(cgField, cgTheta)
+    call cgExportTableG(cgField, cgTheta, cgTable)
 !
     call jedema()
 !

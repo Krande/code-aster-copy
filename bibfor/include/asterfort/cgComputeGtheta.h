@@ -18,10 +18,11 @@
 !
 !
 interface
-    subroutine cgComputeGtheta(cgField, cgTheta, cgStudy)
+    subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable)
     use calcG_type
         type(CalcG_field), intent(in) :: cgField
         type(CalcG_theta), intent(in) :: cgTheta
         type(CalcG_Study), intent(inout) :: cgStudy
+        type(CalcG_Table), intent(inout) :: cgTable
     end subroutine cgComputeGtheta
 end interface

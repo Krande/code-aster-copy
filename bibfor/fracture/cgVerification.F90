@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,8 +45,8 @@ use calcG_type
 !
 !
     character(len=8) :: model, mesh
-    aster_logical :: lmodemeca, ldynatrans, lXfemModel
-    integer :: nexci, ixfem, netatinit
+    aster_logical :: lmodemeca, ldynatrans
+    integer :: nexci, netatinit
 !
     call jemarq()
 !
@@ -61,20 +61,6 @@ use calcG_type
     lmodemeca = cgField%isModeMeca()
     ldynatrans= cgField%isDynaTrans()
 !
-! --- Compatibility between Model and Crack
-!
-    lXfemModel = ASTER_FALSE
-    call exixfe(model, ixfem)
-    if(ixfem==1) then
-        lXfemModel = ASTER_TRUE
-    end if
-!
-    if(cgTheta%lxfem .and. lXfemModel) then
-        if(cgTheta%lxfem .neqv. lXfemModel) then
-            call utmess('F', 'RUPTURE3_8')
-        end if
-    end if
-!
 ! --- EXCIT is allowed only for MODE_MECA and DYNA_TRANS
 !
     call getfac('EXCIT', nexci)
@@ -88,17 +74,8 @@ use calcG_type
         endif
     end if
 !
-! --- If Xfem -> COHESIF is forbidden
-!
-    if(cgTheta%lxfem) then
-        if(cgField%ndim .eq. 2 .and. cgTheta%XfemDisc_type.eq.'COHESIF') then
-            call utmess('F', 'RUPTURE2_5')
-        end if
-    endif
-!
 ! --- Verification option (not allowed for the moment)
 !
-    ASSERT(.not.cgTheta%lxfem)
     ASSERT(.not.cgField%isModeMeca())
     ASSERT(.not.cgField%isDynaTrans())
     ASSERT(nexci==0)

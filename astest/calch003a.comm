@@ -160,12 +160,12 @@ G1=CALC_H(
                           FISSURE=FOND_NEW,),
                  )
 
-#GK1=CALC_H(        RESULTAT=RESU,
-#                   THETA=_F(R_INF = 10.,
-#                              R_SUP = 40.,
-#                              FISSURE=FOND_NEW),
-#                    
-#                    OPTION='K')
+GK1=CALC_H(        RESULTAT=RESU,
+                   THETA=_F(R_INF = 10.,
+                              R_SUP = 40.,
+                              FISSURE=FOND_NEW),
+
+                    OPTION=('G_EPSI','K'))
 
 G2=CALC_H(        OPTION='G_EPSI',
                   RESULTAT=RESU,
@@ -175,12 +175,11 @@ G2=CALC_H(        OPTION='G_EPSI',
                            FISSURE=FOND_NEW,),
                   )
 
-#GK2=CALC_H(          RESULTAT=RESU,
-#                     THETA=_F(R_INF = 15.,
-#                              R_SUP = 45.,
-#                              FISSURE=FOND_NEW),
-#                    
-#                    OPTION='K')
+GK2=CALC_H(          RESULTAT=RESU,
+                     THETA=_F(R_INF = 15.,
+                              R_SUP = 45.,
+                              FISSURE=FOND_NEW),
+                    OPTION=('G_EPSI','K'))
 
 G3=CALC_H(         OPTION='G_EPSI',
                    RESULTAT=RESU,
@@ -190,12 +189,12 @@ G3=CALC_H(         OPTION='G_EPSI',
                             FISSURE=FOND_NEW,),
                    )
 
-#GK3=CALC_H(          RESULTAT=RESU,
-#                     THETA=_F(R_INF = 5.0,
-#                              R_SUP = 47.,
-#                              FISSURE=FOND_NEW),
-#                     
-#                     OPTION='K')
+GK3=CALC_H(          RESULTAT=RESU,
+                     THETA=_F(R_INF = 5.0,
+                              R_SUP = 47.,
+                              FISSURE=FOND_NEW),
+
+                     OPTION=('G_EPSI','K'))
 
 G4=CALC_H(        OPTION='G_EPSI',
                   RESULTAT=RESU,
@@ -206,21 +205,20 @@ G4=CALC_H(        OPTION='G_EPSI',
                            FISSURE=FOND_NEW,),
                   )
 
-#GK4=CALC_H(         RESULTAT=RESU,
-#                    NUME_ORDRE=1,
-#                    THETA=_F(R_INF = 3.0,
-#                              R_SUP = 48.,
-#                              FISSURE=FOND_NEW),
-#                    
-#                    OPTION='K')
+GK4=CALC_H(         RESULTAT=RESU,
+                    NUME_ORDRE=1,
+                    THETA=_F(R_INF = 3.0,
+                              R_SUP = 48.,
+                              FISSURE=FOND_NEW),
+
+                    OPTION=('G_EPSI','K'))
 
 
-#GK5=CALC_H(         RESULTAT=RESU,
-#                    NUME_ORDRE=1,
-#                    THETA=_F( FISSURE=FOND_NEW,
-#                             ),
-#                    
-#                    OPTION='K')
+GK5=CALC_H(         RESULTAT=RESU,
+                    NUME_ORDRE=1,
+                    THETA=_F( FISSURE=FOND_NEW,
+                             ),
+                    OPTION=('G_EPSI','K'))
 
 
 TEST_TABLE(PRECISION=0.080000000000000002,
@@ -230,32 +228,32 @@ TEST_TABLE(PRECISION=0.080000000000000002,
            NOM_PARA='G_EPSI',
            TABLE=G1,)
 
-#TEST_TABLE(PRECISION=0.080000000000000002,
-#           VALE_CALC=0.360202303083,
-#           VALE_REFE=0.38985999999999998,
-#           REFERENCE='NON_DEFINI',
-#           NOM_PARA='G',
-#           TABLE=GK1,)
-#
-#TEST_TABLE(PRECISION=0.080000000000000002,
-#           VALE_CALC=0.359636575533,
-#           VALE_REFE=0.38985999999999998,
-#           REFERENCE='NON_DEFINI',
-#           NOM_PARA='G_IRWIN',
-#           TABLE=GK1,)
-#
-#TEST_TABLE(PRECISION=0.040000000000000001,
-#           VALE_CALC=88.9050086393,
-#           VALE_REFE=92.566000000000003,
-#           REFERENCE='NON_DEFINI',
-#           NOM_PARA='K1',
-#           TABLE=GK1,)
-#
-#TEST_TABLE(CRITERE='ABSOLU',
-#           VALE_CALC=0.,
-#
-#           NOM_PARA='K2',
-#           TABLE=GK1,)
+TEST_TABLE(PRECISION=0.080000000000000002,
+           VALE_CALC=0.3602034326926006,
+           VALE_REFE=0.38985999999999998,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G_EPSI',
+           TABLE=GK1,)
+
+TEST_TABLE(PRECISION=0.080000000000000002,
+           VALE_CALC=0.359636575533,
+           VALE_REFE=0.38985999999999998,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G_IRWIN',
+           TABLE=GK1,)
+
+TEST_TABLE(PRECISION=0.040000000000000001,
+           VALE_CALC=88.9050086393,
+           VALE_REFE=92.566000000000003,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK1,)
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.,
+
+           NOM_PARA='K2',
+           TABLE=GK1,)
 
 TEST_TABLE(PRECISION=0.080000000000000002,
            VALE_CALC=0.3601150977,
@@ -264,32 +262,31 @@ TEST_TABLE(PRECISION=0.080000000000000002,
            NOM_PARA='G_EPSI',
            TABLE=G2,)
 
-#TEST_TABLE(PRECISION=0.080000000000000002,
-#           VALE_CALC=0.360144061822,
-#           VALE_REFE=0.38985999999999998,
-#           REFERENCE='NON_DEFINI',
-#           NOM_PARA='G',
-#           TABLE=GK2,)
-#
-#TEST_TABLE(PRECISION=0.080000000000000002,
-#           VALE_CALC=0.35958185368,
-#           VALE_REFE=0.38985999999999998,
-#           REFERENCE='NON_DEFINI',
-#           NOM_PARA='G_IRWIN',
-#           TABLE=GK2,)
-#
-#TEST_TABLE(PRECISION=0.040000000000000001,
-#           VALE_CALC=88.8982445444,
-#           VALE_REFE=92.566000000000003,
-#           REFERENCE='NON_DEFINI',
-#           NOM_PARA='K1',
-#           TABLE=GK2,)
-#
-#TEST_TABLE(CRITERE='ABSOLU',
-#           VALE_CALC=0.,
-#
-#           NOM_PARA='K2',
-#           TABLE=GK2,)
+TEST_TABLE(PRECISION=0.080000000000000002,
+           VALE_CALC=0.3601150977006137,
+           VALE_REFE=0.38985999999999998,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G_EPSI',
+           TABLE=GK2,)
+
+TEST_TABLE(PRECISION=0.080000000000000002,
+           VALE_CALC=0.35958185368,
+           VALE_REFE=0.38985999999999998,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G_IRWIN',
+           TABLE=GK2,)
+
+TEST_TABLE(PRECISION=0.040000000000000001,
+           VALE_CALC=88.8982445444,
+           VALE_REFE=92.566000000000003,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK2,)
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.,
+           NOM_PARA='K2',
+           TABLE=GK2,)
 
 TEST_TABLE(PRECISION=0.080000000000000002,
            VALE_CALC=0.360144312104,
@@ -298,59 +295,56 @@ TEST_TABLE(PRECISION=0.080000000000000002,
            NOM_PARA='G_EPSI',
            TABLE=G3,)
 
-#TEST_TABLE(PRECISION=0.080000000000000002,
-#           VALE_CALC=0.360194362854,
-#           VALE_REFE=0.38985999999999998,
-#           REFERENCE='NON_DEFINI',
-#           NOM_PARA='G',
-#           TABLE=GK3,)
-#
-#TEST_TABLE(PRECISION=0.080000000000000002,
-#           VALE_CALC=0.359614458429,
-#           VALE_REFE=0.38985999999999998,
-#           REFERENCE='NON_DEFINI',
-#           NOM_PARA='G_IRWIN',
-#           TABLE=GK3,)
-#
-#TEST_TABLE(PRECISION=0.040000000000000001,
-#           VALE_CALC=88.9022748358,
-#           VALE_REFE=92.566000000000003,
-#           REFERENCE='NON_DEFINI',
-#           NOM_PARA='K1',
-#           TABLE=GK3,)
-#
-#TEST_TABLE(CRITERE='ABSOLU',
-#           VALE_CALC=0.,
-#
-#           NOM_PARA='K2',
-#           TABLE=GK3,)
+TEST_TABLE(PRECISION=0.080000000000000002,
+           VALE_CALC=0.36014431210386133,
+           VALE_REFE=0.38985999999999998,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G_EPSI',
+           TABLE=GK3,)
 
-#TEST_TABLE(PRECISION=0.080000000000000002,
-#           VALE_CALC=0.361844542614,
-#           VALE_REFE=0.38985999999999998,
-#           REFERENCE='NON_DEFINI',
-#           NOM_PARA='G',
-#           TABLE=GK5,)
-#
-#TEST_TABLE(PRECISION=0.080000000000000002,
-#           VALE_CALC=0.361357632422,
-#           VALE_REFE=0.38985999999999998,
-#           REFERENCE='NON_DEFINI',
-#           NOM_PARA='G_IRWIN',
-#           TABLE=GK5,)
-#
-#TEST_TABLE(PRECISION=0.040000000000000001,
-#           VALE_CALC=89.1174841841,
-#           VALE_REFE=92.566000000000003,
-#           REFERENCE='NON_DEFINI',
-#           NOM_PARA='K1',
-#           TABLE=GK5,)
-#
-#TEST_TABLE(CRITERE='ABSOLU',
-#           VALE_CALC=0.,
-#
-#           NOM_PARA='K2',
-#           TABLE=GK5,)
+TEST_TABLE(PRECISION=0.080000000000000002,
+           VALE_CALC=0.359614458429,
+           VALE_REFE=0.38985999999999998,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G_IRWIN',
+           TABLE=GK3,)
+
+TEST_TABLE(PRECISION=0.040000000000000001,
+           VALE_CALC=88.9022748358,
+           VALE_REFE=92.566000000000003,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK3,)
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.,
+           NOM_PARA='K2',
+           TABLE=GK3,)
+
+TEST_TABLE(PRECISION=0.080000000000000002,
+           VALE_CALC=0.361844542614,
+           VALE_REFE=0.38985999999999998,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G_EPSI',
+           TABLE=GK5,)
+
+TEST_TABLE(PRECISION=0.080000000000000002,
+           VALE_CALC=0.361357632422,
+           VALE_REFE=0.38985999999999998,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='G_IRWIN',
+           TABLE=GK5,)
+
+TEST_TABLE(PRECISION=0.040000000000000001,
+           VALE_CALC=89.1174841841,
+           VALE_REFE=92.566000000000003,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK5,)
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=0.,
+           NOM_PARA='K2',
+           TABLE=GK5,)
 
 FIN( )
-#

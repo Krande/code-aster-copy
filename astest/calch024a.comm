@@ -21,11 +21,11 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 # MODELIDATION A : FEM 2D
-# Ce test correspond au test forma05a, sauf que l'on y decoupe le 
-# chargement de Neumann en deux charges CLNEU2 et CLNEU2 qui vont 
+# Ce test correspond au test forma05a, sauf que l'on y decoupe le
+# chargement de Neumann en deux charges CLNEU2 et CLNEU2 qui vont
 # s'ajouter. On applique une FONC_MULT sur la deuxieme charge CLNEU2
 # de telle sorte qu'a l'instant auquel on effectue les posts-traitements
-# la combinaison de ces deux charges soit identique a la charge unique 
+# la combinaison de ces deux charges soit identique a la charge unique
 # de forma05a.
 
 MA=DEFI_MATERIAU(ELAS=_F(E=210000e6,
@@ -121,7 +121,7 @@ G=CALC_H(OPTION='G',
 
 IMPR_TABLE(TABLE=G)
 
-GK=CALC_H(OPTION='K',
+GK=CALC_H(OPTION=('G','K'),
           RESULTAT=RESU,
           THETA=_F(FISSURE=FISS_NEW,
                    R_INF=RINF,

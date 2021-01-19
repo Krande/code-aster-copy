@@ -18,7 +18,7 @@
 !
 ! person_in_charge: nicolas.pignet at edf.fr
 !
-subroutine cgExportTableG(cgField, cgTheta)
+subroutine cgExportTableG(cgField, cgTheta, cgTable)
 !
 use calcG_type
 !
@@ -37,6 +37,7 @@ use calcG_type
 !
     type(CalcG_field), intent(in) :: cgField
     type(CalcG_theta), intent(in) :: cgTheta
+    type(CalcG_table), intent(in) :: cgTable
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,7 +74,7 @@ use calcG_type
 ! --- Create table_container to store (calc_g and cham_theta)
 !
     obje_name(1)   = "TABLE_G"
-    obje_sdname(1) = cgField%table_g
+    obje_sdname(1) = cgTable%table_g
 !
     obje_name(2)   = "CHAM_THETA"
     obje_sdname(2) = cgTheta%theta_factors
