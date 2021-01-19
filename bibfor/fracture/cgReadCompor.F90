@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,11 +28,13 @@ subroutine cgReadCompor(result_in, compor, iord0, l_incr)
 #include "asterfort/cgvein.h"
 #include "asterfort/comp_init.h"
 #include "asterfort/comp_meca_elas.h"
+#include "asterfort/cgCreateCompIncr.h"
+#include "asterfort/rs_get_mate.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/rsexch.h"
 !
     character(len=8), intent(in)  :: result_in
-    character(len=19), intent(in) :: compor
+    character(len=19), intent(inout) :: compor
     integer, intent(in)           :: iord0
     aster_logical, intent(out)    :: l_incr
 !
@@ -49,13 +51,19 @@ subroutine cgReadCompor(result_in, compor, iord0, l_incr)
 ! --------------------------------------------------------------------------------------------------
 !
    integer :: iret, nb_cmp, nbetin
-   character(len=8) :: mesh, repk
+   character(len=8) :: mesh, repk, model
    aster_logical :: l_etat_init, l_impel
 !
 ! --- Initialization
 !
     l_etat_init = ASTER_FALSE
     l_impel     = ASTER_FALSE
+!
+    call dismoi('MODELE', result_in, 'RESULTAT', repk=model)
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+!
+    call getfac('ETAT_INIT', nbetin)
+    if (nbetin .ne. 0) l_etat_init = ASTER_TRUE
 !
 ! --- Read COMPOR <CARTE> in RESULT
 !
@@ -65,11 +73,6 @@ subroutine cgReadCompor(result_in, compor, iord0, l_incr)
 !
     if (iret .ne. 0) then
         l_impel = ASTER_TRUE
-        call dismoi('NOM_MAILLA', result_in, 'RESULTAT', repk=mesh)
-!
-        call getfac('ETAT_INIT', nbetin)
-        if (nbetin .ne. 0) l_etat_init = ASTER_TRUE
-!
         call comp_init(mesh, compor, 'V', nb_cmp)
         call comp_meca_elas(compor, nb_cmp, l_etat_init)
     endif
@@ -92,7 +95,7 @@ subroutine cgReadCompor(result_in, compor, iord0, l_incr)
 ! --- Check COMPORTEMENT / RELATION in result for incremental comportement
 !
     if (l_incr) then
-        call cgvein(compor)
+        call cgCreateCompIncr(compor, l_etat_init)
     endif
 !
 end subroutine

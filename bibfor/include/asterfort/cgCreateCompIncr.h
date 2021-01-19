@@ -18,10 +18,8 @@
 !
 !
 interface
-    subroutine cgReadCompor(result_in, compor, iord0, l_incr)
-        character(len=8), intent(in)  :: result_in
+    subroutine cgCreateCompIncr(compor, l_etat_init)
         character(len=19), intent(inout) :: compor
-        integer, intent(in)           :: iord0
-        aster_logical, intent(out)    :: l_incr
-    end subroutine cgReadCompor
+        aster_logical, intent(in) :: l_etat_init
+    end subroutine cgCreateCompIncr
 end interface

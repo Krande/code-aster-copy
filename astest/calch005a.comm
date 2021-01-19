@@ -308,11 +308,11 @@ GK3_P=CALC_H(    RESULTAT=CHAMDEPP,
 # COURONNE 4
 # ----------
 
-#GK4_P=CALC_H(    RESULTAT=CHAMDEPP,
-#                         THETA=_F(
-#                                   FISSURE=FOND_NEW),
-#                         OPTION='K'
-#                     )
+GK4_P=CALC_H(    RESULTAT=CHAMDEPP,
+                         THETA=_F(
+                                   FISSURE=FOND_NEW),
+                         OPTION='K'
+                     )
 
 # ------------------------------------------------
 # CALCUL DE G AVEC CHARGEMENT 2 DE LA FICHE
@@ -397,11 +397,11 @@ GK3_T=CALC_H(    RESULTAT=CHAMDEPT,
 # COURONNE 3
 # ----------
 
-#GK4_T=CALC_H(    RESULTAT=CHAMDEPT,
-#                         THETA=_F(
-#                                   FISSURE=FOND_NEW),
-#                         OPTION='K'
-#                     )
+GK4_T=CALC_H(    RESULTAT=CHAMDEPT,
+                         THETA=_F(
+                                   FISSURE=FOND_NEW),
+                         OPTION='K'
+                     )
 
 # ------------------------------------------------
 # CALCUL DE G AVEC CHARGEMENT 3 DE LA FICHE
@@ -486,11 +486,11 @@ GK3_C=CALC_H(   RESULTAT=CHAMDEP0,
 # COURONNE 4
 # ----------
 
-#GK4_C=CALC_H(   RESULTAT=CHAMDEP0,
-#                         THETA=_F(
-#                                   FISSURE=FOND_NEW),
-#                         OPTION='K'
-#                     )
+GK4_C=CALC_H(   RESULTAT=CHAMDEP0,
+                         THETA=_F(
+                                   FISSURE=FOND_NEW),
+                         OPTION='K'
+                     )
 
 # *******************************************************
 ## IMPRESSION DES RESULTATS CHARGEMENT 1 SANS CONTACT
@@ -525,12 +525,12 @@ TEST_TABLE(PRECISION=0.02,
            NOM_PARA='K1',
            TABLE=GK3_P,)
 
-#TEST_TABLE(PRECISION=0.02,
-#           VALE_CALC=1.12884125888,
-#           VALE_REFE=1.1482000000000001,
-#           REFERENCE='NON_DEFINI',
-#           NOM_PARA='K1',
-#           TABLE=GK4_P,)
+TEST_TABLE(PRECISION=0.02,
+           VALE_CALC=1.12884125888,
+           VALE_REFE=1.1482000000000001,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK4_P,)
 
 ## IMPRESSION DES RESULTATS CHARGEMENT 2 SANS CONTACT
 ## ----------------------------------------------------
@@ -564,12 +564,12 @@ TEST_TABLE(PRECISION=0.070000000000000007,
            NOM_PARA='K1',
            TABLE=GK3_T,)
 
-#TEST_TABLE(PRECISION=0.070000000000000007,
-#           VALE_CALC=-0.384784996926,
-#           VALE_REFE=-0.41236899999999999,
-#           REFERENCE='NON_DEFINI',
-#           NOM_PARA='K1',
-#           TABLE=GK4_T,)
+TEST_TABLE(PRECISION=0.070000000000000007,
+           VALE_CALC=-0.384784996926,
+           VALE_REFE=-0.41236899999999999,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK4_T,)
 
 ## IMPRESSION DES RESULTATS CHARGEMENT CH3 AVEC CONTACT
 ## ----------------------------------------------------
@@ -684,15 +684,15 @@ TEST_TABLE(PRECISION=0.044999999999999998,
                      VALE_I=3,),
            )
 
-#TEST_TABLE(PRECISION=0.044999999999999998,
-#           VALE_CALC=0.00125349775959,
-#           VALE_REFE=1.2075E-3,
-#           REFERENCE='NON_DEFINI',
-#           NOM_PARA='K1',
-#           TABLE=GK4_C,
-#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-#                     VALE_I=3,),
-#           )
+TEST_TABLE(PRECISION=0.044999999999999998,
+           VALE_CALC=0.00125349775959,
+           VALE_REFE=1.2075E-3,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK4_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=3,),
+           )
 
 # ALPHA = 0.335
 # ------------
@@ -739,16 +739,16 @@ TEST_TABLE(PRECISION=0.10000000000000001,
                      VALE_I=4,),
            )
 
-#TEST_TABLE(PRECISION=0.10000000000000001,
-#           VALE_CALC=0.00310496018465,
-#           VALE_REFE=3.0187E-3,
-#
-#           REFERENCE='NON_DEFINI',
-#           NOM_PARA='K1',
-#           TABLE=GK4_C,
-#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-#                     VALE_I=4,),
-#           )
+TEST_TABLE(PRECISION=0.10000000000000001,
+           VALE_CALC=0.00310496018465,
+           VALE_REFE=3.0187E-3,
+
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK4_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=4,),
+           )
 
 # ALPHA = 0.34
 # ------------
@@ -798,16 +798,16 @@ TEST_TABLE(PRECISION=1.E-2,
                      VALE_I=5,),
            )
 
-#TEST_TABLE(PRECISION=1.E-2,
-#           VALE_CALC=0.00545535476415,
-#           VALE_REFE=5.4336000000000002E-3,
-#
-#           REFERENCE='NON_DEFINI',
-#           NOM_PARA='K1',
-#           TABLE=GK4_C,
-#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-#                     VALE_I=5,),
-#           )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC=0.00545535476415,
+           VALE_REFE=5.4336000000000002E-3,
+
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK4_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=5,),
+           )
 
 # ALPHA = 0.345
 # -------------
@@ -857,16 +857,16 @@ TEST_TABLE(PRECISION=0.040000000000000001,
                      VALE_I=6,),
            )
 
-#TEST_TABLE(PRECISION=0.040000000000000001,
-#           VALE_CALC=0.00826863261738,
-#           VALE_REFE=8.5865000000000004E-3,
-#
-#           REFERENCE='NON_DEFINI',
-#           NOM_PARA='K1',
-#           TABLE=GK4_C,
-#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-#                     VALE_I=6,),
-#           )
+TEST_TABLE(PRECISION=0.040000000000000001,
+           VALE_CALC=0.00826863261738,
+           VALE_REFE=8.5865000000000004E-3,
+
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK4_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=6,),
+           )
 
 # ALPHA = 0.35
 # ------------
@@ -916,16 +916,16 @@ TEST_TABLE(PRECISION=0.040000000000000001,
                      VALE_I=7,),
            )
 
-#TEST_TABLE(PRECISION=0.040000000000000001,
-#           VALE_CALC=0.0116192655168,
-#           VALE_REFE=0.012075000000000001,
-#
-#           REFERENCE='NON_DEFINI',
-#           NOM_PARA='K1',
-#           TABLE=GK4_C,
-#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-#                     VALE_I=7,),
-#           )
+TEST_TABLE(PRECISION=0.040000000000000001,
+           VALE_CALC=0.0116192655168,
+           VALE_REFE=0.012075000000000001,
+
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK4_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=7,),
+           )
 
 # ALPHA = 0.36
 # ------------
@@ -975,16 +975,16 @@ TEST_TABLE(PRECISION=1.E-2,
                      VALE_I=8,),
            )
 
-#TEST_TABLE(PRECISION=1.E-2,
-#           VALE_CALC=0.0215978562724,
-#           VALE_REFE=0.021756999999999999,
-#
-#           REFERENCE='NON_DEFINI',
-#           NOM_PARA='K1',
-#           TABLE=GK4_C,
-#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-#                     VALE_I=8,),
-#           )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC=0.0215978562724,
+           VALE_REFE=0.021756999999999999,
+
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK4_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=8,),
+           )
 
 # ALPHA = 0.40
 # ------------
@@ -1033,14 +1033,14 @@ TEST_TABLE(PRECISION=1.E-2,
                      VALE_I=10,),
            )
 
-#TEST_TABLE(PRECISION=1.E-2,
-#           VALE_CALC=0.0667515066278,
-#           VALE_REFE=0.066477999999999995,
-#           REFERENCE='NON_DEFINI',
-#           NOM_PARA='K1',
-#           TABLE=GK4_C,
-#           FILTRE=_F(NOM_PARA='NUME_ORDRE',
-#                     VALE_I=10,),
-#           )
+TEST_TABLE(PRECISION=1.E-2,
+           VALE_CALC=0.0667515066278,
+           VALE_REFE=0.066477999999999995,
+           REFERENCE='NON_DEFINI',
+           NOM_PARA='K1',
+           TABLE=GK4_C,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=10,),
+           )
 
 FIN();

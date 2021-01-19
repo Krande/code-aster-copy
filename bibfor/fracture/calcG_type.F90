@@ -31,6 +31,7 @@ private
 #include "asterfort/cgcrio.h"
 #include "asterfort/cgReadCompor.h"
 #include "asterfort/cgStresses.h"
+#include "asterfort/comp_info.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gcncon.h"
@@ -335,6 +336,10 @@ contains
 ! --- Read <CARTE> COMPORTEMENT
 !
         call cgReadCompor(this%result_in, this%compor, this%list_nume(1), this%l_incr)
+!
+        if(this%level_info > 1) then
+            call comp_info(modele, this%compor)
+        end if
 !
 ! --- Recalculates stresses
 !

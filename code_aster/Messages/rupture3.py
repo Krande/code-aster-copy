@@ -53,5 +53,12 @@ le mot-clé EXCIT est interdit. Le chargement sera directement lu dans las struc
 Veuillez l'enlever.
 """),
 
+    8: _("""
+La relation suivante n'est pas supportée: %(k1)s. Uniquement les lois basées sur VMIS_ISOT_*** sont prévues pour un calcul élastoplastique.
+"""),
+
+    9: _("""
+La déformation suivante n'est pas supportée: %(k1)s. Uniquement PETIT est prévu.
+"""),
 
 }
