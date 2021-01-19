@@ -99,16 +99,16 @@ use calcG_type
 !
 !-- Recuperation du comportement
     if (cgField%l_incr) then
-        call getvid(' ', 'RESULTAT', scal=resu, nbret=nres)
-        call dismoi('TYPE_RESU', resu, 'RESULTAT', repk=type)
+!
+        call dismoi('TYPE_RESU', cgField%result_in, 'RESULTAT', repk=type)
 !
         if (type .ne. 'EVOL_NOLI') then
             call utmess('F', 'RUPTURE1_15')
         endif
 !
-        call rsexch('F', resu, 'SIEF_ELGA', cgStudy%nume_ordre, chsig, iret)
-        call rsexch('F', resu, 'EPSP_ELNO', cgStudy%nume_ordre, chepsp, iret)
-        call rsexch('F', resu, 'VARI_ELNO', cgStudy%nume_ordre, chvari, iret)
+        call rsexch('F', cgField%result_in, 'SIEF_ELGA', cgStudy%nume_ordre, chsig, iret)
+        call rsexch('F', cgField%result_out, 'EPSP_ELNO', cgStudy%nume_ordre, chepsp, iret)
+        call rsexch('F', cgField%result_out, 'VARI_ELNO', cgStudy%nume_ordre, chvari, iret)
     endif
 !
 !-- Recuperation de l'etat initial
@@ -247,7 +247,7 @@ use calcG_type
     if (opti .eq. 'CALCH_G_F' .or. opti .eq. 'CALCH_K_G_F') then
         call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R',&
                     ncmp=1, nomcmp='INST', sr=cgStudy%time)
-      lpain(nchin+1) = 'PTEMPSR'
+        lpain(nchin+1) = 'PTEMPSR'
         lchin(nchin+1) = chtime
         nchin = nchin + 1
     endif
@@ -260,29 +260,31 @@ use calcG_type
         lchin(nchin) = chpuls
     endif
 !
-    if (cgField%l_incr) then
-        lpain(nchin+1) = 'PCONTRR'
-        lchin(nchin+1) = chsig
-        lpain(nchin+2) = 'PDEFOPL'
-        lchin(nchin+2) = chepsp
-        lpain(nchin+3) = 'PVARIPR'
-        lchin(nchin+3) = chvari
-        nchin = nchin + 3
-!
-!------ Champ de contrainte initiale
-        if (nsig .ne. 0) then
-          if (inga .eq. 0) then
-!---------- Champ de contrainte initiale transforme en ELNO
-            lpain(nchin+1) = 'PSIGINR'
-            lchin(nchin+1) = sigelno
-            nchin = nchin + 1
-          else
-!---------- Champ de contrainte initiale donne par l'utilisateur (NOEUD ou ELNO)
-            lpain(nchin+1) = 'PSIGINR'
-            lchin(nchin+1) = chsigi
-            nchin = nchin + 1
-          endif
+    if (cgField%l_incr ) then
+        if (opti .eq. 'CALCH_G_F' .or. opti .eq. 'CALCH_G') then
+            lpain(nchin+1) = 'PCONTRR'
+            lchin(nchin+1) = chsig
+            lpain(nchin+2) = 'PDEFOPL'
+            lchin(nchin+2) = chepsp
+            lpain(nchin+3) = 'PVARIPR'
+            lchin(nchin+3) = chvari
+            nchin = nchin + 3
         endif
+    endif
+!
+!-- Champ de contrainte initiale
+    if (nsig .ne. 0) then
+      if (inga .eq. 0) then
+!------ Champ de contrainte initiale transforme en ELNO
+        lpain(nchin+1) = 'PSIGINR'
+        lchin(nchin+1) = sigelno
+        nchin = nchin + 1
+      else
+!------ Champ de contrainte initiale donne par l'utilisateur (NOEUD ou ELNO)
+        lpain(nchin+1) = 'PSIGINR'
+        lchin(nchin+1) = chsigi
+        nchin = nchin + 1
+      endif
     endif
 !
     if (cgStudy%option .eq. 'G'.or.cgStudy%option .eq. 'G_EPSI') then
@@ -297,13 +299,13 @@ use calcG_type
 !
 !   RECUPERATION DES CONTRAINTES DU RESULTAT POUR  OPTION G
     if (cgStudy%option .eq. 'G') then
-        call getvid(' ', 'RESULTAT', scal=resu, nbret=iret)
-        call rsexch(' ', resu, 'SIEF_ELGA', cgStudy%nume_ordre, chsig, iret)
-
+        call rsexch(' ', cgField%result_in, 'SIEF_ELGA', cgStudy%nume_ordre, chsig, iret)
+!        
         if (iret .ne. 0) then
-!       PROBLEME DANS LA RECUP DE SIEF_ELGA POUR CE NUME_ORDRE
+!-----------Probleme pour recuperer SIEF_ELGA avec ce numero d'ordre
             call utmess('F', 'RUPTURE0_94', si=cgStudy%nume_ordre)
         endif
+!
         lpain(nchin+1) = 'PCONTGR'
         lchin(nchin+1) = chsig
         nchin = nchin + 1

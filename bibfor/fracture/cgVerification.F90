@@ -77,8 +77,6 @@ use calcG_type
 ! --- Verification option (not allowed for the moment)
 !
     ASSERT(.not.cgField%isModeMeca())
-    call getfac('ETAT_INIT', netatinit)
-    ASSERT(netatinit==0)
 !
     call jedema()
 !

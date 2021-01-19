@@ -82,7 +82,7 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_InfoTe, CalcG_Table
 ! ----- name of result (in)
         character(len=8)   :: result_in = ' '
 ! ----- name of temproray result (out)
-        character(len=8)   :: result_out = ' '
+        character(len=8)   :: result_out = 'resuout'
 ! ----- type of result (in)
         character(len=16)  :: result_in_type = ' '
 ! ----- name of table container (out)

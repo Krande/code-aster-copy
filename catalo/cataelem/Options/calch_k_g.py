@@ -37,7 +37,7 @@ PTHETAR = InputParameter(phys=PHY.THET_R)
 PVARIPR = InputParameter(phys=PHY.VARI_R)
 
 
-PCONTRR = InputParameter(phys=PHY.SIEF_R)
+#PCONTRR = InputParameter(phys=PHY.SIEF_R)
 
 
 
@@ -57,7 +57,7 @@ CALCH_K_G = Option(
     para_in=(
         PBASLOR,
         PCOMPOR,
-        PCONTRR,
+#        PCONTRR,
         PVARIPR,
         SP.PCOURB,
         SP.PDEPLAR,

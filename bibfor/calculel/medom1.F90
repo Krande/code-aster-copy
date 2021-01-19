@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,7 +83,7 @@ subroutine medom1(modele, mater, mateco, cara, kcha, ncha,&
     call getres(k8b, concep, nomcmd)
 !
     if ((nomcmd.eq.'CALC_CHAMP' ) .or. (nomcmd.eq.'CALC_ERREUR' ) .or.&
-        (nomcmd.eq.'CALC_META  ' ) .or. (nomcmd.eq.'CALC_G' )) then
+        (nomcmd.eq.'CALC_META  ' ) .or. (nomcmd.eq.'CALC_G' ) .or. (nomcmd.eq.'CALC_H')) then
 !
 !        RECUPERATION DU MODELE, MATERIAU, CARA_ELEM et EXCIT
 !        POUR LE NUMERO d'ORDRE NUORD

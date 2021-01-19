@@ -99,6 +99,10 @@ implicit none
 !
     end do
 !
+!------ Print fields
+    call cgTheta%print()
+    call cgField%print()
+!
 ! --- Cleaning
     call cgField%clean()
 !

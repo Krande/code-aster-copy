@@ -300,9 +300,6 @@ implicit none
     incr = compor(4)(1:9).eq.'COMP_INCR'
     notelas = compor(1).ne.'ELAS'
     read(zk16(icomp+1),'(I16)') nbvari
-    if (incr) then
-        call jevech('PCONTRR', 'L', isigm)
-    endif
     call tecach('ONO', 'PPESANR', 'L', iret, iad=ipesa)
     call tecach('ONO', 'PROTATR', 'L', iret, iad=irota)
     call tecach('ONO', 'PSIGINR', 'L', iret, iad=isigi)
@@ -310,6 +307,9 @@ implicit none
     if (option .eq. 'CALCH_G' .or. option .eq. 'CALCH_G_F') then
         call tecach('ONO', 'PVITESS', 'L', iret, iad=ivites)
         call tecach('ONO', 'PACCELE', 'L', iret, iad=iaccel)
+        if (incr) then
+            call jevech('PCONTRR', 'L', isigm)
+        endif
     else
 !------ Restriction avec option calc_k_g
         if (grand) then
@@ -320,6 +320,8 @@ implicit none
                 call utmess('F', 'RUPTURE1_24')
             end if
         endif
+!       Pas de comportement incrémentale avec option K
+        incr = .FALSE.
 !
 !------ Récupération de la pulsation
         call tecach('ONO', 'PPULPRO', 'L', iret, iad=ipuls)
