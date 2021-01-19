@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/comp_meca_pvar.h"
+#include "asterfort/jedetc.h"
 #include "asterfort/imvari.h"
 !
 character(len=8), intent(in) :: model
@@ -56,5 +57,9 @@ character(len=19), intent(in) :: compor
 ! - Print informations about internal variables
 !
     call imvari(compor_info)
+!
+! - Cleaning
+!
+    call jedetc('V', compor_info, 1)
 !
 end subroutine
