@@ -22,9 +22,11 @@ implicit none
 !
 private
 #include "asterf_types.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/calcG_type.h"
-#include "asterfort/gcncon.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/gcncon.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -254,7 +256,7 @@ contains
         integer :: ier, ifm
         character(len=16) :: k16bid
         character(len=8)  :: modele
-
+        integer, pointer :: v_nume(:) => null()
 !
         call jemarq()
 !
@@ -295,7 +297,10 @@ contains
 !
         this%list_nume_name = '&&OP0027.VECTORDR'
         call cgcrio(this%result_in, this%list_nume_name, this%nb_nume)
-        call jeveuo(this%list_nume_name, 'L', vi=this%list_nume)
+        ASSERT(this%nb_nume > 0)
+        call jeveuo(this%list_nume_name, 'L', vi=v_nume)
+        AS_ALLOCATE(vi=this%list_nume, size=this%nb_nume)
+        this%list_nume(1:this%nb_nume) = v_nume(1:this%nb_nume)
 !
 ! --- Read <CARTE> COMPORTEMENT
 !
@@ -425,6 +430,8 @@ contains
         call rsmena(this%result_in)
     endif
 !
+    AS_DEALLOCATE(vi=this%list_nume)
+!
     call jedema()
 !
     end subroutine
@@ -450,7 +457,7 @@ contains
 !
         class(CalcG_Study), intent(inout)  :: this
         character(len=8), intent(in)       :: result_in
-        integer, intent(in)                :: nume_index
+        integer, intent(in)               :: nume_index
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -466,7 +473,7 @@ contains
 
         this%nume_ordre = nume_index
         this%loading    = "&&STUDY.CHARGES"
-        call medomg(result_in, nume_index, this%model, this%material, this%mateco, this%loading)
+        call medomg(result_in, this%nume_ordre, this%model, this%material, this%mateco,this%loading)
         call dismoi('NOM_MAILLA', this%model,'MODELE', repk=this%mesh)
 !
 !       Maillage linéaire ou quadratique
