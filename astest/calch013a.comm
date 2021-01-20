@@ -157,7 +157,7 @@ for i in range(2):
                   ),
                         NEWTON     =_F ( REAC_INCR    = 1 ,REAC_ITER=0))
 
-   GDP[i]=CALC_H(OPTION='G',
+   GDP[i]=CALC_H(OPTION='G_EPSI',
                  RESULTAT=ELADP[i],
                  INST = 1,
                  THETA=_F(
@@ -170,7 +170,7 @@ for i in range(2):
                   THETA=_F(FISSURE=FOND_NEW,
                            R_INF = 10.,
                            R_SUP = 20.),
-                  OPTION=('K','G'))
+                  OPTION=('K','G_EPSI'))
 
 #--------------------------------------------------------------------
 #            TEST DES RESULTATS DE G, K1 ET K2   EN DP
@@ -178,7 +178,7 @@ for i in range(2):
 
 
    TEST_TABLE(TABLE=GDP[i],
-              NOM_PARA='G',
+              NOM_PARA='G_EPSI',
               VALE_CALC=2.3048695705621E-05,
               VALE_REFE=2.275E-5,
               REFERENCE='NON_DEFINI',
@@ -202,7 +202,7 @@ for i in range(2):
               PRECISION=0.07)
 
    TEST_TABLE(TABLE=K1K2[i],
-              NOM_PARA='G',
+              NOM_PARA='G_EPSI',
               VALE_CALC=2.3048695705621E-05,
               VALE_REFE=2.275E-5,
               REFERENCE='NON_DEFINI',
