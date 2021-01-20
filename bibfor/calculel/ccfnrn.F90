@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,6 +76,7 @@ implicit none
 #include "asterfort/ascomb.h"
 #include "asterfort/dylach.h"
 #include "asterfort/lislec.h"
+#include "asterfort/isParallelMesh.h"
     integer :: nbordr
     character(len=4) :: chtype
     character(len=8) :: resuin, resuou
@@ -93,7 +94,7 @@ implicit none
     character(len=1) :: stop, ktyp, kbid
     character(len=2) :: codret
     character(len=6) :: nompro
-    character(len=8) :: k8bid, kiord, ctyp, nomcmp(3), para, sd_partition
+    character(len=8) :: k8bid, kiord, ctyp, nomcmp(3), para, sd_partition, mesh
     character(len=16) :: typmo, optio2, motfac
     character(len=19) :: ligrel, chdep2, vebid, k19bid, listLoad
     character(len=24) :: numref, fomult, charge, infoch, vechmp, vachmp, cnchmp
@@ -105,7 +106,7 @@ implicit none
     character(len=24) :: strx, vldist, vcnoch, vcham, lisori
     character(len=24) :: bidon, chacce, modele, kstr, modnew
     aster_logical :: exitim, lstr, lstr2, ldist, dbg_ob, dbgv_ob, ltest, lsdpar, lcpu, lbid
-    aster_logical :: lPilo1, lPilo2
+    aster_logical :: lPilo1, lPilo2, l_pmesh
     real(kind=8) :: etan, time, partps(3), omega2, coef(3), raux
     real(kind=8) :: rctfin, rctdeb, rctfini, rctdebi, freq
     real(kind=8), pointer :: cgmp(:) => null()
@@ -144,6 +145,7 @@ implicit none
     ci=dcmplx(0.D0,1.D0)
     cun=dcmplx(1.D0,0.D0)
     cmun=dcmplx(-1.D0,0.D0)
+    l_pmesh = ASTER_FALSE
 !
     bidon='&&'//nompro//'.BIDON'
 
@@ -224,9 +226,12 @@ implicit none
     if (nbproc.eq.1 .and. niv >1) then
         call utmess('I','PREPOST_25',sk=option)
     else if (nbproc.gt.1) then
+        call dismoi('NOM_MAILLA', resuin, 'RESULTAT', repk=mesh)
+
       if (ldist) then
+        ASSERT(.not.l_pmesh)
         call utmess('I','PREPOST_22',si=nbordr,sk=option)
-      else
+      elseif(.not.l_pmesh) then
         if (lsdpar) then
           call utmess('I','PREPOST_23',sk=option)
         else

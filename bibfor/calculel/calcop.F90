@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,6 +38,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
 #include "asterfort/infniv.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/indk16.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jedetr.h"
@@ -97,7 +98,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
     aster_logical :: exitim, exipou, optdem, dbg_ob, dbgv_ob, lcpu, ltest, ldist
-    aster_logical :: ligmod, lbid, lsdpar
+    aster_logical :: ligmod, lbid, lsdpar, l_pmesh
     mpi_int :: mpicou, mpibid
 !
     integer :: nopout, jlisop, iop, ibid, nbord2, lres, n0, n1, n2, n3, posopt, jvcham
@@ -183,6 +184,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
     endif
 !
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=nomail)
+    l_pmesh = isParallelMesh(nomail)
 !
     call dismoi('MODELISATION', modele, 'MODELE', repk=modeli)
 
@@ -311,8 +313,9 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
         call utmess('I','PREPOST_25',sk=optio2)
     else if (nbproc.gt.1) then
       if (ldist) then
+        ASSERT(.not.l_pmesh)
         call utmess('I','PREPOST_22',si=nbordr,sk=optio2)
-      else
+      elseif(.not.l_pmesh) then
         if (lsdpar) then
           call utmess('I','PREPOST_23',sk=optio2)
         else
