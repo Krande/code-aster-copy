@@ -701,7 +701,7 @@ implicit none
             coeff_K1K2 = e
             c1 = e/(1.d0-nu*nu)
             c2 = nu*c1
-            c3 = e/(1.d0 + nu)
+            c3 = mu
             th = (1.d0-2.d0*nu)/(1.d0-nu)
         endif
 !
