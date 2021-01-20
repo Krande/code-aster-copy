@@ -182,14 +182,6 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_InfoTe, CalcG_Table
         character(len=8)        :: mesh = ' '
 ! ----- name of the nodes of the mesh (support of crack)
         character(len=24)       :: nomNoeud = ' '
-! ----- coordinate of nodes of the mesh
-        real(kind=8), pointer   :: coorNoeud(:) => null()
-! ----- size of cell in radial direction
-        real(kind=8), pointer   :: fondTailleR(:) => null()
-! ----- abscisse curviligne of nodes in the crack
-        real(kind=8), pointer   :: abscur(:) => null()
-! ----- list of nodes in the crack
-        character(len=8), pointer :: fondNoeud(:) => null()
 ! ----- number of nodes in the crack
         integer                 :: nb_fondNoeud = 0
 ! ----- rayon
@@ -215,6 +207,10 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_InfoTe, CalcG_Table
         procedure, pass    :: initialize => initialize_theta
         procedure, pass    :: print => print_theta
         procedure, pass    :: compute_courbature
+        procedure, pass    :: getCoorNodes
+        procedure, pass    :: getAbscurv
+        procedure, pass    :: getBaseLoc
+        procedure, pass    :: getFondTailleR
     end type CalcG_Theta
 !
 !===================================================================================================
@@ -669,6 +665,7 @@ contains
         character(len=8) :: typfon
         real(kind=8) :: maxtai, mintai
         aster_logical :: l_disc
+        real(kind=8), pointer :: fondTailleR(:) => null()
 !
         call jemarq()
 ! --- get automatic name
@@ -702,8 +699,6 @@ contains
 !
         call getvis('THETA', 'DEGRE', iocc=1, scal=this%degree, nbret=ier)
         call jelira(this%crack//'.FOND.NOEU', 'LONMAX', this%nnof)
-!        call getvis('THETA', 'NB_POINT_FOND', iocc=1, scal=this%nb_point_fond, nbret=ier)
-
 !
         if ( this%discretization == "LINEAIRE") then
             this%nb_theta_field = this%nnof
@@ -714,9 +709,6 @@ contains
         if(this%discretization == "LINEAIRE") then
             ASSERT(this%nb_point_fond >= 0)
             ASSERT(this%degree == 0)
-!~             if(this%nb_point_fond == 0) then
-!~                 this%nb_point_fond = this%nb_fondNoeud
-!~             end if
         end if
 !
         if(this%discretization == "LEGENDRE") then
@@ -735,13 +727,6 @@ contains
             call utmess('F', 'RUPTURE3_4', ni=2, vali=[this%nb_couche_inf, this%nb_couche_sup])
         end if
 !
-! --- Get pointers on object
-!
-        call jeveuo(this%mesh//'.COORDO    .VALE', 'L', vr=this%coorNoeud)
-        call jeveuo(this%crack//'.FOND.TAILLE_R' , 'L', vr=this%fondTailleR)
-        call jeveuo(this%crack//'.ABSCUR'        , 'L', vr=this%abscur)
-        call jeveuo(this%crack//'.FOND.NOEU'     , 'L', vk8=this%fondNoeud)
-!
         this%nomNoeud = this%mesh//'.NOMNOE'
 
 ! --- Get RINF and DE RSUP from command file or from SD FOND_FISSURE
@@ -757,11 +742,12 @@ contains
             if (this%config_init .eq. 'DECOLLEE') then
                 call utmess('F', 'RUPTURE1_7')
             endif
-            maxtai = this%fondTailleR(1)
-            mintai = this%fondTailleR(1)
+            call this%getFondTailleR(fondTailleR)
+            maxtai = fondTailleR(1)
+            mintai = fondTailleR(1)
             do j = 1, this%nb_fondNoeud
-                maxtai = max(maxtai,this%fondTailleR(j))
-                mintai = min(mintai,this%fondTailleR(j))
+                maxtai = max(maxtai,fondTailleR(j))
+                mintai = min(mintai,fondTailleR(j))
             end do
             this%r_inf = 2*maxtai
             this%r_sup = 4*maxtai
@@ -797,6 +783,98 @@ contains
         baseloc = this%crack//'.BASLOC'
         this%courbature = '&&cgtheta.COURB'
         call xcourb(baseloc, this%mesh, model, this%courbature)
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine getCoorNodes(this, v_coor)
+!
+    implicit none
+!
+        class(CalcG_Theta), intent(in)  :: this
+        real(kind=8), pointer :: v_coor(:)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Get pointer on coordinates of nodes
+!   In this     : theta type
+! --------------------------------------------------------------------------------------------------
+!
+        call jemarq()
+        call jeveuo(this%mesh//'.COORDO    .VALE', 'L', vr=v_coor)
+        call jedema()
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine getAbscurv(this, v_abs)
+!
+    implicit none
+!
+        class(CalcG_Theta), intent(in)  :: this
+        real(kind=8), pointer :: v_abs(:)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Get pointer on abscisse curviligne
+!   In this     : theta type
+! --------------------------------------------------------------------------------------------------
+!
+        call jemarq()
+        call jeveuo(this%crack//'.ABSCUR', 'L', vr=v_abs)
+        call jedema()
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine getFondTailleR(this, v_taille)
+!
+    implicit none
+!
+        class(CalcG_Theta), intent(in)  :: this
+        real(kind=8), pointer :: v_taille(:)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Get pointer
+!   In this     : theta type
+! --------------------------------------------------------------------------------------------------
+!
+        call jemarq()
+        call jeveuo(this%crack//'.FOND.TAILLE_R', 'L', vr=v_taille)
+        call jedema()
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine getBaseLoc(this, v_base)
+!
+    implicit none
+!
+        class(CalcG_Theta), intent(in)  :: this
+        real(kind=8), pointer :: v_base(:)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Get pointer on baseloc
+!   In this     : theta type
+! --------------------------------------------------------------------------------------------------
+!
+        call jemarq()
+        call jeveuo(this%crack//'.BASLOC    .VALE', 'L', vr=v_base)
+        call jedema()
 !
     end subroutine
 !
@@ -1058,21 +1136,25 @@ contains
         real(kind=8) :: coor(3)
         integer :: i_node, iopt
         character(len=8) :: option
+        real(kind=8), pointer   :: coorNoeud(:) => null()
+        real(kind=8), pointer   :: abscur(:) => null()
 !
         call tbajvi(this%table_g, this%nb_para, 'NUME_ORDRE', cgStudy%nume_ordre, livi)
         call tbajvr(this%table_g, this%nb_para, 'INST', cgStudy%time, livr)
+!
+        call cgTheta%getCoorNodes(coorNoeud)
+        call cgTheta%getAbscurv(abscur)
 !
         do i_node = 1, this%nb_point
             call tbajvr(this%table_g, this%nb_para, 'TEMP', 0.d0, livr)
             call tbajvk(this%table_g, this%nb_para, 'COMPORTEMENT', 'K8_BIDON', livk)
 !
-            coor = cgTheta%coorNoeud((i_node-1)*3+1:(i_node-1)*3+3)
+            coor = coorNoeud((i_node-1)*3+1:(i_node-1)*3+3)
             call tbajvr(this%table_g, this%nb_para, 'COOR_X', coor(1), livr)
             call tbajvr(this%table_g, this%nb_para, 'COOR_Y', coor(2), livr)
             if (cgField%ndim.eq.3) then
                 call tbajvr(this%table_g, this%nb_para, 'COOR_Z', coor(3), livr)
-                call tbajvr(this%table_g, this%nb_para, 'ABSC_CURV_NORM', &
-                                cgTheta%abscur(i_node), livr)
+                call tbajvr(this%table_g, this%nb_para, 'ABSC_CURV_NORM', abscur(i_node), livr)
             endif
 !
             do iopt = 1, cgField%nb_option

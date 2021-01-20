@@ -51,8 +51,7 @@ use calcG_type
     type(CalcG_theta), intent(inout) :: cgTheta
 
     integer :: i
-    integer :: nbel, iret
-    integer :: ibas, jcnsl
+    integer :: nbel, iret, jcnsl
 
     real(kind=8) :: d, xm, ym, zm, xn, yn, zn, eps, alpha, lonfis
 
@@ -61,6 +60,10 @@ use calcG_type
     character(len=24) :: cnstet
     real(kind=8) :: theta0
     real(kind=8), pointer :: v_theta(:) => null()
+    real(kind=8), pointer :: v_coor(:) => null()
+    real(kind=8), pointer :: v_base(:) => null()
+    real(kind=8), pointer :: v_absc(:) => null()
+
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -95,7 +98,9 @@ use calcG_type
     eps = 1.d-06
     lonfis = 0.d0
 !
-    call jeveuo(cgTheta%crack//'.BASLOC    .VALE', 'L', ibas)
+    call cgTheta%getCoorNodes(v_coor)
+    call cgTheta%getBaseLoc(v_base)
+    call cgTheta%getAbscurv(v_absc)
 !
     call dismoi('NB_NO_MAILLA', cgTheta%mesh, 'MAILLAGE', repi=nbel)
 !
@@ -104,7 +109,7 @@ use calcG_type
     end if
 
     do i = 1, nbel
-        if(cgTheta%abscur(i).ge.lonfis) lonfis=cgTheta%abscur(i)
+        if(v_absc(i).ge.lonfis) lonfis=v_absc(i)
     enddo
 !
     if(ASTER_FALSE) then
@@ -163,20 +168,20 @@ use calcG_type
 !           FONTION DE R_INF, R_SUP ET LA DISTANCE DU NOEUD AU FRONT
 !
 !           COORDONNEES DU NOEUD COURANT M
-            xm = cgTheta%coorNoeud((i-1)*3+1)
-            ym = cgTheta%coorNoeud((i-1)*3+2)
+            xm = v_coor((i-1)*3+1)
+            ym = v_coor((i-1)*3+2)
             zm = 0.d0
 !
             if(cgField%ndim .eq. 3) then
-                zm= cgTheta%coorNoeud((i-1)*3+3)
+                zm= v_coor((i-1)*3+3)
             endif
 !
 !           COORDONNEES DU PROJETE N DE CE NOEUD SUR LE FRONT DE FISSURE
-            xn = zr(ibas-1+3*cgField%ndim*(i-1)+1)
-            yn = zr(ibas-1+3*cgField%ndim*(i-1)+2)
+            xn = v_base(3*cgField%ndim*(i-1)+1)
+            yn = v_base(3*cgField%ndim*(i-1)+2)
             zn = 0.d0
             if(cgField%ndim .eq. 3) then
-                zn= zr(ibas-1+3*cgField%ndim*(i-1)+3)
+                zn = v_base(3*cgField%ndim*(i-1)+3)
             endif
             d = sqrt((xn-xm)*(xn-xm)+(yn-ym)*(yn-ym)+(zn-zm)*(zn-zm))
             alpha = ( d- cgTheta%r_inf)/(cgTheta%r_sup-cgTheta%r_inf)
@@ -198,12 +203,12 @@ use calcG_type
             zl(jcnsl-1+6*(i-1)+2)=ASTER_TRUE
             zl(jcnsl-1+6*(i-1)+3)=ASTER_TRUE
             zl(jcnsl-1+6*(i-1)+4)=ASTER_TRUE
-            v_theta((i-1)*6+2) = zr(ibas-1+ 3*cgField%ndim*(i-1)+cgField%ndim+1)
-            v_theta((i-1)*6+3) = zr(ibas-1+ 3*cgField%ndim*(i-1)+cgField%ndim+2)
+            v_theta((i-1)*6+2) = v_base(3*cgField%ndim*(i-1)+cgField%ndim+1)
+            v_theta((i-1)*6+3) = v_base(3*cgField%ndim*(i-1)+cgField%ndim+2)
             if(cgField%ndim .eq. 2) then
                 v_theta((i-1)*6+4) = 0.d0
             else
-                v_theta((i-1)*6+4) = zr(ibas-1+ 3*cgField%ndim*(i-1)+cgField%ndim+3)
+                v_theta((i-1)*6+4) = v_base(3*cgField%ndim*(i-1)+cgField%ndim+3)
             endif
 !
 !           stockage de l'abscisse curviligne s, pour le noeud i en 3D
@@ -211,7 +216,7 @@ use calcG_type
             if(cgField%ndim .eq. 2) then
                 v_theta((i-1)*6+5) = 0.d0
             else
-                v_theta((i-1)*6+5) = cgTheta%abscur(i)
+                v_theta((i-1)*6+5) = v_absc(i)
             endif
 !
 !           stockage de la longueur de la fissure, utile en 3D seulement
