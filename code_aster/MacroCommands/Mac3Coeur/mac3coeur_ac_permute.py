@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: samuel.geniaut at edf.fr
+# person_in_charge: francesco.bettonte at edf.fr
 
 from ...Cata.Commons import *
 from ...Cata.DataStructure import *
@@ -47,7 +47,7 @@ def mac3coeur_ac_permute(self, **args):
               RESU_INIT=RESU_INI,
               INST_INIT=INSTANT,
               MAILLAGE_INIT=MA_INI,
-              NOM_CHAM='DEPL',
+              NOM_CHAM=('DEPL', 'VARI_ELGA'),
               RESU_FINAL=RESU_FIN,
               MAILLAGE_FINAL=MA_FIN,
               PERM_CHAM=(_F(GROUP_MA_INIT='CR_' + POS_INIT,
@@ -95,59 +95,6 @@ def mac3coeur_ac_permute(self, **args):
                             TRAN=VECT,
                             PRECISION=1.E-10),))
 
-    CREA_RESU(reuse=RESU_FIN,
-              OPERATION='PERM_CHAM',
-              TYPE_RESU='EVOL_NOLI',
-              RESU_INIT=RESU_INI,
-              INST_INIT=INSTANT,
-              MAILLAGE_INIT=MA_INI,
-              NOM_CHAM='VARI_ELGA',
-              RESU_FINAL=RESU_FIN,
-              MAILLAGE_FINAL=MA_FIN,
-              PERM_CHAM=(_F(GROUP_MA_INIT='CR_' + POS_INIT,
-                            GROUP_MA_FINAL='CR_' + POS_FIN,
-                            TRAN=VECT,
-                            PRECISION=1.E-10),
-                         _F(GROUP_MA_INIT='TG_' + POS_INIT,
-                            GROUP_MA_FINAL='TG_' + POS_FIN,
-                            TRAN=VECT,
-                            PRECISION=1.E-10),
-                         _F(GROUP_MA_INIT='ES_' + POS_INIT,
-                            GROUP_MA_FINAL='ES_' + POS_FIN,
-                            TRAN=VECT,
-                            PRECISION=1.E-10),
-                         _F(GROUP_MA_INIT='EI_' + POS_INIT,
-                            GROUP_MA_FINAL='EI_' + POS_FIN,
-                            TRAN=VECT,
-                            PRECISION=1.E-10),
-                         _F(GROUP_MA_INIT='DI_' + POS_INIT,
-                            GROUP_MA_FINAL='DI_' + POS_FIN,
-                            TRAN=VECT,
-                            PRECISION=1.E-10),
-                         _F(GROUP_MA_INIT='GC_' + POS_INIT + '_B',
-                            GROUP_MA_FINAL='GC_' + POS_FIN + '_B',
-                            TRAN=VECT,
-                            PRECISION=1.E-10),
-                         _F(GROUP_MA_INIT='GC_' + POS_INIT + '_T',
-                            GROUP_MA_FINAL='GC_' + POS_FIN + '_T',
-                            TRAN=VECT,
-                            PRECISION=1.E-10),
-                         _F(GROUP_MA_INIT='GC_' + POS_INIT + '_M',
-                            GROUP_MA_FINAL='GC_' + POS_FIN + '_M',
-                            TRAN=VECT,
-                            PRECISION=1.E-10),
-                         _F(GROUP_MA_INIT='GT_' + POS_INIT + '_E',
-                            GROUP_MA_FINAL='GT_' + POS_FIN + '_E',
-                            TRAN=VECT,
-                            PRECISION=1.E-10),
-                         _F(GROUP_MA_INIT='GT_' + POS_INIT + '_M',
-                            GROUP_MA_FINAL='GT_' + POS_FIN + '_M',
-                            TRAN=VECT,
-                            PRECISION=1.E-10),
-                         _F(GROUP_MA_INIT='MNT_' + POS_INIT,
-                            GROUP_MA_FINAL='MNT_' + POS_FIN,
-                            TRAN=VECT,
-                            PRECISION=1.E-10),))
     return RESU_FIN
 
 

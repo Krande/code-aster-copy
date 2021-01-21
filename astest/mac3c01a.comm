@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,13 +28,14 @@
 # SOLVEUR/PCENT_PIVOT.
 # person_in_charge: pierre.badel at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'),IMPR_MACRO='OUI',)
+DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'), IMPR_MACRO='OUI')
 
 tabn = LIRE_TABLE(UNITE      = 38,
                   FORMAT     = 'LIBRE',
                   SEPARATEUR = '\t')
 
-MA1=LIRE_MAILLAGE(FORMAT='MED',UNITE=20);
+MA1=LIRE_MAILLAGE(FORMAT='MED',
+                  UNITE=20)
 
 RESU_C0 = CALC_MAC3COEUR(TYPE_COEUR  = 'TEST',
                          TABLE_N     =  tabn,
@@ -55,7 +56,7 @@ TEST_TABLE(
            NOM_PARA='DX',
            TABLE=TAB0,
            FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N430',),
+                     VALE_K='N430'),
            )
 
 TEST_TABLE(
@@ -68,10 +69,10 @@ TEST_TABLE(
 
 
 RESU_C1 = CALC_MAC3COEUR(TYPE_COEUR  = 'TEST',
-                      TABLE_N     =  tabn,
-                      MAILLAGE_N  =  MA1,
-                      DEFORMATION = _F(UNITE_THYC   = 32,
-                                       NIVE_FLUENCE = 33))
+                         TABLE_N     =  tabn,
+                         MAILLAGE_N  =  MA1,
+                         DEFORMATION = _F(UNITE_THYC   = 32,
+                                          NIVE_FLUENCE = 33))
 
 post_i = RESU_C1.LIST_PARA()['INST'][-1]
 TAB = CREA_TABLE(RESU=_F(RESULTAT=RESU_C1,
@@ -86,7 +87,7 @@ TEST_TABLE(
            NOM_PARA='DX',
            TABLE=TAB,
            FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N430',),
+                     VALE_K='N430'),
            )
 
 TEST_TABLE(
@@ -94,7 +95,7 @@ TEST_TABLE(
            NOM_PARA='DY',
            TABLE=TAB,
            FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N465',),
+                     VALE_K='N465'),
            )
 
 TEST_TABLE(
@@ -112,7 +113,7 @@ TEST_TABLE(
            )
 
 TAB2 = CREA_TABLE(RESU=_F(RESULTAT=RESU_C1,NOM_CHAM='DEPL',INST=0.004,NOM_CMP=('DX','DY','DZ'),
-                         GROUP_NO=('P_CUV','FIX'),))
+                         GROUP_NO=('P_CUV','FIX')))
 
 #IMPR_TABLE(TABLE=TAB2)
 
@@ -122,7 +123,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='DX',
            TABLE=TAB2,
            FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N509',),
+                     VALE_K='N509'),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -131,7 +132,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='DY',
            TABLE=TAB2,
            FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N509',),
+                     VALE_K='N509'),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -140,7 +141,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='DX',
            TABLE=TAB2,
            FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N568',),
+                     VALE_K='N568'),
            )
 
 FIN()

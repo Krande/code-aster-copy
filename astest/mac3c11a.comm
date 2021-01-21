@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,13 +17,16 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'),IMPR_MACRO='NON',)
+DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'), IMPR_MACRO='NON')
 
 tabn = LIRE_TABLE(UNITE      = 38,
                   FORMAT     = 'LIBRE',
                   SEPARATEUR = '\t')
 
-MA1 = LIRE_MAILLAGE(FORMAT='MED',UNITE=20,INFO=2);
+MA1 = LIRE_MAILLAGE(FORMAT='MED',
+                    UNITE=20,
+                    INFO=1)
+
 MA1 = DEFI_GROUP(reuse=MA1,
                  MAILLAGE=MA1,
                  CREA_GROUP_NO=_F(GROUP_MA='CR_A_A'))
@@ -61,7 +64,7 @@ FLEX = CALC_MAC3COEUR(TYPE_COEUR  = 'MONO_FROID',
 FLEX=CALC_CHAMP(reuse =FLEX,
                 RESULTAT=FLEX,
                 PRECISION=1e-08,
-                FORCE=('FORC_NODA',),)
+                FORCE=('FORC_NODA'))
 
 IMPR_RESU(
   FORMAT = 'RESULTAT',
@@ -77,17 +80,17 @@ efforts = []
 ig = []
 
 for i in range(10) :
-
+  
   POSTP[i] = POST_RELEVE_T(
-     ACTION=_F(INTITULE='FORCE',
-               GROUP_NO=('GRIL_%d'%(i+1)),
-               RESULTAT=FLEX,
-               PRECISION=1e-08,
-               NOM_CHAM='FORC_NODA',
-               RESULTANTE=('DX','DY','DZ'),
-               REPERE='GLOBAL',
-               INST=0.005,
-               OPERATION='EXTRACTION',),)
+    ACTION=_F(INTITULE='FORCE',
+              GROUP_NO=('GRIL_%d'%(i+1)),
+              RESULTAT=FLEX,
+              PRECISION=1e-08,
+              NOM_CHAM='FORC_NODA',
+              RESULTANTE=('DX','DY','DZ'),
+              REPERE='GLOBAL',
+              INST=0.005,
+              OPERATION='EXTRACTION'))
   tab = POSTP[i]
   efforts.append(tab['DY',1])
   ig.append(i+1)
@@ -104,7 +107,7 @@ POSTC = POST_RELEVE_T(
             RESULTANTE=('DX','DY','DZ'),
             REPERE='GLOBAL',
             INST=0.005,
-            OPERATION='EXTRACTION',),)
+            OPERATION='EXTRACTION'))
 
 IMPR_TABLE(TABLE=POSTC)
 
@@ -121,7 +124,7 @@ TEST_TABLE(
   ORDRE_GRANDEUR=1.E-6,
   NOM_PARA='DY',
   TABLE=POSTLOCK,
-  TYPE_TEST='SOMM',)
+  TYPE_TEST='SOMM')
 
 TEST_TABLE(
   CRITERE='ABSOLU',
@@ -129,7 +132,7 @@ TEST_TABLE(
   ORDRE_GRANDEUR=1.E-6,
   NOM_PARA='DZ',
   TABLE=POSTLOCK,
-  TYPE_TEST='SOMM',)
+  TYPE_TEST='SOMM')
 
 # Grilles libres, on retrouve les efforts appliques via l'unite THYC
 TEST_TABLE(
@@ -137,20 +140,20 @@ TEST_TABLE(
   VALE_CALC=1000.0,
   NOM_PARA='EFFORT',
   TABLE=fgrille,
-  FILTRE=_F(NOM_PARA='N_GRILLE',VALE_I=6),)
+  FILTRE=_F(NOM_PARA='N_GRILLE',VALE_I=6))
 
 TEST_TABLE(
   CRITERE='RELATIF',
   VALE_CALC=1000.0,
   NOM_PARA='EFFORT',
   TABLE=fgrille,
-  TYPE_TEST='SOMM',)
+  TYPE_TEST='SOMM')
 
 TEST_TABLE(
   CRITERE='RELATIF',
   VALE_CALC=499.14169801313494,
   NOM_PARA='DY',
   TABLE=POSTC,
-  TYPE_TEST='SOMM',)
+  TYPE_TEST='SOMM')
 
 FIN()

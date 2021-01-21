@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,14 +42,14 @@ from .thyc_result import lire_resu_thyc
 def calc_mac3coeur_ops(self, **args):
     """Fonction d'appel de la macro CALC_MAC3COEUR"""
 
-    MasquerAlarme('MECANONLINE5_57')
-    MasquerAlarme('ELEMENTS3_59')
+    MasquerAlarme('MECANONLINE5_57') # DEPL_CALCULE 
+    MasquerAlarme('POUTRE0_59') # Coeff de poisson non constant 
 
     analysis = Mac3CoeurCalcul.factory(self, args)
     result = analysis.run()
 
     RetablirAlarme('MECANONLINE5_57')
-    RetablirAlarme('ELEMENTS3_59')
+    RetablirAlarme('POUTRE0_59')
 
     return result
 
@@ -679,6 +679,38 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
 
     def _run(self):
         """Run the main part of the calculation"""
+
+        #Preparation d'un etat de contraintes nul
+        _CL_NUL = AFFE_CHAR_CINE(MODELE=self.model,
+                                 MECA_IMPO=(_F(TOUT='OUI',
+                                               DX=0.0, DY=0.0, DZ=0.0,
+                                               DRX=0.0, DRY=0.0, DRZ=0.0)))
+
+        MasquerAlarme('COMPOR4_17')
+        __NUL = STAT_NON_LINE(**self.snl(
+            EXCIT=_F(CHARGE=_CL_NUL),
+            INCREMENT=_F(LIST_INST=self.times,
+                         NUME_INST_FIN=1,),
+        ))
+        RetablirAlarme('COMPOR4_17')
+
+        _tini = __NUL.LIST_PARA()['INST'][-1]
+        
+        __CHSIE = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                             OPERATION='EXTR',
+                             PRECISION=1.0E-08,
+                             RESULTAT=__NUL,
+                             NOM_CHAM='SIEF_ELGA',
+                             INST=_tini,)
+        
+        SIG_NUL = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                             MODELE=self.model,
+                             OPERATION='ASSE',
+                             ASSE=(_F(TOUT='OUI',
+                                      CHAM_GD=__CHSIE,
+                                      CUMUL='NON',
+                                      COEF_R=0.0),),)     
+
         coeur = self.coeur
         if self.keyw['TYPE_COEUR'][:4] == "MONO":
             chmat_contact = self.cham_mater_free
@@ -686,6 +718,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
             chmat_contact = self.cham_mater_contact
         constant_load = self.archimede_load + self.gravity_load + self.vessel_dilatation_load + self.symetric_cond
         nbRatio = 9
+        
         # T0 - T8
         if (self.char_init) :
             __RESULT = STAT_NON_LINE(**self.snl(
@@ -696,7 +729,9 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                             INST_FIN=coeur.temps_simu['T5']),
                                COMPORTEMENT=self.char_ini_comp,
                                EXCIT=constant_load + self.vessel_head_load + self.thyc_load[0]+self.kinematic_cond,
-                               ))
+                               ETAT_INIT=_F(SIGM=SIG_NUL),
+            ))
+                               
             constant_load = self.archimede_load + self.gravity_load + self.vessel_dilatation_load_full + self.symetric_cond + self.periodic_cond + self.rigid_load
             __RESULT = STAT_NON_LINE(**self.snl(
                                reuse=__RESULT,
@@ -738,7 +773,8 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                 INCREMENT=_F(LIST_INST=self.times,
                              INST_INIT=0.,
                              INST_FIN=coeur.temps_simu['T4']),
-                EXCIT=loads))
+                EXCIT=loads,
+                ETAT_INIT=_F(SIGM=SIG_NUL)))
 
         else :
 
@@ -756,6 +792,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                              PRECISION=1.E-08,
                                              INST_FIN=0.),
                                 EXCIT=loads,
+                                ETAT_INIT=_F(SIGM=SIG_NUL)
                 ))
                 self.etat_init = _F(EVOL_NOLI=__RESULT,
                                     PRECISION=1.E-08,
@@ -1041,6 +1078,38 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
 
     def _run(self,tinit=None,tfin=None):
         """Run the main part of the calculation"""
+
+        #Preparation d'un etat de contraintes nul
+        _CL_NUL = AFFE_CHAR_CINE(MODELE=self.model,
+                                 MECA_IMPO=(_F(TOUT='OUI',
+                                               DX=0.0, DY=0.0, DZ=0.0,
+                                               DRX=0.0, DRY=0.0, DRZ=0.0)))
+
+        MasquerAlarme('COMPOR4_17')
+        __NUL = STAT_NON_LINE(**self.snl(
+            EXCIT=_F(CHARGE=_CL_NUL),
+            INCREMENT=_F(LIST_INST=self.times,
+                         NUME_INST_FIN=1,),
+        ))
+        RetablirAlarme('COMPOR4_17')
+
+        _tini = __NUL.LIST_PARA()['INST'][-1]
+        
+        __CHSIE = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                             OPERATION='EXTR',
+                             PRECISION=1.0E-08,
+                             RESULTAT=__NUL,
+                             NOM_CHAM='SIEF_ELGA',
+                             INST=_tini,)
+        
+        SIG_NUL = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                             MODELE=self.model,
+                             OPERATION='ASSE',
+                             ASSE=(_F(TOUT='OUI',
+                                      CHAM_GD=__CHSIE,
+                                      CUMUL='NON',
+                                      COEF_R=0.0),),) 
+        
         coeur = self.coeur
         lock = AFFE_CHAR_MECA(MODELE=self.model, DDL_IMPO=(_F(GROUP_NO=('FIX', 'P_CUV'), DY=0, DZ=0, DX=0),
                                                            _F(GROUP_NO=('PMNT_S',), DY=0, DZ=0)))
@@ -1052,6 +1121,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                                                PRECISION=1.E-08,
                                                INST_FIN=coeur.temps_simu['T1']),
                                   EXCIT=self.layer_load + self.periodic_cond + [_F(CHARGE=lock)],
+                                  ETAT_INIT=_F(SIGM=SIG_NUL)
                                   ))
         self.update_coeur(_snl_lame, self.keyw['TABLE_N'])
         # WARNING: element characteristics and the most of the loadings must be
@@ -1062,6 +1132,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                             INCREMENT=_F(LIST_INST=self.times,
                                          PRECISION=1.E-08,
                                          INST_FIN=0.),
+                            ETAT_INIT=_F(SIGM=SIG_NUL),
                             EXCIT=self.rigid_load + self.archimede_load +
                             self.vessel_head_load +
                             self.vessel_dilatation_load +
