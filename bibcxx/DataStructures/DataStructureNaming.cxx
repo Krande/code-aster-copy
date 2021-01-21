@@ -3,7 +3,7 @@
  * @brief Implementation de DataStructureNaming
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,4 +22,22 @@
  */
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include <assert.h>
+#include <string>
+#include <sstream>
+#include "MemoryManager/JeveuxObject.h"
 #include "DataStructures/DataStructureNaming.h"
+#include "DataStructures/TemporaryDataStructureNaming.h"
+#include "Supervis/ResultNaming.h"
+
+std::string DataStructureNaming::getNewName(JeveuxMemory memoryType,
+                                            const int lengthName ) {
+    if ( memoryType == Permanent ) {
+        std::string tmpName = ResultNaming::getNewResultName();
+        return std::string( tmpName + "                        ", 0, lengthName );
+    } else if ( memoryType == Temporary )
+        return TemporaryDataStructureNaming::getNewTemporaryName( lengthName );
+    else
+        throw std::runtime_error( "Programming error" );
+    return "";
+};

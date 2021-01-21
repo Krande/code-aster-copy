@@ -1,12 +1,12 @@
-#ifndef TEMPORARYDATASTRUCTURE_H_
-#define TEMPORARYDATASTRUCTURE_H_
+#ifndef TEMPORARYDATASTRUCTURENAMING_H_
+#define TEMPORARYDATASTRUCTURENAMING_H_
 
 /**
- * @file TemporaryDataStructure.h
- * @brief Fichier entete de la classe TemporaryDataStructure
+ * @file TemporaryDataStructureNaming.h
+ * @brief Fichier entete de la classe TemporaryDataStructureNaming
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -30,27 +30,23 @@
 #include <sstream>
 
 /**
- * @class TemporaryDataStructure
- * @brief Classe permet de donner un nom temporaire a une sd
+ * @class TemporaryDataStructureNaming
+ * @brief Class to generate automatic JEVEUX name for a temporary object
  * @author Nicolas Sellenet
  */
-class TemporaryDataStructure {
+class TemporaryDataStructureNaming {
   private:
-    /** @brief Numéro du no temporaire */
+    /** @brief Current index for automatic naming of Jeveux objects */
     static unsigned long int _number;
-    static const unsigned long int _maxNumberOfAsterObjects = 268435455;
+
+    /** @brief Maximum index for name of objects */
+    static const unsigned long int maxNumberOfObjects = 268435455;
 
   public:
     /**
-     * @brief Function membre getNewTemporaryName
+     * @brief Static member that returns a new name.
      */
-    static std::string getNewTemporaryName( int lengthName = 8 ) {
-        std::ostringstream oss;
-        assert( _number <= _maxNumberOfAsterObjects );
-        oss << "&" << std::hex << _number;
-        ++_number;
-        return std::string( oss.str() + "                        ", 0, lengthName );
-    };
+    static std::string getNewTemporaryName( const int );
 };
 
-#endif /* TEMPORARYDATASTRUCTURE_H_ */
+#endif /* TEMPORARYDATASTRUCTURENAMING_H_ */

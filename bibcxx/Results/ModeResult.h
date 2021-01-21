@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ModeResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,6 +31,7 @@
 #include "LinearAlgebra/AssemblyMatrix.h"
 #include "LinearAlgebra/GeneralizedAssemblyMatrix.h"
 #include "Numbering/DOFNumbering.h"
+#include "Supervis/ResultNaming.h"
 
 /**
  * @class ModeResultClass

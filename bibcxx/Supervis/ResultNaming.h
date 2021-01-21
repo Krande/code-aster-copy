@@ -5,7 +5,7 @@
  * @file ResultNaming.h
  * @brief Implementation of automatic naming of jeveux objects.
  * @section LICENCE
- * Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+ * Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
  * This file is part of code_aster.
  *
  * code_aster is free software: you can redistribute it and/or modify
@@ -27,19 +27,23 @@
 #include <string>
 
 class ResultNaming {
-  public:
-    // up to 4294967295 objects can be base 16 encoded on 8 chars.
-    static long numberOfObjects;
+  private:
+    /** @brief Current index for automatic naming of Result datastructure objects */
+    static unsigned long int _number;
 
+    /** @brief Maximum index for name of objects */
+    static const unsigned long int maxNumberOfObjects = 4294967295;
+
+  public:
     /**
      * @brief Initialize the counter.
      */
-    static void initCounter( const long );
+    static void initCounter( const unsigned long int );
 
     /**
-* @brief Static member that returns the current result name.
-* @return Name for the current object that is being created.
-*/
+     * @brief Static member that returns the current result name.
+     * @return Name for the current object that is being created.
+     */
     static std::string getCurrentName();
 
     /**

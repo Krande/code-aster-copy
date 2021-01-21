@@ -28,7 +28,6 @@
 #include "Algorithms/GenericAlgorithm.h"
 #include "Algorithms/StaticMechanicalAlgorithm.h"
 #include "Algorithms/StaticMechanicalContext.h"
-#include "DataStructures/TemporaryDataStructureName.h"
 #include "Numbering/DOFNumbering.h"
 #include "Discretization/DiscreteProblem.h"
 #include "Supervis/Exceptions.h"

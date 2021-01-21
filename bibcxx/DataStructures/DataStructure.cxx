@@ -28,11 +28,8 @@
 #include "shared_vars.h"
 
 #include "DataStructures/DataStructure.h"
-#include "DataStructures/TemporaryDataStructureName.h"
 #include "MemoryManager/JeveuxString.h"
 #include "Utilities/Tools.h"
-
-TemporaryDataStructure tempName = TemporaryDataStructure();
 
 DataStructure::DataStructure( const std::string name, const int nameLength, const std::string type,
                               const JeveuxMemory memType )

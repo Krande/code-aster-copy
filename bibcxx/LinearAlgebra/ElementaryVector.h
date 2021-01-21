@@ -36,6 +36,7 @@
 #include "Numbering/ParallelDOFNumbering.h"
 #include "DataFields/ElementaryTerm.h"
 #include "Loads/PhysicalQuantity.h"
+#include "Supervis/ResultNaming.h"
 
 /**
  * @class ElementaryVectorClass

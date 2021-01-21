@@ -37,6 +37,7 @@
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/Model.h"
 #include "Utilities/CapyConvertibleValue.h"
+#include "Supervis/ResultNaming.h"
 
 /**
  * @class ThermalLoadClass

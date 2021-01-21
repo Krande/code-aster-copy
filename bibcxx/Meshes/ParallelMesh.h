@@ -32,6 +32,7 @@
 #ifdef ASTER_HAVE_MPI
 
 #include "Meshes/BaseMesh.h"
+#include "Supervis/ResultNaming.h"
 
 /**
  * @class ParallelMeshClass

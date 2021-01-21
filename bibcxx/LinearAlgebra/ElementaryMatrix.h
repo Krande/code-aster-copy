@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ElementaryMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -35,6 +35,7 @@
 #include "DataFields/ElementaryTerm.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Loads/PhysicalQuantity.h"
+#include "Supervis/ResultNaming.h"
 
 /**
  * @class BaseElementaryMatrixClass

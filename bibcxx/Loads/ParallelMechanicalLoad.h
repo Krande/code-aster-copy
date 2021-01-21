@@ -35,6 +35,7 @@
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/ParallelFiniteElementDescriptor.h"
 #include "Loads/MechanicalLoad.h"
+#include "Supervis/ResultNaming.h"
 
 /**
  * @class ParallelMechanicalLoadClass
