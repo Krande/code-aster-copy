@@ -258,6 +258,8 @@ class Serializer(object):
             if not name:
                 logger.warning(f"restoring {type(obj)} with name 'None'!")
                 continue
+            if isinstance(obj, DataStructure):
+                obj.userName = name
             logger.info(f"{name:<24s} {type(obj)}")
             assert not isinstance(obj, AsterUnpickler.BufferObject)
 

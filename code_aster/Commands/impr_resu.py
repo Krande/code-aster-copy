@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -22,6 +22,7 @@
 from ..Cata.Syntax import _F
 from ..Messages import UTMESS
 from ..Supervis import ExecuteCommand
+from ..Utilities import force_list
 
 
 class ImprResu(ExecuteCommand):
@@ -30,37 +31,34 @@ class ImprResu(ExecuteCommand):
     command_name = "IMPR_RESU"
 
     def add_result_name(self, resu):
-        if resu["RESULTAT"] is not None:
-            if(len(resu["RESULTAT"].userName) == 0 ):
-                UTMESS('A', 'MED3_2', valk=(resu["RESULTAT"].getName()))
-            else:
-                if resu["NOM_CHAM"] is not None:
-                    name_resu = resu["RESULTAT"].userName.ljust(8,"_")[0:8]
-                    if resu["NOM_CHAM_MED"] is None:
-                        list_name = []
-                        if isinstance(resu["NOM_CHAM"], str):
-                            list_name.append(name_resu+resu["NOM_CHAM"])
-                        else:
-                            for field in resu["NOM_CHAM"]:
-                                list_name.append(name_resu+field)
-                        resu["NOM_CHAM_MED"] = list_name
-                elif resu["NOM_RESU_MED"] is None:
-                    resu["NOM_RESU_MED"] = resu["RESULTAT"].userName[0:8]
-        elif resu["CHAM_GD"] is not None:
-            if resu["NOM_CHAM"] is not None:
-                if (len(resu["CHAM_GD"].userName) == 0) :
-                    UTMESS('A', 'MED3_2', valk=(resu["CHAM_GD"].getName()))
-                else:
-                    if resu["NOM_CHAM_MED"] is None:
-                        name_field = resu["CHAM_GD"].userName.ljust(8,"_")[0:8]
-                        list_name = []
-                        if isinstance(resu["NOM_CHAM"], str):
-                            list_name.append(name_field+resu["NOM_CHAM"])
-                        else:
-                            for field in resu["NOM_CHAM"]:
-                                list_name.append(name_field+field)
-                        resu["NOM_CHAM_MED"] = list_name
+        """Try to add NOM_RESU_MED keyword if not set.
 
+        Arguments:
+            resu (dict): factor keyword occurrence of RESU, changed in place.
+        """
+        # if resu.get("NOM_RESU_MED") or resu.get("NOM_CHAM_MED"):
+        #     return
+        if resu.get("RESULTAT"):
+            resu_name = resu["RESULTAT"].userName[0:8]
+            if not resu_name:
+                UTMESS('A', 'MED3_2', valk=resu["RESULTAT"].getName())
+            elif resu.get("NOM_CHAM"):
+                resu.pop("NOM_RESU_MED", None)
+                resu_name = resu_name.ljust(8, "_")
+                if not resu.get("NOM_CHAM_MED"):
+                    resu["NOM_CHAM"] = force_list(resu["NOM_CHAM"])
+                    resu["NOM_CHAM_MED"] = [resu_name + field
+                                            for field in resu["NOM_CHAM"]]
+            elif not resu.get("NOM_RESU_MED"):
+                resu["NOM_RESU_MED"] = resu_name
+        elif resu.get("CHAM_GD"):
+            field_name = resu["CHAM_GD"].userName[0:8]
+            if resu.get("NOM_CHAM_MED"):
+                return
+            if not field_name:
+                UTMESS('A', 'MED3_2', valk=resu["CHAM_GD"].getName())
+            else:
+                resu["NOM_CHAM_MED"] = field_name
 
 
     def adapt_syntax(self, keywords):
@@ -70,15 +68,10 @@ class ImprResu(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
-
-        if "FORMAT" not in keywords or keywords["FORMAT"] is "MED":
-            list_resu = keywords["RESU"]
-
-            if isinstance(list_resu, dict) or isinstance(list_resu, _F):
-                self.add_result_name(list_resu)
-            else:
-                for resu in list_resu:
-                    self.add_result_name(resu)
+        if keywords.get("FORMAT") in (None, "MED"):
+            keywords["RESU"] = force_list(keywords["RESU"])
+            for resu in keywords["RESU"]:
+                self.add_result_name(resu)
 
 
 IMPR_RESU = ImprResu.run
