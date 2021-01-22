@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -95,6 +95,7 @@ subroutine peeint(resu, modele, nbocc)
     character(len=8), pointer :: cmp1(:) => null()
     character(len=8), pointer :: cmp2(:) => null()
     character(len=8), pointer :: cmp_init(:) => null()
+    character(len=8), pointer :: cmp_all(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
     integer, pointer :: v_lma(:) => null()
 
@@ -249,11 +250,12 @@ subroutine peeint(resu, modele, nbocc)
             call getvtx('INTEGRALE', 'NOM_VARI', iocc=iocc, nbval=0, vect=k8b, nbret=nbcmp)
             nbcmp=-nbcmp
             ASSERT(nbcmp.gt.0)
-            call wkvect('&&PEEINT.CMP', 'V V K8', nbmai*nbcmp, jcmp)
+            AS_ALLOCATE(vk8=cmp_all, size=nbcmp*nbmai)
+            call wkvect('&&PEEINT.CMP', 'V V K8', nbcmp, jcmp)
             call wkvect('&&PEEINT.NVARI', 'V V K16', nbcmp, jvari)
             call getvtx('INTEGRALE', 'NOM_VARI', iocc=iocc, nbval=nbcmp, vect=zk16(jvari),&
                     nbret=iret)
-            call varinonu(modele, ' ', resuco, nbmai, zi(jmesma), nbcmp, zk16(jvari), zk8(jcmp))
+            call varinonu(modele, ' ', resuco, nbmai, zi(jmesma), nbcmp, zk16(jvari), cmp_all)
         else
             ivari=0
             call wkvect('&&PEEINT.CMP', 'V V K8', nbcmp, jcmp)
@@ -267,6 +269,7 @@ subroutine peeint(resu, modele, nbocc)
                 cmp_init(i)=zk8(jcmp+i-1)
             else
                 cmp_init(i)=zk16(jvari+i-1)(1:8)
+                zk8(jcmp+i-1)=cmp_all((i-1)*nbmai+1)
             endif
         end do
 
@@ -448,6 +451,7 @@ subroutine peeint(resu, modele, nbocc)
         call jedetr('&&PEEINT.MES_MAILLES')
         call jedetr('&&PEEINT.MAILLES_FILTRE')
         call jedetr('&&PEEINT.CMP')
+        AS_DEALLOCATE(vk8=cmp_all)
         AS_DEALLOCATE(vk8=cmp_init)
     end do
 !
