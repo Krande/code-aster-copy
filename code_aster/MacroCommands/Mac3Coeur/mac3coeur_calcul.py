@@ -609,12 +609,12 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
             UTMESS('F', 'COEUR0_4')
         elif resu_init:
             if mesh:
-                UTMESS('A', 'COEUR0_1')
+                UTMESS('I', 'COEUR0_1')
             self.etat_init = _F(EVOL_NOLI=resu_init)
             mesh = self.set_from_resu('mesh', resu_init)
         elif char_init :
             if mesh :
-                UTMESS('A', 'COEUR0_1')
+                UTMESS('I', 'COEUR0_1')
             mesh = self.set_from_resu('mesh', char_init)
         else:
             mesh = super().mesh
