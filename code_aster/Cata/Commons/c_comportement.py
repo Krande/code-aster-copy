@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -145,8 +145,6 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                                         "BETON_DOUBLE_DP",
                                                         "ENDO_ISOT_BETON",
                                                         "MAZARS",
-                                                        "ENDO_PORO_BETON",
-                                                        "FLUA_PORO_BETON"
                                                         ),
                                                       ),
                               ),
