@@ -103,6 +103,7 @@ use lmp_module, only : lmp_update
     integer :: ndprop4, iterm, nglo
     mpi_int :: rang, nbproc
     mpi_int :: mpicomm
+    integer :: nuno, jrefn, jdeeq, jmlogl, nucmp, j
 !
     character(len=24) :: precon, algo
     character(len=24), dimension(:), pointer :: slvk  => null()
@@ -110,6 +111,7 @@ use lmp_module, only : lmp_update
     character(len=14) :: nonu
     character(len=3) :: matd
     character(len=1) :: rouc
+    character(len=8) :: mesh
 !
     real(kind=8) :: divtol, resipc
     real(kind=8), dimension(:), pointer :: slvr => null()
@@ -210,6 +212,13 @@ use lmp_module, only : lmp_update
         ASSERT(ierr.eq.0)
         call MatAssemblyEnd(ap(kptsc), MAT_FINAL_ASSEMBLY, ierr)
         ASSERT(ierr.eq.0)
+
+        if(dbg) then
+            fres = 0.d0
+            call MatNorm(ap(kptsc), NORM_FROBENIUS, fres, ierr)
+            ASSERT( ierr == 0 )
+            print*, "NORME LHS PETSC: ", fres
+        end if
 !
         if ( precon == 'BLOC_LAGR' ) then
             call convert_mat_to_saddle_point( nomat, ap(kptsc) )
@@ -269,6 +278,12 @@ use lmp_module, only : lmp_update
             call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
             call jeveuo(nonu//'.NUME.NULG', 'L', jnugll)
             call jeveuo(nonu//'.NUME.PDDL', 'L', jprddl)
+            if(dbg) then
+                call jeveuo(nonu//'.NUME.DEEQ', 'L', jdeeq)
+                call jeveuo(nonu//'.NUME.REFN', 'L', jrefn)
+                mesh = zk24(jrefn)(1:8)
+                call jeveuo(mesh//'.NULOGL', 'L', jmlogl)
+            end if
             nloc = zi(jnequ)
             nglo = zi(jnequ + 1)
             ndprop = 0
@@ -296,11 +311,17 @@ use lmp_module, only : lmp_update
                     v_indic(iterm + 1) = zi(jnugll + jcoll)
                     zr(jvaleu + iterm) = rsolu(jcoll + 1)
                     iterm = iterm + 1
-! nsellenet
-!                 write(19,*)zi(jnugll+jcoll),rsolu(jcoll+1)
-! nsellenet
+!
+                    if(dbg) then
+                        nuno  = zi(jdeeq+2*(jcoll))
+                        if( nuno.ne.0 ) nuno = zi(jmlogl + nuno - 1) + 1
+                        nucmp = zi(jdeeq+2*(jcoll) + 1)
+!                    numéro noeud global, num comp du noeud, rhs
+                        write(601+rang,*) nuno, nucmp, zi(jnugll + jcoll), rsolu(jcoll + 1)
+                    end if
                 endif
             end do
+            if(dbg) flush(601+rang)
             nn = to_petsc_int(iterm)
             call VecSetValues(b, nn, v_indic(1), zr(jvaleu), INSERT_VALUES, ierr)
             call jedetr('&&APMAIN.INDICES')
@@ -326,7 +347,14 @@ use lmp_module, only : lmp_update
 !
         call VecDuplicate(b, x, ierr)
         ASSERT(ierr.eq.0)
-
+!
+        if(dbg) then
+            fres = 0.d0
+            call VecNorm(b, norm_2, fres, ierr)
+            ASSERT( ierr == 0 )
+            print*, "NORME RHS PETSC: ", fres
+        end if
+!
         call KSPSolve(ksp, b, x, ierr)
 !
 !        2.5 DIAGNOSTIC :

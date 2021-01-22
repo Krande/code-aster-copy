@@ -101,7 +101,7 @@ use petsc_data_module
     nonu = nonu_courant
     nosolv = nosols(kptsc)
     a = ap(kptsc)
-    ldebug=.false.
+    ldebug=.true.
 !
     call jeveuo(nonu//'.SMOS.SMDI', 'L', jsmdi)
     call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
@@ -194,7 +194,11 @@ use petsc_data_module
         ieq2 = 0
         if(numno1.eq.0) ieq1 = tmp
         if(numno2.eq.0) ieq2 = tmp
-        write(11+rang,*) numno1, nucmp1, numno2, nucmp2, valm, ieq1, ieq2
+        procol = zi(jprddl + jcoll - 1)
+        prolig = zi(jprddl + iligl - 1)
+        if(procol == rang .and. prolig == rang) then
+            write(11+rang,*) numno1, nucmp1, numno2, nucmp2, valm, ieq1, ieq2
+        end if
     endif
 !
 !   On commence par s'occuper du nombres de NZ par ligne

@@ -97,7 +97,8 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
     character(len=14) :: nonu
     character(len=19) :: nomat, nosolv
     character(len=24) :: vcival, nonulg
-    aster_logical :: ltypr, l_debug
+    aster_logical :: ltypr
+    aster_logical, parameter :: l_debug = ASTER_FALSE
     real(kind=8) :: rr4max, raux, rmin, rmax, rtest, valr(2)
     complex(kind=8) :: cbid, caux
     integer, pointer :: delg(:) => null()
@@ -177,7 +178,6 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
         nbeql=n
     endif
 !   Adresses needed to get the solution wrt nodes and dof numbers (see below)
-    l_debug=ASTER_FALSE
     if (l_debug) then
         call jeveuo(nonu//'.NUME.REFN', 'L', jrefn)
         call jeveuo(nonu//'.NUME.DEEQ', 'L', jdeeq)
@@ -282,12 +282,28 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
                     if ( pddl(j).eq.rang ) then
                         nuglo = nulg(j)
                         if(ltypr) then
+                            if(l_debug) then
+                                nuno  = zi(jdeeq+2*(j-1))
+                                if( nuno.ne.0 ) nuno = zi(jmlogl + nuno - 1) + 1
+                                nucmp = zi(jdeeq+2*(j-1) + 1)
+!                    numéro noeud global, num comp du noeud, rhs
+                                write(101+rang,*) nuno, nucmp, nuglo, rsolu(j)
+                            end if
                             zr(jrhs+nuglo) = rsolu(j)
                         else
                             zc(jrhs+nuglo) = csolu(j)
                         endif
                     endif
+                    if(l_debug) then
+                        nuno  = zi(jdeeq+2*(j-1))
+                        if( nuno.ne.0 ) nuno = zi(jmlogl + nuno - 1) + 1
+                        nucmp = zi(jdeeq+2*(j-1) + 1)
+!                    numéro noeud global, num comp du noeud, rhs
+                        write(201+rang,*) nuno, nucmp, rsolu(j), pddl(j), j ,nulg(j)
+                    end if
                 enddo
+                if(l_debug) flush(101+rang)
+                if(l_debug) flush(201+rang)
                 if (ltypr) then
                     call asmpi_comm_vect('REDUCE', 'R', nbval=nnbsol, vr=zr(jrhs))
                     call jgetptc(jrhs, pteur_c, vr=zr(1))
@@ -317,6 +333,15 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
             endif
         else
             if (ltypr) then
+                if(l_debug) then
+                    do j = 1, nnbsol
+                        nuno  = zi(jdeeq+2*(j-1))
+                        nucmp = zi(jdeeq+2*(j-1) + 1)
+        !                numéro noeud, num comp du noeud, solution
+                        write(49,*) nuno, nucmp, j, rsolu(j)
+                    end do
+                    flush(49)
+                end if
                 call jgetptc(1, pteur_c, vr=rsolu(1))
                 call c_f_pointer(pteur_c, rsolu2, [nnbsol])
             else
