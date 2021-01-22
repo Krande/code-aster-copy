@@ -28,7 +28,7 @@
 # SOLVEUR/PCENT_PIVOT.
 # person_in_charge: pierre.badel at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'), IMPR_MACRO='OUI')
+DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'), IMPR_MACRO='NON')
 
 tabn = LIRE_TABLE(UNITE      = 38,
                   FORMAT     = 'LIBRE',
