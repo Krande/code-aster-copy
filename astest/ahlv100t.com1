@@ -36,17 +36,46 @@ IMPR_RESU(FORMAT='MED',
 
 IMPR_RESU(FORMAT='MED',
           UNITE=83,
-          RESU=_F(RESULTAT=MODES, NUME_ORDRE=2, NOM_RESU_MED='resu'),
+          RESU=_F(
+              RESULTAT=MODES,
+              NUME_ORDRE=2,
+              NOM_RESU_MED='resu',
+          ),
           INFO=2)
 #    ==> NOM MED DU CHAMP : resu____DEPL
 
-IMPR_RESU(FORMAT='MED',
-          UNITE=84,
-          RESU=_F(RESULTAT=MODES,
-                  NUME_ORDRE=2,
-                  NOM_CHAM='DEPL',
-                  NOM_RESU_MED='resu'), # not used if NOM_CHAM exists
-          INFO=2)
+IMPR_RESU(
+    FORMAT='MED',
+    UNITE=84,
+    RESU=_F(RESULTAT=MODES, NUME_ORDRE=2, NOM_CHAM='DEPL',
+            NOM_RESU_MED='resu'),  # not used if NOM_CHAM exists
+    INFO=2)
 #    ==> NOM MED DU CHAMP : MODES___DEPL
+
+IMPR_RESU(FORMAT='MED',
+          UNITE=85,
+          RESU=_F(CHAM_GD=VECRES, PARTIE='MODULE'),
+          INFO=2)
+#    ==> NOM MED DU CHAMP : VECRES
+
+IMPR_RESU(FORMAT='MED',
+          UNITE=86,
+          RESU=_F(
+              CHAM_GD=VECRES,
+              PARTIE='MODULE',
+              NOM_CHAM_MED='cham',
+          ),
+          INFO=2)
+#    ==> NOM MED DU CHAMP : cham
+
+IMPR_RESU(FORMAT='MED',
+          UNITE=87,
+          RESU=_F(
+              CHAM_GD=VECRES,
+              PARTIE='MODULE',
+              NOM_RESU_MED='resu', # not used without RESULTAT
+          ),
+          INFO=2)
+#    ==> NOM MED DU CHAMP : VECRES
 
 FIN()

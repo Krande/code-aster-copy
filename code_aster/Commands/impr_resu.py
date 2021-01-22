@@ -36,8 +36,7 @@ class ImprResu(ExecuteCommand):
         Arguments:
             resu (dict): factor keyword occurrence of RESU, changed in place.
         """
-        # if resu.get("NOM_RESU_MED") or resu.get("NOM_CHAM_MED"):
-        #     return
+        is_set = resu.get("NOM_RESU_MED") or resu.get("NOM_CHAM_MED")
         if resu.get("RESULTAT"):
             resu_name = resu["RESULTAT"].userName[0:8]
             if not resu_name:
@@ -49,7 +48,7 @@ class ImprResu(ExecuteCommand):
                     resu["NOM_CHAM"] = force_list(resu["NOM_CHAM"])
                     resu["NOM_CHAM_MED"] = [resu_name + field
                                             for field in resu["NOM_CHAM"]]
-            elif not resu.get("NOM_RESU_MED"):
+            elif not is_set:
                 resu["NOM_RESU_MED"] = resu_name
         elif resu.get("CHAM_GD"):
             field_name = resu["CHAM_GD"].userName[0:8]
@@ -58,6 +57,7 @@ class ImprResu(ExecuteCommand):
             if not field_name:
                 UTMESS('A', 'MED3_2', valk=resu["CHAM_GD"].getName())
             else:
+                resu.pop("NOM_RESU_MED", None)
                 resu["NOM_CHAM_MED"] = field_name
 
 
