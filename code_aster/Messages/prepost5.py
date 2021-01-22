@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,12 @@ from ..Utilities import _
 
 cata_msg = {
 
-    1 : _("""
+    1 : {'message' : _("""
  L'option %(k1)s est déjà calculée pour le numéro d'ordre %(k2)s.
  On la recalcule car les données peuvent être différentes.
 """),
+         'flags' : 'DECORATED',
+    },
 
     2 : _("""
 Champ inexistant SIEF_ELGA ou SIEF_ELGA numéro d'ordre %(k1)s pour le calcul de l'option %(k2)s

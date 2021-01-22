@@ -474,7 +474,7 @@ implicit none
               call codent(iordk, 'G', kiord)
               valk(1)=option
               valk(2)=kiord
-              call utmess('A', 'PREPOST5_1', nk=2, valk=valk)
+              call utmess('I', 'PREPOST5_1', nk=2, valk=valk)
               call detrsd('CHAM_NO', chamnk(1:19))
             endif
             zk24(jvcham+p-1)=' '
@@ -492,7 +492,7 @@ implicit none
             call codent(iordr, 'G', kiord)
             valk(1)=option
             valk(2)=kiord
-            call utmess('A', 'PREPOST5_1', nk=2, valk=valk)
+            call utmess('I', 'PREPOST5_1', nk=2, valk=valk)
             call detrsd('CHAM_NO', chamno(1:19))
           endif
         endif

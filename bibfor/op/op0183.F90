@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -270,7 +270,7 @@ implicit none
             call codent(iordr, 'G', kiord)
             valk(1)=option
             valk(2)=kiord
-            call utmess('A', 'PREPOST5_1', nk=2, valk=valk)
+            call utmess('I', 'PREPOST5_1', nk=2, valk=valk)
             call detrsd('CHAM_NO', chamno(1:19))
         endif
         call vtcreb(chamno, 'G', 'R', nume_ddlz=nume)

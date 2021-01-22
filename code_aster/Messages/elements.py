@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -192,7 +192,7 @@ Conseil :
     Des problèmes de convergence peuvent survenir.
     a) Essayez de définir une poutre qui n'est pas exactement verticale en déplaçant légèrement
        un des noeuds.
-    b) Essayez de modifiez votre maillage, pour qu'au cours du calcul, l'axe de la poutre ne soit
+    b) Essayez de modifier votre maillage, pour qu'au cours du calcul, l'axe de la poutre ne soit
        jamais l'axe Z global.
 
  * Cela peut être due à une instabilité de type flambement, déversement, ...
