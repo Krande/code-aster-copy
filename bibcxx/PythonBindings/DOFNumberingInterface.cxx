@@ -116,31 +116,46 @@ Returns:
               ( py::arg( "self" ) )   )
 // ------------------------------------------------------------------------------------------------------
         .def( "getNodeAssociatedToRow", static_cast<ASTERINTEGER (DOFNumberingClass::*)
-                (const ASTERINTEGER, bool) const> (&DOFNumberingClass::getNodeAssociatedToRow), R"(
+                (const ASTERINTEGER, bool) const> (&DOFNumberingClass::getNodeAssociatedToRow),
+                R"(
 Returns the node index associated to a dof index.
-- If the row is associated to a physical DOF, the *positive* id of the node handling this DOF is returned
-- If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary condition, the name of
-  the *negative* id of the node which is constrained by the multiplier is returned
-- If the row is associated to a Lagrange multiplier DOF for a multipoint-constraint implying several DOF,
-  a blank string ' ' is returned (since no component can be identified)
+
+- If the row is associated to a physical DOF, the *positive* id of the node
+  handling this DOF is returned.
+
+- If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary
+  condition, the name of the *negative* id of the node which is constrained by
+  the multiplier is returned.
+
+- If the row is associated to a Lagrange multiplier DOF for a multipoint-constraint
+  implying several DOF, a blank string ' ' is returned (since no component can be
+  identified).
 
 Arguments:
     row (int): Index of the dof.
-    local=false (bool): not used (kept for compatibility with ParallelDOFNumbering)
+
+    local=false (bool): not used (kept for compatibility with ParallelDOFNumbering).
 
 Returns:
     int: index of the dof.
         )",
-              ( py::arg( "self"), py::args( "row", "local") )  )
+              ( py::arg( "self"), py::args( "row", "local") ) )
 // ------------------------------------------------------------------------------------------------------
         .def( "getNodeAssociatedToRow", static_cast<ASTERINTEGER (DOFNumberingClass::*)
-                   (const ASTERINTEGER) const> (&DOFNumberingClass::getNodeAssociatedToRow), R"(
+                   (const ASTERINTEGER) const> (&DOFNumberingClass::getNodeAssociatedToRow),
+                   R"(
 Returns the node index associated to a dof index.
-- If the row is associated to a physical DOF, the *positive* id of the node handling this DOF is returned
-- If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary condition, the name of
-  the *negative* id of the node which is constrained by the multiplier is returned
-- If the row is associated to a Lagrange multiplier DOF for a multipoint-constraint implying several DOF,
-  a blank string ' ' is returned (since no component can be identified)
+
+- If the row is associated to a physical DOF, the *positive* id of the node
+  handling this DOF is returned.
+
+- If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary
+  condition, the name of the *negative* id of the node which is constrained by the
+  the multiplier is returned.
+
+- If the row is associated to a Lagrange multiplier DOF for a multipoint-constraint
+  implying several DOF, a blank string ' ' is returned (since no component can be
+  identified).
 
 Arguments:
     row (int): Index of the dof.
@@ -148,8 +163,7 @@ Arguments:
 Returns:
     int: index of the dof.
         )",
-              ( py::arg( "self"), py::args( "row", "local") )
-              )
+              ( py::arg( "self"), py::args( "row", "local") ) )
 // ------------------------------------------------------------------------------------------------------
         .def( "getRowsAssociatedToPhysicalDofs", static_cast<VectorLong (DOFNumberingClass::*)
                    () const> (&DOFNumberingClass::getRowsAssociatedToPhysicalDofs), R"(
@@ -204,14 +218,14 @@ Returns:
 Returns the indexes of the Lagrange multipliers dof.
 
 Returns:
-    [int]: indexes of the Lagrange multipliers dof.
+    int: indexes of the Lagrange multipliers dof.
         )",
               ( py::arg( "self" ) )  )
         .def( "getComponents", &DOFNumberingClass::getComponents, R"(
 Returns all the component names assigned in the numbering.
 
 Returns:
-    [str]: component names.
+    str: component names.
         )",
               ( py::arg( "self" ) )  )
 // ------------------------------------------------------------------------------------------------------
@@ -231,18 +245,24 @@ Returns:
 Returns all the component names assigned in the numbering.
 
 Returns:
-    [str]: component names.
+    str: component names.
         )",
               ( py::arg( "self" ) )  )
 // ------------------------------------------------------------------------------------------------------
         .def( "getComponentAssociatedToRow", static_cast<std::string (DOFNumberingClass::*)
-                   (const ASTERINTEGER) const> (&DOFNumberingClass::getComponentAssociatedToRow), R"(
+                   (const ASTERINTEGER) const> (&DOFNumberingClass::getComponentAssociatedToRow),
+                   R"(
 Returns the component name associated to a dof index.
-- If the row is associated to a physical DOF, the name of the component is returned
-- If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary condition, the name of
-  the component which is constrained by the multiplier is returned
-- If the row is associated to a Lagrange multiplier DOF for a multipoint-constraint implying several DOF,
-  a blank string ' ' is returned (since no component can be identified)
+
+- If the row is associated to a physical DOF, the name of the component is returned.
+
+- If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary
+  condition, the name of the component which is constrained by the multiplier is
+  returned.
+
+- If the row is associated to a Lagrange multiplier DOF for a multipoint-constraint
+  implying several DOF, a blank string ' ' is returned (since no component can be
+  identified).
 
 Arguments:
     row (int): Index of the dof (1-based index).
@@ -251,26 +271,32 @@ Returns:
     str: component name.
         )",
               ( py::arg( "self" ), py::arg( "row" ))  )
-// ------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
         .def( "getComponentAssociatedToRow", static_cast<std::string (DOFNumberingClass::*)
-                   (const ASTERINTEGER, bool) const> (&DOFNumberingClass::getComponentAssociatedToRow), R"(
+                   (const ASTERINTEGER, bool) const> (&DOFNumberingClass::getComponentAssociatedToRow),
+                   R"(
 Returns the component name associated to a dof index.
-- If the row is associated to a physical DOF, the name of the component is returned
-- If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary condition, the name of
-  the component which is constrained by the multiplier is returned
-- If the row is associated to a Lagrange multiplier DOF for a multipoint-constraint implying several DOF,
-  a blank string ' ' is returned (since no component can be identified)
 
+- If the row is associated to a physical DOF, the name of the component is returned.
+
+- If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary
+  condition, the name of the component which is constrained by the multiplier is
+  returned.
+
+- If the row is associated to a Lagrange multiplier DOF for a multipoint-constraint
+  implying several DOF, a blank string ' ' is returned (since no component can be
+  identified).
 
 Arguments:
     row (int): Index of the dof (1-based index).
+
     local=false (bool): not used (kept for compatibility with ParallelDOFNumbering)
 
 Returns:
     str: component name.
         )",
               ( py::arg( "self" ), py::args( "row", "local"))  )
-// ------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
         .def( "getComponentsAssociatedToNode", static_cast<VectorString (DOFNumberingClass::*)
                    (const ASTERINTEGER) const> (&DOFNumberingClass::getComponentsAssociatedToNode), R"(
 Returns the components name associated to a node index.
@@ -279,7 +305,7 @@ Arguments:
     node (int): Index of the node (1-based index).
 
 Returns:
-    [str]: component names.
+    str: component names.
         )",
               ( py::arg( "self" ), py::arg( "node" ))  )
 // ------------------------------------------------------------------------------------------------------
@@ -289,10 +315,11 @@ Returns the components name associated to a node index.
 
 Arguments:
     node (int): Index of the node (1-based index).
+
     local=false (bool): not used (kept for compatibility with ParallelDOFNumbering)
 
 Returns:
-    [str]: component names.
+    str: component names.
         )",
               ( py::arg( "self" ), py::args( "node" , "local")) )
 // ------------------------------------------------------------------------------------------------------
@@ -308,6 +335,7 @@ Returns:
         .def( "getNumberOfDofs", static_cast<ASTERINTEGER (DOFNumberingClass::*) (const bool) const>
                    (&DOFNumberingClass::getNumberOfDofs), R"(
 Returns the number of DOFs.
+
 Arguments:
     local=false (bool): not used (kept for compatibility with ParallelDOFNumbering)
 

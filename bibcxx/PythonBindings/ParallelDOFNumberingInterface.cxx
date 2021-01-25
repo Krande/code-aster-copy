@@ -57,31 +57,46 @@ Returns:
               ( py::arg( "self" ) )   )
 // ------------------------------------------------------------------------------------------------
         .def( "getNodeAssociatedToRow", static_cast<ASTERINTEGER (ParallelDOFNumberingClass::*)
-                (const ASTERINTEGER, bool) const> (&ParallelDOFNumberingClass::getNodeAssociatedToRow), R"(
+                (const ASTERINTEGER, bool) const> (&ParallelDOFNumberingClass::getNodeAssociatedToRow),
+                R"(
 Returns the node index associated to a dof index.
-- If the row is associated to a physical DOF, the *positive* id of the node handling this DOF is returned
-- If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary condition, the name of
-  the *negative* id of the node which is constrained by the multiplier is returned
-- If the row is associated to a Lagrange multiplier DOF for a multipoint-constraint implying several DOF,
-  a blank string ' ' is returned (since no component can be identified)
+
+- If the row is associated to a physical DOF, the *positive* id of the node
+  handling this DOF is returned.
+
+- If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary
+  condition, the name of the *negative* id of the node which is constrained by
+  the multiplier is returned.
+
+- If the row is associated to a Lagrange multiplier DOF for a multipoint-constraint
+  implying several DOF, a blank string ' ' is returned (since no component can be
+  identified).
 
 Arguments:
     row (int): Index of the dof.
-    local=false (bool): not used (kept for compatibility with ParallelDOFNumbering)
+
+    local=false (bool): not used (kept for compatibility with ParallelDOFNumbering).
 
 Returns:
     int: index of the dof.
         )",
-              ( py::arg( "self"), py::args( "row", "local") )  )
+              ( py::arg( "self"), py::args( "row", "local") ) )
 // ------------------------------------------------------------------------------------------------
         .def( "getNodeAssociatedToRow", static_cast<ASTERINTEGER (ParallelDOFNumberingClass::*)
-                   (const ASTERINTEGER) const> (&ParallelDOFNumberingClass::getNodeAssociatedToRow), R"(
+                   (const ASTERINTEGER) const> (&ParallelDOFNumberingClass::getNodeAssociatedToRow),
+                   R"(
 Returns the node index associated to a dof index.
-- If the row is associated to a physical DOF, the *positive* id of the node handling this DOF is returned
-- If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary condition, the name of
-  the *negative* id of the node which is constrained by the multiplier is returned
-- If the row is associated to a Lagrange multiplier DOF for a multipoint-constraint implying several DOF,
-  a blank string ' ' is returned (since no component can be identified)
+
+- If the row is associated to a physical DOF, the *positive* id of the node
+  handling this DOF is returned.
+
+- If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary
+  condition, the name of the *negative* id of the node which is constrained by the
+  the multiplier is returned.
+
+- If the row is associated to a Lagrange multiplier DOF for a multipoint-constraint
+  implying several DOF, a blank string ' ' is returned (since no component can be
+  identified).
 
 Arguments:
     row (int): Index of the dof.
@@ -89,8 +104,7 @@ Arguments:
 Returns:
     int: index of the dof.
         )",
-              ( py::arg( "self"), py::args( "row", "local") )
-              )
+              ( py::arg( "self"), py::args( "row", "local") ) )
 // ------------------------------------------------------------------------------------------------
         .def( "getRowsAssociatedToPhysicalDofs", static_cast<VectorLong (ParallelDOFNumberingClass::*)
                    () const> (&ParallelDOFNumberingClass::getRowsAssociatedToPhysicalDofs), R"(
@@ -177,39 +191,11 @@ Returns:
               ( py::arg( "self" ) )  )
 // ------------------------------------------------------------------------------------------------
         .def( "getComponentAssociatedToRow", static_cast<std::string (ParallelDOFNumberingClass::*)
-                   (const ASTERINTEGER) const> (&ParallelDOFNumberingClass::getComponentAssociatedToRow), R"(
-Returns the component name associated to a dof index.
-- If the row is associated to a physical DOF, the name of the component is returned
-- If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary condition, the name of
-  the component which is constrained by the multiplier is returned
-- If the row is associated to a Lagrange multiplier DOF for a multipoint-constraint implying several DOF,
-  a blank string ' ' is returned (since no component can be identified)
-
-Arguments:
-    row (int): Index of the dof (1-based index).
-
-Returns:
-    str: component name.
-        )",
+                   (const ASTERINTEGER) const> (&ParallelDOFNumberingClass::getComponentAssociatedToRow), R"( )",
               ( py::arg( "self" ), py::arg( "row" ))  )
 // ------------------------------------------------------------------------------------------------
         .def( "getComponentAssociatedToRow", static_cast<std::string (ParallelDOFNumberingClass::*)
-                   (const ASTERINTEGER, bool) const> (&ParallelDOFNumberingClass::getComponentAssociatedToRow), R"(
-Returns the component name associated to a dof index.
-- If the row is associated to a physical DOF, the name of the component is returned
-- If the row is associated to a Lagrange multiplier DOF for a Dirichlet boundary condition, the name of
-  the component which is constrained by the multiplier is returned
-- If the row is associated to a Lagrange multiplier DOF for a multipoint-constraint implying several DOF,
-  a blank string ' ' is returned (since no component can be identified)
-
-
-Arguments:
-    row (int): Index of the dof (1-based index).
-    local=false (bool): not used (kept for compatibility with ParallelDOFNumbering)
-
-Returns:
-    str: component name.
-        )",
+                   (const ASTERINTEGER, bool) const> (&ParallelDOFNumberingClass::getComponentAssociatedToRow), R"( )",
               ( py::arg( "self" ), py::args( "row", "local"))  )
 // ------------------------------------------------------------------------------------------------
         .def( "getComponentsAssociatedToNode", static_cast<VectorString (ParallelDOFNumberingClass::*)
@@ -249,6 +235,7 @@ Returns:
         .def( "getNumberOfDofs", static_cast<ASTERINTEGER (ParallelDOFNumberingClass::*) (const bool) const>
                    (&ParallelDOFNumberingClass::getNumberOfDofs), R"(
 Returns the number of DOFs.
+
 Arguments:
     local (bool): local or parallel request
 

@@ -79,13 +79,14 @@ class ExtendedFieldOnNodesReal(object):
             return post_comp_cham_no(valeurs, noeud)
 
     def setDirichletBC(self, **kwargs):
-        """ set the values of the Dirichlet boundary conditions of the degrees of freedom
-            on the group of nodes or cells.
+        """Set the values of the Dirichlet boundary conditions of the degrees
+        of freedom on the group of nodes or cells.
+
         Arguments:
             GROUP_MA (str or list(str)): name of the group of cells
             GROUP_NO (str or list(str)): name of the group of nodes.
             NOEUD    (int or list(int)): indices of the nodes.
-            DX, DY, ... (float) : name and value of the degree of freedom
+            DX, DY, ... (float): name and value of the degree of freedom
         """
         ldofNumbering = [dep for dep in self.getDependencies() if isinstance(dep,DOFNumbering)]
         if not ldofNumbering:
