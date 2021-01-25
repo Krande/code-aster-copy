@@ -25,13 +25,19 @@ subroutine cgReadCompor(result_in, compor, iord0, l_incr)
 #include "asterc/getfac.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/cgvein.h"
 #include "asterfort/comp_init.h"
 #include "asterfort/comp_meca_elas.h"
 #include "asterfort/cgCreateCompIncr.h"
 #include "asterfort/rs_get_mate.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
+#include "asterfort/utmess.h"
 !
     character(len=8), intent(in)  :: result_in
     character(len=19), intent(inout) :: compor
@@ -51,8 +57,14 @@ subroutine cgReadCompor(result_in, compor, iord0, l_incr)
 ! --------------------------------------------------------------------------------------------------
 !
    integer :: iret, nb_cmp, nbetin
+   integer :: nb_vale, nb_zone, nb_cmp_max, i_zone
    character(len=8) :: mesh, repk, model
+   character(len=16) :: defo_comp
    aster_logical :: l_etat_init, l_impel
+   integer, pointer :: v_compor_desc(:) => null()
+   character(len=16), pointer :: v_compor_vale(:) => null()
+!
+   call jemarq()
 !
 ! --- Initialization
 !
@@ -97,5 +109,22 @@ subroutine cgReadCompor(result_in, compor, iord0, l_incr)
     if (l_incr) then
         call cgCreateCompIncr(compor, l_etat_init)
     endif
+!
+! --- Only PETIT is accepted
+!
+    call jeveuo(compor//'.DESC', 'L', vi   = v_compor_desc)
+    call jeveuo(compor//'.VALE', 'L', vk16 = v_compor_vale)
+    call jelira(compor//'.VALE', 'LONMAX', nb_vale)
+    nb_zone    = v_compor_desc(3)
+    nb_cmp_max = nb_vale/v_compor_desc(2)
+!
+    do i_zone = 1, nb_zone
+        defo_comp = v_compor_vale(nb_cmp_max*(i_zone-1)+DEFO)
+        if(defo_comp .ne. "PETIT") then
+            call utmess("F", "RUPTURE3_9", sk=defo_comp)
+        end if
+    end do
+!
+    call jedema()
 !
 end subroutine
