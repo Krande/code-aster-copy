@@ -1139,8 +1139,12 @@ contains
         real(kind=8), pointer   :: coorNoeud(:) => null()
         real(kind=8), pointer   :: abscur(:) => null()
 !
-        call tbajvi(this%table_g, this%nb_para, 'NUME_ORDRE', cgStudy%nume_ordre, livi)
-        call tbajvr(this%table_g, this%nb_para, 'INST', cgStudy%time, livr)
+        if (cgField%isModeMeca()) then
+            call tbajvi(this%table_g, this%nb_para, 'NUME_MODE', cgStudy%nume_ordre, livi)
+        else
+            call tbajvi(this%table_g, this%nb_para, 'NUME_ORDRE', cgStudy%nume_ordre, livi)
+            call tbajvr(this%table_g, this%nb_para, 'INST', cgStudy%time, livr)
+        endif
 !
         call cgTheta%getCoorNodes(coorNoeud)
         call cgTheta%getAbscurv(abscur)

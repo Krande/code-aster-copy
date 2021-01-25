@@ -42,9 +42,9 @@ Le nombre de couches d'élément inférieur et supérieur pour le calcul de thê
 """),
 
     6: _("""
-Dans le cas d'une structure de données résultat de type DYNA_TRANS ou MODE_MECA,
-le mot-clé EXCIT est obligatoire.
-Veuillez le renseigner.
+Le mot-clé EXCIT n'est pas renseigné alors que la structure de données résultat est de type DYNA_TRANS ou MODE_MECA. Hors, on ne peux pas récupérer les chargements automatiquement.
+
+Conseil: vérifiez que cela est normal.
 """),
 
     7: _("""

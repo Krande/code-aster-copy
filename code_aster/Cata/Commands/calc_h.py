@@ -86,7 +86,7 @@ CALC_H=OPER(nom="CALC_H",op=27,sd_prod=table_container,
 
         # loading
         b_excit =BLOC(condition="""is_type("RESULTAT") in (mode_meca, dyna_trans,)""",
-                EXCIT=FACT(statut='o',max='**',
+                EXCIT=FACT(statut='f',max='**',
                         CHARGE      =SIMP(statut='o',typ=(char_meca,char_cine_meca)),
                         FONC_MULT   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                 ),

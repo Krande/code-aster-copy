@@ -66,17 +66,13 @@ use calcG_type
     call getfac('EXCIT', nexci)
     if(lmodemeca .or. ldynatrans) then
         if (nexci == 0) then
-            call utmess('F', 'RUPTURE3_6')
+            call utmess('I', 'RUPTURE3_6')
         endif
     else
-        if (nexci == 1) then
+        if (nexci > 0) then
             call utmess('F', 'RUPTURE3_7')
         endif
     end if
-!
-! --- Verification option (not allowed for the moment)
-!
-    ASSERT(.not.cgField%isModeMeca())
 !
     call jedema()
 !
