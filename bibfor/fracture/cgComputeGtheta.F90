@@ -56,11 +56,11 @@ use calcG_type
 !    Compute G(Theta) in 2D and 3D
 !
 !----------------------------------------------
-    integer :: nres, iret, nsig, ino1, ino2, inga, ibid
+    integer :: iret, nsig, ino1, ino2, inga, ibid
     integer :: nchin
     real(kind=8) :: gth(7)
     character(len=2)  :: codret
-    character(len=8)  :: resu, k8b, lpain(50), lpaout(1)
+    character(len=8)  :: k8b, lpain(50), lpaout(1)
     character(len=16) :: opti
     character(len=19) :: chrota, chpesa, cf2d3d, chpres, chvolu, cf1d2d, chepsi
     character(len=19) :: chvarc, chvref
@@ -300,7 +300,7 @@ use calcG_type
 !   RECUPERATION DES CONTRAINTES DU RESULTAT POUR  OPTION G
     if (cgStudy%option .eq. 'G') then
         call rsexch(' ', cgField%result_in, 'SIEF_ELGA', cgStudy%nume_ordre, chsig, iret)
-!        
+!
         if (iret .ne. 0) then
 !-----------Probleme pour recuperer SIEF_ELGA avec ce numero d'ordre
             call utmess('F', 'RUPTURE0_94', si=cgStudy%nume_ordre)

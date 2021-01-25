@@ -213,12 +213,12 @@ use lmp_module, only : lmp_update
         call MatAssemblyEnd(ap(kptsc), MAT_FINAL_ASSEMBLY, ierr)
         ASSERT(ierr.eq.0)
 
-        if(dbg) then
-            fres = 0.d0
-            call MatNorm(ap(kptsc), NORM_FROBENIUS, fres, ierr)
-            ASSERT( ierr == 0 )
-            print*, "NORME LHS PETSC: ", fres
-        end if
+        ! if(dbg) then
+        !     fres = 0.d0
+        !     call MatNorm(ap(kptsc), NORM_FROBENIUS, fres, ierr)
+        !     ASSERT( ierr == 0 )
+        !     print*, "NORME LHS PETSC: ", fres
+        ! end if
 !
         if ( precon == 'BLOC_LAGR' ) then
             call convert_mat_to_saddle_point( nomat, ap(kptsc) )

@@ -46,7 +46,7 @@ use calcG_type
 !
     character(len=8) :: model, mesh
     aster_logical :: lmodemeca, ldynatrans
-    integer :: nexci, netatinit
+    integer :: nexci
 !
     call jemarq()
 !
