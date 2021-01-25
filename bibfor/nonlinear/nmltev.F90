@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@ subroutine nmltev(sderro, typevt, nombcl, levent)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -85,7 +86,7 @@ subroutine nmltev(sderro, typevt, nombcl, levent)
 !
 ! --- AU MOINS UN EVENEMENT DE CE NIVEAU D'ERREUR EST ACTIVE ?
 !
-    do 15 ieven = 1, zeven
+    do ieven = 1, zeven
         icode = zi(jeeact-1+ieven)
         teven = zk16(jeeniv-1+ieven)(1:9)
         if (teven(1:4) .eq. typevt) then
@@ -97,7 +98,20 @@ subroutine nmltev(sderro, typevt, nombcl, levent)
                 endif
             endif
         endif
- 15 end do
+    end do
+!
+! --- Share error for HPC
+!
+    ieven = 0
+    if(levent) then
+        ieven = 1
+    end if
+    call asmpi_comm_vect('MPI_MAX', 'I', sci=ieven)
+    if(ieven == 1) then
+        levent = ASTER_TRUE
+    else
+        levent = ASTER_FALSE
+    end if
 !
     call jedema()
 end subroutine
