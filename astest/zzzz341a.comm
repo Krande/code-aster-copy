@@ -124,12 +124,12 @@ RESRN=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 
 IMPR_TABLE(TABLE=RESRN,);
 
-# tester extraction de POST_RELEVE_T 
+# tester extraction de POST_RELEVE_T
 RESRNX=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               INTITULE='facehaut',
                               RESULTAT=RESU,
                               NOM_CHAM='REAC_NODA',
-                              GROUP_NO=('FACE','HAUT',), 
+                              GROUP_NO=('FACE','HAUT',),
                               RESULTANTE=('DX','DY',),
                               ),);
 
@@ -185,6 +185,7 @@ TEST_TABLE(TABLE=RESRNX,
            VALE_REFE=0.0,
            REFERENCE='ANALYTIQUE',
            VALE_CALC=0.0,
+           CRITERE='ABSOLU',
            )
 
 IMPR_RESU(FORMAT='MED',
