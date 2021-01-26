@@ -36,13 +36,6 @@ paths = [osp.join(DOCDIR, '_extensions'),
 sys.path = paths + sys.path
 
 # -- General configuration ------------------------------------------------
-
-# If your documentation needs a minimal Sphinx version, state it here.
-#needs_sphinx = '1.0'
-
-# Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones.
 extensions = [
     # 'sphinx.ext.intersphinx',
     'sphinx.ext.autodoc',
@@ -51,17 +44,11 @@ extensions = [
     'sphinx.ext.imgmath',
     'sphinx.ext.viewcode',
     'sphinx.ext.inheritance_diagram',
-    'sphinxcontrib.napoleon',
+    'sphinx.ext.napoleon',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
-
-# The suffix of source filenames.
-source_suffix = '.rst'
-
-# The encoding of source files.
-#source_encoding = 'utf-8-sig'
 
 # The master toctree document.
 master_doc = 'index'
@@ -83,75 +70,15 @@ release = ''
 # for a list of supported languages.
 #language = None
 
-# There are two options for replacing |today|: either, you set today to some
-# non-false value, then it is used:
-#today = ''
-# Else, today_fmt is used as the format for a strftime call.
-#today_fmt = '%B %d, %Y'
-
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 exclude_patterns = ['_build']
 
-# The reST default role (used for this markup: `text`) to use for all
-# documents.
-#default_role = None
-
-# If true, '()' will be appended to :func: etc. cross-reference text.
-#add_function_parentheses = True
-
-# If true, the current module name will be prepended to all description
-# unit titles (such as .. function::).
-#add_module_names = True
-
-# If true, sectionauthor and moduleauthor directives will be shown in the
-# output. They are ignored by default.
-#show_authors = False
-
-# The name of the Pygments (syntax highlighting) style to use.
-# pygments_style = 'sphinx'
-
-# A list of ignored prefixes for module index sorting.
-#modindex_common_prefix = []
-
-# If true, keep warnings as "system message" paragraphs in the built documents.
-#keep_warnings = False
-
-
 # -- Options for HTML output ----------------------------------------------
-
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
 html_theme = 'sphinx_rtd_theme'
-# html_theme = 'python_docs_theme'
-
-# Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
-# documentation.
-#html_theme_options = {}
-
-# Add any paths that contain custom themes here, relative to this directory.
 html_theme_path = ['_extensions']
-
-# The name for this set of Sphinx documents.  If None, it defaults to
-# "<project> v<release> documentation".
-#html_title = None
-
-# A shorter title for the navigation bar.  Default is the same as html_title.
-#html_short_title = None
-
-# The name of an image file (relative to this directory) to place at the top
-# of the sidebar.
-html_logo = "code_aster.png"
-
-# The name of an image file (within the static path) to use as favicon of the
-# docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
-# pixels large.
 html_favicon = "code_aster_favicon.png"
-
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
+html_logo = "code_aster.png"
 html_static_path = ['_static']
 
 # Add any extra paths that contain custom files (such as robots.txt or
@@ -297,7 +224,11 @@ todo_include_todos = True
 
 # adapt css
 def setup(app):
-    app.add_stylesheet('mystyles.css')
+    try:
+        app.add_css_file('mystyles.css')
+    except AttributeError:
+        # version < 1.8
+        app.add_stylesheet('mystyles.css')
 
 # List of modules which should be ignored when checking coverage.
 #coverage_ignore_modules = []
