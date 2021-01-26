@@ -437,18 +437,18 @@ PenteLST=CREA_TABLE( LISTE= (
 TEST_TABLE (TABLE = PenteLST,
             NOM_PARA= 'PU',
             REFERENCE='ANALYTIQUE',
-            VALE_CALC= 3.93327482127,   # raffinement=4
+            VALE_CALC= 3.183720333876414,   # raffinement=4
             VALE_REFE=2.5,              # taux de convergence
-            PRECISION=0.574,            # surconvergence: mélange de convergence de géométrie
+            PRECISION=0.5,            # surconvergence: mélange de convergence de géométrie
             )                           # (surface de contact courbée)
 
 
 TEST_TABLE (TABLE = PenteLST,
             NOM_PARA= 'PP',
             REFERENCE='ANALYTIQUE',
-            VALE_CALC=2.04956032802,    # raffinement=4
+            VALE_CALC=1.9546198500305836,    # raffinement=4
             VALE_REFE=1.0,              # taux de convergence
-            PRECISION=1.05,            # surconvergence: mélange de convergence de géométrie
+            PRECISION=1.0,            # surconvergence: mélange de convergence de géométrie
             )                           # (surface de contact courbée)
 
 sous_titreU='Ordres de convergence: cas PENTA15= %f'%(PenteL2U)

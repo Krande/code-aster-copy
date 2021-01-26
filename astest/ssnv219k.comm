@@ -442,18 +442,18 @@ PenteLST=CREA_TABLE( LISTE= (
 TEST_TABLE (TABLE = PenteLST,
             NOM_PARA= 'PU',
             REFERENCE='ANALYTIQUE',
-            VALE_CALC= 3.66986265524,   # raffinement=4,
+            VALE_CALC= 2.470212858990908,   # raffinement=4,
             VALE_REFE=2.5,              # taux de convergence
-            PRECISION=0.468,            # surconvergence: mélange de convergence de géométrie
+            PRECISION=0.15,             # surconvergence: mélange de convergence de géométrie
             )                           # (surface de contact courbée)
 
 
 TEST_TABLE (TABLE = PenteLST,
             NOM_PARA= 'PP',
             REFERENCE='ANALYTIQUE',
-            VALE_CALC= 1.09023168237,    # raffinement=4,
+            VALE_CALC= 1.1007933249862882,    # raffinement=4,
             VALE_REFE=1.0,              # taux de convergence
-            PRECISION=0.1,            # surconvergence: mélange de convergence de géométrie
+            PRECISION=0.15,            # surconvergence: mélange de convergence de géométrie
             )                           # (surface de contact courbée)
 
 sous_titreU='Ordres de convergence: cas PIRAM13 %f'%(PenteL2U)

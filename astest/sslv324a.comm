@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -146,7 +146,7 @@ T= POST_T_Q(MODELISATION='3D',
 #TEST_TABLE(CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE',PRECISION=0.175,VALE_CALC=0.00307381288541,  VALE_REFE=-1.E6,NOM_PARA='Td',TABLE=T,FILTRE=_F(NOM_PARA='INST',VALE=0.,),)
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.05,
-           VALE_CALC=-1033779.64624,
+           VALE_CALC=-1033545.0016390907,
            VALE_REFE=-1.E6,
            NOM_PARA='Td',
            TYPE_TEST='MAX',
@@ -154,7 +154,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.05,
-           VALE_CALC=-1048024.99916,
+           VALE_CALC=-1047832.9278035065,
            VALE_REFE=-1.E6,
            NOM_PARA='Td',
            TYPE_TEST='MIN',
