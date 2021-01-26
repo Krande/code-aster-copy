@@ -8,66 +8,83 @@ export WAFBUILD_ENV=$(readlink -n -f ${BASH_SOURCE})
 export DEVTOOLS_COMPUTER_ID=eole
 # expected version of official prerequisites
 export OFFICIAL_PLATFORM=1
-export PREREQ_PATH=/projets/simumeca/public/v15
+export PREREQ_PATH=/projets/simumeca/prerequisites/20201218/intel19-seq
 export PREREQ_VERSION=20201002
 
 # generic environment: compilers, python
-. /etc/profile.d/lmod.sh
-module load ifort/2016.0.047 icc/2016.0.047 mkl/2016.0.047
+module load cmake/3.12.1 python/3.6.5 numpy/1.15.1 boost/1.62.0 swig/3.0.12
+module load ifort/2019.4.070 icc/2019.4.070 mkl/2019.4.070
 
-export LD_PRELOAD=/opt/intel/2016.0.047/compilers_and_libraries_2016.0.109/linux/mkl/lib/intel64_lin/libmkl_scalapack_lp64.so:/opt/intel/2016.0.047/compilers_and_libraries_2016.0.109/linux/mkl/lib/intel64_lin/libmkl_intel_lp64.so:/opt/intel/2016.0.047/compilers_and_libraries_2016.0.109/linux/mkl/lib/intel64_lin/libmkl_intel_thread.so:/opt/intel/2016.0.047/compilers_and_libraries_2016.0.109/linux/mkl/lib/intel64_lin/libmkl_core.so:/opt/intel/2016.0.047/compilers_and_libraries_2016.0.109/linux/mkl/lib/intel64_lin/libmkl_blacs_intelmpi_lp64.so:/opt/intel/2016.0.047/compilers_and_libraries_2016.0.109/linux/compiler/lib/intel64_lin/libiomp5.so
-# openblas on Eole: issue27636
-export OPENBLAS_CORETYPE=Sandybridge
-# threads placement: issue24556
-export I_MPI_PIN_DOMAIN=omp:compact
+LIBINTEL=/opt/intel/2019.4.070/compilers_and_libraries_2019.4.243/linux
+export LD_PRELOAD=${LD_PRELOAD}:\
+${LIBINTEL}/mkl/lib/intel64_lin/libmkl_def.so:\
+${LIBINTEL}/mkl/lib/intel64_lin/libmkl_avx2.so:\
+${LIBINTEL}/mkl/lib/intel64_lin/libmkl_core.so:\
+${LIBINTEL}/mkl/lib/intel64_lin/libmkl_intel_lp64.so:\
+${LIBINTEL}/mkl/lib/intel64_lin/libmkl_intel_thread.so:\
+${LIBINTEL}/compiler/lib/intel64_lin/libiomp5.so
 
-export PATH=${PREREQ_PATH}/prerequisites/Python-365/bin:${PATH}
-export LD_LIBRARY_PATH=${PREREQ_PATH}/prerequisites/Python-365/lib:${LD_LIBRARY_PATH}
+export PATH="/projets/simumeca/salomemeca/appli_V2019:${PATH}"
 
 # custom configuration
 export CONFIG_PARAMETERS_addmem=2800
 
+export LINKFLAGS="-Wl,--no-as-needed"
+
 # prerequisites paths
-export PYPATH_NUMPY="${PREREQ_PATH}/prerequisites/Numpy-1151/lib/python3.6/site-packages"
-export PYPATH_ASRUN="${PREREQ_PATH}/tools/Code_aster_frontend-salomemeca/lib/python3.6/site-packages"
+export LIBPATH_HDF5="${PREREQ_PATH}/hdf5-1.10.3/lib"
+export INCLUDES_HDF5="${PREREQ_PATH}/hdf5-1.10.3/include"
+export LD_LIBRARY_PATH="${LIBPATH_HDF5}:${LD_LIBRARY_PATH}"
 
-export LIBPATH_HDF5="${PREREQ_PATH}/prerequisites/Hdf5-1103/lib"
-export INCLUDES_HDF5="${PREREQ_PATH}/prerequisites/Hdf5-1103/include"
+export LIBPATH_MED="${PREREQ_PATH}/med-4.1.0/lib"
+export INCLUDES_MED="${PREREQ_PATH}/med-4.1.0/include"
+export PYPATH_MED="${PREREQ_PATH}/med-4.1.0/lib/python3.6/site-packages"
+export PATH="${PREREQ_PATH}/med-4.1.0/bin:${PATH}"
+export LD_LIBRARY_PATH="${LIBPATH_MED}:${LD_LIBRARY_PATH}"
+export PYTHONPATH="${PYPATH_MED}:${PYTHONPATH}"
 
-export LIBPATH_MED="${PREREQ_PATH}/prerequisites/Medfichier-410/lib"
-export INCLUDES_MED="${PREREQ_PATH}/prerequisites/Medfichier-410/include"
-export PYPATH_MED="${PREREQ_PATH}/prerequisites/Medfichier-410/lib/python3.6/site-packages"
+export LIBPATH_METIS="${PREREQ_PATH}/metis-5.1.0_aster4/lib"
+export INCLUDES_METIS="${PREREQ_PATH}/metis-5.1.0_aster4/include"
+export LD_LIBRARY_PATH="${LIBPATH_METIS}:${LD_LIBRARY_PATH}"
 
-export LIBPATH_METIS="${PREREQ_PATH}/prerequisites/Metis_aster-510_aster4/lib"
-export INCLUDES_METIS="${PREREQ_PATH}/prerequisites/Metis_aster-510_aster4/include"
-
-export LIBPATH_SCOTCH="${PREREQ_PATH}/prerequisites/Scotch_aster-604_aster7/SEQ/lib"
-export INCLUDES_SCOTCH="${PREREQ_PATH}/prerequisites/Scotch_aster-604_aster7/SEQ/include"
-
-export LIBPATH_MUMPS="${PREREQ_PATH}/prerequisites/Mumps-521_consortium_aster/SEQ/lib"
-export INCLUDES_MUMPS="${PREREQ_PATH}/prerequisites/Mumps-521_consortium_aster/SEQ/include ${PREREQ_PATH}/prerequisites/Mumps-521_consortium_aster/SEQ/include_seq"
-
-export TFELHOME="${PREREQ_PATH}/prerequisites/Mfront-TFEL321"
+export TFELHOME="${PREREQ_PATH}/mfront-3.2.1"
 export TFELVERS="3.2.1"
-export LIBPATH_MFRONT="${TFELHOME}/lib"
-export INCLUDES_MFRONT="${TFELHOME}/include"
-export PYPATH_MFRONT="${TFELHOME}/lib/python3.6/site-packages"
+export LIBPATH_MFRONT="${PREREQ_PATH}/mfront-3.2.1/lib"
+export INCLUDES_MFRONT="${PREREQ_PATH}/mfront-3.2.1/include"
+export PYPATH_MFRONT="${PREREQ_PATH}/mfront-3.2.1/lib/python3.6/site-packages"
+export PATH="${PREREQ_PATH}/mfront-3.2.1/bin:${PATH}"
+export LD_LIBRARY_PATH="${LIBPATH_MFRONT}:${LD_LIBRARY_PATH}"
+export PYTHONPATH="${PYPATH_MFRONT}:${PYTHONPATH}"
 
-export INCLUDES_BOOST="${PREREQ_PATH}/prerequisites/Boost-1580/include"
-export LIBPATH_BOOST="${PREREQ_PATH}/prerequisites/Boost-1580/lib"
+export PATH="${PREREQ_PATH}/homard-11.12_aster2/bin:${PATH}"
+
+export LIBPATH_SCOTCH="${PREREQ_PATH}/scotch-6.0.4_aster7/lib"
+export INCLUDES_SCOTCH="${PREREQ_PATH}/scotch-6.0.4_aster7/include"
+export LD_LIBRARY_PATH="${LIBPATH_SCOTCH}:${LD_LIBRARY_PATH}"
+
+export LIBPATH_MUMPS="${PREREQ_PATH}/mumps-5.2.1_consortium_aster3/lib"
+export INCLUDES_MUMPS="${PREREQ_PATH}/mumps-5.2.1_consortium_aster3/include ${PREREQ_PATH}/mumps-5.2.1_consortium_aster3/include_seq"
+export LD_LIBRARY_PATH="${LIBPATH_MUMPS}:${LD_LIBRARY_PATH}"
+
+export PATH="${PREREQ_PATH}/miss3d-6.7_aster5/bin:${PATH}"
+
+export LIBPATH_MEDCOUPLING="${PREREQ_PATH}/medcoupling-V9_6_asterxx_0/lib"
+export INCLUDES_MEDCOUPLING="${PREREQ_PATH}/medcoupling-V9_6_asterxx_0/include"
+export PYPATH_MEDCOUPLING="${PREREQ_PATH}/medcoupling-V9_6_asterxx_0/lib/python3.6/site-packages"
+export LD_LIBRARY_PATH="${LIBPATH_MEDCOUPLING}:${LD_LIBRARY_PATH}"
+export PYTHONPATH="${PYPATH_MEDCOUPLING}:${PYTHONPATH}"
+
+export PATH="${PREREQ_PATH}/ecrevisse-3.2.2/bin:${PATH}"
+
+export PATH="${PREREQ_PATH}/gmsh-2.12.0-Linux64/bin:${PATH}"
+
+export PATH="${PREREQ_PATH}/grace-0.0.1/bin:${PATH}"
+
+export PYPATH_ASRUN="${PREREQ_PATH}/asrun-2020.0.1/lib/python3.6/site-packages"
+export PATH="${PREREQ_PATH}/asrun-2020.0.1/bin:${PATH}"
+export PYTHONPATH="${PYPATH_ASRUN}:${PYTHONPATH}"
+
 export LIB_BOOST="boost_python3-mt"
-
-
-export LD_LIBRARY_PATH=${LIBPATH_HDF5}:${LIBPATH_MED}:${LIBPATH_METIS}:${LIBPATH_SCOTCH}:${LIBPATH_MUMPS}:${LIBPATH_MFRONT}:${LIBPATH_BOOST}:${LD_LIBRARY_PATH}
-
-export PYTHONPATH=${PYPATH_NUMPY}:${PYPATH_ASRUN}:${PYPATH_MFRONT}:${PYPATH_MED}:${PYTHONPATH}
-
-export PATH=\
-${PREREQ_PATH}/prerequisites/Medfichier-410/bin:\
-${PREREQ_PATH}/prerequisites/Gmsh_bin-2120Linux64/bin:\
-${PREREQ_PATH}/tools/Miss3d-67_aster3:\
-${PREREQ_PATH}/tools/Homard_aster-1112_aster2:\
-${PREREQ_PATH}/tools/Ecrevisse-322:\
-/projets/simumeca/salomemeca/appli_V2019:\
-${TFELHOME}/bin:\
-${PATH}
+export LIBPATH_BOOST="/opt/boost/1.62.0/lib"
+export INCLUDES_BOOST="/opt/boost/1.62.0/include"
+export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${LIBPATH_BOOST}"

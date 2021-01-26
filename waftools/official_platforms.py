@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,19 +49,20 @@ def configure(self):
                                          os.environ['PREREQ_VERSION'])
 
 @Configure.conf
-def check_prerequisites_package(self, yammdir, minvers):
+def check_prerequisites_package(self, prereq_dir, minvers):
     """Check for version of the prerequisites package.
 
     Can only be used if prerequisites are installed with a 'Yamm' package.
 
     Arguments:
         self (Configure): Configure object.
-        yammdir (str): Directory path of prerequisites/tools installation.
+        prereq_dir (str): Directory path of prerequisites containing the
+            VERSION file.
         minvers (str): Minimal required version of the prerequisites package.
     """
     self.start_msg("Checking prerequisites version >= {0}".format(minvers))
 
-    filename = osp.join(yammdir, 'VERSION')
+    filename = osp.join(prereq_dir, 'VERSION')
     if osp.isfile(filename):
         with open(filename, 'r') as fvers:
             version = fvers.read().strip()
