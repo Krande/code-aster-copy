@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -157,21 +157,21 @@ subroutine cafelu(typco, alphacc, effm, effn, ht, enrobs,&
         sigm_beton = fbeton*alphacc/gammac
     endif
     alpha_ab = piv_b/(piv_a+piv_b)
-    mu_inf = m_inf/(d**2.d0*sigm_beton*eta*unite_m)
+    mu_inf = m_inf/(d**2.d0*sigm_beton*eta)
     mu_bc = lambda*(1.d0-lambda/2.d0)
 !
 !   CALCULS DES DENSITES DE FERRAILLAGE A L'ELU
 !
     if (mu_inf.lt.0.d0) then
 !       SECTION ENTIEREMENT TENDUE
-        dnssup = (effn*hu+effm)/(2.d0*hu)
-        dnsinf = (effn*hu-effm)/(2.d0*hu)
+        dnssup = (effn*hu+effm)/(2.d0*hu)*unite_m
+        dnsinf = (effn*hu-effm)/(2.d0*hu)*unite_m
     else
 !       SECTION A MINIMA PARTIELLEMENT COMPRIMEE
         if (mu_inf.lt.mu_bc) then
 !           SECTION PARTIELLEMENT TENDUE : PIVOT A ET B
             alpha = 1.d0-sqrt(1.d0-2.d0*mu_inf)
-            N = alpha*d*eta*sigm_beton*unite_m + effn
+            N = (alpha*d*eta*sigm_beton + effn)*unite_m
             if (N.le.0.d0) then
 !               PIVOT B : SECTION COMPRIMEE
                 N = 0.d0

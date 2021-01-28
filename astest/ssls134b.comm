@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,10 +26,12 @@ if unite == 'Pa':
     C_Pa = 1
     C_N = 1.
     C_M = 1.
+    C_MOM=1.
 elif unite == 'MPa':
     C_Pa = 1.e6
-    C_N = 1.e6
+    C_N = 1.e3
     C_M = 1.e3
+    C_MOM=1.
     MA = MODI_MAILLAGE( reuse = MA, MAILLAGE = MA, ECHELLE = 1000.);
 
 MODEL = AFFE_MODELE( MAILLAGE = MA,
@@ -46,82 +48,82 @@ CARA = AFFE_CARA_ELEM( MODELE = MODEL,
 CHEFF1 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PLAQUE',
                                 NOM_CMP  = ('NXX','NYY',    'NXY','MXX','MYY','MXY','QX','QY'),
-                                VALE     = ( 0.0, -1.e6/C_N, 0.0,  0.0,  0.0,  0.0,  0.0, 1.e5/C_M),),);
+                                VALE     = ( 0.0, -1.e6/C_N, 0.0,  0.0,  0.0,  0.0,  0.0, 1.e5/C_N),),);
 #section totalement tendue en X (pivot A "vertical") + effort transversal
 CHEFF2 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PLAQUE',
                                 NOM_CMP  = ('NXX',    'NYY','NXY','MXX','MYY','MXY','QX',     'QY'),
-                                VALE     = ( 1.e6/C_N, 0.0,  0.0,  0.0,  0.0,  0.0, -6.e5/C_M, 0.0),),);
+                                VALE     = ( 1.e6/C_N, 0.0,  0.0,  0.0,  0.0,  0.0, -6.e5/C_N, 0.0),),);
 #section totalement tendue en Y (pivot A "vertical") + effort transversal
 CHEFF3 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PLAQUE',
                                 NOM_CMP  = ('NXX','NYY',    'NXY','MXX','MYY','MXY','QX',     'QY'),
-                                VALE     = ( 0.0,  1.e6/C_N, 0.0,  0.0,  0.0,  0.0, -2.e4/C_M, 8.e4/C_M),),);
+                                VALE     = ( 0.0,  1.e6/C_N, 0.0,  0.0,  0.0,  0.0, -2.e4/C_N, 8.e4/C_N),),);
 #fibre supérieure tendue en Y
 CHEFF4 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PLAQUE',
                                 NOM_CMP  = ('NXX','NYY','NXY','MXX','MYY',    'MXY','QX','QY'),
-                                VALE     = ( 0.0,  0.0,  0.0,  0.0,  1.e5/C_M, 0.0,  0.0, 0.0),),);
+                                VALE     = ( 0.0,  0.0,  0.0,  0.0,  1.e5/C_MOM, 0.0,  0.0, 0.0),),);
 #fibre supérieure tendue en X
 CHEFF5 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PLAQUE',
                                 NOM_CMP  = ('NXX','NYY','NXY','MXX',    'MYY','MXY','QX','QY'),
-                                VALE     = ( 0.0,  0.0,  0.0,  1.e5/C_M, 0.0,  0.0,  0.0, 0.0),),);
+                                VALE     = ( 0.0,  0.0,  0.0,  1.e5/C_MOM, 0.0,  0.0,  0.0, 0.0),),);
 #section partiellement tendue
 CHEFF6 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PLAQUE',
                                 NOM_CMP  = ('NXX',    'NYY','NXY','MXX',    'MYY','MXY','QX','QY'),
-                                VALE     = (-1.e5/C_N, 0.0,  0.0,  1.e5/C_M, 0.0,  0.0,  0.0, 0.0),),);
+                                VALE     = (-1.e5/C_N, 0.0,  0.0,  1.e5/C_MOM, 0.0,  0.0,  0.0, 0.0),),);
 #section partiellement tendue
 CHEFF7 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PLAQUE',
                                 NOM_CMP  = ('NXX',    'NYY','NXY','MXX',    'MYY','MXY','QX','QY'),
-                                VALE     = ( 1.e5/C_N, 0.0,  0.0,  1.e5/C_M, 0.0,  0.0,  0.0, 0.0),),);
+                                VALE     = ( 1.e5/C_N, 0.0,  0.0,  1.e5/C_MOM, 0.0,  0.0,  0.0, 0.0),),);
 #section totalement tendue
 CHEFF8 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PLAQUE',
                                 NOM_CMP  = ('NXX',    'NYY','NXY','MXX',    'MYY','MXY','QX','QY'),
-                                VALE     = (2.e6/C_N,  0.0,  0.0,  1.e5/C_M, 0.0,  0.0,  0.0, 0.0),),);
+                                VALE     = (2.e6/C_N,  0.0,  0.0,  1.e5/C_MOM, 0.0,  0.0,  0.0, 0.0),),);
 
 CHEFF9 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PLAQUE',
                                 NOM_CMP  = ('NXX','NYY','NXY','MXX',     'MYY',     'MXY','QX','QY'),
-                                VALE     = ( 0.0,  0.0,  0.0,  1.e5/C_M, -75.e3/C_M, 0.0,  0.0, 0.0),),);
+                                VALE     = ( 0.0,  0.0,  0.0,  1.e5/C_MOM, -75.e3/C_MOM, 0.0,  0.0, 0.0),),);
 
 CHEFF10 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                       AFFE = _F( GROUP_MA = 'PLAQUE',
                                  NOM_CMP  = ('NXX','NYY','NXY','MXX','MYY' ,    'MXY','QX','QY'),
-                                 VALE     = ( 0.0,  0.0,  0.0,  0.0, -150e3/C_M, 0.0,  0.0, 0.0),),);
+                                 VALE     = ( 0.0,  0.0,  0.0,  0.0, -150e3/C_MOM, 0.0,  0.0, 0.0),),);
 #configuration 10 à l'ELS
 CHEFF11 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                       AFFE = _F( GROUP_MA = 'PLAQUE',
                                  NOM_CMP  = ('NXX','NYY','NXY','MXX','MYY',    'MXY','QX','QY'),
-                                 VALE     = ( 0.0,  0.0,  0.0,  0.0, -1.e5/C_M, 0.0,  0.0, 0.0),),);
+                                 VALE     = ( 0.0,  0.0,  0.0,  0.0, -1.e5/C_MOM, 0.0,  0.0, 0.0),),);
 #configuration 6 à l'ELS
 CHEFF12 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                       AFFE = _F( GROUP_MA = 'PLAQUE',
                                  NOM_CMP  = ('NXX',    'NYY','NXY','MXX',   'MYY','MXY','QX','QY'),
-                                 VALE     = (-20e3/C_N, 0.0,  0.0,  1e5/C_M, 0.0,  0.0,  0.0, 0.0),),);
+                                 VALE     = (-20e3/C_N, 0.0,  0.0,  1e5/C_MOM, 0.0,  0.0,  0.0, 0.0),),);
 #pivot B 
 CHEFF13 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                       AFFE = _F( GROUP_MA = 'PLAQUE',
                                  NOM_CMP  = ('NXX','NYY','NXY','MXX','MYY' ,    'MXY','QX','QY'),
-                                 VALE     = ( 0.0,  0.0,  0.0,  0.0, -26.e4/C_M, 0.0,  0.0, 0.0),),);
+                                 VALE     = ( 0.0,  0.0,  0.0,  0.0, -26.e4/C_MOM, 0.0,  0.0, 0.0),),);
 # vrai pivot C avec compression totale d'une facette sur la section entière
 CHEFF14 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                       AFFE = _F( GROUP_MA = 'PLAQUE',
                                  NOM_CMP  = ('NXX','NYY','NXY','MXX','MYY' ,    'MXY','QX','QY'),
-                                 VALE     = ( 0.0,  0.0,  0.0,  0.0, -38.e4/C_M, 0.0,  0.0, 0.0),),);
+                                 VALE     = ( 0.0,  0.0,  0.0,  0.0, -38.e4/C_MOM, 0.0,  0.0, 0.0),),);
 
 CHEFF15 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                       AFFE = _F( GROUP_MA = 'PLAQUE',
                                  NOM_CMP  = ('NXX','NYY',     'NXY','MXX','MYY','MXY','QX','QY'),
-                                 VALE     = ( 0.0, -15.e5/C_N, 0.0,  0.0,  0.0,  0.0,  0.0, 8.e5/C_M),),);
+                                 VALE     = ( 0.0, -15.e5/C_N, 0.0,  0.0,  0.0,  0.0,  0.0, 8.e5/C_N),),);
 # Pivot C avec compression totale d'une facette sur la section entière
 CHEFF16 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                       AFFE = _F( GROUP_MA = 'PLAQUE',
                                  NOM_CMP  = ('NXX',     'NYY','NXY','MXX',     'MYY','MXY','QX','QY'),
-                                 VALE     = (-45.e5/C_N, 0.0,  0.0,  38.e4/C_M, 0.0,  0.0,  0.0, 1.e5/C_M),),);
+                                 VALE     = (-45.e5/C_N, 0.0,  0.0,  38.e4/C_MOM, 0.0,  0.0,  0.0, 1.e5/C_N),),);
 
 RESUELU = CREA_RESU( OPERATION = 'AFFE',
                      TYPE_RESU = 'EVOL_ELAS',

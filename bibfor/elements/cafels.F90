@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -112,15 +112,15 @@ subroutine cafels(cequi, effm, effn, ht, enrobs, enrobi, sigaci,&
     alpha_ab = cequi*sigbet/(cequi*sigbet+sigaci)
     mu_ab = 0.5*alpha_ab*(1.d0-alpha_ab/3.d0)
     mu_bc = 1.d0/3.d0
-    m_inf = abs(effm) - effn*hu
-    mu = m_inf/(d**2.d0*sigbet*unite_m)
+    m_inf = (abs(effm) - effn*hu)
+    mu = m_inf/(d**2.d0*sigbet)
 !
 !   CALCUL DES DENSITES DE FERRAILLAGE A L'ELS
 !
     if (mu.lt.0) then
 !       PIVOT A : SECTION ENTIEREMENT TENDUE
-        dnssup = (m_inf+effn*(d-enrob))/(sigaci*(d-enrob))
-        dnsinf = (-m_inf)/(sigaci*(d-enrob))
+        dnssup = (m_inf+effn*(d-enrob))/(sigaci*(d-enrob))*unite_m
+        dnsinf = (-m_inf)/(sigaci*(d-enrob))*unite_m
     else 
         if (mu.lt.mu_ab) then
 !           PIVOT A : SECTION PARTIELLEMENT TENDUE
@@ -128,7 +128,7 @@ subroutine cafels(cequi, effm, effn, ht, enrobs, enrobi, sigaci,&
             phi = acos(-1.d0/(1.d0+2.d0*cequi*mu*sigbet/sigaci)**(1.5))
             alpha = 1.d0+2.d0*(1.d0+2.d0*cequi*mu*sigbet/sigaci)**(0.5)*&
                     cos(pi/3.d0+phi/3.d0)
-            dns = m_inf/((1.d0-alpha/3.d0)*sigaci*d)+effn/sigaci
+            dns = (m_inf/((1.d0-alpha/3.d0)*sigaci*d)+effn/sigaci)*unite_m
             if (dns.le.0.d0) then
                 dns = 0.d0
             endif
@@ -136,12 +136,12 @@ subroutine cafels(cequi, effm, effn, ht, enrobs, enrobi, sigaci,&
 !           PIVOT B : SECTION PARTIELLEMENT TENDUE
             alpha = (3.d0-sqrt(3.d0*(3.d0-8.d0*mu)))/2.d0
             sigma_s = (1.d0-alpha)/alpha*cequi*sigbet
-            dns = m_inf/((1.d0-alpha/3.d0)*(d*sigma_s))+effn/sigma_s
+            dns = (m_inf/((1.d0-alpha/3.d0)*(d*sigma_s))+effn/sigma_s)*unite_m
             if (dns.le.0.d0) then
                 dns = 0.d0
             endif
 !           force = effn/(3.d0/4.d0 - 2.d0*effm/(2.d0*ht*effn))
-            force = (8.d0*ht*effn**2)/(6.d0*ht*effn-12.d0*effm)
+            force = ((8.d0*ht*effn**2)/(6.d0*ht*effn-12.d0*effm))*unite_m
             if (force.lt.-1.d0*sigbet*ht) then
 !               PIVOT B : SECTION TROP COMPRIMEE
                 ierr = 1050
@@ -152,7 +152,7 @@ subroutine cafels(cequi, effm, effn, ht, enrobs, enrobi, sigaci,&
             ierr = 1060
             dnssup = 0.0d0
             dnsinf = 0.0d0
-            force = (ht*effn**2)/(ht*effn+6.d0*effm)
+            force = ((ht*effn**2)/(ht*effn+6.d0*effm))*unite_m
             if (force.lt.-1.d0*sigbet*ht) then
 !               PIVOT C : SECTION TROP COMPRIMEE
                 ierr = 1070
