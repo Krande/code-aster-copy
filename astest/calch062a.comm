@@ -1,0 +1,327 @@
+# copie du cas test sslp102d
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# CALCUL DU TAUX DE RESTITUTION D'ENERGIE EN PRESENCE DE PRE-DEFORMATION
+# AXI-SYMMETRIQUE
+# CALCUL ELASTIQUE LINEAIRE
+# DEMI-CYLINDRE TRAITE PAR SYMETRIE
+#
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+MA=LIRE_MAILLAGE(FORMAT='MED',  )
+
+#BARSOUM
+MA = MODI_MAILLAGE(reuse=MA,
+                      MAILLAGE=MA,
+                      MODI_MAILLE=_F(GROUP_NO_FOND=('FOND_FISS', ),
+                                     OPTION='NOEUD_QUART'))
+
+#DEFINITION DU MODELE MECANIQUE
+MO=AFFE_MODELE(     MAILLAGE=MA,
+                         AFFE=_F(  TOUT = 'OUI',
+                                PHENOMENE = 'MECANIQUE',
+                                MODELISATION = 'AXIS'))
+
+
+#CHAMP DE TEMPETATURE UNIFORME NULLE
+CTE0=DEFI_CONSTANTE(VALE=0.0,)
+
+CHP_T0=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
+                     MAILLAGE=MA,
+                     AFFE=_F(TOUT = 'OUI',
+                             NOM_CMP = 'TEMP',
+                             VALE_F = CTE0))
+
+#CHAMP DE TEMPETATURE VARIANT LINERAIREMENT
+GRADT=DEFI_FONCTION(   NOM_PARA='X',
+                         VALE=(0., -50,
+                                100,  50,),
+                            INTERPOL='LIN',
+                          PROL_DROITE='LINEAIRE',
+                         PROL_GAUCHE='LINEAIRE'
+                         )
+
+CH_GRADT=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
+                     MAILLAGE=MA,
+                     AFFE=_F(TOUT = 'OUI',
+                             NOM_CMP = 'TEMP',
+                             VALE_F = GRADT))
+
+
+#CREATION D'UN RESULTAT THERMIQUE
+
+RESUTHER=CREA_RESU(OPERATION='AFFE',
+                   TYPE_RESU='EVOL_THER',
+                   NOM_CHAM='TEMP',
+                   AFFE=(_F(INST = 0,
+                            CHAM_GD = CHP_T0),
+                         _F(INST = 1,
+                            CHAM_GD = CH_GRADT),)
+                    )
+
+# CREATION ET AFFECTATION DU MATERIAU
+MAT=DEFI_MATERIAU(     ELAS=_F(  E = 200000.,
+                                NU = 0.3,
+                                ALPHA = 1.0e-5) )
+
+#SANS DEFORMATION THERMIQUE
+CM=AFFE_MATERIAU(    MAILLAGE=MA,
+                           AFFE=_F(  TOUT = 'OUI',
+                                  MATER = MAT),
+                                   )
+                                   
+#AVEC DEFORMATION THERMIQUE
+CMTH=AFFE_MATERIAU(    MAILLAGE=MA,
+                           AFFE=_F(  TOUT = 'OUI',
+                                  MATER = MAT),
+                           AFFE_VARC=_F(TOUT='OUI',
+                                  NOM_VARC='TEMP',
+                                  EVOL = RESUTHER,
+                                  VALE_REF=0.0)
+                                   )
+
+#CONDITIONS LIMITES ET CHARGEMENT
+
+EPSINI=DEFI_FONCTION(   NOM_PARA='X',
+                         VALE=(0, -0.0005,
+                                100,  0.0005,),
+                            INTERPOL='LIN',
+                          PROL_DROITE='LINEAIRE',
+                         PROL_GAUCHE='LINEAIRE'
+                         )
+
+CH=AFFE_CHAR_CINE(MODELE=MO,MECA_IMPO=(
+                           _F(  GROUP_NO = 'GRNM2',      DY = 0.0),
+                           _F(  GROUP_NO = 'GRNM4',      DY = 0.0),
+                           #~ _F(  GROUP_NO = 'BLOC_CR',      DX = 0.0)
+                           ),
+                        )
+
+CH_EPS=AFFE_CHAR_MECA_F(MODELE=MO,PRE_EPSI=_F(  TOUT = 'OUI',
+                                    EPXX = EPSINI,
+                                    EPYY = EPSINI,
+                                    EPZZ = EPSINI,
+                                )
+                        )
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(  JUSQU_A = 1.0,
+                                      NOMBRE = 1)
+                      )
+                      
+#CALCUL THERMOMECANIQUE
+RESUTH=STAT_NON_LINE( MODELE=MO,
+                       CHAM_MATER=CMTH,
+                       EXCIT=(_F(CHARGE = CH,),
+                                    ),
+                       INCREMENT=_F(LIST_INST = L_INST),
+                       NEWTON=_F(MATRICE = 'ELASTIQUE'),
+              )
+
+#CALCUL AVEC ETAT INITIAL
+RESUINI=STAT_NON_LINE( MODELE=MO,
+                       CHAM_MATER=CM,
+                       EXCIT=(_F(CHARGE = CH,),
+                              _F(CHARGE = CH_EPS,),
+                                    ),
+                       INCREMENT=_F(LIST_INST = L_INST),
+                       NEWTON=_F(MATRICE = 'ELASTIQUE'),
+              )
+
+#--------------------------------------------------------------------
+#  CALCUL DE G AVEC DEFORMATIONS THERMIQUES
+#--------------------------------------------------------------------
+
+FOND=DEFI_FISSURE( MAILLAGE=MA,
+                     FOND_FISS=_F( GROUP_NO = 'FOND_FISS'),
+                     SYME='OUI',
+                     LEVRE_SUP=_F(GROUP_MA='LEVRE_SUP'))
+
+GTH1=CALC_H(RESULTAT=RESUTH,
+            NUME_ORDRE=1,
+            THETA=_F(
+                FISSURE=FOND,
+                R_INF=1.,
+                R_SUP=5.),
+            OPTION='G_EPSI',
+            );
+
+GTH2=CALC_H(RESULTAT=RESUTH,
+            NUME_ORDRE=1,
+            THETA=_F(
+                    FISSURE=FOND,
+                    R_INF=5.,
+                    R_SUP=10.),
+            OPTION='G_EPSI',
+                    );
+
+GTH3=CALC_H(RESULTAT=RESUTH,
+            NUME_ORDRE=1,
+            THETA=_F(
+                    FISSURE=FOND,
+                    R_INF=10.,
+                    R_SUP=20.),
+            OPTION='G_EPSI',
+                    );
+
+GTH4=CALC_H(RESULTAT=RESUTH,
+            NUME_ORDRE=1,
+            THETA=_F(
+                     FISSURE=FOND,
+                     R_INF=20.,
+                     R_SUP=30.),
+            OPTION='G_EPSI',
+                     );
+
+#--------------------------------------------------------------------
+#  CALCUL DE G AVEC DEFORMATIONS INITIALES
+#--------------------------------------------------------------------
+
+GINI1=CALC_H(RESULTAT=RESUINI,
+             NUME_ORDRE=1,
+             THETA=_F(
+                    FISSURE=FOND,
+                    R_INF=1.,
+                    R_SUP=5.),
+            OPTION='G_EPSI',
+            );
+
+GINI2=CALC_H(RESULTAT=RESUINI,
+             NUME_ORDRE=1,
+            THETA=_F(
+                FISSURE=FOND,
+                R_INF=5.,
+                R_SUP=10.),
+            OPTION='G_EPSI',
+                );
+
+GINI3=CALC_H(RESULTAT=RESUINI,
+             NUME_ORDRE=1,
+             THETA=_F(
+                FISSURE=FOND,
+                R_INF=10.,
+                R_SUP=20.),
+            OPTION='G_EPSI',
+                );
+
+GINI4=CALC_H(RESULTAT=RESUINI,
+             NUME_ORDRE=1,
+             THETA=_F(
+                    FISSURE=FOND,
+                    R_INF=20.,
+                    R_SUP=30.),
+            OPTION='G_EPSI',
+                    );
+
+                           
+
+#--------------------------------------------------------------------
+#                TESTS DES RESULTATS                                #
+#--------------------------------------------------------------------
+Gther1= 31.50584388612264
+Gther2= 31.503165974359877
+Gther3= 31.500724485013823
+Gther4= 31.501299959584696
+
+#NON REGRESSIONS DES G ISSUS DU CALCUL THERMOMECANIQUE
+TEST_TABLE(
+           VALE_CALC=Gther1,
+           NOM_PARA='G_EPSI',
+           TABLE=GTH1,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=Gther2,
+           NOM_PARA='G_EPSI',
+           TABLE=GTH2,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=Gther3,
+           NOM_PARA='G_EPSI',
+           TABLE=GTH3,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=Gther4,
+           NOM_PARA='G_EPSI',
+           TABLE=GTH4,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
+
+#TEST DES G ISSUS DU CALCUL AVEC PRE-DEFORMATION
+TEST_TABLE(
+           VALE_CALC=31.50584388612272,
+           VALE_REFE=Gther1,
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-4,
+           CRITERE='RELATIF',
+           NOM_PARA='G_EPSI',
+           TABLE=GINI1,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=31.503165974359916,
+           VALE_REFE=Gther2,
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-4,
+           CRITERE='RELATIF',
+           NOM_PARA='G_EPSI',
+           TABLE=GINI2,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=31.5007244850139,
+           VALE_REFE=Gther3,
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-4,
+           CRITERE='RELATIF',
+           NOM_PARA='G_EPSI',
+           TABLE=GINI3,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=31.501299959584692,
+           VALE_REFE=Gther4,
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-4,
+           CRITERE='RELATIF',
+           NOM_PARA='G_EPSI',
+           TABLE=GINI4,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
+
+FIN( )
+#
