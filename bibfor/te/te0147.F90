@@ -53,7 +53,7 @@ implicit none
 #include "asterfort/rcvad2.h"
 #include "asterc/r8prem.h"
 #include "asterfort/utmess.h"
-#include "asterfort/xdeffk.h"
+#include "asterfort/deffk.h"
 !
 ! =====================================================================
 !                       DECLARATION DES VARIABLES
@@ -516,7 +516,7 @@ implicit none
                     prsc = prsc + p(i,2)*a3(i)
                 enddo
 !
-                if (prsc .gt. 0.0d0) then
+                if (prsc .gt. r8prem()) then
                     phig = -1.0d0 * abs(phig)
                 else
                     phig = abs(phig)
@@ -528,7 +528,7 @@ implicit none
            !      CALCUL DES CHAMPS SINGULIERS
            ! ===========================================
 !
-            call xdeffk(ka, mu, rg, phig, reeldim, fkpo)
+            call deffk(ka, mu, rg, phig, reeldim, fkpo)
 !
             do i = 1, reeldim
                 do ind = 1, reeldim
