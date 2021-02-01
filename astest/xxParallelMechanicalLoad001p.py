@@ -63,7 +63,7 @@ AFFMAT = AFFE_MATERIAU(MAILLAGE=pMesh2,
 
 
 study = code_aster.StudyDescription(model, AFFMAT)
-study.addKinematicsLoad(char_cin)
+study.addDirichletBC(char_cin)
 study.addParallelMechanicalLoad(char_meca)
 dProblem = code_aster.DiscreteProblem(study)
 vect_elem = dProblem.buildElementaryMechanicalLoadsVector()
@@ -77,7 +77,7 @@ test.assertEqual(numeDDL.getType(), "NUME_DDL_P")
 matrAsse = code_aster.AssemblyMatrixDisplacementReal()
 matrAsse.appendElementaryMatrix(matr_elem)
 matrAsse.setDOFNumbering(numeDDL)
-matrAsse.addKinematicsLoad(char_cin)
+matrAsse.addDirichletBC(char_cin)
 matrAsse.build()
 
 matrAsse.print()
