@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -99,6 +99,9 @@ EFORCER  = LocatedComponents(phys=PHY.FORC_R, type='ELGA', location='RIGI',
 
 EKTHETA  = LocatedComponents(phys=PHY.G, type='ELEM',
     components=('GTHETA','FIC[2]','K[2]',))
+
+NEWTHETA  = LocatedComponents(phys=PHY.G, type='ELEM',
+    components=('GTHETA','FIC[3]','K[3]',))
 
 
 NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
@@ -207,6 +210,59 @@ class MIAXOSQU4(Element):
             ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4','MASS=FPG4',),),
         )
     calculs = (
+
+        OP.CALCH_G(te=222,
+            para_in=((SP.PACCELE, NDEPLAR), (OP.CALCH_G.PCOMPOR, LC.CCOMPOR),
+                     (SP.PCONTGR, ESIGMPG), (OP.CALCH_G.PCONTRR, ESIGMPG),
+                     (SP.PDEFOPL, EDEFONO), (SP.PDEPLAR, NDEPLAR),
+                     (SP.PEPSINR, CEPSINO), (SP.PFRVOLU, NFORCER),
+                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (SP.PPESANR, LC.CPESANR), (SP.PROTATR, LC.CROTATR),
+                     (SP.PSIGINR, ESIGMNO), (OP.CALCH_G.PTHETAR, LC.ETHETA),
+                     (OP.CALCH_G.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
+                     (OP.CALCH_G.PVARIPR, LC.ZVARINO), (SP.PVITESS, NDEPLAR),
+                     ),
+            para_out=((SP.PGTHETA, NEWTHETA), ),
+        ),
+
+        OP.CALCH_G_F(te=222,
+            para_in=((SP.PACCELE, NDEPLAR), (OP.CALCH_G_F.PCOMPOR, LC.CCOMPOR),
+                     (SP.PCONTGR, ESIGMPG), (OP.CALCH_G_F.PCONTRR, ESIGMPG),
+                     (SP.PDEFOPL, EDEFONO), (SP.PDEPLAR, NDEPLAR),
+                     (SP.PEPSINF, CEPSINF), (SP.PFFVOLU, CFORCEF),
+                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (SP.PPESANR, LC.CPESANR), (SP.PROTATR, LC.CROTATR),
+                     (SP.PSIGINR, ESIGMNO), (SP.PTEMPSR, CTEMPSR),
+                     (OP.CALCH_G_F.PTHETAR, LC.ETHETA), (OP.CALCH_G_F.PVARCPR, LC.ZVARCPG),
+                     (SP.PVARCRR, LC.ZVARCPG), (OP.CALCH_G_F.PVARIPR, LC.ZVARINO),
+                     (SP.PVITESS, NDEPLAR), ),
+            para_out=((SP.PGTHETA, NEWTHETA), ),
+        ),
+
+        OP.CALCH_K_G(te=222,
+            para_in=((OP.CALCH_K_G.PCOMPOR, LC.CCOMPOR), (SP.PDEPLAR, NDEPLAR),
+                     (SP.PEPSINR, CEPSINO),
+                     (SP.PFRVOLU, NFORCER),(OP.CALCH_K_G.PBASLOR, LC.N6NEUT_R),
+                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (SP.PPESANR, LC.CPESANR), (SP.PPULPRO, LC.CFREQR),
+                     (SP.PROTATR, LC.CROTATR), (SP.PSIGINR, ESIGMNO),
+                     (OP.CALCH_K_G.PTHETAR, LC.ETHETA), (OP.CALCH_K_G.PVARCPR, LC.ZVARCPG),
+                     (SP.PVARCRR, LC.ZVARCPG), ),
+            para_out=((SP.PGTHETA, NEWTHETA), ),
+        ),
+
+        OP.CALCH_K_G_F(te=222,
+            para_in=((OP.CALCH_K_G_F.PCOMPOR, LC.CCOMPOR), (SP.PDEPLAR, NDEPLAR),
+                     (SP.PEPSINF, CEPSINF),
+                     (SP.PFFVOLU, CFORCEF), (OP.CALCH_K_G_F.PBASLOR, LC.N6NEUT_R),
+                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (SP.PPESANR, LC.CPESANR), (SP.PPULPRO, LC.CFREQR),
+                     (SP.PROTATR, LC.CROTATR), (SP.PSIGINR, ESIGMNO),
+                     (SP.PTEMPSR, CTEMPSR), (OP.CALCH_K_G_F.PTHETAR, LC.ETHETA),
+                     (OP.CALCH_K_G_F.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
+                     ),
+            para_out=((SP.PGTHETA, NEWTHETA), ),
+        ),
 
         OP.CALC_G(te=96,
             para_in=((SP.PACCELE, NDEPLAR), (OP.CALC_G.PCOMPOR, LC.CCOMPOR),
