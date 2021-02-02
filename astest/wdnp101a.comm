@@ -917,6 +917,92 @@ ACCE0 = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                            NOM_CMP=('DX', 'DY', 'DZ', 'PRE1'),
                            VALE = (0., 0., 0., 0.,),),);
 
+U9B1=DYNA_NON_LINE(
+                 MODELE=MOD[9],
+                 CHAM_MATER=AFFMAT1,
+                 EXCIT=(_F(CHARGE=BO_CONH0),
+                        _F(CHARGE=PHAUT),
+                        _F(CHARGE=CHPAR),
+                        _F(CHARGE=BO_CONH1),
+                        _F(CHARGE=PESA,),
+                        _F(CHARGE=MONOX, FONC_MULT=ACCELE,),),
+                 COMPORTEMENT=(_F(RELATION='KIT_HM',
+                               ITER_INTE_PAS=-10,
+                               RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
+                               GROUP_MA=list_group_ma[0]),
+                            _F(ITER_INTE_MAXI=-5,
+                               ITER_INTE_PAS=-5,
+                               RESI_INTE_RELA=1E-8,
+                               ALGO_INTE='SPECIFIQUE',
+                               RELATION='KIT_HM',
+                               RELATION_KIT=('HUJEUX','LIQU_SATU','HYDR_UTIL'),
+                               GROUP_MA=list_group_ma[1:nbcouche]),
+                            ),
+                 SOLVEUR=_F(RENUM='MD',
+                            STOP_SINGULIER='NON',
+                            METHODE='MULT_FRONT',),
+                 ETAT_INIT=_F(EVOL_NOLI=U9B,
+                              INST=0.0,PRECISION=1.E-6,
+#  On impose explicitement une acceleration initiale nulle car la matrice de masse etant singuliere
+#  a cause du modele, on ne peut calculer une acceleration non nulle :
+                              ACCE = ACCE0,),
+                 INCREMENT=_F(LIST_INST=L_INSTh,
+                              PRECISION=1.E-8,
+                              INST_FIN=0.02,),
+                 ARCHIVAGE=_F(PAS_ARCH = 10,),
+                 NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1),
+                 SCHEMA_TEMPS=_F(SCHEMA='HHT',ALPHA=-0.0, MODI_EQUI='NON',
+                                      FORMULATION='DEPLACEMENT'),
+                 MODE_VIBR=_F(MATR_RIGI='TANGENTE',OPTION='BANDE',FREQ=(-0.1,10.,),INST=0.01),
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=10,
+                                RESI_GLOB_RELA=1.E-6,
+                                ARRET='OUI',),
+                 INFO=1,);
+
+#
+#  Frequence du premier mode valeur par rapport à CALC_MODES
+#
+TAB_SPEC=RECU_TABLE(CO=U9B1,
+                    NOM_TABLE='ANALYSE_MODALE',)
+
+TEST_TABLE(
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='FREQ',
+           TABLE=TAB_SPEC,
+           CRITERE=('RELATIF',),
+           VALE_CALC=2.622670549633,
+           VALE_REFE=2.62267E+00,
+           FILTRE=(
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='TYPE_MODE',
+                      VALE_K='DEPL_VIBR',),
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='NUME_MODE',
+                      VALE_I=2,),
+                   _F(NOM_PARA='INST',PRECISION=1.E-6,
+                      VALE=0.01,),
+                   ),
+           )
+
+TEST_TABLE(
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='FREQ',
+           TABLE=TAB_SPEC,
+           CRITERE=('RELATIF',),
+           VALE_CALC=5.117660989306,
+           VALE_REFE=5.11766E+00,
+           FILTRE=(
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='TYPE_MODE',
+                      VALE_K='DEPL_VIBR',),
+                   _F(CRIT_COMP='EQ',
+                      NOM_PARA='NUME_MODE',
+                      VALE_I=3,),
+                   _F(NOM_PARA='INST',PRECISION=1.E-6,
+                      VALE=0.01,),
+                   ),
+           )
+
 U9B2=DYNA_NON_LINE(MODELE=MOD[9],
                  CHAM_MATER=AFFMAT1,
                  EXCIT=(_F(CHARGE=PHAUT),

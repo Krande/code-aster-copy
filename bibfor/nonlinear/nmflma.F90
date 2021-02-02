@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,6 +45,7 @@ implicit none
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/matide.h"
+#include "asterfort/matr_asse_syme.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmcha0.h"
 #include "asterfort/nmchai.h"
@@ -320,7 +321,8 @@ type(NL_DS_PostTimeStep), intent(in) :: ds_posttimestep
     if (mod45 .eq. 'VIBR') then
         call dismoi('TYPE_MATRICE', matass, 'MATR_ASSE', repk=syme)
         if (syme .eq. 'NON_SYM') then
-            call utmess('F', 'MECANONLINE5_56')
+            call matr_asse_syme(matass)
+            call utmess('A', 'MECANONLINE5_56')
         else
             call dismoi('TYPE_MATRICE', matgeo, 'MATR_ASSE', repk=syme)
             if (syme .eq. 'NON_SYM') then
