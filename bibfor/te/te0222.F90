@@ -67,6 +67,7 @@ implicit none
 #include "asterfort/tecach.h"
 #include "asterfort/thetapdg.h"
 #include "asterfort/utmess.h"
+#include "asterfort/vecini.h"
 !
 ! =====================================================================
 !                       DECLARATION DES VARIABLES
@@ -90,7 +91,7 @@ implicit none
     real(kind=8)      :: crit(13), e, ecin, tpg(27), tref
     real(kind=8)      :: prod, prod1, prod2, prod3, prod4, puls
     real(kind=8)      :: dtdm(3, 4), dfdm(3,4), dudm(3,4), dvdm(3,4)
-    real(kind=8)      :: rbid, rho, om, omo, epsref(6), depsin(6,3)
+    real(kind=8)      :: rbid, rho, om, omo, epsref(6), depsin(6,3), u1(2), u2(2) 
     real(kind=8)      :: tgd(20), nu, rac2, eps(6), epsin(6), epsp(6)
     real(kind=8)      :: tgdm(3), sr(3,3), sigl(6), sigin(6), r_axi
     real(kind=8)      :: c1, c2, c3, k1, k2, k3, guv1, guv2, guv3
@@ -874,6 +875,21 @@ implicit none
                         invp, lcour, courb, du1dm, du2dm,&
                         du3dm, u1l, u2l, u3l)
 !
+            if (axi) then
+!---------------Champs singuliers dans la base locale
+                call vecini(ndim, 0.d0, u1)
+                call vecini(ndim, 0.d0, u2)
+                do i = 1, ndim
+                    do j = 1, ndim
+                        u1(i) = u1(i) + p(i,j) * u1l(j)
+                        u2(i) = u2(i) + p(i,j) * u2l(j)
+                    end do
+                end do
+!
+                du1dm(3,3)= u1(1)/r_axi
+                du2dm(3,3)= u2(1)/r_axi
+            endif
+!
             ! ======================
             !         CAS 3D
             ! ======================
@@ -925,17 +941,36 @@ implicit none
 !    
 !-- Assemblage final des termes de G, K* et des K* réduits pour le 
 !-- calcul de G_IRWIN
-!
-    zr(igthet)   = tthe + tcla + tfor + tini
-    
-    zr(igthet+1) = k1 * coeff_K1K2
-    zr(igthet+2) = k2 * coeff_K1K2
-    zr(igthet+3) = k3 * coeff_K3
-    
-    zr(igthet+4) = k1 * sqrt(coeff_K1K2)
-    zr(igthet+5) = k2 * sqrt(coeff_K1K2)
-    zr(igthet+6) = k3 * sqrt(coeff_K3)
+!--- VOIR SI ON FAIT LA CALCUL ICI OU DANS CGCOMPUTETHETA POUR AXIS
+!    if (.not. axi) then 
+!        zr(igthet)   = tthe + tcla + tfor + tini
+!        zr(igthet+1) = k1 * coeff_K1K2
+!        zr(igthet+2) = k2 * coeff_K1K2
+!        zr(igthet+3) = k3 * coeff_K3
+!!
+!        zr(igthet+4) = k1 * sqrt(coeff_K1K2)
+!        zr(igthet+5) = k2 * sqrt(coeff_K1K2)
+!        zr(igthet+6) = k3 * sqrt(coeff_K3)
+!    else 
+!!------ On normalise pour G, K1 et K2
+!        zr(igthet) = (tthe + tcla + tfor + tini)/r_axi
+!        zr(igthet+1) = (k1 * coeff_K1K2) /r_axi
+!        zr(igthet+2) = (k1 * coeff_K1K2) /r_axi
+!        zr(igthet+3) = k3 * coeff_K3        
+!!
+!        zr(igthet+4) = (k1 * sqrt(coeff_K1K2))/ r_axi
+!        zr(igthet+5) = (k2 * sqrt(coeff_K1K2))/ r_axi
+!        zr(igthet+6) = k3 * sqrt(coeff_K3)
+!    endif
 
+        zr(igthet)   = tthe + tcla + tfor + tini
+        zr(igthet+1) = k1 * coeff_K1K2
+        zr(igthet+2) = k2 * coeff_K1K2
+        zr(igthet+3) = k3 * coeff_K3
+!
+        zr(igthet+4) = k1 * sqrt(coeff_K1K2)
+        zr(igthet+5) = k2 * sqrt(coeff_K1K2)
+        zr(igthet+6) = k3 * sqrt(coeff_K3)
 !
 !-- Exit sur valeur de theta nulle sur element
     999 continue

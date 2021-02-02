@@ -56,11 +56,11 @@ use calcG_type
 !    Compute G(Theta) in 2D and 3D
 !
 !----------------------------------------------
-    integer :: iret, nsig, ino1, ino2, inga, ibid
+    integer :: iret, nsig, ino1, ino2, inga, ibid, i
     integer :: nchin
     real(kind=8) :: gth(7)
     character(len=2)  :: codret
-    character(len=8)  :: k8b, lpain(50), lpaout(1)
+    character(len=8)  :: k8b, lpain(50), lpaout(1), typmo
     character(len=16) :: opti
     character(len=19) :: chrota, chpesa, cf2d3d, chpres, chvolu, cf1d2d, chepsi
     character(len=19) :: chvarc, chvref
@@ -69,6 +69,7 @@ use calcG_type
     character(len=24) :: pavolu, papres, pa2d3d, pepsin, pa1d2d
     character(len=24) :: lchin(50), lchout(1)
     aster_logical     :: lfonc
+    real(kind=8), pointer :: v_base(:) => null()
 !----------------------------------------------
 !
     call jemarq()
@@ -322,6 +323,15 @@ use calcG_type
 !
 !-- G, K1, K2, K3, FIC1, FIC2, FIC3 en 2D
     call mesomm(lchout(1), 7, vr=gth)
+!
+!--- Cas axis, on normalise par 1/R
+     call dismoi('MODELISATION', cgStudy%model, 'MODELE', repk=typmo)
+     if (typmo(1:4) .eq. 'AXIS') then
+         do i = 1, 7
+             call cgTheta%getBaseLoc(v_base)             
+             gth(i) = gth(i)/v_base(1)
+         end do
+     endif
 !
     cgStudy%gth = 0.d0
     if (cgTheta%symech .eq. 'OUI') then
