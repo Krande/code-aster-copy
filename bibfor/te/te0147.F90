@@ -71,7 +71,7 @@ implicit none
     real(kind=8)      :: epsi, valpar(4), coor(18)
     real(kind=8)      :: a1(3), a2(3), a3(3), i1(3), i2(3), depl(3)
     real(kind=8)      :: dford1(3), dford2(3), dfor(3), coorg(3), forcg(3)
-    real(kind=8)      :: vf, dfde, dxde, dyde, dsde, poids
+    real(kind=8)      :: vf, dfde, dxde, dyde, dsde, poids, dsde2
     real(kind=8)      :: th1, th2, dth1d1, dth2d2, th0, t(3), tcla
     real(kind=8)      :: gradth0, gradt(3), dfxde, dfyde, fx, fy
     real(kind=8)      :: press, presg(2), prod, divt, forc, thet
@@ -351,15 +351,16 @@ implicit none
 !
 !---------- Jacobien dans le cas 2D (element 1D)
             dsde = sqrt(dxde*dxde+dyde*dyde)
+            dsde2 = dsde*dsde
 !
             if (axi) then
                 if ( coorg(1) .lt. r8prem() ) then
                     call utmess('F', 'RUPTURE0_56')
                 else
-                    poids = zr(ipoids+kp-1)*coorg(1)
+                    poids = zr(ipoids+kp-1)*dsde*coorg(1)
                 endif
             else
-                poids = zr(ipoids+kp-1)
+                poids = zr(ipoids+kp-1)*dsde
             endif
 !
         endif
@@ -451,10 +452,10 @@ implicit none
 !          dth1d1= dth1d1+ zr(ithet+3*(i-1)+j-1)*i1(j)*dfdx(i)
 !          dth2d2= dth2d2+ zr(ithet+3*(i-1)+j-1)*i2(j)*dfdy(i)
         else
-            th1 = ( th0*t(1) * dxde ) /dsde
-            th2 = ( th0*t(2) * dyde ) /dsde
-            dth1d1 = ( (gradth0 * t(1) + th0 * gradt(1) ) * dxde ) /dsde
-            dth2d2 = ( (gradth0 * t(2) + th0 * gradt(2) ) * dyde ) /dsde
+            th1 = ( th0*t(1) * dxde ) /dsde2
+            th2 = ( th0*t(2) * dyde ) /dsde2
+            dth1d1 = ( (gradth0 * t(1) + th0 * gradt(1) ) * dxde ) /dsde2
+            dth2d2 = ( (gradth0 * t(2) + th0 * gradt(2) ) * dyde ) /dsde2
 !
         endif
 !
@@ -564,9 +565,10 @@ implicit none
             enddo
         else
             fx = forcg(1)-(dyde*presg(1)-dxde*presg(2))/dsde
-            fy = forcg(2)+(dxde*presg(1)+dyde*presg(2))/dsde
+            fy = forcg(2)+(dxde*presg(1)+dyde*presg(2))/dsde      
             prod = (divt*fx+dfxde*(th1+th2))*depl(1) + (divt*fy+dfyde*(th1+th2))*depl(2)
             tcla = tcla + prod*poids
+!    
             if ( option .eq. 'CALCH_K_G' .or. option .eq. 'CALCH_K_G_F' ) then
                 prod1 = (divt*fx+dfxde*(th1+th2))*u1g(1) + (divt*fy+dfyde*(th1+th2))*u1g(2)
                 prod2 = (divt*fx+dfxde*(th1+th2))*u2g(1) + (divt*fy+dfyde*(th1+th2))*u2g(2)
