@@ -49,11 +49,11 @@ void exportFieldOnNodesToPython() {
         .def( "printMedFile", &FieldOnNodesRealClass::printMedFile )
         .def( "setDOFNumbering", &FieldOnNodesRealClass::setDOFNumbering )
         .def( "setMesh", &FieldOnNodesRealClass::setMesh )
-        .def( "setFieldOnNodesDescription", &FieldOnNodesRealClass::setFieldOnNodesDescription )
+        .def( "setDescription", &FieldOnNodesRealClass::setDescription )
         .def( "update", &FieldOnNodesRealClass::update )
         .def( "getDOFNumbering", &FieldOnNodesRealClass::getDOFNumbering )
         .def( "getMesh", &FieldOnNodesRealClass::getMesh )
-        .def( "getFieldOnNodesDescription", &FieldOnNodesRealClass::getFieldOnNodesDescription )
+        .def( "getDescription", &FieldOnNodesRealClass::getDescription )
         .def( "update", &FieldOnNodesRealClass::update )
         .def( "updateValuePointers", &FieldOnNodesRealClass::updateValuePointers );
     py::class_< FieldOnNodesComplexClass, FieldOnNodesComplexPtr,
@@ -69,11 +69,11 @@ void exportFieldOnNodesToPython() {
         .def( "printMedFile", &FieldOnNodesComplexClass::printMedFile )
         .def( "setDOFNumbering", &FieldOnNodesComplexClass::setDOFNumbering )
         .def( "setMesh", &FieldOnNodesComplexClass::setMesh )
-        .def( "setFieldOnNodesDescription", &FieldOnNodesComplexClass::setFieldOnNodesDescription )
+        .def( "setDescription", &FieldOnNodesComplexClass::setDescription )
         .def( "update", &FieldOnNodesComplexClass::update )
         .def( "getDOFNumbering", &FieldOnNodesComplexClass::getDOFNumbering )
         .def( "getMesh", &FieldOnNodesComplexClass::getMesh )
-        .def( "getFieldOnNodesDescription", &FieldOnNodesComplexClass::getFieldOnNodesDescription )
+        .def( "getDescription", &FieldOnNodesComplexClass::getDescription )
         .def( "update", &FieldOnNodesComplexClass::update )
         .def( "updateValuePointers", &FieldOnNodesComplexClass::updateValuePointers );
 };

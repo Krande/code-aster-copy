@@ -47,7 +47,7 @@ class SolveLinearSystem(ExecuteCommand):
 
         self._result.setMesh(rhs.getMesh())
         self._result.setDOFNumbering(rhs.getDOFNumbering())
-        self._result.setFieldOnNodesDescription(rhs.getFieldOnNodesDescription())
+        self._result.setDescription(rhs.getDescription())
 
 
     def add_dependencies(self, keywords):

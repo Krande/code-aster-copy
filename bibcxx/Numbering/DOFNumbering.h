@@ -425,7 +425,7 @@ class BaseDOFNumberingClass : public DataStructure {
     /**
      * @brief Get FieldOnNodesDescription
      */
-    FieldOnNodesDescriptionPtr getFieldOnNodesDescription() const { return _dofDescription; };
+    FieldOnNodesDescriptionPtr getDescription() const { return _dofDescription; };
 
     /**
      * @brief Get all FiniteElementDescriptors

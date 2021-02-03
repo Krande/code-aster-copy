@@ -36,7 +36,6 @@
 #include "PythonBindings/BaseMaterialPropertyInterface.h"
 #include "PythonBindings/BaseMeshInterface.h"
 #include "PythonBindings/BehaviourDefinitionInterface.h"
-#include "PythonBindings/BehaviourInterface.h"
 #include "PythonBindings/BucklingModeResultInterface.h"
 #include "PythonBindings/CombinedFourierResultInterface.h"
 #include "PythonBindings/ConnectionMeshInterface.h"
@@ -54,7 +53,6 @@
 #include "PythonBindings/DataStructureInterface.h"
 #include "PythonBindings/DebugInterface.h"
 #include "PythonBindings/DiscreteProblemInterface.h"
-#include "PythonBindings/DrivingInterface.h"
 #include "PythonBindings/DynamicMacroElementInterface.h"
 #include "PythonBindings/ElasticFourierResultInterface.h"
 #include "PythonBindings/ElasticResultInterface.h"
@@ -62,7 +60,6 @@
 #include "PythonBindings/ElementaryMatrixInterface.h"
 #include "PythonBindings/ElementaryVectorInterface.h"
 #include "PythonBindings/EmpiricalModeResultInterface.h"
-#include "PythonBindings/EventManagerInterface.h"
 #include "PythonBindings/ExternalVariablesConverterInterface.h"
 #include "PythonBindings/ExternalVariablesDefinitionInterface.h"
 #include "PythonBindings/ExternalVariablesResultInterface.h"
@@ -90,7 +87,6 @@
 #include "PythonBindings/GridInterface.h"
 #include "PythonBindings/InterspectralMatrixInterface.h"
 #include "PythonBindings/DirichletBCInterface.h"
-#include "PythonBindings/LineSearchMethodInterface.h"
 #include "PythonBindings/LinearSolverInterface.h"
 #include "PythonBindings/LinearStaticAnalysisInterface.h"
 #include "PythonBindings/ListOfFloatsInterface.h"
@@ -110,9 +106,7 @@
 #include "PythonBindings/ModeResultInterface.h"
 #include "PythonBindings/ModelInterface.h"
 #include "PythonBindings/MultipleElasticResultInterface.h"
-#include "PythonBindings/NonLinearMethodInterface.h"
 #include "PythonBindings/NonLinearResultInterface.h"
-#include "PythonBindings/NonLinearStaticAnalysisInterface.h"
 #include "PythonBindings/ParallelDOFNumberingInterface.h"
 #include "PythonBindings/ParallelMechanicalLoadInterface.h"
 #include "PythonBindings/ParallelMeshInterface.h"
@@ -125,7 +119,6 @@
 #include "PythonBindings/SimpleFieldOnCellsInterface.h"
 #include "PythonBindings/SimpleFieldOnNodesInterface.h"
 #include "PythonBindings/SkeletonInterface.h"
-#include "PythonBindings/StateInterface.h"
 #include "PythonBindings/StaticMacroElementInterface.h"
 #include "PythonBindings/StructureInterfaceInterface.h"
 #include "PythonBindings/StudyDescriptionInterface.h"
@@ -134,7 +127,6 @@
 #include "PythonBindings/ThermalFourierResultInterface.h"
 #include "PythonBindings/ThermalLoadInterface.h"
 #include "PythonBindings/ThermalResultInterface.h"
-#include "PythonBindings/TimeStepManagerInterface.h"
 #include "PythonBindings/TimeStepperInterface.h"
 #include "PythonBindings/TransientResultInterface.h"
 #include "PythonBindings/TurbulentSpectrumInterface.h"
@@ -258,11 +250,6 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportPhysicsAndModelingsToPython();
     exportPrestressingCableToPython();
     exportXfemCrackToPython();
-    exportBehaviourToPython();
-    exportDrivingToPython();
-    exportLineSearchMethodToPython();
-    exportNonLinearMethodToPython();
-    exportStateToPython();
     exportResultToPython();
     exportTransientResultToPython();
     exportLoadResultToPython();
@@ -273,10 +260,7 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportMultipleElasticResultToPython();
     exportNonLinearResultToPython();
     exportLinearStaticAnalysisToPython();
-    exportNonLinearStaticAnalysisToPython();
-    exportEventManagerToPython();
     exportStudyDescriptionToPython();
-    exportTimeStepManagerToPython();
     exportCppToFortranGlossaryToPython();
     exportCyclicSymmetryModeToPython();
     exportFullResultToPython();

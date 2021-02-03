@@ -220,7 +220,7 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
      * @brief Set FieldOnNodes description
      * @param desc object FieldOnNodesDescriptionPtr
      */
-    void setFieldOnNodesDescription( const FieldOnNodesDescriptionPtr &desc ) {
+    void setDescription( const FieldOnNodesDescriptionPtr &desc ) {
         if ( _dofDescription )
             throw std::runtime_error( "FieldOnNodesDescription already set" );
         _dofDescription = desc;
@@ -246,7 +246,7 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
         return _dofNum;
     };
 
-    FieldOnNodesDescriptionPtr getFieldOnNodesDescription( void ) {
+    FieldOnNodesDescriptionPtr getDescription( void ) {
         return _dofDescription;
     };
 
@@ -256,7 +256,7 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
      */
     bool update() {
         if ( _dofNum != nullptr ) {
-            _dofDescription = _dofNum->getFieldOnNodesDescription();
+            _dofDescription = _dofNum->getDescription();
         } else if ( _dofDescription == nullptr && updateValuePointers() ) {
             typedef FieldOnNodesDescriptionClass FONDesc;
             typedef FieldOnNodesDescriptionPtr FONDescP;

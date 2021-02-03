@@ -133,7 +133,7 @@ template < class ValueType > class FieldOnCellsClass : public DataFieldClass {
      * @brief Set the description of finite elements
      * @param curDesc object FiniteElementDescriptorPtr
      */
-    void setFieldOnCellsDescription( FiniteElementDescriptorPtr &curDesc ) {
+    void setDescription( FiniteElementDescriptorPtr &curDesc ) {
         if ( _dofDescription )
             throw std::runtime_error( "FiniteElementDescriptor already set" );
         _dofDescription = curDesc;

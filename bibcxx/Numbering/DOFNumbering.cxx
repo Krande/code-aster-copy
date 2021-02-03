@@ -144,7 +144,7 @@ std::string DOFNumberingClass::getComponentAssociatedToRow(const ASTERINTEGER ro
                                                            const bool local) const {
     if (row<1 or row>getNumberOfDofs())
         throw std::runtime_error("Invalid row index");
-    JeveuxVectorLong descriptor = getFieldOnNodesDescription()->getNodeAndComponentsNumberFromDOF();
+    JeveuxVectorLong descriptor = getDescription()->getNodeAndComponentsNumberFromDOF();
     descriptor->updateValuePointer();
     const ASTERINTEGER cmpId = abs((*descriptor)[2*(row-1)+1]);
     if (cmpId==0) return " "; // Lagrange multiplier of a MPC - no component
@@ -177,7 +177,7 @@ ASTERINTEGER DOFNumberingClass::getNodeAssociatedToRow(const ASTERINTEGER row,
                                                             const bool local) const {
     if (row<1 or row>getNumberOfDofs(local))
         throw std::runtime_error("Invalid row index");
-    JeveuxVectorLong descriptor = getFieldOnNodesDescription()->getNodeAndComponentsNumberFromDOF();
+    JeveuxVectorLong descriptor = getDescription()->getNodeAndComponentsNumberFromDOF();
     descriptor->updateValuePointer();
     const int isPhysical = ( (*descriptor)[2*(row-1)+1] > 0 ) ? 1 : -1;
     return isPhysical*(*descriptor)[2*(row-1)];
