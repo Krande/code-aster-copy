@@ -36,6 +36,43 @@ void exportStudyDescriptionToPython() {
     c1.def( "__init__",
             py::make_constructor(
                 &initFactoryPtr< StudyDescriptionClass, ModelPtr, MaterialFieldPtr >));
+    c1.def( "__init__",
+            py::make_constructor(
+                &initFactoryPtr< StudyDescriptionClass, ModelPtr, MaterialFieldPtr,
+                                ElementaryCharacteristicsPtr >));
+    c1.def( "getModel", &StudyDescriptionClass::getModel,
+        py::return_value_policy<py::copy_const_reference>(), R"(
+Return the model
+
+Returns:
+    ModelPtr: a pointer to the model
+        )",
+              ( py::arg( "self" ) )   );
+    c1.def( "getMaterialField", &StudyDescriptionClass::getMaterialField,
+        py::return_value_policy<py::copy_const_reference>(), R"(
+Return the material field
+
+Returns:
+    MaterialFieldPtr: a pointer to the material field
+        )",
+              ( py::arg( "self" ) )   );
+    c1.def( "getCodedMaterial", &StudyDescriptionClass::getCodedMaterial,
+        py::return_value_policy<py::copy_const_reference>(), R"(
+Return the coded material
+
+Returns:
+    CodedMaterialPtr: a pointer to the coded material
+        )",
+              ( py::arg( "self" ) )   );
+    c1.def( "getElementaryCharacteristics",
+        &StudyDescriptionClass::getElementaryCharacteristics,
+        py::return_value_policy<py::copy_const_reference>(), R"(
+Return the elementary charateristics
+
+Returns:
+    ElementaryCharacteristicsPtr: a pointer to the elementary charateristics
+        )",
+              ( py::arg( "self" ) )   );
     addDirichletBCToInterface( c1 );
     addMechanicalLoadToInterface( c1 );
 #ifdef _USE_MPI
