@@ -194,7 +194,7 @@ T_2=CALC_TABLE(TABLE=T_G1,
 #CHANGEMENT DE NOM DE COLONNE POUR LES G EN CALC_H1
 T_2=CALC_TABLE(TABLE=T_2,reuse=T_2,
                     ACTION=_F(OPERATION='RENOMME',
-                            NOM_PARA=('G','CALC_H1'),
+                            NOM_PARA=('G','G1'),
                             ),
                );
 
@@ -216,7 +216,7 @@ T_3=CALC_TABLE(TABLE=T_G2,
 #CHANGEMENT DE NOM DE COLONNE POUR LES G EN CALC_H2
 T_3=CALC_TABLE(TABLE=T_3,reuse=T_3,
                     ACTION=_F(OPERATION='RENOMME',
-                            NOM_PARA=('G','CALC_H2'),
+                            NOM_PARA=('G','G2'),
                             ),
                );
 
@@ -238,7 +238,7 @@ T_4=CALC_TABLE(TABLE=T_G3,
 #CHANGEMENT DE NOM DE COLONNE POUR LES G EN CALC_H3
 T_4=CALC_TABLE(TABLE=T_4,reuse=T_4,
                     ACTION=_F(OPERATION='RENOMME',
-                            NOM_PARA=('G','CALC_H3'),
+                            NOM_PARA=('G','G3'),
                             ),
                );
 
@@ -257,18 +257,6 @@ T_FIN=CALC_TABLE(TABLE=T_4,
                         ),
                     );
 
-NORM = FORMULE(VALE='A/long_fiss',
-               NOM_PARA=['A'],long_fiss=long_fiss)
-               
-# CALCULE LE VRAI G EN AXIS (ISSUS DE CALC_H) : G/long_fiss
-T_FIN=CALC_TABLE(reuse =T_FIN,
-                 TABLE=T_FIN,
-                 ACTION=(_F(OPERATION='OPER',FORMULE=NORM,NOM_COLONNE=('CALC_H1'),NOM_PARA=('G1R',),),
-                         _F(OPERATION='OPER',FORMULE=NORM,NOM_COLONNE=('CALC_H2'),NOM_PARA=('G2R',),),
-                         _F(OPERATION='OPER',FORMULE=NORM,NOM_COLONNE=('CALC_H3'),NOM_PARA=('G3R',),),
-                         ),
-                );
-
 
 QUOT = FORMULE(VALE='A/B',
                NOM_PARA=['A', 'B'],)
@@ -276,9 +264,9 @@ QUOT = FORMULE(VALE='A/B',
 # CALCULE DE COLONNES  G (ISSUS DE CALC_H) / G (ISSU DE POST_K1_K2_K3)
 T_FIN=CALC_TABLE(reuse =T_FIN,
                  TABLE=T_FIN,
-                 ACTION=(_F(OPERATION='OPER',FORMULE=QUOT,NOM_COLONNE=('G1R','G_K'),NOM_PARA=('G1R/G_K',),),
-                         _F(OPERATION='OPER',FORMULE=QUOT,NOM_COLONNE=('G2R','G_K'),NOM_PARA=('G2R/G_K',),),
-                         _F(OPERATION='OPER',FORMULE=QUOT,NOM_COLONNE=('G3R','G_K'),NOM_PARA=('G3R/G_K',),),
+                 ACTION=(_F(OPERATION='OPER',FORMULE=QUOT,NOM_COLONNE=('G1','G_K'),NOM_PARA=('G1/G_K',),),
+                         _F(OPERATION='OPER',FORMULE=QUOT,NOM_COLONNE=('G2','G_K'),NOM_PARA=('G2/G_K',),),
+                         _F(OPERATION='OPER',FORMULE=QUOT,NOM_COLONNE=('G3','G_K'),NOM_PARA=('G3/G_K',),),
                          ),
                 );
 
@@ -287,9 +275,9 @@ IMPR_TABLE(TABLE=T_FIN)
 # TEST DU RAPPORT G (ISSUS DE CALC_H) / G (ISSU DE POST_K1_K2_K3)
 # POUR DIFFERENTS INSTANTS ET DIFFERENTES COURONNES D'INTEGRATION
 
-# G1R/GK
+# G1/GK
 TEST_TABLE(  TABLE=T_FIN,
-             NOM_PARA='G1R/G_K',
+             NOM_PARA='G1/G_K',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=1.0,
                        ),
@@ -301,7 +289,7 @@ TEST_TABLE(  TABLE=T_FIN,
              VALE_ABS='NON',)
 
 TEST_TABLE(  TABLE=T_FIN,
-             NOM_PARA='G1R/G_K',
+             NOM_PARA='G1/G_K',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=2.0,
                        ),
@@ -313,7 +301,7 @@ TEST_TABLE(  TABLE=T_FIN,
              VALE_ABS='NON',)
              
 TEST_TABLE(  TABLE=T_FIN,
-             NOM_PARA='G1R/G_K',
+             NOM_PARA='G1/G_K',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=3.0,
                        ),
@@ -323,9 +311,9 @@ TEST_TABLE(  TABLE=T_FIN,
              PRECISION=0.003,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
-# G2R/GK
+# G2/GK
 TEST_TABLE(  TABLE=T_FIN,
-             NOM_PARA='G2R/G_K',
+             NOM_PARA='G2/G_K',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=1.0,
                        ),
@@ -337,7 +325,7 @@ TEST_TABLE(  TABLE=T_FIN,
              VALE_ABS='NON',)
 
 TEST_TABLE(  TABLE=T_FIN,
-             NOM_PARA='G2R/G_K',
+             NOM_PARA='G2/G_K',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=2.0,
                        ),
@@ -349,7 +337,7 @@ TEST_TABLE(  TABLE=T_FIN,
              VALE_ABS='NON',)
              
 TEST_TABLE(  TABLE=T_FIN,
-             NOM_PARA='G2R/G_K',
+             NOM_PARA='G2/G_K',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=3.0,
                        ),
@@ -360,9 +348,9 @@ TEST_TABLE(  TABLE=T_FIN,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
 
-# G3R/GK
+# G3/GK
 TEST_TABLE(  TABLE=T_FIN,
-             NOM_PARA='G3R/G_K',
+             NOM_PARA='G3/G_K',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=1.0,
                        ),
@@ -374,7 +362,7 @@ TEST_TABLE(  TABLE=T_FIN,
              VALE_ABS='NON',)
 
 TEST_TABLE(  TABLE=T_FIN,
-             NOM_PARA='G3R/G_K',
+             NOM_PARA='G3/G_K',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=2.0,
                        ),
@@ -386,7 +374,7 @@ TEST_TABLE(  TABLE=T_FIN,
              VALE_ABS='NON',)
              
 TEST_TABLE(  TABLE=T_FIN,
-             NOM_PARA='G3R/G_K',
+             NOM_PARA='G3/G_K',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=3.0,
                        ),
@@ -401,9 +389,9 @@ TEST_TABLE(  TABLE=T_FIN,
 # POST_K1_K2_K3 SUR UNE TAILLE DE MAILLE 100 FOIS PLUS FINE EN FOND DE FISSURE
 # POUR DIFFERENTS INSTANTS ET DIFFERENTES COURONNES D'INTEGRATION
 
-#G1R
+#G1
 TEST_TABLE(  TABLE=T_FIN ,
-             NOM_PARA='G1R',
+             NOM_PARA='G1',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=1.0,
                        ),
@@ -414,7 +402,7 @@ TEST_TABLE(  TABLE=T_FIN ,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
 TEST_TABLE(  TABLE=T_FIN,
-             NOM_PARA='G1R',
+             NOM_PARA='G1',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=2.0,
                        ),
@@ -425,7 +413,7 @@ TEST_TABLE(  TABLE=T_FIN,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
 TEST_TABLE(  TABLE=T_FIN,
-             NOM_PARA='G1R',
+             NOM_PARA='G1',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=3.0,
                        ),
@@ -438,7 +426,7 @@ TEST_TABLE(  TABLE=T_FIN,
 
 #G2R
 TEST_TABLE(  TABLE=T_FIN ,
-             NOM_PARA='G2R',
+             NOM_PARA='G2',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=1.0,
                        ),
@@ -449,7 +437,7 @@ TEST_TABLE(  TABLE=T_FIN ,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
 TEST_TABLE(  TABLE=T_FIN,
-             NOM_PARA='G2R',
+             NOM_PARA='G2',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=2.0,
                        ),
@@ -460,7 +448,7 @@ TEST_TABLE(  TABLE=T_FIN,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
 TEST_TABLE(  TABLE=T_FIN,
-             NOM_PARA='G2R',
+             NOM_PARA='G2',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=3.0,
                        ),
@@ -474,7 +462,7 @@ TEST_TABLE(  TABLE=T_FIN,
              
 #G3R
 TEST_TABLE(  TABLE=T_FIN,
-             NOM_PARA='G3R',
+             NOM_PARA='G3',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=1.0,
                        ),
@@ -486,7 +474,7 @@ TEST_TABLE(  TABLE=T_FIN,
              VALE_ABS='NON',)
              
 TEST_TABLE(  TABLE=T_FIN,
-             NOM_PARA='G3R',
+             NOM_PARA='G3',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=2.0,
                        ),
@@ -498,7 +486,7 @@ TEST_TABLE(  TABLE=T_FIN,
              VALE_ABS='NON',)
              
 TEST_TABLE(  TABLE=T_FIN,
-             NOM_PARA='G3R',
+             NOM_PARA='G3',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=3.0,
                        ),

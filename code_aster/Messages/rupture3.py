@@ -61,4 +61,13 @@ La relation suivante n'est pas supportée: %(k1)s. Uniquement les lois basées s
 La déformation suivante n'est pas supportée: %(k1)s. Uniquement PETIT est prévu.
 """),
 
+    10: _("""
+Vous réalisez un calcul de G en post-traitement d'un calcul axisymétrique. 
+
+A partir de la V15, il n'est plus nécessaire à l'utilisateur de diviser le résultat 
+en sortie de CALC_G par la distance du fond de fissure à l'axe d’axis-symétrie. 
+
+Cette division est réalisée automatiquement par CALC_G.
+"""),
+
 }

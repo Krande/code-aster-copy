@@ -69,7 +69,7 @@ implicit none
     endif
 !
 !-- Verification (A nettoyer)
-    call cgVerification(cgField, cgTheta)
+    call cgVerification(cgField, cgTheta, cgStudy)
 !
 !-- Compute Theta factors
     call cgComputeTheta(cgField, cgTheta)

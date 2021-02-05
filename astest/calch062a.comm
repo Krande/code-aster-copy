@@ -236,10 +236,10 @@ GINI4=CALC_H(RESULTAT=RESUINI,
 #--------------------------------------------------------------------
 #                TESTS DES RESULTATS                                #
 #--------------------------------------------------------------------
-Gther1= 31.50584388612264
-Gther2= 31.503165974359877
-Gther3= 31.500724485013823
-Gther4= 31.501299959584696
+Gther1= 0.6301168777224526
+Gther2= 0.6300633194871973
+Gther3= 0.6300144897002766
+Gther4= 0.6300259991916937
 
 #NON REGRESSIONS DES G ISSUS DU CALCUL THERMOMECANIQUE
 TEST_TABLE(
@@ -276,7 +276,7 @@ TEST_TABLE(
 
 #TEST DES G ISSUS DU CALCUL AVEC PRE-DEFORMATION
 TEST_TABLE(
-           VALE_CALC=31.50584388612272,
+           VALE_CALC=0.630116877722455,
            VALE_REFE=Gther1,
            REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-4,
@@ -288,7 +288,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=31.503165974359916,
+           VALE_CALC=0.6300633194871978,
            VALE_REFE=Gther2,
            REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-4,
@@ -300,7 +300,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=31.5007244850139,
+           VALE_CALC=0.6300144897002781,
            VALE_REFE=Gther3,
            REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-4,
@@ -312,7 +312,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=31.501299959584692,
+           VALE_CALC=0.6300259991916938,
            VALE_REFE=Gther4,
            REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-4,

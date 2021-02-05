@@ -75,8 +75,8 @@ G0=CALC_H(              RESULTAT=CHAMDEPL,
 # la solution analytique est donnée par MURAKAMI (cf case 9.12)
 
 TEST_TABLE(PRECISION=0.02,
-           VALE_CALC=7.80932358732E-05,
-           VALE_REFE=7.7200000000000006E-05,
+           VALE_CALC=0.0007809323587320806,
+           VALE_REFE=7.72E-4,
            REFERENCE='ANALYTIQUE',
            NOM_PARA='G',
            TABLE=G0,)

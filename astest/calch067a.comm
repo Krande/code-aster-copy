@@ -135,8 +135,8 @@ for i in range(2):
    TEST_TABLE(TABLE=G0[i],
               NOM_PARA='G_EPSI',
               REFERENCE='ANALYTIQUE',
-              VALE_CALC=GREF_CALC[i],
-              VALE_REFE=GREF,
+              VALE_CALC=GLOC_CALC[i],
+              VALE_REFE=GLOC,
               PRECISION=0.02)
 
 

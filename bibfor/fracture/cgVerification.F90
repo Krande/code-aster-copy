@@ -18,7 +18,7 @@
 !
 ! person_in_charge: nicolas.pignet at edf.fr
 !
-subroutine cgVerification(cgField, cgTheta)
+subroutine cgVerification(cgField, cgTheta, cgStudy)
 !
 use calcG_type
 !
@@ -34,6 +34,8 @@ use calcG_type
 !
     type(CalcG_field), intent(in) :: cgField
     type(CalcG_theta), intent(in) :: cgTheta
+    type(CalcG_study), intent(in) :: cgStudy
+    character(len=8)  :: typmo
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,6 +75,13 @@ use calcG_type
             call utmess('F', 'RUPTURE3_7')
         endif
     end if
+    
+!--- Cas axis : on normalise informe l'utilisateur de la division
+!    automatique par 1/R
+    call dismoi('MODELISATION', cgStudy%model, 'MODELE', repk=typmo)
+    if (typmo(1:4) .eq. 'AXIS') then
+        call utmess('I', 'RUPTURE3_10')
+    endif
 !
     call jedema()
 !
