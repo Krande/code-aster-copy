@@ -70,10 +70,12 @@ detect_host()
         printf eole
     elif [ -f /projets/simumeca/gaia ]; then
         printf gaia
-    elif egrep -q "Calibre 9|Debian GNU/Linux 8" /etc/issue; then
-        printf calibre9
+    elif egrep -q "Scibian 10.0" /etc/issue; then
+        printf scibian10
     elif egrep -q "Scibian 9.0" /etc/issue; then
         printf scibian9
+    elif egrep -q "Calibre 9|Debian GNU/Linux 8" /etc/issue; then
+        printf calibre9
     elif [ -f /home/aster/clap0f0q ]; then
         printf clap0f0q
     else
