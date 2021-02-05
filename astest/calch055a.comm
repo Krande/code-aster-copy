@@ -204,7 +204,7 @@ FOND=DEFI_FISSURE(    MAILLAGE=MA,
 G00=CALC_H(
                       RESULTAT=RESU,
                       THETA=_F(FISSURE=FOND,
-                          R_INF = 2.5E-5, R_SUP = 2.75E-5,
+                          R_INF = 1.5E-5, R_SUP = 1.75E-5,
                         CHAM_THETA=CO('cham_theta_no0'),
                           ),
                       OPTION='G_EPSI',
@@ -215,7 +215,7 @@ G00=CALC_H(
 G01=CALC_H(
                  RESULTAT=RESU,
                  THETA=_F(FISSURE=FOND,
-                          R_INF = 2.75E-5, R_SUP = 3.E-5,
+                          R_INF = 1.75E-5, R_SUP = 2.E-5,
                           ),
                       OPTION='G_EPSI',
                  #~ EXCIT=_F(CHARGE=CH,),
@@ -225,7 +225,7 @@ G01=CALC_H(
 G02=CALC_H(
                 RESULTAT=RESU,
                 THETA=_F(FISSURE=FOND,
-                          R_INF = 3.E-5, R_SUP = 3.25E-5,
+                          R_INF = 2.E-5, R_SUP = 2.25E-5,
                           ),
                       OPTION='G_EPSI',
                 #~ EXCIT=_F(CHARGE=CH,),
@@ -235,7 +235,7 @@ G02=CALC_H(
 G03=CALC_H(
                  RESULTAT=RESU,
                  THETA=_F(FISSURE=FOND,
-                          R_INF = 3.25E-5, R_SUP = 3.5E-5,
+                          R_INF = 2.25E-5, R_SUP = 2.5E-5,
                             CHAM_THETA=CO('cham_theta_no3'),
                           ),
                       OPTION='G_EPSI',
@@ -251,30 +251,30 @@ G03=CALC_H(
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           VALE_CALC=0.000103863666708,
+           VALE_CALC=0.000103916986633486,
            VALE_REFE=1.0504749999999999E-4,
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=G00,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           VALE_CALC=0.000103875932975,
+           VALE_CALC=0.0001038861044370645,
            VALE_REFE=1.0504749999999999E-4,
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=G01,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           VALE_CALC=0.000103877000064,
+           VALE_CALC=0.00010385880620078993,
            VALE_REFE=1.0504749999999999E-4,
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=G02,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           VALE_CALC=0.000103871717007,
+           VALE_CALC=0.00010388382311399516,
            VALE_REFE=1.0504749999999999E-4,
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=G03,)
 
 # CALCUL DE K ET G AVEC CALC_H / OPTION K
