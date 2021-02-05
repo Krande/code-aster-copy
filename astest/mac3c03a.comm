@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -83,42 +83,42 @@ TABV2_BC = CREA_TABLE(RESU=_F(RESULTAT=RESU_C2,NOM_CHAM='VARI_ELGA',INST=post_c2
                             GROUP_MA=('CR_B_C', 'TG_B_C')))
 
 TEST_TABLE(
-           VALE_CALC=0.022150540782486662,
+           VALE_CALC=0.02215054078248793,
            NOM_PARA='DX',
            TYPE_TEST='SOMM',
            TABLE=TABC1_BB,
            )
 
 TEST_TABLE(
-           VALE_CALC=0.0218937519566049,
+           VALE_CALC=0.021893751956616435,
            NOM_PARA='DY',
            TYPE_TEST='SOMM',
            TABLE=TABC1_BB,
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.021893751954629215,
+           VALE_CALC=-0.02189375195505212,
            NOM_PARA='DZ',
            TYPE_TEST='SOMM',
            TABLE=TABC1_BB,
            )
 
 TEST_TABLE(
-           VALE_CALC=0.022150540782486662,
+           VALE_CALC=0.02215054078248793,
            NOM_PARA='DX',
            TYPE_TEST='SOMM',
            TABLE=TABI2_BA,
            )
 
 TEST_TABLE(
-           VALE_CALC=0.02189375195660498,
+           VALE_CALC=0.021893751956616435,
            NOM_PARA='DY',
            TYPE_TEST='SOMM',
            TABLE=TABI2_BA,
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.021893751954629215,
+           VALE_CALC=-0.02189375195505212,
            NOM_PARA='DZ',
            TYPE_TEST='SOMM',
            TABLE=TABI2_BA,
@@ -133,49 +133,49 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=0.051319266255404554,
+           VALE_CALC=0.05131926625540813,
            NOM_PARA='DX',
            TYPE_TEST='SOMM',
            TABLE=TABC2_BA,
            )
 
 TEST_TABLE(
-           VALE_CALC=0.03296308132255283,
+           VALE_CALC=0.03296308132255948,
            NOM_PARA='DY',
            TYPE_TEST='SOMM',
            TABLE=TABC2_BA,
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.022225788599055725,
+           VALE_CALC=-0.022225788599488545,
            NOM_PARA='DZ',
            TYPE_TEST='SOMM',
            TABLE=TABC2_BA,
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.008937473098091005,
+           VALE_CALC=-0.00893747309809403,
            NOM_PARA='DX',
            TYPE_TEST='SOMM',
            TABLE=TABC2_BB,
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.012374625962954165,
+           VALE_CALC=-0.012374625962937844,
            NOM_PARA='DY',
            TYPE_TEST='SOMM',
            TABLE=TABC2_BB,
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.011211551976758194,
+           VALE_CALC=-0.011211551976758211,
            NOM_PARA='DZ',
            TYPE_TEST='SOMM',
            TABLE=TABC2_BB,
            )
 
 TEST_TABLE(
-           VALE_CALC=0.00017813802799135673,
+           VALE_CALC=0.0001781380279913542,
            NOM_PARA='V1',
            TYPE_TEST='MAX',
            TABLE=TABV1_BB,
@@ -196,7 +196,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.00029999371605885275,
+           VALE_CALC=0.0002999937160588507,
            NOM_PARA='V1',
            TYPE_TEST='MAX',
            TABLE=TABV2_BA,

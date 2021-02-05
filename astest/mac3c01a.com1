@@ -25,7 +25,7 @@ POURSUITE(CODE='OUI')
 IMPR_RESU(FORMAT='MED',
           UNITE=81,
           RESU=_F(RESULTAT=RESU_C1,
-                  IMPR_NOM_VARI='OUI',
+                  IMPR_NOM_VARI='NON',
                   NOM_CHAM='VARI_ELGA',
                   INST = 33.008))
 FIN()

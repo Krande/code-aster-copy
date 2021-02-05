@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -148,7 +148,7 @@ use Behaviour_module, only : behaviourOption
 !
 ! - Select objects to construct from option name
 !
-    call behaviourOption(option, rela_comp, lMatr, lVect, lVari , lSigm , codret)
+    call behaviourOption(option, zk16(icompo), lMatr, lVect, lVari , lSigm , codret)
     lMatrPred = option .eq. 'RIGI_MECA_TANG'
 !
     if (defo_comp .ne. 'PETIT') then
