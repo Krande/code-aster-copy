@@ -6,6 +6,7 @@ P mpi_nbnoeud 1
 P testlist submit ci verification sequential
 
 F comm ort001a.comm D  1
+F comm ort001a.com0 D  1
 F comm ort001a.com1 D  1
 F mmed ort001a.mmed D 20
-F libr ort001a.25   D 25
+F nom ort001a.py D 0

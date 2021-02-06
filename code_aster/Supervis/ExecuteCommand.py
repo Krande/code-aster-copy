@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -72,8 +72,14 @@ from ..Cata.SyntaxChecker import CheckerError, checkCommandSyntax
 from ..Cata.SyntaxUtils import force_list, mixedcopy, remove_none, search_for
 from ..Messages import UTMESS, MessageLog
 from ..Objects import DataStructure, PyDataStructure
-from ..Utilities import (ExecutionParameter, Options, deprecated,
-                         import_object, logger, no_new_attributes)
+from ..Utilities import (
+    ExecutionParameter,
+    Options,
+    deprecated,
+    import_object,
+    logger,
+    no_new_attributes,
+)
 from ..Utilities.outputs import command_text, decorate_name
 from .code_file import track_coverage
 from .CommandSyntax import CommandSyntax
@@ -119,6 +125,7 @@ class ExecuteCommand(object):
       and can be catched in the commands file. The current result will be
       available in the ``except`` statement if it is validated by the command.
     """
+
     # class attributes
     command_name = command_op = command_cata = None
     level = 0
@@ -133,7 +140,7 @@ class ExecuteCommand(object):
         """Initialization"""
         assert self.command_name, "'command_name' attribute is not defined!"
         self._cata = self.command_cata or getattr(Commands, self.command_name)
-        self._op = self.command_op or self._cata.definition['op']
+        self._op = self.command_op or self._cata.definition["op"]
         self._result = None
         # index of the command
         self._counter = 0
@@ -173,8 +180,7 @@ class ExecuteCommand(object):
         remove_none(keywords)
         try:
             self.check_syntax(keywords)
-        except (CheckerError, AssertionError, KeyError, TypeError,
-                ValueError) as exc:
+        except (CheckerError, AssertionError, KeyError, TypeError, ValueError) as exc:
             # in case of syntax error, show the syntax and raise the exception
             self.print_syntax(keywords)
             ExecuteCommand.level -= 1
@@ -189,9 +195,9 @@ class ExecuteCommand(object):
             track_coverage(self._cata, self.command_name, keywords)
         self.create_result(keywords)
         if hasattr(self._result, "userName"):
-            self._result.userName = get_user_name(self.command_name,
-                                          self._caller["filename"],
-                                          self._caller["lineno"])
+            self._result.userName = get_user_name(
+                self.command_name, self._caller["filename"], self._caller["lineno"]
+            )
 
         self.print_syntax(keywords)
         stop = False
@@ -202,10 +208,11 @@ class ExecuteCommand(object):
             # try to push the result in the user context
             valid = "VALID" in libaster.onFatalError()
             if valid and hasattr(self._result, "userName"):
-                publish_in(self._caller["context"],
-                           {self._result.userName: self._result})
-            stop = (isinstance(self._exc, libaster.TimeLimitError)
-                    and not ExecutionParameter().option & Options.SlaveMode)
+                publish_in(self._caller["context"], {self._result.userName: self._result})
+            stop = (
+                isinstance(self._exc, libaster.TimeLimitError)
+                and not ExecutionParameter().option & Options.SlaveMode
+            )
             if not stop:
                 raise
         finally:
@@ -246,8 +253,7 @@ class ExecuteCommand(object):
         Returns:
             bool: *True* if the syntax should be printed.
         """
-        return (cls.level <= 1 or
-                ExecutionParameter().option & Options.ShowChildCmd)
+        return cls.level <= 1 or ExecutionParameter().option & Options.ShowChildCmd
 
     def _call_oper(self, syntax):
         """Call fortran operator.
@@ -320,7 +326,6 @@ class ExecuteCommand(object):
                     for obj in force_list(value):
                         self._result.removeDependency(obj)
 
-
     def adapt_syntax(self, keywords):
         """Hook to adapt syntax from a old version or for compatibility reasons.
 
@@ -342,24 +347,23 @@ class ExecuteCommand(object):
         filename = self._caller["filename"]
         lineno = self._caller["lineno"]
 
-        logger.info("\n.. _stg{0}_{1}".format(
-            ExecutionParameter().get_option("stage_number"),
-            self._caller["identifier"]))
+        logger.info(
+            "\n.. _stg{0}_{1}".format(
+                ExecutionParameter().get_option("stage_number"), self._caller["identifier"]
+            )
+        )
         logger.info(command_separator())
         logger.info(command_header(self._counter, filename, lineno))
         max_print = ExecutionParameter().get_option("max_print")
-        user_name = get_user_name(self.command_name, filename, lineno,
-                                  strict=False)
-        logger.info(command_text(self.name, printed_args, user_name,
-                                 limit=max_print))
+        user_name = get_user_name(self.command_name, filename, lineno, strict=False)
+        logger.info(command_text(self.name, printed_args, user_name, limit=max_print))
 
     def print_result(self):
         """Print an echo of the result of the command."""
         if not self.show_syntax():
             return
         if self._result is not None:
-            logger.info(command_result(self._counter, self.name,
-                                       self._result))
+            logger.info(command_result(self._counter, self.name, self._result))
         self._print_stats()
 
     def _print_stats(self):
@@ -367,8 +371,7 @@ class ExecuteCommand(object):
         # not called if not show_syntax()
         timer = ExecutionParameter().timer
         logger.info(command_memory())
-        logger.info(
-            command_time(self._counter, *timer.StopAndGet(str(self._counter))))
+        logger.info(command_time(self._counter, *timer.StopAndGet(str(self._counter))))
         logger.info(command_separator())
 
     def check_syntax(self, keywords):
@@ -381,8 +384,7 @@ class ExecuteCommand(object):
         """
         logger.debug(f"checking syntax of {self.name}...")
         max_check = ExecutionParameter().get_option("max_check")
-        checkCommandSyntax(self._cata, keywords, add_default=False,
-                           max_check=max_check)
+        checkCommandSyntax(self._cata, keywords, add_default=False, max_check=max_check)
 
     def create_result(self, keywords):
         """Create the result before calling the *exec* command function
@@ -397,8 +399,9 @@ class ExecuteCommand(object):
         if sd_type is None:
             self._result = None
         else:
-            raise NotImplementedError("Method 'create_result' must be "
-                                      "overridden for {0!r}.".format(self.name))
+            raise NotImplementedError(
+                "Method 'create_result' must be " "overridden for {0!r}.".format(self.name)
+            )
 
     @property
     def result(self):
@@ -469,8 +472,7 @@ class ExecuteCommand(object):
             level (Optional[int]): Number of frames to rewind to find the
                 caller. Defaults to 2 (1: *here*, 2: *run_*, 3: *run*).
         """
-        self._caller = {"filename": "unknown", "lineno": 0, "context": {},
-                        "identifier": ""}
+        self._caller = {"filename": "unknown", "lineno": 0, "context": {}, "identifier": ""}
         caller = inspect.currentframe()
         try:
             for _ in range(level):
@@ -484,7 +486,7 @@ class ExecuteCommand(object):
             del caller
 
         try:
-            identifier = "cmd{0}".format(keywords.pop('identifier'))
+            identifier = "cmd{0}".format(keywords.pop("identifier"))
         except KeyError:
             identifier = "txt{0}".format(self._caller["lineno"])
         self._caller["identifier"] = identifier
@@ -493,14 +495,15 @@ class ExecuteCommand(object):
 def check_jeveux():
     """Check that the memory manager (Jeveux) is up."""
     if not libaster.jeveux_status():
-        raise RuntimeError("code_aster memory manager is not started. "
-                           "No command can be executed.")
+        raise RuntimeError(
+            "code_aster memory manager is not started. " "No command can be executed."
+        )
 
 
 class ExecuteCommandOps(ExecuteCommand):
 
     """This implements an executor of commands that use an
-     `opsXXX` subroutine."""
+    `opsXXX` subroutine."""
 
     def _call_oper(self, syntax):
         """Call fortran operator.
@@ -550,16 +553,18 @@ class ExecuteMacro(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
+
         def _predicate(value):
-            if(type(value) in (list, tuple)):
+            if type(value) in (list, tuple):
                 return all(isinstance(val, CO) for val in value)
             return isinstance(value, CO)
 
         self._sdprods = search_for(keywords, _predicate)
         if self._sdprods:
-            names_i = ((ii.getName() for ii in i) if(type(i) in (list, tuple))
-                       else [i.getName()]
-                       for i in self._sdprods)
+            names_i = (
+                (ii.getName() for ii in i) if (type(i) in (list, tuple)) else [i.getName()]
+                for i in self._sdprods
+            )
             names = [ii for i in names_i for ii in i]
             self._result_type = namedtuple("Result", ["main"] + names)
             self._result_names = names
@@ -570,12 +575,10 @@ class ExecuteMacro(ExecuteCommand):
         if not self.show_syntax():
             return
         if not self._sdprods and self._result:
-            logger.info(command_result(self._counter, self.name,
-                                       self._result))
+            logger.info(command_result(self._counter, self.name, self._result))
         if self._result_names:
             for name in self._result_names:
-                logger.info(command_result(self._counter, self.name,
-                                           self._add_results.get(name)))
+                logger.info(command_result(self._counter, self.name, self._add_results.get(name)))
         self._print_stats()
 
     def exec_(self, keywords):
@@ -585,15 +588,14 @@ class ExecuteMacro(ExecuteCommand):
             keywords (dict): User's keywords.
         """
         output = self._op(self, **keywords)
-        assert not isinstance(output, int), \
-            "OPS must return results, not 'int'."
+        assert not isinstance(output, int), "OPS must return results, not 'int'."
         if not self._tuplmode:
             self._result = output
             # re-assign the user variable name
             if hasattr(self._result, "userName"):
-                user_name = get_user_name(self.command_name,
-                                          self._caller["filename"],
-                                          self._caller["lineno"])
+                user_name = get_user_name(
+                    self.command_name, self._caller["filename"], self._caller["lineno"]
+                )
                 self._result.userName = user_name
             if self._add_results:
                 publish_in(self._caller["context"], self._add_results)
@@ -624,8 +626,7 @@ class ExecuteMacro(ExecuteCommand):
         result.userName = name
         self._add_results[name] = result
         if ExecutionParameter().option & Options.ShowChildCmd:
-            logger.info(MessageLog.GetText('I', 'SUPERVIS2_69',
-                                           valk=(orig, name)))
+            logger.info(MessageLog.GetText("I", "SUPERVIS2_69", valk=(orig, name)))
 
     @property
     @deprecated(case=2)
@@ -660,8 +661,10 @@ def UserMacro(name, cata, ops):
     Returns:
         *ExecuteCommand.run*: Executor function.
     """
+
     class Macro(ExecuteMacro):
         """Execute legacy operator."""
+
         command_name = name
         command_cata = cata
 
@@ -675,6 +678,7 @@ def UserMacro(name, cata, ops):
 class CO(PyDataStructure):
 
     """Object that identify an auxiliary result of a Macro-Command."""
+
     _name = None
 
     @property
@@ -740,11 +744,9 @@ def get_user_name(command, filename, lineno, strict=True):
     re_comment = re.compile(r"^\s*#.*")
     re_oper = re.compile(r"\b{0}\s*\(".format(command))
     if strict:
-        re_name = re.compile(r"^\s*(?P<name>\w+)\s*"
-                             r"=\s*{0}\s*\(".format(command))
+        re_name = re.compile(r"^\s*(?P<name>\w+)\s*" r"=\s*{0}\s*\(".format(command))
     else:
-        re_name = re.compile(r"^\s*(?P<name>.+)\s*"
-                             r"=\s*{0}\s*\(".format(command))
+        re_name = re.compile(r"^\s*(?P<name>.+)\s*" r"=\s*{0}\s*\(".format(command))
 
     while lineno > 0:
         line = linecache.getline(filename, lineno)
@@ -768,7 +770,7 @@ def command_separator():
         str: A separator line.
     """
     if not hasattr(command_separator, "cache"):
-        command_separator.cache = MessageLog.GetText('I', 'SUPERVIS2_70')
+        command_separator.cache = MessageLog.GetText("I", "SUPERVIS2_70")
     return command_separator.cache
 
 
@@ -781,9 +783,7 @@ def command_header(counter, filename, lineno):
     Returns:
         str: String representation.
     """
-    return MessageLog.GetText('I', 'SUPERVIS2_71',
-                              vali=(counter, lineno),
-                              valk=filename)
+    return MessageLog.GetText("I", "SUPERVIS2_71", vali=(counter, lineno), valk=filename)
 
 
 def command_result(counter, command_name, result):
@@ -803,15 +803,15 @@ def command_result(counter, command_name, result):
         show_name = decorate_name(result.getName().strip())
         if result.userName:
             show_name = "{0} ({1})".format(result.userName.strip(), show_name)
-        show_type = MessageLog.GetText('I', 'SUPERVIS2_76',
-                                       valk=type(result).__name__)
+        show_type = MessageLog.GetText("I", "SUPERVIS2_76", valk=type(result).__name__)
     elif isinstance(result, str):
         show_name = decorate_name(result)
     else:
         show_name = str(result)
-    return MessageLog.GetText('I', 'SUPERVIS2_72',
-                              vali=counter,
-                              valk=(command_name, show_name, show_type))
+    return MessageLog.GetText(
+        "I", "SUPERVIS2_72", vali=counter, valk=(command_name, show_name, show_type)
+    )
+
 
 def command_memory():
     """Return a representation of the current memory consumption.
@@ -819,14 +819,13 @@ def command_memory():
     Returns:
         str: String representation.
     """
-    rval, iret = aster_core.get_mem_stat('VMPEAK', 'VMSIZE', 'CMAX_JV',
-                                         'CMXU_JV')
+    rval, iret = aster_core.get_mem_stat("VMPEAK", "VMSIZE", "CMAX_JV", "CMXU_JV")
     txt = ""
     if iret == 0:
-        if rval[0] > 0.:
-            txt = MessageLog.GetText('I', 'SUPERVIS2_73', valr=rval)
+        if rval[0] > 0.0:
+            txt = MessageLog.GetText("I", "SUPERVIS2_73", valr=rval)
         else:
-            txt = MessageLog.GetText('I', 'SUPERVIS2_74', valr=rval)
+            txt = MessageLog.GetText("I", "SUPERVIS2_74", valr=rval)
     return txt
 
 
@@ -841,6 +840,4 @@ def command_time(counter, cpu, system, elapsed):
     Returns:
         str: String representation.
     """
-    return MessageLog.GetText('I', 'SUPERVIS2_75',
-                              vali=counter,
-                              valr=(cpu, system, elapsed))
+    return MessageLog.GetText("I", "SUPERVIS2_75", vali=counter, valr=(cpu, system, elapsed))

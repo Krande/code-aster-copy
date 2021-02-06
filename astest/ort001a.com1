@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,13 +22,14 @@
 POURSUITE(CODE='OUI')
 
 import numpy
-G_output = numpy.load('fort.26')
+# this line stores input and output as tested by ORT unittest
+# numpy.save("/tmp/ref10.npy", (vect_input, G_output))
 
 matr_out = numpy.matrix(G_output.reshape((number_of_sensors, number_of_timesteps))).T
 valcal = numpy.array(matr_out[-1, :]).ravel()
-valref = numpy.array([  81.63620792,   97.97739701,  101.68123443,  114.92603388,
-          128.03021042,  134.63592376,  141.52752606,  164.82806922,
-          174.28725418])
+valref = numpy.array([ 82.78711496,  94.26834022,  97.2562824 , 108.37262373,
+                       119.21433896, 124.71759241, 130.53032413, 149.44354629,
+                       154.94306934])
 diff = abs(valcal - valref)
 
 ttest = CREA_TABLE(LISTE=(
@@ -48,63 +49,63 @@ TEST_TABLE(
     NOM_PARA='CALC',
     FILTRE=_F(NOM_PARA='SENSOR',
               VALE_I=1),
-    VALE_CALC=81.6362079129,
+    VALE_CALC=82.78711496,
     )
 TEST_TABLE(
     TABLE=ttest,
     NOM_PARA='CALC',
     FILTRE=_F(NOM_PARA='SENSOR',
               VALE_I=2),
-    VALE_CALC=97.9773641281,
+    VALE_CALC=94.26834022,
     )
 TEST_TABLE(
     TABLE=ttest,
     NOM_PARA='CALC',
     FILTRE=_F(NOM_PARA='SENSOR',
               VALE_I=3),
-    VALE_CALC=101.681180921,
+    VALE_CALC=97.2562824,
     )
 TEST_TABLE(
     TABLE=ttest,
     NOM_PARA='CALC',
     FILTRE=_F(NOM_PARA='SENSOR',
               VALE_I=4),
-    VALE_CALC=114.926026532,
+    VALE_CALC=108.37262373,
     )
 TEST_TABLE(
     TABLE=ttest,
     NOM_PARA='CALC',
     FILTRE=_F(NOM_PARA='SENSOR',
               VALE_I=5),
-    VALE_CALC=128.030195916,
+    VALE_CALC=119.21433896,
     )
 TEST_TABLE(
     TABLE=ttest,
     NOM_PARA='CALC',
     FILTRE=_F(NOM_PARA='SENSOR',
               VALE_I=6),
-    VALE_CALC=134.635910498,
+    VALE_CALC=124.71759241,
     )
 TEST_TABLE(
     TABLE=ttest,
     NOM_PARA='CALC',
     FILTRE=_F(NOM_PARA='SENSOR',
               VALE_I=7),
-    VALE_CALC=141.527514981,
+    VALE_CALC=130.53032413,
     )
 TEST_TABLE(
     TABLE=ttest,
     NOM_PARA='CALC',
     FILTRE=_F(NOM_PARA='SENSOR',
               VALE_I=8),
-    VALE_CALC=164.827802562,
+    VALE_CALC=149.44354629,
     )
 TEST_TABLE(
     TABLE=ttest,
     NOM_PARA='CALC',
     FILTRE=_F(NOM_PARA='SENSOR',
               VALE_I=9),
-    VALE_CALC=174.287128053,
+    VALE_CALC=154.94306934,
     )
 
 FIN()
