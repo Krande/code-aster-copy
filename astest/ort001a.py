@@ -343,6 +343,12 @@ def get_data(testname):
         nbstep = data.number_of_timesteps - 1 + data.pre_stab_steps + data.post_stab_steps
         data.load = init_kronecker(nbstep, data.number_of_sensors, 1, 0) * 100.0 + 50.0
 
+    elif testname == "test20_long_case2":
+        data.number_of_timesteps += 1
+        data.pre_stab_steps = 0
+        # nominal_input_cas2.npy
+        data.load = numpy.load("fort.11")
+
     # matr to vect in _run_study:
     data.input_values = matrix2vect(data.load)
 
