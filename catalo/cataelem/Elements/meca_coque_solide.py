@@ -1,0 +1,76 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents, SetOfNodes, ElrefeLoc
+from cataelem.Tools.base_objects import Calcul, Element
+import cataelem.Commons.physical_quantities as PHY
+import cataelem.Commons.located_components as LC
+import cataelem.Commons.parameters as SP
+import cataelem.Commons.mesh_types as MT
+from cataelem.Options.options import OP
+
+#----------------------------------------------------------------------------------------------
+# Located components
+#----------------------------------------------------------------------------------------------
+
+DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
+                             components=(('EN1',('DX','DY','DZ',)),
+                                         ('EN2',('PINCH',)),))
+
+#----------------------------------------------------------------------------------------------
+class MESSHELL_SB9(Element):
+    """Solid-shell element on HEXA9 geometric support"""
+    meshType = MT.HEXA9
+    nodes = (
+        SetOfNodes('EN1', (1,2,3,4,5,6,7,8)),
+        SetOfNodes('EN2', (9,)),
+    )
+    elrefe = (
+        ElrefeLoc(MT.HE9, gauss = ('RIGI=LOB5', 'FPG1=FPG1',), mater=('RIGI', 'FPG1',),),
+        ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4', 'MASS=FPG4',),),
+    )
+    calculs = (
+        OP.TOU_INI_ELEM(te=99,
+            para_out = ((SP.PGEOM_R, LC.CGEOM3D),),
+        ),
+
+        OP.TOU_INI_ELGA(te=99,
+            para_out = ((SP.PGEOM_R, LC.EGGEO3D),
+                        (OP.TOU_INI_ELGA.PNEUT_F, LC.EGTINIF), (OP.TOU_INI_ELGA.PNEUT_R, LC.EGTINIR),
+                        (OP.TOU_INI_ELGA.PSIEF_R, LC.EGIG3DR), (OP.TOU_INI_ELGA.PVARI_R, LC.ZVARIPG),
+                        (OP.TOU_INI_ELGA.PEPSI_R, LC.EGPS3DR),
+                        (OP.TOU_INI_ELGA.PDOMMAG, LC.EDOMGGA), (SP.PFACY_R, LC.EGFC3DR),
+                        (OP.TOU_INI_ELGA.PINST_R, LC.EGINST_R),),
+        ),
+
+        OP.TOU_INI_ELNO(te=99,
+            para_out = ((SP.PGEOM_R, LC.EGEOM3D),
+                        (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F), (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R),
+                        (OP.TOU_INI_ELNO.PSIEF_R, LC.ESIG3DR), (OP.TOU_INI_ELNO.PVARI_R, LC.ZVARINO),
+                        (OP.TOU_INI_ELNO.PEPSI_R, LC.EEPS3DR),
+                        (OP.TOU_INI_ELNO.PDOMMAG, LC.EDOMGNO),
+                        (OP.TOU_INI_ELNO.PINST_R, LC.ENINST_R),),
+        ),
+
+        OP.VERI_JACOBIEN(te=328,
+            para_in  = ((SP.PGEOMER, LC.EGEOM3D),),
+            para_out = ((SP.PCODRET, LC.ECODRET),),
+        ),
+    )
+

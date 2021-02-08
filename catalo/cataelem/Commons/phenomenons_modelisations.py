@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -4474,6 +4474,17 @@ phen.add('Q4GG', Modelisation(dim=(2,3), code='Q4S',
         (MT.QUAD4     , EL.MEQ4GG4),
         (MT.TRIA3     , EL.MET3GG3),
         (MT.SEG2      , EL.MEBOQ4G),
+    )))
+
+phen.add('COQUE_SOLIDE', Modelisation(dim=(3,3), code='SSH',
+    attrs=(
+        (AT.NBSIGM,'6'),
+        (AT.TYPMOD,'3D'),
+    ),
+    elements=(
+        (MT.HEXA9     , EL.MESSHELL_SB9),
+        (MT.QUAD4     , EL.MECA_FACE4),
+        (MT.SEG2      , EL.MECA_ARETE2),
     )))
 
 phen.add('TUYAU_3M', Modelisation(dim=(1,3), code='TU3',

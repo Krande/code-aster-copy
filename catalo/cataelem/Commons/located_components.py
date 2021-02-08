@@ -20,9 +20,9 @@
 from cataelem.Tools.base_objects import LocatedComponents, objects_from_context
 import cataelem.Commons.physical_quantities as PHY
 
-
-# Modes locaux de type ELEM :
-#----------------------------------
+#----------------------------------------------------------------------------------------------
+# Located components - ELEM - Field on element (constant)
+#----------------------------------------------------------------------------------------------
 
 # Generic components for geometric / 2D
 CGEOM2D = LocatedComponents(phys=PHY.GEOM_R, type='ELEM',
@@ -100,6 +100,18 @@ CNORML2 = LocatedComponents(phys=PHY.NEUT_R, type='ELEM',
 CERROR  = LocatedComponents(phys=PHY.ERRE_R, type='ELEM',
                             components=('ERREST','NUEST','SIGCAL','TERMRE','TERMR2',
                                         'TERMNO','TERMN2','TERMSA','TERMS2','TAILLE',))
+
+# Field for frequency
+CFREQR  = LocatedComponents(phys=PHY.FREQ_R, type='ELEM',
+                            components=('FREQ',))
+
+# Field for time
+MTEMPSR = LocatedComponents(phys=PHY.INST_R, type='ELEM',
+                            components=('INST',))
+
+# Field for material orientation in 3D (ANGLE_MASSIF)
+CANGM3D = LocatedComponents(phys=PHY.CAMASS, type='ELEM',
+                            components=('C', 'ALPHA', 'BETA', 'KAPPA', 'X', 'Y', 'Z',))
 
 CBORNPI = LocatedComponents(phys=PHY.PILO_R, type='ELEM',
                             components=('A0', 'A1',))
@@ -197,10 +209,6 @@ CFORCEC = LocatedComponents(phys=PHY.FORC_C, type='ELEM',
 CFRELEC = LocatedComponents(phys=PHY.FLAP_R, type='ELEM',
                             components=('X1', 'Y1', 'Z1', 'X2', 'Y2',
                                         'Z2', 'CODE',))
-
-# Field for frequency
-CFREQR  = LocatedComponents(phys=PHY.FREQ_R, type='ELEM',
-                            components=('FREQ',))
 
 CFTRC = LocatedComponents(phys=PHY.ADRSJEVN, type='ELEM',
                           components=('I[2]',))
@@ -544,10 +552,6 @@ MDDLIMR = LocatedComponents(phys=PHY.DDLI_R, type='ELEM',
 MDDLMUR = LocatedComponents(phys=PHY.DDLM_R, type='ELEM',
                             components=('A1',))
 
-# Field for time
-MTEMPSR = LocatedComponents(phys=PHY.INST_R, type='ELEM',
-                            components=('INST',))
-
 N40NEUI = LocatedComponents(phys=PHY.N120_I, type='ELEM',
                             components=('X[40]',))
 
@@ -560,14 +564,21 @@ NFAMILK = LocatedComponents(phys=PHY.NEUT_K8, type='ELEM',
 NINFORR = LocatedComponents(phys=PHY.NEUT_R, type='ELEM',
                             components=('X[26]',))
 
+#----------------------------------------------------------------------------------------------
+# Located components - ELNO - Field on nodes by element
+#----------------------------------------------------------------------------------------------
 
-# Modes locaux de type ELNO :
-#----------------------------------
+# For TOU_INI_ELNO (function)
+ENNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type='ELNO',
+                             components=('X[30]',))
+
+# For TOU_INI_ELNO (real)
+ENNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type='ELNO',
+                             components=('X[30]',))
 
 # For stresses (Real-3D)
 ESIG3DR = LocatedComponents(phys=PHY.SIEF_R, type='ELNO',
                             components=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',))
-
 
 # For geometry (2D)
 EGEOM2D = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
@@ -585,6 +596,23 @@ EPRE3DR = LocatedComponents(phys=PHY.PRES_R, type='ELNO',
 EPRE2DR = LocatedComponents(phys=PHY.PRES_R, type='ELNO',
                             components=('PRES','CISA',))
 
+# For equivalent stresses (Real-3D)
+ECOEQNO = LocatedComponents(phys=PHY.SIEF_R, type='ELNO',
+                            components=('VMIS', 'TRESCA', 'PRIN_[3]', 'VMIS_SG', 'VECT_1_X',
+                                        'VECT_1_Y', 'VECT_1_Z', 'VECT_2_X', 'VECT_2_Y', 'VECT_2_Z',
+                                        'VECT_3_X', 'VECT_3_Y', 'VECT_3_Z', 'TRSIG', 'TRIAX',))
+
+# For strains (Real-3D)
+EEPS3DR = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
+                            components=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ',))
+
+# For nodal forces (Real-2D)
+NFOR2DR = LocatedComponents(phys=PHY.FORC_R, type='ELNO',
+                             components=('FX','FY',))
+
+# For nodal forces (Real-3D)
+NFOR3DR = LocatedComponents(phys=PHY.FORC_R, type='ELNO',
+                             components=('FX','FY','FZ',))
 
 DDL_NOZ1 = LocatedComponents(phys=PHY.SIZZ_R, type='ELNO',
                              components=('SIZZ',))
@@ -594,12 +622,6 @@ E1NNEUT = LocatedComponents(phys=PHY.NEUT_R, type='ELNO',
 
 E3NEUT_R = LocatedComponents(phys=PHY.NEUT_R, type='ELNO',
                              components=('X[3]',))
-
-ECOEQNO = LocatedComponents(phys=PHY.SIEF_R, type='ELNO',
-                            components=(
-                                'VMIS', 'TRESCA', 'PRIN_[3]', 'VMIS_SG', 'VECT_1_X',
-                            'VECT_1_Y', 'VECT_1_Z', 'VECT_2_X', 'VECT_2_Y', 'VECT_2_Z',
-                            'VECT_3_X', 'VECT_3_Y', 'VECT_3_Z', 'TRSIG', 'TRIAX',))
 
 ECONTPO = LocatedComponents(phys=PHY.SIEF_R, type='ELNO',
                             components=('SN', 'SVY', 'SVZ', 'SMT', 'SMFY',
@@ -654,12 +676,6 @@ EHYDRNO = LocatedComponents(phys=PHY.HYDR_R, type='ELNO',
 ENINST_R = LocatedComponents(phys=PHY.INST_R, type='ELNO',
                              components=('INST',))
 
-ENNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type='ELNO',
-                             components=('X[30]',))
-
-ENNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type='ELNO',
-                             components=('X[30]',))
-
 ENOMIMA = LocatedComponents(phys=PHY.SPMX_R, type='ELNO',
                             components=(
                                 'VAL', 'NUCOU', 'NUSECT', 'NUFIBR', 'POSIC',
@@ -688,14 +704,6 @@ ETRIANO = LocatedComponents(phys=PHY.ENDO_R, type='ELNO',
 
 FISNO_I = LocatedComponents(phys=PHY.NEUT_I, type='ELNO',
                             components=('X1',))
-
-# For nodal forces (Real-2D)
-NFOR2DR  = LocatedComponents(phys=PHY.FORC_R, type='ELNO',
-                             components=('FX','FY',))
-
-# For nodal forces (Real-3D)
-NFOR3DR  = LocatedComponents(phys=PHY.FORC_R, type='ELNO',
-                             components=('FX','FY','FZ',))
 
 N1NEUT_R = LocatedComponents(phys=PHY.NEUT_R, type='ELNO',
                              components=('X1',))
@@ -727,9 +735,12 @@ NTEMPER = LocatedComponents(phys=PHY.TEMP_R, type='ELNO',
 ZVARINO = LocatedComponents(phys=PHY.VARI_R, type='ELNO',
                             components=('VARI',))
 
+ZVARCNO = LocatedComponents(phys=PHY.VARI_R, type='ELNO',
+                            components=('VARI',))
 
-# Modes locaux de type ELGA :
-#----------------------------------
+#----------------------------------------------------------------------------------------------
+# Located components - ELGA - Field on integration points
+#----------------------------------------------------------------------------------------------
 
 # Coordinates/weight of Gauss points (in 2D)
 EGGAU2D = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
@@ -763,6 +774,41 @@ EGDEP2D = LocatedComponents(phys=PHY.DEPL_R, type='ELGA', location='RIGI',
 EGDEP3D = LocatedComponents(phys=PHY.DEPL_R, type='ELGA', location='RIGI',
                              components=('DX','DY','DZ',))
 
+# For stresses (Real-3D)
+EGIG3DR = LocatedComponents(phys=PHY.SIEF_R, type='ELGA', location='RIGI',
+                            components=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',))
+
+# For equivalent stresses (Real-3D)
+ECOEQPG = LocatedComponents(phys=PHY.SIEF_R, type='ELGA', location='RIGI',
+                            components=('VMIS', 'TRESCA', 'PRIN_[3]', 'VMIS_SG', 'VECT_1_X',
+                                        'VECT_1_Y', 'VECT_1_Z', 'VECT_2_X', 'VECT_2_Y', 'VECT_2_Z',
+                                        'VECT_3_X', 'VECT_3_Y', 'VECT_3_Z', 'TRSIG', 'TRIAX',))
+
+# For internal state variables
+ZVARIPG = LocatedComponents(phys=PHY.VARI_R, type='ELGA', location='RIGI',
+                            components=('VARI',))
+
+# For external state variables
+ZVARCPG = LocatedComponents(phys=PHY.VARI_R, type='ELGA', location='MATER',
+                            components=('VARI',))
+
+# For strains (Real-3D)
+EGPS3DR = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
+                            components=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ',))
+
+# For fatigue (3D)
+EGFC3DR = LocatedComponents(phys=PHY.FACY_R, type='ELGA', location='RIGI',
+                            components=('DTAUM1','VNM1X','VNM1Y','VNM1Z','SINMAX1',
+                                        'SINMOY1','EPNMAX1','EPNMOY1','SIGEQ1','NBRUP1',
+                                        'ENDO1','DTAUM2','VNM2X','VNM2Y','VNM2Z',
+                                        'SINMAX2','SINMOY2','EPNMAX2','EPNMOY2','SIGEQ2',
+                                        'NBRUP2','ENDO2','VMIS','TRESCA',))
+
+# Field for time
+EGINST_R = LocatedComponents(phys=PHY.INST_R, type='ELGA', location='RIGI',
+                             components=('INST',))
+
+
 E1GNEUT = LocatedComponents(phys=PHY.NEUT_R, type='ELGA', location='RIGI',
                             components=('X1',))
 
@@ -788,9 +834,6 @@ EGGEMA_R = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='MATER',
 
 EGINDLO = LocatedComponents(phys=PHY.INDL_R, type='ELGA', location='RIGI',
                             components=('INDICE', 'DIR[4]',))
-
-EGINST_R = LocatedComponents(phys=PHY.INST_R, type='ELGA', location='RIGI',
-                             components=('INST',))
 
 EGNEUT1R = LocatedComponents(phys=PHY.NEUT_R, type='ELGA', location='RIGI',
                              components=('X1',))
@@ -837,13 +880,6 @@ G27NEUTR = LocatedComponents(phys=PHY.NEUT_R, type='ELGA', location='RIGI',
 
 GGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
                             components=('X', 'Y', 'Z',))
-
-ZVARCNO = LocatedComponents(phys=PHY.VARI_R, type='ELNO',
-                            components=('VARI',))
-
-ZVARCPG = LocatedComponents(phys=PHY.VARI_R, type='ELGA', location='MATER',
-                            components=('VARI',))
-
 
 # store all LocatedComponents objects
 MODES = objects_from_context(globals(), LocatedComponents)
