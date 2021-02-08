@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -65,23 +65,6 @@ mecaStatique = code_aster.LinearStaticAnalysis(monModel, affectMat)
 mecaStatique.addMechanicalLoad( CharMeca1 )
 mecaStatique.addMechanicalLoad( CharMeca2 )
 mecaStatique.setLinearSolver( monSolver )
-
-temps = [0., 0.5, 1.]
-timeList = code_aster.TimeStepManager()
-timeList.setTimeList( temps )
-
-error1 = code_aster.EventError()
-action1 = code_aster.SubstepingOnError()
-action1.setAutomatic( False )
-error1.setAction( action1 )
-timeList.addErrorManager( error1 )
-#error2 = code_aster.Studies.ContactDetectionError()
-#action2 = code_aster.Studies.SubstepingOnContact()
-#error2.setAction( action2 )
-#timeList.addErrorManager( error2 )
-acier.debugPrint(6)
-timeList.build()
-timeList.debugPrint( 8 )
 
 resu = mecaStatique.execute()
 resu.debugPrint( 8 )

@@ -77,15 +77,6 @@ Documentation of all other types.
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.Behaviour` object
-********************************************************************************
-
-.. autoclass:: code_aster.Objects.Behaviour
-   :show-inheritance:
-   :members:
-
-
-********************************************************************************
 :py:class:`~code_aster.Objects.CrackShape` object
 ********************************************************************************
 
@@ -108,15 +99,6 @@ Documentation of all other types.
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.DisplacementReal
-   :show-inheritance:
-   :members:
-
-
-********************************************************************************
-:py:class:`~code_aster.Objects.Driving` object
-********************************************************************************
-
-.. autoclass:: code_aster.Objects.Driving
    :show-inheritance:
    :members:
 
@@ -153,80 +135,6 @@ Documentation of all other types.
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.ForceReal
-   :show-inheritance:
-   :members:
-
-
-********************************************************************************
-:py:class:`~code_aster.Objects.GenericAction` subclasses
-********************************************************************************
-
-.. autoclass:: code_aster.Objects.GenericAction
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.AddIterationOnError
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.ChangePenalisationOnError
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.ContinueOnError
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.GenericSubstepingOnError
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.PilotageError
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.StopOnError
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.SubstepingOnContact
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.SubstepingOnError
-   :show-inheritance:
-   :members:
-
-
-********************************************************************************
-:py:class:`~code_aster.Objects.GenericEventError` subclasses
-********************************************************************************
-
-.. autoclass:: code_aster.Objects.GenericEventError
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.ContactDetectionError
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.EventError
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.IncrementOverboundError
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.InstabilityError
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.InterpenetrationError
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.ResidualDivergenceError
    :show-inheritance:
    :members:
 
@@ -272,15 +180,6 @@ Documentation of all other types.
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.LibAsterInitializer
-   :show-inheritance:
-   :members:
-
-
-********************************************************************************
-:py:class:`~code_aster.Objects.LineSearchMethod` object
-********************************************************************************
-
-.. autoclass:: code_aster.Objects.LineSearchMethod
    :show-inheritance:
    :members:
 
@@ -335,24 +234,6 @@ Documentation of all other types.
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.NonLinearMethod` object
-********************************************************************************
-
-.. autoclass:: code_aster.Objects.NonLinearMethod
-   :show-inheritance:
-   :members:
-
-
-********************************************************************************
-:py:class:`~code_aster.Objects.NonLinearStaticAnalysis` object
-********************************************************************************
-
-.. autoclass:: code_aster.Objects.NonLinearStaticAnalysis
-   :show-inheritance:
-   :members:
-
-
-********************************************************************************
 :py:class:`~code_aster.Objects.NormalSpeedReal` object
 ********************************************************************************
 
@@ -384,15 +265,6 @@ Documentation of all other types.
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.ResultNaming
-   :show-inheritance:
-   :members:
-
-
-********************************************************************************
-:py:class:`~code_aster.Objects.State` object
-********************************************************************************
-
-.. autoclass:: code_aster.Objects.State
    :show-inheritance:
    :members:
 
@@ -468,10 +340,6 @@ Documentation of all other types.
    :show-inheritance:
    :members:
 
-.. autoclass:: code_aster.Objects.DrivingType
-   :show-inheritance:
-   :members:
-
 .. autoclass:: code_aster.Objects.EntityType
    :show-inheritance:
    :members:
@@ -492,15 +360,7 @@ Documentation of all other types.
    :show-inheritance:
    :members:
 
-.. autoclass:: code_aster.Objects.LineSearchEnum
-   :show-inheritance:
-   :members:
-
 .. autoclass:: code_aster.Objects.Loads
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.MatrixEnum
    :show-inheritance:
    :members:
 
@@ -528,10 +388,6 @@ Documentation of all other types.
    :show-inheritance:
    :members:
 
-.. autoclass:: code_aster.Objects.NonLinearMethodEnum
-   :show-inheritance:
-   :members:
-
 .. autoclass:: code_aster.Objects.PhysicalQuantityComponent
    :show-inheritance:
    :members:
@@ -541,10 +397,6 @@ Documentation of all other types.
    :members:
 
 .. autoclass:: code_aster.Objects.Preconditioning
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.PredictionEnum
    :show-inheritance:
    :members:
 
