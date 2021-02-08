@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,6 +68,7 @@ subroutine jeecra(nomlu, catr, ival, cval)
     character(len=32) :: noml32
     character(len=1) :: genri, typei
     character(len=8) :: catrlu
+    character(len=32), dimension(2) :: lvalk
     aster_logical :: lconst, lconti, llong, lluti
     integer :: icre, iret, itab(1), jtab, irt
     integer :: ibacol, ixiadd, ixdeso, ixlong, ii
@@ -176,7 +177,9 @@ subroutine jeecra(nomlu, catr, ival, cval)
                 longi = long ( jlong(ic) + id )
                 longj = ival
                 if (ival .le. 0) then
-                    call utmess('F', 'JEVEUX1_67', sk=catrlu, si=ival)
+                    lvalk(1) = catrlu
+                    lvalk(2) = noml32(1:24)
+                    call utmess('F', 'JEVEUX1_67', nk=2, valk=lvalk, si=ival)
                 endif
             endif
             if (longi .ne. 0) then
