@@ -2,7 +2,7 @@
  * @file ResultNaming.cxx
  * @brief Implementation of automatic naming of jeveux objects.
  * @section LICENCE
- * Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+ * Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
  * This file is part of code_aster.
  *
  * code_aster is free software: you can redistribute it and/or modify
@@ -122,8 +122,10 @@ VectorReal evaluate_formula( const PyObject *code, PyObject *globals,
 
     PyObject *locals = PyDict_New();
     for ( int i = 0; i < nbvars; ++i ) {
+        PyObject *value = PyFloat_FromDouble( values[i] );
         PyDict_SetItemString( locals, trim( variables[i] ).c_str(),
-                              PyFloat_FromDouble( values[i] ) );
+                              value );
+        Py_DECREF( value );
     }
 
     PyObject *res = PyEval_EvalCode( (PyObject *)code, globals, locals );
