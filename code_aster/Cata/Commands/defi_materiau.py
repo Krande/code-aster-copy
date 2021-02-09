@@ -2095,9 +2095,9 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",
 # ---Paramètres BJH-------------------------------------------------------------------------------------------
                                            A0       = SIMP(statut='f',typ='R'),
                                            SHUTTLE  = SIMP(statut='f',typ='R'),
-                                           EPAI           = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           S_BJH          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           W_BJH          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),                                              
+                                           EPAI           = SIMP(statut='f',typ=(fonction_sdaster,formule)),
+                                           S_BJH          = SIMP(statut='f',typ=(fonction_sdaster,formule)),
+                                           W_BJH          = SIMP(statut='f',typ=(fonction_sdaster,formule)),                                              
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES FACULTATIVES   ------------------------------------
 # ---------------------------------------------------------------------------------
@@ -2463,9 +2463,9 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",
 # ---Paramètres BJH-------------------------------------------------------------------------------------------
                                            A0       = SIMP(statut='f',typ='R'),
                                            SHUTTLE  = SIMP(statut='f',typ='R'),
-                                           EPAI           = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           S_BJH          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           W_BJH          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),                                              
+                                           EPAI           = SIMP(statut='f',typ=(fonction_sdaster,formule)),
+                                           S_BJH          = SIMP(statut='f',typ=(fonction_sdaster,formule)),
+                                           W_BJH          = SIMP(statut='f',typ=(fonction_sdaster,formule)),                                              
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES INUTILES   ----------------------------------------
 # ---------------------------------------------------------------------------------
@@ -2629,9 +2629,9 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",
 # ---Paramètres BJH-------------------------------------------------------------------------------------------
                                            A0       = SIMP(statut='f',typ='R'),
                                            SHUTTLE  = SIMP(statut='f',typ='R'),
-                                           EPAI           = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           S_BJH          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           W_BJH          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),                                                                                    
+                                           EPAI           = SIMP(statut='f',typ=(fonction_sdaster,formule)),
+                                           S_BJH          = SIMP(statut='f',typ=(fonction_sdaster,formule)),
+                                           W_BJH          = SIMP(statut='f',typ=(fonction_sdaster,formule)),                                                                                    
                                            
                                            
                                            
@@ -2813,9 +2813,9 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",
 # ---Paramètres BJH-------------------------------------------------------------------------------------------
                                            A0       = SIMP(statut='f',typ='R'),
                                            SHUTTLE  = SIMP(statut='f',typ='R'),
-                                           EPAI           = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           S_BJH          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           W_BJH          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),                                                                                    
+                                           EPAI           = SIMP(statut='f',typ=(fonction_sdaster,formule)),
+                                           S_BJH          = SIMP(statut='f',typ=(fonction_sdaster,formule)),
+                                           W_BJH          = SIMP(statut='f',typ=(fonction_sdaster,formule)),                                                                                    
                                                                                       
 
 #
@@ -3013,9 +3013,9 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",
 # ---Paramètres BJH-------------------------------------------------------------------------------------------
                                            A0       = SIMP(statut='f',typ='R'),
                                            SHUTTLE  = SIMP(statut='f',typ='R'),
-                                           EPAI           = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           S_BJH          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           W_BJH          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),                                                                                    
+                                           EPAI           = SIMP(statut='f',typ=(fonction_sdaster,formule)),
+                                           S_BJH          = SIMP(statut='f',typ=(fonction_sdaster,formule)),
+                                           W_BJH          = SIMP(statut='f',typ=(fonction_sdaster,formule)),                                                                                    
                                                                
 
 #
