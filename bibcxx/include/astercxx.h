@@ -45,11 +45,6 @@ typedef std::vector< double > VectorReal;
 typedef std::vector< RealComplex > VectorComplex;
 typedef std::vector< std::string > VectorString;
 
-extern "C" {
-
-#include "Python.h"
-
-} // extern "C"
 #endif
 
 // Exceptions identifiers - keep consistency with asterf.h
