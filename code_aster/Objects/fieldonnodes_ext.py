@@ -112,12 +112,12 @@ class ExtendedFieldOnNodesReal(object):
         if 'GROUP_MA' in kwargs.keys():
             lGrpMa = kwargs['GROUP_MA']
             lGrpMa = [lGrpMa] if isinstance(lGrpMa, str) else lGrpMa
+            connec = mesh.getConnectivity()
             for grMa in lGrpMa:
                 if mesh.hasGroupOfNodes(grMa):
                     nodes = mesh.getNodes(grMa)
                     lNodes += nodes
                 elif mesh.hasGroupOfCells(grMa):
-                    connec = mesh.getConnectivity()
                     nodes = [node for cell in mesh.getCells(grMa) for node in connec[cell - 1]]
                     lNodes += nodes
                 else:

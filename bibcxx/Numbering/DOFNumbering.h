@@ -99,6 +99,16 @@ class FieldOnNodesDescriptionClass : public DataStructure {
         return _nodeAndComponentsNumberFromDOF;
     }
 
+    /**
+     * @brief Returns a vector of with node index for each DOFs
+     */
+    VectorLong getNodesFromDOF() const;
+
+    /**
+     * @brief Returns number of DOFs
+     */
+    ASTERINTEGER getNumberOfDofs() const;
+
     friend class BaseDOFNumberingClass;
 };
 typedef boost::shared_ptr< FieldOnNodesDescriptionClass > FieldOnNodesDescriptionPtr;

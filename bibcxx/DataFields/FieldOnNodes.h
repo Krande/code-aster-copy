@@ -31,6 +31,7 @@
 
 #include "astercxx.h"
 #include "aster_fort_superv.h"
+#include "aster_mpi.h"
 
 #include "DataFields/DataField.h"
 #include "DataFields/MeshCoordinatesField.h"
@@ -39,7 +40,10 @@
 #include "MemoryManager/JeveuxVector.h"
 #include "Meshes/BaseMesh.h"
 #include "Numbering/DOFNumbering.h"
+#include "ParallelUtilities/MPIContainerUtilities.h"
+#include "ParallelUtilities/MPIInfos.h"
 #include "PythonBindings/LogicalUnitManager.h"
+
 
 /**
  * @struct AllowedFieldType
@@ -81,7 +85,7 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
     BaseDOFNumberingPtr _dofNum;
     /** @brief Dof description */
     FieldOnNodesDescriptionPtr _dofDescription;
-    /** @brief Dof description */
+    /** @brief Support mesh */
     BaseMeshPtr _mesh;
     /** @brief jeveux vector '.TITR' */
     JeveuxVectorChar80 _title;
@@ -89,13 +93,13 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
   public:
     /**
      * @typedef FieldOnNodesPtr
-     * @brief Pointeur intelligent vers un FieldOnNodes
+     * @brief Smart pointer to a FieldOnNodes
      */
     typedef boost::shared_ptr< FieldOnNodesClass > FieldOnNodesPtr;
 
     /**
-     * @brief Constructeur
-     * @param name Nom Jeveux du champ aux noeuds
+     * @brief Constructor
+     * @param name Jeveux name of the field on nodes
      */
     FieldOnNodesClass( const std::string name )
         : DataFieldClass( name, "CHAM_NO" ), _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
@@ -105,15 +109,44 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
           _mesh( nullptr ){};
 
     /**
-     * @brief Constructeur
-     * @param memType Mémoire d'allocation
+     * @brief Constructor
+     * @param memType Type of memory allocation
      */
     FieldOnNodesClass( const JeveuxMemory memType = Permanent )
         : DataFieldClass( memType, "CHAM_NO" ),
           _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
           _reference( JeveuxVectorChar24( getName() + ".REFE" ) ),
           _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ), _dofNum( nullptr ),
-          _dofDescription( nullptr ), _title( JeveuxVectorChar80( getName() + ".TITR" ) ){};
+          _mesh( nullptr ), _dofDescription( nullptr ),
+          _title( JeveuxVectorChar80( getName() + ".TITR" ) ){};
+
+    /**
+     * @brief Copy constructor
+     */
+    FieldOnNodesClass( const FieldOnNodesClass &toCopy )
+        :DataFieldClass( toCopy.getMemoryType(), "CHAM_NO" ),
+          _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
+          _reference( JeveuxVectorChar24( getName() + ".REFE" ) ),
+          _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ), _dofNum( nullptr ),
+          _mesh( nullptr ), _dofDescription( nullptr ),
+          _title( JeveuxVectorChar80( getName() + ".TITR" ) ) {
+        // JeveuxVector to be duplicated
+        *(_descriptor) = *(toCopy._descriptor);
+        *(_reference) = *(toCopy._reference);
+        *(_valuesList) = *(toCopy._valuesList);
+        *(_title) = *(toCopy._title);
+        // Pointers to be copied
+        _dofNum = toCopy._dofNum;
+        _dofDescription = toCopy._dofDescription;
+        _mesh = toCopy._mesh;
+    }
+
+    /**
+     * @brief Wrap of copy constructor
+     */
+    FieldOnNodesClass duplicate() {
+        return *this;
+    }
 
     /**
      * @brief Constructeur from a MeshCoordinatesFieldPtr&
@@ -138,17 +171,118 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
     const ValueType &operator[]( int i ) const { return _valuesList->operator[]( i ); };
 
     /**
-     * @brief Addition d'un champ aux noeuds
-     * @return renvoit true si l'addition s'est bien deroulée, false sinon
-     * @todo ajouter une vérification sur la structure des champs
+     * @brief Check if fields are OK for +, +=, ...
+     * @return true if compatible
      */
-    bool addFieldOnNodes( FieldOnNodesClass< ValueType > &tmp ) {
-        bool retour = tmp.updateValuePointers();
-        retour = ( retour && _valuesList->updateValuePointer() );
+    bool isSimilarTo(const FieldOnNodesClass< ValueType >  &tmp2 ) const {
+        bool similar = (this->_descriptor->size() == tmp2._descriptor->size());
+        similar = (similar && (this->_reference->size() == tmp2._reference->size()));
+        similar = (similar && (this->_valuesList->size() == tmp2._valuesList->size()));
+        return similar;
+    }
+
+    /**
+     * @brief PlusEqual overloading
+     * @return Updated field
+     */
+    FieldOnNodesClass< ValueType > &operator+=( FieldOnNodesClass< ValueType > const &rhs ) {
+        if (!this->isSimilarTo(rhs)) throw std::runtime_error("Fields have incompatible shapes");
+        const_cast<FieldOnNodesClass< ValueType >&> (rhs).updateValuePointers() ;
+        bool retour = _valuesList->updateValuePointer();
         int taille = _valuesList->size();
         for ( int pos = 0; pos < taille; ++pos )
-            ( *this )[pos] = ( *this )[pos] + tmp[pos];
-        return retour;
+            ( *this )[pos] = ( *this )[pos] + rhs[pos];
+        return *this;
+    };
+
+    /**
+     * @brief MinusEqual overloading
+     * @return Updated field
+     * @todo ajouter une vérification sur la structure des champs
+     */
+    FieldOnNodesClass< ValueType > &operator-=( FieldOnNodesClass< ValueType > const &rhs ) {
+        if (!this->isSimilarTo(rhs)) throw std::runtime_error("Fields have incompatible shapes");
+        const_cast<FieldOnNodesClass< ValueType >&> (rhs).updateValuePointers() ;
+        bool retour = _valuesList->updateValuePointer();
+        int taille = _valuesList->size();
+        for ( int pos = 0; pos < taille; ++pos )
+            ( *this )[pos] = ( *this )[pos] - rhs[pos];
+        return *this;
+    };
+
+    /**
+     * @brief TimesEqual overloading
+     * @return Updated field
+     */
+    FieldOnNodesClass< ValueType > &operator*=( const double &scal ) {
+        bool retour = _valuesList->updateValuePointer();
+        int taille = _valuesList->size();
+        for ( int pos = 0; pos < taille; ++pos )
+            ( *this )[pos] = ( *this )[pos] * scal;
+        return *this;
+    };
+
+    /**
+     * @brief Unary Minus overloading
+     * @return Updated field
+     */
+    FieldOnNodesClass< ValueType > &operator-() {
+        bool retour = _valuesList->updateValuePointer();
+        int taille = _valuesList->size();
+        for ( int pos = 0; pos < taille; ++pos )
+            ( *this )[pos] = -( *this )[pos];
+        return *this;
+    };
+
+    // NOTE ON FOLLOWING OPERATOR OVERLAODING
+    // friends methods defined inside class body are inline and are hidden from non-ADL lookup
+    // passing lhs by value helps optimize chained a+b+c
+    // otherwise, both parameters may be const references
+    // return the result by value in order to use copy constructor
+
+    /**
+     * @brief Multiply by a scalar on right overloading
+     * @return New field
+     */
+    friend FieldOnNodesClass< ValueType > operator*( FieldOnNodesClass< ValueType > lhs,
+                                                     const double &scal ) {
+        bool retour = lhs.updateValuePointers();
+        int taille = lhs._valuesList->size();
+        for ( int pos = 0; pos < taille; ++pos )
+            lhs[pos] = lhs[pos] * scal;
+        return lhs;
+    };
+
+    /**
+     * @brief Multiply by a scalar on left overloading
+     * @return New field
+     */
+    friend FieldOnNodesClass< ValueType > operator*( const double &scal,
+                                                     FieldOnNodesClass< ValueType > rhs) {
+        return rhs * scal;
+    };
+
+    /**
+     * @brief Plus overloading
+     * @return New field
+     */
+    friend FieldOnNodesClass< ValueType > operator+(FieldOnNodesClass< ValueType > lhs,
+                                                    const FieldOnNodesClass< ValueType > &rhs ) {
+        if (!lhs.isSimilarTo(rhs)) throw std::runtime_error("Fields have incompatible shapes");
+        lhs += rhs;
+        return lhs;
+    };
+
+    /**
+     * @brief Minus overloading
+     * @return New field
+     * @todo ajouter une vérification sur la structure des champs
+     */
+    friend FieldOnNodesClass< ValueType > operator-(FieldOnNodesClass< ValueType > lhs,
+                                                    const FieldOnNodesClass< ValueType > &rhs ) {
+        if (!lhs.isSimilarTo(rhs)) throw std::runtime_error("Fields have incompatible shapes");
+        lhs -= rhs;
+        return lhs;
     };
 
     /**
@@ -242,10 +376,125 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
         }
     };
 
+    /**
+     * @brief Set mesh
+     * @param normType Type of norm ("NORM_1","NORM_2","NORM_INFINITY")
+     */
+    double norm(const std::string normType) const
+    {
+        double norme = 0.0;
+        bool retour =  _valuesList->updateValuePointer();
+        int taille = _valuesList->size();
+        const int rank = getMPIRank();
+        const JeveuxVectorLong nodesRank = _mesh->getNodesRank();
+        retour = nodesRank->updateValuePointer();
+        const VectorLong nodesId = _dofDescription->getNodesFromDOF();
+
+        if( normType == "NORM_1")
+        {
+            for( int pos = 0; pos < taille; ++pos )
+            {
+                const int node_id = std::abs(nodesId[pos]);
+                if( (*nodesRank)[node_id-1] == rank )
+                    norme += std::abs(( *this )[pos]);
+            }
+        }
+        else if( normType == "NORM_2")
+        {
+            for( int pos = 0; pos < taille; ++pos )
+            {
+                const int node_id = std::abs(nodesId[pos]);
+                if( (*nodesRank)[node_id-1] == rank )
+                    norme += ( *this )[pos] * ( *this )[pos];
+            }
+        }
+        else if( normType == "NORM_INFINITY")
+        {
+            for( int pos = 0; pos < taille; ++pos )
+            {
+                const int node_id = std::abs(nodesId[pos]);
+                if( (*nodesRank)[node_id-1] == rank )
+                    norme = std::max(norme, std::abs(( *this )[pos]));
+            }
+        }
+        else
+            throw std::runtime_error( "Unknown norm" );
+
+#ifdef ASTER_HAVE_MPI
+        if( _mesh->isParallel() )
+        {
+            double norm2 = norme;
+            MPIContainerUtilities utils;
+            if( normType == "NORM_1" || normType == "NORM_2")
+                utils.all_reduce(norm2, norme, MPI_SUM);
+            else
+                utils.all_reduce(norm2, norme, MPI_MAX);
+        }
+#endif
+
+        if( normType == "NORM_2")
+            norme = std::sqrt(norme);
+
+        return norme;
+    };
+
+    /**
+     * @brief Dot product
+     * @param tmp object FieldOnNodesDescriptionPtr
+     */
+    double dot( const FieldOnNodesPtr &tmp ) const
+    {
+        bool retour = tmp->updateValuePointers();
+        retour = ( retour && _valuesList->updateValuePointer() );
+        const int taille = _valuesList->size();
+
+        if( !retour || taille != tmp->size())
+            throw std::runtime_error( "Incompatible size" );
+
+        JeveuxVectorLong nodesRank = _mesh->getNodesRank();
+        retour = nodesRank->updateValuePointer();
+        const VectorLong nodesId = _dofDescription->getNodesFromDOF();
+        const int rank = getMPIRank();
+
+        double ret = 0.0;
+        for( int pos = 0; pos < taille; ++pos )
+        {
+            const int node_id = std::abs(nodesId[pos]);
+            if((*nodesRank)[node_id-1] == rank)
+                ret += ( *this )[pos] * ( *tmp )[pos];
+        }
+
+#ifdef ASTER_HAVE_MPI
+        if( _mesh->isParallel() )
+        {
+            double ret2 = ret;
+            MPIContainerUtilities utils;
+            utils.all_reduce(ret2, ret, MPI_SUM);
+        }
+#endif
+
+        return ret;
+    }
+
+    /**
+     * @brief Size of the FieldOnNodes
+     */
+    ASTERINTEGER size( void ) const
+    {
+        return _valuesList->size();
+    }
+
+
+    /**
+     * @brief Get DOFNumbering
+     */
     BaseDOFNumberingPtr getDOFNumbering( void ) {
         return _dofNum;
     };
 
+    /**
+     * @brief Get FieldOnNodesDescription
+     */
     FieldOnNodesDescriptionPtr getDescription( void ) {
         return _dofDescription;
     };

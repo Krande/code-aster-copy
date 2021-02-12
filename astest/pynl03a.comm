@@ -105,16 +105,7 @@ T        = CREA_CHAMP(TYPE_CHAM = 'NOEU_TEMP_R',
                                     VALE    = (temp_init,),
                                    ),
                       )
-DELTA_T  = CREA_CHAMP(TYPE_CHAM = 'NOEU_TEMP_R',
-                      OPERATION = 'AFFE',
-                      MAILLAGE  = MAIL,
-                      NUME_DDL  = NU,
-                      AFFE      =_F(
-                                    TOUT    = 'OUI',
-                                    NOM_CMP = ('TEMP'),
-                                    VALE    = (0.,),
-                                   ),
-                      )
+DELTA_T  = T.duplicate() * 0
 
 for i_inst in range(1,len(l_inst)) :
     inst = l_inst[i_inst]
@@ -134,7 +125,6 @@ for i_inst in range(1,len(l_inst)) :
                               CHARGE = CHTH,)
     CHAR_AS = ASSE_VECTEUR(VECT_ELEM = CHAR_EL,
                             NUME_DDL  = NU,)
-    DETRUIRE(NOM=CHAR_EL)
 
     # Compute non linear quantities
     PRED     = CALCUL(PHENOMENE  = 'THERMIQUE',
@@ -174,7 +164,6 @@ for i_inst in range(1,len(l_inst)) :
 
     EVNL_AS  = ASSE_VECTEUR(VECT_ELEM = EVNL_EL,
                             NUME_DDL  = NU,)
-    DETRUIRE(NOM=(EVNL_EL),)
 
     # Get CHAR_EVNL
     EVOL_EL  = EXTR_TABLE(TYPE_RESU = 'VECT_ELEM_TEMP_R',
@@ -194,7 +183,6 @@ for i_inst in range(1,len(l_inst)) :
 
     EVOL_AS  = ASSE_VECTEUR(VECT_ELEM = EVOL_EL,
                             NUME_DDL  = NU,)
-    DETRUIRE(NOM=(EVOL_EL),)
 
     # Get CHAR_THER_NONL
     CHNL_EL  = EXTR_TABLE(TYPE_RESU = 'VECT_ELEM_TEMP_R',
@@ -214,28 +202,9 @@ for i_inst in range(1,len(l_inst)) :
 
     CHNL_AS  = ASSE_VECTEUR(VECT_ELEM = CHNL_EL,
                             NUME_DDL  = NU,)
-    DETRUIRE(NOM=(CHNL_EL),)
 
     # Create second member (transient)
-    F2M_PRED  = CREA_CHAMP(OPERATION = 'COMB',
-                          TYPE_CHAM = 'NOEU_TEMP_R',
-                          NUME_DDL  = NU,
-                          COMB      = (
-                                       _F(
-                                          CHAM_GD = CHAR_AS,
-                                          COEF_R  = 1.,
-                                         ),
-                                       _F(
-                                          CHAM_GD = CHNL_AS,
-                                          COEF_R  = 1.,
-                                         ),
-                                       _F(
-                                          CHAM_GD = EVNL_AS,
-                                          COEF_R  = 1.,
-                                         ),
-                                      ),
-                          )
-
+    F2M_PRED = CHAR_AS + CHNL_AS + EVNL_AS
 
     # Get tangent matrix
     MT_EL    = EXTR_TABLE(TYPE_RESU = 'MATR_ELEM_TEMP_R',
@@ -255,7 +224,6 @@ for i_inst in range(1,len(l_inst)) :
 
     MT_AS    = ASSE_MATRICE(MATR_ELEM = MT_EL,
                             NUME_DDL  = NU,)
-    DETRUIRE(NOM=MT_EL)
 
 ####################################################################################################
 # Routine NXPRED
@@ -266,10 +234,8 @@ for i_inst in range(1,len(l_inst)) :
                           MATR_ASSE = MT_AS,)
 
     # Solve
-    DETRUIRE(NOM=DELTA_T)
     DELTA_T  = RESOUDRE(MATR    = MT_AS,
                         CHAM_NO = F2M_PRED,)
-    #DETRUIRE(NOM=MT_AS)
 
 #=========================================================
 #               BOUCLE DE NEWTON
@@ -329,7 +295,6 @@ for i_inst in range(1,len(l_inst)) :
 
         RESI_AS  = ASSE_VECTEUR(VECT_ELEM = RESI_EL,
                                 NUME_DDL  = NU,)
-        DETRUIRE(NOM=RESI_EL)
 
         # Reaction
         BTLA_EL  = EXTR_TABLE(TYPE_RESU = 'VECT_ELEM_TEMP_R',
@@ -348,46 +313,19 @@ for i_inst in range(1,len(l_inst)) :
                               )
         BTLA_AS  = ASSE_VECTEUR(VECT_ELEM = BTLA_EL,
                                 NUME_DDL  = NU,)
-        DETRUIRE(NOM=BTLA_EL)
 
 ####################################################################################################
 # Routine NXRESI
 ####################################################################################################
         # Evaluate equilibrium
-        CN2MBR   = CREA_CHAMP(OPERATION = 'COMB',
-                              TYPE_CHAM = 'NOEU_TEMP_R',
-                              NUME_DDL  = NU,
-                              COMB      = (
-                                           _F(
-                                              CHAM_GD = EVOL_AS,
-                                              COEF_R  = 1.,
-                                             ),
-                                           _F(
-                                              CHAM_GD = RESI_AS,
-                                              COEF_R  = -1.,
-                                             ),
-                                           _F(
-                                              CHAM_GD = BTLA_AS,
-                                              COEF_R  = -1.,
-                                             ),
-                                          ),
-                              )
+        CN2MBR = EVOL_AS - RESI_AS - BTLA_AS
 
         # Evaluate residual
-        v_cn2mbr = CN2MBR.EXTR_COMP('TEMP',[]).valeurs
-        v_vec2nd = F2M_PRED.EXTR_COMP('TEMP',[]).valeurs
-        v_cnvabt = BTLA_AS.EXTR_COMP('TEMP',[]).valeurs
+        resi_maxi = CN2MBR.norm("NORM_INFINITY")
+        resi_rela = CN2MBR.norm("NORM_2")
+        vnorm = (F2M_PRED - BTLA_AS).norm("NORM_2")
 
-        resi_rela = 0.
-        vnorm     = 0.
-        resi_maxi = 0.
-        for i_equa in range(1,len(v_cn2mbr)):
-            resi_rela = resi_rela + (v_cn2mbr[i_equa])**2
-            vnorm     = vnorm + ( v_vec2nd[i_equa] - v_cnvabt[i_equa] )**2
-            resi_maxi = max( resi_maxi,abs( v_cn2mbr[i_equa]) )
-
-
-        Residu[IterNewton-1]  = sqrt( resi_rela / vnorm )
+        Residu[IterNewton-1]  = resi_rela / vnorm
         ResiduX[IterNewton-1] = resi_maxi
 
         print('RESI_GLOB_RELA:',Residu[IterNewton-1])
@@ -402,7 +340,6 @@ for i_inst in range(1,len(l_inst)) :
 
 
         # Compute non linear quantities
-        DETRUIRE(NOM=CORR)
         CORR     = CALCUL(PHENOMENE  = 'THERMIQUE',
                           OPTION     = (
                                         'CHAR_THER_ELEM',
@@ -423,30 +360,11 @@ for i_inst in range(1,len(l_inst)) :
 
 
         # Solve
-        DETRUIRE(NOM=T)
-        T  = RESOUDRE(MATR    = MT_AS,
+        DDT  = RESOUDRE(MATR    = MT_AS,
                       CHAM_NO = CN2MBR,)
 
-
-        # Somme en python T+ = DELTA_t + T-
-        DELTA_T = CREA_CHAMP(reuse     = DELTA_T,
-                              OPERATION = 'COMB',
-                              TYPE_CHAM = 'NOEU_TEMP_R',
-                              COMB      = (
-                                           _F(
-                                              CHAM_GD = DELTA_T,
-                                              COEF_R  = 1.
-                                             ),
-                                           _F(
-                                              CHAM_GD = T,
-                                              COEF_R  = 1.
-                                             ),
-                                          ),)
-
-        DETRUIRE(NOM=CORR)
-        DETRUIRE(NOM=RESI_AS)
-        DETRUIRE(NOM=BTLA_AS)
-        DETRUIRE(NOM=CN2MBR)
+        # Update TEMP increment
+        DELTA_T += DDT
 
     print('instant ',inst)
     print('IterNewton | Resi_Glob_rela   | Resi_Glob_Maxi  | Convergence')
@@ -457,41 +375,10 @@ for i_inst in range(1,len(l_inst)) :
         print('echec de la convergence des iterations de Newton')
         FIN()
 
-    DETRUIRE(NOM=CHAR_AS)
-    DETRUIRE(NOM=PRED)
-    DETRUIRE(NOM=EVNL_AS)
-    DETRUIRE(NOM=EVOL_AS)
-    DETRUIRE(NOM=CHNL_AS)
-    DETRUIRE(NOM=F2M_PRED)
-    DETRUIRE(NOM=CORR)
-    DETRUIRE(NOM=RESI_AS)
-    DETRUIRE(NOM=BTLA_AS)
-    DETRUIRE(NOM=CN2MBR)
-    DETRUIRE(NOM=MT_AS)
-
     # Somme en python T+ = DELTA_t + T-
-    T = CREA_CHAMP(reuse     = T,
-                  OPERATION = 'COMB',
-                  TYPE_CHAM = 'NOEU_TEMP_R',
-                  COMB      = (
-                               _F(
-                                  CHAM_GD = DELTA_T,
-                                  COEF_R  = 1.
-                                 ),
-                               _F(
-                                  CHAM_GD = T,
-                                  COEF_R  = 0.
-                                 ),
-                              ),)
+    T = DELTA_T.duplicate()
 
-    DELTA_T = CREA_CHAMP(reuse     = DELTA_T,
-                  OPERATION = 'COMB',
-                  TYPE_CHAM = 'NOEU_TEMP_R',
-                  COMB      = (
-                               _F(
-                                  CHAM_GD = DELTA_T,
-                                  COEF_R  = 0.
-                                 ),
-                              ),)
+    DELTA_T *= 0.
+
 FIN()
 #

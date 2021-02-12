@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -306,19 +306,7 @@ DIF_VAR=CREA_CHAMP(OPERATION='ASSE',
                             COEF_R=-1.),
                         ))
 
-# DIF_FOR = FOR_REF - FORCAS
-DIF_FOR=CREA_CHAMP(OPERATION='ASSE',
-                   MODELE=MO,
-                   TYPE_CHAM='NOEU_DEPL_R',
-                   ASSE=(_F(CHAM_GD=FORCAS,
-                            TOUT='OUI',
-                            CUMUL='OUI',
-                            COEF_R=1.),
-                         _F(CHAM_GD=FOR_REF,
-                            TOUT='OUI',
-                            CUMUL='OUI',
-                            COEF_R=-1.),
-                        ))
+DIF_FOR = FORCAS - FOR_REF
 
 
 TEST_RESU(CHAM_ELEM=(_F(CRITERE='ABSOLU',

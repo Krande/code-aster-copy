@@ -29,6 +29,7 @@
 
 #include "Meshes/BaseMesh.h"
 #include "Supervis/ResultNaming.h"
+#include "ParallelUtilities/MPIInfos.h"
 
 /**
  * @class MeshClass
@@ -94,7 +95,7 @@ class MeshClass : public BaseMeshClass {
     };
 
     /**
-     * @brief Return lisr of nodes
+     * @brief Return list of nodes
      * @param name name of group (if empty all the nodes)
      * @param local node id in local or global numbering
      * @param same_rank keep or not the nodes owned by the current domain
@@ -110,22 +111,22 @@ class MeshClass : public BaseMeshClass {
 
     const VectorLong getNodes(  ) const
     {
-        return getNodes ( std::string(), true, false);// ->0
+        return getNodes ( std::string(), true, true);// ->0
     };
 
     const VectorLong getNodes( const std::string name ) const
     {
-        return getNodes ( name, true, false);// ->0
+        return getNodes ( name, true, true);// ->0
     };
 
     const VectorLong getNodes( const std::string name, const bool localNumbering ) const
     {
-        return getNodes ( name, localNumbering, false);// ->0
+        return getNodes ( name, localNumbering, true);// ->0
     };
 
     const VectorLong getNodes( const bool localNumbering) const
     {
-        return getNodes(std::string(), localNumbering, false); // ->0
+        return getNodes(std::string(), localNumbering, true); // ->0
     };
 
     // const VectorLong getNodes( const bool same_rank ) const; //not possible
@@ -133,6 +134,24 @@ class MeshClass : public BaseMeshClass {
     // const VectorLong getNodes( const std::string name,
     //                              const bool same_rank ) const; //not possible
 
+
+    /**
+     * @brief Get inner nodes
+     * @return list of node ids
+     */
+    const VectorLong getInnerNodes() const
+    {
+        return this->getNodes( );
+    };
+
+    /**
+     * @brief Get inner nodes
+     * @return list of node ids
+     */
+    const JeveuxVectorLong getNodesRank() const
+    {
+        return JeveuxVectorLong(getName() + ".NOEX", VectorLong(getNumberOfNodes(), getMPIRank()));
+    };
 
     /**
      * @brief Read a Aster Mesh file

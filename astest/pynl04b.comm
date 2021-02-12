@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -279,18 +279,7 @@ SIGM2=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
 # PETITE DEFORMATION
 #-----------------------------------------
 # DIF_FOR = FOR_REF - FORCAS : FORC_NODA
-DIF_FOR=CREA_CHAMP(OPERATION='ASSE',
-                   MODELE=MODEL,
-                   TYPE_CHAM='NOEU_DEPL_R',
-                   ASSE=(_F(CHAM_GD=FORCAS,
-                            TOUT='OUI',
-                            CUMUL='OUI',
-                            COEF_R=1.),
-                         _F(CHAM_GD=FOR_REF,
-                            TOUT='OUI',
-                            CUMUL='OUI',
-                            COEF_R=-1.),
-                        ))
+DIF_FOR = FORCAS - FOR_REF
 
 # DIF_SIG = SIG_REF - SIGM : CONTRAINTE
 DIF_SIG=CREA_CHAMP(OPERATION='ASSE',
@@ -308,18 +297,7 @@ DIF_SIG=CREA_CHAMP(OPERATION='ASSE',
 
 # GROT_GDEP
 #-----------------------------------------
-DIF_FOR2=CREA_CHAMP(OPERATION='ASSE',
-                   MODELE=MODEL,
-                   TYPE_CHAM='NOEU_DEPL_R',
-                   ASSE=(_F(CHAM_GD=FORCAS2,
-                            TOUT='OUI',
-                            CUMUL='OUI',
-                            COEF_R=1.),
-                         _F(CHAM_GD=FOR_REF2,
-                            TOUT='OUI',
-                            CUMUL='OUI',
-                            COEF_R=-1.),
-                        ))
+DIF_FOR2 = FORCAS2 - FOR_REF2
 
 # DIF_SIG = SIG_REF - SIGM : CONTRAINTE
 DIF_SIG2=CREA_CHAMP(OPERATION='ASSE',

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -34,5 +34,17 @@ class AssembleVectorOperator(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         self._result = FieldOnNodesReal()
+
+    def post_exec(self, keywords):
+        """Store references to related objets objects.
+
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords, changed
+                in place.
+        """
+        dofNum = keywords["NUME_DDL"]
+        self._result.setDOFNumbering(dofNum)
+        self._result.setMesh(dofNum.getMesh())
+        self._result.setDescription(dofNum.getDescription())
 
 ASSE_VECTEUR = AssembleVectorOperator.run

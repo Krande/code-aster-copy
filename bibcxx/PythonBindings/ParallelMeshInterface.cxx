@@ -241,6 +241,20 @@ and a restriction to MPI-rank.
         )",
               ( py::arg( "self" ), py::args("localNumbering", "same_rank") )
                )
+        .def( "getInnerNodes", &ParallelMeshClass::getInnerNodes, R"(
+Return the list of the indexes of the inner nodes in the mesh
+
+Returns:
+    list[int]: Indexes of the nodes.
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "getOuterNodes", &ParallelMeshClass::getOuterNodes, R"(
+Return the list of the indexes of the outer nodes in the mesh
+
+Returns:
+    list[int]: Indexes of the nodes.
+        )",
+              ( py::arg( "self" ) ) )
         .def( "readMedFile", &ParallelMeshClass::readMedFile, R"(
 Read a mesh file from MED format.
 

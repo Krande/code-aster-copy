@@ -94,7 +94,7 @@ class FieldBuilder {
     };
 
     /**
-     * @brief Build a FieldOnCells with a FieldOnNodesDescription
+     * @brief Build a FieldOnNodes with a FieldOnNodesDescription
      */
     template < typename ValueType >
     boost::shared_ptr< FieldOnNodesClass< ValueType > > buildFieldOnNodes( std::string name ) {

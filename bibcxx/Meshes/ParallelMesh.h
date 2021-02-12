@@ -95,7 +95,6 @@ class ParallelMeshClass : public BaseMeshClass {
      */
     const JeveuxVectorLong getCellsRank() const { return _outerCells; };
 
-
     bool hasGroupOfCells( const std::string &name, const bool local) const;
 
     bool hasGroupOfCells( const std::string &name) const
@@ -164,10 +163,23 @@ class ParallelMeshClass : public BaseMeshClass {
         return getNodes(std::string(), localNumbering, same_rank); // ->0
     };
 
-    // const VectorLong getNodes( const bool same_rank ) const; //not possible
+    /**
+     * @brief Get inner nodes
+     * @return list of node ids
+     */
+    const VectorLong getInnerNodes() const
+    {
+        return this->getNodes(std::string(), true, true);
+    };
 
-    // const VectorLong getNodes( const std::string name, const bool same_rank )
-    // const; //not possible
+    /**
+     * @brief Get outer nodes
+     * @return list of node ids
+     */
+    const VectorLong getOuterNodes() const
+    {
+        return this->getNodes(std::string(), true, false);
+    };
 
 
     /**

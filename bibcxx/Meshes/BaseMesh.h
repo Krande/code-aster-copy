@@ -5,7 +5,7 @@
  * @file BaseMesh.h
  * @brief Fichier entete de la classe BaseMesh
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -219,6 +219,30 @@ class BaseMeshClass : public DataStructure, public ListOfTablesClass {
      * @return VectorLong
      */
     virtual const VectorLong getNodes( const std::string name ) const {
+        throw std::runtime_error( "Not allowed" );
+    }
+
+    /**
+     * @brief Returns the nodes indexes of inner nodes
+     * @return VectorLong
+     */
+    virtual const VectorLong getInnerNodes(  ) const {
+        throw std::runtime_error( "Not allowed" );
+    }
+
+    /**
+     * @brief Returns the nodes indexes of outer nodes
+     * @return VectorLong
+     */
+    virtual const VectorLong getOuterNodes( ) const {
+        throw std::runtime_error( "Not allowed" );
+    }
+
+    /**
+     * @brief Get the JeveuxVector for outer subdomain nodes
+     * @return VectorLong
+     */
+    virtual const JeveuxVectorLong getNodesRank(  ) const {
         throw std::runtime_error( "Not allowed" );
     }
 

@@ -40,6 +40,27 @@ FieldOnNodesDescriptionClass::FieldOnNodesDescriptionClass( const std::string na
       _namesOfGroupOfCells( getName() + ".LILI" ), _indexationVector( getName() + ".NUEQ" ),
       _nodeAndComponentsNumberFromDOF( getName() + ".DEEQ" ){};
 
+
+
+ASTERINTEGER FieldOnNodesDescriptionClass::getNumberOfDofs() const
+{
+    return _nodeAndComponentsNumberFromDOF->size() / 2;
+};
+
+VectorLong FieldOnNodesDescriptionClass::getNodesFromDOF() const
+{
+    _nodeAndComponentsNumberFromDOF->updateValuePointer();
+    const ASTERINTEGER nb_eq = this->getNumberOfDofs();
+
+    VectorLong nodes(nb_eq);
+    for(int i_eq = 0; i_eq < nb_eq; i_eq++)
+        nodes[i_eq] = (*_nodeAndComponentsNumberFromDOF)[2 * i_eq];
+
+    return nodes;
+}
+
+
+
 BaseDOFNumberingClass::BaseDOFNumberingClass( const std::string &type, const JeveuxMemory memType )
     : DataStructure( ResultNaming::getNewResultName(), 14, type, memType ),
       _nameOfSolverDataStructure( JeveuxVectorChar24( getName() + ".NSLV" ) ),

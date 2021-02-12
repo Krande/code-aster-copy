@@ -237,6 +237,13 @@ Returns:
         )",
               ( py::arg( "self" ), py::args("localNumbering", "same_rank") )
                )
+        .def( "getInnerNodes", &MeshClass::getInnerNodes, R"(
+Return the list of the indexes of the nodes in the mesh
+
+Returns:
+    list[int]: Indexes of the nodes.
+        )",
+              ( py::arg( "self" ) ) )
         .def( "readAsterFile", &MeshClass::readAsterFile, R"(
 Read a mesh file from ASTER format.
 

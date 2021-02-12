@@ -60,9 +60,9 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      * @brief Destructeur
      */
     ~JeveuxVectorClass() {
-// #ifdef ASTER_DEBUG_CXX
-//         std::cout << "DEBUG: JeveuxVector.destr: " << _name << std::endl;
-// #endif
+#ifdef ASTER_DEBUG_CXX
+        // std::cout << "DEBUG: JeveuxVector.destr: " << _name << std::endl;
+#endif
         _valuePtr = nullptr;
     };
 
@@ -76,6 +76,9 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
         toCopy.updateValuePointer();
         for ( int i = 0; i < toCopy.size(); ++i )
             this->operator[]( i ) = toCopy[i];
+        // Copy Jeveux attribute
+        std::string docu = toCopy.getInformationParameter();
+        if (docu != "") this->setInformationParameter(docu);
         return *this;
     };
 
@@ -161,6 +164,9 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
         } else
             return false;
         updateValuePointer();
+#ifdef ASTER_DEBUG_CXX
+        // std::cout << "DEBUG: JeveuxVector.alloc: " << _name << std::endl;
+#endif
         return true;
     };
 
@@ -170,6 +176,9 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
     void deallocate() {
         if ( _name != "" && get_sh_jeveux_status() == 1 )
             CALLO_JEDETR( _name );
+#ifdef ASTER_DEBUG_CXX
+        // std::cout << "DEBUG: JeveuxVector.dealloc: " << _name << std::endl;
+#endif
     };
 
     /**
@@ -181,6 +190,8 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      * @brief Get the value of DOCU parameter of jeveux object
      */
     std::string getInformationParameter() const {
+        if ( !exists() )
+            return "";
         const std::string param( "DOCU" );
         std::string charval( 4, ' ' );
         ASTERINTEGER valTmp;
@@ -301,6 +312,12 @@ template < class ValueType > class JeveuxVector {
 
     JeveuxVector( std::string nom )
         : _jeveuxVectorPtr( new JeveuxVectorClass< ValueType >( nom ) ){};
+
+    JeveuxVector( std::string nom, const std::vector<ValueType>& vect )
+        : _jeveuxVectorPtr( new JeveuxVectorClass< ValueType >( nom ) )
+        {
+            (*_jeveuxVectorPtr) = vect;
+        };
 
     ~JeveuxVector(){};
 

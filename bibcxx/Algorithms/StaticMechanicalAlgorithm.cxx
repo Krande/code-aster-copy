@@ -69,12 +69,12 @@ void StaticMechanicalAlgorithm::oneStep( const CurrentContext &ctx ) {
                                                                                       );
     FieldOnNodesRealPtr chNoNeu = vectElem3->assembleVector( dofNum1, ctx._time, Temporary );
 
-    chNoDir->addFieldOnNodes( *chNoLap );
-    chNoDir->addFieldOnNodes( *chNoNeu );
+    *chNoDir += *chNoLap;
+    *chNoDir += *chNoNeu;
 
     if ( ctx._varCom->existsMechanicalLoads() ) {
         auto varComLoad = ctx._varCom->computeMechanicalLoads( dofNum1 );
-        chNoDir->addFieldOnNodes( *varComLoad );
+        *chNoDir += *varComLoad;
     }
 
     CommandSyntax cmdSt( "MECA_STATIQUE" );

@@ -38,7 +38,8 @@ void exportFieldOnNodesToPython() {
         .def( "__init__", py::make_constructor(&initFactoryPtr< FieldOnNodesRealClass >))
         .def( "__init__",
               py::make_constructor(&initFactoryPtr< FieldOnNodesRealClass, std::string >))
-
+        .def(py::init<const FieldOnNodesRealClass&>())
+        .def( "duplicate", &FieldOnNodesRealClass::duplicate)
         .def( "exportToSimpleFieldOnNodes",
               &FieldOnNodesRealClass::exportToSimpleFieldOnNodes )
         .def( "getMesh", &FieldOnNodesRealClass::getMesh )
@@ -46,6 +47,16 @@ void exportFieldOnNodesToPython() {
               +[]( const FieldOnNodesRealClass &v, int i ) { return v.operator[]( i ); } )
         .def( "__setitem__",
               +[]( FieldOnNodesRealClass &v, int i, float f ) { return v.operator[]( i )=f; } )
+        .def( "__add__",
+              +[]( FieldOnNodesRealClass &v1, FieldOnNodesRealClass &v2 ) { return (v1 + v2); } )
+        .def( py::self += py::self )
+        .def( py::self -= py::self )
+        .def( py::self + py::self )
+        .def( py::self - py::self )
+        .def( py::self * float() )
+        .def( float() * py::self )
+        .def( py::self *= float() )
+        .def( - py::self)
         .def( "printMedFile", &FieldOnNodesRealClass::printMedFile )
         .def( "setDOFNumbering", &FieldOnNodesRealClass::setDOFNumbering )
         .def( "setMesh", &FieldOnNodesRealClass::setMesh )
@@ -54,8 +65,37 @@ void exportFieldOnNodesToPython() {
         .def( "getDOFNumbering", &FieldOnNodesRealClass::getDOFNumbering )
         .def( "getMesh", &FieldOnNodesRealClass::getMesh )
         .def( "getDescription", &FieldOnNodesRealClass::getDescription )
-        .def( "update", &FieldOnNodesRealClass::update )
-        .def( "updateValuePointers", &FieldOnNodesRealClass::updateValuePointers );
+        .def( "updateValuePointers", &FieldOnNodesRealClass::updateValuePointers )
+        .def( "norm", &FieldOnNodesRealClass::norm,
+               R"(
+Return the euclidean norm of the field
+
+Argument:
+    normType: "NORM_1", "NORM_2", "NORM_INFINITY"
+
+Returns:
+    double: euclidean norm
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "dot", &FieldOnNodesRealClass::dot,
+               R"(
+Return the dot product of two fields
+
+Argument:
+    FieldOnNodes: field
+
+Returns:
+    double: dot produc
+        )",
+              ( py::arg( "self"), py::arg( "field") ) )
+        .def( "size", &FieldOnNodesRealClass::size,
+               R"(
+Return the size of the field
+
+Return:
+    int: number of element in the field
+        )",
+              ( py::arg( "self" ) ) );
     py::class_< FieldOnNodesComplexClass, FieldOnNodesComplexPtr,
                 py::bases< DataFieldClass > >( "FieldOnNodesComplex", py::no_init )
         .def( "__init__", py::make_constructor(&initFactoryPtr< FieldOnNodesComplexClass >))

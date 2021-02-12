@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ def injector(boost_class):
                 if name not in ("__call__", "__getattr__", "__getinitargs__",
                                 "__getitem__", "__getstate__",
                                 "__getstate_manages_dict__", "__len__",
-                                "__setstate__"):
+                                "__setstate__", "__add__", "__mult__", "__iadd__"):
                     continue
             setattr(boost_class, name, attr)
     return decorated

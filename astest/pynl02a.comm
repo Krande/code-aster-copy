@@ -124,11 +124,6 @@ for i_inst in range(1,len(l_inst)) :
    # creation du NUME_DDL
    if i_inst == 1 :
 
-      # matrice elementaire tangente (sans lagranges)
-      MT_EL=CALC_MATR_ELEM(OPTION='RIGI_MECA',
-                           MODELE=MO,
-                           CHAM_MATER=CHMAT)
-
       # matrice elementaire complete
       M_EL=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                           MODELE=MO,
@@ -143,25 +138,6 @@ for i_inst in range(1,len(l_inst)) :
    #=========================================================
 
    if i_inst == 1 :
-
-      # creer un cham_no complet a 0, mais le DESC(2) vaut 8 au lieu de 1 pour DU
-#       U=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-#                    OPERATION='AFFE',
-#                    MAILLAGE=MA,
-#                    NUME_DDL=NU,
-#                    AFFE=_F(TOUT='OUI',
-#                            NOM_CMP=('DX','DY','DZ'),
-#                            VALE=(0.,0.,0.),
-#                            ),)
-#
-#       U=CREA_CHAMP(OPERATION='COMB',
-#                    TYPE_CHAM='NOEU_DEPL_R',
-#                    COMB=(_F(CHAM_GD=DU, COEF_R=0.),
-#                          _F(CHAM_GD=DU,   COEF_R=0.),),)
-
-#     EN FAIT, ON NE PEUT PAS CREER LE CHAMP U ICI CAR SON PROFIL SERAIT MAUVAIS
-#     ON LE FERA APRES LA PREDICTION DU 1ER PAS DE TEMPS
-
 
       SIGMA=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                       OPERATION='AFFE',
@@ -179,14 +155,7 @@ for i_inst in range(1,len(l_inst)) :
    else :
 
       # DEPLACEMENTS : U = U + DELTA_U
-      U=CREA_CHAMP(reuse=U,
-                   OPERATION='COMB',
-                   TYPE_CHAM='NOEU_DEPL_R',
-                   COMB=(_F(CHAM_GD=U, COEF_R=1.),
-                         _F(CHAM_GD=DU,COEF_R=1.),),)
-
-      DETRUIRE(NOM=DELTA_U)
-      DETRUIRE(NOM=(SIGMA,VARI),)
+      U += DU
 
       SIG_TEMP=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
                           TABLE=CONT,
@@ -214,9 +183,6 @@ for i_inst in range(1,len(l_inst)) :
                       ASSE  = _F(TOUT       ='OUI',
                                  CHAM_GD    =VAR_TEMP))
 
-      DETRUIRE(NOM=(SIG_TEMP,VAR_TEMP),)
-
-
       # STOCKAGE DE LA CHARGE DU PAS DE TEMPS PRECEDENT
       CHARB_PR=CREA_CHAMP(OPERATION='COMB',
                           TYPE_CHAM='NOEU_DEPL_R',
@@ -229,17 +195,9 @@ for i_inst in range(1,len(l_inst)) :
    # pour le premier pas de temps, prediction elastique forcee
    if i_inst == 1 :
 
-      # matrice assemblee tangente (sans lagranges)
-      MT_AS=ASSE_MATRICE(MATR_ELEM=MT_EL,
-                         NUME_DDL=NU,)
-
-      # matrice assemblee complete
+      # matrice assemblee élastique
       ME_AS=ASSE_MATRICE(MATR_ELEM=M_EL,
                          NUME_DDL=NU,)
-
-      # matrice assemblee des lagranges (par soustraction)
-      ML_AS=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE = ME_AS, COEF_R= 1.),
-                                   _F(MATR_ASSE = MT_AS,COEF_R=-1.),),)
 
       ME_AS=FACTORISER(reuse =ME_AS, METHODE="MULT_FRONT",
                        MATR_ASSE=ME_AS)
@@ -250,29 +208,14 @@ for i_inst in range(1,len(l_inst)) :
    # charge assemblee : attention : ca ne doit etre que des LAGR
    CHARB_AS=ASSE_VECTEUR(VECT_ELEM=CHARB_EL,NUME_DDL=NU,)
 
-   DETRUIRE(NOM=CHARB_EL)
-
    # multiplication de la charge par la rampe
-   CHARB_AS=CREA_CHAMP(reuse=CHARB_AS,
-                       OPERATION='COMB',
-                       TYPE_CHAM='NOEU_DEPL_R',
-                       COMB=_F(CHAM_GD=CHARB_AS, COEF_R=RAMPE(inst)))
+   CHARB_AS *= RAMPE(inst)
 
    # construction du second membre
    if i_inst == 1 :
-      F_AS=CREA_CHAMP(OPERATION='COMB',
-                      TYPE_CHAM='NOEU_DEPL_R',
-                      COMB=_F(CHAM_GD=CHARB_AS, COEF_R=1.),)
+      F_AS = CHARB_AS.duplicate()
    else :
-
-      DETRUIRE(NOM=F_AS)
-      F_AS=CREA_CHAMP(OPERATION='COMB',
-                      TYPE_CHAM='NOEU_DEPL_R',
-                      COMB=(_F(CHAM_GD=CHARB_AS, COEF_R=1.),
-                            _F(CHAM_GD=CHARB_PR, COEF_R=-1.),
-                            _F(CHAM_GD=FORIN_AS, COEF_R=-1.),
-                            _F(CHAM_GD=BTLA_AS,  COEF_R=-1.),
-                            ),)
+      F_AS = CHARB_AS - CHARB_PR - FORIN_AS - BTLA_AS
 
    if i_inst == 1 or pred == 'elastique' :
       # prediction avec la matrice elastique
@@ -281,19 +224,13 @@ for i_inst in range(1,len(l_inst)) :
       # prediction avec la matrice du pas de temps precedent
       DU=RESOUDRE(MATR=M_AS,CHAM_NO=F_AS,)
 
-
    # initialisation de U A PARTIR DU PROFIL DE DU
    if i_inst == 1 :
-      U=CREA_CHAMP(OPERATION='COMB',
-                   TYPE_CHAM='NOEU_DEPL_R',
-                   COMB=_F(CHAM_GD=DU, COEF_R=0.),)
+      U = DU.duplicate()
 
    # creation du DELTA_U = (Ucourant - Uequilibre) = dU(pred)
-   DELTA_U=CREA_CHAMP(OPERATION='COMB',
-                      TYPE_CHAM='NOEU_DEPL_R',
-                      COMB=_F(CHAM_GD=DU, COEF_R=1.),)
+   DELTA_U = DU.duplicate()
 
-   DETRUIRE(NOM=(MT_EL,MT_AS,F_AS),INFO=1)
 
    #=========================================================
    #               BOUCLE DE NEWTON
@@ -366,9 +303,6 @@ for i_inst in range(1,len(l_inst)) :
          FIN()
 
 
-      DETRUIRE(NOM=CODE)
-
-
       #=========================================================
       #   MATRICE TANGENTE
       #=========================================================
@@ -387,12 +321,8 @@ for i_inst in range(1,len(l_inst)) :
       MT_AS=ASSE_MATRICE(MATR_ELEM=MT_EL,
                          NUME_DDL=NU,)
 
-      # matrice assemblee complete
-      M_AS=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE = MT_AS,COEF_R= 1.),
-                                  _F(MATR_ASSE = ML_AS,COEF_R= 1.),),)
-
-      M_AS=FACTORISER(reuse =M_AS, METHODE="MULT_FRONT",
-                       MATR_ASSE=M_AS,)
+      M_AS=FACTORISER(reuse =MT_AS, METHODE="MULT_FRONT",
+                       MATR_ASSE=MT_AS,)
 
       #=========================================================
       #   SECONDS MEMBRES et RESIDU
@@ -412,8 +342,6 @@ for i_inst in range(1,len(l_inst)) :
       FORIN_AS=ASSE_VECTEUR(VECT_ELEM=FORIN_EL,
                             NUME_DDL=NU,)
 
-      DETRUIRE(NOM=FORIN_EL)
-
       # Bt.La elem
       BTLA_EL=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
                            TABLE=CONT,
@@ -428,31 +356,13 @@ for i_inst in range(1,len(l_inst)) :
       BTLA_AS=ASSE_VECTEUR(VECT_ELEM=BTLA_EL,
                            NUME_DDL=NU,)
 
-      DETRUIRE(NOM=BTLA_EL)
-
       # f_v : sommes des 2nds membres
-      F_AS=CREA_CHAMP(OPERATION='COMB',
-                      TYPE_CHAM='NOEU_DEPL_R',
-                      COMB=(_F(CHAM_GD=FORIN_AS, COEF_R=-1.),
-                            _F(CHAM_GD=BTLA_AS,  COEF_R=-1.),),)
+      F_AS = -FORIN_AS - BTLA_AS
 
-      RESB=CREA_CHAMP(OPERATION='COMB',
-                      TYPE_CHAM='NOEU_DEPL_R',
-                      COMB=(_F(CHAM_GD=CHARB_AS, COEF_R= 1.),
-                            _F(CHAM_GD=BTLA_AS, COEF_R=-1.),),)
+      RESB = CHARB_AS - BTLA_AS
 
-      tmp_x = F_AS.EXTR_COMP('DX',[]).valeurs
-      tmp_y = F_AS.EXTR_COMP('DY',[]).valeurs
-      tmp_z = F_AS.EXTR_COMP('DZ',[]).valeurs
-
-      residu_haut = max( max(abs(tmp_x)) , max(abs(tmp_y)) , max(abs(tmp_z)) )
-
-      tmp_x = RESB.EXTR_COMP('DX',[]).valeurs
-      tmp_y = RESB.EXTR_COMP('DY',[]).valeurs
-      tmp_z = RESB.EXTR_COMP('DZ',[]).valeurs
-      DETRUIRE(NOM=RESB)
-
-      residu_bas = max( max(abs(tmp_x)) , max(abs(tmp_y)) , max(abs(tmp_z)) )
+      residu_haut = F_AS.norm("NORM_INFINITY")
+      residu_bas = RESB.norm("NORM_INFINITY")
 
       Residu[IterNewton-1]  = residu_haut / residu_bas
       ResiduX[IterNewton-1] = residu_haut
@@ -470,18 +380,11 @@ for i_inst in range(1,len(l_inst)) :
       #   resolution M_AS . DU = FEXT - FORIN_AS - BTLA_AS
       #=========================================================
 
-      DETRUIRE(NOM=DU)
       DU=RESOUDRE(MATR=M_AS,
                   CHAM_NO=F_AS,)
 
-      # somme en python DELTA_U = DELTA_U + DU
-      DELTA_U=CREA_CHAMP(reuse=DELTA_U,
-                         OPERATION='COMB',
-                         TYPE_CHAM='NOEU_DEPL_R',
-                         COMB=(_F(CHAM_GD=DELTA_U, COEF_R=1.),
-                               _F(CHAM_GD=DU,      COEF_R=1.),),)
+      DELTA_U +=  DU
 
-      DETRUIRE(NOM=(MT_EL,MT_AS,M_AS,F_AS),)
 
    print('instant ',inst)
    print('IterNewton | Resi_Glob_rela   | Resi_Glob_Maxi  | Convergence')
@@ -513,8 +416,6 @@ VAR_REF=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_VARI_R',
 #=========================================================
 #          EXTRACTION DES CHAMPS CALCULES
 #=========================================================
-
-DETRUIRE(NOM=(SIGMA,VARI),)
 
 SIG_TEMP=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
                     TABLE=CONT,
@@ -548,7 +449,6 @@ VARI=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
                 ASSE  = _F(TOUT       ='OUI',
                            CHAM_GD    =VAR_TEMP))
 
-DETRUIRE(NOM=(SIG_TEMP,VAR_TEMP),)
 
 #=========================================================
 #            REALISATION DES TESTS
@@ -622,7 +522,5 @@ IMPR_TABLE(TABLE=CONT)
 
 IMPR_RESU(FORMAT='GMSH',UNITE=37,
           RESU=_F(RESULTAT=SOLUT,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')),)
-
-
 
 FIN()

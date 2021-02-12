@@ -107,6 +107,10 @@ class MPIContainerUtilities {
     /// Specialization for VectorString
     static void all_gather(const VectorString& in_values,
                            VectorString& out_values);
+
+    /// AllReduce values, one value from each process (MPI_AllReduce).
+    template<typename T>
+    static void all_reduce(const T in_value, T& out_value, MPI_Op op);
 };
 
 //---------------------------------------------------------------------------
@@ -228,7 +232,14 @@ template<typename T>
                 out_values.data(), 1, mpi_type<T>(), commWorld->id);
 }
 //---------------------------------------------------------------------------
-
+template<typename T>
+    void MPIContainerUtilities::all_reduce(const T in_value,
+                                          T& out_value, MPI_Op op) {
+    aster_comm_t *commWorld = aster_get_comm_world();
+    MPI_Allreduce(const_cast<T*>(&in_value), const_cast<T*>(&out_value),
+                1, mpi_type<T>(), op, commWorld->id);
+}
+//---------------------------------------------------------------------------
 
 
 #endif /* MPICONTAINERUTILITIES_H_ */
