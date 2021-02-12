@@ -529,8 +529,11 @@ integer, intent(out)  :: retcom
                                     phi  , phim  ,&
                                     satur, saturm,&
                                     rho11, rho11m)
-                                   
-            congep(adcp12) = 0.d0
+            congep(adcp12) = appmasl(ds_thm,m12m,&
+                                    phi       , phim,&
+                                    1.d0-satur, 1.d0-saturm,&
+                                    rho12     , rho12m)
+            
             congep(adcp21) = appmasl(ds_thm,m21m,&
                                     phi       , phim,&
                                     1.d0-satur, 1.d0-saturm,&
@@ -547,7 +550,11 @@ integer, intent(out)  :: retcom
                                     satur, saturm,&
                                     rho11, rho11m,&
                                     epsv , epsvm)
-            congep(adcp12) = 0.d0
+            congep(adcp12) = appmas(m12m,&
+                                    phi       , phim,&
+                                    1.d0-satur, 1.d0-saturm,&
+                                    rho12     , rho12m,&
+                                    epsv      , epsvm)            
             congep(adcp21) = appmas(m21m,&
                                     phi       , phim,&
                                     1.d0-satur, 1.d0-saturm,&
