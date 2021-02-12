@@ -55,6 +55,8 @@ class ParallelMeshClass : public BaseMeshClass {
     SetOfString _setOfAllGOE;
     /** @brief Identify outer nodes */
     JeveuxVectorLong _outerNodes;
+    /** @brief Identify outer cells */
+    JeveuxVectorLong _outerCells;
     /** @brief Global numbering */
     JeveuxVectorLong _globalNumbering;
     /** @brief List of opposite domain */
@@ -78,7 +80,7 @@ class ParallelMeshClass : public BaseMeshClass {
     ParallelMeshClass( const std::string &name )
         : BaseMeshClass( name, "MAILLAGE_P" ), _globalGroupOfNodes( getName() + ".PAR_GRPNOE" ),
           _globalGroupOfCells( getName() + ".PAR_GRPMAI" ), _outerNodes( getName() + ".NOEX" ),
-          _globalNumbering( getName() + ".NULOGL" ),
+          _outerCells( getName() + ".MAEX" ), _globalNumbering( getName() + ".NULOGL" ),
           _listOfOppositeDomain( getName() + ".DOMJOINTS" ){};
 
     /**
@@ -86,6 +88,12 @@ class ParallelMeshClass : public BaseMeshClass {
      * @return _outerNodes
      */
     const JeveuxVectorLong getNodesRank() const { return _outerNodes; };
+
+    /**
+     * @brief Get the JeveuxVector for outer subdomain nodes
+     * @return _outerNodes
+     */
+    const JeveuxVectorLong getCellsRank() const { return _outerCells; };
 
 
     bool hasGroupOfCells( const std::string &name, const bool local) const;

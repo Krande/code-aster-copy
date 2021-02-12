@@ -258,6 +258,13 @@ Returns:
     list[int]: MPI-Rank of the owners of the nodes
         )",
               ( py::arg( "self" ) ) )
+        .def( "getCellsRank", &ParallelMeshClass::getCellsRank, R"(
+Return the rank of the processor which owns the cells
+
+Returns:
+    list[int]: MPI-Rank of the owners of the cells
+        )",
+              ( py::arg( "self" ) ) )
         .def( "_updateGlobalGroupOfCells", &ParallelMeshClass::updateGlobalGroupOfCells, R"(
 Share and update global groups of cells betwenn MPI process.
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
 #include "asterf_types.h"
 #include "jeveux.h"
 !
+#include "asterc/ismaem.h"
 #include "asterfort/as_mmhgnr.h"
 #include "asterfort/as_msdcrr.h"
 #include "asterfort/as_msdjni.h"
@@ -33,6 +34,7 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -40,6 +42,7 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/lrm_clean_joint.h"
 #include "asterfort/mdexma.h"
 #include "asterfort/utmess.h"
@@ -57,17 +60,21 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
 ! ---------------------------------------------------------------------------------------------
 !
     character(len=4) :: chrang, chnbjo, chdomdis
-    character(len=24) :: nonulg, nojoin, nojoin_old, nojoin_new
+    character(len=8) :: mesh
+    character(len=24) :: nonulg, nojoin, nojoin_old, nojoin_new, connex
     character(len=64) :: nomjoi, nommad
     character(len=200) :: descri
-    integer rang, nbproc, nbjoin, domdis, nstep, ncorre
-    integer icor, entlcl, geolcl, entdst, geodst, ncorr2
-    integer jnlogl, codret, i_join, ino, numno, deca
+    integer :: rang, nbproc, nbjoin, domdis, nstep, ncorre
+    integer :: icor, entlcl, geolcl, entdst, geodst, ncorr2
+    integer :: jnlogl, codret, i_join, ino, numno, deca
+    integer :: ima, nbma, node_id, nbnoma
     integer, parameter :: ednoeu=3, typnoe=0
     mpi_int :: mrank, msize
     integer, pointer :: v_noext(:) => null()
     integer, pointer :: v_nojoin(:) => null()
     integer, pointer :: v_joint(:) => null()
+    integer, pointer :: v_maex(:) => null()
+    integer, pointer :: v_connex(:) => null()
 !
     call jemarq()
 !
@@ -81,7 +88,8 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
 !
 ! --- Récupération de la numérotation globale des noeuds
 !
-        nonulg = nomnoe(1:8)//'.NULOGL'
+        mesh = nomnoe(1:8)
+        nonulg = mesh//'.NULOGL'
         call wkvect(nonulg, 'G V I', nbnoeu, jnlogl)
         call as_mmhgnr(fid, nomam2, ednoeu, typnoe, zi(jnlogl), nbnoeu, codret)
         call codent(rang, 'G', chrang)
@@ -183,6 +191,21 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
 !
             do ino=1, nbnoeu
                 ASSERT(v_noext(ino).ne.-1)
+            end do
+!
+! --- Creation .MAEX
+!
+            connex = mesh //'.CONNEX'
+            call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbma)
+            call wkvect(mesh//'.MAEX', 'G V I', nbma, vi=v_maex)
+            v_maex(1:nbma) = ismaem()
+            do ima = 1, nbma
+                call jelira(jexnum(connex , ima), 'LONMAX', nbnoma)
+                call jeveuo(jexnum(connex , ima), 'L', vi=v_connex)
+                do ino = 1, nbnoma
+                    node_id = v_connex(ino)
+                    v_maex(ima) = min(v_maex(ima), v_noext(node_id))
+                end do
             end do
         else
             call utmess('A', 'MAILLAGE1_5', sk=nomam2)

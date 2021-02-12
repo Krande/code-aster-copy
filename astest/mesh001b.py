@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -104,6 +104,20 @@ test.assertEqual(NodesRank[1], rank)
 node92 = [85, 84 ,106]
 test.assertEqual(globalNodesNum[node92[rank]-1], 92-1)
 test.assertEqual(NodesRank[node92[rank]-1], 1)
+
+# Cells rank
+cellsRankRef = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
+     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
+          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 1, 0, 1, 1, 0, 0, 1, \
+              1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, \
+                  1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0], \
+                      [2, 2, 0, 2, 1, 1, 2, 1, 2, 2, 0, 2, 1, 1, 2, 1, 2, 2, 0, 2, 1, \
+                           0, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 1, 2, 2, \
+                               1, 2, 2, 2, 0, 2, 2, 1, 1, 2, 2, 1, 2, 2, 2, 0, 2, 2, 1, \
+                                   1, 2, 2, 1, 2, 2, 2, 0, 2, 2, 1, 0, 2, 2, 1]]
+test.assertEqual(len(mesh.getCellsRank()), mesh.getNumberOfCells())
+test.assertSequenceEqual(mesh.getCellsRank(), cellsRankRef[rank])
+
 
 def inter(list1, list2):
     return list(set(list1).intersection(list2))
