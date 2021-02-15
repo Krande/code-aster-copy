@@ -53,6 +53,9 @@ extern void DEFS( DETMATRIX, detmatrix, const char *, STRING_SIZE );
 #define CALLO_DELETE_MATRIX( a, b ) CALLOO( DELETE_MATRIX, delete_matrix, a, b )
 void DEFSS( DELETE_MATRIX, delete_matrix, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
+#define CALL_DELETE_TEMPORARY_OBJECTS( ) CALL0( DELETETEMPORARYOBJECTS, deletetemporaryobjects )
+void DEF0( DELETETEMPORARYOBJECTS, deletetemporaryobjects);
+
 #define CALLO_MATR_ASSE_SET_VALUES( a, b, c, d, e) CALLOPPPP( MATR_ASSE_SET_VALUES, \
                                                             matr_asse_set_values, a, b, c, d, e)
 extern void DEFSPPPP( MATR_ASSE_SET_VALUES, matr_asse_set_values, const char *, STRING_SIZE, \

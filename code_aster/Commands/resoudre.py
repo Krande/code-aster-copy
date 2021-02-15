@@ -33,22 +33,10 @@ class SolveLinearSystem(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        self._result = FieldOnNodesReal()
-
-    def post_exec(self, keywords):
-        """Store references to FieldOnNodes objects.
-
-        Arguments:
-            keywords (dict): Keywords arguments of user's keywords, changed
-                in place.
-        """
 
         rhs = keywords.get("CHAM_NO")  # Right Hand Side
 
-        self._result.setMesh(rhs.getMesh())
-        self._result.setDOFNumbering(rhs.getDOFNumbering())
-        self._result.setDescription(rhs.getDescription())
-
+        self._result = FieldOnNodesReal(rhs.getDOFNumbering())
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.

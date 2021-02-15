@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
-                      typres, chpres)
+                      typres, chpres, basez)
         integer, intent(in) :: nbcmb
         character(len=*), intent(in) :: typcst(*)
         real(kind=8), intent(in) :: const(*)
@@ -28,5 +28,6 @@ interface
         character(len=*), intent(in) :: nomch(*)
         character(len=*), intent(in) :: typres
         character(len=*), intent(in) :: chpres
+        character(len=1), intent(in), optional :: basez
     end subroutine vtcmbl
 end interface

@@ -31,7 +31,7 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "Numbering/DOFNumbering.h"
+#include "Numbering/BaseDOFNumbering.h"
 
 /**
  * @class ParallelDOFNumberingClass

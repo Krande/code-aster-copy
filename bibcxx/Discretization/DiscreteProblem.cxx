@@ -214,7 +214,7 @@ FieldOnNodesRealPtr DiscreteProblemClass::buildDirichletBC(
         _listOfLoad->build();
     //         throw std::runtime_error( "ListOfLoads is empty" );
 
-    FieldOnNodesRealPtr retour( new FieldOnNodesRealClass( memType ) );
+    FieldOnNodesRealPtr retour = boost::make_shared<FieldOnNodesRealClass>( memType );;
     std::string resuName = retour->getName();
     std::string dofNumName = curDOFNum->getName();
 
@@ -225,7 +225,11 @@ FieldOnNodesRealPtr DiscreteProblemClass::buildDirichletBC(
     std::string funcLoadName = listOfFunctions->getName();
     funcLoadName.resize( 24, ' ' );
 
-    CALLO_ASCAVC_WRAP( lLoadName, infLoadName, funcLoadName, dofNumName, &time, resuName );
+    CALLO_ASCAVC_WRAP( lLoadName, infLoadName, funcLoadName, dofNumName, &time, resuName,
+                        JeveuxMemoryTypesNames[memType] );
+
+    retour->setDOFNumbering(curDOFNum);
+    retour->update();
 
     return retour;
 };

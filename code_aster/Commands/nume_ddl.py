@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -34,11 +34,19 @@ class NumberingCreation(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        matr = keywords.get('MATR_RIGI')
-        if matr and matr[0].getModel().getMesh().getType() == 'MAILLAGE_P':
-            self._result = ParallelDOFNumbering()
+        model = keywords.get('MODELE')
+
+        if model is not None:
+            if model.getMesh().isParallel():
+                self._result = ParallelDOFNumbering()
+            else:
+                self._result = DOFNumbering()
         else:
-            self._result = DOFNumbering()
+            matr = keywords.get('MATR_RIGI')
+            if matr and matr[0].getModel().getMesh().isParallel():
+                self._result = ParallelDOFNumbering()
+            else:
+                self._result = DOFNumbering()
 
     def post_exec(self, keywords):
         """Store references to ElementaryMatrix objects.

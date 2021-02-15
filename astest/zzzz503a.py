@@ -19,6 +19,7 @@
 
 import code_aster
 from code_aster.Commands import *
+import libaster
 import numpy as np
 
 code_aster.init("--test")
@@ -150,6 +151,7 @@ test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 vcine = dProblem.buildDirichletBC(numeDDL, 0.)
 resu = monSolver.solveRealLinearSystemWithDirichletBC(matrAsse, vcine, retour)
 
+
 y = resu.EXTR_COMP()
 test.assertEqual(len(y.valeurs), 81)
 
@@ -167,6 +169,10 @@ resu = monSolver.solveRealLinearSystem(matrAsse, retour)
 resu2 = resu.exportToSimpleFieldOnNodes()
 resu2.updateValuePointers()
 test.assertAlmostEqual(resu2.getValue(5, 3), 0.000757555469653289/10.)
+
+# To be sure that vcine is Permanent #30689
+libaster.deleteTemporaryObjects()
+test.assertTrue(vcine.updateValuePointers())
 
 test.printSummary()
 

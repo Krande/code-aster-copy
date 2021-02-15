@@ -35,8 +35,11 @@ model=AFFE_MODELE(MAILLAGE=mesh,
                          PHENOMENE='MECANIQUE',
                          MODELISATION='3D',),)
 
+dofNume = NUME_DDL(MODELE=model,)
+
 field = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                       OPERATION='AFFE',
+                      NUME_DDL=dofNume,
                       MODELE=model,
                       AFFE=_F(TOUT='OUI',
                               NOM_CMP=('DX','DY','DZ'),
@@ -50,9 +53,12 @@ norm_inf = 3.0
 test.assertEqual(field.size(), 3*nbNodes)
 test.assertSequenceEqual(mesh.getInnerNodes(), range(1, nbNodes+1))
 test.assertEqual(len(mesh.getInnerNodes()), nbNodes)
+test.assertEqual(len(field.getValues()), field.size())
+test.assertAlmostEqual(sum([abs(x) for x in field.getValues()]), norm_1)
 test.assertAlmostEqual(field.norm("NORM_1"), norm_1)
 test.assertAlmostEqual(field.norm("NORM_2"), norm_2)
 test.assertAlmostEqual(field.norm("NORM_INFINITY"), norm_inf)
+test.assertAlmostEqual(max(field.getValues()), norm_inf)
 test.assertAlmostEqual(field.dot(field), norm_2*norm_2)
 
 f0 = field.duplicate()
@@ -64,6 +70,16 @@ f2.EXTR_COMP().valeurs
 f3 = -f + f2
 f3.EXTR_COMP().valeurs
 test.assertAlmostEqual(f3.norm("NORM_2"), 0)
+
+myField = code_aster.FieldOnNodesReal(dofNume)
+myField.setValues(1.0)
+test.assertAlmostEqual(myField.norm("NORM_1"), 3*nbNodes)
+
+
+field2 =  field - myField
+
+test.assertAlmostEqual(field2.norm("NORM_2"),sqrt( (4.0 + 1.0 + 4.0)*nbNodes))
+
 
 
 # For a Parallel Mesh

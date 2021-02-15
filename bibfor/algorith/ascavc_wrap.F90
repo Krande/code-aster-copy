@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,17 +16,20 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ascavc_wrap(lchar, infcha, fomult, numedd, inst, vci)
-
+subroutine ascavc_wrap(lchar, infcha, fomult, numedd, inst, vci, base)
+!
+use HHO_type
+!
 implicit none
 #include "asterfort/ascavc.h"
 
 character(len=24) :: lchar, infcha, fomult
 character(len=*) :: vci, numedd
 real(kind=8) :: inst
+character(len=1) :: base
 
 ! Wrapper to call AVCAVC from C++ without optional arguments (for HHO)
 
-    call ascavc(lchar , infcha   , fomult, numedd, inst, vci )
+    call ascavc(lchar , infcha, fomult, numedd, inst, vci, basez = base )
 
 end subroutine

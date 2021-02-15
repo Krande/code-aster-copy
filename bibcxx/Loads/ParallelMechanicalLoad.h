@@ -91,6 +91,12 @@ public:
      * @brief Pointeur intelligent vers un ParallelMechanicalLoad
      */
     typedef boost::shared_ptr< ParallelMechanicalLoadClass > ParallelMechanicalLoadPtr;
+
+
+    /**
+     * @brief Get the finite element descriptor
+     */
+    ParallelFiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _FEDesc; };
 };
 
 /**

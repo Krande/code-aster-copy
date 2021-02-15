@@ -271,8 +271,8 @@ FieldOnNodesRealPtr BaseLinearSolverClass::solveRealLinearSystemWithDirichletBC(
         throw std::runtime_error( "Matrix must be factored first" );
     }
 
-    if ( result->getName() == "" )
-        result = FieldOnNodesRealPtr( new FieldOnNodesRealClass( Permanent ) );
+    if ( result->getName().empty() )
+        result = boost::make_shared<FieldOnNodesRealClass>( Permanent );
 
     std::string blanc( " " );
     ASTERINTEGER nsecm = 0, prepos = 1, istop = 0, iret = 0;

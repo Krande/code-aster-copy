@@ -57,7 +57,7 @@ ElementaryVectorClass::assembleVector( const BaseDOFNumberingPtr &currentNumerot
     if ( ( !currentNumerotation ) || currentNumerotation->isEmpty() )
         throw std::runtime_error( "Numerotation is empty" );
 
-    FieldOnNodesRealPtr vectTmp( new FieldOnNodesRealClass( Permanent ) );
+    FieldOnNodesRealPtr vectTmp( new FieldOnNodesRealClass( memType ) );
     std::string name( " " );
     name.resize( 24, ' ' );
 
@@ -107,8 +107,9 @@ ElementaryVectorClass::assembleVector( const BaseDOFNumberingPtr &currentNumerot
     std::string name2( ( *vectTmp2 )[0].toString(), 0, 19 );
     FieldOnNodesRealPtr vectTmp3( new FieldOnNodesRealClass( name2 ) );
     vectTmp->allocateFrom( *vectTmp3 );
+    std::string base = JeveuxMemoryTypesNames[memType];
 
-    CALLO_ASCOVA( detr, name, fomult, param, &time, typres, vectTmp->getName() );
+    CALLO_ASCOVA( detr, name, fomult, param, &time, typres, vectTmp->getName(), base);
 
     return vectTmp;
 };

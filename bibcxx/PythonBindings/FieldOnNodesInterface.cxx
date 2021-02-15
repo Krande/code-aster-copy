@@ -40,6 +40,12 @@ void exportFieldOnNodesToPython() {
               py::make_constructor(&initFactoryPtr< FieldOnNodesRealClass, std::string >))
         .def(py::init<const FieldOnNodesRealClass&>())
         .def( "duplicate", &FieldOnNodesRealClass::duplicate)
+        .def( "__init__",
+              py::make_constructor(&initFactoryPtr< FieldOnNodesRealClass,
+                                                    BaseDOFNumberingPtr>))
+        .def( "__init__",
+              py::make_constructor(&initFactoryPtr< FieldOnNodesRealClass,
+                                                    BaseDOFNumberingPtr, JeveuxMemory >))
         .def( "exportToSimpleFieldOnNodes",
               &FieldOnNodesRealClass::exportToSimpleFieldOnNodes )
         .def( "getMesh", &FieldOnNodesRealClass::getMesh )
@@ -95,7 +101,23 @@ Return the size of the field
 Return:
     int: number of element in the field
         )",
-              ( py::arg( "self" ) ) );
+              ( py::arg( "self" ) ) )
+        .def( "setValues", &FieldOnNodesRealClass::setValues,
+               R"(
+Set values of the field
+
+Argument:
+    float: value to set
+        )",
+              ( py::arg( "self" ), py::arg( "value" ) ) )
+        .def( "getValues", &FieldOnNodesRealClass::getValues,
+        py::return_value_policy<py::copy_const_reference>(), R"(
+Return a list of values as (x1, y1, z1, x2, y2, z2...)
+
+Returns:
+    list[float]: List of values.
+        )",
+              ( py::arg( "self" ) )   );
     py::class_< FieldOnNodesComplexClass, FieldOnNodesComplexPtr,
                 py::bases< DataFieldClass > >( "FieldOnNodesComplex", py::no_init )
         .def( "__init__", py::make_constructor(&initFactoryPtr< FieldOnNodesComplexClass >))

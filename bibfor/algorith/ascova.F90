@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine ascova(detr, vachar, fomulz, npara, vpara,&
-                  typres, cnchar)
+                  typres, cnchar, basez)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -41,6 +41,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
     character(len=*) :: fomulz, npara, typres, cnchar, detr
     character(len=24) :: vachar
     real(kind=8) :: vpara, tval(1)
+    character(len=1), intent(in), optional :: basez
 ! ----------------------------------------------------------------------
 !  BUT :   AJOUTER / COMBINER DES VECTEURS ASSEMBLES (CHAM_NO)
 !
@@ -81,10 +82,17 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
     character(len=19) :: chamno
     character(len=24) :: fomult
     complex(kind=8) :: calpha
+    character(len=1) :: base
 !
     call jemarq()
     fomult = fomulz
     dgrd = r8dgrd()
+!
+    if(present(basez)) then
+        base = basez
+    else
+        base = 'V'
+    end if
 !
 !
 !     -- ON VERIFIE QUE LE VACHAR A LES BONNES PROPRIETES:
@@ -190,7 +198,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
 !     -----------------------------------
     if (cnchar .eq. ' ') cnchar = vachar(1:8)//'.ASCOVA'
     call vtcmbl(nbvec, zk8(jtype), zr(jcoef), zk8(jtype), zk24(jvec),&
-                zk8(jtype), cnchar)
+                zk8(jtype), cnchar, base)
     call jedetr('&&ASCOVA.COEF')
     call jedetr('&&ASCOVA.TYPE')
 !

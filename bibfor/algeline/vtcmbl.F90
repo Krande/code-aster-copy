@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
-                  typres, chpres)
+                  typres, chpres, basez)
 !     ------------------------------------------------------------------
 !     COMBINAISON LINEAIRE DE CHAM_NO OU DE CHAM_ELEM
 !     *  LES CHAM_NOS OU CHAM_ELEMS SONT REELS OU COMPLEXES
@@ -53,6 +53,7 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
     integer, intent(in) :: nbcmb
     real(kind=8), intent(in) :: const(*)
     character(len=*), intent(in) :: typcst(*), typech(*), nomch(*), typres, chpres
+    character(len=1), intent(in), optional :: basez
 !
 !
 ! DECLARATION VARIABLES LOCALES
@@ -64,6 +65,7 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
     integer :: nbdes1, nbref1, nbval1
     real(kind=8) :: dimag
     complex(kind=8) :: c8cst
+    character(len=1) :: base
     character(len=4) :: docu, type
     character(len=5) :: refe, desc, vale
     character(len=19) :: ch19, ch19r
@@ -79,6 +81,12 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
 !-----------------------------------------------------------------------
     type=typres
     ch19=nomch(1)
+!
+    if(present(basez)) then
+        base = basez
+    else
+        base = 'V'
+    end if
 !
 ! CHAM_NO OU CHAM_ELEM ?
     k24b=ch19//'.DESC'
@@ -122,10 +130,11 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
 !   CONSTRUCTION D'UN CHAM_GD RESULTAT SUR LE MODELE DE NOMCH(1)
     ch19r=chpres
     call jeexin(ch19r//vale, iret)
+!
     if (iret .eq. 0) then
-        call wkvect(ch19r//desc, 'V V I', nbdesc, kdesc)
-        call wkvect(ch19r//vale, 'V V '//type, nbvale, kvale)
-        call wkvect(ch19r//refe, 'V V K24', nbrefe, krefe)
+        call wkvect(ch19r//desc, base//' V I', nbdesc, kdesc)
+        call wkvect(ch19r//vale, base//' V '//type, nbvale, kvale)
+        call wkvect(ch19r//refe, base//' V K24', nbrefe, krefe)
     else
         call jeveuo(ch19r//desc, 'E', kdesc)
         call jelira(ch19r//desc, 'LONMAX', nbdes1)

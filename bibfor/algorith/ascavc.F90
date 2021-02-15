@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine ascavc(lchar , infcha   , fomult, numedd, inst, vci,&
-                  l_hho_, hhoField_)
+                  l_hho_, hhoField_, basez)
 !
 use HHO_type
 !
@@ -48,6 +48,7 @@ character(len=*) :: vci, numedd
 real(kind=8) :: inst
 aster_logical, intent(in), optional :: l_hho_
 type(HHO_Field), intent(in), optional :: hhoField_
+character(len=1), intent(in), optional :: basez
 ! ----------------------------------------------------------------------
 ! BUT  :  CALCUL DU CHAM_NO CONTENANT LE VECTEUR LE CINEMATIQUE
 ! ---     ASSOCIE A LA LISTE DE CHAR_CINE_* LCHAR A UN INSTANT INST
@@ -66,6 +67,7 @@ type(HHO_Field), intent(in), optional :: hhoField_
 !----------------------------------------------------------------------
     integer :: idchar, jinfc, idfomu, nchtot, nchci, ichar, icine, ilchno
     integer :: ichci, ibid, ifm, niv, neq, ieq, jdlci2,  ieqmul
+    character(len=1) :: base
     character(len=8) :: newnom
     character(len=19) :: charci, chamno, vci2
     character(len=24) :: vachci
@@ -84,6 +86,12 @@ type(HHO_Field), intent(in), optional :: hhoField_
 !
     call infniv(ifm, niv)
 !
+!
+    if(present(basez)) then
+        base = basez
+    else
+        base = 'V'
+    end if
 !
     newnom='.0000000'
 !
@@ -130,7 +138,7 @@ type(HHO_Field), intent(in), optional :: hhoField_
 !
         ichci = 0
         call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
-        call wkvect(vci2//'.DLCI', 'V V I', neq, jdlci2)
+        call wkvect(vci2//'.DLCI', base//' V I', neq, jdlci2)
         do ichar = 1, nchtot
             charge=zk24(idchar-1+ichar)(1:8)
             icine = zi(jinfc+ichar)
@@ -175,7 +183,7 @@ type(HHO_Field), intent(in), optional :: hhoField_
 !
 !     -- ON COMBINE LES CHAMPS CALCULES :
     call ascova('D', vachci, fomult, 'INST', inst,&
-                'R', vci2)
+                'R', vci2, base)
 !
 !     --SI ON A PAS DE CHARGE CINEMATIQUE, IL FAUT QUAND MEME
 !        FAIRE LE MENAGE

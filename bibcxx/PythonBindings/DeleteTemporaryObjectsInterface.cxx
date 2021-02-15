@@ -1,9 +1,9 @@
 /**
- * @file FieldOnNodesProfile.cxx
- * @brief Implementation de DOFNumbering
+ * @file DeleteTemporaryObjectsInterface.cxx
+ * @brief Interface python de MPIInfos
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,4 +21,17 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Numbering/FieldOnNodesProfile.h"
+/* person_in_charge: nicolas.sellenet at edf.fr */
+
+#include <boost/python.hpp>
+
+namespace py = boost::python;
+
+#include "PythonBindings/DeleteTemporaryObjectsInterface.h"
+
+void exportDeleteTemporaryObjectsToPython() {
+
+    py::def( "deleteTemporaryObjects", deleteTemporaryObjects, R"(
+Delete temporary Jeveux objects
+        )");
+};

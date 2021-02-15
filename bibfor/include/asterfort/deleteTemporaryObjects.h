@@ -15,20 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-#include "asterf_types.h"
 !
 interface
-    subroutine ascavc(lchar, infcha, fomult, numedd, inst, vci,&
-                      l_hho_, hhoField_, basez)
-        use HHO_type
-        character(len=24) :: lchar
-        character(len=24) :: infcha
-        character(len=24) :: fomult
-        character(len=*) :: numedd
-        real(kind=8) :: inst
-        character(len=*) :: vci
-        aster_logical, intent(in), optional :: l_hho_
-        type(HHO_Field), intent(in), optional :: hhoField_
-        character(len=1), intent(in), optional :: basez
-    end subroutine ascavc
+    subroutine deleteTemporaryObjects( )
+! Empty
+    end subroutine deleteTemporaryObjects
 end interface

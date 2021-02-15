@@ -38,7 +38,9 @@ void exportParallelMechanicalLoadToPython() {
                                                             GenericMechanicalLoadPtr, ModelPtr >))
         .def( "__init__",
               py::make_constructor(&initFactoryPtr< ParallelMechanicalLoadClass, std::string,
-                                                GenericMechanicalLoadPtr, ModelPtr >));
+                                                GenericMechanicalLoadPtr, ModelPtr >))
+        .def( "getFiniteElementDescriptor",
+              &ParallelMechanicalLoadClass::getFiniteElementDescriptor );
 };
 
 #endif /* ASTER_HAVE_MPI */

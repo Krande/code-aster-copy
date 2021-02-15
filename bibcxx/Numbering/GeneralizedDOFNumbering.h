@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe GeneralizedDOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -34,76 +34,10 @@
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/GeneralizedModel.h"
 #include "Supervis/ResultNaming.h"
-
+#include "Numbering/GeneralizedFieldOnNodesDescription.h"
 #include "Results/ForwardModeResult.h"
 #include "Results/ForwardGeneralizedModeResult.h"
 
-/**
- * @class GeneralizedFieldOnNodesDescriptionClass
- * @brief This class describes the structure of dof stored in a field on nodes
- * @author Nicolas Sellenet
- */
-class GeneralizedFieldOnNodesDescriptionClass : public DataStructure {
-    /** @brief Objet Jeveux '.DESC' */
-    JeveuxVectorLong _desc;
-    /** @brief Objet Jeveux '.NEQU' */
-    JeveuxVectorLong _nequ;
-    /** @brief Objet Jeveux '.REFN' */
-    JeveuxVectorChar24 _refn;
-    /** @brief Objet Jeveux '.DEEQ' */
-    JeveuxVectorLong _deeq;
-    /** @brief Objet Jeveux '.DELG' */
-    JeveuxVectorLong _delg;
-    /** @brief Objet Jeveux '.LILI' */
-    JeveuxVectorChar24 _lili;
-    /** @brief Objet Jeveux '.NUEQ' */
-    JeveuxVectorLong _nueq;
-    /** @brief Objet Jeveux '.PRNO' */
-    JeveuxCollectionLong _prno;
-    /** @brief Objet Jeveux '.ORIG' */
-    JeveuxCollectionLong _orig;
-
-  public:
-    /**
-     * @brief Constructeur
-     */
-    GeneralizedFieldOnNodesDescriptionClass( const JeveuxMemory memType = Permanent )
-        : DataStructure( ResultNaming::getNewResultName(), 19, "PROF_GENE", memType ),
-          _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
-          _nequ( JeveuxVectorLong( getName() + ".NEQU" ) ),
-          _refn( JeveuxVectorChar24( getName() + ".REFN" ) ),
-          _deeq( JeveuxVectorLong( getName() + ".DEEQ" ) ),
-          _delg( JeveuxVectorLong( getName() + ".DELG" ) ),
-          _lili( JeveuxVectorChar24( getName() + ".LILI" ) ),
-          _nueq( JeveuxVectorLong( getName() + ".NUEQ" ) ),
-          _prno( JeveuxCollectionLong( getName() + ".PRNO" ) ),
-          _orig( JeveuxCollectionLong( getName() + ".ORIG" ) ){};
-
-    /**
-     * @brief Destructor
-     */
-    ~GeneralizedFieldOnNodesDescriptionClass(){};
-
-    /**
-     * @brief Constructeur
-     * @param name nom souhaité de la sd (utile pour le GeneralizedFieldOnNodesDescriptionClass
-     * d'une sd_resu)
-     */
-    GeneralizedFieldOnNodesDescriptionClass( const std::string name,
-                                                const JeveuxMemory memType = Permanent )
-        : DataStructure( name, 19, "PROF_GENE", memType ),
-          _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
-          _nequ( JeveuxVectorLong( getName() + ".NEQU" ) ),
-          _refn( JeveuxVectorChar24( getName() + ".REFN" ) ),
-          _deeq( JeveuxVectorLong( getName() + ".DEEQ" ) ),
-          _delg( JeveuxVectorLong( getName() + ".DELG" ) ),
-          _lili( JeveuxVectorChar24( getName() + ".LILI" ) ),
-          _nueq( JeveuxVectorLong( getName() + ".NUEQ" ) ),
-          _prno( JeveuxCollectionLong( getName() + ".PRNO" ) ),
-          _orig( JeveuxCollectionLong( getName() + ".ORIG" ) ){};
-};
-typedef boost::shared_ptr< GeneralizedFieldOnNodesDescriptionClass >
-    GeneralizedFieldOnNodesDescriptionPtr;
 
 /**
  * @class GeneralizedDOFNumberingClass

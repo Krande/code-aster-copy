@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine ascova(detr, vachar, fomulz, npara, vpara,&
-                      typres, cnchar)
+                      typres, cnchar, basez)
         character(len=*) :: detr
         character(len=24) :: vachar
         character(len=*) :: fomulz
@@ -28,5 +28,6 @@ interface
         real(kind=8) :: vpara
         character(len=*) :: typres
         character(len=*) :: cnchar
+        character(len=1), intent(in), optional :: basez
     end subroutine ascova
 end interface

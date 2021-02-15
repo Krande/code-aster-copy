@@ -27,7 +27,6 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include <assert.h>
-#include <string>
 
 #include "astercxx.h"
 #include "aster_fort_superv.h"
@@ -40,6 +39,7 @@
 #include "MemoryManager/JeveuxVector.h"
 #include "Meshes/BaseMesh.h"
 #include "Numbering/DOFNumbering.h"
+#include "Numbering/FieldOnNodesDescription.h"
 #include "ParallelUtilities/MPIContainerUtilities.h"
 #include "ParallelUtilities/MPIInfos.h"
 #include "PythonBindings/LogicalUnitManager.h"
@@ -142,6 +142,24 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
     }
 
     /**
+     * @brief Constructor with DOFNumbering
+     */
+    FieldOnNodesClass( const BaseDOFNumberingPtr &dofNum, JeveuxMemory memType = Permanent )
+        : DataFieldClass( memType, "CHAM_NO" ),
+          _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
+          _reference( JeveuxVectorChar24( getName() + ".REFE" ) ),
+          _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ), _dofNum( dofNum ),
+          _dofDescription( dofNum->getDescription() ), _mesh( dofNum->getMesh() ),
+          _title( JeveuxVectorChar80( getName() + ".TITR" ) )
+          {
+                if ( !_dofNum )
+                    throw std::runtime_error( "DOFNumering is empty" );
+                const int intType = AllowedFieldType< ValueType >::numTypeJeveux;
+                CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[getMemoryType()],
+                                JeveuxTypesNames[intType], _dofNum->getName() );
+    };
+
+    /**
      * @brief Wrap of copy constructor
      */
     FieldOnNodesClass duplicate() {
@@ -154,7 +172,8 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
     FieldOnNodesClass( MeshCoordinatesFieldPtr &toCopy )
         : DataFieldClass( toCopy->getMemoryType(), "CHAM_NO" ), _descriptor( toCopy->_descriptor ),
           _reference( toCopy->_reference ), _valuesList( toCopy->_valuesList ), _dofNum( nullptr ),
-          _dofDescription( nullptr ), _title( JeveuxVectorChar80( getName() + ".TITR" ) ){};
+          _dofDescription( nullptr ), _title( JeveuxVectorChar80( getName() + ".TITR" ) ),
+          _mesh( nullptr ){};
 
     /**
      * @brief Surcharge de l'operateur []
@@ -301,20 +320,6 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
     };
 
     /**
-     * @brief Allouer un champ au noeud à partir d'un DOFNumbering
-     * @return renvoit true
-     */
-    bool allocateFromDOFNumering( const BaseDOFNumberingPtr &dofNum ) {
-        _dofNum = dofNum;
-        if ( _dofNum->isEmpty() )
-            throw std::runtime_error( "DOFNumering is empty" );
-        const int intType = AllowedFieldType< ValueType >::numTypeJeveux;
-        CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[getMemoryType()],
-                           JeveuxTypesNames[intType], _dofNum->getName() );
-        return true;
-    };
-
-    /**
      * @brief Renvoit un champ aux noeuds simple (carré de taille nb_no*nbcmp)
      * @return SimpleFieldOnNodesValueTypePtr issu du FieldOnNodes
      */
@@ -342,13 +347,40 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
         if ( _dofNum )
             throw std::runtime_error( "DOFNumbering already set" );
         _dofNum = dofNum;
+        _dofDescription = dofNum->getDescription();
         if ( _mesh != nullptr ) {
             const auto name1 = _mesh->getName();
             const auto name2 = _dofNum->getMesh()->getName();
             if ( name1 != name2 )
                 throw std::runtime_error( "Meshes inconsistents" );
         }
+        else {
+            _mesh = dofNum->getMesh();
+        }
     };
+
+    /**
+     * @brief Set the Values object
+     *
+     * @param value Value to affect
+     */
+    void setValues(const ValueType& value)
+    {
+         bool retour = _valuesList->updateValuePointer();
+        const int taille = _valuesList->size();
+
+        for( int pos = 0; pos < taille; ++pos )
+            ( *this )[pos] = value;
+    };
+
+    /**
+     * @brief Get values of the field
+     *
+     */
+    const JeveuxVector< ValueType >& getValues( ) const
+    {
+        return _valuesList;
+    }
 
     /**
      * @brief Set FieldOnNodes description
@@ -377,7 +409,7 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
     };
 
     /**
-     * @brief Set mesh
+     * @brief Comput norm
      * @param normType Type of norm ("NORM_1","NORM_2","NORM_INFINITY")
      */
     double norm(const std::string normType) const
@@ -386,8 +418,13 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
         bool retour =  _valuesList->updateValuePointer();
         int taille = _valuesList->size();
         const int rank = getMPIRank();
+        if ( !_mesh )
+            throw std::runtime_error( "Mesh is empty" );
         const JeveuxVectorLong nodesRank = _mesh->getNodesRank();
         retour = nodesRank->updateValuePointer();
+
+        if ( !_dofDescription )
+            throw std::runtime_error( "Description is empty" );
         const VectorLong nodesId = _dofDescription->getNodesFromDOF();
 
         if( normType == "NORM_1")
@@ -451,9 +488,15 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
         if( !retour || taille != tmp->size())
             throw std::runtime_error( "Incompatible size" );
 
+        if ( !_mesh )
+            throw std::runtime_error( "Mesh is empty" );
         JeveuxVectorLong nodesRank = _mesh->getNodesRank();
         retour = nodesRank->updateValuePointer();
+
+        if ( !_dofDescription )
+            throw std::runtime_error( "Description is empty" );
         const VectorLong nodesId = _dofDescription->getNodesFromDOF();
+
         const int rank = getMPIRank();
 
         double ret = 0.0;
@@ -506,6 +549,7 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
     bool update() {
         if ( _dofNum != nullptr ) {
             _dofDescription = _dofNum->getDescription();
+            _mesh = _dofNum->getMesh();
         } else if ( _dofDescription == nullptr && updateValuePointers() ) {
             typedef FieldOnNodesDescriptionClass FONDesc;
             typedef FieldOnNodesDescriptionPtr FONDescP;

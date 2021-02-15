@@ -52,6 +52,7 @@
 #include "PythonBindings/DataFieldInterface.h"
 #include "PythonBindings/DataStructureInterface.h"
 #include "PythonBindings/DebugInterface.h"
+#include "PythonBindings/DeleteTemporaryObjectsInterface.h"
 #include "PythonBindings/DiscreteProblemInterface.h"
 #include "PythonBindings/DynamicMacroElementInterface.h"
 #include "PythonBindings/ElasticFourierResultInterface.h"
@@ -297,4 +298,5 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportMaterialFieldBuilderToPython();
     exportCreateEnthalpyToPython();
     exportPetscInitializeFinalizeToPython();
+    exportDeleteTemporaryObjectsToPython();
 };
