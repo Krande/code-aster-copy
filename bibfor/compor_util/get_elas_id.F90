@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,10 @@ implicit none
 !                 1 - Isotropic
 !                 2 - Orthotropic
 !                 3 - Transverse isotropic
+!                    or viscoelasticity
+!                 4 - Isotropic
+!                 5 - Orthotropic
+!                 6 - Transverse isotropic
 ! Out elas_keyword : keyword factor linked to type of elasticity parameters
 !
 ! --------------------------------------------------------------------------------------------------
@@ -68,6 +72,12 @@ implicit none
         elas_id = 2
     elseif (elas_keyword_in.eq.'ELAS_ISTR') then
         elas_id = 3
+    elseif (elas_keyword_in.eq.'ELAS_VISCO') then
+        elas_id = 4
+    elseif (elas_keyword_in.eq.'ELAS_VISCO_ORTH') then
+        elas_id = 5
+    elseif (elas_keyword_in.eq.'ELAS_VISCO_ISTR') then
+        elas_id = 6
     else
         call utmess('F','COMPOR5_15', sk = elas_keyword_in)
     endif

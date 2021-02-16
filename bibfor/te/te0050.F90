@@ -17,28 +17,32 @@
 ! --------------------------------------------------------------------
 
 subroutine te0050(option, nomte)
-    implicit none
+!
+implicit none
+!
 #include "jeveux.h"
-#include "asterfort/assert.h"
+#include "asterfort/bmatmc.h"
+#include "asterfort/btdbmc.h"
+#include "asterfort/dmatmc.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/ortrep.h"
+#include "asterfort/get_elas_id.h"
+#include "asterfort/pmfmats.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
-#include "asterfort/utmess.h"
-#include "asterfort/pmfmats.h"
 !
-    character(len=16) :: option, nomte
+    character(len=16), intent(in) :: option
+    character(len=16), intent(in) :: nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!    - fonction réalisée :  calcul des matrices élémentaires
-!                          option :'RIGI_MECA_HYST'
-!        pour tous les types d'éléments (sauf les éléments discrets)
+! Elementary computation
 !
-!    - arguments:
-!        données:      option       -->  option de calcul
-!                      nomte        -->  nom du type élément
+! Elements: 3D
+! Option: RIGI_MECA_HYST
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,79 +50,147 @@ subroutine te0050(option, nomte)
     parameter  ( nbres=2 )
     parameter  ( nbpar=3 )
 !
-    integer :: jgano, iret, nbval, idimge, npara
-    integer :: i, k, mater, irigi
-    integer :: iresu, imate
-    integer :: idresu(5), idrigi(2), idgeo(5)
-    integer :: ipoids, ivf, idfdx, igeom
-    integer :: ndim, nno, nnos, npg1, ino
+    integer :: i, idecno, idecpg, igau, imate, imatuu, j, iret, idrigi(2), rigi
+    integer :: k, nbinco, nbsig, ndim, nno
+    integer :: nnos, npg1
+    integer :: icodre(nbres), elas_id
+    integer :: igeom, ipoids, ivf, idfde, idim
 !
-    real(kind=8) :: eta, valres(nbres), valpar(nbpar), vxyz
+    real(kind=8) :: b(486), jacgau
+    real(kind=8) :: btdbi(81, 81), di(36), eta
+    real(kind=8) :: repere(7), xyzgau(3), instan, nharm
+    real(kind=8) :: bary(3)
+    real(kind=8) :: valres(nbres)
 !
-    integer :: icodre(nbres)
+    character(len=4) :: fami
     character(len=8) :: nompar(nbpar), nomat
     character(len=16) :: nomres(nbres)
     character(len=32) :: phenom
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(option .eq. 'RIGI_MECA_HYST')
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-                     npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+! - Finite element informations
 !
-!   récupération des champs paramètres et de leurs longueurs:
-    call tecach('ONO', 'PMATUUC', 'E', iret, nval=5, itab=idresu)
+    fami = 'RIGI'
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
+                        npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde)
 !
-    nbval= idresu(2)
+! - Initializations
+!
+    instan     = 0.d0
+    nbinco     = ndim*nno
+    nharm      = 0.d0
+    btdbi(:,:) = 0.d0
+    xyzgau(:)  = 0.d0
+    bary(:)    = 0.d0
+!
+! - Number of stress components
+!
+    nbsig     = nbsigm()
+!
+! - Geometry
+!
+    call jevech('PGEOMER', 'L', igeom)
+!
+! - Material parameters
+!
+    call jevech('PMATERC', 'L', imate)
+!
+! - Dilatation coefficients
+!
+    call pmfmats(zi(imate), nomat)
+!
+! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
+!
+    call get_elas_id(zi(imate), elas_id, phenom)
+!
+! - Orthotropic parameters
+!
+    do i = 1, nno
+        do idim = 1, ndim
+            bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
+        end do
+    end do
+    call ortrep(ndim, bary, repere)
 !
     nompar(1)='X'
     nompar(2)='Y'
     nompar(3)='Z'
 !
-    call tecach('ONO', 'PGEOMER', 'L', iret, nval=5, itab=idgeo)
-    igeom=idgeo(1)
-    idimge=idgeo(2)/nno
-!
-    ASSERT(idimge.eq.2 .or. idimge.eq.3)
-!
-    npara=idimge
-    do k = 1, idimge
-        vxyz = 0.d0
-        do ino = 1, nno
-            vxyz = vxyz+zr(igeom + idimge*(ino-1) +k -1)
-        enddo
-        valpar(k) = vxyz/nno
-    enddo
-!
-    call jevech('PMATERC', 'L', imate)
-    mater=zi(imate)
-    call rccoma(mater, 'ELAS', 0, phenom, icodre(1))
-    if(.not.(phenom .eq. 'ELAS'       .or. phenom .eq. 'ELAS_COQMU' .or. &
-             phenom .eq. 'ELAS_GLRC'  .or. phenom .eq. 'ELAS_DHRC'  .or. &
-             phenom .eq. 'ELAS_ORTH')) then
-        call utmess('F', 'PLATE1_1', nk=2, valk=[option, phenom])
-    endif
-
-!   si l'élément est multifibre, il faut prendre le materiau "section"
-!   pour récupérer les coefficients de dilatation :
-    call pmfmats(mater, nomat)
+! - Get RIGI_MECA real part
 !
     call tecach('ONO', 'PRIGIEL', 'L', iret, nval=2, itab=idrigi)
-    ASSERT(idrigi(2).eq.nbval)
 !
-!   récupération des coefficients fonctions de la géométrie :
-    nomres(1)='AMOR_HYST'
-    valres(1) = 0.d0
-    call rcvalb('RIGI', 1, 1, '+', mater, nomat, phenom, npara, nompar, valpar, 1,&
-                nomres, valres, icodre, 0, nan='NON')
+! - Compute RIGI_MECA imaginary part
 !
-!   calcul proprement dit
-    iresu= idresu(1)
-    irigi= idrigi(1)
-    eta = valres(1)
-    do i = 1, nbval
-        zc(iresu-1+i)=dcmplx(zr(irigi-1+i),eta*zr(irigi-1+i))
-    enddo
+!
+! - Case of a viscoelastic materials
+!
+    if (phenom .eq. 'ELAS_VISCO'.or. &
+        phenom .eq. 'ELAS_VISCO_ISTR' .or.&
+        phenom .eq. 'ELAS_VISCO_ORTH') then
+        do igau = 1, npg1
+    !
+            idecpg = nno* (igau-1) - 1
+    !
+    ! ----- Coordinates for current Gauss point
+    !
+            xyzgau(:) = 0.d0
+            do i = 1, nno
+                idecno = 3* (i-1) - 1
+                xyzgau(1) = xyzgau(1) + zr(ivf+i+idecpg)*zr(igeom+1+idecno)
+                xyzgau(2) = xyzgau(2) + zr(ivf+i+idecpg)*zr(igeom+2+idecno)
+                xyzgau(3) = xyzgau(3) + zr(ivf+i+idecpg)*zr(igeom+3+idecno)
+            end do
+    !
+    ! ----- Compute matrix [B]: displacement -> strain (first order)
+    !
+            call bmatmc(igau, nbsig, zr(igeom), ipoids, ivf,&
+                        idfde, nno, nharm, jacgau, b)
+    !
+    ! ---------- Compute Hooke matrix [D]
+    !
+                call dmatmc(fami, zi(imate), instan, '+',&
+                            igau, 1, repere, xyzgau, nbsig,&
+                            di_=di)
+    !
+    ! --------- Compute rigidity matrix [K] = [B]Tx[D]x[B]
+    !
+                call btdbmc(b, di, jacgau, ndim, nno,&
+                            nbsig, elas_id, btdbi)
+        enddo
+!
+! ---- Case of an elastic material
+!
+    else
+
+        nomres(1)='AMOR_HYST'
+        valres(1) = 0.d0
+        call rcvalb('RIGI', 1, 1, '+', zi(imate),&
+                    nomat, phenom, ndim, nompar, bary,&
+                    1, nomres, valres, icodre, 0,&
+                    nan='NON')
+        eta = valres(1)
+!
+    endif
+!
+! - Set matrix in output field
+!
+    rigi = idrigi(1)
+    call jevech('PMATUUC', 'E', imatuu)
+    k = 0
+    do i = 1, nbinco
+        do j = 1, i
+            k = k + 1
+            if (phenom .eq. 'ELAS_VISCO'.or. &
+                phenom .eq. 'ELAS_VISCO_ISTR' .or.&
+                phenom .eq. 'ELAS_VISCO_ORTH') then
+                zc(imatuu+k-1) = dcmplx(zr(rigi+k-1), btdbi(i,j))
+            else
+                zc(imatuu+k-1) = dcmplx(zr(rigi+k-1), eta*zr(rigi+k-1))
+            endif
+        end do
+    end do
 !
 end subroutine

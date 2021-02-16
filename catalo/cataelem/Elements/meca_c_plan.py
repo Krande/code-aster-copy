@@ -927,7 +927,7 @@ class MECPQU4(Element):
             para_out=((SP.PMATUUR, MMATUUR), ),
         ),
 
-        OP.RIGI_MECA_HYST(te=50,
+        OP.RIGI_MECA_HYST(te=230,
             para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                      (SP.PRIGIEL, MMATUUR), (OP.RIGI_MECA_HYST.PVARCPR, LC.ZVARCPG),
                      ),

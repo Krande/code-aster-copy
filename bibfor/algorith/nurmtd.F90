@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine nurmtd(ndim, nno1, nno2, npg, iw,&
 !          CALCUL DE LA RIGIDITE MECANIQUE POUR LES ELEMENTS
 !          INCOMPRESSIBLES POUR LES PETITES DEFORMATIONS
 !          3D/D_PLAN/AXIS
-!          ROUTINE APPELEE PAR TE0596
+!          ROUTINE APPELEE PAR TE0597
 !-----------------------------------------------------------------------
 ! IN  NDIM    : DIMENSION DE L'ESPACE
 ! IN  NNO1    : NOMBRE DE NOEUDS DE L'ELEMENT LIES AUX DEPLACEMENTS

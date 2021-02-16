@@ -642,7 +642,7 @@ class MEDKQG4(Element):
                         para_out=((SP.PMATUUR, MMATUUR), ),
                         ),
 
-        OP.RIGI_MECA_HYST(te=50,
+        OP.RIGI_MECA_HYST(te=121,
                           para_in=(
                               (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                           (SP.PRIGIEL, MMATUUR), (
@@ -737,4 +737,3 @@ class MEDKTG3(MEDKQG4):
             mater=('RIGI', 'NOEU', 'FPG1',),),
         ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2',),),
     )
-

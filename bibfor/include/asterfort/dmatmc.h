@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 !
 interface
     subroutine dmatmc(fami, mater , time, poum ,ipg,&
-                      ispg, repere, xyzgau, nbsig,d,&
-                      l_modi_cp)
+                      ispg, repere, xyzgau, nbsig,dr_,&
+                      l_modi_cp, di_)
         character(len=*), intent(in) :: fami
         integer, intent(in) :: mater
         real(kind=8), intent(in) :: time
@@ -32,7 +32,8 @@ interface
         real(kind=8), intent(in) :: repere(7)
         real(kind=8), intent(in) :: xyzgau(3)
         integer, intent(in) :: nbsig
-        real(kind=8), intent(out) :: d(nbsig, nbsig)
+        real(kind=8), optional, intent(out) :: dr_(nbsig, nbsig)
+        real(kind=8), optional, intent(out) :: di_(nbsig, nbsig)
         aster_logical, optional, intent(in) :: l_modi_cp
     end subroutine dmatmc
 end interface

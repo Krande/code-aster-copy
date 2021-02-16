@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ implicit none
 !
     nbinco = nno*ndim
 !
-    if (elas_type.eq.1) then
+    if (elas_type.eq.1 .or. elas_type.eq.4) then
 !
 ! ----- Isotropic elasticity
 !
@@ -189,7 +189,8 @@ implicit none
         else
             ASSERT(.false.)
         endif
-    elseif ((elas_type.eq.2).or.(elas_type.eq.3)) then
+    elseif ((elas_type.eq.2).or.(elas_type.eq.3).or.&
+            (elas_type.eq.5).or.(elas_type.eq.6)) then
 !
 ! ----- Orthotropic/Transverse isotropic elasticity
 !

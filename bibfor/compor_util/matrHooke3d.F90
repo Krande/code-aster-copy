@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  elas_id          : Type of elasticity
+! In  elas_type          : Type of elasticity
 !                          1 - Isotropic
 !                          2 - Orthotropic
 !                          3 - Transverse isotropic
@@ -96,7 +96,7 @@ implicit none
 !
     if (elas_type .eq. 1) then
 !
-! ----- Isotropic matrix
+! ----- Isotropic elastic matrix
 !
         matr_elas(1,1) = e*(un-nu)*g
         matr_elas(1,2) = e*nu*g
@@ -111,7 +111,7 @@ implicit none
         matr_elas(5,5) = undemi*e/(un+nu)
         matr_elas(6,6) = undemi*e/(un+nu)
 !
-    else if (elas_type .eq. 2) then
+    else if (elas_type .eq. 2 .or. elas_type .eq. 5) then
 !
 ! ----- Orthotropic matrix
 !
@@ -149,7 +149,7 @@ implicit none
             end do
         endif
 !
-    else if (elas_type .eq. 3) then
+    else if (elas_type .eq. 3 .or. elas_type .eq. 6) then
 !
 ! ----- Transverse isotropic matrix
 !
@@ -185,6 +185,23 @@ implicit none
                 end do
             end do
         endif
+    elseif (elas_type .eq. 4) then
+!
+! ----- Isotropic viscoelastic matrix
+!
+        matr_elas(1,1) = (un-nu)*2.d0*g/(un-2.d0*nu)
+        matr_elas(1,2) = nu*2.d0*g/(un-2.d0*nu)
+        matr_elas(1,3) = nu*2.d0*g/(un-2.d0*nu)
+        matr_elas(2,1) = nu*2.d0*g/(un-2.d0*nu)
+        matr_elas(2,2) = (un-nu)*2.d0*g/(un-2.d0*nu)
+        matr_elas(2,3) = nu*2.d0*g/(un-2.d0*nu)
+        matr_elas(3,1) = nu*2.d0*g/(un-2.d0*nu)
+        matr_elas(3,2) = nu*2.d0*g/(un-2.d0*nu)
+        matr_elas(3,3) = (un-nu)*2.d0*g/(un-2.d0*nu)
+        matr_elas(4,4) = g
+        matr_elas(5,5) = g
+        matr_elas(6,6) = g
+
     else
         ASSERT(.false.)
     endif

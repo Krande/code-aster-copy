@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,18 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine get_elas_para(fami    , j_mater     , poum, ipg, ispg, &
+    subroutine get_elas_para(fami    , j_mater, poum, ipg, ispg, &
                              elas_id , elas_keyword,&
-                             time    , temp        ,&
+                             time    , temp,&
                              e_      , nu_  , g_   ,&
                              e1_     , e2_  , e3_  ,&
                              nu12_   , nu13_, nu23_,&
                              g1_     , g2_  , g3_  ,&
-                             BEHinteg, xyzgau_)
+                             BEHinteg, xyzgau_,&
+                             ei_      , nui_  , gi_   ,&
+                             e1i_     , e2i_  , e3i_ ,&
+                             nu12i_     , nu13i_  , nu23i_ ,&
+                             g1i_     , g2i_  , g3i_)
         use Behaviour_type
         character(len=*), intent(in) :: fami
         integer, intent(in) :: j_mater
@@ -36,9 +40,13 @@ interface
         real(kind=8), optional, intent(in) :: temp
         real(kind=8), optional, intent(in) :: xyzgau_(3)
         real(kind=8), optional, intent(out) :: e_, nu_, g_
+        real(kind=8), optional, intent(out) :: ei_, nui_, gi_
         real(kind=8), optional, intent(out) :: e1_,e2_, e3_
+        real(kind=8), optional, intent(out) :: e1i_,e2i_, e3i_
         real(kind=8), optional, intent(out) :: nu12_, nu13_, nu23_
+        real(kind=8), optional, intent(out) :: nu12i_, nu13i_, nu23i_
         real(kind=8), optional, intent(out) :: g1_, g2_, g3_
+        real(kind=8), optional, intent(out) :: g1i_, g2i_, g3i_
         type(Behaviour_Integ), optional, intent(in) :: BEHinteg
     end subroutine get_elas_para
 end interface

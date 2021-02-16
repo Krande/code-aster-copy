@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine dmatdp(fami, mater, time, poum, ipg,&
-                  ispg, repere, d)
+                  ispg, repere, dr_, di_)
 !
 implicit none
 !
@@ -34,7 +34,8 @@ implicit none
     integer, intent(in) :: ipg
     integer, intent(in) :: ispg
     real(kind=8), intent(in) :: repere(7)
-    real(kind=8), intent(out) :: d(4, 4)
+    real(kind=8), optional, intent(out) :: dr_(4, 4)
+    real(kind=8), optional, intent(out) :: di_(4, 4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,15 +52,17 @@ implicit none
 ! In  ipg    : current point gauss
 ! In  ispg   : current "sous-point" gauss
 ! In  repere : local basis for orthotropic elasticity
-! Out d      : Hooke matrix
+! Out dr     : real Hooke matrix
+! Out di_     : imaginary Hooke matrix
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: elas_id
-    real(kind=8) :: nu, nu12, nu13, nu23
-    real(kind=8) :: e1, e2, e3, e
-    real(kind=8) :: g1, g2, g3, g
+    real(kind=8) :: nur, nui, nu12r, nu13r, nu23r, nu12i, nu13i, nu23i
+    real(kind=8) :: e1r, e2r, e3r, e1i, e2i, e3i, er, ei
+    real(kind=8) :: g1r, g2r, g3r, g1i, g2i, g3i, gr, gi
     character(len=16) :: elas_keyword
+    real(kind=8) :: di(4, 4), dr(4, 4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,16 +76,30 @@ implicit none
     call get_elas_para(fami, mater    , poum, ipg, ispg, &
                        elas_id  , elas_keyword,&
                        time = time,&
-                       e_ = e      , nu_ = nu    , g_ = g,&
-                       e1_ = e1    , e2_ = e2    , e3_ = e3,& 
-                       nu12_ = nu12, nu13_ = nu13, nu23_ = nu23,&
-                       g1_ = g1    , g2_ = g2    , g3_ = g3)
+                       e_ = er    , nu_ = nur  , g_ = gr,&
+                       e1_ = e1r    , e2_ = e2r    , e3_ = e3r,&
+                       nu12_ = nu12r, nu13_ = nu13r, nu23_ = nu23r,&
+                       g1_ = g1r    , g2_ = g2r    , g3_ = g3r,&
+                       ei_ = ei    , nui_ = nui  , gi_ = gi,&
+                       e1i_ = e1i    , e2i_ = e2i    , e3i_ = e3i,&
+                       nu12i_ = nu12i, nu13i_ = nu13i, nu23i_ = nu23i,&
+                       g1i_ = g1i    , g2i_ = g2i    , g3i_ = g3i)
 !
 ! - Compute Hooke matrix
 !
-    call matrHookePlaneStrain(elas_id, repere,&
-                              e , nu, g,&
-                              e1, e2, e3, nu12, nu13, nu23, g1,&
-                              d)
+    if (present(di_)) then
+        call matrHookePlaneStrain(elas_id, repere,&
+                                  ei , nui, gi,&
+                                  e1i, e2i, e3i, nu12i, nu13i, nu23i, g1i,&
+                                  di)
+        di_ = di
+    endif
+    if (present(dr_)) then
+        call matrHookePlaneStrain(elas_id, repere,&
+                                  er , nur, gr,&
+                                  e1r, e2r, e3r, nu12r, nu13r, nu23r, g1r,&
+                                  dr)
+        dr_ = dr
+    endif
 !
 end subroutine

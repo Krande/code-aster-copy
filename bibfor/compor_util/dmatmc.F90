@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 
 subroutine dmatmc(fami, mater, time, poum, ipg,&
-                  ispg, repere, xyzgau, nbsig, d,&
-                  l_modi_cp)
+                  ispg, repere, xyzgau, nbsig, dr_,&
+                  l_modi_cp, di_)
     implicit none
 !
 #include "asterf_types.h"
@@ -38,7 +38,8 @@ subroutine dmatmc(fami, mater, time, poum, ipg,&
     real(kind=8), intent(in) :: repere(7)
     real(kind=8), intent(in) :: xyzgau(3)
     integer, intent(in) :: nbsig
-    real(kind=8), intent(out) :: d(nbsig, nbsig)
+    real(kind=8), optional, intent(out) :: dr_(nbsig, nbsig)
+    real(kind=8), optional, intent(out) :: di_(nbsig, nbsig)
     aster_logical, optional, intent(in) :: l_modi_cp
 !
 ! --------------------------------------------------------------------------------------------------
@@ -58,37 +59,48 @@ subroutine dmatmc(fami, mater, time, poum, ipg,&
 ! In  repere    : definition of basis for orthotropic elasticity
 ! In  xyzgau    : coordinates for current Gauss point
 ! In  nbsig     : number of components for stress
-! Out d         : Hooke matrix
+! Out dr        : real Hooke matrix
+! Out di        : imaginary Hooke matrix
 ! In  l_modi_cp : using plane strain Hooke matrix for plane stress case
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    real(kind=8) :: di(nbsig, nbsig)
+    real(kind=8) :: dr(nbsig, nbsig)
+!
     if (lteatt('DIM_TOPO_MAILLE','3')) then
         ASSERT(nbsig.eq.6)
         call dmat3d(fami, mater, time, poum, ipg,&
-                    ispg, repere, xyzgau, d)
+                    ispg, repere, xyzgau, dr_=dr, di_=di)
     else if (lteatt('FOURIER','OUI')) then
         ASSERT(nbsig.eq.6)
         call dmat3d(fami, mater, time, poum, ipg,&
-                    ispg, repere, xyzgau, d)
+                    ispg, repere, xyzgau, dr_=dr, di_=di)
     else if (lteatt('C_PLAN','OUI')) then
         ASSERT(nbsig.eq.4)
         call dmatcp(fami, mater, time, poum, ipg,&
-                    ispg, repere, d)
+                    ispg, repere, dr_=dr, di_=di)
         if (present(l_modi_cp)) then
             ASSERT(l_modi_cp)
             call dmatdp(fami, mater, time, poum, ipg,&
-                        ispg, repere, d)
+                        ispg, repere, dr_=dr, di_=di)
         else
             call dmatcp(fami, mater, time, poum, ipg,&
-                        ispg, repere, d)
+                        ispg, repere, dr_=dr, di_=di)
         endif
     else if (lteatt('D_PLAN','OUI').or. lteatt('AXIS','OUI')) then
         ASSERT(nbsig.eq.4)
         call dmatdp(fami, mater, time, poum, ipg,&
-                    ispg, repere, d)
+                    ispg, repere, dr_=dr, di_=di)
     else
         ASSERT(.false.)
+    endif
+!
+    if (present(di_)) then
+        di_ = di
+    endif
+    if (present(dr_)) then
+        dr_ = dr
     endif
 !
 end subroutine

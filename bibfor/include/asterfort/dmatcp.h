@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine dmatcp(fami, mater, time, poum, ipg,&
-                      ispg, repere, d)
+                      ispg, repere, dr_, di_)
         character(len=*), intent(in) :: fami
         integer, intent(in) :: mater
         real(kind=8), intent(in) :: time
@@ -28,6 +28,7 @@ interface
         integer, intent(in) :: ipg
         integer, intent(in) :: ispg
         real(kind=8), intent(in) :: repere(7)
-        real(kind=8), intent(out) :: d(4, 4)
+        real(kind=8), optional, intent(out) :: dr_(4, 4)
+        real(kind=8), optional, intent(out) :: di_(4, 4)
     end subroutine dmatcp
 end interface
