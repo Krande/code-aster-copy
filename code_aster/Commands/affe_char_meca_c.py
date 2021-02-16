@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -21,13 +21,26 @@
 
 from ..Objects import GenericMechanicalLoad
 from ..Supervis import ExecuteCommand
-
+from ..Utilities import deprecate, force_list
 
 class MechanicalLoadDefinition(ExecuteCommand):
     """Command that creates the
     :class:`~code_aster.Objects.GenericMechanicalLoad`"""
     command_name = "AFFE_CHAR_MECA_C"
-
+    def adapt_syntax(self, keywords):
+        """Adapt keywords.
+        Replace LIAISON = 'ENCASTRE'           
+        """
+        common_dofs = ('DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ')
+        # replace DDL_IMPO/LIAISON by DDL_IMPO/DX=0
+        keywords["DDL_IMPO"] = force_list(keywords.get("DDL_IMPO", []))
+        for fact in keywords["DDL_IMPO"]:
+            block = fact.pop("LIAISON", None)
+            if block == 'ENCASTRE':
+                deprecate("DLL_IMPO/LIAISON='ENCASTRE'", case=3, level=5,
+                          help="Use BLOCAGE = ('DEPLACEMENT','ROTATION')")
+                for ddl in common_dofs:
+                    fact[ddl] = 0.
     def create_result(self, keywords):
         """Initialize the result.
 

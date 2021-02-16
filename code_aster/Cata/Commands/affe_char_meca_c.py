@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ AFFE_CHAR_MECA_C=OPER(nom="AFFE_CHAR_MECA_C",op=   7,sd_prod=char_meca,
          DDL_IMPO        =FACT(statut='f',max='**',
            fr=tr("Impose à des noeuds une ou plusieurs valeurs de déplacement (ou de certaines grandeurs asscociées)"),
            regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE','GROUP_NO','NOEUD',),
-                   AU_MOINS_UN('DX','DY','DZ','DRX','DRY','DRZ','GRX','PRES','PHI','LIAISON','GLIS' ),),
+                   AU_MOINS_UN('DX','DY','DZ','DRX','DRY','DRZ','GRX','PRES','PHI','BLOCAGE','GLIS' ),),
              TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
              NOEUD           =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
@@ -42,7 +42,7 @@ AFFE_CHAR_MECA_C=OPER(nom="AFFE_CHAR_MECA_C",op=   7,sd_prod=char_meca,
              SANS_MAILLE     =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
              SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
              SANS_NOEUD      =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
-           LIAISON         =SIMP(statut='f',typ='TXM',into=('ENCASTRE',)),
+           BLOCAGE         =SIMP(statut='f',typ='TXM',validators=NoRepeat(),into=('DEPLACEMENT','ROTATION'),min=1,max=2),
            DX              =SIMP(statut='f',typ='C' ),
            DY              =SIMP(statut='f',typ='C' ),
            DZ              =SIMP(statut='f',typ='C' ),

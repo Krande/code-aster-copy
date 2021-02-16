@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -24,7 +24,7 @@ from ..Objects import (GenericMechanicalLoad, ParallelMechanicalLoad,
                        ConnectionMesh)
 from ..Supervis import ExecuteCommand
 from .affe_modele import AFFE_MODELE
-
+from ..Utilities import deprecate, force_list
 
 class MechanicalLoadDefinition(ExecuteCommand):
 
@@ -36,6 +36,22 @@ class MechanicalLoadDefinition(ExecuteCommand):
     dirichletLoads = ['DDL_IMPO', 'DDL_POUTRE', 'FACE_IMPO', 'CHAMNO_IMPO', 'ARETE_IMPO', 'LIAISON_DDL', 'LIAISON_OBLIQUE', 'LIAISON_GROUP', 'LIAISON_MAIL', 'LIAISON_PROJ', \
                       'LIAISON_CYCL', 'LIAISON_SOLIDE', 'LIAISON_ELEM', 'LIAISON_UNIF', 'LIAISON_CHAMNO', 'LIAISON_RBE3', 'LIAISON_INTERF', 'LIAISON_COQUE', \
                       'RELA_CINE_BP', 'IMPE_FACE']
+                      
+    def adapt_syntax(self, keywords):
+        """Adapt keywords.
+        Replace LIAISON = 'ENCASTRE'           
+        """
+        common_dofs = ('DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ')
+        # replace DDL_IMPO/LIAISON by DDL_IMPO/DX=0
+        keywords["DDL_IMPO"] = force_list(keywords.get("DDL_IMPO", []))
+        for fact in keywords["DDL_IMPO"]:
+            block = fact.pop("LIAISON", None)
+            if block == 'ENCASTRE':
+                deprecate("DLL_IMPO/LIAISON='ENCASTRE'", case=3, level=5,
+                          help="Use BLOCAGE = ('DEPLACEMENT','ROTATION')")
+                for ddl in common_dofs:
+                    fact[ddl] = 0.
+                  
     def _getNodeGroups(self, keywords):
         """for parallel load, return all node groups present in AFFE_CHAR_MECA, in order to define the partial mesh
         """

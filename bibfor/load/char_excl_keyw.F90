@@ -175,7 +175,7 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl, n_suffix, list_su
             p_keywordexcl(n_keyexcl) = 'ANGL_NAUT'
         else if (keywordfact.eq.'DDL_IMPO') then
             n_keyexcl = n_keyexcl + 1
-            p_keywordexcl(n_keyexcl) = 'LIAISON'
+            p_keywordexcl(n_keyexcl) = 'BLOCAGE'
         else if (keywordfact.eq.'TEMP_IMPO') then
 ! ----- Nothing else components
         else if (keywordfact.eq.'PRES_IMPO') then

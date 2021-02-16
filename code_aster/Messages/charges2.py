@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -286,6 +286,10 @@ l'axe de rotation doit être dirigé suivant Oz.
  Elle ne sera pas affectée par %(k2)s .
 """),
 
+    92: _("""
+ Un noeud dans DDL_IMPO ne porte
+ aucun DDL de type  %(k1)s 
+"""),
 
 
 

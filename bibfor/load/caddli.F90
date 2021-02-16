@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/char_excl_keyw.h"
-#include "asterfort/char_impo_liai.h"
+#include "asterfort/char_impo_bloc.h"
 #include "asterfort/char_read_keyw.h"
 #include "asterfort/char_read_val.h"
 #include "asterfort/char_xfem.h"
@@ -40,6 +40,7 @@ implicit none
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/getnode.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -49,6 +50,7 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/lxlgut.h"
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
@@ -100,21 +102,21 @@ implicit none
     character(len=24) :: list_node
     integer :: jlino
     integer :: nb_node
-    aster_logical :: l_liai, l_ocmp
-    integer :: val_nb_liai
-    real(kind=8) :: val_r_liai
-    character(len=8) :: val_f_liai
-    character(len=16) :: val_t_liai
-    complex(kind=8) :: val_c_liai
-    character(len=8) :: liai_cmp_name(6)
-    integer :: liai_cmp_index(6)
-    integer :: liai_cmp_nb
-    real(kind=8) :: liai_vale_real
-    character(len=8) :: liai_vale_fonc
-    complex(kind=8) :: liai_vale_cplx
+    aster_logical :: l_bloc, l_ocmp
+    integer :: nb_typ_bloc
+    character(len=16) :: val_t_bloc(3)
+    character(len=8) :: bloc_cmp_name(39)
+    integer :: bloc_cmp_index(39)
+    integer :: bloc_cmp_nb
+    real(kind=8) :: bloc_vale_real
+    character(len=8) :: bloc_vale_fonc
+    complex(kind=8) :: bloc_vale_cplx
     character(len=24) :: keywordexcl
-    integer :: n_keyexcl
-!
+    integer :: n_keyexcl, itypblc
+    character(len=16) :: typblc(3), lec_typ_blc
+    aster_logical :: istypblc (3)
+    integer :: cmp_nb_depl, cmp_nb_rota, cmp_nb_fourier
+    integer :: pointer  
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
@@ -123,6 +125,9 @@ implicit none
 !
 ! - Initializations
 !
+    typblc(1) = 'DEPLACEMENT'
+    typblc(2) = 'ROTATION' 
+    typblc(3) = 'TUYAU_FOURIER'
     list_rela = '&&CADDLI.RLLISTE'
     model = ligrmo(1:8)
 !
@@ -189,26 +194,34 @@ implicit none
         if (nb_node .eq. 0) goto 60
         call jeveuo(list_node, 'L', jlino)
 !
-! ----- Detection of LIAISON
+! ----- Detection of BLOCAGE
 !
-        call char_read_val(keywordfact, iocc, 'LIAISON', 'TEXT', val_nb_liai,&
-                           val_r_liai, val_f_liai, val_c_liai, val_t_liai)
-        l_liai = val_nb_liai.gt.0
+        call getvtx(keywordfact, 'BLOCAGE', iocc=iocc, nbval=3, vect= val_t_bloc, nbret=nb_typ_bloc)
+        l_bloc = nb_typ_bloc.gt.0
+! ----- BLOCAGE case
 !
-! ----- LIAISON case
-!
-        if (l_liai) then
-!
+        cmp_nb = 0
+        istypblc(:) = .false.
+        if (l_bloc) then
 ! --------- Counting components
+            do itypblc = 1, nb_typ_bloc
+                lec_typ_blc = val_t_bloc(itypblc)(1:lxlgut(val_t_bloc(itypblc)))
+                if (typblc(1) .eq. lec_typ_blc) then 
+                    istypblc(1) = .true.
+                else if(lec_typ_blc .eq. typblc(2)) then
+                    istypblc(2) = .true.
+                else if(lec_typ_blc .eq. typblc(3)) then
+                    istypblc(3) = .true.     
+                endif
+            enddo
 !
-            cmp_nb = 6
-            call wkvect('&&CADDLI.ICOMPT', 'V V I', cmp_nb, jcompt)
+! --------- Data preparation for BLOCAGE 
 !
-! --------- Data preparation for LIAISON
-!
-            ASSERT(val_nb_liai.eq.1)
-            call char_impo_liai(nomg, val_t_liai, liai_cmp_nb, liai_cmp_name, liai_cmp_index,&
-                                liai_vale_real, liai_vale_cplx, liai_vale_fonc)
+!            ASSERT(nb_typ_bloc.eq.1)
+            call char_impo_bloc(nomg, istypblc, bloc_cmp_nb, bloc_cmp_name, bloc_cmp_index,&
+                                bloc_vale_real, bloc_vale_cplx, bloc_vale_fonc)
+            call wkvect('&&CADDLI.ICOMPT', 'V V I', bloc_cmp_nb, jcompt)
+
 !
 ! --------- Loop on nodes
 !
@@ -216,16 +229,62 @@ implicit none
                 nume_node = zi(jlino-1+ino)
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
                 cmp_nb = 0
-                do icmp = 1, liai_cmp_nb
-                    if (exisdg(zi(jprnm-1+(nume_node-1)*nbec+1),liai_cmp_index(icmp))) then
-                        cmp_nb = cmp_nb + 1
-                        cmp_acti(cmp_nb) = 1
-                        cmp_name(cmp_nb) = liai_cmp_name(icmp)
-                        vale_real(cmp_nb) = liai_vale_real
-                        vale_cplx(cmp_nb) = liai_vale_cplx
-                        vale_func(cmp_nb) = liai_vale_fonc
-                    endif
-                enddo
+                cmp_nb_depl = 0
+                cmp_nb_rota = 0
+                cmp_nb_fourier = 0
+                pointer = 0
+! ---------------- Components of DEPLACEMENT of the node to be blocked
+                if (istypblc(1)) then
+                    do icmp = 1, 3
+                        if (exisdg(zi(jprnm-1+(nume_node-1)*nbec+1),bloc_cmp_index(icmp))) then
+                            cmp_nb = cmp_nb + 1
+                            cmp_nb_depl = cmp_nb_depl + 1
+                            cmp_acti(cmp_nb) = 1
+                            cmp_name(cmp_nb) = bloc_cmp_name(icmp)
+                            vale_real(cmp_nb) = bloc_vale_real
+                            vale_cplx(cmp_nb) = bloc_vale_cplx
+                            vale_func(cmp_nb) = bloc_vale_fonc
+                        endif
+                    enddo
+                    pointer = pointer + 3
+                endif
+! ---------------- Components of ROTATION of the node to be blocked
+                if (istypblc(2)) then
+                    do icmp = pointer+1, pointer+3
+                        if (exisdg(zi(jprnm-1+(nume_node-1)*nbec+1),bloc_cmp_index(icmp))) then
+                            cmp_nb = cmp_nb + 1
+                            cmp_nb_rota = cmp_nb_rota + 1
+                            cmp_acti(cmp_nb) = 1
+                            cmp_name(cmp_nb) = bloc_cmp_name(icmp)
+                            vale_real(cmp_nb) = bloc_vale_real
+                            vale_cplx(cmp_nb) = bloc_vale_cplx
+                            vale_func(cmp_nb) = bloc_vale_fonc
+                        endif
+                    enddo                
+                    pointer = pointer + 3
+                endif
+
+! ---------------- Components of TUYAU_FOURIER of the node to be blocked
+
+                if (istypblc(3)) then 
+                    do icmp = pointer+1, bloc_cmp_nb
+                        if (exisdg(zi(jprnm-1+(nume_node-1)*nbec+1),bloc_cmp_index(icmp))) then
+                            cmp_nb = cmp_nb + 1
+                            cmp_nb_fourier = cmp_nb_fourier + 1
+                            cmp_acti(cmp_nb) = 1
+                            cmp_name(cmp_nb) = bloc_cmp_name(icmp)
+                            vale_real(cmp_nb) = bloc_vale_real
+                            vale_cplx(cmp_nb) = bloc_vale_cplx
+                            vale_func(cmp_nb) = bloc_vale_fonc
+                        endif
+                    enddo
+!!!---------------- Check if the node has ddl of TUYAU_FOURIER
+                    if (cmp_nb_fourier .eq. 0) then
+                        call utmess('F', 'CHARGES2_92', sk=typblc(3))
+                    endif  
+                endif
+
+                            
                 call afddli(model, nbcmp, zk8(jnom), nume_node, name_node,&
                             zi(jprnm-1+ (nume_node-1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)),&
                             coef_type, cmp_nb, cmp_name, cmp_acti, vale_type,&
@@ -243,6 +302,7 @@ implicit none
                             n_max_cmp, cmp_nb, cmp_name, cmp_acti, vale_real,&
                             vale_func, vale_cplx)
         l_ocmp = cmp_nb.gt.0
+
 !
 ! ----- Other cases
 !
