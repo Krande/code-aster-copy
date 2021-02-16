@@ -20,7 +20,7 @@
 # person_in_charge: nicolas.sellenet@edf.fr
 
 from ..Objects import (FieldOnCellsReal, FieldOnNodesComplex,
-                       FieldOnNodesReal, FullResult,
+                       FieldOnNodesReal, FullResult, ModeResult,
                        ConstantFieldOnCellsReal)
 from ..Supervis import ExecuteCommand
 
@@ -45,6 +45,8 @@ class FieldCreator(ExecuteCommand):
         caraElem = keywords.get("CARA_ELEM")
         charge = keywords.get("CHARGE")
         resultat = keywords.get("RESULTAT")
+        numeDdl = keywords.get("NUME_DDL")
+        print("KEY:: ", keywords)
         if mesh is None:
             if model is not None:
                 mesh = model.getMesh()
@@ -69,22 +71,29 @@ class FieldCreator(ExecuteCommand):
         else:
             # ELGA_
             self._result = FieldOnCellsReal()
-        numeDdl = keywords.get("NUME_DDL")
+
         if numeDdl is not None:
             self._result.setDOFNumbering(numeDdl)
-        modele = keywords.get("MODELE")
+
         if location[:2] == "EL":
-            modele = keywords.get("MODELE")
             chamF = keywords.get("CHAM_F")
-            if modele is not None:
-                self._result.setModel(modele)
+            if model is not None:
+                self._result.setModel(model)
             elif resultat is not None:
-                if isinstance(resultat, FullResult):
+                if isinstance(resultat, (FullResult, ModeResult)):
                     try:
                         dofNum = resultat.getDOFNumbering()
-                        self._result.setDescription(dofNum.getFiniteElementDescriptors()[0])
+                        if dofNum is not None:
+                            self._result.setDescription(dofNum.getFiniteElementDescriptors()[0])
                     except:
                         pass
+                    if self._result.getModel() is None:
+                        try:
+                            dofNum = resultat.getDOFNumbering()
+                            if (dofNum is not None) and (dofNum.getModel() is not None):
+                                self._result.setModel(dofNum.getModel())
+                        except:
+                            pass
                 if resultat.getModel() is not None:
                     self._result.setModel(resultat.getModel())
             elif caraElem is not None:
@@ -98,6 +107,16 @@ class FieldCreator(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
+
+        if isinstance(self._result, FieldOnNodesReal):
+            if self._result.getDOFNumbering() is None:
+                if "COMB" in keywords:
+                    for comb in keywords["COMB"]:
+                        dofNum = comb['CHAM_GD'].getDOFNumbering()
+                        if dofNum is not None:
+                            self._result.setDOFNumbering(dofNum)
+                            break
+
         self._result.update()
 
     def add_dependencies(self, keywords):

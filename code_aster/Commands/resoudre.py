@@ -34,9 +34,31 @@ class SolveLinearSystem(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
 
+        self._result = FieldOnNodesReal()
+
+
+    def post_exec(self, keywords):
+        """Post-execute the command.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+
         rhs = keywords.get("CHAM_NO")  # Right Hand Side
 
-        self._result = FieldOnNodesReal(rhs.getDOFNumbering())
+        dofNum = rhs.getDOFNumbering()
+        if dofNum is not None:
+            self._result.setDOFNumbering(dofNum)
+        else:
+            mesh = rhs.getMesh()
+            if mesh is not None:
+                self._result.setMesh(mesh)
+
+            desc = rhs.getDescription()
+            if desc is not None:
+                self._result.setDescription(desc)
+
+        self._result.update()
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.
