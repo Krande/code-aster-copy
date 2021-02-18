@@ -194,4 +194,4 @@ VectorString ParallelDOFNumberingClass::getComponentsAssociatedToNode(const ASTE
 };
 
 
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */

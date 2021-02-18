@@ -75,7 +75,7 @@ Returns:
               ( py::arg( "self" ) )   );
     addDirichletBCToInterface( c1 );
     addMechanicalLoadToInterface( c1 );
-#ifdef _USE_MPI
+#ifdef ASTER_HAVE_MPI
     addParallelMechanicalLoadToInterface( c1 );
-#endif /* _USE_MPI */
+#endif /* ASTER_HAVE_MPI */
 };

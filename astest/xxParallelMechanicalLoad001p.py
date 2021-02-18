@@ -120,10 +120,10 @@ monSolver.setSolverResidual(1.e-10)
 monSolver.matrixFactorization(matrAsse)
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 
-vcine = dProblem.buildKinematicsLoad(numeDDL, 0.)
+vcine = dProblem.buildDirichletBC(numeDDL, 0.)
 test.assertEqual(vect_elem.getType(), "VECT_ELEM_DEPL_R")
 vasse = vect_elem.assembleVector(numeDDL)
-resu = monSolver.solveRealLinearSystemWithKinematicsLoad(matrAsse, vcine, vasse)
+resu = monSolver.solveRealLinearSystemWithDirichletBC(matrAsse, vcine, vasse)
 
 sfon = resu.exportToSimpleFieldOnNodes()
 sfon.updateValuePointers()
