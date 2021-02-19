@@ -117,9 +117,6 @@ subroutine crnlgc(numddl)
         nbjoin = nbjoin/2
     endif
 
-!   NOMBRE DE DDL LOCAUX
-    call jeveuo(numddl//'.NUME.NEQU', 'L', jnequ)
-    nbddll = zi(jnequ)
     n4e = nbproc
 !   ON COMMUNIQUE POUR SAVOIR QUI EST EN RELATION AVEC QUI
     do iaux = 0, nbproc - 1
@@ -404,6 +401,9 @@ subroutine crnlgc(numddl)
 !
 ! --- Vérification de la numérotation
 !
+!   NOMBRE DE DDL LOCAUX
+    call jeveuo(numddl//'.NUME.NEQU', 'L', jnequ)
+    nbddll = zi(jnequ)
     call jeveuo(noma//'.NOEX', 'L', vi=v_noex)
     do iaux = 0, nbddll - 1
         nuno = zi(jdeeq + iaux*2)

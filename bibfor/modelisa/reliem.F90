@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,9 @@
 subroutine reliem(mo, ma, typem, motfaz, iocc,&
                   nbmocl, limocl, tymocl, litroz, nbtrou)
     implicit none
-#include "jeveux.h"
+#include "asterfort/addPhantomNodesFromCells.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
@@ -38,8 +40,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
+#include "jeveux.h"
 !
     integer :: iocc, nbmocl, nbtrou
     character(len=8) :: ma, modele
@@ -87,7 +88,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
     character(len=19) :: ligrel
     character(len=24) :: karg
     integer :: iarg
-    aster_logical :: l_parallel_mesh
+    aster_logical :: l_parallel_mesh, l_group_ma
     integer, pointer :: maille(:) => null()
     integer, pointer :: prnm(:) => null()
     integer(kind=4), pointer :: indic_noeud(:) => null()
@@ -108,6 +109,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
     endif
 !
     type2 = typem(4:)
+    l_group_ma = ASTER_FALSE
     do imo = 1, nbmocl
         motcle = limocl(imo)
         typmcl = tymocl(imo)
@@ -118,6 +120,9 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
         else if (typmcl.ne.'MAILLE' .and. typmcl.ne.'GROUP_MA' .and. typmcl.ne.'TOUT') then
             ASSERT(.false.)
         endif
+        if(typmcl == 'GROUP_MA') then
+            l_group_ma = ASTER_TRUE
+        end if
     end do
 !
 !     --- EN CAS D'EXISTENCE DE L'OBJET, ON LE DETRUIT ---
@@ -265,6 +270,13 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
                 end do
             endif
         end do
+!
+!   --- Pour un maillage ParallelMesh, il faut aussi savoir si des noeuds fantome
+!       font parti aussi de mailles non-présentes localement
+!
+        if( l_group_ma .and. l_parallel_mesh ) then
+            call addPhantomNodesFromCells(ma, indic_noeud)
+        endif
     endif
 !
 !
