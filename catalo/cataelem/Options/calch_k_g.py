@@ -52,12 +52,15 @@ PLSN = InputParameter(phys=PHY.NEUT_R)
 PLST = InputParameter(phys=PHY.NEUT_R)
 
 
+PDEG = InputParameter(phys=PHY.NEUT_I)
+
+
+PLAG = InputParameter(phys=PHY.NEUT_R)
 
 CALCH_K_G = Option(
     para_in=(
         PBASLOR,
         PCOMPOR,
-#        PCONTRR,
         PVARIPR,
         SP.PCOURB,
         SP.PDEPLAR,
@@ -77,6 +80,8 @@ CALCH_K_G = Option(
         PTHETAR,
         PVARCPR,
         SP.PVARCRR,
+        PDEG,
+        PLAG,
     ),
     para_out=(
         SP.PGTHETA,

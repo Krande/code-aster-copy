@@ -112,41 +112,36 @@ use calcG_type
         if(v_absc(i).ge.lonfis) lonfis=v_absc(i)
     enddo
 !
-    if(ASTER_FALSE) then
-        ! CAS X-FEM NON TRAITE ACTUELLEMENT
-        ASSERT(ASTER_FALSE)
+    ! Vérifications spécifiques en 3D
+    if (cgField%ndim .eq. 3) then
+        ! VERIFICATION PRESENCE NB_POINT_FOND
+        if (cgTheta%nb_point_fond .ne. 0) then
+            ! NB_POINT_FOND .ne. 0 non pris en charge pour l'instant : issue30288
+            ASSERT(.FALSE.)
+            ! INTERDICTION D AVOIR NB_POINT_FOND AVEC
+            ! DISCTRETISATION =  LEGENDRE
+            if (cgTheta%discretization.eq.'LEGENDRE') then
+                call utmess('F', 'RUPTURE1_73')
+            endif
+        endif
+    endif
+    !
+    ! DETERMINATION DU NOMBRE nb_theta_field DE CHAMP_NO THETA
+    if(cgField%ndim .eq. 2) then
+        cgTheta%nb_theta_field=1
     else
-        ! CAS FEM
-        ! Vérifications spécifiques en 3D
-        if (cgField%ndim .eq. 3) then
-            ! VERIFICATION PRESENCE NB_POINT_FOND
-            if (cgTheta%nb_point_fond .ne. 0) then
-                ! NB_POINT_FOND .ne. 0 non pris en charge pour l'instant : issue30288
-                ASSERT(.FALSE.)
-                ! INTERDICTION D AVOIR NB_POINT_FOND AVEC
-                ! DISCTRETISATION =  LEGENDRE
-                if (cgTheta%discretization.eq.'LEGENDRE') then
-                    call utmess('F', 'RUPTURE1_73')
-                endif
-            endif
-        endif
-        !
-        ! DETERMINATION DU NOMBRE nb_theta_field DE CHAMP_NO THETA
-        if(cgField%ndim .eq. 2) then
-            cgTheta%nb_theta_field=1
-        else
-            if (cgTheta%discretization.eq.'LINEAIRE') then
-                if(cgTheta%nb_point_fond.ne.0)then
-                    cgTheta%nb_theta_field = cgTheta%nb_point_fond
-                else
-                    cgTheta%nb_theta_field = cgTheta%nb_fondNoeud
-                endif
-            elseif(cgTheta%discretization.eq.'LEGENDRE') then
-                cgTheta%nb_theta_field = cgTheta%degree + 1
+        if (cgTheta%discretization.eq.'LINEAIRE') then
+            if(cgTheta%nb_point_fond.ne.0)then
+                cgTheta%nb_theta_field = cgTheta%nb_point_fond
             else
-                ASSERT(.FALSE.)
+                cgTheta%nb_theta_field = cgTheta%nb_fondNoeud
             endif
+        elseif(cgTheta%discretization.eq.'LEGENDRE') then
+            cgTheta%nb_theta_field = cgTheta%degree + 1
+        else
+            ASSERT(.FALSE.)
         endif
+
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !   NOUVELLE ECRITURE A TRAVERS LE CHAMP THETA_FACTORS

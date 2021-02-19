@@ -59,7 +59,7 @@ implicit none
 !                       DECLARATION DES VARIABLES
 ! =====================================================================
 !
-    type(CalcG_InfoTe) :: cgInfoTe
+!    type(CalcG_InfoTe) :: cgInfoTe
 !
     integer           :: i, j, kp, k, ind
     integer           :: ndim, nno, nnos, npg, compt
@@ -103,7 +103,7 @@ implicit none
 !   C'est une parade à la création d'un champ qui serait envoyé dans l'appel à calcul
 !   On récupere directement la discretisation,nnof et ndeg : cgInfoTe
 !   utile pour reeldim = 3
-    call cgInfoTe%initialize()
+!    call cgInfoTe%initialize()
 !    call cgInfoTe%print()
 !
 !-- Initialisation des paramètres

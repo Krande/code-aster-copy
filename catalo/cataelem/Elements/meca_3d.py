@@ -62,6 +62,9 @@ EDEFOPC  = LocatedComponents(phys=PHY.EPSI_C, type='ELGA', location='RIGI',
     components=('EPXX','EPYY','EPZZ','EPXY','EPXZ',
           'EPYZ',))
 
+E3NEUTR = LocatedComponents(phys=PHY.NEUT_R, type='ELEM',
+                            components=('X[3]',))
+
 
 EDEFONC  = LocatedComponents(phys=PHY.EPSI_C, type='ELNO',
     components=('EPXX','EPYY','EPZZ','EPXY','EPXZ',
@@ -315,6 +318,7 @@ class MECA_HEXA20(Element):
                      (SP.PSIGINR, ECONTNO), (OP.CALCH_G.PTHETAR, LC.ETHETA),
                      (OP.CALCH_G.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
                      (OP.CALCH_G.PVARIPR, LC.ZVARINO), (SP.PVITESS, DDL_MECA),
+                     (OP.CALCH_G.PDEG, LC.E1NEUTI),(OP.CALCH_G.PLAG, LC.E3NEUTR)
                      ),
             para_out=((SP.PGTHETA, NEWTHETA), ),
         ),
@@ -329,7 +333,8 @@ class MECA_HEXA20(Element):
                      (SP.PSIGINR, ECONTNO), (SP.PTEMPSR, CTEMPSR),
                      (OP.CALCH_G_F.PTHETAR, LC.ETHETA), (OP.CALCH_G_F.PVARCPR, LC.ZVARCPG),
                      (SP.PVARCRR, LC.ZVARCPG), (OP.CALCH_G_F.PVARIPR, LC.ZVARINO),
-                     (SP.PVITESS, DDL_MECA), ),
+                     (SP.PVITESS, DDL_MECA), (OP.CALCH_G_F.PDEG, LC.E1NEUTI),
+                     (OP.CALCH_G_F.PLAG, LC.E3NEUT_R)),
             para_out=((SP.PGTHETA, NEWTHETA), ),
         ),
 
@@ -338,12 +343,11 @@ class MECA_HEXA20(Element):
                      (SP.PCOURB, LC.G27NEUTR),
                      (SP.PDEPLAR, DDL_MECA), (SP.PEPSINR, CEPSINO),
                      (SP.PFRVOLU, NFORCER), (SP.PGEOMER, NGEOMER),
-#                     (OP.CALCH_K_G.PLSN, LC.N1NEUT_R), (OP.CALCH_K_G.PLST, LC.N1NEUT_R),
                      (SP.PMATERC, LC.CMATERC), (SP.PPESANR, LC.CPESANR),
                      (SP.PPULPRO, LC.CFREQR), (SP.PROTATR, LC.CROTATR),
                      (SP.PSIGINR, ECONTNO), (OP.CALCH_K_G.PTHETAR, LC.ETHETA),
                      (OP.CALCH_K_G.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
-                     ),
+                     (OP.CALCH_K_G.PDEG, LC.E1NEUTI),(OP.CALCH_K_G.PLAG, LC.E3NEUT_R)),
             para_out=((SP.PGTHETA, NEWTHETA), ),
         ),
 
@@ -352,12 +356,12 @@ class MECA_HEXA20(Element):
                      (SP.PCOURB, LC.G27NEUTR),
                      (SP.PDEPLAR, DDL_MECA), (SP.PEPSINF, CEPSINF),
                      (SP.PFFVOLU, CFORCEF), (SP.PGEOMER, NGEOMER),
-#                     (OP.CALCH_K_G_F.PLSN, LC.N1NEUT_R), (OP.CALCH_K_G_F.PLST, LC.N1NEUT_R),
                      (SP.PMATERC, LC.CMATERC), (SP.PPESANR, LC.CPESANR),
                      (SP.PPULPRO, LC.CFREQR), (SP.PROTATR, LC.CROTATR),
                      (SP.PSIGINR, ECONTNO), (SP.PTEMPSR, CTEMPSR),
                      (OP.CALCH_K_G_F.PTHETAR, LC.ETHETA), (OP.CALCH_K_G_F.PVARCPR, LC.ZVARCPG),
-                     (SP.PVARCRR, LC.ZVARCPG), ),
+                     (SP.PVARCRR, LC.ZVARCPG), (OP.CALCH_K_G_F.PDEG, LC.E1NEUTI),
+                     (OP.CALCH_K_G_F.PLAG, LC.E3NEUT_R)),
             para_out=((SP.PGTHETA, NEWTHETA), ),
         ),
 

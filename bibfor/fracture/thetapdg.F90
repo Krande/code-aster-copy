@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,51 +16,60 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine thetapdg(ndim, nno, ff, dfdi, ndimte, ithet, dtdm)
+subroutine thetapdg(ndim, nno, discr, ff, dfdi, ideg, ilag, ithet, dtdm)
     implicit none
 !
+#include "asterfort/assert.h"
 #include "jeveux.h"
-!#include "asterfort/plegen.h"
-!#include "asterfort/dplegen.h"
+#include "asterfort/plegen.h"
+#include "asterfort/dplegen.h"
 !
     integer, intent(in) :: ndim, nno
-    integer, intent(in) :: ndimte, ithet
-    real(kind=8), intent(in) :: ff(nno), dfdi(nno, ndim)
+    integer, intent(in) :: ithet, ideg, ilag
+    real(kind=8), intent(in)  :: ff(nno), dfdi(nno, ndim)
     real(kind=8), intent(out) :: dtdm(3, 4)
+    character(len=8) :: discr
 !
 !.......................................................................
 !
 !     BUT:  CALCUL DES ELEMENTS CINEMATIQUES (MATRICES F ET E, RAYON R)
 !           EN UN POINT DE GAUSS (EVENTUELLEMENT EN GRANDES TRANSFORM.)
 !
-! IN  NDIM    : DIMENSION DE L'ESPACE
-! IN  NNO    : NOMBRE DE NOEUDS DE L'ELEMENT
-! IN  FF      : FONCTIONS DE FORMES
-! IN  DFDI    : DERIVEE DES FONCTIONS DE FORME
-! IN  ndimte  : Nombre de fonction pour la discrétisation
-!                -- ndeg si legendre
-!                -- nnof si lagrange
-! IN  ITHET   : zr(ithet) est tel que, pour le noeud i
+! IN  NDIM      : DIMENSION DE L'ESPACE
+! IN  NNO       : NOMBRE DE NOEUDS DE L'ELEMENT
+! IN  DISCR     : CHOIX DE LA DISCRETISATION : LAGRANGE OU LEGENDRE OU 2D
+! IN  FF        : FONCTIONS DE FORMES
+! IN  DFDI      : DERIVEE DES FONCTIONS DE FORME
+! IN  IDEG      : Degré du polynome pour la discrétisation legendre k
+! IN  ilag      : Abs_cur s0, s1 et s2 pour la fonction de lagrange k
+! IN  ITHET     : zr(ithet) est tel que, pour le noeud i
 !                   - zr(ithet-1+6*(i-1)+1): theta_0 évalué au noeud i
 !                   - zr(ithet-1+6*(i-1)+2:ithet-1+6*(i-1)+4): la 
-!                        direction de proagation t évaluée au noeud i
+!                        direction de propagation t évaluée au noeud i
 !                   - zr(ithet-1+6*(i-1)+5): l'abscisse curviligne s
 !                        évaluée au noeud i
 !                   - zr(ithet-1+6*(i-1)+6) : longueur de la fissure
-! OUT DTDM    : GRADIENT DE THETA
+! OUT DTDM      : GRADIENT DE THETA + THETA (4ème colonne)
 !......................................................................
 !
-    integer      :: i, j, k, test
-!    real(kind=8) :: gam, dgam
-    real(kind=8) :: th0, s, t(3)
+    integer      :: i, j, k
+    real(kind=8) :: th0, s, t(3), xl
+    real(kind=8) :: sno, s0, s1, s2
+    real(kind=8) :: gam, dgam, eval
     real(kind=8) :: gradth0(3), grads(3), gradt(3, 3)
 !
-!-- Calcul de theta_0, s et t au point de Gauss
+!-- Initilalisation des paramètres
     th0 = 0.d0
     s = 0.d0
     t = 0.d0
+    gradth0 = 0.d0
+    grads = 0.d0
+    gradt = 0.d0
+    gam = 0.d0
+    dgam = 0.d0
+    dtdm = 0.d0
 !
-!
+!-- Calcul de theta_0, s et t au point de Gauss
     do i=1, nno
         th0 = th0 + ff(i)*zr(ithet-1+6*(i-1)+1)
         s = s + ff(i)*zr(ithet-1+6*(i-1)+5)
@@ -70,10 +79,6 @@ subroutine thetapdg(ndim, nno, ff, dfdi, ndimte, ithet, dtdm)
     end do
 !
 !-- Calcul de grad(theta_0), grad(s) et grad(t) au point de Gauss
-    gradth0 = 0.d0
-    grads = 0.d0
-    gradt = 0.d0
-!
     do k = 1, ndim
        do i=1, nno
            gradth0(k) = gradth0(k) + dfdi(i, k)*zr(ithet-1+6*(i-1)+1)
@@ -85,40 +90,78 @@ subroutine thetapdg(ndim, nno, ff, dfdi, ndimte, ithet, dtdm)
     end do
 !
 ! ===========================================
-!                   CAS 3D: A FAIRE
+!          CAS 3D : discrétisation 
 ! ===========================================
-!-- Calcul du polynome de legendre 3D : A FAIRE
-!   call plegen(zi(ideg), s, xl, gam)
-!   xl est recuperable avec zr(ithet-1+6*(i-1)+6) : longueur de la fissure
-!   Zi(deg) est recuperable avec ndimte qui donne le nbr de polynome
 !
-!   a supprimer quand programmation 3D 
-    test = ndimte 
+    if (discr == "LEGENDRE") then
 !
-!-- Calcul de la derivee du polynome de legendre : A FAIRE
-!    call dplegen(zi(ideg), s, xl, dgam)
-
-!-- Il y a le cas LAGRANGE à faire aussi
-! ===========================================
-! ===========================================
-
-!-- Calcul de grad(theta) "analytique" au point de Gauss
-    dtdm = 0.d0
-    do i=1, ndim
-        do j=1, ndim
-!---------- CAS 2D
-            dtdm(i,j) = t(i)*gradth0(j) + th0*gradt(i,j)
-!---------- CAS 3D
-!           dtdm(i,j) = t(i)*(dgam*th0*grads(j) + gam*gradth0(j)) + gam*th0*gradt(i, j)
+!       Longueur de la fissure
+        xl = zr(ithet-1+6*(1-1)+6)
+!
+!       Polynome de Legendre
+        call plegen(zi(ideg), s, xl, gam)
+!
+!       Derivee du polynome de legendre
+        call dplegen(zi(ideg), s, xl, dgam)
+!
+!------ Calcul de grad(theta) "analytique" au point de Gauss
+!-------Stockage de theta dans la 4ème colonne
+        do i=1, ndim
+            dtdm(i,4) = gam*th0*t(i)
+            do j=1, ndim
+                dtdm(i,j) = t(i)*(dgam*th0*grads(j) + gam*gradth0(j)) + gam*th0*gradt(i, j)
+            enddo
         enddo
-    enddo
 !
-!-- Stockage de theta dans la quatrième colonne de dtdm
-    do i=1, ndim
-!------ CAS 2D
-        dtdm(i,4) = th0*t(i)
-!------ CAS 3D
-!        dtdm(i,4) = gam*th0*t(i)
-    enddo
+    else if (discr == "LINEAIRE") then
+!
+        do i=1, nno
+!
+!---------- Récupération des asbcisses curvilignes pour les noeuds du fond
+!---------- restreint a la foncction de forme courante
+            s0 = zr(ilag)
+            s1 = zr(ilag+1)
+            s2 = zr(ilag+2)
+            sno = zr(ithet-1+6*(i-1)+5)
+!
+!---------- Recherche de la valeur de l'abscisse curviligne normalisée
+!---------- pour le projeté d'un noeud du maillage
+            if(sno  .ge. s0 .and. sno  .le. s1 .and. s0 .ne. s1) then
+                eval = (sno - s0) / (s1 - s0)
+            elseif (sno  .ge. s1 .and. sno  .le. s2) then
+                eval = 1.d0 - ((sno - s1) / (s2 - s1))
+            else
+                eval = 0.d0
+            endif 
+!
+!---------  Calcul de grad(theta) au point de Gauss
+!---------- Stockage de theta dans la 4ème colonne
+            do j = 1 , ndim 
+                dtdm(j,4) = dtdm(j,4) + ff(i)*(eval*zr(ithet-1+6*(i-1)+1)* &
+                                                    zr(ithet-1+6*(i-1)+j+1))
+                do k = 1, ndim
+                    dtdm(j,k) = dtdm(j,k) + dfdi(i,k)*(eval*zr(ithet-1+6*(i-1)+1)* &
+                                                            zr(ithet-1+6*(i-1)+j+1))
+                enddo
+            enddo
+        end do
+!
+    else if (discr == "2D") then
+!
+!------ Calcul de grad(theta) "analytique" au point de Gauss
+!-------Stockage de theta dans la 4ème colonne
+        do i=1, ndim
+            dtdm(i,4) = th0*t(i)
+            do j=1, ndim
+                dtdm(i,j) = t(i)*gradth0(j) + th0*gradt(i,j)
+            enddo
+        enddo
+! 
+    else
+!
+        ASSERT(ASTER_FALSE)
+!
+    endif
+
 !
 end subroutine

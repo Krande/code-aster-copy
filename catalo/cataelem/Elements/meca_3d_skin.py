@@ -40,6 +40,8 @@ MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 NEWTHETA  = LocatedComponents(phys=PHY.G, type='ELEM',
             components=('GTHETA','FIC[3]','K[3]',))
 
+E3NEUTR = LocatedComponents(phys=PHY.NEUT_R, type='ELEM',
+                            components=('X[3]',))
 #---------------------------------------------------------------------------------------------------
 class MECA_FACE3(Element):
     """Skin element for 3D isoparametric elements - On TR3"""
@@ -71,9 +73,10 @@ class MECA_FACE3(Element):
         OP.CALCH_G(te=147,
             para_in  = ((SP.PACCELE, DDL_MECA), (SP.PDEPLAR, DDL_MECA),
                         (SP.PFR2D3D, LC.NFOR3DR), (SP.PGEOMER, LC.EGEOM3D),
-                        (SP.PPRESSR, LC.EPRE3DR),
+                        (SP.PPRESSR, LC.EPRE3DR), (OP.CALCH_G.PDEG, LC.E1NEUTI),
                         (OP.CALCH_G.PTHETAR, LC.ETHETA), (OP.CALCH_G.PVARCPR, LC.ZVARCPG),
-                        (SP.PVITESS, DDL_MECA),(SP.PMATERC, LC.CMATERC),),
+                        (SP.PVITESS, DDL_MECA),(SP.PMATERC, LC.CMATERC),
+                        (OP.CALCH_G.PLAG, LC.E3NEUTR)),
             para_out = ((SP.PGTHETA, NEWTHETA),),
         ),
 
@@ -81,9 +84,10 @@ class MECA_FACE3(Element):
             para_in  = ((SP.PACCELE, DDL_MECA), (SP.PDEPLAR, DDL_MECA),
                         (SP.PFF2D3D, LC.CFOR3DF), (SP.PPRESSF, LC.CPRE3DF),
                         (SP.PSIGINR, LC.ESIG3DR),(SP.PMATERC, LC.CMATERC),
-                        (SP.PGEOMER, LC.EGEOM3D),
+                        (SP.PGEOMER, LC.EGEOM3D),(OP.CALCH_G_F.PDEG, LC.E1NEUTI),
                         (SP.PTEMPSR, LC.MTEMPSR), (OP.CALCH_G_F.PTHETAR, LC.ETHETA),
-                        (OP.CALCH_G_F.PVARCPR, LC.ZVARCPG), (SP.PVITESS, DDL_MECA),),
+                        (OP.CALCH_G_F.PVARCPR, LC.ZVARCPG), (SP.PVITESS, DDL_MECA),
+                        (OP.CALCH_G_F.PLAG, LC.E3NEUT_R)),
             para_out = ((SP.PGTHETA, NEWTHETA),),
         ),
 
@@ -97,7 +101,8 @@ class MECA_FACE3(Element):
                         (SP.PROTATR, LC.CROTATR), (SP.PSIGINR, LC.ESIG3DR),
                         (SP.PMATERC, LC.CMATERC), (SP.PPULPRO, LC.CFREQR),
                         (OP.CALCH_K_G.PTHETAR, LC.ETHETA), (OP.CALCH_K_G.PVARCPR, LC.ZVARCPG),
-                        (SP.PVARCRR, LC.ZVARCPG),),
+                        (SP.PVARCRR, LC.ZVARCPG),(OP.CALCH_K_G.PDEG, LC.E1NEUTI),
+                        (OP.CALCH_K_G.PLAG, LC.E3NEUT_R)),
             para_out = ((SP.PGTHETA, NEWTHETA),),
         ),
 
@@ -111,7 +116,8 @@ class MECA_FACE3(Element):
                         (SP.PPRESSF, LC.CPRE3DF), (SP.PPULPRO, LC.CFREQR),
                         (SP.PROTATR, LC.CROTATR), (SP.PSIGINR, LC.ESIG3DR),
                         (SP.PTEMPSR, LC.MTEMPSR), (OP.CALCH_K_G_F.PTHETAR, LC.ETHETA),
-                        (OP.CALCH_K_G_F.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),),
+                        (OP.CALCH_K_G_F.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
+                        (OP.CALCH_K_G_F.PDEG, LC.E1NEUTI),(OP.CALCH_K_G_F.PLAG, LC.E3NEUT_R)),
             para_out = ((SP.PGTHETA, NEWTHETA),),
         ),
 

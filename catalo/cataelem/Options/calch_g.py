@@ -42,6 +42,11 @@ PVARIPR = InputParameter(phys=PHY.VARI_R)
 PTHETAR = InputParameter(phys=PHY.THET_R)
 
 
+PDEG = InputParameter(phys=PHY.NEUT_I)
+
+
+PLAG = InputParameter(phys=PHY.NEUT_R)
+
 CALCH_G = Option(
     para_in=(
         SP.PACCELE,
@@ -65,6 +70,8 @@ CALCH_G = Option(
         SP.PVARCRR,
         PVARIPR,
         SP.PVITESS,
+        PDEG,
+        PLAG,
 
     ),
     para_out=(

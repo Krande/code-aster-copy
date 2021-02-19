@@ -56,7 +56,7 @@ implicit none
     call deprecated_algom('CALC_H')
 !
 ! Fiches concernées par le chantier (A supprimer à la fin)
-! A Faire: #29573, #27931, #29703, #30288
+! A Faire: , #27931, #30288
 !
 !-- Initialisation des champs et des paramètres
     call cgField%initialize()
@@ -66,7 +66,7 @@ implicit none
 !
 !-- Calcul de la courbure
     if (cgField%ndim == 3) then
-        call cgTheta%compute_courbature(cgStudy%model)
+        call cgTheta%compute_curvature(cgStudy%model)
     endif
 !
 !-- Verification (A nettoyer)
@@ -84,10 +84,10 @@ implicit none
 !
         call cgStudy%initialize(cgField%result_in, cgField%list_nume(i_nume))
 !
-! ---  Récupération des champs utiles pour l'appel à calcul
+! ----  Récupération des champs utiles pour l'appel à calcul
         call cgStudy%getField(cgField%result_in)
 !
-! ---  Maillage similaire sd_fond_fissure et sd_resu
+! ----  Maillage similaire sd_fond_fissure et sd_resu
         ASSERT(cgTheta%mesh == cgStudy%mesh)
 !
         do i_opt = 1, cgField%nb_option
@@ -105,8 +105,8 @@ implicit none
     end do
 !
 !------ Print fields
-    call cgTheta%print()
-    call cgField%print()
+!    call cgTheta%print()
+!    call cgField%print()
 !
 ! --- Cleaning
     call cgField%clean()

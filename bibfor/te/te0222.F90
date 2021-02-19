@@ -38,7 +38,7 @@ subroutine te0222(option, nomte)
 !
 use Behaviour_type
 use Behaviour_module
-use calcG_type
+!use calcG_type
 !
 implicit none
 !
@@ -65,6 +65,8 @@ implicit none
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
+#include "asterfort/tecael.h"
+#include "asterfort/teattr.h"
 #include "asterfort/thetapdg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
@@ -73,10 +75,11 @@ implicit none
 !                       DECLARATION DES VARIABLES
 ! =====================================================================
 !
-    type(CalcG_InfoTe) :: cgInfoTe
+!    type(CalcG_InfoTe) :: cgInfoTe
+!    type(CalcG_theta) :: cgTheta
     type(Behaviour_Integ) :: BEHinteg
 !
-    integer           :: i, j, k, j1, j2, m, kk, l, ndimte
+    integer           :: i, j, k, j1, j2, m, kk, l
     integer           :: ier, icodre(4), kp, ncmp
     integer           :: ipoids, ivf, idfde, jgano
     integer           :: ndim, nno, nnos, npg, compt
@@ -84,11 +87,11 @@ implicit none
     integer           :: icomp, igeom, idepl, imate, matcod
     integer           :: iforf, itemps, iepsf, iforc, iepsr
     integer           :: nbvari, irota, ipesa, isigi, isigm
-    integer           :: iret, ireth, ibalo
+    integer           :: iret, ireth, ibalo, ideg, ilag
     real(kind=8)      :: tcla, tthe, tfor, tini, thet, poids, f(3,3)
     real(kind=8)      :: der(4), energi(2), divt, dsidep(6,6), mu
     real(kind=8)      :: epsi, valpar(4), accele(3), dsigin(6,3)
-    real(kind=8)      :: crit(13), e, ecin, tpg(27), tref
+    real(kind=8)      :: crit(13), e, ecin, tpg(27), tref, absno
     real(kind=8)      :: prod, prod1, prod2, prod3, prod4, puls
     real(kind=8)      :: dtdm(3, 4), dfdm(3,4), dudm(3,4), dvdm(3,4)
     real(kind=8)      :: rbid, rho, om, omo, epsref(6), depsin(6,3), u1(2), u2(2) 
@@ -99,8 +102,8 @@ implicit none
     real(kind=8)      :: courb(3, 3, 3), valres(4), alpha, coeff_K1K2, coeff_K3
     real(kind=8)      :: dfvdm(3,4), k3a, ka, lambda, phig, r8bid, rg, th
     real(kind=8)      :: ttrgv, ttrg, u1l(3), u2l(3), u3l(3), tgvdm(3)
-    character(len=8)  :: typmod(2), nompar(4)
-    character(len=4)  :: fami
+    character(len=8)  :: typmod(2), nompar(4), discr
+    character(len=4)  :: fami, typma
     character(len=16) :: nomte, option, compor(4), phenom, oprupt, nomres(4)
 !
     aster_logical :: axi, cp, fonc, epsini, grand, incr, notelas, lcour, l_not_zero
@@ -111,8 +114,7 @@ implicit none
     real(kind=8), pointer :: ffp(:) => null()
 !
 !   TEST A EFFACER
-    real(kind=8)      :: rtheta, tdir(3), abcur, xl
-!    integer           :: iadzi, iazk24
+    integer           :: iadzi, iazk24
 !
 ! =====================================================================
 !                       INITIALISATION PARAMETRES
@@ -124,18 +126,8 @@ implicit none
     call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
-!   C'est une parade à la création d'un champ qui serait envoyé dans l'appel à calcul
-!   On récupere directement la discretisation,nnof et ndeg : cgInfoTe
 !-- Initialisation des champs et paramètres
     call behaviourInit(BEHinteg)
-    call cgInfoTe%initialize()
-!    call cgInfoTe%print()
-!
-!   TEST A EFFACER
-    rtheta = 0.d0
-    tdir(:) = 0.d0
-    abcur = 0.d0
-    xl = 0.d0
 !
 !-- Initialisation des paramètres
     epsi = r8prem()
@@ -164,11 +156,15 @@ implicit none
     endif
     typmod(1) = '3D'
     typmod(2) = ' '
-    oprupt = 'RUPTURE'
+    oprupt    = 'RUPTURE'
     nomres(1) = 'E'
     nomres(2) = 'NU'
     nomres(3) = 'ALPHA'
     nomres(4) = 'RHO'
+    discr = ' '
+!
+!-- Maillage quadratique ou linéaire 
+!    call teattr('S','TYPMA',typma, iret)
 !
 !-- Nombre de composantes des tenseurs
     ncmp = 2*ndim
@@ -196,40 +192,30 @@ implicit none
 !                       CALCUL DE THETA
 ! =====================================================================
 !
-!-- Recuperation des parametres pour créer theta
+!   Recuperation des parametres pour créer theta
     call jevech('PTHETAR', 'L', ithet)  ! champ d'entree
 !
-!-- recuperation du champ de sortie
+!   Recuperation du champ de sortie
     call jevech('PGTHETA', 'E', igthet) ! champ de sortie
 !
-!------------------PRINT TEST--------------------------------------
-!        print* , 'size ncmp' , ncmp
-!        print* , 'size nno' ,  nno
-!        print* , 'size epsino' , ncmp*nno
-!        print* , 'size fno' , ndim*(nno-1)+ndim
+!   Recuperation de DEG si LEGENDRE ou abscisse si LAGRANGE
+    if (ndim .eq. 3) then
 !
-!------ recuperation de l'element 
-!        print* ,''
-!        call tecael(iadzi, iazk24)
-!        print *, 'ele=', zi(iadzi)
+        call tecach('ONO', 'PDEG', 'L', iret, iad=ideg)  
 !
-!        do i = 1 ,nno
-!            print*, '+++++++++++++++++++++++++++++++++++++'
-!            print* , 'nno = ' , i
-!            print* ,''
-!            rtheta = zr(ithet-1+6*(i-1)+1)
-!            tdir = zr(ithet-1+6*(i-1)+2:ithet-1+6*(i-1)+4)
-!            abcur = zr(ithet-1+6*(i-1)+5)
-!            xl = zr(ithet-1+6*(i-1)+6)
-!            print* , 'rtheta' ,rtheta
-!            print* , 'tdir' ,tdir(:)
-!            print* , 'abcur' ,rho
-!            print* , 'xl' ,rho
-!        enddo
-!-------------------------------------------------------- 
-   
+        if (iret .eq. 0 ) then
+            discr = "LEGENDRE"
+        else
+            discr = "LINEAIRE"
+            call jevech('PLAG', 'L', ilag)            
+        endif
+!
+    else
+        discr = "2D"
+    endif
+!   
 !-- Valeur de theta0(r) nulle sur element : pas de calcul 
-!-- Test a enrichir en 3D , rajouter le lissage dans le test 
+!-- si LAGRANGE, test sur les abscisses curvilignes
     compt = 0
     do i = 1, nno
         thet = zr(ithet-1+6*(i-1)+1)
@@ -237,6 +223,22 @@ implicit none
     end do
     if (compt .eq. nno) goto 999
 !
+    compt = 0
+    if (discr == "LINEAIRE" ) then
+        do i = 1, nno
+            absno= zr(ithet-1+6*(i-1)+5)
+            if (absno .ge. zr(ilag) .and. absno .le. zr(ilag+2)) compt = compt+1
+        end do  
+        if (compt .eq. 0) goto 999 
+    endif  
+!
+!===========================================!
+!    print* ,''
+!    print*, 'quadratic' , cgInfoTe%milieu
+!    call tecael(iadzi, iazk24)
+!    print *, 'ele=', zi(iadzi)
+!===========================================!
+!        
 ! =====================================================================
 !                  RECUPERATION DES CHAMPS LOCAUX
 ! =====================================================================
@@ -536,10 +538,10 @@ implicit none
 !
 !------ Calcul de theta et de son gadient aux points de gauss : DTDM
         if (ndim .eq. 2) then
-            ndimte = 0
 !
-            call thetapdg(ndim, nno, zr(ivf - 1 + nno*(kp - 1) + 1:ivf - 1 + nno*(kp - 1) + nno), &
-                          dfdi, ndimte, ithet, dtdm) 
+            call thetapdg(ndim, nno, discr, &
+                          zr(ivf + l - 1 + 1:ivf + l - 1 + nno), &
+                          dfdi, 1, 1, ithet, dtdm) 
 !
             if (cp) then
                 dudm(3,3)= eps(3)
@@ -560,8 +562,11 @@ implicit none
 !---------- Calcul de la divergence 2D
             divt = dtdm(1,1) + dtdm(2,2) + dtdm(3,3)
         else
-!            ndimte = ??
-!---------- CAS 3D : A FAIRE , RAJOUTER LA DISCRETISATION PROPRE AU 3D
+!
+!           Calcul de DTDM pour LEGENDRE ou LAGRANGE
+            call thetapdg(ndim, nno, discr , & 
+                          zr(ivf + l - 1 + 1:ivf + l - 1 + nno), &
+                          dfdi, ideg, ilag, ithet, dtdm) 
 !
 !---------- Calcul de la divergence 3D
             divt = dtdm(1,1) + dtdm(2,2) + dtdm(3,3)
@@ -941,36 +946,14 @@ implicit none
 !    
 !-- Assemblage final des termes de G, K* et des K* réduits pour le 
 !-- calcul de G_IRWIN
-!--- VOIR SI ON FAIT LA CALCUL ICI OU DANS CGCOMPUTETHETA POUR AXIS
-!    if (.not. axi) then 
-!        zr(igthet)   = tthe + tcla + tfor + tini
-!        zr(igthet+1) = k1 * coeff_K1K2
-!        zr(igthet+2) = k2 * coeff_K1K2
-!        zr(igthet+3) = k3 * coeff_K3
-!!
-!        zr(igthet+4) = k1 * sqrt(coeff_K1K2)
-!        zr(igthet+5) = k2 * sqrt(coeff_K1K2)
-!        zr(igthet+6) = k3 * sqrt(coeff_K3)
-!    else 
-!!------ On normalise pour G, K1 et K2
-!        zr(igthet) = (tthe + tcla + tfor + tini)/r_axi
-!        zr(igthet+1) = (k1 * coeff_K1K2) /r_axi
-!        zr(igthet+2) = (k1 * coeff_K1K2) /r_axi
-!        zr(igthet+3) = k3 * coeff_K3        
-!!
-!        zr(igthet+4) = (k1 * sqrt(coeff_K1K2))/ r_axi
-!        zr(igthet+5) = (k2 * sqrt(coeff_K1K2))/ r_axi
-!        zr(igthet+6) = k3 * sqrt(coeff_K3)
-!    endif
-
-        zr(igthet)   = tthe + tcla + tfor + tini
-        zr(igthet+1) = k1 * coeff_K1K2
-        zr(igthet+2) = k2 * coeff_K1K2
-        zr(igthet+3) = k3 * coeff_K3
+    zr(igthet)   = tthe + tcla + tfor + tini
+    zr(igthet+1) = k1 * coeff_K1K2
+    zr(igthet+2) = k2 * coeff_K1K2
+    zr(igthet+3) = k3 * coeff_K3
 !
-        zr(igthet+4) = k1 * sqrt(coeff_K1K2)
-        zr(igthet+5) = k2 * sqrt(coeff_K1K2)
-        zr(igthet+6) = k3 * sqrt(coeff_K3)
+    zr(igthet+4) = k1 * sqrt(coeff_K1K2)
+    zr(igthet+5) = k2 * sqrt(coeff_K1K2)
+    zr(igthet+6) = k3 * sqrt(coeff_K3)
 !
 !-- Exit sur valeur de theta nulle sur element
     999 continue

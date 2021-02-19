@@ -68,7 +68,8 @@ private
 #include "asterfort/xcourb.h"
 #include "jeveux.h"
 !
-public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_InfoTe, CalcG_Table
+!public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_InfoTe, CalcG_Table
+public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -204,44 +205,43 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_InfoTe, CalcG_Table
         character(len=8)        :: symech = 'NON'
 ! ----- the crack is closed ?
         aster_logical           :: l_closed = ASTER_FALSE
-! ----- name of the courbature
-        character(len=24)       :: courbature = ' '
+! ----- name of the curvature
+        character(len=24)       :: curvature = ' '
 ! ----- name of the curvilinear abscissa of crack nodes
         character(len=24)       :: absfond = ' '
 ! ----- member function
         contains
         procedure, pass    :: initialize => initialize_theta
         procedure, pass    :: print => print_theta
-        procedure, pass    :: compute_courbature
+        procedure, pass    :: compute_curvature
         procedure, pass    :: getCoorNodes
         procedure, pass    :: getAbscurv
         procedure, pass    :: getBaseLoc
         procedure, pass    :: getFondTailleR
-        procedure, pass    :: getFondNoeu
+        procedure, pass    :: getFondNoeu        
     end type CalcG_Theta
 !
-!===================================================================================================
+!=================================================================================================
 !
-!===================================================================================================
+!!================================================================================================
+!!
+!    type CalcG_InfoTe
+!! ----- type of discretization
+!        character(len=8)        :: discretisation = ' '
+!!------ linear or quadratic
+!        aster_logical      :: milieu = ASTER_FALSE
+!! ----- name of mesh
+!        character(len=8)   :: mesh      = ' '
+!! ----- name of crack
+!        character(len=8)        :: crack = ' '
+!! ----- member function
+!        contains
+!        procedure, pass    :: initialize => initialize_InfoTe
+!    end type CalcG_InfoTe
 !
-    type CalcG_InfoTe
-! ----- number of nodes in the crack
-        integer                 :: nb_fond = 0
-! ----- type of discretization
-        character(len=8)        :: discretisation = ' '
-! ----- number of points (for linear discretization)
-        integer                 :: nnof = 0
-! ----- nubmer of nodes (for legendre discretization)
-        integer                 :: ndeg = 0
-! ----- member function
-        contains
-        procedure, pass    :: initialize => initialize_InfoTe
-        procedure, pass    :: print => print_InfoTe
-    end type CalcG_InfoTe
+!=================================================================================================
 !
-!===================================================================================================
-!
-!===================================================================================================
+!=================================================================================================
 !
     type CalcG_Table
 ! ----- name of table G (out)
@@ -711,20 +711,20 @@ contains
         call getvis('THETA', 'DEGRE', iocc=1, scal=this%degree, nbret=ier)
         call jelira(this%crack//'.FOND.NOEU', 'LONMAX', this%nnof)
 !
-        if ( this%discretization == "LINEAIRE") then
-            this%nb_theta_field = this%nnof
-        else
-           this%nb_theta_field = this%degree
-        endif
+!        if ( this%discretization == "LINEAIRE") then
+!            this%nb_theta_field = this%nnof
+!        else
+!           this%nb_theta_field = this%degree
+!        endif
 
-        if(this%discretization == "LINEAIRE") then
-            ASSERT(this%nb_point_fond >= 0)
-            ASSERT(this%degree == 0)
-        end if
+!        if(this%discretization == "LINEAIRE") then
+!            ASSERT(this%nb_point_fond >= 0)
+!            ASSERT(this%degree == 0)
+!        end if
 !
         if(this%discretization == "LEGENDRE") then
-            ASSERT(this%nb_point_fond == 0)
-            ASSERT(this%degree >= 0)
+!            ASSERT(this%nb_point_fond == 0)
+!            ASSERT(this%degree >= 0)
             if(this%l_closed) then
                 call utmess('F', 'RUPTURE0_90')
             end if
@@ -767,18 +767,19 @@ contains
                 call utmess('A', 'RUPTURE1_16', nr=2, valr=[mintai, maxtai])
             endif
         endif
-
-        
-! --- Get AbsFond = Abscurv for nodes of the crack front
-! extraction à modifier lors de la résolution de issue30288 (NB_POINT_FOND)
+!
+!       Get AbsFond = Abscurv for nodes of the crack front
+!       extraction à modifier lors de la résolution de issue30288 (NB_POINT_FOND)
         call wkvect(this%absfond, 'V V R8', this%nb_fondNoeud, ibasf)
         call this%getAbscurv(abscur)
         call this%getFondNoeu(fondNoeud)
 !
         do i = 1, this%nb_fondNoeud
-!          Récupération du numéro de noeud
+!
+!           Récupération du numéro de noeud
             call jenonu(jexnom(this%nomNoeud, fondNoeud(i)), num)
-!          Extraction de l'abscisse curviligne pour ce numéro de noeud
+!
+!           Extraction de l'abscisse curviligne pour ce numéro de noeud
             zr(ibasf-1+i)=abscur(num)
         enddo
 !
@@ -790,7 +791,7 @@ contains
 !
 !===================================================================================================
 !
-    subroutine compute_courbature(this, model)
+    subroutine compute_curvature(this, model)
 !
     implicit none
 !
@@ -799,15 +800,15 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!   Compute the courbature in 3D
+!   Compute the curvature in 3D
 !   In this     : theta type
 ! --------------------------------------------------------------------------------------------------
 !
         character(len=24) :: baseloc
 !
         baseloc = this%crack//'.BASLOC'
-        this%courbature = '&&cgtheta.COURB'
-        call xcourb(baseloc, this%mesh, model, this%courbature)
+        this%curvature = '&&cgtheta.COURB'
+        call xcourb(baseloc, this%mesh, model, this%curvature)
 !
     end subroutine
 !
@@ -902,9 +903,6 @@ contains
         call jedema()
 !
     end subroutine
-!
-!===================================================================================================
-!
 !===================================================================================================
 !
     subroutine getFondNoeu(this, v_fondnoeu)
@@ -951,7 +949,7 @@ contains
         print*, "Initial configuration: ", this%config_init
         print*, "the crack is symetric: ", this%symech
         print*, "The crack is closed ?: ", this%l_closed
-        print*, "Nombre de champs THETA: ", this%nb_theta_field
+!        print*, "Nombre de champs THETA: ", this%nb_theta_field
         print*, "Discretization : ", this%discretization,  " with number/degree ", &
                 this%nnof, this%degree
         print*, "Radius:"
@@ -964,68 +962,79 @@ contains
 !
     end subroutine
 !
-!===================================================================================================
+!=========================================================================================
 !
-!===================================================================================================
-!
-    subroutine initialize_InfoTe(this)
-!
-    implicit none
-!
-        class(CalcG_InfoTe), intent(inout)  :: this
-!
-! --------------------------------------------------------------------------------------------------
-!
-!   Informations for TE
-!   In this     : theta type
-! --------------------------------------------------------------------------------------------------
-!
-        integer :: ier
-        character(len=8) :: crack
-!
-        call jemarq()
-!
-        call getvtx('THETA', 'FISSURE', iocc=1, scal=crack, nbret=ier)
+!!========================================================================================
+!!!
+!    subroutine initialize_InfoTe(this)
+!!
+!    implicit none
+!!
+!        class(CalcG_InfoTe), intent(inout)  :: this
+!!
+!! ---------------------------------------------------------------------------------------
+!!
+!!   Informations for TE
+!!   In this     : theta type
+!! ---------------------------------------------------------------------------------------
+!!
+!        integer :: ier
+!        character(len=8) :: typma
+!        integer :: jma
+!!        character(len=8) :: crack
+!!
+!        call jemarq()
+!!
+!!        call getvtx('THETA', 'FISSURE', iocc=1, scal=crack, nbret=ier)
 
-! ---   Get informations about theta discretization
-        call getvtx('THETA', 'DISCRETISATION', iocc=1, scal=this%discretisation, nbret=ier)
-        call getvis('THETA', 'DEGRE', iocc=1, scal=this%ndeg, nbret=ier)
-        call jelira(crack//'.FOND.NOEU', 'LONMAX', this%nnof)
+!! ---   Get informations about theta discretization
+!        call getvtx('THETA', 'DISCRETISATION', iocc=1, scal=this%discretisation, nbret=ier)
+!!        call getvis('THETA', 'DEGRE', iocc=1, scal=this%ndeg, nbret=ier)
+!!        call jelira(crack//'.FOND.NOEU', 'LONMAX', this%nnof)
 
-!       si npoint fond est activé travail à faire 3
-!        call getvis('THETA', 'NB_POINT_FOND', iocc=1, scal=this%nnof, nbret=ier)
+!!       si npoint fond est activé travail à faire 3
+!!        call getvis('THETA', 'NB_POINT_FOND', iocc=1, scal=this%nnof, nbret=ier)
+!        call getvtx('THETA', 'FISSURE', iocc=1, scal=this%crack, nbret=ier)
+!        ASSERT(ier==1)
+!!!
+!        call dismoi('NOM_MAILLA',this%crack,'FOND_FISS', arret='F', repk=this%mesh)
+!        call jeveuo(this%mesh//'.TYPMAIL', 'L', jma)
+!        call jenuno(jexnum('&CATA.TM.NOMTM', zi(jma)), typma)
+!        if (.not. ismali(typma)) then
+!            this%milieu = ASTER_TRUE
+!        endif
 
-        call jedema()
+!        call jedema()
+!!
+!    end subroutine
+!!
+!=========================================================================================
 !
-    end subroutine
+!=========================================================================================
 !
-!===================================================================================================
-!
-!===================================================================================================
-!
-    subroutine print_InfoTe(this)
-!
-    implicit none
-!
-        class(CalcG_InfoTe), intent(in)  :: this
-!
-! --------------------------------------------------------------------------------------------------
-!
-!   print informations of a CalcG_Theta type
-!   In this     : theta type
-! --------------------------------------------------------------------------------------------------
-!
-        print*, "----------------------------------------------------------------------"
-        print*, "Discretization : ", this%discretisation,  " with number/degree ", &
-                this%nnof, this%ndeg
-        print*, "----------------------------------------------------------------------"
-!
-    end subroutine
-!
-!===================================================================================================
-!
-!===================================================================================================
-!
+!    subroutine print_InfoTe(this)
+!!
+!    implicit none
+!!
+!        class(CalcG_InfoTe), intent(in)  :: this
+!!
+!! ---------------------------------------------------------------------------------------
+!!
+!!   print informations of a CalcG_Theta type
+!!   In this     : theta type
+!! ---------------------------------------------------------------------------------------
+!!
+!        print*, "----------------------------------------------------------------------"
+!        print*, "Discretization : ", this%discretisation,  " with number/degree ", &
+!                this%nnof, this%ndeg
+!        print*, "----------------------------------------------------------------------"
+!!
+!    end subroutine
+!!
+!!=======================================================================================
+!!
+!!=======================================================================================
+!!
     subroutine addPara(this, name, type)
 !
     implicit none
@@ -1033,11 +1042,11 @@ contains
         class(CalcG_Table), intent(inout)  :: this
         character(len=*), intent(in) :: name, type
 !
-! --------------------------------------------------------------------------------------------------
+! ---------------------------------------------------------------------------------------
 !
 !   add a parameter to the table
 !   In this     : calcG Table
-! --------------------------------------------------------------------------------------------------
+! ---------------------------------------------------------------------------------------
         this%nb_para = this%nb_para + 1
         ASSERT(this%nb_para .le. NB_MAX_PARA)
 !
@@ -1046,9 +1055,9 @@ contains
 
     end subroutine
 !
-!===================================================================================================
+!=======================================================================================
 !
-!===================================================================================================
+!=======================================================================================
 !
     subroutine initialize_table(this, cgField)
 !
@@ -1057,11 +1066,11 @@ contains
         class(CalcG_Table), intent(inout)  :: this
         type(CalcG_field), intent(inout) :: cgField
 !
-! --------------------------------------------------------------------------------------------------
+! --------------------------------------------------------------------------------------
 !
 !   initialization of a CalcG_Table type
 !   In this     : calcG Table
-! --------------------------------------------------------------------------------------------------
+! --------------------------------------------------------------------------------------
         integer :: iopt, nbValues
         character(len=8) :: option
 !
@@ -1121,9 +1130,9 @@ contains
 !
     end subroutine
 !
-!===================================================================================================
+!==========================================================================================
 !
-!===================================================================================================
+!==========================================================================================
 !
     subroutine addValues(this, cgField, cgStudy)
 !
@@ -1133,11 +1142,11 @@ contains
         type(CalcG_field), intent(in) :: cgField
         type(CalcG_study), intent(in) :: cgStudy
 !
-! --------------------------------------------------------------------------------------------------
+! ----------------------------------------------------------------------------------------
 !
 !   add Values in the table
 !   In this     : calcG Table
-! --------------------------------------------------------------------------------------------------
+! ----------------------------------------------------------------------------------------
 !
         if(cgStudy%option == "G") then
             this%v_G(1) = cgStudy%gth(1)
@@ -1157,9 +1166,9 @@ contains
     end subroutine addValues
 !
 !
-!===================================================================================================
+!=======================================================================================
 !
-!===================================================================================================
+!=======================================================================================
 !
     subroutine save_table(this, cgField, cgTheta, cgStudy)
 !
@@ -1170,11 +1179,11 @@ contains
         type(CalcG_theta), intent(in) :: cgTheta
         type(CalcG_study), intent(in) :: cgStudy
 !
-! --------------------------------------------------------------------------------------------------
+! --------------------------------------------------------------------------------------
 !
 !   save values in the table
 !   In this     : calcG Table
-! --------------------------------------------------------------------------------------------------
+! --------------------------------------------------------------------------------------
 !
         integer            :: livi(NB_MAX_PARA)
         real(kind=8)       :: livr(NB_MAX_PARA)

@@ -19,15 +19,10 @@
 !
 !
 interface
-    subroutine thetapdg(ndim, nno, discr, ff, dfdi, ideg, ilag, ithet, dtdm)
-        integer, intent(in)       :: ndim
-        integer, intent(in)       :: nno
-        character(len=8)          :: discr
-        real(kind=8), intent(in)  :: ff(nno)
-        real(kind=8), intent(in)  :: dfdi(nno, ndim)
-        integer, intent(in)       :: ideg
-        integer, intent(in)       :: ilag
-        integer, intent(in)       :: ithet
-        real(kind=8), intent(out) :: dtdm(3, 4)
-    end subroutine thetapdg
+    subroutine plegen(degre, s, l, legen)
+        integer, intent(in) :: degre
+        real(kind=8), intent(in) :: s
+        real(kind=8), intent(in) :: l
+        real(kind=8), intent(out) :: legen
+    end subroutine plegen
 end interface
