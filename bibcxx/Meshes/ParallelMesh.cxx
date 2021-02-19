@@ -167,7 +167,8 @@ const VectorLong ParallelMeshClass::getCells( const std::string name ) const {
     return _groupsOfCells->getObjectFromName( name ).toVector();
 }
 
-const VectorLong ParallelMeshClass::getNodes( const std::string name , const bool local ) const {
+const VectorLong ParallelMeshClass::getNodes( const std::string name , const bool localNumbering )
+const {
 
     VectorLong listOfNodes;
     if ( name.empty())
@@ -182,7 +183,7 @@ const VectorLong ParallelMeshClass::getNodes( const std::string name , const boo
         listOfNodes = _groupsOfNodes->getObjectFromName( name ).toVector();
     }
 
-    if (local)
+    if (localNumbering)
         return listOfNodes;
 
     VectorLong newNumbering;
@@ -195,7 +196,7 @@ const VectorLong ParallelMeshClass::getNodes( const std::string name , const boo
     return newNumbering;
 }
 
-const VectorLong ParallelMeshClass::getNodes( const std::string name, const bool local,
+const VectorLong ParallelMeshClass::getNodes( const std::string name, const bool localNumbering,
                                               const bool same_rank ) const {
 
     VectorLong listOfNodes;
@@ -238,7 +239,7 @@ const VectorLong ParallelMeshClass::getNodes( const std::string name, const bool
     }
     newRank.resize(size);
 
-    if (local)
+    if (localNumbering)
         return newRank;
 
     VectorLong newNumbering;

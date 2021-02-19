@@ -5,7 +5,7 @@
  * @file Mesh.h
  * @brief Fichier entete de la classe Mesh
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -100,12 +100,12 @@ class MeshClass : public BaseMeshClass {
      * @param same_rank keep or not the nodes owned by the current domain
      * @return list of Nodes
      */
-    const VectorLong getNodes( const std::string name, const bool local,
+    const VectorLong getNodes( const std::string name, const bool localNumbering,
                                 const bool same_rank ) const; // 1
 
-    const VectorLong getNodes( const bool local, const bool same_rank ) const
+    const VectorLong getNodes( const bool localNumbering, const bool same_rank ) const
     {
-        return getNodes( std::string(), local, same_rank); // ->1
+        return getNodes( std::string(), localNumbering, same_rank); // ->1
     };
 
     const VectorLong getNodes(  ) const
@@ -118,14 +118,14 @@ class MeshClass : public BaseMeshClass {
         return getNodes ( name, true, false);// ->0
     };
 
-    const VectorLong getNodes( const std::string name, const bool local ) const
+    const VectorLong getNodes( const std::string name, const bool localNumbering ) const
     {
-        return getNodes ( name, local, false);// ->0
+        return getNodes ( name, localNumbering, false);// ->0
     };
 
-    const VectorLong getNodes( const bool local) const
+    const VectorLong getNodes( const bool localNumbering) const
     {
-        return getNodes(std::string(), local, false); // ->0
+        return getNodes(std::string(), localNumbering, false); // ->0
     };
 
     // const VectorLong getNodes( const bool same_rank ) const; //not possible

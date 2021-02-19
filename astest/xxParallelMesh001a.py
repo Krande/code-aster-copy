@@ -95,7 +95,7 @@ test.assertRaises(RuntimeError, lambda: list(numeDDL.getComponentsAssociatedToNo
 test.assertRaises(RuntimeError, lambda: list(numeDDL.getNodeAssociatedToRow(1)))
 
 physicalRows = numeDDL.getRowsAssociatedToPhysicalDofs(local=True)
-test.assertListEqual(physicalRows, list(range(1,3*len(pMesh.getNodes(local=True))+1)))
+test.assertListEqual(physicalRows, list(range(1,3*len(pMesh.getNodes(localNumbering=True))+1)))
 multipliersRows = numeDDL.getRowsAssociatedToLagrangeMultipliers(local=True)
 test.assertListEqual(multipliersRows, [])
 test.assertFalse(numeDDL.useLagrangeMultipliers())
@@ -103,7 +103,7 @@ test.assertFalse(numeDDL.useSingleLagrangeMultipliers())
 test.assertEqual(numeDDL.getComponents(), ['DX', 'DY', 'DZ'])
 test.assertEqual(numeDDL.getComponentsAssociatedToNode(1, local=True), ['DX', 'DY', 'DZ'])
 test.assertEqual(numeDDL.getNodeAssociatedToRow(1, local=True), 1)
-test.assertEqual(numeDDL.getNumberOfDofs(local=True), 3*len(pMesh.getNodes(local=True)))
+test.assertEqual(numeDDL.getNumberOfDofs(local=True), 3*len(pMesh.getNodes(localNumbering=True)))
 test.assertEqual(numeDDL.getNumberOfDofs(local=False), 3993)
 test.assertEqual(numeDDL.getPhysicalQuantity(), 'DEPL_R')
 

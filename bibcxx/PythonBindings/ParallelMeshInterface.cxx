@@ -195,12 +195,12 @@ with (local or global) indexing.
 
 Arguments:
     group_name (str): Name of the group.
-    local=false (bool) : use local or global numbering
+    localNumbering=true (bool) : use local or global numbering
 
 Returns:
     list[int]: Indexes of the nodes of the group with (local or global) indexing.
         )",
-              ( py::arg( "self" ), py::args("group_name", "local") )
+              ( py::arg( "self" ), py::args("group_name", "localNumbering") )
                )
         .def( "getNodes", n4, R"(
 Return the list of the indexes of the nodes that belong to a group of nodes
@@ -208,38 +208,38 @@ with (local or global) indexing and a restriction to MPI-rank.
 
 Arguments:
     group_name (str): Name of the group.
-    local (bool) : use local or global numbering
+    localNumbering (bool) : use local or global numbering
     same_rank : keep or not the nodes which are owned by the current MPI-rank
 
 Returns:
     list[int]: Indexes of the nodes of the group with (local or global) indexing.
         )",
-              ( py::arg( "self" ), py::args("group_name", "local", "same_rank") )
+              ( py::arg( "self" ), py::args("group_name", "localNumbering", "same_rank") )
                )
         .def( "getNodes", n5, R"(
 Return the list of the indexes of the nodes in the mesh with (local or global) indexing.
 
 Arguments:
-    local (bool) : use local or global numbering
+    localNumbering (bool) : use local or global numbering
 
 Returns:
     list[int]: Indexes of the nodes of the group with (local or global) indexing.
         )",
-              ( py::arg( "self" ), py::arg("local") )
+              ( py::arg( "self" ), py::arg("localNumbering") )
                )
         .def( "getNodes", n6, R"(
 Return the list of the indexes of the nodes in the mesh with (local or global) indexing
 and a restriction to MPI-rank
 
 Arguments:
-    local (bool) : use local or global numbering
+    localNumbering (bool) : use local or global numbering
     same_rank : keep or not the nodes which are owned by the current MPI-rank
 
 Returns:
     list[int]: Indexes of the nodes of the group with (local or global) indexing
 and a restriction to MPI-rank.
         )",
-              ( py::arg( "self" ), py::args("local", "same_rank") )
+              ( py::arg( "self" ), py::args("localNumbering", "same_rank") )
                )
         .def( "readMedFile", &ParallelMeshClass::readMedFile, R"(
 Read a mesh file from MED format.

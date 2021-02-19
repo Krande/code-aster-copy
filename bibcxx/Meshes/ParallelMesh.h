@@ -134,15 +134,15 @@ class ParallelMeshClass : public BaseMeshClass {
     /**
      * @brief Return list of nodes
      * @param name name of group (if empty all the nodes)
-     * @param local node id in local or global numbering
+     * @param localNumbering node id in local or global numbering
      * @param same_rank keep or not the nodes owned by the current domain
      * @return list of Nodes
      */
 
-    const VectorLong getNodes( const std::string name, const bool local,
+    const VectorLong getNodes( const std::string name, const bool localNumbering,
                                const bool same_rank) const; // 0
 
-    const VectorLong getNodes( const std::string name, const bool local) const; // 0
+    const VectorLong getNodes( const std::string name, const bool localNumbering) const; // 0
 
     const VectorLong getNodes(  ) const
     {
@@ -154,14 +154,14 @@ class ParallelMeshClass : public BaseMeshClass {
         return getNodes ( name, true);// ->0
     };
 
-    const VectorLong getNodes( const bool local) const
+    const VectorLong getNodes( const bool localNumbering) const
     {
-        return getNodes(std::string(), local); // ->0
+        return getNodes(std::string(), localNumbering); // ->0
     };
 
-    const VectorLong getNodes( const bool local, const bool same_rank) const
+    const VectorLong getNodes( const bool localNumbering, const bool same_rank) const
     {
-        return getNodes(std::string(), local, same_rank); // ->0
+        return getNodes(std::string(), localNumbering, same_rank); // ->0
     };
 
     // const VectorLong getNodes( const bool same_rank ) const; //not possible

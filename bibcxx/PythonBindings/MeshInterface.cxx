@@ -3,7 +3,7 @@
  * @brief Interface python de Mesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -194,48 +194,48 @@ Return the list of the indexes of the nodes that belong to a group of nodes.
 
 Arguments:
     group_name (str): Name of the group.
-    local=false (bool) : not used (for compatibilty with ParallelMesh)
+    localNumbering=true (bool) : not used (for compatibilty with ParallelMesh)
 
 Returns:
     list[int]: Indexes of the nodes of the group.
         )",
-              ( py::arg( "self" ), py::args("group_name", "local") )
+              ( py::arg( "self" ), py::args("group_name", "localNumbering") )
                )
         .def( "getNodes", n4, R"(
 Return the list of the indexes of the nodes that belong to a group of nodes.
 
 Arguments:
     group_name (str): Name of the group.
-    local (bool) : not used (for compatibilty with ParallelMesh)
+    localNumbering (bool) : not used (for compatibilty with ParallelMesh)
     same_rank : not used (for compatibilty with ParallelMesh)
 
 Returns:
     list[int]: Indexes of the nodes of the group.
         )",
-              ( py::arg( "self" ), py::args("group_name", "local", "same_rank") )
+              ( py::arg( "self" ), py::args("group_name", "localNumbering", "same_rank") )
                )
         .def( "getNodes", n5, R"(
 Return the list of the indexes of the nodes in the mesh.
 
 Arguments:
-    local (bool) : not used (for compatibilty with ParallelMesh)
+    localNumbering (bool) : not used (for compatibilty with ParallelMesh)
 
 Returns:
     list[int]: Indexes of the nodes of the group.
         )",
-              ( py::arg( "self" ), py::arg("local") )
+              ( py::arg( "self" ), py::arg("localNumbering") )
                )
         .def( "getNodes", n6, R"(
 Return the list of the indexes of the nodes in the mesh
 
 Arguments:
-    local (bool) : not used (for compatibilty with ParallelMesh)
+    localNumbering (bool) : not used (for compatibilty with ParallelMesh)
     same_rank : not used (for compatibilty with ParallelMesh)
 
 Returns:
     list[int]: Indexes of the nodes of the group.
         )",
-              ( py::arg( "self" ), py::args("local", "same_rank") )
+              ( py::arg( "self" ), py::args("localNumbering", "same_rank") )
                )
         .def( "readAsterFile", &MeshClass::readAsterFile, R"(
 Read a mesh file from ASTER format.
