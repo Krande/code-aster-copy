@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
 """
 
 import aster
-from libaster import ConstantFieldOnCellsReal
+from libaster import (ConstantFieldOnCellsReal, ConstantFieldOnCellsChar16)
 
 from ..Utilities import injector
 
@@ -35,6 +35,17 @@ class ExtendedConstantFieldOnCellsReal(object):
 
     def __getinitargs__(self):
         """Returns the argument required to reinitialize a ConstantFieldOnCellsReal
+        object during unpickling.
+        """
+        return (self.getName(), self.getMesh())
+
+
+@injector(ConstantFieldOnCellsChar16)
+class ExtendedConstantFieldOnCellsChar16(object):
+    cata_sdj = "SD.sd_carte.sd_carte"
+
+    def __getinitargs__(self):
+        """Returns the argument required to reinitialize a ConstantFieldOnCellsChar16
         object during unpickling.
         """
         return (self.getName(), self.getMesh())

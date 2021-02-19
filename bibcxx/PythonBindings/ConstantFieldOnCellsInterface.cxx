@@ -3,7 +3,7 @@
  * @brief Interface python de ConstantFieldOnCells
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -40,4 +40,13 @@ void exportConstantFieldOnCellsToPython() {
               py::make_constructor(
                   &initFactoryPtr< ConstantFieldOnCellsRealClass, std::string, BaseMeshPtr >))
         .def( "getMesh", &ConstantFieldOnCellsRealClass::getMesh );
+
+    py::class_< ConstantFieldOnCellsChar16Class, ConstantFieldOnCellsChar16Ptr,
+            py::bases< DataFieldClass > >( "ConstantFieldOnCellsChar16", py::no_init )
+        .def( "__init__",
+              py::make_constructor(&initFactoryPtr< ConstantFieldOnCellsChar16Class, BaseMeshPtr >))
+        .def( "__init__",
+              py::make_constructor(
+                  &initFactoryPtr< ConstantFieldOnCellsChar16Class, std::string, BaseMeshPtr >))
+        .def( "getMesh", &ConstantFieldOnCellsChar16Class::getMesh );
 };
