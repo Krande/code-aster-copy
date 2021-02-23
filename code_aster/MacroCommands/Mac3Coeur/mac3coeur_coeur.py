@@ -362,7 +362,7 @@ class Coeur(object):
         mcr = self.mcf_cara_barre()
         mcp = self.mcf_cara_poutre()
         mtmp = _F(GROUP_MA='DIL', SECTION='RECTANGLE',
-                  CARA=('HY', 'HZ'), VALE=(0.03, 0.21338),)
+                  CARA=('HY', 'HZ'), VALE=(0.03, 0.2138))
         mcp.append(mtmp)
         mcd = self.mcf_cara_discret()
         mtmp = _F(GROUP_MA='RES_TOT', REPERE='LOCAL',
@@ -1531,8 +1531,7 @@ class MateriauAC(object):
         """Crée les matériaux"""
 
         for typ in self._types:
-            _mat = INCLUDE_MATERIAU(NOM_AFNOR=self.typeAC + '_' + typ,
+            self.mate[typ] = INCLUDE_MATERIAU(NOM_AFNOR=self.typeAC + '_' + typ,
                                     TYPE_MODELE='REF',
                                     VARIANTE='A',
                                     TYPE_VALE='NOMI')
-            self.mate[typ] = _mat
