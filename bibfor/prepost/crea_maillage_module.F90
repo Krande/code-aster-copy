@@ -118,9 +118,10 @@ private
         character(len=8) :: name = ' '
 ! used to improve search of edges and faces
 ! it could be improved a lot to decrease memory consumption
-        integer :: max_faces = 65, nb_faces = 0
-        integer :: max_edges = 60, nb_edges = 0
-        integer :: faces(65) = 0, edges(60) = 0
+        integer :: max_faces = 0, nb_faces = 0
+        integer :: max_edges = 0, nb_edges = 0
+        integer, allocatable :: faces(:)
+        integer, allocatable :: edges(:)
     end type
 !
     type Mmesh
@@ -516,6 +517,10 @@ contains
                 node_id = this%add_node(v_coor(3*(i_node-1)+1:3*(i_node-1)+3), name)
                 ASSERT(i_node == node_id)
                 this%nodes(node_id)%orphelan = ASTER_TRUE
+                this%nodes(node_id)%max_faces = 30
+                allocate(this%nodes(node_id)%faces(this%nodes(node_id)%max_faces))
+                this%nodes(node_id)%max_edges = 30
+                allocate(this%nodes(node_id)%edges(this%nodes(node_id)%max_edges))
             end do
 !
             do i_cell = 1, nb_elem_mesh
@@ -548,9 +553,21 @@ contains
 !
             class(Mmesh), intent(inout) :: this
 !
+            integer :: i_node, nb_nodes
+!
             if(this%info >= 2) then
                 print*, "Cleaning objects..."
             end if
+!
+            nb_nodes = size(this%nodes)
+            do i_node = 1, nb_nodes
+                if( allocated(this%nodes(i_node)%faces) ) then
+                    deallocate(this%nodes(i_node)%faces)
+                end if
+                if( allocated(this%nodes(i_node)%edges) ) then
+                    deallocate(this%nodes(i_node)%edges)
+                end if
+            end do
 !
             deallocate(this%nodes)
             deallocate(this%edges)
@@ -965,7 +982,8 @@ contains
 ! ----------------------------------------------------------------------
             integer :: nno, nnos, nnos_sort(4), i_edge, edge_id
             integer :: nb_edge, edge_type(12), edge_loc(3,12), i_node
-            integer :: edge_nno, edge_nodes(27)
+            integer :: edge_nno, edge_nodes(27), old_size
+            integer, allocatable :: new_faces(:)
             aster_logical :: find
 !
             ASSERT(this%converter%dim(type) == 2)
@@ -1000,7 +1018,16 @@ contains
                     this%faces(face_id)%edges(i_edge) = edge_id
                 end do
 !
-                ASSERT(this%nodes(nnos_sort(1))%nb_faces < this%nodes(nnos_sort(1))%max_faces)
+                if(this%nodes(nnos_sort(1))%nb_faces > this%nodes(nnos_sort(1))%max_faces) then
+                    old_size = this%nodes(nnos_sort(1))%max_faces
+                    allocate(new_faces(old_size))
+                    new_faces(1:old_size) = this%nodes(nnos_sort(1))%faces(1:old_size)
+                    deallocate(this%nodes(nnos_sort(1))%faces)
+                    allocate(this%nodes(nnos_sort(1))%faces(2*old_size))
+                    this%nodes(nnos_sort(1))%faces(1:old_size) = new_faces(1:old_size)
+                    deallocate(new_faces)
+                    this%nodes(nnos_sort(1))%max_faces = 2 * old_size
+                end if
                 this%nodes(nnos_sort(1))%nb_faces = this%nodes(nnos_sort(1))%nb_faces + 1
                 this%nodes(nnos_sort(1))%faces(this%nodes(nnos_sort(1))%nb_faces) = face_id
 !
@@ -1036,7 +1063,8 @@ contains
             integer, intent(in), optional :: face_id
             integer :: edge_id
 ! ----------------------------------------------------------------------
-            integer :: nno, nnos_sort(2)
+            integer :: nno, nnos_sort(2), old_size
+            integer, allocatable :: new_edges(:)
             aster_logical :: find
 !
             ASSERT(this%converter%dim(type) == 1)
@@ -1058,7 +1086,16 @@ contains
                 this%edges(edge_id)%nodes(1:nno) = nodes(1:nno)
                 this%edges(edge_id)%nnos_sort = nnos_sort
 !
-                ASSERT(this%nodes(nnos_sort(1))%nb_edges < this%nodes(nnos_sort(1))%max_edges)
+                if(this%nodes(nnos_sort(1))%nb_edges > this%nodes(nnos_sort(1))%max_edges) then
+                    old_size = this%nodes(nnos_sort(1))%max_edges
+                    allocate(new_edges(old_size))
+                    new_edges(1:old_size) = this%nodes(nnos_sort(1))%edges(1:old_size)
+                    deallocate(this%nodes(nnos_sort(1))%edges)
+                    allocate(this%nodes(nnos_sort(1))%edges(2*old_size))
+                    this%nodes(nnos_sort(1))%edges(1:old_size) = new_edges(1:old_size)
+                    deallocate(new_edges)
+                    this%nodes(nnos_sort(1))%max_edges = 2 * old_size
+                end if
                 this%nodes(nnos_sort(1))%nb_edges = this%nodes(nnos_sort(1))%nb_edges + 1
                 this%nodes(nnos_sort(1))%edges(this%nodes(nnos_sort(1))%nb_edges) = edge_id
 !
