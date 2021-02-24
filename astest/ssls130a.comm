@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ CHCAR=AFFE_CARA_ELEM(MODELE=MODELE,
 
 ENCAS=AFFE_CHAR_MECA(MODELE=MODELE,
                      DDL_IMPO=_F(GROUP_NO='GOCH_NO',
-                                 LIAISON='ENCASTRE',),);
+                                 BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),);
 
 FORCE=AFFE_CHAR_MECA(MODELE=MODELE,
                      FORCE_NODALE=_F(GROUP_NO='DROI_NO',

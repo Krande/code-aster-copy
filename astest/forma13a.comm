@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ MAT_POM=AFFE_MATERIAU(MAILLAGE=MAY_POM,
 
 CHA_POM=AFFE_CHAR_MECA(MODELE=POMPE,
                        DDL_IMPO=_F(GROUP_MA=('BC_pal','BC_vol','BC_tuy',),
-                                   LIAISON='ENCASTRE',),);
+                                   BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),);
 
 
 CAR_POM=AFFE_CARA_ELEM(MODELE=POMPE,
@@ -146,21 +146,21 @@ MAT_TUY=AFFE_MATERIAU(MAILLAGE=MAY_TUY,
 
 CHA_PAL=AFFE_CHAR_MECA(MODELE=PALIER,
                        DDL_IMPO=(_F(GROUP_MA='BC_pal',
-                                    LIAISON='ENCASTRE',),
+                                    BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),
                                  _F(GROUP_MA='pal_vol',
-                                    LIAISON='ENCASTRE',),),);
+                                    BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),),);
 
 CHA_VOL=AFFE_CHAR_MECA(MODELE=VOLUTE,
                        DDL_IMPO=(_F(GROUP_MA='BC_vol',
-                                    LIAISON='ENCASTRE',),
+                                    BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),
                                  _F(GROUP_MA=('vol_pal','vol_tuy',),
-                                    LIAISON='ENCASTRE',),),);
+                                    BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),),);
 
 CHA_TUY=AFFE_CHAR_MECA(MODELE=TUYAU,
                        DDL_IMPO=(_F(GROUP_MA='BC_tuy',
-                                    LIAISON='ENCASTRE',),
+                                    BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),
                                  _F(GROUP_MA='tuy_vol',
-                                    LIAISON='ENCASTRE',),),);
+                                    BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),),);
 
 
 CAR_PAL=AFFE_CARA_ELEM(MODELE=PALIER,

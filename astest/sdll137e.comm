@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -139,11 +139,11 @@ CHCARSUP=AFFE_CARA_ELEM(MODELE=MODLSUP,
 
 CONDLSUP=AFFE_CHAR_MECA(MODELE=MODLSUP,
                         DDL_IMPO=(_F(GROUP_NO='FIXE',
-                                   LIAISON='ENCASTRE')));
+                                   BLOCAGE = ('DEPLACEMENT', 'ROTATION'))));
 
 ##CONDLSUP=AFFE_CHAR_MECA(MODELE=MODLSUP,
 ##                        DDL_IMPO=(_F(GROUP_NO='FIXE',
-##                                     LIAISON='ENCASTRE'),
+##                                     BLOCAGE = ('DEPLACEMENT', 'ROTATION')),
 ##                                  _F(GROUP_NO=('CAPT2','EXTERNE'),
 ##                                     DY=0.0,DZ=0.0),),);
 
@@ -303,7 +303,7 @@ CHMAMODI=AFFE_MATERIAU(MAILLAGE=MAILMODI,
 
 CONDMODI=AFFE_CHAR_MECA(MODELE=MODMODI,
                         DDL_IMPO=_F(GROUP_NO='EXTERNE',
-                                    LIAISON='ENCASTRE'),);
+                                    BLOCAGE = ('DEPLACEMENT', 'ROTATION')),);
 
 MACELMOD = CREA_ELEM_SSD(
                  MODELE = MODMODI,

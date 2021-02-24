@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,11 +59,11 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 
 ENCAST=AFFE_CHAR_MECA(MODELE=MO,
                       DDL_IMPO=_F(GROUP_MA='Base',
-                                  LIAISON='ENCASTRE'));
+                                  BLOCAGE = ('DEPLACEMENT', 'ROTATION')));
 
 ENCAST2=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=_F(GROUP_MA='Dimpo',
-                                   LIAISON='ENCASTRE'));
+                                   BLOCAGE = ('DEPLACEMENT', 'ROTATION')));
 
 Dimpo=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=_F(GROUP_MA='ContVis',

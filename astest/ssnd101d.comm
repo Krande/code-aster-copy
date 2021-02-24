@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ Depla01 = FORMULE(VALE='U01*Sinus(INST,Freq01)',
 CONDZ1 =AFFE_CHAR_MECA_F(MODELE=MODELZ,
     DDL_IMPO = (
         _F(GROUP_NO='PZ2', DY=ZERO, DZ=ZERO, DX=Depla01, ),
-        _F(GROUP_NO='PZ1', LIAISON='ENCASTRE',),
+        _F(GROUP_NO='PZ1', BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),
     ),
 )
 #

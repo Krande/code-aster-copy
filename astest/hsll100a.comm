@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -136,7 +136,7 @@ CHMAT=AFFE_MATERIAU(
 
 climi=AFFE_CHAR_MECA(
                      MODELE=modelp,
-                     DDL_IMPO=_F(GROUP_NO=('PT0','PT1'),LIAISON='ENCASTRE',),
+                     DDL_IMPO=_F(GROUP_NO=('PT0','PT1'),BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),
                      )
 
 linstS = DEFI_LIST_REEL(

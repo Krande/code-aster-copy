@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ class DynaLineFEM:
         """ Get global bounderis conditions"""
         __cliss = AFFE_CHAR_MECA(MODELE = self.getModele(),
                                  DDL_IMPO = _F(GROUP_NO = self.group_no_interf,
-                                               LIAISON = 'ENCASTRE',
+                                               BLOCAGE = ('DEPLACEMENT','ROTATION'),
                                                )
                                  )
         self.keywords["CHARGE"] = tuple(list(self.keywords["CHARGE"]) + [__cliss]) if "CHARGE" in self.keywords else (__cliss,)

@@ -88,7 +88,7 @@ CARAPLAQ=AFFE_CARA_ELEM(MODELE=MODELE,
 
 CONDLIM=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_MA='ENCAS',
-                                   LIAISON='ENCASTRE',),);
+                                   BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),);
 
 # DEFINITION DU CHARGEMENT
 

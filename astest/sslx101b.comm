@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -74,12 +74,7 @@ CAREL1=AFFE_CARA_ELEM(MODELE=MO1,
 
 CH1=AFFE_CHAR_MECA(MODELE=MO1,
                    DDL_IMPO=_F(GROUP_NO='P_ORIG',
-                               DX=0.0,
-                               DY=0.0,
-                               DZ=0.0,
-                               DRX=0.0,
-                               DRY=0.0,
-                               DRZ=0.0,),
+                                BLOCAGE = ('DEPLACEMENT','ROTATION'),),
                    LIAISON_ELEM=_F(OPTION='COQ_POU',
                                    GROUP_MA_1='CERCL1',
                                    GROUP_NO_2='P_ORIG',

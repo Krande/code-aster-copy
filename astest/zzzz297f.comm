@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,7 +73,7 @@ COEFFS = [-1.0] +  [un4]*4
 CLPROJ=AFFE_CHAR_MECA(
    MODELE=model,
    DDL_IMPO=(
-      _F(GROUP_MA='BORDMA', LIAISON='ENCASTRE',),
+      _F(GROUP_MA='BORDMA', BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),
       _F(GROUP_MA='BORDM2', DX=Uimpose,DY=Uimpose,DZ=Uimpose,),
       _F(GROUP_MA='POUTRE', DRX=0.0,),
    ),
@@ -84,7 +84,7 @@ CLPROJ=AFFE_CHAR_MECA(
 CLMANO=AFFE_CHAR_MECA(
    MODELE=model,
    DDL_IMPO=(
-      _F(GROUP_MA='BORDMA',   LIAISON='ENCASTRE',),
+      _F(GROUP_MA='BORDMA',   BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),
       _F(GROUP_MA='BORDM2',   DX=Uimpose,DY=Uimpose,DZ=Uimpose,),
       _F(GROUP_MA='POUTRE', DRX=0.0,),
    ),
@@ -264,7 +264,7 @@ TEST_TABLE(TABLE=DSIGM, TYPE_TEST='MIN',NOM_PARA='DSIGYZ',VALE_CALC=0.0,ORDRE_GR
 CLPROJR=AFFE_CHAR_MECA(
    MODELE=model,
    DDL_IMPO=(
-      _F(GROUP_MA='BORDMA', LIAISON='ENCASTRE',),
+      _F(GROUP_MA='BORDMA', BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),
       _F(GROUP_MA='BORDM2', DX=Uimpose,DY=Uimpose,DZ=Uimpose,),
       _F(GROUP_MA='POUTRE', DRX=0.0,),
    ),
@@ -275,7 +275,7 @@ CLPROJR=AFFE_CHAR_MECA(
 CLMANOR=AFFE_CHAR_MECA(
    MODELE=model,
    DDL_IMPO=(
-      _F(GROUP_MA='BORDMA',   LIAISON='ENCASTRE',),
+      _F(GROUP_MA='BORDMA',   BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),
       _F(GROUP_MA='BORDM2',   DX=Uimpose,DY=Uimpose,DZ=Uimpose,),
       _F(GROUP_MA='POUTRE', DRX=0.0,),
    ),
@@ -429,7 +429,7 @@ TEST_TABLE(TABLE=DSIGMR, TYPE_TEST='MIN',NOM_PARA='DSIGYZ',VALE_CALC=0.0,ORDRE_G
 CLPROJE=AFFE_CHAR_MECA(
    MODELE=model,
    DDL_IMPO=(
-      _F(GROUP_MA='BORDMA', LIAISON='ENCASTRE',),
+      _F(GROUP_MA='BORDMA', BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),
       _F(GROUP_MA='BORDM2', DX=Uimpose,DY=Uimpose,DZ=Uimpose,),
       _F(GROUP_MA='POUTRE', DRX=0.0,),
    ),
@@ -479,7 +479,7 @@ for nb in list(Relation.keys()):
 CLMANOE=AFFE_CHAR_MECA(
    MODELE=model,
    DDL_IMPO=(
-      _F(GROUP_MA='BORDMA',  LIAISON='ENCASTRE',),
+      _F(GROUP_MA='BORDMA',  BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),
       _F(GROUP_MA='BORDM2',  DX=Uimpose,DY=Uimpose,DZ=Uimpose,),
       _F(GROUP_MA='POUTRE',  DRX=0.0,),
    ),

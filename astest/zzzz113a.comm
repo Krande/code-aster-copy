@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,13 +32,13 @@ steel = DEFI_MATERIAU(ELAS=_F(E=2.1e+11, NU=0.3, RHO=7800.0))
 
 fieldmat = AFFE_MATERIAU(AFFE=_F(MATER=(steel, ), TOUT='OUI'), MAILLAGE=mesh)
 
-EBottom = AFFE_CHAR_MECA(DDL_IMPO=_F(GROUP_MA=('Bottom', ), LIAISON='ENCASTRE'), MODELE=model)
+EBottom = AFFE_CHAR_MECA(DDL_IMPO=_F(GROUP_MA=('Bottom', ), BLOCAGE = ('DEPLACEMENT', 'ROTATION')), MODELE=model)
 
-ELeft = AFFE_CHAR_MECA(DDL_IMPO=_F(GROUP_MA=('Left', ), LIAISON='ENCASTRE'), MODELE=model)
+ELeft = AFFE_CHAR_MECA(DDL_IMPO=_F(GROUP_MA=('Left', ), BLOCAGE = ('DEPLACEMENT', 'ROTATION')), MODELE=model)
 
 ETop = AFFE_CHAR_MECA(DDL_IMPO=_F(DZ=0.1, GROUP_MA=('Top', )), MODELE=model)
 
-EModal = AFFE_CHAR_MECA(DDL_IMPO=(_F(GROUP_MA=('Left', 'Bottom'), LIAISON='ENCASTRE'), _F(DZ=0.1, GROUP_MA=('Top', ))), MODELE=model)
+EModal = AFFE_CHAR_MECA(DDL_IMPO=(_F(GROUP_MA=('Left', 'Bottom'), BLOCAGE = ('DEPLACEMENT', 'ROTATION')), _F(DZ=0.1, GROUP_MA=('Top', ))), MODELE=model)
 
 EForcN = AFFE_CHAR_MECA(FORCE_NODALE=_F(FX=0., GROUP_NO=('Top', )), MODELE=model)
 

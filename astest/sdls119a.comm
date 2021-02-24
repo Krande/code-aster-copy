@@ -133,7 +133,7 @@ chmat = AFFE_MATERIAU( MAILLAGE = mail ,
 depimp = AFFE_CHAR_MECA( MODELE = mode ,
                          DDL_IMPO=( _F(  GROUP_NO =
                                          ( 'R1' , 'R2' , ) ,
-                                         LIAISON = 'ENCASTRE' , ) ,
+                                         BLOCAGE = ('DEPLACEMENT', 'ROTATION') , ) ,
                                     _F(  GROUP_NO = 'RESB' ,
                                          DX = 0. , DY = 0. , DZ = 0.) ,
                                     _F(  GROUP_NO = 'RES0' ,

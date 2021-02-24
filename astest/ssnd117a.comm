@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -67,9 +67,9 @@ linstS=DEFI_LIST_REEL(
 
 CONDLIM =AFFE_CHAR_MECA_F(MODELE=MODE,
     DDL_IMPO=(
-        _F(GROUP_NO='PT1', LIAISON='ENCASTRE',),
+        _F(GROUP_NO='PT1', BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),
         _F(GROUP_NO='PT2', DX=Depla01,  DY=Depla01,  DZ=Depla01,),
-        _F(GROUP_NO='PT3', LIAISON='ENCASTRE',),
+        _F(GROUP_NO='PT3', BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),
         _F(GROUP_NO='PT4', DX=Depla01,  DY=Depla01,  DZ=Depla01,
                            DRX=Depla01, DRY=Depla01, DRZ=Depla01),
         _F(GROUP_NO='PT5', DX=Depla01,  DY=Depla01,  DZ=Depla01,),

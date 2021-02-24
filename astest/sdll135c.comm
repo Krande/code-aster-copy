@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -58,12 +58,7 @@ LISTE2=DEFI_LIST_REEL(DEBUT=0.0,
 
 CL=AFFE_CHAR_MECA(MODELE=MODELE,
                   DDL_IMPO=_F(GROUP_NO='A',
-                              DX=0.0,
-                              DY=0.0,
-                              DZ=0.0,
-                              DRX=0.0,
-                              DRY=0.0,
-                              DRZ=0.0),);
+                             BLOCAGE = ('DEPLACEMENT','ROTATION'),),);
 
 
 # CHARGEMENT DE TYPE HEAVYSIDE

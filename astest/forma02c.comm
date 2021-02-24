@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
 
 CHMECA=AFFE_CHAR_MECA(MODELE=MODMECA,
                       DDL_IMPO=(_F(GROUP_MA=('EFOND','BASE',),
-                                   LIAISON='ENCASTRE',),
+                                   BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),
                                 _F(GROUP_MA='SYMETRIE',
                                    DZ=0,),),
                       PRES_REP=_F(GROUP_MA='TUYAU',

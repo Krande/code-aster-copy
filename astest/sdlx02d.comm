@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -72,13 +72,7 @@ AFFMAT=AFFE_MATERIAU(   MAILLAGE=MAIL,
 #
 CHAR=AFFE_CHAR_MECA(     MODELE=MO,
                          DDL_IMPO=_F( GROUP_NO = ('H','C',),
-                                   DX = 0.,  DY = 0., DZ = 0.,
-                                   DRX = 0.,  DRY = 0., DRZ = 0.,
-                                   UI2 = 0., VI2 = 0., WI2 = 0.,
-                                   UO2 = 0., VO2 = 0., WO2 = 0.,
-                                   UI3 = 0., VI3 = 0., WI3 = 0.,
-                                   UO3 = 0., VO3 = 0., WO3 = 0.,
-                                   WI1 = 0., WO1 = 0., WO = 0.)
+                                BLOCAGE = ('DEPLACEMENT','ROTATION','TUYAU_FOURIER'),)
                        )
 
 #
