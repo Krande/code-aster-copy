@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@ subroutine casour(char, ligrmo, noma, ndim, fonree)
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_affe_neum.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
@@ -54,11 +55,13 @@ subroutine casour(char, ligrmo, noma, ndim, fonree)
     character(len=19) :: cartes(1)
     integer :: ncmps(1)
     character(len=8), pointer :: vncmp(:) => null()
+    character(len=8) :: model
 !     ------------------------------------------------------------------
     call jemarq()
 !
     motclf = 'SOURCE'
     call getfac(motclf, nsour)
+    call dismoi('NOM_MODELE', ligrmo, 'LIGREL', repk=model)
 !
     carte = char//'.CHTH.SOURE'
 !
@@ -96,7 +99,7 @@ subroutine casour(char, ligrmo, noma, ndim, fonree)
 !
         cartes(1) = carte
         ncmps(1) = ncmp
-        call char_affe_neum(noma, ndim, motclf, iocc, 1,&
+        call char_affe_neum(model , noma, ndim, motclf, iocc, 1,&
                             cartes, ncmps)
 !
     end do

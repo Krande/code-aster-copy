@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine char_crea_cart(phenom  , load_type, load, mesh, vale_type,&
-                          nb_carte, carte)
+! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
+subroutine char_crea_cart(phenom    , loadType     , load    , mesh, valeType,&
+                          nbMap     , map          , nbCmp   ,&
+                          createMap_, physQuantity_, cmpName_)
+!
+implicit none
 !
 #include "asterf_types.h"
+#include "LoadTypes_type.h"
 #include "jeveux.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
@@ -32,15 +35,16 @@ subroutine char_crea_cart(phenom  , load_type, load, mesh, vale_type,&
 #include "asterfort/lisnnl.h"
 #include "asterfort/nocart.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=*), intent(in) :: phenom
-    character(len=16), intent(in) :: load_type
-    character(len=8), intent(in) :: load
-    character(len=8), intent(in) :: mesh
-    character(len=4), intent(in) :: vale_type
-    integer, intent(out) :: nb_carte
-    character(len=19), intent(out) :: carte(*)
+character(len=*), intent(in) :: phenom
+character(len=16), intent(in) :: loadType
+character(len=8), intent(in) :: load, mesh
+character(len=4), intent(in) :: valeType
+integer, intent(out) :: nbMap
+character(len=19), intent(out) :: map(LOAD_MAP_NBMAX)
+integer, intent(out) :: nbCmp(LOAD_MAP_NBMAX)
+aster_logical, optional, intent(in) :: createMap_
+character(len=8), optional, intent(out) :: physQuantity_(LOAD_MAP_NBMAX)
+character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBCMPMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,179 +55,210 @@ subroutine char_crea_cart(phenom  , load_type, load, mesh, vale_type,&
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  phenom       : phenomenon (MECANIQUE/THERMIQUE/ACOUSTIQUE)
-! In  load_type    : type of load
+! In  loadType     : type of load
 ! In  mesh         : name of mesh
 ! In  load         : name of load
-! In  vale_type    : affected value type (real, complex or function)
-! Out nb_carte     : number of <CARTE> for this Neumann load
-! Out carte        : <CARTE> for this Neumann load
+! In  valeType     : affected value type (real, complex or function)
+! Out nbMap        : number of <CARTE> for this Neumann load
+! Out map          : <CARTE> for this Neumann load
+! Out nbCmp        : number of components for each map
+! In  createMap    : flag to create maps
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cmp(2)
-    character(len=8) :: name_cmp(2, 7)
+    character(len=8) :: cmpName(LOAD_MAP_NBMAX, LOAD_MAP_NBCMPMAX)
     character(len=13) :: obje_pref
-    character(len=8) :: gran_name(2)
-    character(len=4) :: cart_type(2)
-    integer :: jvalv, i_carte, i_cmp, iret
-    aster_logical :: l_init(2)
+    character(len=8) :: physQuantity(LOAD_MAP_NBMAX)
+    character(len=4) :: mapType(LOAD_MAP_NBMAX)
+    integer :: jvalv, iMap, i_cmp, iret
+    aster_logical :: l_init(LOAD_MAP_NBMAX), createMap
     character(len=8), pointer :: ncmp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
+! - Initializations
+!
+    nbMap        = 0
+    map          = ' '
+    nbCmp        = 0
+    cmpName      = ' '
+    physQuantity = ' '
+    mapType      = ' '
+    l_init       = ASTER_FALSE
+!
+! - Create or not the map ?
+!
+    createMap = ASTER_TRUE
+    if (present(createMap_)) then
+        createMap = createMap_
+    endif
+!
 ! - Prefix of <CARTE> objects
 !
     call lisnnl(phenom, load, obje_pref)
 !
-! - Number of <CARTE> objects - TODO: using lisdef utility
+! - Number of <CARTE> objects
 !
-    if (load_type.eq.'EFFE_FOND') then
-        nb_carte = 2
-    else if (load_type.eq.'ONDE_PLANE') then
-        nb_carte = 2
-    else if (load_type.eq.'ROTATION') then
-        nb_carte = 1
+    if (loadType .eq. 'EFFE_FOND') then
+        nbMap = 2
+    else if (loadType .eq. 'ONDE_PLANE') then
+        nbMap = 2
+    else if (loadType .eq. 'ROTATION') then
+        nbMap = 1
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     endif
-    ASSERT(nb_carte.le.2)
+    ASSERT(nbMap .le. LOAD_MAP_NBMAX)
 !
 ! - Name of the <CARTE> - TODO: using lisdef utility
 !
-    if (load_type .eq. 'EFFE_FOND') then
-        carte(1) = obje_pref(1:13)//'.EFOND'
-        carte(2) = obje_pref(1:13)//'.PREFF'
-    else if (load_type.eq.'ONDE_PLANE') then
-        carte(1) = obje_pref(1:13)//'.ONDPL'
-        carte(2) = obje_pref(1:13)//'.ONDPR'
-    else if (load_type.eq.'ROTATION') then
-        carte(1) = obje_pref(1:13)//'.ROTAT'
+    if (loadType  .eq.  'EFFE_FOND') then
+        map(1) = obje_pref(1:13)//'.EFOND'
+        map(2) = obje_pref(1:13)//'.PREFF'
+    else if (loadType .eq. 'ONDE_PLANE') then
+        map(1) = obje_pref(1:13)//'.ONDPL'
+        map(2) = obje_pref(1:13)//'.ONDPR'
+    else if (loadType .eq. 'ROTATION') then
+        map(1) = obje_pref(1:13)//'.ROTAT'
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     endif
 !
 ! - Name of the <GRANDEUR> - TODO: using lisdef utility
 !
-    if (load_type .eq. 'EFFE_FOND') then
-        if (vale_type .eq. 'REEL') then
-            gran_name(1) = 'NEUT_R'
-            gran_name(2) = 'PRES_R'
-        else if (vale_type.eq.'FONC') then
-            gran_name(1) = 'NEUT_R'
-            gran_name(2) = 'PRES_F'
+    if (loadType  .eq.  'EFFE_FOND') then
+        if (valeType .eq. 'REEL') then
+            physQuantity(1) = 'NEUT_R'
+            physQuantity(2) = 'PRES_R'
+        else if (valeType .eq. 'FONC') then
+            physQuantity(1) = 'NEUT_R'
+            physQuantity(2) = 'PRES_F'
         else
-            ASSERT(.false.)
+            ASSERT(ASTER_FALSE)
         endif
-    else if (load_type.eq.'ONDE_PLANE') then
-        if (vale_type .eq. 'FONC') then
-            gran_name(1) = 'NEUT_K8'
-            gran_name(2) = 'NEUT_R'
+    else if (loadType .eq. 'ONDE_PLANE') then
+        if (valeType .eq. 'FONC') then
+            physQuantity(1) = 'NEUT_K8'
+            physQuantity(2) = 'NEUT_R'
         else
-            ASSERT(.false.)
+            ASSERT(ASTER_FALSE)
         endif
-    else if (load_type.eq.'ROTATION') then
-        if (vale_type .eq. 'REEL') then
-            gran_name(1) = 'ROTA_R'
+    else if (loadType .eq. 'ROTATION') then
+        if (valeType .eq. 'REEL') then
+            physQuantity(1) = 'ROTA_R'
         else
-            ASSERT(.false.)
+            ASSERT(ASTER_FALSE)
         endif
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     endif
 !
 ! - Type of the <CARTE> - TODO: using lisdef utility
 !
-    if (load_type .eq. 'EFFE_FOND') then
-        if (vale_type .eq. 'REEL') then
-            cart_type(1) = 'R'
-            cart_type(2) = 'R'
-        else if (vale_type.eq.'FONC') then
-            cart_type(1) = 'R'
-            cart_type(2) = 'K8'
+    if (loadType  .eq.  'EFFE_FOND') then
+        if (valeType  .eq.  'REEL') then
+            mapType(1) = 'R'
+            mapType(2) = 'R'
+        else if (valeType .eq. 'FONC') then
+            mapType(1) = 'R'
+            mapType(2) = 'K8'
         else
-            ASSERT(.false.)
+            ASSERT(ASTER_FALSE)
         endif
-    else if (load_type.eq.'ONDE_PLANE') then
-        if (vale_type .eq. 'FONC') then
-            cart_type(1) = 'K8'
-            cart_type(2) = 'R'
+    else if (loadType .eq. 'ONDE_PLANE') then
+        if (valeType  .eq.  'FONC') then
+            mapType(1) = 'K8'
+            mapType(2) = 'R'
         else
-            ASSERT(.false.)
+            ASSERT(ASTER_FALSE)
         endif
-    else if (load_type.eq.'ROTATION') then
-        if (vale_type .eq. 'REEL') then
-            cart_type(1) = 'R'
+    else if (loadType .eq. 'ROTATION') then
+        if (valeType  .eq.  'REEL') then
+            mapType(1) = 'R'
         else
-            ASSERT(.false.)
+            ASSERT(ASTER_FALSE)
         endif
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     endif
 !
 ! - Components of the <CARTE> - TODO: using lisdef utility
 !
-    if (load_type .eq. 'EFFE_FOND') then
-        nb_cmp(1) = 1
-        nb_cmp(2) = 1
-        name_cmp(1,1) = 'X1'
-        name_cmp(2,1) = 'PRES'
-    else if (load_type.eq.'ONDE_PLANE') then
-        nb_cmp(1) = 2
-        nb_cmp(2) = 6
-        name_cmp(1,1) = 'Z1'
-        name_cmp(1,2) = 'Z2'
-        name_cmp(2,1) = 'X1'
-        name_cmp(2,2) = 'X2'
-        name_cmp(2,3) = 'X3'
-        name_cmp(2,4) = 'X4'
-        name_cmp(2,5) = 'X5'
-        name_cmp(2,6) = 'X6'
-    else if (load_type.eq.'ROTATION') then
-        nb_cmp(1) = 7
-        name_cmp(1,1) = 'OME'
-        name_cmp(1,2) = 'AR'
-        name_cmp(1,3) = 'BR'
-        name_cmp(1,4) = 'CR'
-        name_cmp(1,5) = 'X'
-        name_cmp(1,6) = 'Y'
-        name_cmp(1,7) = 'Z'
+    if (loadType  .eq.  'EFFE_FOND') then
+        nbCmp(1) = 1
+        nbCmp(2) = 1
+        cmpName(1, 1) = 'X1'
+        cmpName(2, 1) = 'PRES'
+    else if (loadType .eq. 'ONDE_PLANE') then
+        nbCmp(1) = 2
+        nbCmp(2) = 6
+        cmpName(1, 1) = 'Z1'
+        cmpName(1, 2) = 'Z2'
+        cmpName(2, 1) = 'X1'
+        cmpName(2, 2) = 'X2'
+        cmpName(2, 3) = 'X3'
+        cmpName(2, 4) = 'X4'
+        cmpName(2, 5) = 'X5'
+        cmpName(2, 6) = 'X6'
+    else if (loadType .eq. 'ROTATION') then
+        nbCmp(1) = 7
+        cmpName(1, 1) = 'OME'
+        cmpName(1, 2) = 'AR'
+        cmpName(1, 3) = 'BR'
+        cmpName(1, 4) = 'CR'
+        cmpName(1, 5) = 'X'
+        cmpName(1, 6) = 'Y'
+        cmpName(1, 7) = 'Z'
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     endif
 !
 ! - Creation of the <CARTE>
 !
-    do i_carte = 1, nb_carte
-        call exisd('CARTE', carte(i_carte), iret)
-        if (iret .eq. 0) then
-            call alcart('G', carte(i_carte), mesh, gran_name(i_carte))
-            l_init(i_carte) = .true.
-        else
-            l_init(i_carte) = .false.
-        endif
-    enddo
+    if (createMap) then
+        do iMap = 1,  nbMap
+            call exisd('CARTE', map(iMap), iret)
+            if (iret  .eq.  0) then
+                call alcart('G', map(iMap), mesh, physQuantity(iMap))
+                l_init(iMap) = ASTER_TRUE
+            else
+                l_init(iMap) = ASTER_FALSE
+            endif
+        enddo
+    endif
 !
 ! - Initialization of the <CARTE>
 !
-    do i_carte = 1, nb_carte
-        if (l_init(i_carte)) then
-            call jeveuo(carte(i_carte)//'.NCMP', 'E', vk8=ncmp)
-            call jeveuo(carte(i_carte)//'.VALV', 'E', jvalv)
-            do i_cmp = 1, nb_cmp(i_carte)
-                ncmp(i_cmp) = name_cmp(i_carte,i_cmp)
-                if (cart_type(i_carte) .eq. 'R') then
-                    zr(jvalv-1+i_cmp) = 0.d0
-                else if (cart_type(i_carte) .eq.'K8') then
-                    zk8(jvalv-1+i_cmp) = '&FOZERO'
-                else
-                    ASSERT(.false.)
-                endif
-            enddo
-            call nocart(carte(i_carte), 1, nb_cmp(i_carte))
-        endif
-    enddo
+    if (createMap) then
+        do iMap = 1,  nbMap
+            if (l_init(iMap)) then
+                call jeveuo(map(iMap)//'.NCMP', 'E', vk8=ncmp)
+                call jeveuo(map(iMap)//'.VALV', 'E', jvalv)
+                do i_cmp = 1,  nbCmp(iMap)
+                    ncmp(i_cmp) = cmpName(iMap,i_cmp)
+                    if (mapType(iMap) .eq. 'R') then
+                        zr(jvalv-1+i_cmp) = 0.d0
+                    else if (mapType(iMap) .eq. 'K8') then
+                        zk8(jvalv-1+i_cmp) = '&FOZERO'
+                    else if (mapType(iMap) .eq. 'K16') then
+                        zk16(jvalv-1+i_cmp) = ' '
+                    else
+                        ASSERT(ASTER_FALSE)
+                    endif
+                enddo
+                call nocart(map(iMap), 1,  nbCmp(iMap))
+            endif
+        enddo
+    endif
+!
+    if (present(physQuantity_)) then
+        physQuantity_ = physQuantity
+    endif
+    if (present(cmpName_)) then
+        cmpName_ = cmpName
+    endif
 !
     call jedema()
 end subroutine

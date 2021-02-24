@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,22 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
+#include "asterf_types.h"
+#include "LoadTypes_type.h"
 !
 interface
-    subroutine char_crea_cart(phenom  , load_type, load, mesh, vale_type,&
-                              nb_carte, carte)
-        character(len=*),  intent(in) :: phenom
-        character(len=16), intent(in) :: load_type 
-        character(len=8), intent(in)  :: load
-        character(len=8), intent(in)  :: mesh
-        character(len=4), intent(in)  :: vale_type
-        integer, intent(out) :: nb_carte
-        character(len=19), intent(out) :: carte(*)
+    subroutine char_crea_cart(phenom    , loadType     , load    , mesh, valeType,&
+                              nbMap     , map          , nbCmp   ,&
+                              createMap_, physQuantity_, cmpName_)
+        character(len=*), intent(in) :: phenom
+        character(len=16), intent(in) :: loadType
+        character(len=8), intent(in) :: load, mesh
+        character(len=4), intent(in) :: valeType
+        integer, intent(out) :: nbMap
+        character(len=19), intent(out) :: map(LOAD_MAP_NBMAX)
+        integer, intent(out) :: nbCmp(LOAD_MAP_NBMAX)
+        aster_logical, optional, intent(in) :: createMap_
+        character(len=8), optional, intent(out) :: physQuantity_(LOAD_MAP_NBMAX)
+        character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBCMPMAX)
     end subroutine char_crea_cart
 end interface

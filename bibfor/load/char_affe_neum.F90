@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,28 +15,27 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine char_affe_neum(mesh, ndim, keywordfact, iocc, nb_carte,&
-                          carte, nb_cmp)
+! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
+subroutine char_affe_neum(model      , mesh, ndim,&
+                          keywordfact, iocc,&
+                          nbMap      , map , nbCmp)
 !
+implicit none
+!
+#include "asterfort/assert.h"
 #include "asterfort/getelem.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 #include "asterfort/vetyma.h"
-#include "asterfort/getvid.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=8), intent(in) :: mesh
-    integer, intent(in) :: ndim
-    character(len=16), intent(in) :: keywordfact
-    integer, intent(in) :: iocc
-    integer, intent(in) :: nb_carte
-    character(len=19), intent(in) :: carte(nb_carte)
-    integer, intent(in) :: nb_cmp(nb_carte)
+character(len=8), intent(in) :: model, mesh
+integer, intent(in) :: ndim
+character(len=16), intent(in) :: keywordfact
+integer, intent(in) :: iocc, nbMap
+character(len=19), intent(in) :: map(nbMap)
+integer, intent(in) :: nbCmp(nbMap)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,7 +45,8 @@ subroutine char_affe_neum(mesh, ndim, keywordfact, iocc, nb_carte,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  mesh         : name of mesh
+! In  model        : model
+! In  mesh         : mesh
 ! In  ndim         : space dimension
 ! In  keywordfact  : factor keyword to read elements
 ! In  iocc         : factor keyword index in AFFE_CHAR_MECA
@@ -56,52 +56,39 @@ subroutine char_affe_neum(mesh, ndim, keywordfact, iocc, nb_carte,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: load_type
-    character(len=24) :: list_elem
-    character(len=8) :: model
-    integer, pointer :: p_list_elem(:) => null()
-    integer :: nb_elem, nbmodel
-    integer :: codret, i_carte
+    character(len=24), parameter:: listCell = '&&LIST_ELEM'
+    integer, pointer :: cellNume(:) => null()
+    integer :: nbCell
+    integer :: codret, iMap
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    list_elem = '&&LIST_ELEM'
-    load_type = keywordfact
-
-    call getvid(' ', 'MODELE', scal=model, nbret=nbmodel)
 
 !
-! - Elements to apply
+! - Get list of cells
 !
-    if (nbmodel.eq.0) then
-        call getelem(mesh, keywordfact, iocc, 'A', list_elem,nb_elem)
-    else
-        call getelem(mesh, keywordfact, iocc, 'A', list_elem,nb_elem,model=model)
-    endif
+    call getelem(mesh, keywordfact, iocc, 'A', listCell, nbCell, model=model)
 
-    if (nb_elem .ne. 0) then
-!
+    if (nbCell .ne. 0) then
+
 ! ----- Check elements
-!
-        call jeveuo(list_elem, 'L', vi = p_list_elem)
-        do i_carte = 1, nb_carte
-            if (nb_cmp(i_carte) .ne. 0) then
-                call vetyma(mesh, ndim, keywordfact, list_elem, nb_elem,&
-                            codret)
+        call jeveuo(listCell, 'L', vi = cellNume)
+        do iMap = 1, nbMap
+            if (nbCmp(iMap) .ne. 0) then
+                call vetyma(mesh, ndim, keywordfact, listCell, nbCell, codret)
             endif
         end do
-!
+
 ! ----- Apply Neumann loads in <CARTE>
-!
-        do i_carte = 1, nb_carte
-            if (nb_cmp(i_carte) .ne. 0) then
-                call nocart(carte(i_carte), 3, nb_cmp(i_carte), mode='NUM', nma=nb_elem,&
-                            limanu=p_list_elem)
+        do iMap = 1, nbMap
+            if (nbCmp(iMap) .ne. 0) then
+                call nocart(map(iMap), 3, nbCmp(iMap), mode='NUM', nma=nbCell,&
+                            limanu=cellNume)
             endif
         end do
 !
     endif
 !
-    call jedetr(list_elem)
+    call jedetr(listCell)
 !
 end subroutine

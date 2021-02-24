@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
 #include "asterfort/alcart.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_affe_neum.h"
 #include "asterfort/getvc8.h"
@@ -62,6 +63,7 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
     complex(kind=8) :: cfx, cfy, cfz, cmx, cmy, cmz, cvpre
     character(len=8) :: kfx, kfy, kfz, kmx, kmy, kmz, typch, plan
     character(len=8) :: kmgx, kmgy, kmgz
+    character(len=8) :: model
     character(len=16) :: motclf    
     character(len=19) :: carte
     character(len=19) :: cartes(1)
@@ -73,6 +75,9 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
 !
     motclf = motcl
     call getfac(motclf, nchre)
+
+
+    call dismoi('NOM_MODELE', ligrmo, 'LIGREL', repk=model)
 !
     carte = char(1:8)//'.CHME.'//param(1:5)
 !
@@ -450,7 +455,7 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
 !
         cartes(1) = carte
         ncmps(1) = ncmp
-        call char_affe_neum(noma, ndim, motclf, iocc, 1,&
+        call char_affe_neum(model , noma, ndim, motclf, iocc, 1,&
                             cartes, ncmps)
 !
 20      continue

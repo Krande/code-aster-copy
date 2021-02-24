@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cbpesa(char, noma, ndim)
+subroutine cbpesa(char, ligrmo, noma, ndim)
     implicit none
 !     BUT: TRAITE LE MOT_CLE : PESANTEUR
 !
@@ -28,6 +28,7 @@ subroutine cbpesa(char, noma, ndim)
 #include "asterc/getfac.h"
 #include "asterfort/capesa.h"
     character(len=8), intent(in) :: char
+    character(len=*), intent(in) :: ligrmo
     character(len=8), intent(in) :: noma
     integer, intent(in) :: ndim
 !
@@ -35,6 +36,6 @@ subroutine cbpesa(char, noma, ndim)
 !-----------------------------------------------------------------------
     call getfac('PESANTEUR', ipesa)
     if (ipesa .ne. 0) then
-        call capesa(char, noma, ipesa, ndim)
+        call capesa(char, ligrmo, noma, ipesa, ndim)
     endif
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine capesa(char, noma, ipesa, ndim)
+subroutine capesa(char, ligrmo, noma, ipesa, ndim)
     implicit none
 ! BUT : STOCKAGE DE LA PESANTEUR DANS UNE CARTE ALLOUEE SUR LE
 !       LIGREL DU MODELE
@@ -31,6 +31,7 @@ subroutine capesa(char, noma, ipesa, ndim)
 #include "asterc/r8miem.h"
 #include "asterfort/alcart.h"
 #include "asterfort/char_affe_neum.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
@@ -44,6 +45,7 @@ subroutine capesa(char, noma, ipesa, ndim)
     character(len=8), intent(in) :: noma
     integer, intent(in) :: ipesa
     integer, intent(in) :: ndim
+character(len=*), intent(in) :: ligrmo
 !
     real(kind=8) :: pesa(4), norme, pes(3)
     character(len=8) :: licmp(4)
@@ -56,9 +58,11 @@ subroutine capesa(char, noma, ipesa, ndim)
     integer :: ncmps(1)
     real(kind=8), pointer :: valv(:) => null()
     character(len=8), pointer :: vncmp(:) => null()
+    character(len=8) :: model
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
+    call dismoi('NOM_MODELE', ligrmo, 'LIGREL', repk=model)
     motclf = 'PESANTEUR'
     do iocc = 1, ipesa
         call getvr8('PESANTEUR', 'GRAVITE', iocc=iocc, scal=pesa(1), nbret=npesa)
@@ -127,7 +131,7 @@ subroutine capesa(char, noma, ipesa, ndim)
             valv(4) = pesa(4)
             cartes(1) = carte
             ncmps(1) = ncmp
-            call char_affe_neum(noma, ndim, motclf, iocc, 1,&
+            call char_affe_neum(model , noma, ndim, motclf, iocc, 1,&
                                 cartes, ncmps)
         endif
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine char_affe_neum(mesh, ndim, keywordfact, iocc, nb_carte, &
-                              carte, nb_cmp)
-        character(len=8), intent(in)  :: mesh
-        integer, intent(in)  :: ndim
+    subroutine char_affe_neum(model      , mesh, ndim ,&
+                              keywordfact, iocc,&
+                              nbMap      , map , nbCmp)
+        character(len=8), intent(in) :: model, mesh
+        integer, intent(in) :: ndim
         character(len=16), intent(in) :: keywordfact
-        integer, intent(in) :: iocc
-        integer, intent(in) :: nb_carte
-        character(len=19), intent(in) :: carte(nb_carte)
-        integer, intent(in) :: nb_cmp(nb_carte)
+        integer, intent(in) :: iocc, nbMap
+        character(len=19), intent(in) :: map(nbMap)
+        integer, intent(in) :: nbCmp(nbMap)
     end subroutine char_affe_neum
 end interface

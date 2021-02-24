@@ -15,13 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! person_in_charge: mickael.abbas at edf.fr
 !
-interface
-    subroutine capesa(char, ligrmo, noma, ipesa, ndim)
-        character(len=8), intent(in) :: char
-        character(len=8), intent(in) :: noma
-        integer, intent(in) :: ipesa
-        integer, intent(in) :: ndim
-        character(len=*), intent(in) :: ligrmo
-    end subroutine capesa
-end interface
+
+! Maximum number of maps for a load
+#define LOAD_MAP_NBMAX     2
+! Maximum number of components in a map for a load
+#define LOAD_MAP_NBCMPMAX  7
+
