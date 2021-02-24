@@ -15,7 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! person_in_charge: mickael.abbas at edf.fr
+!
 subroutine charme(load, vale_type)
 !
 implicit none
@@ -73,10 +74,8 @@ implicit none
 #include "asterfort/verif_affe.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=4), intent(in) :: vale_type
-    character(len=8), intent(in) :: load
+character(len=4), intent(in) :: vale_type
+character(len=8), intent(in) :: load
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -215,7 +214,7 @@ implicit none
 !
 ! ----- PESANTEUR
 !
-        call cbpesa(load, ligrmo, mesh, nb_dim)
+        call cbpesa(load, mesh, vale_type)
 !
 ! ----- ROTATION
 !

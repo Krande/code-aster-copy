@@ -49,7 +49,6 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
             GRAVITE          =SIMP(statut='o',typ='R',min=1,max=1),
             DIRECTION        =SIMP(statut='o',typ='R',min=3,max=3),),
 
-
          ROTATION        =FACT(statut='f', max=1,
              fr=tr("Définition d'un chargement de rotation"),
              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(), max='**'),
@@ -58,9 +57,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
              SANS_MAILLE     =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
              VITESSE         =SIMP(statut='o', typ='R',min=1,max=1),
              AXE             =SIMP(statut='o', typ='R',min=2, max=3),
-             CENTRE          =SIMP(statut='f',typ='R',min=2, max=3),
-             b_rotation_tout=BLOC(condition="""(not exists("GROUP_MA")) and (not exists("MAILLE"))""",
-                       TOUT     = SIMP(statut='f',typ='TXM',into=("OUI",),defaut="OUI",),),),
+             CENTRE          =SIMP(statut='f',typ='R',min=2, max=3),),
 
          DDL_IMPO        =FACT(statut='f',max='**',
              fr=tr("Impose à des noeuds une ou plusieurs valeurs de déplacement (ou de certaines grandeurs asscociées)"),

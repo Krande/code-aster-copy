@@ -115,6 +115,8 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         nbMap = 1
     else if (loadType .eq. 'FORCE_TUYAU') then
         nbMap = 1
+    else if (loadType .eq. 'PESANTEUR') then
+        nbMap = 1
     else
         ASSERT(ASTER_FALSE)
     endif
@@ -138,6 +140,8 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         map(1) = obje_pref(1:13)//'.PRESS'
     else if (loadType .eq. 'FORCE_TUYAU') then
         map(1) = obje_pref(1:13)//'.PRESS'
+    else if (loadType .eq. 'PESANTEUR') then
+        map(1) = obje_pref(1:13)//'.PESAN'
     else
         ASSERT(ASTER_FALSE)
     endif
@@ -194,6 +198,12 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
             physQuantity(1) = 'PRES_R'
         else if (valeType .eq. 'FONC') then
             physQuantity(1) = 'PRES_F'
+        else
+            ASSERT(ASTER_FALSE)
+        endif
+    else if (loadType .eq. 'PESANTEUR') then
+        if (valeType .eq. 'REEL') then
+            physQuantity(1) = 'PESA_R'
         else
             ASSERT(ASTER_FALSE)
         endif
@@ -256,6 +266,12 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         else
             ASSERT(ASTER_FALSE)
         endif
+    else if (loadType .eq. 'PESANTEUR') then
+        if (valeType  .eq.  'REEL') then
+            mapType(1) = 'R'
+        else
+            ASSERT(ASTER_FALSE)
+        endif
     else
         ASSERT(ASTER_FALSE)
     endif
@@ -306,6 +322,12 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         nbCmp(1) = 2
         cmpName(1, 1) = 'PRES'
         cmpName(1, 2) = 'CISA'
+    else if (loadType .eq. 'PESANTEUR') then
+        nbCmp(1) = 4
+        cmpName(1, 1) = 'G'
+        cmpName(1, 2) = 'AG'
+        cmpName(1, 3) = 'BG'
+        cmpName(1, 4) = 'CG'
     else
         ASSERT(ASTER_FALSE)
     endif

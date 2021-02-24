@@ -50,7 +50,6 @@ character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
 ! In  mesh      : name of mesh
 ! In  load      : name of load
 ! In  valeType  : affected value type (real, complex or function)
@@ -62,8 +61,7 @@ character(len=4), intent(in) :: valeType
     complex(kind=8) :: c16dummy
     character(len=8) :: k8dummy
     character(len=16) :: k16dummy
-    real(kind=8) :: rota_speed, rota_axis(3), rota_cent(3)
-    real(kind=8) :: norme
+    real(kind=8) :: rota_speed, rota_axis(3), rota_cent(3), norme
     integer :: iocc, nrota, val_nb
     integer :: jvCell, nbCell
     real(kind=8), pointer :: valv(:) => null()
@@ -87,14 +85,11 @@ character(len=4), intent(in) :: valeType
     call char_crea_cart('MECANIQUE', keywordfact, load, mesh, valeType,&
                         nbMap, map, nbCmp)
     ASSERT(nbMap .eq. 1)
+    call jeveuo(map(1)//'.VALV', 'E', vr=valv)
 !
 ! - Loop on keywords
 !
     do iocc = 1, nrota
-
-! ----- Read mesh affectation
-        call getelem(mesh, keywordfact, iocc, 'F', listCell, nbCell)
-        call jeveuo(listCell, 'L', jvCell)
 
 ! ----- Get speed
         call char_read_val(keywordfact, iocc, 'VITESSE', valeType, val_nb,&
@@ -112,7 +107,6 @@ character(len=4), intent(in) :: valeType
         call char_read_vect(keywordfact, iocc, 'CENTRE', rota_cent)
 
 ! ----- Affectation of values in <CARTE>
-        call jeveuo(map(1)//'.VALV', 'E', vr=valv)
         valv(1) = rota_speed
         valv(2) = rota_axis(1)
         valv(3) = rota_axis(2)
@@ -120,8 +114,16 @@ character(len=4), intent(in) :: valeType
         valv(5) = rota_cent(1)
         valv(6) = rota_cent(2)
         valv(7) = rota_cent(3)
-        call nocart(map(1), 3, nbCmp(1), mode='NUM', nma=nbCell,&
-                    limanu=zi(jvCell))
+
+! ----- Read mesh affectation
+        call getelem(mesh, keywordfact, iocc, ' ', listCell, nbCell)
+        if (nbCell .eq. 0) then
+            call nocart(map(1), 1, nbCmp(1))
+        else
+            call jeveuo(listCell, 'L', jvCell)
+            call nocart(map(1), 3, nbCmp(1), mode='NUM', nma=nbCell,&
+                        limanu=zi(jvCell))
+        endif
 !
         call jedetr(listCell)
     end do

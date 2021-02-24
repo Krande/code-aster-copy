@@ -17,10 +17,8 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine cbpesa(char, ligrmo, noma, ndim)
-        character(len=8), intent(in) :: char
-        character(len=*), intent(in) :: ligrmo
-        character(len=8), intent(in) :: noma
-        integer, intent(in) :: ndim
+    subroutine cbpesa(load, mesh, valeType)
+        character(len=8), intent(in) :: load, mesh
+        character(len=4), intent(in) :: valeType
     end subroutine cbpesa
 end interface

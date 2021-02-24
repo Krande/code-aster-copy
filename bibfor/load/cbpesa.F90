@@ -15,27 +15,37 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine cbpesa(char, ligrmo, noma, ndim)
-    implicit none
-!     BUT: TRAITE LE MOT_CLE : PESANTEUR
 !
-! ARGUMENTS D'ENTREE:
-!      CHAR   : NOM UTILISATEUR DE LA CHARGE
-!      NOMA   : NOM DU MAILLAGE
-!      NDIM   : DIMENSION DU PROBLEME
+subroutine cbpesa(load, mesh, valeType)
+!
+implicit none
 !
 #include "asterc/getfac.h"
 #include "asterfort/capesa.h"
-    character(len=8), intent(in) :: char
-    character(len=*), intent(in) :: ligrmo
-    character(len=8), intent(in) :: noma
-    integer, intent(in) :: ndim
 !
-    integer :: ipesa
-!-----------------------------------------------------------------------
-    call getfac('PESANTEUR', ipesa)
-    if (ipesa .ne. 0) then
-        call capesa(char, ligrmo, noma, ipesa, ndim)
+character(len=8), intent(in) :: load, mesh
+character(len=4), intent(in) :: valeType
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Loads affectation
+!
+! Treatment of load PESANTEUR
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  load      : load
+! In  mesh      : mesh
+! In  valeType  : affected value type (real, complex or function)
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: nbOcc
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call getfac('PESANTEUR', nbOcc)
+    if (nbOcc .ne. 0) then
+        call capesa(load, mesh, valeType, nbOcc)
     endif
 end subroutine

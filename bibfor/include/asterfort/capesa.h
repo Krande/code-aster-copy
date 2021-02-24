@@ -17,11 +17,9 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine capesa(char, ligrmo, noma, ipesa, ndim)
-        character(len=8), intent(in) :: char
-        character(len=8), intent(in) :: noma
-        integer, intent(in) :: ipesa
-        integer, intent(in) :: ndim
-        character(len=*), intent(in) :: ligrmo
+    subroutine capesa(load, mesh, valeType, nbOcc)
+        character(len=8), intent(in) :: load, mesh
+        character(len=4), intent(in) :: valeType
+        integer, intent(in) :: nbOcc
     end subroutine capesa
 end interface
