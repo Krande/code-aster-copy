@@ -109,6 +109,8 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         nbMap = 1
     else if (loadType .eq. 'ONDE_FLUI') then
         nbMap = 1
+    else if (loadType .eq. 'ECHANGE_THM') then
+        nbMap = 1
     else
         ASSERT(ASTER_FALSE)
     endif
@@ -126,6 +128,8 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         map(1) = obje_pref(1:13)//'.ROTAT'
     else if (loadType .eq. 'ONDE_FLUI') then
         map(1) = obje_pref(1:13)//'.ONDE'
+    else if (loadType .eq. 'ECHANGE_THM') then
+        map(1) = obje_pref(1:13)//'.ETHM'
     else
         ASSERT(ASTER_FALSE)
     endif
@@ -158,6 +162,14 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
     else if (loadType .eq. 'ONDE_FLUI') then
         if (valeType .eq. 'REEL') then
             physQuantity(1) = 'ONDE_R'
+        else
+            ASSERT(ASTER_FALSE)
+        endif
+    else if (loadType .eq. 'ECHANGE_THM') then
+        if (valeType .eq. 'REEL') then
+            physQuantity(1) = 'ETHM_R'
+        else if (valeType .eq. 'FONC') then
+            physQuantity(1) = 'ETHM_F'
         else
             ASSERT(ASTER_FALSE)
         endif
@@ -196,6 +208,14 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         else
             ASSERT(ASTER_FALSE)
         endif
+    else if (loadType .eq. 'ECHANGE_THM') then
+        if (valeType  .eq.  'REEL') then
+            mapType(1) = 'R'
+        else if (valeType .eq. 'FONC') then
+            mapType(1) = 'K8'
+        else
+            ASSERT(ASTER_FALSE)
+        endif
     else
         ASSERT(ASTER_FALSE)
     endif
@@ -230,6 +250,14 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
     else if (loadType .eq. 'ONDE_FLUI') then
         nbCmp(1) = 1
         cmpName(1, 1) = 'PRES'
+    else if (loadType .eq. 'ECHANGE_THM') then
+        nbCmp(1) = 6
+        cmpName(1, 1) = 'COEF1'
+        cmpName(1, 2) = 'COEF2'
+        cmpName(1, 3) = 'COEF3'
+        cmpName(1, 4) = 'COEF4'
+        cmpName(1, 5) = 'PRE1'
+        cmpName(1, 6) = 'PRE2'
     else
         ASSERT(ASTER_FALSE)
     endif
