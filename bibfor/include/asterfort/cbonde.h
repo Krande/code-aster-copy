@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine cbonde(char, noma, ligrmo, fonree)
-        character(len=8) :: char
-        character(len=8) :: noma
-        character(len=*) :: ligrmo
-        character(len=4) :: fonree
+    subroutine cbonde(load, mesh, valeType)
+        character(len=8), intent(in) :: load, mesh
+        character(len=4), intent(in) :: valeType
     end subroutine cbonde
 end interface

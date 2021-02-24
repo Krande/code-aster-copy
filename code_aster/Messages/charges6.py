@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,6 +46,12 @@ Erreur lors de l'opération LIAISON_CYCLE.
 L'élément %(k1)s n'est pas du bon type.
 Si vous êtes en deux dimensions, les éléments doivent être des segments.
 Si vous êtes en trois dimensions, les éléments doivent être des triangles ou des quadrangles.
+"""),
+
+    84: _("""
+Vous demandez le calcul de la matrice correspondant à l'option ONDE_FLUI.
+Mais on ne peut rien calculer, faute de données.
+Il faut fournir en argument du mot clé CHARGE au moins une charge mécanique qui utilise le mot clé ONDE_FLUI.
 """),
 
 }

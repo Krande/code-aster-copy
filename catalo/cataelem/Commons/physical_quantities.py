@@ -2416,17 +2416,6 @@ OME2_R   = PhysicalQuantity(type='R',
        OMEG2 : valeur de la pulsation au carre (Rappel : omega = 2*Pi*freq)
 """)
 
-
-ONDE_F   = PhysicalQuantity(type='K8',
-    components=(
-       'PRES',
-    ),
-    comment="""  ONDE_F Type:K8 Terme d'amortissement en onde incidente imposee sur une face
-    d'element
-       PRES : Valeur de l'onde de type fonction
-""")
-
-
 ONDE_R   = PhysicalQuantity(type='R',
     components=(
        'PRES',

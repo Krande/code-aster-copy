@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W1501
+!
 subroutine me2mme(modelz, nb_load, lchar, mate, mateco, caraz,&
                   time, vect_elem_, nharm, basez)
-! aslint: disable=W1501
-    implicit none
 !
-!     ARGUMENTS:
-!     ----------
+implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calcul.h"
@@ -627,14 +626,8 @@ subroutine me2mme(modelz, nb_load, lchar, mate, mateco, caraz,&
 ! ====================================================================
         call exisd('CHAMP_GD', ligrch(1:13)//'.ONDE ', iret)
         if (iret .ne. 0) then
-            if (lfonc) then
-                option='CHAR_MECA_ONDE_F'
-                lpain(4)='PONDECF'
-            else
-                option='CHAR_MECA_ONDE'
-                lpain(4)='PONDECR'
-            endif
-!
+            option='CHAR_MECA_ONDE'
+            lpain(4)='PONDECR'
             lchin(4)=ligrch(1:13)//'.ONDE .DESC'
             ilires=ilires+1
             call codent(ilires, 'D0', lchout(1)(12:14))

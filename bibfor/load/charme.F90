@@ -141,7 +141,7 @@ implicit none
 !
 ! ----- ONDE_FLUI
 !
-        call cbonde(load, mesh, ligrmo, vale_type)
+        call cbonde(load, mesh, vale_type)
 !
 ! ----- FLUX_THM_REP
 !

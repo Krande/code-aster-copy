@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine meonme(modele, nchar, lchar, mate, mateco, matel)
-    implicit none
+!
+subroutine meonme(model, nbLoad, listLoadName, mate, mateco, matrElem)
+!
+implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
@@ -32,94 +35,77 @@ subroutine meonme(modele, nchar, lchar, mate, mateco, matel)
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
 #include "asterfort/utmess.h"
-    integer :: nchar
-    character(len=8) :: modele, lchar(*)
-    character(len=19) :: matel
-    character(len=*) :: mate, mateco
+!
+integer, intent(in) :: nbLoad
+character(len=8), intent(in) :: model, listLoadName(*)
+character(len=19), intent(in) :: matrElem
+character(len=*), intent(in) :: mate, mateco
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     CALCUL DES MATRICES ELEMENTAIRES D 'IMPEDANCE PAR ONDE INCIDENTE
 !     ACOUSTIQUE DANS LE PHENOMENE MECANIQUE
 !
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
 ! IN  : MODELE : NOM DU MODELE
 ! IN  : NCHAR  : NOMBRE DE CHARGES
 ! IN  : LCHAR  : LISTE DES CHARGES
 ! IN  : MATE   : CARTE DE MATERIAU
 ! VAR : MATEL  : NOM  DU  MATELE (N RESUELEM) PRODUIT
-! ----------------------------------------------------------------------
-!     ------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=16), parameter :: option = 'ONDE_FLUI'
     integer :: nh
-    character(len=8) :: k8b, cara, lpain(3), lpaout(1)
-    character(len=16) :: option
+    character(len=8) :: caraElem, lpain(3), lpaout(1)
     character(len=24) :: ligrmo, lchin(3), lchout(1)
     character(len=24) :: chgeom, chcara(18), chharm
-    aster_logical :: lfonc
+    integer :: iLoad, icode, ilires, iret
 !
-!-----------------------------------------------------------------------
-    integer :: icha, icode, ilires, iret
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
-    if (modele(1:1) .eq. ' ') then
-        call utmess('F', 'CALCULEL2_82')
-    endif
 !
-    cara = ' '
-    nh = 0
-    option = 'CHAR_MECA'
-    call mecham(option, modele, cara, nh, chgeom,&
+    ASSERT(model(1:1) .ne. ' ')
+    caraElem = ' '
+    nh       = 0
+    call mecham(option, model, caraElem, nh, chgeom,&
                 chcara, chharm, icode)
 !
-    call jeexin(matel//'.RERR', iret)
+    call jeexin(matrElem//'.RERR', iret)
     if (iret .gt. 0) then
-        call jedetr(matel//'.RERR')
-        call jedetr(matel//'.RELR')
+        call jedetr(matrElem//'.RERR')
+        call jedetr(matrElem//'.RELR')
     endif
-    call memare('G', matel, modele, mate, ' ',&
-                option)
+    call memare('G', matrElem, model, mate, ' ', option)
 !
     lpaout(1) = 'PMATUUR'
-    lchout(1) = matel(1:8)//'.ME001'
+    lchout(1) = matrElem(1:8)//'.ME001'
     ilires = 0
-    if (lchar(1) .ne. '        ') then
-!
-        ligrmo = modele//'.MODELE'
+    if (listLoadName(1) .ne. ' ') then
+        ligrmo = model//'.MODELE'
         lpain(1) = 'PGEOMER'
         lchin(1) = chgeom
-!
         lpain(3) = 'PMATERC'
         lchin(3) = mateco
-!
-        do icha = 1, nchar
-            call dismoi('TYPE_CHARGE', lchar(icha), 'CHARGE', repk=k8b)
-            if (k8b(5:7) .eq. '_FO') then
-                lfonc = .true.
-            else
-                lfonc = .false.
-            endif
-!           LIGRCH = LCHAR(ICHA)//'.CHME.LIGRE'
-!
-            call exisd('CHAMP_GD', lchar(icha)//'.CHME.ONDE ', iret)
+        do iLoad = 1, nbLoad
+            call exisd('CHAMP_GD', listLoadName(iLoad)//'.CHME.ONDE ', iret)
             if (iret .ne. 0) then
-                if (lfonc) then
-                    option = 'ONDE_FLUI_F'
-                    lpain(2) = 'PONDECF'
-                else
-                    option = 'ONDE_FLUI'
-                    lpain(2) = 'PONDECR'
-                endif
-                lchin(2) = lchar(icha)//'.CHME.ONDE .DESC'
+                lpain(2) = 'PONDECR'
+                lchin(2) = listLoadName(iLoad)//'.CHME.ONDE .DESC'
                 ilires = ilires + 1
                 call codent(ilires, 'D0', lchout(1) (12:14))
                 call calcul('S', option, ligrmo, 3, lchin,&
                             lpain, 1, lchout, lpaout, 'G',&
                             'OUI')
-                call reajre(matel, lchout(1), 'G')
+                call reajre(matrElem, lchout(1), 'G')
             endif
         end do
     endif
-
-    if (ilires.eq.0) then
-        call utmess('F', 'CALCULEL2_84')
+!
+    if (ilires .eq. 0) then
+        call utmess('F', 'CHARGES6_84')
     endif
     call jedema()
 end subroutine

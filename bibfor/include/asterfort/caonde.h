@@ -15,14 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine caonde(char, ligrmo, noma, fonree)
-        character(len=8) :: char
-        character(len=*) :: ligrmo
-        character(len=8) :: noma
-        character(len=4) :: fonree
+    subroutine caonde(load, mesh, valeType, nbOcc)
+        character(len=8), intent(in) :: load, mesh
+        character(len=4), intent(in) :: valeType
+        integer, intent(in) :: nbOcc
     end subroutine caonde
 end interface

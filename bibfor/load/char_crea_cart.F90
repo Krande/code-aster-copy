@@ -107,6 +107,8 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         nbMap = 2
     else if (loadType .eq. 'ROTATION') then
         nbMap = 1
+    else if (loadType .eq. 'ONDE_FLUI') then
+        nbMap = 1
     else
         ASSERT(ASTER_FALSE)
     endif
@@ -122,6 +124,8 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         map(2) = obje_pref(1:13)//'.ONDPR'
     else if (loadType .eq. 'ROTATION') then
         map(1) = obje_pref(1:13)//'.ROTAT'
+    else if (loadType .eq. 'ONDE_FLUI') then
+        map(1) = obje_pref(1:13)//'.ONDE'
     else
         ASSERT(ASTER_FALSE)
     endif
@@ -151,6 +155,12 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         else
             ASSERT(ASTER_FALSE)
         endif
+    else if (loadType .eq. 'ONDE_FLUI') then
+        if (valeType .eq. 'REEL') then
+            physQuantity(1) = 'ONDE_R'
+        else
+            ASSERT(ASTER_FALSE)
+        endif
     else
         ASSERT(ASTER_FALSE)
     endif
@@ -175,6 +185,12 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
             ASSERT(ASTER_FALSE)
         endif
     else if (loadType .eq. 'ROTATION') then
+        if (valeType  .eq.  'REEL') then
+            mapType(1) = 'R'
+        else
+            ASSERT(ASTER_FALSE)
+        endif
+    else if (loadType .eq. 'ONDE_FLUI') then
         if (valeType  .eq.  'REEL') then
             mapType(1) = 'R'
         else
@@ -211,6 +227,9 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         cmpName(1, 5) = 'X'
         cmpName(1, 6) = 'Y'
         cmpName(1, 7) = 'Z'
+    else if (loadType .eq. 'ONDE_FLUI') then
+        nbCmp(1) = 1
+        cmpName(1, 1) = 'PRES'
     else
         ASSERT(ASTER_FALSE)
     endif
