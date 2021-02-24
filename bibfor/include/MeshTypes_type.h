@@ -18,9 +18,11 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 
-! Total number of mesh types
+! Total number of cell types
 #define MT_NTYMAX  74
-! Maximum number of nodes of all elements
+! Total number of real (physical) cell types
+#define MT_NPHMAX  25
+! Maximum number of nodes of all cells
 #define MT_NNOMAX  27
 ! Index of TYPE_ELEM (geometric)
 #define MT_POI1    1

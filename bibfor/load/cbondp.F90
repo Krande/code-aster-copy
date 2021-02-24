@@ -69,7 +69,7 @@ character(len=4), intent(in) :: valeType
     character(len=8) :: signal, signde
     character(len=16) :: wave_type
     integer :: jvalv
-    integer :: iocc, ndir, val_nb, nondp, codret
+    integer :: iocc, ndir, val_nb, nondp
     integer :: jvCell
     integer :: nbCell
     character(len=19) :: map(LOAD_MAP_NBMAX)
@@ -184,7 +184,7 @@ character(len=4), intent(in) :: valeType
         endif
 
 ! ----- Check elements
-        call vetyma(mesh, ndim, keywordfact, listCell, nbCell, codret)
+        call vetyma(mesh, ndim, keywordfact, listCell, nbCell)
 !
         call jedetr(listCell)
 !

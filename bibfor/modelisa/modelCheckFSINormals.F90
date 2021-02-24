@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine modelCheckFSINormals(model)
 !
-use mesh_module, only: getCellProperties, getSkinCellSupport, checkNormalOnSkinCell
+use mesh_module, only: getPropertiesOfListOfCells, getSkinCellSupport, checkNormalOnSkinCell
 use model_module, only: getFSICell, getFluidCell
 !
 implicit none
@@ -53,7 +53,7 @@ character(len=8), intent(in) :: model
     integer :: nbCellFSI, nbCellFluid
     integer, pointer :: cellFSI(:) => null()
     integer, pointer :: cellFluid(:) => null()
-    aster_logical :: lCell2d, lCell1d
+    aster_logical :: lCellSurf, lCellLine
     integer, pointer :: cellFSINbNode(:) => null()
     integer, pointer :: cellFSINodeIndx(:) => null()
     integer, pointer :: cellFSISupport(:) => null()
@@ -80,19 +80,19 @@ character(len=8), intent(in) :: model
 ! ----- Get properties of FSI cells
         AS_ALLOCATE(vi=cellFSINbNode, size=nbCellFSI)
         AS_ALLOCATE(vi=cellFSINodeIndx, size=nbCellFSI)
-        call getCellProperties(mesh         ,&
-                               nbCellFSI    , cellFSI        ,&
-                               cellFSINbNode, cellFSINodeIndx,&
-                               lCell2d      , lCell1d)
-        ASSERT(lCell1d.or.lCell2d)
-        if (lCell1d) then
-            ASSERT(.not.lCell2d)
+        call getPropertiesOfListOfCells(mesh         ,&
+                                        nbCellFSI    , cellFSI        ,&
+                                        cellFSINbNode, cellFSINodeIndx,&
+                                        lCellSurf    , lCellLine)
+        ASSERT(lCellLine .or. lCellSurf)
+        if (lCellLine) then
+            ASSERT(.not.lCellSurf)
             if (niv .ge. 2) then
                 call utmess('I', 'MODELE1_81')
             endif
         endif
-        if (lCell2d) then
-            ASSERT(.not.lCell1d)
+        if (lCellSurf) then
+            ASSERT(.not.lCellLine)
             if (niv .ge. 2) then
                 call utmess('I', 'MODELE1_82')
             endif
@@ -102,7 +102,7 @@ character(len=8), intent(in) :: model
         AS_ALLOCATE(vi=cellFSISupport, size=nbCellFSI)
         call getSkinCellSupport(mesh          ,&
                                 nbCellFSI     , cellFSI,&
-                                lCell2d       , lCell1d,&
+                                lCellSurf       , lCellLine,&
                                 cellFSISupport,&
                                 nbCellFluid   , cellFluid)
 ! ----- Check normals

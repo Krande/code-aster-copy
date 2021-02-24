@@ -21,7 +21,8 @@ module mesh_module
 implicit none
 ! ==================================================================================================
 private :: getSignNormalSkinToSupport
-public  :: getCellProperties, getSkinCellSupport,&
+public  :: getPropertiesOfListOfCells, getPropertiesOfCell,&
+           getSkinCellSupport,&
            checkNormalOnSkinCell, checkInclude,&
            getCellOptionForName, createNameOfCell,&
            getNodeOptionForName, createNameOfNode
@@ -56,38 +57,39 @@ contains
 ! ==================================================================================================
 ! --------------------------------------------------------------------------------------------------
 !
-! getCellProperties
+! getPropertiesOfListOfCells
 !
-! Get properties of cells
+! Get properties of list of cells
 !
 ! In  mesh             : name of mesh
 ! In  nbCell           : number of skin cells
 ! In  listCell         : list of skin cells (number)
 ! IO  cellNbNode       : number of nodes for each cell
 ! IO  cellNodeIndx     : index of first node for each cell
-! Out lCell2d          : 2D cells exist
-! Out lCell1d          : 1D cells exist
+! Out lCellSurf        : 2D cells (surfacic) exist
+! Out lCellLine        : 1D cells (lineic) exist
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine getCellProperties(meshz     ,&
-                             nbCell    , listCell,&
-                             cellNbNode, cellNodeIndx,&
-                             lCell2d   , lCell1d)
+subroutine getPropertiesOfListOfCells(meshz     ,&
+                                      nbCell    , listCell,&
+                                      cellNbNode, cellNodeIndx,&
+                                      lCellSurf , lCellLine)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
     character(len=*), intent(in) :: meshz
     integer, intent(in) :: nbCell, listCell(*)
     integer, intent(inout) :: cellNbNode(nbCell), cellNodeIndx(nbCell)
-    aster_logical, intent(out) :: lCell2d, lCell1d
+    aster_logical, intent(out) :: lCellSurf, lCellLine
 ! - Local
     integer :: iCell, cellNume, cellTypeNume
     character(len=8) :: mesh, cellTypeName
+    character(len=4) :: cellTopo
     integer, pointer :: skinCellType(:) => null()
     integer, pointer :: meshConnexLen(:) => null()
 !   ------------------------------------------------------------------------------------------------
     mesh = meshz
-    lCell2d = ASTER_FALSE
-    lCell1d = ASTER_FALSE
+    lCellSurf = ASTER_FALSE
+    lCellLine = ASTER_FALSE
     call jeveuo(mesh//'.TYPMAIL', 'L', vi=skinCellType)
     call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', vi = meshConnexLen)
     do iCell = 1, nbCell
@@ -96,12 +98,11 @@ subroutine getCellProperties(meshz     ,&
         cellNodeIndx(iCell) = meshConnexLen(cellNume)
         cellTypeNume        = skinCellType(cellNume)
         call jenuno(jexnum('&CATA.TM.NOMTM', cellTypeNume), cellTypeName)
-        if (cellTypeName(1:4) .eq. 'QUAD') then
-            lCell2d = ASTER_TRUE
-        else if (cellTypeName(1:4) .eq. 'TRIA') then
-            lCell2d = ASTER_TRUE
-        else if (cellTypeName(1:3) .eq. 'SEG') then
-            lCell1d = ASTER_TRUE
+        call getPropertiesOfCell(cellTypeName, cellTopo)
+        if (cellTopo .eq. 'SURF') then
+            lCellSurf = ASTER_TRUE
+        else if (cellTopo .eq. 'LINE') then
+            lCellLine = ASTER_TRUE
         else
 ! --------- Ignore
         endif
@@ -189,7 +190,7 @@ end subroutine
 subroutine checkNormalOnSkinCell(meshz         , modelDime,&
                                  nbSkinCell    , cellSkinNume ,&
                                  cellSkinNbNode, cellSkinNodeIndx,&
-                                 cellSuppNume, lMisoriented)
+                                 cellSuppNume  , lMisoriented)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
     character(len=*), intent(in) :: meshz
@@ -391,52 +392,181 @@ end subroutine
 subroutine checkInclude()
 !   ------------------------------------------------------------------------------------------------
 ! - Local
-    integer :: elemTypeNume
+    integer :: cellTypeNume, nbCell
 !   ------------------------------------------------------------------------------------------------
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), elemTypeNume)
-    ASSERT(elemTypeNume .eq. MT_POI1)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2'), elemTypeNume)
-    ASSERT(elemTypeNume .eq. MT_SEG2)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG3'), elemTypeNume)
-    ASSERT(elemTypeNume .eq. MT_SEG3)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG4'), elemTypeNume)
-    ASSERT(elemTypeNume .eq. MT_SEG4)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3'), elemTypeNume)
-    ASSERT(elemTypeNume .eq. MT_TRIA3)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA6'), elemTypeNume)
-    ASSERT(elemTypeNume .eq. MT_TRIA6)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA7'), elemTypeNume)
-    ASSERT(elemTypeNume .eq. MT_TRIA7)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD4'), elemTypeNume)
-    ASSERT(elemTypeNume .eq. MT_QUAD4)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD8'), elemTypeNume)
-    ASSERT(elemTypeNume .eq. MT_QUAD8)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD9'), elemTypeNume)
-    ASSERT(elemTypeNume .eq. MT_QUAD9)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA4'), elemTypeNume)
-    ASSERT(elemTypeNume .eq. MT_TETRA4)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA10'), elemTypeNume)
-    ASSERT(elemTypeNume .eq. MT_TETRA10)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA6'), elemTypeNume)
-    ASSERT(elemTypeNume .eq. MT_PENTA6)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA15'), elemTypeNume)
-    ASSERT(elemTypeNume .eq. MT_PENTA15)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA18'), elemTypeNume)
-    ASSERT(elemTypeNume .eq. MT_PENTA18)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM5'), elemTypeNume)
-    ASSERT(elemTypeNume .eq. MT_PYRAM5)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM13'), elemTypeNume)
-    ASSERT(elemTypeNume .eq. MT_PYRAM13)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA8'), elemTypeNume)
-    ASSERT(elemTypeNume .eq. MT_HEXA8)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA20'), elemTypeNume)
-    ASSERT(elemTypeNume .eq. MT_HEXA20)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA27'), elemTypeNume)
-    ASSERT(elemTypeNume .eq. MT_HEXA27)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA9'), elemTypeNume)
-    ASSERT(elemTypeNume .eq. MT_HEXA9)
-    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA7'), elemTypeNume)
-    ASSERT(elemTypeNume .eq. MT_PENTA7)
+    nbCell = 0
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_POI1)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_SEG2)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG3'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_SEG3)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG4'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_SEG4)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_TRIA3)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA6'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_TRIA6)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA7'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_TRIA7)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD4'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_QUAD4)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD8'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_QUAD8)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD9'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_QUAD9)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA4'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_TETRA4)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA10'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_TETRA10)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA15'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_TETRA15)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA6'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_PENTA6)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA15'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_PENTA15)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA18'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_PENTA18)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA21'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_PENTA21)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM5'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_PYRAM5)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM13'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_PYRAM13)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'PYRAM19'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_PYRAM19)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA8'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_HEXA8)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA20'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_HEXA20)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA27'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_HEXA27)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA9'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_HEXA9)
+    nbCell = nbCell + 1
+    call jenonu(jexnom('&CATA.TM.NOMTM', 'PENTA7'), cellTypeNume)
+    ASSERT(cellTypeNume .eq. MT_PENTA7)
+    nbCell = nbCell + 1
+
+! - Total number of "physical" cells - See MeshTypes_type.h
+    ASSERT(nbCell .eq. MT_NPHMAX)
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! getPropertiesOfCell
+!
+! Get properties of cell
+!
+! --------------------------------------------------------------------------------------------------
+subroutine getPropertiesOfCell(cellTypeName, cellTopo_, cellOrder_)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    character(len=8), intent(in) :: cellTypeName
+    character(len=4), optional, intent(out) :: cellTopo_
+    integer, optional, intent(out) :: cellOrder_
+! - Local
+    integer :: cellOrder
+    character(len=4) :: cellTopo
+!   ------------------------------------------------------------------------------------------------
+    if (cellTypeName .eq. 'POI1') then
+        cellTopo  = 'PONC'
+        cellOrder = 0
+    else if (cellTypeName .eq. 'SEG2') then
+        cellTopo  = 'LINE'
+        cellOrder = 1
+    else if (cellTypeName .eq. 'SEG3') then
+        cellTopo  = 'LINE'
+        cellOrder = 2
+    else if (cellTypeName .eq. 'SEG4') then
+        cellTopo  = 'LINE'
+        cellOrder = 3
+    else if (cellTypeName .eq. 'TRIA3') then
+        cellTopo  = 'SURF'
+        cellOrder = 1
+    else if (cellTypeName .eq. 'TRIA6') then
+        cellTopo  = 'SURF'
+        cellOrder = 2
+    else if (cellTypeName .eq. 'TRIA7') then
+        cellTopo  = 'SURF'
+        cellOrder = 2
+    else if (cellTypeName .eq. 'QUAD4') then
+        cellTopo  = 'SURF'
+        cellOrder = 1
+    else if (cellTypeName .eq. 'QUAD8') then
+        cellTopo  = 'SURF'
+        cellOrder = 2
+    else if (cellTypeName .eq. 'QUAD9') then
+        cellTopo  = 'SURF'
+        cellOrder = 2
+    else if (cellTypeName .eq. 'TETRA4') then
+        cellTopo  = 'VOLU'
+        cellOrder = 1
+    else if (cellTypeName .eq. 'TETRA10') then
+        cellTopo  = 'VOLU'
+        cellOrder = 2
+    else if (cellTypeName .eq. 'PENTA6') then
+        cellTopo  = 'VOLU'
+        cellOrder = 1
+    else if (cellTypeName .eq. 'PENTA15') then
+        cellTopo  = 'VOLU'
+        cellOrder = 2
+    else if (cellTypeName .eq. 'PENTA18') then
+        cellTopo  = 'VOLU'
+        cellOrder = 2
+    else if (cellTypeName .eq. 'PYRAM5') then
+        cellTopo  = 'VOLU'
+        cellOrder = 1
+    else if (cellTypeName .eq. 'PYRAM13') then
+        cellTopo  = 'VOLU'
+        cellOrder = 2
+    else if (cellTypeName .eq. 'HEXA8') then
+        cellTopo  = 'VOLU'
+        cellOrder = 1
+    else if (cellTypeName .eq. 'HEXA20') then
+        cellTopo  = 'VOLU'
+        cellOrder = 2
+    else if (cellTypeName .eq. 'HEXA27') then
+        cellTopo  = 'VOLU'
+        cellOrder = 2
+    else if (cellTypeName .eq. 'HEXA9') then
+        cellTopo  = 'VOLU'
+        cellOrder = 1
+    else if (cellTypeName .eq. 'PENTA7') then
+        cellTopo  = 'VOLU'
+        cellOrder = 1
+    else
+        ASSERT(ASTER_FALSE)
+    endif
+    if (present(cellTopo_)) then
+        cellTopo_ = cellTopo
+    endif
+    if (present(cellOrder_)) then
+        cellOrder_ = cellOrder
+    endif
 !   ------------------------------------------------------------------------------------------------
 end subroutine
 ! --------------------------------------------------------------------------------------------------

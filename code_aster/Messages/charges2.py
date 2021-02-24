@@ -256,6 +256,11 @@ l'axe de rotation doit être dirigé suivant Oz.
  Il faut au moins deux noeuds pour LIAISON_UNIF.
 """),
 
+    85: _("""
+ La maille de nom %(k1)s n'est pas de bon ordre d'interpolation.
+ Elle ne sera pas affectée par %(k2)s .
+"""),
+
     86: _("""
  La maille de nom %(k1)s n'est pas de type linéique (segments).
  Elle ne sera pas affectée par %(k2)s .
@@ -272,27 +277,13 @@ l'axe de rotation doit être dirigé suivant Oz.
 """),
 
     89: _("""
-  -> Erreur dans les mailles du mot-clé facteur %(k1)s.
-     Aucune maille n'est du bon type. Elles sont toutes ignorées.
-"""),
-
-    90: _("""
- La maille de nom %(k1)s est de type volumique.
- Elle ne sera pas affectée par %(k2)s .
-"""),
-
-    91: _("""
- La maille de nom %(k1)s est de type linéique.
- Elle ne sera pas affectée par %(k2)s .
+Erreur dans les mailles du mot-clé facteur %(k1)s.
+Aucune maille n'est du bon type. Elles sont toutes ignorées.
 """),
 
     92: _("""
- Un noeud dans DDL_IMPO ne porte
- aucun DDL de type  %(k1)s 
+Un noeud dans DDL_IMPO ne porte aucun DDL de type %(k1)s.
 """),
-
-
-
 
     97 : _("""
  Tous les coefficients de la relation linéaire sont strictement nuls.

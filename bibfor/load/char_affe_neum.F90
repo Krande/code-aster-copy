@@ -59,7 +59,7 @@ integer, intent(in) :: nbCmp(nbMap)
     character(len=24), parameter:: listCell = '&&LIST_ELEM'
     integer, pointer :: cellNume(:) => null()
     integer :: nbCell
-    integer :: codret, iMap
+    integer :: iMap
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,7 +75,7 @@ integer, intent(in) :: nbCmp(nbMap)
         call jeveuo(listCell, 'L', vi = cellNume)
         do iMap = 1, nbMap
             if (nbCmp(iMap) .ne. 0) then
-                call vetyma(mesh, ndim, keywordfact, listCell, nbCell, codret)
+                call vetyma(mesh, ndim, keywordfact, listCell, nbCell)
             endif
         end do
 

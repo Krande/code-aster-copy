@@ -76,7 +76,7 @@ character(len=4), intent(in) :: valeType
     character(len=16), parameter :: option = 'CARA_SECT_POUT3'
     character(len=19), parameter :: ligrel = '&&CAFOND.LIGREL'
     integer :: npres, iocc
-    integer :: ifm, niv, val_nb, jvalv, codret
+    integer :: ifm, niv, val_nb, jvalv
     real(kind=8) :: r8dummy
     real(kind=8) :: hole_area, cara_geom(10), mate_area, coef_mult
     complex(kind=8) :: c16dummy
@@ -168,8 +168,7 @@ character(len=4), intent(in) :: valeType
                     limanu=zi(jvCellSect))
 
 ! ----- Check elements
-        call vetyma(mesh, ndim, keywordfact, listCellSect, nbCellSect,&
-                    codret)
+        call vetyma(mesh, ndim, keywordfact, listCellSect, nbCellSect)
 !
         call jedetr(listCellHole)
         call jedetr(listCellSect)
