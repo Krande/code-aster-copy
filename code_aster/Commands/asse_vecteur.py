@@ -44,7 +44,5 @@ class AssembleVectorOperator(ExecuteCommand):
         """
         dofNum = keywords["NUME_DDL"]
         self._result.setDOFNumbering(dofNum)
-        self._result.setMesh(dofNum.getMesh())
-        self._result.setDescription(dofNum.getDescription())
 
 ASSE_VECTEUR = AssembleVectorOperator.run

@@ -1018,7 +1018,7 @@ contains
                     this%faces(face_id)%edges(i_edge) = edge_id
                 end do
 !
-                if(this%nodes(nnos_sort(1))%nb_faces > this%nodes(nnos_sort(1))%max_faces) then
+                if(this%nodes(nnos_sort(1))%nb_faces >= this%nodes(nnos_sort(1))%max_faces) then
                     old_size = this%nodes(nnos_sort(1))%max_faces
                     allocate(new_faces(old_size))
                     new_faces(1:old_size) = this%nodes(nnos_sort(1))%faces(1:old_size)
@@ -1086,7 +1086,7 @@ contains
                 this%edges(edge_id)%nodes(1:nno) = nodes(1:nno)
                 this%edges(edge_id)%nnos_sort = nnos_sort
 !
-                if(this%nodes(nnos_sort(1))%nb_edges > this%nodes(nnos_sort(1))%max_edges) then
+                if(this%nodes(nnos_sort(1))%nb_edges >= this%nodes(nnos_sort(1))%max_edges) then
                     old_size = this%nodes(nnos_sort(1))%max_edges
                     allocate(new_edges(old_size))
                     new_edges(1:old_size) = this%nodes(nnos_sort(1))%edges(1:old_size)
