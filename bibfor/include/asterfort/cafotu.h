@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine cafotu(char, ligrmo, ialloc, noma, fonree)
-        character(len=8) :: char
-        character(len=*) :: ligrmo
-        integer :: ialloc
-        character(len=8) :: noma
-        character(len=4) :: fonree
+    subroutine cafotu(load, ligrmo, mapAlreadyCreated, mesh, ndim, valeType, nbOcc)
+        aster_logical, intent(in) :: mapAlreadyCreated
+        character(len=8), intent(in) :: load, mesh
+        character(len=19), intent(in) :: ligrmo
+        character(len=4), intent(in) :: valeType
+        integer, intent(in) :: nbOcc, ndim
     end subroutine cafotu
 end interface

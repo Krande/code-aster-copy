@@ -329,15 +329,6 @@ Conseil:
  pour la maille  %(k1)s
 """),
 
-    81 : _("""
-  La maille de nom %(k1)s n'est pas de type SEG3 ou SEG4,
-  elle ne sera pas affectée par %(k2)s
-"""),
-
-
-    94 : _("""
-     On ne peut pas appliquer un cisaillement 2d sur une modélisation 3D
-"""),
     95 : _("""
      ERREUR: l'auto-spectre est a valeurs négatives
 """),

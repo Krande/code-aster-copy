@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,20 +16,19 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cbpres(load, mesh, ligrmo, ndim, vale_type)
+subroutine cbpres(load, mesh, ligrmo, ndim, valeType)
 !
-    implicit   none
+implicit none
 !
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterfort/cafotu.h"
 #include "asterfort/capres.h"
 !
-!
-    integer, intent(in) :: ndim
-    character(len=4), intent(in) :: vale_type
-    character(len=8), intent(in) :: load
-    character(len=8), intent(in) :: mesh
-    character(len=19), intent(in) :: ligrmo
+character(len=8), intent(in) :: load, mesh
+character(len=19), intent(in) :: ligrmo
+integer, intent(in) :: ndim
+character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,24 +43,25 @@ subroutine cbpres(load, mesh, ligrmo, ndim, vale_type)
 ! In  mesh      : mesh
 ! In  ligrmo    : model <LIGREL>
 ! In  ndim      : dimension of space
-! In  vale_type : affected value type (real, complex or function)
+! In  valeType  : affected value type (real, complex or function)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbocc, ialloc
+    integer :: nbocc
+    aster_logical :: mapAlreadyCreated
     character(len=16) :: keywordfact
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ialloc = 0
+    mapAlreadyCreated = ASTER_FALSE
 !
 ! - PRES_REP loading
 !
     keywordfact = 'PRES_REP'
     call getfac(keywordfact, nbocc)
     if (nbocc .ne. 0) then
-        call capres(load, ligrmo, mesh, ndim, vale_type)
-        ialloc = 1
+        call capres(load, ligrmo, mesh, ndim, valeType, nbocc)
+        mapAlreadyCreated = ASTER_TRUE
     endif
 !
 ! - FORCE_TUYAU loading
@@ -69,7 +69,7 @@ subroutine cbpres(load, mesh, ligrmo, ndim, vale_type)
     keywordfact = 'FORCE_TUYAU'
     call getfac(keywordfact, nbocc)
     if (nbocc .ne. 0) then
-        call cafotu(load, ligrmo, ialloc, mesh, vale_type)
+        call cafotu(load, ligrmo, mapAlreadyCreated, mesh, ndim, valeType, nbocc)
     endif
 !
 end subroutine

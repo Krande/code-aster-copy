@@ -54,4 +54,8 @@ Mais on ne peut rien calculer, faute de données.
 Il faut fournir en argument du mot clé CHARGE au moins une charge mécanique qui utilise le mot clé ONDE_FLUI.
 """),
 
+    94 : _("""
+On ne peut pas appliquer un cisaillement 2d sur une modélisation 3D.
+"""),
+
 }
