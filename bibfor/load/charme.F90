@@ -222,7 +222,7 @@ character(len=8), intent(in) :: load
 !
 ! ----- FORCE_ELEC
 !
-        call cbelec(load, ligrmo, mesh)
+        call cbelec(load, mesh)
 !
 ! ----- INTE_ELEC
 !

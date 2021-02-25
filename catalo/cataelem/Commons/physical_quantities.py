@@ -1407,7 +1407,7 @@ FACY_R   = PhysicalQuantity(type='R',
 """)
 
 
-FELECR   = PhysicalQuantity(type='R',
+FLAP_R   = PhysicalQuantity(type='R',
     components=(
        'X1',
        'Y1',
@@ -1417,7 +1417,7 @@ FELECR   = PhysicalQuantity(type='R',
        'Z2',
        'CODE',
     ),
-    comment="""  FELECR Type:R Application de la force de Laplace ( FORCE_ELEC )
+    comment="""  FLAP_R Type:R Application de la force de Laplace ( FORCE_ELEC )
        X1 : coordonnee X d'un point du conducteur 1
        Y1 : coordonnee Y d'un point du conducteur 1
        Z1 : coordonnee Z d'un point du conducteur 1

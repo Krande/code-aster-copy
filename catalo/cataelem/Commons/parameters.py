@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -602,7 +602,7 @@ PFRCO2D = InputParameter(phys=PHY.FORC_R,
 PFRCO3D = InputParameter(phys=PHY.FORC_R,
                          comment="""""")
 
-PFRELEC = InputParameter(phys=PHY.FELECR,
+PFRELEC = InputParameter(phys=PHY.FLAP_R,
                          comment="""""")
 
 PFREQR = InputParameter(phys=PHY.FREQ_R, container='VOLA!&&CCPARA.FREQ',

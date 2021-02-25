@@ -117,6 +117,8 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         nbMap = 1
     else if (loadType .eq. 'PESANTEUR') then
         nbMap = 1
+    else if (loadType .eq. 'FORCE_ELEC') then
+        nbMap = 1
     else
         ASSERT(ASTER_FALSE)
     endif
@@ -142,6 +144,8 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         map(1) = obje_pref(1:13)//'.PRESS'
     else if (loadType .eq. 'PESANTEUR') then
         map(1) = obje_pref(1:13)//'.PESAN'
+    else if (loadType .eq. 'FORCE_ELEC') then
+        map(1) = obje_pref(1:13)//'.FELEC'
     else
         ASSERT(ASTER_FALSE)
     endif
@@ -204,6 +208,12 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
     else if (loadType .eq. 'PESANTEUR') then
         if (valeType .eq. 'REEL') then
             physQuantity(1) = 'PESA_R'
+        else
+            ASSERT(ASTER_FALSE)
+        endif
+    else if (loadType .eq. 'FORCE_ELEC') then
+        if (valeType .eq. 'REEL') then
+            physQuantity(1) = 'FLAP_R'
         else
             ASSERT(ASTER_FALSE)
         endif
@@ -272,6 +282,12 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         else
             ASSERT(ASTER_FALSE)
         endif
+    else if (loadType .eq. 'FORCE_ELEC') then
+        if (valeType  .eq.  'REEL') then
+            mapType(1) = 'R'
+        else
+            ASSERT(ASTER_FALSE)
+        endif
     else
         ASSERT(ASTER_FALSE)
     endif
@@ -328,6 +344,15 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         cmpName(1, 2) = 'AG'
         cmpName(1, 3) = 'BG'
         cmpName(1, 4) = 'CG'
+    else if (loadType .eq. 'FORCE_ELEC') then
+        nbCmp(1) = 7
+        cmpName(1, 1) = 'X1'
+        cmpName(1, 2) = 'Y1'
+        cmpName(1, 3) = 'Z1'
+        cmpName(1, 4) = 'X2'
+        cmpName(1, 5) = 'Y2'
+        cmpName(1, 6) = 'Z2'
+        cmpName(1, 7) = 'CODE'
     else
         ASSERT(ASTER_FALSE)
     endif

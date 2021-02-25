@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ def C_NOM_GRANDEUR():
         "EPSI_R",
         "ERRE_R",
         "FACY_R",
-        "FELECR",
+        "FLAP_R",
         "FER2_R",
         "FISS_R",
         "FLAPLA",
