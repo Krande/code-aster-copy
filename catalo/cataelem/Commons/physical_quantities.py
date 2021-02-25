@@ -2018,19 +2018,6 @@ J        = PhysicalQuantity(type='R',
        JPR :
 """)
 
-
-LISTMA   = PhysicalQuantity(type='K16',
-    components=(
-       'LISTMA',
-       'TRANS',
-    ),
-    comment="""  LISTMA Type:K16 Definition des charges reparties sur une zone du maillage
-                    (Force de LAPLACE)
-       LISTMA : Liste des mailles affectees par le chargement
-       TRANS : Nom d'un vecteur de travail decrivant le chargement
-""")
-
-
 MASS_R   = PhysicalQuantity(type='R',
     components=(
        'M',

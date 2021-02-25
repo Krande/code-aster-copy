@@ -693,7 +693,7 @@ PLAGRM = InputParameter(phys=PHY.NEUT_R,
 PLEVSET = InputParameter(phys=PHY.NEUT_R,
                          comment="""""")
 
-PLISTMA = InputParameter(phys=PHY.LISTMA,
+PLISTMA = InputParameter(phys=PHY.NEUT_K16,
                          comment="""""")
 
 PLONFA = InputParameter(phys=PHY.N120_I,

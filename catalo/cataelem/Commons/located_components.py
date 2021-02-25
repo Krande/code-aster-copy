@@ -220,8 +220,8 @@ CINSTPR = LocatedComponents(phys=PHY.INST_R, type='ELEM',
 CITERAT = LocatedComponents(phys=PHY.NEUT_I, type='ELEM',
                             components=('X1',))
 
-CLISTMA = LocatedComponents(phys=PHY.LISTMA, type='ELEM',
-                            components=('LISTMA', 'TRANS',))
+CLISTMA = LocatedComponents(phys=PHY.NEUT_K16, type='ELEM',
+                            components=('Z[2]',))
 
 CMASDIA = LocatedComponents(phys=PHY.POSI, type='ELEM',
                             components=('POS',))
