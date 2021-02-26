@@ -27,7 +27,7 @@
 
 unsigned long int TemporaryDataStructureNaming::_number = 0;
 
-std::string TemporaryDataStructureNaming::getNewTemporaryName( const int lengthName = 8 ) {
+std::string TemporaryDataStructureNaming::getNewTemporaryName( const int lengthName ) {
     std::ostringstream oss;
     assert( _number <= _maxNumberOfObjects);
     assert( lengthName <= JeveuxNameMaxLength);

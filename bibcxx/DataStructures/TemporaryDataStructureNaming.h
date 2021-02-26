@@ -46,7 +46,7 @@ class TemporaryDataStructureNaming {
     /**
      * @brief Static member that returns a new name.
      */
-    static std::string getNewTemporaryName( const int );
+    static std::string getNewTemporaryName( const int lengthName = 8);
 };
 
 #endif /* TEMPORARYDATASTRUCTURENAMING_H_ */
