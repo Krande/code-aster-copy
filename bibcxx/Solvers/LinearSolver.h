@@ -280,7 +280,7 @@ class BaseLinearSolverClass : public DataStructure {
     /**
      * @brief Inversion du systeme lineaire
      * @param currentMatrix Matrice assemblee
-     * @param kinematicsField Charge cinématique
+     * @param dirichletBCField Charge cinématique
      * @param currentRHS Second membre
      * @param result champ aux noeuds résultat (optionnel)
      * @return champ aux noeuds resultat
@@ -294,14 +294,14 @@ class BaseLinearSolverClass : public DataStructure {
     /**
      * @brief Inversion du systeme lineaire
      * @param currentMatrix Matrice assemblee
-     * @param kinematicsField Charge cinématique
+     * @param dirichletBCField Charge cinématique
      * @param currentRHS Second membre
      * @param result champ aux noeuds résultat (optionnel)
      * @return champ aux noeuds resultat
      */
     FieldOnNodesRealPtr solveRealLinearSystemWithDirichletBC(
         const AssemblyMatrixDisplacementRealPtr &currentMatrix,
-        const FieldOnNodesRealPtr &kinematicsField, const FieldOnNodesRealPtr &currentRHS,
+        const FieldOnNodesRealPtr &dirichletBCField, const FieldOnNodesRealPtr &currentRHS,
         FieldOnNodesRealPtr result =
             FieldOnNodesRealPtr( new FieldOnNodesRealClass( Permanent ) ) ) const;
 

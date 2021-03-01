@@ -33,16 +33,7 @@ class AssembleVectorOperator(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        self._result = FieldOnNodesReal()
+        self._result = FieldOnNodesReal(keywords["NUME_DDL"])
 
-    def post_exec(self, keywords):
-        """Store references to related objets objects.
-
-        Arguments:
-            keywords (dict): Keywords arguments of user's keywords, changed
-                in place.
-        """
-        dofNum = keywords["NUME_DDL"]
-        self._result.setDOFNumbering(dofNum)
 
 ASSE_VECTEUR = AssembleVectorOperator.run

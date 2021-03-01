@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -248,15 +248,15 @@ ENGENDRE_TEST(FORMAT='OBJET',
 
 # validation du resultat de ENGENDRE_TEST :
 TEST_RESU(OBJET=(
-_F(NOM='0000001e           .CONL',VALE_CALC= 1.0000000000000E+00,),
-_F(NOM='0000001e      .SMOS.SMDI',VALE_CALC_I=              1       ,),
-_F(NOM='0000001e      .SMOS.SMDE',VALE_CALC_I=              3       ,),
-_F(NOM='0000001f           .CONL',VALE_CALC= 1.0000000000000E+00,),
-_F(NOM='0000001f      .SMOS.SMDI',VALE_CALC_I=              1       ,),
-_F(NOM='0000001f      .SMOS.SMDE',VALE_CALC_I=              3       ,),
-_F(NOM='0000001d           .CONL',VALE_CALC= 1.0000000000000E+00,),
-_F(NOM='0000001d      .SMOS.SMDI',VALE_CALC_I=              1       ,),
-_F(NOM='0000001d      .SMOS.SMDE',VALE_CALC_I=              3       ,),
+_F(NOM=MASS.getName() + '           .CONL',VALE_CALC= 1.0000000000000E+00,),
+_F(NOM=MASS.getName() + '      .SMOS.SMDI',VALE_CALC_I=              1       ,),
+_F(NOM=MASS.getName() + '      .SMOS.SMDE',VALE_CALC_I=              3       ,),
+_F(NOM=RIGI.getName() + '           .CONL',VALE_CALC= 1.0000000000000E+00,),
+_F(NOM=RIGI.getName() + '      .SMOS.SMDI',VALE_CALC_I=              1       ,),
+_F(NOM=RIGI.getName() + '      .SMOS.SMDE',VALE_CALC_I=              3       ,),
+_F(NOM=AMOR.getName() + '           .CONL',VALE_CALC= 1.0000000000000E+00,),
+_F(NOM=AMOR.getName() + '      .SMOS.SMDI',VALE_CALC_I=              1       ,),
+_F(NOM=AMOR.getName() + '      .SMOS.SMDE',VALE_CALC_I=              3       ,),
 ))
 
 #TESTS DES VALEURS DES MATRICES D'AMORTISSEMENT ET DE MASSE AJOUTES
@@ -265,12 +265,12 @@ _F(NOM='0000001d      .SMOS.SMDE',VALE_CALC_I=              3       ,),
 TEST_RESU(OBJET=(_F(VALE_CALC= 1.66014403E+09,
                     VALE_REFE=1.666800000E9,
                     REFERENCE='NON_DEFINI',
-                    NOM='0000001e           .VALM',
+                    NOM=MASS.getName() + '           .VALM',
                     PRECISION=1.E-2,),
                  _F(VALE_CALC=-3.96644423E+08,
                     VALE_REFE=-4.00040000E8,
                     REFERENCE='NON_DEFINI',
-                    NOM='0000001d           .VALM',
+                    NOM=AMOR.getName() + '           .VALM',
                     PRECISION=1.E-2,),
                  ),
           )
@@ -321,9 +321,9 @@ ENGENDRE_TEST(FORMAT='OBJET',
               CO=(MASSCRIT,AMORCRIT,),);
 
 TEST_RESU(OBJET=(_F(VALE_CALC= 1.66014403E+09,
-                    NOM='0000002c           .VALM',),
+                    NOM=MASSCRIT.getName() + '           .VALM',),
                  _F(VALE_CALC=-4.20443084E+08,
-                    NOM='0000002b           .VALM',),
+                    NOM=AMORCRIT.getName() + '           .VALM',),
                  ),
           )
 
@@ -350,12 +350,12 @@ MASSFLOT=CALC_MATR_AJOU(MODELE_FLUIDE=FLUIDE2,
 TEST_RESU(OBJET=(_F(VALE_CALC= 1.66014403E+09,
                     VALE_REFE=1.666800000E9,
                     REFERENCE='NON_DEFINI',
-                    NOM='0000002e           .VALM',
+                    NOM=MASSFLOT.getName() + '           .VALM',
                     PRECISION=1.E-2,),
                  _F(VALE_CALC=-5.94966629E+08,
                     VALE_REFE=-6.00060000E8,
                     REFERENCE='NON_DEFINI',
-                    NOM='0000002d           .VALM',
+                    NOM=AMORFLOT.getName() + '           .VALM',
                     PRECISION=1.E-2,),
                  ),
           )

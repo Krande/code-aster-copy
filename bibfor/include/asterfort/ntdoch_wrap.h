@@ -16,8 +16,15 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine op0011()
-    implicit none
-#include "asterfort/utmess.h"
-    call utmess('F', 'FERMETUR_5')
-end subroutine
+!
+!
+#include "asterf_types.h"
+!
+interface
+    subroutine ntdoch_wrap(list_load0, l_load_user0, list_load_resu0, base)
+        character(len=*), intent(in) :: list_load0
+        integer, intent(in) :: l_load_user0
+        character(len=*), intent(in) :: list_load_resu0
+        character(len=*), intent(in) :: base
+    end subroutine ntdoch_wrap
+end interface

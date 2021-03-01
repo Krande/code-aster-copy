@@ -23,6 +23,7 @@ subroutine crnlgn(numddl)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -203,6 +204,10 @@ subroutine crnlgn(numddl)
         end do
         flush(120+rang)
     end if
+!
+    call jedetr("&&CRNUGL.MULT_DDL")
+    call jedetr("&&CRNUGL.MULT_DDL2")
+    call jedetr('&&CRNULG.NBDDLL')
 !
     call jedema()
 #endif

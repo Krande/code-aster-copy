@@ -28,45 +28,54 @@ class NumberingCreation(ExecuteCommand):
     """Command that creates a :class:`~code_aster.Objects.DOFNumbering`."""
     command_name = "NUME_DDL"
 
+    def meshIsParallel(self, keywords):
+        """ The mesh is a ParallelMesh ?
+
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords.
+        """
+
+        model = keywords.get('MODELE')
+        if model is not None:
+            return model.getMesh().isParallel()
+        else:
+            matr = keywords.get('MATR_RIGI')[0]
+            return matr.getMesh().isParallel()
+
+
     def create_result(self, keywords):
         """Initialize the result.
 
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        model = keywords.get('MODELE')
 
-        if model is not None:
-            if model.getMesh().isParallel():
-                self._result = ParallelDOFNumbering()
-            else:
-                self._result = DOFNumbering()
+        if self.meshIsParallel(keywords):
+            self._result = ParallelDOFNumbering()
         else:
-            matr = keywords.get('MATR_RIGI')
-            if matr and matr[0].getModel().getMesh().isParallel():
-                self._result = ParallelDOFNumbering()
-            else:
-                self._result = DOFNumbering()
+            self._result = DOFNumbering()
 
-    def post_exec(self, keywords):
-        """Store references to ElementaryMatrix objects.
+
+    def exec_(self, keywords):
+        """Execute the command.
 
         Arguments:
-            keywords (dict): Keywords arguments of user's keywords, changed
-                in place.
+            keywords (dict): User's keywords.
         """
-        if 'MODELE' in keywords:
-            self._result.setModel(keywords['MODELE'])
+
+        model = keywords.get('MODELE')
+        if model is not None:
+            self._result.setModel(model)
             charge = keywords.get("CHARGE")
             if charge is not None:
                 for curLoad in charge:
-                    curFED = curLoad.getFiniteElementDescriptor()
-                    self._result.addFiniteElementDescriptor(curFED)
+                    self._result.addLoad(curLoad)
         else:
-            matrRigi = keywords['MATR_RIGI'][0]
-            self._result.setModel(matrRigi.getModel())
-            for curFED in matrRigi.getFiniteElementDescriptors():
-                self._result.addFiniteElementDescriptor(curFED)
+            matrRigi = keywords['MATR_RIGI']
+            for matr in matrRigi:
+                self._result.setElementaryMatrix(matr)
+
+        self._result.computeNumbering()
 
 
 NUME_DDL = NumberingCreation.run

@@ -24,19 +24,19 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stdexcept>
-#include <list>
-#include <string>
 
 #include "astercxx.h"
+#include "boost/variant.hpp"
+#include "Functions/Formula.h"
+#include "Functions/Function.h"
+#include "Functions/Function2D.h"
+#include "Loads/AcousticLoad.h"
+#include "Loads/DirichletBC.h"
 #include "Loads/MechanicalLoad.h"
 #include "Loads/ParallelMechanicalLoad.h"
-#include "Loads/DirichletBC.h"
-#include "Functions/Function.h"
-#include "Functions/Formula.h"
-#include "Functions/Function2D.h"
-#include "boost/variant.hpp"
+#include "Loads/ThermalLoad.h"
 #include "MemoryManager/JeveuxVector.h"
+#include "Modeling/Model.h"
 
 class GenericLoadFunction {
   private:
@@ -73,13 +73,21 @@ typedef std::vector< GenericLoadFunction > ListOfLoadFunctions;
 class ListOfLoadsClass : public DataStructure {
   private:
     /** @brief Chargements cinematiques */
-    ListKineLoad _listOfDirichletBCs;
+    ListDiriBC _listOfDirichletBCs;
     /** @brief List of functions for DirichletBCs */
-    ListOfLoadFunctions _listOfKineFun;
+    ListOfLoadFunctions _listOfDiriFun;
     /** @brief Chargements Mecaniques */
     ListMecaLoad _listOfMechanicalLoads;
     /** @brief List of functions for MechanicalLoads */
     ListOfLoadFunctions _listOfMechaFun;
+    /** @brief Chargements Thermique */
+    ListTherLoad _listOfThermalLoads;
+    /** @brief List of functions for ThermalLoads */
+    ListOfLoadFunctions _listOfTherFun;
+    /** @brief Chargements Acoustique */
+    ListAcouLoad _listOfAcousticLoads;
+    /** @brief List of functions for AcousticLoads */
+    ListOfLoadFunctions _listOfAcouFun;
 #ifdef ASTER_HAVE_MPI
     /** @brief Chargements Mecaniques paralleles */
     ListParaMecaLoad _listOfParallelMechanicalLoads;
@@ -94,6 +102,8 @@ class ListOfLoadsClass : public DataStructure {
     JeveuxVectorChar24 _listOfFunctions;
     /** @brief La chargement est-il vide ? */
     bool _isEmpty;
+    /** @brief Model */
+    ModelPtr _model;
 
   public:
     /**
@@ -109,8 +119,9 @@ class ListOfLoadsClass : public DataStructure {
     void addLoad( const DirichletBCPtr &currentLoad,
                   const FunctionPtr &func = emptyRealFunction ) {
         _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
         _listOfDirichletBCs.push_back( currentLoad );
-        _listOfKineFun.push_back( func );
+        _listOfDiriFun.push_back( func );
     };
 
     /**
@@ -120,8 +131,9 @@ class ListOfLoadsClass : public DataStructure {
      */
     void addLoad( const DirichletBCPtr &currentLoad, const FormulaPtr &func ) {
         _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
         _listOfDirichletBCs.push_back( currentLoad );
-        _listOfKineFun.push_back( func );
+        _listOfDiriFun.push_back( func );
     };
 
     /**
@@ -131,8 +143,9 @@ class ListOfLoadsClass : public DataStructure {
      */
     void addLoad( const DirichletBCPtr &currentLoad, const Function2DPtr &func ) {
         _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
         _listOfDirichletBCs.push_back( currentLoad );
-        _listOfKineFun.push_back( func );
+        _listOfDiriFun.push_back( func );
     };
 
     /**
@@ -143,6 +156,7 @@ class ListOfLoadsClass : public DataStructure {
     void addLoad( const GenericMechanicalLoadPtr &currentLoad,
                   const FunctionPtr &func = emptyRealFunction ) {
         _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoads.push_back( currentLoad );
         _listOfMechaFun.push_back( func );
     };
@@ -154,6 +168,7 @@ class ListOfLoadsClass : public DataStructure {
      */
     void addLoad( const GenericMechanicalLoadPtr &currentLoad, const FormulaPtr &func ) {
         _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoads.push_back( currentLoad );
         _listOfMechaFun.push_back( func );
     };
@@ -165,6 +180,7 @@ class ListOfLoadsClass : public DataStructure {
      */
     void addLoad( const GenericMechanicalLoadPtr &currentLoad, const Function2DPtr &func ) {
         _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoads.push_back( currentLoad );
         _listOfMechaFun.push_back( func );
     };
@@ -178,6 +194,7 @@ class ListOfLoadsClass : public DataStructure {
     void addLoad( const ParallelMechanicalLoadPtr &currentLoad,
                   const FunctionPtr &func = emptyRealFunction ) {
         _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
         _listOfParallelMechanicalLoads.push_back( currentLoad );
         _listOfParaMechaFun.push_back( func );
     };
@@ -189,6 +206,7 @@ class ListOfLoadsClass : public DataStructure {
      */
     void addLoad( const ParallelMechanicalLoadPtr &currentLoad, const FormulaPtr &func ) {
         _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
         _listOfParallelMechanicalLoads.push_back( currentLoad );
         _listOfParaMechaFun.push_back( func );
     };
@@ -200,23 +218,93 @@ class ListOfLoadsClass : public DataStructure {
      */
     void addLoad( const ParallelMechanicalLoadPtr &currentLoad, const Function2DPtr &func ) {
         _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
         _listOfParallelMechanicalLoads.push_back( currentLoad );
         _listOfParaMechaFun.push_back( func );
     };
 #endif /* ASTER_HAVE_MPI */
 
+
+    /**
+     * @brief Function d'ajout d'une charge mécanique
+     * @param currentLoad charge a ajouter a la sd
+     * @param func multiplier function
+     */
+    void addLoad( const ThermalLoadPtr &currentLoad,
+                  const FunctionPtr &func = emptyRealFunction ) {
+        _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
+        _listOfThermalLoads.push_back( currentLoad );
+        _listOfTherFun.push_back( func );
+    };
+
+    /**
+     * @brief Function d'ajout d'une charge mécanique
+     * @param currentLoad charge a ajouter a la sd
+     * @param func multiplier formula
+     */
+    void addLoad( const ThermalLoadPtr &currentLoad, const FormulaPtr &func ) {
+        _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
+        _listOfThermalLoads.push_back( currentLoad );
+        _listOfTherFun.push_back( func );
+    };
+
+    /**
+     * @brief Function d'ajout d'une charge mécanique
+     * @param currentLoad charge a ajouter a la sd
+     * @param func multiplier function2d
+     */
+    void addLoad( const ThermalLoadPtr &currentLoad, const Function2DPtr &func ) {
+        _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
+        _listOfThermalLoads.push_back( currentLoad );
+        _listOfTherFun.push_back( func );
+    };
+
+
+    /**
+     * @brief Function d'ajout d'une charge mécanique
+     * @param currentLoad charge a ajouter a la sd
+     * @param func multiplier function
+     */
+    void addLoad( const AcousticLoadPtr &currentLoad,
+                  const FunctionPtr &func = emptyRealFunction ) {
+        _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
+        _listOfAcousticLoads.push_back( currentLoad );
+        _listOfAcouFun.push_back( func );
+    };
+
+    /**
+     * @brief Function d'ajout d'une charge mécanique
+     * @param currentLoad charge a ajouter a la sd
+     * @param func multiplier formula
+     */
+    void addLoad( const AcousticLoadPtr &currentLoad, const FormulaPtr &func ) {
+        _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
+        _listOfAcousticLoads.push_back( currentLoad );
+        _listOfAcouFun.push_back( func );
+    };
+
+    /**
+     * @brief Function d'ajout d'une charge mécanique
+     * @param currentLoad charge a ajouter a la sd
+     * @param func multiplier function2d
+     */
+    void addLoad( const AcousticLoadPtr &currentLoad, const Function2DPtr &func ) {
+        _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
+        _listOfAcousticLoads.push_back( currentLoad );
+        _listOfAcouFun.push_back( func );
+    };
+
     /**
      * @brief Construction de la liste de charge
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool build() ;
-
-    /**
-    * @brief Construction de la liste des charges pour valoriser le mot-clé facteur EXCIT de
-    * STAT_NON_LINE . C'est une méthode temporaire
-    * @return listExcit
-    */
-    ListSyntaxMapContainer buildListExcit() ;
+    bool build( ModelPtr model = nullptr) ;
 
     /**
      * @brief Function de récupération des informations des charges
@@ -234,7 +322,7 @@ class ListOfLoadsClass : public DataStructure {
      * @brief Function de récupération de la liste des charges cinématiques
      * @return _listOfDirichletBCs
      */
-    const ListKineLoad &getListOfDirichletBCs() const { return _listOfDirichletBCs; };
+    const ListDiriBC &getListOfDirichletBCs() const { return _listOfDirichletBCs; };
 
     /**
      * @brief Function de récupération de la liste des charges mécaniques
@@ -253,10 +341,24 @@ class ListOfLoadsClass : public DataStructure {
 #endif /* ASTER_HAVE_MPI */
 
     /**
+     * @brief Function de récupération de la liste des charges thermiques
+     * @return _listOfThermalLoads
+     */
+    const ListTherLoad &getListOfThermalLoads() const { return _listOfThermalLoads; };
+
+    /**
      * @brief Function de récupération de la liste des charges
      * @return _list
      */
     const JeveuxVectorChar24 &getListVector() const { return _list; };
+
+    /**
+     * @brief Get all FiniteElementDescriptors
+     * @return vector of all FiniteElementDescriptors
+     */
+    std::vector< FiniteElementDescriptorPtr > getFiniteElementDescriptors() const;
+
+    int getPhysics( void ) const;
 
     /**
      * @brief Methode permettant de savoir si la matrice est vide
@@ -268,7 +370,28 @@ class ListOfLoadsClass : public DataStructure {
      * @brief Nombre de charges
      * @return taille de _listOfMechanicalLoads + taille de _listOfDirichletBCs
      */
-    int size() const { return _listOfMechanicalLoads.size() + _listOfDirichletBCs.size(); };
+    int getNumberOfLoads() const {
+        return _listOfMechanicalLoads.size() +
+#ifdef ASTER_HAVE_MPI
+               _listOfParallelMechanicalLoads.size() +
+#endif /* ASTER_HAVE_MPI */
+               _listOfThermalLoads.size() +
+               _listOfAcousticLoads.size() +
+               _listOfDirichletBCs.size();
+        };
+
+    /**
+     * @brief Check that all loads have the same model
+     * @return True if all loads have the same model
+     */
+    bool checkModelConsistency( const ModelPtr& model ) const;
+
+    bool setModel( const ModelPtr& model );
+
+    const ModelPtr& getModel( void ) const
+    {
+        return _model;
+    };
 };
 
 /**

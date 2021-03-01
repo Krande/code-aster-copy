@@ -46,7 +46,6 @@ class FieldCreator(ExecuteCommand):
         charge = keywords.get("CHARGE")
         resultat = keywords.get("RESULTAT")
         numeDdl = keywords.get("NUME_DDL")
-        print("KEY:: ", keywords)
         if mesh is None:
             if model is not None:
                 mesh = model.getMesh()

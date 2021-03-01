@@ -60,9 +60,9 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      * @brief Destructeur
      */
     ~JeveuxVectorClass() {
-#ifdef ASTER_DEBUG_CXX
-        // std::cout << "DEBUG: JeveuxVector.destr: " << _name << std::endl;
-#endif
+// #ifdef ASTER_DEBUG_CXX
+//         std::cout << "DEBUG: JeveuxVector.destr: " << _name << std::endl;
+// #endif
         _valuePtr = nullptr;
     };
 
@@ -128,7 +128,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
         if( i < 0 || i >= this->size() )
         {
             throw std::runtime_error("Out of bounds: " + std::to_string(i) +
-                "(size: " + std::to_string(this->size()) + ")");
+                "( size: " + std::to_string(this->size()) + ")");
         }
 #endif
         return _valuePtr[i];
@@ -147,7 +147,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
         if( i < 0 || i >= this->size() )
         {
             throw std::runtime_error("Out of bounds: " + std::to_string(i) +
-                "(size: " + std::to_string(this->size()) + ")");
+                "( size: " + std::to_string(this->size()) + ")");
         }
 #endif
         return _valuePtr[i];
@@ -161,7 +161,6 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      */
     bool allocate( JeveuxMemory jeveuxBase, unsigned ASTERINTEGER length ) {
         if ( _name != "" && length > 0 ) {
-            _mem = jeveuxBase;
             std::string strJeveuxBase( "V" );
             if ( jeveuxBase == Permanent )
                 strJeveuxBase = "G";
@@ -177,6 +176,31 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
 #ifdef ASTER_DEBUG_CXX
         // std::cout << "DEBUG: JeveuxVector.alloc: " << _name << std::endl;
 #endif
+        return true;
+    };
+
+    /**
+     * @brief Fonction d'allocation d'un vecteur Jeveux
+     * @param length Longueur du vecteur Jeveux a allouer
+     * @return true si l'allocation s'est bien passee
+     */
+    bool allocate( unsigned ASTERINTEGER length ) {
+        if ( _name != "" && length > 0 ) {
+            std::string strJeveuxBase( "V" );
+            if ( _mem == Permanent )
+                strJeveuxBase = "G";
+            ASTERINTEGER taille = length;
+            const int intType = AllowedJeveuxType< ValueType >::numTypeJeveux;
+            std::string carac = strJeveuxBase + " V " + JeveuxTypesNames[intType];
+            CALLO_WKVECTC( _name, carac, &taille, (void *)( &_valuePtr ) );
+            if ( _valuePtr == NULL )
+                return false;
+        } else
+            return false;
+        updateValuePointer();
+// #ifdef ASTER_DEBUG_CXX
+//         std::cout << "DEBUG: JeveuxVector.alloc: " << _name << std::endl;
+// #endif
         return true;
     };
 

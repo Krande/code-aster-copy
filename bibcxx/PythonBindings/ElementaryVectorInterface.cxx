@@ -46,7 +46,7 @@ void exportElementaryVectorToPython() {
         .def( "__init__", py::make_constructor(&initFactoryPtr< ElementaryVectorClass >))
         .def( "__init__",
               py::make_constructor(&initFactoryPtr< ElementaryVectorClass, std::string >))
-        .def( "addMechanicalLoad", c3 )
+        .def( "addLoad", c3 )
         .def( "assembleVector", c1 )
         .def( "setType", &ElementaryVectorClass::setType )
 #ifdef ASTER_HAVE_MPI

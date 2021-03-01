@@ -42,19 +42,15 @@ class MechanicalSolver(ExecuteCommand):
         if func !=  None:
             if isinstance(load, DirichletBC):
                 mechaSolv.addDirichletBC(load, func)
-            elif isinstance(load, GenericMechanicalLoad):
-                mechaSolv.addMechanicalLoad(load, func)
-            elif isinstance(load, ParallelMechanicalLoad):
-                mechaSolv.addParallelMechanicalLoad(load, func)
+            elif isinstance(load, (GenericMechanicalLoad, ParallelMechanicalLoad)):
+                mechaSolv.addLoad(load, func)
             else:
                 assert False
         else:
             if isinstance(load, DirichletBC):
                 mechaSolv.addDirichletBC(load)
-            elif isinstance(load, GenericMechanicalLoad):
-                mechaSolv.addMechanicalLoad(load)
-            elif isinstance(load, ParallelMechanicalLoad):
-                mechaSolv.addParallelMechanicalLoad(load)
+            elif isinstance(load, (GenericMechanicalLoad, ParallelMechanicalLoad)):
+                mechaSolv.addLoad(load)
             else:
                 assert False
 

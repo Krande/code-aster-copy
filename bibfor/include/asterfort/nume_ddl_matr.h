@@ -15,9 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine op0011()
-    implicit none
-#include "asterfort/utmess.h"
-    call utmess('F', 'FERMETUR_5')
-end subroutine
+!
+!
+interface
+    subroutine nume_ddl_matr(nume, list_matr, nb_matr)
+        character(len=*), intent(in) :: nume
+        character(len=*), intent(in) :: list_matr
+        integer, intent(in) :: nb_matr
+    end subroutine nume_ddl_matr
+end interface

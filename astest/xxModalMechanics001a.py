@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -79,11 +79,11 @@ CharMeca4.build()
 test.assertEqual(CharMeca4.getType(), "CHAR_MECA")
 
 study = code_aster.StudyDescription(POVOL, CHMAT)
-study.addMechanicalLoad(PRESSION)
-study.addMechanicalLoad(CharMeca1)
-study.addMechanicalLoad(CharMeca2)
-study.addMechanicalLoad(CharMeca3)
-study.addMechanicalLoad(CharMeca4)
+study.addLoad(PRESSION)
+study.addLoad(CharMeca1)
+study.addLoad(CharMeca2)
+study.addLoad(CharMeca3)
+study.addLoad(CharMeca4)
 
 dProblem = code_aster.DiscreteProblem(study)
 K_ELEM1 = dProblem.computeMechanicalStiffnessMatrix()

@@ -58,7 +58,7 @@ extern const VectorString allExcitationNames;
 class ExcitationClass {
   private:
     ExcitationEnum _typeExcit;
-    DirichletBCPtr _kinematicLoad;
+    DirichletBCPtr _dirichletBC;
     GenericMechanicalLoadPtr _mecaLoad;
     FunctionPtr _multFunction;
     CapyConvertibleContainer _toCapyConverter;
@@ -70,13 +70,13 @@ class ExcitationClass {
         _toCapyConverter.add( new CapyConvertibleValue< ExcitationEnum >(
             true, "TYPE_CHARGE", _typeExcit, allExcitation, allExcitationNames, true ) );
     };
-    /** @function setKinematicLoad
-     * @brief sets the kinematicLoad attribut
+    /** @function setDirichletBC
+     * @brief sets the dirichletBC attribut
      */
-    void setKinematicLoad( const DirichletBCPtr &kineLoad ) {
-        _kinematicLoad = kineLoad;
+    void setDirichletBC( const DirichletBCPtr &diriBC ) {
+        _dirichletBC = diriBC;
         _toCapyConverter.add(
-            new CapyConvertibleValue< DirichletBCPtr >( true, "CHARGE", _kinematicLoad, true ) );
+            new CapyConvertibleValue< DirichletBCPtr >( true, "CHARGE", _dirichletBC, true ) );
     };
     /** @function setMechanicalLoad
      * @brief sets the mecaLoad attribut
@@ -105,8 +105,8 @@ class ExcitationClass {
     std::string getLoadName() const {
         if ( _mecaLoad != nullptr )
             return _mecaLoad->getName();
-        else if ( _kinematicLoad != nullptr )
-            return _kinematicLoad->getName();
+        else if ( _dirichletBC != nullptr )
+            return _dirichletBC->getName();
         else
             return "None";
     };

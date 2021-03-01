@@ -1,6 +1,9 @@
+#ifndef BASEDOFNUMBERINGINTERFACE_H_
+#define BASEDOFNUMBERINGINTERFACE_H_
+
 /**
- * @file ElementaryMatrix.cxx
- * @brief Implementation de ElementaryMatrix
+ * @file DOFNumberingInterface.h
+ * @brief Fichier entete de la classe DOFNumberingInterface
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
@@ -21,13 +24,9 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "LinearAlgebra/ElementaryMatrix.h"
+#include "astercxx.h"
+#include "Numbering/BaseDOFNumbering.h"
 
+void exportBaseDOFNumberingToPython();
 
-BaseMeshPtr BaseElementaryMatrixClass::getMesh( void ) const
-{
-    if( _model )
-        return _model->getMesh();
-
-    return nullptr;
-};
+#endif /* BASEDOFNUMBERINGINTERFACE_H_ */

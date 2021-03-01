@@ -1,6 +1,6 @@
 /**
- * @file FiniteElementDescriptorInterface.cxx
- * @brief Interface python de FiniteElementDescriptor
+ * @file ParallelFiniteElementDescriptorInterface.cxx
+ * @brief Interface python de ParallelFiniteElementDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
@@ -26,21 +26,28 @@
 #include <boost/python.hpp>
 
 namespace py = boost::python;
-#include "PythonBindings/FiniteElementDescriptorInterface.h"
+#include "PythonBindings/ParallelFiniteElementDescriptorInterface.h"
 #include <PythonBindings/factory.h>
 
-void exportFiniteElementDescriptorToPython() {
-
-    py::class_< FiniteElementDescriptorClass,
-                FiniteElementDescriptorClass::FiniteElementDescriptorPtr,
-                py::bases< DataStructure > >( "FiniteElementDescriptor", py::no_init )
-// fake initFactoryPtr: not directly created by user
-// fake initFactoryPtr: not directly created by user
-        .def( "getPhysics",
-              &FiniteElementDescriptorClass::getPhysics )
 #ifdef ASTER_HAVE_MPI
-        .def( "transferDofDescriptorFrom",
-              &FiniteElementDescriptorClass::transferDofDescriptorFrom )
-#endif /* ASTER_HAVE_MPI */
-        ;
+
+void exportParallelFiniteElementDescriptorToPython() {
+
+    py::class_< ParallelFiniteElementDescriptorClass,
+                ParallelFiniteElementDescriptorClass::ParallelFiniteElementDescriptorPtr,
+                py::bases< FiniteElementDescriptorClass > >( "ParallelFiniteElementDescriptor",
+                py::no_init )
+// fake initFactoryPtr: not directly created by user
+// fake initFactoryPtr: not directly created by user
+        .def( "getJoins",
+              &ParallelFiniteElementDescriptorClass::getJoins,
+              py::return_value_policy< py::return_by_value >(),
+        R"(
+Return the vector of joins between the curent domain and the others subdomains.
+
+Returns:
+    list: joins between subdomains.
+        )",
+            ( py::arg( "self" ) ) );
 };
+#endif /* ASTER_HAVE_MPI */

@@ -26,70 +26,10 @@
 
 namespace py = boost::python;
 #include "PythonBindings/DOFNumberingInterface.h"
-#include "PythonBindings/LoadUtilities.h"
 #include <PythonBindings/factory.h>
 
 void exportDOFNumberingToPython() {
 
-    py::class_< FieldOnNodesDescriptionClass, FieldOnNodesDescriptionPtr,
-                py::bases< DataStructure > >( "FieldOnNodesDescription", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< FieldOnNodesDescriptionClass >))
-        .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< FieldOnNodesDescriptionClass, std::string >));
-
-    void ( BaseDOFNumberingClass::*f1 )( const ElementaryMatrixDisplacementRealPtr & ) =
-        &BaseDOFNumberingClass::setElementaryMatrix;
-    void ( BaseDOFNumberingClass::*f2 )( const ElementaryMatrixDisplacementComplexPtr & ) =
-        &BaseDOFNumberingClass::setElementaryMatrix;
-    void ( BaseDOFNumberingClass::*f3 )( const ElementaryMatrixTemperatureRealPtr & ) =
-        &BaseDOFNumberingClass::setElementaryMatrix;
-    void ( BaseDOFNumberingClass::*f4 )( const ElementaryMatrixPressureComplexPtr & ) =
-        &BaseDOFNumberingClass::setElementaryMatrix;
-
-    py::class_< BaseDOFNumberingClass, BaseDOFNumberingClass::BaseDOFNumberingPtr,
-                py::bases< DataStructure > > c1( "BaseDOFNumbering", py::no_init );
-    // fake initFactoryPtr: created by subclasses
-    // fake initFactoryPtr: created by subclasses
-    c1.def( "addFiniteElementDescriptor", &BaseDOFNumberingClass::addFiniteElementDescriptor );
-    c1.def( "computeNumbering", &BaseDOFNumberingClass::computeNumbering );
-    c1.def( "getDescription", &BaseDOFNumberingClass::getDescription );
-    c1.def( "getFiniteElementDescriptors", &BaseDOFNumberingClass::getFiniteElementDescriptors );
-    c1.def( "getPhysicalQuantity", &BaseDOFNumberingClass::getPhysicalQuantity, R"(
-Returns the name of the physical quantity that is numbered.
-
-Returns:
-    str: physical quantity name.
-        )",
-              ( py::arg( "self" ) )  );
-
-    c1.def( "isParallel", &BaseDOFNumberingClass::isParallel, R"(
-The numbering is distributed across MPI processes for High Performance Computing.
-
-Returns:
-    bool: *True* if used, *False* otherwise.
-        )",
-              ( py::arg( "self" ) )    );
-    c1.def( "setElementaryMatrix", f1 );
-    c1.def( "setElementaryMatrix", f2 );
-    c1.def( "setElementaryMatrix", f3 );
-    c1.def( "setElementaryMatrix", f4 );
-    c1.def( "getModel", &BaseDOFNumberingClass::getModel, R"(
-Return the model
-
-Returns:
-    ModelPtr: a pointer to the model
-        )",
-              ( py::arg( "self" ) )  );
-    c1.def( "setModel", &BaseDOFNumberingClass::setModel );
-    c1.def( "getMesh", &BaseDOFNumberingClass::getMesh, R"(
-Return the mesh
-
-Returns:
-    MeshPtr: a pointer to the mesh
-        )",
-              ( py::arg( "self" ) ) );
-    addDirichletBCToInterface( c1 );
-    addMechanicalLoadToInterface( c1 );
 
     py::class_< DOFNumberingClass, DOFNumberingClass::DOFNumberingPtr,
                 py::bases< BaseDOFNumberingClass > >( "DOFNumbering", py::no_init )

@@ -7,4 +7,3 @@ P testlist submit ci verification parallel
 
 F comm xxParallelLinearTransientDynamics001a.py D 1
 R nom  xxParallelLinearTransientDynamics001a.med D 0
-R nom  xxParallelLinearTransientDynamics001a D 0

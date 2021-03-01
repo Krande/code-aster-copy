@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -104,7 +104,7 @@ aster_logical, optional, intent(out) :: coecst_
 !
 ! - Get loads information and create datastructure
 !
-    call ntdoch(list_load, l_load_user, list_load_resu)
+    call ntdoch(list_load, l_load_user, list_load_resu, 'V')
 !
 ! - Detect non-constant rigidity matrix
 !

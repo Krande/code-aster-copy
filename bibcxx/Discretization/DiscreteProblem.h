@@ -63,6 +63,8 @@ class DiscreteProblemClass {
      */
     typedef boost::shared_ptr< DiscreteProblemClass > DiscreteProblemPtr;
 
+    DiscreteProblemClass( void ) = delete;
+
     /**
      * @brief Constructeur
      * @param StudyDescriptionPtr Etude utilisateur

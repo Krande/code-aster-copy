@@ -1,5 +1,5 @@
-#ifndef KINEMATICSLOADINTERFACE_H_
-#define KINEMATICSLOADINTERFACE_H_
+#ifndef DIRICHLETBCSLOADINTERFACE_H_
+#define DIRICHLETBCSLOADINTERFACE_H_
 
 /**
  * @file DirichletBCInterface.h
@@ -29,4 +29,4 @@
 
 void exportDirichletBCToPython();
 
-#endif /* KINEMATICSLOADINTERFACE_H_ */
+#endif /* DIRICHLETBCSLOADINTERFACE_H_ */

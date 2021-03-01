@@ -60,6 +60,10 @@ class StudyDescriptionClass {
     ExternalVariablesComputationPtr _varCom;
 
   public:
+
+    // No default constructor
+    StudyDescriptionClass( void ) = delete;
+
     /**
      * @brief Constructeur
      * @param ModelPtr Modèle de l'étude
@@ -71,12 +75,20 @@ class StudyDescriptionClass {
           _listOfLoads( ListOfLoadsPtr( new ListOfLoadsClass() ) ), _elemChara( cara ),
           _codedMater( new CodedMaterialClass( _materialField, _model ) ),
           _varCom( new ExternalVariablesComputationClass( _model, _materialField,
-                                                          _elemChara, _codedMater ) ){};
+                                                          _elemChara, _codedMater ) ){
+        if( _elemChara ){
+            if( _model->getName() != _elemChara->getModel()->getName())
+                throw std::runtime_error("Inconsistent model");
+        }
+
+        if( _model->getMesh()->getName() != _materialField->getMesh()->getName())
+            throw std::runtime_error("Inconsistent mesh");
+    };
 
     ~StudyDescriptionClass(){};
 
     /**
-     * @brief Add a load (mechanical or kinematic) with function, formula...
+     * @brief Add a load (mechanical or dirichlet) with function, formula...
      * @param Args... template list of arguments (load and function or formula)
      */
     template < typename... Args > void addLoad( const Args &... a ) {
@@ -87,7 +99,7 @@ class StudyDescriptionClass {
      * @brief Construction de la liste de chargements
      * @return true si tout s'est bien passé
      */
-    bool buildListOfLoads() { return _listOfLoads->build(); };
+    bool buildListOfLoads() { return _listOfLoads->build(_model); };
 
     /**
      * @brief Get elementary characteristics
@@ -102,7 +114,7 @@ class StudyDescriptionClass {
     /**
      * @brief Obtenir la liste des chargements cinematiques
      */
-    const ListKineLoad &getListOfDirichletBCs() const {
+    const ListDiriBC &getListOfDirichletBCs() const {
         return _listOfLoads->getListOfDirichletBCs();
     };
 
@@ -128,6 +140,13 @@ class StudyDescriptionClass {
 #endif /* ASTER_HAVE_MPI */
 
     /**
+     * @brief Function de récupération de la liste des charges thermiques
+     * @return _listOfThermalLoads
+     */
+    const ListTherLoad &getListOfThermalLoads() const
+    { return _listOfLoads->getListOfThermalLoads(); };
+
+    /**
      * @brief Obtenir le matériau affecté
      */
     const MaterialFieldPtr &getMaterialField() const { return _materialField; };
@@ -136,6 +155,11 @@ class StudyDescriptionClass {
      * @brief Obtenir le modèle de l'étude
      */
     const ModelPtr &getModel() const { return _model; };
+
+    /**
+     * @brief Obtenir le maillage de l'étude
+     */
+     BaseMeshPtr getMesh() const { return _model->getMesh(); };
 };
 
 /**

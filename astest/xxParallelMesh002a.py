@@ -61,7 +61,7 @@ CHT1 = AFFE_CHAR_MECA(MODELE=MODT,
 
 study = code_aster.StudyDescription(MODT, affectMat)
 study.addDirichletBC(charCine)
-study.addMechanicalLoad(CHT1)
+study.addLoad(CHT1)
 dProblem = code_aster.DiscreteProblem(study)
 vect_elem = dProblem.buildElementaryMechanicalLoadsVector()
 matr_elem = dProblem.computeMechanicalStiffnessMatrix()

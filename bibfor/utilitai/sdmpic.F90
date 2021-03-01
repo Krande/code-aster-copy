@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,19 +89,20 @@ subroutine sdmpic(typesd, nomsd)
     else if (types2.eq.'MATR_ELEM') then
 !     ----------------------------------
         call dismoi('NOM_MAILLA', k19, 'MATR_ELEM', repk=mesh)
-        ASSERT(.not. isParallelMesh(mesh))
-        call jeveuo(k19//'.RELR', 'L', vk24=relr)
-        call jelira(k19//'.RELR', 'LONMAX', nbrel, kbid)
-        do i = 1, nbrel
-            if( relr(i).ne.' ' ) then
-                k19=relr(i)(1:19)
-                call dismoi('MPI_COMPLET', k19, 'RESUELEM', repk=kmpic)
-                if (kmpic .eq. 'OUI') cycle
-                call asmpi_comm_jev('MPI_SUM', k19//'.RESL')
-                call jeveuo(k19//'.NOLI', 'E', vk24=noli)
-                noli(3)='MPI_COMPLET'
-            endif
-        enddo
+        if(.not. isParallelMesh(mesh)) then
+            call jeveuo(k19//'.RELR', 'L', vk24=relr)
+            call jelira(k19//'.RELR', 'LONMAX', nbrel, kbid)
+            do i = 1, nbrel
+                if( relr(i).ne.' ' ) then
+                    k19=relr(i)(1:19)
+                    call dismoi('MPI_COMPLET', k19, 'RESUELEM', repk=kmpic)
+                    if (kmpic .eq. 'OUI') cycle
+                    call asmpi_comm_jev('MPI_SUM', k19//'.RESL')
+                    call jeveuo(k19//'.NOLI', 'E', vk24=noli)
+                    noli(3)='MPI_COMPLET'
+                endif
+            enddo
+        endif
 !
     else if (types2.eq.'MATR_ASSE') then
 !     ----------------------------------

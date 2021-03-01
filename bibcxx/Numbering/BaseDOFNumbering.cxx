@@ -24,7 +24,6 @@
 #include "astercxx.h"
 
 #include "Numbering/BaseDOFNumbering.h"
-#include "Supervis/CommandSyntax.h"
 #include "Supervis/ResultNaming.h"
 
 
@@ -56,30 +55,32 @@ bool BaseDOFNumberingClass::computeNumbering() {
         if ( _model->isEmpty() )
             throw std::runtime_error( "Model is empty" );
 
-        _listOfLoads->build();
-        JeveuxVectorChar24 jvListOfLoads = _listOfLoads->getListVector();
-        jvListOfLoads->updateValuePointer();
+        _listOfLoads->build(_model);
 
-        const std::string base( "VG" );
+        const std::string base( "GG" );
         const std::string null( " " );
         CALLO_NUMERO_WRAP( getName(), base, null, null, _model->getName(),
                            _listOfLoads->getName() );
+
+        const auto FEDescs = _listOfLoads->getFiniteElementDescriptors();
+        this->addFiniteElementDescriptors(FEDescs);
+
     } else if ( _matrix.size() != 0 ) {
-        CommandSyntax cmdSt( "NUME_DDL" );
-        cmdSt.setResult( getName(), getType() );
+        _model = this->getModel();
 
-        SyntaxMapContainer dict;
+        ASTERINTEGER nb_matr = _matrix.size();
+        JeveuxVectorChar24 jvListOfMatr(ResultNaming::getNewResultName());
+        bool retour = jvListOfMatr->allocate( nb_matr );
 
-        VectorString names;
+        int ind = 0;
         for ( const auto &mat : _matrix )
-            names.push_back( boost::apply_visitor( ElementaryMatrixGetName(), mat ) );
-        dict.container["MATR_RIGI"] = names;
+        {
+            (*jvListOfMatr)[ind++] = ( boost::apply_visitor( ElementaryMatrixGetName(), mat ) );
+            auto FEDescs = boost::apply_visitor( ElementaryMatrixGetFEDescrp(), mat );
+            this->addFiniteElementDescriptors(FEDescs);
+        }
 
-        cmdSt.define( dict );
-
-        // Maintenant que le fichier de commande est pret, on appelle OP0011
-        ASTERINTEGER op = 11;
-        CALL_EXECOP( &op );
+        CALLO_NUME_DDL_MATR(getName(), jvListOfMatr->getName(), &nb_matr);
     } else
         throw std::runtime_error( "No matrix or model defined" );
     _isEmpty = false;

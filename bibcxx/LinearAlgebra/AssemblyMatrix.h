@@ -436,7 +436,7 @@ bool AssemblyMatrixClass< ValueType, PhysicalQuantity >::build() {
     std::string base( "G" );
     std::string blanc( " " );
     std::string cumul( "ZERO" );
-    if ( _listOfLoads->isEmpty() && _listOfLoads->size() != 0 )
+    if ( _listOfLoads->isEmpty() && _listOfLoads->getNumberOfLoads() != 0 )
         _listOfLoads->build();
     ASTERINTEGER nbMatrElem = 1;
     CALL_ASMATR( &nbMatrElem, tabNames, blanc.c_str(), _dofNum->getName().c_str(),

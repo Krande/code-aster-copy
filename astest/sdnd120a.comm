@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -281,7 +281,7 @@ TEST_TABLE(PRECISION=1.E-2,
            NOM_PARA='DEPL',
            TABLE=MAX_N2A1,
            FILTRE=(_F(NOM_PARA='FONCTION',
-                      VALE_K='00000027',),
+                      VALE_K='00000028',),
                    _F(NOM_PARA='INST',
                       VALE=0.25,),
                    _F(NOM_PARA='TYPE',
@@ -296,7 +296,7 @@ TEST_TABLE(PRECISION=1.E-2,
            NOM_PARA='DEPL',
            TABLE=MAX_N2A2,
            FILTRE=(_F(NOM_PARA='FONCTION',
-                      VALE_K='0000002a',),
+                      VALE_K='0000002b',),
                    _F(NOM_PARA='INST',
                       VALE=0.25,),
                    _F(NOM_PARA='TYPE',
@@ -311,7 +311,7 @@ TEST_TABLE(PRECISION=1.E-2,
            NOM_PARA='RMS',
            TABLE=RMS_N2A1,
            FILTRE=(_F(NOM_PARA='FONCTION',
-                      VALE_K='00000027',),
+                      VALE_K='00000028',),
                    _F(NOM_PARA='METHODE',
                       VALE_K='TRAPEZE',),
                    ),

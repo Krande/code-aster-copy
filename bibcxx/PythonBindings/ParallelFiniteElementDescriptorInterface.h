@@ -1,6 +1,9 @@
+#ifndef PARALLELFINITEELEMENTDESCRIPTORINTERFACE_H_
+#define PARALLELFINITEELEMENTDESCRIPTORINTERFACE_H_
+
 /**
- * @file ElementaryMatrix.cxx
- * @brief Implementation de ElementaryMatrix
+ * @file FiniteElementDescriptorInterface.h
+ * @brief Fichier entete de la classe FiniteElementDescriptorInterface
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
@@ -21,13 +24,9 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "LinearAlgebra/ElementaryMatrix.h"
+#include "astercxx.h"
+#include "Modeling/ParallelFiniteElementDescriptor.h"
 
+void exportParallelFiniteElementDescriptorToPython();
 
-BaseMeshPtr BaseElementaryMatrixClass::getMesh( void ) const
-{
-    if( _model )
-        return _model->getMesh();
-
-    return nullptr;
-};
+#endif /* PARALLELFINITEELEMENTDESCRIPTORINTERFACE_H_ */

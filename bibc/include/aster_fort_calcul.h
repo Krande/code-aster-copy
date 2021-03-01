@@ -89,11 +89,20 @@ void DEFSPSSSSPSSPS( MERIME_WRAP, merime_wrap, const char *, STRING_SIZE, ASTERI
 void DEFSPSS( NMDOCH_WRAP, nmdoch_wrap, const char *, STRING_SIZE, ASTERINTEGER *, const char *,
               STRING_SIZE, const char *, STRING_SIZE );
 
+#define CALLO_NTDOCH_WRAP( a, b, c, d ) CALLOPOO( NTDOCH_WRAP, ntdoch_wrap, a, b, c, d )
+void DEFSPSS( NTDOCH_WRAP, ntdoch_wrap, const char *, STRING_SIZE, ASTERINTEGER *, const char *,
+              STRING_SIZE, const char *, STRING_SIZE );
+
 #define CALLO_NUMERO_WRAP( a, b, c, d, e, f )                                                      \
     CALLOOOOOO( NUMERO_WRAP, numero_wrap, a, b, c, d, e, f )
 void DEFSSSSSS( NUMERO_WRAP, numero_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
                 const char *, STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
                 const char *, STRING_SIZE );
+
+#define CALLO_NUME_DDL_MATR( a, b, c )                                                      \
+    CALLOOP( NUME_DDL_MATR, nume_ddl_matr, a, b, c)
+void DEFSSP( NUME_DDL_MATR, nume_ddl_matr, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                ASTERINTEGER *);
 
 #define CALLO_RESOUD_WRAP( a, b, c, d, e, f, g, h, i, j, k, l )                                    \
     CALLOOOOPOOOOPPP( RESOUD_WRAP, resoud_wrap, a, b, c, d, e, f, g, h, i, j, k, l )

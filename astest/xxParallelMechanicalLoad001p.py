@@ -64,7 +64,7 @@ AFFMAT = AFFE_MATERIAU(MAILLAGE=pMesh2,
 
 study = code_aster.StudyDescription(model, AFFMAT)
 study.addDirichletBC(char_cin)
-study.addParallelMechanicalLoad(char_meca)
+study.addLoad(char_meca)
 dProblem = code_aster.DiscreteProblem(study)
 vect_elem = dProblem.buildElementaryMechanicalLoadsVector()
 matr_elem = dProblem.computeMechanicalStiffnessMatrix()

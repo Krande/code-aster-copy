@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ import aster
 ############################################################
 ################  Bilan energetique  #######################
 ############################################################
-tmpd = aster.getvectjev('0000001b           .VALE        ');
+tmpd = D_EULER.getValues();
 t = NP.array(tmpd[0:len(tmpd)//2])
 fext = Fa*NP.sin(2*NP.pi*f*t)  # formule qui definit le chargement exterieur
 
@@ -34,11 +34,11 @@ fext = Fa*NP.sin(2*NP.pi*f*t)  # formule qui definit le chargement exterieur
 d_euler = NP.array(tmpd[len(tmpd)//2:len(tmpd)])
 del tmpd
 
-tmpv = aster.getvectjev('0000001c           .VALE        ');
+tmpv = V_EULER.getValues()
 v_euler = NP.array(tmpv[len(tmpv)//2:len(tmpv)])
 del tmpv
 
-tmpa = aster.getvectjev('0000001d           .VALE        ');
+tmpa = A_EULER.getValues()
 a_euler = NP.array(tmpa[len(tmpa)//2:len(tmpa)])
 del tmpa
 
@@ -60,16 +60,16 @@ err_globale_E_euler = NP.sqrt( NP.sum((E_inj_euler-E_tot_euler)**2) / NP.sum(E_i
 #-------
 
 # Adapt:
-tmpd = aster.getvectjev('0000001e           .VALE        ');
+tmpd = D_ADAPT.getValues()
 t = NP.array(tmpd[0:len(tmpd)//2])
 d_adapt = NP.array(tmpd[len(tmpd)//2:len(tmpd)])
 del tmpd
 
-tmpv = aster.getvectjev('0000001f           .VALE        ');
+tmpv = V_ADAPT.getValues()
 v_adapt = NP.array(tmpv[len(tmpv)//2:len(tmpv)])
 del tmpv
 
-tmpa = aster.getvectjev('00000020           .VALE        ');
+tmpa = A_ADAPT.getValues()
 a_adapt = NP.array(tmpa[len(tmpa)//2:len(tmpa)])
 del tmpa
 
@@ -88,11 +88,11 @@ err_globale_E_adapt = NP.sqrt( NP.sum((E_inj_adapt-E_tot_adapt)**2) / NP.sum(E_i
 ############################################################
 # Verification de la coherence entre la force de choc et la cinematique:
 ############################################################
-tmpd = aster.getvectjev('00000021           .VALE        ');
+tmpd = D_ADAP2.getValues()
 d_adap2 = NP.array(tmpd[len(tmpd)//2:len(tmpd)])
 del tmpd
 
-tmpf = aster.getvectjev('00000022           .VALE        ');
+tmpf = FC_ADAP2.getValues()
 fchoc_adap2 = NP.array(tmpf[len(tmpf)//2:len(tmpf)])
 del tmpf
 

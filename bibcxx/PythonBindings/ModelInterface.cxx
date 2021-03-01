@@ -67,6 +67,34 @@ Returns:
     MeshPtr: a pointer to the mesh
         )",
               ( py::arg( "self" ) )  )
+        .def( "isMechanical", &ModelClass::isMechanical, R"(
+To know if the model is mechanical or not
+
+Returns:
+    Bool: True - if the model is mechanical
+        )",
+              ( py::arg( "self" ) )  )
+        .def( "isThermal", &ModelClass::isThermal, R"(
+To know if the model is thermal or not
+
+Returns:
+    Bool: True - if the model is thermal
+        )",
+              ( py::arg( "self" ) )  )
+        .def( "isAcoustic", &ModelClass::isAcoustic, R"(
+To know if the model is acoustic or not
+
+Returns:
+    Bool: True - if the model is acoustic
+        )",
+              ( py::arg( "self" ) )  )
+        .def( "getPhysics", &ModelClass::getPhysics, R"(
+To know the physics supported by the model
+
+Returns:
+    str: Mechanics or Thermal or Acoustic
+        )",
+              ( py::arg( "self" ) )  )
         .def( "getSplittingMethod", &ModelClass::getSplittingMethod )
         .def( "getGraphPartitioner", &ModelClass::getGraphPartitioner )
         .def( "setSaneModel", &ModelClass::setSaneModel )

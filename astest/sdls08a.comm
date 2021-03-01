@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -385,10 +385,10 @@ IMPR_GENE(UNITE=39,
 
 TEST_FICHIER(FICHIER="fort.39",
              NB_VALE_I=3511,
-             VALE_CALC_I=75875,
+             VALE_CALC_I=75876,
              NB_VALE=2250,
              VALE_CALC=1.88787191129,
-             VALE_CALC_K="568d62adc6e07151cb9c8a231f280ca9",
+             VALE_CALC_K="eeb83c489c292fffa8f68436943b9fb8",
              EXPR_IGNORE = ('ASTER','INSTANT','ORDRE','FREQ'),
 )
 

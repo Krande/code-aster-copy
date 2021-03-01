@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,12 +30,11 @@ test = code_aster.TestCase()
 parallel=True
 
 if (parallel):
-    rank=code_aster.getMPIRank()
     MA = code_aster.ParallelMesh()
-    MA.readMedFile( "xxParallelLinearTransientDynamics001a/%d.med"%rank, True )
 else:
     MA = code_aster.Mesh()
-    MA.readMedFile("xxParallelLinearTransientDynamics001a.med")
+
+MA.readMedFile("xxParallelLinearTransientDynamics001a.med")
 
 MO=AFFE_MODELE(MAILLAGE=MA,DISTRIBUTION=_F(METHODE='CENTRALISE'),
                AFFE=(
@@ -65,6 +64,7 @@ CEL=CALC_MATR_ELEM(OPTION='AMOR_MECA', MODELE=MO, CHAM_MATER=CHMAT, RIGI_MECA=KE
 
 
 NUMEDDL=NUME_DDL(MATR_RIGI=KEL,)
+NUMEDDL2=NUME_DDL(MODELE=MO, )
 
 
 STIFFNESS=ASSE_MATRICE(MATR_ELEM=KEL, NUME_DDL=NUMEDDL)
@@ -86,7 +86,7 @@ DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                         OBSERVATION=(_F(CRITERE='RELATIF',
                                  EVAL_CHAM='VALE',
                                  EVAL_CMP='VALE',
-                                 GROUP_NO='EXT_0',
+                                 GROUP_MA='COTE_H',
                                  NOM_CHAM='DEPL',
                                  NOM_CMP='DX',
                                  OBSE_ETAT_INIT='OUI',
@@ -95,7 +95,7 @@ DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                                  _F(CRITERE='RELATIF',
                                  EVAL_CHAM='VALE',
                                  EVAL_CMP='VALE',
-                                 GROUP_NO='EXT_1',
+                                 GROUP_MA='COTE_B',
                                  NOM_CHAM='DEPL',
                                  NOM_CMP='DX',
                                  OBSE_ETAT_INIT='OUI',
@@ -111,15 +111,7 @@ DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
 TAB= RECU_TABLE(CO=DYNA, NOM_TABLE='OBSERVATION')
 
 IMPR_TABLE(UNITE=6, TABLE=TAB)
-# depl=DYNA.getRealFieldOnNodes("DEPL",10)
-# v=depl.EXTR_COMP()
 
-# total=np.sum(v.valeurs)
-
-# global_sum = np.zeros(1)
-
-# MPI.COMM_WORLD.Reduce(np.array(total), global_sum, op=MPI.SUM)
-# print global_sum[0]
 
 test.assertTrue(True)
 

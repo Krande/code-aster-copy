@@ -84,6 +84,15 @@ class BaseDOFNumberingClass : public DataStructure {
         };
     };
 
+    class ElementaryMatrixGetFEDescrp : public boost::static_visitor<
+                std::vector< FiniteElementDescriptorPtr > > {
+      public:
+        template < typename T > std::vector< FiniteElementDescriptorPtr >
+            operator()( const T &operand ) const {
+            return operand->getFiniteElementDescriptors();
+        };
+    };
+
   private:
     class MultFrontGarbageClass {
         /** @brief Objet Jeveux '.ADNT' */
@@ -274,11 +283,26 @@ class BaseDOFNumberingClass : public DataStructure {
     bool addFiniteElementDescriptor( const FiniteElementDescriptorPtr &curFED ) {
         const auto name = trim( curFED->getName() );
         if ( _FEDNames.find( name ) == _FEDNames.end() ) {
-            _FEDVector.push_back( _model->getFiniteElementDescriptor() );
+            _FEDVector.push_back( curFED );
             _FEDNames.insert( name );
             return true;
         }
         return false;
+    };
+
+    /**
+     * @brief Add a FiniteElementDescriptor to elementary matrix
+     * @param FiniteElementDescriptorPtr FiniteElementDescriptor
+     */
+    bool addFiniteElementDescriptors( const std::vector<FiniteElementDescriptorPtr> &curFEDs ) {
+        for( auto& curFED : curFEDs)
+        {
+            const bool ret = this->addFiniteElementDescriptor( curFED );
+            if( !ret )
+                return false;
+        }
+
+        return true;
     };
 
     /**
@@ -482,6 +506,8 @@ class BaseDOFNumberingClass : public DataStructure {
      */
     void setListOfLoads( const ListOfLoadsPtr &currentList ) { _listOfLoads = currentList; };
 
+    ListOfLoadsPtr getListOfLoads( void ) const { return _listOfLoads; };
+
     /**
      * @brief Methode permettant de definir le modele
      * @param currentModel Modele de la numerotation
@@ -491,12 +517,7 @@ class BaseDOFNumberingClass : public DataStructure {
             throw std::runtime_error(
                 "It is not allowed to defined Model and ElementaryMatrix together" );
         _model = currentModel;
-        auto curFED = _model->getFiniteElementDescriptor();
-        const auto name = trim( curFED->getName() );
-        if ( _FEDNames.find( name ) == _FEDNames.end() ) {
-            _FEDVector.push_back( _model->getFiniteElementDescriptor() );
-            _FEDNames.insert( name );
-        }
+        this->addFiniteElementDescriptor(_model->getFiniteElementDescriptor());
     };
 };
 

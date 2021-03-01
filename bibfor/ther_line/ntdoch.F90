@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine ntdoch(list_load, l_load_user_, list_load_resu)
+subroutine ntdoch(list_load, l_load_user_, list_load_resu, basez)
 !
 implicit none
 !
@@ -42,6 +42,7 @@ implicit none
 character(len=19), intent(in) :: list_load
 aster_logical, optional, intent(in) :: l_load_user_
 character(len=19), optional, intent(in) :: list_load_resu
+character(len=1), optional, intent(in) :: basez
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,6 +66,7 @@ character(len=19), optional, intent(in) :: list_load_resu
     aster_logical :: l_func_c
     integer :: nb_info_type
     character(len=24) :: info_type
+    character(len=1) :: base
     integer :: nb_load, i_load, i_type_neum, iret, i_excit
     character(len=24) :: ligrch
     character(len=10) :: load_obje(2)
@@ -89,6 +91,10 @@ character(len=19), optional, intent(in) :: list_load_resu
     if (present(l_load_user_)) then
         l_load_user = l_load_user_
     endif
+    base = 'V'
+    if( present(basez)) then
+        base = basez
+    end if
 !
 ! - Get number of loads for loads datastructure
 !
@@ -106,9 +112,9 @@ character(len=19), optional, intent(in) :: list_load_resu
     if (nb_load .ne. 0) then
         ASSERT(load_keyword .ne. 'None')
 !
-! ----- Create list of loads 
+! ----- Create list of loads
 !
-        call lisccr('THER', list_load, nb_load, 'V')
+        call lisccr('THER', list_load, nb_load, base)
 !
 ! ----- List of loads to avoid same loads
 !
@@ -172,7 +178,7 @@ character(len=19), optional, intent(in) :: list_load_resu
             ASSERT(load_func .ne. ' ')
             l_func_mult = load_func(1:2) .ne. '&&'
 !
-! --------- Identify type of Neumann loads 
+! --------- Identify type of Neumann loads
 !
             call load_neut_iden(nb_type_neum, load_name, list_load_keyw)
 !

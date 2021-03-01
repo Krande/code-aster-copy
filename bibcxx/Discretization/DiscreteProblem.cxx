@@ -211,10 +211,10 @@ FieldOnNodesRealPtr DiscreteProblemClass::buildDirichletBC(
     const auto &loadInformations = _listOfLoad->getInformationVector();
     const auto &listOfFunctions = _listOfLoad->getListOfFunctions();
     if ( _listOfLoad->isEmpty() )
-        _listOfLoad->build();
+        _listOfLoad->build( _study->getModel() );
     //         throw std::runtime_error( "ListOfLoads is empty" );
 
-    FieldOnNodesRealPtr retour = boost::make_shared<FieldOnNodesRealClass>( memType );;
+    FieldOnNodesRealPtr retour = boost::make_shared<FieldOnNodesRealClass>( memType );
     std::string resuName = retour->getName();
     std::string dofNumName = curDOFNum->getName();
 

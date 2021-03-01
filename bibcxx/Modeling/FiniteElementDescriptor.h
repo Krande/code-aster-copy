@@ -150,6 +150,8 @@ public:
         _mesh = currentMesh;
     };
 
+    int getPhysics( void ) const;
+
 #ifdef ASTER_HAVE_MPI
     /** @brief Transert .PRNM from other FiniteElementDescriptor.
      * this should be associated to a ConnectionMesh,

@@ -264,7 +264,7 @@ FieldOnNodesRealPtr BaseLinearSolverClass::solveRealLinearSystem(
 
 FieldOnNodesRealPtr BaseLinearSolverClass::solveRealLinearSystemWithDirichletBC(
     const AssemblyMatrixDisplacementRealPtr &currentMatrix,
-    const FieldOnNodesRealPtr &kinematicsField, const FieldOnNodesRealPtr &currentRHS,
+    const FieldOnNodesRealPtr &dirichletBCField, const FieldOnNodesRealPtr &currentRHS,
     FieldOnNodesRealPtr result ) const {
 
     if (!currentMatrix->isFactorized()) {
@@ -279,8 +279,8 @@ FieldOnNodesRealPtr BaseLinearSolverClass::solveRealLinearSystemWithDirichletBC(
     std::string base( JeveuxMemoryTypesNames[result->getMemoryType()] );
 
     CALLO_RESOUD_WRAP( currentMatrix->getName(), _matrixPrec->getName(), getName(),
-                       kinematicsField->getName(), &nsecm, currentRHS->getName(), result->getName(),
-                       base, blanc, &prepos, &istop, &iret );
+                       dirichletBCField->getName(), &nsecm, currentRHS->getName(),
+                       result->getName(), base, blanc, &prepos, &istop, &iret );
 
     auto solverType = std::string( LinearSolverNames[_linearSolver] );
     currentMatrix->setSolverName( solverType );

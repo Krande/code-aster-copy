@@ -367,7 +367,7 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
 TEST_RESU(OBJET=_F(VALE_CALC=6.97377669876E-08,
                    VALE_REFE=6.7227942546217507E-08,
                    REFERENCE='SOURCE_EXTERNE',      # n'est-ce pas plutot NON_REGRESSION ?
-                   NOM='00000023           .DEPL',
+                   NOM=DYNDIAG.getName()+'           .DEPL',
                    PRECISION=5.E-2,),
           )
 
@@ -552,12 +552,12 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
 TEST_RESU(OBJET=(_F(VALE_CALC=-2.00831839696E-07,
                     VALE_REFE=-2.1104262094838747E-07,
                     REFERENCE='SOURCE_EXTERNE',     # n'est-ce pas plutot NON_REGRESSION ?
-                    NOM='0000002b           .DEPL',
+                    NOM=DYNPLEIN.getName()+'           .DEPL',
                     PRECISION=5.E-2,),
                  _F(VALE_CALC=6.97377669876E-08,
                     VALE_REFE=6.7227942546231073E-08,
                     REFERENCE='SOURCE_EXTERNE',     # n'est-ce pas plutot NON_REGRESSION ?
-                    NOM='0000002d           .DEPL',
+                    NOM=DYNPLEI2.getName()+'           .DEPL',
                     PRECISION=5.E-2,),
                  ),
           )

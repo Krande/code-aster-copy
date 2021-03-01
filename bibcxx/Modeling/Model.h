@@ -290,6 +290,39 @@ class ModelClass : public DataStructure, public ListOfTablesClass {
 
         _splitMethod = split;
     };
+
+
+    /**
+     * @brief To known if the the model is mechanical or not
+     *
+     * @return true The phenomen is  mechanical
+     */
+    bool isMechanical( void ) const {
+        return this->getPhysics() == Physics::Mechanics;
+    };
+
+    /**
+     * @brief To known if the the model is thermal or not
+     *
+     * @return true The phenomen is therman
+     */
+    bool isThermal( void ) const {
+        return this->getPhysics() == Physics::Thermal;
+    };
+
+    /**
+     * @brief To known if the the model is acoustic or not
+     *
+     * @return true The phenomen is acoustic
+     */
+    bool isAcoustic( void ) const {
+        return this->getPhysics() == Physics::Acoustic;
+    };
+
+    int getPhysics( void ) const
+    {
+        return _ligrel->getPhysics();
+    }
 };
 
 /**

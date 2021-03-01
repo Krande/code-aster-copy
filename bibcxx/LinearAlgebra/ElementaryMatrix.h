@@ -117,6 +117,11 @@ public:
     ModelPtr getModel() const { return _model; };
 
     /**
+     * @brief Obtenir le maillage de l'étude
+     */
+    BaseMeshPtr getMesh( void ) const;
+
+    /**
      * @brief Methode permettant de savoir si les matrices elementaires sont vides
      * @return true si les matrices elementaires sont vides
      */

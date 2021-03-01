@@ -174,4 +174,11 @@ class ThermalLoadClass : public DataStructure {
  */
 typedef boost::shared_ptr< ThermalLoadClass > ThermalLoadPtr;
 
+/** @typedef std::list de ThermalLoad */
+typedef std::list< ThermalLoadPtr > ListTherLoad;
+/** @typedef Iterateur sur une std::list de ThermalLoad */
+typedef ListTherLoad::iterator ListTherLoadIter;
+/** @typedef Iterateur constant sur une std::list de ThermalLoad */
+typedef ListTherLoad::const_iterator ListTherLoadCIter;
+
 #endif /* THERMALLOAD_H_ */

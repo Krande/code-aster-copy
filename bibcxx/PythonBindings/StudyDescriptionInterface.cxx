@@ -48,6 +48,13 @@ Returns:
     ModelPtr: a pointer to the model
         )",
               ( py::arg( "self" ) )   );
+    c1.def( "getMesh", &StudyDescriptionClass::getMesh, R"(
+Return the mesh
+
+Returns:
+    MeshPtr: a pointer to the mesh
+        )",
+              ( py::arg( "self" ) )   );
     c1.def( "getMaterialField", &StudyDescriptionClass::getMaterialField,
         py::return_value_policy<py::copy_const_reference>(), R"(
 Return the material field
@@ -73,9 +80,47 @@ Returns:
     ElementaryCharacteristicsPtr: a pointer to the elementary charateristics
         )",
               ( py::arg( "self" ) )   );
+    c1.def( "buildListOfLoads",
+        &StudyDescriptionClass::buildListOfLoads, R"(
+Build the list of loads from the added loads
+
+Returns:
+    Bool: True if success
+        )",
+              ( py::arg( "self" ) )   );
+    c1.def( "getListOfDirichletBCs",
+        &StudyDescriptionClass::getListOfDirichletBCs,
+        py::return_value_policy<py::copy_const_reference>(), R"(
+Return list of DirichletBCs
+
+Returns:
+    ListDiriBC: a list of DirichletBC
+        )",
+              ( py::arg( "self" ) )   );
+    c1.def( "getListOfMechanicalLoads",
+        &StudyDescriptionClass::getListOfMechanicalLoads,
+        py::return_value_policy<py::copy_const_reference>(), R"(
+Return list of mechanical loads
+
+Returns:
+    ListMecaLoad: a list of mechanical loads
+        )",
+              ( py::arg( "self" ) )   );
+#ifdef ASTER_HAVE_MPI
+    c1.def( "getListOfParallelMechanicalLoads",
+        &StudyDescriptionClass::getListOfParallelMechanicalLoads,
+        py::return_value_policy<py::copy_const_reference>(), R"(
+Return list of parallel mechanical loads
+
+Returns:
+    ListParaMecaLoad: a list of parallel mechanical loads
+        )",
+              ( py::arg( "self" ) )   );
+#endif /* ASTER_HAVE_MPI */
     addDirichletBCToInterface( c1 );
     addMechanicalLoadToInterface( c1 );
 #ifdef ASTER_HAVE_MPI
     addParallelMechanicalLoadToInterface( c1 );
 #endif /* ASTER_HAVE_MPI */
+    addThermalLoadToInterface( c1 );
 };

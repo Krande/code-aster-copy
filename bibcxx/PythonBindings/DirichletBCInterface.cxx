@@ -72,6 +72,13 @@ Return the model
 Returns:
     ModelPtr: a pointer to the model
         )",
+              ( py::arg( "self" ) )  )
+        .def( "getPhysics", &DirichletBCClass::getPhysics, R"(
+To know the physics supported by the model
+
+Returns:
+    str: Mechanics or Thermal or Acoustic
+        )",
               ( py::arg( "self" ) )  );
 
     py::class_< MechanicalDirichletBCClass,

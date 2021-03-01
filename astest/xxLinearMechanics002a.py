@@ -62,8 +62,8 @@ test.assertEqual(CharMeca2.getType(), "CHAR_MECA")
 monSolver = code_aster.MumpsSolver( code_aster.Renumbering.Metis )
 
 mecaStatique = code_aster.LinearStaticAnalysis(monModel, affectMat)
-mecaStatique.addMechanicalLoad( CharMeca1 )
-mecaStatique.addMechanicalLoad( CharMeca2 )
+mecaStatique.addLoad( CharMeca1 )
+mecaStatique.addLoad( CharMeca2 )
 mecaStatique.setLinearSolver( monSolver )
 
 resu = mecaStatique.execute()

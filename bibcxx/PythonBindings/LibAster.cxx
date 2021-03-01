@@ -33,6 +33,7 @@
 #include "PythonBindings/AcousticLoadInterface.h"
 #include "PythonBindings/AcousticModeResultInterface.h"
 #include "PythonBindings/AssemblyMatrixInterface.h"
+#include "PythonBindings/BaseDOFNumberingInterface.h"
 #include "PythonBindings/BaseMaterialPropertyInterface.h"
 #include "PythonBindings/BaseMeshInterface.h"
 #include "PythonBindings/BehaviourDefinitionInterface.h"
@@ -109,6 +110,7 @@
 #include "PythonBindings/MultipleElasticResultInterface.h"
 #include "PythonBindings/NonLinearResultInterface.h"
 #include "PythonBindings/ParallelDOFNumberingInterface.h"
+#include "PythonBindings/ParallelFiniteElementDescriptorInterface.h"
 #include "PythonBindings/ParallelMechanicalLoadInterface.h"
 #include "PythonBindings/ParallelMeshInterface.h"
 #include "PythonBindings/PhysicalQuantityInterface.h"
@@ -196,6 +198,7 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportBaseMeshToPython();
     exportMeshToPython();
     exportDiscreteProblemToPython();
+    exportBaseDOFNumberingToPython();
     exportDOFNumberingToPython();
     exportElementaryCharacteristicsToPython();
     exportFiniteElementDescriptorToPython();
@@ -284,6 +287,7 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportParallelMeshToPython();
     exportParallelDOFNumberingToPython();
     exportParallelMechanicalLoadToPython();
+    exportParallelFiniteElementDescriptorToPython();
 #endif /* ASTER_HAVE_MPI */
     exportMPIInfosToPython();
 

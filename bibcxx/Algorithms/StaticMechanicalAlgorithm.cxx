@@ -80,14 +80,14 @@ void StaticMechanicalAlgorithm::oneStep( const CurrentContext &ctx ) {
     CommandSyntax cmdSt( "MECA_STATIQUE" );
     cmdSt.setResult( ctx._results->getName(), ctx._results->getType() );
 
-    FieldOnNodesRealPtr kineLoadsFON =
+    FieldOnNodesRealPtr diriBCsFON =
         ctx._discreteProblem->buildDirichletBC( dofNum1, ctx._time, Temporary );
 
     FieldOnNodesRealPtr resultField =
         ctx._results->getEmptyFieldOnNodesReal( "DEPL", ctx._rank );
 
     resultField = ctx._linearSolver->solveRealLinearSystemWithDirichletBC(
-        ctx._aMatrix, kineLoadsFON, chNoDir, resultField );
+        ctx._aMatrix, diriBCsFON, chNoDir, resultField );
 
     const auto &study = ctx._discreteProblem->getStudyDescription();
     const auto &model = study->getModel();

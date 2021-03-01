@@ -60,7 +60,7 @@ monSolver = code_aster.MumpsSolver(code_aster.Renumbering.Metis)
 
 mecaStatique = code_aster.LinearStaticAnalysis(monModel, affectMat)
 mecaStatique.addDirichletBC(charCine)
-mecaStatique.addParallelMechanicalLoad(charMeca)
+mecaStatique.addLoad(charMeca)
 mecaStatique.setLinearSolver(monSolver)
 
 resu = mecaStatique.execute()

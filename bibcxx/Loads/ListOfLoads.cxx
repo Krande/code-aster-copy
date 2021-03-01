@@ -34,91 +34,167 @@ ListOfLoadsClass::ListOfLoadsClass( const JeveuxMemory memType )
                      memType ),
       _loadInformations( JeveuxVectorLong( getName() + ".INFC" ) ),
       _list( JeveuxVectorChar24( getName() + ".LCHA" ) ),
-      _listOfFunctions( JeveuxVectorChar24( getName() + ".FCHA" ) ), _isEmpty( true ){};
+      _listOfFunctions( JeveuxVectorChar24( getName() + ".FCHA" ) ),
+      _isEmpty( true ), _model( nullptr ){};
 
-bool ListOfLoadsClass::build() {
+
+bool ListOfLoadsClass::checkModelConsistency( const ModelPtr& model ) const
+{
+    if( _model ){
+        if( _model->getName() != model->getName())
+            return false;
+    }
+    return true;
+};
+
+bool ListOfLoadsClass::setModel( const ModelPtr& model )
+{
+    if( _model ){
+        if( !this->checkModelConsistency( model ) )
+            throw std::runtime_error("Inconsistent model");
+    }
+    else
+        _model = model;
+
+    return true;
+};
+
+int ListOfLoadsClass::getPhysics( void ) const
+{
+    if( _model )
+        return _model->getPhysics();
+
+    return -1;
+};
+
+bool ListOfLoadsClass::build( ModelPtr model ) {
     if ( !_isEmpty )
         return true;
-    CommandSyntax cmdSt( "MECA_STATIQUE" );
 
-    SyntaxMapContainer dict;
-    ListSyntaxMapContainer listeExcit;
-    int pos = 0;
-    for ( const auto &curIter : _listOfMechanicalLoads ) {
-        SyntaxMapContainer dict2;
-        dict2.container["CHARGE"] = curIter->getName();
-        if ( _listOfMechaFun[pos].getName() != emptyRealFunction->getName() )
-            dict2.container["FONC_MULT"] = _listOfMechaFun[pos].getName();
-        ++pos;
-        listeExcit.push_back( dict2 );
-    }
-#ifdef ASTER_HAVE_MPI
-    pos = 0;
-    for ( const auto &curIter : _listOfParallelMechanicalLoads ) {
-        SyntaxMapContainer dict2;
-        dict2.container["CHARGE"] = curIter->getName();
-        if ( _listOfParaMechaFun[pos].getName() != emptyRealFunction->getName() )
-            dict2.container["FONC_MULT"] = _listOfParaMechaFun[pos].getName();
-        ++pos;
-        listeExcit.push_back( dict2 );
-    }
-#endif /* ASTER_HAVE_MPI */
-    pos = 0;
-    for ( const auto &curIter : _listOfDirichletBCs ) {
-        SyntaxMapContainer dict2;
-        dict2.container["CHARGE"] = curIter->getName();
-        if ( _listOfKineFun[pos].getName() != emptyRealFunction->getName() )
-            dict2.container["FONC_MULT"] = _listOfKineFun[pos].getName();
-        ++pos;
-        listeExcit.push_back( dict2 );
-    }
-    dict.container["EXCIT"] = listeExcit;
-    cmdSt.define( dict );
+    int physic;
+    if( model )
+        physic = model->getPhysics();
+    else
+        physic = this->getPhysics();
+
     ASTERINTEGER iexcit = 1;
     std::string name( getName().c_str() );
     name.resize( 19, ' ' );
     std::string blank( " " );
     blank.resize( 19, ' ' );
     std::string base( JeveuxMemoryTypesNames[(int)getMemoryType()] );
-    CALLO_NMDOCH_WRAP( name, &iexcit, blank, base );
+
+    SyntaxMapContainer dict;
+    ListSyntaxMapContainer listeExcit;
+
+    if( physic == Physics::Mechanics)
+    {
+        CommandSyntax cmdSt( "MECA_STATIQUE" );
+        int pos = 0;
+        for ( const auto &curIter : _listOfMechanicalLoads ) {
+            SyntaxMapContainer dict2;
+            dict2.container["CHARGE"] = curIter->getName();
+            if ( _listOfMechaFun[pos].getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfMechaFun[pos].getName();
+            ++pos;
+            listeExcit.push_back( dict2 );
+        }
+#ifdef ASTER_HAVE_MPI
+        pos = 0;
+        for ( const auto &curIter : _listOfParallelMechanicalLoads ) {
+            SyntaxMapContainer dict2;
+            dict2.container["CHARGE"] = curIter->getName();
+            if ( _listOfParaMechaFun[pos].getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfParaMechaFun[pos].getName();
+            ++pos;
+            listeExcit.push_back( dict2 );
+        }
+#endif /* ASTER_HAVE_MPI */
+
+        pos = 0;
+        for ( const auto &curIter : _listOfDirichletBCs ) {
+            SyntaxMapContainer dict2;
+            dict2.container["CHARGE"] = curIter->getName();
+            if ( _listOfDiriFun[pos].getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfDiriFun[pos].getName();
+            ++pos;
+            listeExcit.push_back( dict2 );
+        }
+        dict.container["EXCIT"] = listeExcit;
+        cmdSt.define( dict );
+
+        CALLO_NMDOCH_WRAP( name, &iexcit, blank, base );
+    }
+    else if( physic == Physics::Thermal)
+    {
+        CommandSyntax cmdSt( "THER_NON_LINE" );
+        int pos = 0;
+        for ( const auto &curIter : _listOfThermalLoads ) {
+            SyntaxMapContainer dict2;
+            dict2.container["CHARGE"] = curIter->getName();
+            if ( _listOfTherFun[pos].getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfTherFun[pos].getName();
+            ++pos;
+            listeExcit.push_back( dict2 );
+        }
+
+        pos = 0;
+        for ( const auto &curIter : _listOfDirichletBCs ) {
+            SyntaxMapContainer dict2;
+            dict2.container["CHARGE"] = curIter->getName();
+            if ( _listOfDiriFun[pos].getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfDiriFun[pos].getName();
+            ++pos;
+            listeExcit.push_back( dict2 );
+        }
+
+        dict.container["EXCIT"] = listeExcit;
+        cmdSt.define( dict );
+
+        CALLO_NTDOCH_WRAP( name, &iexcit, blank, base );
+    }
+    else if( physic == Physics::Acoustic)
+    {
+        throw std::runtime_error("Not Implemented AcousticLoad");
+    }
+    else{
+        throw std::runtime_error("Should not be here");
+    }
+
     _isEmpty = false;
     return true;
 };
 
-/* buildListExcit : construit la liste des charges utilisées pour valoriser le mot-clé facteur EXCIT
-dans STAT_NON_LINE. C'est une méthode temporaire qui disparaîtra avec la réécriture d'op0070 */
-ListSyntaxMapContainer ListOfLoadsClass::buildListExcit() {
-    ListSyntaxMapContainer listeExcit;
-    int pos = 0;
-    for ( ListMecaLoadCIter curIter = _listOfMechanicalLoads.begin();
-          curIter != _listOfMechanicalLoads.end(); ++curIter ) {
-        SyntaxMapContainer dict2;
-        dict2.container["CHARGE"] = ( *curIter )->getName();
-        if ( _listOfMechaFun[pos].getName() != emptyRealFunction->getName() )
-            dict2.container["FONC_MULT"] = _listOfMechaFun[pos].getName();
-        ++pos;
-        listeExcit.push_back( dict2 );
-    }
+
+std::vector< FiniteElementDescriptorPtr > ListOfLoadsClass::getFiniteElementDescriptors() const
+{
+    std::vector< FiniteElementDescriptorPtr > FEDesc;
+
+    const int physic = this->getPhysics();
+
+    if( physic == Physics::Mechanics)
+    {
+        for ( const auto &curIter : _listOfMechanicalLoads ) {
+            FEDesc.push_back( curIter->getFiniteElementDescriptor() );
+        }
 #ifdef ASTER_HAVE_MPI
-    pos = 0;
-    for ( const auto &curIter : _listOfParallelMechanicalLoads ) {
-        SyntaxMapContainer dict2;
-        dict2.container["CHARGE"] = curIter->getName();
-        if ( _listOfParaMechaFun[pos].getName() != emptyRealFunction->getName() )
-            dict2.container["FONC_MULT"] = _listOfParaMechaFun[pos].getName();
-        ++pos;
-        listeExcit.push_back( dict2 );
-    }
+        for ( const auto &curIter : _listOfParallelMechanicalLoads ) {
+            FEDesc.push_back( curIter->getFiniteElementDescriptor() );
+        }
 #endif /* ASTER_HAVE_MPI */
-    pos = 0;
-    for ( ListKineLoadCIter curIter = _listOfDirichletBCs.begin();
-          curIter != _listOfDirichletBCs.end(); ++curIter ) {
-        SyntaxMapContainer dict2;
-        dict2.container["CHARGE"] = ( *curIter )->getName();
-        if ( _listOfKineFun[pos].getName() != emptyRealFunction->getName() )
-            dict2.container["FONC_MULT"] = _listOfKineFun[pos].getName();
-        ++pos;
-        listeExcit.push_back( dict2 );
     }
-    return listeExcit;
+    else if( physic == Physics::Thermal)
+    {
+        for ( const auto &curIter : _listOfThermalLoads ) {
+            FEDesc.push_back( curIter->getFiniteElementDescriptor() );
+        }
+    }
+    else if( physic == Physics::Acoustic)
+    {
+        for ( const auto &curIter : _listOfAcousticLoads ) {
+            FEDesc.push_back( curIter->getFiniteElementDescriptor() );
+        }
+    }
+
+    return FEDesc;
 };

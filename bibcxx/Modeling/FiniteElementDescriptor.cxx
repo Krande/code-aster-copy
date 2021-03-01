@@ -28,6 +28,7 @@
 #include "Meshes/BaseMesh.h"
 #include "Meshes/ConnectionMesh.h"
 #include "Modeling/PhysicalQuantityManager.h"
+#include "Modeling/PhysicsAndModelings.h"
 #include "ParallelUtilities/MPIInfos.h"
 
 FiniteElementDescriptorClass::FiniteElementDescriptorClass( const std::string &name,
@@ -46,6 +47,22 @@ FiniteElementDescriptorClass::FiniteElementDescriptorClass( const std::string &n
       _explorer(
           ConnectivityDelayedElementsExplorer( _delayedNumberedConstraintElementsDescriptor ) ),
       _explorer2( ConnectivityDelayedElementsExplorer( _listOfGroupOfCells ) ){};
+
+int FiniteElementDescriptorClass::getPhysics( void ) const
+{
+    const std::string docu = trim(_parameters->getInformationParameter());
+
+    if( docu == "MECA" )
+        return Physics::Mechanics;
+    else if( docu == "THER" )
+        return Physics::Thermal;
+    else if( docu == "ACOU" )
+        return Physics::Acoustic;
+    else
+        throw std::runtime_error("Unknown physics");
+
+    return -1;
+};
 
 #ifdef ASTER_HAVE_MPI
 void FiniteElementDescriptorClass::transferDofDescriptorFrom( FiniteElementDescriptorPtr &other ) {

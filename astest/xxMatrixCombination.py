@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,8 +62,8 @@ char_meca_2.setValue(imposed_pres_1, "Haut")
 char_meca_2.build()
 
 study = code_aster.StudyDescription(model, affe_mat)
-study.addMechanicalLoad(char_meca_1)
-study.addMechanicalLoad(char_meca_2)
+study.addLoad(char_meca_1)
+study.addLoad(char_meca_2)
 problem = code_aster.DiscreteProblem(study)
 
 matr_elem_k = problem.computeMechanicalStiffnessMatrix()

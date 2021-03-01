@@ -1,5 +1,5 @@
-#ifndef KINEMATICSLOAD_H_
-#define KINEMATICSLOAD_H_
+#ifndef DIRICHLETBCSLOAD_H_
+#define DIRICHLETBCSLOAD_H_
 
 /**
  * @file DirichletBC.h
@@ -96,6 +96,10 @@ class DirichletBCClass : public DataStructure {
         return _model;
     }
 
+    virtual int getPhysics( void ) const {
+        throw std::runtime_error( "Not allowed" );
+    };
+
   private:
     /**
      * @brief Definition du modele
@@ -136,6 +140,10 @@ class MechanicalDirichletBCClass : public DirichletBCClass {
      * @brief Pointeur intelligent vers un MechanicalDirichletBC
      */
     typedef boost::shared_ptr< MechanicalDirichletBCClass > MechanicalDirichletBCPtr;
+
+    virtual int getPhysics( void ) const {
+        return Physics::Mechanics;
+    };
 
     /**
      * @brief Ajout d'une valeur mecanique imposee sur un groupe de mailles
@@ -232,6 +240,10 @@ class ThermalDirichletBCClass : public DirichletBCClass {
      * @brief Pointeur intelligent vers un ThermalDirichletBC
      */
     typedef boost::shared_ptr< ThermalDirichletBCClass > ThermalDirichletBCPtr;
+
+    virtual int getPhysics( void ) const {
+        return Physics::Thermal;
+    };
 
     /**
      * @brief Ajout d'une valeur thermique imposee sur un groupe de mailles
@@ -362,6 +374,10 @@ class AcousticDirichletBCClass : public DirichletBCClass {
      */
     typedef boost::shared_ptr< AcousticDirichletBCClass > AcousticDirichletBCPtr;
 
+    virtual int getPhysics( void ) const {
+        return Physics::Acoustic;
+    };
+
     /**
      * @brief Ajout d'une valeur acoustique imposee sur un groupe de mailles
      * @param nameOfGroup Nom du groupe sur lequel imposer la valeur
@@ -410,10 +426,10 @@ typedef boost::shared_ptr< ThermalDirichletBCClass > ThermalDirichletBCPtr;
 typedef boost::shared_ptr< AcousticDirichletBCClass > AcousticDirichletBCPtr;
 
 /** @typedef std::list de DirichletBC */
-typedef std::list< DirichletBCPtr > ListKineLoad;
+typedef std::list< DirichletBCPtr > ListDiriBC;
 /** @typedef Iterateur sur une std::list de DirichletBC */
-typedef ListKineLoad::iterator ListKineLoadIter;
+typedef ListDiriBC::iterator ListDiriBCIter;
 /** @typedef Iterateur constant sur une std::list de DirichletBC */
-typedef ListKineLoad::const_iterator ListKineLoadCIter;
+typedef ListDiriBC::const_iterator ListDiriBCCIter;
 
-#endif /* KINEMATICSLOAD_H_ */
+#endif /* DIRICHLETBCSLOAD_H_ */
