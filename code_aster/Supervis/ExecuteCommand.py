@@ -96,20 +96,24 @@ class ExecuteCommand(object):
     The :meth:`run` factory creates an instance of one of these classes and
     executes successively these steps:
 
-        - :meth:`.adapt_syntax` to eventually change the user's keywords to
-          adapt the syntax from an older version. Does nothing by default.
+        - :meth:`compat_syntax` to eventually change the user's keywords to
+          adapt the syntax from an older version **before** syntax checking.
+          Does nothing by default.
 
-        - :meth:`.check_syntax` to check the user's keywords conformance to
+        - :meth:`check_syntax` to check the user's keywords conformance to
           to catalog definition.
 
-        - :meth:`.create_result` to create the *DataStructure* object.
+        - :meth:`adapt_syntax` to eventually change the user's keywords to
+          adapt the syntax **after** syntax checking. Does nothing by default.
+
+        - :meth:`create_result` to create the *DataStructure* object.
           The default implementation only works if the operator creates no
           object.
 
-        - :meth:`.exec_` that is the main function of the Command.
+        - :meth:`exec_` that is the main function of the Command.
           The default implementation calls the *legacy* Fortran operator.
 
-        - :meth:`.post_exec` that allows to execute additional code after
+        - :meth:`post_exec` that allows to execute additional code after
           the main function. Does nothing by default.
 
     If a :attr:`libaster.AsterError` exception (or a derivated) is raised
@@ -175,7 +179,7 @@ class ExecuteCommand(object):
         if self.show_syntax():
             timer.Start(str(self._counter), name=self.command_name)
         timer.Start(" . check syntax", num=1.1e6)
-        self.adapt_syntax(keywords)
+        self.compat_syntax(keywords)
         self._cata.addDefaultKeywords(keywords)
         remove_none(keywords)
         try:
@@ -191,6 +195,7 @@ class ExecuteCommand(object):
             UTMESS("F", "SUPERVIS_4", valk=(self.command_name, msg))
         finally:
             timer.Stop(" . check syntax")
+        self.adapt_syntax(keywords)
         if ExecutionParameter().option & Options.TestMode:
             track_coverage(self._cata, self.command_name, keywords)
         self.create_result(keywords)
@@ -326,8 +331,23 @@ class ExecuteCommand(object):
                     for obj in force_list(value):
                         self._result.removeDependency(obj)
 
-    def adapt_syntax(self, keywords):
+    def compat_syntax(self, keywords):
         """Hook to adapt syntax from a old version or for compatibility reasons.
+
+        As the keywords have not been checked, no assumptions can be done about
+        the presence or the number of values for example.
+        If the syntax is already valid, call :meth:`adapt_syntax` instead.
+
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords, changed
+                in place.
+        """
+
+    def adapt_syntax(self, keywords):
+        """Hook to adapt syntax *after* syntax checking.
+
+        As the syntax is valid, changes are easier: existence, number of values
+        verify syntax description.
 
         Arguments:
             keywords (dict): Keywords arguments of user's keywords, changed
@@ -527,7 +547,7 @@ class ExecuteMacro(ExecuteCommand):
     a *DataStructure* object (for one result) or a *namedtuple* (for several
     results). ``result`` is created by the *ops* function.
 
-    For compatibility: :meth:`.create_result` builds the type of the
+    For compatibility: :meth:`create_result` builds the type of the
     *namedtuple*. The *ops* function returns the "main" result and registers
     others with :meth:`register_result`.
     :meth:`exec_` adds it at first position of the *namedtuple* under the

@@ -100,8 +100,8 @@ class Starter(ExecuteCommand):
     command_name = "DEBUT"
     arg_init = []
 
-    def adapt_syntax(self, keywords):
-        """Adapt keywords.
+    def compat_syntax(self, keywords):
+        """Hook to adapt syntax from a old version or for compatibility reasons.
 
         Arguments:
             keywords (dict): User's keywords, changed in place.

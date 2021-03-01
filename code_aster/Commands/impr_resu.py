@@ -62,7 +62,7 @@ class ImprResu(ExecuteCommand):
 
 
     def adapt_syntax(self, keywords):
-        """Hook to adapt syntax from a old version or for compatibility reasons.
+        """Hook to adapt syntax *after* syntax checking.
 
         Arguments:
             keywords (dict): Keywords arguments of user's keywords, changed

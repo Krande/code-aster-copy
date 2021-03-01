@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -29,20 +29,13 @@ class ModelAssignment(ExecuteCommand):
     command_name = "AFFE_MODELE"
 
     def adapt_syntax(self, keywords):
-        """Hook to adapt syntax from a old version or for compatibility reasons.
+        """Hook to adapt syntax *after* syntax checking.
 
         Arguments:
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
-        mesh = keywords["MAILLAGE"]
-        if isinstance(mesh, tuple):
-            if len(mesh) == 1:
-                mesh = mesh[0]
-            else:
-                raise ValueError("Mesh object is a tuple")
-
-        if mesh.isParallel():
+        if keywords["MAILLAGE"].isParallel():
             keywords["DISTRIBUTION"] = {'METHODE': 'CENTRALISE'}
 
     def create_result(self, keywords):

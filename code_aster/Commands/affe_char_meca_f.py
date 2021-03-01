@@ -27,19 +27,18 @@ class MechanicalLoadDefinition(ExecuteCommand):
     """Command that defines :class:`~code_aster.Objects.GenericMechanicalLoad`.
     """
     command_name = "AFFE_CHAR_MECA_F"
-    def adapt_syntax(self, keywords):
+    def compat_syntax(self, keywords):
         """Adapt keywords.
-        Replace LIAISON = 'ENCASTRE'           
+        Replace LIAISON='ENCASTRE'
         """
-        common_dofs = ('DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ')
-        # replace DDL_IMPO/LIAISON by DDL_IMPO/DX=0
+        # replace DDL_IMPO/LIAISON=ENCASTRE by DDL_IMPO/BLOCAGE
         keywords["DDL_IMPO"] = force_list(keywords.get("DDL_IMPO", []))
         for fact in keywords["DDL_IMPO"]:
             block = fact.pop("LIAISON", None)
             if block == 'ENCASTRE':
                 deprecate("DLL_IMPO/LIAISON='ENCASTRE'", case=3, level=5,
-                          help="Use BLOCAGE = ('DEPLACEMENT','ROTATION')")
-                fact["BLOCAGE"] = ('DEPLACEMENT','ROTATION')
+                          help="Use BLOCAGE = ('DEPLACEMENT', 'ROTATION')")
+                fact["BLOCAGE"] = ('DEPLACEMENT', 'ROTATION')
 
     def create_result(self, keywords):
         """Initialize the result.

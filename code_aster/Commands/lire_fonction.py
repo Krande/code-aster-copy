@@ -30,7 +30,7 @@ class ReadFunctionProperly(ExecuteMacro):
     """
     command_name = "LIRE_FONCTION"
 
-    def adapt_syntax(self, keywords):
+    def compat_syntax(self, keywords):
         """Hook to adapt syntax from a old version or for compatibility reasons.
 
         Arguments:

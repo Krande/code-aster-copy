@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -29,8 +29,8 @@ class FunctionInterpolation(ExecuteCommand):
     :py:class:`~code_aster.Objects.Function`."""
     command_name = "CALC_FONC_INTERP"
 
-    def adapt_syntax(self, keywords):
-        """Hook to adapt syntax from a old version or for compatibility reasons.
+    def compat_syntax(self, keywords):
+        """Hook to adapt syntax *after* syntax checking.
 
         Arguments:
             keywords (dict): Keywords arguments of user's keywords, changed

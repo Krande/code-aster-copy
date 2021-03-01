@@ -36,13 +36,13 @@ class MechanicalLoadDefinition(ExecuteCommand):
     dirichletLoads = ['DDL_IMPO', 'DDL_POUTRE', 'FACE_IMPO', 'CHAMNO_IMPO', 'ARETE_IMPO', 'LIAISON_DDL', 'LIAISON_OBLIQUE', 'LIAISON_GROUP', 'LIAISON_MAIL', 'LIAISON_PROJ', \
                       'LIAISON_CYCL', 'LIAISON_SOLIDE', 'LIAISON_ELEM', 'LIAISON_UNIF', 'LIAISON_CHAMNO', 'LIAISON_RBE3', 'LIAISON_INTERF', 'LIAISON_COQUE', \
                       'RELA_CINE_BP', 'IMPE_FACE']
-                      
-    def adapt_syntax(self, keywords):
+
+    def compat_syntax(self, keywords):
         """Adapt keywords.
-        Replace LIAISON = 'ENCASTRE'           
+        Replace LIAISON='ENCASTRE'
         """
         common_dofs = ('DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ')
-        # replace DDL_IMPO/LIAISON by DDL_IMPO/DX=0
+        # replace DDL_IMPO/LIAISON=ENCASTRE by DDL_IMPO/BLOCAGE
         keywords["DDL_IMPO"] = force_list(keywords.get("DDL_IMPO", []))
         for fact in keywords["DDL_IMPO"]:
             block = fact.pop("LIAISON", None)
@@ -51,7 +51,7 @@ class MechanicalLoadDefinition(ExecuteCommand):
                           help="Use BLOCAGE = ('DEPLACEMENT','ROTATION')")
                 for ddl in common_dofs:
                     fact[ddl] = 0.
-                  
+
     def _getNodeGroups(self, keywords):
         """for parallel load, return all node groups present in AFFE_CHAR_MECA, in order to define the partial mesh
         """

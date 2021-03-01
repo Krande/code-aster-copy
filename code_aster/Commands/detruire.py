@@ -29,8 +29,8 @@ class Deleter(ExecuteCommand):
     """Command that deletes *DataStructure* instances from the calling stack."""
     command_name = "DETRUIRE"
 
-    def adapt_syntax(self, keywords):
-        """Adapt keywords.
+    def compat_syntax(self, keywords):
+        """Hook to adapt syntax from a old version or for compatibility reasons.
 
         Arguments:
             keywords (dict): User's keywords, changed in place.
