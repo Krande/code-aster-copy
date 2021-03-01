@@ -1208,6 +1208,7 @@ PyObject *args;
                 case 0 :
                     Py_INCREF( Py_None );
                     PyDict_SetItem(dico, key, Py_None);
+                    Py_DECREF(key);
                     break;
                 case 1 :
                     /* REEL */
@@ -1524,8 +1525,8 @@ PyObject *args;
                     }
                 }
                 PyDict_SetItem(dico,key,liste);
-                Py_XDECREF(key);
-                Py_XDECREF(liste);
+                Py_DECREF(key);
+                Py_DECREF(liste);
                 FreeStr(nomch);
             }
             exceptAll {
@@ -1599,8 +1600,8 @@ PyObject *args;
                 }
             }
             PyDict_SetItem(dico,key,liste);
-            Py_XDECREF(key);
-            Py_XDECREF(liste);
+            Py_DECREF(key);
+            Py_DECREF(liste);
             FreeStr(nomva);
           }
 

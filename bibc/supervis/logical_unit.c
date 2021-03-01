@@ -56,6 +56,7 @@ int openLogicalUnitFile(const char* name, const int type, const int access)
 
     Py_XDECREF(res);
     Py_XDECREF(pylu);
+    Py_XDECREF(unit);
     return number;
 }
 

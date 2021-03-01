@@ -64,6 +64,7 @@ static PyObject* register_jdc(PyObject *self, PyObject *args)
     if ( PyObject_SetAttrString(aster_core, "get_option", val) < 0 )
         MYABORT("erreur lors de l'initialisation de 'aster_core.get_option'.");
 
+    Py_DECREF(val);
     Py_INCREF(Py_None);
     return Py_None;
 }
@@ -109,6 +110,8 @@ PyObject* GetJdcAttr(_IN char *attribut)
 {
     /*
      * Retourne un attribut du 'jdc' en tant que PyObject.
+     *
+     * Return value: New reference.
      */
     PyObject *objattr;
     objattr = PyObject_GetAttrString(get_sh_params(), attribut);
@@ -192,15 +195,15 @@ PyObject *args;
      *      iret = 1 : longueur de valk insuffisante, valeur tronquée
      *      iret = 4 : option inexistante, type incorrect.
      */
-    PyObject *res, *option, *value;
+    PyObject *res, *option, *value, *set;
     char *sopt;
 
     if ( !PyArg_ParseTuple(args, "OO:set_option", &option, &value) )
         return NULL;
 
+    set = PyUnicode_FromString("set_option");
     res = PyObject_CallMethodObjArgs(get_sh_params(),
-                                     PyUnicode_FromString("set_option"),
-                                     option, value, NULL);
+                                     set, option, value, NULL);
     if ( !res ) MYABORT("erreur lors de l'appel a la methode CoreOptions.set_option");
     sopt = PyUnicode_AsUTF8(option);
     if (! strcmp(sopt, "tpmax")) {
@@ -210,6 +213,7 @@ PyObject *args;
     Py_DECREF(option);
     // Py_DECREF(value); Do not deallocate, stored in the 'info' dict.
     Py_DECREF(res);
+    Py_DECREF(set);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -592,8 +596,10 @@ void DEFP(PRHEAD,prhead, _IN ASTERINTEGER *part)
      * Voir help(aster_core.print_header)
      */
     PyObject *res;
-    res = PyObject_CallFunction(GetJdcAttr("print_header"), "i", (int)(*part));
+    PyObject *func = GetJdcAttr("print_header");
+    res = PyObject_CallFunction(func, "i", (int)(*part));
     if (!res) MYABORT("erreur lors de l'appel a la fonction E_Global.print_header");
+    Py_DECREF(func);
     Py_DECREF(res);
 }
 
@@ -601,20 +607,20 @@ void DEFSSP(CHEKSD,cheksd,_IN char *nomsd,_IN STRING_SIZE lnom,
                           _IN char *typsd,_IN STRING_SIZE ltyp,
                           _OUT ASTERINTEGER *iret)
 {
-   /*
-      Interface Fortran/C pour vérifier que la structure de données `nomsd`
-      est conforme au type `typsd`.
+    /*
+        Interface Fortran/C pour vérifier que la structure de données `nomsd`
+        est conforme au type `typsd`.
 
-      Exemple d'appel :
-         call cheksd('MA', 'sd_maillage', iret)
-   */
-   PyObject *res;
-
-   res = PyObject_CallFunction(GetJdcAttr("checksd"), "s#s#", nomsd, lnom, typsd, ltyp);
-   if (!res) MYABORT("erreur lors de l'appel a la methode CHECKSD");
-   *iret = (ASTERINTEGER)PyLong_AsLong(res);
-
-   Py_DECREF(res);
+        Exemple d'appel :
+            call cheksd('MA', 'sd_maillage', iret)
+    */
+    PyObject *res;
+    PyObject *func = GetJdcAttr("checksd");
+    res = PyObject_CallFunction(func, "s#s#", nomsd, lnom, typsd, ltyp);
+    if (!res) MYABORT("erreur lors de l'appel a la methode CHECKSD");
+    *iret = (ASTERINTEGER)PyLong_AsLong(res);
+    Py_DECREF(func);
+    Py_DECREF(res);
 }
 
 void DEFSSPPPPPPPPPPPP(TESTRESU_PRINT,testresu_print,
@@ -664,6 +670,7 @@ void DEFSSPPPPPPPPPPPP(TESTRESU_PRINT,testresu_print,
     if ( (float)(*compare) != 1. ) {
         comp = PyFloat_FromDouble((double)(*compare));
         PyDict_SetItemString(kwargs, "compare", comp);
+        Py_DECREF(comp);
     }
 
     res = PyObject_Call(func, args, kwargs);
@@ -677,7 +684,6 @@ void DEFSSPPPPPPPPPPPP(TESTRESU_PRINT,testresu_print,
     Py_XDECREF(kwargs);
     Py_XDECREF(ref);
     Py_XDECREF(val);
-    Py_XDECREF(comp);
 }
 
 /*

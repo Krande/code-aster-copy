@@ -66,6 +66,7 @@ PyObject *args;
         tupstr = MakeTupleString((long)nbComp, nomsComp, (STRING_SIZE)MED_SNAME_SIZE, NULL);
 
         PyDict_SetItem(dic_champ_comp, PyUnicode_FromString(nomChamp), tupstr);
+        Py_DECREF( tupstr );
         FreeStr(nomsComp);
         FreeStr(unitesComp);
     }
