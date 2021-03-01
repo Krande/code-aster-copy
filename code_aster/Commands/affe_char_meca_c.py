@@ -22,25 +22,18 @@
 from ..Objects import GenericMechanicalLoad
 from ..Supervis import ExecuteCommand
 from ..Utilities import deprecate, force_list
+from .affe_char_meca import MechanicalLoadDefinition
 
-class MechanicalLoadDefinition(ExecuteCommand):
+
+class MechanicalLoadComplexDefinition(ExecuteCommand):
     """Command that creates the
     :class:`~code_aster.Objects.GenericMechanicalLoad`"""
     command_name = "AFFE_CHAR_MECA_C"
+
     def compat_syntax(self, keywords):
-        """Adapt keywords.
-        Replace LIAISON='ENCASTRE'
-        """
-        common_dofs = ('DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ')
-        # replace DDL_IMPO/LIAISON=ENCASTRE by DDL_IMPO/BLOCAGE
-        keywords["DDL_IMPO"] = force_list(keywords.get("DDL_IMPO", []))
-        for fact in keywords["DDL_IMPO"]:
-            block = fact.pop("LIAISON", None)
-            if block == 'ENCASTRE':
-                deprecate("DLL_IMPO/LIAISON='ENCASTRE'", case=3, level=5,
-                          help="Use BLOCAGE = ('DEPLACEMENT', 'ROTATION')")
-                for ddl in common_dofs:
-                    fact[ddl] = 0.
+        """Compatibility support, common with AFFE_CHAR_MECA."""
+        return MechanicalLoadDefinition.compat_syntax(keywords)
+
     def create_result(self, keywords):
         """Initialize the result.
 
@@ -50,4 +43,4 @@ class MechanicalLoadDefinition(ExecuteCommand):
         self._result = GenericMechanicalLoad(keywords["MODELE"])
 
 
-AFFE_CHAR_MECA_C = MechanicalLoadDefinition.run
+AFFE_CHAR_MECA_C = MechanicalLoadComplexDefinition.run
