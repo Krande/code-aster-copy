@@ -27,7 +27,7 @@ subroutine as_mlclci(fid, nordr, k64, ityp, nbn,&
 #include "asterfort/utmess.h"
 #include "med/mlclci.h"
     med_idt :: fid
-    aster_int :: nordr, ityp, nbn, cret, ndim, nbmasu
+    aster_int :: nordr, ityp, nbn, cret, ndim, nbmasu, tymasu
     character(len=64) :: k64, giname
     character(len=*) :: nomasu
 #ifndef ASTER_HAVE_MED

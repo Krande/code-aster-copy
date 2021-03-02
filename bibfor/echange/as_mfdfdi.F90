@@ -28,7 +28,7 @@ subroutine as_mfdfdi(fid, ind, cha, type, comp,&
 #include "med/mfdfdi.h"
     character(len=*) :: cha, comp, unit
     med_idt :: fid
-    aster_int :: ind, type, cret, nseqca
+    aster_int :: ind, type, cret, nseqca, lmail
     character(len=64) :: nommai
     character(len=80) :: unidt
 !
