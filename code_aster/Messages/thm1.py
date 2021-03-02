@@ -117,15 +117,13 @@ La modélisation a un degré de liberté pour la thermique la loi de comportemen
 La loi mécanique GONF_ELAS n'est utilisable qu'avec une modélisation à deux pressions.
 """),
 
-    
+
     94 : _("""Il manque les paramètres de Van Genuchten."""),
 
     95 : _("""La surface spécifique A0 introduite dans DEFI_MATERIAU ne peut pas être négative."""),
-    
-    96 : _("""L'épaisseur de la couche adsorbée EPAI introduite dans DEFI_MATERIAU ne peut pas être négative."""),
-    
+
+    96 : _("""L'épaisseur de la couche absorbée EPAI introduite dans DEFI_MATERIAU ne peut pas être négative."""),
+
     97 : _("""Les valeurs des tableaux S_BJH et W_BJH introduits dans DEFI_MATERIAU doivent être compris entre 0 et 1."""),
-    
-    #~ 98 : _("""Il manque des paramètres pour la loi HYDR_TABBAL."""),
 
 }
