@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -140,6 +140,30 @@ void DEFSSSS( VRCREF, vrcref, const char *, STRING_SIZE, const char *, STRING_SI
 #define CALLO_VTCREB_WRAP( a, b, c, d ) CALLOOOO( VTCREB_WRAP, vtcreb_wrap, a, b, c, d )
 void DEFSSSS( VTCREB_WRAP, vtcreb_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
               const char *, STRING_SIZE, const char *, STRING_SIZE );
+
+#define CALLO_NMDOCC_WRAP( a, b, c, d, e, f )                                                      \
+    CALLOOOPPP( NMDOCC_WRAP, nmdocc_wrap, a, b, c, d, e, f )
+void DEFSSSPPP( NMDOCC_WRAP, nmdocc_wrap,
+                const char *, STRING_SIZE, 
+                const char *, STRING_SIZE,
+                const char *, STRING_SIZE,
+                ASTERINTEGER *,
+                ASTERINTEGER *,
+                ASTERINTEGER *);
+
+#define CALLO_NMDOCR_WRAP( a, b, c )                                                               \
+    CALLOOP( NMDOCR_WRAP, nmdocr_wrap, a, b, c )
+void DEFSSP( NMDOCR_WRAP, nmdocr_wrap,
+             const char *, STRING_SIZE,
+             const char *, STRING_SIZE,
+             ASTERINTEGER * );
+
+#define CALLO_NMDOCM( a, b )                                                                       \
+    CALLOO( NMDOCM, nmdocm, a, b )
+void DEFSS( NMDOCM, nmdocm,
+            const char *, STRING_SIZE,
+            const char *, STRING_SIZE);
+
 
 #ifdef __cplusplus
 }

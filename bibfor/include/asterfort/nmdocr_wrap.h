@@ -18,9 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdocr(model, carcri, l_implex)
+    subroutine nmdocr_wrap(model, carcri, implex)
         character(len=8), intent(in) :: model
-        character(len=24), intent(in) :: carcri
-        aster_logical, intent(in) :: l_implex
-    end subroutine nmdocr
+        character(len=24), intent(out) :: carcri
+        integer, intent(in) :: implex
+    end subroutine nmdocr_wrap
 end interface
