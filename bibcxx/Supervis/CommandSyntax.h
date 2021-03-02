@@ -5,7 +5,7 @@
  * @file CommandSyntax.h
  * @brief Implementation of API to CommandSyntax Python object.
  * @section LICENCE
- * Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+ * Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
  * This file is part of code_aster.
  *
  * code_aster is free software: you can redistribute it and/or modify
@@ -75,6 +75,13 @@ class CommandSyntax {
      * @param syntax Objet de type SyntaxMapContainer
      */
     void define( SyntaxMapContainer &syntax );
+
+
+    /**
+     * @brief Fonction permettant de definir la syntaxe
+     * @param syntax Objet de type pointeur sur PyObject
+     */
+    void define( PyObject *keywords );
 
     /**
      * @brief Fonction permettant de definir la syntax

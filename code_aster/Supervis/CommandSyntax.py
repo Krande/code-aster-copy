@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,8 +59,8 @@ import random
 
 from ..Cata import Commands
 from ..Objects import DataStructure
-from ..Utilities import (force_list, is_complex, is_float, is_int, is_str,
-                         logger, value_is_sequence)
+from ..Utilities import (force_list, import_object, is_complex, is_float,
+                         is_int, is_str, logger, value_is_sequence)
 from .typeaster import typeaster
 
 # WARNING:
@@ -97,13 +97,19 @@ class CommandSyntax(object):
 
 
     def __init__(self, name="unNamed", cata=None):
-        """Create a new command"""
-        self._name = name
+        """Create a new command or part of syntax.
+
+        Arguments:
+            name (str): Command name (ex: "DEBUT") or path to catalog (ex:
+                "code_aster.Cata.Commands.DEBUT").
+            cata (*PartOfSyntax*): Command description.
+        """
+        self._name = name.split(".")[-1]
         self._resultName = " "
         self._resultType = " "
         self._resultValue = None
         self._definition = None
-        logger.debug(f"Syntax: new command is {self._name!r}")
+        logger.debug(f"Syntax: new command is {name!r}")
         currentCommand = self.getCurrentCommand()
         # only FIN is allowed to free the current "in failure" command
         if self._name == "FIN" and currentCommand is not None:
@@ -112,9 +118,11 @@ class CommandSyntax(object):
         assert currentCommand is None, \
             "CommandSyntax {} must be freed".format( currentCommand.getName() )
         self.setCurrentCommand(self)
-        # TODO: remove cata argument (not easy to fill in C++)
         if not cata:
-            cata = getattr(Commands, name, None)
+            if "." not in name:
+                cata = getattr(Commands, name, None)
+            else:
+                cata = import_object(name)
             if not cata:
                 logger.debug(f"CommandSyntax: catalog not found for {name!r}")
         self._commandCata = cata

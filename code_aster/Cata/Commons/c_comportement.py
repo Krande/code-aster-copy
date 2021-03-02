@@ -327,7 +327,7 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                                         "LIQU_VAPE",
                                                         "LIQU_GAZ",
                                                         "HYDR_UTIL",
-                                                        "HYDR_TABBAL",                                                       
+                                                        "HYDR_TABBAL",
                                                         "HYDR_VGM",
                                                         "HYDR_VGC",
                                                         "HYDR_ENDO",
@@ -426,3 +426,6 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
 
 
     return mcfact
+
+
+C_COMPORTEMENT_SNL = FACT(statut='o', COMPORTEMENT=C_COMPORTEMENT("STAT_NON_LINE"))

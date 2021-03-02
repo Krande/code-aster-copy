@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,14 +24,15 @@ Unittest for CommandSyntax.
 import platform
 
 import code_aster
-from code_aster.Cata.Commands import DEBUT, DYNA_VIBRA
+from code_aster.Cata.Commands import DEBUT
 from code_aster.Supervis import CommandSyntax
 
 code_aster.init("--test", "--abort", "--debug")
 
 test = code_aster.TestCase()
 
-syntax = CommandSyntax("DEBUT", DEBUT)
+# just for testing import of command description from path
+syntax = CommandSyntax("code_aster.Cata.Commands.DEBUT")
 test.assertEqual(syntax.getName(), "DEBUT")
 
 catadef = DEBUT.definition
@@ -106,7 +107,7 @@ test.assertLessEqual(rand[0], 1.)
 syntax.free()
 
 # some more complex cases (factor keywords under conditional blocks)
-syntax = CommandSyntax("DYNA_VIBRA", DYNA_VIBRA)
+syntax = CommandSyntax("DYNA_VIBRA")
 test.assertEqual(syntax.getName(), "DYNA_VIBRA")
 
 test.assertTrue(syntax.getexm("", "TYPE_CALCUL"))
@@ -117,6 +118,17 @@ test.assertTrue(syntax.getexm("IMPRESSION", "NIVEAU"))
 
 test.assertTrue(syntax.getexm("EXCIT", "CHARGE"))
 test.assertTrue(syntax.getexm("EXCIT", "D_FONC_DT"))
+
+syntax.free()
+
+# case using a part of syntax
+syntax = CommandSyntax("code_aster.Cata.Commons.c_comportement.C_COMPORTEMENT_SNL")
+test.assertEqual(syntax.getName(), "C_COMPORTEMENT_SNL")
+
+test.assertTrue(syntax.getexm("COMPORTEMENT", "TOUT"))
+test.assertTrue(syntax.getexm("COMPORTEMENT", "POST_INCR"))
+
+syntax.free()
 
 test.printSummary()
 
