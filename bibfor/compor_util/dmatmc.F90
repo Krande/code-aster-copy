@@ -28,7 +28,6 @@ subroutine dmatmc(fami, mater, time, poum, ipg,&
 #include "asterfort/dmatdp.h"
 #include "asterfort/lteatt.h"
 !
-!
     character(len=*), intent(in) :: fami
     integer, intent(in) :: mater
     real(kind=8), intent(in) :: time
@@ -41,6 +40,7 @@ subroutine dmatmc(fami, mater, time, poum, ipg,&
     real(kind=8), optional, intent(out) :: dr_(nbsig, nbsig)
     real(kind=8), optional, intent(out) :: di_(nbsig, nbsig)
     aster_logical, optional, intent(in) :: l_modi_cp
+
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,28 +70,56 @@ subroutine dmatmc(fami, mater, time, poum, ipg,&
 !
     if (lteatt('DIM_TOPO_MAILLE','3')) then
         ASSERT(nbsig.eq.6)
-        call dmat3d(fami, mater, time, poum, ipg,&
-                    ispg, repere, xyzgau, dr_=dr, di_=di)
+        if (present(di_)) then
+            call dmat3d(fami, mater, time, poum, ipg,&
+                        ispg, repere, xyzgau, di_=di)
+        endif
+        if (present(dr_)) then
+            call dmat3d(fami, mater, time, poum, ipg,&
+                        ispg, repere, xyzgau, dr_=dr)
+        endif
     else if (lteatt('FOURIER','OUI')) then
         ASSERT(nbsig.eq.6)
-        call dmat3d(fami, mater, time, poum, ipg,&
-                    ispg, repere, xyzgau, dr_=dr, di_=di)
+        if (present(di_)) then
+            call dmat3d(fami, mater, time, poum, ipg,&
+                        ispg, repere, xyzgau, di_=di)
+        endif
+        if (present(dr_)) then
+            call dmat3d(fami, mater, time, poum, ipg,&
+                        ispg, repere, xyzgau, dr_=dr)
+        endif
     else if (lteatt('C_PLAN','OUI')) then
         ASSERT(nbsig.eq.4)
-        call dmatcp(fami, mater, time, poum, ipg,&
-                    ispg, repere, dr_=dr, di_=di)
         if (present(l_modi_cp)) then
             ASSERT(l_modi_cp)
-            call dmatdp(fami, mater, time, poum, ipg,&
-                        ispg, repere, dr_=dr, di_=di)
+            if (present(di_)) then
+                call dmatdp(fami, mater, time, poum, ipg,&
+                            ispg, repere, di_=di)
+            endif
+            if (present(dr_)) then
+                call dmatdp(fami, mater, time, poum, ipg,&
+                            ispg, repere, dr_=dr)
+            endif
         else
-            call dmatcp(fami, mater, time, poum, ipg,&
-                        ispg, repere, dr_=dr, di_=di)
+            if (present(di_)) then
+                call dmatcp(fami, mater, time, poum, ipg,&
+                            ispg, repere, di_=di)
+            endif
+            if (present(dr_)) then
+                call dmatcp(fami, mater, time, poum, ipg,&
+                            ispg, repere, dr_=dr)
+            endif
         endif
     else if (lteatt('D_PLAN','OUI').or. lteatt('AXIS','OUI')) then
         ASSERT(nbsig.eq.4)
-        call dmatdp(fami, mater, time, poum, ipg,&
-                    ispg, repere, dr_=dr, di_=di)
+        if (present(di_)) then
+            call dmatdp(fami, mater, time, poum, ipg,&
+                        ispg, repere, di_=di)
+        endif
+        if (present(dr_)) then
+            call dmatdp(fami, mater, time, poum, ipg,&
+                        ispg, repere, dr_=dr)
+        endif
     else
         ASSERT(.false.)
     endif

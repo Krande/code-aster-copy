@@ -25,6 +25,8 @@ implicit none
 #include "asterfort/get_elas_para.h"
 #include "asterfort/get_elas_id.h"
 #include "asterfort/matrHooke3d.h"
+#include "asterfort/separ_RI_elas_3D.h"
+#include "asterfort/utmess.h"
 !
 !
     character(len=*), intent(in) :: fami
@@ -64,7 +66,7 @@ implicit none
     real(kind=8) :: e1r, e2r, e3r, e1i, e2i, e3i, er, ei
     real(kind=8) :: g1r, g2r, g3r, g1i, g2i, g3i, gr, gi
     character(len=16) :: elas_keyword
-    real(kind=8) :: di(6, 6), dr(6,6)
+    real(kind=8) :: di(6, 6), dr(6,6), hr(6), hi(6)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -88,19 +90,26 @@ implicit none
                        nu12i_ = nu12i, nu13i_ = nu13i, nu23i_ = nu23i,&
                        g1i_ = g1i    , g2i_ = g2i    , g3i_ = g3i)
 !
+! - Prepare Hook matrix coefficient
+!
+    call separ_RI_elas_3D(elas_id ,nur , gr, nui ,gi, &
+                          e1r     , e2r  , e3r  ,&
+                          nu12r   , nu13r, nu23r,&
+                          e1i     , e2i  , e3i  ,&
+                          nu12i   , nu13i, nu23i,&
+                          hr, hi)
+!
 ! - Compute Hooke matrix
 !
     if (present(di_)) then
         call matrHooke3d(elas_id, repere,&
-                         ei , nui, gi,&
-                         e1i, e2i, e3i, nu12i, nu13i, nu23i, g1i, g2i, g3i,&
+                         hi, gi, g1i, g2i, g3i,&
                          di , xyzgau)
         di_ = di
     endif
     if (present(dr_)) then
         call matrHooke3d(elas_id, repere,&
-                         er , nur, gr,&
-                         e1r, e2r, e3r, nu12r, nu13r, nu23r, g1r, g2r, g3r,&
+                         hr, gr, g1r, g2r, g3r,&
                          dr , xyzgau)
         dr_ = dr
     endif

@@ -1,0 +1,161 @@
+#!/usr/bin/env python
+# coding: utf-8
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# CAS_TEST__: SDLv126E
+#
+# BUT DE LA FAMILLE DE TEST
+# Ce test unitaire permet de verifier la bone implémentation des 
+# routines de calcul des matrices de rigidité pour les matériaux
+# élastique et viscoélastique 3D.
+#
+# BUT DE L'INDICE E
+# test de retrocompatibilité avec AMOR_MECA sur C_PLAN
+# ### Import des packages et démarrage d'aster
+
+# In[1]:
+
+
+import numpy as np
+
+import code_aster
+from code_aster.Commands import *
+code_aster.init("--test")
+
+test = code_aster.TestCase()
+
+
+# ### Import du maillage
+
+# In[2]:
+
+
+mail = code_aster.Mesh()
+mail.readMedFile('sdlv126d.med')
+
+
+# ### Declaration du modèle
+
+# In[3]:
+
+
+model = AFFE_MODELE(AFFE=(_F(GROUP_MA='PLAN', 
+                             PHENOMENE='MECANIQUE', 
+                             MODELISATION='C_PLAN') 
+                          ),
+                    MAILLAGE=mail)
+
+
+# ### Déclaration des matériaux
+
+# In[4]:
+
+
+# matériau viscoélastique: deltane350
+freq = 100.
+
+G0 = 1400000.0
+Ginf = 540000000.0
+tauG = 5.2e-07
+alphaG = 0.59
+
+G = (G0 + Ginf*(1j*freq*2*np.pi)**alphaG)/(1. + (1j*freq*2*np.pi)**alphaG)
+nu = 0.3
+Ev = 2*G*(1. + nu)
+
+deltane = DEFI_MATERIAU(ELAS_VISCO=_F(G=G, NU=complex(nu, 0.)))
+deltane_hyst = DEFI_MATERIAU(ELAS=_F(E=Ev.real, NU=0.3, AMOR_HYST=Ev.imag/Ev.real))
+
+
+# ### Affectation des matériaux
+
+# In[5]:
+
+
+mater_vhyst = AFFE_MATERIAU(AFFE=(_F(GROUP_MA='PLAN', 
+                                     MATER=deltane_hyst
+                                    ),),
+                             MODELE=model)
+
+mater_v = AFFE_MATERIAU(AFFE=(_F(GROUP_MA='PLAN', 
+                                 MATER=deltane
+                                 ),),
+                        MODELE=model)
+
+
+# ### Construction de la matrice par RIGI_MECA_HYST
+
+# In[6]:
+
+
+nddl = NUME_DDL(MODELE=model)
+
+# Matrice viscoélastique
+KV_elem = CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                         MODELE=model,
+                         CHAM_MATER=mater_v)
+KVc_elem = CALC_MATR_ELEM(OPTION='RIGI_MECA_HYST',
+                         MODELE=model,
+                         CHAM_MATER=mater_v,
+                         RIGI_MECA=KV_elem)
+KV = ASSE_MATRICE(MATR_ELEM=KVc_elem, NUME_DDL=nddl)
+
+# Matrice viscoélastique hysteretique
+KVh_elem = CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                          MODELE=model,
+                          CHAM_MATER=mater_vhyst)
+KVhc_elem = CALC_MATR_ELEM(OPTION='RIGI_MECA_HYST',
+                          MODELE=model,
+                          CHAM_MATER=mater_vhyst,
+                          RIGI_MECA=KVh_elem)
+KVh = ASSE_MATRICE(MATR_ELEM=KVhc_elem, NUME_DDL=nddl)
+
+
+# ### Test des matrices
+
+# In[9]:
+
+
+kv = KV.EXTR_MATR()
+kvh = KVh.EXTR_MATR()
+np.savetxt('test.txt', np.real(kv - kvh))
+TEST_FICHIER(FICHIER='test.txt', TYPE_TEST='SOMM_ABS', NB_VALE=64, VALE_CALC=1e-7, CRITERE='ABSOLU')
+np.savetxt('test.txt', np.imag(kv - kvh))
+TEST_FICHIER(FICHIER='test.txt', TYPE_TEST='SOMM_ABS', NB_VALE=64, VALE_CALC=1e-7, 
+             CRITERE='ABSOLU', TOLE_MACHINE=1e-5)
+
+
+# In[ ]:
+
+
+FIN()
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+

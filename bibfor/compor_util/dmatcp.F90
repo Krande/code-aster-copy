@@ -25,6 +25,7 @@ implicit none
 #include "asterfort/get_elas_para.h"
 #include "asterfort/get_elas_id.h"
 #include "asterfort/matrHookePlaneStress.h"
+#include "asterfort/separ_RI_elas_cp.h"
 !
 !
     character(len=*), intent(in) :: fami
@@ -62,7 +63,7 @@ implicit none
     real(kind=8) :: e1r, e2r, e3r, e1i, e2i, e3i, er, ei
     real(kind=8) :: g1r, g2r, g3r, g1i, g2i, g3i, gr, gi
     character(len=16) :: elas_keyword
-    real(kind=8) :: di(4, 4), dr(4,4)
+    real(kind=8) :: di(4, 4), dr(4,4), hr(3), hi(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,19 +86,26 @@ implicit none
                        nu12i_ = nu12i, nu13i_ = nu13i, nu23i_ = nu23i,&
                        g1i_ = g1i    , g2i_ = g2i    , g3i_ = g3i)
 !
+! - Prepare Hook matrix coefficient
+!
+    call separ_RI_elas_cp(elas_id ,nur , gr, nui ,gi, &
+                          e1r     , e2r  ,&
+                          nu12r   , &
+                          e1i     , e2i  ,&
+                          nu12i   , &
+                          hr, hi)
+!
 ! - Compute Hooke matrix
 !
     if (present(di_)) then
         call matrHookePlaneStress(elas_id, repere,&
-                                  ei , nui,&
-                                  e1i, e2i, nu12i, g1i,&
+                                  hi, gi, g1i,&
                                   di)
         di_ = di
     endif
     if (present(dr_)) then
         call matrHookePlaneStress(elas_id, repere,&
-                                  er , nur,&
-                                  e1r, e2r, nu12r, g1r,&
+                                  hr, gr, g1r,&
                                   dr)
         dr_ = dr
     endif

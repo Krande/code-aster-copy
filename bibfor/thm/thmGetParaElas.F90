@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,8 +52,9 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: g, alpha(2)
+    real(kind=8) :: g, nu, alpha(2)
     character(len=8) :: fami
+    g = 0.d0
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,12 +80,13 @@ type(THM_DS), intent(inout) :: ds_thm
                        g1_ = ds_thm%ds_material%elas%g_lt,&
                        g2_ = ds_thm%ds_material%elas%g_ln,&
                        g3_ = ds_thm%ds_material%elas%g_tn,&
-                       g_  = g)
+                       g_  = ds_thm%ds_material%elas%g)
     if (ds_thm%ds_material%elas%id .eq. 3) then
         ds_thm%ds_material%elas%g_ln = g
         ds_thm%ds_material%elas%g    = g
     else
-        ds_thm%ds_material%elas%g    = g
+        nu = ds_thm%ds_material%elas%nu
+        ds_thm%ds_material%elas%g    = 1.d0/((1.d0+nu)*(1.d0-2.d0*nu))
     endif
 !
 ! - Read parameters (dilatation)

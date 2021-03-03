@@ -25,10 +25,10 @@ subroutine get_elas_para(fami    , j_mater, poum, ipg, ispg, &
                          nu12_   , nu13_, nu23_,&
                          g1_     , g2_  , g3_  ,&
                          BEHinteg, xyzgau_,&
-                         ei_      , nui_  , gi_   ,&
-                         e1i_     , e2i_  , e3i_ ,&
-                         nu12i_     , nu13i_  , nu23i_ ,&
-                         g1i_     , g2i_  , g3i_)
+                         ei_     , nui_  , gi_   ,&
+                         e1i_    , e2i_  , e3i_ ,&
+                         nu12i_  , nu13i_, nu23i_ ,&
+                         g1i_    , g2i_  , g3i_)
 !
 use Behaviour_type
 !
@@ -73,10 +73,14 @@ type(Behaviour_Integ), optional, intent(in) :: BEHinteg
 ! In  poum             : '-' or '+' for parameters evaluation (previous or current temperature)
 ! In  ipg              : current point gauss
 ! In  ispg             : current "sous-point" gauss
-! In  elas_id          : Type of elasticity or viscoelasticity
+! In  elas_id          : Type of elasticity
 !                 1 - Isotropic
 !                 2 - Orthotropic
 !                 3 - Transverse isotropic
+!                    or viscoelasticity
+!                 4 - Isotropic
+!                 5 - Orthotropic
+!                 6 - Transverse isotropic
 ! In  elas_keyword     : keyword factor linked to type of elasticity parameters
 ! Out e                : real Young modulus (isotropic)
 ! Out ei               : imaginary Young modulus (isotropic)
@@ -125,7 +129,7 @@ type(Behaviour_Integ), optional, intent(in) :: BEHinteg
     real(kind=8) :: nu12i, nu13i, nu23i
     real(kind=8) :: g1r, g2r, g3r
     real(kind=8) :: g1i, g2i, g3i
-    complex(kind=8) :: Kc, Gc, nuc
+    complex(kind=8) :: Gc, nuc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -176,7 +180,7 @@ type(Behaviour_Integ), optional, intent(in) :: BEHinteg
                         c10, c01, c20, k)
             nur = (3.d0*k-4.0d0*(c10+c01))/(6.d0*k+4.0d0*(c10+c01))
             er  = 4.d0*(c10+c01)*(un+nur)
-            gr = 1.d0/((1.d0 + nur)*(1.d0-2.d0*nur))
+            gr = er/(2.d0*(1 + nur))
         else
             nomres(1) = 'E'
             nomres(2) = 'NU'
@@ -186,100 +190,47 @@ type(Behaviour_Integ), optional, intent(in) :: BEHinteg
                         nbres, nomres, valres, icodre, 1)
             er  = valres(1)
             nur = valres(2)
-            gr = 1.d0/((1.d0 + nur)*(1.d0-2.d0*nur))
+            gr = er/(2.d0*(1 + nur))
         endif
 
-    elseif (elas_id .eq. 2 .or. elas_id .eq. 5) then
-        if (elas_keyword.eq.'ELAS_VISCO_ORTH') then
-            nomres(1) = 'E_L'
-            nomres(2) = 'E_T'
-            nomres(3) = 'E_N'
-            nomres(4) = 'NU_LT'
-            nomres(5) = 'NU_LN'
-            nomres(6) = 'NU_TN'
-            nomres(7) = 'G_LT'
-            nomres(8) = 'G_LN'
-            nomres(9) = 'G_TN'
-            nbres     = 9
-            call rcvalc(j_mater, elas_keyword, nbres, nomres, valresc, icodre, 1)
-            e1r = real(valresc(1))
-            e2r = real(valresc(2))
-            e3r = real(valresc(3))
-            nu12r = real(valresc(4))
-            nu13r = real(valresc(5))
-            nu23r = real(valresc(6))
-            g1r = real(valresc(7))
-            g2r = real(valresc(8))
-            g3r = real(valresc(9))
-            e1i = aimag(valresc(1))
-            e2i = aimag(valresc(2))
-            e3i = aimag(valresc(3))
-            nu12i = aimag(valresc(4))
-            nu13i = aimag(valresc(5))
-            nu23i = aimag(valresc(6))
-            g1i = aimag(valresc(7))
-            g2i = aimag(valresc(8))
-            g3i = aimag(valresc(9))
-        else
-            nomres(1) = 'E_L'
-            nomres(2) = 'E_T'
-            nomres(3) = 'E_N'
-            nomres(4) = 'NU_LT'
-            nomres(5) = 'NU_LN'
-            nomres(6) = 'NU_TN'
-            nomres(7) = 'G_LT'
-            nomres(8) = 'G_LN'
-            nomres(9) = 'G_TN'
-            nbres     = 9
-            call rcvalb(fami, ipg, ispg, poum, j_mater,&
-                        ' ', elas_keyword, nb_para, para_name, [para_vale],&
-                        nbres, nomres, valres, icodre, 1)
-            e1r = valres(1)
-            e2r = valres(2)
-            e3r = valres(3)
-            nu12r = valres(4)
-            nu13r = valres(5)
-            nu23r = valres(6)
-            g1r = valres(7)
-            g2r = valres(8)
-            g3r = valres(9)
-        endif
-    elseif (elas_id .eq. 3 .or. elas_id .eq. 6) then
-        if (elas_keyword.eq.'ELAS_VISCO_ISTR') then
-            nomres(1) = 'E_L'
-            nomres(2) = 'E_N'
-            nomres(3) = 'NU_LT'
-            nomres(4) = 'NU_LN'
-            nomres(5) = 'G_LN'
-            nbres     = 5
-            call rcvalc(j_mater, elas_keyword, nbres, nomres, valresc, icodre, 1)
-            e1r = real(valresc(1))
-            e3r = real(valresc(2))
-            nu12r = real(valresc(3))
-            nu13r = real(valresc(4))
-            gr = real(valresc(5))
-            e1i = aimag(valresc(1))
-            e3i = aimag(valresc(2))
-            nu12i = aimag(valresc(3))
-            nu13i = aimag(valresc(4))
-            gi = aimag(valresc(5))
-
-        else
-            nomres(1) = 'E_L'
-            nomres(2) = 'E_N'
-            nomres(3) = 'NU_LT'
-            nomres(4) = 'NU_LN'
-            nomres(5) = 'G_LN'
-            nbres     = 5
-            call rcvalb(fami, ipg, ispg, poum, j_mater,&
-                        ' ', elas_keyword, nb_para, para_name, [para_vale],&
-                        nbres, nomres, valres, icodre, 1)
-            e1r   = valres(1)
-            e3r   = valres(2)
-            nu12r = valres(3)
-            nu13r = valres(4)
-            gr   = valres(5)
-        endif
+    elseif (elas_id .eq. 2) then
+        nomres(1) = 'E_L'
+        nomres(2) = 'E_T'
+        nomres(3) = 'E_N'
+        nomres(4) = 'NU_LT'
+        nomres(5) = 'NU_LN'
+        nomres(6) = 'NU_TN'
+        nomres(7) = 'G_LT'
+        nomres(8) = 'G_LN'
+        nomres(9) = 'G_TN'
+        nbres     = 9
+        call rcvalb(fami, ipg, ispg, poum, j_mater,&
+                    ' ', elas_keyword, nb_para, para_name, [para_vale],&
+                    nbres, nomres, valres, icodre, 1)
+        e1r = valres(1)
+        e2r = valres(2)
+        e3r = valres(3)
+        nu12r = valres(4)
+        nu13r = valres(5)
+        nu23r = valres(6)
+        g1r = valres(7)
+        g2r = valres(8)
+        g3r = valres(9)
+    elseif (elas_id .eq. 3)  then
+        nomres(1) = 'E_L'
+        nomres(2) = 'E_N'
+        nomres(3) = 'NU_LT'
+        nomres(4) = 'NU_LN'
+        nomres(5) = 'G_LN'
+        nbres     = 5
+        call rcvalb(fami, ipg, ispg, poum, j_mater,&
+                    ' ', elas_keyword, nb_para, para_name, [para_vale],&
+                    nbres, nomres, valres, icodre, 1)
+        e1r   = valres(1)
+        e3r   = valres(2)
+        nu12r = valres(3)
+        nu13r = valres(4)
+        gr   = valres(5)
     elseif (elas_id .eq. 4) then
         nomres(1) = 'G'
         nomres(2) = 'NU'
@@ -287,18 +238,66 @@ type(Behaviour_Integ), optional, intent(in) :: BEHinteg
         call rcvalc(j_mater, elas_keyword, nbres, nomres, valresc, icodre, 1)
         Gc = valresc(1)
         nuc = valresc(2)
-        Kc = 2*Gc*(1.d0 + nuc)/(3.d0*(1.d0 - 2.d0*nuc))
-        nur = (3.d0*real(Kc) - 2.d0*real(Gc))/(2.d0*(real(Gc) + 3.d0*real(Kc)))
-        nui = (3.d0*aimag(Kc) - 2.d0*aimag(Gc))/(2.d0*(aimag(Gc) + 3.d0*aimag(Kc)))
-        er = 2.d0*real(Gc)*(1.d0 + nur)
-        ei = 2.d0*aimag(Gc)*(1.d0 + nui)
+        nur = real(nuc)
+        nui = aimag(nuc)
+        er = 2.d0*real(Gc*(1.d0 + nuc))
+        ei = 2.d0*aimag(Gc*(1.d0 + nuc))
         gr = real(Gc)
         gi = aimag(Gc)
+    elseif (elas_id .eq. 5) then
+        nomres(1) = 'E_L'
+        nomres(2) = 'E_T'
+        nomres(3) = 'E_N'
+        nomres(4) = 'NU_LT'
+        nomres(5) = 'NU_LN'
+        nomres(6) = 'NU_TN'
+        nomres(7) = 'G_LT'
+        nomres(8) = 'G_LN'
+        nomres(9) = 'G_TN'
+        nbres     = 9
+        call rcvalc(j_mater, elas_keyword, nbres, nomres, valresc, icodre, 1)
+        e1r = real(valresc(1))
+        e2r = real(valresc(2))
+        e3r = real(valresc(3))
+        nu12r = real(valresc(4))
+        nu13r = real(valresc(5))
+        nu23r = real(valresc(6))
+        g1r = real(valresc(7))
+        g2r = real(valresc(8))
+        g3r = real(valresc(9))
+        e1i = aimag(valresc(1))
+        e2i = aimag(valresc(2))
+        e3i = aimag(valresc(3))
+        nu12i = aimag(valresc(4))
+        nu13i = aimag(valresc(5))
+        nu23i = aimag(valresc(6))
+        g1i = aimag(valresc(7))
+        g2i = aimag(valresc(8))
+        g3i = aimag(valresc(9))
+    elseif (elas_id .eq. 6) then
+        nomres(1) = 'E_L'
+        nomres(2) = 'E_N'
+        nomres(3) = 'NU_LT'
+        nomres(4) = 'NU_LN'
+        nomres(5) = 'G_LN'
+        nbres     = 5
+        call rcvalc(j_mater, elas_keyword, nbres, nomres, valresc, icodre, 1)
+        e1r = real(valresc(1))
+        e3r = real(valresc(2))
+        nu12r = real(valresc(3))
+        nu13r = real(valresc(4))
+        gr = real(valresc(5))
+        e1i = aimag(valresc(1))
+        e3i = aimag(valresc(2))
+        nu12i = aimag(valresc(3))
+        nu13i = aimag(valresc(4))
+        gi = aimag(valresc(5))
     else
         ASSERT(ASTER_FALSE)
     endif
 !
 ! - Output
+!
     if (present(e_)) then
         e_ = er
     endif

@@ -1,0 +1,230 @@
+#!/usr/bin/env python
+# coding: utf-8
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# CAS_TEST: SDLV126G
+#
+# BUT DE LA FAMILLE DE TEST
+# Ce test unitaire permet de verifier la bone implémentation des 
+# routines de calcul des matrices de rigidité pour les matériaux
+# élastique et viscoélastique 3D.
+#
+# BUT DE L'INDICE G
+# comparaison avec autre code EF
+# ### Import des packages et démarrage d'aster
+
+# In[1]:
+
+
+import numpy as np
+import os 
+
+import code_aster
+from code_aster.Commands import *
+code_aster.init('--test')
+
+
+# ### Import du maillage
+
+# In[2]:
+
+
+mail = code_aster.Mesh()
+mail.readMedFile('sdlv126g.med')
+
+
+# ### Coordonnée Postraitement
+
+# In[3]:
+
+
+# coordonnée du maillage
+coord_l = mail.getCoordinates().EXTR_COMP().valeurs
+coord = np.reshape(coord_l, (coord_l.size//3,3))
+x_max = 1.
+y_max = 0.1
+z_max = 0.1
+
+# coordonnée de post-traitement
+x_post = np.array([x_max])
+y_post = np.array([y_max/2.])
+z_post = np.array([z_max])
+coord_post = np.zeros((x_post.size*y_post.size*z_post.size, 3))
+k=0
+for i in range(x_post.size):
+    for j in range(y_post.size):
+        for l in range(z_post.size):
+            coord_post[k] = np.array([x_post[i], y_post[j], z_post[l]])
+            k=k+1
+        
+# coordonnée du maillage les plus proches
+ind = []
+for k in range(x_post.size*y_post.size*z_post.size):
+    ind.append(np.argmin(np.linalg.norm(coord-coord_post[k], axis = 1)))
+
+
+# ### Declaration du modèle
+
+# In[4]:
+
+
+model = AFFE_MODELE(AFFE=(_F(TOUT='OUI', 
+                             PHENOMENE='MECANIQUE', 
+                             MODELISATION='3D') 
+                          ),
+                    MAILLAGE=mail)
+
+
+# ### Déclaration des propiété matériaux et des fréquences
+
+# In[5]:
+
+
+# materiau elastique: acier
+G = 8.08e10
+K = 1.75e11
+nu = (3*K - 2*G)/(2*(3*K+G))
+E = 2*G*(1+nu)
+rho_a = 7800 
+acier = DEFI_MATERIAU(ELAS=_F(E=E, NU=nu, RHO=rho_a))
+
+# matériau viscoélastique: deltane350
+G0 = 1.4e6
+Ginf = 0.54e9
+tauG = 0.52e-6
+alphaG = 0.59
+rho_d = 1460
+
+
+# ### Condtion aux limites
+
+# In[6]:
+
+
+encas = AFFE_CHAR_CINE(MECA_IMPO=(_F(GROUP_MA=('ENCAS'),
+                                     DX=0., DY=0., DZ=0.)),
+                       MODELE=model)
+
+excit = AFFE_CHAR_MECA(FORCE_NODALE=_F(GROUP_NO=('EXCIT',), FX=0., FY=0., FZ=1.),
+                       VERI_NORM='NON',
+                       MODELE=model)
+
+
+# ### Construction second membre
+
+# In[7]:
+
+
+nddl = NUME_DDL(MODELE=model)
+F_elem = CALC_VECT_ELEM(OPTION='CHAR_MECA', CHARGE= excit)
+F = ASSE_VECTEUR(VECT_ELEM=F_elem, NUME_DDL=nddl)
+
+
+# ### Boucle sur les fréquences
+
+# In[8]:
+
+
+freq_amor = np.array([ 45., 179., 255., 696.])
+#freq_amor = np.linspace(0,100,11)
+val_refe = np.array([-2.52885263e-06-5.26288448e-06j,  
+                     1.11783628e-09-3.30841894e-09j,
+                     1.01911277e-07-2.96162398e-07j,  
+                     1.48442697e-08-7.13562822e-08j])
+val_calc = np.array([-2.19729959e-06-5.31250496e-06j,  
+                     1.15296519e-09-3.39972232e-09j,
+                     1.04664929e-07-2.81759671e-07j,  
+                     1.57582867e-08-6.87887584e-08j])
+Nb_freq = freq_amor.size 
+FRF_amor = np.zeros(Nb_freq, dtype=complex)
+
+for i in range(Nb_freq):
+    
+    freq =freq_amor[i]
+
+    # matériau viscoélastique: deltane350
+    G = (G0 + Ginf*(1j*2*np.pi*freq*tauG)**alphaG)/(1. + (1j*2*np.pi*freq*tauG)**alphaG)
+    K = complex(2.22e9,0)
+    nu = (3*K-2*G)/(3*K+2*G)*0.5
+    deltane = DEFI_MATERIAU(ELAS_VISCO=_F(G=G, NU=nu, RHO=rho_d))
+        
+    # Affectation des matériaux
+    mater = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=('STRUCT','ENCAS'), MATER=acier),
+                                _F(GROUP_MA=('VISCO'), MATER=deltane),
+                            ),
+                          MODELE=model)
+     
+    
+    # Matrice de masse
+    M_elem1 = CALC_MATR_ELEM(OPTION='MASS_MECA',
+                            MODELE=model,
+                            CHAM_MATER=mater)
+    # Matrice de rigidité
+    K_elem1 = CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                            MODELE=model,
+                            CHAM_MATER=mater)
+    Kc_elem1 = CALC_MATR_ELEM(OPTION='RIGI_MECA_HYST',
+                             MODELE=model,
+                             CHAM_MATER=mater,
+                             RIGI_MECA=K_elem1)
+
+    # Assemblage
+    M1 = ASSE_MATRICE(MATR_ELEM=M_elem1, NUME_DDL=nddl, CHAR_CINE=encas)
+    K1 = ASSE_MATRICE(MATR_ELEM=Kc_elem1, NUME_DDL=nddl, CHAR_CINE=encas)
+    
+    # Resolution du système
+    res_harm = DYNA_VIBRA(TYPE_CALCUL    = 'HARM',
+                           BASE_CALCUL    = 'PHYS',
+                           MATR_MASS      = M1,
+                           MATR_RIGI      = K1,
+                           SOLVEUR        = _F(METHODE='MUMPS'),
+                           FREQ           = freq,
+                           TOUT_CHAM      = 'OUI',
+                           EXCIT          = _F(VECT_ASSE=F,
+                                               COEF_MULT=1.)
+                          )
+
+
+    # recupération des accélération aux points de postraitement
+    TEST_RESU (RESU=_F(RESULTAT    = res_harm,
+                       FREQ        = freq_amor[i],
+                       NOM_CHAM    = 'DEPL',
+                       GROUP_NO    = 'EXCIT',
+                       NOM_CMP     = 'DZ' ,
+                       REFERENCE   = 'AUTRE_ASTER' ,
+                       VALE_CALC_C = val_calc[i],
+                       VALE_REFE_C = val_refe[i],
+                       VALE_ABS    = 'NON', 
+                       CRITERE     = 'RELATIF',
+                       PRECISION   = 1e-1,))
+    
+
+
+# In[ ]:
+
+
+FIN()
+
+
+# In[ ]:
+
+
+
+

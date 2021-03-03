@@ -1,0 +1,199 @@
+#!/usr/bin/env python
+# coding: utf-8
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# CAS_TEST__: SDLv126B
+#
+# BUT DE LA FAMILLE DE TEST
+# Ce test unitaire permet de verifier la bone implémentation des 
+# routines de calcul des matrices de rigidité pour les matériaux
+# élastique et viscoélastique 3D isotropes.
+#
+# BUT DE L'INDICE B
+# test de contructions des matrices de rigidités d'un matériaux 
+# viscoélastique 3D orthotrope.
+# ### Import des packages et démarrage d'aster
+
+# In[1]:
+
+
+import numpy as np
+
+import code_aster
+from code_aster.Commands import *
+code_aster.init("--test")
+
+test = code_aster.TestCase()
+
+
+# ### Import du maillage
+
+# In[2]:
+
+
+mail = code_aster.Mesh()
+mail.readMedFile('sdlv126a.med')
+
+
+# ### Declaration du modèle
+
+# In[3]:
+
+
+model = AFFE_MODELE(AFFE=(_F(GROUP_MA=('3D'), 
+                             PHENOMENE='MECANIQUE', 
+                             MODELISATION='3D') 
+                          ),
+                    MAILLAGE=mail)
+
+
+# ### Déclaration des matériaux
+
+# In[4]:
+
+
+# materiau elastique 1:
+G1 = 15
+K1 = 20
+NU1 = (3*K1 - 2*G1)/(2*(3*K1 + G1))
+E1 = G1*(2*(1 + NU1))
+materiau_1 = DEFI_MATERIAU(ELAS_ORTH=_F(E_L=E1, E_T=E1, E_N=E1,
+                                        G_LT=G1, G_TN=G1, G_LN=G1,
+                                        NU_LT=NU1, NU_TN=NU1, NU_LN=NU1))
+
+# materiau elastique 2:
+G2 = 10
+K2 = 25
+NU2 = (3*K2 - 2*G2)/(2*(3*K2 + G2))
+E2 = G2*(2*(1 + NU2))
+materiau_2 = DEFI_MATERIAU(ELAS_ORTH=_F(E_L=E2, E_T=E2, E_N=E2,
+                                        G_LT=G2, G_TN=G2, G_LN=G2,
+                                        NU_LT=NU2, NU_TN=NU2, NU_LN=NU2))
+
+# materiaux viscoélastique
+G =G1 + 1j*G2 
+K = K1 + 1j*K2
+NU = (3*K - 2*G)/(2*(3*K + G))
+E = 2*G*(1+NU)
+materiau_v = DEFI_MATERIAU(ELAS_VISCO_ORTH=_F(E_L=E, E_T=E, E_N=E,
+                                              G_LT=G, G_TN=G, G_LN=G,
+                                              NU_LT=NU, NU_TN=NU, NU_LN=NU))
+
+
+# ### Affectation des matériaux
+
+# In[5]:
+
+
+mater_1 = AFFE_MATERIAU(AFFE=(_F(GROUP_MA='3D', MATER=materiau_1)),
+                        MODELE=model)
+mater_2 = AFFE_MATERIAU(AFFE=(_F(GROUP_MA='3D', MATER=materiau_2)),
+                        MODELE=model)
+mater_v = AFFE_MATERIAU(AFFE=(_F(GROUP_MA='3D', MATER=materiau_v)),
+                        MODELE=model)
+
+
+# ### Construction de la matrice par RIGI_MECA
+
+# In[6]:
+
+
+nddl = NUME_DDL(MODELE=model)
+
+# Matrice élastique 1
+K1_elem = CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                         MODELE=model,
+                         CHAM_MATER=mater_1)
+K1 = ASSE_MATRICE(MATR_ELEM=K1_elem, NUME_DDL=nddl)
+
+# Matrice élastique 2
+K2_elem = CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                         MODELE=model,
+                         CHAM_MATER=mater_2)
+K2 = ASSE_MATRICE(MATR_ELEM=K2_elem, NUME_DDL=nddl)
+
+# Matrice viscoélastique
+Kv_elem = CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                         MODELE=model,
+                         CHAM_MATER=mater_v)
+Kv = ASSE_MATRICE(MATR_ELEM=Kv_elem, NUME_DDL=nddl)
+
+
+# ### Construction de la matrice par RIGI_MECA_HYST
+
+# In[7]:
+
+
+# Matrice élastique 1
+K1c_elem = CALC_MATR_ELEM(OPTION='RIGI_MECA_HYST',
+                          MODELE=model,
+                          CHAM_MATER=mater_1,
+                          RIGI_MECA=K1_elem)
+K1c = ASSE_MATRICE(MATR_ELEM=K1c_elem, NUME_DDL=nddl)
+
+# Matrice élastique 2
+K2c_elem = CALC_MATR_ELEM(OPTION='RIGI_MECA_HYST',
+                          MODELE=model,
+                          CHAM_MATER=mater_2,
+                          RIGI_MECA=K2_elem)
+K2c = ASSE_MATRICE(MATR_ELEM=K2c_elem, NUME_DDL=nddl)
+
+# Matrice viscoélastique
+Kvc_elem = CALC_MATR_ELEM(OPTION='RIGI_MECA_HYST',
+                          MODELE=model,
+                          CHAM_MATER=mater_v,
+                          RIGI_MECA=Kv_elem)
+Kvc = ASSE_MATRICE(MATR_ELEM=Kvc_elem, NUME_DDL=nddl)
+
+
+# ### Test des matrices (TEST_*)
+
+# In[8]:
+
+
+k1 = K1.EXTR_MATR()
+k1_c = K1c.EXTR_MATR()
+k2 = K2.EXTR_MATR()
+k2_c = K2c.EXTR_MATR()
+kv = Kv.EXTR_MATR()
+kv_c = Kvc.EXTR_MATR()
+
+# Test de la bonne construction des matrices elastiques
+np.savetxt('test.txt', k1-np.real(k1_c))
+TEST_FICHIER(FICHIER='test.txt', TYPE_TEST='SOMM_ABS', NB_VALE=576, VALE_CALC=1e-7, CRITERE='ABSOLU')
+np.savetxt('test.txt', np.imag(k1_c))
+TEST_FICHIER(FICHIER='test.txt', TYPE_TEST='SOMM_ABS', NB_VALE=576, VALE_CALC=1e-7, CRITERE='ABSOLU')
+
+# Test de la bonne construction des mastrices viscoelastiques
+np.savetxt('test.txt', kv-np.real(kv_c))
+TEST_FICHIER(FICHIER='test.txt', TYPE_TEST='SOMM_ABS', NB_VALE=576, VALE_CALC=1e-7, CRITERE='ABSOLU')
+
+# Test de la bonne séparation des parties réelles et imaginaires matrices
+np.savetxt('test.txt', np.real(kv_c)-k1)
+TEST_FICHIER(FICHIER='test.txt', TYPE_TEST='SOMM_ABS', NB_VALE=576, VALE_CALC=1e-7, CRITERE='ABSOLU')
+np.savetxt('test.txt', np.imag(kv_c)-k2)
+TEST_FICHIER(FICHIER='test.txt', TYPE_TEST='SOMM_ABS', NB_VALE=576, VALE_CALC=1e-7, CRITERE='ABSOLU')
+
+
+# In[ ]:
+
+
+FIN()
+

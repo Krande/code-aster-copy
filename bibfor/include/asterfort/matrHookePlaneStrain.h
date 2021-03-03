@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,16 +19,11 @@
 !
 interface
     subroutine matrHookePlaneStrain(elas_type, repere,&
-                                    e , nu, g,&
-                                    e1, e2, e3, nu12, nu13, nu23, g1,&
+                                    h, g, g1,&
                                     matr_elas)
         integer, intent(in) :: elas_type
         real(kind=8), intent(in) :: repere(7)
-        real(kind=8), intent(in) :: e
-        real(kind=8), intent(in) :: nu
-        real(kind=8), intent(in) :: g
-        real(kind=8), intent(in) :: e1, e2, e3
-        real(kind=8), intent(in) :: nu12, nu13, nu23
+        real(kind=8), intent(in) :: h(6), g
         real(kind=8), intent(in) :: g1
         real(kind=8), intent(out) :: matr_elas(4, 4)
     end subroutine matrHookePlaneStrain
