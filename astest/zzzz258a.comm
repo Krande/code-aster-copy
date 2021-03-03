@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -229,5 +229,28 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=_F(NOM_PARA='ABSC_CURV',
                      VALE=1.0,),
            )
+
+# Using Python binding for behaviour
+study = code_aster.StudyDescription(MOMEC2, CHMAT)
+dProblem = code_aster.DiscreteProblem(study)
+
+thisdict1 = {
+  "RELATION": "ELAS",
+  "MAILLE": "M5"
+}
+
+thisdict2 = {
+  "RELATION": "VMIS_CINE_LINE",
+  "MAILLE": ('M1','M3','M7','M8','M9')
+}
+
+thisdictFinal = {
+  "COMPORTEMENT": (thisdict1,thisdict2)
+}
+
+# No initial state, no implex and verbosity =1
+dProblem.createBehaviour(thisdictFinal, 0, 0, 1)
+
+
 
 FIN()

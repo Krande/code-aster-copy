@@ -60,5 +60,17 @@ void exportDiscreteProblemToPython() {
         .def( "computeMechanicalStiffnessMatrix",
               &DiscreteProblemClass::computeMechanicalStiffnessMatrix )
         .def( "computeMechanicalMassMatrix", &DiscreteProblemClass::computeMechanicalMassMatrix )
-        .def( "getStudyDescription", &DiscreteProblemClass::getStudyDescription );
+        .def( "getStudyDescription", &DiscreteProblemClass::getStudyDescription )
+        .def( "createBehaviour", &DiscreteProblemClass::createBehaviour,
+               R"(
+Create maps for behaviour (COMPOR, CARCRI and MULCOM)
+
+Arguments:
+    initialState: set 1 if there is an initial stress
+    implex: set 1 if using Implex algorithm
+    verbosity: level of verbosity, 1 to have description of behaviour
+
+Returns:
+    nothing
+        )");
 };

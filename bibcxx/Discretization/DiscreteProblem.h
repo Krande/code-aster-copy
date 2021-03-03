@@ -29,10 +29,10 @@
 #include "astercxx.h"
 
 #include <vector>
-
-#include "Numbering/DOFNumbering.h"
+#include "Behaviours/BehaviourProperty.h"
 #include "LinearAlgebra/ElementaryMatrix.h"
 #include "LinearAlgebra/ElementaryVector.h"
+#include "Numbering/DOFNumbering.h"
 #include "Studies/StudyDescription.h"
 
 /**
@@ -45,6 +45,9 @@ class DiscreteProblemClass {
     /** @brief Etude definie par l'utilisateur */
     StudyDescriptionPtr _study;
 
+    /** @brief Behaviour properties */
+    BehaviourPropertyPtr _behaviourProp;
+
     /**
      * @brief Production d'un CommandSyntax pour CALC_MATR_ELEM
      */
@@ -53,8 +56,7 @@ class DiscreteProblemClass {
     /**
      * @brief Calcul des matrices elementaires pour une option quelconque
      */
-    ElementaryMatrixDisplacementRealPtr
-    computeMechanicalMatrix( const std::string &optionName ) ;
+    ElementaryMatrixDisplacementRealPtr computeMechanicalMatrix( const std::string &optionName );
 
   public:
     /**
@@ -79,7 +81,7 @@ class DiscreteProblemClass {
     /**
      * @brief Calcul des matrices elementaires pour l'option CHAR_MECA
      */
-    ElementaryVectorPtr buildElementaryMechanicalLoadsVector() ;
+    ElementaryVectorPtr buildElementaryMechanicalLoadsVector();
 
     /**
      * @brief Fonction permettant de calculer les vecteurs élémentaires pour les
@@ -103,9 +105,8 @@ class DiscreteProblemClass {
      theta
      * @return Vecteur élémentaire
      */
-    ElementaryVectorPtr
-    buildElementaryNeumannVector( const VectorReal time,
-                                  ExternalVariablesComputationPtr ) ;
+    ElementaryVectorPtr buildElementaryNeumannVector( const VectorReal time,
+                                                      ExternalVariablesComputationPtr );
 
     /**
      * @brief Fonction permettant de calculer les matrices élémentaires de rigidité
@@ -127,10 +128,8 @@ class DiscreteProblemClass {
      * @brief Construction d'un vecteur de chargement cinématique
      * @return Booleen indiquant que tout s'est bien passe
      */
-    FieldOnNodesRealPtr buildDirichletBC( const BaseDOFNumberingPtr &curDOFNum,
-                                               const double &time,
-                                               const JeveuxMemory &memType = Permanent ) const
-        ;
+    FieldOnNodesRealPtr buildDirichletBC( const BaseDOFNumberingPtr &curDOFNum, const double &time,
+                                          const JeveuxMemory &memType = Permanent ) const;
 
     /**
      * @brief Détermination de la numérotation de ddl
@@ -144,26 +143,32 @@ class DiscreteProblemClass {
      */
     ElementaryMatrixDisplacementRealPtr
     computeMechanicalDampingMatrix( const ElementaryMatrixDisplacementRealPtr &rigidity,
-                                    const ElementaryMatrixDisplacementRealPtr &mass )
-        ;
+                                    const ElementaryMatrixDisplacementRealPtr &mass );
 
     /**
      * @brief Calcul des matrices elementaires pour l'option RIGI_MECA
      */
-    ElementaryMatrixDisplacementRealPtr computeMechanicalStiffnessMatrix()
-        ;
+    ElementaryMatrixDisplacementRealPtr computeMechanicalStiffnessMatrix();
 
     /**
      * @brief Calcul des matrices elementaires pour l'option MASS_MECA
      */
-    ElementaryMatrixDisplacementRealPtr computeMechanicalMassMatrix()
-        ;
+    ElementaryMatrixDisplacementRealPtr computeMechanicalMassMatrix();
 
     /**
      * @brief Récupération de l'étude
      * @return Numérotation du problème discret
      */
     StudyDescriptionPtr getStudyDescription() { return _study; };
+
+    /**
+     * @brief Create maps for behaviours
+     */
+    void createBehaviour(PyObject *keywords,
+                         const ASTERINTEGER initialState = 0,
+                         const ASTERINTEGER implex = 0,
+                         const ASTERINTEGER verbosity = 0);
+
 };
 
 /**

@@ -164,6 +164,15 @@
 
 
 ================================================================================
+:py:class:`~code_aster.Objects.ConstantFieldOnCellsChar16` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.ConstantFieldOnCellsChar16
+   :show-inheritance:
+   :members:
+
+
+================================================================================
 :py:class:`~code_aster.Objects.ConstantFieldOnCellsReal` object
 ================================================================================
 

@@ -396,3 +396,32 @@ ElementaryMatrixDisplacementRealPtr
 DiscreteProblemClass::computeMechanicalStiffnessMatrix() {
     return computeMechanicalMatrix( "RIGI_MECA" );
 };
+
+
+
+void DiscreteProblemClass::createBehaviour(
+    PyObject *keywords,
+    const ASTERINTEGER initialState,
+    const ASTERINTEGER implex,
+    const ASTERINTEGER verbosity)
+{
+
+    // Create object for behaviour
+    BehaviourPropertyPtr _behavProp;
+    _behavProp = BehaviourPropertyPtr( 
+                 new BehaviourPropertyClass( _study -> getModel( ),
+                                             _study -> getMaterialField( ) ));
+    _behavProp -> setInitialState( initialState );
+    _behavProp -> setImplex( implex );
+    _behavProp -> setVerbosity( verbosity );
+
+    // Create syntax
+    CommandSyntax cmdSt( "code_aster.Cata.Commons.c_comportement.C_COMPORTEMENT_SNL" );
+    if ( !PyDict_Check( keywords ) ) {
+        throw std::runtime_error( "Create Behaviour: 'dict' object is expected." );
+    }
+    cmdSt.define( keywords );
+
+    // Build objects
+    _behavProp -> buildObjects( );
+};
