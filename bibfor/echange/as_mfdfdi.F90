@@ -41,8 +41,9 @@ subroutine as_mfdfdi(fid, ind, cha, type, comp,&
 #if !ASTER_MED_SAME_INT_IDT
     med_idt :: fidm
     med_int :: ind4, type4, cret4, nseqc4, lmai4
+    lmail = 0
     fidm = to_med_idt(fid)
-    ind4 = ind
+    ind4 = to_med_int(ind)
     call mfdfdi(fidm, ind4, cha, nommai, lmai4,&
                 type4, comp, unit, unidt, nseqc4,&
                 cret4)
