@@ -88,7 +88,7 @@ module lcgtn_module
 
        
     aster_logical:: DBG = ASTER_FALSE
-    real(kind=8) :: dbg_tmp1, dbg_tmp2, dbg_tmp3, dbg_tmp4, dbg_tmp5
+    real(kind=8) :: dbg_tmp1, dbg_tmp2, dbg_tmp3, dbg_tmp4
     
 contains
 
@@ -609,7 +609,7 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
         tshmax = f_ts_hat(self,dka=dkamax) 
     end if
     
-    ASSERT(dkamin .lt. dkamax)
+    ASSERT(dkamin .le. dkamax)
     ASSERT(tshmin .le. tshmax)
     ASSERT(tshmin .le. tels)
     ASSERT(tshmin .gt. 0)
@@ -763,7 +763,7 @@ subroutine ComputePlasticity(self, eps, ka, f, state, ep, &
 
         ! Valeur de p optimale -> celle qui conduit au meilleur lambda
         ASSERT(fg1*fg2 .le. 0)
-        ASSERT(p2.gt.p1)
+        ASSERT(p2.ge.p1)
         p = merge(p1,p2,abs(dka-lbd1).le.abs(dka-lbd2))
 
 
