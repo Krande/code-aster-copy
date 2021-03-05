@@ -37,8 +37,9 @@ subroutine as_mlclci(fid, nordr, k64, ityp, nbn,&
 #if med_int_kind != aster_int_kind || med_idt_kind != aster_int_kind
     med_idt :: fidm
     med_int :: nordr4, ityp4, nbn4, cret4, ndim4, tymas4, nbmas4
+    tymasu = 0
     fidm = to_med_idt(fid)
-    nordr4 = nordr
+    nordr4 = to_med_int(nordr)
     call mlclci(fidm, nordr4, k64, ityp4, ndim4,&
                 nbn4, giname, nomasu, nbmas4, tymas4,&
                 cret4)
