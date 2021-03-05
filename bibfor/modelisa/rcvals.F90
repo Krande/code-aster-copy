@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine rcvals(iarret, icodre, nbres, nomres)
                 para = nomres(ires)
                 valk = para
                 call utmess('E+', 'MODELISA9_77', sk=valk)
-                if (iarret .eq. 1) then
+                if (iarret .eq. 1 .or. iarret .eq. 3) then
                     call tecael(iadzi, iazk24)
                     nomail = zk24(iazk24-1+3)(1:8)
                     valk = nomail
@@ -48,7 +48,7 @@ subroutine rcvals(iarret, icodre, nbres, nomres)
                 call utmess('E', 'VIDE_1')
             endif
 200      continue
-        if (ier .ne. 0) then
+        if (ier .ne. 0) then 
             call utmess('F', 'MODELISA6_4')
         endif
     endif

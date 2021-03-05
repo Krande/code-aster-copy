@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -104,7 +104,7 @@ subroutine pmfitx(icdmat, isw, casect, gto)
                             1, 'E', val, codres, 1)
             endif
         else if (isw.eq.2) then
-            call rcvala(icdmat, materi, 'ELAS', 0, ' ', [0.0d+0], 1, 'RHO', val, codres, 0)
+            call rcvala(icdmat, materi, 'ELAS', 0, ' ', [0.0d+0], 1, 'RHO', val, codres, 3)
             if (codres(1) .eq. 1) then
                 call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
                 call jevech('PABSCUR', 'L', labsc)

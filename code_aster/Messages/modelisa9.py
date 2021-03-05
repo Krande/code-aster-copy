@@ -322,7 +322,7 @@ Conseil:
 """),
 
     77 : _("""
- manque le paramètre  %(k1)s
+ Le paramètre '%(k1)s' doit être fourni  
 """),
 
     78 : _("""

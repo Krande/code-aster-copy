@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,6 +56,9 @@ use calcul_module, only : ca_iactif_
 !              = 1 : si un des parametres n'est pas trouve, on arrete
 !                       en fatal en indiquant le nom de la maille.
 !              = 2 : idem que 1 mais on n'indique pas la maille.
+!              = 3 : si le phenomene n'est pas trouve pour l'element, on fait 
+!                    idem que iarret = 0, si le phenomene est trouve mais pas 
+!                    le parametre demande, on fait idem que irarret = 1 
 !       nan    = 'OUI' (defaut) : pour les parametres non trouves, on retourne valres = NaN
 !              = 'NON' : pour les parametres non trouves, on ne modifie pas valres
 !
@@ -71,7 +74,7 @@ use calcul_module, only : ca_iactif_
     integer :: ires, icomp, ipi, iadzi, iazk24, nbobj, nbr, nbc, nbf, ivalk
     integer :: ivalr, ir, ipif, ik, nbmat, imat, kmat, inom
     character(len=8) :: nomail, nomi
-    character(len=32) :: nomphe
+    character(len=24) :: nomphe
     character(len=24) :: valk(2)
     real(kind=8) :: rundf
     aster_logical :: lnan
@@ -156,9 +159,11 @@ use calcul_module, only : ca_iactif_
             else
                 ASSERT(.false.)
             endif
-        else
+        elseif (iarret .eq. 2) then
             call utmess('F', 'MODELISA9_74', sk=valk(1))
-        endif
+        elseif (iarret .eq. 3) then
+            goto 888
+        endif 
     endif
     goto 999
 
@@ -207,5 +212,5 @@ use calcul_module, only : ca_iactif_
 
     call rcvals(iarret, icodre, nbres, nomres)
 
-
+888 continue
 end subroutine
