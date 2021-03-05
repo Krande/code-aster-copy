@@ -97,6 +97,15 @@ public:
      * @brief Get the finite element descriptor
      */
     ParallelFiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _FEDesc; };
+
+    /**
+     * @brief Get the model
+     */
+    const ModelPtr &getModel() const {
+        if ( ( !_model ) || _model->isEmpty() )
+            throw std::runtime_error( "Model of current load is empty" );
+        return _model;
+    };
 };
 
 /**
