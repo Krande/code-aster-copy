@@ -642,7 +642,7 @@ class MEDKQG4(Element):
                         para_out=((SP.PMATUUR, MMATUUR), ),
                         ),
 
-        OP.RIGI_MECA_HYST(te=121,
+        OP.RIGI_MECA_HYST(te=50,
                           para_in=(
                               (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                           (SP.PRIGIEL, MMATUUR), (

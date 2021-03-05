@@ -644,7 +644,7 @@ class MEDSQU4(Element):
 
         OP.RIGI_GEOM(te=-1,),
 
-        OP.RIGI_MECA_HYST(te=121,
+        OP.RIGI_MECA_HYST(te=50,
             para_in =( (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                        (SP.PRIGIEL, MMATUUR), (OP.RIGI_MECA_HYST.PVARCPR, LC.ZVARCPG), ),
             para_out=( (SP.PMATUUC, MMATUUC), ),
