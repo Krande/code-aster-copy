@@ -410,9 +410,13 @@ void DiscreteProblemClass::createBehaviour(
     _behavProp = BehaviourPropertyPtr(
                  new BehaviourPropertyClass( _study -> getModel( ),
                                              _study -> getMaterialField( ) ));
-    _behavProp -> setInitialState( (ASTERINTEGER)(initialState == "OUI" ? 1 : 0) );
-    _behavProp -> setImplex( (ASTERINTEGER)(implex == "OUI" ? 1 : 0) );
-    _behavProp -> setVerbosity( (ASTERINTEGER)info );
+    _behavProp -> setInitialState( initialState == "OUI" );
+    _behavProp -> setImplex( implex == "OUI" );
+    _behavProp -> setVerbosity( info );
+
+    // Check input PyObject
+    if ( !PyDict_Check(keywords) && !PyList_Check(keywords) && !PyTuple_Check(keywords))
+        throw std::runtime_error( "Unexpected value for 'COMPORTEMENT'." );
 
     // Create syntax
     CommandSyntax cmdSt( "code_aster.Cata.Commons.c_comportement.C_COMPORTEMENT_SNL" );

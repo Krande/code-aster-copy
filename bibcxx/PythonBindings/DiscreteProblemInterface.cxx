@@ -68,11 +68,11 @@ Create constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
 
 Arguments:
     COMPORTEMENT (list[dict]): keywords as provided to STAT_NON_LINE/COMPORTEMENT
-    ETAT_INIT (int): set 1 if there is an initial stress
-    IMPLEX (int): set 1 if using Implex algorithm
-    INFO (int): level of verbosity, 1 to have description of behaviour
+    SIGM_INIT (str): "OUI" if there is an initial stress field
+    IMPLEX (str): "OUI" if Implex algorithm is used
+    INFO (int): level of verbosity, 1 to have description of behaviour or 0 to be quiet
         )",
-              ( py::arg( "self" ), py::arg( "COMPORTEMENT" ), py::arg( "ETAT_INIT" ),
+              ( py::arg( "self" ), py::arg( "COMPORTEMENT" ), py::arg( "SIGM_INIT" ),
                 py::arg( "IMPLEX" ), py::arg( "INFO" ) ) )
         .def( "createBehaviour",
               static_cast< void ( DiscreteProblemClass::* )( PyObject * ) >(

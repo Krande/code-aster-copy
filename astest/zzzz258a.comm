@@ -230,24 +230,4 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE=1.0,),
            )
 
-# Using Python binding for behaviour
-study = code_aster.StudyDescription(MOMEC2, CHMAT)
-dProblem = code_aster.DiscreteProblem(study)
-
-# With default values: no initial state, no implex and info=1
-dProblem.createBehaviour(
-    COMPORTEMENT=(
-        _F(RELATION="ELAS", MAILLE="M5"),
-        _F(RELATION="VMIS_CINE_LINE",
-           MAILLE=("M1", "M3", "M7", "M8", "M9")),))
-
-dProblem.createBehaviour(
-    COMPORTEMENT=(
-        _F(RELATION="ELAS", MAILLE="M5"),
-        _F(RELATION="VMIS_CINE_LINE",
-           MAILLE=("M1", "M3", "M7", "M8", "M9")),),
-    ETAT_INIT="NON",
-    IMPLEX="NON",
-    INFO=1)
-
 FIN()

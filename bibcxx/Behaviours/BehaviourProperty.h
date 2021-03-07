@@ -33,6 +33,7 @@
 #include "DataFields/ConstantFieldOnCells.h"
 #include "DataStructures/TemporaryDataStructureNaming.h"
 
+// TODO doit être une DataStructure
 /**
  * @class BehaviourPropertyClass
  * @brief Class to define behaviour
@@ -52,13 +53,13 @@ class BehaviourPropertyClass {
     std::string _baseName;
 
     /** @brief Flag for initial state */
-    ASTERINTEGER _initialState;
+    bool _initialState;
 
     /** @brief Flag for IMPLEX algorithm */
-    ASTERINTEGER _Implex;
+    bool _implex;
 
     /** @brief Verbosity */
-    ASTERINTEGER _verbosity;
+    int _verbosity;
 
     /** @brief Map '.COMPOR' to define behaviours */
     ConstantFieldOnCellsChar16Ptr _COMPOR;
@@ -92,22 +93,14 @@ class BehaviourPropertyClass {
     MaterialFieldPtr getMaterialField( ) const { return _materialField; }
 
     /** @brief Set flag for initial state */
-    void setInitialState( const ASTERINTEGER &value ) { _initialState = value; };
+    void setInitialState( const bool &value ) { _initialState = value; };
 
     /** @brief Set flag for Implex */
-    void setImplex( const ASTERINTEGER & value ) { _Implex = value; };
+    void setImplex( const bool &value ) { _implex = value; };
 
     /** @brief Set verbosity */
-    void setVerbosity( const ASTERINTEGER & value ) { _verbosity = value; };
+    void setVerbosity( const int &value ) { _verbosity = value; };
 
-    /** @brief Get flag from initial state */
-    ASTERINTEGER getInitialState( ) const { return _initialState; };
-
-    /** @brief Get flag from Implex */
-    ASTERINTEGER getImplex( ) const { return _Implex; };
-
-    /** @brief Get flag from Implex */
-    ASTERINTEGER getVerbosity( ) const { return _verbosity; };
 };
 
 /** @typedef Smart-pointer to behaviour class */

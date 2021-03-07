@@ -1,0 +1,52 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import code_aster
+
+code_aster.init("--test", "--continue")
+
+test = code_aster.TestCase()
+
+# Using Python binding for behaviour
+study = code_aster.StudyDescription(MOMEC2, CHMAT)
+dProblem = code_aster.DiscreteProblem(study)
+
+# With default values: no initial state, no implex and info=1
+dProblem.createBehaviour(
+    COMPORTEMENT=(
+        _F(RELATION="ELAS", MAILLE="M5"),
+        _F(RELATION="VMIS_CINE_LINE",
+           MAILLE=("M1", "M3", "M7", "M8", "M9")),))
+
+# the same all arguments
+dProblem.createBehaviour(
+    COMPORTEMENT=(
+        _F(RELATION="ELAS", MAILLE="M5"),
+        _F(RELATION="VMIS_CINE_LINE",
+           MAILLE=("M1", "M3", "M7", "M8", "M9")),),
+    SIGM_INIT="NON",
+    IMPLEX="NON",
+    INFO=1)
+
+with test.assertRaisesRegex(RuntimeError, "Unexpected value.*COMPORTEMENT"):
+    dProblem.createBehaviour(COMPORTEMENT="ELAS")
+
+test.printSummary()
+
+code_aster.close()
