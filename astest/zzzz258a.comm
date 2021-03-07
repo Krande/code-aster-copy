@@ -234,14 +234,20 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 study = code_aster.StudyDescription(MOMEC2, CHMAT)
 dProblem = code_aster.DiscreteProblem(study)
 
-# No initial state, no implex and verbosity =1
+# With default values: no initial state, no implex and info=1
+dProblem.createBehaviour(
+    COMPORTEMENT=(
+        _F(RELATION="ELAS", MAILLE="M5"),
+        _F(RELATION="VMIS_CINE_LINE",
+           MAILLE=("M1", "M3", "M7", "M8", "M9")),))
+
 dProblem.createBehaviour(
     COMPORTEMENT=(
         _F(RELATION="ELAS", MAILLE="M5"),
         _F(RELATION="VMIS_CINE_LINE",
            MAILLE=("M1", "M3", "M7", "M8", "M9")),),
-    ETAT_INIT=0,
-    IMPLEX=0,
+    ETAT_INIT="NON",
+    IMPLEX="NON",
     INFO=1)
 
 FIN()

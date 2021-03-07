@@ -400,9 +400,9 @@ DiscreteProblemClass::computeMechanicalStiffnessMatrix() {
 
 void DiscreteProblemClass::createBehaviour(
     PyObject *keywords,
-    const ASTERINTEGER initialState,
-    const ASTERINTEGER implex,
-    const ASTERINTEGER info)
+    const std::string &initialState,
+    const std::string &implex,
+    const int info)
 {
 
     // Create object for behaviour
@@ -410,9 +410,9 @@ void DiscreteProblemClass::createBehaviour(
     _behavProp = BehaviourPropertyPtr(
                  new BehaviourPropertyClass( _study -> getModel( ),
                                              _study -> getMaterialField( ) ));
-    _behavProp -> setInitialState( initialState );
-    _behavProp -> setImplex( implex );
-    _behavProp -> setVerbosity( info );
+    _behavProp -> setInitialState( (ASTERINTEGER)(initialState == "OUI" ? 1 : 0) );
+    _behavProp -> setImplex( (ASTERINTEGER)(implex == "OUI" ? 1 : 0) );
+    _behavProp -> setVerbosity( (ASTERINTEGER)info );
 
     // Create syntax
     CommandSyntax cmdSt( "code_aster.Cata.Commons.c_comportement.C_COMPORTEMENT_SNL" );

@@ -28,12 +28,12 @@
 
 #include "astercxx.h"
 
-#include <vector>
 #include "Behaviours/BehaviourProperty.h"
 #include "LinearAlgebra/ElementaryMatrix.h"
 #include "LinearAlgebra/ElementaryVector.h"
 #include "Numbering/DOFNumbering.h"
 #include "Studies/StudyDescription.h"
+#include <vector>
 
 /**
  * @class DiscreteProblemClass
@@ -164,11 +164,10 @@ class DiscreteProblemClass {
     /**
      * @brief Create maps for behaviours
      */
-    void createBehaviour(PyObject *keywords,
-                         const ASTERINTEGER initialState = 0,
-                         const ASTERINTEGER implex = 0,
-                         const ASTERINTEGER verbosity = 0);
-
+    void createBehaviour( PyObject *keywords, const std::string &initialState = "NON",
+                          const std::string &implex = "NON", const int verbosity = 0 );
+    // added for Python interface
+    void createBehaviour( PyObject *keywords ) { createBehaviour( keywords, "NON", "NON", 1 ); };
 };
 
 /**

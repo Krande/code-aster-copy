@@ -58,7 +58,11 @@ void exportDiscreteProblemToPython() {
               &DiscreteProblemClass::computeMechanicalStiffnessMatrix )
         .def( "computeMechanicalMassMatrix", &DiscreteProblemClass::computeMechanicalMassMatrix )
         .def( "getStudyDescription", &DiscreteProblemClass::getStudyDescription )
-        .def( "createBehaviour", &DiscreteProblemClass::createBehaviour,
+
+        .def( "createBehaviour",
+              static_cast< void ( DiscreteProblemClass::* )( PyObject *, const std::string &,
+                                                             const std::string &, const int ) >(
+                  &DiscreteProblemClass::createBehaviour ),
               R"(
 Create constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
 
@@ -67,10 +71,17 @@ Arguments:
     ETAT_INIT (int): set 1 if there is an initial stress
     IMPLEX (int): set 1 if using Implex algorithm
     INFO (int): level of verbosity, 1 to have description of behaviour
-
-Returns:
-    nothing
         )",
               ( py::arg( "self" ), py::arg( "COMPORTEMENT" ), py::arg( "ETAT_INIT" ),
-                py::arg( "IMPLEX" ), py::arg( "INFO" ) ) );
+                py::arg( "IMPLEX" ), py::arg( "INFO" ) ) )
+        .def( "createBehaviour",
+              static_cast< void ( DiscreteProblemClass::* )( PyObject * ) >(
+                  &DiscreteProblemClass::createBehaviour ),
+              R"(
+Create constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
+
+Arguments:
+    COMPORTEMENT (list[dict]): keywords as provided to STAT_NON_LINE/COMPORTEMENT
+        )",
+              ( py::arg( "self" ), py::arg( "COMPORTEMENT" ) ) );
 };
