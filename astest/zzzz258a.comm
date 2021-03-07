@@ -234,23 +234,14 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 study = code_aster.StudyDescription(MOMEC2, CHMAT)
 dProblem = code_aster.DiscreteProblem(study)
 
-thisdict1 = {
-  "RELATION": "ELAS",
-  "MAILLE": "M5"
-}
-
-thisdict2 = {
-  "RELATION": "VMIS_CINE_LINE",
-  "MAILLE": ('M1','M3','M7','M8','M9')
-}
-
-thisdictFinal = {
-  "COMPORTEMENT": (thisdict1,thisdict2)
-}
-
 # No initial state, no implex and verbosity =1
-dProblem.createBehaviour(thisdictFinal, 0, 0, 1)
-
-
+dProblem.createBehaviour(
+    COMPORTEMENT=(
+        _F(RELATION="ELAS", MAILLE="M5"),
+        _F(RELATION="VMIS_CINE_LINE",
+           MAILLE=("M1", "M3", "M7", "M8", "M9")),),
+    ETAT_INIT=0,
+    IMPLEX=0,
+    INFO=1)
 
 FIN()

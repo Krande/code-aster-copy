@@ -26,30 +26,27 @@
 #include <boost/python.hpp>
 
 namespace py = boost::python;
-#include <PythonBindings/factory.h>
 #include "PythonBindings/DiscreteProblemInterface.h"
+#include <PythonBindings/factory.h>
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( buildDirichletBC_overloads, buildDirichletBC, 2, 2 )
 
 void exportDiscreteProblemToPython() {
 
-    py::class_< DiscreteProblemClass, DiscreteProblemClass::DiscreteProblemPtr >(
-        "DiscreteProblem", py::no_init )
+    py::class_< DiscreteProblemClass, DiscreteProblemClass::DiscreteProblemPtr >( "DiscreteProblem",
+                                                                                  py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< DiscreteProblemClass, StudyDescriptionPtr >))
+              py::make_constructor( &initFactoryPtr< DiscreteProblemClass, StudyDescriptionPtr > ) )
         // fake initFactoryPtr: not a DataStructure
         .def( "buildElementaryMechanicalLoadsVector",
               &DiscreteProblemClass::buildElementaryMechanicalLoadsVector )
         .def( "buildElementaryDirichletVector",
               &DiscreteProblemClass::buildElementaryDirichletVector )
-        .def( "buildElementaryLaplaceVector",
-              &DiscreteProblemClass::buildElementaryLaplaceVector )
-        .def( "buildElementaryNeumannVector",
-              &DiscreteProblemClass::buildElementaryNeumannVector )
+        .def( "buildElementaryLaplaceVector", &DiscreteProblemClass::buildElementaryLaplaceVector )
+        .def( "buildElementaryNeumannVector", &DiscreteProblemClass::buildElementaryNeumannVector )
         .def( "buildElementaryStiffnessMatrix",
               &DiscreteProblemClass::buildElementaryStiffnessMatrix )
-        .def( "buildElementaryTangentMatrix",
-              &DiscreteProblemClass::buildElementaryTangentMatrix )
+        .def( "buildElementaryTangentMatrix", &DiscreteProblemClass::buildElementaryTangentMatrix )
         .def( "buildElementaryJacobianMatrix",
               &DiscreteProblemClass::buildElementaryJacobianMatrix )
         .def( "buildDirichletBC", &DiscreteProblemClass::buildDirichletBC,
@@ -62,15 +59,18 @@ void exportDiscreteProblemToPython() {
         .def( "computeMechanicalMassMatrix", &DiscreteProblemClass::computeMechanicalMassMatrix )
         .def( "getStudyDescription", &DiscreteProblemClass::getStudyDescription )
         .def( "createBehaviour", &DiscreteProblemClass::createBehaviour,
-               R"(
-Create maps for behaviour (COMPOR, CARCRI and MULCOM)
+              R"(
+Create constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
 
 Arguments:
-    initialState: set 1 if there is an initial stress
-    implex: set 1 if using Implex algorithm
-    verbosity: level of verbosity, 1 to have description of behaviour
+    COMPORTEMENT (list[dict]): keywords as provided to STAT_NON_LINE/COMPORTEMENT
+    ETAT_INIT (int): set 1 if there is an initial stress
+    IMPLEX (int): set 1 if using Implex algorithm
+    INFO (int): level of verbosity, 1 to have description of behaviour
 
 Returns:
     nothing
-        )");
+        )",
+              ( py::arg( "self" ), py::arg( "COMPORTEMENT" ), py::arg( "ETAT_INIT" ),
+                py::arg( "IMPLEX" ), py::arg( "INFO" ) ) );
 };
