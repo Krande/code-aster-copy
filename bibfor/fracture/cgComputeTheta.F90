@@ -141,88 +141,83 @@ use calcG_type
         else
             ASSERT(.FALSE.)
         endif
-
-!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!   NOUVELLE ECRITURE A TRAVERS LE CHAMP THETA_FACTORS
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    !
-    ! allocation de la structure de données temporaire de theta
-
-    !   N.B.: le champ theta contient seulement les ndimte champs utiles
-    !     * stockage des champs simples utilisés pour le remplissages
-    !
-        cnstet = '&&CNSTET_CHAM'
-        call cnscre(cgTheta%mesh,'THET_R',6,licmp,'V',cnstet)
-        call jeveuo(cnstet(1:19)//'.CNSL','E',jcnsl)
-        call jeveuo(cnstet(1:19)//'.CNSV','E', vr=v_theta)
-
-!       BOUCLE SUR LES NOEUDS M COURANTS DU MAILLAGE
-        do i = 1, nbel
-!           CALCUL DE LA FONCTION DETERMINANT LA NORME DE THETA EN
-!           FONTION DE R_INF, R_SUP ET LA DISTANCE DU NOEUD AU FRONT
-!
-!           COORDONNEES DU NOEUD COURANT M
-            xm = v_coor((i-1)*3+1)
-            ym = v_coor((i-1)*3+2)
-            zm = 0.d0
-!
-            if(cgField%ndim .eq. 3) then
-                zm= v_coor((i-1)*3+3)
-            endif
-!
-!           COORDONNEES DU PROJETE N DE CE NOEUD SUR LE FRONT DE FISSURE
-            xn = v_base(3*cgField%ndim*(i-1)+1)
-            yn = v_base(3*cgField%ndim*(i-1)+2)
-            zn = 0.d0
-            if(cgField%ndim .eq. 3) then
-                zn = v_base(3*cgField%ndim*(i-1)+3)
-            endif
-            d = sqrt((xn-xm)*(xn-xm)+(yn-ym)*(yn-ym)+(zn-zm)*(zn-zm))
-            alpha = ( d- cgTheta%r_inf)/(cgTheta%r_sup-cgTheta%r_inf)
-
-!           calcul de theta0 du noeud i
-            if ((abs(alpha).le.eps) .or. (alpha.lt.0)) then
-                theta0 = 1.d0
-            else if((abs(alpha-1).le.eps).or.((alpha-1).gt.0)) then
-                theta0 = 0.d0
-            else
-                theta0 = 1.d0-alpha
-            endif
-
-!           stockage de la norme de theta, évaluée au noeud i
-            zl(jcnsl-1+6*(i-1)+1)=ASTER_TRUE
-            v_theta((i-1)*6+1) = theta0
-
-!           stockage de t, la direction de theta, pour le noeud i issue de BASLOC
-            zl(jcnsl-1+6*(i-1)+2)=ASTER_TRUE
-            zl(jcnsl-1+6*(i-1)+3)=ASTER_TRUE
-            zl(jcnsl-1+6*(i-1)+4)=ASTER_TRUE
-            v_theta((i-1)*6+2) = v_base(3*cgField%ndim*(i-1)+cgField%ndim+1)
-            v_theta((i-1)*6+3) = v_base(3*cgField%ndim*(i-1)+cgField%ndim+2)
-            if(cgField%ndim .eq. 2) then
-                v_theta((i-1)*6+4) = 0.d0
-            else
-                v_theta((i-1)*6+4) = v_base(3*cgField%ndim*(i-1)+cgField%ndim+3)
-            endif
-!
-!           stockage de l'abscisse curviligne s, pour le noeud i en 3D
-            zl(jcnsl-1+6*(i-1)+5)=ASTER_TRUE
-            if(cgField%ndim .eq. 2) then
-                v_theta((i-1)*6+5) = 0.d0
-            else
-                v_theta((i-1)*6+5) = v_absc(i)
-            endif
-!
-!           stockage de la longueur de la fissure, utile en 3D seulement
-            zl(jcnsl-1+6*(i-1)+6)=ASTER_TRUE
-            if(cgField%ndim .eq. 2) then
-                v_theta((i-1)*6+6) = 0.d0
-            else
-                v_theta((i-1)*6+6) = lonfis
-            endif
-        end do
     endif
+!
+! allocation de la structure de données temporaire de theta
+
+!   N.B.: le champ theta contient seulement les ndimte champs utiles
+!     * stockage des champs simples utilisés pour le remplissages
+!
+    cnstet = '&&CNSTET_CHAM'
+    call cnscre(cgTheta%mesh,'THET_R',6,licmp,'V',cnstet)
+    call jeveuo(cnstet(1:19)//'.CNSL','E',jcnsl)
+    call jeveuo(cnstet(1:19)//'.CNSV','E', vr=v_theta)
+
+!   BOUCLE SUR LES NOEUDS M COURANTS DU MAILLAGE
+    do i = 1, nbel
+!       CALCUL DE LA FONCTION DETERMINANT LA NORME DE THETA EN
+!       FONTION DE R_INF, R_SUP ET LA DISTANCE DU NOEUD AU FRONT
+!
+!       COORDONNEES DU NOEUD COURANT M
+        xm = v_coor((i-1)*3+1)
+        ym = v_coor((i-1)*3+2)
+        zm = 0.d0
+!
+        if(cgField%ndim .eq. 3) then
+            zm= v_coor((i-1)*3+3)
+        endif
+!
+!       COORDONNEES DU PROJETE N DE CE NOEUD SUR LE FRONT DE FISSURE
+        xn = v_base(3*cgField%ndim*(i-1)+1)
+        yn = v_base(3*cgField%ndim*(i-1)+2)
+        zn = 0.d0
+        if(cgField%ndim .eq. 3) then
+            zn = v_base(3*cgField%ndim*(i-1)+3)
+        endif
+        d = sqrt((xn-xm)*(xn-xm)+(yn-ym)*(yn-ym)+(zn-zm)*(zn-zm))
+        alpha = ( d- cgTheta%r_inf)/(cgTheta%r_sup-cgTheta%r_inf)
+
+!       calcul de theta0 du noeud i
+        if ((abs(alpha).le.eps) .or. (alpha.lt.0)) then
+            theta0 = 1.d0
+        else if((abs(alpha-1).le.eps).or.((alpha-1).gt.0)) then
+            theta0 = 0.d0
+        else
+            theta0 = 1.d0-alpha
+        endif
+
+!       stockage de la norme de theta, évaluée au noeud i
+        zl(jcnsl-1+6*(i-1)+1)=ASTER_TRUE
+        v_theta((i-1)*6+1) = theta0
+
+!       stockage de t, la direction de theta, pour le noeud i issue de BASLOC
+        zl(jcnsl-1+6*(i-1)+2)=ASTER_TRUE
+        zl(jcnsl-1+6*(i-1)+3)=ASTER_TRUE
+        zl(jcnsl-1+6*(i-1)+4)=ASTER_TRUE
+        v_theta((i-1)*6+2) = v_base(3*cgField%ndim*(i-1)+cgField%ndim+1)
+        v_theta((i-1)*6+3) = v_base(3*cgField%ndim*(i-1)+cgField%ndim+2)
+        if(cgField%ndim .eq. 2) then
+            v_theta((i-1)*6+4) = 0.d0
+        else
+            v_theta((i-1)*6+4) = v_base(3*cgField%ndim*(i-1)+cgField%ndim+3)
+        endif
+!
+!       stockage de l'abscisse curviligne s, pour le noeud i en 3D
+        zl(jcnsl-1+6*(i-1)+5)=ASTER_TRUE
+        if(cgField%ndim .eq. 2) then
+            v_theta((i-1)*6+5) = 0.d0
+        else
+            v_theta((i-1)*6+5) = v_absc(i)
+        endif
+!
+!       stockage de la longueur de la fissure, utile en 3D seulement
+        zl(jcnsl-1+6*(i-1)+6)=ASTER_TRUE
+        if(cgField%ndim .eq. 2) then
+            v_theta((i-1)*6+6) = 0.d0
+        else
+            v_theta((i-1)*6+6) = lonfis
+        endif
+    end do
 !
 !   ALLOCATION DES OBJETS POUR STOCKER LE VRAI CHAMP_NO THETA_FACTORS
 !
