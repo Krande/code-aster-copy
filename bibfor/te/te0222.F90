@@ -21,7 +21,7 @@ subroutine te0222(option, nomte)
 !------------------------------------------------------------------------------------------
 ! FONCTION REALISEE:
 !
-!      CALCUL DU TAUX DE RESTITUTION D'ENERGIE ET DES FACTEURS 
+!      CALCUL DU TAUX DE RESTITUTION D'ENERGIE ET DES FACTEURS
 !      D'INTENSITE DES CONTRAINTES EN ELASTICITE LINEAIRE ET NON LINEAIRE
 !
 !      ELEMENTS ISOPARAMETRIQUES 2D/3D
@@ -94,7 +94,7 @@ implicit none
     real(kind=8)      :: crit(13), e, ecin, tpg(27), tref, absno
     real(kind=8)      :: prod, prod1, prod2, prod3, prod4, puls
     real(kind=8)      :: dtdm(3, 4), dfdm(3,4), dudm(3,4), dvdm(3,4)
-    real(kind=8)      :: rbid, rho, om, omo, epsref(6), depsin(6,3), u1(2), u2(2) 
+    real(kind=8)      :: rbid, rho, om, omo, epsref(6), depsin(6,3), u1(2), u2(2)
     real(kind=8)      :: tgd(20), nu, rac2, eps(6), epsin(6), epsp(6)
     real(kind=8)      :: tgdm(3), sr(3,3), sigl(6), sigin(6), r_axi
     real(kind=8)      :: c1, c2, c3, k1, k2, k3, guv1, guv2, guv3
@@ -103,7 +103,7 @@ implicit none
     real(kind=8)      :: dfvdm(3,4), k3a, ka, lambda, phig, r8bid, rg, th
     real(kind=8)      :: ttrgv, ttrg, u1l(3), u2l(3), u3l(3), tgvdm(3)
     character(len=8)  :: typmod(2), nompar(4), discr
-    character(len=4)  :: fami, typma
+    character(len=4)  :: fami
     character(len=16) :: nomte, option, compor(4), phenom, oprupt, nomres(4)
 !
     aster_logical :: axi, cp, fonc, epsini, grand, incr, notelas, lcour, l_not_zero
@@ -114,7 +114,7 @@ implicit none
     real(kind=8), pointer :: ffp(:) => null()
 !
 !   TEST A EFFACER
-    integer           :: iadzi, iazk24
+!    integer           :: iadzi, iazk24
 !
 ! =====================================================================
 !                       INITIALISATION PARAMETRES
@@ -163,7 +163,7 @@ implicit none
     nomres(4) = 'RHO'
     discr = ' '
 !
-!-- Maillage quadratique ou linéaire 
+!-- Maillage quadratique ou linéaire
 !    call teattr('S','TYPMA',typma, iret)
 !
 !-- Nombre de composantes des tenseurs
@@ -174,7 +174,7 @@ implicit none
     AS_ALLOCATE(vr=fno, size=ndim*nno)
     AS_ALLOCATE(vr=dfdi, size=ndim*nno)
     AS_ALLOCATE(vr=ffp, size= nno)
-! 
+!
 !-- Cas 2D
     if (ndim .eq. 2) then
         if (lteatt('AXIS','OUI')) then
@@ -185,8 +185,8 @@ implicit none
             cp = .true.
         else if (lteatt('D_PLAN','OUI')) then
             typmod(1) = 'D_PLAN'
-        endif  
-    endif    
+        endif
+    endif
 !
 ! =====================================================================
 !                       CALCUL DE THETA
@@ -201,20 +201,20 @@ implicit none
 !   Recuperation de DEG si LEGENDRE ou abscisse si LAGRANGE
     if (ndim .eq. 3) then
 !
-        call tecach('ONO', 'PDEG', 'L', iret, iad=ideg)  
+        call tecach('ONO', 'PDEG', 'L', iret, iad=ideg)
 !
         if (iret .eq. 0 ) then
             discr = "LEGENDRE"
         else
             discr = "LINEAIRE"
-            call jevech('PLAG', 'L', ilag)            
+            call jevech('PLAG', 'L', ilag)
         endif
 !
     else
         discr = "2D"
     endif
-!   
-!-- Valeur de theta0(r) nulle sur element : pas de calcul 
+!
+!-- Valeur de theta0(r) nulle sur element : pas de calcul
 !-- si LAGRANGE, test sur les abscisses curvilignes
     compt = 0
     do i = 1, nno
@@ -228,9 +228,9 @@ implicit none
         do i = 1, nno
             absno= zr(ithet-1+6*(i-1)+5)
             if (absno .ge. zr(ilag) .and. absno .le. zr(ilag+2)) compt = compt+1
-        end do  
-        if (compt .eq. 0) goto 999 
-    endif  
+        end do
+        if (compt .eq. 0) goto 999
+    endif
 !
 !===========================================!
 !    print* ,''
@@ -238,7 +238,7 @@ implicit none
 !    call tecael(iadzi, iazk24)
 !    print *, 'ele=', zi(iadzi)
 !===========================================!
-!        
+!
 ! =====================================================================
 !                  RECUPERATION DES CHAMPS LOCAUX
 ! =====================================================================
@@ -250,8 +250,8 @@ implicit none
     if (option .eq. 'CALCH_K_G' .or. option .eq. 'CALCH_K_G_F') then
         call jevech('PBASLOR', 'L', ibalo)
         if (ndim .eq. 3) then
-            call jevech('PCOURB', 'L', icour)  
-        endif 
+            call jevech('PCOURB', 'L', icour)
+        endif
 !------ Verification coherence RHO <-> PESANTEUR, ROTATION, PULSATION
         if (.not. cgverho(imate)) call utmess('F', 'RUPTURE1_26')
     endif
@@ -374,7 +374,7 @@ implicit none
                     epsino(ncmp* (i-1)+j) = zr(iepsr+ncmp* (i-1)+j-1)
                 end do
                 if (ndim .eq. 3) then
-                    do j = 1, 3                    
+                    do j = 1, 3
                         epsino(ncmp* (i-1)+j+3) = zr(iepsr+ncmp* (i-1)+j-1+3)*rac2
                     enddo
                 else
@@ -499,12 +499,12 @@ implicit none
         if (ndim .eq. 2) then
             call nmgeom(ndim, nno, axi, grand, zr(igeom),&
                         kp, ipoids, ivf, idfde, zr(idepl),&
-                        .true._1, poids, dfdi, f, eps, r_axi) 
+                        .true._1, poids, dfdi, f, eps, r_axi)
         else
             call nmgeom(ndim, nno, .false._1, grand, zr(igeom),&
                         kp, ipoids, ivf, idfde, zr(idepl),&
                         .true._1, poids, dfdi, f, eps, rbid)
-        endif    
+        endif
         ! ===========================================
         !      CALCULS AUX POINTS DE GAUSS
         !        --    GRADIENT DE U (DUDM)
@@ -541,7 +541,7 @@ implicit none
 !
             call thetapdg(ndim, nno, discr, &
                           zr(ivf + l - 1 + 1:ivf + l - 1 + nno), &
-                          dfdi, 1, 1, ithet, dtdm) 
+                          dfdi, 1, 1, ithet, dtdm)
 !
             if (cp) then
                 dudm(3,3)= eps(3)
@@ -564,13 +564,13 @@ implicit none
         else
 !
 !           Calcul de DTDM pour LEGENDRE ou LAGRANGE
-            call thetapdg(ndim, nno, discr , & 
+            call thetapdg(ndim, nno, discr , &
                           zr(ivf + l - 1 + 1:ivf + l - 1 + nno), &
-                          dfdi, ideg, ilag, ithet, dtdm) 
+                          dfdi, ideg, ilag, ithet, dtdm)
 !
 !---------- Calcul de la divergence 3D
             divt = dtdm(1,1) + dtdm(2,2) + dtdm(3,3)
-        endif        
+        endif
 !
         ! ===========================================
         ! PRE-DEFORMATIONS ET GRADIENT DEPSIN
@@ -612,7 +612,7 @@ implicit none
                 sigl(i) = zr(isigm+ncmp* (kp-1)+i-1)
             end do
             if (ndim .eq. 3) then
-                do i = 1, 3                    
+                do i = 1, 3
                     sigl(i+3) = zr(isigm+ncmp* (kp-1)+i-1+3)*rac2
                 enddo
             else
@@ -638,7 +638,7 @@ implicit none
                     sigl(i) = zr(isigm+ncmp* (kp-1)+i-1)
                 end do
                 if (ndim .eq. 3) then
-                    do i = 1, 3                    
+                    do i = 1, 3
                         sigl(i+3) = zr(isigm+ncmp* (kp-1)+i-1+3)*rac2
                     enddo
                 else
@@ -646,7 +646,7 @@ implicit none
                 endif
             endif
         endif
-!       
+!
 !------ Stockage de sigma et des termes croises
         sr(1,1) = sigl(1)
         sr(2,2) = sigl(2)
@@ -659,8 +659,8 @@ implicit none
         sr(3,2) = sr(2,3)
 !
         ! ===========================================================
-        ! RECUPERATION DE E, NU, ALPHA (dilation thermique), RHO 
-        ! CALCUL DES PARAMETRES UTILES 
+        ! RECUPERATION DE E, NU, ALPHA (dilation thermique), RHO
+        ! CALCUL DES PARAMETRES UTILES
         ! ===========================================================
 !
         call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
@@ -715,7 +715,7 @@ implicit none
         ! CORRECTIONS LIEES A LA CONTRAINTE INITIALE (SIGM DE CALC_G)
         ! CONTRAINTE, DEFORMATION DE REFERENCE, ENERGIE ELASTIQUE
         ! ===========================================================
-!        
+!
         if (isigi .ne. 0) then
             do i = 1, nno
                 der(1) = dfdi(i)
@@ -757,7 +757,7 @@ implicit none
             do i = 1, ncmp
                 energi(1) = energi(1) + (eps(i)-0.5d0*epsref(i))* sigin(i)
             end do
-        endif 
+        endif
 !
         ! ===========================================================
         !                  CALCUL DE G(THETA)
@@ -858,10 +858,10 @@ implicit none
 !---------- Base locale associée au PDG KP
             do i = 1, nno
                 ffp(i)=zr(ivf-1+nno*(kp-1)+i)
-            enddo 
+            enddo
 !
             call coor_cyl(ndim, nno, zr(ibalo), zr(igeom), ffp,&
-                          p, invp, rg, phig, l_not_zero)  
+                          p, invp, rg, phig, l_not_zero)
 !
 !---------- Recuparation du tenseur de courbure
             if (lcour) then
@@ -942,9 +942,9 @@ implicit none
         endif
 !
 !-- Fin boucle points de Gauss
-    enddo   
-!    
-!-- Assemblage final des termes de G, K* et des K* réduits pour le 
+    enddo
+!
+!-- Assemblage final des termes de G, K* et des K* réduits pour le
 !-- calcul de G_IRWIN
     zr(igthet)   = tthe + tcla + tfor + tini
     zr(igthet+1) = k1 * coeff_K1K2
