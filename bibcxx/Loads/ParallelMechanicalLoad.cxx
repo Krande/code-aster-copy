@@ -33,13 +33,14 @@ ParallelMechanicalLoadClass::ParallelMechanicalLoadClass(
         const GenericMechanicalLoadPtr& load,
         const ModelPtr& model ):
     DataStructure( name, 8, "CHAR_MECA" ),
-    _FEDesc( new ParallelFiniteElementDescriptorClass
+    _FEDesc( boost::make_shared<ParallelFiniteElementDescriptorClass>
                     ( getName() + ".CHME.LIGRE", load->getMechanicalLoadDescription()._FEDesc,
                       load->getModel()->getConnectionMesh(), model ) ),
-    _cimpo( new ConstantFieldOnCellsRealClass( getName() + ".CHME.CIMPO", _FEDesc ) ),
-    _cmult( new ConstantFieldOnCellsRealClass( getName() + ".CHME.CMULT", _FEDesc ) ),
+    _cimpo(boost::make_shared<ConstantFieldOnCellsRealClass>( getName() + ".CHME.CIMPO", _FEDesc )),
+    _cmult(boost::make_shared<ConstantFieldOnCellsRealClass>( getName() + ".CHME.CMULT", _FEDesc )),
     _type( getName() + ".TYPE" ),
-    _modelName( getName() + ".CHME.MODEL.NOMO" )
+    _modelName( getName() + ".CHME.MODEL.NOMO" ),
+    _model( model )
 {
     _type->allocate( Permanent, 1 );
     (*_type)[0] = "MECA_RE ";
