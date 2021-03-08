@@ -180,7 +180,7 @@ type(Behaviour_Integ), optional, intent(in) :: BEHinteg
                         c10, c01, c20, k)
             nur = (3.d0*k-4.0d0*(c10+c01))/(6.d0*k+4.0d0*(c10+c01))
             er  = 4.d0*(c10+c01)*(un+nur)
-            gr = er/(2.d0*(1 + nur))
+            gr = er/(2.d0*(1.d0 + nur))
         else
             nomres(1) = 'E'
             nomres(2) = 'NU'
@@ -190,7 +190,7 @@ type(Behaviour_Integ), optional, intent(in) :: BEHinteg
                         nbres, nomres, valres, icodre, 1)
             er  = valres(1)
             nur = valres(2)
-            gr = er/(2.d0*(1 + nur))
+            gr = er/(2.d0*(1.d0 + nur))
         endif
 
     elseif (elas_id .eq. 2) then

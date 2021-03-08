@@ -54,7 +54,7 @@ implicit none
     integer :: k, nbinco, nbsig, ndim, nno
     integer :: nnos, npg1
     integer :: icodre(nbres), elas_id
-    integer :: igeom, ipoids, ivf, idfde, idim
+    integer :: igeom, ipoids, ivf, idfde, idim, nbval
 !
     real(kind=8) :: b(486), jacgau
     real(kind=8) :: btdbi(81, 81), di(36), eta
@@ -84,10 +84,6 @@ implicit none
     btdbi(:,:) = 0.d0
     xyzgau(:)  = 0.d0
     bary(:)    = 0.d0
-!
-! - Number of stress components
-!
-    nbsig     = nbsigm()
 !
 ! - Geometry
 !
@@ -130,8 +126,14 @@ implicit none
     if (phenom .eq. 'ELAS_VISCO'.or. &
         phenom .eq. 'ELAS_VISCO_ISTR' .or.&
         phenom .eq. 'ELAS_VISCO_ORTH') then
+
+!
+! - Number of stress components
+!
+        nbsig     = nbsigm()
+!
         do igau = 1, npg1
-    !
+!
             idecpg = nno* (igau-1) - 1
     !
     ! ----- Coordinates for current Gauss point
@@ -179,18 +181,21 @@ implicit none
 !
     rigi = idrigi(1)
     call jevech('PMATUUC', 'E', imatuu)
-    k = 0
-    do i = 1, nbinco
-        do j = 1, i
-            k = k + 1
-            if (phenom .eq. 'ELAS_VISCO'.or. &
-                phenom .eq. 'ELAS_VISCO_ISTR' .or.&
-                phenom .eq. 'ELAS_VISCO_ORTH') then
+    if (phenom .eq. 'ELAS_VISCO'.or. &
+        phenom .eq. 'ELAS_VISCO_ISTR' .or.&
+        phenom .eq. 'ELAS_VISCO_ORTH') then
+        k = 0
+        do i = 1, nbinco
+            do j = 1, i
+                k = k + 1
                 zc(imatuu+k-1) = dcmplx(zr(rigi+k-1), btdbi(i,j))
-            else
-                zc(imatuu+k-1) = dcmplx(zr(rigi+k-1), eta*zr(rigi+k-1))
-            endif
+            end do
         end do
-    end do
+    else
+        nbval = idrigi(2)
+        do k = 1, nbval
+            zc(imatuu+k-1) = dcmplx(zr(rigi+k-1), eta*zr(rigi+k-1))
+        end do
+    endif
 !
 end subroutine

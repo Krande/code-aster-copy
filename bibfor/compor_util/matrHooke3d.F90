@@ -107,7 +107,7 @@ implicit none
         dorth(1,3) = h(3)
         dorth(2,2) = h(4)
         dorth(2,3) = h(5)
-        dorth(3,3) = h(5)
+        dorth(3,3) = h(6)
         dorth(2,1) = dorth(1,2)
         dorth(3,1) = dorth(1,3)
         dorth(3,2) = dorth(2,3)
