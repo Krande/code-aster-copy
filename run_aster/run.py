@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -202,7 +202,7 @@ class RunAster:
         cmd = self._get_cmdline(idx, comm, timeout)
         logger.info(f"    {' '.join(cmd)}")
 
-        exitcode = run_command(cmd, timeout, exitcode_file=EXITCODE_FILE)
+        exitcode = run_command(cmd, exitcode_file=EXITCODE_FILE)
         msg = f"\nEXECUTION_CODE_ASTER_EXIT_{self.jobnum}={exitcode}\n\n"
         logger.info(msg)
         _log_mess(msg)

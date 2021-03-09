@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,6 @@ import string
 import sys
 import time
 from glob import glob
-from subprocess import TimeoutExpired, run
 
 from .logger import logger
 
@@ -136,27 +135,25 @@ def make_writable(filename):
     os.chmod(filename, os.stat(filename).st_mode | stat.S_IWUSR)
 
 
-def run_command(cmd, timeout=None, exitcode_file=None):
+def run_command(cmd, exitcode_file=None):
     """Execute a command and duplicate output to `logfile`.
 
     Arguments:
         cmd (list): Command line arguments.
-        timeout (float, optional): Time out for the execution.
         exitcode_file (str, optional): Read exit code from this file if
             it exists.
 
     Returns:
         int: exit code.
     """
-    try:
-        proc = run(" ".join(cmd), shell=True, timeout=timeout or None)
-        iret = proc.returncode
-        if exitcode_file and osp.isfile(exitcode_file):
-            with open(exitcode_file) as fexit:
-                iret = int(fexit.read())
-            os.remove(exitcode_file)
-    except TimeoutExpired as exc:
-        sys.stderr.write(str(exc))
+    # previous revisions used `subprocess.run` but IntelMPI mpiexec does not
+    # support the way the process is forked.
+    iret = os.system(" ".join(cmd))
+    if exitcode_file and osp.isfile(exitcode_file):
+        with open(exitcode_file) as fexit:
+            iret = int(fexit.read())
+        os.remove(exitcode_file)
+    if iret == 124:
         iret = -9
     return iret
 

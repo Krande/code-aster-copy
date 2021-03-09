@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -256,6 +256,7 @@ def main(argv=None):
             args_cmd = dict(mpi_nbcpu=export.get("mpi_nbcpu", 1),
                             program=f"{run_aster} {' '.join(argv)}")
             cmd = CFG.get("mpiexec").format(**args_cmd)
+            logger.info("Restart: " + cmd)
             proc = run(cmd, shell=True)
             return proc.returncode
 
@@ -268,7 +269,7 @@ def main(argv=None):
         wrapper = CFG.get("exectool", {}).get(args.exectool)
         if not wrapper:
             logger.warning(f"'{args.exectool}' is not defined in your "
-                           f"configuration, it is used it as a command line.")
+                           f"configuration, it is used as a command line.")
             wrapper = args.exectool
         opts["exectool"] = wrapper
     calc = RunAster.factory(export, **opts)
