@@ -36,6 +36,10 @@ import string
 import sys
 import time
 from glob import glob
+try:
+    from os import waitstatus_to_exitcode
+except ImportError:
+    pass
 
 from .logger import logger
 
@@ -149,13 +153,36 @@ def run_command(cmd, exitcode_file=None):
     # previous revisions used `subprocess.run` but IntelMPI mpiexec does not
     # support the way the process is forked.
     iret = os.system(" ".join(cmd))
+    iret = waitstatus_to_exitcode(iret)
     if exitcode_file and osp.isfile(exitcode_file):
         with open(exitcode_file) as fexit:
             iret = int(fexit.read())
         os.remove(exitcode_file)
-    if iret == 124:
-        iret = -9
     return iret
+
+
+def _waitstatus_to_exitcode(status):
+    """Replacement for `waitstatus_to_exitcode` function added in Python 3.9.
+
+    Arguments:
+        status (int): status as returned by `os.wait()`/`os.waitpid()`.
+
+    Return:
+        int: exit code.
+    """
+    if os.WIFSIGNALED(status):
+        returncode = -os.WTERMSIG(status)
+    elif os.WIFEXITED(status):
+        returncode = os.WEXITSTATUS(status)
+    elif os.WIFSTOPPED(status):
+        returncode = -os.WSTOPSIG(status)
+    else:
+        returncode = 15
+    return returncode
+
+if not hasattr(os, "waitstatus_to_exitcode"):
+    waitstatus_to_exitcode = _waitstatus_to_exitcode
+
 
 def cmd_abspath(prog):
     """Return the absolute path of a program as found in PATH.
