@@ -1,5 +1,10 @@
 # created by waf using data/wscript
 
+# to avoid recursive calls
+if [ ! -z "${ASTER_PROFILE_LOADED}" ]; then
+    return
+fi
+
 @BUILD_ENV@
 @OPT_ENV@
 
@@ -56,3 +61,6 @@ ASTER_ELEMENTSDIR=@ASTERLIBDIR@
 export ASTER_ELEMENTSDIR
 
 @OPT_ENV_FOOTER@
+
+# to avoid recursive calls
+export ASTER_PROFILE_LOADED=1
