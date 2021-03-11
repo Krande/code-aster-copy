@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -208,7 +208,7 @@ SIF2 = [None]*(nbc+1)
 SIF3 = [None]*(nbc+1)
 SIF4 = [None]*(nbc+1)
 """"
-A METTRE A JOUR QUAND LA GESTION DE LA TABLE DE SORTIE SERA MIEUX TRAITER 
+A METTRE A JOUR QUAND LA GESTION DE LA TABLE DE SORTIE SERA MIEUX TRAITER
 """
 for i in range(0,nbc) :
 
@@ -292,47 +292,16 @@ IMPR_TABLE(TABLE=SIF4[nbc],)
 A METTRE A JOUR QUAND ON AURA LE CALCUL DE G ET K EN 3D
 
 """
+value = [55.06032879146989, 54.96086003429834, 55.05971351192175, 55.05972516535749, 55.060123697572585, 55.06003788811107, 55.06003788811107]
 for i in range(0,nbc+1) :
 
    TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.0001,
-#           VALE_CALC=123456789.0,
-#           VALE_REFE=123456789.0,
-           VALE_CALC=0.0,
-           VALE_REFE=0.0,
+           PRECISION=0.01,
+           VALE_CALC=value[i],
+           VALE_REFE=55.0,
            CRITERE='RELATIF',
            NOM_PARA='G',
            TABLE=SIF1[i],)
-
-   TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.0001,
-#           VALE_CALC=123456789.0,
-#           VALE_REFE=123456789.0,
-           VALE_CALC=0.0,
-           VALE_REFE=0.0,
-           CRITERE='RELATIF',
-           NOM_PARA='G',
-           TABLE=SIF2[i],)
-
-   TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.0001,
-#           VALE_CALC=123456789.0,
-#           VALE_REFE=123456789.0,
-           VALE_CALC=0.0,
-           VALE_REFE=0.0,
-           CRITERE='RELATIF',
-           NOM_PARA='G',
-           TABLE=SIF3[i],)
-
-   TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.0001,
-#           VALE_CALC=123456789.0,
-#           VALE_REFE=123456789.0,
-           VALE_CALC=0.0,
-           VALE_REFE=0.0,
-           CRITERE='RELATIF',
-           NOM_PARA='G',
-           TABLE=SIF4[i],)
 
 """
 
