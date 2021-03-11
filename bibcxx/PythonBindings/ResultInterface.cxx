@@ -73,6 +73,12 @@ void exportResultToPython() {
         .def( "getModel", c3 )
         .def( "getModel", c4 )
         .def( "getNumberOfRanks", &ResultClass::getNumberOfRanks )
+        .def( "getAccessParameters", &ResultClass::getAccessParameters, R"(
+Return the access parameters of the result as Python dict.
+
+Returns:
+    dict{str : list[int,float,str]}: Dict of values for each access variable.
+        )", ( py::arg("self" )))
         .def( "getFieldsOnNodesNames", &ResultClass::getFieldsOnNodesNames, R"(
 Return the names of the fields on nodes as Python list.
 

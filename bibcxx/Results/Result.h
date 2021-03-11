@@ -45,6 +45,7 @@
 #include "DataFields/FieldBuilder.h"
 #include "DataFields/ListOfTables.h"
 
+#include "Python.h"
 
 /**
  * @class ResultClass
@@ -310,6 +311,12 @@ class ResultClass : public DataStructure, public ListOfTablesClass {
      */
     FieldOnCellsRealPtr getRealFieldOnCells( const std::string name, const int rank ) const
         ;
+
+    /**
+    * @brief Get dict of access variables and their values
+    * @return PyObject
+    */
+    PyObject *getAccessParameters() const;
 
     /**
     * @brief Get the list of fields on nodes

@@ -103,13 +103,13 @@ template < class ValueType > class SimpleFieldOnNodesClass : public DataStructur
             throw std::runtime_error( "First call of updateValuePointers is mandatory" );
 #endif
 
-	if ( nodeNumber < 0 || nodeNumber > _nbNodes) {
-	  throw std::runtime_error("Out of range");
-	};
-	if ( compNumber < 0 || compNumber > _nbComp) {
-	  throw std::runtime_error("Out of range");
-	};
-	
+    if ( nodeNumber < 0 || nodeNumber > _nbNodes) {
+      throw std::runtime_error("Out of range");
+    };
+    if ( compNumber < 0 || compNumber > _nbComp) {
+      throw std::runtime_error("Out of range");
+    };
+    
         const long position = nodeNumber * _nbComp + compNumber;
         return ( *_values )[position];
     };
@@ -144,7 +144,7 @@ template < class ValueType > class SimpleFieldOnNodesClass : public DataStructur
     std::string getNameOfComponent( const int& i ) const {
 
       if ( i < 0 || i >= _nbComp) {
-	throw std::runtime_error( "Out of range");
+        throw std::runtime_error( "Out of range");
       };
       
       std::string name = trim(( *_component )[i].toString());
@@ -161,7 +161,7 @@ template < class ValueType > class SimpleFieldOnNodesClass : public DataStructur
       VectorString names;
       names.reserve(size);
       for ( int i = 0 ; i < size; i++ ) {
-	names.push_back(this->getNameOfComponent(i));
+        names.push_back(this->getNameOfComponent(i));
       }
       return names;
     }

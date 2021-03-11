@@ -277,6 +277,87 @@ FieldOnCellsRealPtr ResultClass::getRealFieldOnCells( const std::string name,
     return toReturn;
 };
 
+PyObject *ResultClass::getAccessParameters() const
+{
+
+  PyObject *returnDict = PyDict_New();
+  std::string var_name, str_val, typevar, nosuff;
+  
+  _serialNumber->updateValuePointer();
+  _rspr->updateValuePointer();
+  _rspi->updateValuePointer();
+  _rsp8->updateValuePointer();
+  _rs16->updateValuePointer();
+  _rs24->updateValuePointer();
+
+  ASTERINTEGER nb_ranks = _serialNumber->usedSize();
+  
+  var_name = "NUME_ORDRE";
+  PyObject *listValues = PyList_New( nb_ranks );
+  for ( int j = 0; j < nb_ranks; ++j ) {
+    PyList_SetItem(listValues, j, PyLong_FromLong( ( *_serialNumber )[j] ));
+  }
+  PyDict_SetItemString( returnDict, var_name.c_str(), listValues );
+  Py_DECREF( listValues );
+  
+  for ( int i = 0; i < (_calculationParameter->getVectorOfObjects()).size(); ++i ) {
+    const auto item = _calculationParameter->getVectorOfObjects()[i];
+    typevar = trim(item[3].toString());
+    
+    if (typevar == "ACCES"){
+      var_name = trim(_accessVariables->getStringFromIndex( i+1 ));
+      nosuff = trim(item[0].toString());
+      int ivar = std::stoi(trim(item[1].toString()));
+      int nmax = std::stoi(trim(item[2].toString()));
+      
+      PyObject *listValues = PyList_New( nb_ranks );
+      
+      if (nosuff == ".RSPI") {
+        for ( int j = 0; j < nb_ranks; ++j ) {
+          int index = nmax*(j)+ivar -1;
+          PyList_SetItem( listValues, j, PyLong_FromLong( ( *_rspi )[index] ));
+        }
+      }
+      
+      else if (nosuff == ".RSPR") {
+        for ( int j = 0; j < nb_ranks; ++j ) {
+          int index = nmax*(j)+ivar -1;
+          PyList_SetItem( listValues, j, PyFloat_FromDouble( ( *_rspr )[index] ));
+        }
+      }
+      
+      else {
+        for ( int j = 0; j < nb_ranks; ++j ) {
+          int index = nmax*(j)+ivar -1;
+          if (nosuff == ".RSP8") {
+            str_val = trim((( *_rsp8 )[index]).toString());
+          }
+          else if (nosuff == ".RS16") {
+            str_val = trim((( *_rs16 )[index]).toString());
+          }
+          else if (nosuff == ".RS24") {
+            str_val = trim((( *_rs24 )[index]).toString());
+          }
+          else {
+            throw std::runtime_error( "Uknown type for access variable : " + nosuff);
+          }
+
+          if (str_val.length()==0){
+            PyList_SetItem( listValues, j, Py_None);
+          }
+          else {
+            PyList_SetItem( listValues, j, PyUnicode_FromString( str_val.c_str()));
+          }
+        }
+      }
+      PyDict_SetItemString( returnDict, var_name.c_str(), listValues );
+      Py_DECREF( listValues );
+    }
+  }
+
+  return returnDict;
+}
+
 VectorString ResultClass::getFieldsOnNodesNames() const
 {
   VectorString names;
@@ -364,7 +445,17 @@ bool ResultClass::update()
 {
     CALL_JEMARQ();
     _serialNumber->updateValuePointer();
-    auto boolRet = _namesOfFields->buildFromJeveux( true );
+    
+    bool check_tava = _calculationParameter->buildFromJeveux( true );
+    if (check_tava == false){
+      throw std::runtime_error( "Cannot build .TAVA from Jeveux");
+    }
+    
+    bool check_tach = _namesOfFields->buildFromJeveux( true );
+    if (check_tach == false){
+      throw std::runtime_error( "Cannot build .TACH from Jeveux");
+    }
+
     const auto numberOfSerialNum = _serialNumber->usedSize();
     _nbRanks = numberOfSerialNum;
     BaseMeshPtr curMesh( nullptr );
