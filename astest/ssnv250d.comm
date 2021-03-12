@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -84,10 +84,10 @@ ACIER = DEFI_MATERIAU(ELAS = _F(E=190000.0, NU=0.3),
                                      NUCL_GAUSS_PORO = 0.0,
                                      NUCL_GAUSS_PLAS = 0.6,
                                      NUCL_GAUSS_DEV = 0.01,
-                     ),                
-                      ) 
-                                 
-# AFFECTATION DES MATERIAUX                               
+                     ),
+                      )
+
+# AFFECTATION DES MATERIAUX
 MATE = AFFE_MATERIAU (MAILLAGE = MAIL,
                       AFFE     = _F(GROUP_MA='SPECIMEN', MATER = ACIER),)
 
@@ -104,8 +104,8 @@ CL = AFFE_CHAR_MECA(MODELE    = MODE,
 DEFY = DEFI_FONCTION(NOM_PARA = 'Y',
                      VALE = (0,0,0.05,deply),)
 
-CHAR = AFFE_CHAR_MECA_F(MODELE   = MODE,
-                      DDL_IMPO = (_F(GROUP_MA = 'SPECIMEN',  DY = DEFY),),
+CHAR = AFFE_CHAR_CINE_F(MODELE   = MODE,
+                      MECA_IMPO = (_F(GROUP_MA = 'SPECIMEN',  DY = DEFY),),
                       )
 
 
@@ -135,7 +135,7 @@ RESU = STAT_NON_LINE (MODELE       = MODE,
                     RESI_GLOB_MAXI=1.E-3,
                     ),
                       NEWTON       = _F(MATRICE='TANGENTE',REAC_ITER=1,REAC_INCR=1),
-                      SOLVEUR      = _F(METHODE='MUMPS', PCENT_PIVOT=20, MATR_DISTRIBUEE='OUI',),
+                      SOLVEUR      = _F(METHODE='MUMPS', PCENT_PIVOT=20, MATR_DISTRIBUEE='OUI',POSTTRAITEMENTS='FORCE',),
                       ARCHIVAGE    = _F(LIST_INST=REEL_ARC,),
             )
 
