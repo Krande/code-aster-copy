@@ -39,7 +39,7 @@ def configure(self):
         opts.with_prog_homard = True
         opts.with_prog_ecrevisse = True
         opts.with_prog_mfront = True
-        opts.with_prog_xmgrace = True
+        opts.with_prog_xmgrace = False  # soon deprecated
         opts.with_prog_gracebat = True
         opts.with_prog_mdump = True
         opts.with_py_med = True
