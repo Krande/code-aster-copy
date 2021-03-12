@@ -47,6 +47,29 @@ dProblem.createBehaviour(
 with test.assertRaisesRegex(RuntimeError, "Unexpected value.*COMPORTEMENT"):
     dProblem.createBehaviour(COMPORTEMENT="ELAS")
 
+
+U2_2.update() # 2021_03 L'appel de update est necessaire en poursuite
+dico_par = U2_2.getAccessParameters()
+test.assertEqual(sorted(dico_par.keys()), ['INST', 'NUME_ORDRE'])
+test.assertEqual(dico_par['NUME_ORDRE'], [0, 1, 2])
+test.assertEqual(dico_par['INST'], [60.0, 80.0, 100.0])
+
+test.assertEqual(U2_2.getFieldsOnNodesNames(), ['DEPL'])
+test.assertEqual(U2_2.getFieldsOnCellsNames(), ['SIEF_ELGA', 'VARI_ELGA'])
+
+ranks = dico_par['NUME_ORDRE']
+rf = U2_2.getRealFieldOnNodes('DEPL', ranks[0] + 1)
+sf = rf.exportToSimpleFieldOnNodes()
+
+test.assertAlmostEqual(sf.getValues()[6], 0.314065725792971)
+test.assertEqual(sf.getNameOfComponents(), ['DX', 'DY'])
+test.assertEqual(sf.getNumberOfComponents(), 2)
+test.assertEqual(sf.getNumberOfNodes(), 16)
+test.assertEqual(sf.getNameOfComponent(0), 'DX')
+
+with test.assertRaisesRegex(RuntimeError, "Out of range"):
+    name = sf.getNameOfComponent(5)
+
 test.printSummary()
 
 code_aster.close()
