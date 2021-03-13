@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -17,15 +17,19 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
-# person_in_charge: nicolas.sellenet@edf.fr
+# person_in_charge: mathieu.courtois@edf.fr
+from collections import namedtuple
 
 from ..Objects import TableContainer
-from ..Supervis import ExecuteCommand
+from ..Supervis import ExecuteCommand, UserMacro
+from ..Cata import Commands
+from .extr_table import EXTR_TABLE
 
 
 class Compute(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.Table`"""
-    command_name = "CALCUL"
+    command_name = "_CALCUL_"
+    command_cata = Commands.CALCUL
 
     def create_result(self, keywords):
         """Initialize the result.
@@ -48,5 +52,39 @@ class Compute(ExecuteCommand):
         """
         self._result.update()
 
+_CALCUL_ = Compute.run
 
-CALCUL = Compute.run
+
+def calcul_ops(self, **kwargs):
+    """Executor of CALCUL.
+
+    By default, a *TableContainer* object is returned. If `__use_namedtuple__`
+    is *True*, a namedtuple is returned, using objects names from the table.
+
+    Returns:
+        (table|namedtuple): Container as Table or a tuple.
+    """
+    container = _CALCUL_(**kwargs)
+    if not self._tuplmode:
+        result = container
+    else:
+        table = container.EXTR_TABLE()
+        if kwargs["INFO"] > 1:
+            print(table)
+        objects = []
+        content = {}
+        for row in table:
+            name = row["NOM_OBJET"]
+            objects.append(name)
+            content[name] = EXTR_TABLE(TABLE=container,
+                                       TYPE_RESU=row["TYPE_OBJET"],
+                                       NOM_PARA="NOM_SD",
+                                       FILTRE=_F(NOM_PARA="NOM_OBJET",
+                                                 VALE_K=name))
+        result_type = namedtuple("Result", objects)
+        result = result_type(**content)
+
+    return result
+
+
+CALCUL = UserMacro("CALCUL", Commands.CALCUL, calcul_ops)

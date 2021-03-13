@@ -18,7 +18,8 @@
 # --------------------------------------------------------------------
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-DEBUG=_F(SDVERI='OUI'))
+      DEBUG=_F(SDVERI='OUI'),
+      IMPR_MACRO="OUI")
 
 # MODELISATION A : COMPORTEMENT VMIS_ECMI_TRAC AVEC PLUSIEURS PAS DE TEMPS
 
@@ -157,31 +158,19 @@ for i_inst in range(1,len(l_inst)) :
       # DEPLACEMENTS : U = U + DELTA_U
       U += DU
 
-      SIG_TEMP=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
-                          TABLE=CONT,
-                          NOM_PARA='NOM_SD',
-                          FILTRE=_F(NOM_PARA='NOM_OBJET',
-                                    VALE_K='SIEF_ELGA'),)
-
       SIGMA=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                        OPERATION='ASSE',
                        MODELE   =MO,
                        PROL_ZERO='OUI',
                        ASSE  = _F(TOUT       ='OUI',
-                                  CHAM_GD    =SIG_TEMP))
-
-      VAR_TEMP=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
-                       TABLE=CONT,
-                       NOM_PARA='NOM_SD',
-                       FILTRE=_F(NOM_PARA='NOM_OBJET',
-                                 VALE_K='VARI_ELGA'),)
+                                  CHAM_GD    =result.SIEF_ELGA))
 
       VARI=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
                       OPERATION='ASSE',
                       MODELE   =MO,
                       PROL_ZERO='OUI',
                       ASSE  = _F(TOUT       ='OUI',
-                                 CHAM_GD    =VAR_TEMP))
+                                 CHAM_GD    =result.VARI_ELGA))
 
       # STOCKAGE DE LA CHARGE DU PAS DE TEMPS PRECEDENT
       CHARB_PR=CREA_CHAMP(OPERATION='COMB',
@@ -252,53 +241,43 @@ for i_inst in range(1,len(l_inst)) :
       # remarque la destruction du container 'CONT ne detruit pas les champs de la table...
       # ce qui augmente leur numero  a chaque fois, et declenche les erreurs de verif SD
       #DETRUIRE(OBJET=_F(CHAINE='CONT'),INFO=1)
-      # à vérifier en >15.2...
+      # à vérifier en >15.2... maintenant qu'il y a 'update'
 
       if (i_inst == 1 and IterNewton == 1):
-          CONT=CALCUL(OPTION=('COMPORTEMENT','FORC_INTE_ELEM','MATR_TANG_ELEM'),
-                      MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      INCREMENT=_F(LIST_INST=LIST,
-                                   NUME_ORDRE=i_inst),
-                      EXCIT=_F(CHARGE=CHARB,FONC_MULT=RAMPE),
-                      INCR_DEPL=DELTA_U,
-                      DEPL=U,
-                      SIGM=SIGMA,
-                      VARI=VARI,
-                      COMPORTEMENT=_F(RELATION='VMIS_ECMI_TRAC',),
-                      INFO=2,)
+          result=CALCUL(__use_namedtuple__=True,
+                        OPTION=('COMPORTEMENT','FORC_INTE_ELEM','MATR_TANG_ELEM'),
+                        MODELE=MO,
+                        CHAM_MATER=CHMAT,
+                        INCREMENT=_F(LIST_INST=LIST,
+                                     NUME_ORDRE=i_inst),
+                        EXCIT=_F(CHARGE=CHARB,FONC_MULT=RAMPE),
+                        INCR_DEPL=DELTA_U,
+                        DEPL=U,
+                        SIGM=SIGMA,
+                        VARI=VARI,
+                        COMPORTEMENT=_F(RELATION='VMIS_ECMI_TRAC',),
+                        INFO=2,)
       else:
-          CONT=CALCUL(OPTION=('COMPORTEMENT','FORC_INTE_ELEM','MATR_TANG_ELEM'),
-                      MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      INCREMENT=_F(LIST_INST=LIST,
-                                   NUME_ORDRE=i_inst),
-                      EXCIT=_F(CHARGE=CHARB,FONC_MULT=RAMPE),
-                      INCR_DEPL=DELTA_U,
-                      DEPL=U,
-                      reuse = CONT,
-                      TABLE = CONT,
-                      SIGM=SIGMA,
-                      VARI=VARI,
-                      COMPORTEMENT=_F(RELATION='VMIS_ECMI_TRAC',),
-                      INFO=2,)
-
-      IMPR_TABLE(TABLE=CONT)
+          result=CALCUL(__use_namedtuple__=True,
+                        OPTION=('COMPORTEMENT','FORC_INTE_ELEM','MATR_TANG_ELEM'),
+                        MODELE=MO,
+                        CHAM_MATER=CHMAT,
+                        INCREMENT=_F(LIST_INST=LIST,
+                                     NUME_ORDRE=i_inst),
+                        EXCIT=_F(CHARGE=CHARB,FONC_MULT=RAMPE),
+                        INCR_DEPL=DELTA_U,
+                        DEPL=U,
+                       #  reuse = CONT,
+                       #  TABLE = CONT,
+                        SIGM=SIGMA,
+                        VARI=VARI,
+                        COMPORTEMENT=_F(RELATION='VMIS_ECMI_TRAC',),
+                        INFO=2,)
 
       #=========================================================
       #   VERIFICTION DU CODE RETOUR DE L'INTEGRATION DE LA LC
       #=========================================================
-
-      CODE=EXTR_TABLE(TYPE_RESU='CHAM_ELEM',
-                       TABLE=CONT,
-                       NOM_PARA='NOM_SD',
-                       FILTRE=(_F(NOM_PARA='NOM_OBJET',
-                                  VALE_K='CODE_RETOUR_INTE'),
-                               _F(NOM_PARA='NUME_ORDRE',
-                                  VALE_I=i_inst,),)
-                       )
-
-      if max(CODE.EXTR_COMP("IRET",[]).valeurs) > 0 :
+      if max(result.CODE_RETOUR_INTE.EXTR_COMP("IRET",[]).valeurs) > 0 :
          print('echec d integration de la loi de comportement')
          FIN()
 
@@ -307,18 +286,8 @@ for i_inst in range(1,len(l_inst)) :
       #   MATRICE TANGENTE
       #=========================================================
 
-      # matrice elementaire tangente
-      MT_EL=EXTR_TABLE(TYPE_RESU='MATR_ELEM_DEPL_R',
-                       TABLE=CONT,
-                       NOM_PARA='NOM_SD',
-                       FILTRE=(_F(NOM_PARA='NOM_OBJET',
-                                 VALE_K='MATR_TANG_ELEM'),
-                               _F(NOM_PARA='NUME_ORDRE',
-                                  VALE_I=i_inst,),)
-                       )
-
       # matrice assemblee tangente
-      MT_AS=ASSE_MATRICE(MATR_ELEM=MT_EL,
+      MT_AS=ASSE_MATRICE(MATR_ELEM=result.MATR_TANG_ELEM,
                          NUME_DDL=NU,)
 
       M_AS=FACTORISER(reuse =MT_AS, METHODE="MULT_FRONT",
@@ -328,32 +297,12 @@ for i_inst in range(1,len(l_inst)) :
       #   SECONDS MEMBRES et RESIDU
       #=========================================================
 
-      # forces internes elementaires
-      FORIN_EL=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
-                           TABLE=CONT,
-                           NOM_PARA='NOM_SD',
-                           FILTRE=(_F(NOM_PARA='NOM_OBJET',
-                                     VALE_K='FORC_INTE_ELEM'),
-                                  _F(NOM_PARA='NUME_ORDRE',
-                                     VALE_I=i_inst,),)
-                            )
-
       # forces internes assemblees
-      FORIN_AS=ASSE_VECTEUR(VECT_ELEM=FORIN_EL,
+      FORIN_AS=ASSE_VECTEUR(VECT_ELEM=result.FORC_INTE_ELEM,
                             NUME_DDL=NU,)
 
-      # Bt.La elem
-      BTLA_EL=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
-                           TABLE=CONT,
-                           NOM_PARA='NOM_SD',
-                           FILTRE=(_F(NOM_PARA='NOM_OBJET',
-                                      VALE_K='FORC_DIRI_ELEM'),
-                                   _F(NOM_PARA='NUME_ORDRE',
-                                      VALE_I=i_inst,),)
-                         )
-
       # Bt.La assemblee
-      BTLA_AS=ASSE_VECTEUR(VECT_ELEM=BTLA_EL,
+      BTLA_AS=ASSE_VECTEUR(VECT_ELEM=result.FORC_DIRI_ELEM,
                            NUME_DDL=NU,)
 
       # f_v : sommes des 2nds membres
@@ -417,37 +366,19 @@ VAR_REF=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_VARI_R',
 #          EXTRACTION DES CHAMPS CALCULES
 #=========================================================
 
-SIG_TEMP=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
-                    TABLE=CONT,
-                    NOM_PARA='NOM_SD',
-                    FILTRE=(_F(NOM_PARA='NOM_OBJET',
-                               VALE_K='SIEF_ELGA'),
-                            _F(NOM_PARA='NUME_ORDRE',
-                               VALE_I=i_inst,),)
-                           )
-
 SIGMA=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                  OPERATION='ASSE',
                  MODELE   =MO,
                  PROL_ZERO='OUI',
                  ASSE  = _F(TOUT       ='OUI',
-                            CHAM_GD    =SIG_TEMP))
-
-VAR_TEMP=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
-                 TABLE=CONT,
-                 NOM_PARA='NOM_SD',
-                 FILTRE=(_F(NOM_PARA='NOM_OBJET',
-                           VALE_K='VARI_ELGA'),
-                        _F(NOM_PARA='NUME_ORDRE',
-                           VALE_I=i_inst,),)
-                           )
+                            CHAM_GD    =result.SIEF_ELGA))
 
 VARI=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
                 OPERATION='ASSE',
                 MODELE   =MO,
                 PROL_ZERO='OUI',
                 ASSE  = _F(TOUT       ='OUI',
-                           CHAM_GD    =VAR_TEMP))
+                           CHAM_GD    =result.VARI_ELGA))
 
 
 #=========================================================
@@ -517,8 +448,6 @@ TEST_RESU(CHAM_ELEM=(_F(CRITERE='ABSOLU',
                         VALE_ABS='OUI',),
                      ),
           )
-
-IMPR_TABLE(TABLE=CONT)
 
 IMPR_RESU(FORMAT='GMSH',UNITE=37,
           RESU=_F(RESULTAT=SOLUT,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')),)
