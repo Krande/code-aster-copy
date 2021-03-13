@@ -176,16 +176,17 @@ def code_checker(self, define, check, fragment, start_msg, error_msg,
             if into and size not in into:
                 raise ValueError
             val = 1 if setbool else size
-            self.define(define, val, quote=False)
-            # for easy access to the value in other wscripts
-            self.env[define] = val
+            if define:
+                self.define(define, val, quote=False)
+                # for easy access to the value in other wscripts
+                self.env[define] = val
         except ValueError:
             raise Errors.ConfigurationError(error_msg % locals())
         except:
             raise RuntimeError
     except RuntimeError:
         self.end_msg('no', 'YELLOW')
-        if setbool:
+        if define and setbool:
             self.undefine(define)
     else:
         self.end_msg(str(size))
@@ -247,7 +248,7 @@ def check_sizeof_logical(self):
     self.code_checker('ASTER_LOGICAL_SIZE', self.check_fc, fragment,
                       'Checking size of logical',
                       'unexpected value for sizeof(aster_logical): %(size)s',
-                      into=(1, 4, 8))
+                      into=(1, ))
 
 @Configure.conf
 def check_sizeof_real4(self):

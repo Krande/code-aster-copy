@@ -33,6 +33,7 @@ def configure(self):
     self.check_cxx_compiler_flags()
     if 'icc' not in self.env.CC_NAME:
         self.check_bibcxx_depends()
+    self.check_cxx_types()
     self.check_boost_aster()
 
     cxxpath = self.path.get_src().abspath()
@@ -106,3 +107,23 @@ def check_boost_aster(self):
                      libs=self.env.LIBPATH_BOOST,
                      lib="python",
                      toolset='cxx')
+
+@Configure.conf
+def check_cxx_types(self):
+    """Check C++ types"""
+    self.check_sizeof_bool()
+
+@Configure.conf
+def check_sizeof_bool(self):
+    fragment = r'''
+#include <stdio.h>
+int main(void){
+    bool logical;
+    printf("%d", (int)sizeof(logical));
+    return 0;
+}'''
+    self.code_checker(None, self.check_cxx, fragment,
+                      'Checking size of C++ bool',
+                      'unexpected value for sizeof(bool): %(size)s',
+                      into=(1, ))
+    self.define("ASTER_C_FORTRAN_LOGICAL", "char", quote=False)
