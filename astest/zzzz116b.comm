@@ -77,6 +77,8 @@ G0 = CALC_G(LISSAGE=_F(DEGRE=3,
                      R_INF=2.5,
                      R_SUP=5.0))
 
+IMPR_TABLE(UNITE=6, TABLE=G0)
+
 # cham_theta_no.printMedFile("/home/C00976/tmp/cham_theta_no.med")
 IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=cham_theta_no,), )
 
@@ -527,6 +529,8 @@ H0 = CALC_H(RESULTAT=RES0,
                      R_INF=2.5,
                      R_SUP=5.0))
 
+IMPR_TABLE(UNITE=6, TABLE=H0)
+
 TEST_RESU(
         CHAM_NO=(
         _F(
@@ -717,6 +721,14 @@ TEST_RESU(
             ),
             )
     )
+
+TEST_TABLE(
+           VALE_CALC_K="ELAS",
+           NOM_PARA='COMPORTEMENT',
+           TABLE=H0,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=1,),
+           )
 
 IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(CHAM_GD=cham_theta_noh))
 

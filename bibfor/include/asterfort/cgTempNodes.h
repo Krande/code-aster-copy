@@ -16,34 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-! CalcG module : Parameters <-> integer definitions
-! -------------------------------------------------------------------------
 !
-! - CALC_G - General
-!
-! --- number of option computed
-#define NB_MAX_OPT 3
-!
-! --- list of options
-#define OPT_G 1
-#define OPT_K 2
-#define OPT_G_EPSI 3
-!
-! --- number of option computed
-#define NB_MAX_TERM 7
-!
-! --- list of terms
-#define G  1
-#define K1 2
-#define K2 3
-#define K3 4
-#define G_IRWIN 5
-#define G_EPSI 6
-!
-! --- number of parameters for table
-#define NB_MAX_PARA 20
-!
-! --- List of comportement
-#define ELAS    0
-#define ELAS_NL 1
-#define PLAS    2
+interface
+    subroutine cgTempNodes(cgStudy, cgTable)
+use calcG_type
+        type(CalcG_study), intent(in) :: cgStudy
+        type(CalcG_table), intent(inout) :: cgTable
+    end subroutine cgTempNodes
+end interface

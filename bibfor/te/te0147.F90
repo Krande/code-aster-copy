@@ -36,7 +36,6 @@ subroutine te0147(option, nomte)
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !------------------------------------------------------------------------------------------
 !
-use calcG_type
 !
 implicit none
 !
@@ -58,8 +57,6 @@ implicit none
 ! =====================================================================
 !                       DECLARATION DES VARIABLES
 ! =====================================================================
-!
-!    type(CalcG_InfoTe) :: cgInfoTe
 !
     integer           :: i, j, kp, k, ind
     integer           :: ndim, nno, nnos, npg, compt
@@ -99,12 +96,6 @@ implicit none
     fami = 'RIGI'
     call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-!
-!   C'est une parade à la création d'un champ qui serait envoyé dans l'appel à calcul
-!   On récupere directement la discretisation,nnof et ndeg : cgInfoTe
-!   utile pour reeldim = 3
-!    call cgInfoTe%initialize()
-!    call cgInfoTe%print()
 !
 !-- Initialisation des paramètres
 !
@@ -565,10 +556,10 @@ implicit none
             enddo
         else
             fx = forcg(1)-(dyde*presg(1)-dxde*presg(2))/dsde
-            fy = forcg(2)+(dxde*presg(1)+dyde*presg(2))/dsde      
+            fy = forcg(2)+(dxde*presg(1)+dyde*presg(2))/dsde
             prod = (divt*fx+dfxde*(th1+th2))*depl(1) + (divt*fy+dfyde*(th1+th2))*depl(2)
             tcla = tcla + prod*poids
-!    
+!
             if ( option .eq. 'CALCH_K_G' .or. option .eq. 'CALCH_K_G_F' ) then
                 prod1 = (divt*fx+dfxde*(th1+th2))*u1g(1) + (divt*fy+dfyde*(th1+th2))*u1g(2)
                 prod2 = (divt*fx+dfxde*(th1+th2))*u2g(1) + (divt*fy+dfyde*(th1+th2))*u2g(2)

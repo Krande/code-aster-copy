@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,22 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
 !
 !
 interface
-    subroutine cgStresses(resu, vecord, calsig)
-        character(len=8)  :: resu
-        character(len=19) :: vecord
-        character(len=8)  :: calsig
-    end subroutine cgStresses
+    subroutine cgDiscrField(cgField, cgTheta, cgStudy, chsdeg, chslag, v_absc, v_basf, v_cesv, &
+    jcesd, jcesl, i_theta, lpain, lchin, nchin)
+use calcG_type
+        type(CalcG_field), intent(in) :: cgField
+        type(CalcG_theta), intent(in) :: cgTheta
+        type(CalcG_Study), intent(in) :: cgStudy
+        character(len=19), intent(in) :: chsdeg, chslag
+        integer, intent(in) :: jcesd, jcesl, i_theta
+        real(kind=8), pointer :: v_basf(:)
+        real(kind=8), pointer :: v_absc(:)
+        integer, pointer  :: v_cesv(:)
+        character(len=24), intent(inout) :: lchin(*)
+        character(len=8), intent(inout) :: lpain(*)
+        integer, intent(inout) :: nchin
+    end subroutine cgDiscrField
 end interface

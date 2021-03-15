@@ -95,7 +95,7 @@ BILIN = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                             ),
                             PROL_DROITE = 'LINEAIRE',
                             PROL_GAUCHE = 'LINEAIRE',);
-                            
+
 MAT=DEFI_MATERIAU(ELAS=_F(E = EE,
                           NU = poisson,
                           ALPHA = 1.0e-5),
@@ -108,7 +108,7 @@ CM=AFFE_MATERIAU(    MAILLAGE=MA,
                            AFFE=_F(  TOUT = 'OUI',
                                   MATER = MAT),
                                    )
-                                   
+
 #AVEC DEFORMATION THERMIQUE
 CMTH=AFFE_MATERIAU(    MAILLAGE=MA,
                            AFFE=_F(  TOUT = 'OUI',
@@ -181,7 +181,7 @@ RESUINI=CALC_CHAMP(reuse=RESUINI,
                     CRITERES=('SIEQ_ELGA',),
                     VARI_INTERNE=('VARI_ELNO',),);
 
-IMPR_RESU(RESU=_F(RESULTAT=RESUINI), UNITE=81, FORMAT='MED')              
+IMPR_RESU(RESU=_F(RESULTAT=RESUINI), UNITE=81, FORMAT='MED')
 
 #--------------------------------------------------------------------
 #  CALCUL DE G AVEC DEFORMATIONS THERMIQUES
@@ -267,7 +267,7 @@ GINI4=CALC_H(RESULTAT=RESUINI,
                     R_SUP=30.),
             OPTION='G_EPSI',
                     );
-                    
+
 #--------------------------------------------------------------------
 #                TESTS DES RESULTATS                                #
 #--------------------------------------------------------------------
@@ -281,7 +281,7 @@ Gther4_elas= 0.6300259991916937
 #VALEURS EN ELASTO PLASTICITE
 Gther1= 0.43624301954411765
 Gther2= 0.4359888525889633
-Gther3= 0.43596620466516106 
+Gther3= 0.43596620466516106
 Gther4= 0.4359945607557256
 
 
@@ -363,6 +363,15 @@ TEST_TABLE(
            CRITERE='RELATIF',
            NOM_PARA='G_EPSI',
            TABLE=GINI4,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
+
+#
+TEST_TABLE(
+           VALE_CALC_K="PLAS",
+           NOM_PARA='COMPORTEMENT',
+           TABLE=GTH1,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),
            )

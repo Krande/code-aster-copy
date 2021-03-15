@@ -111,6 +111,7 @@ use calcG_type
     do i = 1, nbel
         if(v_absc(i).ge.lonfis) lonfis=v_absc(i)
     enddo
+    cgTheta%lonfis = lonfis
 !
     ! Vérifications spécifiques en 3D
     if (cgField%ndim .eq. 3) then
@@ -164,7 +165,7 @@ use calcG_type
         zm = 0.d0
 !
         if(cgField%ndim .eq. 3) then
-            zm= v_coor((i-1)*3+3)
+            zm = v_coor((i-1)*3+3)
         endif
 !
 !       COORDONNEES DU PROJETE N DE CE NOEUD SUR LE FRONT DE FISSURE

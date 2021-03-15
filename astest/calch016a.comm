@@ -50,7 +50,7 @@ MESH = CREA_MAILLAGE(LINE_QUAD=_F(TOUT='OUI'),
 MESH = MODI_MAILLAGE(reuse=MESH,
                       MAILLAGE=MESH,
                       ORIE_PEAU_2D=_F(GROUP_MA=('HAUT')))
-                      
+
 #BARSOUM
 MESH = MODI_MAILLAGE(reuse=MESH,
                       MAILLAGE=MESH,
@@ -62,7 +62,7 @@ MODE = AFFE_MODELE(AFFE=_F(MODELISATION=('D_PLAN', ),
                             PHENOMENE='MECANIQUE',
                             TOUT='OUI'),
                     MAILLAGE=MESH)
-                    
+
 #MATERIAU ELASTIQUE BI-LINEAIRE
 MATER = DEFI_MATERIAU(ECRO_LINE=_F(D_SIGM_EPSI=EE/ratio,
                                    SY=sigma_max),
@@ -128,8 +128,8 @@ FISS_NEW = DEFI_FISSURE(CONFIG_INIT='COLLEE',
                        LEVRE_SUP=_F(GROUP_MA=('LEVRE_SUP', )),
                        MAILLAGE=MESH,
                        SYME='OUI')
-                       
-# A PROXIMITE DE LA FISSURE, LES CARACTERISTIQUES MATERIAUX A UTILISER  
+
+# A PROXIMITE DE LA FISSURE, LES CARACTERISTIQUES MATERIAUX A UTILISER
 # PAR POST_K1_K2_K3 NE SONT PAS CELLES DE L'ELASTICITE LINEAIRE
 MATERINF = DEFI_MATERIAU(ELAS=_F(E=EE/ratio,
                                  NU=0.5*(1.-1./ratio)+poisson/ratio))
@@ -142,8 +142,8 @@ T_FIC = POST_K1_K2_K3(ABSC_CURV_MAXI=4e-6,
                       TOUT_ORDRE='OUI',
                       INFO=2,)
 IMPR_TABLE(TABLE=T_FIC)
-                      
-#CALCUL DE G PAR CALC_G               
+
+#CALCUL DE G PAR CALC_G
 # ON CALCULE G POUR TROIS COURONNES D'INTEGRATIONS
 T_G1 = CALC_H(OPTION='G_EPSI',
               RESULTAT=RESU,
@@ -249,7 +249,7 @@ T_4=CALC_TABLE(reuse =T_4,
 
                     );
 
-# SUPPRESSION DE LA PREMIER LIGNE DE LA TABLE SUR LAQUELLE TOUTES 
+# SUPPRESSION DE LA PREMIER LIGNE DE LA TABLE SUR LAQUELLE TOUTES
 #LES VALEURS SONT NULLES
 T_FIN=CALC_TABLE(TABLE=T_4,
                  ACTION=(
@@ -282,7 +282,7 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='ANALYTIQUE',
              VALE_CALC=1.000440556912623,
-             VALE_REFE=1.0, 
+             VALE_REFE=1.0,
              PRECISION=0.003,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
@@ -294,11 +294,11 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='ANALYTIQUE',
              VALE_CALC=0.9997326451757083,
-             VALE_REFE=1.0, 
+             VALE_REFE=1.0,
              PRECISION=0.003,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
-             
+
 TEST_TABLE(  TABLE=T_FIN,
              NOM_PARA='G1/G_K',
              FILTRE=_F(NOM_PARA='INST',
@@ -306,7 +306,7 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='ANALYTIQUE',
              VALE_CALC=0.9988752596657248,
-             VALE_REFE=1.0, 
+             VALE_REFE=1.0,
              PRECISION=0.002,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
@@ -318,7 +318,7 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='ANALYTIQUE',
              VALE_CALC=1.0004409827526006,
-             VALE_REFE=1.0, 
+             VALE_REFE=1.0,
              PRECISION=0.003,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
@@ -330,11 +330,11 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='ANALYTIQUE',
              VALE_CALC=0.9997325166378151,
-             VALE_REFE=1.0, 
+             VALE_REFE=1.0,
              PRECISION=0.003,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
-             
+
 TEST_TABLE(  TABLE=T_FIN,
              NOM_PARA='G2/G_K',
              FILTRE=_F(NOM_PARA='INST',
@@ -342,7 +342,7 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='ANALYTIQUE',
              VALE_CALC=0.9988728577731216,
-             VALE_REFE=1.0, 
+             VALE_REFE=1.0,
              PRECISION=0.002,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
@@ -355,7 +355,7 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='ANALYTIQUE',
              VALE_CALC=1.000441270171713,
-             VALE_REFE=1.0, 
+             VALE_REFE=1.0,
              PRECISION=0.003,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
@@ -367,11 +367,11 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='ANALYTIQUE',
              VALE_CALC=0.9997330690163335,
-             VALE_REFE=1.0, 
+             VALE_REFE=1.0,
              PRECISION=0.003,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
-             
+
 TEST_TABLE(  TABLE=T_FIN,
              NOM_PARA='G3/G_K',
              FILTRE=_F(NOM_PARA='INST',
@@ -379,11 +379,11 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='ANALYTIQUE',
              VALE_CALC=0.998873688572175,
-             VALE_REFE=1.0, 
+             VALE_REFE=1.0,
              PRECISION=0.002,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
-            
+
 # TEST DE G (ISSUS DE CALC_G) VS VALEUR OBTENUE AVEC LA METHODE 3 DE
 # POST_K1_K2_K3 SUR UNE TAILLE DE MAILLE 100 FOIS PLUS FINE EN FOND DE FISSURE
 # POUR DIFFERENTS INSTANTS ET DIFFERENTES COURONNES D'INTEGRATION
@@ -396,7 +396,7 @@ TEST_TABLE(  TABLE=T_G1 ,
                        ),
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=113877.72108628301,
-             VALE_REFE=1.13702E+05, 
+             VALE_REFE=1.13702E+05,
              PRECISION=0.003,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
@@ -407,7 +407,7 @@ TEST_TABLE(  TABLE=T_G1,
                        ),
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=286149.71390294743,
-             VALE_REFE=2.85869E+05, 
+             VALE_REFE=2.85869E+05,
              PRECISION=0.003,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
@@ -418,11 +418,18 @@ TEST_TABLE(  TABLE=T_G1,
                        ),
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=3424607.524718903,
-             VALE_REFE=3.42359E+06, 
+             VALE_REFE=3.42359E+06,
              PRECISION=0.002,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
 
+TEST_TABLE(
+           VALE_CALC_K="ELAS_NL",
+           NOM_PARA='COMPORTEMENT',
+           TABLE=T_G1,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
 #G2
 TEST_TABLE(  TABLE=T_G2 ,
              NOM_PARA='G_EPSI',
@@ -431,7 +438,7 @@ TEST_TABLE(  TABLE=T_G2 ,
                        ),
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=113877.76955861443,
-             VALE_REFE=1.13702E+05, 
+             VALE_REFE=1.13702E+05,
              PRECISION=0.003,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
@@ -442,7 +449,7 @@ TEST_TABLE(  TABLE=T_G2,
                       ),
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=286149.67711202987,
-             VALE_REFE=2.85869E+05, 
+             VALE_REFE=2.85869E+05,
              PRECISION=0.003,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
@@ -453,12 +460,12 @@ TEST_TABLE(  TABLE=T_G2,
                        ),
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=3424599.2899174076,
-             VALE_REFE=3.42359E+06, 
+             VALE_REFE=3.42359E+06,
              PRECISION=0.002,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
-             
-             
+
+
 #G3
 TEST_TABLE(  TABLE=T_G3 ,
              NOM_PARA='G_EPSI',
@@ -467,11 +474,11 @@ TEST_TABLE(  TABLE=T_G3 ,
                        ),
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=113877.80227483457,
-             VALE_REFE=1.13702E+05, 
+             VALE_REFE=1.13702E+05,
              PRECISION=0.003,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
-             
+
 TEST_TABLE(  TABLE=T_G3,
              NOM_PARA='G_EPSI',
              FILTRE=_F(NOM_PARA='INST',
@@ -479,11 +486,11 @@ TEST_TABLE(  TABLE=T_G3,
                        ),
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=286149.83521725505,
-             VALE_REFE=2.85869E+05, 
+             VALE_REFE=2.85869E+05,
              PRECISION=0.003,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
-             
+
 TEST_TABLE(  TABLE=T_G3,
              NOM_PARA='G_EPSI',
              FILTRE=_F(NOM_PARA='INST',
@@ -491,7 +498,7 @@ TEST_TABLE(  TABLE=T_G3,
                       ),
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=3424602.1382817673,
-             VALE_REFE=3.42359E+06, 
+             VALE_REFE=3.42359E+06,
              PRECISION=0.002,
             CRITERE='RELATIF',
              VALE_ABS='NON',)

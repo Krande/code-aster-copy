@@ -38,7 +38,6 @@ subroutine te0222(option, nomte)
 !
 use Behaviour_type
 use Behaviour_module
-!use calcG_type
 !
 implicit none
 !
@@ -75,8 +74,6 @@ implicit none
 !                       DECLARATION DES VARIABLES
 ! =====================================================================
 !
-!    type(CalcG_InfoTe) :: cgInfoTe
-!    type(CalcG_theta) :: cgTheta
     type(Behaviour_Integ) :: BEHinteg
 !
     integer           :: i, j, k, j1, j2, m, kk, l
@@ -234,7 +231,7 @@ implicit none
 !
 !===========================================!
 !    print* ,''
-!    print*, 'quadratic' , cgInfoTe%milieu
+!    print*, 'quadratic'
 !    call tecael(iadzi, iazk24)
 !    print *, 'ele=', zi(iadzi)
 !===========================================!

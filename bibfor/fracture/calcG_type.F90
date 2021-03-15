@@ -30,7 +30,7 @@ private
 #include "asterfort/ccbcop.h"
 #include "asterfort/cgcrio.h"
 #include "asterfort/cgReadCompor.h"
-#include "asterfort/cgStresses.h"
+#include "asterfort/cgComporNodes.h"
 #include "asterfort/comp_info.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -68,7 +68,6 @@ private
 #include "asterfort/xcourb.h"
 #include "jeveux.h"
 !
-!public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_InfoTe, CalcG_Table
 public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table
 !
 ! --------------------------------------------------------------------------------------------------
@@ -94,8 +93,8 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table
         character(len=24)  :: compor = ' '
 ! ----- Incremental behavior or not ?
         aster_logical      :: l_incr
-! ----- recalculate stresses :yes or no
-        character(len=8)   :: stresses
+!------ temperature in VARC
+        aster_logical      :: l_temp = ASTER_FALSE
 ! ----- topological dimension
         integer            :: ndim      = 0
 ! ----- name of list of NUME
@@ -133,6 +132,8 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table
         character(len=24)  :: material  = ' '
 ! ----- name of coded material
         character(len=24)  :: mateco    = ' '
+! ----- name of elementary characteristics
+        character(len=24)  :: carael    = ' '
 ! ----- name of loading
         character(len=24)  :: loading   = ' '
 ! ----- index order
@@ -143,6 +144,8 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table
         aster_logical      :: milieu = ASTER_FALSE
 !------ modal analysis ?
         aster_logical      :: l_modal = ASTER_FALSE
+!------ axisymetric model
+        aster_logical      :: l_axis = ASTER_FALSE
 ! ----- displacement field
         character(len=24)  :: depl   = ' '
 ! ----- speed field
@@ -191,6 +194,8 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table
         integer                 :: nb_fondNoeud = 0
 ! ----- rayon
         real(kind=8)            :: r_inf = 0.d0, r_sup = 0.d0
+! ----- lenght of crack
+        real(kind=8)            :: lonfis = 0.d0
 ! ----- number of layer
         integer                 :: nb_couche_inf = 0, nb_couche_sup = 0
 ! ----- type of discretization
@@ -209,6 +214,8 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table
         character(len=24)       :: curvature = ' '
 ! ----- name of the curvilinear abscissa of crack nodes
         character(len=24)       :: absfond = ' '
+! ----- id of crack nodes
+        character(len=24)       :: fondNoeudNume = ' '
 ! ----- member function
         contains
         procedure, pass    :: initialize => initialize_theta
@@ -218,26 +225,9 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table
         procedure, pass    :: getAbscurv
         procedure, pass    :: getBaseLoc
         procedure, pass    :: getFondTailleR
-        procedure, pass    :: getFondNoeu        
+        procedure, pass    :: getFondNoeu
+        procedure, pass    :: getFondNoeuNume
     end type CalcG_Theta
-!
-!=================================================================================================
-!
-!!================================================================================================
-!!
-!    type CalcG_InfoTe
-!! ----- type of discretization
-!        character(len=8)        :: discretisation = ' '
-!!------ linear or quadratic
-!        aster_logical      :: milieu = ASTER_FALSE
-!! ----- name of mesh
-!        character(len=8)   :: mesh      = ' '
-!! ----- name of crack
-!        character(len=8)        :: crack = ' '
-!! ----- member function
-!        contains
-!        procedure, pass    :: initialize => initialize_InfoTe
-!    end type CalcG_InfoTe
 !
 !=================================================================================================
 !
@@ -257,6 +247,8 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table
         real(kind=8), pointer :: v_K3(:) => null()
         real(kind=8), pointer :: v_G_IRWIN(:) => null()
         real(kind=8), pointer :: v_G_EPSI(:) => null()
+        real(kind=8), pointer :: v_TEMP(:) => null()
+        character(len=8), pointer :: v_COMPOR(:) => null()
 ! ----- nb point
         integer :: nb_point = 1
 !
@@ -292,9 +284,10 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: ier, ifm, jopt, nbropt
+        character(len=3) :: repk
         character(len=16) :: k16bid
         character(len=19) :: lisopt
-        character(len=8)  :: modele
+        character(len=8)  :: modele, mater
         integer, pointer :: v_nume(:) => null()
 !
         call jemarq()
@@ -310,6 +303,12 @@ contains
         call gettco(this%result_in, this%result_in_type, ASTER_TRUE)
         call dismoi('MODELE', this%result_in, 'RESULTAT', repk=modele)
         call dismoi('DIM_GEOM', modele, 'MODELE', repi=this%ndim)
+!
+        call dismoi('CHAM_MATER', this%result_in, 'RESULTAT', repk=mater)
+        call dismoi('EXI_VARC', mater, 'CHAM_MATER', repk=repk)
+        if( repk == "OUI" ) then
+            this%l_temp = ASTER_TRUE
+        end if
 !
 ! --- Get name of option
 !
@@ -343,10 +342,6 @@ contains
         if(this%level_info > 1) then
             call comp_info(modele, this%compor)
         end if
-!
-! --- Recalculates stresses
-!
-        call cgStresses(this%result_in, this%list_nume_name, this%stresses)
 !
 ! --- if ELAS_INCR
 !
@@ -505,15 +500,23 @@ contains
 !   In nume_index : index nume
 ! --------------------------------------------------------------------------------------------------
 !
-        character(len=8) :: typma
+        character(len=8) :: typma, typmo
         integer :: jma
 
         call jemarq()
 
         this%nume_ordre = nume_index
         this%loading    = "&&STUDY.CHARGES"
-        call medomg(result_in, this%nume_ordre, this%model, this%material, this%mateco,this%loading)
+        call medomg(result_in, this%nume_ordre, this%model, this%material, &
+                    this%mateco, this%loading)
+        call dismoi('CARA_ELEM', result_in, 'RESULTAT', repk=this%carael)
         call dismoi('NOM_MAILLA', this%model,'MODELE', repk=this%mesh)
+        call dismoi('MODELISATION', this%model, 'MODELE', repk=typmo)
+        if( typmo(1:4) == "AXIS") then
+            this%l_axis = ASTER_TRUE
+        else
+            this%l_axis = ASTER_FALSE
+        end if
 !
 !       Maillage linéaire ou quadratique
         call jeveuo(this%mesh//'.TYPMAIL', 'L', jma)
@@ -668,7 +671,7 @@ contains
 !   In this     : theta type
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ier, j, ibasf, i, num
+        integer :: ier, j, ibasf, i, num, inume
         character(len=8) :: typfon
         real(kind=8) :: maxtai, mintai
         aster_logical :: l_disc
@@ -682,6 +685,7 @@ contains
         call gcncon("_", this%theta_factors)
         call gcncon("_", this%matrix)
         call gcncon("_", this%absfond)
+        call gcncon("_", this%fondNoeudNume)
 !
 ! --- get informations about the crack
 !
@@ -710,6 +714,7 @@ contains
 !
         call getvis('THETA', 'DEGRE', iocc=1, scal=this%degree, nbret=ier)
         call jelira(this%crack//'.FOND.NOEU', 'LONMAX', this%nnof)
+
 !
 !        if ( this%discretization == "LINEAIRE") then
 !            this%nb_theta_field = this%nnof
@@ -771,6 +776,7 @@ contains
 !       Get AbsFond = Abscurv for nodes of the crack front
 !       extraction à modifier lors de la résolution de issue30288 (NB_POINT_FOND)
         call wkvect(this%absfond, 'V V R8', this%nb_fondNoeud, ibasf)
+        call wkvect(this%fondNoeudNume, 'V V I', this%nb_fondNoeud, inume)
         call this%getAbscurv(abscur)
         call this%getFondNoeu(fondNoeud)
 !
@@ -780,7 +786,8 @@ contains
             call jenonu(jexnom(this%nomNoeud, fondNoeud(i)), num)
 !
 !           Extraction de l'abscisse curviligne pour ce numéro de noeud
-            zr(ibasf-1+i)=abscur(num)
+            zr(ibasf-1+i) = abscur(num)
+            zi(inume-1+i) = num
         enddo
 !
         call jedema()
@@ -925,6 +932,26 @@ contains
     end subroutine
 !===================================================================================================
 !
+    subroutine getFondNoeuNume(this, v_fondnoeuNume)
+!
+    implicit none
+!
+        class(CalcG_Theta), intent(in)  :: this
+        integer, pointer :: v_fondnoeuNume(:)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Get pointer on baseloc
+!   In this     : theta type
+! --------------------------------------------------------------------------------------------------
+!
+        call jemarq()
+        call jeveuo(this%fondNoeudNume, 'L', vi=v_fondnoeuNume)
+        call jedema()
+!
+    end subroutine
+!===================================================================================================
+!
 !===================================================================================================
 !
     subroutine print_theta(this)
@@ -962,79 +989,10 @@ contains
 !
     end subroutine
 !
-!=========================================================================================
+!=======================================================================================
 !
-!!========================================================================================
-!!!
-!    subroutine initialize_InfoTe(this)
-!!
-!    implicit none
-!!
-!        class(CalcG_InfoTe), intent(inout)  :: this
-!!
-!! ---------------------------------------------------------------------------------------
-!!
-!!   Informations for TE
-!!   In this     : theta type
-!! ---------------------------------------------------------------------------------------
-!!
-!        integer :: ier
-!        character(len=8) :: typma
-!        integer :: jma
-!!        character(len=8) :: crack
-!!
-!        call jemarq()
-!!
-!!        call getvtx('THETA', 'FISSURE', iocc=1, scal=crack, nbret=ier)
-
-!! ---   Get informations about theta discretization
-!        call getvtx('THETA', 'DISCRETISATION', iocc=1, scal=this%discretisation, nbret=ier)
-!!        call getvis('THETA', 'DEGRE', iocc=1, scal=this%ndeg, nbret=ier)
-!!        call jelira(crack//'.FOND.NOEU', 'LONMAX', this%nnof)
-
-!!       si npoint fond est activé travail à faire 3
-!!        call getvis('THETA', 'NB_POINT_FOND', iocc=1, scal=this%nnof, nbret=ier)
-!        call getvtx('THETA', 'FISSURE', iocc=1, scal=this%crack, nbret=ier)
-!        ASSERT(ier==1)
-!!!
-!        call dismoi('NOM_MAILLA',this%crack,'FOND_FISS', arret='F', repk=this%mesh)
-!        call jeveuo(this%mesh//'.TYPMAIL', 'L', jma)
-!        call jenuno(jexnum('&CATA.TM.NOMTM', zi(jma)), typma)
-!        if (.not. ismali(typma)) then
-!            this%milieu = ASTER_TRUE
-!        endif
-
-!        call jedema()
-!!
-!    end subroutine
-!!
-!=========================================================================================
+!=======================================================================================
 !
-!=========================================================================================
-!
-!    subroutine print_InfoTe(this)
-!!
-!    implicit none
-!!
-!        class(CalcG_InfoTe), intent(in)  :: this
-!!
-!! ---------------------------------------------------------------------------------------
-!!
-!!   print informations of a CalcG_Theta type
-!!   In this     : theta type
-!! ---------------------------------------------------------------------------------------
-!!
-!        print*, "----------------------------------------------------------------------"
-!        print*, "Discretization : ", this%discretisation,  " with number/degree ", &
-!                this%nnof, this%ndeg
-!        print*, "----------------------------------------------------------------------"
-!!
-!    end subroutine
-!!
-!!=======================================================================================
-!!
-!!=======================================================================================
-!!
     subroutine addPara(this, name, type)
 !
     implicit none
@@ -1059,12 +1017,13 @@ contains
 !
 !=======================================================================================
 !
-    subroutine initialize_table(this, cgField)
+    subroutine initialize_table(this, cgField, cgTheta)
 !
     implicit none
 !
         class(CalcG_Table), intent(inout)  :: this
-        type(CalcG_field), intent(inout) :: cgField
+        type(CalcG_field), intent(in) :: cgField
+        type(CalcG_theta), intent(in) :: cgTheta
 !
 ! --------------------------------------------------------------------------------------
 !
@@ -1073,12 +1032,15 @@ contains
 ! --------------------------------------------------------------------------------------
         integer :: iopt, nbValues
         character(len=8) :: option
+        integer, pointer :: fondNoeudNume(:) => null()
+
 !
 ! --- Table pour les valeurs (table)
 !
         call gcncon("_", this%table_g)
         call tbcrsd(this%table_g, 'G')
 !
+        this%nb_point = cgTheta%nb_fondNoeud
         this%nb_para = 0
 !
 ! --- INST or FREQ
@@ -1088,16 +1050,27 @@ contains
             call this%addPara('NUME_ORDRE', 'I')
             call this%addPara('INST', 'R')
         endif
-! --- Time and behavior
-        call this%addPara('TEMP', 'R')
-        call this%addPara('COMPORTEMENT', 'K8')
+! --- Node name
+        call this%addPara('NOEUD', 'K8')
+        call this%addPara('NUM_PT', 'I')
 ! --- Coordinates of nodes
         call this%addPara('COOR_X', 'R')
         call this%addPara('COOR_Y', 'R')
         if (cgField%ndim.eq.3) then
             call this%addPara('COOR_Z', 'R')
+            call this%addPara('ABSC_CURV', 'R')
             call this%addPara('ABSC_CURV_NORM', 'R')
         endif
+! --- Tempature
+        if( cgField%l_temp ) then
+            call this%addPara('TEMP', 'R')
+            call wkvect("&&TABLEG.TEMP", 'V V R', this%nb_point, vr=this%v_TEMP)
+        end if
+! --- Behavior
+        call this%addPara('COMPORTEMENT', 'K8')
+        call cgTheta%getFondNoeuNume(fondNoeudNume)
+        call cgComporNodes(cgField%result_in, cgField%list_nume(1), this%nb_point, &
+                            fondNoeudNume, this%v_COMPOR)
 ! --- Option
         nbValues = this%nb_point
         do iopt = 1, cgField%nb_option
@@ -1134,13 +1107,14 @@ contains
 !
 !==========================================================================================
 !
-    subroutine addValues(this, cgField, cgStudy)
+    subroutine addValues(this, cgField, cgStudy, node_id)
 !
     implicit none
 !
         class(CalcG_Table), intent(inout)  :: this
         type(CalcG_field), intent(in) :: cgField
         type(CalcG_study), intent(in) :: cgStudy
+        integer, intent(in) :: node_id
 !
 ! ----------------------------------------------------------------------------------------
 !
@@ -1149,16 +1123,16 @@ contains
 ! ----------------------------------------------------------------------------------------
 !
         if(cgStudy%option == "G") then
-            this%v_G(1) = cgStudy%gth(1)
+            this%v_G(node_id) = cgStudy%gth(1)
         elseif(cgStudy%option == "K") then
-            this%v_K1(1) = cgStudy%gth(2)
-            this%v_K2(1) = cgStudy%gth(3)
+            this%v_K1(node_id) = cgStudy%gth(2)
+            this%v_K2(node_id) = cgStudy%gth(3)
             if(cgField%ndim == 3) then
-                this%v_K3(1) = cgStudy%gth(4)
+                this%v_K3(node_id) = cgStudy%gth(4)
             end if
-            this%v_G_IRWIN(1) = cgStudy%gth(5)**2 + cgStudy%gth(6)**2 + cgStudy%gth(7)**2
+            this%v_G_IRWIN(node_id) = cgStudy%gth(5)**2 + cgStudy%gth(6)**2 + cgStudy%gth(7)**2
         elseif(cgStudy%option == "G_EPSI") then
-            this%v_G_EPSI(1) = cgStudy%gth(1)
+            this%v_G_EPSI(node_id) = cgStudy%gth(1)
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -1190,10 +1164,12 @@ contains
         complex(kind=8)    :: livc(NB_MAX_PARA)
         character(len=24)  :: livk(NB_MAX_PARA)
         real(kind=8) :: coor(3)
-        integer :: i_node, iopt
+        integer :: i_node, iopt, node_id
         character(len=8) :: option
         real(kind=8), pointer   :: coorNoeud(:) => null()
         real(kind=8), pointer   :: abscur(:) => null()
+        integer, pointer   :: fondNoeudNume(:) => null()
+        character(len=8), pointer :: fondNoeud(:) => null()
 !
         if (cgField%isModeMeca()) then
             call tbajvi(this%table_g, this%nb_para, 'NUME_MODE', cgStudy%nume_ordre, livi)
@@ -1204,18 +1180,28 @@ contains
 !
         call cgTheta%getCoorNodes(coorNoeud)
         call cgTheta%getAbscurv(abscur)
+        call cgTheta%getFondNoeuNume(fondNoeudNume)
+        call cgTheta%getFondNoeu(fondNoeud)
 !
         do i_node = 1, this%nb_point
-            call tbajvr(this%table_g, this%nb_para, 'TEMP', 0.d0, livr)
-            call tbajvk(this%table_g, this%nb_para, 'COMPORTEMENT', 'K8_BIDON', livk)
+            node_id = fondNoeudNume(i_node)
+            call tbajvk(this%table_g, this%nb_para, 'NOEUD', fondNoeud(i_node), livk)
+            call tbajvi(this%table_g, this%nb_para, 'NUM_PT', i_node, livi)
 !
-            coor = coorNoeud((i_node-1)*3+1:(i_node-1)*3+3)
+            coor = coorNoeud((node_id-1)*3+1:(node_id-1)*3+3)
             call tbajvr(this%table_g, this%nb_para, 'COOR_X', coor(1), livr)
             call tbajvr(this%table_g, this%nb_para, 'COOR_Y', coor(2), livr)
             if (cgField%ndim.eq.3) then
                 call tbajvr(this%table_g, this%nb_para, 'COOR_Z', coor(3), livr)
-                call tbajvr(this%table_g, this%nb_para, 'ABSC_CURV_NORM', abscur(i_node), livr)
+                call tbajvr(this%table_g, this%nb_para, 'ABSC_CURV', abscur(node_id), livr)
+                call tbajvr(this%table_g, this%nb_para, 'ABSC_CURV_NORM', &
+                            abscur(node_id)/cgTheta%lonfis, livr)
             endif
+!
+            if( cgField%l_temp ) then
+                call tbajvr(this%table_g, this%nb_para, 'TEMP', this%v_TEMP(i_node), livr)
+            end if
+            call tbajvk(this%table_g, this%nb_para, 'COMPORTEMENT', this%v_COMPOR(i_node), livk)
 !
             do iopt = 1, cgField%nb_option
                 option = cgField%list_option(iopt)

@@ -29,31 +29,25 @@ use calcG_type
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/cescre.h"
-#include "asterfort/cescel.h"
-#include "asterfort/cesexi.h"
+#include "asterfort/cgDiscrField.h"
+#include "asterfort/cgTempNodes.h"
 #include "asterfort/chpchd.h"
 #include "asterfort/chpver.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/gcharg.h"
 #include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/nbelem.h"
 #include "asterfort/mecact.h"
-#include "asterfort/megeom.h"
 #include "asterfort/mesomm.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/typele.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "jeveux.h"
-
+!
     type(CalcG_field), intent(in) :: cgField
     type(CalcG_theta), intent(inout) :: cgTheta
     type(CalcG_Study), intent(inout) :: cgStudy
@@ -65,30 +59,30 @@ use calcG_type
 !    Compute G(Theta) in 2D and 3D
 !
 !----------------------------------------------
-    integer :: iret, nsig, ino1, ino2, inga, ibid, i
-    integer :: nchin, nbgrel, nel, nute, nncp
-    integer :: jcesd, jcesl, jliel, ibasf
-    integer :: igr, iel, ima, iad
+    integer :: iret, nsig, ino1, ino2, inga, ibid, i_theta
+    integer :: nchin, nbgrel
+    integer :: jcesd, jcesl
     real(kind=8) :: gth(7)
     character(len=2)  :: codret
-    character(len=8)  :: k8b, lpain(50), lpaout(1), typmo, ma
-    character(len=16) :: opti, nomte
+    character(len=8)  :: k8b, lpain(50), lpaout(1)
+    character(len=16) :: opti
     character(len=19) :: chrota, chpesa, cf2d3d, chpres, chvolu, cf1d2d, chepsi
-    character(len=19) :: chvarc, chvref, chsdeg, chdeg, ligrmo, chslag, chlag
+    character(len=19) :: chvarc, chvref, chsdeg, ligrmo, chslag
     character(len=24) :: chsigi, celmod, sigelno, chtime, chpuls
-    character(len=24) :: chgeom, type, chsig, chepsp, chvari
+    character(len=24) :: chgeom, chsig, chepsp, chvari, chgtheta
     character(len=24) :: pavolu, papres, pa2d3d, pepsin, pa1d2d
     character(len=24) :: lchin(50), lchout(1)
     aster_logical     :: lfonc
-    integer, pointer  :: cesv(:) => null()
-    real(kind=8), pointer  :: absc(:) => null()
-!    integer, pointer  :: absc(:) => null()
+    integer, pointer  :: v_cesv(:) => null()
+    real(kind=8), pointer :: v_absc(:) => null()
     real(kind=8), pointer :: v_base(:) => null()
+    real(kind=8), pointer :: v_basf(:) => null()
 !----------------------------------------------
 !
     call jemarq()
 !
 !   Initialisation des champs et des paramètres
+    chgtheta= '&&cgtheta.CH_G'
     chvarc  = '&&cgtheta.VARC'
     chvref  = '&&cgtheta.VARC.REF'
     chsigi  = '&&cgtheta.CHSIGI'
@@ -105,13 +99,10 @@ use calcG_type
     chpuls  = '&&cgtheta.PULS'
     chsdeg  = '&&cgtheta.CHSDEG'
     chslag  = '&&cgtheta.CHSLAG'
-    chdeg   = '&&cgtheta.CHDEG'
-    chlag   = '&&cgtheta.CHLAG'
 !
     k8b = '        '
-
 !   Recuperation du champ geometrique
-    call megeom(cgStudy%model, chgeom)
+    chgeom = cgStudy%mesh//'.COORDO'
 !
 !   Recuperation du LIGREL
     ligrmo = cgStudy%model//'.MODELE'
@@ -119,9 +110,7 @@ use calcG_type
 !   Recuperation du comportement
     if (cgField%l_incr) then
 !
-        call dismoi('TYPE_RESU', cgField%result_in, 'RESULTAT', repk=type)
-!
-        if (type .ne. 'EVOL_NOLI') then
+        if (cgField%result_in_type .ne. 'EVOL_NOLI') then
             call utmess('F', 'RUPTURE1_15')
         endif
 !
@@ -214,8 +203,6 @@ use calcG_type
     endif
 !
 !   Création d'un champ constant par élément : LEGENDRE, LAGRANGE
-    call dismoi('NOM_MAILLA', cgStudy%model, 'MODELE', repk=ma)
-!
 !   Récupération du nombre de groupes d'éléments du ligrel
     call jelira(ligrmo//'.LIEL', 'NMAXOC', nbgrel)
 !
@@ -223,26 +210,26 @@ use calcG_type
 !
 !       Champ scalaire constant par élement :
 !            --  degré du polynome
-        call cescre('V', chsdeg, 'ELEM', ma, 'NEUT_I',&
+        call cescre('V', chsdeg, 'ELEM', cgStudy%mesh, 'NEUT_I',&
                     0, ' ', [-1], [-1], [-1])
 !
         call jeveuo(chsdeg//'.CESD', 'L', jcesd)
         call jeveuo(chsdeg//'.CESL', 'E', jcesl)
-        call jeveuo(chsdeg//'.CESV', 'E', vi=cesv)
+        call jeveuo(chsdeg//'.CESV', 'E', vi=v_cesv)
 !
     elseif (cgtheta%discretization .eq.'LINEAIRE') then
 !
-        call jeveuo(cgTheta%absfond, 'L', ibasf)
+        call jeveuo(cgTheta%absfond, 'L', vr=v_basf)
 !
 !       Champ scalaire constant par élement :
 !            -- abscisse curviligne s(i-1), s(i), s(i+1)
-!               pour la fonction de forme courante   
-        call cescre('V', chslag, 'ELEM', ma, 'NEUT_R',&
+!               pour la fonction de forme courante
+        call cescre('V', chslag, 'ELEM', cgStudy%mesh, 'NEUT_R',&
                     0, '', [-1], [-1], [-3])
 !
         call jeveuo(chslag//'.CESD', 'L', jcesd)
         call jeveuo(chslag//'.CESL', 'E', jcesl)
-        call jeveuo(chslag//'.CESV', 'E', vr=absc)
+        call jeveuo(chslag//'.CESV', 'E', vr=v_absc)
 !
     endif
 !
@@ -251,11 +238,11 @@ use calcG_type
 !    --- 1 si 2D
 !    --- ndeg ou nnof si 3D
 !************************************************
-    do i = 1, cgTheta%nb_theta_field
+    do i_theta = 1, cgTheta%nb_theta_field
 !
-!       Declaration des entrees/sorties pour l'appel à calcul
+!       Declaration des entrees/sorties pour l'appel à calcul (indépendent de i_theta)
         lpaout(1) = 'PGTHETA'
-        lchout(1) = '&&cgtheta.CH_G'
+        lchout(1) = chgtheta
         lpain(1) = 'PGEOMER'
         lchin(1) = chgeom
         lpain(2) = 'PDEPLAR'
@@ -292,82 +279,8 @@ use calcG_type
 !
         nchin = 14
 !
-!       Champ constant pour construire theta_i dans le te
-        if (cgField%ndim .eq. 3) then
-!
-            do igr = 1, nbgrel
-!
-!               Récupération nombre d'éléments dans le groupe
-                nel = nbelem(ligrmo,igr)
-                call jeveuo(jexnum(ligrmo//'.LIEL', igr), 'L', jliel)
-!
-!               Récupération du nom du type d'éléments du groupe
-                nute = typele(ligrmo,igr)
-                call jenuno(jexnum('&CATA.TE.NOMTE', nute), nomte)
-!
-!               Boucle sur les éléments du groupe
-                do iel = 1, nel
-!
-                    ima=zi(jliel-1+iel)
-                    if (ima .lt. 0) cycle
-!
-                    if (cgTheta%discretization.eq.'LEGENDRE') then       
-!            
-                        call cesexi('C', jcesd, jcesl, ima, 1, 1, 1, iad)
-                        iad = abs(iad)
-                        zl(jcesl-1+iad)=.true.
-                        cesv(iad)= i - 1
-!
-                    elseif (cgtheta%discretization .eq.'LINEAIRE') then
-!
-                        call cesexi('C', jcesd, jcesl, ima, 1, 1, 1, iad)
-                        iad = abs(iad)
-                        zl(jcesl-1+iad)=.true.
-                        if (i .eq. 1 ) then 
-                            absc(iad)= zr(ibasf-1+i)
-                        else 
-                            absc(iad)= zr(ibasf-1+i-1)
-                        endif
-!
-                        call cesexi('C', jcesd, jcesl, ima, 1, 1, 2, iad)
-                        iad = abs(iad)
-                        zl(jcesl-1+iad)=.true.
-                        absc(iad)= zr(ibasf-1+i)
-!
-                        call cesexi('C', jcesd, jcesl, ima, 1, 1, 3, iad)
-                        iad = abs(iad)
-                        zl(jcesl-1+iad)=.true.
-                        if (i .eq. cgTheta%nb_theta_field ) then     
-                            absc(iad)= zr(ibasf-1+i)
-                        else
-                            absc(iad)= zr(ibasf-1+i+1)
-                        endif
-!
-                    endif
-                enddo
-            enddo
-!
-            if (cgTheta%discretization.eq.'LEGENDRE') then                  
-!               Conversion du champ par élément simple en champ par éléments
-                call cescel(chsdeg, ligrmo, 'CALCH_G', 'PDEG', 'NON',&
-                            nncp, 'V', chdeg, 'F', iret)
-!
-                lpain(nchin+1) = 'PDEG'
-                lchin(nchin+1) = chdeg
-!
-            elseif (cgtheta%discretization .eq.'LINEAIRE') then
-!               Conversion du champ par élément simple en champ par éléments
-                call cescel(chslag, ligrmo, 'CALCH_G', 'PLAG', 'NON',&
-                            nncp, 'V', chlag, 'F', iret)
-!
-                lpain(nchin+1) = 'PLAG'
-                lchin(nchin+1) = chlag
-!
-            endif
-!         
-            nchin = nchin + 1
-!
-        endif
+        call cgDiscrField(cgField, cgTheta, cgStudy, chsdeg, chslag, v_absc, v_basf, v_cesv, &
+        jcesd, jcesl, i_theta, lpain, lchin, nchin)
 
         if (cgStudy%option .eq. 'K') then
             lpain(nchin+1) = 'PCOURB'
@@ -377,7 +290,6 @@ use calcG_type
             lpain(nchin+3) = 'PLST'
             lchin(nchin+3) = cgTheta%crack//'.LTNO'
             nchin = nchin + 3
-
         endif
 !
         if (opti .eq. 'CALCH_G_F' .or. opti .eq. 'CALCH_K_G_F') then
@@ -410,17 +322,15 @@ use calcG_type
 !
 !       Champ de contrainte initiale
         if (nsig .ne. 0) then
-          if (inga .eq. 0) then
+            lpain(nchin+1) = 'PSIGINR'
+            if (inga .eq. 0) then
 !           Champ de contrainte initiale transforme en ELNO
-            lpain(nchin+1) = 'PSIGINR'
-            lchin(nchin+1) = sigelno
-            nchin = nchin + 1
-          else
+                lchin(nchin+1) = sigelno
+            else
 !           Champ de contrainte initiale donne par l'utilisateur (NOEUD ou ELNO)
-            lpain(nchin+1) = 'PSIGINR'
-            lchin(nchin+1) = chsigi
+                lchin(nchin+1) = chsigi
+            endif
             nchin = nchin + 1
-          endif
         endif
 !
         if (cgStudy%option .eq. 'G'.or.cgStudy%option .eq. 'G_EPSI') then
@@ -433,7 +343,7 @@ use calcG_type
             endif
         endif
 !
-!       Recuperationdes contraintes du resultat pour option G
+!       Recuperation des contraintes du resultat pour option G
         if (cgStudy%option .eq. 'G') then
             call rsexch(' ', cgField%result_in, 'SIEF_ELGA', cgStudy%nume_ordre, chsig, iret)
 !
@@ -454,17 +364,14 @@ use calcG_type
 !       G, K1, K2, K3, FIC1, FIC2, FIC3 en 2D
         call mesomm(lchout(1), 7, vr=gth)
 !
-        print* , ' G = ' , gth(1) , 'K = ' , i
+        print* , ' G = ' , gth(1) , 'K = ' , i_theta
 !
     end do
 !
 !    Cas axis, on normalise par 1/R
-     call dismoi('MODELISATION', cgStudy%model, 'MODELE', repk=typmo)
-     if (typmo(1:4) .eq. 'AXIS') then
-         do i = 1, 7
-             call cgTheta%getBaseLoc(v_base)             
-             gth(i) = gth(i)/v_base(1)
-         end do
+     if (cgStudy%l_axis) then
+        call cgTheta%getBaseLoc(v_base)
+        gth(1:7) = gth(1:7) / v_base(1)
      endif
 !
     cgStudy%gth = 0.d0
@@ -476,7 +383,8 @@ use calcG_type
     endif
 !
 !   Ajout des valeurs dans la table de G
-    call cgTable%addValues(cgField, cgStudy)
+    call cgTempNodes(cgStudy, cgTable)
+    call cgTable%addValues(cgField, cgStudy, 1)
 !
     call detrsd('CHAMP_GD', chvarc)
     call detrsd('CHAMP_GD', chvref)

@@ -61,7 +61,7 @@ implicit none
 !-- Initialisation des champs et des paramètres
     call cgField%initialize()
     call cgTheta%initialize()
-    call cgTable%initialize(cgField)
+    call cgTable%initialize(cgField, cgTheta)
     call cgStudy%initialize(cgField%result_in, cgField%list_nume(1))
 !
 !-- Calcul de la courbure
