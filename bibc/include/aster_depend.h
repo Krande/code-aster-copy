@@ -91,6 +91,7 @@
 #define ASTERINTEGER        ASTER_C_FORTRAN_INT
 #define ASTERDOUBLE         ASTER_C_FORTRAN_REAL8
 #define ASTERREAL4          ASTER_C_FORTRAN_REAL4
+#define ASTERLOGICAL        ASTER_C_FORTRAN_LOGICAL
 
 /* flags d'optimisation */
 /* taille de bloc dans MULT_FRONT */

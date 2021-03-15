@@ -88,8 +88,20 @@ code_aster as done in :file:`code_aster/__init__.py`:
       File "<stdin>", line 1, in <module>
     ImportError: .../dev/codeaster/install/mpi/lib64/aster/libbibfor.so: undefined symbol: scotchfdgraphcorderinit_
 
-(This is an example of error!)
+This is an example of error caused by a missing external library.
 
+Another frequent error:
+
+.. code-block:: python
+
+    python3
+    >>> import aster
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    ImportError: .../dev/codeaster/install/std/lib64/aster/libbibcxx.so: undefined symbol: _Z7nmdocr_PKcS0_Pcjj
+
+Here, ``nmdocr`` is a Fortran subroutine, called from C++. Its prototype must be
+enclosed by ``extern "C" { ... }``.
 
 
 Profiling

@@ -70,7 +70,7 @@ void BehaviourPropertyClass ::buildObjects() {
     CALLO_NMDOCC_WRAP( modelName, materialFieldName, mapComporName, &initialState, &implex,
                        &verbosity );
 
-    CALLO_NMDOCR_WRAP( getModel()->getName(), _CARCRI->getName(), &implex );
+    CALLO_NMDOCR( getModel()->getName(), _CARCRI->getName(), (ASTERLOGICAL *)&_implex );
 
     CALLO_NMDOCM( getModel()->getName(), _MULCOM->getName() );
 };

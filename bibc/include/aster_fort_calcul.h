@@ -144,19 +144,19 @@ void DEFSSSS( VTCREB_WRAP, vtcreb_wrap, const char *, STRING_SIZE, const char *,
 #define CALLO_NMDOCC_WRAP( a, b, c, d, e, f )                                                      \
     CALLOOOPPP( NMDOCC_WRAP, nmdocc_wrap, a, b, c, d, e, f )
 void DEFSSSPPP( NMDOCC_WRAP, nmdocc_wrap,
-                const char *, STRING_SIZE, 
+                const char *, STRING_SIZE,
                 const char *, STRING_SIZE,
                 const char *, STRING_SIZE,
                 ASTERINTEGER *,
                 ASTERINTEGER *,
                 ASTERINTEGER *);
 
-#define CALLO_NMDOCR_WRAP( a, b, c )                                                               \
-    CALLOOP( NMDOCR_WRAP, nmdocr_wrap, a, b, c )
-void DEFSSP( NMDOCR_WRAP, nmdocr_wrap,
+#define CALLO_NMDOCR( a, b, c )                                                               \
+    CALLOOP( NMDOCR, nmdocr, a, b, c )
+void DEFSSP( NMDOCR, nmdocr,
              const char *, STRING_SIZE,
              const char *, STRING_SIZE,
-             ASTERINTEGER * );
+             ASTERLOGICAL * );
 
 #define CALLO_NMDOCM( a, b )                                                                       \
     CALLOO( NMDOCM, nmdocm, a, b )
