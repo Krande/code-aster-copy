@@ -73,7 +73,7 @@ MA=DEFI_GROUP(reuse =MA,
 
 MA=MODI_MAILLAGE(reuse=MA,
                  MAILLAGE=MA,
-                 ORIE_PEAU_3D=_F(GROUP_MA=('inter','FACE1','FACE2'),),
+                 ORIE_PEAU=_F(GROUP_MA_PEAU=('inter','FACE1','FACE2'),),
                  )
 
 # Barsoum

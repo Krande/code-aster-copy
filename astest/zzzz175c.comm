@@ -33,8 +33,8 @@ MA_INTER=LIRE_MAILLAGE(UNITE=19,
 M_0=LIRE_MAILLAGE(FORMAT='MED');
 #
 M_0=MODI_MAILLAGE( reuse=M_0,   MAILLAGE=M_0,
-                   ORIE_PEAU_3D=_F(
-           GROUP_MA = ('Tore_f', 'C_1_base', 'C_1_cote', 'C_2_base', 'C_2_cote', 'C_3_base', 'C_3_cote', 'C_4_base', 'C_4_cote',),  )
+                   ORIE_PEAU=_F(
+           GROUP_MA_PEAU = ('Tore_f', 'C_1_base', 'C_1_cote', 'C_2_base', 'C_2_cote', 'C_3_base', 'C_3_cote', 'C_4_base', 'C_4_cote',),  )
                  )
 #
 # 2. Adaptation

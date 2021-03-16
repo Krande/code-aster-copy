@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -115,7 +115,7 @@ MODE00=AFFE_MODELE(MAILLAGE=M00,
 
 M00=MODI_MAILLAGE(reuse =M00,
                   MAILLAGE=M00,
-                  ORIE_PEAU_3D=_F(GROUP_MA=('X_0','X_MAX','Y_MI_MA','Z_MI_MA',),),);
+                  ORIE_PEAU=_F(GROUP_MA_PEAU=('X_0','X_MAX','Y_MI_MA','Z_MI_MA',),),);
 
 #
 # 3.2. MISE EN PLACE DU MATERIAU

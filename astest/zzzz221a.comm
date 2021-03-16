@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ MOTHER_2=AFFE_MODELE(MAILLAGE=MAIL,
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
-                   ORIE_PEAU_2D=_F(GROUP_MA=('L1_INT','L1_EXT','L1_INF','L1_SUP','L2_EXT','L2_INT','L2_SUP',),),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU=('L1_INT','L1_EXT','L1_INF','L1_SUP','L2_EXT','L2_INT','L2_SUP',),),);
 
 #
 # DEFINITION DE L'AFFINITE FONCTION DU DEGRE D'HYDRATATION [-]

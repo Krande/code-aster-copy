@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -106,7 +106,7 @@ MAIL[1]=LIRE_MAILLAGE(UNITE=20,
 
 MAIL[1]=MODI_MAILLAGE(reuse =MAIL[1],
                       MAILLAGE=MAIL[1],
-                      ORIE_PEAU_2D=_F(GROUP_MA=('HAUT','BAS','GAUCHE','DROIT',),),);
+                      ORIE_PEAU=_F(GROUP_MA_PEAU=('HAUT','BAS','GAUCHE','DROIT',),),);
 
 ####################################################
 # BOUCLE CALCUL /INDICATEUR / ADAPTATION MAILLAGE  #

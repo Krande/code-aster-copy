@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,9 +46,10 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 #
 MA=MODI_MAILLAGE(reuse=MA,
                  MAILLAGE=MA,
-                 ORIE_PEAU_2D=(_F(GROUP_MA = 'LPRESV',),
-                               _F(GROUP_MA = 'LPRESH',))
-                )
+                 ORIE_PEAU=(_F(GROUP_MA_PEAU = 'LPRESV',),
+                               _F(GROUP_MA_PEAU = 'LPRESH',))
+                );
+                
 #
 MATPLA=DEFI_MATERIAU(ELAS=_F(E = 1.3E11,
                              NU = 0.2,)

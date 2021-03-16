@@ -70,7 +70,7 @@ mail=DEFI_GROUP(reuse =mail,
 
 mail=MODI_MAILLAGE(reuse =mail,
                 MAILLAGE=mail,
-                ORIE_PEAU_2D=_F(GROUP_MA='FOND',GROUP_MA_SURF='FONDAT',),
+                ORIE_PEAU=_F(GROUP_MA_PEAU='FOND',GROUP_MA_INTERNE='FONDAT',),
                 );
 
 

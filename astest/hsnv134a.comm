@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ MAIL=LIRE_MAILLAGE(UNITE=20,
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
-                   ORIE_PEAU_2D=_F(GROUP_MA=('FACE_INT','FACE_SUP',),),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU=('FACE_INT','FACE_SUP',),),);
 
 # PARTIES THERMIQUE ET METALLURGIQUE
 # TEMPERATURE DE 700 DEGRES PARTOUT DANS LE TUBE

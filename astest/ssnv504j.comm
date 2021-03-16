@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,11 +63,11 @@ MO=AFFE_MODELE(MAILLAGE=MAILL1,
 
 MAILL1=MODI_MAILLAGE(reuse   =MAILL1,
                      MAILLAGE=MAILL1,
-                     ORIE_PEAU_3D=_F(GROUP_MA=('FIL_MAI1','FIL_MAI2')));
+                     ORIE_PEAU=_F(GROUP_MA_PEAU=('FIL_MAI1','FIL_MAI2')));
 
 MAILL1=MODI_MAILLAGE(reuse   =MAILL1,
                      MAILLAGE=MAILL1,
-                     ORIE_PEAU_3D=_F(GROUP_MA=('LOP_SYM1','LOP_SYM2',
+                     ORIE_PEAU=_F(GROUP_MA_PEAU=('LOP_SYM1','LOP_SYM2',
                                                'LOP_ESC1','LOP_ESC2')));
 
 #_____________________________________________________________________

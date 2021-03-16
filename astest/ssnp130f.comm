@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,14 +50,14 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
-                 ORIE_PEAU_3D=(_F(GROUP_MA='HAUT',),
-                               _F(GROUP_MA='ARRIERE',),
-                               _F(GROUP_MA='AVANT',),
-                               _F(GROUP_MA='GAUCHE',),
-                               _F(GROUP_MA='DROITE',),
-                               _F(GROUP_MA='S1',),
-                               _F(GROUP_MA='S3',),
-                               _F(GROUP_MA='S4',),),);
+                 ORIE_PEAU=(_F(GROUP_MA_PEAU='HAUT',),
+                               _F(GROUP_MA_PEAU='ARRIERE',),
+                               _F(GROUP_MA_PEAU='AVANT',),
+                               _F(GROUP_MA_PEAU='GAUCHE',),
+                               _F(GROUP_MA_PEAU='DROITE',),
+                               _F(GROUP_MA_PEAU='S1',),
+                               _F(GROUP_MA_PEAU='S3',),
+                               _F(GROUP_MA_PEAU='S4',),),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',

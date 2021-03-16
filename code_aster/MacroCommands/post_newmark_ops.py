@@ -252,7 +252,7 @@ def post_newmark_ops(self,**args):
     # Orientation des mailles surfaciques
     __mail_1 = MODI_MAILLAGE(reuse        = __mail_1,
                        MAILLAGE     = __mail_1,
-                       ORIE_PEAU_2D =_F(GROUP_MA=('LIGNE_',),),);
+                       ORIE_PEAU =_F(GROUP_MA_PEAU=('LIGNE_',),),);
 
     ##### ON RESTREINT LE MAILLAGE PATCH A LA ZONE COMMUNE AVEC LE MAILLAGE DU
     ##### RESULTAT A CONSIDERER

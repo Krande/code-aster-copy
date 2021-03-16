@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ MAIL_ME=CREA_MAILLAGE(MAILLAGE=MAIL_INI,
 
 MAIL_ME=MODI_MAILLAGE(reuse =MAIL_ME,
                       MAILLAGE=MAIL_ME,
-                      ORIE_PEAU_2D=_F(GROUP_MA=('GXXXXXX_GM3','GXXXXXX_GM2','GXXXXXX_GM1','GXXXXXX_GM4',),),);
+                      ORIE_PEAU=_F(GROUP_MA_PEAU=('GXXXXXX_GM3','GXXXXXX_GM2','GXXXXXX_GM1','GXXXXXX_GM4',),),);
 
 ########################################
 # Precision pour l'erreur en hydraulique

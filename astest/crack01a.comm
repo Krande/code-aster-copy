@@ -110,7 +110,7 @@ assert(nb_raff == i_raff+1)
 
 MA[nb_raff]=MODI_MAILLAGE(reuse =MA[nb_raff],
                           MAILLAGE=MA[nb_raff],
-                          ORIE_PEAU_3D=_F(GROUP_MA=('EXTUBE_S')))
+                          ORIE_PEAU=_F(GROUP_MA_PEAU=('EXTUBE_S')))
 
 IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MA[nb_raff]))
 

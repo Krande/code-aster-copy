@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ MAILLAG2 = LIRE_MAILLAGE(FORMAT='GMSH', UNITE=19)
 
 MAILLAG2=MODI_MAILLAGE(reuse =MAILLAG2,
                        MAILLAGE=MAILLAG2,
-                       ORIE_PEAU_2D=_F(GROUP_MA=('GM4','GM5','GM6','GM7',),),);
+                       ORIE_PEAU=_F(GROUP_MA_PEAU=('GM4','GM5','GM6','GM7',),),);
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,

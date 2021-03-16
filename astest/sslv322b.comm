@@ -163,7 +163,7 @@ MA[nb_iter]=DEFI_GROUP(reuse =MA[nb_iter],
 
 MA[nb_iter]=MODI_MAILLAGE(reuse=MA[nb_iter],
                           MAILLAGE=MA[nb_iter],
-                          ORIE_PEAU_3D=_F(GROUP_MA=('inter',),),);
+                          ORIE_PEAU=_F(GROUP_MA_PEAU=('inter',),),);
 
 Fiss_01=DEFI_FISS_XFEM(MAILLAGE=MA[nb_iter],
                        DEFI_FISS=(

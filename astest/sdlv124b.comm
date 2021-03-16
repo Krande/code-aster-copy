@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ MODEL=AFFE_MODELE(MAILLAGE=MAYA,
 
 MAYA=MODI_MAILLAGE(reuse=MAYA,
                      MAILLAGE=MAYA,
-                      ORIE_PEAU_3D=_F(GROUP_MA=('GM1',
+                      ORIE_PEAU=_F(GROUP_MA_PEAU=('GM1',
                       'GM2','GM3','GM4','GM5','GM6'),),
                       );
 

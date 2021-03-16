@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ MA_INIT=LIRE_MAILLAGE(UNITE=20,
                       FORMAT='MED',);
 MA_INIT = MODI_MAILLAGE( reuse = MA_INIT,
                     MAILLAGE     = MA_INIT,
-                    ORIE_PEAU_2D = _F( GROUP_MA  = ('GAUCHE','DROITE','HAUT','BAS',),),);
+                    ORIE_PEAU = _F( GROUP_MA_PEAU  = ('GAUCHE','DROITE','HAUT','BAS',),),);
 
 #################################################################
 ### RAFFINEMENT #################################################

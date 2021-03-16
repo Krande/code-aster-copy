@@ -49,8 +49,9 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
 
 MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
                        MAILLAGE=MAILLAGE,
-                       ORIE_PEAU_3D=_F(GROUP_MA=('LEVSUP','LEVINF','SURFSUP','SURFINF'),),
-                       )
+                       ORIE_PEAU=_F(GROUP_MA_PEAU=('LEVSUP','LEVINF','SURFSUP','SURFINF'),),
+                       );
+                       
 
 #----------------------------------------------
 #                   MATERIAU

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -131,7 +131,7 @@ MA[nb_iter]=DEFI_GROUP( reuse=MA[nb_iter],
 
 MA[nb_iter]=MODI_MAILLAGE(reuse =MA[nb_iter],
                           MAILLAGE=MA[nb_iter],
-                          ORIE_PEAU_3D=_F(GROUP_MA=('SUP','INF','EXT','LATG','LATD')))
+                          ORIE_PEAU=_F(GROUP_MA_PEAU=('SUP','INF','EXT','LATG','LATD')))
 
 MODE=AFFE_MODELE(MAILLAGE=MA[nb_iter],
                  AFFE=_F(GROUP_MA=('VOL','SUP','INF','EXT','LATG','LATD'),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ if typ_ma == 'grossier' :
 
    MA[i_raff]=MODI_MAILLAGE(reuse =MA[i_raff],
                             MAILLAGE=MA[i_raff],
-                            ORIE_PEAU_3D=_F(GROUP_MA=('M_HAUT','M_BAS','SYM_X','SYM_Y')))
+                            ORIE_PEAU=_F(GROUP_MA_PEAU=('M_HAUT','M_BAS','SYM_X','SYM_Y')))
 
    # boucle de raffinements
    for i_raff in range(nb_iter) :

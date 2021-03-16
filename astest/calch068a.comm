@@ -57,7 +57,7 @@ MA=MODI_MAILLAGE(reuse = MA,
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
-                 ORIE_PEAU_2D=_F(GROUP_MA=('SUP','INF','EXT','AXI','LEV_INF','LEV_SUP',),),);
+                 ORIE_PEAU=_F(GROUP_MA_PEAU=('SUP','INF','EXT','AXI','LEV_INF','LEV_SUP',),),);
 
 MODE=AFFE_MODELE(MAILLAGE=MA,
                  AFFE=_F(TOUT='OUI',

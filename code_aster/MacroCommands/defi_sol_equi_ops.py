@@ -1007,7 +1007,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
         if dime == "2D":
           __mailla=MODI_MAILLAGE(reuse =__mailla,
                     MAILLAGE=__mailla,
-                    ORIE_PEAU_2D=_F(GROUP_MA=grma_subst,GROUP_MA_SURF=grma_colon,),
+                    ORIE_PEAU=_F(GROUP_MA_PEAU=grma_subst,GROUP_MA_INTERNE=grma_colon,),
                     )
           __MODELE = AFFE_MODELE(MAILLAGE=__mailla,
                                AFFE=(
@@ -1040,7 +1040,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
         else:
           __mailla=MODI_MAILLAGE(reuse =__mailla,
                     MAILLAGE=__mailla,
-                    ORIE_PEAU_3D=_F(GROUP_MA=grma_subst,GROUP_MA_VOLU=grma_colon,),
+                    ORIE_PEAU=_F(GROUP_MA_PEAU=grma_subst,GROUP_MA_INTERNE=grma_colon,),
                     )
 
           __MODELE = AFFE_MODELE(MAILLAGE=__mailla,
@@ -1065,7 +1065,7 @@ def defi_sol_equi_ops(self, TITRE=None, INFO=None, **args):
     # uniquement en 2D
         __mailla=MODI_MAILLAGE(reuse =__mailla,
                 MAILLAGE=__mailla,
-                ORIE_PEAU_2D=_F(GROUP_MA=(grma_subst,grma_gauch,grma_droit),GROUP_MA_SURF=grma_colon,),
+                ORIE_PEAU=_F(GROUP_MA_PEAU=(grma_subst,grma_gauch,grma_droit),GROUP_MA_INTERNE=grma_colon,),
                 )
         if lmassp == 'OUI':
             __MODELE = AFFE_MODELE(MAILLAGE=__mailla,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -66,9 +66,9 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 
 MAILLAG2=MODI_MAILLAGE(reuse=MAILLAG2,
                        MAILLAGE=MAILLAG2,
-                       ORIE_PEAU_2D=(_F(GROUP_MA = 'LIG2'),
-                                     _F(GROUP_MA = 'LIG3'),
-                                     _F(GROUP_MA = 'LIG4')));
+                       ORIE_PEAU=(_F(GROUP_MA_PEAU = 'LIG2'),
+                                     _F(GROUP_MA_PEAU = 'LIG3'),
+                                     _F(GROUP_MA_PEAU = 'LIG4')));
 
 #----------------------------------------------
 #                   MODELE ET FISSURE

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -276,14 +276,6 @@ Contactez le support technique.
 
     94 : _("""
  impossibilité, la maille  %(k1)s  doit être une maille de peau, i.e. de type "QUAD" ou "tria" en 3d ou de type "SEG" en 2d, et elle est de type :  %(k2)s
-"""),
-
-    95 : _("""
- Vous avez utilisé le mot clé ORIE_PEAU_2D alors que le problème est tridimensionnel. utilisez ORIE_PEAU_3D
- Il est possible que votre maillage soit plan, mais que les noeuds possèdent 3 coordonnées. """),
-
-    96 : _("""
- vous avez utilisé le mot clé ORIE_PEAU_3D alors que le problème est 2d. utilisez ORIE_PEAU_2D
 """),
 
     97 : _("""

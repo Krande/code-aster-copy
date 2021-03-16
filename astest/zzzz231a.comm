@@ -28,7 +28,7 @@ MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
-                 ORIE_PEAU_3D=_F(GROUP_MA=('ContVis','ContTrou',),),)
+                 ORIE_PEAU=_F(GROUP_MA_PEAU=('ContVis','ContTrou',),),)
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,

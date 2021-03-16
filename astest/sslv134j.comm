@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ M=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED')
 
 
 M=MODI_MAILLAGE( reuse=M,   MAILLAGE=M,
-                        ORIE_PEAU_3D=_F(  GROUP_MA = ( 'SINF_2', 'SINF_4', ),  )
+                        ORIE_PEAU=_F(  GROUP_MA_PEAU = ( 'SINF_2', 'SINF_4', ),  )
                       )
 
 MA=DEFI_MATERIAU(            ELAS=_F(  E = 2.E11,

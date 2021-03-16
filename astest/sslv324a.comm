@@ -42,10 +42,10 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
-                 ORIE_PEAU_3D=_F(GROUP_MA=('FACE_AV','FACE_LAT','CUBE1', 'CUBE4')))
-#                 ORIE_PEAU_3D=_F(GROUP_MA=('face1','face2','face3','face4', 'face5','face6','facePeau0', 'pipeBoundaries',)))
-#                 ORIE_PEAU_3D=_F(GROUP_MA=( 'FACE_AV', 'FACE_LAT','CUBE4', 'CUBE1')))
-#                 ORIE_PEAU_3D=_F(GROUP_MA=( 'CUBE2','facePeau0', 'faceCircPipe1', 'CUBE3','facePeau1', 'faceCircPipe0','CUBE4', 'CUBE1')))
+                 ORIE_PEAU=_F(GROUP_MA_PEAU=('FACE_AV','FACE_LAT','CUBE1', 'CUBE4')))
+#                 ORIE_PEAU=_F(GROUP_MA_PEAU=('face1','face2','face3','face4', 'face5','face6','facePeau0', 'pipeBoundaries',)))
+#                 ORIE_PEAU=_F(GROUP_MA_PEAU=( 'FACE_AV', 'FACE_LAT','CUBE4', 'CUBE1')))
+#                 ORIE_PEAU=_F(GROUP_MA_PEAU=( 'CUBE2','facePeau0', 'faceCircPipe1', 'CUBE3','facePeau1', 'faceCircPipe0','CUBE4', 'CUBE1')))
 
 
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,8 +47,8 @@ subroutine orilgm(noma)
 !     ORILGM  --  LE BUT EST DE REORIENTER, SI C'EST NECESSAIRE,
 !                 LES MAILLES DE PEAU DE GROUPES DE MAILLES
 !                 DONNES SOUS LES MOTS CLES :
-!                 'ORIE_PEAU_2D' EN 2D
-!                 'ORIE_PEAU_3D' ET 'ORIE_NORM_COQUE' EN 3D
+!                 'ORIE_PEAU_2D' EN 2D (ou 3D)
+!                 ET 'ORIE_NORM_COQUE' EN 3D
 !                 DE TELLE FACON A CE QUE LA NORMALE A LA MAILLE DE
 !                 PEAU SOIT EXTERIEURE AU VOLUME.
 !
@@ -60,11 +60,11 @@ subroutine orilgm(noma)
     integer :: ifm, niv, nbf1, nbf2, nbf3, jjj, jgro, n1, n2
     integer :: n3, noeud, iocc, ngv, ier, ndim, igr, ng, nbmail, norit, norien
     integer :: ntrait, jjv, nbmavo, jmavo, nbmato, ima, nbmavi, jmavi, k, jgv
-    integer :: ncf3, ngs, jgs, nbmasu, jmasu
+    integer :: ncf3, ngs, jgs, nbmasu, jmafr
     real(kind=8) :: vect(3)
     aster_logical :: reorie, orivec
     character(len=8) :: k8b
-    character(len=16) :: mofa2d, mofa3d, mofb3d, mofc3d
+    character(len=16) :: mofac,  mofb3d, mofc3d
     character(len=24) :: nomnoe, grmama, nnoeud, gmat
     character(len=24) :: valk(2), cmd
     integer :: iarg
@@ -81,13 +81,11 @@ subroutine orilgm(noma)
     reorie = .true.
     vect(:) = 0.d0
 !
-    mofa2d = 'ORIE_PEAU_2D'
-    mofa3d = 'ORIE_PEAU_3D'
+    mofac = 'ORIE_PEAU'
     mofb3d = 'ORIE_NORM_COQUE'
     mofc3d = 'ORIE_LIGNE'
 !
-    call getfac(mofa2d, nbf1)
-    call getfac(mofa3d, nbf2)
+    call getfac(mofac, nbf1)
     call getfac(mofb3d, nbf3)
     call getfac(mofc3d, ncf3)
 !
@@ -104,33 +102,24 @@ subroutine orilgm(noma)
     else
         ndim = 3
     endif
-!
-! --- COMPATIBILITE DU PROBLEME AVEC LES MOTS CLES FACTEUR :
-!     ----------------------------------------------------
-    if (( nbf1 .gt. 0 ) .and. ( ndim .eq. 3 )) then
-        call utmess('F', 'MODELISA5_95')
-    endif
-    if (( nbf2 .gt. 0 ) .and. ( ndim .eq. 2 )) then
-        call utmess('F', 'MODELISA5_96')
-    endif
-!
-! --- TRAITEMENT DE 'ORIE_PEAU_2D' :
+
+! --- TRAITEMENT DE 'ORIE_PEAU' :
 !     ----------------------------
 !
     do iocc = 1, nbf1
-        call getvem(noma, 'GROUP_MA', mofa2d, 'GROUP_MA', iocc,&
+        call getvem(noma, 'GROUP_MA', mofac, 'GROUP_MA_PEAU', iocc,&
                     iarg, 0, k8b, ng)
         ng = -ng
         call wkvect('&&ORILGM.WORK', 'V V K24', ng, jjj)
-        call getvem(noma, 'GROUP_MA', mofa2d, 'GROUP_MA', iocc,&
+        call getvem(noma, 'GROUP_MA', mofac, 'GROUP_MA_PEAU', iocc,&
                     iarg, ng, zk24(jjj), ng)
-!        PRESENCE DE GROUP_MA_SURF ?
+!        PRESENCE DE GROUP_MA_INTERNE ?
 !        ---------------------------
-        call getvtx(mofa2d, 'GROUP_MA_SURF', iocc=iocc, nbval=0, nbret=ngs)
+        call getvtx(mofac, 'GROUP_MA_INTERNE', iocc=iocc, nbval=0, nbret=ngs)
         if (ngs .ne. 0) then
             ngs = -ngs
             call wkvect('&&ORILGM.WORK2', 'V V K24', ngs, jgs)
-            call getvem(noma, 'GROUP_MA', mofa2d, 'GROUP_MA_SURF', iocc,&
+            call getvem(noma, 'GROUP_MA', mofac, 'GROUP_MA_INTERNE', iocc,&
                         iarg, ngs, zk24(jgs), ngs)
             call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmato)
             call wkvect('&&ORILGM.WORK3', 'V V I', nbmato, jjv)
@@ -145,25 +134,25 @@ subroutine orilgm(noma)
                     zi(jjv+zi(jmavi+ima-1)-1)=1
                 end do
             end do
-!          NOMBRE DE MAILLES 'VOLUMIQUES' (SANS DOUBLON) : NBMASU
+!          NOMBRE DE MAILLES 'INTERNES' (SANS DOUBLON) : NBMASU
             nbmasu=0
             do ima = 1, nbmato
                 nbmasu=nbmasu+zi(jjv+ima-1)
             end do
-!          LISTE DES MAILLES 'VOLUMIQUES' (SANS DOUBLON) : ZI(JMASU)
-            call wkvect('&&ORILGM.GROUP_MA_SURF', 'V V I', nbmasu, jmasu)
+!          LISTE DES MAILLES 'INTERNES' (SANS DOUBLON) : ZI(jmafr)
+            call wkvect('&&ORILGM.GROUP_MA_FRONT', 'V V I', nbmasu, jmafr)
             k=0
             do ima = 1, nbmato
                 if (zi(jjv+ima-1) .eq. 1) then
                     k=k+1
-                    zi(jmasu+k-1)=ima
+                    zi(jmafr+k-1)=ima
                 endif
             end do
             call jedetr('&&ORILGM.WORK3')
             call jedetr('&&ORILGM.WORK2')
         else
             nbmasu=0
-            call wkvect('&&ORILGM.GROUP_MA_SURF', 'V V I', 1, jmasu)
+            call wkvect('&&ORILGM.GROUP_MA_FRONT', 'V V I', 1, jmafr)
         endif
 !
         do igr = 1, ng
@@ -173,85 +162,16 @@ subroutine orilgm(noma)
             write(ifm,1000) gmat, nbmail
             norien=0
             call orilma(noma, ndim, zi(jgro), nbmail, norien,&
-                        ntrait, reorie, nbmasu, zi(jmasu))
+                        ntrait, reorie, nbmasu, zi(jmafr))
             norit = norit + norien
             write(ifm,1100) norien
             if (ntrait .ne. 0) write(ifm,1110) ntrait
         end do
         call jedetr('&&ORILGM.WORK')
-        call jedetr('&&ORILGM.GROUP_MA_SURF')
+        call jedetr('&&ORILGM.GROUP_MA_FRONT')
     end do
-!
-! --- TRAITEMENT DE 'ORIE_PEAU_3D' :
-!     ----------------------------
-!
-    do iocc = 1, nbf2
-        call getvem(noma, 'GROUP_MA', mofa3d, 'GROUP_MA', iocc,&
-                    iarg, 0, k8b, ng)
-        ng = -ng
-        call wkvect('&&ORILGM.WORK', 'V V K24', ng, jjj)
-        call getvem(noma, 'GROUP_MA', mofa3d, 'GROUP_MA', iocc,&
-                    iarg, ng, zk24(jjj), ng)
-!
-!        PRESENCE DE GROUP_MA_VOLU ?
-!        ---------------------------
-        call getvtx(mofa3d, 'GROUP_MA_VOLU', iocc=iocc, nbval=0, nbret=ngv)
-        if (ngv .ne. 0) then
-            ngv = -ngv
-            call wkvect('&&ORILGM.WORK2', 'V V K24', ngv, jgv)
-            call getvem(noma, 'GROUP_MA', mofa3d, 'GROUP_MA_VOLU', iocc,&
-                        iarg, ngv, zk24(jgv), ngv)
-            call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmato)
-            call wkvect('&&ORILGM.WORK3', 'V V I', nbmato, jjv)
-            do ima = 1, nbmato
-                zi(jjv+ima-1)=0
-            end do
-            do igr = 1, ngv
-                gmat = zk24(jgv+igr-1)
-                call jelira(jexnom(grmama, gmat), 'LONMAX', nbmavi)
-                call jeveuo(jexnom(grmama, gmat), 'L', jmavi)
-                do ima = 1, nbmavi
-                    zi(jjv+zi(jmavi+ima-1)-1)=1
-                end do
-            end do
-!          NOMBRE DE MAILLES 'VOLUMIQUES' (SANS DOUBLON) : NBMAVO
-            nbmavo=0
-            do ima = 1, nbmato
-                nbmavo=nbmavo+zi(jjv+ima-1)
-            end do
-!          LISTE DES MAILLES 'VOLUMIQUES' (SANS DOUBLON) : ZI(JMAVO)
-            call wkvect('&&ORILGM.GROUP_MA_VOLU', 'V V I', nbmavo, jmavo)
-            k=0
-            do ima = 1, nbmato
-                if (zi(jjv+ima-1) .eq. 1) then
-                    k=k+1
-                    zi(jmavo+k-1)=ima
-                endif
-            end do
-            call jedetr('&&ORILGM.WORK3')
-            call jedetr('&&ORILGM.WORK2')
-        else
-            nbmavo=0
-            call wkvect('&&ORILGM.GROUP_MA_VOLU', 'V V I', 1, jmavo)
-        endif
-!
-!
-        do igr = 1, ng
-            gmat = zk24(jjj+igr-1)
-            call jelira(jexnom(grmama, gmat), 'LONUTI', nbmail)
-            call jeveuo(jexnom(grmama, gmat), 'L', jgro)
-            write(ifm,1000) gmat, nbmail
-            norien=0
-            call orilma(noma, ndim, zi(jgro), nbmail, norien,&
-                        ntrait, reorie, nbmavo, zi(jmavo))
-            norit = norit + norien
-            write(ifm,1100) norien
-            if (ntrait .ne. 0) write(ifm,1110) ntrait
-        end do
-        call jedetr('&&ORILGM.WORK')
-        call jedetr('&&ORILGM.GROUP_MA_VOLU')
-    end do
-!
+
+
 ! --- TRAITEMENT DE 'ORIE_NORM_COQUE':
 !     -------------------------------
 !

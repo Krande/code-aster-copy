@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ MO=AFFE_MODELE(
 
 MA=MODI_MAILLAGE(reuse =MA,
                    MAILLAGE=MA,
-                   ORIE_PEAU_2D=_F(GROUP_MA='CD',),
+                   ORIE_PEAU=_F(GROUP_MA_PEAU='CD',),
                    );
 #--------------------------------------------------
 MAT2=DEFI_MATERIAU(ELAS=_F(E = 20.0E+05,

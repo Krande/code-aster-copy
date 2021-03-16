@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ M=LIRE_MAILLAGE(FORMAT='MED',)
 # MAILLAGE, MODELE ET MATERIAU
 #
 M=MODI_MAILLAGE(reuse =M, MAILLAGE=M,INFO=2,
-                       ORIE_PEAU_3D=(_F(GROUP_MA='SLAT2',),),
+                       ORIE_PEAU=(_F(GROUP_MA_PEAU='SLAT2',),),
                        );
 
 MO=AFFE_MODELE(    MAILLAGE=M,    

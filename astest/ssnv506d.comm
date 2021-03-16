@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ MO=AFFE_MODELE(MAILLAGE=SSNV506D,
 # REORENTATION DES NORMALES DES SURFACES DE CONTACT
 SSNV506D=MODI_MAILLAGE(reuse =SSNV506D,
                        MAILLAGE=SSNV506D,
-                       ORIE_PEAU_3D=_F(GROUP_MA=('SMAI','SESC'),),
+                       ORIE_PEAU=_F(GROUP_MA_PEAU=('SMAI','SESC'),),
                        INFO=1,);
 
 #----------------------------------------------------------------------

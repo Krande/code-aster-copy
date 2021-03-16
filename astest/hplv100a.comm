@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ MO=AFFE_MODELE(
           AFFE=_F( TOUT = 'OUI',PHENOMENE = 'THERMIQUE',MODELISATION = '3D',) )
 
 MODI_MAILLAGE( reuse=M,   MAILLAGE=M,
-                        ORIE_PEAU_3D=_F(  GROUP_MA = ( 'YZO', 'YZA', ),  )
+                        ORIE_PEAU=_F(  GROUP_MA_PEAU = ( 'YZO', 'YZA', ),  )
                       )
 
 MA=DEFI_MATERIAU(

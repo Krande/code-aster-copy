@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -150,7 +150,7 @@ MODE_00=AFFE_MODELE(MAILLAGE=MAIL_00,
 
 MAIL_00=MODI_MAILLAGE(reuse =MAIL_00,
                       MAILLAGE=MAIL_00,
-                      ORIE_PEAU_2D=_F(GROUP_MA=('GM3','GM2','GM1','GM4',),),);
+                      ORIE_PEAU=_F(GROUP_MA_PEAU=('GM3','GM2','GM1','GM4',),),);
 
 #
 # 3.2. Affectation du materiau sur le maillage

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ mesh = CREA_MAILLAGE(MAILLAGE=mesh0,
                    MODI_HHO=_F(TOUT='OUI', PREF_NOEUD='NH'),)
 
 mesh = MODI_MAILLAGE(reuse=mesh, MAILLAGE=mesh,
-                     ORIE_PEAU_2D=_F(GROUP_MA=('Encast', 'load',),),)
+                     ORIE_PEAU=_F(GROUP_MA_PEAU=('Encast', 'load',),),)
 
 ctrac = LIRE_FONCTION(UNITE=21,
                       NOM_PARA='EPSI',

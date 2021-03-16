@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
 
 MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
                        MAILLAGE=MAILLAG1,
-                       ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF',),),
+                       ORIE_PEAU=_F(GROUP_MA_PEAU=('SURFSUP','SURFINF',),),
                        );
 
 LN = FORMULE(VALE='Z-15.',

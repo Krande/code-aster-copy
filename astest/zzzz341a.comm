@@ -23,7 +23,7 @@ MAIL=LIRE_MAILLAGE(FORMAT="ASTER",);
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
-                   ORIE_PEAU_2D=_F(GROUP_MA='HAUT',),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU='HAUT',),);
 
 MAIL = DEFI_GROUP(reuse=MAIL,
                    MAILLAGE=MAIL,

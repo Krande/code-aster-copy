@@ -299,11 +299,11 @@ MA0[0]=LIRE_MAILLAGE(FORMAT='MED',
 
 MA0[0]=MODI_MAILLAGE(reuse=MA0[0],
                      MAILLAGE=MA0[0],
-                     ORIE_PEAU_3D=(_F(GROUP_MA='ESCLAVE'),
-                                   _F(GROUP_MA='BORDX'),
-                                   _F(GROUP_MA='BORDMX'),
-                                   _F(GROUP_MA='BORDY'),
-                                   _F(GROUP_MA='BORDMY'),));
+                     ORIE_PEAU=(_F(GROUP_MA_PEAU='ESCLAVE'),
+                                   _F(GROUP_MA_PEAU='BORDX'),
+                                   _F(GROUP_MA_PEAU='BORDMX'),
+                                   _F(GROUP_MA_PEAU='BORDY'),
+                                   _F(GROUP_MA_PEAU='BORDMY'),));
 
 MA[0]=CREA_MAILLAGE(MAILLAGE=MA0[0],
                     DECOUPE_LAC=_F(GROUP_MA_ESCL='ESCLAVE',DECOUPE_HEXA="HEXA",),);

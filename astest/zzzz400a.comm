@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,8 +38,8 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
 
 MAIL = MODI_MAILLAGE(reuse=MAIL,
                      MAILLAGE=MAIL,
-                     ORIE_PEAU_2D=(_F(GROUP_MA='BORD3',),
-                                   _F(GROUP_MA='BORD1',),),);
+                     ORIE_PEAU=(_F(GROUP_MA_PEAU='BORD3',),
+                                   _F(GROUP_MA_PEAU='BORD1',),),);
 
 LI1=DEFI_LIST_REEL(DEBUT=0.0,
                    INTERVALLE=(  _F(JUSQU_A=1.E4, NOMBRE=4,),),);

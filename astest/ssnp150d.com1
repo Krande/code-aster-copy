@@ -284,8 +284,8 @@ MA0[0]=LIRE_MAILLAGE(FORMAT='MED',
 
 MA0[0]=MODI_MAILLAGE(reuse=MA0[0],
                     MAILLAGE=MA0[0],
-                    ORIE_PEAU_2D=(_F(GROUP_MA='MAITRE'),
-                                  _F(GROUP_MA='BAS'),
+                    ORIE_PEAU=(_F(GROUP_MA_PEAU='MAITRE'),
+                                  _F(GROUP_MA_PEAU='BAS'),
                               )
                         );
 

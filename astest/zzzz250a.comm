@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ acier=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
                             NU=0.0,),);
 
 
-# 1 - VALIDATION DE ORIE_PEAU_2D/GROUP_MA_SURF
+# 1 - VALIDATION DE ORIE_PEAU/GROUP_MA_INTERNE
 # --------------------------------------------
 #
 #        ^y
@@ -46,14 +46,14 @@ acier=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
 # On bloque AB et on impose une pression SIXX= p=1.E8 (TRACTION) sur le cote CD
 #
 # L'etat initial est tel que la maille CD est mal orientee, il faut donc la
-# reoriente avec MODI_MAILLAGE et ORIE_PEAU_2D/GROUP_MA_SURF
+# reoriente avec MODI_MAILLAGE et ORIE_PEAU/GROUP_MA_INTERNE
 #
 mail2D = LIRE_MAILLAGE (FORMAT="ASTER",INFO=2) ;
 
 mail2D=MODI_MAILLAGE(reuse=mail2D,
                  MAILLAGE=mail2D,
-                 ORIE_PEAU_2D=_F(GROUP_MA=('GXXXXXX_CD'),
-                                 GROUP_MA_SURF=('GXXXXXX_MA1'),),)
+                 ORIE_PEAU=_F(GROUP_MA_PEAU=('GXXXXXX_CD'),
+                                 GROUP_MA_INTERNE=('GXXXXXX_MA1'),),)
 
 chmat2D=AFFE_MATERIAU(MAILLAGE=mail2D,
                     AFFE=_F(TOUT='OUI',
@@ -113,7 +113,7 @@ IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=resu2D))
 
 
 
-# 2 - VALIDATION DE ORIE_PEAU_3D/GROUP_MA_VOLU
+# 2 - VALIDATION DE ORIE_PEAU/GROUP_MA_INTERNE
 # --------------------------------------------
 #
 #            A1          C1            E1
@@ -138,15 +138,15 @@ IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=resu2D))
 # la face (C,D,D1,C1)
 #
 # L'etat initial est tel que la maille M2 est mal orientee il faut donc la
-# reoriente avec MODI_MAILLAGE et ORIE_PEAU_3D/GROUP_MA_VOLU
+# reoriente avec MODI_MAILLAGE et ORIE_PEAU/GROUP_MA_INTERNE
 #
 
 mail3D = LIRE_MAILLAGE (FORMAT="ASTER",UNITE=21,INFO=2) ;
 
 mail3D=MODI_MAILLAGE(reuse=mail3D,
                  MAILLAGE=mail3D,
-                 ORIE_PEAU_3D=_F(GROUP_MA=('GXXXXXX_M2'),
-                                 GROUP_MA_VOLU=('GXXXXXX_MA1'),),)
+                 ORIE_PEAU=_F(GROUP_MA_PEAU=('GXXXXXX_M2'),
+                                 GROUP_MA_INTERNE=('GXXXXXX_MA1'),),)
 
 chmat3D=AFFE_MATERIAU(MAILLAGE=mail3D,
                     AFFE=_F(TOUT='OUI',

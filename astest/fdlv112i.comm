@@ -41,7 +41,7 @@ mail = DEFI_GROUP(reuse =mail, MAILLAGE=mail,
                 );
 
 mail = MODI_MAILLAGE(reuse =mail, MAILLAGE=mail,
-             ORIE_PEAU_3D=_F(GROUP_MA_VOLU='VOLSOL',GROUP_MA='TH_SOL'),
+             ORIE_PEAU=_F(GROUP_MA_INTERNE='VOLSOL',GROUP_MA_PEAU='TH_SOL'),
                 );
 
 #

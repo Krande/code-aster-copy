@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,11 +28,11 @@ Mail=LIRE_MAILLAGE(FORMAT='MED',);
 
 Mail=MODI_MAILLAGE(reuse=Mail,
                     MAILLAGE=Mail,
-                    ORIE_PEAU_3D=(_F(GROUP_MA='ESCLAVE'),
-                                  _F(GROUP_MA='BORDX'),
-                                  _F(GROUP_MA='BORDMX'),
-                                  _F(GROUP_MA='BORDY'),
-                                  _F(GROUP_MA='BORDMY'),
+                    ORIE_PEAU=(_F(GROUP_MA_PEAU='ESCLAVE'),
+                                  _F(GROUP_MA_PEAU='BORDX'),
+                                  _F(GROUP_MA_PEAU='BORDMX'),
+                                  _F(GROUP_MA_PEAU='BORDY'),
+                                  _F(GROUP_MA_PEAU='BORDMY'),
                                   )
                             );
 

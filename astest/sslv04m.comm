@@ -47,7 +47,7 @@ MO=AFFE_MODELE(            MAILLAGE=M,
                                          MODELISATION = '3D',        ))
 
 M=MODI_MAILLAGE( reuse=M,   MAILLAGE=M,
-                        ORIE_PEAU_3D=_F(  GROUP_MA = 'CYLINT',  )
+                        ORIE_PEAU=_F(  GROUP_MA_PEAU = 'CYLINT',  )
                       )
 
 MA=DEFI_MATERIAU(            ELAS=_F(  E = 200000.,

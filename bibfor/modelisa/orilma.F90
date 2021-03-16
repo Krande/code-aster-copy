@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,11 +59,8 @@ subroutine orilma(noma, ndim, listma, nbmail, norien,&
 !    NBMAIL         IN    I       NB DE MAILLES DE LA LISTE
 !    NORIEN        VAR            NOMBRE DE MAILLES REORIENTEES
 !    REORIE         IN    L       INDIQUE SI L'ON DOIT APPELER ORIEMA
-!    MAILVO         IN    I       SI ORIE_PEAU_3D ("GROUP_MA_VOLU")
-!                                   = LISTE DES MAILLES VOLUMIQUES
-!                                     UTILES A LA REORIENTATION
-!                                 SI ORIE_PEAU_2D ("GROUP_MA_SURF")
-!                                   = LISTE DES MAILLES SURFACIQUES
+!    MAILVO         IN    I       SI ORIE_PEAU ("GROUP_MA_INTERNE")
+!                                   = LISTE DES MAILLES INTERNES
 !                                     UTILES A LA REORIENTATION
 !                                 SINON: MAILVO N'EST PAS UTILISE
 !    NBMAVO         IN    I       NB DE MAILLES DE MAILVO

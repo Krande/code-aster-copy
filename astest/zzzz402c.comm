@@ -69,7 +69,7 @@ MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
 # Orientation des mailles surfaciques
 MA = MODI_MAILLAGE(reuse        = MA,
                    MAILLAGE     = MA,
-                   ORIE_PEAU_2D =_F(GROUP_MA=('SLATD','SLATG', 'SFREEDRO','SFREEGAU',),),)
+                   ORIE_PEAU =_F(GROUP_MA_PEAU=('SLATD','SLATG', 'SFREEDRO','SFREEGAU',),),)
 
 mail_barrage = ('ENR','ENRW','ENROC','ENROCW','TRANS','TRANSW','NOYAU','FILTRE')
 Cotes     = ('DRO', 'GAU')
@@ -78,8 +78,8 @@ Paraxiaux = ('BAS',)
 #Orientation des mailles surfaciques
 MA = MODI_MAILLAGE(reuse        = MA,
                    MAILLAGE     = MA,
-                   ORIE_PEAU_2D = _F(GROUP_MA=Paraxiaux+Cotes,
-                                     GROUP_MA_SURF=('Fondation'),),)
+                   ORIE_PEAU = _F(GROUP_MA_PEAU=Paraxiaux+Cotes,
+                                     GROUP_MA_INTERNE=('Fondation'),),)
 
 MODSTAT = AFFE_MODELE(MAILLAGE = MA,
                     AFFE  = (_F(GROUP_MA     = mail_barrage,

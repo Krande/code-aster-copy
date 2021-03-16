@@ -66,10 +66,10 @@ AFFE=(_F(GROUP_MA=('COUDE','PEAUINT','PEAUEXT','EXTUBE','CLGV',),
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
-                 ORIE_PEAU_3D=(_F(GROUP_MA='PEAUINT',),
-                               _F(GROUP_MA='PEAUEXT',),
-                               _F(GROUP_MA='EXTUBE',),
-                               _F(GROUP_MA='CLGV',),),
+                 ORIE_PEAU=(_F(GROUP_MA_PEAU='PEAUINT',),
+                               _F(GROUP_MA_PEAU='PEAUEXT',),
+                               _F(GROUP_MA_PEAU='EXTUBE',),
+                               _F(GROUP_MA_PEAU='CLGV',),),
                     );
 
 MATC=DEFI_MATERIAU(ELAS=_F(E=EE ,NU =nnu,),

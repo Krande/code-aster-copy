@@ -29,7 +29,7 @@ MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
-                   ORIE_PEAU_3D=_F(GROUP_MA='SURFINT',),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU='SURFINT',),);
 
 MATER=DEFI_MATERIAU(ELAS=_F(E=204000000000.0,
                             NU=0.3,

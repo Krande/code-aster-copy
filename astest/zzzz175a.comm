@@ -137,7 +137,7 @@ for num_calc in range(nbre_calcul):
 #
     Mad2[num_calc]=MODI_MAILLAGE(reuse =Mad2[num_calc],
              MAILLAGE=Mad2[num_calc],
-             ORIE_PEAU_2D=_F(GROUP_MA=( 'ENCASTR',
+             ORIE_PEAU=_F(GROUP_MA_PEAU=( 'ENCASTR',
                                         'SUP_1', 'SUP_2', 'SUP_3', 'SUP_4', 'SUP_5', 'SUP_6', 'SUP_7', 'SUP_8',
                                         'INF_1', 'INF_2', 'INF_3', 'INF_4', 'INF_5', 'INF_6', 'INF_7', 'INF_8',
                                         'T1', 'T2', 'T3', 'T4',
@@ -145,6 +145,7 @@ for num_calc in range(nbre_calcul):
                                         'EXT',
                                         'PRES1', 'PRES2', ),),
              );
+             
 #
 # E.3. Mise en place des materiaux
 #

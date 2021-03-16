@@ -47,7 +47,8 @@ MODETRQU=AFFE_MODELE(  MAILLAGE=MAILTRQU,
 # 3.2. Orientation des mailles de bord
 #
 MAILTRQU=MODI_MAILLAGE( reuse=MAILTRQU,   MAILLAGE=MAILTRQU,
-                     ORIE_PEAU_2D=_F(  GROUP_MA = ('BORD_GAU','BORD_INF','BORD_DRO','BORD_SUP',),),);
+                     ORIE_PEAU=_F(  GROUP_MA_PEAU = ('BORD_GAU','BORD_INF','BORD_DRO','BORD_SUP',),),);
+                     
 #
 # 3.3. Mise en place des materiaux
 #

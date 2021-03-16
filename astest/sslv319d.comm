@@ -142,7 +142,7 @@ MAIT[i_tot]=LIRE_MAILLAGE(FORMAT='MED')
 
 MAIT[i_tot]=MODI_MAILLAGE(reuse=MAIT[i_raff],
                           MAILLAGE=MAIT[i_raff],
-                          ORIE_PEAU_3D=_F(GROUP_MA=('FACESUP','FACEINF')))
+                          ORIE_PEAU=_F(GROUP_MA_PEAU=('FACESUP','FACEINF')))
 
 
 # boucle de raffinements +une iteration en plus pour la definition de la fissure sur le maillage le plus fin

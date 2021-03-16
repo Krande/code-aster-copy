@@ -103,7 +103,7 @@ for n_adap in range(n_adap_max ) :
 
     BLOC[n_adap]=MODI_MAILLAGE(reuse =BLOC[n_adap],
                    MAILLAGE=BLOC[n_adap],
-                   ORIE_PEAU_3D=_F(GROUP_MA=('Z_MIN','Z_MAX','COTE_0','COTE_1','COTE_2','COTE_3',),),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU=('Z_MIN','Z_MAX','COTE_0','COTE_1','COTE_2','COTE_3',),),);
 
 #
     #MACR_INFO_MAIL( MAILLAGE=BLOC[n_adap],

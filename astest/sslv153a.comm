@@ -73,7 +73,7 @@ MODE=AFFE_MODELE(MAILLAGE=G_00,
 
 G_00=MODI_MAILLAGE(reuse =G_00,
                    MAILLAGE=G_00,
-                   ORIE_PEAU_3D=_F(GROUP_MA=('MURHEXA','MURPENT','CHARTETR','CHARPYRA','CHARPENT','CHARHEXA','LIBRE','LIBRE2',),),
+                   ORIE_PEAU=_F(GROUP_MA_PEAU=('MURHEXA','MURPENT','CHARTETR','CHARPYRA','CHARPENT','CHARHEXA','LIBRE','LIBRE2',),),
                    INFO=2,);
 
 # A.5. Mise en place des materiaux

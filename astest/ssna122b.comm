@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ MESH=LIRE_MAILLAGE(FORMAT='MED',);
 
 MESH=MODI_MAILLAGE(reuse =MESH,
                    MAILLAGE=MESH,
-                   ORIE_PEAU_2D=(_F(GROUP_MA='P_cont',),
-                                 _F(GROUP_MA='M_cont',),),);
+                   ORIE_PEAU=(_F(GROUP_MA_PEAU='P_cont',),
+                                 _F(GROUP_MA_PEAU='M_cont',),),);
 
 MAT_pu=DEFI_MATERIAU(ELAS=_F(E=210000.0,
                              NU=0.3,),);

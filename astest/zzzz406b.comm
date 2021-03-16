@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ MAILLIN=LIRE_MAILLAGE(FORMAT='MED')
 
 MAILLIN=MODI_MAILLAGE(reuse=MAILLIN,
                    MAILLAGE=MAILLIN,
-                   ORIE_PEAU_2D=_F(GROUP_MA=('HAUT','BAS','LEV_SUP','LEV_INF')))
+                   ORIE_PEAU=_F(GROUP_MA_PEAU=('HAUT','BAS','LEV_SUP','LEV_INF')))
 
 # Passage en quadratique
 # PREF_NOEUD sert a definir le prefix du nom des noeuds milieux. Par defaut 

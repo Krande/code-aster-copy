@@ -105,11 +105,12 @@ for num_mail in range(nb_mail_max) :
   if num_mail==0 :
     M[num_mail] = MODI_MAILLAGE( reuse=M[num_mail],
                           MAILLAGE=M[num_mail],
-                          ORIE_PEAU_3D=_F(GROUP_MA=('XMIN', 'XMAX',
+                          ORIE_PEAU=_F(GROUP_MA_PEAU=('XMIN', 'XMAX',
                                                     'YMIN', 'YMAX',
                                                     'ZMIN', 'ZMAX',
                                                     'CL_1', 'CL_2',),)
-                         )
+                         );
+                         
 #
 # 4.4. MISE EN PLACE DES MATERIAUX
 #

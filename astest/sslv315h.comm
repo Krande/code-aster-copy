@@ -80,7 +80,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAILLAG1,
 
 MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
                        MAILLAGE=MAILLAG1,
-                       ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF',),),
+                       ORIE_PEAU=_F(GROUP_MA_PEAU=('SURFSUP','SURFINF',),),
                        );
 
 #----------------------------------------------

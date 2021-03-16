@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -101,8 +101,9 @@ MOME00=AFFE_MODELE(    MAILLAGE=M00_2,
   AFFE=_F(  TOUT = 'OUI',   PHENOMENE = 'MECANIQUE',   MODELISATION = 'D_PLAN',  ))
 #
 M00_2=MODI_MAILLAGE( reuse=M00_2,   MAILLAGE=M00_2,
-                         ORIE_PEAU_2D=_F(  GROUP_MA = ('BORD_GAU', 'BORD_SUP',),  )
-                       )
+                         ORIE_PEAU=_F(  GROUP_MA_PEAU = ('BORD_GAU', 'BORD_SUP',),  )
+                       );
+                       
 #
 # 3.2.2. PROJECTION DE LA TEMPERATURE DU MAILLAGE EN DEGRE 1 VERS DEGRE 2
 #

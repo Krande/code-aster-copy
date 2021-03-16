@@ -268,7 +268,7 @@ implicit none
         call echell(geomInit, ltchar)
     endif
 !
-! - For "ORIE_PEAU_2D" , "ORIE_PEAU_3D", "ORIE_LIGNE" and "ORIE_NORM_COQUE"
+! - For "ORIE_PEAU" , "ORIE_LIGNE" and "ORIE_NORM_COQUE"
 !
     call orilgm(mesh)
 !

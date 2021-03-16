@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -81,17 +81,17 @@ mesh = DEFI_GROUP(reuse=mesh,
 
 mesh = MODI_MAILLAGE(reuse=mesh,
                       MAILLAGE=mesh,
-                      ORIE_PEAU_2D=(_F(GROUP_MA='Cont_1'),
-                                    _F(GROUP_MA='Cont_2'),
-                                    _F(GROUP_MA='Cont_3'),
-                                    _F(GROUP_MA='edgeInf1'),
-                                    _F(GROUP_MA='edgeInf2'),
-                                    _F(GROUP_MA='edgeSup'),
-                                    _F(GROUP_MA='charniere_inf'),
-                                    _F(GROUP_MA='charniere_sup'),
-                                    _F(GROUP_MA='LevreInf'),
-                                    _F(GROUP_MA='LevreSup'),
-                                    _F(GROUP_MA='ContInsert'),
+                      ORIE_PEAU=(_F(GROUP_MA_PEAU='Cont_1'),
+                                    _F(GROUP_MA_PEAU='Cont_2'),
+                                    _F(GROUP_MA_PEAU='Cont_3'),
+                                    _F(GROUP_MA_PEAU='edgeInf1'),
+                                    _F(GROUP_MA_PEAU='edgeInf2'),
+                                    _F(GROUP_MA_PEAU='edgeSup'),
+                                    _F(GROUP_MA_PEAU='charniere_inf'),
+                                    _F(GROUP_MA_PEAU='charniere_sup'),
+                                    _F(GROUP_MA_PEAU='LevreInf'),
+                                    _F(GROUP_MA_PEAU='LevreSup'),
+                                    _F(GROUP_MA_PEAU='ContInsert'),
                                    ))
 
 mesh = MODI_MAILLAGE(reuse=mesh,

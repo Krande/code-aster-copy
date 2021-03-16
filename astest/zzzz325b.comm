@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,8 +34,8 @@ MA = LIRE_MAILLAGE(FORMAT='MED',INFO=2,
                    )
 # ORIENTATION DES FACES 'FAC1' et 'FAC2' :
 MA=MODI_MAILLAGE(reuse=MA, MAILLAGE=MA,
-                 ORIE_PEAU_2D=(
-                     _F(GROUP_MA=('UP','DOWN','LEFT','RIGHT'),  GROUP_MA_SURF=('FAC1')),
+                 ORIE_PEAU=(
+                     _F(GROUP_MA_PEAU=('UP','DOWN','LEFT','RIGHT'),  GROUP_MA_INTERNE=('FAC1')),
                      ))
 
 

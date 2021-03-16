@@ -128,7 +128,7 @@ MAT=DEFI_MATERIAU(ELAS=_F(E=200000.0,
 
 MA[nb_iter]=MODI_MAILLAGE(reuse =MA[nb_iter],
                           MAILLAGE=MA[nb_iter],
-                          ORIE_PEAU_2D=_F(GROUP_MA='haut',),);
+                          ORIE_PEAU=_F(GROUP_MA_PEAU='haut',),);
 
 MA[nb_iter]=DEFI_GROUP(reuse =MA[nb_iter],
                        MAILLAGE=MA[nb_iter],

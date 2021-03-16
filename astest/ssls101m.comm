@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ DEFI_GROUP(reuse=MAILL, MAILLAGE=MAILL, CREA_GROUP_NO= _F(TOUT_GROUP_MA='OUI',))
 
 
 MAILL=MODI_MAILLAGE(reuse =MAILL, MAILLAGE=MAILL,
-                   ORIE_PEAU_3D=_F(GROUP_MA='ADE2',),);
+                   ORIE_PEAU=_F(GROUP_MA_PEAU='ADE2',),);
 
 MATER=DEFI_MATERIAU(  ELAS=_F(  E = 1.,      NU = 0.3) )
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MAILL, AFFE=_F(  TOUT = 'OUI',   MATER = MATER) )

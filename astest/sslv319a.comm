@@ -131,7 +131,7 @@ MA_INI=LIRE_MAILLAGE(FORMAT='MED')
 
 MA_INI=MODI_MAILLAGE(reuse=MA_INI,
                      MAILLAGE=MA_INI,
-                     ORIE_PEAU_3D=_F(GROUP_MA=('FACESUP','FACEINF')))
+                     ORIE_PEAU=_F(GROUP_MA_PEAU=('FACESUP','FACEINF')))
 
 i_propa=0
 MAF[i_propa]= CO('MAF_%d' %i_propa)

@@ -46,8 +46,8 @@ IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MAIL));
 
 MAIL = MODI_MAILLAGE(reuse=MAIL,
                        MAILLAGE=MAIL,
-                       ORIE_PEAU_3D=_F(GROUP_MA=('ABSO', ),
-                                       GROUP_MA_VOLU=('VOLU', ),),
+                       ORIE_PEAU=_F(GROUP_MA_PEAU=('ABSO', ),
+                                       GROUP_MA_INTERNE=('VOLU', ),),
                        INFO=1,)
 
 MAT1=DEFI_MATERIAU( ELAS=_F(  E = 4.44E+8, RHO = 1900.,  NU = 0.48)

@@ -270,8 +270,8 @@ MA[0]=LIRE_MAILLAGE(FORMAT="ASTER",);
 
 MA[0]=MODI_MAILLAGE(reuse=MA[0],
                     MAILLAGE=MA[0],
-                    ORIE_PEAU_2D=(_F(GROUP_MA='MAITRE'),
-                                  _F(GROUP_MA='BAS'),
+                    ORIE_PEAU=(_F(GROUP_MA_PEAU='MAITRE'),
+                                  _F(GROUP_MA_PEAU='BAS'),
                                   )
                             );
 
