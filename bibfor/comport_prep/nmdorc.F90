@@ -54,10 +54,16 @@ aster_logical, optional, intent(in) :: l_implex_
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=8) :: model_, chmate_
+    character(len=19) :: compor_
     integer :: ifm, niv
     aster_logical :: l_implex
 !
 ! --------------------------------------------------------------------------------------------------
+!
+    model_ = model
+    chmate_ = chmate
+    compor_ = compor
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
@@ -73,16 +79,16 @@ aster_logical, optional, intent(in) :: l_implex_
 !
 ! - Get parameters from COMPORTEMENT keyword and prepare COMPOR <CARTE>
 !
-    call nmdocc(model, chmate, l_etat_init, l_implex, compor, ASTER_FALSE)
+    call nmdocc(model_, chmate_, l_etat_init, l_implex, compor_)
 !
 ! - Get parameters from COMPORTEMENT keyword and prepare CARCRI <CARTE>
 !
-    call nmdocr(model, carcri, l_implex)
+    call nmdocr(model_, carcri, l_implex)
 !
 ! - Get parameters from COMPORTEMENT keyword and prepare MULT_COMP <CARTE> (for crystals)
 !
     if (present(mult_comp_)) then
-        call nmdocm(model, mult_comp_)
+        call nmdocm(model_, mult_comp_)
     endif
 !
 end subroutine

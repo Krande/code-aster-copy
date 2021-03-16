@@ -40,8 +40,10 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/infniv.h"
 !
-character(len=8), intent(in) :: model, chmate
-aster_logical, intent(in) :: l_etat_init, l_implex
+character(len=8), intent(in) :: model
+character(len=8), intent(in) :: chmate
+aster_logical, intent(in) :: l_etat_init
+aster_logical, intent(in) :: l_implex
 character(len=19), intent(in) :: compor
 aster_logical, intent(in), optional :: l_verbose
 !
