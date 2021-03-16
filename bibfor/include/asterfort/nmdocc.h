@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdocc(model, chmate, l_etat_init, l_implex, compor)
+    subroutine nmdocc(model, chmate, l_etat_init, l_implex, compor, l_verbose)
         character(len=8), intent(in) :: model
         character(len=8), intent(in) :: chmate
         aster_logical, intent(in) :: l_etat_init
         aster_logical, intent(in) :: l_implex
         character(len=19), intent(in) :: compor
+        aster_logical, intent(in), optional :: l_verbose
     end subroutine nmdocc
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 ! aslint: disable=W1003
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmdocc(model, chmate, l_etat_init, l_implex, compor)
+subroutine nmdocc(model, chmate, l_etat_init, l_implex, compor, l_verbose)
 !
 use Behaviour_type
 !
@@ -27,6 +27,7 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/comp_init.h"
+#include "asterfort/comp_info.h"
 #include "asterfort/comp_meca_info.h"
 #include "asterfort/comp_meca_chck.h"
 #include "asterfort/comp_meca_cvar.h"
@@ -42,6 +43,7 @@ implicit none
 character(len=8), intent(in) :: model, chmate
 aster_logical, intent(in) :: l_etat_init, l_implex
 character(len=19), intent(in) :: compor
+aster_logical, intent(in), optional :: l_verbose
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,16 +58,26 @@ character(len=19), intent(in) :: compor
 ! In  l_etat_init      : .true. if initial state is defined
 ! In  l_implex         : .true. if IMPLEX method
 ! In  compor           : name of <CARTE> COMPOR
+! In  l_verbose        : .true. to enable verbose mode
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
     integer :: nb_cmp
+    aster_logical :: verbose
     character(len=8) :: mesh, answer
     character(len=19) :: comp_elas, full_elem_s
     type(Behaviour_PrepPara) :: ds_compor_prep
 !
 ! --------------------------------------------------------------------------------------------------
+!
+    verbose = ASTER_FALSE
+    if (present(l_verbose)) then
+        verbose = l_verbose
+    endif
+    if (verbose) then
+        call comp_info(model, compor)
+    endif
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then

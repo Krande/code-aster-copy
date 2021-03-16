@@ -3,7 +3,7 @@
  * @brief Implementation de CodedMaterialClass
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,25 +23,23 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "Materials/CodedMaterial.h"
 #include "aster_fort_jeveux.h"
 #include "aster_fort_material.h"
 #include "aster_fort_utils.h"
-#include "Materials/CodedMaterial.h"
 
-CodedMaterialClass::CodedMaterialClass( const std::string& name,
-                                        const MaterialFieldPtr &mater,
+CodedMaterialClass::CodedMaterialClass( const std::string &name, const MaterialFieldPtr &mater,
                                         const ModelPtr &model )
     : _name( name ), _type( "MATER_CODE" ), _mater( mater ), _model( model ),
       _field( new ConstantFieldOnCellsLongClass( getName() + ".MATE_CODE", _model->getMesh(),
-                                             Permanent ) ),
+                                                 Permanent ) ),
       _grp( JeveuxVectorChar8( getName() + ".MATE_CODE.GRP" ) ),
       _nGrp( JeveuxVectorLong( getName() + ".MATE_CODE.NGRP" ) ){};
 
-bool CodedMaterialClass::allocate(bool force) {
-    if( ! force && _field->exists() )
+bool CodedMaterialClass::allocate( bool force ) {
+    if ( !force && _field->exists() )
         return false;
-    if( _field->exists() )
-    {
+    if ( _field->exists() ) {
         _field->deallocate();
         _grp->deallocate();
         _nGrp->deallocate();
@@ -53,13 +51,12 @@ bool CodedMaterialClass::allocate(bool force) {
     std::string materName = _mater->getName();
     materName.resize( 24, ' ' );
     std::string mate = blanc;
-    ASTERINTEGER thm = 0;
-    if ( _model->existsThm() )
-        thm = 1;
+    bool thm( _model->existsThm() );
     // TODO existsTher ?
-    ASTERINTEGER ther = 0;
+    bool ther( false );
     std::string strJeveuxBase( "V" );
-    CALLO_RCMFMC_WRAP( materName, mate, &thm, &ther, getName(), strJeveuxBase );
+    CALLO_RCMFMC( materName, mate, (ASTERLOGICAL *)&thm, (ASTERLOGICAL *)&ther, getName(),
+                  strJeveuxBase );
 
     auto vecOfMater = _mater->getVectorOfMaterial();
     for ( auto curIter : vecOfMater ) {
@@ -85,22 +82,19 @@ bool CodedMaterialClass::allocate(bool force) {
         }
 
         const int nbMB = curIter->getNumberOfMaterialBehaviour();
-        for( int i = 0; i < nbMB; ++i )
-        {
+        for ( int i = 0; i < nbMB; ++i ) {
             auto vecVec1 = curIter->getBehaviourVectorOfRealValues( i );
             auto vecVec2 = curIter->getBehaviourVectorOfFunctions( i );
-            for( auto vec1 : vecVec1 )
-                if( vec1->exists() )
-                {
+            for ( auto vec1 : vecVec1 )
+                if ( vec1->exists() ) {
                     const std::string name( vec1->getName(), 0, 16 );
                     const std::string name1 = name + ".LISV_VR";
                     const std::string name2 = name + ".LISV_IA";
                     _vecOfR8.push_back( JeveuxVectorReal( name1 ) );
                     _vecOfIa.push_back( JeveuxVectorLong( name2 ) );
                 }
-            for( auto vec2 : vecVec2 )
-                if( vec2->exists() )
-                {
+            for ( auto vec2 : vecVec2 )
+                if ( vec2->exists() ) {
                     const std::string name( vec2->getName(), 0, 16 );
                     const std::string name1 = name + ".LISV_VR";
                     const std::string name2 = name + ".LISV_IA";

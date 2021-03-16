@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,7 +73,7 @@ aster_logical, optional, intent(in) :: l_implex_
 !
 ! - Get parameters from COMPORTEMENT keyword and prepare COMPOR <CARTE>
 !
-    call nmdocc(model, chmate, l_etat_init, l_implex, compor)
+    call nmdocc(model, chmate, l_etat_init, l_implex, compor, ASTER_FALSE)
 !
 ! - Get parameters from COMPORTEMENT keyword and prepare CARCRI <CARTE>
 !

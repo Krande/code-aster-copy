@@ -36,10 +36,10 @@ extern "C" {
 void DEFSS( CREATE_ENTHALPY, create_enthalpy, const char *, STRING_SIZE, const char *,
             STRING_SIZE );
 
-#define CALLO_RCMFMC_WRAP( a, b, c, d, e, f )                                                      \
-    CALLOOPPOO( RCMFMC_WRAP, rcmfmc_wrap, a, b, c, d, e, f )
-void DEFSSPPSS( RCMFMC_WRAP, rcmfmc_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
-                ASTERINTEGER *, ASTERINTEGER *, const char *, STRING_SIZE, const char *,
+#define CALLO_RCMFMC( a, b, c, d, e, f )                                                      \
+    CALLOOPPOO( RCMFMC, rcmfmc, a, b, c, d, e, f )
+void DEFSSPPSS( RCMFMC, rcmfmc, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                ASTERLOGICAL *, ASTERLOGICAL *, const char *, STRING_SIZE, const char *,
                 STRING_SIZE );
 
 #define CALL_RCVALE_WRAP( a, b, c, d, e, f, g, h, i, j )                                           \

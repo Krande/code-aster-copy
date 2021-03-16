@@ -45,7 +45,7 @@ void BehaviourPropertyClass ::createObjects() {
 
 /** @brief Constructor */
 BehaviourPropertyClass ::BehaviourPropertyClass( ModelPtr model, MaterialFieldPtr materialField )
-    : _initialState( false ), _implex( false ), _verbosity( 0 ), _model( model ),
+    : _initialState( false ), _implex( false ), _verbosity( false ), _model( model ),
       _materialField( materialField ) {
     _mesh = _model->getMesh();
     _baseName = TemporaryDataStructureNaming::getNewTemporaryName();
@@ -63,12 +63,8 @@ void BehaviourPropertyClass ::buildObjects() {
     std::string mapComporName = _COMPOR->getName();
     mapComporName.resize( 19, ' ' );
 
-    ASTERINTEGER initialState = (ASTERINTEGER)( _initialState ? 1 : 0 );
-    ASTERINTEGER implex = (ASTERINTEGER)( _implex ? 1 : 0 );
-    ASTERINTEGER verbosity = (ASTERINTEGER)_verbosity;
-
-    CALLO_NMDOCC_WRAP( modelName, materialFieldName, mapComporName, &initialState, &implex,
-                       &verbosity );
+    CALLO_NMDOCC( modelName, materialFieldName, (ASTERLOGICAL *)&_initialState,
+                  (ASTERLOGICAL *)&_implex, mapComporName, (ASTERLOGICAL *)&_verbosity );
 
     CALLO_NMDOCR( getModel()->getName(), _CARCRI->getName(), (ASTERLOGICAL *)&_implex );
 

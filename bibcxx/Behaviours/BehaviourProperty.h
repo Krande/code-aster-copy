@@ -59,7 +59,7 @@ class BehaviourPropertyClass {
     bool _implex;
 
     /** @brief Verbosity */
-    int _verbosity;
+    bool _verbosity;
 
     /** @brief Map '.COMPOR' to define behaviours */
     ConstantFieldOnCellsChar16Ptr _COMPOR;
@@ -99,7 +99,7 @@ class BehaviourPropertyClass {
     void setImplex( const bool &value ) { _implex = value; };
 
     /** @brief Set verbosity */
-    void setVerbosity( const int &value ) { _verbosity = value; };
+    void setVerbosity( const bool &value ) { _verbosity = value; };
 
 };
 
