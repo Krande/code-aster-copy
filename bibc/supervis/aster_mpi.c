@@ -238,7 +238,9 @@ int aster_set_mpi_barrier(aster_comm_t *node) {
     return 0;
 }
 
-int aster_mpi_bcast(void *buffer, int count, MPI_Datatype datatype, int root, aster_comm_t *node) {
+/* Tools allowing collective communications between processes */
+int aster_mpi_bcast(void *buffer, int count, MPI_Datatype datatype, int root,
+                                                           aster_comm_t *node) {
     /*! Broadcasts a message from one process to all other processes */
 #ifdef ASTER_HAVE_MPI
     DEBUG_MPI("MPI_Bcast: send %d values from proc #%d\n", count, root);
@@ -249,7 +251,7 @@ int aster_mpi_bcast(void *buffer, int count, MPI_Datatype datatype, int root, as
 
 int aster_mpi_allreduce(void *sendbuf, void *recvbuf, int count,
                         MPI_Datatype sendtype, MPI_Op op, aster_comm_t *node) {
-    /*! Reduces a message and distribute the result to all other processes */
+    /*! Reduces a message and distributes the result to all other processes */
 #ifdef ASTER_HAVE_MPI
     DEBUG_MPI("MPI_Allreduce: send %d values from proc #%d\n", count, root);
     AS_ASSERT(MPI_Allreduce(sendbuf, recvbuf, count, sendtype, op, node->id) == MPI_SUCCESS);
@@ -270,6 +272,19 @@ int aster_mpi_gather(void *sendbuf, int sendcnt, MPI_Datatype sendtype,
     return 0;
 }
 
+int aster_mpi_gatherv(void *sendbuf, int sendcnt, MPI_Datatype sendtype,
+                      void *recvbuf, int *recvcnt, int *displ, MPI_Datatype recvtype,
+                      int root, aster_comm_t *node) {
+    /*! Gathers into specified locations from all processes in a group */
+#ifdef ASTER_HAVE_MPI
+    DEBUG_MPI("MPI_Gatherv: %d gathered values by proc #%d\n", sendcnt, root);
+    AS_ASSERT(MPI_Gatherv(sendbuf, sendcnt, sendtype,
+                          recvbuf, recvcnt, displ, recvtype,
+                          root, node->id) == MPI_SUCCESS);
+#endif
+    return 0;
+}
+
 int aster_mpi_allgather(void *sendbuf, int sendcnt, MPI_Datatype sendtype,
                         void *recvbuf, int recvcnt, MPI_Datatype recvtype,
                         aster_comm_t *node) {
@@ -283,15 +298,15 @@ int aster_mpi_allgather(void *sendbuf, int sendcnt, MPI_Datatype sendtype,
     return 0;
 }
 
-int aster_mpi_gatherv(void *sendbuf, int sendcnt, MPI_Datatype sendtype,
-                      void *recvbuf, int *recvcnt, int *displ, MPI_Datatype recvtype,
-                      int root, aster_comm_t *node) {
-    /*! Gathers into specified locations from all processes in a group */
+int aster_mpi_allgatherv(void *sendbuf, int sendcnt, MPI_Datatype sendtype,
+                        void *recvbuf, int* recvcnt, int *displs, MPI_Datatype recvtype,
+                        aster_comm_t *node) {
+    /*! Gathers together values from a group of processes */
 #ifdef ASTER_HAVE_MPI
-    DEBUG_MPI("MPI_Gatherv: %d gathered values by proc #%d\n", sendcnt, root);
-    AS_ASSERT(MPI_Gatherv(sendbuf, sendcnt, sendtype,
-                          recvbuf, recvcnt, displ, recvtype,
-                          root, node->id) == MPI_SUCCESS);
+    DEBUG_MPI("MPI_AllGather: %d gathered values by all %s\n", sendcnt, " ");
+    AS_ASSERT(MPI_Allgatherv(sendbuf, sendcnt, sendtype,
+                            recvbuf, recvcnt, displs, recvtype,
+                            node->id) == MPI_SUCCESS);
 #endif
     return 0;
 }

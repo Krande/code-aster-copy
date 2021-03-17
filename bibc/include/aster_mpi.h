@@ -87,20 +87,21 @@ extern aster_comm_t* aster_split_comm(aster_comm_t *, int, int, char *);
 extern void aster_free_comm(aster_comm_t *);
 extern int aster_set_mpi_barrier(aster_comm_t *);
 extern int aster_mpi_bcast(void *, int, MPI_Datatype, int, aster_comm_t *);
-extern int aster_mpi_gather(void *, int, MPI_Datatype, void *, int, MPI_Datatype,
-                            int, aster_comm_t *);
-extern int aster_mpi_allgather(void *, int, MPI_Datatype, void *, int, MPI_Datatype,
-                               aster_comm_t *);
-extern int aster_mpi_allreduce(void *, void *, int, MPI_Datatype, MPI_Op, aster_comm_t *);
-extern int aster_mpi_gatherv(void *, int, MPI_Datatype,
-                             void *, int *, int *, MPI_Datatype,
-                             int, aster_comm_t *);
-
+extern int aster_mpi_allreduce(void *, void *, int, MPI_Datatype, MPI_Op,
+                                                                aster_comm_t *);
+extern int aster_mpi_gather(void *, int, MPI_Datatype, void *, int,
+                                             MPI_Datatype, int, aster_comm_t *);
+extern int aster_mpi_gatherv(void *, int, MPI_Datatype, void *, int *, int *,
+                                             MPI_Datatype, int, aster_comm_t *);
+extern int aster_mpi_allgather(void *, int, MPI_Datatype, void *, int,
+                                                  MPI_Datatype, aster_comm_t *);
+extern int aster_mpi_allgatherv(void *, int, MPI_Datatype, void *, int *, int *,
+                                                  MPI_Datatype, aster_comm_t *);
 extern void DEFSP(ASMPI_COMM, asmpi_comm,  char *, STRING_SIZE, MPI_Fint *);
-extern void DEFPPPSP(ASMPI_SPLIT_COMM, asmpi_split_comm,
-                     MPI_Fint *, MPI_Fint *, MPI_Fint *, char *, STRING_SIZE, MPI_Fint *);
-extern void DEFPPP(ASMPI_INFO_WRAP, asmpi_info_wrap, MPI_Fint *, MPI_Fint *, MPI_Fint *);
-
+extern void DEFPPPSP(ASMPI_SPLIT_COMM, asmpi_split_comm, MPI_Fint *, MPI_Fint *,
+                                   MPI_Fint *, char *, STRING_SIZE, MPI_Fint *);
+extern void DEFPPP(ASMPI_INFO_WRAP, asmpi_info_wrap, MPI_Fint *, MPI_Fint *,
+                                                                    MPI_Fint *);
 extern void terminate( void );
 
 #define CALL_ASABRT( a ) CALLP( ASABRT, asabrt, a )

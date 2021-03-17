@@ -3,7 +3,7 @@
  * @brief Interface python de BaseMesh
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -111,5 +111,15 @@ Returns:
     Table: Table stored with the given identifier.
         )",
               ( py::arg( "self" ), py::arg( "identifier" ) ) )
+        .def( "printMedFile", &BaseMeshClass::printMedFile, R"(
+Print the mesh in the MED format
+
+Arguments:
+    filename (str): Name of the file
+
+Returns:
+    Bool: True if of
+        )",
+              ( py::arg( "self" ), py::arg( "fileName" ) ) )
         ;
 };

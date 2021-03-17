@@ -50,6 +50,9 @@ class ConnectionMeshClass : public BaseMeshClass {
     /** @brief number of owner proc for each nodes */
     JeveuxVectorLong _owner;
 
+
+    VectorLong getCellsGlobalNumbering( const JeveuxVectorLong& rankOfCells ) const;
+
   public:
     /**
      * @typedef ConnectionMeshPtr
@@ -60,13 +63,16 @@ class ConnectionMeshClass : public BaseMeshClass {
     /**
      * @brief Constructeur
      */
-    ConnectionMeshClass( const ParallelMeshPtr &mesh, const VectorString &toFind )
-        : ConnectionMeshClass( ResultNaming::getNewResultName(), mesh, toFind ){};
+    ConnectionMeshClass( const ParallelMeshPtr &mesh, const VectorString &groupsOfNodes,
+        const VectorString &groupsOfCells )
+        : ConnectionMeshClass( ResultNaming::getNewResultName(), mesh,
+                            groupsOfNodes, groupsOfCells ){};
 
     /**
      * @brief Constructeur
      */
-    ConnectionMeshClass( const std::string &name, const ParallelMeshPtr &, const VectorString & );
+    ConnectionMeshClass( const std::string &name, const ParallelMeshPtr &mesh,
+        const VectorString &groupsOfNodes, const VectorString &groupsOfCells );
 
     const JeveuxVectorLong &getGlobalNumbering() const { return _globalNumbering; };
 
@@ -75,6 +81,21 @@ class ConnectionMeshClass : public BaseMeshClass {
     const JeveuxVectorLong &getOwner() const { return _owner; };
 
     const ParallelMeshPtr &getParallelMesh() const { return _pMesh; };
+
+    VectorString getGroupsOfCells( ) const;
+
+    VectorString getGroupsOfNodes( ) const;
+
+    bool hasGroupOfCells( const std::string &name) const;
+
+    bool hasGroupOfNodes( const std::string &name) const;
+
+    const VectorLong getCells( const std::string name ) const;
+
+    const VectorLong getCells(  ) const
+    {
+        return getCells( std::string() );
+    };
 
     /**
      * @brief Fonction permettant de savoir si un maillage est partiel

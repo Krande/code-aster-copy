@@ -56,6 +56,14 @@ extern void DEFSS( GET_MED_TYPES, get_med_types, const char *, STRING_SIZE, cons
 extern void DEFSS( GET_MED_CONNECTIVITY, get_med_connectivity, const char *, STRING_SIZE,
                    const char *, STRING_SIZE );
 
+
+#define CALL_CNCINV( a, b, c, d, e ) CALLSPPSS( CNCINV, cncinv, a, b, c, d, e )
+#define CALLO_CNCINV( a, b, c, d, e ) \
+    CALLOPPOO( CNCINV, cncinv, a, b, c, d, e )
+extern void DEFSPPSS( CNVINV, cncinv, const char *, STRING_SIZE, ASTERINTEGER *, ASTERINTEGER *,
+                     const char *, STRING_SIZE, const char *, STRING_SIZE );
+
+
 #ifdef __cplusplus
 }
 #endif

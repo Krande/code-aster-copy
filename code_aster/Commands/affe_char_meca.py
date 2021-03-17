@@ -120,7 +120,7 @@ class MechanicalLoadDefinition(ExecuteCommand):
             super(MechanicalLoadDefinition, self).exec_(keywords)
         else:
             model = keywords.pop("MODELE")
-            connectionMesh = ConnectionMesh(model.getMesh(), self._getNodeGroups(keywords))
+            connectionMesh = ConnectionMesh(model.getMesh(), self._getNodeGroups(keywords), [])
             if connectionMesh.getDimension()==3:
                 modelisation = "3D"
             else:

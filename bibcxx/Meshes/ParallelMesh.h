@@ -90,8 +90,8 @@ class ParallelMeshClass : public BaseMeshClass {
     const JeveuxVectorLong getNodesRank() const { return _outerNodes; };
 
     /**
-     * @brief Get the JeveuxVector for outer subdomain nodes
-     * @return _outerNodes
+     * @brief Get the JeveuxVector for outer subdomain cells
+     * @return _outerCells
      */
     const JeveuxVectorLong getCellsRank() const { return _outerCells; };
 
@@ -204,6 +204,7 @@ class ParallelMeshClass : public BaseMeshClass {
  * @brief Pointeur intelligent vers un ParallelMeshClass
  */
 typedef boost::shared_ptr< ParallelMeshClass > ParallelMeshPtr;
+
 #endif /* ASTER_HAVE_MPI */
 
 #endif /* PARALLELMESH_H_ */

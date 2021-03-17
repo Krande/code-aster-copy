@@ -186,30 +186,31 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
                     call jedetr(nojoin_old)
                 end if
             end do
-!
-! --- Verification NOEX
-!
-            do ino=1, nbnoeu
-                ASSERT(v_noext(ino).ne.-1)
-            end do
-!
-! --- Creation .MAEX
-!
-            connex = mesh //'.CONNEX'
-            call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbma)
-            call wkvect(mesh//'.MAEX', 'G V I', nbma, vi=v_maex)
-            v_maex(1:nbma) = ismaem()
-            do ima = 1, nbma
-                call jelira(jexnum(connex , ima), 'LONMAX', nbnoma)
-                call jeveuo(jexnum(connex , ima), 'L', vi=v_connex)
-                do ino = 1, nbnoma
-                    node_id = v_connex(ino)
-                    v_maex(ima) = min(v_maex(ima), v_noext(node_id))
-                end do
-            end do
         else
             call utmess('A', 'MAILLAGE1_5', sk=nomam2)
         end if
+!
+! --- Verification NOEX
+!
+        do ino=1, nbnoeu
+            ASSERT(v_noext(ino).ne.-1)
+        end do
+!
+! --- Creation .MAEX
+!
+        connex = mesh //'.CONNEX'
+        call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbma)
+        call wkvect(mesh//'.MAEX', 'G V I', nbma, vi=v_maex)
+        v_maex(1:nbma) = ismaem()
+        do ima = 1, nbma
+            call jelira(jexnum(connex , ima), 'LONMAX', nbnoma)
+            call jeveuo(jexnum(connex , ima), 'L', vi=v_connex)
+            do ino = 1, nbnoma
+                node_id = v_connex(ino)
+                v_maex(ima) = min(v_maex(ima), v_noext(node_id))
+            end do
+        end do
+!
     endif
 !
     call jedema()

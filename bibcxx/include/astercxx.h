@@ -39,6 +39,7 @@
 
 typedef std::complex< double > RealComplex;
 
+typedef std::vector< bool > VectorBool;
 typedef std::vector< int > VectorInt;
 typedef std::vector< ASTERINTEGER > VectorLong;
 typedef std::vector< double > VectorReal;

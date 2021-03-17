@@ -121,6 +121,9 @@ class BaseMeshClass : public DataStructure, public ListOfTablesClass {
      */
     const JeveuxCollectionLong getConnectivity() const { return _connectivity; }
 
+
+    const JeveuxCollectionLong getInverseConnectivity() const;
+
     /**
      * @brief Return the connectivity with MED numberings
      */
@@ -138,17 +141,6 @@ class BaseMeshClass : public DataStructure, public ListOfTablesClass {
     MeshCoordinatesFieldPtr getCoordinates() const {
         _coordinates->updateValuePointers();
         return _coordinates;
-    };
-
-    /**
-     * @brief Recuperation d'un groupe de noeuds
-     * @return Objet de collection contenant la liste des noeuds
-     */
-    const JeveuxCollectionObject< ASTERINTEGER > &
-    getGroupOfNodesObject( const std::string &name ) const {
-        if ( _groupsOfNodes->size() == -1 )
-            _groupsOfNodes->buildFromJeveux();
-        return _groupsOfNodes->getObjectFromName( name );
     };
 
     /**
@@ -269,6 +261,13 @@ class BaseMeshClass : public DataStructure, public ListOfTablesClass {
      * @return retourne true si tout est ok
      */
     virtual bool readMedFile( const std::string &fileName );
+
+    /**
+     * @brief Impression du maillage au format MED
+     * @param fileName Nom du fichier MED à imprimer
+     * @return true
+     */
+    bool printMedFile( const std::string fileName ) const ;
 };
 
 /**

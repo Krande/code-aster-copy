@@ -3,7 +3,7 @@
  * @brief Implementation de BaseMeshClass
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -150,3 +150,49 @@ const JeveuxVectorLong BaseMeshClass::getMedCellsTypes() const {
     JeveuxVectorLong result( objv.toString() );
     return result;
 }
+
+bool BaseMeshClass::printMedFile( const std::string fileName ) const
+{
+    LogicalUnitFile a( fileName, Binary, New );
+    ASTERINTEGER retour = a.getLogicalUnit();
+    CommandSyntax cmdSt( "IMPR_RESU" );
+
+    SyntaxMapContainer dict;
+
+    if( isParallel() || isPartial()  )
+        dict.container["PROC0"] = "NON";
+    else
+        dict.container["PROC0"] = "OUI";
+
+    dict.container["FORMAT"] = "MED";
+    dict.container["UNITE"] = retour;
+
+    ListSyntaxMapContainer listeResu;
+    SyntaxMapContainer dict2;
+    dict2.container["MAILLAGE"] = getName();
+    listeResu.push_back( dict2 );
+    dict.container["RESU"] = listeResu;
+
+    cmdSt.define( dict );
+
+    try {
+        ASTERINTEGER op = 39;
+        CALL_EXECOP( &op );
+    } catch ( ... ) {
+        throw;
+    }
+
+    return true;
+};
+
+const JeveuxCollectionLong BaseMeshClass::getInverseConnectivity() const {
+    JeveuxChar24 objv( DataStructureNaming::getNewName( Permanent, 24 ) );
+    std::string base( JeveuxMemoryTypesNames[Permanent] );
+
+    ASTERINTEGER listCell;
+    ASTERINTEGER nbCell = 0;
+
+    CALLO_CNCINV( getName(), &listCell, &nbCell, base, objv );
+    JeveuxCollectionLong result( objv.toString() );
+    return result;
+};

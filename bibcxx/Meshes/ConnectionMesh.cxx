@@ -22,227 +22,629 @@
  */
 
 #include <algorithm>
+#include <sstream>
+#include <iomanip>
 
 #include "aster_fort_mesh.h"
 #include "aster_mpi.h"
 #include "Meshes/ConnectionMesh.h"
 #include "ParallelUtilities/MPIInfos.h"
+#include "ParallelUtilities/MPIContainerUtilities.h"
 
 #ifdef ASTER_HAVE_MPI
 
-ConnectionMeshClass::ConnectionMeshClass( const std::string &name, const ParallelMeshPtr &mesh,
-                                          const VectorString &toFind )
-    : BaseMeshClass( name, "MAILLAGE_PARTIEL" ), _pMesh( mesh ),
-      _localNumbering( getName() + ".LOCAL" ), _globalNumbering( getName() + ".GLOBAL" ),
-      _owner( getName() + ".POSSESSEUR" ) {
-    aster_comm_t *commWorld = aster_get_comm_world();
-    VectorString toFind2( toFind );
-    std::sort( toFind2.begin(), toFind2.end() );
+/* Initial constructor for an object of ConnectionMeshClass. This class is only
+   defined for the parallel use of a ParrallelMesh. The idea is to rebuild on
+   each processor a temporary mesh associated with all the cells and nodes
+   concerned by the groups given.
+*/
+ConnectionMeshClass::ConnectionMeshClass( const std::string &name,
+                                          const ParallelMeshPtr &mesh,
+                                          const VectorString &groupsOfNodes,
+                                          const VectorString &groupsOfCells )
+: BaseMeshClass( name, "MAILLAGE_PARTIEL" ),
+  _pMesh( mesh ),
+  _localNumbering( getName() + ".LOCAL" ),
+  _globalNumbering( getName() + ".GLOBAL" ),
+  _owner( getName() + ".POSSESSEUR" )
+{
 
+    /* Stop if no group is given */
+    if( groupsOfNodes.empty() && groupsOfCells.empty() )
+        throw std::runtime_error( "No groups" );
+
+    /* ******************************************************************* */
+    /* Part of the code dealing with the definition of the local variables */
+    /* ******************************************************************* */
+
+    /* Local variables gathering the basic MPI informations needed */
+    /* Rank of the current MPI proc */
     const int rank = getMPIRank();
-    const int nbProcs = getMPINumberOfProcs();
-    auto outers = mesh->getNodesRank();
-    outers->updateValuePointer();
-    int nbNodes = mesh->getNumberOfNodes();
-    VectorLong boolToSend( nbNodes, -1 );
-    VectorLong toSend;
-    typedef std::map< std::string, VectorLong > MapStringVecInt;
-    MapStringVecInt myMap, gatheredMap;
-    int count = 1;
-    for ( const auto &nameOfGrp : toFind2 ) {
-        if ( mesh->hasGroupOfNodes( nameOfGrp, true ) ) {
-            const auto &grp = mesh->getGroupOfNodesObject( nameOfGrp );
-            const int nbNodesGrp = grp.size();
-            VectorLong toSendGrp;
-            for ( int pos = 0; pos < nbNodesGrp; ++pos ) {
-                const long nodeNum = grp[pos];
-                if ( ( *outers )[nodeNum - 1] == rank ) {
-                    if ( boolToSend[nodeNum - 1] == -1 ) {
-                        toSend.push_back( nodeNum - 1 );
-                        boolToSend[nodeNum - 1] = count;
-                        ++count;
+    /* MPIUntilities */
+    MPIContainerUtilities mpiUtils;
+
+    /* Local variables needed to handle the input groups of cells */
+     /* Make a copy of the input groups of cells */
+    VectorString groupsOfCellsToFind;
+    groupsOfCellsToFind.reserve( groupsOfCells.size() );
+    /* Total number of mesh cells related to the proc */
+    const int numberOfMeshCells = mesh->getNumberOfCells();
+    /* Rank of the proc cells (to identify outer cells) */
+    const JeveuxVectorLong rankOfCells = mesh->getCellsRank();
+    /* Update the jeveux pointer to access the Fortran Jeveux pointer */
+    rankOfCells->updateValuePointer();
+    /* Get global cell connectivity to create cells group's later */
+    const VectorLong globalCellIds = this->getCellsGlobalNumbering( rankOfCells );
+    int numberOfCellsToSend = 0;
+    /* Cells of the proc that are part of the ConnectionMesh in building */
+    VectorLong cellsToSend;
+    cellsToSend.reserve( numberOfMeshCells );
+    /* Tags related to proc cells, used to build their future numbering */
+    VectorBool boolCellsToSend( numberOfMeshCells, false );
+    /* Outer cells whose future numbering needs checking in other procs */
+    int numberOfCellsToCheck = 0;
+    VectorLong cellsToCheck;
+    cellsToCheck.reserve( numberOfMeshCells );
+
+    std::map< std::string, VectorLong > groupsOfCellsToSend;
+    std::map< std::string, VectorLong > groupsOfCellsGathered;
+
+    VectorLong connectivitiesToSend;
+    VectorLong connectivitiesGathered;
+
+    /* Local variables needed to handle the input groups of nodes */
+    /* Make a copy of the input groups of nodes */
+    VectorString groupsOfNodesToFind;
+    groupsOfNodesToFind.reserve( groupsOfNodes.size() );
+    /* Total number of mesh nodes related to the proc */
+    const int numberOfMeshNodes = mesh->getNumberOfNodes();
+    /* Rank of the proc nodes (to identify outer nodes) */
+    const JeveuxVectorLong rankOfNodes = mesh->getNodesRank();
+    /* Update the jeveux pointer to access the Fortran Jeveux pointer */
+    rankOfNodes->updateValuePointer();
+    /* Global numbering of proc nodes (to link outer nodes on all procs) */
+    const VectorLong globalNodeIds = mesh->getNodes( false );
+    int numberOfNodesToSend = 0;
+    /* The proc Nodes that are part of the ConnectionMesh we are building */
+    VectorLong nodesToSend;
+    nodesToSend.reserve( numberOfMeshNodes );
+    /* Tags related to the proc nodes used to build future numbering */
+    VectorBool boolNodesToSend( numberOfMeshNodes, false );
+    /* Outer nodes whose future numbering needs checking in other procs */
+    int numberOfNodesToCheck = 0;
+    VectorLong nodesToCheck;
+    nodesToCheck.reserve( numberOfMeshNodes );
+
+    std::map< std::string, VectorLong > groupsOfNodesToSend;
+    std::map< std::string, VectorLong > groupsOfNodesGathered;
+
+    const auto &meshCoordinates = mesh->getCoordinates();
+    meshCoordinates->updateValuePointers();
+
+    /* Inverse connectivity nodes -> cell */
+    const JeveuxCollectionLong connecInv = mesh->getInverseConnectivity();
+    connecInv->buildFromJeveux();
+
+    VectorReal coordinatesToSend;
+    VectorReal coordinatesGathered;
+
+    VectorLong numNodesGathered;
+    VectorLong numNodesToSend;
+
+    std::map< long, long> numNodesGloLoc, numCellsGloLoc;
+
+    int totalNumberOfNodes = 0, totalNumberOfCells = 0;
+
+    const auto& connecExp = mesh->getConnectivityExplorer();
+
+    /* *********************************************************************** */
+    /* Part of the code dealing with the treament of the input groups of cells */
+    /* *********************************************************************** */
+
+    /* Sort copy of input vector to be identical on all procs */
+    for(const auto &nameOfTheGroup : groupsOfCells )
+    {
+        if( mesh->hasGroupOfCells( nameOfTheGroup, false ) )
+            groupsOfCellsToFind.push_back( nameOfTheGroup );
+    }
+    std::sort( groupsOfCellsToFind.begin(), groupsOfCellsToFind.end() );
+
+    if ( !groupsOfCellsToFind.empty() )
+    {
+        /* Loop over the groups of cells to add/tag those concerned by the proc,
+        add/tag also the nodes concerned and get the ones needing later checks */
+        for ( const auto &nameOfTheGroup : groupsOfCellsToFind )
+        {
+            if( mesh->hasGroupOfCells( nameOfTheGroup, true ) )
+            {
+                const auto &cellsToFind = mesh->getCells( nameOfTheGroup );
+                const auto numberOfCellsToFind = cellsToFind.size();
+                VectorLong cellsOfTheGroupToSend;
+                cellsOfTheGroupToSend.reserve( numberOfCellsToFind );
+                for ( int i = 0; i < numberOfCellsToFind; ++i )
+                {
+                    const auto cellId = cellsToFind[i] - 1;
+
+                    if ( !boolCellsToSend[cellId] )
+                    {
+                        const auto cell = connecExp[cellsToFind[i]];
+                        for (const auto vertex : cell )
+                        {
+                            const auto nodeId = vertex - 1;
+                            if ( !boolNodesToSend[nodeId] )
+                            {
+                                /*  Split the proc nodes (toSend) from outer ones (toCheck) */
+                                if ( ( *rankOfNodes )[nodeId] == rank )
+                                {
+                                    nodesToSend.push_back( vertex );
+                                    ++numberOfNodesToSend;
+                                }
+                                else
+                                {
+                                    nodesToCheck.push_back( vertex );
+                                    ++numberOfNodesToCheck;
+                                }
+                                boolNodesToSend[nodeId] = true;
+                            }
+                        }
                     }
-                    toSendGrp.push_back( boolToSend[nodeNum - 1] );
+
+                    /* Add the cell that we own */
+                    if ( ( *rankOfCells )[cellId] == rank )
+                    {
+                        cellsOfTheGroupToSend.push_back( globalCellIds[cellId] );
+
+                        if ( !boolCellsToSend[cellId] )
+                        {
+                            cellsToSend.push_back( cellsToFind[i] );
+                            ++numberOfCellsToSend;
+                        }
+                    }
+                    boolCellsToSend[cellId] = true;
                 }
+                groupsOfCellsToSend[nameOfTheGroup] = cellsOfTheGroupToSend;
             }
-            myMap[nameOfGrp] = toSendGrp;
+            groupsOfCellsGathered[nameOfTheGroup] = VectorLong();
         }
-        gatheredMap[nameOfGrp] = VectorLong();
     }
-    // recup mailles connexes et nouveaux noeuds
-    int taille = toSend.size();
-    VectorLong cellsTypes;
-    std::vector< VectorLong > connectivity;
-    for ( const auto cell : mesh->getConnectivityExplorer() ) {
-        bool keepCell = false;
-        for ( auto nodeNum : cell ) {
-            if ( keepCell )
-                break;
-            for ( int i = 0; i < taille; i++ ) {
-                if ( nodeNum - 1 == toSend[i] )
-                    keepCell = true;
-                break;
-            }
-        }
-        if ( keepCell ) {
-            cellsTypes.push_back( cell.getType() );
-            VectorLong listOfNodes;
-            for ( auto nodeNum : cell ) {
-                if ( boolToSend[nodeNum - 1] == -1 ) {
-                    toSend.push_back( nodeNum - 1 );
-                    boolToSend[nodeNum - 1] = count;
-                    ++count;
+
+
+    /* *********************************************************************** */
+    /* Part of the code dealing with the treament of the input groups of nodes */
+    /* *********************************************************************** */
+    /* Sort copy of input vector to be identical on all procs */
+    for(const auto &nameOfTheGroup : groupsOfNodes )
+    {
+        if( mesh->hasGroupOfNodes( nameOfTheGroup, false ) )
+            groupsOfNodesToFind.push_back( nameOfTheGroup );
+    }
+    std::sort( groupsOfNodesToFind.begin(), groupsOfNodesToFind.end() );
+
+    if ( !groupsOfNodesToFind.empty() )
+    {
+        /* Loop over the groups of nodes to tag/add those concerned by the proc */
+        for ( const auto &nameOfTheGroup : groupsOfNodesToFind )
+        {
+            if ( mesh->hasGroupOfNodes( nameOfTheGroup, true ) )
+            {
+                const auto &nodesToFind = mesh->getNodes( nameOfTheGroup );
+                const int numberOfNodesToFind = nodesToFind.size();
+                VectorLong nodesOfTheGroupToSend;
+                nodesOfTheGroupToSend.reserve(numberOfNodesToFind);
+                for ( int i = 0; i < numberOfNodesToFind; ++i )
+                {
+                    const auto nodeId = nodesToFind[i] - 1;
+                    if ( !boolNodesToSend[nodeId] )
+                    {
+                        if ( ( *rankOfNodes )[nodeId] == rank )
+                        {
+                            nodesToSend.push_back( nodesToFind[i] );
+                            ++numberOfNodesToSend;
+                        }
+                        else
+                        {
+                            nodesToCheck.push_back( nodesToFind[i] );
+                            ++numberOfNodesToCheck;
+                        }
+                        boolNodesToSend[nodeId] = true;
+                    }
+
+                    if ( ( *rankOfNodes )[nodeId] == rank )
+                    {
+                        nodesOfTheGroupToSend.push_back( globalNodeIds[nodeId] );
+                    }
                 }
-                listOfNodes.push_back( boolToSend[nodeNum - 1] );
+                groupsOfNodesToSend[nameOfTheGroup] = nodesOfTheGroupToSend;
             }
-            connectivity.push_back( listOfNodes );
+            groupsOfNodesGathered[nameOfTheGroup] = VectorLong();
         }
     }
-    boolToSend.clear();
 
-    VectorReal coords;
-    VectorLong numbering;
-    const auto &meshCoords = mesh->getCoordinates();
-    meshCoords->updateValuePointers();
-    const auto globalNum = mesh->getNodes(false);
 
-    for ( const auto &nodeNum : toSend ) {
-        coords.push_back( ( *meshCoords )[nodeNum * 3] );
-        coords.push_back( ( *meshCoords )[nodeNum * 3 + 1] );
-        coords.push_back( ( *meshCoords )[nodeNum * 3 + 2] );
-        numbering.push_back( nodeNum + 1 );
-        numbering.push_back( globalNum[nodeNum] );
-        numbering.push_back( rank );
-    }
-    VectorReal completeCoords;
-    VectorLong completeMatchingNumbering;
-    VectorLong completeCellsType;
-    std::vector< VectorLong > completeConnectivity;
-    int completeConnectivitySize = 0;
-    int offset = 0;
-    for ( int proc = 0; proc < nbProcs; ++proc ) {
-        int taille = coords.size();
-        aster_mpi_bcast( &taille, 1, MPI_INT, proc, commWorld );
-        if ( proc == rank ) {
-            aster_mpi_bcast( coords.data(), taille, MPI_DOUBLE, proc, commWorld );
-            completeCoords.insert( completeCoords.end(), coords.begin(), coords.end() );
-        } else {
-            VectorReal buffer( taille, 0. );
-            aster_mpi_bcast( buffer.data(), taille, MPI_DOUBLE, proc, commWorld );
-            completeCoords.insert( completeCoords.end(), buffer.begin(), buffer.end() );
-        }
+    /* *********************************************************************** */
+    /* Part of the code dealing with the neighbourhood                         */
+    /* *********************************************************************** */
 
-        taille = numbering.size();
-        aster_mpi_bcast( &taille, 1, MPI_INT, proc, commWorld );
-        int addOffset = taille / 3;
-        if ( proc == rank ) {
-            aster_mpi_bcast( numbering.data(), taille, MPI_LONG, proc, commWorld );
-            completeMatchingNumbering.insert( completeMatchingNumbering.end(), numbering.begin(),
-                                              numbering.end() );
-        } else {
-            VectorLong buffer( taille, 0. );
-            aster_mpi_bcast( buffer.data(), taille, MPI_LONG, proc, commWorld );
-            completeMatchingNumbering.insert( completeMatchingNumbering.end(), buffer.begin(),
-                                              buffer.end() );
-        }
+    /* Get cells lying on nodes */
+    for( int i = 0; i < numberOfNodesToSend; i++)
+    {
+        const auto nodeId = nodesToSend[i] - 1;
+        const auto listCells = connecInv->getObject( nodeId + 1 ).toVector();
 
-        for ( const auto &nameOfGrp : toFind2 ) {
-            VectorLong &vecTmp = myMap[nameOfGrp];
-            VectorLong &vecTmp2 = gatheredMap[nameOfGrp];
-            taille = vecTmp.size();
-            aster_mpi_bcast( &taille, 1, MPI_INT, proc, commWorld );
-            if ( taille == 0 )
-                continue;
-
-            if ( proc == rank ) {
-                aster_mpi_bcast( vecTmp.data(), taille, MPI_LONG, proc, commWorld );
-                for ( const auto &val : vecTmp )
-                    vecTmp2.push_back( val + offset );
-            } else {
-                VectorLong buffer( taille, 0. );
-                aster_mpi_bcast( buffer.data(), taille, MPI_LONG, proc, commWorld );
-                for ( const auto &val : buffer )
-                    vecTmp2.push_back( val + offset );
+        for( const auto cell : listCells )
+        {
+            const auto cellId = cell - 1;
+            if ( !boolCellsToSend[cellId] )
+            {
+                if ( ( *rankOfCells )[cellId] == rank )
+                {
+                    cellsToSend.push_back( cell );
+                    ++numberOfCellsToSend;
+                }
+                else
+                {
+                    cellsToCheck.push_back( cell );
+                    ++numberOfCellsToCheck;
+                }
+                boolCellsToSend[cellId] = true;
             }
         }
-        taille = cellsTypes.size();
-        aster_mpi_bcast( &taille, 1, MPI_INT, proc, commWorld );
-        if ( proc == rank ) {
-            aster_mpi_bcast( cellsTypes.data(), taille, MPI_LONG, proc, commWorld );
-            completeCellsType.insert( completeCellsType.end(), cellsTypes.begin(),
-                                      cellsTypes.end() );
-        } else {
-            VectorLong buffer( taille, 0. );
-            aster_mpi_bcast( buffer.data(), taille, MPI_LONG, proc, commWorld );
-            completeCellsType.insert( completeCellsType.end(), buffer.begin(), buffer.end() );
-        }
-        taille = connectivity.size();
-        aster_mpi_bcast( &taille, 1, MPI_INT, proc, commWorld );
-        for ( int i = 0; i < taille; i++ ) {
-            VectorLong listOfNodes;
-            int taille2;
-            if ( proc == rank )
-                taille2 = connectivity[i].size();
-            aster_mpi_bcast( &taille2, 1, MPI_INT, proc, commWorld );
-            if ( proc == rank ) {
-                aster_mpi_bcast( connectivity[i].data(), taille2, MPI_LONG, proc, commWorld );
-                for ( const auto &val : connectivity[i] )
-                    listOfNodes.push_back( val + offset );
-            } else {
-                VectorLong buffer( taille2, 0. );
-                aster_mpi_bcast( buffer.data(), taille2, MPI_LONG, proc, commWorld );
-                for ( const auto &val : buffer )
-                    listOfNodes.push_back( val + offset );
+    }
+
+    for( int i = 0; i < numberOfNodesToCheck; i++)
+    {
+        const auto nodeId = nodesToCheck[i] - 1;
+        const auto listCells = connecInv->getObject( nodeId + 1 ).toVector();
+
+        for( const auto cell : listCells )
+        {
+            const auto cellId = cell - 1;
+            if ( !boolCellsToSend[cellId] )
+            {
+                if ( ( *rankOfCells )[cellId] == rank )
+                {
+                    cellsToSend.push_back( cell );
+                    ++numberOfCellsToSend;
+                }
+                else
+                {
+                    cellsToCheck.push_back( cell );
+                    ++numberOfCellsToCheck;
+                }
+                boolCellsToSend[cellId] = true;
             }
-            completeConnectivity.push_back( listOfNodes );
-            completeConnectivitySize += taille2;
         }
-        offset += addOffset;
+    }
+    nodesToCheck.clear();
+
+    /* Get nodes lying on cell */
+    for( int i = 0; i < numberOfCellsToSend; i++)
+    {
+        const auto cell = connecExp[cellsToSend[i]];
+        for (const auto vertex : cell )
+        {
+            const auto nodeId = vertex - 1;
+            if ( !boolNodesToSend[nodeId] && ( *rankOfNodes )[nodeId] == rank )
+            {
+                nodesToSend.push_back( vertex );
+                ++numberOfNodesToSend;
+            }
+            boolNodesToSend[nodeId] = true;
+        }
     }
 
-    nbNodes = completeCoords.size() / 3;
+    for( int i = 0; i < numberOfCellsToCheck; i++)
+    {
+        const auto cell = connecExp[cellsToCheck[i]];
+        for (const auto vertex : cell )
+        {
+            const auto nodeId = vertex - 1;
+            if ( !boolNodesToSend[nodeId] && ( *rankOfNodes )[nodeId] == rank )
+            {
+                nodesToSend.push_back( vertex );
+                ++numberOfNodesToSend;
+            }
+            boolNodesToSend[nodeId] = true;
+        }
+    }
+    cellsToCheck.clear();
 
-    _localNumbering->allocate( Permanent, nbNodes );
-    _globalNumbering->allocate( Permanent, nbNodes );
-    _owner->allocate( Permanent, nbNodes );
-    for ( int i = 0; i < nbNodes; ++i ) {
-        ( *_localNumbering )[i] = completeMatchingNumbering[3 * i];
-        ( *_globalNumbering )[i] = completeMatchingNumbering[3 * i + 1];
-        ( *_owner )[i] = completeMatchingNumbering[3 * i + 2];
+    boolNodesToSend.clear();
+    boolCellsToSend.clear();
+
+    /* Now we have all cells and nodes to send */
+
+
+    /* *********************************************************************** */
+    /* Part of the code dealing with the building of the output ConnectionMesh */
+    /* *********************************************************************** */
+
+    /* Build the coordinates and numbering of the mesh nodes to send */
+    coordinatesToSend.reserve( 3 * nodesToSend.size());
+    numNodesToSend.reserve( 3 * nodesToSend.size());
+    for ( const auto &node : nodesToSend )
+    {
+        const auto nodeId = node - 1;
+        coordinatesToSend.push_back( ( *meshCoordinates )[nodeId * 3] );
+        coordinatesToSend.push_back( ( *meshCoordinates )[nodeId * 3 + 1] );
+        coordinatesToSend.push_back( ( *meshCoordinates )[nodeId * 3 + 2] );
+        numNodesToSend.push_back( node );
+        numNodesToSend.push_back( globalNodeIds[nodeId] );
+        numNodesToSend.push_back( rank );
+    }
+    nodesToSend.clear();
+
+    mpiUtils.all_gatherv( coordinatesToSend, coordinatesGathered );
+    totalNumberOfNodes = coordinatesGathered.size() / 3;
+    coordinatesToSend.clear();
+
+    mpiUtils.all_gatherv( numNodesToSend, numNodesGathered );
+    numNodesToSend.clear();
+
+
+    /* Build the connectivities of the mesh cells and their types to send */
+    /* For each cell, we save the type, the global index, the number of nodes,
+        the list of nodes in global numbering */
+    connectivitiesToSend.reserve( cellsToSend.size() * ( 1 + 1 + 1 + 27 ));
+    for ( const auto& cellId : cellsToSend )
+    {
+        const auto cell = connecExp[cellId];
+        connectivitiesToSend.push_back( cell.getType() );
+        connectivitiesToSend.push_back( globalCellIds[ cellId - 1 ] );
+        connectivitiesToSend.push_back( cell.getNumberOfNodes() );
+        for (const auto vertex : cell )
+        {
+            const auto nodeId = vertex - 1;
+            connectivitiesToSend.push_back( globalNodeIds[nodeId] );
+        }
     }
 
+    /* Gather the types and connectivities of cells */
+    mpiUtils.all_reduce(int(cellsToSend.size()), totalNumberOfCells, MPI_SUM);
+    cellsToSend.clear();
+
+    mpiUtils.all_gatherv( connectivitiesToSend, connectivitiesGathered );
+    connectivitiesToSend.clear();
+
+    /* Gather the groups of nodes */
+    for ( const auto &nameOfTheGroup : groupsOfNodesToFind )
+    {
+        VectorLong &nodesOfTheGroupToSend = groupsOfNodesToSend[nameOfTheGroup];
+        VectorLong &nodesOfTheGroupGathered = groupsOfNodesGathered[nameOfTheGroup];
+
+        mpiUtils.all_gatherv( nodesOfTheGroupToSend, nodesOfTheGroupGathered );
+        nodesOfTheGroupToSend.clear();
+    }
+
+    /* Gather the groups of cells */
+    for ( const auto &nameOfTheGroup : groupsOfCellsToFind )
+    {
+        VectorLong &cellsOfTheGroupToSend = groupsOfCellsToSend[nameOfTheGroup];
+        VectorLong &cellsOfTheGroupGathered = groupsOfCellsGathered[nameOfTheGroup];
+
+        mpiUtils.all_gatherv( cellsOfTheGroupToSend, cellsOfTheGroupGathered );
+        cellsOfTheGroupToSend.clear();
+    }
+
+    /* ************************************************************************ */
+    /* Part of the code dealing with the definition of ConnectionMesh variables */
+    /* ************************************************************************ */
+
+    /* Add numbering */
+    _localNumbering->allocate( Permanent, totalNumberOfNodes );
+    _globalNumbering->allocate( Permanent, totalNumberOfNodes );
+    _owner->allocate( Permanent, totalNumberOfNodes );
+
+    for ( int i = 0; i < totalNumberOfNodes; ++i )
+    {
+        ( *_localNumbering )[i] = numNodesGathered[3 * i];
+        ( *_globalNumbering )[i] = numNodesGathered[3 * i + 1];
+        ( *_owner )[i] = numNodesGathered[3 * i + 2];
+        numNodesGloLoc[ ( *_globalNumbering )[i] ] = i + 1;
+    }
+
+    /* Add coordinates */
+    const auto numberOfConnectionMeshCoordinates=coordinatesGathered.size();
     *_coordinates->getDescriptor() = *mesh->getCoordinates()->getDescriptor();
     *_coordinates->getReference() = *mesh->getCoordinates()->getReference();
     auto values = _coordinates->getValues();
-    values->allocate( Permanent, completeCoords.size() );
+    values->allocate( Permanent, numberOfConnectionMeshCoordinates );
     values->updateValuePointer();
-    for ( int position = 0; position < completeCoords.size(); ++position )
-        ( *values )[position] = completeCoords[position];
-    _dimensionInformations->allocate( Permanent, 6 );
-    ( *_dimensionInformations )[0] = nbNodes;
-    int nbElems = completeConnectivity.size();
-    ( *_dimensionInformations )[2] = nbElems;
-    ( *_dimensionInformations )[5] = mesh->getDimension();
-    _nameOfNodes->allocate( Permanent, nbNodes );
-    for ( int position = 1; position <= nbNodes; ++position )
-        _nameOfNodes->add( position, std::string( "N" + std::to_string( position ) ) );
+    for ( int i = 0; i < numberOfConnectionMeshCoordinates; ++i )
+    {
+        ( *values )[i] = coordinatesGathered[i];
+    }
 
-    _groupsOfNodes->allocate( Permanent, toFind2.size() );
-    for ( const auto &nameOfGrp : toFind2 ) {
-        const auto &toCopy = gatheredMap[nameOfGrp];
-        _groupsOfNodes->allocateObjectByName( nameOfGrp, toCopy.size() );
-        _groupsOfNodes->getObjectFromName( nameOfGrp ).setValues( toCopy );
+    /* Add nodes */
+    _nameOfNodes->allocate( Permanent, totalNumberOfNodes );
+    for ( int i = 1; i <= totalNumberOfNodes; ++i )
+    {
+        std::stringstream sstream;
+        sstream << std::setfill( '0' ) << std::setw( 7 ) << std::hex << i;
+        _nameOfNodes->add( i, std::string( "N" + sstream.str() ) );
     }
-    _nameOfCells->allocate( Permanent, nbElems );
-    _cellsType->allocate( Permanent, nbElems );
-    _connectivity->allocateContiguous( Permanent, nbElems, completeConnectivitySize, Numbered );
-    for ( int position = 1; position <= nbElems; ++position ) {
-        _nameOfCells->add( position, std::string( "M" + std::to_string( position ) ) );
-        _connectivity->allocateObject( completeConnectivity[position - 1].size() );
-        _connectivity->getObject( position ).setValues( completeConnectivity[position - 1] );
-        ( *_cellsType )[position - 1] = completeCellsType[position - 1];
+
+    /* Add group of nodes */
+    if( groupsOfNodesToFind.size() > 0 )
+    {
+        _groupsOfNodes->allocate( Permanent, groupsOfNodesToFind.size() );
+
+        for ( const auto &nameOfTheGroup : groupsOfNodesToFind ) {
+            const auto &toCopy = groupsOfNodesGathered[nameOfTheGroup];
+            const auto nbNodes = toCopy.size();
+            VectorLong nodesOfGrp( nbNodes );
+            for( int i = 0; i < nbNodes; i++)
+            {
+                auto it = numNodesGloLoc.find( toCopy[i] );
+                if( it == numNodesGloLoc.end() )
+                    throw std::runtime_error( "Not finding nodes");
+
+                nodesOfGrp[ i ] = it->second;
+            }
+
+            _groupsOfNodes->allocateObjectByName( nameOfTheGroup, nbNodes );
+            _groupsOfNodes->getObjectFromName( nameOfTheGroup ).setValues( nodesOfGrp );
+        }
     }
+
+    /* Add cells */
+    _nameOfCells->allocate( Permanent, totalNumberOfCells );
+    _cellsType->allocate( Permanent, totalNumberOfCells );
+    _connectivity->allocateContiguous( Permanent, totalNumberOfCells,
+                                         connectivitiesGathered.size(), Numbered );
+
+    int offset = 0;
+    for ( int i = 1; i <= totalNumberOfCells; ++i )
+    {
+        std::stringstream sstream;
+        sstream << std::setfill( '0' ) << std::setw( 7 ) << std::hex << i;
+        _nameOfCells->add( i, std::string( "M" + sstream.str() ) );
+        ( *_cellsType )[i - 1] = connectivitiesGathered[offset++];
+        const auto globCellId = connectivitiesGathered[offset++];
+        numCellsGloLoc[ globCellId ] = i;
+
+        const auto nbNodes = connectivitiesGathered[offset++];
+        VectorLong listNodes( nbNodes );
+        for( int iNode = 0; iNode < nbNodes; iNode++)
+        {
+            const auto globNodeId = connectivitiesGathered[offset++];
+            auto it = numNodesGloLoc.find( globNodeId );
+                if( it == numNodesGloLoc.end() )
+                    throw std::runtime_error( "Not finding nodes");
+
+            listNodes[iNode] = it->second;
+        }
+
+        _connectivity->allocateObject( nbNodes );
+        _connectivity->getObject( i ).setValues( listNodes );
+    }
+    connectivitiesGathered.clear();
+
+    /* Add group of nodes */
+    if( groupsOfCellsToFind.size() > 0 )
+    {
+        _groupsOfCells->allocate( Permanent, groupsOfCellsToFind.size() );
+
+        for ( const auto &nameOfTheGroup : groupsOfCellsToFind ) {
+            const auto &toCopy = groupsOfCellsGathered[nameOfTheGroup];
+            const auto nbCells = toCopy.size();
+            VectorLong cellsOfGrp( nbCells );
+            for( int i = 0; i < nbCells; i++)
+            {
+                auto it = numCellsGloLoc.find( toCopy[i] );
+                if( it == numCellsGloLoc.end() )
+                    throw std::runtime_error( "Not finding cells");
+
+                if( it->second < 0 )
+                    throw std::runtime_error( "Wrong cell index" );
+
+                cellsOfGrp[ i ] = it->second;
+            }
+
+            _groupsOfCells->allocateObjectByName( nameOfTheGroup, nbCells );
+            _groupsOfCells->getObjectFromName( nameOfTheGroup ).setValues( cellsOfGrp );
+        }
+    }
+
+    /* Update information about the mesh */
+    _dimensionInformations->allocate( Permanent, 6 );
+    ( *_dimensionInformations )[0] = totalNumberOfNodes;
+    ( *_dimensionInformations )[2] = totalNumberOfCells;
+    ( *_dimensionInformations )[5] = mesh->getDimension();
     CALLO_CARGEO( getName() );
 };
+
+VectorString ConnectionMeshClass::getGroupsOfCells( ) const {
+    ASTERINTEGER size = _nameOfGrpCells->size();
+    VectorString names;
+    for ( int i = 0; i < size; i++ ) {
+        names.push_back( trim( _nameOfGrpCells->getStringFromIndex( i + 1 ) ) );
+    }
+    return names;
+}
+
+VectorString ConnectionMeshClass::getGroupsOfNodes( ) const {
+    ASTERINTEGER size = _nameOfGrpNodes->size();
+    VectorString names;
+    for ( int i = 0; i < size; i++ ) {
+        names.push_back( trim( _nameOfGrpNodes->getStringFromIndex( i + 1 ) ) );
+    }
+    return names;
+}
+
+
+VectorLong ConnectionMeshClass::getCellsGlobalNumbering( const JeveuxVectorLong& rankOfCells ) const
+{
+    /* Local variables gathering the basic MPI informations needed */
+    /* Aster version of MPI_COMM_WORLD */
+    aster_comm_t *commWorld = aster_get_comm_world();
+    /* Rank of the current MPI proc */
+    const int rank = getMPIRank();
+    /* Total number of processors */
+    const int numberOfProcessors = getMPINumberOfProcs();
+
+    const int nbCells = _pMesh->getNumberOfCells();
+    int nbCellOwned = 0;
+    for( int i = 0; i < nbCells; i++ )
+    {
+        if( ( *rankOfCells )[i] == rank )
+            nbCellOwned++;
+    }
+
+    /* Sizes obtained after having MPI gathered all sizeInfo variables */
+    VectorInt sizePerRank( numberOfProcessors, -1 );
+    /* Cumulated sizes obtained in sizePerRank (starting from zero) */
+    VectorInt sizeOffset( numberOfProcessors, -1 );
+
+    /* Gather the number of cell owned on all procs */
+    aster_mpi_allgather( &nbCellOwned, 1, MPI_INT, sizePerRank.data(), 1,
+                                                            MPI_INT, commWorld );
+
+    sizeOffset[0] = 0;
+    for ( int i = 1; i < numberOfProcessors; ++i )
+    {
+        sizeOffset[i] = sizeOffset[i - 1] + sizePerRank[i - 1];
+    }
+
+    VectorLong globalNum( nbCells, -1 );
+
+    int globalId = sizeOffset[ rank ];
+    for( int i = 0; i < nbCells; i++ )
+    {
+        if( ( *rankOfCells )[ i ] == rank )
+            globalNum[ i ] = globalId++;
+    }
+
+    return globalNum;
+};
+
+bool ConnectionMeshClass::hasGroupOfCells( const std::string &name) const {
+    if ( _groupsOfCells->size() < 0 && !_groupsOfCells->buildFromJeveux() ) {
+        return false;
+    }
+    return _groupsOfCells->existsObject( name );
+}
+
+bool ConnectionMeshClass::hasGroupOfNodes( const std::string &name) const {
+    if ( _groupsOfNodes->size() < 0 && !_groupsOfNodes->buildFromJeveux() ) {
+        return false;
+    }
+    return _groupsOfNodes->existsObject( name );
+}
+
+const VectorLong ConnectionMeshClass::getCells( const std::string name ) const {
+
+    if ( name.empty())
+    {
+        return irange(long(1), long(getNumberOfCells()));
+    }
+    else if ( !hasGroupOfCells( name ) ) {
+        return VectorLong();
+    }
+
+    return _groupsOfCells->getObjectFromName( name ).toVector();
+};
+
+
 
 #endif /* ASTER_HAVE_MPI */
