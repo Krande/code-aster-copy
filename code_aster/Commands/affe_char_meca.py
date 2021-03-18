@@ -45,6 +45,8 @@ class MechanicalLoadDefinition(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
+        if not keywords.get("DDL_IMPO"):
+            return
         # replace DDL_IMPO/LIAISON=ENCASTRE by DDL_IMPO/BLOCAGE
         keywords["DDL_IMPO"] = force_list(keywords.get("DDL_IMPO", []))
         for fact in keywords["DDL_IMPO"]:
@@ -88,15 +90,15 @@ class MechanicalLoadDefinition(ExecuteCommand):
 
     def _hasDirichletLoadings(self, keywords):
         """return True if instance has Dirichlet loadings"""
-        for key in list(keywords.keys()):
-            if key in self.dirichletLoads:
+        for key in self.dirichletLoads:
+            if keywords.get(key):
                 return True
         return False
 
     def _hasNeumannLoadings(self, keywords):
         """return True if instance has Neumann loadings"""
-        for key in list(keywords.keys()):
-            if key in self.neumannLoads:
+        for key in self.neumannLoads:
+            if keywords.get(key):
                 return True
         return False
 
