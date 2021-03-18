@@ -69,7 +69,7 @@ integer, intent(in) :: ific, nocc
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: vali, iocc, iret, ivari, jvPara, jordr, n1, n2, n3, n4
+    integer :: vali, iocc, iret, ivari, jvPara, jordr, n1, n2, n3, n4, ng
     integer :: nbStore, numeStore, nupo, nbcmp
     integer :: n1r, n2r, n3r, irefrr, irefir, irefcr, n1a, n1b, cellNume
     integer :: nusp, irefr, irefi, irefc, nref, nl1, nl2, nl11, nl22
@@ -284,6 +284,9 @@ integer, intent(in) :: ific, nocc
             call rsexch('F', leresu, fieldName, numeStore, cham19,&
                         iret)
 !
+            call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=mesh, arret='F')
+            l_parallel_mesh = isParallelMesh(mesh)
+!
             nl1 = lxlgut(lign1)
             nl2 = lxlgut(lign2)
             lign1(1:nl1+16)=lign1(1:nl1-1)//' NOM_CHAM'
@@ -296,6 +299,9 @@ integer, intent(in) :: ific, nocc
             call getvtx('RESU', 'TYPE_TEST', iocc=iocc, scal=typtes, nbret=n1)
 !
             if (n1 .ne. 0) then
+                if (l_parallel_mesh) then
+                    call utmess('F', 'MODELISA7_87')
+                endif
 !
                 !EXCLUS('NOEUD','GROUP_NO','POINT') avec 'TYPE_TEST'
                 call getvtx('RESU', 'NOEUD', iocc=iocc, scal=exclgr, nbret=n2)
@@ -404,7 +410,14 @@ integer, intent(in) :: ific, nocc
 !
                 call getvem(mesh, 'GROUP_NO', 'RESU', 'GROUP_NO', iocc,&
                             iarg, 1, nogrno, n2)
-                if (n2 .ne. 0) then
+
+                ng = 0
+                if(n2 == 0 .and. l_parallel_mesh) then
+                    call getvtx('RESU', 'GROUP_NO', iocc=iocc, nbval=1, scal=nogrno,&
+                                nbret=ng)
+                end if
+
+                if ((n2 .ne. 0) .or. (ng .ne. 0)) then
                     nl1 = lxlgut(lign1)
                     nl2 = lxlgut(lign2)
                     lign1(1:nl1+16)=lign1(1:nl1-1)//' GROUP_NO'
@@ -415,13 +428,14 @@ integer, intent(in) :: ific, nocc
 !
                 if (n1 .ne. 0) then
 !              RIEN A FAIRE.
-                else if (n2.ne.0) then
-                    call utnono('F', mesh, 'NOEUD', nogrno, nonoeu(1:8),&
-                                iret)
+                else if ((n2 .ne. 0) .or. (ng .ne. 0)) then
+                    nonoeu = ' '
+                    if( n2 > 0 ) then
+                        call utnono('F', mesh, 'NOEUD', nogrno, nonoeu(1:8), iret)
+                    end if
                     nonoeu(10:33) = nogrno
                 endif
                 call dismoi('TYPE_CHAMP', cham19, 'CHAMP', repk=typch)
-                call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=mesh)
                 call dismoi('NOM_GD', cham19, 'CHAMP', repk=nomgd)
                 call utcmp1(nomgd, 'RESU', iocc, noddl, ivari, variName)
 
@@ -473,16 +487,28 @@ integer, intent(in) :: ific, nocc
                                             crit, .false._1, ssigne)
                     endif
                 else if (typch(1:2).eq.'EL') then
+!
+                    cellName = ' '
                     call getvem(mesh, 'MAILLE', 'RESU', 'MAILLE', iocc,&
                                 iarg, 1, cellName, n1a)
-                    if (n1a .eq. 0) then
+
+                    if(n1a > 0) then
+                        if (l_parallel_mesh) then
+                            call utmess('F', 'MODELISA7_86')
+                        endif
+                    else
                         call getvem(mesh, 'GROUP_MA', 'RESU', 'GROUP_MA', iocc,&
                                 iarg, 1, nogrma, n1b)
-                        ASSERT(n1b.eq.1)
-                        call jelira(jexnom(mesh//'.GROUPEMA', nogrma),'LONUTI',ival=n1b)
-                        if (n1b .ne. 1) call utmess('F', 'TEST0_20',sk=nogrma,si=n1b)
-                        call jeveuo(jexnom(mesh//'.GROUPEMA', nogrma), 'L', jnuma)
-                        call jenuno(jexnum(mesh//'.NOMMAI', zi(jnuma)), cellName)
+                        if( n1b == 1) then
+                            call jelira(jexnom(mesh//'.GROUPEMA', nogrma),'LONUTI',ival=n1b)
+                            if (n1b .ne. 1) call utmess('F', 'TEST0_20',sk=nogrma,si=n1b)
+                            call jeveuo(jexnom(mesh//'.GROUPEMA', nogrma), 'L', jnuma)
+                            call jenuno(jexnum(mesh//'.NOMMAI', zi(jnuma)), cellName)
+                        else
+                            ASSERT(l_parallel_mesh)
+                            call getvtx('RESU', 'GROUP_MA', iocc=iocc, nbval=1, scal=nogrma,&
+                                nbret=ng)
+                        end if
                     endif
 
                     if (ivari .eq.- 1) then

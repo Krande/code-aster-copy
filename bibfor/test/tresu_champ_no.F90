@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,12 +20,14 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
                           refi, refr, refc, typres, epsi,&
                           crit, llab, ssigne, ignore, compare)
     implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/indik8.h"
+#include "asterf_types.h"
+#include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -37,6 +39,11 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
 #include "asterfort/nbec.h"
 #include "asterfort/tresu_print_all.h"
 #include "asterfort/utmess.h"
+#include "jeveux.h"
+#ifdef ASTER_HAVE_MPI
+#include "mpif.h"
+#include "asterf_mpi.h"
+#endif
 !
     character(len=19), intent(in) :: cham19
     character(len=33), intent(in) :: nonoeu
@@ -69,16 +76,17 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
 ! ----------------------------------------------------------------------
 !     FONCTIONS EXTERNES:
 !     VARIABLES LOCALES:
-    character(len=8) :: nogd
+    character(len=8) :: nogd, mesh
     character(len=1) :: type
-    integer :: gd, iadg, vali
+    integer :: gd, iadg, vali, ser, inog, rank
     real(kind=8) :: valr
     complex(kind=8) :: valc
     character(len=8) :: nomma
     character(len=19) :: prchno, valk(3)
     character(len=24) :: nolili
-    aster_logical :: skip
+    aster_logical :: skip, l_parallel_mesh, l_ok
     real(kind=8) :: ordgrd
+    mpi_int :: irank
 !
 !-----------------------------------------------------------------------
     integer :: iadesc, iancmp, ianueq, iaprno, iarefe, iavale
@@ -96,6 +104,9 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
     if (present(compare)) then
         ordgrd = compare
     endif
+!
+    call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=mesh, arret='F')
+    l_parallel_mesh = isParallelMesh(mesh)
 !
     call dismoi('NOM_GD', cham19, 'CHAM_NO', repk=nogd)
 !
@@ -131,10 +142,17 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
     endif
 !
 !        -- RECUPERATION DU NUMERO DU NOEUD:
+    l_ok = ASTER_FALSE
     call jenonu(jexnom(nomma//'.NOMNOE', nonoeu(1:8)), ino)
-    if (ino .eq. 0) then
+    inog = ino
+    call asmpi_comm_vect('MPI_MAX', 'I', sci=inog)
+    if (inog .eq. 0) then
         valk(1) =nonoeu(1:8)
         call utmess('F', 'CALCULEL6_92', sk=valk(1))
+    end if
+!
+    if( ino == 0) then
+        go to 100
     endif
 !
 !     --SI LE CHAMP EST A REPRESENTATION CONSTANTE:
@@ -156,12 +174,7 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
             else if (type .eq. 'C') then
                 valc = zc(iavale-1+(ino-1)*ncmp+idecal)
             endif
-            call tresu_print_all(tbtxt(1), tbtxt(2), llab, type, nbref,&
-                                 crit, epsi, ssigne, refr, valr,&
-                                 refi, vali, refc, valc, ignore=skip,&
-                                 compare=ordgrd)
-        else
-            call utmess('F', 'CALCULEL6_93')
+            l_ok = ASTER_TRUE
         endif
     else
 !        --SI LE CHAMP EST DECRIT PAR 1 "PRNO":
@@ -192,13 +205,47 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
             else if (type .eq. 'C') then
                 valc = zc(iavale-1+zi(ianueq-1+ival-1+idecal))
             endif
-            call tresu_print_all(tbtxt(1), tbtxt(2), llab, type, nbref,&
+            l_ok = ASTER_TRUE
+        endif
+    endif
+!
+100 continue
+!
+!
+    if(l_parallel_mesh) then
+        ser = 0
+        rank = -1
+        if( l_ok ) then
+            ser = 1
+            call asmpi_info(rank=irank)
+            rank = irank
+        end if
+        call asmpi_comm_vect('MPI_MAX', 'I', sci=ser)
+        call asmpi_comm_vect('MPI_MAX', 'I', sci=rank)
+        if(ser == 1) then
+            l_ok = ASTER_TRUE
+        else
+            l_ok = ASTER_FALSE
+        end if
+    end if
+!
+    if(l_ok) then
+        if( l_parallel_mesh ) then
+            if( type == 'R') then
+                call asmpi_comm_vect('BCAST', 'R', bcrank=rank, scr=valr)
+            elseif( type == 'I' ) then
+                call asmpi_comm_vect('BCAST', 'I', bcrank=rank, sci=vali)
+            elseif( type == 'C' ) then
+                call asmpi_comm_vect('BCAST', 'C', bcrank=rank, scc=valc)
+            endif
+        end if
+        call tresu_print_all(tbtxt(1), tbtxt(2), llab, type, nbref,&
                                  crit, epsi, ssigne, refr, valr,&
                                  refi, vali, refc, valc, ignore=skip,&
                                  compare=ordgrd)
-        else
-            call utmess('F', 'CALCULEL6_93')
-        endif
-    endif
+    else
+        call utmess('F', 'CALCULEL6_93')
+    end if
+!
     call jedema()
 end subroutine

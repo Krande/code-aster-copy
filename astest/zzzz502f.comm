@@ -49,8 +49,7 @@ RESU=STAT_NON_LINE(MODELE=model,
                       INCREMENT=_F(LIST_INST=LINSTC,),
                      )
 
-if pMesh.hasGroupOfNodes('GN0', local=True):
-    TEST_RESU(
+TEST_RESU(
         RESU=(_F(
             GROUP_NO=('GN0', ),
             NOM_CHAM='DEPL',
@@ -78,8 +77,7 @@ if pMesh.hasGroupOfNodes('GN0', local=True):
         ),
     ),)
 
-if pMesh.hasGroupOfNodes('GN1', local=True):
-    TEST_RESU(
+TEST_RESU(
         RESU=(_F(
             GROUP_NO=('GN1', ),
             NOM_CHAM='DEPL',

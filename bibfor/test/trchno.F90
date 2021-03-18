@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ subroutine trchno(ific, nocc)
 #include "asterfort/tresu_tole.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -52,7 +53,7 @@ subroutine trchno(ific, nocc)
     character(len=6) :: nompro
     parameter (nompro='TRCHNO')
 !
-    integer :: iocc, iret, nbcmp, n1, n2, n3, n4
+    integer :: iocc, iret, nbcmp, n1, n2, n3, n4, ng
     integer :: n1r, n2r, n3r, irefrr, irefir, irefcr
     integer :: irefr, irefi, irefc, nref, nl1, nl2, nl11, nl22
     real(kind=8) :: epsi, epsir
@@ -66,7 +67,7 @@ subroutine trchno(ific, nocc)
     character(len=24) :: travr, travi, travc, travrr, travir, travcr, nogrno
     character(len=200) :: lign1, lign2
     integer :: iarg
-    aster_logical :: lref
+    aster_logical :: lref, l_parallel_mesh
     character(len=8), pointer :: nom_cmp(:) => null()
     aster_logical :: skip
     real(kind=8) :: ordgrd
@@ -189,14 +190,20 @@ subroutine trchno(ific, nocc)
         endif
 ! ----------------------------------------------------------------------
 !
+        call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=nomma)
+        l_parallel_mesh = isParallelMesh(nomma)
+!
         call getvtx('CHAM_NO', 'TYPE_TEST', iocc=iocc, scal=typtes, nbret=n1)
 !
         if (n1 .ne. 0) then
+            if (l_parallel_mesh) then
+                call utmess('F', 'MODELISA7_87')
+            endif
 !
             !EXCLUS('NOEUD','GROUP_NO') avec 'TYPE_TEST'
             call getvtx('RESU', 'NOEUD', iocc=iocc, scal=exclgr, nbret=n2)
             call getvtx('RESU', 'GROUP_NO', iocc=iocc, scal=exclgr, nbret=n3)
-            if ((n2+n3) .gt. 0) then 
+            if ((n2+n3) .gt. 0) then
                 call utmess('A', 'CALCULEL6_96')
             endif
 
@@ -216,17 +223,17 @@ subroutine trchno(ific, nocc)
                 if (nl11 .lt. 80) then
                     write (ific,*) lign1(1:nl11)
                 else if (nl11.lt.160) then
-                    write (ific,1160) lign1(1:80),lign1(81:nl11)
+                    write (ific,116) lign1(1:80),lign1(81:nl11)
                 else
-                    write (ific,1200) lign1(1:80),lign1(81:160),&
+                    write (ific,120) lign1(1:80),lign1(81:160),&
                     lign1(161:nl11)
                 endif
                 if (nl22 .lt. 80) then
                     write (ific,*) lign2(1:nl22)
                 else if (nl22.lt.160) then
-                    write (ific,1160) lign2(1:80),lign2(81:nl22)
+                    write (ific,116) lign2(1:80),lign2(81:nl22)
                 else
-                    write (ific,1200) lign2(1:80),lign2(81:160),&
+                    write (ific,120) lign2(1:80),lign2(81:160),&
                     lign2(161:nl22)
                 endif
 !
@@ -270,7 +277,6 @@ subroutine trchno(ific, nocc)
         else
 !
             call getvtx('CHAM_NO', 'NOM_CMP', iocc=iocc, scal=noddl, nbret=n1)
-            call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=nomma)
             call getvem(nomma, 'NOEUD', 'CHAM_NO', 'NOEUD', iocc,&
                         iarg, 1, nonoeu(1:8), n1)
             if (n1 .ne. 0) then
@@ -278,11 +284,20 @@ subroutine trchno(ific, nocc)
                 nl2 = lxlgut(lign2)
                 lign1(1:nl1+16)=lign1(1:nl1-1)//' NOEUD'
                 lign2(1:nl2+16)=lign2(1:nl2-1)//' '//nonoeu(1:8)
+            else
+                if (l_parallel_mesh) then
+                    call utmess('F', 'MODELISA7_86')
+                endif
             endif
 !
             call getvem(nomma, 'GROUP_NO', 'CHAM_NO', 'GROUP_NO', iocc,&
                         iarg, 1, nogrno, n2)
-            if (n2 .ne. 0) then
+
+            ng = 0
+            if(n2 == 0 .and. l_parallel_mesh) then
+                call getvtx('RESU', 'GROUP_NO', iocc=iocc, nbval=1, scal=nogrno, nbret=ng)
+            end if
+            if ((n2 .ne. 0) .or. (ng .ne. 0)) then
                 nl1 = lxlgut(lign1)
                 nl2 = lxlgut(lign2)
                 lign1(1:nl1+16)=lign1(1:nl1-1)//' GROUP_NO'
@@ -298,8 +313,10 @@ subroutine trchno(ific, nocc)
             if (n1 .eq. 1) then
 !            RIEN A FAIRE.
             else
-                call utnono('F', nomma, 'NOEUD', nogrno, nonoeu(1:8),&
-                            iret)
+                nonoeu = ' '
+                if( n2 > 0 ) then
+                    call utnono('F', nomma, 'NOEUD', nogrno, nonoeu(1:8), iret)
+                end if
                 nonoeu(10:33) = nogrno
             endif
 !
@@ -320,8 +337,8 @@ subroutine trchno(ific, nocc)
         write (ific,*)' '
     end do
 !
-    1160 format(1x,a80,a)
-    1200 format(1x,2(a80),a)
+    116 format(1x,a80,a)
+    120 format(1x,2(a80),a)
 !
     call jedetr(travr)
     call jedetr(travc)

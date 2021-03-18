@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
 #include "asterfort/nbec.h"
 #include "asterfort/numel2.h"
 #include "asterfort/utmess.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -79,7 +80,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
     character(len=8) :: k8b, nocmp, nomaiz, nonoez, nommaz, nomgd
     character(len=16) :: nomcmd
     character(len=19) :: noligr, chm19z, ncmp
-    aster_logical :: diff, trouve, nogran
+    aster_logical :: diff, trouve, nogran, l_parallel_mesh
     integer, pointer :: celd(:) => null()
     character(len=24), pointer :: celk(:) => null()
     integer, pointer :: long_pt_cumu(:) => null()
@@ -105,6 +106,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
     trouve = .false.
     nogran = ASTER_FALSE
     if(present(nogranz)) nogran = nogranz
+    l_parallel_mesh = isParallelMesh(nommaz)
 !
 !
 !
@@ -146,9 +148,11 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo,&
 !     -----------------------------
     call jenonu(jexnom(nommaz//'.NOMMAI', nomaiz), ima)
     if (ima .le. 0) then
-        valk(1) = nomaiz
-        valk(2) = nommaz
-        call utmess(aof, 'UTILITAI5_31', nk=2, valk=valk)
+        if(.not.l_parallel_mesh) then
+            valk(1) = nomaiz
+            valk(2) = nommaz
+            call utmess(aof, 'UTILITAI5_31', nk=2, valk=valk)
+        end if
         iddl=0
         goto 999
     endif

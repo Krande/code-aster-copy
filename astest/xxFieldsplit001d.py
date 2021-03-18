@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -172,8 +172,7 @@ MESTAT = STAT_NON_LINE(
 
 
 # ajouter TEST_RESU comme petsc04c
-if MAIL.hasGroupOfNodes('N_test', True) :
-    TEST_RESU(
+TEST_RESU(
        RESU=_F(
        CRITERE='ABSOLU',
        GROUP_NO='N_test',
@@ -187,7 +186,7 @@ if MAIL.hasGroupOfNodes('N_test', True) :
         VALE_REFE=7.98054127843E-06,
     ))
 
-elif MAIL.hasGroupOfNodes('N_test2', True) :
+MAIL.hasGroupOfNodes('N_test2', True) :
     TEST_RESU(
        RESU=_F(
        CRITERE='ABSOLU',

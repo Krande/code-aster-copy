@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -371,9 +371,19 @@ Contactez le support technique.
 """),
 
     86: _("""
-  -> Les mot-clés NOEUD et MAILLE ne sont pas autorisés pour un maillage parallèle
+  Les mot-clés NOEUD et MAILLE ne sont pas autorisés pour un maillage parallèle
 
      Conseil: Transformez NOEUD et MAILLE en GROUP_NO et GROUP_MA
+"""),
+
+    87: _("""
+  Le mot-clé TYPE_TEST n'est pas encore disponible pour un maillage parallèle
+
+"""),
+
+    88: _("""
+  Les CARTE ne sont pas encore testable pour un maillage parallèle
+
 """),
 
     97: _("""

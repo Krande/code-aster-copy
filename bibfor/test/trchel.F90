@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,6 +47,7 @@ subroutine trchel(ific, nocc)
 #include "asterfort/tresu_read_refe.h"
 #include "asterfort/tresu_tole.h"
 #include "asterfort/utnono.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/wkvect.h"
     integer, intent(in) :: ific
     integer, intent(in) :: nocc
@@ -57,14 +58,14 @@ subroutine trchel(ific, nocc)
     character(len=6) :: nompro
     parameter (nompro='TRCHEL')
 !
-    integer :: iocc, iret, nbcmp, jcmp, n1, n2, n3, n4, ivari, nupo, nusp
+    integer :: iocc, iret, nbcmp, jcmp, n1, n2, n3, n4, ivari, nupo, nusp, ng
     integer :: irefr, irefi, irefc, nref, nl1, nl2, nl11, nl22, n1r, n2r, n3r
     integer :: irefrr, irefir, irefcr, n1a, n1b, imigma, nbmag
     real(kind=8) :: epsi, epsir
     character(len=1) :: typres
     character(len=3) :: ssigne
     character(len=4) :: chpt
-    character(len=8) :: crit, noddl, nomma, typtes, nomail, nomgd, exclgr
+    character(len=8) :: crit, noddl, nomma, typtes, nomail, nomgd, exclgr, mesh
     character(len=11) :: motcle
     character(len=19) :: cham19
     character(len=16) :: tbtxt(2), tbref(2), nom_vari
@@ -72,7 +73,7 @@ subroutine trchel(ific, nocc)
     character(len=24) :: travr, travi, travc, travrr, travir, travcr, nogrno, nogrma
     character(len=200) :: lign1, lign2
     integer :: iarg
-    aster_logical :: lref
+    aster_logical :: lref, l_parallel_mesh
     aster_logical :: skip
     real(kind=8) :: ordgrd
 !     ------------------------------------------------------------------
@@ -96,6 +97,7 @@ subroutine trchel(ific, nocc)
         lign1 = ' '
         lign2 = ' '
         nonoeu = ' '
+        nomail = ' '
         noddl = ' '
         call getvid('CHAM_ELEM', 'CHAM_GD', iocc=iocc, scal=cham19, nbret=n1)
         lign1(1:21)='---- '//motcle(1:9)
@@ -193,13 +195,18 @@ subroutine trchel(ific, nocc)
         endif
 ! ----------------------------------------------------------------------
         call getvtx('CHAM_ELEM', 'TYPE_TEST', iocc=iocc, scal=typtes, nbret=n1)
+        call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=mesh, arret='F')
+        l_parallel_mesh = isParallelMesh(mesh)
 !
         if (n1 .ne. 0) then
+            if (l_parallel_mesh) then
+                call utmess('F', 'MODELISA7_87')
+            endif
 !
             !EXCLUS('MAILLE' ou 'GROUP_MA') avec 'TYPE_TEST'
             call getvtx('RESU', 'MAILLE', iocc=iocc, scal=exclgr, nbret=n2)
             call getvtx('RESU', 'GROUP_MA', iocc=iocc, scal=exclgr, nbret=n3)
-            if ((n2+n3) .gt. 0) then 
+            if ((n2+n3) .gt. 0) then
                 call utmess('A', 'CALCULEL6_96')
             endif
 
@@ -278,11 +285,20 @@ subroutine trchel(ific, nocc)
                         iarg, 1, nomail, n1a)
             if (n1a .eq. 0) then
                 call getvem(nomma, 'GROUP_MA', 'CHAM_ELEM', 'GROUP_MA', iocc, iarg, 1, nogrma, n1b)
-                ASSERT(n1b.eq.1)
-                call jelira(jexnom(nomma//'.GROUPEMA', nogrma), 'LONUTI', nbmag)
-                if ( nbmag .gt. 1) call utmess('F', 'TEST0_20' , sk=nogrma, si=nbmag)
-                call jeveuo(jexnom(nomma//'.GROUPEMA', nogrma), 'L', imigma)
-                call jenuno(jexnum(nomma//'.NOMMAI', zi(imigma)), nomail)
+                if( n1b == 1) then
+                    call jelira(jexnom(nomma//'.GROUPEMA', nogrma), 'LONUTI', nbmag)
+                    if ( nbmag .gt. 1) call utmess('F', 'TEST0_20' , sk=nogrma, si=nbmag)
+                    call jeveuo(jexnom(nomma//'.GROUPEMA', nogrma), 'L', imigma)
+                    call jenuno(jexnum(nomma//'.NOMMAI', zi(imigma)), nomail)
+                else
+                    ASSERT(l_parallel_mesh)
+                    call getvtx('RESU', 'GROUP_MA', iocc=iocc, nbval=1, scal=nogrma,&
+                                nbret=ng)
+                endif
+            else
+                if (l_parallel_mesh) then
+                    call utmess('F', 'MODELISA7_86')
+                endif
             endif
 !
             if (n1a.ne.0) then
@@ -310,6 +326,10 @@ subroutine trchel(ific, nocc)
                 lign2(1:nl2+16)=lign2(1:nl2-1)//' '//nonoeu(1:8)
                 lign1(nl1+17:nl1+17)='.'
                 lign2(nl2+17:nl2+17)='.'
+            else
+                if (l_parallel_mesh) then
+                    call utmess('F', 'MODELISA7_86')
+                endif
             endif
 !
             call getvem(nomma, 'GROUP_NO', 'CHAM_ELEM', 'GROUP_NO', iocc,&

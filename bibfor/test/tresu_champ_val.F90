@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,18 @@ subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
                            llab, ssigne, ignore, compare)
     implicit none
 #include "asterf_types.h"
+#include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/utch19.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/tresu_print_all.h"
+#include "asterfort/utch19.h"
+#ifdef ASTER_HAVE_MPI
+#include "mpif.h"
+#include "asterf_mpi.h"
+#endif
+!
     character(len=*), intent(in) :: cham19
     character(len=*), intent(in) :: nomail
     character(len=*), intent(in) :: nonoeu
@@ -63,12 +71,13 @@ subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
 ! IN  : LLAB   : FLAG D IMPRESSION DE LABELS
 ! OUT : IMPRESSION SUR LISTING
 ! ----------------------------------------------------------------------
-    integer :: vali, ier
+    integer :: vali, ier, rank
     real(kind=8) :: valr
     complex(kind=8) :: valc
     character(len=8) :: nomma
-    aster_logical :: skip
+    aster_logical :: skip, l_parallel_mesh
     real(kind=8) :: ordgrd
+    mpi_int :: irank
 !     ------------------------------------------------------------------
 !
     skip = .false.
@@ -82,11 +91,33 @@ subroutine tresu_champ_val(cham19, nomail, nonoeu, nupo, nusp,&
     endif
 !
     call dismoi('NOM_MAILLA', cham19, 'CHAM_ELEM', repk=nomma)
+    l_parallel_mesh = isParallelMesh(nomma)
 !
     call utch19(cham19, nomma, nomail, nonoeu, nupo,&
                 nusp, ivari, nocmp, typres, valr,&
                 valc, vali, ier)
+
+    if(l_parallel_mesh) then
+        rank = -1
+        if( ier == 0 ) then
+            call asmpi_info(rank=irank)
+            rank = irank
+        end if
+        call asmpi_comm_vect('MPI_MIN', 'I', sci=ier)
+        call asmpi_comm_vect('MPI_MAX', 'I', sci=rank)
+    end if
+
     ASSERT( ier .eq. 0 )
+
+    if(l_parallel_mesh) then
+        if( typres == 'R') then
+            call asmpi_comm_vect('BCAST', 'R', bcrank=rank, scr=valr)
+        elseif( typres == 'I' ) then
+            call asmpi_comm_vect('BCAST', 'I', bcrank=rank, sci=vali)
+        elseif( typres == 'C' ) then
+            call asmpi_comm_vect('BCAST', 'C', bcrank=rank, scc=valc)
+        endif
+    end if
 
     call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, nbref,&
                          crit, epsi, ssigne, refr, valr,&

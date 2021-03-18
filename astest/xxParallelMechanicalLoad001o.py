@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -84,78 +84,7 @@ CALC_CHAMP(reuse=resu,
            RESULTAT=resu,
            CONTRAINTE=('SIEF_NOEU'),)
 
-if(parallel):
-    if(Mesh.hasGroupOfNodes("N1", local=True)):
-        TEST_RESU(
-            RESU=(_F(
-                CRITERE='RELATIF',
-                GROUP_NO='N1',
-                NOM_CHAM='DEPL',
-                NOM_CMP='DY',
-                NUME_ORDRE=1,
-                PRECISION=1.e-6,
-                REFERENCE='AUTRE_ASTER',
-                RESULTAT=resu,
-                VALE_CALC=-0.1656392388099706,
-                VALE_REFE=-0.1656392,
-            ),
-
-            _F(
-                CRITERE='RELATIF',
-                GROUP_NO='N1',
-                NOM_CHAM='DEPL',
-                NOM_CMP='DX',
-                NUME_ORDRE=1,
-                PRECISION=1.e-6,
-                REFERENCE='AUTRE_ASTER',
-                RESULTAT=resu,
-                VALE_CALC=0.9999999999999999,
-                VALE_REFE=1.0,
-            ),
-        ),)
-
-    if(Mesh.hasGroupOfNodes("N3", local=True)):
-        TEST_RESU(
-            RESU=(
-            _F(
-            CRITERE='RELATIF',
-            GROUP_NO='N3',
-            NOM_CHAM='SIEF_NOEU',
-            NOM_CMP='SIXX',
-            NUME_ORDRE=1,
-            PRECISION=1.e-6,
-            REFERENCE='AUTRE_ASTER',
-            RESULTAT=resu,
-            VALE_CALC=110776.65299053668,
-            VALE_REFE=110776.653,
-        ),
-            _F(
-            CRITERE='RELATIF',
-            GROUP_NO='N3',
-            NOM_CHAM='SIEF_NOEU',
-            NOM_CMP='SIXY',
-            NUME_ORDRE=1,
-            PRECISION=1.e-6,
-            REFERENCE='AUTRE_ASTER',
-            RESULTAT=resu,
-            VALE_CALC=-53501.845246685734,
-            VALE_REFE=-53501.845,
-        ),
-            _F(
-            CRITERE='RELATIF',
-            GROUP_NO='N3',
-            NOM_CHAM='SIEF_NOEU',
-            NOM_CMP='SIYY',
-            NUME_ORDRE=1,
-            PRECISION=1.e-6,
-            REFERENCE='AUTRE_ASTER',
-            RESULTAT=resu,
-            VALE_CALC=11071.480114632101,
-            VALE_REFE=11071.480,
-        ),),
-        )
-else:
-    TEST_RESU(
+TEST_RESU(
         RESU=(_F(
             CRITERE='RELATIF',
             GROUP_NO='N1',
