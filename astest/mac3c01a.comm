@@ -52,7 +52,7 @@ TAB0 = CREA_TABLE(RESU=_F(RESULTAT=RESU_C0,
                           GROUP_MA=('CR_B_B', 'TG_B_B')))
 
 TEST_TABLE(
-           VALE_CALC=-0.014409234755092246,
+           VALE_CALC=-0.014409234755092223,
            NOM_PARA='DX',
            TABLE=TAB0,
            FILTRE=_F(NOM_PARA='NOEUD',
@@ -60,7 +60,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.014296019350313072,
+           VALE_CALC=-0.01429601935031305,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
            TABLE=TAB0,
@@ -83,7 +83,7 @@ TAB = CREA_TABLE(RESU=_F(RESULTAT=RESU_C1,
 
 #IMPR_TABLE(TABLE=TAB)
 TEST_TABLE(
-           VALE_CALC=0.004892830416838143,
+           VALE_CALC=0.00489283041683813,
            NOM_PARA='DX',
            TABLE=TAB,
            FILTRE=_F(NOM_PARA='NOEUD',
@@ -91,7 +91,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.0029244407793884344,
+           VALE_CALC=0.002924440343639904,
            NOM_PARA='DY',
            TABLE=TAB,
            FILTRE=_F(NOM_PARA='NOEUD',
@@ -99,14 +99,14 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.005466026347720817,
+           VALE_CALC=0.005466026347720789,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
            TABLE=TAB,
            )
 
 TEST_TABLE(
-           VALE_CALC=0.0029645450720997297,
+           VALE_CALC=0.002964544765432738,
            NOM_PARA='DY',
            TYPE_TEST='MAX',
            TABLE=TAB,
