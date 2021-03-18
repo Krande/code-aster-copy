@@ -64,6 +64,14 @@ waf_main()
 # detect for supported host for automatic configuration
 detect_host()
 {
+    if [ ! -z "${SINGULARITY_NAME}" ]; then
+        local wbe=$(ls /opt/public/*_${WAF_SUFFIX}.sh 2> /dev/null)
+        if [ ! -z "${wbe}" ]; then
+            plt=$(basename "${wbe}" | sed -e "s%_${WAF_SUFFIX}\.sh$%%")
+            printf "${plt}"
+            return
+        fi
+    fi
     if [ -f /software/rd/simumeca/cronos ]; then
         printf cronos
     elif [ -f /projets/simumeca/eole ]; then
@@ -78,12 +86,6 @@ detect_host()
         printf calibre9
     elif [ -f /home/aster/clap0f0q ]; then
         printf clap0f0q
-    else
-        local wbe=$(ls /opt/public/*_${WAF_SUFFIX}.sh 2> /dev/null)
-        if [ ! -z "${wbe}" ]; then
-            plt=$(basename "${wbe}" | sed -e "s%_${WAF_SUFFIX}\.sh$%%")
-            printf "${plt}"
-        fi
     fi
     printf ""
 }
@@ -92,9 +94,9 @@ get_wafbuild_env()
 {
     # usage: get_wafbuild_env platform
     local plt="${1}"
-    local wbe="${prefix}/env.d/${plt}_${WAF_SUFFIX}.sh"
+    local wbe="/opt/public/${plt}_${WAF_SUFFIX}.sh"
     if [ ! -f "${wbe}" ]; then
-        wbe="/opt/public/${plt}_${WAF_SUFFIX}.sh"
+        wbe="${prefix}/env.d/${plt}_${WAF_SUFFIX}.sh"
         [ ! -f "${wbe}" ] && wbe=""
     fi
     printf "${wbe}"
