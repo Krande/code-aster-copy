@@ -26,7 +26,6 @@
 #include <iomanip>
 
 #include "aster_fort_mesh.h"
-#include "aster_mpi.h"
 #include "Meshes/ConnectionMesh.h"
 #include "ParallelUtilities/MPIInfos.h"
 #include "ParallelUtilities/MPIContainerUtilities.h"
@@ -133,7 +132,7 @@ ConnectionMeshClass::ConnectionMeshClass( const std::string &name,
 
     std::map< long, long> numNodesGloLoc, numCellsGloLoc;
 
-    int totalNumberOfNodes = 0, totalNumberOfCells = 0;
+    int totalNumberOfNodes = 0, totalNumberOfCells = 0, numOwner = 0;
 
     const auto& connecExp = mesh->getConnectivityExplorer();
 
@@ -441,6 +440,11 @@ ConnectionMeshClass::ConnectionMeshClass( const std::string &name,
         ( *_globalNumbering )[i] = numNodesGathered[3 * i + 1];
         ( *_owner )[i] = numNodesGathered[3 * i + 2];
         numNodesGloLoc[ ( *_globalNumbering )[i] ] = i + 1;
+
+        /* The nodes have to be ordered by proc to speed up tansfert of DofNum */
+        if( numOwner > ( *_owner )[i] )
+            throw std::runtime_error("Nodes not ordered");
+        numOwner = ( *_owner )[i];
     }
 
     /* Add coordinates */
@@ -576,8 +580,8 @@ VectorString ConnectionMeshClass::getGroupsOfNodes( ) const {
 VectorLong ConnectionMeshClass::getCellsGlobalNumbering( const JeveuxVectorLong& rankOfCells ) const
 {
     /* Local variables gathering the basic MPI informations needed */
-    /* Aster version of MPI_COMM_WORLD */
-    aster_comm_t *commWorld = aster_get_comm_world();
+    MPIContainerUtilities mpiUtils;
+
     /* Rank of the current MPI proc */
     const int rank = getMPIRank();
     /* Total number of processors */
@@ -597,8 +601,7 @@ VectorLong ConnectionMeshClass::getCellsGlobalNumbering( const JeveuxVectorLong&
     VectorInt sizeOffset( numberOfProcessors, -1 );
 
     /* Gather the number of cell owned on all procs */
-    aster_mpi_allgather( &nbCellOwned, 1, MPI_INT, sizePerRank.data(), 1,
-                                                            MPI_INT, commWorld );
+    mpiUtils.all_gather( nbCellOwned, sizePerRank );
 
     sizeOffset[0] = 0;
     for ( int i = 1; i < numberOfProcessors; ++i )

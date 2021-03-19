@@ -23,13 +23,13 @@
 
 #include <algorithm>
 
-#include "aster_mpi.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Meshes/BaseMesh.h"
 #include "Meshes/ConnectionMesh.h"
 #include "Modeling/PhysicalQuantityManager.h"
 #include "Modeling/PhysicsAndModelings.h"
 #include "ParallelUtilities/MPIInfos.h"
+#include "ParallelUtilities/MPIContainerUtilities.h"
 
 FiniteElementDescriptorClass::FiniteElementDescriptorClass( const std::string &name,
                                                             const BaseMeshPtr mesh,
@@ -77,25 +77,36 @@ void FiniteElementDescriptorClass::transferDofDescriptorFrom( FiniteElementDescr
             "does not correspond to other FiniteElementDescriptorClass mesh" );
     getPhysicalNodesComponentDescriptor();
 
+    MPIContainerUtilities mpiUtils;
     const int rank = getMPIRank();
-    aster_comm_t *commWorld = aster_get_comm_world();
     int nbNodes = connectionMesh->getNumberOfNodes();
     int nec = _dofDescriptor->size() / nbNodes;
 
     const JeveuxVectorLong &localNumbering = connectionMesh->getLocalNumbering();
     const JeveuxVectorLong &owner = connectionMesh->getOwner();
     const JeveuxVectorLong &otherDofDescriptor = other->getPhysicalNodesComponentDescriptor();
+
+    int nbNodesLoc = 0;
     for ( int i = 0; i < nbNodes; ++i ) {
-        int proc = ( *owner )[i];
-        int nodeNum = ( *localNumbering )[i] - 1;
-        VectorLong buffer( nec, 0. );
-        if ( proc == rank ) {
-            for ( int j = 0; j < nec; ++j )
-                buffer[j] = ( *otherDofDescriptor )[nodeNum * nec + j];
-        }
-        aster_mpi_bcast( buffer.data(), nec, MPI_LONG, proc, commWorld );
-        for ( int j = 0; j < nec; ++j )
-            ( *_dofDescriptor )[i * nec + j] = buffer[j];
+        if ( ( *owner )[i] == rank )
+            nbNodesLoc++;
     }
+
+    VectorLong buffer( nec * nbNodesLoc, 0 );
+    nbNodesLoc = 0;
+    for ( int i = 0; i < nbNodes; ++i ) {
+        int nodeNum = ( *localNumbering )[i] - 1;
+        if ( ( *owner )[i] == rank ) {
+            for ( int j = 0; j < nec; ++j )
+                buffer[nbNodesLoc * nec + j] = ( *otherDofDescriptor )[nodeNum * nec + j];
+
+            nbNodesLoc++;
+        }
+    }
+
+    VectorLong bufferGathered;
+    mpiUtils.all_gatherv( buffer, _dofDescriptor );
+    buffer.clear();
+
 };
 #endif /* ASTER_HAVE_MPI */

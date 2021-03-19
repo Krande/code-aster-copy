@@ -36,6 +36,7 @@
 #include "aster_mpi.h"
 #include "ParallelUtilities/MPIInfos.h"
 #include "MemoryManager/JeveuxString.h"
+#include "MemoryManager/JeveuxVector.h"
 
 class MPIContainerUtilities {
   private:
@@ -100,13 +101,18 @@ class MPIContainerUtilities {
     void all_gatherv(const std::vector<T>& in_values,
                               std::vector<T>& out_values);
 
+    /// Gather values from each process (variable count per process)
+    template<typename T>
+    void all_gatherv(const std::vector<T>& in_values,
+                              JeveuxVector<T>& out_values);
+
     /// Gather values, one primitive from each process (MPI_Allgather)
     template<typename T>
     void all_gather(const T in_value, std::vector<T>& out_values);
 
     /// Gather values, one primitive from each process (MPI_Allgather).
     /// Specialization for std::string
-    void all_gather(const std::string& in_values,
+    void all_gatherv(const std::string& in_values,
                            VectorString& out_values);
     /// Gather values, one primitive from each process (MPI_Allgather).
     /// Specialization for VectorString
@@ -130,8 +136,10 @@ template<> inline MPI_Datatype MPIContainerUtilities::mpi_type<unsigned long int
                                                                     { return MPI_UNSIGNED_LONG; }
 template<> inline MPI_Datatype MPIContainerUtilities::mpi_type<long long>()
                                                                     { return MPI_LONG_LONG; }
+template<> inline MPI_Datatype MPIContainerUtilities::mpi_type<bool>()
+                                                                    { return MPI_LOGICAL; }
 //---------------------------------------------------------------------------
-inline void MPIContainerUtilities::all_gather(const std::string& in_values,
+inline void MPIContainerUtilities::all_gatherv(const std::string& in_values,
                         VectorString& out_values) {
     const std::size_t comm_size = _nbProcs;
 
@@ -167,9 +175,9 @@ inline void MPIContainerUtilities::all_gather(const VectorString& in_values,
 
     // Gather
     std::set<std::string> stringSet;
-    for (auto str:in_values) {
+    for (auto str: in_values) {
         VectorString tmp(comm_size);
-        all_gather(str, tmp);
+        all_gatherv(str, tmp);
         std::copy(tmp.begin(), tmp.end(), std::inserter(stringSet, stringSet.end()));
     }
 
@@ -248,6 +256,41 @@ template<typename T>
                 mpi_type<T>(),
                 out_values.data(), pcounts.data(), offsets.data(),
                 mpi_type<T>(), _commWorld->id);
+}
+//---------------------------------------------------------------------------
+template<typename T>
+    void MPIContainerUtilities::all_gatherv(const std::vector<T>& in_values,
+                    JeveuxVector<T>& out_values) {
+
+    const std::size_t comm_size = _nbProcs;
+
+    // Get data size on each process
+    VectorInt pcounts;
+    const int local_size = in_values.size();
+    MPIContainerUtilities::all_gather(local_size, pcounts);
+    assert(pcounts.size() == comm_size);
+
+    // Build offsets
+    VectorInt offsets(comm_size + 1, 0);
+    for (std::size_t i = 1; i <= comm_size; ++i)
+    offsets[i] = offsets[i - 1] + pcounts[i - 1];
+
+    // Gather data
+    const std::size_t n = std::accumulate(pcounts.begin(), pcounts.end(), 0);
+
+    if( out_values->size() < n)
+    {
+        if( out_values->isAllocated() )
+            out_values->deallocate();
+        out_values->allocate(n);
+    }
+    out_values->updateValuePointer();
+
+    MPI_Allgatherv(const_cast<T*>(in_values.data()), in_values.size(),
+                mpi_type<T>(),
+                out_values->getDataPtr(), pcounts.data(), offsets.data(),
+                mpi_type<T>(), _commWorld->id);
+
 }
 //---------------------------------------------------------------------------
 template<typename T>

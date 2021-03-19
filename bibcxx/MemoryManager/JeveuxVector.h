@@ -218,6 +218,11 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
 #endif
     };
 
+        /**
+     * @brief Return a pointer to the vector
+     */
+    ValueType *getDataPtr() { return _valuePtr; };
+
     /**
      * @brief Return a pointer to the vector
      */

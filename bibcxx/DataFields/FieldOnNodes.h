@@ -30,7 +30,6 @@
 
 #include "astercxx.h"
 #include "aster_fort_superv.h"
-#include "aster_mpi.h"
 
 #include "DataFields/DataField.h"
 #include "DataFields/MeshCoordinatesField.h"

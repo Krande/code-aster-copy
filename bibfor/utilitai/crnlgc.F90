@@ -363,6 +363,7 @@ subroutine crnlgc(numddl)
                         call jeveuo(nojoir, 'L', jjoinr)
                         call jelira(nojoir, 'LONMAX', nbnoer, k8bid)
                         call wkvect('&&CRNUGL.NUM_DDL_GLOB_R', 'V V I', nbnoer, jnujoi2)
+                        n4r = nbnoer
                     endif
 
                     if (rang .lt. numpro) then

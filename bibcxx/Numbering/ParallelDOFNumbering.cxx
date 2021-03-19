@@ -25,7 +25,6 @@
 
 #include "Numbering/ParallelDOFNumbering.h"
 #include <stdexcept>
-#include "aster_mpi.h"
 #include "ParallelUtilities/MPIContainerUtilities.h"
 
 #ifdef ASTER_HAVE_MPI
@@ -36,14 +35,16 @@ bool ParallelDOFNumberingClass::useLagrangeMultipliers() const {
     JeveuxChar32 repk( " " );
     const std::string arret( "C" );
     const std::string questi( "EXIS_LAGR" );
-    aster_comm_t *commWorld = aster_get_comm_world();
     bool local_answer=false, global_answer;
 
     CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
     auto retour = trim( repk.toString() );
     if ( retour == "OUI" )
         local_answer = true;
-    aster_mpi_allreduce(&local_answer, &global_answer, 1, MPI_LOGICAL, MPI_LAND, commWorld);
+
+    MPIContainerUtilities mpiUtils;
+    mpiUtils.all_reduce(local_answer, global_answer, MPI_LAND);
+
     return global_answer;
 };
 
@@ -141,14 +142,16 @@ bool ParallelDOFNumberingClass::useSingleLagrangeMultipliers() const {
     JeveuxChar32 repk( " " );
     const std::string arret( "C" );
     const std::string questi( "SIMP_LAGR" );
-    aster_comm_t *commWorld = aster_get_comm_world();
     bool local_answer=false, global_answer;
 
     CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
     auto retour = trim( repk.toString() );
     if ( retour == "OUI" )
         local_answer = true;
-    aster_mpi_allreduce(&local_answer, &global_answer, 1, MPI_LOGICAL, MPI_LAND, commWorld);
+
+    MPIContainerUtilities mpiUtils;
+    mpiUtils.all_reduce(local_answer, global_answer, MPI_LAND);
+
     return global_answer;
 };
 
@@ -158,7 +161,6 @@ VectorString ParallelDOFNumberingClass::getComponents() const {
     VectorString localComp, globalComp;
     std::string all("ALL");
     MPIContainerUtilities MPIutil;
-    aster_comm_t *commWorld = aster_get_comm_world();
     stringArray = MakeTabFStr( 8, maxCmp );
     CALL_NUMEDDL_GET_COMPONENTS( getName().c_str(), all.c_str(), &ibid, &ncmp, \
                                                                 stringArray, &maxCmp );
