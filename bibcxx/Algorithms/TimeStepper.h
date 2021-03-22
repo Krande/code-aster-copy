@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe TimeStepper
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -27,9 +27,9 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 #include "astercxx.h"
 
-#include "MemoryManager/JeveuxVector.h"
-#include "DataStructures/DataStructure.h"
 #include "Algorithms/GenericStepper.h"
+#include "DataStructures/DataStructure.h"
+#include "MemoryManager/JeveuxVector.h"
 
 typedef VectorReal::const_iterator VectorRealCIter;
 
@@ -73,7 +73,7 @@ class TimeStepperClass : public DataStructure, public GenericStepper {
 
         inline const_iterator() : position( NULL ), rank( 1 ){};
 
-        inline const_iterator( double *memoryPosition, int curRank )
+        inline const_iterator( int curRank, double *memoryPosition )
             : position( memoryPosition ), rank( curRank ){};
 
         inline const_iterator( const const_iterator &iter )
@@ -112,30 +112,28 @@ class TimeStepperClass : public DataStructure, public GenericStepper {
      * @brief
      * @return
      */
-    const_iterator begin() const { return const_iterator( &( *_values )[0], 1 ); };
+    const_iterator begin() const { return const_iterator( 1, &( *_values )[0] ); };
 
     /**
      * @brief
      * @return
      */
     const_iterator end() const {
-        //             return const_iterator( &( *_values )[ _values->size() - 1 ] );
-        return const_iterator( &( *_values )[_values->size()], _values->size() );
+        return const_iterator( _values->size() + 1,
+                               (double *)( _values->getDataPtr() + _values->size() ) );
     };
 
     /**
      * @brief Fonction permettant de mettre a jour le stepper
      * @return true si tout s'est bien passé
      */
-    bool operator=( const VectorReal &vecReal ) {
-        return setValues( vecReal );
-    };
+    bool operator=( const VectorReal &vecReal ) { return setValues( vecReal ); };
 
     /**
      * @brief Fonction permettant de fixer la liste de pas de temps
      * @param values Liste des valeurs
      */
-    bool setValues( const VectorReal &values ) ;
+    bool setValues( const VectorReal &values );
 
     /**
      * @brief Fonction permettant de connaître le nombre de pas de temps

@@ -46,6 +46,10 @@ typedef std::vector< double > VectorReal;
 typedef std::vector< RealComplex > VectorComplex;
 typedef std::vector< std::string > VectorString;
 
+#define AS_ABORT(message) \
+            DEBUG_LOC; std::cout << message << std::endl; \
+            INTERRUPT(17);
+
 #endif
 
 // Exceptions identifiers - keep consistency with asterf.h

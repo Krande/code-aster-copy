@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MeshExplorer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -119,7 +119,7 @@ public:
      */
     const_iterator end() const
     {
-        return const_iterator( &_listOfNodes[ _nbNodes ] );
+        return const_iterator( _listOfNodes + _nbNodes );
     };
 };
 

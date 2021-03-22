@@ -123,13 +123,8 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
     inline const ValueType &operator[]( const int &i ) const
     {
 #ifdef ASTER_DEBUG_CXX
-        if( _valuePtr == nullptr )
-            throw std::runtime_error("Vector not allocated " + _name);
-        if( i < 0 || i >= this->size() )
-        {
-            throw std::runtime_error("Out of bounds: " + std::to_string(i) +
-                "( size: " + std::to_string(this->size()) + ")");
-        }
+        AS_ASSERT( _valuePtr != nullptr );
+        AS_ASSERT( 0 <= i && i < this->size() );
 #endif
         return _valuePtr[i];
     };
@@ -142,13 +137,8 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
     inline ValueType &operator[]( const int &i )
     {
 #ifdef ASTER_DEBUG_CXX
-        if( _valuePtr == nullptr )
-            throw std::runtime_error("Vector not allocated " + _name);
-        if( i < 0 || i >= this->size() )
-        {
-            throw std::runtime_error("Out of bounds: " + std::to_string(i) +
-                "( size: " + std::to_string(this->size()) + ")");
-        }
+        AS_ASSERT( _valuePtr != nullptr );
+        AS_ASSERT( 0 <= i && i < this->size() );
 #endif
         return _valuePtr[i];
     };
@@ -173,9 +163,9 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
         } else
             return false;
         updateValuePointer();
-#ifdef ASTER_DEBUG_CXX
-        // std::cout << "DEBUG: JeveuxVector.alloc: " << _name << std::endl;
-#endif
+// #ifdef ASTER_DEBUG_CXX
+//         std::cout << "DEBUG: JeveuxVector.alloc: " << _name << std::endl;
+// #endif
         return true;
     };
 
@@ -213,9 +203,9 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
 // #endif
         if ( _name != "" && get_sh_jeveux_status() == 1 )
             CALLO_JEDETR( _name );
-#ifdef ASTER_DEBUG_CXX
-        // std::cout << "DEBUG: JeveuxVector.dealloc: " << _name << std::endl;
-#endif
+// #ifdef ASTER_DEBUG_CXX
+//         std::cout << "DEBUG: JeveuxVector.dealloc: " << _name << std::endl;
+// #endif
     };
 
         /**
