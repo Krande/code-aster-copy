@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,20 +17,9 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine dis_contact_frot(option, nomte,&
-                                lMatr, lVect, lSigm, lVari,&
-                                ndim, nbt, nno, &
-                                nc, ulm, dul, pgl, iret)
-        aster_logical, intent(in) :: lMatr, lVect, lSigm, lVari
-        character(len=*) :: option
-        character(len=*) :: nomte
-        integer :: ndim
-        integer :: nbt
-        integer :: nno
-        integer :: nc
-        real(kind=8) :: ulm(12)
-        real(kind=8) :: dul(12)
-        real(kind=8) :: pgl(3, 3)
-        integer :: iret
+    subroutine dis_contact_frot(for_discret, iret)
+        use te0047_type
+        type(te0047_dscr), intent(in) :: for_discret
+        integer, intent(out)          :: iret
     end subroutine dis_contact_frot
 end interface

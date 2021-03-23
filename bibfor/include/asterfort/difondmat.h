@@ -15,11 +15,21 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+
+!
 !
 interface
-    subroutine dibili(for_discret, iret)
-        use te0047_type
-        type(te0047_dscr), intent(in) :: for_discret
-        integer, intent(out)          :: iret
-    end subroutine dibili
+     subroutine difondmat(tirela,raidTang,vloc,vpara,&
+               nbVloc,nbPara,klr,errmax,dulMat,iret)
+        integer :: nbVloc
+        integer :: nbPara
+        integer :: iret
+        real(kind=8) :: tirela(6)
+        real(kind=8) :: raidTang(6)
+        real(kind=8) :: vloc(nbVloc)
+        real(kind=8) :: vpara(nbPara)
+        real(kind=8) :: klr(78)
+        real(kind=8) :: dulMat(4)
+        real(kind=8) :: errmax
+    end subroutine difondmat
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,20 +17,9 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine diecci(nomte,&
-                      lMatr, lVect, lSigm, lVari,&
-                      rela_comp, type_comp,&
-                      ndim, nbt, nno,&
-                      nc, ulm, dul, pgl)
-        aster_logical, intent(in) :: lMatr, lVect, lSigm, lVari
-        character(len=*), intent(in) :: rela_comp, type_comp
-        character(len=*) :: nomte
-        integer :: ndim
-        integer :: nbt
-        integer :: nno
-        integer :: nc
-        real(kind=8) :: ulm(12)
-        real(kind=8) :: dul(12)
-        real(kind=8) :: pgl(3, 3)
+    subroutine diecci(for_discret, iret)
+        use te0047_type
+        type(te0047_dscr), intent(in) :: for_discret
+        integer, intent(out)          :: iret
     end subroutine diecci
 end interface

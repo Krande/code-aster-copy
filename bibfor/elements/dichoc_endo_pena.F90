@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,37 +15,23 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine dichoc_endo_pena(option, nomte, ndim, nbt, nno,&
-                       nc, ulm, dul, pgl, iret)
-!
-! -------------------------------------------------------------------------------
 ! person_in_charge:fabien.grange@edf.fr
 !
+subroutine dichoc_endo_pena(for_discret, iret)
+!
+! -------------------------------------------------------------------------------
+!
 !     RELATION DE COMPORTEMENT "CHOC_ENDO_PENA" : COMPORTEMENT DISCRET CHOC NON-LINEAIRE
-!     CALCUL DES OPTIONS
-!           FULL_MECA  RAPH_MECA   RIGI_MECA_TANG  RIGI_MECA_ELAS  FULL_MECA_ELAS
-!   MATR       OUI                     OUI             OUI               OUI
-!   FORC       OUI         OUI
 !
-! -------------------------------------------------------------------------------
-!  IN
-!     option   : option de calcul
-!     nomte    : nom terme élémentaire
-!     ndim     : dimension du problème
-!     nbt      : nombre de terme dans la matrice de raideur
-!     nno      : nombre de noeuds de l'élément
-!     nc       : nombre de composante par noeud
-!     ulm      : déplacement moins dans le repère local de l'élément
-!     dul      : incrément de déplacement dans le repère local de l'élément
-!     pgl      : matrice de passage de global a local
+! --------------------------------------------------------------------------------------------------
 !
-! -------------------------------------------------------------------------------
+! IN    for_discret : voir l'appel
+! OUT   iret        : code retour
 !
-    implicit none
-    character(len=*)    :: option, nomte
-    integer             :: ndim, nbt, nno, nc, iret
-    real(kind=8)        :: ulm(12), dul(12), pgl(3, 3)
+! --------------------------------------------------------------------------------------------------
+!
+use te0047_type
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -66,18 +52,23 @@ subroutine dichoc_endo_pena(option, nomte, ndim, nbt, nno,&
 #include "asterfort/utpvlg.h"
 #include "blas/dcopy.h"
 !
+type(te0047_dscr), intent(in) :: for_discret
+integer, intent(out)          :: iret
+!
 ! -------------------------------------------------------------------------------
 !
-    aster_logical :: rigi, resi
     integer :: jdc, irep, imat, ivarim, ii, ivitp, idepen, iviten, neq, igeom, ivarip
     integer :: iretlc, ifono, imatsym
     integer :: icontp, iadzi, iazk24, icompo
 !
-    real(kind=8) :: dvl(nno*nc), dpe(nno*nc), dve(nno*nc)
-    real(kind=8) :: klv(nbt), force(3), fl(nno*nc), raide(6)
+    real(kind=8) :: dvl(for_discret%nno*for_discret%nc), dpe(for_discret%nno*for_discret%nc)
+    real(kind=8) :: dve(for_discret%nno*for_discret%nc)
+    real(kind=8) :: klv(for_discret%nbt), force(3), fl(for_discret%nno*for_discret%nc), raide(6)
     real(kind=8) :: r8bid
     character(len=8) :: k8bid
     character(len=24) :: messak(6)
+
+    aster_logical     :: resi
 ! -------------------------------------------------------------------------------
     integer, parameter  :: nbres=3
     real(kind=8)        :: valres(nbres)
@@ -100,13 +91,13 @@ subroutine dichoc_endo_pena(option, nomte, ndim, nbt, nno,&
 ! -------------------------------------------------------------------------------
 !
     iret = 0
-    rigi = (option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL')
-    resi = (option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL')
+    resi = for_discret%lVect .or. for_discret%lSigm .or. for_discret%lVari
 !   Seulement en 3D, sur un segment, avec seulement de la translation
-    if ((nomte(1:12).ne.'MECA_DIS_T_L').or.(ndim.ne.3).or.(nno.ne.2).or.(nc.ne.3)) then
+    if ((for_discret%nomte(1:12).ne.'MECA_DIS_T_L').or. &
+        (for_discret%ndim.ne.3).or.(for_discret%nno.ne.2).or.(for_discret%nc.ne.3)) then
         call jevech('PCOMPOR', 'L', icompo)
-        messak(1) = nomte
-        messak(2) = option
+        messak(1) = for_discret%nomte
+        messak(2) = for_discret%option
         messak(3) = zk16(icompo+3)
         messak(4) = zk16(icompo)
         call tecael(iadzi, iazk24)
@@ -114,7 +105,7 @@ subroutine dichoc_endo_pena(option, nomte, ndim, nbt, nno,&
         call utmess('F', 'DISCRETS_22', nk=5, valk=messak)
     endif
 !   Nombre de degré de liberté
-    neq = nno*nc
+    neq = for_discret%nno*for_discret%nc
 !   Paramètres en entrée
     call jevech('PCADISK', 'L', jdc)
     call jevech('PGEOMER', 'L', igeom)
@@ -123,24 +114,24 @@ subroutine dichoc_endo_pena(option, nomte, ndim, nbt, nno,&
     call infdis('REPK', irep, r8bid, k8bid)
 !   irep = 1 = matrice en repère global ==> passer en local
     if (irep .eq. 1) then
-        if (ndim .eq. 3) then
-            call utpsgl(nno, nc, pgl, zr(jdc), klv)
-        else if (ndim.eq.2) then
-            call ut2mgl(nno, nc, pgl, zr(jdc), klv)
+        if (for_discret%ndim .eq. 3) then
+            call utpsgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(jdc), klv)
+        else if (for_discret%ndim.eq.2) then
+            call ut2mgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(jdc), klv)
         endif
     else
-        call dcopy(nbt, zr(jdc), 1, klv, 1)
+        call dcopy(for_discret%nbt, zr(jdc), 1, klv, 1)
     endif
 !   Récupération des termes diagonaux : raide = klv(i,i)
-    call diraidklv(nomte,raide,klv)
+    call diraidklv(for_discret%nomte,raide,klv)
 !
 !   Champ de vitesse
     call tecach('ONO', 'PVITPLU', 'L', iretlc, iad=ivitp)
     if (iretlc .eq. 0) then
-        if (ndim .eq. 3) then
-            call utpvgl(nno, nc, pgl, zr(ivitp), dvl)
-        else if (ndim.eq.2) then
-            call ut2vgl(nno, nc, pgl, zr(ivitp), dvl)
+        if (for_discret%ndim .eq. 3) then
+            call utpvgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(ivitp), dvl)
+        else if (for_discret%ndim.eq.2) then
+            call ut2vgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(ivitp), dvl)
         endif
     else
         dvl(:) = 0.0d0
@@ -148,10 +139,10 @@ subroutine dichoc_endo_pena(option, nomte, ndim, nbt, nno,&
 !   Champ de déplacement d'entrainement
     call tecach('ONO', 'PDEPENT', 'L', iretlc, iad=idepen)
     if (iretlc .eq. 0) then
-        if (ndim .eq. 3) then
-            call utpvgl(nno, nc, pgl, zr(idepen), dpe)
-        else if (ndim.eq.2) then
-            call ut2vgl(nno, nc, pgl, zr(idepen), dpe)
+        if (for_discret%ndim .eq. 3) then
+            call utpvgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(idepen), dpe)
+        else if (for_discret%ndim.eq.2) then
+            call ut2vgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(idepen), dpe)
         endif
     else
         dpe(:) = 0.0d0
@@ -159,10 +150,10 @@ subroutine dichoc_endo_pena(option, nomte, ndim, nbt, nno,&
 !   Champ de vitesse d'entrainement
     call tecach('ONO', 'PVITENT', 'L', iretlc, iad=iviten)
     if (iretlc .eq. 0) then
-        if (ndim .eq. 3) then
-            call utpvgl(nno, nc, pgl, zr(iviten), dve)
-        else if (ndim.eq.2) then
-            call ut2vgl(nno, nc, pgl, zr(iviten), dve)
+        if (for_discret%ndim .eq. 3) then
+            call utpvgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(iviten), dve)
+        else if (for_discret%ndim.eq.2) then
+            call ut2vgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(iviten), dve)
         endif
     else
         dve(:) = 0.d0
@@ -179,10 +170,10 @@ subroutine dichoc_endo_pena(option, nomte, ndim, nbt, nno,&
 !
 !   Coordonnees du discret dans le repère local
     xl(:) = 0.0
-    if (ndim .eq. 3) then
-        call utpvgl(nno, 3, pgl, zr(igeom), xl)
-    else if (ndim.eq.2) then
-        call ut2vgl(nno, 2, pgl, zr(igeom), xl)
+    if (for_discret%ndim .eq. 3) then
+        call utpvgl(for_discret%nno, 3, for_discret%pgl, zr(igeom), xl)
+    else if (for_discret%ndim.eq.2) then
+        call ut2vgl(for_discret%nno, 2, for_discret%pgl, zr(igeom), xl)
     endif
 !
 !   Caractéristiques du matériau
@@ -193,9 +184,9 @@ subroutine dichoc_endo_pena(option, nomte, ndim, nbt, nno,&
                 [valpar], 2, nomres, valres, codres, 0, nan='NON')
 !
 !   calcul du jeu
-    if ( nno.eq.2 ) then
+    if ( for_discret%nno.eq.2 ) then
 !       longueur du discret
-        xd(1:3) = xl(1+ndim:2*ndim) - xl(1:ndim)
+        xd(1:3) = xl(1+for_discret%ndim:2*for_discret%ndim) - xl(1:for_discret%ndim)
         ld = xd(1) - valres(1) - valres(2)
     else
         ld = valres(3) - valres(1)
@@ -208,20 +199,21 @@ subroutine dichoc_endo_pena(option, nomte, ndim, nbt, nno,&
 !
 !   calcul de l'enfoncement
     if (resi) then
-        if (nno .eq. 1) then
-            deplace = ulm(1) + dul(1)
+        if (for_discret%nno .eq. 1) then
+            deplace = for_discret%ulm(1) + for_discret%dul(1)
             vitesse = dvl(1)
         else
-            deplace = (ulm(1+nc) + dul(1+nc) - ulm(1) - dul(1))
-            vitesse = (dvl(1+nc) - dvl(1))
+            deplace = (for_discret%ulm(1+for_discret%nc) + for_discret%dul(1+for_discret%nc) - &
+                       for_discret%ulm(1) - for_discret%dul(1))
+            vitesse = (dvl(1+for_discret%nc) - dvl(1))
         endif
     else
-        if (nno .eq. 1) then
-            deplace = ulm(1)
+        if (for_discret%nno .eq. 1) then
+            deplace = for_discret%ulm(1)
             vitesse = dvl(1)
         else
-            deplace = (ulm(1+nc) - ulm(1))
-            vitesse = (dvl(1+nc) - dvl(1))
+            deplace = (for_discret%ulm(1+for_discret%nc) - for_discret%ulm(1))
+            vitesse = (dvl(1+for_discret%nc) - dvl(1))
         endif
     endif
     enfoncement = deplace + ld
@@ -253,73 +245,86 @@ subroutine dichoc_endo_pena(option, nomte, ndim, nbt, nno,&
     endif
 
 !   indic_charge [0, 1, 2] : [pas de contact, contact élastique, sur le seuil]
-    if (resi) then
-        force(:) = 0.0
-        if (enfoncement-enfoncement_resi_moins>0) then
+    force(:) = 0.0
+    if (enfoncement-enfoncement_resi_moins>0) then
+        force(1)     = 0.0
+        indic_charge = 0.0
+        enfoncement_resi = enfoncement_resi_moins
+    else
+        ! correction de l'enfoncement residuel (vitesse = 0)
+        ftry = rignor*(enfoncement-enfoncement_resi_moins)
+        if (abs(ftry).gt.seuil2) then
+            enfoncement_resi = enfoncement+seuil2/rignor
+        else
+            enfoncement_resi = enfoncement_resi_moins
+        endif
+        ! limitation de f au seuil (en prenant en compte l'amortissement)
+        ftry = rignor*(enfoncement-enfoncement_resi)+amornor_in*vitesse
+        if (abs(ftry).ge.seuil) then
+            force(1) = -seuil+amornor_out*vitesse
+            indic_charge = 2.0
+        else if (ftry+amornor_out*vitesse .gt. 0.d0) then
             force(1)     = 0.0
             indic_charge = 0.0
-            enfoncement_resi = enfoncement_resi_moins
         else
-            ! correction de l'enfoncement residuel (vitesse = 0)
-            ftry = rignor*(enfoncement-enfoncement_resi_moins)
-            if (abs(ftry).gt.seuil2) then
-                enfoncement_resi = enfoncement+seuil2/rignor
-            else
-                enfoncement_resi = enfoncement_resi_moins
-            endif
-            ! limitation de f au seuil (en prenant en compte l'amortissement)
-            ftry = rignor*(enfoncement-enfoncement_resi)+amornor_in*vitesse
-            if (abs(ftry).ge.seuil) then
-                force(1) = -seuil+amornor_out*vitesse
-                indic_charge = 2.0
-            else if (ftry+amornor_out*vitesse .gt. 0.d0) then
-                force(1)     = 0.0
-                indic_charge = 0.0
-            else
-                force(1)= ftry+amornor_out*vitesse
-                indic_charge = 1.0
-            endif
+            force(1)= ftry+amornor_out*vitesse
+            indic_charge = 1.0
         endif
-        ! stockage contrainte et efforts
-        call jevech('PVECTUR', 'E', ifono)
+    endif
+    !
+    ! stockage des contraintes
+    if ( for_discret%lSigm ) then
         call jevech('PCONTPR', 'E', icontp)
-        fl(:)=0.d0
-        if (nno .eq. 1) then
+        if (for_discret%nno .eq. 1) then
             zr(icontp-1+1) = force(1)
             zr(icontp-1+2) = force(2)
+            if (for_discret%ndim .eq. 3) then
+                zr(icontp-1+3) = force(3)
+            endif
+        else if (for_discret%nno.eq.2) then
+            zr(icontp-1+1)                = force(1)
+            zr(icontp-1+1+for_discret%nc) = force(1)
+            zr(icontp-1+2)                = force(2)
+            zr(icontp-1+2+for_discret%nc) = force(2)
+            if (for_discret%ndim .eq. 3) then
+                zr(icontp-1+3)                =  force(3)
+                zr(icontp-1+3+for_discret%nc) =  force(3)
+            endif
+        endif
+    endif
+    ! stockage des efforts
+    if ( for_discret%lVect ) then
+        fl(:)=0.d0
+        if (for_discret%nno .eq. 1) then
             fl(1) = force(1)
             fl(2) = force(2)
-            if (ndim .eq. 3) then
-                zr(icontp-1+3) = force(3)
-                fl(3)          = force(3)
+            if (for_discret%ndim .eq. 3) then
+                fl(3) = force(3)
             endif
-        else if (nno.eq.2) then
-            zr(icontp-1+1)    = force(1)
-            zr(icontp-1+1+nc) = force(1)
-            zr(icontp-1+2)    = force(2)
-            zr(icontp-1+2+nc) = force(2)
-            fl(1)    = -force(1)
-            fl(1+nc) =  force(1)
-            fl(2)    = -force(2)
-            fl(2+nc) =  force(2)
-            if (ndim .eq. 3) then
-                zr(icontp-1+3)    =  force(3)
-                zr(icontp-1+3+nc) =  force(3)
-                fl(3)             = -force(3)
-                fl(3+nc)          =  force(3)
+        else if (for_discret%nno.eq.2) then
+            fl(1)                = -force(1)
+            fl(1+for_discret%nc) =  force(1)
+            fl(2)                = -force(2)
+            fl(2+for_discret%nc) =  force(2)
+            if (for_discret%ndim .eq. 3) then
+                fl(3)                = -force(3)
+                fl(3+for_discret%nc) =  force(3)
             endif
         endif
-        if (nc .ne. 2) then
-            call utpvlg(nno, nc, pgl, fl, zr(ifono))
+        call jevech('PVECTUR', 'E', ifono)
+        if (for_discret%nc .ne. 2) then
+            call utpvlg(for_discret%nno, for_discret%nc, for_discret%pgl, fl, zr(ifono))
         else
-            call ut2vlg(nno, nc, pgl, fl, zr(ifono))
+            call ut2vlg(for_discret%nno, for_discret%nc, for_discret%pgl, fl, zr(ifono))
         endif
-        ! stockage variables internes
+    endif
+    ! stockage variables internes
+    if ( for_discret%lVari ) then
         varpl(1) = enfoncement_max
         varpl(2) = enfoncement_resi
         varpl(3) = indic_charge
         call jevech('PVARIPR', 'E', ivarip)
-        if ( nno .eq. 1 ) then
+        if ( for_discret%nno .eq. 1 ) then
             do ii = 1, nbvari
                 zr(ivarip+ii-1) = varpl(ii)
             enddo
@@ -330,12 +335,13 @@ subroutine dichoc_endo_pena(option, nomte, ndim, nbt, nno,&
             enddo
         endif
     endif
-    if (rigi) then
+    ! stockage matrice tangente
+    if ( for_discret%lMatr ) then
         call jevech('PMATUUR', 'E', imatsym)
-        if (ndim .eq. 3) then
-            call utpslg(nno, nc, pgl, klv, zr(imatsym))
-        else if (ndim.eq.2) then
-            call ut2mlg(nno, nc, pgl, klv, zr(imatsym))
+        if (for_discret%ndim .eq. 3) then
+            call utpslg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imatsym))
+        else if (for_discret%ndim.eq.2) then
+            call ut2mlg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imatsym))
         endif
     endif
   !

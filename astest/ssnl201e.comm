@@ -1,0 +1,257 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+CoefRef = 1.0E-05
+
+MA = LIRE_MAILLAGE(FORMAT="ASTER",INFO=2)
+
+
+
+LIS_INST =DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(_F(JUSQU_A=100.0,PAS=1,),),)
+LINST = DEFI_LIST_INST(
+   METHODE='MANUEL',
+   DEFI_LIST=_F( LIST_INST =  LIS_INST, ),
+   ECHEC=_F(
+      EVENEMENT       = 'ERREUR',
+      ACTION          = 'DECOUPE',
+      SUBD_METHODE    = 'MANUEL',
+      SUBD_PAS        = 5,
+      SUBD_PAS_MINI   = 1.0E-10,
+      SUBD_NIVEAU     = 9,
+   ),
+)
+
+
+MO = AFFE_MODELE(MAILLAGE=MA,
+                     AFFE=(_F(GROUP_MA = ('MA1'),PHENOMENE='MECANIQUE',MODELISATION='DIS_TR'),),
+                 )
+
+CA_DISTL=AFFE_CARA_ELEM(
+   MODELE=MO,INFO=2,
+   DISCRET=(
+      _F(CARA='K_TR_D_N', GROUP_MA='MA1', REPERE='LOCAL', VALE=(7.5E4,5.0E4,8.0E4,1.0E4,1.5E4,5.0E3,),),
+   ),
+   ORIENTATION=_F(GROUP_MA='MA1',
+                  CARA='ANGL_NAUT',
+                  VALE=(0.0,0.0,0.0,),),
+
+    )
+
+
+#-------------------------------------------------------------------------------------
+# GC101 --> Chargement vertical  déplacement puis horizontal sans cohésion
+# --------------------------
+
+MAGC101 = DEFI_MATERIAU(
+   FONDA_SUPERFI=_F(
+             LONG_X           =1.0,
+             LONG_Y           =1.0,
+             PHI       =15.0,
+             COHESION       =0.0,
+             CP_SERVICE        =80000.0,
+         RAID_GLIS        =20000.0,
+             GAMMA_REFE        =50.0,
+   ),
+)
+
+
+MATGC101 = AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE = _F(TOUT='OUI',MATER=MAGC101,),)
+
+CHGC1001 = AFFE_CHAR_MECA(MODELE=MO,
+             DDL_IMPO=_F(GROUP_NO='PT1', DY= 0.0,DZ = -0.00625, DRY = 0.000, DRZ = 0.,),)
+
+CHGC1002 = AFFE_CHAR_MECA(MODELE=MO,
+             DDL_IMPO=_F(GROUP_NO='PT1', DX= 0.05, DRX = 0.00,),)
+MGC1001 = DEFI_FONCTION(NOM_PARA='INST',
+   VALE =(
+      0.0 , 0.000,
+      25.0 , 1.000,
+     50.0 , 1.000,
+     75.0 , 1.000,
+     100.0 , 0.000,
+   ),
+)
+
+MGC1002 = DEFI_FONCTION(NOM_PARA='INST',
+   VALE =(
+      0.0 , 0.000,
+      25.0 , 0.000,
+     50.0 , 1.000,
+     75.0 , 0.000,
+     100.0 , 0.000,
+   ),
+)
+
+
+REGC101=STAT_NON_LINE(MODELE  = MO,
+                     CHAM_MATER = MATGC101,
+                     CARA_ELEM  = CA_DISTL,
+                     EXCIT      = (_F(CHARGE = CHGC1001,FONC_MULT=MGC1001),
+                   _F(CHARGE = CHGC1002,FONC_MULT=MGC1002),),
+                     COMPORTEMENT=_F(RELATION='FONDATION', ),
+                     INCREMENT = _F(LIST_INST = LINST,),
+
+   )
+
+
+
+TEST_RESU(RESU=(_F(INST=50,
+                   RESULTAT=REGC101,
+                   NOM_CHAM='SIEF_ELGA',
+                   MAILLE='M1',
+           POINT=1,
+                   NOM_CMP='VZ',
+                   VALE_CALC=-1.36417632211431759970E+03,
+                   VALE_REFE=-1367.82155,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-2,),
+                _F(INST=75,
+                   RESULTAT=REGC101,
+                   NOM_CHAM='SIEF_ELGA',
+                   MAILLE='M1',
+           POINT=1,
+                   NOM_CMP='N',
+                   VALE_CALC=-2.62935365811454516916E+02,
+                   VALE_REFE=-275.2508436,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=5.E-2,),
+                _F(INST=75,
+                   RESULTAT=REGC101,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='M1',
+           POINT=1,
+                   NOM_CMP='V3',
+                   VALE_CALC=2.06650304671144625923E-02,
+                   VALE_REFE=0.02071216,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-2,),
+                _F(INST=50,
+                   RESULTAT=REGC101,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='M1',
+           POINT=1,
+                   NOM_CMP='V1',
+                   VALE_CALC=4.03143742603580199080E-02 ,
+                   VALE_REFE=0.040484426,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-2,),
+                _F(INST=100,
+                   RESULTAT=REGC101,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='M1',
+           POINT=1,
+                   NOM_CMP='V11',
+                   VALE_CALC=3.13342100528963158013E+02,
+                   VALE_REFE=302.043879,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=5.E-2,),
+                ),
+          )
+
+#-------------------------------------------------------------------------------------
+# GC102 --> Chargement vertical  déplacement puis horizontal avec cohésion
+# --------------------------
+
+MAGC102 = DEFI_MATERIAU(
+   FONDA_SUPERFI=_F(
+             LONG_X           =1.0,
+             LONG_Y           =1.0,
+             PHI       =15.0,
+             COHESION       =200.0,
+             CP_SERVICE        =80000.0,
+         RAID_GLIS        =20000.0,
+             GAMMA_REFE        =50.0,
+   ),
+)
+
+
+MATGC102 = AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE = _F(TOUT='OUI',MATER=MAGC102,),)
+
+REGC102=STAT_NON_LINE(MODELE  = MO,
+                     CHAM_MATER = MATGC102,
+                     CARA_ELEM  = CA_DISTL,
+                     EXCIT      = (_F(CHARGE = CHGC1001,FONC_MULT=MGC1001),
+                   _F(CHARGE = CHGC1002,FONC_MULT=MGC1002),),
+                     COMPORTEMENT=_F(RELATION='FONDATION', ),
+                     INCREMENT = _F(LIST_INST = LINST,),
+
+   )
+
+
+
+TEST_RESU(RESU=(_F(INST=75,
+                   RESULTAT=REGC102,
+                   NOM_CHAM='SIEF_ELGA',
+                   MAILLE='M1',
+           POINT=1,
+                   NOM_CMP='VZ',
+                   VALE_CALC=-2.00234324245456673452E+03,
+                   VALE_REFE=-2005.924922,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=5.E-3,),
+                _F(INST=100,
+                   RESULTAT=REGC102,
+                   NOM_CHAM='SIEF_ELGA',
+                   MAILLE='M1',
+           POINT=1,
+                   NOM_CMP='N',
+                   VALE_CALC=-3.09903302836395994291E+02,
+                   VALE_REFE=-321.1040395,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=5.E-2,),
+                _F(INST=100,
+                   RESULTAT=REGC102,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='M1',
+           POINT=1,
+                   NOM_CMP='V3',
+                   VALE_CALC=1.92207257941116524402E-02,
+                   VALE_REFE=0.019265528,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=5.E-3,),
+                _F(INST=75,
+                   RESULTAT=REGC102,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='M1',
+           POINT=1,
+                   NOM_CMP='V19',
+                   VALE_CALC=7.00852663906026407403E-02,
+                   VALE_REFE=0.070252354,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-2,),
+                _F(INST=50,
+                   RESULTAT=REGC102,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='M1',
+           POINT=1,
+                   NOM_CMP='V11',
+                   VALE_CALC=3.53222741792323802201E+02,
+                   VALE_REFE=340.4431314,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=5.E-2,),
+                ),
+          )
+
+
+
+FIN()

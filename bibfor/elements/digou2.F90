@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,16 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
-subroutine digou2(option, nomte,&
-                  lMatr, lVect, lSigm, lVari,&
-                  rela_comp,&
-                  ndim, nbt, nno,&
-                  nc, dul, pgl)
+subroutine digou2(for_discret, iret)
 !
+! --------------------------------------------------------------------------------------------------
+!
+! IN    for_discret : voir l'appel
+! OUT   iret        : code retour
+!
+! --------------------------------------------------------------------------------------------------
+!
+use te0047_type
 implicit none
 !
 #include "jeveux.h"
@@ -35,23 +39,8 @@ implicit none
 #include "asterfort/utpslg.h"
 #include "blas/dcopy.h"
 !
-character(len=*) :: option, nomte
-aster_logical, intent(in) :: lMatr, lVect, lSigm, lVari
-character(len=*), intent(in) :: rela_comp
-integer :: ndim, nbt, nno, nc
-real(kind=8) :: dul(12), pgl(3, 3)
-!
-! --------------------------------------------------------------------------------------------------
-!
-!  IN
-!     option   : option de calcul
-!     nomte    : nom terme élémentaire
-!     ndim     : dimension du problème
-!     nbt      : nombre de terme dans la matrice de raideur
-!     nno      : nombre de noeuds de l'élément
-!     nc       : nombre de composante par noeud
-!     dul      : incrément de déplacement
-!     pgl      : matrice de passage de global a local
+type(te0047_dscr), intent(in) :: for_discret
+integer, intent(out)          :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,6 +48,9 @@ real(kind=8) :: dul(12), pgl(3, 3)
     real(kind=8) :: r8bid, klv(78), klv2(78)
     character(len=8) :: k8bid
 !
+! --------------------------------------------------------------------------------------------------
+!
+    iret = 0
 !   paramètres en entrée
     call jevech('PCADISK', 'L', jdc)
     call jevech('PMATERC', 'L', imat)
@@ -67,41 +59,41 @@ real(kind=8) :: dul(12), pgl(3, 3)
 !   matrice de rigidité en repère local
     call infdis('REPK', irep, r8bid, k8bid)
     if (irep .eq. 1) then
-        if (ndim .eq. 3) then
-            call utpsgl(nno, nc, pgl, zr(jdc), klv)
-        elseif (ndim.eq.2) then
-            call ut2mgl(nno, nc, pgl, zr(jdc), klv)
+        if (for_discret%ndim .eq. 3) then
+            call utpsgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(jdc), klv)
+        else if (for_discret%ndim.eq.2) then
+            call ut2mgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(jdc), klv)
         endif
     else
-        call dcopy(nbt, zr(jdc), 1, klv, 1)
+        call dcopy(for_discret%nbt, zr(jdc), 1, klv, 1)
     endif
 !
     ifono  = 1
     icontp = 1
     ivarip = 1
-    if (lVect) then
+    if (for_discret%lVect) then
         call jevech('PVECTUR', 'E', ifono)
     endif
-    if (lSigm) then
+    if (for_discret%lSigm) then
         call jevech('PCONTPR', 'E', icontp)
     endif
-    if (lVari) then
+    if (for_discret%lVari) then
         call jevech('PVARIPR', 'E', ivarip)
     endif
 !   relation de comportement : élastique partout
 !   sauf suivant Y local : élasto-plastique VMIS_ISOT_TRAC
-    neq = nno*nc
-    call digouj(option, rela_comp, nno, nbt, neq,&
-                nc, zi(imat), dul, zr(icontm), zr(ivarim),&
-                pgl, klv, klv2, zr(ivarip), zr(ifono),&
-                zr(icontp), nomte)
+    neq = for_discret%nno*for_discret%nc
+    call digouj(for_discret%option, for_discret%rela_comp, for_discret%nno, for_discret%nbt, &
+                neq, for_discret%nc, zi(imat), for_discret%dul, zr(icontm), zr(ivarim),&
+                for_discret%pgl, klv, klv2, zr(ivarip), zr(ifono),&
+                zr(icontp), for_discret%nomte)
 !
-    if (lMatr) then
+    if (for_discret%lMatr) then
         call jevech('PMATUUR', 'E', imat)
-        if (ndim .eq. 3) then
-            call utpslg(nno, nc, pgl, klv, zr(imat))
-        elseif (ndim.eq.2) then
-            call ut2mlg(nno, nc, pgl, klv, zr(imat))
+        if (for_discret%ndim .eq. 3) then
+            call utpslg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imat))
+        else if (for_discret%ndim.eq.2) then
+            call ut2mlg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imat))
         endif
     endif
 !

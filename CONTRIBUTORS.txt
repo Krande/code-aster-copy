@@ -263,3 +263,4 @@
     Stefan H. Reiterer <stefan.harald.reiterer .at. gmail.com>
     Thierry Thomas <thierry .at. FreeBSD.org>
     Alain Sellier <sellier .at. insa-toulouse.fr>
+    Cyril Borely <cyril.borely .at. setec.com>

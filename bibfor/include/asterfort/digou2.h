@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,15 +17,9 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine digou2(option, nomte,&
-                      lMatr, lVect, lSigm, lVari,&
-                      rela_comp,&
-                      ndim, nbt, nno,&
-                      nc, dul, pgl)
-        character(len=*) :: option, nomte
-        aster_logical, intent(in) :: lMatr, lVect, lSigm, lVari
-        character(len=*), intent(in) :: rela_comp
-        integer :: ndim, nbt, nno, nc
-        real(kind=8) :: dul(12), pgl(3, 3)
+    subroutine digou2(for_discret, iret)
+        use te0047_type
+        type(te0047_dscr), intent(in) :: for_discret
+        integer, intent(out)          :: iret
     end subroutine digou2
 end interface

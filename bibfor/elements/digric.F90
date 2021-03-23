@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine digric(option, nomte,&
-                  lMatr, lVect, lSigm, lVari,&
-                  rela_comp, type_comp,&
-                  nno,&
-                  nc, ulm, dul, pgl)
-    implicit none
+! person_in_charge: jean-luc.flejou at edf.fr
+!
+subroutine digric(for_discret, iret)
+!
+! --------------------------------------------------------------------------------------------------
+!
+! IN    for_discret : voir l'appel
+! OUT   iret        : code retour
+!
+! --------------------------------------------------------------------------------------------------
+!
+use te0047_type
+implicit none
+!
 #include "jeveux.h"
 #include "asterfort/dicrgr.h"
 #include "asterfort/jevech.h"
@@ -29,23 +36,8 @@ subroutine digric(option, nomte,&
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 !
-character(len=*) :: option, nomte
-aster_logical, intent(in) :: lMatr, lVect, lSigm, lVari
-character(len=*), intent(in) :: rela_comp, type_comp
-integer :: nno, nc
-real(kind=8) :: ulm(12), dul(12), pgl(3, 3)
-!
-! person_in_charge: jean-luc.flejou at edf.fr
-! --------------------------------------------------------------------------------------------------
-!
-!  IN
-!     option   : option de calcul
-!     nomte    : nom terme élémentaire
-!     nno      : nombre de noeuds de l'élément
-!     nc       : nombre de composante par noeud
-!     ulm      : déplacement moins
-!     dul      : incrément de déplacement
-!     pgl      : matrice de passage de global a local
+type(te0047_dscr), intent(in) :: for_discret
+integer, intent(out)          :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,13 +45,16 @@ real(kind=8) :: ulm(12), dul(12), pgl(3, 3)
     real(kind=8) :: klv(78)
     character(len=24) :: messak(5)
 !
+! --------------------------------------------------------------------------------------------------
+!
+    iret = 0
     call jevech('PCONTMR', 'L', icontm)
 !
-    if (nomte .ne. 'MECA_DIS_TR_L') then
-        messak(1) = nomte
+    if (for_discret%nomte .ne. 'MECA_DIS_TR_L') then
+        messak(1) = for_discret%nomte
         messak(2) = 'NON_LINEAR'
-        messak(3) = type_comp
-        messak(4) = rela_comp
+        messak(3) = for_discret%type_comp
+        messak(4) = for_discret%rela_comp
         call tecael(iadzi, iazk24)
         messak(5) = zk24(iazk24-1+3)
         call utmess('F', 'DISCRETS_11', nk=5, valk=messak)
@@ -72,23 +67,23 @@ real(kind=8) :: ulm(12), dul(12), pgl(3, 3)
     ifono = 1
     icontp = 1
     ivarip = 1
-    if (lVect) then
+    if (for_discret%lVect) then
         call jevech('PVECTUR', 'E', ifono)
     endif
-    if (lSigm) then
+    if (for_discret%lSigm) then
         call jevech('PCONTPR', 'E', icontp)
     endif
-    if (lVari) then
+    if (for_discret%lVari) then
         call jevech('PVARIPR', 'E', ivarip)
     endif
-    neq = nno*nc
+    neq = for_discret%nno*for_discret%nc
 !
-    call dicrgr('RIGI', option, neq, nc, zi(imat),&
-                ulm, dul, zr(icontm), zr(ivarim), pgl,&
+    call dicrgr('RIGI', for_discret%option, neq, for_discret%nc, zi(imat), &
+                for_discret%ulm, for_discret%dul, zr(icontm), zr(ivarim), for_discret%pgl, &
                 klv, zr(ivarip), zr(ifono), zr(icontp))
 !
-    if (lMatr) then
+    if (for_discret%lMatr) then
         call jevech('PMATUUR', 'E', imat)
-        call utpslg(nno, nc, pgl, klv, zr(imat))
+        call utpslg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imat))
     endif
 end subroutine

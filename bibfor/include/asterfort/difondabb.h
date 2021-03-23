@@ -17,9 +17,9 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine dibili(for_discret, iret)
+     subroutine difondabb(for_discret, iret)
         use te0047_type
         type(te0047_dscr), intent(in) :: for_discret
         integer, intent(out)          :: iret
-    end subroutine dibili
+    end subroutine difondabb
 end interface

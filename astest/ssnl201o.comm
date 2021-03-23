@@ -1,0 +1,267 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+CoefRef = 1.0E-05
+
+MA = LIRE_MAILLAGE(FORMAT="ASTER",INFO=2)
+
+LIS_INST =DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(_F(JUSQU_A=100.0,PAS=1,),),)
+
+LINST = DEFI_LIST_INST(
+   METHODE='MANUEL',
+   DEFI_LIST=_F( LIST_INST =  LIS_INST, ),
+   ECHEC=_F(
+      EVENEMENT       = 'ERREUR',
+      ACTION          = 'DECOUPE',
+      SUBD_METHODE    = 'MANUEL',
+      SUBD_PAS        = 5,
+      SUBD_PAS_MINI   = 1.0E-10,
+      SUBD_NIVEAU     = 9,
+   ),
+)
+
+
+
+MO = AFFE_MODELE(MAILLAGE=MA,
+    AFFE=(_F(GROUP_MA = ('MA1'),PHENOMENE='MECANIQUE',MODELISATION='DIS_TR'),),
+)
+
+CA_DISTL=AFFE_CARA_ELEM(
+   MODELE=MO,INFO=2,
+   DISCRET=(
+      _F(CARA='K_TR_D_N', GROUP_MA='MA1', REPERE='LOCAL',
+         VALE=(7.5E4,5.0E4,8.0E4,1.0E4,1.5E4,5.0E3,),),
+   ),
+   ORIENTATION=_F(GROUP_MA='MA1',
+                  CARA='ANGL_NAUT',
+                  VALE=(0.0,0.0,0.0,),),
+)
+
+
+
+#-------------------------------------------------------------------------------------
+# FZCPI1 --> Chargement vertical  à 1200 kN Vult =1600kN
+# --------------------------
+
+MAFZCPI1 = DEFI_MATERIAU(
+        FONDA_SUPERFI=_F(
+        LONG_X           =1.0,
+        LONG_Y           =1.0,
+        PHI             =45.0,
+        CP_SERVICE      =800.0,
+        CP_ULTIME        =1600.0,
+        DEPL_REFE        =0.02,
+    ),
+)
+
+CHFZCPI1 = AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE = _F(TOUT='OUI',MATER=MAFZCPI1,),)
+
+CGFZCPI1 = AFFE_CHAR_MECA(MODELE=MO,
+    FORCE_NODALE=_F(GROUP_NO='PT1',FX=0.0, FY= 0.0,FZ = -1200.0,MX = 0.00, MY = 0.000, MZ = 0.,),)
+
+# Definition de la fonction de chargement
+MPFZCPI1 = DEFI_FONCTION(NOM_PARA='INST',
+   VALE =(
+      0.0 , 0.000,
+      50.0 , 1.000,
+     100.0 , 0.000,
+   ),
+)
+
+
+
+REFZCPI1=STAT_NON_LINE(MODELE  = MO,
+                     CHAM_MATER = CHFZCPI1,
+                     CARA_ELEM  = CA_DISTL,
+                     EXCIT      = (_F(CHARGE = CGFZCPI1,FONC_MULT=MPFZCPI1),),
+                     COMPORTEMENT=_F(RELATION='FONDATION', ),
+                     INCREMENT = _F(LIST_INST = LINST,),
+
+   )
+
+
+
+TEST_RESU(RESU=(_F(INST=50,
+                   RESULTAT=REFZCPI1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P1',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-3.49999999579696866037E-02,
+                   VALE_REFE=-0.035,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-5,),
+                _F(INST=75,
+                   RESULTAT=REFZCPI1,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='M1',
+           POINT=1,
+                   NOM_CMP='V15',
+                   VALE_CALC=3.99999999580539054023E+02 ,
+                   VALE_REFE=0400.0,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-4,),
+                _F(INST=100,
+                   RESULTAT=REFZCPI1,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='M1',
+           POINT=1,
+                   NOM_CMP='V8',
+                   VALE_CALC=-1.99999999580539079835E-02,
+                   VALE_REFE=-0.02,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-5,),
+                ),
+          )
+
+#-------------------------------------------------------------------------------------
+# FZCPI2 --> Chargement vertical  à 1200 kN Vult =2000Kn
+# --------------------------
+
+MAFZCPI2 = DEFI_MATERIAU(
+   FONDA_SUPERFI=_F(
+             LONG_X           =1.0,
+             LONG_Y           =1.0,
+             PHI       =45.0,
+             CP_SERVICE        =800.0,
+         CP_ULTIME        =2000.0,
+             DEPL_REFE        =0.03,
+
+   ),
+)
+
+CHFZCPI2 = AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE = _F(TOUT='OUI',MATER=MAFZCPI2,),)
+
+
+
+
+REFZCPI2=STAT_NON_LINE(MODELE  = MO,
+                     CHAM_MATER = CHFZCPI2,
+                     CARA_ELEM  = CA_DISTL,
+                     EXCIT      = (_F(CHARGE = CGFZCPI1,FONC_MULT=MPFZCPI1),),
+                     COMPORTEMENT=_F(RELATION='FONDATION', ),
+                     INCREMENT = _F(LIST_INST = LINST,),
+
+   )
+
+
+
+TEST_RESU(RESU=(_F(INST=75,
+                   RESULTAT=REFZCPI2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P1',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-2.24999921853789378035E-02,
+                   VALE_REFE=-0.0225,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-5,),
+                _F(INST=50,
+                   RESULTAT=REFZCPI2,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='M1',
+           POINT=1,
+                   NOM_CMP='V15',
+                   VALE_CALC=3.99999861073379804566E+02 ,
+                   VALE_REFE=0400.0,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-4,),
+                _F(INST=100,
+                   RESULTAT=REFZCPI2,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='M1',
+           POINT=1,
+                   NOM_CMP='V8',
+                   VALE_CALC=-1.49999921853789710408E-02 ,
+                   VALE_REFE=-0.015,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-5,),
+                ),
+          )
+
+#-------------------------------------------------------------------------------------
+# FZCPI3 --> Chargement vertical  à 1200 kN Vult =1300Kn
+# --------------------------
+
+
+MAFZCPI3 = DEFI_MATERIAU(
+   FONDA_SUPERFI=_F(
+             LONG_X           =1.0,
+             LONG_Y           =1.0,
+             PHI       =45.0,
+             CP_SERVICE        =800.0,
+         CP_ULTIME        =1300.0,
+             DEPL_REFE        =0.0075,
+
+   ),
+)
+CHFZCPI3 = AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE = _F(TOUT='OUI',MATER=MAFZCPI3,),)
+
+
+
+
+REFZCPI3=STAT_NON_LINE(MODELE  = MO,
+                     CHAM_MATER = CHFZCPI3,
+                     CARA_ELEM  = CA_DISTL,
+                     EXCIT      = (_F(CHARGE = CGFZCPI1,FONC_MULT=MPFZCPI1),),
+                     COMPORTEMENT=_F(RELATION='FONDATION', ),
+                     INCREMENT = _F(LIST_INST = LINST,),
+
+   )
+
+
+
+TEST_RESU(RESU=(_F(INST=75,
+                   RESULTAT=REFZCPI3,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P1',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-3.74999566646039839135E-02,
+                   VALE_REFE=-0.0375,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-5,),
+                _F(INST=100,
+                   RESULTAT=REFZCPI3,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='M1',
+           POINT = 1,
+                   NOM_CMP='V15',
+                   VALE_CALC=3.99999884438810511256E+02 ,
+                   VALE_REFE=0400.0,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-4,),
+                _F(INST=50,
+                   RESULTAT=REFZCPI3,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='M1',
+           POINT = 1,
+                   NOM_CMP='V21',
+                   VALE_CALC=2.99999566646040292939E-02 ,
+                   VALE_REFE=0.03,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-5,),
+                ),
+          )
+
+
+
+FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -246,6 +246,30 @@ DYNA_VIBRA : Pour l'élément discret de type DIS_VISC ou DIS_ECRO_TRAC.
 Sa longueur est nulle ou trop petite.
 Il n'est pas possible de calculer le vecteur directeur de l'élément.
 
+"""),
+
+    44: _("""
+Pour l'élément discret de type %(k4)s.
+
+Sa longueur selon x ou y est nulle ou trop petite.
+Il n'est pas possible de calculer les variations géométriques de l'élément.
+
+Pour information :
+   Modèle   : <%(k1)s>, Option   : <%(k2)s>
+   Comportement : <%(k3)s>, Matériau : <%(k4)s>
+   Maille   : <%(k5)s>
+"""),
+
+    45: _("""
+Pour l'élément discret de type %(k4)s.
+
+Les capacités portante élastique et ultime sont nulles.
+La fondation ne peut pas reprendre d'effort.
+
+Pour information :
+   Modèle   : <%(k1)s>, Option   : <%(k2)s>
+   Comportement : <%(k3)s>, Matériau : <%(k4)s>
+   Maille   : <%(k5)s>
 """),
 
     61 : _("""

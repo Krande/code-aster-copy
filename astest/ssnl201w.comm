@@ -1,0 +1,392 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+CoefRef = 1.0E-05
+
+MA = LIRE_MAILLAGE(FORMAT="ASTER",INFO=2)
+
+
+LISINST =DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(_F(JUSQU_A=100.0,PAS=1,),),)
+LINST = DEFI_LIST_INST(
+   METHODE='MANUEL',
+   DEFI_LIST=_F( LIST_INST =  LISINST, ),
+   ECHEC=_F(
+      EVENEMENT       = 'ERREUR',
+      ACTION          = 'DECOUPE',
+      SUBD_METHODE    = 'MANUEL',
+      SUBD_PAS        = 5,
+      SUBD_PAS_MINI   = 1.0E-10,
+      SUBD_NIVEAU     = 9,
+   ),
+)
+
+LISINST2 =DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(_F(JUSQU_A=100.0,PAS=0.5,),),)
+LINST2 = DEFI_LIST_INST(
+   METHODE='MANUEL',
+   DEFI_LIST=_F( LIST_INST =  LISINST2, ),
+   ECHEC=_F(
+      EVENEMENT       = 'ERREUR',
+      ACTION          = 'DECOUPE',
+      SUBD_METHODE    = 'MANUEL',
+      SUBD_PAS        = 5,
+      SUBD_PAS_MINI   = 1.0E-10,
+      SUBD_NIVEAU     = 9,
+   ),
+)
+
+MO = AFFE_MODELE(MAILLAGE=MA,
+                     AFFE=(_F(GROUP_MA = ('MA1'),PHENOMENE='MECANIQUE',MODELISATION='DIS_TR'),),
+                 )
+
+CA_DISTL=AFFE_CARA_ELEM(
+   MODELE=MO,INFO=2,
+   DISCRET=(
+      _F(CARA='K_TR_D_N', GROUP_MA='MA1', REPERE='LOCAL', VALE=(7.5E4,5.0E4,8.0E4,1.0E4,1.5E4,5.0E3,),),
+   ),
+   ORIENTATION=_F(GROUP_MA='MA1',
+                  CARA='ANGL_NAUT',
+                  VALE=(0.0,0.0,0.0,),),
+
+    )
+
+
+
+
+
+# Definition des fonctions de chargement
+MPFMHGC1 = DEFI_FONCTION(NOM_PARA='INST',
+   VALE =(
+      0.0 , 0.000,
+      10.0 , 1.000,
+      90.0 , 1.000,
+     100.0 , 0.000,
+   ),
+)
+MPFMHGC2 = DEFI_FONCTION(NOM_PARA='INST',
+   VALE =(
+      0.0 , 0.000,
+      25.0 , 1.000,
+      75.0 , 1.000,
+     100.0 , 0.000,
+   ),
+)
+MPFMHGC3 = DEFI_FONCTION(NOM_PARA='INST',
+   VALE =(
+      0.0 , 0.000,
+      25.0 , 0.000,
+      50.0 , 1.000,
+      75.0 , 0.000,
+     100.0 , 0.000,
+   ),
+)
+
+
+
+
+#-------------------------------------------------------------------------------------
+# FMHGC1 --> Charge Fz=600kN puis Fx =130kN puis Mx=200kN.m
+# --------------------------
+
+
+MAFMHGC1= DEFI_MATERIAU(
+   FONDA_SUPERFI=_F(
+             LONG_X           =1.0,
+             LONG_Y           =1.0,
+             PHI       =10.0,
+             COHESION = 30,
+             CP_SERVICE        =4000.0,
+         RAID_GLIS        =750.0,
+             GAMMA_REFE        =45.0,
+
+   ),
+)
+
+CHFMHGC1 = AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE = _F(TOUT='OUI',MATER=MAFMHGC1,),)
+
+CFMHGC11 = AFFE_CHAR_MECA(MODELE=MO,
+             FORCE_NODALE=_F(GROUP_NO='PT1', FY= 0.0,FZ = -600.0, MY = 0.000, MZ = 0.,),)
+CFMHGC12 = AFFE_CHAR_MECA(MODELE=MO,
+             FORCE_NODALE=_F(GROUP_NO='PT1',FX = 130.00,),)
+CFMHGC13 = AFFE_CHAR_MECA(MODELE=MO,
+             FORCE_NODALE=_F(GROUP_NO='PT1',MX = 200.00,),)
+
+
+
+REFMHGC1=STAT_NON_LINE(MODELE  = MO,
+                     CHAM_MATER = CHFMHGC1,
+                     CARA_ELEM  = CA_DISTL,
+                     EXCIT      = (_F(CHARGE = CFMHGC11,FONC_MULT=MPFMHGC1),
+                   _F(CHARGE = CFMHGC12,FONC_MULT=MPFMHGC2),
+           _F(CHARGE = CFMHGC13,FONC_MULT=MPFMHGC3),),
+                     COMPORTEMENT=_F(RELATION='FONDATION', ),
+                     INCREMENT = _F(LIST_INST = LINST2,),
+
+   )
+
+
+
+
+TEST_RESU(RESU=(_F(INST=100,
+                   RESULTAT=REFMHGC1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P1',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 7.96744909767198E-03,
+                   VALE_REFE= 0.00797734,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=5.E-3,),
+        _F(INST=50,
+                   RESULTAT=REFMHGC1,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P1',
+                   NOM_CMP='DRX',
+                   VALE_CALC=2.39557842085786E-02 ,
+                   VALE_REFE=0.024249088,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=2.E-2,),
+                _F(INST=75,
+                   RESULTAT=REFMHGC1,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='M1',
+           POINT=1,
+                   NOM_CMP='V11',
+                   VALE_CALC=1.42037993446483E+01,
+                   VALE_REFE=14.203812,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-5,),
+                _F(INST=50,
+                   RESULTAT=REFMHGC1,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='M1',
+           POINT=1,
+                   NOM_CMP='V1',
+                   VALE_CALC=3.95584316640187E-02 ,
+                   VALE_REFE=0.042490876,
+           CRITERE='ABSOLU',
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-1,),
+                _F(INST=75,
+                   RESULTAT=REFMHGC1,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='M1',
+           POINT=1,
+                   NOM_CMP='V3',
+                   VALE_CALC=7.96744909767198E-03,
+                   VALE_REFE=0.00797734,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=5.E-3,),
+
+                ),
+          )
+
+
+
+
+#-------------------------------------------------------------------------------------
+# FMHGC2 --> Charge Fz=800kN puis Fx =165kN puis Mx=200kN.m
+# --------------------------
+
+
+MAFMHGC2= DEFI_MATERIAU(
+   FONDA_SUPERFI=_F(
+             LONG_X           =1.0,
+             LONG_Y           =1.0,
+             PHI              =10.0,
+             COHESION          = 30,
+             CP_SERVICE        =4000.0,
+             RAID_GLIS        =200.0,
+             GAMMA_REFE        =4.5,
+
+   ),
+)
+
+CHFMHGC2 = AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE = _F(TOUT='OUI',MATER=MAFMHGC2,),)
+
+CFMHGC21 = AFFE_CHAR_MECA(MODELE=MO,
+             FORCE_NODALE=_F(GROUP_NO='PT1', FY= 0.0,FZ = -800.0, MY = 0.000, MZ = 0.,),)
+CFMHGC22 = AFFE_CHAR_MECA(MODELE=MO,
+             FORCE_NODALE=_F(GROUP_NO='PT1',FX = 165.00,),)
+
+
+
+
+REFMHGC2=STAT_NON_LINE(MODELE  = MO,
+                     CHAM_MATER = CHFMHGC2,
+                     CARA_ELEM  = CA_DISTL,
+                     EXCIT      = (_F(CHARGE = CFMHGC21,FONC_MULT=MPFMHGC1),
+                   _F(CHARGE = CFMHGC22,FONC_MULT=MPFMHGC2),
+                   _F(CHARGE = CFMHGC13,FONC_MULT=MPFMHGC3),),
+                     COMPORTEMENT=_F(RELATION='FONDATION', ),
+                     INCREMENT = _F(LIST_INST = LINST,),
+
+   )
+
+TEST_RESU(RESU=(_F(INST=100,
+                   RESULTAT=REFMHGC2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P1',
+                   NOM_CMP='DZ',
+                   VALE_CALC= 9.40336359801674E-03,
+                   VALE_REFE= 0.009216047,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=5.E-2,),
+        _F(INST=50,
+                   RESULTAT=REFMHGC2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P1',
+                   NOM_CMP='DX',
+                   VALE_CALC=5.16837983059557E-02 ,
+                   VALE_REFE=0.052097213,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-2,),
+                _F(INST=75,
+                   RESULTAT=REFMHGC2,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='M1',
+           POINT=1,
+                   NOM_CMP='V4',
+                   VALE_CALC=3.71319087981235E-03,
+                   VALE_REFE=0.003742291,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-2,),
+                _F(INST=50,
+                   RESULTAT=REFMHGC2,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='M1',
+           POINT=1,
+                   NOM_CMP='V1',
+                   VALE_CALC=4.94837976035868E-02,
+                   VALE_REFE=0.049897213,
+           CRITERE='ABSOLU',
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-2,),
+                _F(INST=100,
+                   RESULTAT=REFMHGC2,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='M1',
+           POINT=1,
+                   NOM_CMP='V11',
+                   VALE_CALC=8.93839973666577E+00,
+                   VALE_REFE=8.938415,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-5,),
+
+                ),
+          )
+
+
+#-------------------------------------------------------------------------------------
+# FMHGC3 --> Charge Fz=200kN puis Fx =60kN puis Mx=80kN.m
+# --------------------------
+
+
+MAFMHGC3= DEFI_MATERIAU(
+   FONDA_SUPERFI=_F(
+             LONG_X           =1.0,
+             LONG_Y           =1.0,
+             PHI       =10.0,
+             COHESION = 30,
+             CP_SERVICE        =4000.0,
+         RAID_GLIS        =10000.0,
+             GAMMA_REFE        =50.0,
+
+   ),
+)
+
+CHFMHGC3 = AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE = _F(TOUT='OUI',MATER=MAFMHGC3,),)
+
+CFMHGC31 = AFFE_CHAR_MECA(MODELE=MO,
+             FORCE_NODALE=_F(GROUP_NO='PT1', FY= 0.0,FZ = -200.0, MY = 0.000, MZ = 0.,),)
+CFMHGC32 = AFFE_CHAR_MECA(MODELE=MO,
+             FORCE_NODALE=_F(GROUP_NO='PT1',FX = 60.00,),)
+CFMHGC33 = AFFE_CHAR_MECA(MODELE=MO,
+             FORCE_NODALE=_F(GROUP_NO='PT1',MX = 80.00,),)
+
+
+
+REFMHGC3=STAT_NON_LINE(MODELE  = MO,
+                     CHAM_MATER = CHFMHGC3,
+                     CARA_ELEM  = CA_DISTL,
+                     EXCIT      = (_F(CHARGE = CFMHGC31,FONC_MULT=MPFMHGC1),
+                   _F(CHARGE = CFMHGC32,FONC_MULT=MPFMHGC2),
+                   _F(CHARGE = CFMHGC33,FONC_MULT=MPFMHGC3),),
+                     COMPORTEMENT=_F(RELATION='FONDATION', ),
+                     INCREMENT = _F(LIST_INST = LINST,),
+
+   )
+
+TEST_RESU(RESU=(_F(INST=50,
+                   RESULTAT=REFMHGC3,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P1',
+                   NOM_CMP='DX',
+                   VALE_CALC= 2.76197978856400E-03,
+                   VALE_REFE= 0.002767103,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=5.E-3,),
+        _F(INST=100,
+                   RESULTAT=REFMHGC3,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P1',
+                   NOM_CMP='DRX',
+                   VALE_CALC=5.88564028206662E-04 ,
+                   VALE_REFE=0.000590131,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=5.E-3,),
+                _F(INST=75,
+                   RESULTAT=REFMHGC3,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='M1',
+           POINT=1,
+                   NOM_CMP='V19',
+                   VALE_CALC=1.96197969659545E-03,
+                   VALE_REFE=0.001967103,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=5.E-3,),
+                _F(INST=50,
+                   RESULTAT=REFMHGC3,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='M1',
+           POINT=1,
+                   NOM_CMP='V4',
+                   VALE_CALC=5.88564028206660E-04,
+                   VALE_REFE=0.000590131,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=5.E-3,),
+                _F(INST=100,
+                   RESULTAT=REFMHGC3,
+                   NOM_CHAM='VARI_ELGA',
+                   MAILLE='M1',
+           POINT=1,
+                   NOM_CMP='V3',
+                   VALE_CALC=4.95617383289305E-04,
+                   VALE_REFE=0.000409798,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=2.5E-1,),
+
+                ),
+          )
+
+
+FIN()

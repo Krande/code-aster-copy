@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -113,6 +113,27 @@ DICT_NOM_VARI = {
     "CRITRUPT": _("Critère de rupture pour CRIT_RUPT"),
     "CRITSIG": _("Critère en contrainte, utilisé en Génie Civil"),
     "CSHR": _("FLUA_ENDO_PORO perte de viscosité par séchage (coeff de consolidation par séchage)"),
+    "DABSCPZ"   : _("Fondations discret : Somme des incréments du déplacement plastique selon z, critère de Capacité Portante"),
+    "DABSSLX"   : _("Fondations discret : Somme des incréments du déplacement plastique selon x, critère de Glissement (SLiding)"),
+    "DABSSLY"   : _("Fondations discret : Somme des incréments du déplacement plastique selon y, critère de Glissement (SLiding)"),
+    "DACPRX"    : _("Fondations discret : Rotation selon X plastique, critère de Capacité Portante"),
+    "DACPRY"    : _("Fondations discret : Rotation selon Y plastique, critère de Capacité Portante"),
+    "DACPX"     : _("Fondations discret : Translation selon X plastique, critère de Capacité Portante"),
+    "DACPY"     : _("Fondations discret : Translation selon Y plastique, critère de Capacité Portante"),
+    "DACPZ"     : _("Fondations discret : Translation selon Z plastique, critère de Capacité Portante"),
+    "DAQCPRX"   : _("Fondations discret : Ecrouissage cinématique en rotation selon X, critère de Capacité Portante"),
+    "DAQCPRY"   : _("Fondations discret : Ecrouissage cinématique en rotation selon Y, critère de Capacité Portante"),
+    "DAQCPX"    : _("Fondations discret : Ecrouissage cinématique en translation selon X, critère de Capacité Portante"),
+    "DAQCPY"    : _("Fondations discret : Ecrouissage cinématique en translation selon Y, critère de Capacité Portante"),
+    "DAQSLX"    : _("Fondations discret : Ecrouissage cinématique en translation selon X, critère de Glissement (SLiding)"),
+    "DAQSLY"    : _("Fondations discret : Ecrouissage cinématique en translation selon Y, critère de Glissement (SLiding)"),
+    "DARCP"     : _("Fondations discret : Ecrouissage isotrope, critère de Capacoté Portante"),
+    "DASLRX"    : _("Fondations discret : Rotation selon X plastique, critère de Glissement (SLiding)"),
+    "DASLRY"    : _("Fondations discret : Rotation selon Y plastique, critère de Glissement (SLiding)"),
+    "DASLX"     : _("Fondations discret : Translation selon X plastique, critère de Glissement (SLiding)"),
+    "DASLY"     : _("Fondations discret : Translation selon Y plastique, critère de Glissement (SLiding)"),
+    "DASLZ"     : _("Fondations discret : Translation selon Z plastique, critère de Glissement (SLiding)"),
+    "DAUTRE"    : _("Fondations discret : Paramètre autre (au besoin)"),
     "DB1": _("c_plan ou 1d algo Deborst, variable interne 1"),
     "DB2": _("c_plan ou 1d algo Deborst, variable interne 2"),
     "DB3": _("c_plan ou 1d algo Deborst, variable interne 3"),

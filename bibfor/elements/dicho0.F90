@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,17 +15,23 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+! person_in_charge: jean-luc.flejou at edf.fr
 !
-subroutine dicho0(lMatr, lVect, lSigm, lVari,&
-                  ndim, nbt, nno,&
-                  nc, ulm, dul, pgl)
+subroutine dicho0(for_discret, iret)
 !
+! --------------------------------------------------------------------------------------------------
+!
+! IN    for_discret : voir l'appel
+! OUT   iret        : code retour
+!
+! --------------------------------------------------------------------------------------------------
+!
+use te0047_type
 implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 #include "asterfort/dichoc.h"
 #include "asterfort/infdis.h"
 #include "asterfort/jevech.h"
@@ -42,21 +48,8 @@ implicit none
 #include "asterfort/vecma.h"
 #include "blas/dcopy.h"
 !
-aster_logical, intent(in) :: lMatr, lVect, lSigm, lVari
-integer :: ndim, nbt, nno, nc
-real(kind=8) :: ulm(12), dul(12), pgl(3, 3)
-!
-! person_in_charge: jean-luc.flejou at edf.fr
-! --------------------------------------------------------------------------------------------------
-!
-!  IN
-!     ndim     : dimension du problème
-!     nbt      : nombre de terme dans la matrice de raideur
-!     nno      : nombre de noeuds de l'élément
-!     nc       : nombre de composante par noeud
-!     ulm      : déplacement moins
-!     dul      : incrément de déplacement
-!     pgl      : matrice de passage de global a local
+type(te0047_dscr), intent(in) :: for_discret
+integer, intent(out)          :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,6 +65,7 @@ real(kind=8) :: ulm(12), dul(12), pgl(3, 3)
     character(len=8)    :: k8bid
 ! --------------------------------------------------------------------------------------------------
 !
+    iret = 0
 !   paramètres en entrée
     call jevech('PCADISK', 'L', jdc)
     call jevech('PGEOMER', 'L', igeom)
@@ -81,13 +75,13 @@ real(kind=8) :: ulm(12), dul(12), pgl(3, 3)
 !   absolu vers local ? ---
 !   irep = 1 = matrice en repère global ==> passer en local ---
     if (irep .eq. 1) then
-        if (ndim .eq. 3) then
-            call utpsgl(nno, nc, pgl, zr(jdc), klv)
-        else if (ndim.eq.2) then
-            call ut2mgl(nno, nc, pgl, zr(jdc), klv)
+        if (for_discret%ndim .eq. 3) then
+            call utpsgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(jdc), klv)
+        else if (for_discret%ndim.eq.2) then
+            call ut2mgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(jdc), klv)
         endif
     else
-        call dcopy(nbt, zr(jdc), 1, klv, 1)
+        call dcopy(for_discret%nbt, zr(jdc), 1, klv, 1)
     endif
     call jevech('PMATERC', 'L', imat)
     call jevech('PVARIMR', 'L', ivarim)
@@ -101,10 +95,10 @@ real(kind=8) :: ulm(12), dul(12), pgl(3, 3)
 !
     call tecach('ONO', 'PVITPLU', 'L', iretlc, iad=ivitp)
     if (iretlc .eq. 0) then
-        if (ndim .eq. 3) then
-            call utpvgl(nno, nc, pgl, zr(ivitp), dvl)
-        else if (ndim.eq.2) then
-            call ut2vgl(nno, nc, pgl, zr(ivitp), dvl)
+        if (for_discret%ndim .eq. 3) then
+            call utpvgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(ivitp), dvl)
+        else if (for_discret%ndim.eq.2) then
+            call ut2vgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(ivitp), dvl)
         endif
     else
         dvl(:)    = 0.0
@@ -112,10 +106,10 @@ real(kind=8) :: ulm(12), dul(12), pgl(3, 3)
 !
     call tecach('ONO', 'PDEPENT', 'L', iretlc, iad=idepen)
     if (iretlc .eq. 0) then
-        if (ndim .eq. 3) then
-            call utpvgl(nno, nc, pgl, zr(idepen), dpe)
-        else if (ndim.eq.2) then
-            call ut2vgl(nno, nc, pgl, zr(idepen), dpe)
+        if (for_discret%ndim .eq. 3) then
+            call utpvgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(idepen), dpe)
+        else if (for_discret%ndim.eq.2) then
+            call ut2vgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(idepen), dpe)
         endif
     else
         dpe(:) = 0.0d0
@@ -123,101 +117,124 @@ real(kind=8) :: ulm(12), dul(12), pgl(3, 3)
 !
     call tecach('ONO', 'PVITENT', 'L', iretlc, iad=iviten)
     if (iretlc .eq. 0) then
-        if (ndim .eq. 3) then
-            call utpvgl(nno, nc, pgl, zr(iviten), dve)
-        else if (ndim.eq.2) then
-            call ut2vgl(nno, nc, pgl, zr(iviten), dve)
+        if (for_discret%ndim .eq. 3) then
+            call utpvgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(iviten), dve)
+        else if (for_discret%ndim.eq.2) then
+            call ut2vgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(iviten), dve)
         endif
     else
         dve(:) = 0.d0
     endif
 !
-    neq = nno*nc
-    ulp(:) = ulm(:) + dul(:)
+    neq = for_discret%nno*for_discret%nc
+    ulp(:) = for_discret%ulm(:) + for_discret%dul(:)
 !   relation de comportement de choc
-    call dichoc(nbt, neq, nno, nc, zi(imat),&
-                dul, ulp, zr(igeom), pgl, klv,&
+    call dichoc(for_discret%nbt, neq, for_discret%nno, for_discret%nc, zi(imat),&
+                for_discret%dul, ulp, zr(igeom), for_discret%pgl, klv,&
                 duly, dvl, dpe, dve, force,&
-                varmo, varpl, ndim)
+                varmo, varpl, for_discret%ndim)
 !   actualisation de la matrice tangente
-    if (lMatr) then
+    if (for_discret%lMatr) then
         call jevech('PMATUUR', 'E', imat)
-        if (ndim .eq. 3) then
-            call utpslg(nno, nc, pgl, klv, zr(imat))
-        else if (ndim.eq.2) then
-            call ut2mlg(nno, nc, pgl, klv, zr(imat))
+        if (for_discret%ndim .eq. 3) then
+            call utpslg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imat))
+        else if (for_discret%ndim.eq.2) then
+            call ut2mlg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imat))
         endif
     endif
-!
-!   calcul des efforts généralisés et des forces nodales
-    if (lVect) then
-!       Il faut séparer les deux => petit travail de réflexion
-        ASSERT(lSigm)
-        call jevech('PVECTUR', 'E', ifono)
+    !
+    if ( for_discret%lVect .or. for_discret%lSigm ) then
+        ! demi-matrice klv transformée en matrice pleine klc
+        call vecma(klv, for_discret%nbt, klc, neq)
+        ! calcul de fl = klc.dul (incrément d'effort)
+        call pmavec('ZERO', neq, klc, for_discret%dul, fl)
+    endif
+!   calcul des efforts généralisés
+    if ( for_discret%lSigm ) then
         call jevech('PCONTPR', 'E', icontp)
-!       demi-matrice klv transformée en matrice pleine klc
-        call vecma(klv, nbt, klc, neq)
-!       calcul de fl = klc.dul (incrément d'effort)
-        call pmavec('ZERO', neq, klc, dul, fl)
-!       efforts généralisés aux noeuds 1 et 2 (repère local)
-!       on change le signe des efforts sur le premier noeud pour les MECA_DIS_TR_L et MECA_DIS_T_L
-        if (nno .eq. 1) then
+        ! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
+        if (for_discret%nno .eq. 1) then
             do ii = 1, neq
                 zr(icontp-1+ii) = fl(ii) + zr(icontm-1+ii)
-                fl(ii) = fl(ii) + zr(icontm-1+ii)
             enddo
-        else if (nno.eq.2) then
-            do ii = 1, nc
-                zr(icontp-1+ii) = -fl(ii) + zr(icontm-1+ii)
-                zr(icontp-1+ii+nc) = fl(ii+nc) + zr(icontm-1+ii+nc)
-                fl(ii) = fl(ii) - zr(icontm-1+ii)
-                fl(ii+nc) = fl(ii+nc) + zr(icontm-1+ii+nc)
+        else if (for_discret%nno.eq.2) then
+            do ii = 1, for_discret%nc
+                zr(icontp-1+ii)                = -fl(ii) + zr(icontm-1+ii)
+                zr(icontp-1+ii+for_discret%nc) =  fl(ii+for_discret%nc) + &
+                                                  zr(icontm-1+ii+for_discret%nc)
             enddo
         endif
-        if (nno .eq. 1) then
+        if (for_discret%nno .eq. 1) then
             zr(icontp-1+1) = force(1)
             zr(icontp-1+2) = force(2)
-            fl(1) = force(1)
-            fl(2) = force(2)
-            if (ndim .eq. 3) then
-                fl(3) = force(3)
+            if (for_discret%ndim .eq. 3) then
                 zr(icontp-1+3) = force(3)
             endif
-        else if (nno.eq.2) then
-            zr(icontp-1+1) = force(1)
-            zr(icontp-1+1+nc) = force(1)
-            zr(icontp-1+2) = force(2)
-            zr(icontp-1+2+nc) = force(2)
-            fl(1) = -force(1)
-            fl(1+nc) = force(1)
-            fl(2) = -force(2)
-            fl(2+nc) = force(2)
-            if (ndim .eq. 3) then
-                zr(icontp-1+3) = force(3)
-                zr(icontp-1+3+nc) = force(3)
-                fl(3) = -force(3)
-                fl(3+nc) = force(3)
+        else if (for_discret%nno.eq.2) then
+            zr(icontp-1+1)                = force(1)
+            zr(icontp-1+1+for_discret%nc) = force(1)
+            zr(icontp-1+2)                = force(2)
+            zr(icontp-1+2+for_discret%nc) = force(2)
+            if (for_discret%ndim .eq. 3) then
+                zr(icontp-1+3)               = force(3)
+                zr(icontp-1+3+for_discret%nc) = force(3)
+            endif
+        endif
+        if (abs(force(1)) .lt. r8prem()) then
+            do ii = 1, neq
+                zr(icontp-1+ii) = 0.0d0
+            enddo
+        endif
+    endif
+    ! calcul des efforts généralisés et des forces nodales
+    if ( for_discret%lVect ) then
+        call jevech('PVECTUR', 'E', ifono)
+        ! Attention aux signes des efforts sur le premier noeud pour MECA_DIS_TR_L et MECA_DIS_T_L
+        if (for_discret%nno .eq. 1) then
+            do ii = 1, neq
+                fl(ii) = fl(ii) + zr(icontm-1+ii)
+            enddo
+        else if (for_discret%nno.eq.2) then
+            do ii = 1, for_discret%nc
+                fl(ii)                = fl(ii) - zr(icontm-1+ii)
+                fl(ii+for_discret%nc) = fl(ii+for_discret%nc) + &
+                                        zr(icontm-1+ii+for_discret%nc)
+            enddo
+        endif
+        if (for_discret%nno .eq. 1) then
+            fl(1) = force(1)
+            fl(2) = force(2)
+            if (for_discret%ndim .eq. 3) then
+                fl(3) = force(3)
+            endif
+        else if (for_discret%nno.eq.2) then
+            fl(1)                = -force(1)
+            fl(1+for_discret%nc) = force(1)
+            fl(2)                = -force(2)
+            fl(2+for_discret%nc) = force(2)
+            if (for_discret%ndim .eq. 3) then
+                fl(3)                = -force(3)
+                fl(3+for_discret%nc) =  force(3)
             endif
         endif
         if (abs(force(1)) .lt. r8prem()) then
             do ii = 1, neq
                 fl(ii) = 0.0d0
-                zr(icontp-1+ii) = 0.0d0
             enddo
         endif
 !       forces nodales aux noeuds 1 et 2 (repère global)
-        if (nc .ne. 2) then
-            call utpvlg(nno, nc, pgl, fl, zr(ifono))
+        if (for_discret%nc .ne. 2) then
+            call utpvlg(for_discret%nno, for_discret%nc, for_discret%pgl, fl, zr(ifono))
         else
-            call ut2vlg(nno, nc, pgl, fl, zr(ifono))
+            call ut2vlg(for_discret%nno, for_discret%nc, for_discret%pgl, fl, zr(ifono))
         endif
     endif
-!   mise à jour des variables internes 
-    if (lVari) then
+    ! mise à jour des variables internes
+    if (for_discret%lVari) then
         call jevech('PVARIPR', 'E', ivarip)
         do ii = 1, 8
             zr(ivarip+ii-1) = varpl(ii)
-            if (nno .eq. 2) zr(ivarip+ii+7) = varpl(ii)
+            if (for_discret%nno .eq. 2) zr(ivarip+ii+7) = varpl(ii)
         enddo
     endif
 end subroutine
