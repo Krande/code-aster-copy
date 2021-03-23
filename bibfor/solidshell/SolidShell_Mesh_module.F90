@@ -29,14 +29,17 @@ private
 #include "asterf_types.h"
 #include "MeshTypes_type.h"
 #include "asterfort/assert.h"
+#include "asterfort/cncinv.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getelem.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
+#include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/jenuno.h"
+#include "asterfort/jeexin.h"
 ! ==================================================================================================
 contains
 ! ==================================================================================================
@@ -50,26 +53,30 @@ contains
 ! In  mesh             : mesh
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine orieHexa9(iOcc, nbVoluCell, voluCell, mesh)
+subroutine orieHexa9(iOcc, mesh)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    integer, intent(in) :: iOcc, nbVoluCell
-    integer, pointer :: voluCell(:)
+    integer, intent(in) :: iOcc
     character(len=8), intent(in) :: mesh
 ! - Local
     character(len=16), parameter :: keywfact  = 'COQUE_SOLIDE'
-    integer :: iVoluNode, iVoluCell, iSurfCell, iSurfNode
+    integer :: iVoluNode, iSurfCell, iSurfNode
     integer :: voluCellNume, surfCellNume
-    integer :: nbSurfCell, voluNbNode, surfNbNode, voluCellType, surfCellType
+    integer :: nbSurfCell, surfCellType, surfNodeCurr
     integer :: voluNodeHexa(8), surfNodeQuad(4)
+    integer :: voluLinkedToNode(15, 2), nbVoluLinkedToSurf, iVoluLinked
+    integer :: nbCellLinkedToNode
+    integer :: iCellLinked, cellLinkedNume, cellLinkedType, iExist
     character(len=16) :: suffix, answer
+    character(len=19), parameter :: cnxinv = '&&ORIHEXA9.INV'
     character(len=24), parameter :: jvSurfCell = '&&ORIHEXA9.SURF'
-    integer :: fp(24), iter, aux
+    integer :: fp(24), iter, aux, iDummy
     integer, pointer :: typmail(:) => null()
     integer, pointer :: surfCell(:) => null()
     integer, pointer :: surfNode(:) => null()
     integer, pointer :: voluNode(:) => null()
-    aster_logical :: lFace1, lFace2, lHexaInMesh, lPentaInMesh
+    integer, pointer :: cnxinvLoncum(:) => null(), cnxinvCell(:) => null()
+    aster_logical :: lFace1, lFace2, lHexaInMesh, lPentaInMesh, lVoluFind
 !   ------------------------------------------------------------------------------------------------
 !
     call jeveuo(mesh//'.TYPMAIL', 'L', vi=typmail)
@@ -77,6 +84,15 @@ subroutine orieHexa9(iOcc, nbVoluCell, voluCell, mesh)
     lHexaInMesh  = answer .eq. 'OUI'
     call dismoi('EXI_PENTA6', mesh, 'MAILLAGE', repk = answer)
     lPentaInMesh = answer .eq. 'OUI'
+
+! - Prepare reverse connectivity
+    call jeexin(cnxinv, iExist)
+    if (iExist .eq. 0) then
+        iDummy = 0
+        call cncinv(mesh, [iDummy], 0, 'V', cnxinv)
+    endif
+    call jeveuo(jexatr(cnxinv, 'LONCUM'), 'L', vi = cnxinvLoncum)
+    call jeveuo(jexnum(cnxinv, 1), 'L', vi = cnxinvCell)
 
 ! - Get list of surfacic cells
     suffix    = '_SURF'
@@ -91,71 +107,98 @@ subroutine orieHexa9(iOcc, nbVoluCell, voluCell, mesh)
     if (lPentaInMesh .and. (.not. lHexaInMesh)) then
         call utmess('A', 'SOLIDSHELL1_3')
     endif
-    call jeveuo(jvSurfCell, 'L', vi = surfCell)
 
-! - Reorient
-    do iVoluCell = 1, nbVoluCell
-        voluCellNume = voluCell(iVoluCell)
-        voluCellType = typmail(voluCellNume)
-        if (voluCellType .ne. MT_HEXA8) then
+! - Loop on surfacic cells
+    call jeveuo(jvSurfCell, 'L', vi = surfCell)
+    do iSurfCell = 1, nbSurfCell
+        surfCellNume = surfCell(iSurfCell)
+        surfCellType = typmail(surfCellNume)
+        if (surfCellType .ne. MT_QUAD4) then
             call utmess('F', 'SOLIDSHELL1_1')
         endif
-        call jelira(jexnum(mesh//'.CONNEX', voluCellNume), 'LONMAX', voluNbNode)
-        call jeveuo(jexnum(mesh//'.CONNEX', voluCellNume), 'E', vi = voluNode)
-        do iSurfCell = 1, nbSurfCell
-            surfCellNume = surfCell(iSurfCell)
-            surfCellType = typmail(surfCellNume)
-            if (surfCellType .ne. MT_QUAD4) then
-                call utmess('F', 'SOLIDSHELL1_1')
+        ASSERT(surfCellNume .ne. 0)
+! ----- Look for volumic cells attached to current surfacic cell
+        nbVoluLinkedToSurf = 0
+        voluLinkedToNode   = 0
+        call jeveuo(jexnum(mesh//'.CONNEX', surfCellNume), 'L', vi = surfNode)
+        do iSurfNode = 1, 4
+            surfNodeQuad(iSurfNode) = surfNode(iSurfNode)
+            surfNodeCurr = surfNodeQuad(iSurfNode)
+            nbCellLinkedToNode = &
+              cnxinvLoncum(surfNodeCurr+1) - cnxinvLoncum(surfNodeCurr)
+            do iCellLinked = 1, nbCellLinkedToNode
+                cellLinkedNume = cnxinvCell(cnxinvLoncum(surfNodeCurr)+iCellLinked)
+                cellLinkedType = typmail(cellLinkedNume)
+                if (cellLinkedType .eq. MT_HEXA8) then
+                    lVoluFind = ASTER_FALSE
+                    do iVoluLinked = 1, nbVoluLinkedToSurf
+                        if (voluLinkedToNode(iVoluLinked, 1) .eq. cellLinkedNume) then
+                            voluLinkedToNode(iVoluLinked, 2) = &
+                                voluLinkedToNode(iVoluLinked, 2) + 1
+                            lVoluFind = ASTER_TRUE
+                        endif
+                    end do
+                    if (.not. lVoluFInd) then
+                        nbVoluLinkedToSurf = nbVoluLinkedToSurf + 1
+                        ASSERT(nbVoluLinkedToSurf .le. 15)
+                        voluLinkedToNode(nbVoluLinkedToSurf, 1) = cellLinkedNume
+                        voluLinkedToNode(nbVoluLinkedToSurf, 2) = 1
+                    endif
+                endif
+            end do
+        end do
+        voluCellNume = 0
+        do iVoluLinked = 1, nbVoluLinkedToSurf
+            if (voluLinkedToNode(iVoluLinked, 2) .eq. 4) then
+                voluCellNume = voluLinkedToNode(iVoluLinked, 1)
             endif
-            call jelira(jexnum(mesh//'.CONNEX', surfCellNume), 'LONMAX', surfNbNode)
-            call jeveuo(jexnum(mesh//'.CONNEX', surfCellNume), 'L', vi = surfNode)
-            do iVoluNode = 1, 8
-                voluNodeHexa(iVoluNode) = voluNode(iVoluNode)
-            end do
-            
-            do iSurfNode = 1, 4
-                surfNodeQuad(iSurfNode) = surfNode(iSurfNode)
-            end do
-            fp(1)  = voluNodeHexa(1)
-            fp(2)  = voluNodeHexa(2)
-            fp(3)  = voluNodeHexa(3)
-            fp(4)  = voluNodeHexa(4)
-            fp(5)  = voluNodeHexa(5)
-            fp(6)  = voluNodeHexa(6)
-            fp(7)  = voluNodeHexa(7)
-            fp(8)  = voluNodeHexa(8)
-            fp(9)  = voluNodeHexa(5)
-            fp(10) = voluNodeHexa(1)
-            fp(11) = voluNodeHexa(4)
-            fp(12) = voluNodeHexa(8)
-            fp(13) = voluNodeHexa(6)
-            fp(14) = voluNodeHexa(2)
-            fp(15) = voluNodeHexa(3)
-            fp(16) = voluNodeHexa(7)
-            fp(17) = voluNodeHexa(5)
-            fp(18) = voluNodeHexa(1)
-            fp(19) = voluNodeHexa(2)
-            fp(20) = voluNodeHexa(6)
-            fp(21) = voluNodeHexa(8)
-            fp(22) = voluNodeHexa(4)
-            fp(23) = voluNodeHexa(3)
-            fp(24) = voluNodeHexa(7)
-            do iter = 1, 3
-                aux = 8*(iter-1)
-                lFace1 = isThisQuad(fp(1+aux:4+aux), surfNodeQuad(:))
-                lFace2 = isThisQuad(fp(5+aux:8+aux), surfNodeQuad(:))
-                if (lFace1 .or. lFace2) then
-                    voluNode(1) = fp(1+aux)
-                    voluNode(2) = fp(2+aux)
-                    voluNode(3) = fp(3+aux)
-                    voluNode(4) = fp(4+aux)
-                    voluNode(5) = fp(5+aux)
-                    voluNode(6) = fp(6+aux)
-                    voluNode(7) = fp(7+aux)
-                    voluNode(8) = fp(8+aux)
-                end if
-            end do
+        end do
+        ASSERT(voluCellNume .ne. 0)
+
+! ----- Access to volumic cell
+        call jeveuo(jexnum(mesh//'.CONNEX', voluCellNume), 'E', vi = voluNode)
+        do iVoluNode = 1, 8
+            voluNodeHexa(iVoluNode) = voluNode(iVoluNode)
+        end do
+
+        fp(1)  = voluNodeHexa(1)
+        fp(2)  = voluNodeHexa(2)
+        fp(3)  = voluNodeHexa(3)
+        fp(4)  = voluNodeHexa(4)
+        fp(5)  = voluNodeHexa(5)
+        fp(6)  = voluNodeHexa(6)
+        fp(7)  = voluNodeHexa(7)
+        fp(8)  = voluNodeHexa(8)
+        fp(9)  = voluNodeHexa(5)
+        fp(10) = voluNodeHexa(1)
+        fp(11) = voluNodeHexa(4)
+        fp(12) = voluNodeHexa(8)
+        fp(13) = voluNodeHexa(6)
+        fp(14) = voluNodeHexa(2)
+        fp(15) = voluNodeHexa(3)
+        fp(16) = voluNodeHexa(7)
+        fp(17) = voluNodeHexa(5)
+        fp(18) = voluNodeHexa(1)
+        fp(19) = voluNodeHexa(2)
+        fp(20) = voluNodeHexa(6)
+        fp(21) = voluNodeHexa(8)
+        fp(22) = voluNodeHexa(4)
+        fp(23) = voluNodeHexa(3)
+        fp(24) = voluNodeHexa(7)
+        do iter = 1, 3
+            aux = 8*(iter-1)
+            lFace1 = isThisQuad(fp(1+aux:4+aux), surfNodeQuad(:))
+            lFace2 = isThisQuad(fp(5+aux:8+aux), surfNodeQuad(:))
+            if (lFace1 .or. lFace2) then
+                voluNode(1) = fp(1+aux)
+                voluNode(2) = fp(2+aux)
+                voluNode(3) = fp(3+aux)
+                voluNode(4) = fp(4+aux)
+                voluNode(5) = fp(5+aux)
+                voluNode(6) = fp(6+aux)
+                voluNode(7) = fp(7+aux)
+                voluNode(8) = fp(8+aux)
+            end if
         end do
     end do
 !

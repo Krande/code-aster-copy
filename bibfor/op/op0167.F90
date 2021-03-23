@@ -350,6 +350,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     if (nbOccCoqueSolide .gt. 0) then
+
         call jeexin(meshIn//'.NOMACR', iret)
         if (iret .ne. 0) then
             call utmess('F', 'MESH1_7')
@@ -360,16 +361,21 @@ implicit none
         endif
         keywfact = 'COQUE_SOLIDE'
 
+!------ Orient HEXA9
+        do iOcc = 1, nbOccCoqueSolide
+            call orieHexa9(iOcc, meshIn)
+        end do
+
 ! ----- Create mesh to convert
         call meshSolidShell%init(meshIn)
 
-! ----- Add conversions
+! ----- Add conversions 
         convType = ["HEXA8", "HEXA9"]
         call meshSolidShell%converter%add_conversion(convType(1), convType(2))
         convType = ["PENTA6", "PENTA7"]
         call meshSolidShell%converter%add_conversion(convType(1), convType(2))
 
-        do iocc = 1, nbOccCoqueSolide
+        do iOcc = 1, nbOccCoqueSolide
 
 ! --------- Get parameters
             call getelem(meshIn, keywfact, iocc, 'F', jvCellNume, nbCell)
@@ -379,16 +385,15 @@ implicit none
 
 ! --------- Convert cells
             call meshSolidShell%convert_cells(nbCell, listCellNume, prefNodeName, prefNodeNume)
-
-! --------- Orient HEXA9
-            call orieHexa9(iOcc, nbCell, listCellNume, meshIn)
-
             call jedetr(jvCellNume)
+
         end do
+
 ! ----- Copy mesh
         call meshSolidShell%copy_mesh(meshOut)
         call meshSolidShell%create_joints(meshOut)
         call meshSolidShell%clean()
+
         goto 350
     endif
 
