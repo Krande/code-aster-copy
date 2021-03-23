@@ -107,6 +107,27 @@ extern void terminate( void );
 #define CALL_ASABRT( a ) CALLP( ASABRT, asabrt, a )
 extern void DEFP( ASABRT, asabrt, _IN ASTERINTEGER * );
 
+/* AS_MPICHECK checks the return code of an MPI function */
+#define AS_MPICHECK(code) int ret = (code); \
+                    if ( (ret) == MPI_ERR_COMM ) { \
+            DEBUG_LOC; DBGV("Invalid communicator: %s", #code); \
+            INTERRUPT(17); } \
+                    else if ( (ret) == MPI_ERR_TYPE ) { \
+            DEBUG_LOC; DBGV("Invalid datatype argument: %s", #code); \
+            INTERRUPT(17); } \
+                    else if ( (ret) == MPI_ERR_COUNT ) { \
+            DEBUG_LOC; DBGV("Invalid count argument: %s", #code); \
+            INTERRUPT(17); } \
+                    else if ( (ret) == MPI_ERR_TAG ) { \
+            DEBUG_LOC; DBGV("Invalid tag argument: %s", #code); \
+            INTERRUPT(17); } \
+                    else if ( (ret) == MPI_ERR_RANK ) { \
+            DEBUG_LOC; DBGV("Invalid source or destination rank: %s", #code); \
+            INTERRUPT(17); } \
+                    else if ( (ret) != MPI_SUCCESS ) { \
+            DEBUG_LOC; DBGV("Unknown error: %s", #code); \
+            INTERRUPT(17); }
+
 /*
  *   PRIVATE FUNCTIONS
  *

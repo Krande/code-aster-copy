@@ -233,7 +233,7 @@ int aster_set_mpi_barrier(aster_comm_t *node) {
         return 1;
     }
 
-    AS_ASSERT(MPI_Barrier(node->id) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Barrier(node->id));
 #endif
     return 0;
 }
@@ -244,7 +244,7 @@ int aster_mpi_bcast(void *buffer, int count, MPI_Datatype datatype, int root,
     /*! Broadcasts a message from one process to all other processes */
 #ifdef ASTER_HAVE_MPI
     DEBUG_MPI("MPI_Bcast: send %d values from proc #%d\n", count, root);
-    AS_ASSERT(MPI_Bcast(buffer, count, datatype, root, node->id) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Bcast(buffer, count, datatype, root, node->id));
 #endif
     return 0;
 }
@@ -254,7 +254,7 @@ int aster_mpi_allreduce(void *sendbuf, void *recvbuf, int count,
     /*! Reduces a message and distributes the result to all other processes */
 #ifdef ASTER_HAVE_MPI
     DEBUG_MPI("MPI_Allreduce: send %d values from proc #%d\n", count, root);
-    AS_ASSERT(MPI_Allreduce(sendbuf, recvbuf, count, sendtype, op, node->id) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Allreduce(sendbuf, recvbuf, count, sendtype, op, node->id));
 #endif
     return 0;
 }
@@ -265,9 +265,9 @@ int aster_mpi_gather(void *sendbuf, int sendcnt, MPI_Datatype sendtype,
     /*! Gathers together values from a group of processes */
 #ifdef ASTER_HAVE_MPI
     DEBUG_MPI("MPI_Gather: %d gathered values by proc #%d\n", sendcnt, root);
-    AS_ASSERT(MPI_Gather(sendbuf, sendcnt, sendtype,
+    AS_MPICHECK(MPI_Gather(sendbuf, sendcnt, sendtype,
                          recvbuf, recvcnt, recvtype,
-                         root, node->id) == MPI_SUCCESS);
+                         root, node->id));
 #endif
     return 0;
 }
@@ -291,9 +291,9 @@ int aster_mpi_allgather(void *sendbuf, int sendcnt, MPI_Datatype sendtype,
     /*! Gathers together values from a group of processes */
 #ifdef ASTER_HAVE_MPI
     DEBUG_MPI("MPI_AllGather: %d gathered values by all %s\n", sendcnt, " ");
-    AS_ASSERT(MPI_Allgather(sendbuf, sendcnt, sendtype,
+    AS_MPICHECK(MPI_Allgather(sendbuf, sendcnt, sendtype,
                             recvbuf, recvcnt, recvtype,
-                            node->id) == MPI_SUCCESS);
+                            node->id));
 #endif
     return 0;
 }
@@ -304,9 +304,9 @@ int aster_mpi_allgatherv(void *sendbuf, int sendcnt, MPI_Datatype sendtype,
     /*! Gathers together values from a group of processes */
 #ifdef ASTER_HAVE_MPI
     DEBUG_MPI("MPI_AllGather: %d gathered values by all %s\n", sendcnt, " ");
-    AS_ASSERT(MPI_Allgatherv(sendbuf, sendcnt, sendtype,
-                            recvbuf, recvcnt, displs, recvtype,
-                            node->id) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Allgatherv(sendbuf, sendcnt, sendtype,
+                          recvbuf, recvcnt, displs, recvtype,
+                          node->id));
 #endif
     return 0;
 }
@@ -424,8 +424,8 @@ void DEFPPPPP(ASMPI_SEND_R, asmpi_send_r, ASTERDOUBLE *buf, ASTERINTEGER4 *count
 #ifdef ASTER_HAVE_MPI
     mpicom = MPI_Comm_f2c(*comm);
     DEBUG_MPI("MPI_Send: send %d double values to proc #%d\n", *count, *dest);
-    AS_ASSERT(MPI_Send((void *)buf, *count, MPI_DOUBLE_PRECISION,
-                       *dest, *tag, mpicom) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Send((void *)buf, *count, MPI_DOUBLE_PRECISION,
+                       *dest, *tag, mpicom));
 #endif
     return;
 }
@@ -436,8 +436,8 @@ void DEFPPPPP(ASMPI_SEND_I, asmpi_send_i, ASTERINTEGER *buf, ASTERINTEGER4 *coun
 #ifdef ASTER_HAVE_MPI
     mpicom = MPI_Comm_f2c(*comm);
     DEBUG_MPI("MPI_Send: send %d integer8 values to proc #%d\n", *count, *dest);
-    AS_ASSERT(MPI_Send((void *)buf, *count, MPI_INTEGER8,
-                       *dest, *tag, mpicom) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Send((void *)buf, *count, MPI_INTEGER8,
+                       *dest, *tag, mpicom));
 #endif
     return;
 }
@@ -448,8 +448,8 @@ void DEFPPPPP(ASMPI_SEND_I4, asmpi_send_i4, ASTERINTEGER4 *buf, ASTERINTEGER4 *c
 #ifdef ASTER_HAVE_MPI
     mpicom = MPI_Comm_f2c(*comm);
     DEBUG_MPI("MPI_Send: send %d integer4 values to proc #%d\n", *count, *dest);
-    AS_ASSERT(MPI_Send((void *)buf, *count, MPI_INTEGER4,
-                       *dest, *tag, mpicom) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Send((void *)buf, *count, MPI_INTEGER4,
+                       *dest, *tag, mpicom));
 #endif
     return;
 }
@@ -464,8 +464,8 @@ void DEFPPPPP(ASMPI_RECV_R, asmpi_recv_r, ASTERDOUBLE *buf, ASTERINTEGER4 *count
 #ifdef ASTER_HAVE_MPI
     mpicom = MPI_Comm_f2c(*comm);
     DEBUG_MPI("MPI_Recv: recieve %d double values from proc #%d\n", *count, *source);
-    AS_ASSERT(MPI_Recv((void *)buf, *count, MPI_DOUBLE_PRECISION,
-                       *source, *tag, mpicom, MPI_STATUS_IGNORE) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Recv((void *)buf, *count, MPI_DOUBLE_PRECISION,
+                       *source, *tag, mpicom, MPI_STATUS_IGNORE));
 #endif
     return;
 }
@@ -476,8 +476,8 @@ void DEFPPPPP(ASMPI_RECV_I, asmpi_recv_i, ASTERINTEGER *buf, ASTERINTEGER4 *coun
 #ifdef ASTER_HAVE_MPI
     mpicom = MPI_Comm_f2c(*comm);
     DEBUG_MPI("MPI_Recv: recieve %d integer8 values from proc #%d\n", *count, *source);
-    AS_ASSERT(MPI_Recv((void *)buf, *count, MPI_INTEGER8,
-                       *source, *tag, mpicom, MPI_STATUS_IGNORE) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Recv((void *)buf, *count, MPI_INTEGER8,
+                       *source, *tag, mpicom, MPI_STATUS_IGNORE));
 #endif
     return;
 }
@@ -488,8 +488,8 @@ void DEFPPPPP(ASMPI_RECV_I4, asmpi_recv_i4, ASTERINTEGER4 *buf, ASTERINTEGER4 *c
 #ifdef ASTER_HAVE_MPI
     mpicom = MPI_Comm_f2c(*comm);
     DEBUG_MPI("MPI_Recv: recieve %d integer4 values from proc #%d\n", *count, *source);
-    AS_ASSERT(MPI_Recv((void *)buf, *count, MPI_INTEGER4,
-                       *source, *tag, mpicom, MPI_STATUS_IGNORE) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Recv((void *)buf, *count, MPI_INTEGER4,
+                       *source, *tag, mpicom, MPI_STATUS_IGNORE));
 #endif
     return;
 }
@@ -505,8 +505,8 @@ void DEFPPPPPP(ASMPI_ISEND_I, asmpi_isend_i, ASTERINTEGER *buf, ASTERINTEGER4 *c
 #ifdef ASTER_HAVE_MPI
     mpicom = MPI_Comm_f2c(*comm);
     DEBUG_MPI("MPI_Isend: isend %d integer8 values to proc #%d\n", *count, *dest);
-    AS_ASSERT(MPI_Isend((void *)buf, *count, MPI_INTEGER8,
-                        *dest, *tag, mpicom, &mpireq) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Isend((void *)buf, *count, MPI_INTEGER8,
+                        *dest, *tag, mpicom, &mpireq));
     *request = MPI_Request_c2f(mpireq);
 #endif
     return;
@@ -523,8 +523,8 @@ void DEFPPPPPP(ASMPI_IRECV_I, asmpi_irecv_i, ASTERINTEGER *buf, ASTERINTEGER4 *c
 #ifdef ASTER_HAVE_MPI
     mpicom = MPI_Comm_f2c(*comm);
     DEBUG_MPI("MPI_Irecv: irecieve %d integer8 values from proc #%d\n", *count, *source);
-    AS_ASSERT(MPI_Irecv((void *)buf, *count, MPI_INTEGER8,
-                        *source, *tag, mpicom, &mpireq) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Irecv((void *)buf, *count, MPI_INTEGER8,
+                        *source, *tag, mpicom, &mpireq));
     *request = MPI_Request_c2f(mpireq);
 #endif
     return;
@@ -541,8 +541,8 @@ void DEFPPPPPP(ASMPI_ISEND_I4, asmpi_isend_i4, ASTERDOUBLE *buf, ASTERINTEGER4 *
 #ifdef ASTER_HAVE_MPI
     mpicom = MPI_Comm_f2c(*comm);
     DEBUG_MPI("MPI_Isend: isend %d integer4 values to proc #%d\n", *count, *dest);
-    AS_ASSERT(MPI_Isend((void *)buf, *count, MPI_INTEGER4,
-                        *dest, *tag, mpicom, &mpireq) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Isend((void *)buf, *count, MPI_INTEGER4,
+                        *dest, *tag, mpicom, &mpireq));
     *request = MPI_Request_c2f(mpireq);
 #endif
     return;
@@ -559,8 +559,8 @@ void DEFPPPPPP(ASMPI_IRECV_I4, asmpi_irecv_i4, ASTERDOUBLE *buf, ASTERINTEGER4 *
 #ifdef ASTER_HAVE_MPI
     mpicom = MPI_Comm_f2c(*comm);
     DEBUG_MPI("MPI_Irecv: irecieve %d integer4 values from proc #%d\n", *count, *source);
-    AS_ASSERT(MPI_Irecv((void *)buf, *count, MPI_INTEGER4,
-                        *source, *tag, mpicom, &mpireq) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Irecv((void *)buf, *count, MPI_INTEGER4,
+                        *source, *tag, mpicom, &mpireq));
     *request = MPI_Request_c2f(mpireq);
 #endif
     return;
@@ -576,7 +576,7 @@ void DEFPP(ASMPI_TEST, asmpi_test, MPI_Fint *request, ASTERINTEGER4 *flag) {
 #ifdef ASTER_HAVE_MPI
     mpireq = MPI_Request_f2c(*request);
     DEBUG_MPI("MPI_Test: Test %d communication request %s \n", mpireq, " ");
-    AS_ASSERT(MPI_Test(&mpireq, &iflag, MPI_STATUS_IGNORE) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Test(&mpireq, &iflag, MPI_STATUS_IGNORE));
     /* true=1, false=0 */
     *flag = (ASTERINTEGER4)iflag;
 #endif
@@ -592,7 +592,7 @@ void DEFP(ASMPI_CANCEL, asmpi_cancel, MPI_Fint *request) {
 #ifdef ASTER_HAVE_MPI
     mpireq = MPI_Request_f2c(*request);
     DEBUG_MPI("MPI_Cancel: cancel %d communication request %s \n", mpireq, " ");
-    AS_ASSERT(MPI_Cancel(&mpireq) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Cancel(&mpireq));
 #endif
     return;
 }
@@ -621,8 +621,8 @@ void DEFPPPPPP(ASMPI_REDUCE_R, asmpi_reduce_r, ASTERDOUBLE *sendbuf, ASTERDOUBLE
     mpicom = MPI_Comm_f2c(*comm);
     mpiop = MPI_Op_f2c( *op );
     DEBUG_MPI("MPI_Reduce: %d double reduced values by all %s\n", *count, " ");
-    AS_ASSERT(MPI_Reduce((void *)sendbuf, (void *)recvbuf, *count, MPI_DOUBLE_PRECISION,
-                         mpiop, *root, mpicom) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Reduce((void *)sendbuf, (void *)recvbuf, *count, MPI_DOUBLE_PRECISION,
+                         mpiop, *root, mpicom));
 #endif
     return;
 }
@@ -635,8 +635,8 @@ void DEFPPPPPP(ASMPI_REDUCE_C, asmpi_reduce_c, ASTERDOUBLE *sendbuf, ASTERDOUBLE
     mpicom = MPI_Comm_f2c(*comm);
     mpiop = MPI_Op_f2c( *op );
     DEBUG_MPI("MPI_Reduce: %d double complex reduced values by all %s\n", *count, " ");
-    AS_ASSERT(MPI_Reduce((void *)sendbuf, (void *)recvbuf, *count, MPI_DOUBLE_COMPLEX,
-                         mpiop, *root, mpicom) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Reduce((void *)sendbuf, (void *)recvbuf, *count, MPI_DOUBLE_COMPLEX,
+                         mpiop, *root, mpicom));
 #endif
     return;
 }
@@ -649,8 +649,8 @@ void DEFPPPPPP(ASMPI_REDUCE_I, asmpi_reduce_i, ASTERINTEGER *sendbuf, ASTERINTEG
     mpicom = MPI_Comm_f2c(*comm);
     mpiop = MPI_Op_f2c( *op );
     DEBUG_MPI("MPI_Reduce: %d integer8 reduced values by all %s\n", *count, " ");
-    AS_ASSERT(MPI_Reduce((void *)sendbuf, (void *)recvbuf, *count, MPI_INTEGER8,
-                         mpiop, *root, mpicom) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Reduce((void *)sendbuf, (void *)recvbuf, *count, MPI_INTEGER8,
+                         mpiop, *root, mpicom));
 #endif
     return;
 }
@@ -664,8 +664,8 @@ void DEFPPPPPP(ASMPI_REDUCE_I4, asmpi_reduce_i4, ASTERINTEGER4 *sendbuf, ASTERIN
     mpicom = MPI_Comm_f2c(*comm);
     mpiop = MPI_Op_f2c( *op );
     DEBUG_MPI("MPI_Reduce: %d integer4 reduced values by all %s\n", *count, " ");
-    AS_ASSERT(MPI_Reduce((void *)sendbuf, (void *)recvbuf, *count, MPI_INTEGER4,
-                         mpiop, *root, mpicom) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Reduce((void *)sendbuf, (void *)recvbuf, *count, MPI_INTEGER4,
+                         mpiop, *root, mpicom));
 #endif
     return;
 }
@@ -682,8 +682,8 @@ void DEFPPPPP(ASMPI_ALLREDUCE_R, asmpi_allreduce_r, ASTERDOUBLE *sendbuf, ASTERD
     mpicom = MPI_Comm_f2c(*comm);
     mpiop = MPI_Op_f2c( *op );
     DEBUG_MPI("MPI_Allreduce: %d double reduced values by all %s\n", *count, " ");
-    AS_ASSERT(MPI_Allreduce((void *)sendbuf, (void *)recvbuf, *count, MPI_DOUBLE_PRECISION,
-                            mpiop, mpicom) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Allreduce((void *)sendbuf, (void *)recvbuf, *count, MPI_DOUBLE_PRECISION,
+                            mpiop, mpicom));
 #endif
     return;
 }
@@ -696,8 +696,8 @@ void DEFPPPPP(ASMPI_ALLREDUCE_C, asmpi_allreduce_c, ASTERDOUBLE *sendbuf, ASTERD
     mpicom = MPI_Comm_f2c(*comm);
     mpiop = MPI_Op_f2c( *op );
     DEBUG_MPI("MPI_Allreduce: %d double complex reduced values by all %s\n", *count, " ");
-    AS_ASSERT(MPI_Allreduce((void *)sendbuf, (void *)recvbuf, *count, MPI_DOUBLE_COMPLEX,
-                            mpiop, mpicom) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Allreduce((void *)sendbuf, (void *)recvbuf, *count, MPI_DOUBLE_COMPLEX,
+                            mpiop, mpicom));
 #endif
     return;
 }
@@ -710,8 +710,8 @@ void DEFPPPPP(ASMPI_ALLREDUCE_I, asmpi_allreduce_i, ASTERINTEGER *sendbuf,
     mpicom = MPI_Comm_f2c(*comm);
     mpiop = MPI_Op_f2c( *op );
     DEBUG_MPI("MPI_Allreduce: %d integer8 reduced values by all %s\n", *count, " ");
-    AS_ASSERT(MPI_Allreduce((void *)sendbuf, (void *)recvbuf, *count, MPI_INTEGER8,
-                            mpiop, mpicom) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Allreduce((void *)sendbuf, (void *)recvbuf, *count, MPI_INTEGER8,
+                            mpiop, mpicom));
 #endif
     return;
 }
@@ -725,8 +725,8 @@ void DEFPPPPP(ASMPI_ALLREDUCE_I4, asmpi_allreduce_i4, ASTERDOUBLE *sendbuf,
     mpicom = MPI_Comm_f2c(*comm);
     mpiop = MPI_Op_f2c( *op );
     DEBUG_MPI("MPI_Allreduce: %d integer4 reduced values by all %s\n", *count, " ");
-    AS_ASSERT(MPI_Allreduce((void *)sendbuf, (void *)recvbuf, *count, MPI_INTEGER4,
-                            mpiop, mpicom) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Allreduce((void *)sendbuf, (void *)recvbuf, *count, MPI_INTEGER4,
+                            mpiop, mpicom));
 #endif
     return;
 }
@@ -742,8 +742,8 @@ void DEFPPPP(ASMPI_BCAST_R, asmpi_bcast_r, ASTERDOUBLE *buffer,
 #ifdef ASTER_HAVE_MPI
     mpicom = MPI_Comm_f2c(*comm);
     DEBUG_MPI("MPI_Bcast: send %d double values from proc #%d\n", *count, *root);
-    AS_ASSERT(MPI_Bcast((void *)buffer, *count, MPI_DOUBLE_PRECISION,
-                        *root, mpicom) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Bcast((void *)buffer, *count, MPI_DOUBLE_PRECISION,
+                        *root, mpicom));
 #endif
     return;
 }
@@ -755,8 +755,8 @@ void DEFPPPP(ASMPI_BCAST_C, asmpi_bcast_c, ASTERDOUBLE *buffer,
 #ifdef ASTER_HAVE_MPI
     mpicom = MPI_Comm_f2c(*comm);
     DEBUG_MPI("MPI_Bcast: send %d double complex values from proc #%d\n", *count, *root);
-    AS_ASSERT(MPI_Bcast((void *)buffer, *count, MPI_DOUBLE_COMPLEX,
-                        *root, mpicom) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Bcast((void *)buffer, *count, MPI_DOUBLE_COMPLEX,
+                        *root, mpicom));
 #endif
     return;
 }
@@ -768,8 +768,8 @@ void DEFPPPP(ASMPI_BCAST_I, asmpi_bcast_i, ASTERINTEGER *buffer,
 #ifdef ASTER_HAVE_MPI
     mpicom = MPI_Comm_f2c(*comm);
     DEBUG_MPI("MPI_Bcast: send %d integer8 values from proc #%d\n", *count, *root);
-    AS_ASSERT(MPI_Bcast((void *)buffer, *count, MPI_INTEGER8,
-                        *root, mpicom) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Bcast((void *)buffer, *count, MPI_INTEGER8,
+                        *root, mpicom));
 #endif
     return;
 }
@@ -781,8 +781,8 @@ void DEFPPPP(ASMPI_BCAST_I4, asmpi_bcast_i4, ASTERINTEGER4 *buffer,
 #ifdef ASTER_HAVE_MPI
     mpicom = MPI_Comm_f2c(*comm);
     DEBUG_MPI("MPI_Bcast: send %d integer4 values from proc #%d\n", *count, *root);
-    AS_ASSERT(MPI_Bcast((void *)buffer, *count, MPI_INTEGER4,
-                        *root, mpicom) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Bcast((void *)buffer, *count, MPI_INTEGER4,
+                        *root, mpicom));
 #endif
     return;
 }
@@ -799,8 +799,8 @@ void DEFPPPPP(ASMPI_SCAN_R, asmpi_scan_r, ASTERDOUBLE *sendbuf,
 #ifdef ASTER_HAVE_MPI
     mpicom = MPI_Comm_f2c(*comm);
     mpiop = MPI_Op_f2c( *op );
-    AS_ASSERT(MPI_Scan((void *)sendbuf, (void *)recvbuf, *count,
-                       MPI_DOUBLE_PRECISION, mpiop, mpicom) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Scan((void *)sendbuf, (void *)recvbuf, *count,
+                       MPI_DOUBLE_PRECISION, mpiop, mpicom));
 #endif
     return;
 }
@@ -813,8 +813,8 @@ void DEFPPPPP(ASMPI_SCAN_C, asmpi_scan_c, ASTERDOUBLE *sendbuf,
 #ifdef ASTER_HAVE_MPI
     mpicom = MPI_Comm_f2c(*comm);
     mpiop = MPI_Op_f2c( *op );
-    AS_ASSERT(MPI_Scan((void *)sendbuf, (void *)recvbuf, *count,
-                       MPI_DOUBLE_COMPLEX, mpiop, mpicom) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Scan((void *)sendbuf, (void *)recvbuf, *count,
+                       MPI_DOUBLE_COMPLEX, mpiop, mpicom));
 #endif
     return;
 }
@@ -827,8 +827,8 @@ void DEFPPPPP(ASMPI_SCAN_I, asmpi_scan_i, ASTERINTEGER *sendbuf,
 #ifdef ASTER_HAVE_MPI
     mpicom = MPI_Comm_f2c(*comm);
     mpiop = MPI_Op_f2c( *op );
-    AS_ASSERT(MPI_Scan((void *)sendbuf, (void *)recvbuf, *count,
-                       MPI_INTEGER8, mpiop, mpicom) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Scan((void *)sendbuf, (void *)recvbuf, *count,
+                       MPI_INTEGER8, mpiop, mpicom));
 #endif
     return;
 }
@@ -841,8 +841,8 @@ void DEFPPPPP(ASMPI_SCAN_I4, asmpi_scan_i4, ASTERINTEGER4 *sendbuf,
 #ifdef ASTER_HAVE_MPI
     mpicom = MPI_Comm_f2c(*comm);
     mpiop = MPI_Op_f2c( *op );
-    AS_ASSERT(MPI_Scan((void *)sendbuf, (void *)recvbuf, *count,
-                       MPI_INTEGER4, mpiop, mpicom) == MPI_SUCCESS);
+    AS_MPICHECK(MPI_Scan((void *)sendbuf, (void *)recvbuf, *count,
+                       MPI_INTEGER4, mpiop, mpicom));
 #endif
     return;
 }
