@@ -334,7 +334,7 @@ class MECA_HEXA20(Element):
                      (OP.CALCH_G_F.PTHETAR, LC.ETHETA), (OP.CALCH_G_F.PVARCPR, LC.ZVARCPG),
                      (SP.PVARCRR, LC.ZVARCPG), (OP.CALCH_G_F.PVARIPR, LC.ZVARINO),
                      (SP.PVITESS, DDL_MECA), (OP.CALCH_G_F.PDEG, LC.E1NEUTI),
-                     (OP.CALCH_G_F.PLAG, LC.E3NEUT_R)),
+                     (OP.CALCH_G_F.PLAG, LC.E3NEUTR)),
             para_out=((SP.PGTHETA, NEWTHETA), ),
         ),
 
@@ -347,7 +347,7 @@ class MECA_HEXA20(Element):
                      (SP.PPULPRO, LC.CFREQR), (SP.PROTATR, LC.CROTATR),
                      (SP.PSIGINR, ECONTNO), (OP.CALCH_K_G.PTHETAR, LC.ETHETA),
                      (OP.CALCH_K_G.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
-                     (OP.CALCH_K_G.PDEG, LC.E1NEUTI),(OP.CALCH_K_G.PLAG, LC.E3NEUT_R)),
+                     (OP.CALCH_K_G.PDEG, LC.E1NEUTI),(OP.CALCH_K_G.PLAG, LC.E3NEUTR)),
             para_out=((SP.PGTHETA, NEWTHETA), ),
         ),
 
@@ -361,7 +361,7 @@ class MECA_HEXA20(Element):
                      (SP.PSIGINR, ECONTNO), (SP.PTEMPSR, CTEMPSR),
                      (OP.CALCH_K_G_F.PTHETAR, LC.ETHETA), (OP.CALCH_K_G_F.PVARCPR, LC.ZVARCPG),
                      (SP.PVARCRR, LC.ZVARCPG), (OP.CALCH_K_G_F.PDEG, LC.E1NEUTI),
-                     (OP.CALCH_K_G_F.PLAG, LC.E3NEUT_R)),
+                     (OP.CALCH_K_G_F.PLAG, LC.E3NEUTR)),
             para_out=((SP.PGTHETA, NEWTHETA), ),
         ),
 

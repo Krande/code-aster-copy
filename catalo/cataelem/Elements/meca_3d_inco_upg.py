@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -70,6 +70,8 @@ EDEFONO  = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
     components=('EPXX','EPYY','EPZZ','EPXY','EPXZ',
           'EPYZ',))
 
+E3NEUTR = LocatedComponents(phys=PHY.NEUT_R, type='ELEM',
+                            components=('X[3]',))
 
 CEPSINO  = LocatedComponents(phys=PHY.EPSI_R, type='ELEM',
     components=('EPXX','EPYY','EPZZ','EPXY','EPXZ',
@@ -125,6 +127,8 @@ EGGEOP_R = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
 CTEMPSR  = LocatedComponents(phys=PHY.INST_R, type='ELEM',
     components=('INST',))
 
+E3NEUTR = LocatedComponents(phys=PHY.NEUT_R, type='ELEM',
+                            components=('X[3]',))
 
 EGNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type='ELGA', location='RIGI',
     components=('X[30]',))
@@ -191,6 +195,9 @@ ECOEQPG  = LocatedComponents(phys=PHY.SIEF_R, type='ELGA', location='RIGI',
 ESOURCR  = LocatedComponents(phys=PHY.SOUR_R, type='ELGA', location='RIGI',
     components=('SOUR',))
 
+NEWTHETA  = LocatedComponents(phys=PHY.G, type='ELEM',
+    components=('GTHETA','FIC[3]','K[3]',))
+
 
 ZVARIPG  = LocatedComponents(phys=PHY.VARI_R, type='ELGA', location='RIGI',
     components=('VARI',))
@@ -223,6 +230,64 @@ class MINC_HEXA20(Element):
         )
     calculs = (
 
+
+        OP.CALCH_G(te=222,
+            para_in=((SP.PACCELE, NDEPLAR), (OP.CALCH_G.PCOMPOR, LC.CCOMPOR),
+                     (SP.PCONTGR, ESIGMPG), (OP.CALCH_G.PCONTRR, ESIGMPG),
+                     (SP.PDEFOPL, EDEFONO), (SP.PDEPLAR, NDEPLAR),
+                     (SP.PEPSINR, CEPSINO), (SP.PFRVOLU, NFORCER),
+                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (SP.PPESANR, LC.CPESANR), (SP.PROTATR, LC.CROTATR),
+                     (SP.PSIGINR, ESIGMNO), (OP.CALCH_G.PTHETAR, LC.ETHETA),
+                     (OP.CALCH_G.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
+                     (OP.CALCH_G.PVARIPR, LC.ZVARINO), (SP.PVITESS, NDEPLAR),
+                     (OP.CALCH_G.PDEG, LC.E1NEUTI),(OP.CALCH_G.PLAG, LC.E3NEUTR),
+                     ),
+            para_out=((SP.PGTHETA, NEWTHETA), ),
+        ),
+
+        OP.CALCH_G_F(te=222,
+            para_in=((SP.PACCELE, NDEPLAR), (OP.CALCH_G_F.PCOMPOR, LC.CCOMPOR),
+                     (SP.PCONTGR, ESIGMPG), (OP.CALCH_G_F.PCONTRR, ESIGMPG),
+                     (SP.PDEFOPL, EDEFONO), (SP.PDEPLAR, NDEPLAR),
+                     (SP.PEPSINF, CEPSINF), (SP.PFFVOLU, CFORCEF),
+                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (SP.PPESANR, LC.CPESANR), (SP.PROTATR, LC.CROTATR),
+                     (SP.PSIGINR, ESIGMNO), (SP.PTEMPSR, CTEMPSR),
+                     (OP.CALCH_G_F.PTHETAR, LC.ETHETA), (OP.CALCH_G_F.PVARCPR, LC.ZVARCPG),
+                     (SP.PVARCRR, LC.ZVARCPG), (OP.CALCH_G_F.PVARIPR, LC.ZVARINO),
+                     (SP.PVITESS, NDEPLAR), (OP.CALCH_G_F.PDEG, LC.E1NEUTI),
+                     (OP.CALCH_G_F.PLAG, LC.E3NEUTR),),
+            para_out=((SP.PGTHETA, NEWTHETA), ),
+        ),
+
+        OP.CALCH_K_G(te=222,
+            para_in=((OP.CALCH_K_G.PBASLOR, LC.N9NEUT_R), (OP.CALCH_K_G.PCOMPOR, LC.CCOMPOR),
+                     (SP.PCOURB, LC.G27NEUTR),
+                     (SP.PDEPLAR, NDEPLAR), (SP.PEPSINR, CEPSINO),
+                     (SP.PFRVOLU, NFORCER), (SP.PGEOMER, NGEOMER),
+                     (SP.PMATERC, LC.CMATERC), (SP.PPESANR, LC.CPESANR),
+                     (SP.PPULPRO, LC.CFREQR), (SP.PROTATR, LC.CROTATR),
+                     (SP.PSIGINR, ESIGMNO), (OP.CALCH_K_G.PTHETAR, LC.ETHETA),
+                     (OP.CALCH_K_G.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
+                     (OP.CALCH_K_G.PDEG, LC.E1NEUTI),(OP.CALCH_K_G.PLAG, LC.E3NEUTR),),
+            para_out=((SP.PGTHETA, NEWTHETA), ),
+        ),
+
+        OP.CALCH_K_G_F(te=222,
+            para_in=((OP.CALC_K_G_F.PBASLOR, LC.N9NEUT_R), (OP.CALC_K_G_F.PCOMPOR, LC.CCOMPOR),
+                     (SP.PCOURB, LC.G27NEUTR),
+                     (SP.PDEPLAR, NDEPLAR), (SP.PEPSINF, CEPSINF),
+                     (SP.PFFVOLU, CFORCEF), (SP.PGEOMER, NGEOMER),
+                     (SP.PMATERC, LC.CMATERC), (SP.PPESANR, LC.CPESANR),
+                     (SP.PPULPRO, LC.CFREQR), (SP.PROTATR, LC.CROTATR),
+                     (SP.PSIGINR, ESIGMNO), (SP.PTEMPSR, CTEMPSR),
+                     (OP.CALCH_K_G_F.PTHETAR, LC.ETHETA), (OP.CALCH_K_G_F.PVARCPR, LC.ZVARCPG),
+                     (SP.PVARCRR, LC.ZVARCPG), (OP.CALCH_K_G_F.PDEG, LC.E1NEUTI),
+                     (OP.CALCH_K_G_F.PLAG, LC.E3NEUTR),),
+            para_out=((SP.PGTHETA, NEWTHETA), ),
+        ),
+
         OP.CALC_G(te=27,
             para_in=((SP.PACCELE, NDEPLAR), (OP.CALC_G.PCOMPOR, LC.CCOMPOR),
                      (SP.PCONTGR, ESIGMPG), (OP.CALC_G.PCONTRR, ESIGMPG),
@@ -254,7 +319,7 @@ class MINC_HEXA20(Element):
 
         OP.CALC_K_G(te=295,
             para_in=((OP.CALC_K_G.PBASLOR, LC.N9NEUT_R), (OP.CALC_K_G.PCOMPOR, LC.CCOMPOR),
-                     (SP.PCOURB, LC.G27NEUTR), (SP.PDEPINR, NDEPLAR),
+                     (SP.PCOURB, LC.G27NEUTR),(SP.PDEPINR, NDEPLAR),
                      (SP.PDEPLAR, NDEPLAR), (SP.PEPSINR, CEPSINO),
                      (SP.PFRVOLU, NFORCER), (SP.PGEOMER, NGEOMER),
                      (OP.CALC_K_G.PLSN, LC.N1NEUT_R), (OP.CALC_K_G.PLST, LC.N1NEUT_R),
@@ -268,7 +333,7 @@ class MINC_HEXA20(Element):
 
         OP.CALC_K_G_F(te=295,
             para_in=((OP.CALC_K_G_F.PBASLOR, LC.N9NEUT_R), (OP.CALC_K_G_F.PCOMPOR, LC.CCOMPOR),
-                     (SP.PCOURB, LC.G27NEUTR), (SP.PDEPINR, NDEPLAR),
+                     (SP.PCOURB, LC.G27NEUTR),(SP.PDEPINR, NDEPLAR),
                      (SP.PDEPLAR, NDEPLAR), (SP.PEPSINF, CEPSINF),
                      (SP.PFFVOLU, CFORCEF), (SP.PGEOMER, NGEOMER),
                      (OP.CALC_K_G_F.PLSN, LC.N1NEUT_R), (OP.CALC_K_G_F.PLST, LC.N1NEUT_R),
