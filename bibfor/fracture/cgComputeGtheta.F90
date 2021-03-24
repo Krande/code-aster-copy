@@ -410,6 +410,17 @@ use calcG_type
         call cgTheta%getBaseLoc(v_base)
         gth(1:7) = gth(1:7) / v_base(1)
      endif
+!     
+!   Correction dans le cas des fonds fermés (LAGRANDE/LINEAIRE) : G(1)=G(N)
+    if(cgTheta%l_closed)then
+        gthi(cgTheta%nb_theta_field)=gth(1)
+        k1th(cgTheta%nb_theta_field)=k1th(1)
+        k2th(cgTheta%nb_theta_field)=k2th(1)
+        k3th(cgTheta%nb_theta_field)=k3th(1)
+        g1th(cgTheta%nb_theta_field)=g1th(1)
+        g2th(cgTheta%nb_theta_field)=g2th(1)
+        g3th(cgTheta%nb_theta_field)=g3th(1)
+    endif
 !
 !    Cas 3D, on détermine G(s) et les K(s)
     if (cgField%ndim.eq.3) then
