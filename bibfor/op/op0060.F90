@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -248,7 +248,7 @@ subroutine op0060()
     endif
 !   
 !   CALCUL DE L'ABSCISSE CURVILIGNE ET STOCKAGE DANS OBJET INTERNE OP0060
-    absfon = '&&OP0060.ABSFOND'
+    absfon = resu//'.ABSFON'
     call fonfis2(noma, nbnoff, fonoeu, absfon)
 !
 !     --------------------------------------------------------------- 
@@ -267,9 +267,6 @@ subroutine op0060()
         call fonbas2(noma, basnof, typm, fonoeu, nbnoff,absfon,&
                     basloc,abscur, lnno, ltno)
     endif
-!
-    call jedetr(absfon)
-!
 !
 !     ---------------------------------------------------------------
 !     EXTRACTION DES NOEUDS DES LEVRES SUR DIRECTON NORMALE

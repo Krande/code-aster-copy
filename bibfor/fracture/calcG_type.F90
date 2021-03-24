@@ -223,6 +223,7 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table
         procedure, pass    :: compute_curvature
         procedure, pass    :: getCoorNodes
         procedure, pass    :: getAbscurv
+        procedure, pass    :: getAbsfon
         procedure, pass    :: getBaseLoc
         procedure, pass    :: getFondTailleR
         procedure, pass    :: getFondNoeu
@@ -676,7 +677,7 @@ contains
         real(kind=8) :: maxtai, mintai
         aster_logical :: l_disc
         real(kind=8), pointer :: fondTailleR(:) => null()
-        real(kind=8), pointer :: abscur(:)  => null()
+        real(kind=8), pointer :: absfon(:)  => null()
         character(len=8), pointer :: fondNoeud(:)  => null()
 !
         call jemarq()
@@ -773,11 +774,10 @@ contains
             endif
         endif
 !
-!       Get AbsFond = Abscurv for nodes of the crack front
-!       extraction à modifier lors de la résolution de issue30288 (NB_POINT_FOND)
+!       Extraction à modifier lors de la résolution de issue30288 (NB_POINT_FOND)
         call wkvect(this%absfond, 'V V R8', this%nb_fondNoeud, ibasf)
         call wkvect(this%fondNoeudNume, 'V V I', this%nb_fondNoeud, inume)
-        call this%getAbscurv(abscur)
+        call this%getAbscurv(absfon)
         call this%getFondNoeu(fondNoeud)
 !
         do i = 1, this%nb_fondNoeud
@@ -785,8 +785,7 @@ contains
 !           Récupération du numéro de noeud
             call jenonu(jexnom(this%nomNoeud, fondNoeud(i)), num)
 !
-!           Extraction de l'abscisse curviligne pour ce numéro de noeud
-            zr(ibasf-1+i) = abscur(num)
+            zr(ibasf-1+i) = absfon(i)
             zi(inume-1+i) = num
         enddo
 !
@@ -861,6 +860,29 @@ contains
 !
         call jemarq()
         call jeveuo(this%crack//'.ABSCUR', 'L', vr=v_abs)
+        call jedema()
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine getAbsfon(this, v_absfon)
+!
+    implicit none
+!
+        class(CalcG_Theta), intent(in)  :: this
+        real(kind=8), pointer :: v_absfon(:)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Get pointer on abscisse curviligne
+!   In this     : theta type
+! --------------------------------------------------------------------------------------------------
+!
+        call jemarq()
+        call jeveuo(this%crack//'.ABSFON', 'L', vr=v_absfon)
         call jedema()
 !
     end subroutine

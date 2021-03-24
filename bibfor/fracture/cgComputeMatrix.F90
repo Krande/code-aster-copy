@@ -60,7 +60,7 @@ use calcG_type
     aster_logical    :: l_quad
     integer          :: iatyma, imatr, ibasf, i, j
     character(len=8) :: typma
-    real(kind=8)     :: lonfis
+!    real(kind=8)     :: lonfis
     
 !
 ! --------------------------------------------------------------------------------------------------
@@ -75,9 +75,9 @@ use calcG_type
         zr(imatr)=1.0
     else if(cgField%ndim.eq.3) then
 
-!       Récupération de la longuer de fissure:
-        call jeveuo(cgTheta%absfond, 'L', ibasf)
-        lonfis=zr(ibasf-1+cgTheta%nb_fondNoeud)
+!!       Récupération de la longuer de fissure:
+!        call jeveuo(cgTheta%absfond, 'L', ibasf)
+!        lonfis=zr(ibasf-1+cgTheta%nb_fondNoeud)
 !
         if(cgTheta%discretization .eq. 'LINEAIRE')then
 !       Détermination du caractère linéaire ou quadratique du maillage

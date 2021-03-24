@@ -50,10 +50,10 @@ use calcG_type
     type(CalcG_field), intent(in) :: cgField
     type(CalcG_theta), intent(inout) :: cgTheta
 
-    integer :: i
+    integer :: i, ibasf
     integer :: nbel, iret, jcnsl
 
-    real(kind=8) :: d, xm, ym, zm, xn, yn, zn, eps, alpha, lonfis
+    real(kind=8) :: d, xm, ym, zm, xn, yn, zn, eps, alpha
 
     character(len=8), parameter :: licmp(6) = ['MODULE  ','DIR_X   ','DIR_Y   ','DIR_Z   ',&
                                                'ABSC_CUR','LONG    ']
@@ -96,7 +96,6 @@ use calcG_type
     call jemarq()
 !
     eps = 1.d-06
-    lonfis = 0.d0
 !
     call cgTheta%getCoorNodes(v_coor)
     call cgTheta%getBaseLoc(v_base)
@@ -107,11 +106,10 @@ use calcG_type
     if(cgField%level_info>1) then
         call utmess('I', 'RUPTURE3_2')
     end if
-
-    do i = 1, nbel
-        if(v_absc(i).ge.lonfis) lonfis=v_absc(i)
-    enddo
-    cgTheta%lonfis = lonfis
+!
+!   Récupération de la longuer de fissure:
+    call jeveuo(cgTheta%absfond, 'L', ibasf)
+    cgTheta%lonfis = zr(ibasf-1+cgTheta%nb_fondNoeud)
 !
     ! Vérifications spécifiques en 3D
     if (cgField%ndim .eq. 3) then
@@ -216,7 +214,7 @@ use calcG_type
         if(cgField%ndim .eq. 2) then
             v_theta((i-1)*6+6) = 0.d0
         else
-            v_theta((i-1)*6+6) = lonfis
+            v_theta((i-1)*6+6) = cgTheta%lonfis
         endif
     end do
 !
