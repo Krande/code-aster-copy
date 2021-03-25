@@ -40,13 +40,12 @@ void _check_pyClass() {
 CommandSyntax::CommandSyntax( const std::string name ) : _commandName( name ) {
     _check_pyClass();
 
-    _pySyntax =
-        PyObject_CallFunction( CommandSyntax::pyClass, (char *)"s", (char *)( name.c_str() ) );
+    std::string format( "s" );
+    _pySyntax = PyObject_CallFunction( CommandSyntax::pyClass, format.c_str(), name.c_str() );
     if ( _pySyntax == NULL ) {
         throw std::runtime_error( "Error during `CommandSyntax.__init__`." );
     }
 
-    Py_INCREF( _pySyntax );
     register_sh_etape( append_etape( _pySyntax ) );
 }
 
@@ -57,20 +56,23 @@ void CommandSyntax::free() {
     if ( _pySyntax == NULL ) {
         return;
     }
+    
     register_sh_etape( pop_etape() );
     PyObject *res = PyObject_CallMethod( _pySyntax, (char *)"free", NULL );
     if ( res == NULL ) {
         throw std::runtime_error( "Error calling `CommandSyntax.free`." );
     }
-
-    Py_XDECREF( res );
-    Py_XDECREF( _pySyntax );
-    _pySyntax = NULL;
+    Py_DECREF( res );
+    Py_CLEAR( _pySyntax );
+    Py_CLEAR( pyClass );
 }
 
 void CommandSyntax::debugPrint() const {
     PyObject *res = PyObject_CallMethod( _pySyntax, (char *)"__repr__", NULL );
-    Py_XDECREF( res );
+    if ( res == NULL ) {
+        throw std::runtime_error( "Error calling `CommandSyntax.__repr__`." );
+    }
+    Py_DECREF( res );
 }
 
 void CommandSyntax::define( SyntaxMapContainer &syntax ) {
@@ -79,7 +81,8 @@ void CommandSyntax::define( SyntaxMapContainer &syntax ) {
     if ( res == NULL ) {
         throw std::runtime_error( "Error calling `CommandSyntax.define`." );
     }
-    Py_XDECREF( res );
+    Py_DECREF( res );
+    Py_DECREF( keywords );   
 }
 
 void CommandSyntax::define( PyObject *keywords ) {
@@ -87,7 +90,7 @@ void CommandSyntax::define( PyObject *keywords ) {
     if ( res == NULL ) {
         throw std::runtime_error( "Error calling `CommandSyntax.define`." );
     }
-    Py_XDECREF( res );
+    Py_DECREF( res );
 }
 
 void CommandSyntax::define( const CapyConvertibleSyntax &syntax ) {
@@ -97,9 +100,9 @@ void CommandSyntax::define( const CapyConvertibleSyntax &syntax ) {
 
 void CommandSyntax::setResult( const std::string resultName, const std::string typeSd ) const {
     PyObject *res = PyObject_CallMethod( _pySyntax, (char *)"setResult", (char *)"ss",
-                                         (char *)resultName.c_str(), (char *)typeSd.c_str() );
+                                         resultName.c_str(), typeSd.c_str() );
     if ( res == NULL ) {
         throw std::runtime_error( "Error calling `CommandSyntax.setResult`." );
     }
-    Py_XDECREF( res );
+    Py_DECREF( res );
 }
