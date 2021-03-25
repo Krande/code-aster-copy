@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ from ..Objects.function_py import t_fonction
 from ..Objects.table_py import Table
 from .Utils.optimize import fmin
 from .Utils.random_signal_utils import (DSP2ACCE1D, DSP2FR, RAND_DSP, RAND_VEC,
-                                        SRO2DSP, Rice2, acce_filtre_CP,
+                                        SRO2DSP, Rice2, acce_filtre_CP, butterfilter,
                                         calc_dsp_KT, calc_phase_delay,
                                         corrcoefmodel, dsp_filtre_CP, f_ARIAS,
                                         f_ARIAS_TSM, f_opt1, f_opt2, f_opta,
@@ -205,6 +205,7 @@ class Generator(object):
         self.method_params = params.method_keys
         self.simu_params = params.simulation_keys
         self.FREQ_FILTRE = params.simulation_keys.get('FREQ_FILTRE')
+        self.FREQ_FILTRE_ZPA = params.simulation_keys.get('FREQ_FILTRE_ZPA')
         self.FREQ_CORNER = params.simulation_keys.get('FREQ_CORNER')
         self.FREQ_PENTE = params.simulation_keys.get('FREQ_PENTE')
         self.DSP_args = {}
@@ -398,10 +399,15 @@ class GeneratorSpectrum(Generator):
                                     **self.SRO_args)
         if self.FREQ_CORNER > 0.0:
             f_dsp = dsp_filtre_CP(f_dsp, self.FREQ_CORNER)
+        if self.FREQ_FILTRE_ZPA > 0.0:
+            f_dsp = butterfilter(self.FREQ_FILTRE_ZPA, f_dsp)
+
         fonc_dsp = f_dsp.evalfonc(self.sampler.liste_w2)
         self.DSP_args.update({'FONC_DSP': fonc_dsp,
                               'TYPE_DSP': 'SC', 'FC': 0.05})
         self.SRO_args['FONC_SPEC'] = f_spec_ref
+
+
         if self.FREQ_PENTE is not None:
             self.DSP_args['TYPE_DSP'] = 'FR'
             vop, amo, R0, R2, f_FIT = DSP2FR(self.DSP_args['FONC_DSP'],

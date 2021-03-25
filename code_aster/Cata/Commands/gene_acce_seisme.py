@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,8 @@ GENE_ACCE_SEISME=MACRO(nom = "GENE_ACCE_SEISME",
          DUREE_PHASE_FORTE =SIMP(statut='o',typ='R',fr=tr("durée phase forte du signal") ),
          NB_TIRAGE         =SIMP(statut='f',typ='I',defaut= 1, val_min=1, fr=tr("nombre accelerogrammes") ),
          FREQ_CORNER       =SIMP(statut='f',typ='R', val_min=0.0, fr=tr("frequence du filtre frequentiel: corner frequency")),
-         FREQ_FILTRE       =SIMP(statut='f',typ='R', defaut= 0.0, val_min=0.0, fr=tr("frequence du filtre temporel")),
+         FREQ_FILTRE       =SIMP(statut='f',typ='R', defaut= 0.0, val_min=0.0, fr=tr("frequence du filtre temporel passe-haut")),
+         FREQ_FILTRE_ZPA       =SIMP(statut='f',typ='R', defaut= 0.0, val_min=0.0, fr=tr("frequence du filtre Butterworth passe-bas")),
          FREQ_PENTE        =SIMP(statut='f',typ='R',  fr=tr("pente pour l'evolution de la frequence centrale")),
          COEF_CORR         =SIMP(statut='f',typ='R',val_min=-1.0, val_max=1.0, fr=tr("Correlation coefficient for horizontal motion")),
               a_ratio   = BLOC(condition="""exists('COEF_CORR') and exists('SPEC_FRACTILE')""",

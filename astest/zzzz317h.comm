@@ -118,6 +118,7 @@ ACCE2=GENE_ACCE_SEISME( INIT_ALEA = graine,
                         MODULATION = _F(TYPE = 'GAMMA',
                                         INST_INI = t_init,
                                         ),)
+
 #----------------------------------------------------------------------------------
 # Extraction des accélérogrammes de la table
 
@@ -206,5 +207,141 @@ TEST_TABLE(  TABLE=TABLOG,
              VALE_CALC=0.00042331295493511223,
              CRITERE='RELATIF',
              )
+
+
+#----------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------
+# Verification de l'utilisation du filtre basse-bas FREQ_FILTRE_ZPA
+# dans les fonctions fournies à GENE_ACCE_SEISME
+
+zpa_cut = 20.                   # Fréquence de coupure pour le filtre Butterworth
+graine = 7461                   # Graine
+t_pas = 0.005                   # Fréquence d'échantillonage du signal
+t_DPF = 4.55                    # Durée de phase forte 5-95% de l'intensité d'Arias
+t_init = 1.5                    # Instant du début de la durée de phase forte
+t_fin = 20.                     # Instant de fin
+n_point = int(t_fin/ t_pas) + 1
+fmin = 0.1                      # Fréquence minimale pour vérification du spectre cible
+fmax = 34.                      # Fréquence maximale pour vérification du spectre cible
+fpas = 0.01                     # Pas fréquentiel pour vérification du spectre cible
+amor = 0.05                     # Amortissement de l'accélérogramme cible
+nb_iter = 50                    # Nombre d'itération
+ZPA = 0.356                     # ZPA/PGA cible
+
+
+#----------------------------------------------------------------------------------
+# Lecture du fichier de spectre
+SPECTRE = LIRE_FONCTION(UNITE=31,
+                        SEPAR=',',
+                        NOM_PARA='FREQ',
+                        PROL_DROITE='CONSTANT',
+                        PROL_GAUCHE='EXCLU',
+                        INTERPOL='LOG',
+                        INDIC_PARA=[1,1],
+                        INDIC_RESU=[1,2])
+
+#----------------------------------------------------------------------------------
+#Definition de la liste de frequence en fonction des parametres
+L_FREQ = DEFI_LIST_REEL(DEBUT=fmin,
+                        INTERVALLE=(_F(JUSQU_A=1.0, PAS=fpas,),
+                                    _F(JUSQU_A=20.0, PAS=10*fpas,),
+                                    _F(JUSQU_A= 50., PAS=50*fpas,),) );
+
+L_FREQ2 = DEFI_LIST_REEL(DEBUT=fmin,
+                        INTERVALLE=(_F(JUSQU_A=10., PAS=5.,),
+                                    _F(JUSQU_A=50.0, PAS=1.0,),) );
+                                    
+#----------------------------------------------------------------------------------
+SPECTRE2 = CALC_FONC_INTERP(FONCTION= SPECTRE,
+                            NOM_PARA='FREQ',
+                            LIST_PARA = L_FREQ,
+                            PROL_GAUCHE='CONSTANT',
+                            PROL_DROITE='EXCLU',
+                            INTERPOL='LOG');
+
+#----------------------------------------------------------------------------------
+#Generation des acceleros
+ACCE1=GENE_ACCE_SEISME( INIT_ALEA = graine,
+                        PAS_INST = t_pas,
+                        PESANTEUR = 9.81,
+                        DUREE_PHASE_FORTE =t_DPF,
+                        NB_TIRAGE = 10,
+                        NB_POIN = n_point,
+                        FREQ_FILTRE = 0.05,
+                        FREQ_FILTRE_ZPA = zpa_cut  ,
+                        SPEC_UNIQUE =_F(SPEC_OSCI = SPECTRE2,
+                                       AMOR_REDUIT = amor,
+                                       NB_ITER = nb_iter,
+                                       METHODE = 'NIGAM',
+                                       LIST_FREQ = L_FREQ,
+                                       ),
+                        MODULATION = _F(TYPE = 'GAMMA',
+                                        INST_INI = t_init,),)
+
+
+
+#----------------------------------------------------------------------------------
+# Extraction des accélérogrammes de la table
+#ACC = [None]*n_tir
+l_SRO =[]
+l_SRO1 =[]
+l_SRO2 =[]
+
+for i in range(n_tir):
+    ACC =RECU_FONCTION(TABLE=ACCE1,
+                    FILTRE=_F(NOM_PARA = 'NUME_ORDRE',VALE_I = i+1),
+                    NOM_PARA_TABL='FONCTION',)
+
+    SRO = CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACC, LIST_FREQ = L_FREQ2, 
+                          NORME=9.81, AMOR_REDUIT=(amor,),),);  
+
+    SRO2 = CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACC, LIST_FREQ = L_FREQ2, 
+                          NORME=9.81, AMOR_REDUIT=(0.02,),),);  
+
+    SRO1 = CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACC, LIST_FREQ = L_FREQ2, 
+                          NORME=9.81, AMOR_REDUIT=(0.1,),),);  
+ 
+    l_SRO.append(SRO)
+    l_SRO2.append(SRO2)
+    l_SRO1.append(SRO1)
+
+
+
+SRO_MEAN=CALC_FONCTION(MOYENNE = _F(FONCTION= l_SRO,) )
+
+SRO_MEAN1=CALC_FONCTION(MOYENNE = _F(FONCTION= l_SRO1, ) )
+
+SRO_MEAN2=CALC_FONCTION(MOYENNE = _F(FONCTION=l_SRO2, ) )
+
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC= 0.35843403729312,
+                         VALE_REFE= ZPA    ,                        
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 35.0),
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=0.1,
+                         FONCTION= SRO_MEAN,),
+                      _F(VALE_CALC= 0.65083160200843,
+                         VALE_REFE= 0.655    ,                        
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 10.0),
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=0.1,
+                         FONCTION= SRO_MEAN,),
+                        _F(VALE_CALC= 0.35826986646571,
+                         VALE_REFE= ZPA ,                        
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.1, 35.0),
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=0.1,
+                         FONCTION= SRO_MEAN1,),
+                        _F(VALE_CALC= 0.35849846406159,
+                         VALE_REFE= ZPA  ,                        
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.02, 35.),
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=0.1,
+                         FONCTION= SRO_MEAN2,),
+                         ),)
+
+
+
+
 
 FIN()

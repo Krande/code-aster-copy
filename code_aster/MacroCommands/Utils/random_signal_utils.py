@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ gene_traj_gauss_evol1D ---      generation of trajectories of a non stationary G
 calc_dsp_KT            ---      construct KT PSD
 calc_dsp_FR            ---      construct rational PSD
 acce_filtre_CP         ---       high pass filter for seismic signals
+butterfilter             ---     Butterworth  lowpass filter for seismic signals
 DSP2SRO                ---       identify PSD from given response spectrum
 SRO2DSP                ---      determine response spectrum for a given PSD
 Acce2SRO               ---      calculate response spectrum of a seismic signal
@@ -39,7 +40,6 @@ from cmath import sqrt as csqrt
 from math import ceil, cos, exp, log, pi, sqrt
 
 import numpy as NP
-
 import aster_fonctions
 from ...Messages import UTMESS
 
@@ -189,6 +189,28 @@ def acce_filtre_CP(vale_acce, dt, fcorner, amoc=1.0):
     acce_out = NP.fft.ifft(Yw).real
 #      f_out = t_fonction(vale_t, acce_out, para=f_in.para)
     return acce_out
+
+
+
+#-----------------------------------------------------------------
+#    filtre Butterworth passe bas 
+#-----------------------------------------------------------------
+def butterfilter( cut_freq,  dsp_input, order = 10):
+    # ---------------------------------------------------------
+    # IN : acce: accelerogram m/s2 (optional)
+    #      order : order of filter
+    #      cut_freq: filter cut-off frequency if 'freq' 
+    #               need to give normalized cut_freq: cut_freq/fc if 'temp'
+    # OUT: filtered time hist if domain = 'temp' or psd if "freq"
+    #
+    # ---------------------------------------------------------
+    wc = 2. * pi * cut_freq
+    w = dsp_input.vale_x
+    f_h = 1. / NP.sqrt(1. + (w/wc)**(2.*order))
+    dsp_filt = dsp_input.vale_y * NP.abs(f_h)**2
+    output = t_fonction(w, dsp_filt, para=dsp_input.para)
+    return output
+
 
 # ------------------------------------------------------------------------
 
