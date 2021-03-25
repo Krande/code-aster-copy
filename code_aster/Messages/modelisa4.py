@@ -20,7 +20,9 @@
 from ..Utilities import _
 
 cata_msg = {
-
+    1 : _("""
+Présence de mailles dégénérées : modifier le maillage du béton.
+"""),
     6 : _("""
   -> Phase de vérification du maillage : présence de noeuds orphelins.
      Les noeuds orphelins sont des noeuds qui n'appartiennent à aucune maille.

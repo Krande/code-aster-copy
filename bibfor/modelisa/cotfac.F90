@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,8 @@
 subroutine cotfac(xyz, n1, n2, n3, n4,&
                   xpt, iret)
     implicit none
+#include "asterc/r8prem.h"
+#include "asterfort/utmess.h"
 !  DESCRIPTION :
 !-------------------   DECLARATION DES VARIABLES   ---------------------
 !
@@ -30,7 +32,7 @@ subroutine cotfac(xyz, n1, n2, n3, n4,&
 ! VARIABLES LOCALES
 ! -----------------
     real(kind=8) :: v12(3), v23(3), v24(3), v25(3), vno(3)
-    real(kind=8) :: ra, rb, rr
+    real(kind=8) :: ra, rb, rr, norvno
     real(kind=8) :: eps
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -45,6 +47,11 @@ subroutine cotfac(xyz, n1, n2, n3, n4,&
     vno(1) = v23(2) * v12(3) - v23(3) * v12(2)
     vno(2) = v23(3) * v12(1) - v23(1) * v12(3)
     vno(3) = v23(1) * v12(2) - v23(2) * v12(1)
+    norvno=sqrt(vno(1)*vno(1)+vno(2)*vno(2)+vno(3)*vno(3))
+    if (norvno .lt. r8prem())then
+!      les trois noeuds sont alignés
+       call utmess('F','MODELISA4_1')
+    endif
 !
     v24(1)=xyz(1,n4)-xyz(1,n2)
     v24(2)=xyz(2,n4)-xyz(2,n2)
@@ -56,6 +63,10 @@ subroutine cotfac(xyz, n1, n2, n3, n4,&
 !
     ra=vno(1)*v24(1)+vno(2)*v24(2)+vno(3)*v24(3)
     rb=vno(1)*v25(1)+vno(2)*v25(2)+vno(3)*v25(3)
+    if (abs(ra).lt.r8prem())then
+!       n4 est dans le plan de la face n1, n2, n3
+        call utmess('F','MODELISA4_1')
+    endif
     rr=rb/ra
 !
     if (rr .gt. eps) then
