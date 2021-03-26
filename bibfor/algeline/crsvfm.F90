@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine crsvfm(solvbz, matasz, prec, rank, pcpiv, usersmz, blreps, renumz)
 #include "asterfort/sdsolv.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: solvbz, matasz
-    character        :: prec, rank 
+    character        :: prec, rank
     integer          :: pcpiv
     character(len=*) :: usersmz, renumz
     real(kind=8)     :: blreps
@@ -41,15 +41,15 @@ subroutine crsvfm(solvbz, matasz, prec, rank, pcpiv, usersmz, blreps, renumz)
 ! IN  K*  SOLVBZ    : NOM DE LA SD SOLVEUR MUMPS BIDON
 ! IN  K*  MATASZ    : MATRICE DU SYSTEME
 ! IN  K1  PREC      : 'S' ou 'D' (SIMPLE/DOUBLE PRECISION)
-! IN  K1  RANK      : 'F' ou 'L' (FULL/LOW RANK)  
+! IN  K1  RANK      : 'F' ou 'L' (FULL/LOW RANK)
 ! IN  I   PCPIV     : VALEUR DE PCENT_PIVOT
 ! IN  K*  USERSM    : STRATEGIE MEMOIRE (AUTO/IN_CORE/OUT_OF_CORE)
 ! IN  R   BLREPS    : VALEUR DU SEUIL POUR UNE FACTO LOW_RANK
 !-----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
-    integer :: zslvk, zslvr, zslvi
-    integer :: jslvk, jslvr, jslvi, iret
+    integer :: zslvk, zslvr, zslvi, zslvo
+    integer :: jslvk, jslvr, jslvi, jslvo, iret
     character(len=19) :: matass, solvbd
     character(len=24) :: usersm, renum
     character(len=8) :: symk, kacmum
@@ -61,11 +61,11 @@ subroutine crsvfm(solvbz, matasz, prec, rank, pcpiv, usersmz, blreps, renumz)
     matass = matasz
     usersm = usersmz
     renum = renumz
-! 
+!
     call jeexin(solvbd, iret)
     if (iret .eq. 0) call detrsd('SOLVEUR', solvbd)
 !
-!     LA MATRICE EST-ELLE NON SYMETRIQUE ? 
+!     LA MATRICE EST-ELLE NON SYMETRIQUE ?
     call dismoi('TYPE_MATRICE', matass, 'MATR_ASSE', repk=symk)
     if (symk .eq. 'SYMETRI') then
         syme='OUI'
@@ -74,15 +74,15 @@ subroutine crsvfm(solvbz, matasz, prec, rank, pcpiv, usersmz, blreps, renumz)
     else
         ASSERT(.false.)
     endif
-! 
+!
     ASSERT((rank == 'L').or.(rank=='F'))
     ASSERT((prec == 'S').or.(prec =='D'))
-    if ( rank == 'F' ) then 
+    if ( rank == 'F' ) then
         kacmum = 'AUTO'
     elseif ( rank == 'L') then
-        kacmum = 'LR+' 
+        kacmum = 'LR+'
     endif
-    if ( prec == 'S' ) then 
+    if ( prec == 'S' ) then
         mixpre = 'OUI'
     elseif ( prec == 'D') then
         mixpre ='NON'
@@ -91,9 +91,11 @@ subroutine crsvfm(solvbz, matasz, prec, rank, pcpiv, usersmz, blreps, renumz)
     zslvk = sdsolv('ZSLVK')
     zslvr = sdsolv('ZSLVR')
     zslvi = sdsolv('ZSLVI')
+    zslvo = sdsolv('ZSLVO')
     call wkvect(solvbd//'.SLVK', 'V V K24', zslvk, jslvk)
     call wkvect(solvbd//'.SLVR', 'V V R', zslvr, jslvr)
     call wkvect(solvbd//'.SLVI', 'V V I', zslvi, jslvi)
+    call wkvect(solvbd//'.SLVO', 'V V K80', zslvo, jslvo)
 !
 !     ATTENTION A LA COHERENCE AVEC CRSVL2 ET CRSVMU
     zk24(jslvk-1+1) = 'MUMPS'
@@ -107,7 +109,7 @@ subroutine crsvfm(solvbz, matasz, prec, rank, pcpiv, usersmz, blreps, renumz)
     endif
 !     RENUM
     zk24(jslvk-1+4) = renum
-!     ACCELERATION 
+!     ACCELERATION
     zk24(jslvk-1+5) = kacmum
 !     ELIM_LAGR
     zk24(jslvk-1+6) = 'NON'
@@ -118,7 +120,7 @@ subroutine crsvfm(solvbz, matasz, prec, rank, pcpiv, usersmz, blreps, renumz)
 !     MEMOIRE_MUMPS
     zk24(jslvk-1+9) = usersm
     zk24(jslvk-1+10) = 'XXXX'
-    
+
 !     POSTTRAITEMENTS
     zk24(jslvk-1+11) = 'SANS'
     zk24(jslvk-1+12) = 'XXXX'

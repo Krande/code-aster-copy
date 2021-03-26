@@ -70,7 +70,7 @@ void charToPetscArgcArgv(char *buffer, char * delim, char ** Output, int* index)
 void DEFSP(ASTER_PETSC_INITIALIZE,aster_petsc_initialize, _IN char* options,
            _IN STRING_SIZE loptions, ASTERINTEGER* ierr)
 {
-    int a = 0;
+    int ierr2 = 0;
     char** myargs;
     char* options2;
     int myargc;
@@ -81,7 +81,10 @@ void DEFSP(ASTER_PETSC_INITIALIZE,aster_petsc_initialize, _IN char* options,
     charToPetscArgcArgv(options2, " ", myargs, &myargc);
 
     *ierr = (ASTERINTEGER)PetscInitialize(&myargc, &myargs, NULL, NULL);
-    PetscInitializeFortran();
+    ierr2 = (ASTERINTEGER)PetscInitializeFortran();
+    *ierr += ierr2;
+    ierr2 = (ASTERINTEGER)PetscLogDefaultBegin();
+    *ierr += ierr2;
 
     FreeStr(options2);
     free(myargs);

@@ -196,6 +196,7 @@ implicit none
         call jedetr(solveu//'.SLVI')
         call jedetr(solveu//'.SLVK')
         call jedetr(solveu//'.SLVR')
+        call jedetr(solveu//'.SLVO')
 !
 !     ------------------------------------------------------------------
     else if (typ2sd.eq.'EIGENSOLVER') then

@@ -143,28 +143,31 @@ use elg_module
         goto 999
     endif
 !
-!
-!   petsc a-t-il ete initialise ?
+!   Vérification du nom de la matrice
+    ASSERT(matas.ne.' ')
+
+!   PETSc a-t-il ete initialise ?
     call PetscInitialized(initialized, ierr)
     ASSERT(ierr.eq.0)
 
-    if ((iprem .eq. 0 .or. .not.initialized) .and. action.ne.'DETR_MAT') then
+!   Récupération des options PETSc
+    myopt = ''
+    if (action.ne.'DETR_MAT') then
+        call jeveuo(solveu//'.SLVO', 'L', vk80=slvo)
+        call jeveuo(solveu//'.SLVI', 'L', vi=slvi)
+        lslvo = slvi(9)
+        do i=1, lslvo
+            myopt(80*(i-1)+1:80*i)=slvo(i)
+        enddo
+    endif
+
+    if (iprem .eq. 0 .or. .not.initialized) then
 !     --------------------
 !        -- quelques verifications sur la coherence Aster / Petsc :
         ASSERT(kind(rbid).eq.kind(r8))
         ASSERT(kind(sbid).eq.kind(r8))
         ASSERT(kind(offbid).eq.kind(np))
 !
-        ! PETSc solver options
-        call jeveuo(solveu//'.SLVO', 'L', vk80=slvo)
-        call jeveuo(solveu//'.SLVI', 'L', vi=slvi)
-        myopt = ""
-        lslvo = slvi(9)
-        do i=1, lslvo
-            myopt(80*(i-1)+1:80*i)=slvo(i)
-        enddo
-
-
         ier2 = 0
         call aster_petsc_initialize(myopt, ier2)
         ierr = to_petsc_int(ier2)
@@ -185,9 +188,13 @@ use elg_module
         spsolv = ' '
         iprem = 1
     endif
-    ASSERT(matas.ne.' ')
 
-
+!   Si PETSc est déjà initialisé (éventuellement avec d'autres options),
+!   on ajoute les options courantes de la commande
+    if (action.ne.'DETR_MAT') then
+        call PetscOptionsInsertString(PETSC_NULL_OPTIONS, myopt, ierr)
+        ASSERT(ierr.eq.0)
+    endif
 
 
 !   1. On ne veut pas de matrice complexe :
