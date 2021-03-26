@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -121,6 +121,12 @@ NOM_PARA='PCAP',
                         PROL_GAUCHE='LINEAIRE',
                         PROL_DROITE='LINEAIRE',
                         INFO=2,);
+# VERIFICATION DU PASSAGE PAR NAPPE                 
+SATU_BO=DEFI_NAPPE(  NOM_PARA='TEMP',
+                      PARA=( 300.0,   343., ),
+                      FONCTION=( SATUBO,    SATUBO, ),
+                            PROL_DROITE='LINEAIRE',
+                            PROL_GAUCHE='LINEAIRE',  )
 
 DSATBO=DEFI_CONSTANTE(VALE=-1.E-12,);
 
@@ -183,7 +189,7 @@ MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15000000E8,
                                    RHO=2200.0,
                                    CP=1050.0,
                                    BIOT_COEF=1.0,
-                                   SATU_PRES=SATUBO,
+                                   SATU_PRES=SATU_BO,
                                    D_SATU_PRES=DSATBO,
                                    PESA_X=0.0,
                                    PESA_Y=0.0,

@@ -1,0 +1,913 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import numpy
+import math
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+def densite_liquide(Temp):
+    """
+    Masse volumique de l'eau liquide
+    """
+    rho_liquide=314.4+685.6*(1-((Temp-273.15)/374.14)**(1/0.55))**0.55
+    return rho_liquide
+    
+def tension_superficielle(Temp):
+    """
+    Tension superficielle de l'eau'
+    """
+    gamma=0.1558*(1-(Temp/647.1))**1.26
+    return gamma
+
+def isotherme_PC_S(S, alpha, beta, Ad, T0, Temp, R=8.314, Mmolaire=18.01528e-3):
+
+    gamma0 = tension_superficielle(T0)
+    gamma=tension_superficielle(Temp)
+    a=densite_liquide(T0)*R*T0/(alpha*Mmolaire)
+    K0_KT=(10**(Ad*(2*10**-3*(Temp-T0)-1e-6*(Temp-T0)**2)))**(-1)
+    pc = +a*((S**(-1./beta)-1.0)**(1.-beta))*(gamma0/gamma)*numpy.sqrt(K0_KT)
+    return pc
+def isotherme_S_PC(Pc, alpha, beta, Ad, T0, Temp, R=8.314, Mmolaire=18.01528e-3):
+    gamma0 = tension_superficielle(T0)
+    gamma=tension_superficielle(Temp)
+    a=densite_liquide(T0)*R*T0/(alpha*Mmolaire)
+    K0_KT=(10**(Ad*(2*10**-3*(Temp-T0)-1e-6*(Temp-T0)**2)))**(-1)
+    Facteur = a*(gamma0/gamma)*numpy.sqrt(K0_KT)
+    s= (1.+(Pc/Facteur)**(1./(1.-beta)))**(-beta)
+    return s
+#
+#=============================================================
+#=============================================================
+
+MODELISA = 'D_PLAN_THH2S'
+LOI= 'LIQU_AD_GAZ_VAPE'
+
+
+
+#*********************************************************
+# CI
+#*********************************************************
+PREF = 1.E5
+
+#*********************************************************
+# CL
+#*********************************************************
+T1H=3600.
+T1JOUR=86400
+UNMOIS = 30*T1JOUR
+T1ANS  = 3.1536E7
+T10ANS = 3.1536E8
+
+
+
+
+
+UN=DEFI_CONSTANTE(VALE=1.0);
+ZERO=DEFI_CONSTANTE(VALE=0.0);
+
+VISCOLIQ=DEFI_CONSTANTE(VALE=1.E-3);
+VISCOGAZ=DEFI_CONSTANTE(VALE=9.E-06);
+
+DVISCOL=DEFI_CONSTANTE(VALE=0.0);
+DVISCOG=DEFI_CONSTANTE(VALE=0.0);
+MAMOLVAP = 0.018
+TREF = 293.
+R = 8.315
+HENRY=DEFI_CONSTANTE(VALE=130719.);
+
+KINT=DEFI_CONSTANTE(VALE=1.2E-20);
+
+
+LI1=DEFI_LIST_REEL(DEBUT=0.000,
+                      INTERVALLE=(_F(JUSQU_A=1.E6,   NOMBRE=100,),
+                                  _F(JUSQU_A=1.E7,   NOMBRE=100,),
+                                  _F(JUSQU_A=1.E8,   NOMBRE=100,),
+                                  _F(JUSQU_A=1.E9,   NOMBRE=100,),),);
+
+LI2=DEFI_LIST_REEL(DEBUT=0.019,
+                   INTERVALLE=_F(JUSQU_A=0.999,
+                                 PAS=1.E-2,),);
+
+# parametre article JLA
+alpha = 9.33427661 #premier coefficient de Van Genuchten [Pa]
+beta = 0.38923339 #second coefficient de Van Genuchten [-]
+Ad=10.378
+gamma0 = tension_superficielle(TREF)
+
+rho0l=densite_liquide(TREF)
+print('rho0l=',rho0l)
+#
+fac =rho0l*R*TREF/(alpha*MAMOLVAP)
+unsunb= 1./(1.-beta)
+
+# Definition formules saturation et derives
+
+
+SLO_REF = FORMULE(NOM_PARA='PCAP',
+VALE='''((PCAP/(fac*(gamma0/(0.1558*(1-(temp/647.1))**1.26)*(10**(Ad*(2*10**-3*(temp-TREF)-1e-6*(temp-TREF)**2)))**(-1./2.))))**USB  
+          +1)**(-BETA)''',
+  fac=fac,temp=TREF,TREF=TREF,BETA=beta,USB=unsunb,Ad=Ad,gamma0=gamma0)
+
+
+SLO_60 = FORMULE(NOM_PARA='PCAP',
+VALE='''((PCAP/(fac*(gamma0/(0.1558*(1-(temp/647.1))**1.26)*(10**(Ad*(2*10**-3*(temp-TREF)-1e-6*(temp-TREF)**2)))**(-1./2.))))**USB  
+          +1)**(-BETA)''',
+  fac=fac,temp=333.,TREF=TREF,BETA=beta,USB=unsunb,Ad=Ad,gamma0=gamma0)
+
+
+
+
+DSLO_REF = FORMULE(NOM_PARA='PCAP',
+VALE='''-USB/(fac*(gamma0/(0.1558*(1-(temp/647.1))**1.26)*(10**(Ad*(2*10**-3*(temp-TREF)-1e-6*(temp-TREF)**2)))**(-1./2.)))*
+        (PCAP/(fac*(gamma0/(0.1558*(1-(temp/647.1))**1.26)*(10**(Ad*(2*10**-3*(temp-TREF)-1e-6*(temp-TREF)**2)))**(-1./2.))))**(BETA*USB)* 
+       BETA*(1.+(PCAP/(fac*(gamma0/(0.1558*(1-(temp/647.1))**1.26)*(10**(Ad*(2*10**-3*(temp-TREF)-1e-6*(temp-TREF)**2)))**(-1./2.))))**USB )**(-BETA-1)''',
+  fac=fac,temp=TREF,TREF=TREF,BETA=beta,USB=unsunb,Ad=Ad,gamma0=gamma0)
+
+
+
+DSLO_60 = FORMULE(NOM_PARA='PCAP',
+VALE='''-USB/(fac*(gamma0/(0.1558*(1-(temp/647.1))**1.26)*(10**(Ad*(2*10**-3*(temp-TREF)-1e-6*(temp-TREF)**2)))**(-1./2.)))*
+        (PCAP/(fac*(gamma0/(0.1558*(1-(temp/647.1))**1.26)*(10**(Ad*(2*10**-3*(temp-TREF)-1e-6*(temp-TREF)**2)))**(-1./2.))))**(BETA*USB)* 
+       BETA*(1.+(PCAP/(fac*(gamma0/(0.1558*(1-(temp/647.1))**1.26)*(10**(Ad*(2*10**-3*(temp-TREF)-1e-6*(temp-TREF)**2)))**(-1./2.))))**USB )**(-BETA-1)''',
+  fac=fac,temp=333.,TREF=TREF,BETA=beta,USB=unsunb,Ad=Ad,gamma0=gamma0)
+
+
+
+#
+SATU_REF=CALC_FONC_INTERP(FONCTION=SLO_REF,
+                        LIST_PARA=LI1,
+                        NOM_PARA='PCAP',
+                        PROL_DROITE='LINEAIRE',
+                        PROL_GAUCHE='LINEAIRE',
+                        INFO=2,);
+SATU_60=CALC_FONC_INTERP(FONCTION=SLO_60,
+                        LIST_PARA=LI1,
+                        NOM_PARA='PCAP',
+                        PROL_DROITE='LINEAIRE',
+                        PROL_GAUCHE='LINEAIRE',
+                        INFO=2,);
+SATU_BET=DEFI_NAPPE(  NOM_PARA='TEMP',
+                      PARA=( TREF,   333., ),
+                      FONCTION=( SATU_REF,    SATU_60, ),
+                            PROL_DROITE='LINEAIRE',
+                            PROL_GAUCHE='LINEAIRE',  )
+
+DSAT_REF=CALC_FONC_INTERP(FONCTION=DSLO_REF,
+                        LIST_PARA=LI1,
+                        NOM_PARA='PCAP',
+                        PROL_DROITE='LINEAIRE',
+                        PROL_GAUCHE='LINEAIRE',
+                        INFO=2,);
+#
+DSAT_60=CALC_FONC_INTERP(FONCTION=DSLO_60,
+                        LIST_PARA=LI1,
+                        NOM_PARA='PCAP',
+                        PROL_DROITE='LINEAIRE',
+                        PROL_GAUCHE='LINEAIRE',
+                        INFO=2,);
+
+DSAT_BET=DEFI_NAPPE(  NOM_PARA='TEMP',
+                      PARA=( 293.,   333., ),
+                      FONCTION=( DSAT_REF,    DSAT_60, ),
+                            PROL_DROITE='LINEAIRE',
+                            PROL_GAUCHE='LINEAIRE' )
+### PERMEABILITES RELATIVES
+p = 2.91
+KL_BET=FORMULE(NOM_PARA='SAT',VALE='(((SAT-SR_BET)/(1.-SR_BET))**(p_))*(1-((1-(((SAT-SR_BET)/(1.-SR_BET))**(1./M_BET)))**(M_BET)))**q_',
+SR_BET=0.,M_BET=beta,p_=p,q_=2.,)
+
+DKL_BET=FORMULE(NOM_PARA='SAT',VALE='((p_*(1./(1.-SR_BET))*((SAT-SR_BET)/(1.-SR_BET))**(p_-1))*(1-((1-(((SAT-SR_BET)/(1.-SR_BET))**(1./M_BET)))**(M_BET)))**q_) + ((((SAT-SR_BET)/(1.-SR_BET))**(p_))* q_ * ((1-((1-(((SAT-SR_BET)/(1.-SR_BET))**(1./M_BET)))**(M_BET)))**(q_-1))*(-M_BET)*((1-(((SAT-SR_BET)/(1.-SR_BET))**(1./M_BET))**(M_BET- 1))*((-1./M_BET)*(1./(1.-SR_BET))*(((SAT-SR_BET)/(1.-SR_BET))**((1./M_BET)-1)))))',
+SR_BET=0.,M_BET=beta,p_=p,q_=2,)
+
+KG_BET=FORMULE(NOM_PARA='SAT',VALE='((1-((SAT-SR_BET)/(1.-SR_BET)))**(p_))*((1-(((SAT-SR_BET)/(1.-SR_BET))**(1./M_BET)))**(q_*M_BET)) ',
+SR_BET=0.,M_BET=beta,p_=p,q_=2.,)
+
+DKG_BET=FORMULE(NOM_PARA='SAT',VALE='((-p_)*(1./(1.-SR_BET))*((1-((SAT-SR_BET)/(1.-SR_BET)))**(p_-1))*((1-(((SAT-SR_BET)/(1.-SR_BET))**(1./M_BET)))**(q_*M_BET)))+(((1-((SAT-SR_BET)/(1.-SR_BET)))**(p_))*(q_*M_BET)*((1-(((SAT-SR_BET)/(1.-SR_BET))**(1./M_BET)))**((q_*M_BET)-1))*((-1/M_BET)*(1./(1.-SR_BET))*(((SAT-SR_BET)/(1.-SR_BET))**((1./M_BET)-1))))',SR_BET=0.,M_BET=beta,p_=p,q_=2.,)
+
+
+
+
+
+# ================================
+#  DIFFUSION DU MELANGE LIQUIDE
+# ================================
+
+FICKW=DEFI_CONSTANTE ( VALE = 1.0E-10);
+FFAS = FORMULE(VALE='SAT',  NOM_PARA='SAT',)
+
+FAS   = CALC_FONC_INTERP ( FONCTION     =  FFAS      ,
+                           LIST_PARA    =  LI2       ,
+                           NOM_PARA     = 'SAT'      ,
+                           PROL_GAUCHE  = 'CONSTANT' ,
+                           PROL_DROITE  = 'CONSTANT' ,
+                           INFO         = 2          );
+
+
+
+# ================================
+# DIFFUSION DU MELANGE GAZEUX
+# ================================
+LIT=DEFI_LIST_REEL(DEBUT=283.,
+                   INTERVALLE=_F(JUSQU_A=343, PAS=1.,),);
+a=2.607
+b = 7
+D0V = FORMULE(VALE='(0.15**ma)*0.217E-4*(TEMP/273.)**1.88',  NOM_PARA='TEMP',ma=a)
+FVT   = CALC_FONC_INTERP ( FONCTION     =  D0V      ,
+                           LIST_PARA    =  LIT       ,
+                           NOM_PARA     = 'TEMP'      ,
+                           PROL_GAUCHE  = 'CONSTANT' ,
+                           PROL_DROITE  = 'CONSTANT' ,
+                           INFO         = 2          );
+
+FFVS = FORMULE(VALE='(1.-SAT)**mb',  NOM_PARA='SAT',mb=b)
+
+FVS   = CALC_FONC_INTERP ( FONCTION     =  FFVS      ,
+                           LIST_PARA    =  LI2       ,
+                           NOM_PARA     = 'SAT'      ,
+                           PROL_GAUCHE  = 'CONSTANT' ,
+                           PROL_DROITE  = 'CONSTANT' ,
+                           INFO         = 2          );
+
+
+# ================================
+# THERMIQUE
+# ================================
+ALPHAL=DEFI_CONSTANTE(VALE=1.048E-4,);
+LAMBLIQ=DEFI_CONSTANTE(VALE=0.6,);
+LS_RB = FORMULE(VALE='( 0.15*SAT)',
+                NOM_PARA='SAT',);
+
+LSRB=CALC_FONC_INTERP(FONCTION=LS_RB,
+                      LIST_PARA=LI2,
+                      NOM_PARA='SAT',
+                      PROL_DROITE='CONSTANT',
+                      PROL_GAUCHE='CONSTANT',
+                      INFO=2,);
+
+DLSRB=DEFI_CONSTANTE(VALE=0.15,);
+
+# 
+#
+#*************************************************************
+# LISTE DES INSTANTS DE CALCULS
+#*************************************************************
+#
+
+
+INST1=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(
+ _F( JUSQU_A = 100, NOMBRE = 10),   
+ _F( JUSQU_A = T1H, NOMBRE = 2),    
+ _F( JUSQU_A = T1JOUR, NOMBRE =23),  
+ _F( JUSQU_A = 2*T1JOUR, NOMBRE =10), 
+ _F( JUSQU_A = 10*T1JOUR, NOMBRE =32),                     
+ _F( JUSQU_A = UNMOIS , NOMBRE =   40 ),                   
+ _F( JUSQU_A = 2*UNMOIS , NOMBRE = 20 ),                
+ _F( JUSQU_A = 6*UNMOIS , NOMBRE = 30 ),                
+ _F( JUSQU_A = 12*UNMOIS , NOMBRE = 20 ),                
+                     ));
+LI =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INST1 ),
+                                ECHEC=_F(ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
+                                         SUBD_PAS=5,
+                                         SUBD_PAS_MINI=0.1))
+#=============================================================
+#=============================================================
+#=============================================================
+
+
+
+#*********************
+# LECTURE DU MAILLAGE
+#*********************
+
+MAILINI=LIRE_MAILLAGE(FORMAT='MED');
+
+MAIL=CREA_MAILLAGE(MAILLAGE  = MAILINI,
+                       LINE_QUAD = _F(TOUT='OUI'),
+                      );
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                  MAILLAGE=MAIL,
+                  CREA_GROUP_NO=(_F(GROUP_MA='BAS'),
+                                _F(GROUP_MA='HAUT'),
+                                _F(GROUP_MA='GAUCHE'),
+                                _F(GROUP_MA='DROIT'),
+                                _F(GROUP_MA='TOUT'),
+                               ));
+
+
+#*********************************************************
+# MODELE DE CALCUL
+#*********************************************************
+#
+MODELE=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION=MODELISA));
+
+
+MATER1=DEFI_MATERIAU(ELAS=_F(E=5.15E8,
+                              NU=0.20,
+                              RHO=2670.0,
+                              ALPHA=1.E-5),
+                    COMP_THM = LOI,
+#
+                    THM_LIQU=_F(RHO=rho0l,
+                                ALPHA=ALPHAL,
+                                CP=4180.,
+                                UN_SUR_K=4.5E-10,
+                                VISC=VISCOLIQ,
+                                D_VISC_TEMP=DVISCOL),
+
+                    THM_GAZ=_F(MASS_MOL=0.002,
+                               CP=1017.0,
+                               VISC=VISCOGAZ,
+                               D_VISC_TEMP=ZERO),
+
+                   THM_VAPE_GAZ=_F(MASS_MOL=0.018,
+                                   CP=1900.0,
+                                   VISC=VISCOGAZ,
+                                   D_VISC_TEMP=ZERO),
+
+                   THM_AIR_DISS=_F(CP=1870.,
+                                   COEF_HENRY=HENRY,
+                                      ),
+
+                   THM_INIT=_F(TEMP=TREF,
+                               PRE1=0.,
+                               PRE2=PREF,
+                               PORO=0.15,
+                               PRES_VAPE=1000.,
+                               ),
+                   THM_DIFFU=_F(R_GAZ=R,
+                                RHO=1737.0,
+                                CP=1500.0,
+                                BIOT_COEF=1.0,
+                                PESA_X=0.0,
+                                PESA_Y=0.0,
+                                PESA_Z=0.0,
+                                PERM_IN=KINT,
+#          
+                                SATU_PRES=SATU_BET,
+                                D_SATU_PRES=DSAT_BET,    
+                                PERM_LIQU=KL_BET,
+                                D_PERM_LIQU_SATU=DKL_BET,
+                                PERM_GAZ=KG_BET,
+                                D_PERM_SATU_GAZ=DKG_BET,
+                                D_PERM_PRES_GAZ=ZERO,        
+#
+                                FICKV_T=FVT,
+                                FICKV_S=FVS,
+                                FICKA_T= FICKW,
+                                FICKA_S  = FAS   ,
+                                LAMB_T=LAMBLIQ,
+                                LAMB_S=LSRB,
+                                D_LB_S=DLSRB,
+                                LAMB_CT=1.,
+                                ));
+#****************************************************************
+# AFFECTATION DES MATERIAUX
+#****************************************************************
+#
+CHMAT1=AFFE_MATERIAU(MAILLAGE=MAIL,
+                     AFFE=(_F(TOUT='OUI',
+                              MATER=MATER1),
+                              ));
+
+#*************************************************************
+# AFFECTATION DE L ETAT INITIAL
+#*************************************************************
+#
+Sat0=0.98 
+PC0=isotherme_PC_S(Sat0, alpha, beta, Ad, TREF, TREF)
+print('PC0=',PC0)
+
+CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
+                    OPERATION='AFFE',
+                    TYPE_CHAM='NOEU_DEPL_R',
+                    AFFE    = (
+                          _F(TOUT='OUI', NOM_CMP='PRE1', VALE=PC0),
+                          _F(TOUT='OUI', NOM_CMP='PRE2', VALE=0.),
+                          _F(TOUT='OUI', NOM_CMP='TEMP', VALE=0.),
+                             ));
+
+
+#*************************************************************
+# AFFECTATION DES CL
+#*************************************************************
+
+# SECHAGE AU BORD de 70%
+HR = 0.7
+PCHYGRO = -rho0l*R*TREF/MAMOLVAP * log(HR)
+print('PCHYGRO',PCHYGRO)
+
+S=isotherme_S_PC(PCHYGRO, alpha, beta, Ad, TREF, TREF+40., R=8.314, Mmolaire=18.01528e-3)
+print('S au bord',S)
+
+TEXT = 60.+273
+SECH=AFFE_CHAR_CINE(
+  MODELE=MODELE,
+  MECA_IMPO= (
+    _F(GROUP_MA=('GAUCHE'), PRE1=PCHYGRO, ),
+    _F(GROUP_MA=('GAUCHE'), PRE2=4.E5      ),
+    _F(GROUP_MA=('GAUCHE',),TEMP=TEXT -TREF   ),  ) )   
+#
+#
+#*************************************************************
+#     STAT NON LINE
+#*************************************************************
+
+
+U1=STAT_NON_LINE(MODELE=MODELE,
+                 CHAM_MATER=CHMAT1,
+                 EXCIT    =( _F( CHARGE   = SECH ),),
+                 COMPORTEMENT=_F(RELATION='KIT_THH2',
+                              RELATION_KIT=(LOI,'HYDR_UTIL')),
+                 ETAT_INIT=_F(DEPL=CHAMNO),
+                 INCREMENT=_F( LIST_INST = LI,  ),
+                 NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1),
+                 CONVERGENCE=_F(
+                   RESI_GLOB_RELA=1.E-06,
+                   ITER_GLOB_MAXI=20,  ),
+                 SOLVEUR=_F(METHODE='MUMPS'), );
+
+#*************************************************************
+# IMPRESSIONS
+#*************************************************************
+Npost = 3
+LISPOST=DEFI_LIST_REEL(VALE=(T1H,UNMOIS,12*UNMOIS),);
+#~ instant = (T1H,UNMOIS,12*UNMOIS)
+#~ legende = ('1 heure','1 mois','1 an',)
+#~ couleur = (1,8,3)
+
+
+U1=CALC_CHAMP(reuse=U1,LIST_INST=LISPOST,CONTRAINTE=('SIEF_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U1)
+U1=CALC_CHAMP(reuse=U1,LIST_INST=LISPOST,CONTRAINTE=('SIEF_NOEU'),VARI_INTERNE=('VARI_NOEU'),RESULTAT=U1)
+
+
+PR1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+               GROUP_NO=('BAS'),
+               RESULTAT=U1,
+               NOM_CHAM='DEPL',
+               LIST_INST=LISPOST,
+               NOM_CMP=('PRE1'),
+               OPERATION='EXTRACTION'));
+PR2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+               GROUP_NO=('BAS'),
+               RESULTAT=U1,
+               NOM_CHAM='DEPL',
+               LIST_INST=LISPOST,
+               NOM_CMP=('PRE2'),
+               OPERATION='EXTRACTION'));               
+IMPR_TABLE(TABLE=PR1,
+             FORMAT   = 'TABLEAU_CROISE'    ,
+             NOM_PARA=('INST','COOR_X','PRE1'),
+             TRI   = (_F( NOM_PARA = ('COOR_X' ),
+             ORDRE    = 'CROISSANT')));
+
+
+
+PR2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+               GROUP_NO=('BAS'),
+               RESULTAT=U1,
+               NOM_CHAM='DEPL',
+               LIST_INST=LISPOST,
+               NOM_CMP=('PRE2'),
+               OPERATION='EXTRACTION'));
+IMPR_TABLE(TABLE=PR2,
+             FORMAT   = 'TABLEAU_CROISE'    ,
+             NOM_PARA=('INST','COOR_X','PRE2'),
+             TRI   = (_F( NOM_PARA = ('COOR_X' ),
+             ORDRE    = 'CROISSANT')));
+
+PRT=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+               GROUP_NO=('BAS'),
+               RESULTAT=U1,
+               NOM_CHAM='DEPL',
+               LIST_INST=LISPOST,
+               NOM_CMP=('TEMP'),
+               OPERATION='EXTRACTION'));
+IMPR_TABLE(TABLE=PRT,
+             FORMAT   = 'TABLEAU_CROISE'    ,
+             NOM_PARA=('INST','COOR_X','TEMP'),
+             TRI   = (_F( NOM_PARA = ('COOR_X' ),
+             ORDRE    = 'CROISSANT')));
+
+PV4=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+               GROUP_NO=('BAS'),
+               RESULTAT=U1,
+               NOM_CHAM='VARI_ELNO',
+               LIST_INST=LISPOST,
+               NOM_CMP=('V4'),
+               OPERATION='EXTRACTION'));
+IMPR_TABLE(TABLE=PV4,
+             FORMAT   = 'TABLEAU_CROISE'    ,
+             NOM_PARA=('INST','COOR_X','V4'),
+             TRI   = (_F( NOM_PARA = ('COOR_X' ),
+             ORDRE    = 'CROISSANT')));
+
+
+
+#
+PRT=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+               GROUP_NO=('BAS'),
+               RESULTAT=U1,
+               NOM_CHAM='DEPL',
+               LIST_INST=LISPOST,
+               NOM_CMP=('TEMP'),
+               OPERATION='EXTRACTION'));
+
+#
+
+#~ for icalc in range(Npost):
+  #~ IMPR_TABLE(TABLE=PR1,
+                  #~ FORMAT='XMGRACE',
+                  #~ UNITE=21,
+                  #~ LEGENDE_X='X [m]',
+                  #~ LEGENDE_Y='Pc [Pa]',
+                  #~ NOM_PARA=('COOR_X','PRE1'),
+                  #~ LEGENDE=legende[icalc],
+                  #~ COULEUR=couleur[icalc],
+                  #~ FILTRE   = ( _F( NOM_PARA = 'INST',CRIT_COMP    = 'EQ' ,VALE=instant[icalc], 
+                  #~ PRECISION=1.E-10),),
+                  #~ TITRE='Pression capillaire',
+                  #~ TRI=_F(NOM_PARA=('COOR_X'),ORDRE='CROISSANT'),);
+  #~ IMPR_TABLE(TABLE=PR2,
+                  #~ FORMAT='XMGRACE',
+                  #~ UNITE=24,
+                  #~ LEGENDE_X='X [m]',
+                  #~ LEGENDE_Y='Pc [Pa]',
+                  #~ NOM_PARA=('COOR_X','PRE2'),
+                  #~ LEGENDE=legende[icalc],
+                  #~ COULEUR=couleur[icalc],
+                  #~ FILTRE   = ( _F( NOM_PARA = 'INST',CRIT_COMP    = 'EQ' ,VALE=instant[icalc], 
+                  #~ PRECISION=1.E-10),),
+                  #~ TITRE='Pression de gaz',
+                  #~ TRI=_F(NOM_PARA=('COOR_X'),ORDRE='CROISSANT'),);
+
+  #~ IMPR_TABLE(TABLE=PV4,
+                  #~ FORMAT='XMGRACE',
+                  #~ UNITE=22,
+                  #~ LEGENDE_X='X [m]',
+                  #~ LEGENDE_Y='S [-]',
+                  #~ NOM_PARA=('COOR_X','V4'),
+                  #~ LEGENDE=legende[icalc],
+                  #~ COULEUR=couleur[icalc],
+                  #~ FILTRE   = ( _F( NOM_PARA = 'INST',CRIT_COMP    = 'EQ' ,VALE=instant[icalc], 
+                  #~ PRECISION=1.E-10),),
+                  #~ TITRE='Saturation',
+                  #~ TRI=_F(NOM_PARA=('COOR_X'),ORDRE='CROISSANT'),);
+  #~ IMPR_TABLE(TABLE=PRT,
+                  #~ FORMAT='XMGRACE',
+                  #~ UNITE=23,
+                  #~ LEGENDE_X='X [m]',
+                  #~ LEGENDE_Y='T',
+                  #~ NOM_PARA=('COOR_X','TEMP'),
+                  #~ LEGENDE=legende[icalc],
+                  #~ COULEUR=couleur[icalc],
+                  #~ FILTRE   = ( _F( NOM_PARA = 'INST',CRIT_COMP    = 'EQ' ,VALE=instant[icalc], 
+                  #~ PRECISION=1.E-10),),
+                  #~ TITRE='Temperature',
+                  #~ TRI=_F(NOM_PARA=('COOR_X'),ORDRE='CROISSANT'),);
+####
+   
+TEST_RESU(RESU=_F(INST=T1H,
+                  RESULTAT=U1,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N14',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=1351092.731648531 ,
+                  ),
+          )
+TEST_RESU(RESU=_F(INST=UNMOIS,
+                  RESULTAT=U1,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N14',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=1569955.9412039544,
+                  ),
+          )
+TEST_RESU(RESU=_F(INST=12*UNMOIS,
+                  RESULTAT=U1,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N14',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=4111009.417378001,
+                  ),
+          )
+TEST_RESU(RESU=_F(INST=T1H,
+                  RESULTAT=U1,
+                  NOM_CHAM='VARI_NOEU',
+                  NOEUD='N14',
+                  NOM_CMP='V4',
+                  VALE_CALC= 0.9844149901848286,
+                  ),)
+TEST_RESU(RESU=_F(INST=UNMOIS,
+                  RESULTAT=U1,
+                  NOM_CHAM='VARI_NOEU',
+                  NOEUD='N14',
+                  NOM_CMP='V4',
+                  VALE_CALC=0.9651732988923506,
+                  ),)
+TEST_RESU(RESU=_F(INST=12*UNMOIS,
+                  RESULTAT=U1,
+                  NOM_CHAM='VARI_NOEU',
+                  NOEUD='N14',
+                  NOM_CMP='V4',
+                  VALE_CALC=0.8628120428249735,
+                  ),)
+#
+#=============================================================
+# TEST LOI= 'LIQU_AD_GAZ'
+#=============================================================
+LOI= 'LIQU_AD_GAZ'
+
+
+MATER2=DEFI_MATERIAU(ELAS=_F(E=5.15E8,
+                              NU=0.20,
+                              RHO=2670.0,
+                              ALPHA=1.E-5),
+                    COMP_THM = LOI,
+#
+                    THM_LIQU=_F(RHO=rho0l,
+                                ALPHA=ALPHAL,
+                                CP=4180.,
+                                UN_SUR_K=4.5E-10,
+                                VISC=VISCOLIQ,
+                                D_VISC_TEMP=DVISCOL),
+
+                    THM_GAZ=_F(MASS_MOL=0.002,
+                               CP=1017.0,
+                               VISC=VISCOGAZ,
+                               D_VISC_TEMP=ZERO),
+
+                   THM_VAPE_GAZ=_F(MASS_MOL=0.018,
+                                   CP=1900.0,
+                                   VISC=VISCOGAZ,
+                                   D_VISC_TEMP=ZERO),
+
+                   THM_AIR_DISS=_F(CP=1870.,
+                                   COEF_HENRY=HENRY,
+                                      ),
+
+                   THM_INIT=_F(TEMP=TREF,
+                               PRE1=0.,
+                               PRE2=PREF,
+                               PORO=0.15,
+                               PRES_VAPE=1000.,
+                               ),
+                   THM_DIFFU=_F(R_GAZ=R,
+                                RHO=1737.0,
+                                CP=1500.0,
+                                BIOT_COEF=1.0,
+                                PESA_X=0.0,
+                                PESA_Y=0.0,
+                                PESA_Z=0.0,
+                                PERM_IN=KINT,
+#  
+#          
+                                SATU_PRES=SATU_BET,
+                                D_SATU_PRES=DSAT_BET,    
+                                PERM_LIQU=KL_BET,
+                                D_PERM_LIQU_SATU=DKL_BET,
+                                PERM_GAZ=KG_BET,
+                                D_PERM_SATU_GAZ=DKG_BET,
+                                D_PERM_PRES_GAZ=ZERO,        
+#
+                                FICKV_T=ZERO,
+                                FICKA_T= FICKW,
+                                FICKA_S  = FAS   ,
+                                LAMB_T=LAMBLIQ,
+                                LAMB_S=LSRB,
+                                D_LB_S=DLSRB,
+                                LAMB_CT=1.34,
+                                ),);
+
+
+                               
+CHMAT2=AFFE_MATERIAU(MAILLAGE=MAIL,
+                     AFFE=(_F(TOUT='OUI',
+                              MATER=MATER2,)
+                              ));    
+
+                                                       
+U2=STAT_NON_LINE(MODELE=MODELE,
+                 CHAM_MATER=CHMAT2,
+                 EXCIT    =( _F( CHARGE   = SECH ),),
+                 COMPORTEMENT=_F(RELATION='KIT_THH2',
+                                RELATION_KIT=(LOI,'HYDR_UTIL')),
+                 ETAT_INIT=_F(DEPL=CHAMNO),
+                 INCREMENT=_F( LIST_INST = LI, INST_FIN=T1H ),
+                 NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1),
+                 CONVERGENCE=_F(
+                   RESI_GLOB_RELA=1.E-06,
+                   ITER_GLOB_MAXI=20,  ),
+                 SOLVEUR=_F(METHODE='MUMPS'), );
+                 
+TEST_RESU(RESU=_F(INST=T1H,
+                  RESULTAT=U2,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N14',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=1294972.0444640887 ,
+                  ),
+          );
+         
+#=============================================================
+# TEST LOI= 'LIQU_GAZ'
+#=============================================================
+LOI= 'LIQU_GAZ'
+MODELISA = 'D_PLAN_THHS'
+MODEL3=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION=MODELISA));
+SECH3=AFFE_CHAR_CINE(
+  MODELE=MODEL3,
+  MECA_IMPO= (
+    _F(GROUP_MA=('GAUCHE'), PRE1=PCHYGRO, ),
+    _F(GROUP_MA=('GAUCHE'), PRE2=0       ),
+    _F(GROUP_MA=('GAUCHE',),TEMP=TEXT -TREF   ),  ) )  
+                                
+MATER3=DEFI_MATERIAU(ELAS=_F(E=5.15E8,
+                              NU=0.20,
+                              RHO=2670.0,
+                              ALPHA=1.E-5),
+                    COMP_THM = LOI,
+#
+                    THM_LIQU=_F(RHO=rho0l,
+                                ALPHA=ALPHAL,
+                                CP=4180.,
+                                UN_SUR_K=4.5E-10,
+                                VISC=VISCOLIQ,
+                                D_VISC_TEMP=DVISCOL),
+
+                    THM_GAZ=_F(MASS_MOL=0.002,
+                               CP=1017.0,
+                               VISC=VISCOGAZ,
+                               D_VISC_TEMP=ZERO),
+
+                   THM_INIT=_F(TEMP=TREF,
+                               PRE1=0.,
+                               PRE2=PREF,
+                               PORO=0.15,
+                               PRES_VAPE=1000.,
+                               ),
+                   THM_DIFFU=_F(R_GAZ=R,
+                                RHO=1737.0,
+                                CP=1500.0,
+                                BIOT_COEF=1.0,
+                                PESA_X=0.0,
+                                PESA_Y=0.0,
+                                PESA_Z=0.0,
+                                PERM_IN=KINT,
+#                 
+                                SATU_PRES=SATU_BET,
+                                D_SATU_PRES=DSAT_BET,    
+                                PERM_LIQU=KL_BET,
+                                D_PERM_LIQU_SATU=DKL_BET,
+                                PERM_GAZ=KG_BET,
+                                D_PERM_SATU_GAZ=DKG_BET,
+                                D_PERM_PRES_GAZ=ZERO,        
+#
+                                LAMB_T=LAMBLIQ,
+                                LAMB_S=LSRB,
+                                D_LB_S=DLSRB,
+                                LAMB_CT=1.34,
+                                ),);
+
+
+                               
+CHMAT3=AFFE_MATERIAU(MAILLAGE=MAIL,
+                     AFFE=(_F(TOUT='OUI',
+                              MATER=MATER3,)
+                              ));    
+
+                                                       
+U3=STAT_NON_LINE(MODELE=MODEL3,
+                 CHAM_MATER=CHMAT3,
+                 EXCIT    =( _F( CHARGE   = SECH3 ),),
+                 COMPORTEMENT=_F(RELATION='KIT_THH',
+                                RELATION_KIT=(LOI,'HYDR_UTIL')),
+                 ETAT_INIT=_F(DEPL=CHAMNO),
+                 INCREMENT=_F( LIST_INST = LI, INST_FIN=T1H ),
+                 NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1),
+                 CONVERGENCE=_F(
+                   RESI_GLOB_RELA=1.E-06,
+                   ITER_GLOB_MAXI=20,  ),
+                 SOLVEUR=_F(METHODE='MUMPS'), );
+                 
+TEST_RESU(RESU=_F(INST=T1H,
+                  RESULTAT=U3,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N14',
+                  NOM_CMP='PRE1',
+                  VALE_CALC= 1295263.0731222886,
+                  ),
+          );
+         
+#=============================================================
+# TEST LOI= 'LIQU_VAPE_GAZ'
+#=============================================================
+LOI= 'LIQU_VAPE_GAZ'
+                                
+MATER4=DEFI_MATERIAU(ELAS=_F(E=5.15E8,
+                              NU=0.20,
+                              RHO=2670.0,
+                              ALPHA=1.E-5),
+                    COMP_THM = LOI,
+#
+                    THM_LIQU=_F(RHO=rho0l,
+                                ALPHA=ALPHAL,
+                                CP=4180.,
+                                UN_SUR_K=4.5E-10,
+                                VISC=VISCOLIQ,
+                                D_VISC_TEMP=DVISCOL),
+
+                    THM_GAZ=_F(MASS_MOL=0.002,
+                               CP=1017.0,
+                               VISC=VISCOGAZ,
+                               D_VISC_TEMP=ZERO),
+
+                   THM_INIT=_F(TEMP=TREF,
+                               PRE1=0.,
+                               PRE2=PREF,
+                               PORO=0.15,
+                               PRES_VAPE=1000.,
+                               ),
+
+                   THM_VAPE_GAZ=_F(MASS_MOL=0.018,
+                                   CP=1900.0,
+                                   VISC=VISCOGAZ,
+                                   D_VISC_TEMP=ZERO),
+                   THM_DIFFU=_F(R_GAZ=R,
+                                RHO=1737.0,
+                                CP=1500.0,
+                                BIOT_COEF=1.0,
+                                PESA_X=0.0,
+                                PESA_Y=0.0,
+                                PESA_Z=0.0,
+                                PERM_IN=KINT,
+#          
+                                SATU_PRES=SATU_BET,
+                                D_SATU_PRES=DSAT_BET,    
+                                PERM_LIQU=KL_BET,
+                                D_PERM_LIQU_SATU=DKL_BET,
+                                PERM_GAZ=KG_BET,
+                                D_PERM_SATU_GAZ=DKG_BET,
+                                D_PERM_PRES_GAZ=ZERO,        
+#
+                                FICKV_T=FVT,
+                                FICKV_S=FVS,
+                                LAMB_T=LAMBLIQ,
+                                LAMB_S=LSRB,
+                                D_LB_S=DLSRB,
+                                LAMB_CT=1.2,
+                                ),);
+
+CHMAT4=AFFE_MATERIAU(MAILLAGE=MAIL,
+                     AFFE=(_F(TOUT='OUI',
+                              MATER=MATER4,)
+                              ));  
+                                                                                      
+U4=STAT_NON_LINE(MODELE=MODEL3,
+                 CHAM_MATER=CHMAT4,
+                 EXCIT    =( _F( CHARGE   = SECH3 ),),
+                 COMPORTEMENT=_F(RELATION='KIT_THH',
+                                RELATION_KIT=(LOI,'HYDR_UTIL')),
+                 ETAT_INIT=_F(DEPL=CHAMNO),
+                 INCREMENT=_F( LIST_INST = LI, INST_FIN=T1H ),
+                 NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1),
+                 CONVERGENCE=_F(
+                   RESI_GLOB_RELA=1.E-06,
+                   ITER_GLOB_MAXI=20,  ),
+                 SOLVEUR=_F(METHODE='MUMPS'), );
+                 
+TEST_RESU(RESU=_F(INST=T1H,
+                  RESULTAT=U4,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N14',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=1331246.4362344788,
+                  ),
+          );
+
+FIN();
+
+
