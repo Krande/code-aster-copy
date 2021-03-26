@@ -950,8 +950,19 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
         """Initialize all the cached properties to NULL"""
         super()._init_properties()
         self._layer_load = NULL
+        self._lock_load = NULL
         self._lame = True
 
+    @property
+    @cached_property
+    def lock_load(self):
+        """Return the lock condition applied together with the displacements of the water layer"""
+        return [_F(CHARGE=AFFE_CHAR_MECA(MODELE=self.model,
+                                         DDL_IMPO=(_F(GROUP_NO=('FIX', 'P_CUV'),
+                                                      DY=0, DZ=0, DX=0),
+                                                   _F(GROUP_NO=('PMNT_S',),
+                                                      DY=0, DZ=0))))]
+    
     @property
     @cached_property
     def layer_load(self):
@@ -1080,18 +1091,16 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
         """Run the main part of the calculation"""
 
         #Preparation d'un etat de contraintes nul
+        MasquerAlarme('COMPOR4_17')
         _CL_NUL = AFFE_CHAR_CINE(MODELE=self.model,
                                  MECA_IMPO=(_F(TOUT='OUI',
                                                DX=0.0, DY=0.0, DZ=0.0,
                                                DRX=0.0, DRY=0.0, DRZ=0.0)))
-
-        MasquerAlarme('COMPOR4_17')
-        __NUL = STAT_NON_LINE(**self.snl(
-            EXCIT=_F(CHARGE=_CL_NUL),
-            INCREMENT=_F(LIST_INST=self.times,
-                         NUME_INST_FIN=1,),
-        ))
-        RetablirAlarme('COMPOR4_17')
+        
+        __NUL = STAT_NON_LINE(**self.snl(INCREMENT=_F(LIST_INST=self.times,
+                                                      PRECISION=1.E-08,
+                                                      NUME_INST_FIN=1),
+                                         EXCIT=_F(CHARGE=_CL_NUL)))
 
         _tini = __NUL.LIST_PARA()['INST'][-1]
         
@@ -1100,7 +1109,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                              PRECISION=1.0E-08,
                              RESULTAT=__NUL,
                              NOM_CHAM='SIEF_ELGA',
-                             INST=_tini,)
+                             INST=_tini)
         
         SIG_NUL = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                              MODELE=self.model,
@@ -1108,54 +1117,54 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                              ASSE=(_F(TOUT='OUI',
                                       CHAM_GD=__CHSIE,
                                       CUMUL='NON',
-                                      COEF_R=0.0),),) 
+                                      COEF_R=0.0)))
+
+        RetablirAlarme('COMPOR4_17')
+
         
         coeur = self.coeur
-        lock = AFFE_CHAR_MECA(MODELE=self.model, DDL_IMPO=(_F(GROUP_NO=('FIX', 'P_CUV'), DY=0, DZ=0, DX=0),
-                                                           _F(GROUP_NO=('PMNT_S',), DY=0, DZ=0)))
-
         # calcul de deformation d'apres DAMAC / T0 - T1
-        _snl_lame = STAT_NON_LINE(**self.snl_lame(
-                                  INCREMENT=_F(LIST_INST=self.times,
-                                               INST_INIT=0.,
-                                               PRECISION=1.E-08,
-                                               INST_FIN=coeur.temps_simu['T1']),
-                                  EXCIT=self.layer_load + self.periodic_cond + [_F(CHARGE=lock)],
-                                  ETAT_INIT=_F(SIGM=SIG_NUL)
-                                  ))
+        _snl_lame = STAT_NON_LINE(**self.snl_lame(INCREMENT=_F(LIST_INST=self.times,
+                                                               PRECISION=1.E-08,
+                                                               INST_INIT=0.,
+                                                               INST_FIN=coeur.temps_simu['T1']),
+                                                  EXCIT=(self.symetric_cond + self.periodic_cond +
+                                                         self.layer_load +
+                                                         self.vessel_head_load + self.vessel_dilatation_load +
+                                                         self.archimede_load + self.gravity_load),
+                                                  ETAT_INIT=_F(SIGM=SIG_NUL)))
+        
         self.update_coeur(_snl_lame, self.keyw['TABLE_N'])
+        # On fait l'irradiation historique sur assemblages droits
         # WARNING: element characteristics and the most of the loadings must be
-        # computed on the initial (not deformed) meshhg st
+        # computed on the initial (not deformed) mesh
         # please keep the call to deform_mesh after the computation of keywords
         keywords=[]
-        keywords.append(self.snl_lame(CHAM_MATER=self.cham_mater_free,
-                            INCREMENT=_F(LIST_INST=self.times,
-                                         PRECISION=1.E-08,
-                                         INST_FIN=0.),
-                            ETAT_INIT=_F(SIGM=SIG_NUL),
-                            EXCIT=self.rigid_load + self.archimede_load +
-                            self.vessel_head_load +
-                            self.vessel_dilatation_load +
-                            self.gravity_load +
-                            self.symetric_cond + self.periodic_cond +
-                            self.thyc_load[0] + self.thyc_load[1],
-                           ))
-        #on fait l'irradiation historique sur assemblages droits
+        keywords.append(self.snl_lame(INCREMENT=_F(LIST_INST=self.times,
+                                                   PRECISION=1.E-08,
+                                                   INST_FIN=0.),
+                                      EXCIT=(self.symetric_cond + self.periodic_cond +
+                                             self.rigid_load +
+                                             self.vessel_head_load + self.vessel_dilatation_load +
+                                             self.archimede_load + self.gravity_load),
+                                      ETAT_INIT=_F(SIGM=SIG_NUL)))
+         
         __RESULT = STAT_NON_LINE(**keywords[-1])
-        #on deforme le maillage
+        # On deforme le maillage
         depl_deformed = self.deform_mesh(_snl_lame)
+
+        # On active progressivement les contacts
         mater=[]
         ratio = 1.
         mater.append(self.cham_mater_contact_progressif(ratio))
-        kwds = {    'CHAM_MATER' : mater[-1],
-                    'ETAT_INIT' : _F(EVOL_NOLI=__RESULT,
-                                     PRECISION=1.E-08,
-                                     CRITERE='RELATIF'),
-                    'INCREMENT' : _F(LIST_INST=self.times_woSubd,
-                                     PRECISION=1.E-08,
-                                     INST_FIN=coeur.temps_simu['T0b']),
+        kwds = {'CHAM_MATER' : mater[-1],
+                'ETAT_INIT' : _F(EVOL_NOLI=__RESULT,
+                                 PRECISION=1.E-08,
+                                 CRITERE='RELATIF'),
+                'INCREMENT' : _F(LIST_INST=self.times_woSubd,
+                                 PRECISION=1.E-08,
+                                 INST_FIN=coeur.temps_simu['T0b'])}
 
-            }
         keywords[-1].update(kwds)
         nb_test = 0
         while nb_test < 5 :
@@ -1167,79 +1176,67 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                     if i>0 :
                         kwds = {
                             'NEWTON': _F(MATRICE='TANGENTE',
-                             PREDICTION='DEPL_CALCULE',
-                             EVOL_NOLI = __res_int[i-1],
-                             REAC_ITER=1,),
-                            }
+                                         PREDICTION='DEPL_CALCULE',
+                                         EVOL_NOLI = __res_int[i-1],
+                                         REAC_ITER=1)}
                         k.update(kwds)
-                    # if i == nb-1 :
-                    #     __RESULT = STAT_NON_LINE(**k)
-                    # else :
+
                     __res_int[i]=STAT_NON_LINE(**k)
                 break
             except ConvergenceError:
                 ratio = ratio/10.
                 mater.append(self.cham_mater_contact_progressif(ratio))
                 keywords.append(self.snl_lame(CHAM_MATER=mater[-1],
-                                INCREMENT=_F(LIST_INST=self.times_woSubd,
-                                             PRECISION=1.E-08,
-                                             INST_FIN=coeur.temps_simu['T0b']),
-                                ETAT_INIT=_F(EVOL_NOLI=__RESULT,
-                                             PRECISION=1.E-08,
-                                             CRITERE='RELATIF'),
-                                EXCIT=self.rigid_load + self.archimede_load +
-                                self.vessel_head_load +
-                                self.vessel_dilatation_load +
-                                self.gravity_load +
-                                self.symetric_cond + self.periodic_cond +
-                                self.thyc_load[0] + self.thyc_load[1],
-                               ))
+                                              INCREMENT=_F(LIST_INST=self.times_woSubd,
+                                                           PRECISION=1.E-08,
+                                                           INST_FIN=coeur.temps_simu['T0b']),
+                                              EXCIT=(self.symetric_cond + self.periodic_cond +
+                                                     self.rigid_load +
+                                                     self.vessel_head_load + self.vessel_dilatation_load +
+                                                     self.archimede_load + self.gravity_load +
+                                                     self.thyc_load[0] + self.thyc_load[1]),
+                                              ETAT_INIT=_F(EVOL_NOLI=__RESULT,
+                                                           PRECISION=1.E-08,
+                                                           CRITERE='RELATIF')))
             nb_test+=1
         else :
-            raise  ConvergenceError('no convergence')
+            raise  ConvergenceError('MAC3 Water Gaps : No convergence during the application of contacts.')
 
 
-        keywords = self.snl_lame(
-                            reuse = __RESULT,
-                            RESULTAT=__RESULT,
-                            ETAT_INIT=_F(EVOL_NOLI=__RESULT,
-                                         PRECISION=1.E-08,
-                                         CRITERE='RELATIF'),
-                            NEWTON= _F(MATRICE='TANGENTE',
-                                PREDICTION='DEPL_CALCULE',
-                                EVOL_NOLI = __res_int[-1],
-                                REAC_ITER=1,),
-                            CHAM_MATER=self.cham_mater_contact,
-                            INCREMENT=_F(LIST_INST=self.times_woSubd,
-                                         PRECISION=1.E-08,
-                                         INST_FIN=coeur.temps_simu['T0b']),
-                            EXCIT=self.rigid_load + self.archimede_load +
-                            self.vessel_head_load +
-                            self.vessel_dilatation_load +
-                            self.gravity_load +
-                            self.symetric_cond + self.periodic_cond +
-                            self.thyc_load[0] + self.thyc_load[1],
-                            )
-        __RESULT = STAT_NON_LINE(**keywords)
-        keywords = self.snl_lame(
-                            reuse = __RESULT,
-                            RESULTAT=__RESULT,
-                            ETAT_INIT=_F(EVOL_NOLI=__RESULT,
-                                         PRECISION=1.E-08,
-                                         CRITERE='RELATIF'),
-                            CHAM_MATER=self.cham_mater_contact,
-                            INCREMENT=_F(LIST_INST=self.times,
-                                         PRECISION=1.E-08,
-                                         INST_FIN=coeur.temps_simu['T4']),
-                            EXCIT=self.rigid_load + self.archimede_load +
-                            self.vessel_head_load +
-                            self.vessel_dilatation_load +
-                            self.gravity_load +
-                            self.symetric_cond + self.periodic_cond +
-                            self.thyc_load[0] + self.thyc_load[1],
-                            )
-        __RESULT = STAT_NON_LINE(**keywords)
-
+        __RESULT = STAT_NON_LINE(**self.snl_lame(reuse = __RESULT,
+                                                 RESULTAT=__RESULT,
+                                                 NEWTON= _F(MATRICE='TANGENTE',
+                                                            PREDICTION='DEPL_CALCULE',
+                                                            EVOL_NOLI = __res_int[-1],
+                                                            REAC_ITER=1),
+                                                 CHAM_MATER=self.cham_mater_contact,
+                                                 INCREMENT=_F(LIST_INST=self.times_woSubd,
+                                                              PRECISION=1.E-08,
+                                                              INST_FIN=coeur.temps_simu['T0b']),
+                                                 EXCIT=(self.symetric_cond + self.periodic_cond +
+                                                        self.rigid_load +
+                                                        self.vessel_head_load + self.vessel_dilatation_load +
+                                                        self.archimede_load + self.gravity_load +
+                                                        self.thyc_load[0] + self.thyc_load[1]),
+                                                 ETAT_INIT=_F(EVOL_NOLI=__RESULT,
+                                                              PRECISION=1.E-08,
+                                                              CRITERE='RELATIF')))
+       
+        __RESULT = STAT_NON_LINE(**self.snl_lame(reuse = __RESULT,
+                                                 RESULTAT=__RESULT,
+                                                 CHAM_MATER=self.cham_mater_contact,
+                                                 INCREMENT=_F(LIST_INST=self.times,
+                                                              PRECISION=1.E-08,
+                                                              INST_FIN=coeur.temps_simu['T4']),
+                                                 EXCIT=(self.symetric_cond + self.periodic_cond +
+                                                        self.rigid_load +
+                                                        self.vessel_head_load + self.vessel_dilatation_load +
+                                                        self.archimede_load + self.gravity_load +
+                                                        self.thyc_load[0] + self.thyc_load[1]),
+                                                 ETAT_INIT=_F(EVOL_NOLI=__RESULT,
+                                                              PRECISION=1.E-08,
+                                                              CRITERE='RELATIF')))
+        
         if self.calc_res_def:
             self.output_resdef(__RESULT,depl_deformed,tinit,tfin)
         return __RESULT

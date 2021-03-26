@@ -176,11 +176,6 @@ class Coeur(object):
         mcf = []
         for ac in list(self.collAC.values()):
             mcf.extend(ac.mcf_deform_impo())
-
-        mtmp = (_F(GROUP_MA='CRAYON',           DRX=0.,),
-                _F(GROUP_NO='LISPG',            DRX=0., DRY=0., DRZ=0.),
-                _F(GROUP_MA=('EBOSUP', 'EBOINF'), DRX=0., DRY=0., DRZ=0.),)
-        mcf.extend(mtmp)
         return mcf
 
     def repr(self):
