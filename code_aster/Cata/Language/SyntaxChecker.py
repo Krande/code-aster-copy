@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -326,14 +326,33 @@ class SyntaxCheckerVisitor:
                                "Unexpected value: {0!r}, must be in {1!r}"
                                    .format(i, step.definition["into"]))
             # val_min/val_max
-            if valMax is not None and i > valMax:
-                self.error(ValueError,
+            if valMax is not None:
+                if complex in validType:
+                    ValMax = old_complex(ValMax)
+                    if i.real > valMax.real or i.imag > valMax.imag:
+                        self.error(ValueError,
+                           'Real and imaginary parts must be smaller than the real'
+                           ' and the imaginary parts of {0}, respectively, {1} is not'
+                                .format(valMax, i))
+                else:
+                    if i > valMax:
+                        self.error(ValueError,
                            'Value must be smaller than {0}, {1} is not'
                                .format(valMax, i))
-            if valMin is not None and i < valMin:
-                self.error(ValueError,
+            if valMin is not None:
+                if complex in validType:
+                    ValMin = old_complex(ValMin)
+                    if i.real < valMin.real or i.imag < valMin.imag:
+                        self.error(ValueError,
+                           'Real and imaginary parts must be greater than the real'
+                           ' and the imaginary parts of {0}, respectively, {1} is not'
+                                .format(valMax, i))
+                else:
+                    if i < valMin:
+                        self.error(ValueError,
                            'Value must be bigger than {0}, {1} is not'
                                .format(valMin, i))
+
 
         # call validators
         for valid in force_list(step.definition.get('validators', [])):
