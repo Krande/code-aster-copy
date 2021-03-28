@@ -244,6 +244,11 @@ FieldOnNodesRealPtr BaseLinearSolverClass::solveRealLinearSystem(
 
     if ( result->getName() == "" )
         result = FieldOnNodesRealPtr( new FieldOnNodesRealClass( Permanent ) );
+    
+    try{
+       if ( !result->getDOFNumbering()) result->setDOFNumbering(currentRHS->getDOFNumbering());
+    } catch ( ... ) {}
+
 
     std::string blanc( " " );
     ASTERINTEGER nsecm = 0, istop = 0, iret = 0;
