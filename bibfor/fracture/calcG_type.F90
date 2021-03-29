@@ -34,6 +34,7 @@ private
 #include "asterfort/comp_info.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/fointe.h"
 #include "asterfort/gcncon.h"
 #include "asterfort/gettco.h"
 #include "asterfort/getvid.h"
@@ -192,8 +193,13 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table
         character(len=24)       :: nomNoeud = ' '
 ! ----- number of nodes in the crack
         integer                 :: nb_fondNoeud = 0
-! ----- rayon
+! ----- radius
         real(kind=8)            :: r_inf = 0.d0, r_sup = 0.d0
+! ----- radius function of curvilinear abcissa
+        character(len=8)        :: r_inf_fo
+        character(len=8)        :: r_sup_fo
+! ----- How is theta torus defined ?
+        character(len=24)       :: radius_type = ' '
 ! ----- lenght of crack
         real(kind=8)            :: lonfis = 0.d0
 ! ----- number of layer
@@ -673,8 +679,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         integer :: ier, j, ibasf, i, num, inume
-        character(len=8) :: typfon
-        real(kind=8) :: maxtai, mintai
+        character(len=8) :: typfon, nompar(1) 
+        real(kind=8) :: maxtai, mintai, valpar(1), valres_i, valres_s
         aster_logical :: l_disc
         real(kind=8), pointer :: fondTailleR(:) => null()
         real(kind=8), pointer :: absfon(:)  => null()
@@ -685,7 +691,6 @@ contains
         call gcncon("_", this%theta_field)
         call gcncon("_", this%theta_factors)
         call gcncon("_", this%matrix)
-        call gcncon("_", this%absfond)
         call gcncon("_", this%fondNoeudNume)
 !
 ! --- get informations about the crack
@@ -735,9 +740,28 @@ contains
                 call utmess('F', 'RUPTURE0_90')
             end if
         end if
+
+!
+        this%nomNoeud = this%mesh//'.NOMNOE'
+        this%absfond=this%crack//'.ABSFON'
+
+!       Récupération des numéros de noeud du fond de fissure
+        call wkvect(this%fondNoeudNume, 'V V I', this%nb_fondNoeud, inume)
+        call this%getFondNoeu(fondNoeud)
+!
+        do i = 1, this%nb_fondNoeud
+!           Récupération du numéro de noeud
+            call jenonu(jexnom(this%nomNoeud, fondNoeud(i)), num)
+            zi(inume-1+i) = num
+        enddo
+!
+! ---- Theta torus definition
 !
         call getvis('THETA', 'NB_COUCHE_INF', iocc=1, scal=this%nb_couche_inf, nbret=ier)
         call getvis('THETA', 'NB_COUCHE_SUP', iocc=1, scal=this%nb_couche_sup, nbret=ier)
+        if(ier.ne.0)then
+            this%radius_type='NB_COUCHE'
+        endif
 !
         if(ier == 1 .and. ((this%nb_couche_inf < 0) .or. &
             (this%nb_couche_inf >= this%nb_couche_sup))) then
@@ -750,13 +774,43 @@ contains
 
         call getvr8('THETA', 'R_INF', iocc=1, scal=this%r_inf, nbret=ier)
         call getvr8('THETA', 'R_SUP', iocc=1, scal=this%r_sup, nbret=ier)
+        if(ier.ne.0)then
+            this%radius_type='R'
+        endif
 !
-        if(ier == 1 .and. ((this%r_inf < 0.d0) .or. (this%r_inf >= this%r_sup))) then
+        call getvid('THETA', 'R_INF_FO', iocc=1, scal=this%r_inf_fo, nbret=ier)
+        call getvid('THETA', 'R_SUP_FO', iocc=1, scal=this%r_sup_fo, nbret=ier)
+        if(ier.ne.0)then
+            this%radius_type='R_FO'
+        endif
+!
+!       Verifications
+        if(this%radius_type.eq.'R' .and. ((this%r_inf < 0.d0) .or. (this%r_inf >= this%r_sup))) then
             call utmess('F', 'RUPTURE3_3', nr=2, valr=[this%r_inf, this%r_sup])
         end if
-
-        if (ier .eq. 0) then
+!
+        call this%getAbsfon(absfon)
+        this%lonfis = absfon(this%nb_fondNoeud)
+        if(this%radius_type.eq.'R_FO')then
+            do i=1, this%nb_fondNoeud
+                nompar(1) = 'ABSC'
+                valpar(1) = absfon(i) 
+                call fointe('FM', this%r_inf_fo, 1, nompar, valpar,valres_i, ier)
+                call fointe('FM', this%r_sup_fo, 1, nompar, valpar,valres_s, ier)
+                if ( valres_s .le. valres_i) then
+                    call utmess('F', 'RUPTURE1_6')
+                endif
+            end do
+        endif 
+!
+!       if no radius is defined
+        if (this%radius_type.ne.'R' .and. this%radius_type.ne.'R_FO' &
+            .and. this%radius_type.ne.'NB_COUCHE') then
+            this%radius_type='R'
             if (this%config_init .eq. 'DECOLLEE') then
+!           A vérifier si toujours impossible de calculer r dans ce cas
+!           (fond_taille_r disponible dans la sd_fond_fissure même si 
+!           DECOLLEE?)
                 call utmess('F', 'RUPTURE1_7')
             endif
             call this%getFondTailleR(fondTailleR)
@@ -773,22 +827,7 @@ contains
                 call utmess('A', 'RUPTURE1_16', nr=2, valr=[mintai, maxtai])
             endif
         endif
-!
-!       Extraction à modifier lors de la résolution de issue30288 (NB_POINT_FOND)
-        call wkvect(this%absfond, 'V V R8', this%nb_fondNoeud, ibasf)
-        call wkvect(this%fondNoeudNume, 'V V I', this%nb_fondNoeud, inume)
-        call this%getAbscurv(absfon)
-        call this%getFondNoeu(fondNoeud)
-!
-        do i = 1, this%nb_fondNoeud
-!
-!           Récupération du numéro de noeud
-            call jenonu(jexnom(this%nomNoeud, fondNoeud(i)), num)
-!
-            zr(ibasf-1+i) = absfon(i)
-            zi(inume-1+i) = num
-        enddo
-!
+
         call jedema()
 !
     end subroutine

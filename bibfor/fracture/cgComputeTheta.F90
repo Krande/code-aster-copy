@@ -31,6 +31,7 @@ use calcG_type
 #include "asterfort/cnscre.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/fointe.h"
 #include "asterfort/gcou2d.h"
 #include "asterfort/ismali.h"
 #include "jeveux.h"
@@ -50,13 +51,15 @@ use calcG_type
     type(CalcG_field), intent(in) :: cgField
     type(CalcG_theta), intent(inout) :: cgTheta
 
-    integer :: i, ibasf
+    integer :: i
     integer :: nbel, iret, jcnsl
 
-    real(kind=8) :: d, xm, ym, zm, xn, yn, zn, eps, alpha
+    real(kind=8) :: d, xm, ym, zm, xn, yn, zn, eps, alpha, lonfis
+    real(kind=8) :: valpar(1), valres_i, valres_s
 
     character(len=8), parameter :: licmp(6) = ['MODULE  ','DIR_X   ','DIR_Y   ','DIR_Z   ',&
                                                'ABSC_CUR','LONG    ']
+    character(len=8) :: nompar(1) 
     character(len=24) :: cnstet
     real(kind=8) :: theta0
     real(kind=8), pointer :: v_theta(:) => null()
@@ -106,11 +109,7 @@ use calcG_type
     if(cgField%level_info>1) then
         call utmess('I', 'RUPTURE3_2')
     end if
-!
-!   Récupération de la longuer de fissure:
-    call jeveuo(cgTheta%absfond, 'L', ibasf)
-    cgTheta%lonfis = zr(ibasf-1+cgTheta%nb_fondNoeud)
-!
+    
     ! Vérifications spécifiques en 3D
     if (cgField%ndim .eq. 3) then
         ! VERIFICATION PRESENCE NB_POINT_FOND
@@ -174,8 +173,17 @@ use calcG_type
             zn = v_base(3*cgField%ndim*(i-1)+3)
         endif
         d = sqrt((xn-xm)*(xn-xm)+(yn-ym)*(yn-ym)+(zn-zm)*(zn-zm))
-        alpha = ( d- cgTheta%r_inf)/(cgTheta%r_sup-cgTheta%r_inf)
-
+        if (cgTheta%radius_type.eq.'R')then
+            alpha = ( d- cgTheta%r_inf)/(cgTheta%r_sup-cgTheta%r_inf)
+        else if (cgTheta%radius_type.eq.'R_FO')then
+            nompar(1) = 'ABSC'
+            valpar(1) = v_absc(i) 
+            call fointe('FM', cgTheta%r_inf_fo, 1, nompar, valpar,valres_i, iret)
+            call fointe('FM', cgTheta%r_sup_fo, 1, nompar, valpar,valres_s, iret)
+            alpha = ( d- valres_i)/(valres_s-valres_i)
+        else
+            ASSERT(.FALSE.)
+        endif
 !       calcul de theta0 du noeud i
         if ((abs(alpha).le.eps) .or. (alpha.lt.0)) then
             theta0 = 1.d0
