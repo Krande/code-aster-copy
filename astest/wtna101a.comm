@@ -303,4 +303,127 @@ TEST_RESU(RESU=(_F(INST=1.004,
                 ),
           )
 
+
+# Meme resolution mais avec le preconditionneur LDLT_DP
+
+U2 = STAT_NON_LINE(  MODELE     = MODELE, CHAM_MATER = CHMAT,
+
+#      On utilise le solveur PETSC + GMRES + NMAX_ITER pour forcer le passage dans la routine ap2foi.F90
+#      (voir issue22110, issue21962, issue24287 et issue30816).
+#      Ne pas utiliser FGMRES
+       SOLVEUR=_F(METHODE='PETSC', ALGORITHME='GMRES', PCENT_PIVOT=50., NMAX_ITER=20,RESI_RELA=1.e-10, PRE_COND='LDLT_DP',),
+
+       EXCIT      = (
+          _F( CHARGE    = DEP_SYM),
+          _F( CHARGE    = PR_LATE, FONC_MULT = EVOL_HYD),
+          _F( CHARGE    = DEP_V, FONC_MULT = EVOL_DEV)),
+       COMPORTEMENT  = _F( RELATION     = 'KIT_HM',
+                           RELATION_KIT = ('DRUCK_PRAGER', 'LIQU_SATU', 'HYDR_UTIL')),
+       ETAT_INIT  = _F( EVOL_NOLI  = U1,
+                        NUME_ORDRE = 1),
+       INCREMENT  = _F( LIST_INST  = TEMPS2),
+       NEWTON     = _F( MATRICE    = 'TANGENTE', REAC_ITER  = 1),
+       CONVERGENCE= _F( RESI_GLOB_RELA = 1.E-7, ITER_GLOB_MAXI = 30),
+                        )
+
+U2=CALC_CHAMP(reuse=U2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U2)
+
+
+U2       = CALC_CHAMP( reuse    = U2,
+                    RESULTAT = U2,
+                    CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU'
+                  )
+
+#
+#-------------------------
+#    TEST_RESU AU POINT A
+#-------------------------
+
+TEST_RESU(RESU=(_F(INST=1.004,
+                   RESULTAT=U2,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='NO8',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-969230.769928,
+                   ),
+                _F(INST=1.1599999999999999,
+                   RESULTAT=U2,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='NO8',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-45228240.1842,
+                   ),
+                _F(INST=1.3400000000000001,
+                   RESULTAT=U2,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='NO8',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-95912228.8354,
+                   ),
+                _F(INST=1.6000000000000001,
+                   RESULTAT=U2,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='NO8',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-169122434.648,
+                   ),
+                _F(INST=1.004,
+                   RESULTAT=U2,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='NO8',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC=-4061538.46202,
+                   ),
+                _F(INST=1.1599999999999999,
+                   RESULTAT=U2,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='NO8',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC=-112908774.187,
+                   ),
+                _F(INST=1.3400000000000001,
+                   RESULTAT=U2,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='NO8',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC=-238484029.657,
+                   ),
+                _F(INST=1.6000000000000001,
+                   RESULTAT=U2,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='NO8',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC=-419870509.728,
+                   ),
+                _F(INST=1.004,
+                   RESULTAT=U2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO8',
+                   NOM_CMP='PRE1',
+                   VALE_CALC=1030769.22998,
+                   ),
+                _F(INST=1.1599999999999999,
+                   RESULTAT=U2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO8',
+                   NOM_CMP='PRE1',
+                   VALE_CALC=-43228240.1834,
+                   ),
+                _F(INST=1.3400000000000001,
+                   RESULTAT=U2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO8',
+                   NOM_CMP='PRE1',
+                   VALE_CALC=-93912228.8356,
+                   ),
+                _F(INST=1.6000000000000001,
+                   RESULTAT=U2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='NO8',
+                   NOM_CMP='PRE1',
+                   VALE_CALC=-167122434.649,
+                   ),
+                ),
+          )
+
 FIN()

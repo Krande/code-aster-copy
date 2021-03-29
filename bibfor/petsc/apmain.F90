@@ -370,9 +370,9 @@ use lmp_module, only : lmp_update
         ASSERT(ierr.eq.0)
 
 !
-!       -- si LDLT_SP et its > maxits, on essaye une 2eme fois
+!       -- si LDLT_SP/DP et its > maxits, on essaye une 2eme fois
 !       -- apres avoir actualise le preconditionneur :
-        if ((indic .eq. KSP_DIVERGED_ITS) .and. (precon.eq.'LDLT_SP')) then
+        if ((indic.eq.KSP_DIVERGED_ITS) .and. ((precon.eq.'LDLT_SP').or.(precon.eq.'LDLT_DP'))) then
             call ap2foi(kptsc, mpicomm, nosolv, lmd, indic,its)
 !           -- ksp a ete modifie par ap2foi :
             ksp = kp(kptsc)

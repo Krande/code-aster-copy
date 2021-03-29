@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -196,7 +196,7 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
     kdeb=(k-1)*neq+1
     istop_solv = istop
 !
-    if ( precon(1:7) == 'LDLT_SP' ) then
+    if ( precon(1:7) == 'LDLT_SP' .or. precon(1:7) == 'LDLT_DP' ) then
 !   ACTIVATION DE LA SECONDE CHANCE : stop_singulier = non
         istop_solv = 2
     endif
@@ -209,7 +209,7 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
 !
 !     9-1 SECONDE CHANCE AVEC LE PRECONDITIONNEUR LDLT_SP
 !     (cf ap2foi)
-    if (( iret == 1 ).and.(precon(1:7) == 'LDLT_SP' )) then
+    if (( iret == 1 ).and.((precon(1:7) == 'LDLT_SP').or.(precon(1:7) == 'LDLT_DP'))) then
 !       ON ACTUALISE LE PRECONDITIONNEUR
         call utmess('I', 'ALGELINE4_63')
 !   -- bascule pour la mesure du temps CPU : RESOUD -> PRERES :
