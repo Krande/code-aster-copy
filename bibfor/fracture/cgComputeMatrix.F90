@@ -58,7 +58,7 @@ use calcG_type
 !
 
     aster_logical    :: l_quad
-    integer          :: iatyma, imatr, ibasf, i, j
+    integer          :: iatyma, imatr, i, j
     character(len=8) :: typma
 !    real(kind=8)     :: lonfis
     

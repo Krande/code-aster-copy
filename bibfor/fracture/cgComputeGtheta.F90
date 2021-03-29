@@ -67,6 +67,7 @@ use calcG_type
     integer :: nchin, nbgrel, iadrt3
     integer :: jcesd, jcesl
     real(kind=8) :: gth(7), som(7)
+    real(kind=8) :: s1, s2, s3, sn2, sn1, sn
     character(len=2)  :: codret
     character(len=8)  :: k8b, lpain(50), lpaout(1)
     character(len=16) :: opti
@@ -410,21 +411,81 @@ use calcG_type
         call cgTheta%getBaseLoc(v_base)
         gth(1:7) = gth(1:7) / v_base(1)
      endif
-!     
-!   Correction dans le cas des fonds fermés (LAGRANDE/LINEAIRE) : G(1)=G(N)
-    if(cgTheta%l_closed)then
-        gthi(cgTheta%nb_theta_field)=gth(1)
-        k1th(cgTheta%nb_theta_field)=k1th(1)
-        k2th(cgTheta%nb_theta_field)=k2th(1)
-        k3th(cgTheta%nb_theta_field)=k3th(1)
-        g1th(cgTheta%nb_theta_field)=g1th(1)
-        g2th(cgTheta%nb_theta_field)=g2th(1)
-        g3th(cgTheta%nb_theta_field)=g3th(1)
-    endif
 !
 !    Cas 3D, on détermine G(s) et les K(s)
     if (cgField%ndim.eq.3) then
         if(cgTheta%discretization.eq.'LINEAIRE') then
+
+!           Correction dans le cas des fonds fermés (LAGRANDE/LINEAIRE) : G(1)=G(N)
+            if (cgTheta%l_closed) then
+                gthi(cgTheta%nb_theta_field)=gthi(1)
+                k1th(cgTheta%nb_theta_field)=k1th(1)
+                k2th(cgTheta%nb_theta_field)=k2th(1)
+                k3th(cgTheta%nb_theta_field)=k3th(1)
+                g1th(cgTheta%nb_theta_field)=g1th(1)
+                g2th(cgTheta%nb_theta_field)=g2th(1)
+                g3th(cgTheta%nb_theta_field)=g3th(1)
+            endif   
+!
+!           CORRECTION VALEURS EXTREMITES
+            if (.not.cgTheta%l_closed) then
+                if (cgTheta%nb_theta_field .ne. 2) then
+
+                     s1 =  v_basf(1)
+                     s2 =  v_basf(2)
+                     s3 =  v_basf(3)
+                     sn2 = v_basf(cgTheta%nb_theta_field-3)
+                     sn1 = v_basf(cgTheta%nb_theta_field-2)
+                     sn =  v_basf(cgTheta%nb_theta_field-1)
+
+!                    CORRECTION DANS LE CAS LINEAIRE
+                     if (.not.cgStudy%milieu) then
+                         gthi(1) = gthi(2)*(s2-s1)/(s3-s1)
+                         k1th(1) = k1th(2)*(s2-s1)/(s3-s1)
+                         k2th(1) = k2th(2)*(s2-s1)/(s3-s1)
+                         k3th(1) = k3th(2)*(s2-s1)/(s3-s1)
+                         g1th(1) = g1th(2)*(s2-s1)/(s3-s1)
+                         g2th(1) = g2th(2)*(s2-s1)/(s3-s1)
+                         g3th(1) = g3th(2)*(s2-s1)/(s3-s1)
+                         gthi(cgTheta%nb_theta_field) = gthi(cgTheta%nb_theta_field-1)&
+                                                        *(sn-sn1)/(sn-sn2)
+                         k1th(cgTheta%nb_theta_field) = k1th(cgTheta%nb_theta_field-1)&  
+                                                        *(sn-sn1)/(sn-sn2)
+                         k2th(cgTheta%nb_theta_field) = k2th(cgTheta%nb_theta_field-1)&
+                                                        *(sn-sn1)/(sn-sn2)
+                         k3th(cgTheta%nb_theta_field) = k3th(cgTheta%nb_theta_field-1)&
+                                                        *(sn-sn1)/(sn-sn2)
+                         g1th(cgTheta%nb_theta_field) = g1th(cgTheta%nb_theta_field-1)&
+                                                        *(sn-sn1)/(sn-sn2)
+                         g2th(cgTheta%nb_theta_field) = g2th(cgTheta%nb_theta_field-1)&
+                                                        *(sn-sn1)/(sn-sn2)
+                         g3th(cgTheta%nb_theta_field) = g3th(cgTheta%nb_theta_field-1)&
+                                                        *(sn-sn1)/(sn-sn2)
+
+!                    CORRECTION DANS LE CAS QUADRATIQUE
+                     else if (cgStudy%milieu) then
+                         gthi(1) = gthi(2)/4.d0
+                         k1th(1) = k1th(2)/4.d0
+                         k2th(1) = k2th(2)/4.d0
+                         k3th(1) = k3th(2)/4.d0
+                         g1th(1) = g1th(2)*(s2-s1)/(s3-s1)
+                         g2th(1) = g2th(2)*(s2-s1)/(s3-s1)
+                         g3th(1) = g3th(2)*(s2-s1)/(s3-s1)
+                         gthi(cgTheta%nb_theta_field) = gthi(cgTheta%nb_theta_field-1)/4.d0
+                         k1th(cgTheta%nb_theta_field) = k1th(cgTheta%nb_theta_field-1)/4.d0
+                         k2th(cgTheta%nb_theta_field) = k2th(cgTheta%nb_theta_field-1)/4.d0
+                         k3th(cgTheta%nb_theta_field) = k3th(cgTheta%nb_theta_field-1)/4.d0
+                         g1th(cgTheta%nb_theta_field) = g1th(cgTheta%nb_theta_field-1)&
+                                                        *(sn-sn1)/(sn-sn2)
+                         g2th(cgTheta%nb_theta_field) = g2th(cgTheta%nb_theta_field-1)&
+                                                        *(sn-sn1)/(sn-sn2)
+                         g3th(cgTheta%nb_theta_field) = g3th(cgTheta%nb_theta_field-1)&
+                                                        *(sn-sn1)/(sn-sn2)
+                     endif
+
+                 endif
+            endif 
+!
     !       On inverse les systèmes linéaires A.G(s)=G(theta)
 
     !       SYSTEME LINEAIRE:  MATR*GS = GTHI

@@ -678,7 +678,7 @@ contains
 !   In this     : theta type
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ier, j, ibasf, i, num, inume
+        integer :: ier, j, i, num, inume
         character(len=8) :: typfon, nompar(1) 
         real(kind=8) :: maxtai, mintai, valpar(1), valres_i, valres_s
         aster_logical :: l_disc

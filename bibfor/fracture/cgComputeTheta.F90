@@ -54,7 +54,7 @@ use calcG_type
     integer :: i
     integer :: nbel, iret, jcnsl
 
-    real(kind=8) :: d, xm, ym, zm, xn, yn, zn, eps, alpha, lonfis
+    real(kind=8) :: d, xm, ym, zm, xn, yn, zn, eps, alpha
     real(kind=8) :: valpar(1), valres_i, valres_s
 
     character(len=8), parameter :: licmp(6) = ['MODULE  ','DIR_X   ','DIR_Y   ','DIR_Z   ',&
