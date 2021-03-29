@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,14 +74,14 @@ subroutine comp81(nomres, basmod, raidf, noma)
     integer :: nbmtot, nbmdef
     integer :: nbmdyn, nbndyn, i, j, k, inebid, nec, ie
     integer :: iacon1, iadesm, ialica, ialich, iaprno, icas
-    integer :: igex, instdy, iocc, ldgn, ldgn0, lnocmp
+    integer :: igex, instdy, iocc, ldgn, ldgn0, lnocmp, igin
     integer :: n1, nbndef, nbno, nbno2, nbnot, ncmpmx, nocc, nueq, nunot
 !
     real(kind=8) :: rbndyn, rbndef
 !
     character(len=8) :: nomo, blanc, lintf, k8bid, chmat, chcar, nogdsi
     character(len=8) :: nomcas, vectas, resuge
-    character(len=24) :: gnex
+    character(len=24) :: gnex, gnin
     character(len=14) :: numddl
     character(len=19) :: nu
 !
@@ -164,6 +164,8 @@ subroutine comp81(nomres, basmod, raidf, noma)
 ! L'INTERFACE ET TELS QUE LE NBRE DE DDL CONSIDERE SOIT EGAL
 ! AU NBRE DE MODES DYNAMIQUES
 ! ON PREND COMME POSTULAT QUE NBNDYN=PARTIE_ENTIERE DE NBMDYN/NCMPMX
+    call getvtx(' ', 'GROUP_NO', scal=gnin, nbret=igin)
+    if (igin .ne. 0) goto 556
     call getvtx(' ', 'SANS_GROUP_NO', scal=gnex, nbret=igex)
     if (igex .ne. 0) then
         call jelira(jexnom(noma//'.GROUPENO', gnex), 'LONUTI', nbno2)
@@ -184,6 +186,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
             zi(ldgn) = 0
         endif
     endif
+556 continue
     nbndyn=nbmdyn/ncmpmx
     rbndyn=dble(nbmdyn)/dble(ncmpmx)
     if (abs(rbndyn-dble(nbndyn)) .gt. 0.d0) then
@@ -195,6 +198,13 @@ subroutine comp81(nomres, basmod, raidf, noma)
         goto 554
     endif
     call wkvect(nomres//'.NEUBID', 'V V I', nbndyn, inebid)
+    if (igin .ne. 0) then
+        call jeveuo(jexnom(noma//'.GROUPENO', gnin), 'L', ldgn0)
+        do j = 1, nbndyn
+            zi(inebid+j-1)=zi(ldgn0+j-1)
+        end do
+        goto 554
+    endif
     do i = 1, nbno
         nunot=zi(iaprno-1+ (i-1)* (nec+2)+1)
         if (nunot .ne. 0) then
@@ -223,6 +233,14 @@ subroutine comp81(nomres, basmod, raidf, noma)
         if (abs(rbndef-dble(nbndef)) .gt. 0.d0) then
             call utmess('I', 'ALGORITH_54', si=ncmpmx)
         endif
+        call wkvect('&&COMP81.NOSTDY', 'V V I', nbndef, instdy)
+        if (igin .ne. 0) then
+            call jeveuo(jexnom(noma//'.GROUPENO', gnin), 'L', ldgn0)
+            do j = 1, nbndef
+                zi(instdy+j-1)=zi(ldgn0+nbndyn+j-1)
+            end do
+            goto 654
+        endif
         if (nbndyn .ne. 0) then
             nbnot = nbno2 + nbndyn
             call juveca('&&COMP81.NEUEXC', nbnot)
@@ -232,7 +250,6 @@ subroutine comp81(nomres, basmod, raidf, noma)
             end do
             nbno2 = nbnot
         endif
-        call wkvect('&&COMP81.NOSTDY', 'V V I', nbndef, instdy)
         k=1
         do i = 1, nbno
             nunot=zi(iaprno-1+ (i-1)* (nec+2)+1)

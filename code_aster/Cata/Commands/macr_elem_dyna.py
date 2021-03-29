@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,7 @@ MACR_ELEM_DYNA=OPER(nom="MACR_ELEM_DYNA",op=  81,sd_prod=macr_elem_dyna,
                  EXCLUS('MODELE_MESURE','MATR_IMPE_RIGI' ),
                  EXCLUS('MODELE_MESURE','MATR_IMPE_MASS' ),
                  EXCLUS('MODELE_MESURE','MATR_IMPE_AMOR' ),
+                 EXCLUS('SANS_GROUP_NO','GROUP_NO' ),
 
                  PRESENT_ABSENT('MATR_IMPE','MATR_IMPE_RIGI'),
                  PRESENT_ABSENT('MATR_IMPE','MATR_IMPE_MASS'),
@@ -55,6 +56,7 @@ MACR_ELEM_DYNA=OPER(nom="MACR_ELEM_DYNA",op=  81,sd_prod=macr_elem_dyna,
          MATR_AMOR       =SIMP(statut='f',typ=matr_asse_depl_r ),
          AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
          SANS_GROUP_NO   =SIMP(statut='f',typ=grno ),
+         GROUP_NO        =SIMP(statut='f',typ=grno ),
          MATR_IMPE       =SIMP(statut='f',typ=matr_asse_gene_c ),
          MATR_IMPE_RIGI  =SIMP(statut='f',typ=matr_asse_gene_c ),
          MATR_IMPE_MASS  =SIMP(statut='f',typ=matr_asse_gene_c ),
