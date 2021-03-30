@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,6 +73,6 @@ CALC_GP =MACRO(nom="CALC_GP",
                  SYME            =SIMP(statut='o',typ='TXM',into=("NON","OUI"),
                       fr=tr("multiplication par 2 si SYME=OUI")),),
          b_tranche_3d = BLOC(condition="""exists("TRANCHE_3D")""",
-                 FOND_FISS       =SIMP(statut='o',typ=fond_fiss,max=1,),),
+                 FOND_FISS       =SIMP(statut='o',typ=fond_fissure,max=1,),),
          GPMAX           = SIMP(statut='f',typ=CO,),
            )

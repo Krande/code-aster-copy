@@ -190,6 +190,14 @@ FONFISS=DEFI_FOND_FISS(MAILLAGE=MA,
                        SYME='OUI',
                        NORMALE=(0.,0.,1.,),
                        );
+NFONFISS=DEFI_FISSURE(MAILLAGE=MA,
+                       CONFIG_INIT='DECOLLEE',
+                       LEVRE_SUP=_F(GROUP_MA='LEVREINF'),
+                       FOND_FISS=_F(GROUP_MA='LFOND',
+                                    GROUP_NO_ORIG='PFONI',),
+                       SYME='OUI',
+                       NORMALE=(0.,0.,1.,),
+                       );
 l_copeaux1 = ('CO_1_1','CO_1_2')
 l_copeaux4 = ('CO_4_1','CO_4_2')
 
@@ -210,7 +218,7 @@ gtheta = CALC_G(COMPORTEMENT=_F(
                   )
 
 tabgp=CALC_GP(RESULTAT=RESU,
-            FOND_FISS=FONFISS,
+            FOND_FISS=NFONFISS,
             TRANCHE_3D = (
                           _F(GROUP_MA=l_copeaux1,),
                           _F(GROUP_MA=l_copeaux4,),

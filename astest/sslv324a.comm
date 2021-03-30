@@ -123,7 +123,7 @@ CHAMDEPL=CALC_CHAMP(reuse=CHAMDEPL,
 
 
 
-FISS=DEFI_FOND_FISS(MAILLAGE=MA, SYME='NON',
+FISS=DEFI_FISSURE(MAILLAGE=MA, SYME='NON',
                     FOND_FISS=_F(GROUP_MA='FONDFISS',
                                  GROUP_NO_ORIG='IN',
                                  GROUP_NO_EXTR='OUT',

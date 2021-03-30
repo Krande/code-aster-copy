@@ -80,15 +80,6 @@ Vérifier que le concept %(k1)s indiqué sous le mot clé FOND_FISS a été
 correctement crée par l'opérateur DEFI_FOND_FISS.
 """),
 
-    12: _("""
-Type de mailles du fond de fissure non défini.
--> Risque et Conseil :
-Pour une modélisation 3D, les mailles de votre fond de fissure
-doivent être de type SEG2 ou SEG3.
-Veuillez revoir la création de votre fond de fissure
-(opérateur DEFI_FOND_FISS).
-"""),
-
     13: _("""
 Le GROUP_NO %(k1)s n'est pas dans le maillage.
 -> Risque et Conseil :

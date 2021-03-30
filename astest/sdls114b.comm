@@ -228,7 +228,7 @@ RES_DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
 KT2 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
                   NUME_ORDRE = 2500,
                   K_MODAL = _F(TABL_K_MODA =GLMO1,
-                              FOND_FISS=FF1,),);
+                              FOND_FISS=NFF1,),);
                               
 IMPR_TABLE(TABLE=KT2,TRI=_F(NOM_PARA=('ABSC_CURV','INST'),ORDRE='CROISSANT'),)
 
