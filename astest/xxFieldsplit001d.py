@@ -186,8 +186,7 @@ TEST_RESU(
         VALE_REFE=7.98054127843E-06,
     ))
 
-MAIL.hasGroupOfNodes('N_test2', True) :
-    TEST_RESU(
+TEST_RESU(
        RESU=_F(
        CRITERE='ABSOLU',
        GROUP_NO='N_test2',
