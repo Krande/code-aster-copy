@@ -283,5 +283,12 @@ Arguments:
 Returns:
     bool: *True* if succeeds, *False* otherwise.
         )",
-              ( py::arg( "self" ), py::arg( "filename" ) ) );
+              ( py::arg( "self" ), py::arg( "filename" ) ) )
+        .def( "isQuadratic", &MeshClass::isQuadratic, R"(
+To know if the mesh contains quadratic cells
+
+Returns:
+    bool: *True* if the mesh contains quadratic cells, *False* otherwise.
+        )",
+              ( py::arg( "self" )  ) );
 };

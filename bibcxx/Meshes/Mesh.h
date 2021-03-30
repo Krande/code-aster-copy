@@ -153,6 +153,8 @@ class MeshClass : public BaseMeshClass {
         return JeveuxVectorLong(getName() + ".NOEX", VectorLong(getNumberOfNodes(), getMPIRank()));
     };
 
+    bool isQuadratic() const;
+
     /**
      * @brief Read a Aster Mesh file
      * @return retourne true si tout est ok

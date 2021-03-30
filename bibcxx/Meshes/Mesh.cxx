@@ -100,3 +100,22 @@ const VectorLong MeshClass::getNodes( const std::string name, const bool localNu
     }
     return _groupsOfNodes->getObjectFromName( name ).toVector();
 }
+
+bool MeshClass::isQuadratic() const
+{
+    auto cellsType = getMedCellsTypes();
+    cellsType->updateValuePointer();
+    const auto nb_elem = cellsType->size();
+
+    for(ASTERINTEGER ii = 0; ii < nb_elem; ii++)
+    {
+        const auto cellType = (*cellsType)[ii];
+        if( cellType == 103 || cellType == 104 || cellType == 206 ||
+        cellType == 207 || cellType == 208 || cellType == 209 ||
+        cellType == 310 || cellType == 315 || cellType == 318 ||
+        cellType == 313 || cellType == 320 || cellType == 327 )
+            return true;
+    }
+
+    return false;
+};

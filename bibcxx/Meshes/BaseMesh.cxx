@@ -35,6 +35,7 @@
 #include "Supervis/Exceptions.h"
 #include "Supervis/ResultNaming.h"
 #include "Utilities/CapyConvertibleValue.h"
+#include "Utilities/Tools.h"
 
 
 int BaseMeshClass::getNumberOfNodes() const {
@@ -195,4 +196,14 @@ const JeveuxCollectionLong BaseMeshClass::getInverseConnectivity() const {
     CALLO_CNCINV( getName(), &listCell, &nbCell, base, objv );
     JeveuxCollectionLong result( objv.toString() );
     return result;
+};
+
+std::string BaseMeshClass::getNodeName( const ASTERINTEGER& index) const
+{
+    return trim(_nameOfNodes->getStringFromIndex(index));
+};
+
+std::string BaseMeshClass::getCellName( const ASTERINTEGER& index) const
+{
+    return trim(_nameOfCells->getStringFromIndex(index));
 };

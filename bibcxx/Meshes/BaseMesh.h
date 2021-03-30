@@ -165,6 +165,11 @@ class BaseMeshClass : public DataStructure, public ListOfTablesClass {
      */
     const NamesMapChar8 &getNameOfNodesMap() const { return _nameOfNodes; };
 
+    std::string getNodeName( const ASTERINTEGER& index) const;
+
+    std::string getCellName( const ASTERINTEGER& index) const;
+
+
     /**
      * @brief Recuperation de la dimension du maillage
      */
@@ -255,6 +260,14 @@ class BaseMeshClass : public DataStructure, public ListOfTablesClass {
      * @return retourne true si le maillage est partiel
      */
     virtual bool isPartial() const { return false; };
+
+    /**
+     * @brief Tester le maillage a des cells quadratiques
+     * @return true si quadratique
+     */
+    virtual bool isQuadratic( ) const {
+        throw std::runtime_error( "Not allowed" );
+    };
 
     /**
      * @brief Read a MED Mesh file

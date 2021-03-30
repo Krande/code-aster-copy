@@ -79,6 +79,26 @@ Returns:
     list[list[int]]: List of, for each cell, a list of the nodes indexes.
         )",
               ( py::arg( "self" ) ) )
+        .def( "getNodeName", &BaseMeshClass::getNodeName,   R"(
+Return the name of the given node
+
+Arguments:
+    int : index of the node (1-based)
+
+Returns:
+    str : name of the node (stripped)
+        )",
+              ( py::arg( "self" ), py::arg( "index" )  ) )
+        .def( "getCellName", &BaseMeshClass::getCellName,   R"(
+Return the name of the given cell
+
+Arguments:
+    int : index of the cell (1-based)
+
+Returns:
+    str : name of the cell (stripped)
+        )",
+              ( py::arg( "self" ), py::arg( "index" )  ) )
         .def( "getMedConnectivity", &BaseMeshClass::getMedConnectivity, R"(
 Return the connectivity of the mesh as Python lists following the Med numbering.
 

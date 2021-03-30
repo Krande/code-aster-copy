@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ mesh = code_aster.Mesh()
 mesh.readMedFile("zzzz503a.mmed")
 
 test.assertFalse(mesh.isParallel())
+test.assertFalse(mesh.isQuadratic())
 test.assertEqual(mesh.getDimension(), 3)
 test.assertEqual(mesh.getNumberOfNodes(), 27)
 test.assertEqual(mesh.getNumberOfCells(), 56)
@@ -110,6 +111,8 @@ test.assertTrue((medtypes[49:] == 308).all())
 quad47 = connect[47 - 1]
 test.assertSequenceEqual(quad47, [10, 1, 18, 26])
 test.assertSequenceEqual(medconn[47 - 1], [10, 1, 18, 26])
+test.assertEqual("M47", mesh.getCellName(47))
+test.assertEqual("N10", mesh.getNodeName(10))
 
 # always 3 coordinates, even if 'getDimension() == 2'
 npcoord = np.array(values).reshape((-1, 3))
@@ -133,6 +136,8 @@ test.assertEqual(npcoord.max(), 1.)
 # read a HEXA27 from ASTER format
 mail = code_aster.Mesh()
 mail.readAsterFile("zzzz366a.mail")
+test.assertTrue(mail.isQuadratic())
+
 m1, m2, m3 = mail.getConnectivity()
 # reference connectivities from '.mail' file
 ast27 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
