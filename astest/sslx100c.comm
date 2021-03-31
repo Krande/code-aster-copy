@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -275,6 +275,57 @@ TEST_RESU(RESU=(_F(INST=0.0,
                 _F(INST=0.0,
                    POINT=1,
                    RESULTAT=DEP,
+                   NOM_CHAM='FERRAILLAGE',
+                   NOM_CMP='DNSVOL',
+                   VALE_CALC=-1.,
+                   CRITERE='RELATIF',
+                   MAILLE='C1',),),);
+
+
+efgeElno = CREA_CHAMP (OPERATION = 'EXTR',
+               TYPE_CHAM = 'ELNO_SIEF_R',
+               RESULTAT  = DEP, 
+               NOM_CHAM  = 'EFGE_ELNO',
+               INST      = 0.,)
+
+dynaTransResu=CREA_RESU(OPERATION='AFFE',
+                 TYPE_RESU='DYNA_TRANS',
+                 NOM_CHAM='EFGE_ELNO',
+                 AFFE=(_F(CHAM_GD=efgeElno,INST=0.0,),),);
+
+dynaTransResu=CALC_FERRAILLAGE(reuse =dynaTransResu,
+                    RESULTAT=dynaTransResu,
+                        CARA_ELEM=CARA,
+                    TYPE_COMB='ELS',
+                    INST=(0.),
+                    AFFE = (_F( TOUT='OUI',
+                                C_INF=0.04,
+                                C_SUP=0.04,
+                                FCK=35e6,
+                                ALPHA_E=15.E0,
+                                SIGS_ELS=2.3E8,
+                                SIGC_ELS=3.5E7,
+                                UNITE_CONTRAINTE='Pa'),),);
+
+TEST_RESU(RESU=(_F(INST=0.0,
+                   POINT=1,
+                   RESULTAT=dynaTransResu,
+                   NOM_CHAM='FERRAILLAGE',
+                   NOM_CMP='DNSXS',
+                   VALE_CALC=2.26512773371E-08,
+                   CRITERE='RELATIF',
+                   MAILLE='C1',),
+                _F(INST=0.0,
+                   POINT=1,
+                   RESULTAT=dynaTransResu,
+                   NOM_CHAM='FERRAILLAGE',
+                   NOM_CMP='DNSYI',
+                   VALE_CALC=1.13226882673E-10,
+                   CRITERE='RELATIF',
+                   MAILLE='C1',),
+                _F(INST=0.0,
+                   POINT=1,
+                   RESULTAT=dynaTransResu,
                    NOM_CHAM='FERRAILLAGE',
                    NOM_CMP='DNSVOL',
                    VALE_CALC=-1.,

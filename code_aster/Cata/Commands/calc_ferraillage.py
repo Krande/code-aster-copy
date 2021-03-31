@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-
-# person_in_charge: jessica.haelewyn at edf.fr
 
 from ..Commons import *
 from ..Language.DataStructure import *
@@ -38,6 +36,10 @@ CALC_FERRAILLAGE=OPER(nom="CALC_FERRAILLAGE", op=175, sd_prod=calc_ferraillage_p
 
          reuse           =SIMP(statut='c', typ=CO),
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,evol_noli,dyna_trans,mult_elas,) ),
+
+         b_dyna_trans =BLOC(condition = """is_type("RESULTAT") in (dyna_trans,)""",
+            CARA_ELEM       =SIMP(statut='o',typ=cara_elem, ),
+         ),
 #
 #====
 # Sélection des numéros d'ordre pour lesquels on fait le calcul :
@@ -188,4 +190,3 @@ CALC_FERRAILLAGE=OPER(nom="CALC_FERRAILLAGE", op=175, sd_prod=calc_ferraillage_p
 
 #     Arrêt en erreur si:
 #        - EFGE_ELNO n'a pas été précédemment calculé et n'est donc pas présent dans la structure de données RESULTAT
-#        - si aucun CARA_ELEM n'est récupérable via la structure de données RESULTAT
