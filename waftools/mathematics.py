@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -93,54 +93,54 @@ def check_libm_after_files(self):
 
 @Configure.conf
 def detect_mkl(self):
-    """Try to use MKL if ifort was detected"""
-    var = 'OPTLIB_FLAGS_MATH'
-    opts = self.options
-    embed = opts.embed_math or opts.embed_all
-    if 'ifort' not in self.env.FC_NAME.lower():
-        return
+    """Try to detect MKL """
+    # MKL can be installed either as a standalone package
+    # or with Intel compiler. In both cases MKLROOT is/must be defined
+    if os.environ.get('MKLROOT') is None:
+        return False
     self.start_msg('Detecting MKL libraries')
     suffix = '_lp64' if self.env.DEST_CPU.endswith('64') else ''
-    # first: out of the box (OPTLIB_FLAGS as provided)
-    totest = ['']
+    scalapack  = []
+    blacs = []
+    thread = 'mkl_sequential'
+    core = 'mkl_core'
+    libs =[]
     # http://software.intel.com/en-us/articles/intel-mkl-link-line-advisor/
     if self.get_define('HAVE_MPI'):
-        totest.append('-mkl=parallel')
-        scalapack = ['-lmkl_scalapack' + suffix or '_core', '-lmkl_intel' + suffix]   # ia32: mkl_scalapack_core
-        blacs = ['-lmkl_intel_thread', '-lmkl_blacs_intelmpi' + suffix] + ['-lmkl_lapack95' + suffix]
+        scalapack  = 'mkl_scalapack' + suffix
+    if ('ifort' in self.env.FC_NAME.lower()) or ('icc' in self.env.CC_NAME.lower()):
+        if self.get_define('_USE_OPENMP'):
+            thread  = 'mkl_intel_thread'
+        interf = 'mkl_intel' + suffix
+        if self.get_define('HAVE_MPI'):
+            blacs = 'mkl_blacs_intelmpi' + suffix
     else:
-        scalapack = []
-        blacs = []
-    interf = 'mkl_intel' + suffix
-    for typ in ('parallel', 'sequential'):
-        totest.append('-mkl=' + typ)
-        thread = 'mkl_sequential' if typ == 'sequential' else 'mkl_intel_thread'
-        core = 'mkl_core'
-        optional = []
-        if typ == 'parallel':
-            optional.append('iomp5')
-        libs = ['-l%s' % name for name in [interf, thread, core] + optional]
-        libs = ['-Wl,--start-group'] + scalapack + libs + blacs + ['-Wl,--end-group']
-        totest.append(libs)
-        libs = ['-mkl=' + typ ] +  libs
-        totest.append(libs)
-    Logs.debug("\ntest: %r" % totest)
-    while totest:
+        if self.get_define('_USE_OPENMP'):
+            thread  = 'mkl_gnu_thread'
+        interf = 'mkl_gf' + suffix
+        if self.get_define('HAVE_MPI'):
+            blacs = 'mkl_blacs_openmpi' + suffix
+    if scalapack:
+        libs.append(scalapack)
+    libs.append(interf)
+    libs.append(thread)
+    libs.append(core)
+    if blacs:
+        libs.append(blacs)
+    try:
         self.env.stash()
-        opts = totest.pop(0)
-        if opts:
-            self.env.append_value(var, opts)
-        try:
-            self.check_math_libs_call(color='YELLOW')
-        except:
-            self.env.revert()
-            continue
-        else:
-            self.end_msg(self.env[var])
-            self.define('_USE_MKL', 1)
-            return True
-    self.end_msg('no', color='YELLOW')
-    return False
+        self.env.append_value('LIB_MATH', libs)
+        self.env.append_value('LIBPATH_MATH', os.environ['MKLROOT'] + '/lib/intel64')
+        self.check_math_libs_call(color='YELLOW')
+    except:
+        self.env.revert()
+        self.end_msg('no', color='YELLOW')
+        return False
+    else:
+        self.define('_USE_MKL', 1)
+        self.env.commit()
+        self.end_msg(self.env.LIBPATH_MATH + self.env.LIB_MATH)
+        return True
 
 @Configure.conf
 def detect_math_lib(self):

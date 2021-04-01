@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,26 +19,38 @@
 
 import os.path as osp
 from waflib import Configure, Logs
+from waflib.Tools import c, ccroot, cxx, fc
 
 ###############################################################################
-# Add OPTLIB_FLAGS support
-from waflib.Tools import fc, c, cxx, ccroot
 # original run_str command line is store as hcode
-for lang in ('c', 'cxx', 'fc'):
-    for feature in ('', 'program', 'shlib'):
-        ccroot.USELIB_VARS[lang + feature].add('OPTLIB_FLAGS')
+for feature in ('program', 'shlib'):
+    ccroot.USELIB_VARS['c'  + feature].add('CCLINKFLAGS')
+    ccroot.USELIB_VARS['fc' + feature].add('FCLINKFLAGS')
+    ccroot.USELIB_VARS['cxx' + feature].add('CXXLINKFLAGS')
 
 class fcprogram(fc.fcprogram):
-    """Link object files into a fortran program, add optional OPTLIB_FLAGS at the end"""
-    run_str = fc.fcprogram.hcode.decode() + ' ${OPTLIB_FLAGS}'
+    """Modifying cxxprogram. Add FCLINKFLAGS."""
+    run_str = '${LINK_FC} ${FCLINKFLAGS} ${LINKFLAGS} ${FCLNK_SRC_F}${SRC} ${FCLNK_TGT_F}${TGT[0].abspath()} ${RPATH_ST:RPATH} ${FCSTLIB_MARKER} ${FCSTLIBPATH_ST:STLIBPATH} ${FCSTLIB_ST:STLIB} ${FCSHLIB_MARKER} ${FCLIBPATH_ST:LIBPATH} ${FCLIB_ST:LIB} ${LDFLAGS}'
+
+class fcshlib(fcprogram):
+    """ Modifying fcshlib """
+    inst_to = '${LIBDIR}'
 
 class cprogram(c.cprogram):
-    """Link object files into a C program, add optional OPTLIB_FLAGS at the end"""
-    run_str = c.cprogram.hcode.decode() + ' ${OPTLIB_FLAGS}'
+    """Modifying cxxprogram. Add CCLINKFLAGS."""
+    run_str = '${LINK_CC} ${CCLINKFLAGS} ${LINKFLAGS} ${CCLNK_SRC_F}${SRC} ${CCLNK_TGT_F}${TGT[0].abspath()} ${RPATH_ST:RPATH} ${FRAMEWORKPATH_ST:FRAMEWORKPATH} ${FRAMEWORK_ST:FRAMEWORK} ${ARCH_ST:ARCH} ${STLIB_MARKER} ${STLIBPATH_ST:STLIBPATH} ${STLIB_ST:STLIB} ${SHLIB_MARKER} ${LIBPATH_ST:LIBPATH} ${LIB_ST:LIB} ${LDFLAGS}'
+
+class cshlib(cprogram):
+    """ Modifying cshlib """
+    inst_to = '${LIBDIR}'
 
 class cxxprogram(cxx.cxxprogram):
-    """Link object files into a C program, add optional OPTLIB_FLAGS at the end"""
-    run_str = cxx.cxxprogram.hcode.decode() + ' ${OPTLIB_FLAGS}'
+    """Modifying cxxprogram. Add CXXLINKFLAGS."""
+    run_str = '${LINK_CXX} ${CXXLINKFLAGS} ${LINKFLAGS} ${CXXLNK_SRC_F}${SRC} ${CXXLNK_TGT_F}${TGT[0].abspath()} ${RPATH_ST:RPATH} ${FRAMEWORKPATH_ST:FRAMEWORKPATH} ${FRAMEWORK_ST:FRAMEWORK} ${ARCH_ST:ARCH} ${STLIB_MARKER} ${STLIBPATH_ST:STLIBPATH} ${STLIB_ST:STLIB} ${SHLIB_MARKER} ${LIBPATH_ST:LIBPATH} ${LIB_ST:LIB} ${LDFLAGS}'
+
+class cxxshlib(cxxprogram):
+    """ Modifying cxxshlib """
+    inst_to = '${LIBDIR}'
 
 ###############################################################################
 def customize_configure_output():
