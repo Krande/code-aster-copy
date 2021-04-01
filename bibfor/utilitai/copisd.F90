@@ -137,6 +137,7 @@ implicit none
         call jedup1(k191//'.SLVK', bas2, k192//'.SLVK')
         call jedup1(k191//'.SLVI', bas2, k192//'.SLVI')
         call jedup1(k191//'.SLVR', bas2, k192//'.SLVR')
+        call jedup1(k191//'.SLVO', bas2, k192//'.SLVO')
 !
 ! ----------------------------------------------------------------------
     else if (typesd.eq.'LISTE_RELA') then
