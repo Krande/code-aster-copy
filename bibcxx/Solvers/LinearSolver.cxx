@@ -246,7 +246,9 @@ FieldOnNodesRealPtr BaseLinearSolverClass::solveRealLinearSystem(
         result = FieldOnNodesRealPtr( new FieldOnNodesRealClass( Permanent ) );
     
     try{
-       if ( !result->getDOFNumbering()) result->setDOFNumbering(currentRHS->getDOFNumbering());
+       if ( !result->getDOFNumbering() && currentRHS->getDOFNumbering()){
+            result->setDOFNumbering(currentRHS->getDOFNumbering());
+       }
     } catch ( ... ) {}
 
 
