@@ -29,7 +29,7 @@
 #include "aster_fort_mesh.h"
 #include "Meshes/ParallelMesh.h"
 #include "ParallelUtilities/MPIInfos.h"
-#include "ParallelUtilities/MPIContainerUtilities.h"
+#include "ParallelUtilities/AsterMPI.h"
 #include "Utilities/Tools.h"
 
 
@@ -46,10 +46,9 @@ bool ParallelMeshClass::readPartitionedMedFile( const std::string &fileName ) {
 
 bool ParallelMeshClass::updateGlobalGroupOfNodes( void ) {
 
-    MPIContainerUtilities util;
     _groupsOfNodes->buildFromJeveux();
     auto gONNames = _groupsOfNodes->getObjectNames();
-    auto allgONNames = util.gatheringVectorsOnAllProcs( gONNames );
+    auto allgONNames = AsterMPI::gatheringVectorsOnAllProcs( gONNames );
 
     for ( auto &nameOfGrp : allgONNames )
         _setOfAllGON.insert( trim( nameOfGrp.toString() ) );
@@ -69,10 +68,9 @@ bool ParallelMeshClass::updateGlobalGroupOfNodes( void ) {
 
 bool ParallelMeshClass::updateGlobalGroupOfCells( void ) {
 
-    MPIContainerUtilities util;
     _groupsOfCells->buildFromJeveux();
     auto gOENames = _groupsOfCells->getObjectNames();
-    auto allgOENames = util.gatheringVectorsOnAllProcs( gOENames );
+    auto allgOENames = AsterMPI::gatheringVectorsOnAllProcs( gOENames );
 
     for ( auto &nameOfGrp : allgOENames )
         _setOfAllGOE.insert( trim( nameOfGrp.toString() ) );

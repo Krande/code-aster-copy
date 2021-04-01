@@ -1,8 +1,8 @@
-#ifndef MPICONTAINERUTILITIES_H_
-#define MPICONTAINERUTILITIES_H_
+#ifndef ASTERMPI_H_
+#define ASTERMPI_H_
 
 /**
- * @file MPIContainerUtilities.h
+ * @file AsterMPI.h
  * @brief Fichier entete contenant des utilitaires de manipulation de containers STL en parallèle
  * @author Nicolas Sellenet
  * @section LICENCE
@@ -38,12 +38,10 @@
 #include "MemoryManager/JeveuxString.h"
 #include "MemoryManager/JeveuxVector.h"
 
-class MPIContainerUtilities {
-  private:
-    int _nbProcs;
-    int _rank;
-    aster_comm_t *_commWorld;
+/* this code is inspired by the MPI class of the dolfin project : fenicsproject.org */
 
+class AsterMPI {
+  private:
     template<typename T>
       struct dependent_false : std::false_type {};
     template<typename T> static MPI_Datatype mpi_type() {
@@ -53,17 +51,18 @@ class MPIContainerUtilities {
     }
 
   public:
-    MPIContainerUtilities();
-
     template < int length >
-    std::vector< JeveuxString< length > >
-    gatheringVectorsOnAllProcs( std::vector< JeveuxString< length > > &toGather ) const {
+    static std::vector< JeveuxString< length > >
+    gatheringVectorsOnAllProcs( std::vector< JeveuxString< length > > &toGather,
+                                aster_comm_t *_commCurrent = aster_get_current_comm() ) {
+        int _nbProcs = getMPINumberOfProcs();
+        int _rank = getMPIRank();
         typedef JeveuxString< length > JeveuxChar;
         VectorInt sizes( _nbProcs, 0 );
         VectorInt sizes2( _nbProcs, 0 );
         sizes[0] = toGather.size();
         aster_mpi_allgather( sizes.data(), 1, MPI_INTEGER, sizes2.data(), 1, MPI_INTEGER,
-                             _commWorld );
+                             _commCurrent );
         int sum = 0;
         for ( auto taille : sizes2 )
             sum += taille;
@@ -76,7 +75,7 @@ class MPIContainerUtilities {
                 for ( int position = 0; position < sizes2[rank]; ++position )
                     retour[position] = toGather[position];
 
-            aster_mpi_bcast( retour, length * sizes2[rank], MPI_CHAR, rank, _commWorld );
+            aster_mpi_bcast( retour, length * sizes2[rank], MPI_CHAR, rank, _commCurrent );
             for ( int position = 0; position < sizes2[rank]; ++position )
                 toReturn.push_back( JeveuxChar( retour[position] ) );
             delete[] retour;
@@ -85,68 +84,72 @@ class MPIContainerUtilities {
         return toReturn;
     };
 
-    /// Gather values from all processes. Same data count from each
-    /// process (wrapper for MPI_Allgather)
+    /// Gather values from each process (variable count per process)
     template<typename T>
-    void all_gather(const std::vector<T>& in_values,
-                             std::vector<T>& out_values);
+    static void all_gather(const std::vector<T>& in_values,
+                             std::vector<std::vector<T>>& out_values,
+                             aster_comm_t* _commCurrent = aster_get_current_comm() );
 
     /// Gather values from each process (variable count per process)
     template<typename T>
-    void all_gatherv(const std::vector<T>& in_values,
-                             std::vector<std::vector<T>>& out_values);
+    static void all_gather(const std::vector<T>& in_values,
+                              std::vector<T>& out_values,
+                              aster_comm_t* _commCurrent = aster_get_current_comm()  );
 
     /// Gather values from each process (variable count per process)
     template<typename T>
-    void all_gatherv(const std::vector<T>& in_values,
-                              std::vector<T>& out_values);
-
-    /// Gather values from each process (variable count per process)
-    template<typename T>
-    void all_gatherv(const std::vector<T>& in_values,
-                              JeveuxVector<T>& out_values);
+    static void all_gather(const std::vector<T>& in_values,
+                              JeveuxVector<T>& out_values,
+                              aster_comm_t* _commCurrent = aster_get_current_comm()  );
 
     /// Gather values, one primitive from each process (MPI_Allgather)
     template<typename T>
-    void all_gather(const T in_value, std::vector<T>& out_values);
+    static void all_gather(const T in_value, std::vector<T>& out_values,
+                            aster_comm_t* _commCurrent = aster_get_current_comm() );
 
     /// Gather values, one primitive from each process (MPI_Allgather).
     /// Specialization for std::string
-    void all_gatherv(const std::string& in_values,
-                           VectorString& out_values);
+    static void all_gather(const std::string& in_values,
+                           VectorString& out_values,
+                           aster_comm_t* _commCurrent = aster_get_current_comm()  );
+
     /// Gather values, one primitive from each process (MPI_Allgather).
     /// Specialization for VectorString
-    void all_gather(const VectorString& in_values,
-                           VectorString& out_values);
+    static void all_gather(const VectorString& in_values,
+                           VectorString& out_values,
+                           aster_comm_t* _commCurrent = aster_get_current_comm() );
 
     /// AllReduce values, one value from each process (MPI_AllReduce).
     template<typename T>
-    void all_reduce(const T in_value, T& out_value, MPI_Op op);
+    static void all_reduce(const T in_value, T& out_value, MPI_Op op,
+                            aster_comm_t* _commCurrent = aster_get_current_comm()  );
 };
 
 //---------------------------------------------------------------------------
-template<> inline MPI_Datatype MPIContainerUtilities::mpi_type<float>() { return MPI_FLOAT; }
-template<> inline MPI_Datatype MPIContainerUtilities::mpi_type<double>() { return MPI_DOUBLE; }
-template<> inline MPI_Datatype MPIContainerUtilities::mpi_type<short int>() { return MPI_SHORT; }
-template<> inline MPI_Datatype MPIContainerUtilities::mpi_type<int>() { return MPI_INT; }
-template<> inline MPI_Datatype MPIContainerUtilities::mpi_type<long int>() { return MPI_LONG; }
-template<> inline MPI_Datatype MPIContainerUtilities::mpi_type<unsigned int>()
+template<> inline MPI_Datatype AsterMPI::mpi_type<float>() { return MPI_FLOAT; }
+template<> inline MPI_Datatype AsterMPI::mpi_type<double>() { return MPI_DOUBLE; }
+template<> inline MPI_Datatype AsterMPI::mpi_type<short int>() { return MPI_SHORT; }
+template<> inline MPI_Datatype AsterMPI::mpi_type<int>() { return MPI_INT; }
+template<> inline MPI_Datatype AsterMPI::mpi_type<long int>() { return MPI_LONG; }
+template<> inline MPI_Datatype AsterMPI::mpi_type<unsigned int>()
                                                                     { return MPI_UNSIGNED; }
-template<> inline MPI_Datatype MPIContainerUtilities::mpi_type<unsigned long int>()
+template<> inline MPI_Datatype AsterMPI::mpi_type<unsigned long int>()
                                                                     { return MPI_UNSIGNED_LONG; }
-template<> inline MPI_Datatype MPIContainerUtilities::mpi_type<long long>()
+template<> inline MPI_Datatype AsterMPI::mpi_type<long long>()
                                                                     { return MPI_LONG_LONG; }
-template<> inline MPI_Datatype MPIContainerUtilities::mpi_type<bool>()
-                                                                    { return MPI_LOGICAL; }
+template<> inline MPI_Datatype AsterMPI::mpi_type<bool>()
+                                                                    { return MPI_CXX_BOOL; }
 //---------------------------------------------------------------------------
-inline void MPIContainerUtilities::all_gatherv(const std::string& in_values,
-                        VectorString& out_values) {
-    const std::size_t comm_size = _nbProcs;
+inline void AsterMPI::all_gather(const std::string& in_values,
+                        VectorString& out_values,
+                        aster_comm_t* _commCurrent ) {
+    // Get number of procs
+    const std::size_t comm_size = getMPINumberOfProcs();
 
     // Get data size on each process
     VectorInt pcounts(comm_size);
     int local_size = in_values.size();
-    MPI_Allgather(&local_size, 1, MPI_INT, pcounts.data(), 1, MPI_INT, _commWorld->id);
+    aster_mpi_allgather(&local_size, 1, MPI_INT, pcounts.data(), 1, MPI_INT, _commCurrent);
 
     // Build offsets
     VectorInt offsets(comm_size + 1, 0);
@@ -156,9 +159,9 @@ inline void MPIContainerUtilities::all_gatherv(const std::string& in_values,
     // Gather
     const std::size_t n = std::accumulate(pcounts.begin(), pcounts.end(), 0);
     std::vector<char> _out(n);
-    MPI_Allgatherv(const_cast<char*>(in_values.data()), in_values.size(),
+    aster_mpi_allgatherv(const_cast<char*>(in_values.data()), in_values.size(),
                 MPI_CHAR, _out.data(), pcounts.data(), offsets.data(),
-                MPI_CHAR, _commWorld->id);
+                MPI_CHAR, _commCurrent);
 
     // Rebuild
     out_values.resize(comm_size);
@@ -169,15 +172,17 @@ inline void MPIContainerUtilities::all_gatherv(const std::string& in_values,
     }
 }
 //---------------------------------------------------------------------------
-inline void MPIContainerUtilities::all_gather(const VectorString& in_values,
-                        VectorString& out_values) {
-    const std::size_t comm_size = _nbProcs;
+inline void AsterMPI::all_gather(const VectorString& in_values,
+                        VectorString& out_values,
+                        aster_comm_t* _commCurrent ) {
+    // Get number of procs
+    const std::size_t comm_size = getMPINumberOfProcs();
 
     // Gather
     std::set<std::string> stringSet;
     for (auto str: in_values) {
         VectorString tmp(comm_size);
-        all_gatherv(str, tmp);
+        AsterMPI::all_gather(str, tmp);
         std::copy(tmp.begin(), tmp.end(), std::inserter(stringSet, stringSet.end()));
     }
 
@@ -186,27 +191,19 @@ inline void MPIContainerUtilities::all_gather(const VectorString& in_values,
     std::copy(stringSet.begin(), stringSet.end(), out_values.begin());
     std::sort(out_values.begin(), out_values.end());
 }
-//-------------------------------------------------------------------------
-template<typename T>
-    void MPIContainerUtilities::all_gather(const std::vector<T>& in_values,
-                    std::vector<T>& out_values) {
-    out_values.resize(in_values.size()*_nbProcs);
-    MPI_Allgather(const_cast<T*>(in_values.data()), in_values.size(),
-                mpi_type<T>(),
-                out_values.data(), in_values.size(), mpi_type<T>(),
-                _commWorld->id);
-}
 //---------------------------------------------------------------------------
 template<typename T>
-    void MPIContainerUtilities::all_gatherv(const std::vector<T>& in_values,
-                    std::vector<std::vector<T>>& out_values) {
+    void AsterMPI::all_gather(const std::vector<T>& in_values,
+                    std::vector<std::vector<T>>& out_values,
+                    aster_comm_t* _commCurrent) {
 
-    const std::size_t comm_size = _nbProcs;
+    // Get number of procs
+    const std::size_t comm_size = getMPINumberOfProcs();
 
     // Get data size on each process
     VectorInt pcounts;
     const int local_size = in_values.size();
-    MPIContainerUtilities::all_gather(local_size, pcounts);
+    AsterMPI::all_gather(local_size, pcounts);
     assert(pcounts.size() == comm_size);
 
     // Build offsets
@@ -217,10 +214,10 @@ template<typename T>
     // Gather data
     const std::size_t n = std::accumulate(pcounts.begin(), pcounts.end(), 0);
     std::vector<T> recvbuf(n);
-    MPI_Allgatherv(const_cast<T*>(in_values.data()), in_values.size(),
+    aster_mpi_allgatherv(const_cast<T*>(in_values.data()), in_values.size(),
                 mpi_type<T>(),
                 recvbuf.data(), pcounts.data(), offsets.data(),
-                mpi_type<T>(), _commWorld->id);
+                mpi_type<T>(), _commCurrent);
 
     // Repack data
     out_values.resize(comm_size);
@@ -233,15 +230,17 @@ template<typename T>
 }
 //---------------------------------------------------------------------------
 template<typename T>
-    void MPIContainerUtilities::all_gatherv(const std::vector<T>& in_values,
-                    std::vector<T>& out_values) {
+    void AsterMPI::all_gather(const std::vector<T>& in_values,
+                    std::vector<T>& out_values,
+                    aster_comm_t* _commCurrent ) {
 
-    const std::size_t comm_size = _nbProcs;
+    // Get number of procs
+    const std::size_t comm_size = getMPINumberOfProcs();
 
     // Get data size on each process
     VectorInt pcounts;
     const int local_size = in_values.size();
-    MPIContainerUtilities::all_gather(local_size, pcounts);
+    AsterMPI::all_gather(local_size, pcounts);
     assert(pcounts.size() == comm_size);
 
     // Build offsets
@@ -252,22 +251,24 @@ template<typename T>
     // Gather data
     const std::size_t n = std::accumulate(pcounts.begin(), pcounts.end(), 0);
     out_values.resize(n);
-    MPI_Allgatherv(const_cast<T*>(in_values.data()), in_values.size(),
+    aster_mpi_allgatherv(const_cast<T*>(in_values.data()), in_values.size(),
                 mpi_type<T>(),
                 out_values.data(), pcounts.data(), offsets.data(),
-                mpi_type<T>(), _commWorld->id);
+                mpi_type<T>(), _commCurrent);
 }
 //---------------------------------------------------------------------------
 template<typename T>
-    void MPIContainerUtilities::all_gatherv(const std::vector<T>& in_values,
-                    JeveuxVector<T>& out_values) {
+    void AsterMPI::all_gather(const std::vector<T>& in_values,
+                    JeveuxVector<T>& out_values,
+                    aster_comm_t* _commCurrent ) {
 
-    const std::size_t comm_size = _nbProcs;
+    // Get number of procs
+    const std::size_t comm_size = getMPINumberOfProcs();
 
     // Get data size on each process
     VectorInt pcounts;
     const int local_size = in_values.size();
-    MPIContainerUtilities::all_gather(local_size, pcounts);
+    AsterMPI::all_gather(local_size, pcounts);
     assert(pcounts.size() == comm_size);
 
     // Build offsets
@@ -286,30 +287,32 @@ template<typename T>
     }
     out_values->updateValuePointer();
 
-    MPI_Allgatherv(const_cast<T*>(in_values.data()), in_values.size(),
+    aster_mpi_allgatherv(const_cast<T*>(in_values.data()), in_values.size(),
                 mpi_type<T>(),
                 out_values->getDataPtr(), pcounts.data(), offsets.data(),
-                mpi_type<T>(), _commWorld->id);
+                mpi_type<T>(), _commCurrent);
 
 }
 //---------------------------------------------------------------------------
 template<typename T>
-    void MPIContainerUtilities::all_gather(const T in_value,
-                                           std::vector<T>& out_values) {
-    out_values.resize(_nbProcs);
-    MPI_Allgather(const_cast<T*>(&in_value), 1, mpi_type<T>(),
-                out_values.data(), 1, mpi_type<T>(), _commWorld->id);
+    void AsterMPI::all_gather(const T in_value,
+                                std::vector<T>& out_values,
+                                aster_comm_t* _commCurrent ) {
+    out_values.resize(getMPINumberOfProcs());
+    aster_mpi_allgather(const_cast<T*>(&in_value), 1, mpi_type<T>(),
+                out_values.data(), 1, mpi_type<T>(), _commCurrent);
 }
 //---------------------------------------------------------------------------
 template<typename T>
-    void MPIContainerUtilities::all_reduce(const T in_value,
-                                          T& out_value, MPI_Op op) {
-    MPI_Allreduce(const_cast<T*>(&in_value), const_cast<T*>(&out_value),
-                1, mpi_type<T>(), op, _commWorld->id);
+    void AsterMPI::all_reduce(const T in_value,
+                                T& out_value, MPI_Op op,
+                                aster_comm_t* _commCurrent ) {
+    aster_mpi_allreduce(const_cast<T*>(&in_value), static_cast<T*>(&out_value),
+                1, mpi_type<T>(), op, _commCurrent);
 }
 //---------------------------------------------------------------------------
 
 
-#endif /* MPICONTAINERUTILITIES_H_ */
+#endif /* ASTERMPI_H_ */
 
 #endif /* ASTER_HAVE_MPI */

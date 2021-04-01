@@ -1,6 +1,6 @@
 /**
- * @file MPIContainerUtilities.cxx
- * @brief Implementation de MPIContainerUtilities
+ * @file AsterMPI.cxx
+ * @brief Implementation de AsterMPI
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
@@ -27,11 +27,5 @@
 #include "aster_mpi.h"
 
 #ifdef ASTER_HAVE_MPI
-
-#include "ParallelUtilities/MPIContainerUtilities.h"
-
-MPIContainerUtilities::MPIContainerUtilities()
-    : _nbProcs( getMPINumberOfProcs() ), _rank( getMPIRank() ),
-      _commWorld( aster_get_comm_world() ){};
 
 #endif /* ASTER_HAVE_MPI */

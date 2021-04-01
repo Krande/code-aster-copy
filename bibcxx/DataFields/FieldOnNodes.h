@@ -39,7 +39,7 @@
 #include "Meshes/BaseMesh.h"
 #include "Numbering/DOFNumbering.h"
 #include "Numbering/FieldOnNodesDescription.h"
-#include "ParallelUtilities/MPIContainerUtilities.h"
+#include "ParallelUtilities/AsterMPI.h"
 #include "ParallelUtilities/MPIInfos.h"
 #include "PythonBindings/LogicalUnitManager.h"
 
@@ -460,11 +460,10 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
         if( _mesh->isParallel() )
         {
             double norm2 = norme;
-            MPIContainerUtilities utils;
             if( normType == "NORM_1" || normType == "NORM_2")
-                utils.all_reduce(norm2, norme, MPI_SUM);
+                AsterMPI::all_reduce(norm2, norme, MPI_SUM);
             else
-                utils.all_reduce(norm2, norme, MPI_MAX);
+                AsterMPI::all_reduce(norm2, norme, MPI_MAX);
         }
 #endif
 
@@ -510,8 +509,7 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
         if( _mesh->isParallel() )
         {
             double ret2 = ret;
-            MPIContainerUtilities utils;
-            utils.all_reduce(ret2, ret, MPI_SUM);
+            AsterMPI::all_reduce(ret2, ret, MPI_SUM);
         }
 #endif
 

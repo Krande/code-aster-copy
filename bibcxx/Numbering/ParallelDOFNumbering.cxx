@@ -25,7 +25,7 @@
 
 #include "Numbering/ParallelDOFNumbering.h"
 #include <stdexcept>
-#include "ParallelUtilities/MPIContainerUtilities.h"
+#include "ParallelUtilities/AsterMPI.h"
 
 #ifdef ASTER_HAVE_MPI
 
@@ -42,8 +42,7 @@ bool ParallelDOFNumberingClass::useLagrangeMultipliers() const {
     if ( retour == "OUI" )
         local_answer = true;
 
-    MPIContainerUtilities mpiUtils;
-    mpiUtils.all_reduce(local_answer, global_answer, MPI_LAND);
+    AsterMPI::all_reduce(local_answer, global_answer, MPI_LAND);
 
     return global_answer;
 };
@@ -148,9 +147,7 @@ bool ParallelDOFNumberingClass::useSingleLagrangeMultipliers() const {
     auto retour = trim( repk.toString() );
     if ( retour == "OUI" )
         local_answer = true;
-
-    MPIContainerUtilities mpiUtils;
-    mpiUtils.all_reduce(local_answer, global_answer, MPI_LAND);
+    AsterMPI::all_reduce(local_answer, global_answer, MPI_LAND);
 
     return global_answer;
 };
@@ -160,7 +157,6 @@ VectorString ParallelDOFNumberingClass::getComponents() const {
     char *stringArray;
     VectorString localComp, globalComp;
     std::string all("ALL");
-    MPIContainerUtilities MPIutil;
     stringArray = MakeTabFStr( 8, maxCmp );
     CALL_NUMEDDL_GET_COMPONENTS( getName().c_str(), all.c_str(), &ibid, &ncmp, \
                                                                 stringArray, &maxCmp );
@@ -170,7 +166,7 @@ VectorString ParallelDOFNumberingClass::getComponents() const {
     FreeStr( stringArray );
 
     // Communicate with others
-    MPIutil.all_gather(localComp, globalComp);
+    AsterMPI::all_gather(localComp, globalComp);
 
     return globalComp;
 };

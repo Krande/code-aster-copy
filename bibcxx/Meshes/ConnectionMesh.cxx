@@ -28,7 +28,7 @@
 #include "aster_fort_mesh.h"
 #include "Meshes/ConnectionMesh.h"
 #include "ParallelUtilities/MPIInfos.h"
-#include "ParallelUtilities/MPIContainerUtilities.h"
+#include "ParallelUtilities/AsterMPI.h"
 
 #ifdef ASTER_HAVE_MPI
 
@@ -59,8 +59,6 @@ ConnectionMeshClass::ConnectionMeshClass( const std::string &name,
     /* Local variables gathering the basic MPI informations needed */
     /* Rank of the current MPI proc */
     const int rank = getMPIRank();
-    /* MPIUntilities */
-    MPIContainerUtilities mpiUtils;
 
     /* Local variables needed to handle the input groups of cells */
      /* Make a copy of the input groups of cells */
@@ -373,11 +371,11 @@ ConnectionMeshClass::ConnectionMeshClass( const std::string &name,
     }
     nodesToSend.clear();
 
-    mpiUtils.all_gatherv( coordinatesToSend, coordinatesGathered );
+    AsterMPI::all_gather( coordinatesToSend, coordinatesGathered );
     totalNumberOfNodes = coordinatesGathered.size() / 3;
     coordinatesToSend.clear();
 
-    mpiUtils.all_gatherv( numNodesToSend, numNodesGathered );
+    AsterMPI::all_gather( numNodesToSend, numNodesGathered );
     numNodesToSend.clear();
 
 
@@ -399,10 +397,10 @@ ConnectionMeshClass::ConnectionMeshClass( const std::string &name,
     }
 
     /* Gather the types and connectivities of cells */
-    mpiUtils.all_reduce(int(cellsToSend.size()), totalNumberOfCells, MPI_SUM);
+    AsterMPI::all_reduce(int(cellsToSend.size()), totalNumberOfCells, MPI_SUM);
     cellsToSend.clear();
 
-    mpiUtils.all_gatherv( connectivitiesToSend, connectivitiesGathered );
+    AsterMPI::all_gather( connectivitiesToSend, connectivitiesGathered );
     connectivitiesToSend.clear();
 
     /* Gather the groups of nodes */
@@ -411,7 +409,7 @@ ConnectionMeshClass::ConnectionMeshClass( const std::string &name,
         VectorLong &nodesOfTheGroupToSend = groupsOfNodesToSend[nameOfTheGroup];
         VectorLong &nodesOfTheGroupGathered = groupsOfNodesGathered[nameOfTheGroup];
 
-        mpiUtils.all_gatherv( nodesOfTheGroupToSend, nodesOfTheGroupGathered );
+        AsterMPI::all_gather( nodesOfTheGroupToSend, nodesOfTheGroupGathered );
         nodesOfTheGroupToSend.clear();
     }
 
@@ -421,7 +419,7 @@ ConnectionMeshClass::ConnectionMeshClass( const std::string &name,
         VectorLong &cellsOfTheGroupToSend = groupsOfCellsToSend[nameOfTheGroup];
         VectorLong &cellsOfTheGroupGathered = groupsOfCellsGathered[nameOfTheGroup];
 
-        mpiUtils.all_gatherv( cellsOfTheGroupToSend, cellsOfTheGroupGathered );
+        AsterMPI::all_gather( cellsOfTheGroupToSend, cellsOfTheGroupGathered );
         cellsOfTheGroupToSend.clear();
     }
 
@@ -580,7 +578,7 @@ VectorString ConnectionMeshClass::getGroupsOfNodes( ) const {
 VectorLong ConnectionMeshClass::getCellsGlobalNumbering( const JeveuxVectorLong& rankOfCells ) const
 {
     /* Local variables gathering the basic MPI informations needed */
-    MPIContainerUtilities mpiUtils;
+    AsterMPI AsterMPI;
 
     /* Rank of the current MPI proc */
     const int rank = getMPIRank();
@@ -601,7 +599,7 @@ VectorLong ConnectionMeshClass::getCellsGlobalNumbering( const JeveuxVectorLong&
     VectorInt sizeOffset( numberOfProcessors, -1 );
 
     /* Gather the number of cell owned on all procs */
-    mpiUtils.all_gather( nbCellOwned, sizePerRank );
+    AsterMPI::all_gather( nbCellOwned, sizePerRank );
 
     sizeOffset[0] = 0;
     for ( int i = 1; i < numberOfProcessors; ++i )

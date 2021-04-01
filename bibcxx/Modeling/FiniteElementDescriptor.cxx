@@ -29,7 +29,7 @@
 #include "Modeling/PhysicalQuantityManager.h"
 #include "Modeling/PhysicsAndModelings.h"
 #include "ParallelUtilities/MPIInfos.h"
-#include "ParallelUtilities/MPIContainerUtilities.h"
+#include "ParallelUtilities/AsterMPI.h"
 
 FiniteElementDescriptorClass::FiniteElementDescriptorClass( const std::string &name,
                                                             const BaseMeshPtr mesh,
@@ -77,7 +77,6 @@ void FiniteElementDescriptorClass::transferDofDescriptorFrom( FiniteElementDescr
             "does not correspond to other FiniteElementDescriptorClass mesh" );
     getPhysicalNodesComponentDescriptor();
 
-    MPIContainerUtilities mpiUtils;
     const int rank = getMPIRank();
     int nbNodes = connectionMesh->getNumberOfNodes();
     int nec = _dofDescriptor->size() / nbNodes;
@@ -105,7 +104,7 @@ void FiniteElementDescriptorClass::transferDofDescriptorFrom( FiniteElementDescr
     }
 
     VectorLong bufferGathered;
-    mpiUtils.all_gatherv( buffer, _dofDescriptor );
+    AsterMPI::all_gather( buffer, _dofDescriptor );
     buffer.clear();
 
 };
