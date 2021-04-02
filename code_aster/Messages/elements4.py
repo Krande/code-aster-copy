@@ -43,7 +43,7 @@ cata_msg = {
 """),
 
     32 : _("""
- vous utilisez le mot clé LIAISON_ELEM avec l'option COQ_POU: l'épaisseur des éléments de bord de coque n'a pas été affectée.
+ vous utilisez le mot clé LIAISON_ELEM avec l'option COQ_POU ou COQ_TUYAU: l'épaisseur des éléments de bord de coque n'a pas été affectée.
 """),
 
     33 : _("""
