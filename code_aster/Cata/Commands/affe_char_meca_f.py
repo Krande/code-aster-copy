@@ -484,6 +484,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
            DEPL_IMPO       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            MAILLE          =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+           COOR_REFE      = SIMP(statut='f', typ='R', defaut= 0.0 , fr=tr("coord de reference pour les phases") ),
          ),
 
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ subroutine te0499(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/pronor.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/trigom.h"
 #include "asterfort/vff2dn.h"
 !
 !
@@ -50,14 +51,18 @@ subroutine te0499(option, nomte)
     real(kind=8) :: rho, taux, tauy, nux, nuy, scal
     real(kind=8) :: sigma(2, 2), epsi(2, 2), grad(2, 2)
     real(kind=8) :: xgg(4), ygg(4), vondn(2), vondt(2), uondn(2), uondt(2)
-    real(kind=8) :: taondx, taondy, norx, nory, dirx, diry, cele
+    real(kind=8) :: taondx, taondy, norx, nory, dirx, diry, cele, cele2
     real(kind=8) :: trace, norm, jac, coef_amor
-    real(kind=8) :: param0, param, param2, h, h2, instd, instd2, ris, rip, l0, usl0
+    real(kind=8) :: param0, param, h, h2, instd, ris, rip, l0, usl0
+    real(kind=8) :: a2, b2, sina, cosa, sinb2, cosb2, rc1c2, ra12, ra13
+    real(kind=8) :: coedir, typer, valfon
+    real(kind=8) :: xsv, zsv, dist, dist1, dist2, instd1, instd2
+    real(kind=8) :: kr, nr, x0, z0, z1
+    real(kind=8) :: valfon1, valfon2, param1, param2
     integer :: nno, npg, ipoids, ivf, idfde, igeom
     integer :: ivectu, k, i, mater
     integer :: ier, ii, imate, indic1, indic2, iondc, ionde
     integer :: j, jgano, jinst, ndim, nnos, ndim2
-    real(kind=8) :: coedir, typer, valfon, valfon2
     character(len=8) :: nompar(2), lpar2(2)
     real(kind=8) :: vpar2(2)
     real(kind=8) :: xygau(2)
@@ -107,6 +112,7 @@ subroutine te0499(option, nomte)
     h = zr(iondc+4)
     h2 = zr(iondc+5)
 !ER h2 équivalent de h pour définir la position du toit du rocher par rapport a l'onde
+    x0 = zr(iondc+6)
 !
     if (typer .eq. 0.d0) type = 'P'
     if (typer .eq. 1.d0) type = 'S'
@@ -180,14 +186,69 @@ subroutine te0499(option, nomte)
 
         if (type .eq. 'P') then
             cele = cp
+            cele2 = cs
         else
             cele = cs
+            cele2 = cp
+        endif
+
+! Calcul du rapport des célérités des ondes de cisaillement (c2) et de compression (c1).
+        rc1c2=sqrt(2.d0+2.d0*nu/(1.d0-2.d0*nu))
+
+! Calcul de l'angle réflexion de l'onde SV réfléchie.
+        sina = dirx
+        cosa = diry
+        a2=asin(sina)
+        if (type .eq. 'P') then
+          b2=asin(sina/rc1c2)
+          cosb2=cos(b2)
+          sinb2=sin(b2)
+
+! Coefficients de réflexions (Calcul intégré au script).
+          kr=1.d0/rc1c2
+          nr=(kr)**2*sin(2.d0*b2)*sin(2.d0*a2)+cos(2.d0*b2)**2
+          ra12=(kr**2*sin(2.d0*a2)*sin(2.d0*b2)-cos(2.d0*b2)**2)/nr
+          ra13=2.d0*kr*sin(2.d0*a2)*cos(2.d0*b2)/nr
+        else
+!          b2=asin(sina*rc1c2)
+          b2= trigom('ASIN',sina*rc1c2)
+          cosb2=cos(b2)
+          sinb2=sin(b2)
+
+! Coefficients de réflexions (Calcul intégré au script).
+          kr=1.d0/rc1c2
+          nr=(kr)**2*sin(2.d0*b2)*sin(2.d0*a2)+cos(2.d0*a2)**2
+          ra12=(kr**2*sin(2.d0*a2)*sin(2.d0*b2)-cos(2.d0*a2)**2)/nr
+          ra13=-2.d0*kr*sin(2.d0*a2)*cos(2.d0*a2)/nr
+        endif
+
+! Calcul des bons paramètres dist à insérer dans le calcul.
+        if (h .ne. r8vide()) then
+!          x0=0.d0
+          z0=(h-x0*sina)/cosa
+          dist=h
+          if (h2 .ne. r8vide()) then
+            z1=(h2-x0*sina)/cosa
+            dist1=x0*sina+(2.d0*z1-z0)*(-cosa)
+            if (type .eq. 'P') then
+              zsv=cosb2*(2.d0*z1-z0)/rc1c2/cosa
+              xsv=(sina/cosa)*(2.d0*z1-z0)-sinb2*(2.d0*z1-z0)/rc1c2/cosa
+            else
+              zsv=cosb2*(2.d0*z1-z0)*rc1c2/cosa
+              xsv=(sina/cosa)*(2.d0*z1-z0)-sinb2*(2.d0*z1-z0)*rc1c2/cosa
+            endif
+            dist2=xsv*sinb2+zsv*(-cosb2)
+          endif
+!          write(6,*) 'z0 dist dist1 dist2 ',z0,dist,dist1,dist2
         endif
 !
         k = (kpg-1)*nno
 !
 !        CALCUL DU CHARGEMENT PAR ONDE PLANE
         param0=dirx*xgg(kpg)+diry*ygg(kpg)
+
+        valfon1 = 0.d0
+        valfon2 = 0.d0
         if (h .ne. r8vide()) then
           param = param0 -h
           instd = zr(jinst) - param/cele
@@ -197,15 +258,34 @@ subroutine te0499(option, nomte)
             call fointe('F ', zk8(ionde), 1, 'INST', [instd], valfon, ier)
           endif
           if (h2 .ne. r8vide()) then
-            param2= 2.0d0*(h2-h)-param
-            instd2 = zr(jinst) - param2/cele
-            if (instd2 .lt. 0.d0) then
-              valfon2 = 0.d0
+            if (abs(cosa) .gt. 0.d0) then
+              param1=sina*xgg(kpg)-cosa*ygg(kpg)
+              param = param1 -dist1
+              instd1 = zr(jinst) - param/cele
+              if (instd1 .lt. 0.d0) then
+                valfon1 = 0.d0
+              else
+                call fointe('F ', zk8(ionde), 1, 'INST', [instd1], valfon1, ier)
+                valfon1 = valfon1*ra12
+              endif
+              param2=sinb2*xgg(kpg)-cosb2*ygg(kpg)
+              param = param2 -dist2
+              instd2 = zr(jinst) - param/cele2
+              if (instd2 .lt. 0.d0) then
+                valfon2 = 0.d0
+              else
+                call fointe('F ', zk8(ionde), 1, 'INST', [instd2], valfon2, ier)
+                valfon2 = valfon2*ra13
+              endif
             else
-              call fointe('F ', zk8(ionde), 1, 'INST', [instd2], valfon2, ier)
+              param1= 2.0d0*(h2-h)-param
+              instd1 = zr(jinst) - param1/cele
+              if (instd1 .lt. 0.d0) then
+                valfon1 = 0.d0
+              else
+                call fointe('F ', zk8(ionde), 1, 'INST', [instd1], valfon1, ier)
+              endif
             endif
-          else
-            valfon2 = 0.d0
           endif
         else
           lpar2(1) = 'X'
@@ -216,30 +296,62 @@ subroutine te0499(option, nomte)
           if (type .ne. 'P') then
             valfon = -valfon
           endif
-          valfon2 = 0.d0
         endif
+
 !
         valfon = -valfon/cele
-        valfon2 = -valfon2/cele
-!        VALFON = VALFON/CELE
+        valfon1 = -valfon1/cele
+        valfon2 = -valfon2/cele2
 !
 !        CALCUL DES CONTRAINTES ASSOCIEES A L'ONDE PLANE
 !        CALCUL DU GRADIENT DU DEPLACEMENT
         if (type .eq. 'P') then
 !
-            grad(1,1) = dirx*(valfon-valfon2)*dirx
-            grad(1,2) = diry*(valfon-valfon2)*dirx
-            grad(2,1) = dirx*(valfon-valfon2)*diry
-            grad(2,2) = diry*(valfon-valfon2)*diry
+          if (abs(cosa) .gt. 0.d0) then
+            grad(1,1) = dirx*valfon*dirx
+            grad(1,1) = grad(1,1) + dirx*valfon1*dirx
+            grad(1,1) = grad(1,1) + sinb2*valfon2*cosb2
+            grad(1,2) = diry*valfon*dirx
+            grad(1,2) = grad(1,2) - diry*valfon1*dirx
+            grad(1,2) = grad(1,2) - cosb2*valfon2*cosb2
 !
+            grad(2,1) = dirx*valfon*diry
+            grad(2,1) = grad(2,1) - dirx*valfon1*diry
+            grad(2,1) = grad(2,1) + sinb2*valfon2*sinb2
+            grad(2,2) = diry*valfon*diry
+            grad(2,2) = grad(2,2) + diry*valfon1*diry
+            grad(2,2) = grad(2,2) - cosb2*valfon2*sinb2
+          else
+            grad(1,1) = dirx*(valfon-valfon1)*dirx
+            grad(1,2) = diry*(valfon-valfon1)*dirx
+            grad(2,1) = dirx*(valfon-valfon1)*diry
+            grad(2,2) = diry*(valfon-valfon1)*diry
+          endif
         else if (type.eq.'S') then
 !
-            grad(1,1) = dirx*(valfon-valfon2)*norx
-            grad(1,2) = diry*(valfon-valfon2)*norx
-            grad(2,1) = dirx*(valfon-valfon2)*nory
-            grad(2,2) = diry*(valfon-valfon2)*nory
+          if (abs(cosa) .gt. 0.d0) then
+            grad(1,1) = dirx*valfon*norx
+            grad(1,1) = grad(1,1) - dirx*valfon1*norx
+            grad(1,1) = grad(1,1) + sinb2*valfon2*sinb2
+            grad(1,2) = diry*valfon*norx
+            grad(1,2) = grad(1,2) + diry*valfon1*norx
+            grad(1,2) = grad(1,2) - cosb2*valfon2*sinb2
+!
+            grad(2,1) = dirx*valfon*nory
+            grad(2,1) = grad(2,1) + dirx*valfon1*nory
+            grad(2,1) = grad(2,1) - cosb2*valfon2*sinb2
+            grad(2,2) = diry*valfon*nory
+            grad(2,2) = grad(2,2) - diry*valfon1*nory
+            grad(2,2) = grad(2,2) + cosb2*valfon2*cosb2
+          else
+            grad(1,1) = dirx*(valfon-valfon1)*norx
+            grad(1,2) = diry*(valfon-valfon1)*norx
+            grad(2,1) = dirx*(valfon-valfon1)*nory
+            grad(2,2) = diry*(valfon-valfon1)*nory
+          endif
 !
         endif
+
 !
 !        CALCUL DES DEFORMATIONS
         do indic1 = 1, 2
@@ -284,7 +396,6 @@ subroutine te0499(option, nomte)
           coedir = -1.d0
         else
           coedir = 0.d0
-!          coedir = -1.d0
         endif
 !ER        endif
 !
@@ -294,11 +405,29 @@ subroutine te0499(option, nomte)
         vondt(2) = 0.d0
 !
         if (type .eq. 'P') then
-            vondt(1) = -cele*(valfon+valfon2)*dirx
-            vondt(2) = -cele*(valfon+valfon2)*diry
+          if (abs(cosa) .gt. 0.d0) then
+            vondt(1) = -cele*valfon*dirx
+            vondt(1) = vondt(1)-cele*valfon1*dirx
+            vondt(1) = vondt(1)-cele2*valfon2*cosb2
+            vondt(2) = -cele*valfon*diry
+            vondt(2) = vondt(2)+cele*valfon1*diry
+            vondt(2) = vondt(2)-cele2*valfon2*sinb2
+          else
+            vondt(1) = -cele*(valfon+valfon1)*dirx
+            vondt(2) = -cele*(valfon+valfon1)*diry
+          endif
         else if (type.eq.'S') then
-            vondt(1) = -cele*(valfon+valfon2)*norx
-            vondt(2) = -cele*(valfon+valfon2)*nory
+          if (abs(cosa) .gt. 0.d0) then
+            vondt(1) = -cele*valfon*norx
+            vondt(1) = vondt(1)+cele*valfon1*norx
+            vondt(1) = vondt(1)-cele2*valfon2*sinb2
+            vondt(2) = -cele*valfon*nory
+            vondt(2) = vondt(2)-cele*valfon1*nory
+            vondt(2) = vondt(2)+cele2*valfon2*cosb2
+          else
+            vondt(1) = -cele*(valfon+valfon1)*norx
+            vondt(2) = -cele*(valfon+valfon1)*nory
+          endif
         endif
 !
         scal = nux*vondt(1) + nuy*vondt(2)
@@ -320,6 +449,8 @@ subroutine te0499(option, nomte)
         uondt(1) = 0.d0
         uondt(2) = 0.d0
 !
+        valfon1 = 0.d0
+        valfon2 = 0.d0
         if (h .ne. r8vide()) then
           if (instd .lt. 0.d0) then
             valfon = 0.d0
@@ -327,13 +458,26 @@ subroutine te0499(option, nomte)
             call fointe('F ', zk8(ionde+1), 1, 'INST', [instd], valfon, ier)
           endif
           if (h2 .ne. r8vide()) then
-            if (instd2 .lt. 0.d0) then
-              valfon2 = 0.d0
+            if (abs(cosa) .gt. 0.d0) then
+              if (instd1 .lt. 0.d0) then
+                valfon1 = 0.d0
+              else
+                call fointe('F ', zk8(ionde+1), 1, 'INST', [instd1], valfon1, ier)
+                valfon1 = valfon1*ra12
+              endif
+              if (instd2 .lt. 0.d0) then
+                valfon2 = 0.d0
+              else
+                call fointe('F ', zk8(ionde+1), 1, 'INST', [instd2], valfon2, ier)
+                valfon2 = valfon2*ra13
+              endif
             else
-              call fointe('F ', zk8(ionde+1), 1, 'INST', [instd2], valfon2, ier)
+              if (instd1 .lt. 0.d0) then
+                valfon1 = 0.d0
+              else
+                call fointe('F ', zk8(ionde+1), 1, 'INST', [instd1], valfon1, ier)
+              endif
             endif
-          else
-            valfon2 = 0.d0
           endif
         else
           lpar2(1) = 'X'
@@ -344,14 +488,31 @@ subroutine te0499(option, nomte)
           if (type .ne. 'P') then
             valfon = -valfon
           endif
-          valfon2 = 0.d0
         endif
         if (type .eq. 'P') then
-            uondt(1) = (valfon+valfon2)*dirx
-            uondt(2) = (valfon+valfon2)*diry
+          if (abs(cosa) .gt. 0.d0) then
+            uondt(1) = valfon*dirx
+            uondt(1) = uondt(1)+valfon1*dirx
+            uondt(1) = uondt(1)+valfon2*cosb2
+            uondt(2) = valfon*diry
+            uondt(2) = uondt(2)-valfon1*diry
+            uondt(2) = uondt(2)+valfon2*sinb2
+          else
+            uondt(1) = (valfon+valfon1)*dirx
+            uondt(2) = (valfon+valfon1)*diry
+          endif
         else if (type.eq.'S') then
-            uondt(1) = (valfon+valfon2)*norx
-            uondt(2) = (valfon+valfon2)*nory
+          if (abs(cosa) .gt. 0.d0) then
+            uondt(1) = valfon*norx
+            uondt(1) = uondt(1)-valfon1*norx
+            uondt(1) = uondt(1)+valfon2*sinb2
+            uondt(2) = valfon*nory
+            uondt(2) = uondt(2)+valfon1*nory
+            uondt(2) = uondt(2)-valfon2*cosb2
+          else
+            uondt(1) = (valfon+valfon1)*norx
+            uondt(2) = (valfon+valfon1)*nory
+          endif
         endif
         scal = nux*uondt(1) + nuy*uondt(2)
         uondn(1) = nux*scal

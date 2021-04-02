@@ -239,7 +239,7 @@ CONDPLA = LocatedComponents(phys=PHY.NEUT_K8, type='ELEM',
                             components=('Z[2]',))
 
 CONDPLR = LocatedComponents(phys=PHY.NEUT_R, type='ELEM',
-                            components=('X[6]',))
+                            components=('X[7]',))
 
 CPESANR = LocatedComponents(phys=PHY.PESA_R, type='ELEM',
                             components=('G', 'AG', 'BG', 'CG',))

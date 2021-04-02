@@ -317,7 +317,7 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         cmpName(2, 1) = 'PRES'
     else if (loadType .eq. 'ONDE_PLANE') then
         nbCmp(1) = 2
-        nbCmp(2) = 6
+        nbCmp(2) = 7
         cmpName(1, 1) = 'Z1'
         cmpName(1, 2) = 'Z2'
         cmpName(2, 1) = 'X1'
@@ -326,6 +326,7 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         cmpName(2, 4) = 'X4'
         cmpName(2, 5) = 'X5'
         cmpName(2, 6) = 'X6'
+        cmpName(2, 7) = 'X7'
     else if (loadType .eq. 'ROTATION') then
         nbCmp(1) = 7
         cmpName(1, 1) = 'OME'

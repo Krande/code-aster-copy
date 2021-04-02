@@ -179,6 +179,8 @@ character(len=4), intent(in) :: valeType
                            scal=dist)
                zr(jvalv-1+6) = dist
             endif
+            call getvr8(keywordfact, 'COOR_REFE', iocc=iocc, scal=dist)
+            zr(jvalv-1+7) = dist
             call nocart(map(2), 3, nbCmp(2), mode='NUM', nma=nbCell,&
                         limanu=zi(jvCell))
         endif

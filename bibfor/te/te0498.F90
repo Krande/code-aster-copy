@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ subroutine te0498(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/pronor.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/trigom.h"
 !
 !
     character(len=16), intent(in) :: option
@@ -53,10 +54,13 @@ subroutine te0498(option, nomte)
     real(kind=8) :: norm, tanx, tany, norx, nory, norz
     real(kind=8) :: taondx, taondy, taondz
     real(kind=8) :: nux, nuy, nuz, scal, coedir, coef_amor
-    real(kind=8) ::  nortan, cele, trace
-    real(kind=8) :: param0, param, param2, h, h2, instd, instd2, ris, rip, l0, usl0
-    real(kind=8) :: sigma(3, 3), epsi(3, 3), grad(3, 3), valfon, valfon2
+    real(kind=8) :: nortan, cele, trace, cele2
+    real(kind=8) :: param0, param, h, h2, instd, ris, rip, l0, usl0
+    real(kind=8) :: sigma(3, 3), epsi(3, 3), grad(3, 3), valfon
     real(kind=8) :: xgg(9), ygg(9), zgg(9), vondn(3), vondt(3), uondn(3), uondt(3)
+    real(kind=8) :: a2, b2, sina, cosa, sinb2, cosb2, rc1c2, ra12, ra13, kr, nr
+    real(kind=8) :: xsv, zsv, dist1, dist2, instd1, instd2, x0, z0, z1
+    real(kind=8) :: valfon1, valfon2, param1, param2
     integer :: icodre(5), ndim2
     character(len=2) :: type
     character(len=8) :: fami, poum
@@ -111,7 +115,7 @@ subroutine te0498(option, nomte)
     typer=zr(iondc+3)
     h = zr(iondc+4)
     h2 = zr(iondc+5)
-!    h2 = 5.135d0
+    x0 = zr(iondc+6)
 !
     if (typer .eq. 0.d0) type = 'P'
     if (typer .eq. 1.d0) type = 'SV'
@@ -220,8 +224,68 @@ subroutine te0498(option, nomte)
 !
         if (type .eq. 'P') then
             cele = cp
+            cele2 = cs
         else
             cele = cs
+            cele2 = cp
+        endif
+
+! Calcul du rapport des célérités des ondes de cisaillement (c2) et de compression (c1).
+        rc1c2=sqrt(2.d0+2.d0*nu/(1.d0-2.d0*nu))
+
+! Calcul de l'angle réflexion de l'onde SV réfléchie.
+        sina = dirx
+        cosa = dirz
+        a2=asin(sina)
+        if (type .eq. 'P') then
+          b2=asin(sina/rc1c2)
+          cosb2=cos(b2)
+          sinb2=sin(b2)
+
+! Coefficients de réflexions (Calcul intégré au script).
+          kr=1.d0/rc1c2
+          nr=(kr)**2*sin(2.d0*b2)*sin(2.d0*a2)+cos(2.d0*b2)**2
+          ra12=(kr**2*sin(2.d0*a2)*sin(2.d0*b2)-cos(2.d0*b2)**2)/nr
+          ra13=2.d0*kr*sin(2.d0*a2)*cos(2.d0*b2)/nr
+        else if (type .eq. 'SV') then
+!          b2=asin(sina*rc1c2)
+          b2= trigom('ASIN',sina*rc1c2)
+          cosb2=cos(b2)
+          sinb2=sin(b2)
+
+! Coefficients de réflexions (Calcul intégré au script).
+          kr=1.d0/rc1c2
+          nr=(kr)**2*sin(2.d0*b2)*sin(2.d0*a2)+cos(2.d0*a2)**2
+          ra12=(kr**2*sin(2.d0*a2)*sin(2.d0*b2)-cos(2.d0*a2)**2)/nr
+          ra13=-2.d0*kr*sin(2.d0*a2)*cos(2.d0*a2)/nr
+        else if (type .eq. 'SH') then
+          b2=a2
+          cosb2=cos(b2)
+          sinb2=sin(b2)
+
+! Coefficients de réflexions (Calcul intégré au script).
+          ra12=1.0d0
+          ra13=0.d0
+        endif
+
+! Calcul des bons paramètres dist à insérer dans le calcul.
+        if (h .ne. r8vide()) then
+          if (h2 .ne. r8vide()) then
+            if (abs(cosa) .gt. 0.d0) then
+!              x0=0.d0
+              z0=(h-x0*sina)/cosa
+              z1=(h2-x0*sina)/cosa
+              dist1=x0*sina+(2.d0*z1-z0)*(-cosa)
+              if (type .eq. 'P') then
+                zsv=cosb2*(2.d0*z1-z0)/rc1c2/cosa
+                xsv=(sina/cosa)*(2.d0*z1-z0)-sinb2*(2.d0*z1-z0)/rc1c2/cosa
+              else
+                zsv=cosb2*(2.d0*z1-z0)*rc1c2/cosa
+                xsv=(sina/cosa)*(2.d0*z1-z0)-sinb2*(2.d0*z1-z0)*rc1c2/cosa
+              endif
+              dist2=xsv*sinb2+zsv*(-cosb2)
+            endif 
+          endif
         endif
 !
         kdec = (ipg-1)*nno*ndim
@@ -230,6 +294,8 @@ subroutine te0498(option, nomte)
 !        --- CALCUL DU CHARGEMENT PAR ONDE PLANE
 !KH          ON SUPPOSE QU'ON RECUPERE UNE VITESSE
         param0=dirx*xgg(ipg)+diry*ygg(ipg)+dirz*zgg(ipg)
+        valfon1 = 0.d0
+        valfon2 = 0.d0
         if (h .ne. r8vide()) then
           param = param0 -h
           instd = zr(jinst) - param/cele
@@ -239,15 +305,34 @@ subroutine te0498(option, nomte)
             call fointe('F ', zk8(ionde), 1, 'INST', [instd], valfon, ier)
           endif
           if (h2 .ne. r8vide()) then
-            param2= 2.0d0*(h2-h)-param
-            instd2 = zr(jinst) - param2/cele
-            if (instd2 .lt. 0.d0) then
-              valfon2 = 0.d0
+            if (abs(cosa) .gt. 0.d0) then
+              param1=sina*xgg(ipg)+0.0*ygg(ipg)-cosa*zgg(ipg)
+              param = param1 -dist1
+              instd1 = zr(jinst) - param/cele
+              if (instd1 .lt. 0.d0) then
+                valfon1 = 0.d0
+              else
+                call fointe('F ', zk8(ionde), 1, 'INST', [instd1], valfon1, ier)
+                valfon1 = valfon1*ra12
+              endif
+              param2=sinb2*xgg(ipg)+0.0*ygg(ipg)-cosb2*zgg(ipg)
+              param = param2 -dist2
+              instd2 = zr(jinst) - param/cele2
+              if (instd2 .lt. 0.d0) then
+                valfon2 = 0.d0
+              else
+                call fointe('F ', zk8(ionde), 1, 'INST', [instd2], valfon2, ier)
+                valfon2 = valfon2*ra13
+              endif
             else
-              call fointe('F ', zk8(ionde), 1, 'INST', [instd2], valfon2, ier)
+              param1= 2.0d0*(h2-h)-param
+              instd1 = zr(jinst) - param1/cele
+              if (instd1 .lt. 0.d0) then
+                valfon1 = 0.d0
+              else
+                call fointe('F ', zk8(ionde), 1, 'INST', [instd1], valfon1, ier)
+              endif
             endif
-          else
-            valfon2 = 0.d0
           endif
         else
           lpar2(1) = 'X'
@@ -258,56 +343,109 @@ subroutine te0498(option, nomte)
           if (type .ne. 'P') then
             valfon = -valfon
           endif
-          valfon2 = 0.d0
         endif
 
         valfon = -valfon/cele
-        valfon2 = -valfon2/cele
-!         VALFON = +VALFON/CELE
+        valfon1 = -valfon1/cele
+        valfon2 = -valfon2/cele2
 !
 !        CALCUL DES CONTRAINTES ASSOCIEES A L'ONDE PLANE
 !        CALCUL DU GRADIENT DU DEPLACEMENT
         if (type .eq. 'P') then
 !
-            grad(1,1) = dirx*(valfon-valfon2)*dirx
-            grad(1,2) = diry*(valfon-valfon2)*dirx
-            grad(1,3) = dirz*(valfon-valfon2)*dirx
+          if (abs(cosa) .gt. 0.d0) then
+            grad(1,1) = dirx*valfon*dirx
+            grad(1,1) = grad(1,1) + dirx*valfon1*dirx
+            grad(1,1) = grad(1,1) + sinb2*valfon2*cosb2
+            grad(1,2) = diry*valfon*dirx
+            grad(1,3) = dirz*valfon*dirx
+            grad(1,3) = grad(1,3) - dirz*valfon1*dirx
+            grad(1,3) = grad(1,3) - cosb2*valfon2*cosb2
 !
-            grad(2,1) = dirx*(valfon-valfon2)*diry
-            grad(2,2) = diry*(valfon-valfon2)*diry
-            grad(2,3) = dirz*(valfon-valfon2)*diry
+            grad(2,1) = dirx*valfon*diry
+            grad(2,2) = diry*valfon*diry
+            grad(2,3) = dirz*valfon*diry
 !
-            grad(3,1) = dirx*(valfon-valfon2)*dirz
-            grad(3,2) = diry*(valfon-valfon2)*dirz
-            grad(3,3) = dirz*(valfon-valfon2)*dirz
+            grad(3,1) = dirx*valfon*dirz
+            grad(3,1) = grad(3,1) - dirx*valfon1*dirz
+            grad(3,1) = grad(3,1) + sinb2*valfon2*sinb2
+            grad(3,2) = diry*valfon*dirz
+            grad(3,3) = dirz*valfon*dirz
+            grad(3,3) = grad(3,3) + dirz*valfon1*dirz
+            grad(3,3) = grad(3,3) - cosb2*valfon2*sinb2
+          else
+            grad(1,1) = dirx*(valfon-valfon1)*dirx
+            grad(1,2) = diry*(valfon-valfon1)*dirx
+            grad(1,3) = dirz*(valfon-valfon1)*dirx
+!
+            grad(2,1) = dirx*(valfon-valfon1)*diry
+            grad(2,2) = diry*(valfon-valfon1)*diry
+            grad(2,3) = dirz*(valfon-valfon1)*diry
+!
+            grad(3,1) = dirx*(valfon-valfon1)*dirz
+            grad(3,2) = diry*(valfon-valfon1)*dirz
+            grad(3,3) = dirz*(valfon-valfon1)*dirz
+          endif
 !
         else if (type.eq.'SV') then
 !
-            grad(1,1) = dirx*(valfon-valfon2)*norx
-            grad(1,2) = diry*(valfon-valfon2)*norx
-            grad(1,3) = dirz*(valfon-valfon2)*norx
+          if (abs(cosa) .gt. 0.d0) then
+            grad(1,1) = dirx*valfon*norx
+            grad(1,1) = grad(1,1) - dirx*valfon1*norx
+            grad(1,1) = grad(1,1) + sinb2*valfon2*sinb2
+            grad(1,2) = diry*valfon*norx
+            grad(1,3) = dirz*valfon*norx
+            grad(1,3) = grad(1,3) + dirz*valfon1*norx
+            grad(1,3) = grad(1,3) - cosb2*valfon2*sinb2
 !
-            grad(2,1) = dirx*(valfon-valfon2)*nory
-            grad(2,2) = diry*(valfon-valfon2)*nory
-            grad(2,3) = dirz*(valfon-valfon2)*nory
+            grad(2,1) = dirx*valfon*nory
+            grad(2,2) = diry*valfon*nory
+            grad(2,3) = dirz*valfon*nory
 !
-            grad(3,1) = dirx*(valfon-valfon2)*norz
-            grad(3,2) = diry*(valfon-valfon2)*norz
-            grad(3,3) = dirz*(valfon-valfon2)*norz
+            grad(3,1) = dirx*valfon*norz
+            grad(3,1) = grad(3,1) + dirx*valfon1*norz
+            grad(3,1) = grad(3,1) - cosb2*valfon2*sinb2
+            grad(3,2) = diry*valfon*norz
+            grad(3,3) = dirz*valfon*norz
+            grad(3,3) = grad(3,3) - dirz*valfon1*norz
+            grad(3,3) = grad(3,3) + cosb2*valfon2*cosb2
+          else
+            grad(1,1) = dirx*(valfon-valfon1)*norx
+            grad(1,2) = diry*(valfon-valfon1)*norx
+            grad(1,3) = dirz*(valfon-valfon1)*norx
+!
+            grad(2,1) = dirx*(valfon-valfon1)*nory
+            grad(2,2) = diry*(valfon-valfon1)*nory
+            grad(2,3) = dirz*(valfon-valfon1)*nory
+!
+            grad(3,1) = dirx*(valfon-valfon1)*norz
+            grad(3,2) = diry*(valfon-valfon1)*norz
+            grad(3,3) = dirz*(valfon-valfon1)*norz
+          endif
 !
         else if (type.eq.'SH') then
 !
-            grad(1,1) = dirx*(valfon-valfon2)*tanx
-            grad(1,2) = diry*(valfon-valfon2)*tanx
-            grad(1,3) = dirz*(valfon-valfon2)*tanx
+          if (abs(cosa) .gt. 0.d0) then
+            grad(1,1) = dirx*valfon*tanx
+            grad(1,2) = diry*valfon*tanx
+            grad(1,3) = dirz*valfon*tanx
+            grad(2,1) = dirx*valfon*tany
+            grad(2,1) = grad(2,1) + dirx*valfon1*tany
+            grad(2,2) = diry*valfon*tany
+            grad(2,3) = dirz*valfon*tany
+            grad(2,3) = grad(2,3) - dirz*valfon1*tany
+          else
+            grad(1,1) = dirx*(valfon-valfon1)*tanx
+            grad(1,2) = diry*(valfon-valfon1)*tanx
+            grad(1,3) = dirz*(valfon-valfon1)*tanx
+            grad(2,1) = dirx*(valfon-valfon1)*tany
+            grad(2,2) = diry*(valfon-valfon1)*tany
+            grad(2,3) = dirz*(valfon-valfon1)*tany
+          endif
 !
-            grad(2,1) = dirx*(valfon-valfon2)*tany
-            grad(2,2) = diry*(valfon-valfon2)*tany
-            grad(2,3) = dirz*(valfon-valfon2)*tany
-!
-            grad(3,1) = 0.d0
-            grad(3,2) = 0.d0
-            grad(3,3) = 0.d0
+          grad(3,1) = 0.d0
+          grad(3,2) = 0.d0 
+          grad(3,3) = 0.d0
 !
         endif
 !
@@ -374,7 +512,6 @@ subroutine te0498(option, nomte)
           coedir = -1.d0
         else
           coedir = 0.d0
-!          coedir = -1.d0
         endif
 !
 !        --- CALCUL DE V.N ---
@@ -384,17 +521,43 @@ subroutine te0498(option, nomte)
         vondt(3) = 0.d0
 !
         if (type .eq. 'P') then
-            vondt(1) = -cele*(valfon+valfon2)*dirx
-            vondt(2) = -cele*(valfon+valfon2)*diry
-            vondt(3) = -cele*(valfon+valfon2)*dirz
+          if (abs(cosa) .gt. 0.d0) then
+            vondt(1) = -cele*valfon*dirx
+            vondt(1) = vondt(1)-cele*valfon1*dirx
+            vondt(1) = vondt(1)-cele2*valfon2*cosb2
+            vondt(2) = -cele*valfon*diry
+            vondt(3) = -cele*valfon*dirz
+            vondt(3) = vondt(3)+cele*valfon1*dirz
+            vondt(3) = vondt(3)-cele2*valfon2*sinb2
+          else
+            vondt(1) = -cele*(valfon+valfon1)*dirx
+            vondt(2) = -cele*(valfon+valfon1)*diry
+            vondt(3) = -cele*(valfon+valfon1)*dirz
+          endif
         else if (type.eq.'SV') then
-            vondt(1) = -cele*(valfon+valfon2)*norx
-            vondt(2) = -cele*(valfon+valfon2)*nory
-            vondt(3) = -cele*(valfon+valfon2)*norz
+          if (abs(cosa) .gt. 0.d0) then
+            vondt(1) = -cele*valfon*norx
+            vondt(1) = vondt(1)+cele*valfon1*norx
+            vondt(1) = vondt(1)-cele2*valfon2*sinb2
+            vondt(2) = -cele*valfon*nory
+            vondt(3) = -cele*valfon*norz
+            vondt(3) = vondt(3)-cele*valfon1*norz
+            vondt(3) = vondt(3)+cele2*valfon2*cosb2
+          else
+            vondt(1) = -cele*(valfon+valfon1)*norx
+            vondt(2) = -cele*(valfon+valfon1)*nory
+            vondt(3) = -cele*(valfon+valfon1)*norz
+          endif
         else if (type.eq.'SH') then
+          if (abs(cosa) .gt. 0.d0) then
+            vondt(1) = -cele*valfon*tanx
+            vondt(2) = -cele*valfon*tany
+            vondt(2) = vondt(2)-cele*valfon1*tany
+          else
             vondt(1) = -cele*(valfon+valfon2)*tanx
             vondt(2) = -cele*(valfon+valfon2)*tany
-            vondt(3) = 0.d0
+          endif
+          vondt(3) = 0.d0
         endif
 !
 !        --- CALCUL DE LA VITESSE NORMALE ET DE LA VITESSE TANGENTIELLE
@@ -412,6 +575,8 @@ subroutine te0498(option, nomte)
         uondt(2) = 0.d0
         uondt(3) = 0.d0
 !
+        valfon1 = 0.d0
+        valfon2 = 0.d0
         if (h .ne. r8vide()) then
           if (instd .lt. 0.d0) then
             valfon = 0.d0
@@ -419,13 +584,26 @@ subroutine te0498(option, nomte)
             call fointe('F ', zk8(ionde+1), 1, 'INST', [instd], valfon, ier)
           endif
           if (h2 .ne. r8vide()) then
-            if (instd2 .lt. 0.d0) then
-              valfon2 = 0.d0
+            if (abs(cosa) .gt. 0.d0) then
+              if (instd1 .lt. 0.d0) then
+                valfon1 = 0.d0
+              else
+                call fointe('F ', zk8(ionde+1), 1, 'INST', [instd1], valfon1, ier)
+                valfon1 = valfon1*ra12
+              endif
+              if (instd2 .lt. 0.d0) then
+                valfon2 = 0.d0
+              else
+                call fointe('F ', zk8(ionde+1), 1, 'INST', [instd2], valfon2, ier)
+                valfon2 = valfon2*ra13
+              endif
             else
-              call fointe('F ', zk8(ionde+1), 1, 'INST', [instd2], valfon2, ier)
+              if (instd1 .lt. 0.d0) then
+                valfon1 = 0.d0
+              else
+                call fointe('F ', zk8(ionde+1), 1, 'INST', [instd1], valfon1, ier)
+              endif
             endif
-          else
-            valfon2 = 0.d0
           endif
         else
           lpar2(1) = 'X'
@@ -436,20 +614,45 @@ subroutine te0498(option, nomte)
           if (type .ne. 'P') then
             valfon = -valfon
           endif
-          valfon2 = 0.d0
         endif
         if (type .eq. 'P') then
-            uondt(1) = (valfon+valfon2)*dirx
-            uondt(2) = (valfon+valfon2)*diry
-            uondt(3) = (valfon+valfon2)*dirz
+          if (abs(cosa) .gt. 0.d0) then
+            uondt(1) = valfon*dirx
+            uondt(1) = uondt(1)+valfon1*dirx
+            uondt(1) = uondt(1)+valfon2*cosb2
+            uondt(2) = valfon*diry
+            uondt(3) = valfon*dirz
+            uondt(3) = uondt(3)-valfon1*dirz
+            uondt(3) = uondt(3)+valfon2*sinb2
+          else
+            uondt(1) = (valfon+valfon1)*dirx
+            uondt(2) = (valfon+valfon1)*diry
+            uondt(3) = (valfon+valfon1)*dirz
+          endif
         else if (type.eq.'SV') then
-            uondt(1) = (valfon+valfon2)*norx
-            uondt(2) = (valfon+valfon2)*nory
-            uondt(3) = (valfon+valfon2)*norz
+          if (abs(cosa) .gt. 0.d0) then
+            uondt(1) = valfon*norx
+            uondt(1) = uondt(1)-valfon1*norx
+            uondt(1) = uondt(1)+valfon2*sinb2
+            uondt(2) = valfon*nory
+            uondt(3) = valfon*norz
+            uondt(3) = uondt(3)+valfon1*norz
+            uondt(3) = uondt(3)-valfon2*cosb2
+          else
+            uondt(1) = (valfon+valfon1)*norx
+            uondt(2) = (valfon+valfon1)*nory
+            uondt(3) = (valfon+valfon1)*norz
+          endif
         else if (type.eq.'SH') then
-            uondt(1) = (valfon+valfon2)*tanx
-            uondt(2) = (valfon+valfon2)*tany
-            uondt(3) = 0.d0
+          if (abs(cosa) .gt. 0.d0) then
+            uondt(1) = valfon*tanx
+            uondt(2) = valfon*tany
+            uondt(2) = uondt(2)+valfon1*tany
+          else
+            uondt(1) = (valfon+valfon1)*tanx
+            uondt(2) = (valfon+valfon1)*tany
+          endif
+          uondt(3) = 0.d0
         endif
 !        --- CALCUL DES DEPLACEMENTS NORMAL ET TANGENTIEL
         call pronor(nux, nuy, nuz, uondt, uondn)
