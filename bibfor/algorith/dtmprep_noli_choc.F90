@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,10 @@
 subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
     implicit none
 ! dtmprep_noli_choc : prepare the calculations for a localized nonlinearity
-!                     of type : stop/choc. This routine adds one or more 
+!                     of type : stop/choc. This routine adds one or more
 !                     occurences to sd_nl and increments NB_NOLI in sd_dtm
 !
-!             icomp : an integer giving the index of occurence of the 
+!             icomp : an integer giving the index of occurence of the
 !                     nonlinearity to be treated under the factor kw
 !                     COMPORTEMENT of the command DYNA_VIBRA.
 !
@@ -78,16 +78,18 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
     integer           :: jcoor, iret, nbmcl, nbma, im
     integer           :: jmama, nbnma, ier, nbno1, nbno2
     integer           :: ino1, ino2, ind1, ind2, irett
-    integer           :: namtan, nbmode, ind_mmax, info, vali
+    integer           :: namtan, nbmode, ind_mmax, info, vali(10)
     integer           :: j, neq, start, finish, mxlevel, nbchoc
     integer           :: nl_type, nexcit, unidir
 !
     real(kind=8)      :: ctang, ktang, fric_static, fric_dynamic, r8bid
-    real(kind=8)      :: gap, xjeu, k, amor, mmax
+    real(kind=8)      :: gap, xjeu, k, amor, mmax, tdepl2, gdepl(3), ldepl(3)
     real(kind=8)      :: sina, cosa, sinb, cosb, sing
     real(kind=8)      :: cosg, valr(10), damp_normal, stif_normal, dist_no1
     real(kind=8)      :: dist_no2, ddpilo(3), dpiglo(6), dpiloc(6), one
     real(kind=8)      :: coor(3), VectIN(3), VectOUT(3)
+    real(kind=8)      :: ldepl_norm
+
 !
     character(len=3)  :: unidirk
     character(len=8)  :: sd_dtm, sd_nl, mesh, mesh1, mesh2
@@ -106,6 +108,7 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
     integer     , pointer       :: elems(:)          => null()
     real(kind=8), pointer       :: coor_no1(:)       => null()
     real(kind=8), pointer       :: coor_no2(:)       => null()
+    real(kind=8), pointer       :: bc_norm(:)       => null()
     real(kind=8), pointer       :: vale(:)           => null()
     real(kind=8), pointer       :: omega2(:)         => null()
     real(kind=8), pointer       :: amogen(:)         => null()
@@ -121,6 +124,7 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
     real(kind=8), pointer       :: origob(:)         => null()
     real(kind=8), pointer       :: bmodal_v(:)       => null()
     real(kind=8), pointer       :: ps1del_v(:)       => null()
+    real(kind=8), pointer       :: mass_normed(:)    => null()
     character(len=8) , pointer  :: noeud(:)          => null()
     character(len=24), pointer  :: refn(:)           => null()
 !
@@ -146,7 +150,7 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
     start  = i
     finish = i
 !
-!   --- 1 - Basic information about the mesh and numbering 
+!   --- 1 - Basic information about the mesh and numbering
 !
     call dtmget(sd_dtm, _NUM_DDL, kscal=nume)
     call dtmget(sd_dtm, _NB_MODES, iscal=nbmode)
@@ -231,7 +235,7 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
             call jenuno(jexnum(mesh1//'.NOMNOE', zi(jmama+1)), no2_name)
             call nlsav(sd_nl, _NO1_NAME, 1, iocc=ind, kscal=no1_name)
             call nlsav(sd_nl, _NO2_NAME, 1, iocc=ind, kscal=no2_name)
-            
+
             call nlsav(sd_nl, _NUMDDL_1, 1, iocc=ind, kscal=nume1(1:8))
             call nlsav(sd_nl, _MESH_1, 1, iocc=ind, kscal=mesh1)
 
@@ -272,7 +276,7 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
                     nbmcl, limocl, tymocl, sd_nl//'.INDI_NO2.TEMP', nbno2)
 
         if (nbno2.gt.0) then
-            ASSERT (nbno2.eq.1) 
+            ASSERT (nbno2.eq.1)
             call jeveuo(sd_nl//'.INDI_NO2.TEMP','L', vk8=noeud)
             no2_name = noeud(1)
             call nlsav(sd_nl, _NO2_NAME, 1, iocc=i, kscal=no2_name)
@@ -287,7 +291,7 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
 
 
 !   --- 2.3 - Check whether this stop/choc nonlinearity(ies) conflicts
-!             with a buckling one for the same support node, if yes, stop 
+!             with a buckling one for the same support node, if yes, stop
 !             the treatment immediately
     call nlget(sd_nl, _NB_FLAMB, iscal=nbbuck)
     if (nbbuck.gt.0) then
@@ -305,7 +309,7 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
         end do
     end if
 !
-!   --- 3 - Filling up the sd_nl with further information regarding the 
+!   --- 3 - Filling up the sd_nl with further information regarding the
 !           nonlinearity(ies)
 !
     AS_ALLOCATE(vi=ddlcho, size=6)
@@ -417,8 +421,7 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
         if (namtan.gt.0) call getvr8(motfac, 'AMOR_TAN', iocc=icomp, scal=ctang)
 
         call getvid(motfac, 'OBSTACLE', iocc=icomp, scal=obst_typ, nbret=n1)
-
-!       --- 3.4 - Obstacle type 
+!       --- 3.4 - Obstacle type
         call tbliva(obst_typ, 1, 'LIEU', [ibid], [r8bid], &
                     [cbid], 'DEFIOBST', kbid, [r8bid], 'TYPE',&
                     k8typ, ibid, r8bid, cbid, refo,&
@@ -434,48 +437,11 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
             obst_typ = refo(1:8)
         endif
         call nlsav(sd_nl, _OBST_TYP, 1, iocc=i, kscal=obst_typ)
-
         if ((obst_typ(1:8).eq.'BI_CERCI').and.(dist_no2.lt.dist_no1)) then
             call utmess('F', 'ALGORITH5_35')
         endif
-
-!       --- 3.5 - Special treatment for the tangential damping
-!           If no value is given, an optimized value is calculated and
-!           based on the maximum modal mass and the tangential stiffness
-        if (namtan .eq. 0 .and. ktang .gt. r8prem()) then
-!           --- Search for the mode with the greatest modal mass
-!               mmax     : value of the max modal mass
-!               ind_mmax : index of the mode with the greatest mass
-            call dtmget(sd_dtm, _MASS_DIA, vr=masgen)
-            call dtmget(sd_dtm, _OMEGA_SQ, vr=omega2)
-            mmax = masgen(1)
-            ind_mmax = 1
-            do im = 2, nbmode
-                if (masgen(im) .gt. mmax) then
-                    mmax = masgen(im)
-                    ind_mmax = im
-                endif
-            enddo
-
-!           --- Access index of the corresponding modal damping
-!               (depending whether the damping matrix is diagonal or no)
-            call dtmget(sd_dtm, _AMOR_FUL, lonvec=iret)
-            if (iret.gt.0) then
-                call dtmget(sd_dtm, _AMOR_FUL, vr=amogen)
-                amor = amogen(ind_mmax + nbmode*(ind_mmax-1))
-            else
-                call dtmget(sd_dtm, _AMOR_DIA, vr=amogen)
-                amor = amogen(ind_mmax)
-            end if
 !
-            k = omega2(ind_mmax) * mmax
-            ctang = 2.d0*sqrt(mmax*(k+ktang)) - 2.d0*amor*sqrt(k*mmax)
-            call utmess('I', 'ALGORITH16_10', si=i, sr=ctang)
-        endif
-        call nlsav(sd_nl, _DAMP_TANGENTIAL, 1, iocc=i, rscal=ctang)
-
-!
-!       --- 3.6 - Calculation of geometrical properties : 
+!       --- 3.5 - Calculation of geometrical properties :
 !                 play, orientation, local coordinates, distances
         call nlget(sd_nl, _COOR_NO1, iocc=i, vr=coor_no1)
         xjeu = 0.d0
@@ -531,11 +497,10 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
         call nlsav(sd_nl, _SIGN_DYZ, 2, iocc=i, rvect=[-sign(one,ddpilo(2)), -sign(one,ddpilo(3))])
 !
 !
-!       --- 3.7 - Printing out user information
+!       --- 3.6 - Printing out user information
         if (info .eq. 2) then
-            vali = i
             call nlget(sd_nl, _NO1_NAME, iocc=i, kscal=valk(1))
-            call utmess('I', 'ALGORITH16_2', sk=valk(1), si=vali)
+            call utmess('I', 'ALGORITH16_2', sk=valk(1), si=i)
             if (typnum(1:13) .eq. 'NUME_DDL_GENE') then
                 call nlget(sd_nl, _SS1_NAME, iocc=i, kscal=valk(1))
                 call utmess('I', 'ALGORITH16_3', sk=valk(1))
@@ -611,7 +576,7 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
         else if (typnum(1:13).eq.'NUME_DDL_GENE') then
             numero = nume
             AS_ALLOCATE(vr=dplcho, size=nbmode*6)
-            AS_ALLOCATE(vk8=noeud, size=3)           
+            AS_ALLOCATE(vk8=noeud, size=3)
             call nlget(sd_nl, _NO1_NAME, iocc=i, kscal=noeud(1))
             call nlget(sd_nl, _SS1_NAME, iocc=i, kscal=noeud(2))
             call nlget(sd_nl, _NUMDDL_1, iocc=i, kscal=noeud(3))
@@ -668,6 +633,112 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
             endif
         endif
 
+
+!       --- 3.9 - Special treatment for the tangential damping
+!           If no value is given, an optimized value is calculated and
+!           based on the maximum modal mass and the tangential stiffness
+        if (namtan .eq. 0 .and. ktang .gt. r8prem()) then
+            call dtmget(sd_dtm, _MASS_DIA, vr=masgen)
+            call dtmget(sd_dtm, _OMEGA_SQ, vr=omega2)
+!
+!           --- Calculate a normalizing factor based on the effective
+!               *tangential* local displacement for each mode related to
+!               the present non linearity
+            AS_ALLOCATE(vr=mass_normed, size=nbmode)
+!
+!           --- 1) Determine the local tangential (in plane) displacement
+!                  for each mode
+            do j = 1, nbmode
+!               --- Detect (and skip) non dynamic modes => fictional mass
+                if ((omega2(j)*omega2(j)) .lt. 1.d-10) then
+                    ! write(*,*) 'Rigid body movement => not considered'
+                    mass_normed(j) = 0.d0
+                else
+                    gdepl(1) = defmod1(3*(j-1)+1)
+                    gdepl(2) = defmod1(3*(j-1)+2)
+                    gdepl(3) = defmod1(3*(j-1)+3)
+                    if (obst_typ(1:2).eq.'BI') then
+                        gdepl(1) = defmod2(3*(j-1)+1) - gdepl(1)
+                        gdepl(2) = defmod2(3*(j-1)+2) - gdepl(2)
+                        gdepl(3) = defmod2(3*(j-1)+3) - gdepl(3)
+                    endif
+                    call gloloc(gdepl, [0.d0, 0.d0, 0.d0], sina, cosa, sinb,&
+                                cosb, sing, cosg, ldepl)
+                    if (obst_typ .eq. 'BI_PLANY' .or. obst_typ .eq. 'PLAN_Y') then
+                        tdepl2 = ldepl(1)*ldepl(1)+ldepl(3)*ldepl(3)
+                    else if (obst_typ.eq.'BI_PLANZ' .or. obst_typ.eq.'PLAN_Z') then
+                        tdepl2 = ldepl(1)*ldepl(1)+ldepl(2)*ldepl(2)
+                    else if (obst_typ.eq.'BI_CERCLE') then
+                        bc_norm = coor_no1 - coor_no2
+                        bc_norm = bc_norm /  sqrt(dot_product(bc_norm, bc_norm))
+                        ldepl_norm = dot_product(ldepl, bc_norm)
+                        tdepl2 =dot_product(ldepl, ldepl) - ldepl_norm**2
+                    else
+                        tdepl2 = ldepl(1)*ldepl(1)
+                    endif
+
+!                   --- Detect (and skip) non dynamic modes => fictional mass
+                    mass_normed(j) = 0.d0
+!                    if ((tdepl2*tdepl2) .gt. 1.d-10) then
+                    mass_normed(j) = masgen(j)*sqrt(tdepl2)
+!                    endif
+                endif
+            end do
+
+!           --- Determine the mode with the maximum mass, relevant to the
+!               tangential motion at the contact interface
+!               mmax     : value of the max modal mass
+!               ind_mmax : index of the mode with the greatest mass
+            mmax = mass_normed(1)
+            ind_mmax = 1
+            if (nbmode.gt.1) then
+                do im = 2, nbmode
+                    if (mass_normed(im) .gt. mmax) then
+                        mmax = mass_normed(im)
+                        ind_mmax = im
+                    endif
+                enddo
+            endif
+            mmax = masgen(ind_mmax)
+            AS_DEALLOCATE(vr=mass_normed)
+
+!           --- Access index of the corresponding modal damping (ksi)
+!               (depending whether the damping matrix is diagonal or no)
+            call dtmget(sd_dtm, _AMOR_FUL, lonvec=iret)
+            if (iret.gt.0) then
+!               --- amogen = C (full matrix)
+!               --- Acrit (critical damping) = 2*sqrt(k*m) = 2*omega*m
+                call dtmget(sd_dtm, _AMOR_FUL, vr=amogen)
+                amor = amogen(ind_mmax + nbmode*(ind_mmax-1))
+                amor = amor/(2.d0*sqrt(omega2(ind_mmax))*masgen(ind_mmax))
+            else
+!               --- amogen = 2*omega*ksi (diagonal matrix)
+                call dtmget(sd_dtm, _AMOR_DIA, vr=amogen)
+                amor = 0.5*amogen(ind_mmax)/sqrt(omega2(ind_mmax))
+            end if
+!
+!
+!           --- The stiffness (k) is calculated based on mmax which is normed.
+!               Hence (k) itself is also normed to local choc displacement = 1
+            k = omega2(ind_mmax) * mmax
+            ctang = 2.d0*sqrt(mmax*(k+ktang)) - 2.d0*amor*sqrt(k*mmax)
+
+!           --- Insure that the optimized tangential damping is not negative
+            ctang = max(0.d0, ctang)
+!
+            if (ctang .gt. r8prem()) then
+                vali(1) = i
+                vali(2) = ind_mmax
+                valr(1) = ctang
+                valr(2) = mmax
+                valr(3) = k
+                valr(4) = amor
+                valr(5) = ktang
+                call utmess('I', 'ALGORITH16_10', ni=2, vali=vali, nr=5,&
+                            valr=valr)
+            endif
+        endif
+        call nlsav(sd_nl, _DAMP_TANGENTIAL, 1, iocc=i, rscal=ctang)
     end do
 !
 !   --- 4 - Updating indices for sd_nl and sd_dtm
