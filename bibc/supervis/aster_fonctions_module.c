@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -16,19 +16,8 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-#include "Python.h"
-
-#include <numpy/numpyconfig.h>
-
-#if (NPY_API_VERSION >= 0x00000007)
-// NumPy >= 1.7
-#   define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
-#else
-// NumPy < 1.7
-#   define NPY_ARRAY_IN_ARRAY   NPY_IN_ARRAY
-#endif
-
-#include <numpy/arrayobject.h>
+#define CODEASTER_IMPORT_ARRAY 1
+#include "aster_numpy.h"
 
 extern void calc_SPEC_OSCI(int, double *, double *,
                            int, double *, int, double *,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ def build(self):
             name = 'asterbibcxx',
           source = get_srcs('**/*.cxx', excl='mfront/*.cxx'),
           target = 'bibcxx',
-             use = ['BIBCXX', 'PETSC', 'BOOST', 'PYEXT', 'CXX'],
+             use = ['BIBCXX', 'PETSC', 'BOOST', 'PYEXT', 'NUMPY', 'CXX'],
              env = env.derive(),
     install_path = env.ASTERLIBDIR
     )

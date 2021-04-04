@@ -3,7 +3,7 @@
  * @brief Création de LibAster
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,10 +21,14 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <boost/python.hpp>
+#define CODEASTER_IMPORT_ARRAY 1
+
+#include "aster_numpy.h"
 
 #include "aster_init.h"
 #include "astercxx.h"
+
+#include <boost/python.hpp>
 
 #include "PythonBindings/Fortran.h"
 #include "Supervis/Exceptions.h"
@@ -152,7 +156,15 @@ struct LibAsterInitializer {
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( raiseAsterError_overloads, raiseAsterError, 0, 1 )
 
+void *numpyInitialize()
+{
+  import_array();
+  return NULL;
+}
+
 BOOST_PYTHON_MODULE( libaster ) {
+    numpyInitialize();
+
     // hide c++ signatures
     py::docstring_options doc_options( true, true, false );
 
