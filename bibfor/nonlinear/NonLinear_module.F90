@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@ module NonLinear_module
 ! ==================================================================================================
 use NonLin_Datastructure_type
 use Rom_Datastructure_type
+use ldlt_xp_data_module
 ! ==================================================================================================
 implicit none
 ! ==================================================================================================
@@ -797,7 +798,9 @@ subroutine factorSystem(list_func_acti, ds_measure, ds_algorom,&
         endif
     endif
     call nmtime(ds_measure, 'Stop'  , 'Factor')
-    call nmrinc(ds_measure, 'Factor')
+!   only increase nb of factorization if the matrix has indeed been factored
+!   this can not be the case with the use of LDLT_SP/DP
+    if (really_factored) call nmrinc(ds_measure, 'Factor')
 !   -----------------------------------------------------------------------------------------------
 end subroutine
 ! --------------------------------------------------------------------------------------------------

@@ -23,6 +23,7 @@ subroutine ldsp1(pc, ierr)
 use aster_petsc_module
 use petsc_data_module
 use lmp_module, only : lmp_destroy
+use ldlt_xp_data_module
 
     implicit none
 
@@ -47,7 +48,6 @@ use lmp_module, only : lmp_destroy
 !----------------------------------------------------------------
 !     VARIABLES LOCALES
     integer :: jrefa, iret
-    aster_logical :: new_facto
     PC :: pc_lmp
 !----------------------------------------------------------------
 !
@@ -60,11 +60,11 @@ use lmp_module, only : lmp_destroy
     zk24(jrefa-1+8) = ' '
 !
 ! --  APPEL A LA ROUTINE DE FACTO SP POUR LE PRECONDITIONNEMENT
-    call pcmump(spmat, spsolv, iret, new_facto )
+    call pcmump(spmat, spsolv, iret, really_factored )
 !
 ! -- SI LE PRECONDITIONNEUR DE SECOND NIVEAU EST ACTIVE, ON DOIT LE DETRUIRE
 !    A CHAQUE RECONSTRUCTION DU LDLT_SP
-    if ( new_facto ) then
+    if ( really_factored ) then
        call lmp_destroy( pc_lmp, ierr )
        ASSERT( ierr == 0 )
     endif
