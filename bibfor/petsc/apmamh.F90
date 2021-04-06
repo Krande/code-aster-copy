@@ -75,7 +75,8 @@ use petsc_data_module
     character(len=14) :: nonu
     character(len=4) :: kbid
 !
-    logical :: lmnsy, lgive, ldebug
+    logical :: lmnsy, lgive
+    aster_logical, parameter :: ldebug = ASTER_FALSE
 !
     real(kind=8) :: valm, valm2
 !
@@ -101,7 +102,6 @@ use petsc_data_module
     nonu = nonu_courant
     nosolv = nosols(kptsc)
     a = ap(kptsc)
-    ldebug=.true.
 !
     call jeveuo(nonu//'.SMOS.SMDI', 'L', jsmdi)
     call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)

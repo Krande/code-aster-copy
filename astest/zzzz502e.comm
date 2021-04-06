@@ -45,8 +45,9 @@ LINSTC=DEFI_LIST_REEL(VALE=(0., 1.0,),)
 RESU=STAT_NON_LINE(MODELE=model,
                       CHAM_MATER=MATE,
                       EXCIT=_F(CHARGE=CHAR),
-                      CONVERGENCE=_F(RESI_GLOB_MAXI=1e-4,),
+                      CONVERGENCE=_F(RESI_GLOB_MAXI=2.0e-4,),
                       INCREMENT=_F(LIST_INST=LINSTC,),
+                      SOLVEUR = _F(METHODE='PETSC',RESI_RELA = 1E-10, PRE_COND = 'GAMG', ),
                      )
 
 TEST_RESU(
@@ -116,16 +117,6 @@ TEST_RESU(
             RESULTAT=RESU,
             CRITERE='RELATIF',
             VALE_CALC=10500000000.000002,
-        ),
-    _F(
-            CRITERE=('RELATIF', ),
-            GROUP_MA=('M1', ),
-            NOM_CHAM='SIEF_ELGA',
-            NOM_CMP='SIXY',
-            POINT=2,
-            INST=1.0,
-            RESULTAT=RESU,
-            VALE_CALC=-3.9022420292081487E-07,
         ),
     ),)
 
