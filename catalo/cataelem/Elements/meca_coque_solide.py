@@ -52,6 +52,30 @@ class MESSHELL_SB9(Element):
         ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4', 'MASS=FPG4',),),
     )
     calculs = (
+        OP.EPSI_ELGA(te=125,
+            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
+                        (SP.PDEPLAR, DDL_MECA)  , (SP.PVARCPR, LC.ZVARCPG),
+                        (SP.PVARCRR, LC.ZVARCPG),),
+            para_out = ((OP.EPSI_ELGA.PDEFOPG, LC.EGPS3DR),),
+        ),
+
+        OP.EPSI_ELNO(te=4,
+            para_in  = ((OP.EPSI_ELNO.PDEFOPG, LC.EGPS3DR),),
+            para_out = ((SP.PDEFONO, LC.EEPS3DR),),
+        ),
+
+        OP.EPSL_ELGA(te=125,
+            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
+                        (SP.PDEPLAR, DDL_MECA)  , (SP.PVARCPR, LC.ZVARCPG),
+                        (SP.PVARCRR, LC.ZVARCPG),),
+            para_out = ((OP.EPSL_ELGA.PDEFOPG, LC.EGPS3DR),),
+        ),
+
+        OP.EPSL_ELNO(te=4,
+            para_in  = ((OP.EPSL_ELNO.PDEFOPG, LC.EGPS3DR),),
+            para_out = ((SP.PDEFONO, LC.EEPS3DR),),
+        ),
+
         OP.FORC_NODA(te=125,
             para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
                         (SP.PCOMPOR, LC.CCOMPOR), (SP.PVARCPR, LC.ZVARCPG),

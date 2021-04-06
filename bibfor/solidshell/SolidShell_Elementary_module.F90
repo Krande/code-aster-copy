@@ -34,7 +34,8 @@ use SolidShell_Elementary_Hexa_module
 ! ==================================================================================================
 implicit none
 ! ==================================================================================================
-public  :: compRigiMatr, compSiefElga, compForcNoda, compNonLinear
+public  :: compRigiMatr, compSiefElga, compForcNoda, compNonLinear,&
+           compEpsiElga, compEpslElga
 private :: setMateOrientation, compElemElasMatrix,&
            initCellGeom, initMateProp, initElemProp, initBehaProp
 ! ==================================================================================================
@@ -529,6 +530,100 @@ subroutine compNonLinear(option)
     else
         ASSERT(ASTER_FALSE)
     endif
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compEpsiElga
+!
+! Compute small strains - EPSI_ELGA
+!
+! --------------------------------------------------------------------------------------------------
+subroutine compEpsiElga()
+!   ------------------------------------------------------------------------------------------------
+! - Local
+    character(len=4), parameter :: inteFami = 'RIGI'
+    type(SSH_CELL_GEOM) :: cellGeom
+    type(SSH_ELEM_PROP) :: elemProp
+    real(kind=8) :: epsiElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
+    integer :: jvEpsi, jvDisp, i
+!   ------------------------------------------------------------------------------------------------
+!
+    epsiElga = 0.d0
+
+! - Initialization of general properties of finite element
+    call initElemProp(inteFami, elemProp)
+    if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
+
+    ASSERT(elemProp%elemInte%nbIntePoint .le. SSH_NBPG_MAX)
+
+! - Initialization of geometric properties of cell
+    call initCellGeom(elemProp, cellGeom)
+    if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
+
+! - Get displacements
+    call jevech('PDEPLAR', 'L', jvDisp)
+
+! - Compute strains
+    if (elemProp%cellType .eq. SSH_CELL_HEXA) then
+        call compEpsiElgaHexa(elemProp, cellGeom, zr(jvDisp), epsiElga)
+    else
+        ASSERT(ASTER_FALSE)
+    endif
+
+! - Save strains
+    call jevech('PDEFOPG', 'E', jvEpsi)
+    do i = 1, SSH_SIZE_TENS*elemProp%elemInte%nbIntePoint
+         zr(jvEpsi-1+i) = epsiElga(i)
+    enddo
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compEpslElga
+!
+! Compute logarithmic strains - EPSL_ELGA
+!
+! --------------------------------------------------------------------------------------------------
+subroutine compEpslElga()
+!   ------------------------------------------------------------------------------------------------
+! - Local
+    character(len=4), parameter :: inteFami = 'RIGI'
+    type(SSH_CELL_GEOM) :: cellGeom
+    type(SSH_ELEM_PROP) :: elemProp
+    real(kind=8) :: epslElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
+    integer :: jvEpsi, jvDisp, i
+!   ------------------------------------------------------------------------------------------------
+!
+    epslElga = 0.d0
+
+! - Initialization of general properties of finite element
+    call initElemProp(inteFami, elemProp)
+    if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
+
+    ASSERT(elemProp%elemInte%nbIntePoint .le. SSH_NBPG_MAX)
+
+! - Initialization of geometric properties of cell
+    call initCellGeom(elemProp, cellGeom)
+    if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
+
+! - Get displacements
+    call jevech('PDEPLAR', 'L', jvDisp)
+
+! - Compute stresses
+    if (elemProp%cellType .eq. SSH_CELL_HEXA) then
+        call compEpslElgaHexa(elemProp, cellGeom, zr(jvDisp), epslElga)
+    else
+        ASSERT(ASTER_FALSE)
+    endif
+
+! - Save stress
+    call jevech('PDEFOPG', 'E', jvEpsi)
+    do i = 1, SSH_SIZE_TENS*elemProp%elemInte%nbIntePoint
+         zr(jvEpsi-1+i) = epslElga(i)
+    enddo
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine

@@ -34,7 +34,8 @@ use SolidShell_Stabilization_Hexa_module
 implicit none
 ! ==================================================================================================
 public  :: compRigiMatrHexa, compSiefElgaHexa, compForcNodaHexa,&
-           compRigiGeomHexaKpg
+           compRigiGeomHexaKpg,&
+           compEpsgElgaHexa, compEpsiElgaHexa, compEpslElgaHexa
 ! ==================================================================================================
 private
 #include "jeveux.h"
@@ -361,6 +362,184 @@ subroutine compRigiGeomHexaKpg(geomHexa, zeta, sigm, matrGeom)
     GPinchZZ(3) = 4.d0
     const = matmul(geomHexa%T, GPinchZZ)*zeta*zeta
     matrGeom(25, 25) = sum(const*sigm)
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compEpsiElgaHexa
+!
+! Compute small strains for HEXA - EPSI_ELGA
+!
+! In  elemProp         : general properties of element
+! In  cellGeom         : general geometric properties of cell
+! In  disp             : current displacements
+! Out epsiElga         : small strains at Gauss points
+!
+! --------------------------------------------------------------------------------------------------
+subroutine compEpsiElgaHexa(elemProp, cellGeom, disp, epsiElga)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    type(SSH_ELEM_PROP), intent(in) :: elemProp
+    type(SSH_CELL_GEOM), intent(in) :: cellGeom
+    real(kind=8), intent(in)        :: disp(SSH_NBDOF_HEXA)
+    real(kind=8), intent(out)       :: epsiElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
+! - Local
+    type(SSH_GEOM_HEXA) :: geomHexa
+    type(SSH_KINE_HEXA) :: kineHexa
+    real(kind=8) :: geomCurr(SSH_NBDOFG_HEXA)
+    real(kind=8) :: zeta, epsi(SSH_SIZE_TENS)
+    integer :: nbIntePoint, kpg, jvCoor
+!   ------------------------------------------------------------------------------------------------
+!
+    nbIntePoint = elemProp%elemInte%nbIntePoint
+    jvCoor      = elemProp%elemInte%jvCoor
+
+! - Prepare geometric quantities
+    call initGeomCellHexa(cellGeom, geomHexa)
+    if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
+
+! - Update configuration
+    geomCurr = cellGeom%geomInit
+
+! - Compute gradient matrix in covariant basis
+    call compBCovaMatrHexa(geomCurr, kineHexa)
+
+! - Compute gradient matrix in cartesian frame
+    call compBCartMatrHexa(geomHexa, kineHexa)
+    if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallCstPart_ = ASTER_TRUE)
+
+! - Loop on Gauss points
+    do kpg = 1, nbIntePoint
+        zeta  = zr(jvCoor-1+3*kpg)
+
+! ----- Compute EAS B matrix in cartesian frame at current Gauss point
+        call compBCartEASMatrHexa(zeta, geomHexa, kineHexa)
+
+! ----- Compute B matrix
+        call compBMatrHexa(zeta, kineHexa)
+        if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallVarPart_ = ASTER_TRUE)
+
+! ----- Compute small strains
+        call compEpsiHexa(kineHexa, disp, epsi)
+        epsiElga(1+(kpg-1)*SSH_SIZE_TENS:SSH_SIZE_TENS*kpg) = epsi
+
+    end do
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compEpsgElgaHexa
+!
+! Compute stresses for HEXA - EPSG_ELGA
+!
+! In  elemProp         : general properties of element
+! In  cellGeom         : general geometric properties of cell
+! In  disp             : current displacements
+! Out epsgElga         : Euler-Lagrange strains at Gauss points
+!
+! --------------------------------------------------------------------------------------------------
+subroutine compEpsgElgaHexa(elemProp, cellGeom, disp, epsgElga)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    type(SSH_ELEM_PROP), intent(in) :: elemProp
+    type(SSH_CELL_GEOM), intent(in) :: cellGeom
+    real(kind=8), intent(in)        :: disp(SSH_NBDOF_HEXA)
+    real(kind=8), intent(out)       :: epsgElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
+! - Local
+    type(SSH_GEOM_HEXA) :: geomHexa
+    type(SSH_KINE_HEXA) :: kineHexa
+    type(SSH_EPSG_HEXA) :: epsgHexa
+    real(kind=8) :: zeta
+    integer :: nbIntePoint, kpg, jvCoor
+!   ------------------------------------------------------------------------------------------------
+!
+    nbIntePoint = elemProp%elemInte%nbIntePoint
+    jvCoor      = elemProp%elemInte%jvCoor
+
+! - Prepare geometric quantities
+    call initGeomCellHexa(cellGeom, geomHexa)
+    if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
+
+! - Flag for large strains
+    kineHexa%lLarge = ASTER_TRUE
+
+    do kpg = 1, nbIntePoint
+        zeta  = zr(jvCoor-1+3*kpg)
+
+! ----- Compute EAS B matrix in cartesian frame at current Gauss point
+        call compBCartEASMatrHexa(zeta, geomHexa, kineHexa)
+
+! ----- Compute Green-Lagrange strains
+        call compECovaMatrHexa(cellGeom, disp, epsgHexa)
+        call compEpsgHexa(zeta, geomHexa, epsgHexa)
+        epsgHexa%vale = epsgHexa%vale + kineHexa%BCartEAS * disp(25)
+        if (SSH_DBG_KINE) call dbgObjEpsgHexa(epsgHexa)
+
+        epsgElga(1+(kpg-1)*SSH_SIZE_TENS:SSH_SIZE_TENS*kpg) = epsgHexa%vale(1:SSH_SIZE_TENS)
+
+    end do
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compEpslElgaHexa
+!
+! Compute stresses for HEXA - EPSL_ELGA
+!
+! In  elemProp         : general properties of element
+! In  cellGeom         : general geometric properties of cell
+! In  disp             : current displacements
+! Out epslElga         : logarithmic strains at Gauss points
+!
+! --------------------------------------------------------------------------------------------------
+subroutine compEpslElgaHexa(elemProp, cellGeom,  disp, epslElga)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    type(SSH_ELEM_PROP), intent(in) :: elemProp
+    type(SSH_CELL_GEOM), intent(in) :: cellGeom
+    real(kind=8), intent(in)        :: disp(SSH_NBDOF_HEXA)
+    real(kind=8), intent(out)       :: epslElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
+! - Local
+    type(SSH_GEOM_HEXA) :: geomHexa
+    type(SSH_KINE_HEXA) :: kineHexa
+    type(SSH_EPSG_HEXA) :: epsgHexa
+    type(SSH_EPSL_HEXA) :: epslHexa
+    real(kind=8) :: zeta
+    integer :: cod, nbIntePoint, kpg, jvCoor
+!   ------------------------------------------------------------------------------------------------
+!
+    nbIntePoint = elemProp%elemInte%nbIntePoint
+    jvCoor      = elemProp%elemInte%jvCoor
+
+! - Prepare geometric quantities
+    call initGeomCellHexa(cellGeom, geomHexa)
+    if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
+
+! - Flag for large strains
+    kineHexa%lLarge = ASTER_TRUE
+
+    do kpg = 1, nbIntePoint
+        zeta  = zr(jvCoor-1+3*kpg)
+
+! ----- Compute EAS B matrix in cartesian frame at current Gauss point
+        call compBCartEASMatrHexa(zeta, geomHexa, kineHexa)
+
+! ----- Compute Green-Lagrange strains
+        call compECovaMatrHexa(cellGeom, disp, epsgHexa)
+        call compEpsgHexa(zeta, geomHexa, epsgHexa)
+        epsgHexa%vale = epsgHexa%vale + kineHexa%BCartEAS * disp(25)
+        if (SSH_DBG_KINE) call dbgObjEpsgHexa(epsgHexa)
+
+! ----- Compute Logarithmic strains
+        call compEpslHexa(epsgHexa, epslHexa, cod)
+        if (SSH_DBG_KINE) call dbgObjEpslHexa(epslHexa)
+
+        epslElga(1+(kpg-1)*SSH_SIZE_TENS:SSH_SIZE_TENS*kpg) = epslHexa%vale
+
+    end do
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine

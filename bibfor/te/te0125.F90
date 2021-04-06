@@ -33,7 +33,7 @@ character(len=16), intent(in) :: option, nomte
 !
 ! Elements: COQUE_SOLIDE (HEXA9 and PENTA7)
 !
-! Options: RIGI_MECA, SIEF_ELGA, FORC_NODA, EPSI_ELGA, EPSG_ELGA, EPSL_ELGA
+! Options: RIGI_MECA, SIEF_ELGA, FORC_NODA, EPSI_ELGA, EPSL_ELGA
 !          CHAR_MECA_* (loads)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -49,6 +49,10 @@ character(len=16), intent(in) :: option, nomte
         call compSiefElga()
     elseif (option .eq. 'FORC_NODA') then
         call compForcNoda()
+    elseif (option .eq. 'EPSI_ELGA') then
+        call compEpsiElga()
+    elseif (option .eq. 'EPSL_ELGA') then
+        call compEpslElga()
     else
         ASSERT(ASTER_FALSE)
     endif
