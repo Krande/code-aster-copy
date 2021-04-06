@@ -33,7 +33,8 @@ use SolidShell_Stabilization_Hexa_module
 ! ==================================================================================================
 implicit none
 ! ==================================================================================================
-public  :: compRigiMatrHexa, compSiefElgaHexa, compForcNodaHexa
+public  :: compRigiMatrHexa, compSiefElgaHexa, compForcNodaHexa,&
+           compRigiGeomHexaKpg
 ! ==================================================================================================
 private
 #include "jeveux.h"
@@ -283,6 +284,83 @@ subroutine compForcNodaHexa(elemProp, cellGeom,&
                    kineHexa%B, siefElga(1+SSH_SIZE_TENS*(kpg-1)), forcNoda)
 
     end do
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compRigiGeomHexaKpg
+!
+! Compute geometric matrix at current Gauss point for HEXA
+!
+! In  geomHexa         : geometric properties for HEXA cell
+! In  cellGeom         : general geometric properties of cell
+! In  matePara         : parameters of material
+! Out matrRigi         : rigidity matrix
+!
+! --------------------------------------------------------------------------------------------------
+subroutine compRigiGeomHexaKpg(geomHexa, zeta, sigm, matrGeom)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    type(SSH_GEOM_HEXA), intent(in) :: geomHexa
+    real(kind=8), intent(in)        :: zeta, sigm(SSH_SIZE_TENS)
+    real(kind=8), intent(out)       :: matrGeom(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
+!   ------------------------------------------------------------------------------------------------
+! - Local
+    integer, parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
+    integer :: iNodeGeom, jNodeGeom
+    real(kind=8) :: const(SSH_SIZE_TENS)
+    real(kind=8) :: GCart0(SSH_SIZE_TENS), GCartZETA(SSH_SIZE_TENS), GCartZETAZETA(SSH_SIZE_TENS)
+    real(kind=8) :: GPinchZETA(SSH_SIZE_TENS), GPinchZZETA(SSH_SIZE_TENS), GPinchZZ(SSH_SIZE_TENS)
+!   ------------------------------------------------------------------------------------------------
+!
+    matrGeom = 0.d0
+
+! - For "standard" nodes
+    do iNodeGeom = 1, nbNodeGeom
+        do jNodeGeom = 1, nbNodeGeom
+
+! --------- Compute gradients for geometric matrix
+            call compGCartMatrHexa(iNodeGeom, jNodeGeom, GCart0, GCartZETA)
+
+! --------- Compute GCartZETAZETA
+            GCartZETAZETA(1) = hexaVectH3(iNodeGeom)*hexaVectH3(jNodeGeom)
+            GCartZETAZETA(2) = hexaVectH2(iNodeGeom)*hexaVectH2(jNodeGeom)
+            GCartZETAZETA(3) = 0.d0
+            GCartZETAZETA(4) = hexaVectH2(iNodeGeom)*hexaVectH3(jNodeGeom)+&
+                               hexaVectH2(jNodeGeom)*hexaVectH3(iNodeGeom)
+            GCartZETAZETA(5) = 0.d0
+            GCartZETAZETA(6) = 0.d0
+
+! --------- Compute matrix
+            const = matmul(geomHexa%T, GCart0)+&
+                    zeta*(matmul(geomHexa%T, GCartZETA) + &
+                          matmul(geomHexa%TZETA, GCart0))+ &
+                    zeta*zeta*(matmul(geomHexa%T, GCartZETAZETA) + &
+                               matmul(geomHexa%TZETA, GCartZETA))
+            matrGeom(3*(iNodeGeom-1)+1: 3*(iNodeGeom-1)+3, 3*(jNodeGeom-1)+1: 3*(jNodeGeom-1)+3) =&
+                    sum(const*sigm)*matr3Iden
+        enddo
+    enddo
+
+! - For "pinch" node
+    GPinchZETA  = 0.d0
+    GPinchZZETA = 0.d0
+    GPinchZZ    = 0.d0
+    do iNodeGeom = 1, nbNodeGeom
+        GPinchZETA(3)  = -2.d0*hexaVectG3(iNodeGeom)
+        GPinchZETA(5)  = -2.d0*hexaVectG1(iNodeGeom)
+        GPinchZETA(6)  = -2.d0*hexaVectG2(iNodeGeom)
+        GPinchZZETA(5) = -2.d0*hexaVectH3(iNodeGeom)
+        GPinchZZETA(6) = -2.d0*hexaVectH2(iNodeGeom)
+        const = zeta*matmul(geomHexa%T, GPinchZETA)+&
+                zeta*zeta*(matmul(geomHexa%T, GPinchZZETA) + matmul(geomHexa%TZETA, GPinchZETA))
+        matrGeom(25, 3*(iNodeGeom-1)+3) = sum(const*sigm)
+        matrGeom(3*(iNodeGeom-1)+3, 25) = sum(const*sigm)
+    enddo
+    GPinchZZ(3) = 4.d0
+    const = matmul(geomHexa%T, GPinchZZ)*zeta*zeta
+    matrGeom(25, 25) = sum(const*sigm)
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine
