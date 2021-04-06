@@ -104,6 +104,11 @@ use Behaviour_type
     do i_node = 1, nb_point
         compor_node = -1
         node_nume = fondNoeudNume(i_node)
+! --- For nb_point_fond: behavior not identified (could be possible but harder)
+        if(node_nume <= 0) then
+            compValues(i_node) = "XXXXXXXX"
+            cycle
+        end if
 ! --------- Get elements attached to current node
         call jeveuo(jexatr(connex_inv, 'LONCUM'), 'L', vi = v_coninv_longcum)
         nb_node_cell = v_coninv_longcum(node_nume+1) - v_coninv_longcum(node_nume)

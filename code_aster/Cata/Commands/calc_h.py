@@ -73,10 +73,10 @@ CALC_H=OPER(nom="CALC_H",op=27,sd_prod=table_container,
                             ),
             R_INF           =SIMP(statut='f',typ='R', min=0),
             R_SUP           =SIMP(statut='f',typ='R', min=0),
-            
+
             R_INF_FO        =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
             R_SUP_FO        =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-            
+
             # Commenté en attendant d'être developpé
             #NB_COUCHE_INF   =SIMP(statut='f',typ='I', min=0),
             #NB_COUCHE_SUP   =SIMP(statut='f',typ='I', min=1),
@@ -87,9 +87,9 @@ CALC_H=OPER(nom="CALC_H",op=27,sd_prod=table_container,
                     #PRESENT_PRESENT('NB_COUCHE_INF','NB_COUCHE_SUP'),
                     #EXCLUS('R_INF','NB_COUCHE_INF',), EXCLUS('R_SUP','NB_COUCHE_INF',),
                     #EXCLUS('R_SUP','NB_COUCHE_SUP',), EXCLUS('R_INF','NB_COUCHE_SUP',),
-                    EXCLUS('R_INF','R_INF_FO',), 
+                    EXCLUS('R_INF','R_INF_FO',),
                     #EXCLUS('R_INF_FO','NB_COUCHE_INF',),
-                    
+
                     ),
             ),
 

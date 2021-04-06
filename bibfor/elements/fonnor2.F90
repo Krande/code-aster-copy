@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine fonnor2(resu, noma, cnxinv, typm, basnof)
 ! FONCTION REALISEE:
 !
 !     CALCUL EN 2D ET 3D DE LA BASE LOCALE POUR DEFI_FISSURE
-!     
+!
 !
 !     ENTREES:
 !        RESU       : NOM DU CONCEPT RESULTAT DE L'OPERATEUR
@@ -162,7 +162,7 @@ subroutine fonnor2(resu, noma, cnxinv, typm, basnof)
 !     ALLOCATION DU VECTEUR DES BASES LOCALES PAR NOEUD DU FOND  :
 !           - VECTEUR DIRECTION DE PROPA
 !           - VECTEUR NORMAL (A LA SURFACE)
-    call wkvect(basnof, 'V V R', 2*ndim*nbnoff, jbasno)
+    call wkvect(basnof, 'G V R', 2*ndim*nbnoff, jbasno)
 !
 !     ALLOCATION DU VECTEUR DES TAILLES DE MAILLES MAX PAR NOEUD DU FOND
     call wkvect(resu//'.FOND.TAILLE_R', 'G V R', nbnoff, jtail)
@@ -226,7 +226,7 @@ subroutine fonnor2(resu, noma, cnxinv, typm, basnof)
         noeua = zk8(jnoe1-1+ina)
         call jenonu(jexnom(noma//'.NOMNOE', noeua), na)
         if (ndim .eq. 3) then
-!       EN 3D : NB EST LE NUMERO (ABSOLU) DU DEUXIEME NOEUD SOMMETS DU SEGMENT 
+!       EN 3D : NB EST LE NUMERO (ABSOLU) DU DEUXIEME NOEUD SOMMETS DU SEGMENT
             call jenonu(jexnom(noma//'.NOMNOE', zk8(jnoe1-1+inb)), nb)
             if (iseg .eq. 1) then
                 inoext=na
@@ -256,7 +256,7 @@ subroutine fonnor2(resu, noma, cnxinv, typm, basnof)
                     nb=connex(1)
                     dist=disttemp
                 endif
-                
+
             enddo
 
         else

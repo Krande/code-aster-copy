@@ -222,8 +222,8 @@ subroutine op0060()
 
 
 !   OBJET CONTENANT LA BASE LOCALE EN CHAQUE NOEUD DU FOND DE FISSURE
-!   OBJET QUI N'EXISTE QUE DANS DEFI_FISSURE    
-    basnof = '&&OP0060.BASNOF'
+!   OBJET QUI N'EXISTE QUE DANS DEFI_FISSURE
+    basnof = resu//'.BASNOF'
 !
     call fonnor2(resu, noma, cnxinv, typm, basnof)
 !
@@ -246,13 +246,13 @@ subroutine op0060()
     else
         ASSERT(.FALSE.)
     endif
-!   
+!
 !   CALCUL DE L'ABSCISSE CURVILIGNE ET STOCKAGE DANS OBJET INTERNE OP0060
     absfon = resu//'.ABSFON'
     call fonfis2(noma, nbnoff, fonoeu, absfon)
 !
-!     --------------------------------------------------------------- 
-!     CREATION DE LA BASE LOCALE, DES LEVEL SETS ET DE L'ABCISSE 
+!     ---------------------------------------------------------------
+!     CREATION DE LA BASE LOCALE, DES LEVEL SETS ET DE L'ABCISSE
 !     CURVILIGNE EN CHAQUE NOEUD
 !     ---------------------------------------------------------------
 !

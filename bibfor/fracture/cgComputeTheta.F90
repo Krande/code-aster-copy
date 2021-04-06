@@ -26,15 +26,15 @@ use calcG_type
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/codent.h"
 #include "asterfort/cnscno.h"
 #include "asterfort/cnscre.h"
+#include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/fointe.h"
 #include "asterfort/gcou2d.h"
+#include "asterfort/imprsd.h"
 #include "asterfort/ismali.h"
-#include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
@@ -46,7 +46,7 @@ use calcG_type
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
-#include "asterfort/imprsd.h"
+#include "jeveux.h"
 !
     type(CalcG_field), intent(in) :: cgField
     type(CalcG_theta), intent(inout) :: cgTheta
@@ -59,14 +59,13 @@ use calcG_type
 
     character(len=8), parameter :: licmp(6) = ['MODULE  ','DIR_X   ','DIR_Y   ','DIR_Z   ',&
                                                'ABSC_CUR','LONG    ']
-    character(len=8) :: nompar(1) 
+    character(len=8) :: nompar(1)
     character(len=24) :: cnstet
     real(kind=8) :: theta0
     real(kind=8), pointer :: v_theta(:) => null()
     real(kind=8), pointer :: v_coor(:) => null()
     real(kind=8), pointer :: v_base(:) => null()
     real(kind=8), pointer :: v_absc(:) => null()
-
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -109,35 +108,16 @@ use calcG_type
     if(cgField%level_info>1) then
         call utmess('I', 'RUPTURE3_2')
     end if
-    
+
     ! Vérifications spécifiques en 3D
     if (cgField%ndim .eq. 3) then
         ! VERIFICATION PRESENCE NB_POINT_FOND
         if (cgTheta%nb_point_fond .ne. 0) then
-            ! NB_POINT_FOND .ne. 0 non pris en charge pour l'instant : issue30288
-            ASSERT(.FALSE.)
             ! INTERDICTION D AVOIR NB_POINT_FOND AVEC
             ! DISCTRETISATION =  LEGENDRE
             if (cgTheta%discretization.eq.'LEGENDRE') then
                 call utmess('F', 'RUPTURE1_73')
             endif
-        endif
-    endif
-    !
-    ! DETERMINATION DU NOMBRE nb_theta_field DE CHAMP_NO THETA
-    if(cgField%ndim .eq. 2) then
-        cgTheta%nb_theta_field=1
-    else
-        if (cgTheta%discretization.eq.'LINEAIRE') then
-            if(cgTheta%nb_point_fond.ne.0)then
-                cgTheta%nb_theta_field = cgTheta%nb_point_fond
-            else
-                cgTheta%nb_theta_field = cgTheta%nb_fondNoeud
-            endif
-        elseif(cgTheta%discretization.eq.'LEGENDRE') then
-            cgTheta%nb_theta_field = cgTheta%degree + 1
-        else
-            ASSERT(.FALSE.)
         endif
     endif
 !
@@ -177,10 +157,10 @@ use calcG_type
             alpha = ( d- cgTheta%r_inf)/(cgTheta%r_sup-cgTheta%r_inf)
         else if (cgTheta%radius_type.eq.'R_FO')then
             nompar(1) = 'ABSC'
-            valpar(1) = v_absc(i) 
-            call fointe('FM', cgTheta%r_inf_fo, 1, nompar, valpar,valres_i, iret)
-            call fointe('FM', cgTheta%r_sup_fo, 1, nompar, valpar,valres_s, iret)
-            alpha = ( d- valres_i)/(valres_s-valres_i)
+            valpar(1) = v_absc(i)
+            call fointe('FM', cgTheta%r_inf_fo, 1, nompar, valpar, valres_i, iret)
+            call fointe('FM', cgTheta%r_sup_fo, 1, nompar, valpar, valres_s, iret)
+            alpha = (d - valres_i)/(valres_s-valres_i)
         else
             ASSERT(.FALSE.)
         endif

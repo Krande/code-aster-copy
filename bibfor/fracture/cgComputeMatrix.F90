@@ -25,21 +25,13 @@ use calcG_type
     implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/ismali.h"
-#include "asterfort/gmatr1.h"
 #include "asterfort/gmatc3.h"
-#include "asterfort/imprsd.h"
+#include "asterfort/gmatr1.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "jeveux.h"
 
 !
     type(CalcG_field), intent(in)    :: cgField
@@ -54,7 +46,9 @@ use calcG_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer          :: imatr, i, j
+    integer          ::  i, j
+    character(len=24) :: chabsfon
+    real(kind=8), pointer :: matr(:)  => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,36 +56,43 @@ use calcG_type
 
     cgTheta%matrix='&&OP0060.MATRIX'
 
-    if(cgField%ndim.eq.2)then
-!       EN 2D, L'EQUATION EST SCALAIRE. A = 1     
-        call wkvect(cgTheta%matrix, 'V V R8', 1, imatr)
-        zr(imatr)=1.0
-    else if(cgField%ndim.eq.3) then
+    if(cgField%ndim==2)then
+!       EN 2D, L'EQUATION EST SCALAIRE. A = 1
+        call wkvect(cgTheta%matrix, 'V V R8', 1, vr=matr)
+        matr(1) = 1.d0
+    else if(cgField%ndim==3) then
 !
-        if(cgTheta%discretization .eq. 'LINEAIRE')then
+        if(cgTheta%discretization == 'LINEAIRE')then
 !       Calcul de A dans le cas LINERAIRE
-            call gmatc3(cgTheta%nb_fondNoeud,cgTheta%milieu,cgTheta%l_closed,&
-                        cgTheta%absfond,cgTheta%matrix)
+            call cgTheta%getAbsfonName(chabsfon)
+            call gmatc3(cgTheta%nnof, cgTheta%milieu, cgTheta%l_closed, &
+                    chabsfon, cgTheta%matrix)
+        elseif(cgTheta%discretization == 'LEGENDRE') then
 !
-        elseif(cgTheta%discretization .eq. 'LEGENDRE') then
-!!
-            call wkvect(cgTheta%matrix, 'V V R8', (cgTheta%degree+1)*(cgTheta%degree+1), imatr)
+!       Dans le cas LEGENDRE, A = Identité. On laisse en commentaires pour l'instant l'appel
+!       à la fonction historique qui calculait cette matrice au cas où ce ne serait pas l'idendité
+!       dans un cas particulier non encore identifié.
+!
+!             call gmatr1(cgTheta%nb_fondNoeud,cgTheta%degree,cgTheta%absfond, &
+!                         lonfis,cgTheta%matrix)
+!
+            call wkvect(cgTheta%matrix, 'V V R8', (cgTheta%degree+1)*(cgTheta%degree+1), vr=matr)
             do i =1, cgTheta%degree+1
                 do j=1, cgTheta%degree+1
-                    if (i.eq.j) then
-                        zr(imatr-1 +(i-1)*(cgTheta%degree+1)+j)=1.0
+                    if (i==j) then
+                        matr((i-1)*(cgTheta%degree+1)+j) = 1.d0
                     else
-                        zr(imatr-1 +(i-1)*(cgTheta%degree+1)+j)=0.0
+                        matr((i-1)*(cgTheta%degree+1)+j) = 0.d0
                     endif
                 enddo
             enddo
 
         else
-            ASSERT(.FALSE.)
+            ASSERT(ASTER_FALSE)
         endif
     else
-        ASSERT(.FALSE.)
+        ASSERT(ASTER_FALSE)
     endif
-    
+!
     call jedema()
 end subroutine

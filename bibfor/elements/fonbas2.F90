@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -138,7 +138,7 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, nbnoff, absfon,&
 !   RECUPERATION DE L'ABSCISSE CURVILIGNE DES NOEUDS DU FOND DE FISSURE
     call jeveuo(absfon, 'L', jabsf)
 !
-!   CREATION DU VECTEUR CONTENANT L'ABSCISSE CURVILIGNE DU PROJETE 
+!   CREATION DU VECTEUR CONTENANT L'ABSCISSE CURVILIGNE DU PROJETE
 !   SUR LE FOND DE FISSURE DE CHAQUE NOEUD DU MAILLAGE
     call wkvect(abscur, 'G V R', nbno, jabscur)
 !
@@ -255,10 +255,10 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, nbnoff, absfon,&
                     n(2) = s*yab+ya
                     n(3) = s*zab+za
                 endif
-!           ABSCISSE CURVILIGNE DU NOEUD N SUR LE FRONT DE FISSURE
-            zr(jabscur-1+ino) = (1-sn)*zr(jabsf-1+indica) + sn*zr(jabsf-1+indicb)
 !
             end do
+!           ABSCISSE CURVILIGNE DU NOEUD N SUR LE FRONT DE FISSURE
+            zr(jabscur-1+ino) = (1-sn)*zr(jabsf-1+indica) + sn*zr(jabsf-1+indicb)
 !
 !         CALCUL DES VECTEURS DE LA BASE LOCALE AU POINT PROJETE
 !         ------------------------------------------------------

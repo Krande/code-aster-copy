@@ -63,7 +63,7 @@ use calcG_type
 !    Compute G(Theta) in 2D and 3D
 !
 !----------------------------------------------
-    integer :: iret, nsig, ino1, ino2, inga, ibid, i_theta, i, j, k
+    integer :: iret, nsig, ino1, ino2, inga, ibid, i_theta, i, j
     integer :: nchin, nbgrel, iadrt3
     integer :: jcesd, jcesl
     real(kind=8) :: gth(7), som(7)
@@ -82,9 +82,9 @@ use calcG_type
     real(kind=8), pointer :: v_absc(:) => null()
     real(kind=8), pointer :: v_base(:) => null()
     real(kind=8), pointer :: v_basf(:) => null()
-    real(kind=8), dimension(cgTheta%nb_fondNoeud) :: gthi, k1th, k2th, k3th,g1th,g2th,g3th
-    real(kind=8), dimension(cgTheta%nb_fondNoeud) :: gs, k1s, k2s, k3s,g1s,g2s,g3s, gis
-    
+    real(kind=8), dimension(cgTheta%nb_theta_field) :: gthi, k1th, k2th, k3th, g1th, g2th, g3th
+    real(kind=8), dimension(cgTheta%nnof) :: gs, k1s, k2s, k3s, g1s, g2s, g3s, gis
+
 !----------------------------------------------
 !
     call jemarq()
@@ -107,7 +107,7 @@ use calcG_type
     chpuls  = '&&cgtheta.PULS'
     chsdeg  = '&&cgtheta.CHSDEG'
     chslag  = '&&cgtheta.CHSLAG'
-!    
+!
     gthi(:)=0.0
     k1th(:)=0.0
     k2th(:)=0.0
@@ -123,7 +123,6 @@ use calcG_type
     g2s(:)=0.0
     g3s(:)=0.0
     cgStudy%gth = 0.d0
-    
 !
     k8b = '        '
 !   Recuperation du champ geometrique
@@ -244,7 +243,7 @@ use calcG_type
 !
     elseif (cgtheta%discretization .eq.'LINEAIRE') then
 !
-        call jeveuo(cgTheta%absfond, 'L', vr=v_basf)
+        call cgTheta%getAbsfon(v_basf)
 !
 !       Champ scalaire constant par élement :
 !            -- abscisse curviligne s(i-1), s(i), s(i+1)
@@ -393,7 +392,7 @@ use calcG_type
 !       (inversion du système linéaire A.G(s)=G(theta) par gsyste plus loin)
 
         if (cgField%ndim.eq.3) then
-!       En 3D, on stocke pour chacun des theta,  G, K1, K2, K3, FIC1, FIC2, FIC3 
+!       En 3D, on stocke pour chacun des theta,  G, K1, K2, K3, FIC1, FIC2, FIC3
 !       dans des vecteurs temporaires dédiés
             gthi(i_theta)=gth(1)
             k1th(i_theta)=gth(2)
@@ -449,7 +448,7 @@ use calcG_type
                          g3th(1) = g3th(2)*(s2-s1)/(s3-s1)
                          gthi(cgTheta%nb_theta_field) = gthi(cgTheta%nb_theta_field-1)&
                                                         *(sn-sn1)/(sn-sn2)
-                         k1th(cgTheta%nb_theta_field) = k1th(cgTheta%nb_theta_field-1)&  
+                         k1th(cgTheta%nb_theta_field) = k1th(cgTheta%nb_theta_field-1)&
                                                         *(sn-sn1)/(sn-sn2)
                          k2th(cgTheta%nb_theta_field) = k2th(cgTheta%nb_theta_field-1)&
                                                         *(sn-sn1)/(sn-sn2)
@@ -489,46 +488,43 @@ use calcG_type
     !       On inverse les systèmes linéaires A.G(s)=G(theta)
 
     !       SYSTEME LINEAIRE:  MATR*GS = GTHI
-            call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nb_theta_field, gthi, gs)
+            call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, gthi, gs)
 
     !       SYSTEME LINEAIRE:  MATR*K1S = K1TH
-            call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nb_theta_field, k1th, k1s)
+            call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, k1th, k1s)
 
     !       SYSTEME LINEAIRE:  MATR*K2S = K2TH
-            call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nb_theta_field, k2th, k2s)
+            call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, k2th, k2s)
 
     !       SYSTEME LINEAIRE:  MATR*K3S = K3TH
-            call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nb_theta_field, k3th, k3s)
+            call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, k3th, k3s)
 
     !       SYSTEMES LINEAIRES POUR GIRWIN
-            call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nb_theta_field, g1th, g1s)
-            call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nb_theta_field, g2th, g2s)
-            call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nb_theta_field, g3th, g3s)
-
-
+            call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, g1th, g1s)
+            call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, g2th, g2s)
+            call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, g3th, g3s)
+!
         else if(cgTheta%discretization.eq.'LEGENDRE') then
 !       On évalue G(s) grâce aux polynômes de Legendre
 !       Récupération des valeurs des poluynomes de Legendre pour les  noeuds
-!       du fond de fissure 
+!       du fond de fissure
             call wkvect('&&OP0027.LEGENDRE', 'V V R8', &
-                        cgTheta%nb_theta_field*cgTheta%nb_fondNoeud, iadrt3)
-            call glegen(cgTheta%degree, cgTheta%nb_fondNoeud, cgTheta%lonfis, &
+                        cgTheta%nb_theta_field*cgTheta%nnof, iadrt3)
+            call glegen(cgTheta%degree, cgTheta%nnof, cgTheta%lonfis, &
                         cgTheta%absfond, zr(iadrt3))
- 
-            do i = 1, cgTheta%nb_fondNoeud
+
+            do i = 1, cgTheta%nnof
 !
-                do k=1, 7
-                    som(k) = 0.d0
-                end do
+                som(:) = 0.d0
 !
                 do j = 1, cgTheta%nb_theta_field
-                    som(1) = som(1) + gthi(j)*zr(iadrt3+(j-1)*cgTheta%nb_fondNoeud+i-1)
-                    som(2) = som(2) + k1th(j)*zr(iadrt3+(j-1)*cgTheta%nb_fondNoeud+i-1)
-                    som(3) = som(3) + k2th(j)*zr(iadrt3+(j-1)*cgTheta%nb_fondNoeud+i-1)
-                    som(4) = som(4) + k3th(j)*zr(iadrt3+(j-1)*cgTheta%nb_fondNoeud+i-1)
-                    som(5) = som(5) + g1th(j)*zr(iadrt3+(j-1)*cgTheta%nb_fondNoeud+i-1)
-                    som(6) = som(6) + g2th(j)*zr(iadrt3+(j-1)*cgTheta%nb_fondNoeud+i-1)
-                    som(7) = som(7) + g3th(j)*zr(iadrt3+(j-1)*cgTheta%nb_fondNoeud+i-1)
+                    som(1) = som(1) + gthi(j)*zr(iadrt3+(j-1)*cgTheta%nnof+i-1)
+                    som(2) = som(2) + k1th(j)*zr(iadrt3+(j-1)*cgTheta%nnof+i-1)
+                    som(3) = som(3) + k2th(j)*zr(iadrt3+(j-1)*cgTheta%nnof+i-1)
+                    som(4) = som(4) + k3th(j)*zr(iadrt3+(j-1)*cgTheta%nnof+i-1)
+                    som(5) = som(5) + g1th(j)*zr(iadrt3+(j-1)*cgTheta%nnof+i-1)
+                    som(6) = som(6) + g2th(j)*zr(iadrt3+(j-1)*cgTheta%nnof+i-1)
+                    som(7) = som(7) + g3th(j)*zr(iadrt3+(j-1)*cgTheta%nnof+i-1)
                 end do
 !
                 gs(i) = som(1)
@@ -548,13 +544,13 @@ use calcG_type
 !
 !   Ajout des valeurs dans la table de G
     call cgTempNodes(cgStudy, cgTable)
-    
-    do i =1, cgTheta%nb_fondNoeud
+
+    do i = 1, cgTheta%nnof
         if(cgField%ndim.eq.3) then
 !       En 2D,  gth est déjà rempli. En 3D, on le remplit pour le noeud courant
-            gth(1:7)=[gs(i),k1s(i) ,k2s(i) ,k3s(i) ,g1s(i) ,g2s(i),g3s(i)]
+            gth(1:7)=[gs(i), k1s(i), k2s(i), k3s(i), g1s(i), g2s(i), g3s(i)]
         endif
-    
+
 !       On recopie gth dans cgStudy%gth avec prise en compte de la symétrie
         if (cgTheta%symech .eq. 'OUI') then
             cgStudy%gth(1:7) = [ 2.d0*gth(1), 2.d0*gth(2), 0.d0, 0.d0,&

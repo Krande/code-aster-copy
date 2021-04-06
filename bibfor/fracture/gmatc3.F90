@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,15 +68,15 @@ implicit none
         nseg = (nnoff-1)/2
         elrefe = 'SE3'
     else
-        nseg = nnoff-1    
+        nseg = nnoff-1
         elrefe = 'SE2'
-    endif       
+    endif
 
 !   CREA OBJET TEMP POUR LA VAL DE GLEGEN A ABSC CURV S
     call wkvect(matr, 'V V R8', nnoff*nnoff, imatr)
 !
 !  BOUCLE SUR LES SEGMENTS
-    do iseg = 1, nseg      
+    do iseg = 1, nseg
 
         if (milieu) then
             conn(1) = 2*iseg-1
@@ -107,7 +107,7 @@ implicit none
                 conn2 = conn
                 conn2(1) = nnoff
 
-                i = 1 
+                i = 1
                 do j = 1, nno
                      ij = (conn2(i)-1)*nnoff + conn2(j)
                      zr(imatr + ij - 1) = zr(imatr + ij - 1) + mele(i, j)
@@ -118,8 +118,8 @@ implicit none
             if (conn(2).eq.nnoff) then
                 conn2 = conn
                 conn2(2) = 1
- 
-                i=2 
+
+                i=2
                 do j=1, nno
                      ij = (conn2(i)-1)*nnoff + conn2(j)
                      zr(imatr + ij - 1) = zr(imatr + ij - 1) + mele(i, j)
