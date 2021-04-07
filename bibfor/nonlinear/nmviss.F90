@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -166,7 +166,6 @@ implicit none
     if (npasm .ne. 0 .and. npasm .lt. (nume+1-nume0)) then
         nummax = npasm
     endif
-    write(6,*) 'nummax=',nummax
 !
     AS_ALLOCATE(vr=trav, size=nbmode)
     AS_ALLOCATE(vr=travd, size=nbmode)
@@ -204,8 +203,8 @@ implicit none
         endif
 !
         ifreq = int(inst*(1.d0+precision)/pas)+1
-                
-        if (iarc2 .gt. 0) then 
+
+        if (iarc2 .gt. 0) then
             do id1 = 1,nbmode
                 trav(id1) = zr(ldnew+zi(ieqint+id1-1)-1)
                 travd(id1) = coef1 * vald(1+zi(ieqint+id1-1)-1)&
@@ -214,7 +213,7 @@ implicit none
                 + coef2 * vav2(1+zi(ieqint+id1-1)-1)
                 trava(id1) = coef1 * vala(1+zi(ieqint+id1-1)-1)&
                 + coef2 *vaa2(1+zi(ieqint+id1-1)-1)
-            end do    
+            end do
             alpha = -0.5d0
             call dsymv('L', nbmode, alpha, zr(jrigt+(ifreq-1)*nbmode*nbmode),&
                         nbmode, travd, 1, 1.d0, trav,1)
@@ -234,7 +233,7 @@ implicit none
                 travd(id1) = vald(1+zi(ieqint+id1-1)-1)
                 travv(id1) = valv(1+zi(ieqint+id1-1)-1)
                 trava(id1) = vala(1+zi(ieqint+id1-1)-1)
-            end do    
+            end do
             alpha = -0.5d0 * coef1
             call dsymv('L', nbmode, alpha, zr(jrigt+(ifreq-1)*nbmode*nbmode),&
                         nbmode, travd, 1, 1.d0, trav,1)
@@ -248,11 +247,11 @@ implicit none
                         nbmode, trava, 1, 1.d0, trav,1)
             call dsymv('U', nbmode, alpha, zr(jmast+(ifreq-1)*nbmode*nbmode),&
                         nbmode, trava, 1, 1.d0, trav,1)
-           
+
         endif
         do id1 = 1,nbmode
             zr(ldnew+zi(ieqint+id1-1)-1) = trav(id1)
-        end do    
+        end do
     end do
     AS_DEALLOCATE(vr=trav)
     AS_DEALLOCATE(vr=travd)
