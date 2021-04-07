@@ -1,0 +1,142 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+# Prepare mesh
+MESH0=LIRE_MAILLAGE(FORMAT='MED',)
+MESH=CREA_MAILLAGE(MAILLAGE     = MESH0,
+                   INFO         = 2,
+                   COQUE_SOLIDE = _F(GROUP_MA      = 'VOL1',
+                                     GROUP_MA_SURF = 'SS2',
+                                  ),
+                  )
+
+MESH=DEFI_GROUP(reuse         = MESH,
+                MAILLAGE      = MESH,
+                CREA_GROUP_NO = (_F(GROUP_MA='ENCAS',),
+                                 _F(GROUP_MA='BOUT',),),)
+
+# Material parameters
+MAT=DEFI_MATERIAU(ELAS=_F(E=29E+6,
+                          NU=0.22,),)
+
+CHM=AFFE_MATERIAU(MAILLAGE=MESH,
+                  AFFE=_F(TOUT='OUI',
+                          MATER=MAT,),)
+
+# Select finite elements
+MODMECA=AFFE_MODELE(MAILLAGE=MESH,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='COQUE_SOLIDE',),)
+
+# Boundary conditions and loads - First case
+CHARGT=AFFE_CHAR_MECA(MODELE=MODMECA,
+                      DDL_IMPO=(_F(GROUP_MA=('ENCAS'),
+                                   DX=0.0,),
+                                _F(GROUP_NO='ENCAS',
+                                   DY=0.0,),
+                                _F(GROUP_NO='ENCAS',
+                                   DZ=0.0,),),
+                      FORCE_NODALE=(_F(GROUP_NO = 'A1',
+                                      FZ=0.5,),
+                                    _F(GROUP_NO = 'A2',
+                                      FZ=0.5,),),);
+
+# Calcul élastique linéaire - First case
+RESU1=MECA_STATIQUE(MODELE=MODMECA,
+                    CHAM_MATER=CHM,
+                    EXCIT=_F(CHARGE=CHARGT,),
+                    );
+
+# Test des résultats - First case
+dispDYRefe = -0.00172
+toleDYRefe = 0.01 * 1.63
+dispDZRefe = 0.00542
+toleDZRefe = 0.01 * 0.68
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU1,
+                   NUME_ORDRE=1,
+                   GROUP_NO='A1',
+                   REFERENCE='SOURCE_EXTERNE',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-0.0017478928918873004,
+                   VALE_REFE=dispDYRefe,
+                   PRECISION=toleDYRefe,),
+                _F(RESULTAT=RESU1,
+                   NUME_ORDRE=1,
+                   GROUP_NO='A2',
+                   REFERENCE='SOURCE_EXTERNE',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=0.005383302528735475,
+                   VALE_REFE=dispDZRefe,
+                   PRECISION=toleDZRefe,),
+                ),
+          )
+
+# Boundary conditions and loads - Second case
+CHARGT2=AFFE_CHAR_MECA(MODELE=MODMECA,
+                      DDL_IMPO=(_F(GROUP_MA=('ENCAS'),
+                                   DX=0.0,),
+                                _F(GROUP_NO='ENCAS',
+                                   DY=0.0,),
+                                _F(GROUP_NO='ENCAS',
+                                   DZ=0.0,),),
+                      FORCE_NODALE=(_F(GROUP_NO = 'A1',
+                                      FY=0.5,),
+                                    _F(GROUP_NO = 'A2',
+                                      FY=0.5,),),);
+
+# Calcul élastique linéaire - Second case
+RESU2=MECA_STATIQUE(MODELE=MODMECA,
+                    CHAM_MATER=CHM,
+                    EXCIT=_F(CHARGE=CHARGT2,),
+                    );
+
+# Test des résultats - Second case
+dispDYRefe = 0.00175
+toleDYRefe = 0.01 * 6.30
+dispDZRefe = -0.00172
+toleDZRefe = 0.01 * 1.63
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU2,
+                   NUME_ORDRE=1,
+                   GROUP_NO='A1',
+                   REFERENCE='SOURCE_EXTERNE',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.0016397763158850212,
+                   VALE_REFE=dispDYRefe,
+                   PRECISION=toleDYRefe,),
+                _F(RESULTAT=RESU2,
+                   NUME_ORDRE=1,
+                   GROUP_NO='A2',
+                   REFERENCE='SOURCE_EXTERNE',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-0.001747892891887169,
+                   VALE_REFE=dispDZRefe,
+                   PRECISION=toleDZRefe,),
+                ),
+          )
+
+
+FIN()

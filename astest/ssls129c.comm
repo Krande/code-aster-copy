@@ -1,0 +1,311 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+# Prepare mesh
+MESH0=LIRE_MAILLAGE(FORMAT='MED',)
+MESH=CREA_MAILLAGE(MAILLAGE     = MESH0,
+                   INFO         = 2,
+                   COQUE_SOLIDE = _F(GROUP_MA      = 'VOL',
+                                     GROUP_MA_SURF = 'SurfSup',
+                                  ),
+                  )
+
+MESH=DEFI_GROUP(reuse         = MESH,
+                MAILLAGE      = MESH,
+                CREA_GROUP_NO = (_F(GROUP_MA='DROITE',),
+                                 _F(GROUP_MA='GAUCHE',),),)
+
+# Material parameters
+ACIER=DEFI_MATERIAU(ELAS=_F(E=204000.0,
+                            NU=0.3,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MESH,
+                    AFFE=_F(GROUP_MA='VOL',
+                            MATER=ACIER,),);
+
+# Select finite elements
+MODELE=AFFE_MODELE(MAILLAGE=MESH,
+                   AFFE=_F(GROUP_MA=('VOL','GAUCHE','DROITE',),
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='COQUE_SOLIDE',),);
+
+# Boundary conditions and loads - First case
+CC=AFFE_CHAR_MECA(MODELE=MODELE,
+                  DDL_IMPO=_F(GROUP_MA='GAUCHE',
+                              DX=0.0,
+                              DY=0.0,
+                              DZ=0.0,
+                              ),
+                );
+
+FORCEZ=AFFE_CHAR_MECA(MODELE=MODELE,
+                      FORCE_FACE=_F(GROUP_MA='DROITE',
+                                      FZ=-0.5,),);
+
+# Static linear - First case
+resuForceZ=MECA_STATIQUE(MODELE=MODELE,
+                    CHAM_MATER=CHMAT,
+                    EXCIT=(_F(CHARGE=CC,),
+                           _F(CHARGE=FORCEZ,),),);
+
+# Post-treatement - First case
+resuForceZ = CALC_CHAMP(reuse      = resuForceZ,
+                        RESULTAT   = resuForceZ,
+                        CONTRAINTE = ('SIGM_ELNO', 'SIGM_NOEU'),
+                        FORCE      = 'FORC_NODA',
+             );
+
+forcForceZ=POST_RELEVE_T(ACTION=(_F(INTITULE='FZ_GAUCHE',
+                              GROUP_NO='GAUCHE',
+                              RESULTAT=resuForceZ,
+                              NOM_CHAM='FORC_NODA',
+                              RESULTANTE=('DX','DY','DZ',),
+                              MOMENT=('DRX','DRY','DRZ',),
+                              POINT=(0.0,0.0,0.0,),
+                              OPERATION='EXTRACTION',),
+                           _F(INTITULE='FZ_DROITE',
+                              GROUP_NO='DROITE',
+                              RESULTAT=resuForceZ,
+                              NOM_CHAM='FORC_NODA',
+                              RESULTANTE=('DX','DY','DZ',),
+                              MOMENT=('DRX','DRY','DRZ',),
+                              POINT=(0.0,0.0,0.0,),
+                              OPERATION='EXTRACTION',),
+                              ),);
+
+# Test des résultats - First case
+# DEPLACEMENT (ref: ssls129a)
+nodeBDispDZRefe = -6.2097302104193997
+nodeBDispDZTole = 0.01 * 3.9
+TEST_RESU(RESU=_F(
+                  RESULTAT=resuForceZ,
+                  NUME_ORDRE=1,
+                  GROUP_NO='B',
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC=-5.971400413725107,
+                  VALE_REFE=nodeBDispDZRefe,
+                  PRECISION=nodeBDispDZTole,),
+          )
+
+nodeCDispDZRefe = -6.2082328310698003
+nodeCDispDZTole = 0.01 * 3.9
+TEST_RESU(RESU=_F(
+                  RESULTAT=resuForceZ,
+                  NUME_ORDRE=1,
+                  GROUP_NO='C',
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC=-5.970013964895441,
+                  VALE_REFE=nodeCDispDZRefe,
+                  PRECISION=nodeCDispDZTole,),
+          )
+
+# FORCES NODALES
+leftFZRefe = 2000.
+leftFZTole = 0.01 * 1.E-6
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=leftFZTole,
+           VALE_CALC=2000.0000004640954,
+           VALE_REFE=leftFZRefe,
+           NOM_PARA='RESULT_Z',
+           TABLE=forcForceZ,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='FZ_GAUCHE',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   ),
+           )
+
+rightFZRefe = -2000.
+rightFZTole = 0.01 * 1.E-6
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=rightFZTole,
+           VALE_CALC=-2000.0000000586106,
+           VALE_REFE=rightFZRefe,
+           NOM_PARA='RESULT_Z',
+           TABLE=forcForceZ,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='FZ_DROITE',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   ),
+           )
+
+leftMXRefe = 2.E5
+leftMXTole = 0.01 * 0.11
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=leftMXTole,
+           VALE_CALC=199797.49168395548,
+           VALE_REFE=leftMXRefe,
+           NOM_PARA='MOMENT_X',
+           TABLE=forcForceZ,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='FZ_GAUCHE',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   ),
+           )
+
+rightMYRefe = -1.500000E6
+rightMYTole = 0.01 * 0.94
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=rightMYTole,
+           VALE_CALC=-1486002.1933945082,
+           VALE_REFE=rightMYRefe,
+           NOM_PARA='MOMENT_Y',
+           TABLE=forcForceZ,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='FZ_GAUCHE',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   ),
+           )
+
+# Boundary conditions and loads - Second case
+FORCEX=AFFE_CHAR_MECA(MODELE=MODELE,
+                      FORCE_FACE=_F(GROUP_MA='DROITE',
+                                      FX=0.5,),);
+
+# Static linear - Second case
+resuForceX=MECA_STATIQUE(MODELE=MODELE,
+                    CHAM_MATER=CHMAT,
+                    EXCIT=(_F(CHARGE=CC,),
+                           _F(CHARGE=FORCEX,),),);
+
+# Post-treatement - Second case
+resuForceX = CALC_CHAMP(reuse      = resuForceX,
+                        RESULTAT   = resuForceX,
+                        CONTRAINTE = ('SIGM_ELNO', 'SIGM_NOEU'),
+                        FORCE      = 'FORC_NODA',
+             );
+
+forcForceX=POST_RELEVE_T(ACTION=(_F(INTITULE='FX_GAUCHE',
+                              GROUP_NO='GAUCHE',
+                              RESULTAT=resuForceX,
+                              NOM_CHAM='FORC_NODA',
+                              RESULTANTE=('DX','DY','DZ',),
+                              MOMENT=('DRX','DRY','DRZ',),
+                              POINT=(0.0,0.0,0.0,),
+                              OPERATION='EXTRACTION',),
+                           _F(INTITULE='FX_DROITE',
+                              GROUP_NO='DROITE',
+                              RESULTAT=resuForceX,
+                              NOM_CHAM='FORC_NODA',
+                              RESULTANTE=('DX','DY','DZ',),
+                              MOMENT=('DRX','DRY','DRZ',),
+                              POINT=(0.0,0.0,0.0,),
+                              OPERATION='EXTRACTION',),
+                              ),);
+
+# Test des résultats - Second case
+# DEPLACEMENT
+nodeBDispDXRefe = 5.6766753846415E-3
+nodeBDispDXTole = 0.01 * 4.1
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='B',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=resuForceX,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.00544463499856678,
+                  VALE_REFE=nodeBDispDXRefe,
+                  CRITERE='RELATIF',
+                  PRECISION=nodeBDispDXTole,),
+          )
+
+nodeCDispDXRefe = 5.837493523202E-3
+nodeCDispDXTole = 0.01 * 4.8
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  GROUP_NO='C',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=resuForceX,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.005560143947430967 ,
+                  VALE_REFE=nodeCDispDXRefe,
+                  CRITERE='RELATIF',
+                  PRECISION=nodeCDispDXTole,),
+          )
+
+# FORCES NODALES
+leftFXRefe = -2000.
+leftFXTole = 0.01 * 1.E-6
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=leftFXTole,
+           VALE_CALC=-2000.0000000001346,
+           VALE_REFE=leftFXRefe,
+           NOM_PARA='RESULT_X',
+           TABLE=forcForceX,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='FX_GAUCHE',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   ),
+           )
+
+rightFXRefe = 2000.
+rightFXTole = 0.01 * 1.E-6
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=rightFXTole,
+           VALE_CALC=1999.999999999948,
+           VALE_REFE=rightFXRefe,
+           NOM_PARA='RESULT_X',
+           TABLE=forcForceX,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='FX_DROITE',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   ),
+           )
+
+leftMYRefe = -20000.
+leftMYTole = 0.01 * 1.07
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=leftMYTole,
+           VALE_CALC=-20213.258479130945,
+           VALE_REFE=leftMYRefe,
+           NOM_PARA='MOMENT_Y',
+           TABLE=forcForceX,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='FX_GAUCHE',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   ),
+           )
+
+leftMZRefe = 200000.
+leftMZTole = 0.01 * 3.3E-3
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=leftMZTole,
+           VALE_CALC=199993.52048222756,
+           VALE_REFE=leftMZRefe,
+           NOM_PARA='MOMENT_Z',
+           TABLE=forcForceX,
+           FILTRE=(_F(NOM_PARA='INTITULE',
+                      VALE_K='FX_GAUCHE',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   ),
+           )
+
+FIN()

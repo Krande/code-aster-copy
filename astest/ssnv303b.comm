@@ -1,0 +1,154 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
+
+# Read mesh
+MESH0 = LIRE_MAILLAGE(FORMAT='MED',
+                      UNITE=20)
+
+# Prepare mesh
+mesh=CREA_MAILLAGE(MAILLAGE     = MESH0,
+                   INFO         = 2,
+                   COQUE_SOLIDE = _F(GROUP_MA      = 'AllVoluCells',
+                                     GROUP_MA_SURF = 'FaceSup',
+                                  ),
+                  )
+
+# Select finite elements
+model=AFFE_MODELE(MAILLAGE = mesh,
+                  AFFE     = _F(TOUT='OUI',
+                                PHENOMENE='MECANIQUE',
+                                MODELISATION=('COQUE_SOLIDE',),
+                             ),
+                 )
+
+# Material parameters
+mater = DEFI_MATERIAU(ELAS      = _F(E           = 10000000.0,
+                                     NU          = 0.3),
+                      ECRO_LINE = _F(D_SIGM_EPSI = 1.E6,
+                                     SY          = 1.E10,),)
+
+matfield = AFFE_MATERIAU(AFFE=_F(MATER=(mater, ),
+                                 TOUT='OUI'),
+                         MODELE=model)
+
+# Boundary conditions and loads
+clamp = AFFE_CHAR_MECA(DDL_IMPO=_F(DX=0.0,
+                                   DY=0.0,
+                                   DZ=0.0,
+                                   GROUP_MA=('FaceLeft', )),
+                       MODELE=model)
+
+load = AFFE_CHAR_MECA(FORCE_FACE=_F(FZ       = 400.0,
+                                    GROUP_MA = ('FaceRight', )),
+                      MODELE=model)
+
+# Calcul élastique linéaire
+rampUnit = DEFI_FONCTION(NOM_PARA='INST',
+                         VALE=(0.0, 0.0, 1.0, 1.0))
+
+timeStepper = DEFI_LIST_REEL(DEBUT=0.0,
+                             INTERVALLE=_F(JUSQU_A=1.0,
+                                           NOMBRE=10))
+
+times = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=timeStepper),
+                       ECHEC=_F(ACTION='DECOUPE',
+                                EVENEMENT='ERREUR'))
+
+resuElas = STAT_NON_LINE(MODELE       = model,
+                         CHAM_MATER   = matfield,
+                         COMPORTEMENT =_F(DEFORMATION = 'GDEF_LOG',
+                                          RELATION    = 'VMIS_ISOT_LINE',
+                                          TOUT        = 'OUI'),
+                         EXCIT        = (_F(CHARGE=clamp),
+                                         _F(CHARGE=load, FONC_MULT=rampUnit)),
+                         INCREMENT    =  _F(LIST_INST=times),
+                         CONVERGENCE  =  _F(ITER_GLOB_MAXI = 15,
+                                            RESI_GLOB_RELA = 1.0E-6,),
+                         )
+
+# Post-traitement
+resuElas = CALC_CHAMP(reuse      = resuElas,
+                      RESULTAT   = resuElas,
+                      CONTRAINTE = ('SIEF_NOEU'),
+                      FORCE      = ('FORC_NODA'),
+                      CRITERES   = ('SIEQ_ELGA', 'SIEQ_NOEU'),)
+
+IMPR_RESU(RESU=_F(RESULTAT=resuElas),
+          UNITE=80)
+
+# Test des valeurs du calcul
+# Valeurs de référence (référence: 3D overkill)
+nodeISup_DEPLDZ_Refe   = 6.984100151756534
+nodeCSup_SIEQVMIS_Refe =  96136.88288957067
+nodeESup_SIEQVMIS_Refe =  53026.95940282758
+nodeGSup_SIEQVMIS_Refe =  22960.427189762704
+
+# Valeurs calculées
+nodeISup_DEPLDZ_Calc   = 6.979847929406603
+nodeCSup_SIEQVMIS_Calc =  96838.92116338623
+nodeESup_SIEQVMIS_Calc =  53369.14251605422
+nodeGSup_SIEQVMIS_Calc =  23085.568122117733
+
+nodeISup_DEPLDZ_Tole   = 0.01 * 6.1E-2
+nodeCSup_SIEQVMIS_Tole = 0.01 * 7.4E-1
+nodeESup_SIEQVMIS_Tole = 0.01 * 6.5E-1
+nodeGSup_SIEQVMIS_Tole = 0.01 * 5.5E-1
+
+TEST_RESU(RESU=_F(GROUP_NO  = ('NodeISup', ),
+                  INST      = 1.0,
+                  NOM_CHAM  = 'DEPL',
+                  NOM_CMP   = 'DZ',
+                  RESULTAT  = resuElas,
+                  VALE_CALC = nodeISup_DEPLDZ_Calc,
+                  REFERENCE = 'AUTRE_ASTER',
+                  PRECISION = nodeISup_DEPLDZ_Tole,
+                  VALE_REFE = nodeISup_DEPLDZ_Refe,),)
+
+TEST_RESU(RESU=(_F(GROUP_NO  = ('NodeCSup', ),
+                   INST      = 1.0,
+                   NOM_CHAM  = 'SIEQ_NOEU',
+                   NOM_CMP   = 'VMIS',
+                   RESULTAT  = resuElas,
+                   REFERENCE = 'AUTRE_ASTER',
+                   VALE_CALC = nodeCSup_SIEQVMIS_Calc,
+                   PRECISION = nodeCSup_SIEQVMIS_Tole,
+                   VALE_REFE = nodeCSup_SIEQVMIS_Refe,),
+                _F(GROUP_NO  = ('NodeESup', ),
+                   INST      = 1.0,
+                   NOM_CHAM  = 'SIEQ_NOEU',
+                   NOM_CMP   = 'VMIS',
+                   RESULTAT  = resuElas,
+                   REFERENCE = 'AUTRE_ASTER',
+                   VALE_CALC = nodeESup_SIEQVMIS_Calc,
+                   PRECISION = nodeESup_SIEQVMIS_Tole,
+                   VALE_REFE = nodeESup_SIEQVMIS_Refe,),
+                _F(GROUP_NO  = ('NodeGSup', ),
+                   INST      = 1.0,
+                   NOM_CHAM  = 'SIEQ_NOEU',
+                   NOM_CMP   = 'VMIS',
+                   RESULTAT  = resuElas,
+                   REFERENCE = 'AUTRE_ASTER',
+                   VALE_CALC = nodeGSup_SIEQVMIS_Calc,
+                   PRECISION = nodeGSup_SIEQVMIS_Tole,
+                   VALE_REFE = nodeGSup_SIEQVMIS_Refe,),
+                 ),)
+
+FIN()

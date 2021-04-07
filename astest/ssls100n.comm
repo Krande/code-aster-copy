@@ -1,0 +1,222 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+# Prepare mesh
+MESH0=LIRE_MAILLAGE(FORMAT='MED',)
+MESH=CREA_MAILLAGE(MAILLAGE     = MESH0,
+                   INFO         = 2,
+                   COQUE_SOLIDE = _F(GROUP_MA      = 'volume',
+                                     GROUP_MA_SURF = 'face_sup',
+                                  ),
+                  )
+
+# Material parameters
+MAT=DEFI_MATERIAU(ELAS      = _F(NU = 0.3,
+                                 E  = 200000.,
+                                ),
+                  )
+
+MATERIAL=AFFE_MATERIAU(MAILLAGE = MESH,
+                       AFFE     = _F(GROUP_MA = 'volume',
+                                     MATER    = MAT,
+                                  ),
+                      )
+
+# Select finite elements
+MODEL=AFFE_MODELE(MAILLAGE = MESH,
+                  AFFE     = _F(TOUT='OUI',
+                                PHENOMENE='MECANIQUE',
+                                MODELISATION=('COQUE_SOLIDE',),
+                             ),
+                 )
+
+# ==================================================================================================
+#
+# Coordonnées des points de Gauss
+#
+# ==================================================================================================
+coorPg=CALC_CHAM_ELEM(MODELE = MODEL,
+                      OPTION ='COOR_ELGA' )
+
+# Test des coordonnées des points de Gauss
+pg1X      = 4.9
+pg1Y      = 4.9
+pg1Z      = 0.
+pg3X      = 4.9
+pg3Y      = 4.9
+pg3Z      = 0.5
+pg5X      = 4.9
+pg5Y      = 4.9
+pg5Z      = 1.0
+
+TEST_RESU(CHAM_ELEM=(_F(CHAM_GD   = coorPg,
+                        REFERENCE = 'ANALYTIQUE',
+                        GROUP_MA  = 'CellMiddle',
+                        POINT     = 1,
+                        NOM_CMP   = 'X',
+                        VALE_CALC = pg1X,
+                        VALE_REFE = pg1X,),
+                     _F(CHAM_GD   = coorPg,
+                        REFERENCE = 'ANALYTIQUE',
+                        GROUP_MA  = 'CellMiddle',
+                        POINT     = 1,
+                        NOM_CMP   = 'Y',
+                        VALE_CALC = pg1Y,
+                        VALE_REFE = pg1Y,),
+                     _F(CHAM_GD   = coorPg,
+                        REFERENCE = 'ANALYTIQUE',
+                        GROUP_MA  = 'CellMiddle',
+                        POINT     = 1,
+                        NOM_CMP   = 'Z',
+                        VALE_CALC = pg1Z,
+                        VALE_REFE = pg1Z,),
+         ),)
+
+TEST_RESU(CHAM_ELEM=(_F(CHAM_GD   = coorPg,
+                        REFERENCE = 'ANALYTIQUE',
+                        GROUP_MA  = 'CellMiddle',
+                        POINT     = 3,
+                        NOM_CMP   = 'X',
+                        VALE_CALC = pg3X,
+                        VALE_REFE = pg3X,),
+                     _F(CHAM_GD   = coorPg,
+                        REFERENCE = 'ANALYTIQUE',
+                        GROUP_MA  = 'CellMiddle',
+                        POINT     = 3,
+                        NOM_CMP   = 'Y',
+                        VALE_CALC = pg3Y,
+                        VALE_REFE = pg3Y,),
+                     _F(CHAM_GD   = coorPg,
+                        REFERENCE = 'ANALYTIQUE',
+                        GROUP_MA  = 'CellMiddle',
+                        POINT     = 3,
+                        NOM_CMP   = 'Z',
+                        VALE_CALC = pg3Z,
+                        VALE_REFE = pg3Z,),
+         ),)
+
+TEST_RESU(CHAM_ELEM=(_F(CHAM_GD   = coorPg,
+                        REFERENCE = 'ANALYTIQUE',
+                        GROUP_MA  = 'CellMiddle',
+                        POINT     = 5,
+                        NOM_CMP   = 'X',
+                        VALE_CALC = pg5X,
+                        VALE_REFE = pg5X,),
+                     _F(CHAM_GD   = coorPg,
+                        REFERENCE = 'ANALYTIQUE',
+                        GROUP_MA  = 'CellMiddle',
+                        POINT     = 5,
+                        NOM_CMP   = 'Y',
+                        VALE_CALC = pg5Y,
+                        VALE_REFE = pg5Y,),
+                     _F(CHAM_GD   = coorPg,
+                        REFERENCE = 'ANALYTIQUE',
+                        GROUP_MA  = 'CellMiddle',
+                        POINT     = 5,
+                        NOM_CMP   = 'Z',
+                        VALE_CALC = pg5Z,
+                        VALE_REFE = pg5Z,),
+         ),)
+
+# ==================================================================================================
+#
+# CALCUL ELASTIQUE POUR PRES_REP
+#
+# ==================================================================================================
+
+# Boundary conditions and loads
+kineCondition=AFFE_CHAR_CINE(MODELE    = MODEL,
+                             MECA_IMPO = (_F(GROUP_MA = ('encastre'),
+                                             DX       = 0.,
+                                             DY       = 0.,
+                                             DZ       = 0.,),
+                                          _F(GROUP_MA  = ('x0'),
+                                             DX        = 0.,),
+                                          _F(GROUP_MA = ('y0'),
+                                             DY        = 0.,),
+                                         ),
+                             )
+
+presAppl = 0.01172
+pressure=AFFE_CHAR_MECA(MODELE   = MODEL,
+                        PRES_REP = (_F(GROUP_MA = ('face_sup',), 
+                                       PRES     = presAppl),
+                                   )
+                       )
+
+# Static linear
+resuLinear=MECA_STATIQUE(MODELE     = MODEL,
+                         CHAM_MATER = MATERIAL,
+                         EXCIT      = (_F(CHARGE=kineCondition,),
+                                       _F(CHARGE=pressure,),
+                                      ),
+                         )
+
+# Post-treatement
+resuLinear=CALC_CHAMP(reuse       = resuLinear,
+                      RESULTAT    = resuLinear,
+                      DEFORMATION = ('EPSI_ELGA', 'EPSL_ELGA', ),
+                      CONTRAINTE  = ('SIEF_NOEU'),
+                      FORCE       = ('FORC_NODA'),
+                      CRITERES    = ('SIEQ_ELGA'),)
+
+# Test des résultats
+deplDZ    = -1.
+sigmZZInf =  0.0
+sigmZZSup = -0.01172
+
+TEST_RESU(RESU=_F(RESULTAT       = resuLinear,
+                  INST           = 0,
+                  GROUP_NO       = 'c1',
+                  REFERENCE      = 'ANALYTIQUE',
+                  NOM_CHAM       = 'DEPL',
+                  NOM_CMP        = ('DZ',),
+                  VALE_REFE      = deplDZ,
+                  VALE_CALC      = -0.999046426157413,
+          ),)
+
+TEST_RESU(RESU=_F(RESULTAT       = resuLinear,
+                  INST           = 0,
+                  GROUP_MA       = 'CellMiddle',
+                  POINT          = 1,
+                  REFERENCE      = 'ANALYTIQUE',
+                  NOM_CHAM       = 'SIEF_ELGA',
+                  NOM_CMP        = ('SIZZ',),
+                  CRITERE        = 'ABSOLU',
+                  ORDRE_GRANDEUR = 1.0,
+                  VALE_REFE      = sigmZZInf,
+                  VALE_CALC      = 0.,
+                  PRECISION      = 1.0E-04, 
+                  TOLE_MACHINE   = 1.0E-04, 
+          ),)
+
+TEST_RESU(RESU=_F(RESULTAT       = resuLinear,
+                  INST           = 0,
+                  GROUP_MA       = 'CellMiddle',
+                  POINT          = 5,
+                  REFERENCE      = 'ANALYTIQUE',
+                  NOM_CHAM       = 'SIEF_ELGA',
+                  NOM_CMP        = ('SIZZ',),
+                  VALE_REFE      = sigmZZSup,
+                  VALE_CALC      = -0.01177566534745722,
+                  PRECISION      = 0.005,
+          ),)
+
+FIN()
