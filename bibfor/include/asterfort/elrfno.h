@@ -18,9 +18,9 @@
 #include "MeshTypes_type.h"
 !
 interface
-    subroutine elrfno(elrefz, nno, nnos, ndim, nodeCoor)
+    subroutine elrfno(elrefz, nno, nnos, ndim, nodeCoor, cellVolu)
         character(len=*), intent(in)        :: elrefz
         integer, optional, intent(out)      :: nno, ndim, nnos
-        real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
+        real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX), cellVolu
     end subroutine elrfno
 end interface

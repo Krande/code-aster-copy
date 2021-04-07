@@ -69,11 +69,10 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
     cellVolu = 0.d0
 
 ! - Get main parameters of geometric support in parametric space
-    call elrfno(elrefa, nno, nnos, ndim, coorno)
+    call elrfno(elrefa, nno, nnos, ndim, coorno, cellVolu)
 
     select case (elrefa)
         case('HE8')
-            cellVolu = 8.d0
             nbfpg = 7
             nbpg(1:nbfpg) = [nno, nnos, 1, 8, 27, 16, 64]
             fapg(1) = 'NOEU'
@@ -85,7 +84,6 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
             fapg(7) = 'FPG64'
 
         case('H20')
-            cellVolu = 8.d0
             nbfpg = 7
             nbpg(1:nbfpg) = [nno, nnos, 1, 8, 27, 16, 64]
             fapg(1) = 'NOEU'
@@ -97,7 +95,6 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
             fapg(7) = 'FPG64'
 
         case('H27')
-        cellVolu = 8.d0
             nbfpg = 6
             nbpg(1:nbfpg) = [nno, nnos, 1, 8, 27, 64]
             fapg(1) = 'NOEU'
@@ -108,7 +105,6 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
             fapg(6) = 'FPG64'
 
         case('TE4')
-            cellVolu = 1.d0/6.d0
             nbfpg = 9
             nbpg(1:nbfpg) = [nno, nnos, 1, 4, 5, 11, 15, 23, 8]
             fapg(1) = 'NOEU'
@@ -122,7 +118,6 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
             fapg(9) = 'FPG4NOS'
 
         case('T10')
-            cellVolu = 1.d0/6.d0
             nbfpg = 7
             nbpg(1:nbfpg) = [nno, nnos, 1, 4, 5, 15, 8]
             fapg(1) = 'NOEU'
@@ -134,7 +129,6 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
             fapg(7) = 'FPG4NOS'
 
         case('T15')
-            cellVolu = 1.d0/6.d0
             nbfpg = 9
             nbpg(1:nbfpg) = [nno, nnos, 1, 4, 5, 11, 15, 23, 8]
             fapg(1) = 'NOEU'
@@ -148,7 +142,6 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
             fapg(9) = 'FPG4NOS'
 
         case('PE6')
-            cellVolu = 1.d0
             nbfpg = 8
             nbpg(1:nbfpg) = [nno, nnos, 1, 6, 6, 8, 21, 12]
             fapg(1) = 'NOEU'
@@ -161,7 +154,6 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
             fapg(8) = 'FPG6NOS'
 
         case('P15')
-            cellVolu = 1.d0
             nbfpg = 7
             nbpg(1:nbfpg) = [nno, nnos, 1, 6, 8, 21, 12]
             fapg(1) = 'NOEU'
@@ -173,7 +165,6 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
             fapg(7) = 'FPG6NOS'
 
         case('P18')
-            cellVolu = 1.d0
             nbfpg = 7
             nbpg(1:nbfpg) = [nno, nnos, 1, 6, 8, 21, 12]
             fapg(1) = 'NOEU'
@@ -185,7 +176,6 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
             fapg(7) = 'FPG6NOS'
 
         case('P21')
-            cellVolu = 1.d0
             nbfpg = 7
             nbpg(1:nbfpg) = [nno, nnos, 1, 6, 8, 21, 12]
             fapg(1) = 'NOEU'
@@ -197,7 +187,6 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
             fapg(7) = 'FPG6NOS'
 
         case('PY5')
-            cellVolu = 2.d0/3.d0
             nbfpg = 7
             nbpg(1:nbfpg) = [nno, nnos, 1, 5, 6, 27, 10]
             fapg(1) = 'NOEU'
@@ -209,7 +198,6 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
             fapg(7) = 'FPG5NOS'
 
         case('P13')
-            cellVolu = 2.d0/3.d0
             nbfpg = 8
             nbpg(1:nbfpg) = [nno, nnos, 1, 5, 6, 10, 27, 10]
             fapg(1) = 'NOEU'
@@ -222,7 +210,6 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
             fapg(8) = 'FPG5NOS'
 
         case('P19')
-            cellVolu = 2.d0/3.d0
             nbfpg = 7
             nbpg(1:nbfpg) = [nno, nnos, 1, 5, 6, 27, 10]
             fapg(1) = 'NOEU'
@@ -234,7 +221,6 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
             fapg(7) = 'FPG5NOS'
 
         case('TR3')
-            cellVolu = 1.d0/2.d0
             nbfpg = 13
             nbpg(1:nbfpg) = [nno, nnos, 1, 3, 4, 6, 7, 12, 3, 6, 13, 16, 6]
             fapg(1) = 'NOEU'
@@ -252,7 +238,6 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
             fapg(13) = 'SIMP'
 
         case('TR6')
-            cellVolu = 1.d0/2.d0
             nbfpg = 11
             nbpg(1:nbfpg) = [nno, nnos, 1, 3, 4, 6, 7, 12, 6, 13, 16]
             fapg(1) = 'NOEU'
@@ -268,7 +253,6 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
             fapg(11) = 'FPG16'
 
         case('TR7')
-            cellVolu = 1.d0/2.d0
             nbfpg = 10
             nbpg(1:nbfpg) = [nno, nnos, 1, 3, 4, 6, 7, 12, 13, 16]
             fapg(1) = 'NOEU'
@@ -283,7 +267,6 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
             fapg(10) = 'FPG16'
 
         case('QU4')
-            cellVolu = 4.d0
             nbfpg = 8
             nbpg(1:nbfpg) = [nno, nnos, 1, 4, 9, 16, 2, 8]
             fapg(1) = 'NOEU'
@@ -296,7 +279,6 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
             fapg(8) = 'FPG4NOS'
 
         case('QU8')
-            cellVolu = 4.d0
             nbfpg = 7
             nbpg(1:nbfpg) = [nno, nnos, 1, 4, 9, 9, 8]
             fapg(1) = 'NOEU'
@@ -308,7 +290,6 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
             fapg(7) = 'FPG4NOS'
 
         case('QU9')
-            cellVolu = 4.d0
             nbfpg = 6
             nbpg(1:nbfpg) = [nno, nnos, 1, 4, 9, 9]
             fapg(1) = 'NOEU'
@@ -319,7 +300,6 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
             fapg(6) = 'FPG9COQ'
 
         case('SE2')
-            cellVolu = 2.d0
             nbfpg = 13
             nbpg(1:nbfpg) = [nno, nnos, 1, 2, 3, 4, 3, 5, 4, 5, 10, nnos+2, nnos+3]
             fapg(1) = 'NOEU'
@@ -337,7 +317,6 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
             fapg(13) = 'FPG3NOS'
 
         case('SE3')
-            cellVolu = 2.d0
             nbfpg = 10
             nbpg(1:nbfpg) = [nno, nnos, 1, 2, 3, 4, 3, 4, nnos+2, nnos+3]
             fapg(1) = 'NOEU'
@@ -352,7 +331,6 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
             fapg(10) = 'FPG3NOS'
 
         case('SE4')
-            cellVolu = 2.d0
             nbfpg = 8
             nbpg(1:nbfpg) = [nno, nnos, 1, 2, 3, 4, 3, 4]
             fapg(1) = 'NOEU'
@@ -365,7 +343,6 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
             fapg(8) = 'COTES'
 
         case('PO1')
-            cellVolu = 1.d0
             nbfpg = 3
             nbpg(1:nbfpg) = [1, 1, 1]
             fapg(1) = 'NOEU'

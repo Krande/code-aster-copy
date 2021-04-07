@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine elrfno(elrefz, nno, nnos, ndim, nodeCoor)
+subroutine elrfno(elrefz, nno, nnos, ndim, nodeCoor, cellVolu)
 !
 implicit none
 !
@@ -26,7 +26,7 @@ implicit none
 !
 character(len=*), intent(in)        :: elrefz
 integer, optional, intent(out)      :: nno, ndim, nnos
-real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
+real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX), cellVolu
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,17 +41,20 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
 ! Out nno              : number of nodes
 ! Out nnos             : number of middle nodes
 ! Out nodeCoor         : coordinates of node of geometric support in parametric space
+! Out cellVolu         : volume of geometric support in parametric space
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nnos_, ndim_, nno_
     real(kind=8), parameter :: untiers = 1.d0 / 3.d0
+    real(kind=8) :: cellVolu_
 !
 ! --------------------------------------------------------------------------------------------------
 !
     nnos_     = 0
     ndim_     = 0
     nno_      = 0
+    cellVolu_ = 0.d0
 !
     if (present(nodeCoor)) then
         nodeCoor = 0.d0
@@ -67,6 +70,7 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
                 nodeCoor(2,1:8) = [-1.d0, -1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0]
                 nodeCoor(3,1:8) = [-1.d0, -1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0, +1.d0]
             end if
+            cellVolu_  = 8.d0
 
         case('HE9')
             nno_  = 9
@@ -77,6 +81,7 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
                 nodeCoor(2,1:9) = [-1.d0, -1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0, 0.d0]
                 nodeCoor(3,1:9) = [-1.d0, -1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0, +1.d0, 0.d0]
             end if
+            cellVolu_  = 8.d0
 
         case('H20')
             nno_  = 20
@@ -93,25 +98,70 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
                 nodeCoor(3,9:20) = [-1.d0, -1.d0, -1.d0, -1.d0,  0.d0,  0.d0,  0.d0,  0.d0, &
                                     +1.d0, +1.d0, +1.d0, +1.d0]
             end if
+            cellVolu_  = 8.d0
 
         case('H27')
             nno_  = 27
             nnos_ = 8
             ndim_ = 3
             if (present(nodeCoor)) then
-                nodeCoor(1,1:8)  = [-1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0, -1.d0]
-                nodeCoor(2,1:8)  = [-1.d0, -1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0]
-                nodeCoor(3,1:8)  = [-1.d0, -1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0, +1.d0]
-                nodeCoor(1,9:20) = [ 0.d0, +1.d0,  0.d0, -1.d0, -1.d0, +1.d0, +1.d0, -1.d0, &
-                                     0.d0, +1.d0,  0.d0, -1.d0]
-                nodeCoor(2,9:20) = [-1.d0,  0.d0, +1.d0,  0.d0, -1.d0, -1.d0, +1.d0, +1.d0, &
-                                    -1.d0,  0.d0, +1.d0,  0.d0]
-                nodeCoor(3,9:20) = [-1.d0, -1.d0, -1.d0, -1.d0,  0.d0,  0.d0,  0.d0,  0.d0, &
-                                    +1.d0, +1.d0, +1.d0, +1.d0]
+                nodeCoor(1,1:8)   = [-1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0, -1.d0]
+                nodeCoor(2,1:8)   = [-1.d0, -1.d0, +1.d0, +1.d0, -1.d0, -1.d0, +1.d0, +1.d0]
+                nodeCoor(3,1:8)   = [-1.d0, -1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0, +1.d0]
+                nodeCoor(1,9:20)  = [ 0.d0, +1.d0,  0.d0, -1.d0, -1.d0, +1.d0, +1.d0, -1.d0, &
+                                      0.d0, +1.d0,  0.d0, -1.d0]
+                nodeCoor(2,9:20)  = [-1.d0,  0.d0, +1.d0,  0.d0, -1.d0, -1.d0, +1.d0, +1.d0, &
+                                     -1.d0,  0.d0, +1.d0,  0.d0]
+                nodeCoor(3,9:20)  = [-1.d0, -1.d0, -1.d0, -1.d0,  0.d0,  0.d0,  0.d0,  0.d0, &
+                                     +1.d0, +1.d0, +1.d0, +1.d0]
                 nodeCoor(1,21:27) = [ 0.d0,  0.d0, +1.d0,  0.d0, -1.d0,  0.d0, 0.d0]
                 nodeCoor(2,21:27) = [ 0.d0, -1.d0,  0.d0, +1.d0,  0.d0,  0.d0, 0.d0]
                 nodeCoor(3,21:27) = [-1.d0,  0.d0,  0.d0,  0.d0,  0.d0, +1.d0, 0.d0]
             end if
+            cellVolu_  = 8.d0
+
+        case('TE4')
+            nno_  = 4
+            nnos_ = 4
+            ndim_ = 3
+            if (present(nodeCoor)) then
+                nodeCoor(1,1:4) = [ 0.d0,  0.d0,  0.d0, +1.d0]
+                nodeCoor(2,1:4) = [+1.d0,  0.d0,  0.d0,  0.d0]
+                nodeCoor(3,1:4) = [ 0.d0, +1.d0,  0.d0,  0.d0]
+            end if
+            cellVolu_  = 1.d0/6.d0
+
+        case('T10')
+            nno_  = 10
+            nnos_ = 4
+            ndim_ = 3
+            if (present(nodeCoor)) then
+                nodeCoor(1,1:4)  = [ 0.d0,  0.d0,  0.d0, +1.d0]
+                nodeCoor(2,1:4)  = [+1.d0,  0.d0,  0.d0,  0.d0]
+                nodeCoor(3,1:4)  = [ 0.d0, +1.d0,  0.d0,  0.d0]
+                nodeCoor(1,5:10) = [ 0.d0,   0.d0,  0.d0,  0.5d0, 0.5d0, 0.5d0]
+                nodeCoor(2,5:10) = [ 0.5d0,  0.d0,  0.5d0, 0.5d0, 0.d0,  0.d0]
+                nodeCoor(3,5:10) = [ 0.5d0,  0.5d0, 0.d0,  0.d0,  0.5d0, 0.d0]
+            end if
+            cellVolu_  = 1.d0/6.d0
+
+        case('T15')
+            nno_  = 15
+            nnos_ = 4
+            ndim_ = 3
+            if (present(nodeCoor)) then
+                nodeCoor(1,1:4)   = [ 0.d0,  0.d0,  0.d0, +1.d0]
+                nodeCoor(2,1:4)   = [+1.d0,  0.d0,  0.d0,  0.d0]
+                nodeCoor(3,1:4)   = [ 0.d0, +1.d0,  0.d0,  0.d0]
+                nodeCoor(1,5:10)  = [ 0.d0,   0.d0,  0.d0,  0.5d0, 0.5d0, 0.5d0]
+                nodeCoor(2,5:10)  = [ 0.5d0,  0.d0,  0.5d0, 0.5d0, 0.d0,  0.d0]
+                nodeCoor(3,5:10)  = [ 0.5d0,  0.5d0, 0.d0,  0.d0,  0.5d0, 0.d0]
+                nodeCoor(1,11:14) = [    0.d0,  untiers,  untiers,  untiers]
+                nodeCoor(2,11:14) = [ untiers,  untiers,  untiers,     0.d0]
+                nodeCoor(3,11:14) = [ untiers,  untiers,     0.d0,  untiers]
+                nodeCoor(1:3,15)  = [ 0.25d0,  0.25d0,  0.25d0]
+            end if
+            cellVolu_  = 1.d0/6.d0
 
         case('PE6')
             nno_  = 6
@@ -122,6 +172,7 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
                 nodeCoor(2,1:6) = [+1.d0,  0.d0,  0.d0, +1.d0,  0.d0,  0.d0]
                 nodeCoor(3,1:6) = [ 0.d0, +1.d0,  0.d0,  0.d0, +1.d0,  0.d0]
             end if
+            cellVolu_  = 1.d0
 
         case('PE7')
             nno_  = 7
@@ -132,35 +183,38 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
                 nodeCoor(2,1:7) = [ 0.d0,  0.d0, 1.d0,  0.d0,  0.d0,  1.d0, untiers]
                 nodeCoor(3,1:7) = [-1.d0, -1.d0,-1.d0, +1.d0, +1.d0, +1.d0, 0.d0   ]
             end if
+            cellVolu_  = 1.d0
 
         case('P15')
             nno_  = 15
             nnos_ = 6
             ndim_ = 3
             if (present(nodeCoor)) then
-                nodeCoor(1,1:6)  = [-1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0]
-                nodeCoor(2,1:6)  = [+1.d0,  0.d0,  0.d0, +1.d0,  0.d0,  0.d0]
-                nodeCoor(3,1:6)  = [ 0.d0, +1.d0,  0.d0,  0.d0, +1.d0,  0.d0]
+                nodeCoor(1,1:6) = [-1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0]
+                nodeCoor(2,1:6) = [+1.d0,  0.d0,  0.d0, +1.d0,  0.d0,  0.d0]
+                nodeCoor(3,1:6) = [ 0.d0, +1.d0,  0.d0,  0.d0, +1.d0,  0.d0]
                 nodeCoor(1,7:15) = [-1.d0, -1.d0, -1.d0,  0.d0,  0.d0,  0.d0, +1.d0, +1.d0, +1.d0]
                 nodeCoor(2,7:15) = [0.5d0,  0.d0, 0.5d0, +1.d0,  0.d0,  0.d0, 0.5d0,  0.d0,  0.5d0]
                 nodeCoor(3,7:15) = [0.5d0, 0.5d0,  0.d0,  0.d0, +1.d0,  0.d0, 0.5d0,  0.5d0, 0.d0]
             end if
+            cellVolu_  = 1.d0
 
         case('P18')
             nno_  = 18
             nnos_ = 6
             ndim_ = 3
             if (present(nodeCoor)) then
-                nodeCoor(1,1:6)   = [-1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0]
-                nodeCoor(2,1:6)   = [+1.d0,  0.d0,  0.d0, +1.d0,  0.d0,  0.d0]
-                nodeCoor(3,1:6)   = [ 0.d0, +1.d0,  0.d0,  0.d0, +1.d0,  0.d0]
-                nodeCoor(1,7:15)  = [-1.d0, -1.d0, -1.d0,  0.d0,  0.d0,  0.d0, +1.d0, +1.d0, +1.d0]
-                nodeCoor(2,7:15)  = [0.5d0,  0.d0, 0.5d0, +1.d0,  0.d0,  0.d0, 0.5d0,  0.d0,  0.5d0]
-                nodeCoor(3,7:15)  = [0.5d0, 0.5d0,  0.d0,  0.d0, +1.d0,  0.d0, 0.5d0,  0.5d0, 0.d0]
+                nodeCoor(1,1:6) = [-1.d0, -1.d0, -1.d0, +1.d0, +1.d0, +1.d0]
+                nodeCoor(2,1:6) = [+1.d0,  0.d0,  0.d0, +1.d0,  0.d0,  0.d0]
+                nodeCoor(3,1:6) = [ 0.d0, +1.d0,  0.d0,  0.d0, +1.d0,  0.d0]
+                nodeCoor(1,7:15) = [-1.d0, -1.d0, -1.d0,  0.d0,  0.d0,  0.d0, +1.d0, +1.d0, +1.d0]
+                nodeCoor(2,7:15) = [0.5d0,  0.d0, 0.5d0, +1.d0,  0.d0,  0.d0, 0.5d0,  0.d0,  0.5d0]
+                nodeCoor(3,7:15) = [0.5d0, 0.5d0,  0.d0,  0.d0, +1.d0,  0.d0, 0.5d0,  0.5d0, 0.d0]
                 nodeCoor(1,16:18) = [ 0.d0,   0.d0,   0.d0]
                 nodeCoor(2,16:18) = [ 0.5d0,  0.d0,   0.5d0]
                 nodeCoor(3,16:18) = [ 0.5d0,  0.5d0,  0.d0]
             end if
+            cellVolu_  = 1.d0
 
         case('P21')
             nno_  = 21
@@ -178,46 +232,7 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
                 nodeCoor(3,16:20) = [ 0.5d0,  0.5d0,  0.d0, untiers, untiers]
                 nodeCoor(1:3,21)  = [ 0.d0,  untiers, untiers]
             end if
-
-        case('TE4')
-            nno_  = 4
-            nnos_ = 4
-            ndim_ = 3
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:4) = [ 0.d0,  0.d0,  0.d0, +1.d0]
-                nodeCoor(2,1:4) = [+1.d0,  0.d0,  0.d0,  0.d0]
-                nodeCoor(3,1:4) = [ 0.d0, +1.d0,  0.d0,  0.d0]
-            end if
-
-        case('T10')
-            nno_  = 10
-            nnos_ = 4
-            ndim_ = 3
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:4)  = [ 0.d0,  0.d0,  0.d0, +1.d0]
-                nodeCoor(2,1:4)  = [+1.d0,  0.d0,  0.d0,  0.d0]
-                nodeCoor(3,1:4)  = [ 0.d0, +1.d0,  0.d0,  0.d0]
-                nodeCoor(1,5:10) = [ 0.d0,   0.d0,  0.d0,  0.5d0, 0.5d0, 0.5d0]
-                nodeCoor(2,5:10) = [ 0.5d0,  0.d0,  0.5d0, 0.5d0, 0.d0,  0.d0]
-                nodeCoor(3,5:10) = [ 0.5d0,  0.5d0, 0.d0,  0.d0,  0.5d0, 0.d0]
-            end if
-
-        case('T15')
-            nno_  = 15
-            nnos_ = 4
-            ndim_ = 3
-            if (present(nodeCoor)) then
-                nodeCoor(1,1:4)  = [ 0.d0,  0.d0,  0.d0, +1.d0]
-                nodeCoor(2,1:4)  = [+1.d0,  0.d0,  0.d0,  0.d0]
-                nodeCoor(3,1:4)  = [ 0.d0, +1.d0,  0.d0,  0.d0]
-                nodeCoor(1,5:10)  = [ 0.d0,   0.d0,  0.d0,  0.5d0, 0.5d0, 0.5d0]
-                nodeCoor(2,5:10)  = [ 0.5d0,  0.d0,  0.5d0, 0.5d0, 0.d0,  0.d0]
-                nodeCoor(3,5:10)  = [ 0.5d0,  0.5d0, 0.d0,  0.d0,  0.5d0, 0.d0]
-                nodeCoor(1,11:14) = [    0.d0,  untiers,  untiers,  untiers]
-                nodeCoor(2,11:14) = [ untiers,  untiers,  untiers,     0.d0]
-                nodeCoor(3,11:14) = [ untiers,  untiers,     0.d0,  untiers]
-                nodeCoor(1:3,15)  = [ 0.25d0,  0.25d0,  0.25d0]
-            end if
+            cellVolu_  = 1.d0
 
         case('PY5')
             nno_  = 5
@@ -228,6 +243,7 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
                 nodeCoor(2,1:5) = [ 0.d0, +1.d0,  0.d0, -1.d0,  0.d0]
                 nodeCoor(3,1:5) = [ 0.d0,  0.d0,  0.d0,  0.d0, +1.d0]
             end if
+            cellVolu_  = 2.d0/3.d0
 
         case('P13')
             nno_  = 13
@@ -241,15 +257,16 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
                 nodeCoor(2,6:13) = [ 0.5d0,  0.5d0, -0.5d0, -0.5d0,  0.d0,   0.5d0,  0.d0,  -0.5d0]
                 nodeCoor(3,6:13) = [ 0.d0,   0.d0,   0.d0,   0.d0,   0.5d0,  0.5d0,  0.5d0,  0.5d0]
             end if
+            cellVolu_  = 2.d0/3.d0
 
         case('P19')
             nno_  = 19
             nnos_ = 6
             ndim_ = 3
             if (present(nodeCoor)) then
-                nodeCoor(1,1:5)  = [+1.d0,  0.d0, -1.d0,  0.d0,  0.d0]
-                nodeCoor(2,1:5)  = [ 0.d0, +1.d0,  0.d0, -1.d0,  0.d0]
-                nodeCoor(3,1:5)  = [ 0.d0,  0.d0,  0.d0,  0.d0, +1.d0]
+                nodeCoor(1,1:5)   = [+1.d0,  0.d0, -1.d0,  0.d0,  0.d0]
+                nodeCoor(2,1:5)   = [ 0.d0, +1.d0,  0.d0, -1.d0,  0.d0]
+                nodeCoor(3,1:5)   = [ 0.d0,  0.d0,  0.d0,  0.d0, +1.d0]
                 nodeCoor(1,6:13)  = [ 0.5d0, -0.5d0, -0.5d0,  0.5d0,  0.5d0,  0.d0,  -0.5d0,  0.d0]
                 nodeCoor(2,6:13)  = [ 0.5d0,  0.5d0, -0.5d0, -0.5d0,  0.d0,   0.5d0,  0.d0,  -0.5d0]
                 nodeCoor(3,6:13)  = [ 0.d0,   0.d0,   0.d0,   0.d0,   0.5d0,  0.5d0,  0.5d0,  0.5d0]
@@ -258,6 +275,7 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
                 nodeCoor(3,14:18) = [0.d0, untiers,  untiers,  untiers,  untiers]
                 nodeCoor(1:3,19)  = [0.d0, 0.d0, 0.2d0]
             end if
+            cellVolu_  = 2.d0/3.d0
 
         case('TR3')
             nno_  = 3
@@ -267,6 +285,7 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
                 nodeCoor(1,1:nno_) = [0.d0, +1.d0,  0.d0]
                 nodeCoor(2,1:nno_) = [0.d0,  0.d0, +1.d0]
             end if
+            cellVolu_  = 1.d0/2.d0
 
         case('TR6')
             nno_  = 6
@@ -276,6 +295,7 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
                 nodeCoor(1,1:nno_) = [0.d0, +1.d0,  0.d0, 0.5d0, 0.5d0, 0.d0]
                 nodeCoor(2,1:nno_) = [0.d0,  0.d0, +1.d0, 0.d0 , 0.5d0, 0.5d0]
             end if
+            cellVolu_  = 1.d0/2.d0
 
         case('TR7')
             nno_  = 7
@@ -285,6 +305,7 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
                 nodeCoor(1,1:nno_) = [0.d0, +1.d0,  0.d0, 0.5d0, 0.5d0, 0.d0,  untiers]
                 nodeCoor(2,1:nno_) = [0.d0,  0.d0, +1.d0, 0.d0 , 0.5d0, 0.5d0, untiers]
             end if
+            cellVolu_  = 1.d0/2.d0
 
         case('QU4')
             nno_  = 4
@@ -294,6 +315,7 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
                 nodeCoor(1,1:nno_) = [-1.d0, +1.d0, +1.d0, -1.d0]
                 nodeCoor(2,1:nno_) = [-1.d0, -1.d0, +1.d0, +1.d0]
             end if
+            cellVolu_  = 4.d0
 
         case('QU8')
             nno_  = 8
@@ -303,6 +325,7 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
                 nodeCoor(1,1:nno_) = [-1.d0, +1.d0, +1.d0, -1.d0,  0.d0, +1.d0,  0.d0 , -1.d0]
                 nodeCoor(2,1:nno_) = [-1.d0, -1.d0, +1.d0, +1.d0, -1.d0,  0.d0, +1.d0,   0.d0]
             end if
+            cellVolu_  = 4.d0
 
         case('QU9')
             nno_  = 9
@@ -312,6 +335,7 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
                 nodeCoor(1,1:nno_) = [-1.d0, +1.d0, +1.d0, -1.d0,  0.d0, +1.d0,  0.d0 , -1.d0, 0.d0]
                 nodeCoor(2,1:nno_) = [-1.d0, -1.d0, +1.d0, +1.d0, -1.d0,  0.d0, +1.d0,   0.d0, 0.d0]
             end if
+            cellVolu_  = 4.d0
 
         case('SE2')
             nno_  = 2
@@ -320,6 +344,7 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
             if (present(nodeCoor)) then
                 nodeCoor(1,1:nno_) = [-1.d0, +1.d0]
             end if
+            cellVolu_  = 2.d0
 
         case('SE3')
             nno_  = 3
@@ -328,6 +353,7 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
             if (present(nodeCoor)) then
                 nodeCoor(1,1:nno_) = [ -1.d0, +1.d0, 0.d0]
             end if
+            cellVolu_  = 2.d0
 
         case('SE4')
             nno_  = 4
@@ -336,6 +362,7 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
             if (present(nodeCoor)) then
                 nodeCoor(1,1:nno_) = [-1.d0, +1.d0, -1.d0/3.d0, 1.d0/3.d0]
             end if
+            cellVolu_  = 2.d0
 
         case('PO1')
             nno_  = 1
@@ -344,6 +371,7 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
             if (present(nodeCoor)) then
                 nodeCoor(1,1) = 0.d0
             end if
+            cellVolu_  = 1.d0
 
         case default
             ASSERT(ASTER_FALSE)
@@ -358,6 +386,9 @@ real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX)
     end if
     if (present(ndim)) then
         ndim = ndim_
+    end if
+    if (present(cellVolu)) then
+        cellVolu = cellVolu_
     end if
 !
 end subroutine
