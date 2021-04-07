@@ -20,6 +20,7 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 !
 implicit none
 !
+#include "MeshTypes_type.h"
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/alchml.h"
@@ -95,10 +96,10 @@ implicit none
 !
 !-----------------------------------------------------------------------
 !
-    integer :: nbpgmx, nbnomx, nbfamx, nbflmx
-    parameter (nbpgmx=27,nbnomx=27,nbfamx=20,nbflmx=20)
+    integer :: nbpgmx, nbflmx
+    parameter (nbpgmx=27, nbflmx=20)
     integer :: nbma, ima, jcesd, jcesl,  iad, jnbpg
-    integer :: ilcnx1, nbpgf(nbfamx), k, jfpgl
+    integer :: ilcnx1, nbpgf(MT_NBFAMX), k, jfpgl
     integer :: nec, kfpg, ndim, nno, nnos, nbfpg, npg, kp, ino
     integer ::  nbgrel, nel, nute, imolo, jmolo, jecono
     integer :: igr, iel,  lont1
@@ -106,14 +107,14 @@ implicit none
     integer :: nblfpg,  nuflpg, nufgpg, jliel, jliel1
     integer :: jcesgl, jcesgv, jcesgd, nbpt, nbsp
     character(len=3) :: exixfm
-    character(len=8) :: ma, fapg(nbfamx), nomgd, famil, elrefe, param
+    character(len=8) :: ma, fapg(MT_NBFAMX), nomgd, famil, elrefe, param
     character(len=8) :: lielrf(nbflmx), lifapg(nbflmx)
     character(len=16) :: pheno, option, nomte, nofpg, valk(2)
     character(len=19) :: mnoga, ligrel, celmod, ligre1, chsgeo
     character(len=24) :: obnbpg, obnbno, obdime, kecono
     character(len=32) :: noflpg
-    real(kind=8) :: xno(3*nbnomx), xpg(3*nbpgmx), vol, ff(nbnomx)
-    real(kind=8) :: poipg(nbnomx)
+    real(kind=8) :: xno(3*MT_NNOMAX), xpg(3*nbpgmx), vol, ff(MT_NNOMAX)
+    real(kind=8) :: poipg(MT_NNOMAX)
     aster_logical :: econom
     integer, pointer :: nolocfpg(:) => null()
     integer, pointer :: celd(:) => null()
@@ -194,13 +195,12 @@ implicit none
             zi(jliel1-1+2)=zi(jliel-1+nel+1)
             do iel = 1, nel
                 ima=zi(jliel-1+iel)
-                if (ima .lt. 0) goto 882
+                if (ima .lt. 0) cycle
                 if (iel .eq. 1) then
                     mailref(ima)=+zi(jliel-1+1)
                 else
                     mailref(ima)=-zi(jliel-1+1)
                 endif
-882             continue
             end do
         else
             call jecroc(jexnum(ligre1//'.LIEL', igr))
@@ -211,9 +211,8 @@ implicit none
             do iel = 1, nel
                 zi(jliel1-1+iel)=zi(jliel-1+iel)
                 ima=zi(jliel-1+iel)
-                if (ima .lt. 0) goto 884
+                if (ima .lt. 0) cycle
                 mailref(ima)=+zi(jliel-1+iel)
-884             continue
             end do
         endif
     end do
@@ -320,11 +319,10 @@ implicit none
         do kfam = 1, nbfam
             elrefe=lielrf(kfam)
             famil=lifapg(kfam)
-!
             call elraca(elrefe, ndim, nno, nnos, nbfpg,&
                         fapg, nbpgf, xno, vol)
-            ASSERT(nbfpg.le.nbfamx)
-            ASSERT(nno.le.nbnomx)
+            ASSERT(nbfpg.le.MT_NBFAMX)
+            ASSERT(nno.le.MT_NNOMAX)
 !
 !         4.2.1 CALCUL DE NPG ET XPG (SI FAMILLE != XFEM)
 !         ------------------------------------------------

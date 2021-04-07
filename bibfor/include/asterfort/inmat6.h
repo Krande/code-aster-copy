@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "MeshTypes_type.h"
 !
 interface
     subroutine inmat6(elrefa, fapg, mganos)
+        integer, parameter :: nbpgmx=1000
         character(len=8), intent(in) :: elrefa, fapg
-        integer, parameter :: nbpgmx=1000, nbnomx=27
-        real(kind=8), intent(out) :: mganos(nbpgmx, nbnomx)
+        real(kind=8), intent(out) :: mganos(nbpgmx, MT_NNOMAX)
     end subroutine inmat6
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine arlref(elrefe, fami, nomte, ndim, nno,&
                   nnos, npg, jpoids, jcoopg, jvf,&
                   jdfde, jdfd2, jgano)
+!
 use calcul_module, only : ca_iactif_, ca_jnolfp_, ca_jpnlfp_, ca_nblfpg_, ca_nbsav_
+!
 implicit none
+!
+#include "MeshTypes_type.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -73,15 +77,13 @@ implicit none
 
 !   -------------------------------------------------------------------
 
-    integer :: nbnomx, nbfamx
-    parameter    ( nbnomx=27, nbfamx=20)
-    character(len=8) :: elrf, famil, fapg(nbfamx)
+    character(len=8) :: elrf, famil, fapg(MT_NBFAMX)
     character(len=16) :: nofgpg
     character(len=32) :: noflpg
-    integer :: nbfpg, nbpg(nbfamx), jvr, decal, ifam, lonfam
+    integer :: nbfpg, nbpg(MT_NBFAMX), jvr, decal, ifam, lonfam
     integer :: nufpg, nufgpg, nuflpg, jdfd2l, jganol
     integer :: ndiml, nnosl, nnol, npgl, jpoidl, jcoopl, jvfl, jdfdel
-    real(kind=8) :: vol, x(3*nbnomx)
+    real(kind=8) :: vol, x(3*MT_NNOMAX)
 
 !   -- pour faire des "save" et gagner du temps CPU :
     integer :: maxsav
@@ -135,27 +137,29 @@ implicit none
     endif
     call jenuno(jexnum('&CATA.TM.NOFPG', nufgpg), nofgpg)
     ASSERT(nofgpg(1:8).eq.elrf)
+
+! - Get list of integration schemes of geometric support
     call elraca(elrf, ndiml, nnol, nnosl, nbfpg,&
                 fapg, nbpg, x, vol)
-    ASSERT(nbfpg.lt.nbfamx)
-    nufpg = indik8(fapg,nofgpg(9:16),1,nbfpg)
-    ASSERT(nufpg.gt.0)
+    ASSERT(nbfpg .lt. MT_NBFAMX)
+
+! - Get index for integration scheme
+    nufpg = indik8(fapg, nofgpg(9:16), 1, nbfpg)
+    ASSERT(nufpg .gt. 0)
 
 
     call jeveuo('&INEL.'//elrf//'.ELRA_R', 'L', jvr)
 
     decal = 0
-    do ifam = 1,nufpg - 1
-    npgl = nbpg(ifam)
-
-    lonfam = npgl
-    lonfam = lonfam + npgl*ndiml
-    lonfam = lonfam + npgl*nnol
-    lonfam = lonfam + npgl*nnol*ndiml
-    lonfam = lonfam + npgl*nnol*ndiml*ndiml
-    lonfam = lonfam + 2 + npgl*nnol
-
-    decal = decal + lonfam
+    do ifam = 1, nufpg - 1
+        npgl = nbpg(ifam)
+        lonfam = npgl
+        lonfam = lonfam + npgl*ndiml
+        lonfam = lonfam + npgl*nnol
+        lonfam = lonfam + npgl*nnol*ndiml
+        lonfam = lonfam + npgl*nnol*ndiml*ndiml
+        lonfam = lonfam + 2 + npgl*nnol
+        decal = decal + lonfam
     end do
 
     npgl = nbpg(nufpg)

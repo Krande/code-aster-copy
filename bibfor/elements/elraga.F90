@@ -22,6 +22,7 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
 !
 implicit none
 !
+#include "MeshTypes_type.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/elraca.h"
@@ -34,7 +35,7 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
 !
 ! Finite elements management
 !
-! Get parameters of geometric support for finite element
+! Get parameters of integration scheme
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,10 +49,9 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nbpgmx = 1000
-    integer, parameter :: nbfamx = 20
-    character(len=8) :: elrefa, fapg, nofpg(nbfamx)
+    character(len=8) :: elrefa, fapg, nofpg(MT_NBFAMX)
     integer :: i, npar, npi, ix, iy, iz, npx, npyz
-    integer :: nno, nnos, nbfpg, nbpg1(nbfamx), ino, ifam
+    integer :: nno, nnos, nbfpg, nbpg1(MT_NBFAMX), ino, ifam
     real(kind=8) :: xpg(nbpgmx), ypg(nbpgmx), zpg(nbpgmx), hpg(nbpgmx), a(4)
     real(kind=8) :: h(4)
     real(kind=8) :: aty(7), ht(7), atz(7)
@@ -59,7 +59,7 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
     real(kind=8) :: d1, d12
     real(kind=8) :: p1, p2, p3, p4, p5
     real(kind=8) :: xa, xb
-    real(kind=8) :: zero, unquar, undemi, un, deux, xno(3*27), vol, a2, b2
+    real(kind=8) :: zero, unquar, undemi, un, deux, xno(3*MT_NNOMAX), vol, a2, b2
     real(kind=8) :: untiers
 #define t(u) 2.0d0*(u) - 1.0d0
 !
@@ -74,16 +74,19 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
     deux = 2.0d0
     untiers = 1.d0/3.d0
     rac5 = sqrt(5.d0)
-!
-!     -- CALCUL DE NBPG,NDIM,VOL,NNO,XNO :
-!     ------------------------------------
+
+! - Get list of integration schemes of geometric support
     call elraca(elrefa, ndim, nno, nnos, nbfpg,&
                 nofpg, nbpg1, xno, vol)
+    ASSERT((ndim.ge.0).and.(ndim.le.3))
+
+! - Get index for integration scheme
     ifam = indik8(nofpg,fapg,1,nbfpg)
     ASSERT(ifam .gt. 0)
+
+! - Get number of Gauss points
     nbpg = nbpg1(ifam)
-    ASSERT((ndim.ge.0).and.(ndim.le.3))
-!
+
 !
 !     -- TRAITEMENT GENERIQUE DE FAPG='NOEU' :
 !     -----------------------------------------

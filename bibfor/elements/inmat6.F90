@@ -20,16 +20,16 @@ subroutine inmat6(elrefa, fapg, mganos)
 !
 implicit none
 !
+#include "MeshTypes_type.h"
 #include "asterfort/assert.h"
 #include "asterfort/elraca.h"
 #include "asterfort/elraga.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/mgauss.h"
-#include "asterfort/r8inir.h"
 !
+integer, parameter :: nbpgmx=1000
 character(len=8), intent(in) :: elrefa, fapg
-integer, parameter :: nbpgmx=1000, nbnomx=27
-real(kind=8), intent(out) :: mganos(nbpgmx, nbnomx)
+real(kind=8), intent(out) :: mganos(nbpgmx, MT_NNOMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,13 +45,12 @@ real(kind=8), intent(out) :: mganos(nbpgmx, nbnomx)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbfamx=20
-    integer :: ndim, nno, nnos, nbfpg, nbpg(nbfamx)
+    integer :: ndim, nno, nnos, nbfpg, nbpg(MT_NBFAMX)
     integer :: i, kp, kdim, ln, j, lm, npg, iret
-    real(kind=8) :: xno(3*nbnomx), vol, ff(nbnomx), m(nbpgmx*nbnomx)
-    real(kind=8) :: p(nbpgmx*nbnomx)
+    real(kind=8) :: xno(3*MT_NNOMAX), vol, ff(MT_NNOMAX), m(nbpgmx*MT_NNOMAX)
+    real(kind=8) :: p(nbpgmx*MT_NNOMAX)
     real(kind=8) :: xpg(3*nbpgmx), poipg(nbpgmx), xg(3), det
-    character(len=8) :: nofpg(nbfamx), elref2
+    character(len=8) :: nofpg(MT_NBFAMX), elref2
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,13 +59,13 @@ real(kind=8), intent(out) :: mganos(nbpgmx, nbnomx)
     call elraga(elrefa, fapg, ndim, npg, xpg,&
                 poipg)
 !
-    ASSERT(nno.le.nbnomx)
+    ASSERT(nno.le.MT_NNOMAX)
     ASSERT(npg.le.nbpgmx)
 !
 ! - QU4/FIS2 NON INVERSIBLE => not inversible !
 !
     if (elrefa .eq. 'QU4' .and. fapg .eq. 'FIS2') then
-        call r8inir(nbnomx*nbnomx, 0.d0, mganos, 1)
+        mganos      = 0.d0
         mganos(1,1) = 1.d0
         mganos(1,4) = 1.d0
         mganos(2,2) = 1.d0

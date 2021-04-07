@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cesgno(ces1, celfpg, ces2)
-! person_in_charge: jacques.pellet at edf.fr
-    implicit none
+!
+implicit none
+!
+#include "MeshTypes_type.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -52,11 +54,10 @@ subroutine cesgno(ces1, celfpg, ces2)
 !         REMARQUE : LE CHAM_ELEM_S EST DEJA ALLOUE.
 !-----------------------------------------------------------------------
 !
-    integer :: nbnomx, nbfamx, nbpgmx
-    parameter (nbnomx=27,nbfamx=20,nbpgmx=27)
-    character(len=8) :: elrf, fapg1, fapg(nbfamx)
-    real(kind=8) :: vol, x(3*nbnomx)
-    integer :: nbfpg, nbpg(nbfamx), ndiml, nnol, nnosl
+    integer, parameter :: nbpgmx =27
+    character(len=8) :: elrf, fapg1, fapg(MT_NBFAMX)
+    real(kind=8) :: vol, x(3*MT_NNOMAX)
+    integer :: nbfpg, nbpg(MT_NBFAMX), ndiml, nnol, nnosl
 !
     integer :: ima, ncmp, icmp, ino, isp, nno
     integer :: nbma, iret
@@ -69,8 +70,8 @@ subroutine cesgno(ces1, celfpg, ces2)
     character(len=3) :: tsca
     character(len=16) :: schema
     character(len=24) :: liobj(10)
-    real(kind=8) :: vrpg(nbpgmx), vrno(nbnomx), sr
-    complex(kind=8) :: vcpg(nbpgmx), vcno(nbnomx), sc
+    real(kind=8) :: vrpg(nbpgmx), vrno(MT_NNOMAX), sr
+    complex(kind=8) :: vcpg(nbpgmx), vcno(MT_NNOMAX), sc
     character(len=8), pointer :: cesk(:) => null()
     integer :: ndim
     integer :: nnos, ipoids, jcoopg, ivf, idfde, jdfd2, jgano
@@ -148,14 +149,19 @@ subroutine cesgno(ces1, celfpg, ces2)
 !
         if (avance .eq. 1) then
             ASSERT(schema(1:8).eq.elrf)
+
+! --------- Get list of integration schemes of geometric support
             call elraca(elrf, ndiml, nnol, nnosl, nbfpg,&
                         fapg, nbpg, x, vol)
-            ASSERT(nbfpg.lt.nbfamx)
-            nufpg = indik8(fapg1,fapg1,1,nbfpg)
+            ASSERT(nbfpg .lt. MT_NBFAMX)
+
+! --------- Get index for integration scheme
+            nufpg = indik8(fapg1, fapg1, 1, nbfpg)
             ASSERT(nufpg.gt.0)
+
             call jeveuo('&INEL.'//elrf//'.ELRA_R', 'L', jvr)
             decal = 0
-            do 145 ifam = 1, nufpg - 1
+            do ifam = 1, nufpg - 1
                 npgl = nbpg(ifam)
 !
                 lonfam = npgl
@@ -166,7 +172,7 @@ subroutine cesgno(ces1, celfpg, ces2)
                 lonfam = lonfam + 2 + npgl*nnol
 !
                 decal = decal + lonfam
-145          continue
+            end do
 !
             npgl = nbpg(nufpg)
 !
@@ -188,7 +194,7 @@ subroutine cesgno(ces1, celfpg, ces2)
             jdfd2 = jdfd2l
             jgano = jganol
 !
-            ASSERT(nno.le.nbnomx)
+            ASSERT(nno.le.MT_NNOMAX)
             ASSERT(npg.le.nbpgmx)
         endif
 !
@@ -229,17 +235,22 @@ subroutine cesgno(ces1, celfpg, ces2)
 !           OUT : NPG,NNO,JMAT
 !           --------------------------------------------------------
         if (avance .eq. 1) then
+
+! --------- Get list of integration schemes of geometric support
             call elraca(elrf, ndiml, nnol, nnosl, nbfpg,&
                         fapg, nbpg, x, vol)
-            nufpg = indik8(fapg,fapg1,1,nbfpg)
+
+! --------- Get index for integration scheme
+            nufpg = indik8(fapg, fapg1, 1, nbfpg)
             ASSERT(nufpg.gt.0)
+
             call nuelrf(elrf, nujni)
             ASSERT(nujni.eq.2)
             call jni002(elrf, 10, liobj, nbobj)
             call jeveuo('&INEL.'//elrf//'.ELRA_R', 'L', jvr)
 !
             decal = 0
-            do 20 ifam = 1, nufpg - 1
+            do ifam = 1, nufpg - 1
                 npgl = nbpg(ifam)
 !
                 lonfam = npgl
@@ -250,7 +261,7 @@ subroutine cesgno(ces1, celfpg, ces2)
                 lonfam = lonfam + 2 + npgl*nnol
 !
                 decal = decal + lonfam
- 20         continue
+            end do
 !
             npgl = nbpg(nufpg)
 !
@@ -263,7 +274,7 @@ subroutine cesgno(ces1, celfpg, ces2)
             nno = nint(zr(jganol-1+1))
             npg = nint(zr(jganol-1+2))
             jmat = jganol + 2
-            ASSERT(nno.le.nbnomx)
+            ASSERT(nno.le.MT_NNOMAX)
             ASSERT(npg.le.nbpgmx)
         endif
 !
@@ -319,8 +330,6 @@ subroutine cesgno(ces1, celfpg, ces2)
  70                 continue
                 endif
 
-!
-!
 !               -- RECOPIE DE VXNO :
                 do 80 ino = 1, nno
                     call cesexi('C', jces2d, jces2l, ima, ino,&
@@ -335,16 +344,10 @@ subroutine cesgno(ces1, celfpg, ces2)
 80              continue
 90          continue
 100      continue
-!
-!
     endif
 !
-!
-!
-    110 continue
+110 continue
     if (avance .gt. 0) goto 10
-!
-!
 !
     call jedema()
 end subroutine

@@ -24,6 +24,7 @@ subroutine xdelt2(elp, n, ndime, ksi,&
 implicit none
 !
 #include "jeveux.h"
+#include "MeshTypes_type.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/elraca.h"
@@ -52,15 +53,10 @@ implicit none
 !       DELTA   : QUANTITE A MINIMISER
 !     ----------------------------------------------------------------
 !
-    integer :: nbnomx
-    parameter     (nbnomx = 27)
-    integer :: nbfamx
-    parameter     (nbfamx = 20)
-!
-    character(len=8) :: fapg(nbfamx)
-    integer :: ibid, ibid2, nnos, nbfpg, nbpg(nbfamx), nno
-    real(kind=8) :: vol, refcoo(3*nbnomx)
-    real(kind=8) :: ff(nbnomx), dff(3, nbnomx)
+    character(len=8) :: fapg(MT_NBFAMX)
+    integer :: ibid, ibid2, nnos, nbfpg, nbpg(MT_NBFAMX), nno
+    real(kind=8) :: vol, refcoo(3*MT_NNOMAX)
+    real(kind=8) :: ff(MT_NNOMAX), dff(3, MT_NNOMAX)
     integer :: i, j, k
     real(kind=8) :: p(ndim), m(ndim), nor(ndim)
     real(kind=8) :: pint1(ndim), pint2(ndim)
@@ -116,9 +112,9 @@ implicit none
 !                   NOR = (XII-XI,YII-YI,ZII-ZI)
 !
     do  i = 1, ndim
-        do 30 j = 1, nno
+        do j = 1, nno
             p(i)=p(i)+ff(j)*tabco(ndim*(j-1)+i)
-30      continue
+        end do
         m(i)=0.5d0*(pint1(i)+pint2(i))
         nor(i)=pint2(i)-pint1(i)
         r(2)=r(2)+(p(i)-m(i))*nor(i)
@@ -126,13 +122,13 @@ implicit none
 !
 !     CALCUL DES DERIVEES PREMIERES DE R2 EN KSI
     do  i = 1, ndime
-        do 45 k = 1, ndim
+        do k = 1, ndim
             dx=0.d0
-            do 50 j = 1, nno
+            do j = 1, nno
                 dx=dx+dff(i,j)*tabco(ndim*(j-1)+k)
-50          continue
+            end do
             jac(2,i)=jac(2,i)+dx*nor(k)
-45      continue
+        end do
     end do
 !
 ! --- CALCUL DE R3,DR2 EN KSI EN FONTION DE LA FACE A APPARTENIR
@@ -141,25 +137,25 @@ implicit none
     if (ndime .eq. 3) then
 ! --- RECUPERATION DES COORDONNEES DANS L'ESPACE DE REFERENCE DES
 ! --- NOEUDS DE L'ELEMENT PARENT
-        call vecini(3*nbnomx, 0.d0, refcoo)
+        refcoo = 0.d0
         call elraca(elp, ibid, ibid2, nnos, nbfpg,&
                     fapg, nbpg, refcoo, vol)
 !
 ! ---  CALCUL DES VECTEURS N(1)N(2) ET N(1)N(3)
         call vecini(3, 0.d0, v1)
         call vecini(3, 0.d0, v2)
-        do 80 i = 1, ndim
+        do i = 1, ndim
             v1(i)=refcoo(ndim*(n(2)-1)+i) - refcoo(ndim*(n(1)-1)+i)
             v2(i)=refcoo(ndim*(n(3)-1)+i) - refcoo(ndim*(n(1)-1)+i)
-80      continue
+        end do
 !
 ! calcul de la NORMALE a la face
         call provec(v1, v2, nf)
 !
-        do 110 i = 1, ndim
-            r(3)=r(3)+nf(i)*(ksi(i)-refcoo(ndim*(n(1)-1)+i))
-            jac(3,i)=nf(i)
-110      continue
+        do i = 1, ndim
+            r(3)     = r(3)+nf(i)*(ksi(i)-refcoo(ndim*(n(1)-1)+i))
+            jac(3,i) = nf(i)
+        end do
     endif
 !
     det=0.d0
@@ -171,9 +167,9 @@ implicit none
 ! --- CALCUL DES QUANTITES A ANNULER
 !     CALCUL DE DELTAS
     do  i = 1, ndime
-        do 100 j = 1, ndime
+        do j = 1, ndime
             delta(i)=delta(i)+inv(i,j)*r(j)
-100      continue
+        end do
     end do
 !
 end subroutine

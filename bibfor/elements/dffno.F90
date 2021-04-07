@@ -15,31 +15,31 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dffno(elrefe, ndim, nno, nnos, dff)
-    implicit none
+!
+implicit none
+!
+#include "MeshTypes_type.h"
 #include "asterfort/elraca.h"
 #include "asterfort/elrfdf.h"
-    character(len=*) :: elrefe
-    integer :: ndim, nno, nnos
-    real(kind=8) :: dff(*)
+character(len=*) :: elrefe
+integer :: ndim, nno, nnos
+real(kind=8) :: dff(*)
 ! BUT:   CALCUL DES DERIVEES DES FONCTIONS DE FORMES
 !        AUX NOEUDS D'UN ELREFE
 !
-    integer :: nbnomx, nbfamx
-    parameter    ( nbnomx=27, nbfamx=20)
-    real(kind=8) :: x(nbnomx*3), vol, tab(3, nbnomx)
-    integer :: nbfpg, nbpg(nbfamx), ino, ideri, ifonc
-    character(len=8) :: fapg(nbfamx)
+    real(kind=8) :: x(MT_NNOMAX*3), vol, tab(3, MT_NNOMAX)
+    integer :: nbfpg, nbpg(MT_NBFAMX), ino, ideri, ifonc
+    character(len=8) :: fapg(MT_NBFAMX)
 ! ----------------------------------------------------------------------
-!
     call elraca(elrefe, ndim, nno, nnos, nbfpg,&
                 fapg, nbpg, x, vol)
     do ino = 1, nno
         call elrfdf(elrefe, x(ndim*(ino-1)+1), tab)
         do ideri = 1, ndim
             do ifonc = 1, nno
-                dff((ino-1)*nno*ndim+(ideri-1)*nno+ifonc)=tab(ideri, ifonc)
+                dff((ino-1)*nno*ndim+(ideri-1)*nno+ifonc) = tab(ideri, ifonc)
             end do
         end do
     end do

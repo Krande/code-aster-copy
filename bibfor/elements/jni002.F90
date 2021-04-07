@@ -20,6 +20,7 @@ subroutine jni002(elrefa, nmaxob, liobj, nbobj)
 !
 implicit none
 !
+#include "MeshTypes_type.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -40,17 +41,16 @@ character(len=8) :: elrefa
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbpgmx, nbnomx, nbfamx
-    parameter (nbpgmx=1000,nbnomx=27,nbfamx=20)
+    integer, parameter :: nbpgmx = 1000
 !
-    integer :: nbpg(nbfamx), iret, ndim, nno, nnos, nbfpg
+    integer :: nbpg(MT_NBFAMX), iret, ndim, nno, nnos, nbfpg
     integer :: nmaxob, nbobj, lonfam, ifam, lon2, decal, idim
     integer :: ipg, ino, nderiv, jvi, jvr, npg, nno2, jdim
-    real(kind=8) :: xno(3*nbnomx), vol, rvide
+    real(kind=8) :: xno(3*MT_NNOMAX), vol, rvide
     real(kind=8) :: xpg(3*nbpgmx), poipg(nbpgmx)
-    real(kind=8) :: ff(nbnomx), dff(3, nbnomx), dff2(3, 3, nbnomx)
+    real(kind=8) :: ff(MT_NNOMAX), dff(3, MT_NNOMAX), dff2(3, 3, MT_NNOMAX)
     character(len=24) :: liobj(nmaxob)
-    character(len=8) :: nofpg(nbfamx)
+    character(len=8) :: nofpg(MT_NBFAMX)
 !
 !     NBPGMX, NBNOMX, NBFAMX SE REFERER A ELRACA
 !
@@ -66,13 +66,14 @@ character(len=8) :: elrefa
 !
     call jeexin('&INEL.'//elrefa//'.ELRA_I', iret)
     if (iret .gt. 0) goto 999
-!
-!    write (6,*) "elrefa  ", elrefa
+
+! - Get list of integration schemes of geometric support
     call elraca(elrefa, ndim, nno, nnos, nbfpg,&
                 nofpg, nbpg, xno, vol)
+
     ASSERT((ndim.ge.0) .and. (ndim.le.3))
-    ASSERT((nno.gt.0) .and. (nno.le.nbnomx))
-    ASSERT((nbfpg.gt.0) .and. (nbfpg.le.nbfamx))
+    ASSERT((nno.gt.0) .and. (nno.le.MT_NNOMAX))
+    ASSERT((nbfpg.gt.0) .and. (nbfpg.le.MT_NBFAMX))
 !
 !
     call wkvect(liobj(1), 'V V I', 4+nbfpg, jvi)
@@ -81,7 +82,7 @@ character(len=8) :: elrefa
     zi(jvi-1+3) = nno
     zi(jvi-1+4) = nnos
     lon2 = 0
-    do ifam = 1,nbfpg
+    do ifam = 1, nbfpg
         npg = nbpg(ifam)
         ASSERT((npg.gt.0) .and. (npg.le.nbpgmx))
         zi(jvi-1+4+ifam) = npg
@@ -148,7 +149,7 @@ character(len=8) :: elrefa
 !       -- DERIVEES 2EMES DES FONCTIONS DE FORME :
 !       ------------------------------------------------
         do ipg = 1,npg
-            call elrfd2(elrefa, xpg(ndim* (ipg-1)+1), 9*nbnomx, dff2, nno2, nderiv)
+            call elrfd2(elrefa, xpg(ndim* (ipg-1)+1), 9*MT_NNOMAX, dff2, nno2, nderiv)
             if (nderiv .eq. 0) then
                 ASSERT(nno2.eq.0)
                 rvide = r8vide()

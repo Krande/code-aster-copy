@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0065(option, nomte)
-    implicit none
+!
+implicit none
+!
+#include "MeshTypes_type.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dfdm3d.h"
@@ -33,26 +36,25 @@ subroutine te0065(option, nomte)
 !     CALCULE DES TERMES PROPRES A UN STRUCTURE
 !     OPTION : 'MASS_INER'              (ELEMENTS ISOPARAMETRIQUES 3D)
 !     ------------------------------------------------------------------
-    integer :: nbres, nbfamx
+    integer, parameter :: nbres = 3
 !-----------------------------------------------------------------------
     integer :: l, lcastr, ndim, nnos
     real(kind=8) :: rho(1), xxi, yyi, zero, zzi
 !-----------------------------------------------------------------------
-    parameter   ( nbres = 3, nbfamx = 20 )
 !
     integer :: icodre(nbres)
-    character(len=8) :: lielrf(nbfamx)
+    character(len=8) :: lielrf(MT_NBFAMX)
     character(len=16) :: nomres(nbres)
     character(len=32) :: phenom
     real(kind=8) :: poids, volume
-    real(kind=8) :: x(27), y(27), z(27), xg, yg, zg, matine(6)
+    real(kind=8) :: x(MT_NNOMAX), y(MT_NNOMAX), z(MT_NNOMAX), xg, yg, zg, matine(6)
     real(kind=8) :: rhopou, rhoflu, tpg, valres(nbres), ayz, ycell, rapp, yf
     integer :: ipoids, ivf, idfde, igeom, nbv, lcorr
     integer :: jgano, nno, kp, npg, i, j, imate, ntrou
 !     ------------------------------------------------------------------
     zero = 0.d0
 !
-    call elref2(nomte, nbfamx, lielrf, ntrou)
+    call elref2(nomte, MT_NBFAMX, lielrf, ntrou)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)

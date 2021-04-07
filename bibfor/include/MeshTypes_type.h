@@ -24,6 +24,8 @@
 #define MT_NPHMAX  25
 ! Maximum number of nodes of all cells
 #define MT_NNOMAX  27
+! Maximum number of families for integration schemes
+#define MT_NBFAMX  20
 ! Index of TYPE_ELEM (geometric)
 #define MT_POI1    1
 #define MT_SEG2    2

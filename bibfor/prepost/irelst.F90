@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -81,9 +81,9 @@ character(len=80) :: caimpk(3, nbimpr)
     med_idt :: idfimd
     integer :: nbtyp, nbsp
     integer :: medcel, nbmssu, nbattc, prespr
-    integer, parameter :: lgmax = 1000, edleaj = 1, nbfamx = 20
+    integer, parameter :: lgmax = 1000, edleaj = 1
     integer, parameter :: edmail = 0, edcart = 0, edfuin = 0, ednoda = 0, edtyre = 6
-    character(len=8) :: lielrf(nbfamx)
+    character(len=8) :: lielrf(MT_NBFAMX)
     real(kind=8)     :: refcoo(3*lgmax), gscoo(3*lgmax), wg(lgmax)
     integer :: nnotyp(MT_NTYMAX), typgeo(MT_NTYMAX), renumd(MT_NTYMAX)
     integer :: modnum(MT_NTYMAX), nuanom(MT_NTYMAX, MT_NNOMAX), numnoa(MT_NTYMAX, MT_NNOMAX)
@@ -169,7 +169,7 @@ character(len=80) :: caimpk(3, nbimpr)
 !
         call jenuno(jexnum('&CATA.TE.NOMTE', ntypef), nomtef)
 !
-        call elref2(nomtef, nbfamx, lielrf, nbelr)
+        call elref2(nomtef, MT_NBFAMX, lielrf, nbelr)
         ASSERT(nbelr.gt.0)
 !
         call uteref(chanom, typech, ntypef, nomtef, nomfpg,&

@@ -15,14 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
-
+!
 ! ======================================================================
 !     COMMANDE:  PROJ_CHAMP  METHODE:'COUPLAGE' (COUPLAGE IFS VIA YACS)
 ! ----------------------------------------------------------------------
 !
-    implicit none
+!
+implicit none
+!
+#include "MeshTypes_type.h"
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elraca.h"
@@ -42,17 +45,17 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
     character(len=16) :: nomgma, nomgno, corres
 ! ======================================================================
 ! ======================================================================
-    integer :: iret, itypma, ndim, nbpg, ib, ib2, flag, ibt(20)
+    integer :: iret, itypma, ndim, nbpg, ib, ib2, flag, ibt(MT_NBFAMX)
     integer :: nodegl, inol, ino2, mailrf, nbpgrf
     integer :: inog2, ii, ima1, ima, inom1, inom2, inom3
     integer :: nbmag1, nbnog2, nbnog
     integer :: ialim1, ialin2, jcoor1, icxma1
     integer :: iacono, iaconb, iacom1, iaconu, iacocf
-    integer :: listno(27)
+    integer :: listno(MT_NNOMAX)
     real(kind=8) :: normgl, rbid, normlo
     real(kind=8) :: con1m2(3), con1m1(3), con2m1(3), con3m1(3)
-    real(kind=8) :: cobary(3), ksi(2), ff(27), coefno(27), crrefe(81)
-    character(len=8) :: ntypma, elref, cbt(15)
+    real(kind=8) :: cobary(3), ksi(2), ff(MT_NNOMAX), coefno(MT_NNOMAX), crrefe(81)
+    character(len=8) :: ntypma, elref, cbt(MT_NBFAMX)
     character(len=24) :: grpma, grpno
     aster_logical :: inmail
     real(kind=8), pointer :: coor2(:) => null()
@@ -111,9 +114,9 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
     do inog2 = 1, nbnog2
 !
         ino2 = zi(ialin2-1+inog2)
-        do 20 ii = 1, 3
+        do ii = 1, 3
             con1m2(ii) = coor2(3*(ino2-1)+ii)
- 20     continue
+        end do
         mailrf = 0
 !
 !       RECHERCHE DES MAILLES1 ASSOCIEES AU NOEUD1

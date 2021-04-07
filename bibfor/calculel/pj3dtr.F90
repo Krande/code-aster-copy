@@ -15,10 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
                   geom2, dala, listInterc, nbInterc)
-    implicit none
+!
+implicit none
+!
+#include "MeshTypes_type.h"
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -61,14 +64,12 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
 ! ----------------------------------------------------------------------
 
     aster_logical :: lext
-    integer :: nbnomx, nbfamx
-    parameter    ( nbnomx=27, nbfamx=20)
     integer :: cntetr(4, 1), cnpent(4, 3), cnhexa(4, 6), cnpyra(4, 2)
-    integer :: nbpg(nbfamx)
+    integer :: nbpg(MT_NBFAMX)
     real(kind=8) :: ksi, eta, dzeta, x1, x2, x3, vol
-    real(kind=8) :: crrefe(3*nbnomx), xr1(3), xr2(3), xr3(3)
-    real(kind=8) :: ff(nbnomx), cooele(3*nbnomx)
-    character(len=8) :: elrefa, m1, m2, fapg(nbfamx), nomnoe
+    real(kind=8) :: crrefe(3*MT_NNOMAX), xr1(3), xr2(3), xr3(3)
+    real(kind=8) :: ff(MT_NNOMAX), cooele(3*MT_NNOMAX)
+    character(len=8) :: elrefa, m1, m2, fapg(MT_NBFAMX), nomnoe
     integer :: i1conb, i1conu, nno1, nno2
     integer :: nma1, nma2, ialim1, ialin1, ialin2, ilcnx1
     integer :: j2xxk1, i2conb, i2com1, ideca2, ino2, itr, ima1, nbno, i2conu

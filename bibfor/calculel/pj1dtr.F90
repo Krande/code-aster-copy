@@ -15,9 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
-    implicit none
+!
+implicit none
+!
+#include "MeshTypes_type.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -45,16 +48,14 @@ subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
 !  IN        ELRF1D(5) K8 : NOMS DES 3 TYPES DE MAILLES 1D  (SEGX)
 ! ----------------------------------------------------------------------
 
-    integer :: nbnomx, nbfamx
-    parameter    ( nbnomx=27, nbfamx=20)
-    character(len=8) :: m1, m2, elrefa, fapg(nbfamx)
-    integer :: nbpg(nbfamx), i1conb, i1conu,   nno1, nno2
+    character(len=8) :: m1, m2, elrefa, fapg(MT_NBFAMX)
+    integer :: nbpg(MT_NBFAMX), i1conb, i1conu,   nno1, nno2
     integer :: nma1
     integer :: nma2, ialim1, ialin1,   ilcnx1,  j2xxk1
     integer :: i2conb, i2com1, ideca2, ino2, itr, ima1, nbno, i2conu, i2cocf
     integer :: ideca1, itypm, nutm, ndim, nno, nnos, nbfpg, kk, ino
     integer :: nuno,  ialin2, i2coco
-    real(kind=8) :: crrefe(3*nbnomx), ksi, x(1), ff(nbnomx), vol, x1
+    real(kind=8) :: crrefe(3*MT_NNOMAX), ksi, x(1), ff(MT_NNOMAX), vol, x1
     integer, pointer :: seg2(:) => null()
     integer, pointer :: connex(:) => null()
     integer, pointer :: pjef_tr(:) => null()
@@ -107,14 +108,13 @@ subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
     do ino2 = 1, nno2
 !       ITR : SEG2 ASSOCIE A INO2
         itr=pjef_tr(ino2)
-        if (itr .eq. 0) goto 10
+        if (itr .eq. 0) cycle
 !       IMA1 : MAILLE DE M1 ASSOCIEE AU SEG2 ITR
         ima1=seg2(1+3*(itr-1)+3)
         nbno=zi(ilcnx1+ima1)-zi(ilcnx1-1+ima1)
         zi(i2conb-1+ino2)=nbno
         zi(i2com1-1+ino2)=ima1
         ideca2=ideca2+nbno
- 10     continue
     end do
     if (ideca2 .eq. 0) then
         call utmess('F', 'CALCULEL3_97')
@@ -131,7 +131,7 @@ subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
     do ino2 = 1, nno2
 !       ITR : SEG2 ASSOCIE A INO2
         itr = pjef_tr(ino2)
-        if (itr .eq. 0) goto 20
+        if (itr .eq. 0) cycle
 !       IMA1 : MAILLE DE M1 ASSOCIE AU SEG2 ITR
         ima1= seg2(1+3*(itr-1)+3)
 !       ITYPM : TYPE DE LA MAILLE IMA1
@@ -170,7 +170,6 @@ subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
         ideca1=ideca1+2
         ideca2=ideca2+nbno
 
- 20     continue
     end do
 
     call jedema()

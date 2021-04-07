@@ -15,10 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
                   geom2, spacedim, dala, listInterc, nbInterc)
-    implicit none
+!
+implicit none
+!
+#include "MeshTypes_type.h"
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -68,17 +71,15 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
 ! ----------------------------------------------------------------------
 
     aster_logical :: lext
-    integer :: nbnomx, nbfamx
-    parameter    ( nbnomx=27, nbfamx=20)
-    character(len=8) :: m1, m2, elrefa, fapg(nbfamx), nomnoe
-    integer :: nbpg(nbfamx), cnquad(3, 2)
-    real(kind=8) :: crrefe(3*nbnomx), ksi, eta, xr1(2), xr2(2), xr3(2)
-    real(kind=8) :: ff(nbnomx), cooele(3*nbnomx), x1, x2, vol, xg(2)
+    character(len=8) :: m1, m2, elrefa, fapg(MT_NBFAMX), nomnoe
+    integer :: nbpg(MT_NBFAMX), cnquad(3, 2)
+    real(kind=8) :: crrefe(3*MT_NNOMAX), ksi, eta, xr1(2), xr2(2), xr3(2)
+    real(kind=8) :: ff(MT_NNOMAX), cooele(3*MT_NNOMAX), x1, x2, vol, xg(2)
     integer :: i1conb, i1conu, i2cocf, i2coco
     integer :: i2com1, i2conb, j2xxk1, i2conu, ialim1, ialin1, ialin2
     integer :: ideca1, ideca2, ilcnx1, ima1, ino, ino2
     integer :: iret, itr, itypm, kdim, kk, nbfpg, nbno, ndim, nma1, nma2, nno
-    integer :: nno1, nno2, nnos, nuno, nuno2, nutm, nunos(nbnomx)
+    integer :: nno1, nno2, nnos, nuno, nuno2, nutm, nunos(MT_NNOMAX)
 
     integer :: nbmax
     parameter  (nbmax=5)
@@ -150,7 +151,6 @@ subroutine pj2dtr(cortr3, corres, nutm2d, elrf2d, geom1,&
     call wkvect(corres//'.PJEF_NB', 'V V I', nno2, i2conb)
     call wkvect(corres//'.PJEF_M1', 'V V I', nno2, i2com1)
     ideca2=0
-
     do ino2 = 1, nno2
 !       ITR : TRIA3 ASSOCIE A INO2
         itr=pjef_tr(ino2)

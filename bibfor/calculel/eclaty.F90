@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,10 @@ subroutine eclaty(nomte, elrefa, fapg, npg, npoini,&
                   nterm1, nsomm1, csomm1, tyma, nbno2,&
                   connx, mxnbn2, mxnbpi, mxnbte, mxnbse,&
                   nbsel, corsel, iret)
-    implicit   none
+!
+implicit none
+!
+#include "MeshTypes_type.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/ecla2d.h"
@@ -84,11 +87,9 @@ subroutine eclaty(nomte, elrefa, fapg, npg, npoini,&
 !                    (1<= IPOINI <= NPOINI)
 !
 ! ---------------------------------------------------------------------
-    integer :: nbnomx, nbfamx
-    parameter    ( nbnomx=27, nbfamx=20)
-    integer :: nno, nnos, nbfpg, nbpg(nbfamx), nufpg
-    real(kind=8) :: vol, x(3*nbnomx)
-    character(len=8) :: famg(nbfamx)
+    integer :: nno, nnos, nbfpg, nbpg(MT_NBFAMX), nufpg
+    real(kind=8) :: vol, x(3*MT_NNOMAX)
+    character(len=8) :: famg(MT_NBFAMX)
 ! ---------------------------------------------------------------------
     call jemarq()
 !
@@ -96,12 +97,15 @@ subroutine eclaty(nomte, elrefa, fapg, npg, npoini,&
     npoini = 0
     nbsel = 0
     iret = 1
-!
+
+! - Get list of integration schemes of geometric support
     call elraca(elrefa, ndim, nno, nnos, nbfpg,&
                 famg, nbpg, x, vol)
-!
-    nufpg = indik8( famg, fapg, 1, nbfpg )
+
+! - Get index for integration scheme
+    nufpg = indik8(famg, fapg, 1, nbfpg)
     ASSERT(nufpg.gt.0)
+
     npg = nbpg(nufpg)
 !
     if (ndim .eq. 2) then
@@ -110,14 +114,14 @@ subroutine eclaty(nomte, elrefa, fapg, npg, npoini,&
                     connx, mxnbn2, mxnbpi, mxnbte, mxnbse,&
                     nbsel, corsel)
         iret = 0
-!
     else if (ndim .eq. 3) then
         call ecla3d(nomte, elrefa, fapg, npg, npoini,&
                     nterm1, nsomm1, csomm1, tyma, nbno2,&
                     connx, mxnbn2, mxnbpi, mxnbte, mxnbse,&
                     nbsel, corsel)
         iret = 0
-!
+    else
+        ASSERT(ASTER_FALSE)
     endif
 !
     call jedema()

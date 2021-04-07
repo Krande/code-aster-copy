@@ -20,12 +20,12 @@ subroutine utelvf(elrefa, famil, nomjv, npg, nno)
 !
 implicit none
 !
+#include "MeshTypes_type.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elraca.h"
 #include "asterfort/elraga.h"
 #include "asterfort/elrfvf.h"
-#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 integer :: npg, nno
@@ -42,27 +42,27 @@ character(len=*) :: nomjv
 !        NNO    : NOMBRE DE NOEUDS DU TYPE_MAILLE
 ! ----------------------------------------------------------------------
 !
-    integer :: nbpgmx, nbnomx, nbfamx
-    parameter (nbpgmx=27, nbnomx=27, nbfamx=20)
-!
-    integer :: nbpg(nbfamx), ndim, nnos, nbfpg
+    integer, parameter :: nbpgmx = 27
+    integer :: nbpg(MT_NBFAMX), ndim, nnos, nbfpg
     integer :: ifam, decal, ipg, ino, jvr
-    real(kind=8) :: xno(3*nbnomx), xpg(3*nbpgmx), poipg(nbpgmx), ff(nbnomx)
+    real(kind=8) :: xno(3*MT_NNOMAX), xpg(3*nbpgmx), poipg(nbpgmx), ff(MT_NNOMAX)
     real(kind=8) :: vol
-    character(len=8) :: nofpg(nbfamx)
+    character(len=8) :: nofpg(MT_NBFAMX)
 ! DEB ------------------------------------------------------------------
 !
+
+! - Get list of integration schemes of geometric support
     call elraca(elrefa, ndim, nno, nnos, nbfpg,&
                 nofpg, nbpg, xno, vol)
-!
+
     ASSERT((ndim.ge.0) .and. (ndim.le.3))
-    ASSERT((nno.gt.0) .and. (nno.le.nbnomx))
-    ASSERT((nbfpg.gt.0) .and. (nbfpg.le.nbfamx))
+    ASSERT((nno.gt.0) .and. (nno.le.MT_NNOMAX))
+    ASSERT((nbfpg.gt.0) .and. (nbfpg.le.MT_NBFAMX))
 !
     do ifam = 1,nbfpg
         if (nofpg(ifam) .eq. famil) goto 12
     end do
-    call utmess('F', 'ELEMENTS4_56', sk=famil)
+    ASSERT(ASTER_FALSE)
 12  continue
 !
     npg = nbpg(ifam)

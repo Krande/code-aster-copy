@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
                   nnos, nno, nbpg, ndim, refcoo,&
                   gscoo, wg, nochmd, codret)
 !
-! person_in_charge: nicolas.sellenet at edf.fr
 !-----------------------------------------------------------------------
 !     UTILITAIRE - ELEMENT DE REFERENCE
 !     --           -          ---
@@ -52,10 +51,9 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
 !     WG1 WG2 ... ... WGN
 !-----------------------------------------------------------------------
 !
-    implicit none
+implicit none
 !
-! 0.1. ==> ARGUMENTS
-!
+#include "MeshTypes_type.h"
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
@@ -90,24 +88,20 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
-    integer :: nbfamx
-    parameter ( nbfamx = 20 )
-!
-    integer :: nbpg00(nbfamx), imolo, nec, kfpg, nbfpg, nbfpg2, ifam
+    integer :: nbpg00(MT_NBFAMX), imolo, nec, kfpg, nbfpg, nbfpg2, ifam
     integer :: itype, nb1, nbelr, jmolo, idime, ipg
     integer :: ifm, nivinf, igrel
     integer :: ierd, jliel, nbgrel
     integer :: iaux, dimtopo
     aster_logical :: ljoint, lpenta
 !
-    integer :: lgmax
-    parameter (lgmax=1000)
+    integer, parameter:: lgmax = 1000
 !
     real(kind=8) :: gscoo2(3*lgmax)
 !
     character(len=4) :: tych
-    character(len=8) :: elrefe, elrefb, lielrf(nbfamx), fapg(nbfamx), nomgd, famil
-    character(len=8) :: nomtypmail, fapg2(nbfamx)
+    character(len=8) :: elrefe, elrefb, lielrf(MT_NBFAMX), fapg(MT_NBFAMX), nomgd, famil
+    character(len=8) :: nomtypmail, fapg2(MT_NBFAMX)
     character(len=16) :: nomsym
     character(len=64) :: valk(2)
     character(len=19) :: ligrel, resu
@@ -125,8 +119,8 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
     call infniv(ifm, nivinf)
     if (nivinf .gt. 1) then
         call utmess('I', 'UTILITAI5_39')
-        write (ifm,10001) tyelas, nomte
-        10001 format('ELEMENT FINI NUMERO',i6,', DE NOM : ',a16)
+        write (ifm,10) tyelas, nomte
+        10 format('ELEMENT FINI NUMERO',i6,', DE NOM : ',a16)
     endif
     ASSERT(typech.eq.'ELGA')
 !
@@ -135,7 +129,7 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
 !
     if (codret .eq. 0) then
 !
-        call elref2(nomte, nbfamx, lielrf, nbelr)
+        call elref2(nomte, MT_NBFAMX, lielrf, nbelr)
         ASSERT(nbelr.gt.0)
         elrefe = lielrf(1)
 !
@@ -155,26 +149,22 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
 !     -------------------------------------------------------------
 !
     if (codret .eq. 0) then
-!
-        do 31 ,igrel=1,nbgrel
-!
-        call jeveuo(jexnum(ligrel//'.LIEL', igrel), 'L', jliel)
-        call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', nb1)
-        itype = zi(jliel-1+nb1)
-!
-        if (itype .eq. tyelas) then
-            imolo = celd(celd(4+igrel)+2)
-            if (imolo .eq. 0) then
-                codret = 1
-                if (nivinf .gt. 1) then
-                    write (ifm,*)&
-     &          '==> LE CHAMP N''EST PAS DEFINI SUR CE TYPE D''ELEMENT'
+        do igrel=1,nbgrel
+            call jeveuo(jexnum(ligrel//'.LIEL', igrel), 'L', jliel)
+            call jelira(jexnum(ligrel//'.LIEL', igrel), 'LONMAX', nb1)
+            itype = zi(jliel-1+nb1)
+            if (itype .eq. tyelas) then
+                imolo = celd(celd(4+igrel)+2)
+                if (imolo .eq. 0) then
+                    codret = 1
+                    if (nivinf .gt. 1) then
+                        write (ifm,*)&
+         &          '==> LE CHAMP N''EST PAS DEFINI SUR CE TYPE D''ELEMENT'
+                    endif
                 endif
+                goto 32
             endif
-            goto 32
-        endif
-!
-        31     end do
+        end do
 !
         ASSERT(.false.)
 !
@@ -202,7 +192,6 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
 !
     lpenta = .false.
     if (codret .eq. 0) then
-!
         call elraca(elrefe, ndim, nno, nnos, nbfpg,&
                     fapg, nbpg00, refcoo, vol)
 !
@@ -238,9 +227,9 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
             resu = chanom(1:8)
             call jeexin(resu//'.DESC', ierd)
             if (ierd .eq. 0) then
-                nomsym = nochmd
+                nomsym = nochmd(1:16)
             else
-                nomsym = chanom
+                nomsym = chanom(1:16)
             endif
             valk(1) = nomsym
             valk(2) = famil
@@ -288,83 +277,83 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
 !
         if (nivinf .gt. 1) then
 !
-            write (ifm,61000) 'FAMILLE DE POINTS DE GAUSS', nomfpg
-            write (ifm,61001) 'NOMBRE DE SOMMETS        ', nnos
-            write (ifm,61001) 'NOMBRE DE NOEUDS         ', nno
-            write (ifm,61001) 'NOMBRE DE POINTS DE GAUSS', nbpg
+            write (ifm,801) 'FAMILLE DE POINTS DE GAUSS', nomfpg
+            write (ifm,802) 'NOMBRE DE SOMMETS        ', nnos
+            write (ifm,802) 'NOMBRE DE NOEUDS         ', nno
+            write (ifm,802) 'NOMBRE DE POINTS DE GAUSS', nbpg
 !
 !     6.1. DIMENSION 1
 !
             if (ndim .eq. 1) then
 !                            123456789012345
-                write (ifm,60001) 'NOEUDS         '
-                do 6011 , iaux = 1 , nno
-                write (ifm,60011) iaux,refcoo(iaux)
-6011             continue
-                write (ifm,60021)
-                write (ifm,60001) 'POINTS DE GAUSS'
-                do 6021 , iaux = 1 , nbpg
-                write (ifm,60011) iaux,gscoo(iaux)
-6021             continue
-                write (ifm,60021)
+                write (ifm,601) 'NOEUDS         '
+                do iaux = 1 , nno
+                    write (ifm,711) iaux,refcoo(iaux)
+                end do
+                write (ifm,721)
+                write (ifm,601) 'POINTS DE GAUSS'
+                do iaux = 1 , nbpg
+                    write (ifm,711) iaux,gscoo(iaux)
+                end do
+                write (ifm,721)
 !
 !     6.2. DIMENSION 2
 !
             else if (ndim.eq.2) then
-                write (ifm,60002) 'NOEUDS         '
-                do 6012 , iaux = 1 , nno
-                write (ifm,60012) iaux, refcoo(ndim*(iaux-1)+1),&
-                    refcoo(ndim*(iaux-1)+2)
-6012             continue
-                write (ifm,60022)
-                write (ifm,60002) 'POINTS DE GAUSS'
-                do 6022 , iaux = 1 , nbpg
-                write (ifm,60012) iaux, gscoo(ndim*(iaux-1)+1),&
-                    gscoo(ndim*(iaux-1)+2)
-6022             continue
-                write (ifm,60022)
+                write (ifm,602) 'NOEUDS         '
+                do iaux = 1 , nno
+                    write (ifm,712) iaux, refcoo(ndim*(iaux-1)+1),&
+                        refcoo(ndim*(iaux-1)+2)
+                end do
+                write (ifm,722)
+                write (ifm,602) 'POINTS DE GAUSS'
+                do iaux = 1 , nbpg
+                    write (ifm,712) iaux, gscoo(ndim*(iaux-1)+1),&
+                        gscoo(ndim*(iaux-1)+2)
+                end do
+                write (ifm,722)
 !
 !     6.3. DIMENSION 3
 !
             else
-                write (ifm,60003) 'NOEUDS         '
-                do 6013 , iaux = 1 , nno
-                write (ifm,60013) iaux, refcoo(ndim*(iaux-1)+1),&
-                    refcoo(ndim*(iaux-1)+2), refcoo(ndim*(iaux-1)+3)
-6013             continue
-                write (ifm,60023)
-                write (ifm,60003) 'POINTS DE GAUSS'
-                do 6023 , iaux = 1 , nbpg
-                write (ifm,60013) iaux, gscoo(ndim*(iaux-1)+1),&
-                    gscoo(ndim*(iaux-1)+2), gscoo(ndim*(iaux-1)+3)
-6023             continue
-                write (ifm,60023)
+                write (ifm,603) 'NOEUDS         '
+                do iaux = 1 , nno
+                    write (ifm,713) iaux, refcoo(ndim*(iaux-1)+1),&
+                        refcoo(ndim*(iaux-1)+2), refcoo(ndim*(iaux-1)+3)
+                end do
+                write (ifm,723)
+                write (ifm,603) 'POINTS DE GAUSS'
+                do iaux = 1 , nbpg
+                    write (ifm,713) iaux, gscoo(ndim*(iaux-1)+1),&
+                        gscoo(ndim*(iaux-1)+2), gscoo(ndim*(iaux-1)+3)
+                end do
+                write (ifm,723)
             endif
 !
-            write (ifm,60004)
-            do 6024 , iaux = 1 , nbpg
-            write (ifm,60011) iaux, wg(iaux)
-6024         continue
-            write (ifm,60021)
+            write (ifm,604)
+            do iaux = 1 , nbpg
+                write (ifm,711) iaux, wg(iaux)
+            end do
+            write (ifm,721)
 !
         endif
 !
     endif
 !
-    60001 format(&
+601 format(&
      &/,28('*'),&
      &/,'*      COORDONNEES DES     *',&
      &/,'*      ',a15        ,'     *',&
      &/,28('*'),&
      &/,'*  NUMERO  *       X       *',&
      &/,28('*'))
-    60002 format(&
+602 format(&
      &/,44('*'),&
      &/,'*       COORDONNEES DES ',a15        ,'    *',&
      &/,44('*'),&
      &/,'*  NUMERO  *       X       *       Y       *',&
      &/,44('*'))
-    60003 format(&
+603 format(&
      &/,60('*'),&
      &/,'*            COORDONNEES DES ',a15         ,&
      &'               *',&
@@ -372,19 +361,19 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
      &/,'*  NUMERO  *       X       *       Y       *',&
      &'       Z       *',&
      &/,60('*'))
-    60004 format(&
+604 format(&
      &/,28('*'),&
      &/,'*      POINTS DE GAUSS     *',&
      &/,'*  NUMERO  *     POIDS     *',&
      &/,28('*'))
-    60011 format('* ',i5,'    *',1pg12.5,'    *')
-    60012 format('* ',i5,2('    *',1pg12.5),'    *')
-    60013 format('* ',i5,3('    *',1pg12.5),'    *')
-    60021 format(28('*'))
-    60022 format(44('*'))
-    60023 format(60('*'))
-    61000 format(a,' : ',a)
-    61001 format(a,' : ',i4)
+711 format('* ',i5,'    *',1pg12.5,'    *')
+712 format('* ',i5,2('    *',1pg12.5),'    *')
+713 format('* ',i5,3('    *',1pg12.5),'    *')
+721 format(28('*'))
+722 format(44('*'))
+723 format(60('*'))
+801 format(a,' : ',a)
+802 format(a,' : ',i4)
 !
     call jedema()
 end subroutine
