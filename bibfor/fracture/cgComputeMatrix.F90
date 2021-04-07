@@ -42,10 +42,8 @@ use calcG_type
 #include "asterfort/wkvect.h"
 
 !
-    type(CalcG_field), intent(in) :: cgField
+    type(CalcG_field), intent(in)    :: cgField
     type(CalcG_theta), intent(inout) :: cgTheta
-
-
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,12 +54,7 @@ use calcG_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
-
-    aster_logical    :: l_quad
-    integer          :: iatyma, imatr, i, j
-    character(len=8) :: typma
-!    real(kind=8)     :: lonfis
-    
+    integer          :: imatr, i, j
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,28 +67,14 @@ use calcG_type
         call wkvect(cgTheta%matrix, 'V V R8', 1, imatr)
         zr(imatr)=1.0
     else if(cgField%ndim.eq.3) then
-
-!!       Récupération de la longuer de fissure:
-!        call jeveuo(cgTheta%absfond, 'L', ibasf)
-!        lonfis=zr(ibasf-1+cgTheta%nb_fondNoeud)
 !
         if(cgTheta%discretization .eq. 'LINEAIRE')then
-!       Détermination du caractère linéaire ou quadratique du maillage
-            call jeveuo(cgTheta%mesh//'.TYPMAIL', 'L', iatyma)
-            call jenuno(jexnum('&CATA.TM.NOMTM', zi(iatyma)), typma)
-            l_quad=.not.ismali(typma)
 !       Calcul de A dans le cas LINERAIRE
-            call gmatc3(cgTheta%nb_fondNoeud,l_quad,cgTheta%l_closed,&
+            call gmatc3(cgTheta%nb_fondNoeud,cgTheta%milieu,cgTheta%l_closed,&
                         cgTheta%absfond,cgTheta%matrix)
+!
         elseif(cgTheta%discretization .eq. 'LEGENDRE') then
-!
-!       Dans le cas LEGENDRE, A = Identité. On laisse en commentaires pour l'instant l'appel
-!       à la fonction historique qui calculait cette matrice au cas où ce ne serait pas l'idendité
-!       dans un cas particulier non encore identifié.
-!
-!             call gmatr1(cgTheta%nb_fondNoeud,cgTheta%degree,cgTheta%absfond, &
-!                         lonfis,cgTheta%matrix)
-!
+!!
             call wkvect(cgTheta%matrix, 'V V R8', (cgTheta%degree+1)*(cgTheta%degree+1), imatr)
             do i =1, cgTheta%degree+1
                 do j=1, cgTheta%degree+1

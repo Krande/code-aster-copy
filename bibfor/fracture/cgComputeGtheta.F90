@@ -52,7 +52,7 @@ use calcG_type
 #include "asterfort/wkvect.h"
 #include "jeveux.h"
 !
-    type(CalcG_field), intent(in) :: cgField
+    type(CalcG_field), intent(in)    :: cgField
     type(CalcG_theta), intent(inout) :: cgTheta
     type(CalcG_Study), intent(inout) :: cgStudy
     type(CalcG_Table), intent(inout) :: cgTable
@@ -115,7 +115,7 @@ use calcG_type
     g1th(:)=0.0
     g2th(:)=0.0
     g3th(:)=0.0
-    gs(:)=0.0
+    gs(:)  =0.0
     k1s(:)=0.0
     k2s(:)=0.0
     k3s(:)=0.0
@@ -404,7 +404,7 @@ use calcG_type
             g3th(i_theta)=gth(7)
         endif
 !
-    end do    
+    end do
 !
 !    Cas axis, on normalise par 1/R
      if (cgStudy%l_axis) then
@@ -425,7 +425,7 @@ use calcG_type
                 g1th(cgTheta%nb_theta_field)=g1th(1)
                 g2th(cgTheta%nb_theta_field)=g2th(1)
                 g3th(cgTheta%nb_theta_field)=g3th(1)
-            endif   
+            endif
 !
 !           CORRECTION VALEURS EXTREMITES
             if (.not.cgTheta%l_closed) then
@@ -439,7 +439,7 @@ use calcG_type
                      sn =  v_basf(cgTheta%nb_theta_field-1)
 
 !                    CORRECTION DANS LE CAS LINEAIRE
-                     if (.not.cgStudy%milieu) then
+                     if (.not.cgTheta%milieu) then
                          gthi(1) = gthi(2)*(s2-s1)/(s3-s1)
                          k1th(1) = k1th(2)*(s2-s1)/(s3-s1)
                          k2th(1) = k2th(2)*(s2-s1)/(s3-s1)
@@ -463,7 +463,7 @@ use calcG_type
                                                         *(sn-sn1)/(sn-sn2)
 
 !                    CORRECTION DANS LE CAS QUADRATIQUE
-                     else if (cgStudy%milieu) then
+                     else if (cgTheta%milieu) then
                          gthi(1) = gthi(2)/4.d0
                          k1th(1) = k1th(2)/4.d0
                          k2th(1) = k2th(2)/4.d0
@@ -484,7 +484,7 @@ use calcG_type
                      endif
 
                  endif
-            endif 
+            endif
 !
     !       On inverse les systèmes linéaires A.G(s)=G(theta)
 

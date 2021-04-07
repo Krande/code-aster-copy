@@ -25,7 +25,7 @@ subroutine te0147(option, nomte)
 !      BORDS ELEMENTS ISOPARAMETRIQUES 2D/3D AVEC CHARGEMENT DE BORD
 !      PRESSION-CISAILLEMENT ET FORCE REPARTIE
 !
-!      ELEMENTS DE BORDS 2D ISOPARAMETRIQUES 2D/3D
+!      ELEMENTS DE BORDS ISOPARAMETRIQUES 2D/3D
 !
 !      OPTION : 'CALCH_G'          (LOCAL,CHARGES REELLES)
 !               'CALCH_G_F'        (LOCAL,CHARGES FONCTIONS)
@@ -39,46 +39,48 @@ subroutine te0147(option, nomte)
 !
 implicit none
 !
+#include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/coor_cyl.h"
+#include "asterfort/deffk.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
-#include "jeveux.h"
 #include "asterfort/rcvad2.h"
 #include "asterc/r8prem.h"
 #include "asterfort/utmess.h"
-#include "asterfort/deffk.h"
+#include "asterfort/tecach.h"
+#include "asterfort/thetapdg.h"
 !
 ! =====================================================================
 !                       DECLARATION DES VARIABLES
 ! =====================================================================
 !
-    integer           :: i, j, kp, k, ind
+    integer           :: i, j, kp, k, ind, iret
     integer           :: ndim, nno, nnos, npg, compt
     integer           :: ipoids, ivf, idfde, jgano
     integer           :: ithet, igthet, igeom, idepl
     integer           :: ipref, itemps, iforf, ipres, iforc
-    integer           :: icode, imate, jlsn, jlst, ibalo
+    integer           :: icode, imate, jlsn, jlst, ibalo, ideg, ilag
     integer           :: nbpara, reeldim, icodre(3)
     real(kind=8)      :: epsi, valpar(4), coor(18)
     real(kind=8)      :: a1(3), a2(3), a3(3), i1(3), i2(3), depl(3)
     real(kind=8)      :: dford1(3), dford2(3), dfor(3), coorg(3), forcg(3)
     real(kind=8)      :: vf, dfde, dxde, dyde, dsde, poids, dsde2
     real(kind=8)      :: th1, th2, dth1d1, dth2d2, th0, t(3), tcla
-    real(kind=8)      :: gradth0, gradt(3), dfxde, dfyde, fx, fy
-    real(kind=8)      :: press, presg(2), prod, divt, forc, thet
+    real(kind=8)      :: gradth0, gradt(3), dfxde, dfyde, fx, fy, dtdm(3, 4)
+    real(kind=8)      :: press, presg(2), prod, divt, forc, thet, absno
     real(kind=8)      :: a1norm, a3norm, i2norm, dfdx(9), dfdy(9)
     real(kind=8)      :: presno, cisano, p(3,3), invp(3,3), devres(3)
     real(kind=8)      :: coeff_K1K2, coeff_K3, e , nu, mu, lsng, lstg
     real(kind=8)      :: ka, phig, prsc, rg, valres(3), tcla1, tcla2, tcla3
     real(kind=8)      :: u1g(3), u2g(3), u3g(3), prod1, prod2, fkpo(3,3)
     character(len=4)  :: fami
-    character(len=8)  :: nompar(4)
+    character(len=8)  :: nompar(4), discr
     character(len=16) :: option, nomte, nomres(3)
 !
     aster_logical :: axi, fonc, l_not_zero
@@ -86,6 +88,7 @@ implicit none
     real(kind=8), pointer :: presn(:) => null()
     real(kind=8), pointer :: forcn(:) => null()
     real(kind=8), pointer :: ffp(:) => null()
+    real(kind=8), pointer :: dfdi(:) => null()
 !
 ! =====================================================================
 !                       INITIALISATION PARAMETRES
@@ -117,6 +120,7 @@ implicit none
 !-- Allocation dynamique : vecteurs 2D/3D
     if (reeldim .eq. 3) then
         AS_ALLOCATE(vr=presn, size=nno)
+        AS_ALLOCATE(vr=dfdi, size=ndim*nno)
     else
 !------ Pression/cisaillement
         AS_ALLOCATE(vr=presn, size=reeldim*nno)
@@ -136,8 +140,24 @@ implicit none
 !-- Recuperation des parametres pour créer theta
     call jevech('PTHETAR', 'L', ithet)  ! champ d'entree
 !
-!-- recuperation du champ de sortie
+!-- Recuperation du champ de sortie
     call jevech('PGTHETA', 'E', igthet) ! champ de sortie
+!
+!   Recuperation du degré si LEGENDRE ou abscisse si LAGRANGE
+    if (reeldim .eq. 3) then
+!
+        call tecach('ONO', 'PDEG', 'L', iret, iad=ideg)
+!
+        if (iret .eq. 0 ) then
+            discr = "LEGENDRE"
+        else
+            discr = "LINEAIRE"
+            call jevech('PLAG', 'L', ilag)
+        endif
+!
+    else
+        discr = "2D"
+    endif
 !
 !-- Valeur de theta0(r) nulle sur element : pas de calcul
     compt = 0
@@ -146,6 +166,15 @@ implicit none
         if (thet .lt. epsi) compt = compt+1
     end do
     if (compt .eq. nno) goto 999
+!-- Si LAGRANGE, test sur les abscisses curvilignes
+    compt = 0
+    if (discr == "LINEAIRE" ) then
+        do i = 1, nno
+            absno= zr(ithet-1+6*(i-1)+5)
+            if (absno .ge. zr(ilag) .and. absno .le. zr(ilag+2)) compt = compt+1
+        end do
+        if (compt .eq. 0) goto 999
+    endif
 !
 ! =====================================================================
 !                  RECUPERATION DES CHAMPS LOCAUX
@@ -301,6 +330,8 @@ implicit none
         u1g(:)    = 0.d0
         u2g(:)    = 0.d0
         u3g(:)    = 0.d0
+        lsng      = 0.d0
+        lstg      = 0.d0
 !
 !------ Coordonnées des points de Gauss
         do i = 1, nno
@@ -318,6 +349,8 @@ implicit none
             call dfdm2d(nno, kp, ipoids, idfde, coor,&
                         poids, dfdx, dfdy)
             do i = 1, nno
+                dfdi(i) = dfdx(i)
+                dfdi(i+nno) = dfdy(i)
                 do j=1, reeldim
                     depl(j) = depl(j)+ zr(ivf+k+i-1)*zr(idepl+reeldim*(i-1)+j-1)
                 end do
@@ -437,17 +470,28 @@ implicit none
         ! ===========================================
 !
         if (reeldim .eq. 3) then
-!--------- Champ theta A CONSTRUIRE : A FAIRE 2021
-!          th1 = th1 + zr(ivf+k+i-1)*zr(ithet+3*(i-1)+j-1)*i1(j)
-!          th2 = th2 + zr(ivf+k+i-1)*zr(ithet+3*(i-1)+j-1)*i2(j)
-!          dth1d1= dth1d1+ zr(ithet+3*(i-1)+j-1)*i1(j)*dfdx(i)
-!          dth2d2= dth2d2+ zr(ithet+3*(i-1)+j-1)*i2(j)*dfdy(i)
+!
+!---------- Calcul de DTDM pour LEGENDRE ou LAGRANGE
+            call thetapdg(reeldim, nno, discr , &
+                          zr(ivf + k - 1 + 1:ivf + k - 1 + nno), &
+                          dfdi, ideg, ilag, ithet, dtdm)
+!
+!---------- Calcul de theta dans la base I1,I2      
+            th1 = dot_product(dtdm(1:3,4),i1)
+            th2 = dot_product(dtdm(1:3,4),i2)
+            dth1d1 = dot_product(dtdm(1:3,1),i1)
+            dth2d2 = dot_product(dtdm(1:3,2),i2)
+!
+!---------- Calcul de la divergence 
+            divt = dth1d1 + dth2d2
         else
             th1 = ( th0*t(1) * dxde ) /dsde2
             th2 = ( th0*t(2) * dyde ) /dsde2
             dth1d1 = ( (gradth0 * t(1) + th0 * gradt(1) ) * dxde ) /dsde2
             dth2d2 = ( (gradth0 * t(2) + th0 * gradt(2) ) * dyde ) /dsde2
 !
+!---------- Calcul de la divergence 
+            divt = dth1d1 + dth2d2
         endif
 !
         ! ===========================================
@@ -587,5 +631,6 @@ implicit none
     AS_DEALLOCATE(vr=presn)
     AS_DEALLOCATE(vr=forcn)
     AS_DEALLOCATE(vr=ffp)
+    AS_DEALLOCATE(vr=dfdi)
 !
 end subroutine

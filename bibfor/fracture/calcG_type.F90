@@ -141,8 +141,6 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table
         integer            :: nume_ordre = -1
 ! ----- option to compute
         character(len=8)   :: option    = ' '
-!------ linear or quadratic
-        aster_logical      :: milieu = ASTER_FALSE
 !------ modal analysis ?
         aster_logical      :: l_modal = ASTER_FALSE
 !------ axisymetric model
@@ -222,6 +220,8 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table
         character(len=24)       :: absfond = ' '
 ! ----- id of crack nodes
         character(len=24)       :: fondNoeudNume = ' '
+!------ linear or quadratic
+        aster_logical      :: milieu = ASTER_FALSE
 ! ----- member function
         contains
         procedure, pass    :: initialize => initialize_theta
@@ -507,8 +507,7 @@ contains
 !   In nume_index : index nume
 ! --------------------------------------------------------------------------------------------------
 !
-        character(len=8) :: typma, typmo
-        integer :: jma
+        character(len=8) :: typmo
 
         call jemarq()
 
@@ -525,13 +524,6 @@ contains
             this%l_axis = ASTER_FALSE
         end if
 !
-!       Maillage linéaire ou quadratique
-        call jeveuo(this%mesh//'.TYPMAIL', 'L', jma)
-        call jenuno(jexnum('&CATA.TM.NOMTM', zi(jma)), typma)
-        if (.not. ismali(typma)) then
-            this%milieu = ASTER_TRUE
-        endif
-
         call jedema()
 
     end subroutine
@@ -561,7 +553,6 @@ contains
         print*, "Coded material: ", this%mateco
         print*, "Loading: ", this%loading
         print*, "Nume index: ", this%nume_ordre
-        PRINT*, "linear or quadratic", this%milieu
         print*, "----------------------------------------------------------------------"
 !
     end subroutine
@@ -678,13 +669,15 @@ contains
 !   In this     : theta type
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ier, j, i, num, inume
-        character(len=8) :: typfon, nompar(1) 
+        integer :: ier, j, i, num, inume, jma, nume
         real(kind=8) :: maxtai, mintai, valpar(1), valres_i, valres_s
+        character(len=8) :: typma, typfon, nompar(1) 
         aster_logical :: l_disc
+!
         real(kind=8), pointer :: fondTailleR(:) => null()
         real(kind=8), pointer :: absfon(:)  => null()
         character(len=8), pointer :: fondNoeud(:)  => null()
+        integer, pointer :: typmail(:) => null()
 !
         call jemarq()
 ! --- get automatic name
@@ -802,6 +795,18 @@ contains
                 endif
             end do
         endif 
+!
+!       Maillage linéaire ou quadratique
+        call jeveuo(this%crack//'.LEVRESUP.MAIL', 'L', jma)
+        call jeveuo(this%mesh//'.TYPMAIL', 'L', vi=typmail)
+!
+        call jenonu(jexnom(this%mesh//'.NOMMAI', zk8(jma)), nume)
+!
+        call jenuno(jexnum('&CATA.TM.NOMTM', typmail(nume)), typma)
+!
+        if (.not. ismali(typma)) then
+            this%milieu = ASTER_TRUE
+        endif
 !
 !       if no radius is defined
         if (this%radius_type.ne.'R' .and. this%radius_type.ne.'R_FO' &
