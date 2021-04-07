@@ -115,6 +115,9 @@ subroutine thetapdg(ndim, nno, discr, ff, dfdi, ideg, ilag, ithet, dtdm)
 !
     else if (discr == "LINEAIRE") then
 !
+!       Longueur de la fissure
+        xl = zr(ithet-1+6*(1-1)+6)
+!
         do i=1, nno
 !
 !---------- Récupération des asbcisses curvilignes pour les noeuds du fond
@@ -130,6 +133,9 @@ subroutine thetapdg(ndim, nno, discr, ff, dfdi, ideg, ilag, ithet, dtdm)
                 eval = (sno - s0) / (s1 - s0)
             elseif (sno  .ge. s1 .and. sno  .le. s2) then
                 eval = 1.d0 - ((sno - s1) / (s2 - s1))
+!---------- Cas fond fermé
+            elseif (s0 .gt. s1 .and. sno .ge. s0 ) then
+                eval = (sno - s0) / (xl - s0)  
             else
                 eval = 0.d0
             endif 

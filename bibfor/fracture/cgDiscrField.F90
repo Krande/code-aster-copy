@@ -104,6 +104,10 @@ use calcG_type
                     zl(jcesl-1+iad)=ASTER_TRUE
                     if (i_theta .eq. 1 ) then
                         v_absc(iad)= v_basf(i_theta)
+!---------------------- Cas fond fermé 
+                        if (cgtheta%l_closed) then
+                            v_absc(iad)= v_basf(cgTheta%nb_theta_field-1) 
+                        endif
                     else
                         v_absc(iad)= v_basf(i_theta-1)
                     endif

@@ -110,9 +110,6 @@ implicit none
     real(kind=8), pointer :: dfdi(:) => null()
     real(kind=8), pointer :: ffp(:) => null()
 !
-!   TEST A EFFACER
-!    integer           :: iadzi, iazk24
-!
 ! =====================================================================
 !                       INITIALISATION PARAMETRES
 !                       Cas 2D/3D
@@ -224,17 +221,19 @@ implicit none
     if (discr == "LINEAIRE" ) then
         do i = 1, nno
             absno= zr(ithet-1+6*(i-1)+5)
-            if (absno .ge. zr(ilag) .and. absno .le. zr(ilag+2)) compt = compt+1
+!---------- Cas fond fermé
+            if (zr(ilag) .gt. zr(ilag+1) ) then 
+                if (absno .ge. zr(ilag) .and. absno .le. zr(ithet-1+6*(i-1)+6)) then
+                    compt = compt+1
+                elseif (absno .ge. zr(ilag+1) .and. absno .le. zr(ilag+2)) then
+                    compt = compt+1
+                endif
+            else
+                if (absno .ge. zr(ilag) .and. absno .lt. zr(ilag+2)) compt = compt+1
+            endif 
         end do
         if (compt .eq. 0) goto 999
     endif
-!
-!===========================================!
-!    print* ,''
-!    print*, 'quadratic'
-!    call tecael(iadzi, iazk24)
-!    print *, 'ele=', zi(iadzi)
-!===========================================!
 !
 ! =====================================================================
 !                  RECUPERATION DES CHAMPS LOCAUX
@@ -441,6 +440,7 @@ implicit none
         call rcvarc(' ', 'TEMP', '+', 'RIGI', kp, 1, tpg(kp), iret)
         if (iret .ne. 0) tpg(kp) = 0.d0
     enddo
+!
 ! =====================================================================
 !           BOUCLE PRINCIPALE SUR LES POINTS DE GAUSS
 ! =====================================================================
