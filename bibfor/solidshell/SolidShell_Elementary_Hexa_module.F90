@@ -35,7 +35,8 @@ implicit none
 ! ==================================================================================================
 public  :: compRigiMatrHexa, compSiefElgaHexa, compForcNodaHexa,&
            compRigiGeomHexaKpg,&
-           compEpsgElgaHexa, compEpsiElgaHexa, compEpslElgaHexa
+           compEpsgElgaHexa, compEpsiElgaHexa, compEpslElgaHexa,&
+           compLoadHexa
 ! ==================================================================================================
 private
 #include "jeveux.h"
@@ -43,7 +44,9 @@ private
 #include "MeshTypes_type.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/SolidShell_type.h"
+#include "asterfort/assert.h"
 #include "asterfort/btsig.h"
+#include "asterfort/jevecd.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 ! ==================================================================================================
@@ -540,6 +543,47 @@ subroutine compEpslElgaHexa(elemProp, cellGeom,  disp, epslElga)
         epslElga(1+(kpg-1)*SSH_SIZE_TENS:SSH_SIZE_TENS*kpg) = epslHexa%vale
 
     end do
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compLoadHexa
+!
+! Compute loads for HEXA - CHAR_MECA_*
+!
+! In  cellGeom         : general geometric properties of cell
+! In  option           : name of option to compute
+! Out loadNoda         : nodal force from loads (Neumann)
+!
+! --------------------------------------------------------------------------------------------------
+subroutine compLoadHexa(cellGeom, option, loadNoda)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    type(SSH_CELL_GEOM), intent(in) :: cellGeom
+    character(len=16), intent(in)   :: option
+    real(kind=8), intent(out)       :: loadNoda(SSH_NBDOF_MAX)
+! - Local
+    integer :: jvPres
+    real(kind=8) :: presSup, presInf, area
+!   ------------------------------------------------------------------------------------------------
+!
+    loadNoda = 0.d0
+    ASSERT(option .eq. 'CHAR_MECA_PRES_R')
+
+! - Get input fields: for pressure, no node affected -> 0
+    call jevecd('PPRESSR', jvPres, 0.d0)
+
+! - Compute quantities in Ahmad frame for pinch quantities
+    call compAhmadFrame(cellGeom, area)
+
+! - Get pressure
+    presSup = zr(jvPres-1+1)
+    presInf = zr(jvPres-1+2)
+
+! - Compute
+    loadNoda(25) = loadNoda(25) +&
+                   4.d0*(presInf-presSup)*area/3.d0
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine

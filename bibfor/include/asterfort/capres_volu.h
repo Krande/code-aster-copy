@@ -17,10 +17,9 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine cbpres(load, mesh, ligrmo, ndim, valeType)
+    subroutine capres_volu(load, mesh, valeType, nbOccPresRep)
         character(len=8), intent(in)  :: load, mesh
-        character(len=19), intent(in) :: ligrmo
-        integer, intent(in)           :: ndim
         character(len=4), intent(in)  :: valeType
-    end subroutine cbpres
+        integer, intent(in)           :: nbOccPresRep
+    end subroutine capres_volu
 end interface

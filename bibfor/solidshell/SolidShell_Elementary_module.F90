@@ -35,7 +35,8 @@ use SolidShell_Elementary_Hexa_module
 implicit none
 ! ==================================================================================================
 public  :: compRigiMatr, compSiefElga, compForcNoda, compNonLinear,&
-           compEpsiElga, compEpslElga
+           compEpsiElga, compEpslElga,&
+           compLoad
 private :: setMateOrientation, compElemElasMatrix,&
            initCellGeom, initMateProp, initElemProp, initBehaProp
 ! ==================================================================================================
@@ -469,7 +470,7 @@ subroutine compForcNoda()
 ! - Get stresses
     call jevech('PCONTMR', 'L', jvSigm)
 
-! - Compute stresses
+! - Compute nodal forces
     if (elemProp%cellType .eq. SSH_CELL_HEXA) then
         call compForcNodaHexa(elemProp  , cellGeom,&
                               zr(jvSigm), forcNoda)
@@ -623,6 +624,52 @@ subroutine compEpslElga()
     call jevech('PDEFOPG', 'E', jvEpsi)
     do i = 1, SSH_SIZE_TENS*elemProp%elemInte%nbIntePoint
          zr(jvEpsi-1+i) = epslElga(i)
+    enddo
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compLoad
+!
+! Compute loads - CHAR_MECA_*
+!
+! In  option           : name of option to compute
+!
+! --------------------------------------------------------------------------------------------------
+subroutine compLoad(option)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    character(len=16), intent(in)   :: option
+! - Local
+    character(len=4), parameter :: inteFami = 'RIGI'
+    type(SSH_CELL_GEOM) :: cellGeom
+    type(SSH_ELEM_PROP) :: elemProp
+    real(kind=8) :: loadNoda(SSH_NBDOF_MAX)
+    integer :: jvVect, i
+!   ------------------------------------------------------------------------------------------------
+!
+    loadNoda = 0.d0
+
+! - Initialization of general properties of finite element
+    call initElemProp(inteFami, elemProp)
+    if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
+
+! - Initialization of geometric properties of cell
+    call initCellGeom(elemProp, cellGeom)
+    if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
+
+! - Compute loads
+    if (elemProp%cellType .eq. SSH_CELL_HEXA) then
+        call compLoadHexa(cellGeom, option, loadNoda)
+    else
+        ASSERT(ASTER_FALSE)
+    endif
+
+! - Save vector
+    call jevech('PVECTUR', 'E', jvVect)
+    do i = 1, elemProp%nbDof
+        zr(jvVect-1+i) = loadNoda(i)
     enddo
 !
 !   ------------------------------------------------------------------------------------------------

@@ -68,6 +68,14 @@ CPRE3DF = LocatedComponents(phys=PHY.PRES_F, type='ELEM',
 CPRE3DR = LocatedComponents(phys=PHY.PRES_R, type='ELEM',
                             components=('PRES',))
 
+# For pressure (Real-3D for solid shell elements)
+CPRESBR = LocatedComponents(phys=PHY.PRES_R, type='ELEM',
+                            components=('PINF','PSUP',))
+
+# For pressure (Function-3D)
+CPRESBF = LocatedComponents(phys=PHY.PRES_F, type='ELEM',
+                            components=('PINF','PSUP',))
+
 # For 'EFFE_FOND'
 CEFOND  = LocatedComponents(phys=PHY.NEUT_R, type='ELEM',
                             components=('X1',))

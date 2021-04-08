@@ -2547,12 +2547,16 @@ PRES_F   = PhysicalQuantity(type='K8',
     components=(
        'PRES',
        'CISA',
+       'PINF',
+       'PSUP',
     ),
     comment="""  PRES_F Type:K8 Chargement surfacique applique a un modele mecanique
     (PRES,CISA)
      inconnue d'un probleme d'acoustique : (pression, vitesse du fluide)
        PRES : valeur de la pression
        CISA : cisaillement applique sur le bord d'un modele 2D
+       PINF: pression inférieure pour pincement solid-shell
+       PSUP: pression supérieure pour pincement solid-shell
 """)
 
 
@@ -2560,6 +2564,8 @@ PRES_R   = PhysicalQuantity(type='R',
     components=(
        'PRES',
        'CISA',
+       'PINF',
+       'PSUP',
        'VX',
        'VY',
        'VZ',
@@ -2570,6 +2576,8 @@ PRES_R   = PhysicalQuantity(type='R',
     Inconnue d'un probleme d'acoustique : (pression, vitesse du fluide)
        PRES : valeur de la pression
        CISA : cisaillement applique sur le bord d'un modele 2D
+       PINF: pression inférieure pour pincement solid-shell
+       PSUP: pression supérieure pour pincement solid-shell
        VX : vitesse du fluide suivant OX
        VY : vitesse du fluide suivant OY
        VZ : vitesse du fluide suivant OZ

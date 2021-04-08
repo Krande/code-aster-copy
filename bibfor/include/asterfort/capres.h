@@ -17,11 +17,11 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine capres(load, ligrmo, mesh, ndim, valeType, nbOcc)
-        character(len=8), intent(in) :: load, mesh
+    subroutine capres(load, mesh, ligrmo, ndim, valeType, nbOccPresRep)
+        character(len=8), intent(in)  :: load, mesh
         character(len=19), intent(in) :: ligrmo
-        integer, intent(in) :: ndim
-        character(len=4), intent(in) :: valeType
-        integer, intent(in) :: nbOcc
+        integer, intent(in)           :: ndim
+        character(len=4), intent(in)  :: valeType
+        integer, intent(in)           :: nbOccPresRep
     end subroutine capres
 end interface

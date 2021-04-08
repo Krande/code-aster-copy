@@ -139,6 +139,9 @@ CHAR_MECA_PRES_R = Option(
 #     Pour les elements tuyau
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.TUYAU,'OUI'),)),
 
+#     Pour les elements solid-shell, la contribution de la pression est volumique (pinching)
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'SSH'),)),
+
 #     Pour les elements membrane
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'MMB'),)),
 
