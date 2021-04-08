@@ -67,11 +67,7 @@ G0=CALC_H(              RESULTAT=CHAMDEPL,
                                  R_SUP=0.0075),
                         OPTION='G',
                     )
-
-#
-# LA VALEUR DE REFERENCE VAUT 7.72E-4, LE RAYON LA FISSURE VAUT 0.1 :
-# ET DONC LA VALEUR A TESTER VAUT 7.72E-4*0.1=7.72E-5
-#
+                    
 # la solution analytique est donnée par MURAKAMI (cf case 9.12)
 
 TEST_TABLE(PRECISION=0.02,

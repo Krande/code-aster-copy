@@ -205,28 +205,28 @@ G4=CALC_H(        THETA=_F(
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
            VALE_CALC=5.837593117556824E-07,
-           VALE_REFE=5.945e-07,
+           VALE_REFE=5.9115E-07,
            NOM_PARA='G_EPSI',
            TABLE=G1,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
            VALE_CALC=5.837392466535863E-07,
-           VALE_REFE=5.945e-07,
+           VALE_REFE=5.9115E-07,
            NOM_PARA='G_EPSI',
            TABLE=G2,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
            VALE_CALC=5.837127045798243E-07 ,
-           VALE_REFE=5.945e-07,
+           VALE_REFE=5.9115E-07,
            NOM_PARA='G_EPSI',
            TABLE=G3,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
            VALE_CALC=5.837446585706715E-07 ,
-           VALE_REFE=5.945e-07,
+           VALE_REFE=5.9115E-07,
            NOM_PARA='G_EPSI',
            TABLE=G4,)
 

@@ -1,0 +1,284 @@
+# copie du cas test zzzz116b
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# person_in_charge: nicolas.pignet at edf.fr
+
+# Modelisation B : FEM - 3D
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),IMPR_MACRO='OUI',)
+
+mesh = LIRE_MAILLAGE(UNITE=20)
+
+model = AFFE_MODELE(AFFE=_F(MODELISATION=('3D', ),
+                            PHENOMENE='MECANIQUE',
+                            TOUT='OUI'),
+                    MAILLAGE=mesh)
+
+ACIER = DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
+                              NU=0.3))
+
+fieldmat = AFFE_MATERIAU(AFFE=_F(MATER=(ACIER, ),
+                                 TOUT='OUI'),
+                         MODELE=model)
+
+CHAM0 = CREA_CHAMP(AFFE=(_F(NOM_CMP=('DX', ),
+                            TOUT='OUI',
+                            VALE=(0.0, )),
+                         _F(NOM_CMP=('DY', ),
+                            TOUT='OUI',
+                            VALE=(0.0, )),
+                         _F(NOM_CMP=('DZ', ),
+                            TOUT='OUI',
+                            VALE=(0.0, ))),
+                   MAILLAGE=mesh,
+                   OPERATION='AFFE',
+                   TYPE_CHAM='NOEU_DEPL_R')
+
+RES0 = CREA_RESU(AFFE=_F(CHAM_GD=CHAM0,
+                         CHAM_MATER=fieldmat,
+                         INST=(1.0, ),
+                         MODELE=model),
+                 NOM_CHAM='DEPL',
+                 OPERATION='AFFE',
+                 TYPE_RESU='EVOL_ELAS')
+
+#### TEST #####
+
+
+FISSH=DEFI_FISSURE(MAILLAGE=mesh, SYME='OUI',
+                    FOND_FISS=_F(GROUP_MA='FOND_FISS',
+                                     GROUP_NO_ORIG='NFORIG',
+                                     GROUP_NO_EXTR='NFEXTR',
+                                     TYPE_FOND='OUVERT',),
+                    LEVRE_SUP=_F(GROUP_MA='LEVRE2D',),
+                    )
+
+H0 = CALC_H(RESULTAT=RES0,
+            OPTION=("G_EPSI",),
+            THETA=_F(FISSURE=FISSH,
+                     CHAM_THETA=CO('cham_theta_noh'),
+                     R_INF=2.5,
+                     R_SUP=5.0))
+
+IMPR_TABLE(UNITE=6, TABLE=H0)
+
+TEST_RESU(
+        CHAM_NO=(
+        _F(
+            CRITERE=('RELATIF', ),
+            REFERENCE = 'ANALYTIQUE',
+            GROUP_NO=('NINF1', ),
+            NOM_CMP='MODULE',
+            CHAM_GD=cham_theta_noh,
+            VALE_REFE=1.0,
+            VALE_CALC=1.0,
+            ),
+        _F(
+            CRITERE=('ABSOLU', ),
+            GROUP_NO=('NINF1', ),
+            REFERENCE = 'ANALYTIQUE',
+            NOM_CMP='ABSC_CUR',
+            CHAM_GD=cham_theta_noh,
+            ORDRE_GRANDEUR= 1.0,
+            VALE_REFE=0.0,
+            VALE_CALC=0.0,
+            ),
+        _F(
+            CRITERE=('RELATIF', ),
+            REFERENCE = 'ANALYTIQUE',
+            GROUP_NO=('NINF2', ),
+            NOM_CMP='MODULE',
+            CHAM_GD=cham_theta_noh,
+            VALE_REFE=1.0,
+            VALE_CALC=1.0,
+            ),
+        _F(
+            CRITERE=('ABSOLU', ),
+            GROUP_NO=('NINF2', ),
+            REFERENCE = 'ANALYTIQUE',
+            NOM_CMP='ABSC_CUR',
+            CHAM_GD=cham_theta_noh,
+            VALE_REFE=6.25,
+            VALE_CALC=6.25,
+            ),
+        _F(
+            CRITERE=('RELATIF', ),
+            REFERENCE = 'ANALYTIQUE',
+            GROUP_NO=('NINF3', ),
+            NOM_CMP='MODULE',
+            CHAM_GD=cham_theta_noh,
+            VALE_REFE=1.0,
+            VALE_CALC=1.0,
+            ),
+        _F(
+            CRITERE=('ABSOLU', ),
+            GROUP_NO=('NINF3', ),
+            REFERENCE = 'ANALYTIQUE',
+            NOM_CMP='ABSC_CUR',
+            CHAM_GD=cham_theta_noh,
+            VALE_REFE=12.5,
+            VALE_CALC=12.5,
+            ),
+        _F(
+            CRITERE=('RELATIF', ),
+            REFERENCE = 'ANALYTIQUE',
+            GROUP_NO=('NMIL1', ),
+            NOM_CMP='MODULE',
+            CHAM_GD=cham_theta_noh,
+            VALE_REFE=0.5,
+            VALE_CALC=0.5,
+            ),
+        _F(
+            CRITERE=('ABSOLU', ),
+            GROUP_NO=('NMIL1', ),
+            REFERENCE = 'ANALYTIQUE',
+            NOM_CMP='ABSC_CUR',
+            CHAM_GD=cham_theta_noh,
+            ORDRE_GRANDEUR= 1.0,
+            VALE_REFE=0.0,
+            VALE_CALC=0.0,
+            ),
+        _F(
+            CRITERE=('RELATIF', ),
+            REFERENCE = 'ANALYTIQUE',
+            GROUP_NO=('NMIL2', ),
+            NOM_CMP='MODULE',
+            CHAM_GD=cham_theta_noh,
+            VALE_REFE=0.5,
+            VALE_CALC=0.5,
+            ),
+        _F(
+            CRITERE=('ABSOLU', ),
+            GROUP_NO=('NMIL2', ),
+            REFERENCE = 'ANALYTIQUE',
+            NOM_CMP='ABSC_CUR',
+            CHAM_GD=cham_theta_noh,
+            VALE_REFE=6.25,
+            VALE_CALC=6.25,
+            ),
+        _F(
+            CRITERE=('RELATIF', ),
+            REFERENCE = 'ANALYTIQUE',
+            GROUP_NO=('NMIL3', ),
+            NOM_CMP='MODULE',
+            CHAM_GD=cham_theta_noh,
+            VALE_REFE=0.5,
+            VALE_CALC=0.5,
+            ),
+        _F(
+            CRITERE=('ABSOLU', ),
+            GROUP_NO=('NMIL3', ),
+            REFERENCE = 'ANALYTIQUE',
+            NOM_CMP='ABSC_CUR',
+            CHAM_GD=cham_theta_noh,
+            VALE_REFE=12.5,
+            VALE_CALC=12.5,
+            ),
+        _F(
+            CRITERE=('RELATIF', ),
+            REFERENCE = 'ANALYTIQUE',
+            GROUP_NO=('NMIL3', ),
+            NOM_CMP='DIR_X',
+            CHAM_GD=cham_theta_noh,
+            VALE_REFE=1.0,
+            VALE_CALC=1.0,
+            ),
+         _F(
+            CRITERE=('RELATIF', ),
+            REFERENCE = 'ANALYTIQUE',
+            GROUP_NO=('NMIL3', ),
+            NOM_CMP='DIR_Y',
+            CHAM_GD=cham_theta_noh,
+            ORDRE_GRANDEUR= 1.0,
+            VALE_REFE=0.0,
+            VALE_CALC=0.0,
+            ),
+         _F(
+            CRITERE=('RELATIF', ),
+            REFERENCE = 'ANALYTIQUE',
+            GROUP_NO=('NMIL3', ),
+            NOM_CMP='DIR_Z',
+            CHAM_GD=cham_theta_noh,
+            ORDRE_GRANDEUR= 1.0,
+            VALE_REFE=0.0,
+            VALE_CALC=0.0,
+            ),
+         _F(
+            CRITERE=('RELATIF', ),
+            REFERENCE = 'ANALYTIQUE',
+            GROUP_NO=('NMIL3', ),
+            NOM_CMP='LONG',
+            CHAM_GD=cham_theta_noh,
+            VALE_REFE=12.5,
+            VALE_CALC=12.5,
+            ),
+        _F(
+            CRITERE=('RELATIF', ),
+            REFERENCE = 'ANALYTIQUE',
+            GROUP_NO=('NINF1', ),
+            NOM_CMP='DIR_X',
+            CHAM_GD=cham_theta_noh,
+            VALE_REFE=1.0,
+            VALE_CALC=1.0,
+            ),
+         _F(
+            CRITERE=('RELATIF', ),
+            REFERENCE = 'ANALYTIQUE',
+            GROUP_NO=('NINF1', ),
+            NOM_CMP='DIR_Y',
+            CHAM_GD=cham_theta_noh,
+            ORDRE_GRANDEUR= 1.0,
+            VALE_REFE=0.0,
+            VALE_CALC=0.0,
+            ),
+         _F(
+            CRITERE=('RELATIF', ),
+            REFERENCE = 'ANALYTIQUE',
+            GROUP_NO=('NINF1', ),
+            NOM_CMP='DIR_Z',
+            CHAM_GD=cham_theta_noh,
+            ORDRE_GRANDEUR= 1.0,
+            VALE_REFE=0.0,
+            VALE_CALC=0.0,
+            ),
+         _F(
+            CRITERE=('RELATIF', ),
+            REFERENCE = 'ANALYTIQUE',
+            GROUP_NO=('NINF1', ),
+            NOM_CMP='LONG',
+            CHAM_GD=cham_theta_noh,
+            VALE_REFE=12.5,
+            VALE_CALC=12.5,
+            ),
+            )
+    )
+
+TEST_TABLE(
+           VALE_CALC_K="ELAS",
+           NOM_PARA='COMPORTEMENT',
+           TABLE=H0,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=1,),
+           )
+
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(CHAM_GD=cham_theta_noh))
+
+
+FIN()
