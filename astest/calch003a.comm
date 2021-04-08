@@ -141,12 +141,6 @@ RESU=CREA_RESU(  OPERATION='AFFE',
                                 INST=0.,
                                 MODELE=MO,
                                 CHAM_MATER = CM)     )
-
-
-FOND=DEFI_FOND_FISS( MAILLAGE=MA,
-                     FOND_FISS=_F( GROUP_NO = 'GN3'),
-                     SYME='OUI',
-                     LEVRE_SUP=_F(MAILLE='M388'))
 FOND_NEW=DEFI_FISSURE( MAILLAGE=MA,
                      FOND_FISS=_F( GROUP_NO = 'GN3'),
                      SYME='OUI',

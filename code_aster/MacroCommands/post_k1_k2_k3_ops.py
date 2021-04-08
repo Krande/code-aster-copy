@@ -272,16 +272,6 @@ def verif_config_init(FOND_FISS):
     if config != 'COLLEE':
         UTMESS('F', 'RUPTURE0_16')
 
-
-#-------------------------------------------------------------------------
-
-def verif_type_fond_fiss(ndim, FOND_FISS):
-    if ndim == 3:
-        Typ = FOND_FISS.sdj.FOND_TYPE.get()
-#     attention : Typ est un tuple contenant une seule valeur
-        if Typ[0].rstrip() != 'SEG2' and Typ[0].rstrip() != 'SEG3':
-            UTMESS('F', 'RUPTURE0_12')
-
 #-------------------------------------------------------------------------
 
 
@@ -327,9 +317,7 @@ def get_noeud_a_calculer(Lnoff, ndim, FOND_FISS, MAILLAGE, EnumTypes, args):
                     NO_AVEC.append(cnom[node - 1])
             NO_AVEC = list(map(lambda x: x.rstrip(), NO_AVEC))
         else:
-            Typ = FOND_FISS.sdj.FOND_TYPE.get()
-            Typ = Typ[0].rstrip()
-            if (Typ == 'SEG3') and (TOUT is None):
+            if (MAILLAGE.isQuadratic()) and (TOUT is None):
                 NO_AVEC = Lnoff[::2]
             else:
                 NO_AVEC = Lnoff
@@ -395,45 +383,50 @@ def get_coor_libre(self, Lnoff, RESULTAT, ndim):
 #-------------------------------------------------------------------------
 
 
-def get_direction(Nnoff, ndim, DTANOR, DTANEX, Lnoff, FOND_FISS):
+def get_direction(Nnoff, ndim, Lnoff, FOND_FISS, MAILLAGE):
     """ retourne les normales en chaque point du fond (VNOR)
         et les vecteurs de direction de propagation (VDIR)"""
 
     # cette fonction retourne 2 dictionnaires, il faudrait mettre
     # en conformite avec get_direction_xfem
 
+    # On récupère ces informations dans BASELOC
+    # Attendtion à l'odre des veccteurs dans BASELOC
+    basloc = FOND_FISS.sdj.BASLOC.VALE.get()
+    
+    # extraction, à partir de baseloc, un objet basefon reduit aux noeud 
+    # du fonr tde fissure.
+    nb_comp_basloc = 3*ndim
+    #suppresion des coordonnées du projeté du noeud, non utilisées ici
+    basloc = NP.array(basloc).reshape((len(basloc)//nb_comp_basloc),nb_comp_basloc)[:,ndim:]
+#   recuperation des valeurs dans baseloc en indexant sur les noeuds du fond de fissure
+    nomnoe = [i.strip() for i in MAILLAGE.sdj.NOMNOE.get()]
+    Basefo = basloc[[nomnoe.index(item) for item in Lnoff],:].flatten()
 
-    Basefo = FOND_FISS.sdj.BASEFOND.get()
 
     VNOR = [None] * Nnoff
     VDIR = [None] * Nnoff
 
     if ndim == 2:
-        VNOR[0] = NP.array([Basefo[0], Basefo[1], 0.])
-        VDIR[0] = NP.array([Basefo[2], Basefo[3], 0.])
+        VDIR[0] = NP.array([Basefo[0], Basefo[1], 0.])
+        VNOR[0] = NP.array([Basefo[2], Basefo[3], 0.])
         dicVDIR = dict([(Lnoff[0], VDIR[0])])
         dicVNOR = dict([(Lnoff[0], VNOR[0])])
     elif ndim == 3:
-        VNOR[0] = NP.array([Basefo[0], Basefo[1], Basefo[2]])
-        if DTANOR is not None:
-            VDIR[0] = NP.array(DTANOR)
-        else:
-            VDIR[0] = NP.array([Basefo[3], Basefo[4], Basefo[5]])
+        VNOR[0] = NP.array([Basefo[3], Basefo[4], Basefo[5]])
+        VDIR[0] = NP.array([Basefo[0], Basefo[1], Basefo[2]])
 
         for i in range(1, Nnoff - 1):
             VDIR[i] = NP.array(
-                [Basefo[3 + 6 * i], Basefo[3 + 6 * i + 1], Basefo[3 + 6 * i + 2]])
-            VNOR[i] = NP.array(
                 [Basefo[6 * i], Basefo[6 * i + 1], Basefo[6 * i + 2]])
+            VNOR[i] = NP.array(
+                [Basefo[3 + 6 * i], Basefo[3 + 6 * i + 1], Basefo[3 + 6 * i + 2]])
 
         i = Nnoff - 1
         VNOR[i] = NP.array(
+            [Basefo[3 + 6 * i], Basefo[3 + 6 * i + 1], Basefo[3 + 6 * i + 2]])
+        VDIR[i] = NP.array(
             [Basefo[6 * i], Basefo[6 * i + 1], Basefo[6 * i + 2]])
-        if DTANEX is not None:
-            VDIR[i] = NP.array(DTANEX)
-        else:
-            VDIR[i] = NP.array(
-                [Basefo[3 + 6 * i], Basefo[3 + 6 * i + 1], Basefo[3 + 6 * i + 2]])
 
         dicVDIR = dict([(Lnoff[i], VDIR[i]) for i in range(Nnoff)])
         dicVNOR = dict([(Lnoff[i], VNOR[i]) for i in range(Nnoff)])
@@ -1960,10 +1953,6 @@ def post_k1_k2_k3_ops(self, RESULTAT, FOND_FISS =None, FISSURE=None, MATER=None,
 
         verif_config_init(FOND_FISS)
 
-#     Verification du type des mailles de FOND_FISS
-#     ---------------------------------------------
-        verif_type_fond_fiss(ndim, FOND_FISS)
-
 #     Recuperation de la liste des noeuds du fond issus de la sd_fond_fiss : Lnoff, de longueur Nnoff
 #     --------------------------------------------------------------------
 
@@ -2020,14 +2009,8 @@ def post_k1_k2_k3_ops(self, RESULTAT, FOND_FISS =None, FISSURE=None, MATER=None,
 
 #        Dictionnaire des vecteurs normaux (allant de la levre inf vers la levre sup) et
 #        dictionnaire des vecteurs de propagation
-            if ndim == 3:
-                DTANOR = FOND_FISS.sdj.DTAN_ORIGINE.get()
-                DTANEX = FOND_FISS.sdj.DTAN_EXTREMITE.get()
-            elif ndim == 2:
-                DTANOR = None
-                DTANEX = None
             (dicVDIR, dicVNOR) = get_direction(
-                Nnoff, ndim, DTANOR, DTANEX, Lnoff, FOND_FISS)
+                Nnoff, ndim, Lnoff, FOND_FISS, MAILLAGE)
 
 #        Abscisse curviligne du fond
             if ndim == 3:
@@ -2060,10 +2043,8 @@ def post_k1_k2_k3_ops(self, RESULTAT, FOND_FISS =None, FISSURE=None, MATER=None,
 
 #        Dictionnaire des vecteurs normaux (allant de la levre inf vers la levre sup) et
 #        dictionnaire des vecteurs de propagation
-            DTANOR = None
-            DTANEX = None
             (dicVDIR, dicVNOR) = get_direction(
-                Nnoff, ndim, DTANOR, DTANEX, Lnoff, FOND_FISS)
+                Nnoff, ndim, Lnoff, FOND_FISS,MAILLAGE)
 
 #        Abscisse curviligne du fond
             if ndim == 3:

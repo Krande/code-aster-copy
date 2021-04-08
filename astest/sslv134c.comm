@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -67,6 +67,11 @@ FISS=DEFI_FOND_FISS(MAILLAGE=MA,SYME='NON',
                     LEVRE_SUP=_F(  GROUP_MA = 'LP0P8'),
                     LEVRE_INF=_F(  GROUP_MA = 'LP0P8S'),
                    )
+NFISS=DEFI_FISSURE(MAILLAGE=MA,SYME='NON',
+                    FOND_FISS=_F( GROUP_NO = ('P0',)),
+                    LEVRE_SUP=_F(  GROUP_MA = 'LP0P8'),
+                    LEVRE_INF=_F(  GROUP_MA = 'LP0P8S'),
+                   )
 
 RSUP=0.25
 RINF=0.05
@@ -91,7 +96,7 @@ IMPR_TABLE(TABLE=GK0)
 
 # POST_K1_K2_K3
 TABL_K1=POST_K1_K2_K3(RESULTAT=CHAMDEPL,
-                      FOND_FISS=FISS,
+                      FOND_FISS=NFISS,
                       INFO=2,
                       )
 
@@ -196,7 +201,7 @@ IMPR_TABLE(TABLE=GK1)
 
 # POST_K1_K2_K3
 TABL_K2=POST_K1_K2_K3(RESULTAT=DEPL_ROT,
-                      FOND_FISS=FISS,
+                      FOND_FISS=NFISS,
                       )
 
 IMPR_TABLE(TABLE=TABL_K2)

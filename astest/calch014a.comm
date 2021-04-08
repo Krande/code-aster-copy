@@ -190,12 +190,7 @@ RESUINI=STAT_NON_LINE(MODELE=MO,
 
 
 # Définition du fond de fissure
-FISS=DEFI_FOND_FISS(MAILLAGE=MAILMECA,
-                     FOND_FISS=_F(GROUP_NO='G'),
-                     LEVRE_SUP=_F(GROUP_MA='lev_sup'),
-                     LEVRE_INF=_F(GROUP_MA='lev_inf'),
-                     SYME='NON')
-FISS_NEW=DEFI_FISSURE(MAILLAGE=MAILMECA,
+FISS=DEFI_FISSURE(MAILLAGE=MAILMECA,
                      FOND_FISS=_F(GROUP_NO='G'),
                      LEVRE_SUP=_F(GROUP_MA='lev_sup'),
                      LEVRE_INF=_F(GROUP_MA='lev_inf'),
@@ -224,7 +219,7 @@ Rsup3 = 9.0
 GTHER1=CALC_H(OPTION='G',
               RESULTAT=RESOUVFI,
               INST=1,
-              THETA=_F(FISSURE=FISS_NEW,
+              THETA=_F(FISSURE=FISS,
                        R_INF=Rinf1,
                        R_SUP=Rsup1,),
               )
@@ -232,7 +227,7 @@ GTHER1=CALC_H(OPTION='G',
 GTHER2=CALC_H(OPTION='G',
               RESULTAT=RESOUVFI,
               INST=1,
-              THETA=_F(FISSURE=FISS_NEW,
+              THETA=_F(FISSURE=FISS,
                        R_INF=Rinf2,
                        R_SUP=Rsup2,),
               )
@@ -240,7 +235,7 @@ GTHER2=CALC_H(OPTION='G',
 GTHER3=CALC_H(OPTION='G',
               RESULTAT=RESOUVFI,
               INST=1,
-              THETA=_F(FISSURE=FISS_NEW,
+              THETA=_F(FISSURE=FISS,
                        R_INF=Rinf3,
                        R_SUP=Rsup3,),
               )
@@ -257,7 +252,7 @@ GINGA1=CALC_H(OPTION='G',
               RESULTAT=RESUINI,
               INST=3,
               ETAT_INIT=_F(SIGM=SIEFELGA),
-              THETA=_F(FISSURE=FISS_NEW,
+              THETA=_F(FISSURE=FISS,
                        R_INF=Rinf1,
                        R_SUP=Rsup1,)
               )
@@ -266,7 +261,7 @@ GINGA2=CALC_H(OPTION='G',
               RESULTAT=RESUINI,
               INST=3,
               ETAT_INIT=_F(SIGM=SIEFELGA),
-              THETA=_F(FISSURE=FISS_NEW,
+              THETA=_F(FISSURE=FISS,
                        R_INF=Rinf2,
                        R_SUP=Rsup2,),
               )
@@ -275,7 +270,7 @@ GINGA3=CALC_H(OPTION='G',
               RESULTAT=RESUINI,
               INST=3,
               ETAT_INIT=_F(SIGM=SIEFELGA),
-              THETA=_F(FISSURE=FISS_NEW,
+              THETA=_F(FISSURE=FISS,
                        R_INF=Rinf3,
                        R_SUP=Rsup3,),
               )
@@ -292,7 +287,7 @@ GINELNO1=CALC_H(OPTION='G',
                 RESULTAT=RESUINI,
                 INST=3,
                 ETAT_INIT=_F(SIGM=SIEFELNO),
-                THETA=_F(FISSURE=FISS_NEW,
+                THETA=_F(FISSURE=FISS,
                          R_INF=Rinf1,
                          R_SUP=Rsup1,)
               )
@@ -301,7 +296,7 @@ GINELNO2=CALC_H(OPTION='G',
                 RESULTAT=RESUINI,
                 INST=3,
                 ETAT_INIT=_F(SIGM=SIEFELNO),
-                THETA=_F(FISSURE=FISS_NEW,
+                THETA=_F(FISSURE=FISS,
                          R_INF=Rinf2,
                          R_SUP=Rsup2,)
               )
@@ -310,7 +305,7 @@ GINELNO3=CALC_H(OPTION='G',
                 RESULTAT=RESUINI,
                 INST=3,
                 ETAT_INIT=_F(SIGM=SIEFELNO),
-                THETA=_F(FISSURE=FISS_NEW,
+                THETA=_F(FISSURE=FISS,
                          R_INF=Rinf3,
                          R_SUP=Rsup3,)
               )
@@ -327,7 +322,7 @@ GINNO1=CALC_H(OPTION='G',
               RESULTAT=RESUINI,
               INST=3,
               ETAT_INIT=_F(SIGM=SIEFNOEU),
-              THETA=_F(FISSURE=FISS_NEW,
+              THETA=_F(FISSURE=FISS,
                        R_INF=Rinf1,
                        R_SUP=Rsup1,)
               )
@@ -336,7 +331,7 @@ GINNO2=CALC_H(OPTION='G',
               RESULTAT=RESUINI,
               INST=3,
               ETAT_INIT=_F(SIGM=SIEFNOEU),
-              THETA=_F(FISSURE=FISS_NEW,
+              THETA=_F(FISSURE=FISS,
                        R_INF=Rinf2,
                        R_SUP=Rsup2,)
               )
@@ -345,7 +340,7 @@ GINNO3=CALC_H(OPTION='G',
               RESULTAT=RESUINI,
               INST=3,
               ETAT_INIT=_F(SIGM=SIEFNOEU),
-              THETA=_F(FISSURE=FISS_NEW,
+              THETA=_F(FISSURE=FISS,
                        R_INF=Rinf3,
                        R_SUP=Rsup3,)
               )
@@ -361,7 +356,7 @@ IMPR_TABLE(TABLE=GINNO3)
 KTHER1=CALC_H(OPTION=('K','G'),
               RESULTAT=RESOUVFI,
               INST=1,
-              THETA=_F(FISSURE=FISS_NEW,
+              THETA=_F(FISSURE=FISS,
                        R_INF=Rinf1,
                        R_SUP=Rsup1,),
               )
@@ -369,7 +364,7 @@ KTHER1=CALC_H(OPTION=('K','G'),
 KTHER2=CALC_H(OPTION=('K','G'),
               RESULTAT=RESOUVFI,
               INST=1,
-              THETA=_F(FISSURE=FISS_NEW,
+              THETA=_F(FISSURE=FISS,
                        R_INF=Rinf2,
                        R_SUP=Rsup2,),
               )
@@ -377,7 +372,7 @@ KTHER2=CALC_H(OPTION=('K','G'),
 KTHER3=CALC_H(OPTION=('K','G'),
               RESULTAT=RESOUVFI,
               INST=1,
-              THETA=_F(FISSURE=FISS_NEW,
+              THETA=_F(FISSURE=FISS,
                        R_INF=Rinf3,
                        R_SUP=Rsup3,),
               )
@@ -394,7 +389,7 @@ KINGA1=CALC_H(OPTION=('K','G'),
               RESULTAT=RESUINI,
               INST=3,
               ETAT_INIT=_F(SIGM=SIEFELGA),
-              THETA=_F(FISSURE=FISS_NEW,
+              THETA=_F(FISSURE=FISS,
                        R_INF=Rinf1,
                        R_SUP=Rsup1,)
               )
@@ -403,7 +398,7 @@ KINGA2=CALC_H(OPTION=('K','G'),
               RESULTAT=RESUINI,
               INST=3,
               ETAT_INIT=_F(SIGM=SIEFELGA),
-              THETA=_F(FISSURE=FISS_NEW,
+              THETA=_F(FISSURE=FISS,
                        R_INF=Rinf2,
                        R_SUP=Rsup2,)
               )
@@ -412,7 +407,7 @@ KINGA3=CALC_H(OPTION=('K','G'),
               RESULTAT=RESUINI,
               INST=3,
               ETAT_INIT=_F(SIGM=SIEFELGA),
-              THETA=_F(FISSURE=FISS_NEW,
+              THETA=_F(FISSURE=FISS,
                        R_INF=Rinf3,
                        R_SUP=Rsup3,)
               )
@@ -429,7 +424,7 @@ KINELNO1=CALC_H(OPTION=('K','G'),
                 RESULTAT=RESUINI,
                 INST=3,
                 ETAT_INIT=_F(SIGM=SIEFELNO),
-                THETA=_F(FISSURE=FISS_NEW,
+                THETA=_F(FISSURE=FISS,
                          R_INF=Rinf1,
                          R_SUP=Rsup1,)
               )
@@ -438,7 +433,7 @@ KINELNO2=CALC_H(OPTION=('K','G'),
                 RESULTAT=RESUINI,
                 INST=3,
                 ETAT_INIT=_F(SIGM=SIEFELNO),
-                THETA=_F(FISSURE=FISS_NEW,
+                THETA=_F(FISSURE=FISS,
                          R_INF=Rinf2,
                          R_SUP=Rsup2,)
               )
@@ -447,7 +442,7 @@ KINELNO3=CALC_H(OPTION=('K','G'),
                 RESULTAT=RESUINI,
                 INST=3,
                 ETAT_INIT=_F(SIGM=SIEFELNO),
-                THETA=_F(FISSURE=FISS_NEW,
+                THETA=_F(FISSURE=FISS,
                          R_INF=Rinf3,
                          R_SUP=Rsup3,)
               )
@@ -464,7 +459,7 @@ KINNO1=CALC_H(OPTION=('K','G'),
               RESULTAT=RESUINI,
               INST=3,
               ETAT_INIT=_F(SIGM=SIEFNOEU),
-              THETA=_F(FISSURE=FISS_NEW,
+              THETA=_F(FISSURE=FISS,
                        R_INF=Rinf1,
                        R_SUP=Rsup1,)
               )
@@ -473,7 +468,7 @@ KINNO2=CALC_H(OPTION=('K','G'),
               RESULTAT=RESUINI,
               INST=3,
               ETAT_INIT=_F(SIGM=SIEFNOEU),
-              THETA=_F(FISSURE=FISS_NEW,
+              THETA=_F(FISSURE=FISS,
                        R_INF=Rinf2,
                        R_SUP=Rsup2,)
               )
@@ -482,7 +477,7 @@ KINNO3=CALC_H(OPTION=('K','G'),
               RESULTAT=RESUINI,
               INST=3,
               ETAT_INIT=_F(SIGM=SIEFNOEU),
-              THETA=_F(FISSURE=FISS_NEW,
+              THETA=_F(FISSURE=FISS,
                        R_INF=Rinf3,
                        R_SUP=Rsup3,)
               )

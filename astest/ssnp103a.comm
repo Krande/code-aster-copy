@@ -122,6 +122,11 @@ FISS = DEFI_FOND_FISS(CONFIG_INIT='COLLEE',
                        LEVRE_SUP=_F(GROUP_MA=('LEVRE_SUP', )),
                        MAILLAGE=MESH,
                        SYME='OUI')
+NFISS = DEFI_FISSURE(CONFIG_INIT='COLLEE',
+                       FOND_FISS=_F(GROUP_NO=('FOND_FISS', )),
+                       LEVRE_SUP=_F(GROUP_MA=('LEVRE_SUP', )),
+                       MAILLAGE=MESH,
+                       SYME='OUI')
                        
 # A PROXIMITE DE LA FISSURE, LES CARACTERISTIQUES MATERIAUX A UTILISER  
 # PAR POST_K1_K2_K3 NE SONT PAS CELLES DE L'ELASTICITE LINEAIRE
@@ -130,7 +135,7 @@ MATERINF = DEFI_MATERIAU(ELAS=_F(E=EE/ratio,
 
 #CALCUL DE G PAR POST_K1_K2_K3
 T_FIC = POST_K1_K2_K3(ABSC_CURV_MAXI=4e-6,
-                      FOND_FISS=FISS,
+                      FOND_FISS=NFISS,
                       MATER=MATERINF,
                       RESULTAT=RESU,
                       TOUT_ORDRE='OUI',

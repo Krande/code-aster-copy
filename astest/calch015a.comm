@@ -209,11 +209,8 @@ RESUINI=CALC_CHAMP(reuse=RESUINI,
 ## Calcul de G en utilisant les couronnes precedemment definies (dans le calcul thermique)
 # et les differentes possibilites de l'etat initial.
 ##Definition du fond de fissure et des couronnes pour reutilisation dans resuini
-FISS1=DEFI_FOND_FISS(MAILLAGE=MAILMECA, SYME='NON',
-                     FOND_FISS=_F(GROUP_NO='G',),
-                     LEVRE_SUP=_F(GROUP_MA='lev_sup',),
-                     LEVRE_INF=_F(GROUP_MA='lev_inf',),);
-FISS1_NEW=DEFI_FISSURE(MAILLAGE=MAILMECA, SYME='NON',
+
+FISS1=DEFI_FISSURE(MAILLAGE=MAILMECA, SYME='NON',
                      FOND_FISS=_F(GROUP_NO='G',),
                      LEVRE_SUP=_F(GROUP_MA='lev_sup',),
                      LEVRE_INF=_F(GROUP_MA='lev_inf',),);
@@ -236,7 +233,7 @@ Rsup3 = 9.0
 GINGA1=CALC_H(OPTION='G',
               THETA=_F(
                        R_INF=Rinf1,
-                       FISSURE=FISS1_NEW,
+                       FISSURE=FISS1,
                        R_SUP=Rsup1,),
               RESULTAT=RESUINI,
               INST=1,
@@ -245,7 +242,7 @@ GINGA1=CALC_H(OPTION='G',
 GINGA2=CALC_H(OPTION='G',
               THETA=_F(
                        R_INF=Rinf2,
-                       FISSURE=FISS1_NEW,
+                       FISSURE=FISS1,
                        R_SUP=Rsup2,),
               RESULTAT=RESUINI,
               INST=1,
@@ -254,7 +251,7 @@ GINGA2=CALC_H(OPTION='G',
 GINGA3=CALC_H(OPTION='G',
               THETA=_F(
                        R_INF=Rinf3,
-                       FISSURE=FISS1_NEW,
+                       FISSURE=FISS1,
                        R_SUP=Rsup3,),
               RESULTAT=RESUINI,
               INST=1,
@@ -266,7 +263,7 @@ GINGA3=CALC_H(OPTION='G',
 GINNO1=CALC_H(OPTION='G',
               THETA=_F(
                        R_INF=Rinf1,
-                       FISSURE=FISS1_NEW,
+                       FISSURE=FISS1,
                        R_SUP=Rsup1,),
              RESULTAT=RESUINI,
              INST=1,
@@ -275,7 +272,7 @@ GINNO1=CALC_H(OPTION='G',
 GINNO2=CALC_H(OPTION='G',
               THETA=_F(
                        R_INF=Rinf2,
-                       FISSURE=FISS1_NEW,
+                       FISSURE=FISS1,
                        R_SUP=Rsup2,),
              RESULTAT=RESUINI,
              INST=1,
@@ -284,7 +281,7 @@ GINNO2=CALC_H(OPTION='G',
 GINNO3=CALC_H(OPTION='G',
               THETA=_F(
                        R_INF=Rinf3,
-                       FISSURE=FISS1_NEW,
+                       FISSURE=FISS1,
                        R_SUP=Rsup3,),
               RESULTAT=RESUINI,
               INST=1,
@@ -296,7 +293,7 @@ GINNO3=CALC_H(OPTION='G',
 GINELNO1=CALC_H(OPTION='G',
                 THETA=_F(
                          R_INF=Rinf1,
-                         FISSURE=FISS1_NEW,
+                         FISSURE=FISS1,
                          R_SUP=Rsup1,),
                 RESULTAT=RESUINI,
                 INST=1,
@@ -305,7 +302,7 @@ GINELNO1=CALC_H(OPTION='G',
 GINELNO2=CALC_H(OPTION='G',
                 THETA=_F(
                          R_INF=Rinf2,
-                         FISSURE=FISS1_NEW,
+                         FISSURE=FISS1,
                          R_SUP=Rsup2,),
                 RESULTAT=RESUINI,
                 INST=1,
@@ -314,7 +311,7 @@ GINELNO2=CALC_H(OPTION='G',
 GINELNO3=CALC_H(OPTION='G',
                 THETA=_F(
                          R_INF=Rinf3,
-                         FISSURE=FISS1_NEW,
+                         FISSURE=FISS1,
                          R_SUP=Rsup3,),
                 RESULTAT=RESUINI,
                 INST=1,
@@ -323,7 +320,7 @@ GINELNO3=CALC_H(OPTION='G',
 # Calcul de G et K pour les 3 couronnes, a partir de SIEF_ELNO
 #------------------------------------------------------------
 
-GINELNK1=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
+GINELNK1=CALC_H(THETA=_F(FISSURE=FISS1,
                         R_INF=Rinf1,
                         R_SUP=Rsup1),
                 RESULTAT=RESUINI,
@@ -331,7 +328,7 @@ GINELNK1=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
                 ETAT_INIT =_F(SIGM=SIEFELNO),
                 OPTION=('K','G'))
 
-GINELNK2=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
+GINELNK2=CALC_H(THETA=_F(FISSURE=FISS1,
                         R_INF=Rinf2,
                         R_SUP=Rsup2),
                 RESULTAT=RESUINI,
@@ -339,7 +336,7 @@ GINELNK2=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
                 ETAT_INIT =_F(SIGM=SIEFELNO),
                 OPTION=('K','G'))
 
-GINELNK3=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
+GINELNK3=CALC_H(THETA=_F(FISSURE=FISS1,
                         R_INF=Rinf3,
                         R_SUP=Rsup3),
                 RESULTAT=RESUINI,
@@ -350,7 +347,7 @@ GINELNK3=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
 # Calcul de G et K pour les 3 couronnes, a partir de SIEF_ELGA
 #------------------------------------------------------------
 
-GINGAK1=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
+GINGAK1=CALC_H(THETA=_F(FISSURE=FISS1,
                         R_INF=Rinf1,
                         R_SUP=Rsup1),
                 RESULTAT=RESUINI,
@@ -358,7 +355,7 @@ GINGAK1=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
                 ETAT_INIT =_F(SIGM=SIEFELGA),
                 OPTION=('K','G'))
 
-GINGAK2=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
+GINGAK2=CALC_H(THETA=_F(FISSURE=FISS1,
                         R_INF=Rinf2,
                         R_SUP=Rsup2),
                 RESULTAT=RESUINI,
@@ -366,7 +363,7 @@ GINGAK2=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
                 ETAT_INIT =_F(SIGM=SIEFELGA),
                 OPTION=('K','G'))
 
-GINGAK3=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
+GINGAK3=CALC_H(THETA=_F(FISSURE=FISS1,
                         R_INF=Rinf3,
                         R_SUP=Rsup3),
                 RESULTAT=RESUINI,
@@ -380,7 +377,7 @@ GINGAK3=CALC_H(THETA=_F(FISSURE=FISS1_NEW,
 GTHER3=CALC_H(OPTION='G',
               THETA=_F(
                        R_INF=Rinf3,
-                       FISSURE=FISS1_NEW,
+                       FISSURE=FISS1,
                        R_SUP=Rsup3,),
               RESULTAT=RESOUVFI,
               INST=1,)

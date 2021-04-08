@@ -211,7 +211,7 @@ UTOTC=CALC_CHAMP(reuse =UTOTC,
 
 
 
-FISS=DEFI_FOND_FISS(MAILLAGE=MAILLAGE, SYME='NON',
+FISS=DEFI_FISSURE(MAILLAGE=MAILLAGE, SYME='NON',
                     FOND_FISS=_F(GROUP_MA='FONFISS',
                                  GROUP_NO_ORIG='PFON_INI',
                                  GROUP_NO_EXTR='PFON_FIN'),

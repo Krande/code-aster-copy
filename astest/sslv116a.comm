@@ -418,6 +418,11 @@ FISS=DEFI_FOND_FISS(MAILLAGE=MA,
                     LEVRE_SUP=_F(GROUP_MA='LEVSUP'),
                     LEVRE_INF=_F(GROUP_MA='LEVINF'),
                     SYME='NON')
+NFISS=DEFI_FISSURE(MAILLAGE=MA,
+                    FOND_FISS=_F(GROUP_MA='LFF1'),
+                    LEVRE_SUP=_F(GROUP_MA='LEVSUP'),
+                    LEVRE_INF=_F(GROUP_MA='LEVINF'),
+                    SYME='NON')
 
 # 1 prisme + 6 hexas selon le rayon du tore
 # h_ -> taille de maille selon le rayon du tore
@@ -491,7 +496,7 @@ GKREF3=CALC_G(OPTION='CALC_K_G',
 # Extrapolation des sauts de deplacements
 KREF=POST_K1_K2_K3(RESULTAT=RESOUVFI,
                    INST=1,
-                   FOND_FISS=FISS)
+                   FOND_FISS=NFISS)
                    
 #CALCULS AVEC ETAT INITIAL, A PARTIR DE RESUINI
 # a partir d'un champ de contraintes initiales de type ELGA
@@ -662,7 +667,7 @@ GKININO3=CALC_G(OPTION='CALC_K_G',
                         )
           
 # Extrapolation des sauts de deplacements
-KINI=POST_K1_K2_K3(FOND_FISS=FISS,
+KINI=POST_K1_K2_K3(FOND_FISS=NFISS,
                    RESULTAT=RESUINI,
                    INST=3.)                
 

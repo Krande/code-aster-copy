@@ -116,11 +116,6 @@ evol=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                        INCREMENT=_F(LIST_INST=TEMPLI,),
                        ARCHIVAGE=_F(PAS_ARCH=100,),);
 
-FOND=DEFI_FOND_FISS(MAILLAGE=MAIL,
-                    FOND_FISS=_F( GROUP_NO = ('P2',)),
-                    SYME='OUI',
-                    LEVRE_SUP=_F(GROUP_MA='LP1P2',),
-                    )
 FOND_NEW=DEFI_FISSURE(MAILLAGE=MAIL,
                     FOND_FISS=_F( GROUP_NO = ('P2',)),
                     SYME='OUI',

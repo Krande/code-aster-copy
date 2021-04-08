@@ -53,12 +53,7 @@ CHAMDEPL=MECA_STATIQUE(  MODELE=MO,
                          EXCIT=_F( CHARGE = CH)
                           )
 
-FOND1=DEFI_FOND_FISS(  MAILLAGE=MA, SYME='NON',
-                       FOND_FISS=_F( GROUP_NO = ('P0',)),
-                       LEVRE_SUP=_F(GROUP_MA='LPOP8',),
-                       LEVRE_INF=_F(GROUP_MA='LPOP8B',),
-                     )
-NFOND1=DEFI_FISSURE(  MAILLAGE=MA, SYME='NON',
+FOND1=DEFI_FISSURE(  MAILLAGE=MA, SYME='NON',
                        FOND_FISS=_F( GROUP_NO = ('P0',)),
                        LEVRE_SUP=_F(GROUP_MA='LPOP8',),
                        LEVRE_INF=_F(GROUP_MA='LPOP8B',),
@@ -68,7 +63,7 @@ GK01=CALC_H(              RESULTAT=CHAMDEPL,
                           THETA=_F(
                                    R_INF = 0.00001875,
                                    R_SUP = 0.000075,
-                                   FISSURE=NFOND1),
+                                   FISSURE=FOND1),
                           OPTION=('G','K'),
                       )
 

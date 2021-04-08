@@ -97,11 +97,7 @@ IMPR_RESU(FORMAT='MED',
 #----------------------------------------------------------------------------------
 
 # post-traitements a completer
-FISS=DEFI_FOND_FISS(MAILLAGE=MAIL,
-                    SYME='OUI',
-                    FOND_FISS=_F(GROUP_NO='O'),
-                    LEVRE_SUP=_F(GROUP_MA='GO'))
-FISS_NEW=DEFI_FISSURE(MAILLAGE=MAIL,
+FISS=DEFI_FISSURE(MAILLAGE=MAIL,
                     SYME='OUI',
                     FOND_FISS=_F(GROUP_NO='O'),
                     LEVRE_SUP=_F(GROUP_MA='GO'))
@@ -113,7 +109,7 @@ RINF=0.005 * 2
 # CALC_G
 G=CALC_H(OPTION='G',
          RESULTAT=RESU,
-         THETA=_F(FISSURE=FISS_NEW,
+         THETA=_F(FISSURE=FISS,
                   R_INF=RINF,
                   R_SUP=RSUP,
                   ),
@@ -123,7 +119,7 @@ IMPR_TABLE(TABLE=G)
 
 GK=CALC_H(OPTION=('G','K'),
           RESULTAT=RESU,
-          THETA=_F(FISSURE=FISS_NEW,
+          THETA=_F(FISSURE=FISS,
                    R_INF=RINF,
                    R_SUP=RSUP,
                    ),

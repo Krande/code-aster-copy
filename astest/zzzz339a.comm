@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -98,6 +98,10 @@ FOND=DEFI_FOND_FISS(MAILLAGE=MA, SYME='NON',
                     FOND_FISS=_F(GROUP_MA='FOND_FISS',),
                     LEVRE_SUP=_F(GROUP_MA='LEVR_SUP',),
                     LEVRE_INF=_F(GROUP_MA='LEVR_INF',),)
+NFOND=DEFI_FISSURE(MAILLAGE=MA, SYME='NON',
+                    FOND_FISS=_F(GROUP_MA='FOND_FISS',),
+                    LEVRE_SUP=_F(GROUP_MA='LEVR_SUP',),
+                    LEVRE_INF=_F(GROUP_MA='LEVR_INF',),)
 
 RESU=CALC_CHAMP(reuse=RESU,
                     RESULTAT=RESU,
@@ -116,7 +120,7 @@ G_INIT=CALC_G(THETA=_F(FOND_FISS=FOND,
               OPTION='CALC_G',)
 
 #CALCUL DE K PAR POST_K1_K2_K3
-KMECA=POST_K1_K2_K3(FOND_FISS=FOND,
+KMECA=POST_K1_K2_K3(FOND_FISS=NFOND,
                     RESULTAT=RESU)
 
 #CALCUL DES G et K par CALC_K_G

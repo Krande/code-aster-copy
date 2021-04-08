@@ -73,6 +73,14 @@ FF1=DEFI_FOND_FISS(MAILLAGE=M,
                    SYME='OUI',
                    LEVRE_SUP=_F(GROUP_MA = 'LEVINF',)
                   )
+NFF1=DEFI_FISSURE(MAILLAGE=M,
+                   FOND_FISS=_F(TYPE_FOND='FERME',
+                                GROUP_MA = 'LFF',
+                                NOEUD_ORIG = 'N49',
+                                MAILLE_ORIG = 'M3233',),
+                   SYME='OUI',
+                   LEVRE_SUP=_F(GROUP_MA = 'LEVINF',)
+                  )
 
 FF=DEFI_FOND_FISS(MAILLAGE=M,
                   FOND_FISS=_F(TYPE_FOND='FERME',
@@ -82,6 +90,7 @@ FF=DEFI_FOND_FISS(MAILLAGE=M,
                    SYME='OUI',
                    LEVRE_SUP=_F(GROUP_MA = 'LEVINF',)
                  )
+
 
 GLOC0=CALC_G(        RESULTAT=RESU,
                      INFO=2,
@@ -304,7 +313,7 @@ TEST_TABLE(VALE_CALC=11.6836726693,
 #
 TABL_K=POST_K1_K2_K3(TOUT = 'OUI',
                      INFO = 1,
-                     FOND_FISS = FF1,
+                     FOND_FISS = NFF1,
                      RESULTAT  = RESU,
                      PREC_VIS_A_VIS = 0.05,
                     )
@@ -324,7 +333,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.13,
-           VALE_CALC=11.6843111989,
+           VALE_CALC=11.684798262225337,
            VALE_REFE=11.58648,
            NOM_PARA='G',
            TABLE=TABL_K,

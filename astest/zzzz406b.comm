@@ -103,6 +103,11 @@ FISS=DEFI_FOND_FISS(MAILLAGE=MAIL,
                     FOND_FISS=_F(GROUP_NO='FRONT'),
                     LEVRE_SUP=_F(GROUP_MA='LEV_SUP'),
                     LEVRE_INF=_F(GROUP_MA='LEV_INF'),)
+NFISS=DEFI_FISSURE(MAILLAGE=MAIL,
+                    SYME='NON',
+                    FOND_FISS=_F(GROUP_NO='FRONT'),
+                    LEVRE_SUP=_F(GROUP_MA='LEV_SUP'),
+                    LEVRE_INF=_F(GROUP_MA='LEV_INF'),)
 
 RSUP=0.005 * 5
 RINF=0.005 * 2
@@ -132,7 +137,7 @@ IMPR_TABLE(TABLE=GK),
 
 # POST_K1_K2_K3
 K=POST_K1_K2_K3(RESULTAT=RESU,
-                FOND_FISS=FISS,)
+                FOND_FISS=NFISS,)
 
 IMPR_TABLE(TABLE=K )
 

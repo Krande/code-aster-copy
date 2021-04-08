@@ -232,7 +232,7 @@ REAXNEUT=MECA_STATIQUE(MODELE=MODAX,
 #                   POST-TRAITEMENT
 #----------------------------------------------
 
-FISS=DEFI_FOND_FISS(MAILLAGE=MAIL,
+FISS=DEFI_FISSURE(MAILLAGE=MAIL,
                     SYME='OUI',
                     FOND_FISS=_F(GROUP_NO='O'),
                     LEVRE_SUP=_F(GROUP_MA='GO'))

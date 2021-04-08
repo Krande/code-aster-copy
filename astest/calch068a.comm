@@ -87,19 +87,13 @@ RESU=MECA_STATIQUE(MODELE=MODE,
                    EXCIT=_F(CHARGE=CHAR)
                    )
 
-FISS=DEFI_FOND_FISS(MAILLAGE=MA, SYME='NON',
+FISS=DEFI_FISSURE(MAILLAGE=MA, SYME='NON',
                     FOND_FISS=_F(GROUP_NO='FOND',),
                     LEVRE_SUP=_F(GROUP_MA='LEV_SUP',),
                     LEVRE_INF=_F(GROUP_MA='LEV_INF',),
                     )
 
-NFISS=DEFI_FISSURE(MAILLAGE=MA, SYME='NON',
-                    FOND_FISS=_F(GROUP_NO='FOND',),
-                    LEVRE_SUP=_F(GROUP_MA='LEV_SUP',),
-                    LEVRE_INF=_F(GROUP_MA='LEV_INF',),
-                    )
-
-CG=CALC_H(THETA=_F(FISSURE=NFISS,
+CG=CALC_H(THETA=_F(FISSURE=FISS,
                    R_INF=2*h,
                    R_SUP=5*h,),
           RESULTAT=RESU,

@@ -48,10 +48,6 @@ CHAM0 = CREA_CHAMP(AFFE=(_F(NOM_CMP=('DX', ),
                    OPERATION='AFFE',
                    TYPE_CHAM='NOEU_DEPL_R')
 
-FISS = DEFI_FOND_FISS(FOND_FISS=_F(GROUP_NO=('FOND_FISS', )),
-                      LEVRE_SUP=_F(GROUP_MA=('LEVRE_SUP', )),
-                      MAILLAGE=mesh,
-                      SYME='OUI')
 FISS_NEW = DEFI_FISSURE(FOND_FISS=_F(GROUP_NO=('FOND_FISS', )),
                       LEVRE_SUP=_F(GROUP_MA=('LEVRE_SUP', )),
                       MAILLAGE=mesh,

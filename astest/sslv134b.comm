@@ -184,6 +184,13 @@ FISS=DEFI_FOND_FISS(MAILLAGE=MA, SYME='NON',
                     LEVRE_SUP=_F(  GROUP_MA = 'LEVINFS'),
                     LEVRE_INF=_F(  GROUP_MA = 'LEVINF1'),
                    )
+NFISS=DEFI_FISSURE(MAILLAGE=MA, SYME='NON',
+                    FOND_FISS=_F(GROUP_MA = 'LFF1',
+                                 GROUP_NO_ORIG = 'NFF1',
+                                 GROUP_NO_EXTR = 'NFF2',),
+                    LEVRE_SUP=_F(  GROUP_MA = 'LEVINFS'),
+                    LEVRE_INF=_F(  GROUP_MA = 'LEVINF1'),
+                   )
 
 RSUP=0.5
 
@@ -236,14 +243,14 @@ MOD_T1=DEFI_CONSTANTE(   VALE=1.    )
 # POST_K1_K2_K3
 
 
-TABL_K1=POST_K1_K2_K3(  FOND_FISS = FISS,
+TABL_K1=POST_K1_K2_K3(  FOND_FISS = NFISS,
                         RESULTAT = CHAMDEPL,
                       )
 
 IMPR_TABLE(TABLE=TABL_K1)
 
 
-TABL_KTO=POST_K1_K2_K3(  FOND_FISS = FISS,
+TABL_KTO=POST_K1_K2_K3(  FOND_FISS = NFISS,
               RESULTAT=CHAMDEPL,
               PREC_VIS_A_VIS = 0.05,
            )
@@ -329,7 +336,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 # TEST INFORMATIQUE : VALIDATION DE DEFI_FOND_FISS
-FISSM=DEFI_FOND_FISS(MAILLAGE=MA, SYME='NON',
+FISSM=DEFI_FISSURE(MAILLAGE=MA, SYME='NON',
                      FOND_FISS=_F(GROUP_MA = 'LFF1',),
                      LEVRE_SUP=_F(  GROUP_MA = 'LEVINFS'),
                      LEVRE_INF=_F(  GROUP_MA = 'LEVINF1'),
@@ -365,7 +372,7 @@ MA=MODI_MAILLAGE(reuse=MA,
                 MODI_MAILLE=_F(OPTION='NOEUD_QUART',
                                GROUP_NO_FOND='NLFF1'))
 
-FISSN=DEFI_FOND_FISS(MAILLAGE=MA, SYME='NON',
+FISSN=DEFI_FISSURE(MAILLAGE=MA, SYME='NON',
                      FOND_FISS=_F(GROUP_MA = 'LFF1',),
                      LEVRE_SUP=_F(GROUP_MA = 'LEVINFS'),
                      LEVRE_INF=_F(GROUP_MA = 'LEVINF1'),

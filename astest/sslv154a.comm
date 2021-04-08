@@ -109,6 +109,11 @@ FISS=DEFI_FOND_FISS(MAILLAGE=MA, SYME='NON',
                     LEVRE_SUP=_F(GROUP_MA='LEVSUP'),
                     LEVRE_INF=_F(GROUP_MA='LEVINF'),
                     )
+NFISS=DEFI_FISSURE(MAILLAGE=MA, SYME='NON',
+                    FOND_FISS=_F(GROUP_MA='LFF1'),
+                    LEVRE_SUP=_F(GROUP_MA='LEVSUP'),
+                    LEVRE_INF=_F(GROUP_MA='LEVINF'),
+                    )
 
 RSUP = 0.528
 RINF = 0.12
@@ -131,7 +136,7 @@ CG2=CALC_G(THETA=_F(FOND_FISS=FISS,
 
 
 # Extrapolation des sauts de deplacements
-PK=POST_K1_K2_K3(FOND_FISS=FISS,
+PK=POST_K1_K2_K3(FOND_FISS=NFISS,
                  RESULTAT=RESU,
                  )
 

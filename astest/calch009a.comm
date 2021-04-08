@@ -179,10 +179,6 @@ IMPR_RESU(RESU=_F(RESULTAT=RESUINI), UNITE=81, FORMAT='MED')
 #  CALCUL DE G AVEC DEFORMATIONS THERMIQUES
 #--------------------------------------------------------------------
 
-FOND=DEFI_FOND_FISS( MAILLAGE=MA,
-                     FOND_FISS=_F( GROUP_NO = 'FOND_FISS'),
-                     SYME='OUI',
-                     LEVRE_SUP=_F(GROUP_MA='LEVRE_SUP'))
 FOND_NEW=DEFI_FISSURE( MAILLAGE=MA,
                      FOND_FISS=_F( GROUP_NO = 'FOND_FISS'),
                      SYME='OUI',

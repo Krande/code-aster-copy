@@ -99,12 +99,8 @@ IMPR_RESU(FORMAT='MED',
 #----------------------------------------------------------------------------------
 
 # post-traitements a completer
-FISS=DEFI_FOND_FISS(MAILLAGE=MAIL,
-                    SYME='NON',
-                    FOND_FISS=_F(GROUP_NO='FRONT'),
-                    LEVRE_SUP=_F(GROUP_MA='LEV_SUP'),
-                    LEVRE_INF=_F(GROUP_MA='LEV_INF'),)
-FISS_NEW=DEFI_FISSURE(MAILLAGE=MAIL,
+
+FISS=DEFI_FISSURE(MAILLAGE=MAIL,
                     SYME='NON',
                     FOND_FISS=_F(GROUP_NO='FRONT'),
                     LEVRE_SUP=_F(GROUP_MA='LEV_SUP'),
@@ -117,7 +113,7 @@ RINF=0.005 * 2
 # CALC_G
 G=CALC_H(OPTION='G',
          RESULTAT=RESU,
-         THETA=_F(FISSURE=FISS_NEW,
+         THETA=_F(FISSURE=FISS,
                   R_INF=RINF,
                   R_SUP=RSUP,
                   ),
@@ -127,7 +123,7 @@ IMPR_TABLE(TABLE=G)
 
 GK=CALC_H(OPTION=('G','K'),
           RESULTAT=RESU,
-          THETA=_F(FISSURE=FISS_NEW,
+          THETA=_F(FISSURE=FISS,
                    R_INF=RINF,
                    R_SUP=RSUP,
                    ),

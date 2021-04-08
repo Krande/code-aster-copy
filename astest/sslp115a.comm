@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -190,6 +190,11 @@ RESUINI=STAT_NON_LINE(MODELE=MO,
 
 # Définition du fond de fissure
 FISS=DEFI_FOND_FISS(MAILLAGE=MAILMECA,
+                     FOND_FISS=_F(GROUP_NO='G'),
+                     LEVRE_SUP=_F(GROUP_MA='lev_sup'),
+                     LEVRE_INF=_F(GROUP_MA='lev_inf'),
+                     SYME='NON')
+NFISS=DEFI_FISSURE(MAILLAGE=MAILMECA,
                      FOND_FISS=_F(GROUP_NO='G'),
                      LEVRE_SUP=_F(GROUP_MA='lev_sup'),
                      LEVRE_INF=_F(GROUP_MA='lev_inf'),
@@ -484,11 +489,11 @@ KINNO3=CALC_G(OPTION='CALC_K_G',
 # POST_K1_K2_K3
 #--------------
 
-PKTHER=POST_K1_K2_K3(FOND_FISS=FISS,
+PKTHER=POST_K1_K2_K3(FOND_FISS=NFISS,
                      RESULTAT=RESOUVFI,
                      INST=1.)
 
-PKMECA=POST_K1_K2_K3(FOND_FISS=FISS,
+PKMECA=POST_K1_K2_K3(FOND_FISS=NFISS,
                      RESULTAT=RESUINI,
                      INST=3.)
 

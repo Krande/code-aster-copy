@@ -80,11 +80,6 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.,
 # DEFINITION DE LA COURONNE
 # -------------------------
 
-FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
-                        FOND_FISS=_F( GROUP_NO = ('P0',)),
-                        SYME='OUI',
-                        LEVRE_SUP=_F(MAILLE='M458'),
-                      )
 FOND_NEW=DEFI_FISSURE(    MAILLAGE=MA,
                         FOND_FISS=_F( GROUP_NO = ('P0',)),
                         SYME='OUI',

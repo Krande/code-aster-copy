@@ -91,6 +91,11 @@ FISS=DEFI_FOND_FISS(MAILLAGE=MA, SYME='NON',
                     LEVRE_SUP=_F(GROUP_MA='LEV_SUP',),
                     LEVRE_INF=_F(GROUP_MA='LEV_INF',),
                     )
+NFISS=DEFI_FISSURE(MAILLAGE=MA, SYME='NON',
+                    FOND_FISS=_F(GROUP_NO='FOND',),
+                    LEVRE_SUP=_F(GROUP_MA='LEV_SUP',),
+                    LEVRE_INF=_F(GROUP_MA='LEV_INF',),
+                    )
 
 CG=CALC_G(THETA=_F(FOND_FISS=FISS,
                    R_INF=2*h,
@@ -101,7 +106,7 @@ CG=CALC_G(THETA=_F(FOND_FISS=FISS,
 IMPR_TABLE(TABLE=CG)
 
 
-PK=POST_K1_K2_K3(FOND_FISS=FISS,
+PK=POST_K1_K2_K3(FOND_FISS=NFISS,
                  RESULTAT=RESU)
 
 IMPR_TABLE(TABLE=PK)

@@ -146,14 +146,7 @@ MODE=NORM_MODE(reuse=MODE,
                MODE=MODE,
                NORME='MASS_GENE',);
 
-
-FF1=DEFI_FOND_FISS(MAILLAGE=M, SYME='NON',
-                   FOND_FISS=_F(GROUP_NO = 'PF',),
-                   LEVRE_SUP=_F(  GROUP_MA = 'LEVSUP'),
-                   LEVRE_INF=_F(  GROUP_MA = 'LEVINF'),
-                  );
-                  
-NF1=DEFI_FISSURE(MAILLAGE=M, SYME='NON',
+NFF1=DEFI_FISSURE(MAILLAGE=M, SYME='NON',
                    FOND_FISS=_F(GROUP_NO = 'PF',),
                    LEVRE_SUP=_F(  GROUP_MA = 'LEVSUP'),
                    LEVRE_INF=_F(  GROUP_MA = 'LEVINF'),
@@ -162,7 +155,7 @@ NF1=DEFI_FISSURE(MAILLAGE=M, SYME='NON',
 GLMO1=CALC_H(OPTION='K',
              RESULTAT=MODE,
              TOUT_MODE = 'OUI',
-             THETA=_F(FISSURE=NF1,
+             THETA=_F(FISSURE=NFF1,
                       R_INF=5.E-6,
                       R_SUP=5.E-5,
                     CHAM_THETA=CO('cham_theta_no1'),
@@ -175,7 +168,7 @@ IMPR_TABLE(TABLE =GLMO1);
 
 T1_K = POST_K1_K2_K3(INFO = 2,
                            RESULTAT=MODE,
-                           FOND_FISS=FF1,
+                           FOND_FISS=NFF1,
                            NUME_ORDRE=(1,2,3,4,5),);
 IMPR_TABLE(TABLE=T1_K)
 
@@ -286,7 +279,7 @@ TEST_TABLE(
 
 KT1 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
                    K_MODAL = _F(TABL_K_MODA =GLMO1,
-                              FOND_FISS=FF1, ),);
+                              FOND_FISS=NFF1, ),);
 
 IMPR_TABLE(TABLE=KT1)
 
@@ -303,7 +296,7 @@ TEST_TABLE(
 GLMO2=CALC_H(NUME_MODE = 1,
              OPTION='K',
              RESULTAT=MODE,
-             THETA=_F(FISSURE=NF1,
+             THETA=_F(FISSURE=NFF1,
                       R_INF=5.E-6,
                       R_SUP=5.E-5,),
                     );
@@ -322,7 +315,7 @@ GLMO3=CALC_H(OPTION='K',
              FREQ = 3.46915E+03,
              PRECISION=1.E-3,
 
-             THETA=_F(FISSURE=NF1,
+             THETA=_F(FISSURE=NFF1,
                       R_INF=5.E-6,
                       R_SUP=5.E-5,
                       CHAM_THETA=CO('cham_theta_no3'),

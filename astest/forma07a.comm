@@ -88,6 +88,15 @@ FISS=DEFI_FOND_FISS(MAILLAGE=MA,
                     LEVRE_SUP=_F(GROUP_MA = 'LEV_SUP'),
                     LEVRE_INF=_F(GROUP_MA = 'LEV_INF'),
                     )
+FISSH=DEFI_FISSURE(MAILLAGE=MA,
+                    FOND_FISS=_F(GROUP_MA='LFF',
+                                 GROUP_NO_ORIG='NFF1',
+                                 GROUP_NO_EXTR='NFF2',
+                                 ),
+                    SYME='NON',
+                    LEVRE_SUP=_F(GROUP_MA = 'LEV_SUP'),
+                    LEVRE_INF=_F(GROUP_MA = 'LEV_INF'),
+                    )
 
 RSUP=0.5
 RINF=0.2
@@ -140,7 +149,7 @@ IMPR_TABLE(TABLE=G_LAGN)
 #---------------------------------------------------------
 
 K=POST_K1_K2_K3(RESULTAT=CHAMDEPL,
-                FOND_FISS=FISS,)
+                FOND_FISS=FISSH,)
 
 
 IMPR_TABLE(TABLE=K)

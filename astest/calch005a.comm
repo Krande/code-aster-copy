@@ -196,11 +196,6 @@ CHAMDEP0=STAT_NON_LINE(MODELE=MO,
                 ITER_GLOB_MAXI = 20),
               )
 
-FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
-                        FOND_FISS=_F( GROUP_NO = ('P0',)),
-                        SYME='OUI',
-                        LEVRE_SUP=_F(MAILLE='M1609'),
-                      )
 FOND_NEW=DEFI_FISSURE(    MAILLAGE=MA,
                         FOND_FISS=_F( GROUP_NO = ('P0',)),
                         SYME='OUI',

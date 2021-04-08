@@ -138,6 +138,13 @@ FF1=DEFI_FOND_FISS(MAILLAGE=M, SYME='NON',
                    LEVRE_INF=_F(GROUP_MA='LEV_INF',),
                    )
 
+NFF1=DEFI_FISSURE(MAILLAGE=M, SYME='NON',
+                   FOND_FISS=_F(GROUP_MA='FN_FS',),
+                                #GROUP_NO_ORIG='PFINI',),
+                   LEVRE_SUP=_F(GROUP_MA='LEV_SUP',),
+                   LEVRE_INF=_F(GROUP_MA='LEV_INF',),
+                   )
+
 
 GLMO1=CALC_G(OPTION='CALC_K_G',
              RESULTAT=MODE,
@@ -152,7 +159,7 @@ GLMO1=CALC_G(OPTION='CALC_K_G',
 IMPR_TABLE(TABLE = GLMO1)
 
 
-T1_K = POST_K1_K2_K3(FOND_FISS=FF1,
+T1_K = POST_K1_K2_K3(FOND_FISS=NFF1,
                      RESULTAT=MODE,
                      ABSC_CURV_MAXI=2.E-4,
                      TOUT_ORDRE='OUI',

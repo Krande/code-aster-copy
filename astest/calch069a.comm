@@ -117,13 +117,8 @@ RESU = STAT_NON_LINE(CHAM_MATER=CHMAT,
 ########################################################################
 
 #DEFINITION DU FRONT DE FISSURE
-FISS = DEFI_FOND_FISS(CONFIG_INIT='COLLEE',
-                       FOND_FISS=_F(GROUP_NO=('FOND_FISS', )),
-                       LEVRE_SUP=_F(GROUP_MA=('LEVRE_SUP', )),
-                       MAILLAGE=MESH,
-                       SYME='OUI')
-                       
-NFISS = DEFI_FISSURE(CONFIG_INIT='COLLEE',
+
+FISS = DEFI_FISSURE(CONFIG_INIT='COLLEE',
                        FOND_FISS=_F(GROUP_NO=('FOND_FISS', )),
                        LEVRE_SUP=_F(GROUP_MA=('LEVRE_SUP', )),
                        MAILLAGE=MESH,
@@ -146,21 +141,21 @@ T_FIC = POST_K1_K2_K3(ABSC_CURV_MAXI=4e-6,
 # ON CALCULE G POUR TROIS COURONNES D'INTEGRATIONS
 T_G1 = CALC_H(OPTION='G',
              RESULTAT=RESU,
-             THETA=_F(FISSURE=NFISS,
+             THETA=_F(FISSURE=FISS,
                       R_INF=20.0e-3,
                       R_SUP=25.0e-3),
              TOUT_ORDRE='OUI')
 
 T_G2 = CALC_H(OPTION='G',
              RESULTAT=RESU,
-             THETA=_F(FISSURE=NFISS,
+             THETA=_F(FISSURE=FISS,
                       R_INF=15e-3,
                       R_SUP=20.0e-3),
              TOUT_ORDRE='OUI')
 
 T_G3 = CALC_H(OPTION='G',
              RESULTAT=RESU,
-             THETA=_F(FISSURE=NFISS,
+             THETA=_F(FISSURE=FISS,
                       R_INF=10e-3,
                       R_SUP=15.0e-3),
              TOUT_ORDRE='OUI')

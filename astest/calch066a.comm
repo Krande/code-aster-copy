@@ -62,14 +62,7 @@ CHAMDEPL=MECA_STATIQUE(        MODELE=MO,
 
 CHAMDEPL=CALC_CHAMP(reuse=CHAMDEPL,CONTRAINTE=('SIGM_ELNO'),RESULTAT=CHAMDEPL)
 
-
-FISS=DEFI_FOND_FISS(MAILLAGE=MA,SYME='NON',
-                    FOND_FISS=_F( GROUP_NO = ('P0',)),
-                    LEVRE_SUP=_F(  GROUP_MA = 'LP0P8'),
-                    LEVRE_INF=_F(  GROUP_MA = 'LP0P8S'),
-                   )
-
-NFISS=DEFI_FISSURE(MAILLAGE=MA,SYME='NON',
+FISS=DEFI_FISSURE(MAILLAGE=MA,SYME='NON',
                     FOND_FISS=_F( GROUP_NO = ('P0',)),
                     LEVRE_SUP=_F(  GROUP_MA = 'LP0P8'),
                     LEVRE_INF=_F(  GROUP_MA = 'LP0P8S'),
@@ -81,7 +74,7 @@ RINF=0.05
 
 G0=CALC_H(RESULTAT=CHAMDEPL,
           THETA=_F(R_INF=RINF,
-                   FISSURE=NFISS,
+                   FISSURE=FISS,
                    R_SUP=RSUP,
                    ),
            OPTION='G',
@@ -90,7 +83,7 @@ G0=CALC_H(RESULTAT=CHAMDEPL,
 
 GK0=CALC_H(RESULTAT=CHAMDEPL,
            THETA=_F(R_INF=RINF,
-                    FISSURE=NFISS,
+                    FISSURE=FISS,
                     R_SUP=RSUP,
                     ),
            OPTION='K')
@@ -188,14 +181,14 @@ IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=DEPL_ROT));
 
 G1=CALC_H(RESULTAT=DEPL_ROT,
           THETA=_F(R_INF=RINF,
-                   FISSURE=NFISS,
+                   FISSURE=FISS,
                    R_SUP=RSUP,
                    ),
           OPTION='G',
           )
 
 GK1=CALC_H(THETA=_F(R_INF=RINF,
-                    FISSURE=NFISS,
+                    FISSURE=FISS,
                     R_SUP=RSUP,
                     ),
           RESULTAT=DEPL_ROT,
