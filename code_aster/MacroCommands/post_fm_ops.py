@@ -48,17 +48,11 @@ class PostFM(object):
         if len(nodes) != 1:
             UTMESS("E", "POSTFM_1", vali=len(nodes), valk=group_no)
         node = nodes[0]
-        _, _, axis = aster.dismoi("AXIS", model.getName(), "MODELE", "C")
-        if axis == "OUI":
-            # récupération de la distance à l'axe Y pour normaliser g_elas et g_plas
-            norm_g = mesh.getCoordinates()[3 * (node - 1)]
-        else:
-            norm_g = 1.0
         # récupération des entrées : inst, temp, g_elas et g_plas
         self._inst = np.array(inst)
         self._temp = np.array(temp)
-        self._g_elas = np.maximum(0.0, np.array(g_elas)) / norm_g
-        self._g_plas = np.maximum(0.0, np.array(g_plas)) / norm_g
+        self._g_elas = np.maximum(0.0, np.array(g_elas))
+        self._g_plas = np.maximum(0.0, np.array(g_plas))
         # récupération du materiau
         chmat = resultat.getMaterialField()
         self._retrieve_material(chmat, mesh, node)
