@@ -231,6 +231,7 @@ TEST_TABLE(TABLE = SXX11,
            VALE_CALC = 723.6044660403583,
            REFERENCE= 'SOURCE_EXTERNE',
            VALE_REFE= 7.234025e+02,
+           TOLE_MACHINE = 1.e-5,
        PRECISION = 0.01,
            )
 TEST_TABLE(TABLE = SXX12,
