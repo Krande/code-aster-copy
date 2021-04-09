@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -210,7 +210,7 @@ ResuRefe = [
 ]
 ResuCalc = [
 # PARA     DXCALC                DZCALC             TOLEMAx   TOLEMAz
-[ 1.0 , 1.9672796277789E-01 , 0.81972023013363    , 1.0E-06 , 1.2E-05 ,],
+[ 1.0 , 1.9672796277789E-01 , 0.81972023013363    , 2.0E-06 , 1.5E-05 ,],
 [ 1.2 , 21.96100497589      , 44.52981220033      , 1.0E-06 , 1.0E-06 ,],
 [ 1.4 , 51.44118381317      , 58.45884525001      , 1.0E-06 , 1.0E-06 ,],
 [ 1.6 , 72.29127274566      , 60.25969177032      , 1.0E-06 , 1.0E-06 ,],
