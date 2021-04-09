@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -96,6 +96,7 @@ PARAMS_TYPE = {
     "ncpus": "int",
     "no-mpi": "bool",
     "time_limit": "float",
+    "testlist": "list[str]",
     # command line arguments
     "args": "list[str]",
 }
@@ -107,7 +108,7 @@ PARAMS_TYPE.update({}.fromkeys(
      "memjob", "mode", "mpi_nbnoeud", "nbmaxnook", "noeud", "nomjob", "parent",
      "platform", "protocol_copyfrom", "protocol_copyto", "protocol_exec",
      "proxy_dir", "rep_trav", "origine", "server", "serveur", "service",
-     "soumbtc", "studyid", "testlist", "tpsjob", "username", "uclient",
+     "soumbtc", "studyid", "tpsjob", "username", "uclient",
      "version"],
     DEPRECATED))
 
