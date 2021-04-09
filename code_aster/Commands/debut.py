@@ -55,10 +55,10 @@ from ..Utilities import (ExecutionParameter, Options, deprecate, import_object,
 from ..Utilities.i18n import localization
 
 try:
-    import ptvsd
-    HAS_PTVSD = True
+    import debugpy
+    HAS_DEBUGPY = True
 except ImportError:
-    HAS_PTVSD = False
+    HAS_DEBUGPY = False
 
 
 class ExecutionStarter:
@@ -285,15 +285,15 @@ def init(*argv, **kwargs):
         ExecutionParameter().enable(Options.Debug)
     kwargs.pop('debug', None)
 
-    if kwargs.get('ptvsd') and HAS_PTVSD:
-        print('Waiting for debugger attach...'),
-        ptvsd.enable_attach(address=('127.0.0.1', kwargs['ptvsd']))
-        ptvsd.wait_for_attach()
-        ptvsd.break_into_debugger()
+    if kwargs.get('debugpy') and HAS_DEBUGPY:
+        debugpy.listen(("localhost", kwargs['debugpy']))
+        print("Waiting for debugger attach")
+        debugpy.wait_for_client()
+        debugpy.breakpoint()
         # add 10 hours for debugging
         tpmax = ExecutionParameter().get_option("tpmax")
         ExecutionParameter().set_option("tpmax", tpmax + 36000)
-    kwargs.pop('ptvsd', None)
+    kwargs.pop('debugpy', None)
 
     if ExecutionStarter.params.option & Options.Continue:
         Restarter.run_with_argv(**kwargs)

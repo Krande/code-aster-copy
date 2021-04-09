@@ -78,10 +78,10 @@ from .run import RunAster, get_procid
 from .utils import ROOT
 
 try:
-    import ptvsd
-    HAS_PTVSD = True
+    import debugpy
+    HAS_DEBUGPY = True
 except ImportError:
-    HAS_PTVSD = False
+    HAS_DEBUGPY = False
 
 USAGE = """
     run_aster [options] [EXPORT]
@@ -161,9 +161,9 @@ def parse_args(argv):
     parser.add_argument('--exectool', action='store',
                         help="wrap code_aster execution using this tool "
                              "(debugger, valgrind, custom command...)")
-    parser.add_argument('--ptvsd-runner', action='store', type=int,
+    parser.add_argument('--debugpy-runner', action='store', type=int,
                         help=argparse.SUPPRESS)
-    parser.add_argument('--ptvsd-rank', action='store', type=int, default=0,
+    parser.add_argument('--debugpy-rank', action='store', type=int, default=0,
                         help=argparse.SUPPRESS)
     parser.add_argument('export', metavar='EXPORT', nargs="?",
                         help="Export file defining the calculation. "
@@ -183,8 +183,8 @@ def parse_args(argv):
         parser.exit(0)
     if args.env and not args.wrkdir:
         parser.error("Argument '--wrkdir' is required if '--env' is enabled")
-    if args.ptvsd_runner and not HAS_PTVSD:
-        parser.error("can not import 'ptvsd'")
+    if args.debugpy_runner and not HAS_DEBUGPY:
+        parser.error("can not import 'debugpy'")
     return args
 
 
@@ -200,11 +200,11 @@ def main(argv=None):
     procid = 0
     if CFG.get("parallel", 0):
         procid = get_procid()
-    if args.ptvsd_runner and procid == args.ptvsd_rank:
-        print('Waiting for debugger attach...'),
-        ptvsd.enable_attach(address=('127.0.0.1', args.ptvsd_runner))
-        ptvsd.wait_for_attach()
-        ptvsd.break_into_debugger()
+    if args.debugpy_runner and procid == args.debugpy_rank:
+        debugpy.listen(("localhost", args.debugpy_runner))
+        print("Waiting for debugger attach")
+        debugpy.wait_for_client()
+        debugpy.breakpoint()
 
     export = Export(args.export, " ", test=args.test or args.ctest, check=False)
     make_env = args.env or "make_env" in export.get("actions", [])
