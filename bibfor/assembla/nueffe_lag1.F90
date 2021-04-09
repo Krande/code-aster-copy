@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -603,7 +603,7 @@ implicit none
 !
     p_nequ(2) = nb_dof
 !
-    if (niv .ge. 1) then
+    if (niv .ge. 1 .and. .not.lparallel_mesh) then
 
 ! ---   CALCUL DE NNO : NOMBRE DE NOEUDS DU MAILLAGE PORTEURS DE DDLS :
 !       ----------------------------------------------------------------

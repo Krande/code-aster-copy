@@ -61,7 +61,9 @@ ParallelMechanicalLoadClass::transferConstantFieldOnCells( const ConstantFieldOn
 
     std::string savedName( "" );
     fieldOut->allocate( Permanent, fieldIn );
-    for( int pos = 0; pos < (*fieldIn).size(); ++pos )
+    const auto sizeFieldIn = (*fieldIn).size();
+
+    for( int pos = 0; pos < sizeFieldIn; ++pos )
     {
         const auto& zone = fieldIn->getZoneDescription( pos );
         const auto& curFEDesc = zone.getFiniteElementDescriptor();
@@ -73,12 +75,15 @@ ParallelMechanicalLoadClass::transferConstantFieldOnCells( const ConstantFieldOn
         }
         savedName = curFEDesc->getName();
 
+        const auto& listCells = zone.getListOfCells();
         VectorLong toCopy;
-        for( const auto& num : zone.getListOfCells() )
+        toCopy.reserve(listCells.size());
+        for( const auto& num : listCells )
         {
             if( toKeep[ -num - 1 ] != 1 )
                 toCopy.push_back( toKeep[ -num - 1 ] );
         }
+
         if( toCopy.size() != 0 )
         {
             const auto newZone = ConstantFieldOnZone( zone.getFiniteElementDescriptor(), toCopy );
@@ -86,6 +91,7 @@ ParallelMechanicalLoadClass::transferConstantFieldOnCells( const ConstantFieldOn
             fieldOut->setValueOnZone( newZone, resu );
         }
     }
+
 };
 
 #endif /* ASTER_HAVE_MPI */

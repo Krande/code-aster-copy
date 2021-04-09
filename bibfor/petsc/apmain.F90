@@ -70,7 +70,7 @@ use lmp_module, only : lmp_update
 #include "asterfort/ap2foi.h"
 #include "asterfort/apsolu.h"
 #include "asterfort/apvsmb.h"
-#include "asterfort/asmpi_info.h"
+#include "asterfort/apvsmbh.h"
 #include "asterfort/assert.h"
 #include "asterfort/csmbgg.h"
 #include "asterfort/cpysol.h"
@@ -88,8 +88,6 @@ use lmp_module, only : lmp_update
 #include "asterfort/mrconl.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/utmess.h"
-#include "asterfort/uttcpu.h"
-#include "asterfort/wkvect.h"
 !
 #ifdef ASTER_HAVE_PETSC
 !----------------------------------------------------------------
@@ -101,7 +99,6 @@ use lmp_module, only : lmp_update
     mpi_int :: mrank, msize
     integer, dimension(:), pointer :: slvi => null()
     integer :: ndprop4, iterm, nglo
-    mpi_int :: rang, nbproc
     mpi_int :: mpicomm
     integer :: nuno, jrefn, jdeeq, jmlogl, nucmp, j
 !
@@ -111,7 +108,6 @@ use lmp_module, only : lmp_update
     character(len=14) :: nonu
     character(len=3) :: matd
     character(len=1) :: rouc
-    character(len=8) :: mesh
 !
     real(kind=8) :: divtol, resipc
     real(kind=8), dimension(:), pointer :: slvr => null()
@@ -125,9 +121,8 @@ use lmp_module, only : lmp_update
 !
     PetscInt :: its, maxits
     PetscErrorCode ::  ierr
-    PetscInt :: neq, i, low, high, ndpro2, nn
-    PetscInt :: bs
-    PetscInt, pointer :: v_indic(:) => null()
+    PetscInt :: i, low, high, ndpro2
+    PetscInt :: bs, mm, nn
     PetscReal :: rtol, atol, dtol
     Vec :: r
     PetscScalar :: xx(1), ires, fres
@@ -148,7 +143,6 @@ use lmp_module, only : lmp_update
     call matfpe(-1)
 !
     call infniv(ifm, niv)
-    call asmpi_info(rank=rang, size=nbproc)
 !
 !     -- LECTURE DU COMMUN
     nomat = nomat_courant
@@ -217,6 +211,9 @@ use lmp_module, only : lmp_update
         !     fres = 0.d0
         !     call MatNorm(ap(kptsc), NORM_FROBENIUS, fres, ierr)
         !     ASSERT( ierr == 0 )
+        !     call MatGetSize( ap(kptsc), mm, nn, ierr )
+        !     ASSERT( ierr == 0 )
+        !     print*, "SIZE LHS PETSC: ", mm, nn
         !     print*, "NORME LHS PETSC: ", fres
         ! end if
 !
@@ -274,62 +271,7 @@ use lmp_module, only : lmp_update
         if (.not.lmhpc) then
             call apvsmb(kptsc, lmd, rsolu)
         else
-            bs = tblocs(kptsc)
-            call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
-            call jeveuo(nonu//'.NUME.NULG', 'L', jnugll)
-            call jeveuo(nonu//'.NUME.PDDL', 'L', jprddl)
-            if(dbg) then
-                call jeveuo(nonu//'.NUME.DEEQ', 'L', jdeeq)
-                call jeveuo(nonu//'.NUME.REFN', 'L', jrefn)
-                mesh = zk24(jrefn)(1:8)
-                call jeveuo(mesh//'.NULOGL', 'L', jmlogl)
-            end if
-            nloc = zi(jnequ)
-            nglo = zi(jnequ + 1)
-            ndprop = 0
-            do jcoll = 0, nloc - 1
-                if ( zi(jprddl + jcoll) .eq. rang ) ndprop = ndprop + 1
-            end do
-            ndprop4 = ndprop
-            call VecCreate(mpicomm, b, ierr)
-            ASSERT(ierr .eq. 0)
-            call VecSetBlockSize(b, to_petsc_int(bs), ierr)
-            ASSERT(ierr .eq. 0)
-            call VecSetSizes(b, to_petsc_int(ndprop4), to_petsc_int(nglo), ierr)
-            ASSERT(ierr .eq. 0)
-            call VecSetType(b, VECMPI, ierr)
-            ASSERT(ierr .eq. 0)
-#if ASTER_PETSC_INT_SIZE == 4
-            call wkvect('&&APMAIN.INDICES', 'V V S', ndprop, vi4=v_indic)
-#else
-            call wkvect('&&APMAIN.INDICES', 'V V I', ndprop, vi=v_indic)
-#endif
-            call wkvect('&&APMAIN.VALEURS', 'V V R', ndprop, jvaleu)
-            iterm = 0
-            do jcoll = 0, nloc - 1
-                if ( zi(jprddl + jcoll) .eq. rang ) then
-                    v_indic(iterm + 1) = zi(jnugll + jcoll)
-                    zr(jvaleu + iterm) = rsolu(jcoll + 1)
-                    iterm = iterm + 1
-!
-                    if(dbg) then
-                        nuno  = zi(jdeeq+2*(jcoll))
-                        if( nuno.ne.0 ) nuno = zi(jmlogl + nuno - 1) + 1
-                        nucmp = zi(jdeeq+2*(jcoll) + 1)
-!                    numéro noeud global, num comp du noeud, rhs
-                        write(601+rang,*) nuno, nucmp, zi(jnugll + jcoll), rsolu(jcoll + 1)
-                    end if
-                endif
-            end do
-            if(dbg) flush(601+rang)
-            nn = to_petsc_int(iterm)
-            call VecSetValues(b, nn, v_indic(1), zr(jvaleu), INSERT_VALUES, ierr)
-            call jedetr('&&APMAIN.INDICES')
-            call jedetr('&&APMAIN.VALEURS')
-            call VecAssemblyBegin(b, ierr)
-            ASSERT(ierr .eq. 0)
-            call VecAssemblyEnd(b, ierr)
-            ASSERT(ierr .eq. 0)
+            call apvsmbh(kptsc, rsolu)
         endif
 
 !        2.3 PARAMETRES DU KSP :
@@ -356,6 +298,13 @@ use lmp_module, only : lmp_update
         end if
 !
         call KSPSolve(ksp, b, x, ierr)
+
+        if(dbg) then
+            fres = 0.d0
+            call VecNorm(x, norm_2, fres, ierr)
+            ASSERT( ierr == 0 )
+            print*, "NORME SOL PETSC: ", fres
+        end if
 !
 !        2.5 DIAGNOSTIC :
 !        ----------------

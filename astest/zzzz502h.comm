@@ -1,0 +1,200 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',), )
+
+pMesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH", INFO_MED=1)
+
+pMesh = DEFI_GROUP(reuse=pMesh, MAILLAGE=pMesh, CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
+
+model = AFFE_MODELE(MAILLAGE=pMesh,
+                    AFFE=_F(MODELISATION='D_PLAN', PHENOMENE='MECANIQUE', TOUT='OUI'),)
+
+
+MA=DEFI_MATERIAU(ELAS=_F(E=210000e6,
+                         NU=0.3))
+
+MATE=AFFE_MATERIAU(MAILLAGE=pMesh,
+                   AFFE=_F(TOUT='OUI',
+                           MATER=MA))
+
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                VALE=(0.0,0.0,1.0,1.0,),)
+
+LINSTC=DEFI_LIST_REEL(VALE=(0., 0.5, 1.0,),)
+
+loads = 9*[None]
+
+loads[0]=AFFE_CHAR_MECA(MODELE=model,
+                    DDL_IMPO=(_F(GROUP_MA='BAS', DY=-1.0, ),
+                              _F(GROUP_MA='HAUT', DY=1., ),
+                              _F(GROUP_MA='GAUCHE',  DX=-1.0),
+                              _F(GROUP_MA='DROIT',  DX=1.0),
+                      ),)
+
+loads[1]=AFFE_CHAR_MECA(MODELE=model,
+                    DDL_IMPO=(_F(GROUP_NO='BAS', DY=-1.0, ),
+                              _F(GROUP_NO='HAUT', DY=1., ),
+                              _F(GROUP_NO='GAUCHE',  DX=-1.0),
+                              _F(GROUP_NO='DROIT',  DX=1.0),
+                      ),)
+
+loads[2]=AFFE_CHAR_MECA(MODELE=model,
+                    DDL_IMPO=(_F(GROUP_MA='BAS', DY=-1.0, ),
+                              _F(GROUP_NO='HAUT', DY=1., ),
+                              _F(GROUP_MA='GAUCHE',  DX=-1.0),
+                              _F(GROUP_NO='DROIT',  DX=1.0),
+                      ),)
+
+loads[3]=AFFE_CHAR_MECA(MODELE=model,
+                    DDL_IMPO=(_F(GROUP_MA='GAUCHE', DX=-1.0, ),
+                    _F(GROUP_MA='HAUT',  DY=1.0), _F(GROUP_NO='GN0',  DY=-1.0)),
+                    LIAISON_GROUP=(_F(GROUP_MA_1='GAUCHE', DDL_1="DX",
+                              GROUP_MA_2='DROIT', DDL_2="DX",
+                              COEF_MULT_1=1.0, COEF_MULT_2=1.0, COEF_IMPO=0.),),
+                    LIAISON_UNIF=(
+                              _F(GROUP_MA='BAS',  DDL="DY"),
+                      ),)
+
+loads[4]=AFFE_CHAR_MECA(MODELE=model,
+                    DDL_IMPO=(_F(GROUP_MA='GAUCHE', DX=-1.0, ),
+                    _F(GROUP_MA='HAUT',  DY=1.0), _F(GROUP_NO='GN0',  DY=-1.0)),
+                    LIAISON_GROUP=(_F(GROUP_NO_1='GAUCHE', DDL_1="DX",
+                              GROUP_NO_2='DROIT', DDL_2="DX",
+                              COEF_MULT_1=1.0, COEF_MULT_2=1.0, COEF_IMPO=0.),),
+                    LIAISON_UNIF=(
+                              _F(GROUP_NO='BAS',  DDL="DY"),
+                      ),)
+
+loads[5]=AFFE_CHAR_MECA(MODELE=model,
+                    DDL_IMPO=(_F(GROUP_MA='GAUCHE', DX=-1.0, ),
+                    _F(GROUP_MA='DROIT',  DX=1.0), ),
+                    LIAISON_DDL=_F(GROUP_NO=("GN0", "GN1"), COEF_MULT=(1.0,1.0),
+                    COEF_IMPO=0., DDL=("DY","DY")),
+                    LIAISON_UNIF=(
+                              _F(GROUP_MA='HAUT',  DDL="DY"),),
+                    LIAISON_OBLIQUE=(
+                              _F(GROUP_NO='BAS',  DY=-1, ANGL_NAUT=(0.0,0.0,0.0)),
+                      ),)
+
+loads[6]=AFFE_CHAR_CINE(MODELE=model,
+                    MECA_IMPO=(_F(GROUP_MA='BAS', DY=-1.0, ),
+                              _F(GROUP_MA='HAUT', DY=1., ),
+                              _F(GROUP_MA='GAUCHE',  DX=-1.0),
+                              _F(GROUP_MA='DROIT',  DX=1.0),
+                      ),)
+
+loads[7]=AFFE_CHAR_CINE(MODELE=model,
+                    MECA_IMPO=(_F(GROUP_NO='BAS', DY=-1.0, ),
+                              _F(GROUP_NO='HAUT', DY=1., ),
+                              _F(GROUP_NO='GAUCHE',  DX=-1.0),
+                              _F(GROUP_NO='DROIT',  DX=1.0),
+                      ),)
+
+loads[8]=AFFE_CHAR_CINE(MODELE=model,
+                    MECA_IMPO=(_F(GROUP_MA='BAS', DY=-1.0, ),
+                              _F(GROUP_NO='HAUT', DY=1., ),
+                              _F(GROUP_MA='GAUCHE',  DX=-1.0),
+                              _F(GROUP_NO='DROIT',  DX=1.0),
+                      ),)
+
+solvers = ["MUMPS", "PETSC"]
+for load in loads:
+    for solver in solvers:
+
+        RESU=STAT_NON_LINE(MODELE=model,
+                        CHAM_MATER=MATE,
+                        EXCIT=_F(CHARGE=load, FONC_MULT=RAMPE,),
+                        CONVERGENCE=_F(RESI_GLOB_MAXI=2.0e-4,),
+                        SOLVEUR=_F(METHODE=solver,RESI_RELA=1e-9,),
+                        INCREMENT=_F(LIST_INST=LINSTC,),
+                        )
+
+        TEST_RESU(
+                RESU=(_F(
+                    GROUP_NO=('GN0', ),
+                    NOM_CHAM='DEPL',
+                    NOM_CMP='DX',
+                    INST=1.0,
+                    PRECISION=0.00001,
+                    REFERENCE='ANALYTIQUE',
+                    RESULTAT=RESU,
+                    ORDRE_GRANDEUR=1e-6,
+                    CRITERE='ABSOLU',
+                    VALE_CALC=2.6988334396258498E-17,
+                    VALE_REFE=0.0,
+                ),
+            _F(
+                    CRITERE=('RELATIF', ),
+                    GROUP_NO=('GN0', ),
+                    NOM_CHAM='DEPL',
+                    NOM_CMP='DY',
+                    INST=1.0,
+                    PRECISION=0.00001,
+                    REFERENCE='ANALYTIQUE',
+                    RESULTAT=RESU,
+                    VALE_CALC=-0.9999999999999999,
+                    VALE_REFE=-1.0,
+                ),
+            ),)
+
+
+        TEST_RESU(
+                RESU=(_F(
+                    GROUP_NO=('GN1', ),
+                    NOM_CHAM='DEPL',
+                    NOM_CMP='DX',
+                    INST=1.0,
+                    PRECISION=0.00001,
+                    REFERENCE='ANALYTIQUE',
+                    RESULTAT=RESU,
+                    ORDRE_GRANDEUR=1e-6,
+                    CRITERE='ABSOLU',
+                    VALE_CALC=2.6988334396258498E-17,
+                    VALE_REFE=0.0,
+                ),
+            _F(
+                    CRITERE=('RELATIF', ),
+                    GROUP_NO=('GN1', ),
+                    NOM_CHAM='DEPL',
+                    NOM_CMP='DY',
+                    INST=1.0,
+                    PRECISION=0.00001,
+                    REFERENCE='ANALYTIQUE',
+                    RESULTAT=RESU,
+                    VALE_CALC=0.9999999999999999,
+                    VALE_REFE=1.0,
+                ),
+            ),)
+
+        TEST_RESU(
+                RESU=(_F(
+                    GROUP_MA=('M1', ),
+                    NOM_CHAM='SIEF_ELGA',
+                    NOM_CMP='SIXX',
+                    POINT=1,
+                    INST=1.0,
+                    RESULTAT=RESU,
+                    CRITERE='RELATIF',
+                    VALE_CALC=10500000000.000002,
+                ),
+            ),)
+
+
+FIN()

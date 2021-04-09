@@ -18,12 +18,20 @@
 
 subroutine crnlgc(numddl)
     implicit none
+#include "asterc/asmpi_bcast_i.h"
+#include "asterc/asmpi_comm.h"
+#include "asterc/asmpi_recv_i.h"
+#include "asterc/asmpi_send_i.h"
+#include "asterc/loisem.h"
 #include "asterf_config.h"
-#include "asterf.h"
 #include "asterf_types.h"
-#include "jeveux.h"
+#include "asterf.h"
+#include "asterfort/asmpi_info.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/infniv.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
@@ -39,13 +47,10 @@ subroutine crnlgc(numddl)
 #include "asterfort/jexnum.h"
 #include "asterfort/juveca.h"
 #include "asterfort/utimsd.h"
-#include "asterc/loisem.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/asmpi_info.h"
-#include "asterc/asmpi_bcast_i.h"
-#include "asterc/asmpi_send_i.h"
-#include "asterc/asmpi_recv_i.h"
-#include "asterc/asmpi_comm.h"
+#include "asterfort/utmess.h"
+#include "jeveux.h"
+!
     character(len=14) :: numddl
 
 #ifdef ASTER_HAVE_MPI
@@ -60,6 +65,7 @@ subroutine crnlgc(numddl)
     integer :: decalm, nbjver, jprddl, jnujoi, cmpteu, lgrcor, jnbjoi, curpos
     integer :: jdeeq, jmlogl, nuno, ieq, numero_noeud, nb_ddl_envoi, nbddl
     integer :: ibid, jposdd, nddlg, jenvoi2, jrecep2, jjoin, ijoin, numnoe
+    integer :: ifm, niv, vali(5), ino, nno, nb_node, nlag
     integer :: lgenve2, lgenvr2, jnujoi1, jnujoi2, iret, iret1, iret2, nlili
     integer(kind=4) :: un
     real(kind=8) :: dx, dy, dz
@@ -87,6 +93,8 @@ subroutine crnlgc(numddl)
     zzprno(ili,nunoel,l) = zi(idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
 !
     call jemarq()
+!
+    call infniv(ifm,niv)
 !
     call asmpi_comm('GET', mpicou)
     call asmpi_info(rank = mrank, size = msize)
@@ -410,8 +418,38 @@ subroutine crnlgc(numddl)
         nuno = zi(jdeeq + iaux*2)
         if(nuno.ne.0) then
             ASSERT(zi(jposdd + iaux) == v_noex(nuno))
+        else
+            ASSERT(zi(jposdd + iaux) .ne. -1)
         end if
     end do
+!
+! --- Affichage inconnue systeme
+    if (niv .ge. 1 ) then
+        call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nb_node)
+        nno = 0
+        do ino = 1, nb_node
+            if(v_noex(ino) == rang) then
+                if (zi(idprn1-1+ (ino-1)* (2+nec)+2) .gt. 0) nno = nno + 1
+            end if
+        end do
+        call asmpi_comm_vect("MPI_SUM", "I", sci=nno)
+!
+        call jeexin(numddl//'.NUME.MDLA', iret)
+        if(iret .ne. 0) then
+            call jelira(numddl//'.NUME.MDLA', 'LONMAX', nlag, k8bid)
+            nlag = nlag / 3
+        else
+            nlag = 0
+        end if
+        call asmpi_comm_vect("MPI_SUM", "I", sci=nlag)
+!
+        vali(1) = zi(jnequ + 1)
+        vali(2) = zi(jnequ + 1) - nlag
+        vali(3) = nno
+        vali(4) = nlag
+        vali(5) = nlag / 2
+        call utmess('I', 'FACTOR_1', ni=5, vali=vali)
+    end if
 !
 ! --- Pour debuggage en hpc
     if(ASTER_FALSE) then
@@ -429,6 +467,9 @@ subroutine crnlgc(numddl)
     end if
 !
     call jedema()
+#else
+    character(len=14) :: kbid
+    kbid = numddl
 #endif
 !
 end subroutine

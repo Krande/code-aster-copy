@@ -61,8 +61,6 @@ ElasticResultPtr LinearStaticAnalysisClass::execute() {
     if ( _model->getMesh()->isParallel() ) {
         if ( !_linearSolver->isHPCCompliant() )
             throw std::runtime_error( "ParallelMesh not allowed with this linear solver" );
-        if ( _linearSolver->getPreconditioning() == SimplePrecisionLdlt )
-            throw std::runtime_error( "ParallelMesh not allowed with this preconditioning" );
     }
     // Build the linear solver (sd_solver)
     _linearSolver->_commandName = "MECA_STATIQUE";
