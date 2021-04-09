@@ -81,7 +81,6 @@ integer, intent(out), optional  :: jgano
     integer :: nbfpg, nbpg(MT_NBFAMX), jvr, decal, ifam, lonfam
     integer :: nufpg, nufgpg, nuflpg, jdfd2l, jganol
     integer :: ndiml, nnosl, nnol, npgl, jpoidl, jcoopl, jvfl, jdfdel
-    real(kind=8) :: vol, x(3*MT_NNOMAX)
 
 !   -- pour faire des "save" et gagner du temps CPU :
     integer :: maxsav
@@ -137,8 +136,9 @@ integer, intent(out), optional  :: jgano
     ASSERT(nofgpg(1:8).eq.elrf)
 
 ! - Get list of integration schemes of geometric support
-    call elraca(elrf, ndiml, nnol, nnosl, nbfpg,&
-                fapg, nbpg, x, vol)
+    call elraca(elrf   ,&
+                nbfpg_  = nbfpg, fapg_ = fapg, nbpg_ = nbpg,&
+                ndim_   = ndiml, nno_  = nnol, nnos_ = nnosl)
     ASSERT(nbfpg.lt.MT_NBFAMX)
 
 ! - Get index for integration scheme

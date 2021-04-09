@@ -45,15 +45,15 @@ character(len=*) :: nomjv
     integer, parameter :: nbpgmx = 27
     integer :: nbpg(MT_NBFAMX), ndim, nnos, nbfpg
     integer :: ifam, decal, ipg, ino, jvr
-    real(kind=8) :: xno(3*MT_NNOMAX), xpg(3*nbpgmx), poipg(nbpgmx), ff(MT_NNOMAX)
-    real(kind=8) :: vol
+    real(kind=8) :: xpg(3*nbpgmx), poipg(nbpgmx), ff(MT_NNOMAX)
     character(len=8) :: nofpg(MT_NBFAMX)
 ! DEB ------------------------------------------------------------------
 !
 
 ! - Get list of integration schemes of geometric support
-    call elraca(elrefa, ndim, nno, nnos, nbfpg,&
-                nofpg, nbpg, xno, vol)
+    call elraca(elrefa,&
+                nbfpg_  = nbfpg, fapg_ = nofpg, nbpg_ = nbpg,&
+                ndim_   = ndim, nno_  = nno, nnos_ = nnos)
 
     ASSERT((ndim.ge.0) .and. (ndim.le.3))
     ASSERT((nno.gt.0) .and. (nno.le.MT_NNOMAX))

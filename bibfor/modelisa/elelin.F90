@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine elelin(nconta, elref1, elref2, nnop, nnops)
     implicit none
 !
-#include "asterfort/elraca.h"
+#include "asterfort/elrfno.h"
     character(len=8) :: elref1, elref2
     integer :: nnop, nnops, nconta
 !
@@ -35,11 +35,6 @@ subroutine elelin(nconta, elref1, elref2, nnop, nnops)
 !       NNOP    : NOMBRE DE NOEUDS DE L'ELEMENT PARENT
 !       NNOPS   : NOMBRE DE NOEUDS DE L'ELEMENT LINEAIRE
 !......................................................................
-!
-    integer :: ndim, nbfpg, nbpg(20)
-    real(kind=8) :: x(3*27), vol
-    character(len=8) :: fapg(20)
-!
 !
     if (nconta .ge. 2) then
         if (elref1 .eq. 'QU8') then
@@ -72,13 +67,11 @@ subroutine elelin(nconta, elref1, elref2, nnop, nnops)
             nnops= 4
         else
             elref2=elref1
-            call elraca(elref1, ndim, nnop, nnops, nbfpg,&
-                        fapg, nbpg, x, vol)
+            call elrfno(elref1, nnop, nnops)
         endif
     else
         elref2=elref1
-        call elraca(elref1, ndim, nnop, nnops, nbfpg,&
-                    fapg, nbpg, x, vol)
+        call elrfno(elref1, nnop, nnops)
     endif
 !
 end subroutine

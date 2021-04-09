@@ -27,7 +27,7 @@ implicit none
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/elraca.h"
+#include "asterfort/elrfno.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/indiis.h"
@@ -71,15 +71,15 @@ implicit none
 ! ----------------------------------------------------------------------
 
     aster_logical :: lext
-    character(len=8) :: m1, m2, elrefa, fapg(MT_NBFAMX), nomnoe
-    integer :: nbpg(MT_NBFAMX), cnquad(3, 2)
-    real(kind=8) :: crrefe(3*MT_NNOMAX), ksi, eta, xr1(2), xr2(2), xr3(2)
-    real(kind=8) :: ff(MT_NNOMAX), cooele(3*MT_NNOMAX), x1, x2, vol, xg(2)
+    character(len=8) :: m1, m2, elrefa, nomnoe
+    integer :: cnquad(3, 2)
+    real(kind=8) :: crrefe(3, MT_NNOMAX), ksi, eta, xr1(2), xr2(2), xr3(2)
+    real(kind=8) :: ff(MT_NNOMAX), cooele(3*MT_NNOMAX), x1, x2, xg(2)
     integer :: i1conb, i1conu, i2cocf, i2coco
     integer :: i2com1, i2conb, j2xxk1, i2conu, ialim1, ialin1, ialin2
     integer :: ideca1, ideca2, ilcnx1, ima1, ino, ino2
-    integer :: iret, itr, itypm, kdim, kk, nbfpg, nbno, ndim, nma1, nma2, nno
-    integer :: nno1, nno2, nnos, nuno, nuno2, nutm, nunos(MT_NNOMAX)
+    integer :: iret, itr, itypm, kdim, kk, nbno, ndim, nma1, nma2, nno
+    integer :: nno1, nno2, nuno, nuno2, nutm, nunos(MT_NNOMAX)
 
     integer :: nbmax
     parameter  (nbmax=5)
@@ -191,9 +191,7 @@ implicit none
         elrefa = elrf2d(nutm)
         nbno = zi(ilcnx1+ima1)-zi(ilcnx1-1+ima1)
 
-        call elraca(elrefa, ndim, nno, nnos, nbfpg,&
-                    fapg, nbpg, crrefe, vol)
-
+        call elrfno(elrefa, ndim = ndim, nno  = nno, nodeCoor = crrefe)
         ASSERT(nbno .eq. nno)
 
 !       2.2.1 determination des coordonees de ino2 dans l'element
@@ -209,8 +207,8 @@ implicit none
         if (elrefa .eq. 'TR3' .or. elrefa .eq. 'TR6' .or. elrefa .eq. 'TR7') then
 
             do kk = 1, 3
-                x1 = crrefe(ndim*(kk-1)+1)
-                x2 = crrefe(ndim*(kk-1)+2)
+                x1 = crrefe(1, kk)
+                x2 = crrefe(2, kk)
                 ksi = ksi + pjef_cf(ideca1+kk)*x1
                 eta = eta + pjef_cf(ideca1+kk)*x2
             enddo
@@ -219,16 +217,16 @@ implicit none
             if (nuno2 .eq. tria3(1+4*(itr-1)+2)) then
 !               SI 1ER TRIANGLE :
                 do kk = 1, 3
-                    x1 = crrefe(ndim*(cnquad(kk,1)-1)+1)
-                    x2 = crrefe(ndim*(cnquad(kk,1)-1)+2)
+                    x1 = crrefe(1, cnquad(kk,1))
+                    x2 = crrefe(2, cnquad(kk,1))
                     ksi = ksi + pjef_cf(ideca1+kk)*x1
                     eta = eta + pjef_cf(ideca1+kk)*x2
                 enddo
             else
 !               SI 2EME TRIANGLE :
                 do kk = 1, 3
-                    x1 = crrefe(ndim*(cnquad(kk,2)-1)+1)
-                    x2 = crrefe(ndim*(cnquad(kk,2)-1)+2)
+                    x1 = crrefe(1, cnquad(kk,2))
+                    x2 = crrefe(2, cnquad(kk,2))
                     ksi = ksi + pjef_cf(ideca1+kk)*x1
                     eta = eta + pjef_cf(ideca1+kk)*x2
                 enddo

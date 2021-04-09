@@ -18,13 +18,13 @@
 #include "MeshTypes_type.h"
 !
 interface
-    subroutine elraca(elrefz,&
-                      ndim, nno, nnos, nbfpg,&
-                      fapg, nbpg,&
-                      nodeCoor , cellVolu)
-        character(len=*), intent(in)  :: elrefz
-        integer, intent(out)          :: ndim, nno, nnos, nbfpg, nbpg(MT_NBFAMX)
-        real(kind=8), intent(out)     :: nodeCoor(3*MT_NNOMAX), cellVolu
-        character(len=8), intent(out) :: fapg(MT_NBFAMX)
+    subroutine elraca(elrefz   ,&
+                      nbfpg_   , fapg_    , nbpg_,&
+                      ndim_    , nno_     , nnos_,&
+                      nodeCoor_, cellVolu_)
+        character(len=*), intent(in)            :: elrefz
+        integer, optional, intent(out)          :: ndim_, nno_, nnos_, nbfpg_, nbpg_(MT_NBFAMX)
+        real(kind=8), optional, intent(out)     :: nodeCoor_(3*MT_NNOMAX), cellVolu_
+        character(len=8), optional, intent(out) :: fapg_(MT_NBFAMX)
     end subroutine elraca
 end interface

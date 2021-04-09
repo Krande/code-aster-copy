@@ -20,16 +20,16 @@ subroutine xelrex(elrefp, nno, xref, ndime)
 implicit none
 #include "asterf_types.h"
 #include "asterfort/elraca.h"
-character(len=8) :: elrefp
+#include "asterfort/elrfno.h"
+character(len=8):: elrefp
 integer :: nno
 integer, optional :: ndime
 real(kind=8) :: xref(81)
 !   BUT: INTERFACE VERS ELRACA : 
 !         RETOURNE LES COORDONNEES DE REFERENCE DE 
 !             L ELEMENT PARENT COMPLET
-    integer :: nnos, nbfpg, nbpg(MT_NBFAMX), ndim
-    real(kind=8) :: vol
-    character(len=8) :: fapg(MT_NBFAMX), elp
+    integer :: ndim
+    character(len=8) :: elp
     aster_logical :: transfert
 !=======================================================================
 !
@@ -48,12 +48,12 @@ real(kind=8) :: xref(81)
         elp=elrefp
     endif
 
+! - Get number of nodes
 !   LE TRANSFERT VERS L ELMENT COMPLET EST AMBIGU
 !     ON STOCKE LES COORDONNES DE REFERENCE DE L ELEMENT COMPLET
 !     ON INTERPOLE SUR LE L ELEMENT PARENT => NNO (L ELMENT INCOMPLET)
-    call elraca(elp, ndim, nno, nnos, nbfpg,&
-                fapg, nbpg, xref, vol)
 
+    call elrfno(elp, nno, ndim = ndim)
     if (transfert) then
         if ((elrefp .eq. 'H20')) then
             nno=20
@@ -63,6 +63,10 @@ real(kind=8) :: xref(81)
             nno=8
         endif
     endif
+
+! - Get coordinates of nodes
+    call elraca(elp, nodeCoor_ = xref)
+
 !
 !   Cas particulier de la pyramide quadratique : le noeud au centre de
 !   la base doit être ajouté à la main, car la pyramide quadratique à

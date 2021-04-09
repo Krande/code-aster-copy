@@ -24,7 +24,7 @@ implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/elraca.h"
+#include "asterfort/elrfno.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/indiis.h"
 #include "asterfort/jedema.h"
@@ -48,14 +48,14 @@ implicit none
 !  IN        ELRF1D(5) K8 : NOMS DES 3 TYPES DE MAILLES 1D  (SEGX)
 ! ----------------------------------------------------------------------
 
-    character(len=8) :: m1, m2, elrefa, fapg(MT_NBFAMX)
-    integer :: nbpg(MT_NBFAMX), i1conb, i1conu,   nno1, nno2
+    character(len=8) :: m1, m2, elrefa
+    integer :: i1conb, i1conu,  nno1, nno2
     integer :: nma1
     integer :: nma2, ialim1, ialin1,   ilcnx1,  j2xxk1
     integer :: i2conb, i2com1, ideca2, ino2, itr, ima1, nbno, i2conu, i2cocf
-    integer :: ideca1, itypm, nutm, ndim, nno, nnos, nbfpg, kk, ino
+    integer :: ideca1, itypm, nutm, nno, kk, ino
     integer :: nuno,  ialin2, i2coco
-    real(kind=8) :: crrefe(3*MT_NNOMAX), ksi, x(1), ff(MT_NNOMAX), vol, x1
+    real(kind=8) :: crrefe(3, MT_NNOMAX), ksi, x(1), ff(MT_NNOMAX), x1
     integer, pointer :: seg2(:) => null()
     integer, pointer :: connex(:) => null()
     integer, pointer :: pjef_tr(:) => null()
@@ -140,8 +140,7 @@ implicit none
         elrefa = elrf1d(nutm)
         nbno = zi(ilcnx1+ima1)-zi(ilcnx1-1+ima1)
 
-        call elraca(elrefa, ndim, nno, nnos, nbfpg,&
-                    fapg, nbpg, crrefe, vol)
+        call elrfno(elrefa, nno  = nno, nodeCoor = crrefe)
         ASSERT(nbno.eq.nno)
 
 
@@ -150,7 +149,7 @@ implicit none
 !     -----------------------------------------------------------
         ksi=0.d0
         do kk = 1, 2
-            x1 = crrefe(ndim*(kk-1)+1)
+            x1 = crrefe(1, kk)
             ksi = ksi + pjef_cf(ideca1+kk)*x1
         end do
         x(1) = ksi

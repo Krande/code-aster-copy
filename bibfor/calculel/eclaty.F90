@@ -87,8 +87,7 @@ implicit none
 !                    (1<= IPOINI <= NPOINI)
 !
 ! ---------------------------------------------------------------------
-    integer :: nno, nnos, nbfpg, nbpg(MT_NBFAMX), nufpg
-    real(kind=8) :: vol, x(3*MT_NNOMAX)
+    integer :: nbfpg, nbpg(MT_NBFAMX), nufpg
     character(len=8) :: famg(MT_NBFAMX)
 ! ---------------------------------------------------------------------
     call jemarq()
@@ -99,8 +98,9 @@ implicit none
     iret = 1
 
 ! - Get list of integration schemes of geometric support
-    call elraca(elrefa, ndim, nno, nnos, nbfpg,&
-                famg, nbpg, x, vol)
+    call elraca(elrefa,&
+                nbfpg_ = nbfpg, fapg_ = famg, nbpg_ = nbpg,&
+                ndim_  = ndim)
 
 ! - Get index for integration scheme
     nufpg = indik8(famg, fapg, 1, nbfpg)

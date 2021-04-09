@@ -21,7 +21,7 @@ subroutine dffno(elrefe, ndim, nno, nnos, dff)
 implicit none
 !
 #include "MeshTypes_type.h"
-#include "asterfort/elraca.h"
+#include "asterfort/elrfno.h"
 #include "asterfort/elrfdf.h"
 character(len=*) :: elrefe
 integer :: ndim, nno, nnos
@@ -29,14 +29,14 @@ real(kind=8) :: dff(*)
 ! BUT:   CALCUL DES DERIVEES DES FONCTIONS DE FORMES
 !        AUX NOEUDS D'UN ELREFE
 !
-    real(kind=8) :: x(MT_NNOMAX*3), vol, tab(3, MT_NNOMAX)
-    integer :: nbfpg, nbpg(MT_NBFAMX), ino, ideri, ifonc
-    character(len=8) :: fapg(MT_NBFAMX)
+
+    real(kind=8) :: x(3, MT_NNOMAX), tab(3, MT_NNOMAX)
+    integer :: ino, ideri, ifonc
 ! ----------------------------------------------------------------------
-    call elraca(elrefe, ndim, nno, nnos, nbfpg,&
-                fapg, nbpg, x, vol)
+
+    call elrfno(elrefe, nno, nnos, ndim, x)
     do ino = 1, nno
-        call elrfdf(elrefe, x(ndim*(ino-1)+1), tab)
+        call elrfdf(elrefe, x(1:ndim, ino), tab)
         do ideri = 1, ndim
             do ifonc = 1, nno
                 dff((ino-1)*nno*ndim+(ideri-1)*nno+ifonc) = tab(ideri, ifonc)

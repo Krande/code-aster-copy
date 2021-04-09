@@ -27,7 +27,7 @@ implicit none
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/elraca.h"
+#include "asterfort/elrfno.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/indiis.h"
@@ -65,16 +65,15 @@ implicit none
 
     aster_logical :: lext
     integer :: cntetr(4, 1), cnpent(4, 3), cnhexa(4, 6), cnpyra(4, 2)
-    integer :: nbpg(MT_NBFAMX)
-    real(kind=8) :: ksi, eta, dzeta, x1, x2, x3, vol
-    real(kind=8) :: crrefe(3*MT_NNOMAX), xr1(3), xr2(3), xr3(3)
+    real(kind=8) :: ksi, eta, dzeta, x1, x2, x3
+    real(kind=8) :: crrefe(3, MT_NNOMAX), xr1(3), xr2(3), xr3(3)
     real(kind=8) :: ff(MT_NNOMAX), cooele(3*MT_NNOMAX)
-    character(len=8) :: elrefa, m1, m2, fapg(MT_NBFAMX), nomnoe
+    character(len=8) :: elrefa, m1, m2, nomnoe
     integer :: i1conb, i1conu, nno1, nno2
     integer :: nma1, nma2, ialim1, ialin1, ialin2, ilcnx1
     integer :: j2xxk1, i2conb, i2com1, ideca2, ino2, itr, ima1, nbno, i2conu
     integer :: i2cocf, i2coco, ideca1, itypm, nutm, ityp, ndim, nno, kdim
-    integer :: nnos, nbfpg, kk, ino, nuno, iret
+    integer :: kk, ino, nuno, iret
 
     integer :: nbmax
     parameter  (nbmax=5)
@@ -248,9 +247,7 @@ implicit none
         ityp = tetr4(1+6*(itr-1)+6)
         nbno = zi(ilcnx1+ima1)-zi(ilcnx1-1+ima1)
 
-        call elraca(elrefa, ndim, nno, nnos, nbfpg,&
-                    fapg, nbpg, crrefe, vol)
-
+        call elrfno(elrefa, ndim = ndim, nno  = nno, nodeCoor = crrefe)
         ASSERT(nbno .eq. nno)
 
 !       2.2.1 determination des coordonnees de ino2 dans l'element
@@ -262,9 +259,9 @@ implicit none
 
         if (elrefa .eq. 'TE4' .or. elrefa .eq. 'T10') then
             do kk = 1, 4
-                x1 = crrefe(ndim*(cntetr(kk,ityp)-1)+1)
-                x2 = crrefe(ndim*(cntetr(kk,ityp)-1)+2)
-                x3 = crrefe(ndim*(cntetr(kk,ityp)-1)+3)
+                x1 = crrefe(1, cntetr(kk,ityp))
+                x2 = crrefe(2, cntetr(kk,ityp))
+                x3 = crrefe(3, cntetr(kk,ityp))
                 ksi = ksi + pjef_cf(ideca1+kk)*x1
                 eta = eta + pjef_cf(ideca1+kk)*x2
                 dzeta = dzeta + pjef_cf(ideca1+kk)*x3
@@ -272,9 +269,9 @@ implicit none
 
         else if (elrefa.eq.'PE6' .or. elrefa.eq.'P15'.or. elrefa.eq.'P18') then
             do kk = 1, 4
-                x1 = crrefe(ndim*(cnpent(kk,ityp)-1)+1)
-                x2 = crrefe(ndim*(cnpent(kk,ityp)-1)+2)
-                x3 = crrefe(ndim*(cnpent(kk,ityp)-1)+3)
+                x1 = crrefe(1, cnpent(kk,ityp))
+                x2 = crrefe(2, cnpent(kk,ityp))
+                x3 = crrefe(3, cnpent(kk,ityp))
                 ksi = ksi + pjef_cf(ideca1+kk)*x1
                 eta = eta + pjef_cf(ideca1+kk)*x2
                 dzeta = dzeta + pjef_cf(ideca1+kk)*x3
@@ -282,9 +279,9 @@ implicit none
 
         else if (elrefa.eq.'HE8' .or. elrefa.eq.'H20' .or. elrefa.eq.'H27' ) then
             do kk = 1, 4
-                x1 = crrefe(ndim*(cnhexa(kk,ityp)-1)+1)
-                x2 = crrefe(ndim*(cnhexa(kk,ityp)-1)+2)
-                x3 = crrefe(ndim*(cnhexa(kk,ityp)-1)+3)
+                x1 = crrefe(1, cnhexa(kk,ityp))
+                x2 = crrefe(2, cnhexa(kk,ityp))
+                x3 = crrefe(3, cnhexa(kk,ityp))
                 ksi = ksi + pjef_cf(ideca1+kk)*x1
                 eta = eta + pjef_cf(ideca1+kk)*x2
                 dzeta = dzeta + pjef_cf(ideca1+kk)*x3
@@ -292,9 +289,9 @@ implicit none
 
         else if (elrefa.eq.'PY5' .or. elrefa.eq.'P13') then
             do kk = 1, 4
-                x1 = crrefe(ndim*(cnpyra(kk,ityp)-1)+1)
-                x2 = crrefe(ndim*(cnpyra(kk,ityp)-1)+2)
-                x3 = crrefe(ndim*(cnpyra(kk,ityp)-1)+3)
+                x1 = crrefe(1, cnpyra(kk,ityp))
+                x2 = crrefe(2, cnpyra(kk,ityp))
+                x3 = crrefe(3, cnpyra(kk,ityp))
                 ksi = ksi + pjef_cf(ideca1+kk)*x1
                 eta = eta + pjef_cf(ideca1+kk)*x2
                 dzeta = dzeta + pjef_cf(ideca1+kk)*x3

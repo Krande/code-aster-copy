@@ -19,8 +19,8 @@
 !
 interface
     subroutine inmat6(elrefa, fapg, mganos)
-        integer, parameter :: nbpgmx=1000
         character(len=8), intent(in) :: elrefa, fapg
+        integer, parameter :: nbpgmx=1000
         real(kind=8), intent(out) :: mganos(nbpgmx, MT_NNOMAX)
     end subroutine inmat6
 end interface

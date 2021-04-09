@@ -192,8 +192,10 @@ implicit none
 !
     lpenta = .false.
     if (codret .eq. 0) then
-        call elraca(elrefe, ndim, nno, nnos, nbfpg,&
-                    fapg, nbpg00, refcoo, vol)
+        call elraca(elrefe,&
+                    nbfpg , fapg, nbpg00,&
+                    ndim  , nno, nnos,&
+                    refcoo, vol)
 !
         call dismoi('DIM_TOPO', nomte, 'TYPE_ELEM', repi=dimtopo)
         call dismoi('NOM_TYPMAIL', nomte, 'TYPE_ELEM', repk=nomtypmail)
@@ -215,8 +217,10 @@ implicit none
             else
                 call utmess('F', 'MED2_11')
             endif
-            call elraca(elrefb, dimtopo, nno, nnos, nbfpg2,&
-                        fapg2, nbpg00, refcoo, vol)
+            call elraca(elrefb ,&
+                        nbfpg2 , fapg2, nbpg00,&
+                        dimtopo, nno  , nnos,&
+                        refcoo , vol)
             ljoint = .true.
         endif
 !

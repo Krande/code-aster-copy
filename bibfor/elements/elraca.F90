@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine elraca(elrefz,&
-                  ndim, nno, nnos, nbfpg,&
-                  fapg, nbpg,&
-                  nodeCoor , cellVolu)
+subroutine elraca(elrefz   ,&
+                  nbfpg_   , fapg_    , nbpg_,&
+                  ndim_    , nno_     , nnos_,&
+                  nodeCoor_, cellVolu_)
 !
 implicit none
 !
@@ -27,10 +27,10 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/elrfno.h"
 !
-character(len=*), intent(in)  :: elrefz
-integer, intent(out)          :: ndim, nno, nnos, nbfpg, nbpg(MT_NBFAMX)
-real(kind=8), intent(out)     :: nodeCoor(3*MT_NNOMAX), cellVolu
-character(len=8), intent(out) :: fapg(MT_NBFAMX)
+character(len=*), intent(in)            :: elrefz
+integer, optional, intent(out)          :: ndim_, nno_, nnos_, nbfpg_, nbpg_(MT_NBFAMX)
+real(kind=8), optional, intent(out)     :: nodeCoor_(3*MT_NNOMAX), cellVolu_
+character(len=8), optional, intent(out) :: fapg_(MT_NBFAMX)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,16 +54,18 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
 !
     character(len=8) :: elrefa
     integer :: i, deca
-    real(kind=8) :: coorno(3, MT_NNOMAX)
+    integer :: ndim, nno, nnos, nbfpg, nbpg(MT_NBFAMX)
+    character(len=8) :: fapg(MT_NBFAMX)
+    real(kind=8) :: coorno(3, MT_NNOMAX), nodeCoor(3*MT_NNOMAX), cellVolu
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    elrefa   = elrefz
-    nbpg     = 0
+    elrefa = elrefz
     ndim     = 0
     nno      = 0
     nnos     = 0
     nbfpg    = 0
+    nbpg     = 0
     nodeCoor = 0.d0
     fapg     = ' '
     cellVolu = 0.d0
@@ -354,11 +356,34 @@ character(len=8), intent(out) :: fapg(MT_NBFAMX)
 
     end select
 !
-    do i = 1, nno
-        deca = ndim * (i -1)
-        if (ndim .ge. 1) nodeCoor(deca+1) = coorno(1,i)
-        if (ndim .ge. 2) nodeCoor(deca+2) = coorno(2,i)
-        if (ndim .eq. 3) nodeCoor(deca+3) = coorno(3,i)
-    end do
+    if (present(nodeCoor_)) then
+        do i = 1, nno
+            deca = ndim * (i -1)
+            if (ndim .ge. 1) nodeCoor_(deca+1) = coorno(1,i)
+            if (ndim .ge. 2) nodeCoor_(deca+2) = coorno(2,i)
+            if (ndim .eq. 3) nodeCoor_(deca+3) = coorno(3,i)
+        end do
+    endif
+    if (present(ndim_)) then
+        ndim_ = ndim
+    endif
+    if (present(nno_)) then
+        nno_ = nno
+    endif
+    if (present(nnos_)) then
+        nnos_ = nnos
+    endif
+    if (present(nbfpg_)) then
+        nbfpg_ = nbfpg
+    endif
+    if (present(nbpg_)) then
+        nbpg_ = nbpg
+    endif
+    if (present(cellVolu_)) then
+        cellVolu_ = cellVolu
+    endif
+    if (present(fapg_)) then
+        fapg_ = fapg
+    endif
 !
 end subroutine

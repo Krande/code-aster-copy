@@ -22,13 +22,12 @@ subroutine pjecou(ma1, ma2, nomgma, nomgno, corres)
 !     COMMANDE:  PROJ_CHAMP  METHODE:'COUPLAGE' (COUPLAGE IFS VIA YACS)
 ! ----------------------------------------------------------------------
 !
-!
 implicit none
 !
 #include "MeshTypes_type.h"
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/elraca.h"
+#include "asterfort/elrfno.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -45,17 +44,17 @@ implicit none
     character(len=16) :: nomgma, nomgno, corres
 ! ======================================================================
 ! ======================================================================
-    integer :: iret, itypma, ndim, nbpg, ib, ib2, flag, ibt(MT_NBFAMX)
+    integer :: iret, itypma, nbpg, flag
     integer :: nodegl, inol, ino2, mailrf, nbpgrf
     integer :: inog2, ii, ima1, ima, inom1, inom2, inom3
     integer :: nbmag1, nbnog2, nbnog
     integer :: ialim1, ialin2, jcoor1, icxma1
     integer :: iacono, iaconb, iacom1, iaconu, iacocf
     integer :: listno(MT_NNOMAX)
-    real(kind=8) :: normgl, rbid, normlo
+    real(kind=8) :: normgl, normlo
     real(kind=8) :: con1m2(3), con1m1(3), con2m1(3), con3m1(3)
-    real(kind=8) :: cobary(3), ksi(2), ff(MT_NNOMAX), coefno(MT_NNOMAX), crrefe(81)
-    character(len=8) :: ntypma, elref, cbt(MT_NBFAMX)
+    real(kind=8) :: cobary(3), ksi(2), ff(MT_NNOMAX), coefno(MT_NNOMAX), crrefe(3, MT_NNOMAX)
+    character(len=8) :: ntypma, elref
     character(len=24) :: grpma, grpno
     aster_logical :: inmail
     real(kind=8), pointer :: coor2(:) => null()
@@ -138,8 +137,8 @@ implicit none
             elref(1:2)=ntypma(1:2)
             elref(3:3)=ntypma(ii:ii)
             elref(4:8)='     '
-            call elraca(elref, ndim, nbpg, ib, ib2,&
-                        cbt, ibt, crrefe, rbid)
+
+            call elrfno(elref, nno  = nbpg, nodeCoor = crrefe)
 !
 !         CAS OU LA MAILLE EST LINEIQUE (SEG)
 !         -----------------------------------
@@ -156,7 +155,7 @@ implicit none
                             normlo)
                 ksi(1) = 0
                 do 50 ii = 1, 2
-                    ksi(1) = ksi(1) + cobary(ii)*crrefe(ndim*(ii-1)+1)
+                    ksi(1) = ksi(1) + cobary(ii)* crrefe(1, ii)
  50             continue
 !
 !         CAS OU LA MAILLE EST SURFACIQUE (TRIA)
@@ -178,8 +177,8 @@ implicit none
                 ksi(1) = 0
                 ksi(2) = 0
                 do 70 ii = 1, 3
-                    ksi(1) = ksi(1) + cobary(ii)*crrefe(ndim*(ii-1)+1)
-                    ksi(2) = ksi(2) + cobary(ii)*crrefe(ndim*(ii-1)+2)
+                    ksi(1) = ksi(1) + cobary(ii)* crrefe(1, ii)
+                    ksi(2) = ksi(2) + cobary(ii)* crrefe(2, ii)
  70             continue
 !
 !         CAS OU LA MAILLE EST SURFACIQUE (QUAD)
@@ -217,18 +216,18 @@ implicit none
 !     &                  COBARY,NORMLO)
                     call pj3da3(con1m2, con1m1, con2m1, con3m1, inmail,&
                                 cobary(1), cobary(2), cobary(3), normlo)
-                    ksi(1) = cobary(1)*crrefe(1)
-                    ksi(2) = cobary(1)*crrefe(2)
+                    ksi(1) = cobary(1)*crrefe(1, 1) 
+                    ksi(2) = cobary(1)*crrefe(2, 1)
                     do 100 ii = 2, 3
-                        ksi(1) = ksi(1) + cobary(ii)*crrefe(ndim*(ii)+ 1)
-                        ksi(2) = ksi(2) + cobary(ii)*crrefe(ndim*(ii)+ 2)
+                        ksi(1) = ksi(1) + cobary(ii)* crrefe(1, ii)
+                        ksi(2) = ksi(2) + cobary(ii)*  crrefe(2, ii)
 100                 continue
                 else
                     ksi(1) = 0.d0
                     ksi(2) = 0.d0
                     do 110 ii = 1, 3
-                        ksi(1) = ksi(1) + cobary(ii)*crrefe(ndim*(ii- 1)+1)
-                        ksi(2) = ksi(2) + cobary(ii)*crrefe(ndim*(ii- 1)+2)
+                        ksi(1) = ksi(1) + cobary(ii)* crrefe(1, ii)
+                        ksi(2) = ksi(2) + cobary(ii)* crrefe(2, ii)
 110                 continue
                 endif
             else

@@ -76,8 +76,10 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
     rac5 = sqrt(5.d0)
 
 ! - Get list of integration schemes of geometric support
-    call elraca(elrefa, ndim, nno, nnos, nbfpg,&
-                nofpg, nbpg1, xno, vol)
+    call elraca(elrefa,&
+                nbfpg , nofpg, nbpg1,&
+                ndim  , nno  , nnos,&
+                xno   , vol)
     ASSERT((ndim.ge.0).and.(ndim.le.3))
 
 ! - Get index for integration scheme

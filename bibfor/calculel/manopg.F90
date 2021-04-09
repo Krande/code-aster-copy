@@ -30,7 +30,7 @@ implicit none
 #include "asterfort/cesexi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/elraca.h"
+#include "asterfort/elrfno.h"
 #include "asterfort/elraga.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/indk32.h"
@@ -96,25 +96,24 @@ implicit none
 !
 !-----------------------------------------------------------------------
 !
-    integer :: nbpgmx, nbflmx
-    parameter (nbpgmx=27, nbflmx=20)
+    integer :: nbpgmx,  nbflmx
+    parameter (nbpgmx=27,nbflmx=20)
     integer :: nbma, ima, jcesd, jcesl,  iad, jnbpg
-    integer :: ilcnx1, nbpgf(MT_NBFAMX), k, jfpgl
-    integer :: nec, kfpg, ndim, nno, nnos, nbfpg, npg, kp, ino
+    integer :: ilcnx1, k, jfpgl
+    integer :: nec, kfpg, ndim, nno, npg, kp, ino
     integer ::  nbgrel, nel, nute, imolo, jmolo, jecono
     integer :: igr, iel,  lont1
     integer :: jnbno, jdime, iret, ncpmax, nbfam, kfam, nbpgt, iad0, iad1
     integer :: nblfpg,  nuflpg, nufgpg, jliel, jliel1
     integer :: jcesgl, jcesgv, jcesgd, nbpt, nbsp
     character(len=3) :: exixfm
-    character(len=8) :: ma, fapg(MT_NBFAMX), nomgd, famil, elrefe, param
+    character(len=8) :: ma, nomgd, famil, elrefe, param
     character(len=8) :: lielrf(nbflmx), lifapg(nbflmx)
     character(len=16) :: pheno, option, nomte, nofpg, valk(2)
     character(len=19) :: mnoga, ligrel, celmod, ligre1, chsgeo
     character(len=24) :: obnbpg, obnbno, obdime, kecono
     character(len=32) :: noflpg
-    real(kind=8) :: xno(3*MT_NNOMAX), xpg(3*nbpgmx), vol, ff(MT_NNOMAX)
-    real(kind=8) :: poipg(MT_NNOMAX)
+    real(kind=8) :: xpg(3*nbpgmx), ff(MT_NNOMAX), poipg(MT_NNOMAX)
     aster_logical :: econom
     integer, pointer :: nolocfpg(:) => null()
     integer, pointer :: celd(:) => null()
@@ -319,10 +318,8 @@ implicit none
         do kfam = 1, nbfam
             elrefe=lielrf(kfam)
             famil=lifapg(kfam)
-            call elraca(elrefe, ndim, nno, nnos, nbfpg,&
-                        fapg, nbpgf, xno, vol)
-            ASSERT(nbfpg.le.MT_NBFAMX)
-            ASSERT(nno.le.MT_NNOMAX)
+
+            call elrfno(elrefe, ndim = ndim, nno = nno)
 !
 !         4.2.1 CALCUL DE NPG ET XPG (SI FAMILLE != XFEM)
 !         ------------------------------------------------

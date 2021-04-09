@@ -22,7 +22,7 @@ implicit none
 !
 #include "MeshTypes_type.h"
 #include "asterfort/assert.h"
-#include "asterfort/elraca.h"
+#include "asterfort/elrfno.h"
 #include "asterfort/elraga.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/mgauss.h"
@@ -45,19 +45,17 @@ real(kind=8), intent(out) :: mganos(nbpgmx, MT_NNOMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ndim, nno, nnos, nbfpg, nbpg(MT_NBFAMX)
+    integer :: ndim, nno, nnos
     integer :: i, kp, kdim, ln, j, lm, npg, iret
-    real(kind=8) :: xno(3*MT_NNOMAX), vol, ff(MT_NNOMAX), m(nbpgmx*MT_NNOMAX)
+    real(kind=8) :: ff(MT_NNOMAX), m(nbpgmx*MT_NNOMAX)
     real(kind=8) :: p(nbpgmx*MT_NNOMAX)
     real(kind=8) :: xpg(3*nbpgmx), poipg(nbpgmx), xg(3), det
-    character(len=8) :: nofpg(MT_NBFAMX), elref2
+    character(len=8) :: elref2
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call elraca(elrefa, ndim, nno, nnos, nbfpg,&
-                nofpg, nbpg, xno, vol)
-    call elraga(elrefa, fapg, ndim, npg, xpg,&
-                poipg)
+    call elrfno(elrefa, nno, nnos, ndim)
+    call elraga(elrefa, fapg, ndim, npg, xpg, poipg)
 !
     ASSERT(nno.le.MT_NNOMAX)
     ASSERT(npg.le.nbpgmx)

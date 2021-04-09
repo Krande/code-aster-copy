@@ -27,7 +27,7 @@ implicit none
 #include "MeshTypes_type.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
-#include "asterfort/elraca.h"
+#include "asterfort/elrfno.h"
 #include "asterfort/elrfdf.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/matini.h"
@@ -53,10 +53,8 @@ implicit none
 !       DELTA   : QUANTITE A MINIMISER
 !     ----------------------------------------------------------------
 !
-    character(len=8) :: fapg(MT_NBFAMX)
-    integer :: ibid, ibid2, nnos, nbfpg, nbpg(MT_NBFAMX), nno
-    real(kind=8) :: vol, refcoo(3*MT_NNOMAX)
-    real(kind=8) :: ff(MT_NNOMAX), dff(3, MT_NNOMAX)
+    integer :: nno
+    real(kind=8) :: refcoo(3, MT_NNOMAX), ff(MT_NNOMAX), dff(3, MT_NNOMAX)
     integer :: i, j, k
     real(kind=8) :: p(ndim), m(ndim), nor(ndim)
     real(kind=8) :: pint1(ndim), pint2(ndim)
@@ -83,7 +81,7 @@ implicit none
     call elrfvf(elp, ksi, ff, nno)
 !
 !     CALCUL DES DERIVEES FONCTIONS DE FORME DE L'ELEMENT EN KSI
-    call elrfdf(elp, ksi, dff, nno)
+    call elrfdf(elp, ksi, dff)
 !
     call vecini(ndime, 0.d0, r)
     call matini(ndime, ndime, 0.d0, jac)
@@ -138,22 +136,21 @@ implicit none
 ! --- RECUPERATION DES COORDONNEES DANS L'ESPACE DE REFERENCE DES
 ! --- NOEUDS DE L'ELEMENT PARENT
         refcoo = 0.d0
-        call elraca(elp, ibid, ibid2, nnos, nbfpg,&
-                    fapg, nbpg, refcoo, vol)
+        call elrfno(elp, nodeCoor = refcoo)
 !
 ! ---  CALCUL DES VECTEURS N(1)N(2) ET N(1)N(3)
         call vecini(3, 0.d0, v1)
         call vecini(3, 0.d0, v2)
         do i = 1, ndim
-            v1(i)=refcoo(ndim*(n(2)-1)+i) - refcoo(ndim*(n(1)-1)+i)
-            v2(i)=refcoo(ndim*(n(3)-1)+i) - refcoo(ndim*(n(1)-1)+i)
+            v1(i)=refcoo(i, n(2)) - refcoo(i, n(1))
+            v2(i)=refcoo(i, n(3)) - refcoo(i, n(1))
         end do
 !
 ! calcul de la NORMALE a la face
         call provec(v1, v2, nf)
 !
         do i = 1, ndim
-            r(3)     = r(3)+nf(i)*(ksi(i)-refcoo(ndim*(n(1)-1)+i))
+            r(3)     = r(3)+nf(i)*(ksi(i)-refcoo(i, n(1)))
             jac(3,i) = nf(i)
         end do
     endif

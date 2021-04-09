@@ -56,7 +56,6 @@ implicit none
 !
     integer, parameter :: nbpgmx =27
     character(len=8) :: elrf, fapg1, fapg(MT_NBFAMX)
-    real(kind=8) :: vol, x(3*MT_NNOMAX)
     integer :: nbfpg, nbpg(MT_NBFAMX), ndiml, nnol, nnosl
 !
     integer :: ima, ncmp, icmp, ino, isp, nno
@@ -151,9 +150,9 @@ implicit none
             ASSERT(schema(1:8).eq.elrf)
 
 ! --------- Get list of integration schemes of geometric support
-            call elraca(elrf, ndiml, nnol, nnosl, nbfpg,&
-                        fapg, nbpg, x, vol)
-            ASSERT(nbfpg .lt. MT_NBFAMX)
+            call elraca(elrf   ,&
+                        nbfpg_  = nbfpg, fapg_ = fapg, nbpg_ = nbpg,&
+                        ndim_   = ndiml, nno_  = nnol, nnos_ = nnosl)
 
 ! --------- Get index for integration scheme
             nufpg = indik8(fapg1, fapg1, 1, nbfpg)
@@ -237,8 +236,9 @@ implicit none
         if (avance .eq. 1) then
 
 ! --------- Get list of integration schemes of geometric support
-            call elraca(elrf, ndiml, nnol, nnosl, nbfpg,&
-                        fapg, nbpg, x, vol)
+            call elraca(elrf   ,&
+                        nbfpg_  = nbfpg, fapg_ = fapg, nbpg_ = nbpg,&
+                        ndim_   = ndiml, nno_  = nnol, nnos_ = nnosl)
 
 ! --------- Get index for integration scheme
             nufpg = indik8(fapg, fapg1, 1, nbfpg)

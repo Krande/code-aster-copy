@@ -46,7 +46,7 @@ character(len=8) :: elrefa
     integer :: nbpg(MT_NBFAMX), iret, ndim, nno, nnos, nbfpg
     integer :: nmaxob, nbobj, lonfam, ifam, lon2, decal, idim
     integer :: ipg, ino, nderiv, jvi, jvr, npg, nno2, jdim
-    real(kind=8) :: xno(3*MT_NNOMAX), vol, rvide
+    real(kind=8) :: rvide
     real(kind=8) :: xpg(3*nbpgmx), poipg(nbpgmx)
     real(kind=8) :: ff(MT_NNOMAX), dff(3, MT_NNOMAX), dff2(3, 3, MT_NNOMAX)
     character(len=24) :: liobj(nmaxob)
@@ -68,8 +68,9 @@ character(len=8) :: elrefa
     if (iret .gt. 0) goto 999
 
 ! - Get list of integration schemes of geometric support
-    call elraca(elrefa, ndim, nno, nnos, nbfpg,&
-                nofpg, nbpg, xno, vol)
+    call elraca(elrefa,&
+                nbfpg_  = nbfpg, fapg_ = nofpg, nbpg_ = nbpg,&
+                ndim_   = ndim, nno_  = nno, nnos_ = nnos)
 
     ASSERT((ndim.ge.0) .and. (ndim.le.3))
     ASSERT((nno.gt.0) .and. (nno.le.MT_NNOMAX))
