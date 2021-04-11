@@ -99,26 +99,25 @@ def detect_mkl(self):
         return False
     self.start_msg('Detecting MKL libraries')
     suffix = '_lp64' if self.env.DEST_CPU.endswith('64') else ''
-    scalapack  = []
+    scalapack  = ''
     blacs = []
     thread = 'mkl_sequential'
     core = 'mkl_core'
     libs =[]
     # http://software.intel.com/en-us/articles/intel-mkl-link-line-advisor/
-    if self.get_define('ASTER_HAVE_MPI'):
-        scalapack  = 'mkl_scalapack' + suffix
-    if ('ifort' in self.env.FC_NAME.lower()) or ('icc' in self.env.CC_NAME.lower()):
+    if 'ifort' in self.env.FC_NAME.lower() or 'icc' in self.env.CC_NAME.lower():
         if self.get_define('ASTER_HAVE_OPENMP'):
             thread  = 'mkl_intel_thread'
         interf = 'mkl_intel' + suffix
         if self.get_define('ASTER_HAVE_MPI'):
+            scalapack  = 'mkl_scalapack' + suffix
             blacs = 'mkl_blacs_intelmpi' + suffix
     else:
+        if self.get_define('ASTER_HAVE_MPI'):
+            scalapack = "scalapack"
         if self.get_define('ASTER_HAVE_OPENMP'):
             thread  = 'mkl_gnu_thread'
         interf = 'mkl_gf' + suffix
-        if self.get_define('ASTER_HAVE_MPI'):
-            blacs = 'mkl_blacs_openmpi' + suffix
     if scalapack:
         libs.append(scalapack)
     libs.append(interf)
