@@ -33,7 +33,7 @@ character(len=16), intent(in) :: option, nomte
 !
 ! Elements: COQUE_SOLIDE (HEXA9 and PENTA7)
 !
-! Options: RIGI_MECA, MASS_MECA
+! Options: RIGI_MECA, MASS_MECA, RIGI_GEOM
 !          SIEF_ELGA, FORC_NODA, EPSI_ELGA, EPSL_ELGA
 !          CHAR_MECA_PRES_R
 !
@@ -58,6 +58,8 @@ character(len=16), intent(in) :: option, nomte
         call compLoad(option)
     elseif (option .eq. 'MASS_MECA') then
         call compMassMatr()
+    elseif (option .eq. 'RIGI_GEOM') then
+        call compRigiGeomMatr()
     else
         ASSERT(ASTER_FALSE)
     endif

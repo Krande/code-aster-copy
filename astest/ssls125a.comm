@@ -1,0 +1,177 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+# Prepare mesh
+MESH0=LIRE_MAILLAGE(FORMAT='MED',)
+MESH=CREA_MAILLAGE(MAILLAGE     = MESH0,
+                   INFO         = 1,
+                   COQUE_SOLIDE = _F(GROUP_MA      = 'VOLU',
+                                     GROUP_MA_SURF = 'SUEXT',
+                                  ),
+                  )
+
+MESH=MODI_MAILLAGE(MAILLAGE  = MESH,
+                   reuse     = MESH,
+                   ORIE_PEAU = _F(GROUP_MA_PEAU='SUEXT',),
+                   );
+
+# Material parameters
+MAT=DEFI_MATERIAU(ELAS      = _F(NU = 0.3,
+                                 E  = 2.0000000000E11,
+                                ),
+                  )
+
+MATERIAL=AFFE_MATERIAU(MAILLAGE = MESH,
+                       AFFE     = _F(TOUT = 'OUI',
+                                     MATER    = MAT,
+                                  ),
+                      )
+
+# Select finite elements
+model=AFFE_MODELE(MAILLAGE = MESH,
+                  AFFE     = _F(TOUT='OUI',
+                                PHENOMENE='MECANIQUE',
+                                MODELISATION=('COQUE_SOLIDE',),
+                             ),
+                 )
+
+# Loads and boundary conditions
+CHARGT=AFFE_CHAR_MECA(MODELE=model,
+                      DDL_IMPO=(_F(GROUP_MA=('SU0'),
+                                   DY=0.0,),
+                                _F(GROUP_MA='SU90',
+                                   DX=0.0,),
+                                _F(GROUP_MA='SUINF',
+                                   DZ=0.0,),),
+                      PRES_REP=_F(GROUP_MA='SUEXT',
+                                   PRES=1.,),);
+
+# Compute initial stresses
+RESU=MECA_STATIQUE(MODELE=model,
+                   CHAM_MATER=MATERIAL,
+                   EXCIT=_F(CHARGE=CHARGT,),
+                  )
+
+# Test
+sixxCalc = -54.76185332456292
+siyyCalc = -46.86498637504582
+sixyCalc =  50.1696041176199
+
+TEST_RESU(RESU=(_F(
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   GROUP_MA='ElemTest',
+                   POINT=1,
+                   RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   VALE_CALC=sixxCalc,),
+                 _F(
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIYY',
+                   GROUP_MA='ElemTest',
+                   POINT=1,
+                   RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   VALE_CALC=siyyCalc,),
+                 _F(
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXY',
+                   GROUP_MA='ElemTest',
+                   POINT=1,
+                   RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   VALE_CALC=sixyCalc,),
+                ),
+          )
+
+# Get initial stresses
+siefElgaInit = CREA_CHAMP(OPERATION  = 'EXTR', 
+                          RESULTAT   = RESU,
+                          NUME_ORDRE = 1,
+                          TYPE_CHAM  = 'ELGA_SIEF_R',
+                          NOM_CHAM   = 'SIEF_ELGA' 
+                          ),
+
+# Compute elementary matrices
+rigiElem = CALC_MATR_ELEM(MODELE     = model,
+                          CHAM_MATER = MATERIAL,
+                          CHARGE     = CHARGT,
+                          OPTION     = 'RIGI_MECA' )
+
+geomElem = CALC_MATR_ELEM(MODELE     = model,
+                          SIEF_ELGA  = siefElgaInit,
+                          OPTION     = 'RIGI_GEOM')
+
+# Numbering
+NUMERO=NUME_DDL(MATR_RIGI=rigiElem )
+
+# Assemblying
+rigiAsse = ASSE_MATRICE(MATR_ELEM = rigiElem,
+                        NUME_DDL  = NUMERO )
+geomAsse = ASSE_MATRICE(MATR_ELEM = geomElem,
+                        NUME_DDL  = NUMERO)
+
+
+# Compute buckling modrres
+MOD_1=CALC_MODES(MATR_RIGI_GEOM=geomAsse,
+                 TYPE_RESU='MODE_FLAMB',
+                 MATR_RIGI=rigiAsse,
+                 CALC_CHAR_CRIT=_F(
+                                   NMAX_CHAR_CRIT=3,
+                                   ),
+                 )
+
+
+# Test
+freqRefe1 = 659340.
+freqCalc1 = 668815.8870339605
+freqTole1 = 0.01 * 1.44
+freqRefe2 = 293040.
+freqCalc2 = 291377.7285874381
+freqTole2 = 0.01 * 0.57
+freqRefe3 = 73260.
+freqCalc3 = 71974.00390203038
+freqTole3 = 0.01 * 1.76
+
+TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
+                   NUME_MODE=3,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MOD_1,
+                   VALE_CALC=freqCalc1,
+                   VALE_REFE=freqRefe1,
+                   PRECISION=freqTole1,),
+                _F(PARA='CHAR_CRIT',
+                   NUME_MODE=2,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MOD_1,
+                   VALE_CALC=freqCalc2,
+                   VALE_REFE=freqRefe2,
+                   PRECISION=freqTole2,),
+                _F(PARA='CHAR_CRIT',
+                   NUME_MODE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MOD_1,
+                   VALE_CALC=freqCalc3,
+                   VALE_REFE=freqRefe3,
+                   PRECISION=freqTole3,),
+                ),
+          )
+
+FIN()

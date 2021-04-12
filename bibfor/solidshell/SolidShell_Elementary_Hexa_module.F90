@@ -36,7 +36,7 @@ implicit none
 public  :: compRigiMatrHexa, compSiefElgaHexa, compForcNodaHexa,&
            compRigiGeomHexaKpg,&
            compEpsgElgaHexa, compEpsiElgaHexa, compEpslElgaHexa,&
-           compLoadHexa, compMassMatrHexa
+           compLoadHexa, compMassMatrHexa, compRigiGeomMatrHexa
 ! ==================================================================================================
 private
 #include "jeveux.h"
@@ -301,6 +301,7 @@ end subroutine
 ! In  geomHexa         : geometric properties for HEXA cell
 ! In  cellGeom         : general geometric properties of cell
 ! In  matePara         : parameters of material
+! In  sigm             : stress tensor at current Gauss point
 ! Out matrRigi         : rigidity matrix
 !
 ! --------------------------------------------------------------------------------------------------
@@ -665,6 +666,71 @@ subroutine compMassMatrHexa(elemProp, cellGeom, matePara, matrMass)
 
 ! ----- Update matrix
         matrMass = matrMass + matrMassPt
+
+    end do
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compRigiGeomMatrHexa
+!
+! Compute geometric rigidity matrix for HEXA - RIGI_GEOM
+!
+! In  elemProp         : general properties of element
+! In  cellGeom         : general geometric properties of cell
+! In  nbIntePoint      : number of integration points on cell
+! In  sigm             : stress tensor at current Gauss point
+! Out matrRigiGeom     : geometric rigidity matrix
+!
+! --------------------------------------------------------------------------------------------------
+subroutine compRigiGeomMatrHexa(elemProp, cellGeom, nbIntePoint, sigm, matrRigiGeom)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    type(SSH_ELEM_PROP), intent(in) :: elemProp
+    type(SSH_CELL_GEOM), intent(in) :: cellGeom
+    integer, intent(in)             :: nbIntePoint
+    real(kind=8), intent(in)        :: sigm(SSH_SIZE_TENS, nbIntePoint)
+    real(kind=8), intent(out)       :: matrRigiGeom(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
+! - Local
+    type(SSH_GEOM_HEXA) :: geomHexa
+ !   type(SSH_KINE_HEXA) :: kineHexa
+ !   type(SSH_STAB_HEXA) :: stabHexa
+ !   real(kind=8) :: geomCurr(SSH_NBDOFG_HEXA)
+    real(kind=8) :: zeta, poids, jacob
+    integer :: kpg, jvCoor, jvWeight
+    real(kind=8) :: matrRigiGeomPt(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
+!   ------------------------------------------------------------------------------------------------
+!
+    matrRigiGeom = 0.d0
+    jvCoor       = elemProp%elemInte%jvCoor
+    jvWeight     = elemProp%elemInte%jvWeight
+
+! - Prepare geometric quantities
+    call initGeomCellHexa(cellGeom, geomHexa)
+    if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
+
+! - Update configuration
+  !  geomCurr = cellGeom%geomInit
+
+! - Compute gradient matrix in covariant basis
+  !  call compBCovaMatrHexa(geomCurr, kineHexa)
+
+! - Compute gradient matrix in cartesian frame
+  !  call compBCartMatrHexa(geomHexa, kineHexa)
+  !  if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallCstPart_ = ASTER_TRUE)
+
+! - Loop on Gauss points
+    do kpg = 1, nbIntePoint
+        zeta  = zr(jvCoor-1+3*kpg)
+        poids = zr(jvWeight-1+kpg)
+        jacob = poids * cellGeom%detJac0
+
+! ----- Compute geometric matrix at current Gauss point for HEXA
+        call compRigiGeomHexaKpg(geomHexa, zeta, sigm(:, kpg), matrRigiGeomPt)
+
+! ----- Update matrix
+        matrRigiGeom = matrRigiGeom + jacob * matrRigiGeomPt
 
     end do
 !

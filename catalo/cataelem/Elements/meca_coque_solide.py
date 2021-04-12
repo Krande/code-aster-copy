@@ -124,6 +124,11 @@ class MESSHELL_SB9(Element):
             para_out = ((SP.PDCEL_I, LC.EDCEL_I),),
         ),
 
+        OP.RIGI_GEOM(te=125,
+            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (OP.RIGI_GEOM.PCONTRR, LC.EGIG3DR),),
+            para_out = ((SP.PMATUUR, MMATUUR),),
+        ),
+
         OP.RIGI_MECA(te=125,
             para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
                         (SP.PVARCPR, LC.ZVARCPG),),

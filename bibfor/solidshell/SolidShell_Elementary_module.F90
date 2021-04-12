@@ -36,7 +36,7 @@ implicit none
 ! ==================================================================================================
 public  :: compRigiMatr, compSiefElga, compForcNoda, compNonLinear,&
            compEpsiElga, compEpslElga,&
-           compLoad, compMassMatr
+           compLoad, compMassMatr, compRigiGeomMatr
 private :: setMateOrientation, compElemElasMatrix,&
            initCellGeom, initMateProp, initElemProp, initBehaProp
 ! ==================================================================================================
@@ -720,6 +720,58 @@ subroutine compMassMatr()
         do j = 1, i
             k = k + 1
             zr(jvMatr-1+k) = matrMass(i, j)
+        end do
+    end do
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compRigiGeomMatr
+!
+! Compute rigidity geometric matrix - RIGI_GEOM
+!
+! --------------------------------------------------------------------------------------------------
+subroutine compRigiGeomMatr()
+!   ------------------------------------------------------------------------------------------------
+! - Local
+    character(len=4), parameter :: inteFami = 'RIGI'
+    type(SSH_CELL_GEOM) :: cellGeom
+    type(SSH_ELEM_PROP) :: elemProp
+    type(SSH_MATE_PARA) :: matePara
+    real(kind=8) :: matrRigiGeom(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
+    integer :: nbIntePoint
+    integer :: jvMatr, jvSigm, i, j, k
+!   ------------------------------------------------------------------------------------------------
+!
+    matrRigiGeom = 0.d0
+
+! - Initialization of general properties of finite element
+    call initElemProp(inteFami, elemProp)
+    if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
+    nbIntePoint = elemProp%elemInte%nbIntePoint
+
+! - Initialization of geometric properties of cell
+    call initCellGeom(elemProp, cellGeom)
+    if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
+
+! - Get stress tensor
+    call jevech('PCONTRR', 'L', jvSigm)
+
+! - Compute geometric rigidity matrix
+    if (elemProp%cellType .eq. SSH_CELL_HEXA) then
+        call compRigiGeomMatrHexa(elemProp, cellGeom, nbIntePoint, zr(jvSigm), matrRigiGeom)
+    else
+        ASSERT(ASTER_FALSE)
+    endif
+
+! - Save matrix
+    call jevech('PMATUUR', 'E', jvMatr)
+    k = 0
+    do i = 1, elemProp%nbDof
+        do j = 1, i
+            k = k + 1
+            zr(jvMatr-1+k) = matrRigiGeom(i, j)
         end do
     end do
 !
