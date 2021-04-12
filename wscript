@@ -491,9 +491,9 @@ def write_config_h(self, language, variant, configfile=None, env=None):
     node.parent.mkdir()
     node.write('\n'.join(lst))
     incpath = node.parent.abspath()
-    self.env.append_unique('INCLUDES', incpath)
+    env.append_unique('INCLUDES', incpath)
     if language == 'Cython':
-        self.env.append_unique('CYTHONFLAGS', ["-I{0}".format(incpath)])
+        env.append_unique('CYTHONFLAGS', ["-I{0}".format(incpath)])
     # config files are not removed on "waf clean"
     env.append_unique(Build.CFG_FILES, [node.abspath()])
     self.end_msg(node.bldpath())

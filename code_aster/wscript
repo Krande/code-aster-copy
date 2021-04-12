@@ -42,7 +42,8 @@ def options(self):
                      help='build without the source repository')
 
 
-def configure(self):
+@Configure.conf
+def check_cython_conf(self):
     opts = self.options
     self.env.BUILD_CYTHON = False
     if not self.env.BUILD_MPI:
@@ -57,6 +58,8 @@ def configure(self):
     else:
         self.define('ASTER_HAVE_CYTHON', 1)
         self.env.BUILD_CYTHON = True
+
+def configure(self):
     self.check_version()
 
 @Configure.conf

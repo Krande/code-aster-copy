@@ -39,6 +39,7 @@ def options(self):
 
 
 def configure(self):
+    self.check_cython_conf()
     if not self.env.BUILD_MPI:
         self.undefine('ASTER_HAVE_PETSC')
         # can not be undefined for Cython
@@ -57,9 +58,8 @@ def configure(self):
             raise
     else:
         self.define('ASTER_HAVE_PETSC', 1)
-        # waiting fix for #30790
         self.define('ASTER_HAVE_PETSC4PY', 0)
-        # self.check_petsc4py()
+        self.check_petsc4py()
 
 ###############################################################################
 @Configure.conf
@@ -154,7 +154,7 @@ def check_petsc4py(self):
                                                   ['import petsc4py'])[0]
         self.env.append_unique('CYTHONFLAGS', '-I{0}'.format(pymodule_path))
     except Errors.ConfigurationError:
-        self.define('ASTER_HAVE_PETSC4PY' ,0)
+        self.define('ASTER_HAVE_PETSC4PY', 0)
     else:
         self.define('ASTER_HAVE_PETSC4PY', 1)
 

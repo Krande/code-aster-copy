@@ -108,7 +108,7 @@ else:
     cols = N.array(list(range(0, ce)), dtype=petsc4py.PETSc.IntType)
     rows = petsc4py.PETSc.IS().createGeneral(rows, comm=A.getComm())
     cols = petsc4py.PETSc.IS().createGeneral(cols, comm=A.getComm())
-    (S,) = A.getSubMatrices(rows, cols)
+    (S,) = A.createSubMatrices(rows, cols)
     v = petsc4py.PETSc.Viewer().createASCII("xxParallelMesh002a_rank"+str(rank)+".out",comm=S.getComm())
     S.view(v)
 

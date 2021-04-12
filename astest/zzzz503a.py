@@ -141,6 +141,7 @@ try:
 except ImportError:
     pass
 else:
+    print("PETSC4PY passed")
     A = code_aster.LinearAlgebra.AssemblyMatrixToPetsc4Py(matrAsse)
     v = petsc4py.PETSc.Viewer.DRAW(A.comm)
     A.view(v)

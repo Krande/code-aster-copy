@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ NB: The Cython language is required to build this interface.
 
 # silently pass to build documentation without the interface build
 try:
-    from Petsc4PyTest import AssemblyMatrixToPetsc4Py
+    from .Petsc4PyTest import AssemblyMatrixToPetsc4Py
 except ImportError as exc:
     pass
 
