@@ -48,7 +48,7 @@ class MESSHELL_SB9(Element):
         SetOfNodes('EN2', (9,)),
     )
     elrefe = (
-        ElrefeLoc(MT.HE9, gauss = ('RIGI=LOB5', 'FPG1=FPG1',), mater=('RIGI', 'FPG1',),),
+        ElrefeLoc(MT.HE9, gauss = ('RIGI=LOB5', 'FPG1=FPG1', 'MASS=FPG8',), mater=('RIGI', 'FPG1',),),
         ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4', 'MASS=FPG4',),),
     )
     calculs = (
@@ -111,6 +111,12 @@ class MESSHELL_SB9(Element):
 
         OP.INIT_VARC(te=99,
             para_out = ((OP.INIT_VARC.PVARCPR, LC.ZVARCPG),),
+        ),
+
+        OP.MASS_MECA(te=125,
+            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
+                        (SP.PVARCPR, LC.ZVARCPG),),
+            para_out = ((SP.PMATUUR, MMATUUR),),
         ),
 
         OP.NSPG_NBVA(te=496,

@@ -36,7 +36,7 @@ implicit none
 ! ==================================================================================================
 public  :: compRigiMatr, compSiefElga, compForcNoda, compNonLinear,&
            compEpsiElga, compEpslElga,&
-           compLoad
+           compLoad, compMassMatr
 private :: setMateOrientation, compElemElasMatrix,&
            initCellGeom, initMateProp, initElemProp, initBehaProp
 ! ==================================================================================================
@@ -671,6 +671,57 @@ subroutine compLoad(option)
     do i = 1, elemProp%nbDof
         zr(jvVect-1+i) = loadNoda(i)
     enddo
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compMassMatr
+!
+! Compute mass matrix - MASS_MECA
+!
+! --------------------------------------------------------------------------------------------------
+subroutine compMassMatr()
+!   ------------------------------------------------------------------------------------------------
+! - Local
+    character(len=4), parameter :: inteFami = 'MASS'
+    type(SSH_CELL_GEOM) :: cellGeom
+    type(SSH_ELEM_PROP) :: elemProp
+    type(SSH_MATE_PARA) :: matePara
+    real(kind=8) :: matrMass(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
+    integer :: jvMatr, i, j, k
+!   ------------------------------------------------------------------------------------------------
+!
+    matrMass = 0.d0
+
+! - Initialization of general properties of finite element
+    call initElemProp(inteFami, elemProp)
+    if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
+
+! - Initialization of geometric properties of cell
+    call initCellGeom(elemProp, cellGeom)
+    if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
+
+! - Initialization of properties of material
+    call initMateProp(elemProp, cellGeom, matePara)
+    if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
+
+! - Compute mass matrix
+    if (elemProp%cellType .eq. SSH_CELL_HEXA) then
+        call compMassMatrHexa(elemProp, cellGeom, matePara, matrMass)
+    else
+        ASSERT(ASTER_FALSE)
+    endif
+
+! - Save matrix
+    call jevech('PMATUUR', 'E', jvMatr)
+    k = 0
+    do i = 1, elemProp%nbDof
+        do j = 1, i
+            k = k + 1
+            zr(jvMatr-1+k) = matrMass(i, j)
+        end do
+    end do
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine

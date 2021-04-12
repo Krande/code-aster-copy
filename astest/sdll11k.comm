@@ -1,0 +1,212 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+# Prepare mesh
+MESH0=LIRE_MAILLAGE(FORMAT='MED',)
+MESH=CREA_MAILLAGE(MAILLAGE     = MESH0,
+                   INFO         = 1,
+                   COQUE_SOLIDE = _F(GROUP_MA      = 'volu',
+                                     GROUP_MA_SURF = 'ori',
+                                  ),
+                  )
+
+# Material parameters
+MAT=DEFI_MATERIAU(ELAS      = _F(NU = 0.3,
+                                 E  = 7.2E10,
+                                 RHO = 2700.,
+                                ),
+                  )
+
+MATERIAL=AFFE_MATERIAU(MAILLAGE = MESH,
+                       AFFE     = _F(TOUT = 'OUI',
+                                     MATER    = MAT,
+                                  ),
+                      )
+
+# Select finite elements
+MODEL=AFFE_MODELE(MAILLAGE = MESH,
+                  AFFE     = _F(GROUP_MA = 'volu',
+                                PHENOMENE='MECANIQUE',
+                                MODELISATION=('COQUE_SOLIDE',),
+                             ),
+                 )
+
+# Compute elementary matrices
+rigiElem = CALC_MATR_ELEM(MODELE     = MODEL,
+                          CHAM_MATER = MATERIAL,
+                          OPTION     = 'RIGI_MECA' )
+
+massElem = CALC_MATR_ELEM(MODELE     = MODEL,
+                          CHAM_MATER = MATERIAL,
+                          OPTION     = 'MASS_MECA' )
+
+# Numbering
+NUMERO=NUME_DDL(MATR_RIGI=rigiElem )
+
+# Assemblying
+rigiAsse = ASSE_MATRICE(MATR_ELEM = rigiElem,
+                        NUME_DDL  = NUMERO )
+
+massAsse = ASSE_MATRICE(MATR_ELEM = massElem,
+                        NUME_DDL  = NUMERO )
+
+# Compute eigen
+MODE1=CALC_MODES(MATR_RIGI=rigiAsse,
+                 MATR_MASS=massAsse,
+                 OPTION='BANDE',
+                 CALC_FREQ=_F(FREQ=( 200.,3500.,),),
+                 )
+
+# Test (reference: analytiques)
+freqRefe1 = 318.36
+freqTole1 = 0.01 * 1.0E-1
+freqRefe2 = 900.46
+freqTole2 = 0.01 * 2.6E-1
+freqRefe3 = 1726.55
+freqTole3 = 0.01 * 5.0E-1
+freqRefe4 = 2792.21
+freqTole4 = 0.01 * 9.0E-1
+
+TEST_RESU(RESU=(_F(PARA='FREQ',
+                   NUME_MODE=7,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE1,
+                   VALE_CALC=318.044132476244,
+                   VALE_REFE=freqRefe1,
+                   CRITERE='RELATIF',
+                   PRECISION=freqTole1,),
+                _F(PARA='FREQ',
+                   NUME_MODE=8,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE1,
+                   VALE_CALC=318.0441324879623,
+                   VALE_REFE=freqRefe1,
+                   CRITERE='RELATIF',
+                   PRECISION=freqTole1,),
+                _F(PARA='FREQ',
+                   NUME_MODE=11,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE1,
+                   VALE_CALC=898.1779910340562,
+                   VALE_REFE=freqRefe2,
+                   CRITERE='RELATIF',
+                   PRECISION=freqTole2,),
+                _F(PARA='FREQ',
+                   NUME_MODE=12,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE1,
+                   VALE_CALC=898.1779910346613,
+                   VALE_REFE=freqRefe2,
+                   CRITERE='RELATIF',
+                   PRECISION=freqTole2,),
+                _F(PARA='FREQ',
+                   NUME_MODE=15,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE1,
+                   VALE_CALC=1717.971140836072,
+                   VALE_REFE=freqRefe3,
+                   CRITERE='RELATIF',
+                   PRECISION=0.0135,),
+                _F(PARA='FREQ',
+                   NUME_MODE=16,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE1,
+                   VALE_CALC=1717.971140836072,
+                   VALE_REFE=freqRefe3,
+                   CRITERE='RELATIF',
+                   PRECISION=freqTole3,),
+                _F(PARA='FREQ',
+                   NUME_MODE=17,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE1,
+                   VALE_CALC=2768.441532537756,
+                   VALE_REFE=freqRefe4,
+                   CRITERE='RELATIF',
+                   PRECISION=freqTole4,),
+                _F(PARA='FREQ',
+                   NUME_MODE=18,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE1,
+                   VALE_CALC=2768.441532538167,
+                   VALE_REFE=freqRefe4,
+                   CRITERE='RELATIF',
+                   PRECISION=freqTole4,),
+          ),)
+
+# Test (reference: moyenne de codes)
+freqRefe10 = 511.
+freqTole10 = 0.01 * 1.23
+freqRefe20 = 1590.
+freqTole20 = 0.01 * 4.24E-1
+freqRefe30 = 3184.
+freqTole30 = 0.01 * 1.75
+
+TEST_RESU(RESU=(
+                _F(PARA='FREQ',
+                   NUME_MODE=9,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODE1,
+                   VALE_CALC=517.2784811382676,
+                   VALE_REFE=freqRefe10,
+                   CRITERE='RELATIF',
+                   PRECISION=freqTole10,),
+                _F(PARA='FREQ',
+                   NUME_MODE=10,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODE1,
+                   VALE_CALC=517.2784811395591,
+                   VALE_REFE=freqRefe10,
+                   CRITERE='RELATIF',
+                   PRECISION=freqTole10,),
+                _F(PARA='FREQ',
+                   NUME_MODE=13,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODE1,
+                   VALE_CALC=1583.262794594132,
+                   VALE_REFE=freqRefe20,
+                   CRITERE='RELATIF',
+                   PRECISION=freqTole20,),
+                _F(PARA='FREQ',
+                   NUME_MODE=14,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODE1,
+                   VALE_CALC=1583.2627945941515,
+                   VALE_REFE=freqRefe20,
+                   CRITERE='RELATIF',
+                   PRECISION=freqTole20,),
+                _F(PARA='FREQ',
+                   NUME_MODE=19,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODE1,
+                   VALE_CALC=3128.3789863771703,
+                   VALE_REFE=freqRefe30,
+                   CRITERE='RELATIF',
+                   PRECISION=freqTole30,),
+                _F(PARA='FREQ',
+                   NUME_MODE=20,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=MODE1,
+                   VALE_CALC=3128.3789863773627,
+                   VALE_REFE=freqRefe30,
+                   CRITERE='RELATIF',
+                   PRECISION=freqTole30,),
+          ),)
+
+FIN()

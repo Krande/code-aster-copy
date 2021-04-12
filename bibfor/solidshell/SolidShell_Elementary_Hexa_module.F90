@@ -36,7 +36,7 @@ implicit none
 public  :: compRigiMatrHexa, compSiefElgaHexa, compForcNodaHexa,&
            compRigiGeomHexaKpg,&
            compEpsgElgaHexa, compEpsiElgaHexa, compEpslElgaHexa,&
-           compLoadHexa
+           compLoadHexa, compMassMatrHexa
 ! ==================================================================================================
 private
 #include "jeveux.h"
@@ -47,6 +47,7 @@ private
 #include "asterfort/assert.h"
 #include "asterfort/btsig.h"
 #include "asterfort/jevecd.h"
+#include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 ! ==================================================================================================
@@ -584,6 +585,88 @@ subroutine compLoadHexa(cellGeom, option, loadNoda)
 ! - Compute
     loadNoda(25) = loadNoda(25) +&
                    4.d0*(presInf-presSup)*area/3.d0
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compMassMatrHexa
+!
+! Compute mass matrix for HEXA - MASS_MECA
+!
+! In  elemProp         : general properties of element
+! In  cellGeom         : general geometric properties of cell
+! In  matePara         : parameters of material
+! Out matrMass         : mass matrix
+!
+! --------------------------------------------------------------------------------------------------
+subroutine compMassMatrHexa(elemProp, cellGeom, matePara, matrMass)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    type(SSH_ELEM_PROP), intent(in) :: elemProp
+    type(SSH_CELL_GEOM), intent(in) :: cellGeom
+    type(SSH_MATE_PARA), intent(in) :: matePara
+    real(kind=8), intent(out)       :: matrMass(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
+! - Local
+    integer, parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
+    integer :: iNodeGeom, jNodeGeom
+    real(kind=8) :: poids, jacob, XI(3)
+    real(kind=8) :: rho(1), N(SSH_NBNODEG_HEXA), NPinch
+    integer :: valeIret(1)
+    character(len=4) :: inteFami
+    integer :: nbIntePoint, kpg, jvCoor, jvWeight
+    real(kind=8) :: matrMassPt(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
+!   ------------------------------------------------------------------------------------------------
+!
+    matrMass    = 0.d0
+    nbIntePoint = elemProp%elemInte%nbIntePoint
+    inteFami    = elemProp%elemInte%inteFami
+    jvCoor      = elemProp%elemInte%jvCoor
+    jvWeight    = elemProp%elemInte%jvWeight
+
+! - Loop on Gauss points
+    do kpg = 1, nbIntePoint
+        XI(1) = zr(jvCoor+3*(kpg-1)-1+1) 
+        XI(2) = zr(jvCoor+3*(kpg-1)-1+2)
+        XI(3) = zr(jvCoor+3*(kpg-1)-1+3)
+        poids = zr(jvWeight-1+kpg)
+        jacob = poids * cellGeom%detJac0
+
+! ----- Get density
+        call rcvalb(inteFami, kpg   , 1  , '+'        , matePara%jvMater,&
+                    ' '     , 'ELAS', 0  , ' '        , [0.d0]          ,&
+                    1       , 'RHO' , rho, valeIret(1), 1)
+
+! ----- Construction of shape functions
+        N  = hexaVectS1 + &
+             XI(1)*hexaVectG1+XI(2)*hexaVectG2+XI(3)*hexaVectG3+&
+             XI(1)*XI(2)*hexaVectH1+&
+             XI(3)*XI(2)*hexaVectH2+&
+             XI(1)*XI(3)*hexaVectH3+&
+             XI(1)*XI(2)*XI(3)*hexaVectH4
+        NPinch = 1.d0 - XI(3)*XI(3)
+
+! ----- Compute matrix on volumic nodes
+        matrMassPt = 0.d0
+        do iNodeGeom = 1, nbNodeGeom
+            do jNodeGeom = 1, nbNodeGeom
+                matrMassPt(3*(iNodeGeom-1)+1:3*(iNodeGeom-1)+3,&
+                           3*(jNodeGeom-1)+1:3*(jNodeGeom-1)+3) = &
+                    rho(1) * jacob * N(iNodeGeom) * N(jNodeGeom) * matr3Iden
+            end do
+        end do
+
+! ----- Compute matrix on pinch node
+        do iNodeGeom = 1, nbNodeGeom
+            matrMassPt(SSH_NBDOF_HEXA, 3*(iNodeGeom-1)+3) = rho(1) * jacob*N(iNodeGeom) * NPinch
+            matrMassPt(3*(iNodeGeom-1)+3, SSH_NBDOF_HEXA) = rho(1) * jacob*N(iNodeGeom) * NPinch
+        enddo
+        matrMassPt(SSH_NBDOF_HEXA, SSH_NBDOF_HEXA) = rho(1) * poids * NPinch * NPinch
+
+! ----- Update matrix
+        matrMass = matrMass + matrMassPt
+
+    end do
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine

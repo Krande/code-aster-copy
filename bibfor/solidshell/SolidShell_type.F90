@@ -65,6 +65,8 @@ real(kind=8), parameter :: hexaVectH3(8) = (/+1.d0, -1.d0, -1.d0, +1.d0,&
                                              -1.d0, +1.d0, +1.d0, -1.d0/)/8.d0
 real(kind=8), parameter :: hexaVectH4(8) = (/-1.d0, +1.d0, -1.d0,  1.d0,&
                                              +1.d0, -1.d0, +1.d0, -1.d0/)/8.d0
+real(kind=8), parameter :: hexaVectS1(8) = (/+1.d0, +1.d0, +1.d0, +1.d0,&
+                                             +1.d0, +1.d0, +1.d0, +1.d0/)/8.d0
 
 ! Center of cell in parametric frame for HEXA
 real(kind=8), parameter :: hexaCovaCenter(3)  = (/0.d0, 0.d0, 0.d0/)
