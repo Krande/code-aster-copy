@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ CALC_MAC3COEUR = MACRO(nom="CALC_MAC3COEUR",
                        MAILLAGE_N   = SIMP(statut='f',typ=maillage_sdaster),      # MAILLAGE EN ATTENDANT MIEUX ???
                        RESU_DEF     = SIMP(statut='f',typ=CO),
                        FLUENCE_CYCLE = SIMP(statut='f',typ='R',max=1,defaut=0.),
-                       TYPE_DEFORMATION =SIMP(statut='f',typ='TXM',defaut="PETIT",
+                       TYPE_DEFORMATION =SIMP(statut='f',typ='TXM',defaut="RIGI_GEOM",
                                               into=("PETIT","RIGI_GEOM","GROT_GDEP")),
                        ETAT_INITIAL = FACT(statut='f',max=1,
                                            fr=tr("Estimation d'un etat initial a partir d un DAMAC"),

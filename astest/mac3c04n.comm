@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ MA1 = LIRE_MAILLAGE(FORMAT = 'MED',
 FLEX = CALC_MAC3COEUR(TYPE_COEUR  = 'MONO_FROID',
                       TABLE_N     =  tabn,
                       MAILLAGE_N  =  MA1,
-                      TYPE_DEFORMATION = 'PETIT',
+                      TYPE_DEFORMATION = 'RIGI_GEOM',
                       DEFORMATION = _F(UNITE_THYC   = 32,
                                        NIVE_FLUENCE = 0.,
                                        TYPE_MAINTIEN = 'FORCE',
