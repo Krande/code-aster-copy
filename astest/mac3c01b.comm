@@ -1,0 +1,57 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'), IMPR_MACRO='NON', DEBUG=_F(SDVERI='OUI'))
+
+MA1 = LIRE_MAILLAGE(FORMAT='MED',
+                    UNITE=20)
+
+DATAMAC = LIRE_TABLE(UNITE      = 38,
+                     FORMAT     = 'LIBRE',
+                     SEPARATEUR = '\t')
+
+RESU = CALC_MAC3COEUR(TYPE_COEUR  = 'TEST',
+                      TABLE_N     =  DATAMAC,
+                      MAILLAGE_N  =  MA1,
+                      DEFORMATION = _F(UNITE_THYC   = 32,
+                                       TEMP_IMPO = 300.0,
+                                       NIVE_FLUENCE = 33))
+
+t4 = 4.E-3
+
+TAB = CREA_TABLE(RESU=_F(RESULTAT=RESU,
+                          NOM_CHAM='DEPL',
+                          INST=t4,
+                          NOM_CMP=('DX','DY'),
+                          GROUP_MA=('CR_B_B', 'TG_B_B')))
+
+TEST_TABLE(VALE_CALC=-0.01249484742016728,
+           NOM_PARA='DX',
+           TABLE=TAB,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N430'))
+
+TEST_TABLE(VALE_CALC=-0.01237064462877838,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=TAB)
+
+FIN()

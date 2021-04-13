@@ -18,130 +18,94 @@
 # --------------------------------------------------------------------
 
 #
-# COMMENTAIRE SUR LES ASPECTS SOLVEURS LINEAIRES DE CE CAS-TEST
-# (APPELES VIA STAT_NON_LINE)
-# CE CAS TEST ILLUSTRE L'INTERET DE LA VALEUR 'NON' DE l'OPTION
-# SOLVEUR/ELIM_LAGR. DANS LES CAS DE FIGURES (COMME ICI) COMPORTANT
-# BEAUCOUP DE LAGRANGES (> 25% DDLS TOTAL). ON A SOUVENT INTERET A
-# PASSER CETTE OPTION DE 'OUI' A 'NON'. A GAGNE EN CPU (ICI 35%).
-# ATTENTION, CELA PEUT OBLIGER PARFOIS A AUGMENTER LE PARAMETRE
-# SOLVEUR/PCENT_PIVOT.
-# person_in_charge: pierre.badel at edf.fr
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'), IMPR_MACRO='NON')
 
-tabn = LIRE_TABLE(UNITE      = 38,
-                  FORMAT     = 'LIBRE',
-                  SEPARATEUR = '\t')
+MA1 = LIRE_MAILLAGE(FORMAT='MED',
+                    UNITE=20)
 
-MA1=LIRE_MAILLAGE(FORMAT='MED',
-                  UNITE=20)
-
-RESU_C0 = CALC_MAC3COEUR(TYPE_COEUR  = 'TEST',
-                         TABLE_N     =  tabn,
-                         MAILLAGE_N  =  MA1,
-                         DEFORMATION = _F(UNITE_THYC   = 32,
-                                          TEMP_IMPO = 300.0,
-                                          NIVE_FLUENCE = 33))
-
-t4 = 4.e-3
-TAB0 = CREA_TABLE(RESU=_F(RESULTAT=RESU_C0,
-                          NOM_CHAM='DEPL',
-                          INST=t4,
-                          NOM_CMP=('DX','DY'),
-                          GROUP_MA=('CR_B_B', 'TG_B_B')))
-
-TEST_TABLE(
-           VALE_CALC=-0.012545539860191423,
-           NOM_PARA='DX',
-           TABLE=TAB0,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N430'),
-           )
-
-TEST_TABLE(
-           VALE_CALC=-0.012423363103816384,
-           NOM_PARA='DX',
-           TYPE_TEST='MAX',
-           TABLE=TAB0,
-           )
-
-
+DATAMAC = LIRE_TABLE(UNITE      = 38,
+                     FORMAT     = 'LIBRE',
+                     SEPARATEUR = '\t')
 
 RESU_C1 = CALC_MAC3COEUR(TYPE_COEUR  = 'TEST',
-                         TABLE_N     =  tabn,
+                         TABLE_N     =  DATAMAC,
                          MAILLAGE_N  =  MA1,
                          DEFORMATION = _F(UNITE_THYC   = 32,
                                           NIVE_FLUENCE = 33))
 
-post_i = RESU_C1.LIST_PARA()['INST'][-1]
-TAB = CREA_TABLE(RESU=_F(RESULTAT=RESU_C1,
+t4 = 4.E-3
+t9 = 33 + 8.E-3
+
+TAB1 = CREA_TABLE(RESU=_F(RESULTAT=RESU_C1,
                          NOM_CHAM='DEPL',
-                         INST=post_i,
+                         INST=t4,
                          NOM_CMP=('DX','DY'),
                          GROUP_MA=('CR_B_B', 'TG_B_B')))
 
-#IMPR_TABLE(TABLE=TAB)
-TEST_TABLE(
-           VALE_CALC=0.0048500628307623465,
+TAB2 = CREA_TABLE(RESU=_F(RESULTAT=RESU_C1,
+                          NOM_CHAM='DEPL',
+                          INST=t4,
+                          NOM_CMP=('DX','DY','DZ'),
+                          GROUP_NO=('P_CUV','FIX')))
+
+TAB3 = POST_MAC3COEUR(RESULTAT    =  RESU_C1,
+                      TYPE_COEUR  = 'TEST',
+                      INST        =  t9,
+                      TABLE      = DATAMAC,
+                      TYPE_CALCUL = 'DEFORMATION',
+                      OPERATION   = 'EXTRACTION')
+
+TEST_TABLE(VALE_CALC=-0.012373837711170253,
            NOM_PARA='DX',
-           TABLE=TAB,
+           TABLE=TAB1,
            FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N430'),
-           )
+                     VALE_K='N430'))
 
-TEST_TABLE(
-           VALE_CALC=0.002883950696622203,
+TEST_TABLE(VALE_CALC=0.0034632688588879003,
            NOM_PARA='DY',
-           TABLE=TAB,
+           TABLE=TAB1,
            FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N465'),
-           )
+                     VALE_K='N465'))
 
-TEST_TABLE(
-           VALE_CALC=0.005426005429273937,
+TEST_TABLE(VALE_CALC=-0.012250100635088116,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
-           TABLE=TAB,
-           )
+           TABLE=TAB1)
 
-TEST_TABLE(
-           VALE_CALC=0.0028926288759618685,
+TEST_TABLE(VALE_CALC=0.003494032351801081,
            NOM_PARA='DY',
            TYPE_TEST='MAX',
-           TABLE=TAB,
-           )
+           TABLE=TAB1)
 
-TAB2 = CREA_TABLE(RESU=_F(RESULTAT=RESU_C1,NOM_CHAM='DEPL',INST=0.004,NOM_CMP=('DX','DY','DZ'),
-                         GROUP_NO=('P_CUV','FIX')))
-
-#IMPR_TABLE(TABLE=TAB2)
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=-0.021929946270868632,
-           VALE_REFE=-0.021929946270868632,
+TEST_TABLE(VALE_CALC=-0.021929946270868632,
            NOM_PARA='DX',
            TABLE=TAB2,
            FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N509'),
-           )
+                     VALE_K='N509'))
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.0010398774297798892,
-           VALE_REFE=0.0010398774297798892,
+TEST_TABLE(VALE_CALC=0.0010398774297798892,
            NOM_PARA='DY',
            TABLE=TAB2,
            FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N509'),
-           )
+                     VALE_K='N509'))
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=-0.02164406475443807,
-           VALE_REFE=-0.02164406475443807,
-           NOM_PARA='DX',
+TEST_TABLE(VALE_CALC=0.0005242425230768122,
+           NOM_PARA='DZ',
            TABLE=TAB2,
            FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='N568'),
-           )
+                     VALE_K='N509'))
+
+TEST_TABLE(VALE_CALC=3.0984525326560823,
+           NOM_PARA='Ro',
+           TABLE=TAB3,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='B02'))
+
+TEST_TABLE(VALE_CALC_K='2C',
+           NOM_PARA='Forme',
+           TABLE=TAB3,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='B02'))
 
 FIN()
