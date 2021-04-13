@@ -645,6 +645,7 @@ HE9.addLocation('NOEU_S', 8)
 HE9.addLocation('LOB5', 5)
 HE9.addLocation('LOB7', 7)
 HE9.addLocation('FPG1', 1)
+HE9.addLocation('FPG8', 8)
 HEXA9.addElrefe(HE9)
 
 

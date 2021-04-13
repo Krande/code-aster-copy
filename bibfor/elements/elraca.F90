@@ -86,13 +86,14 @@ character(len=8), optional, intent(out) :: fapg_(MT_NBFAMX)
             fapg(7) = 'FPG64'
 
         case('HE9')
-            nbfpg = 5
-            nbpg(1:nbfpg) = [nno, nnos, 1, 5, 7]
+            nbfpg = 6
+            nbpg(1:nbfpg) = [nno, nnos, 1, 5, 7, 8]
             fapg(1) = 'NOEU'
             fapg(2) = 'NOEU_S'
             fapg(3) = 'FPG1'
             fapg(4) = 'LOB5'
             fapg(5) = 'LOB7'
+            fapg(6) = 'FPG8'
 
         case('H20')
             nbfpg = 7

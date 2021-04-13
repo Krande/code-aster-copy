@@ -244,10 +244,30 @@ real(kind=8), intent(out) :: coopg(*), poipg(*)
                 hpg(iz) = lobWeight(iz)*4.d0
             enddo
 
+        else if (fapg .eq. 'FPG8') then
+! --------- FORMULE DE QUADRATURE DE GAUSS A 2 POINTS DANS CHAQUE DIRECTION ( ORDRE 3 )
+            npar = 2
+            a(1) = -0.577350269189626d0
+            a(2) = -a(1)
+            h(1) = un
+            h(2) = un
+            npi = 0
+            do ix = 1, npar
+                do iy = 1, npar
+                    do iz = 1, npar
+                        npi = npi + 1
+                        xpg(npi) = a(ix)
+                        ypg(npi) = a(iy)
+                        zpg(npi) = a(iz)
+                        hpg(npi) = h(ix)*h(iy)*h(iz)
+                    end do
+                end do
+            end do
+
         else
             ASSERT(ASTER_FALSE)
         endif
-
+!
     else if (elrefa .eq. 'PE6' .or. elrefa .eq. 'P15' .or. elrefa .eq. 'P18' .or.&
              elrefa .eq. 'P21') then
         if (fapg .eq. 'FPG6') then
