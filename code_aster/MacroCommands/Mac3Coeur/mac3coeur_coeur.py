@@ -68,7 +68,10 @@ class Coeur(object):
         'ALPH1', 'ALPH2',
         # Post-traitement des lames
         #'nomContactAssLame', 'nomContactCuve',
+        #Valeurs de gravité et tables de l'eau à pression int cuve
+        'ACC_PESA', 'RHO_EAU20', 'RHO_EAU60', 'RHO_EAU307',
     ]
+    
     _time = ('T0', 'T0b', 'T1', 'T2', 'T3',
              'T4', 'T5', 'T6', 'T7', 'T8', 'T8b', 'T9',)
     _subtime = ('N0', 'N0b', 'N1', 'N2', 'N3',
@@ -285,9 +288,9 @@ class Coeur(object):
         # cas ou la force d'archimede est activee
         if use_archimede == 'OUI':
 
-            ARCHFR1 = 9.81 * 1.005305e+03  # Valeur en arret a froid (20 degres)
-            ARCHFR2 = 9.81 * 0.989942e+03  # Valeur en arret a froid (60 degres)
-            ARCHCH  = 9.81 * 0.712066e+03  # Valeur a chaud (307 degres)
+            ARCHFR1 = self.ACC_PESA * self.RHO_EAU20
+            ARCHFR2 = self.ACC_PESA * self.RHO_EAU60
+            ARCHCH  = self.ACC_PESA * self.RHO_EAU307
 
         # cas ou la force d'archimede n'est pas activee
         elif use_archimede == 'NON':
