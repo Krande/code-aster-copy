@@ -21,53 +21,30 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'),IMPR_MACRO='NON',)
 
-DAMAC1=LIRE_TABLE(UNITE=38,
-                  SEPARATEUR = '\t'
-)
+DATAMAC1 = LIRE_TABLE(UNITE=38,
+                    SEPARATEUR = '\t')
 
-MA1=LIRE_MAILLAGE(FORMAT='MED',UNITE=20);
-
-# TEST ETAT INITIAL
+MA1 = LIRE_MAILLAGE(FORMAT='MED',UNITE=20);
 
 RESU_C1D = CALC_MAC3COEUR(TYPE_COEUR  = 'TEST',
-                          TABLE_N     =  DAMAC1,
+                          TABLE_N     =  DATAMAC1,
                           MAILLAGE_N  =  MA1,
                           ETAT_INITIAL = _F(
-                                           UNITE_THYC   = 32,
-                                           NIVE_FLUENCE = 33))
-
-
-TAB_C1D = CREA_TABLE(RESU=_F(RESULTAT=RESU_C1D,
-                             NOM_CHAM='DEPL',
-                             INST=33.008,
-                             NOM_CMP=('DY','DZ'),
-                             GROUP_MA=('TG_B_B')))
-
-
-RESU_C2D = CALC_MAC3COEUR(TYPE_COEUR  = 'TEST',
-                          TABLE_N     =  DAMAC1,
-                          MAILLAGE_N  =  MA1,
-                          ETAT_INITIAL = _F(
-                              MAINTIEN_GRILLE='OUI',
+                              MAINTIEN_GRILLE='NON',
                               UNITE_THYC   = 32,
                               NIVE_FLUENCE = 33))
 
-TAB_C2D = CREA_TABLE(RESU=_F(RESULTAT=RESU_C2D,
+t9 = 33 + 8.E-3
+
+TAB_C1D = CREA_TABLE(RESU=_F(RESULTAT=RESU_C1D,
                              NOM_CHAM='DEPL',
-                             INST=33.008,
+                             INST=t9,
                              NOM_CMP=('DY','DZ'),
                              GROUP_MA=('TG_B_B')))
 
-TEST_TABLE(VALE_CALC=0.00129603171655477,
+TEST_TABLE(VALE_CALC=0.0013849981066704218,
            NOM_PARA='DY',
            TYPE_TEST='MAX',
-           TABLE=TAB_C1D,
-           )
-
-TEST_TABLE(VALE_CALC=0.00129603171655477,
-           NOM_PARA='DY',
-           TYPE_TEST='MAX',
-           TABLE=TAB_C2D,
-           )
+           TABLE=TAB_C1D)
 
 FIN()
