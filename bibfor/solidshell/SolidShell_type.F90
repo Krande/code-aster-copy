@@ -217,7 +217,10 @@ end type SSH_EPSL_HEXA
 
 ! Kinematic for HEXA cell
 type SSH_KINE_HEXA
+! - Flag if large hypothesis for kinematic
     aster_logical :: lLarge              = ASTER_FALSE
+! - Reference configuration
+    real(kind=8) :: geomCurr(SSH_NBDOFG_HEXA) = 0.d0
 ! - Parts of gradient matrix (covariant/parametric frame)
     real(kind=8) :: BCova0(6, 24)        = 0.d0
     real(kind=8) :: BCovaZETA(6, 24)     = 0.d0

@@ -222,7 +222,7 @@ subroutine compSmallStrainHexa(option     , elemProp, cellGeom, geomHexa,&
     type(SSH_STAB_HEXA) :: stabHexa
     real(kind=8) :: zeta, poids, jacob
     real(kind=8) :: UeffKpg, Ueff
-    real(kind=8) :: geomCurr(SSH_NBDOFG_HEXA), dispCurr(SSH_NBDOF_HEXA)
+    real(kind=8) :: dispCurr(SSH_NBDOF_HEXA)
     real(kind=8) :: epsiPrev(SSH_SIZE_TENS), epsiIncr(SSH_SIZE_TENS)
     real(kind=8) :: sigmPost(SSH_SIZE_TENS), sigmPrep(SSH_SIZE_TENS)
     real(kind=8), dimension(SSH_NBDOF_HEXA, SSH_NBDOF_HEXA) :: matrMate
@@ -253,12 +253,12 @@ subroutine compSmallStrainHexa(option     , elemProp, cellGeom, geomHexa,&
 ! - Total displacement from initial configuration
     dispCurr = dispIncr + dispPrev
 
-! - Update configuration: initial
-    geomCurr(1:SSH_NBDOFG_HEXA) = cellGeom%geomInit(1:SSH_NBDOFG_HEXA)
+! - Set current configuration to initial geometry
+    call setCurrConfToInit(cellGeom, kineHexa)
 
 ! - Compute gradient matrix in covariant basis
     kineHexa%lLarge = ASTER_FALSE
-    call compBCovaMatrHexa(geomCurr, kineHexa)
+    call compBCovaMatrHexa(kineHexa)
 
 ! - Compute gradient matrix in cartesian frame
     call compBCartMatrHexa(geomHexa, kineHexa)
@@ -449,7 +449,7 @@ subroutine compGdefLogHexa(option     , elemProp, cellGeom, geomHexa,&
     type(SSH_STAB_HEXA) :: stabHexa
     real(kind=8) :: zeta, poids, jacob
     real(kind=8) :: UeffKpg, Ueff
-    real(kind=8) :: geomCurr(SSH_NBDOFG_HEXA), dispCurr(SSH_NBDOF_HEXA)
+    real(kind=8) :: dispCurr(SSH_NBDOF_HEXA)
     real(kind=8) :: epslIncr(SSH_SIZE_TENS)
     real(kind=8) :: sigmPrep(SSH_SIZE_TENS), pk2(SSH_SIZE_TENS)
     real(kind=8) :: tPrev(SSH_SIZE_TENS), tCurr(SSH_SIZE_TENS)
@@ -486,12 +486,12 @@ subroutine compGdefLogHexa(option     , elemProp, cellGeom, geomHexa,&
 ! - Total displacement from initial configuration
     dispCurr = dispIncr + dispPrev
 
-! - Update configuration: current
-    geomCurr(1:SSH_NBDOFG_HEXA) = cellGeom%geomInit(1:SSH_NBDOFG_HEXA) + dispCurr(1:SSH_NBDOFG_HEXA)
+! - Set current configuration with current displacement
+    call setCurrConfWithDisp(cellGeom, dispCurr, kineHexa)
 
 ! - Compute gradient matrix in covariant basis
     kineHexa%lLarge = ASTER_TRUE
-    call compBCovaMatrHexa(geomCurr, kineHexa)
+    call compBCovaMatrHexa(kineHexa)
 
 ! - Compute gradient matrix in cartesian frame
     call compBCartMatrHexa(geomHexa, kineHexa)

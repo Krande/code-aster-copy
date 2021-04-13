@@ -32,7 +32,7 @@ implicit none
 ! ==================================================================================================
 public :: compBCovaMatrHexa, compBCartMatrHexa, compBCartEASMatrHexa, compBMatrHexa, compEpsiHexa,&
           compECovaMatrHexa, compEpsgHexa, compGCartMatrHexa, compGCartSMatrHexa,&
-          compEpslHexa
+          compEpslHexa, setCurrConfToInit, setCurrConfWithDisp
 ! ==================================================================================================
 private
 #include "asterf_types.h"
@@ -181,14 +181,12 @@ end subroutine
 !
 ! Compute gradient matrix in covariant basis for HEXA cell
 !
-! In  geomCurr         : current configuration of element
 ! IO  kineHexa         : kinematic quantities (HEXA cell)
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compBCovaMatrHexa(geomCurr, kineHexa)
+subroutine compBCovaMatrHexa(kineHexa)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    real(kind=8), intent(in)           :: geomCurr(SSH_NBDOFG_HEXA)
     type(SSH_KINE_HEXA), intent(inout) :: kineHexa
 ! - Local
     integer, parameter :: nbNodeGeom = SSH_NBNODE_HEXA
@@ -211,10 +209,10 @@ subroutine compBCovaMatrHexa(geomCurr, kineHexa)
     kineHexa%BCovaXIZETA   = 0.d0
 
 ! - Compute the decomposed derivatives of the jacobian in the covariant base
-    call decoJacoMatrHexa(geomCurr,&
-                          J10     , J1ETA, J1ZETA, J1ETAZETA,&
-                          J20     , J2XI , J2ZETA, J2XIZETA ,&
-                          J30     , J3ETA, J3XI  , J3XIETA)
+    call decoJacoMatrHexa(kineHexa%geomCurr,&
+                          J10, J1ETA, J1ZETA, J1ETAZETA,&
+                          J20, J2XI , J2ZETA, J2XIZETA ,&
+                          J30, J3ETA, J3XI  , J3XIETA)
 
 ! - Compute BCova0
     do iNodeGeom = 1, nbNodeGeom
@@ -837,6 +835,51 @@ subroutine compEpslHexa(epsg, epsl, iretLog)
     call tnsvec(3, 3, epsl33, epsl%vale, sqrt(2.d0))
 
 999 continue
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! setCurrConfToInit
+!
+! Set current configuration to initial geometry
+!
+! In  cellGeom         : general geometric properties of cell
+! IO  kineHexa         : kinematic quantities (HEXA cell)
+!
+! --------------------------------------------------------------------------------------------------
+subroutine setCurrConfToInit(cellGeom, kineHexa)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    type(SSH_CELL_GEOM), intent(in)    :: cellGeom
+    type(SSH_KINE_HEXA), intent(inout) :: kineHexa
+!   ------------------------------------------------------------------------------------------------
+!
+    kineHexa%geomCurr = cellGeom%geomInit
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! setCurrConfWithDisp
+!
+! Set current configuration with displacement
+!
+! In  cellGeom         : general geometric properties of cell
+! In  disp             : diplacement to add at initial geometry
+! IO  kineHexa         : kinematic quantities (HEXA cell)
+!
+! --------------------------------------------------------------------------------------------------
+subroutine setCurrConfWithDisp(cellGeom, disp, kineHexa)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    type(SSH_CELL_GEOM), intent(in)    :: cellGeom
+    real(kind=8), intent(in)           :: disp(SSH_NBDOF_HEXA)
+    type(SSH_KINE_HEXA), intent(inout) :: kineHexa
+!   ------------------------------------------------------------------------------------------------
+!
+    kineHexa%geomCurr(1:SSH_NBDOFG_HEXA) = cellGeom%geomInit(1:SSH_NBDOFG_HEXA) +&
+                                           disp(1:SSH_NBDOFG_HEXA)
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine

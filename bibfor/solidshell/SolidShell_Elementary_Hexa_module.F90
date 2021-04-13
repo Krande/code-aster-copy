@@ -76,7 +76,6 @@ subroutine compRigiMatrHexa(elemProp, cellGeom, matePara, matrRigi)
     type(SSH_GEOM_HEXA) :: geomHexa
     type(SSH_KINE_HEXA) :: kineHexa
     type(SSH_STAB_HEXA) :: stabHexa
-    real(kind=8) :: geomCurr(SSH_NBDOFG_HEXA)
     real(kind=8) :: zeta, poids, jacob, Ueff
     integer :: nbIntePoint, kpg, jvCoor, jvWeight
     real(kind=8) :: tBDB(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
@@ -90,11 +89,11 @@ subroutine compRigiMatrHexa(elemProp, cellGeom, matePara, matrRigi)
     call initGeomCellHexa(cellGeom, geomHexa)
     if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
-! - Update configuration
-    geomCurr = cellGeom%geomInit
+! - Set current configuration to initial geometry
+    call setCurrConfToInit(cellGeom, kineHexa)
 
 ! - Compute gradient matrix in covariant basis
-    call compBCovaMatrHexa(geomCurr, kineHexa)
+    call compBCovaMatrHexa(kineHexa)
 
 ! - Compute gradient matrix in cartesian frame
     call compBCartMatrHexa(geomHexa, kineHexa)
@@ -161,7 +160,6 @@ subroutine compSiefElgaHexa(elemProp, cellGeom, matePara, disp,&
 ! - Local
     type(SSH_GEOM_HEXA) :: geomHexa
     type(SSH_KINE_HEXA) :: kineHexa
-    real(kind=8) :: geomCurr(SSH_NBDOFG_HEXA)
     real(kind=8) :: zeta, epsi(SSH_SIZE_TENS)
     integer :: nbIntePoint, kpg, jvCoor
 !   ------------------------------------------------------------------------------------------------
@@ -173,11 +171,11 @@ subroutine compSiefElgaHexa(elemProp, cellGeom, matePara, disp,&
     call initGeomCellHexa(cellGeom, geomHexa)
     if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
-! - Update configuration
-    geomCurr = cellGeom%geomInit
+! - Set current configuration to initial geometry
+    call setCurrConfToInit(cellGeom, kineHexa)
 
 ! - Compute gradient matrix in covariant basis
-    call compBCovaMatrHexa(geomCurr, kineHexa)
+    call compBCovaMatrHexa(kineHexa)
 
 ! - Compute gradient matrix in cartesian frame
     call compBCartMatrHexa(geomHexa, kineHexa)
@@ -228,7 +226,7 @@ subroutine compForcNodaHexa(elemProp, cellGeom,&
 ! - Local
     type(SSH_GEOM_HEXA) :: geomHexa
     type(SSH_KINE_HEXA) :: kineHexa
-    real(kind=8) :: geomCurr(SSH_NBDOFG_HEXA), disp(SSH_NBDOF_HEXA)
+    real(kind=8) :: disp(SSH_NBDOF_HEXA)
     real(kind=8) :: zeta, poids, jacob
     integer :: nbIntePoint, kpg, jvCoor, jvWeight, jvCompor, jvDisp, iretc, iDof
     character(len=16) :: defoComp
@@ -251,21 +249,21 @@ subroutine compForcNodaHexa(elemProp, cellGeom,&
 
 ! - Update configuration
     if (defoComp .eq. 'PETIT') then
-        geomCurr = cellGeom%geomInit
+        call setCurrConfToInit(cellGeom, kineHexa)
     else
         call tecach('ONO', 'PDEPLMR', 'L', iretc, iad = jvDisp)
         if (iretc .eq. 0) then
             do iDof = 1, SSH_NBDOF_HEXA
                 disp(iDof) = zr(jvDisp-1+iDof)
             end do
-            geomCurr = cellGeom%geomInit + disp(1:SSH_NBDOFG_HEXA)
+            call setCurrConfWithDisp(cellGeom, disp, kineHexa)
         else
             call utmess('F', 'SOLIDSHELL1_4')
         endif
     endif
 
 ! - Compute gradient matrix in covariant basis
-    call compBCovaMatrHexa(geomCurr, kineHexa)
+    call compBCovaMatrHexa(kineHexa)
 
 ! - Compute gradient matrix in cartesian frame
     call compBCartMatrHexa(geomHexa, kineHexa)
@@ -392,7 +390,6 @@ subroutine compEpsiElgaHexa(elemProp, cellGeom, disp, epsiElga)
 ! - Local
     type(SSH_GEOM_HEXA) :: geomHexa
     type(SSH_KINE_HEXA) :: kineHexa
-    real(kind=8) :: geomCurr(SSH_NBDOFG_HEXA)
     real(kind=8) :: zeta, epsi(SSH_SIZE_TENS)
     integer :: nbIntePoint, kpg, jvCoor
 !   ------------------------------------------------------------------------------------------------
@@ -404,11 +401,11 @@ subroutine compEpsiElgaHexa(elemProp, cellGeom, disp, epsiElga)
     call initGeomCellHexa(cellGeom, geomHexa)
     if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
 
-! - Update configuration
-    geomCurr = cellGeom%geomInit
+! - Set current configuration to initial geometry
+    call setCurrConfToInit(cellGeom, kineHexa)
 
 ! - Compute gradient matrix in covariant basis
-    call compBCovaMatrHexa(geomCurr, kineHexa)
+    call compBCovaMatrHexa(kineHexa)
 
 ! - Compute gradient matrix in cartesian frame
     call compBCartMatrHexa(geomHexa, kineHexa)
@@ -694,9 +691,6 @@ subroutine compRigiGeomMatrHexa(elemProp, cellGeom, nbIntePoint, sigm, matrRigiG
     real(kind=8), intent(out)       :: matrRigiGeom(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
 ! - Local
     type(SSH_GEOM_HEXA) :: geomHexa
- !   type(SSH_KINE_HEXA) :: kineHexa
- !   type(SSH_STAB_HEXA) :: stabHexa
- !   real(kind=8) :: geomCurr(SSH_NBDOFG_HEXA)
     real(kind=8) :: zeta, poids, jacob
     integer :: kpg, jvCoor, jvWeight
     real(kind=8) :: matrRigiGeomPt(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
@@ -709,16 +703,6 @@ subroutine compRigiGeomMatrHexa(elemProp, cellGeom, nbIntePoint, sigm, matrRigiG
 ! - Prepare geometric quantities
     call initGeomCellHexa(cellGeom, geomHexa)
     if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
-
-! - Update configuration
-  !  geomCurr = cellGeom%geomInit
-
-! - Compute gradient matrix in covariant basis
-  !  call compBCovaMatrHexa(geomCurr, kineHexa)
-
-! - Compute gradient matrix in cartesian frame
-  !  call compBCartMatrHexa(geomHexa, kineHexa)
-  !  if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallCstPart_ = ASTER_TRUE)
 
 ! - Loop on Gauss points
     do kpg = 1, nbIntePoint

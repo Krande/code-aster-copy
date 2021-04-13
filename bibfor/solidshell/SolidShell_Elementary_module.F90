@@ -409,8 +409,6 @@ subroutine compSiefElga()
     call initElemProp(inteFami, elemProp)
     if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
-    ASSERT(elemProp%elemInte%nbIntePoint .le. SSH_NBPG_MAX)
-
 ! - Initialization of geometric properties of cell
     call initCellGeom(elemProp, cellGeom)
     if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
@@ -461,8 +459,6 @@ subroutine compForcNoda()
     call initElemProp(inteFami, elemProp)
     if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
-    ASSERT(elemProp%elemInte%nbIntePoint .le. SSH_NBPG_MAX)
-
 ! - Initialization of geometric properties of cell
     call initCellGeom(elemProp, cellGeom)
     if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
@@ -511,7 +507,6 @@ subroutine compNonLinear(option)
 ! - Initialization of general properties of finite element
     call initElemProp(inteFami, elemProp)
     if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
-    ASSERT(elemProp%elemInte%nbIntePoint .le. SSH_NBPG_MAX)
 
 ! - Initialization of geometric properties of cell
     call initCellGeom(elemProp, cellGeom)
@@ -557,8 +552,6 @@ subroutine compEpsiElga()
     call initElemProp(inteFami, elemProp)
     if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
 
-    ASSERT(elemProp%elemInte%nbIntePoint .le. SSH_NBPG_MAX)
-
 ! - Initialization of geometric properties of cell
     call initCellGeom(elemProp, cellGeom)
     if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
@@ -603,8 +596,6 @@ subroutine compEpslElga()
 ! - Initialization of general properties of finite element
     call initElemProp(inteFami, elemProp)
     if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
-
-    ASSERT(elemProp%elemInte%nbIntePoint .le. SSH_NBPG_MAX)
 
 ! - Initialization of geometric properties of cell
     call initCellGeom(elemProp, cellGeom)
@@ -738,7 +729,6 @@ subroutine compRigiGeomMatr()
     character(len=4), parameter :: inteFami = 'RIGI'
     type(SSH_CELL_GEOM) :: cellGeom
     type(SSH_ELEM_PROP) :: elemProp
-    type(SSH_MATE_PARA) :: matePara
     real(kind=8) :: matrRigiGeom(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
     integer :: nbIntePoint
     integer :: jvMatr, jvSigm, i, j, k
