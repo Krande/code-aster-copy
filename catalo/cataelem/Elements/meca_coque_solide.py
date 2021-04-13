@@ -33,6 +33,10 @@ DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
                              components=(('EN1',('DX','DY','DZ',)),
                                          ('EN2',('PINCH',)),))
 
+# For REFE_FORC_NODA
+EREFCO   = LocatedComponents(phys=PHY.PREC, type='ELEM',
+                             components=('SIGM',))
+
 MMATUUR  = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
 MMATUNS  = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
@@ -139,6 +143,11 @@ class MESSHELL_SB9(Element):
         OP.NSPG_NBVA(te=496,
             para_in  = ((SP.PCOMPOR, LC.CCOMPO2),),
             para_out = ((SP.PDCEL_I, LC.EDCEL_I),),
+        ),
+
+        OP.REFE_FORC_NODA(te=125,
+            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PREFCO, EREFCO),),
+            para_out = ((SP.PVECTUR, MVECTUR), ),
         ),
 
         OP.RIGI_GEOM(te=125,

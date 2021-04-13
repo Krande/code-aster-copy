@@ -36,7 +36,8 @@ implicit none
 ! ==================================================================================================
 public  :: compRigiMatr, compSiefElga, compForcNoda, compNonLinear,&
            compEpsiElga, compEpslElga,&
-           compLoad, compMassMatr, compRigiGeomMatr
+           compLoad, compMassMatr, compRigiGeomMatr,&
+           compRefeForcNoda
 private :: setMateOrientation, compElemElasMatrix,&
            initCellGeom, initMateProp, initElemProp, initBehaProp
 ! ==================================================================================================
@@ -52,6 +53,7 @@ private
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcangm.h"
+#include "asterfort/terefe.h"
 ! ==================================================================================================
 contains
 ! ==================================================================================================
@@ -771,6 +773,51 @@ subroutine compRigiGeomMatr()
             zr(jvMatr-1+k) = matrRigiGeom(i, j)
         end do
     end do
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compRefeForcNoda
+!
+! Compute reference force - REFE_FORC_NODA
+!
+! --------------------------------------------------------------------------------------------------
+subroutine compRefeForcNoda()
+!   ------------------------------------------------------------------------------------------------
+! - Local
+    character(len=4), parameter :: inteFami = 'RIGI'
+    type(SSH_CELL_GEOM) :: cellGeom
+    type(SSH_ELEM_PROP) :: elemProp
+    real(kind=8) :: refeForcNoda(SSH_NBDOF_MAX), sigmRefe
+    integer :: jvVect, iDof
+!   ------------------------------------------------------------------------------------------------
+!
+    refeForcNoda = 0.d0
+
+! - Initialization of general properties of finite element
+    call initElemProp(inteFami, elemProp)
+    if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
+
+! - Initialization of geometric properties of cell
+    call initCellGeom(elemProp, cellGeom)
+    if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
+
+! - Get reference stress
+    call terefe('SIGM_REFE', 'MECA_ISO', sigmRefe)
+
+! - Compute reference force
+    if (elemProp%cellType .eq. SSH_CELL_HEXA) then
+        call compRefeForcNodaHexa(elemProp, cellGeom, sigmRefe, refeForcNoda)
+    else
+        ASSERT(ASTER_FALSE)
+    endif
+
+! - Save vector
+    call jevech('PVECTUR', 'E', jvVect)
+    do iDof = 1, elemProp%nbDof
+        zr(jvVect-1+iDof) = refeForcNoda(iDof)
+    enddo
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine

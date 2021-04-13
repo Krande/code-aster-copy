@@ -36,7 +36,9 @@ implicit none
 public  :: compRigiMatrHexa, compSiefElgaHexa, compForcNodaHexa,&
            compRigiGeomHexaKpg,&
            compEpsgElgaHexa, compEpsiElgaHexa, compEpslElgaHexa,&
-           compLoadHexa, compMassMatrHexa, compRigiGeomMatrHexa
+           compLoadHexa, compMassMatrHexa, compRigiGeomMatrHexa,&
+           compRefeForcNodaHexa
+private :: prodBTSigm
 ! ==================================================================================================
 private
 #include "jeveux.h"
@@ -231,14 +233,10 @@ subroutine compForcNodaHexa(elemProp, cellGeom,&
     type(SSH_GEOM_HEXA) :: geomHexa
     type(SSH_KINE_HEXA) :: kineHexa
     real(kind=8) :: disp(SSH_NBDOF_HEXA)
-    real(kind=8) :: zeta, poids, jacob
-    integer :: nbIntePoint, kpg, jvCoor, jvWeight, jvCompor, jvDisp, iretc, iDof
+    integer :: jvCompor, jvDisp, iretc, iDof
     character(len=16) :: defoComp
 !   ------------------------------------------------------------------------------------------------
 !
-    nbIntePoint = elemProp%elemInte%nbIntePoint
-    jvCoor      = elemProp%elemInte%jvCoor
-    jvWeight    = elemProp%elemInte%jvWeight
 
 ! - Prepare geometric quantities
     call initGeomCellHexa(cellGeom, geomHexa)
@@ -272,6 +270,43 @@ subroutine compForcNodaHexa(elemProp, cellGeom,&
 ! - Compute gradient matrix in cartesian frame
     call compBCartMatrHexa(geomHexa, kineHexa)
     if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallCstPart_ = ASTER_TRUE)
+
+! - Compute Bt.Sigma
+    call prodBTSigm(elemProp, cellGeom, geomHexa, kineHexa, siefElga, forcNoda)
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! prodBTSigm
+!
+! Compute B.Sigm for HEXA - Nodal forces
+!
+! In  elemProp         : general properties of element
+! In  cellGeom         : general geometric properties of cell
+! In  siefElga         : stresses at Gauss points
+! Out forcNoda         : nodal forces
+!
+! --------------------------------------------------------------------------------------------------
+subroutine prodBTSigm(elemProp, cellGeom, geomHexa, kineHexa, siefElga, forcNoda)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    type(SSH_ELEM_PROP), intent(in)    :: elemProp
+    type(SSH_CELL_GEOM), intent(in)    :: cellGeom
+    type(SSH_GEOM_HEXA), intent(in)    :: geomHexa
+    type(SSH_KINE_HEXA), intent(inout) :: kineHexa
+    real(kind=8), intent(in)           :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
+    real(kind=8), intent(out)          :: forcNoda(SSH_NBDOF_MAX)
+!   ------------------------------------------------------------------------------------------------
+! - Local
+    real(kind=8) :: zeta, poids, jacob
+    integer :: nbIntePoint, kpg, jvCoor, jvWeight
+!   ------------------------------------------------------------------------------------------------
+!
+    nbIntePoint = elemProp%elemInte%nbIntePoint
+    jvCoor      = elemProp%elemInte%jvCoor
+    jvWeight    = elemProp%elemInte%jvWeight
+    forcNoda    = 0.d0
 
 ! - Loop on Gauss points
     do kpg = 1, nbIntePoint
@@ -862,6 +897,66 @@ subroutine compRigiGeomMatrHexa(elemProp, cellGeom, nbIntePoint, sigm, matrRigiG
 ! ----- Update matrix
         matrRigiGeom = matrRigiGeom + jacob * matrRigiGeomPt
 
+    end do
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compRefeForcNodaHexa
+!
+! Compute reference force for HEXA - REFE_FORC_NODA
+!
+! In  elemProp         : general properties of element
+! In  cellGeom         : general geometric properties of cell
+! In  sigeRefe         : reference value for stress
+! Out refeForcNoda     : reference force
+!
+! --------------------------------------------------------------------------------------------------
+subroutine compRefeForcNodaHexa(elemProp, cellGeom, sigmRefe, refeForcNoda)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    type(SSH_ELEM_PROP), intent(in) :: elemProp
+    type(SSH_CELL_GEOM), intent(in) :: cellGeom
+    real(kind=8), intent(in)        :: sigmRefe
+    real(kind=8), intent(out)       :: refeForcNoda(SSH_NBDOF_MAX)
+!   ------------------------------------------------------------------------------------------------
+! - Local
+    type(SSH_GEOM_HEXA) :: geomHexa
+    type(SSH_KINE_HEXA) :: kineHexa
+    real(kind=8) :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
+    real(kind=8) :: forcNoda(SSH_NBDOF_MAX)
+    integer :: iDof, iCmp, nbIntePoint
+!   ------------------------------------------------------------------------------------------------
+!
+    refeForcNoda = 0.d0
+    nbIntePoint  = elemProp%elemInte%nbIntePoint
+
+! - Prepare geometric quantities
+    call initGeomCellHexa(cellGeom, geomHexa)
+    if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
+
+! - Set current configuration
+    call setCurrConfToInit(cellGeom, kineHexa)
+
+! - Compute gradient matrix in covariant basis
+    call compBCovaMatrHexa(kineHexa)
+
+! - Compute gradient matrix in cartesian frame
+    call compBCartMatrHexa(geomHexa, kineHexa)
+    if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallCstPart_ = ASTER_TRUE)
+
+! - Compute force
+    do iCmp = 1, SSH_SIZE_TENS * nbIntePoint
+        siefElga = 0.d0
+        siefElga(iCmp) = sigmRefe
+        call prodBTSigm(elemProp, cellGeom, geomHexa, kineHexa, siefElga, forcNoda)
+        do iDof = 1, elemProp%nbDof
+            refeForcNoda(iDof) = refeForcNoda(iDof) + abs(forcNoda(iDof))
+        end do
+    end do
+    do iDof = 1, elemProp%nbDof
+        refeForcNoda(iDof) = refeForcNoda(iDof)/nbIntePoint
     end do
 !
 !   ------------------------------------------------------------------------------------------------

@@ -50,6 +50,8 @@ character(len=16), intent(in) :: option, nomte
         call compSiefElga()
     elseif (option .eq. 'FORC_NODA') then
         call compForcNoda()
+    elseif (option .eq. 'REFE_FORC_NODA') then
+        call compRefeForcNoda()
     elseif (option .eq. 'EPSI_ELGA') then
         call compEpsiElga()
     elseif (option .eq. 'EPSL_ELGA') then

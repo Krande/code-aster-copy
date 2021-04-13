@@ -79,18 +79,19 @@ resuElas = STAT_NON_LINE(MODELE       = model,
                                          _F(CHARGE=load, FONC_MULT=rampUnit)),
                          INCREMENT    =  _F(LIST_INST=times),
                          CONVERGENCE  =  _F(ITER_GLOB_MAXI = 15,
-                                            RESI_GLOB_RELA = 1.0E-6,),
+                                            SIGM_REFE      = 1.E6,
+                                            RESI_REFE_RELA = 1.0E-6,),
                          )
 
 # Post-traitement
 resuElas = CALC_CHAMP(reuse      = resuElas,
                       RESULTAT   = resuElas,
                       CONTRAINTE = ('SIEF_NOEU'),
-                      FORCE      = ('FORC_NODA'),
+                   #   FORCE      = ('FORC_NODA'),
                       CRITERES   = ('SIEQ_ELGA', 'SIEQ_NOEU'),)
 
-IMPR_RESU(RESU=_F(RESULTAT=resuElas),
-          UNITE=80)
+#IMPR_RESU(RESU=_F(RESULTAT=resuElas),
+#          UNITE=80)
 
 # Test des valeurs du calcul
 # Valeurs de référence (référence: 3D overkill)
@@ -100,10 +101,10 @@ nodeESup_SIEQVMIS_Refe =  120010.92889717518
 nodeGSup_SIEQVMIS_Refe =  60023.91296327567
 
 # Valeurs calculées
-nodeISup_DEPLDZ_Calc   = 15.824552988952243
-nodeCSup_SIEQVMIS_Calc =  180018.00544926344
-nodeESup_SIEQVMIS_Calc =  120015.41203479527
-nodeGSup_SIEQVMIS_Calc =  60032.389440133804
+nodeISup_DEPLDZ_Calc   = 15.824552988952265
+nodeCSup_SIEQVMIS_Calc = 180018.00544926213
+nodeESup_SIEQVMIS_Calc = 120015.4120347967
+nodeGSup_SIEQVMIS_Calc = 60032.389440171144
 
 nodeISup_DEPLDZ_Tole   = 0.01 * 1.1E-1
 nodeCSup_SIEQVMIS_Tole = 0.01 * 4.2E-2
