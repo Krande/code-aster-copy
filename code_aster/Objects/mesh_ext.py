@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,6 +27,7 @@ import aster
 from libaster import Mesh
 
 from ..Utilities import injector
+from ..Utilities.MedUtils.MEDConverter import convertMesh2MedCoupling
 
 
 @injector(Mesh)
@@ -55,3 +56,12 @@ class ExtendedMesh(object):
             dim = max([dimama[ma-1] for ma in dic_gpma[grp]])
             ngpma.append((grp.strip(), len(dic_gpma[grp]),dim))
         return ngpma
+
+    def createMedCouplingMesh(self):
+        """Returns the MEDCoupling unstructured mesh associated to the current mesh.
+
+        Returns:
+            mesh: The MEDCoupling unstructured mesh associated to the current mesh.
+        """
+
+        return convertMesh2MedCoupling(self)

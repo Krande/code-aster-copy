@@ -100,6 +100,7 @@
 #include "PythonBindings/MaterialInterface.h"
 #include "PythonBindings/MaterialPropertyInterface.h"
 #include "PythonBindings/MechanicalLoadInterface.h"
+#include "PythonBindings/MedCouplingConversionInterface.h"
 #include "PythonBindings/MeshCoordinatesFieldInterface.h"
 #include "PythonBindings/MeshEntitiesInterface.h"
 #include "PythonBindings/MeshInterface.h"
@@ -197,6 +198,7 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportMeshEntitiesToPython();
     exportBaseMeshToPython();
     exportMeshToPython();
+    exportMedCouplingConversionToPython();
     exportDiscreteProblemToPython();
     exportBaseDOFNumberingToPython();
     exportDOFNumberingToPython();
