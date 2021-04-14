@@ -3,7 +3,7 @@
  * @brief Definition of interface functions between C++ and Fortran
  * @author Mathieu Courtois
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -64,6 +64,12 @@ void call_oper( PyObject *syntax, int jxveri ) {
     }
     // unstack the syntax object
     register_sh_etape( pop_etape() );
+}
+
+void call_oper_init() {
+    // to execute before/after steps around operator
+    ASTERINTEGER op = 8888;
+    CALL_EXECOP( &op );
 }
 
 void call_ops( PyObject *syntax, int ops ) {

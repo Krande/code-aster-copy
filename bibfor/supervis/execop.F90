@@ -65,8 +65,10 @@ use superv_module, only: superv_before, superv_after
     if (nuoper .lt. 0) then
         nuop2 = abs(nuoper)
         call opsexe(nuop2)
-    else if (nuoper.lt. 200) then
+    else if (nuoper .lt. 200) then
         call ex0000(nuoper)
+    else if (nuoper .eq. 8888) then
+!       special operator number: does nothing, just to pass after/before steps
     else
         call utmess('E', 'SUPERVIS_61', si=nuoper)
     endif

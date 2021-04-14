@@ -207,6 +207,9 @@ class ExecuteCommand(object):
         self.print_syntax(keywords)
         stop = False
         try:
+            if not self._op and self.command_name not in ("DEBUT", "POURSUITE"):
+                # for commands that do not call any operator, do initializations
+                libaster.call_oper_init()
             self.exec_(keywords)
         except libaster.AsterError as exc:
             self._exc = exc

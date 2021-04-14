@@ -3,7 +3,7 @@
  * @brief Python bindings for Fortran interface.
  * @author Mathieu Courtois
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -49,7 +49,12 @@ Arguments:
     syntax (CommandSyntax): Object containing the user syntax.
     jxveri (int): If non null `JXVERI` is called after calling the operator.
         )",
-         ( py::arg( "syntax" ), py::arg( "jxveri" ) ) );
+             ( py::arg( "syntax" ), py::arg( "jxveri" ) ) );
+
+    py::def( "call_oper_init", &call_oper_init, R"(
+Execute initializations before and after operator but without executing any
+operator.
+        )" );
 
     py::def( "call_ops", &call_ops, R"(
 Call a Fortran 'ops' subroutine.
@@ -58,7 +63,7 @@ Arguments:
     syntax (CommandSyntax): Object containing the user syntax.
     ops (int): Number of the `ops00x` subroutine.
         )",
-         ( py::arg( "syntax" ), py::arg( "ops" ) ) );
+             ( py::arg( "syntax" ), py::arg( "ops" ) ) );
 
     py::def( "call_debut", &call_debut, R"(
 Call a Fortran 'debut' subroutine.
