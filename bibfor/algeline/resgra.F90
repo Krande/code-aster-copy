@@ -19,6 +19,7 @@
 subroutine resgra(mat, matf, vcine, niter, epsi,&
                   criter, nsecm, rsolu, solveu, istop,&
                   iret)
+use ldlt_xp_data_module
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -229,11 +230,11 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
         if (iret .ne. 0) then
              call utmess('F', 'ALGELINE5_76', sk=precon)
         endif
-    !
-    !
-    !   -- bascule pour la mesure du temps CPU : PRERES -> RESOUD :
-    call uttcpu('CPU.RESO.4', 'FIN', ' ')
-    call uttcpu('CPU.RESO.5', 'DEBUT', ' ')
+!
+!
+!   -- bascule pour la mesure du temps CPU : PRERES -> RESOUD :
+        call uttcpu('CPU.RESO.4', 'FIN', ' ')
+        call uttcpu('CPU.RESO.5', 'DEBUT', ' ')
 !
 !       PUIS ON RESOUT A NOUVEAU
         call gcpc(neq, in, zi4(idip), zr(idac), zi(idinpc), perm,&
@@ -242,10 +243,13 @@ subroutine resgra(mat, matf, vcine, niter, epsi,&
               criter, solveu, matas, istop, &
               iret)
 
+!   -- booleen stocké dans ldlt_xp_data_module pour impression
+        ap2foi_called = ASTER_TRUE
+
     endif
 !
     do ieq=1,neq
-    rsolu(kdeb-1+ieq)=w4(ieq)
+        rsolu(kdeb-1+ieq)=w4(ieq)
     enddo
     AS_DEALLOCATE(vr=w4)
     end do
