@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -415,6 +415,10 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
                                 ksipc2, ksipr1, ksipr2, lagr_fro1_node, lagr_fro2_node,&
                                 tau1, tau2, norm, pres_frot, gap_user_frot,&
                                 indi_frot_eval)
+                else
+                    indi_frot_eval = 0.d0
+                    gap_user_frot(:) = 0.d0
+                    pres_frot(:) = 0.d0
                 endif
 !
 ! ------------- Status treatment
