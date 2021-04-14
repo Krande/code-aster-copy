@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,6 +60,11 @@ Attention la ligne de coupe traverse des zones sans matière :
 
     9: _("""
 Nom du modèle absent dans le concept résultat %(k1)s.
+
+Conseils :
+  Si le concept résultat provient des opérateurs LIRE_RESU ou CREA_RESU, il est possible
+  de renseigner un concept modèle plutôt qu'un concept maillage.
+  Il est également possible de renseigner un concept modèle directement dans MACR_LIGN_COUP. 
 """),
 
     10: _("""

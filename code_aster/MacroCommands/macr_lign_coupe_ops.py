@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -735,6 +735,8 @@ def macr_lign_coupe_ops(self, LIGN_COUPE, RESULTAT=None, CHAM_GD=None,
                     l_mode_meca_sans_modele = True
                     Mesh = RESULTAT.getMesh()
                     UTMESS('I', 'POST0_23', valk=RESULTAT.getName())
+            else :
+                Mesh = Model.getMesh()
         else:
             Mesh = model.getMesh()
             if Model is None:
