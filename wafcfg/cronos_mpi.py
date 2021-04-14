@@ -54,6 +54,9 @@ def configure(self):
         '/fscronos/software/shared/easybuild/software/imkl/2020.4.304/mkl/lib/intel64/libmkl_blacs_openmpi_lp64.so:\\',
         '/opt/mpi/openmpi-gnu/4.0.3.2/lib/libmpi.so',
         ])
+    self.env.append_value('OPT_ENV_FOOTER', [
+        'export PATH=$PATH:' + ROOT + '/grace-0.0.1/bin'
+    ])
 
     TFELHOME = ROOT + '/mfront-3.2.1'
     TFELVERS = '3.2.1'
