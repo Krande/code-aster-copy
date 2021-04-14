@@ -702,6 +702,7 @@ implicit none
 !------ Contrainte plane
             ka = (3.d0-nu)/(1.d0+nu)
             coeff_K1K2 = e
+            coeff_K3 = 0.d0
             c1 = e/(1.d0-nu*nu)
             c2 = nu*c1
             c3 = mu
