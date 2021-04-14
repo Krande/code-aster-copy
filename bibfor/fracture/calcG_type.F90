@@ -22,8 +22,10 @@ implicit none
 !
 private
 #include "asterc/getres.h"
+#include "asterc/ismaem.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -73,7 +75,7 @@ private
 #include "asterfort/xcourb.h"
 #include "jeveux.h"
 !
-public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table
+public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table, CalcG_Stat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -278,8 +280,56 @@ public :: CalcG_Field, CalcG_Study, CalcG_Theta, CalcG_Table
         procedure, pass    :: addValues
         procedure, pass    :: addPara
         procedure, pass    :: save => save_table
+        procedure, pass    :: clean => clean_table
 !
     end type CalcG_Table
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    type CalcG_Stat
+! ----- level information
+        integer            :: level_info = 1
+        real(kind=8)       :: time
+! ----- cgField
+        real(kind=8)       :: init_cgField = 0.d0
+        real(kind=8)       :: clean_cgField = 0.d0
+! ----- cgTheta
+        real(kind=8)       :: init_cgTheta = 0.d0
+        real(kind=8)       :: npf_cgTheta = 0.d0
+        integer            :: nb_npf_cgTheta = 0
+! ----- cgStudy
+        real(kind=8)       :: init_cgStudy = 0.d0
+        integer            :: nb_init_cgStudy = 0
+! ----- cgTable
+        real(kind=8)       :: init_cgTable = 0.d0
+        real(kind=8)       :: clean_cgTable = 0.d0
+        real(kind=8)       :: save_cgTable = 0.d0
+        integer            :: nb_save_cgTable = 0
+! ----- cgComputeGtheta
+        real(kind=8)       :: cgCmpGtheta = 0.d0
+        integer            :: nb_cgCmpGtheta = 0
+        real(kind=8)       :: cgCmpGtheta_te = 0.d0
+        integer            :: nb_cgCmpGtheta_te = 0
+        real(kind=8)       :: cgCmpGtheta_sys = 0.d0
+        integer            :: nb_cgCmpGtheta_sys = 0
+        real(kind=8)       :: cgCmpGtheta_disc = 0.d0
+        integer            :: nb_cgCmpGtheta_disc = 0
+        real(kind=8)       :: cgCmpGtheta_mes = 0.d0
+        integer            :: nb_cgCmpGtheta_mes = 0
+! ----- routines
+        real(kind=8)       :: cgVerif = 0.d0
+        real(kind=8)       :: cgThetaFact = 0.d0
+        real(kind=8)       :: cgCmpMat = 0.d0
+        real(kind=8)       :: cgExpTabl = 0.d0
+
+! ----- member function
+        contains
+        procedure, pass    :: initialize => initialize_stat
+        procedure, pass    :: print => print_stat
+        procedure, pass    :: finish => finish_stat
+    end type CalcG_Stat
 !
 contains
 !
@@ -291,11 +341,37 @@ contains
 !
 !===================================================================================================
 !
-    subroutine initialize_field(this)
+    subroutine initialize_stat(this)
+!
+    implicit none
+!
+        class(CalcG_Stat), intent(inout)  :: this
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   initialization of a CalcG_Stat type
+!   In this     : calG Stat
+! --------------------------------------------------------------------------------------------------
+!
+        integer :: ifm
+!
+! --- Level of information
+!
+        call infniv(ifm, this%level_info)
+        call cpu_time(this%time)
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine initialize_field(this, cgStat)
 !
     implicit none
 !
         class(CalcG_Field), intent(inout)  :: this
+        type(CalcG_Stat), intent(inout)   :: cgStat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -309,6 +385,9 @@ contains
         character(len=19) :: lisopt
         character(len=8)  :: modele, mater
         integer, pointer :: v_nume(:) => null()
+        real(kind=8) :: start, finish
+!
+        call cpu_time(start)
 !
         call jemarq()
 !
@@ -377,6 +456,9 @@ contains
 !
         call jedema()
 !
+        call cpu_time(finish)
+        cgStat%init_cgField = cgStat%init_cgField +finish - start
+!
     end subroutine
 !
 !===================================================================================================
@@ -409,6 +491,80 @@ contains
         end do
         print*, "Number of step/mode to compute: ", this%nb_nume
         print*, "----------------------------------------------------------------------"
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine print_stat(this)
+!
+    implicit none
+!
+        class(CalcG_Stat), intent(in)  :: this
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   initialization of a CalcG_Stat type
+!   In this     : calG stat
+! --------------------------------------------------------------------------------------------------
+!
+        print*, "----------------------------------------------------------------------------------"
+        print*, "Informations about CalcG_Stat"
+        print*, "Level of informations: ", this%level_info
+        print*, "Total time of OP: ", this%time, "s"
+        print*, "*CalcG_Field: "
+        print*, "**initialize(): ", this%init_cgField, "s with ", 1, "calls"
+        print*, "**clean():      ", this%clean_cgField, "s with ", 1, "calls"
+        print*, "*CalcG_Theta: "
+        print*, "**initialize(): ", this%init_cgTheta, "s with ", 1, "calls"
+        print*, "**create_npf(): ", this%npf_cgTheta, "s with ", this%nb_npf_cgTheta, "calls"
+        print*, "*CalcG_Study: "
+        print*, "**initialize(): ", this%init_cgStudy, "s with ", this%nb_init_cgStudy, "calls"
+        print*, "*CalcG_Table: "
+        print*, "**initialize(): ", this%init_cgTable, "s with ", 1, "calls"
+        print*, "**save():       ", this%save_cgTable, "s with ", this%nb_save_cgTable, "calls"
+        print*, "**clean():      ", this%clean_cgTable, "s with ", 1, "calls"
+        print*, "*Others: "
+        print*, "**cgVerification():       ", this%cgVerif, "s with ", 1, "calls"
+        print*, "**cgComputeThetaFactor(): ", this%cgThetaFact, "s with ", 1, "calls"
+        print*, "**cgComputeMatrix():      ", this%cgCmpMat, "s with ", 1, "calls"
+        print*, "**cgExportTableG():       ", this%cgExpTabl, "s with ", 1, "calls"
+        print*, "**cgComputeGtheta():      ", this%cgCmpGtheta, "s with ", &
+        this%nb_cgCmpGtheta, "calls"
+        print*, "***calcul():       " , this%cgCmpGtheta_te, "s with ", &
+        this%nb_cgCmpGtheta_te, "calls"
+        print*, "***gsyste():       ", this%cgCmpGtheta_sys, "s with ", &
+        this%nb_cgCmpGtheta_sys, "calls"
+        print*, "***cgDiscrField(): ", this%cgCmpGtheta_disc, "s with ", &
+        this%nb_cgCmpGtheta_disc, "calls"
+        print*, "***mesomm():       ", this%cgCmpGtheta_mes, "s with ", &
+        this%nb_cgCmpGtheta_mes, "calls"
+        print*, "----------------------------------------------------------------------------------"
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine finish_stat(this)
+!
+    implicit none
+!
+        class(CalcG_Stat), intent(inout)  :: this
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   initialization of a CalcG_Stat type
+!   In this     : calG Stat
+! --------------------------------------------------------------------------------------------------
+!
+        real(kind=8) :: finish
+!
+        call cpu_time(finish)
+        this%time = finish - this%time
 !
     end subroutine
 !
@@ -464,11 +620,12 @@ contains
 !
 !===================================================================================================
 !
-    subroutine clean_field(this)
+    subroutine clean_field(this, cgStat)
 !
     implicit none
 !
         class(CalcG_Field), intent(inout)  :: this
+        type(CalcG_stat), intent(inout) :: cgStat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -478,6 +635,9 @@ contains
 !
     integer :: iret
     integer, pointer :: ordr(:) => null()
+    real(kind=8) :: start, finish
+!
+    call cpu_time(start)
 !
     call jemarq()
 !
@@ -499,19 +659,60 @@ contains
 !
     call jedema()
 !
+    call cpu_time(finish)
+    cgStat%clean_cgField = cgStat%clean_cgField + finish - start
+!
     end subroutine
 !
 !===================================================================================================
 !
 !===================================================================================================
 !
-    subroutine initialize_study(this, result_in, nume_index)
+    subroutine clean_table(this, cgStat)
+!
+    implicit none
+!
+        class(CalcG_Table), intent(inout)  :: this
+        type(CalcG_stat), intent(inout) :: cgStat
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   Clean objects
+!   In this     : calG field
+! --------------------------------------------------------------------------------------------------
+!
+    real(kind=8) :: start, finish
+!
+    call cpu_time(start)
+!
+    call jemarq()
+!
+    AS_DEALLOCATE(vr=this%v_G)
+    AS_DEALLOCATE(vr=this%v_K1)
+    AS_DEALLOCATE(vr=this%v_K2)
+    AS_DEALLOCATE(vr=this%v_K3)
+    AS_DEALLOCATE(vr=this%v_G_IRWIN)
+    AS_DEALLOCATE(vr=this%v_G_EPSI)
+!
+    call jedema()
+!
+    call cpu_time(finish)
+    cgStat%clean_cgTable = cgStat%clean_cgTable + finish - start
+!
+    end subroutine
+!
+!===================================================================================================
+!
+!===================================================================================================
+!
+    subroutine initialize_study(this, result_in, nume_index, cgStat)
 !
     implicit none
 !
         class(CalcG_Study), intent(inout)  :: this
         character(len=8), intent(in)       :: result_in
         integer, intent(in)                :: nume_index
+        type(CalcG_Stat), intent(inout)    :: cgStat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -521,6 +722,9 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         character(len=8) :: typmo
+        real(kind=8) :: start, finish
+!
+        call cpu_time(start)
 !
         this%nume_ordre = nume_index
         this%loading    = "&&STUDY.CHARGES"
@@ -534,6 +738,10 @@ contains
         else
             this%l_axis = ASTER_FALSE
         end if
+!
+        call cpu_time(finish)
+        cgStat%init_cgStudy = cgStat%init_cgStudy + finish - start
+        cgStat%nb_init_cgStudy = cgStat%nb_init_cgStudy + 1
 !
     end subroutine
 !
@@ -666,11 +874,12 @@ contains
 !
 !===================================================================================================
 !
-    subroutine initialize_theta(this)
+    subroutine initialize_theta(this, cgStat)
 !
     implicit none
 !
         class(CalcG_Theta), intent(inout)  :: this
+        type(CalcG_Stat), intent(inout)   :: cgStat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -685,6 +894,9 @@ contains
         real(kind=8), pointer :: fondTailleR(:) => null()
         real(kind=8), pointer :: absfon(:)  => null()
         integer, pointer :: typmail(:) => null()
+        real(kind=8) :: start, finish
+!
+        call cpu_time(start)
 !
         call jemarq()
 ! --- get automatic name
@@ -707,6 +919,18 @@ contains
 !
         this%nomNoeud = this%mesh//'.NOMNOE'
         this%absfond  = this%crack//'.ABSFON'
+!
+!       Maillage linéaire ou quadratique
+        call jeveuo(this%crack//'.LEVRESUP.MAIL', 'L', jma)
+        call jeveuo(this%mesh//'.TYPMAIL', 'L', vi=typmail)
+!
+        call jenonu(jexnom(this%mesh//'.NOMMAI', zk8(jma)), nume)
+!
+        call jenuno(jexnum('&CATA.TM.NOMTM', typmail(nume)), typma)
+!
+        if (.not. ismali(typma)) then
+            this%milieu = ASTER_TRUE
+        endif
 !
 ! --- the crack is closed ?
         if (typfon .eq. 'FERME') then
@@ -759,7 +983,7 @@ contains
         endif
 !
 ! ---- Create pointers for NB_POINT_FOND
-        call this%create_npf()
+        call this%create_npf(cgStat)
 !
 ! ---- Theta torus definition
 !
@@ -805,18 +1029,6 @@ contains
                     call utmess('F', 'RUPTURE1_6')
                 endif
             end do
-        endif 
-!
-!       Maillage linéaire ou quadratique
-        call jeveuo(this%crack//'.LEVRESUP.MAIL', 'L', jma)
-        call jeveuo(this%mesh//'.TYPMAIL', 'L', vi=typmail)
-!
-        call jenonu(jexnom(this%mesh//'.NOMMAI', zk8(jma)), nume)
-!
-        call jenuno(jexnum('&CATA.TM.NOMTM', typmail(nume)), typma)
-!
-        if (.not. ismali(typma)) then
-            this%milieu = ASTER_TRUE
         endif
 !
 !       if no radius is defined
@@ -845,6 +1057,9 @@ contains
         endif
 !
         call jedema()
+!
+        call cpu_time(finish)
+        cgStat%init_cgTheta = cgStat%init_cgTheta + finish - start
 !
     end subroutine
 !
@@ -1159,13 +1374,14 @@ contains
 !
 !=======================================================================================
 !
-    subroutine initialize_table(this, cgField, cgTheta)
+    subroutine initialize_table(this, cgField, cgTheta, cgStat)
 !
     implicit none
 !
         class(CalcG_Table), intent(inout)  :: this
         type(CalcG_field), intent(in) :: cgField
         type(CalcG_theta), intent(in) :: cgTheta
+        type(CalcG_Stat), intent(inout)   :: cgStat
 !
 ! --------------------------------------------------------------------------------------
 !
@@ -1175,7 +1391,10 @@ contains
         integer :: iopt, nbValues
         character(len=8) :: option
         integer, pointer :: fondNoeudNume(:) => null()
-
+        real(kind=8) :: start, finish
+!
+        call cpu_time(start)
+        call jemarq()
 !
 ! --- Table pour les valeurs (table)
 !
@@ -1220,28 +1439,39 @@ contains
 
             if (option == "G" ) then
                 call this%addPara('G', 'R')
-                call wkvect("&&TABLEG.G", 'V V R', nbValues, vr=this%v_G)
             elseif (option == "K" ) then
                 call this%addPara('K1', 'R')
-                call wkvect("&&TABLEG.K1", 'V V R', nbValues, vr=this%v_K1)
                 call this%addPara('K2', 'R')
-                call wkvect("&&TABLEG.K2", 'V V R', nbValues, vr=this%v_K2)
                 if (cgField%ndim.eq.3) then
                     call this%addPara('K3', 'R')
-                    call wkvect("&&TABLEG.K3", 'V V R', nbValues, vr=this%v_K3)
                 endif
                 call this%addPara('G_IRWIN', 'R')
-                call wkvect("&&TABLEG.GIR", 'V V R', nbValues, vr=this%v_G_IRWIN)
             elseif (option == "G_EPSI" ) then
                 call this%addPara('G_EPSI', 'R')
-                call wkvect("&&TABLEG.GEP", 'V V R', nbValues, vr=this%v_G_EPSI)
             else
                 ASSERT(ASTER_FALSE)
             end if
         end do
 !
+        AS_ALLOCATE(vr=this%v_G, size=nbValues)
+        this%v_G(:) = r8vide()
+        AS_ALLOCATE(vr=this%v_K1, size=nbValues)
+        this%v_K1(:) = r8vide()
+        AS_ALLOCATE(vr=this%v_K2, size=nbValues)
+        this%v_K2(:) = r8vide()
+        AS_ALLOCATE(vr=this%v_K3, size=nbValues)
+        this%v_K3(:) = r8vide()
+        AS_ALLOCATE(vr=this%v_G_IRWIN, size=nbValues)
+        this%v_G_IRWIN(:) = r8vide()
+        AS_ALLOCATE(vr=this%v_G_EPSI, size=nbValues)
+        this%v_G_EPSI(:) = r8vide()
+!
 ! --- create table
         call tbajpa(this%table_g, this%nb_para, this%list_name_para, this%list_type_para)
+        call jedema()
+!
+        call cpu_time(finish)
+        cgStat%init_cgTable = cgStat%init_cgTable + finish - start
 !
     end subroutine
 !
@@ -1286,7 +1516,7 @@ contains
 !
 !=======================================================================================
 !
-    subroutine save_table(this, cgField, cgTheta, cgStudy)
+    subroutine save_table(this, cgField, cgTheta, cgStudy, cgStat)
 !
     implicit none
 !
@@ -1294,6 +1524,7 @@ contains
         type(CalcG_field), intent(in) :: cgField
         type(CalcG_theta), intent(in) :: cgTheta
         type(CalcG_study), intent(in) :: cgStudy
+        type(CalcG_stat), intent(inout) :: cgStat
 !
 ! --------------------------------------------------------------------------------------
 !
@@ -1305,12 +1536,19 @@ contains
         real(kind=8)       :: livr(NB_MAX_PARA)
         complex(kind=8)    :: livc(NB_MAX_PARA)
         character(len=24)  :: livk(NB_MAX_PARA)
-        real(kind=8) :: coor(3)
+        real(kind=8) :: coor(3), start, finish
         integer :: i_node, iopt
         character(len=8) :: option
         real(kind=8), pointer   :: fondNoeudCoor(:) => null()
         real(kind=8), pointer   :: absfon(:) => null()
         character(len=8), pointer :: fondNoeud(:) => null()
+!
+        call cpu_time(start)
+!
+        livi(:) = ismaem()
+        livr(:) = r8vide()
+        livc(:) = cmplx(r8vide(), r8vide())
+        livk(:) = ' '
 !
         if (cgField%isModeMeca()) then
             call tbajvi(this%table_g, this%nb_para, 'NUME_MODE', cgStudy%nume_ordre, livi)
@@ -1364,6 +1602,10 @@ contains
 !
         end do
 !
+        call cpu_time(finish)
+        cgStat%save_cgTable = cgStat%save_cgTable + finish - start
+        cgStat%nb_save_cgTable = cgStat%nb_save_cgTable + 1
+!
     end subroutine save_table
 !
 !
@@ -1371,11 +1613,12 @@ contains
 !
 !=======================================================================================
 !
-    subroutine create_npf(this)
+    subroutine create_npf(this, cgStat)
 !
     implicit none
 !
         class(CalcG_theta), intent(in) :: this
+        type(CalcG_Stat), intent(inout)   :: cgStat
 !
 ! --------------------------------------------------------------------------------------
 !
@@ -1398,7 +1641,7 @@ contains
         character(len=19) :: cnsbas
         integer :: i_node, nume, k, node_nume, ndim, nbno, ibid
         integer :: ina, inb, nseg, iseg, indica, indicb
-        real(kind=8) :: smax, s, s1, s2, coor1(3), coor2(3)
+        real(kind=8) :: smax, s, s1, s2, coor1(3), coor2(3), start, finish
         real(kind=8) :: base1(6), base2(6), eps, dmin, sn, n(3)
         real(kind=8) :: xm, ym, zm, xa, ya, za, xb, yb, zb, d
         real(kind=8) :: xab, yab, zab, xam, yam, zam, norm2, xnm, ynm, znm
@@ -1413,6 +1656,7 @@ contains
         call wkvect(this%fondNoeudCoor, 'V V R', 3*this%nnof, vr=fondNoeudCoor)
 !
         if(this%nb_point_fond > 0) then
+            call cpu_time(start)
             call wkvect(this%npf_basefond, 'V V R', 6*this%nb_point_fond, vr=v_basfon)
             call wkvect(this%npf_fondNoeud, 'V V K8', this%nb_point_fond, vk8=v_noeuf)
             call wkvect(this%npf_absfon, 'V V R', this%nb_point_fond, vr=v_absfon)
@@ -1577,6 +1821,8 @@ contains
             end do
             call cnscno(cnsbas, ' ', 'NON', 'G', this%npf_baseloc,&
             'F', ibid)
+            call cpu_time(finish)
+            cgStat%npf_cgTheta = cgStat%npf_cgTheta + finish - start
         else
             do i_node = 1, this%nb_fondNoeud
 !               Récupération du numéro de noeud

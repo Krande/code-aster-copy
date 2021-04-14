@@ -18,12 +18,13 @@
 !
 !
 interface
-    subroutine cgDiscrField(cgField, cgTheta, cgStudy, chsdeg, chslag, v_absc, v_basf, v_cesv, &
-    jcesd, jcesl, i_theta, lpain, lchin, nchin)
+    subroutine cgDiscrField(cgField, cgTheta, cgStudy, cgStat, chsdeg, chslag, v_absc, v_basf, &
+     v_cesv, jcesd, jcesl, i_theta, lpain, lchin, nchin)
 use calcG_type
         type(CalcG_field), intent(in) :: cgField
         type(CalcG_theta), intent(in) :: cgTheta
         type(CalcG_Study), intent(in) :: cgStudy
+        type(CalcG_stat), intent(inout) :: cgStat
         character(len=19), intent(in) :: chsdeg, chslag
         integer, intent(in) :: jcesd, jcesl, i_theta
         real(kind=8), pointer :: v_basf(:)

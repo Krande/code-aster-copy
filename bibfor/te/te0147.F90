@@ -67,6 +67,7 @@ implicit none
     integer           :: ipref, itemps, iforf, ipres, iforc
     integer           :: icode, imate, jlsn, jlst, ibalo, ideg, ilag
     integer           :: nbpara, reeldim, icodre(3)
+    real(kind=8)      :: xno1, xno2, yno1, yno2, d1, d2
     real(kind=8)      :: epsi, valpar(4), coor(18)
     real(kind=8)      :: a1(3), a2(3), a3(3), i1(3), i2(3), depl(3)
     real(kind=8)      :: dford1(3), dford2(3), dfor(3), coorg(3), forcg(3)
@@ -120,7 +121,7 @@ implicit none
 !-- Allocation dynamique : vecteurs 2D/3D
     if (reeldim .eq. 3) then
         AS_ALLOCATE(vr=presn, size=nno)
-        AS_ALLOCATE(vr=dfdi, size=ndim*nno)
+        AS_ALLOCATE(vr=dfdi, size=reeldim*nno)
     else
 !------ Pression/cisaillement
         AS_ALLOCATE(vr=presn, size=reeldim*nno)
@@ -171,7 +172,16 @@ implicit none
     if (discr == "LINEAIRE" ) then
         do i = 1, nno
             absno= zr(ithet-1+6*(i-1)+5)
-            if (absno .ge. zr(ilag) .and. absno .le. zr(ilag+2)) compt = compt+1
+!---------- Cas fond fermé
+            if (zr(ilag) .gt. zr(ilag+1) ) then
+                if (absno .ge. zr(ilag) .and. absno .le. zr(ithet-1+6*(i-1)+6)) then
+                    compt = compt+1
+                elseif (absno .ge. zr(ilag+1) .and. absno .le. zr(ilag+2)) then
+                    compt = compt+1
+                endif
+            else
+                if (absno .ge. zr(ilag) .and. absno .lt. zr(ilag+2)) compt = compt+1
+            endif
         end do
         if (compt .eq. 0) goto 999
     endif
@@ -351,6 +361,7 @@ implicit none
             do i = 1, nno
                 dfdi(i) = dfdx(i)
                 dfdi(i+nno) = dfdy(i)
+                dfdi(i+2*nno) = 0.d0
                 do j=1, reeldim
                     depl(j) = depl(j)+ zr(ivf+k+i-1)*zr(idepl+reeldim*(i-1)+j-1)
                 end do
@@ -476,13 +487,13 @@ implicit none
                           zr(ivf + k - 1 + 1:ivf + k - 1 + nno), &
                           dfdi, ideg, ilag, ithet, dtdm)
 !
-!---------- Calcul de theta dans la base I1,I2      
+!---------- Calcul de theta dans la base I1,I2
             th1 = dot_product(dtdm(1:3,4),i1)
             th2 = dot_product(dtdm(1:3,4),i2)
             dth1d1 = dot_product(dtdm(1:3,1),i1)
             dth2d2 = dot_product(dtdm(1:3,2),i2)
 !
-!---------- Calcul de la divergence 
+!---------- Calcul de la divergence
             divt = dth1d1 + dth2d2
         else
             th1 = ( th0*t(1) * dxde ) /dsde2
@@ -490,7 +501,7 @@ implicit none
             dth1d1 = ( (gradth0 * t(1) + th0 * gradt(1) ) * dxde ) /dsde2
             dth2d2 = ( (gradth0 * t(2) + th0 * gradt(2) ) * dyde ) /dsde2
 !
-!---------- Calcul de la divergence 
+!---------- Calcul de la divergence
             divt = dth1d1 + dth2d2
         endif
 !
@@ -546,16 +557,31 @@ implicit none
 !---------- On détermine si on est sur levre sup ou sur levre inf
             if ((abs(lsng) .lt. 1.0d-8) .and. (lstg .lt. 0.0d0)) then
 !
-!-------------- Produit scalaire entre vecteur normale au fond de fissures
-!-------------- et la normale de l'element
-                do  i = 1, 3
-                    prsc = prsc + p(i,2)*a3(i)
-                enddo
-!
-                if (prsc .gt. r8prem()) then
-                    phig = -1.0d0 * abs(phig)
+                if (reeldim .eq. 2) then
+                    xno1 = zr(igeom)
+                    yno1 = zr(igeom + 1)
+                    xno2 = zr(igeom + 2)
+                    yno2 = zr(igeom + 3)
+                    d1 = ((xno1-zr(ibalo-1+1)) * (xno1-zr(ibalo-1+1))) + &
+                         ((yno1-zr(ibalo-1+2)) * (yno1-zr(ibalo-1+2)))
+                    d2 = ((xno2-zr(ibalo-1+1)) * (xno2-zr(ibalo-1+1))) + &
+                         ((yno2-zr(ibalo-1+2)) * (yno2-zr(ibalo-1+2)))
+                    if (d2 .gt. d1) then
+                        phig = -1.0d0 * abs(phig)
+                    else
+                        phig = abs(phig)
+                    endif
                 else
-                    phig = abs(phig)
+!------------------ Produit scalaire entre vecteur normale au fond de fissures
+!------------------ et la normale de l'element
+                    do  i = 1, 3
+                        prsc = prsc + p(i,2)*a3(i)
+                    enddo
+                    if (prsc .gt. r8prem()) then
+                        phig = -1.0d0 * abs(phig)
+                    else
+                        phig = abs(phig)
+                    endif
                 endif
 !
             endif
@@ -628,9 +654,11 @@ implicit none
     zr(igthet+5) = tcla2 * sqrt(coeff_K1K2)
     zr(igthet+6) = tcla3 * sqrt(coeff_K3)
 !
-    AS_DEALLOCATE(vr=presn)
     AS_DEALLOCATE(vr=forcn)
+    AS_DEALLOCATE(vr=presn)
     AS_DEALLOCATE(vr=ffp)
-    AS_DEALLOCATE(vr=dfdi)
+    if (reeldim .eq. 3) then
+        AS_DEALLOCATE(vr=dfdi)
+    end if
 !
 end subroutine

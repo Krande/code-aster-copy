@@ -107,6 +107,7 @@ GK=CALC_H(OPTION=('G','K'),
                    R_INF=RINF,
                    R_SUP=RSUP,
                    ),
+          INFO=2,
           )
 
 IMPR_TABLE(TABLE=GK, UNITE=6),

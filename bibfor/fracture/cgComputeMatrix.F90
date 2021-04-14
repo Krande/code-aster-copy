@@ -18,7 +18,7 @@
 !
 ! person_in_charge: tanguy.mathieu at edf.fr
 !
-subroutine cgComputeMatrix(cgField, cgTheta)
+subroutine cgComputeMatrix(cgField, cgTheta, cgStat)
 !
 use calcG_type
 !
@@ -32,10 +32,10 @@ use calcG_type
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
 #include "jeveux.h"
-
 !
     type(CalcG_field), intent(in)    :: cgField
     type(CalcG_theta), intent(inout) :: cgTheta
+    type(CalcG_stat), intent(inout)  :: cgStat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,9 +48,11 @@ use calcG_type
 !
     integer          ::  i, j
     character(len=24) :: chabsfon
+    real(kind=8) :: start, finish
     real(kind=8), pointer :: matr(:)  => null()
 !
 ! --------------------------------------------------------------------------------------------------
+    call cpu_time(start)
 !
     call jemarq()
 
@@ -95,4 +97,7 @@ use calcG_type
     endif
 !
     call jedema()
+!
+    call cpu_time(finish)
+    cgStat%cgCmpMat = finish - start
 end subroutine

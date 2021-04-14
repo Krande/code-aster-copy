@@ -64,6 +64,7 @@ use calcG_type
 !
     call jemarq()
 !    print*, cgStudy%model, cgStudy%material, cgStudy%carael, cgStudy%time
+    codret = 'XX'
     call vrcins(cgStudy%model, cgStudy%material, "       ", cgStudy%time, celvrc, codret)
     !, nompaz='PVARCNO')
     if( codret .ne. 'OK' ) then

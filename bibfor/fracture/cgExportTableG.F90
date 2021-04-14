@@ -18,7 +18,7 @@
 !
 ! person_in_charge: nicolas.pignet at edf.fr
 !
-subroutine cgExportTableG(cgField, cgTheta, cgTable)
+subroutine cgExportTableG(cgField, cgTheta, cgTable, cgStat)
 !
 use calcG_type
 !
@@ -38,6 +38,7 @@ use calcG_type
     type(CalcG_field), intent(in) :: cgField
     type(CalcG_theta), intent(in) :: cgTheta
     type(CalcG_table), intent(in) :: cgTable
+    type(CalcG_stat), intent(inout) :: cgStat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,6 +69,9 @@ use calcG_type
     character(len=24) :: vk(3)
     character(len=16) :: obje_type
     aster_logical, parameter :: debug = ASTER_FALSE
+    real(kind=8) :: start, finish
+!
+    call cpu_time(start)
 !
     call jemarq()
 !
@@ -124,5 +128,8 @@ use calcG_type
     call jedema()
 !
     call titre()
+!
+    call cpu_time(finish)
+    cgStat%cgExpTabl = cgStat%cgExpTabl + finish - start
 !
 end subroutine

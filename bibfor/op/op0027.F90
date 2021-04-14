@@ -48,6 +48,7 @@ implicit none
     type(CalcG_theta) :: cgTheta
     type(CalcG_study) :: cgStudy
     type(CalcG_table) :: cgTable
+    type(CalcG_stat)  :: cgStat
 !
     integer           :: i_opt, i_nume
 !---------------------------------------------------------------------------------------------------
@@ -59,10 +60,11 @@ implicit none
 ! A Faire: , #27931, #30288
 !
 !-- Initialisation des champs et des paramètres
-    call cgField%initialize()
-    call cgTheta%initialize()
-    call cgTable%initialize(cgField, cgTheta)
-    call cgStudy%initialize(cgField%result_in, cgField%list_nume(1))
+    call cgStat%initialize()
+    call cgField%initialize(cgStat)
+    call cgTheta%initialize(cgStat)
+    call cgTable%initialize(cgField, cgTheta, cgStat)
+    call cgStudy%initialize(cgField%result_in, cgField%list_nume(1), cgStat)
 !
 !-- Calcul de la courbure
     if (cgField%ndim == 3) then
@@ -70,19 +72,19 @@ implicit none
     endif
 !
 !-- Verification (A nettoyer)
-    call cgVerification(cgField, cgTheta, cgStudy)
+    call cgVerification(cgField, cgTheta, cgStudy, cgStat)
 !
 !-- Compute Theta factors
-    call cgComputeTheta(cgField, cgTheta)
+    call cgComputeTheta(cgField, cgTheta, cgStat)
 !
 ! --- Compute A Matrix from equation A*G(s)=g(theta)
 !
-    call cgComputeMatrix(cgField, cgTheta)
+    call cgComputeMatrix(cgField, cgTheta, cgStat)
 !
 !-- Loop on option
     do i_nume = 1, cgField%nb_nume
 !
-        call cgStudy%initialize(cgField%result_in, cgField%list_nume(i_nume))
+        call cgStudy%initialize(cgField%result_in, cgField%list_nume(i_nume), cgStat)
 !
 ! ----  Récupération des champs utiles pour l'appel à calcul
         call cgStudy%getField(cgField%result_in)
@@ -97,18 +99,25 @@ implicit none
             call cgStudy%getParameter(cgField%result_in)
 !
 !---------- Calcul de G(theta) pour les éléments 2D/3D option G et K
-            call cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable)
+            call cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
         end do
 !
-        call cgTable%save(cgField, cgTheta, cgStudy)
+        call cgTable%save(cgField, cgTheta, cgStudy, cgStat)
 !
     end do
 !
 ! --- Cleaning
-    call cgField%clean()
+    call cgField%clean(cgStat)
+    call cgTable%clean(cgStat)
 !
 !-- Création de la table container
-    call cgExportTableG(cgField, cgTheta, cgTable)
+    call cgExportTableG(cgField, cgTheta, cgTable, cgStat)
+!
+! --- Print statistics
+    call cgStat%finish()
+    if(cgStat%level_info > 1) then
+        call cgStat%print()
+    endif
 !
     call jedema()
 !

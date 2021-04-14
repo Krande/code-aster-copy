@@ -18,7 +18,7 @@
 !
 ! person_in_charge: nicolas.pignet at edf.fr
 !
-subroutine cgDiscrField(cgField, cgTheta, cgStudy, chsdeg, chslag, v_absc, v_basf, v_cesv, &
+subroutine cgDiscrField(cgField, cgTheta, cgStudy, cgStat, chsdeg, chslag, v_absc, v_basf, v_cesv,&
     jcesd, jcesl, i_theta, lpain, lchin, nchin)
 !
 use calcG_type
@@ -43,6 +43,7 @@ use calcG_type
     type(CalcG_field), intent(in) :: cgField
     type(CalcG_theta), intent(in) :: cgTheta
     type(CalcG_Study), intent(in) :: cgStudy
+    type(CalcG_stat), intent(inout) :: cgStat
     character(len=19), intent(in) :: chsdeg, chslag
     integer, intent(in) :: jcesd, jcesl, i_theta
     real(kind=8), pointer :: v_basf(:)
@@ -66,7 +67,9 @@ use calcG_type
     character(len=19) :: ligrmo
     integer :: igr, nbgrel, nel, nute, iel, iad, ima, nncp, iret
     integer, pointer :: v_liel(:) => null()
+    real(kind=8) :: start, finish
 !
+    call cpu_time(start)
     call jemarq()
 !
 !   Champ constant pour construire theta_i dans le te
@@ -104,9 +107,9 @@ use calcG_type
                     zl(jcesl-1+iad)=ASTER_TRUE
                     if (i_theta .eq. 1 ) then
                         v_absc(iad)= v_basf(i_theta)
-!---------------------- Cas fond fermé 
+!---------------------- Cas fond fermé
                         if (cgtheta%l_closed) then
-                            v_absc(iad)= v_basf(cgTheta%nb_theta_field-1) 
+                            v_absc(iad)= v_basf(cgTheta%nb_theta_field-1)
                         endif
                     else
                         v_absc(iad)= v_basf(i_theta-1)
@@ -154,5 +157,8 @@ use calcG_type
     endif
 !
     call jedema()
+    call cpu_time(finish)
+    cgStat%cgCmpGtheta_disc = cgStat%cgCmpGtheta_disc + finish - start
+    cgStat%nb_cgCmpGtheta_disc = cgStat%nb_cgCmpGtheta_disc + 1
 !
 end subroutine

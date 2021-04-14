@@ -18,10 +18,11 @@
 !
 !
 interface
-    subroutine cgVerification(cgField, cgTheta, cgStudy)
+    subroutine cgVerification(cgField, cgTheta, cgStudy, cgStat)
     use calcG_type
         type(CalcG_field), intent(in) :: cgField
         type(CalcG_theta), intent(in) :: cgTheta
         type(CalcG_study), intent(in) :: cgStudy
+        type(CalcG_stat), intent(inout) :: cgStat
     end subroutine cgVerification
 end interface

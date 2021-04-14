@@ -18,7 +18,7 @@
 !
 ! person_in_charge: nicolas.pignet at edf.fr
 !
-subroutine cgVerification(cgField, cgTheta, cgStudy)
+subroutine cgVerification(cgField, cgTheta, cgStudy, cgStat)
 !
 use calcG_type
 !
@@ -35,7 +35,7 @@ use calcG_type
     type(CalcG_field), intent(in) :: cgField
     type(CalcG_theta), intent(in) :: cgTheta
     type(CalcG_study), intent(in) :: cgStudy
-    character(len=8)  :: typmo
+    type(CalcG_stat), intent(inout) :: cgStat
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,9 +46,12 @@ use calcG_type
 ! --------------------------------------------------------------------------------------------------
 !
 !
-    character(len=8) :: model, mesh
+    character(len=8) :: model, mesh, typmo
     aster_logical :: lmodemeca, ldynatrans
     integer :: nexci
+    real(kind=8) :: start, finish
+!
+    call cpu_time(start)
 !
     call jemarq()
 !
@@ -75,7 +78,7 @@ use calcG_type
             call utmess('F', 'RUPTURE3_7')
         endif
     end if
-    
+
 !--- Cas axis : on normalise informe l'utilisateur de la division
 !    automatique par 1/R
     call dismoi('MODELISATION', cgStudy%model, 'MODELE', repk=typmo)
@@ -84,5 +87,8 @@ use calcG_type
     endif
 !
     call jedema()
+!
+    call cpu_time(finish)
+    cgStat%cgVerif = finish - start
 !
 end subroutine

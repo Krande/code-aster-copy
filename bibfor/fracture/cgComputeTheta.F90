@@ -18,7 +18,7 @@
 !
 ! person_in_charge: nicolas.pignet at edf.fr
 !
-subroutine cgComputeTheta(cgField, cgTheta)
+subroutine cgComputeTheta(cgField, cgTheta, cgStat)
 !
 use calcG_type
 !
@@ -50,6 +50,7 @@ use calcG_type
 !
     type(CalcG_field), intent(in) :: cgField
     type(CalcG_theta), intent(inout) :: cgTheta
+    type(CalcG_stat), intent(inout) :: cgStat
 
     integer :: i
     integer :: nbel, iret, jcnsl
@@ -61,7 +62,7 @@ use calcG_type
                                                'ABSC_CUR','LONG    ']
     character(len=8) :: nompar(1)
     character(len=24) :: cnstet
-    real(kind=8) :: theta0
+    real(kind=8) :: theta0, start, finish
     real(kind=8), pointer :: v_theta(:) => null()
     real(kind=8), pointer :: v_coor(:) => null()
     real(kind=8), pointer :: v_base(:) => null()
@@ -94,6 +95,8 @@ use calcG_type
 !    Remplissage de la variable cgTheta%nb_theta_field
 !
 ! --------------------------------------------------------------------------------------------------
+!
+    call cpu_time(start)
 !
     call jemarq()
 !
@@ -214,4 +217,7 @@ use calcG_type
 !    call imprsd('CHAMP', cgTheta%theta_factors, 6, ' VECTEUR THETA FACTORS')
 !
     call jedema()
+!
+    call cpu_time(finish)
+    cgStat%cgThetaFact = finish - start
 end subroutine

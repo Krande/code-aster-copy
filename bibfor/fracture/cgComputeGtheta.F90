@@ -18,7 +18,7 @@
 !
 ! person_in_charge: matthieu-m.le-cren at edf.fr
 !
-subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable)
+subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
 !
 use calcG_type
 !
@@ -38,6 +38,7 @@ use calcG_type
 #include "asterfort/getvid.h"
 #include "asterfort/glegen.h"
 #include "asterfort/gsyste.h"
+#include "asterfort/imprsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -56,6 +57,7 @@ use calcG_type
     type(CalcG_theta), intent(inout) :: cgTheta
     type(CalcG_Study), intent(inout) :: cgStudy
     type(CalcG_Table), intent(inout) :: cgTable
+    type(CalcG_stat), intent(inout) :: cgStat
 ! --------------------------------------------------------------------------------------------------
 !
 !     CALC_G --- Utilities
@@ -84,8 +86,11 @@ use calcG_type
     real(kind=8), pointer :: v_basf(:) => null()
     real(kind=8), dimension(cgTheta%nb_theta_field) :: gthi, k1th, k2th, k3th, g1th, g2th, g3th
     real(kind=8), dimension(cgTheta%nnof) :: gs, k1s, k2s, k3s, g1s, g2s, g3s, gis
+    real(kind=8) :: finish, start, start0, finish0
 
 !----------------------------------------------
+!
+    call cpu_time(start)
 !
     call jemarq()
 !
@@ -303,8 +308,8 @@ use calcG_type
 !
         nchin = 14
 !
-        call cgDiscrField(cgField, cgTheta, cgStudy, chsdeg, chslag, v_absc, v_basf, v_cesv, &
-        jcesd, jcesl, i_theta, lpain, lchin, nchin)
+        call cgDiscrField(cgField, cgTheta, cgStudy, cgStat, chsdeg, chslag, &
+                        v_absc, v_basf, v_cesv, jcesd, jcesl, i_theta, lpain, lchin, nchin)
 
         if (cgStudy%option .eq. 'K') then
             lpain(nchin+1) = 'PCOURB'
@@ -380,13 +385,26 @@ use calcG_type
             lchin(nchin+1) = chsig
             nchin = nchin + 1
         endif
+!~         do i=1, nchin
+!~             print*,'IMPRSD N°', i, lpain(i)
+!~             call imprsd('CHAMP', lchin(i),6, lpain(i))
+!~         enddo
+
 !
 !       Sommation des G élémentaires
+        call cpu_time(start0)
         call calcul('S', opti, ligrmo, nchin, lchin,&
                     lpain, 1, lchout, lpaout, 'V', 'OUI')
+        call cpu_time(finish0)
+        cgStat%cgCmpGtheta_te = cgStat%cgCmpGtheta_te + finish0 - start0
+        cgStat%nb_cgCmpGtheta_te = cgStat%nb_cgCmpGtheta_te + 1
 !
 !       Somme des G, K1, K2, K3, FIC1, FIC2, FIC3 pour le champ theta actuel
+        call cpu_time(start0)
         call mesomm(lchout(1), 7, vr=gth)
+        call cpu_time(finish0)
+        cgStat%cgCmpGtheta_mes = cgStat%cgCmpGtheta_mes + finish0 - start0
+        cgStat%nb_cgCmpGtheta_mes = cgStat%nb_cgCmpGtheta_mes + 1
 !       En 2D, gth contient directement les valeurs à imprimer
 !       En 3D, il faut déterminer gth pour chaque noeud du front de fissure
 !       (inversion du système linéaire A.G(s)=G(theta) par gsyste plus loin)
@@ -486,6 +504,7 @@ use calcG_type
             endif
 !
     !       On inverse les systèmes linéaires A.G(s)=G(theta)
+            call cpu_time(start0)
 
     !       SYSTEME LINEAIRE:  MATR*GS = GTHI
             call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, gthi, gs)
@@ -503,6 +522,10 @@ use calcG_type
             call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, g1th, g1s)
             call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, g2th, g2s)
             call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, g3th, g3s)
+!
+            call cpu_time(finish0)
+            cgStat%cgCmpGtheta_sys = cgStat%cgCmpGtheta_sys + finish0 - start0
+            cgStat%nb_cgCmpGtheta_sys = cgStat%nb_cgCmpGtheta_sys + 7
 !
         else if(cgTheta%discretization.eq.'LEGENDRE') then
 !       On évalue G(s) grâce aux polynômes de Legendre
@@ -572,6 +595,19 @@ use calcG_type
     call detrsd('CHAMP_GD', chrota)
     call detrsd('CHAMP_GD', chtime)
     call detrsd('CHAMP_GD', chvolu)
+    call detrsd('CHAMP_GD', chpuls)
+    call detrsd('CHAMP_GD', chgtheta)
+    call detrsd('CHAMP_GD', sigelno)
+    call detrsd('CHAMP_GD', celmod)
+    call detrsd('CHAMP_GD', chsdeg)
+    call detrsd('CHAMP_GD', chslag)
+!
+! --- A ne pas supprimer car on supprime un champ externe sinon
+!    call detrsd('CHAMP_GD', chsigi)
 !
     call jedema()
+!
+    call cpu_time(finish)
+    cgStat%cgCmpGtheta = cgStat%cgCmpGtheta + finish - start
+    cgStat%nb_cgCmpGtheta = cgStat%nb_cgCmpGtheta + 1
 end subroutine

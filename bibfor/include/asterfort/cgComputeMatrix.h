@@ -18,9 +18,10 @@
 !
 !
 interface
-    subroutine cgComputeMatrix(cgField, cgTheta)
+    subroutine cgComputeMatrix(cgField, cgTheta, cgStat)
     use calcG_type
         type(CalcG_field), intent(in) :: cgField
         type(CalcG_theta), intent(inout) :: cgTheta
+        type(CalcG_stat), intent(inout)  :: cgStat
     end subroutine cgComputeMatrix
 end interface
