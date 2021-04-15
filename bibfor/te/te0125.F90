@@ -64,6 +64,14 @@ character(len=16), intent(in) :: option, nomte
         call compLoad(option)
     elseif (option .eq. 'CHAR_MECA_FR3D3D') then
         call compLoad(option)
+    elseif (option .eq. 'CHAR_MECA_TEMP_R') then
+        call compLoadExteStatVari(option)
+    elseif (option .eq. 'CHAR_MECA_HYDR_R') then
+        call compLoadExteStatVari(option)
+    elseif (option .eq. 'CHAR_MECA_SECH_R') then
+        call compLoadExteStatVari(option)
+    elseif (option .eq. 'CHAR_MECA_EPSA_R') then
+        call compLoadExteStatVari(option)
     elseif (option .eq. 'MASS_MECA') then
         call compMassMatr()
     elseif (option .eq. 'RIGI_GEOM') then

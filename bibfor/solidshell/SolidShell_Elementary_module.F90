@@ -37,7 +37,7 @@ implicit none
 public  :: compRigiMatr, compSiefElga, compForcNoda, compNonLinear,&
            compEpsiElga, compEpslElga,&
            compLoad, compMassMatr, compRigiGeomMatr,&
-           compRefeForcNoda
+           compRefeForcNoda, compLoadExteStatVari
 private :: setMateOrientation, compElemElasMatrix,&
            initCellGeom, initMateProp, initElemProp, initBehaProp
 ! ==================================================================================================
@@ -53,6 +53,7 @@ private
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcangm.h"
+#include "asterfort/tecach.h"
 #include "asterfort/terefe.h"
 ! ==================================================================================================
 contains
@@ -625,7 +626,7 @@ end subroutine
 !
 ! compLoad
 !
-! Compute loads - CHAR_MECA_*
+! Compute load - CHAR_MECA_PRES_R / CHAR_MECA_PESA_R / CHAR_MECA_FF3D3D / CHAR_MECA_FR3D3D
 !
 ! In  option           : name of option to compute
 !
@@ -659,7 +660,7 @@ subroutine compLoad(option)
         if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
     endif
 
-! - Compute loads
+! - Compute load
     if (elemProp%cellType .eq. SSH_CELL_HEXA) then
         call compLoadHexa(elemProp, cellGeom, matePara, option, loadNoda)
     else
@@ -817,6 +818,64 @@ subroutine compRefeForcNoda()
     call jevech('PVECTUR', 'E', jvVect)
     do iDof = 1, elemProp%nbDof
         zr(jvVect-1+iDof) = refeForcNoda(iDof)
+    enddo
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compLoadExteStatVariHexa
+!
+! Compute external state variable load - CHAR_MECA_TEMP_R
+!
+! In  option           : name of option to compute
+!
+! --------------------------------------------------------------------------------------------------
+subroutine compLoadExteStatVari(option)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    character(len=16), intent(in)   :: option
+! - Local
+    character(len=4), parameter :: inteFami = 'RIGI'
+    type(SSH_CELL_GEOM) :: cellGeom
+    type(SSH_ELEM_PROP) :: elemProp
+    type(SSH_MATE_PARA) :: matePara
+    real(kind=8) :: loadNoda(SSH_NBDOF_MAX), timeCurr
+    integer :: jvVect, jvTime, i, iret
+!   ------------------------------------------------------------------------------------------------
+!
+    loadNoda = 0.d0
+
+! - Initialization of general properties of finite element
+    call initElemProp(inteFami, elemProp)
+    if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
+
+! - Initialization of geometric properties of cell
+    call initCellGeom(elemProp, cellGeom)
+    if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
+
+! - Initialization of properties of material
+    call initMateProp(elemProp, cellGeom, matePara)
+    if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
+
+! - Get current time
+    timeCurr = 0.d0
+    call tecach('ONO', 'PTEMPSR', 'L', iret, iad = jvTime)
+    if (jvTime .ne. 0) then
+        timeCurr = zr(jvTime)
+    endif
+
+! - Compute external state variable load
+    if (elemProp%cellType .eq. SSH_CELL_HEXA) then
+        call compLoadExteStatVariHexa(elemProp, cellGeom, matePara, timeCurr, option, loadNoda)
+    else
+        ASSERT(ASTER_FALSE)
+    endif
+
+! - Save vector
+    call jevech('PVECTUR', 'E', jvVect)
+    do i = 1, elemProp%nbDof
+        zr(jvVect-1+i) = loadNoda(i)
     enddo
 !
 !   ------------------------------------------------------------------------------------------------

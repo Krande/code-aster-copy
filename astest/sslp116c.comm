@@ -1,0 +1,190 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+# Prepare mesh
+MESH0=LIRE_MAILLAGE(FORMAT='MED',)
+MESH=CREA_MAILLAGE(MAILLAGE     = MESH0,
+                   INFO         = 1,
+                   COQUE_SOLIDE = _F(GROUP_MA      = 'Plaque',
+                                     GROUP_MA_SURF = 'SurfSup',
+                                  ),
+                  )
+
+# Material parameters
+
+funcYoung=DEFI_FONCTION(NOM_PARA='Z',
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='CONSTANT',
+                     VALE=(0.   , 30.E+06,
+                           0.125, 30.E+06,
+                           0.25 , 30.E+06,),)
+
+funcNu=DEFI_FONCTION(NOM_PARA='Z',
+                      PROL_DROITE='CONSTANT',
+                      PROL_GAUCHE='CONSTANT',
+                      VALE=(0.  , 0.3,
+                            0.25, 0.3),)
+
+funcAlpha=DEFI_CONSTANTE(VALE=6.5E-6);
+
+
+MATfunc=DEFI_MATERIAU(ELAS_FO = _F(E              = funcYoung,
+                                   NU             = funcNu,
+                                   ALPHA          = funcAlpha,
+                                   TEMP_DEF_ALPHA = 20.0,)
+                     )
+
+
+MAT=DEFI_MATERIAU(ELAS = _F(E              = 30.E+06,
+                            NU             = 0.3,
+                            ALPHA          = 6.5E-6,)
+                  )
+
+# Select finite elements
+MODEL=AFFE_MODELE(MAILLAGE = MESH,
+                  AFFE     = _F(TOUT='OUI',
+                                PHENOMENE='MECANIQUE',
+                                MODELISATION=('COQUE_SOLIDE',),
+                             ),
+                 )
+
+# Create field for temperature
+tempValeFunc = FORMULE(VALE='-50. + Z*400.',
+                       NOM_PARA=['Z'],)
+
+neutFieldFunc = CREA_CHAMP(OPERATION = 'AFFE',
+                           TYPE_CHAM = 'ELGA_NEUT_F',
+                           MODELE    = MODEL,
+                           PROL_ZERO = 'OUI',
+                           AFFE      = _F(TOUT    = 'OUI',
+                                          NOM_CMP = ('X1',),
+                                          VALE_F  = (tempValeFunc,),
+                                         )
+                          )
+
+geomFieldNode = CREA_CHAMP(MAILLAGE  = MESH,
+                           OPERATION = 'EXTR',
+                           TYPE_CHAM = 'NOEU_GEOM_R',
+                           NOM_CHAM  = 'GEOMETRIE',
+                          )
+
+geomFieldElga = CREA_CHAMP(MODELE    = MODEL,
+                           OPERATION = 'DISC',
+                           TYPE_CHAM = 'ELGA_GEOM_R', 
+                           CHAM_GD   = geomFieldNode,
+                          )
+
+neutFieldElga = CREA_CHAMP(OPERATION = 'EVAL',
+                           TYPE_CHAM = 'ELGA_NEUT_R',
+                           CHAM_F    = neutFieldFunc,
+                           CHAM_PARA = geomFieldElga,
+                          )
+
+neutFieldNode = CREA_CHAMP(MODELE    = MODEL,
+                           OPERATION = 'DISC',
+                           TYPE_CHAM = 'NOEU_NEUT_R', 
+                           CHAM_GD   = neutFieldElga,
+                          )
+
+tempFieldNode = CREA_CHAMP(MODELE    = MODEL,
+                           OPERATION = 'ASSE',
+                           TYPE_CHAM = 'NOEU_TEMP_R',
+                           ASSE      = _F(TOUT         = 'OUI',
+                                          CHAM_GD      = neutFieldNode,
+                                          NOM_CMP      = ('X1',),
+                                          NOM_CMP_RESU = ('TEMP',),
+                                         ),
+                           INFO      = 1,
+                           )
+
+
+MATERIAL=AFFE_MATERIAU(MAILLAGE  = MESH,
+                       AFFE      = _F(GROUP_MA = 'Plaque',
+                                      MATER    = MATfunc,
+                                   ),
+                       AFFE_VARC = (_F(NOM_VARC = 'TEMP', 
+                                       CHAM_GD  = tempFieldNode,
+                                       VALE_REF = 20.,
+                                      ),
+                                    _F(NOM_VARC = 'GEOM',
+                                       CHAM_GD  = geomFieldNode,
+                                      ),
+                                   ),
+                       INFO      = 1,
+                      )
+
+# Boundary conditions and loads
+kineCondition=AFFE_CHAR_CINE(MODELE    = MODEL,
+                             MECA_IMPO = (_F(GROUP_MA = ('FaceDA'),
+                                             DX       = 0.,),
+                                          _F(GROUP_MA = ('FaceAB'),
+                                             DY       = 0.,),
+                                          _F(GROUP_MA = ('FaceBC','FaceCD'),
+                                             DZ       = 0.,),),
+                             )
+
+# Static linear
+resuLinear=MECA_STATIQUE(MODELE     = MODEL,
+                         CHAM_MATER = MATERIAL,
+                         EXCIT      = _F(CHARGE=kineCondition,),
+                         SOLVEUR    = _F(RESI_RELA = 1.E-5),
+                        )
+
+# Post-treatement
+resuLinear=CALC_CHAMP(reuse    = resuLinear,
+                      RESULTAT = resuLinear,
+                      CRITERES = ('SIEQ_ELGA',),)
+
+# Test
+deplRefe = 0.1033
+deplTole = 0.01 * 2.6
+sixxCalc = -29353.841211187533
+siyyCalc =  9842.17151363325
+
+TEST_RESU(RESU=(_F(RESULTAT   = resuLinear,
+                   NUME_ORDRE = 1,
+                   GROUP_NO   = 'NodeASup',
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'DZ',
+                   REFERENCE  = 'SOURCE_EXTERNE',
+                   VALE_CALC  = 0.1007033441430163,
+                   VALE_REFE  = deplRefe,
+                   PRECISION  = deplTole,),),)
+
+TEST_RESU(RESU=(_F(RESULTAT   = resuLinear,
+                   NUME_ORDRE = 1,
+                   GROUP_MA   = 'CellTest',
+                   POINT      = 5,
+                   NOM_CHAM   = 'SIEF_ELGA',
+                   NOM_CMP    = 'SIXX',
+                   VALE_CALC  = sixxCalc,),),)
+
+TEST_RESU(RESU=(_F(RESULTAT   = resuLinear,
+                   NUME_ORDRE = 1,
+                   GROUP_MA   = 'CellTest',
+                   POINT      = 1,
+                   NOM_CHAM   = 'SIEF_ELGA',
+                   NOM_CMP    = 'SIYY',
+                   VALE_CALC  = siyyCalc,),),)
+
+# Output
+IMPR_RESU(RESU=_F(RESULTAT = resuLinear,))
+
+FIN()

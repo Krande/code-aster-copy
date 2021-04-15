@@ -37,8 +37,9 @@ public  :: compRigiMatrHexa, compSiefElgaHexa, compForcNodaHexa,&
            compRigiGeomHexaKpg,&
            compEpsgElgaHexa, compEpsiElgaHexa, compEpslElgaHexa,&
            compLoadHexa, compMassMatrHexa, compRigiGeomMatrHexa,&
-           compRefeForcNodaHexa
-private :: prodBTSigm
+           compRefeForcNodaHexa,&
+           compLoadExteStatVariHexa
+private :: prodBTSigm, compSiefExteStatVariHexa
 ! ==================================================================================================
 private
 #include "jeveux.h"
@@ -56,6 +57,7 @@ private
 #include "asterfort/tecach.h"
 #include "asterfort/tefrep.h"
 #include "asterfort/utmess.h"
+#include "asterfort/epstmc.h"
 ! ==================================================================================================
 contains
 ! ==================================================================================================
@@ -588,7 +590,7 @@ end subroutine
 !
 ! compLoadHexa
 !
-! Compute loads for HEXA - CHAR_MECA_*
+! Compute load for HEXA - CHAR_MECA_PRES_R / CHAR_MECA_PESA_R / CHAR_MECA_FF3D3D / CHAR_MECA_FR3D3D
 !
 ! In  elemProp         : general properties of element
 ! In  cellGeom         : general geometric properties of cell
@@ -957,6 +959,111 @@ subroutine compRefeForcNodaHexa(elemProp, cellGeom, sigmRefe, refeForcNoda)
     end do
     do iDof = 1, elemProp%nbDof
         refeForcNoda(iDof) = refeForcNoda(iDof)/nbIntePoint
+    end do
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compLoadExteStatVariHexa
+!
+! Compute external state variable load for HEXA - CHAR_MECA_TEMP_R
+!
+! In  elemProp         : general properties of element
+! In  cellGeom         : general geometric properties of cell
+! In  matePara         : parameters of material
+! In  timeCurr         : current time
+! In  option           : name of option to compute
+! Out loadNoda         : nodal force from loads (Neumann)
+!
+! --------------------------------------------------------------------------------------------------
+subroutine compLoadExteStatVariHexa(elemProp, cellGeom, matePara, timeCurr, option, loadNoda)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    type(SSH_ELEM_PROP), intent(in) :: elemProp
+    type(SSH_CELL_GEOM), intent(in) :: cellGeom
+    type(SSH_MATE_PARA), intent(in) :: matePara
+    real(kind=8), intent(in)        :: timeCurr
+    character(len=16), intent(in)   :: option
+    real(kind=8), intent(out)       :: loadNoda(SSH_NBDOF_MAX)
+! - Local
+    type(SSH_GEOM_HEXA) :: geomHexa
+    type(SSH_KINE_HEXA) :: kineHexa
+    real(kind=8) :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
+!   ------------------------------------------------------------------------------------------------
+!
+    loadNoda = 0.d0
+
+! - Compute stresses from external state variables
+    call compSiefExteStatVariHexa(elemProp, matePara, timeCurr, option, siefElga)
+
+! - Prepare geometric quantities
+    call initGeomCellHexa(cellGeom, geomHexa)
+    if (SSH_DBG_GEOM) call dbgObjGeomHexa(geomHexa)
+
+! - Set current configuration to initial geometry
+    call setCurrConfToInit(cellGeom, kineHexa)
+
+! - Compute gradient matrix in covariant basis
+    call compBCovaMatrHexa(kineHexa)
+
+! - Compute gradient matrix in cartesian frame
+    call compBCartMatrHexa(geomHexa, kineHexa)
+    if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallCstPart_ = ASTER_TRUE)
+
+! - Compute Bt.Sigma
+    call prodBTSigm(elemProp, cellGeom, geomHexa, kineHexa, siefElga, loadNoda)
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compSiefExteStatVariHexa
+!
+! Compute stresses from external state variables for HEXA - SIEF_ELGA
+!
+! In  elemProp         : general properties of element
+! In  matePara         : parameters of material
+! In  timeCurr         : current time
+! In  option           : name of option to compute
+! Out siefElga         : stresses at Gauss points
+!
+! --------------------------------------------------------------------------------------------------
+subroutine compSiefExteStatVariHexa(elemProp, matePara, timeCurr, option, siefElga)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    type(SSH_ELEM_PROP), intent(in) :: elemProp
+    type(SSH_MATE_PARA), intent(in) :: matePara
+    character(len=16), intent(in)   :: option
+    real(kind=8), intent(in)        :: timeCurr
+    real(kind=8), intent(out)       :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
+! - Local
+    character(len=4), parameter :: inteFami = 'RIGI'
+    integer, parameter :: kspg = 1
+    integer :: nbIntePoint, kpg
+    real(kind=8) :: xyzgau(3), epsiExteStatVari(SSH_SIZE_TENS)
+!   ------------------------------------------------------------------------------------------------
+!
+    nbIntePoint = elemProp%elemInte%nbIntePoint
+    xyzgau      = 0.d0
+    siefElga    = 0.d0
+
+! - Loop on Gauss points
+    do kpg = 1, nbIntePoint
+
+! ----- Compute strains from external state variables
+        call epstmc(inteFami, SSH_NDIM         , timeCurr        ,&
+                    '+'     , kpg              , kspg            ,&
+                    xyzgau  , matePara%mateBase, matePara%jvMater,&
+                    option  , epsiExteStatVari)
+
+! ----- Shear components with sqrt(2)
+        epsiExteStatVari(4:6) = 2.d0 * epsiExteStatVari(4:6)
+
+! ----- Compute stresses from external state variables
+        siefElga(1+(kpg-1)*SSH_SIZE_TENS:SSH_SIZE_TENS*kpg) =&
+                matmul(matePara%elemHookeMatrix, epsiExteStatVari)
+
     end do
 !
 !   ------------------------------------------------------------------------------------------------
