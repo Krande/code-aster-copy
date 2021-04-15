@@ -57,8 +57,9 @@ def configure(self):
             raise
     else:
         self.define('ASTER_HAVE_PETSC', 1)
-        self.define('ASTER_HAVE_PETSC4PY', 1)
-        self.check_petsc4py()
+        # waiting fix for #30790
+        self.define('ASTER_HAVE_PETSC4PY', 0)
+        # self.check_petsc4py()
 
 ###############################################################################
 @Configure.conf
