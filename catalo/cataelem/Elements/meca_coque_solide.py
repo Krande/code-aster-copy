@@ -121,6 +121,16 @@ class MESSHELL_SB9(Element):
             para_out = ((OP.COOR_ELGA.PCOORPG, LC.EGGAU3D),),
         ),
 
+        OP.EPEQ_ELGA(te=335,
+            para_in  = ((OP.EPEQ_ELGA.PDEFORR, LC.EGPS3DR),),
+            para_out = ((OP.EPEQ_ELGA.PDEFOEQ, LC.EDFEQPG),),
+        ),
+
+        OP.EPEQ_ELNO(te=335,
+            para_in  = ((OP.EPEQ_ELNO.PDEFORR, LC.EEPS3DR),),
+            para_out = ((OP.EPEQ_ELNO.PDEFOEQ, LC.EDFEQNO),),
+        ),
+
         OP.EPSI_ELGA(te=125,
             para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
                         (SP.PDEPLAR, DDL_MECA)  , (SP.PVARCPR, LC.ZVARCPG),
