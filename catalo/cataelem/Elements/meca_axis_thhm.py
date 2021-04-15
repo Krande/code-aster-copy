@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -61,12 +61,6 @@ EDEFOPG  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
 EDEFONO  = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
     components=('EPXX','EPYY','EPZZ','EPXY','EPXZ',
           'EPYZ',))
-
-
-EDFEQPG  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
-    components=('INVA_2','PRIN_[3]','INVA_2SG','VECT_1_X','VECT_1_Y',
-          'VECT_1_Z','VECT_2_X','VECT_2_Y','VECT_2_Z','VECT_3_X',
-          'VECT_3_Y','VECT_3_Z',))
 
 
 NFORCER  = LocatedComponents(phys=PHY.FORC_R, type='ELNO',
@@ -214,7 +208,7 @@ class THHM_AXIS_QU8D(Element):
 
         OP.EPEQ_ELGA(te=335,
             para_in=((OP.EPEQ_ELGA.PDEFORR, EDEFOPG), ),
-            para_out=((OP.EPEQ_ELGA.PDEFOEQ, EDFEQPG), ),
+            para_out=((OP.EPEQ_ELGA.PDEFOEQ, LC.EDFEQPG), ),
         ),
 
         OP.EPEQ_ELNO(te=335,

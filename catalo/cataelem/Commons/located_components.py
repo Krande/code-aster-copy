@@ -614,6 +614,12 @@ ECOEQNO = LocatedComponents(phys=PHY.SIEF_R, type='ELNO',
 EEPS3DR = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
                             components=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ',))
 
+# For equivalent strains (Real-3D)
+EDFEQNO = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
+                            components=('INVA_2', 'PRIN_[3]', 'INVA_2SG', 'VECT_1_X', 'VECT_1_Y',
+                                        'VECT_1_Z', 'VECT_2_X', 'VECT_2_Y', 'VECT_2_Z', 'VECT_3_X',
+                                        'VECT_3_Y', 'VECT_3_Z',))
+
 # For nodal forces (Real-2D)
 NFOR2DR = LocatedComponents(phys=PHY.FORC_R, type='ELNO',
                              components=('FX','FY',))
@@ -651,11 +657,6 @@ EDERANO = LocatedComponents(phys=PHY.DERA_R, type='ELNO',
                             'X22', 'X33', 'X12', 'X13', 'X23',
                             'RADI_V', 'ERR_RADI',))
 
-EDFEQNO = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
-                            components=(
-                                'INVA_2', 'PRIN_[3]', 'INVA_2SG', 'VECT_1_X', 'VECT_1_Y',
-                            'VECT_1_Z', 'VECT_2_X', 'VECT_2_Y', 'VECT_2_Z', 'VECT_3_X',
-                            'VECT_3_Y', 'VECT_3_Z',))
 
 EDOMGNO = LocatedComponents(phys=PHY.DOMA_R, type='ELNO',
                             components=('DOMA',))
@@ -803,6 +804,12 @@ ZVARCPG = LocatedComponents(phys=PHY.VARI_R, type='ELGA', location='MATER',
 # For strains (Real-3D)
 EGPS3DR = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
                             components=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ',))
+
+# For equivalent strains (Real-3D)
+EDFEQPG = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
+                            components=('INVA_2','PRIN_[3]','INVA_2SG','VECT_1_X','VECT_1_Y',
+                                        'VECT_1_Z','VECT_2_X','VECT_2_Y','VECT_2_Z','VECT_3_X',
+                                        'VECT_3_Y','VECT_3_Z',))
 
 # For fatigue (3D)
 EGFC3DR = LocatedComponents(phys=PHY.FACY_R, type='ELGA', location='RIGI',

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -89,12 +89,6 @@ EDEFONO  = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
 
 CEPSINR  = LocatedComponents(phys=PHY.EPSI_R, type='ELEM',
     components=('EPXX','EPYY','EPZZ','EPXY',))
-
-
-EDFEQPG  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
-    components=('INVA_2','PRIN_[3]','INVA_2SG','VECT_1_X','VECT_1_Y',
-          'VECT_1_Z','VECT_2_X','VECT_2_Y','VECT_2_Z','VECT_3_X',
-          'VECT_3_Y','VECT_3_Z',))
 
 
 EDFVCPG  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',

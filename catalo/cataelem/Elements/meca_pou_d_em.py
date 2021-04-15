@@ -84,12 +84,6 @@ EDEFONO  = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
     components=('EPXX',))
 
 
-EDFEQPG  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
-    components=('INVA_2','PRIN_[3]','INVA_2SG','VECT_1_X','VECT_1_Y',
-          'VECT_1_Z','VECT_2_X','VECT_2_Y','VECT_2_Z','VECT_3_X',
-          'VECT_3_Y','VECT_3_Z',))
-
-
 CEPSINR  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
     components=('EPX','KY','KZ',))
 
@@ -371,7 +365,7 @@ class MECA_POU_D_EM(Element):
 
         OP.EPEQ_ELGA(te=335,
             para_in =( (OP.EPEQ_ELGA.PDEFORR, EDEFOPG), ),
-            para_out=( (OP.EPEQ_ELGA.PDEFOEQ, EDFEQPG), ),
+            para_out=( (OP.EPEQ_ELGA.PDEFOEQ, LC.EDFEQPG), ),
         ),
 
         OP.EPEQ_ELNO(te=335,

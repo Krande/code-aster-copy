@@ -69,12 +69,6 @@ EDEFONO  = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
     components=('EPXX','EPYY','EPZZ','EPXY',))
 
 
-EDFEQPG  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
-    components=('INVA_2','PRIN_[3]','INVA_2SG','VECT_1_X','VECT_1_Y',
-          'VECT_1_Z','VECT_2_X','VECT_2_Y','VECT_2_Z','VECT_3_X',
-          'VECT_3_Y','VECT_3_Z',))
-
-
 CFORCEF  = LocatedComponents(phys=PHY.FORC_F, type='ELEM',
     components=('FX','FY',))
 
@@ -282,7 +276,7 @@ class MVAXTR6(Element):
 
         OP.EPEQ_ELGA(te=335,
             para_in=((OP.EPEQ_ELGA.PDEFORR, EDEFOPG), ),
-            para_out=((OP.EPEQ_ELGA.PDEFOEQ, EDFEQPG), ),
+            para_out=((OP.EPEQ_ELGA.PDEFOEQ, LC.EDFEQPG), ),
         ),
 
         OP.EPEQ_ELNO(te=335,
@@ -292,7 +286,7 @@ class MVAXTR6(Element):
         
         OP.EPGQ_ELGA(te=335,
             para_in=((OP.EPGQ_ELGA.PDEFORR, EDEFOPG), ),
-            para_out=((OP.EPGQ_ELGA.PDEFOEQ, EDFEQPG), ),
+            para_out=((OP.EPGQ_ELGA.PDEFOEQ, LC.EDFEQPG), ),
         ),
 
         OP.EPGQ_ELNO(te=335,
