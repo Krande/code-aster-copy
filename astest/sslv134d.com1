@@ -1,3 +1,4 @@
+# copie du cas test sslv134d
 # coding=utf-8
 # --------------------------------------------------------------------
 # Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
@@ -51,7 +52,7 @@ MA = DEFI_GROUP(reuse = MA,
 
 # --------------------------------------------------------------------
 
-TABK1K3=POST_K1_K2_K3(  FOND_FISS=NFISS,
+TABK1K3=POST_K1_K2_K3(  FOND_FISS=FISS,
                         SANS_GROUP_NO = 'SANSNO',
                         RESULTAT=RESU1,
                         ABSC_CURV_MAXI=0.539,
@@ -79,7 +80,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 # --------------------------------------------------------------------
 
-K_N49=POST_K1_K2_K3(  FOND_FISS=NFISS,
+K_N49=POST_K1_K2_K3(  FOND_FISS=FISS,
                         GROUP_NO =  'N49',
                         RESULTAT=RESU1,
                         ABSC_CURV_MAXI=0.539,
@@ -109,7 +110,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 # --------------------------------------------------------------------
 
 T_K1K3=POST_K1_K2_K3(  RESULTAT = RESU1,
-                        FOND_FISS=NFISS,
+                        FOND_FISS=FISS,
                         SANS_GROUP_NO = 'SANSNO',
                         ABSC_CURV_MAXI=0.539,
                       )
@@ -141,7 +142,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 # --------------------------------------------------------------------
 
 K_TOUT=POST_K1_K2_K3(  RESULTAT = RESU1,
-                       FOND_FISS=NFISS,
+                       FOND_FISS=FISS,
                        TOUT =  'OUI',
                        ABSC_CURV_MAXI=0.539,
                      )
@@ -168,7 +169,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 K_TOU2=POST_K1_K2_K3(  RESULTAT = RESU1,
-                       FOND_FISS=NFISS,
+                       FOND_FISS=FISS,
                        TOUT =  'OUI',
                        SANS_GROUP_NO = 'N1346',
                        ABSC_CURV_MAXI=0.539,

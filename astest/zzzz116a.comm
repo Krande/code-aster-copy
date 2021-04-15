@@ -47,7 +47,7 @@ CHAM0 = CREA_CHAMP(AFFE=(_F(NOM_CMP=('DX', ),
                    OPERATION='AFFE',
                    TYPE_CHAM='NOEU_DEPL_R')
 
-FISS = DEFI_FOND_FISS(FOND_FISS=_F(GROUP_NO=('FOND_FISS', )),
+FISS_NEW = DEFI_FOND_FISS(FOND_FISS=_F(GROUP_NO=('FOND_FISS', )),
                       LEVRE_SUP=_F(GROUP_MA=('LEVRE_SUP', )),
                       MAILLAGE=mesh,
                       SYME='OUI')
@@ -60,22 +60,21 @@ RES0 = CREA_RESU(AFFE=_F(CHAM_GD=CHAM0,
                  OPERATION='AFFE',
                  TYPE_RESU='EVOL_ELAS')
 
-G0 = CALC_G(RESULTAT=RES0,
-            CHAM_THETA=CO('cham_theta_no'),
-            THETA=_F(FOND_FISS=FISS,
+G0 = CALC_G(OPTION='G_EPSI',
+            RESULTAT=RES0,
+            THETA=_F(CHAM_THETA=CO('cham_theta_no'),
+                     FISSURE=FISS_NEW,
                      R_INF=0.0203282,
                      R_SUP=0.025))
 
 
 TEST_RESU(
-    RESU=(_F(
+    CHAM_NO=(_F(
         CRITERE=('RELATIF', ),
         REFERENCE = 'ANALYTIQUE',
         GROUP_NO=('NO_TEST', ),
-        NOM_CHAM='DEPL',
-        NOM_CMP='DX',
-        INST=0,
-        RESULTAT=cham_theta_no,
+        NOM_CMP='MODULE',
+        CHAM_GD=cham_theta_no,
         VALE_REFE=4.2484695E-01,
         VALE_CALC=0.42485725,
         ),
@@ -83,22 +82,17 @@ TEST_RESU(
         CRITERE=('ABSOLU', ),
         GROUP_NO=('NO_TEST', ),
         REFERENCE = 'ANALYTIQUE',
-        NOM_CHAM='DEPL',
-        NOM_CMP='DY',
-        INST=0,
-        RESULTAT=cham_theta_no,
-        ORDRE_GRANDEUR= 1.0,
-        VALE_REFE=0.0,
-        VALE_CALC=0.0,
+        NOM_CMP='DIR_X',
+        CHAM_GD=cham_theta_no,
+        VALE_REFE=1.0,
+        VALE_CALC=1.0,
         ),
         _F(
         CRITERE=('RELATIF', ),
         REFERENCE = 'ANALYTIQUE',
         GROUP_NO=('NO_ZERO', ),
-        NOM_CHAM='DEPL',
-        NOM_CMP='DX',
-        INST=0,
-        RESULTAT=cham_theta_no,
+        NOM_CMP='DIR_Y',
+        CHAM_GD=cham_theta_no,
         ORDRE_GRANDEUR= 1.0,
         VALE_REFE=0.0,
         VALE_CALC=0.0,
@@ -107,10 +101,8 @@ TEST_RESU(
         CRITERE=('ABSOLU', ),
         GROUP_NO=('NO_ZERO', ),
         REFERENCE = 'ANALYTIQUE',
-        NOM_CHAM='DEPL',
-        NOM_CMP='DY',
-        INST=0,
-        RESULTAT=cham_theta_no,
+        NOM_CMP='DIR_Z',
+        CHAM_GD=cham_theta_no,
         ORDRE_GRANDEUR= 1.0,
         VALE_REFE=0.0,
         VALE_CALC=0.0,
@@ -119,10 +111,8 @@ TEST_RESU(
         CRITERE=('RELATIF', ),
         REFERENCE = 'ANALYTIQUE',
         GROUP_NO=('NO_UN', ),
-        NOM_CHAM='DEPL',
-        NOM_CMP='DX',
-        INST=0,
-        RESULTAT=cham_theta_no,
+        NOM_CMP='MODULE',
+        CHAM_GD=cham_theta_no,
         VALE_REFE=1.0,
         VALE_CALC=1.0,
         ),
@@ -130,25 +120,22 @@ TEST_RESU(
         CRITERE=('ABSOLU', ),
         GROUP_NO=('NO_UN', ),
         REFERENCE = 'ANALYTIQUE',
-        NOM_CHAM='DEPL',
-        NOM_CMP='DY',
-        INST=0,
-        RESULTAT=cham_theta_no,
-        ORDRE_GRANDEUR= 1.0,
-        VALE_REFE=0.0,
-        VALE_CALC=0.0,
+        NOM_CMP='DIR_X',
+        CHAM_GD=cham_theta_no,
+        VALE_REFE=1.0,
+        VALE_CALC=1.0,
         ),
         )
 )
 
-FISSH=DEFI_FISSURE(MAILLAGE=mesh, SYME='OUI',
+FISSH=DEFI_FOND_FISS(MAILLAGE=mesh, SYME='OUI',
                     FOND_FISS=_F(GROUP_NO='FOND_FISS',),
                     LEVRE_SUP=_F(GROUP_MA='LEVRE_SUP',),
                     )
 
 #~ IMPR_CO(CONCEPT=_F(NOM=FISSH), ATTRIBUT='OUI', NIVEAU=2, UNITE=6)
 
-H0 = CALC_H(RESULTAT=RES0,
+H0 = CALC_G(RESULTAT=RES0,
             OPTION=("G_EPSI",),
             THETA=_F(FISSURE=FISSH,
                      CHAM_THETA=CO('cham_theta_no2'),
@@ -165,7 +152,7 @@ TEST_RESU(
         NOM_CMP='MODULE',
         CHAM_GD=cham_theta_no2,
         VALE_REFE=4.2484695E-01,
-        VALE_CALC=0.4248572542966713,
+        VALE_CALC=0.42485725,
         ),
     _F(
         CRITERE=('ABSOLU', ),
@@ -180,25 +167,6 @@ TEST_RESU(
         CRITERE=('RELATIF', ),
         REFERENCE = 'ANALYTIQUE',
         GROUP_NO=('NO_ZERO', ),
-        NOM_CMP='MODULE',
-        CHAM_GD=cham_theta_no2,
-        ORDRE_GRANDEUR= 1.0,
-        VALE_REFE=0.0,
-        VALE_CALC=0.0,
-        ),
-    _F(
-        CRITERE=('ABSOLU', ),
-        GROUP_NO=('NO_ZERO', ),
-        REFERENCE = 'ANALYTIQUE',
-        NOM_CMP='DIR_X',
-        CHAM_GD=cham_theta_no2,
-        VALE_REFE=1.0,
-        VALE_CALC=1.0,
-        ),
-    _F(
-        CRITERE=('ABSOLU', ),
-        GROUP_NO=('NO_ZERO', ),
-        REFERENCE = 'ANALYTIQUE',
         NOM_CMP='DIR_Y',
         CHAM_GD=cham_theta_no2,
         ORDRE_GRANDEUR= 1.0,
@@ -210,26 +178,6 @@ TEST_RESU(
         GROUP_NO=('NO_ZERO', ),
         REFERENCE = 'ANALYTIQUE',
         NOM_CMP='DIR_Z',
-        CHAM_GD=cham_theta_no2,
-        ORDRE_GRANDEUR= 1.0,
-        VALE_REFE=0.0,
-        VALE_CALC=0.0,
-        ),
-    _F(
-        CRITERE=('ABSOLU', ),
-        GROUP_NO=('NO_ZERO', ),
-        REFERENCE = 'ANALYTIQUE',
-        NOM_CMP='ABSC_CUR',
-        CHAM_GD=cham_theta_no2,
-        ORDRE_GRANDEUR= 1.0,
-        VALE_REFE=0.0,
-        VALE_CALC=0.0,
-        ),
-    _F(
-        CRITERE=('ABSOLU', ),
-        GROUP_NO=('NO_ZERO', ),
-        REFERENCE = 'ANALYTIQUE',
-        NOM_CMP='LONG',
         CHAM_GD=cham_theta_no2,
         ORDRE_GRANDEUR= 1.0,
         VALE_REFE=0.0,
@@ -256,7 +204,7 @@ TEST_RESU(
         )
 )
 
-IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=cham_theta_no))
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(CHAM_GD=cham_theta_no))
 
 IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(CHAM_GD=cham_theta_no2))
 

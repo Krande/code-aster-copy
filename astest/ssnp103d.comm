@@ -1,6 +1,3 @@
-
-
-
 # coding=utf-8
 # --------------------------------------------------------------------
 # Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
@@ -160,12 +157,6 @@ FISS = DEFI_FOND_FISS(CONFIG_INIT='COLLEE',
                        LEVRE_INF=_F(GROUP_MA=('LEVRE_INF', )),
                        MAILLAGE=MESH,
                        SYME='NON')
-NFISS = DEFI_FISSURE(CONFIG_INIT='COLLEE',
-                       FOND_FISS=_F(GROUP_NO=('FOND_FISS', )),
-                       LEVRE_SUP=_F(GROUP_MA=('LEVRE_SUP', )),
-                       LEVRE_INF=_F(GROUP_MA=('LEVRE_INF', )),
-                       MAILLAGE=MESH,
-                       SYME='NON')
                        
 # A PROXIMITE DE LA FISSURE, LES CARACTERISTIQUES MATERIAUX A UTILISER  
 # PAR POST_K1_K2_K3 NE SONT PAS CELLES DE L'ELASTICITE LINEAIRE
@@ -174,7 +165,7 @@ MATERINF = DEFI_MATERIAU(ELAS=_F(E=EE/ratio,
 
 #CALCUL DE G PAR POST_K1_K2_K3
 T_FIC = POST_K1_K2_K3(ABSC_CURV_MAXI=4e-6,
-                      FOND_FISS=NFISS,
+                      FOND_FISS=FISS,
                       MATER=MATERINF,
                       RESULTAT=RESU,
                       TOUT_ORDRE='OUI',
@@ -182,26 +173,23 @@ T_FIC = POST_K1_K2_K3(ABSC_CURV_MAXI=4e-6,
                       
 #CALCUL DE G PAR CALC_G               
 # ON CALCULE G POUR TROIS COURONNES D'INTEGRATIONS
-T_G1 = CALC_G(OPTION='CALC_G',
-             RESULTAT=RESU,
-             COMPORTEMENT=_F(RELATION='ELAS_VMIS_LINE',),
-             THETA=_F(FOND_FISS=FISS,
+T_G1 = CALC_G(OPTION='G_EPSI',
+              RESULTAT=RESU,
+             THETA=_F(FISSURE=FISS,
                       R_INF=20.0e-3,
                       R_SUP=25.0e-3),
              TOUT_ORDRE='OUI')
 
-T_G2 = CALC_G(OPTION='CALC_G',
-             RESULTAT=RESU,
-             COMPORTEMENT=_F(RELATION='ELAS_VMIS_LINE',),
-             THETA=_F(FOND_FISS=FISS,
+T_G2 = CALC_G(OPTION='G_EPSI',
+              RESULTAT=RESU,
+             THETA=_F(FISSURE=FISS,
                       R_INF=15e-3,
                       R_SUP=20.0e-3),
              TOUT_ORDRE='OUI')
 
-T_G3 = CALC_G(OPTION='CALC_G',
-             RESULTAT=RESU,
-             COMPORTEMENT=_F(RELATION='ELAS_VMIS_LINE',),
-             THETA=_F(FOND_FISS=FISS,
+T_G3 = CALC_G(OPTION='G_EPSI',
+              RESULTAT=RESU,
+             THETA=_F(FISSURE=FISS,
                       R_INF=10e-3,
                       R_SUP=15.0e-3),
              TOUT_ORDRE='OUI')
@@ -228,14 +216,14 @@ T_1=CALC_TABLE(TABLE=T_1,reuse=T_1,
 T_2=CALC_TABLE(TABLE=T_G1,
                  ACTION=(
                          _F(OPERATION='EXTR',
-                            NOM_PARA=('INST','G'),
+                            NOM_PARA=('INST','G_EPSI'),
                             ),
                         ),
                     );
 #CHANGEMENT DE NOM DE COLONNE POUR LES G EN CALC_G1
 T_2=CALC_TABLE(TABLE=T_2,reuse=T_2,
                     ACTION=_F(OPERATION='RENOMME',
-                            NOM_PARA=('G','CALC_G1'),
+                            NOM_PARA=('G_EPSI','CALC_G1'),
                             ),
                );
 
@@ -250,14 +238,14 @@ T_2=CALC_TABLE(reuse =T_2,
 T_3=CALC_TABLE(TABLE=T_G2,
                  ACTION=(
                          _F(OPERATION='EXTR',
-                            NOM_PARA=('INST','G'),
+                            NOM_PARA=('INST','G_EPSI'),
                             ),
                         ),
                     );
 #CHANGEMENT DE NOM DE COLONNE POUR LES G EN CALC_G2
 T_3=CALC_TABLE(TABLE=T_3,reuse=T_3,
                     ACTION=_F(OPERATION='RENOMME',
-                            NOM_PARA=('G','CALC_G2'),
+                            NOM_PARA=('G_EPSI','CALC_G2'),
                             ),
                );
 
@@ -272,14 +260,14 @@ T_3=CALC_TABLE(reuse =T_3,
 T_4=CALC_TABLE(TABLE=T_G3,
                  ACTION=(
                          _F(OPERATION='EXTR',
-                            NOM_PARA=('INST','G'),
+                            NOM_PARA=('INST','G_EPSI'),
                             ),
                         ),
                     );
 #CHANGEMENT DE NOM DE COLONNE POUR LES G EN CALC_G3
 T_4=CALC_TABLE(TABLE=T_4,reuse=T_4,
                     ACTION=_F(OPERATION='RENOMME',
-                            NOM_PARA=('G','CALC_G3'),
+                            NOM_PARA=('G_EPSI','CALC_G3'),
                             ),
                );
 
@@ -297,7 +285,6 @@ T_FIN=CALC_TABLE(TABLE=T_4,
                          _F(OPERATION='FILTRE',NOM_PARA=('INST'),CRIT_COMP = 'GT', VALE=0.0),
                         ),
                     );
-
 QUOT = FORMULE(VALE='A/B',
                NOM_PARA=['A', 'B'],)
 
@@ -326,14 +313,14 @@ TEST_TABLE(  TABLE=T_FIN,
              VALE_REFE=1.0, 
              PRECISION=0.005,
              CRITERE='RELATIF',
-             VALE_ABS='NON',)
+            VALE_ABS='NON',)
 
 TEST_TABLE(  TABLE=T_FIN,
              NOM_PARA='G1/G_K',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=2.0,
                        ),
-             REFERENCE='ANALYTIQUE',
+            REFERENCE='ANALYTIQUE',
              VALE_CALC=1.0009330360647948,
              VALE_REFE=1.0, 
              PRECISION=0.004,
@@ -359,7 +346,7 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='ANALYTIQUE',
              VALE_CALC=1.0013922747017554,
-             VALE_REFE=1.0, 
+            VALE_REFE=1.0, 
              PRECISION=0.005,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
@@ -408,7 +395,7 @@ TEST_TABLE(  TABLE=T_FIN,
                        ),
              REFERENCE='ANALYTIQUE',
              VALE_CALC=1.000932975812486,
-             VALE_REFE=1.0, 
+            VALE_REFE=1.0, 
              PRECISION=0.004,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
@@ -421,7 +408,7 @@ TEST_TABLE(  TABLE=T_FIN,
              REFERENCE='ANALYTIQUE',
              VALE_CALC=0.9998109319430226,
              VALE_REFE=1.0, 
-             PRECISION=0.003,
+            PRECISION=0.003,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
 
@@ -431,42 +418,42 @@ TEST_TABLE(  TABLE=T_FIN,
 
 #G1
 TEST_TABLE(  TABLE=T_G1 ,
-             NOM_PARA='G',
+             NOM_PARA='G_EPSI',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=1.0,
                        ),
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=50740.73221132007,
-             VALE_REFE=5.00690E+04, 
+            VALE_REFE=5.00690E+04, 
              PRECISION=0.02,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
 TEST_TABLE(  TABLE=T_G1,
-             NOM_PARA='G',
+             NOM_PARA='G_EPSI',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=2.0,
                        ),
-             REFERENCE='AUTRE_ASTER',
+            REFERENCE='AUTRE_ASTER',
              VALE_CALC=70816.93866841258,
-             VALE_REFE=7.00295E+04, 
+            VALE_REFE=7.00295E+04, 
              PRECISION=0.02,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
 TEST_TABLE(  TABLE=T_G1,
-             NOM_PARA='G',
+             NOM_PARA='G_EPSI',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=3.0,
                        ),
              REFERENCE='AUTRE_ASTER',
-             VALE_CALC=245755.2513222844,
+            VALE_CALC=245755.2513222844,
              VALE_REFE=2.44290E+05, 
              PRECISION=0.01,
              CRITERE='RELATIF',
-             VALE_ABS='NON',)
+            VALE_ABS='NON',)
 
 #G2
 TEST_TABLE(  TABLE=T_G2 ,
-             NOM_PARA='G',
+             NOM_PARA='G_EPSI',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=1.0,
                        ),
@@ -477,8 +464,8 @@ TEST_TABLE(  TABLE=T_G2 ,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
 TEST_TABLE(  TABLE=T_G2,
-             NOM_PARA='G',
-             FILTRE=_F(NOM_PARA='INST',
+             NOM_PARA='G_EPSI',
+            FILTRE=_F(NOM_PARA='INST',
                        VALE=2.0,
                        ),
              REFERENCE='AUTRE_ASTER',
@@ -488,9 +475,9 @@ TEST_TABLE(  TABLE=T_G2,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
 TEST_TABLE(  TABLE=T_G2,
-             NOM_PARA='G',
+             NOM_PARA='G_EPSI',
              FILTRE=_F(NOM_PARA='INST',
-                       VALE=3.0,
+                      VALE=3.0,
                        ),
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=245755.18091061353,
@@ -498,11 +485,11 @@ TEST_TABLE(  TABLE=T_G2,
              PRECISION=0.01,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
-             
+            
              
 #G3
 TEST_TABLE(  TABLE=T_G3 ,
-             NOM_PARA='G',
+             NOM_PARA='G_EPSI',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=1.0,
                        ),
@@ -514,27 +501,30 @@ TEST_TABLE(  TABLE=T_G3 ,
              VALE_ABS='NON',)
              
 TEST_TABLE(  TABLE=T_G3,
-             NOM_PARA='G',
+             NOM_PARA='G_EPSI',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=2.0,
                        ),
              REFERENCE='AUTRE_ASTER',
-             VALE_CALC=70816.93440550598,
+            VALE_CALC=70816.93440550598,
              VALE_REFE=7.00295E+04, 
              PRECISION=0.02,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
              
 TEST_TABLE(  TABLE=T_G3,
-             NOM_PARA='G',
+             NOM_PARA='G_EPSI',
              FILTRE=_F(NOM_PARA='INST',
                        VALE=3.0,
-                       ),
+                      ),
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=245755.30220333397,
              VALE_REFE=2.44290E+05, 
              PRECISION=0.01,
              CRITERE='RELATIF',
              VALE_ABS='NON',)
+
+test = code_aster.TestCase()
+test.assertTrue( True )
 
 FIN()

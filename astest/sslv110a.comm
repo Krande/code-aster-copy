@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -80,13 +80,10 @@ RSUP3=DEFI_FONCTION(  NOM_PARA='ABSC',  VALE=( 0., 5.484,  26.69, 6.25,  ))
 
 FISS1=DEFI_FOND_FISS(MAILLAGE=MA,
                      FOND_FISS=_F(GROUP_MA = 'FONDFISS',
-                                  VECT_GRNO_ORIG=('GNO9','GNO1099',),
-                                  VECT_GRNO_EXTR=('GNO9','GNO1259',),
                                   GROUP_NO_ORIG='GNO1099',
                                   ),
                      SYME='OUI',
                      LEVRE_SUP=_F(  GROUP_MA = 'GRPRES'),
-#                    NORMALE : (0. 0. -1.)
                     )
 
 #----------------------------------------------------------------------
@@ -94,10 +91,13 @@ FISS1=DEFI_FOND_FISS(MAILLAGE=MA,
 #----------------------------------------------------------------------
 
 GLOC0=CALC_G(   RESULTAT=CHAMDEPL,
-                       THETA=_F(FOND_FISS=FISS1,
+                       OPTION='G',
+                       THETA=_F(FISSURE=FISS1,
                                 R_INF_FO = RINF0,
-                                R_SUP_FO = RSUP0),
-                       LISSAGE=_F(DEGRE=7),
+                                R_SUP_FO = RSUP0,
+                                DISCRETISATION='LEGENDRE',
+                                DEGRE=7,
+                                ),
              )
 
 #----------------------------------------------------------------------
@@ -105,11 +105,15 @@ GLOC0=CALC_G(   RESULTAT=CHAMDEPL,
 #----------------------------------------------------------------------
 
 GLOC1=CALC_G(  RESULTAT=CHAMDEPL,
-                        THETA=_F(FOND_FISS=FISS1,
+                       OPTION='G',
+                        THETA=_F(FISSURE=FISS1,
                                  R_SUP_FO=RSUP1,
-                                 R_INF_FO=RINF1,),
-                        LISSAGE=_F(DEGRE=7),
-                        CHAM_THETA=CO('cham_theta_no1'),
+                                 R_INF_FO=RINF1,
+                                DISCRETISATION='LEGENDRE',
+                                DEGRE=7,
+                                CHAM_THETA=CO('cham_theta_no1'),                                
+                                 ),
+
                        )
 
 #----------------------------------------------------------------------
@@ -117,17 +121,22 @@ GLOC1=CALC_G(  RESULTAT=CHAMDEPL,
 #----------------------------------------------------------------------
 
 GLOC2=CALC_G(  RESULTAT=CHAMDEPL,
-                       THETA=_F(FOND_FISS=FISS1,R_SUP_FO=RSUP2,  R_INF_FO=RINF2),
-                       CHAM_THETA=CO('cham_theta_no2'),
-                       LISSAGE=_F(DEGRE=7))
+                       OPTION='G',
+                       THETA=_F(FISSURE=FISS1,R_SUP_FO=RSUP2,  R_INF_FO=RINF2,
+                                DISCRETISATION='LEGENDRE',
+                                DEGRE=7,
+                                CHAM_THETA=CO('cham_theta_no2'),
+                       ),
+
+                       )
 #----------------------------------------------------------------------
 #              TEST DE G(A) SUR LES 3 COURONNES
 #----------------------------------------------------------------------
-IMPR_TABLE(TABLE=GLOC0)
+IMPR_TABLE(TABLE=GLOC0, UNITE=6)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.050000000000000003,
-           VALE_CALC=6.82897220046E-05,
+           PRECISION=0.06,
+           VALE_CALC=6.750954230360737E-05,
            VALE_REFE=7.1710000000000003E-05,
            NOM_PARA='G',
            TABLE=GLOC0,
@@ -136,8 +145,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,
-           VALE_CALC=7.2392293091E-05,
+           PRECISION=0.03,
+           VALE_CALC=6.978356267297446E-05,
            VALE_REFE=7.1710000000000003E-05,
            NOM_PARA='G',
            TABLE=GLOC1,
@@ -147,7 +156,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.050000000000000003,
-           VALE_CALC=6.86383077464E-05,
+           VALE_CALC=6.834745379684663E-05,
            VALE_REFE=7.1710000000000003E-05,
            NOM_PARA='G',
            TABLE=GLOC2,
@@ -161,7 +170,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.14000000000000001,
-           VALE_CALC=1.48288183146E-05,
+           VALE_CALC=1.4857100904531047E-05,
            VALE_REFE=1.721E-05,
            NOM_PARA='G',
            TABLE=GLOC0,
@@ -170,8 +179,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.087999999999999995,
-           VALE_CALC=1.57073966912E-05,
+           PRECISION=0.11,
+           VALE_CALC=1.5395457098196402E-05,
            VALE_REFE=1.721E-05,
            NOM_PARA='G',
            TABLE=GLOC1,
@@ -180,8 +189,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.14000000000000001,
-           VALE_CALC=1.60124079793E-05 ,
+           PRECISION=0.19,
+           VALE_CALC=1.4014237333420493E-05 ,
            VALE_REFE=1.721E-05,
            NOM_PARA='G',
            TABLE=GLOC2,
@@ -195,7 +204,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.050000000000000003,
-           VALE_CALC=4.99174197815E-05,
+           VALE_CALC=4.980328475186752E-05,
            VALE_REFE=5.215E-05,
            NOM_PARA='G',
            TABLE=GLOC0,
@@ -205,7 +214,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.050000000000000003,
-           VALE_CALC=5.12383113014E-05,
+           VALE_CALC=5.0992616488841797E-05,
            VALE_REFE=5.215E-05,
            NOM_PARA='G',
            TABLE=GLOC1,
@@ -215,7 +224,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.050000000000000003,
-           VALE_CALC=5.01341793449E-05,
+           VALE_CALC=5.0108456536611834E-05,
            VALE_REFE=5.215E-05,
            NOM_PARA='G',
            TABLE=GLOC2,

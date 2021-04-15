@@ -107,64 +107,56 @@ FOND=DEFI_FOND_FISS(    MAILLAGE=MA, SYME='NON',
                         LEVRE_INF=_F(GROUP_MA='LEVRE_INF',),
                       )
 
-# CREATION DU CHAMP THETA SUR LA COURONNE 0 (TRIANGLES)
-# -----------------------------------------------------
-
-# CREATION DU CHAMP THETA SUR LA COURONNE 1 (QUADRANGLES)
-# -------------------------------------------------------
-
-# CREATION DU CHAMP THETA SUR LA COURONNE 2 (QUADRANGLES)
-# -------------------------------------------------------
-
-# CREATION DU CHAMP THETA SUR LA COURONNE 3 (QUADRANGLES)
-# -------------------------------------------------------
-
-# CREATION DU CHAMP THETA SUR LA COURONNE 4
 # -----------------------------------------
-
 # CALCUL DE G_THETA SUR LA COURONNE 0
 # -----------------------------------
 
 G1_C0=CALC_G(            RESULTAT=RES1,
                          THETA=_F(
                                   R_INF=0.000,
-                                  FOND_FISS=FOND,
+                                  FISSURE=FOND,
                                   R_SUP=0.025,),
+                         OPTION='G',
                     )
 
 G2_C0=CALC_G(            RESULTAT=RES2,
                          THETA=_F(
                                   R_INF=0.000,
-                                  FOND_FISS=FOND,
+                                  FISSURE=FOND,
                                   R_SUP=0.025,),
+                         OPTION='G',
                     )
 
 G3_C0=CALC_G(            RESULTAT=RES3,
                          THETA=_F(
                                   R_INF=0.000,
-                                  FOND_FISS=FOND,
+                                  FISSURE=FOND,
                                   R_SUP=0.025,),
+                         OPTION='G',
                     )
 
 G4_C0=CALC_G(            RESULTAT=RES4,
                          THETA=_F(
                                   R_INF=0.000,
-                                  FOND_FISS=FOND,
+                                  FISSURE=FOND,
                                   R_SUP=0.025,),
+                         OPTION='G',
                     )
 
 G5_C0=CALC_G(            RESULTAT=RES5,
                          THETA=_F(
                                   R_INF=0.000,
-                                  FOND_FISS=FOND,
+                                  FISSURE=FOND,
                                   R_SUP=0.025,),
+                         OPTION='G',
                     )
 
 G6_C0=CALC_G(            RESULTAT=RES6,
                          THETA=_F(
                                   R_INF=0.000,
-                                  FOND_FISS=FOND,
+                                  FISSURE=FOND,
                                   R_SUP=0.025,),
+                         OPTION='G',
                     )
 
 # CALCUL DE G_THETA SUR LA COURONNE 1
@@ -173,43 +165,49 @@ G6_C0=CALC_G(            RESULTAT=RES6,
 G1_C1=CALC_G(           RESULTAT=RES1,
                         THETA=_F(
                                  R_INF=0.025,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND,
                                  R_SUP=0.050,),
+                         OPTION='G',
                     )
 
 G2_C1=CALC_G(            RESULTAT=RES2,
                          THETA=_F(
                                   R_INF=0.025,
-                                  FOND_FISS=FOND,
+                                  FISSURE=FOND,
                                   R_SUP=0.050,),
+                         OPTION='G',
                     )
 
 G3_C1=CALC_G(            RESULTAT=RES3,
                          THETA=_F(
                                   R_INF=0.025,
-                                  FOND_FISS=FOND,
+                                  FISSURE=FOND,
                                   R_SUP=0.050,),
+                         OPTION='G',
                     )
 
 G4_C1=CALC_G(            RESULTAT=RES4,
                          THETA=_F(
                                   R_INF=0.025,
-                                  FOND_FISS=FOND,
+                                  FISSURE=FOND,
                                   R_SUP=0.050,),
+                         OPTION='G',
                     )
 
 G5_C1=CALC_G(            RESULTAT=RES5,
                          THETA=_F(
                                   R_INF=0.025,
-                                  FOND_FISS=FOND,
+                                  FISSURE=FOND,
                                   R_SUP=0.050,),
+                         OPTION='G',
                     )
 
 G6_C1=CALC_G(            RESULTAT=RES6,
                          THETA=_F(
                                   R_INF=0.025,
-                                  FOND_FISS=FOND,
+                                  FISSURE=FOND,
                                   R_SUP=0.050,),
+                         OPTION='G',
                     )
 
 # CALCUL DE G_THETA SUR LA COURONNE 2
@@ -218,43 +216,49 @@ G6_C1=CALC_G(            RESULTAT=RES6,
 G1_C2=CALC_G(           RESULTAT=RES1,
                         THETA=_F(
                                  R_INF=0.050,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND,
                                  R_SUP=0.075,),
+                         OPTION='G',
                     )
 
 G2_C2=CALC_G(           RESULTAT=RES2,
                         THETA=_F(
                                  R_INF=0.050,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND,
                                  R_SUP=0.075,),
+                         OPTION='G',
                     )
 
 G3_C2=CALC_G(           RESULTAT=RES3,
                         THETA=_F(
                                  R_INF=0.050,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND,
                                  R_SUP=0.075,),
+                         OPTION='G',
                     )
 
 G4_C2=CALC_G(           RESULTAT=RES4,
                         THETA=_F(
                                  R_INF=0.050,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND,
                                  R_SUP=0.075,),
+                         OPTION='G',
                     )
 
 G5_C2=CALC_G(           RESULTAT=RES5,
                         THETA=_F(
                                  R_INF=0.050,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND,
                                  R_SUP=0.075,),
+                         OPTION='G',
                     )
 
 G6_C2=CALC_G(           RESULTAT=RES6,
                         THETA=_F(
                                  R_INF=0.050,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND,
                                  R_SUP=0.075,),
+                         OPTION='G',
                     )
 
 # CALCUL DE G_THETA SUR LA COURONNE 3
@@ -263,43 +267,49 @@ G6_C2=CALC_G(           RESULTAT=RES6,
 G1_C3=CALC_G(           RESULTAT=RES1,
                         THETA=_F(
                                  R_INF=0.075,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND,
                                  R_SUP=0.100,),
+                         OPTION='G',
                     )
 
 G2_C3=CALC_G(           RESULTAT=RES2,
                         THETA=_F(
                                  R_INF=0.075,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND,
                                  R_SUP=0.100,),
+                         OPTION='G',
                     )
 
 G3_C3=CALC_G(           RESULTAT=RES3,
                         THETA=_F(
                                  R_INF=0.075,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND,
                                  R_SUP=0.100,),
+                         OPTION='G',
                     )
 
 G4_C3=CALC_G(           RESULTAT=RES4,
                         THETA=_F(
                                  R_INF=0.075,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND,
                                  R_SUP=0.100,),
+                         OPTION='G',
                     )
 
 G5_C3=CALC_G(           RESULTAT=RES5,
                         THETA=_F(
                                  R_INF=0.075,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND,
                                  R_SUP=0.100,),
+                         OPTION='G',
                     )
 
 G6_C3=CALC_G(           RESULTAT=RES6,
                         THETA=_F(
                                  R_INF=0.075,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND,
                                  R_SUP=0.100,),
+                         OPTION='G',
                     )
 
 # CALCUL DE G_THETA SUR LA COURONNE 4
@@ -308,43 +318,49 @@ G6_C3=CALC_G(           RESULTAT=RES6,
 G1_C4=CALC_G(    RESULTAT=RES1,
                  THETA=_F(
                           R_INF=0.025,
-                          FOND_FISS=FOND,
+                          FISSURE=FOND,
                           R_SUP=0.500,),
+                         OPTION='G',
                     )
 
 G2_C4=CALC_G(    RESULTAT=RES2,
                  THETA=_F(
                           R_INF=0.025,
-                          FOND_FISS=FOND,
+                          FISSURE=FOND,
                           R_SUP=0.500,),
+                         OPTION='G',
                     )
 
 G3_C4=CALC_G(    RESULTAT=RES3,
                  THETA=_F(
                           R_INF=0.025,
-                          FOND_FISS=FOND,
+                          FISSURE=FOND,
                           R_SUP=0.500,),
+                         OPTION='G',
                     )
 
 G4_C4=CALC_G(    RESULTAT=RES4,
                  THETA=_F(
                           R_INF=0.025,
-                          FOND_FISS=FOND,
+                          FISSURE=FOND,
                           R_SUP=0.500,),
+                         OPTION='G',
                     )
 
 G5_C4=CALC_G(    RESULTAT=RES5,
                  THETA=_F(
                           R_INF=0.025,
-                          FOND_FISS=FOND,
+                          FISSURE=FOND,
                           R_SUP=0.500,),
+                         OPTION='G',
                     )
 
 G6_C4=CALC_G(    RESULTAT=RES6,
                  THETA=_F(
                           R_INF=0.025,
-                          FOND_FISS=FOND,
+                          FISSURE=FOND,
                           R_SUP=0.500,),
+                         OPTION='G',
                     )
 
 # IMPRESSION DES RESULTATS COURONNE 0

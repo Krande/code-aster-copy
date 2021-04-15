@@ -177,14 +177,7 @@ TEST_TABLE(FILTRE=_F(NOM_PARA='QUANTITE',
            TABLE=TB2M,
            VALE_CALC=1188664.62838)
 
-FISS=DEFI_FOND_FISS(MAILLAGE=MA, SYME='NON',
-                    FOND_FISS=_F(GROUP_MA = 'LFF1',
-                                 GROUP_NO_ORIG = 'NFF1',
-                                 GROUP_NO_EXTR = 'NFF2',),
-                    LEVRE_SUP=_F(  GROUP_MA = 'LEVINFS'),
-                    LEVRE_INF=_F(  GROUP_MA = 'LEVINF1'),
-                   )
-NFISS=DEFI_FISSURE(MAILLAGE=MA, SYME='NON',
+FISSH=DEFI_FOND_FISS(MAILLAGE=MA, SYME='NON',
                     FOND_FISS=_F(GROUP_MA = 'LFF1',
                                  GROUP_NO_ORIG = 'NFF1',
                                  GROUP_NO_EXTR = 'NFF2',),
@@ -201,12 +194,15 @@ Gref  = 11.58648
 K1ref =  1.595769E6
 
 GLOC1=CALC_G(           RESULTAT=CHAMDEPL,
-                        THETA=_F(FOND_FISS=FISS,),
+                        OPTION='G',
+                        THETA=_F(FISSURE=FISSH,
+                        DISCRETISATION='LEGENDRE',
+                        ),
                     )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.029999999999999999,
-           VALE_CALC=11.762186947,
+           VALE_CALC=11.710295933567776,
            VALE_REFE=11.58648,
            NOM_PARA='G',
            TABLE=GLOC1,
@@ -216,7 +212,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           VALE_CALC=11.7545188214,
+           VALE_CALC=11.722453216226567,
            VALE_REFE=11.58648,
            NOM_PARA='G',
            TABLE=GLOC1,
@@ -226,7 +222,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.029999999999999999,
-           VALE_CALC=11.7268586465,
+           VALE_CALC=11.684778737367257,
            VALE_REFE=11.58648,
            NOM_PARA='G',
            TABLE=GLOC1,
@@ -234,23 +230,16 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='N77',),
            )
 
-RAY_INF1=DEFI_CONSTANTE(VALE=RINF)
-
-RAY_SUP1=DEFI_CONSTANTE(VALE=RSUP)
-
-MOD_T1=DEFI_CONSTANTE(   VALE=1.    )
-
 # POST_K1_K2_K3
 
-
-TABL_K1=POST_K1_K2_K3(  FOND_FISS = NFISS,
+TABL_K1=POST_K1_K2_K3(  FOND_FISS = FISSH,
                         RESULTAT = CHAMDEPL,
                       )
 
 IMPR_TABLE(TABLE=TABL_K1)
 
 
-TABL_KTO=POST_K1_K2_K3(  FOND_FISS = NFISS,
+TABL_KTO=POST_K1_K2_K3(  FOND_FISS = FISSH,
               RESULTAT=CHAMDEPL,
               PREC_VIS_A_VIS = 0.05,
            )
@@ -336,7 +325,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 # TEST INFORMATIQUE : VALIDATION DE DEFI_FOND_FISS
-FISSM=DEFI_FISSURE(MAILLAGE=MA, SYME='NON',
+FISSM=DEFI_FOND_FISS(MAILLAGE=MA, SYME='NON',
                      FOND_FISS=_F(GROUP_MA = 'LFF1',),
                      LEVRE_SUP=_F(  GROUP_MA = 'LEVINFS'),
                      LEVRE_INF=_F(  GROUP_MA = 'LEVINF1'),
@@ -372,7 +361,7 @@ MA=MODI_MAILLAGE(reuse=MA,
                 MODI_MAILLE=_F(OPTION='NOEUD_QUART',
                                GROUP_NO_FOND='NLFF1'))
 
-FISSN=DEFI_FISSURE(MAILLAGE=MA, SYME='NON',
+FISSN=DEFI_FOND_FISS(MAILLAGE=MA, SYME='NON',
                      FOND_FISS=_F(GROUP_MA = 'LFF1',),
                      LEVRE_SUP=_F(GROUP_MA = 'LEVINFS'),
                      LEVRE_INF=_F(GROUP_MA = 'LEVINF1'),

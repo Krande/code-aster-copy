@@ -20,11 +20,11 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 # MODELIDATION A : FEM 2D
-# Ce test correspond au test forma05a, sauf que l'on y decoupe le 
-# chargement de Neumann en deux charges CLNEU2 et CLNEU2 qui vont 
+# Ce test correspond au test forma05a, sauf que l'on y decoupe le
+# chargement de Neumann en deux charges CLNEU2 et CLNEU2 qui vont
 # s'ajouter. On applique une FONC_MULT sur la deuxieme charge CLNEU2
 # de telle sorte qu'a l'instant auquel on effectue les posts-traitements
-# la combinaison de ces deux charges soit identique a la charge unique 
+# la combinaison de ces deux charges soit identique a la charge unique
 # de forma05a.
 
 MA=DEFI_MATERIAU(ELAS=_F(E=210000e6,
@@ -71,7 +71,6 @@ FMULT=DEFI_FONCTION(NOM_PARA='INST',
 
 RESU=MECA_STATIQUE(MODELE=MODE,
                    CHAM_MATER=MATE,
-                   OPTION='SANS',
                    EXCIT=(
                           _F(CHARGE=CLDIR),
                           _F(CHARGE=CLNEU1),
@@ -79,29 +78,8 @@ RESU=MECA_STATIQUE(MODELE=MODE,
                           ),
                    LIST_INST=LINST)
 
-# test de CALC_CHAMP/FORC_NODA avec SIEF_ELGA absent du résultat d'entrée et sans reuse
-RESU1=CALC_CHAMP(RESULTAT=RESU,FORCE=('FORC_NODA'))
+RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CRITERES=('SIEQ_ELNO'),CONTRAINTE=('SIGM_ELNO'))
 
-RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CRITERES=('SIEQ_ELNO'),CONTRAINTE=('SIGM_ELNO'),
-                                         FORCE='FORC_NODA')
-
-
-TEST_RESU(RESU=(_F(INST=1,
-                   RESULTAT=RESU,
-                   NOM_CHAM='FORC_NODA',
-                   NOEUD='N1807',
-                   NOM_CMP='DY',
-                   VALE_CALC=4.21986603405171E+05,),
-                _F(INST=1,
-                   RESULTAT=RESU1,
-                   NOM_CHAM='FORC_NODA',
-                   NOEUD='N1807',
-                   NOM_CMP='DY',
-                   VALE_CALC=4.21986603405171E+05,
-                   REFERENCE='AUTRE_ASTER',
-                   VALE_REFE=4.21986603405171E+05,),
-                ),
-          )
 
 RESU=CALC_CHAMP(reuse =RESU,
              RESULTAT=RESU,
@@ -122,19 +100,15 @@ FISS=DEFI_FOND_FISS(MAILLAGE=MAIL,
                     SYME='OUI',
                     FOND_FISS=_F(GROUP_NO='O'),
                     LEVRE_SUP=_F(GROUP_MA='GO'))
-NFISS=DEFI_FISSURE(MAILLAGE=MAIL,
-                    SYME='OUI',
-                    FOND_FISS=_F(GROUP_NO='O'),
-                    LEVRE_SUP=_F(GROUP_MA='GO'))
 
 RSUP=0.005 * 5
 RINF=0.005 * 2
 
 
 # CALC_G
-G=CALC_G(OPTION='CALC_G',
+G=CALC_G(OPTION='G',
          RESULTAT=RESU,
-         THETA=_F(FOND_FISS=FISS,
+         THETA=_F(FISSURE=FISS,
                   R_INF=RINF,
                   R_SUP=RSUP,
                   ),
@@ -142,9 +116,9 @@ G=CALC_G(OPTION='CALC_G',
 
 IMPR_TABLE(TABLE=G)
 
-GK=CALC_G(OPTION='CALC_K_G',
+GK=CALC_G(OPTION=('G','K'),
           RESULTAT=RESU,
-          THETA=_F(FOND_FISS=FISS,
+          THETA=_F(FISSURE=FISS,
                    R_INF=RINF,
                    R_SUP=RSUP,
                    ),
@@ -155,7 +129,7 @@ IMPR_TABLE(TABLE=GK),
 
 # POST_K1_K2_K3
 K=POST_K1_K2_K3(RESULTAT=RESU,
-                FOND_FISS=NFISS,)
+                FOND_FISS=FISS,)
 
 IMPR_TABLE(TABLE=K )
 

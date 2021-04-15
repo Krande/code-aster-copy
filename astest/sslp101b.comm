@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,14 +62,15 @@ G1=CALC_G(              RESULTAT=CHAMDEPL,
                         THETA=_F(
                                  R_INF=22.04078,
                                  R_SUP=30.,
-                                 FOND_FISS=FOND,),
+                                 FISSURE=FOND,),
+                        OPTION='G',
           )
 
 GK1=CALC_G(             RESULTAT=CHAMDEPL,
                         THETA=_F(R_INF = 22.04078,
                                  R_SUP = 30.,
-                                 FOND_FISS=FOND),
-                        OPTION='CALC_K_G')
+                                 FISSURE=FOND),
+                        OPTION='K')
 
 IMPR_TABLE(TABLE=GK1)
 
@@ -77,76 +78,81 @@ G2=CALC_G(              RESULTAT=CHAMDEPL,
                         THETA=_F(
                                  R_INF=15.3061094,
                                  R_SUP=22.04078,
-                                 FOND_FISS=FOND,),
+                                 FISSURE=FOND,),
+                        OPTION='G',
           )
 
 GK2=CALC_G(             RESULTAT=CHAMDEPL,
                         THETA=_F(
                                  R_SUP = 22.04078,
                                  R_INF = 15.3061094,
-                                 FOND_FISS=FOND),
-                        OPTION='CALC_K_G')
+                                 FISSURE=FOND),
+                        OPTION='K')
 
 G3=CALC_G(              RESULTAT=CHAMDEPL,
                         THETA=_F(
                                  R_INF=9.79591846,
                                  R_SUP=15.3061094,
-                                 FOND_FISS=FOND,),
+                                 FISSURE=FOND,),
+                        OPTION='G',
           )
 
 GK3=CALC_G(             RESULTAT=CHAMDEPL,
                         THETA=_F(
                                  R_INF = 9.79591846,
                                  R_SUP = 15.3061094,
-                                 FOND_FISS=FOND),
-                        OPTION='CALC_K_G')
+                                 FISSURE=FOND),
+                        OPTION='K')
 
 G4=CALC_G(              RESULTAT=CHAMDEPL,
                         THETA=_F(
                                  R_INF=5.510197639,
                                  R_SUP=9.79591846,
-                                 FOND_FISS=FOND,),
+                                 FISSURE=FOND,),
+                        OPTION='G',
           )
 
 GK4=CALC_G(              RESULTAT=CHAMDEPL,
                          THETA=_F(
                                  R_SUP = 9.79591846,
                                  R_INF = 5.510197639,
-                                 FOND_FISS=FOND),
-                         OPTION='CALC_K_G')
+                                 FISSURE=FOND),
+                         OPTION='K')
 
 G5=CALC_G(               RESULTAT=CHAMDEPL,
                          THETA=_F(
                                   R_INF=2.448979377,
                                   R_SUP=5.510197639,
-                                  FOND_FISS=FOND,),
+                                  FISSURE=FOND,),
+                        OPTION='G',
           )
 
 GK5=CALC_G(              RESULTAT=CHAMDEPL,
                          THETA=_F(
                                  R_INF = 2.448979377,
                                  R_SUP = 5.510197639,
-                                 FOND_FISS=FOND),
-                         OPTION='CALC_K_G')
+                                 FISSURE=FOND),
+                         OPTION='K')
 
 G6=CALC_G(               RESULTAT=CHAMDEPL,
                          THETA=_F(
                                   R_INF=0.61225116,
                                   R_SUP=2.448979377,
-                                  FOND_FISS=FOND,),
+                                  FISSURE=FOND,),
+                        OPTION='G',
           )
 
 GK6=CALC_G(              RESULTAT=CHAMDEPL,
                             THETA=_F(
                                 R_SUP = 2.448979377,
                                 R_INF = 0.61225116,
-                                FOND_FISS=FOND),
-                         OPTION='CALC_K_G')
+                                FISSURE=FOND),
+                         OPTION='K')
 
 GK7=CALC_G(              RESULTAT=CHAMDEPL,
                             THETA=_F(
-                                FOND_FISS=FOND),
-                         OPTION='CALC_K_G')
+                                FISSURE=FOND),
+                         OPTION='K')
 
 TEST_TABLE(PRECISION=5.0000000000000001E-3,
            VALE_CALC=0.00229940675469,
@@ -155,12 +161,6 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
            NOM_PARA='G',
            TABLE=G1,)
 
-TEST_TABLE(PRECISION=5.0000000000000001E-3,
-           VALE_CALC=0.00229940675469,
-           VALE_REFE=2.3092999999999998E-3,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=GK1,)
 
 TEST_TABLE(PRECISION=5.0000000000000001E-3,
            VALE_CALC=0.00229900781728,
@@ -187,13 +187,6 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
            REFERENCE='NON_DEFINI',
            NOM_PARA='G',
            TABLE=G2,)
-
-TEST_TABLE(PRECISION=5.0000000000000001E-3,
-           VALE_CALC=0.00229934595953,
-           VALE_REFE=2.3092999999999998E-3,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=GK2,)
 
 TEST_TABLE(PRECISION=5.0000000000000001E-3,
            VALE_CALC=0.0022989371696,
@@ -223,13 +216,6 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
            TABLE=G3,)
 
 TEST_TABLE(PRECISION=5.0000000000000001E-3,
-           VALE_CALC=0.00229929002036,
-           VALE_REFE=2.3092999999999998E-3,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=GK3,)
-
-TEST_TABLE(PRECISION=5.0000000000000001E-3,
            VALE_CALC=0.00229887852477,
            VALE_REFE=2.3092999999999998E-3,
            REFERENCE='NON_DEFINI',
@@ -257,13 +243,6 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
            TABLE=G4,)
 
 TEST_TABLE(PRECISION=5.0000000000000001E-3,
-           VALE_CALC=0.00229906870983,
-           VALE_REFE=2.3092999999999998E-3,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=GK4,)
-
-TEST_TABLE(PRECISION=5.0000000000000001E-3,
            VALE_CALC=0.00229864151883,
            VALE_REFE=2.3092999999999998E-3,
            REFERENCE='NON_DEFINI',
@@ -289,13 +268,6 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
            REFERENCE='NON_DEFINI',
            NOM_PARA='G',
            TABLE=G5,)
-
-TEST_TABLE(PRECISION=5.0000000000000001E-3,
-           VALE_CALC=0.00229813106988,
-           VALE_REFE=2.3092999999999998E-3,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=GK5,)
 
 TEST_TABLE(PRECISION=5.1000000000000004E-3,
            VALE_CALC=0.00229759985556,
@@ -325,13 +297,6 @@ TEST_TABLE(PRECISION=1.E-2,
            TABLE=G6,)
 
 TEST_TABLE(PRECISION=1.E-2,
-           VALE_CALC=0.00229062455905,
-           VALE_REFE=2.3092999999999998E-3,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=GK6,)
-
-TEST_TABLE(PRECISION=1.E-2,
            VALE_CALC=0.00228905955078,
            VALE_REFE=2.3092999999999998E-3,
            REFERENCE='NON_DEFINI',
@@ -350,13 +315,6 @@ TEST_TABLE(CRITERE='ABSOLU',
 
            NOM_PARA='K2',
            TABLE=GK6,)
-
-TEST_TABLE(PRECISION=1.E-2,
-           VALE_CALC=0.00231021514097,
-           VALE_REFE=2.3092999999999998E-3,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=GK7,)
 
 TEST_TABLE(PRECISION=1.E-2,
            VALE_CALC=0.00230937714918,

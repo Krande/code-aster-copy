@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -76,8 +76,7 @@ CHAMDEPL=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,
 
 FISS1=DEFI_FOND_FISS(MAILLAGE=MA,
                      SYME='OUI',
-                     FOND_FISS=_F(GROUP_MA = ( 'LFF',),
-                                       DTAN_ORIG=( 1.,  0.,  0.,),),
+                     FOND_FISS=_F(GROUP_MA = ( 'LFF',),),
                      LEVRE_SUP=_F(  GROUP_MA = 'LEVREINS'),
                     )
 
@@ -100,8 +99,11 @@ MOD_T1=DEFI_CONSTANTE(   VALE=1.)
 # -------------------------------------
 
 GLO1_LE5=CALC_G(  RESULTAT=CHAMDEPL,
-                 THETA=_F(FOND_FISS=FISS1, 
-                          R_INF_FO=RAY_INF1,  R_SUP_FO=RAY_SUP1,),  
+                 OPTION='G',
+                 THETA=_F(FISSURE=FISS1, 
+                          R_INF_FO=RAY_INF1,  R_SUP_FO=RAY_SUP1,
+                          DISCRETISATION='LEGENDRE',
+                          ),  
                        )
 
 #
@@ -123,16 +125,19 @@ MOD_T2=DEFI_CONSTANTE(    VALE=1.   )
 # -------------------------------------
 
 GLO2_LE5=CALC_G(  RESULTAT=CHAMDEPL,
-                  THETA=_F(FOND_FISS=FISS1, 
-                            R_INF_FO=RAY_INF2,  R_SUP_FO=RAY_SUP2,),)
+                 OPTION='G',
+                  THETA=_F(FISSURE=FISS1, 
+                            R_INF_FO=RAY_INF2,  R_SUP_FO=RAY_SUP2,
+                          DISCRETISATION='LEGENDRE',
+                            ),)
 
 #
 # IMPRESSION DES RESULTATS
 # ------------------------
 # la solution analytique est donnée par MURAKAMI (cf case 9.70)
 
-TEST_TABLE(PRECISION=0.12,
-           VALE_CALC=4.66208332326E-06,
+TEST_TABLE(PRECISION=0.13,
+           VALE_CALC=4.576277775229887E-06,
            VALE_REFE=5.2055000000000004E-06,
            REFERENCE='ANALYTIQUE',
            NOM_PARA='G',
@@ -141,8 +146,8 @@ TEST_TABLE(PRECISION=0.12,
                      VALE_K='N71',),
            )
 
-TEST_TABLE(PRECISION=0.13,
-           VALE_CALC=4.71995181031E-06,
+TEST_TABLE(PRECISION=0.14,
+           VALE_CALC=4.693362018225326E-06,
            VALE_REFE=5.3991999999999999E-06,
            REFERENCE='ANALYTIQUE',
            NOM_PARA='G',
@@ -152,7 +157,7 @@ TEST_TABLE(PRECISION=0.13,
            )
 
 TEST_TABLE(PRECISION=0.080000000000000002,
-           VALE_CALC=6.53375319252E-06,
+           VALE_CALC=6.475944181279695E-06,
            VALE_REFE=6.9762000000000002E-06,
            REFERENCE='ANALYTIQUE',
            NOM_PARA='G',
@@ -162,7 +167,7 @@ TEST_TABLE(PRECISION=0.080000000000000002,
            )
 
 TEST_TABLE(PRECISION=0.080000000000000002,
-           VALE_CALC=6.89827194864E-06,
+           VALE_CALC=6.874636740724916E-06,
            VALE_REFE=6.4492E-06,
            REFERENCE='ANALYTIQUE',
            NOM_PARA='G',
@@ -172,7 +177,7 @@ TEST_TABLE(PRECISION=0.080000000000000002,
            )
 
 TEST_TABLE(PRECISION=0.12,
-           VALE_CALC=6.89201162041E-06,
+           VALE_CALC=6.8936398348183065E-06,
            VALE_REFE=6.2103999999999999E-06,
            REFERENCE='ANALYTIQUE',
            NOM_PARA='G',
@@ -181,8 +186,8 @@ TEST_TABLE(PRECISION=0.12,
                      VALE_K='N357',),
            )
 
-TEST_TABLE(PRECISION=0.12,
-           VALE_CALC=4.65177910925E-06,
+TEST_TABLE(PRECISION=0.14,
+           VALE_CALC=4.486301856340327E-06,
            VALE_REFE=5.2055000000000004E-06,
            REFERENCE='ANALYTIQUE',
            NOM_PARA='G',
@@ -191,8 +196,8 @@ TEST_TABLE(PRECISION=0.12,
                      VALE_K='N71',),
            )
 
-TEST_TABLE(PRECISION=0.13,
-           VALE_CALC=4.72401348936E-06,
+TEST_TABLE(PRECISION=0.14,
+           VALE_CALC=4.665533430710718E-06,
            VALE_REFE=5.3991999999999999E-06,
            REFERENCE='ANALYTIQUE',
            NOM_PARA='G',
@@ -202,7 +207,7 @@ TEST_TABLE(PRECISION=0.13,
            )
 
 TEST_TABLE(PRECISION=0.080000000000000002,
-           VALE_CALC=6.53329088152E-06,
+           VALE_CALC=6.48303801781046E-06,
            VALE_REFE=6.9762000000000002E-06,
            REFERENCE='ANALYTIQUE',
            NOM_PARA='G',
@@ -212,7 +217,7 @@ TEST_TABLE(PRECISION=0.080000000000000002,
            )
 
 TEST_TABLE(PRECISION=0.080000000000000002,
-           VALE_CALC=6.90592545812E-06,
+           VALE_CALC=6.8845129187000655E-06,
            VALE_REFE=6.4492E-06,
            REFERENCE='ANALYTIQUE',
            NOM_PARA='G',
@@ -222,7 +227,7 @@ TEST_TABLE(PRECISION=0.080000000000000002,
            )
 
 TEST_TABLE(PRECISION=0.12,
-           VALE_CALC=6.90448525221E-06,
+           VALE_CALC=6.910551823284101E-06,
            VALE_REFE=6.2103999999999999E-06,
            REFERENCE='ANALYTIQUE',
            NOM_PARA='G',

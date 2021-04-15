@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,58 +51,59 @@ FOND=DEFI_FOND_FISS( MAILLAGE=MA,
                      SYME='OUI',
                      CONFIG_INIT='DECOLLEE',
                      NORMALE=(0.0,1.0,0.0),
+                     LEVRE_SUP=_F(MAILLE='M306'),
                    )
 G1=CALC_G(              RESULTAT=CHAMDEPL,
                         THETA=_F(
                                  R_INF=22.04078,
                                  R_SUP=30.,
-                                 DIRECTION=(1.0,0.0),
-                                 FOND_FISS=FOND,),
+                                 FISSURE=FOND,),
+                        OPTION='G',
           )
 
 G2=CALC_G(              RESULTAT=CHAMDEPL,
                         THETA=_F(
                                  R_INF=15.3061094,
                                  R_SUP=22.04078,
-                                 FOND_FISS=FOND,
-                                 DIRECTION=(1.0,0.0),
+                                 FISSURE=FOND,
                                  ),
+                        OPTION='G',
           )
 
 G3=CALC_G(              RESULTAT=CHAMDEPL,
                         THETA=_F(
                                  R_INF=9.79591846,
                                  R_SUP=15.3061094,
-                                 FOND_FISS=FOND,
-                                 DIRECTION=(1.0,0.0),
+                                 FISSURE=FOND,
                                  ),
+                        OPTION='G',
           )
 
 G4=CALC_G(              RESULTAT=CHAMDEPL,
                         THETA=_F(
                                  R_INF=5.510197639,
                                  R_SUP=9.79591846,
-                                 FOND_FISS=FOND,
-                                 DIRECTION=(1.0,0.0),
+                                 FISSURE=FOND,
                                  ),
+                        OPTION='G',
           )
 
 G5=CALC_G(               RESULTAT=CHAMDEPL,
                          THETA=_F(
                                   R_INF=2.448979377,
                                   R_SUP=5.510197639,
-                                  FOND_FISS=FOND,
-                                  DIRECTION=(1.0,0.0),
+                                  FISSURE=FOND,
                                   ),
+                        OPTION='G',
           )
 
 G6=CALC_G(               RESULTAT=CHAMDEPL,
                          THETA=_F(
                                   R_INF=0.61225116,
                                   R_SUP=2.448979377,
-                                  FOND_FISS=FOND,
-                                  DIRECTION=(1.0,0.0),
+                                  FISSURE=FOND,
                                   ),
+                        OPTION='G',
           )
 
 TEST_TABLE(PRECISION=5.0000000000000001E-3,

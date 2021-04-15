@@ -133,12 +133,15 @@ SIF = [None]*(nbcalc+1)
 # POST TRAITEMENT POUR CALCUL DE G
 RI = 0.1
 RS = 1.0
-SIF[0]=CALC_G (RESULTAT=RESUIN,
-               OPTION='CALC_K_G',
-               THETA=_F( FOND_FISS=FONDFI,
+SIF[0]=CALC_G(RESULTAT=RESUIN,
+               OPTION=('G','K',),
+               THETA=_F( FISSURE=FONDFI,
                          R_INF=RI,
-                         R_SUP=RS,),
-               LISSAGE=_F( DEGRE=0,),);
+                         R_SUP=RS,
+                         DISCRETISATION='LEGENDRE',
+                         DEGRE=0,
+                         
+                         ),);
 IMPR_TABLE(TABLE=SIF[0],UNITE=6)
 # partie fixe
 # partie pilotee

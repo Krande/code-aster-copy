@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -134,12 +134,12 @@ R_SUP=DEFI_CONSTANTE(VALE=0.0025)
 
 # calcul de G(s) et K(s) avec le lissage Legendre (par defaut)
 GLO1=CALC_G(RESULTAT=CHAMDEPL,
-            OPTION='CALC_K_G',
-            THETA=_F(FOND_FISS=FISS,
+            OPTION=('G','K',),
+            THETA=_F(FISSURE=FISS,
                      R_INF_FO=R_INF,
-                     R_SUP_FO=R_SUP,),
-#            LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-#                       LISSAGE_G='LAGRANGE',),
+                     R_SUP_FO=R_SUP,
+                     DISCRETISATION='LEGENDRE',
+                     ),
            );
 
 
@@ -173,7 +173,7 @@ TEST_TABLE(TABLE=GLO1,
            REFERENCE='SOURCE_EXTERNE',
            VALE_REFE=K1ref(0.),
            PRECISION=0.11,
-           VALE_CALC=54752007.87967059,
+           VALE_CALC=54818340.50022869,
            )
 
 # a l'abscisse curviligne 5.34881e-3 (point 8)
@@ -184,7 +184,7 @@ TEST_TABLE(TABLE=GLO1,
            REFERENCE='SOURCE_EXTERNE',
            VALE_REFE=K1ref(5.34881e-3),
            PRECISION=0.02,
-           VALE_CALC=74423110.32240902,
+           VALE_CALC=74154792.2358294,
            )
 
 # a l'abscisse curviligne 3.44482e-2 (point 25)
@@ -195,7 +195,7 @@ TEST_TABLE(TABLE=GLO1,
            REFERENCE='SOURCE_EXTERNE',
            VALE_REFE=K1ref(3.44482e-2),
            PRECISION=0.01,
-           VALE_CALC=101903847.56606053,
+           VALE_CALC=101830114.43105218,
            )
 
 # a l'abscisse curviligne 5.36143e-2 (point 33)
@@ -206,7 +206,7 @@ TEST_TABLE(TABLE=GLO1,
            REFERENCE='SOURCE_EXTERNE',
            VALE_REFE=K1ref(5.36143e-2),
            PRECISION=0.07,
-           VALE_CALC=96994254.22989388,
+           VALE_CALC=96683399.29793245,
            )
 
 
@@ -274,10 +274,12 @@ CHAMDEP2=MECA_STATIQUE(MODELE=MO,
 
 # lissage de legendre (par defaut)
 GK2leg=CALC_G(RESULTAT=CHAMDEP2,
-              OPTION='CALC_K_G',
-              THETA=_F(FOND_FISS=FISS,
+              OPTION=('G','K',),
+              THETA=_F(FISSURE=FISS,
                        R_INF_FO=R_INF,
-                       R_SUP_FO=R_SUP,),
+                       R_SUP_FO=R_SUP,
+                       DISCRETISATION='LEGENDRE',
+                       ),
               )
 
 GK2leg=CALC_TABLE(TABLE=GK2leg,
@@ -297,7 +299,7 @@ TEST_TABLE(TABLE=GK2leg,
            REFERENCE='SOURCE_EXTERNE',
            VALE_REFE=K1ref(0.),
            PRECISION=0.24,
-           VALE_CALC=54752007.87967063,
+           VALE_CALC=54818340.50022926 ,
            )
 
 # a l'abscisse curviligne 5.34881e-3 (point 8)
@@ -308,7 +310,7 @@ TEST_TABLE(TABLE=GK2leg,
            REFERENCE='SOURCE_EXTERNE',
            VALE_REFE=K1ref(5.34881e-3),
            PRECISION=0.08,
-           VALE_CALC=74423110.322409,
+           VALE_CALC=74154792.23582952,
            )
 
 # a l'abscisse curviligne 3.44482e-2 (point 25)
@@ -319,7 +321,7 @@ TEST_TABLE(TABLE=GK2leg,
            REFERENCE='SOURCE_EXTERNE',
            VALE_REFE=K1ref(3.44482e-2),
            PRECISION=0.02,
-           VALE_CALC=101903847.56606053,
+           VALE_CALC=101830114.4310522,
            )
 
 # a l'abscisse curviligne 5.36143e-2 (point 33)
@@ -330,42 +332,7 @@ TEST_TABLE(TABLE=GK2leg,
            REFERENCE='SOURCE_EXTERNE',
            VALE_REFE=K1ref(5.36143e-2),
            PRECISION=0.07,
-           VALE_CALC=96994254.22989425,
-           )
-
-
-
-
-
-
-# lissage de Lagrange_No_No
-GK2lagno=CALC_G(RESULTAT=CHAMDEP2,
-                OPTION='CALC_K_G',
-                THETA=_F(FOND_FISS=FISS,
-                         R_INF_FO=R_INF,
-                         R_SUP_FO=R_SUP,),
-                LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                           LISSAGE_G='LAGRANGE_NO_NO',),
-                )
-
-GK2lagno=CALC_TABLE(TABLE=GK2lagno,
-                  reuse=GK2lagno,
-                  ACTION=(_F(OPERATION='OPER',NOM_PARA='K1REF',FORMULE=K1ref),
-                          _F(OPERATION='OPER',NOM_PARA='ECART',FORMULE=Ecart),
-                          ),
-                  )
-
-IMPR_TABLE(TABLE=GK2lagno)
-
-# a l'abscisse curviligne 5.36143e-2 (point 33)
-TEST_TABLE(TABLE=GK2lagno,
-           NOM_PARA='K1',
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=5.36143e-2,),
-           REFERENCE='SOURCE_EXTERNE',
-           VALE_REFE=K1ref(5.36143e-2),
-           PRECISION=0.01,
-           VALE_CALC=104081312.53943054,
+           VALE_CALC=96683399.29793248,
            )
 
 FIN()

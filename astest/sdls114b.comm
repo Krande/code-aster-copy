@@ -130,33 +130,27 @@ MODE=CALC_MODES(MATR_RIGI=RIG_ASS,
 MODE=NORM_MODE(reuse=MODE,
                MODE=MODE,
                NORME='MASS_GENE',);
+                   
 
-FF1=DEFI_FOND_FISS(MAILLAGE=M, SYME='NON',
+NFF1=DEFI_FOND_FISS(MAILLAGE=M, SYME='NON',
                    FOND_FISS=_F(GROUP_MA='FN_FS',),
                                 #GROUP_NO_ORIG='PFINI',),
                    LEVRE_SUP=_F(GROUP_MA='LEV_SUP',),
                    LEVRE_INF=_F(GROUP_MA='LEV_INF',),
                    )
 
-NFF1=DEFI_FISSURE(MAILLAGE=M, SYME='NON',
-                   FOND_FISS=_F(GROUP_MA='FN_FS',),
-                                #GROUP_NO_ORIG='PFINI',),
-                   LEVRE_SUP=_F(GROUP_MA='LEV_SUP',),
-                   LEVRE_INF=_F(GROUP_MA='LEV_INF',),
-                   )
 
-
-GLMO1=CALC_G(OPTION='CALC_K_G',
+GLMO1=CALC_G(OPTION='K',
              RESULTAT=MODE,
              TOUT_MODE = 'OUI',
-             THETA=_F( FOND_FISS=FF1,
+             THETA=_F( FISSURE=NFF1,
                        R_INF=9.E-5,
-                       R_SUP=3.E-4,),
-             LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                        LISSAGE_G='LAGRANGE',),
+                       R_SUP=3.E-4,
+                       DISCRETISATION= 'LINEAIRE',
+                       ),
             )
 
-IMPR_TABLE(TABLE = GLMO1)
+IMPR_TABLE(TABLE = GLMO1, UNITE=6)
 
 
 T1_K = POST_K1_K2_K3(FOND_FISS=NFF1,

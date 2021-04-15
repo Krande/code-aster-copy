@@ -98,41 +98,44 @@ FOND=DEFI_FOND_FISS(MAILLAGE=MA, SYME='NON',
                     FOND_FISS=_F(GROUP_MA='FOND_FISS',),
                     LEVRE_SUP=_F(GROUP_MA='LEVR_SUP',),
                     LEVRE_INF=_F(GROUP_MA='LEVR_INF',),)
-NFOND=DEFI_FISSURE(MAILLAGE=MA, SYME='NON',
-                    FOND_FISS=_F(GROUP_MA='FOND_FISS',),
-                    LEVRE_SUP=_F(GROUP_MA='LEVR_SUP',),
-                    LEVRE_INF=_F(GROUP_MA='LEVR_INF',),)
 
 RESU=CALC_CHAMP(reuse=RESU,
                     RESULTAT=RESU,
                     DEFORMATION=('EPSI_ELGA','EPSP_ELNO',),
                    VARI_INTERNE=('VARI_ELNO',)
                )
+               
 #CALCUL DE G DIRECT
-G_INIT=CALC_G(THETA=_F(FOND_FISS=FOND,
+G_INIT=CALC_G(THETA=_F(FISSURE=FOND,
                        R_INF=0.1,
-                       R_SUP=0.5,),
+                       R_SUP=0.5,
+                       DISCRETISATION='LEGENDRE',
+                       DEGRE=0,
+                       CHAM_THETA=CO('cham_theta_no'),
+                       ),
               RESULTAT=RESU,
               INST=1,
-              LISSAGE=_F(DEGRE=0),
               ETAT_INIT=_F(SIGM=S_INIT,),
-              CHAM_THETA=CO('cham_theta_no'),
-              OPTION='CALC_G',)
+
+              OPTION='G',)
 
 #CALCUL DE K PAR POST_K1_K2_K3
-KMECA=POST_K1_K2_K3(FOND_FISS=NFOND,
+KMECA=POST_K1_K2_K3(FOND_FISS=FOND,
                     RESULTAT=RESU)
 
-#CALCUL DES G et K par CALC_K_G
-G_INIT2=CALC_G(THETA=_F(FOND_FISS=FOND,
+#CALCUL DES  K 
+G_INIT2=CALC_G(THETA=_F(FISSURE=FOND,
                        R_INF=0.1,
-                       R_SUP=0.5,),
+                       R_SUP=0.5,
+                       DISCRETISATION='LEGENDRE',
+                       DEGRE=0,
+                       CHAM_THETA=CO('cham_theta_no'),
+                       ),
               RESULTAT=RESU,
               INST=1,
-              LISSAGE=_F(DEGRE=0),
               ETAT_INIT=_F(SIGM=S_INIT,),
-              CHAM_THETA=CO('cham_theta_no'),
-              OPTION='CALC_K_G',)
+
+              OPTION='K',)
 
 
 TEST_TABLE(CRITERE='RELATIF',

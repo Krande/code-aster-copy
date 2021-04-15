@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -79,7 +79,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.,
 # DEFINITION DE LA COURONNE
 # -------------------------
 
-FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
+FOND_NEW=DEFI_FOND_FISS(    MAILLAGE=MA,
                         FOND_FISS=_F( GROUP_NO = ('P0',)),
                         SYME='OUI',
                         LEVRE_SUP=_F(MAILLE='M458'),
@@ -103,9 +103,10 @@ CHAMDEP=STAT_NON_LINE( MODELE=MO,
 
                      );
 
-G_0=CALC_G( THETA=_F(
+G_0=CALC_G( OPTION='G',
+            THETA=_F(
                      R_INF=0.15,
-                     FOND_FISS=FOND,
+                     FISSURE=FOND_NEW,
                      R_SUP=0.6,),
                      RESULTAT=CHAMDEP,
                      TOUT_ORDRE='OUI',
@@ -239,9 +240,10 @@ CHAMDEP2=STAT_NON_LINE( MODELE=MO,
 
                      );
 
-G_0_2=CALC_G( THETA=_F(
+G_0_2=CALC_G( OPTION='G',
+              THETA=_F(
                        R_INF=0.15,
-                       FOND_FISS=FOND,
+                       FISSURE=FOND_NEW,
                        R_SUP=0.6,),
                        RESULTAT=CHAMDEP2,
                        TOUT_ORDRE='OUI',
@@ -379,9 +381,10 @@ CHAMDEP3=STAT_NON_LINE( MODELE=MO,
 #################"
 
 
-G_0_3=CALC_G( THETA=_F(
+G_0_3=CALC_G( OPTION='G',
+              THETA=_F(
                        R_INF=0.15,
-                       FOND_FISS=FOND,
+                       FISSURE=FOND_NEW,
                        R_SUP=0.6,),
                        RESULTAT=CHAMDEP3,
                        TOUT_ORDRE='OUI',
@@ -550,9 +553,10 @@ CHAMDEP4=STAT_NON_LINE( MODELE=MO,
 #################"
 
 
-G_0_4=CALC_G( THETA=_F(
+G_0_4=CALC_G( OPTION='G',
+              THETA=_F(
                        R_INF=0.15,
-                       FOND_FISS=FOND,
+                       FISSURE=FOND_NEW,
                        R_SUP=0.6,),
                        RESULTAT=CHAMDEP4,
                        TOUT_ORDRE='OUI',
@@ -682,9 +686,10 @@ CHAMDEP5=STAT_NON_LINE( MODELE=MO,
 #################"
 
 
-G_0_5=CALC_G(THETA=_F(
+G_0_5=CALC_G(OPTION='G',
+             THETA=_F(
                       R_INF=0.15,
-                      FOND_FISS=FOND,
+                      FISSURE=FOND_NEW,
                       R_SUP=0.6,),
                       RESULTAT=CHAMDEP5,
             )
@@ -696,7 +701,7 @@ IMPR_TABLE(TABLE=G_0_5)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-3,
-           VALE_CALC=3.59129161557,
+           VALE_CALC=3.5912878574227047,
            VALE_REFE=3.5912927278361999,
            NOM_PARA='G',
            TABLE=G_0_5,
@@ -706,7 +711,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-3,
-           VALE_CALC=14.4439668753,
+           VALE_CALC=14.444094417902624,
            VALE_REFE=14.444141788733001,
            NOM_PARA='G',
            TABLE=G_0_5,
@@ -716,7 +721,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-3,
-           VALE_CALC=32.7593686031,
+           VALE_CALC=32.760252425573064,
            VALE_REFE=32.761550138719002,
            NOM_PARA='G',
            TABLE=G_0_5,
@@ -726,7 +731,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-3,
-           VALE_CALC=58.9833337329,
+           VALE_CALC=58.98434794747897,
            VALE_REFE=58.991063873790999,
            NOM_PARA='G',
            TABLE=G_0_5,
@@ -736,7 +741,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-3,
-           VALE_CALC=93.7712391682,
+           VALE_CALC=93.77227344472027,
            VALE_REFE=93.763266517031994,
            NOM_PARA='G',
            TABLE=G_0_5,
@@ -746,7 +751,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-3,
-           VALE_CALC=136.178069448,
+           VALE_CALC=136.1790719582369,
            VALE_REFE=136.1388091366,
            NOM_PARA='G',
            TABLE=G_0_5,
@@ -756,7 +761,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-3,
-           VALE_CALC=184.089168532,
+           VALE_CALC=184.0900510397501 ,
            VALE_REFE=184.03472768248,
            NOM_PARA='G',
            TABLE=G_0_5,
@@ -766,7 +771,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-3,
-           VALE_CALC=236.383306399,
+           VALE_CALC=236.38429430895113,
            VALE_REFE=236.3102565378,
            NOM_PARA='G',
            TABLE=G_0_5,
@@ -776,7 +781,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-3,
-           VALE_CALC=292.462078297,
+           VALE_CALC=292.46301835115685,
            VALE_REFE=292.38439111913999,
            NOM_PARA='G',
            TABLE=G_0_5,
@@ -786,7 +791,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-3,
-           VALE_CALC=351.901071742,
+           VALE_CALC=351.9020513673919,
            VALE_REFE=351.82239283614001,
            NOM_PARA='G',
            TABLE=G_0_5,
@@ -795,7 +800,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            )
 
 # ======================================================================
-# VALIDATION 2D DE "CALCUL_CONTRAINTE" (TEST INFORMATIQUE)
+# VALIDATION 2D DE L'EGALITE ENTRE G et G_EPSI (TEST INFORMATIQUE)
 
 # CALCUL AVEC UN COMPORTEMENT INCREMENTAL
 RESUINCR=STAT_NON_LINE(MODELE=MO,
@@ -811,12 +816,12 @@ RESUINCR=STAT_NON_LINE(MODELE=MO,
                        )
 
 # calcul Incr, post-traitement ELAS -> Genl
-G_I_E=CALC_G(RESULTAT=RESUINCR,
+G_I_E=CALC_G(OPTION='G_EPSI',
+             RESULTAT=RESUINCR,
              THETA=_F(
                       R_INF=0.15,
-                      FOND_FISS=FOND,
-                      R_SUP=0.6,),
-                      COMPORTEMENT=_F(RELATION='ELAS_VMIS_PUIS'))
+                      FISSURE=FOND_NEW,
+                      R_SUP=0.6,),)
 
 IMPR_TABLE(TABLE=G_I_E)
 
@@ -824,16 +829,15 @@ IMPR_TABLE(TABLE=G_I_E)
 G_I_E2=CALC_G(RESULTAT=RESUINCR,
               THETA=_F(
                        R_INF=0.15,
-                       FOND_FISS=FOND,
+                       FISSURE=FOND_NEW,
                        R_SUP=0.6,),
-                       COMPORTEMENT=_F(RELATION='ELAS_VMIS_PUIS'),
-                       CALCUL_CONTRAINTE='NON',)
+                       OPTION='G',)
 
 IMPR_TABLE(TABLE=G_I_E2)
 
 # test de G_I_E (non regression)
 TEST_TABLE(VALE_CALC=349.872598141,
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=G_I_E,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=10,),

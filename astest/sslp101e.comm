@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -81,162 +81,174 @@ FOND=DEFI_FOND_FISS( MAILLAGE=MA,
 GPRES1=CALC_G(      RESULTAT=RESU1,
                     THETA=_F(
                              R_INF=22.04078,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND,
                              R_SUP=30.,),
+                    OPTION='G',
 
               )
               
 GKPRES1=CALC_G(     RESULTAT=RESU1,
                     THETA=_F(  R_INF = 22.04078,
                                R_SUP = 30.,
-                               FOND_FISS=FOND),
-                    OPTION='CALC_K_G')
+                               FISSURE=FOND),
+                    OPTION='K')
 
 GPRES2=CALC_G(      RESULTAT=RESU1,
                     THETA=_F(
                              R_INF=15.3061094,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND,
                              R_SUP=22.04078,),
+                    OPTION='G',
     )
                              
 GKPRES2=CALC_G(     RESULTAT=RESU1,
                     THETA=_F( R_SUP = 22.04078,
                               R_INF = 15.3061094,
-                              FOND_FISS=FOND),
-                    OPTION='CALC_K_G')
+                              FISSURE=FOND),
+                    OPTION='K')
 
 GPRES3=CALC_G(      RESULTAT=RESU1,
                     THETA=_F(
                              R_INF=9.79591846,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND,
                              R_SUP=15.3061094,),
+                    OPTION='G',
               )
                              
 
 GKPRES3=CALC_G(     RESULTAT=RESU1,
                     THETA=_F( R_INF = 9.79591846,
                               R_SUP = 15.3061094,
-                              FOND_FISS=FOND),
-                    OPTION='CALC_K_G')
+                              FISSURE=FOND),
+                    OPTION='K')
 
 GPRES4=CALC_G(      RESULTAT=RESU1,
                     THETA=_F(
                              R_INF=5.510197639,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND,
                              R_SUP=9.79591846,),
+                    OPTION='G',
     )
                              
 GKPRES4=CALC_G(     RESULTAT=RESU1,
                     THETA=_F( R_SUP = 9.79591846,
                               R_INF = 5.510197639,
-                              FOND_FISS=FOND),
-                    OPTION='CALC_K_G')
+                              FISSURE=FOND),
+                    OPTION='K')
 
 GPRES5=CALC_G(      RESULTAT=RESU1,
                     THETA=_F(
                              R_INF=2.448979377,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND,
                              R_SUP=5.510197639,),
+                    OPTION='G',
                )
 
 GKPRES5=CALC_G(     RESULTAT=RESU1,
                     THETA=_F( R_INF = 2.448979377,
                               R_SUP = 5.510197639,
-                              FOND_FISS=FOND),
-                    OPTION='CALC_K_G')
+                              FISSURE=FOND),
+                    OPTION='K')
 
 GPRES6=CALC_G(      RESULTAT=RESU1,
                     THETA=_F(
                              R_INF=0.61225116,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND,
                              R_SUP=2.448979377,),
+                    OPTION='G',
               )
 
 GKPRES6=CALC_G(     RESULTAT=RESU1,
                     THETA=_F(R_SUP = 2.448979377,
                              R_INF = 0.61225116,
-                             FOND_FISS=FOND),
-                    OPTION='CALC_K_G')
+                             FISSURE=FOND),
+                    OPTION='K')
 
 # ---- G, K1 ET K2 AVEC CHARGEMENT FORCE_CONTOUR --------------------
 
 GFCON1=CALC_G(      RESULTAT=RESU2,
                     THETA=_F(
                              R_INF=22.04078,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND,
                              R_SUP=30.,),
+                    OPTION='G',
               )
 
 GKFCON1=CALC_G(     RESULTAT=RESU2,
                     THETA=_F(  R_INF = 22.04078,
                                R_SUP = 30.,
-                               FOND_FISS=FOND),
-                    OPTION='CALC_K_G')
+                               FISSURE=FOND),
+                    OPTION='K')
 
 GFCON2=CALC_G(      RESULTAT=RESU2,
                     THETA=_F(
                              R_INF=22.04078,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND,
                              R_SUP=30.,),
+                    OPTION='G',
               )
 
 GKFCON2=CALC_G(     RESULTAT=RESU2,
                     THETA=_F( R_SUP = 22.04078,
                                R_INF = 15.3061094,
-                               FOND_FISS=FOND),
-                    OPTION='CALC_K_G')
+                               FISSURE=FOND),
+                    OPTION='K')
 
 GFCON3=CALC_G(      RESULTAT=RESU2,
                     THETA=_F(
                              R_INF=9.79591846,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND,
                              R_SUP=15.3061094,),
+                    OPTION='G',
               )
 
 GKFCON3=CALC_G(     RESULTAT=RESU2,
                     THETA=_F( R_INF = 9.79591846,
                               R_SUP = 15.3061094,
-                              FOND_FISS=FOND),
-                    OPTION='CALC_K_G')
+                              FISSURE=FOND),
+                    OPTION='K')
 
 GFCON4=CALC_G(      RESULTAT=RESU2,
                     THETA=_F(
                              R_INF=5.510197639,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND,
                              R_SUP=9.79591846,),
+                    OPTION='G',
               )
 
 GKFCON4=CALC_G(     RESULTAT=RESU2,
                     THETA=_F( R_SUP = 9.79591846,
                               R_INF = 5.510197639,
-                              FOND_FISS=FOND),
-                    OPTION='CALC_K_G')
+                              FISSURE=FOND),
+                    OPTION='K')
 
 GFCON5=CALC_G(      RESULTAT=RESU2,
                     THETA=_F(
                              R_INF=2.448979377,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND,
                              R_SUP=5.510197639,),
+                    OPTION='G',
               )
 
 GKFCON5=CALC_G(     RESULTAT=RESU2,
                     THETA=_F( R_INF = 2.448979377,
                               R_SUP = 5.510197639,
-                              FOND_FISS=FOND),
-                    OPTION='CALC_K_G')
+                              FISSURE=FOND),
+                    OPTION='K')
 
 GFCON6=CALC_G(      RESULTAT=RESU2,
                     THETA=_F(
                              R_INF=0.61225116,
-                             FOND_FISS=FOND,
+                             FISSURE=FOND,
                              R_SUP=2.448979377,),
+                    OPTION='G',
               )
 
 GKFCON6=CALC_G(     RESULTAT=RESU2,
                     THETA=_F( R_SUP = 2.448979377,
                               R_INF = 0.61225116,
-                              FOND_FISS=FOND),
-                    OPTION='CALC_K_G')
+                              FISSURE=FOND),
+                    OPTION='K')
 
 TEST_TABLE(PRECISION=5.0000000000000001E-3,
            VALE_CALC=0.00060223657092,
@@ -245,12 +257,6 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
            NOM_PARA='G',
            TABLE=GPRES1,)
 
-TEST_TABLE(PRECISION=5.0000000000000001E-3,
-           VALE_CALC=0.00060223657092,
-           VALE_REFE=5.9999999999999995E-4,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=GKPRES1,)
 
 TEST_TABLE(PRECISION=5.4999999999999997E-3,
            VALE_CALC=0.00060327445374,
@@ -279,12 +285,6 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
            NOM_PARA='G',
            TABLE=GPRES2,)
 
-TEST_TABLE(PRECISION=5.0000000000000001E-3,
-           VALE_CALC=0.000602229372226,
-           VALE_REFE=5.9999999999999995E-4,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=GKPRES2,)
 
 TEST_TABLE(PRECISION=5.4999999999999997E-3,
            VALE_CALC=0.000603262002742,
@@ -313,13 +313,6 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
            NOM_PARA='G',
            TABLE=GPRES3,)
 
-TEST_TABLE(PRECISION=5.0000000000000001E-3,
-           VALE_CALC=0.000602218822018,
-           VALE_REFE=5.9999999999999995E-4,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=GKPRES3,)
-
 TEST_TABLE(PRECISION=5.4999999999999997E-3,
            VALE_CALC=0.000603246568299,
            VALE_REFE=5.9999999999999995E-4,
@@ -346,13 +339,6 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
            REFERENCE='NON_DEFINI',
            NOM_PARA='G',
            TABLE=GPRES4,)
-
-TEST_TABLE(PRECISION=5.0000000000000001E-3,
-           VALE_CALC=0.00060216563233,
-           VALE_REFE=5.9999999999999995E-4,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=GKPRES4,)
 
 TEST_TABLE(PRECISION=5.4999999999999997E-3,
            VALE_CALC=0.000603184342345,
@@ -381,13 +367,6 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
            NOM_PARA='G',
            TABLE=GPRES5,)
 
-TEST_TABLE(PRECISION=5.0000000000000001E-3,
-           VALE_CALC=0.00060192213725,
-           VALE_REFE=5.9999999999999995E-4,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=GKPRES5,)
-
 TEST_TABLE(PRECISION=5.4999999999999997E-3,
            VALE_CALC=0.000602911062315,
            VALE_REFE=5.9999999999999995E-4,
@@ -414,13 +393,6 @@ TEST_TABLE(PRECISION=1.E-2,
            REFERENCE='NON_DEFINI',
            NOM_PARA='G',
            TABLE=GPRES6,)
-
-TEST_TABLE(PRECISION=1.E-2,
-           VALE_CALC=0.000599946064473,
-           VALE_REFE=5.9999999999999995E-4,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=GKPRES6,)
 
 TEST_TABLE(PRECISION=5.4999999999999997E-3,
            VALE_CALC=0.000600666312872,
@@ -449,13 +421,6 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
            NOM_PARA='G',
            TABLE=GFCON1,)
 
-TEST_TABLE(PRECISION=5.0000000000000001E-3,
-           VALE_CALC=0.00060223657092,
-           VALE_REFE=5.9999999999999995E-4,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=GKFCON1,)
-
 TEST_TABLE(PRECISION=5.4999999999999997E-3,
            VALE_CALC=0.00060327445374,
            VALE_REFE=5.9999999999999995E-4,
@@ -482,13 +447,6 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
            REFERENCE='NON_DEFINI',
            NOM_PARA='G',
            TABLE=GFCON2,)
-
-TEST_TABLE(PRECISION=5.0000000000000001E-3,
-           VALE_CALC=0.000602229372226,
-           VALE_REFE=5.9999999999999995E-4,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=GKFCON2,)
 
 TEST_TABLE(PRECISION=5.4999999999999997E-3,
            VALE_CALC=0.000603262002742,
@@ -517,13 +475,6 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
            NOM_PARA='G',
            TABLE=GFCON3,)
 
-TEST_TABLE(PRECISION=5.0000000000000001E-3,
-           VALE_CALC=0.000602218822018,
-           VALE_REFE=5.9999999999999995E-4,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=GKFCON3,)
-
 TEST_TABLE(PRECISION=5.4999999999999997E-3,
            VALE_CALC=0.000603246568299,
            VALE_REFE=5.9999999999999995E-4,
@@ -550,13 +501,6 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
            REFERENCE='NON_DEFINI',
            NOM_PARA='G',
            TABLE=GFCON4,)
-
-TEST_TABLE(PRECISION=5.0000000000000001E-3,
-           VALE_CALC=0.00060216563233,
-           VALE_REFE=5.9999999999999995E-4,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=GKFCON4,)
 
 TEST_TABLE(PRECISION=5.4999999999999997E-3,
            VALE_CALC=0.000603184342345,
@@ -586,13 +530,6 @@ TEST_TABLE(PRECISION=5.0000000000000001E-3,
            TABLE=GFCON5,)
 
 TEST_TABLE(PRECISION=5.0000000000000001E-3,
-           VALE_CALC=0.00060192213725,
-           VALE_REFE=5.9999999999999995E-4,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=GKFCON5,)
-
-TEST_TABLE(PRECISION=5.0000000000000001E-3,
            VALE_CALC=0.000602911062315,
            VALE_REFE=5.9999999999999995E-4,
            REFERENCE='NON_DEFINI',
@@ -618,13 +555,6 @@ TEST_TABLE(PRECISION=1.E-2,
            REFERENCE='NON_DEFINI',
            NOM_PARA='G',
            TABLE=GFCON6,)
-
-TEST_TABLE(PRECISION=1.E-2,
-           VALE_CALC=0.000599946064473,
-           VALE_REFE=5.9999999999999995E-4,
-           REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
-           TABLE=GKFCON6,)
 
 TEST_TABLE(PRECISION=5.0000000000000001E-3,
            VALE_CALC=0.000600666312872,

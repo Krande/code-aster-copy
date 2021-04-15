@@ -56,14 +56,6 @@ MO[1]=AFFE_MODELE(             MAILLAGE=M,
 LINST = DEFI_LIST_REEL   ( DEBUT      =  0.,
                            INTERVALLE =_F (JUSQU_A= 1.0, NOMBRE = 1   )
                                          );
-FF1=DEFI_FOND_FISS(MAILLAGE=M,
-                   FOND_FISS=_F(TYPE_FOND='FERME',
-                                GROUP_MA = 'LFF',
-                                NOEUD_ORIG = 'N49',
-                                MAILLE_ORIG = 'M3233',),
-                   SYME='OUI',
-                   LEVRE_SUP=_F(GROUP_MA = 'LEVINF',)
-                  )
 
 FF=DEFI_FOND_FISS(MAILLAGE=M,
                   FOND_FISS=_F(TYPE_FOND='FERME',
@@ -75,13 +67,7 @@ FF=DEFI_FOND_FISS(MAILLAGE=M,
                  )
 CH = [None]*2
 RESU = [None]*2
-THET1 = [None]*2
-THET = [None]*2
-G01 = [None]*2
-G0 = [None]*2
 GLOC1 = [None]*2
-GLOC2 =[None]*2
-GLOC3 =[None]*2
 
 for i in range(2) :
    CH[i]=AFFE_CHAR_MECA(       MODELE=MO[i],
@@ -110,20 +96,21 @@ for i in range(2) :
                   ),
                         NEWTON     =_F ( REAC_INCR    = 1 ))
 
-#IMPR_TABLE(       TABLE=G0,);
 
-   GLOC1[i]=CALC_G(        RESULTAT=RESU[i],
+   GLOC1[i]=CALC_G(  RESULTAT=RESU[i],
                      INFO=2,
                      INST = 1,
-                     THETA=_F(FOND_FISS=FF,),
-                     LISSAGE=_F(LISSAGE_G='LAGRANGE',
-                                LISSAGE_THETA='LAGRANGE'),
+                     OPTION='G',
+                     THETA=_F(FISSURE=FF,
+                              DISCRETISATION='LINEAIRE',
+                     ),
                      )
+                     
    TEST_TABLE(       TABLE=GLOC1[i],
                      NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N403',      ),
-                     VALE_CALC=11.8601328045,
+                     VALE_CALC=11.765085866881403,
                      VALE_REFE=1.158648E+01,
                      PRECISION=0.04,
                      REFERENCE='ANALYTIQUE'       )
@@ -132,7 +119,7 @@ for i in range(2) :
                      NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N2862',      ),
-                     VALE_CALC=11.60523834,
+                     VALE_CALC=11.611407777888743,
                      VALE_REFE=1.158648E+01,
                      PRECISION=0.01,
                      REFERENCE='ANALYTIQUE'       )
@@ -141,7 +128,7 @@ for i in range(2) :
                      NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N375',      ),
-                     VALE_CALC=11.841205281738,
+                     VALE_CALC=11.745127920084224,
                      VALE_REFE=1.158648E+01,
                      PRECISION=0.035,
                      REFERENCE='ANALYTIQUE'       )
@@ -150,7 +137,7 @@ for i in range(2) :
                      NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N292',      ),
-                     VALE_CALC=11.8687201842,
+                     VALE_CALC=11.76665393837242,
                      VALE_REFE=1.158648E+01,
                      PRECISION=0.04,
                      REFERENCE='ANALYTIQUE'       )
@@ -158,7 +145,7 @@ for i in range(2) :
    TEST_TABLE(TABLE=GLOC1[i],
            NOM_PARA='G',
            TYPE_TEST = 'MAX',
-           VALE_CALC=11.8687201842,
+           VALE_CALC=11.771188573755818,
            VALE_REFE=1.158648E+01,
            PRECISION=0.05,
            REFERENCE='ANALYTIQUE'       )
@@ -166,67 +153,9 @@ for i in range(2) :
    TEST_TABLE(TABLE=GLOC1[i],
            NOM_PARA='G',
            TYPE_TEST = 'MIN',
-           VALE_CALC=11.5971937956,
+           VALE_CALC=11.56758132781171,
            VALE_REFE=1.158648E+01,
            PRECISION=0.01,
-           REFERENCE='ANALYTIQUE'       )
-
-   GLOC2[i]=CALC_G(        RESULTAT=RESU[i],
-                     INST = 1,
-                     THETA=_F(FOND_FISS=FF,),
-                     LISSAGE=_F(LISSAGE_G='LAGRANGE_NO_NO',
-                                LISSAGE_THETA='LAGRANGE'),
-                     )
-   TEST_TABLE(       TABLE=GLOC2[i],
-                     NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N403',      ),
-                     VALE_CALC=11.763099799026,
-                     VALE_REFE=1.158648E+01,
-                     PRECISION=0.025,
-                     REFERENCE='ANALYTIQUE'       )
-
-   TEST_TABLE(       TABLE=GLOC2[i],
-                     NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N2862',      ),
-                     VALE_CALC=11.655556518891,
-                     VALE_REFE=1.158648E+01,
-                     PRECISION=0.02,
-                     REFERENCE='ANALYTIQUE'       )
-
-   TEST_TABLE(       TABLE=GLOC2[i],
-                     NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N375',      ),
-                     VALE_CALC=11.743277221398,
-                     VALE_REFE=1.158648E+01,
-                     PRECISION=0.02,
-                     REFERENCE='ANALYTIQUE'       )
-
-   TEST_TABLE(       TABLE=GLOC2[i],
-                     NOM_PARA='G',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N292',      ),
-                     VALE_CALC=11.769029525819, 
-                     VALE_REFE=1.158648E+01,
-                     PRECISION=0.03,
-                     REFERENCE='ANALYTIQUE'       )
-
-   TEST_TABLE(TABLE=GLOC2[i],
-           NOM_PARA='G',
-           TYPE_TEST = 'MAX',
-           VALE_CALC=11.771000316799,
-           VALE_REFE=1.1714999753978E+01,
-           PRECISION=0.02,
-           REFERENCE='ANALYTIQUE'       )
-
-   TEST_TABLE(TABLE=GLOC2[i],
-           NOM_PARA='G',
-           TYPE_TEST = 'MIN',
-           VALE_CALC=11.646814965523,
-           VALE_REFE=1.1575479415611E+01,
-           PRECISION=0.02,
            REFERENCE='ANALYTIQUE'       )
 
 

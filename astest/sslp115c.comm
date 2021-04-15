@@ -70,7 +70,7 @@ RESUTHER=CREA_RESU(OPERATION='AFFE',
                          _F(LIST_INST = LIST1,
                             CHAM_GD = CHP_TEMP),)
                    )
-                   
+
 ##CALCUL MECANIQUE AVEC TEMPERATURE, FISSURE FERMEE => RESUMECA, pour champs
 #de contrainte initiale
 
@@ -174,7 +174,7 @@ RESOUVFI=CALC_CHAMP(reuse=RESOUVFI,
 ## Affectation du materiau mecanique (sans chargement thermique)
 LIST2=DEFI_LIST_REEL(DEBUT=0,
                         INTERVALLE=(_F(JUSQU_A=1,PAS=1,),),);
-                        
+
 RESTHCT=CREA_RESU(OPERATION='AFFE',
                    TYPE_RESU='EVOL_THER',
                    NOM_CHAM='TEMP',
@@ -188,7 +188,7 @@ MAMECACT=AFFE_MATERIAU(MAILLAGE=MAILMECA,
                                   NOM_VARC='TEMP',
                                   EVOL = RESTHCT,
                                   VALE_REF=250,),);
-                   
+
 ## Resolution ouverture de la fissure en presence d'un champ de contrainte residuelle
 
 RESUINI=STAT_NON_LINE(MODELE=MO,
@@ -208,11 +208,8 @@ RESUINI=CALC_CHAMP(reuse=RESUINI,
 ## Calcul de G en utilisant les couronnes precedemment definies (dans le calcul thermique)
 # et les differentes possibilites de l'etat initial.
 ##Definition du fond de fissure et des couronnes pour reutilisation dans resuini
+
 FISS1=DEFI_FOND_FISS(MAILLAGE=MAILMECA, SYME='NON',
-                     FOND_FISS=_F(GROUP_NO='G',),
-                     LEVRE_SUP=_F(GROUP_MA='lev_sup',),
-                     LEVRE_INF=_F(GROUP_MA='lev_inf',),);
-NFISS1=DEFI_FISSURE(MAILLAGE=MAILMECA, SYME='NON',
                      FOND_FISS=_F(GROUP_NO='G',),
                      LEVRE_SUP=_F(GROUP_MA='lev_sup',),
                      LEVRE_INF=_F(GROUP_MA='lev_inf',),);
@@ -232,166 +229,166 @@ Rsup3 = 9.0
 # Calcul de G pour les 3 couronnes, a partir de SIEF_ELGA
 #--------------------------------------------------------
 
-GINGA1=CALC_G(THETA=_F(
+GINGA1=CALC_G(OPTION='G',
+              THETA=_F(
                        R_INF=Rinf1,
-                       FOND_FISS=FISS1,
+                       FISSURE=FISS1,
                        R_SUP=Rsup1,),
               RESULTAT=RESUINI,
               INST=1,
-              ETAT_INIT =_F(SIGM=SIEFELGA),
-              OPTION='CALC_G')
+              ETAT_INIT =_F(SIGM=SIEFELGA),)
 
-GINGA2=CALC_G(THETA=_F(
+GINGA2=CALC_G(OPTION='G',
+              THETA=_F(
                        R_INF=Rinf2,
-                       FOND_FISS=FISS1,
+                       FISSURE=FISS1,
                        R_SUP=Rsup2,),
               RESULTAT=RESUINI,
               INST=1,
-              ETAT_INIT =_F(SIGM=SIEFELGA),
-              OPTION='CALC_G')
+              ETAT_INIT =_F(SIGM=SIEFELGA),)
 
-GINGA3=CALC_G(THETA=_F(
+GINGA3=CALC_G(OPTION='G',
+              THETA=_F(
                        R_INF=Rinf3,
-                       FOND_FISS=FISS1,
+                       FISSURE=FISS1,
                        R_SUP=Rsup3,),
               RESULTAT=RESUINI,
               INST=1,
-              ETAT_INIT =_F(SIGM=SIEFELGA),
-              OPTION='CALC_G')
+              ETAT_INIT =_F(SIGM=SIEFELGA),)
 
 # Calcul de G pour les 3 couronnes, a partir de SIEF_NOEU
 #--------------------------------------------------------
 
-GINNO1=CALC_G(THETA=_F(
+GINNO1=CALC_G(OPTION='G',
+              THETA=_F(
                        R_INF=Rinf1,
-                       FOND_FISS=FISS1,
+                       FISSURE=FISS1,
                        R_SUP=Rsup1,),
              RESULTAT=RESUINI,
              INST=1,
-             ETAT_INIT =_F(SIGM=SIEFNOEU),
-             OPTION='CALC_G')
+             ETAT_INIT =_F(SIGM=SIEFNOEU),)
 
-GINNO2=CALC_G(THETA=_F(
+GINNO2=CALC_G(OPTION='G',
+              THETA=_F(
                        R_INF=Rinf2,
-                       FOND_FISS=FISS1,
+                       FISSURE=FISS1,
                        R_SUP=Rsup2,),
              RESULTAT=RESUINI,
              INST=1,
-             ETAT_INIT =_F(SIGM=SIEFNOEU),
-             OPTION='CALC_G')
+             ETAT_INIT =_F(SIGM=SIEFNOEU),)
 
-GINNO3=CALC_G(THETA=_F(
+GINNO3=CALC_G(OPTION='G',
+              THETA=_F(
                        R_INF=Rinf3,
-                       FOND_FISS=FISS1,
+                       FISSURE=FISS1,
                        R_SUP=Rsup3,),
               RESULTAT=RESUINI,
               INST=1,
-              ETAT_INIT =_F(SIGM=SIEFNOEU),
-              OPTION='CALC_G')
+              ETAT_INIT =_F(SIGM=SIEFNOEU),)
 
 # Calcul de G pour les 3 couronnes, a partir de SIEF_ELNO
 #--------------------------------------------------------
 
-GINELNO1=CALC_G(THETA=_F(
+GINELNO1=CALC_G(OPTION='G',
+                THETA=_F(
                          R_INF=Rinf1,
-                         FOND_FISS=FISS1,
+                         FISSURE=FISS1,
                          R_SUP=Rsup1,),
                 RESULTAT=RESUINI,
                 INST=1,
-                ETAT_INIT=_F(SIGM=SIEFELNO),
-                OPTION='CALC_G')
+                ETAT_INIT=_F(SIGM=SIEFELNO),)
 
-GINELNO2=CALC_G(THETA=_F(
+GINELNO2=CALC_G(OPTION='G',
+                THETA=_F(
                          R_INF=Rinf2,
-                         FOND_FISS=FISS1,
+                         FISSURE=FISS1,
                          R_SUP=Rsup2,),
                 RESULTAT=RESUINI,
                 INST=1,
-                ETAT_INIT=_F(SIGM=SIEFELNO),
-                OPTION='CALC_G')
+                ETAT_INIT=_F(SIGM=SIEFELNO),)
 
-GINELNO3=CALC_G(THETA=_F(
+GINELNO3=CALC_G(OPTION='G',
+                THETA=_F(
                          R_INF=Rinf3,
-                         FOND_FISS=FISS1,
+                         FISSURE=FISS1,
                          R_SUP=Rsup3,),
                 RESULTAT=RESUINI,
                 INST=1,
-                ETAT_INIT=_F(SIGM=SIEFELNO),
-                OPTION='CALC_G')
+                ETAT_INIT=_F(SIGM=SIEFELNO),)
 
 # Calcul de G et K pour les 3 couronnes, a partir de SIEF_ELNO
 #------------------------------------------------------------
 
-GINELNK1=CALC_G(THETA=_F(FOND_FISS=FISS1,
+GINELNK1=CALC_G(THETA=_F(FISSURE=FISS1,
                         R_INF=Rinf1,
                         R_SUP=Rsup1),
                 RESULTAT=RESUINI,
                 INST=1,
                 ETAT_INIT =_F(SIGM=SIEFELNO),
-                OPTION='CALC_K_G')
+                OPTION=('K','G'))
 
-GINELNK2=CALC_G(THETA=_F(FOND_FISS=FISS1,
+GINELNK2=CALC_G(THETA=_F(FISSURE=FISS1,
                         R_INF=Rinf2,
                         R_SUP=Rsup2),
                 RESULTAT=RESUINI,
                 INST=1,
                 ETAT_INIT =_F(SIGM=SIEFELNO),
-                OPTION='CALC_K_G')
+                OPTION=('K','G'))
 
-GINELNK3=CALC_G(THETA=_F(FOND_FISS=FISS1,
+GINELNK3=CALC_G(THETA=_F(FISSURE=FISS1,
                         R_INF=Rinf3,
                         R_SUP=Rsup3),
                 RESULTAT=RESUINI,
                 INST=1,
                 ETAT_INIT =_F(SIGM=SIEFELNO),
-                OPTION='CALC_K_G')
+                OPTION=('K','G'))
 
 # Calcul de G et K pour les 3 couronnes, a partir de SIEF_ELGA
 #------------------------------------------------------------
 
-GINGAK1=CALC_G(THETA=_F(FOND_FISS=FISS1,
+GINGAK1=CALC_G(THETA=_F(FISSURE=FISS1,
                         R_INF=Rinf1,
                         R_SUP=Rsup1),
                 RESULTAT=RESUINI,
                 INST=1,
                 ETAT_INIT =_F(SIGM=SIEFELGA),
-                OPTION='CALC_K_G')
+                OPTION=('K','G'))
 
-GINGAK2=CALC_G(THETA=_F(FOND_FISS=FISS1,
+GINGAK2=CALC_G(THETA=_F(FISSURE=FISS1,
                         R_INF=Rinf2,
                         R_SUP=Rsup2),
                 RESULTAT=RESUINI,
                 INST=1,
                 ETAT_INIT =_F(SIGM=SIEFELGA),
-                OPTION='CALC_K_G')
+                OPTION=('K','G'))
 
-GINGAK3=CALC_G(THETA=_F(FOND_FISS=FISS1,
+GINGAK3=CALC_G(THETA=_F(FISSURE=FISS1,
                         R_INF=Rinf3,
                         R_SUP=Rsup3),
                 RESULTAT=RESUINI,
                 INST=1,
                 ETAT_INIT =_F(SIGM=SIEFELGA),
-                OPTION='CALC_K_G')
-                
+                OPTION=('K','G'))
+
 # Calcul de G a partir du RESOUVFI
 #---------------------------------
 
-GTHER3=CALC_G(THETA=_F(
+GTHER3=CALC_G(OPTION='G',
+              THETA=_F(
                        R_INF=Rinf3,
-                       FOND_FISS=FISS1,
+                       FISSURE=FISS1,
                        R_SUP=Rsup3,),
               RESULTAT=RESOUVFI,
-              INST=1,
-              OPTION='CALC_G')
+              INST=1,)
 
 
 # POST_K1_K2_K3
 #--------------
 
-KTHER=POST_K1_K2_K3(FOND_FISS=NFISS1,
+KTHER=POST_K1_K2_K3(FOND_FISS=FISS1,
                     RESULTAT=RESOUVFI)
 
-KMECA=POST_K1_K2_K3(FOND_FISS=NFISS1,
+KMECA=POST_K1_K2_K3(FOND_FISS=FISS1,
                     RESULTAT=RESUINI)
 
 ## Verification des resultats
@@ -434,5 +431,8 @@ TEST_TABLE(PRECISION=0.02,
 TEST_TABLE(VALE_CALC=55.3650585586,
            NOM_PARA='G',
            TABLE=GTHER3,)
+
+test = code_aster.TestCase()
+test.assertTrue( True )
 
 FIN();

@@ -61,13 +61,7 @@ CHAMDEPL=MECA_STATIQUE(        MODELE=MO,
 
 CHAMDEPL=CALC_CHAMP(reuse=CHAMDEPL,CONTRAINTE=('SIGM_ELNO'),RESULTAT=CHAMDEPL)
 
-
 FISS=DEFI_FOND_FISS(MAILLAGE=MA,SYME='NON',
-                    FOND_FISS=_F( GROUP_NO = ('P0',)),
-                    LEVRE_SUP=_F(  GROUP_MA = 'LP0P8'),
-                    LEVRE_INF=_F(  GROUP_MA = 'LP0P8S'),
-                   )
-NFISS=DEFI_FISSURE(MAILLAGE=MA,SYME='NON',
                     FOND_FISS=_F( GROUP_NO = ('P0',)),
                     LEVRE_SUP=_F(  GROUP_MA = 'LP0P8'),
                     LEVRE_INF=_F(  GROUP_MA = 'LP0P8S'),
@@ -79,24 +73,25 @@ RINF=0.05
 
 G0=CALC_G(RESULTAT=CHAMDEPL,
           THETA=_F(R_INF=RINF,
-                   FOND_FISS=FISS,
+                   FISSURE=FISS,
                    R_SUP=RSUP,
                    ),
+           OPTION='G',
           INFO=2)
 
 
 GK0=CALC_G(RESULTAT=CHAMDEPL,
            THETA=_F(R_INF=RINF,
-                    FOND_FISS=FISS,
+                    FISSURE=FISS,
                     R_SUP=RSUP,
                     ),
-           OPTION='CALC_K_G')
+           OPTION='K')
 
 IMPR_TABLE(TABLE=GK0)
 
 # POST_K1_K2_K3
 TABL_K1=POST_K1_K2_K3(RESULTAT=CHAMDEPL,
-                      FOND_FISS=NFISS,
+                      FOND_FISS=FISS,
                       INFO=2,
                       )
 
@@ -113,17 +108,10 @@ GREF=23.17296
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.017999999999999999,
-           VALE_CALC=23.563767881,
-           VALE_REFE=23.17296,
-           NOM_PARA='G',
-           TABLE=G0,)
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.017999999999999999,
-           VALE_CALC=11.7818839405,
+           VALE_CALC=11.78188394048058,
            VALE_REFE=11.58648,
            NOM_PARA='G',
-           TABLE=GK0,)
+           TABLE=G0,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.029999999999999999,
@@ -185,23 +173,24 @@ IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=DEPL_ROT));
 
 G1=CALC_G(RESULTAT=DEPL_ROT,
           THETA=_F(R_INF=RINF,
-                   FOND_FISS=FISS,
+                   FISSURE=FISS,
                    R_SUP=RSUP,
                    ),
+          OPTION='G',
           )
 
 GK1=CALC_G(THETA=_F(R_INF=RINF,
-                    FOND_FISS=FISS,
+                    FISSURE=FISS,
                     R_SUP=RSUP,
                     ),
           RESULTAT=DEPL_ROT,
-          OPTION='CALC_K_G')
+          OPTION='K')
 
 IMPR_TABLE(TABLE=GK1)
 
 # POST_K1_K2_K3
 TABL_K2=POST_K1_K2_K3(RESULTAT=DEPL_ROT,
-                      FOND_FISS=NFISS,
+                      FOND_FISS=FISS,
                       )
 
 IMPR_TABLE(TABLE=TABL_K2)

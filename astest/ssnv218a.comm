@@ -189,15 +189,9 @@ FONFISS=DEFI_FOND_FISS(MAILLAGE=MA,
                                     GROUP_NO_ORIG='PFONI',),
                        SYME='OUI',
                        NORMALE=(0.,0.,1.,),
-                       );
-NFONFISS=DEFI_FISSURE(MAILLAGE=MA,
-                       CONFIG_INIT='DECOLLEE',
                        LEVRE_SUP=_F(GROUP_MA='LEVREINF'),
-                       FOND_FISS=_F(GROUP_MA='LFOND',
-                                    GROUP_NO_ORIG='PFONI',),
-                       SYME='OUI',
-                       NORMALE=(0.,0.,1.,),
                        );
+                       
 l_copeaux1 = ('CO_1_1','CO_1_2')
 l_copeaux4 = ('CO_4_1','CO_4_2')
 
@@ -205,20 +199,18 @@ L_INS_GP = DEFI_LIST_REEL(VALE=[1.0,3.0],);
 conv = 1000.**0.5
 kjc1=conv*57.739
 
-gtheta = CALC_G(COMPORTEMENT=_F(
-                             DEFORMATION='PETIT',
-                             RELATION='ELAS_VMIS_TRAC',
-                             GROUP_MA=('VBLOC','SINF'),
-                             ),
+gtheta = CALC_G(OPTION='G',
                 THETA=_F(R_INF=0.25,
                          R_SUP=0.5,
-                         FOND_FISS=FONFISS,),
+                         FISSURE=FONFISS,
+                         DISCRETISATION='LEGENDRE',
+                         ),
                          RESULTAT=RESU,
                          LIST_INST=L_INS_GP,
                   )
 
 tabgp=CALC_GP(RESULTAT=RESU,
-            FOND_FISS=NFONFISS,
+            FOND_FISS=FONFISS,
             TRANCHE_3D = (
                           _F(GROUP_MA=l_copeaux1,),
                           _F(GROUP_MA=l_copeaux4,),
@@ -230,7 +222,7 @@ tabgp=CALC_GP(RESULTAT=RESU,
 IMPR_TABLE(TABLE=tabgp);
 IMPR_TABLE(TABLE=gtheta,UNITE=8)
 #Test du calcul de G
-TEST_TABLE(VALE_CALC=20.7982207268,
+TEST_TABLE(VALE_CALC=20.69454398473108,
            NOM_PARA='G',
            TABLE=gtheta,
            FILTRE=(_F(NOM_PARA='NOEUD',

@@ -57,26 +57,13 @@ FOND1=DEFI_FOND_FISS(  MAILLAGE=MA, SYME='NON',
                        LEVRE_SUP=_F(GROUP_MA='LPOP8',),
                        LEVRE_INF=_F(GROUP_MA='LPOP8B',),
                      )
-NFOND1=DEFI_FISSURE(  MAILLAGE=MA, SYME='NON',
-                       FOND_FISS=_F( GROUP_NO = ('P0',)),
-                       LEVRE_SUP=_F(GROUP_MA='LPOP8',),
-                       LEVRE_INF=_F(GROUP_MA='LPOP8B',),
-                     )
-
-
-G01=CALC_G(          RESULTAT=CHAMDEPL,
-                     THETA=_F(
-                              R_INF=0.00001875,
-                              FOND_FISS=FOND1,
-                              R_SUP=0.000075,),
-                   )
 
 GK01=CALC_G(              RESULTAT=CHAMDEPL,
                           THETA=_F(
                                    R_INF = 0.00001875,
                                    R_SUP = 0.000075,
-                                   FOND_FISS=FOND1),
-                          OPTION='CALC_K_G'
+                                   FISSURE=FOND1),
+                          OPTION=('G','K'),
                       )
 
 # references analytiques
@@ -116,7 +103,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 # ------------------------------------------------------------------
 
 TABL_K=POST_K1_K2_K3(  RESULTAT = CHAMDEPL,
-                       FOND_FISS = NFOND1,
+                       FOND_FISS = FOND1,
                        )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',

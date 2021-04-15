@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -157,31 +157,38 @@ FOND=DEFI_FOND_FISS( MAILLAGE=MA,
 GTH1=CALC_G(RESULTAT=RESUTH,
             NUME_ORDRE=1,
             THETA=_F(
-                FOND_FISS=FOND,
+                FISSURE=FOND,
                 R_INF=1.,
                 R_SUP=5.),
+            OPTION='G_EPSI',
             );
 
 GTH2=CALC_G(RESULTAT=RESUTH,
             NUME_ORDRE=1,
             THETA=_F(
-                    FOND_FISS=FOND,
+                    FISSURE=FOND,
                     R_INF=5.,
-                    R_SUP=10.),);
+                    R_SUP=10.),
+            OPTION='G_EPSI',
+                    );
 
 GTH3=CALC_G(RESULTAT=RESUTH,
             NUME_ORDRE=1,
             THETA=_F(
-                    FOND_FISS=FOND,
+                    FISSURE=FOND,
                     R_INF=10.,
-                    R_SUP=20.),);
+                    R_SUP=20.),
+            OPTION='G_EPSI',
+                    );
 
 GTH4=CALC_G(RESULTAT=RESUTH,
             NUME_ORDRE=1,
             THETA=_F(
-                     FOND_FISS=FOND,
+                     FISSURE=FOND,
                      R_INF=20.,
-                     R_SUP=30.),);
+                     R_SUP=30.),
+            OPTION='G_EPSI',
+                     );
 
 #--------------------------------------------------------------------
 #  CALCUL DE G AVEC DEFORMATIONS INITIALES
@@ -190,46 +197,53 @@ GTH4=CALC_G(RESULTAT=RESUTH,
 GINI1=CALC_G(RESULTAT=RESUINI,
              NUME_ORDRE=1,
              THETA=_F(
-                    FOND_FISS=FOND,
+                    FISSURE=FOND,
                     R_INF=1.,
                     R_SUP=5.),
+            OPTION='G_EPSI',
             );
 
 GINI2=CALC_G(RESULTAT=RESUINI,
              NUME_ORDRE=1,
             THETA=_F(
-                FOND_FISS=FOND,
+                FISSURE=FOND,
                 R_INF=5.,
-                R_SUP=10.),);
+                R_SUP=10.),
+            OPTION='G_EPSI',
+                );
 
 GINI3=CALC_G(RESULTAT=RESUINI,
              NUME_ORDRE=1,
              THETA=_F(
-                FOND_FISS=FOND,
+                FISSURE=FOND,
                 R_INF=10.,
-                R_SUP=20.),);
+                R_SUP=20.),
+            OPTION='G_EPSI',
+                );
 
 GINI4=CALC_G(RESULTAT=RESUINI,
              NUME_ORDRE=1,
              THETA=_F(
-                    FOND_FISS=FOND,
+                    FISSURE=FOND,
                     R_INF=20.,
-                    R_SUP=30.),);
+                    R_SUP=30.),
+            OPTION='G_EPSI',
+                    );
 
                            
 
 #--------------------------------------------------------------------
 #                TESTS DES RESULTATS                                #
 #--------------------------------------------------------------------
-Gther1= 31.50584388612264
-Gther2= 31.503165974359877
-Gther3= 31.500724485013823
-Gther4= 31.501299959584696
+Gther1= 0.6301168777224526
+Gther2= 0.6300633194871973
+Gther3= 0.6300144897002766
+Gther4= 0.6300259991916937
 
 #NON REGRESSIONS DES G ISSUS DU CALCUL THERMOMECANIQUE
 TEST_TABLE(
            VALE_CALC=Gther1,
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=GTH1,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),
@@ -237,7 +251,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=Gther2,
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=GTH2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),
@@ -245,7 +259,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=Gther3,
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=GTH3,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),
@@ -253,7 +267,7 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=Gther4,
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=GTH4,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),
@@ -261,48 +275,48 @@ TEST_TABLE(
 
 #TEST DES G ISSUS DU CALCUL AVEC PRE-DEFORMATION
 TEST_TABLE(
-           VALE_CALC=31.50584388612272,
+           VALE_CALC=0.630116877722455,
            VALE_REFE=Gther1,
            REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-4,
            CRITERE='RELATIF',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=GINI1,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),
            )
 
 TEST_TABLE(
-           VALE_CALC=31.503165974359916,
+           VALE_CALC=0.6300633194871978,
            VALE_REFE=Gther2,
            REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-4,
            CRITERE='RELATIF',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=GINI2,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),
            )
 
 TEST_TABLE(
-           VALE_CALC=31.5007244850139,
+           VALE_CALC=0.6300144897002781,
            VALE_REFE=Gther3,
            REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-4,
            CRITERE='RELATIF',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=GINI3,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),
            )
 
 TEST_TABLE(
-           VALE_CALC=31.501299959584692,
+           VALE_CALC=0.6300259991916938,
            VALE_REFE=Gther4,
            REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-4,
            CRITERE='RELATIF',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=GINI4,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=1,),

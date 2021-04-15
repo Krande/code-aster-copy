@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -61,21 +61,18 @@ FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
 
 G0=CALC_G(              RESULTAT=CHAMDEPL,
                         THETA=_F(
-                                 FOND_FISS=FOND,
+                                 CHAM_THETA=CO('cham_theta_no'),
+                                 FISSURE=FOND,
                                  R_INF=0.00015,
                                  R_SUP=0.00020),
-                        CHAM_THETA=CO('cham_theta_no'),
+                        OPTION='G',
                     )
 
-#
-# LA VALEUR DE REFERENCE VAUT 7.37409E-3, LE RAYON LA FISSURE VAUT 0.1
-# ET DONC LA VALEUR A TESTER VAUT 7.37409E-3*0.1=7.37409E-4
-#
 # la solution analytique est donnée par MURAKAMI (cf case 9.12)
 
 TEST_TABLE(PRECISION=0.02,
-           VALE_CALC=0.000730834528052,
-           VALE_REFE=7.3740899999999996E-4,
+           VALE_CALC=0.00730834528052,
+           VALE_REFE=7.3740899999999996E-3,
            REFERENCE='ANALYTIQUE',
            NOM_PARA='G',
            TABLE=G0,)

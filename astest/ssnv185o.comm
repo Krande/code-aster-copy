@@ -131,22 +131,21 @@ SIF2 = [None]*nbc
 for i in range(0,nbc) :
    
    SIF1[i]=CALC_G(RESULTAT=UTOT1,
-                  OPTION='CALC_K_G',
-                  LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
-                               LISSAGE_G='LAGRANGE',),
+                  OPTION='K',
                   THETA=_F(R_INF=RI[i],
                            R_SUP=RS[i],
-                           FOND_FISS=FISS,),);
+                           FISSURE=FISS,
+                           DISCRETISATION='LINEAIRE',
+                           ),);
 
    IMPR_TABLE(TABLE=SIF1[i],);
 
    SIF2[i]=CALC_G(RESULTAT=UTOT2,
-                  OPTION='CALC_K_G',
-                  LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
-                               LISSAGE_G='LAGRANGE',),
+                  OPTION='K',
                   THETA=_F(R_INF=RI[i],
                            R_SUP=RS[i],
-                  FOND_FISS=FISS,),);
+                           DISCRETISATION='LINEAIRE',
+                  FISSURE=FISS,),);
 
    IMPR_TABLE(TABLE=SIF2[i],);
 

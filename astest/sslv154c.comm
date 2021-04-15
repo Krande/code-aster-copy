@@ -135,12 +135,14 @@ for i in range(2) :
 #-----------------------------------------------------------------------------------------------------------------------------
 
 # Methode G-theta
-   CG[i]=CALC_G(THETA=_F(FOND_FISS=FISS,
+   CG[i]=CALC_G(THETA=_F(FISSURE=FISS,
                    R_INF=RINF,
-                   R_SUP=RSUP),
+                   R_SUP=RSUP,
+                   DISCRETISATION='LEGENDRE',
+                   ),
           RESULTAT=RESU[i],
           INST = 1,
-          OPTION='CALC_K_G')
+          OPTION=('G','K'),)
 
 
 # formule pour le calcul de l'angle en degre
@@ -180,10 +182,10 @@ k2ref_0 = 8.6435469393827E+05
 k3ref_90 = 6.7469786391964E+05
 
 # valeurs de ref calcule abtenus avec eole
-k1calmax = 855641.1782236944
-k1calmin = 838922.7142114817
-k2calc = 834970.5180428904
-k3calc = 683651.1178975893
+k1calmax = 852866.3806825043
+k1calmin = 835923.7772277619
+k2calc = 838645.3081470532
+k3calc = 680970.7225031462
 
 # ajout des colonnes 'angle' et valeurs de ref dans les tables
 

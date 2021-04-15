@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -181,20 +181,24 @@ FOND=DEFI_FOND_FISS(MAILLAGE=MA, SYME='NON',
 
 G00=CALC_G(RESULTAT=RESU,
            THETA=_F(
+                    CHAM_THETA=CO('cham_theta_no0'),
                     R_INF=3.75E-5,
-                    FOND_FISS=FOND,
+                    FISSURE=FOND,
                     R_SUP=7.50E-5,),
-           EXCIT=_F(CHARGE=CH,),
-           CHAM_THETA=CO('cham_theta_no0'),
+           #~ EXCIT=_F(CHARGE=CH,),
+            OPTION='G_EPSI',
+
            )
 
 GK00=CALC_G(RESULTAT=RESU,
-            THETA=_F(FOND_FISS=FOND,
+            THETA=_F(FISSURE=FOND,
                      R_INF = 3.75E-5,
-                     R_SUP = 7.50E-5,),
-            EXCIT=_F(CHARGE=CH,),
-            OPTION='CALC_K_G',
-            CHAM_THETA=CO('cham_theta_no1'),
+                     R_SUP = 7.50E-5,
+                     CHAM_THETA=CO('cham_theta_no1'),
+                     ),
+            #~ EXCIT=_F(CHARGE=CH,),
+            OPTION='K',
+
            )
 
 #
@@ -206,17 +210,18 @@ GK00=CALC_G(RESULTAT=RESU,
 G01=CALC_G(RESULTAT=RESU,
            THETA=_F(
                     R_INF=7.50E-5,
-                    FOND_FISS=FOND,
+                    FISSURE=FOND,
                     R_SUP=1.125E-4,),
-           EXCIT=_F(CHARGE=CH,),
+           #~ EXCIT=_F(CHARGE=CH,),
+            OPTION='G_EPSI',
           )
 
 GK01=CALC_G(RESULTAT=RESU,
-            THETA=_F(FOND_FISS=FOND,
+            THETA=_F(FISSURE=FOND,
                      R_INF =  7.50E-5,
                      R_SUP = 1.125E-4),
-            EXCIT=_F(CHARGE=CH,),
-            OPTION='CALC_K_G'
+            #~ EXCIT=_F(CHARGE=CH,),
+            OPTION='K'
             )
 
 #
@@ -228,18 +233,19 @@ GK01=CALC_G(RESULTAT=RESU,
 G02=CALC_G(RESULTAT=RESU,
            THETA=_F(
                     R_INF=1.125E-4,
-                    FOND_FISS=FOND,
+                    FISSURE=FOND,
                     R_SUP=1.500E-4,),
-           EXCIT=_F(CHARGE=CH,),
+           #~ EXCIT=_F(CHARGE=CH,),
+            OPTION='G_EPSI',
            )
 
 #
 GK02=CALC_G(RESULTAT=RESU,
-            THETA=_F(FOND_FISS=FOND,
+            THETA=_F(FISSURE=FOND,
                      R_INF = 1.125E-4,
                      R_SUP = 1.500E-4),
-            EXCIT=_F(CHARGE=CH,),
-            OPTION='CALC_K_G'
+            #~ EXCIT=_F(CHARGE=CH,),
+            OPTION='K'
             )
 
 #
@@ -251,20 +257,22 @@ GK02=CALC_G(RESULTAT=RESU,
 #
 G03=CALC_G(RESULTAT=RESU,
            THETA=_F(
+                    CHAM_THETA=CO('cham_theta_no3'),
                     R_INF=1.500E-4,
-                    FOND_FISS=FOND,
+                    FISSURE=FOND,
                     R_SUP=1.875E-4,),
-           EXCIT=_F(CHARGE=CH,),
-           CHAM_THETA=CO('cham_theta_no3'),
+            OPTION='G_EPSI',
+           #~ EXCIT=_F(CHARGE=CH,),
+
             )
 
 #
 GK03=CALC_G(RESULTAT=RESU,
-            THETA=_F(FOND_FISS=FOND,
+            THETA=_F(FISSURE=FOND,
                      R_INF = 1.500E-4,
                      R_SUP = 1.875E-4),
-            EXCIT=_F(CHARGE=CH,),
-            OPTION='CALC_K_G'
+            #~ EXCIT=_F(CHARGE=CH,),
+            OPTION='K'
             )
 
 #
@@ -277,18 +285,19 @@ GK03=CALC_G(RESULTAT=RESU,
 G04=CALC_G(RESULTAT=RESU,
            THETA=_F(
                     R_INF=1.875E-4,
-                    FOND_FISS=FOND,
+                    FISSURE=FOND,
                     R_SUP=2.250E-4,),
-           EXCIT=_F(CHARGE=CH,),
+            OPTION='G_EPSI',
+           #~ EXCIT=_F(CHARGE=CH,),
             )
 
 #
 GK04=CALC_G(RESULTAT=RESU,
-            THETA=_F(FOND_FISS=FOND,
+            THETA=_F(FISSURE=FOND,
                      R_INF = 1.875E-4,
                      R_SUP = 2.250E-4),
-            EXCIT=_F(CHARGE=CH,),
-            OPTION='CALC_K_G'
+            #~ EXCIT=_F(CHARGE=CH,),
+            OPTION='K'
             )
 
 
@@ -301,19 +310,20 @@ GK04=CALC_G(RESULTAT=RESU,
 #
 G05=CALC_G(RESULTAT=RESU,
            THETA=_F(
-                    FOND_FISS=FOND,
+                    FISSURE=FOND,
                     R_INF = 2.250E-4,
                     R_SUP = 3.000E-4,),
-           EXCIT=_F(CHARGE=CH,),
+            OPTION='G_EPSI',
+           #~ EXCIT=_F(CHARGE=CH,),
             )
 
 #
 GK05=CALC_G(RESULTAT=RESU,
-            THETA=_F(FOND_FISS=FOND,
+            THETA=_F(FISSURE=FOND,
                      R_INF = 2.250E-4,
                      R_SUP = 3.000E-4),
-            EXCIT=_F(CHARGE=CH,),
-            OPTION='CALC_K_G'
+            #~ EXCIT=_F(CHARGE=CH,),
+            OPTION='K'
             )
 
 #
@@ -324,7 +334,7 @@ TEST_TABLE(PRECISION=0.050000000000000003,
            VALE_CALC=2598.60846232,
            VALE_REFE=2496.9000000000001,
            REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=G00,)
 
 TEST_TABLE(PRECISION=0.050000000000000003,
@@ -340,7 +350,7 @@ TEST_TABLE(PRECISION=0.050000000000000003,
            VALE_CALC=2599.14038573,
            VALE_REFE=2496.9000000000001,
            REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=G01,)
 
 #
@@ -356,7 +366,7 @@ TEST_TABLE(PRECISION=0.050000000000000003,
            VALE_CALC=2599.25385725,
            VALE_REFE=2496.9000000000001,
            REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=G02,)
 
 #
@@ -372,7 +382,7 @@ TEST_TABLE(PRECISION=0.050000000000000003,
            VALE_CALC=2599.38307167,
            VALE_REFE=2496.9000000000001,
            REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=G03,)
 
 #
@@ -388,7 +398,7 @@ TEST_TABLE(PRECISION=0.050000000000000003,
            VALE_CALC=2601.30341271,
            VALE_REFE=2496.9000000000001,
            REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=G04,)
 
 #
@@ -404,7 +414,7 @@ TEST_TABLE(PRECISION=0.050000000000000003,
            VALE_CALC=2598.59476439,
            VALE_REFE=2496.9000000000001,
            REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=G05,)
 
 #

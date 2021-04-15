@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -202,7 +202,7 @@ CHAMDEP0=STAT_NON_LINE(MODELE=MO,
                 ITER_GLOB_MAXI = 20),
               )
 
-FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
+FOND_NEW=DEFI_FOND_FISS(    MAILLAGE=MA,
                          FOND_FISS=_F( GROUP_NO = ('P0',)),
                          SYME='OUI',
                          LEVRE_SUP=_F(MAILLE='M1609'),
@@ -233,10 +233,11 @@ FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
 # COURONNE 0
 # ----------
 
-G0_P=CALC_G(    RESULTAT=CHAMDEPP,
+G0_P=CALC_G(    OPTION='G',
+                RESULTAT=CHAMDEPP,
                         THETA=_F(
                                  R_INF=0.0025,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND_NEW,
                                  R_SUP=0.005,),
                     )
 
@@ -244,17 +245,18 @@ GK0_P=CALC_G(    RESULTAT=CHAMDEPP,
                          THETA=_F(
                                    R_INF = 0.0025,
                                    R_SUP = 0.005,
-                                   FOND_FISS=FOND),
-                         OPTION='CALC_K_G'
+                                   FISSURE=FOND_NEW),
+                         OPTION='K'
                      )
 
 # COURONNE 1
 # ----------
 
-G1_P=CALC_G(    RESULTAT=CHAMDEPP,
+G1_P=CALC_G(    OPTION='G',
+                RESULTAT=CHAMDEPP,
                         THETA=_F(
                                  R_INF=0.005,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND_NEW,
                                  R_SUP=0.0075,),
                     )
 
@@ -262,17 +264,18 @@ GK1_P=CALC_G(    RESULTAT=CHAMDEPP,
                          THETA=_F(
                                    R_INF = 0.005,
                                    R_SUP = 0.0075,
-                                   FOND_FISS=FOND,),
-                         OPTION='CALC_K_G'
+                                   FISSURE=FOND_NEW,),
+                         OPTION='K'
                      )
 
 # COURONNE 2
 # ----------
 
-G2_P=CALC_G(    RESULTAT=CHAMDEPP,
+G2_P=CALC_G(    OPTION='G',
+                RESULTAT=CHAMDEPP,
                         THETA=_F(
                                  R_INF=0.0075,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND_NEW,
                                  R_SUP=0.01,),
                     )
 
@@ -280,17 +283,18 @@ GK2_P=CALC_G(    RESULTAT=CHAMDEPP,
                          THETA=_F(
                                    R_INF = 0.0075,
                                    R_SUP = 0.01,
-                                   FOND_FISS=FOND),
-                         OPTION='CALC_K_G'
+                                   FISSURE=FOND_NEW),
+                         OPTION='K'
                      )
 
 # COURONNE 3
 # ----------
 
-G3_P=CALC_G(    RESULTAT=CHAMDEPP,
+G3_P=CALC_G(    OPTION='G',
+                RESULTAT=CHAMDEPP,
                         THETA=_F(
                                  R_INF=0.005,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND_NEW,
                                  R_SUP=0.03,),
                     )
 
@@ -298,8 +302,8 @@ GK3_P=CALC_G(    RESULTAT=CHAMDEPP,
                          THETA=_F(
                                    R_INF = 0.005,
                                    R_SUP = 0.03,
-                                   FOND_FISS=FOND),
-                         OPTION='CALC_K_G'
+                                   FISSURE=FOND_NEW),
+                         OPTION='K'
                      )
 
 # COURONNE 4
@@ -307,8 +311,8 @@ GK3_P=CALC_G(    RESULTAT=CHAMDEPP,
 
 GK4_P=CALC_G(    RESULTAT=CHAMDEPP,
                          THETA=_F(
-                                   FOND_FISS=FOND),
-                         OPTION='CALC_K_G'
+                                   FISSURE=FOND_NEW),
+                         OPTION='K'
                      )
 
 # ------------------------------------------------
@@ -318,10 +322,11 @@ GK4_P=CALC_G(    RESULTAT=CHAMDEPP,
 # COURONNE 0
 # ----------
 
-G0_T=CALC_G(    RESULTAT=CHAMDEPT,
+G0_T=CALC_G(    OPTION='G',
+                RESULTAT=CHAMDEPT,
                         THETA=_F(
                                  R_INF=0.0025,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND_NEW,
                                  R_SUP=0.005,),
                     )
 
@@ -329,17 +334,18 @@ GK0_T=CALC_G(    RESULTAT=CHAMDEPT,
                          THETA=_F(
                                    R_INF = 0.0025,
                                    R_SUP = 0.005,
-                                   FOND_FISS=FOND),
-                         OPTION='CALC_K_G'
+                                   FISSURE=FOND_NEW),
+                         OPTION='K'
                      )
 
 # COURONNE 1
 # ----------
 
-G1_T=CALC_G(    RESULTAT=CHAMDEPT,
+G1_T=CALC_G(    OPTION='G',
+                RESULTAT=CHAMDEPT,
                         THETA=_F(
                                  R_INF=0.005,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND_NEW,
                                  R_SUP=0.0075,),
                     )
 
@@ -347,35 +353,37 @@ GK1_T=CALC_G(    RESULTAT=CHAMDEPT,
                          THETA=_F(
                                    R_INF = 0.005,
                                    R_SUP = 0.0075,
-                                   FOND_FISS=FOND,),
-                         OPTION='CALC_K_G'
+                                   FISSURE=FOND_NEW,),
+                         OPTION='K'
                      )
 
 # COURONNE 2
 # ----------
 
-G2_T=CALC_G(    RESULTAT=CHAMDEPT,
+G2_T=CALC_G(    OPTION='G',
+                RESULTAT=CHAMDEPT,
                         THETA=_F(
                                  R_INF=0.0075,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND_NEW,
                                  R_SUP=0.01,),
                     )
 
 GK2_T=CALC_G(    RESULTAT=CHAMDEPT,
                          THETA=_F(
-                                   R_INF = 0.0075,
+                                  R_INF = 0.0075,
                                    R_SUP = 0.01,
-                                   FOND_FISS=FOND),
-                         OPTION='CALC_K_G'
+                                   FISSURE=FOND_NEW),
+                         OPTION='K'
                      )
 
 # COURONNE 3
 # ----------
 
-G3_T=CALC_G(    RESULTAT=CHAMDEPT,
+G3_T=CALC_G(    OPTION='G',
+                RESULTAT=CHAMDEPT,
                         THETA=_F(
                                  R_INF=0.005,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND_NEW,
                                  R_SUP=0.03,),
                     )
 
@@ -383,8 +391,8 @@ GK3_T=CALC_G(    RESULTAT=CHAMDEPT,
                          THETA=_F(
                                    R_INF = 0.005,
                                    R_SUP = 0.03,
-                                   FOND_FISS=FOND),
-                         OPTION='CALC_K_G'
+                                   FISSURE=FOND_NEW),
+                         OPTION='K'
                      )
 
 # COURONNE 4
@@ -392,8 +400,8 @@ GK3_T=CALC_G(    RESULTAT=CHAMDEPT,
 
 GK4_T=CALC_G(    RESULTAT=CHAMDEPT,
                          THETA=_F(
-                                   FOND_FISS=FOND),
-                         OPTION='CALC_K_G'
+                                   FISSURE=FOND_NEW),
+                         OPTION='K'
                      )
 
 # ------------------------------------------------
@@ -403,10 +411,11 @@ GK4_T=CALC_G(    RESULTAT=CHAMDEPT,
 # COURONNE 0
 # ----------
 
-G0_C=CALC_G(   RESULTAT=CHAMDEP0,
+G0_C=CALC_G(   OPTION='G',
+               RESULTAT=CHAMDEP0,
                         THETA=_F(
                                  R_INF=0.0025,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND_NEW,
                                  R_SUP=0.005,),
                     )
 
@@ -414,17 +423,18 @@ GK0_C=CALC_G(   RESULTAT=CHAMDEP0,
                          THETA=_F(
                                    R_INF = 0.0025,
                                    R_SUP = 0.005,
-                                   FOND_FISS=FOND),
-                         OPTION='CALC_K_G'
+                                   FISSURE=FOND_NEW),
+                         OPTION='K'
                      )
 
 # COURONNE 1
 # ----------
 
-G1_C=CALC_G(   RESULTAT=CHAMDEP0,
+G1_C=CALC_G(   OPTION='G',
+               RESULTAT=CHAMDEP0,
                         THETA=_F(
                                  R_INF=0.005,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND_NEW,
                                  R_SUP=0.0075,),
                     )
 
@@ -432,17 +442,18 @@ GK1_C=CALC_G(   RESULTAT=CHAMDEP0,
                          THETA=_F(
                                    R_INF = 0.005,
                                    R_SUP = 0.0075,
-                                   FOND_FISS=FOND,),
-                         OPTION='CALC_K_G'
+                                   FISSURE=FOND_NEW,),
+                         OPTION='K'
                      )
 
 # COURONNE 2
 # ----------
 
-G2_C=CALC_G(   RESULTAT=CHAMDEP0,
+G2_C=CALC_G(   OPTION='G',
+               RESULTAT=CHAMDEP0,
                         THETA=_F(
                                  R_INF=0.0075,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND_NEW,
                                  R_SUP=0.01,),
                     )
 
@@ -450,17 +461,18 @@ GK2_C=CALC_G(   RESULTAT=CHAMDEP0,
                          THETA=_F(
                                    R_INF = 0.0075,
                                    R_SUP = 0.01,
-                                   FOND_FISS=FOND),
-                         OPTION='CALC_K_G'
+                                   FISSURE=FOND_NEW),
+                         OPTION='K'
                      )
 
 # COURONNE 3
 # ----------
 
-G3_C=CALC_G(   RESULTAT=CHAMDEP0,
+G3_C=CALC_G(   OPTION='G',
+               RESULTAT=CHAMDEP0,
                         THETA=_F(
                                  R_INF=0.005,
-                                 FOND_FISS=FOND,
+                                 FISSURE=FOND_NEW,
                                  R_SUP=0.03,),
                     )
 
@@ -468,8 +480,8 @@ GK3_C=CALC_G(   RESULTAT=CHAMDEP0,
                          THETA=_F(
                                    R_INF = 0.005,
                                    R_SUP = 0.03,
-                                   FOND_FISS=FOND),
-                         OPTION='CALC_K_G'
+                                   FISSURE=FOND_NEW),
+                         OPTION='K'
                      )
 
 # COURONNE 4
@@ -477,8 +489,8 @@ GK3_C=CALC_G(   RESULTAT=CHAMDEP0,
 
 GK4_C=CALC_G(   RESULTAT=CHAMDEP0,
                          THETA=_F(
-                                   FOND_FISS=FOND),
-                         OPTION='CALC_K_G'
+                                   FISSURE=FOND_NEW),
+                         OPTION='K'
                      )
 
 # *******************************************************
@@ -552,21 +564,18 @@ TEST_TABLE(PRECISION=0.070000000000000007,
            REFERENCE='NON_DEFINI',
            NOM_PARA='K1',
            TABLE=GK3_T,)
-
 TEST_TABLE(PRECISION=0.070000000000000007,
            VALE_CALC=-0.38478499453,
            VALE_REFE=-0.41236899999999999,
            REFERENCE='NON_DEFINI',
            NOM_PARA='K1',
            TABLE=GK4_T,)
-
 ## IMPRESSION DES RESULTATS CHARGEMENT CH3 AVEC CONTACT
-## ----------------------------------------------------
+# ----------------------------------------------------
 IMPR_TABLE(       TABLE=GK0_C,)
 IMPR_TABLE(       TABLE=GK1_C,)
 IMPR_TABLE(       TABLE=GK2_C,)
 IMPR_TABLE(       TABLE=GK3_C,)
-
 # ALPHA = 0.30
 # ------------
 
@@ -800,7 +809,7 @@ TEST_TABLE(PRECISION=0.040000000000000001,
            VALE_REFE=8.5865000000000004E-3,
            REFERENCE='NON_DEFINI',
            NOM_PARA='K1',
-           TABLE=GK0_C,
+          TABLE=GK0_C,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=6,),
            )
@@ -874,7 +883,7 @@ TEST_TABLE(PRECISION=0.040000000000000001,
            VALE_REFE=0.012075000000000001,
            REFERENCE='NON_DEFINI',
            NOM_PARA='K1',
-           TABLE=GK2_C,
+          TABLE=GK2_C,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                      VALE_I=7,),
            )
@@ -974,7 +983,7 @@ TEST_TABLE(PRECISION=1.E-2,
            NOM_PARA='K1',
            TABLE=GK1_C,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=10,),
+                    VALE_I=10,),
            )
 
 TEST_TABLE(PRECISION=1.E-2,

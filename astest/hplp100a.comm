@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -140,92 +140,91 @@ RESU=CREA_RESU(  OPERATION='AFFE',
                                 INST=0.,
                                 MODELE=MO,
                                 CHAM_MATER = CM)     )
-
-
-FOND=DEFI_FOND_FISS( MAILLAGE=MA,
+FOND_NEW=DEFI_FOND_FISS( MAILLAGE=MA,
                      FOND_FISS=_F( GROUP_NO = 'GN3'),
                      SYME='OUI',
                      LEVRE_SUP=_F(MAILLE='M388'))
 G1=CALC_G(
+                 OPTION='G_EPSI',
                  RESULTAT=RESU,
                  THETA=_F(
                           R_INF=10.,
                           R_SUP=40.,
-                          FOND_FISS=FOND,),
-                 EXCIT=_F(CHARGE=CH,),)
+                          FISSURE=FOND_NEW,),
+                 )
 
 GK1=CALC_G(        RESULTAT=RESU,
                    THETA=_F(R_INF = 10.,
                               R_SUP = 40.,
-                              FOND_FISS=FOND),
-                    EXCIT=_F(CHARGE=CH,),
-                    OPTION='CALC_K_G')
+                              FISSURE=FOND_NEW),
 
-G2=CALC_G(        RESULTAT=RESU,
+                    OPTION=('G_EPSI','K'))
+
+G2=CALC_G(        OPTION='G_EPSI',
+                  RESULTAT=RESU,
                   THETA=_F(
                            R_INF=15.,
                            R_SUP=45.,
-                           FOND_FISS=FOND,),
-                  EXCIT=_F(CHARGE=CH,),)
+                           FISSURE=FOND_NEW,),
+                  )
 
 GK2=CALC_G(          RESULTAT=RESU,
                      THETA=_F(R_INF = 15.,
                               R_SUP = 45.,
-                              FOND_FISS=FOND),
-                    EXCIT=_F(CHARGE=CH,),
-                    OPTION='CALC_K_G')
+                              FISSURE=FOND_NEW),
+                    OPTION=('G_EPSI','K'))
 
-G3=CALC_G(         RESULTAT=RESU,
+G3=CALC_G(         OPTION='G_EPSI',
+                   RESULTAT=RESU,
                    THETA=_F(
                             R_INF=5.0,
                             R_SUP=47.,
-                            FOND_FISS=FOND,),
-                   EXCIT=_F(CHARGE=CH,),)
+                            FISSURE=FOND_NEW,),
+                   )
 
 GK3=CALC_G(          RESULTAT=RESU,
                      THETA=_F(R_INF = 5.0,
                               R_SUP = 47.,
-                              FOND_FISS=FOND),
-                     EXCIT=_F(CHARGE=CH,),
-                     OPTION='CALC_K_G')
+                              FISSURE=FOND_NEW),
 
-G4=CALC_G(        RESULTAT=RESU,
+                     OPTION=('G_EPSI','K'))
+
+G4=CALC_G(        OPTION='G_EPSI',
+                  RESULTAT=RESU,
                   NUME_ORDRE=1,
                   THETA=_F(
                            R_INF=3.0,
                            R_SUP=48.,
-                           FOND_FISS=FOND,),
-                  EXCIT=_F(CHARGE=CH,),)
+                           FISSURE=FOND_NEW,),
+                  )
 
 GK4=CALC_G(         RESULTAT=RESU,
                     NUME_ORDRE=1,
                     THETA=_F(R_INF = 3.0,
                               R_SUP = 48.,
-                              FOND_FISS=FOND),
-                    EXCIT=_F(CHARGE=CH,),
-                    OPTION='CALC_K_G')
+                              FISSURE=FOND_NEW),
+                    OPTION=('G_EPSI','K'))
 
 
 GK5=CALC_G(         RESULTAT=RESU,
                     NUME_ORDRE=1,
-                    THETA=_F( FOND_FISS=FOND,
+                    THETA=_F( FISSURE=FOND_NEW,
                              ),
-                    EXCIT=_F(CHARGE=CH,),
-                    OPTION='CALC_K_G')
+                    OPTION=('G_EPSI','K'))
 
 
 TEST_TABLE(PRECISION=0.080000000000000002,
            VALE_CALC=0.360203432692,
            VALE_REFE=0.38985999999999998,
            REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=G1,)
 
 TEST_TABLE(PRECISION=0.080000000000000002,
-           VALE_CALC=0.360202303083,
+           VALE_CALC=0.360203432692,
            VALE_REFE=0.38985999999999998,
            REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=GK1,)
 
 TEST_TABLE(PRECISION=0.080000000000000002,
@@ -244,7 +243,6 @@ TEST_TABLE(PRECISION=0.040000000000000001,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.,
-
            NOM_PARA='K2',
            TABLE=GK1,)
 
@@ -252,14 +250,14 @@ TEST_TABLE(PRECISION=0.080000000000000002,
            VALE_CALC=0.3601150977,
            VALE_REFE=0.38985999999999998,
            REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=G2,)
 
 TEST_TABLE(PRECISION=0.080000000000000002,
-           VALE_CALC=0.360144061822,
+           VALE_CALC=0.3601150977,
            VALE_REFE=0.38985999999999998,
            REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=GK2,)
 
 TEST_TABLE(PRECISION=0.080000000000000002,
@@ -278,7 +276,6 @@ TEST_TABLE(PRECISION=0.040000000000000001,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.,
-
            NOM_PARA='K2',
            TABLE=GK2,)
 
@@ -286,14 +283,14 @@ TEST_TABLE(PRECISION=0.080000000000000002,
            VALE_CALC=0.360144312104,
            VALE_REFE=0.38985999999999998,
            REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=G3,)
 
 TEST_TABLE(PRECISION=0.080000000000000002,
-           VALE_CALC=0.360194362854,
+           VALE_CALC=0.360144312104,
            VALE_REFE=0.38985999999999998,
            REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=GK3,)
 
 TEST_TABLE(PRECISION=0.080000000000000002,
@@ -312,7 +309,6 @@ TEST_TABLE(PRECISION=0.040000000000000001,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.,
-
            NOM_PARA='K2',
            TABLE=GK3,)
 
@@ -320,7 +316,7 @@ TEST_TABLE(PRECISION=0.080000000000000002,
            VALE_CALC=0.361844542614,
            VALE_REFE=0.38985999999999998,
            REFERENCE='NON_DEFINI',
-           NOM_PARA='G',
+           NOM_PARA='G_EPSI',
            TABLE=GK5,)
 
 TEST_TABLE(PRECISION=0.080000000000000002,
@@ -339,7 +335,6 @@ TEST_TABLE(PRECISION=0.040000000000000001,
 
 TEST_TABLE(CRITERE='ABSOLU',
            VALE_CALC=0.,
-
            NOM_PARA='K2',
            TABLE=GK5,)
 
