@@ -233,7 +233,7 @@ class MESSHELL_SB9(Element):
                         (SP.PCONTMR, LC.EGIG3DR),
                         (SP.PVARIMP, LC.ZVARIPG), (SP.PVARIMR, LC.ZVARIPG),),
             para_out = ((SP.PCODRET, LC.ECODRET), (SP.PCOPRED, LC.ECODRET),
-                        (SP.PCONTPR, LC.EGIG3DR), (SP.PVARIPR, LC.ZVARIPG),
+                        (SP.PCONTPR, LC.EGIG3DR),
                         (SP.PMATUNS, MMATUNS)   , (SP.PMATUUR, MMATUUR),
                         (SP.PVECTUR, MVECTUR),),
         ),
