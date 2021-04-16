@@ -272,7 +272,8 @@ integer, optional, intent(in)  :: nbInterc_
                 dzeta = dzeta + pjef_cf(ideca1+kk)*x3
             enddo
 
-        else if (elrefa.eq.'HE8' .or. elrefa.eq.'H20' .or. elrefa.eq.'H27' ) then
+        else if (elrefa.eq.'HE8' .or. elrefa.eq.'H20' .or.&
+                 elrefa.eq.'H27' .or. elrefa.eq.'HE9') then
             do kk = 1, 4
                 x1 = crrefe(1, cnhexa(kk,ityp))
                 x2 = crrefe(2, cnhexa(kk,ityp))

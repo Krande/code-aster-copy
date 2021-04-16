@@ -174,7 +174,7 @@ character(len=8), intent(out) :: cellListCode(MT_NTYMAX)
         cellListCode(6) = 'QU9'
 
     else if (projDime.eq.'3D') then
-        nbCellType = 10
+        nbCellType = 11
         cellTypeName(1) = 'TETRA4'
         cellTypeName(2) = 'TETRA10'
         cellTypeName(3) = 'PENTA6'
@@ -185,6 +185,7 @@ character(len=8), intent(out) :: cellListCode(MT_NTYMAX)
         cellTypeName(8) = 'HEXA27'
         cellTypeName(9) = 'PYRAM5'
         cellTypeName(10) = 'PYRAM13'
+        cellTypeName(11) = 'HEXA9'
         cellListCode(1) = 'TE4'
         cellListCode(2) = 'T10'
         cellListCode(3) = 'PE6'
@@ -195,6 +196,7 @@ character(len=8), intent(out) :: cellListCode(MT_NTYMAX)
         cellListCode(8) = 'H27'
         cellListCode(9) = 'PY5'
         cellListCode(10) = 'P13'
+        cellListCode(11) = 'HE9'
 
     else
         ASSERT(ASTER_FALSE)

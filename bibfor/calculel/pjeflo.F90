@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
 !
 ! --------------------------------------------------------------------------------------------------
 !   POUR LES HEXA : KSI,ETA,DZETA SONT DANS [-1,1]
-    if (elrefa .eq. 'HE8' .or. elrefa .eq. 'H20' .or. elrefa .eq. 'H27') then
+    if (elrefa .eq. 'HE8' .or. elrefa .eq. 'H20' .or. elrefa .eq. 'H27' .or. elrefa .eq. 'HE9') then
         ASSERT(ndim.eq.3)
         if (abs(x) .gt. 1.d0) goto 10
         if (abs(y) .gt. 1.d0) goto 10

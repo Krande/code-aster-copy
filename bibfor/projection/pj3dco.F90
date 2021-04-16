@@ -138,7 +138,7 @@ integer, optional, intent(in)  :: nbInterc_
                      (cellTypeNume.eq.cellListType(5))) then
                 nbTetra = nbTetra + 3
             else if ((cellTypeNume.eq.cellListType(6)).or.(cellTypeNume.eq.cellListType(7)).or.&
-                     (cellTypeNume.eq.cellListType(8))) then
+                     (cellTypeNume.eq.cellListType(8)).or.(cellTypeNume.eq.cellListType(11))) then
                 nbTetra = nbTetra + 6
             else if ((cellTypeNume.eq.cellListType(9)).or.(cellTypeNume.eq.cellListType(10))) then
                 nbTetra = nbTetra + 2
@@ -201,7 +201,7 @@ integer, optional, intent(in)  :: nbInterc_
                 zi(iate4+(nbTetra-1)*6+3)=connex(1+ zi(ilcnx1-1+iCell1)-2+5)
                 zi(iate4+(nbTetra-1)*6+4)=connex(1+ zi(ilcnx1-1+iCell1)-2+2)
             else if ((cellTypeNume.eq.cellListType(6)).or.(cellTypeNume.eq.cellListType(7)).or.&
-                     (cellTypeNume.eq.cellListType(8))) then
+                     (cellTypeNume.eq.cellListType(8)).or.(cellTypeNume.eq.cellListType(11))) then
                 nbTetra=nbTetra+1
                 zi(iate4+(nbTetra-1)*6+5)=iCell1
                 zi(iate4+(nbTetra-1)*6+6)=1
