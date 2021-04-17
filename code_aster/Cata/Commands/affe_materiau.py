@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -54,42 +54,11 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",
 
          #  affectation des variables de commande :
          #  --------------------------------------------------
+
+         AFFE_VARC         = C_AFFE_VARC() ,
          # un mot clé caché qui ne sert qu'à boucler sur les VARC possibles :
          LIST_NOM_VARC =SIMP(statut='c',typ='TXM', max='**', defaut=("TEMP","GEOM","CORR","IRRA","HYDR","SECH","EPSA",
                                                            "M_ACIER","M_ZIRC","NEUT1","NEUT2","NEUT3","PTOT","DIVU",)),
-
-         AFFE_VARC    =FACT(statut='f',max='**',
-          regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
-                  PRESENT_ABSENT('GROUP_MA','TOUT'),
-                  PRESENT_ABSENT('MAILLE','TOUT'),
-                  EXCLUS('EVOL','CHAM_GD'),
-                  ),
-
-          TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ), # [défaut]
-          GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-          MAILLE          =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
-
-          NOM_VARC        =SIMP(statut='o',typ='TXM', into=("TEMP","GEOM","CORR","IRRA","HYDR","SECH","EPSA",
-                               "M_ACIER","M_ZIRC","NEUT1","NEUT2","NEUT3","PTOT","DIVU",)),
-          CHAM_GD        =SIMP(statut='f',typ=cham_gd_sdaster,),
-          EVOL            =SIMP(statut='f',typ=evol_sdaster,),
-
-          B_EVOL          =BLOC(condition="""exists("EVOL")""",
-              NOM_CHAM      =SIMP(statut='f',typ='TXM',into=("TEMP","CORR","IRRA","NEUT","GEOM",
-                                                             "HYDR_ELNO","HYDR_NOEU",
-                                                             "META_ELNO","META_NOEU",
-                                                             "EPSA_ELNO","EPSA_NOEU","PTOT","DIVU",)),
-              PROL_DROITE   =SIMP(statut='f',typ='TXM',defaut="EXCLU",into=("CONSTANT","LINEAIRE","EXCLU") ),
-              PROL_GAUCHE   =SIMP(statut='f',typ='TXM',defaut="EXCLU",into=("CONSTANT","LINEAIRE","EXCLU") ),
-              FONC_INST     =SIMP(statut='f',typ=(fonction_sdaster,formule)),
-          ),
-
-          # VALE_REF est nécessaire pour certaines VARC :
-          B_VALE_REF          =BLOC(condition="""is_in("NOM_VARC", ('TEMP','SECH'))""",
-               VALE_REF          =SIMP(statut='o',typ='R'),
-          ),
-
-         ),
 
          #  mots clés cachés pour les variables de commande NEUT* :
          #  --------------------------------------------------------------
