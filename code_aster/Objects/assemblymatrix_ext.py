@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,9 +24,8 @@
 """
 
 import numpy as NP
-
 from libaster import (AssemblyMatrixDisplacementComplex,
-                      AssemblyMatrixDisplacementReal)
+                      AssemblyMatrixDisplacementReal, assemblyMatrixToPetsc)
 
 from ..SD.sd_stoc_morse import sd_stoc_morse
 from ..Utilities import injector
@@ -66,6 +65,14 @@ class ExtendedAssemblyMatrixDisplacementReal(object):
         """
         typ = _orig_getType(self).replace("_DEPL_R_DEPL_R", "_DEPL_R")
         return typ
+
+    def toPetsc(self):
+        """Convert the matrix to a PETSc matrix object.
+
+        Returns:
+            PetscMat: PETSc matrix.
+        """
+        return assemblyMatrixToPetsc(self)
 
     def EXTR_MATR(self, sparse=False, epsilon=None) :
         """Returns the matrix values as `numpy.array`.

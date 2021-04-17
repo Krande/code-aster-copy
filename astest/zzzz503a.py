@@ -137,8 +137,7 @@ test.assertEqual(np.linalg.norm(K1 - K3), 0)
 
 try:
     import petsc4py
-    import libaster
-    A = libaster.assemblyMatrixToPetsc(matrAsse)
+    A = matrAsse.toPetsc()
 except (ImportError, NotImplementedError):
     pass
 else:

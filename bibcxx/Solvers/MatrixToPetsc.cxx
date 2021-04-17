@@ -50,23 +50,7 @@ void petscInitializeWithOptions( const std::string &options ) {
 };
 #endif
 
-/** @brief Convert an AssemblyMatrix object to a PETSc Mat object */
-PyObject *assemblyMatrixToPetsc( const AssemblyMatrixDisplacementRealPtr matr ) {
-#ifdef ASTER_HAVE_PETSC4PY
-    PyObject *petsc4py = PyImport_ImportModule( "petsc4py.PETSc" );
-    PyObject *petsc_matr = PyObject_CallMethod( petsc4py, "Mat", NULL );
+template <>
+PyObject *assemblyMatrixToPetsc< AssemblyMatrixDisplacementRealPtr >(
+    const AssemblyMatrixDisplacementRealPtr matr );
 
-    Mat conv;
-    PetscErrorCode ier;
-    CALLO_MATASS2PETSC( matr->getName(), &conv, &ier );
-
-    struct PyPetscMatObject *pyx_mat = (struct PyPetscMatObject *)petsc_matr;
-    pyx_mat->mat = conv;
-    PyObject *result = (PyObject *)pyx_mat;
-    Py_DECREF( petsc4py );
-    return result;
-#else
-    PyErr_SetString( PyExc_NotImplementedError, "petsc4py is not available" );
-    return NULL;
-#endif
-}

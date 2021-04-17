@@ -91,8 +91,7 @@ resu = monSolver.solveRealLinearSystem( matrAsse, retour )
 
 try:
     import petsc4py
-    import libaster
-    A = libaster.assemblyMatrixToPetsc(matrAsse)
+    A = matrAsse.toPetsc()
 except (ImportError, NotImplementedError):
     pass
 else:

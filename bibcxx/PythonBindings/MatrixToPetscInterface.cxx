@@ -45,7 +45,8 @@ Arguments:
         )",
              ( py::args( "options" ) ) );
 
-    py::def( "assemblyMatrixToPetsc", &assemblyMatrixToPetsc, R"(
+    py::def( "assemblyMatrixToPetsc", &assemblyMatrixToPetsc< AssemblyMatrixDisplacementRealPtr >,
+             R"(
 Convert a *AssemblyMatrix* object to a PETSc *Mat* object.
 
 Arguments:
