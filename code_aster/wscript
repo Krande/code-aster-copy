@@ -29,35 +29,10 @@ from waflib import Configure, Context, Errors, Logs
 
 
 def options(self):
-    self.load('cython')
     group = self.get_option_group("code_aster options")
-    group.add_option('--disable-cython', dest='enable_cython',
-                     default=None, action='store_false',
-                     help='disable the Cython support')
-    group.add_option('--enable-cython', dest='enable_cython',
-                     default=None, action='store_true',
-                     help='force the Cython support')
     group.add_option('--without-hg', dest='without_hg',
                      default=False, action='store_true',
                      help='build without the source repository')
-
-
-@Configure.conf
-def check_cython_conf(self):
-    opts = self.options
-    self.env.BUILD_CYTHON = False
-    if not self.env.BUILD_MPI:
-        opts.enable_cython = False
-    try:
-        self.check_cython()
-    except Errors.ConfigurationError:
-        self.reset_msg()
-        if opts.enable_cython is True:
-            raise
-        self.undefine('ASTER_HAVE_CYTHON')
-    else:
-        self.define('ASTER_HAVE_CYTHON', 1)
-        self.env.BUILD_CYTHON = True
 
 def configure(self):
     self.check_version()
@@ -92,21 +67,6 @@ def check_version(self):
     self.env.append_value('ASTER_VERSION', values)
     self.end_msg(self.env.ASTER_VERSION[:-1])
 
-@Configure.conf
-def check_cython(self):
-    opts = self.options
-    if opts.enable_cython is False:
-        raise Errors.ConfigurationError('Cython disabled')
-
-    self.load('cython')
-    self.start_msg('Checking for Cython version')
-    try:
-        output = self.cmd_and_log(self.env['CYTHON'] + ['--version'],
-                                    output=Context.STDERR)
-        self.end_msg(output.strip())
-    except:
-        self.end_msg('failed - Cython support disabled', 'YELLOW')
-        raise Errors.ConfigurationError()
 
 def build(self):
     get_srcs = self.path.get_src().ant_glob
@@ -137,37 +97,6 @@ def build(self):
     install_path = osp.join(env.ASTERLIBDIR, "code_aster", "Cata"),
     VERSION_INFO = pformat(env['ASTER_VERSION'])
     )
-
-    # cython
-    if self.env.BUILD_CYTHON:
-        build_cython_ext(self)
-
-def build_cython_ext(self):
-    get_srcs = self.path.get_src().ant_glob
-    env = self.all_envs[self.variant]
-
-    # Wrappers on C++ objects uses libaster
-    wrapper = get_srcs('**/*.pyx')
-    for cymodule in wrapper:
-        path = cymodule.abspath()
-        modname = osp.splitext(osp.basename(path))[0]
-        dirname = osp.basename(osp.dirname(path))
-
-        self(
-            features = 'cxx cxxshlib pyext',
-              source = cymodule,
-              target = osp.join(dirname, modname),
-                 use = 'asterlib',
-        install_path = osp.join(env.ASTERLIBDIR, 'code_aster', dirname)
-        )
-
-@Configure.conf
-def check_optimization_cython(self):
-    self.setenv('debug')
-    self.env.append_unique('CYTHONFLAGS', ["-3", "-a"])
-    self.setenv('release')
-    self.env.append_unique('CYTHONFLAGS', ["-3"])
-
 
 def check_aster_version(self):
     """Set ASTER_VERSION to the tuple = (

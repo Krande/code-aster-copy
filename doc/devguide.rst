@@ -89,7 +89,6 @@ Contents
     devguide/supervis
     devguide/cata
     devguide/boost
-    devguide/linearalgebra
     devguide/messages
     devguide/helpers
     devguide/utilities

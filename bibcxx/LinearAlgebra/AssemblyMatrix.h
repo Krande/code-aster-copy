@@ -43,7 +43,7 @@
 #include "Supervis/CommandSyntax.h"
 #include "Utilities/Tools.h"
 
-#if ASTER_HAVE_PETSC4PY == 1
+#ifdef ASTER_HAVE_PETSC4PY
 #include <petscmat.h>
 #endif
 
@@ -268,7 +268,7 @@ class AssemblyMatrixClass : public DataStructure {
      */
     int getNumberOfElementaryMatrix() const { return _elemMatrix.size(); };
 
-#if ASTER_HAVE_PETSC4PY == 1
+#ifdef ASTER_HAVE_PETSC4PY
     /**
      * @brief Conversion to petsc4py
      * @return converted matrix
@@ -448,7 +448,7 @@ bool AssemblyMatrixClass< ValueType, PhysicalQuantity >::build() {
     return true;
 };
 
-#if ASTER_HAVE_PETSC4PY == 1
+#ifdef ASTER_HAVE_PETSC4PY
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 Mat AssemblyMatrixClass< ValueType, PhysicalQuantity >::toPetsc4py() {

@@ -28,8 +28,6 @@ Examples: ``ASTER_HAVE_PETSC`` (feature is installed),
 
 If ``ASTER_HAVE_xxx`` is defined (use ``#ifdef``, not
 ``#if ASTER_HAVE_xxx == 1``), the feature *xxx* is available.
-The exception is for ``ASTER_HAVE_PETSC4PY`` because Cython requires that the variable
-is always defined.
 
 Include guards to avoid multiple inclusion must be named ``NAME_OF_HEADER_FILE_H_``.
 Example: ``MATERIAL_H_`` for :file:`Material.h`.

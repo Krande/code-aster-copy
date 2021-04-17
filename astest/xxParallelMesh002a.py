@@ -91,11 +91,11 @@ resu = monSolver.solveRealLinearSystem( matrAsse, retour )
 
 try:
     import petsc4py
-    import code_aster.LinearAlgebra
-except ImportError:
+    import libaster
+    A = libaster.assemblyMatrixToPetsc(matrAsse)
+except (ImportError, NotImplementedError):
     pass
 else:
-    A = code_aster.LinearAlgebra.AssemblyMatrixToPetsc4Py(matrAsse)
     v = petsc4py.PETSc.Viewer().createASCII("xxParallelMesh002a.out")
     v.pushFormat(petsc4py.PETSc.Viewer.Format.ASCII_DENSE)
     A.view(v)

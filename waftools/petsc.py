@@ -36,14 +36,18 @@ def options(self):
     group.add_option('--embed-petsc', dest='embed_petsc',
                     default=False, action='store_true',
                     help='Embed PETSC libraries as static library')
+    group.add_option('--disable-petsc4py', dest='enable_petsc4py',
+                   action='store_false', default=None,
+                   help='Disable PETSC4PY support')
+    group.add_option('--enable-petsc4py', dest='enable_petsc4py',
+                   action='store_true', default=None,
+                   help='Force PETSC4PY support')
 
 
 def configure(self):
-    self.check_cython_conf()
     if not self.env.BUILD_MPI:
         self.undefine('ASTER_HAVE_PETSC')
-        # can not be undefined for Cython
-        self.define('ASTER_HAVE_PETSC4PY', 0)
+        self.undefine('ASTER_HAVE_PETSC4PY')
         return
     try:
         self.env.stash()
@@ -52,13 +56,11 @@ def configure(self):
         self.reset_msg()
         self.env.revert()
         self.undefine('ASTER_HAVE_PETSC')
-        # can not be undefined for Cython
-        self.define('ASTER_HAVE_PETSC4PY', 0)
-        if self.options.enable_petsc:
+        self.undefine('ASTER_HAVE_PETSC4PY')
+        if self.options.enable_petsc or self.options.enable_petsc4py:
             raise
     else:
         self.define('ASTER_HAVE_PETSC', 1)
-        self.define('ASTER_HAVE_PETSC4PY', 0)
         self.check_petsc4py()
 
 ###############################################################################
@@ -148,13 +150,15 @@ int main(void){
 
 @Configure.conf
 def check_petsc4py(self):
+    if self.options.enable_petsc4py is False:
+        self.undefine('ASTER_HAVE_PETSC4PY')
+        return
     try:
         self.check_python_module('petsc4py')
-        pymodule_path = self.get_python_variables(['petsc4py.get_include()'],
-                                                  ['import petsc4py'])[0]
-        self.env.append_unique('CYTHONFLAGS', '-I{0}'.format(pymodule_path))
     except Errors.ConfigurationError:
-        self.define('ASTER_HAVE_PETSC4PY', 0)
+        self.undefine('ASTER_HAVE_PETSC4PY')
+        if self.options.enable_petsc4py:
+            raise
     else:
         self.define('ASTER_HAVE_PETSC4PY', 1)
 

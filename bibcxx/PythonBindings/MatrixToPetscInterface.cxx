@@ -1,9 +1,9 @@
 /**
- * @file MPIInfosInterface.cxx
- * @brief Interface python de MPIInfos
- * @author Nicolas Sellenet
+ * @file FortranInterface.cxx
+ * @brief Python bindings for Fortran interface.
+ * @author Mathieu Courtois
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,20 +21,21 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
+/* person_in_charge: mathieu.courtois@edf.fr */
 
 #include <boost/python.hpp>
 
 namespace py = boost::python;
 
-#include "PythonBindings/PetscInitializeFinalize.h"
+#include "PythonBindings/MatrixToPetscInterface.h"
+#include "Solvers/MatrixToPetsc.h"
 
-void exportPetscInitializeFinalizeToPython() {
+void exportMatrixToPetscToPython() {
 
     py::def( "petscFinalize", petscFinalize, R"(
 Stops the PETSc interface.
-        )");
-//
+        )" );
+    //
     py::def( "_petscInitializeWithOptions", petscInitializeWithOptions, R"(
 Starts the PETSc interface with options.
 
@@ -42,5 +43,16 @@ Arguments:
     options[str]: PETSc options
 
         )",
-        ( py::args( "options" ) ) );
+             ( py::args( "options" ) ) );
+
+    py::def( "assemblyMatrixToPetsc", &assemblyMatrixToPetsc, R"(
+Convert a *AssemblyMatrix* object to a PETSc *Mat* object.
+
+Arguments:
+    matr (*AssemblyMatrix*): code_aster matrix.
+
+Returns:
+    *Mat*: PETSc matrix.
+        )",
+             ( py::arg( "matr" ) ) );
 };

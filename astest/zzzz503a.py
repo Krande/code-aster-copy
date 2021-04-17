@@ -137,12 +137,11 @@ test.assertEqual(np.linalg.norm(K1 - K3), 0)
 
 try:
     import petsc4py
-    import code_aster.LinearAlgebra
-except ImportError:
+    import libaster
+    A = libaster.assemblyMatrixToPetsc(matrAsse)
+except (ImportError, NotImplementedError):
     pass
 else:
-    print("PETSC4PY passed")
-    A = code_aster.LinearAlgebra.AssemblyMatrixToPetsc4Py(matrAsse)
     v = petsc4py.PETSc.Viewer.DRAW(A.comm)
     A.view(v)
 

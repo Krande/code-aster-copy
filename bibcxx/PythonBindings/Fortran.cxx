@@ -23,6 +23,7 @@
 
 /* person_in_charge: mathieu.courtois@edf.fr */
 
+#include "Python.h"
 #include "PythonBindings/Fortran.h"
 #include "aster_fort_superv.h"
 #include "aster_fort_utils.h"

@@ -1,12 +1,12 @@
-#ifndef PETSCINITIALIZEFINALIZEINTERFACE_H_
-#define PETSCINITIALIZEFINALIZEINTERFACE_H_
+#ifndef MATRIXTOPETSCINTERFACE_H_
+#define MATRIXTOPETSCINTERFACE_H_
 
 /**
- * @file PETSCINITIALIZEFINALIZEINTERFACE.h
- * @brief Fichier entete des utilitaires MPI en python
- * @author Nicolas Tardieu
+ * @file FortranInterface.cxx
+ * @brief Python bindings for Fortran interface.
+ * @author Mathieu Courtois
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,10 +24,8 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.tardieu at edf.fr */
+/* person_in_charge: mathieu.courtois@edf.fr */
 
-#include "Solvers/PetscInitializeFinalize.h"
+void exportMatrixToPetscToPython();
 
-void exportPetscInitializeFinalizeToPython();
-
-#endif /* PETSCINITIALIZEFINALIZEINTERFACE_H_ */
+#endif /* MATRIXTOPETSCINTERFACE_H_ */

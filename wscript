@@ -368,8 +368,6 @@ def check_optimization_options(self):
     self.check_optimization_cxxflags()
     self.check_optimization_fcflags()
     self.check_optimization_python()
-    if self.env.BUILD_CYTHON:
-        self.check_optimization_cython()
     self.check_variant_vars()
 
 @Configure.conf
@@ -395,7 +393,6 @@ class ConfigHelper(object):
             'C': '/* {0} */',
             'Fortran': '! {0}',
             'Python': '# {0}',
-            'Cython': '# {0}'
         }[self._lang].format(text)
 
     @property
@@ -404,7 +401,6 @@ class ConfigHelper(object):
             'C': 'asterc_config.h',
             'Fortran': 'asterf_config.h',
             'Python': 'aster_config.py',
-            'Cython': 'astercython_config.pxi'
         }[self._lang]
 
     @property
@@ -440,15 +436,11 @@ class ConfigHelper(object):
         # ASTER_C_* defines will be used if language='C', not 'Fortran'.
         if self._lang != 'C' and var.startswith('ASTER_C_'):
             return False
-        if self._lang == 'Cython' and 'PETSC4PY' not in var:
-            return False
         return True
 
     def define(self, var, value=""):
         if self._lang == 'Python':
             fmt = '   {0}=' + '{1},' if value else 'True'
-        elif self._lang == 'Cython':
-            fmt = 'DEF {0}' + '={1}' if value else ''
         else:
             fmt = '#define {0} {1}'
         return fmt.format(var, value)
@@ -467,8 +459,6 @@ def write_config_headers(self):
         self.write_config_h('Fortran', variant)
         self.write_config_h('C', variant)
         self.write_config_h('Python', variant)
-        if self.env.BUILD_CYTHON:
-            self.write_config_h('Cython', variant)
         for key in self.env[DEFKEYS]:
             self.undefine(key)
         self.env[DEFKEYS] = []
@@ -492,8 +482,6 @@ def write_config_h(self, language, variant, configfile=None, env=None):
     node.write('\n'.join(lst))
     incpath = node.parent.abspath()
     env.append_unique('INCLUDES', incpath)
-    if language == 'Cython':
-        env.append_unique('CYTHONFLAGS', ["-I{0}".format(incpath)])
     # config files are not removed on "waf clean"
     env.append_unique(Build.CFG_FILES, [node.abspath()])
     self.end_msg(node.bldpath())
