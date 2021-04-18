@@ -450,6 +450,10 @@ def copy_datafiles(files):
         dest = None
         # fort.*
         if obj.unit != 0 or obj.filetype == "nom":
+            if obj.unit in (6, 15):
+                raise IndexError("Files fort.6 and fort.15 are reserved.\n"
+                                 "Please change unit number for: {}"
+                                 .format(obj.path))
             dest = "fort." + str(obj.unit)
             if obj.filetype == "nom":
                 dest = osp.basename(obj.path)
