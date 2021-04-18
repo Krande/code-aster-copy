@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,37 +19,13 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import NonLinearResult
-from ..Supervis import ExecuteCommand
+from .stat_non_line import NonLinearStaticAnalysis
 
-
-class DynaNonLine(ExecuteCommand):
-    """Command that defines :class:`~code_aster.Objects.NonLinearResult`.
+class NonLinearDynamicAnalysis(NonLinearStaticAnalysis):
+    """Command that creates :class:`~code_aster.Objects.NonLinearResult`
+    for non linear dynamic analysis.
     """
     command_name = "DYNA_NON_LINE"
 
-    def create_result(self, keywords):
-        """Initialize the result.
 
-        Arguments:
-            keywords (dict): Keywords arguments of user's keywords.
-        """
-        if keywords.get("reuse") != None:
-            self._result = keywords["reuse"]
-        else:
-            self._result = NonLinearResult()
-
-    def post_exec(self, keywords):
-        """Execute the command.
-
-        Arguments:
-            keywords (dict): User's keywords.
-        """
-        self._result.appendModelOnAllRanks(keywords["MODELE"])
-        self._result.appendMaterialFieldOnAllRanks(keywords["CHAM_MATER"])
-        caraElem = keywords.get("CARA_ELEM")
-        if caraElem is not None:
-            self._result.appendElementaryCharacteristicsOnAllRanks(caraElem)
-        self._result.update()
-
-DYNA_NON_LINE = DynaNonLine.run
+DYNA_NON_LINE = NonLinearDynamicAnalysis.run
