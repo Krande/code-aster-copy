@@ -194,6 +194,12 @@ class MESSHELL_SB9(Element):
             para_out = ((OP.INIT_VARC.PVARCPR, LC.ZVARCPG),),
         ),
 
+        OP.MASS_INER(te=65,
+            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
+                        (SP.PVARCPR, LC.ZVARCPG),),
+            para_out = ((SP.PMASSINE, LC.EMASSINE),),
+        ),
+
         OP.MASS_MECA(te=125,
             para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
                         (SP.PVARCPR, LC.ZVARCPG),),

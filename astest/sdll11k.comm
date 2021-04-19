@@ -209,4 +209,20 @@ TEST_RESU(RESU=(
                    PRECISION=freqTole30,),
           ),)
 
+# Test MASS_INER
+massTable = POST_ELEM(MODELE     = MODEL,
+                      CHAM_MATER = MATERIAL, 
+                      MASS_INER  = _F(TOUT = 'OUI',),)
+
+massRefe = 0.0848230016469242
+massTole = 0.01 * 7.4E-3
+
+TEST_TABLE(REFERENCE = 'ANALYTIQUE',
+           PRECISION = massTole,
+           VALE_CALC = 0.08481680052759483,
+           VALE_REFE = massRefe,
+           NOM_PARA  = 'MASSE',
+           TABLE     = massTable,
+           )
+
 FIN()
