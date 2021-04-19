@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,7 @@ character(len=16), intent(in) :: option, nomte
     idfdy = idfdx + 1
     if (fsi_form .eq. 'FSI_UPPHI') then
         ndi = nno*(2*nno+1)
-    elseif (fsi_form .eq. 'FSI_UP') then
+    elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
         ndi = nno*(nno+1)/2
     else
         call utmess('F', 'FLUID1_2', sk = fsi_form)
@@ -147,6 +147,16 @@ character(len=16), intent(in) :: option, nomte
                         zr(jv_matr+ij-1) = zr(jv_matr+ij-1) + &
                                            jac * zr(ipoids+ipg-1) *&
                                            rho / zr(jv_impe+ipg-1) *&
+                                           zr(ivf+ldec+ i-1) * zr(ivf+ldec+j-1)
+                    end do
+                end do
+            elseif (fsi_form .eq. 'FSI_UPSI') then
+                do i = 1, nno
+                    do j = 1, i
+                        ij = (i-1)*i/2 + j
+                        zr(jv_matr+ij-1) = zr(jv_matr+ij-1) + &
+                                           jac * zr(ipoids+ipg-1) *&
+                                           rho2 / zr(jv_impe+ipg-1) *&
                                            zr(ivf+ldec+ i-1) * zr(ivf+ldec+j-1)
                     end do
                 end do
