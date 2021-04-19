@@ -250,7 +250,7 @@ rinf = 2.*h
 rsup = 4.*h
 
 # LISSAGE LEGENDRE
-CGleg=CALC_G(RESULTAT=RESU,
+CGleg=CALC_G_XFEM(RESULTAT=RESU,
              OPTION='CALC_G',
              LISSAGE = _F(LISSAGE_THETA='LEGENDRE',
                           DEGRE = 5,
@@ -260,7 +260,7 @@ CGleg=CALC_G(RESULTAT=RESU,
                         FISSURE=l_fiss,),)
 
 # LISSAGE LEGENDRE : INDEPENDANCE AU CHOIX DES COURONNES
-CGleg2=CALC_G(RESULTAT=RESU,
+CGleg2=CALC_G_XFEM(RESULTAT=RESU,
               OPTION='CALC_G',
               LISSAGE = _F(LISSAGE_THETA='LEGENDRE',
                            DEGRE = 5,
@@ -270,7 +270,7 @@ CGleg2=CALC_G(RESULTAT=RESU,
                          FISSURE=l_fiss,),)
 
 # 'CALC_K_G' LISSAGE LEGENDRE
-CGKleg=CALC_G(RESULTAT=RESU,
+CGKleg=CALC_G_XFEM(RESULTAT=RESU,
               OPTION='CALC_K_G',
               LISSAGE = _F(LISSAGE_THETA='LEGENDRE',
                            DEGRE = 5,
@@ -280,7 +280,7 @@ CGKleg=CALC_G(RESULTAT=RESU,
                          FISSURE=l_fiss,),)
 
 # 'CALC_K_G' LISSAGE LEGENDRE : INDEPENDANCE AU CHOIX DES COURONNES
-CGKleg2=CALC_G(RESULTAT=RESU,
+CGKleg2=CALC_G_XFEM(RESULTAT=RESU,
                OPTION='CALC_K_G',
                LISSAGE = _F(LISSAGE_THETA='LEGENDRE',
                             DEGRE = 5,
@@ -290,7 +290,7 @@ CGKleg2=CALC_G(RESULTAT=RESU,
                           FISSURE=l_fiss,),)
 
 # LISSAGE LAGRANGE + REPARTITION UNIFORME DE 15 POINTS
-CGla15=CALC_G(RESULTAT=RESU,
+CGla15=CALC_G_XFEM(RESULTAT=RESU,
               OPTION='CALC_G',
               LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
                            LISSAGE_G='LAGRANGE',),

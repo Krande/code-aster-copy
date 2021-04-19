@@ -151,7 +151,7 @@ h = L/N
 rinf = 2*h
 rsup = 5*h
 
-SIF1=CALC_G(RESULTAT=RESU,
+SIF1=CALC_G_XFEM(RESULTAT=RESU,
             INST=1.,
             OPTION='CALC_K_G',
             THETA=_F(FISSURE=FISS1,
@@ -159,7 +159,7 @@ SIF1=CALC_G(RESULTAT=RESU,
                      R_INF=rinf,
                      R_SUP=rsup,))
 
-SIF2=CALC_G(RESULTAT=RESU,
+SIF2=CALC_G_XFEM(RESULTAT=RESU,
             INST=1.,
             OPTION='CALC_K_G',
             THETA=_F(FISSURE=FISS1,
@@ -171,13 +171,13 @@ IMPR_TABLE(TABLE=SIF1)
 IMPR_TABLE(TABLE=SIF2)
 
 # calcul sans R_INF et R_SUP
-SIF3=CALC_G(RESULTAT=RESU,
+SIF3=CALC_G_XFEM(RESULTAT=RESU,
             INST=1.,
             OPTION='CALC_K_G',
             THETA=_F(FISSURE=FISS1,
                      NUME_FOND=1,))
 
-SIF4=CALC_G(RESULTAT=RESU,
+SIF4=CALC_G_XFEM(RESULTAT=RESU,
             INST=1.,
             OPTION='CALC_K_G',
             THETA=_F(FISSURE=FISS1,

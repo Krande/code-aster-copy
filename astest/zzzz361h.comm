@@ -152,7 +152,7 @@ UTOT2x=MECA_STATIQUE(MODELE=MODELEK,
 
 
 # unique test de CALC_G, option CALC_G avec pression sur levres
-G2=CALC_G(RESULTAT=UTOT2x,
+G2=CALC_G_XFEM(RESULTAT=UTOT2x,
           THETA=_F(FISSURE=FISS,
                    R_INF=2.,
                    R_SUP=4.,),

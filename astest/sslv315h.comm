@@ -325,7 +325,7 @@ for i in range(nbcalc) :
                              TABLE=SIF[i],),
                   INFO=1,);
 #  LISSAGE, auparavant degre 0
-   SIF[i+1]=CALC_G(RESULTAT=RESU[i],
+   SIF[i+1]=CALC_G_XFEM(RESULTAT=RESU[i],
                    OPTION='CALC_K_G',
                    INST=L_INS1[i+1],
                    THETA=_F(FISSURE=FISP[i],NUME_FOND=1,NB_POINT_FOND=nb_pts,),

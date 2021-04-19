@@ -98,7 +98,7 @@ IMPR_RESU(FORMAT='MED', RESU=_F(RESULTAT=RES_VISU), UNITE=80);
 #               POST-TRAITEMENT de G et K
 #------------------------------------------------------------------------
 
-G = CALC_G(RESULTAT=RESU,
+G = CALC_G_XFEM(RESULTAT=RESU,
            THETA=_F(FISSURE=FISS, 
                     R_INF=0.04, 
                     R_SUP=0.1),
@@ -106,7 +106,7 @@ G = CALC_G(RESULTAT=RESU,
 
 IMPR_TABLE(TABLE=G);
 
-GK = CALC_G(RESULTAT=RESU,
+GK = CALC_G_XFEM(RESULTAT=RESU,
             THETA=_F(FISSURE=FISS, 
                      R_INF=0.04, 
                      R_SUP=0.1),

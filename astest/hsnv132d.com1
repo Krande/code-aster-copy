@@ -141,7 +141,7 @@ RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         INFO          = 2)
 
 
-SIFC1=CALC_G(RESULTAT=UTOT,
+SIFC1=CALC_G_XFEM(RESULTAT=UTOT,
            OPTION='CALC_K_G',
            THETA=_F(FISSURE=FISS,
                     R_INF=0.1,
@@ -151,7 +151,7 @@ SIFC1=CALC_G(RESULTAT=UTOT,
            INFO=2,);
 
 
-TABGC1=CALC_G(RESULTAT=UTOT,
+TABGC1=CALC_G_XFEM(RESULTAT=UTOT,
            OPTION='CALC_G',
            THETA=_F(FISSURE=FISS,
                     R_INF=0.1,

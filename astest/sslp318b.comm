@@ -128,13 +128,13 @@ for i in range(1,NPS-1) :
 
 #   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LE FOND
 #   DE FISSURE A GAUCHE
-    SIFL[i]=CALC_G(THETA=_F(FISSURE=Fiss[i],),
+    SIFL[i]=CALC_G_XFEM(THETA=_F(FISSURE=Fiss[i],),
                    RESULTAT=ResX[i],
                    OPTION='CALC_K_G',);
 
 #   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LE FOND
 #   DE FISSURE A DROITE
-    SIFR[i]=CALC_G(THETA=_F(FISSURE=Fiss[i],
+    SIFR[i]=CALC_G_XFEM(THETA=_F(FISSURE=Fiss[i],
                             NUME_FOND=2,),
                    RESULTAT=ResX[i],
                    OPTION='CALC_K_G',);

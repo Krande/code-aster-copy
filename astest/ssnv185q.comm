@@ -153,7 +153,7 @@ for i in range(1,4) :
                                 _F(CHARGE=CH2[i],),),
                          INFO=1,);
 
-   SIF[i]=CALC_G        (RESULTAT=RESU[i],
+   SIF[i]=CALC_G_XFEM        (RESULTAT=RESU[i],
                          OPTION='CALC_K_G',
                          THETA=_F( FISSURE=FISS[i-1],),
                          LISSAGE=_F( LISSAGE_THETA='LAGRANGE',

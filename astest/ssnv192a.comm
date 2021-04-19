@@ -359,7 +359,7 @@ for i in range(n) :
       k = i*nb_fond + j
       ifond = j+1
 
-      SIF[k]=CALC_G(RESULTAT=RESU1,
+      SIF[k]=CALC_G_XFEM(RESULTAT=RESU1,
                     OPTION='CALC_K_G',
                     THETA=_F( FISSURE=FISS,
                               R_INF=RI[i],
@@ -375,7 +375,7 @@ for j in range(nb_fond) :
 
       ifond = j+1
 
-      SIF2[j]=CALC_G(RESULTAT=RESU1,
+      SIF2[j]=CALC_G_XFEM(RESULTAT=RESU1,
                     OPTION='CALC_K_G',
                     THETA=_F( FISSURE=FISS,
                               NUME_FOND=ifond),

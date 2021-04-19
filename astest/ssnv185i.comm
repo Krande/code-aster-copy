@@ -238,7 +238,7 @@ SIF = [None]*nbc
 
 for i in range(0,nbc) :
 
-   SIF[i]=CALC_G(    RESULTAT=UTOT1,
+   SIF[i]=CALC_G_XFEM(    RESULTAT=UTOT1,
                      OPTION='CALC_K_G',
                      THETA=_F(FISSURE=FISS,
                               R_INF=RI[i],

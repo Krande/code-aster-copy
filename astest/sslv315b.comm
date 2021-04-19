@@ -125,7 +125,7 @@ for i in range(nbcalc) :
                          INFO=1,);
 
 
-   SIF[i]=CALC_G        (RESULTAT=RESV[i],
+   SIF[i]=CALC_G_XFEM        (RESULTAT=RESV[i],
                          OPTION='CALC_K_G',
                          THETA=_F( FISSURE=FF[i],),
                          LISSAGE=_F( DEGRE=0,),);

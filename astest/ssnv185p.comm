@@ -158,7 +158,7 @@ SIGMA_1=CREA_CHAMP( OPERATION='EXTR',INFO=2, TYPE_CHAM='ELGA_SIEF_R',
 # POST-TRAITEMENT : CALCUL DE G
 #------------------------------------------------------------------------
 
-G1=CALC_G(RESULTAT=UTOT1,
+G1=CALC_G_XFEM(RESULTAT=UTOT1,
           THETA=_F(FISSURE=FISS,
                    R_INF=2.,
                    R_SUP=4.),
@@ -167,7 +167,7 @@ G1=CALC_G(RESULTAT=UTOT1,
 
 IMPR_TABLE(TABLE=G1)
 
-G2=CALC_G(RESULTAT=UTOT2,
+G2=CALC_G_XFEM(RESULTAT=UTOT2,
           THETA=_F(FISSURE=FISS,
                    R_INF=2.,
                    R_SUP=4.,),
@@ -214,7 +214,7 @@ SIF2 = [None]*nbc
 
 for i in range(0,nbc) :
 
-   SIF1[i]=CALC_G(RESULTAT=UTOT1,
+   SIF1[i]=CALC_G_XFEM(RESULTAT=UTOT1,
                  OPTION='CALC_K_G',
                  THETA=_F(FISSURE=FISS,
                           R_INF=RI[i],
@@ -224,7 +224,7 @@ for i in range(0,nbc) :
 
    IMPR_TABLE(TABLE=SIF1[i],);
 
-   SIF2[i]=CALC_G(RESULTAT=UTOT2,
+   SIF2[i]=CALC_G_XFEM(RESULTAT=UTOT2,
                  OPTION='CALC_K_G',
                  THETA=_F(FISSURE=FISS,
                           R_INF=RI[i],

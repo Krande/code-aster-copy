@@ -172,7 +172,7 @@ RESU=STAT_NON_LINE(MODELE=MODX,
 # visu : pas indispensable pour le test pour l instant
 
 # calcul de G et K : on remplace par une methode cohesive
-CG=CALC_G(RESULTAT=RESU,
+CG=CALC_G_XFEM(RESULTAT=RESU,
           OPTION='CALC_K_G',
           INST=1.0,
           THETA=_F(FISSURE=FISS,

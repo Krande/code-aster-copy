@@ -151,7 +151,7 @@ RESU=CALC_CHAMP(reuse=RESU,
                    VARI_INTERNE=('VARI_ELNO',)
                )
 
-G_INIT=CALC_G(THETA=_F(FISSURE=FISS,
+G_INIT=CALC_G_XFEM(THETA=_F(FISSURE=FISS,
                        R_INF=0.1,
                        R_SUP=0.4,),
               RESULTAT=RESU,
@@ -161,7 +161,7 @@ G_INIT=CALC_G(THETA=_F(FISSURE=FISS,
               CHAM_THETA=CO('cham_theta_no'),
               OPTION='CALC_G')
 
-G_INIT2=CALC_G(THETA=_F(FISSURE=FISS,
+G_INIT2=CALC_G_XFEM(THETA=_F(FISSURE=FISS,
                        R_INF=0.1,
                        R_SUP=0.4,),
               RESULTAT=RESU,

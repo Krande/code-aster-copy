@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -260,7 +260,7 @@ TEST_TABLE(CRITERE='RELATIF',
 #------------------------------------------------------------------------
 
 # couronne 1 entre h et 4h
-G_1=CALC_G(THETA=_F(FISSURE=FISS,
+G_1=CALC_G_XFEM(THETA=_F(FISSURE=FISS,
                     R_INF = 1*h,
                     R_SUP = 4*h),
            RESULTAT=UTOT1,
@@ -269,7 +269,7 @@ G_1=CALC_G(THETA=_F(FISSURE=FISS,
 IMPR_TABLE(TABLE=G_1)
 
 # couronne 2 entre 2h et 6h
-G_2=CALC_G(THETA=_F(FISSURE=FISS,
+G_2=CALC_G_XFEM(THETA=_F(FISSURE=FISS,
                     R_INF = 2*h,
                     R_SUP = 6*h),
            RESULTAT=UTOT1,

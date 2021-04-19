@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -342,7 +342,7 @@ SIF3 = [None]*(nbc+1)
 
 for i in range(0,nbc) :
 
-   SIF2[i]=CALC_G(RESULTAT=UTOT2,
+   SIF2[i]=CALC_G_XFEM(RESULTAT=UTOT2,
                   OPTION='CALC_K_G',
                   THETA=_F(FISSURE=FISS,
                            R_INF=RI[i],
@@ -353,7 +353,7 @@ for i in range(0,nbc) :
 
    IMPR_TABLE(TABLE=SIF2[i],);
 
-   SIF3[i]=CALC_G(RESULTAT=UTOT3,
+   SIF3[i]=CALC_G_XFEM(RESULTAT=UTOT3,
                   OPTION='CALC_K_G',
                   THETA=_F(FISSURE=FISS,
                            R_INF=RI[i],
@@ -364,7 +364,7 @@ for i in range(0,nbc) :
 
    IMPR_TABLE(TABLE=SIF3[i],);
 
-SIF2[nbc]=CALC_G(RESULTAT=UTOT2,
+SIF2[nbc]=CALC_G_XFEM(RESULTAT=UTOT2,
                   OPTION='CALC_K_G',
                   THETA=_F(FISSURE=FISS,),
                   LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
@@ -373,7 +373,7 @@ SIF2[nbc]=CALC_G(RESULTAT=UTOT2,
 
 IMPR_TABLE(TABLE=SIF2[nbc],);
 
-SIF3[nbc]=CALC_G(RESULTAT=UTOT3,
+SIF3[nbc]=CALC_G_XFEM(RESULTAT=UTOT3,
                   OPTION='CALC_K_G',
                   THETA=_F(FISSURE=FISS,),
                   LISSAGE=_F(LISSAGE_THETA='LAGRANGE',

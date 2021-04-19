@@ -175,14 +175,14 @@ for i in range(1,NPS-1) :
 
 #   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LA FISSURE
 #   A GAUCHE
-    SIFL[i]=CALC_G(THETA=_F(FISSURE=FissL[i],),
+    SIFL[i]=CALC_G_XFEM(THETA=_F(FISSURE=FissL[i],),
                    RESULTAT=ResX[i],
                    OPTION='CALC_K_G',
                    )
 
 #   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LA FISSURE
 #   A DROITE
-    SIFR[i]=CALC_G(THETA=_F(FISSURE=FissR[i],),
+    SIFR[i]=CALC_G_XFEM(THETA=_F(FISSURE=FissR[i],),
                    RESULTAT=ResX[i],
                    OPTION='CALC_K_G',
                    )

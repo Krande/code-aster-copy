@@ -124,7 +124,7 @@ angle = pi/2.
 k3ref_90 = 4.*(1 - nu)/(pi*(2.-nu)) * sig*sin(alpha)*cos(alpha) * sin(angle) * sqrt(pi*a)
 
 # Methode G-theta
-CG=CALC_G(THETA=_F(FISSURE=FISS,
+CG=CALC_G_XFEM(THETA=_F(FISSURE=FISS,
                    NB_POINT_FOND=21,
                    R_INF=0.1,
                    R_SUP=0.5,),

@@ -198,20 +198,20 @@ for i in range(nbcalc) :
 
    for j in range(0,nbc) :
       k = i*nbc + j
-      SIF_1[k]=CALC_G(RESULTAT=RESU[i],
+      SIF_1[k]=CALC_G_XFEM(RESULTAT=RESU[i],
                      OPTION='CALC_K_G',
                      THETA=_F(FISSURE=FISS[i],
                               R_INF=RI[j],
                               R_SUP=RS[j]))
 
-      SIF_2[k]=CALC_G(RESULTAT=RESU[i],
+      SIF_2[k]=CALC_G_XFEM(RESULTAT=RESU[i],
                      OPTION='CALC_K_G',
                      THETA=_F(FISSURE=FISS[i],
                               NUME_FOND=2,
                               R_INF=RI[j],
                               R_SUP=RS[j]))
 
-      TG_1[k]=CALC_G(RESULTAT=RESU[i],
+      TG_1[k]=CALC_G_XFEM(RESULTAT=RESU[i],
                      THETA=_F(FISSURE=FISS[i],
                               R_INF=RI[j],
                               R_SUP=RS[j]))

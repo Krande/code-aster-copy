@@ -165,7 +165,7 @@ MODE=NORM_MODE(reuse=MODE,
                MODE=MODE,
                NORME='MASS_GENE',);
 
-GLMO1 = CALC_G(  RESULTAT=MODE,
+GLMO1 = CALC_G_XFEM(  RESULTAT=MODE,
                  OPTION='CALC_K_G',
                  THETA=_F( FISSURE=FISS,
                                    R_INF=2.E-3,
@@ -273,7 +273,7 @@ TEST_TABLE(VALE_CALC=354514.221664,
 # #                    IMPRESSION = _F(TOUT='OUI',),
 #                     );
 #
-# GLMO2 = CALC_G(  RESULTAT=RES_DYN2,
+# GLMO2 = CALC_G_XFEM(  RESULTAT=RES_DYN2,
 #                  OPTION='CALC_K_G',
 #                  THETA=_F( FISSURE=FISS,
 #                            R_INF=2.E-3,

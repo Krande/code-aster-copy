@@ -376,7 +376,7 @@ SIF1 = [None]*n
 SIF2 = [None]*n
 
 for i in range(0,n) :
-   SIF1[i]=CALC_G(
+   SIF1[i]=CALC_G_XFEM(
                RESULTAT=RESU1,
                OPTION='CALC_K_G',NUME_ORDRE=1,
                THETA=_F( FISSURE=FISS,
@@ -387,7 +387,7 @@ for i in range(0,n) :
 
    #IMPR_TABLE(TABLE=SIF1[i],);
 
-   SIF2[i]=CALC_G(
+   SIF2[i]=CALC_G_XFEM(
                RESULTAT=RESU1,NUME_ORDRE=1,
                OPTION='CALC_K_G',
                THETA=_F( FISSURE=FISS,

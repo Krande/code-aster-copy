@@ -212,7 +212,7 @@ RESU=STAT_NON_LINE(MODELE=MODELEK,
 # debut ajout
 # on fait un CALC_G en methode cohesive
 # mot cle NB_POINT_FOND ds mot-cle facteur THETA a enlever
-SIF=CALC_G(RESULTAT=RESU,
+SIF=CALC_G_XFEM(RESULTAT=RESU,
            OPTION='CALC_K_G',
            INST=1.0,
            THETA=_F(FISSURE=FISS,NUME_FOND=1,NB_POINT_FOND=2,),
@@ -256,7 +256,7 @@ TEST_TABLE(TABLE=SIF,
 
 # calcul legendre pas ouvert avec le cohesif
 
-GLAGR=CALC_G(RESULTAT=RESU,
+GLAGR=CALC_G_XFEM(RESULTAT=RESU,
              OPTION='CALC_K_G',
              INST=1.0,
              THETA=_F(FISSURE=FISS,NUME_FOND=1,),

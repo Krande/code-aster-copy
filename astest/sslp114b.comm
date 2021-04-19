@@ -269,14 +269,14 @@ UTOT=MECA_STATIQUE(MODELE=MODELK,
                    INFO=2,
                   );
 
-CH_G=CALC_G(RESULTAT=UTOT,
+CH_G=CALC_G_XFEM(RESULTAT=UTOT,
             OPTION='CALC_K_G',
             THETA=_F(FISSURE=FISS,
                      R_INF=0.1*A,
                      R_SUP=0.3*A,),
             INFO=2);
 
-CH_G2=CALC_G(RESULTAT=UTOT,
+CH_G2=CALC_G_XFEM(RESULTAT=UTOT,
             OPTION='CALC_K_G',
             THETA=_F(FISSURE=FISS,),
             INFO=2);

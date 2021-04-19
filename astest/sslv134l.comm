@@ -97,7 +97,7 @@ RESU=MECA_STATIQUE(MODELE=MOX,
                    CHAM_MATER=CM,
                    EXCIT=_F(  CHARGE = CH,   ) )
 
-GLOC=CALC_G(RESULTAT=RESU,
+GLOC=CALC_G_XFEM(RESULTAT=RESU,
             INST = 0,
             OPTION='CALC_K_G',
             THETA=_F(FISSURE=FF,R_INF=0.3,

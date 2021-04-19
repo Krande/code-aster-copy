@@ -193,14 +193,14 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 # CALCUL AVEC CALC_G
-SIFC1=CALC_G(RESULTAT=UTOT,
+SIFC1=CALC_G_XFEM(RESULTAT=UTOT,
            OPTION='CALC_K_G',
            THETA=_F(FISSURE=FISS,
                     R_INF=0.01,
                     R_SUP=0.05,),
            )
 
-TABGC1=CALC_G(RESULTAT=UTOT,
+TABGC1=CALC_G_XFEM(RESULTAT=UTOT,
            THETA=_F(FISSURE=FISS,
                     R_INF=0.01,
                     R_SUP=0.05,),

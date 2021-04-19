@@ -94,12 +94,12 @@ RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
 
 #-------------------------------------------------------
 # Taille d'element h = 0.1
-TABKG=CALC_G(THETA=_F(FISSURE=FISS,),
+TABKG=CALC_G_XFEM(THETA=_F(FISSURE=FISS,),
            RESULTAT=RESU,
            COMPORTEMENT=_F(RELATION='ELAS',),
            OPTION='CALC_K_G',);
 
-TABG=CALC_G(THETA=_F(FISSURE=FISS,),
+TABG=CALC_G_XFEM(THETA=_F(FISSURE=FISS,),
             RESULTAT=RESU,);
 
 IMPR_TABLE(TABLE=TABKG,);
@@ -213,12 +213,12 @@ RES_XROT=POST_CHAM_XFEM(MODELE_VISU = MOD_XROT,
 
 #-------------------------------------------------------
 # Taille d'element h = 0.1
-TABKG_RO=CALC_G(THETA=_F(FISSURE=FISS,),
+TABKG_RO=CALC_G_XFEM(THETA=_F(FISSURE=FISS,),
                 RESULTAT=RESU_ROT,
                 COMPORTEMENT=_F(RELATION='ELAS',),
                 OPTION='CALC_K_G',);
 
-TABG_RO=CALC_G(THETA=_F(FISSURE=FISS,),
+TABG_RO=CALC_G_XFEM(THETA=_F(FISSURE=FISS,),
                RESULTAT=RESU_ROT,
                COMPORTEMENT=_F(RELATION='ELAS',));
 

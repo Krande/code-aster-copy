@@ -210,7 +210,7 @@ for i in range(nbcalc) :
 # 1) CALCUL AVEC CALC_G POUR L'ANGLE COURANT i
 
 # CAS DU PREMIER CHARGEMENT
-  SI1CH1[i]=CALC_G(RESULTAT=UTOT1[i],
+  SI1CH1[i]=CALC_G_XFEM(RESULTAT=UTOT1[i],
                    INST=0.,
                    OPTION='CALC_K_G',
                    THETA=_F(FISSURE=FISS[i],
@@ -219,7 +219,7 @@ for i in range(nbcalc) :
                     CHAM_THETA=CO('cham_theta_no1'),
                    )
 
-  SI2CH1[i]=CALC_G(RESULTAT=UTOT1[i],
+  SI2CH1[i]=CALC_G_XFEM(RESULTAT=UTOT1[i],
                    INST=0.,
                    OPTION='CALC_K_G',
                    THETA=_F(FISSURE=FISS[i],
@@ -228,7 +228,7 @@ for i in range(nbcalc) :
                             R_SUP=RS,),
                    )
 
-  TG1CH1[i]=CALC_G(RESULTAT=UTOT1[i],
+  TG1CH1[i]=CALC_G_XFEM(RESULTAT=UTOT1[i],
                    INST=0.,
                    THETA=_F(FISSURE=FISS[i],
                             R_INF=RI,
@@ -240,7 +240,7 @@ for i in range(nbcalc) :
   IMPR_TABLE(TABLE=TG1CH1[i])
 
 # CAS DU DEUXIEME CHARGEMENT
-  SI1CH2[i]=CALC_G(RESULTAT=UTOT2[i],
+  SI1CH2[i]=CALC_G_XFEM(RESULTAT=UTOT2[i],
                    INST=0.,
                    OPTION='CALC_K_G',
                    THETA=_F(FISSURE=FISS[i],
@@ -248,7 +248,7 @@ for i in range(nbcalc) :
                             R_SUP=RS,),
                    )
 
-  SI2CH2[i]=CALC_G(RESULTAT=UTOT2[i],
+  SI2CH2[i]=CALC_G_XFEM(RESULTAT=UTOT2[i],
                    INST=0.,
                    OPTION='CALC_K_G',
                    CHAM_THETA=CO('cham_theta_no2'),
@@ -261,7 +261,7 @@ for i in range(nbcalc) :
 
   DETRUIRE(NOM=(cham_theta_no1, cham_theta_no2),)
 
-  TG1CH2[i]=CALC_G(RESULTAT=UTOT2[i],
+  TG1CH2[i]=CALC_G_XFEM(RESULTAT=UTOT2[i],
                    INST=0.,
                    THETA=_F(FISSURE=FISS[i],
                             R_INF=RI,

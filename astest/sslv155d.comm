@@ -162,7 +162,7 @@ MO_VISU=AFFE_MODELE(MAILLAGE=MA_VISU,
 RE_VISU=POST_CHAM_XFEM(MODELE_VISU=MO_VISU,
                        RESULTAT=RESU)
 
-CGX=CALC_G(THETA=_F(FISSURE=FISSX,
+CGX=CALC_G_XFEM(THETA=_F(FISSURE=FISSX,
                     R_INF=Rinf,
                     R_SUP=Rsup,),
           CHAM_THETA=CO('cham_theta_no'),

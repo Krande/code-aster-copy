@@ -186,7 +186,7 @@ G2 = [None]*nb_fond
 
 for i in range(nb_fond) :
 
-   G1[i]=CALC_G(THETA=_F(FISSURE=fiss_1,
+   G1[i]=CALC_G_XFEM(THETA=_F(FISSURE=fiss_1,
                          NUME_FOND=i+1,
                          R_INF=2*h,
                          R_SUP=5*h,),
@@ -196,7 +196,7 @@ for i in range(nb_fond) :
    IMPR_TABLE(TABLE=G1[i])
 
 #  calcul sans R_INF et R_SUP
-   G2[i]=CALC_G(THETA=_F(FISSURE=fiss_1,
+   G2[i]=CALC_G_XFEM(THETA=_F(FISSURE=fiss_1,
                          NUME_FOND=i+1,),
                 CHAM_THETA=CO('cham_theta_no'),
                 RESULTAT=RESU,

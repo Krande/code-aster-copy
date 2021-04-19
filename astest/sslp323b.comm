@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -118,7 +118,7 @@ for i in range(1,NPS-1) :
                                 ),
                          INST=1,);
 
-    SIF[i]=CALC_G(THETA=_F(FISSURE=Fiss[i],),
+    SIF[i]=CALC_G_XFEM(THETA=_F(FISSURE=Fiss[i],),
                    RESULTAT=ResX[i],
                    OPTION='CALC_K_G',);
 

@@ -234,7 +234,7 @@ Fissure = [FISS1,FISS1,FISS4,FISS2,FISS2,FISS3,FISS3,FISS5,FISS5,FISS8,FISS6,FIS
 #Vale_IIc = [None]*14
 
 for i in range(14):
-    PK[i]=CALC_G(RESULTAT=UTOT1,
+    PK[i]=CALC_G_XFEM(RESULTAT=UTOT1,
                  OPTION='CALC_K_G',
                  NUME_ORDRE=1,
                  THETA=_F(NUME_FOND=NumFond[i],

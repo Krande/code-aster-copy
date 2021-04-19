@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -173,7 +173,7 @@ Rsup2 = 4.8
 # meme valeurs que sslp115a (soit ici C3 = 7h - 15h)
 Rinf3 = 4.228
 Rsup3 = 9.0
-GTHER3=CALC_G(THETA=_F(FISSURE=FISS,
+GTHER3=CALC_G_XFEM(THETA=_F(FISSURE=FISS,
                        NUME_FOND = 2,
                        R_INF=Rinf3,
                        R_SUP=Rsup3,),
@@ -222,7 +222,7 @@ RESUINI=CALC_CHAMP(reuse=RESUINI,
 # Calcul de G pour les 3 couronnes, a partir de SIEF_ELGA
 #--------------------------------------------------------
 
-GINGA1=CALC_G(THETA=_F(FISSURE=FISS,
+GINGA1=CALC_G_XFEM(THETA=_F(FISSURE=FISS,
                        NUME_FOND = 2,
                        R_INF = Rinf1,
                        R_SUP = Rsup1),
@@ -231,7 +231,7 @@ GINGA1=CALC_G(THETA=_F(FISSURE=FISS,
               ETAT_INIT =_F(SIGM=SIEFELGA),
               OPTION='CALC_G')
 
-GINGA2=CALC_G(THETA=_F(FISSURE=FISS,
+GINGA2=CALC_G_XFEM(THETA=_F(FISSURE=FISS,
                        NUME_FOND = 2,
                        R_INF = Rinf2,
                        R_SUP = Rsup2),
@@ -240,7 +240,7 @@ GINGA2=CALC_G(THETA=_F(FISSURE=FISS,
              ETAT_INIT =_F(SIGM=SIEFELGA),
              OPTION='CALC_G')
 
-GINGA3=CALC_G(THETA=_F(FISSURE=FISS,
+GINGA3=CALC_G_XFEM(THETA=_F(FISSURE=FISS,
                        NUME_FOND = 2,
                        R_INF = Rinf3,
                        R_SUP = Rsup3),
@@ -256,7 +256,7 @@ IMPR_TABLE(TABLE=GINGA3,UNITE=11)
 # Calcul de G et K pour les 3 couronnes, a partir de SIEF_ELGA
 #-------------------------------------------------------------
 
-GINGAK1=CALC_G(THETA=_F(FISSURE=FISS,
+GINGAK1=CALC_G_XFEM(THETA=_F(FISSURE=FISS,
                        NUME_FOND = 2,
                        R_INF = Rinf1,
                        R_SUP = Rsup1),
@@ -265,7 +265,7 @@ GINGAK1=CALC_G(THETA=_F(FISSURE=FISS,
                ETAT_INIT =_F(SIGM=SIEFELGA),
                OPTION='CALC_K_G')
 
-GINGAK2=CALC_G(THETA=_F(FISSURE=FISS,
+GINGAK2=CALC_G_XFEM(THETA=_F(FISSURE=FISS,
                        NUME_FOND = 2,
                        R_INF = Rinf2,
                        R_SUP = Rsup2),
@@ -274,7 +274,7 @@ GINGAK2=CALC_G(THETA=_F(FISSURE=FISS,
                ETAT_INIT =_F(SIGM=SIEFELGA),
                OPTION='CALC_K_G')
 
-GINGAK3=CALC_G(THETA=_F(FISSURE=FISS,
+GINGAK3=CALC_G_XFEM(THETA=_F(FISSURE=FISS,
                         NUME_FOND = 2,
                         R_INF = Rinf3,
                         R_SUP = Rsup3),
