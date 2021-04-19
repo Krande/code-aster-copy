@@ -195,11 +195,11 @@ use petsc_data_module
 !
         ASSERT( xscatt == PETSC_NULL_VECSCATTER )
         ASSERT( xglobal == PETSC_NULL_VEC )
-! Ne pas supprimer VecCreate: si xglobal vaut PETSC_NULL_VEC en entrée de VecScatterCreateToAll,
-! il n'est pas alloué en sortie
         call VecCreateSeq( PETSC_COMM_SELF, to_petsc_int(neq), xglobal, ierr )
         ASSERT( ierr == 0 )
-        call VecScatterCreateToAll(xlocal, xscatt, xglobal, ierr)
+! On passe PETSC_NULL_VEC en lieu et place de xglobal en entrée de VecScatterCreateToAll
+! car ainsi, il n'est pas realloué
+        call VecScatterCreateToAll(xlocal, xscatt, PETSC_NULL_VEC, ierr)
         ASSERT(ierr.eq.0)
 !-----------------------------------------------------------------------
     else if (precon.eq.'SOR') then
