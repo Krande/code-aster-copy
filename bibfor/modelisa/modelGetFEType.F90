@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -81,6 +81,8 @@ character(len=16), intent(out) :: modeli
         modeli = modeli_in(1:lxlgut(modeli_in))//'#1'
     elseif (formul .eq. 'U_P') then
         modeli = modeli_in(1:lxlgut(modeli_in))//'#2'
+    elseif (formul .eq. 'U_PSI') then
+        modeli = modeli_in(1:lxlgut(modeli_in))//'#3'
     elseif (formul .ne. ' ') then
         ASSERT(ASTER_FALSE)
     endif
