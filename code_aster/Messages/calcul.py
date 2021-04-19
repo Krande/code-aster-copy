@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -116,8 +116,7 @@ dans la structure de données résultat pour le calcul de l'option %(k2)s.
 Erreur utilisateur dans un calcul élémentaire de forces réparties :
   On n'a pas trouvé toutes les composantes voulues du champ pour le paramètre : %(k1)s
    - option        : %(k2)s
-   - type_élément  : %(k3)s
-   - maille        : %(k4)s
+   - maille        : %(k3)s
   On a trouvé un noeud sur lequel il existe des composantes mais pas toutes.
   On ne peut pas continuer
 

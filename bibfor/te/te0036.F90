@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,9 +66,10 @@ subroutine te0036(option, nomte)
 #include "asterfort/xteddl.h"
 #include "asterfort/xcalc_heav.h"
 !
+character(len=16), intent(in) :: option, nomte
+!
     character(len=8) :: nompar(4), noma, elrefp, elrese(4), enr, lag
     character(len=8) :: elref
-    character(len=16) :: nomte, option
     integer :: jpintt, jcnset, jheavt, jlonch, jlsn, jlst, k
     integer :: jpmilt, irese, nfiss, jfisno, jtab(7), ncomp, jheavn, jheavs, ncompn
     integer :: jbaslo, imate
@@ -173,9 +174,9 @@ subroutine te0036(option, nomte)
     elseif (option.eq.'CHAR_MECA_FR2D3D'.or.&
      &        option.eq.'CHAR_MECA_FR1D2D') then
         if (ndim .eq. 3) then
-           call tefrep(option, nomte, 'PFR2D3D', iforc)
+           call tefrep(option, 'PFR2D3D', iforc)
         else if (ndim .eq. 2) then
-           call tefrep(option, nomte, 'PFR1D2D', iforc)
+           call tefrep(option, 'PFR1D2D', iforc)
         endif
 !
     elseif (option.eq.'CHAR_MECA_FF2D3D'.or.&

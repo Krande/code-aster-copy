@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0440(option, nomte)
 !
+implicit none
 !
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -34,7 +34,8 @@ subroutine te0440(option, nomte)
 #include "asterfort/xteddl.h"
 #include "asterfort/xteini.h"
 #include "asterfort/lteatt.h"
-    character(len=16) :: option, nomte
+!
+character(len=16), intent(in) :: option, nomte
 !......................................................................
 !
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
@@ -128,11 +129,10 @@ subroutine te0440(option, nomte)
     if ((option.eq.'CHAR_MECA_FR3D3D') .or. (option.eq.'CHAR_MECA_FR2D2D')) then
 !
         fonc=.false.
-        if (ndim .eq. 3) call tefrep(option, nomte, 'PFR3D3D', iforc)
-        if (ndim .eq. 2) call tefrep(option, nomte, 'PFR2D2D', iforc)
+        if (ndim .eq. 3) call tefrep(option, 'PFR3D3D', iforc)
+        if (ndim .eq. 2) call tefrep(option, 'PFR2D2D', iforc)
 !
-        elseif ((option.eq.'CHAR_MECA_FF3D3D').or. (&
-    option.eq.'CHAR_MECA_FF2D2D')) then
+        elseif ((option.eq.'CHAR_MECA_FF3D3D').or. ( option.eq.'CHAR_MECA_FF2D2D')) then
 !
         fonc=.true.
         call jevech('PTEMPSR', 'L', itemps)

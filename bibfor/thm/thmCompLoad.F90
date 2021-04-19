@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine thmCompLoad(option, nomte, ds_thm)
+subroutine thmCompLoad(option, ds_thm)
 !
 use THM_type
 !
@@ -32,7 +32,7 @@ implicit none
 #include "asterfort/thmGetGene.h"
 #include "asterfort/thmGetElemIntegration.h"
 !
-character(len=16), intent(in) :: option, nomte
+character(len=16), intent(in) :: option
 type(THM_DS), intent(inout) :: ds_thm
 !
 ! --------------------------------------------------------------------------------------------------
@@ -44,7 +44,6 @@ type(THM_DS), intent(inout) :: ds_thm
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  option           : name of option to compute
-! In  nomte            : type of finite element
 ! IO  ds_thm           : datastructure for THM
 !
 ! --------------------------------------------------------------------------------------------------
@@ -103,7 +102,7 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 ! - Compute loads
 !
-    call thmevc(option  , nomte  , l_axi   ,&
+    call thmevc(option  , l_axi  ,&
                 nno     , nnos   ,&
                 npg     , nddls  , nddlm   ,&
                 jv_poids, jv_func, jv_dfunc)

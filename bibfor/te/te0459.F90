@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine te0459(nomopt, nomte)
+subroutine te0459(option, nomte)
 !
 use HHO_type
 use HHO_size_module, only  : hhoMecaFaceDofs
@@ -26,7 +26,8 @@ use HHO_init_module, only : hhoInfoInitFace
 use HHO_eval_module
 use HHO_utils_module
 !
-    implicit none
+implicit none
+!
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
@@ -37,7 +38,7 @@ use HHO_utils_module
 #include "asterfort/writeVector.h"
 #include "blas/dcopy.h"
 !
-    character(len=16) :: nomte, nomopt
+character(len=16), intent(in) :: option, nomte
 !
 !---------------------------------------------------------------------------------------------------
 !
@@ -87,7 +88,7 @@ use HHO_utils_module
 !
 ! ---- Which option ?
 !
-    if (nomopt .eq. 'CHAR_MECA_PRES_R') then
+    if (option .eq. 'CHAR_MECA_PRES_R') then
 !
 ! ----- Evaluate the function PRES
 !
@@ -100,7 +101,7 @@ use HHO_utils_module
             NeumValuesQP(1:3,ipg) = - PresQP(ipg) * hhoFace%normal(1:3)
         end do
 !
-    elseif (nomopt .eq. 'CHAR_MECA_PRES_F') then
+    elseif (option .eq. 'CHAR_MECA_PRES_F') then
 !
 ! ---- Get Function Parameters
 !
@@ -131,17 +132,17 @@ use HHO_utils_module
             NeumValuesQP(1:3,ipg) = - PresQP(ipg) * hhoFace%normal(1:3)
         end do
 !
-    elseif (nomopt .eq. 'CHAR_MECA_FF2D3D' .or. nomopt .eq. 'CHAR_MECA_FF1D2D') then
+    elseif (option .eq. 'CHAR_MECA_FF2D3D' .or. option .eq. 'CHAR_MECA_FF1D2D') then
 !
 ! ---- Get Function Parameters
 !
         if (celldim == 3) then
-            ASSERT(nomopt .eq. 'CHAR_MECA_FF2D3D')
+            ASSERT(option .eq. 'CHAR_MECA_FF2D3D')
             call jevech('PFF2D3D', 'L', j_forc)
             nbpara = 4
             nompar(1:3) = (/ 'X', 'Y', 'Z' /)
         else if (celldim == 2) then
-            ASSERT(nomopt .eq. 'CHAR_MECA_FF1D2D')
+            ASSERT(option .eq. 'CHAR_MECA_FF1D2D')
             call jevech('PFF1D2D', 'L', j_forc)
             nbpara = 3
             nompar(1:2) = (/ 'X', 'Y' /)
@@ -162,16 +163,16 @@ use HHO_utils_module
                                 & celldim, NeumValuesQP(idim, 1:MAX_QP_FACE))
         end do
 !
-    elseif (nomopt .eq. 'CHAR_MECA_FR1D2D' .or. nomopt .eq. 'CHAR_MECA_FR2D3D') then
+    elseif (option .eq. 'CHAR_MECA_FR1D2D' .or. option .eq. 'CHAR_MECA_FR2D3D') then
 !
 ! ---- Get Forces
 !
         if (celldim == 3) then
-            ASSERT(nomopt .eq. 'CHAR_MECA_FR2D3D')
-            call tefrep(nomopt, nomte, 'PFR2D3D', j_forc)
+            ASSERT(option .eq. 'CHAR_MECA_FR2D3D')
+            call tefrep(option, 'PFR2D3D', j_forc)
         else if (celldim == 2) then
-            ASSERT(nomopt .eq. 'CHAR_MECA_FR1D2D')
-            call tefrep(nomopt, nomte, 'PFR1D2D', j_forc)
+            ASSERT(option .eq. 'CHAR_MECA_FR1D2D')
+            call tefrep(option, 'PFR1D2D', j_forc)
         else
             ASSERT(ASTER_FALSE)
         end if

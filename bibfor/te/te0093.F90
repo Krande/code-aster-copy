@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,61 +15,97 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0093(option, nomte)
-    implicit none
+!
+implicit none
+!
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/tefrep.h"
-    character(len=16) :: option, nomte
-! ......................................................................
-!    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
-!                          OPTION : 'CHAR_MECA_FR2D2D  '
 !
-!    - ARGUMENTS:
-!        DONNEES:      OPTION       -->  OPTION DE CALCUL
-!                      NOMTE        -->  NOM DU TYPE ELEMENT
-! ......................................................................
+character(len=16), intent(in) :: option, nomte
 !
-    integer :: ndim, nno, nnos, npg, i, k, kp, ii, iforc, ivectu
-    integer :: ipoids, ivf, idfde, igeom, jgano
-    real(kind=8) :: poids, r, fx, fy
-!     ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+! Elementary computation
 !
-    call jevech('PGEOMER', 'L', igeom)
-    call jevech('PVECTUR', 'E', ivectu)
-    call tefrep(option, nomte, 'PFR2D2D', iforc)
+! Elements: MECA_AXIS, MECA_AXIS_SI
+!           MECA_AXIS_INCO_UPO, MECA_AXIS_INCO_UPG, MECA_AXIS_INCO_UP
+!           MECA_AXIS_GRAD_INCO, MECA_AXIS_GRAD_VARI
+!           MECA_C_PLAN, MECA_C_PLAN_SI
+!           MECA_D_PLAN, MECA_D_PLAN_SI
+!           MECA_D_PLAN_INCO_UPO, MECA_D_PLAN_INCO_UPG, MECA_D_PLAN_INCO_UP
+!           MECA_D_PLAN_GRAD_INCO, MECA_D_PLAN_GRAD_VARI, MECA_D_PLAN_GVNO
 !
-    do kp = 1, npg
-        k=(kp-1)*nno
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                    poids)
+! Options: CHAR_MECA_FR2D2D
 !
-!      --- CALCUL DE LA FORCE AUX PG (A PARTIR DES NOEUDS) ---
+! --------------------------------------------------------------------------------------------------
+!
+! In  option           : name of option to compute
+! In  nomte            : type of finite element
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer, parameter :: ndimSpace = 2
+    integer :: jvWeight, jvShape, jvDShape
+    integer :: jvGeom, jvForc, jvVect
+    integer :: nno, npg
+    integer :: kpg, iNode, iDof
+    integer :: jdec, kdec
+    real(kind=8) :: jacWeight, r, fx, fy
+    aster_logical :: lAxis
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call elrefe_info(fami='RIGI',&
+                     nno=nno, npg=npg,&
+                     jpoids=jvWeight, jvf=jvShape, jdfde=jvDShape)
+    lAxis = lteatt('AXIS','OUI')
+
+! - Get input fields
+    call jevech('PGEOMER', 'L', jvGeom)
+    call tefrep(option, 'PFR2D2D', jvForc)
+
+! - Get output fields
+    call jevech('PVECTUR', 'E', jvVect)
+    do iDof = 1, ndimSpace*nno
+        zr(jvVect+iDof-1) = 0.d0
+    end do
+
+! - Loop on Gauss points
+    do kpg = 1, npg
+        kdec = (kpg-1)*nno
+
+! ----- Compute jacobian
+        call dfdm2d(nno, kpg, jvWeight, jvDShape, zr(jvGeom), jacWeight)
+        if (lAxis) then
+            r = 0.d0
+            do iNode = 1, nno
+                r = r + zr(jvGeom+ndimSpace*(iNode-1))*zr(jvShape+kdec+iNode-1)
+            end do
+            jacWeight = jacWeight * r
+        endif
+
+! ----- Compute force at Gauss point from node value
         fx = 0.d0
         fy = 0.d0
-        do i = 1, nno
-            ii = 2 * (i-1)
-            fx = fx + zr(ivf+k+i-1) * zr(iforc+ii )
-            fy = fy + zr(ivf+k+i-1) * zr(iforc+ii+1)
+        do iNode = 1, nno
+            jdec = (iNode-1) * ndimSpace
+            fx = fx + zr(jvShape+kdec+iNode-1) * zr(jvForc+jdec )
+            fy = fy + zr(jvShape+kdec+iNode-1) * zr(jvForc+jdec+1)
         end do
-!
-        if (lteatt('AXIS','OUI')) then
-            r = 0.d0
-            do i = 1, nno
-                r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
-            end do
-            poids = poids*r
-        endif
-        do i = 1, nno
-            zr(ivectu+2*i-2) = zr(ivectu+2*i-2) + poids * fx * zr(ivf+ k+i-1)
-            zr(ivectu+2*i-1) = zr(ivectu+2*i-1) + poids * fy * zr(ivf+ k+i-1)
+
+! ----- Compute force 
+        do iNode = 1, nno
+            zr(jvVect+ndimSpace*(iNode-1))   = zr(jvVect+ndimSpace*(iNode-1)) +&
+                                               jacWeight * fx * zr(jvShape+kdec+iNode-1)
+            zr(jvVect+ndimSpace*(iNode-1)+1) = zr(jvVect+ndimSpace*(iNode-1)+1) +&
+                                               jacWeight * fy * zr(jvShape+kdec+iNode-1)
         end do
     end do
 !

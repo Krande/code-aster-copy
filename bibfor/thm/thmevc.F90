@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine thmevc(option  , nomte  , l_axi   ,&
+subroutine thmevc(option  , l_axi  ,&
                   nno     , nnos   ,&
                   npg     , nddls  , nddlm   ,&
                   jv_poids, jv_func, jv_dfunc)
@@ -30,7 +30,7 @@ implicit none
 #include "asterfort/jevech.h"
 #include "asterfort/tefrep.h"
 !
-character(len=16), intent(in) :: option, nomte
+character(len=16), intent(in) :: option
 aster_logical, intent(in) :: l_axi
 integer, intent(in) :: nno, nnos
 integer, intent(in) :: npg
@@ -46,7 +46,6 @@ integer, intent(in) :: jv_poids, jv_func, jv_dfunc
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  option       : name of option to compute
-! In  nomte        : type of finite element
 ! In  l_axi        : flag is axisymmetric model
 ! In  nno          : number of nodes (all)
 ! In  nnos         : number of nodes (not middle ones)
@@ -69,7 +68,7 @@ integer, intent(in) :: jv_poids, jv_func, jv_dfunc
     nnom = nno - nnos
     if (option .eq. 'CHAR_MECA_FR3D3D') then
         call jevech('PGEOMER', 'L', jv_geom)
-        call tefrep(option, nomte, 'PFR3D3D', jv_forc)
+        call tefrep(option, 'PFR3D3D', jv_forc)
         call jevech('PVECTUR', 'E', jv_vect)
         do kp = 1, npg
             k = (kp-1)*nno
@@ -101,7 +100,7 @@ integer, intent(in) :: jv_poids, jv_func, jv_dfunc
 !
     if (option .eq. 'CHAR_MECA_FR2D2D') then
         call jevech('PGEOMER', 'L', jv_geom)
-        call tefrep(option, nomte, 'PFR2D2D', jv_forc)
+        call tefrep(option, 'PFR2D2D', jv_forc)
         call jevech('PVECTUR', 'E', jv_vect)
 !
         do kp = 1, npg

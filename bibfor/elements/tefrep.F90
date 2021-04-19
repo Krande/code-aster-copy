@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,75 +15,81 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine tefrep(option, nomte, param, iforc)
-    implicit none
+!
+subroutine tefrep(option, fieldTypeName, jvForc)
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 !
-    character(len=16) :: option, nomte
-    character(len=*) :: param
+character(len=16), intent(in) :: option
+character(len=*), intent(in) :: fieldTypeName
+integer, intent(out) :: jvForc
 !
-! ......................................................................
-! person_in_charge: jacques.pellet at edf.fr
-!    - BUT:
-!     RECUPERER L'ADRESSE DU CHAMP LOCAL CORRESPONDANT AUX EFFORTS
-!     REPARTIS (CHAR_MECA_FR.D.D)
-! ......................................................................
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: iforc, itab(8), k, iret, ino, ico
-    integer :: iadzi, iazk24, nbval, jad, nbno, nbcmp
-    character(len=24) :: valk(4)
-    character(len=8) :: nommai
-!     ------------------------------------------------------------------
+! Elementary computation
 !
-    call tecach('OON', param, 'L', iret, nval=8,&
-                itab=itab)
-    ASSERT(iret.eq.0.or.iret.eq.3)
+! Check components of force (options CHAR_MECA_F*)
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  option           : name of option to compute
+! In  fieldTypeName    : type of field
+! Out jvForc           : JEVEUX adress of field
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: itab(8), iCmp, iret, iNode, ico
+    integer :: iadzi, iazk24, nbValue, jad, nbNode, nbCmp
+    character(len=24) :: valk(3)
+    character(len=8) :: cellName
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call tecach('OON', fieldTypeName, 'L', iret, nval=8, itab=itab)
+    ASSERT(iret .eq. 0 .or. iret .eq. 3)
 !
     if (iret .eq. 0) then
-        iforc=itab(1)
+        jvForc = itab(1)
 !
-    else if (iret.eq.3) then
-        iforc=itab(1)
-!       -- APRES CONCERTATION (JP+JLF) ON DECIDE :
-!       1) SI UN NOEUD NE PORTE PAS TOUTES LES CMPS => <F>
-!       2) SI UN NOEUD NE PORTE AUCUNE COMPOSANTE, ON LE MET
-!          A ZERO.
-        nbval=itab(2)
-        nbno=itab(3)
-        jad=itab(8)
-        nbcmp=nbval/nbno
-        ASSERT(nbval.eq.nbno*nbcmp)
+    else if (iret .eq. 3) then
+        jvForc  = itab(1)
+        nbValue = itab(2)
+        nbNode  = itab(3)
+        jad     = itab(8)
+        nbCmp   = nbValue/nbNode
+        ASSERT(jvForc .ne. 0)
+        ASSERT(nbValue .eq. nbNode*nbCmp)
 !
-        do 3,ino=1,nbno
-        ico=0
-        do 1, k=1,nbcmp
-        if (zl(jad-1+(ino-1)*nbcmp+k)) ico=ico+1
- 1      continue
-        if (ico .ne. 0 .and. ico .ne. nbcmp) goto 12
-        ASSERT(iforc.ne.0)
-        if (ico .eq. 0) then
-            do 2, k=1,nbcmp
-            zr(iforc-1+(ino-1)*nbcmp+k)=0.d0
- 2          continue
-        endif
- 3      continue
-        goto 9999
-!
-!
+        do iNode = 1, nbNode
+            ico = 0
+            do iCmp=1,nbCmp
+                if (zl(jad-1+(iNode-1)*nbCmp+iCmp)) then
+                    ico = ico + 1
+                endif
+            end do
+            if (ico .ne. 0 .and. ico .ne. nbCmp) goto 12
+
+            if (ico .eq. 0) then
+                do iCmp = 1, nbCmp
+                    zr(jvForc-1+(iNode-1)*nbCmp+iCmp)=0.d0
+                end do
+            endif
+        end do
+        goto 999
 12      continue
         call tecael(iadzi, iazk24)
-        nommai=zk24(iazk24-1+3)
-        valk(1) = param
+        cellName = zk24(iazk24-1+3)(1:8)
+        valk(1) = fieldTypeName
         valk(2) = option
-        valk(3) = nomte
-        valk(4) = nommai
-        call utmess('F', 'CALCUL_18', nk=4, valk=valk)
+        valk(3) = cellName
+        call utmess('F', 'CALCUL_18', nk=3, valk=valk)
     endif
 !
-9999  continue
+999 continue
 end subroutine
