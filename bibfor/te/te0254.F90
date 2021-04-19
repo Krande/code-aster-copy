@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -124,6 +124,17 @@ character(len=16), intent(in) :: option, nomte
                     endif
                 end do
             end do
+        elseif (fsi_form .eq. 'FSI_UPSI') then
+            do ino2 = 1, nno
+                do ino1 = 1, ino2
+                    if (celer .eq. 0.d0) then
+                        mmat(ino1,ino2) = 0.d0
+                    else
+                        mmat(ino1,ino2) = mmat(ino1,ino2)-rho*&
+                                          poids*zr(ivf+ldec+ino1-1)*zr(ivf+ldec+ino2-1)/celer/celer
+                    endif
+                end do
+            end do
         else
             call utmess('F', 'FLUID1_2', sk = fsi_form)
         endif
@@ -149,7 +160,7 @@ character(len=16), intent(in) :: option, nomte
                 end do
             end do
         end do
-    elseif (fsi_form .eq. 'FSI_UP') then
+    elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
         do ino2 = 1, nno
             do ino1 = 1, ino2
                 ij = (ino2-1)*ino2/2 + ino1
