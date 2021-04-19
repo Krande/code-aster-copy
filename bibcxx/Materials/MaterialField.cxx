@@ -175,3 +175,35 @@ void MaterialFieldClass::addMaterialsOnCell( std::vector< MaterialPtr > curMater
 void MaterialFieldClass::addMaterialsOnCell( MaterialPtr &curMater, VectorString namesOfCells ) {
     addMaterialsOnCell( (std::vector< MaterialPtr >){curMater}, namesOfCells );
 }
+
+
+void MaterialFieldClass::addExternalStateVariables( PyObject *keywords ) {
+
+    // Check input PyObject
+    if ( !PyDict_Check( keywords ) && !PyList_Check( keywords ) && !PyTuple_Check( keywords ) )
+        throw std::runtime_error( "Unexpected value for 'AFFE_VARC'." );
+
+    // Create syntax
+    CommandSyntax cmdSt( "code_aster.Cata.Commons.c_affe_varc.C_AFFE_VARC_EXTE" );
+    PyObject *kwfact = PyDict_New();
+    PyDict_SetItemString( kwfact, "AFFE_VARC", keywords );
+    cmdSt.define( kwfact );
+
+    // Get objects to create
+    std::string modelName;
+    modelName = " ";
+    if ( getModel() != NULL ) {
+        modelName = getModel()->getName();
+    }
+    modelName.resize( 8, ' ' );
+    std::string materialFieldName = getName();
+    materialFieldName.resize( 8, ' ' );
+    std::string meshName = getMesh()->getName();
+    meshName.resize( 8, ' ' );
+
+    // Add external state variables in material field
+    CALLO_AFVARC(materialFieldName, meshName, modelName);
+    CALLO_CMTREF(materialFieldName, meshName);
+
+    Py_DECREF( kwfact );
+};

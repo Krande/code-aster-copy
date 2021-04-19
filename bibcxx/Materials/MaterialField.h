@@ -257,9 +257,17 @@ class MaterialFieldClass : public DataStructure {
     };
 
     /**
+     * @brief Get model
+     */
+    ModelPtr getModel() const { return _model;};
+
+    /**
      * @brief Set the model
      */
     void setModel( ModelPtr model ) { _model = model; };
+
+    /** @brief Add external state variables */
+    void addExternalStateVariables( PyObject *keywords );
 };
 
 /**

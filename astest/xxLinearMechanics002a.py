@@ -36,12 +36,20 @@ YOUNG = 200000.0
 POISSON = 0.3
 
 acier = DEFI_MATERIAU(ELAS = _F(E = YOUNG,
-                                    NU = POISSON,),)
+                                    NU = POISSON,
+                                    ALPHA = 0.),)
 acier.debugPrint(6)
 
 affectMat = code_aster.MaterialField(monMaillage)
 affectMat.addMaterialsOnMesh( acier )
 affectMat.buildWithoutExternalVariable()
+
+fieldTemp = CREA_CHAMP(MAILLAGE=monMaillage,OPERATION='AFFE', 
+                       TYPE_CHAM='CART_TEMP_R', 
+                       AFFE=_F(  TOUT='OUI',   NOM_CMP = 'TEMP',   VALE = 0.E0,  ) )
+
+affectMat.addExternalStateVariables(
+    AFFE_VARC=(_F(MAILLE = 'M50', VALE_REF=0.,NOM_VARC = 'TEMP', CHAM_GD=fieldTemp,)))
 
 imposedDof1 = code_aster.DisplacementReal()
 imposedDof1.setValue( code_aster.PhysicalQuantityComponent.Dx, 0.0 )

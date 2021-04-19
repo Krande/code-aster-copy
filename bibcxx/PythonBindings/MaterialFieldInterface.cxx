@@ -89,5 +89,18 @@ void exportMaterialFieldToPython() {
         .def( "getVectorOfMaterial", &MaterialFieldClass::getVectorOfMaterial )
         .def( "getVectorOfPartOfMaterialField",
               &MaterialFieldClass::getVectorOfPartOfMaterialField )
-        .def( "setModel", &MaterialFieldClass::setModel );
+        .def( "setModel", &MaterialFieldClass::setModel )
+
+        .def( "addExternalStateVariables",
+              static_cast< void ( MaterialFieldClass::* )( PyObject * ) >(
+                  &MaterialFieldClass::addExternalStateVariables ),
+              R"(
+Add external state variables of material field
+
+Arguments:
+    AFFE_VARC (list[dict]): keywords as provided to AFFE_MATERIAU/AFFE_VARC
+        )",
+              ( py::arg( "self" ), py::arg( "AFFE_VARC" ) ) );
+
+
 };

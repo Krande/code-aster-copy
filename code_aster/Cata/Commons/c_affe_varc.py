@@ -52,3 +52,5 @@ def C_AFFE_VARC() : return FACT(statut='f', max='**',
 
 );
 
+C_AFFE_VARC_EXTE = FACT(statut='o', AFFE_VARC=C_AFFE_VARC( ))
+

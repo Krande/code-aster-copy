@@ -149,6 +149,13 @@ void DEFSSP( NMDOCR, nmdocr, const char *, STRING_SIZE, const char *, STRING_SIZ
 #define CALLO_NMDOCM( a, b ) CALLOO( NMDOCM, nmdocm, a, b )
 void DEFSS( NMDOCM, nmdocm, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
+#define CALLO_AFVARC( a, b, c ) CALLOOO( AFVARC, afvarc, a, b, c )
+void DEFSSS( AFVARC, afvarc, const char *, STRING_SIZE, const char *, STRING_SIZE,
+             const char *, STRING_SIZE );
+
+#define CALLO_CMTREF( a, b ) CALLOO( CMTREF, cmtref, a, b )
+void DEFSS( CMTREF, cmtref, const char *, STRING_SIZE, const char *, STRING_SIZE );
+
 #ifdef __cplusplus
 }
 #endif
