@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -155,6 +155,17 @@ character(len=16), intent(in) :: option, nomte
                     endif
                 end do
             end do
+        elseif (fsi_form .eq. 'FSI_UPSI') then
+            do j = 1, nno
+                do i = 1, j
+                    if (celer .eq. 0.d0 .or. rho .eq. 0.d0) then
+                        mmat(i,j) = 0.d0
+                    else
+                        mmat(i,j) = mmat(i,j) -rho*&
+                                    poids*(dfdx(i)*dfdx(j)+dfdy(i)*dfdy(j))
+                    endif
+                end do
+            end do
         else
             call utmess('F', 'FLUID1_2', sk = fsi_form)
         endif
@@ -184,7 +195,7 @@ character(len=16), intent(in) :: option, nomte
             do i = 1, nt2
                 zc(jv_matr+i-1) = dcmplx(c(i),0.d0)
             end do
-        elseif (fsi_form .eq. 'FSI_UP') then
+        elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
             do j = 1, nno
                 do i = 1, j
                     ij = (j-1)*j/2 + i 
@@ -196,7 +207,7 @@ character(len=16), intent(in) :: option, nomte
         endif
     elseif (option(1:9) .eq. 'FULL_MECA' ) then
         call jevech('PMATUUR', 'E', jv_matr)
-        if (fsi_form .eq. 'FSI_UPPHI') then
+        if (fsi_form .eq. 'FSI_UPPHI' ) then
             do i = 1, nt2
                 zr(jv_matr+i-1) = c(i)
             end do
@@ -209,7 +220,7 @@ character(len=16), intent(in) :: option, nomte
             do i = 1, nt2
                 zr(jv_matr+i-1) = c(i)
             end do
-        elseif (fsi_form .eq. 'FSI_UP') then
+        elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
             do j = 1, nno
                do i = 1, j
                   ij = (j-1)*j/2 + i 
