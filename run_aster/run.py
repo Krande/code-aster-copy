@@ -37,7 +37,7 @@ from subprocess import PIPE, run
 from .command_files import add_import_commands, stop_at_end
 from .config import CFG
 from .export import Export
-from .logger import logger
+from .logger import WARNING, logger
 from .status import StateOptions, Status, get_status
 from .timer import Timer
 from .utils import (ROOT, cmd_abspath, compress, copy, make_writable,
@@ -348,6 +348,11 @@ class RunOnlyEnv(RunAster):
     """
     _show_comm = False
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self._procid > 0:
+            logger.setLevel(WARNING)
+
     def execute_study(self):
         """Execute the study.
 
@@ -356,10 +361,13 @@ class RunOnlyEnv(RunAster):
         """
         logger.info("TITLE Copy/paste these command lines:")
         profile = osp.join(ROOT, "share", "aster", "profile.sh")
-        logger.info(f"    cd {os.getcwd()}")
+        timeout = self.export.get("time_limit", 0) * 1.25
+        if not self._parallel:
+            logger.info(f"    cd {os.getcwd()}")
+        else:
+            logger.info(f"    cd {osp.dirname(os.getcwd())}")
         logger.info(f"    . {profile}")
         logger.info("    ulimit -c unlimited")
-        timeout = self.export.get("time_limit", 0) * 1.25
         logger.info(f"    ulimit -t {timeout:.0f}")
         return super().execute_study()
 
@@ -372,11 +380,23 @@ class RunOnlyEnv(RunAster):
             last (bool): *True* for the last command file.
             timeout (float): Remaining time.
         """
-        cmd = self._get_cmdline_exec(comm, idx)
-        logger.info(f"    {' '.join(cmd)}")
-        with open(f"cmd{idx}.sh", "w") as fobj:
-            fobj.write(' '.join(cmd) + '\n')
+        cmd = []
+        if self._parallel:
+            cmd.append("#!/bin/bash")
+            cmd.append("cd proc.$({0})".format(CFG.get("mpi_get_rank")))
+        cmd.append(" ".join(self._get_cmdline_exec(comm, idx)))
+        cmd.append("")
+        shell = f"cmd{idx}.sh"
+        with open(shell, "w") as fobj:
+            fobj.write("\n".join(cmd))
         os.chmod(f"cmd{idx}.sh", 0o755)
+        if not self._parallel:
+            logger.info(cmd[0])
+        elif self._procid == 0:
+            args_cmd = dict(mpi_nbcpu=self.export.get("mpi_nbcpu", 1),
+                            program="proc.0/" + shell)
+            cmd = CFG.get("mpiexec").format(**args_cmd)
+            logger.info(cmd)
         return Status(StateOptions.Ok, exitcode=0)
 
     def ending_execution(self, _):
