@@ -268,13 +268,6 @@ Erreur utilisateur :
   Température sur la maille: %(k1)s : il manque la composante "TEMP_MIL"
 """),
 
-    55 : _("""
-Inconnu:  %(k1)s
-Ce message est un message d'erreur développeur.
-Contactez le support technique.
-"""),
-
-
 
     62 : _("""
  GROUP_MA :  %(k1)s  inconnu dans le maillage
@@ -283,7 +276,6 @@ Contactez le support technique.
     63 : _("""
  Le groupe de mailles %(k1)s n'existe pas.
 """),
-
 
 
 

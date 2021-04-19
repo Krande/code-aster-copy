@@ -16,8 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
-                  geom2, dala, listInterc, nbInterc)
+subroutine pj3dtr(corrMeshTemp, corrMesh,&
+                  cellListType, cellListCode,&
+                  geom1, geom2,&
+                  dala,&
+                  listInterc_, nbInterc_)
 !
 implicit none
 !
@@ -46,50 +49,59 @@ implicit none
 #include "asterfort/wkvect.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
-
-    character(len=16), intent(in) :: corres, cortr3, listInterc
-    character(len=8), intent(in) :: elrf3d(10)
-    integer, intent(in) :: nutm3d(10), nbInterc
-    real(kind=8), intent(in) :: geom1(*), geom2(*)
-    real(kind=8), intent(in) :: dala
-! ----------------------------------------------------------------------
+!
+character(len=16), intent(in) :: corrMesh, corrMeshTemp
+character(len=8), intent(in) :: cellListCode(MT_NTYMAX)
+integer, intent(in) :: cellListType(MT_NTYMAX)
+real(kind=8), intent(in) :: geom1(*), geom2(*)
+real(kind=8), intent(in) :: dala
+character(len=16), optional, intent(in)  :: listInterc_
+integer, optional, intent(in)  :: nbInterc_
+!
+! --------------------------------------------------------------------------------------------------
+!
 !  but :
-!    transformer cortr3 en corres en utilisant les fonc. de forme
+!    transformer corrMeshTemp en corrMesh en utilisant les fonc. de forme
 !    des mailles du maillage1 (en 3d isoparametrique)
-
-!  in/jxin   cortr3    k16 : nom du corresp_2_mailla fait avec les tetr4
-!  in/jxout  corres    k16 : nom du corresp_2_mailla final
-!  in        nutm3d(10) i  : numeros des 10 types de mailles 3d
-!  in        elrf3d(10) k8 : noms des 10 types de mailles 3d
-! ----------------------------------------------------------------------
-
+!
+! --------------------------------------------------------------------------------------------------
+!
+!  in/jxin   corrMeshTemp    k16 : nom du corresp_2_mailla fait avec les tetr4
+!  in/jxout  corrMesh    k16 : nom du corresp_2_mailla final
+!  in        cellListType i  : numeros des types de mailles
+!  in        cellListCode k8 : noms des types de mailles
+!
+! --------------------------------------------------------------------------------------------------
+!
     aster_logical :: lext
+    character(len=8) :: mesh1, mesh2, elrefa, nodeName2
     integer :: cntetr(4, 1), cnpent(4, 3), cnhexa(4, 6), cnpyra(4, 2)
-    real(kind=8) :: ksi, eta, dzeta, x1, x2, x3
-    real(kind=8) :: crrefe(3, MT_NNOMAX), xr1(3), xr2(3), xr3(3)
-    real(kind=8) :: ff(MT_NNOMAX), cooele(3*MT_NNOMAX)
-    character(len=8) :: elrefa, m1, m2, nomnoe
-    integer :: i1conb, i1conu, nno1, nno2
-    integer :: nma1, nma2, ialim1, ialin1, ialin2, ilcnx1
-    integer :: j2xxk1, i2conb, i2com1, ideca2, ino2, itr, ima1, nbno, i2conu
-    integer :: i2cocf, i2coco, ideca1, itypm, nutm, ityp, ndim, nno, kdim
-    integer :: kk, ino, nuno, iret
-
-    integer :: nbmax
-    parameter  (nbmax=5)
+    real(kind=8) :: crrefe(3, MT_NNOMAX), ff(MT_NNOMAX), cooele(3*MT_NNOMAX)
+    real(kind=8) :: ksi, eta, dzeta
+    real(kind=8) :: x1, x2, x3
+    real(kind=8) :: xr1(3), xr2(3), xr3(3)
+    integer :: nbCell1, nbCell2, nbNode1, nbNode2
+    integer :: i2cocf, i2coco
+    integer :: i2com1, i2conb, j2xxk1, i2conu
+    integer :: ideca1, ideca2, ilcnx1
+    integer :: ima1, ino, iNode2, kk, ityp, itypm, nbno, nno, itr
+    integer :: iret, kdim, ndim
+    integer :: nuno, nutm
+    integer, parameter :: nbmax = 5
     integer :: tino2m(nbmax), nbnod, nbnodm
     real(kind=8) :: tdmin2(nbmax), disprj, distv
     aster_logical :: loin2
     integer, pointer :: typmail(:) => null()
-    character(len=24), pointer :: pjxx_k1(:) => null()
-    real(kind=8), pointer :: pjef_cf(:) => null()
-    integer, pointer :: tetr4(:) => null()
-    integer, pointer :: pjef_tr(:) => null()
     integer, pointer :: connex(:) => null()
-    integer, pointer :: lino_loin(:) => null()
+    integer, pointer :: pjef_tr(:) => null()
+    real(kind=8), pointer :: pjef_cf(:) => null()
+    character(len=24), pointer :: pjxx_k1(:) => null()
+    integer, pointer :: tetr4(:) => null()
     integer, pointer :: vinterc(:) => null()
-! --- DEB --------------------------------------------------------------
-
+    integer, pointer :: lino_loin(:) => null()
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
 
 !   0. DECOUPAGE DES ELEMENTS 3D EN TETRA (VOIR PJ3DC0) :
@@ -163,56 +175,43 @@ implicit none
     cnpyra(3,2)=4
     cnpyra(4,2)=5
 
-
-!   1. RECUPERATION DES INFORMATIONS GENERALES :
-!   -----------------------------------------------
-    call jeveuo(cortr3//'.PJXX_K1', 'L', vk24=pjxx_k1)
-    call jeveuo(cortr3//'.PJEF_NB', 'L', i1conb)
-    call jeveuo(cortr3//'.PJEF_NU', 'L', i1conu)
-    call jeveuo(cortr3//'.PJEF_CF', 'L', vr=pjef_cf)
-    call jeveuo(cortr3//'.PJEF_TR', 'L', vi=pjef_tr)
-
-    m1=pjxx_k1(1)(1:8)
-    m2=pjxx_k1(2)(1:8)
-    call dismoi('NB_NO_MAILLA', m1, 'MAILLAGE', repi=nno1)
-    call dismoi('NB_NO_MAILLA', m2, 'MAILLAGE', repi=nno2)
-    call dismoi('NB_MA_MAILLA', m1, 'MAILLAGE', repi=nma1)
-    call dismoi('NB_MA_MAILLA', m2, 'MAILLAGE', repi=nma2)
-
-    call jeveuo('&&PJXXCO.LIMA1', 'L', ialim1)
-    call jeveuo('&&PJXXCO.LINO1', 'L', ialin1)
-    call jeveuo('&&PJXXCO.LINO2', 'L', ialin2)
+!   General parameters
+    call jeveuo(corrMeshTemp//'.PJXX_K1', 'L', vk24=pjxx_k1)
+    call jeveuo(corrMeshTemp//'.PJEF_CF', 'L', vr=pjef_cf)
+    call jeveuo(corrMeshTemp//'.PJEF_TR', 'L', vi=pjef_tr)
+    mesh1=pjxx_k1(1)(1:8)
+    mesh2=pjxx_k1(2)(1:8)
+    call dismoi('NB_NO_MAILLA', mesh1, 'MAILLAGE', repi=nbNode1)
+    call dismoi('NB_NO_MAILLA', mesh2, 'MAILLAGE', repi=nbNode2)
+    call dismoi('NB_MA_MAILLA', mesh1, 'MAILLAGE', repi=nbCell1)
+    call dismoi('NB_MA_MAILLA', mesh2, 'MAILLAGE', repi=nbCell2)
     call jeveuo('&&PJXXCO.TETR4', 'L', vi=tetr4)
-
-    call jeveuo(m1//'.CONNEX', 'L', vi=connex)
-    call jeveuo(jexatr(m1//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
-    call jeveuo(m1//'.TYPMAIL', 'L', vi=typmail)
+    call jeveuo(mesh1//'.CONNEX', 'L', vi=connex)
+    call jeveuo(jexatr(mesh1//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
+    call jeveuo(mesh1//'.TYPMAIL', 'L', vi=typmail)
 
 !   -- l'objet lino_loin contiendra la liste des noeuds projetes un peu loin
-    AS_ALLOCATE(vi=lino_loin, size=nno2)
+    AS_ALLOCATE(vi=lino_loin, size=nbNode2)
 
-
-!   2. ALLOCATION DE CORRES :
-!   -----------------------------------------------
-    call wkvect(corres//'.PJXX_K1', 'V V K24', 5, j2xxk1)
-    zk24(j2xxk1-1+1)=m1
-    zk24(j2xxk1-1+2)=m2
+! - Allocate corrMesh
+    call wkvect(corrMesh//'.PJXX_K1', 'V V K24', 5, j2xxk1)
+    zk24(j2xxk1-1+1)=mesh1
+    zk24(j2xxk1-1+2)=mesh2
     zk24(j2xxk1-1+3)='COLLOCATION'
 
-!     2.1 REMPLISSAGE DE .PJEF_NB ET .PJEF_M1:
-!     -----------------------------------------
-    call wkvect(corres//'.PJEF_NB', 'V V I', nno2, i2conb)
-    call wkvect(corres//'.PJEF_M1', 'V V I', nno2, i2com1)
+! - Create .pjef_nb and .pjef_m1
+    call wkvect(corrMesh//'.PJEF_NB', 'V V I', nbNode2, i2conb)
+    call wkvect(corrMesh//'.PJEF_M1', 'V V I', nbNode2, i2com1)
     ideca2=0
-    do ino2 = 1, nno2
+    do iNode2 = 1, nbNode2
 !       ITR : TETR4 ASSOCIE A INO2
-        itr=pjef_tr(ino2)
+        itr=pjef_tr(iNode2)
         if (itr .eq. 0) cycle
 !       IMA1 : MAILLE DE M1 ASSOCIE AU TETR4 ITR
         ima1=tetr4(1+6*(itr-1)+5)
         nbno=zi(ilcnx1+ima1)-zi(ilcnx1-1+ima1)
-        zi(i2conb-1+ino2)=nbno
-        zi(i2com1-1+ino2)=ima1
+        zi(i2conb-1+iNode2)=nbno
+        zi(i2com1-1+iNode2)=ima1
         ideca2=ideca2+nbno
     enddo
     if (ideca2 .eq. 0) then
@@ -221,41 +220,37 @@ implicit none
 
     loin2 = .false.
     nbnod = 0
-    tdmin2(:)=0.d0
-    tino2m(:)=0
+    tdmin2 = 0.d0
+    tino2m = 0
     nbnodm = 0
 
-
-!   2.2 allocation de .pjef_nu .pjef_cf .pjef_co:
-!       (et remplissage de ces 3 objets)
-!   ------------------------------------------------------
-    call wkvect(corres//'.PJEF_NU', 'V V I', ideca2, i2conu)
-    call wkvect(corres//'.PJEF_CF', 'V V R', ideca2, i2cocf)
-    call wkvect(corres//'.PJEF_CO', 'V V R', 3*nno2, i2coco)
+! - Create .pjef_nu .pjef_cf .pjef_co
+    call wkvect(corrMesh//'.PJEF_NU', 'V V I', ideca2, i2conu)
+    call wkvect(corrMesh//'.PJEF_CF', 'V V R', ideca2, i2cocf)
+    call wkvect(corrMesh//'.PJEF_CO', 'V V R', 3*nbNode2, i2coco)
     ideca1=0
     ideca2=0
-    do ino2 = 1, nno2
+    do iNode2 = 1, nbNode2
 !       ITR : TETR4 ASSOCIE A INO2
-        itr = pjef_tr(ino2)
+        itr = pjef_tr(iNode2)
         if (itr .eq. 0) cycle
 !       IMA1 : MAILLE DE M1 ASSOCIE AU TETR4 ITR
         ima1 = tetr4(1+6*(itr-1)+5)
 !       ITYPM : TYPE DE LA MAILLE IMA1
         itypm = typmail(ima1)
-        nutm = indiis(nutm3d,itypm,1,10)
-        elrefa = elrf3d(nutm)
+        nutm = indiis(cellListType,itypm,1,MT_NTYMAX)
+        ASSERT(nutm .ne. 0)
+        elrefa = cellListCode(nutm)
         ityp = tetr4(1+6*(itr-1)+6)
         nbno = zi(ilcnx1+ima1)-zi(ilcnx1-1+ima1)
 
         call elrfno(elrefa, ndim = ndim, nno  = nno, nodeCoor = crrefe)
         ASSERT(nbno .eq. nno)
 
-!       2.2.1 determination des coordonnees de ino2 dans l'element
-!             de reference : ksi , eta et dzeta
-!       -----------------------------------------------------------
-        ksi =0.d0
-        eta =0.d0
-        dzeta=0.d0
+!       determination des coordonnees de iNode2 dans l'element de reference
+        ksi = 0.d0
+        eta = 0.d0
+        dzeta = 0.d0
 
         if (elrefa .eq. 'TE4' .or. elrefa .eq. 'T10') then
             do kk = 1, 4
@@ -298,9 +293,8 @@ implicit none
             enddo
 
         else
-            call utmess('F', 'ELEMENTS_55', sk=elrefa)
+            ASSERT(ASTER_FALSE)
         endif
-
         xr1(1) = ksi
         xr1(2) = eta
         xr1(3) = dzeta
@@ -312,15 +306,15 @@ implicit none
                 cooele(ndim*(ino-1)+kdim)=geom1(3*(nuno-1)+kdim)
             enddo
         enddo
-        call reereg('C', elrefa, nno, cooele, geom2(3*(ino2-1)+1),&
+        call reereg('C', elrefa, nno, cooele, geom2(3*(iNode2-1)+1),&
                     ndim, xr2, iret)
 
-!       -- on regarde si ino2 est exterieur a ima1 :
+!       -- on regarde si iNode2 est exterieur a ima1 :
         call pjeflo(elrefa, ndim, iret, xr2, disprj)
         lext= (disprj.gt.1.0d-02)
 
 !       -- on choisit la meilleure approximation entre xr1 et xr2:
-        call pjefmi(elrefa, nno, cooele, geom2(3*(ino2-1)+1), ndim,&
+        call pjefmi(elrefa, nno, cooele, geom2(3*(iNode2-1)+1), ndim,&
                     xr1, xr2, lext, xr3, distv)
 
         if (distv.lt.dala) then
@@ -331,23 +325,22 @@ implicit none
             else if (disprj .gt. 1.0d-01) then
 !               on regarde si le noeud est deja projete par une autre
 !               occurrence de VIS_A_VIS
-                if (nbInterc .ne. 0)then
-                    call jeveuo(listInterc, 'L', vi=vinterc)
-                    do ino = 1,nbInterc
-                        if (ino2 .eq. vinterc(ino))then
-                            zi(i2conb-1+ino2)=0
-                            call jenuno(jexnum(m2//'.NOMNOE', ino2), nomnoe)
-                            call utmess('A','CALCULEL5_47', si=vinterc(nbInterc+1),&
-                                        sk=nomnoe)
+                if (present(nbInterc_))then
+                    call jeveuo(listInterc_, 'L', vi=vinterc)
+                    do ino = 1,nbInterc_
+                        if (iNode2 .eq. vinterc(ino))then
+                            zi(i2conb-1+iNode2)=0
+                            call jenuno(jexnum(mesh2//'.NOMNOE', iNode2), nodeName2)
+                            call utmess('A','CALCULEL5_47', si=vinterc(nbInterc_+1), sk=nodeName2)
                             exit
                         endif
                     enddo
                 endif
-                if (zi(i2conb-1+ino2).ne.0)then
+                if (zi(i2conb-1+iNode2).ne.0)then
                     loin2=.true.
                     nbnodm = nbnodm + 1
-                    lino_loin(nbnodm)=ino2
-                    call inslri(nbmax, nbnod, tdmin2, tino2m, distv,ino2)
+                    lino_loin(nbnodm)=iNode2
+                    call inslri(nbmax, nbnod, tdmin2, tino2m, distv,iNode2)
                 else
                     ideca1=ideca1+4
                     cycle
@@ -355,15 +348,11 @@ implicit none
             endif
         endif
 
-        zr(i2coco-1+3*(ino2-1)+1)=xr3(1)
-        zr(i2coco-1+3*(ino2-1)+2)=xr3(2)
-        zr(i2coco-1+3*(ino2-1)+3)=xr3(3)
+        zr(i2coco-1+3*(iNode2-1)+1)=xr3(1)
+        zr(i2coco-1+3*(iNode2-1)+2)=xr3(2)
+        zr(i2coco-1+3*(iNode2-1)+3)=xr3(3)
 
-!       2.2.2 :
-!       calcul des f. de forme aux noeuds pour le point ksi,eta,dzeta:
-!       --------------------------------------------------------------
         call elrfvf(elrefa, xr3, ff)
-
         do ino = 1, nbno
             nuno = connex(1+ zi(ilcnx1-1+ima1)-2+ino)
             zi(i2conu-1+ideca2+ino) = nuno
@@ -374,9 +363,9 @@ implicit none
         ideca2=ideca2+nbno
     enddo
 
-!   emission d'un eventuel message d'alarme:
+! - Alarm message
     if (loin2) then
-        call pjloin(nbnod,nbnodm,m2,geom2,nbmax,tino2m,tdmin2,lino_loin)
+        call pjloin(nbnod,nbnodm,mesh2,geom2,nbmax,tino2m,tdmin2,lino_loin)
     endif
 
     AS_DEALLOCATE(vi=lino_loin)

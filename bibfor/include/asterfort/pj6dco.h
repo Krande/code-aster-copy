@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,26 +15,23 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
 !
-!
-          interface 
-            subroutine pj6dco(mocle,moa1,moa2,nbma1,lima1,nbno2,lino2,  &
-     &geom1,geom2,corres,l_dmax,dmax,dala, listIntercz, nbIntercz)
-              character(len=*) :: mocle
-              character(len=8) :: moa1
-              character(len=8) :: moa2
-              integer :: nbma1
-              integer :: lima1(*)
-              integer :: nbno2
-              integer :: lino2(*)
-              character(len=*) :: geom1
-              character(len=*) :: geom2
-              character(len=16) :: corres
-              aster_logical :: l_dmax
-              real(kind=8) :: dmax
-              real(kind=8) :: dala
-              character(len=16), optional :: listIntercz
-              integer, optional :: nbIntercz
-            end subroutine pj6dco
-          end interface 
+interface
+    subroutine pj6dco(typeSelect   ,&
+                      entity1      , entity2        ,&
+                      nbCellSelect1, listCellSelect1,&
+                      nbNodeSelect2, listNodeSelect2,&
+                      geom1        , geom2, corrMesh,&
+                      l_dmax       , dmax, dala,&
+                      listInterc_  , nbInterc_)
+        character(len=*), intent(in) :: typeSelect
+        character(len=8), intent(in) :: entity1, entity2
+        integer, intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
+        character(len=*), intent(in) :: geom1, geom2
+        character(len=16), intent(in)  :: corrMesh
+        aster_logical, intent(inout) :: l_dmax
+        real(kind=8), intent(in) :: dmax, dala
+        character(len=16), optional, intent(in)  :: listInterc_
+        integer, optional, intent(in)  :: nbInterc_
+    end subroutine pj6dco
+end interface 

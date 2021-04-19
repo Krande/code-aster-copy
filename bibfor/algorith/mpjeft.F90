@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ subroutine mpjeft(corres)
 ! ----------------------------------------------------------------------
     implicit none
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
@@ -64,6 +65,7 @@ subroutine mpjeft(corres)
     real(kind=8) :: coef, rbid
     integer, pointer :: linonu1(:) => null()
     integer, pointer :: linonu2(:) => null()
+    aster_logical :: l_dmax
 !----------------------------------------------------------------------
 !       DESCRIPTION DE LA SD CORRESP_2_MAILLA : CORRES
 !       --------------------------------------------------------
@@ -153,18 +155,19 @@ subroutine mpjeft(corres)
 ! POUR L'INSTANT ON SE LIMITE AU CAS OU IL N'Y A PAS DE MELANGE
 !  ELEMENT VOLUMIQUE / ELEMENT SURFACIQUE / ELEMENT LINEIQUE
 !
+    l_dmax = ASTER_FALSE
     if (ncas .eq. 2) then
         call pj2dco('TOUT', model1, model2, 0, [0],&
                     0, [0], ' ', ' ', corres,&
-                    .false._1, rbid, 0.d0)
+                    l_dmax, rbid, 0.d0)
     else if (ncas.eq.3) then
         call pj3dco('TOUT', model1, model2, 0, [0],&
                     0, [0], ' ', ' ', corres,&
-                    .false._1, rbid, 0.d0)
+                    l_dmax, rbid, 0.d0)
     else if (ncas.eq.4) then
         call pj4dco('TOUT', model1, model2, 0, [0],&
                     0, [0], ' ', ' ', corres,&
-                    .false._1, rbid, 0.d0)
+                    l_dmax, rbid, 0.d0)
     else if (ncas.eq.5) then
         call pj5dco(model1, model2, corres)
     else
@@ -372,18 +375,18 @@ subroutine mpjeft(corres)
     kk = 0
     do i = 1, nbnmes
         call jenuno(jexnum(noma2//'.NOMNOE', i), labk8)
-        write(ifres,1000) labk8
+        write(ifres,100) labk8
         nbno1 = zi(iaconb-1 +i)
         do iocc = 1, nbno1
             kk = kk + 1
             call jenuno(jexnum(noma1//'.NOMNOE', zi(iaconu-1+kk)), labk8)
             coef = zr(iacocf-1 +kk)
-            write(ifres,1001) labk8,coef
+            write(ifres,101) labk8,coef
         end do
     end do
 !
-    1000 format (' NOEUD MESURE :  ',a8)
-    1001 format ('       ',a8,'    POIDS : ',d12.5)
+100 format (' NOEUD MESURE :  ',a8)
+101 format ('       ',a8,'    POIDS : ',d12.5)
 !
     call jedema()
 end subroutine

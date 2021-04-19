@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,21 +15,20 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+#include "MeshTypes_type.h"
 !
-!
-          interface 
-            subroutine pj2dtr(cortr3,corres,nutm2d,elrf2d,geom1,geom2,  &
-     &spacedim, dala, listInterc, nbInterc)
-              character(len=16), intent(in) :: cortr3
-              character(len=16), intent(in) :: corres
-              integer, intent(in) :: nutm2d(6)
-              character(len=8), intent(in) :: elrf2d(6)
-              real(kind=8), intent(in) :: geom1(*)
-              real(kind=8), intent(in) :: geom2(*)
-              integer, intent(in) :: spacedim
-              real(kind=8), intent(in) :: dala
-              character(len=16), intent(in) :: listInterc
-              integer, intent(in) :: nbInterc
-            end subroutine pj2dtr
-          end interface 
+interface
+    subroutine pj2dtr(corrMeshTemp, corrMesh,&
+                      cellListType, cellListCode,&
+                      geom1, geom2,&
+                      spacedim, dala,&
+                      listInterc_, nbInterc_)
+        character(len=16), intent(in) :: corrMesh, corrMeshTemp
+        character(len=8), intent(in) :: cellListCode(MT_NTYMAX)
+        integer, intent(in) :: cellListType(MT_NTYMAX), spacedim
+        real(kind=8), intent(in) :: geom1(*), geom2(*)
+        real(kind=8), intent(in) :: dala
+        character(len=16), optional, intent(in)  :: listInterc_
+        integer, optional, intent(in)  :: nbInterc_
+    end subroutine pj2dtr
+end interface 

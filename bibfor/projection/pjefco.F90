@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine pjefco(moa1, moa2, corres, base)
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
+
 ! ----------------------------------------------------------------------
 !     COMMANDE:  PROJ_CHAMP  METHODE:'ELEM'
 ! BUT : CALCULER LA STRUCTURE DE DONNEE CORRESP_2_MAILLA
@@ -285,23 +285,23 @@ subroutine pjefco(moa1, moa2, corres, base)
             if (ncas .eq. '2D') then
                 call pj2dco('PARTIE', moa1, moa2, nbma1, limanu1,&
                             nbno2, linonu2, geom1, geom2, corre1,&
-                            l_dmax, dmax, dala, listIntercz = nameListInterc,& 
-                            nbIntercz = nbNodeInterc)
+                            l_dmax, dmax, dala, listInterc_ = nameListInterc,& 
+                            nbInterc_ = nbNodeInterc)
             else if (ncas.eq.'3D') then
                 call pj3dco('PARTIE', moa1, moa2, nbma1, limanu1,&
                             nbno2, linonu2, geom1, geom2, corre1,&
-                            l_dmax, dmax, dala, listIntercz = nameListInterc,& 
-                            nbIntercz = nbNodeInterc)
+                            l_dmax, dmax, dala, listInterc_ = nameListInterc,& 
+                            nbInterc_ = nbNodeInterc)
             else if (ncas.eq.'2.5D') then
                 call pj4dco('PARTIE', moa1, moa2, nbma1, limanu1,&
                             nbno2, linonu2, geom1, geom2, corre1,&
-                            l_dmax, dmax, dala, listIntercz = nameListInterc,& 
-                            nbIntercz = nbNodeInterc)
+                            l_dmax, dmax, dala, listInterc_ = nameListInterc,& 
+                            nbInterc_ = nbNodeInterc)
             else if (ncas.eq.'1.5D') then
                 call pj6dco('PARTIE', moa1, moa2, nbma1, limanu1,&
                             nbno2, linonu2, geom1, geom2, corre1,&
-                            l_dmax, dmax, dala, listIntercz = nameListInterc,& 
-                            nbIntercz = nbNodeInterc)
+                            l_dmax, dmax, dala, listInterc_ = nameListInterc,& 
+                            nbInterc_ = nbNodeInterc)
             else
                 ASSERT(.false.)
             endif

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
+#include "MeshTypes_type.h"
 !
 interface
-    subroutine pj1dtr(cortr3, corres, nutm1d, elrf1d)
-        character(len=16) :: cortr3
-        character(len=16) :: corres
-        integer :: nutm1d(3)
-        character(len=8) :: elrf1d(3)
+    subroutine pj1dtr(corrMeshTemp, corrMesh, cellListType, cellListCode)
+        character(len=16), intent(in) :: corrMesh, corrMeshTemp
+        character(len=8), intent(in) :: cellListCode(MT_NTYMAX)
+        integer, intent(in) :: cellListType(MT_NTYMAX)
     end subroutine pj1dtr
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,7 @@ subroutine pj5dco(mo1, mo2, corres)
     call dismoi('NB_NO_MAILLA', m2, 'MAILLAGE', repi=nno2)
 
     if (nno2 .eq. 0) then
-        call utmess('F', 'CALCULEL4_54')
+        call utmess('F', 'PROJECTION4_54')
     endif
 
 !     DETERMINATION DE LA DIMENSION DE L'ESPACE :

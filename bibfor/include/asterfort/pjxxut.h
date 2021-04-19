@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,26 +15,21 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
+#include "MeshTypes_type.h"
 !
 interface
-    subroutine pjxxut(dim, mocle, moa1, moa2, nbma1,&
-                      lima1, nbno2, lino2, ma1, ma2,&
-                      nbtmx, nbtm, nutm, elrf)
-        integer :: nbtmx
-        character(len=2) :: dim
-        character(len=*) :: mocle
-        character(len=8) :: moa1
-        character(len=8) :: moa2
-        integer :: nbma1
-        integer :: lima1(*)
-        integer :: nbno2
-        integer :: lino2(*)
-        character(len=8) :: ma1
-        character(len=8) :: ma2
-        integer :: nbtm
-        integer :: nutm(nbtmx)
-        character(len=8) :: elrf(nbtmx)
+    subroutine pjxxut(projDime     , typeSelect     ,&
+                      entity1      , entity2        ,&
+                      nbCellSelect1, listCellSelect1,&
+                      nbNodeSelect2, listNodeSelect2,&
+                      mesh1        , mesh2          ,&
+                      nbCellType   , cellListNume   , cellListCode)
+        character(len=2), intent(in) :: projDime
+        character(len=*), intent(in) :: typeSelect
+        character(len=8), intent(in) :: entity1, entity2
+        integer, intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
+        character(len=8), intent(out) :: mesh1, mesh2
+        integer, intent(out) :: nbCellType, cellListNume(MT_NTYMAX)
+        character(len=8), intent(out) :: cellListCode(MT_NTYMAX)
     end subroutine pjxxut
 end interface

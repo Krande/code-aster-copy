@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -187,23 +187,6 @@ Contactez le support technique.
 
     53 : _("""
  longueurs des modes locaux incompatibles entre eux.
-"""),
-
-    54 : _("""
- aucuns noeud sur lesquels projeter.
-"""),
-
-    55 : _("""
- Pas de mailles à projeter ou en correspondance.
-
- Dans le cas de l'utilisation de AFFE_CHAR_MECA / LIAISON_MAIL, les mailles maîtres
- doivent avoir la même dimension que l'espace de modélisation :
- - mailles volumiques pour un modèle 3D
- - mailles surfaciques pour un modèle 2D
-"""),
-
-    56 : _("""
-  %(k1)s  pas trouvé.
 """),
 
     57 : _("""
