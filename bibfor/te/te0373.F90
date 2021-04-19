@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,7 +74,7 @@ character(len=16), intent(in) :: option, nomte
     ASSERT(nno .le. 3)
     if (fsi_form .eq. 'FSI_UPPHI') then
         ndofbynode = 2
-    elseif (fsi_form .eq. 'FSI_UP') then
+    elseif (fsi_form .eq. 'FSI_UP' .or. fsi_form .eq. 'FSI_UPSI') then
         ndofbynode = 1
     else
         call utmess('F', 'FLUID1_2', sk = fsi_form)
