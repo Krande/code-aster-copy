@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ from .calc_modes_inv import calc_modes_inv
 from .calc_modes_multi_bandes import calc_modes_multi_bandes
 from .calc_modes_post import calc_modes_post
 from .calc_modes_simult import calc_modes_simult
-from ...Messages import MasquerAlarme, RetablirAlarme
+from ...Messages import MasquerAlarme, RetablirAlarme, UTMESS 
 
 
 def calc_modes_ops(self, TYPE_RESU, OPTION, AMELIORATION, INFO, **args):
@@ -48,7 +48,7 @@ def calc_modes_ops(self, TYPE_RESU, OPTION, AMELIORATION, INFO, **args):
     sturm     = None
     if (AMELIORATION=='OUI'):
         if OPTION in ('SEPARE', 'AJUSTE', 'PROCHE'):
-          assert(False)
+            UTMESS('F', 'ALGELINE5_21')
         stop_erreur='NON'
         sturm      ='NON'
         # Warnings from op/op0045.F90 & algeline/vpcntl.F90
