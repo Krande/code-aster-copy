@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine fin999(isave)
+subroutine fin999()
     implicit none
 ! person_in_charge: mathieu.courtois at edf.fr
 !-----------------------------------------------------------------------
@@ -33,7 +33,6 @@ subroutine fin999(isave)
 #include "asterc/lcdiscard.h"
 #include "asterfort/apetsc.h"
 #include "asterfort/asmpi_checkalarm.h"
-    integer, intent(in) :: isave
 
     integer :: ichk
 #ifdef ASTER_HAVE_PETSC
@@ -51,13 +50,11 @@ subroutine fin999(isave)
 ! --- LIBERATION DE TOUS LES COMPOSANTS CHARGES DYNAMIQUEMENT
     call dllcls()
 
-    if ( isave .eq. 1 ) then
-        ! --- VERIFICATION DES ALARMES EN PARALLELE
-        call asmpi_checkalarm()
+! --- VERIFICATION DES ALARMES EN PARALLELE
+    call asmpi_checkalarm()
 
-        ! --- TEST ERREUR E SANS ERREUR F
-        call chkmsg(1, ichk)
-    endif
+! --- TEST ERREUR E SANS ERREUR F
+    call chkmsg(1, ichk)
 
 !   call lcdiscard(" ")
 

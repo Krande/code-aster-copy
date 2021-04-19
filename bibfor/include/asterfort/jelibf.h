@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine jelibf(cond, clas, info)
-        character(len=*) :: cond
-        character(len=*) :: clas
-        integer :: info
+        character(len=*), intent(in) :: cond
+        character(len=*), intent(in) :: clas
+        integer, intent(in) :: info
     end subroutine jelibf
 end interface

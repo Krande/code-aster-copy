@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,7 @@ MO2=AFFE_MODELE(MAILLAGE=MA,
                         MODELISATION='3D',),),);
 
 #--------------------------------------------------------------
-# 2- DEFINITION DES PARAMETRES MATERIAUX 
+# 2- DEFINITION DES PARAMETRES MATERIAUX
 #  ET CARACTERISTIQUES GEOMETRIQUES DES ELEMENTS DE STRUCTURE
 #--------------------------------------------------------------
 # MECANIQUE
@@ -256,4 +256,4 @@ RESUTH = CALC_CHAMP(reuse= RESUTH,PARALLELISME_TEMPS='OUI',
 
 
 
-FIN();
+FIN(PROC0='NON')

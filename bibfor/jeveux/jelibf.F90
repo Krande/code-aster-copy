@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,8 +43,9 @@ subroutine jelibf(cond, clas, info)
 #include "asterfort/jxferm.h"
 #include "asterfort/lxmins.h"
 #include "asterfort/utmess.h"
-    character(len=*) :: cond, clas
-    integer :: info
+    character(len=*), intent(in) :: cond
+    character(len=*), intent(in) :: clas
+    integer, intent(in) :: info
 ! ----------------------------------------------------------------------
     integer :: lk1zon, jk1zon, liszon, jiszon
     common /izonje/  lk1zon , jk1zon , liszon , jiszon
@@ -52,7 +53,7 @@ subroutine jelibf(cond, clas, info)
     common /ienvje/  lbis , lois , lols , lor8 , loc8
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iad2, iadacc, iadacy, iadadi, iadady
+    integer :: i, iad2, iadacc, iadacy, iadadi, iadady, infrm
     integer :: iadmi, iadyn, ibacol, ic, idb, iret
     integer :: jcara, jdate, jdocu, jgenr, jhcod, jiacce, jiadd
     integer :: jiadm, jindir, jlong, jlono, jltyp, jluti, jmarq
@@ -123,7 +124,7 @@ subroutine jelibf(cond, clas, info)
     endif
 !
 !     ----------- DECHARGER TOUTES LES COLLECTIONS -----------------
-    do 10 i = lidbas+1, nreuti(ic)
+    do i = lidbas+1, nreuti(ic)
         if (genr ( jgenr(ic) + i ) .eq. 'X') then
             iclaco = ic
             ibacol = iadm( jiadm(ic) + 2*i-1 )
@@ -133,16 +134,16 @@ subroutine jelibf(cond, clas, info)
                 call jjlide('JELIBF', nomco, 2)
             endif
         endif
- 10 end do
+    end do
 !     -- DECHARGER TOUS LES OBJETS SIMPLES Y COMPRIS AVEC $$ -------
-    do 20 i = lidbas+1, nreuti(ic)
+    do i = lidbas+1, nreuti(ic)
         iadmi = iadm( jiadm(ic) + 2*i-1 )
         if (iadmi .ne. 0) then
             idatos = i
             nomos = rnom ( jrnom(ic) + i )
             call jjlide('JELIBF', nomos, 1)
         endif
- 20 end do
+    end do
 !     ----------- DECHARGER TOUS LES OBJETS SYSTEME ----------------
     iad2 = iadm(jiadm(ic) + 2*2-1)
     iadcar = iadm(jiadm(ic) + 2*1-1)
@@ -321,8 +322,8 @@ subroutine jelibf(cond, clas, info)
         if (kstout(ic)(1:7) .eq. 'DETRUIT') then
             nom = nomfic(ic)(1:4)//'.?  '
             call lxmins(nom)
-            info = 0
-            call rmfile(nom, info, iret)
+            infrm = 0
+            call rmfile(nom, infrm, iret)
         endif
 !
         classe(ic:ic) = ' '

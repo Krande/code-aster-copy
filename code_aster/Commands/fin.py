@@ -42,6 +42,7 @@ from ..Utilities import ExecutionParameter, logger
 class Closer(ExecuteCommand):
     """Command that closes the execution."""
     command_name = "FIN"
+    _only_proc0 = None
     _exit = None
 
     def compat_syntax(self, keywords):
@@ -53,6 +54,15 @@ class Closer(ExecuteCommand):
         """
         self._exit = keywords.pop("exit", False)
 
+    def exec_(self, keywords):
+        """Execute the command.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+        self._only_proc0 = keywords.get("PROC0") == "OUI"
+        super().exec_(keywords)
+
     def _call_oper(self, dummy):
         """Save objects that exist in the context of the caller.
 
@@ -60,8 +70,8 @@ class Closer(ExecuteCommand):
         """
         # Ensure that `saveObjects` has not been already called
         if libaster.jeveux_status():
-            # 1: here, 2: exec_, 3: run_, 4: run, 5: user space
-            saveObjects(level=5)
+            # 1: here, 2: exec_, 3: parent.exec_, 4: run_, 5: run, 6: user space
+            saveObjects(level=6, only_proc0=self._only_proc0)
 
         logger.info(repr(ExecutionParameter().timer))
 

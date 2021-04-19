@@ -58,6 +58,7 @@ from hashlib import sha256
 from io import IOBase
 
 import libaster
+import aster_core
 import numpy
 
 from .. import Objects
@@ -279,13 +280,20 @@ def _restore(name, obj):
     return new
 
 
-def saveObjects(level=1, delete=True):
+def saveObjects(level=1, delete=True, only_proc0=True):
     """Save objects of the caller context in a file.
 
     Arguments:
         level (int): Number of frames to go back to find the user context.
         delete (bool): If *True* the saved objects are deleted from the context.
+        only_proc0 (bool): If *True* save objects only on proc #0.
     """
+    rank, _ = aster_core.MPI_CommRankSize()
+    if only_proc0 and rank != 0:
+        logger.info("Objects not saved on processor #{0}".format(rank))
+        libaster.jeveux_finalize(False)
+        return
+
     context = get_caller_context(level)
 
     # if ExecutionParameter().option & Options.Debug:

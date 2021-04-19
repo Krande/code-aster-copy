@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,9 +43,4 @@ FIN = FIN_PROC(nom="FIN",
             statut='f', typ='TXM', defaut="OUI", into=("OUI", "NON",)),
 
         PROC0=SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
-
-        # hidden keyword used to ensure that the fortran knows that an error occurred
-        # because when an exception is raised, the global status is reset by utmess.
-        STATUT=SIMP(
-            statut='c', typ='I', defaut=0),
 )

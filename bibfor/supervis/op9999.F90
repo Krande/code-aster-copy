@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,12 +20,11 @@ subroutine op9999(isave)
     use parameters_module, only : ST_OK
     implicit none
 !     ------------------------------------------------------------------
-! person_in_charge: j-pierre.lefebvre at edf.fr
+! person_in_charge: mathieu.courtois at edf.fr
 !     OPERATEUR DE CLOTURE
 !-----------------------------------------------------------------------
 !     FIN OP9999
 !-----------------------------------------------------------------------
-#include "jeveux.h"
 #include "asterc/gettyp.h"
 #include "asterc/jdcset.h"
 #include "asterc/rmfile.h"
@@ -50,40 +49,33 @@ subroutine op9999(isave)
 #include "asterfort/ulopen.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/asmpi_info.h"
+#include "jeveux.h"
 
 !   isave = 1 : The objects must be saved properly.
 !   isave = 0 : The objects can be wiped out (== automatically called).
+!   Warning: isave has not necessarly the same value on all processes!
     integer, intent(in) :: isave
 
-    mpi_int :: mrank, msize
-    integer :: info, nbenre, nboct, iret, rank
+    integer :: nbenre, nboct, iret
     integer :: ifm, iunres, iunmes
     integer :: i, jco, nbco
     integer :: nbext, nfhdf
     aster_logical :: close_base
-    character(len=8) :: k8b, ouinon, infr, proc
+    character(len=8) :: k8b, ouinon, infr
     character(len=16) :: fhdf, typres
     character(len=80) :: fich
     character(len=256) :: fbase
 !-----------------------------------------------------------------------
 !
     call jemarq()
-    info = 1
-
-    call asmpi_info(rank=mrank, size=msize)
-    rank = to_aster_int(mrank)
 !
-!   --- PROC0 = 'OUI' pour effectuer les ecritures uniquement sur le processeur de rang 0 ---
-!       si PROC0 = 'NON' on force rank=0
-    proc = 'OUI'
-    close_base = isave .eq. 1 .and. (proc.eq.'NON' .or. rank.eq.0)
+    close_base = isave .eq. 1
 
     call ststat(ST_OK)
 
 ! --- MENAGE DANS LES BIBLIOTHEQUES, ALARMES, ERREURS, MPI
 !
-    call fin999(isave)
+    call fin999()
 !
 ! --- ecriture des informations sur le contenu de chaque sd_resultat :
 !
@@ -150,9 +142,9 @@ subroutine op9999(isave)
       !
       ! --- CLOTURE DES FICHIERS
       !
-      call jelibf('SAUVE', 'G', info)
+      call jelibf('SAUVE', 'G', 1)
       !
-      call jelibf('DETRUIT', 'V', info)
+      call jelibf('DETRUIT', 'V', 1)
       !
       ! --- RETASSAGE EFFECTIF
       !
@@ -168,7 +160,7 @@ subroutine op9999(isave)
     call jedema()
 !
 !   the diagnosis of the execution is OK thanks to this message
-    if ( isave .eq. 1 ) then
+    if ( close_base ) then
         call utmess('I', 'SUPERVIS2_99')
     endif
 !
@@ -176,7 +168,7 @@ subroutine op9999(isave)
 !
     call jefini('NORMAL', close_base)
 
-    if ( isave .eq. 0 ) then
+    if ( .not. close_base ) then
         do i=1,99
             call get_jvbasename('glob', i, fbase)
             call rmfile(fbase, 0, iret)
