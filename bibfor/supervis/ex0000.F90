@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,7 +73,6 @@ subroutine ex0000(nuoper)
 #include "asterfort/op0052.h"
 #include "asterfort/op0053.h"
 #include "asterfort/op0054.h"
-#include "asterfort/op0055.h"
 #include "asterfort/op0056.h"
 #include "asterfort/op0057.h"
 #include "asterfort/op0058.h"
@@ -334,8 +333,6 @@ subroutine ex0000(nuoper)
         call op0053()
     case (54)
         call op0054()
-    case (55)
-        call op0055()
     case (56)
         call op0056()
     case (57)

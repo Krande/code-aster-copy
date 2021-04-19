@@ -19,7 +19,7 @@
 subroutine op0060()
     implicit none
 !
-!      OPERATEUR :     DEFI_FISSURE
+!      OPERATEUR :     DEFI_FOND_FISS
 !
 !-----------------------------------------------------------------------
 !
@@ -222,7 +222,7 @@ subroutine op0060()
 
 
 !   OBJET CONTENANT LA BASE LOCALE EN CHAQUE NOEUD DU FOND DE FISSURE
-!   OBJET QUI N'EXISTE QUE DANS DEFI_FISSURE
+!   OBJET QUI N'EXISTE QUE DANS DEFI_FOND_FISS
     basnof = resu//'.BASNOF'
 !
     call fonnor2(resu, noma, cnxinv, typm, basnof)

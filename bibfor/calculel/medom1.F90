@@ -83,7 +83,7 @@ subroutine medom1(modele, mater, mateco, cara, kcha, ncha,&
     call getres(k8b, concep, nomcmd)
 !
     if ((nomcmd.eq.'CALC_CHAMP' ) .or. (nomcmd.eq.'CALC_ERREUR' ) .or.&
-        (nomcmd.eq.'CALC_META  ' ) .or. (nomcmd.eq.'CALC_G' ) .or. (nomcmd.eq.'CALC_H')) then
+        (nomcmd.eq.'CALC_META  ' ) .or. (nomcmd.eq.'CALC_G_XFEM' ) .or. (nomcmd.eq.'CALC_G')) then
 !
 !        RECUPERATION DU MODELE, MATERIAU, CARA_ELEM et EXCIT
 !        POUR LE NUMERO d'ORDRE NUORD

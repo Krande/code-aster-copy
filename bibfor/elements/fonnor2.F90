@@ -52,7 +52,7 @@ subroutine fonnor2(resu, noma, cnxinv, typm, basnof)
     character(len=19) :: cnxinv, basnof
 ! FONCTION REALISEE:
 !
-!     CALCUL EN 2D ET 3D DE LA BASE LOCALE POUR DEFI_FISSURE
+!     CALCUL EN 2D ET 3D DE LA BASE LOCALE POUR DEFI_FOND_FISS
 !
 !
 !     ENTREES:

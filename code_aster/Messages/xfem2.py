@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -106,7 +106,7 @@ On ne peut pas appliquer de chargement de pression ou de condition d'échange th
      Si vous souhaitez imposer les valeurs de l'angle de bifurcation aux points
      du fonds de fissure, veuillez indiquer CRITERE='ANGLE_IMPO' et ajouter
      une colonne 'BETA' au tableau manuellement ou si le modèle est en 3D,
-     en utilisant l'option 'CALC_K_G' de la commande CALC_G.
+     en utilisant l'option 'CALC_K_G' de la commande CALC_G_XFEM.
 """),
 
     20 : _("""
@@ -430,7 +430,7 @@ ne borde pourtant aucune maille principale.
      valeur DA_MAX donnée ne peut pas être changée, sa valeur minimale
      conseillée peut être diminuée en agissant sur la valeur de RAYON,
      c'est-à-dire en utilisant une valeur de RAYON plus petite. Cela
-     influence l'opérateur CALC_G aussi et normalement est faisable en
+     influence l'opérateur CALC_G_XFEM aussi et normalement est faisable en
      utilisant un maillage plus raffiné.
   """),
 

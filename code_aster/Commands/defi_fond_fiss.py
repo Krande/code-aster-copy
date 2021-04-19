@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,20 +19,21 @@
 
 # person_in_charge: mathieu.courtois@edf.fr
 
-from ..Objects import CrackTip
+from ..Objects import Crack
 from ..Supervis import ExecuteCommand
 
 
-class CrackDefinition(ExecuteCommand):
+class FEMCrackDefinition(ExecuteCommand):
     """Execute legacy operator DEFI_FOND_FISS."""
     command_name = "DEFI_FOND_FISS"
 
     def create_result(self, keywords):
+
         """Create the result.
 
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        self._result = CrackTip()
+        self._result = Crack()
 
-DEFI_FOND_FISS = CrackDefinition.run
+DEFI_FOND_FISS = FEMCrackDefinition.run

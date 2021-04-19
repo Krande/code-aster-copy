@@ -21,7 +21,6 @@
 
 from ..Objects import Table
 from .extr_table import EXTR_TABLE
-from .crea_resu import CREA_RESU
 from ..Supervis import ExecuteCommand, UserMacro
 from ..Cata.Commands.calc_g import CALC_G as calc_g_cata
 from ..Cata.Syntax import _F
@@ -58,37 +57,16 @@ def calc_g_with_co(self, **args):
         )
 
     # On fait quoi de theta ?
-    if "CHAM_THETA" in args:
-        # number of CHAM_THETA fields
-        _nb_cham_theta = EXTR_TABLE(TYPE_RESU='ENTIER',
-                TABLE=_result_calc_g, NOM_PARA='NUME_ORDRE',
-                FILTRE=_F(NOM_PARA='NOM_OBJET', VALE_K='NB_CHAM_THETA'),
+    _cham_theta_no = EXTR_TABLE(TYPE_RESU='CHAM_NO_SDASTER',
+                TABLE=_result_calc_g, NOM_PARA='NOM_SD',
+                FILTRE=_F(NOM_PARA='NOM_OBJET', VALE_K='CHAM_THETA'),
             )
-
-        for i_cham in range(0, _nb_cham_theta):
-            # get i-th CHAM_THETA field
-            _cham_theta_no = EXTR_TABLE(TYPE_RESU='CHAM_NO_SDASTER',
-                    TABLE=_result_calc_g, NOM_PARA='NOM_SD',
-                    FILTRE=(_F(NOM_PARA='NOM_OBJET', VALE_K='CHAM_THETA'),
-                            _F(NOM_PARA='NUME_ORDRE', VALE_I=i_cham+1))
-                )
-
-            if (i_cham == 0):
-                _cham_theta = CREA_RESU(OPERATION='AFFE',
-                                    TYPE_RESU='EVOL_NOLI',
-                                    NOM_CHAM='DEPL',
-                                    AFFE=(_F(CHAM_GD=_cham_theta_no,INST=i_cham,),),)
-            else:
-                _cham_theta = CREA_RESU(reuse=_cham_theta,
-                                    RESULTAT=_cham_theta,
-                                    OPERATION='AFFE',
-                                    TYPE_RESU='EVOL_NOLI',
-                                    NOM_CHAM='DEPL',
-                                    AFFE=(_F(CHAM_GD=_cham_theta_no,INST=i_cham,),),)
-
-        self.register_result(_cham_theta, args["CHAM_THETA"])
+    if "CHAM_THETA" in args["THETA"]:
+        # number of CHAM_THETA fields
+        self.register_result(_cham_theta_no, args["THETA"]["CHAM_THETA"])
+    else:
+        del _cham_theta_no
 
     return _table_g
-
 
 CALC_G = UserMacro("CALC_G2", calc_g_cata, calc_g_with_co)

@@ -59,8 +59,8 @@ from .calc_ferraillage import CALC_FERRAILLAGE
 from .calc_flui_stru import CALC_FLUI_STRU
 from .calc_fonc_interp import CALC_FONC_INTERP
 from .calc_forc_nonl import CALC_FORC_NONL
+from .calc_g_xfem import CALC_G_XFEM
 from .calc_g import CALC_G
-from .calc_h import CALC_H
 from .calc_inte_spec import CALC_INTE_SPEC
 from .calc_matr_ajou import CALC_MATR_AJOU
 from .calc_matr_elem import CALC_MATR_ELEM
@@ -85,7 +85,6 @@ from .defi_contact import DEFI_CONTACT
 from .defi_domaine_reduit import DEFI_DOMAINE_REDUIT
 from .defi_fichier import DEFI_FICHIER
 from .defi_fiss_xfem import DEFI_FISS_XFEM
-from .defi_fissure import DEFI_FISSURE
 from .defi_flui_stru import DEFI_FLUI_STRU
 from .defi_fonc_flui import DEFI_FONC_FLUI
 from .defi_fonction import DEFI_FONCTION

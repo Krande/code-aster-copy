@@ -37,7 +37,7 @@ implicit none
 #include "jeveux.h"
 ! --------------------------------------------------------------------------------------------------
 !
-!      OPERATEUR :     CALC_H
+!      OPERATEUR :     CALC_G
 !
 !      BUT:CALCUL DU TAUX DE RESTITUTION D'ENERGIE PAR LA METHODE THETA
 !          CALCUL DES FACTEURS D'INTENSITE DE CONTRAINTES
@@ -54,7 +54,7 @@ implicit none
 !---------------------------------------------------------------------------------------------------
     call jemarq()
     call infmaj()
-    call deprecated_algom('CALC_H')
+    call deprecated_algom('CALC_G')
 !
 ! Fiches concernées par le chantier (A supprimer à la fin)
 ! A Faire: , #27931, #30288

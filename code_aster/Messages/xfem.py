@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -373,7 +373,7 @@ Le calcul de la norme L2 de la pression de contact sur une fissure XFEM n'est pa
      Une ou des mailles contenant plus de 2 points du fond de fissure ont été détectées.
      Le fond ne peut pas être orienté sous cette condition. Il n'est donc pas possible
      de calculer les abscisses curvilignes du fond et de détecter les fonds multiples.
-     Par conséquent le post-traitement avec la commande CALC_G n'est pas possible.
+     Par conséquent le post-traitement avec la commande CALC_G_XFEM n'est pas possible.
 """),
 
     53: _("""
@@ -696,12 +696,12 @@ L'opération ASSE_DEPL de l'opérateur CREA_CHAMP ne prend pas en charge les él
 """),
 
     98: _("""
-  -> Les chargements de type FORCE_FACE ne sont pas gérés pour le calcul de l'option CALC_G sur les éléments de bord X-FEM.
+  -> Les chargements de type FORCE_FACE ne sont pas gérés pour le calcul de l'option CALC_G_XFEM sur les éléments de bord X-FEM.
      Seuls les chargements de type PRES_REP peuvent être pris en compte.
 """),
 
     99: _("""
-  -> L'opérateur CALC_G ne sait pas traiter le cas d'une pression fonction d'un ou de plusieurs paramètres appliquée
+  -> L'opérateur CALC_G_XFEM ne sait pas traiter le cas d'une pression fonction d'un ou de plusieurs paramètres appliquée
      sur les lèvres d'une fissure X-FEM. Seul le cas d'une pression constante en espace et en temps est prévu.
      Veuillez utiliser l'opérateur POST_K1_K2_K3.
 """),

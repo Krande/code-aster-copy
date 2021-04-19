@@ -332,13 +332,6 @@ Le mot clef DIRECTION n'a pas été renseigné et la fissure n'a pas été défi
 Définissez la fissure dans DEFI_FOND_FISS ou renseignez le mot clef DIRECTION.
 """),
 
-    60 : _("""
-Mélange de mailles de type SEG2 et SEG3 dans la définition du fond de fissure.
--> Risque et Conseil :
-Les mailles du fond de fissure doivent toutes être du même type.
-Modifiez le maillage ou définissez plusieurs fonds de fissure consécutifs.
-"""),
-
     61 : _("""
 L'angle entre 2 vecteurs normaux consécutifs est supérieur à 10 degrés.
 Cela signifie que la fissure est fortement non plane.
@@ -364,14 +357,6 @@ Les mailles des lèvres doivent être du type quadrangle ou triangle.
 Vérifiez que les mailles définies correspondent bien aux faces des éléments
 3D qui s'appuient sur la lèvre.
 """),
-
-    66 : _("""
-Le groupe de noeuds ou la liste de noeuds définissant le fond de fissure n'est pas ordonné.
--> Risque et Conseil :
-Il faut ordonner les noeuds du fond de fissure.
-Les options SEGM_DROI_ORDO et NOEUD_ORDO de l'opérateur
-DEFI_GROUP/CREA_GROUP_NO peuvent être utilisées.
-."""),
 
     70 : _("""
 Erreur utilisateur : la lèvre définie sous %(k1)s possède une maille répétée 2 fois :
@@ -411,24 +396,6 @@ sur la lèvre.
     76: _("""
 Erreur utilisateur.
 Cette combinaison de lissage est interdite avec X-FEM.
-"""),
-
-    78: _("""
-La tangente à l'origine n'est pas orthogonale à la normale :
-   Normale aux lèvres de la fissure : %(r1)f %(r2)f %(r3)f
-   Tangente à l'origine (= direction de propagation) :  %(r4)f %(r5)f %(r6)f
--> Risque et Conseil :
-La tangente à l'origine est nécessairement dans le plan de la fissure,
-donc orthogonale à la normale fournie. Vérifier les données.
-"""),
-
-    79: _("""
-La tangente à l'extrémité n'est pas orthogonale à la normale :
-   Normale aux lèvres de la fissure : %(r1)f %(r2)f %(r3)f
-   Tangente à l'origine (= direction de propagation) :  %(r4)f %(r5)f %(r6)f
--> Risque et Conseil :
-La tangente à l'extrémité est nécessairement dans le plan de la fissure,
-donc orthogonale à la normale fournie. Vérifier les données.
 """),
 
     84: _("""
