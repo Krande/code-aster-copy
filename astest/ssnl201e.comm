@@ -253,5 +253,74 @@ TEST_RESU(RESU=(_F(INST=75,
           )
 
 
+# Non régression pour tester DECOLLEMENT='OUI
+# copié-collé de ssnl201a
+
+MAP701 = DEFI_MATERIAU(
+    FONDA_SUPERFI=_F(
+        LONG_X          =1.0,
+        LONG_Y          =1.0,
+        PHI             =45.0,
+        COHESION        =1000.0,
+        CP_SERVICE      =800.0,
+        DECOLLEMENT      ='OUI'
+    ),
+)
+CHP701 = AFFE_MATERIAU(MAILLAGE=MA, AFFE = _F(TOUT='OUI',MATER=MAP701,),)
+
+CHP4011 = AFFE_CHAR_MECA(MODELE=MO,
+    DDL_IMPO=_F(GROUP_NO='PT1', DY= 0.0,DZ = -0.002, DRY = 0.000, DRZ = 0.,),)
+
+CHP4012 = AFFE_CHAR_MECA(MODELE=MO,
+    DDL_IMPO=_F(GROUP_NO='PT1', DX= 0.000, DRX = 0.05,),)
+
+MP1011 = DEFI_FONCTION(NOM_PARA='INST',
+   VALE =(
+         0.0 , 0.000,
+        25.0 , 1.000,
+        50.0 , 1.000,
+   ),
+)
+
+MP1012 = DEFI_FONCTION(NOM_PARA='INST',
+   VALE =(
+        0.0 , 0.000,
+       25.0 , 0.000,
+       50.0 , 1.000,
+   ),
+)
+
+
+REP701=STAT_NON_LINE(
+    MODELE  = MO,
+    CHAM_MATER = CHP701,
+    CARA_ELEM  = CA_DISTL,
+    EXCIT      = (  _F(CHARGE = CHP4011,FONC_MULT=MP1011),
+                    _F(CHARGE = CHP4012,FONC_MULT=MP1012),),
+    COMPORTEMENT=_F(RELATION='FONDATION', ),
+    INCREMENT = _F(LIST_INST = LINST,INST_FIN=50.0),
+)
+
+
+
+TEST_RESU(
+    RESU=(
+        _F( INST=50.0, RESULTAT=REP701, NOM_CHAM='SIEF_ELGA', MAILLE='M1', POINT=1,
+            NOM_CMP='VZ', REFERENCE='AUTRE_ASTER',
+            VALE_REFE= -186.9480163711371,
+            VALE_CALC= -186.9480163711371,
+        ),
+        _F( INST=50.0, RESULTAT=REP701, NOM_CHAM='SIEF_ELGA', MAILLE='M1', POINT=1,
+            NOM_CMP='MT', REFERENCE='AUTRE_ASTER',
+            VALE_REFE= 71.63053266988109,
+            VALE_CALC= 71.63053266988109,
+        ),
+        _F( INST=50.0, RESULTAT=REP701, NOM_CHAM='VARI_ELGA', MAILLE='M1', POINT=1,
+            NOM_CMP='V9', REFERENCE='AUTRE_ASTER',
+            VALE_REFE= 0.001197108997832166,
+            VALE_CALC= 0.001197108997832166,
+        ),
+    ),
+)
 
 FIN()
