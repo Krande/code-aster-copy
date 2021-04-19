@@ -1,0 +1,101 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#
+#        TUYAUTERIE COMPORTANT UN COUDE
+#     MODELISATION PAR DES ELEMENTS POUTRES
+#     -------------------------------------
+
+POURSUITE(CODE='OUI')
+
+"""
+y=R*cos(a)
+z=R*sin(a)
+
+Sixx = N/S + My*z/Iy – Mz*y/Iz
+Sixy = Vy/Ay – z*Mx/Jx
+Sixz = Vz/Az + y*Mx/Jx
+
+Avec les composantes du SIPO_ELNO
+Sixx = SN  + SMFY*sin(a) + SMFZ*cos(a)
+Sixy = SVY – SMT*sin(a)
+Sixz = SVZ + SMT*cos(a)
+
+Vmis : (Sixx**2 + 3.0*(Sixy**2 + Sixz**2))**0.5
+
+Pour trouver le max
+    'a' est dans [0,2*Pi] ==> calcul tous les x°
+    C'est bestial, mais simple !!!
+
+"""
+from math import *
+def VonMisesMaxCercle(SN,SMFY,SMFZ,SVY,SVZ,SMT):
+    #
+    nbang = 36; Vmax = 0.0
+    for ii in range(nbang):
+        ang = ii * 2.0*pi/nbang
+        yy = cos(ang); zz = sin(ang)
+        Sixx = SN  + SMFY*zz + SMFZ*yy
+        Sixy = SVY - SMT*zz
+        Sixz = SVZ + SMT*yy
+        Vm = (Sixx**2+3.0*(Sixy**2+Sixz**2))**0.5
+        Vmax=max(Vmax,Vm)
+    return Vmax
+
+fVonMis = FORMULE(
+    VALE_C="""VonMisesMaxCercle(SN,SMFY,SMFZ,SVY,SVZ,SMT)""",
+    VonMisesMaxCercle=VonMisesMaxCercle,
+    NOM_PARA=['SN', 'SMFY', 'SMFZ', 'SVY', 'SVZ', 'SMT'],)
+
+
+RESVMIS = CALC_CHAMP(
+    RESULTAT=DYNATRA, INST=2.0,
+    GROUP_MA=('TUY1','TUY2','COUDE'),
+    CHAM_UTIL=(
+        _F(NOM_CHAM='SIPO_ELNO', FORMULE=fVonMis, NUME_CHAM_RESU=1,),
+    ),
+)
+
+"""
+IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=RESVMIS,NOM_CMP=('X1',),))
+"""
+
+Resultat = {
+ 'M1':  ('N1'  , 2.65525950321032E+10, 'N5 ' , 1.91602451891548E+10,) ,
+ 'M5':  ('N8'  , 4.76940234452520E+09, 'N2 ' , 9.91478483836135E+09,) ,
+ 'M10': ('N12' , 1.14170016881428E+10, 'N17' , 1.17082409641626E+10,) ,
+ 'M15': ('N16' , 7.15116317069291E+08, 'N4'  , 4.03046361573517E+08,) ,
+ 'M20': ('N21' , 1.25461303509103E+10, 'N22' , 1.26545053171175E+10,) ,
+ 'M25': ('N26' , 1.26960884377723E+10, 'N27' , 1.26130631206432E+10,) ,
+ 'M30': ('N31' , 1.19017411826117E+10, 'N3'  , 1.16587852175797E+10,) ,
+}
+
+for nma in Resultat.keys():
+    nno1, vale1, nno2, vale2 = Resultat[nma]
+    #
+    TEST_RESU(
+        RESU=(
+            _F( RESULTAT= RESVMIS, NOM_CHAM='UT01_ELNO', MAILLE=nma, NOEUD =nno1, NOM_CMP='X1', INST=2.0,
+                VALE_CALC= vale1,  VALE_REFE= vale1,     REFERENCE= 'AUTRE_ASTER', ),
+            _F( RESULTAT= RESVMIS, NOM_CHAM='UT01_ELNO', MAILLE=nma, NOEUD =nno2, NOM_CMP='X1', INST=2.0,
+                VALE_CALC= vale2,  VALE_REFE= vale2,     REFERENCE= 'AUTRE_ASTER', ),
+        ),
+    )
+
+FIN()
