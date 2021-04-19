@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,13 @@ FISS0=DEFI_FOND_FISS(MAILLAGE=M, SYME='NON',
                     LEVRE_SUP=_F(GROUP_MA='LEVR_SUP',),
                     LEVRE_INF=_F(GROUP_MA='LEVR_INF',),);
 
-basefond0=FISS0.sdj.BASEFOND.get()
+import numpy as np
+nb_comp_basloc = 6
+basloc = FISS0.sdj.BASLOC.VALE.get()
+basloc = np.array(basloc).reshape((len(basloc)//nb_comp_basloc),nb_comp_basloc)[:,2:]
+nomnoe = [i.strip() for i in M.sdj.NOMNOE.get()]
+lnoff = FISS0.sdj.FOND_NOEU.get()
+basefond0 = basloc[[nomnoe.index(item.strip()) for item in lnoff],:].flatten()
 
 ndfon=[]
 vnorX=[]
@@ -38,10 +44,10 @@ vdirY=[]
 
 for i in range(0,len(basefond0)//4):
   ndfon.append(i+1)
-  vnorX.append(basefond0[4*i])
-  vnorY.append(basefond0[4*i+1])
-  vdirX.append(basefond0[4*i+2])
-  vdirY.append(basefond0[4*i+3])
+  vdirX.append(basefond0[4*i])
+  vdirY.append(basefond0[4*i+1])
+  vnorX.append(basefond0[4*i+2])
+  vnorY.append(basefond0[4*i+3])
 
 TABL0=CREA_TABLE(LISTE=(_F(LISTE_I=ndfon,PARA='ND_FOND'),
                         _F(LISTE_R=vnorX,PARA='VNORX'),

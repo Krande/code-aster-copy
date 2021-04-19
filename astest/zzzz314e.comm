@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,18 @@ FISS0=DEFI_FOND_FISS(MAILLAGE=M, SYME='NON',
                      LEVRE_INF=_F(GROUP_MA = 'LEVINF1'),
                     );
 
-basefond0=FISS0.sdj.BASEFOND.get()
+import numpy as np
+nb_comp_basloc = 9
+basloc = FISS0.sdj.BASLOC.VALE.get()
+basloc = np.array(basloc).reshape((len(basloc)//nb_comp_basloc),nb_comp_basloc)[:,3:]
+nomnoe = [i.strip() for i in M.sdj.NOMNOE.get()]
+lnoff = FISS0.sdj.FOND_NOEU.get()
+basloc = basloc[[nomnoe.index(item.strip()) for item in lnoff],:]
+basloc = basloc.reshape((len(basloc), 2, 3))
+norm = np.linalg.norm(basloc, axis=2)
+norm = norm.reshape((len(basloc), 2, 1))
+norm = np.concatenate((norm, norm, norm), axis=2)
+basefond0 = (basloc/norm).flatten()
 
 ndfon=[]
 # listes des composantes des vecteurs normaux au plan de la fissure
@@ -46,12 +57,12 @@ vdirZ=[]
 
 for i in range(0,len(basefond0)//6):
   ndfon.append(i+1)
-  vnorX.append(basefond0[6*i])
-  vnorY.append(basefond0[6*i+1])
-  vnorZ.append(basefond0[6*i+2])
-  vdirX.append(basefond0[6*i+3])
-  vdirY.append(basefond0[6*i+4])
-  vdirZ.append(basefond0[6*i+5])
+  vdirX.append(basefond0[6*i])
+  vdirY.append(basefond0[6*i+1])
+  vdirZ.append(basefond0[6*i+2])
+  vnorX.append(basefond0[6*i+3])
+  vnorY.append(basefond0[6*i+4])
+  vnorZ.append(basefond0[6*i+5])
 
 TABL0=CREA_TABLE(LISTE=(_F(LISTE_I=ndfon,PARA='ND_FOND'),
                         _F(LISTE_R=vnorX,PARA='VNORX'),
