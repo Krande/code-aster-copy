@@ -53,4 +53,3 @@ void petscInitializeWithOptions( const std::string &options ) {
 template <>
 PyObject *assemblyMatrixToPetsc< AssemblyMatrixDisplacementRealPtr >(
     const AssemblyMatrixDisplacementRealPtr matr );
-
