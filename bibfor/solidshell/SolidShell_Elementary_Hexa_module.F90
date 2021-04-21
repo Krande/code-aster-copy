@@ -38,13 +38,14 @@ public  :: compRigiMatrHexa, compSiefElgaHexa, compForcNodaHexa,&
            compEpsgElgaHexa, compEpsiElgaHexa, compEpslElgaHexa,&
            compLoadHexa, compMassMatrHexa, compRigiGeomMatrHexa,&
            compRefeForcNodaHexa,&
-           compLoadExteStatVariHexa
+           compLoadExteStatVariHexa, compEpvcElgaHexa
 private :: prodBTSigm, compSiefExteStatVariHexa
 ! ==================================================================================================
 private
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "MeshTypes_type.h"
+#include "asterc/r8vide.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/SolidShell_type.h"
 #include "asterfort/assert.h"
@@ -623,6 +624,7 @@ subroutine compLoadHexa(elemProp, cellGeom, matePara, option, loadNoda)
 !   ------------------------------------------------------------------------------------------------
 !
     loadNoda = 0.d0
+    inteFami = elemProp%elemInte%inteFami
 
     if (option .eq. 'CHAR_MECA_PRES_R') then
 ! ----- Get input fields: for pressure, no node affected -> 0
@@ -972,18 +974,16 @@ end subroutine
 ! In  elemProp         : general properties of element
 ! In  cellGeom         : general geometric properties of cell
 ! In  matePara         : parameters of material
-! In  timeCurr         : current time
 ! In  option           : name of option to compute
 ! Out loadNoda         : nodal force from loads (Neumann)
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compLoadExteStatVariHexa(elemProp, cellGeom, matePara, timeCurr, option, loadNoda)
+subroutine compLoadExteStatVariHexa(elemProp, cellGeom, matePara, option, loadNoda)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
     type(SSH_ELEM_PROP), intent(in) :: elemProp
     type(SSH_CELL_GEOM), intent(in) :: cellGeom
     type(SSH_MATE_PARA), intent(in) :: matePara
-    real(kind=8), intent(in)        :: timeCurr
     character(len=16), intent(in)   :: option
     real(kind=8), intent(out)       :: loadNoda(SSH_NBDOF_MAX)
 ! - Local
@@ -995,7 +995,7 @@ subroutine compLoadExteStatVariHexa(elemProp, cellGeom, matePara, timeCurr, opti
     loadNoda = 0.d0
 
 ! - Compute stresses from external state variables
-    call compSiefExteStatVariHexa(elemProp, matePara, timeCurr, option, siefElga)
+    call compSiefExteStatVariHexa(elemProp, matePara, option, siefElga)
 
 ! - Prepare geometric quantities
     call initGeomCellHexa(cellGeom, geomHexa)
@@ -1024,29 +1024,31 @@ end subroutine
 !
 ! In  elemProp         : general properties of element
 ! In  matePara         : parameters of material
-! In  timeCurr         : current time
 ! In  option           : name of option to compute
 ! Out siefElga         : stresses at Gauss points
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compSiefExteStatVariHexa(elemProp, matePara, timeCurr, option, siefElga)
+subroutine compSiefExteStatVariHexa(elemProp, matePara, option, siefElga)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
     type(SSH_ELEM_PROP), intent(in) :: elemProp
     type(SSH_MATE_PARA), intent(in) :: matePara
     character(len=16), intent(in)   :: option
-    real(kind=8), intent(in)        :: timeCurr
     real(kind=8), intent(out)       :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
 ! - Local
-    character(len=4), parameter :: inteFami = 'RIGI'
+    character(len=4) :: inteFami
     integer, parameter :: kspg = 1
     integer :: nbIntePoint, kpg
-    real(kind=8) :: xyzgau(3), epsiExteStatVari(SSH_SIZE_TENS)
+    real(kind=8) :: xyzgau(3), epsiExteStatVari(SSH_SIZE_TENS), timeCurr
 !   ------------------------------------------------------------------------------------------------
 !
     nbIntePoint = elemProp%elemInte%nbIntePoint
+    inteFami    = elemProp%elemInte%inteFami
     xyzgau      = 0.d0
     siefElga    = 0.d0
+
+! - Non-sense ! To suppress (see issue30887)
+    timeCurr = r8vide()
 
 ! - Loop on Gauss points
     do kpg = 1, nbIntePoint
@@ -1063,6 +1065,59 @@ subroutine compSiefExteStatVariHexa(elemProp, matePara, timeCurr, option, siefEl
 ! ----- Compute stresses from external state variables
         siefElga(1+(kpg-1)*SSH_SIZE_TENS:SSH_SIZE_TENS*kpg) =&
                 matmul(matePara%elemHookeMatrix, epsiExteStatVari)
+
+    end do
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compEpvcElgaHexa
+!
+! Compute strains from external state variables for HEXA - EPVC_ELGA
+!
+! In  elemProp         : general properties of element
+! In  matePara         : parameters of material
+! In  option           : name of option to compute
+! Out epvcElga         : strains from external state variables
+!
+! --------------------------------------------------------------------------------------------------
+subroutine compEpvcElgaHexa(elemProp, matePara, option, epvcElga)
+!   ------------------------------------------------------------------------------------------------
+! - Parameters
+    type(SSH_ELEM_PROP), intent(in) :: elemProp
+    type(SSH_MATE_PARA), intent(in) :: matePara
+    character(len=16), intent(in)   :: option
+    real(kind=8), intent(out)       :: epvcElga(SSH_NBPG_MAX, SSH_SIZE_TENS)
+! - Local
+    character(len=4) :: inteFami
+    integer, parameter :: kspg = 1
+    integer :: nbIntePoint, kpg
+    real(kind=8) :: xyzgau(3), epsiExteStatVari(SSH_SIZE_TENS), timeCurr
+!   ------------------------------------------------------------------------------------------------
+!
+    nbIntePoint = elemProp%elemInte%nbIntePoint
+    inteFami    = elemProp%elemInte%inteFami
+    xyzgau      = 0.d0
+    epvcElga    = 0.d0
+
+! - Non-sense ! To suppress (see issue30887)
+    timeCurr = r8vide()
+
+! - Loop on Gauss points
+    do kpg = 1, nbIntePoint
+
+! ----- Compute strains from external state variables
+        call epstmc(inteFami, SSH_NDIM         , timeCurr        ,&
+                    '+'     , kpg              , kspg            ,&
+                    xyzgau  , matePara%mateBase, matePara%jvMater,&
+                    option  , epsiExteStatVari)
+
+! ----- Shear components with sqrt(2)
+        epsiExteStatVari(4:6) = 2.d0 * epsiExteStatVari(4:6)
+
+! ----- Copy strains
+        epvcElga(kpg, 1:SSH_SIZE_TENS) = epsiExteStatVari
 
     end do
 !

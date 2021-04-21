@@ -28,7 +28,7 @@ MESH=CREA_MAILLAGE(MAILLAGE     = MESH0,
                   )
 
 # Material parameters
-
+alpha = 6.5E-6
 funcYoung=DEFI_FONCTION(NOM_PARA='Z',
                      PROL_DROITE='CONSTANT',
                      PROL_GAUCHE='CONSTANT',
@@ -42,7 +42,7 @@ funcNu=DEFI_FONCTION(NOM_PARA='Z',
                       VALE=(0.  , 0.3,
                             0.25, 0.3),)
 
-funcAlpha=DEFI_CONSTANTE(VALE=6.5E-6);
+funcAlpha=DEFI_CONSTANTE(VALE=alpha);
 
 
 MATfunc=DEFI_MATERIAU(ELAS_FO = _F(E              = funcYoung,
@@ -50,12 +50,6 @@ MATfunc=DEFI_MATERIAU(ELAS_FO = _F(E              = funcYoung,
                                    ALPHA          = funcAlpha,
                                    TEMP_DEF_ALPHA = 20.0,)
                      )
-
-
-MAT=DEFI_MATERIAU(ELAS = _F(E              = 30.E+06,
-                            NU             = 0.3,
-                            ALPHA          = 6.5E-6,)
-                  )
 
 # Select finite elements
 MODEL=AFFE_MODELE(MAILLAGE = MESH,
@@ -148,15 +142,18 @@ resuLinear=MECA_STATIQUE(MODELE     = MODEL,
                         )
 
 # Post-treatement
-resuLinear=CALC_CHAMP(reuse    = resuLinear,
-                      RESULTAT = resuLinear,
-                      CRITERES = ('SIEQ_ELGA',),)
+resuLinear=CALC_CHAMP(reuse       = resuLinear,
+                      RESULTAT    = resuLinear,
+                      DEFORMATION = ('EPVC_ELGA',),
+                      CRITERES    = ('SIEQ_ELGA',),)
 
-# Test
+# Tests
 deplRefe = 0.1033
 deplTole = 0.01 * 2.6
 sixxCalc = -29353.841211187533
 siyyCalc =  9842.17151363325
+epvcRefe = -alpha * 70.
+epvcTole = 0.01 * 1.E-6
 
 TEST_RESU(RESU=(_F(RESULTAT   = resuLinear,
                    NUME_ORDRE = 1,
@@ -183,6 +180,17 @@ TEST_RESU(RESU=(_F(RESULTAT   = resuLinear,
                    NOM_CHAM   = 'SIEF_ELGA',
                    NOM_CMP    = 'SIYY',
                    VALE_CALC  = siyyCalc,),),)
+
+TEST_RESU(RESU=(_F(RESULTAT   = resuLinear,
+                   NUME_ORDRE = 1,
+                   GROUP_MA   = 'CellTest',
+                   POINT      = 5,
+                   NOM_CHAM   = 'EPVC_ELGA',
+                   NOM_CMP    = 'EPTHER_L',
+                   REFERENCE  = 'ANALYTIQUE',
+                   VALE_CALC  = -0.00045499999999999995,
+                   VALE_REFE  = epvcRefe,
+                   PRECISION  = epvcTole,),),)
 
 # Output
 IMPR_RESU(RESU=_F(RESULTAT = resuLinear,))

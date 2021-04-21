@@ -56,6 +56,8 @@ character(len=16), intent(in) :: option, nomte
         call compEpsiElga()
     elseif (option .eq. 'EPSL_ELGA') then
         call compEpslElga()
+    elseif (option .eq. 'EPVC_ELGA') then
+        call compEpvcElga()
     elseif (option .eq. 'CHAR_MECA_PRES_R') then
         call compLoad(option)
     elseif (option .eq. 'CHAR_MECA_PESA_R') then

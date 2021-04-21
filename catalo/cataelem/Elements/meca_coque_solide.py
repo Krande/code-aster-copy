@@ -37,6 +37,16 @@ DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
 EREFCO   = LocatedComponents(phys=PHY.PREC, type='ELEM',
                              components=('SIGM',))
 
+# For EPVC_ELGA
+EDFVCPG  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
+                             components=('EPTHER_L','EPTHER_T','EPTHER_N',
+                                         'EPSECH','EPHYDR','EPPTOT',))
+
+# For EPVC_ELNO
+EDFVCNO  = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
+                             components=('EPTHER_L','EPTHER_T','EPTHER_N',
+                                         'EPSECH','EPHYDR','EPPTOT',))
+
 MMATUUR  = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
 MMATUNS  = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
@@ -133,6 +143,18 @@ class MESSHELL_SB9(Element):
         OP.EPSL_ELNO(te=4,
             para_in  = ((OP.EPSL_ELNO.PDEFOPG, LC.EGPS3DR),),
             para_out = ((SP.PDEFONO, LC.EEPS3DR),),
+        ),
+
+        OP.EPVC_ELGA(te=125,
+            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
+                        (SP.PCOMPOR, LC.CCOMPOR),
+                        (SP.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),),
+            para_out = ((OP.EPVC_ELGA.PDEFOPG, EDFVCPG),),
+        ),
+
+        OP.EPVC_ELNO(te=4,
+            para_in  = ((OP.EPVC_ELNO.PDEFOPG, EDFVCPG),),
+            para_out = ((SP.PDEFONO, EDFVCNO),),
         ),
 
         OP.FORC_NODA(te=125,

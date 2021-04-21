@@ -37,7 +37,7 @@ implicit none
 public  :: compRigiMatr, compSiefElga, compForcNoda, compNonLinear,&
            compEpsiElga, compEpslElga,&
            compLoad, compMassMatr, compRigiGeomMatr,&
-           compRefeForcNoda, compLoadExteStatVari
+           compRefeForcNoda, compLoadExteStatVari, compEpvcElga
 private :: setMateOrientation, compElemElasMatrix,&
            initCellGeom, initMateProp, initElemProp, initBehaProp
 ! ==================================================================================================
@@ -45,9 +45,9 @@ private
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "MeshTypes_type.h"
+#include "asterc/r8vide.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/SolidShell_type.h"
-#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/dmat3d.h"
 #include "asterfort/elrefe_info.h"
@@ -169,14 +169,16 @@ end subroutine
 !
 ! In  elemProp         : general properties of element
 ! In  cellGeom         : general geometric properties of cell
+! In  timeCurr         : current time
 ! Out matePara         : parameters of material
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine initMateProp(elemProp, cellGeom, matePara)
+subroutine initMateProp(elemProp, cellGeom, timeCurr, matePara)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
     type(SSH_ELEM_PROP), intent(in)  :: elemProp
     type(SSH_CELL_GEOM), intent(in)  :: cellGeom
+    real(kind=8), intent(in)         :: timeCurr
     type(SSH_MATE_PARA), intent(out) :: matePara
 ! - Local
     integer :: jvMate
@@ -191,7 +193,7 @@ subroutine initMateProp(elemProp, cellGeom, matePara)
     call setMateOrientation(elemProp, cellGeom, matePara)
 
 ! - Compute elasticity matrix at middle of cell
-    call compElemElasMatrix(elemProp%elemInte, matePara)
+    call compElemElasMatrix(elemProp%elemInte, timeCurr, matePara)
 
 !
     if (SSH_DBG_ELEM) SSH_DBG_STRG('< initMateProp')
@@ -319,20 +321,22 @@ end subroutine
 ! Compute elasticity matrix at middle of cell
 !
 ! In  elemInte         : properties of integration scheme
+! In  timeCurr         : current time
 ! IO  matePara         : parameters of material
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compElemElasMatrix(elemInte, matePara)
+subroutine compElemElasMatrix(elemInte, timeCurr, matePara)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
     type(SSH_ELEM_INTE), intent(in)    :: elemInte
+    real(kind=8), intent(in)           :: timeCurr
     type(SSH_MATE_PARA), intent(inout) :: matePara
 ! - Local
     real(kind=8) :: xyzgau(3)
 !   ------------------------------------------------------------------------------------------------
 ! 
    xyzgau = 0.d0
-   call dmat3d(elemInte%inteFami, matePara%jvMater , r8vide(), '+', 1,&
+   call dmat3d(elemInte%inteFami, matePara%jvMater , timeCurr, '+', 1,&
                1                , matePara%mateBase, xyzgau  , matePara%elemHookeMatrix)
 !
 !   ------------------------------------------------------------------------------------------------
@@ -351,11 +355,14 @@ subroutine compRigiMatr()
     type(SSH_CELL_GEOM) :: cellGeom
     type(SSH_ELEM_PROP) :: elemProp
     type(SSH_MATE_PARA) :: matePara
-    real(kind=8) :: matrRigi(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
+    real(kind=8) :: matrRigi(SSH_NBDOF_MAX, SSH_NBDOF_MAX), timeCurr
     integer :: jvMatr, i, j, k
 !   ------------------------------------------------------------------------------------------------
 !
     matrRigi = 0.d0
+
+! - Non-sense ! To suppress (see issue30887)
+    timeCurr = r8vide()
 
 ! - Initialization of general properties of finite element
     call initElemProp(inteFami, elemProp)
@@ -366,7 +373,7 @@ subroutine compRigiMatr()
     if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
 ! - Initialization of properties of material
-    call initMateProp(elemProp, cellGeom, matePara)
+    call initMateProp(elemProp, cellGeom, timeCurr, matePara)
     if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
 
 ! - Compute rigidity matrix
@@ -402,11 +409,14 @@ subroutine compSiefElga()
     type(SSH_CELL_GEOM) :: cellGeom
     type(SSH_ELEM_PROP) :: elemProp
     type(SSH_MATE_PARA) :: matePara
-    real(kind=8) :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
+    real(kind=8) :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX), timeCurr
     integer :: jvSigm, jvDisp, i
 !   ------------------------------------------------------------------------------------------------
 !
     siefElga = 0.d0
+
+! - Non-sense ! To suppress (see issue30887)
+    timeCurr = r8vide()
 
 ! - Initialization of general properties of finite element
     call initElemProp(inteFami, elemProp)
@@ -417,7 +427,7 @@ subroutine compSiefElga()
     if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
 ! - Initialization of properties of material
-    call initMateProp(elemProp, cellGeom, matePara)
+    call initMateProp(elemProp, cellGeom, timeCurr, matePara)
     if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
 
 ! - Get displacements
@@ -504,8 +514,12 @@ subroutine compNonLinear(option)
     type(SSH_ELEM_PROP) :: elemProp
     type(SSH_MATE_PARA) :: matePara
     type(SSH_BEHA_PARA) :: behaPara
+    real(kind=8) :: timeCurr
 !   ------------------------------------------------------------------------------------------------
 !
+
+! - Non-sense ! To suppress (see issue30887)
+    timeCurr = r8vide()
 
 ! - Initialization of general properties of finite element
     call initElemProp(inteFami, elemProp)
@@ -516,7 +530,7 @@ subroutine compNonLinear(option)
     if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
 ! - Initialization of properties of material
-    call initMateProp(elemProp, cellGeom, matePara)
+    call initMateProp(elemProp, cellGeom, timeCurr, matePara)
     if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
 
 ! - Initialization of properties of behaviour
@@ -640,11 +654,14 @@ subroutine compLoad(option)
     type(SSH_CELL_GEOM) :: cellGeom
     type(SSH_ELEM_PROP) :: elemProp
     type(SSH_MATE_PARA) :: matePara
-    real(kind=8) :: loadNoda(SSH_NBDOF_MAX)
+    real(kind=8) :: loadNoda(SSH_NBDOF_MAX), timeCurr
     integer :: jvVect, i
 !   ------------------------------------------------------------------------------------------------
 !
     loadNoda = 0.d0
+
+! - Non-sense ! To suppress (see issue30887)
+    timeCurr = r8vide()
 
 ! - Initialization of general properties of finite element
     call initElemProp(inteFami, elemProp)
@@ -656,7 +673,7 @@ subroutine compLoad(option)
 
 ! - Initialization of properties of material
     if (option .eq. 'CHAR_MECA_PESA_R') then
-        call initMateProp(elemProp, cellGeom, matePara)
+        call initMateProp(elemProp, cellGeom, timeCurr, matePara)
         if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
     endif
 
@@ -689,11 +706,14 @@ subroutine compMassMatr()
     type(SSH_CELL_GEOM) :: cellGeom
     type(SSH_ELEM_PROP) :: elemProp
     type(SSH_MATE_PARA) :: matePara
-    real(kind=8) :: matrMass(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
+    real(kind=8) :: matrMass(SSH_NBDOF_MAX, SSH_NBDOF_MAX), timeCurr
     integer :: jvMatr, i, j, k
 !   ------------------------------------------------------------------------------------------------
 !
     matrMass = 0.d0
+
+! - Non-sense ! To suppress (see issue30887)
+    timeCurr = r8vide()
 
 ! - Initialization of general properties of finite element
     call initElemProp(inteFami, elemProp)
@@ -704,7 +724,7 @@ subroutine compMassMatr()
     if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
 ! - Initialization of properties of material
-    call initMateProp(elemProp, cellGeom, matePara)
+    call initMateProp(elemProp, cellGeom, timeCurr, matePara)
     if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
 
 ! - Compute mass matrix
@@ -846,6 +866,9 @@ subroutine compLoadExteStatVari(option)
 !
     loadNoda = 0.d0
 
+! - Non-sense ! To suppress (see issue30887)
+    timeCurr = r8vide()
+
 ! - Initialization of general properties of finite element
     call initElemProp(inteFami, elemProp)
     if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
@@ -854,20 +877,19 @@ subroutine compLoadExteStatVari(option)
     call initCellGeom(elemProp, cellGeom)
     if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
-! - Initialization of properties of material
-    call initMateProp(elemProp, cellGeom, matePara)
-    if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
-
 ! - Get current time
-    timeCurr = 0.d0
     call tecach('ONO', 'PTEMPSR', 'L', iret, iad = jvTime)
     if (jvTime .ne. 0) then
         timeCurr = zr(jvTime)
     endif
 
+! - Initialization of properties of material
+    call initMateProp(elemProp, cellGeom, timeCurr, matePara)
+    if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
+
 ! - Compute external state variable load
     if (elemProp%cellType .eq. SSH_CELL_HEXA) then
-        call compLoadExteStatVariHexa(elemProp, cellGeom, matePara, timeCurr, option, loadNoda)
+        call compLoadExteStatVariHexa(elemProp, cellGeom, matePara, option, loadNoda)
     else
         ASSERT(ASTER_FALSE)
     endif
@@ -876,6 +898,74 @@ subroutine compLoadExteStatVari(option)
     call jevech('PVECTUR', 'E', jvVect)
     do i = 1, elemProp%nbDof
         zr(jvVect-1+i) = loadNoda(i)
+    enddo
+!
+!   ------------------------------------------------------------------------------------------------
+end subroutine
+! --------------------------------------------------------------------------------------------------
+!
+! compEpvcElga
+!
+! Compute strains from external state variables - EPVC_ELGA
+!
+! --------------------------------------------------------------------------------------------------
+subroutine compEpvcElga()
+!   ------------------------------------------------------------------------------------------------
+! - Local
+    character(len=4), parameter :: inteFami = 'RIGI'
+    integer, parameter :: nbCmp = 6
+    character(len=16) :: option
+    type(SSH_CELL_GEOM) :: cellGeom
+    type(SSH_ELEM_PROP) :: elemProp
+    type(SSH_MATE_PARA) :: matePara
+    real(kind=8) :: epvcElga(SSH_NBPG_MAX, SSH_SIZE_TENS), timeCurr
+    real(kind=8) :: epvcElgaAllCmp(SSH_NBPG_MAX, nbCmp)
+    integer :: jvEpsi, iIntePoint, iCmp
+!   ------------------------------------------------------------------------------------------------
+!
+    epvcElga = 0.d0
+
+! - Non-sense ! To suppress (see issue30887)
+    timeCurr = r8vide()
+
+! - Initialization of general properties of finite element
+    call initElemProp(inteFami, elemProp)
+    if (SSH_DBG_ELEM) call dbgObjElemProp(elemProp)
+
+! - Initialization of geometric properties of cell
+    call initCellGeom(elemProp, cellGeom)
+    if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
+
+! - Initialization of properties of material (to suppress, see 30888)
+    call initMateProp(elemProp, cellGeom, timeCurr, matePara)
+    if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
+
+! - Compute strains
+    if (elemProp%cellType .eq. SSH_CELL_HEXA) then
+        option = 'EPVC_ELGA_TEMP'
+        call compEpvcElgaHexa(elemProp, matePara, option, epvcElga)
+        epvcElgaAllCmp(:, 1) = epvcElga(:, 1)
+        epvcElgaAllCmp(:, 2) = epvcElga(:, 2)
+        epvcElgaAllCmp(:, 3) = epvcElga(:, 3)
+        option = 'EPVC_ELGA_SECH'
+        call compEpvcElgaHexa(elemProp, matePara, option, epvcElga)
+        epvcElgaAllCmp(:, 4) = epvcElga(:, 1)
+        option = 'EPVC_ELGA_HYDR'
+        call compEpvcElgaHexa(elemProp, matePara, option, epvcElga)
+        epvcElgaAllCmp(:, 5) = epvcElga(:, 1)
+        option = 'EPVC_ELGA_PTOT'
+        call compEpvcElgaHexa(elemProp, matePara, option, epvcElga)
+        epvcElgaAllCmp(:, 6) = epvcElga(:, 1)
+    else
+        ASSERT(ASTER_FALSE)
+    endif
+
+! - Save strains
+    call jevech('PDEFOPG', 'E', jvEpsi)
+    do iIntePoint = 1, elemProp%elemInte%nbIntePoint
+        do iCmp = 1, nbCmp
+            zr(jvEpsi-1+nbCmp*(iIntePoint-1)+iCmp) = epvcElgaAllCmp(iIntePoint, iCmp)
+        enddo
     enddo
 !
 !   ------------------------------------------------------------------------------------------------
