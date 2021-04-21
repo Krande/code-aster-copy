@@ -7,4 +7,4 @@ P testlist ci verification sequential
 
 F comm hsnv102a.comm D 1
 F mail hsnv101a.mail D 20
-F rmed hsnv102a.85   D 85
+F libr hsnv102a.85   D 85

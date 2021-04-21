@@ -8,4 +8,4 @@ P testlist ci verification sequential
 F comm sdll154a.comm D 1
 F comm sdll154a.com1 D 1
 F mmed sdll154a.mmed D 20
-F rmed sdll154a.81 D 81
+F libr sdll154a.81 D 81

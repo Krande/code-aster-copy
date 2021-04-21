@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm ssnv210a.comm D 1
-F med ssnv208a.mail D 20
+F mail ssnv208a.mail D 20
