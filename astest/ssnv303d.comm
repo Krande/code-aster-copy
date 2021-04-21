@@ -1,0 +1,165 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+# 
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
+
+
+# Read mesh
+MESH0 = LIRE_MAILLAGE(FORMAT='MED',)
+
+
+# Prepare mesh
+mesh = CREA_MAILLAGE(COQUE_SOLIDE=_F(GROUP_MA=('CoqueVoluCells', ),
+                                     GROUP_MA_SURF=('CoqueFaceSup', ),
+                                     PREF_NOEUD='NS',
+                                     PREF_NUME=1),
+                     MAILLAGE=MESH0)
+
+
+# Select finite elements
+model = AFFE_MODELE(AFFE=(_F(GROUP_MA=('CoqueVoluCells', 'CoqueFaceRight'),
+                             MODELISATION='COQUE_SOLIDE',
+                             PHENOMENE='MECANIQUE'),
+                          _F(GROUP_MA=('VoluVoluCells'),
+                             MODELISATION='3D_SI',
+                             PHENOMENE='MECANIQUE')
+                           ),
+                    MAILLAGE=mesh)
+
+
+# Material parameters
+mater = DEFI_MATERIAU(ELAS=_F(E=10000000.0,
+                              NU=0.3))
+
+matfield = AFFE_MATERIAU(AFFE=_F(MATER=(mater, ),
+                                 TOUT='OUI'),
+                         MODELE=model)
+
+# Boundary conditions and loads
+clamp = AFFE_CHAR_MECA(DDL_IMPO=_F(DX=0.0,
+                                   DY=0.0,
+                                   DZ=0.0,
+                                   GROUP_MA=('VoluFaceLeft', )),
+                       MODELE=model, INFO=2)
+
+load = AFFE_CHAR_MECA(FORCE_FACE=_F(FZ=400.0,
+                                    GROUP_MA=('CoqueFaceRight', )),
+                      MODELE=model)
+
+
+meshLink = AFFE_CHAR_MECA(LIAISON_MAIL=_F(GROUP_MA_ESCL=('CoqueFaceLeft', ),
+                                          GROUP_MA_MAIT=('VoluVoluCells', ),
+                                          TYPE_RACCORD='MASSIF'),
+                          MODELE=model)
+
+# Calcul élastique linéaire
+rampUnit = DEFI_FONCTION(NOM_PARA='INST',
+                         VALE=(0.0, 0.0, 1.0, 1.0))
+
+timeStep = DEFI_LIST_REEL(DEBUT=0.0,
+                          INTERVALLE=_F(JUSQU_A=1.0,
+                                        NOMBRE=1))
+
+times = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=timeStep),
+                       ECHEC=_F(ACTION='DECOUPE',
+                                EVENEMENT='ERREUR',
+                                SUBD_METHODE='MANUEL',
+                                SUBD_NIVEAU=3,
+                                SUBD_PAS=4,
+                                SUBD_PAS_MINI=0.0))
+
+resuElas = STAT_NON_LINE(CHAM_MATER=matfield,
+                         COMPORTEMENT=(_F(DEFORMATION='PETIT',
+                                         RELATION='ELAS',
+                                         GROUP_MA='VoluVoluCells',
+                                         ),
+                                      _F(DEFORMATION='PETIT',
+                                         RELATION='ELAS',
+                                         GROUP_MA='CoqueVoluCells',
+                                         ),),
+                         CONVERGENCE=_F(
+                                        RESI_REFE_RELA=1e-06,
+                                        SIGM_REFE=1000000.0),
+                         EXCIT=(_F(CHARGE=clamp,),
+                                _F(CHARGE=load, FONC_MULT=rampUnit,),
+                                _F(CHARGE=meshLink,)
+                               ),
+                         INCREMENT=_F(LIST_INST=times,
+                                      PRECISION=1e-06),
+                         MODELE=model)
+
+
+# Post-traitement
+resuElas = CALC_CHAMP(reuse=resuElas,
+                      CONTRAINTE='SIEF_NOEU',
+                      CRITERES=('SIEQ_ELGA', 'SIEQ_NOEU'),
+                      RESULTAT=resuElas)
+
+
+# Test des valeurs du calcul
+# Valeurs de référence (référence: 3D overkill)
+nodeISup_DEPLDZ_Refe = 15.840541161507563
+nodeESup_SIEQVMIS_Refe = 120010.92889717518
+nodeGSup_SIEQVMIS_Refe = 60023.91296327567
+
+
+# Valeurs calculées
+nodeISup_DEPLDZ_Calc = 15.916697761547914
+nodeESup_SIEQVMIS_Calc = 120012.29791732758
+nodeGSup_SIEQVMIS_Calc = 60026.66670224128
+nodeISup_DEPLDZ_Tole = 0.01 * 4.81
+nodeESup_SIEQVMIS_Tole = 0.01 * 1.15E-3
+nodeGSup_SIEQVMIS_Tole = 0.01 * 4.59E-3
+
+TEST_RESU(RESU=_F(GROUP_NO=('CoqueNodeISup', ),
+                  INST=1.0,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  PRECISION=nodeISup_DEPLDZ_Tole,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=resuElas,
+                  VALE_ABS='NON',
+                  VALE_CALC=[nodeISup_DEPLDZ_Calc],
+                  VALE_REFE=[nodeISup_DEPLDZ_Refe]))
+
+TEST_RESU(RESU=(
+                _F(GROUP_NO=('CoqueNodeESup', ),
+                   INST=1.0,
+                   NOM_CHAM='SIEQ_NOEU',
+                   NOM_CMP='VMIS',
+                   PRECISION=nodeESup_SIEQVMIS_Tole,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=resuElas,
+                   VALE_ABS='NON',
+                   VALE_CALC=[nodeESup_SIEQVMIS_Calc],
+                   VALE_REFE=[nodeESup_SIEQVMIS_Refe]),
+                _F(GROUP_NO=('CoqueNodeGSup', ),
+                   INST=1.0,
+                   NOM_CHAM='SIEQ_NOEU',
+                   NOM_CMP='VMIS',
+                   PRECISION=nodeGSup_SIEQVMIS_Tole,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=resuElas,
+                   VALE_ABS='NON',
+                   VALE_CALC=[nodeGSup_SIEQVMIS_Calc],
+                   VALE_REFE=[nodeGSup_SIEQVMIS_Refe])))
+
+
+
+FIN()
