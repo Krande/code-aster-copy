@@ -107,6 +107,12 @@ def check_boost_aster(self):
                      libs=self.env.LIBPATH_BOOST,
                      lib="python",
                      toolset='cxx')
+    if self.env.BOOST_VERSION_NUMBER < 106000:
+        self.start_msg('Adding C++ flags (old boost version)')
+        flags = ["-Wno-deprecated-declarations", "-Wno-return-type"]
+        self.env.append_unique("CXXFLAGS", flags)
+        self.end_msg(flags)
+    self.env["STLIBPATH_BOOST"] = []
 
 @Configure.conf
 def check_cxx_types(self):
