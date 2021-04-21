@@ -46,9 +46,13 @@ private
 #include "asterfort/SolidShell_type.h"
 #include "asterfort/assert.h"
 #include "asterfort/btsig.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/fointe.h"
 #include "asterfort/jevecd.h"
+#include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
+#include "asterfort/tefrep.h"
 #include "asterfort/utmess.h"
 ! ==================================================================================================
 contains
@@ -551,38 +555,180 @@ end subroutine
 !
 ! Compute loads for HEXA - CHAR_MECA_*
 !
+! In  elemProp         : general properties of element
 ! In  cellGeom         : general geometric properties of cell
+! In  matePara         : parameters of material
 ! In  option           : name of option to compute
 ! Out loadNoda         : nodal force from loads (Neumann)
 !
 ! --------------------------------------------------------------------------------------------------
-subroutine compLoadHexa(cellGeom, option, loadNoda)
+subroutine compLoadHexa(elemProp, cellGeom, matePara, option, loadNoda)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
+    type(SSH_ELEM_PROP), intent(in) :: elemProp
     type(SSH_CELL_GEOM), intent(in) :: cellGeom
+    type(SSH_MATE_PARA), intent(in) :: matePara
     character(len=16), intent(in)   :: option
     real(kind=8), intent(out)       :: loadNoda(SSH_NBDOF_MAX)
 ! - Local
-    integer :: jvPres
-    real(kind=8) :: presSup, presInf, area
+    character(len=4) :: inteFami
+    integer, parameter :: nbNode = SSH_NBNODE_HEXA, nbNodeGeom = SSH_NBNODEG_HEXA
+    integer :: iNodeGeom, iDim, nbIntePoint, kpg, kdec, ldec, iret
+    integer :: jvPres, jvPesa, jvForc, jvTime
+    integer :: jvShape, jvDShape, jvWeight
+    real(kind=8) :: presSup, presInf, area, fx, fy, fz, xx, yy, zz
+    real(kind=8) :: coefGrav, jacob
+    real(kind=8) :: rho(1)
+    integer :: valeIret(1)
+    integer, parameter :: nbPara = 4
+    real(kind=8) :: paraVale(nbPara)
+    character(len=8), parameter :: paraName(nbPara) =(/'X   ','Y   ','Z   ','INST'/)
 !   ------------------------------------------------------------------------------------------------
 !
     loadNoda = 0.d0
-    ASSERT(option .eq. 'CHAR_MECA_PRES_R')
 
-! - Get input fields: for pressure, no node affected -> 0
-    call jevecd('PPRESSR', jvPres, 0.d0)
+    if (option .eq. 'CHAR_MECA_PRES_R') then
+! ----- Get input fields: for pressure, no node affected -> 0
+        call jevecd('PPRESSR', jvPres, 0.d0)
 
-! - Compute quantities in Ahmad frame for pinch quantities
-    call compAhmadFrame(cellGeom, area)
+! ----- Compute quantities in Ahmad frame for pinch quantities
+        call compAhmadFrame(cellGeom, area)
 
-! - Get pressure
-    presSup = zr(jvPres-1+1)
-    presInf = zr(jvPres-1+2)
+! ----- Get pressures
+        presSup = zr(jvPres-1+1)
+        presInf = zr(jvPres-1+2)
 
-! - Compute
-    loadNoda(25) = loadNoda(25) +&
-                   4.d0*(presInf-presSup)*area/3.d0
+! ----- Compute
+        loadNoda(25) = loadNoda(25) +&
+                       4.d0*(presInf-presSup)*area/3.d0
+
+    elseif (option .eq. 'CHAR_MECA_PESA_R') then
+
+! ----- Get references to integration scheme
+        inteFami    = elemProp%elemInte%inteFami
+        nbIntePoint = elemProp%elemInte%nbIntePoint
+        jvShape     = elemProp%elemInte%jvShape
+        jvDShape    = elemProp%elemInte%jvDShape
+        jvWeight    = elemProp%elemInte%jvWeight
+
+! ----- Get input field: for gravity
+        call jevech('PPESANR', 'L', jvPesa)
+
+! ----- Loop on Gauss points
+        do kpg = 1, nbIntePoint
+! --------- Get density
+            call rcvalb(inteFami, kpg   , 1  , '+'        , matePara%jvMater,&
+                        ' '     , 'ELAS', 0  , ' '        , [0.d0]          ,&
+                        1       , 'RHO' , rho, valeIret(1), 1)
+
+! --------- Compute gradient matrix
+            call dfdm3d(nbNode, kpg, jvWeight, jvDShape, zr(cellGeom%jvGeom), jacob)
+
+! --------- Compute
+            coefGrav = rho(1) * jacob * zr(jvPesa)
+            do iNodeGeom = 1, nbNodeGeom
+                do iDim = 1, 3
+                    loadNoda(3*(iNodeGeom-1)+iDim) = loadNoda(3*(iNodeGeom-1)+iDim) +&
+                                                     coefGrav *&
+                                                     zr(jvShape+(kpg-1)*nbNode+iNodeGeom-1) * &
+                                                     zr(jvPesa+iDim)
+                end do
+            end do
+        end do
+
+    elseif (option .eq. 'CHAR_MECA_FR3D3D') then
+! ----- Get references to integration scheme
+        nbIntePoint = elemProp%elemInte%nbIntePoint
+        jvShape     = elemProp%elemInte%jvShape
+        jvDShape    = elemProp%elemInte%jvDShape
+        jvWeight    = elemProp%elemInte%jvWeight
+
+! ----- Get input fields
+        call tefrep(option, 'PFR3D3D', jvForc)
+        call jevech('PFR3D3D', 'L', jvForc)
+
+! ----- Loop on Gauss points
+        do kpg = 1, nbIntePoint
+            ldec = (kpg-1)*nbNode
+
+! --------- Compute gradient matrix
+            call dfdm3d(nbNode, kpg, jvWeight, jvDShape, zr(cellGeom%jvGeom), jacob)
+
+! --------- Evaluate force at Gauss points from node values
+            fx = 0.d0
+            fy = 0.d0
+            fz = 0.d0
+            do iNodeGeom = 1, nbNodeGeom
+                kdec = SSH_NDIM*(iNodeGeom-1)
+                fx = fx + zr(jvShape-1+ldec+iNodeGeom)*zr(jvForc+kdec)
+                fy = fy + zr(jvShape-1+ldec+iNodeGeom)*zr(jvForc+kdec+1)
+                fz = fz + zr(jvShape-1+ldec+iNodeGeom)*zr(jvForc+kdec+2)
+            end do
+
+! --------- Compute load
+            do iNodeGeom = 1, nbNodeGeom
+                kdec = SSH_NDIM*(iNodeGeom-1)
+                loadNoda(kdec+1) = loadNoda(kdec+1) +&
+                                   jacob * fx * zr(jvShape-1+ldec+iNodeGeom)
+                loadNoda(kdec+2) = loadNoda(kdec+2) +&
+                                   jacob * fy * zr(jvShape-1+ldec+iNodeGeom)
+                loadNoda(kdec+3) = loadNoda(kdec+3) +&
+                                   jacob * fz * zr(jvShape-1+ldec+iNodeGeom)
+            end do
+        end do
+
+    elseif (option .eq. 'CHAR_MECA_FF3D3D') then
+! ----- Get references to integration scheme
+        nbIntePoint = elemProp%elemInte%nbIntePoint
+        jvShape     = elemProp%elemInte%jvShape
+        jvDShape    = elemProp%elemInte%jvDShape
+        jvWeight    = elemProp%elemInte%jvWeight
+
+! ----- Get input fields
+        call jevech('PFF3D3D', 'L', jvForc)
+        call jevech('PTEMPSR', 'L', jvTime)
+        paraVale(4) = zr(jvTime)
+
+! ----- Loop on Gauss points
+        do kpg = 1, nbIntePoint
+            ldec = (kpg-1)*nbNode
+
+! --------- Compute gradient matrix
+            call dfdm3d(nbNode, kpg, jvWeight, jvDShape, zr(cellGeom%jvGeom), jacob)
+
+! --------- Compute coordinates of current Gauss point
+            xx = 0.d0
+            yy = 0.d0
+            zz = 0.d0
+            do iNodeGeom = 1, nbNodeGeom
+                xx = xx + zr(cellGeom%jvGeom+3*iNodeGeom-3) * zr(jvShape-1+ldec+iNodeGeom)
+                yy = yy + zr(cellGeom%jvGeom+3*iNodeGeom-2) * zr(jvShape-1+ldec+iNodeGeom)
+                zz = zz + zr(cellGeom%jvGeom+3*iNodeGeom-1) * zr(jvShape-1+ldec+iNodeGeom)
+            end do
+            paraVale(1) = xx
+            paraVale(2) = yy
+            paraVale(3) = zz
+
+! --------- Evaluate force at Gauss points from function
+            call fointe('FM', zk8(jvForc  ), nbPara, paraName, paraVale, fx, iret)
+            call fointe('FM', zk8(jvForc+1), nbPara, paraName, paraVale, fy, iret)
+            call fointe('FM', zk8(jvForc+2), nbPara, paraName, paraVale, fz, iret)
+
+! --------- Compute load
+            do iNodeGeom = 1, nbNodeGeom
+                kdec = SSH_NDIM*(iNodeGeom-1)
+                loadNoda(kdec+1) = loadNoda(kdec+1) +&
+                                   jacob * fx * zr(jvShape-1+ldec+iNodeGeom)
+                loadNoda(kdec+2) = loadNoda(kdec+2) +&
+                                   jacob * fy * zr(jvShape-1+ldec+iNodeGeom)
+                loadNoda(kdec+3) = loadNoda(kdec+3) +&
+                                   jacob * fz * zr(jvShape-1+ldec+iNodeGeom)
+            end do
+        end do
+
+    else
+        ASSERT(ASTER_FALSE)
+    endif
 !
 !   ------------------------------------------------------------------------------------------------
 end subroutine

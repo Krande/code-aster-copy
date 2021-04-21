@@ -28,8 +28,9 @@ MESH=CREA_MAILLAGE(MAILLAGE     = MESH0,
                   )
 
 # Material parameters
-MAT=DEFI_MATERIAU(ELAS      = _F(NU = 0.3,
-                                 E  = 200000.,
+MAT=DEFI_MATERIAU(ELAS      = _F(NU  = 0.3,
+                                 E   = 200000.,
+                                 RHO = 1.0,
                                 ),
                   )
 
@@ -155,12 +156,11 @@ kineCondition=AFFE_CHAR_CINE(MODELE    = MODEL,
                              )
 
 presAppl = 0.01172
-pressure=AFFE_CHAR_MECA(MODELE   = MODEL,
-                        PRES_REP = (_F(GROUP_MA = ('face_sup',), 
+pressure = AFFE_CHAR_MECA(MODELE   = MODEL,
+                          PRES_REP = (_F(GROUP_MA = ('face_sup',), 
                                        PRES     = presAppl),
-                                   )
-                       )
-
+                                     )
+                          )
 # Static linear
 resuLinear=MECA_STATIQUE(MODELE     = MODEL,
                          CHAM_MATER = MATERIAL,
@@ -177,10 +177,13 @@ resuLinear=CALC_CHAMP(reuse       = resuLinear,
                       FORCE       = ('FORC_NODA'),
                       CRITERES    = ('SIEQ_ELGA'),)
 
-# Test des résultats
-deplDZ    = -1.
-sigmZZInf =  0.0
-sigmZZSup = -0.01172
+# Test
+deplDZRefe    = -1.0
+deplDZTole    = 0.01 * 9.6E-1
+sigmZZInfRefe = -5.6E-5
+sigmZZInfTole = abs(sigmZZInfRefe)
+sigmZZSupRefe = -0.01172
+sigmZZSupTole = 0.01 * 4.75E-1
 
 TEST_RESU(RESU=_F(RESULTAT       = resuLinear,
                   INST           = 0,
@@ -188,8 +191,9 @@ TEST_RESU(RESU=_F(RESULTAT       = resuLinear,
                   REFERENCE      = 'ANALYTIQUE',
                   NOM_CHAM       = 'DEPL',
                   NOM_CMP        = ('DZ',),
-                  VALE_REFE      = deplDZ,
-                  VALE_CALC      = -0.999046426157413,
+                  VALE_REFE      = deplDZRefe,
+                  VALE_CALC      = -0.999046427151572,
+                  PRECISION      = deplDZTole,
           ),)
 
 TEST_RESU(RESU=_F(RESULTAT       = resuLinear,
@@ -201,10 +205,9 @@ TEST_RESU(RESU=_F(RESULTAT       = resuLinear,
                   NOM_CMP        = ('SIZZ',),
                   CRITERE        = 'ABSOLU',
                   ORDRE_GRANDEUR = 1.0,
-                  VALE_REFE      = sigmZZInf,
+                  VALE_REFE      = sigmZZInfRefe,
                   VALE_CALC      = 0.,
-                  PRECISION      = 1.0E-04, 
-                  TOLE_MACHINE   = 1.0E-04, 
+                  PRECISION      = sigmZZInfTole, 
           ),)
 
 TEST_RESU(RESU=_F(RESULTAT       = resuLinear,
@@ -214,9 +217,9 @@ TEST_RESU(RESU=_F(RESULTAT       = resuLinear,
                   REFERENCE      = 'ANALYTIQUE',
                   NOM_CHAM       = 'SIEF_ELGA',
                   NOM_CMP        = ('SIZZ',),
-                  VALE_REFE      = sigmZZSup,
-                  VALE_CALC      = -0.01177566534745722,
-                  PRECISION      = 0.005,
+                  VALE_REFE      = sigmZZSupRefe,
+                  VALE_CALC      = -0.011775665337019348,
+                  PRECISION      = sigmZZSupTole,
           ),)
 
 FIN()

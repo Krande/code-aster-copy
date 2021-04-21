@@ -636,6 +636,7 @@ subroutine compLoad(option)
     character(len=4), parameter :: inteFami = 'RIGI'
     type(SSH_CELL_GEOM) :: cellGeom
     type(SSH_ELEM_PROP) :: elemProp
+    type(SSH_MATE_PARA) :: matePara
     real(kind=8) :: loadNoda(SSH_NBDOF_MAX)
     integer :: jvVect, i
 !   ------------------------------------------------------------------------------------------------
@@ -650,9 +651,15 @@ subroutine compLoad(option)
     call initCellGeom(elemProp, cellGeom)
     if (SSH_DBG_GEOM) call dbgObjCellGeom(cellGeom)
 
+! - Initialization of properties of material
+    if (option .eq. 'CHAR_MECA_PESA_R') then
+        call initMateProp(elemProp, cellGeom, matePara)
+        if (SSH_DBG_MATE) call dbgObjMatePara(matePara)
+    endif
+
 ! - Compute loads
     if (elemProp%cellType .eq. SSH_CELL_HEXA) then
-        call compLoadHexa(cellGeom, option, loadNoda)
+        call compLoadHexa(elemProp, cellGeom, matePara, option, loadNoda)
     else
         ASSERT(ASTER_FALSE)
     endif

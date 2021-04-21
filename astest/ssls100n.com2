@@ -1,0 +1,74 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+POURSUITE(CODE='OUI', DEBUG=_F(SDVERI='OUI'))
+
+# VolumicForce: equivalent to pressure
+voluForc = AFFE_CHAR_MECA(MODELE        = MODEL,
+                          FORCE_INTERNE = _F(GROUP_MA = 'volume',
+                                             FZ       = -presAppl,),)
+
+# Static linear
+resuLinearVoluForce = MECA_STATIQUE(MODELE     = MODEL,
+                                    CHAM_MATER = MATERIAL,
+                                    EXCIT      = (_F(CHARGE=kineCondition,),
+                                                  _F(CHARGE=voluForc,),
+                                                 ),
+                                    )
+
+# Test
+deplDZTole = 0.01 * 8.3E-2
+TEST_RESU(RESU=_F(RESULTAT       = resuLinearVoluForce,
+                  INST           = 0,
+                  GROUP_NO       = 'c1',
+                  REFERENCE      = 'ANALYTIQUE',
+                  NOM_CHAM       = 'DEPL',
+                  NOM_CMP        = ('DZ',),
+                  VALE_REFE      = deplDZRefe,
+                  VALE_CALC      = -1.0008268440234867,
+                  PRECISION      = deplDZTole,
+          ),)
+
+# VolumicForce (function): equivalent to pressure
+presApplFunc = DEFI_CONSTANTE(VALE = -presAppl)
+voluForcFunc = AFFE_CHAR_MECA_F(MODELE        = MODEL,
+                          FORCE_INTERNE = _F(GROUP_MA = 'volume',
+                                             FZ       = presApplFunc,),)
+
+# Static linear
+resuLinearVoluForceFunc = MECA_STATIQUE(MODELE     = MODEL,
+                                        CHAM_MATER = MATERIAL,
+                                        EXCIT      = (_F(CHARGE=kineCondition,),
+                                                      _F(CHARGE=voluForcFunc,),
+                                                     ),
+                                        )
+
+# Test
+deplDZTole = 0.01 * 8.3E-2
+TEST_RESU(RESU=_F(RESULTAT       = resuLinearVoluForceFunc,
+                  INST           = 0,
+                  GROUP_NO       = 'c1',
+                  REFERENCE      = 'ANALYTIQUE',
+                  NOM_CHAM       = 'DEPL',
+                  NOM_CMP        = ('DZ',),
+                  VALE_REFE      = deplDZRefe,
+                  VALE_CALC      = -1.0008268440234853,
+                  PRECISION      = deplDZTole,
+          ),)
+
+FIN()

@@ -35,7 +35,7 @@ character(len=16), intent(in) :: option, nomte
 !
 ! Options: RIGI_MECA, MASS_MECA, RIGI_GEOM
 !          SIEF_ELGA, FORC_NODA, EPSI_ELGA, EPSL_ELGA
-!          CHAR_MECA_PRES_R
+!          CHAR_MECA_PRES_R, CHAR_MECA_FF3D3D, CHAR_MECA_FR3D3D
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,6 +55,12 @@ character(len=16), intent(in) :: option, nomte
     elseif (option .eq. 'EPSL_ELGA') then
         call compEpslElga()
     elseif (option .eq. 'CHAR_MECA_PRES_R') then
+        call compLoad(option)
+    elseif (option .eq. 'CHAR_MECA_PESA_R') then
+        call compLoad(option)
+    elseif (option .eq. 'CHAR_MECA_FF3D3D') then
+        call compLoad(option)
+    elseif (option .eq. 'CHAR_MECA_FR3D3D') then
         call compLoad(option)
     elseif (option .eq. 'MASS_MECA') then
         call compMassMatr()
