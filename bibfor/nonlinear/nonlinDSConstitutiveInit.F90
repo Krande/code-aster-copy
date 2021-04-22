@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -109,7 +109,9 @@ type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
     lDisCtc = ASTER_FALSE
     do i_affe = 1, nb_affe
         if ((v_compor_vale(RELA_NAME+COMPOR_SIZE*(i_affe-1)).eq.'DIS_CHOC') .or.&
-            (v_compor_vale(RELA_NAME+COMPOR_SIZE*(i_affe-1)).eq.'DIS_CONTACT')) then
+            (v_compor_vale(RELA_NAME+COMPOR_SIZE*(i_affe-1)).eq.'DIS_CONTACT') .or.&
+            (v_compor_vale(RELA_NAME+COMPOR_SIZE*(i_affe-1)).eq.'CHOC_ENDO_PENA') .or.&
+            (v_compor_vale(RELA_NAME+COMPOR_SIZE*(i_affe-1)).eq.'CHOC_ENDO')) then
             lDisCtc = ASTER_TRUE
         endif
     enddo
