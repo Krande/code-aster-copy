@@ -546,6 +546,15 @@ implicit none
                 ffp(i)=zr(ivf-1+nno*(kp-1)+i)
             enddo
 !
+            if (reeldim == 2) then
+!-------------- On construit le vecteur normal à partir du vecteur direction
+!-------------- pour s'assurer d'avoir un repère direct (cas 2d uniquement)
+                do i = 1, nno
+                    zr(ibalo-1+6*(i-1)+5) = -zr(ibalo-1+6*(i-1)+4)
+                    zr(ibalo-1+6*(i-1)+6) = zr(ibalo-1+6*(i-1)+3)
+                enddo
+            endif
+!
             call coor_cyl(reeldim, nno, zr(ibalo), zr(igeom), ffp,&
                        p, invp, rg, phig, l_not_zero)
 !
