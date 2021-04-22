@@ -22,10 +22,12 @@ implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
+#include "asterfort/evalFaceSpeedVale.h"
+#include "asterfort/getFluidPara.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/getFluidPara.h"
 #include "asterfort/vff2dn.h"
 !
 character(len=16), intent(in) :: option, nomte
@@ -40,12 +42,12 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jv_geom, jv_mate, jv_speed, jv_vect
+    integer :: jvGeom, jvMate, jvLoad, jvVect
     real(kind=8) :: nx, ny
     real(kind=8) :: rho, poids
-    complex(kind=8) :: vnor
-    integer :: ipoids, ivf, idfde
-    integer :: nno, npg, ndim, ndof
+    complex(kind=8) :: speedVale
+    integer :: jvWeight, jvShape, jvDShape
+    integer :: nbNode, npg, cellDime, ndof
     integer :: ldec
     integer :: i, ipg
     aster_logical :: l_axis
@@ -56,52 +58,52 @@ character(len=16), intent(in) :: option, nomte
 !
 
 ! - Input fields
-    call jevech('PGEOMER', 'L', jv_geom)
-    call jevech('PMATERC', 'L', jv_mate)
-    call jevech('PVITEFC', 'L', jv_speed)
+    call jevech('PGEOMER', 'L', jvGeom)
+    call jevech('PMATERC', 'L', jvMate)
+    call jevech('PVITEFC', 'L', jvLoad)
 
 ! - Get element parameters
     l_axis = (lteatt('AXIS','OUI'))
     call elrefe_info(fami='RIGI',&
-                     nno=nno, npg=npg, ndim=ndim,&
-                     jpoids=ipoids, jvf=ivf, jdfde=idfde)
-    ndof = nno
+                     nno=nbNode, npg=npg, ndim=cellDime,&
+                     jpoids=jvWeight, jvf=jvShape, jdfde=jvDShape)
+    ndof = nbNode
 
 ! - Get material properties
-    j_mater = zi(jv_mate)
+    j_mater = zi(jvMate)
     call getFluidPara(j_mater, rho)
 
 ! - Output field
-    call jevech('PVECTTC', 'E', jv_vect)
+    call jevech('PVECTTC', 'E', jvVect)
     do i = 1, ndof
-        zc(jv_vect+i-1) = (0.d0, 0.d0)
+        zc(jvVect+i-1) = (0.d0, 0.d0)
     end do
 
 ! - Loop on Gauss points
     do ipg = 1, npg
-        ldec = (ipg-1)*nno
+        ldec = (ipg-1)*nbNode
 
 ! ----- Compute normal
         nx = 0.d0
         ny = 0.d0
-        call vff2dn(ndim, nno, ipg, ipoids, idfde,&
-                    zr(jv_geom), nx, ny, poids)
+        call vff2dn(cellDime, nbNode, ipg, jvWeight, jvDShape,&
+                    zr(jvGeom), nx, ny, poids)
         if (l_axis) then
             r = 0.d0
-            do i = 1, nno
-                r = r + zr(jv_geom+2*(i-1))*zr(ivf+ldec+i-1)
+            do i = 1, nbNode
+                r = r + zr(jvGeom+2*(i-1))*zr(jvShape+ldec+i-1)
             end do
             poids = poids*r
         endif
 
 ! ----- Get value of normal speed
-        vnor = zc(jv_speed+ipg-1)
+        speedVale = zc(jvLoad+ipg-1)
 
 ! ----- Compute vector
-        do i = 1, nno
-            zc(jv_vect+i-1) = zc(jv_vect+i-1) +&
-                              poids *&
-                              zr(ivf+ldec+i-1) * vnor * rho
+        do i = 1, nbNode
+            zc(jvVect+i-1) = zc(jvVect+i-1) +&
+                             poids *&
+                             zr(jvShape+ldec+i-1) * speedVale * rho
         end do
 
     end do

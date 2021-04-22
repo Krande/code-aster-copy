@@ -23,12 +23,12 @@ implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
+#include "asterfort/evalFaceSpeedVale.h"
 #include "asterfort/getFluidPara.h"
-#include "asterfort/utmess.h"
-#include "asterfort/tecach.h"
+#include "asterfort/jevech.h"
 #include "asterfort/teattr.h"
-#include "asterfort/evalNormalSpeed.h"
+#include "asterfort/tecach.h"
+#include "asterfort/utmess.h"
 !
 character(len=16), intent(in) :: option, nomte
 !
@@ -42,13 +42,13 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_func, l_time
-    integer :: jv_geom, jv_mate, jv_speed, jv_time, jv_vect
+    aster_logical :: lFunc, lTime
+    integer :: jvGeom, jvMate, jvLoad, jvTime, jvVect
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9)
     real(kind=8) :: jac, rho
-    real(kind=8) :: time, vnor
-    integer :: ipoids, ivf, idfdx, idfdy
-    integer :: nno, npg, ndim, ndofbynode
+    real(kind=8) :: time, speedVale
+    integer :: jvWeight, jvShape, jvDShapeX, jvDShapeY
+    integer :: nbNode, npg, cellDime, ndofbynode
     integer :: idec, jdec, kdec, ldec
     integer :: i, ii, ino, j, jno, ipg
     integer :: j_mater, iret
@@ -56,33 +56,33 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_func = (option .eq. 'CHAR_MECA_VFAC_F')
+    lFunc = (option .eq. 'CHAR_MECA_VFAC_F')
 
 ! - Input fields
-    call jevech('PGEOMER', 'L', jv_geom)
-    call jevech('PMATERC', 'L', jv_mate)
-    if (l_func) then
-        call jevech('PVITEFF', 'L', jv_speed)
+    call jevech('PGEOMER', 'L', jvGeom)
+    call jevech('PMATERC', 'L', jvMate)
+    if (lFunc) then
+        call jevech('PVITEFF', 'L', jvLoad)
     else
-        call jevech('PVITEFR', 'L', jv_speed)
+        call jevech('PVITEFR', 'L', jvLoad)
     endif
 
 ! - Get time if present
-    call tecach('NNO', 'PTEMPSR', 'L', iret, iad=jv_time)
-    l_time = ASTER_FALSE
-    time   = 0.d0
-    if (jv_time .ne. 0) then
-        l_time = ASTER_TRUE
-        time   = zr(jv_time)
+    call tecach('NNO', 'PTEMPSR', 'L', iret, iad=jvTime)
+    lTime = ASTER_FALSE
+    time  = 0.d0
+    if (jvTime .ne. 0) then
+        lTime = ASTER_TRUE
+        time  = zr(jvTime)
     endif
 
 ! - Get element parameters
     call teattr('S', 'FORMULATION', fsi_form, iret)
     call elrefe_info(fami='RIGI',&
-                     nno=nno, npg=npg, ndim = ndim,&
-                     jpoids=ipoids, jvf=ivf, jdfde=idfdx)
-    ASSERT(nno .le. 9)
-    idfdy = idfdx + 1
+                     nno=nbNode, npg=npg, ndim=cellDime,&
+                     jpoids=jvWeight, jvf=jvShape, jdfde=jvDShapeX)
+    ASSERT(nbNode .le. 9)
+    jvDShapeY = jvDShapeX + 1
     if (fsi_form .eq. 'FSI_UPPHI') then
         ndofbynode = 4
     elseif (fsi_form .eq. 'FSI_UP') then
@@ -92,20 +92,20 @@ character(len=16), intent(in) :: option, nomte
     endif
 
 ! - Get material properties for fluid
-    j_mater = zi(jv_mate)
+    j_mater = zi(jvMate)
     call getFluidPara(j_mater, rho)
 
 ! - Output field
-    call jevech('PVECTUR', 'E', jv_vect)
-    do i = 1, ndofbynode*nno
-        zr(jv_vect+i-1) = 0.d0
+    call jevech('PVECTUR', 'E', jvVect)
+    do i = 1, ndofbynode*nbNode
+        zr(jvVect+i-1) = 0.d0
     end do
 
 ! - CALCUL DES PRODUITS VECTORIELS OMI X OMJ
-    do ino = 1, nno
-        i = jv_geom + 3*(ino-1) -1
-        do jno = 1, nno
-            j = jv_geom + 3*(jno-1) -1
+    do ino = 1, nbNode
+        i = jvGeom + 3*(ino-1) -1
+        do jno = 1, nbNode
+            j = jvGeom + 3*(jno-1) -1
             sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
             sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
             sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
@@ -114,20 +114,20 @@ character(len=16), intent(in) :: option, nomte
 
 ! - Loop on Gauss points
     do ipg = 1, npg
-        kdec = (ipg-1)*nno*ndim
-        ldec = (ipg-1)*nno
+        kdec = (ipg-1)*nbNode*cellDime
+        ldec = (ipg-1)*nbNode
 
 ! ----- Compute normal
         nx = 0.d0
         ny = 0.d0
         nz = 0.d0
-        do i = 1, nno
-            idec = (i-1)*ndim
-            do j = 1, nno
-                jdec = (j-1)*ndim
-                nx = nx + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sx(i,j)
-                ny = ny + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sy(i,j)
-                nz = nz + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sz(i,j)
+        do i = 1, nbNode
+            idec = (i-1)*cellDime
+            do j = 1, nbNode
+                jdec = (j-1)*cellDime
+                nx = nx + zr(jvDShapeX+kdec+idec) * zr(jvDShapeY+kdec+jdec) * sx(i,j)
+                ny = ny + zr(jvDShapeX+kdec+idec) * zr(jvDShapeY+kdec+jdec) * sy(i,j)
+                nz = nz + zr(jvDShapeX+kdec+idec) * zr(jvDShapeY+kdec+jdec) * sz(i,j)
             end do
         end do
 
@@ -135,17 +135,17 @@ character(len=16), intent(in) :: option, nomte
         jac = sqrt (nx*nx + ny*ny + nz*nz)
 
 ! ----- Get value of normal speed
-        call evalNormalSpeed(l_func, l_time , time    ,&
-                             nno   , ndim   , ipg     ,&
-                             ivf   , jv_geom, jv_speed,&
-                             vnor)
+        call evalFaceSpeedVale(lFunc    , lTime   , time  ,&
+                               nbNode   , cellDime, ipg   ,&
+                               jvShape  , jvGeom  , jvLoad,&
+                               speedVale)
 
 ! ----- Compute vector
-        do i = 1, nno
+        do i = 1, nbNode
             ii = ndofbynode*i
-            zr(jv_vect+ii-1) = zr(jv_vect+ii-1) -&
-                               jac*zr(ipoids+ipg-1) *&
-                               zr(ivf+ldec+i-1) * vnor * rho
+            zr(jvVect+ii-1) = zr(jvVect+ii-1) -&
+                               jac*zr(jvWeight+ipg-1) *&
+                               zr(jvShape+ldec+i-1) * speedVale * rho
         end do
 
     end do

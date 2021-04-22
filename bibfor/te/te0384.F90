@@ -23,14 +23,14 @@ implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
+#include "asterfort/evalFaceSpeedVale.h"
+#include "asterfort/getFluidPara.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/getFluidPara.h"
-#include "asterfort/vff2dn.h"
-#include "asterfort/utmess.h"
-#include "asterfort/tecach.h"
 #include "asterfort/teattr.h"
-#include "asterfort/evalNormalSpeed.h"
+#include "asterfort/tecach.h"
+#include "asterfort/utmess.h"
+#include "asterfort/vff2dn.h"
 !
 character(len=16), intent(in) :: option, nomte
 !
@@ -44,13 +44,13 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_func, l_time
-    integer :: jv_geom, jv_mate, jv_speed, jv_time, jv_vect
+    aster_logical :: lFunc, lTime
+    integer :: jvGeom, jvMate, jvLoad, jvTime, jvVect
     real(kind=8) :: nx, ny
     real(kind=8) :: rho, poids
-    real(kind=8) :: time, vnor
-    integer :: ipoids, ivf, idfde
-    integer :: nno, npg, ndim, ndofbynode
+    real(kind=8) :: time, speedVale
+    integer :: jvWeight, jvShape, jvDShape
+    integer :: nbNode, npg, cellDime, ndofbynode
     integer :: ldec
     integer :: i, ii, ipg
     aster_logical :: l_axis
@@ -60,33 +60,33 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_func = (option .eq. 'CHAR_MECA_VFAC_F')
+    lFunc = (option .eq. 'CHAR_MECA_VFAC_F')
 
 ! - Input fields
-    call jevech('PGEOMER', 'L', jv_geom)
-    call jevech('PMATERC', 'L', jv_mate)
-    if (l_func) then
-        call jevech('PVITEFF', 'L', jv_speed)
+    call jevech('PGEOMER', 'L', jvGeom)
+    call jevech('PMATERC', 'L', jvMate)
+    if (lFunc) then
+        call jevech('PVITEFF', 'L', jvLoad)
     else
-        call jevech('PVITEFR', 'L', jv_speed)
+        call jevech('PVITEFR', 'L', jvLoad)
     endif
 
 ! - Get time if present
-    call tecach('NNO', 'PTEMPSR', 'L', iret, iad=jv_time)
-    l_time = ASTER_FALSE
+    call tecach('NNO', 'PTEMPSR', 'L', iret, iad=jvTime)
+    lTime = ASTER_FALSE
     time   = 0.d0
-    if (jv_time .ne. 0) then
-        l_time = ASTER_TRUE
-        time   = zr(jv_time)
+    if (jvTime .ne. 0) then
+        lTime = ASTER_TRUE
+        time   = zr(jvTime)
     endif
 
 ! - Get element parameters
     l_axis = (lteatt('AXIS','OUI'))
     call teattr('S', 'FORMULATION', fsi_form, iret)
     call elrefe_info(fami='RIGI',&
-                     nno=nno, npg=npg, ndim = ndim,&
-                     jpoids=ipoids, jvf=ivf, jdfde=idfde)
-    ASSERT(nno .le. 3)
+                     nno=nbNode, npg=npg, ndim=cellDime,&
+                     jpoids=jvWeight, jvf=jvShape, jdfde=jvDShape)
+    ASSERT(nbNode .le. 3)
     if (fsi_form .eq. 'FSI_UPPHI') then
         ndofbynode = 3
     elseif (fsi_form .eq. 'FSI_UP') then
@@ -96,44 +96,44 @@ character(len=16), intent(in) :: option, nomte
     endif
 
 ! - Get material properties for fluid
-    j_mater = zi(jv_mate)
+    j_mater = zi(jvMate)
     call getFluidPara(j_mater, rho)
 
 ! - Output field
-    call jevech('PVECTUR', 'E', jv_vect)
+    call jevech('PVECTUR', 'E', jvVect)
     do i = 1, ndofbynode
-        zr(jv_vect+i-1) = 0.d0
+        zr(jvVect+i-1) = 0.d0
     end do
 
 ! - Loop on Gauss points
     do ipg = 1, npg
-        ldec = (ipg-1)*nno
+        ldec = (ipg-1)*nbNode
 
 ! ----- Compute normal
         nx = 0.d0
         ny = 0.d0
-        call vff2dn(ndim, nno, ipg, ipoids, idfde,&
-                    zr(jv_geom), nx, ny, poids)
+        call vff2dn(cellDime, nbNode, ipg, jvWeight, jvDShape,&
+                    zr(jvGeom), nx, ny, poids)
         if (l_axis) then
             r = 0.d0
-            do i = 1, nno
-                r = r + zr(jv_geom+2*(i-1))*zr(ivf+ldec+i-1)
+            do i = 1, nbNode
+                r = r + zr(jvGeom+2*(i-1))*zr(jvShape+ldec+i-1)
             end do
             poids = poids*r
         endif
 
 ! ----- Get value of normal speed
-        call evalNormalSpeed(l_func, l_time , time    ,&
-                             nno   , ndim   , ipg     ,&
-                             ivf   , jv_geom, jv_speed,&
-                             vnor)
+        call evalFaceSpeedVale(lFunc    , lTime   , time  ,&
+                               nbNode   , cellDime, ipg   ,&
+                               jvShape  , jvGeom  , jvLoad,&
+                               speedVale)
 
 ! ----- Compute vector
-        do i = 1, nno
+        do i = 1, nbNode
             ii = ndofbynode*i
-            zr(jv_vect+ii-1) = zr(jv_vect+ii-1) -&
+            zr(jvVect+ii-1) = zr(jvVect+ii-1) -&
                                poids *&
-                               zr(ivf+ldec+i-1) * vnor * rho
+                               zr(jvShape+ldec+i-1) * speedVale * rho
         end do
 
     end do

@@ -17,10 +17,10 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine evalNormalSpeed(l_func , l_time , time    ,&
-                           nb_node, ndim   , ipg     ,&
-                           jv_shap, jv_geom, jv_speed,&
-                           vnor)
+subroutine evalFaceSpeedVale(lFunc    , lTime   , time  ,&
+                             nbNode   , cellDime, ipg   ,&
+                             jvShape  , jvGeom  , jvLoad,&
+                             speedVale)
 !
 implicit none
 !
@@ -29,30 +29,30 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/fointe.h"
 !
-aster_logical, intent(in) :: l_func, l_time
-integer, intent(in) :: ndim, nb_node, ipg
-integer, intent(in) :: jv_geom, jv_shap, jv_speed
+aster_logical, intent(in) :: lFunc, lTime
+integer, intent(in) :: cellDime, nbNode, ipg
+integer, intent(in) :: jvGeom, jvShape, jvLoad
 real(kind=8), intent(in) :: time
-real(kind=8), intent(out) :: vnor
+real(kind=8), intent(out) :: speedVale
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Utilities for fluid
 !
-! Evaluation of normal speed (CHAR_MECA_VFAC)
+! Evaluation of value of speed for VITE_FACE
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  l_func           : flag if CHAR_MECA_VFAC is function
-! In  l_time           : flag if have time for function
+! In  lFunc            : flag if VITE_FACE is function
+! In  lTime            : flag if have time for function
 ! In  time             : value of current time
-! In  nb_node          : total number of nodes
-! In  ndim             : dimension of cell (2 or 3)
+! In  nbNode           : total number of nodes
+! In  cellDime         : dimension of cell (2 or 3)
 ! In  ipg              : current index of Gauss point
-! In  jv_shap          : JEVEUX adress for shape functions
-! In  jv_geom          : JEVEUX adress for geometry (coordinates of nodes)
-! In  jv_speed         : JEVEUX adress for normal speed
-! Out vnor             : normal speed
+! In  jvShape          : JEVEUX adress for shape functions
+! In  jvGeom           : JEVEUX adress for geometry (coordinates of nodes)
+! In  jvLoad           : JEVEUX adress for field with parameters for load
+! Out speedVale        : value of speed
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,20 +64,20 @@ real(kind=8), intent(out) :: vnor
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    vnor = 0.d0
+    speedVale = 0.d0
 !
-    if (l_func) then
-        ldec = (ipg-1)*nb_node
+    if (lFunc) then
+        ldec = (ipg-1)*nbNode
 
 ! ----- Coordinates of current Gauss point
         x = 0.d0
         y = 0.d0
         z = 0.d0
-        do i_node = 1, nb_node
-            x = x + zr(jv_geom+(ndim+1)*(i_node-1)-1+1) * zr(jv_shap+ldec-1+i_node)
-            y = y + zr(jv_geom+(ndim+1)*(i_node-1)-1+2) * zr(jv_shap+ldec-1+i_node)
-            if (ndim .eq. 2) then
-                z = z + zr(jv_geom+(ndim+1)*(i_node-1)-1+3) * zr(jv_shap+ldec-1+i_node)
+        do i_node = 1, nbNode
+            x = x + zr(jvGeom+(cellDime+1)*(i_node-1)-1+1) * zr(jvShape+ldec-1+i_node)
+            y = y + zr(jvGeom+(cellDime+1)*(i_node-1)-1+2) * zr(jvShape+ldec-1+i_node)
+            if (cellDime .eq. 2) then
+                z = z + zr(jvGeom+(cellDime+1)*(i_node-1)-1+3) * zr(jvShape+ldec-1+i_node)
             endif
         end do
 
@@ -85,19 +85,20 @@ real(kind=8), intent(out) :: vnor
         nbPara = 2
         paraVale(1) = x
         paraVale(2) = y
-        if (ndim .eq. 2) then
+        if (cellDime .eq. 2) then
             nbPara = 3
             paraVale(3) = z
         endif
-        if (l_time) then
+        if (lTime) then
             nbPara = nbPara + 1
             paraVale(nbPara) = time
         endif
-        call fointe('FM', zk8(jv_speed), nbPara, paraName, paraVale,&
-                    vnor, iret)
+        call fointe('FM', zk8(jvLoad-1+1), nbPara, paraName, paraVale,&
+                    speedVale, iret)
 
     else
-        vnor = zr(jv_speed)
+        speedVale = zr(jvLoad)
+
     endif
 !
 end subroutine

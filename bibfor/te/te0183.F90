@@ -38,12 +38,12 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jv_geom, jv_mate, jv_speed, jv_vect
+    integer :: jvGeom, jvMate, jvLoad, jvVect
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9)
     real(kind=8) :: rho, jac
-    complex(kind=8) :: vnor
-    integer :: ipoids, ivf, idfdx, idfdy
-    integer :: nno, npg, ndim, ndof
+    complex(kind=8) :: speedVale
+    integer :: jvWeight, jvShape, jvDShapeX, jvDShapeY
+    integer :: nbNode, npg, cellDime, ndof
     integer :: idec, jdec, kdec, ldec
     integer :: i, ino, j, jno, ipg
     integer :: j_mater
@@ -53,33 +53,33 @@ character(len=16), intent(in) :: option, nomte
 
 
 ! - Input fields
-    call jevech('PGEOMER', 'L', jv_geom)
-    call jevech('PMATERC', 'L', jv_mate)
-    call jevech('PVITEFC', 'L', jv_speed)
+    call jevech('PGEOMER', 'L', jvGeom)
+    call jevech('PMATERC', 'L', jvMate)
+    call jevech('PVITEFC', 'L', jvLoad)
 
 ! - Get element parameters
     call elrefe_info(fami='RIGI',&
-                     nno=nno, npg=npg, ndim=ndim,&
-                     jpoids=ipoids, jvf=ivf, jdfde=idfdx)
-    ASSERT(nno .le. 9)
-    idfdy = idfdx + 1
-    ndof = nno
+                     nno=nbNode, npg=npg, ndim=cellDime,&
+                     jpoids=jvWeight, jvf=jvShape, jdfde=jvDShapeX)
+    ASSERT(nbNode .le. 9)
+    jvDShapeY = jvDShapeX + 1
+    ndof = nbNode
 
 ! - Get material properties
-    j_mater = zi(jv_mate)
+    j_mater = zi(jvMate)
     call getFluidPara(j_mater, rho)
 
 ! - Output field
-    call jevech('PVECTTC', 'E', jv_vect)
+    call jevech('PVECTTC', 'E', jvVect)
     do i = 1, ndof
-        zc(jv_vect+i-1) = (0.d0, 0.d0)
+        zc(jvVect+i-1) = (0.d0, 0.d0)
     end do
 
 ! - CALCUL DES PRODUITS VECTORIELS OMI X OMJ
-    do ino = 1, nno
-        i = jv_geom + 3*(ino-1) -1
-        do jno = 1, nno
-            j = jv_geom + 3*(jno-1) -1
+    do ino = 1, nbNode
+        i = jvGeom + 3*(ino-1) -1
+        do jno = 1, nbNode
+            j = jvGeom + 3*(jno-1) -1
             sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
             sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
             sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
@@ -88,20 +88,20 @@ character(len=16), intent(in) :: option, nomte
 
 ! - Loop on Gauss points
     do ipg = 1, npg
-        kdec = (ipg-1)*nno*ndim
-        ldec = (ipg-1)*nno
+        kdec = (ipg-1)*nbNode*cellDime
+        ldec = (ipg-1)*nbNode
 
 ! ----- Compute normal
         nx = 0.d0
         ny = 0.d0
         nz = 0.d0
-        do i = 1, nno
-            idec = (i-1)*ndim
-            do j = 1, nno
-                jdec = (j-1)*ndim
-                nx = nx + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sx(i,j)
-                ny = ny + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sy(i,j)
-                nz = nz + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sz(i,j)
+        do i = 1, nbNode
+            idec = (i-1)*cellDime
+            do j = 1, nbNode
+                jdec = (j-1)*cellDime
+                nx = nx + zr(jvDShapeX+kdec+idec) * zr(jvDShapeY+kdec+jdec) * sx(i,j)
+                ny = ny + zr(jvDShapeX+kdec+idec) * zr(jvDShapeY+kdec+jdec) * sy(i,j)
+                nz = nz + zr(jvDShapeX+kdec+idec) * zr(jvDShapeY+kdec+jdec) * sz(i,j)
             end do
         end do
 
@@ -109,13 +109,13 @@ character(len=16), intent(in) :: option, nomte
         jac   = sqrt (nx*nx + ny*ny + nz*nz)
 
 ! ----- Get value of normal speed
-        vnor = zc(jv_speed+ipg-1)
+        speedVale = zc(jvLoad+ipg-1)
 
 ! ----- Compute vector
-        do i = 1, nno
-            zc(jv_vect+i-1) = zc(jv_vect+i-1) +&
-                              jac*zr(ipoids+ipg-1) *&
-                              zr(ivf+ldec+i-1) * vnor * rho
+        do i = 1, nbNode
+            zc(jvVect+i-1) = zc(jvVect+i-1) +&
+                             jac*zr(jvWeight+ipg-1) *&
+                             zr(jvShape+ldec+i-1) * speedVale * rho
         end do
 
     end do

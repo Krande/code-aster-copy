@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,14 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine evalNormalSpeed(l_func , l_time , time    ,&
-                               nb_node, ndim   , ipg     ,&
-                               jv_shap, jv_geom, jv_speed,&
-                               vnor)
-        aster_logical, intent(in) :: l_func, l_time
-        integer, intent(in) :: ndim, nb_node, ipg
-        integer, intent(in) :: jv_geom, jv_shap, jv_speed
+    subroutine evalFaceSpeedVale(lFunc    , lTime   , time  ,&
+                                 nbNode   , cellDime, ipg   ,&
+                                 jvShape  , jvGeom  , jvLoad,&
+                                 speedVale)
+        aster_logical, intent(in) :: lFunc, lTime
+        integer, intent(in) :: cellDime, nbNode, ipg
+        integer, intent(in) :: jvGeom, jvShape, jvLoad
         real(kind=8), intent(in) :: time
-        real(kind=8), intent(out) :: vnor
-    end subroutine evalNormalSpeed
+        real(kind=8), intent(out) :: speedVale
+    end subroutine evalFaceSpeedVale
 end interface
