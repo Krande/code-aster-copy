@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,9 +63,9 @@ class ACOU_FACE3(Element):
         ),
 
         OP.CHAR_ACOU_VNOR_C(te=183,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
-                     (SP.PVITENC, LC.EVITENC), ),
-            para_out=((SP.PVECTTC, MVECTTC), ),
+            para_in  = ((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                        (SP.PVITEFC, LC.EVITEFC), ),
+            para_out = ((SP.PVECTTC, MVECTTC), ),
         ),
 
         OP.COOR_ELGA(te=488,

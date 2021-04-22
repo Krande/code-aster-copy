@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,9 +63,9 @@ character(len=16), intent(in) :: option, nomte
     call jevech('PGEOMER', 'L', jv_geom)
     call jevech('PMATERC', 'L', jv_mate)
     if (l_func) then
-        call jevech('PVITENF', 'L', jv_speed)
+        call jevech('PVITEFF', 'L', jv_speed)
     else
-        call jevech('PVITENR', 'L', jv_speed)
+        call jevech('PVITEFR', 'L', jv_speed)
     endif
 !
 ! - Get time if present

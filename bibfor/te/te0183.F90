@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,106 +15,110 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0183(option, nomte)
-!.......................................................................
-    implicit none
 !
-!     BUT: CALCUL DES VECTEURS ELEMENTAIRES EN ACOUSTIQUE
-!          CORRESPONDANT AUX VITESSES NORMALES IMPOSEES
-!          SUR DES FACES D'ELEMENTS ISOPARAMETRIQUES 3D ET 3D_MIXTE
-!
-!          OPTION : 'CHAR_ACOU_VNOR_C '
-!
-!     ENTREES  ---> OPTION : OPTION DE CALCUL
-!          ---> NOMTE  : NOM DU TYPE ELEMENT
-!.......................................................................
-!
+implicit none
 !
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
-#include "asterfort/rcvalb.h"
-    integer :: icodre(1), kpg, spt
-    character(len=8) :: fami, poum
-    character(len=16) :: nomte, option
-    real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac
-    integer :: ipoids, ivf, idfdx, idfdy, igeom, imate
-    integer :: ndim, nno, ipg, npg1, ivectt
-    integer :: idec, jdec, kdec, ldec, nnos, jgano
+#include "asterfort/assert.h"
+#include "asterfort/getFluidPara.h"
 !
+character(len=16), intent(in) :: option, nomte
 !
-!-----------------------------------------------------------------------
-    integer :: i, ino, ivitn, j, jno, mater
-    integer :: nddl
-    real(kind=8) ::  rho(1)
-!-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+! --------------------------------------------------------------------------------------------------
+!
+! Elementary computation
+!
+! Elements: ACOU / 3D (boundary)
+!
+! Options: CHAR_ACOU_VNOR
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: jv_geom, jv_mate, jv_speed, jv_vect
+    real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9)
+    real(kind=8) :: rho, jac
+    complex(kind=8) :: vnor
+    integer :: ipoids, ivf, idfdx, idfdy
+    integer :: nno, npg, ndim, ndof
+    integer :: idec, jdec, kdec, ldec
+    integer :: i, ino, j, jno, ipg
+    integer :: j_mater
+!
+! --------------------------------------------------------------------------------------------------
+!
+
+!
+! - Input fields
+!
+    call jevech('PGEOMER', 'L', jv_geom)
+    call jevech('PMATERC', 'L', jv_mate)
+    call jevech('PVITEFC', 'L', jv_speed)
+!
+! - Get element parameters
+!
+    call elrefe_info(fami='RIGI',&
+                     nno=nno, npg=npg, ndim=ndim,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdx)
+    ASSERT(nno .le. 9)
     idfdy = idfdx + 1
+    ndof = nno
 !
-    nddl = nno
+! - Get material properties
 !
-    call jevech('PGEOMER', 'L', igeom)
-    call jevech('PVITENC', 'L', ivitn)
-    call jevech('PVECTTC', 'E', ivectt)
-    call jevech('PMATERC', 'L', imate)
-    mater = zi(imate)
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'FLUIDE', 0, ' ', [0.d0],&
-                1, 'RHO', rho, icodre, 1)
+    j_mater = zi(jv_mate)
+    call getFluidPara(j_mater, rho)
 !
+! - Output field
 !
-!    CALCUL DES PRODUITS VECTORIELS OMI X OMJ
+    call jevech('PVECTTC', 'E', jv_vect)
+    do i = 1, ndof
+        zc(jv_vect+i-1) = (0.d0, 0.d0)
+    end do
 !
-    do 1 ino = 1, nno
-        i = igeom + 3*(ino-1) -1
-        do 2 jno = 1, nno
-            j = igeom + 3*(jno-1) -1
+! - CALCUL DES PRODUITS VECTORIELS OMI X OMJ
+!
+    do ino = 1, nno
+        i = jv_geom + 3*(ino-1) -1
+        do jno = 1, nno
+            j = jv_geom + 3*(jno-1) -1
             sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
             sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
             sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
- 2      continue
- 1  end do
-    do 20 i = 1, nddl
-        zc(ivectt+i-1) =(0.0d0, 0.0d0)
-20  continue
+        end do
+    end do
 !
-!    BOUCLE SUR LES POINTS DE GAUSS
+! - Loop on Gauss points
 !
-    do 101 ipg = 1, npg1
+    do ipg = 1, npg
         kdec = (ipg-1)*nno*ndim
         ldec = (ipg-1)*nno
-!
-        nx = 0.0d0
-        ny = 0.0d0
-        nz = 0.0d0
-!
-!   CALCUL DE LA NORMALE AU POINT DE GAUSS IPG
-!
-        do 102 i = 1, nno
+! ----- Compute normal
+        nx = 0.d0
+        ny = 0.d0
+        nz = 0.d0
+        do i = 1, nno
             idec = (i-1)*ndim
-            do 102 j = 1, nno
+            do j = 1, nno
                 jdec = (j-1)*ndim
-!
                 nx = nx + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sx(i,j)
                 ny = ny + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sy(i,j)
                 nz = nz + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sz(i,j)
+            end do
+        end do
+! ----- Compute jacobian
+        jac   = sqrt (nx*nx + ny*ny + nz*nz)
+! ----- Get value of normal speed
+        vnor = zc(jv_speed+ipg-1)
+! ----- Compute vector
+        do i = 1, nno
+            zc(jv_vect+i-1) = zc(jv_vect+i-1) +&
+                              jac*zr(ipoids+ipg-1) *&
+                              zr(ivf+ldec+i-1) * vnor * rho
+        end do
+    end do
 !
-102          continue
-!
-!   CALCUL DU JACOBIEN AU POINT DE GAUSS IPG
-!
-        jac = sqrt(nx*nx + ny*ny + nz*nz)
-!
-        do 103 i = 1, nno
-            zc(ivectt+i-1) = zc(ivectt+i-1) + jac * zr(ipoids+ipg- 1) * zc(ivitn+ipg-1) * zr(&
-                             &ivf+ldec+i-1) *rho(1)
-103     continue
-!
-101  continue
 end subroutine

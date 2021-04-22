@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,11 +67,18 @@ real(kind=8), optional, intent(out) :: rho_, cele_r_, pesa_
         cele_r = resu_vale(2)
         pesa   = resu_vale(3)
     else
-        call rcvalb(fami, ipg, ispg, poum, j_mater,&
-                    ' ' , 'FLUIDE', 0, ' ', [0.d0],&
-                    2, resu_name, resu_vale, icodre, 1)
-        rho    = resu_vale(1)
-        cele_r = resu_vale(2)
+        if (present(cele_r_)) then
+            call rcvalb(fami, ipg, ispg, poum, j_mater,&
+                        ' ' , 'FLUIDE', 0, ' ', [0.d0],&
+                        2, resu_name, resu_vale, icodre, 1)
+            rho    = resu_vale(1)
+            cele_r = resu_vale(2)
+        else
+            call rcvalb(fami, ipg, ispg, poum, j_mater,&
+                        ' ' , 'FLUIDE', 0, ' ', [0.d0],&
+                        1, resu_name, resu_vale, icodre, 1)
+            rho    = resu_vale(1)
+        endif
     endif
 !
     if (present(rho_)) then

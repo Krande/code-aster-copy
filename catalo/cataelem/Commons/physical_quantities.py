@@ -3449,26 +3449,20 @@ SIZZ_R   = PhysicalQuantity(type='R',
 SOUR_F   = PhysicalQuantity(type='K8',
     components=(
        'SOUR',
-       'VNOR',
     ),
     comment="""  SOUR_F Type:K8 Source volumique de type fonction
        SOUR : valeur de la source volumique appliquee a une maille
        mot cle SOURCE de la commande AFFE_CHAR_THER_F
-       VNOR : valeur de la vitesse normale appliquee a une face
-       mot cle VITE_FACE de la commande AFFE_CHAR_MECA_F
 """)
 
 
 SOUR_R   = PhysicalQuantity(type='R',
     components=(
        'SOUR',
-       'VNOR',
     ),
     comment="""  SOUR_R Type:R Source volumique de type reel
        SOUR : valeur de la source volumique appliquee a une maille
        mot cle SOURCE de la commande AFFE_CHAR_THER
-       VNOR : valeur de la vitesse normale appliquee a une face
-       mot cle VITE_FACE de la commande AFFE_CHAR_MECA
 """)
 
 
@@ -3710,30 +3704,30 @@ VENTCX_F = PhysicalQuantity(type='K8',
        FCXP :
 """)
 
-VNOR_R   = PhysicalQuantity(type='R',
+VFAC_R   = PhysicalQuantity(type='R',
     components=(
-       'VNOR',
+       'VITE',
     ),
-    comment="""  Vitesse normale appliquee a une face de maille
-       VNOR : valeur de la vitesse normale
+    comment="""  Vitesse appliquee a une face de maille
+       VITE : valeur de la norme de la vitesse
 """)
 
 
-VNOR_C   = PhysicalQuantity(type='C',
+VFAC_C   = PhysicalQuantity(type='C',
     components=(
-       'VNOR',
+       'VITE',
     ),
-    comment="""  Vitesse normale appliquee a une face de maille
-       VNOR : valeur de la vitesse normale
+    comment="""  Vitesse appliquee a une face de maille
+       VITE : valeur de la norme de la vitesse
 """)
 
 
-VNOR_F   = PhysicalQuantity(type='K8',
+VFAC_F   = PhysicalQuantity(type='K8',
     components=(
-       'VNOR',
+       'VITE',
     ),
-    comment="""  Vitesse normale appliquee a une face de maille
-       VNOR : fonction de la vitesse normale
+    comment="""  Vitesse appliquee a une face de maille
+       VITE : valeur de la norme de la vitesse
 """)
 
 

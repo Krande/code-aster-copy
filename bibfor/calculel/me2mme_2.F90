@@ -583,10 +583,10 @@ integer :: nb_load
         if (iret .ne. 0) then
             if (lfonc) then
                 option='CHAR_MECA_VNOR_F'
-                lpain(4)='PVITENF'
+                lpain(4)='PVITEFF'
             else
                 option='CHAR_MECA_VNOR'
-                lpain(4)='PVITENR'
+                lpain(4)='PVITEFR'
             endif
             lchin(4)=ligrch(1:13)//'.VNOR .DESC'
             ilires=ilires+1

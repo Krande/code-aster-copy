@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -249,13 +249,13 @@ class MEFL_FACE3(Element):
 
         OP.CHAR_MECA_VNOR(te=173,
             para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
-                        (SP.PVITENR, LC.EVITENR),),
+                        (SP.PVITEFR, LC.EVITEFR),),
             para_out = ((SP.PVECTUR, MVECTUR),),
         ),
 
         OP.CHAR_MECA_VNOR_F(te=173,
             para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
-                        (SP.PVITENF, LC.EVITENF),),
+                        (SP.PVITEFF, LC.EVITEFF),),
             para_out = ((SP.PVECTUR, MVECTUR),),
         ),
 

@@ -127,10 +127,10 @@ subroutine me2mac(modele, nchar, lchar, mate, mateco, vectElemz)
             if (iret .ne. 0) then
                 if (lfonc) then
                     option = 'CHAR_ACOU_VNOR_F'
-                    lpain(3) = 'PVITENF'
+                    lpain(3) = 'PVITEFF'
                 else
                     option = 'CHAR_ACOU_VNOR_C'
-                    lpain(3) = 'PVITENC'
+                    lpain(3) = 'PVITEFC'
                 endif
                 lchin(3) = ligrch(1:13)//'.VITFA     '
                 ilires = ilires + 1

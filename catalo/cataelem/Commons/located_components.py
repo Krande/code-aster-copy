@@ -823,6 +823,18 @@ EGFC3DR = LocatedComponents(phys=PHY.FACY_R, type='ELGA', location='RIGI',
 EGINST_R = LocatedComponents(phys=PHY.INST_R, type='ELGA', location='RIGI',
                              components=('INST',))
 
+# Field for load VITE_FACE (complex)
+EVITEFC = LocatedComponents(phys=PHY.VFAC_C, type='ELGA', location='RIGI',
+                            components=('VITE',))
+
+# Field for load VITE_FACE (function)
+EVITEFF = LocatedComponents(phys=PHY.VFAC_F, type='ELGA', location='RIGI',
+                            components=('VITE',))
+
+# Field for load VITE_FACE (real)
+EVITEFR = LocatedComponents(phys=PHY.VFAC_R, type='ELGA', location='RIGI',
+                            components=('VITE',))
+
 
 E1GNEUT = LocatedComponents(phys=PHY.NEUT_R, type='ELGA', location='RIGI',
                             components=('X1',))
@@ -868,12 +880,6 @@ EPDILPG = LocatedComponents(phys=PHY.PDIL_R, type='ELGA', location='RIGI',
 EPRESGA = LocatedComponents(phys=PHY.PRES_R, type='ELGA', location='RIGI',
                             components=('PRES',))
 
-EVITENR = LocatedComponents(phys=PHY.VNOR_R, type='ELGA', location='RIGI',
-                            components=('VNOR',))
-
-EVITENF = LocatedComponents(phys=PHY.VNOR_F, type='ELGA', location='RIGI',
-                            components=('VNOR',))
-
 ETEMPMA = LocatedComponents(phys=PHY.TEMP_R, type='ELGA', location='MATER',
                             components=('TEMP',))
 
@@ -887,8 +893,7 @@ EVARC_R = LocatedComponents(phys=PHY.VARC_R, type='ELGA', location='RIGI',
                             components=('TEMP', 'HYDR', 'SECH', 'IRRA', 'CORR',
                                         'PTOT', 'DIVU', 'NEUT[2]',))
 
-EVITENC = LocatedComponents(phys=PHY.VNOR_C, type='ELGA', location='RIGI',
-                            components=('VNOR',))
+
 
 G27NEUTR = LocatedComponents(phys=PHY.NEUT_R, type='ELGA', location='RIGI',
                              components=('X[27]',))

@@ -1050,14 +1050,14 @@ PVARIPG = InputParameter(phys=PHY.VARI_R,
 PVENTCX = InputParameter(phys=PHY.VENTCX_F,
                          comment="""""")
 
-PVITENC = InputParameter(phys=PHY.VNOR_C,
-                         comment="""""")
+PVITEFC = InputParameter(phys=PHY.VFAC_C,
+                         comment="""Field to describe the load VITE_FACE (complex)""")
 
-PVITENR = InputParameter(phys=PHY.VNOR_R,
-                         comment="""""")
+PVITEFF = InputParameter(phys=PHY.VFAC_F,
+                         comment="""Field to describe the load VITE_FACE (function)""")
 
-PVITENF = InputParameter(phys=PHY.VNOR_F,
-                         comment="""""")
+PVITEFR = InputParameter(phys=PHY.VFAC_R,
+                         comment="""Field to describe the load VITE_FACE (real)""")
 
 PVITENT = InputParameter(phys=PHY.DEPL_R,
                          comment=""" VITESSE POUR IMPEDANCE SOL
