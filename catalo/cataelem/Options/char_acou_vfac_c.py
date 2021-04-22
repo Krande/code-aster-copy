@@ -24,7 +24,7 @@ import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
-CHAR_ACOU_VNOR_C = Option(
+CHAR_ACOU_VFAC_C = Option(
     para_in=(
         SP.PGEOMER,
         SP.PMATERC,

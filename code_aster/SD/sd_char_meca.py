@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -125,7 +125,7 @@ class sd_char_chme(AsBase):
     ROTAT = Facultatif(sd_carte())
     SIGIN = Facultatif(sd_carte())
     SIINT = Facultatif(sd_carte())
-    VNOR  = Facultatif(sd_carte())
+    VFACE = Facultatif(sd_carte())
     ONDPL = Facultatif(sd_carte())
     ONDPR = Facultatif(sd_carte())
     EFOND = Facultatif(sd_carte())

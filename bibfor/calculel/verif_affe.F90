@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ subroutine verif_affe(modele,sd,non_lin)
     l_cart_char_meca = (/ &
     'EFOND' , 'EPSIN' , 'F1D1D' , 'F1D2D' , 'F1D3D' , 'F2D2D' , 'F2D3D' , 'F3D3D' , 'FCO2D' , &
     'FCO3D' , 'FELEC' , 'FL101' , 'FL102' , 'FLUX ' , 'FORNO' , 'IMPE ' , 'ONDE ' , 'ONDPL' , &
-    'ONDPR' , 'PESAN' , 'PREFF' , 'PRESS' , 'ROTAT' , 'SIGIN' , 'SIINT' , 'VNOR ' /)
+    'ONDPR' , 'PESAN' , 'PREFF' , 'PRESS' , 'ROTAT' , 'SIGIN' , 'SIINT' , 'VFACE' /)
 
     l_comm_char_meca = ' '
     l_comm_char_meca(22) = 'Chargement provenant du mot cle PRES_REP'

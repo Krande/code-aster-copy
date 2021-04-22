@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ integer, intent(out) :: i_neum_lapl
                                                                '.F2D2D','.F1D2D','.F1D1D','.PESAN',&
                                                                '.ROTAT','.PRESS','.FELEC','.FCO3D',&
                                                                '.FCO2D','.EPSIN','.FLUX ','.VEASS',&
-                                                               '.ONDPL','.SIINT','.ETHM ','.VNOR '/)
+                                                               '.ONDPL','.SIINT','.ETHM ','.VFACE'/)
     integer :: i_type_neum, iret, iret_cable_cine, infc, i_lapl
     character(len=5) :: suffix, para_inst, para_vite, para_acce
     character(len=24) :: info_type, lchin

@@ -62,7 +62,7 @@ class ACPLSE2(Element):
             para_out=((SP.PMATTTC, MMATTTC), ),
         ),
 
-        OP.CHAR_ACOU_VNOR_C(te=179,
+        OP.CHAR_ACOU_VFAC_C(te=179,
             para_in  = ((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                         (SP.PVITEFC, LC.EVITEFC), ),
             para_out = ((SP.PVECTTC, MVECTTC), ),

@@ -58,7 +58,7 @@ subroutine me2mac(modele, nchar, lchar, mate, mateco, vectElemz)
 !     SORTIES:
 !     SONT TRAITES ACTUELLEMENT LES CHAMPS:
 !        LCHAR(ICHA)//'.CHAC.CIMPO     ' : PRESSION    IMPOSEE
-!        LCHAR(ICHA)//'.CHAC.VITFA     ' : VITESSE NORMALE FACE
+!        LCHAR(ICHA)//'.CHAC.VFACE     ' : FACE
 !
 ! ----------------------------------------------------------------------
 !
@@ -94,12 +94,8 @@ subroutine me2mac(modele, nchar, lchar, mate, mateco, vectElemz)
     lpaout(1) = 'PVECTTC'
     lchout(1) = vectElem(1:8)//'.VE000'
     ilires = 0
-!
-!     BOUCLE SUR LES CHARGES POUR CALCULER :
-!        ( CHAR_ACOU_VNOR_F , ISO_FACE ) SUR LE MODELE
-!         ( ACOU_DDLI_F    , CAL_TI   )  SUR LE LIGREL(CHARGE)
-!
-!
+
+! - Loop on loads
     if (nchar .ne. 0) then
         lpain(1) = 'PGEOMER'
         lchin(1) = chgeom
@@ -120,19 +116,18 @@ subroutine me2mac(modele, nchar, lchar, mate, mateco, vectElemz)
             endif
 !
             ligrch = lchar(icha)//'.CHAC.LIGRE'
-!
-!           --  ( CHAR_ACOU_VNOR_F , ISO_FACE ) SUR LE MODELE
-!
-            call exisd('CHAMP_GD', ligrch(1:13)//'.VITFA', iret)
+
+! --------- Speed on face
+            call exisd('CHAMP_GD', ligrch(1:13)//'.VFACE', iret)
             if (iret .ne. 0) then
                 if (lfonc) then
-                    option = 'CHAR_ACOU_VNOR_F'
+                    option = 'CHAR_ACOU_VFAC_F'
                     lpain(3) = 'PVITEFF'
                 else
-                    option = 'CHAR_ACOU_VNOR_C'
+                    option = 'CHAR_ACOU_VFAC_C'
                     lpain(3) = 'PVITEFC'
                 endif
-                lchin(3) = ligrch(1:13)//'.VITFA     '
+                lchin(3) = ligrch(1:13)//'.VFACE'
                 ilires = ilires + 1
                 call codent(ilires, 'D0', lchout(1) (12:14))
                 call calcul('S', option, ligrmo, 3, lchin,&
@@ -140,7 +135,8 @@ subroutine me2mac(modele, nchar, lchar, mate, mateco, vectElemz)
                             'OUI')
                 call reajre(vectElem, lchout(1), 'G')
             endif
-!           --   ( ACOU_DDLI_F    , CAL_TI   )  SUR LE LIGREL(CHARGE)
+
+! --------- Dirichlet 
             call exisd('CHAMP_GD', ligrch(1:13)//'.CIMPO', iret)
             if (iret .ne. 0) then
                 if (lfonc) then

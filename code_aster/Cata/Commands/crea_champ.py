@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-
-# person_in_charge: j-pierre.lefebvre at edf.fr
 
 from ..Commons import *
 from ..Language.DataStructure import *
@@ -199,7 +197,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                        '.CHME.F2D3D', '.CHME.F3D3D', '.CHME.FCO2D', '.CHME.FCO3D', '.CHME.FELEC',
                        '.CHME.FL101', '.CHME.FL102', '.CHME.FLUX',  '.CHME.FORNO', '.CHME.IMPE',
                        '.CHME.ONDE',  '.CHME.ONDPL', '.CHME.ONDPR', '.CHME.PESAN', '.CHME.PRESS',
-                       '.CHME.ROTAT', '.CHME.SIGIN', '.CHME.SIINT', '.CHME.VNOR',)),
+                       '.CHME.ROTAT', '.CHME.SIGIN', '.CHME.SIINT', '.CHME.VFACE',)),
              ),
 
              b_extr_fissure  = BLOC(condition = """exists("FISSURE")""",

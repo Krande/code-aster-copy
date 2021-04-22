@@ -36,7 +36,7 @@ character(len=16), intent(in) :: option, nomte
 !
 ! Elements: ACOU / PLAN (boundary)
 !
-! Options: CHAR_ACOU_VNOR
+! Options: CHAR_ACOU_VFAC
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,37 +55,32 @@ character(len=16), intent(in) :: option, nomte
 ! --------------------------------------------------------------------------------------------------
 !
 
-!
 ! - Input fields
-!
     call jevech('PGEOMER', 'L', jv_geom)
     call jevech('PMATERC', 'L', jv_mate)
     call jevech('PVITEFC', 'L', jv_speed)
-!
+
 ! - Get element parameters
-!
     l_axis = (lteatt('AXIS','OUI'))
     call elrefe_info(fami='RIGI',&
                      nno=nno, npg=npg, ndim=ndim,&
                      jpoids=ipoids, jvf=ivf, jdfde=idfde)
     ndof = nno
-!
+
 ! - Get material properties
-!
     j_mater = zi(jv_mate)
     call getFluidPara(j_mater, rho)
-!
+
 ! - Output field
-!
     call jevech('PVECTTC', 'E', jv_vect)
     do i = 1, ndof
         zc(jv_vect+i-1) = (0.d0, 0.d0)
     end do
-!
+
 ! - Loop on Gauss points
-!
     do ipg = 1, npg
         ldec = (ipg-1)*nno
+
 ! ----- Compute normal
         nx = 0.d0
         ny = 0.d0
@@ -98,14 +93,17 @@ character(len=16), intent(in) :: option, nomte
             end do
             poids = poids*r
         endif
+
 ! ----- Get value of normal speed
         vnor = zc(jv_speed+ipg-1)
+
 ! ----- Compute vector
         do i = 1, nno
             zc(jv_vect+i-1) = zc(jv_vect+i-1) +&
                               poids *&
                               zr(ivf+ldec+i-1) * vnor * rho
         end do
+
     end do
 !
 end subroutine

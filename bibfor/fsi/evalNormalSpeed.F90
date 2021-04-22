@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,11 +39,11 @@ real(kind=8), intent(out) :: vnor
 !
 ! Utilities for fluid
 !
-! Evaluation of normal speed (CHAR_MECA_VNOR)
+! Evaluation of normal speed (CHAR_MECA_VFAC)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  l_func           : flag if CHAR_MECA_VNOR is function
+! In  l_func           : flag if CHAR_MECA_VFAC is function
 ! In  l_time           : flag if have time for function
 ! In  time             : value of current time
 ! In  nb_node          : total number of nodes
@@ -58,9 +58,9 @@ real(kind=8), intent(out) :: vnor
 !
     real(kind=8) :: x, y, z
     integer :: i_node, ldec, iret
-    integer :: nb_para
-    character(len=8), parameter :: para_name(4) = (/'X   ', 'Y   ',  'Z   ', 'INST'/)
-    real(kind=8) :: para_vale(4)
+    integer :: nbPara
+    character(len=8), parameter :: paraName(4) = (/'X   ', 'Y   ',  'Z   ', 'INST'/)
+    real(kind=8) :: paraVale(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,6 +68,7 @@ real(kind=8), intent(out) :: vnor
 !
     if (l_func) then
         ldec = (ipg-1)*nb_node
+
 ! ----- Coordinates of current Gauss point
         x = 0.d0
         y = 0.d0
@@ -79,20 +80,22 @@ real(kind=8), intent(out) :: vnor
                 z = z + zr(jv_geom+(ndim+1)*(i_node-1)-1+3) * zr(jv_shap+ldec-1+i_node)
             endif
         end do
+
 ! ----- Evaluation of function
-        nb_para = 2
-        para_vale(1) = x
-        para_vale(2) = y
+        nbPara = 2
+        paraVale(1) = x
+        paraVale(2) = y
         if (ndim .eq. 2) then
-            nb_para = 3
-            para_vale(3) = z
+            nbPara = 3
+            paraVale(3) = z
         endif
         if (l_time) then
-            nb_para = nb_para + 1
-            para_vale(nb_para) = time
+            nbPara = nbPara + 1
+            paraVale(nbPara) = time
         endif
-        call fointe('FM', zk8(jv_speed), nb_para, para_name, para_vale,&
+        call fointe('FM', zk8(jv_speed), nbPara, paraName, paraVale,&
                     vnor, iret)
+
     else
         vnor = zr(jv_speed)
     endif

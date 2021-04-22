@@ -58,13 +58,13 @@ class MEFS_FACE3P(Element):
             para_out = ((SP.PVECTUR, MVECTUR),),
         ),
 
-        OP.CHAR_MECA_VNOR(te=213,
+        OP.CHAR_MECA_VFAC(te=213,
             para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
                         (SP.PVITEFR, LC.EVITEFR),),
             para_out = ((SP.PVECTUR, MVECTUR), ),
         ),
 
-        OP.CHAR_MECA_VNOR_F(te=213,
+        OP.CHAR_MECA_VFAC_F(te=213,
             para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
                         (SP.PVITEFF, LC.EVITEFF),),
             para_out = ((SP.PVECTUR, MVECTUR), ),

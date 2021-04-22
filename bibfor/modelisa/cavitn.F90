@@ -58,7 +58,7 @@ character(len=*) :: ligrmo
     motclf = 'VITE_FACE'
     call getfac(motclf, nvnor)
 !
-    carte =char//'.CHME.VNOR'
+    carte =char//'.CHME.VFACE'
 !
     if (fonree .eq. 'REEL') then
         call alcart('G', carte, noma, 'VFAC_R')

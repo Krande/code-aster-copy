@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ character(len=19), intent(in) :: list_load
 !
     integer, parameter :: nb_excl_load = 1
     character(len=6), parameter :: ligr_excl_char(nb_excl_load) = (/&
-         '.VNOR '/)
+         '.VFACE'/)
     character(len=24) :: lload_name, lload_info
     integer, pointer :: v_load_info(:) => null()
     character(len=24), pointer :: v_load_name(:) => null()

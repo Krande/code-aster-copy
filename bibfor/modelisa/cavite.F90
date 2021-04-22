@@ -56,7 +56,7 @@ subroutine cavite(char, ligrmo, noma, fonree)
     motclf = 'VITE_FACE'
     call getfac(motclf, nvite)
 !
-    carte = char//'.CHAC.VITFA'
+    carte = char//'.CHAC.VFACE'
 !
     if (fonree .eq. 'REEL') then
         call alcart('G', carte, noma, 'VFAC_C')

@@ -93,7 +93,7 @@ implicit none
 !        LCHAR(ICHA)//'.CHME.PRESS'
 !        LCHAR(ICHA)//'.CHME.EPSIN'
 !        LCHAR(ICHA)//'.CHME.TEMPE'
-!        LCHAR(ICHA)//'.CHME.VNOR'
+!        LCHAR(ICHA)//'.CHME.VFACE'
 !        LCHAR(ICHA)//'.CHME.ONDE'
 !        LCHAR(ICHA)//'.CHME.EVOL.CHAR'
 !
@@ -597,16 +597,16 @@ implicit none
             call reajre(vect_elem, lchout(1), base)
         endif
 ! ====================================================================
-        call exisd('CHAMP_GD', ligrch(1:13)//'.VNOR ', iret)
+        call exisd('CHAMP_GD', ligrch(1:13)//'.VFACE', iret)
         if (iret .ne. 0) then
             if (lfonc) then
-                option='CHAR_MECA_VNOR_F'
+                option='CHAR_MECA_VFAC_F'
                 lpain(4)='PSOURCF'
             else
-                option='CHAR_MECA_VNOR'
+                option='CHAR_MECA_VFAC'
                 lpain(4)='PSOURCR'
             endif
-            lchin(4)=ligrch(1:13)//'.VNOR .DESC'
+            lchin(4)=ligrch(1:13)//'.VFACE'
             ilires=ilires+1
             call codent(ilires, 'D0', lchout(1)(12:14))
             call calcul('S', option, ligrmo, nbin, lchin,&

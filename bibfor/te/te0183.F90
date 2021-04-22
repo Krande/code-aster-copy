@@ -34,7 +34,7 @@ character(len=16), intent(in) :: option, nomte
 !
 ! Elements: ACOU / 3D (boundary)
 !
-! Options: CHAR_ACOU_VNOR
+! Options: CHAR_ACOU_VFAC
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,36 +51,31 @@ character(len=16), intent(in) :: option, nomte
 ! --------------------------------------------------------------------------------------------------
 !
 
-!
+
 ! - Input fields
-!
     call jevech('PGEOMER', 'L', jv_geom)
     call jevech('PMATERC', 'L', jv_mate)
     call jevech('PVITEFC', 'L', jv_speed)
-!
+
 ! - Get element parameters
-!
     call elrefe_info(fami='RIGI',&
                      nno=nno, npg=npg, ndim=ndim,&
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx)
     ASSERT(nno .le. 9)
     idfdy = idfdx + 1
     ndof = nno
-!
+
 ! - Get material properties
-!
     j_mater = zi(jv_mate)
     call getFluidPara(j_mater, rho)
-!
+
 ! - Output field
-!
     call jevech('PVECTTC', 'E', jv_vect)
     do i = 1, ndof
         zc(jv_vect+i-1) = (0.d0, 0.d0)
     end do
-!
+
 ! - CALCUL DES PRODUITS VECTORIELS OMI X OMJ
-!
     do ino = 1, nno
         i = jv_geom + 3*(ino-1) -1
         do jno = 1, nno
@@ -90,12 +85,12 @@ character(len=16), intent(in) :: option, nomte
             sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
         end do
     end do
-!
+
 ! - Loop on Gauss points
-!
     do ipg = 1, npg
         kdec = (ipg-1)*nno*ndim
         ldec = (ipg-1)*nno
+
 ! ----- Compute normal
         nx = 0.d0
         ny = 0.d0
@@ -109,16 +104,20 @@ character(len=16), intent(in) :: option, nomte
                 nz = nz + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sz(i,j)
             end do
         end do
+
 ! ----- Compute jacobian
         jac   = sqrt (nx*nx + ny*ny + nz*nz)
+
 ! ----- Get value of normal speed
         vnor = zc(jv_speed+ipg-1)
+
 ! ----- Compute vector
         do i = 1, nno
             zc(jv_vect+i-1) = zc(jv_vect+i-1) +&
                               jac*zr(ipoids+ipg-1) *&
                               zr(ivf+ldec+i-1) * vnor * rho
         end do
+
     end do
 !
 end subroutine

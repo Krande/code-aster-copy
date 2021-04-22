@@ -38,7 +38,7 @@ character(len=16), intent(in) :: option, nomte
 !
 ! Elements: 3D_FLUIDE (boundary)
 !
-! Options: CHAR_MECA_VNOR
+! Options: CHAR_MECA_VFAC
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,10 +56,9 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_func = (option .eq. 'CHAR_MECA_VNOR_F')
-!
+    l_func = (option .eq. 'CHAR_MECA_VFAC_F')
+
 ! - Input fields
-!
     call jevech('PGEOMER', 'L', jv_geom)
     call jevech('PMATERC', 'L', jv_mate)
     if (l_func) then
@@ -67,9 +66,8 @@ character(len=16), intent(in) :: option, nomte
     else
         call jevech('PVITEFR', 'L', jv_speed)
     endif
-!
+
 ! - Get time if present
-!
     call tecach('NNO', 'PTEMPSR', 'L', iret, iad=jv_time)
     l_time = ASTER_FALSE
     time   = 0.d0
@@ -77,9 +75,8 @@ character(len=16), intent(in) :: option, nomte
         l_time = ASTER_TRUE
         time   = zr(jv_time)
     endif
-!
+
 ! - Get element parameters
-!
     call teattr('S', 'FORMULATION', fsi_form, iret)
     call elrefe_info(fami='RIGI',&
                      nno=nno, npg=npg, ndim=ndim,&
@@ -93,21 +90,18 @@ character(len=16), intent(in) :: option, nomte
     else
         call utmess('F', 'FLUID1_2', sk = fsi_form)
     endif
-!
+
 ! - Get material properties for fluid
-!
     j_mater = zi(jv_mate)
     call getFluidPara(j_mater, rho)
-!
+
 ! - Output field
-!
     call jevech('PVECTUR', 'E', jv_vect)
     do i = 1, ndofbynode*nno
         zr(jv_vect+i-1) = 0.d0
     end do
-!
+
 ! - CALCUL DES PRODUITS VECTORIELS OMI X OMJ
-!
     do ino = 1, nno
         i = jv_geom + 3*(ino-1) -1
         do jno = 1, nno
@@ -117,12 +111,12 @@ character(len=16), intent(in) :: option, nomte
             sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
         end do
     end do
-!
+
 ! - Loop on Gauss points
-!
     do ipg = 1, npg
         kdec = (ipg-1)*nno*ndim
         ldec = (ipg-1)*nno
+
 ! ----- Compute normal
         nx = 0.d0
         ny = 0.d0
@@ -136,13 +130,16 @@ character(len=16), intent(in) :: option, nomte
                 nz = nz + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sz(i,j)
             end do
         end do
+
 ! ----- Compute jacobian
         jac = sqrt (nx*nx + ny*ny + nz*nz)
+
 ! ----- Get value of normal speed
         call evalNormalSpeed(l_func, l_time , time    ,&
                              nno   , ndim   , ipg     ,&
                              ivf   , jv_geom, jv_speed,&
                              vnor)
+
 ! ----- Compute vector
         do i = 1, nno
             ii = ndofbynode*i
@@ -150,6 +147,7 @@ character(len=16), intent(in) :: option, nomte
                                jac*zr(ipoids+ipg-1) *&
                                zr(ivf+ldec+i-1) * vnor * rho
         end do
+
     end do
 !
 end subroutine

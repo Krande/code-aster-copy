@@ -59,13 +59,13 @@ class MEFSSE2P(Element):
             para_out = ((SP.PVECTUR, MVECTUR),),
         ),
 
-        OP.CHAR_MECA_VNOR(te=384,
+        OP.CHAR_MECA_VFAC(te=384,
             para_in  = ((SP.PGEOMER, LC.EGEOM2D), (SP.PMATERC, LC.CMATERC),
                         (SP.PVITEFR, LC.EVITEFR),),
             para_out = ((SP.PVECTUR, MVECTUR), ),
         ),
 
-        OP.CHAR_MECA_VNOR_F(te=384,
+        OP.CHAR_MECA_VFAC_F(te=384,
             para_in  = ((SP.PGEOMER, LC.EGEOM2D), (SP.PMATERC, LC.CMATERC),
                         (SP.PVITEFF, LC.EVITEFF),),
             para_out = ((SP.PVECTUR, MVECTUR), ),
