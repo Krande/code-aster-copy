@@ -167,6 +167,11 @@ def post_newmark_ops(self,**args):
                                    UNION = grpma,),)
 
  ### RECUPERATION DES POSITIONS DU CERCLE DE GLISSEMENT
+  fac_cercle = 1.
+  if args['POSITION'] is not None  :
+    if args['POSITION'] is "AMONT":
+        fac_cercle = -1.
+
   if args['RAYON'] is not None  :
     TYPE = 'CERCLE'
     r = args['RAYON']
@@ -441,16 +446,18 @@ def post_newmark_ops(self,**args):
     cohesionL = __chCPLG.EXTR_COMP('X2',[])
 
     available_shear,static_shear = get_static_shear(SIGN_stat.valeurs,
-                                              SIGTN_stat.valeurs,phiL.valeurs,cohesionL.valeurs)
+                                              SIGTN_stat.valeurs,phiL.valeurs,
+                                              cohesionL.valeurs)
     available_shear_v,static_shear_v = get_static_shear_vector(SIGN_stat.valeurs,
-                                              SIGTN_stat.valeurs,phiL.valeurs,cohesionL.valeurs)
+                                              SIGTN_stat.valeurs,phiL.valeurs,
+                                              cohesionL.valeurs)
 
-    FSp = available_shear / (static_shear)
+    FSp = fac_cercle * available_shear / (static_shear)
 
     FSpL = []
     for k in range(len(available_shear_v)):
       try:
-        FSpL.append(available_shear_v[k] / (static_shear_v[k] ))
+        FSpL.append(fac_cercle * available_shear_v[k] / (static_shear_v[k] ))
       except:
         FSpL.append(0.)
 
@@ -712,12 +719,12 @@ def post_newmark_ops(self,**args):
 
       ##### CALCUL DU FACTEUR DE SECURITE
 
-      FSp = available_shear / (static_shear - dynamic_shear)
+      FSp = fac_cercle * available_shear / (static_shear - dynamic_shear)
 
       FSpL = []
       for k in range(len(available_shear_v)):
         try:
-          FSpL.append(available_shear_v[k] / (static_shear_v[k] - dynamic_shear_v[k]))
+          FSpL.append(fac_cercle * available_shear_v[k] / (static_shear_v[k] - dynamic_shear_v[k]))
         except:
           FSpL.append(0.)
 
@@ -744,8 +751,8 @@ def post_newmark_ops(self,**args):
     forcey = fresu.values()['DY']
     time = fresu.values()['INST']
 
-    accyFLI = np.array(forcey)/masse
-    accxFLI = np.array(forcex)/masse
+    accyFLI = fac_cercle * np.array(forcey)/masse
+    accxFLI = fac_cercle * np.array(forcex)/masse
 
     __accyFL = DEFI_FONCTION(NOM_RESU = 'ACCE_MOY',
                   NOM_PARA = 'INST',

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,6 +43,7 @@ POST_NEWMARK = MACRO(nom="POST_NEWMARK",
                             GROUP_MA_LIGNE = SIMP(statut='f',typ=grma,max='**',fr="GROUP_MA associé à la ligne de glissement"),
 
                         ),
+                        POSITION = SIMP(statut='f',typ='TXM',into=("AMONT","AVAL",),defaut="AVAL"),
                         RESULTAT = SIMP(statut='f',typ=(dyna_trans,evol_noli,),fr="Concept résultat du calcul dynamique"),
                         RESULTAT_PESANTEUR = SIMP(statut='f',typ=(evol_noli,evol_elas),fr="Champ des contraintes issu du résultat du calcul à la pesanteur"),
                         b_RESULTAT_PESANTEUR = BLOC ( condition ="""exists("RESULTAT_PESANTEUR")""",
