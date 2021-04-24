@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,23 +15,37 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine cbimpe(char, noma, ligrmo, fonree)
-    implicit   none
+!
+subroutine cbimpe(load, mesh)
+!
+implicit none
+!
 #include "asterc/getfac.h"
 #include "asterfort/caimpe.h"
-    character(len=4) :: fonree
-    character(len=8) :: char, noma
-    character(len=*) :: ligrmo
-    integer :: nbfac
-    character(len=16) :: motfac
-!     ------------------------------------------------------------------
 !
-    motfac = 'IMPE_FACE'
-    call getfac(motfac, nbfac)
+character(len=8), intent(in) :: load, mesh
 !
-    if (nbfac .ne. 0) then
-        call caimpe(char, ligrmo, noma, fonree)
+! --------------------------------------------------------------------------------------------------
+!
+! Loads affectation - Acoustic
+!
+! Treatment of load IMPE_FACE
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  load             : load
+! In  mesh             : mesh
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: nbOcc
+    character(len=16), parameter :: keywFact = 'IMPE_FACE'
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call getfac(keywFact, nbOcc)
+    if (nbOcc .ne. 0) then
+        call caimpe(load, mesh, nbOcc)
     endif
 !
 end subroutine

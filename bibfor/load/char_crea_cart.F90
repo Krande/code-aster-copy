@@ -70,16 +70,15 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
     character(len=13) :: obje_pref
     character(len=8) :: physQuantity(LOAD_MAP_NBMAX)
     character(len=4) :: mapType(LOAD_MAP_NBMAX)
-    integer :: jvalv, iMap, i_cmp, iret
+    integer :: jvValv, iMap, i_cmp, iret
     aster_logical :: l_init(LOAD_MAP_NBMAX), createMap
     character(len=8), pointer :: ncmp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
+
 ! - Initializations
-!
     nbMap        = 0
     map          = ' '
     nbCmp        = 0
@@ -87,20 +86,17 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
     physQuantity = ' '
     mapType      = ' '
     l_init       = ASTER_FALSE
-!
+
 ! - Create or not the map ?
-!
     createMap = ASTER_TRUE
     if (present(createMap_)) then
         createMap = createMap_
     endif
-!
+
 ! - Prefix of <CARTE> objects
-!
     call lisnnl(phenom, load, obje_pref)
-!
+
 ! - Number of <CARTE> objects
-!
     if (loadType .eq. 'EFFE_FOND') then
         nbMap = 2
     else if (loadType .eq. 'ONDE_PLANE') then
@@ -121,13 +117,16 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         nbMap = 1
     else if (loadType .eq. 'INTE_ELEC') then
         nbMap = 1
+    else if (loadType .eq. 'VITE_FACE') then
+        nbMap = 1
+    else if (loadType .eq. 'IMPE_FACE') then
+        nbMap = 1
     else
         ASSERT(ASTER_FALSE)
     endif
     ASSERT(nbMap .le. LOAD_MAP_NBMAX)
-!
-! - Name of the <CARTE> - TODO: using lisdef utility
-!
+
+! - Name of the <CARTE>
     if (loadType  .eq.  'EFFE_FOND') then
         map(1) = obje_pref(1:13)//'.EFOND'
         map(2) = obje_pref(1:13)//'.PREFF'
@@ -150,12 +149,15 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         map(1) = obje_pref(1:13)//'.FELEC'
     else if (loadType .eq. 'INTE_ELEC') then
         map(1) = obje_pref(1:13)//'.FL1'
+    else if (loadType .eq. 'VITE_FACE') then
+        map(1) = obje_pref(1:13)//'.VFACE'
+    else if (loadType .eq. 'IMPE_FACE') then
+        map(1) = obje_pref(1:13)//'.IMPED'
     else
         ASSERT(ASTER_FALSE)
     endif
-!
-! - Name of the <GRANDEUR> - TODO: using lisdef utility
-!
+
+! - Name of the <GRANDEUR>
     if (loadType  .eq.  'EFFE_FOND') then
         if (valeType .eq. 'REEL') then
             physQuantity(1) = 'NEUT_R'
@@ -227,12 +229,23 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         else
             ASSERT(ASTER_FALSE)
         endif
+    else if (loadType .eq. 'VITE_FACE') then
+        if (valeType .eq. 'COMP') then
+            physQuantity(1) = 'VFAC_C'
+        else
+            ASSERT(ASTER_FALSE)
+        endif
+    else if (loadType .eq. 'IMPE_FACE') then
+        if (valeType .eq. 'COMP') then
+            physQuantity(1) = 'IMPE_C'
+        else
+            ASSERT(ASTER_FALSE)
+        endif
     else
         ASSERT(ASTER_FALSE)
     endif
-!
-! - Type of the <CARTE> - TODO: using lisdef utility
-!
+
+! - Type of the <CARTE>
     if (loadType  .eq.  'EFFE_FOND') then
         if (valeType  .eq.  'REEL') then
             mapType(1) = 'R'
@@ -304,12 +317,23 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         else
             ASSERT(ASTER_FALSE)
         endif
+    else if (loadType .eq. 'VITE_FACE') then
+        if (valeType  .eq. 'COMP') then
+            mapType(1) = 'C'
+        else
+            ASSERT(ASTER_FALSE)
+        endif
+    else if (loadType .eq. 'IMPE_FACE') then
+        if (valeType  .eq.  'COMP') then
+            mapType(1) = 'C'
+        else
+            ASSERT(ASTER_FALSE)
+        endif
     else
         ASSERT(ASTER_FALSE)
     endif
-!
-! - Components of the <CARTE> - TODO: using lisdef utility
-!
+
+! - Components of the <CARTE>
     if (loadType  .eq.  'EFFE_FOND') then
         nbCmp(1) = 1
         nbCmp(2) = 1
@@ -374,12 +398,17 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         nbCmp(1) = 2
         cmpName(1, 1) = 'Z1'
         cmpName(1, 2) = 'Z2'
+    else if (loadType .eq. 'VITE_FACE') then
+        nbCmp(1) = 1
+        cmpName(1, 1) = 'VITE'
+    else if (loadType .eq. 'IMPE_FACE') then
+        nbCmp(1) = 1
+        cmpName(1, 1) = 'IMPE'
     else
         ASSERT(ASTER_FALSE)
     endif
-!
+
 ! - Creation of the <CARTE>
-!
     if (createMap) then
         do iMap = 1,  nbMap
             call exisd('CARTE', map(iMap), iret)
@@ -391,22 +420,23 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
             endif
         enddo
     endif
-!
+
 ! - Initialization of the <CARTE>
-!
     if (createMap) then
         do iMap = 1,  nbMap
             if (l_init(iMap)) then
                 call jeveuo(map(iMap)//'.NCMP', 'E', vk8=ncmp)
-                call jeveuo(map(iMap)//'.VALV', 'E', jvalv)
+                call jeveuo(map(iMap)//'.VALV', 'E', jvValv)
                 do i_cmp = 1,  nbCmp(iMap)
                     ncmp(i_cmp) = cmpName(iMap,i_cmp)
                     if (mapType(iMap) .eq. 'R') then
-                        zr(jvalv-1+i_cmp) = 0.d0
+                        zr(jvValv-1+i_cmp) = 0.d0
+                    elseif (mapType(iMap) .eq. 'C') then
+                        zc(jvValv-1+i_cmp) = (0.d0, 0.d0)
                     else if (mapType(iMap) .eq. 'K8') then
-                        zk8(jvalv-1+i_cmp) = '&FOZERO'
+                        zk8(jvValv-1+i_cmp) = '&FOZERO'
                     else if (mapType(iMap) .eq. 'K16') then
-                        zk16(jvalv-1+i_cmp) = ' '
+                        zk16(jvValv-1+i_cmp) = ' '
                     else
                         ASSERT(ASTER_FALSE)
                     endif

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine charac(load, vale_type)
+! person_in_charge: mickael.abbas at edf.fr
+!
+subroutine charac(load)
 !
 implicit none
 !
@@ -27,16 +28,15 @@ implicit none
 #include "asterfort/cbimpe.h"
 #include "asterfort/cbvite.h"
 #include "asterfort/cormgi.h"
+#include "asterfort/initel.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/initel.h"
+#include "asterfort/lisnnl.h"
 #include "asterfort/utmess.h"
+
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=4), intent(in) :: vale_type
-    character(len=8), intent(in) :: load
+character(len=8), intent(in) :: load
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,60 +46,56 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
-! In  vale_type : affected value type (real, complex or function)
-! In  load      : name of load
+! In  load             : load
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_dim, iret
-    character(len=4) :: vale_type_acou
+    character(len=16), parameter :: phenom = 'ACOUSTIQUE'
+    character(len=4), parameter :: phenomS = 'ACOU'
+    character(len=16), parameter :: command = 'AFFE_CHAR_ACOU'
+    character(len=4), parameter :: valeType = 'COMP', coefType = 'REEL'
+    character(len=16), parameter :: keywFactEnforceDOF = 'PRES_IMPO'
+    integer :: dimeModel, iret
     character(len=8) :: mesh, model
-    character(len=16) :: keywordfact, command
-    character(len=19) :: ligrch, ligrmo
-    character(len=8), pointer :: p_ligrch_lgrf(:) => null()
+    character(len=13) :: loadDescBase
+    character(len=19) :: loadLigrel, modelLigrel
+    character(len=8), pointer :: loadLigrelLgrf(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
+
 ! - Mesh, Ligrel for model, dimension of model
-!
-    command = 'AFFE_CHAR_ACOU'
-    call cagene(load, command, ligrmo, mesh, nb_dim)
-    model = ligrmo(1:8)
-    if (nb_dim .gt. 3) then
+    call cagene(load, command, modelLigrel, mesh, dimeModel)
+    model = modelLigrel(1:8)
+    if (dimeModel .gt. 3) then
         call utmess('A', 'CHARGES2_4')
     endif
-!
-! - VITE_FACE
-!
-    call cbvite(load, mesh, ligrmo, vale_type)
-!
-! - IMPE_FACE
-!
-    call cbimpe(load, mesh, ligrmo, vale_type)
-!
-! - PRES_IMPO
-!
-    keywordfact    = 'PRES_IMPO'
-    vale_type_acou = 'COMP'
-    call caddli(keywordfact, load, mesh, ligrmo, vale_type_acou)
-!
-! - LIAISON_UNIF
-!
-    call cagrou(load, mesh, vale_type, 'ACOU')
-!
+
+! - Get Ligrel for load
+    call lisnnl(phenom, load, loadDescBase)
+    loadLigrel = loadDescBase//'.LIGRE'
+
+! - Load VITE_FACE
+    call cbvite(load, mesh)
+
+! - Load IMPE_FACE
+    call cbimpe(load, mesh)
+
+! - Kinematic PRES_IMPO
+    call caddli(keywFactEnforceDOF, load, mesh, modelLigrel, valeType)
+
+! - Kinematic LIAISON_UNIF
+    call cagrou(load, mesh, coefType, phenomS)
+
 ! - Update loads <LIGREL>
-!
-    ligrch = load//'.CHAC.LIGRE'
-    call jeexin(ligrch//'.LGRF', iret)
+    call jeexin(loadLigrel//'.LGRF', iret)
     if (iret .ne. 0) then
-        call adalig(ligrch)
-        call cormgi('G', ligrch)
-        call jeecra(ligrch//'.LGRF', 'DOCU', cval = 'ACOU')
-        call initel(ligrch)
-        call jeveuo(ligrch//'.LGRF', 'E', vk8 = p_ligrch_lgrf)
-        p_ligrch_lgrf(2) = model
+        call adalig(loadLigrel)
+        call cormgi('G', loadLigrel)
+        call jeecra(loadLigrel//'.LGRF', 'DOCU', cval = phenomS)
+        call initel(loadLigrel)
+        call jeveuo(loadLigrel//'.LGRF', 'E', vk8 = loadLigrelLgrf)
+        loadLigrelLgrf(2) = model
     endif
 !
 end subroutine
