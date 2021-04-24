@@ -42,7 +42,7 @@ TAB_C1D = CREA_TABLE(RESU=_F(RESULTAT=RESU_C1D,
                              NOM_CMP=('DY','DZ'),
                              GROUP_MA=('TG_B_B')))
 
-TEST_TABLE(VALE_CALC=0.0013849981066704218,
+TEST_TABLE(VALE_CALC=0.0013575707419075564,
            NOM_PARA='DY',
            TYPE_TEST='MAX',
            TABLE=TAB_C1D)
