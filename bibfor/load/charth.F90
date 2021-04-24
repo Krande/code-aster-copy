@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine charth(load, vale_type)
+! person_in_charge: mickael.abbas at edf.fr
+!
+subroutine charth(load, valeType)
 !
 implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/adalig.h"
+#include "asterfort/assert.h"
 #include "asterfort/caddli.h"
 #include "asterfort/caechp.h"
 #include "asterfort/cagene.h"
@@ -44,13 +45,12 @@ implicit none
 #include "asterfort/jeecra.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/lisnnl.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verif_affe.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=4), intent(in) :: vale_type
-    character(len=8), intent(in) :: load
+character(len=8), intent(in) :: load
+character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,176 +60,142 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
-! In  vale_type : affected value type (real, complex or function)
-! In  load      : name of load
+! In  load             : load
+! In  valeType         : affected value type (real, complex or function)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_dim, iret
+    character(len=16), parameter :: phenom = 'THERMIQUE'
+    character(len=4), parameter :: phenomS = 'THER'
+    character(len=16), parameter :: command = 'AFFE_CHAR_THER'
+    character(len=16), parameter :: keywFactEnforceDOF = 'TEMP_IMPO'
+    integer :: dimeModel, iret
     character(len=8) :: mesh, model
-    character(len=16) :: keywordfact, command
-    character(len=19) :: ligrch, ligrmo
-    character(len=8), pointer :: p_ligrch_lgrf(:) => null()
+    character(len=13) :: loadDescBase
+    character(len=19) :: loadLigrel, modelLigrel
+    character(len=8), pointer :: loadLigrelLgrf(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
-!
+
 ! - Mesh, Ligrel for model, dimension of model
-!
-    command = 'AFFE_CHAR_THER'
-    call cagene(load, command, ligrmo, mesh, nb_dim)
-    model  = ligrmo(1:8)
-    if (nb_dim .gt. 3) then
+    call cagene(load, command, modelLigrel, mesh, dimeModel)
+    model = modelLigrel(1:8)
+    if (dimeModel .gt. 3) then
         call utmess('A', 'CHARGES2_4')
     endif
-!
-! - Ligrel for loads
-!
-    ligrch = load//'.CHTH.LIGRE'
-!
-    if (vale_type .eq. 'REEL') then
-!
+
+! - Get Ligrel for load
+    call lisnnl(phenom, load, loadDescBase)
+    loadLigrel = loadDescBase//'.LIGRE'
+
+    if (valeType .eq. 'REEL') then
+
 ! ----- SOURCE
-!
-        call cbsour(load, mesh, ligrmo, nb_dim, vale_type)
-!
+        call cbsour(load, mesh, modelLigrel, dimeModel, valeType)
+
 ! ----- SOUR_NL
-!
-        call cbsonl(load, mesh, ligrmo, nb_dim, vale_type)
-!
+        call cbsonl(load, mesh, modelLigrel, dimeModel, valeType)
+
 ! ----- CONVECTION
-!
         call cbconv(load)
-!
+
 ! ----- FLUX_REP
-!
-        call cbflux(load, mesh, ligrmo, nb_dim, vale_type)
-!
+        call cbflux(load, mesh, modelLigrel, dimeModel, valeType)
+
 ! ----- FLUX_NL
-!
-        call cbflnl(load, mesh, ligrmo, vale_type)
-!
+        call cbflnl(load, mesh, modelLigrel, valeType)
+
 ! ----- RAYONNEMENT
-!
-        call cbrayo(load, mesh, ligrmo, vale_type)
-!
+        call cbrayo(load, mesh, modelLigrel, valeType)
+
 ! ----- ECHANGE
-!
-        call cbecha(load, mesh, ligrmo, nb_dim, vale_type)
-!
+        call cbecha(load, mesh, modelLigrel, dimeModel, valeType)
+
 ! ----- ECHANGE_PAROI
-!
-        call caechp(load, ligrch, ligrmo, mesh, vale_type, &
-                    nb_dim)
-!
+        call caechp(load, loadLigrel, modelLigrel, mesh, valeType, dimeModel)
+
 ! ----- EVOL_CHAR
-!
-        call cbprca('THERMIQUE', load)
-!
+        call cbprca(phenom, load)
+
 ! ----- GRADIENT INITIAL
-!
-        call cbgrai(load, mesh, ligrmo, vale_type)
-!
+        call cbgrai(load, mesh, modelLigrel, valeType)
+
 ! ----- TEMP_IMPO
-!
-        keywordfact = 'TEMP_IMPO'
-        call caddli(keywordfact, load, mesh, ligrmo, vale_type)
-!
+        call caddli(keywFactEnforceDOF, load, mesh, modelLigrel, valeType)
+
 ! ----- LIAISON_DDL
-!
-        call caliai(vale_type, load, 'THER')
-!
+        call caliai(valeType, load, phenomS)
+
 ! ----- LIAISON_GROUP
-!
-        call caliag(vale_type, load, 'THER')
-!
+        call caliag(valeType, load, phenomS)
+
 ! ----- LIAISON_UNIF
-!
-        call cagrou(load, mesh, vale_type, 'THER')
-!
+        call cagrou(load, mesh, valeType, phenomS)
+
 ! ----- LIAISON_CHAMNO
-!
-        call calich(load, 'THER')
-!
+        call calich(load, phenomS)
+
 ! ----- LIAISON_MAIL
-!
-        call calirc('THERMIQUE', load, mesh)
-!
-    else if (vale_type .eq. 'FONC') then
-!
+        call calirc(phenom, load, mesh)
+
+    else if (valeType .eq. 'FONC') then
+
 ! ----- SOURCE
-!
-        call cbsour(load, mesh, ligrmo, nb_dim, vale_type)
-!
+        call cbsour(load, mesh, modelLigrel, dimeModel, valeType)
+
 ! ----- SOUR_NL
-!
-        call cbsonl(load, mesh, ligrmo, nb_dim, vale_type)
-!
+        call cbsonl(load, mesh, modelLigrel, dimeModel, valeType)
+
 ! ----- CONVECTION
-!
         call cbconv(load)
-!
+
 ! ----- FLUX_REP
-!
-        call cbflux(load, mesh, ligrmo, nb_dim, vale_type)
-!
+        call cbflux(load, mesh, modelLigrel, dimeModel, valeType)
+
 ! ----- FLUX_NL
-!
-        call cbflnl(load, mesh, ligrmo, vale_type)
-!
+        call cbflnl(load, mesh, modelLigrel, valeType)
+
 ! ----- RAYONNEMENT
-!
-        call cbrayo(load, mesh, ligrmo, vale_type)
-!
+        call cbrayo(load, mesh, modelLigrel, valeType)
+
 ! ----- ECHANGE
-!
-        call cbecha(load, mesh, ligrmo, nb_dim, vale_type)
-!
+        call cbecha(load, mesh, modelLigrel, dimeModel, valeType)
+
 ! ----- ECHANGE_PAROI
-!
-        call caechp(load, ligrch, ligrmo, mesh, vale_type,&
-                    nb_dim)
-!
+        call caechp(load, loadLigrel, modelLigrel, mesh, valeType, dimeModel)
+
 ! ----- GRADIENT INITIAL
-!
-        call cbgrai(load, mesh, ligrmo, vale_type)
-!
+        call cbgrai(load, mesh, modelLigrel, valeType)
+
 ! ----- TEMP_IMPO
-!
-        keywordfact = 'TEMP_IMPO'
-        call caddli(keywordfact, load, mesh, ligrmo, vale_type)
-!
+        call caddli(keywFactEnforceDOF, load, mesh, modelLigrel, valeType)
+
 ! ----- LIAISON_DDL
-!
-        call caliai(vale_type, load, 'THER')
-!
+        call caliai(valeType, load, phenomS)
+
 ! ----- LIAISON_GROUP
-!
-        call caliag(vale_type, load, 'THER')
-!
+        call caliag(valeType, load, phenomS)
+
 ! ----- LIAISON_UNIF
-!
-        call cagrou(load, mesh, vale_type, 'THER')
+        call cagrou(load, mesh, valeType, phenomS)
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
+
     endif
-!
+
 ! - Update loads <LIGREL>
-!
-    call jeexin(ligrch//'.LGRF', iret)
+    call jeexin(loadLigrel//'.LGRF', iret)
     if (iret .ne. 0) then
-        call adalig(ligrch)
-        call cormgi('G', ligrch)
-        call jeecra(ligrch//'.LGRF', 'DOCU', cval = 'THER')
-        call initel(ligrch)
-        call jeveuo(ligrch//'.LGRF', 'E', vk8 = p_ligrch_lgrf)
-        p_ligrch_lgrf(2) = model
+        call adalig(loadLigrel)
+        call cormgi('G', loadLigrel)
+        call jeecra(loadLigrel//'.LGRF', 'DOCU', cval = phenomS)
+        call initel(loadLigrel)
+        call jeveuo(loadLigrel//'.LGRF', 'E', vk8 = loadLigrelLgrf)
+        loadLigrelLgrf(2) = model
     endif
-!
+
 ! - Audit assignments
-!
-    call verif_affe(modele=model,sd=load)
+    call verif_affe(modele=model, sd=load)
 !
 end subroutine
