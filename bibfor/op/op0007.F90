@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,64 +15,62 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! person_in_charge: mickael.abbas at edf.fr
+!
 subroutine op0007()
 !
-    implicit none
+implicit none
 !
-#include "jeveux.h"
 #include "asterc/getres.h"
+#include "asterfort/assert.h"
 #include "asterfort/charme.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-
-!
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! COMMAND:  AFFE_CHAR_MECA_*
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    character(len=4) :: vale_type
+    character(len=4) :: valeType
     character(len=8) :: load
     character(len=16) :: command, k16dummy
-    character(len=8), pointer :: p_load_type(:) => null() 
+    character(len=8), pointer :: loadType(:) => null() 
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infmaj()
-!
+
 ! - Which command ?
-!
     call getres(load, k16dummy, command)
     if (command .eq. 'AFFE_CHAR_MECA') then
-        vale_type = 'REEL'
+        valeType = 'REEL'
     else if (command .eq. 'AFFE_CHAR_MECA_F') then
-        vale_type = 'FONC'
+        valeType = 'FONC'
     else if (command .eq. 'AFFE_CHAR_MECA_C') then
-        vale_type = 'COMP'
+        valeType = 'COMP'
+    else
+        ASSERT(ASTER_FALSE)
     endif
-!
+
 ! - Load type
-!
-    call wkvect(load//'.TYPE', 'G V K8', 1, vk8 = p_load_type)
-    if (vale_type.eq.'REEL') then
-        p_load_type(1) = 'MECA_RE'
-    else if (vale_type.eq.'FONC') then
-        p_load_type(1) = 'MECA_FO'
-    else if (vale_type.eq.'COMP') then
-        p_load_type(1) = 'MECA_RI'
+    call wkvect(load//'.TYPE', 'G V K8', 1, vk8 = loadType)
+    if (valeType .eq. 'REEL') then
+        loadType(1) = 'MECA_RE'
+    else if (valeType .eq. 'FONC') then
+        loadType(1) = 'MECA_FO'
+    else if (valeType .eq. 'COMP') then
+        loadType(1) = 'MECA_RI'
+    else
+        ASSERT(ASTER_FALSE)
     endif
-!
+
 ! - Loads treatment
-!
-    call charme(load, vale_type)
+    call charme(load, valeType)
 !
     call jedema()
 end subroutine

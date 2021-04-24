@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine charme(load, vale_type)
+subroutine charme(load, valeType)
 !
 implicit none
 !
@@ -27,11 +27,11 @@ implicit none
 #include "asterfort/cachre.h"
 #include "asterfort/caddli.h"
 #include "asterfort/caddlp.h"
+#include "asterfort/caethm.h"
 #include "asterfort/cafaci.h"
 #include "asterfort/cafond.h"
 #include "asterfort/cafono.h"
 #include "asterfort/cafthm.h"
-#include "asterfort/caethm.h"
 #include "asterfort/cagene.h"
 #include "asterfort/cagrou.h"
 #include "asterfort/caimch.h"
@@ -71,11 +71,12 @@ implicit none
 #include "asterfort/jeecra.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/verif_affe.h"
+#include "asterfort/lisnnl.h"
 #include "asterfort/utmess.h"
+#include "asterfort/verif_affe.h"
 !
-character(len=4), intent(in) :: vale_type
 character(len=8), intent(in) :: load
+character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,103 +86,85 @@ character(len=8), intent(in) :: load
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
-! In  vale_type : affected value type (real, complex or function)
-! In  load      : name of load
+! In  load             : load
+! In  valeType         : affected value type (real, complex or function)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_dim, iret
-    character(len=3) :: klag2
+    character(len=16), parameter :: phenom = 'MECANIQUE'
+    character(len=4), parameter :: phenomS = 'MECA'
+    character(len=16), parameter :: command = 'AFFE_CHAR_MECA'
+    character(len=16), parameter :: keywFactEnforceDOF = 'DDL_IMPO'
+    integer :: dimeModel, iret
+    character(len=3) :: answer
     character(len=8) :: mesh, model
-    character(len=16) :: keywordfact, command
-    character(len=19) :: ligrch, ligrmo
-    character(len=8), pointer :: p_ligrch_lgrf(:) => null()
+    character(len=13) :: loadDescBase
+    character(len=19) :: loadLigrel, modelLigrel
+    character(len=8), pointer :: loadLigrelLgrf(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
+
 ! - Mesh, Ligrel for model, dimension of model
-!
-    command = 'AFFE_CHAR_MECA'
-    call cagene(load, command, ligrmo, mesh, nb_dim)
-    model = ligrmo(1:8)
-    if (nb_dim .gt. 3) then
+    call cagene(load, command, modelLigrel, mesh, dimeModel)
+    model = modelLigrel(1:8)
+    if (dimeModel .gt. 3) then
         call utmess('A', 'CHARGES2_4')
     endif
-!
-! - Ligrel for loads
-!
-    ligrch = load//'.CHME.LIGRE'
-!
-! --------------------------------------------------------------------------------------------------
-!
-!   Others loadings
-!
-! --------------------------------------------------------------------------------------------------
-!
-    if (vale_type .eq. 'REEL') then
-!
+
+! - Get Ligrel for load
+    call lisnnl(phenom, load, loadDescBase)
+    loadLigrel = loadDescBase//'.LIGRE'
+
+! - Others loadings
+    if (valeType .eq. 'REEL') then
+
 ! ----- LIAISON_INTERF
-!
         call calimc(load)
-!
+
 ! ----- RELA_CINE_BP
-!
-        call caprec(load, mesh, ligrmo, vale_type)
-!
+        call caprec(load, mesh, modelLigrel, valeType)
+
 ! ----- IMPE_FACE
-!
-        call cbimpd(load, mesh, ligrmo, vale_type)
-!
+        call cbimpd(load, mesh, modelLigrel, valeType)
+
 ! ----- VITE_FACE
-!
-        call cbvitn(load, mesh, ligrmo, vale_type)
-!
+        call cbvitn(load, mesh, modelLigrel, valeType)
+
 ! ----- ONDE_FLUI
-!
-        call cbonde(load, mesh, vale_type)
-!
+        call cbonde(load, mesh, valeType)
+
 ! ----- FLUX_THM_REP
-!
-        call cafthm(load, mesh, ligrmo, vale_type)
+        call cafthm(load, mesh, modelLigrel, valeType)
+
 ! ----- ECHA_THM
-!
-        call caethm(load, mesh, ligrmo, vale_type)
-!
-!
+        call caethm(load, mesh, modelLigrel, valeType)
+
 ! ----- FORCE_SOL
-!
         call caveis(load)
-!
-! --------------------------------------------------------------------------------------------------
-    else if (vale_type .eq. 'COMP') then
-!
-! --------------------------------------------------------------------------------------------------
-    else if (vale_type .eq. 'FONC') then
-!
+
+    else if (valeType .eq. 'COMP') then
+
+    else if (valeType .eq. 'FONC') then
+
 ! ----- IMPE_FACE
-!
-        call cbimpd(load, mesh, ligrmo, vale_type)
-!
+        call cbimpd(load, mesh, modelLigrel, valeType)
+
 ! ----- VITE_FACE
-!
-        call cbvitn(load, mesh, ligrmo, vale_type)
-!
+        call cbvitn(load, mesh, modelLigrel, valeType)
+
 ! ----- ONDE_PLANE
-!
-        call cbondp(load, mesh, nb_dim, vale_type)
-!
+        call cbondp(load, mesh, dimeModel, valeType)
+
 ! ----- FLUX_THM_REP
-!
-        call cafthm(load, mesh, ligrmo, vale_type)
-!
+        call cafthm(load, mesh, modelLigrel, valeType)
+
 ! ----- ECHA_THM
-!
-        call caethm(load, mesh, ligrmo, vale_type)
-! --------------------------------------------------------------------------------------------------
+        call caethm(load, mesh, modelLigrel, valeType)
+
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
+
     endif
 !
 ! --------------------------------------------------------------------------------------------------
@@ -190,92 +173,72 @@ character(len=8), intent(in) :: load
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (vale_type .eq. 'REEL') then
-!
+    if (valeType .eq. 'REEL') then
+
 ! ----- PRES_REP/FORCE_TUYAU
-!
-        call cbpres(load, mesh, ligrmo, nb_dim, vale_type)
-!
+        call cbpres(load, mesh, modelLigrel, dimeModel, valeType)
+
 ! ----- PRE_EPSI
-!
-        call cbchei(load, mesh, ligrmo, vale_type)
-!
+        call cbchei(load, mesh, modelLigrel, valeType)
+
 ! ----- PRE_SIGM
-!
-        call cbsint(load, mesh, ligrmo, vale_type)
-!
+        call cbsint(load, mesh, modelLigrel, valeType)
+
 ! ----- EFFE_FOND
-!
-        call cafond(load, ligrmo, mesh, nb_dim, vale_type)
-!
+        call cafond(load, modelLigrel, mesh, dimeModel, valeType)
+
 ! ----- EVOL_CHAR
-!
-        call cbprca('MECANIQUE', load)
-!
+        call cbprca(phenom, load)
+
 ! ----- PESANTEUR
-!
-        call cbpesa(load, mesh, vale_type)
-!
+        call cbpesa(load, mesh, valeType)
+
 ! ----- ROTATION
-!
-        call carota(load, mesh, vale_type)
-!
+        call carota(load, mesh, valeType)
+
 ! ----- FORCE_ELEC
-!
         call cbelec(load, mesh)
-!
+
 ! ----- INTE_ELEC
-!
-        call cblapl(load, ligrmo, mesh)
-!
+        call cblapl(load, modelLigrel, mesh)
+
 ! ----- VECT_ASSE
-!
         call caveas(load)
-!
+
 ! ----- FORCE_NODALE
-!
-        call cafono(load, ligrch, mesh, ligrmo, vale_type)
-!
+        call cafono(load, loadLigrel, mesh, modelLigrel, valeType)
+
 ! ----- FORCE_CONTOUR/FORCE_INTERNE/FORCE_ARETE/FORCE_FACE/FORCE_POUTRE/FORCE_COQUE
-!
-        call char_crea_neum(load, ligrmo, mesh, nb_dim, vale_type)
-!
-! --------------------------------------------------------------------------------------------------
-    else if (vale_type .eq. 'COMP') then
-!
+        call char_crea_neum(load, modelLigrel, mesh, dimeModel, valeType)
+
+    else if (valeType .eq. 'COMP') then
+
 ! ----- FORCE_CONTOUR/FORCE_INTERNE/FORCE_ARETE/FORCE_FACE/FORCE_POUTRE/FORCE_COQUE
-!
-        call char_crea_neum(load, ligrmo, mesh, nb_dim, vale_type)
-!
-! --------------------------------------------------------------------------------------------------
-    else if (vale_type .eq. 'FONC') then
-!
+        call char_crea_neum(load, modelLigrel, mesh, dimeModel, valeType)
+
+    else if (valeType .eq. 'FONC') then
+
 ! ----- PRES_REP/FORCE_TUYAU
-!
-        call cbpres(load, mesh, ligrmo, nb_dim, vale_type)
-!
+        call cbpres(load, mesh, modelLigrel, dimeModel, valeType)
+
 ! ----- PRE_EPSI
-!
-        call cbchei(load, mesh, ligrmo, vale_type)
-!
+        call cbchei(load, mesh, modelLigrel, valeType)
+
 ! ----- PRE_SIGM
-!
-        call cbsint(load, mesh, ligrmo, vale_type)
-!
+        call cbsint(load, mesh, modelLigrel, valeType)
+
 ! ----- EFFE_FOND
-!
-        call cafond(load, ligrmo, mesh, nb_dim, vale_type)
-!
+        call cafond(load, modelLigrel, mesh, dimeModel, valeType)
+
 ! ----- FORCE_NODALE
-!
-        call cafono(load, ligrch, mesh, ligrmo, vale_type)
-!
+        call cafono(load, loadLigrel, mesh, modelLigrel, valeType)
+
 ! ----- FORCE_CONTOUR/FORCE_INTERNE/FORCE_ARETE/FORCE_FACE/FORCE_POUTRE/FORCE_COQUE
-!
-        call char_crea_neum(load, ligrmo, mesh, nb_dim, vale_type)
-! --------------------------------------------------------------------------------------------------
+        call char_crea_neum(load, modelLigrel, mesh, dimeModel, valeType)
+
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
+
     endif
 !
 ! --------------------------------------------------------------------------------------------------
@@ -284,147 +247,116 @@ character(len=8), intent(in) :: load
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (vale_type .eq. 'REEL') then
-!
+    if (valeType .eq. 'REEL') then
+
 ! ----- DDL_POUTRE
-!
-        call caddlp(load, mesh, ligrmo, vale_type)
-!
+        call caddlp(load, mesh, modelLigrel, valeType)
+
 ! ----- DDL_IMPO
-!
-        keywordfact = 'DDL_IMPO'
-        call caddli(keywordfact, load, mesh, ligrmo, vale_type)
-!
+        call caddli(keywFactEnforceDOF, load, mesh, modelLigrel, valeType)
+
 ! ----- ARETE_IMPO
-!
-        call caarei(load, mesh, ligrmo, vale_type)
-!
+        call caarei(load, mesh, modelLigrel, valeType)
+
 ! ----- FACE_IMPO
-!
-        call cafaci(load, mesh, ligrmo, vale_type)
-!
+        call cafaci(load, mesh, modelLigrel, valeType)
+
 ! ----- LIAISON_DDL
-!
-        call caliai(vale_type, load, 'MECA')
-!
+        call caliai(valeType, load, phenomS)
+
 ! ----- LIAISON_MAIL
-!
-        call calirc('MECANIQUE', load, mesh)
-!
+        call calirc(phenom, load, mesh)
+
 ! ----- LIAISON_PROJ
-!
         call calipj(load)
-!
+
 ! ----- LIAISON_CYCL
-!
         call calyrc(load, mesh)
-!
+
 ! ----- LIAISON_ELEM
-!
-        call caliel(vale_type, load)
-!
+        call caliel(valeType, load)
+
 ! ----- LIAISON_CHAMNO
-!
-        call calich(load, 'MECA')
-!
+        call calich(load, phenomS)
+
 ! ----- CHAMNO_IMPO
-!
         call caimch(load)
-!
+
 ! ----- LIAISON_RBE3
-!
         call carbe3(load)
-!
+
 ! ----- LIAISON_OBLIQUE
-!
-        call caliob(load, mesh, ligrmo, vale_type)
-!
+        call caliob(load, mesh, modelLigrel, valeType)
+
 ! ----- LIAISON_GROUP
-!
-        call caliag(vale_type, load, 'MECA')
-!
+        call caliag(valeType, load, phenomS)
+
 ! ----- LIAISON_UNIF
-!
-        call cagrou(load, mesh, vale_type, 'MECA')
-!
+        call cagrou(load, mesh, valeType, phenomS)
+
 ! ----- LIAISON_SOLIDE
-!
-        call caliso(load, mesh, ligrmo, vale_type)
-!
+        call caliso(load, mesh, modelLigrel, valeType)
+
 ! ----- LIAISON_COQUE
-!
-        call calicp(load, mesh, ligrmo, vale_type)
-! --------------------------------------------------------------------------------------------------
-    else if (vale_type .eq. 'COMP') then
-!
+        call calicp(load, mesh, modelLigrel, valeType)
+
+    else if (valeType .eq. 'COMP') then
+
 ! ----- DDL_IMPO
-!
-        keywordfact = 'DDL_IMPO'
-        call caddli(keywordfact, load, mesh, ligrmo, vale_type)
-!
+        call caddli(keywFactEnforceDOF, load, mesh, modelLigrel, valeType)
+
 ! ----- LIAISON_DDL
-!
-        call caliai(vale_type, load, 'MECA')
-! --------------------------------------------------------------------------------------------------
-    else if (vale_type .eq. 'FONC') then
-!
+        call caliai(valeType, load, phenomS)
+
+    else if (valeType .eq. 'FONC') then
+
 ! ----- DDL_IMPO
-!
-        keywordfact = 'DDL_IMPO'
-        call caddli(keywordfact, load, mesh, ligrmo, vale_type)
-!
+        call caddli(keywFactEnforceDOF, load, mesh, modelLigrel, valeType)
+
 ! ----- FACE_IMPO
-!
-        call cafaci(load, mesh, ligrmo, vale_type)
-!
+        call cafaci(load, mesh, modelLigrel, valeType)
+
 ! ----- LIAISON_DDL
-!
-        call caliai(vale_type, load, 'MECA')
-!
+        call caliai(valeType, load, phenomS)
+
 ! ----- LIAISON_OBLIQUE
-!
-        call caliob(load, mesh, ligrmo, vale_type)
-!
+        call caliob(load, mesh, modelLigrel, valeType)
+
 ! ----- LIAISON_GROUP
-!
-        call caliag(vale_type, load, 'MECA')
-!
+        call caliag(valeType, load, phenomS)
+
 ! ----- LIAISON_UNIF
-!
-        call cagrou(load, mesh, vale_type, 'MECA')
-!
+        call cagrou(load, mesh, valeType, phenomS)
+
 ! ----- LIAISON_COQUE
-!
-        call calicp(load, mesh, ligrmo, vale_type)
-! --------------------------------------------------------------------------------------------------
+        call calicp(load, mesh, modelLigrel, valeType)
+
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
+
     endif
-!
+
 ! - Update loads <LIGREL>
-!
-    call jeexin(ligrch//'.LGRF', iret)
+    call jeexin(loadLigrel//'.LGRF', iret)
     if (iret .ne. 0) then
-        call adalig(ligrch)
-        call cormgi('G', ligrch)
-        call jeecra(ligrch//'.LGRF', 'DOCU', cval = 'MECA')
-        call initel(ligrch)
-        call jeveuo(ligrch//'.LGRF', 'E', vk8 = p_ligrch_lgrf)
-        p_ligrch_lgrf(2) = model
-        call getvtx(' ', 'DOUBLE_LAGRANGE', scal=klag2)
-        if( klag2.eq.'NON' ) then
-            p_ligrch_lgrf(3) = 'LAG1'
+        call adalig(loadLigrel)
+        call cormgi('G', loadLigrel)
+        call jeecra(loadLigrel//'.LGRF', 'DOCU', cval = phenomS)
+        call initel(loadLigrel)
+        call jeveuo(loadLigrel//'.LGRF', 'E', vk8 = loadLigrelLgrf)
+        loadLigrelLgrf(2) = model
+        call getvtx(' ', 'DOUBLE_LAGRANGE', scal = answer)
+        if( answer .eq. 'NON' ) then
+            loadLigrelLgrf(3) = 'LAG1'
         endif
     endif
-!
+
 ! - Check mesh orientation (normals)
-!
-    if (vale_type .ne. 'COMP') then
-        call chveno(vale_type, mesh, model)
+    if (valeType .ne. 'COMP') then
+        call chveno(valeType, mesh, model)
     endif
-!
+
 ! - Audit assignments
-!
-    call verif_affe(modele=model,sd=load)
+    call verif_affe(modele=model, sd=load)
 !
 end subroutine
