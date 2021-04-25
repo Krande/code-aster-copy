@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cme_getpara(option      ,&
-                       model       , cara_elem, mate, mateco, compor_mult,&
-                       v_list_load8, nb_load  ,&
-                       rigi_meca   , mass_meca,&
-                       time_curr   , time_incr, nh       ,&
-                       sigm        , strx     , disp)
+subroutine cmeGetParameters(option      ,&
+                            model       , caraElem    , mate, mateco, comporMult,&
+                            listLoadK8  , nbLoad      ,&
+                            rigiMatrElem, massMatrElem,&
+                            timeCurr    , timeIncr    , modeFourier,&
+                            sigm        , strx        , disp)
 !
 implicit none
 !
@@ -38,20 +38,14 @@ implicit none
 #include "asterfort/get_load8.h"
 !
 character(len=16), intent(out) :: option
-character(len=8), intent(out) :: model
-character(len=8), intent(out) :: cara_elem
-character(len=24), intent(out) :: mate, mateco
-character(len=24), intent(out) :: compor_mult
-character(len=8), pointer :: v_list_load8(:)
-integer, intent(out) :: nb_load
-character(len=19), intent(out) :: rigi_meca
-character(len=19), intent(out) :: mass_meca
-real(kind=8), intent(out) :: time_curr
-real(kind=8), intent(out) :: time_incr
-integer, intent(out) :: nh
-character(len=8), intent(out) :: sigm
-character(len=8), intent(out) :: strx
-character(len=8), intent(out) :: disp
+character(len=8), intent(out) :: model, caraElem
+character(len=24), intent(out) :: mate, mateco, comporMult
+character(len=8), pointer :: listLoadK8(:)
+integer, intent(out) :: nbLoad
+character(len=19), intent(out) :: rigiMatrElem, massMatrElem
+real(kind=8), intent(out) :: timeCurr, timeIncr
+integer, intent(out) :: modeFourier
+character(len=8), intent(out) :: sigm, strx, disp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,16 +57,16 @@ character(len=8), intent(out) :: disp
 !
 ! Out option           : option to compute
 ! Out model            : name of the model
-! Out cara_elem        : name of elementary characteristics (field)
+! Out caraElem         : name of elementary characteristics (field)
 ! Out mate             : name of material characteristics (field)
-! Out compor_mult      : multi-behaviours for multifibers beams (field)
-! Out v_list_load8     : pointer to list of loads (K8)
-! Out nb_load          : number of loads
-! Out rigi_meca        : option for mechanic rigidity (useful for damping)
-! Out mass_meca        : option for mechanic mass (useful for damping)
-! Out time_curr        : current time
-! Out time_incr        : time step
-! Out nh               : Fourier mode
+! Out comporMult       : multi-behaviour for multifibers beams (field)
+! Out listLoadK8       : pointer to list of loads (K8)
+! Out nbLoad           : number of loads
+! Out rigiMatrElem     : option for mechanic rigidity (useful for damping)
+! Out massMatrElem     : option for mechanic mass (useful for damping)
+! Out timeCurr         : current time
+! Out timeIncr         : time step
+! Out modeFourier      : Fourier mode
 ! Out sigm             : stress
 ! Out strx             : fibers information
 ! Out disp             : displacements
@@ -86,53 +80,52 @@ character(len=8), intent(out) :: disp
 ! --------------------------------------------------------------------------------------------------
 !
     option       = ' '
-    rigi_meca    = ' '
-    mass_meca    = ' '
-    time_curr    = 0.d0
-    time_incr    = 0.d0
-    nh           = 0
+    rigiMatrElem = ' '
+    massMatrElem = ' '
+    timeCurr     = 0.d0
+    timeIncr     = 0.d0
+    modeFourier  = 0
     model        = ' '
-    cara_elem    = ' '
+    caraElem     = ' '
     mate         = ' '
     mateco       = ' '
-    compor_mult  = ' '
-    v_list_load8 => null()
-    nb_load      = 0
+    comporMult   = ' '
+    listLoadK8 => null()
+    nbLoad       = 0
     sigm         = ' '
     strx         = ' '
     disp         = ' '
-!
+
 ! - Get parameters
-!
     call getvtx(' ', 'OPTION'   , scal=option, nbret=nocc)
     ASSERT(nocc.eq.1)
-    call getvid(' ', 'RIGI_MECA', scal=rigi_meca, nbret=nocc)
+    call getvid(' ', 'RIGI_MECA', scal=rigiMatrElem, nbret=nocc)
     if (nocc .eq. 0) then
-        rigi_meca = ' '
+        rigiMatrElem = ' '
     endif
-    call getvid(' ', 'MASS_MECA', scal=mass_meca, nbret=nocc)
+    call getvid(' ', 'MASS_MECA', scal=massMatrElem, nbret=nocc)
     if (nocc .eq. 0) then
-        mass_meca = ' '
+        massMatrElem = ' '
     endif
-    call getvr8(' ', 'INST', scal=time_curr, nbret=nocc)
+    call getvr8(' ', 'INST', scal=timeCurr, nbret=nocc)
     if (nocc .eq. 0) then
-        time_curr = 0.d0
+        timeCurr = 0.d0
     endif
-    call getvr8(' ', 'INCR_INST', scal=time_incr, nbret=nocc)
+    call getvr8(' ', 'INCR_INST', scal=timeIncr, nbret=nocc)
     if (nocc .eq. 0) then
-        time_incr = 0.d0
+        timeIncr = 0.d0
     endif
-    call getvis(' ', 'MODE_FOURIER', scal=nh, nbret=nocc)
+    call getvis(' ', 'MODE_FOURIER', scal=modeFourier, nbret=nocc)
     if (nocc .eq. 0) then
-        nh = 0
+        modeFourier = 0
     endif
     call getvid(' ', 'MODELE', scal=model, nbret=nocc)
     ASSERT(nocc.eq.1)
-    call getvid(' ', 'CARA_ELEM', scal=cara_elem, nbret=nocc)
+    call getvid(' ', 'CARA_ELEM', scal=caraElem, nbret=nocc)
     call dismoi('EXI_RDM', model, 'MODELE', repk=answer)
     if ((nocc.eq.0) .and. (answer.eq.'OUI')) then
         call utmess('A', 'MECHANICS1_39')
-        cara_elem = ' '
+        caraElem = ' '
     endif
     call getvid(' ', 'CHAM_MATER', scal=mate, nbret=nocc)
 
@@ -164,9 +157,10 @@ character(len=8), intent(out) :: disp
     else
         mate = ' '
     endif
-    call get_load8(model, v_list_load8, nb_load)
-! - For multifibers
-    compor_mult = mate(1:8)//'.COMPOR'
+    call get_load8(model, listLoadK8, nbLoad)
+
+! - Get multi-behaviour for multifibers beams
+    comporMult = mate(1:8)//'.COMPOR'
 !
     if (option.eq.'RIGI_GEOM') then
         call getvid(' ', 'SIEF_ELGA', scal=sigm, nbret=nocc)

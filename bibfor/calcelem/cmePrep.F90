@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine cme_prep(option, model, time_curr, time_incr, chtime)
+!
+subroutine cmePrep(optionz, modelz, timeCurr, timeIncr, chtime)
 !
 implicit none
 !
@@ -24,10 +24,8 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/mecact.h"
 !
-character(len=16), intent(in) :: option
-character(len=8), intent(in) :: model
-real(kind=8), intent(in) :: time_curr
-real(kind=8), intent(in) :: time_incr
+character(len=*), intent(in) :: optionz, modelz
+real(kind=8), intent(in) :: timeCurr, timeIncr
 character(len=24), intent(out) :: chtime
 !
 ! --------------------------------------------------------------------------------------------------
@@ -40,25 +38,27 @@ character(len=24), intent(out) :: chtime
 !
 ! In  option           : option to compute
 ! In  model            : name of the model
-! In  time_curr        : current time
-! In  time_incr        : time step
+! In  timeCurr         : current time
+! In  timeIncr         : time step
 ! Out chtime           : time parameters (field)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cmp = 6
-    character(len=8), parameter :: list_cmp(nb_cmp) = (/'INST    ','DELTAT  ','THETA   ',&
-                                                        'KHI     ','R       ','RHO     '/)
-    real(kind=8) :: list_vale(nb_cmp)
+    integer, parameter :: nbCmp = 6
+    character(len=8), parameter :: cmpName(nbCmp) = (/'INST    ','DELTAT  ','THETA   ',&
+                                                      'KHI     ','R       ','RHO     '/)
+    real(kind=8) :: cmpVale(nbCmp)
+    character(len=16) :: option
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    option       = optionz
     chtime       = '&&CHTIME'
-    list_vale(1:6) = [time_curr,time_incr,1.d0,0.d0,0.d0,0.d0]
+    cmpVale(1:6) = [timeCurr, timeIncr, 1.d0, 0.d0, 0.d0, 0.d0]
 !
     if ((option.eq.'RIGI_THER') .or. (option.eq.'MASS_THER')) then
-        call mecact('V', chtime, 'MODELE', model//'.MODELE', 'INST_R',&
-                    ncmp=nb_cmp, lnomcmp=list_cmp, vr=list_vale)
+        call mecact('V', chtime, 'MODELE', modelz, 'INST_R',&
+                    ncmp=nbCmp, lnomcmp=cmpName, vr=cmpVale)
     endif
 !
 end subroutine
