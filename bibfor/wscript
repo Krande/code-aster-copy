@@ -359,11 +359,7 @@ def check_c_fortran_real8(self):
 
 @Configure.conf
 def check_optimization_fcflags(self):
-    """
-    loop optimization error using LOC function in gfortran
-    Debian bug report: http://gcc.gnu.org/bugzilla/show_bug.cgi?id=51267
-    Check if it must be fixed using the 'VOLATILE' statement.
-    """
+    """Check for optimization FCFLAGS."""
     self.setenv('debug')
     self.remove_optflags("FCFLAGS")
     flags = ['-g', '-O0'] + Utils.to_list(self.env['FCFLAGS_ASTER_DEBUG'])
@@ -373,14 +369,17 @@ def check_optimization_fcflags(self):
 
     self.setenv('release')
     testit = partial(self.check_fc, mandatory=False,
-                     compile_filename='testloc.f', execute=True, use=['OPENMP'])
-    self.start_msg('Getting fortran optimization flags')
+                     compile_filename='snippet.f', execute=True)
     flags = [f for f in self.env.FCFLAGS
              if (f.startswith('-O') and f[-1].isdigit()) or f == '-g']
     # remove existing optimization flags
     list(map(self.env.FCFLAGS.remove, flags))
     if not flags:
         flags = ['-O2']
+    self.start_msg('Checking loop optimization with LOC')
+    # Loop optimization error using LOC function in gfortran
+    # GCC bug: http://gcc.gnu.org/bugzilla/show_bug.cgi?id=51267
+    # Check if it must be fixed using the 'VOLATILE' statement.
     # different cases to check
     # '-fno-tree-dse' is a workaround that works with gfortran 4.6
     last_ressort = ['-O0']
@@ -404,8 +403,33 @@ def check_optimization_fcflags(self):
                 break
         if optflag:
             break
+    self.end_msg(legend)
+
+    # GCC bug: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100227
+    self.start_msg('Checking implicit loop in write')
+    res = None
+    for flag in ("", "-fno-frontend-optimize"):
+        out = self.check_fc(fcflags=optflag + [flag],
+                            compile_filename = 'test.F90',
+                            fragment=fragment_write_loop,
+                            execute=True,
+                            mandatory=False,
+                            define_ret=True)
+        try:
+            values = [int(float(i)) for i in out.split()]
+            if values == [2, 4, 6]:
+                res = "%s is required" % repr(flag)
+                optflag.append(flag)
+                break
+        except ValueError:
+            pass
+    if res is None:
+        self.end_msg("failed", "YELLOW")
+    else:
+        self.end_msg(res)
+    self.start_msg('Getting fortran optimization flags')
     self.env.append_unique('FCFLAGS', optflag)
-    self.end_msg('%s (%s)' % (optflag, legend))
+    self.end_msg(optflag)
 
 @Configure.conf
 def check_optional_features(self):
@@ -452,3 +476,16 @@ fragment_with_volatile = """
 """
 
 fragment_without_volatile = fragment_with_volatile.replace("volatile ius", "")
+
+fragment_write_loop = """
+program p
+    implicit none
+    integer, parameter :: nbmode = 3
+    integer :: k
+    real    :: mass(nbmode*2)
+    do k = 1, nbmode*2
+       mass(k) = k
+    end do
+    print *, (mass(k+k), k=1,nbmode)
+  end program
+"""
