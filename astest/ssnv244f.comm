@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -103,11 +103,11 @@ F_VG=DEFI_FONCTION(
                          210,0.,),
                    PROL_DROITE='CONSTANT',);
 
-VGF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_F',
+VGF=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
                  OPERATION='AFFE',
                 MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
-                         NOM_CMP='TEMP',
+                         NOM_CMP='X1',
                          VALE_F= F_VG,),);
 
 VG=CREA_RESU(OPERATION='AFFE',
@@ -128,11 +128,7 @@ CAR_MAT=AFFE_MATERIAU(AFFE=_F(MATER=MATERIAU,
                                  _F(TOUT='OUI',
                                     NOM_VARC='NEUT1',
                                     NOM_CHAM='TEMP',
-                                    EVOL=VG,),),
-                                    VARC_NEUT1=_F(NOM_VARC='NEUT1',
-                                    GRANDEUR='TEMP_R',
-                                    CMP_GD='TEMP',
-                                    CMP_VARC='X1',),);
+                                    EVOL=VG,),),);
 
 CLIM=AFFE_CHAR_MECA(DDL_IMPO=(_F(DX=0.0,
                                  GROUP_NO='COTEG'),

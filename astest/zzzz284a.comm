@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -140,13 +140,25 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 # 2) variable de commande : HYDR
 #--------------------------------
 
+tempFinal = CREA_CHAMP(OPERATION = 'EXTR',
+                       TYPE_CHAM = 'NOEU_TEMP_R',
+                       RESULTAT  = TEMPLIN,
+                       NOM_CHAM  = 'TEMP',
+                       INST      = 0.)
+
+hydrFinal = CREA_CHAMP(OPERATION= 'ASSE',
+                       MODELE    = MO , 
+                       TYPE_CHAM ='NOEU_HYDR_R',
+                       ASSE = _F( CHAM_GD = tempFinal , 
+                                  TOUT ='OUI',
+                                  NOM_CMP = ( 'TEMP'),
+                                  NOM_CMP_RESU =( 'HYDR'), ),
+                      )
+
+
 CHMA2=AFFE_MATERIAU(  MAILLAGE=MA,
                         AFFE=_F(  TOUT = 'OUI', MATER = MAT2),
-                        AFFE_VARC=_F(NOM_VARC='HYDR',  EVOL = TEMPLIN,  NOM_CHAM='TEMP'),
-         VARC_HYDR    =_F(
-           NOM_VARC        ='HYDR',  GRANDEUR        ='TEMP_R',
-           CMP_GD          ='TEMP',  CMP_VARC        ='HYDR',
-         ),
+                        AFFE_VARC=_F(NOM_VARC='HYDR',  CHAM_GD = hydrFinal,),
                         )
 
 

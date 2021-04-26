@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -61,29 +61,6 @@ MATERIAU=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
                      TSTH            =  83.,
                      DIM3            =  3.,),);
 
-# HYDRI=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
-                 # OPERATION='AFFE',
-                 # MAILLAGE=MAIL,
-                 # AFFE=_F(TOUT='OUI',
-                         # NOM_CMP='HYDR',
-                         # VALE=1.0,),);
-
-# HYDRF=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
-                 # OPERATION='AFFE',
-                 # MAILLAGE=MAIL,
-                 # AFFE=_F(TOUT='OUI',
-                         # NOM_CMP='HYDR',
-                         # VALE=1.0,),);
-
-# HYDR=CREA_RESU(OPERATION='AFFE',
-               # TYPE_RESU='EVOL_VARC',
-               # NOM_CHAM='HYDR_NOEU',
-               # AFFE=(
-               # _F(CHAM_GD=HYDRI,
-                  # INST=0.0,),
-               # _F(CHAM_GD=HYDRF,
-                  # INST=100.0,),),);
-
 TEMPI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                  OPERATION='AFFE',
                  MAILLAGE=MAIL,
@@ -107,29 +84,6 @@ TEMP=CREA_RESU(OPERATION='AFFE',
                _F(CHAM_GD=TEMPF,
                   INST=100.0,),),);
 
-# SECHI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
-                 # OPERATION='AFFE',
-                 # MAILLAGE=MAIL,
-                 # AFFE=_F(TOUT='OUI',
-                         # NOM_CMP='TEMP',
-                         # VALE=1.,),);
-
-# SECHF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
-                 # OPERATION='AFFE',
-                 # MAILLAGE=MAIL,
-                 # AFFE=_F(TOUT='OUI',
-                         # NOM_CMP='TEMP',
-                         # VALE=1.,),);
-
-# SECH=CREA_RESU(OPERATION='AFFE',
-               # TYPE_RESU='EVOL_THER',
-               # NOM_CHAM='TEMP',
-               # AFFE=(
-               # _F(CHAM_GD=SECHI,
-                  # INST=0.0,),
-               # _F(CHAM_GD=SECHF,
-                  # INST=100.0,),),);
-
 L_THER=DEFI_LIST_REEL(DEBUT=0,
                   INTERVALLE=_F(JUSQU_A=210,
                                 PAS=1,),);
@@ -140,11 +94,11 @@ F_VG=DEFI_FONCTION(
                          210,0.,),
                    PROL_DROITE='CONSTANT',);
 
-VGF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_F',
+VGF=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
                  OPERATION='AFFE',
                 MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
-                         NOM_CMP='TEMP',
+                         NOM_CMP='X1',
                          VALE_F= F_VG,),);
 
 VG=CREA_RESU(OPERATION='AFFE',
@@ -157,15 +111,6 @@ CAR_MAT=AFFE_MATERIAU(AFFE=_F(MATER=MATERIAU,
                               TOUT='OUI'),
                               MAILLAGE=MAIL,
                       AFFE_VARC=(
-                                   # _F(TOUT='OUI',
-                                    # NOM_VARC='HYDR',
-                                    # EVOL=HYDR,
-                                    # NOM_CHAM='HYDR_NOEU',),
-                                 # _F(TOUT='OUI',
-                                    # NOM_VARC='SECH',
-                                    # EVOL=SECH,
-                                    # NOM_CHAM='TEMP',
-                                    # VALE_REF=1.,),
                                  _F(TOUT='OUI',
                                     NOM_VARC='TEMP',
                                     EVOL=TEMP,
@@ -174,11 +119,7 @@ CAR_MAT=AFFE_MATERIAU(AFFE=_F(MATER=MATERIAU,
                                  _F(TOUT='OUI',
                                     NOM_VARC='NEUT1',
                                     NOM_CHAM='TEMP',
-                                    EVOL=VG,),),
-                                    VARC_NEUT1=_F(NOM_VARC='NEUT1',
-                                    GRANDEUR='TEMP_R',
-                                    CMP_GD='TEMP',
-                                    CMP_VARC='X1',),);
+                                    EVOL=VG,),),);
 
 CLIM=AFFE_CHAR_MECA(DDL_IMPO=(_F(DX=0.0,
                                  GROUP_NO='COTEG'),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -108,18 +108,18 @@ SECH1 = CREA_CHAMP(OPERATION = 'AFFE',
                             VALE = 1.,),
                   );
 
-HYDR0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+HYDR0=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                   OPERATION='AFFE',
                   MODELE=MODELE,
                   AFFE=_F(TOUT = 'OUI',
-                          NOM_CMP='TEMP',
+                          NOM_CMP='HYDR',
                           VALE=0.0,),);
 
-HYDR1=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+HYDR1=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                   OPERATION='AFFE',
                   MODELE=MODELE,
                   AFFE=_F(TOUT = 'OUI',
-                          NOM_CMP='TEMP',
+                          NOM_CMP='HYDR',
                           VALE=10.0,),);
 
 EVOLTEMP=CREA_RESU(OPERATION='AFFE',
@@ -168,10 +168,6 @@ CAR_MAT = AFFE_MATERIAU(
                                    NOM_CHAM='TEMP'
                                    ),
                                  ),
-                    VARC_HYDR    =_F(
-                                     NOM_VARC='HYDR', GRANDEUR ='TEMP_R',
-                                     CMP_GD ='TEMP', CMP_VARC='HYDR',
-                                     ),
                            );
 
 # CONDITIONS AUX LIMITES
