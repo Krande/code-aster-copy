@@ -242,6 +242,10 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
     else if (loadType .eq. 'IMPE_FACE') then
         if (valeType .eq. 'COMP') then
             physQuantity(1) = 'IMPE_C'
+        elseif (valeType .eq. 'REEL') then
+            physQuantity(1) = 'IMPE_R'
+        elseif (valeType .eq. 'FONC') then
+            physQuantity(1) = 'IMPE_F'
         else
             ASSERT(ASTER_FALSE)
         endif
@@ -332,8 +336,12 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
             ASSERT(ASTER_FALSE)
         endif
     else if (loadType .eq. 'IMPE_FACE') then
-        if (valeType  .eq.  'COMP') then
+        if (valeType  .eq. 'COMP') then
             mapType(1) = 'C'
+        elseif (valeType .eq. 'REEL') then
+            mapType(1) = 'R'
+        elseif (valeType .eq. 'FONC') then
+            mapType(1) = 'K8'
         else
             ASSERT(ASTER_FALSE)
         endif

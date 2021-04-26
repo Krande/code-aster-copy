@@ -79,7 +79,7 @@ character(len=8), intent(in) :: load
     call cbvite(phenom, load, mesh, valeType)
 
 ! - Load IMPE_FACE
-    call cbimpe(load, mesh)
+    call cbimpe(phenom, load, mesh, valeType)
 
 ! - Kinematic PRES_IMPO
     call caddli(keywFactEnforceDOF, load, mesh, modelLigrel, valeType)

@@ -53,7 +53,7 @@ implicit none
 #include "asterfort/caveis.h"
 #include "asterfort/cbchei.h"
 #include "asterfort/cbelec.h"
-#include "asterfort/cbimpd.h"
+#include "asterfort/cbimpe.h"
 #include "asterfort/cblapl.h"
 #include "asterfort/cbonde.h"
 #include "asterfort/cbondp.h"
@@ -126,7 +126,7 @@ character(len=4), intent(in) :: valeType
         call caprec(load, mesh, modelLigrel, valeType)
 
 ! ----- IMPE_FACE
-        call cbimpd(load, mesh, modelLigrel, valeType)
+        call cbimpe(phenom, load, mesh, valeType)
 
 ! ----- VITE_FACE
         call cbvite(phenom, load, mesh, valeType)
@@ -148,7 +148,7 @@ character(len=4), intent(in) :: valeType
     else if (valeType .eq. 'FONC') then
 
 ! ----- IMPE_FACE
-        call cbimpd(load, mesh, modelLigrel, valeType)
+        call cbimpe(phenom, load, mesh, valeType)
 
 ! ----- VITE_FACE
         call cbvite(phenom, load, mesh, valeType)

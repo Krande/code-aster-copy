@@ -163,7 +163,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
      &     '.CIMPO'          ,'__ELIM'          ,&
      &     '.FORNO'          ,'.EPSIN'          ,'.SIINT'          ,&
      &     '.PRESS'          ,'.FLUX'           ,'.VFACE'          ,&
-     &     '.IMPE'           ,'__EVOC'          ,'.PESAN'          ,&
+     &     '.IMPED'          ,'__EVOC'          ,'.PESAN'          ,&
      &     '.ROTAT'          ,'.SIGIN'          ,'.FELEC'          ,&
      &     '.FL1'            ,'.ONDE'           ,'.ONDPL'          ,&
      &     '.VEASS'          ,'.F1D2D'          ,'.F3D3D'          ,&

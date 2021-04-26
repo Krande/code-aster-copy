@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -96,7 +96,7 @@ subroutine meimme(modele, nchar, lchar, mate, mateco, matel)
                 lfonc = .false.
             endif
 !           LIGRCH = LCHAR(ICHA)//'.CHME.LIGRE'
-            call exisd('CHAMP_GD', lchar(icha)//'.CHME.IMPE ', iret)
+            call exisd('CHAMP_GD', lchar(icha)//'.CHME.IMPED', iret)
             if (iret .ne. 0) then
                 if (lfonc) then
                     option = 'IMPE_MECA_F'
@@ -105,7 +105,7 @@ subroutine meimme(modele, nchar, lchar, mate, mateco, matel)
                     option = 'IMPE_MECA'
                     lpain(2) = 'PIMPEDR'
                 endif
-                lchin(2) = lchar(icha)//'.CHME.IMPE .DESC'
+                lchin(2) = lchar(icha)//'.CHME.IMPED.DESC'
                 ilires = ilires + 1
                 call codent(ilires, 'D0', lchout(1) (12:14))
                 call calcul('S', option, ligrmo, 3, lchin,&
