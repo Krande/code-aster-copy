@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -136,10 +136,6 @@ Pas d'interpolation possible.
 Erreur de la direction de glissement.
  Angle ALPHA: %(k1)s
  Angle BETA : %(k2)s
-"""),
-
-    83 : _("""
-Arrêt par manque de temps CPU.
 """),
 
     86 : _("""

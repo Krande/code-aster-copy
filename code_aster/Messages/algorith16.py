@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -277,13 +277,6 @@ Risques & conseils :
      - Numéro d'ordre correspondant : %(i2)d
      - Temps moyen par pas de temps : %(r2)f
      - Temps restant     :            %(r3)f
-  """),
-
-    88 : _("""
-   Arrêt par manque de temps CPU au pas de temps : %(i1)d
-     - A l'instant  :                %(r1)f
-     - Temps moyen par pas :         %(r2)f
-     - Temps restant     :           %(r3)f
   """),
 
     89 : _("""
