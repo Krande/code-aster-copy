@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine me2mac(modele, nchar, lchar, mate, mateco, vecel)
+subroutine me2mac(modele, nchar, lchar, mate, mateco, vectElemz)
     implicit none
 !
 !
@@ -38,7 +38,7 @@ subroutine me2mac(modele, nchar, lchar, mate, mateco, vecel)
 #include "asterfort/reajre.h"
 !
     character(len=8) :: modele, lchar(*)
-    character(len=19) :: vecel
+    character(len=*) :: vectElemz
     character(len=24) :: mate, mateco
     integer :: nchar
 ! ----------------------------------------------------------------------
@@ -70,6 +70,7 @@ subroutine me2mac(modele, nchar, lchar, mate, mateco, vecel)
     aster_logical :: lfonc
     character(len=8) :: lpain(5), lpaout(1), k8bid
     character(len=16) :: option
+    character(len=19) :: vectElem
     character(len=24) :: chgeom, lchin(5), lchout(1)
     character(len=24) :: ligrmo, ligrch
 !
@@ -79,18 +80,19 @@ subroutine me2mac(modele, nchar, lchar, mate, mateco, vecel)
 !-----------------------------------------------------------------------
     call jemarq()
 !
+    vectElem = vectElemz
     call megeom(modele, chgeom)
 !
-    call jeexin(vecel//'.RERR', iret)
+    call jeexin(vectElem//'.RERR', iret)
     if (iret .gt. 0) then
-        call jedetr(vecel//'.RERR')
-        call jedetr(vecel//'.RELR')
+        call jedetr(vectElem//'.RERR')
+        call jedetr(vectElem//'.RELR')
     endif
-    call memare('G', vecel, modele, mate, ' ',&
+    call memare('G', vectElem, modele, mate, ' ',&
                 'CHAR_ACOU')
 !
     lpaout(1) = 'PVECTTC'
-    lchout(1) = vecel(1:8)//'.VE000'
+    lchout(1) = vectElem(1:8)//'.VE000'
     ilires = 0
 !
 !     BOUCLE SUR LES CHARGES POUR CALCULER :
@@ -117,7 +119,7 @@ subroutine me2mac(modele, nchar, lchar, mate, mateco, vecel)
                 lfonc = .false.
             endif
 !
-            ligrch = lchar(icha)//'.CHAC.LIGRE      '
+            ligrch = lchar(icha)//'.CHAC.LIGRE'
 !
 !           --  ( CHAR_ACOU_VNOR_F , ISO_FACE ) SUR LE MODELE
 !
@@ -136,7 +138,7 @@ subroutine me2mac(modele, nchar, lchar, mate, mateco, vecel)
                 call calcul('S', option, ligrmo, 3, lchin,&
                             lpain, 1, lchout, lpaout, 'G',&
                             'OUI')
-                call reajre(vecel, lchout(1), 'G')
+                call reajre(vectElem, lchout(1), 'G')
             endif
 !           --   ( ACOU_DDLI_F    , CAL_TI   )  SUR LE LIGREL(CHARGE)
             call exisd('CHAMP_GD', ligrch(1:13)//'.CIMPO', iret)
@@ -154,7 +156,7 @@ subroutine me2mac(modele, nchar, lchar, mate, mateco, vecel)
                 call calcul('S', option, ligrch, 3, lchin,&
                             lpain, 1, lchout, lpaout, 'G',&
                             'OUI')
-                call reajre(vecel, lchout(1), 'G')
+                call reajre(vectElem, lchout(1), 'G')
             endif
         end do
     endif

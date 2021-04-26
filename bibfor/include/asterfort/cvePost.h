@@ -17,11 +17,7 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine me2mac(modele, nchar, lchar, mate, mateco, vectElemz)
-        character(len=8) :: modele
-        integer :: nchar
-        character(len=8) :: lchar(*)
-        character(len=24) :: mate, mateco
-        character(len=*) :: vectElemz
-    end subroutine me2mac
+    subroutine cvePost(vectElemz)
+        character(len=*), intent(in) :: vectElemz
+    end subroutine cvePost
 end interface

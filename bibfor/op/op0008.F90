@@ -15,17 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine op0008()
-    implicit none
-! ......................................................................
-!     COMMANDE:  CALC_VECT_ELEM
 !
-! ......................................................................
+subroutine op0008()
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
+#include "asterfort/cvePost.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
@@ -35,8 +34,6 @@ subroutine op0008()
 #include "asterfort/jecreo.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/me2mac.h"
@@ -44,32 +41,35 @@ subroutine op0008()
 #include "asterfort/me2mth.h"
 #include "asterfort/mecact.h"
 #include "asterfort/rcmfmc.h"
-#include "asterfort/sdmpic.h"
 #include "asterfort/ss2mme.h"
 #include "asterfort/utmess.h"
-#include "asterfort/isParallelMesh.h"
+!
+! --------------------------------------------------------------------------------------------------
+!
+!                       COMMANDE:  CALC_VECT_ELEM
+!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ibid, ich, icha, ncha, nh
-    integer :: n1, n3, n4, n5, n7, n9, iresu,  iexi, nbresu
+    integer :: n1, n3, n4, n5, n7, n9
     real(kind=8) :: time, tps(6), vcmpth(4)
-    character(len=8) :: matez, modele, cara, k8bid, kmpic, mesh
+    character(len=8) :: vectElem, modele, cara, k8bid
     character(len=8) :: nomcmp(6), mo1, ncmpth(4)
     character(len=16) :: type, oper, suropt
-    character(len=19) :: vectElem, resuel
     character(len=24) :: time2, mateco, materi
     aster_logical :: l_ther
-    character(len=24), pointer :: relr(:) => null()
     data nomcmp/'INST    ','DELTAT  ','THETA   ','KHI     ',&
      &     'R       ','RHO     '/
     data ncmpth/'TEMP','TEMP_MIL','TEMP_INF','TEMP_SUP'/
     data vcmpth/4*0.d0/
     data tps/0,2*1.0d0,3*0/
 !
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
     call infmaj()
 !
-    call getres(matez, type, oper)
-    vectElem=matez
+    call getres(vectElem, type, oper)
 !
     call getvtx(' ', 'OPTION', scal=suropt, nbret=n3)
     l_ther = ASTER_FALSE
@@ -176,29 +176,10 @@ subroutine op0008()
         call me2mac(modele, ncha, zk8(icha), materi, mateco, vectElem)
 !
     endif
-!
-!
-!
-!     -- SI vectElem N'EST PAS MPI_COMPLET, ON LE COMPLETE :
-!     ----------------------------------------------------
 
-    call dismoi('NOM_MAILLA', vectElem, 'MATR_ELEM', repk=mesh)
-    if(.not. isParallelMesh(mesh)) then
-        call jelira(vectElem//'.RELR', 'LONMAX', nbresu)
-        call jeveuo(vectElem//'.RELR', 'L', vk24=relr)
-        do iresu = 1, nbresu
-            resuel=relr(iresu)(1:19)
-            call jeexin(resuel//'.RESL', iexi)
-            if (iexi .eq. 0) goto 101
-            call dismoi('MPI_COMPLET', resuel, 'RESUELEM', repk=kmpic)
-            ASSERT((kmpic.eq.'OUI').or.(kmpic.eq.'NON'))
-            if (kmpic .eq. 'NON') call sdmpic('RESUELEM', resuel)
-101         continue
-        end do
-    end if
-!
-!
-!
+! - Post-treatment
+    call cvePost(vectElem)
+
 !
     call jedema()
 end subroutine
