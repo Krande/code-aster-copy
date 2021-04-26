@@ -141,7 +141,10 @@ try:
 except (ImportError, NotImplementedError):
     pass
 else:
-    v = petsc4py.PETSc.Viewer.DRAW(A.comm)
+    v = petsc4py.PETSc.Viewer()
+    A.view(v)
+    v = petsc4py.PETSc.Viewer().createASCII("test.txt")
+    v.pushFormat(petsc4py.PETSc.Viewer.Format.ASCII_MATLAB)
     A.view(v)
 
 monSolver.matrixFactorization(matrAsse)

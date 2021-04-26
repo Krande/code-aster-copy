@@ -24,14 +24,14 @@
 """
 
 import numpy as NP
-from libaster import (AssemblyMatrixDisplacementComplex,
-                      AssemblyMatrixDisplacementReal, assemblyMatrixToPetsc)
+from libaster import (AssemblyMatrixDisplacementComplex, AssemblyMatrixDisplacementReal,
+                      AssemblyMatrixTemperatureReal,
+                      assemblyMatrixToPetsc)
 
 from ..SD.sd_stoc_morse import sd_stoc_morse
 from ..Utilities import injector
 
-_orig_getType = AssemblyMatrixDisplacementReal.getType
-
+_orig_DisplReal_getType = AssemblyMatrixDisplacementReal.getType
 
 @injector(AssemblyMatrixDisplacementReal)
 class ExtendedAssemblyMatrixDisplacementReal(object):
@@ -63,7 +63,7 @@ class ExtendedAssemblyMatrixDisplacementReal(object):
         Returns:
             str: Type name of the matrix.
         """
-        typ = _orig_getType(self).replace("_DEPL_R_DEPL_R", "_DEPL_R")
+        typ = _orig_DisplReal_getType(self).replace("_DEPL_R_DEPL_R", "_DEPL_R")
         return typ
 
     def toPetsc(self):
@@ -301,3 +301,33 @@ class ExtendedAssemblyMatrixDisplacementComplex(object):
                 data[:,elim] = 0.
                 data[elim,elim] = 1.
             return data
+
+@injector(AssemblyMatrixTemperatureReal)
+class ExtendedAssemblyMatrixTemperatureReal(object):
+    cata_sdj = "SD.sd_matr_asse.sd_matr_asse"
+
+    def __getstate__(self):
+        """Return internal state.
+
+        Returns:
+            list: Internal state.
+        """
+        return [self.getDOFNumbering(), ]
+
+    def __setstate__(self, state):
+        """Restore internal state.
+
+        Arguments:
+            state (list): Internal state.
+        """
+        if state[0]:
+            self.setDOFNumbering(state[0])
+
+    def toPetsc(self):
+        """Convert the matrix to a PETSc matrix object.
+
+        Returns:
+            PetscMat: PETSc matrix.
+        """
+        return assemblyMatrixToPetsc(self)
+

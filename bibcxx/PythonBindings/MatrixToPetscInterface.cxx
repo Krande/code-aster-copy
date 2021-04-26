@@ -56,4 +56,16 @@ Returns:
     *Mat*: PETSc matrix.
         )",
              ( py::arg( "matr" ) ) );
+
+    py::def( "assemblyMatrixToPetsc", &assemblyMatrixToPetsc< AssemblyMatrixTemperatureRealPtr >,
+             R"(
+Convert a *AssemblyMatrix* object to a PETSc *Mat* object.
+
+Arguments:
+    matr (*AssemblyMatrix*): code_aster matrix.
+
+Returns:
+    *Mat*: PETSc matrix.
+        )",
+             ( py::arg( "matr" ) ) );
 };
