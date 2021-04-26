@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -102,6 +102,7 @@ character(len=19) :: matele
     character(len=19) :: varc_prev, varc_curr, time_prev
     character(len=24) :: charge, infoch
     character(len=8) :: mesh
+    character(len=24) :: listElemCalc
 !
 ! ----------------------------------------------------------------------
 !
@@ -175,9 +176,10 @@ character(len=19) :: matele
         if (niv .ge. 2) then
             call utmess('I', 'MECANONLINE13_82')
         endif
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk = listElemCalc)
         call memame(optmat, model, ds_material%mater, ds_material%mateco,&
                     carele, instam, ds_constitutive%compor, matele,&
-                    base)
+                    base  , listElemCalc)
 !
 ! --- MATR_ELEM AMORTISSEMENT
 !

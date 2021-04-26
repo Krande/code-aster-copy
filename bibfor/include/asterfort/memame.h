@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,21 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine memame(option , model_    , mate_, mateco_, cara_elem_, time,&
-                      compor_, matr_elem_, base)
-        character(len=*), intent(in) :: option
-        character(len=*), intent(in) :: model_
-        character(len=*), intent(in) :: mate_, mateco_
-        character(len=*), intent(in) :: cara_elem_
+    subroutine memame(optionz    , modelz   , matez, matecoz      , caraElemz, time,&
+                      comporMultz, matrElemz, basez, listElemCalcz)
+        character(len=*), intent(in) :: optionz
+        character(len=*), intent(in) :: modelz
+        character(len=*), intent(in) :: matez, matecoz, caraElemz
         real(kind=8), intent(in) :: time
-        character(len=*), intent(in) :: compor_
-        character(len=*), intent(in) :: matr_elem_
-        character(len=1), intent(in) :: base
+        character(len=*), intent(in) :: comporMultz, matrElemz
+        character(len=*), intent(in) :: basez, listElemCalcz
     end subroutine memame
 end interface

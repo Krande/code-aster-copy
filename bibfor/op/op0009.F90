@@ -58,11 +58,13 @@ implicit none
 !
     character(len=1), parameter :: base = 'G'
     character(len=19), parameter :: listLoad = '&&OP0009.LISCHA'
+! - Linear case: multi-behaviour for PMF
+    character(len=24) :: comporMult
     integer :: nbLoad, modeFourier
     character(len=8) :: model, caraElem, sigm, strx, disp
     character(len=16) :: k8dummy, option
     character(len=19) :: matrElem, rigiMatrElem, massMatrElem
-    character(len=24) :: chtime, mate, comporMult, matr_elem24, mateco
+    character(len=24) :: chtime, mate, matr_elem24, mateco
     character(len=8), pointer :: listLoadK8(:) => null()
     character(len=24), pointer :: listLoadK24(:) => null()
     real(kind=8) :: timeCurr, timeIncr
@@ -118,20 +120,20 @@ implicit none
                     nbLoad, listLoadK8)
 
     else if (option.eq.'RIGI_GYRO') then
-        call merigy(model  ,mate,  mateco      , caraElem, comporMult, matrElem,&
+        call merigy(model ,mate,  mateco      , caraElem, comporMult, matrElem,&
                     nbLoad, listLoadK8)
 
-    else if (option.eq.'MASS_MECA') then
-        call memame(option    , model   , mate, mateco, caraElem, timeCurr,&
-                    comporMult, matrElem, base)
+    else if (option .eq. 'MASS_MECA') then
+        call memame(option, model   , mate, mateco      , caraElem, timeCurr,&
+                    comporMult, matrElem, base, listElemCalc)
 
-    else if (option.eq.'MASS_FLUI_STRU') then
-        call memame(option    , model   , mate, mateco, caraElem, timeCurr,&
-                    comporMult, matrElem, base)
+    else if (option .eq. 'MASS_FLUI_STRU') then
+        call memame(option, model   , mate, mateco      , caraElem, timeCurr,&
+                    comporMult, matrElem, base, listElemCalc)
 
-   else if (option.eq.'MASS_MECA_DIAG') then
-        call memame(option    , model   , mate, mateco, caraElem, timeCurr,&
-                    comporMult, matrElem, base)
+   else if (option .eq. 'MASS_MECA_DIAG') then
+        call memame(option    , model   , mate, mateco      , caraElem, timeCurr,&
+                    comporMult, matrElem, base, listElemCalc)
 
     else if (option.eq.'AMOR_MECA') then
         call meamme(option   , model, nbLoad, listLoadK8, mate     , mateco, &

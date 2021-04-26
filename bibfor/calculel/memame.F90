@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,21 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine memame(option , model_    , mate_, mateco_, cara_elem_, time,&
-                  compor_, matr_elem_, base)
+!
+subroutine memame(optionz    , modelz   , matez, matecoz      , caraElemz, time,&
+                  comporMultz, matrElemz, basez, listElemCalcz)
 !
 implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
-#include "asterfort/dbgcal.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exixfe.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/inical.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -42,96 +39,96 @@ implicit none
 #include "asterfort/vrcins.h"
 #include "asterfort/xajcin.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=*), intent(in) :: option
-    character(len=*), intent(in) :: model_
-    character(len=*), intent(in) :: mate_, mateco_
-    character(len=*), intent(in) :: cara_elem_
-    real(kind=8), intent(in) :: time
-    character(len=*), intent(in) :: compor_
-    character(len=*), intent(in) :: matr_elem_
-    character(len=1), intent(in) :: base
+character(len=*), intent(in) :: optionz
+character(len=*), intent(in) :: modelz, matez, matecoz, caraElemz
+real(kind=8), intent(in) :: time
+character(len=*), intent(in) :: comporMultz, matrElemz
+character(len=*), intent(in) :: basez, listElemCalcz
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Compute MASS_* elementary matrix
+! Elementary matrix MASS_*
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  option           : name of option
 ! In  model            : name of the model
 ! In  mate             : name of material characteristics (field)
-! In  cara_elem        : name of elementary characteristics (field)
+! In  mateco           : name of coded material
+! In  caraElem         : name of elementary characteristics (field)
 ! In  time             : current time
-! In  base             : JEVEUX base to create matr_elem
-! In  matr_elem        : name of matr_elem result
+! In  comporMult       : name of comportment definition for PMF (field)
+! In  base             : JEVEUX base to create matrElem
+! In  matrElem         : elementary matrix
+! In  listElemCalc     : list of elements (LIGREL) where matrElem is computed
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_in_maxi = 30
-    integer, parameter :: nbout = 2
-    character(len=8) :: lpain(nb_in_maxi), lpaout(nbout)
-    character(len=19) :: lchin(nb_in_maxi), lchout(nbout)
+    integer, parameter :: nbFieldInMax = 30, nbFieldOutMax = 2
+    character(len=8) :: lpain(nbFieldInMax), lpaout(nbFieldOutMax)
+    character(len=19) :: lchin(nbFieldInMax), lchout(nbFieldOutMax)
+!
+    integer :: nbFieldIn, nbFieldOut
     character(len=2) :: codret
-    character(len=19) :: chvarc, matr_elem
-    character(len=24) :: ligrmo
-    character(len=24), pointer :: v_matr_rerr(:) => null()
+    integer :: iret
+    integer, parameter :: modeFourier = 0
+    character(len=16) :: option
+    character(len=24), parameter :: chvarc = '&&MERIME.CHVARC'
+    character(len=24) :: comporMult, listElemCalc
     character(len=24) :: chgeom, chcara(18), chharm
-    integer :: nbout2, nbin, nh, iret, icode, nb_subs_stat
-    aster_logical :: l_xfem
-    character(len=24) :: cara_elem, mate, mateco
-    character(len=8) :: model
+    character(len=1) :: base
+    character(len=8) :: model, caraElem
+    character(len=24) :: mate, mateco
+    character(len=19) :: matrElem
+    integer :: nbSubstruct
+    aster_logical :: lxfem, hasFiniteElement
+    character(len=24), pointer :: rerr(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
+
 ! - Initializations
-!
-    model     = model_
-    cara_elem = cara_elem_
-    mate      = mate_
-    mateco    = mateco_
-    matr_elem = matr_elem_
-    nh        = 0
-    ligrmo    = model(1:8)//'.MODELE'
-    chvarc    = '&&MEMAME.VARC'
+    option       = optionz
+    model        = modelz
+    caraElem     = caraElemz
+    mate         = matez
+    mateco       = matecoz
+    matrElem     = matrElemz
+    comporMult   = comporMultz
+    base         = basez
+    listElemCalc = listElemCalcz
+    lpain  = ' '
+    lchin  = ' '
+    lpaout = ' '
+    lchout = ' '
+
+! - Prepare flags
     call exixfe(model, iret)
-    l_xfem = (iret .ne. 0)
-    call dismoi('NB_SS_ACTI', model, 'MODELE', repi=nb_subs_stat)
-!
-! - Init fields
-!
-    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout,&
-                lchout    )
-!
-! - Create fields (geometry, elem. characteristics, Fourier)
-!
-    call mecham(option, model , cara_elem, nh, chgeom,&
-                chcara, chharm, icode)
-!
-! - Construct command variables fields
-!
-    call vrcins(model , mate, cara_elem, time, chvarc,&
-                codret)
-!
-! - Prepare MATR_ELEM
-!
-    call jeexin(matr_elem(1:19)//'.RELR', iret)
+    lxfem  = iret .ne. 0
+    call dismoi('NB_SS_ACTI', model, 'MODELE', repi = nbSubstruct)
+
+! - Preparation of input fields
+    call mecham(option, model , caraElem, modeFourier, chgeom,&
+                chcara, chharm, iret)
+    hasFiniteElement = iret .eq. 0
+
+! - Field for external state variables
+    call vrcins(model, mate, caraElem, time, chvarc, codret)
+
+! - Prepare RESU_ELEM objects
+    call jeexin(matrElem(1:19)//'.RELR', iret)
     if (iret .eq. 0) then
-        call memare(base, matr_elem, model, mate, cara_elem, option)
+        call memare(base, matrElem, model, mate, caraElem, option)
     else
-        call jedetr(matr_elem(1:19)//'.RELR')
+        call jedetr(matrElem(1:19)//'.RELR')
     endif
-    call jeveuo(matr_elem(1:19)//'.RERR', 'E', vk24 = v_matr_rerr)
-    if (nb_subs_stat .gt. 0) then
-        v_matr_rerr(3) = 'OUI_SOUS_STRUC'
+    call jeveuo(matrElem//'.RERR', 'E', vk24 = rerr)
+    if (nbSubstruct .gt. 0) then
+        rerr(3) = 'OUI_SOUS_STRUC'
     endif
-    if (icode .eq. 1) goto 10
-!
+
 ! - Input fields
-!
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom(1:19)
     lpain(2) = 'PMATERC'
@@ -161,49 +158,50 @@ implicit none
     lpain(14) = 'PCAPOUF'
     lchin(14) = chcara(13)(1:19)
     lpain(15) = 'PCOMPOR'
-    lchin(15) = compor_(1:19)
+    lchin(15) = comporMult(1:19)
     lpain(16) = 'PNBSP_I'
     lchin(16) = chcara(16)(1:19)
     lpain(17) = 'PFIBRES'
     lchin(17) = chcara(17)(1:19)
     lpain(18) = 'PCINFDI'
     lchin(18) = chcara(15)(1:19)
-    nbin      = 18
-    if (l_xfem) then
-        call xajcin(model, option, nb_in_maxi, lchin, lpain,&
-                    nbin)
+    nbFieldIn = 18
+
+! - Add input XFEM fields if required
+    if (lxfem) then
+        call xajcin(model, option, nbFieldInMax, lchin, lpain, nbFieldIn)
     endif
-!
+
 ! - Output fields
-!
     lpaout(1) = 'PMATUUR'
-    lchout(1) = matr_elem(1:15)//'.M01'
+    lchout(1) = matrElem(1:15)//'.M01'
     lpaout(2) = 'PMATUNS'
-    lchout(2) = matr_elem(1:15)//'.M02'
+    lchout(2) = matrElem(1:15)//'.M02'
     if (option .eq. 'MASS_MECA') then
-        nbout2 = 2
+        nbFieldOut = 2
     else
-        nbout2 = 1
+        nbFieldOut = 1
     endif
-!
-! - Compute
-!
-    call calcul('S', option, ligrmo, nbin, lchin,&
-                lpain, nbout2, lchout, lpaout, base,&
-                'OUI')
-!
-! - Add RESU_ELEM in MATR_ELEM
-!
-    call reajre(matr_elem_, lchout(1), base)
-    if (nbout2 .eq. 2) then
-        call reajre(matr_elem_, lchout(2), base)
+
+! - Mass
+    if (hasFiniteElement) then
+! ----- Compute
+        call calcul('S',&
+                    option, listElemCalc,&
+                    nbFieldIn, lchin, lpain,&
+                    nbFieldOut, lchout, lpaout,&
+                    base, 'OUI')
+
+! ----- Save RESU_ELEM
+        call reajre(matrElem, lchout(1), base)
+        if (nbFieldOut .eq. 2) then
+            call reajre(matrElem, lchout(2), base)
+        endif
+
     endif
-!
- 10 continue
-!
-! - Cleaning
-!
-    call redetr(matr_elem_)
+
+! - Clean
+    call redetr(matrElem)
     call detrsd('CHAMP_GD', chvarc)
 !
     call jedema()

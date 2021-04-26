@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,9 @@
 ! --------------------------------------------------------------------
 
 subroutine ssmage(nomu, option)
-    implicit none
 !
-!     ARGUMENTS:
-!     ----------
+implicit none
+!
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/assmam.h"
@@ -35,8 +34,8 @@ subroutine ssmage(nomu, option)
 #include "asterfort/ssmau2.h"
 #include "asterfort/ualfcr.h"
 #include "asterfort/utmess.h"
-    character(len=8) :: nomu
-    character(len=9) :: option
+character(len=8) :: nomu
+character(len=9) :: option
 ! ----------------------------------------------------------------------
 !     BUT: TRAITER LE MOT CLEF "MASS_MECA" (RESP. "AMOR_MECA")
 !             DE L'OPERATEUR MACR_ELEM_STAT
@@ -52,15 +51,17 @@ subroutine ssmage(nomu, option)
 !
 ! ----------------------------------------------------------------------
 !
+! - Linear case: no behaviour !
+    character(len=24), parameter :: compor = ' '
     real(kind=8) :: time
     character(len=1) :: base
     character(len=8) :: nomo, cara, materi, matel, promes
     character(len=14) :: nu
     character(len=19) :: matas
-    character(len=24) :: mateco, compor, mater
-!-----------------------------------------------------------------------
+    character(len=24) :: mateco, mater
     integer :: iarefm
     real(kind=8), pointer :: varm(:) => null()
+    character(len=24) :: listElemCalc
 !-----------------------------------------------------------------------
     call jemarq()
 !
@@ -98,10 +99,10 @@ subroutine ssmage(nomu, option)
 !
 !     -- CALCULS MATRICES ELEMENTAIRES DE MASSE (OU AMORTISSEMENT):
     if (option .eq. 'MASS_MECA') then
-        compor = ' '
-        call memame('MASS_MECA', nomo, mater, mateco,&
+        call dismoi('NOM_LIGREL', nomo, 'MODELE', repk = listElemCalc)
+        call memame(option, nomo, mater, mateco,&
                     cara, time, compor, matel,&
-                    base)
+                    base, listElemCalc)
     else if (option.eq.'AMOR_MECA') then
         call dismoi('NOM_PROJ_MESU', nomu, 'MACR_ELEM_STAT', repk=promes)
 !     --  CAS MODIFICATION STRUCTURALE : CREATION MATRICE PAR SSMAU2
