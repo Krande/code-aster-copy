@@ -415,8 +415,12 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         cmpName(1, 1) = 'Z1'
         cmpName(1, 2) = 'Z2'
     else if (loadType .eq. 'VITE_FACE') then
-        nbCmp(1) = 1
+        nbCmp(1) = 5
         cmpName(1, 1) = 'VITE'
+        cmpName(1, 2) = 'INDC'
+        cmpName(1, 3) = 'DIRX'
+        cmpName(1, 4) = 'DIRY'
+        cmpName(1, 5) = 'DIRZ'
     else if (loadType .eq. 'IMPE_FACE') then
         nbCmp(1) = 1
         cmpName(1, 1) = 'IMPE'

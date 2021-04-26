@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,12 +41,15 @@ AFFE_CHAR_ACOU=OPER(nom="AFFE_CHAR_ACOU",op=  68,sd_prod=char_acou,
              PRES            =SIMP(statut='o',typ='C' ),
          ),
          VITE_FACE       =FACT(statut='f',max='**',
-             regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),
-                     PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
-           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           regles=(AU_MOINS_UN('GROUP_MA','MAILLE'),
+                   PRESENT_ABSENT('GROUP_MA','MAILLE'),
+                   UN_PARMI('VNOR', 'DIRECTION',),),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
-           VNOR            =SIMP(statut='o',typ='C' ),
+           VNOR            =SIMP(statut='f',typ='C' ),
+             DIRECTION       =SIMP(statut='f',typ='R', min = 2, max = 3),
+             b_nonNormal    = BLOC(condition="""exists("DIRECTION")""",
+                  VITE            =SIMP(statut='o',typ='C', ),),
          ),
          IMPE_FACE       =FACT(statut='f',max='**',
              regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),

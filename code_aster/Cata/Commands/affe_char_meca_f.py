@@ -454,13 +454,16 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
 
 
          VITE_FACE       =FACT(statut='f',max='**',
-           fr=tr("Impose des vitesses normales à une face (phénomène ACOUSTIQUE) dont les valeurs sont fournies par"
-                " l'intermédiaire d'un concept fonction"),
+           fr=tr("Impose des vitesses à une face dont les valeurs sont fournies par l'intermédiaire d'un concept fonction"),
            regles=(AU_MOINS_UN('GROUP_MA','MAILLE'),
-                   PRESENT_ABSENT('GROUP_MA','MAILLE'),),
+                   PRESENT_ABSENT('GROUP_MA','MAILLE'),
+                   UN_PARMI('VNOR', 'DIRECTION',),),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
-           VNOR            =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           VNOR            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+           DIRECTION       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule), min = 2, max = 3),
+           b_nonNormal    = BLOC(condition="""exists("DIRECTION")""",
+                VITE            =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule) ),),
          ),
          IMPE_FACE       =FACT(statut='f',max='**',
            fr=tr("Applique à une face une impédance acoustique dont la valeur est fournie par l'intermédiaire"

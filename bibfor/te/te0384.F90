@@ -23,6 +23,7 @@ implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
+#include "asterfort/evalFaceSpeedDire.h"
 #include "asterfort/evalFaceSpeedVale.h"
 #include "asterfort/getFluidPara.h"
 #include "asterfort/jevech.h"
@@ -46,6 +47,8 @@ character(len=16), intent(in) :: option, nomte
 !
     aster_logical :: lFunc, lTime
     integer :: jvGeom, jvMate, jvLoad, jvTime, jvVect
+    aster_logical :: lReal
+    real(kind=8) :: x, y, speedDire
     real(kind=8) :: nx, ny
     real(kind=8) :: rho, poids
     real(kind=8) :: time, speedVale
@@ -61,6 +64,7 @@ character(len=16), intent(in) :: option, nomte
 ! --------------------------------------------------------------------------------------------------
 !
     lFunc = (option .eq. 'CHAR_MECA_VFAC_F')
+    lReal = .not. lFunc
 
 ! - Input fields
     call jevech('PGEOMER', 'L', jvGeom)
@@ -122,16 +126,23 @@ character(len=16), intent(in) :: option, nomte
             poids = poids*r
         endif
 
-! ----- Get value of normal speed
+! ----- Get value of speed
         call evalFaceSpeedVale(lFunc    , lTime   , time  ,&
                                nbNode   , cellDime, ipg   ,&
                                jvShape  , jvGeom  , jvLoad,&
-                               speedVale)
+                               speedVale, x, y)
+
+! ----- Get direction of speed
+        call evalFaceSpeedDire(cellDime , jvLoad, speedDire, &
+                               ipg, nx, ny,&
+                               lFunc_ = lFunc, lReal_ = lReal,&
+                               lTime_ = lTime, time_ = time ,&
+                               x_ = x, y_ = y)
 
 ! ----- Compute vector
         do i = 1, nbNode
             ii = ndofbynode*i
-            zr(jvVect+ii-1) = zr(jvVect+ii-1) -&
+            zr(jvVect+ii-1) = zr(jvVect+ii-1) - speedDire*&
                                poids *&
                                zr(jvShape+ldec+i-1) * speedVale * rho
         end do

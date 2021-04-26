@@ -48,6 +48,8 @@ Si vous êtes en deux dimensions, les éléments doivent être des segments.
 Si vous êtes en trois dimensions, les éléments doivent être des triangles ou des quadrangles.
 """),
 
+    6: _("""Lors de l'évaluation du chargement VITE_FACE, la normale calculée est nulle. Le maillage est probablement incorrect."""),
+
     84: _("""
 Vous demandez le calcul de la matrice correspondant à l'option ONDE_FLUI.
 Mais on ne peut rien calculer, faute de données.

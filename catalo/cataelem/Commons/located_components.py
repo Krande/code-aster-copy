@@ -825,15 +825,15 @@ EGINST_R = LocatedComponents(phys=PHY.INST_R, type='ELGA', location='RIGI',
 
 # Field for load VITE_FACE (complex)
 EVITEFC = LocatedComponents(phys=PHY.VFAC_C, type='ELGA', location='RIGI',
-                            components=('VITE',))
+                            components=('VITE', 'INDC', 'DIRX', 'DIRY', 'DIRZ', ))
 
 # Field for load VITE_FACE (function)
 EVITEFF = LocatedComponents(phys=PHY.VFAC_F, type='ELGA', location='RIGI',
-                            components=('VITE',))
+                            components=('VITE', 'INDC', 'DIRX', 'DIRY', 'DIRZ', ))
 
 # Field for load VITE_FACE (real)
 EVITEFR = LocatedComponents(phys=PHY.VFAC_R, type='ELGA', location='RIGI',
-                            components=('VITE',))
+                            components=('VITE', 'INDC', 'DIRX', 'DIRY', 'DIRZ', ))
 
 
 E1GNEUT = LocatedComponents(phys=PHY.NEUT_R, type='ELGA', location='RIGI',

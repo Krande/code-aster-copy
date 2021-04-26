@@ -3707,27 +3707,51 @@ VENTCX_F = PhysicalQuantity(type='K8',
 VFAC_R   = PhysicalQuantity(type='R',
     components=(
        'VITE',
+       'INDC',
+       'DIRX',
+       'DIRY',
+       'DIRZ',
     ),
     comment="""  Vitesse appliquee a une face de maille
        VITE : valeur de la norme de la vitesse
+       INDC : flag if direction has been given
+       DIRX : direction of speed along X axis
+       DIRY : direction of speed along Y axis
+       DIRZ : direction of speed along Z axis
 """)
 
 
 VFAC_C   = PhysicalQuantity(type='C',
     components=(
        'VITE',
+       'INDC',
+       'DIRX',
+       'DIRY',
+       'DIRZ',
     ),
     comment="""  Vitesse appliquee a une face de maille
        VITE : valeur de la norme de la vitesse
+       INDC : flag if direction has been given
+       DIRX : direction of speed along X axis
+       DIRY : direction of speed along Y axis
+       DIRZ : direction of speed along Z axis
 """)
 
 
 VFAC_F   = PhysicalQuantity(type='K8',
     components=(
        'VITE',
+       'INDC',
+       'DIRX',
+       'DIRY',
+       'DIRZ',
     ),
     comment="""  Vitesse appliquee a une face de maille
        VITE : valeur de la norme de la vitesse
+       INDC : flag if direction has been given
+       DIRX : direction of speed along X axis
+       DIRY : direction of speed along Y axis
+       DIRZ : direction of speed along Z axis
 """)
 
 

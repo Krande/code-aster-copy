@@ -59,10 +59,11 @@ integer, intent(in) :: nbOcc
     character(len=16), parameter :: keywFact = 'VITE_FACE'
     character(len=24), parameter :: listCell = '&&CAVITE.LIST_CELL'
     integer :: nbCell, jvCell
-    integer :: iocc, nbRet
+    integer :: iocc, nbRet, nbVal
+    character(len=16) :: keyword
     complex(kind=8) :: speedCplx
-    real(kind=8) :: speedReal
-    character(len=8) :: speedFunc
+    real(kind=8) :: speedReal, speedDirectionReal(3)
+    character(len=8) :: speedFunc, speedDirectionFunc(3)
     integer :: jvValv
     character(len=19) :: map(LOAD_MAP_NBMAX)
     integer :: nbMap, nbCmp(LOAD_MAP_NBMAX)
@@ -82,18 +83,85 @@ integer, intent(in) :: nbOcc
 ! ----- Read mesh affectation
         call getelem(mesh, keywFact, iocc, 'A', listCell, nbCell)
 
-! ----- Get parameter
+! ----- Get type of speed: with direction or without it
         if (valeType .eq. 'REEL') then
-            call getvr8(keywFact, 'VNOR', iocc=iocc, scal = speedReal, nbret=nbRet)
-            zr(jvValv-1+1) = speedReal
+            call getvr8(keywFact, 'VNOR', iocc=iocc, nbval = 0, nbret=nbRet)
         elseif (valeType .eq. 'COMP') then
-            call getvc8(keywFact, 'VNOR', iocc=iocc, scal = speedCplx, nbret=nbRet)
-            zc(jvValv-1+1) = speedCplx
+            call getvc8(keywFact, 'VNOR', iocc=iocc, nbval = 0, nbret=nbRet)
         elseif (valeType .eq. 'FONC') then
-            call getvid(keywFact, 'VNOR', iocc=iocc, scal = speedFunc, nbret=nbRet)
-            zk8(jvValv-1+1) = speedFunc
+            call getvid(keywFact, 'VNOR', iocc=iocc, nbval = 0, nbret=nbRet)
         else
             ASSERT(ASTER_FALSE)
+        endif
+        nbRet = abs(nbRet)
+        ASSERT(nbRet .le. 1)
+        if (nbRet .eq. 0) then
+            keyword = 'VITE'
+        else
+            keyword = 'VNOR'
+        endif
+
+! ----- Get value of speed
+        if (valeType .eq. 'REEL') then
+            call getvr8(keywFact, keyword, iocc=iocc, scal = speedReal, nbret=nbRet)
+        elseif (valeType .eq. 'COMP') then
+            call getvc8(keywFact, keyword, iocc=iocc, scal = speedCplx, nbret=nbRet)
+        elseif (valeType .eq. 'FONC') then
+            call getvid(keywFact, keyword, iocc=iocc, scal = speedFunc, nbret=nbRet)
+        endif
+
+! ----- Get direction if necessari
+        speedDirectionReal = 0.d0
+        speedDirectionFunc = ' '
+        if (keyword .eq. 'VITE') then
+            if (valeType .eq. 'REEL' .or. valeType .eq. 'COMP') then
+                call getvr8(keywFact, 'DIRECTION',&
+                            iocc=iocc, nbval = 0, nbret=nbRet)
+                nbVal = abs(nbRet)
+                call getvr8(keywFact, 'DIRECTION',&
+                            iocc=iocc, nbval = nbVal, vect = speedDirectionReal, nbret=nbRet)
+            elseif (valeType .eq. 'FONC') then
+                call getvid(keywFact, 'DIRECTION',&
+                            iocc=iocc, nbval = 0, nbret=nbRet)
+                nbVal = abs(nbRet)
+                call getvid(keywFact, 'DIRECTION',&
+                            iocc=iocc, nbval = nbVal, vect = speedDirectionFunc, nbret=nbRet)
+            endif
+        endif
+
+! ----- Save values
+        if (keyword .eq. 'VNOR') then
+            if (valeType .eq. 'REEL') then
+                zr(jvValv-1+1) = speedReal
+                zr(jvValv-1+2) = -1.d0
+            elseif (valeType .eq. 'COMP') then
+                zc(jvValv-1+1) = speedCplx
+                zc(jvValv-1+2) = (-1.d0, 0.d0)
+            elseif (valeType .eq. 'FONC') then
+                zk8(jvValv-1+1) = speedFunc
+                zk8(jvValv-1+2) = '&FOZERO'
+            endif
+        else
+            if (valeType .eq. 'REEL') then
+                zr(jvValv-1+1) = speedReal
+                zr(jvValv-1+2) = 1.d0
+                zr(jvValv-1+3) = speedDirectionReal(1)
+                zr(jvValv-1+4) = speedDirectionReal(2)
+                zr(jvValv-1+5) = speedDirectionReal(3)
+            elseif (valeType .eq. 'COMP') then
+                zc(jvValv-1+1) = speedCplx
+                zc(jvValv-1+2) = (1.d0, 0.d0)
+                zc(jvValv-1+3) = speedDirectionReal(1)
+                zc(jvValv-1+4) = speedDirectionReal(2)
+                zc(jvValv-1+5) = speedDirectionReal(3)
+            elseif (valeType .eq. 'FONC') then
+                zk8(jvValv-1+1) = speedFunc
+                zk8(jvValv-1+2) = ' '
+                zk8(jvValv-1+3) = speedDirectionFunc(1)
+                zk8(jvValv-1+4) = speedDirectionFunc(2)
+                zk8(jvValv-1+5) = speedDirectionFunc(3)
+            endif
+
         endif
 
 ! ----- Set parameter in field

@@ -898,13 +898,16 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
            ),
 
          VITE_FACE       =FACT(statut='f',fr=tr("Impose des vitesses normales à une face (phénomène ACOUSTIQUE), "),max='**',
-             regles=(AU_MOINS_UN('GROUP_MA','MAILLE'),),
+           regles=(AU_MOINS_UN('GROUP_MA','MAILLE'),
+                   PRESENT_ABSENT('GROUP_MA','MAILLE'),
+                   UN_PARMI('VNOR', 'DIRECTION',),),
              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
              MAILLE          =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
-             VNOR            =SIMP(statut='o',typ='R' ),
-           ),
-
-
+             VNOR            =SIMP(statut='f',typ='R' ),
+             DIRECTION       =SIMP(statut='f',typ='R' , min = 2, max = 3),
+             b_nonNormal    = BLOC(condition="""exists("DIRECTION")""",
+                  VITE            =SIMP(statut='o',typ='R', ),),
+         ),
 
          ONDE_FLUI       =FACT(statut='f',max='**',
              fr=tr("Applique une amplitude de pression d'onde incidente sinusoidale arrivant normalement à une face"),

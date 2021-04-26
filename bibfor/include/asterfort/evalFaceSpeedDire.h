@@ -17,17 +17,18 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine evalFaceSpeedVale(lFunc    , lTime   , time  ,&
-                                 nbNode   , cellDime, ipg   ,&
-                                 jvShape  , jvGeom  , jvLoad,&
-                                 speedVale,&
-                                 x        , y       , z_)
-        aster_logical, intent(in) :: lFunc, lTime
-        integer, intent(in) :: cellDime, nbNode, ipg
-        integer, intent(in) :: jvGeom, jvShape, jvLoad
-        real(kind=8), intent(in) :: time
-        real(kind=8), intent(out) :: speedVale
-        real(kind=8), intent(out) :: x, y
-        real(kind=8), optional, intent(out) :: z_
-    end subroutine evalFaceSpeedVale
+    subroutine evalFaceSpeedDire(cellDime, jvLoad , speedDire,&
+                                 ipg     , nx     , ny       ,&
+                                 lFunc_  , lReal_ , lCplx_   ,&
+                                 lTime_  , time_  ,&
+                                 x_      , y_     ,&
+                                 z_      , nz_)
+        integer, intent(in) :: cellDime, jvLoad
+        real(kind=8), intent(out) :: speedDire
+        integer, intent(in) :: ipg
+        real(kind=8), intent(in) :: nx, ny
+        aster_logical, optional, intent(in) :: lFunc_, lReal_, lCplx_, lTime_
+        real(kind=8), optional, intent(in) :: time_, x_, y_
+        real(kind=8), optional, intent(in) :: z_, nz_
+    end subroutine evalFaceSpeedDire
 end interface

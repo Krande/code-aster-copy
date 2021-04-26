@@ -20,7 +20,8 @@
 subroutine evalFaceSpeedVale(lFunc    , lTime   , time  ,&
                              nbNode   , cellDime, ipg   ,&
                              jvShape  , jvGeom  , jvLoad,&
-                             speedVale)
+                             speedVale,&
+                             x        , y       , z_)
 !
 implicit none
 !
@@ -34,6 +35,8 @@ integer, intent(in) :: cellDime, nbNode, ipg
 integer, intent(in) :: jvGeom, jvShape, jvLoad
 real(kind=8), intent(in) :: time
 real(kind=8), intent(out) :: speedVale
+real(kind=8), intent(out) :: x, y
+real(kind=8), optional, intent(out) :: z_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,10 +56,13 @@ real(kind=8), intent(out) :: speedVale
 ! In  jvGeom           : JEVEUX adress for geometry (coordinates of nodes)
 ! In  jvLoad           : JEVEUX adress for field with parameters for load
 ! Out speedVale        : value of speed
+! Out x, y, z          : coordinates of current Gauss point
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: x, y, z
+    integer, parameter :: nbCmpInMap = 5
+    real(kind=8) :: z
+    character(len=8) :: funcName
     integer :: i_node, ldec, iret
     integer :: nbPara
     character(len=8), parameter :: paraName(4) = (/'X   ', 'Y   ',  'Z   ', 'INST'/)
@@ -65,14 +71,15 @@ real(kind=8), intent(out) :: speedVale
 ! --------------------------------------------------------------------------------------------------
 !
     speedVale = 0.d0
+    x = 0.d0
+    y = 0.d0
+    z = 0.d0
+
 !
     if (lFunc) then
         ldec = (ipg-1)*nbNode
 
 ! ----- Coordinates of current Gauss point
-        x = 0.d0
-        y = 0.d0
-        z = 0.d0
         do i_node = 1, nbNode
             x = x + zr(jvGeom+(cellDime+1)*(i_node-1)-1+1) * zr(jvShape+ldec-1+i_node)
             y = y + zr(jvGeom+(cellDime+1)*(i_node-1)-1+2) * zr(jvShape+ldec-1+i_node)
@@ -93,12 +100,16 @@ real(kind=8), intent(out) :: speedVale
             nbPara = nbPara + 1
             paraVale(nbPara) = time
         endif
-        call fointe('FM', zk8(jvLoad-1+1), nbPara, paraName, paraVale,&
-                    speedVale, iret)
+        funcName = zk8(jvLoad-1+nbCmpInMap*(ipg-1)+1)
+        call fointe('FM', funcName, nbPara, paraName, paraVale, speedVale, iret)
 
     else
-        speedVale = zr(jvLoad)
+        speedVale = zr(jvLoad-1+nbCmpInMap*(ipg-1)+1)
 
+    endif
+
+    if (present(z_)) then
+        z_ = z
     endif
 !
 end subroutine
