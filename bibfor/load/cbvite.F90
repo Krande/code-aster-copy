@@ -16,25 +16,29 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cbvite(load, mesh)
+subroutine cbvite(phenom, load, mesh, valeType)
 !
 implicit none
 !
 #include "asterc/getfac.h"
 #include "asterfort/cavite.h"
 !
+character(len=16), intent(in) :: phenom
 character(len=8), intent(in) :: load, mesh
+character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Loads affectation - Acoustic
+! Loads affectation - Acoustic and mechanic
 !
 ! Treatment of load VITE_FACE
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  phenom           : phenomenon (MECANIQUE/THERMIQUE/ACOUSTIQUE)
 ! In  load             : load
 ! In  mesh             : mesh
+! In  valeType         : affected value type (real, complex or function)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,7 +49,7 @@ character(len=8), intent(in) :: load, mesh
 !
     call getfac(keywFact, nbOcc)
     if (nbOcc .ne. 0) then
-        call cavite(load, mesh, nbOcc)
+        call cavite(phenom, load, mesh, valeType, nbOcc)
     endif
 !
 end subroutine

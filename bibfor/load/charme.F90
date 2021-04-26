@@ -61,7 +61,7 @@ implicit none
 #include "asterfort/cbprca.h"
 #include "asterfort/cbpres.h"
 #include "asterfort/cbsint.h"
-#include "asterfort/cbvitn.h"
+#include "asterfort/cbvite.h"
 #include "asterfort/char_crea_neum.h"
 #include "asterfort/chveno.h"
 #include "asterfort/cormgi.h"
@@ -129,7 +129,7 @@ character(len=4), intent(in) :: valeType
         call cbimpd(load, mesh, modelLigrel, valeType)
 
 ! ----- VITE_FACE
-        call cbvitn(load, mesh, modelLigrel, valeType)
+        call cbvite(phenom, load, mesh, valeType)
 
 ! ----- ONDE_FLUI
         call cbonde(load, mesh, valeType)
@@ -151,7 +151,7 @@ character(len=4), intent(in) :: valeType
         call cbimpd(load, mesh, modelLigrel, valeType)
 
 ! ----- VITE_FACE
-        call cbvitn(load, mesh, modelLigrel, valeType)
+        call cbvite(phenom, load, mesh, valeType)
 
 ! ----- ONDE_PLANE
         call cbondp(load, mesh, dimeModel, valeType)

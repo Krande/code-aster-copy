@@ -17,7 +17,9 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine cbvite(load, mesh)
+    subroutine cbvite(phenom, load, mesh, valeType)
+        character(len=16), intent(in) :: phenom
         character(len=8), intent(in) :: load, mesh
+        character(len=4), intent(in) :: valeType
     end subroutine cbvite
 end interface

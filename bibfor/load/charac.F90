@@ -76,7 +76,7 @@ character(len=8), intent(in) :: load
     loadLigrel = loadDescBase//'.LIGRE'
 
 ! - Load VITE_FACE
-    call cbvite(load, mesh)
+    call cbvite(phenom, load, mesh, valeType)
 
 ! - Load IMPE_FACE
     call cbimpe(load, mesh)
