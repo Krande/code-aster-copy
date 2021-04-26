@@ -97,8 +97,8 @@ MAILLAGE=MODI_MAILLAGE( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
                      )
 MAILLAGE = DEFI_GROUP( reuse        = MAILLAGE,
                           MAILLAGE     = MAILLAGE,
-                          CREA_GROUP_MA_PEAU=_F(NOM='ROCHE',TOUT='OUI',),
-                          CREA_GROUP_NO=_F(GROUP_MA_PEAU='ROCHE',),);
+                          CREA_GROUP_MA=_F(NOM='ROCHE',TOUT='OUI',),
+                          CREA_GROUP_NO=_F(GROUP_MA='ROCHE',),);
 
 MODELE=AFFE_MODELE(     MAILLAGE=MAILLAGE,
                              AFFE=_F(  TOUT = 'OUI',
