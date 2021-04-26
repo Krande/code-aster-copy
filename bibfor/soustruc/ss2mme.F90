@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine ss2mme(nomo, motfaz, vesstr, base)
 !
+subroutine ss2mme(modelz, vesstrz, base)
 !
-    implicit none
+implicit none
+!
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/dismoi.h"
@@ -41,64 +41,61 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    character(len=8) :: nomo
-    character(len=19) :: vesstr
-    character(len=1) :: base
-    character(len=*) :: motfaz
+character(len=*), intent(in) :: modelz, vesstrz
+character(len=1), intent(in) :: base
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! PREPARER LE VECT_ELEM DANS LE CAS DE SOUS-STRUCTURES
 !
-!
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  NOMO   : NOM DU MODELE
-! IN  MOTFAC : MOT-CLEF FACTEUR DECRIVANT LES SOUS-STRUCTURES
 ! IN  BASE   : BASE DE CREATION DU VECT_ELEM
 ! I/O VESSTR : NOM DU VECT_ELEM
 !                OUT : VESSTR EST (EVENTUELLEMENT) ENRICHI DE
 !                L'OBJET .RELC
 !
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-    character(len=8) :: noma, k8bid, nosma, nomcas, nomacr
+    character(len=16), parameter :: keywfact = 'SOUS_STRUC'
+    character(len=8) :: mesh, model, k8bid, nosma, nomcas, nomacr
     integer :: nbssa, nbsma, n1, n2, nboc
     integer ::   ialsch, imas
     integer :: ier0, ioc, i, iret
-    character(len=16) :: motfac, valk(2)
+    character(len=19) :: vesstr
+    character(len=16) :: valk(2)
     character(len=8), pointer :: lmai(:) => null()
     character(len=24), pointer :: rerr(:) => null()
     character(len=8), pointer :: vnomacr(:) => null()
     integer, pointer :: sssa(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
-    motfac = motfaz
-    call getfac(motfac, nboc)
+
+! - Initializations
+    vesstr = vesstrz
+    model  = modelz
+    call getfac(keywfact, nboc)
     if (nboc .eq. 0) goto 999
-!
-! --- INITIALISATIONS
-!
-    call dismoi('NOM_MAILLA', nomo, 'MODELE', repk=noma)
-    call dismoi('NB_SS_ACTI', nomo, 'MODELE', repi=nbssa)
-    call dismoi('NB_SM_MAILLA', nomo, 'MODELE', repi=nbsma)
+
+! - Parameters from mesh
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+    call dismoi('NB_SS_ACTI', model, 'MODELE', repi=nbssa)
+    call dismoi('NB_SM_MAILLA', model, 'MODELE', repi=nbsma)
 !
     if (nbssa .eq. 0) then
         call utmess('F', 'SOUSTRUC_24')
     endif
 !
-    call jeveuo(nomo//'.MODELE    .SSSA', 'L', vi=sssa)
-    call jeveuo(noma//'.NOMACR', 'L', vk8=vnomacr)
+    call jeveuo(model//'.MODELE    .SSSA', 'L', vi=sssa)
+    call jeveuo(mesh//'.NOMACR', 'L', vk8=vnomacr)
 !
     call jeveuo(vesstr(1:19)//'.RERR', 'E', vk24=rerr)
     rerr(3)='OUI_SOUS_STRUC'
 !
-    call jecrec(vesstr(1:19)//'.RELC', base//' V I', 'NO', 'CONTIG', 'CONSTANT',&
-                nboc)
+    call jecrec(vesstr(1:19)//'.RELC', base//' V I', 'NO', 'CONTIG', 'CONSTANT', nboc)
     call jeecra(vesstr(1:19)//'.RELC', 'LONMAX', nbsma)
 !
     AS_ALLOCATE(vk8=lmai, size=nbsma)
@@ -108,13 +105,13 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
     ier0 = 0
     do ioc = 1, nboc
 !
-        call getvtx(motfac, 'CAS_CHARGE', iocc=ioc, scal=nomcas, nbret=n1)
+        call getvtx(keywfact, 'CAS_CHARGE', iocc=ioc, scal=nomcas, nbret=n1)
         call jecroc(jexnom(vesstr(1:19)//'.RELC', nomcas))
         call jeveuo(jexnom(vesstr(1:19)//'.RELC', nomcas), 'E', ialsch)
 !
 !       -- CAS : TOUT: 'OUI'
 !
-        call getvtx(motfac, 'TOUT', iocc=ioc, scal=k8bid, nbret=n1)
+        call getvtx(keywfact, 'TOUT', iocc=ioc, scal=k8bid, nbret=n1)
         if (n1 .eq. 1) then
             do i = 1, nbsma
                 if (sssa(i) .eq. 1) zi(ialsch-1+i)=1
@@ -124,19 +121,19 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
 !
 !       -- CAS : MAILLE: L_MAIL
 !
-        call getvtx(motfac, 'SUPER_MAILLE', iocc=ioc, nbval=0, nbret=n2)
+        call getvtx(keywfact, 'SUPER_MAILLE', iocc=ioc, nbval=0, nbret=n2)
         if (-n2 .gt. nbsma) then
             call utmess('F', 'SOUSTRUC_25')
         else
-            call getvtx(motfac, 'SUPER_MAILLE', iocc=ioc, nbval=nbsma, vect=lmai,&
+            call getvtx(keywfact, 'SUPER_MAILLE', iocc=ioc, nbval=nbsma, vect=lmai,&
                         nbret=n2)
         endif
         do i = 1, n2
             nosma = lmai(i)
-            call jenonu(jexnom(noma//'.SUPMAIL', nosma), imas)
+            call jenonu(jexnom(mesh//'.SUPMAIL', nosma), imas)
             if (imas .eq. 0) then
                 valk(1) = nosma
-                valk(2) = noma
+                valk(2) = mesh
                 call utmess('F', 'SOUSTRUC_26', nk=2, valk=valk)
             else
                 zi(ialsch-1+imas)=1
@@ -148,7 +145,7 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
   5     continue
         do i = 1, nbsma
             if (zi(ialsch-1+i) .ne. 0) then
-                call jenuno(jexnum(noma//'.SUPMAIL', i), nosma)
+                call jenuno(jexnum(mesh//'.SUPMAIL', i), nosma)
                 if (sssa(i) .ne. 1) then
                     call utmess('F', 'SOUSTRUC_27', sk=nosma)
                 endif
@@ -163,7 +160,6 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
                 endif
             endif
         end do
-!
     end do
 !
     if (ier0 .eq. 1) then
@@ -173,5 +169,6 @@ subroutine ss2mme(nomo, motfaz, vesstr, base)
     AS_DEALLOCATE(vk8=lmai)
 !
 999 continue
+!
     call jedema()
 end subroutine

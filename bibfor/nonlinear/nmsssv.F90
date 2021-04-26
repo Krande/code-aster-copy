@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nmsssv(modelz, mate, carele, lischa, vesstf)
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
+subroutine nmsssv(modelz, matez, caraElemz, listLoad, vesstf)
+!
+implicit none
+!
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -28,47 +28,39 @@ subroutine nmsssv(modelz, mate, carele, lischa, vesstf)
 #include "asterfort/jemarq.h"
 #include "asterfort/memare.h"
 #include "asterfort/ss2mme.h"
-    character(len=*) :: modelz
-    character(len=24) :: mate, carele
-    character(len=19) :: vesstf, lischa
 !
-! ----------------------------------------------------------------------
+character(len=*), intent(in) :: modelz, matez, caraElemz
+character(len=19), intent(in) :: vesstf, listLoad
+!
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (CALCUL - SOUS-STRUCTURATION)
 !
 ! CALCUL DU VECTEUR CHARGEMENT SUR MACRO-ELEMENTS
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-!
-!
-    character(len=8) :: modele
-    character(len=24) :: fomul2
+    character(len=1), parameter :: base = 'V'
+    character(len=8) :: model, mate
+    character(len=24) :: funcMultSuper, caraElem
     integer :: iret
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
-! --- INITIALISATIONS
-!
-    modele = modelz
-    fomul2 = lischa(1:19)//'.FCSS'
-!
-! --- CALCUL
-!
-    call jeexin(fomul2, iret)
-    if (iret .eq. 0) then
-        ASSERT(.false.)
-    else
-        call memare('V', vesstf, modele, mate, carele(1:8),&
-                    'CHAR_MECA')
-        call jedetr(vesstf//'.RELC')
-        call ss2mme(modele(1:8), 'SOUS_STRUC', vesstf, 'V')
-    endif
+
+! - Initializations
+    mate     = matez
+    caraElem = caraElemz
+    model    = modelz
+    funcMultSuper = listLoad(1:19)//'.FCSS'
+
+! - CALCUL
+    call jeexin(funcMultSuper, iret)
+    ASSERT(iret .ne. 0)
+    call memare(base, vesstf, model, mate, caraElem, 'CHAR_MECA')
+    call jedetr(vesstf//'.RELC')
+    call ss2mme(model, vesstf, base)
 !
     call jedema()
 !

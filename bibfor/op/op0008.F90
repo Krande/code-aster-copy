@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine op0008()
     character(len=8) :: matez, modele, cara, k8bid, kmpic, mesh
     character(len=8) :: nomcmp(6), mo1, ncmpth(4)
     character(len=16) :: type, oper, suropt
-    character(len=19) :: matel, resuel
+    character(len=19) :: vectElem, resuel
     character(len=24) :: time2, mateco, materi
     aster_logical :: l_ther
     character(len=24), pointer :: relr(:) => null()
@@ -69,7 +69,7 @@ subroutine op0008()
     call infmaj()
 !
     call getres(matez, type, oper)
-    matel=matez
+    vectElem=matez
 !
     call getvtx(' ', 'OPTION', scal=suropt, nbret=n3)
     l_ther = ASTER_FALSE
@@ -86,10 +86,10 @@ subroutine op0008()
 !
     if (ncha .lt. 0) then
         ncha = -ncha
-        call jecreo(matel(1:8)//'.CHARGES', 'V V K8')
+        call jecreo(vectElem(1:8)//'.CHARGES', 'V V K8')
         n3=max(1,ncha)
-        call jeecra(matel(1:8)//'.CHARGES', 'LONMAX', n3)
-        call jeveuo(matel(1:8)//'.CHARGES', 'E', icha)
+        call jeecra(vectElem(1:8)//'.CHARGES', 'LONMAX', n3)
+        call jeveuo(vectElem(1:8)//'.CHARGES', 'E', icha)
         call getvid(' ', 'CHARGE', nbval=ncha, vect=zk8(icha), nbret=ibid)
 !
         call dismoi('NOM_MODELE', zk8(icha), 'CHARGE', repk=mo1)
@@ -156,10 +156,10 @@ subroutine op0008()
 !        -- TRAITEMENT DES ELEMENTS FINIS CLASSIQUES (.RELR)
 !           (ET CREATION DE L'OBJET .RERR).
         call me2mme_2(modele, ncha, zk8(icha), materi, mateco, cara,&
-                    time, matel, nh, 'G')
+                    time, vectElem, nh, 'G')
 !
 !        -- TRAITEMENT DES SOUS-STRUCTURES EVENTUELLES. (.RELC):
-        call ss2mme(modele, 'SOUS_STRUC', matel, 'G')
+        call ss2mme(modele, vectElem, 'G')
 !
 !
     else if (suropt.eq.'CHAR_THER') then
@@ -171,21 +171,21 @@ subroutine op0008()
         call mecact('V', '&&OP0008.PTEMPER', 'MODELE', modele//'.MODELE', 'TEMP_R',&
                     ncmp=4, lnomcmp=ncmpth, vr=vcmpth)
         call me2mth(modele, ncha, zk8(icha), cara,&
-                    time2, '&&OP0008.PTEMPER', matel)
+                    time2, '&&OP0008.PTEMPER', vectElem)
     else if (suropt.eq.'CHAR_ACOU') then
-        call me2mac(modele, ncha, zk8(icha), materi, mateco, matel)
+        call me2mac(modele, ncha, zk8(icha), materi, mateco, vectElem)
 !
     endif
 !
 !
 !
-!     -- SI MATEL N'EST PAS MPI_COMPLET, ON LE COMPLETE :
+!     -- SI vectElem N'EST PAS MPI_COMPLET, ON LE COMPLETE :
 !     ----------------------------------------------------
 
-    call dismoi('NOM_MAILLA', matel, 'MATR_ELEM', repk=mesh)
+    call dismoi('NOM_MAILLA', vectElem, 'MATR_ELEM', repk=mesh)
     if(.not. isParallelMesh(mesh)) then
-        call jelira(matel//'.RELR', 'LONMAX', nbresu)
-        call jeveuo(matel//'.RELR', 'L', vk24=relr)
+        call jelira(vectElem//'.RELR', 'LONMAX', nbresu)
+        call jeveuo(vectElem//'.RELR', 'L', vk24=relr)
         do iresu = 1, nbresu
             resuel=relr(iresu)(1:19)
             call jeexin(resuel//'.RESL', iexi)

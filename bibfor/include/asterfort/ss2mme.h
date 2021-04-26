@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine ss2mme(nomo, motfaz, vesstr, base)
-        character(len=8) :: nomo
-        character(len=*) :: motfaz
-        character(len=19) :: vesstr
-        character(len=1) :: base
+    subroutine ss2mme(modelz, vesstrz, base)
+        character(len=*), intent(in) :: modelz, vesstrz
+        character(len=1), intent(in) :: base
     end subroutine ss2mme
 end interface
