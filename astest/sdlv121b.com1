@@ -1,0 +1,80 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+POURSUITE(CODE='OUI')
+
+# Get results
+timeTest = 0.2656
+disp = CREA_CHAMP(OPERATION = 'EXTR',
+                  TYPE_CHAM = 'NOEU_DEPL_R',
+                  RESULTAT  = DYNAC,
+                  NOM_CHAM  = 'DEPL',
+                  INST      = timeTest)
+
+vite = CREA_CHAMP(OPERATION = 'EXTR',
+                  TYPE_CHAM = 'NOEU_DEPL_R',
+                  RESULTAT  = DYNAC,
+                  NOM_CHAM  = 'VITE',
+                  INST      = timeTest)
+
+acce = CREA_CHAMP(OPERATION = 'EXTR',
+                  TYPE_CHAM = 'NOEU_DEPL_R',
+                  RESULTAT  = DYNAC,
+                  NOM_CHAM  = 'ACCE',
+                  INST      = timeTest)
+
+# Reconstruct left-hand side from DYNA_VIBRA results
+prodMass = PROD_MATR_CHAM(MATR_ASSE=MASSEC, CHAM_NO=acce,)
+
+prodDamp = PROD_MATR_CHAM(MATR_ASSE=AMORTC, CHAM_NO=vite,)
+
+prodRigi = PROD_MATR_CHAM(MATR_ASSE=RIGIDITC, CHAM_NO=disp,)
+
+resuSolu = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R', 
+                      OPERATION='COMB',
+                      COMB=(_F(CHAM_GD=prodMass, COEF_R=+1.0,),
+                            _F(CHAM_GD=prodDamp, COEF_R=+1.0,),
+                            _F(CHAM_GD=prodRigi, COEF_R=+1.0,),),
+                      )
+
+# Construct right-hand side from loads
+charWaveElem = CALC_VECT_ELEM(OPTION     = 'CHAR_MECA',
+                              CHAM_MATER = CHAMATC,
+                              CHARGE     = ONDE,
+                              INST       = timeTest)
+
+charWaveAsse = ASSE_VECTEUR(VECT_ELEM = charWaveElem,
+                            NUME_DDL  = NUMEDDLC)
+
+# Make difference
+resuVect = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R', 
+                      OPERATION='COMB',
+                      COMB=(_F(CHAM_GD=resuSolu, COEF_R=+1.0,),
+                            _F(CHAM_GD=charWaveAsse, COEF_R=-1.0,),),
+                      )
+
+# The difference must be zero !
+TEST_RESU(CHAM_NO=_F(CHAM_GD=resuVect,
+                     NOEUD='N11',
+                     NOM_CMP='DX',
+                     CRITERE = 'ABSOLU',
+                     ORDRE_GRANDEUR = 1.,
+                     VALE_CALC = 0.,),)
+
+
+FIN()

@@ -44,15 +44,16 @@ implicit none
 #include "asterfort/nmvcd2.h"
 #include "asterfort/reajre.h"
 #include "asterfort/utmess.h"
+#include "asterfort/vrcins.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/me2mme_evol.h"
 !
-    character(len=8) :: model, cara_elem, kbid, lcmp(5)
-    character(len=*) :: modelz, caraz, vect_elem_, lchar(*), mate, basez, mateco
-    character(len=19) :: vect_elem
-    real(kind=8) :: time
-    aster_logical :: lfonc
-    integer :: nb_load
+character(len=8) :: model, cara_elem, kbid, lcmp(5)
+character(len=*) :: modelz, caraz, vect_elem_, lchar(*), mate, basez, mateco
+character(len=19) :: vect_elem
+real(kind=8) :: time
+aster_logical :: lfonc
+integer :: nb_load
 ! ----------------------------------------------------------------------
 !
 !     CALCUL DES SECONDS MEMBRES ELEMENTAIRES
@@ -95,14 +96,13 @@ implicit none
 !        LCHAR(ICHA)//'.CHME.ONDE'
 !        LCHAR(ICHA)//'.CHME.EVOL.CHAR'
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+    character(len=24), parameter :: chvarc = '&&ME2MME.CHVARC'
     character(len=1) :: base
     integer :: nbin
-!-----------------------------------------------------------------------
     integer :: i_load, ier, ifla, ilires, iret
     integer :: j, jveass, nharm
-!-----------------------------------------------------------------------
     parameter(nbin=44)
     character(len=8) :: lpain(nbin), lpaout(1), noma, exiele, load_name
     character(len=16) :: option
@@ -114,7 +114,9 @@ implicit none
     real(kind=8) :: inst_prev, inst_curr, inst_theta
     integer :: i
     aster_logical :: ltemp
+    character(len=2) :: codret
 !
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     model=modelz
@@ -631,13 +633,17 @@ implicit none
         call exisd('CHAMP_GD', ligrch(1:13)//'.ONDPL', iret)
         if (iret .ne. 0) then
             option='ONDE_PLAN'
+            call vrcins(model, mate, cara_elem, time, chvarc, codret)
             lpain(4)='PONDPLA'
             lchin(4)=ligrch(1:13)//'.ONDPL'
             lpain(6)='PONDPLR'
             lchin(6)=ligrch(1:13)//'.ONDPR'
+            lpain(7)='PVARCPR'
+            lchin(7)=chvarc
+
             ilires=ilires+1
             call codent(ilires, 'D0', lchout(1)(12:14))
-            call calcul('S', option, ligrmo, 6, lchin,&
+            call calcul('S', option, ligrmo, 7, lchin,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
             call reajre(vect_elem, lchout(1), base)

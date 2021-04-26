@@ -6,5 +6,6 @@ P mpi_nbnoeud 1
 P testlist ci verification sequential
 
 F comm sdlv121b.comm D 1
+F comm sdlv121b.com1 D 1
 F mmed sdlv121b.mmed D 20
 F nom  sdlv121a.py D 0
