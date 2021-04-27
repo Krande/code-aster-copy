@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -229,15 +229,18 @@ CALC_MISS = MACRO(nom="CALC_MISS",
         OFFSET_NB      = SIMP(statut='f', typ='I'),
         AUTO           = SIMP(statut='f', typ='TXM', into=("OUI","NON",), defaut="NON"),
     b_auto =    BLOC(condition="""equal_to("AUTO", 'OUI')""",
+                       regles=(ENSEMBLE('SPEC_MAX', 'SPEC_NB'),
+                               ),
         OPTION_DREF    = SIMP(statut='f', typ='TXM', into=("OUI","NON",), defaut="NON"),
         OPTION_RFIC    = SIMP(statut='f', typ='TXM', into=("OUI","NON",), defaut="NON"),
         RFIC           = SIMP(statut='f', typ='R'),
         SPEC_MAX       = SIMP(statut='f', typ='R'),
-        SPEC_NB        = SIMP(statut='f', typ='I', defaut=16384),
+        SPEC_NB        = SIMP(statut='f', typ='I'),
         COEF_OFFSET    = SIMP(statut='f', typ='I', defaut=12),
         ),
     b_noauto =    BLOC(condition="""equal_to("AUTO", 'NON')""",
-                       regles=(PRESENT_PRESENT('SPEC_MAX', 'SPEC_NB'),),
+                       regles=(ENSEMBLE('SPEC_MAX', 'SPEC_NB'),
+                               ),
         ALGO           = SIMP(statut='f', typ='TXM', into=("DEPL","REGU")),
         RFIC           = SIMP(statut='f', typ='R', defaut=0.),
         SPEC_MAX       = SIMP(statut='f', typ='R'),
