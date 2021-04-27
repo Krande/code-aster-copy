@@ -764,7 +764,7 @@ list_cmp_depl=(
   'SITY',       'LH1',        'SIXX',       'SIYY',       'SIZZ',       'SIXY',
   'DAMG',       'PTOT',       'PIX',        'PIY',        'PIZ',
   'DRGX',       'DRGY',       'DRGZ',
-  'HHO[60]',    'HHO_U[6]',   'HHO_V[6]',   'HHO_W[6]',   'PINCH',
+  'HHO[60]',    'HHO_U[6]',   'HHO_V[6]',   'HHO_W[6]',   'PINCH',       'PSI'
 )
 comment_depl= """  DEPL_R/_C/_F  Deplacement reel, complexe ou fonction
        DX, DY, DZ : translation suivant X, Y ET Z (repere global)
@@ -772,7 +772,7 @@ comment_depl= """  DEPL_R/_C/_F  Deplacement reel, complexe ou fonction
        GLIS    : translation relative suivante tangente (repere local)
        PRE1, PRE2 : DDL de pression
        TEMP : DDL de temperature
-       PHI : angle de fissuration
+       PHI : angle de fissuration / potentiel de deplacement fluid 
        DH : diametre hydraulique
        Pour X-FEM: H1X, H1Y, H1Z
                    H2X, H2Y, H2Z
@@ -838,6 +838,7 @@ comment_depl= """  DEPL_R/_C/_F  Deplacement reel, complexe ou fonction
        HHO_W : degres de liberté HHO: 1, X, Y, X2, Y2, XY (X, Y plan face) dir3
        HHO   : degres de liberté HHO: 1, X, Y, X2, Y2, XY (X, Y plan face) scal
        PINCH   : pinch dof for solid-shell elements
+       PSI   : potentiel de vitesse de deplacement du fluid 
 """
 
 DEPL_R   = PhysicalQuantity(type='R',

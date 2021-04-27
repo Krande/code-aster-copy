@@ -97,6 +97,22 @@ phen.add('2D_FLUIDE#2', Modelisation(dim=(2,2), code='2FP',
         (MT.SEG2      , EL.MEFLSE2P),
         (MT.SEG3      , EL.MEFLSE3P),
     )))
+    
+phen.add('2D_FLUIDE#3', Modelisation(dim=(2,2), code='2FI',
+    attrs=(
+        (AT.TYPMOD,'PLAN'),
+        (AT.FLUIDE,'OUI'),
+        (AT.FORMULATION,'FSI_UPSI'),
+    ),
+    elements=(
+        (MT.TRIA3     , EL.MEFLTR3PSI),
+        (MT.QUAD4     , EL.MEFLQU4PSI),
+        (MT.TRIA6     , EL.MEFLTR6PSI),
+        (MT.QUAD8     , EL.MEFLQU8PSI),
+        (MT.QUAD9     , EL.MEFLQU9PSI),
+        (MT.SEG2      , EL.MEFLSE2PSI),
+        (MT.SEG3      , EL.MEFLSE3PSI),
+    )))
 
 phen.add('2D_FLUI_ABSO#1', Modelisation(dim=(1,2), code='2FA',
     attrs=(
@@ -147,6 +163,18 @@ phen.add('2D_FLUI_STRU#2', Modelisation(dim=(1,2), code='FP2',
     elements=(
         (MT.SEG2      , EL.MEFSSE2P),
         (MT.SEG3      , EL.MEFSSE3P),
+    )))
+
+phen.add('2D_FLUI_STRU#3', Modelisation(dim=(1,2), code='FI2',
+    attrs=(
+        (AT.TYPMOD,'PLAN'),
+        (AT.FLUIDE,'OUI'),
+        (AT.FSI,'OUI'),
+        (AT.FORMULATION,'FSI_UPSI'),
+    ),
+    elements=(
+        (MT.SEG2      , EL.MEFSSE2PSI),
+        (MT.SEG3      , EL.MEFSSE3PSI),
     )))
 
 phen.add('3D', Modelisation(dim=(3,3), code='3D_',
@@ -525,6 +553,29 @@ phen.add('3D_FLUIDE#2', Modelisation(dim=(3,3), code='3FP',
         (MT.TRIA6     , EL.MEFL_FACE6P),
         (MT.QUAD8     , EL.MEFL_FACE8P),
         (MT.QUAD9     , EL.MEFL_FACE9P),
+    )))
+
+phen.add('3D_FLUIDE#3', Modelisation(dim=(3,3), code='3FI',
+    attrs=(
+        (AT.TYPMOD,'3D'),
+        (AT.FLUIDE,'OUI'),
+        (AT.FORMULATION,'FSI_UPSI'),
+    ),
+    elements=(
+        (MT.HEXA8     , EL.MEFL_HEXA8PSI),
+        (MT.HEXA20    , EL.MEFL_HEXA20PSI),
+        (MT.HEXA27    , EL.MEFL_HEXA27PSI),
+        (MT.PENTA6    , EL.MEFL_PENTA6PSI),
+        (MT.PENTA15   , EL.MEFL_PENTA15PSI),
+        (MT.PYRAM5    , EL.MEFL_PYRAM5PSI),
+        (MT.PYRAM13   , EL.MEFL_PYRAM13PSI),
+        (MT.TETRA4    , EL.MEFL_TETRA4PSI),
+        (MT.TETRA10   , EL.MEFL_TETRA10PSI),
+        (MT.TRIA3     , EL.MEFL_FACE3PSI),
+        (MT.QUAD4     , EL.MEFL_FACE4PSI),
+        (MT.TRIA6     , EL.MEFL_FACE6PSI),
+        (MT.QUAD8     , EL.MEFL_FACE8PSI),
+        (MT.QUAD9     , EL.MEFL_FACE9PSI),
     )))
 
 phen.add('3D_FLUI_ABSO#1', Modelisation(dim=(2,3), code='3FA',
@@ -1553,6 +1604,23 @@ phen.add('AXIS_FLUIDE#2', Modelisation(dim=(2,2), code='AX2',
         (MT.SEG3      , EL.MEAXFLS3P),
     )))
 
+phen.add('AXIS_FLUIDE#3', Modelisation(dim=(2,2), code='AX3',
+    attrs=(
+        (AT.TYPMOD,'AXIS'),
+        (AT.FLUIDE,'OUI'),
+        (AT.AXIS,'OUI'),
+        (AT.FORMULATION,'FSI_UPSI'),
+    ),
+    elements=(
+        (MT.TRIA3     , EL.MEAXFLT3PSI),
+        (MT.QUAD4     , EL.MEAXFLQ4PSI),
+        (MT.TRIA6     , EL.MEAXFLT6PSI),
+        (MT.QUAD8     , EL.MEAXFLQ8PSI),
+        (MT.QUAD9     , EL.MEAXFLQ9PSI),
+        (MT.SEG2      , EL.MEAXFLS2PSI),
+        (MT.SEG3      , EL.MEAXFLS3PSI),
+    )))
+
 phen.add('AXIS_FLUI_STRU#1', Modelisation(dim=(1,2), code='FSA',
     attrs=(
         (AT.TYPMOD,'AXIS'),
@@ -1578,6 +1646,21 @@ phen.add('AXIS_FLUI_STRU#2', Modelisation(dim=(1,2), code='FS2',
         (MT.SEG2      , EL.MEAXFSS2P),
         (MT.SEG3      , EL.MEAXFSS3P),
     )))
+
+phen.add('AXIS_FLUI_STRU#3', Modelisation(dim=(1,2), code='FS3',
+    attrs=(
+        (AT.TYPMOD,'AXIS'),
+        (AT.FLUIDE,'OUI'),
+        (AT.AXIS,'OUI'),
+        (AT.FSI,'OUI'),
+        (AT.FORMULATION,'FSI_UPSI'),
+    ),
+    elements=(
+        (MT.SEG2      , EL.MEAXFSS2PSI),
+        (MT.SEG3      , EL.MEAXFSS3PSI),
+    )))
+
+
 
 phen.add('AXIS_FOURIER', Modelisation(dim=(2,2), code='AFO',
     attrs=(
@@ -4250,6 +4333,21 @@ phen.add('FLUI_STRU#2', Modelisation(dim=(3,3), code='FLP',
         (MT.TRIA6     , EL.MEFS_FACE6P),
         (MT.QUAD8     , EL.MEFS_FACE8P),
         (MT.QUAD9     , EL.MEFS_FACE9P),
+    )))
+
+phen.add('FLUI_STRU#3', Modelisation(dim=(3,3), code='FLI',
+    attrs=(
+        (AT.TYPMOD,'3D'),
+        (AT.FLUIDE,'OUI'),
+        (AT.FSI,'OUI'),
+        (AT.FORMULATION,'FSI_UPSI'), 
+    ),
+    elements=(
+        (MT.TRIA3     , EL.MEFS_FACE3PSI),
+        (MT.QUAD4     , EL.MEFS_FACE4PSI),
+        (MT.TRIA6     , EL.MEFS_FACE6PSI),
+        (MT.QUAD8     , EL.MEFS_FACE8PSI),
+        (MT.QUAD9     , EL.MEFS_FACE9PSI),
     )))
 
 phen.add('GRILLE_EXCENTRE', Modelisation(dim=(2,3), code='GRC',

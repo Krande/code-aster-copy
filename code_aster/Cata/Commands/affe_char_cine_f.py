@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ AFFE_CHAR_CINE_F=OPER(nom="AFFE_CHAR_CINE_F",op= 101,sd_prod=affe_char_cine_f_pr
                                'VO6','WI6','WO6','WO','WI1','WO1','GONF',
                                'H1X','H1Y','H1Z','K1','K2','K3','V11','V12','V13','V21','V22',
                                'V23','V31','V32','V33','PRES11','PRES12','PRES13','PRES21',
-                               'PRES22','PRES23','PRES31','PRES32','PRES33','LH1','GLIS'),),
+                               'PRES22','PRES23','PRES31','PRES32','PRES33','LH1','GLIS', 'PSI'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
@@ -125,6 +125,7 @@ AFFE_CHAR_CINE_F=OPER(nom="AFFE_CHAR_CINE_F",op= 101,sd_prod=affe_char_cine_f_pr
            PRES33=SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            LH1   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            GLIS  =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           PSI   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
 
          ),
          THER_IMPO       =FACT(statut='f',max='**',

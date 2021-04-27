@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -293,9 +293,9 @@ FORMULATION = Attribute(value=(
     comment="""
   FORMULATION =  'HHO_LINE'  : formulation linear for HHO (1/2/1)
   FORMULATION =  'HHO_QUAD'  : formulation quadratic for HHO (2/2/2)
-  FORMULATION =  'FSI_UPPHI' : formulation displacement/pressure/speed potential
+  FORMULATION =  'FSI_UPPHI' : formulation displacement/pressure/disp potential
   FORMULATION =  'FSI_UP'    : formulation displacement/pressure
-  FORMULATION =  'FSI_UPSI'  : formulation displacement/disp potential
+  FORMULATION =  'FSI_UPSI'  : formulation displacement/speed potential
 """)
 
 FROTTEMENT = Attribute(value=(
