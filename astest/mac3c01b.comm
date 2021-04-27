@@ -31,6 +31,7 @@ DATAMAC = LIRE_TABLE(UNITE      = 38,
 RESU = CALC_MAC3COEUR(TYPE_COEUR  = 'TEST',
                       TABLE_N     =  DATAMAC,
                       MAILLAGE_N  =  MA1,
+                      TYPE_DEFORMATION = 'GROT_GDEP',
                       DEFORMATION = _F(UNITE_THYC   = 32,
                                        TEMP_IMPO = 300.0,
                                        NIVE_FLUENCE = 33))
