@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,27 +15,25 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine meamme(optioz, modele, nchar, lchar, mate, mateco, &
-                      cara, time, base, merigi,&
-                      memass, meamor, varplu, compor_)
-        character(len=*) :: optioz
-        character(len=*) :: modele
-        integer :: nchar
-        character(len=8) :: lchar(*)
-        character(len=*) :: mate, mateco
-        character(len=*) :: cara
-        real(kind=8) :: time
-        character(len=1) :: base
-        character(len=*) :: merigi
-        character(len=*) :: memass
-        character(len=*) :: meamor
-        character(len=*) :: varplu
-        character(len=*), optional  :: compor_
+    subroutine meamme(optionz,&
+                      modelz, nbLoad, listLoadK24,&
+                      matez, matecoz, caraElemz,&
+                      time, basez,&
+                      matrRigiz,  matrMassz,&
+                      matrElemz, listElemCalcz,&
+                      variz_, comporz_)
+        character(len=*), intent(in) :: optionz
+        character(len=*), intent(in) :: modelz
+        integer, intent(in) :: nbLoad
+        character(len=24), pointer :: listLoadK24(:) 
+        character(len=*), intent(in) :: matez, matecoz, caraElemz
+        real(kind=8), intent(in) :: time
+        character(len=*), intent(in) :: basez
+        character(len=*), intent(in) :: matrRigiz, matrMassz, matrElemz
+        character(len=*), intent(in) :: listElemCalcz
+        character(len=*), intent(in), optional :: variz_, comporz_
     end subroutine meamme
 end interface

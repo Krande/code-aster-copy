@@ -135,10 +135,13 @@ implicit none
         call memame(option    , model   , mate, mateco      , caraElem, timeCurr,&
                     comporMult, matrElem, base, listElemCalc)
 
-    else if (option.eq.'AMOR_MECA') then
-        call meamme(option   , model, nbLoad, listLoadK8, mate     , mateco, &
-                    caraElem, timeCurr , base   , rigiMatrElem   , massMatrElem,&
-                    matrElem, ' ')
+    else if (option .eq. 'AMOR_MECA') then
+        call meamme(option,&
+                    model       , nbLoad      , listLoadK24,&
+                    mate        , mateco      , caraElem,&
+                    timeCurr    , base        ,&
+                    rigiMatrElem, massMatrElem,&
+                    matrElem    , listElemCalc)
 
     else if (option.eq.'IMPE_MECA') then
         call meimme(model, nbLoad, listLoadK8, mate, mateco, matrElem)
@@ -146,10 +149,13 @@ implicit none
     else if (option.eq.'ONDE_FLUI') then
         call meonme(model, nbLoad, listLoadK8, mate, mateco, matrElem)
 
-    else if (option.eq.'RIGI_MECA_HYST') then
-        call meamme(option  , model, nbLoad, listLoadK8, mate     , mateco, &
-                    caraElem, timeCurr , base   , rigiMatrElem   , massMatrElem,&
-                    matrElem, ' ')
+    else if (option .eq. 'RIGI_MECA_HYST') then
+        call meamme(option,&
+                    model       , nbLoad      , listLoadK24,&
+                    mate        , mateco      , caraElem,&
+                    timeCurr    , base        ,&
+                    rigiMatrElem, massMatrElem,&
+                    matrElem    , listElemCalc)
 
     else if (option.eq.'RIGI_THER') then
         call ntdoch(listLoad, l_load_user_ = .true._1)

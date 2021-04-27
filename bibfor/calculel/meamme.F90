@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,179 +15,192 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine meamme(optioz, modele, nchar, lchar, mate, mateco, &
-                  cara, time, base, merigi,&
-                  memass, meamor, varplu, compor_)
 !
+subroutine meamme(optionz,&
+                  modelz, nbLoad, listLoadK24,&
+                  matez, matecoz, caraElemz,&
+                  time, basez,&
+                  matrRigiz, matrMassz,&
+                  matrElemz, listElemCalcz,&
+                  variz_, comporz_)
 !
-    implicit none
+implicit none
+!
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
-#include "asterfort/dbgcal.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/inical.h"
+#include "asterfort/exisd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/lisnnl.h"
 #include "asterfort/mecham.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
 #include "asterfort/redetr.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 !
-    integer :: nchar
-    real(kind=8) :: time
-    character(len=*) :: modele, optioz, cara, mate, mateco
-    character(len=*) :: merigi, memass, meamor, varplu
-    character(len=8) :: lchar(*)
-    character(len=1) :: base
-    character(len=*), optional :: compor_
-
+character(len=*), intent(in) :: optionz
+character(len=*), intent(in) :: modelz
+integer, intent(in) :: nbLoad
+character(len=24), pointer :: listLoadK24(:) 
+character(len=*), intent(in) :: matez, matecoz, caraElemz
+real(kind=8), intent(in) :: time
+character(len=*), intent(in) :: basez
+character(len=*), intent(in) :: matrRigiz, matrMassz, matrElemz
+character(len=*), intent(in) :: listElemCalcz
+character(len=*), intent(in), optional :: variz_, comporz_
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! CALCUL DES MATRICES ELEMENTAIRES D'AMOR_MECA
-! OU DES MATRICES ELEMENTAIRES DE RIGI_MECA_HYST
+! Elementary matrix for AMOR_MECA / RIGI_MECA_HYST
 !
-! ----------------------------------------------------------------------
+! NB: careful, compute Dirichlet [B] matrix too when RIGI_MECA_HYST
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  OPTION : 'AMOR_MECA' OU 'RIGI_MECA_HYST'
-! IN  MODELE : NOM DU MODELE
-! IN  NCHAR  : NOMBRE DE CHARGES
-! IN  LCHAR  : LISTE DES CHARGES
-! IN  MATE   : CHAM_MATER
-! IN  CARA   : CARA_ELEM
-! OUT MEAMOR : MATR_ELEM AMORTISSEMENT
-! IN  TIME   : INSTANT DE CALCUL
-! IN  MERIGI : MATR_ELEM_DEPL_R DE RIGI_MECA
-! IN  MEMASS : MATR_ELEM_DEPL_R DE MASS_MECA
+! In  option           : option to compute
+! In  model            : name of model
+! In  nbLoad           : number of loads
+! In  listLoadK24      : pointer to the name of loads
+! In  mate             : name of material characteristics (field)
+! In  mateco           : name of coded material
+! In  caraElem         : name of elementary characteristics (field)
+! In  time             : current time
+! In  base             : JEVEUX base to create matrElem
+! In  matrRigi         : elementary rigidity matrix
+! In  matrMass         : elementary rigidity mass
+! In  listElemCalc     : list of element (LIGREL) where matrElem is computed
+! In  matrElem         : elementary matrix
+! In  modeFourier      : index of Fourier mode
+! In  vari             : internal state variables
+! In  compor           : field of behaviour (non-linear cases)
 !
+! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: nbFieldInMax = 14, nbFieldOutMax = 2
+    character(len=8) :: lpain(nbFieldInMax), lpaout(nbFieldOutMax)
+    character(len=19) :: lchin(nbFieldInMax), lchout(nbFieldOutMax)
 !
-!
-    integer :: nbout, nbin
-    parameter    (nbout=3, nbin=14)
-    character(len=8) :: lpaout(nbout), lpain(nbin)
-    character(len=19) :: lchout(nbout), lchin(nbin)
-!
-    integer :: icode, iret, i, icha, ires1
-    integer :: ialir1, ilires
-    integer :: nh, nop
-    integer :: nbres1
+    character(len=16), parameter :: phenom = 'MECANIQUE'
+    integer :: nbFieldIn, nbFieldOut
     character(len=2) :: codret
-    character(len=8) :: nomgd
-    character(len=19) :: ligre1, chvarc
-    character(len=24) :: rigich, massch, ligrmo, ligrch
-    character(len=24) :: chgeom, chcara(18), chharm, argu
+    integer :: iret
+    integer, parameter :: modeFourier = 0
     character(len=16) :: option
-    aster_logical :: debug
-    integer :: ifmdbg, nivdbg
+    character(len=24), parameter :: chvarc = '&&MEAMME.CHVARC'
+    character(len=24) :: compor, listElemCalc
+    character(len=8) :: physQuantityName
+    character(len=24) :: matrRigi, matrMass
+    character(len=24) :: resuElemRigi, resuElemMass
+    character(len=24) :: chgeom, chcara(18), chharm
+    character(len=1) :: base
+    character(len=8) :: model, caraElem
+    character(len=24) :: mate, mateco
+    character(len=19) :: matrElem, resuElem, ligrel
+    integer :: iLoad, indxResuElem
+    integer :: nbResuElem, iResuElem, idxResuElemRigi
     character(len=24), pointer :: rerr(:) => null()
+    character(len=24), pointer :: listResuElem(:) => null()
+    aster_logical :: hasDirichlet
+    character(len=8) :: loadName
+    character(len=13) :: loadDescBase
+    character(len=19) :: loadMapName, loadLigrel
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    call infdbg('PRE_CALCUL', ifmdbg, nivdbg)
-!
-! --- INITIALISATIONS
-!
-    if (modele(1:1) .eq. ' ') then
-        ASSERT(.false.)
-    endif
-    option = optioz
-    ligrmo = modele(1:8)//'.MODELE'
-    if (nivdbg .ge. 2) then
-        debug = .true.
+
+! - Initializations
+    option       = optionz
+    model        = modelz
+    caraElem     = caraElemz
+    mate         = matez
+    mateco       = matecoz
+    matrElem     = matrElemz
+    base         = basez
+    listElemCalc = listElemCalcz
+    matrRigi     = matrRigiz
+    matrMass     = matrMassz
+    hasDirichlet = option .eq. 'RIGI_MECA_HYST'
+    lpain  = ' '
+    lchin  = ' '
+    lpaout = ' '
+    lchout = ' '
+
+! - Behaviour when non-linear case, multi-behaviour (PMF) for linear case
+    compor = ' '
+    if (present(comporz_)) then
+        compor = comporz_
     else
-        debug = .false.
+        compor = mate(1:8)//'.COMPOR'
     endif
-!
-! --- INITIALISATION DES CHAMPS POUR CALCUL
-!
-    call inical(nbin, lpain, lchin, nbout, lpaout,&
-                lchout)
-!
-! --- CREATION DES CHAMPS DE GEOMETRIE, CARA_ELEM ET FOURIER
-!
-    nh = 0
-    call mecham(option, modele, cara, nh, chgeom,&
-                chcara, chharm, icode)
-!
-! --- CREATION CHAMP DE VARIABLES DE COMMANDE CORRESPONDANT
-!
-    chvarc = '&&MEAMME.CHVARC'
-    call vrcins(modele, mate, cara, time, chvarc,&
-                codret)
-!
-! --- NOM DES RESUELEM DE RIGIDITE
-!
-    rigich = ' '; ires1 = 0
-    if (merigi(1:1) .ne. ' ') then
-        call jeexin(merigi(1:19)//'.RELR', iret)
+
+! - Preparation of input fields
+    call mecham(option, model, caraElem, modeFourier, chgeom,&
+                chcara, chharm, iret)
+
+! - Field for external state variables
+    call vrcins(model, mate, caraElem, time, chvarc, codret)
+
+! - Get RESU_ELEM from rigidity matrix
+    resuElemRigi    = ' '
+    idxResuElemRigi = 0
+    if (matrRigi(1:1) .ne. ' ') then
+        call jeexin(matrRigi(1:19)//'.RELR', iret)
         if (iret .gt. 0) then
-            call jeveuo(merigi(1:19)//'.RELR', 'L', ialir1)
-            call jelira(merigi(1:19)//'.RELR', 'LONUTI', nbres1)
-            do i = 1, nbres1
-                rigich = zk24(ialir1-1+i)
-                ires1=i
-                call dismoi('NOM_LIGREL', rigich(1:19), 'RESUELEM', repk=ligre1)
-                if (ligre1(1:8) .eq. modele(1:8)) goto 20
+            call jeveuo(matrRigi(1:19)//'.RELR', 'L', vk24 = listResuElem)
+            call jelira(matrRigi(1:19)//'.RELR', 'LONUTI', nbResuElem)
+            do iResuElem = 1, nbResuElem
+                resuElemRigi    = listResuElem(iResuElem)
+                idxResuElemRigi = iResuElem
+                call dismoi('NOM_LIGREL', resuElemRigi, 'RESUELEM', repk=ligrel)
+                if (ligrel(1:8) .eq. model(1:8)) then
+                    goto 20
+                endif
             end do
-            ASSERT(.false.)
+            ASSERT(ASTER_FALSE)
  20         continue
-!
-!
-!
         endif
     endif
-!
-! --- NOM DES RESUELEM DE MASSE
-!
-    massch = ' '
-    if (memass(1:1) .ne. ' ') then
-        call jeexin(memass(1:19)//'.RELR', iret)
+
+! - Get RESU_ELEM from mass matrix
+    resuElemMass = ' '
+    if (matrMass(1:1) .ne. ' ') then
+        call jeexin(matrMass(1:19)//'.RELR', iret)
         if (iret .gt. 0) then
-            call jeveuo(memass(1:19)//'.RELR', 'L', ialir1)
-            call jelira(memass(1:19)//'.RELR', 'LONUTI', nbres1)
-            do i = 1, nbres1
-                massch = zk24(ialir1-1+i)
-                call dismoi('NOM_LIGREL', massch(1:19), 'RESUELEM', repk=ligre1)
-                if (ligre1(1:8) .eq. modele(1:8)) goto 40
+            call jeveuo(matrMass(1:19)//'.RELR', 'L', vk24 = listResuElem)
+            call jelira(matrMass(1:19)//'.RELR', 'LONUTI', nbResuElem)
+            do iResuElem = 1, nbResuElem
+                resuElemMass = listResuElem(iResuElem)
+                call dismoi('NOM_LIGREL', resuElemMass, 'RESUELEM', repk=ligrel)
+                if (ligrel(1:8) .eq. model(1:8)) then
+                    goto 40
+                endif
             end do
-            ASSERT(.false.)
+            ASSERT(ASTER_FALSE)
  40         continue
         endif
     endif
-!
-! --- CREATION DU .RERR DES MATR_ELEM D'AMORTISSEMENT
-!
-    call jeexin(meamor(1:19)//'.RERR', iret)
-    if (iret .gt. 0) then
-        call jedetr(meamor(1:19)//'.RERR')
-        call jedetr(meamor(1:19)//'.RELR')
-    endif
-    call memare(base, meamor(1:19), modele(1:8), mate, cara(1:8),&
-                'AMOR_MECA')
-!     SI LA MATRICE EST CALCULEE SUR LE MODELE, ON ACTIVE LES S_STRUC:
-    call jeveuo(meamor(1:19)//'.RERR', 'E', vk24=rerr)
+
+! - Prepare RESU_ELEM objects
+    call memare(base, matrElem, model, mate, caraElem, 'AMOR_MECA')
+    call jeveuo(matrElem//'.RERR', 'E', vk24 = rerr)
     rerr(3) (1:3) = 'OUI'
-!
-! --- REMPLISSAGE DES CHAMPS D'ENTREE
-!
+    call jedetr(matrElem//'.RELR')
+
+! - Input fields
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom(1:19)
     lpain(2) = 'PMATERC'
-    lchin(2) = mateco(1:19)
+    lchin(2) = matecoz(1:19)
     lpain(3) = 'PCAORIE'
     lchin(3) = chcara(1)(1:19)
     lpain(4) = 'PCADISA'
@@ -198,111 +211,121 @@ subroutine meamme(optioz, modele, nchar, lchar, mate, mateco, &
     lchin(6) = chcara(7)(1:19)
     lpain(7) = 'PVARCPR'
     lchin(7) = chvarc(1:19)
-    lpain(8) = 'PRIGIEL'
-    lchin(8) = rigich(1:19)
-    nop=11
-!
-    if (rigich .ne. ' ') then
-        call dismoi('NOM_GD', rigich, 'RESUELEM', repk=nomgd)
-        if (nomgd .eq. 'MDNS_R') then
-            lpain(8) = 'PRIGINS'
+    lpain(8) = 'PCADISK'
+    lchin(8) = chcara(2)(1:19)
+    lpain(9) = 'PCINFDI'
+    lchin(9) = chcara(15)(1:19)
+    lpain(10) = 'PMASSEL'
+    lchin(10) = resuElemMass(1:19)
+    lpain(11) = 'PCOMPOR'
+    lchin(11) = compor(1:19)
+    nbFieldIn = 11
+
+! - Add internal state variables
+    if (present(variz_)) then
+        nbFieldIn = nbFieldIn + 1
+        lpain(nbFieldIn) = 'PVARIPG'
+        lchin(nbFieldIn) = variz_(1:19)
+    endif
+
+! - Get symmetric or unsymmetric rigidity matrix
+    if (resuElemRigi .ne. ' ') then
+        nbFieldIn = nbFieldIn + 1
+        lchin(nbFieldIn) = resuElemRigi(1:19)
+        call dismoi('NOM_GD', resuElemRigi, 'RESUELEM', repk=physQuantityName)
+        if (physQuantityName .eq. 'MDNS_R') then
+            lpain(nbFieldIn) = 'PRIGINS'
         else
-            call jeveuo(merigi(1:19)//'.RELR', 'L', ialir1)
-            call jelira(merigi(1:19)//'.RELR', 'LONUTI', nbres1)
-            if (ires1 .lt. nbres1) then
-                rigich = zk24(ialir1+ires1)
-                call dismoi('NOM_GD', rigich, 'RESUELEM', repk=nomgd)
-                if (nomgd .eq. 'MDNS_R') then
-                    nop=12
-                    lpain(12) = 'PRIGINS'
-                    lchin(12) = rigich(1:19)
+            lpain(nbFieldIn) = 'PRIGIEL'
+            call jeveuo(matrRigi(1:19)//'.RELR', 'L', vk24 = listResuElem)
+            call jelira(matrRigi(1:19)//'.RELR', 'LONUTI', nbResuElem)
+            if (idxResuElemRigi .lt. nbResuElem) then
+                resuElemRigi = listResuElem(idxResuElemRigi+1)
+                call dismoi('NOM_GD', resuElemRigi, 'RESUELEM', repk=physQuantityName)
+                if (physQuantityName .eq. 'MDNS_R') then
+                    nbFieldIn = nbFieldIn + 1
+                    lpain(nbFieldIn) = 'PRIGINS'
+                    lchin(nbFieldIn) = resuElemRigi(1:19)
                 endif
             endif
         endif
     endif
-!
-    lpain(9) = 'PMASSEL'
-    lchin(9) = massch(1:19)
-    lpain(10) = 'PCADISK'
-    lchin(10) = chcara(2)(1:19)
-    lpain(11) = 'PCINFDI'
-    lchin(11) = chcara(15)(1:19)
-!
-!
-! --- REMPLISSAGE DES CHAMPS DE SORTIE
-!
-    if (option(1:9) .eq. 'AMOR_MECA') then
+
+! - Output fields
+    if (option .eq. 'AMOR_MECA') then
         lpaout(1) = 'PMATUUR'
         lpaout(2) = 'PMATUNS'
-    else if (option.eq.'RIGI_MECA_HYST') then
+    else if (option .eq. 'RIGI_MECA_HYST') then
         lpaout(1) = 'PMATUUC'
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     endif
-    lpaout(3) = 'PMATUUR'
-    lchout(1) = meamor(1:8)//'.ME001'
-    lchout(2) = meamor(1:8)//'.ME002'
-    lchout(3) = meamor(1:8)//'.ME003'
-!
-! --- APPEL A CALCUL
-!
-!    nop = 12
-    if (varplu .ne. ' ') then
-        nop=nop+1
-        lpain(nop) = 'PVARIPG'
-        lchin(nop) = varplu(1:19)
-    endif
-!   Comportement
-    nop=nop+1
-    lpain(nop) = 'PCOMPOR'
-    if ( present(compor_) ) then
-        lchin(nop) = compor_
-    else
-        lchin(nop) = mate(1:8)//'.COMPOR'
-    endif
+    lchout(1) = matrElem(1:8)//'.ME001'
+    lchout(2) = matrElem(1:8)//'.ME002'
+    nbFieldOut = 2
 
-    call calcul('S', option, ligrmo, nop, lchin,&
-                lpain, 2, lchout, lpaout, base,&
-                'OUI')
-!
-    if (debug) then
-        call dbgcal(option, ifmdbg, nop, lpain, lchin,&
-                    2, lpaout, lchout)
-    endif
-!
-    call reajre(meamor, lchout(1), base)
-    call reajre(meamor, lchout(2), base)
-!
-! --- PRISE EN COMPTE DES MATRICES DE BLOCAGE DANS LE CAS D'UNE
-! --- RIGIDITE HYSTERETIQUE :
-!
-    if (option .eq. 'RIGI_MECA_HYST') then
-        do icha = 1, nchar
-            ligrch = lchar(icha) (1:8)//'.CHME.LIGRE'
-            argu = lchar(icha) (1:8)//'.CHME.LIGRE.LIEL'
-            call jeexin(argu, iret)
-            if (iret .le. 0) goto 50
-            lchin(1) = lchar(icha) (1:8)//'.CHME.CMULT'
-            argu = lchar(icha) (1:8)//'.CHME.CMULT.DESC'
-            call jeexin(argu, iret)
-            if (iret .le. 0) goto 50
-!
+! - Compute
+    call calcul('S',&
+                option, listElemCalc,&
+                nbFieldIn, lchin, lpain,&
+                nbFieldOut, lchout, lpaout,&
+                base, 'OUI')
+
+! - Save RESU_ELEM
+    call reajre(matrElem, lchout(1), base)
+    call reajre(matrElem, lchout(2), base)
+
+! - Dirichlet
+    option       = 'MECA_DDLM_R'
+    nbFieldIn    = 1
+    nbFieldOut   = 1
+    resuElem     = matrElem(1:8)//'.XXXXXXX'
+    call jelira(matrElem(1:19)//'.RELR', 'LONUTI', indxResuElem)
+    indxResuElem = indxResuElem + 1
+    if (hasDirichlet) then
+        do iLoad = 1, nbLoad
+! --------- Current load
+            loadName    = listLoadK24(iLoad)(1:8)
+            call lisnnl(phenom, loadName, loadDescBase)
+            loadMapName = loadDescBase//'.CMULT'
+            loadLigrel  = loadDescBase//'.LIGRE'
+
+! --------- Detect if current load is OK
+            call jeexin(loadLigrel(1:19)//'.LIEL', iret)
+            if (iret .le. 0) cycle
+            call exisd('CHAMP_GD', loadMapName, iret)
+            if (iret .le. 0) cycle
+
+! --------- Input field
             lpain(1) = 'PDDLMUR'
-            call jelira(meamor(1:19)//'.RELR', 'LONUTI', ilires)
-            call codent(ilires+1, 'D0', lchout(3) (12:14))
-            option = 'MECA_DDLM_R'
-            call calcul('S', option, ligrch, 1, lchin,&
-                        lpain, 1, lchout(3), lpaout(3), base,&
-                        'OUI')
-            call reajre(meamor, lchout(3), base)
- 50         continue
+            lchin(1) = loadMapName
+
+! --------- Generate new RESU_ELEM name
+            call codent(indxResuElem, 'D0', resuElem(10:16))
+
+! --------- Output field
+            lpaout(1) = 'PMATUUR'
+            lchout(1) = resuElem
+
+! --------- Compute
+            call calcul('S',&
+                        option, loadLigrel,&
+                        nbFieldIn, lchin, lpain,&
+                        nbFieldOut, lchout, lpaout,&
+                        base, 'OUI')
+
+! --------- Save RESU_ELEM
+            call reajre(matrElem, resuElem, base)
+            indxResuElem = indxResuElem + 1
+            if (indxResuElem .eq. 9999999) then
+                call utmess('F', 'CHARGES6_82', sk = 'RIGI_MECA_HYST')
+            endif
+
         end do
     endif
-!
-!
-!     -- DESTRUCTION DES RESUELEM NULS :
-    call redetr(meamor)
-!
+
+! - Clean
+    call redetr(matrElem)
     call detrsd('CHAMP_GD', chvarc)
 !
     call jedema()

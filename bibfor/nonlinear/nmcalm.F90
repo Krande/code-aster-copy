@@ -93,9 +93,7 @@ character(len=19) :: matele
     integer :: ifm, niv
     character(len=19) :: memass, merigi
     character(len=24) :: model
-    integer :: jinfc, jchar, jchar2
-    integer :: nbchar
-    integer :: i
+    integer :: jinfc, nbLoad
     character(len=16) :: optmat
     character(len=19) :: disp_prev, sigplu, strplu
     character(len=19) :: disp_cumu_inst, disp_newt_curr, varplu, time_curr
@@ -103,6 +101,7 @@ character(len=19) :: matele
     character(len=24) :: charge, infoch
     character(len=8) :: mesh
     character(len=24) :: listElemCalc
+    character(len=24), pointer :: listLoadK24(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -135,22 +134,13 @@ character(len=19) :: matele
         merigi = ds_system%merigi
         call nmchex(meelem, 'MEELEM', 'MEMASS', memass)
     endif
-!
-! --- TRANSFO CHARGEMENTS
-!
+
+! - Get parameters about loads
     charge = lischa(1:19)//'.LCHA'
     infoch = lischa(1:19)//'.INFC'
     call jeveuo(infoch, 'L', jinfc)
-    nbchar = zi(jinfc)
-    if (nbchar .ne. 0) then
-        call jeveuo(charge, 'L', jchar)
-        call wkvect('&&NMCALC.LISTE_CHARGE', 'V V K8', nbchar, jchar2)
-        do i = 1, nbchar
-            zk8(jchar2-1+i) = zk24(jchar-1+i) (1:8)
-        end do
-    else
-        call wkvect('&&NMCALC.LISTE_CHARGE', 'V V K8', 1, jchar2)
-    endif
+    nbLoad = zi(jinfc)
+    call jeveuo(charge, 'L', vk24 = listLoadK24)
 !
     if (typmat .eq. 'MEDIRI') then
 !
@@ -187,9 +177,12 @@ character(len=19) :: matele
         if (niv .ge. 2) then
             call utmess('I', 'MECANONLINE13_83')
         endif
-        call meamme(optmat, model, nbchar, zk8(jchar2), ds_material%mater, ds_material%mateco, &
-                    carele, instam, 'V', ds_system%merigi,&
-                    memass, matele, varplu, ds_constitutive%compor)
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk = listElemCalc)
+        call meamme(optmat, model, nbLoad, listLoadK24,&
+                    ds_material%mater, ds_material%mateco,  carele,&
+                    instam, base,&
+                    ds_system%merigi, memass,&
+                    matele, listElemCalc, varplu, ds_constitutive%compor)
 !
 ! --- MATR_ELEM POUR CHARGES SUIVEUSES
 !
