@@ -3,7 +3,7 @@
  * @brief Interface python de MaterialFieldBuilder
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,7 +28,7 @@
 namespace py = boost::python;
 
 BOOST_PYTHON_FUNCTION_OVERLOADS( MaterialFieldBuilderbuild, MaterialFieldBuilderClass::build,
-                                 1, 3 )
+                                 1, 2 )
 
 void exportMaterialFieldBuilderToPython() {
 

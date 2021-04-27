@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@
 from ..Objects import (ConcreteDryingExternalVariable,
                        ConcreteHydratationExternalVariable,
                        CorrosionExternalVariable, EvolutionParameter,
-                       GeometryExternalVariable, ExternalVariablesConverter,
+                       GeometryExternalVariable, 
                        ExternalVariablesField, IrradiationExternalVariable,
                        IrreversibleDeformationExternalVariable, MaterialField,
                        MaterialFieldBuilder, Neutral1ExternalVariable,
@@ -116,28 +116,7 @@ class MaterialAssignment(ExecuteCommand):
             else:
                 raise TypeError("Unexpected type: {0!r} {1}".format(fkw, type(fkw)))
 
-        varc = ["VARC_NEUT1", "VARC_NEUT2", "VARC_TEMP", "VARC_GEOM", "VARC_PTOT", "VARC_SECH",
-                "VARC_HYDR", "VARC_CORR", "VARC_IRRA", "VARC_DIVU", "VARC_EPSA", "VARC_M_ACIER",
-                "VARC_M_ZIRC"]
-        externalVariableConverter = ExternalVariablesConverter()
-        for varcName in varc:
-            fkw = keywords[varcName]
-            name1 = fkw["NOM_VARC"]
-            name2 = fkw["GRANDEUR"]
-            comp1 = fkw["CMP_VARC"]
-            comp2 = fkw["CMP_GD"]
-            if type(comp1) is str:
-                comp1 = [comp1]
-            if type(comp1) is tuple:
-                comp1 = list(comp1)
-            if type(comp2) is str:
-                comp2 = [comp2]
-            if type(comp2) is tuple:
-                comp2 = list(comp2)
-            externalVariableConverter.addConverter(name1, comp1, name2, comp2)
-
-        self._result = MaterialFieldBuilder.build(self._result, externalVarOnMesh,
-                                                  externalVariableConverter)
+        self._result = MaterialFieldBuilder.build(self._result, externalVarOnMesh)
 
     def _addBehaviour(self, fkw):
         kwTout = fkw.get("TOUT")

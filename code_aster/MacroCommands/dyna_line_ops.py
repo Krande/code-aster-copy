@@ -167,7 +167,7 @@ class DynaLineFEM:
         self.__impePhy = None
         if "CHARGE" in self.keywords:
             for charge in self.keywords['CHARGE']:
-                if aster.jeveux_exists(charge.getName().ljust(8) + '.CHME.IMPE .DESC'):
+                if aster.jeveux_exists(charge.getName().ljust(8) + '.CHME.IMPED.DESC'):
                     __impePhy = ASSE_MATRICE(MATR_ELEM=self.__getImpeelem(), NUME_DDL=self.getNumeddl(), **self.char_cine)
                     self.__impePhy = __impePhy
                     break

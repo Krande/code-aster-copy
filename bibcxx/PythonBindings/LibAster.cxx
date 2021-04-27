@@ -62,7 +62,6 @@
 #include "PythonBindings/ElementaryMatrixInterface.h"
 #include "PythonBindings/ElementaryVectorInterface.h"
 #include "PythonBindings/EmpiricalModeResultInterface.h"
-#include "PythonBindings/ExternalVariablesConverterInterface.h"
 #include "PythonBindings/ExternalVariablesDefinitionInterface.h"
 #include "PythonBindings/ExternalVariablesResultInterface.h"
 #include "PythonBindings/FiberGeometryInterface.h"
@@ -298,7 +297,6 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportListOfFloatsToPython();
     exportListOfIntegersToPython();
     exportExternalVariablesToPython();
-    exportExternalVariablesConverterToPython();
     exportEmpiricalModeResultToPython();
     exportExternalVariablesResultToPython();
     exportMaterialFieldBuilderToPython();

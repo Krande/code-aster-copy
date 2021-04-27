@@ -6,7 +6,7 @@
  * @brief Fichier entete de MaterialFieldBuilder
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,7 +28,6 @@
 
 #include "Materials/ExternalVariablesDefinition.h"
 #include "Materials/MaterialField.h"
-#include "Materials/ExternalVariablesConverter.h"
 #include "astercxx.h"
 #include <stdexcept>
 
@@ -46,8 +45,7 @@ class MaterialFieldBuilderClass : public DataStructure {
      * @param curExternalVariable Input variables to add in MaterialFieldPtr
      */
     static void buildClass( MaterialFieldClass &curMater,
-                               const ExternalVariablesFieldPtr &curExternalVariable = nullptr,
-                               const ExternalVariablesConverterPtr &converter = nullptr );
+                               const ExternalVariablesFieldPtr &curExternalVariable = nullptr);
 
   public:
     /**
@@ -62,8 +60,7 @@ class MaterialFieldBuilderClass : public DataStructure {
      * @param curExternalVariable Input variables to add in MaterialFieldPtr
      */
     static MaterialFieldPtr build( MaterialFieldPtr &curMater,
-                                    const ExternalVariablesFieldPtr &curExternalVariable = nullptr,
-                                    const ExternalVariablesConverterPtr &converter = nullptr );
+                                    const ExternalVariablesFieldPtr &curExternalVariable = nullptr);
 };
 
 #endif /* MATERIALONMESHBUILDER_H_ */

@@ -3,7 +3,7 @@
  * @brief Implementation de MaterialFieldBuilderClass::build
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,8 +32,7 @@
 #include "Utilities/SyntaxDictionary.h"
 
 void MaterialFieldBuilderClass::buildClass( MaterialFieldClass &curMater,
-                                             const ExternalVariablesFieldPtr &curExternalVariable,
-                                             const ExternalVariablesConverterPtr &converter )
+                                             const ExternalVariablesFieldPtr &curExternalVariable)
 {
     SyntaxMapContainer dict;
 
@@ -122,28 +121,6 @@ void MaterialFieldBuilderClass::buildClass( MaterialFieldClass &curMater,
         dict.container["AFFE_VARC"] = listeAFFE_VARC;
     }
 
-    if( converter != nullptr )
-    {
-        const int size = converter->getNumberOfConverter();
-        for( int i = 0; i < size; ++i )
-        {
-            const auto name1 = converter->getName(i);
-            const auto name2 = converter->getNewVariableType(i);
-            const auto comp1 = converter->getComponentNames(i);
-            const auto comp2 = converter->getNewComponentNames(i);
-            const std::string fkwName = "VARC_" + name1;
-            SyntaxMapContainer dict1;
-
-            dict1.container["NOM_VARC"] = name1;
-            dict1.container["GRANDEUR"] = name2;
-            dict1.container["CMP_VARC"] = comp1;
-            dict1.container["CMP_GD"] = comp2;
-            ListSyntaxMapContainer listeVARC_;
-            listeVARC_.push_back(dict1);
-            dict.container[fkwName] = listeVARC_;
-        }
-    }
-
     auto syntax = CommandSyntax( "AFFE_MATERIAU" );
     syntax.setResult( curMater.getName(), curMater.getType() );
     syntax.define( dict );
@@ -158,10 +135,9 @@ void MaterialFieldBuilderClass::buildClass( MaterialFieldClass &curMater,
 
 MaterialFieldPtr
 MaterialFieldBuilderClass::build( MaterialFieldPtr &curMater,
-                                      const ExternalVariablesFieldPtr &curExternalVariable,
-                                      const ExternalVariablesConverterPtr &converter )
+                                      const ExternalVariablesFieldPtr &curExternalVariable)
 
 {
-    MaterialFieldBuilderClass::buildClass( *curMater, curExternalVariable, converter );
+    MaterialFieldBuilderClass::buildClass( *curMater, curExternalVariable);
     return curMater;
 };

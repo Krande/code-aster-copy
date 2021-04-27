@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -200,8 +200,6 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT",
               V9   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
                           ),
                          ),
-        # un mot clé caché qui ne sert qu'à boucler sur les VARC possibles :
-      LIST_NOM_VARC =SIMP(statut='c',typ='TXM', defaut=("TEMP","CORR","IRRA","HYDR","SECH","EPSA","M_ACIER","M_ZIRC","NEUT1","NEUT2")),
 
 
    INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
