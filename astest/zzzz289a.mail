@@ -96,5 +96,12 @@ VE-13-JANV-2012 14:27:37
  M36      N8       N4       N9       N3       N20      N32      N34     
           N25      N12      N33     
  FINSF
+GROUP_MA NOM=V1
+ M25 M26 M27 M28 M29 M30
+FINSF
+
+GROUP_MA NOM=V2
+ M31 M32 M33 M34 M35 M36
+FINSF
  %
  FIN

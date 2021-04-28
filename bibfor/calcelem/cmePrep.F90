@@ -20,7 +20,7 @@ subroutine cmePrep(optionz      , modelz       ,&
                    timeCurr     , timeIncr     , chtime     ,&
                    nbLoad       , listLoadK8   , listLoadK24,&
                    calcElemModel, onlyDirichlet,&
-                   listElemCalc)
+                   matrElemz    , listElemCalc)
 !
 implicit none
 !
@@ -29,6 +29,10 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/mecact.h"
+#include "asterfort/getelem.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/exlim1.h"
+#include "asterfort/jedetr.h"
 !
 character(len=*), intent(in) :: optionz, modelz
 real(kind=8), intent(in) :: timeCurr, timeIncr
@@ -38,6 +42,7 @@ character(len=8), pointer :: listLoadK8(:)
 character(len=24), pointer :: listLoadK24(:)
 character(len=8), intent(in) :: calcElemModel
 aster_logical, intent(out) :: onlyDirichlet
+character(len=*), intent(in) :: matrElemz
 character(len=24), intent(out) :: listElemCalc
 !
 ! --------------------------------------------------------------------------------------------------
@@ -62,6 +67,12 @@ character(len=24), intent(out) :: listElemCalc
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=16), parameter :: keywfact = ' '
+    integer, parameter :: iocc = 0
+    character(len=24), parameter :: listCellJv = '&&CAIMPE.LIST_CELL'
+    integer :: nbCell
+    integer, pointer :: listCell(:) => null()
+    character(len=8) :: model, mesh, matrElem
     integer, parameter :: nbCmp = 6
     character(len=8), parameter :: cmpName(nbCmp) = (/'INST    ','DELTAT  ','THETA   ',&
                                                       'KHI     ','R       ','RHO     '/)
@@ -70,7 +81,9 @@ character(len=24), intent(out) :: listElemCalc
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    option = optionz
+    option   = optionz
+    model    = modelz
+    matrElem = matrElemz
 
 ! - Preapre field for time
     chtime       = '&&CHTIME'
@@ -94,7 +107,22 @@ character(len=24), intent(out) :: listElemCalc
     endif
 
 ! - Create list of elements (LIGREL) where matrElem is computed
-    call dismoi('NOM_LIGREL', modelz, 'MODELE', repk = listElemCalc)
 
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk = mesh)
+    if (option .eq. 'RIGI_MECA' .or. option .eq. 'MASS_MECA' .or. &
+        option .eq. 'MASS_MECA_DIAG' .or. option .eq. 'AMOR_MECA' .or.&
+        option .eq. 'RIGI_MECA_HYST' .or. option .eq. 'MASS_FLUI_STRU') then
+        call getelem(mesh, keywFact, iocc, ' ', listCellJv, nbCell)
+        if (nbCell .eq. 0) then
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk = listElemCalc)
+        else
+            listElemCalc = matrElem(1:8)//'LIGREL'
+            call jeveuo(listCellJv, 'L', vi = listCell)
+            call exlim1(listCell, nbCell, model, 'G', listElemCalc)
+        endif
+        call jedetr(listCellJv)
+    else
+        call dismoi('NOM_LIGREL', model, 'MODELE', repk = listElemCalc)
+    endif
 !
 end subroutine

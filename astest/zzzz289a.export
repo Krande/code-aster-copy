@@ -6,4 +6,5 @@ P mpi_nbnoeud 1
 P testlist submit ci verification sequential
 
 F comm zzzz289a.comm D 1
+F comm zzzz289a.com1 D 1
 F mail zzzz289a.mail D 20

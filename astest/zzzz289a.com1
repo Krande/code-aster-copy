@@ -1,0 +1,82 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+POURSUITE(CODE='OUI', DEBUG=_F(SDVERI='OUI'))
+
+# Test for issue30883 (partial computation for CALC_MATR_ELEM)
+MATER_nul=DEFI_MATERIAU(ELAS=_F(E=0.,
+                                NU=0.2,
+                                RHO=0,),
+                        ECRO_LINE=_F(D_SIGM_EPSI=-1950.0,
+                                     SY=3.0,),)
+
+CHMAT_Q_nul=AFFE_MATERIAU(MAILLAGE=MAIL_Q,
+                          AFFE=(_F(GROUP_MA='V1', MATER = MATER,),
+                                _F(GROUP_MA='V2', MATER = MATER_nul,),)
+                          )
+
+# Test MASS_MECA on partial mesh: reference
+massElemRefe=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                            MODELE=MODELUPG,
+                            CHAM_MATER=CHMAT_Q_nul,)
+
+massAsseRefe=ASSE_MATRICE(MATR_ELEM=massElemRefe,
+                          NUME_DDL=NUMEUPG,)
+
+valmMass = 3144.996466545156
+TEST_RESU(OBJET=_F(VALE_CALC= valmMass,
+                   NOM=massAsseRefe.getName()[:8] + '           .VALM',), )
+
+# Test MASS_MECA on partial mesh: effective computation
+massElemPartial=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                               MODELE=MODELUPG,
+                               CHAM_MATER=CHMAT_Q,
+                               GROUP_MA = 'V1')
+
+massAssePartial=ASSE_MATRICE(MATR_ELEM=(massElemPartial,),
+                             NUME_DDL=NUMEUPG,)
+
+TEST_RESU(OBJET=_F(VALE_CALC=valmMass,
+                   NOM=massAssePartial.getName()[:8] + '           .VALM',), )
+
+# Test RIGI_MECA on partial mesh: reference
+rigiElemRefe=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                            MODELE=MODELUPG,
+                            CHAM_MATER=CHMAT_Q_nul,)
+
+rigiAsseRefe=ASSE_MATRICE(MATR_ELEM=rigiElemRefe,
+                          NUME_DDL=NUMEUPG,)
+
+valmRigi = 1347040.9746727615
+TEST_RESU(OBJET=_F(VALE_CALC= valmRigi,
+                   NOM=rigiAsseRefe.getName()[:8] + '           .VALM',), )
+
+# Test RIGI_MECA on partial mesh: effective computation
+rigiElemPartial=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                               MODELE=MODELUPG,
+                               CHAM_MATER=CHMAT_Q,
+                               GROUP_MA = 'V1');
+
+rigiAssePartial=ASSE_MATRICE(MATR_ELEM=(rigiElemPartial,),
+                             NUME_DDL=NUMEUPG,);
+
+TEST_RESU(OBJET=_F(VALE_CALC=valmRigi,
+                   NOM=rigiAssePartial.getName()[:8] + '           .VALM',), )
+
+FIN()

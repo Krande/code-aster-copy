@@ -95,7 +95,7 @@ implicit none
                  timeCurr     , timeIncr     , chtime     ,&
                  nbLoad       , listLoadK8   , listLoadK24,&
                  calcElemModel, onlyDirichlet,&
-                 listElemCalc)
+                 matrElem     , listElemCalc)
 
 ! - Compute
     if (option .eq. 'RIGI_MECA') then
@@ -131,7 +131,7 @@ implicit none
         call memame(option, model   , mate, mateco      , caraElem, timeCurr,&
                     comporMult, matrElem, base, listElemCalc)
 
-   else if (option .eq. 'MASS_MECA_DIAG') then
+    else if (option .eq. 'MASS_MECA_DIAG') then
         call memame(option    , model   , mate, mateco      , caraElem, timeCurr,&
                     comporMult, matrElem, base, listElemCalc)
 
