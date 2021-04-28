@@ -17,9 +17,19 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine cmePrep(optionz, modelz, timeCurr, timeIncr, chtime)
+    subroutine cmePrep(optionz      , modelz       ,&
+                       timeCurr     , timeIncr     , chtime     ,&
+                       nbLoad       , listLoadK8   , listLoadK24,&
+                       calcElemModel, onlyDirichlet,&
+                       listElemCalc)
         character(len=*), intent(in) :: optionz, modelz
         real(kind=8), intent(in) :: timeCurr, timeIncr
         character(len=24), intent(out) :: chtime
+        integer, intent(in) :: nbLoad
+        character(len=8), pointer :: listLoadK8(:)
+        character(len=24), pointer :: listLoadK24(:)
+        character(len=8), intent(in) :: calcElemModel
+        aster_logical, intent(out) :: onlyDirichlet
+        character(len=24), intent(out) :: listElemCalc
     end subroutine cmePrep
 end interface

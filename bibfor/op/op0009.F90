@@ -27,7 +27,6 @@ implicit none
 #include "asterfort/cmeGetParameters.h"
 #include "asterfort/cmePost.h"
 #include "asterfort/cmePrep.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -65,7 +64,11 @@ implicit none
     character(len=19) :: matrElem, rigiMatrElem, massMatrElem
     character(len=24) :: chtime, mate, comporMult, matr_elem24, mateco
     character(len=8), pointer :: listLoadK8(:) => null()
+    character(len=24), pointer :: listLoadK24(:) => null()
     real(kind=8) :: timeCurr, timeIncr
+    character(len=24) :: calcElemModel, listElemCalc
+    aster_logical, parameter :: hasExteStatVari = ASTER_TRUE
+    aster_logical :: onlyDirichlet
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,21 +79,27 @@ implicit none
     call getres(matrElem, k8dummy, k8dummy)
 
 ! - Get parameters
-    call cmeGetParameters(option      ,&
-                          model       , caraElem    , mate, mateco, comporMult,&
-                          listLoadK8  , nbLoad      ,&
-                          rigiMatrElem, massMatrElem,&
-                          timeCurr    , timeIncr    , modeFourier,&
-                          sigm        , strx        , disp)
+    call cmeGetParameters(option       ,&
+                          model        , caraElem    ,&
+                          mate         , mateco      , comporMult,&
+                          listLoadK8   , nbLoad      ,&
+                          rigiMatrElem , massMatrElem,&
+                          timeCurr     , timeIncr    , modeFourier,&
+                          sigm         , strx        , disp       ,&
+                          calcElemModel)
 
 ! - Preparation
-    call cmePrep(option, model, timeCurr, timeIncr, chtime)
+    call cmePrep(option       , model        ,&
+                 timeCurr     , timeIncr     , chtime     ,&
+                 nbLoad       , listLoadK8   , listLoadK24,&
+                 calcElemModel, onlyDirichlet,&
+                 listElemCalc)
 
 ! - Compute
     if (option .eq. 'RIGI_MECA') then
-        call merime(model   , nbLoad    , listLoadK8,&
-                    mate    , mateco    , caraElem  ,&
-                    timeCurr, comporMult, matrElem  , modeFourier, base)
+        call merime(model       , nbLoad         , listLoadK24, mate       , mateco, caraElem,&
+                    timeCurr    , comporMult     , matrElem   , modeFourier, base,&
+                    listElemCalc, hasExteStatVari, onlyDirichlet)
 
     else if (option.eq.'RIGI_FLUI_STRU') then
         call merifs(model, nbLoad, listLoadK8, mate, mateco, caraElem,&
@@ -170,6 +179,7 @@ implicit none
 
 ! - Clean
     AS_DEALLOCATE(vk8 = listLoadK8)
+    AS_DEALLOCATE(vk24 = listLoadK24)
     call jedetr('&MERITH1           .RELR')
     call jedetr('&MERITH2           .RELR')
     call jedetr('&MERITH3           .RELR')

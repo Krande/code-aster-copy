@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,26 +15,21 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine merime(modelz, nchar, lchar, mater, mateco, carelz,&
-                      time, compoz, matelz, nh,&
-                      basz)
-        character(len=*) :: modelz
-        integer :: nchar
-        character(len=*) :: lchar(*)
-        character(len=*) :: mateco
-        character(len=*) :: carelz
-        aster_logical :: exitim
-        character(len=*) :: compoz
-        character(len=*) :: matelz
-        integer :: nh
-        character(len=*) :: basz
+    subroutine merime(modelz, nbLoad       , listLoadK24     ,&
+                      matez , matecoz      , caraElemz       ,&
+                      time  , comporMultz  , matrElemz       , modeFourier,&
+                      basez , listElemCalcz, hasExteStatVari_, onlyDirichlet_)
+        character(len=*), intent(in) :: modelz
+        integer, intent(in) :: nbLoad
+        character(len=24), pointer :: listLoadK24(:) 
+        character(len=*), intent(in) :: matez, matecoz, caraElemz
         real(kind=8), intent(in) :: time
-        character(len=*), intent(in) :: mater
+        character(len=*), intent(in) :: comporMultz, matrElemz
+        integer, intent(in) :: modeFourier
+        character(len=*), intent(in) :: basez, listElemCalcz
+        aster_logical, intent(in), optional :: hasExteStatVari_, onlyDirichlet_
     end subroutine merime
 end interface

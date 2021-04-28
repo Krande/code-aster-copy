@@ -16,12 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cmeGetParameters(option      ,&
-                            model       , caraElem    , mate, mateco, comporMult,&
-                            listLoadK8  , nbLoad      ,&
-                            rigiMatrElem, massMatrElem,&
-                            timeCurr    , timeIncr    , modeFourier,&
-                            sigm        , strx        , disp)
+subroutine cmeGetParameters(option       ,&
+                            model        , caraElem    ,&
+                            mate         , mateco      , comporMult,&
+                            listLoadK8   , nbLoad      ,&
+                            rigiMatrElem , massMatrElem,&
+                            timeCurr     , timeIncr    , modeFourier,&
+                            sigm         , strx        , disp,&
+                            calcElemModel)
 !
 implicit none
 !
@@ -46,6 +48,7 @@ character(len=19), intent(out) :: rigiMatrElem, massMatrElem
 real(kind=8), intent(out) :: timeCurr, timeIncr
 integer, intent(out) :: modeFourier
 character(len=8), intent(out) :: sigm, strx, disp
+character(len=8), intent(out) :: calcElemModel
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,7 +63,7 @@ character(len=8), intent(out) :: sigm, strx, disp
 ! Out caraElem         : name of elementary characteristics (field)
 ! Out mate             : name of material characteristics (field)
 ! Out comporMult       : multi-behaviour for multifibers beams (field)
-! Out listLoadK8       : pointer to list of loads (K8)
+! Ptr listLoadK8       : pointer to list of loads (K8)
 ! Out nbLoad           : number of loads
 ! Out rigiMatrElem     : option for mechanic rigidity (useful for damping)
 ! Out massMatrElem     : option for mechanic mass (useful for damping)
@@ -70,6 +73,7 @@ character(len=8), intent(out) :: sigm, strx, disp
 ! Out sigm             : stress
 ! Out strx             : fibers information
 ! Out disp             : displacements
+! Out calcElemModel    : value of keyword CALC_ELEM_MODELE
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,22 +83,23 @@ character(len=8), intent(out) :: sigm, strx, disp
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    option       = ' '
-    rigiMatrElem = ' '
-    massMatrElem = ' '
-    timeCurr     = 0.d0
-    timeIncr     = 0.d0
-    modeFourier  = 0
-    model        = ' '
-    caraElem     = ' '
-    mate         = ' '
-    mateco       = ' '
-    comporMult   = ' '
-    listLoadK8 => null()
-    nbLoad       = 0
-    sigm         = ' '
-    strx         = ' '
-    disp         = ' '
+    option        = ' '
+    rigiMatrElem  = ' '
+    massMatrElem  = ' '
+    timeCurr      = 0.d0
+    timeIncr      = 0.d0
+    modeFourier   = 0
+    model         = ' '
+    caraElem      = ' '
+    mate          = ' '
+    mateco        = ' '
+    comporMult    = ' '
+    listLoadK8    => null()
+    nbLoad        = 0
+    sigm          = ' '
+    strx          = ' '
+    disp          = ' '
+    calcElemModel = 'OUI'
 
 ! - Get parameters
     call getvtx(' ', 'OPTION'   , scal=option, nbret=nocc)
@@ -176,5 +181,11 @@ character(len=8), intent(out) :: sigm, strx, disp
             call chpver('F', disp, 'NOEU', 'DEPL_R', ier)
         endif
     endif
+
+! - Specific for RIGI_MECA
+    if (option .eq. 'RIGI_MECA') then
+        call getvtx(' ', 'CALC_ELEM_MODELE', scal=calcElemModel, nbret=nocc)
+    endif
+
 !
 end subroutine

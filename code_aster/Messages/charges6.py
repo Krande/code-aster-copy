@@ -50,6 +50,10 @@ Si vous êtes en trois dimensions, les éléments doivent être des triangles ou
 
     6: _("""Lors de l'évaluation du chargement VITE_FACE, la normale calculée est nulle. Le maillage est probablement incorrect."""),
 
+    82: _("""
+Il y a trop de chargements avec l'option %(k1)s pour calculer toutes les matrices élémentaires.
+"""),
+
     84: _("""
 Vous demandez le calcul de la matrice correspondant à l'option ONDE_FLUI.
 Mais on ne peut rien calculer, faute de données.

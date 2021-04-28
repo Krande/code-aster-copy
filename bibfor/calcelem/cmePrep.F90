@@ -16,17 +16,29 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cmePrep(optionz, modelz, timeCurr, timeIncr, chtime)
+subroutine cmePrep(optionz      , modelz       ,&
+                   timeCurr     , timeIncr     , chtime     ,&
+                   nbLoad       , listLoadK8   , listLoadK24,&
+                   calcElemModel, onlyDirichlet,&
+                   listElemCalc)
 !
 implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/as_allocate.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/mecact.h"
 !
 character(len=*), intent(in) :: optionz, modelz
 real(kind=8), intent(in) :: timeCurr, timeIncr
 character(len=24), intent(out) :: chtime
+integer, intent(in) :: nbLoad
+character(len=8), pointer :: listLoadK8(:)
+character(len=24), pointer :: listLoadK24(:)
+character(len=8), intent(in) :: calcElemModel
+aster_logical, intent(out) :: onlyDirichlet
+character(len=24), intent(out) :: listElemCalc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,6 +53,12 @@ character(len=24), intent(out) :: chtime
 ! In  timeCurr         : current time
 ! In  timeIncr         : time step
 ! Out chtime           : time parameters (field)
+! In  nbLoad           : number of loads
+! Ptr listLoadK8       : pointer to list of loads (K8)
+! Ptr listLoadK24      : pointer to list of loads (K24)
+! In  calcElemModel    : value of keyword CALC_ELEM_MODELE
+! Out onlyDirichlet    : flag to compute only Dirichlet [B] matrix
+! Out listElemCalc     : list of elements (LIGREL) where matrElem is computed
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,13 +70,31 @@ character(len=24), intent(out) :: chtime
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    option       = optionz
+    option = optionz
+
+! - Preapre field for time
     chtime       = '&&CHTIME'
     cmpVale(1:6) = [timeCurr, timeIncr, 1.d0, 0.d0, 0.d0, 0.d0]
-!
     if ((option.eq.'RIGI_THER') .or. (option.eq.'MASS_THER')) then
         call mecact('V', chtime, 'MODELE', modelz, 'INST_R',&
                     ncmp=nbCmp, lnomcmp=cmpName, vr=cmpVale)
     endif
+
+! - Conversion for names of loads
+    listLoadK24 => null()
+    if (nbLoad .ne. 0) then
+        AS_ALLOCATE(vk24 = listLoadK24, size = nbLoad)
+        listLoadK24(1:nbLoad) = listLoadK8(1:nbLoad)
+    endif
+
+! - Detect flag to compute only Dirichlet [B] matrix
+    onlyDirichlet = ASTER_FALSE
+    if (option .eq. 'RIGI_MECA') then
+        onlyDirichlet = calcElemModel .eq. 'NON'
+    endif
+
+! - Create list of elements (LIGREL) where matrElem is computed
+    call dismoi('NOM_LIGREL', modelz, 'MODELE', repk = listElemCalc)
+
 !
 end subroutine

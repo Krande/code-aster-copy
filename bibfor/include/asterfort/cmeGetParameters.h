@@ -17,12 +17,14 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine cmeGetParameters(option      ,&
-                                model       , caraElem    , mate, mateco, comporMult,&
-                                listLoadK8  , nbLoad      ,&
-                                rigiMatrElem, massMatrElem,&
-                                timeCurr    , timeIncr    , modeFourier,&
-                                sigm        , strx        , disp)
+    subroutine cmeGetParameters(option       ,&
+                                model        , caraElem    ,&
+                                mate         , mateco      , comporMult,&
+                                listLoadK8   , nbLoad      ,&
+                                rigiMatrElem , massMatrElem,&
+                                timeCurr     , timeIncr    , modeFourier,&
+                                sigm         , strx        , disp,&
+                                calcElemModel)
         character(len=16), intent(out) :: option
         character(len=8), intent(out) :: model, caraElem
         character(len=24), intent(out) :: mate, mateco, comporMult
@@ -32,5 +34,6 @@ interface
         real(kind=8), intent(out) :: timeCurr, timeIncr
         integer, intent(out) :: modeFourier
         character(len=8), intent(out) :: sigm, strx, disp
+        character(len=8), intent(out) :: calcElemModel
     end subroutine cmeGetParameters
 end interface
