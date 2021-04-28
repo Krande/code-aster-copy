@@ -49,6 +49,7 @@ if the ``--continue`` argument is passed.
 The command :func:`~code_aster.Commands.debut.POURSUITE` does also the same.
 """
 
+import gc
 import os.path as osp
 import pickle
 import re
@@ -287,6 +288,7 @@ def saveObjects(level=1, delete=True, only_proc0=True):
         delete (bool): If *True* the saved objects are deleted from the context.
         only_proc0 (bool): If *True* save objects only on proc #0.
     """
+    gc.collect()
     rank = libaster.getMPIRank()
     if only_proc0 and rank != 0:
         logger.info("Objects not saved on processor #{0}".format(rank))

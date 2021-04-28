@@ -317,7 +317,7 @@ class ExecuteCommand(object):
             for key in key1:
                 value = keywords.get(key)
                 if not value:
-                    return
+                    continue
                 for obj in force_list(value):
                     self._result.removeDependency(obj)
         else:
@@ -330,7 +330,7 @@ class ExecuteCommand(object):
                 for key in key2:
                     value = occ.get(key)
                     if not value:
-                        return
+                        continue
                     for obj in force_list(value):
                         self._result.removeDependency(obj)
 
@@ -387,6 +387,12 @@ class ExecuteCommand(object):
             return
         if self._result is not None:
             logger.info(command_result(self._counter, self.name, self._result))
+            if hasattr(self._result, "getDependencies"):
+                deps = self._result.getDependencies()
+                if deps:
+                    logger.info(MessageLog.GetText("I", "SUPERVIS2_80"))
+                for dep in deps:
+                    logger.info("# - {0} {1}".format(*_get_object_repr(dep)))
         self._print_stats()
 
     def _print_stats(self):
@@ -809,6 +815,20 @@ def command_header(counter, filename, lineno):
     return MessageLog.GetText("I", "SUPERVIS2_71", vali=(counter, lineno), valk=filename)
 
 
+def _get_object_repr(obj):
+    typ = ""
+    if hasattr(obj, "getName"):
+        nam = decorate_name(obj.getName().strip())
+        if obj.userName:
+            nam = "{0} ({1})".format(obj.userName.strip(), nam)
+        typ = MessageLog.GetText("I", "SUPERVIS2_76", valk=type(obj).__name__)
+    elif isinstance(obj, str):
+        nam = decorate_name(obj)
+    else:
+        nam = str(obj)
+    return nam, typ
+
+
 def command_result(counter, command_name, result):
     """Return the command footer.
 
@@ -821,16 +841,7 @@ def command_result(counter, command_name, result):
     Returns:
         str: String representation.
     """
-    show_type = ""
-    if hasattr(result, "getName"):
-        show_name = decorate_name(result.getName().strip())
-        if result.userName:
-            show_name = "{0} ({1})".format(result.userName.strip(), show_name)
-        show_type = MessageLog.GetText("I", "SUPERVIS2_76", valk=type(result).__name__)
-    elif isinstance(result, str):
-        show_name = decorate_name(result)
-    else:
-        show_name = str(result)
+    show_name, show_type = _get_object_repr(result)
     return MessageLog.GetText(
         "I", "SUPERVIS2_72", vali=counter, valk=(command_name, show_name, show_type)
     )

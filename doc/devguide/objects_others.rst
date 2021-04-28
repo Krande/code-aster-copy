@@ -113,15 +113,6 @@ Documentation of all other types.
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.ExternalVariablesConverter` object
-********************************************************************************
-
-.. autoclass:: code_aster.Objects.ExternalVariablesConverter
-   :show-inheritance:
-   :members:
-
-
-********************************************************************************
 :py:class:`~code_aster.Objects.ExternalVariablesField` object
 ********************************************************************************
 
