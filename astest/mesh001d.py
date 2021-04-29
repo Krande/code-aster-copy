@@ -70,6 +70,13 @@ connect_hexa8_mc+=1
 test.assertEqual(connect_hexa8_mc.getValuesAsTuple(),
                  connect_hexa8_aster)
 
+
+gmsh = code_aster.Mesh()
+gmsh.readGmshFile("ssnv187a.msh")
+mcgmsh = gmsh.createMedCouplingMesh()
+test.assertEqual(gmsh.getDimension(), 2)
+test.assertEqual(mcgmsh.getSpaceDimension(), 2)
+
 test.printSummary()
 
 code_aster.close()

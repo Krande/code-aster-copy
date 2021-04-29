@@ -41,7 +41,7 @@ def convertMesh2MedCoupling(asmesh):
     mcmesh = mc.MEDFileUMesh()
     coords = mc.DataArrayDouble(asmesh.getCoordinates().getValues(),
                                 asmesh.getNumberOfNodes(),
-                                asmesh.getDimension())
+                                3)[:, :asmesh.getDimension()]
         
     maxdim = max(cells.keys())
     levels = {i : i-maxdim for i in range(maxdim,-1,-1)}

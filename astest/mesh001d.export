@@ -7,3 +7,4 @@ P testlist ci verification parallel
 
 F comm mesh001d.py D 1
 F nom zzzz503a.mmed D 0
+F nom ssnv187a.msh D 0
