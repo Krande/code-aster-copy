@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,5 +29,5 @@ from .exceptions_ext import (AsterError, ContactError, ConvergenceError,
                              IntegrationError, SolverError, TimeLimitError)
 from .ExecuteCommand import (CO, ExecuteCommand, ExecuteCommandOps,
                              ExecuteMacro, UserMacro)
-from .Serializer import Serializer, loadObjects, saveObjects
+from .Serializer import FinalizeOptions, Serializer, loadObjects, saveObjects
 from .visitors import replace_enum

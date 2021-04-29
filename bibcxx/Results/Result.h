@@ -329,7 +329,7 @@ class ResultClass : public DataStructure, public ListOfTablesClass {
     * @return std::vector< string >
     */
     VectorString getFieldsOnCellsNames() const;
-    
+
     /**
      * @brief Obtenir un champ aux noeuds réel à partir de son nom et de son numéro d'ordre
      * @param name nom Aster du champ
@@ -369,6 +369,11 @@ class ResultClass : public DataStructure, public ListOfTablesClass {
     * @return nbRanks
     */
     void listFields() const;
+
+    /**
+    * @brief Print informations about the Result content
+    */
+    void printInfo() const;
 
     /**
      * @brief Construire une sd_resultat à partir d'objet produit dans le Fortran

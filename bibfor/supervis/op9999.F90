@@ -16,16 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine op9999(isave)
+subroutine op9999(options)
     use parameters_module, only : ST_OK
     implicit none
-!     ------------------------------------------------------------------
-! person_in_charge: mathieu.courtois at edf.fr
-!     OPERATEUR DE CLOTURE
-!-----------------------------------------------------------------------
-!     FIN OP9999
-!-----------------------------------------------------------------------
-#include "asterc/gettyp.h"
+    integer, intent(in) :: options
 #include "asterc/jdcset.h"
 #include "asterc/rmfile.h"
 #include "asterfort/assert.h"
@@ -46,126 +40,91 @@ subroutine op9999(isave)
 #include "asterfort/ststat.h"
 #include "asterfort/uimpba.h"
 #include "asterfort/ulexis.h"
-#include "asterfort/ulopen.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "jeveux.h"
 
-!   isave = 1 : The objects must be saved properly.
-!   isave = 0 : The objects can be wiped out (== automatically called).
-!   Warning: isave has not necessarly the same value on all processes!
-    integer, intent(in) :: isave
+!   Warning: 'options' has not necessarly the same value on all processes!
+!   Options:
+    integer, parameter :: SaveBase = 1, FormatHdf = 4, Repack = 8
+!   InfoResu = 2, OnlyProc0 = 16: not used here
+!   - SaveBase:
+!       If enabled, the objects must be saved properly.
+!       Otherwise, the objects can be wiped out (== automatically called).
+!   - FormatHdf:
+!       Enabled if FormatHdf="OUI"
+!   - Repack:
+!       Enabled if RETASSAGE="OUI"
+!   Same values are in 'fin.py'
 
     integer :: nbenre, nboct, iret
-    integer :: ifm, iunres, iunmes
-    integer :: i, jco, nbco
-    integer :: nbext, nfhdf
+    integer :: iunres, iunmes
+    integer :: i, nbext
     aster_logical :: close_base
-    character(len=8) :: k8b, ouinon, infr
-    character(len=16) :: fhdf, typres
     character(len=80) :: fich
     character(len=256) :: fbase
-!-----------------------------------------------------------------------
-!
+
     call jemarq()
-!
-    close_base = isave .eq. 1
+
+    close_base = iand(options, SaveBase) .ne. 0
 
     call ststat(ST_OK)
 
-! --- MENAGE DANS LES BIBLIOTHEQUES, ALARMES, ERREURS, MPI
-!
+!   Cleaning in libraries, warnings, errors, mpi...
     call fin999()
-!
-! --- ecriture des informations sur le contenu de chaque sd_resultat :
-!
-    infr = 'NON'
-    if (infr.eq.'OUI') then
-        ifm = iunifi('MESSAGE')
-!
-        typres = 'RESULTAT_SDASTER'
-        nbco = 0
-        call gettyp(typres, nbco, k8b)
-        if (nbco .gt. 0) then
-            call wkvect('&&OP9999.NOM', 'V V K8', nbco, jco)
-            call gettyp(typres, nbco, zk8(jco))
-            do 10 i = 1, nbco
-                write(ifm,100)
-                call rsinfo(zk8(jco-1+i), ifm)
-10          continue
-        endif
-    endif
-!
-    iunmes = iunifi('MESSAGE')
-    iunres = iunifi('RESULTAT')
-!
-! --- SUPPRESSION DES CONCEPTS TEMPORAIRES DES MACRO
-!
+
     if ( close_base ) then
-      call jedetc('G', '.', 1)
-!
-! --- IMPRESSION DE LA TAILLE DES CONCEPTS DE LA BASE GLOBALE
-!
-      call uimpba('G', iunmes)
-!
-! --- RETASSAGE EVENTUEL DE LA GLOBALE
-!
-      ouinon = 'NON'
-      if (ouinon .eq. 'OUI') call jetass('G')
-!
-! --- SAUVEGARDE DE LA GLOBALE AU FORMAT HDF
-!
-      fhdf = 'NON'
-      fhdf = 'NON'
-      nfhdf = 1
-      if (nfhdf .gt. 0) then
-        if (fhdf .eq. 'OUI') then
-            if (ouinon .eq. 'OUI') then
+!       Remove temporay objects from macro-commands
+        call jedetc('G', '.', 1)
+
+!       Print the size of objects existing on the GLOBALE database
+        iunmes = iunifi('MESSAGE')
+        call uimpba('G', iunmes)
+
+!       Repacking of the GLOBALE database
+        if ( iand(options, Repack) .ne. 0 ) then
+            call jetass('G')
+            if ( iand(options, FormatHdf) .ne. 0 ) then
                 call utmess('A', 'SUPERVIS2_8')
             endif
+        endif
+
+!       Save the GLOBALE database in HDF5 format
+        if ( iand(options, FormatHdf) .ne. 0 ) then
             fich = 'bhdf.1'
             call jeimhd(fich, 'G')
         endif
-     endif
-   endif
 
-!
-! --- RECUPERE LA POSITION D'UN ENREGISTREMENT SYSTEME CARACTERISTIQUE
-!
+    endif
+
+!   Get the location of a specific record to identify the execution
     call jeliad('G', nbenre, nboct)
     call jdcset('jeveux_sysaddr', nboct)
-!
-! --- APPEL JXVERI POUR VERIFIER LA BONNE FIN D'EXECUTION
-!
-    if ( close_base ) then
-      call jxveri()
-      !
-      ! --- CLOTURE DES FICHIERS
-      !
-      call jelibf('SAUVE', 'G', 1)
-      !
-      call jelibf('DETRUIT', 'V', 1)
-      !
-      ! --- RETASSAGE EFFECTIF
-      !
-      if (ouinon .eq. 'OUI') then
-        call jxcopy('G', 'GLOBALE', 'V', 'VOLATILE', nbext)
-        if (iunres .gt. 0) write(iunres, '(A,I2,A)'&
-        ) ' <I> <FIN> RETASSAGE DE LA BASE "GLOBALE" EFFECTUEE, ',&
-        nbext, ' FICHIER(S) UTILISE(S).'
-      endif
 
+!   Call jxveri to check that the execution is ending properly
+    if ( close_base ) then
+        call jxveri()
+        call jelibf('SAUVE', 'G', 1)
+        call jelibf('DETRUIT', 'V', 1)
+
+!       Effective repacking
+        if ( iand(options, Repack) .ne. 0 ) then
+            call jxcopy('G', 'GLOBALE', 'V', 'VOLATILE', nbext)
+            iunres = iunifi('RESULTAT')
+            if (iunres .gt. 0) then
+                write(iunres,'(A,I2,A)') &
+                    ' <I> <FIN> RETASSAGE DE LA BASE "GLOBALE" EFFECTUEE, ',&
+                    nbext, ' FICHIER(S) UTILISE(S).'
+            endif
+        endif
     endif
 
     call jedema()
-!
-!   the diagnosis of the execution is OK thanks to this message
+
+!   The diagnosis of the execution is OK thanks to this message
     if ( close_base ) then
         call utmess('I', 'SUPERVIS2_99')
     endif
-!
-! --- CLOTURE DE JEVEUX
-!
     call jefini('NORMAL', close_base)
 
     if ( .not. close_base ) then
@@ -180,6 +139,4 @@ subroutine op9999(isave)
         end do
     endif
 
-100 format(/,1x,'======>')
-!
 end subroutine

@@ -36,10 +36,10 @@ FIN = FIN_PROC(nom="FIN",
             fr=tr("sauvegarde de la base GLOBALE au format HDF"),
             statut='f', typ='TXM', defaut="NON", into=("OUI", "NON",)),
         RETASSAGE=SIMP(
-            fr=tr("provoque le retassage de la base GLOBALE"),
+            fr=tr("retassage de la base GLOBALE"),
             statut='f', typ='TXM', defaut="NON", into=("OUI", "NON",)),
         INFO_RESU=SIMP(
-            fr=tr("provoque l'impression des informations sur les structures de données"),
+            fr=tr("impression des informations sur les structures de données résultats"),
             statut='f', typ='TXM', defaut="OUI", into=("OUI", "NON",)),
 
         PROC0=SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),

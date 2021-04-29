@@ -370,7 +370,7 @@ VectorString ResultClass::getFieldsOnNodesNames() const
     names.push_back(trim(name)) ;
   }
   return names;
-}
+};
 
 VectorString ResultClass::getFieldsOnCellsNames() const
 {
@@ -382,7 +382,8 @@ VectorString ResultClass::getFieldsOnCellsNames() const
     names.push_back(trim(name)) ;
   }
   return names;
-}
+};
+
 
 FieldOnNodesRealPtr ResultClass::getRealFieldOnNodes( const std::string name,
                                                                      const int rank ) const
@@ -408,7 +409,12 @@ void ResultClass::listFields() const
         std::cout << curIter.first << " - ";
     }
     std::cout << std::endl;
-};
+}
+
+void ResultClass::printInfo() const {
+    ASTERINTEGER umess( 6 );
+    CALLO_RSINFO( getName(), &umess );
+}
 
 bool ResultClass::printMedFile( const std::string fileName,
                                 std::string medName ) const

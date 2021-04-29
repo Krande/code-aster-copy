@@ -609,13 +609,6 @@ class CommandSyntax(object):
         """
         return self._commandCata.definition['op']
 
-    def gettyp(self, typaster):
-        """'gettyp' is not yet supported because it requires to store all the
-        results of Commands, and it was only used in `FIN` for statistical
-        purposes.
-        """
-        return 0, ()
-
 
 def _check_strings(factName, simpName, value):
     """Check that keyword values are strings.

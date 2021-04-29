@@ -490,37 +490,6 @@ void DEFSSS( GETRES ,getres, _OUT char *nomres, _IN STRING_SIZE lres,
         return ;
 }
 
-void DEFSPS(GETTYP,gettyp, _IN char *typaster, _IN STRING_SIZE ltyp,
-                        _INOUT ASTERINTEGER *nbval,
-                          _OUT char *txval,    _IN STRING_SIZE ltx)
-{
-    /* Interface GETTYP
-     * voir B_ETAPE.gettyp
-     */
-    PyObject *res = (PyObject*)0;
-    PyObject *tup = (PyObject*)0;
-    char *typ;
-    int ok = 0;
-    int nval = 0;
-
-    typ = MakeCStrFromFStr(typaster, ltyp);
-    res = PyObject_CallMethod(get_sh_etape(), "gettyp", "s", typ);
-    if ( res == NULL ) MYABORT("erreur dans la partie Python de gettyp");
-
-    ok = PyArg_ParseTuple(res, "iO", &nval, &tup);
-    if( !ok ) MYABORT("erreur dans la partie Python");
-
-    if ( *nbval == 0 ) {
-        *nbval = (ASTERINTEGER)nval;
-    } else {
-        nval = nval > (int)*nbval ? (int)*nbval : nval;
-        convertxt(nval, tup, txval, ltx);
-    }
-
-    FreeStr(typ);
-    Py_XDECREF(res);
-}
-
 /* ------------------------------------------------------------------ */
 void DEFSSPPPP(GETVC8_WRAP,getvc8_wrap,
                _IN char *motfac, _IN STRING_SIZE lfac,

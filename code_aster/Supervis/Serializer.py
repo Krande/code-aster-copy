@@ -73,6 +73,15 @@ LIST = '_MARK_LIST_'
 DICT = '_MARK_DICT_'
 UNSTACKED = object()
 
+# same values in op9999
+class FinalizeOptions:
+    """Options for closure."""
+    SaveBase = 1
+    InfoResu = 2
+    FormatHdf = 4
+    Repack = 8
+    OnlyProc0 = 16
+
 
 class Serializer(object):
 
@@ -280,22 +289,29 @@ def _restore(name, obj):
     return new
 
 
-def saveObjects(level=1, delete=True, only_proc0=True):
+def saveObjects(level=1, delete=True, options=0):
     """Save objects of the caller context in a file.
 
     Arguments:
         level (int): Number of frames to go back to find the user context.
         delete (bool): If *True* the saved objects are deleted from the context.
-        only_proc0 (bool): If *True* save objects only on proc #0.
+        options (*FinalizeOptions*): Options for finalization.
     """
     gc.collect()
+    options |= FinalizeOptions.SaveBase
     rank = libaster.getMPIRank()
-    if only_proc0 and rank != 0:
+    if options & FinalizeOptions.OnlyProc0 and rank != 0:
         logger.info("Objects not saved on processor #{0}".format(rank))
         libaster.jeveux_finalize(False)
         return
 
     context = get_caller_context(level)
+
+    if options & FinalizeOptions.InfoResu:
+        for name, obj in context.items():
+            if hasattr(obj, "printInfo"):
+                libaster.write("\n ======> " + name)
+                obj.printInfo()
 
     # if ExecutionParameter().option & Options.Debug:
     #     libaster.debugJeveuxContent("Saved jeveux objects:")
@@ -304,8 +320,9 @@ def saveObjects(level=1, delete=True, only_proc0=True):
     # logger.setLevel(DEBUG)
     pickler = Serializer(context)
     saved = pickler.save()
+
     # close Jeveux files (should not be done before pickling)
-    libaster.jeveux_finalize(True)
+    libaster.jeveux_finalize(options)
     pickler.sign()
     # logger.setLevel(orig)
 

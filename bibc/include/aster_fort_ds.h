@@ -148,6 +148,9 @@ void DEFSSSPSP( RSEXCH, rsexch, const char *, STRING_SIZE, const char *, STRING_
 void DEFSSP( RSNOCH_FORWARD, rsnoch_forward, const char *, STRING_SIZE, const char *, STRING_SIZE,
              const ASTERINTEGER * );
 
+#define CALLO_RSINFO( a, b ) CALLOP( RSINFO, rsinfo, a, b )
+extern void DEFSP( RSINFO, rsinfo, const char *, STRING_SIZE, ASTERINTEGER * );
+
 #ifdef __cplusplus
 }
 #endif

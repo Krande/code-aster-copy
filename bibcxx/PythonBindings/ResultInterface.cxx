@@ -98,6 +98,7 @@ Returns:
         .def( "printMedFile", c8 )
         .def( "setMesh", &ResultClass::setMesh )
         .def( "update", &ResultClass::update )
+        .def( "printInfo", &ResultClass::printInfo )
 
         .def( "getTable", &ListOfTablesClass::getTable, R"(
 Extract a Table from the datastructure.

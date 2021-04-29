@@ -39,13 +39,12 @@ void jeveux_init() {
     register_sh_jeveux_status( 1 );
 }
 
-void jeveux_finalize( const bool from_save ) {
+void jeveux_finalize( const ASTERINTEGER options ) {
     if ( get_sh_jeveux_status() != 1 ) {
         return;
     }
-    ASTERINTEGER isave;
-    isave = ( ASTERINTEGER ) int( from_save );
-    CALL_OP9999( &isave );
+    ASTERINTEGER fopt = options;
+    CALL_OP9999( &fopt );
     register_sh_jeveux_status( 0 );
 }
 

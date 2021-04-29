@@ -35,14 +35,14 @@ is equivalent.
 import sys
 import libaster
 
-from ..Supervis import ExecuteCommand, saveObjects
+from ..Supervis import ExecuteCommand, saveObjects, FinalizeOptions as Options
 from ..Utilities import ExecutionParameter, logger
 
 
 class Closer(ExecuteCommand):
     """Command that closes the execution."""
     command_name = "FIN"
-    _only_proc0 = None
+    _options = None
     _exit = None
 
     def compat_syntax(self, keywords):
@@ -60,7 +60,15 @@ class Closer(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        self._only_proc0 = keywords.get("PROC0") == "OUI"
+        self._options = Options.SaveBase
+        if keywords.get("INFO_RESU") == "OUI":
+            self._options |= Options.InfoResu
+        if keywords.get("FORMAT_HDF") == "OUI":
+            self._options |= Options.FormatHdf
+        if keywords.get("RETASSAGE") == "OUI":
+            self._options |= Options.Repack
+        if keywords.get("PROC0") == "OUI":
+            self._options |= Options.OnlyProc0
         super().exec_(keywords)
 
     def _call_oper(self, dummy):
@@ -71,7 +79,7 @@ class Closer(ExecuteCommand):
         # Ensure that `saveObjects` has not been already called
         if libaster.jeveux_status():
             # 1: here, 2: exec_, 3: parent.exec_, 4: run_, 5: run, 6: user space
-            saveObjects(level=6, only_proc0=self._only_proc0)
+            saveObjects(level=6, options=self._options)
 
         logger.info(repr(ExecutionParameter().timer))
 
