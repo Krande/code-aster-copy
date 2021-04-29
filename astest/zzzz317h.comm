@@ -227,7 +227,7 @@ fpas = 0.01                     # Pas fréquentiel pour vérification du spectre
 amor = 0.05                     # Amortissement de l'accélérogramme cible
 nb_iter = 50                    # Nombre d'itération
 ZPA = 0.356                     # ZPA/PGA cible
-
+n_tir = 5
 
 #----------------------------------------------------------------------------------
 # Lecture du fichier de spectre
@@ -265,7 +265,7 @@ ACCE1=GENE_ACCE_SEISME( INIT_ALEA = graine,
                         PAS_INST = t_pas,
                         PESANTEUR = 9.81,
                         DUREE_PHASE_FORTE =t_DPF,
-                        NB_TIRAGE = 10,
+                        NB_TIRAGE = n_tir,
                         NB_POIN = n_point,
                         FREQ_FILTRE = 0.05,
                         FREQ_FILTRE_ZPA = zpa_cut  ,
@@ -314,26 +314,26 @@ SRO_MEAN1=CALC_FONCTION(MOYENNE = _F(FONCTION= l_SRO1, ) )
 SRO_MEAN2=CALC_FONCTION(MOYENNE = _F(FONCTION=l_SRO2, ) )
 
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC= 0.35843403729312,
-                         VALE_REFE= ZPA    ,                        
+TEST_FONCTION(VALEUR=(_F(VALE_CALC= 0.34067309739490,
+                         VALE_REFE= ZPA    ,                   
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 35.0),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.1,
                          FONCTION= SRO_MEAN,),
-                      _F(VALE_CALC= 0.65083160200843,
-                         VALE_REFE= 0.655    ,                        
+                      _F(VALE_CALC= 0.65668917213612,
+                         VALE_REFE= 0.655    ,                       
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 10.0),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.1,
                          FONCTION= SRO_MEAN,),
-                        _F(VALE_CALC= 0.35826986646571,
-                         VALE_REFE= ZPA ,                        
+                        _F(VALE_CALC= 0.33953497220673,
+                         VALE_REFE= ZPA ,                          
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.1, 35.0),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.1,
                          FONCTION= SRO_MEAN1,),
-                        _F(VALE_CALC= 0.35849846406159,
-                         VALE_REFE= ZPA  ,                        
+                        _F(VALE_CALC=  0.34265202957992,
+                         VALE_REFE= ZPA  ,                       
                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.02, 35.),
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.1,
