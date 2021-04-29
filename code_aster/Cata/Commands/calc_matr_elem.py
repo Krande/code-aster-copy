@@ -59,7 +59,7 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",
                                  "AMOR_MECA","RIGI_THER","IMPE_MECA",
                                  "ONDE_FLUI","AMOR_MECA_ABSO","MASS_FLUI_STRU","RIGI_FLUI_STRU",
                                  "RIGI_ROTA","MECA_GYRO","RIGI_GYRO","MASS_MECA_DIAG","RIGI_ACOU",
-                                 "MASS_ACOU","AMOR_ACOU","RIGI_MECA_HYST") ),
+                                 "MASS_ACOU","AMOR_ACOU","RIGI_MECA_HYST"), max = 1),
 
     MODELE          = SIMP(statut='o',typ=modele_sdaster ),
 
