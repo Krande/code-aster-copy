@@ -168,4 +168,4 @@ TEST_TABLE(
                      VALE=2.2999999999999998,),
            )
 
-FIN(FORMAT_HDF='OUI');
+FIN();

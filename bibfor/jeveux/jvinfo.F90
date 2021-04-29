@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ function jvinfo(info)
     integer :: jvinfo
     integer :: info
 ! ----------------------------------------------------------------------
-! Define the JEVEUX logging level (only used by jedet* and jeimhd)
+! Define the JEVEUX logging level (only used by jedet*)
 !
 ! The level must be initialized at startup.
 ! The level is stored in a common for performance reasons.

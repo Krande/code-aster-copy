@@ -203,4 +203,4 @@ TEST_RESU(RESU=(_F(INST=T_FIN,
                 ),
           )
 
-FIN(FORMAT_HDF='OUI');
+FIN();

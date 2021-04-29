@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ subroutine debut()
 #include "asterfort/ibbase.h"
 #include "asterfort/ibcata.h"
 #include "asterfort/ibdbgs.h"
-#include "asterfort/ibfhdf.h"
 #include "asterfort/ibtcpu.h"
 #include "asterfort/jvinfo.h"
 #include "asterfort/onerrf.h"
@@ -42,7 +41,6 @@ subroutine debut()
 #include "asterfort/utmess.h"
     character(len=8) :: k8b, repons
     character(len=16) :: nomcmd, k16b
-    character(len=80) :: fichdf
     integer :: ier, n, dummy
     integer, save :: ipass=0
 !
@@ -53,20 +51,15 @@ subroutine debut()
 !   to be set by 'ExecutionParameter().enable(Options.Debug)' or similar
     dummy = jvinfo(0)
 !
-    fichdf=' '
-!
 ! --- LECTURE DU MOT CLE FACTEUR DEBUG OU DE GESTION MEMOIRE DEMANDE
     call ibdbgs()
 !
 ! --- LECTURE DU MOT CLEF TEMPS_CPU
     call ibtcpu(ier)
 !
-! --- LECTURE DU MOT CLE HDF ---
-    ! call ibfhdf(fichdf)
-!
 ! --- LECTURE DU MOT CLE FACTEUR BASE ET ---
 ! --- ALLOCATION DES BASES DE DONNEES ---
-    call ibbase(ier, fichdf)
+    call ibbase(ier)
     if (ier .eq. 0) then
         call getres(k8b, k16b, nomcmd)
 !        -- INITIALISATION DE LA FONCTION NULLE : '&FOZERO'
@@ -81,7 +74,7 @@ subroutine debut()
     call gcncon('.', k8b)
 !
 ! --- LECTURE DU MOT CLE FACTEUR  CATALOGUE ---
-    if (fichdf .eq. '  ') call ibcata(ier)
+    call ibcata(ier)
 !
 !
 ! --- DEBUG / VERI_BASE : lu ici et non dans ibdbgs car après ibbase

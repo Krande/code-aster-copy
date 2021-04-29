@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -588,4 +588,4 @@ IMPR_FONCTION(FORMAT='TABLEAU',
 IMPR_TABLE(TABLE = TRESU);
 #IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_TRA,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),
 
-FIN(FORMAT_HDF='OUI')
+FIN()

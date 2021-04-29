@@ -227,6 +227,15 @@ class Restarter(Starter):
     command_name = "POURSUITE"
     arg_init = ["--continue"]
 
+    def compat_syntax(self, keywords):
+        """Ignore obsolete keywords.
+
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords, changed
+                in place.
+        """
+        keywords.pop("FORMAT_HDF", None)
+
     @staticmethod
     def _code_enabled(keywords):
         """Tell if CODE is enabled.

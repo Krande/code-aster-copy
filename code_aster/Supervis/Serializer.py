@@ -78,9 +78,8 @@ class FinalizeOptions:
     """Options for closure."""
     SaveBase = 1
     InfoResu = 2
-    FormatHdf = 4
-    Repack = 8
-    OnlyProc0 = 16
+    Repack = 4
+    OnlyProc0 = 8
 
 
 class Serializer(object):

@@ -56,12 +56,6 @@ Il n'est pas possible d'avoir plusieurs occurrences pour le
 mot-clé facteur '%(k2)s'.
 """),
 
-    8 : _("""
-L'opération de retassage de la base GLOBALE (mot clé RETASSAGE="OUI"
-dans la commande FIN) est inutile lorsque l'on sauvegarde cette
-dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
-"""),
-
     # Lignes d'entete
     4 : {  'message' : _("""
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -260,18 +260,6 @@ Contactez le support technique.
  Relecture au format HDF impossible.
 """),
 
-    54 : _("""
- Impossible d'ouvrir le fichier HDF %(k1)s.
-"""),
-
-    55 : _("""
- Impossible de fermer le fichier HDF %(k1)s.
-"""),
-
-    56 : _("""
- Fermeture du fichier HDF %(k1)s.
-"""),
-
     58 : _("""
  Le répertoire est saturé.
 """),
@@ -326,14 +314,6 @@ Contactez le support technique.
      erreur dans la programmation de la commande.
 
 """),
-
-    66 : _("""
-
- La base au format HDF de nom %(k1)s ne peut être créée.
- La fonction renvoie un code retour : %(i1)d
-
-"""),
-
 
     67 : _("""
 Le nombre d'objets de la collection %(k1)s est inférieur ou égal à 0

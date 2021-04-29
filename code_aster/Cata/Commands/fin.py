@@ -31,16 +31,12 @@ FIN = FIN_PROC(nom="FIN",
         # FIN est appelé prématurément en cas d'exception ("SIGUSR1", ArretCPUError,
         # NonConvergenceError..., erreurs <S> ou erreurs <F> récupérées).
         # En cas d'ArretCPUError, on limite au maximum le travail à faire dans FIN.
-        # Pour cela, on force certains mots-clés dans Execution/E_JDC.py.
-        FORMAT_HDF=SIMP(
-            fr=tr("sauvegarde de la base GLOBALE au format HDF"),
-            statut='f', typ='TXM', defaut="NON", into=("OUI", "NON",)),
         RETASSAGE=SIMP(
             fr=tr("retassage de la base GLOBALE"),
             statut='f', typ='TXM', defaut="NON", into=("OUI", "NON",)),
         INFO_RESU=SIMP(
             fr=tr("impression des informations sur les structures de données résultats"),
-            statut='f', typ='TXM', defaut="OUI", into=("OUI", "NON",)),
+            statut='f', typ='TXM', defaut="NON", into=("OUI", "NON",)),
 
         PROC0=SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
 )

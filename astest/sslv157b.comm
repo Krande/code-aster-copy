@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
                   ),)
 
 MAT00001=DEFI_MATERIAU(ELAS=_F(E=210000.0, NU=0.3,),)
-              
+
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(
                           _F(GROUP_MA='GMA00002', MATER=MAT00001,),
@@ -38,9 +38,9 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
 
 CINE1=AFFE_CHAR_CINE(MODELE=MODMECA,
                         MECA_IMPO=(
-                                 _F(GROUP_NO='GNO00001',DZ=0.0,),  
-                                 _F(GROUP_NO='GNO00002',DX=0.0,DY=0.0,DZ=0.0,),  
-                                 _F(GROUP_NO='GNO00003',DX=0.0,DZ=0.0,),  
+                                 _F(GROUP_NO='GNO00001',DZ=0.0,),
+                                 _F(GROUP_NO='GNO00002',DX=0.0,DY=0.0,DZ=0.0,),
+                                 _F(GROUP_NO='GNO00003',DX=0.0,DZ=0.0,),
         ),)
 
 B0P0=AFFE_CHAR_MECA(MODELE=MODMECA,
@@ -50,43 +50,43 @@ B0P0=AFFE_CHAR_MECA(MODELE=MODMECA,
                     DDL=('DX','DX','DY','DZ','DX','DY','DZ','DX','DY','DZ','DX','DY','DZ',),
                     COEF_MULT=(-1.0,-0.25,1.66967134563e-16,-8.34835672814e-17,-2.75,1.66967134563e-16,-1.25333771139e-16,3.25,1.25333771139e-16,-8.34835672814e-17,0.75,1.25333771139e-16,-1.25333771139e-16,),
                     COEF_IMPO=0,
-                    ),                  
-        
+                    ),
+
                 _F(
                     NOEUD=('N000009','N000003','N000003','N000003','N000002','N000002','N000002','N000007','N000007','N000007','N000006','N000006','N000006',),
                     DDL=('DY','DX','DY','DZ','DX','DY','DZ','DX','DY','DZ','DX','DY','DZ',),
                     COEF_MULT=(-1.0,-0.5,-0.625,-0.875,0.5,-0.625,0.875,-0.5,1.125,-0.875,0.5,1.125,0.875,),
                     COEF_IMPO=0,
-                    ),                  
-        
+                    ),
+
                 _F(
                     NOEUD=('N000009','N000003','N000003','N000003','N000002','N000002','N000002','N000007','N000007','N000007','N000006','N000006','N000006',),
                     DDL=('DZ','DX','DY','DZ','DX','DY','DZ','DX','DY','DZ','DX','DY','DZ',),
                     COEF_MULT=(-1.0,0.5,0.625,0.875,0.5,0.625,-0.375,-0.5,-0.625,0.875,-0.5,-0.625,-0.375,),
                     COEF_IMPO=0,
-                    ),                  
-        
+                    ),
+
                 _F(
                     NOEUD=('N000009','N000003','N000003','N000003','N000002','N000002','N000002','N000007','N000007','N000007','N000006','N000006','N000006',),
                     DDL=('DRX','DX','DY','DZ','DX','DY','DZ','DX','DY','DZ','DX','DY','DZ',),
                     COEF_MULT=(-1.0,5.80822598173e-21,0.25,0.25,-6.34471220281e-17,0.25,-0.25,5.80822598173e-21,-0.25,0.25,-6.34471220281e-17,-0.25,-0.25,),
                     COEF_IMPO=0,
-                    ),                  
-        
+                    ),
+
                 _F(
                     NOEUD=('N000009','N000003','N000003','N000003','N000002','N000002','N000002','N000007','N000007','N000007','N000006','N000006','N000006',),
                     DDL=('DRY','DX','DY','DZ','DX','DY','DZ','DX','DY','DZ','DX','DY','DZ',),
                     COEF_MULT=(-1.0,-0.5,-1.38739152791e-16,-1.94289029309e-16,-0.5,-1.38739152791e-16,1.52655665886e-16,0.5,2.082157068e-16,-1.94289029309e-16,0.5,2.082157068e-16,1.52655665886e-16,),
                     COEF_IMPO=0,
-                    ),                  
-        
+                    ),
+
                 _F(
                     NOEUD=('N000009','N000003','N000003','N000003','N000002','N000002','N000002','N000007','N000007','N000007','N000006','N000006','N000006',),
                     DDL=('DRZ','DX','DY','DZ','DX','DY','DZ','DX','DY','DZ','DX','DY','DZ',),
                     COEF_MULT=(-1.0,-0.5,-2.22044604925e-16,-1.94289029309e-16,0.5,-2.22044604925e-16,1.94289029309e-16,-0.5,1.66533453694e-16,-1.94289029309e-16,0.5,1.66533453694e-16,1.94289029309e-16,),
                     COEF_IMPO=0,
-                    ),                  
-        ), 
+                    ),
+        ),
 )
 
 
@@ -94,14 +94,14 @@ CHARGE1=AFFE_CHAR_MECA(MODELE=MODMECA,
         FORCE_NODALE=(
                   _F(GROUP_NO='GNO00004',FX=-0.123456701636,FY=-0.246913403273,FZ=-0.370370090008,),),
         # ne sert a rien, sauf a verifier la correction de issue23939 :
-        FORCE_INTERNE= _F(GROUP_MA='GMA00001', FZ=0.0,), 
-        )                      
-                       
+        FORCE_INTERNE= _F(GROUP_MA='GMA00001', FZ=0.0,),
+        )
+
 CAEL=AFFE_CARA_ELEM(MODELE=MODMECA,
         DISCRET=(
                 _F(CARA='K_TR_D_N', GROUP_MA='GMA00003',VALE=(0,0,0,0,0,0),),
-              )              
-                  )                       
+              )
+                  )
 
 RESU1=MECA_STATIQUE(MODELE=MODMECA,
                     OPTION='SANS',
@@ -237,4 +237,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN(FORMAT_HDF='OUI')
+FIN()

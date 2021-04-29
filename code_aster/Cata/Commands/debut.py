@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,8 +30,6 @@ DEBUT=MACRO(nom="DEBUT",
 
          IMPR_MACRO      =SIMP(fr=tr("affichage des sous-commandes produites par les macros dans le fichier mess"),
                            statut='f',typ='TXM',into=("OUI","NON"),defaut="NON"),
-#         FORMAT_HDF      =SIMP(fr=tr("sauvegarde de la base GLOBALE au format HDF"),statut='f',
-#                               typ='TXM',defaut="NON",into=("OUI","NON",) ),
          BASE            =FACT(fr=tr("définition des paramètres associés aux bases JEVEUX"),
                                statut='f',min=1,max=2,
            FICHIER         =SIMP(fr=tr("nom de la base"),statut='o',typ='TXM',

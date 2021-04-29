@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,20 +25,20 @@ MAIL=LIRE_MAILLAGE(FORMAT='ASTER',VERI_MAIL=_F(VERIF='OUI',))
 MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=(
                           _F(GROUP_MA='GMA00001',PHENOMENE='MECANIQUE',MODELISATION='C_PLAN',), # COQUE
-                          _F(GROUP_MA='GMA00003',PHENOMENE='MECANIQUE',MODELISATION='2D_DIS_T',), # DISCRET2D             
+                          _F(GROUP_MA='GMA00003',PHENOMENE='MECANIQUE',MODELISATION='2D_DIS_T',), # DISCRET2D
                          )
                    )
 
 MAT00001=DEFI_MATERIAU(ELAS=_F(E=4000000.0,NU=0.0,RHO=0.0))
-              
+
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(_F(GROUP_MA='GMA00002', MATER=MAT00001))
                    )
-        
+
 CINE1=AFFE_CHAR_CINE(MODELE=MODMECA,
                         MECA_IMPO=(
-                                 _F(GROUP_NO='GNO00001',DX=0.0,DY=0.0,DRZ=0.0,),  
-                                 _F(GROUP_MA='GMA00003',DY=0.0),  
+                                 _F(GROUP_NO='GNO00001',DX=0.0,DY=0.0,DRZ=0.0,),
+                                 _F(GROUP_MA='GMA00003',DY=0.0),
         ),)
 
 B0P0=AFFE_CHAR_MECA(MODELE=MODMECA,
@@ -48,14 +48,14 @@ B0P0=AFFE_CHAR_MECA(MODELE=MODMECA,
                     DDL=('DX','DX','DX','DX','DX',),
                     COEF_MULT=(0.25,0.25,0.25,-1.0,0.25,),
                     COEF_IMPO=0,
-                    ),                  
-        ), 
+                    ),
+        ),
 )
 
 #RBE3          ID         REFGRID    REFC     WT1      C1      G1      G2
-#              G3      G4      G5      G6      G7      G8     
+#              G3      G4      G5      G6      G7      G8
 #RBE3    10               5      1       1.0     123     1       2
-#        3       4   
+#        3       4
 
 BRBE3=AFFE_CHAR_MECA(MODELE=MODMECA,
         LIAISON_RBE3=(
@@ -66,20 +66,20 @@ BRBE3=AFFE_CHAR_MECA(MODELE=MODMECA,
                       DDL_ESCL=('DX-DY-DZ'),
                       COEF_ESCL=(1.,)
                 ),
-        ), 
+        ),
 )
 
 CHARGE1=AFFE_CHAR_MECA(MODELE=MODMECA,
                        FORCE_NODALE=(_F(GROUP_NO='GNO00002',FX=100.0,),)
-                      )                      
+                      )
 
 CAEL=AFFE_CARA_ELEM(MODELE=MODMECA,
-        MASSIF=(           
-                _F(GROUP_MA='GMA00001',ANGL_REP=(1.,2.,3.), ), 
+        MASSIF=(
+                _F(GROUP_MA='GMA00001',ANGL_REP=(1.,2.,3.), ),
               ),
         DISCRET_2D=(
                 _F(CARA='K_T_D_N', GROUP_MA='GMA00003',VALE=(0,0,),),
-              )                    
+              )
                    )
 
 RESU1=MECA_STATIQUE(MODELE=MODMECA,
@@ -91,7 +91,7 @@ RESU1=MECA_STATIQUE(MODELE=MODMECA,
                            _F(CHARGE=B0P0,),
                            ),
                    )
-                   
+
 RES_RBE3=MECA_STATIQUE(MODELE=MODMECA,
                     OPTION='SANS',
                     CHAM_MATER=CHMAT,CARA_ELEM=CAEL,
@@ -100,23 +100,23 @@ RES_RBE3=MECA_STATIQUE(MODELE=MODMECA,
                            _F(CHARGE=CINE1,),
                            _F(CHARGE=BRBE3,),
                            ),
-                   )                   
+                   )
 
 IMPR_RESU(
       FORMAT='RESULTAT',
-      RESU=(      
-      _F(RESULTAT = RESU1,NOM_CHAM = 'DEPL',VALE_MAX = 'OUI',VALE_MIN= 'OUI',), 
-      _F(RESULTAT = RES_RBE3,NOM_CHAM = 'DEPL',VALE_MAX = 'OUI',VALE_MIN= 'OUI',),          
+      RESU=(
+      _F(RESULTAT = RESU1,NOM_CHAM = 'DEPL',VALE_MAX = 'OUI',VALE_MIN= 'OUI',),
+      _F(RESULTAT = RES_RBE3,NOM_CHAM = 'DEPL',VALE_MAX = 'OUI',VALE_MIN= 'OUI',),
       ),)
 
-        
+
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RES_RBE3,
                    NOM_CHAM='DEPL',
                    NOEUD='N000003',
                    NOM_CMP='DX',
                    VALE_CALC=1.2500000000000001E-05,
-                   
+
                    CRITERE='ABSOLU',
                    ),
                 _F(NUME_ORDRE=1,
@@ -125,7 +125,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOEUD='N000001',
                    NOM_CMP='DY',
                    VALE_CALC=0.0,
-                   
+
                    CRITERE='ABSOLU',
                    ),
                 _F(NUME_ORDRE=1,
@@ -134,7 +134,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOEUD='N000001',
                    NOM_CMP='DX',
                    VALE_CALC=0.0,
-                   
+
                    CRITERE='ABSOLU',
                    ),
                 _F(NUME_ORDRE=1,
@@ -143,10 +143,10 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOEUD='N000002',
                    NOM_CMP='DY',
                    VALE_CALC=-2.1175799999999999E-21,
-                   
+
                    CRITERE='ABSOLU',
                    ),
                 ),
           )
 
-FIN(FORMAT_HDF='OUI')
+FIN()

@@ -489,4 +489,4 @@ TEST_TABLE(
                      VALE=3.31077E-02,),)
            )
 
-FIN(FORMAT_HDF='OUI')
+FIN()

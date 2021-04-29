@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -153,7 +153,7 @@ INS_ARCH=DEFI_LIST_REEL(DEBUT   = deb,
 FCT_E = DEFI_FONCTION(
   NOM_PARA = 'INST',
   VALE     = (-1,0 ,  0,0,   tfin ,dep_f ),
-  
+
                 )
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST ),
                         ECHEC=_F(
@@ -164,7 +164,7 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST ),
                   SUBD_NIVEAU=10,
                                  ))
 
-  
+
 # CALCUL ELASTIQUE
 U_ELAS=STAT_NON_LINE( INFO=1,
   MODELE     = MO,
@@ -227,9 +227,9 @@ D_ELAS = POST_RELEVE_T(
 
 # POST TRAITEMENT DE LA LONGUEUR DE FISSURE COHESIVE
 
-L_CZM_E = POST_CZM_FISS(RESULTAT = U_ELAS, 
-                      OPTION='LONGUEUR', 
-                      GROUP_MA='DCBJ', 
+L_CZM_E = POST_CZM_FISS(RESULTAT = U_ELAS,
+                      OPTION='LONGUEUR',
+                      GROUP_MA='DCBJ',
                       POINT_ORIG = (0.0 , 0.0),
                       VECT_TANG  = (1.0 , 0.0))
 IMPR_TABLE(TABLE=L_CZM_E);
@@ -299,4 +299,4 @@ IMPR_RESU(FORMAT='RESULTAT',RESU=(_F(RESULTAT=U_ELAS,
 
 
 
-FIN(FORMAT_HDF='OUI')
+FIN()

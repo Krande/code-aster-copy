@@ -20,7 +20,6 @@ subroutine op9999(options)
     use parameters_module, only : ST_OK
     implicit none
     integer, intent(in) :: options
-#include "asterc/jdcset.h"
 #include "asterc/rmfile.h"
 #include "asterfort/assert.h"
 #include "asterfort/fin999.h"
@@ -29,8 +28,6 @@ subroutine op9999(options)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jefini.h"
-#include "asterfort/jeimhd.h"
-#include "asterfort/jeliad.h"
 #include "asterfort/jelibf.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jetass.h"
@@ -46,22 +43,18 @@ subroutine op9999(options)
 
 !   Warning: 'options' has not necessarly the same value on all processes!
 !   Options:
-    integer, parameter :: SaveBase = 1, FormatHdf = 4, Repack = 8
-!   InfoResu = 2, OnlyProc0 = 16: not used here
+    integer, parameter :: SaveBase = 1, Repack = 4
+!   InfoResu = 2, OnlyProc0 = 8: not used here
 !   - SaveBase:
 !       If enabled, the objects must be saved properly.
 !       Otherwise, the objects can be wiped out (== automatically called).
-!   - FormatHdf:
-!       Enabled if FormatHdf="OUI"
 !   - Repack:
 !       Enabled if RETASSAGE="OUI"
 !   Same values are in 'fin.py'
 
-    integer :: nbenre, nboct, iret
     integer :: iunres, iunmes
-    integer :: i, nbext
+    integer :: i, iret, nbext
     aster_logical :: close_base
-    character(len=80) :: fich
     character(len=256) :: fbase
 
     call jemarq()
@@ -84,25 +77,9 @@ subroutine op9999(options)
 !       Repacking of the GLOBALE database
         if ( iand(options, Repack) .ne. 0 ) then
             call jetass('G')
-            if ( iand(options, FormatHdf) .ne. 0 ) then
-                call utmess('A', 'SUPERVIS2_8')
-            endif
         endif
 
-!       Save the GLOBALE database in HDF5 format
-        if ( iand(options, FormatHdf) .ne. 0 ) then
-            fich = 'bhdf.1'
-            call jeimhd(fich, 'G')
-        endif
-
-    endif
-
-!   Get the location of a specific record to identify the execution
-    call jeliad('G', nbenre, nboct)
-    call jdcset('jeveux_sysaddr', nboct)
-
-!   Call jxveri to check that the execution is ending properly
-    if ( close_base ) then
+!       Call jxveri to check that the execution is ending properly
         call jxveri()
         call jelibf('SAUVE', 'G', 1)
         call jelibf('DETRUIT', 'V', 1)

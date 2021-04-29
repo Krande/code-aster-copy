@@ -53,6 +53,8 @@ class Closer(ExecuteCommand):
                 in place.
         """
         self._exit = keywords.pop("exit", False)
+        # removed keyword
+        keywords.pop("FORMAT_HDF", None)
 
     def exec_(self, keywords):
         """Execute the command.
@@ -63,8 +65,6 @@ class Closer(ExecuteCommand):
         self._options = Options.SaveBase
         if keywords.get("INFO_RESU") == "OUI":
             self._options |= Options.InfoResu
-        if keywords.get("FORMAT_HDF") == "OUI":
-            self._options |= Options.FormatHdf
         if keywords.get("RETASSAGE") == "OUI":
             self._options |= Options.Repack
         if keywords.get("PROC0") == "OUI":

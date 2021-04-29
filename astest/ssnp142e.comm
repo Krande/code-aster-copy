@@ -357,4 +357,4 @@ TEST_TABLE(
                      VALE=4.6,),
            )
 
-FIN(FORMAT_HDF='OUI')
+FIN()

@@ -104,7 +104,7 @@ RESU=CALC_CHAMP(reuse=RESU,
                     DEFORMATION=('EPSI_ELGA','EPSP_ELNO',),
                    VARI_INTERNE=('VARI_ELNO',)
                )
-               
+
 #CALCUL DE G DIRECT
 G_INIT=CALC_G(THETA=_F(FISSURE=FOND,
                        R_INF=0.1,
@@ -123,7 +123,7 @@ G_INIT=CALC_G(THETA=_F(FISSURE=FOND,
 KMECA=POST_K1_K2_K3(FOND_FISS=FOND,
                     RESULTAT=RESU)
 
-#CALCUL DES  K 
+#CALCUL DES  K
 G_INIT2=CALC_G(THETA=_F(FISSURE=FOND,
                        R_INF=0.1,
                        R_SUP=0.5,
@@ -153,4 +153,4 @@ IMPR_TABLE(TABLE=KMECA,UNITE=8)
 
 IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RESU))
 
-FIN(FORMAT_HDF='NON',)
+FIN()

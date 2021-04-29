@@ -98,7 +98,6 @@ class ExecutionParameter(metaclass=Singleton):
         self._args['dbgjeveux'] = 0
         self._args['jxveri'] = 0
         self._args['sdveri'] = 0
-        self._args['jeveux_sysaddr'] = 0
 
         self._args['memory'] = 0.
         self._args['tpmax'] = 0.

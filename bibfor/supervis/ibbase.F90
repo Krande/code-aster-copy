@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,22 +16,19 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ibbase(ier, fichdf)
+subroutine ibbase(ier)
     implicit none
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/loisem.h"
 #include "asterc/mofiem.h"
-#include "asterc/rmfile.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jeinif.h"
 #include "asterfort/jelibf.h"
-#include "asterfort/jelihd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utremt.h"
     integer :: ier
-    character(len=*) :: fichdf
 !     ALLOCATION ET OUVERTURE DES BASES DE DONNEES
 !     ------------------------------------------------------------------
 ! IN  COMMAND : CH* : NOM DE LA COMMANDE APPELANTE  (DEBUT OU POURSUITE)
@@ -50,7 +47,7 @@ subroutine ibbase(ier, fichdf)
 !
 !     --- VARIABLES LOCALES --------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibase, ideb, indbas, indcas, ltt, iret
+    integer :: i, ibase, ideb, indbas, indcas, ltt
     integer :: mxbase, mxcas, nb, nbbase, n
 !-----------------------------------------------------------------------
     parameter   ( mxbase = 2 , n = 5 )
@@ -201,19 +198,8 @@ subroutine ibbase(ier, fichdf)
         info = 0
         call jelibf('DETRUIT', 'V', info)
 !
-!        --- RE-DEFINITION DE L'ENVIRONNEMENT SELON DESIRS UTILISATEUR -
-!
 !        --- INITIALISATION DE CHAQUE BASE ---
-        if (fichdf .ne. ' ') then
-            call jelihd('GLOBALE ', fichdf, 'G')
-!           --- DESTRUCTION DU FICHIER POUR QU'ON NE CONFONDE PAS PLUS
-!               TARD AVEC UNE EVENTUELLE BASE HDF EN RESULTAT ---
-            info=1
-            call rmfile(fichdf, info, iret)
-        endif
         ideb = 1
-        if (fichdf .ne. ' ') ideb = 2
-!
         do 300 ibase = ideb, mxbase
             call jeinif(stin(ibase), stout(ibase), nomba(ibase)(1:8), nomba(ibase)(1:1),&
                         balgre(ibase), banbbl(ibase), balgbl( ibase))

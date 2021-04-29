@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,21 +29,21 @@ MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
              _F(GROUP_MA='GMA00001',PHENOMENE='MECANIQUE',MODELISATION='DKT',), # COQUE
              _F(GROUP_MA='GMA00003',PHENOMENE='MECANIQUE',MODELISATION='DIS_T',), # DISCRET
 ),)
-                   
+
 MAT00001=DEFI_MATERIAU(
         ELAS=_F(
             E=210000.0,
             NU=0.300000011921,RHO=7.84999976133e-09,),)  #  1
-              
+
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(
                           _F(GROUP_MA='GMA00002', MATER=MAT00001,),
                          )
                     )
-        
+
 CINE1=AFFE_CHAR_CINE(MODELE=MODMECA,
                         MECA_IMPO=(
-                                 _F(GROUP_NO='GNO00001',DX=0.0,DY=0.0,DZ=0.0,DRX=0.0,DRY=0.0,DRZ=0.0,),  
+                                 _F(GROUP_NO='GNO00001',DX=0.0,DY=0.0,DZ=0.0,DRX=0.0,DRY=0.0,DRZ=0.0,),
         ),)
 
 B0P0=AFFE_CHAR_MECA(MODELE=MODMECA,
@@ -55,8 +55,8 @@ B0P0=AFFE_CHAR_MECA(MODELE=MODMECA,
                               -1.55416117309e-07,0.124999843538,1.55416884695e-07,0.125000149012,
                               -1.55416117309e-07,0.124999776483,-3.86470423806e-13,-1.0,0.125000223517,-3.86470423806e-13,0.125,2.19792767098e-07,),
                     COEF_IMPO=0,
-                    ),                  
-        
+                    ),
+
                 _F(
                     NOEUD=('N000014','N000014','N000010','N000010','N000109','N000109','N000068','N000068','N000092','N000092','N000009','N000009','N000001','N000003','N000003','N000002','N000002',),
                     DDL=('DX','DY','DX','DY','DX','DY','DX','DY','DX','DY','DX','DY','DY','DX','DY','DX','DY',),
@@ -64,15 +64,15 @@ B0P0=AFFE_CHAR_MECA(MODELE=MODMECA,
                                1.55416884695e-07,0.125000149012,1.55416884695e-07,0.124999843538,
                                -1.55416117309e-07,0.125000149012,2.19792767098e-07,0.125,-1.0,-2.19793534484e-07,0.125,-3.86470423806e-13,0.124999776483,),
                     COEF_IMPO=0,
-                    ),                  
-        
+                    ),
+
                 _F(
                     NOEUD=('N000014','N000010','N000109','N000068','N000092','N000009','N000001','N000003','N000002',),
                     DDL=('DZ','DZ','DZ','DZ','DZ','DZ','DZ','DZ','DZ',),
                     COEF_MULT=(0.125,0.125000447035,0.125,0.124999381602,0.125000625849,0.124999560416,-1.0,0.125000447035,0.124999560416,),
                     COEF_IMPO=0,
-                    ),                  
-        ), 
+                    ),
+        ),
 )
 
 
@@ -80,15 +80,15 @@ B0P0=AFFE_CHAR_MECA(MODELE=MODMECA,
 CHARGE1=AFFE_CHAR_MECA(MODELE=MODMECA,
         FORCE_NODALE=(
                   _F(GROUP_NO='GNO00002',FX=-0.123456701636,FY=-0.246913403273,FZ=-0.370370090008,),),
-                       )                      
+                       )
 
 CAEL=AFFE_CARA_ELEM(MODELE=MODMECA,
-        COQUE=(           
+        COQUE=(
                 _F(GROUP_MA='GMA00001',EPAIS=0.123000003397, VECTEUR=(0.9,0.1,0.2) ),
               ),
         DISCRET=(
                 _F(CARA='K_T_D_N', GROUP_MA='GMA00003',VALE=(0,0,0,),),
-              )              
+              )
                   )
 
 RESU1=MECA_STATIQUE(MODELE=MODMECA,
@@ -102,15 +102,15 @@ RESU1=MECA_STATIQUE(MODELE=MODMECA,
 
 IMPR_RESU(
       FORMAT='RESULTAT',
-      RESU=(      
+      RESU=(
       _F(RESULTAT = RESU1,NOM_CHAM = 'DEPL',VALE_MAX = 'OUI',VALE_MIN= 'OUI',NOEUD=('N000002','N000003','N000014','N000009','N000068','N000092','N000010','N000109')),
       ),)
 
 IMPR_RESU(FORMAT='MED',
           UNITE=80,
-          RESU=(  
+          RESU=(
           _F(MAILLAGE=MAIL,RESULTAT=RESU1,NOM_CHAM=('DEPL' ),),
-         ),)                   
+         ),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='SOURCE_EXTERNE',
@@ -235,4 +235,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN(FORMAT_HDF='OUI')
+FIN()
