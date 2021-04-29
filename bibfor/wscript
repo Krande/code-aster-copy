@@ -418,7 +418,7 @@ def check_optimization_fcflags(self):
         try:
             values = [int(float(i)) for i in out.split()]
             if values == [2, 4, 6]:
-                res = "%s is required" % repr(flag)
+                res = "%s is required" % repr(flag) if flag else "ok"
                 optflag.append(flag)
                 break
         except ValueError:
