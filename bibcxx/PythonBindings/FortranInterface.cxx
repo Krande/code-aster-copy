@@ -71,7 +71,7 @@ Call a Fortran 'debut' subroutine.
 Arguments:
     syntax (CommandSyntax): Object containing the user syntax.
         )",
-         ( py::arg( "syntax" ) ) );
+             ( py::arg( "syntax" ) ) );
 
     py::def( "call_poursuite", &call_poursuite, R"(
 Call a Fortran 'poursuite' subroutine.
@@ -79,7 +79,7 @@ Call a Fortran 'poursuite' subroutine.
 Arguments:
     syntax (CommandSyntax): Object containing the user syntax.
         )",
-         ( py::arg( "syntax" ) ) );
+             ( py::arg( "syntax" ) ) );
 
     py::def( "write", &call_print, R"(
 Print a string using the fortran subroutine.
@@ -87,7 +87,7 @@ Print a string using the fortran subroutine.
 Arguments:
     text (str): Text to be printed.
         )",
-         ( py::arg( "text" ) ) );
+             ( py::arg( "text" ) ) );
 
     py::def( "affich", &call_affich, R"(
 Print a string using the fortran subroutine on an internal file.
@@ -96,7 +96,7 @@ Arguments:
     code (str): Code name of the internal file : 'MESSAGE' or 'CODE'.
     text (str): Text to be printed.
         )",
-         ( py::arg( "code" ), py::arg( "text" ) ) );
+             ( py::arg( "code" ), py::arg( "text" ) ) );
 
     py::def( "jeveux_status", &get_sh_jeveux_status, R"(
 Return the status of the Jeveux memory manager.
@@ -105,18 +105,29 @@ Returns:
     int: 0 after initialization and after shutdown, 1 during the execution.
         )" );
 
-//     py::def( "onFatalError", &onFatalError, R"(
-// Get/set the behavior in case of error.
+    py::def( "jeveux_delete", &jeveux_delete, R"(
+Force manual deletion of Jeveux objects.
 
-// Arguments:
-//     value (str, optional): Set the new behavior in case of error (one of "ABORT",
-//         "EXCEPTION", "EXCEPTION+VALID" or "INIT"). If `value` is not provided,
-//         the current behavior is returned.
+Warning: Use only for debugging usages, it is dangerous for objects integrity
+and cpu consuming.
 
-// Returns:
-//     str: Current value
-//         )",
-//          ( py::arg( "value" ) ) );
+Arguments:
+    prefix (str): Root name of the Jeveux datastructure.
+        )",
+             ( py::arg( "prefix" ) ) );
+
+    //     py::def( "onFatalError", &onFatalError, R"(
+    // Get/set the behavior in case of error.
+
+    // Arguments:
+    //     value (str, optional): Set the new behavior in case of error (one of "ABORT",
+    //         "EXCEPTION", "EXCEPTION+VALID" or "INIT"). If `value` is not provided,
+    //         the current behavior is returned.
+
+    // Returns:
+    //     str: Current value
+    //         )",
+    //          ( py::arg( "value" ) ) );
     py::def( "onFatalError", &onFatalError, onFatalError_overloads() );
 
     py::def( "set_option", &set_option, R"(
@@ -125,5 +136,5 @@ Set an option value to be used from Fortran operators.
 Arguments:
     option (str): Option name.
     value (float): Option value.
-        )");
+        )" );
 };

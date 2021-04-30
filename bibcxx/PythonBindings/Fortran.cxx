@@ -23,8 +23,9 @@
 
 /* person_in_charge: mathieu.courtois@edf.fr */
 
-#include "Python.h"
 #include "PythonBindings/Fortran.h"
+#include "Python.h"
+#include "aster_fort_ds.h"
 #include "aster_fort_superv.h"
 #include "aster_fort_utils.h"
 #include "aster_utils.h"
@@ -97,6 +98,11 @@ void call_poursuite( PyObject *syntax ) { return call_ops( syntax, -2 ); }
 void call_affich( const std::string &code, const std::string &text ) { CALL_AFFICH( code, text ); }
 
 void call_print( const std::string &text ) { call_affich( "MESSAGE", text ); }
+
+void jeveux_delete( const std::string prefix ) {
+    std::string type = " ";
+    CALLO_DETRSD( type, prefix );
+}
 
 std::string onFatalError( const std::string value ) {
     ASTERINTEGER lng = 16;

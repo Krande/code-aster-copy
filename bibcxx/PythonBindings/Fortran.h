@@ -46,6 +46,8 @@ void call_affich( const std::string &code, const std::string &text );
 
 void call_print( const std::string &text );
 
+void jeveux_delete( const std::string prefix );
+
 std::string onFatalError( const std::string value = "" );
 
 void set_option( const std::string &option, double value );
