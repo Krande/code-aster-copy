@@ -269,7 +269,9 @@ integer, optional, intent(in)  :: nbInterc_
 !               on regarde si le noeud est deja projete par une autre
 !               occurrence de VIS_A_VIS
                 if (present(nbInterc_))then
-                    call jeveuo(listInterc_, 'L', vi=vinterc)
+                    if (nbInterc_ .ne. 0) then
+                        call jeveuo(listInterc_, 'L', vi=vinterc)
+                    endif
                     do ino = 1,nbInterc_
                         if (iNode2 .eq. vinterc(ino))then
                             zi(i2conb-1+iNode2)=0
