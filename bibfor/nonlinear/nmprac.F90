@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ subroutine nmprac(fonact, lischa, numedd, solveu     ,&
                   meelem, measse, maprec, matass    , faccvg)
 !
 use NonLin_Datastructure_type
+use ldlt_xp_data_module
 !
 implicit none
 !
@@ -158,7 +159,11 @@ integer :: faccvg
     call preres(solveu, 'V', faccvg, maprec, matass,&
                 ibid, -9999)
     call nmtime(ds_measure, 'Stop', 'Factor')
-    call nmrinc(ds_measure, 'Factor')
+
+!   only increase nb of factorization if the matrix has indeed been factored
+!   this can not be the case with the use of LDLT_SP/DP
+    if (really_factored) call nmrinc(ds_measure, 'Factor')
+
 !
 ! --- RETABLISSEMENT CODE
 !

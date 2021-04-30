@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@ subroutine prere1(solvez, base, iret, matpre, matass,&
 !                        POUR STOP_SINGULIER (VALEUR 0 OU 1 SEULEMENT)
 !                 /AUTRE --> ASSERT
 !-----------------------------------------------------------------------
+use ldlt_xp_data_module
     implicit none
 !
 ! DECLARATION PARAMETRES D'APPELS
@@ -186,7 +187,7 @@ subroutine prere1(solvez, base, iret, matpre, matass,&
             niremp = zi(islvi-1+4)
             call pcldlt(maprec, matas, niremp, base)
         else if (precon.eq.'LDLT_SP') then
-            call pcmump(matas, solveu, iretgc)
+            call pcmump(matas, solveu, iretgc, really_factored)
             if (iretgc .ne. 0) then
                 call utmess('F', 'ALGELINE5_76')
             endif
