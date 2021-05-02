@@ -20,9 +20,10 @@
 # person_in_charge: mathieu.courtois@edf.fr
 import gc
 
+from ..Messages import UTMESS
 from ..Objects import DataStructure, Function
-from ..Utilities import deprecate, force_list, get_caller_context
 from ..Supervis import ExecuteCommand
+from ..Utilities import deprecate, force_list, get_caller_context
 
 
 class Deleter(ExecuteCommand):
@@ -71,6 +72,7 @@ class Deleter(ExecuteCommand):
         for name in list(context.keys()):
             if isinstance(context[name], DataStructure):
                 if context[name].getName() in to_del:
+                    UTMESS("I", "SUPERVIS_5", valk=name)
                     del context[name]
 
         # force garbage collection
