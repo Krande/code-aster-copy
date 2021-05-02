@@ -20,9 +20,13 @@ subroutine op9999(options)
     use parameters_module, only : ST_OK
     implicit none
     integer, intent(in) :: options
+#include "asterc/chkmsg.h"
+#include "asterc/dllcls.h"
+#include "asterc/lcdiscard.h"
 #include "asterc/rmfile.h"
+#include "asterfort/apetsc.h"
+#include "asterfort/asmpi_checkalarm.h"
 #include "asterfort/assert.h"
-#include "asterfort/fin999.h"
 #include "asterfort/get_jvbasename.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
@@ -64,9 +68,24 @@ subroutine op9999(options)
     call ststat(ST_OK)
 
 !   Cleaning in libraries, warnings, errors, mpi...
-    call fin999()
+
+#ifdef ASTER_HAVE_PETSC
+!   Finalize PETSc
+    call apetsc('FIN', ' ', ' ', [0.d0], ' ', 0, 0, iret)
+#endif
+
+!   Free dynamically loaded components
+    call dllcls()
+
+!    call lcdiscard(" ")
 
     if ( close_base ) then
+!       Check warning messages in parallel
+        call asmpi_checkalarm()
+
+!       Check error messages of type 'E' not followed by 'F' message
+        call chkmsg(1, iret)
+
 !       Remove temporay objects from macro-commands
         call jedetc('G', '.', 1)
 
