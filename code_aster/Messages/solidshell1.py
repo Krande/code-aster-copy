@@ -27,5 +27,7 @@ cata_msg = {
 
     3 : _("""Erreur lors de la création des mailles de coque solide: il n'y a que des pentaèdres, il est inutile d'utiliser GROUP_MA_SURF."""),
 
-    4 : _("""Erreur lors du calcul de l'option FORC_NODA. Nous sommes en grandes transformations mais le champ de déplacement est absent de la structure de données résultat.."""),
+    4 : _("""Erreur lors du calcul de l'option FORC_NODA. Nous sommes en grandes transformations mais le champ de déplacement est absent de la structure de données résultat."""),
+
+    5 : _("""Les chargements de type EFFE_FOND sont interdits sur les éléments de type COQUE_SOLIDE. Si votre modèle contient des éléments de ce type, même si vous n'appliquez pas de chargement sur cette zone, on ne peut pas le prendre en compte."""),
 }

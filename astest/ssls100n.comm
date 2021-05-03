@@ -161,18 +161,34 @@ pressure = AFFE_CHAR_MECA(MODELE   = MODEL,
                                        PRES     = presAppl),
                                      )
                           )
+
 # Static linear
-resuLinear=MECA_STATIQUE(MODELE     = MODEL,
-                         CHAM_MATER = MATERIAL,
-                         EXCIT      = (_F(CHARGE=kineCondition,),
-                                       _F(CHARGE=pressure,),
-                                      ),
+rampUnit = DEFI_FONCTION(NOM_PARA='INST',
+                         VALE=(0.0, 0.0, 1.0, 1.0))
+
+timeStepper = DEFI_LIST_REEL(DEBUT=0.0,
+                             INTERVALLE=_F(JUSQU_A=1.0,
+                                           NOMBRE=1))
+
+times = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=timeStepper),
+                       ECHEC=_F(ACTION='DECOUPE',
+                                EVENEMENT='ERREUR'))
+
+resuLinear=STAT_NON_LINE(MODELE       = MODEL,
+                         CHAM_MATER   = MATERIAL,
+                         COMPORTEMENT =_F(DEFORMATION = 'PETIT',
+                                          RELATION    = 'ELAS',
+                                          TOUT        = 'OUI'),
+                         EXCIT        = (_F(CHARGE=kineCondition),
+                                         _F(CHARGE=pressure, FONC_MULT=rampUnit, )),
+                         INCREMENT    = _F(LIST_INST=times),
+                         NEWTON       = _F(REAC_ITER=1,),
                          )
 
 # Post-treatement
 resuLinear=CALC_CHAMP(reuse       = resuLinear,
                       RESULTAT    = resuLinear,
-                      DEFORMATION = ('EPSI_ELGA', 'EPSL_ELGA', ),
+                      DEFORMATION = ('EPSI_ELGA', 'EPSL_ELGA', 'EPSI_ELNO'),
                       CONTRAINTE  = ('SIEF_NOEU'),
                       FORCE       = ('FORC_NODA'),
                       CRITERES    = ('SIEQ_ELGA'),)
@@ -186,18 +202,18 @@ sigmZZSupRefe = -0.01172
 sigmZZSupTole = 0.01 * 4.75E-1
 
 TEST_RESU(RESU=_F(RESULTAT       = resuLinear,
-                  INST           = 0,
+                  INST           = 1,
                   GROUP_NO       = 'c1',
                   REFERENCE      = 'ANALYTIQUE',
                   NOM_CHAM       = 'DEPL',
                   NOM_CMP        = ('DZ',),
                   VALE_REFE      = deplDZRefe,
-                  VALE_CALC      = -0.999046427151572,
+                  VALE_CALC      = -0.9990464270297896,
                   PRECISION      = deplDZTole,
           ),)
 
 TEST_RESU(RESU=_F(RESULTAT       = resuLinear,
-                  INST           = 0,
+                  INST           = 1,
                   GROUP_MA       = 'CellMiddle',
                   POINT          = 1,
                   REFERENCE      = 'ANALYTIQUE',
@@ -211,15 +227,24 @@ TEST_RESU(RESU=_F(RESULTAT       = resuLinear,
           ),)
 
 TEST_RESU(RESU=_F(RESULTAT       = resuLinear,
-                  INST           = 0,
+                  INST           = 1,
                   GROUP_MA       = 'CellMiddle',
                   POINT          = 5,
                   REFERENCE      = 'ANALYTIQUE',
                   NOM_CHAM       = 'SIEF_ELGA',
                   NOM_CMP        = ('SIZZ',),
                   VALE_REFE      = sigmZZSupRefe,
-                  VALE_CALC      = -0.011775665337019348,
+                  VALE_CALC      = -0.011775665318594974,
                   PRECISION      = sigmZZSupTole,
+          ),)
+
+TEST_RESU(RESU=_F(RESULTAT       = resuLinear,
+                  INST           = 1,
+                  GROUP_MA       = 'CellMiddle',
+                  GROUP_NO       = 'c1',
+                  NOM_CHAM       = 'EPSI_ELNO',
+                  NOM_CMP        = ('EPXX',),
+                  VALE_CALC      = -0.00019887254028908588,
           ),)
 
 FIN()

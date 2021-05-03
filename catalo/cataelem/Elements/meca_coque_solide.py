@@ -66,6 +66,11 @@ class MESSHELL_SB9(Element):
         ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4', 'MASS=FPG4',),),
     )
     calculs = (
+        OP.CHAR_MECA_EFSU_R(te=-1,
+            para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PPRESSR, LC.CPRESBR),),
+            para_out = ((SP.PVECTUR, MVECTUR),),
+        ),
+
         OP.CHAR_MECA_EPSA_R(te=125,
             para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PMATERC, LC.CMATERC),
                         (SP.PTEMPSR, LC.MTEMPSR),

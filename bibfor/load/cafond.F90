@@ -43,6 +43,8 @@ implicit none
 #include "asterfort/nocart.h"
 #include "asterfort/peair1.h"
 #include "asterfort/vetyma.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/utmess.h"
 !
 character(len=8), intent(in) :: load, mesh
 integer, intent(in) :: ndim
@@ -82,7 +84,7 @@ character(len=4), intent(in) :: valeType
     complex(kind=8) :: c16dummy
     character(len=8) :: pres_fonc
     real(kind=8) :: pres_real
-    character(len=16) :: k16dummy
+    character(len=16) :: k16dummy, answer
     integer :: jvCellHole, jvCellSect
     integer :: nbCellHole, nbCellSect
     character(len=8) :: suffix
@@ -96,6 +98,12 @@ character(len=4), intent(in) :: valeType
 !
     call getfac(keywordfact, npres)
     if (npres .eq. 0) goto 99
+
+! - Warning for COQUe_SOLIDE
+    call dismoi('EXI_COQSOL', ligrmo, 'LIGREL', repk = answer)
+    if (answer .eq. 'OUI') then
+        call utmess('F', 'SOLIDSHELL1_5')
+    endif
 !
 ! - Creation and initialization to zero of <CARTE>
 !
