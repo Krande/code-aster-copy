@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ subroutine te0013(option, nomte)
 #include "asterfort/bsigmc.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
+#include "asterfort/metau1.h"
 #include "asterfort/metau2.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/ortrep.h"
@@ -40,7 +41,7 @@ subroutine te0013(option, nomte)
 !
 ! Elementary computation
 !
-! Elements: 3D
+! Elements: 2D et 3D
 ! Option: CHAR_MECA_TEMP_R
 !
 ! --------------------------------------------------------------------------------------------------
@@ -64,18 +65,25 @@ subroutine te0013(option, nomte)
     bsigma(:) = zero
     bary(:) = 0.d0
 !
-! - Compute CHAR_MECA_TEMP_R for metallurgy
-!
-    call metau2(l_meta)
-    if (l_meta) then
-        goto 40
-    endif
 !
 ! - Finite element informations
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, npg=npg, jpoids=ipoids,&
                      jvf=ivf, jdfde=idfde)
 !
+
+! - Compute CHAR_MECA_TEMP_R for metallurgy
+!
+    if (ndim .eq. 3) then
+        call metau2(l_meta)
+    else 
+        call metau1(l_meta)
+    endif
+
+    if (l_meta) then
+        goto 40
+    endif
+
 ! - Number of stress components
 !
     nbsig = nbsigm()

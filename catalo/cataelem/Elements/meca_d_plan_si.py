@@ -344,7 +344,7 @@ class MEDPQS4(Element):
         para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
-        OP.CHAR_MECA_HYDR_R(te=492,
+        OP.CHAR_MECA_HYDR_R(te=13,
         para_in=((SP.PCAMASS, CCAMASS), (SP.PGEOMER, NGEOMER),
                  (SP.PMATERC, LC.CMATERC), (SP.PTEMPSR, CTEMPSR),
                  (OP.CHAR_MECA_HYDR_R.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
@@ -367,7 +367,7 @@ class MEDPQS4(Element):
         para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
-        OP.CHAR_MECA_PTOT_R(te=492,
+        OP.CHAR_MECA_PTOT_R(te=13,
         para_in=((SP.PCAMASS, CCAMASS), (SP.PGEOMER, NGEOMER),
                  (SP.PMATERC, LC.CMATERC), (SP.PTEMPSR, CTEMPSR),
                  (OP.CHAR_MECA_PTOT_R.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
@@ -381,7 +381,7 @@ class MEDPQS4(Element):
         para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
-        OP.CHAR_MECA_SECH_R(te=492,
+        OP.CHAR_MECA_SECH_R(te=13,
         para_in=((SP.PCAMASS, CCAMASS), (SP.PGEOMER, NGEOMER),
                  (SP.PMATERC, LC.CMATERC), (SP.PTEMPSR, CTEMPSR),
                  (OP.CHAR_MECA_SECH_R.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
@@ -389,8 +389,8 @@ class MEDPQS4(Element):
         para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
-        OP.CHAR_MECA_TEMP_R(te=83,
-        para_in=((SP.PCAMASS, CCAMASS), (OP.CHAR_MECA_TEMP_R.PCOMPOR, LC.CCOMPOR),
+OP.CHAR_MECA_TEMP_R(te=13,
+            para_in=((SP.PCAMASS, CCAMASS), 
                  (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                  (SP.PTEMPSR, CTEMPSR), (OP.CHAR_MECA_TEMP_R.PVARCPR, LC.ZVARCPG),
                  (SP.PVARCRR, LC.ZVARCPG), ),
@@ -1161,7 +1161,7 @@ class MEDPQS8(Element):
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
-        OP.CHAR_MECA_HYDR_R(te=492,
+        OP.CHAR_MECA_HYDR_R(te=13,
             para_in=((SP.PCAMASS, CCAMASS), (SP.PGEOMER, NGEOMER),
                      (SP.PMATERC, LC.CMATERC), (SP.PTEMPSR, CTEMPSR),
                      (OP.CHAR_MECA_HYDR_R.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
@@ -1184,7 +1184,7 @@ class MEDPQS8(Element):
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
-        OP.CHAR_MECA_PTOT_R(te=492,
+        OP.CHAR_MECA_PTOT_R(te=13,
             para_in=((SP.PCAMASS, CCAMASS), (SP.PGEOMER, NGEOMER),
                      (SP.PMATERC, LC.CMATERC), (SP.PTEMPSR, CTEMPSR),
                      (OP.CHAR_MECA_PTOT_R.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
@@ -1198,7 +1198,7 @@ class MEDPQS8(Element):
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
-        OP.CHAR_MECA_SECH_R(te=492,
+        OP.CHAR_MECA_SECH_R(te=13,
             para_in=((SP.PCAMASS, CCAMASS), (SP.PGEOMER, NGEOMER),
                      (SP.PMATERC, LC.CMATERC), (SP.PTEMPSR, CTEMPSR),
                      (OP.CHAR_MECA_SECH_R.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
@@ -1206,8 +1206,8 @@ class MEDPQS8(Element):
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
-        OP.CHAR_MECA_TEMP_R(te=83,
-            para_in=((SP.PCAMASS, CCAMASS), (OP.CHAR_MECA_TEMP_R.PCOMPOR, LC.CCOMPOR),
+        OP.CHAR_MECA_TEMP_R(te=13,
+            para_in=((SP.PCAMASS, CCAMASS), 
                      (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                      (SP.PTEMPSR, CTEMPSR), (OP.CHAR_MECA_TEMP_R.PVARCPR, LC.ZVARCPG),
                      (SP.PVARCRR, LC.ZVARCPG), ),

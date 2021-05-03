@@ -336,8 +336,8 @@ class MUAXQU8(Element):
             para_out=((SP.PVECTUR, VVECTUR), ),
         ),
 
-        OP.CHAR_MECA_TEMP_R(te=83,
-            para_in=((SP.PCAMASS, CCAMASS), (OP.CHAR_MECA_TEMP_R.PCOMPOR, LC.CCOMPOR),
+        OP.CHAR_MECA_TEMP_R(te=13,
+            para_in=((SP.PCAMASS, CCAMASS), 
                      (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                      (SP.PTEMPSR, CTEMPSR), (OP.CHAR_MECA_TEMP_R.PVARCPR, LC.ZVARCPG),
                      (SP.PVARCRR, LC.ZVARCPG), ),
