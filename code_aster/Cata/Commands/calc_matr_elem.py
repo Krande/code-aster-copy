@@ -40,7 +40,6 @@ def calc_matr_elem_prod(OPTION,**args):
   if OPTION == "AMOR_MECA"        : return matr_elem_depl_r
   if OPTION == "IMPE_MECA"        : return matr_elem_depl_r
   if OPTION == "ONDE_FLUI"        : return matr_elem_depl_r
-  if OPTION == "AMOR_MECA_ABSO"   : return matr_elem_depl_r
   if OPTION == "RIGI_MECA_HYST"   : return matr_elem_depl_c
   if OPTION == "RIGI_THER"        : return matr_elem_temp_r
   if OPTION == "MASS_THER"        : return matr_elem_temp_r
@@ -57,7 +56,7 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",
     OPTION          = SIMP(statut='o',typ='TXM',
                            into=("RIGI_MECA","MASS_MECA","RIGI_GEOM","MASS_THER",
                                  "AMOR_MECA","RIGI_THER","IMPE_MECA",
-                                 "ONDE_FLUI","AMOR_MECA_ABSO","MASS_FLUI_STRU","RIGI_FLUI_STRU",
+                                 "ONDE_FLUI","MASS_FLUI_STRU","RIGI_FLUI_STRU",
                                  "RIGI_ROTA","MECA_GYRO","RIGI_GYRO","MASS_MECA_DIAG","RIGI_ACOU",
                                  "MASS_ACOU","AMOR_ACOU","RIGI_MECA_HYST"), max = 1),
 
