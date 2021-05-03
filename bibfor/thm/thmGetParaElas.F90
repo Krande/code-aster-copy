@@ -52,7 +52,7 @@ type(THM_DS), intent(inout) :: ds_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: g, nu, alpha(2)
+    real(kind=8) :: g, alpha(2)
     character(len=8) :: fami
 !
 ! --------------------------------------------------------------------------------------------------
@@ -83,11 +83,6 @@ type(THM_DS), intent(inout) :: ds_thm
     if (ds_thm%ds_material%elas%id .eq. 3) then
         ds_thm%ds_material%elas%g_ln = g
         ds_thm%ds_material%elas%g    = g
-    elseif (ds_thm%ds_material%elas%id .eq. 1) then
-        nu = ds_thm%ds_material%elas%nu
-        ds_thm%ds_material%elas%g    = 1.d0/((1.d0+nu)*(1.d0-2.d0*nu))
-    else
-        ds_thm%ds_material%elas%g = g
     endif
 !
 ! - Read parameters (dilatation)

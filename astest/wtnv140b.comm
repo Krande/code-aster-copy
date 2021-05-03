@@ -144,7 +144,7 @@ MAT=DEFI_MATERIAU(
            NU_LT = 2*POISSON,
            NU_TN = 2*POISSON,
            G_LT = 8.88E+9,
-           G_LN = 8.88E+9,
+           G_LN = 3.62E+9,
            G_TN = 8.88E+9,
                ),
         COMP_THM = 'LIQU_SATU',
