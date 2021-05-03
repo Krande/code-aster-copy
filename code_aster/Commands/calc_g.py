@@ -69,4 +69,4 @@ def calc_g_with_co(self, **args):
 
     return _table_g
 
-CALC_G = UserMacro("CALC_G2", calc_g_cata, calc_g_with_co)
+CALC_G = UserMacro("CALC_G", calc_g_cata, calc_g_with_co)

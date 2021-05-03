@@ -83,7 +83,7 @@ implicit none
     integer           :: ivites, iaccel, ithet, igthet, icour, ipuls
     integer           :: icomp, igeom, idepl, imate, matcod
     integer           :: iforf, itemps, iepsf, iforc, iepsr
-    integer           :: nbvari, irota, ipesa, isigi, isigm
+    integer           :: irota, ipesa, isigi, isigm
     integer           :: iret, ireth, ibalo, ideg, ilag
     real(kind=8)      :: tcla, tthe, tfor, tini, thet, poids, f(3,3)
     real(kind=8)      :: der(4), energi(2), divt, dsidep(6,6), mu
@@ -222,7 +222,7 @@ implicit none
         do i = 1, nno
             absno= zr(ithet-1+6*(i-1)+5)
 !---------- Cas fond fermé
-            if (zr(ilag) .gt. zr(ilag+1) ) then 
+            if (zr(ilag) .gt. zr(ilag+1) ) then
                 if (absno .ge. zr(ilag) .and. absno .le. zr(ithet-1+6*(i-1)+6)) then
                     compt = compt+1
                 elseif (absno .ge. zr(ilag+1) .and. absno .le. zr(ilag+2)) then
@@ -230,7 +230,7 @@ implicit none
                 endif
             else
                 if (absno .ge. zr(ilag) .and. absno .lt. zr(ilag+2)) compt = compt+1
-            endif 
+            endif
         end do
         if (compt .eq. 0) goto 999
     endif
@@ -298,7 +298,7 @@ implicit none
     grand = compor(3).eq.'GROT_GDEP'
     incr = compor(4)(1:9).eq.'COMP_INCR'
     notelas = compor(1).ne.'ELAS'
-    read(zk16(icomp+1),'(I16)') nbvari
+!
     call tecach('ONO', 'PPESANR', 'L', iret, iad=ipesa)
     call tecach('ONO', 'PROTATR', 'L', iret, iad=irota)
     call tecach('ONO', 'PSIGINR', 'L', iret, iad=isigi)

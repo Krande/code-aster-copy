@@ -95,9 +95,9 @@ subroutine cgReadCompor(result_in, compor, iord0, l_incr)
         l_incr = ASTER_FALSE
     else
         call dismoi('ELAS_INCR', compor, 'CARTE_COMPOR', repk=repk)
-        if (repk .eq. 'ELAS') then
+        if (repk == 'ELAS') then
             l_incr = ASTER_FALSE
-        else if (repk.eq.'INCR'.or.repk.eq.'MIXTE') then
+        else if (repk=='INCR'.or.repk=='MIXTE') then
             l_incr = ASTER_TRUE
         else
             ASSERT(ASTER_FALSE)
@@ -108,6 +108,15 @@ subroutine cgReadCompor(result_in, compor, iord0, l_incr)
 !
     if (l_incr) then
         call cgCreateCompIncr(compor, l_etat_init)
+    endif
+!
+    call dismoi('ELAS_INCR', compor, 'CARTE_COMPOR', repk=repk)
+    if (repk == 'ELAS') then
+        l_incr = ASTER_FALSE
+    else if (repk=='INCR'.or.repk=='MIXTE') then
+        l_incr = ASTER_TRUE
+    else
+        ASSERT(ASTER_FALSE)
     endif
 !
 ! --- Only PETIT is accepted
