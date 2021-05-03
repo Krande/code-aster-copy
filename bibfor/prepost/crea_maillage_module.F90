@@ -100,7 +100,6 @@ private
         integer :: nodes(9) = 0
         integer :: nnos_sort(4) = 0
         integer :: nb_edges = 0, edges(4) = 0
-        integer :: nb_volumes = 0, volumes(2) = 0
     end type
 !
     type Medge
@@ -344,8 +343,6 @@ contains
 !
             ASSERT(nodes(1) == val_min)
 !
-            ! print*,"AVANT: ", tmp(1:nb_elem)
-            ! print*,"APRES: ", elems(1:nb_elem)
     end subroutine
 !
 ! ==================================================================================================
@@ -940,7 +937,7 @@ contains
                 do i_node = 1, edge_nno
                     edge_nodes(i_node) = nodes(edge_loc(i_node, i_edge))
                 end do
-                edge_id = this%add_edge(edge_type(i_edge), edge_nodes, volume_id)
+                edge_id = this%add_edge(edge_type(i_edge), edge_nodes)
                 this%volumes(volume_id)%edges(i_edge) = edge_id
             end do
 ! --- create faces
@@ -951,7 +948,7 @@ contains
                 do i_node = 1, face_nno
                     face_nodes(i_node) = nodes(face_loc(i_node, i_face))
                 end do
-                face_id = this%add_face(face_type(i_face), face_nodes, volume_id)
+                face_id = this%add_face(face_type(i_face), face_nodes)
                 this%volumes(volume_id)%faces(i_face) = face_id
             end do
 !
@@ -971,13 +968,12 @@ contains
 !
 ! ==================================================================================================
 !
-    function add_face(this, type, nodes, volume_id) result(face_id)
+    function add_face(this, face_type, nodes) result(face_id)
 !
         implicit none
 !
             class(Mmesh), intent(inout) :: this
-            integer, intent(in) :: type, nodes(27)
-            integer, intent(in), optional :: volume_id
+            integer, intent(in) :: face_type, nodes(27)
             integer :: face_id
 ! ----------------------------------------------------------------------
             integer :: nno, nnos, nnos_sort(4), i_edge, edge_id
@@ -986,9 +982,10 @@ contains
             integer, allocatable :: new_faces(:)
             aster_logical :: find
 !
-            ASSERT(this%converter%dim(type) == 2)
-            nno = this%converter%nno(type)
-            nnos = this%converter%nnos(type)
+            ASSERT(face_type > 0)
+            ASSERT(this%converter%dim(face_type) == 2)
+            nno = this%converter%nno(face_type)
+            nnos = this%converter%nnos(face_type)
             nnos_sort(1:nnos) = nodes(1:nnos)
 !
             call circ_perm(nnos, nnos_sort)
@@ -1002,19 +999,19 @@ contains
                 end if
                 ASSERT(this%nb_faces <= this%max_faces)
                 face_id = this%nb_faces
-                this%faces(face_id)%type = type
+                this%faces(face_id)%type = face_type
                 this%faces(face_id)%nodes(1:nno) = nodes(1:nno)
                 this%faces(face_id)%nnos = nnos
                 this%faces(face_id)%nnos_sort(1:nnos) = nnos_sort(1:nnos)
 ! --- create edges
-                call numbering_edge(type, nb_edge, edge_type, edge_loc)
+                call numbering_edge(face_type, nb_edge, edge_type, edge_loc)
                 this%faces(face_id)%nb_edges = nb_edge
                 do i_edge = 1, nb_edge
                     edge_nno = this%converter%nno(edge_type(i_edge))
                     do i_node = 1, edge_nno
                         edge_nodes(i_node) = nodes(edge_loc(i_node, i_edge))
                     end do
-                    edge_id = this%add_edge(edge_type(i_edge), edge_nodes, face_id)
+                    edge_id = this%add_edge(edge_type(i_edge), edge_nodes)
                     this%faces(face_id)%edges(i_edge) = edge_id
                 end do
 !
@@ -1034,11 +1031,6 @@ contains
                 call this%convert_face(face_id)
             end if
 !
-            if(present(volume_id)) then
-                this%faces(face_id)%nb_volumes = this%faces(face_id)%nb_volumes + 1
-                this%faces(face_id)%volumes(this%faces(face_id)%nb_volumes) = volume_id
-            end if
-!
             if(this%debug) then
                 print*, "Add face: ", face_id
                 print*, "- Find: ", find
@@ -1047,20 +1039,18 @@ contains
                 print*, "- Nodes: ", this%faces(face_id)%nodes
                 print*, "- NNOS: ", this%faces(face_id)%nnos_sort
                 print*, "- Edges: ", this%faces(face_id)%edges
-                print*, "- Volumes: ", this%faces(face_id)%volumes
             end if
 !
     end function
 !
 ! ==================================================================================================
 !
-    function add_edge(this, type, nodes, face_id) result(edge_id)
+    function add_edge(this, type, nodes) result(edge_id)
 !
         implicit none
 !
             class(Mmesh), intent(inout) :: this
             integer, intent(in) :: type, nodes(27)
-            integer, intent(in), optional :: face_id
             integer :: edge_id
 ! ----------------------------------------------------------------------
             integer :: nno, nnos_sort(2), old_size
@@ -1100,12 +1090,6 @@ contains
                 this%nodes(nnos_sort(1))%edges(this%nodes(nnos_sort(1))%nb_edges) = edge_id
 !
                 call this%convert_edge(edge_id)
-            end if
-!
-            if(present(face_id)) then
-                ! this%edges(face_id)%nb_faces = this%edges(face_id)%nb_faces + 1
-                ! ASSERT(this%edges(face_id)%nb_faces <= this%edges(face_id)%max_faces)
-                ! this%edges(face_id)%faces(this%edges(face_id)%nb_faces) = face_id
             end if
 !
             if(this%debug) then
