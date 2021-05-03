@@ -27,7 +27,7 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/cgComputeGtheta.h"
 #include "asterfort/cgComputeMatrix.h"
-#include "asterfort/cgComputeTheta.h"
+#include "asterfort/cgComputeFactors.h"
 #include "asterfort/cgExportTableG.h"
 #include "asterfort/cgVerification.h"
 #include "asterfort/deprecated_algom.h"
@@ -54,7 +54,6 @@ implicit none
 !---------------------------------------------------------------------------------------------------
     call jemarq()
     call infmaj()
-    call deprecated_algom('CALC_G')
 !
 !-- Initialisation des champs et des paramètres
     call cgStat%initialize()
@@ -72,9 +71,10 @@ implicit none
     call cgVerification(cgField, cgTheta, cgStudy, cgStat)
 !
 !-- Compute Theta factors
-    call cgComputeTheta(cgField, cgTheta, cgStat)
+    call cgComputeFactors(cgField, cgTheta, cgStat)
 !
-!-- Compute A Matrix from equation A*G(s)=g(theta)
+! --- Compute A Matrix from equation A*G(s)=g(theta)
+!
     call cgComputeMatrix(cgField, cgTheta, cgStat)
 !
 !-- Loop on option
@@ -82,10 +82,10 @@ implicit none
 !
         call cgStudy%initialize(cgField%result_in, cgField%list_nume(i_nume), cgStat)
 !
-!------ Récupération des champs utiles pour l'appel à calcul
+! ----  Récupération des champs utiles pour l'appel à calcul
         call cgStudy%getField(cgField%result_in)
 !
-!------ Maillage similaire sd_fond_fissure et sd_resu
+! ----  Maillage similaire sd_fond_fissure et sd_resu
         ASSERT(cgTheta%mesh == cgStudy%mesh)
 !
         do i_opt = 1, cgField%nb_option
@@ -102,7 +102,7 @@ implicit none
 !
     end do
 !
-!-- Cleaning
+! --- Cleaning
     call cgField%clean(cgStat)
     call cgTable%clean(cgStat)
 !

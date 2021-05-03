@@ -45,9 +45,6 @@ character(len=*), intent(in) :: algo
     if (algo .eq. 'MON ALGO') then
         vali = 15
         valk = "MON ALGO"
-    else if (algo .eq. 'CALC_G') then
-        vali = 15
-        valk = "CALC_G"
     else
         goto 999
     endif

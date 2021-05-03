@@ -18,7 +18,7 @@
 !
 ! person_in_charge: nicolas.pignet at edf.fr
 !
-subroutine cgComputeTheta(cgField, cgTheta, cgStat)
+subroutine cgComputeFactors(cgField, cgTheta, cgStat)
 !
 use calcG_type
 !
@@ -73,7 +73,6 @@ use calcG_type
 !     CALC_G --- Utilities
 !
 !    Compute Theta Field in 2D and 3D
-!    X-FEM not taken in charge for now
 !
 !    Contenu de theta: structure de données stockant les informations
 !            permettant de calculer le champ theta aux points de Gauss
