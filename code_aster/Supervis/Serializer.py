@@ -687,7 +687,8 @@ def _filteringContext(context):
             continue
         if getattr(numpy, name, None) is obj: # see issue29282
             continue
-        if isinstance(obj, IOBase):
+        # check attr needed for python<=3.6
+        if hasattr(obj, "__class__") and isinstance(obj, IOBase):
             continue
         if type(obj) in (types.ModuleType, type,
                          types.MethodType, types.FunctionType,
