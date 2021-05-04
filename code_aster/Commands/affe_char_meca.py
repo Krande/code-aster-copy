@@ -57,6 +57,20 @@ class MechanicalLoadDefinition(ExecuteCommand):
                           help="Use BLOCAGE = ('DEPLACEMENT', 'ROTATION')")
                 fact["BLOCAGE"] = ('DEPLACEMENT', 'ROTATION')
 
+    def _addGroup(self, mcf, groups, keys):
+        for name in keys:
+            mc = mcf.get(name)
+            if mc:
+                if isinstance(mc, str):
+                    groups.add(mc)
+                else:
+                    groups.update(mc)
+
+    def _excludeGroup(self, mcf, keys):
+        for name in keys:
+            if mcf.get(name):
+                raise RuntimeError("Keyword %s not accepted in parallel AFFE_CHAR_MECA"%name)
+
     def _getGroups(self, keywords):
         """for parallel load, return all node and cells groups present in AFFE_CHAR_MECA, in order to define the connection mesh
         """
@@ -67,46 +81,19 @@ class MechanicalLoadDefinition(ExecuteCommand):
             if key in ("LIAISON_DDL", "DDL_IMPO", "LIAISON_OBLIQUE", "LIAISON_UNIF", \
                             "LIAISON_SOLIDE", "DDL_POUTRE", "FACE_IMPO", "ARETE_IMPO"):
                 for mcf in keywords[key]:
-                    for name in ("GROUP_NO", "SANS_GROUP_NO"):
-                        mc = mcf.get(name)
-                        if mc:
-                            nodeGroups.update(mc)
-                    for name in ("GROUP_MA", "SANS_GROUP_MA"):
-                        mc = mcf.get(name)
-                        if mc:
-                            cellGroups.update(mc)
-                    for name in ("NOEUD", "SANS_NOEUD", "MAILLE", "SANS_MAILLE"):
-                        if mcf.get(name):
-                            raise NotImplementedError("Keyword %s not accepted in \
-                                parallel AFFE_CHAR_MECA"%name)
+                    self._addGroup(mcf, nodeGroups, ("GROUP_NO", "SANS_GROUP_NO"))
+                    self._addGroup(mcf, cellGroups, ("GROUP_MA", "SANS_GROUP_MA"))
+                    self._excludeGroup(mcf, ("NOEUD", "SANS_NOEUD", "MAILLE", "SANS_MAILLE"))
             elif key in ("LIAISON_GROUP", "LIAISON_COQUE", "LIAISON_ELEM"):
                 for mcf in keywords[key]:
-                    for name in ("GROUP_NO_1", "GROUP_NO_2", "SANS_GROUP_NO"):
-                        mc = mcf.get(name)
-                        if mc:
-                            nodeGroups.update(mc)
-                    for name in ("GROUP_MA_1", "GROUP_MA_2"):
-                        mc = mcf.get(name)
-                        if mc:
-                            cellGroups.update(mc)
-                    for name in ("NOEUD_1", "NOEUD_2", "SANS_NOEUD", "MAILLE_1", "MAILLE_2"):
-                        if mcf.get(name):
-                            raise NotImplementedError("Keyword %s not accepted in \
-                                parallel AFFE_CHAR_MECA"%name)
+                    self._addGroup(mcf, nodeGroups, ("GROUP_NO_1", "GROUP_NO_2", "SANS_GROUP_NO"))
+                    self._addGroup(mcf, cellGroups, ("GROUP_MA_1", "GROUP_MA_2"))
+                    self._excludeGroup(mcf, ("NOEUD_1", "NOEUD_2", "SANS_NOEUD", "MAILLE_1", "MAILLE_2"))
             elif key in ("LIAISON_RBE3", "LIAISON_MAIL"):
                 for mcf in keywords[key]:
-                    for name in ("GROUP_NO_MAIT", "GROUP_NO_ESCL"):
-                        mc = mcf.get(name)
-                        if mc:
-                            nodeGroups.update(mc)
-                    for name in ("GROUP_MA_MAIT", "GROUP_MA_ESCL"):
-                        mc = mcf.get(name)
-                        if mc:
-                            cellGroups.update(mc)
-                    for name in ("NOEUD_ESCL", "NOEUD_MAIT", "MAILLE_MAIT", "MAILLE_ESCL"):
-                        if mcf.get(name):
-                            raise NotImplementedError("Keyword %s not accepted in \
-                                parallel AFFE_CHAR_MECA"%name)
+                    self._addGroup(mcf, nodeGroups, ("GROUP_NO_MAIT", "GROUP_NO_ESCL"))
+                    self._addGroup(mcf, cellGroups, ("GROUP_MA_MAIT", "GROUP_MA_ESCL"))
+                    self._excludeGroup(mcf, ("NOEUD_ESCL", "NOEUD_MAIT", "MAILLE_MAIT", "MAILLE_ESCL"))
             elif key in load_types:
                 raise NotImplementedError("Type of load {0!r} not yet "
                                       "implemented in parallel".format(key))
@@ -166,6 +153,7 @@ class MechanicalLoadDefinition(ExecuteCommand):
         else:
             model = keywords.pop("MODELE")
             nodeGroups, cellGroups = self._getGroups(keywords)
+            print(nodeGroups, cellGroups, flush=True)
             connectionMesh = ConnectionMesh(model.getMesh(), nodeGroups, cellGroups)
 
             if connectionMesh.getDimension()==3:
