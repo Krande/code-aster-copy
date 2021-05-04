@@ -45,15 +45,18 @@ subroutine op9999(options)
 #include "asterfort/wkvect.h"
 #include "jeveux.h"
 
-!   Warning: 'options' has not necessarly the same value on all processes!
+!   Warning: 'options' has not necessarly the same value on all processes
+!   but OnlyProc0 must be set everywhere with the same value.
 !   Options:
-    integer, parameter :: SaveBase = 1, Repack = 4
-!   InfoResu = 2, OnlyProc0 = 8: not used here
+    integer, parameter :: SaveBase = 1, Repack = 4, OnlyProc0 = 8
+!   InfoResu = 2 not used here
 !   - SaveBase:
 !       If enabled, the objects must be saved properly.
 !       Otherwise, the objects can be wiped out (== automatically called).
 !   - Repack:
 !       Enabled if RETASSAGE="OUI"
+!   - OnlyProc0:
+!       The objects are only saved on rank #0.
 !   Same values are in 'fin.py'
 
     integer :: iunres, iunmes
@@ -80,8 +83,10 @@ subroutine op9999(options)
 !    call lcdiscard(" ")
 
     if ( close_base ) then
-!       Check warning messages in parallel
-        call asmpi_checkalarm()
+        if ( iand(options, OnlyProc0) .eq. 0 ) then
+!           Check warning messages in parallel
+            call asmpi_checkalarm()
+        endif
 
 !       Check error messages of type 'E' not followed by 'F' message
         call chkmsg(1, iret)

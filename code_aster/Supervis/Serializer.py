@@ -301,7 +301,7 @@ def saveObjects(level=1, delete=True, options=0):
     rank = libaster.getMPIRank()
     if options & FinalizeOptions.OnlyProc0 and rank != 0:
         logger.info("Objects not saved on processor #{0}".format(rank))
-        libaster.jeveux_finalize(False)
+        libaster.jeveux_finalize(FinalizeOptions.OnlyProc0)
         return
 
     context = get_caller_context(level)
