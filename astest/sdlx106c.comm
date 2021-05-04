@@ -117,6 +117,17 @@ ASSEMBLAGE(MODELE=MODELE,
                            ),
                  );
 
+mode_ri=CALC_MODES(MATR_RIGI=MATRIGI,
+                    VERI_MODE=_F(STOP_ERREUR='NON',
+                                 ),
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(-0.1, 0.5),),
+                    MATR_MASS=MATMASS,
+                    NORM_MODE=_F(INFO=1,
+                              NORME='TRAN',),
+                    )
+
+'''
 cond_lir = AFFE_CHAR_MECA(MODELE= MODELE,
                           DDL_IMPO=(_F( GROUP_NO=('PB',),
                                           DX= 0.,
@@ -182,6 +193,8 @@ modgen=CALC_MODES(MATR_RIGI=rigigen, MATR_MASS=massgen,
                     #OPTION='BANDE',
                     CALC_FREQ=_F(NMAX_FREQ=10,),
                     );
+
+IMPR_CO(CONCEPT=_F(NOM=modgen),UNITE=6)
                     
 ##--Restitution dans la base physique des modes calculés 
 mode_ri=REST_GENE_PHYS(RESU_GENE=modgen, 
@@ -191,24 +204,14 @@ mode_ri=REST_GENE_PHYS(RESU_GENE=modgen,
 
 '''
 
-mode_ri=CALC_MODES(MATR_RIGI=MATRIGI,
-                    VERI_MODE=_F(STOP_ERREUR='NON',
-                                 ),
-                    OPTION='BANDE', #'PLUS_PETITE',
-                    CALC_FREQ=_F(FREQ=(-0.1, 0.5),), #NMAX_FREQ=10),
-                    MATR_MASS=MATMASS,
-                    NORM_MODE=_F(INFO=1,
-                              NORME='TRAN_ROTA',),
-                    )
-'''
-
 cond_lim = AFFE_CHAR_MECA(MODELE= MODELE,
                           DDL_IMPO=(_F( GROUP_NO=('SBASE',),
                                           DX= 0.,
                                           DY= 0.,
                                           DZ= 0.,
                                          ),
-                                    ),              
+                                    ),
+                                        
                          ) ;
 
 nume_dd0 = NUME_DDL( MODELE= MODELE, CHARGE= cond_lim);
@@ -291,6 +294,7 @@ CALC_MISS(
         FREQ_PAS=25.,
         Z0=0.,
         AUTO='OUI',OPTION_DREF = 'OUI', OPTION_RFIC = 'NON',
+        TYPE='BINAIRE',
         # Valeurs en manuel :
         #DREF=4.,
         #ALGO = 'REGU',
@@ -302,11 +306,11 @@ CALC_MISS(
 NDDLGEN = NUME_DDL_GENE( BASE= BAMO, STOCKAGE= 'PLEIN',);
 
 MATI = LIRE_IMPE_MISS(UNITE_RESU_IMPE=38, FREQ_EXTR=25.5,
-                      SYME='OUI', #TYPE='BINAIRE',
+                      SYME='OUI', TYPE='BINAIRE',
                       BASE=BAMO, NUME_DDL_GENE=NDDLGEN);
 
 IMPI = LIRE_IMPE_MISS(UNITE_RESU_IMPE=38, FREQ_EXTR=0.5,
-                      SYME='OUI', #TYPE='BINAIRE',
+                      SYME='OUI', TYPE='BINAIRE',
                       BASE=BAMO, NUME_DDL_GENE=NDDLGEN);
 
 MAEL=MACR_ELEM_DYNA(  BASE_MODALE=BAMO,
@@ -475,12 +479,10 @@ U44 = RECU_FONCTION ( RESULTAT = repor,
 U55 = RECU_FONCTION ( RESULTAT = repor,
            NOM_CHAM = 'DEPL', GROUP_NO = 'PB', NOM_CMP = 'DRY');
 
-'''
-
 #
 # CALCUL ASTER-MISS3D REFERENCE AUTRE_ASTER
 TEST_FONCTION(VALEUR=(
-                      _F(VALE_CALC_C=(5.067862E-06-3.249020E-06j),
+                      _F(VALE_CALC_C=(5.067904E-06-3.249059E-06j),
                          VALE_REFE_C=(4.645135E-06-3.412753E-06j),
                          VALE_PARA=8.5,
                          REFERENCE='AUTRE_ASTER',
@@ -488,7 +490,7 @@ TEST_FONCTION(VALEUR=(
                          FONCTION=U11,
                          ),
 
-                      _F(VALE_CALC_C=(1.469815E-06-3.202205E-06j),
+                      _F(VALE_CALC_C=(1.469855E-06-3.202196E-06j),
                          VALE_REFE_C=(1.293239E-06-3.050977E-06j),
                          VALE_PARA=25.5,
                          REFERENCE='AUTRE_ASTER',
@@ -496,7 +498,7 @@ TEST_FONCTION(VALEUR=(
                          FONCTION=U11,
                          ),
                          
-                      _F(VALE_CALC_C=(4.873639E-06-3.125391E-06j),
+                      _F(VALE_CALC_C=(4.873658E-06-3.125474E-06j),
                          VALE_REFE_C=(4.462425E-06-3.297199E-06j),
                          VALE_PARA=8.5,
                          REFERENCE='AUTRE_ASTER',
@@ -504,7 +506,7 @@ TEST_FONCTION(VALEUR=(
                          FONCTION=U22,
                          ),
                          
-                      _F(VALE_CALC_C=(1.662707E-06-2.970872E-06j),
+                      _F(VALE_CALC_C=(1.662716E-06-2.970850E-06j),
                          VALE_REFE_C=(1.469668E-06-2.876367E-06j),
                          VALE_PARA=25.5,
                          REFERENCE='AUTRE_ASTER',
@@ -512,7 +514,7 @@ TEST_FONCTION(VALEUR=(
                          FONCTION=U22,
                          ),
 
-                      _F(VALE_CALC_C=(4.692034E-06-3.992781E-06j),
+                      _F(VALE_CALC_C=(4.692041E-06-3.992837E-06j),
                          VALE_REFE_C=(4.410068E-06-4.272455E-06j),
                          VALE_PARA=8.5,
                          REFERENCE='AUTRE_ASTER',
@@ -520,20 +522,15 @@ TEST_FONCTION(VALEUR=(
                          FONCTION=U33,
                          ),
 
-                      _F(VALE_CALC_C=(7.761650E-07-2.965710E-06j),
+                      _F(VALE_CALC_C=(7.761652E-07-2.965708E-06j),
                          VALE_REFE_C=(7.025091E-07-2.830639E-06j),
                          VALE_PARA=25.5,
                          REFERENCE='AUTRE_ASTER',
                          PRECISION=6.0E-2,
                          FONCTION=U33,
                          ),
-                      ),
-              )
-'''
 
-TEST_FONCTION(VALEUR=(
-
-                      _F(VALE_CALC_C=(8.811058E-08-1.782739E-08j),
+                      _F(VALE_CALC_C=(8.811169E-08-1.782748E-08j),
                          VALE_REFE_C=(9.296503E-08-2.281340E-08j),
                          VALE_PARA=8.5,
                          REFERENCE='AUTRE_ASTER',
@@ -541,7 +538,7 @@ TEST_FONCTION(VALEUR=(
                          FONCTION=U44,
                          ),
 
-                      _F(VALE_CALC_C=(7.297364E-08-5.467878E-08j),
+                      _F(VALE_CALC_C=(7.297385E-08-5.467570E-08j),
                          VALE_REFE_C=(6.415414E-08-5.661873E-08j),
                          VALE_PARA=25.5,
                          REFERENCE='AUTRE_ASTER',
@@ -549,7 +546,7 @@ TEST_FONCTION(VALEUR=(
                          FONCTION=U44,
                          ),
 
-                      _F(VALE_CALC_C=(4.327635E-08-1.289158E-08j),
+                      _F(VALE_CALC_C=(4.327600E-08-1.289139E-08j),
                          VALE_REFE_C=(4.909687E-08-1.504732E-08j),
                          VALE_PARA=8.5,
                          REFERENCE='AUTRE_ASTER',
@@ -557,7 +554,7 @@ TEST_FONCTION(VALEUR=(
                          FONCTION=U55,
                          ),
 
-                      _F(VALE_CALC_C=(2.524187E-08-3.458166E-08j),
+                      _F(VALE_CALC_C=(2.524195E-08-3.458107E-08j),
                          VALE_REFE_C=(2.166812E-08-3.324385E-08j),
                          VALE_PARA=25.5,
                          REFERENCE='AUTRE_ASTER',
