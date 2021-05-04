@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine op0175()
 !
     integer :: ifm, niv, n0, nuord
     integer :: iret, jpara, ie, nbordr, i, nuordr
-    character(len=8) :: resu, modele, cara, k8b
+    character(len=8) :: resu, model, caraElem
     character(len=16) :: crit, concep, nomcmd
     character(len=19) :: chfer1, chfer2, chefge, resu19, resuc1
     real(kind=8) :: prec
@@ -64,8 +64,7 @@ subroutine op0175()
 !     ---------------------------------
     call getvr8(' ', 'PRECISION', scal=prec, nbret=ie)
     call getvtx(' ', 'CRITERE', scal=crit, nbret=ie)
-    call rsutnu(resu19, ' ', 0, '&&OP0175.NUME_ORDRE', nbordr,&
-                prec, crit, iret)
+    call rsutnu(resu19, ' ', 0, '&&OP0175.NUME_ORDRE', nbordr,prec, crit, iret)
     ASSERT(iret.eq.0)
     ASSERT(nbordr.gt.0)
     call jeveuo('&&OP0175.NUME_ORDRE', 'L', vi=nume_ordre)
@@ -75,41 +74,41 @@ subroutine op0175()
 !     --------------------------------------------
     nuord = nume_ordre(1)
 !
-    call rsadpa(resu, 'L', 1, 'MODELE', nuord,&
-                0, sjv=jpara, styp=k8b)
-    modele=zk8(jpara)
-    ASSERT(modele.ne.' ')
-    call rsadpa(resu, 'L', 1, 'CARAELEM', nuord,&
-                0, sjv=jpara, styp=k8b)
-    cara=zk8(jpara)
-    ASSERT(cara.ne.' ')
+    call rsadpa(resu, 'L', 1, 'MODELE', nuord, 0, sjv=jpara)
+    model=zk8(jpara)
+    ASSERT(model.ne. ' ')
+    call rsadpa(resu, 'L', 1, 'CARAELEM', nuord, 0, sjv=jpara)
+    caraElem=zk8(jpara)
+    ASSERT(caraElem.ne. ' ')
 !
 !
 !     -- 1. ON CREE LE CHAMP DE DONNEES (CHFER1) :
 !     ---------------------------------------------
     chfer1='&&OP0175.CHFER1'
-    call w175af(modele, chfer1)
-    if (niv .gt. 1) call imprsd('CHAMP', chfer1, 6, 'CHFER1=')
+    call w175af(model, chfer1)
+    if (niv .gt. 1) then
+        call imprsd('CHAMP', chfer1, 6, 'CHFER1=')
+    endif
 !
 !
 !     -- 2. ON APPELLE L'OPTION FERRAILLAGE :
 !     -------------------------------------------
-    do 20,i = 1,nbordr
+    do i = 1,nbordr
         nuordr = nume_ordre(i)
-        call rsexch('F', resu19, 'EFGE_ELNO', nuordr, chefge,&
-                    iret)
-        call rsexch(' ', resu19, 'FERRAILLAGE', nuordr, chfer2,&
-                    iret)
+        call rsexch('F', resu19, 'EFGE_ELNO', nuordr, chefge, iret)
+        call rsexch(' ', resu19, 'FERRAILLAGE', nuordr, chfer2, iret)
         if (resu19.eq.resuc1) then
-            if (iret.eq.0.d0) then
+            if (iret.eq.0) then
                 call utmess('A', 'CALCULEL_88', si=nuordr ,sk=resu19)
             endif
         endif
-        call w175ca(modele, cara, chfer1, chefge, chfer2)
+        call w175ca(model, caraElem, chfer1, chefge, chfer2)
 !
-        if (niv .gt. 1) call imprsd('CHAMP', chfer2, 6, 'CHFER2=')
+        if (niv .gt. 1) then
+                call imprsd('CHAMP', chfer2, 6, 'CHFER2=')
+        endif
         call rsnoch(resu19, 'FERRAILLAGE', nuordr)
-    20 end do
+    end do
 !
     call jedema()
 end subroutine
