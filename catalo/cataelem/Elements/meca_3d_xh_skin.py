@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -102,37 +102,37 @@ class MECA_XH_FACE3(Element):
         )
     calculs = (
 
-        OP.CALC_G(te=118,
-            para_in=((OP.CALC_G.PCNSETO, LC.E36NEUI), (SP.PDEPLAR, DDL_MECA),
+        OP.CALC_G_XFEM(te=118,
+            para_in=((OP.CALC_G_XFEM.PCNSETO, LC.E36NEUI), (SP.PDEPLAR, DDL_MECA),
                      (SP.PFR2D3D, NFORCER), (SP.PGEOMER, NGEOMER),
-                     (OP.CALC_G.PHEAVTO, E6NEUTI), (OP.CALC_G.PHEA_NO, LC.N5NEUTI),
-                     (OP.CALC_G.PLONCHA, LC.E10NEUTI), (OP.CALC_G.PLSN, LC.N1NEUT_R),
-                     (OP.CALC_G.PLST, LC.N1NEUT_R), (OP.CALC_G.PPINTTO, LC.E12NEUTR),
-                     (SP.PPRESSR, EPRESNO), (SP.PTHETAR, NTHETAR),(OP.CALC_G.PPMILTO, E33NEUTR),
+                     (OP.CALC_G_XFEM.PHEAVTO, E6NEUTI), (OP.CALC_G_XFEM.PHEA_NO, LC.N5NEUTI),
+                     (OP.CALC_G_XFEM.PLONCHA, LC.E10NEUTI), (OP.CALC_G_XFEM.PLSN, LC.N1NEUT_R),
+                     (OP.CALC_G_XFEM.PLST, LC.N1NEUT_R), (OP.CALC_G_XFEM.PPINTTO, LC.E12NEUTR),
+                     (SP.PPRESSR, EPRESNO), (SP.PTHETAR, NTHETAR),(OP.CALC_G_XFEM.PPMILTO, E33NEUTR),
                      ),
             para_out=((SP.PGTHETA, LC.EGTHETA), ),
         ),
 
 #       -- te0580 : ne resout que les cas triviaux : 0.
-        OP.CALC_G_F(te=580,
+        OP.CALC_G_XFEM_F(te=580,
             para_in=((SP.PFF2D3D, CFORCEF), (SP.PPRESSF, CPRESSF),
                      (SP.PTHETAR, NTHETAR), ),
             para_out=((SP.PGTHETA, LC.EGTHETA), ),
         ),
 
-        OP.CALC_K_G(te=48,
-            para_in=((OP.CALC_G.PCNSETO, LC.E36NEUI), (SP.PDEPLAR, DDL_MECA),
+        OP.CALC_K_G_XFEM(te=48,
+            para_in=((OP.CALC_G_XFEM.PCNSETO, LC.E36NEUI), (SP.PDEPLAR, DDL_MECA),
                      (SP.PFR2D3D, NFORCER), (SP.PGEOMER, NGEOMER),
-                     (OP.CALC_G.PHEAVTO, E6NEUTI), (OP.CALC_G.PHEA_NO, LC.N5NEUTI),
-                     (OP.CALC_G.PLONCHA, LC.E10NEUTI), (OP.CALC_G.PLSN, LC.N1NEUT_R),
-                     (OP.CALC_G.PLST, LC.N1NEUT_R), (OP.CALC_G.PPINTTO, LC.E12NEUTR),
+                     (OP.CALC_G_XFEM.PHEAVTO, E6NEUTI), (OP.CALC_G_XFEM.PHEA_NO, LC.N5NEUTI),
+                     (OP.CALC_G_XFEM.PLONCHA, LC.E10NEUTI), (OP.CALC_G_XFEM.PLSN, LC.N1NEUT_R),
+                     (OP.CALC_G_XFEM.PLST, LC.N1NEUT_R), (OP.CALC_G_XFEM.PPINTTO, LC.E12NEUTR),
                      (SP.PPRESSR, EPRESNO), (SP.PTHETAR, NTHETAR),
-                     (OP.CALC_K_G.PBASLOR, LC.N9NEUT_R), (SP.PMATERC, LC.CMATERC),
-                     (OP.CALC_K_G.PPMILTO, E33NEUTR),),
+                     (OP.CALC_K_G_XFEM.PBASLOR, LC.N9NEUT_R), (SP.PMATERC, LC.CMATERC),
+                     (OP.CALC_K_G_XFEM.PPMILTO, E33NEUTR),),
             para_out=((SP.PGTHETA, EKTHETA), ),
         ),
 
-        OP.CALC_K_G_F(te=580,
+        OP.CALC_K_G_XFEM_F(te=580,
             para_in=((SP.PFF2D3D, CFORCEF), (SP.PPRESSF, CPRESSF),
                      (SP.PTHETAR, NTHETAR), ),
             para_out=((SP.PGTHETA, EKTHETA), ),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -178,56 +178,56 @@ class TemplateElement(Element):
     """Only a template to shared definitions of options"""
     calculs = (
 
-        OP.CALC_G(te=288,
-            para_in=((OP.CALC_G.PAINTER, LC.E200NEUT), (OP.CALC_G.PBASECO, LC.E360NEUT),
-                     (OP.CALC_G.PBASLOR, LC.N9NEUT_R), (OP.CALC_G.PCFACE, LC.E90NEUTI),
-                     (OP.CALC_G.PCNSETO, LC.E320NEUI), (OP.CALC_G.PCOMPOR, LC.CCOMPOR),
+        OP.CALC_G_XFEM(te=288,
+            para_in=((OP.CALC_G_XFEM.PAINTER, LC.E200NEUT), (OP.CALC_G_XFEM.PBASECO, LC.E360NEUT),
+                     (OP.CALC_G_XFEM.PBASLOR, LC.N9NEUT_R), (OP.CALC_G_XFEM.PCFACE, LC.E90NEUTI),
+                     (OP.CALC_G_XFEM.PCNSETO, LC.E320NEUI), (OP.CALC_G_XFEM.PCOMPOR, LC.CCOMPOR),
                      (SP.PDEPLAR, DDL_MECA), (SP.PFRVOLU, NFORCER),
-                     (SP.PGEOMER, NGEOMER), (OP.CALC_G.PHEAVTO, LC.E32NEUTI),
-                     (OP.CALC_G.PHEA_NO, LC.N5NEUTI), (OP.CALC_G.PLONCHA, LC.E10NEUTI),
-                     (OP.CALC_G.PLONGCO, LC.E3NEUTI), (OP.CALC_G.PLSN, LC.N1NEUT_R),
-                     (OP.CALC_G.PLST, LC.N1NEUT_R), (SP.PMATERC, LC.CMATERC),
-                     (SP.PPESANR, LC.CPESANR), (OP.CALC_G.PPINTER, LC.E120NEUT),
-                     (OP.CALC_G.PPINTTO, E33NEUTR), (OP.CALC_G.PPMILTO, LC.E198NEUT),
+                     (SP.PGEOMER, NGEOMER), (OP.CALC_G_XFEM.PHEAVTO, LC.E32NEUTI),
+                     (OP.CALC_G_XFEM.PHEA_NO, LC.N5NEUTI), (OP.CALC_G_XFEM.PLONCHA, LC.E10NEUTI),
+                     (OP.CALC_G_XFEM.PLONGCO, LC.E3NEUTI), (OP.CALC_G_XFEM.PLSN, LC.N1NEUT_R),
+                     (OP.CALC_G_XFEM.PLST, LC.N1NEUT_R), (SP.PMATERC, LC.CMATERC),
+                     (SP.PPESANR, LC.CPESANR), (OP.CALC_G_XFEM.PPINTER, LC.E120NEUT),
+                     (OP.CALC_G_XFEM.PPINTTO, E33NEUTR), (OP.CALC_G_XFEM.PPMILTO, LC.E198NEUT),
                      (SP.PPRESSR, EPRESNO), (SP.PROTATR, LC.CROTATR),
-                     (SP.PTHETAR, DDL_MECC), (OP.CALC_G.PVARCPR, LC.ZVARCPG),
+                     (SP.PTHETAR, DDL_MECC), (OP.CALC_G_XFEM.PVARCPR, LC.ZVARCPG),
                      (SP.PVARCRR, LC.ZVARCPG), ),
             para_out=((SP.PGTHETA, LC.EGTHETA), ),
         ),
 
-        OP.CALC_G_F(te=288,
-            para_in=((OP.CALC_G_F.PAINTER, LC.E200NEUT), (OP.CALC_G_F.PBASECO, LC.E360NEUT),
-                     (OP.CALC_G_F.PBASLOR, LC.N9NEUT_R), (OP.CALC_G_F.PCFACE, LC.E90NEUTI),
-                     (OP.CALC_G_F.PCNSETO, LC.E320NEUI), (OP.CALC_G_F.PCOMPOR, LC.CCOMPOR),
+        OP.CALC_G_XFEM_F(te=288,
+            para_in=((OP.CALC_G_XFEM_F.PAINTER, LC.E200NEUT), (OP.CALC_G_XFEM_F.PBASECO, LC.E360NEUT),
+                     (OP.CALC_G_XFEM_F.PBASLOR, LC.N9NEUT_R), (OP.CALC_G_XFEM_F.PCFACE, LC.E90NEUTI),
+                     (OP.CALC_G_XFEM_F.PCNSETO, LC.E320NEUI), (OP.CALC_G_XFEM_F.PCOMPOR, LC.CCOMPOR),
                      (SP.PCOURB, LC.G27NEUTR), (SP.PDEPLAR, DDL_MECA),
                      (SP.PFFVOLU, CFORCEF), (SP.PGEOMER, NGEOMER),
-                     (OP.CALC_G_F.PHEAVTO, LC.E32NEUTI), (OP.CALC_G_F.PHEA_NO, LC.N5NEUTI),
-                     (OP.CALC_G_F.PLONCHA, LC.E10NEUTI), (OP.CALC_G_F.PLONGCO, LC.E3NEUTI),
-                     (OP.CALC_G_F.PLSN, LC.N1NEUT_R), (OP.CALC_G_F.PLST, LC.N1NEUT_R),
+                     (OP.CALC_G_XFEM_F.PHEAVTO, LC.E32NEUTI), (OP.CALC_G_XFEM_F.PHEA_NO, LC.N5NEUTI),
+                     (OP.CALC_G_XFEM_F.PLONCHA, LC.E10NEUTI), (OP.CALC_G_XFEM_F.PLONGCO, LC.E3NEUTI),
+                     (OP.CALC_G_XFEM_F.PLSN, LC.N1NEUT_R), (OP.CALC_G_XFEM_F.PLST, LC.N1NEUT_R),
                      (SP.PMATERC, LC.CMATERC), (SP.PPESANR, LC.CPESANR),
-                     (OP.CALC_G_F.PPINTER, LC.E120NEUT), (OP.CALC_G_F.PPINTTO, E33NEUTR),
-                     (OP.CALC_G_F.PPMILTO, LC.E198NEUT), (SP.PPRESSF, CPRESSF),
+                     (OP.CALC_G_XFEM_F.PPINTER, LC.E120NEUT), (OP.CALC_G_XFEM_F.PPINTTO, E33NEUTR),
+                     (OP.CALC_G_XFEM_F.PPMILTO, LC.E198NEUT), (SP.PPRESSF, CPRESSF),
                      (SP.PROTATR, LC.CROTATR), (SP.PTEMPSR, CTEMPSR),
-                     (SP.PTHETAR, DDL_MECC), (OP.CALC_G_F.PVARCPR, LC.ZVARCPG),
+                     (SP.PTHETAR, DDL_MECC), (OP.CALC_G_XFEM_F.PVARCPR, LC.ZVARCPG),
                      (SP.PVARCRR, LC.ZVARCPG), ),
             para_out=((SP.PGTHETA, LC.EGTHETA), ),
         ),
 
-        OP.CALC_K_G(te=297,
-            para_in=((OP.CALC_K_G.PAINTER, LC.E200NEUT), (OP.CALC_K_G.PBASECO, LC.E360NEUT),
-                     (OP.CALC_K_G.PBASLOR, LC.N9NEUT_R), (OP.CALC_K_G.PCFACE, LC.E90NEUTI),
-                     (OP.CALC_K_G.PCNSETO, LC.E320NEUI), (OP.CALC_K_G.PCOMPOR, LC.CCOMPOR),
+        OP.CALC_K_G_XFEM(te=297,
+            para_in=((OP.CALC_K_G_XFEM.PAINTER, LC.E200NEUT), (OP.CALC_K_G_XFEM.PBASECO, LC.E360NEUT),
+                     (OP.CALC_K_G_XFEM.PBASLOR, LC.N9NEUT_R), (OP.CALC_K_G_XFEM.PCFACE, LC.E90NEUTI),
+                     (OP.CALC_K_G_XFEM.PCNSETO, LC.E320NEUI), (OP.CALC_K_G_XFEM.PCOMPOR, LC.CCOMPOR),
                      (SP.PCOURB, LC.G27NEUTR), (SP.PDEPLAR, DDL_MECA),
                      (SP.PFRVOLU, NFORCER), (SP.PGEOMER, NGEOMER),
-                     (OP.CALC_K_G.PHEAVTO, LC.E32NEUTI), (OP.CALC_K_G.PHEA_NO, LC.N5NEUTI),
-                     (OP.CALC_K_G.PLONCHA, LC.E10NEUTI), (OP.CALC_K_G.PLONGCO, LC.E3NEUTI),
-                     (OP.CALC_K_G.PLSN, LC.N1NEUT_R), (OP.CALC_K_G.PLST, LC.N1NEUT_R),
+                     (OP.CALC_K_G_XFEM.PHEAVTO, LC.E32NEUTI), (OP.CALC_K_G_XFEM.PHEA_NO, LC.N5NEUTI),
+                     (OP.CALC_K_G_XFEM.PLONCHA, LC.E10NEUTI), (OP.CALC_K_G_XFEM.PLONGCO, LC.E3NEUTI),
+                     (OP.CALC_K_G_XFEM.PLSN, LC.N1NEUT_R), (OP.CALC_K_G_XFEM.PLST, LC.N1NEUT_R),
                      (SP.PMATERC, LC.CMATERC), (SP.PPESANR, LC.CPESANR),
-                     (OP.CALC_K_G.PPINTER, LC.E120NEUT), (OP.CALC_K_G.PPINTTO, E33NEUTR),
-                     (OP.CALC_K_G.PPMILTO, LC.E198NEUT), (SP.PPRESSR, EPRESNO),
+                     (OP.CALC_K_G_XFEM.PPINTER, LC.E120NEUT), (OP.CALC_K_G_XFEM.PPINTTO, E33NEUTR),
+                     (OP.CALC_K_G_XFEM.PPMILTO, LC.E198NEUT), (SP.PPRESSR, EPRESNO),
                      (SP.PPULPRO, LC.CFREQR), (SP.PROTATR, LC.CROTATR),
                      (SP.PSIGISE, ECONTSE), (SP.PTHETAR, DDL_MECC),
-                     (OP.CALC_K_G.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
+                     (OP.CALC_K_G_XFEM.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
                      ),
             para_out=((SP.PGTHETA, EKTHETA), ),
         ),
@@ -243,21 +243,21 @@ class TemplateElement(Element):
             para_out=((SP.PGTHETA, EKTHETA), ),
         ),
 
-        OP.CALC_K_G_F(te=297,
-            para_in=((OP.CALC_K_G_F.PAINTER, LC.E200NEUT), (OP.CALC_K_G_F.PBASECO, LC.E360NEUT),
-                     (OP.CALC_K_G_F.PBASLOR, LC.N9NEUT_R), (OP.CALC_K_G_F.PCFACE, LC.E90NEUTI),
-                     (OP.CALC_K_G_F.PCNSETO, LC.E320NEUI), (OP.CALC_K_G_F.PCOMPOR, LC.CCOMPOR),
+        OP.CALC_K_G_XFEM_F(te=297,
+            para_in=((OP.CALC_K_G_XFEM_F.PAINTER, LC.E200NEUT), (OP.CALC_K_G_XFEM_F.PBASECO, LC.E360NEUT),
+                     (OP.CALC_K_G_XFEM_F.PBASLOR, LC.N9NEUT_R), (OP.CALC_K_G_XFEM_F.PCFACE, LC.E90NEUTI),
+                     (OP.CALC_K_G_XFEM_F.PCNSETO, LC.E320NEUI), (OP.CALC_K_G_XFEM_F.PCOMPOR, LC.CCOMPOR),
                      (SP.PCOURB, LC.G27NEUTR), (SP.PDEPLAR, DDL_MECA),
                      (SP.PFFVOLU, CFORCEF), (SP.PGEOMER, NGEOMER),
-                     (OP.CALC_K_G_F.PHEAVTO, LC.E32NEUTI), (OP.CALC_K_G_F.PHEA_NO, LC.N5NEUTI),
-                     (OP.CALC_K_G_F.PLONCHA, LC.E10NEUTI), (OP.CALC_K_G_F.PLONGCO, LC.E3NEUTI),
-                     (OP.CALC_K_G_F.PLSN, LC.N1NEUT_R), (OP.CALC_K_G_F.PLST, LC.N1NEUT_R),
+                     (OP.CALC_K_G_XFEM_F.PHEAVTO, LC.E32NEUTI), (OP.CALC_K_G_XFEM_F.PHEA_NO, LC.N5NEUTI),
+                     (OP.CALC_K_G_XFEM_F.PLONCHA, LC.E10NEUTI), (OP.CALC_K_G_XFEM_F.PLONGCO, LC.E3NEUTI),
+                     (OP.CALC_K_G_XFEM_F.PLSN, LC.N1NEUT_R), (OP.CALC_K_G_XFEM_F.PLST, LC.N1NEUT_R),
                      (SP.PMATERC, LC.CMATERC), (SP.PPESANR, LC.CPESANR),
-                     (OP.CALC_K_G_F.PPINTER, LC.E120NEUT), (OP.CALC_K_G_F.PPINTTO, E33NEUTR),
-                     (OP.CALC_K_G_F.PPMILTO, LC.E198NEUT), (SP.PPRESSF, CPRESSF),
+                     (OP.CALC_K_G_XFEM_F.PPINTER, LC.E120NEUT), (OP.CALC_K_G_XFEM_F.PPINTTO, E33NEUTR),
+                     (OP.CALC_K_G_XFEM_F.PPMILTO, LC.E198NEUT), (SP.PPRESSF, CPRESSF),
                      (SP.PPULPRO, LC.CFREQR), (SP.PROTATR, LC.CROTATR),
                      (SP.PTEMPSR, CTEMPSR), (SP.PTHETAR, DDL_MECC), (SP.PSIGISE, ECONTSE),
-                     (OP.CALC_K_G_F.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
+                     (OP.CALC_K_G_XFEM_F.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
                      ),
             para_out=((SP.PGTHETA, EKTHETA), ),
         ),
@@ -857,11 +857,11 @@ class MECA_XHC3_HEXA8(TemplateElement):
         )
 
     calculs = (
-        OP.CALC_G_F(te=-1),
+        OP.CALC_G_XFEM_F(te=-1),
 
-        OP.CALC_G(te=-1),
+        OP.CALC_G_XFEM(te=-1),
 
-        OP.CALC_K_G_F(te=-1),
+        OP.CALC_K_G_XFEM_F(te=-1),
 
         OP.CHAR_MECA_CONT(te=-1),
 
@@ -891,11 +891,11 @@ class MECA_XHC3_PENTA6(TemplateElement):
         )
 
     calculs = (
-        OP.CALC_G_F(te=-1),
+        OP.CALC_G_XFEM_F(te=-1),
 
-        OP.CALC_G(te=-1),
+        OP.CALC_G_XFEM(te=-1),
 
-        OP.CALC_K_G_F(te=-1),
+        OP.CALC_K_G_XFEM_F(te=-1),
 
         OP.CHAR_MECA_CONT(te=-1),
 
@@ -925,11 +925,11 @@ class MECA_XHC3_PYRAM5(TemplateElement):
         )
 
     calculs = (
-        OP.CALC_G_F(te=-1),
+        OP.CALC_G_XFEM_F(te=-1),
 
-        OP.CALC_G(te=-1),
+        OP.CALC_G_XFEM(te=-1),
 
-        OP.CALC_K_G_F(te=-1),
+        OP.CALC_K_G_XFEM_F(te=-1),
 
         OP.CHAR_MECA_CONT(te=-1),
 
@@ -958,11 +958,11 @@ class MECA_XHC3_TETRA4(TemplateElement):
         )
 
     calculs = (
-        OP.CALC_G_F(te=-1),
+        OP.CALC_G_XFEM_F(te=-1),
 
-        OP.CALC_G(te=-1),
+        OP.CALC_G_XFEM(te=-1),
 
-        OP.CALC_K_G_F(te=-1),
+        OP.CALC_K_G_XFEM_F(te=-1),
 
         OP.CHAR_MECA_CONT(te=-1),
 

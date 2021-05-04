@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -79,7 +79,7 @@ PBASECO = InputParameter(phys=PHY.N2448R)
 PSTANO   = InputParameter(phys=PHY.N120_I)
 
 
-CALC_K_G = Option(
+CALC_K_G_XFEM_F = Option(
     para_in=(
         PAINTER,
         PBASECO,
@@ -90,11 +90,11 @@ CALC_K_G = Option(
         SP.PCOURB,
         SP.PDEPINR,
         SP.PDEPLAR,
-        SP.PEPSINR,
+        SP.PEPSINF,
+        SP.PFF1D2D,
+        SP.PFF2D3D,
+        SP.PFFVOLU,
         SP.PFISSR,
-        SP.PFR1D2D,
-        SP.PFR2D3D,
-        SP.PFRVOLU,
         SP.PGEOMER,
         PHEAVTO,
         PHEA_NO,
@@ -107,11 +107,12 @@ CALC_K_G = Option(
         PPINTER,
         PPINTTO,
         PPMILTO,
-        SP.PPRESSR,
+        SP.PPRESSF,
         SP.PPULPRO,
         SP.PROTATR,
         SP.PSIGINR,
         SP.PSIGISE,
+        SP.PTEMPSR,
         SP.PTHETAR,
         PVARCPR,
         SP.PVARCRR,

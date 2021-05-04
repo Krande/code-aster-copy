@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -238,7 +238,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
                             ASSERT(occur <= 1)
 !               traitement du champ pour les elements finis classiques
                             call detrsd('CHAMP', cepsi)
-                            call alchml(ligrmo, 'CALC_G', 'PEPSINR', 'V', cepsi, iret, ' ')
+                            call alchml(ligrmo, 'CALCH_G', 'PEPSINR', 'V', cepsi, iret, ' ')
                             call chpchd(cartei(1:19), 'ELNO', cepsi, 'OUI', 'V', epselno)
                             call chpver('F', epselno(1:19), 'ELNO', 'EPSI_R', iret)
                             cartei(1:19) = epselno(1:19)

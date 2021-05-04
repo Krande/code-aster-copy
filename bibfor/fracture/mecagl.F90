@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -207,7 +207,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 
 !               traitement du champ pour les elements finis classiques
                 call detrsd('CHAMP', celmod)
-                call alchml(ligrmo, 'CALC_G', 'PSIGINR', 'V', celmod,&
+                call alchml(ligrmo, 'CALC_G_XFEM', 'PSIGINR', 'V', celmod,&
                             iret, ' ')
                 call chpchd(chsigi(1:19), 'ELNO', celmod, 'OUI', 'V',&
                             sigelno)
@@ -251,7 +251,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
         papres = 'PPRESSF'
         pepsin = 'PEPSINF'
         if (option .eq. 'CALC_G') then
-            opti = 'CALC_G_F'
+            opti = 'CALC_G_XFEM_F'
         else
             opti = 'G_LAGR_F'
         endif
@@ -260,7 +260,11 @@ subroutine mecagl(option, result, modele, depla, thetai,&
         pa2d3d = 'PFR2D3D'
         papres = 'PPRESSR'
         pepsin = 'PEPSINR'
-        opti=option
+        if (option .eq. 'CALC_G') then
+            opti = 'CALC_G_XFEM'
+        else
+            opti = 'G_LAGR'
+        endif
     endif
 !
 !- CALCUL DES G(THETA_I) AVEC I=1,NDIMTE  NDIMTE = NNOFF  SI TH-LAGRANGE
@@ -366,7 +370,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
             nchin = 28
         endif
 !
-        if ((opti.eq.'CALC_G_F') .or. (opti.eq.'G_LAGR_F')) then
+        if ((opti.eq.'CALC_G_XFEM_F') .or. (opti.eq.'G_LAGR_F')) then
             chtime = '&&MECAGL.CH_INST_R'
             call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R',&
                         ncmp=1, nomcmp='INST', sr=time)
@@ -405,7 +409,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
                 endif
             endif
         endif
-        if (option .eq. 'CALC_G' .or. option .eq. 'CALC_G_F') then
+        if (opti .eq. 'CALC_G_XFEM' .or. opti .eq. 'CALC_G_XFEM_F') then
             if (chvite .ne. ' ') then
                 lpain(nchin+1) = 'PVITESS'
                 lchin(nchin+1) = chvite

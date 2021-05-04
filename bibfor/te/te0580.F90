@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -140,8 +140,8 @@ subroutine te0580(nomopt, nomte)
         enddo
 
 
-    elseif (nomopt.eq.'CALC_G' .or. nomopt.eq.'CALC_G_F' &
-            .or. nomopt.eq.'CALC_K_G' .or. nomopt.eq.'CALC_K_G_F') then
+    elseif (nomopt.eq.'CALC_G_XFEM' .or. nomopt.eq.'CALC_G_XFEM_F' &
+            .or. nomopt.eq.'CALC_K_G_XFEM' .or. nomopt.eq.'CALC_K_G_XFEM_F') then
 !   =======================================================================
 
 !       -- le resultat est nul si les forces de bord sont nulles ou
@@ -233,7 +233,7 @@ subroutine te0580(nomopt, nomte)
     endif
 
 !   -- le bloc if suivant sera a retirer apres la correction de issue23504
-    if (nomopt.eq.'CALC_K_G_F') then
+    if (nomopt.eq.'CALC_K_G_XFEM_F') then
         if (nomte.eq.'MECA_XH_FACE4' .or. nomte.eq.'MECA_XHT_FACE4' &
             .or. nomte.eq.'MECA_XT_FACE4' .or.&
             nomte.eq.'MECA_XH_FACE8' .or. nomte.eq.'MECA_XHT_FACE8' &

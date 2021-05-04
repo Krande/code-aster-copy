@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -142,7 +142,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     ASSERT(nbchar.le.mxstac)
     call infniv(ifm, niv)
     option = optioz
-    if (optioz .eq. 'CALC_K_X') option = 'CALC_K_G'
+    if (optioz .eq. 'CALC_K_X') option = 'CALC_K_G_XFEM'
 !
 !   cas FEM ou X-FEM
     call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=ibid)
@@ -191,7 +191,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 
 !           traitement du champ pour les elements finis classiques
             call detrsd('CHAMP',celmod)
-            call alchml(ligrmo, 'CALC_G', 'PSIGINR', 'V', celmod,&
+            call alchml(ligrmo, 'CALC_G_XFEM', 'PSIGINR', 'V', celmod,&
                         iret, ' ')
             call chpchd(chsigi(1:19), 'ELNO', celmod, 'OUI', 'V',&
                         sigelno)
@@ -226,13 +226,13 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
         pavolu = 'PFFVOLU'
         pa1d2d = 'PFF1D2D'
         papres = 'PPRESSF'
-        option = 'CALC_K_G_F'
-        optio2 = 'CALC_K_G_F'
+        option = 'CALC_K_G_XFEM_F'
+        optio2 = 'CALC_K_G_XFEM_F'
     else
         pavolu = 'PFRVOLU'
         pa1d2d = 'PFR1D2D'
         papres = 'PPRESSR'
-        optio2 = 'CALC_K_G'
+        optio2 = 'CALC_K_G_XFEM'
     endif
 !
 ! OBJET DECRIVANT LE MAILLAGE
@@ -437,7 +437,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     nchin = 28
 !
     chtime = '&&CAKG2D.CH_INST_R'
-    if (option .eq. 'CALC_K_G_F') then
+    if (option .eq. 'CALC_K_G_XFEM_F') then
         call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ',&
                     ncmp=1, nomcmp='INST   ', sr=time)
         nchin = nchin + 1

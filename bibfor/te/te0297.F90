@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -186,10 +186,10 @@ subroutine te0297(option, nomte)
 !              CALCUL DE G, K1, K2, K3 SUR LES LEVRES
 !     ------------------------------------------------------------------
 !
-    if (option .eq. 'CALC_K_G') then
+    if (option .eq. 'CALC_K_G_XFEM') then
 !       SI LA PRESSION N'EST CONNUE SUR AUCUN NOEUD, ON LA PREND=0.
         call jevecd('PPRESSR', ipres, 0.d0)
-    else if (option.eq.'CALC_K_G_F') then
+    else if (option.eq.'CALC_K_G_XFEM_F') then
         call jevech('PPRESSF', 'L', ipref)
         call jevech('PTEMPSR', 'L', itemps)
 !
@@ -212,8 +212,8 @@ subroutine te0297(option, nomte)
 !   SI LA VALEUR DE LA PRESSION EST NULLE SUR L'ÉLÉMENT, ON SORT
     compt = 0
     do 90 i = 1, nnop
-        if (option .eq. 'CALC_K_G') pres = abs(zr(ipres-1+i))
-        if (option .eq. 'CALC_K_G_F') pres = abs(presn(i))
+        if (option .eq. 'CALC_K_G_XFEM') pres = abs(zr(ipres-1+i))
+        if (option .eq. 'CALC_K_G_XFEM_F') pres = abs(presn(i))
         if (pres .lt. r8prem()) compt = compt + 1
 90  continue
     if (compt .eq. nnop) goto 999

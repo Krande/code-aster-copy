@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -230,7 +230,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 
 !           traitement du champ pour les elements finis classiques
             call detrsd('CHAMP',celmod)
-            call alchml(ligrmo, 'CALC_G', 'PSIGINR', 'V', celmod,&
+            call alchml(ligrmo, 'CALC_G_XFEM', 'PSIGINR', 'V', celmod,&
                         iret, ' ')
             call chpchd(chsigi(1:19), 'ELNO', celmod, 'OUI', 'V',&
                         sigelno)
@@ -282,13 +282,13 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
             pa2d3d = 'PFF2D3D'
             papres = 'PPRESSF'
             pepsin = 'PEPSINF'
-            opti = 'CALC_K_G_F'
+            opti = 'CALC_K_G_XFEM_F'
         else
             pavolu = 'PFRVOLU'
             pa2d3d = 'PFR2D3D'
             papres = 'PPRESSR'
             pepsin = 'PEPSINR'
-            opti = 'CALC_K_G'
+            opti = 'CALC_K_G_XFEM'
         endif
     endif
 !
@@ -401,7 +401,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 
 !
         chtime = '&&CAKG3D.CH_INST_R'
-        if (opti .eq. 'CALC_K_G_F') then
+        if (opti .eq. 'CALC_K_G_XFEM_F') then
             call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ',&
                         ncmp=1, nomcmp='INST   ', sr=time)
             nchin = nchin + 1

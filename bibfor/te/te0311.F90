@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -122,7 +122,7 @@ subroutine te0311(option, nomte)
 !
     call jevech('PMATERC', 'L', imate)
 !
-    if (option .eq. 'CALC_K_G_F') then
+    if (option .eq. 'CALC_K_G_XFEM_F') then
         fonc = .true.
         call jevech('PFF2D3D', 'L', iforf)
         call jevech('PPRESSF', 'L', ipref)

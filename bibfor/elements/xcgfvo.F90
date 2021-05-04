@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,10 +65,10 @@ subroutine xcgfvo(option, ndim, nnop, fno)
     call jevech('PMATERC', 'L', imate)
 !
 !     PARAMETRES DES FORCES VOLUMIQUES
-    if (option .eq. 'CALC_G' .or. option .eq. 'CALC_K_G') then
+    if (option .eq. 'CALC_G_XFEM' .or. option .eq. 'CALC_K_G_XFEM') then
         fonc=.false.
         call jevech('PFRVOLU', 'L', iforc)
-        else if (option.eq.'CALC_G_F'.or. option.eq.'CALC_K_G_F') then
+        else if (option.eq.'CALC_G_XFEM_F'.or. option.eq.'CALC_K_G_XFEM_F') then
         fonc=.true.
         call jevech('PFFVOLU', 'L', iforf)
         call jevech('PTEMPSR', 'L', itemps)

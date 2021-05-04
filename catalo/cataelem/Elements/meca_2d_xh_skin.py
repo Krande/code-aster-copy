@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -98,25 +98,25 @@ class MEPLSE2_XH(Element):
     calculs = (
 
 #       -- te0580 : ne resout que les cas triviaux : 0.
-        OP.CALC_G(te=580,
+        OP.CALC_G_XFEM(te=580,
             para_in=((SP.PFR1D2D, NFORCER), (SP.PPRESSR, EPRESNO),
                      (SP.PTHETAR, NTHETAR), ),
             para_out=((SP.PGTHETA, LC.EGTHETA), ),
         ),
 
-        OP.CALC_G_F(te=580,
+        OP.CALC_G_XFEM_F(te=580,
             para_in=((SP.PFF1D2D, CFORCEF), (SP.PPRESSF, CPRESSF),
                      (SP.PTHETAR, NTHETAR), ),
             para_out=((SP.PGTHETA, LC.EGTHETA), ),
         ),
 
-        OP.CALC_K_G(te=580,
+        OP.CALC_K_G_XFEM(te=580,
             para_in=((SP.PFR1D2D, NFORCER), (SP.PPRESSR, EPRESNO),
                      (SP.PTHETAR, NTHETAR), ),
             para_out=((SP.PGTHETA, EKTHETA), ),
         ),
 
-        OP.CALC_K_G_F(te=580,
+        OP.CALC_K_G_XFEM_F(te=580,
             para_in=((SP.PFF1D2D, CFORCEF), (SP.PPRESSF, CPRESSF),
                      (SP.PTHETAR, NTHETAR), ),
             para_out=((SP.PGTHETA, EKTHETA), ),

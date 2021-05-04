@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -85,7 +85,7 @@ subroutine xsifl1(elrefp, angl, basloc, coeff, coeff3, ddlm,&
 !
     call vecini(3*2, 0.d0, forrep)
 !
-    if ((option.eq.'CALC_K_G') .or. (option.eq.'CALC_G')) then
+    if ((option.eq.'CALC_K_G_XFEM') .or. (option.eq.'CALC_G_XFEM')) then
 !
 !         CALCUL DE LA PRESSION AUX POINTS DE GAUSS
         pres = 0.d0
@@ -108,7 +108,7 @@ subroutine xsifl1(elrefp, angl, basloc, coeff, coeff3, ddlm,&
             forrep(2,2) = forrep(2,2)+ cisa * (-nd(1))
         endif
 !
-    else if ((option.eq.'CALC_K_G_F') .or. (option.eq.'CALC_G_F')) then
+    else if ((option.eq.'CALC_K_G_XFEM_F') .or. (option.eq.'CALC_G_XFEM_F')) then
 !
 !         VALEUR DE LA PRESSION
         call vecini(ndim+1, 0.d0, var)
@@ -246,8 +246,8 @@ subroutine xsifl1(elrefp, angl, basloc, coeff, coeff3, ddlm,&
 !       D(PRES)/DI n'etait pas correctement calcule dans cette routine.
 !       issue24174 supprime le calcul de cette quantite (DFOR reste nul) 
 !       et interdit toute autre chose qu'un chargement constant.
-        if ( (option.eq.'CALC_K_G') .or.&
-             (option.eq.'CALC_G') ) then
+        if ( (option.eq.'CALC_K_G_XFEM') .or.&
+             (option.eq.'CALC_G_XFEM') ) then
 !
 !           Tester le nom de l'option (CALC_*G ou CALC_*G_F) ne suffit
 !           pas pour detecter le caractere constant du chargement si on
@@ -276,8 +276,8 @@ subroutine xsifl1(elrefp, angl, basloc, coeff, coeff3, ddlm,&
                 enddo
             endif
 !
-        elseif ( (option.eq.'CALC_K_G_F') .or.&
-                 (option.eq.'CALC_G_F') ) then
+        elseif ( (option.eq.'CALC_K_G_XFEM_F') .or.&
+                 (option.eq.'CALC_G_XFEM_F') ) then
 !
             call utmess('F', 'XFEM_99')
 !

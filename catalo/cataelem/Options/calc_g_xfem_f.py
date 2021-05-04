@@ -86,7 +86,7 @@ PBASECO  = InputParameter(phys=PHY.N2448R)
 
 PSTANO   = InputParameter(phys=PHY.N120_I)
 
-CALC_G_F = Option(
+CALC_G_XFEM_F = Option(
     para_in=(
         SP.PACCELE,
            PAINTER,
@@ -137,6 +137,5 @@ CALC_G_F = Option(
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'-1'),)),
       CondCalcul('-', ((AT.PHENO,'ME'),(AT.ABSO,'OUI'),)),
       CondCalcul('-', ((AT.PHENO,'ME'),(AT.DISCRET,'OUI'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'SSH'),)),
     ),
 )

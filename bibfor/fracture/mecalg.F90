@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -191,7 +191,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 
 !               traitement du champ pour les elements finis classiques
                 call detrsd('CHAMP', celmod)
-                call alchml(ligrmo, 'CALC_G', 'PSIGINR', 'V', celmod,&
+                call alchml(ligrmo, 'CALC_G_XFEM', 'PSIGINR', 'V', celmod,&
                             iret, ' ')
                 call chpchd(chsigi(1:19), 'ELNO', celmod, 'OUI', 'V',&
                             sigelno)
@@ -233,7 +233,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
         if (option .eq. 'CALC_DG') then
             option = 'CALC_DG_F'
         else if (option.eq.'CALC_G') then
-            option = 'CALC_G_F'
+            option = 'CALC_G_XFEM_F'
         else if (option.eq.'CALC_DG_E') then
             option = 'CALC_DG_E_F'
         else if (option.eq.'CALC_DGG_E') then
@@ -249,6 +249,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
         pa2d3d = 'PFR2D3D'
         papres = 'PPRESSR'
         pepsin = 'PEPSINR'
+        option = 'CALC_G_XFEM'
     endif
 !
 !
@@ -346,7 +347,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
 !
     endif
 !
-    if ((option.eq.'CALC_G_F') .or. (option.eq.'CALC_DG_F') .or. (option.eq.'CALC_DG_E_F')&
+    if ((option.eq.'CALC_G_XFEM_F') .or. (option.eq.'CALC_DG_F') .or. (option.eq.'CALC_DG_E_F')&
         .or. (option.eq.'CALC_DGG_E_F') .or.&
         (option.eq.'CALC_DGG_FORC_F') .or. (option.eq.'CALC_DG_FORC_F')) then
         call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R  ',&
