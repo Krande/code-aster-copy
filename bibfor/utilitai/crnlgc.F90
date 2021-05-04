@@ -297,6 +297,7 @@ subroutine crnlgc(numddl)
                 endif
             enddo
         enddo
+        print*, "NBDDL: ", nbddl, zi(jrecep1)
         ASSERT(zi(jrecep1) .eq. nbddl)
         n4e = nbddl
         n4r = nb_ddl_envoi
