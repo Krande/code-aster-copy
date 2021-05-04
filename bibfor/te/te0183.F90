@@ -24,7 +24,6 @@ implicit none
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/assert.h"
-#include "asterfort/evalFaceSpeedDire.h"
 #include "asterfort/getFluidPara.h"
 !
 character(len=16), intent(in) :: option, nomte
@@ -41,8 +40,6 @@ character(len=16), intent(in) :: option, nomte
 !
     integer, parameter :: nbCmpInMap = 5
     integer :: jvGeom, jvMate, jvLoad, jvVect
-    aster_logical, parameter :: lCplx = ASTER_TRUE
-    real(kind=8) :: speedDire
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9)
     real(kind=8) :: rho, jac
     complex(kind=8) :: speedVale
@@ -115,15 +112,9 @@ character(len=16), intent(in) :: option, nomte
 ! ----- Get value of speed
         speedVale = zc(jvLoad-1+nbCmpInMap*(ipg-1)+1)
 
-! ----- Get direction of speed
-        call evalFaceSpeedDire(cellDime, jvLoad, speedDire,&
-                               ipg, nx, ny,&
-                               lCplx_ = lCplx,&
-                               nz_ = nz)
-
 ! ----- Compute vector
         do i = 1, nbNode
-            zc(jvVect+i-1) = zc(jvVect+i-1) + speedDire*&
+            zc(jvVect+i-1) = zc(jvVect+i-1) + &
                              jac*zr(jvWeight+ipg-1) *&
                              zr(jvShape+ldec+i-1) * speedVale * rho
         end do

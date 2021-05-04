@@ -50,6 +50,8 @@ Si vous êtes en trois dimensions, les éléments doivent être des triangles ou
 
     6: _("""Lors de l'évaluation du chargement VITE_FACE, la normale calculée est nulle. Le maillage est probablement incorrect."""),
 
+    7: _("""On ne peut pas donner la direction du chargement VITE_FACE dans le cas d'une formulation de type %(k1)s."""),
+
     82: _("""
 Il y a trop de chargements avec l'option %(k1)s pour calculer toutes les matrices élémentaires.
 """),

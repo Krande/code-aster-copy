@@ -145,7 +145,7 @@ character(len=16), intent(in) :: option, nomte
                                speedVale, x, y, z)
 
 ! ----- Get direction of speed
-        call evalFaceSpeedDire(cellDime , jvLoad, speedDire, &
+        call evalFaceSpeedDire(fsi_form, cellDime , jvLoad, speedDire, &
                                ipg, nx, ny,&
                                lFunc_ = lFunc, lReal_ = lReal,&
                                lTime_ = lTime, time_ = time ,&

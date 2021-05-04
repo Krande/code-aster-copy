@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine evalFaceSpeedDire(cellDime, jvLoad , speedDire,&
+subroutine evalFaceSpeedDire(fsi_form, cellDime, jvLoad , speedDire,&
                              ipg     , nx     , ny       ,&
                              lFunc_  , lReal_ , lCplx_   ,&
                              lTime_  , time_  ,&
@@ -33,6 +33,7 @@ implicit none
 #include "asterfort/fointe.h"
 #include "asterfort/utmess.h"
 !
+character(len=16), intent(in) :: fsi_form
 integer, intent(in) :: cellDime, jvLoad
 real(kind=8), intent(out) :: speedDire
 integer, intent(in) :: ipg
@@ -49,6 +50,7 @@ real(kind=8), optional, intent(in) :: z_, nz_
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  fsi_form         : type of FORMULATION
 ! In  cellDime         : dimension of cell (2 or 3)
 ! In  jvLoad           : JEVEUX adress for field with parameters for load
 ! Out speedDire        : direction of speed (dot product with normal)
@@ -110,20 +112,23 @@ real(kind=8), optional, intent(in) :: z_, nz_
         lSpeedNorm = zk8(jvLoad-1+nbCmpInMap*(ipg-1)+2) .eq. '&FOZERO'
 
     elseif (lReal) then
-        lSpeedNorm = zr(jvLoad-1+nbCmpInMap*(ipg-1)+2) .lt. 0.d0
+        lSpeedNorm = zr(jvLoad-1+nbCmpInMap*(ipg-1)+2) .le. 0.d0
 
     elseif (lCplx) then
-        lSpeedNorm = dble(zc(jvLoad-1+nbCmpInMap*(ipg-1)+2)) .lt. 0.d0
+        lSpeedNorm = dble(zc(jvLoad-1+nbCmpInMap*(ipg-1)+2)) .le. 0.d0
 
     else
         ASSERT(ASTER_FALSE)
 
     endif
-    
+
     if (lSpeedNorm) then
         speedDire = 1.d0
 
     else
+        if (fsi_form .ne. 'FSI_UPSI') then
+            call utmess('F', 'CHARGES6_7', sk = fsi_form)
+        endif
         nvx = 0.d0
         nvy = 0.d0
         nvz = 0.d0

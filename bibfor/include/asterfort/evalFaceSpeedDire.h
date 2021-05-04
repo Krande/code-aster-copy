@@ -17,12 +17,13 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine evalFaceSpeedDire(cellDime, jvLoad , speedDire,&
+    subroutine evalFaceSpeedDire(fsi_form, cellDime, jvLoad , speedDire,&
                                  ipg     , nx     , ny       ,&
                                  lFunc_  , lReal_ , lCplx_   ,&
                                  lTime_  , time_  ,&
                                  x_      , y_     ,&
                                  z_      , nz_)
+        character(len=16), intent(in) :: fsi_form
         integer, intent(in) :: cellDime, jvLoad
         real(kind=8), intent(out) :: speedDire
         integer, intent(in) :: ipg

@@ -88,6 +88,7 @@ integer, intent(in) :: nbOcc
             call getvr8(keywFact, 'VNOR', iocc=iocc, nbval = 0, nbret=nbRet)
         elseif (valeType .eq. 'COMP') then
             call getvc8(keywFact, 'VNOR', iocc=iocc, nbval = 0, nbret=nbRet)
+            ASSERT(nbRet .eq. -1)
         elseif (valeType .eq. 'FONC') then
             call getvid(keywFact, 'VNOR', iocc=iocc, nbval = 0, nbret=nbRet)
         else
@@ -100,6 +101,9 @@ integer, intent(in) :: nbOcc
         else
             keyword = 'VNOR'
         endif
+        if (valeType .eq. 'COMP') then
+            ASSERT(keyword .eq. 'VNOR')
+        endif
 
 ! ----- Get value of speed
         if (valeType .eq. 'REEL') then
@@ -110,16 +114,18 @@ integer, intent(in) :: nbOcc
             call getvid(keywFact, keyword, iocc=iocc, scal = speedFunc, nbret=nbRet)
         endif
 
-! ----- Get direction if necessari
+! ----- Get direction if necessary
         speedDirectionReal = 0.d0
         speedDirectionFunc = ' '
         if (keyword .eq. 'VITE') then
-            if (valeType .eq. 'REEL' .or. valeType .eq. 'COMP') then
+            if (valeType .eq. 'REEL') then
                 call getvr8(keywFact, 'DIRECTION',&
                             iocc=iocc, nbval = 0, nbret=nbRet)
                 nbVal = abs(nbRet)
                 call getvr8(keywFact, 'DIRECTION',&
                             iocc=iocc, nbval = nbVal, vect = speedDirectionReal, nbret=nbRet)
+            elseif (valeType .eq. 'COMP') then
+                speedDirectionReal = 0.d0
             elseif (valeType .eq. 'FONC') then
                 call getvid(keywFact, 'DIRECTION',&
                             iocc=iocc, nbval = 0, nbret=nbRet)

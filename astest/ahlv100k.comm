@@ -55,7 +55,7 @@ CHM=AFFE_MATERIAU(
 #
 VELO=AFFE_CHAR_ACOU(
          MODELE=MO,
-         VITE_FACE=_F( GROUP_MA = 'velo', VITE = ('RI',0.014,0.0,), DIRECTION = (-1., 0., 0.),),)
+         VITE_FACE=_F( GROUP_MA = 'velo', VNOR = ('RI',0.014,0.0,),),)
 
 IMPE=AFFE_CHAR_ACOU(
          MODELE=MO,
