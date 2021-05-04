@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,6 +48,8 @@ subroutine orth99(nomres, ritz)
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/rscopi.h"
+#include "asterfort/detrsd.h"
 !
     character(len=8) :: nomres
     integer :: ritz
@@ -74,10 +76,12 @@ subroutine orth99(nomres, ritz)
     integer, pointer :: trav4(:) => null()
     integer, pointer :: nequ(:) => null()
     real(kind=8), pointer :: vale(:) => null()
+    logical :: rewrite
 !----------------------------------------------------------------------
     call jemarq()
 !
     alpha = 0.717d0
+    rewrite = .false.
 !
 !     ---RECUPERATION DU NIVEAU D'IMPRESSION---
 !
@@ -190,10 +194,12 @@ subroutine orth99(nomres, ritz)
         jordm=ibid
 !
 !       Save the old REFD information in a temporary location
+        call rscopi('V',nomres,'&&ORTH99')
         call refdcp(nomres, '&&ORTH99')
 !
 !       Delete the old result concept
         call jedetc('G', nomres, 1)
+        rewrite = .true.
     endif
     call rscrsd('G', nomres, 'MODE_MECA', nbmode)
     call settco(nomres, typeco)
@@ -270,21 +276,35 @@ subroutine orth99(nomres, ritz)
         call rsadpa(nomres, 'E', 1, 'TYPE_DEFO', iorne,&
                     0, sjv=jiad, styp=k8b)
         zk16(jiad) = zk16(iad)
-        
-        call rsadpa(base, 'L', 1, 'MODELE', iorol,&
-                    0, sjv=iad, styp=k8b, istop=0)
+        if(rewrite) then
+            call rsadpa('&&ORTH99', 'L', 1, 'MODELE', iorol,&
+                        0, sjv=iad, styp=k8b, istop=0)
+        else
+            call rsadpa(base, 'L', 1, 'MODELE', iorol,&
+                        0, sjv=iad, styp=k8b, istop=0)
+        endif
         call rsadpa(nomres, 'E', 1, 'MODELE', iorne,&
                     0, sjv=jiad, styp=k8b)
         zk8(jiad) = zk8(iad)
-        
-        call rsadpa(base, 'L', 1, 'CHAMPMAT', iorol,&
-                    0, sjv=iad, styp=k8b, istop=0)
+
+        if(rewrite) then
+             call rsadpa('&&ORTH99', 'L', 1, 'CHAMPMAT', iorol,&
+                         0, sjv=iad, styp=k8b, istop=0)
+        else
+            call rsadpa(base, 'L', 1, 'CHAMPMAT', iorol,&
+                        0, sjv=iad, styp=k8b, istop=0)
+        endif
         call rsadpa(nomres, 'E', 1, 'CHAMPMAT', iorne,&
                     0, sjv=jiad, styp=k8b)
         zk8(jiad) = zk8(iad)
-        
-        call rsadpa(base, 'L', 1, 'CARAELEM', iorol,&
-                    0, sjv=iad, styp=k8b, istop=0)
+
+        if(rewrite) then
+            call rsadpa('&&ORTH99', 'L', 1, 'CARAELEM', iorol,&
+                        0, sjv=iad, styp=k8b, istop=0)
+        else
+            call rsadpa(base, 'L', 1, 'CARAELEM', iorol,&
+                        0, sjv=iad, styp=k8b, istop=0)
+        endif
         call rsadpa(nomres, 'E', 1, 'CARAELEM', iorne,&
                     0, sjv=jiad, styp=k8b)
         zk8(jiad) = zk8(iad)
@@ -296,6 +316,7 @@ subroutine orth99(nomres, ritz)
     AS_DEALLOCATE(vi=trav4)
     call jedetr('&&ORTH99.BASE')
     call jedetr('&&ORTH99.VECT_TEM')
+    call detrsd('RESULTAT', '&&ORTH99')
 !
 !
 999 continue
