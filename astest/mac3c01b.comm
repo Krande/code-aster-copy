@@ -44,13 +44,13 @@ TAB = CREA_TABLE(RESU=_F(RESULTAT=RESU,
                           NOM_CMP=('DX','DY'),
                           GROUP_MA=('CR_B_B', 'TG_B_B')))
 
-TEST_TABLE(VALE_CALC=-0.01249484742016728,
+TEST_TABLE(VALE_CALC=-0.012494847420171493,
            NOM_PARA='DX',
            TABLE=TAB,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N430'))
 
-TEST_TABLE(VALE_CALC=-0.01237064462877838,
+TEST_TABLE(VALE_CALC=-0.012370644628782694,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
            TABLE=TAB)

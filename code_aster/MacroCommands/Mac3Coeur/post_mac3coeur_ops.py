@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,8 @@ from ...Objects.table_py import Table
 from ...Utilities import ExecutionParameter
 from .mac3coeur_coeur import CoeurFactory
 
+MAC3_ROUND = 14
+
 class CollectionDiscretChoc():
     
     @property
@@ -62,15 +64,15 @@ class CollectionDiscretChoc():
     def __setitem__(self, key, item):
         self._collection[key] = item
 
-    def analysis(self, label):
+    def analysis(self):
         quantiles = (70, 80, 90, 95, 99)
         
         values = {}
         
         for i in quantiles :
-            values['Quan%s_CU_%d'%(label, i)] = np.percentile(self.values_external, i)
-            values['Quan%s_AC_%d'%(label, i)] = np.percentile(self.values_internal, i)
-            values['Quan%s_%d'%(label, i)] = np.percentile(self.values, i)
+            values['Quan%s_CU_%d'%(self.label, i)] = np.percentile(self.values_external, i)
+            values['Quan%s_AC_%d'%(self.label, i)] = np.percentile(self.values_internal, i)
+            values['Quan%s_%d'%(self.label, i)] = np.percentile(self.values, i)
             
             qu_cu_grids_i = np.percentile(self.values_external, i, axis=0)           
             qu_ac_grids_i = np.percentile(self.values_internal, i, axis=0)
@@ -78,9 +80,12 @@ class CollectionDiscretChoc():
             
             nb_grids = qu_cu_grids_i.size
             for j in range(nb_grids):
-                values['Quan%s_CU_G%d_%d'%(label, j+1,i)] = qu_cu_grids_i[j]
-                values['Quan%s_AC_G%d_%d'%(label, j+1,i)] = qu_ac_grids_i[j]
-                values['Quan%s_G%d_%d'%(label, j+1,i)] = qu_grids_i[j]
+                values['Quan%s_CU_G%d_%d'%(self.label, j+1,i)] = qu_cu_grids_i[j]
+                values['Quan%s_AC_G%d_%d'%(self.label, j+1,i)] = qu_ac_grids_i[j]
+                values['Quan%s_G%d_%d'%(self.label, j+1,i)] = qu_grids_i[j]
+
+        for key, item in values.items():
+            values[key] = np.around(item, MAC3_ROUND)
 
         return values
 
@@ -95,7 +100,7 @@ class CollectionDiscretChoc():
 
     def extr_analysis_table(self):
         
-        values = self.analysis(self.label)
+        values = self.analysis()
 
         listdic = [values]
         listpara = sorted(values.keys())
@@ -135,21 +140,21 @@ class CollectionPostAC():
     def __setitem__(self, key, item):
         self._collection[key] = item
 
-    def analysis(self, prec):
+    def analysis(self):
      
         for pos_damac in sorted(self.keys) : 
             AC = self[pos_damac]
             
-            if AC['Rho'] - self.maxRho > prec :
+            if AC['Rho'] > self.maxRho :
                 self.maxRho = AC['Rho']
                 self.locMaxRho = pos_damac
                 
-            if AC['Gravite'] - self.maxGravite > prec :
+            if AC['Gravite'] > self.maxGravite :
                 self.maxGravite = AC['Gravite']
                 self.locMaxGravite = pos_damac
 
             for g in range(AC.nb_grilles):
-                if AC['NormF'][g] - self.maxDeplGrille[g] > prec:
+                if AC['NormF'][g] > self.maxDeplGrille[g]:
                     self.maxDeplGrille[g] = AC['NormF'][g]
                     self.locMaxDeplGrille[g] = pos_damac
                     
@@ -170,9 +175,9 @@ class CollectionPostAC():
         listpara, listtype = PostAC.fleche_parameters_types(self.label)
         return Table(listdic,listpara,listtype)
 
-    def extr_analysis_table(self, prec=1.e-8):
+    def extr_analysis_table(self):
 
-        self.analysis(prec)
+        self.analysis()
         
         values = {
             'moyRhoCoeur' : self.moyenneRho,
@@ -221,8 +226,7 @@ class PostAC():
             'PositionASTER' : AC.idAST,
             'Cycle' : AC._cycle,
             'Repere' : AC.name,
-            'Rho' : max([np.sqrt((fy[i] - fy[j]) ** 2 + (fz[i] - fz[j]) ** 2)
-                         for i in range(self.nb_grilles - 1) for j in range(i + 1, self.nb_grilles)]),
+            'Rho' : np.around(self._compute_rho(fy, fz), MAC3_ROUND),
             'DepY' : dy[0] - dy[-1],
             'DepZ' : dz[0] - dz[-1],
             'TypeAC' : AC.typeAC,
@@ -235,8 +239,8 @@ class PostAC():
             'FormeY' : FormeY,
             'FormeZ' : FormeZ,
             'Forme' : Forme,
-            'Gravite' : self._compute_gravite(coor_x, fy, fz),
-            'NormF' : np.sqrt(fy**2+fz**2),
+            'Gravite' : np.around(self._compute_gravite(coor_x, fy, fz), MAC3_ROUND),
+            'NormF' : np.around(self._compute_norm(fy, fz), MAC3_ROUND),
             'FY' : fy,
             'FZ' : fz,
         }
@@ -247,6 +251,13 @@ class PostAC():
         self._props.update({'XG%d'%(i+1) : val for i, val in enumerate(fy)})
         self._props.update({'YG%d'%(i+1) : val for i, val in enumerate(fz)})
 
+
+    def _compute_rho(self, fy, fz):
+        return max([np.sqrt((fy[i] - fy[j]) ** 2 + (fz[i] - fz[j]) ** 2)
+                    for i in range(self.nb_grilles - 1) for j in range(i + 1, self.nb_grilles)])
+
+    def _compute_norm(self, fy, fz):
+        return np.sqrt(fy**2+fz**2)
         
     def _compute_gravite(self, coor_x, fy, fz):
 
@@ -369,7 +380,7 @@ def post_mac3coeur_ops(self, **args):
             vals = np.stack((TMP.EXTR_TABLE().values()[i] for i in ('COOR_X', 'V8')))
             vals = np.mean(vals.reshape(2, vals.shape[1]//2, 2), axis=2) # Moyenne sur les 2 noeuds du discret (qui portent tous la meme valeur)
 
-            coor_x, v8 = np.around(1000.*vals[:, vals[0].argsort()], 12)
+            coor_x, v8 = np.around(1000.*vals[:, vals[0].argsort()], MAC3_ROUND)
             collection[name] = v8
    
     #
@@ -393,7 +404,7 @@ def post_mac3coeur_ops(self, **args):
             vals = np.abs(np.stack((TMP.EXTR_TABLE().values()[i] for i in ('COOR_X', 'N'))))
             vals = np.mean(vals.reshape(2,vals.shape[1]//2,2),axis=2) # Moyenne sur les 2 noeuds du discret (qui portent tous la meme valeur)
 
-            coor_x, force = np.around(vals[:, vals[0].argsort()], 12)
+            coor_x, force = np.around(vals[:, vals[0].argsort()], MAC3_ROUND)
             collection[name] = force
             
     #
@@ -416,7 +427,7 @@ def post_mac3coeur_ops(self, **args):
             # Moyenne sur les 4 discrets de la grille (qui portent tous la meme valeur)
             vals = np.mean(vals.reshape(vals.shape[0], vals.shape[1]//4, 4),axis=2)
             # Passage en mm et arrondi
-            coor_x, dy, dz = np.around(1000.0*vals[:, vals[0].argsort()],12)
+            coor_x, dy, dz = np.around(1000.0*vals[:, vals[0].argsort()], MAC3_ROUND)
 
             post_ac = PostAC(coor_x, dy, dz, AC)
             collection[post_ac['PositionDAMAC']] = post_ac
