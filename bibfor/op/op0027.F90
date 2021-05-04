@@ -56,9 +56,6 @@ implicit none
     call infmaj()
     call deprecated_algom('CALC_G')
 !
-! Fiches concernées par le chantier (A supprimer à la fin)
-! A Faire: , #27931, #30288
-!
 !-- Initialisation des champs et des paramètres
     call cgStat%initialize()
     call cgField%initialize(cgStat)
@@ -77,8 +74,7 @@ implicit none
 !-- Compute Theta factors
     call cgComputeTheta(cgField, cgTheta, cgStat)
 !
-! --- Compute A Matrix from equation A*G(s)=g(theta)
-!
+!-- Compute A Matrix from equation A*G(s)=g(theta)
     call cgComputeMatrix(cgField, cgTheta, cgStat)
 !
 !-- Loop on option
@@ -86,10 +82,10 @@ implicit none
 !
         call cgStudy%initialize(cgField%result_in, cgField%list_nume(i_nume), cgStat)
 !
-! ----  Récupération des champs utiles pour l'appel à calcul
+!------ Récupération des champs utiles pour l'appel à calcul
         call cgStudy%getField(cgField%result_in)
 !
-! ----  Maillage similaire sd_fond_fissure et sd_resu
+!------ Maillage similaire sd_fond_fissure et sd_resu
         ASSERT(cgTheta%mesh == cgStudy%mesh)
 !
         do i_opt = 1, cgField%nb_option
@@ -106,14 +102,14 @@ implicit none
 !
     end do
 !
-! --- Cleaning
+!-- Cleaning
     call cgField%clean(cgStat)
     call cgTable%clean(cgStat)
 !
 !-- Création de la table container
     call cgExportTableG(cgField, cgTheta, cgTable, cgStat)
 !
-! --- Print statistics
+!-- Print statistics
     call cgStat%finish()
     if(cgStat%level_info > 1) then
         call cgStat%print()

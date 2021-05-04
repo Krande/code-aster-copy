@@ -379,7 +379,7 @@ contains
 !   In this     : calG field
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ier, ifm, jopt, nbropt
+        integer :: ier, ifm, nbropt
         character(len=3) :: repk
         character(len=16) :: k16bid
         character(len=19) :: lisopt
@@ -445,11 +445,8 @@ contains
 ! --- if ELAS_INCR
 !
         if(this%l_incr) then
-            lisopt = '&&OP0027.LISOPT'
-            nbropt = 2
-            call wkvect(lisopt, 'V V K16', nbropt, jopt)
-            zk16(jopt) = 'VARI_ELNO'
-            zk16(jopt+1) = 'EPSP_ELNO'
+            lisopt = ' '
+            nbropt = 0
             call ccbcop(this%result_in, this%result_out, this%list_nume_name,&
                         this%nb_nume, lisopt, nbropt)
         end if

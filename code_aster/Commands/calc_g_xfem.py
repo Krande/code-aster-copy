@@ -91,4 +91,4 @@ def calc_g_xfem_with_co(self, **args):
     return _table_g_xfem
 
 
-CALC_G_XFEM = UserMacro("CALC_G_XFEM2", calc_g_xfem_cata, calc_g_xfem_with_co)
+CALC_G_XFEM = UserMacro("CALC_G_XFEM", calc_g_xfem_cata, calc_g_xfem_with_co)

@@ -76,7 +76,7 @@ use calcG_type
     character(len=19) :: chrota, chpesa, cf2d3d, chpres, chvolu, cf1d2d, chepsi
     character(len=19) :: chvarc, chvref, chsdeg, ligrmo, chslag
     character(len=24) :: chsigi, celmod, sigelno, chtime, chpuls
-    character(len=24) :: chgeom, chsig, chepsp, chvari, chgtheta
+    character(len=24) :: chgeom, chsig, chgtheta
     character(len=24) :: pavolu, papres, pa2d3d, pepsin, pa1d2d
     character(len=24) :: lchin(50), lchout(1)
     aster_logical     :: lfonc
@@ -144,8 +144,6 @@ use calcG_type
         endif
 !
         call rsexch('F', cgField%result_in, 'SIEF_ELGA', cgStudy%nume_ordre, chsig, iret)
-        call rsexch('F', cgField%result_out, 'EPSP_ELNO', cgStudy%nume_ordre, chepsp, iret)
-        call rsexch('F', cgField%result_out, 'VARI_ELNO', cgStudy%nume_ordre, chvari, iret)
     endif
 !
 !   Recuperation de l'etat initial
@@ -341,11 +339,7 @@ use calcG_type
             if (opti .eq. 'CALCH_G_F' .or. opti .eq. 'CALCH_G') then
                 lpain(nchin+1) = 'PCONTRR'
                 lchin(nchin+1) = chsig
-                lpain(nchin+2) = 'PDEFOPL'
-                lchin(nchin+2) = chepsp
-                lpain(nchin+3) = 'PVARIPR'
-                lchin(nchin+3) = chvari
-                nchin = nchin + 3
+                nchin = nchin + 1
             endif
         endif
 !

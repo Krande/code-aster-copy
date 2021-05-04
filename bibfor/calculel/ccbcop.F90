@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -161,7 +161,10 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
         call jedetr(nompar)
     endif
 !
-    call jeveuo(lisopt, 'L', jopt)
+    call jeexin(lisopt, iret)
+    if(iret .ne. 0) then
+        call jeveuo(lisopt, 'L', jopt)
+    end if
 !
 !     VERIFICATION DE LA PRESENCE D'UN EXCIT DANS LE FICHIER
 !     DE COMMANDE OU DES CHARGES DANS LA SD RESULTAT

@@ -26,10 +26,10 @@ subroutine te0222(option, nomte)
 !
 !      ELEMENTS ISOPARAMETRIQUES 2D/3D
 !
-!      OPTION : 'CALCH_G'          (LOCAL,CHARGES REELLES)
-!               'CALCH_G_F'        (LOCAL,CHARGES FONCTIONS)
-!               'CALCH_K_G'        (LOCAL,CHARGES REELLES)
-!               'CALCH_K_G_F'      (LOCAL,CHARGES FONCTIONS)
+!      OPTION : 'CALC_G'          (LOCAL,CHARGES REELLES)
+!               'CALC_G_F'        (LOCAL,CHARGES FONCTIONS)
+!               'CALC_K_G'        (LOCAL,CHARGES REELLES)
+!               'CALC_K_G_F'      (LOCAL,CHARGES FONCTIONS)
 !
 ! ENTREES  ---> OPTION : OPTION DE CALCUL
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
@@ -41,40 +41,44 @@ use Behaviour_module
 !
 implicit none
 !
+#include "asterc/r8prem.h"
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/chauxi.h"
+#include "asterfort/assert.h"
 #include "asterfort/cgverho.h"
+#include "asterfort/chauxi.h"
 #include "asterfort/coor_cyl.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
-#include "asterfort/gbilin.h"
 #include "asterfort/gbil3d.h"
+#include "asterfort/gbilin.h"
 #include "asterfort/jevech.h"
-#include "jeveux.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nmelnl.h"
 #include "asterfort/nmgeom.h"
 #include "asterfort/nmplru.h"
-#include "asterc/r8prem.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
+#include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/teattr.h"
 #include "asterfort/thetapdg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
+#include "jeveux.h"
 !
 ! =====================================================================
 !                       DECLARATION DES VARIABLES
 ! =====================================================================
 !
     type(Behaviour_Integ) :: BEHinteg
+!
+    real(kind=8), parameter :: rac2 = sqrt(2.d0)
+    character(len=16), parameter :: oprupt = 'RUPTURE'
+    character(len=16), parameter :: nomres(4) = ['E    ', 'NU   ', 'ALPHA', 'RHO  ']
 !
     integer           :: i, j, k, j1, j2, m, kk, l
     integer           :: ier, icodre(4), kp, ncmp
@@ -92,7 +96,7 @@ implicit none
     real(kind=8)      :: prod, prod1, prod2, prod3, prod4, puls
     real(kind=8)      :: dtdm(3, 4), dfdm(3,4), dudm(3,4), dvdm(3,4)
     real(kind=8)      :: rbid, rho, om, omo, epsref(6), depsin(6,3), u1(2), u2(2)
-    real(kind=8)      :: tgd(20), nu, rac2, eps(6), epsin(6), epsp(6)
+    real(kind=8)      :: tgd(20), nu, eps(6), epsin(6), epsp(6)
     real(kind=8)      :: tgdm(3), sr(3,3), sigl(6), sigin(6), r_axi
     real(kind=8)      :: c1, c2, c3, k1, k2, k3, guv1, guv2, guv3
     real(kind=8)      :: p(3,3), invp(3,3), du1dm(3,4), du2dm(3,4), du3dm(3,4)
@@ -101,7 +105,7 @@ implicit none
     real(kind=8)      :: ttrgv, ttrg, u1l(3), u2l(3), u3l(3), tgvdm(3)
     character(len=8)  :: typmod(2), nompar(4), discr
     character(len=4)  :: fami
-    character(len=16) :: nomte, option, compor(4), phenom, oprupt, nomres(4)
+    character(len=16) :: nomte, option, compor(4), phenom
 !
     aster_logical :: axi, cp, fonc, epsini, grand, incr, notelas, lcour, l_not_zero
 !
@@ -136,29 +140,20 @@ implicit none
     k1 = 0.d0
     k2 = 0.d0
     k3 = 0.d0
-    rac2 = sqrt(2.d0)
     ivites = 0
     iaccel = 0
     nompar(:) = ' '
-    epsini = .false.
-    axi = .false.
-    cp = .false.
-    if (ndim .eq. 2) then
-        lcour = .false.
+    epsini = ASTER_FALSE
+    axi = ASTER_FALSE
+    cp = ASTER_FALSE
+    if (ndim == 2) then
+        lcour = ASTER_FALSE
     else
-        lcour = .true.
+        lcour = ASTER_TRUE
     endif
     typmod(1) = '3D'
     typmod(2) = ' '
-    oprupt    = 'RUPTURE'
-    nomres(1) = 'E'
-    nomres(2) = 'NU'
-    nomres(3) = 'ALPHA'
-    nomres(4) = 'RHO'
     discr = ' '
-!
-!-- Maillage quadratique ou linéaire
-!    call teattr('S','TYPMA',typma, iret)
 !
 !-- Nombre de composantes des tenseurs
     ncmp = 2*ndim
@@ -170,13 +165,13 @@ implicit none
     AS_ALLOCATE(vr=ffp, size= nno)
 !
 !-- Cas 2D
-    if (ndim .eq. 2) then
+    if (ndim == 2) then
         if (lteatt('AXIS','OUI')) then
             typmod(1) = 'AXIS'
-            axi = .true.
+            axi = ASTER_TRUE
         else if (lteatt('C_PLAN','OUI')) then
             typmod(1) = 'C_PLAN'
-            cp = .true.
+            cp = ASTER_TRUE
         else if (lteatt('D_PLAN','OUI')) then
             typmod(1) = 'D_PLAN'
         endif
@@ -193,11 +188,11 @@ implicit none
     call jevech('PGTHETA', 'E', igthet) ! champ de sortie
 !
 !   Recuperation de DEG si LEGENDRE ou abscisse si LAGRANGE
-    if (ndim .eq. 3) then
+    if (ndim == 3) then
 !
         call tecach('ONO', 'PDEG', 'L', iret, iad=ideg)
 !
-        if (iret .eq. 0 ) then
+        if (iret == 0 ) then
             discr = "LEGENDRE"
         else
             discr = "LINEAIRE"
@@ -215,7 +210,7 @@ implicit none
         thet = zr(ithet-1+6*(i-1)+1)
         if (thet .lt. epsi) compt = compt+1
     end do
-    if (compt .eq. nno) goto 999
+    if (compt == nno) goto 999
 !
     compt = 0
     if (discr == "LINEAIRE" ) then
@@ -232,7 +227,7 @@ implicit none
                 if (absno .ge. zr(ilag) .and. absno .lt. zr(ilag+2)) compt = compt+1
             endif
         end do
-        if (compt .eq. 0) goto 999
+        if (compt == 0) goto 999
     endif
 !
 ! =====================================================================
@@ -243,9 +238,9 @@ implicit none
     call jevech('PDEPLAR', 'L', idepl)
     call jevech('PMATERC', 'L', imate)
     call jevech('PCOMPOR', 'L', icomp)
-    if (option .eq. 'CALCH_K_G' .or. option .eq. 'CALCH_K_G_F') then
+    if (option == 'CALCH_K_G' .or. option == 'CALCH_K_G_F') then
         call jevech('PBASLOR', 'L', ibalo)
-        if (ndim .eq. 3) then
+        if (ndim == 3) then
             call jevech('PCOURB', 'L', icour)
         endif
 !------ Verification coherence RHO <-> PESANTEUR, ROTATION, PULSATION
@@ -256,11 +251,11 @@ implicit none
 !
 !-- Recuperation du champ local (carte) associe au pre-epsi
 !-- Ce champ est issu d un chargement pre epsi
-    if ( option .eq. 'CALCH_G_F' .or. option .eq. 'CALCH_K_G_F' ) then
-        fonc = .true.
+    if ( option == 'CALCH_G_F' .or. option == 'CALCH_K_G_F' ) then
+        fonc = ASTER_TRUE
         call jevech('PFFVOLU', 'L', iforf)
         call jevech('PTEMPSR', 'L', itemps)
-        if (ndim .eq. 3) then
+        if (ndim == 3) then
             nompar(1) = 'X'
             nompar(2) = 'Y'
             nompar(3) = 'Z'
@@ -274,20 +269,16 @@ implicit none
         endif
         call tecach('ONO', 'PEPSINF', 'L', iret, iad=iepsf)
         if (iepsf .ne. 0) then
-            epsini = .true.
-            do i = 1, ncmp*nno
-               epsino(i) = 0.d0
-            end do
+            epsini = ASTER_TRUE
+            epsino(1:ncmp*nno) = 0.d0
         endif
     else
-        fonc = .false.
+        fonc = ASTER_FALSE
         call jevech('PFRVOLU', 'L', iforc)
         call tecach('ONO', 'PEPSINR', 'L', iret, iad=iepsr)
         if (iepsr .ne. 0) then
-            epsini = .true.
-            do i = 1, ncmp*nno
-               epsino(i) = 0.d0
-            end do
+            epsini = ASTER_TRUE
+            epsino(1:ncmp*nno) = 0.d0
         endif
     endif
 !
@@ -295,15 +286,15 @@ implicit none
     do i = 1, 4
         compor(i)= zk16(icomp+i-1)
     end do
-    grand = compor(3).eq.'GROT_GDEP'
-    incr = compor(4)(1:9).eq.'COMP_INCR'
+    grand = compor(3)=='GROT_GDEP'
+    incr = compor(4)(1:9)=='COMP_INCR'
     notelas = compor(1).ne.'ELAS'
 !
     call tecach('ONO', 'PPESANR', 'L', iret, iad=ipesa)
     call tecach('ONO', 'PROTATR', 'L', iret, iad=irota)
     call tecach('ONO', 'PSIGINR', 'L', iret, iad=isigi)
 !
-    if (option .eq. 'CALCH_G' .or. option .eq. 'CALCH_G_F') then
+    if (option == 'CALCH_G' .or. option == 'CALCH_G_F') then
         call tecach('ONO', 'PVITESS', 'L', iret, iad=ivites)
         call tecach('ONO', 'PACCELE', 'L', iret, iad=iaccel)
         if (incr) then
@@ -320,7 +311,7 @@ implicit none
             end if
         endif
 !       Pas de comportement incrémentale avec option K
-        incr = .FALSE.
+        incr = ASTER_FALSE
 !
 !------ Récupération de la pulsation
         call tecach('ONO', 'PPULPRO', 'L', iret, iad=ipuls)
@@ -369,7 +360,7 @@ implicit none
                 do j = 1, 3
                     epsino(ncmp* (i-1)+j) = zr(iepsr+ncmp* (i-1)+j-1)
                 end do
-                if (ndim .eq. 3) then
+                if (ndim == 3) then
                     do j = 1, 3
                         epsino(ncmp* (i-1)+j+3) = zr(iepsr+ncmp* (i-1)+j-1+3)*rac2
                     enddo
@@ -430,7 +421,7 @@ implicit none
 !-- Recuperation aux noeuds
     do kp = 1, nno
         call rcvarc(' ', 'TEMP', '+', 'NOEU', kp, 1, tgd(kp), ireth)
-        if (ireth .eq. 1) tgd(kp) = 0.d0
+        if (ireth == 1) tgd(kp) = 0.d0
     end do
 !
 !-- Recuperation aux PDG
@@ -451,39 +442,29 @@ implicit none
         !              INITIALISATION
         ! ===========================================
         l = (kp-1)*nno
-        do i = 1, 3
-            tgdm(i)   = 0.d0
-            accele(i) = 0.d0
-            tgvdm(i) = 0.d0
-            do j = 1, 3
-                sr(i,j) = 0.d0
-            end do
-            do j = 1, 4
-                dudm(i,j) = 0.d0
-                du1dm(i,j)= 0.d0
-                du2dm(i,j)= 0.d0
-                du3dm(i,j)= 0.d0
-                dvdm(i,j) = 0.d0
-                dtdm(i,j) = 0.d0
-                dfdm(i,j) = 0.d0
-                dfvdm(i,j) = 0.d0
-            end do
-        end do
-        do i = 1, 6
-            sigl (i) = 0.d0
-            sigin(i) = 0.d0
-            epsin(i) = 0.d0
-            epsp(i)  = 0.d0
-            eps(i)   = 0.d0
-            epsref(i)= 0.d0
-            do j = 1, 3
-                dsigin(i,j) = 0.d0
-                depsin(i,j) = 0.d0
-            end do
-        end do
+        tgdm(:)   = 0.d0
+        accele(:) = 0.d0
+        tgvdm(:)  = 0.d0
+        sr(:,:)   = 0.d0
+        dudm(:,:) = 0.d0
+        du1dm(:,:)= 0.d0
+        du2dm(:,:)= 0.d0
+        du3dm(:,:)= 0.d0
+        dvdm(:,:) = 0.d0
+        dtdm(:,:) = 0.d0
+        dfdm(:,:) = 0.d0
+        dfvdm(:,:)= 0.d0
+        sigl (:) = 0.d0
+        sigin(:) = 0.d0
+        epsin(:) = 0.d0
+        epsp(:)  = 0.d0
+        eps(:)   = 0.d0
+        epsref(:)= 0.d0
+        dsigin(:,:) = 0.d0
+        depsin(:,:) = 0.d0
         p(:,:) = 0.d0
         invp(:,:) = 0.d0
-        courb (:,:,:) = 0.d0
+        courb(:,:,:) = 0.d0
         guv1 = 0.d0
         guv2 = 0.d0
         guv3 = 0.d0
@@ -493,14 +474,14 @@ implicit none
         !       CALCUL DES ELEMENTS GEOMETRIQUES
         ! ===========================================
 !
-        if (ndim .eq. 2) then
+        if (ndim == 2) then
             call nmgeom(ndim, nno, axi, grand, zr(igeom),&
                         kp, ipoids, ivf, idfde, zr(idepl),&
-                        .true._1, poids, dfdi, f, eps, r_axi)
+                        ASTER_TRUE, poids, dfdi, f, eps, r_axi)
         else
-            call nmgeom(ndim, nno, .false._1, grand, zr(igeom),&
+            call nmgeom(ndim, nno, ASTER_FALSE, grand, zr(igeom),&
                         kp, ipoids, ivf, idfde, zr(idepl),&
-                        .true._1, poids, dfdi, f, eps, rbid)
+                        ASTER_TRUE, poids, dfdi, f, eps, rbid)
         endif
         ! ===========================================
         !      CALCULS AUX POINTS DE GAUSS
@@ -513,7 +494,7 @@ implicit none
         do i = 1, nno
             der(1) = dfdi(i)
             der(2) = dfdi(i+nno)
-            if (ndim .eq. 3) der(3) = dfdi(i+2*nno)
+            if (ndim == 3) der(3) = dfdi(i+2*nno)
             der(4) = zr(ivf+l+i-1)
             do j = 1, ndim
                 tgdm(j) = tgdm(j) + tgd(i)*der(j)
@@ -534,7 +515,7 @@ implicit none
         end do
 !
 !------ Calcul de theta et de son gadient aux points de gauss : DTDM
-        if (ndim .eq. 2) then
+        if (ndim == 2) then
 !
             call thetapdg(ndim, nno, discr, &
                           zr(ivf + l - 1 + 1:ivf + l - 1 + nno), &
@@ -578,7 +559,7 @@ implicit none
             do i = 1, nno
                 der(1) = dfdi(i)
                 der(2) = dfdi(i+nno)
-                if (ndim .eq. 3) der(3) = dfdi(i+2*nno)
+                if (ndim == 3) der(3) = dfdi(i+2*nno)
                 der(4) = zr(ivf+l+i-1)
                 do j = 1, ncmp
                     epsin(j) = epsin(j) + epsino(ncmp* (i-1)+j)*der(4)
@@ -608,7 +589,7 @@ implicit none
             do i = 1, 3
                 sigl(i) = zr(isigm+ncmp* (kp-1)+i-1)
             end do
-            if (ndim .eq. 3) then
+            if (ndim == 3) then
                 do i = 1, 3
                     sigl(i+3) = zr(isigm+ncmp* (kp-1)+i-1+3)*rac2
                 enddo
@@ -629,12 +610,12 @@ implicit none
                         oprupt, eps, sigl, rbid, dsidep,&
                         energi)
             call tecach('NNO', 'PCONTGR', 'L', iret, iad=isigm)
-            if (iret .eq. 0) then
+            if (iret == 0) then
                 call jevech('PCONTGR', 'L', isigm)
                 do i = 1, 3
                     sigl(i) = zr(isigm+ncmp* (kp-1)+i-1)
                 end do
-                if (ndim .eq. 3) then
+                if (ndim == 3) then
                     do i = 1, 3
                         sigl(i+3) = zr(isigm+ncmp* (kp-1)+i-1+3)*rac2
                     enddo
@@ -669,7 +650,7 @@ implicit none
                     ' ', phenom, 0, ' ', [0.d0],&
                     4, nomres, valres, icodre, 0)
 !
-        ASSERT(icodre(1)+icodre(2).eq.0)
+        ASSERT(icodre(1)+icodre(2)==0)
 !
         if (icodre(3) .ne. 0) then
             ASSERT(iret.ne.0)
@@ -690,7 +671,7 @@ implicit none
         k3a = alpha * e / (1.d0-2.d0*nu)
         ttrg = tpg(kp) - tref
 !
-        if (ndim .eq.3 .or. lteatt('D_PLAN','OUI') .or. lteatt('AXIS','OUI') ) then
+        if (ndim ==3 .or. lteatt('D_PLAN','OUI') .or. lteatt('AXIS','OUI') ) then
             ka = 3.d0-4.d0*nu
             coeff_K1K2 = e/(1.d0-nu*nu)
             coeff_K3 = 2.d0 * mu
@@ -718,7 +699,7 @@ implicit none
             do i = 1, nno
                 der(1) = dfdi(i)
                 der(2) = dfdi(i+nno)
-                if (ndim .eq. 3) der(3) = dfdi(i+2*nno)
+                if (ndim == 3) der(3) = dfdi(i+2*nno)
                 der(4) = zr(ivf+l+i-1)
 !
 !-------------- Calcul de sigma initial
@@ -746,7 +727,7 @@ implicit none
             epsref(2)=-(1.d0/e)*(sigin(2)-(nu*(sigin(3)+sigin(1))))
             epsref(3)=-(1.d0/e)*(sigin(3)-(nu*(sigin(1)+sigin(2))))
             epsref(4)=-(1.d0/mu)*sigin(4)
-            if (ndim .eq. 3) then
+            if (ndim == 3) then
                 epsref(5)=-(1.d0/mu)*sigin(5)
                 epsref(6)=-(1.d0/mu)*sigin(6)
             endif
@@ -802,7 +783,7 @@ implicit none
         !               -(D(ENER)/DT)(GRAD(T).THETA)
         ! ===========================================================
 !
-        if (ireth .eq. 0) then
+        if (ireth == 0) then
             prod = 0.d0
             do i = 1, ndim
                 prod = prod + tgdm(i)*dtdm(i,4)
@@ -851,7 +832,7 @@ implicit none
         !         UTILISATION DE LA FORME BILINEAIRE
         ! ===========================================================
 !
-        if ( option .eq. 'CALCH_K_G' .or. option .eq. 'CALCH_K_G_F' ) then
+        if ( option == 'CALCH_K_G' .or. option == 'CALCH_K_G_F' ) then
 !
 !---------- Base locale associée au PDG KP
             do i = 1, nno
@@ -905,7 +886,7 @@ implicit none
             ! ======================
             !         CAS 3D
             ! ======================
-            if (ndim .eq. 3) then
+            if (ndim == 3) then
 !
                 call gbil3d(dudm, du1dm, dtdm, dfdm, dfvdm,&
                             tgdm, tgvdm, ttrg, ttrgv, poids, sigin,&
