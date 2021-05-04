@@ -352,17 +352,15 @@ def combinaison_charge_ops(self, MODELE_MECA, BLOC, EXCIT_MECA, CARA_ELEM_MECA, 
 
     #--------------------------------------------------------------------------------------
     #                         Calculs des efforts et des contraintes pour chaque cas
-    #                         les déplacements sont calculés par défaut
-    #-------------------------------------------------------------------------------------- 
-    for ii in range(nb_char - nb_char_ther):
-        calc[ii]= CALC_CHAMP(reuse=calc[ii], RESULTAT=calc[ii], CONTRAINTE=('EFGE_ELNO', 'EFGE_NOEU', 'SIEF_ELNO'))
-
+    #                              les déplacements sont calculés par défaut
     #--------------------------------------------------------------------------------------
-    #                   Calculs des champs demandés dans le dictionnaire table_resu
-    #-------------------------------------------------------------------------------------- 
-    type_champ = {'DEPL': 'NOEU_DEPL_R', 'EFGE_NOEU': 'NOEU_SIEF_R', 'SIEF_ELNO': 'ELNO_SIEF_R'}
-    nom_champ= {'DEPL': 'depl', 'EFGE_NOEU': 'effort', 'SIEF_ELNO': 'contrainte'}
-    nom_table= {'DEPL': 'deplcm', 'EFGE_NOEU': 'effcm', 'SIEF_ELNO': 'contcm'}
+
+    for ii in range(nb_char - nb_char_ther):
+        calc[ii]= CALC_CHAMP(reuse=calc[ii], RESULTAT=calc[ii], CONTRAINTE=('EFGE_ELNO', 'EFGE_NOEU', 'SIEF_ELNO',), FORCE=('FORC_NODA',))
+        
+    type_champ = {'DEPL': 'NOEU_DEPL_R', 'EFGE_NOEU': 'NOEU_SIEF_R', 'SIEF_ELNO': 'ELNO_SIEF_R', 'FORC_NODA': 'NOEU_DEPL_R'}
+    nom_champ= {'DEPL': None, 'EFGE_NOEU': None, 'SIEF_ELNO': None, 'FORC_NODA': None}
+    nom_table= {'DEPL': None, 'EFGE_NOEU': None, 'SIEF_ELNO': None, 'FORC_NODA': None}
 
     list_cham = []
     list_cmp = []
@@ -372,7 +370,7 @@ def combinaison_charge_ops(self, MODELE_MECA, BLOC, EXCIT_MECA, CARA_ELEM_MECA, 
             list_cmp.append(CHAM_RESU[ii]["NOM_CMP"])
         else : 
             list_cmp.append('TOUT')
-
+ 
     list_sortie = []
     for cc in range( len(TABLE_RESU) ):
         if TABLE_RESU[cc]['OPTION'] == 'EXTREMA' :

@@ -26,7 +26,7 @@ cata_msg = {
 """),
 
     2: _("""
- La combinaison à la %(i1)d ième ligne dans la table applique plus de 2 chargements thermiques.
+ La combinaison à la ligne %(i1)d dans la table applique plus de 2 chargements thermiques.
  Merci de vérifier votre table des combinaisons.
 """),
 
