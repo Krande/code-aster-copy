@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,9 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-
-# person_in_charge: mathieu.courtois at edf.fr
-# Don't forget to change person in charge in `printKeywordsUsage` function
 
 import os
 import tempfile
@@ -434,9 +431,8 @@ def printKeywordsUsage( commands, fileList=None ):
         lines.append( fmt.format(word, *cmds) )
     print(os.linesep.join(lines))
     if fileList:
-        picline = '# person_in_charge: mathieu.courtois@edf.fr'
         with open(fileList, 'w') as fobj:
-            fobj.write( os.linesep.join([picline] + allKwd) )
+            fobj.write( os.linesep.join(allKwd) )
         line = "\n    {:^60}"
         print(line.format( "*" * 60 ))
         print(line.format( "Nom du fichier à recopier pour mettre à jour vocab01a.34" ))

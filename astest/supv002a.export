@@ -7,3 +7,4 @@ P testlist submit ci verif_interact sequential
 
 F comm supv002a.comm D 1
 F nom supv002a.py D 0
+F libr vocab01a.34 D 34

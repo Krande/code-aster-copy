@@ -321,6 +321,13 @@ def get_personal_dict():
     else:
         raise IOError("no such file: {0}\nAn updated devtools repository is "
                       "required!".format(cata))
+    cata = "fort.34"
+    with open(cata, "r") as fper:
+        lines = fper.read().splitlines() #[1:]
+        words = [i for i in set(re.split("[ _\n]", "\n".join(lines)))
+                 if not re.search("[0-9]", i)]
+    cnt.extend(sorted(words))
+
     cawl = osp.join(dictdir, 'code_aster_dict.aspell.per')
     if osp.exists(cawl):
         # ignore the first line
