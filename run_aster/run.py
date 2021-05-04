@@ -247,7 +247,13 @@ class RunAster:
         else:
             cmd.append(CFG.get("python_interactive", python))
             cmd.append("-i")
-        # remaining arguments are treated for code_aster script
+        # To show executed lines with trace module:
+        # import sys
+        # ign = [sys.prefix, sys.exec_prefix, "$HOME/.local", os.getenv("PYTHONPATH")]
+        # cmd.extend(["-m", "trace", "--trace",
+        #             "--ignore-dir=" + ":".join(ign)])
+        cmd.extend(["-X", "faulthandler"])
+        # remaining arguments are treated by code_aster script
         cmd.append("--")
         cmd.append(commfile)
         if self._test:
