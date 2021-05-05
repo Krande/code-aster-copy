@@ -788,6 +788,22 @@ void DEFPPPP(ASMPI_BCAST_I4, asmpi_bcast_i4, ASTERINTEGER4 *buffer,
 }
 
 /*
+ * Wrappers around MPI_Allgather
+ * Do not check returncode because all errors raise
+ */
+void DEFPPPPP(ASMPI_ALLGATHER_I, asmpi_allgather_i, ASTERINTEGER *sendbuf, ASTERINTEGER4 *sendcnt,
+                ASTERINTEGER *recvbuf, ASTERINTEGER4 *recvcnt,  MPI_Fint *comm) {
+    MPI_Comm mpicom;
+#ifdef ASTER_HAVE_MPI
+    mpicom = MPI_Comm_f2c(*comm);
+    DEBUG_MPI("MPI_Allgather: %d gather integer values by all %s\n", *sendcnt, " ");
+    AS_MPICHECK(MPI_Allgather((void *)sendbuf, *sendcnt, MPI_INTEGER8,
+        (void *)recvbuf, *recvcnt, MPI_INTEGER8, mpicom));
+#endif
+    return;
+}
+
+/*
  * Wrappers around MPI_Scan
  * Do not check returncode because all errors raise
  */
