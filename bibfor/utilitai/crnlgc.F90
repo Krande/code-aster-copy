@@ -18,7 +18,7 @@
 
 subroutine crnlgc(numddl)
     implicit none
-#include "asterc/asmpi_bcast_i.h"
+#include "asterc/asmpi_allgather_i.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_recv_i.h"
 #include "asterc/asmpi_send_i.h"
@@ -26,8 +26,8 @@ subroutine crnlgc(numddl)
 #include "asterf_config.h"
 #include "asterf_types.h"
 #include "asterf.h"
-#include "asterfort/asmpi_info.h"
 #include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
@@ -47,36 +47,46 @@ subroutine crnlgc(numddl)
 #include "asterfort/jexnum.h"
 #include "asterfort/juveca.h"
 #include "asterfort/utimsd.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 #include "jeveux.h"
 !
     character(len=14) :: numddl
 
 #ifdef ASTER_HAVE_MPI
 !
-    integer :: rang, nbproc, jrefn, jdojoi, nbjoin, iaux, jgraco, nddll
-    integer :: jmasqu, iproc1, iproc2, nbedge, posit, nmatch, icmp, ico2, nbcmp
-    integer :: jtmp, dime, idprn1, idprn2, ntot, jordjo, num, ili, nunoel
+    integer :: rang, nbproc, jrefn, nbjoin, iaux, nddll
+    integer :: iproc1, iproc2, posit, nmatch, icmp, ico2, nbcmp
+    integer :: dime, idprn1, idprn2, ntot, num, ili, nunoel
     integer :: nec, l, numpro, jjoine, jjoinr, nbnoee, jaux, numno1, numno2, iec
     integer :: ncmpmx, iad, jcpnec, jencod, jenvoi1, lgenve1, lgenvr1, poscom, nddld
-    integer :: nbddll, jnequ, jnugll, nddl, jenco2, deccmp, jcpne2
+    integer :: nbddll, jnequ, nddl, jenco2, deccmp, jcpne2
     integer :: jnbddl, decalp, jddlco, posddl, nuddl, inttmp, nbnoer, jrecep1
     integer :: decalm, nbjver, jprddl, jnujoi, cmpteu, lgrcor, jnbjoi, curpos
-    integer :: jdeeq, jmlogl, nuno, ieq, numero_noeud, nb_ddl_envoi, nbddl
-    integer :: ibid, jposdd, nddlg, jenvoi2, jrecep2, jjoin, ijoin, numnoe
+    integer :: jmlogl, nuno, ieq, numero_noeud, nb_ddl_envoi, nbddl
+    integer :: ibid, nddlg, jenvoi2, jrecep2, jjoin, ijoin, numnoe
     integer :: ifm, niv, vali(5), ino, nno, nb_node, nlag
     integer :: lgenve2, lgenvr2, jnujoi1, jnujoi2, iret, iret1, iret2, nlili
     integer(kind=4) :: un
     real(kind=8) :: dx, dy, dz
     integer(kind=4) :: iaux4, num4, numpr4, n4e, n4r
-    mpi_int :: mrank, msize, mpicou
+    mpi_int :: mrank, mnbproc, mpicou
     integer, pointer :: v_noex(:) => null()
+    integer, pointer :: v_nugll(:) => null()
+    integer, pointer :: v_posdd(:) => null()
+    integer, pointer :: v_dojoin(:) => null()
+    integer, pointer :: v_graloc(:) => null()
+    integer, pointer :: v_gracom(:) => null()
+    integer, pointer :: v_mask(:) => null()
+    integer, pointer :: v_tmp(:) => null()
+    integer, pointer :: v_ordjoi(:) => null()
+    integer, pointer :: v_nbjo(:) => null()
+    integer, pointer :: v_deeq(:) => null()
 !
     character(len=4) :: chnbjo
-    character(len=8) :: noma, k8bid, nomgdr
+    character(len=8) :: mesh, k8bid, nomgdr
     character(len=19) :: nomlig
-    character(len=24) :: nojoie, nojoir, nomtmp, noma24, nonulg, join
+    character(len=24) :: nojoie, nojoir, nomtmp, mesh24, nonulg, join
 !
 !----------------------------------------------------------------------
     integer :: zzprno
@@ -97,94 +107,75 @@ subroutine crnlgc(numddl)
     call infniv(ifm,niv)
 !
     call asmpi_comm('GET', mpicou)
-    call asmpi_info(rank = mrank, size = msize)
+    call asmpi_info(rank = mrank, size = mnbproc)
     rang = to_aster_int(mrank)
-    nbproc = to_aster_int(msize)
+    nbproc = to_aster_int(mnbproc)
     ASSERT(nbproc.lt.9999)
 
 !   RECUPERATION DU NOM DU MAILLAGE DANS LE BUT D'OBTENIR LE JOINT
     call jeveuo(numddl//'.NUME.REFN', 'L', jrefn)
-    noma = zk24(jrefn)
+    mesh = zk24(jrefn)
     nomgdr = zk24(jrefn + 1)
 
-    call jeveuo(numddl//'.NUME.NULG', 'E', jnugll)
-    call jeveuo(numddl//'.NUME.PDDL', 'E', jposdd)
+    call jeveuo(numddl//'.NUME.NULG', 'E', vi=v_nugll)
+    call jeveuo(numddl//'.NUME.PDDL', 'E', vi=v_posdd)
 
-    call wkvect('&&CRNULG.GRAPH_COMM', 'V V I', nbproc*nbproc, jgraco)
+    call wkvect('&&CRNULG.GRAPH_COMM', 'V V I', nbproc*nbproc, vi=v_gracom)
+    call wkvect('&&CRNULG.GRAPH_LOC', 'V V I', nbproc, vi=v_graloc)
 !
+! -- On crée la liste des proc avec lequel rank doit communiquer - 1 si oui
     nbjoin = 0
-    jdojoi = 0
-    call jeexin(noma//'.DOMJOINTS', iret)
+    call jeexin(mesh//'.DOMJOINTS', iret)
     if(iret > 0) then
-        call jeveuo(noma//'.DOMJOINTS', 'L', jdojoi)
-        call jelira(noma//'.DOMJOINTS', 'LONMAX', nbjoin, k8bid)
+        call jeveuo(mesh//'.DOMJOINTS', 'L', vi=v_dojoin)
+        call jelira(mesh//'.DOMJOINTS', 'LONMAX', nbjoin, k8bid)
     !   CREATION DU GRAPH LOCAL
         do iaux = 1, nbjoin
-            zi(jgraco + rang*nbproc + zi(jdojoi + iaux - 1)) = 1
+            v_graloc(v_dojoin(iaux)+1) = 1
         end do
         nbjoin = nbjoin/2
     endif
 
-    n4e = nbproc
 !   ON COMMUNIQUE POUR SAVOIR QUI EST EN RELATION AVEC QUI
-    do iaux = 0, nbproc - 1
-        iaux4 = iaux
-        call asmpi_bcast_i(zi(jgraco+iaux*nbproc), n4e, iaux4, mpicou)
-    end do
-
-    nbedge = 0
-    do iaux = 1, nbproc*nbproc
-       if (zi(jgraco+iaux-1) .eq. 1) nbedge = nbedge+1
-    end do
-    nbedge = nbedge/2
+    call asmpi_allgather_i(v_graloc, mnbproc, v_gracom, mnbproc, mpicou)
 
 !   RECHERCHE DES COUPLAGES MAXIMAUX
-    call wkvect('&&CRNULG.MASQUE', 'V V I', nbproc*nbproc, jmasqu)
-    call wkvect('&&CRNULG.TMP', 'V V I', nbproc, jtmp)
+    call wkvect('&&CRNULG.MASQUE', 'V V I', nbproc*nbproc, vi=v_mask)
     nmatch = 1
-60  continue
 
-    do iproc1 = 0, nbproc - 1
-        do iproc2 = 0, nbproc - 1
-            posit = iproc1*nbproc + iproc2
-            if (zi(jgraco + posit) .eq. 1 .and. zi(jtmp + iproc1) .eq. 0 &
-                .and. zi(jtmp + iproc2) .eq. 0) then
-                zi(jgraco + posit) = 0
-                zi(jmasqu + posit) = nmatch
-                posit = iproc2*nbproc + iproc1
-                zi(jgraco + posit) = 0
-                zi(jmasqu + posit) = nmatch
-                nbedge = nbedge-1
-                zi(jtmp + iproc1) = 1
-                zi(jtmp + iproc2) = 1
+    do iproc1 = 1, nbproc
+        do iproc2 = 1, nbproc
+            posit = (iproc1-1)*nbproc + iproc2
+            if (v_gracom(posit) == 1) then
+                v_gracom(posit) = 0
+                v_mask(posit) = nmatch
+                posit = (iproc2-1)*nbproc + iproc1
+                v_gracom(posit) = 0
+                v_mask(posit) = nmatch
+                nmatch = nmatch + 1
             endif
         end do
     end do
 
-    nmatch = nmatch + 1
-    do iaux = 0, nbproc - 1
-        zi(jtmp + iaux) = 0
-    end do
-    if (nbedge .gt. 0) goto 60
+    call jedetr('&&CRNULG.GRAPH_COMM')
+    call jedetr('&&CRNULG.GRAPH_LOC')
 
     nmatch = nmatch - 1
-    call wkvect('&&CRNULG.ORDJOI', 'V V I', nmatch, jordjo)
-    do iaux = 0, nmatch - 1
-        zi(jordjo + iaux) = -1
-    end do
+    call wkvect('&&CRNULG.ORDJOI', 'V V I', nmatch, vi=v_ordjoi)
+    v_ordjoi(:) = -1
 
     nbjver = 0
     do iaux = 0, nbproc - 1
-       num = zi(jmasqu + rang*nbproc + iaux)
-       ASSERT(num .le. nmatch)
-       if (num .ne. 0) then
-           zi(jordjo + num - 1) = iaux
-           nbjver = nbjver + 1
-       endif
+        num = v_mask(rang*nbproc + iaux + 1)
+        ASSERT(num .le. nmatch)
+        if (num .ne. 0) then
+            v_ordjoi(num) = iaux
+            nbjver = nbjver + 1
+        endif
     end do
     ASSERT(nbjver .eq. nbjoin)
-    call wkvect(numddl//'.NUME.NBJO', 'G V I', 1 + nmatch, jnbjoi)
-    zi(jnbjoi) = nmatch
+    call wkvect(numddl//'.NUME.NBJO', 'G V I', 1 + nmatch, vi=v_nbjo)
+    v_nbjo(1) = nmatch
 
 !     !!!! IL PEUT ETRE INTERESSANT DE STOCKER CES INFOS
 !     !!!! EN CAS DE CONSTRUCTION MULTIPLE DE NUMEDDL
@@ -193,9 +184,9 @@ subroutine crnlgc(numddl)
     call jeveuo(numddl//'.NUME.PRNO', 'E', idprn1)
     call jeveuo(jexatr(numddl//'.NUME.PRNO', 'LONCUM'), 'L', idprn2)
     call jelira(jexnum(numddl//'.NUME.PRNO', 1), 'LONMAX', ntot, k8bid)
-    call jeveuo(numddl//'.NUME.DEEQ', 'L', jdeeq)
+    call jeveuo(numddl//'.NUME.DEEQ', 'L', vi=v_deeq)
 
-    call jeveuo(noma//'.DIME', 'L', dime)
+    call jeveuo(mesh//'.DIME', 'L', dime)
 
 !   !!! VERIFIER QU'IL N'Y A PAS DE MACRO-ELTS
 !   CALCUL DU NOMBRE D'ENTIERS CODES A PARTIR DE LONMAX
@@ -214,14 +205,13 @@ subroutine crnlgc(numddl)
     do iaux = 0, nmatch - 1
 !
 !       RECHERCHE DU JOINT
-        numpro = zi(jordjo + iaux)
-        zi(jnbjoi + iaux + 1) = numpro
+        numpro = v_ordjoi(iaux+1)
+        v_nbjo(iaux + 2) = numpro
         if (numpro .ne. -1) then
-        num = zi(jmasqu + rang*nbproc + numpro)
+        num = v_mask(rang*nbproc + numpro + 1)
         call codent(numpro, 'G', chnbjo)
-        nojoie = noma//'.E'//chnbjo
-        nojoir = noma//'.R'//chnbjo
-        call jeveuo(nojoie, 'L', jjoine)
+        nojoie = mesh//'.E'//chnbjo
+        nojoir = mesh//'.R'//chnbjo
         call jelira(nojoie, 'LONMAX', nbnoee, k8bid)
         call jeveuo(nojoir, 'L', jjoinr)
         call jelira(nojoir, 'LONMAX', nbnoer, k8bid)
@@ -275,7 +265,7 @@ subroutine crnlgc(numddl)
             numno1 = zi(jrecep1 + poscom)
 !
             nddl = zzprno(1, numno1, 1)
-            nddlg = zi(jnugll + nddl - 1)
+            nddlg = v_nugll(nddl)
 !
 !           Recherche des composantes demandees
             do iec = 1, nec
@@ -297,7 +287,7 @@ subroutine crnlgc(numddl)
                 endif
             enddo
         enddo
-        print*, "NBDDL: ", nbddl, zi(jrecep1)
+!
         ASSERT(zi(jrecep1) .eq. nbddl)
         n4e = nbddl
         n4r = nb_ddl_envoi
@@ -319,8 +309,8 @@ subroutine crnlgc(numddl)
             nbcmp = zzprno(1, numno1, 2)
             do icmp = 0, nbcmp - 1
                 ASSERT(zi(jrecep2 + curpos) .ne. -1)
-                zi(jnugll - 1 + nddll + icmp) = zi(jrecep2 + curpos)
-                zi(jposdd - 1 + nddll + icmp) = numpro
+                v_nugll(nddll + icmp) = zi(jrecep2 + curpos)
+                v_posdd(nddll + icmp) = numpro
                 zi(jnujoi2 + curpos) = nddll + icmp
                 curpos = curpos + 1
             enddo
@@ -362,7 +352,7 @@ subroutine crnlgc(numddl)
                             numnoe = -zi(jjoine+jaux-1)
                             ASSERT(zzprno(ili, numnoe, 2).eq.1)
                             nddll = zzprno(ili, numnoe, 1)
-                            zi(jnujoi1+jaux-1) = zi(jnugll - 1 + nddll)
+                            zi(jnujoi1+jaux-1) = v_nugll(nddll)
                         enddo
                         n4e = nbnoee
                     endif
@@ -396,8 +386,8 @@ subroutine crnlgc(numddl)
                             numnoe = -zi(jjoinr+jaux-1)
                             ASSERT(zzprno(ili, numnoe, 2).eq.1)
                             nddll = zzprno(ili, numnoe, 1)
-                            zi(jnugll - 1 + nddll) = zi(jnujoi2+jaux-1)
-                            zi(jposdd - 1 + nddll) = numpro
+                            v_nugll(nddll) = zi(jnujoi2+jaux-1)
+                            v_posdd(nddll) = numpro
                         enddo
                     endif
                     call jedetr('&&CRNUGL.NUM_DDL_GLOB_E')
@@ -414,19 +404,19 @@ subroutine crnlgc(numddl)
 !   NOMBRE DE DDL LOCAUX
     call jeveuo(numddl//'.NUME.NEQU', 'L', jnequ)
     nbddll = zi(jnequ)
-    call jeveuo(noma//'.NOEX', 'L', vi=v_noex)
-    do iaux = 0, nbddll - 1
-        nuno = zi(jdeeq + iaux*2)
+    call jeveuo(mesh//'.NOEX', 'L', vi=v_noex)
+    do iaux = 1, nbddll
+        nuno = v_deeq((iaux-1)*2+1)
         if(nuno.ne.0) then
-            ASSERT(zi(jposdd + iaux) == v_noex(nuno))
+            ASSERT(v_posdd(iaux) == v_noex(nuno))
         else
-            ASSERT(zi(jposdd + iaux) .ne. -1)
+            ASSERT(v_posdd(iaux) .ne. -1)
         end if
     end do
 !
 ! --- Affichage inconnue systeme
     if (niv .ge. 1 ) then
-        call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nb_node)
+        call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_node)
         nno = 0
         do ino = 1, nb_node
             if(v_noex(ino) == rang) then
@@ -454,18 +444,20 @@ subroutine crnlgc(numddl)
 !
 ! --- Pour debuggage en hpc
     if(ASTER_FALSE) then
-        nonulg = noma//'.NULOGL'
+        nonulg = mesh//'.NULOGL'
         call jeveuo(nonulg, 'L', jmlogl)
         do iaux = 0, nbddll - 1
-            nuno = zi(jdeeq + iaux*2)
+            nuno = v_deeq(iaux*2+1)
             if(nuno.ne.0) nuno = zi(jmlogl + nuno - 1) + 1
 ! numero ddl local, numéro noeud local, numéro noeud global, num composante du noeud,
 !            num ddl global, num proc proprio
-            write(130+rang, *) iaux, zi(jdeeq + iaux*2), nuno , zi(jdeeq + iaux*2 + 1), &
-             zi(jnugll + iaux), zi(jposdd + iaux)
+            write(130+rang, *) iaux, v_deeq(iaux*2+1), nuno , v_deeq(iaux*2 + 2), &
+            v_nugll(iaux + 1), v_posdd(1 + iaux)
         end do
         flush(130+rang)
     end if
+!
+    call jedetr('&&CRNULG.ORDJOI')
 !
     call jedema()
 #else
