@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ implicit none
 #include "asterfort/jexnum.h"
 #include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
+#include "asterfort/asmpi_comm_logical.h"
 !
 integer, intent(in) :: iComp
 character(len=8), intent(in) :: model
@@ -165,6 +166,13 @@ aster_logical, intent(out) :: lElasByDefault, lNeedDeborst
 ! - All elements are boundary elements
 !
     lAllCellAreBound = nbCmpAffected .eq. 0
+!
+! - Comm for MPI
+!
+    call asmpi_comm_logical("MPI_LAND", lAllCellAreBound)
+    call asmpi_comm_logical("MPI_LOR", lAtOneCellAffect)
+    call asmpi_comm_logical("MPI_LOR", lNeedDeborst)
+    call asmpi_comm_logical("MPI_LOR", lElasByDefault)
 !
 ! - Error when nothing is affected by the behavior
 !

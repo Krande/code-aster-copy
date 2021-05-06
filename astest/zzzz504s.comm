@@ -1,0 +1,156 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# Le but de ce test est de vérifier quand les joints du maillage n'ont pas de ddl
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+
+MAIL= LIRE_MAILLAGE(FORMAT='MED',
+                       PARTITIONNEUR='PTSCOTCH',
+                       INFO=1,
+                       )
+
+MAT_AUS = DEFI_MATERIAU(ELAS=_F(E=200000.,
+                                NU=0.3, RHO=1100.,
+                               ),
+                        MONO_VISC1=_F(N=11.,
+                                      K=25.,
+                                      C=10000.,
+                                     ),
+                        MONO_ISOT1=_F(R_0=40.,
+                                      Q=160.,
+                                      B=1.5,
+                                      H1=1.,
+                                      H2=1.64,
+                                      H3=0.1,
+                                      H4=12.5,
+                                      H5=1.,
+                                      H6=2.,
+                                     ),
+                        MONO_CINE1=_F(D=400.,
+                                     ),
+                       )
+
+BEHAV_A = DEFI_COMPOR(MONOCRISTAL = _F(MATER=MAT_AUS,
+                                       ECOULEMENT='MONO_VISC1',
+                                       ECRO_ISOT='MONO_ISOT1',
+                                       ECRO_CINE='MONO_CINE1',
+                                          ELAS = 'ELAS',
+                                       FAMI_SYST_GLIS='OCTAEDRIQUE',
+                                      ),
+                     )
+
+
+MAT_FER = DEFI_MATERIAU(ELAS=_F(E=250000.,
+                                NU=0.3, RHO=1000.,
+                               ),
+                        MONO_VISC1=_F(N=10.,
+                                      K=25.,
+                                      C=20000.,
+                                     ),
+                        MONO_ISOT1=_F(R_0=40.,
+                                      Q=160.,
+                                      B=1.5,
+                                      H1=1.,
+                                      H2=1.64,
+                                      H3=0.1,
+                                      H4=12.5,
+                                      H5=1.,
+                                      H6=2.,
+                                     ),
+                        MONO_CINE1=_F(D=500.,
+                                     ),
+                       )
+
+BEHAV_F = DEFI_COMPOR(MONOCRISTAL = _F(MATER=MAT_FER,
+                                       ECOULEMENT='MONO_VISC1',
+                                       ECRO_ISOT='MONO_ISOT1',
+                                       ECRO_CINE='MONO_CINE1',
+                                           ELAS = 'ELAS',
+                                       FAMI_SYST_GLIS='CUBIQUE1',
+                                      ),
+                     )
+
+affectMat = AFFE_MATERIAU(MAILLAGE = MAIL,
+                         AFFE = (
+                                 _F(GROUP_MA = 'S1',
+                                    MATER = MAT_AUS,
+                                   ),
+                                 _F(GROUP_MA = ('S2',"S3","S4"),
+                                    MATER = MAT_FER,
+                                   ),
+                                ),
+                        )
+
+MODT=AFFE_MODELE(MAILLAGE=MAIL,
+                 AFFE=_F(GROUP_MA=('S1', 'S2', 'S3', 'S4'),
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='D_PLAN',),)
+
+
+charCine = AFFE_CHAR_CINE(MODELE=MODT, MECA_IMPO=(_F(GROUP_MA=("Bas1","Bas4"), DX=0., DY=0.)))
+
+CHT1 = AFFE_CHAR_MECA(MODELE=MODT,
+                      PESANTEUR=_F(GRAVITE=.2,
+                                   DIRECTION=(0.0, -1.0, 0.0),),
+                      INFO=1,
+                      VERI_NORM='NON',)
+
+LINS_USR = DEFI_LIST_REEL(VALE=(0.0,0.5,1.0))
+
+LINST  = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LINS_USR,),)
+
+RAMP = DEFI_FONCTION(NOM_PARA = 'INST',
+                     VALE = (0.,0.,1.0,1,
+                            ),
+                     PROL_DROITE = 'EXCLU',
+                     PROL_GAUCHE = 'EXCLU',
+                    )
+
+RESU=STAT_NON_LINE( MODELE=MODT,
+                        CHAM_MATER=affectMat,
+                        COMPORTEMENT = (_F(RELATION="MONOCRISTAL", GROUP_MA='S1', COMPOR=BEHAV_A),
+                        _F(RELATION="MONOCRISTAL", GROUP_MA=('S2','S3','S4'), COMPOR=BEHAV_F),),
+                        EXCIT  =(_F( CHARGE = CHT1, FONC_MULT = RAMP,),
+                                _F( CHARGE = charCine, FONC_MULT = RAMP,)),
+                        INCREMENT = _F(LIST_INST = LINST
+                                   ),
+                       )
+
+# la valeur de référence vient de la version std du code
+TEST_RESU(RESU=(_F(INST=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-0.0015609540723286568,
+                   VALE_REFE=-0.0015609540723286568,
+                   GROUP_NO='NH12',),
+                _F(INST=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-0.001325764112854702,
+                   VALE_REFE=-0.001325764112854702,
+                   GROUP_NO='NH34',),
+                ),
+          )
+FIN()
