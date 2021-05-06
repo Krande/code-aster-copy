@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -139,6 +139,8 @@ class ParameterInt(AbstractParameter):
     def _convert(value):
         if isinstance(value, (list, tuple)):
             value = " ".join([str(i) for i in value])
+        if value == "":
+            value = 0
         return int(float(value))
 
 
@@ -149,6 +151,8 @@ class ParameterFloat(AbstractParameter):
     def _convert(value):
         if isinstance(value, (list, tuple)):
             value = " ".join([str(i) for i in value])
+        if value == "":
+            value = 0.
         return float(value)
 
 
@@ -160,8 +164,8 @@ class ParameterListStr(AbstractParameter):
         if not isinstance(value, (list, tuple)):
             value = [value]
         value = [str(i) for i in value]
-
         return value
+
 
 class ParameterDictStr(AbstractParameter):
     """A parameter defined in a Export object of type dict of strings."""
