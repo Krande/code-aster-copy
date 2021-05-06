@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist submit ci verification parallel
 
 F comm xxParallelLinearMechanics001c.py D 1
-R nom  xxParallelMesh001a D 0
+R nom  mesh004a D 0

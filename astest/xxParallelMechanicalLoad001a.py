@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ rank = code_aster.getMPIRank()
 if (parallel):
     rank=code_aster.getMPIRank()
     pMesh2 = code_aster.ParallelMesh()
-    pMesh2.readMedFile("xxParallelMesh003a/%d.med"%rank, True )
+    pMesh2.readMedFile("mesh004c/%d.med"%rank, True )
        #os.system('echo "-mat_view :/tmp/par.txt:ascii_matlab " > ~/.petscrc')
        #os.system('echo "-ksp_view_rhs ascii:/tmp/rhs_par.txt " >> ~/.petscrc')
        #os.system('echo "-ksp_view_solution ascii:/tmp/sol_par.txt  " >> ~/.petscrc')

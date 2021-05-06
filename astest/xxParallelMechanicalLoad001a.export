@@ -7,4 +7,4 @@ P testlist submit ci verification parallel
 
 F comm xxParallelMechanicalLoad001a.py D 1
 F nom xxParallelMechanicalLoad001a.med D 0
-R nom xxParallelMesh003a D 0
+R nom mesh004c D 0

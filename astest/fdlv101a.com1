@@ -1,0 +1,50 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+
+import code_aster
+from code_aster.Commands import *
+
+POURSUITE(CODE='OUI', DEBUG=_F(SDVERI='OUI'),)
+
+
+test = code_aster.TestCase()
+
+test.assertEqual( NUSTR.getComponents(), ['DX', 'DY', 'LAGR'] )
+for row in NUSTR.getRowsAssociatedToLagrangeMultipliers():
+   test.assertEqual( NUSTR.getComponentAssociatedToRow(row), 'DY' )
+   test.assertTrue( int(NUSTR.getNodeAssociatedToRow(row) < 0 ) )
+for row in NUSTR.getRowsAssociatedToPhysicalDofs():
+   test.assertTrue( NUSTR.getComponentAssociatedToRow(row) in ['DX','DY'])
+test.assertEqual( NUSTR.getNodeAssociatedToRow(1), -1 )
+test.assertEqual( NUSTR.getRowAssociatedToNodeComponent(1,'DX'), 2)
+test.assertEqual( len(NUSTR.getRowsAssociatedToLagrangeMultipliers()), 512)
+test.assertEqual( len(NUSTR.getRowsAssociatedToPhysicalDofs()), 514)
+test.assertTrue( NUSTR.useLagrangeMultipliers() )
+test.assertFalse( NUSTR.useSingleLagrangeMultipliers() )
+test.assertEqual( NUSTR.getPhysicalQuantity(), 'DEPL_R')
+
+test.assertRaises( RuntimeError, lambda: list(NUSTR.getComponentAssociatedToRow(0)) )
+test.assertRaises( RuntimeError, lambda: list(NUSTR.getComponentAssociatedToRow(999999)) )
+test.assertRaises( RuntimeError, lambda: list(NUSTR.getRowAssociatedToNodeComponent(1,'XXXXX') ))
+test.assertRaises( RuntimeError, lambda: list(NUSTR.getRowAssociatedToNodeComponent(999999,'DX') ))
+
+test.printSummary()
+
+FIN()
