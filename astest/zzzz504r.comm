@@ -1,0 +1,89 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# Le but de ce test est de vérifier quand les joints du maillage n'ont pas
+# tout les ddl possible
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+
+MAIL= LIRE_MAILLAGE(FORMAT='MED',
+                       PARTITIONNEUR='PTSCOTCH',
+                       INFO=1,
+                       )
+
+MATER=DEFI_MATERIAU(ELAS=_F(E=10000.0,
+                            NU=0.,
+                            RHO=1.0,),
+                            )
+
+affectMat =AFFE_MATERIAU( MAILLAGE=MAIL,
+                        AFFE=(_F(  TOUT='OUI',
+                                   MATER    = MATER),
+                      ),)
+
+MODT=AFFE_MODELE(MAILLAGE=MAIL,
+                 AFFE=(_F(GROUP_MA=('S1','S2','S3'),
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='D_PLAN',),
+                       _F(GROUP_MA=('S4'),
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='D_PLAN_INCO_UPG',),))
+
+
+charCine = AFFE_CHAR_CINE(MODELE=MODT, MECA_IMPO=(_F(GROUP_MA=("Bas1","Bas4"), DX=0., DY=0.)))
+
+CHT1 = AFFE_CHAR_MECA(MODELE=MODT,
+                      PESANTEUR=_F(GRAVITE=1.0,
+                                   DIRECTION=(0.0, -1.0, 0.0),),
+                      INFO=1,
+                      VERI_NORM='NON',)
+
+RESU=MECA_STATIQUE( MODELE=MODT,
+                        CHAM_MATER=affectMat,
+                        EXCIT  =(_F( CHARGE = CHT1), _F( CHARGE = charCine)),
+                       )
+
+# la valeur de référence vient de la version std du code
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-0.00014507700867149846,
+                   VALE_REFE=-0.00014507700867149846,
+                   GROUP_NO='NH12',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-0.0001441387533446719,
+                   VALE_REFE=-0.0001441387533446719,
+                   GROUP_NO='NH34',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='PRES',
+                   VALE_CALC=0.04339832028025116,
+                   VALE_REFE=0.04339832028025116,
+                   GROUP_NO='NH34',),
+          ),)
+FIN()

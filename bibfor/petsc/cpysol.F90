@@ -68,7 +68,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
     character(len=4) :: chnbjo
     character(len=8) :: k8bid, noma
     character(len=19) :: nomlig
-    character(len=24) :: nonbjo, nojoinr, nojoine, nonulg, join
+    character(len=24) :: nojoinr, nojoine, nonulg, join
 !----------------------------------------------------------------------
     integer :: zzprno
 !
@@ -92,8 +92,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
 !
-    nonbjo = numddl//'.NUME.NBJO'
-    call jeveuo(nonbjo, 'L', jnbjoi)
+    call jeveuo(numddl//'.NUME.NBJO', 'L', jnbjoi)
     nbjoin = zi(jnbjoi)
 !
     call jeveuo(numddl//'.NUME.NULG', 'L', jnulg)
@@ -243,6 +242,9 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 ! -- REMISE A L'ECHELLE DES LAGRANGES DANS LA SOLUTION
     call jeveuo(nomat//'.&INT', 'L', lmat)
     call mrconl('MULT', lmat, 0, 'R', rsolu, 1)
+!
+!
+! -- debug
     if(ldebug) then
         call jeveuo(numddl//'.NUME.DEEQ', 'L', jdeeq)
         call jeveuo(numddl//'.NUME.REFN', 'L', jrefn)

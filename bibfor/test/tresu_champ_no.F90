@@ -87,6 +87,7 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
     aster_logical :: skip, l_parallel_mesh, l_ok
     real(kind=8) :: ordgrd
     mpi_int :: irank
+    integer, pointer :: v_noex(:) => null()
 !
 !-----------------------------------------------------------------------
     integer :: iadesc, iancmp, ianueq, iaprno, iarefe, iavale
@@ -155,6 +156,15 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
         go to 100
     endif
 !
+    if(l_parallel_mesh) then
+        call asmpi_info(rank = irank)
+        rank = to_aster_int(irank)
+        call jeveuo(mesh//'.NOEX', 'L', vi=v_noex)
+        if(v_noex(ino) .ne. rank) then
+            go to 100
+        end if
+    end if
+!
 !     --SI LE CHAMP EST A REPRESENTATION CONSTANTE:
 !
     if (num .lt. 0) then
@@ -217,8 +227,7 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt,&
         rank = -1
         if( l_ok ) then
             ser = 1
-            call asmpi_info(rank=irank)
-            rank = irank
+            rank = to_aster_int(irank)
         end if
         call asmpi_comm_vect('MPI_MAX', 'I', sci=ser)
         call asmpi_comm_vect('MPI_MAX', 'I', sci=rank)
