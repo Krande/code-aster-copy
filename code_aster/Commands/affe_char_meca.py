@@ -153,7 +153,6 @@ class MechanicalLoadDefinition(ExecuteCommand):
         else:
             model = keywords.pop("MODELE")
             nodeGroups, cellGroups = self._getGroups(keywords)
-            print(nodeGroups, cellGroups, flush=True)
             connectionMesh = ConnectionMesh(model.getMesh(), nodeGroups, cellGroups)
 
             if connectionMesh.getDimension()==3:

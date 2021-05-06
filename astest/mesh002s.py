@@ -74,8 +74,8 @@ for line in list_mesh:
 
 list_mesh.close()
 
-list_nb_mesh = [507, 495, 485]
-list_nb_mesh_conv = [507, 495, 485]
+list_nb_mesh = [507, 495, 484]
+list_nb_mesh_conv = [507, 495, 484]
 
 print("Number of mesh: %s" % (nb_mesh), flush=True)
 print("Number of mesh converted: %s" % (nb_mesh_converted), flush=True)
