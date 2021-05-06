@@ -42,7 +42,7 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecham.h"
 #include "asterfort/mechti.h"
-#include "asterfort/medom1.h"
+#include "asterfort/rcmfmc.h"
 #include "asterfort/sdmpic.h"
 #include "asterfort/utmess.h"
 !
@@ -52,18 +52,17 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ierd, iret, jcha, n1, n3, n4, n6, n7, nchar, nh
+    integer :: ierd, iret, nh, nbRet
     real(kind=8) :: time, rundf
     character(len=1), parameter :: base = 'G'
-    character(len=4) :: ctyp
-    character(len=8) :: modele, cara, temp, noma, blan8, kmpic
+    character(len=8) :: model, caraElem, temp, mesh, kmpic, chmate
     character(len=8) :: lpain(8), lpaout(1)
-    character(len=16) :: type, oper, option
-    character(len=19) :: kcha, chelem, press, ligrel
-    character(len=24) :: chgeom, chcara(18), chharm, mate, mateco
+    character(len=16) :: type, oper, option, phenom
+    character(len=19) :: chelem, press, ligrel
+    character(len=24) :: chgeom, chcara(18), chharm, mateco
     character(len=24) :: chtemp, chtime, chflug, chpres
     character(len=24) :: lchin(8), lchout(1)
-    aster_logical :: exitim
+    aster_logical :: exitim, l_ther
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,48 +70,58 @@ implicit none
     call infmaj()
 
 ! - Initializations
-    blan8 = '        '
-    kcha = '&&OP0038.CHARGES   '
     rundf = r8vide()
 
 ! - Output result
     call getres(chelem, type, oper)
 
 ! - Get main parameters
-    press = ' '
-    chtime = ' '
-    exitim = .false.
-!
-    call utalrm('OFF', 'CALCULEL3_40')
-    call medom1(modele, mate, mateco, cara, kcha, nchar,&
-                ctyp, blan8, 1)
-    call utalrm('ON', 'CALCULEL3_40')
-    call jeveuo(kcha//'.LCHA', 'E', jcha)
-    call getvtx(' ', 'OPTION', scal=option, nbret=n1)
-    call getvid(' ', 'TEMP', scal=temp, nbret=n3)
-    call getvid(' ', 'PRES', scal=press, nbret=n4)
-    call getvr8(' ', 'INST', scal=time, nbret=n6)
-    call getvis(' ', 'MODE_FOURIER', scal=nh, nbret=n7)
-    if (n3 .ne. 0) then
+    model    = ' '
+    mateco   = ' '
+    caraElem = ' '
+    chmate   = ' '
+    chtemp   = ' '
+    chpres   = ' '
+    call getvid(' ', 'MODELE', scal = model, nbret = nbRet)
+    ASSERT(nbRet .eq. 1)
+    call dismoi('PHENOMENE', model, 'MODELE', repk = phenom)
+    l_ther = phenom .eq. 'THERMIQUE'
+    call getvid(' ', 'CARA_ELEM', scal = caraElem, nbret = nbRet)
+    call getvid(' ', 'CHAM_MATER', scal = chmate, nbret = nbRet)
+    mateco = ' '
+    if (nbRet .ne. 0) then
+        call rcmfmc(chmate, mateco, l_ther_ = l_ther)
+    endif
+    call getvtx(' ', 'OPTION', scal=option, nbret=nbRet)
+    temp = ' '
+    call getvid(' ', 'TEMP', scal=temp, nbret=nbRet)
+    if (nbRet .ne. 0) then
         chtemp = temp
         call chpver('F', chtemp, 'NOEU', 'TEMP_R', ierd)
     endif
-    if (n4 .ne. 0) then
+    press = ' '
+    call getvid(' ', 'PRES', scal=press, nbret=nbRet)
+    if (nbRet .ne. 0) then
         chpres = press
         call chpver('F', chpres, 'NOEU', 'PRES_C', ierd)
     endif
-    if (n6 .ne. 0) exitim = .true.
-    if (n7 .eq. 0) nh = 0
+    call getvr8(' ', 'INST', scal=time, nbret=nbRet)
+    exitim = nbRet .ne. 0
+    call getvis(' ', 'MODE_FOURIER', scal=nh, nbret=nbRet)
+    if (nbRet .eq. 0) then
+        nh = 0
+    endif
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk = mesh)
 
 ! - List of cells for computation: all model
-    call exlima(' ', 0, 'G', modele, ligrel)
+    call exlima(' ', 0, 'G', model, ligrel)
 
 ! - Prepare input field
-    call mecham(option, modele, cara, nh, chgeom,&
+    call mecham(option, model, caraElem, nh, chgeom,&
                 chcara, chharm, iret)
-    noma = chgeom(1:8)
+    chtime = ' '
     if (exitim) then
-        call mechti(noma, time, rundf, rundf, chtime)
+        call mechti(mesh, time, rundf, rundf, chtime)
     endif
 
     if (iret .ne. 0) goto 10
@@ -173,7 +182,7 @@ implicit none
         lpain(6)='PCAGEPO'
         lchout(1)=chelem
         lpaout(1)='PCOORPG'
-        call cesvar(cara, ' ', ligrel, lchout(1))
+        call cesvar(caraElem, ' ', ligrel, lchout(1))
         call calcul('S', option, ligrel, 6, lchin,&
                     lpain, 1, lchout, lpaout, base,&
                     'OUI')

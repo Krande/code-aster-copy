@@ -15,10 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
-                  nbropt)
-    implicit none
+!
+subroutine ccbcop(resultIn    , resultOut,&
+                  listStoreJv , nbStore,&
+                  listOptionJv, nbOption)
+!
+implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/gettco.h"
@@ -38,18 +41,21 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
 #include "asterfort/medom1.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
+#include "asterfort/rslesd.h"
 #include "asterfort/rsnopa.h"
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/deprecated_option.h"
-    integer :: nbordr, nbropt
-    character(len=8) :: resuou, resuin
-    character(len=19) :: lisord, lisopt
-! person_in_charge: nicolas.sellenet at edf.fr
-! ----------------------------------------------------------------------
+!
+integer, intent(in) :: nbStore, nbOption
+character(len=8), intent(in) :: resultOut, resultIn
+character(len=19), intent(in) :: listStoreJv, listOptionJv
+!
+! --------------------------------------------------------------------------------------------------
+!
 !  CALC_CHAMP - BOUCLE SUR LA LISTE D'OPTION ET APPEL A CALCOP
-!  -    -       -  -                  --
-! ----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
 !
 !  ROUTINE PREPARANT L'APPEL A CALCOP
 !
@@ -60,85 +66,79 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
 !   NBORDR I    NOMBRE DE NUMEROS D'ORDRE
 !   LISOOP K19  NOM DE LA LISTE DES OPTIONS A CALCULER
 !   NBROPT I    LONGUEUR DE LA LISTE D'OPTIONS
-! ----------------------------------------------------------------------
-    character(len=6) :: nompro
-    parameter  (nompro='CCBCOP')
+
 !
-    integer :: jordr, iret, nbchar, posopt
-    integer :: ifm, niv, nuord
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: iret, posopt
+    integer :: ifm, niv, numeStore0
     integer :: nbac, nbpa, nbpara, jpara
-    integer :: iaux, j, iadou, iadin, iordr, jopt, iopt
-!
+    integer :: iStore, j, iadou, iadin, numeStore, jopt, iOption
+    integer, pointer :: listStore(:) => null()
     character(len=4) :: typcha
-    character(len=8) :: type, modele, carael
-    character(len=8) :: k8b
-    character(len=16) :: option, typesd
-    character(len=19) :: lischa
-    character(len=24) :: nompar, mater, mateco
+    character(len=8) :: type, model, caraElem
+    character(len=8) :: answer
+    character(len=16) :: option, resultType
+    character(len=24) :: nompar
+    aster_logical :: exipla, newResult, lforc_noda
 !
-    aster_logical :: exipla, newcal, lforc_noda
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
     call infmaj()
     call infniv(ifm, niv)
 !
-    call gettco(resuin, typesd)
+    call gettco(resultIn, resultType)
 !
-    lischa = '&&'//nompro//'.CHARGES   '
+    call jeexin(resultOut//'           .DESC', iret)
+    newResult = iret .eq. 0
 !
-    newcal = .false.
-    call jeexin(resuou//'           .DESC', iret)
-    if (iret .eq. 0) newcal = .true.
-!
-    if ((resuin.ne.resuou) .and. (.not.newcal)) then
+    if ((resultIn.ne.resultOut) .and. (.not.newResult)) then
         call utmess('F', 'CALCULEL_18')
     endif
 !
-    call jeveuo(lisord, 'L', jordr)
-    nuord = zi(jordr)
-!
-    call medom1(modele, mater , mateco, carael, lischa, nbchar,&
-                typcha, resuin, nuord)
-    if (modele .eq. ' ') then
+    call jeveuo(listStoreJv, 'L', vi = listStore)
+
+! - Get parameters at initial state
+    numeStore0 = listStore(1)
+    call rslesd(resultIn, numeStore0, model_ = model, cara_elem_ = caraElem)
+    typcha = ' '
+    if (model .eq. ' ') then
         call utmess('F', 'CALCULEL2_44')
     endif
-!
-!     RECUPERATION DE LA LISTE DE NUMEROS D'ORDRE
-    if (newcal) then
-        call rscrsd('G', resuou, typesd, nbordr)
+
+! - New output result
+    if (newResult) then
+        call rscrsd('G', resultOut, resultType, nbStore)
         call titre()
     endif
 !
 !     ON VERIFIE QUE CARA_ELEM EST RENSEIGNES POUR LES COQUES
     exipla=.false.
-    call dismoi('EXI_COQ1D', modele, 'MODELE', repk=k8b)
-    if (k8b(1:3) .eq. 'OUI') exipla=.true.
-    call dismoi('EXI_COQ3D', modele, 'MODELE', repk=k8b)
-    if (k8b(1:3) .eq. 'OUI') exipla=.true.
-    call dismoi('EXI_PLAQUE', modele, 'MODELE', repk=k8b)
-    if (k8b(1:3) .eq. 'OUI') exipla=.true.
-!
-    if (exipla .and. carael .eq. ' ') then
+    call dismoi('EXI_COQ1D', model, 'MODELE', repk=answer)
+    if (answer(1:3) .eq. 'OUI') exipla=.true.
+    call dismoi('EXI_COQ3D', model, 'MODELE', repk=answer)
+    if (answer(1:3) .eq. 'OUI') exipla=.true.
+    call dismoi('EXI_PLAQUE', model, 'MODELE', repk=answer)
+    if (answer(1:3) .eq. 'OUI') exipla=.true.
+    if (exipla .and. caraElem .eq. ' ') then
         call utmess('A', 'CALCULEL2_94')
         goto 30
     endif
 !
 !     RECOPIE DES PARAMETRES DANS LA NOUVELLE SD RESULTAT
-    if (newcal) then
-        nompar='&&'//nompro//'.NOMS_PARA '
-        call rsnopa(resuin, 2, nompar, nbac, nbpa)
+    if (newResult) then
+        nompar='&&CCBCOP.NOMS_PARA '
+        call rsnopa(resultIn, 2, nompar, nbac, nbpa)
         nbpara=nbac+nbpa
-!
         call jeveuo(nompar, 'L', jpara)
-        do iaux = 1, nbordr
-            iordr=zi(jordr+iaux-1)
+        do iStore = 1, nbStore
+            numeStore = listStore(iStore)
             do j = 1, nbpara
-                call rsadpa(resuin, 'L', 1, zk16(jpara+j-1), iordr,&
+                call rsadpa(resultIn, 'L', 1, zk16(jpara+j-1), numeStore,&
                             1, sjv=iadin, styp=type, istop=0)
-                call rsadpa(resuou, 'E', 1, zk16(jpara+j-1), iordr,&
+                call rsadpa(resultOut, 'E', 1, zk16(jpara+j-1), numeStore,&
                             1, sjv=iadou, styp=type)
-!
                 if (type(1:1) .eq. 'I') then
                     zi(iadou)=zi(iadin)
                 else if (type(1:1).eq.'R') then
@@ -161,37 +161,37 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
         call jedetr(nompar)
     endif
 !
-    call jeexin(lisopt, iret)
+    call jeexin(listOptionJv, iret)
     if(iret .ne. 0) then
-        call jeveuo(lisopt, 'L', jopt)
+        call jeveuo(listOptionJv, 'L', jopt)
     end if
 !
 !     VERIFICATION DE LA PRESENCE D'UN EXCIT DANS LE FICHIER
 !     DE COMMANDE OU DES CHARGES DANS LA SD RESULTAT
-    posopt = indk16(zk16(jopt), 'FORC_NODA', 1, nbropt)
+    posopt = indk16(zk16(jopt), 'FORC_NODA', 1, nbOption)
     lforc_noda = .true.
     if (posopt.eq.0) lforc_noda = .false.
-    call ccvrch(resuin, zi(jordr), lforc_noda)
+    call ccvrch(resultIn, numeStore0, lforc_noda)
 !
 !     BOUCLE SUR LES OPTIONS DEMANDEES PAR L'UTILISATEUR
-    do iopt = 1, nbropt
+    do iOption = 1, nbOption
 !
-        option=zk16(jopt+iopt-1)
+        option = zk16(jopt+iOption-1)
         call deprecated_option(option)
 
         if (option .eq. ' ') goto 20
 !
         if ((option.eq.'FORC_NODA') .or. (option.eq.'REAC_NODA')) then
-            call ccfnrn(option, resuin, resuou, lisord, nbordr,&
-                        typcha, typesd)
+            call ccfnrn(option, resultIn, resultOut, listStoreJv, nbStore,&
+                        typcha, resultType)
             if((option.eq.'REAC_NODA') .and. &
-                  ((typesd.eq.'DYNA_TRANS') .or. &
-                   (typesd.eq.'DYNA_HARMO'))) then
+                  ((resultType.eq.'DYNA_TRANS') .or. &
+                   (resultType.eq.'DYNA_HARMO'))) then
                 call utmess('A', 'CALCCHAMP_4')
             endif
         else
-            call calcop(option, lisopt, resuin, resuou, lisord,&
-                        nbordr, typcha, typesd, iret, tldist=.True._1)
+            call calcop(option, listOptionJv, resultIn, resultOut, listStoreJv,&
+                        nbStore, typcha, resultType, iret, tldist=.True._1)
 !
             if (iret .ne. 0) then
                 ASSERT(.false.)
