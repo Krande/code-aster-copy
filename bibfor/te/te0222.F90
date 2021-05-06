@@ -103,16 +103,19 @@ implicit none
     real(kind=8)      :: courb(3, 3, 3), valres(4), alpha, coeff_K1K2, coeff_K3
     real(kind=8)      :: dfvdm(3,4), k3a, ka, lambda, phig, r8bid, rg, th
     real(kind=8)      :: ttrgv, ttrg, u1l(3), u2l(3), u3l(3), tgvdm(3)
+    character(len=6)  :: epsa(6)
     character(len=8)  :: typmod(2), nompar(4), discr
     character(len=4)  :: fami
     character(len=16) :: nomte, option, compor(4), phenom
 !
-    aster_logical :: axi, cp, fonc, epsini, grand, incr, notelas, lcour, l_not_zero
+    aster_logical :: axi, cp, fonc, epsini, grand, incr, notelas, lcour, l_not_zero, epsaini
 !
     real(kind=8), pointer :: fno(:) => null()
     real(kind=8), pointer :: epsino(:) => null()
     real(kind=8), pointer :: dfdi(:) => null()
     real(kind=8), pointer :: ffp(:) => null()
+    
+    data epsa/'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ','EPSAYZ'/
 !
 ! =====================================================================
 !                       INITIALISATION PARAMETRES
@@ -144,6 +147,7 @@ implicit none
     iaccel = 0
     nompar(:) = ' '
     epsini = ASTER_FALSE
+    epsaini = ASTER_FALSE
     axi = ASTER_FALSE
     cp = ASTER_FALSE
     if (ndim == 2) then
@@ -321,20 +325,28 @@ implicit none
             puls = 0.d0
         endif
     endif
+
 !
 ! =====================================================================
-!                     MESSAGES D'ERREURS
+!   RECUPERATION DES CHARGES, PRE-DEFORMATIONS (CHARGEMENT PRE-EPSI),
+!   OU VARIABLE DE COMMANDE EPSA
 ! =====================================================================
 !
-!-- On ne peut avoir simultanement pre-deformations et contraintes init
-    if ((isigi.ne.0) .and. epsini) then
+!--Vérification de l'existence de EPSA (sur un point de Gauss et une seule composante,
+!-- A vérifier si c'est suffisant)
+    call rcvarc(' ', epsa(1), '+', 'NOEU', 1,1, rbid, iret)
+    if (iret .eq. 0) epsaini=.true.
+!                    
+!-- On ne peut avoir simultanement pre-deformations/déformations init et contraintes init
+    if ((isigi.ne.0) .and. (epsini.or.epsaini)) then
         call utmess('F', 'RUPTURE1_20')
     endif
 !
-! =====================================================================
-!   RECUPERATION DES CHARGES ET PRE-DEFORMATIONS (CHARGEMENT PRE-EPSI)
-! =====================================================================
-!
+!-- On ne peut avoir simultanement pre-deformations et déformations init
+    if (epsini.and. epsaini) then
+        call utmess('F', 'RUPTURE1_30')
+    endif
+
     if (fonc) then
         do i = 1, nno
             do j = 1, ndim
@@ -366,6 +378,19 @@ implicit none
                     enddo
                 else
                     epsino(ncmp* (i-1)+4) = zr(iepsr+ncmp*(i-1)-1+4)*rac2
+                endif
+            else if(epsaini) then
+                do j = 1, 2*ndim
+                    call rcvarc(' ', epsa(j), '+', 'NOEU', i,&
+                        1, epsino(2*ndim*(i- 1)+j), iret)
+                end do
+                ! traitement des termes extra diagonaux
+                if (ndim.eq.2)then
+                    epsino(4*(i- 1)+4)=2*epsino(4*(i- 1)+4)
+                else
+                    epsino(6*(i- 1)+4)=2*epsino(6*(i- 1)+4)
+                    epsino(6*(i- 1)+5)=2*epsino(6*(i- 1)+5)
+                    epsino(6*(i- 1)+6)=2*epsino(6*(i- 1)+6)
                 endif
             endif
         end do
@@ -555,7 +580,7 @@ implicit none
         ! (seule intervenant dans le calcul de G)
         ! ===========================================
 !
-        if (epsini) then
+        if (epsini.or.epsaini) then
             do i = 1, nno
                 der(1) = dfdi(i)
                 der(2) = dfdi(i+nno)
@@ -570,9 +595,11 @@ implicit none
                     end do
                 end do
             end do
-            do i = 1, ncmp
-                eps(i) = eps(i) - epsin(i)
-            end do
+            if (epsini) then
+                do i = 1, ncmp
+                    eps(i) = eps(i) - epsin(i)
+                end do
+            endif
         endif
 !
         ! ===========================================
@@ -807,7 +834,7 @@ implicit none
         ! PROD1 LIE A LA CONTRAINTE (EPS-EPSREF):GRAD(SIGIN).THETA
         ! PROD2 LIE A LA PREDEFORMATION SIG:GRAD(EPSIN).THETA
         ! ===========================================================
-        if ((isigi.ne.0) .or. epsini) then
+        if ((isigi.ne.0) .or. epsini.or.epsaini) then
             prod1 = 0.d0
             prod2 = 0.d0
             if (isigi .ne. 0) then
@@ -817,7 +844,7 @@ implicit none
                         dtdm(j,4)
                     end do
                 end do
-            else if (epsini) then
+            else if (epsini.or.epsaini) then
                 do i = 1, ncmp
                     do j = 1, ndim
                         prod2=prod2+sigl(i)*depsin(i,j)*dtdm(j,4)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -152,9 +152,9 @@ Veuillez vérifiez vos données.
 """),
 
     20: _("""
-Votre étude comporte une charge de type PRE_EPSI. Ceci est incompatible
-avec la présence d'une contrainte initiale dans le calcul de G(mot clé SIGM_INIT
-de l'opérateur CALC_G).
+Votre étude comporte une charge de type PRE_EPSI ou une variable de commande EPSA.
+Ceci est incompatible avec la présence d'une contrainte initiale dans le calcul de G
+(mot clé SIGM_INIT de l'opérateur CALC_G).
 -> Risque et Conseil :
 On ne peut pas faire de calcul de G en introduisant simultanément une contrainte
 initiale ET une déformation initiale. Veuillez revoir les données.
@@ -218,6 +218,14 @@ trapézoïdale.
 Le calcul de la surface de sa face appartenant au plan de symétrie de
 l'entaille risque d'être altéré et par conséquent celui de GP également.
 Veuillez vérifier votre maillage.
+"""),
+
+    30: _("""
+Votre étude comporte une charge de type PRE_EPSI et une variable de commande EPSA.
+Le calcul de G ne peut être réalisé.
+-> Risque et Conseil :
+On ne peut pas faire de calcul de G en introduisant simultanément une pré-déformation
+ET une déformation initiale. Veuillez revoir les données.
 """),
 
     31: _("""

@@ -426,6 +426,13 @@ est interdit.
 Veuillez redéfinir le mot-clé LISSAGE_THETA.
 """),
 
+    91: _("""
+Le calcul de l'option G avec un chargement de type pré-déformations PRE_EPSI
+est interdit.
+-> Risque et Conseil :
+Veuillez utiliser l'option G_EPSI
+"""),
+
     92: _("""
 Incohérence entre la dimension du maillage et le nombre de noeuds du fond. L'opérateur
 DEFI_FOND_FISS ne trouve qu'un seul noeud pour le fond, mais le maillage %(k1)s est considéré

@@ -23,6 +23,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/calcG_type.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/alchml.h"
 #include "asterfort/chpver.h"
@@ -30,6 +31,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
 #include "asterfort/gcchar.h"
 #include "asterfort/gcfonc.h"
 #include "asterfort/gcsele.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -48,6 +50,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
 #include "asterfort/lisnnl.h"
 #include "asterfort/mefor0.h"
 #include "asterfort/mepres.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: iord
     character(len=8) :: modele
@@ -85,7 +88,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
     character(len=24) :: k24bid
     character(len=24) :: oldfon, cepsi, epselno, ligrmo
     integer :: jfonci
-    integer :: ichar, nbchar, ig, iret, inga, occur
+    integer :: ichar, nbchar, ig, iret, inga, occur, ier, i
     character(len=8) :: charge, typech, nomfct, newfct, ng
     character(len=6) :: nomobj
     character(len=16) :: typfct, motcle, nomcmd, phenom
@@ -101,6 +104,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
     aster_logical :: lfepsi, lfpesa, lfrota
     integer, pointer :: desc(:) => null()
     character(len=8), pointer :: p_vale_epsi(:) => null()
+    character(len=8)   :: list_option(NB_MAX_OPT)
 !
 ! ----------------------------------------------------------------------
 !
@@ -131,6 +135,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
     lformu = .false.
     lpchar = .false.
     lccomb = .false.
+    list_option(:) = ' '
     call lisnnb(lischa, nbchar)
 !   Recuperation du LIGREL
     ligrmo = modele//'.MODELE'
@@ -253,6 +258,29 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
                                 lfvolu, lf1d2d, lf2d3d, lfpres, lfepsi,&
                                 lfpesa, lfrota, carteo, lpchar,&
                                 lccomb)
+                                
+!
+!------------------ Interdiction d'un chargement PRE_EPSI avec l'option G de CALC_G
+!                   (sans re-calcul de contraintes, le résultat est faux)
+!                   
+                    if (lepsi.or.lfepsi) then
+                        call getvtx(' ', 'OPTION', nbret=ier)
+                        if(ier == 1) then
+                            call getvtx(' ', 'OPTION', scal=list_option(1))
+                            if(list_option(1).eq.'G') then
+                                call utmess('F', 'RUPTURE0_91')
+                            endif
+                        else
+                            call getvtx(' ', 'OPTION', nbval=-ier, vect=list_option)
+                            do i=1, -ier
+                                if(list_option(i).eq.'G') then
+                                    call utmess('F', 'RUPTURE0_91')
+                                endif
+                            end do
+                        end if
+                    end if
+
+
 !
 ! ----------------- PREPARATION NOM DE LA FONCTION RESULTANTE
 !
