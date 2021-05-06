@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -166,14 +166,6 @@ PROJ_CHAMP / METHODE='ECLA_PG' :
     36 : _("""
  A cause des alarmes précédentes, l'option SING_ELEM n'est pas calculée.
 """),
-
-#     37 : _("""
-#  Attention : Certains ddls sont "imposés" plusieurs fois par AFFE_CHAR_CINE.
-#  Pour ces ddls, la valeur imposée sera la SOMME des différentes valeurs imposées.
-#  Ce n'est peut-être pas ce qui est voulu.
-
-#  Exemple d'un ddl imposé plusieurs fois :
-# """),
 
     38 : _("""
  on ne traite pas le type_scalaire: %(k1)s
@@ -372,14 +364,6 @@ Risque et conseils :
 
     93 : _("""
  une des charges n'est pas acoustique
-"""),
-
-
-
-    96 : _("""
-  Pour prendre en compte les termes d'inertie,
-  il est préférable d'utiliser la commande CALC_CHAMP.
-  Le mot-clé ACCE n'est pas traité et les résultats risquent d'être faux.
 """),
 
     97 : _("""

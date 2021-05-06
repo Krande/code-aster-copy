@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,22 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine op0038()
-    implicit none
-!     COMMANDE:  CALC_CHAM_ELEM
-!     - FONCTION REALISEE:
-!         CALCUL DES FLUX ELEMENTAIRES EN THERMIQUE ;
-!         CALCUL DE LA PRESSION ACOUSTIQUE ;
-!         CALCUL DES COOREDONNEES DES POINTS DE GAUSS
 !
-! ----------------------------------------------------------------------
+subroutine op0038()
+!
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/r8vide.h"
 #include "asterc/utalrm.h"
+#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/cesvar.h"
 #include "asterfort/chpver.h"
@@ -51,51 +46,48 @@ subroutine op0038()
 #include "asterfort/sdmpic.h"
 #include "asterfort/utmess.h"
 !
+! --------------------------------------------------------------------------------------------------
+!
+! Command: CALC_CHAM_ELEM
+!
+! --------------------------------------------------------------------------------------------------
+!
     integer :: ierd, iret, jcha, n1, n3, n4, n6, n7, nchar, nh
-!
     real(kind=8) :: time, rundf
-!
-    character(len=1) :: base
+    character(len=1), parameter :: base = 'G'
     character(len=4) :: ctyp
     character(len=8) :: modele, cara, temp, noma, blan8, kmpic
     character(len=8) :: lpain(8), lpaout(1)
     character(len=16) :: type, oper, option
     character(len=19) :: kcha, chelem, press, ligrel
-    character(len=24) :: chgeom, chcara(18), chharm, mate, k24b, mateco
+    character(len=24) :: chgeom, chcara(18), chharm, mate, mateco
     character(len=24) :: chtemp, chtime, chflug, chpres
     character(len=24) :: lchin(8), lchout(1)
-!
     aster_logical :: exitim
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infmaj()
-!               123456789012345678901234
-    k24b = '                        '
+
+! - Initializations
     blan8 = '        '
     kcha = '&&OP0038.CHARGES   '
-!
-    base = 'G'
     rundf = r8vide()
+
+! - Output result
+    call getres(chelem, type, oper)
+
+! - Get main parameters
     press = ' '
     chtime = ' '
     exitim = .false.
-!
-    call getres(chelem, type, oper)
-    call getvid(' ', 'ACCE', nbval=0, nbret=n1)
-    if (n1 .ne. 0) then
-        call utmess('A', 'CALCULEL3_96')
-    endif
 !
     call utalrm('OFF', 'CALCULEL3_40')
     call medom1(modele, mate, mateco, cara, kcha, nchar,&
                 ctyp, blan8, 1)
     call utalrm('ON', 'CALCULEL3_40')
     call jeveuo(kcha//'.LCHA', 'E', jcha)
-!
-    call exlima(' ', 0, 'G', modele, ligrel)
-!
     call getvtx(' ', 'OPTION', scal=option, nbret=n1)
     call getvid(' ', 'TEMP', scal=temp, nbret=n3)
     call getvid(' ', 'PRES', scal=press, nbret=n4)
@@ -111,16 +103,21 @@ subroutine op0038()
     endif
     if (n6 .ne. 0) exitim = .true.
     if (n7 .eq. 0) nh = 0
-!
+
+! - List of cells for computation: all model
+    call exlima(' ', 0, 'G', modele, ligrel)
+
+! - Prepare input field
     call mecham(option, modele, cara, nh, chgeom,&
                 chcara, chharm, iret)
-    if (iret .ne. 0) goto 10
     noma = chgeom(1:8)
-    if (exitim) call mechti(noma, time, rundf, rundf, chtime)
-!
-!        -------------------------
-!        -- OPTIONS DE THERMIQUE :
-!        -------------------------
+    if (exitim) then
+        call mechti(noma, time, rundf, rundf, chtime)
+    endif
+
+    if (iret .ne. 0) goto 10
+
+! - Compute
     if (option(1:7) .eq. 'FLUX_EL') then
         chflug='&&OP0038.FLUXGAUSS'
         lchin(1)=chgeom
@@ -137,33 +134,31 @@ subroutine op0038()
         lpain(6)='PTEMPSR'
         lchin(7)=chharm
         lpain(7)='PHARMON'
-        lchin(8)=k24b
+        lchin(8)= ' '
         lpain(8)='PVARCPR'
         lchout(1)=chflug
         lpaout(1)='PFLUXPG'
-!
         call calcul('S', 'FLUX_ELGA', ligrel, 8, lchin,&
                     lpain, 1, lchout, lpaout, 'V',&
                     'OUI')
-!
         if (option .eq. 'FLUX_ELNO') then
             lchin(1)=chflug
             lpain(1)='PFLUXPG'
             lchout(1)=chelem
             lpaout(1)='PFLUXNO'
-!
             call calcul('S', option, ligrel, 1, lchin,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
-!
+
         else if (option.eq.'FLUX_ELGA') then
             call copisd('CHAMP', 'G', chflug, chelem)
+
+        else
+            ASSERT(ASTER_FALSE)
+
         endif
-!
-!        ---------------------------
-!        -- OPTION POINTS DE GAUSS :
-!        ---------------------------
-    else if (option.eq.'COOR_ELGA') then
+
+    else if (option .eq. 'COOR_ELGA') then
         lchin(1)=chgeom
         lpain(1)='PGEOMER'
         lchin(2)=chcara(1)
@@ -179,14 +174,11 @@ subroutine op0038()
         lchout(1)=chelem
         lpaout(1)='PCOORPG'
         call cesvar(cara, ' ', ligrel, lchout(1))
-!
         call calcul('S', option, ligrel, 6, lchin,&
                     lpain, 1, lchout, lpaout, base,&
                     'OUI')
-!        ---------------------------
-!        -- OPTION ROCH_ELNO :
-!        ---------------------------
-    else if (option.eq.'ROCH_ELNO') then
+
+    else if (option .eq. 'ROCH_ELNO') then
         lchin(1)=mateco
         lpain(1)='PMATERC'
         lchin(2)=chcara(6)
@@ -195,28 +187,22 @@ subroutine op0038()
         lpain(3)='PCAGEPO'
         lchout(1)=chelem
         lpaout(1)='PROCHRR'
-!
         call calcul('S', option, ligrel, 3, lchin,&
                     lpain, 1, lchout, lpaout, base,&
                     'OUI')
-!        ------------------------
-!        -- OPTIONS ACOUSTIQUES :
-!        ------------------------
-    else if (option.eq.'PRAC_ELNO') then
+
+    else if (option .eq. 'PRAC_ELNO') then
         lpain(1)='PPRESSC'
         lchin(1)=chpres
         lchout(1)=chelem
         lpaout(1)='PPRAC_R'
-!
         call calcul('S', option, ligrel, 1, lchin,&
                     lpain, 1, lchout, lpaout, 'G',&
                     'OUI')
-!
-!        ----------------------
-!        -- OPTIONS INCONNUES :
-!        ----------------------
+
     else
-        call utmess('F', 'CALCULEL3_22', sk=option)
+        ASSERT(ASTER_FALSE)
+
     endif
 !
  10 continue
