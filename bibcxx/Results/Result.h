@@ -293,6 +293,11 @@ class ResultClass : public DataStructure, public ListOfTablesClass {
     BaseMeshPtr getMesh();
 
     /**
+     * @brief check for multiple models
+     */
+    bool isMultiModel() ;
+
+    /**
      * @brief Get model
      */
     ModelPtr getModel() ;

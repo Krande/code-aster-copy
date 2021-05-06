@@ -226,16 +226,27 @@ BaseMeshPtr ResultClass::getMesh()
     return nullptr;
 };
 
-ModelPtr ResultClass::getModel() {
+bool ResultClass::isMultiModel()
+{
     std::string name( "" );
-    ModelPtr toReturn( nullptr );
     for ( const auto &curIter : _mapModel ) {
         if ( name == "" ) {
-            toReturn = curIter.second;
-            name = toReturn->getName();
+            name = curIter.second->getName();
         }
         if ( name != curIter.second->getName() )
+            return true;
+    }
+    return false;
+}
+
+ModelPtr ResultClass::getModel() {
+    ModelPtr toReturn( nullptr );
+    if ( isMultiModel() ){
             throw std::runtime_error( "Error: multiple models" );
+    }
+    auto curIter= _mapModel.begin();
+    if ( curIter != _mapModel.end() ){
+        toReturn = ( *curIter ).second;
     }
     return toReturn;
 };
@@ -467,11 +478,12 @@ bool ResultClass::update()
     _nbRanks = numberOfSerialNum;
     BaseMeshPtr curMesh( nullptr );
     const ASTERINTEGER iordr = ( *_serialNumber )[_nbRanks - 1];
-    if ( _mapModel.find( iordr ) != _mapModel.end() )
+    if ( _mapModel.find( iordr ) != _mapModel.end() ){
         curMesh = _mapModel[iordr]->getMesh();
-    else if ( _mesh != nullptr )
+    }
+    else if ( _mesh != nullptr ){
         curMesh = _mesh;
-
+    }
     int cmpt = 1;
     for ( const auto curIter : _namesOfFields->getVectorOfObjects() ) {
         auto nomSymb = trim( _symbolicNamesOfFields->getStringFromIndex( cmpt ) );
@@ -524,7 +536,15 @@ bool ResultClass::update()
                                 "No mesh, can not build FieldOnCells" );
                         FieldOnCellsRealPtr result =
                             _fieldBuidler.buildFieldOnCells< double >( name, curMesh );
+                        auto curIter = _mapModel.find(( *_serialNumber )[rank]);
+                        if ( curIter != _mapModel.end() )
+                            result->setModel(( *curIter ).second);
+                        else if (not(isMultiModel())){
+                            ModelPtr curModel = getModel();
+                            result->setModel(curModel);
+                        }
                         _dictOfVectorOfFieldsCells[nomSymb][rank] = result;
+
                     }
                 }
                 CALL_JEDEMA();
