@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -105,10 +105,12 @@ subroutine cargeo(mailla)
     vale(4) = ymax
     vale(5) = zmin
     vale(6) = zmax
+    vale(7) = 0
+    vale(8) = 0
 !
     call jeexin(connex, iret)
     if (iret .eq. 0) then
-        nbpart = 7
+        nbpart = 6
         goto 100
     else
         nbpart = nbpara
