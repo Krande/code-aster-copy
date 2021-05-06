@@ -585,6 +585,7 @@ VectorLong ConnectionMeshClass::getCellsGlobalNumbering( const JeveuxVectorLong&
     /* Total number of processors */
     const int numberOfProcessors = getMPINumberOfProcs();
 
+    rankOfCells->updateValuePointer();
     const int nbCells = _pMesh->getNumberOfCells();
     int nbCellOwned = 0;
     for( int i = 0; i < nbCells; i++ )
