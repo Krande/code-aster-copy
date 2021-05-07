@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -446,5 +446,20 @@ TEST_RESU(CHAM_ELEM=(_F(
 
                     ),
          )
+
+
+MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
+                       MAILLAGE=MAILLAGE,
+                       ABSC_CURV=_F(MAILLE='TUY41',
+                       NOEUD_ORIG=('N017',),),
+                      );
+
+CHABSC = CREA_CHAMP(OPERATION = 'EXTR' , TYPE_CHAM = 'CART_ABSC_R',
+                     NOM_CHAM = 'ABSC_CURV' , MAILLAGE = MAILLAGE , )
+
+TEST_RESU(CARTE=_F(CHAM_GD=CHABSC, MAILLE='TUY41', REFERENCE='ANALYTIQUE',
+                   NOM_CMP='ABSC4',  VALE_REFE=1.4142135623730954,   VALE_CALC= 1.4142135623730954 ))
+
+
 
 FIN()

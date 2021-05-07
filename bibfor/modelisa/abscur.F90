@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine abscur(ma)
     integer :: adrm, iseg1, iseg2, isegprev, jtmp, kseg, nbextr, nbnot
     integer :: iab1, iab2, iadr2, numa2, nuno1, nuno2
     integer :: icoo1, icoo2, icoo3, icoo4, icor2, kma, nunosuiv, vuorig
-    integer :: jpoi, jseg, ind, ing, ino
+    integer :: jpoi, jseg, ino
     integer :: ipoi1, iseg, itypm, jcoor
     integer :: mi, n, n1, n2, nunorig
     integer :: nbpoi1, nbma, nbseg, nbno
@@ -280,17 +280,10 @@ subroutine abscur(ma)
         numa=zi(jseg-1+abs(mi))
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(itypm+numa-1)), typm)
         call jeveuo(jexnum(connex, numa), 'L', jtmp)
-        if (mi .gt. 0) then
-            ing=zi(jtmp-1+1)
-            ind=zi(jtmp-1+2)
-        else
-            ing=zi(jtmp-1+2)
-            ind=zi(jtmp-1+1)
-        endif
-!
+
 !       noeuds 1 et 2 (extremites) :
-        icoo1 = 3*(ing-1)
-        icoo2 = 3*(ind-1)
+        icoo1 = 3*(zi(jtmp-1+1)-1)
+        icoo2 = 3*(zi(jtmp-1+2)-1)
         coor(:,1)=zr(jcoor+icoo1-1+1:jcoor+icoo1-1+3)
         coor(:,2)=zr(jcoor+icoo2-1+1:jcoor+icoo2-1+3)
 !
@@ -345,10 +338,11 @@ subroutine abscur(ma)
             zr(iab2+abs(mi)-1)= stot
 !
             if (nbnoseg .eq. 3) then
-                valv(3) = stot+s13
+                valv(3) = stot+s32
             else if (nbnoseg.eq.4) then
-                valv(3) = stot+s13
-                valv(4) = stot+s13+s34
+                
+                valv(4) = stot+s42
+                valv(3) = stot+s42+s34
             endif
 !
             stot = stot+s
