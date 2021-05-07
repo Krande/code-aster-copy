@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ subroutine cnoaff(noma, nomgd, base, cno)
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -71,11 +72,13 @@ subroutine cnoaff(noma, nomgd, base, cno)
     character(len=19) :: cnos
     character(len=24) :: valk(2), mesnoe, mescmp, prchno
     character(len=8), pointer :: tmp(:) => null()
+    aster_logical :: l_parallel_mesh
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
+    l_parallel_mesh = isParallelMesh(noma)
 !
 ! --- 1. RECUPERATION
 !     ===============
@@ -205,6 +208,10 @@ subroutine cnoaff(noma, nomgd, base, cno)
         else
             call reliem(' ', noma, 'NU_NOEUD', 'AFFE', iocc,&
                         4, motcle, typmcl, mesnoe, nbnoe)
+            if (nbnoe.eq.0.and.l_parallel_mesh) cycle
+            if (nbnoe.eq.0.and..not.l_parallel_mesh) then
+                ASSERT(.false.)
+            endif
             call jeveuo(mesnoe, 'L', jlno)
         endif
 !
