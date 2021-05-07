@@ -92,6 +92,7 @@ def C_RELATION( COMMAND ):
                                         "DIS_GRICRA",
                                         "CHOC_ENDO",
                                         "CHOC_ENDO_PENA",
+                                        "JONC_ENDO_PLAS",
                                         "DIS_VISC",
                                         "DIS_ECRO_TRAC",
                                         "DRUCK_PRAGER",

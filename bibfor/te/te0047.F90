@@ -65,6 +65,7 @@ character(len=*) :: optioz, nomtez
 #include "asterfort/difondabb.h"
 #include "asterfort/dichoc_endo_ldc.h"
 #include "asterfort/dizeng.h"
+#include "asterfort/disjvp.h"
 #include "asterfort/infdis.h"
 #include "asterfort/infted.h"
 #include "asterfort/jevech.h"
@@ -251,6 +252,9 @@ type(te0047_dscr) :: for_discret
     else if (for_discret%rela_comp.eq.'CHOC_ENDO_PENA') then
         ! comportement de choc avec déformation résiduelle par pénalisation
         call dichoc_endo_pena(for_discret, codret)
+    else if (for_discret%rela_comp.eq.'JONC_ENDO_PLAS') then
+        ! comportement élasto-plastique endommageable : jonction voile-plancher
+        call disjvp(for_discret, codret)
     else
         ! si on passe par ici c'est qu'aucun comportement n'est valide
         messak(1) = for_discret%nomte
@@ -261,7 +265,7 @@ type(te0047_dscr) :: for_discret
         messak(5) = zk24(iazk24-1+3)
         call utmess('F', 'DISCRETS_7', nk=5, valk=messak)
     endif
-    ! les comportements valident passe par ici
+    ! les comportements valides passent par ici
     if (for_discret%lSigm) then
         call jevech('PCODRET', 'E', jcret)
         zi(jcret) = codret

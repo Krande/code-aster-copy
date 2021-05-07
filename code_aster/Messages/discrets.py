@@ -332,5 +332,17 @@ Le paramètre plastique doit être strictement croissant.
 Vérifiez les messages d'alarme de DEFI_MATERIAU
 """),
 
+    65 : _("""
+Le comportement %(k1)s est non valide.
+Les valeurs des paramètres ne respectent pas les conditions imposées.
+Les conditions à respecter sont :
+    1)  KE doit être supérieur ou égal à KP
+    2)  KDP doit être compris dans l'intervalle [KP, KE]
+    3)  KDM doit être compris dans l'intervalle [KP, KE]
+    4)  MYP doit être supérieur ou égal au produit de KE par RDP
+    5)  MYM doit être inférieur ou égal au produit de KE par RDM
+----------------------------------------------------------
+Condition non respectée :: <%(i1)d>
+"""),
 
 }

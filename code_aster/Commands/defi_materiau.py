@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -215,6 +215,8 @@ def check_keywords(kwargs):
         kwargs['DIS_ECRO_TRAC'] = check_dis_ecro_trac(kwargs['DIS_ECRO_TRAC'])
     if 'DIS_CHOC_ENDO' in kwargs:
         kwargs['DIS_CHOC_ENDO'] = check_dis_choc_endo(kwargs['DIS_CHOC_ENDO'])
+    if 'JONC_ENDO_PLAS' in kwargs:
+        kwargs['JONC_ENDO_PLAS'] = check_dis_jvp(kwargs['JONC_ENDO_PLAS'])
     if 'THER_NL' in kwargs:
         kwargs['THER_NL'] = add_enthalpy(kwargs['THER_NL'])
 
@@ -444,6 +446,45 @@ def check_dis_choc_endo(keywords):
     Clefs['AMORP'] = newAm
     #
     return Clefs
+
+def check_dis_jvp(keywords):
+    """Check for parameters in JONC_ENDO_PLAS
+
+    Arguments:
+        keywords (dict): JONC_ENDO_PLAS keyword, changed in place.
+
+    Returns:
+        dict: JONC_ENDO_PLAS keyword changed in place.
+
+        Raises '<F>' in case of error.
+    """
+    def _message(num):
+        UTMESS('F', 'DISCRETS_65',
+               valk=('JONC_ENDO_PLAS'),
+               vali=num)
+    #
+    Clefs = keywords
+    ke=Clefs['KE']
+    kp=Clefs['KP']
+    kdp=Clefs['KDP']
+    kdm=Clefs['KDM']
+    myp=Clefs['MYP']
+    mym=Clefs['MYM']
+    rdp=Clefs['RDP']
+    rdm=Clefs['RDM']
+    #
+    if ke < kp:
+        _message(1)
+    elif kdp < kp or kdp > ke:
+        _message(2)
+    elif kdm < kp or kdm > ke:
+        _message(3)
+    elif myp < ke*rdp:
+        _message(4)
+    elif mym > ke*rdm:
+        _message(5)
+    return Clefs
+
 
 def add_enthalpy(keywords):
     """Check for functions for THER_NL. Create "Beta" from "Rho_CP" if not given
