@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -136,6 +136,7 @@ implicit none
         n6 = -n6
         n7 = -n7
         n8 = -n8
+
 !
 !
 !       -- MOT CLEF TOUT:
@@ -480,6 +481,10 @@ implicit none
 !       ----------------------------------
         call jeveuo(lisma, 'L', idlima)
         call addGrpMa(ma, nogma, zi(idlima), nbma, l_added_grpma)
+
+        if(l_added_grpma) then
+            nbgnaj = nbgnaj + 1
+        end if
 !
         call jedetr(lisma)
 !
