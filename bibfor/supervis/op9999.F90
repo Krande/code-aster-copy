@@ -123,7 +123,7 @@ subroutine op9999(options)
     call jedema()
 
 !   The diagnosis of the execution is OK thanks to this message
-    if ( close_base ) then
+    if ( options .ne. 0 ) then
         call utmess('I', 'SUPERVIS2_99')
     endif
     call jefini('NORMAL', close_base)
