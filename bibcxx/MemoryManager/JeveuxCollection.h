@@ -651,7 +651,7 @@ bool JeveuxCollectionClass< ValueType, AccessType >::buildFromJeveux( bool force
                 break;
             }
         if ( !force )
-            return false;
+            return true;
     }
 
     _size = nbColObj;
@@ -704,7 +704,7 @@ bool JeveuxCollectionClass< ValueType, AccessType >::existsObject(
 template < class ValueType, class AccessType >
 std::vector< JeveuxChar32 > JeveuxCollectionClass< ValueType, AccessType >::getObjectNames() const {
     std::vector< JeveuxChar32 > toReturn;
-
+    toReturn.reserve(_listObjects.size());
     for ( auto curObject : _listObjects )
         toReturn.push_back( curObject.getName() );
     return toReturn;

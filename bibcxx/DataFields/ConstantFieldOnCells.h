@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ConstantFieldOnCells
  * @author Natacha Bereux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -378,7 +378,9 @@ template < class ValueType > class ConstantFieldOnCellsClass : public DataFieldC
         const auto &compNames = PhysicalQuantityManager::Class().getComponentNames( gdeur );
         const ASTERINTEGER nbCmpMax = compNames.size();
         VectorString cmpToReturn;
+        cmpToReturn.reserve(30*nec);
         std::vector< ValueType > valToReturn;
+        valToReturn.reserve(30*nec);
         for ( int i = 0; i < nec; ++i ) {
             ASTERINTEGER encodedInt = ( *_descriptor )[3 + 2 * nbZoneMax + position * nec + i];
             VectorLong vecOfComp( 30, -1 );
@@ -529,6 +531,7 @@ template < class ValueType > class ConstantFieldOnCellsClass : public DataFieldC
             mode = "NUM";
             const auto &vecTmp = zone.getListOfCells();
             nbMa = vecTmp.size();
+            // si taille 1 on doit pouvoir préallouer
             limanu->allocate( Temporary, nbMa );
             for ( ASTERINTEGER pos = 0; pos < nbMa; ++pos )
                 ( *limanu )[pos] = vecTmp[pos];
@@ -537,6 +540,7 @@ template < class ValueType > class ConstantFieldOnCellsClass : public DataFieldC
             mode = "NUM";
             const auto &vecTmp = zone.getListOfCells();
             nbMa = vecTmp.size();
+            // si taille 1 on doit pouvoir préallouer
             limanu->allocate( Temporary, nbMa );
             for ( ASTERINTEGER pos = 0; pos < nbMa; ++pos )
                 ( *limanu )[pos] = vecTmp[pos];
