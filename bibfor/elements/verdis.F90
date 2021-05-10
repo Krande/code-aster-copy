@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,10 @@
 subroutine verdis(model, nomail, foue, i3d, i2d,&
                   ndim, ier)
     implicit none
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/modexi.h"
 #include "asterfort/utmess.h"
     character(len=1) :: foue
@@ -47,12 +49,15 @@ subroutine verdis(model, nomail, foue, i3d, i2d,&
 ! --- ------------------------------------------------------------------
     character(len=8) :: kmess
     integer :: ibid, dimmai, dimmod
+    aster_logical :: l_parallel_mesh
 ! --- ------------------------------------------------------------------
 !
 ! --- RECUPERATION DE LA DIMENSION DU MAILLAGE
     call dismoi('DIM_GEOM_B', nomail, 'MAILLAGE', repi=dimmai)
 ! --- RECUPERATION DE LA DIMENSION DU MODELE
     call dismoi('DIM_GEOM', model, 'MODELE', repi=dimmod)
+! --- MAILLAGE DISTRIBUE OU PAS
+    l_parallel_mesh = isParallelMesh(nomail)
 !     SI DIMMAI=DIMMOD
     if (dimmai .eq. dimmod) then
         ndim = dimmai
@@ -82,6 +87,9 @@ subroutine verdis(model, nomail, foue, i3d, i2d,&
         if (ibid .eq. 3) ndim = 3
     endif
 !     LA DIMENSION C'EST 2D OU 3D : TOUS LES AUTRES CAS SONT EXCLUS
+    if (l_parallel_mesh) then
+        call asmpi_comm_vect('MPI_MAX', 'I', sci=ndim)
+    end if
     if ((ndim.ne.2) .and. (ndim.ne.3)) then
         call codent(dimmod, 'G', kmess)
         call utmess(foue, 'DISCRETS_20', sk=kmess)
@@ -92,6 +100,11 @@ subroutine verdis(model, nomail, foue, i3d, i2d,&
     call modexi(model, 'DIS_', i3d)
 ! --- LE MODELE COMPORTE T-IL DES ELEMENTS DISCRETS 2D
     call modexi(model, '2D_DIS_', i2d)
+!
+    if (l_parallel_mesh) then
+        call asmpi_comm_vect('MPI_MAX', 'I', sci=i2d)
+        call asmpi_comm_vect('MPI_MAX', 'I', sci=i3d)
+    end if
 !
 ! --- IL FAUT DES DISCRETS DANS LA MODELISATION
     if ((i3d.eq.0) .and. (i2d.eq.0)) then

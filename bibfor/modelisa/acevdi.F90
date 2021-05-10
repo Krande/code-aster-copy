@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -151,7 +151,9 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
             call getvtx(mcf, 'GROUP_MA', iocc=ioc, nbval=nbgrm, vect=group_ma, nbret=n1)
             do ig = 1, nbgrm
                 nogrm = group_ma(ig)
+                un = 1
                 call verima(noma, nogrm, un, 'GROUP_MA')
+                if (un.eq.0.and.l_parallel_mesh) cycle
                 call jelira(jexnom(grmama, nogrm), 'LONUTI', nbmail)
                 call jeveuo(jexnom(grmama, nogrm), 'L', jmail)
                 do ima = 1, nbmail

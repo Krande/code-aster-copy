@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,6 +57,7 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
     integer, parameter :: nbcar=100
     integer :: ier, i3d, i2d, ndim, ioc, ng, nm, ncar, icar
     integer :: ii, nbma, ialima
+    character(len=1) :: foue
     character(len=8) :: nomu, car(nbcar)
     character(len=16) :: concep, cmd
     character(len=24) :: tmpdis, mlgnno, grpma
