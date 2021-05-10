@@ -24,13 +24,13 @@ from ..Cata.DataStructure import maillage_sdaster
 from ..Cata.Syntax import OPER, SIMP, tr
 from ..Helpers import (FileAccess, FileType,LogicalUnitFile)
 from ..Objects import Mesh, ParallelMesh
+from ..Utilities import haveMPI
 from ..Supervis import ExecuteCommand
 from ..Messages import UTMESS
 from .pre_gibi import PRE_GIBI
 from .pre_gmsh import PRE_GMSH
 from .pre_ideas import PRE_IDEAS
 
-from libaster import MPIInitialized
 
 
 class MeshReader(ExecuteCommand):
@@ -48,7 +48,7 @@ class MeshReader(ExecuteCommand):
         """
         return (keywords['FORMAT'] == "MED" and
                 keywords['PARTITIONNEUR'] == "PTSCOTCH" and
-                MPIInitialized())
+                haveMPI())
 
     def create_result(self, keywords):
         """Create the :class:`~code_aster.Objects.Mesh`.
@@ -93,7 +93,7 @@ class MeshReader(ExecuteCommand):
             self._result.readMedFile(filename, partitioned=False, verbose=keywords['INFO_MED']-1)
         else:
             if keywords['FORMAT'] == "MED" and keywords['PARTITIONNEUR'] == "PTSCOTCH":
-                assert not MPIInitialized()
+                assert not haveMPI()
                 UTMESS("A", "MED_18")
 
             if fmt in need_conversion:

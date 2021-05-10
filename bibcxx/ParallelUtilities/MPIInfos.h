@@ -31,7 +31,5 @@ int getMPINumberOfProcs() ;
 /** @brief Get MPI rank */
 int getMPIRank() ;
 
-/** @brief MPI is initialized ? */
-bool MPIInitialized() ;
 
 #endif /* MPIINFOS_H_ */

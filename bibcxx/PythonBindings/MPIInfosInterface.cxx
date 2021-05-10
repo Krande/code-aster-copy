@@ -43,10 +43,4 @@ Return rank of current mpi process
 Returns:
     int: rank of current mpi process ( return 0 if sequential execution)
         )"  );
-    py::def( "MPIInitialized", MPIInitialized, R"(
-Test if MPI is initialized
-
-Returns:
-    bool: True if MPI is initialized else False
-        )"  );
 };
