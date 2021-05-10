@@ -51,43 +51,42 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                     fr=tr("Nom de la routine MFRONT dans la bibliothèque")),
                                VERI_BORNE = SIMP(statut='f', typ='TXM',
                                                  defaut="ARRET",into=('ARRET','SANS','MESSAGE'),
-                                    fr=tr("Vérification des bornes physiques de la loi de comportement MFRONT"),)),
-           DEFORMATION  =SIMP(statut='f',typ='TXM',defaut="PETIT",
-                                               into=("PETIT","GDEF_LOG")),
+                                    fr=tr("Vérification des bornes physiques de la loi de comportement MFRONT"),),
+                               SYME_MATR_TANG    =SIMP(statut='f',typ='TXM',into=("OUI","NON"), defaut = "OUI"),
+                               ),
+           DEFORMATION  = SIMP(statut='f',typ='TXM',defaut="PETIT", into=("PETIT","GDEF_LOG")),
     # Parametres d'integration
 
-                b_mfront_resi      = BLOC(condition = """equal_to('RELATION', 'MFRONT')""",
-                    RESI_INTE_MAXI    =SIMP(statut='f',typ='R',defaut= 1.0E-8),
-                    ITER_INTE_MAXI    =SIMP(statut='f',typ='I',defaut= 100 ),
-                ),
+            b_mfront_resi      = BLOC(condition = """equal_to('RELATION', 'MFRONT')""",
+                RESI_INTE_MAXI    =SIMP(statut='f',typ='R',defaut= 1.0E-8),
+                ITER_INTE_MAXI    =SIMP(statut='f',typ='I',defaut= 100 ),
+            ),
 
-                b_no_mfront      = BLOC(condition = """not equal_to('RELATION', 'MFRONT')""",
-                    RESI_INTE_RELA    =SIMP(statut='f',typ='R',defaut= 1.0E-6),
-                    ITER_INTE_MAXI    =SIMP(statut='f',typ='I',defaut= 20 ),
-                ),
+            b_no_mfront      = BLOC(condition = """not equal_to('RELATION', 'MFRONT')""",
+                RESI_INTE_RELA    =SIMP(statut='f',typ='R',defaut= 1.0E-6),
+                ITER_INTE_MAXI    =SIMP(statut='f',typ='I',defaut= 20 ),
+            ),
 
-                b_redec_local      = BLOC(condition = """is_in('DEFORMATION', ('PETIT','PETIT_REAC','GROT_GDEP'))""",
-                                     fr=tr("Nombre de redécoupages internes du pas de temps"),
-                                    ITER_INTE_PAS   =SIMP(statut='f',typ='I',defaut= 0 ),
-                                     ),
+            b_redec_local      = BLOC(condition = """is_in('DEFORMATION', ('PETIT','PETIT_REAC','GROT_GDEP'))""",
+                                 fr=tr("Nombre de redécoupages internes du pas de temps"),
+                                ITER_INTE_PAS   =SIMP(statut='f',typ='I',defaut= 0 ),
+                                 ),
 
-                ALGO_INTE         =SIMP(statut='f',typ='TXM',into=("ANALYTIQUE", "SECANTE", "DEKKER", "NEWTON_1D","BRENT",
-                                                              "NEWTON", "NEWTON_RELI", "NEWTON_PERT", "RUNGE_KUTTA",
-                                                              "SPECIFIQUE", "SEMI_EXPLICITE", "BASCULE_EXPLICITE",
-                                                              "SANS_OBJET")),
+            ALGO_INTE         =SIMP(statut='f',typ='TXM',into=("ANALYTIQUE", "SECANTE", "DEKKER", "NEWTON_1D","BRENT",
+                                                          "NEWTON", "NEWTON_RELI", "NEWTON_PERT", "RUNGE_KUTTA",
+                                                          "SPECIFIQUE", "SEMI_EXPLICITE", "BASCULE_EXPLICITE",
+                                                          "SANS_OBJET")),
 
-                TYPE_MATR_TANG    =SIMP(statut='f',typ='TXM',into=("PERTURBATION","VERIFICATION",)),
+            TYPE_MATR_TANG    =SIMP(statut='f',typ='TXM',into=("PERTURBATION","VERIFICATION",)),
 
-                SYME_MATR_TANG    =SIMP(statut='f',typ='TXM',into=("OUI","NON"), defaut = "OUI"),
+            b_perturb         =BLOC(condition = """ (exists("TYPE_MATR_TANG")) """,
+                               fr=tr("Calcul de la matrice tangente par perturbation, valeur de la perturbation"),
+                VALE_PERT_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-5),
+                              ),
 
-                b_perturb         =BLOC(condition = """ (exists("TYPE_MATR_TANG")) """,
-                                   fr=tr("Calcul de la matrice tangente par perturbation, valeur de la perturbation"),
-                    VALE_PERT_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-5),
-                                  ),
+            PARM_THETA      =SIMP(statut='f',typ='R',val_min=0.,val_max=1., defaut= 1.),
 
-                PARM_THETA      =SIMP(statut='f',typ='R',val_min=0.,val_max=1., defaut= 1.),
-
-                b_radi          =BLOC(condition = """not exists("TYPE_MATR_TANG")""", RESI_RADI_RELA  =SIMP(statut='f',typ='R', ),),
+            b_radi          =BLOC(condition = """not exists("TYPE_MATR_TANG")""", RESI_RADI_RELA  =SIMP(statut='f',typ='R', ),),
 
         )
     elif COMMAND == 'CREA_RESU' or COMMAND == 'LIRE_RESU' or COMMAND == 'CALC_FORC_NONL':
@@ -127,6 +126,7 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                 fr=tr("Vérification des bornes physiques de la loi")),
                                 ALGO_CPLAN      = SIMP(statut='f', typ='TXM', defaut="DEBORST",
                                                        into=('DEBORST','ANALYTIQUE'),),
+                                SYME_MATR_TANG    =SIMP(statut='f',typ='TXM',into=("OUI","NON"), defaut = "OUI"),
                               ),
             b_kit_ddi   = BLOC( condition = """equal_to("RELATION", 'KIT_DDI') """,
                                 fr=tr("relations de couplage fluage-plasticite"),
@@ -201,6 +201,7 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                                        defaut="DEBORST",
                                                        into=('DEBORST','ANALYTIQUE'),
                                                       ),
+                                    SYME_MATR_TANG    =SIMP(statut='f',typ='TXM',into=("OUI","NON"), defaut = "OUI"),
                                                   ),
                               ),
             b_kit_meta  = BLOC( condition = """value("RELATION").startswith('META_') and not value("RELATION").startswith('META_LEMA_ANI')""",
@@ -278,6 +279,8 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                 fr=tr("Vérification des bornes physiques de la loi")),
                                 ALGO_CPLAN      = SIMP(statut='f', typ='TXM', defaut="DEBORST",
                                                        into=('DEBORST','ANALYTIQUE'),),
+
+                                SYME_MATR_TANG    =SIMP(statut='f',typ='TXM',into=("OUI","NON"), defaut = "OUI"),
                               ),
             b_kit_ddi   = BLOC( condition = """equal_to("RELATION", 'KIT_DDI') """,
                                 fr=tr("relations de couplage fluage-plasticite"),
@@ -354,6 +357,8 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                                       ),
                                     RESI_INTE_MAXI    =SIMP(statut='f',typ='R',defaut= 1.0E-8),
                                     ITER_INTE_MAXI    =SIMP(statut='f',typ='I',defaut= 100 ),
+
+            SYME_MATR_TANG    =SIMP(statut='f',typ='TXM',into=("OUI","NON"), defaut = "OUI"),
                                                   ),
                               ),
             b_kit_meta  = BLOC( condition = """value("RELATION").startswith('META_') and not value("RELATION").startswith('META_LEMA_ANI')""",
@@ -401,8 +406,6 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                                           "SANS_OBJET")),
 
             TYPE_MATR_TANG    =SIMP(statut='f',typ='TXM',into=("PERTURBATION","VERIFICATION",)),
-
-            SYME_MATR_TANG    =SIMP(statut='f',typ='TXM',into=("OUI","NON"), defaut = "OUI"),
 
             b_perturb         =BLOC(condition = """ (exists("TYPE_MATR_TANG")) """,
                                fr=tr("Calcul de la matrice tangente par perturbation, valeur de la perturbation"),

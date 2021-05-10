@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -203,10 +203,13 @@ aster_logical, intent(in), optional :: l_implex_
         l_matr_unsymm = l_matr_unsymm .or. answer .eq. 'No'
         call lcsymm(defo_code_py, answer)
         l_matr_unsymm = l_matr_unsymm .or. answer .eq. 'No'
-        call getvtx(keywordfact, 'SYME_MATR_TANG', iocc = i_comp, scal = answer, nbret = iret)
-        if (iret .ne. 0) then
-            l_matr_unsymm = l_matr_unsymm .or. answer .eq. 'NON'
+        if (l_mfront_proto) then
+            call getvtx(keywordfact, 'SYME_MATR_TANG', iocc = i_comp, scal = answer, nbret = iret)
+            if (iret .ne. 0) then
+                l_matr_unsymm = l_matr_unsymm .or. answer .eq. 'NON'
+            endif
         endif
+
 ! ----- Get ITER_INTE_PAS
         call getvis(keywordfact, 'ITER_INTE_PAS', iocc = i_comp, scal=iter_inte_pas, nbret=iret)
         if (iret .eq. 0) then
