@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -67,10 +67,8 @@ CALC_ERREUR=OPER(nom="CALC_ERREUR",op=42,sd_prod=calc_erreur_prod,
      CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
      EXCIT           =FACT(statut='f',max='**',
                            fr=tr("Charges contenant les températures, les efforts répartis pour les poutres..."),
-                           regles=(EXCLUS('FONC_MULT','COEF_MULT',),),
                     CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca),),
-                    FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),),
-                    COEF_MULT       =SIMP(statut='f',typ='R'),),
+                    FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),),),
 #-----------------------------------------------------------------------
 
      OPTION =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=C_NOM_CHAM_INTO(phenomene='ERREUR',),),

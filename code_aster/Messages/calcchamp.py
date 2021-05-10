@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,8 @@ Conseil :
  Le calcul de cette option n'est donc pas possible.
  L'option demandée n'est calculable sur les éléments du modèle.
 """),
+
+    3 : _("""L'utilisation de COEF_MULT n'est permise qu'avec des éléments de poutre."""),
 
 4 : _("""
 Les contributions de l'amortissement liées à la vitesse pour les
