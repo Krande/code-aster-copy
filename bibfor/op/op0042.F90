@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine op0042()
-! person_in_charge: josselin.delmas at edf.fr
 !
-!     COMMANDE :  CALC_ERREUR
-!        CALCUL DES CONTRAINTES (DEFORM ...) ELEMENTAIRES EN MECANIQUE.
-!        CALCUL DES FLUX ELEMENTAIRES EN THERMIQUE.
-!        CALCUL DES INTENSITES        EN ACOUSTIQUE
-!        CALCUL DES INDICATEURS D'ERREURS EN MECANIQUE ET EN THERMIQUE
-!   -------------------------------------------------------------------
-! CORPS DU PROGRAMME
-! ----------------------------------------------------------------------
-    implicit none
+subroutine op0042()
+!
+implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -52,20 +44,25 @@ subroutine op0042()
 #include "asterfort/thcalr.h"
 #include "asterfort/utmess.h"
 !
+! --------------------------------------------------------------------------------------------------
+!
+! Command: CALC_ERREUR
+!
+! --------------------------------------------------------------------------------------------------
+!
     character(len=6) :: nompro
     parameter  (nompro='OP0042')
-!
     integer :: ifm, niv, n0, nuord, nchar, ibid, jordr, np, nc
     integer :: nbordr, iret
     real(kind=8) :: prec
-    character(len=4) :: ctyp
     character(len=8) :: resuc1, resuco, modele, cara, crit
     character(len=16) :: nomcmd, tysd, pheno, concep, k16bid, compex
     character(len=19) :: knum, kcha, solveu
     character(len=24) :: mate, mateco
     aster_logical :: newcal
     mpi_int :: msize
-!     ------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
@@ -124,7 +121,7 @@ subroutine op0042()
     call cresol(solveu)
 !
     call medom1(modele, mate, mateco, cara, kcha, nchar,&
-                ctyp, resuco, nuord)
+                resuco, nuord)
     call dismoi('PHENOMENE', modele, 'MODELE', repk=pheno)
 !
 !     --- TRAITEMENT DU PHENOMENE MECANIQUE ---
@@ -132,14 +129,14 @@ subroutine op0042()
 !
         call mecalr(newcal, tysd, knum, kcha, resuco,&
                     resuc1, nbordr, modele, mate, cara,&
-                    nchar, ctyp)
+                    nchar)
 !
 !     --- TRAITEMENT DES PHENOMENES THERMIQUES ET ACOUSTIQUES ---
     else if (pheno(1:4).eq.'THER') then
 !
         call thcalr(newcal, tysd, knum, kcha, resuco,&
                     resuc1, nbordr, modele, mate, cara,&
-                    nchar, ctyp)
+                    nchar)
 !
     endif
 !
@@ -148,10 +145,7 @@ subroutine op0042()
 !
 ! --- ON REMET LE MECANISME D'EXCEPTION A SA VALEUR INITIALE
     call onerrf(compex, k16bid, ibid)
-!
-!     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:
-!     -------------------------------------------
-!   call ajrefd(resuco, resuc1, 'COPIE')
+
 !
     call jedema()
 end subroutine

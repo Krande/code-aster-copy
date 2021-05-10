@@ -36,6 +36,7 @@ implicit none
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/modopt.h"
@@ -60,7 +61,6 @@ implicit none
     integer :: nbtrou, ier,  nbOption, nb, iOption
     integer :: nbStore, numeStore0, numeStoreInit
     real(kind=8) :: inst, prec
-    character(len=4) :: ctyp
     character(len=8) :: crit, temper, temper2, model
     character(len=16) :: resultType, option
     character(len=19), parameter :: compor = '&&OP0194.COMPOR'
@@ -82,7 +82,6 @@ implicit none
     call getvid(' ', 'RESULTAT', scal=temper, nbret=n1)
     call gettco(temper, resultType)
     ASSERT(resultType .eq. 'EVOL_THER')
-    ctyp = ' '
 
 ! - Get list of storing index
     call rs_get_liststore(temper, nbStore)
@@ -105,7 +104,7 @@ implicit none
 ! - Get options to compute
     call getvtx(' ', 'OPTION', nbval=0, nbret=nb)
     nbOption = -nb
-    AS_ALLOCATE(vk16 = listOption, size = nbOption)
+    call wkvect(listOptionsJv, 'V V K16', nbOption, vk16 = listOption)
     call getvtx(' ', 'OPTION', nbval=nbOption, vect=listOption, nbret=nb)
 
 ! - Compute options
@@ -163,13 +162,13 @@ implicit none
                 endif
             end do
             call calcop(option, listOptionsJv, temper, temper, listStoreJv,&
-                        nbStore, ctyp, resultType, iret)
+                        nbStore, resultType, iret)
             if (iret .eq. 0) cycle
 !
         endif
     end do
 !
-    AS_DEALLOCATE(vk16 = listOption)
+    call jedetr(listOptionsJv)
 !
     call jedema()
 end subroutine

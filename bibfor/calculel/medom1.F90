@@ -15,10 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine medom1(modele, mater, mateco, cara, kcha, ncha,&
-                  ctyp, result, nuord)
-    implicit none
+                  result, nuord)
+!
+implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getexm.h"
@@ -35,11 +37,10 @@ subroutine medom1(modele, mater, mateco, cara, kcha, ncha,&
 #include "asterfort/rslesd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: ncha, nuord
-    character(len=4) :: ctyp
-    character(len=8) :: modele, cara, result
-    character(len=24) :: mater, mateco
-    character(len=19) :: kcha
+integer :: ncha, nuord
+character(len=8) :: modele, cara, result
+character(len=24) :: mater, mateco
+character(len=19) :: kcha
 !     SAISIE ET VERIFICATION DE LA COHERENCE DES DONNEES MECANIQUES
 !     DU PROBLEME
 !
@@ -50,7 +51,6 @@ subroutine medom1(modele, mater, mateco, cara, kcha, ncha,&
 ! OUT : CARA   : NOM DU CHAMP DE CARACTERISTIQUES
 ! IN  : KCHA   : NOM JEVEUX POUR STOCKER LES CHARGES
 ! OUT : NCHA   : NOMBRE DE CHARGES
-! OUT : CTYP   : TYPE DE CHARGE
 ! IN  : RESULT : NOM DE LA SD RESULTAT
 ! IN  : NUORD  : NUMERO D'ORDRE
 ! ----------------------------------------------------------------------
@@ -58,7 +58,7 @@ subroutine medom1(modele, mater, mateco, cara, kcha, ncha,&
     integer :: iexcit, i, icha, ie, ikf, in
     integer ::    n, n1, n2, n3, n5
 !-----------------------------------------------------------------------
-    character(len=8) :: k8b, nomo, materi
+    character(len=8) :: k8b, nomo, materi, loadType
     character(len=4) :: phen
     character(len=8) :: blan8
     character(len=16) :: concep, nomcmd, phenom
@@ -69,10 +69,9 @@ subroutine medom1(modele, mater, mateco, cara, kcha, ncha,&
     aster_logical :: l_ther
 !
     call jemarq()
-!              12345678
-    blan8 = '        '
+!
+    blan8 = ' '
     ncha = 0
-    ctyp = ' '
     modele = ' '
     cara = ' '
     materi = ' '
@@ -198,13 +197,10 @@ subroutine medom1(modele, mater, mateco, cara, kcha, ncha,&
         call wkvect(kcha//'.LCHA', 'V V K8', ncha, icha)
         call wkvect(kcha//'.FCHA', 'V V K8', ncha, ikf)
         call dismoi('PHENOMENE', modele, 'MODELE', repk=phenom)
-        ctyp=phenom(1:4)
         in=0
         do i = 1, ncha
-!           ON STOCKE LES CHARGES DONT LE TYPE CORRESPOND A CTYP
-            call dismoi('TYPE_CHARGE', lcha(i), 'CHARGE', repk=k8b, arret='C',&
-                        ier=ie)
-            if ((ie.eq.0) .and. (ctyp.eq.k8b(1:4))) then
+            call dismoi('TYPE_CHARGE', lcha(i), 'CHARGE', repk=loadType, arret='C', ier=ie)
+            if ((ie.eq.0) .and. (phenom(1:4).eq.loadType(1:4))) then
                 zk8(icha+in)= lcha(i)(1:8)
                 zk8(ikf+in) = fcha(i)(1:8)
                 in=in+1

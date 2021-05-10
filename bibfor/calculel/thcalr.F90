@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 subroutine thcalr(newcal, tysd, knum, lload_name, resuco,&
                   resuc1, nbordr, modele, mate, cara,&
-                  nb_load, ctyp)
+                  nb_load)
     implicit none
-! person_in_charge: josselin.delmas at edf.fr
+!
 ! ------------------------------------------------------------------
 ! IN  NEWCAL : TRUE POUR UN NOUVEAU CONCEPT RESULTAT, FALSE SINON
 ! IN  TYSD   : TYPE DU CONCEPT ATTACHE A RESUCO
@@ -35,7 +35,6 @@ subroutine thcalr(newcal, tysd, knum, lload_name, resuco,&
 ! IN  MATE   : NOM DU CHAMP MATERIAU
 ! IN  CARA   : NOM DU CHAMP DES CARACTERISTIQUES ELEMENTAIRES
 ! IN  NCHAR  : NOMBRE DE CHARGES
-! IN  CTYP   : TYPE DE CHARGE
 ! ----------------------------------------------------------------------
 !
 #include "asterf_types.h"
@@ -75,7 +74,6 @@ subroutine thcalr(newcal, tysd, knum, lload_name, resuco,&
 !
     integer :: nbordr, nb_load
     integer :: vali
-    character(len=4) :: ctyp
     character(len=8) :: resuco, resuc1, modele, cara
     character(len=16) :: tysd
     character(len=19) :: knum, lload_name
@@ -167,13 +165,13 @@ subroutine thcalr(newcal, tysd, knum, lload_name, resuco,&
         call jeveuo(knum, 'L', jordr)
 !
         call calcop(option, lesopt, resuco, resuc1, knum,&
-                    nbordr, ctyp, tysd, iret)
+                    nbordr, tysd, iret)
         if (iret .eq. 0) goto 120
 !
 !
         nuord=zi(jordr)
         call medom1(modele, mate, mateco, cara, lload_name, nb_load,&
-                    ctyp, resuco, nuord)
+                    resuco, nuord)
         call jeveuo(lload_name//'.LCHA', 'L', jcha)
 !
         call mecham(option, modele, cara, nh, chgeom,&
@@ -243,7 +241,7 @@ subroutine thcalr(newcal, tysd, knum, lload_name, resuco,&
                 call jerecu('V')
                 iordr=zi(jordr+iaux-1)
                 call medom1(modele, mate, mateco, cara, lload_name, nb_load,&
-                            ctyp, resuco, iordr)
+                            resuco, iordr)
                 call mecara(cara, chcara)
 ! RECUPERATION DU PARM_THETA CORRESPONDANT A IORDR
                 call jenonu(jexnom(resuco//'           .NOVA', 'PARM_THETA'), iad)

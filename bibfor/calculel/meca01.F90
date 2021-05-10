@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
-                  kcha, ctyp, tbgrca, resuco, resuc1,&
+                  kcha, tbgrca, resuco, resuc1,&
                   leres1, noma, modele, ligrmo, mate,&
                   cara, chvarc, codret)
 ! person_in_charge: josselin.delmas at edf.fr
@@ -30,7 +30,6 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 ! IN  NCHAR  : NOMBRE DE CHARGES
 ! IN  JCHA   : ADRESSES DES CHARGES
 ! IN  KCHA   : NOM JEVEUX OU SONT STOCKEES LES CHARGES
-! IN  CTYP   : TYPE DE CHARGE
 ! IN  TBGRCA : TABLEAU DES GRANDEURS CARACTERISTIQUES (HM)
 ! IN  RESUCO : NOM DE CONCEPT RESULTAT
 ! IN  RESUC1 : NOM DE CONCEPT DE LA COMMANDE CALC_ERREUR
@@ -90,7 +89,6 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
     integer :: nbordr, jordr, nchar, jcha
     integer :: codret
     real(kind=8) :: tbgrca(3)
-    character(len=4) :: ctyp
     character(len=8) :: noma, resuco, resuc1, modele, cara
     character(len=19) :: kcha, chvarc
     character(len=19) :: leres1
@@ -224,7 +222,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 ! 2.2.1 ==> SAISIT ET VERIFIE LA COHERENCE DES DONNEES MECANIQUES
 !           RECUPERE LES CHARGES POUR LE NUMERO D'ORDRE IORDR
             call medom1(modele, mate, mateco, cara, kcha, nchar,&
-                        ctyp, resuco, iordr)
+                        resuco, iordr)
             call jeveuo(kcha//'.LCHA', 'L', jcha)
             call mecara(cara, chcara)
 !
@@ -493,9 +491,9 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !
 ! 4.2.2. ==> SAISIE ET VERIFIE LA COHERENCE DES DONNEES MECANIQUES
         call medom1(modele, mate, mateco, cara, kchap, ncharp,&
-                    ctyp, resup, iordr)
+                    resup, iordr)
         call medom1(modele, mate, mateco, cara, kchad, nchard,&
-                    ctyp, resud, iordr)
+                    resud, iordr)
         call jeveuo(kchap//'.LCHA', 'L', jchap)
         call jeveuo(kchad//'.LCHA', 'L', jchad)
 !
@@ -625,9 +623,9 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !
 ! 6.2.1. ==> SAISIT ET VERIFIE LA COHERENCE DES DONNEES MECANIQUES
         call medom1(modele, mate, mateco, cara, kchap, ncharp,&
-                    ctyp, resup, iordr)
+                    resup, iordr)
         call medom1(modele, mate, mateco, cara, kchad, nchard,&
-                    ctyp, resud, iordr)
+                    resud, iordr)
         call jeveuo(kchap//'.LCHA', 'L', jchap)
         call jeveuo(kchad//'.LCHA', 'L', jchad)
 !
@@ -701,7 +699,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !
         iordr = zi(jordr+iaux-1)
         call medom1(modele, mate, mateco, cara, kcha, nchar,&
-                    ctyp, resuco, iordr)
+                    resuco, iordr)
         call jeveuo(kcha//'.LCHA', 'L', jcha)
         call mecara(cara, chcara)
         call rsexc2(1, 1, resuco, 'SIEF_ELGA', iordr,&

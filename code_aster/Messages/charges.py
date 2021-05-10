@@ -26,7 +26,7 @@ La charge %(k1)s a été utilisée plus d'une fois dans EXCIT: il faut la suppri
 """),
 
     2 : _("""
-Il n'y a aucune charge dans le mot-clef facteur EXCIT. Ce n'est pas possible avec STAT_NON_LINE.
+Il n'y a aucun chargement défini, ce n'est pas possible dans cette commande.
 """),
 
     3 : _("""

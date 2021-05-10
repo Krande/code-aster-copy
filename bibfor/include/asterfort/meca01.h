@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
     subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
-                      kcha, ctyp, tbgrca, resuco, resuc1,&
+                      kcha, tbgrca, resuco, resuc1,&
                       leres1, noma, modele, ligrmo, mate,&
                       cara, chvarc, codret)
         character(len=*) :: optio0
@@ -29,7 +27,6 @@ interface
         integer :: nchar
         integer :: jcha
         character(len=19) :: kcha
-        character(len=4) :: ctyp
         real(kind=8) :: tbgrca(3)
         character(len=8) :: resuco
         character(len=8) :: resuc1

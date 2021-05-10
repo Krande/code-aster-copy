@@ -17,8 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1501
 !
-subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
-                  chtype, typesd)
+subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, resultType)
 !
 implicit none
 !
@@ -78,9 +77,8 @@ implicit none
 #include "asterfort/lislec.h"
 #include "asterfort/isParallelMesh.h"
     integer :: nbordr
-    character(len=4) :: chtype
     character(len=8) :: resuin, resuou
-    character(len=16) :: option, typesd
+    character(len=16) :: option, resultType
     character(len=19) :: lisord
 !  CALC_CHAMP - CALCUL DES FORCES NODALES ET DES REACTIONS NODALES
 !  -    -                  -      -              -         -
@@ -149,13 +147,17 @@ implicit none
 !
     bidon='&&'//nompro//'.BIDON'
 
-
+    if((option.eq.'REAC_NODA') .and. &
+          ((resultType.eq.'DYNA_TRANS') .or. &
+           (resultType.eq.'DYNA_HARMO'))) then
+        call utmess('A', 'CALCCHAMP_4')
+    endif
     listLoad = '&&CCFNRN.LISTLOAD'
 !
     call jeveuo(lisord, 'L', jordr)
 !
 ! ----ON VERIFIE SI DERRIERE UN CONCEPT MODE_MECA SE TROUVE UN MODE_DYN
-    if (typesd(1:9) .eq. 'MODE_MECA') then
+    if (resultType(1:9) .eq. 'MODE_MECA') then
         call rsadpa(resuin, 'L', 1, 'TYPE_MODE', 1, 0, sjv=jvPara, styp=k8bid)
         typmo=zk16(jvPara)
     else
@@ -165,7 +167,7 @@ implicit none
 ! - Only one list of loads for REAC_NODA
 !
     if (option .eq. 'REAC_NODA' .and. &
-        (typesd .eq. 'EVOL_ELAS' .or. typesd .eq. 'EVOL_NOLI')) then
+        (resultType .eq. 'EVOL_ELAS' .or. resultType .eq. 'EVOL_NOLI')) then
         call jeveuo(lisord, 'L', vi = v_list_store)
         call medome_once(resuin, v_list_store, nbordr)
     endif
@@ -174,9 +176,9 @@ implicit none
 ! TRI DES OPTIONS SUIVANT TYPESD
     lmat=0
     exitim=.false.
-    if (typesd .eq. 'EVOL_ELAS' .or. typesd .eq. 'EVOL_NOLI') then
+    if (resultType .eq. 'EVOL_ELAS' .or. resultType .eq. 'EVOL_NOLI') then
         exitim=.true.
-    else if (typesd.eq.'MODE_MECA' .or. typesd.eq.'DYNA_TRANS') then
+    else if (resultType.eq.'MODE_MECA' .or. resultType.eq.'DYNA_TRANS') then
         call jeexin(resuin//'           .REFD', iret)
         if (iret .ne. 0) then
             call dismoi('REF_MASS_PREM', resuin, 'RESU_DYNA', repk=masse, arret='C')
@@ -185,8 +187,8 @@ implicit none
                 call jeveuo(masse(1:19)//'.&INT', 'E', lmat)
             endif
         endif
-        if (typesd .eq. 'DYNA_TRANS') exitim=.true.
-    else if (typesd.eq.'DYNA_HARMO') then
+        if (resultType .eq. 'DYNA_TRANS') exitim=.true.
+    else if (resultType.eq.'DYNA_HARMO') then
         call jeexin(resuin//'           .REFD', iret)
         if (iret .ne. 0) then
             call dismoi('REF_MASS_PREM', resuin, 'RESU_DYNA', repk=masse, arret='C')
@@ -196,7 +198,7 @@ implicit none
             endif
         endif
     endif
-    if (typesd .eq. 'MODE_MECA' .or. typesd .eq. 'DYNA_TRANS') then
+    if (resultType .eq. 'MODE_MECA' .or. resultType .eq. 'DYNA_TRANS') then
         call dismoi('NUME_DDL', resuin, 'RESU_DYNA', repk=numref)
     endif
     carac=' '
@@ -206,7 +208,7 @@ implicit none
     modele=' '
     nuord=zi(jordr)
     k24b=' '
-    if (typesd .eq. 'EVOL_THER') then
+    if (resultType .eq. 'EVOL_THER') then
         call ntdoth(k24b, mater, mateco, carac, listLoad,&
                     result = resuou, nume_store = nuord)
     else
@@ -322,7 +324,7 @@ implicit none
         vareno='&&'//nompro//'           .RELR'
 !
         nh=0
-        if (typesd(1:8) .eq. 'FOURIER_') then
+        if (resultType(1:8) .eq. 'FOURIER_') then
             call rsadpa(resuin, 'L', 1, 'NUME_MODE', iordr, 0, sjv=jnmo)
             nh=zi(jnmo)
         endif
@@ -330,9 +332,9 @@ implicit none
         if (iret .ne. 0) then
           optio2 = 'SIEF_ELGA'
           if (ldist) then
-            call calcop(optio2, ' ', resuin, resuou, lisori, nbordi, chtype, typesd, cret, 'V')
+            call calcop(optio2, ' ', resuin, resuou, lisori, nbordi, resultType, cret, 'V')
           else
-            call calcop(optio2, ' ', resuin, resuou, lisord, nbordr, chtype, typesd, cret, 'V')
+            call calcop(optio2, ' ', resuin, resuou, lisord, nbordr, resultType, cret, 'V')
           endif
           call rsexch(' ', resuou, 'SIEF_ELGA', iordr, sigma, iret)
         endif
@@ -341,9 +343,9 @@ implicit none
           if (iret .ne. 0 .and. lstr2) then
             optio2 = 'STRX_ELGA'
             if (ldist) then
-              call calcop(optio2, ' ', resuin, resuou, lisori, nbordi, chtype, typesd, cret, 'V')
+              call calcop(optio2, ' ', resuin, resuou, lisori, nbordi, resultType, cret, 'V')
             else
-              call calcop(optio2, ' ', resuin, resuou, lisord, nbordr, chtype, typesd, cret, 'V')
+              call calcop(optio2, ' ', resuin, resuou, lisord, nbordr, resultType, cret, 'V')
             endif
             call rsexch(' ', resuou, 'STRX_ELGA', iordr, strx, iret)
          endif
@@ -368,7 +370,7 @@ implicit none
         endif
 !
 !       -- CALCUL D'UN NUME_DDL "MINIMUM" POUR ASASVE :
-        if (typesd .eq. 'MODE_MECA' .or. typesd .eq. 'DYNA_TRANS') then
+        if (resultType .eq. 'MODE_MECA' .or. resultType .eq. 'DYNA_TRANS') then
 ! NUME_DDL QUI NE CHANGE PAS AVEC LE PAS DE TEMPS: NUME
             nume=numref(1:14)//'.NUME'
         else
@@ -445,7 +447,7 @@ implicit none
                     compor, partps, nh, ligrel, chvarc,&
                     sigma, strx, chdepl, chdep2, vfono)
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
-        if (typesd.ne.'DYNA_HARMO') then
+        if (resultType.ne.'DYNA_HARMO') then
             call asasve(vfono(1), nume, 'R', vafono)
         else
 ! creation champ aux noeuds
@@ -498,7 +500,7 @@ implicit none
         endif
 !
 ! CREATION DES SDS CHAM_NOS SIMPLE OU SIMULTANES
-        if (typesd.ne.'DYNA_HARMO') then
+        if (resultType.ne.'DYNA_HARMO') then
             ktyp='R'
             if ((ldist).and.(ideb.ne.ifin)) then
               call vtcreb(chamno,'G','R',nume_ddlz=nume,nb_equa_outz=neq,nbz=nbproc,vchamz=vcham)
@@ -533,7 +535,7 @@ implicit none
                    k24b, lonnew, lonch, kbid, k24b, prbid, pcbid)
         lonch=lonnew
 !
-        if (typesd.ne.'DYNA_HARMO') then
+        if (resultType.ne.'DYNA_HARMO') then
             call jeveuo(vafono, 'L', jfo)
             call jeveuo(zk24(jfo)(1:19)//'.VALE', 'L', vr=fono)
         else
@@ -553,7 +555,7 @@ implicit none
 !
 !       --- STOCKAGE DES FORCES NODALES ---
         if (option .eq. 'FORC_NODA') then
-          if (typesd.ne.'DYNA_HARMO') call dcopy(lonch,fono,1,noch,1)
+          if (resultType.ne.'DYNA_HARMO') call dcopy(lonch,fono,1,noch,1)
           goto 270
         endif
 !
@@ -574,7 +576,7 @@ implicit none
             endif
           endif
 !
-            if (typesd.ne.'DYNA_HARMO') then
+            if (resultType.ne.'DYNA_HARMO') then
                 call vechme(stop, modele, charge, infoch, partps,&
                         carac, mater, mateco, vechmp, varc_currz = chvarc, ligrel_calcz = ligrel,&
                         nharm = nh)
@@ -618,7 +620,7 @@ implicit none
 
 !
 ! --- POUR UN EVOL_NOLI, PRISE EN COMPTE DES FORCES PILOTEES
-            if (typesd .eq. 'EVOL_NOLI') then
+            if (resultType .eq. 'EVOL_NOLI') then
 ! - CHARGES PILOTEES (TYPE_CHARGE: 'FIXE_PILO')
                 call vefpme(modele, carac, mater, mateco, charge, infoch,&
                             partps, k24bid, vefpip, ligrel, chdepl, bidon)
@@ -641,26 +643,26 @@ implicit none
 !
 ! --- CALCUL DU CHAMNO DE REACTION PAR DIFFERENCE DES FORCES NODALES
 ! --- ET DES FORCES EXTERIEURES MECANIQUES NON SUIVEUSES
-            if (typesd.ne.'DYNA_HARMO') then
+            if (resultType.ne.'DYNA_HARMO') then
                 call jeveuo(cnchmp(1:19)//'.VALE', 'L', vr=chmp)
                 call jeveuo(cncgmp(1:19)//'.VALE', 'L', vr=cgmp)
             else
                 call jeveuo(cnchmpc(1:19)//'.VALE', 'L', vc=chmpc)
             endif
-            if (typesd.ne.'DYNA_HARMO') then
+            if (resultType.ne.'DYNA_HARMO') then
               do j = 0, lonch-1
                 noch(1+j)=fono(1+j)-chmp(1+j)-cgmp(1+j)
               enddo
             else
               call zaxpy(lonch,cmun,chmpc,1,nochc,1)
             endif
-            if (typesd.eq.'EVOL_NOLI') then
+            if (resultType.eq.'EVOL_NOLI') then
                 call jeveuo(cnfpip(1:19)//'.VALE', 'L', vr=fpip)
                 call daxpy(lonch,-1.d0*etan,fpip,1,noch,1)
             endif
         else
 !         --- CALCUL DU CHAMNO DE REACTION PAR RECOPIE DE FORC_NODA
-            if (typesd.ne.'DYNA_HARMO') call dcopy(lonch,fono,1,noch,1)
+            if (resultType.ne.'DYNA_HARMO') call dcopy(lonch,fono,1,noch,1)
         endif
         if (lcpu) then
           call cpu_time(rctfin)
@@ -669,7 +671,7 @@ implicit none
         endif
 !
 !       --- TRAITEMENT DES MODE_MECA ---
-        if (typesd .eq. 'MODE_MECA' .and. typmo(1:8) .eq. 'MODE_DYN') then
+        if (resultType .eq. 'MODE_MECA' .and. typmo(1:8) .eq. 'MODE_DYN') then
             call rsadpa(resuin, 'L', 1, 'OMEGA2', iordr, 0, sjv=jvPara, styp=ctyp)
             omega2=zr(jvPara)
             call jeveuo(chdepl(1:19)//'.VALE', 'L', vr=nldepl)
@@ -681,7 +683,7 @@ implicit none
             call jedetr('&&'//nompro//'.TRAV')
 !
 !       --- TRAITEMENT DES MODE_STAT ---
-        elseif (typesd.eq.'MODE_MECA' .and. typmo(1:8).eq.'MODE_STA') then
+        elseif (resultType.eq.'MODE_MECA' .and. typmo(1:8).eq.'MODE_STA') then
             call rsadpa(resuin, 'L', 1, 'TYPE_DEFO', iordr, 0, sjv=jvPara, styp=ctyp)
             if (zk16(jvPara)(1:9) .eq. 'FORC_IMPO') then
                 call rsadpa(resuin, 'L', 1, 'NUME_DDL', iordr, 0, sjv=jvPara, styp=ctyp)
@@ -717,7 +719,7 @@ implicit none
             endif
 !
 !       --- TRAITEMENT DE DYNA_TRANS ---
-        else if (typesd.eq.'DYNA_TRANS') then
+        else if (resultType.eq.'DYNA_TRANS') then
             call rsexch(' ', resuin, 'ACCE', iordr, chacce,iret)
             if (iret .eq. 0) then
                 call jeveuo(chacce(1:19)//'.VALE', 'L', lacce)
@@ -731,7 +733,7 @@ implicit none
             endif
 !
 !       --- TRAITEMENT DE DYNA_HARMO ---
-        else if (typesd.eq.'DYNA_HARMO') then
+        else if (resultType.eq.'DYNA_HARMO') then
             call rsexch(' ', resuin, 'ACCE', iordr, chacce,iret)
             if (iret .eq. 0) then
                 call jeveuo(chacce(1:19)//'.VALE', 'L', lacce)
@@ -745,7 +747,7 @@ implicit none
             endif
 !
 !       --- TRAITEMENT DE EVOL_NOLI ---
-        else if (typesd.eq.'EVOL_NOLI') then
+        else if (resultType.eq.'EVOL_NOLI') then
             call rsexch(' ', resuin, 'ACCE', iordr, chacce, iret)
             if (iret .eq. 0) then
                 optio2='M_GAMMA'
@@ -799,7 +801,7 @@ implicit none
             iordk=zi(jordr+k-1)
             call rsnoch(resuou, option, iordk)
             k24b=' '
-            if (typesd .eq. 'EVOL_THER') then
+            if (resultType .eq. 'EVOL_THER') then
               call ntdoth(k24b,mater,mateco,carac,listLoad,result=resuou,nume_store =iordk)
             else
               call nmdome(k24b,mater,mateco,carac,listLoad,resuou(1:8),iordk)
@@ -820,7 +822,7 @@ implicit none
 ! ET SI NON PARALLELISME EN TEMPS
           call rsnoch(resuou, option, iordr)
           k24b=' '
-          if (typesd .eq. 'EVOL_THER') then
+          if (resultType .eq. 'EVOL_THER') then
             call ntdoth(k24b,mater,mateco,carac,listLoad,result=resuou,nume_store=iordr)
           else
             call nmdome(k24b,mater,mateco,carac,listLoad,resuou(1:8),iordr)

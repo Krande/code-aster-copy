@@ -72,11 +72,10 @@ character(len=19), intent(in) :: listStoreJv, listOptionJv
 !
     integer :: iret, posopt
     integer :: ifm, niv, numeStore0
-    integer :: nbac, nbpa, nbpara, jpara
-    integer :: iStore, j, iadou, iadin, numeStore, jopt, iOption
+    integer :: nbac, nbpa, nbpara, jvPara
+    integer :: iStore, iPara, iadou, iadin, numeStore, jopt, iOption
     integer, pointer :: listStore(:) => null()
-    character(len=4) :: typcha
-    character(len=8) :: type, model, caraElem
+    character(len=8) :: paraType, model, caraElem
     character(len=8) :: answer
     character(len=16) :: option, resultType
     character(len=24) :: nompar
@@ -102,7 +101,6 @@ character(len=19), intent(in) :: listStoreJv, listOptionJv
 ! - Get parameters at initial state
     numeStore0 = listStore(1)
     call rslesd(resultIn, numeStore0, model_ = model, cara_elem_ = caraElem)
-    typcha = ' '
     if (model .eq. ' ') then
         call utmess('F', 'CALCULEL2_44')
     endif
@@ -131,29 +129,29 @@ character(len=19), intent(in) :: listStoreJv, listOptionJv
         nompar='&&CCBCOP.NOMS_PARA '
         call rsnopa(resultIn, 2, nompar, nbac, nbpa)
         nbpara=nbac+nbpa
-        call jeveuo(nompar, 'L', jpara)
+        call jeveuo(nompar, 'L', jvPara)
         do iStore = 1, nbStore
             numeStore = listStore(iStore)
-            do j = 1, nbpara
-                call rsadpa(resultIn, 'L', 1, zk16(jpara+j-1), numeStore,&
-                            1, sjv=iadin, styp=type, istop=0)
-                call rsadpa(resultOut, 'E', 1, zk16(jpara+j-1), numeStore,&
-                            1, sjv=iadou, styp=type)
-                if (type(1:1) .eq. 'I') then
+            do iPara = 1, nbpara
+                call rsadpa(resultIn, 'L', 1, zk16(jvPara+iPara-1), numeStore,&
+                            1, sjv=iadin, styp=paraType, istop=0)
+                call rsadpa(resultOut, 'E', 1, zk16(jvPara+iPara-1), numeStore,&
+                            1, sjv=iadou, styp=paraType)
+                if (paraType(1:1) .eq. 'I') then
                     zi(iadou)=zi(iadin)
-                else if (type(1:1).eq.'R') then
+                else if (paraType(1:1).eq.'R') then
                     zr(iadou)=zr(iadin)
-                else if (type(1:1).eq.'C') then
+                else if (paraType(1:1).eq.'C') then
                     zc(iadou)=zc(iadin)
-                else if (type(1:3).eq.'K80') then
+                else if (paraType(1:3).eq.'K80') then
                     zk80(iadou)=zk80(iadin)
-                else if (type(1:3).eq.'K32') then
+                else if (paraType(1:3).eq.'K32') then
                     zk32(iadou)=zk32(iadin)
-                else if (type(1:3).eq.'K24') then
+                else if (paraType(1:3).eq.'K24') then
                     zk24(iadou)=zk24(iadin)
-                else if (type(1:3).eq.'K16') then
+                else if (paraType(1:3).eq.'K16') then
                     zk16(iadou)=zk16(iadin)
-                else if (type(1:2).eq.'K8') then
+                else if (paraType(1:2).eq.'K8') then
                     zk8(iadou)=zk8(iadin)
                 endif
             end do
@@ -179,25 +177,18 @@ character(len=19), intent(in) :: listStoreJv, listOptionJv
         option = zk16(jopt+iOption-1)
         call deprecated_option(option)
 
-        if (option .eq. ' ') goto 20
+        if (option .eq. ' ') cycle
 !
         if ((option.eq.'FORC_NODA') .or. (option.eq.'REAC_NODA')) then
             call ccfnrn(option, resultIn, resultOut, listStoreJv, nbStore,&
-                        typcha, resultType)
-            if((option.eq.'REAC_NODA') .and. &
-                  ((resultType.eq.'DYNA_TRANS') .or. &
-                   (resultType.eq.'DYNA_HARMO'))) then
-                call utmess('A', 'CALCCHAMP_4')
-            endif
+                        resultType)
         else
             call calcop(option, listOptionJv, resultIn, resultOut, listStoreJv,&
-                        nbStore, typcha, resultType, iret, tldist=.True._1)
-!
-            if (iret .ne. 0) then
-                ASSERT(.false.)
-            endif
+                        nbStore, resultType, iret, tldist=.True._1)
+            ASSERT(iret .eq. 0)
+
         endif
- 20     continue
+
     end do
 !
  30 continue

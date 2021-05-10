@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine medom2(modele, mate, mateco, cara, kcha, ncha,&
-                  ctyp, result, nuord, nbordr, base,&
+                  result, nuord, nbordr, base,&
                   npass, ligrel)
-    implicit none
+!
+implicit none
+!
 #include "asterc/getexm.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -36,7 +38,6 @@ subroutine medom2(modele, mate, mateco, cara, kcha, ncha,&
 #include "asterfort/wkvect.h"
     integer :: ncha, nuord
     character(len=1) :: base
-    character(len=4) :: ctyp
     character(len=8) :: modele, cara, result
     character(len=24) :: mate, mateco
     character(len=19) :: kcha
@@ -53,7 +54,6 @@ subroutine medom2(modele, mate, mateco, cara, kcha, ncha,&
 ! OUT    : CARA   : NOM DU CHAMP DE CARACTERISTIQUES
 ! IN     : KCHA   : NOM JEVEUX POUR STOCKER LES CHARGES
 ! OUT    : NCHA   : NOMBRE DE CHARGES
-! OUT    : CTYP   : TYPE DE CHARGE
 ! IN     : RESULT : NOM DE LA SD RESULTAT
 ! IN     : NUORD  : NUMERO D'ORDRE
 ! IN     : BASE   : 'G' OU 'V' POUR LA CREATION DU LIGREL
@@ -84,7 +84,7 @@ subroutine medom2(modele, mate, mateco, cara, kcha, ncha,&
 !     RECUPERATION DU MODELE, CARA, CHARGES A PARTIR DU RESULTAT ET DU
 !     NUMERO ORDRE
     call medom1(modele, mate, mateco, cara, kcha, ncha,&
-                ctyp, result, nuord)
+                result, nuord)
 !
 !     RECUPERATION DU LIGREL DU MODELE
 !

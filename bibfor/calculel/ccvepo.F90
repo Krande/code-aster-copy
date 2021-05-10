@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,10 +68,9 @@ subroutine ccvepo(modele, resuin, typesd, lisord, nbordr,&
 !   LIGREL  K24  NOM DU LIGREL A CREER
 !   EXIPOU  L    LOGIQUE INDIQUANT LE PRESENCE DE POUTRES
 ! ----------------------------------------------------------------------
-! person_in_charge: nicolas.sellenet at edf.fr
+!
     integer :: ierd, ltymo, nbmaal
     integer :: n1, n2
-    character(len=4) :: typcha
 !
     character(len=8) :: k8b, model, cara_elem
     character(len=24) :: mater, mateco
@@ -142,7 +141,7 @@ subroutine ccvepo(modele, resuin, typesd, lisord, nbordr,&
             call lisnch(lischa, nbchar)
         else
             call medom1(model , mater , mateco, cara_elem, lischa, nbchar,&
-                        typcha, resuin, v_list_store(1))
+                        resuin, v_list_store(1))
         endif
 !       VERIFIE L'UNICITE DE LA CHARGE REPARTIE
         if (nbchar .ne. 0) then

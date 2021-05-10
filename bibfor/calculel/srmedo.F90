@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,11 @@
 ! --------------------------------------------------------------------
 
 subroutine srmedo(modele, mate, mateco,  cara, kcha, ncha,&
-                  ctyp, result, nuord, nbordr, base,&
+                  result, nuord, nbordr, base,&
                   npass, ligrel)
-    implicit none
+!
+implicit none
+!
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/exlim1.h"
@@ -34,7 +36,6 @@ subroutine srmedo(modele, mate, mateco,  cara, kcha, ncha,&
 #include "asterfort/wkvect.h"
     integer :: ncha, nuord, nbordr, npass
     character(len=1) :: base
-    character(len=4) :: ctyp
     character(len=8) :: modele, cara, result
     character(len=19) :: kcha
     character(len=24) :: mate, ligrel, mateco
@@ -49,7 +50,6 @@ subroutine srmedo(modele, mate, mateco,  cara, kcha, ncha,&
 ! OUT    : CARA   : NOM DU CHAMP DE CARACTERISTIQUES
 ! IN     : KCHA   : NOM JEVEUX POUR STOCKER LES CHARGES
 ! OUT    : NCHA   : NOMBRE DE CHARGES
-! OUT    : CTYP   : TYPE DE CHARGE
 ! IN     : RESULT : NOM DE LA SD RESULTAT
 ! IN     : NUORD  : NUMERO D'ORDRE
 ! IN     : BASE   : 'G' OU 'V' POUR LA CREATION DU LIGREL
@@ -78,7 +78,7 @@ subroutine srmedo(modele, mate, mateco,  cara, kcha, ncha,&
 !   -- recuperation du modele, cara, charges a partir du resultat et du
 !      numero ordre
     call medom1(modele, mate, mateco, cara, kcha, ncha,&
-                ctyp, result, nuord)
+                result, nuord)
 !
 !
 !   -- pour le premier passage on initialise les tableaux sauves

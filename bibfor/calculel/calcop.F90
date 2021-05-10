@@ -15,11 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine calcop(option, lisopt, resuin, resuou, lisord,&
-                  nbordr, chtype, typesd, codret, base, tldist)
-    implicit none
-!     --- ARGUMENTS ---
+                  nbordr, typesd, codret, base, tldist)
+!
+implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getexm.h"
@@ -63,7 +64,6 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
 !
     integer :: nbordr, codret, tbid(1)
     character(len=1), optional, intent(in) :: base
-    character(len=4) :: chtype
     character(len=8) :: resuin, resuou
     character(len=16) :: option, typesd
     character(len=19) :: lisord
@@ -81,7 +81,6 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
 !   RESUOU  K8   NOM DE LA STRUCTURE DE DONNEES RESULTAT OUT
 !   NBORDR  I    NOMBRE DE NUMEROS D'ORDRE
 !   LISORD  K19  LISTE DE NUMEROS D'ORDRE
-!   CHTYPE  K4   TYPE DES CHARGES
 !   TYPESD  K16  TYPE DE LA STRUCTURE DE DONNEES RESULTAT
 !   BASE    K1   BASE SUR LAQUELLE SERA SAUVEGARDEE LES CHAMP
 !                DEMANDES
@@ -358,7 +357,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
                     numork=zi(jlinst+k+2)
                     k8b=' '
                     call medom2(k8b, mater, mateco, carael, lischa, ncharg,&
-                              chtype, resuin, numord, nbordr, 'V', npass, ligrel)
+                                resuin, numord, nbordr, 'V', npass, ligrel)
                     modnew=' '
                     modnew=trim(adjustl(k8b))
                     if (dbg_ob)&
@@ -389,7 +388,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
 ! OU SI NON PARALLELISME EN TEMPS
                   k8b=' '
                   call medom2(k8b, mater, mateco, carael, lischa, ncharg,&
-                              chtype, resuin, numord, nbordr, 'V', npass, ligrel)
+                             resuin, numord, nbordr, 'V', npass, ligrel)
                   modnew=' '
                   modnew=trim(adjustl(k8b))
 ! SI PARALLELISME EN TEMPS: CAS DE FIGURE DU RELIQUAT DE PAS DE TEMPS (AU CAS OU)
@@ -447,11 +446,11 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
 !
                 if (option .eq. 'SIRO_ELEM') then
                     call srmedo(modele, mater , mateco, carael, lischa, ncharg,&
-                                chtype, resuin, numord, nbordr, basopt,&
+                                resuin, numord, nbordr, basopt,&
                                 npass, ligrel)
                 else
                     call medom2(modele, mater , mateco, carael, lischa, ncharg,&
-                                chtype, resuin, numord, nbordr, basopt,&
+                                resuin, numord, nbordr, basopt,&
                                 npass, ligrel)
                 endif
 !

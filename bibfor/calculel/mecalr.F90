@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,8 @@
 
 subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
                   resuc1, nbordr, modele, mate, cara,&
-                  nchar, ctyp)
+                  nchar)
     implicit none
-! person_in_charge: josselin.delmas at edf.fr
 ! ----------------------------------------------------------------------
 ! IN  NEWCAL : TRUE POUR UN NOUVEAU CONCEPT RESULTAT, FALSE SINON
 ! IN  TYSD   : TYPE DU CONCEPT ATTACHE A RESUCO
@@ -34,7 +33,6 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 ! IN  MATE   : NOM DU CHAMP MATERIAU
 ! IN  CARA   : NOM DU CHAMP DES CARACTERISTIQUES ELEMENTAIRES
 ! IN  NCHAR  : NOMBRE DE CHARGES
-! IN  CTYP   : TYPE DE CHARGE
 ! ----------------------------------------------------------------------
 !
 !     --- ARGUMENTS ---
@@ -84,7 +82,6 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 #include "asterfort/wkvect.h"
 !
     integer :: nbordr, nchar
-    character(len=4) :: ctyp
     character(len=8) :: resuco, resuc1, modele, cara
     character(len=16) :: tysd
     character(len=19) :: knum, kcha
@@ -242,12 +239,12 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
 !
 !         PASSAGE CALC_CHAMP
         call calcop(option, lesopt, resuco, resuc1, knum,&
-                    nbordr, ctyp, tysd, iret)
+                    nbordr, tysd, iret)
         if (iret .eq. 0) goto 660
 !
         nuord=zi(jordr)
         call medom1(modele, mate, mateco, cara, kcha, nchar,&
-                    ctyp, resuco, nuord)
+                    resuco, nuord)
         call jeveuo(kcha//'.LCHA', 'L', jcha)
 !
         call mecham(option, modele, cara, nh, chgeom,&
@@ -265,7 +262,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
                 call jerecu('V')
                 iordr=zi(jordr+iaux-1)
                 call medom1(modele, mate, mateco, cara, kcha, nchar,&
-                            ctyp, resuco, iordr)
+                            resuco, iordr)
                 call jeveuo(kcha//'.LCHA', 'L', jcha)
                 call mecara(cara, chcara)
                 call rsexc2(1, 1, resuco, 'DEPL', iordr,&
@@ -303,7 +300,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco,&
      &          option.eq.'QIZ2_ELEM') then
 !
             call meca01(option, nbordr, jordr, nchar, jcha,&
-                        kcha, ctyp, tbgrca, resuco, resuc1,&
+                        kcha, tbgrca, resuco, resuc1,&
                         leres1, noma, modele, ligrmo, mate,&
                         cara, chvarc, iret)
 !
