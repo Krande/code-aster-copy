@@ -58,7 +58,7 @@ test.assertEqual(U2_2.getFieldsOnNodesNames(), ['DEPL'])
 test.assertEqual(U2_2.getFieldsOnCellsNames(), ['SIEF_ELGA', 'VARI_ELGA'])
 
 ranks = dico_par['NUME_ORDRE']
-rf = U2_2.getRealFieldOnNodes('DEPL', ranks[0] + 1)
+rf = U2_2.getFieldOnNodesReal('DEPL', ranks[0] + 1)
 sf = rf.exportToSimpleFieldOnNodes()
 
 test.assertAlmostEqual(sf.getValues()[6], 0.314065725792971)

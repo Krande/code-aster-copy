@@ -67,7 +67,7 @@ resu = mecaStatique.execute()
 
 resu.printMedFile("fort."+str(rank+40)+".med")
 
-MyFieldOnNodes = resu.getRealFieldOnNodes("DEPL", 1)
+MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
 sfon = MyFieldOnNodes.exportToSimpleFieldOnNodes()
 sfon.updateValuePointers()
 

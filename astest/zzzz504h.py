@@ -68,7 +68,7 @@ resu.printMedFile("test"+str(rank)+".med")
 #from shutil import copyfile
 #copyfile("test"+str(rank)+".med", "/home/siavelis/test"+str(rank)+".med")
 
-MyFieldOnNodes = resu.getRealFieldOnNodes("DEPL", 1)
+MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
 sfon = MyFieldOnNodes.exportToSimpleFieldOnNodes()
 sfon.debugPrint(10+rank)
 sfon.updateValuePointers()

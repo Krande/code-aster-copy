@@ -274,7 +274,7 @@ VectorLong ResultClass::getRanks() const
     return v;
 };
 
-FieldOnCellsRealPtr ResultClass::getRealFieldOnCells( const std::string name,
+FieldOnCellsRealPtr ResultClass::getFieldOnCellsReal( const std::string name,
                                                                            const int rank ) const
 {
     if ( rank > _nbRanks || rank <= 0 )
@@ -396,7 +396,7 @@ VectorString ResultClass::getFieldsOnCellsNames() const
 };
 
 
-FieldOnNodesRealPtr ResultClass::getRealFieldOnNodes( const std::string name,
+FieldOnNodesRealPtr ResultClass::getFieldOnNodesReal( const std::string name,
                                                                      const int rank ) const
 {
     if ( rank > _nbRanks || rank <= 0 )
@@ -538,10 +538,12 @@ bool ResultClass::update()
                             _fieldBuidler.buildFieldOnCells< double >( name, curMesh );
                         auto curIter = _mapModel.find(( *_serialNumber )[rank]);
                         if ( curIter != _mapModel.end() )
-                            result->setModel(( *curIter ).second);
+                            if ( not((( *curIter ).second)->isEmpty()) )
+                                result->setModel(( *curIter ).second);
                         else if (not(isMultiModel())){
                             ModelPtr curModel = getModel();
-                            result->setModel(curModel);
+                            if ( not(curModel->isEmpty()) )
+                                result->setModel(curModel);
                         }
                         _dictOfVectorOfFieldsCells[nomSymb][rank] = result;
 

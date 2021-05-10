@@ -92,8 +92,8 @@ Returns:
     list[str]: List of names of the fields on cells.
         )", ( py::arg("self" )))
         .def( "getRanks", &ResultClass::getRanks )
-        .def( "getRealFieldOnNodes", &ResultClass::getRealFieldOnNodes )
-        .def( "getRealFieldOnCells", &ResultClass::getRealFieldOnCells )
+        .def( "getFieldOnNodesReal", &ResultClass::getFieldOnNodesReal )
+        .def( "getFieldOnCellsReal", &ResultClass::getFieldOnCellsReal )
         .def( "printMedFile", c7 )
         .def( "printMedFile", c8 )
         .def( "setMesh", &ResultClass::setMesh )

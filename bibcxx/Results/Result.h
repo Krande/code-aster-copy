@@ -314,7 +314,7 @@ class ResultClass : public DataStructure, public ListOfTablesClass {
      * @param rank numéro d'ordre
      * @return FieldOnCellsRealPtr pointant vers le champ
      */
-    FieldOnCellsRealPtr getRealFieldOnCells( const std::string name, const int rank ) const
+    FieldOnCellsRealPtr getFieldOnCellsReal( const std::string name, const int rank ) const
         ;
 
     /**
@@ -341,7 +341,7 @@ class ResultClass : public DataStructure, public ListOfTablesClass {
      * @param rank numéro d'ordre
      * @return FieldOnNodesRealPtr pointant vers le champ
      */
-    FieldOnNodesRealPtr getRealFieldOnNodes( const std::string name, const int rank ) const
+    FieldOnNodesRealPtr getFieldOnNodesReal( const std::string name, const int rank ) const
         ;
 
     /**

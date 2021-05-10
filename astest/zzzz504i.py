@@ -104,7 +104,7 @@ resu = STAT_NON_LINE(CHAM_MATER=AFFMAT,
 # else:
 #     resu.printMedFile('/tmp/seq.resu.med')
 
-MyFieldOnNodes = resu.getRealFieldOnNodes("DEPL", 2)
+MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 2)
 sfon = MyFieldOnNodes.exportToSimpleFieldOnNodes()
 
 test.assertAlmostEqual(sfon.getValue(0, 0), 0.0)
