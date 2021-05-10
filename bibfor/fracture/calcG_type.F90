@@ -49,6 +49,7 @@ private
 #include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/ismali.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -913,6 +914,8 @@ contains
         call dismoi('CONFIG_INIT', this%crack, 'FOND_FISS', repk=this%config_init)
         call dismoi('SYME', this%crack, 'FOND_FISS', repk=this%symech)
         call dismoi('DIM_GEOM', this%mesh, 'MAILLAGE', repi=ndim)
+!
+        ASSERT(.not.isParallelMesh(this%mesh))
 !
         this%nomNoeud = this%mesh//'.NOMNOE'
         this%absfond  = this%crack//'.ABSFON'

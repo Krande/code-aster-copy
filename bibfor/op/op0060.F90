@@ -41,6 +41,7 @@ subroutine op0060()
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -79,6 +80,7 @@ subroutine op0060()
 !      -----------------------------------
 !
     call getvid(' ', 'MAILLAGE', scal=noma, nbret=nbocc)
+    ASSERT(.not.isParallelMesh(noma))
 !
 ! ---  RECUPERATION DE LA CONNECTIVITE INVERSE
 !
