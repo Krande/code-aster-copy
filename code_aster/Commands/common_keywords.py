@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -56,7 +56,8 @@ def create_solver(solver_keyword):
                        "FILTRAGE_MATRICE", "LOW_RANK_TAILLE"
                        "MIXER_PRECISION", "NIVE_REMPLISSAGE",
                        "NMAX_ITER", "REAC_PRECOND", "RESI_RELA_PC",
-                       "POSTTRAITEMENTS", "ACCELERATION", "OPTION_PETSC"):
+                       "POSTTRAITEMENTS", "ACCELERATION", "OPTION_PETSC",
+                       "NOM_CMP", "PARTITION_CMP"):
             unsupported(solver_keyword, "", key, warning=True)
 
     method = solver_keyword["METHODE"]
@@ -84,6 +85,12 @@ def create_solver(solver_keyword):
 
     if "OPTION_PETSC" in solver_keyword:
         solver.setPetscOption(solver_keyword["OPTION_PETSC"])
+
+    if "NOM_CMP" in solver_keyword:
+        solver.setComponentName(solver_keyword["NOM_CMP"])
+
+    if "PARTITION_CMP" in solver_keyword:
+        solver.setComponentPartition(solver_keyword["PARTITION_CMP"])
 
     if "STOP_SINGULIER" in solver_keyword:
         value = True

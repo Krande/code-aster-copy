@@ -74,6 +74,8 @@ BaseLinearSolverClass::BaseLinearSolverClass( const std::string name,
       _method( boost::make_shared< GenParam >( "METHODE", false ) ),
       _nPrec( boost::make_shared< GenParam >( "NPREC", false ) ),
       _optionPetsc( boost::make_shared< GenParam >( "OPTION_PETSC", false ) ),
+      _cmpNames( boost::make_shared< GenParam >( "NOM_CMP", false ) ),
+      _cmpPartition( boost::make_shared< GenParam >( "PARTITION_CMP", false ) ),
       _pivotPourcent( boost::make_shared< GenParam >( "PCENT_PIVOT", false ) ),
       _postPro( boost::make_shared< GenParam >( "POSTTRAITEMENTS", false ) ),
       _precision( boost::make_shared< GenParam >( "MIXER_PRECISION", false ) ),
@@ -160,6 +162,8 @@ BaseLinearSolverClass::BaseLinearSolverClass( const std::string name,
     _listOfParameters.push_back( _resolutionType );
     _listOfParameters.push_back( _acceleration );
     _listOfParameters.push_back( _optionPetsc );
+    _listOfParameters.push_back( _cmpNames );
+    _listOfParameters.push_back( _cmpPartition );
 };
 
 void BaseLinearSolverClass::setPreconditioning( Preconditioning precond ) {
@@ -221,9 +225,15 @@ bool BaseLinearSolverClass::matrixFactorization( AssemblyMatrixDisplacementRealP
     const std::string matpre( _matrixPrec->getName() );
     const std::string matass = currentMatrix->getName();
 
-    // AMUMPT appel getres
-    CommandSyntax cmdSt( "AUTRE" );
-    cmdSt.setResult( "AUCUN", "AUCUN" );
+    // Definition du bout de fichier de commande pour SOLVEUR
+    CommandSyntax cmdSt( _commandName );
+    cmdSt.setResult( getName(), getType() );
+
+    SyntaxMapContainer dict;
+    ListSyntaxMapContainer listeSolver = this->buildListSyntax();
+
+    dict.container["SOLVEUR"] = listeSolver;
+    cmdSt.define( dict );
 
     CALLO_MATRIX_FACTOR( solverName, base, &cret, _matrixPrec->getName(), matass, &npvneg, &istop );
     currentMatrix->_isFactorized = true;
@@ -244,7 +254,7 @@ FieldOnNodesRealPtr BaseLinearSolverClass::solveRealLinearSystem(
 
     if ( result->getName() == "" )
         result = FieldOnNodesRealPtr( new FieldOnNodesRealClass( Permanent ) );
-    
+
     try{
        if ( !result->getDOFNumbering() && currentRHS->getDOFNumbering()){
             result->setDOFNumbering(currentRHS->getDOFNumbering());

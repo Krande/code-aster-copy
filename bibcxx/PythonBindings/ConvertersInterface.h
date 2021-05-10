@@ -6,7 +6,7 @@
  * @brief Utilitaires pour convertir un vector en list et inversement
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -82,7 +82,7 @@ template < typename T > struct VectorFromPythonList {
 
     // Determine if obj_ptr can be converted in a std::vector<T>
     static void *convertible( PyObject *obj_ptr ) {
-        if ( !PyList_Check( obj_ptr ) ) {
+        if ( !PyList_Check( obj_ptr ) && !PyTuple_Check( obj_ptr )) {
             return 0;
         }
         return obj_ptr;

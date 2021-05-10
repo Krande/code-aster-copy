@@ -3,7 +3,7 @@
  * @brief Initialise les noms et possibles pour les solveurs et les renumeroteurs
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,7 +28,8 @@ const char *RenumberingNames[nbRenumberings] = {"MD",       "MDA",      "METIS",
                                                 "AMF",      "PORD",     "QAMD",  "SCOTCH", "AUTO",
                                                 "PARMETIS", "PTSCOTCH", "SANS"};
 const char *PreconditioningNames[nbPreconditionings] = {
-    "LDLT_INC", "LDLT_SP", "JACOBI", "SOR", "ML", "BOOMER", "GAMG", "BLOC_LAGR", "SANS"};
+    "LDLT_INC", "LDLT_SP", "JACOBI", "SOR", "ML", "BOOMER", "GAMG", "BLOC_LAGR", "SANS",
+    "FIELDSPLIT",};
 const char *MatrixTypeNames[nbMatrixTypes] = {"NONSYM", "SYMGEN", "SYMDEF", "AUTO"};
 
 const char *IterativeSolverAlgorithmNames[nbIterativeSolverAlgorithms] = {"CG", "CR", "GMRES",

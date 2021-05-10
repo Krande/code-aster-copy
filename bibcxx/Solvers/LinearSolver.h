@@ -165,6 +165,8 @@ class BaseLinearSolverClass : public DataStructure {
     GenParamPtr _method;
     GenParamPtr _nPrec;
     GenParamPtr _optionPetsc;
+    GenParamPtr _cmpNames;
+    GenParamPtr _cmpPartition;
     GenParamPtr _pivotPourcent;
     GenParamPtr _postPro;
     GenParamPtr _precision;
@@ -327,6 +329,18 @@ class BaseLinearSolverClass : public DataStructure {
         if ( _linearSolver != Petsc )
             throw std::runtime_error( "Options only allowed with Petsc" );
         _optionPetsc->setValue( option);
+    };
+
+    void setComponentName( const VectorString cmpNames ) {
+        if ( _linearSolver != Petsc && _preconditioning != Fieldsplit)
+            throw std::runtime_error( "ComponentName only allowed with Petsc and Fieldsplit" );
+        _cmpNames->setValue( cmpNames);
+    };
+
+    void setComponentPartition( const VectorLong cmpPartition ) {
+        if ( _linearSolver != Petsc && _preconditioning != Fieldsplit)
+            throw std::runtime_error( "ComponentPartition only allowed with Petsc and Fieldsplit" );
+        _cmpPartition->setValue( cmpPartition);
     };
 
     void setDistributedMatrix( bool matDist ) {
