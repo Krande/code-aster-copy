@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,10 @@ cata_msg = {
     1 : _("""
 Il y a un chargement de type convection dans les chargements appliqués.
 Ce n'est possible qu'avec THER_NON_LINE_MO.
+"""),
+
+    2 : _("""
+On ne peut pas utiliser d'éléments de structures (coques, plaques, poutres) dans la commande THER_NON_LINE_MO.
 """),
 
     85 : _("""
