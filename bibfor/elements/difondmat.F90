@@ -63,7 +63,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 !   compteur du nombre d'itération
-    integer :: ii, jj, compt
+    integer :: ii, jj, compt, kk
 !   nombre de critères à vérifier
     integer :: nbDDL,nbDDLii,nbDDLjj
 !
@@ -89,7 +89,7 @@ implicit none
 !   MatAinverser    : la matrice à inverser pour obtenir les avancements
 !   fsInverse       : les deltas(finaux)
 !   dfOrdo          : récupération des dérivés des critères uniquement utiles au calcul
-    real(kind=8), allocatable :: MatAinverser(:,:),fsInverse(:,:),dfOrdo(:,:)
+    real(kind=8), allocatable :: MatAinverser(:,:),fsInverse(:,:),dfOrdo(:,:),Mtmp(:,:)
     real(kind=8) :: etatCP,etatG
 !   numérotation pour savoir quels critères sont concernés H et H- pour le
 !   transfert à la matrice de raideur
@@ -390,7 +390,7 @@ implicit none
     if (nbDDL .EQ. 0) then
         goto 999
     endif
-    allocate(MatAinverser(nbDDL,nbDDL),fsInverse(nbDDL,nbDDL),dfOrdo(nbDDL,5))
+    allocate(MatAinverser(nbDDL,nbDDL),fsInverse(nbDDL,nbDDL),dfOrdo(nbDDL,5),Mtmp(5,nbDDL))
     !
     nbDDLii=0
     do ii=1,8
@@ -434,7 +434,28 @@ implicit none
         goto 999
     endif
     ! on reconstruit alors la matrice tangente plastique
-    Kplastique=matmul(matmul(transpose(dfOrdo),fsInverse),dfOrdo)
+    !   Ca plante sur GAIA, on programme les opérations matricielles
+    !       Kplastique=matmul( matmul( transpose(dfOrdo),fsInverse ), dfOrdo )
+    !
+    ! Mtmp = matmul( transpose(dfOrdo),fsInverse )          C(i,j) = A(k,i)*B(k,j) : j, i, k
+    Mtmp(:,:) = 0.0
+    do jj=1,nbDDL
+        do ii=1,5
+            do kk=1,nbDDL
+                Mtmp(ii,jj) = Mtmp(ii,jj) + dfOrdo(kk,ii)*fsInverse(kk,jj)
+            enddo
+        enddo
+    enddo
+    ! Kplastique = matmul( Mtmp ,dfOrdo)                    C(i,j) = A(i,k)*B(k,j) : j, k, i
+    Kplastique(:,:) = 0.0
+    do jj=1,5
+        do kk=1,nbDDL
+            do ii=1,5
+                Kplastique(ii,jj) = Kplastique(ii,jj) + Mtmp(ii,kk)*dfOrdo(kk,jj)
+            enddo
+        enddo
+    enddo
+    !
     compt=0
     do ii=1,5
         do jj=1,ii
@@ -454,6 +475,9 @@ implicit none
     endif
     if (allocated(dfOrdo)) then
         deallocate(dfOrdo)
+    endif
+    if (allocated(Mtmp)) then
+        deallocate(Mtmp)
     endif
     !
 contains
