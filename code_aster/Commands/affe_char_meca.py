@@ -61,10 +61,7 @@ class MechanicalLoadDefinition(ExecuteCommand):
         for name in keys:
             mc = mcf.get(name)
             if mc:
-                if isinstance(mc, str):
-                    groups.add(mc)
-                else:
-                    groups.update(mc)
+                groups.update(force_list(mc))
 
     def _excludeGroup(self, mcf, keys):
         for name in keys:
