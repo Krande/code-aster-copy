@@ -68,7 +68,7 @@ implicit none
     integer :: iordr, iret, iret2, j
     integer :: jfo
     integer :: jordr, ifm, niv
-    integer :: lonch, lvafon, n0, n2
+    integer :: lonch, lvafon, n0
     integer :: nbddl, nbordr, nc, nh, np
     integer :: ltps, ltps2
     real(kind=8) :: time, prec, partps(3)
@@ -77,10 +77,11 @@ implicit none
     character(len=6) :: nompro
     character(len=8) :: ctyp, crit, materi
     character(len=8) :: kiord
-    character(len=16) :: option, type, oper, k16bid
+    character(len=16) :: type, oper, k16bid
     character(len=16) :: compex
     character(len=19) :: resuco, knum, ligrel, resuc1, chdep2
     character(len=19), parameter :: list_load = '&&OP0183.LIST_LOAD'
+    character(len=16), parameter :: option = 'FONL_NOEU'
     character(len=24) :: model, caraElem, chamno, mateco
     character(len=24) :: nume, vafono, sigma, chdepl, k24bid
     character(len=24) :: compor, chvive, chacve, raide
@@ -119,9 +120,6 @@ implicit none
     call getvid(' ', 'RESULTAT', scal=resuco, nbret=n0)
     ASSERT(resuco.ne.resuc1)
 !
-!
-    call getvtx(' ', 'OPTION', scal=option, nbret=n2)
-    ASSERT(n2.eq.1 .and. option.eq.'FONL_NOEU')
 !
 !
     knum='&&'//nompro//'.NUME_ORDRE'
