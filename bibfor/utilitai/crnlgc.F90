@@ -161,7 +161,7 @@ subroutine crnlgc(numddl)
     call jedetr('&&CRNULG.GRAPH_LOC')
 
     nmatch = nmatch - 1
-    call wkvect('&&CRNULG.ORDJOI', 'V V I', nmatch, vi=v_ordjoi)
+    call wkvect('&&CRNULG.ORDJOI', 'V V I', max(nmatch, 1), vi=v_ordjoi)
     v_ordjoi(:) = -1
 
     nbjver = 0

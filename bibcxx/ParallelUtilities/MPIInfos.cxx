@@ -54,3 +54,17 @@ int getMPIRank() {
 #endif
     return rank;
 };
+
+bool MPIInitialized() {
+#ifdef ASTER_HAVE_MPI
+    int isdone;
+    MPI_Initialized(&isdone);
+    if(! isdone) {
+        return false;
+    } else {
+        return true;
+    }
+#else
+    return false;
+#endif
+};

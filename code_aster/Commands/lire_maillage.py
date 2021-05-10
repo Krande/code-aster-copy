@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -30,7 +30,7 @@ from .pre_gibi import PRE_GIBI
 from .pre_gmsh import PRE_GMSH
 from .pre_ideas import PRE_IDEAS
 
-from libaster import getMPINumberOfProcs
+from libaster import MPIInitialized
 
 
 class MeshReader(ExecuteCommand):
@@ -48,7 +48,7 @@ class MeshReader(ExecuteCommand):
         """
         return (keywords['FORMAT'] == "MED" and
                 keywords['PARTITIONNEUR'] == "PTSCOTCH" and
-                getMPINumberOfProcs() > 1)
+                MPIInitialized())
 
     def create_result(self, keywords):
         """Create the :class:`~code_aster.Objects.Mesh`.
@@ -93,7 +93,7 @@ class MeshReader(ExecuteCommand):
             self._result.readMedFile(filename, partitioned=False, verbose=keywords['INFO_MED']-1)
         else:
             if keywords['FORMAT'] == "MED" and keywords['PARTITIONNEUR'] == "PTSCOTCH":
-                assert getMPINumberOfProcs() == 1
+                assert not MPIInitialized()
                 UTMESS("A", "MED_18")
 
             if fmt in need_conversion:

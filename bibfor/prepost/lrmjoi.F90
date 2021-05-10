@@ -84,27 +84,31 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
 !
 ! --- Uniquement pour les ParallelMesh
 !
-    if ( nbproc > 1 ) then
+    mesh = nomnoe(1:8)
 !
-! --- Récupération de la numérotation globale des noeuds
+! --- L'objet .NULOGL permet d'avoir la numérotation globale des noeuds
 !
-        mesh = nomnoe(1:8)
-        nonulg = mesh//'.NULOGL'
-        call wkvect(nonulg, 'G V I', nbnoeu, jnlogl)
-        call as_mmhgnr(fid, nomam2, ednoeu, typnoe, zi(jnlogl), nbnoeu, codret)
-        call codent(rang, 'G', chrang)
-!
-! --- Récupération du nombre de joints
-!
-        call as_msdnjn(fid, nomam2, nbjoin, codret)
+    nonulg = mesh//'.NULOGL'
+    call wkvect(nonulg, 'G V I', nbnoeu, jnlogl)
 !
 ! --- L'objet .NOEX permet de savoir à qui appartient le noeud.
 !     Pour les noeuds internes, c'est le proc courant
 !     Pour les noeuds joints, c'est un autre proc et il faut le trouver par lecture des joints
 !     Par défaut, tout les noeuds d'un domaine appartient au moins à ce domaine
 !
-        call wkvect(nommail(1:8)//'.NOEX', 'G V I', nbnoeu, vi=v_noext)
-        v_noext(1:nbnoeu) = rang
+    call wkvect(nommail(1:8)//'.NOEX', 'G V I', nbnoeu, vi=v_noext)
+    v_noext(1:nbnoeu) = rang
+!
+    if ( nbproc > 1 ) then
+!
+! --- Récupération de la numérotation globale des noeuds
+!
+        call as_mmhgnr(fid, nomam2, ednoeu, typnoe, zi(jnlogl), nbnoeu, codret)
+        call codent(rang, 'G', chrang)
+!
+! --- Récupération du nombre de joints
+!
+        call as_msdnjn(fid, nomam2, nbjoin, codret)
 !
 ! --- On lit l'info de tout les joints quelques soient leurs types car med le permet
 !     mais il faudra faire un tri après pour garder que ceux qui nous intéresse
@@ -192,26 +196,30 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
 !
 ! --- Verification NOEX
 !
-        do ino=1, nbnoeu
+        do ino = 1, nbnoeu
             ASSERT(v_noext(ino).ne.-1)
         end do
 !
+    else
+        do ino = 1, nbnoeu
+            zi(jnlogl + ino - 1) = ino - 1
+        end do
+    endif
+!
 ! --- Creation .MAEX
 !
-        connex = mesh //'.CONNEX'
-        call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbma)
-        call wkvect(mesh//'.MAEX', 'G V I', nbma, vi=v_maex)
-        v_maex(1:nbma) = ismaem()
-        do ima = 1, nbma
-            call jelira(jexnum(connex , ima), 'LONMAX', nbnoma)
-            call jeveuo(jexnum(connex , ima), 'L', vi=v_connex)
-            do ino = 1, nbnoma
-                node_id = v_connex(ino)
-                v_maex(ima) = min(v_maex(ima), v_noext(node_id))
-            end do
+    connex = mesh //'.CONNEX'
+    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbma)
+    call wkvect(mesh//'.MAEX', 'G V I', nbma, vi=v_maex)
+    v_maex(1:nbma) = ismaem()
+    do ima = 1, nbma
+        call jelira(jexnum(connex , ima), 'LONMAX', nbnoma)
+        call jeveuo(jexnum(connex , ima), 'L', vi=v_connex)
+        do ino = 1, nbnoma
+            node_id = v_connex(ino)
+            v_maex(ima) = min(v_maex(ima), v_noext(node_id))
         end do
-!
-    endif
+    end do
 !
     call jedema()
 !

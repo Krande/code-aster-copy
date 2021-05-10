@@ -6,7 +6,7 @@
  * @brief Fichier entete des fonctions informations MPI
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -30,5 +30,8 @@ int getMPINumberOfProcs() ;
 
 /** @brief Get MPI rank */
 int getMPIRank() ;
+
+/** @brief MPI is initialized ? */
+bool MPIInitialized() ;
 
 #endif /* MPIINFOS_H_ */

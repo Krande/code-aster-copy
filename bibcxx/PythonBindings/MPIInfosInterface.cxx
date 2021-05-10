@@ -3,7 +3,7 @@
  * @brief Interface python de MPIInfos
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,6 +31,22 @@ namespace py = boost::python;
 
 void exportMPIInfosToPython() {
 
-    py::def( "getMPINumberOfProcs", getMPINumberOfProcs );
-    py::def( "getMPIRank", getMPIRank );
+    py::def( "getMPINumberOfProcs", getMPINumberOfProcs, R"(
+Return number of mpi process
+
+Returns:
+    int: number of mpi process ( return 1 if sequential execution)
+        )"  );
+    py::def( "getMPIRank", getMPIRank, R"(
+Return rank of current mpi process
+
+Returns:
+    int: rank of current mpi process ( return 0 if sequential execution)
+        )"  );
+    py::def( "MPIInitialized", MPIInitialized, R"(
+Test if MPI is initialized
+
+Returns:
+    bool: True if MPI is initialized else False
+        )"  );
 };
