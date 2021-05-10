@@ -40,10 +40,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/infniv.h"
 !
-character(len=8), intent(in) :: model
-character(len=8), intent(in) :: chmate
-aster_logical, intent(in) :: l_etat_init
-aster_logical, intent(in) :: l_implex
+character(len=8), intent(in) :: model, chmate
+aster_logical, intent(in) :: l_etat_init, l_implex
 character(len=19), intent(in) :: compor
 aster_logical, intent(in), optional :: l_verbose
 !
@@ -73,27 +71,21 @@ aster_logical, intent(in), optional :: l_verbose
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    verbose = ASTER_FALSE
-    if (present(l_verbose)) then
-        verbose = l_verbose
-    endif
-    if (verbose) then
-        call comp_info(model, compor)
-    endif
-!
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE12_4')
     endif
-!
+
 ! - Initialisations
-!
+    verbose = ASTER_FALSE
+    if (present(l_verbose)) then
+        verbose = l_verbose
+    endif
     comp_elas   = '&&NMDOCC.COMP_ELAS'
     full_elem_s = '&&NMDOCC.FULL_ELEM'
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
-!
+
 ! - Create datastructure to prepare comportement
-!
     call comp_meca_info(l_implex, ds_compor_prep)
     if (ds_compor_prep%nb_comp .eq. 0) then
         call utmess('I', 'COMPOR4_64')
@@ -101,45 +93,41 @@ aster_logical, intent(in), optional :: l_verbose
     if (ds_compor_prep%nb_comp .ge. 99999) then
         call utmess('A', 'COMPOR4_65')
     endif
-!
+
 ! - Create COMPOR <CARTE>
-!
     call comp_init(mesh, compor, 'V', nb_cmp)
-!
+
 ! - Set ELASTIQUE COMPOR
-!
     call comp_meca_elas(compor, nb_cmp, l_etat_init)
-!
+
 ! - Default ELASTIQUE COMPOR <CARTE> on all mesh
-!
     call nocart(compor, 1, nb_cmp)
-!
+
 ! - Read informations from command file
-!
     call comp_meca_read(l_etat_init, ds_compor_prep, model)
-!
+
 ! - Create <CARTE> of FULL_MECA option for checking
-!
     call comp_meca_full(model, compor, full_elem_s)
-!
+
 ! - Check informations in COMPOR <CARTE>
-!
     call comp_meca_chck(model, mesh, full_elem_s, l_etat_init, ds_compor_prep)
     call dismoi('EXI_VARC', chmate, 'CHAM_MATER', repk=answer)
     if (answer .eq. 'OUI' .and. ds_compor_prep%lNonIncr) then
         call utmess('A', 'COMPOR4_17')
     endif
-!
+
 ! - Count internal variables
-!
     call comp_meca_cvar(ds_compor_prep)
-!
+
 ! - Save informations in COMPOR <CARTE>
-!
     call comp_meca_save(model, mesh, chmate, compor, nb_cmp, ds_compor_prep)
-!
+
+! - Verbose mode
+    if (verbose) then
+        call comp_info(model, compor)
+    endif
+
 ! - Cleaning
-!
     deallocate(ds_compor_prep%v_para)
     deallocate(ds_compor_prep%v_paraExte)
 !
