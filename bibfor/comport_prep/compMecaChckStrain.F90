@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,41 +83,38 @@ character(len=16), intent(in) :: relaComp, relaCompPY
     integer :: nbCellMesh, nbCell
     integer, pointer :: cellAffectedByModel(:) => null()
     integer, pointer :: listCellAffe(:) => null()
-    aster_logical :: l_coq3d, l_dkt, l_dktg, lShell, l_hho
+    aster_logical :: l_coq3d, l_dkt, l_dktg, lShell, l_hho, lGrotGdep, lPetitReac
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
+
 ! - Access to model
-!
     call jeveuo(model//'.MAILLE', 'L', vi = cellAffectedByModel)
-!
+
 ! - Access to <CHELEM_S> of FULL_MECA option
-!
     call jeveuo(fullElemField//'.CESD', 'L', jvCesd)
     call jeveuo(fullElemField//'.CESL', 'L', jvCesl)
     call jeveuo(fullElemField//'.CESV', 'L', jvCesv)
     nbCellMesh = zi(jvCesd-1+1)
-!
+
 ! - Mesh affectation
-!
     if (lAllCellAffe) then
         nbCell = nbCellMesh
     else
         call jeveuo(cellAffe, 'L', vi = listCellAffe)
         nbCell = nbCellAffe
     endif
-!
+
 ! - Check consistency with catalog
-!
     call lctest(relaCompPY, 'DEFORMATION', defoComp, lctestIret)
     if (lctestIret .eq. 0) then
         call utmess('F', 'COMPOR1_44', nk = 2, valk = [defoComp, relaComp])
     endif
-!
+
 ! - Loop on elements
-!
+    lPetitReac = ASTER_FALSE
+    lGrotGdep  = ASTER_FALSE
     do iCell = 1, nbCell
 ! ----- Current cell
         if (lAllCellAffe) then
@@ -146,11 +143,13 @@ character(len=16), intent(in) :: relaComp, relaCompPY
 
 ! --------- Specific checks
             if (l_dkt .and. defoComp .eq. 'PETIT_REAC') then
-                call utmess('A', 'COMPOR1_50')
+                lPetitReac = ASTER_TRUE
+              !  call utmess('A', 'COMPOR1_50')
             endif
 
             if (l_coq3d .and. (defoComp .eq. 'GROT_GDEP')) then
-                call utmess('A', 'COMPOR1_47')
+                lGrotGdep = ASTER_TRUE
+              !  call utmess('A', 'COMPOR1_47')
             endif
 
             if (l_hho .and.&
@@ -241,6 +240,13 @@ character(len=16), intent(in) :: relaComp, relaCompPY
             endif
         endif
     end do
+!
+    if (lPetitReac) then
+        call utmess('A', 'COMPOR1_50')
+    endif
+    if (lGrotGdep) then
+        call utmess('A', 'COMPOR1_47')
+    endif
 !
     call jedema()
 !

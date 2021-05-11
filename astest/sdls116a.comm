@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,11 @@
 # DANS LA VERSION PRECEDENTE CALCUL DIVERGEAIT A CAUSE DE LA MAUVAISE VALEUR (=0)
 # DE LA COMPOSANTE DDL 6 DE LA MASSE.
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
+      IGNORE_ALARM=('COMPOR1_50',),)
+
+# IGNORE_ALARM COMPOR1_50: Issue14186
+
 RHO  = 2500.E0
 EP   = 0.1
 
@@ -39,7 +43,7 @@ F0   = 1.6166e+05
 TMAX = 1.2E-3
 DT = 1.0E-5
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
@@ -143,13 +147,13 @@ RESU1=CALC_CHAMP(reuse = RESU1,
                RESULTAT=RESU1,
                );
 RESU1=CALC_CHAMP(reuse=RESU1,CONTRAINTE=('EFGE_ELGA','SIGM_ELGA'),DEFORMATION=('DEGE_ELGA','EPSI_ELGA'),RESULTAT=RESU1)
-#IMPR_RESU(FORMAT='RESULTAT', UNITE=6, RESU=_F(RESULTAT=RESU1),)
+
 
 TEST_RESU(RESU=(_F(INST=1.2E-3,
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=RESU1,
                    NOM_CHAM='DEPL',
-                   NOEUD='N2',
+                   GROUP_NO='A2',
                    NOM_CMP='DZ',
                    VALE_CALC=0.011750853,
                    VALE_REFE=0.0117509,
@@ -158,7 +162,7 @@ TEST_RESU(RESU=(_F(INST=1.2E-3,
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=RESU1,
                    NOM_CHAM='VITE',
-                   NOEUD='N4',
+                   GROUP_NO='A4',
                    NOM_CMP='DRX',
                    VALE_CALC=4.577056970,
                    VALE_REFE=4.5782600000000002,
@@ -167,13 +171,12 @@ TEST_RESU(RESU=(_F(INST=1.2E-3,
           )
 
 
-                                   
 # TEST OF SIXZ,SIYZ  DYNA_NON_LINE 
 TEST_RESU(RESU=(
                
                   
                _F(INST=TMAX,
-                  MAILLE='M1',
+                  GROUP_MA='CellTest',
                   POINT=1,
                   SOUS_POINT=2,
                   RESULTAT=RESU1,
@@ -183,7 +186,7 @@ TEST_RESU(RESU=(
                   ),
                   
                _F(INST=TMAX,
-                  MAILLE='M1',
+                  GROUP_MA='CellTest',
                   POINT=1,
                   SOUS_POINT=2,
                   RESULTAT=RESU1,

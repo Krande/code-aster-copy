@@ -220,7 +220,7 @@ Ne renseignez pas le mot-clé COMPORTEMENT/%(k2)s, afin de sélectionner l'algor
 """),
 
     47: _("""
-  L'algorithme de réactualisation des grandes rotations est tel que les rotations doivent être inférieures à 2 pi radians.
+  Quand on utilise COQUE_3D avec GROT_GDEP, l'algorithme de réactualisation des grandes rotations est tel que les rotations doivent être inférieures à 2 pi radians.
   Assurez-vous que les rotations ne soient pas très grandes au risque de résultats faux.
 """),
 
@@ -234,7 +234,7 @@ Ne renseignez pas le mot-clé COMPORTEMENT/%(k2)s, afin de sélectionner l'algor
 
     50: _("""La réactualisation de la géométrie (DEFORMATION='PETIT_REAC') est déconseillée pour les éléments de type DKT et DST.
 Les grandes rotations ne sont pas modélisées correctement.
-En présence de grands déplacements et grandes rotations, il est préférable d'utiliser pour les modélisations type COQUE_3D ou DKTG.
+En présence de grands déplacements et grandes rotations, il est préférable d'utiliser pour les modélisations type COQUE_3D ou COQUE_SOLIDE.
 """),
 
     53: _("""
