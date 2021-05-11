@@ -27,11 +27,8 @@ data files, execute code_aster and copy the result files.
 
 import os
 import os.path as osp
-import stat
 import tempfile
-from contextlib import contextmanager
 from glob import glob
-from math import log10
 from subprocess import PIPE, run
 
 from .command_files import add_import_commands, stop_at_end
@@ -51,15 +48,14 @@ FMT_DIAG = """
 ------------------------------------------------------------
 """
 
-@contextmanager
-def temporary_dir(suffix=""):
-    """"""
-    previous = os.getcwd()
-    with tempfile.TemporaryDirectory(prefix="run_aster_", suffix=suffix,
-                                        dir=CFG.get("tmpdir")) as wrkdir:
-        os.chdir(wrkdir)
-        yield wrkdir
-        os.chdir(previous)
+
+def create_temporary_dir():
+    """Create a temporarry directory.
+
+    Returns:
+        str: Path of the directory.
+    """
+    return tempfile.mkdtemp(prefix="run_aster_", dir=CFG.get("tmpdir"))
 
 
 class RunAster:
@@ -108,24 +104,20 @@ class RunAster:
         procid = max(procid, 0)
         self._procid = procid
 
-    def execute(self, wrkdir=None):
-        """Execution in a temporary directory.
+    def execute(self, wrkdir):
+        """Execution in a working directory.
 
         Arguments:
-            wrkdir (str, optional): Working directory.
+            wrkdir (str): Working directory.
 
         Returns:
             Status: Status object.
         """
-        if wrkdir:
-            if self._parallel:
-                wrkdir = osp.join(wrkdir, f"proc.{self._procid}")
-            os.makedirs(wrkdir, exist_ok=True)
-            os.chdir(wrkdir)
-            status = self._execute()
-        else:
-            with temporary_dir(suffix=f".proc.{self._procid}"):
-                status = self._execute()
+        if self._parallel:
+            wrkdir = osp.join(wrkdir, f"proc.{self._procid}")
+        os.makedirs(wrkdir, exist_ok=True)
+        os.chdir(wrkdir)
+        status = self._execute()
         return status
 
     def _execute(self):

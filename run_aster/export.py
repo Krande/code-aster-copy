@@ -312,6 +312,14 @@ class Export(Store):
         self._checked = False
         self.parse(check)
 
+    def copy(self):
+        """Return a copy of the current object.
+
+        Returns:
+            *Export*: Copy.
+        """
+        return Export(from_string=repr(self))
+
     @staticmethod
     def _new_param(name):
         """Create a Parameter of the right type."""
@@ -352,6 +360,12 @@ class Export(Store):
             fileobj (File): File object to be removed.
         """
         self._files = [i for i in self._files if i is not fileobj]
+
+    def remove_all_commfiles(self):
+        """Remove all 'comm' File objects."""
+        commfiles = self.commfiles
+        kept = [i for i in self._files if i not in commfiles]
+        self._files = kept
 
     def import_file_argument(self, line):
         """Add a File object by decoding a line as formatted
@@ -554,3 +568,19 @@ class Export(Store):
         self.remove_args("--memory", 1)
         self.set_argument(["--memory", str(value)])
         self.check()
+
+
+def split_export(export):
+    """Return a different *Export* object for each 'comm' file.
+
+    Returns:
+        list[Export]: List of *Export* objects.
+    """
+    commfiles = export.commfiles
+    result = []
+    for comm in commfiles:
+        exp = export.copy()
+        exp.remove_all_commfiles()
+        exp.add_file(comm)
+        result.append(exp)
+    return result

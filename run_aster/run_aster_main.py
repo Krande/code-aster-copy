@@ -66,15 +66,16 @@ See ``bin/run_aster --help`` for the available options.
 import argparse
 import os
 import os.path as osp
+import shutil
 import sys
 import tempfile
-from subprocess import PIPE, run
+from subprocess import run
 
 from .command_files import AUTO_IMPORT
 from .config import CFG
-from .export import Export, File
+from .export import Export, File, split_export
 from .logger import DEBUG, WARNING, logger
-from .run import RunAster, get_procid
+from .run import RunAster, create_temporary_dir, get_procid
 from .utils import ROOT
 
 try:
@@ -246,36 +247,50 @@ def main(argv=None):
     if args.only_proc0 is None:
         args.only_proc0 = CFG.get("only-proc0", False)
 
-    if CFG.get("parallel", 0):
-        if args.only_proc0 and procid > 0:
-            logger.setLevel(WARNING)
-        if procid < 0 and args.auto_mpiexec:
-            if tmpf:
-                os.remove(tmpf)
-            run_aster = osp.join(ROOT, "bin", "run_aster")
-            args_cmd = dict(mpi_nbcpu=export.get("mpi_nbcpu", 1),
-                            program=f"{run_aster} {' '.join(argv)}")
-            cmd = CFG.get("mpiexec").format(**args_cmd)
-            logger.info("Restart: " + cmd)
-            proc = run(cmd, shell=True)
-            return proc.returncode
+    wrkdir = args.wrkdir or create_temporary_dir()
+    try:
+        if CFG.get("parallel", 0):
+            if args.only_proc0 and procid > 0:
+                logger.setLevel(WARNING)
+            if procid < 0 and args.auto_mpiexec:
+                if tmpf:
+                    os.remove(tmpf)
+                run_aster = osp.join(ROOT, "bin", "run_aster")
+                for idx, exp_i in enumerate(split_export(export)):
+                    fexp = osp.join(wrkdir, f"export.{idx}")
+                    exp_i.write_to(fexp)
+                    argv_i = [i for i in argv if i != args.export]
+                    argv_i.append("--wrkdir")
+                    argv_i.append(wrkdir)
+                    argv_i.append(fexp)
+                    args_cmd = dict(mpi_nbcpu=export.get("mpi_nbcpu", 1),
+                                    program=f"{run_aster} {' '.join(argv_i)}")
+                    cmd = CFG.get("mpiexec").format(**args_cmd)
+                    logger.info("Restart: " + cmd)
+                    proc = run(cmd, shell=True)
+                    if proc.returncode != 0:
+                        break
+                return proc.returncode
 
-    opts = {}
-    opts["test"] = args.test
-    opts["env"] = make_env
-    opts["tee"] = not args.ctest and (not args.only_proc0 or procid == 0)
-    opts["interactive"] = args.interactive
-    if args.exectool:
-        wrapper = CFG.get("exectool", {}).get(args.exectool)
-        if not wrapper:
-            logger.warning(f"'{args.exectool}' is not defined in your "
-                           f"configuration, it is used as a command line.")
-            wrapper = args.exectool
-        opts["exectool"] = wrapper
-    calc = RunAster.factory(export, **opts)
-    status = calc.execute(args.wrkdir)
-    if tmpf and not opts["env"]:
-        os.remove(tmpf)
+        opts = {}
+        opts["test"] = args.test
+        opts["env"] = make_env
+        opts["tee"] = not args.ctest and (not args.only_proc0 or procid == 0)
+        opts["interactive"] = args.interactive
+        if args.exectool:
+            wrapper = CFG.get("exectool", {}).get(args.exectool)
+            if not wrapper:
+                logger.warning(f"'{args.exectool}' is not defined in your "
+                            f"configuration, it is used as a command line.")
+                wrapper = args.exectool
+            opts["exectool"] = wrapper
+        calc = RunAster.factory(export, **opts)
+        status = calc.execute(wrkdir)
+        if tmpf and not opts["env"]:
+            os.remove(tmpf)
+    finally:
+        if not args.wrkdir:
+            shutil.rmtree(wrkdir)
     return status.exitcode
 
 

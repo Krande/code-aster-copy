@@ -35,16 +35,19 @@ from glob import glob
 from code_aster.Utilities import config
 
 from run_aster.command_files import add_import_commands, stop_at_end
-from run_aster.config import CFG, VERSION_PARAMS, Config
+from run_aster.config import CFG, Config
 from run_aster.ctest2junit import XUnitReport
-from run_aster.export import (PARAMS_TYPE, Export, ExportParameter,
-                              ExportParameterBool, ExportParameterFloat,
-                              ExportParameterInt, ExportParameterListStr,
-                              ExportParameterStr, File)
+from run_aster.export import PARAMS_TYPE, Export, ExportParameter, File, split_export
 from run_aster.logger import ERROR, logger
-from run_aster.settings import (ParameterBool, ParameterDictStr,
-                                ParameterFloat, ParameterInt, ParameterListStr,
-                                ParameterStr, Store)
+from run_aster.settings import (
+    ParameterBool,
+    ParameterDictStr,
+    ParameterFloat,
+    ParameterInt,
+    ParameterListStr,
+    ParameterStr,
+    Store,
+)
 from run_aster.status import StateOptions as SO
 from run_aster.status import Status, get_status
 from run_aster.timer import Timer
@@ -88,14 +91,8 @@ class TestConfig(unittest.TestCase):
         # add user file with server
         user_cfg = {
             "server": [
-                {
-                    "name": "*",
-                    "config": {"mpiexec": "mpiexec_all_servers"}
-                },
-                {
-                    "name": "myhost",
-                    "config": {"mpiexec": "mpiexec_myhost"}
-                },
+                {"name": "*", "config": {"mpiexec": "mpiexec_all_servers"}},
+                {"name": "myhost", "config": {"mpiexec": "mpiexec_myhost"}},
             ]
         }
         cfg.import_dict(user_cfg, with_sections=True)
@@ -105,20 +102,22 @@ class TestConfig(unittest.TestCase):
         cfg.import_dict(user_cfg, with_sections=True)
         self.assertEqual(cfg.get("mpiexec"), "mpiexec_myhost")
         # + 2 versions
-        user_cfg.update({
-            "version": [
-                {
-                    "name": "VERS1",
-                    "path": ROOT,
-                    "config": {"mpiexec": "mpiexec_for_VERS1"}
-                },
-                {
-                    "name": "VERS2",
-                    "path": "/another/installation/directory",
-                    "config": {"mpiexec": "mpiexec_for_VERS2"}
-                }
-            ]
-        })
+        user_cfg.update(
+            {
+                "version": [
+                    {
+                        "name": "VERS1",
+                        "path": ROOT,
+                        "config": {"mpiexec": "mpiexec_for_VERS1"},
+                    },
+                    {
+                        "name": "VERS2",
+                        "path": "/another/installation/directory",
+                        "config": {"mpiexec": "mpiexec_for_VERS2"},
+                    },
+                ]
+            }
+        )
         cfg.import_dict(user_cfg, with_sections=True)
         self.assertEqual(cfg.get("mpiexec"), "mpiexec_for_VERS1")
 
@@ -128,16 +127,7 @@ class TestConfig(unittest.TestCase):
         cfg._storage.set("mpiexec", "empty")
         # add user file with server
         user_cfg = {
-            "server": [
-                {
-                    "name": "*",
-                    "config": {
-                        "exectool": {
-                            "mywrapper": "echo -n"
-                        }
-                    }
-                }
-            ]
+            "server": [{"name": "*", "config": {"exectool": {"mywrapper": "echo -n"}}}]
         }
         cfg.import_dict(user_cfg, with_sections=True)
         self.assertIsInstance(cfg.get("exectool"), dict)
@@ -376,10 +366,12 @@ class TestExport(unittest.TestCase):
         self.assertTrue(shell.data)
 
     def test_data(self):
-        text = "\n".join([
-            "F nom filename.py D 0",
-            "F tests_data filename.py D 0",
-        ])
+        text = "\n".join(
+            [
+                "F nom filename.py D 0",
+                "F tests_data filename.py D 0",
+            ]
+        )
         export = Export(from_string=text)
         # tests_data type works as nom but with a different path initialization
         file0, file1 = export.datafiles
@@ -389,50 +381,68 @@ class TestExport(unittest.TestCase):
         self.assertFalse(file0.is_tests_data)
         self.assertTrue(file1.is_tests_data)
         self.assertEqual(file0.path, "filename.py")
-        self.assertEqual(file1.path, osp.join(ROOT, "share", "aster",
-                                              "tests_data", "filename.py"))
-        self.assertEqual(repr(export), "\n".join([
-            "F nom filename.py D 0",
-            "F tests_data {} D 0".format(file1.path),
-            ""]))
+        self.assertEqual(
+            file1.path, osp.join(ROOT, "share", "aster", "tests_data", "filename.py")
+        )
+        self.assertEqual(
+            repr(export),
+            "\n".join(
+                ["F nom filename.py D 0", "F tests_data {} D 0".format(file1.path), ""]
+            ),
+        )
 
     def test_args(self):
         # memory is taken from memjeveux (that is removed) + addmem
-        text = "\n".join([
-            "A args --continue --memjeveux=512",
-            "A max_base 1000",
-            "A abort",
-        ])
-        addmem = CFG.get("addmem", 0.)
+        text = "\n".join(
+            [
+                "A args --continue --memjeveux=512",
+                "A max_base 1000",
+                "A abort",
+            ]
+        )
+        addmem = CFG.get("addmem", 0.0)
         export = Export(from_string=text)
-        memory = export.get_argument_value("memory", float) # with addmem
+        memory = export.get_argument_value("memory", float)  # with addmem
         refval = 512.0 * (8 if "64" in platform.architecture()[0] else 4)
         self.assertEqual(memory, refval + addmem)
-        self.assertSequenceEqual(export.args,
-            ["--continue",
-             "--max_base", "1000", "--abort",
-             "--memory", str(memory)])
+        self.assertSequenceEqual(
+            export.args,
+            ["--continue", "--max_base", "1000", "--abort", "--memory", str(memory)],
+        )
         self.assertIsNone(export.get_argument_value("memjeveux", float))
         self.assertEqual(export.get_argument_value("max_base", float), 1000.0)
         self.assertEqual(export.get_argument_value("continue", bool), True)
         self.assertEqual(export.get_argument_value("abort", bool), True)
         self.assertEqual(export.get_argument_value("tpmax", float), None)
         self.assertEqual(export.get_argument_value("dbgjeveux", bool), False)
-        self.assertEqual(repr(export), "\n".join([
-            "A args --continue --max_base 1000 --abort --memory {0:.1f}"
-            .format(refval + addmem),
-            ""]))
+        self.assertEqual(
+            repr(export),
+            "\n".join(
+                [
+                    "A args --continue --max_base 1000 --abort --memory {0:.1f}".format(
+                        refval + addmem
+                    ),
+                    "",
+                ]
+            ),
+        )
 
     def test_memory(self):
         text = "P memory_limit 4096.0"
-        addmem = CFG.get("addmem", 0.)
+        addmem = CFG.get("addmem", 0.0)
         export = Export(from_string=text)
         self.assertGreaterEqual(export.get("memory_limit"), 4096.0)
         self.assertGreaterEqual(export.get_argument_value("memory", float), 4096.0)
-        self.assertEqual(repr(export), "\n".join([
-            "P memory_limit 4096.0",
-            "A args --memory {}".format(4096.0 + addmem),
-            ""]))
+        self.assertEqual(
+            repr(export),
+            "\n".join(
+                [
+                    "P memory_limit 4096.0",
+                    "A args --memory {}".format(4096.0 + addmem),
+                    "",
+                ]
+            ),
+        )
         # read memory limit, write export, read => not added twice?
 
     def test_time(self):
@@ -440,10 +450,9 @@ class TestExport(unittest.TestCase):
         export = Export(from_string=text)
         self.assertEqual(export.get("time_limit"), 3600.0)
         self.assertEqual(export.get_argument_value("tpmax", float), 3600.0)
-        self.assertEqual(repr(export), "\n".join([
-            "P time_limit 3600.0",
-            "A args --tpmax 3600",
-            ""]))
+        self.assertEqual(
+            repr(export), "\n".join(["P time_limit 3600.0", "A args --tpmax 3600", ""])
+        )
 
     def test_bool(self):
         text = "P hide-command"
@@ -452,13 +461,43 @@ class TestExport(unittest.TestCase):
         param = export.get_param("hide-command")
         self.assertIsInstance(param, ParameterBool)
         self.assertTrue(export.get("hide-command"))
-        self.assertEqual(repr(export), "\n".join([
-            "P hide-command",
-            ""]))
+        self.assertEqual(repr(export), "\n".join(["P hide-command", ""]))
         # how to disable a bool parameter
         param.set(False)
         self.assertFalse(export.get("hide-command"))
         self.assertEqual(repr(export), "\n")
+
+    def test_split(self):
+        text = "\n".join(
+            [
+                "F comm filename.comm D 1",
+                "F comm filename.com1 D 1",
+                "F mail filename.mail D 20",
+                "P time_limit 3600.0",
+                "A args --tpmax 3600",
+            ]
+        )
+        export = Export(from_string=text)
+        self.assertEqual(len(export.commfiles), 2)
+        main = repr(export)
+        print("\nDEBUG:\n", main)
+        exp0 = export.copy()
+        self.assertEqual(repr(export), repr(exp0))
+        exp0.remove_all_commfiles()
+        self.assertEqual(len(export.commfiles), 2)
+        self.assertEqual(len(exp0.commfiles), 0)
+        self.assertEqual(repr(export), main)
+        self.assertNotEqual(repr(exp0), main)
+        # split
+        lexp = split_export(export)
+        self.assertEqual(len(lexp), 2)
+        comm = []
+        for obj in lexp:
+            self.assertEqual(len(obj.commfiles), 1)
+            comm.append(obj.commfiles[0])
+        self.assertSequenceEqual(
+            [i.path for i in comm], ["filename.comm", "filename.com1"]
+        )
 
 
 class TestCommandFiles(unittest.TestCase):
@@ -481,10 +520,7 @@ class TestCommandFiles(unittest.TestCase):
         self.assertEqual(res, res2)
 
     def test_end(self):
-        text = "\n".join([
-            "DEBUT()",
-            "FIN(PROC0='OUI')"
-        ])
+        text = "\n".join(["DEBUT()", "FIN(PROC0='OUI')"])
         res = stop_at_end(text)
         self.assertIn("DEBUT()", res)
         self.assertIn("code.interact", res)
@@ -548,17 +584,17 @@ class TestStatus(unittest.TestCase):
     def test_status_update(self):
         status = Status()
         st1 = Status(SO.Warn | SO.NoTest, 0)
-        st1.times = (3., 1., 5., 10.)
+        st1.times = (3.0, 1.0, 5.0, 10.0)
         status.update(st1)
         self.assertEqual(status.state, SO.Warn | SO.NoTest)
         self.assertEqual(status.exitcode, 0)
-        self.assertSequenceEqual(status.times, (3., 1., 5., 10.))
+        self.assertSequenceEqual(status.times, (3.0, 1.0, 5.0, 10.0))
         st2 = Status(SO.Except, 1)
-        st2.times = (100., 1., 101., 105.)
+        st2.times = (100.0, 1.0, 101.0, 105.0)
         status.update(st2)
         self.assertEqual(status.state, SO.Except)
         self.assertEqual(status.exitcode, 1)
-        self.assertSequenceEqual(status.times, (103., 2., 106., 115.))
+        self.assertSequenceEqual(status.times, (103.0, 2.0, 106.0, 115.0))
 
     def test_diag(self):
         status = get_status(0, "")
@@ -568,7 +604,7 @@ class TestStatus(unittest.TestCase):
         self.assertTrue(status.state & SO.Completed)
         self.assertTrue(status.is_completed())
         self.assertFalse(status.state & SO.Error)
-        self.assertSequenceEqual(status.times, [0.] * 4)
+        self.assertSequenceEqual(status.times, [0.0] * 4)
 
         status = get_status(1, "")
         self.assertEqual(status.state, SO.Abort)
@@ -592,10 +628,12 @@ class TestStatus(unittest.TestCase):
         self.assertTrue(status.state & SO.Completed)
         self.assertFalse(status.state & SO.Error)
 
-        output = "\n".join([
-            "! <A> SUPERVIS_22 !",
-            "NOOK 1. 0....",
-        ])
+        output = "\n".join(
+            [
+                "! <A> SUPERVIS_22 !",
+                "NOOK 1. 0....",
+            ]
+        )
         status = get_status(0, output)
         self.assertEqual(status.state, SO.Nook | SO.Warn)
         self.assertEqual(SO.name(status.state), "NOOK_TEST_RESU")
@@ -610,34 +648,38 @@ class TestStatus(unittest.TestCase):
         self.assertFalse(status.state & SO.Completed)
         self.assertTrue(status.state & SO.Error)
 
-        output = "\n".join([
-            "! <S> <MECANONLINE_12> ARRET PAR MANQUE DE TEMPS CPU !",
-            "SyntaxError: unexpected argument",
-        ])
+        output = "\n".join(
+            [
+                "! <S> <MECANONLINE_12> ARRET PAR MANQUE DE TEMPS CPU !",
+                "SyntaxError: unexpected argument",
+            ]
+        )
         status = get_status(1, output)
-        self.assertEqual(status.state,
-                         SO.CpuLimit | SO.Except | SO.Syntax)
+        self.assertEqual(status.state, SO.CpuLimit | SO.Except | SO.Syntax)
         self.assertEqual(SO.name(status.state), "<F>_SYNTAX_ERROR")
         self.assertFalse(status.state & SO.Ok)
         self.assertFalse(status.state & SO.Completed)
         self.assertTrue(status.state & SO.Error)
 
-        output = "\n".join([
-            "! <ConvergenceError> <MECANONLINE_44> bla bla !",
-            "<TimeLimitError>: xxxx",
-        ])
+        output = "\n".join(
+            [
+                "! <ConvergenceError> <MECANONLINE_44> bla bla !",
+                "<TimeLimitError>: xxxx",
+            ]
+        )
         status = get_status(1, output)
-        self.assertEqual(status.state,
-                         SO.CpuLimit | SO.Convergence)
+        self.assertEqual(status.state, SO.CpuLimit | SO.Convergence)
         self.assertEqual(SO.name(status.state), "<S>_NO_CONVERGENCE")
         self.assertFalse(status.state & SO.Ok)
         self.assertFalse(status.state & SO.Completed)
         self.assertTrue(status.state & SO.Error)
 
-        output = "\n".join([
-            "-- CODE_ASTER -- VERSION : DÉVELOPPEMENT (unstable) --",
-            " OK assert True passed",
-        ])
+        output = "\n".join(
+            [
+                "-- CODE_ASTER -- VERSION : DÉVELOPPEMENT (unstable) --",
+                " OK assert True passed",
+            ]
+        )
         status = get_status(0, output)
         self.assertEqual(status.state, SO.Abort)
         self.assertEqual(SO.name(status.state), "<F>_ABNORMAL_ABORT")
