@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 ! aslint: disable=W1504
 !
 subroutine dltlec(result, modele, numedd, materi, mate,&
-                  carael, carele, imat, masse, rigid,&
+                  carele, imat, masse, rigid,&
                   amort, lamort, nchar, nveca, lischa,&
                   charge, infoch, fomult, iaadve, ialifo,&
                   nondp, iondp, solveu, iinteg, t0,&
@@ -49,6 +49,7 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/nonlinDSInOutCreate.h"
+#include "asterfort/assert.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -277,6 +278,14 @@ implicit none
     call dismoi('NOM_NUME_DDL', rigid, 'MATR_ASSE', repk=numedd)
     call dismoi('NOM_MODELE', rigid, 'MATR_ASSE', repk=modele)
     call dismoi('CARA_ELEM', rigid, 'MATR_ASSE', repk=carael)
+
+    if(nchar .ne. 0) then
+        !- S'ASSURER DE LA COHRENCE ENTRE LES CARA_ELEM RECUPEREES
+        ASSERT(carael(1:8).eq.carele(1:8))
+    else
+        carele = carael(1:8)//'               '
+    endif
+
     materi = ' '
     call dismoi('CHAM_MATER', rigid, 'MATR_ASSE', repk=materi, arret = 'C', ier = ierc)
     if (ierc .ne. 0) then

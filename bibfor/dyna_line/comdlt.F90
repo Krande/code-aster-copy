@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -96,7 +96,7 @@ implicit none
     character(len=1) :: base, typcoe
     character(len=2) :: codret
     character(len=8) :: k8b, masse, rigid, amort, result
-    character(len=8) :: carael, kstr, nomfon, charep
+    character(len=8) :: kstr, nomfon, charep
     character(len=9) :: nomsym(6)
     character(len=19) :: solveu, infcha, ligrel, linst
     character(len=12) :: allschemes(4), schema, schtyp
@@ -168,7 +168,7 @@ implicit none
 !---CREATION et lecture DATA_STRUCTURE ds_inout pour observation
 
     call dltlec(result, modele, numedd, materi, mateco,&
-                carael, carele, imat, masse, rigid,&
+                carele, imat, masse, rigid,&
                 amort, lamort, nchar, nveca, infcha,&
                 charge, infoch, fomult, iaadve, ialifo,&
                 nondp, iondp, solveu, iinteg, t0,&
@@ -455,7 +455,7 @@ implicit none
 
         call rsadpa(result, 'E', 1, 'CARAELEM', ordr(iordr),&
                     0, sjv=ladpa)
-        zk8(ladpa)=carael
+        zk8(ladpa)=carele(1:8)
     end do
 !
 ! --- ON CALCULE LE CHAMP DE STRUCTURE STRX_ELGA SI BESOIN
@@ -487,16 +487,16 @@ implicit none
             call rsexch(' ', result, 'DEPL', iordr, chamgd,&
                         iret)
             if (iret .gt. 0) cycle
-            call mecham('STRX_ELGA', modele, carael, 0, chgeom,&
+            call mecham('STRX_ELGA', modele, carele(1:8), 0, chgeom,&
                         chcara, chharm, iret)
             if (iret .ne. 0) cycle
             call rsadpa(result, 'L', 1, 'INST', iordr,&
                         0, sjv=ladpa)
             time = zr(ladpa)
             call mechti(chgeom(1:8), time, rundf, rundf, chtime)
-            call vrcins(modele, materi, carael, time, chvarc(1:19),&
+            call vrcins(modele, materi, carele(1:8), time, chvarc(1:19),&
                         codret)
-            call vrcref(modele(1:8), materi(1:8), carael(1:8), chvref(1: 19))
+            call vrcref(modele(1:8), materi(1:8), carele(1:8), chvref(1: 19))
             if (exipou .and. nfon .ne. 0) then
                 call fointe('F ', nomfon, 1, ['INST'], [time],&
                             alpha, iret)
