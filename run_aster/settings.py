@@ -241,7 +241,7 @@ class Store:
             misc: Parameter value.
         """
         param = self.get_param(name)
-        return (param and param.value) or default
+        return param.value if param and param.value is not None else default
 
     def set(self, name, value):
         """Automatically add a parameter of the expected type.

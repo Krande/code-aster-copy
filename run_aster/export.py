@@ -87,6 +87,8 @@ from .utils import ROOT
 
 PARAMS_TYPE = {
     "actions": "list[str]",
+    "step": "int",
+    "nbsteps": "int",
     "expected_diag": "list[str]",
     "hide-command": "bool",
     "interact": "bool",
@@ -578,8 +580,10 @@ def split_export(export):
     """
     commfiles = export.commfiles
     result = []
-    for comm in commfiles:
+    for step, comm in enumerate(commfiles):
         exp = export.copy()
+        exp.set("step", step)
+        exp.set("nbsteps", len(commfiles))
         exp.remove_all_commfiles()
         exp.add_file(comm)
         result.append(exp)

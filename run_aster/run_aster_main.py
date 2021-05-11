@@ -80,6 +80,7 @@ from .utils import ROOT
 
 try:
     import debugpy
+
     HAS_DEBUGPY = True
 except ImportError:
     HAS_DEBUGPY = False
@@ -113,63 +114,112 @@ def parse_args(argv):
     parser = argparse.ArgumentParser(
         usage=USAGE,
         epilog=EPILOG,
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--version', action='store_true',
-                        help="show code_aster version")
-    parser.add_argument('-g', '--debug', action='store_true',
-                        help="print debugging information (same as "
-                             "DEBUG=1 in environment)")
-    parser.add_argument('-i', '--interactive', action='store_true',
-                        help="inspect interactively after running script "
-                             "instead of calling FIN command")
-    parser.add_argument('--env', action='store_true',
-                        help="do not execute, only prepare the working "
-                             "directory ('--wrkdir' is required)")
-    parser.add_argument('-w', '--wrkdir', action='store',
-                        help="use this directory as working directory")
-    parser.add_argument('--all-procs', dest='only_proc0',
-                        action='store_false', default=None,
-                        help="show all processors output")
-    parser.add_argument('--only-proc0', dest='only_proc0',
-                        action='store_true', default=None,
-                        help="only processor #0 is writing on stdout")
-    parser.add_argument('--no-mpi', dest='auto_mpiexec',
-                        action='store_false',
-                        help="if '%(prog)s' is executed with a parallel "
-                             "version but not under 'mpiexec', it is "
-                             "automatically restart with "
-                             "'mpiexec -n N %(prog)s ...'; use '--no-mpi' "
-                             "to not do it")
-    parser.add_argument('-t', '--test', action='store_true',
-                        help="execution of a testcase")
-    parser.add_argument('--ctest', action='store_true',
-                        help="testcase execution inside ctest (implies "
-                             "'--test'), the 'mess' file is saved into "
-                             "the current directory (which is '--resutest' "
-                             "directory for 'run_ctest') and is not duplicated "
-                             "on stdout.")
-    parser.add_argument('--time_limit', dest='time_limit', type=float,
-                        action='store', default=None,
-                        help="override the time limit (may also be changed by "
-                             "FACMTPS environment variable)")
-    parser.add_argument('--memory_limit', dest='memory_limit', type=float,
-                        action='store',
-                        help="override the memory limit in MB")
-    parser.add_argument('--no-comm', action='store_true',
-                        help="do not execute the `.comm` files but start an "
-                             "interactive Python session. Execute "
-                             "`code_aster.init()` to copy data files.")
-    parser.add_argument('--exectool', action='store',
-                        help="wrap code_aster execution using this tool "
-                             "(debugger, valgrind, custom command...)")
-    parser.add_argument('--debugpy-runner', action='store', type=int,
-                        help=argparse.SUPPRESS)
-    parser.add_argument('--debugpy-rank', action='store', type=int, default=0,
-                        help=argparse.SUPPRESS)
-    parser.add_argument('export', metavar='EXPORT', nargs="?",
-                        help="Export file defining the calculation. "
-                             "Without file, it starts an interactive Python "
-                             "session.")
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument(
+        "--version", action="store_true", help="show code_aster version"
+    )
+    parser.add_argument(
+        "-g",
+        "--debug",
+        action="store_true",
+        help="print debugging information (same as " "DEBUG=1 in environment)",
+    )
+    parser.add_argument(
+        "-i",
+        "--interactive",
+        action="store_true",
+        help="inspect interactively after running script "
+        "instead of calling FIN command",
+    )
+    parser.add_argument(
+        "--env",
+        action="store_true",
+        help="do not execute, only prepare the working "
+        "directory ('--wrkdir' is required)",
+    )
+    parser.add_argument(
+        "-w", "--wrkdir", action="store", help="use this directory as working directory"
+    )
+    parser.add_argument(
+        "--all-procs",
+        dest="only_proc0",
+        action="store_false",
+        default=None,
+        help="show all processors output",
+    )
+    parser.add_argument(
+        "--only-proc0",
+        dest="only_proc0",
+        action="store_true",
+        default=None,
+        help="only processor #0 is writing on stdout",
+    )
+    parser.add_argument(
+        "--no-mpi",
+        dest="auto_mpiexec",
+        action="store_false",
+        help="if '%(prog)s' is executed with a parallel "
+        "version but not under 'mpiexec', it is "
+        "automatically restart with "
+        "'mpiexec -n N %(prog)s ...'; use '--no-mpi' "
+        "to not do it",
+    )
+    parser.add_argument(
+        "-t", "--test", action="store_true", help="execution of a testcase"
+    )
+    parser.add_argument(
+        "--ctest",
+        action="store_true",
+        help="testcase execution inside ctest (implies "
+        "'--test'), the 'mess' file is saved into "
+        "the current directory (which is '--resutest' "
+        "directory for 'run_ctest') and is not duplicated "
+        "on stdout.",
+    )
+    parser.add_argument(
+        "--time_limit",
+        dest="time_limit",
+        type=float,
+        action="store",
+        default=None,
+        help="override the time limit (may also be changed by "
+        "FACMTPS environment variable)",
+    )
+    parser.add_argument(
+        "--memory_limit",
+        dest="memory_limit",
+        type=float,
+        action="store",
+        help="override the memory limit in MB",
+    )
+    parser.add_argument(
+        "--no-comm",
+        action="store_true",
+        help="do not execute the `.comm` files but start an "
+        "interactive Python session. Execute "
+        "`code_aster.init()` to copy data files.",
+    )
+    parser.add_argument(
+        "--exectool",
+        action="store",
+        help="wrap code_aster execution using this tool "
+        "(debugger, valgrind, custom command...)",
+    )
+    parser.add_argument(
+        "--debugpy-runner", action="store", type=int, help=argparse.SUPPRESS
+    )
+    parser.add_argument(
+        "--debugpy-rank", action="store", type=int, default=0, help=argparse.SUPPRESS
+    )
+    parser.add_argument(
+        "export",
+        metavar="EXPORT",
+        nargs="?",
+        help="Export file defining the calculation. "
+        "Without file, it starts an interactive Python "
+        "session.",
+    )
 
     args = parser.parse_args(argv)
     if args.ctest:
@@ -178,8 +228,8 @@ def parse_args(argv):
         logger.setLevel(DEBUG)
         os.environ["DEBUG"] = str(os.environ.get("DEBUG") or 1)
     if args.version:
-        tag = CFG.get('version_tag')
-        sha1 = CFG.get('version_sha1')[:12]
+        tag = CFG.get("version_tag")
+        sha1 = CFG.get("version_sha1")[:12]
         logger.info(f"code_aster {tag} ({sha1})")
         parser.exit(0)
     if args.env and not args.wrkdir:
@@ -201,14 +251,30 @@ def main(argv=None):
     procid = 0
     if CFG.get("parallel", 0):
         procid = get_procid()
-    if args.debugpy_runner and procid == args.debugpy_rank:
+
+    export = Export(args.export, " ", test=args.test or args.ctest, check=False)
+    make_env = args.env or "make_env" in export.get("actions", [])
+    need_split = len(export.commfiles) > 1
+    if need_split and (CFG.get("parallel", 0) and procid >= 0):
+        logger.error(
+            "Can not execute several comm files under MPI runner. "
+            "Let run_aster split the export file or change the export file."
+        )
+    need_mpiexec = procid < 0 and args.auto_mpiexec
+    logger.debug(
+        "parallel: {0}, procid: {1}".format(CFG.get("parallel", False), procid)
+    )
+    logger.debug("nbcomm: {0}".format(len(export.commfiles)))
+    if (
+        args.debugpy_runner
+        and procid == args.debugpy_rank
+        and not (need_split or need_mpiexec)
+    ):
         debugpy.listen(("localhost", args.debugpy_runner))
         print("Waiting for debugger attach")
         debugpy.wait_for_client()
         debugpy.breakpoint()
 
-    export = Export(args.export, " ", test=args.test or args.ctest, check=False)
-    make_env = args.env or "make_env" in export.get("actions", [])
     tmpf = None
     if args.no_comm:
         for comm in export.commfiles:
@@ -222,8 +288,7 @@ def main(argv=None):
     if args.ctest:
         args.test = True
         basename = osp.splitext(osp.basename(args.export))[0]
-        mess = File(osp.abspath(basename + ".mess"),
-                    filetype="mess", unit=6, resu=True)
+        mess = File(osp.abspath(basename + ".mess"), filetype="mess", unit=6, resu=True)
         export.add_file(mess)
     if args.time_limit:
         export.set_time_limit(args.time_limit)
@@ -237,7 +302,7 @@ def main(argv=None):
     if args.interactive:
         export.set("interact", True)
     if args.interactive or make_env:
-        export.set_time_limit(86400.)
+        export.set_time_limit(86400.0)
     if args.memory_limit:
         export.set_memory_limit(args.memory_limit)
     if export.get("no-mpi"):
@@ -249,29 +314,29 @@ def main(argv=None):
 
     wrkdir = args.wrkdir or create_temporary_dir()
     try:
-        if CFG.get("parallel", 0):
-            if args.only_proc0 and procid > 0:
-                logger.setLevel(WARNING)
-            if procid < 0 and args.auto_mpiexec:
-                if tmpf:
-                    os.remove(tmpf)
-                run_aster = osp.join(ROOT, "bin", "run_aster")
-                for idx, exp_i in enumerate(split_export(export)):
-                    fexp = osp.join(wrkdir, f"export.{idx}")
-                    exp_i.write_to(fexp)
-                    argv_i = [i for i in argv if i != args.export]
+        if need_split or need_mpiexec:
+            run_aster = osp.join(ROOT, "bin", "run_aster")
+            os.makedirs(wrkdir, exist_ok=True)
+            for exp_i in split_export(export):
+                fexp = osp.join(wrkdir, "export." + str(exp_i.get("step")))
+                exp_i.write_to(fexp)
+                argv_i = [i for i in argv if i != args.export]
+                if not args.wrkdir:
                     argv_i.append("--wrkdir")
                     argv_i.append(wrkdir)
-                    argv_i.append(fexp)
-                    args_cmd = dict(mpi_nbcpu=export.get("mpi_nbcpu", 1),
-                                    program=f"{run_aster} {' '.join(argv_i)}")
+                argv_i.append(fexp)
+                cmd = f"{run_aster} {' '.join(argv_i)}"
+                if need_mpiexec:
+                    args_cmd = dict(mpi_nbcpu=export.get("mpi_nbcpu", 1), program=cmd)
                     cmd = CFG.get("mpiexec").format(**args_cmd)
-                    logger.info("Restart: " + cmd)
-                    proc = run(cmd, shell=True)
-                    if proc.returncode != 0:
-                        break
-                return proc.returncode
+                logger.info("Running: " + cmd)
+                proc = run(cmd, shell=True)
+                if proc.returncode != 0:
+                    break
+            return proc.returncode
 
+        if args.only_proc0 and procid > 0:
+            logger.setLevel(WARNING)
         opts = {}
         opts["test"] = args.test
         opts["env"] = make_env
@@ -280,8 +345,10 @@ def main(argv=None):
         if args.exectool:
             wrapper = CFG.get("exectool", {}).get(args.exectool)
             if not wrapper:
-                logger.warning(f"'{args.exectool}' is not defined in your "
-                            f"configuration, it is used as a command line.")
+                logger.warning(
+                    f"'{args.exectool}' is not defined in your "
+                    f"configuration, it is used as a command line."
+                )
                 wrapper = args.exectool
             opts["exectool"] = wrapper
         calc = RunAster.factory(export, **opts)
@@ -294,5 +361,5 @@ def main(argv=None):
     return status.exitcode
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

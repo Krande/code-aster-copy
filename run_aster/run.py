@@ -103,6 +103,12 @@ class RunAster:
             procid = get_procid()
         procid = max(procid, 0)
         self._procid = procid
+        # multi-steps study
+        if not export.has_param("step"):
+            export.set("step", 0)
+        if not export.has_param("nbsteps"):
+            export.set("nbsteps", len(self.export.commfiles))
+        self._last = export.get("step") + 1 == export.get("nbsteps")
 
     def execute(self, wrkdir):
         """Execution in a working directory.
@@ -135,11 +141,12 @@ class RunAster:
         status = self.execute_study()
         timer.stop()
         timer.start("Copying results")
-        self.ending_execution(status.is_completed())
-        logger.info("TITLE Execution summary")
-        logger.info(timer.report())
-        if self._procid == 0:
-            logger.info(FMT_DIAG.format(state=status.diag))
+        if self._last:
+            self.ending_execution(status.is_completed())
+            logger.info("TITLE Execution summary")
+            logger.info(timer.report())
+            if self._procid == 0:
+                logger.info(FMT_DIAG.format(state=status.diag))
         return status
 
     def prepare_current_directory(self):
@@ -156,39 +163,34 @@ class RunAster:
             Status: Status object.
         """
         commfiles = [obj.path for obj in self.export.commfiles]
-        nbcomm = len(commfiles)
         if not commfiles:
             logger.error("no .comm file found")
-        elif nbcomm > 1:
+        if self.export.get("nbsteps") > 1:
             os.makedirs("BASE_PREC", exist_ok=True)
 
         timeout = (self.export.get("time_limit", 86400) * 1.25 *
                    self.export.get("ncpus", 1))
         status = Status()
-        for idx, comm in enumerate(commfiles):
-            last = idx + 1 == nbcomm
-            logger.info(f"TITLE Command file #{idx + 1} / {nbcomm}")
-            comm = change_comm_file(comm, interact=self._interact,
-                                    show=self._show_comm)
-            status.update(self._exec_one(comm, idx, last,
-                                         timeout - status.times[-1]))
-            if not status.is_completed():
-                break
+        comm = commfiles[0]
+        logger.info("TITLE Command file #{0} / {1}".format(
+            self.export.get("step") + 1, self.export.get("nbsteps")))
+        comm = change_comm_file(comm, interact=self._interact,
+                                show=self._show_comm)
+        status.update(self._exec_one(comm, timeout - status.times[-1]))
         self._coredump_analysis()
         return status
 
-    def _exec_one(self, comm, idx, last, timeout):
+    def _exec_one(self, comm, timeout):
         """Show instructions for a command file.
 
         Arguments:
             comm (str): Command file name.
-            idx (int): Index of execution.
-            last (bool): *True* for the last command file.
             timeout (float): Remaining time.
 
         Returns:
             Status: Status object.
         """
+        idx = self.export.get("step")
         logger.info(f"TITLE Command line #{idx + 1}:")
         timeout = int(max(1, timeout))
         cmd = self._get_cmdline(idx, comm, timeout)
@@ -198,10 +200,10 @@ class RunAster:
         msg = f"\nEXECUTION_CODE_ASTER_EXIT_{self.jobnum}={exitcode}\n\n"
         logger.info(msg)
         _log_mess(msg)
-        status = self._get_status(exitcode, last)
+        status = self._get_status(exitcode)
 
         if status.is_completed():
-            if not last:
+            if not self._last:
                 for vola in glob("vola.*"):
                     os.remove(vola)
                 logger.info("saving result databases to 'BASE_PREC'...")
@@ -303,17 +305,16 @@ class RunAster:
         cmd.insert(0, f"ulimit -c unlimited ; ulimit -t {timeout:.0f} ;")
         return cmd
 
-    def _get_status(self, exitcode, last):
+    def _get_status(self, exitcode):
         """Get the execution status.
 
         Arguments:
             exitcode (int): Return code.
-            last (bool): *True* for the last command file, *False* otherwise.
 
         Returns:
             Status: Status object.
         """
-        status = get_status(exitcode, TMPMESS, test=self._test and last)
+        status = get_status(exitcode, TMPMESS, test=self._test and self._last)
         expected = self.export.get("expected_diag", [])
         if status.diag in expected:
             status.state = StateOptions.Ok
@@ -351,33 +352,38 @@ class RunOnlyEnv(RunAster):
         if self._procid > 0:
             logger.setLevel(WARNING)
 
+    def prepare_current_directory(self):
+        """Prepare the working directory."""
+        if self.export.get("step") == 0:
+            super().prepare_current_directory()
+
     def execute_study(self):
         """Execute the study.
 
         Returns:
             Status: Status object.
         """
-        logger.info("TITLE Copy/paste these command lines:")
-        profile = osp.join(ROOT, "share", "aster", "profile.sh")
-        timeout = self.export.get("time_limit", 0) * 1.25
-        if not self._parallel:
-            logger.info(f"    cd {os.getcwd()}")
-        else:
-            logger.info(f"    cd {osp.dirname(os.getcwd())}")
-        logger.info(f"    . {profile}")
-        logger.info("    ulimit -c unlimited")
-        logger.info(f"    ulimit -t {timeout:.0f}")
+        if self.export.get("step") == 0:
+            logger.info("TITLE Copy/paste these command lines:")
+            profile = osp.join(ROOT, "share", "aster", "profile.sh")
+            timeout = self.export.get("time_limit", 0) * 1.25
+            if not self._parallel:
+                logger.info(f"    cd {os.getcwd()}")
+            else:
+                logger.info(f"    cd {osp.dirname(os.getcwd())}")
+            logger.info(f"    . {profile}")
+            logger.info("    ulimit -c unlimited")
+            logger.info(f"    ulimit -t {timeout:.0f}")
         return super().execute_study()
 
-    def _exec_one(self, comm, idx, last, timeout):
+    def _exec_one(self, comm, timeout):
         """Show instructions for a command file.
 
         Arguments:
             comm (str): Command file name.
-            idx (int): Index of execution.
-            last (bool): *True* for the last command file.
             timeout (float): Remaining time.
         """
+        idx = self.export.get("step")
         cmd = []
         if self._parallel:
             cmd.append("#!/bin/bash")
@@ -447,14 +453,14 @@ def change_comm_file(comm, interact=False, wrkdir=None, show=False):
     text = add_import_commands(text_init)
     if interact:
         text = stop_at_end(text)
+    if show:
+        logger.info(f"\nContent of the file to execute:\n{text}\n")
     if text.strip() == text_init.strip():
         return comm
 
     filename = osp.join(wrkdir or ".", osp.basename(comm) + ".changed.py")
     with open(filename, 'w') as fobj:
         fobj.write(text)
-    if show:
-        logger.info(f"\nContent of the file to execute:\n{text}\n")
     return filename
 
 

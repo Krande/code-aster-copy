@@ -492,7 +492,9 @@ class TestExport(unittest.TestCase):
         lexp = split_export(export)
         self.assertEqual(len(lexp), 2)
         comm = []
-        for obj in lexp:
+        for i, obj in enumerate(lexp):
+            self.assertTrue(obj.has_param("step"))
+            self.assertEqual(obj.get("step"), i)
             self.assertEqual(len(obj.commfiles), 1)
             comm.append(obj.commfiles[0])
         self.assertSequenceEqual(
