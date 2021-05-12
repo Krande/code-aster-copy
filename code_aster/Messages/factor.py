@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -583,6 +583,14 @@ Solveur MUMPS :
      (SOLVEUR/RENUM='METIS'/'PARMETIS'/'SCOTCH'/'PTSCOTCH'/'PORD') ou en laissant le choix par défaut (SOLVEUR/RENUM='AUTO').
     - Sinon, utiliser un solveur linéaire n'ayant pas besoin de MUMPS (SOLVEUR/METHODE='PETSC' + PRE_COND différent de 'LDLT_SP').
     - ou, si possible, réduisez la taille du modèle (< 5 à 10 millions de ddls).
+
+"""),
+
+93: _("""
+Les solveurs LDLT et MULT_FRONT sont interdits pour le calcul haute performance.
+
+Conseil:
+- Utilisez MUMPS ou PETSC
 
 """),
 }

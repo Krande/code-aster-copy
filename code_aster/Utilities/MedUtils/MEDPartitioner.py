@@ -21,6 +21,8 @@
 
 from mpi4py import MPI
 import medcoupling as mc
+import string
+import random
 
 from .myMEDSplitter_mpi import BuildPartNameFromOrig, MakeThePartition, GetGraphPartitioner, setVerbose
 
@@ -88,14 +90,19 @@ class MEDPartitioner:
          Arguments:
             path (str): path where to write the file
         """
-        full_path = self.filename()
-        if (path is not None):
-            if path.endswith("/"):
-                full_path = path + self.filename()
-            else:
-                full_path = path + "/" + self.filename()
-
-        self._writedFilename = BuildPartNameFromOrig(full_path, MPI.COMM_WORLD.rank)
 
         if self._meshPartitioned is not None:
+            if self.filename()[0:4] == "fort":
+                new_name = ''.join(random.choice(string.ascii_lowercase) for i in range(8))
+            else:
+                new_name = self.filename()
+
+            full_path = new_name
+            if (path is not None):
+                if path.endswith("/"):
+                    full_path = path + new_name
+                else:
+                    full_path = path + "/" + new_name
+
+            self._writedFilename = BuildPartNameFromOrig(full_path, MPI.COMM_WORLD.rank)
             self._meshPartitioned.write33( self.writedFilename(), 2)

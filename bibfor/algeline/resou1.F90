@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -101,7 +101,7 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm,&
 !-----------------------------------------------------------------------
 !
     integer :: ibid, ifm, niv
-    character(len=3) :: kmpic, type, typ1
+    character(len=3) :: kmpic, type, typ1, khpc
     character(len=19) :: matr19, mpre19, solv19, cine19
     character(len=19) :: secm19, csol19, crit19
     character(len=24) :: metres
@@ -111,13 +111,12 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm,&
     real(kind=8) :: epsi
     complex(kind=8) :: cbid
     aster_logical :: dbg
-    character(len=1) :: ftype(2)
+    character(len=1), parameter :: ftype(2) = ['R','C']
     character(len=24), pointer :: slvk(:) => null()
     character(len=24), pointer :: refa(:) => null()
     real(kind=8), pointer :: slvr(:) => null()
     integer, pointer :: slvi(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
-    data         ftype/'R','C'/
 ! ----------------------------------------------------------------------
     dbg=.false.
 !
@@ -222,6 +221,10 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm,&
 !
     if (metres .eq. 'LDLT' .or. metres .eq. 'MULT_FRONT') then
 !     ----------------------------------------------------
+        call dismoi('MATR_HPC',matr19,'MATR_ASSE',repk=khpc)
+        if( khpc == "OUI" ) then
+            call utmess( 'F', 'FACTOR_93' )
+        endif
         if (nsecm .gt. 0) then
             call resldl(solv19, matr19, cine19, nsecm, rsolu,&
                         csolu, prepos)

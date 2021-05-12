@@ -81,7 +81,7 @@ use ldlt_xp_data_module
     integer :: istopz, iretgc, n1
     character(len=24) :: metres, precon
     character(len=19) :: matas, maprec, matas1, solveu
-    character(len=8) :: renum, kmpic, kmatd, ksym
+    character(len=8) :: renum, kmpic, kmatd, ksym, khpc
     character(len=24), pointer :: refa(:) => null()
     aster_logical :: dbg
 !
@@ -120,6 +120,7 @@ use ldlt_xp_data_module
 
     call dismoi('MPI_COMPLET', matas, 'MATR_ASSE', repk=kmpic)
     call dismoi('MATR_DISTR', matas, 'MATR_ASSE', repk=kmatd)
+    call dismoi('MATR_HPC', matas, 'MATR_ASSE', repk=khpc)
     if ( niv == 2 ) then
         call dismoi('TYPE_MATRICE', matas, 'MATR_ASSE', repk=ksym)
         select case( ksym(1:7) )
@@ -139,6 +140,11 @@ use ldlt_xp_data_module
     endif
 !
 !
+    if( khpc == "OUI" ) then
+        if (metres .eq. 'LDLT' .or. metres .eq. 'MULT_FRONT') then
+            call utmess( 'F', 'FACTOR_93' )
+        endif
+    endif
 !
     call jeveuo(solveu//'.SLVI', 'L', islvi)
 !
@@ -149,6 +155,7 @@ use ldlt_xp_data_module
 !             MULTIFRONTALE OU LDLT OU MUMPS               C
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
     if (metres .eq. 'LDLT' .or. metres .eq. 'MULT_FRONT' .or. metres .eq. 'MUMPS') then
+
         nprec = zi(islvi-1+1)
         if (istopz .eq. -9999) istopz = zi(islvi-1+3)
         renum=' '
