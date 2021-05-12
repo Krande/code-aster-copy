@@ -40,6 +40,8 @@
  */
 class ParallelDOFNumberingClass : public BaseDOFNumberingClass {
   private:
+
+
   public:
     /**
      * @typedef ParallelDOFNumberingPtr
@@ -199,6 +201,19 @@ class ParallelDOFNumberingClass : public BaseDOFNumberingClass {
     VectorString getComponents() const;
 
 
+    // VectorLong getDEEG() const
+    // {
+    //     JeveuxVectorLong deeg = JeveuxVectorLong( getName() + ".NUME.DEEG" );
+    //     AS_ASSERT(deeg->updateValuePointer());
+    //     return deeg->toVector();
+    // }
+
+    // VectorLong getNULS() const
+    // {
+    //     JeveuxVectorLong nuls = JeveuxVectorLong( getName() + ".NUME.NULS" );
+    //     AS_ASSERT(nuls->updateValuePointer());
+    //     return nuls->toVector();
+    // }
 
 };
 

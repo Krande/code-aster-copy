@@ -37,6 +37,8 @@ use petsc_data_module
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/crnustd.h"
 
     integer :: kptsc
     real(kind=8) :: rsolu(*)
@@ -49,9 +51,11 @@ use petsc_data_module
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
-    integer :: jnequ, jnequl, jnugll, jprddl, jdeeq
+    integer :: jnequ, jnequl, jnugll, jprddl, jdeeq, iret
     integer :: nloc, nglo, jrefn, jmlogl, ndprop
     integer :: bs, jcoll, jvaleu, iterm, nuno, nucmp
+    integer, pointer :: v_nuls(:) => null()
+    integer, pointer :: v_deeg(:) => null()
 
     mpi_int :: mpicomm
 !
@@ -85,6 +89,13 @@ use petsc_data_module
         call jeveuo(nonu//'.NUME.REFN', 'L', jrefn)
         mesh = zk24(jrefn)(1:8)
         call jeveuo(mesh//'.NULOGL', 'L', jmlogl)
+        call jeexin(nonu//'.NUME.NULS', iret)
+        if(iret == 0) then
+            call crnustd(nonu)
+        end if
+        call jeveuo(nonu//'.NUME.NULS', 'L', vi=v_nuls)
+        call jeveuo(nonu//'.NUME.DEEG', 'L', vi=v_deeg)
+        print*, "DEBUG IN APVSMBH"
     end if
     nloc = zi(jnequ)
     nglo = zi(jnequ + 1)
@@ -115,11 +126,10 @@ use petsc_data_module
             iterm = iterm + 1
 !
             if(dbg) then
-                nuno  = zi(jdeeq+2*(jcoll))
-                if( nuno.ne.0 ) nuno = zi(jmlogl + nuno - 1) + 1
-                nucmp = zi(jdeeq+2*(jcoll) + 1)
-!                    numéro noeud global, num comp du noeud, rhs
-                write(601+rang,*) nuno, nucmp, zi(jnugll + jcoll), rsolu(jcoll + 1)
+                nuno  = v_deeg(2*(jcoll) + 1)
+                nucmp = v_deeg(2*(jcoll) + 2)
+!                    numéro noeud global, num comp du noeud, nume eq std, nume eq glob, rhs
+                write(601+rang,*) nuno, nucmp, v_nuls(jcoll+1), zi(jnugll + jcoll), rsolu(jcoll + 1)
             end if
         endif
     end do

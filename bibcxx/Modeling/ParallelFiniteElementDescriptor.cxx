@@ -34,7 +34,8 @@ ParallelFiniteElementDescriptorClass::ParallelFiniteElementDescriptorClass
                     _joins( JeveuxVectorLong( getName() + ".DOMJ" ) ),
                     _owner( JeveuxVectorLong( getName() + ".PNOE" ) ),
                     _multiplicity( JeveuxVectorLong( getName() + ".MULT" ) ),
-                    _outerMultiplicity( JeveuxVectorLong( getName() + ".MUL2" ) )
+                    _outerMultiplicity( JeveuxVectorLong( getName() + ".MUL2" ) ),
+                    _globalNumberingDelayedNodes( JeveuxVectorLong( getName() + ".NULG" ) )
 {
     const int rank = getMPIRank();
     const int nbProcs = getMPINumberOfProcs();
@@ -47,7 +48,7 @@ ParallelFiniteElementDescriptorClass::ParallelFiniteElementDescriptorClass
     ASTERINTEGER nbOldDelayedNodes = FEDesc->getNumberOfDelayedNodes();
     _delayedElemToKeep = VectorLong( explorer.size(), 1 );
     VectorInt delayedNodesToKeep( nbOldDelayedNodes, -1 );
-    VectorInt delayedNodesNumbering( nbOldDelayedNodes, 0 );
+    VectorInt delayedNodesNumbering( nbOldDelayedNodes, -1 );
     VectorInt delayedNodesMult( nbOldDelayedNodes, 0 );
     VectorInt delayedNodesOuterMult( nbOldDelayedNodes, 0 );
     VectorInt delayedNodesOwner( nbOldDelayedNodes, -1 );
@@ -165,6 +166,19 @@ ParallelFiniteElementDescriptorClass::ParallelFiniteElementDescriptorClass
         if( j != nbDelayedNodes )
             throw std::runtime_error( "Out of bound error" );
 
+        // Creation numérotation globale pour les noeuds tardifs
+        _globalNumberingDelayedNodes->allocate(Permanent, nbDelayedNodes);
+        int count = 0;
+        for(int iNode = 0; iNode < nbOldDelayedNodes; iNode++)
+        {
+            if( delayedNodesNumbering[iNode] != -1)
+            {
+                (*_globalNumberingDelayedNodes)[delayedNodesNumbering[iNode]] = -(iNode+1);
+                count++;
+            }
+        }
+        AS_ASSERT(nbDelayedNodes == count);
+
         // Creation des raccords
         VectorLong joins;
         for( i = 0; i < nbProcs; ++i )
@@ -200,10 +214,12 @@ ParallelFiniteElementDescriptorClass::ParallelFiniteElementDescriptorClass
             VectorLong toCopy;
             for( const auto& numNode : curElem )
             {
-                if( numNode > 0 )
+                if( numNode > 0 ){
                     toCopy.push_back( (*localNum)[numNode-1] );
-                else
+                }
+                else{
                     toCopy.push_back( -delayedNodesNumbering[-numNode-1] - 1 );
+                }
             }
             toCopy.push_back( explorer[numElem].getType() );
             _delayedNumberedConstraintElementsDescriptor->allocateObject( toCopy.size() );

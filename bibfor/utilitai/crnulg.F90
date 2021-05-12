@@ -29,18 +29,16 @@ subroutine crnulg(numddl)
 #include "asterfort/jedetc.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/asmpi_info.h"
-#include "asterc/asmpi_comm.h"
     character(len=14) :: numddl
 !
 #ifdef ASTER_HAVE_MPI
 !
     integer :: rang, nbproc
-    mpi_int :: mrank, msize, mpicou
+    mpi_int :: mrank, msize
 !
 !----------------------------------------------------------------------
     call jemarq()
 !
-    call asmpi_comm('GET', mpicou)
     call asmpi_info(rank = mrank, size = msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
@@ -56,6 +54,9 @@ subroutine crnulg(numddl)
     call jedetc('V', '&&CRNULG', 1)
 !
     call jedema()
+#else
+    character(len=14) :: k14
+    k14 = numddl
 #endif
 !
 end subroutine

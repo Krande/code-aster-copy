@@ -18,24 +18,24 @@
 
 subroutine crnlgn(numddl)
     implicit none
+#include "asterc/asmpi_allgather_i.h"
+#include "asterc/asmpi_comm.h"
 #include "asterf_config.h"
-#include "asterf.h"
 #include "asterf_types.h"
-#include "jeveux.h"
+#include "asterf.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/asmpi_info.h"
-#include "asterc/asmpi_allgather_i.h"
-#include "asterc/asmpi_comm.h"
+#include "jeveux.h"
     character(len=14) :: numddl
 
 #ifdef ASTER_HAVE_MPI
@@ -60,11 +60,12 @@ subroutine crnlgn(numddl)
     integer, pointer :: v_mult1(:) => null()
     integer, pointer :: v_mult2(:) => null()
     integer, pointer :: v_mdlag(:) => null()
+    integer, pointer :: v_nulg(:) => null()
 !
     character(len=4) :: chnbjo
     character(len=8) :: k8bid, noma
     character(len=19) :: nomlig
-    character(len=24) :: owner, mult1, mult2, nonulg
+    character(len=24) :: owner, mult1, mult2
 !
 !----------------------------------------------------------------------
 !
@@ -90,6 +91,7 @@ subroutine crnlgn(numddl)
     noma = zk24(jrefn)
 !
     call jeveuo(noma//'.DIME', 'L', dime)
+    call jeveuo(noma//'.NULOGL', 'L', vi=v_nulg)
 
 !   !!! VERIFIER QU'IL N'Y A PAS DE MACRO-ELTS
 !   CALCUL DU NOMBRE D'ENTIERS CODES A PARTIR DE LONMAX
@@ -208,15 +210,12 @@ subroutine crnlgn(numddl)
 !
 ! --- Pour debuggage en hpc
     if(ASTER_FALSE) then
-        nonulg = noma//'.NULOGL'
-        call jeveuo(nonulg, 'L', jmlogl)
+        print*, "DEBUG IN CRNLGN"
         do i_ddl = 1, nbddll
-            nuno = v_deeq((i_ddl-1)*2 + 1)
-            if(nuno.ne.0) nuno = zi(jmlogl + nuno - 1) + 1
-! numero ddl local, numéro noeud local, numéro noeud global, num composante du noeud,
+! numero ddl local, numéro noeud local,  num composante du noeud,
 !            num ddl global, num proc proprio
-            write(120+rang, *) i_ddl, v_deeq((i_ddl-1)*2 + 1), nuno , v_deeq((i_ddl-1)*2 + 2), &
-             v_nugll(i_ddl), v_posdd(i_ddl)
+            write(120+rang, *) i_ddl, v_deeq((i_ddl-1)*2 + 1) , &
+            v_deeq((i_ddl-1)*2 + 2), v_nugll(i_ddl), v_posdd(i_ddl)
         end do
         flush(120+rang)
     end if

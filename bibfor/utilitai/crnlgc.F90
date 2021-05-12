@@ -30,6 +30,7 @@ subroutine crnlgc(numddl)
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
+#include "asterfort/crnustd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/isdeco.h"
@@ -82,11 +83,13 @@ subroutine crnlgc(numddl)
     integer, pointer :: v_ordjoi(:) => null()
     integer, pointer :: v_nbjo(:) => null()
     integer, pointer :: v_deeq(:) => null()
+    integer, pointer :: v_deeg(:) => null()
+    integer, pointer :: v_nuls(:) => null()
 !
     character(len=4) :: chnbjo
     character(len=8) :: mesh, k8bid, nomgdr
     character(len=19) :: nomlig
-    character(len=24) :: nojoie, nojoir, nomtmp, mesh24, nonulg, join
+    character(len=24) :: nojoie, nojoir, nonulg, join
 !
 !----------------------------------------------------------------------
     integer :: zzprno
@@ -208,7 +211,8 @@ subroutine crnlgc(numddl)
         numpro = v_ordjoi(iaux + 1)
         v_nbjo(iaux + 2) = numpro
         if (numpro .ne. -1) then
-            num = v_mask(rang*nbproc + numpro + 1)
+            ASSERT(iaux+1 == v_mask(rang*nbproc + numpro + 1))
+            num = iaux+1
             call codent(numpro, 'G', chnbjo)
             nojoie = mesh//'.E'//chnbjo
             nojoir = mesh//'.R'//chnbjo
@@ -455,11 +459,14 @@ subroutine crnlgc(numddl)
             nuno = v_deeq(iaux*2 + 1)
             if (nuno .ne. 0) nuno = zi(jmlogl + nuno - 1) + 1
 ! numero ddl local, numéro noeud local, numéro noeud global, num composante du noeud,
-!            num ddl global, num proc proprio
-            write (130 + rang, *) iaux, v_deeq(iaux*2 + 1), nuno, v_deeq(iaux*2 + 2), &
-                v_nugll(iaux + 1), v_posdd(1 + iaux)
+!            num ddl global, num ddl seq, num proc proprio
+            write(130+rang, *) iaux, v_deeq(iaux*2+1), v_deeg(iaux*2+1) , v_deeq(iaux*2 + 2), &
+            v_nugll(iaux + 1), v_nuls(iaux+1), v_posdd(1 + iaux)
+
+            write(190+rang, *) iaux, v_deeg(iaux*2+1), v_nuls(iaux+1), v_nugll(iaux + 1)
         end do
-        flush (130 + rang)
+        flush(130+rang)
+        flush(190+rang)
     end if
 !
     call jedetr('&&CRNULG.ORDJOI')

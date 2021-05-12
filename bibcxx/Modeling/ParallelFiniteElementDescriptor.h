@@ -58,6 +58,8 @@ protected:
     JeveuxVectorLong                 _outerMultiplicity;
     /** @brief Communication graph */
     CommunicationGraphPtr            _commGraph;
+    /** @brief Global numbering for delayed nodes */
+    JeveuxVectorLong                 _globalNumberingDelayedNodes;
 
 public:
     /**
