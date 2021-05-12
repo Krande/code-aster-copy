@@ -61,7 +61,6 @@ subroutine echmat(matz, ldist, lmhpc, rmin, rmax)
 !     ------------------------------------------------------------------
     integer :: nsmhc, jdelgg, jdelgl, jsmhc, ng, nz, n, imatd
     integer :: jcol, nlong, jvalm1, jcolg
-    real(kind=8) :: rminc(1), rmaxc(1)
     character(len=1) :: ktyp, base1
     character(len=14) :: nonu
     character(len=19) :: mat19
@@ -165,10 +164,8 @@ subroutine echmat(matz, ldist, lmhpc, rmin, rmax)
 !
     if (lmhpc) then
         if (ktyp .eq. 'R') then
-            rminc(1) = rmin
-            rmaxc(1) = rmax
-            call asmpi_comm_vect('MPI_MIN', 'R', nbval=1, vr=rminc)
-            call asmpi_comm_vect('MPI_MAX', 'R', nbval=1, vr=rmaxc)
+            call asmpi_comm_vect('MPI_MIN', 'R', scr=rmin)
+            call asmpi_comm_vect('MPI_MAX', 'R', scr=rmax)
         else
             ASSERT(.false.)
         endif

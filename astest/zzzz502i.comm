@@ -63,30 +63,19 @@ loads.append(AFFE_CHAR_MECA(MODELE=model,
                               _F(GROUP_MA='GAUCHE',  DX=-1.0),
                               _F(GROUP_NO='DROIT',  DX=1.0),
                       ),))
-"""
 
-# loads.append(AFFE_CHAR_MECA(MODELE=model,
-#                     DDL_IMPO=(_F(GROUP_MA='GAUCHE', DX=-1.0, ),
-#                     _F(GROUP_MA='HAUT',  DY=1.0), _F(GROUP_NO='GN0',  DY=-1.0)),
-#                     LIAISON_GROUP=(_F(GROUP_NO_1='GAUCHE', DDL_1="DX",
-#                               GROUP_NO_2='DROIT', DDL_2="DX",
-#                               COEF_MULT_1=1.0, COEF_MULT_2=1.0, COEF_IMPO=0.),),
-#                     LIAISON_UNIF=(
-#                               _F(GROUP_NO='BAS',  DDL="DY"),
-#                       ),)
-#                       )
-
-### reduce to reproduce bug
-rank = code_aster.getMPIRank()
 
 loads.append(AFFE_CHAR_MECA(MODELE=model,
                     DDL_IMPO=(_F(GROUP_MA='GAUCHE', DX=-1.0, ),
-                              _F(GROUP_MA='HAUT',  DY=1.0),
-                              _F(GROUP_NO='BAS',  DY=-1.0)),
+                    _F(GROUP_MA='HAUT',  DY=1.0), _F(GROUP_NO='GN0',  DY=-1.0)),
                     LIAISON_GROUP=(_F(GROUP_NO_1='GAUCHE', DDL_1="DX",
                               GROUP_NO_2='DROIT', DDL_2="DX",
-                              COEF_MULT_1=1.0, COEF_MULT_2=1.0, COEF_IMPO=0.),
-                      ),))
+                              COEF_MULT_1=1.0, COEF_MULT_2=1.0, COEF_IMPO=0.),),
+                    LIAISON_UNIF=(
+                              _F(GROUP_NO='BAS',  DDL="DY"),
+                      ),)
+                      )
+
 
 
 loads.append(AFFE_CHAR_MECA(MODELE=model,
@@ -99,7 +88,6 @@ loads.append(AFFE_CHAR_MECA(MODELE=model,
                     LIAISON_OBLIQUE=(
                               _F(GROUP_NO='BAS',  DY=-1, ANGL_NAUT=(0.0,0.0,0.0)),
                       ),))
-"""
 
 loads.append(AFFE_CHAR_CINE(MODELE=model,
                     MECA_IMPO=(_F(GROUP_MA='BAS', DY=-1.0, ),
@@ -132,13 +120,6 @@ for load in loads:
                         SOLVEUR=_F(METHODE=solver,RESI_RELA=1e-9,),
                         INCREMENT=_F(LIST_INST=LINSTC,),
                         )
-
-        # RESU=MECA_STATIQUE(MODELE=model,
-        #                 CHAM_MATER=MATE,
-        #                 EXCIT=_F(CHARGE=load, FONC_MULT=RAMPE,),
-        #                 SOLVEUR=_F(METHODE=solver,RESI_RELA=1e-9,),
-        #                 INST=1.0,
-        #                 )
 
         TEST_RESU(
                 RESU=(_F(

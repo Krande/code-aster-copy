@@ -94,7 +94,7 @@ loads.append(AFFE_CHAR_CINE(MODELE=model,
                               _F(GROUP_MA='SUD',  DX=1.0),
                       ),))
 
-"""
+
 loads.append(AFFE_CHAR_MECA(MODELE=model,
                      DDL_IMPO=( _F(GROUP_NO='N2',  DZ=-1.0, DX=-1.0,),
                                 ),
@@ -113,7 +113,7 @@ loads.append(AFFE_CHAR_MECA(MODELE=model,
                                _F(GROUP_NO='NORD',  DDL="DX"),
                       ),
                       ))
-"""
+
 
 
 solvers = ["MUMPS", "PETSC"]
