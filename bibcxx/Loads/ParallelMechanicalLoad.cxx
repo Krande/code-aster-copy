@@ -63,6 +63,7 @@ ParallelMechanicalLoadClass::transferConstantFieldOnCells( const ConstantFieldOn
     fieldOut->allocate( Permanent, fieldIn );
     const auto sizeFieldIn = (*fieldIn).size();
 
+    fieldIn->updateValuePointers();
     for( int pos = 0; pos < sizeFieldIn; ++pos )
     {
         const auto& zone = fieldIn->getZoneDescription( pos );

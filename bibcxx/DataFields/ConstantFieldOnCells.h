@@ -366,9 +366,7 @@ template < class ValueType > class ConstantFieldOnCellsClass : public DataFieldC
      * @brief Get values of a zone
      */
     ConstantFieldValues< ValueType > getValues( const int &position ) const {
-        _valuesList->updateValuePointer();
-        _descriptor->updateValuePointer();
-        if ( position >= ( *_descriptor )[2] )
+        if ( position >= size() )
             throw std::runtime_error( "Out of ConstantFieldOnCells bound" );
 
         ASTERINTEGER nbZoneMax = ( *_descriptor )[1];
@@ -402,8 +400,7 @@ template < class ValueType > class ConstantFieldOnCellsClass : public DataFieldC
      * @brief Get zone description
      */
     ConstantFieldOnZone getZoneDescription( const int &position ) const {
-        _descriptor->updateValuePointer();
-        if ( position >= ( *_descriptor )[2] )
+        if ( position >= size() )
             throw std::runtime_error( "Out of ConstantFieldOnCells bound" );
 
         ASTERINTEGER code = ( *_descriptor )[3 + 2 * position];
@@ -418,12 +415,10 @@ template < class ValueType > class ConstantFieldOnCellsClass : public DataFieldC
             return ConstantFieldOnZone( _mesh, GroupOfCellsPtr( new GroupOfCells( name ) ) );
         } else if ( code == 3 ) {
             const auto numGrp = ( *_descriptor )[4 + 2 * position];
-            _listOfMeshCells->buildFromJeveux();
             const auto &object = _listOfMeshCells->getObject( numGrp );
             return ConstantFieldOnZone( _mesh, object.toVector() );
         } else if ( code == -3 ) {
             const auto numGrp = ( *_descriptor )[4 + 2 * position];
-            _listOfMeshCells->buildFromJeveux();
             const auto &object = _listOfMeshCells->getObject( numGrp );
             return ConstantFieldOnZone( _FEDesc, object.toVector() );
         } else
@@ -554,7 +549,6 @@ template < class ValueType > class ConstantFieldOnCellsClass : public DataFieldC
      * @brief Get number of zone in ConstantFieldOnCells
      */
     int size() const {
-        _descriptor->updateValuePointer();
         return ( *_descriptor )[2];
     };
 
