@@ -26,7 +26,7 @@ test = code_aster.TestCase()
 rank = code_aster.getMPIRank()
 
 POUTRE0 = code_aster.ParallelMesh()
-POUTRE0.readMedFile("xxParallelBeam001b/%d.med" % rank, True)
+POUTRE0.readMedFile("zzzz504v/%d.med" % rank, True)
 
 DEFI_GROUP(reuse=POUTRE0, MAILLAGE=POUTRE0, CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',))
 
