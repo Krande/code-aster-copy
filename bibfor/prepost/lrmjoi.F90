@@ -121,7 +121,8 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
 !     des comm pour le savoir
 !
         if(nbjoin > 0) then
-            call wkvect(nomnoe(1:8)//'.DOMJOINTS', 'G V I', nbjoin, vi=v_joint)
+            ASSERT(nbjoin <= 9999)
+            call wkvect(mesh//'.DOMJOINTS', 'G V I', nbjoin, vi=v_joint)
             v_joint = -1
 !
 ! --- Boucle sur les joints entre les sous-domaines
@@ -139,9 +140,9 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
                     if ( entlcl.eq.ednoeu.and.geolcl.eq.typnoe ) then
                         call codent(domdis, 'G', chnbjo)
                         if ( nomjoi(1:4).eq.chrang ) then
-                            nojoin = nomnoe(1:8)//'.RT'//chnbjo
+                            nojoin = mesh//'.RT'//chnbjo
                         else
-                            nojoin = nomnoe(1:8)//'.ET'//chnbjo
+                            nojoin = mesh//'.ET'//chnbjo
                         endif
 !
 ! --- Récupération de la table de correspondance pour les noeuds partagés par 2 sous-domaines
@@ -179,11 +180,11 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
 !
                     call codent(domdis, 'G', chdomdis)
                     if ( nomjoi(1:4).eq.chrang ) then
-                        nojoin_old = nomnoe(1:8)//".RT"//chdomdis
-                        nojoin_new = nomnoe(1:8)//".R"//chdomdis
+                        nojoin_old = mesh//".RT"//chdomdis
+                        nojoin_new = mesh//".R"//chdomdis
                     else
-                        nojoin_old = nomnoe(1:8)//".ET"//chdomdis
-                        nojoin_new = nomnoe(1:8)//".E"//chdomdis
+                        nojoin_old = mesh//".ET"//chdomdis
+                        nojoin_new = mesh//".E"//chdomdis
                     endif
 !
                     call lrm_clean_joint(rang, domdis, nbproc, v_noext, nojoin_old, nojoin_new)
