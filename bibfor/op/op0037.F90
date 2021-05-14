@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,7 +82,7 @@ subroutine op0037()
 !     PARAMETRES "MODE_FLAMB"
     parameter   ( nbpafi=1 , nbpafr=1  , nbpafk=1, nbpaft=3  )
     integer :: lmat(2), ibid, ifm, niv, lddl2, vali, iret
-    integer :: l1, l2, l3, lmasse, lraide, lamor, lddl
+    integer :: l1, l2, l3, lmasse, lraide, lamor, lddl, exmasse
     real(kind=8) :: r8b
     complex(kind=8) :: c16b
     aster_logical :: lrefe, lbasm, lamo, lcmplx, lparam
@@ -149,7 +149,7 @@ subroutine op0037()
         do i = 1, nbpara
             nopara(i) = noparm(i)
         end do
-    else if (typcon(1:9) .eq. 'MODE_MECA') then
+    else if (typcon(1:9) .eq. 'MODE_MECA') then 
         nomsy = 'DEPL'
 !        --- VERIFIER SI TOUS LES PARAMETRES MODAUX EXISTENT DANS LA SD
 !          - OU BIEN ILS SERONT CALCULES DANS NORM_MODE
@@ -676,6 +676,37 @@ subroutine op0037()
                     nbmode, zr(lvalr+6*nbmode), zr(lvalr+9*nbmode))
         lparam = .true.
     endif
+
+
+! 
+!   FIX ISSUE 30730 
+    if (lparam .and. .not.(lbasm).and. (norm .eq. 'MASS_GENE')) then
+      call jeexin (masse(1:19)//'.&INT', exmasse)
+      if (exmasse.ne. 0) then 
+          call mtdscr(masse)
+          call jeveuo(masse(1:19)//'.&INT', 'E', lmasse)
+          call mtdscr(raide)
+          call jeveuo(raide(1:19)//'.&INT', 'E', lraide)
+!
+          call jeveuo(kvec, 'L', lmod)  
+   
+!         CALCUL DES PARAMETRES GENERALISES
+          call wkvect('&&OP0037.POSI.DDL', 'V V I', neq, lddl2)
+          call wkvect('&&OP0037.DDL.BLOQ.CINE', 'V V I', neq, lprod)
+          call vpddl(raide(1:19), masse(1:19), neq, ib, ib,&
+               ib, zi(lddl2), zi(lprod), ierd)
+
+!         CALCUL DES FACTEURS DE PARTICIPATIONS ET DES MASSES EFFECTIVES
+          call vppfac(lmasse, zr(lvalr+3*nbmode), zr(lmod), neq, nbmode,&
+               nbmode, zr(lvalr+6*nbmode), zr(lvalr+9*nbmode))
+      else
+          call utmess('A', 'ALGELINE2_89')
+      endif
+    else
+        call utmess('A', 'ALGELINE2_90', sk=norm)
+    endif
+
+
 !
 !     --- NORMALISATION DES MODES ET ARCHIVAGE ---
     ilgcon = lxlgut(typcon)

@@ -422,4 +422,17 @@ Erreur utilisateur dans COMB_MATR_ASSE:
     Instrumenter la routine de destruction pour déterminer la routine coupable.
 """),
 
+    89 : _("""
+  Attention :
+  Vous cherchez à normaliser une base modale de modes généralisés.  
+  La norme est de type "MASS_GENE" mais la référence pour la matrice de masse est inexistante.
+  Les masses effectives et facteurs de participation ne sont pas mis à jour. 
+"""),
+
+    90 : _("""
+  Attention :
+  Vous cherchez à normaliser une base modale de modes généralisés.  
+  La norme %(k1)s est différente de "MASS_GENE", les masses effectives et facteurs de participation ne seront pas mis à jour.  
+"""),
+
 }
