@@ -25,6 +25,7 @@ import string
 import random
 
 from .myMEDSplitter_mpi import BuildPartNameFromOrig, MakeThePartition, GetGraphPartitioner, setVerbose
+from .deal_with_pt1_post_process import add_pt1
 
 from ...Messages import UTMESS
 from ..logger import logger
@@ -106,3 +107,20 @@ class MEDPartitioner:
 
             self._writedFilename = BuildPartNameFromOrig(full_path, MPI.COMM_WORLD.rank)
             self._meshPartitioned.write33( self.writedFilename(), 2)
+
+    def addPO1(self):
+        """ Add PO1 in the partitionning meshes
+            Be carefull all the meshes have to be in the same folder and the initial mesh
+            is loaded so it can be memory expensive
+
+            This is a temporary function until the partitionner do it itself
+        """
+
+        if self._writedFilename is not None:
+            if MPI.COMM_WORLD.rank == 0:
+                name_files = self._writedFilename.replace("0.med", "*.med")
+                args_dict = {"verbosity": 2, "nb_dest_par": MPI.COMM_WORLD.size, \
+                    "origin_seq": self._filename, "dest_par": name_files, "force": 1}
+                add_pt1(args_dict)
+
+            MPI.COMM_WORLD.barrier()

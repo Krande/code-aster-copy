@@ -21,6 +21,7 @@ import code_aster
 
 import medcoupling as mc
 from mpi4py import MPI
+from collections import Counter
 
 code_aster.init("--test")
 
@@ -65,12 +66,44 @@ for line in list_mesh:
             )
 
         # read parallel mesh and partitioning
-        MPI.COMM_WORLD.barrier()
         pmesh = code_aster.ParallelMesh()
         pmesh.readMedFile(mesh_name)
+
+        # read std mesh
+        mesh = code_aster.Mesh()
+        mesh.readMedFile(mesh_name)
+
+        # tests
+        group_no_std = mesh.getGroupsOfNodes(local=False)
+        group_no_gl  = pmesh.getGroupsOfNodes(local=False)
+        # il manque des groupes
+        #test.assertSequenceEqual(sorted(group_no_std), sorted(group_no_gl))
+
+        group_ma_std = mesh.getGroupsOfCells(local=False)
+        group_ma_gl  = pmesh.getGroupsOfCells(local=False)
+        # il manque des point1
+        # test.assertSequenceEqual(sorted(group_ma_std), sorted(group_ma_gl))
+
+        nb_nodes_std = mesh.getNumberOfNodes()
+        nb_nodes_lc = len(pmesh.getInnerNodes())
+        nb_nodes_gl = MPI.COMM_WORLD.allreduce(nb_nodes_lc, MPI.SUM)
+        # il manque des noeuds
+        # test.assertEqual(nb_nodes_std, nb_nodes_gl)
+
+        nb_cells_std = mesh.getNumberOfCells()
+        cells_rank = pmesh.getCellsRank()
+        nb_cells_lc = Counter(cells_rank)[rank]
+        nb_cells_gl = MPI.COMM_WORLD.allreduce(nb_cells_lc, MPI.SUM)
+        # il manque des mailles
+        # test.assertEqual(nb_cells_std, nb_cells_gl)
+
+
         test.assertTrue(pmesh.getNumberOfNodes() > 0)
         test.assertTrue(pmesh.getNumberOfCells() > 0)
         nb_mesh_converted += 1
+
+        MPI.COMM_WORLD.barrier()
+
 
 list_mesh.close()
 
