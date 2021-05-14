@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,21 +38,26 @@ implicit none
 ! In  pres      : pressure
 ! In  dist      : distance
 ! In  coef_augm : augmented coefficient
+! In  ndim      : topological dimension
 ! Out lagr_norm : norm of augmented lagrangian
 !
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: lagr_augm(3)
-    integer :: idim
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    lagr_augm(1) = pres(1) + coef_augm *dist(1)
-    lagr_augm(2) = pres(2) + coef_augm *dist(2)
-    lagr_augm(3) = pres(3) + coef_augm *dist(3)
     lagr_norm = 0.d0
-    do idim = 1, 3
-        lagr_norm = lagr_augm(idim)*lagr_augm(idim) + lagr_norm
-    end do
-    lagr_norm = sqrt(lagr_norm)
+!
+! -- Test to prevent FPE
+!
+    if(maxval(abs(pres)) > 10.d50) then
+        lagr_norm = 10.d50
+    elseif(maxval(abs(dist)) > 10.d10) then
+        lagr_norm = 10.d50
+    else
+        lagr_augm(1:3) = pres(1:3) + coef_augm *dist(1:3)
+        lagr_norm = norm2(lagr_augm)
+    end if
+!
 end subroutine

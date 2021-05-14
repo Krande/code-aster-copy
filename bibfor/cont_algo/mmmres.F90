@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ character(len=19), intent(in) :: cnsper
 ! In  ds_contact       : datastructure for contact management
 ! In  disp_cumu_inst   : displacement increment from beginning of current time
 ! In  sddisc           : datastructure for discretization
-! In  cnsinr           : nodal field (CHAM_NO_S) for CONT_NOEU 
+! In  cnsinr           : nodal field (CHAM_NO_S) for CONT_NOEU
 ! In  cnsper           : nodal field (CHAM_NO_S) to save percussions
 !
 ! --------------------------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ character(len=19), intent(in) :: cnsper
     real(kind=8) :: rtgx, rtgy, rtgz
     real(kind=8) :: r, rx, ry, rz
     real(kind=8) :: imp, impx, impy, impz
-    real(kind=8) :: node_status, lagsf
+    real(kind=8) :: node_status, lagsf, lagf(2)
     real(kind=8) :: ksipr1, ksipr2, proj(3)
     character(len=19) :: disp_cumu_s
     character(len=19) :: cneltc_s, cneltf_s
@@ -120,6 +120,7 @@ character(len=19), intent(in) :: cnsper
     cneltf       = '&&MMMRES.FROT'
     cneltf_s     = '&&MMMRES.FROTCN'
     disp_cumu_s  = '&&MMMRES.DEPCN'
+    lagf         = 0.d0
 !
 ! - Get parameters
 !
@@ -130,7 +131,7 @@ character(len=19), intent(in) :: cnsper
 !
 ! - Collision
 !
-    laffle = .false.
+    laffle = ASTER_FALSE
     valras = 1.d-3
     call iseven(sddisc, FAIL_EVT_COLLISION, lcolli)
 !
@@ -272,19 +273,27 @@ character(len=19), intent(in) :: cnsper
                         rnx = v_cneltc(3*(node_slav_nume-1)+1)
                         rny = v_cneltc(3*(node_slav_nume-1)+2)
                         rnz = v_cneltc(3*(node_slav_nume-1)+3)
-                        rn  = sqrt(rnx**2+rny**2+rnz**2)
+                        if(abs(rnx)>10.d150 .or. abs(rny)>10.d150 .or.abs(rnz)>10.d150) then
+                            rn = 10.d150
+                        else
+                            rn  = sqrt(rnx**2+rny**2+rnz**2)
+                        end if
                     else if (model_ndim.eq.2) then
                         rnx = v_cneltc(2*(node_slav_nume-1)+1)
                         rny = v_cneltc(2*(node_slav_nume-1)+2)
-                        rn  = sqrt(rnx**2+rny**2)
+                        if(abs(rnx)>10.d150 .or. abs(rny)>10.d150) then
+                            rn = 10.d150
+                        else
+                            rn  = sqrt(rnx**2+rny**2)
+                        end if
                     else
-                        ASSERT(.false.)
+                        ASSERT(ASTER_FALSE)
                     endif
 !
 ! ----------------- Very near contact
 !
                     if (rn .le. valras) then
-                        laffle = .true.
+                        laffle = ASTER_TRUE
                     endif
 !
 ! ----------------- Friction
@@ -298,24 +307,36 @@ character(len=19), intent(in) :: cnsper
                                    v_mast_slide(2*(i_cont_poin-1)+1)
                             gli2 = v_slav_slide(2*(i_cont_poin-1)+2) -&
                                    v_mast_slide(2*(i_cont_poin-1)+2)
-                            gli  = sqrt(gli1**2+gli2**2)
+                            if(abs(gli1)>10.d150 .or. abs(gli2)>10.d150 ) then
+                                gli = 10.d150
+                            else
+                                gli  = sqrt(gli1**2+gli2**2)
+                            end if
                         else if (model_ndim.eq.2) then
                             gli1 = v_slav_slide(i_cont_poin) -&
                                    v_mast_slide(i_cont_poin)
                             gli  = abs(gli1)
                         else
-                            ASSERT(.false.)
+                            ASSERT(ASTER_FALSE)
                         endif
 !
 ! --------------------- Friction Lagrange
 !
                         if (model_ndim .eq. 3) then
-                            lagsf = sqrt(v_disp_cumu(nb_dof*(node_slav_nume-1)+5)**2+&
-                                         v_disp_cumu(nb_dof*(node_slav_nume-1)+6)**2)
+!
+! --------------------- Test to prevent FPE
+!
+                            lagf(1) = v_disp_cumu(nb_dof*(node_slav_nume-1)+5)
+                            lagf(2) = v_disp_cumu(nb_dof*(node_slav_nume-1)+6)
+                            if( maxval(abs(lagf)) > 10.d50 ) then
+                                lagsf = 10.d50
+                            else
+                                lagsf = norm2(lagf)
+                            end if
                         else if (model_ndim.eq.2) then
                             lagsf = abs (v_disp_cumu(nb_dof*(node_slav_nume-1)+4))
                         else
-                            ASSERT(.false.)
+                            ASSERT(ASTER_FALSE)
                         endif
 !
 ! --------------------- Stick or slide ?
@@ -330,7 +351,7 @@ character(len=19), intent(in) :: cnsper
                                 rtgx = v_cneltf(2*(node_slav_nume-1)+1)
                                 rtgy = v_cneltf(2*(node_slav_nume-1)+2)
                             else
-                                ASSERT(.false.)
+                                ASSERT(ASTER_FALSE)
                             endif
                         else
                             node_status = 1.d0
@@ -342,7 +363,7 @@ character(len=19), intent(in) :: cnsper
                                 rtax = v_cneltf(2*(node_slav_nume-1)+1)
                                 rtay = v_cneltf(2*(node_slav_nume-1)+2)
                             else
-                                ASSERT(.false.)
+                                ASSERT(ASTER_FALSE)
                             endif
                         endif
                     else
@@ -356,7 +377,12 @@ character(len=19), intent(in) :: cnsper
                 rx = rnx + rtax + rtgx
                 ry = rny + rtay + rtgy
                 rz = rnz + rtaz + rtgz
-                r  = sqrt(rx**2.d0+ry**2.d0+rz**2.d0)
+! ------------- To prevent FPE
+                if(abs(rx)>10.d150 .or. abs(ry)>10.d150 .or.abs(rz)>10.d150) then
+                    r = 10.d150
+                else
+                    r  = sqrt(rx**2+ry**2+rz**2)
+                end if
 !
 ! ------------- Percussion
 !
@@ -376,8 +402,8 @@ character(len=19), intent(in) :: cnsper
 !
                 v_cnsinr_cnsv(zresu*(node_slav_nume-1)+1) = node_status
                 v_cnsinr_cnsv(zresu*(node_slav_nume-1)+2) = -v_sdcont_apjeu(i_cont_poin)
-                v_cnsinr_cnsl(zresu*(node_slav_nume-1)+1) = .true.
-                v_cnsinr_cnsl(zresu*(node_slav_nume-1)+2) = .true.
+                v_cnsinr_cnsl(zresu*(node_slav_nume-1)+1) = ASTER_TRUE
+                v_cnsinr_cnsl(zresu*(node_slav_nume-1)+2) = ASTER_TRUE
                 if (model_ndim .eq. 3) then
                     v_cnsinr_cnsv(zresu*(node_slav_nume-1)+3 ) = rn
                     v_cnsinr_cnsv(zresu*(node_slav_nume-1)+4 ) = rnx
@@ -403,30 +429,30 @@ character(len=19), intent(in) :: cnsper
                     v_cnsinr_cnsv(zresu*(node_slav_nume-1)+28) = proj(1)
                     v_cnsinr_cnsv(zresu*(node_slav_nume-1)+29) = proj(2)
                     v_cnsinr_cnsv(zresu*(node_slav_nume-1)+30) = proj(3)
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+3 ) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+4 ) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+5 ) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+6 ) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+7 ) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+8 ) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+9 ) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+10) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+11) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+12) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+13) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+14) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+15) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+16) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+17) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+18) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+19) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+21) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+22) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+23) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+24) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+28) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+29) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+30) = .true.
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+3 ) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+4 ) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+5 ) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+6 ) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+7 ) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+8 ) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+9 ) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+10) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+11) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+12) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+13) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+14) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+15) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+16) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+17) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+18) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+19) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+21) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+22) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+23) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+24) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+28) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+29) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+30) = ASTER_TRUE
                 else if (model_ndim.eq.2) then
                     v_cnsinr_cnsv(zresu*(node_slav_nume-1)+3 ) = rn
                     v_cnsinr_cnsv(zresu*(node_slav_nume-1)+4 ) = rnx
@@ -445,25 +471,25 @@ character(len=19), intent(in) :: cnsper
                     v_cnsinr_cnsv(zresu*(node_slav_nume-1)+23) = impy
                     v_cnsinr_cnsv(zresu*(node_slav_nume-1)+28) = proj(1)
                     v_cnsinr_cnsv(zresu*(node_slav_nume-1)+29) = proj(2)
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+3 ) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+4 ) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+5 ) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+7 ) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+9 ) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+10) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+11) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+13) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+14) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+16) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+17) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+19) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+21) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+22) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+23) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+28) = .true.
-                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+29) = .true.
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+3 ) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+4 ) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+5 ) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+7 ) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+9 ) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+10) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+11) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+13) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+14) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+16) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+17) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+19) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+21) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+22) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+23) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+28) = ASTER_TRUE
+                    v_cnsinr_cnsl(zresu*(node_slav_nume-1)+29) = ASTER_TRUE
                 else
-                    ASSERT(.false.)
+                    ASSERT(ASTER_FALSE)
                 endif
 !
 ! ------------- Save in percussion field
@@ -471,13 +497,13 @@ character(len=19), intent(in) :: cnsper
                 v_cnsper_cnsv(zperc*(node_slav_nume-1)+1) = imp
                 v_cnsper_cnsv(zperc*(node_slav_nume-1)+2) = impx
                 v_cnsper_cnsv(zperc*(node_slav_nume-1)+3) = impy
-                v_cnsper_cnsl(zperc*(node_slav_nume-1)+1) = .true.
-                v_cnsper_cnsl(zperc*(node_slav_nume-1)+2) = .true.
-                v_cnsper_cnsl(zperc*(node_slav_nume-1)+3) = .true.
+                v_cnsper_cnsl(zperc*(node_slav_nume-1)+1) = ASTER_TRUE
+                v_cnsper_cnsl(zperc*(node_slav_nume-1)+2) = ASTER_TRUE
+                v_cnsper_cnsl(zperc*(node_slav_nume-1)+3) = ASTER_TRUE
 !
                 if (model_ndim .eq. 3) then
                     v_cnsper_cnsv(zperc*(node_slav_nume-1)+4) = impz
-                    v_cnsper_cnsl(zperc*(node_slav_nume-1)+4) = .true.
+                    v_cnsper_cnsl(zperc*(node_slav_nume-1)+4) = ASTER_TRUE
                 endif
  99             continue
 !
@@ -515,7 +541,7 @@ character(len=19), intent(in) :: cnsper
 !
 !     if (ds_contact%calculated_penetration .le. 1.d-99) then
 !         call utmess('A', 'CONTACT3_97')
-!     endif    
+!     endif
 !
     call jedema()
 end subroutine

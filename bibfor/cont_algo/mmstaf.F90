@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,7 +88,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: idim, idim1, idim2
+    integer ::  idim1, idim2
     real(kind=8) :: laug_frot_norm
     real(kind=8) :: dlagrf(2), dist_total(3)
     real(kind=8) :: ddeple(3), ddeplm(3)
@@ -101,17 +101,14 @@ implicit none
 !
 ! - Initializations
 !
-    laug_frot_norm = 0.d0
-    indi_frot_eval = 0
-    do idim = 1, 3
-        laug_frot(idim) = 0.d0
-        dist_frot(idim) = 0.d0
-        dist_total(idim) = 0.d0
-        pres_frot(idim) = 0.d0
-    end do
-    dlagrf(1) = 0.d0
-    dlagrf(2) = 0.d0
-    call matini(3, 3, 0.d0, mprojt)
+    laug_frot_norm  = 0.d0
+    indi_frot_eval  = 0
+    laug_frot(:)    = 0.d0
+    dist_frot(:)    = 0.d0
+    dist_total(:)   = 0.d0
+    pres_frot(:)    = 0.d0
+    dlagrf(:)       = 0.d0
+    mprojt(:,:)     = 0.d0
 !
 ! - Tangent projection matrix
 !
@@ -142,9 +139,7 @@ implicit none
 !
 ! - Gap increment
 !
-    do idim = 1, 3
-        dist_total(idim) = ddeple(idim) - ddeplm(idim)
-    end do
+    dist_total(1:3) = ddeple(1:3) - ddeplm(1:3)
 !
 ! - Projection of gap increment on tangent plane
 !
@@ -159,15 +154,11 @@ implicit none
 ! - Friction "pressure"
 !
     if (ndim .eq. 2) then
-        do idim = 1, 2
-            pres_frot(idim) = dlagrf(1)*tang_1(idim)
-        end do
+        pres_frot(1:2) = dlagrf(1)*tang_1(1:2)
     else if (ndim.eq.3) then
-        do idim = 1, 3
-            pres_frot(idim) = dlagrf(1)*tang_1(idim) + dlagrf(2)*tang_2(idim)
-        end do
+        pres_frot(1:3) = dlagrf(1)*tang_1(1:3) + dlagrf(2)*tang_2(1:3)
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     endif
 !
 ! - Norm of the augmented lagrangian for friction

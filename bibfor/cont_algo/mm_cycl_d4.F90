@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ use NonLin_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
+#include "asterc/r8miem.h"
 #include "asterfort/assert.h"
 #include "asterfort/iscode.h"
 #include "asterfort/iscycl.h"
@@ -77,7 +78,7 @@ implicit none
 !
     cycl_type = 4
     cycl_long_acti = 3
-    cycl_stat = 0 
+    cycl_stat = 0
     detect = .false.
     !on definit une pression rasante proche du zero
     pres_near_zero = 1.d-3 * ds_contact%arete_min
@@ -96,13 +97,13 @@ implicit none
     cycl_ecod = p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_type)
     cycl_long = p_sdcont_cycnbr(4*(i_cont_poin-1)+cycl_type)
     cycl_stat = p_sdcont_cyceta(4*(i_cont_poin-1)+1)
-    
+
 !
 ! - Cycling detection
 !
 
     nb_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC')
-!     
+!
         coef_refe  =  1.d12*nb_cont_poin* (ds_contact%arete_max/ds_contact%arete_min)
         F_refe = max(coef_refe*ds_contact%arete_min,1.d0,ds_contact%cont_pressure)
     !On verifie que le point est stabilise en pression, suivant le cas
@@ -111,16 +112,16 @@ implicit none
     if ((indi_cont_eval .eq. 1) .and. (indi_cont_prev .eq. 0)) &
         resi_press_curr = abs(pres_cont_curr)/F_refe
     if ((indi_cont_eval .eq. 0) .and. (indi_cont_prev .eq. 1)) &
-        resi_press_curr = 1.d-100
+        resi_press_curr = r8miem()
     if ((indi_cont_eval .eq. 0) .and. (indi_cont_prev .eq. 0)) &
-        resi_press_curr = 1.d-100
+        resi_press_curr = r8miem()
     if (resi_press_curr .gt. ds_contact%resi_pressure) &
         ds_contact%resi_pressure = resi_press_curr
-    
+
 !   - Un point a fait du flip-flop
 !
 !
-            if (abs(pres_cont_curr) .gt.pres_near_zero) then 
+            if (abs(pres_cont_curr) .gt.pres_near_zero) then
                 cycl_stat    =    0
             else
                 cycl_stat = -10
@@ -132,7 +133,7 @@ implicit none
     cycl_long = cycl_long + 1
     p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_type) = cycl_stat
     p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_type) = cycl_ecod
-    if (cycl_long .eq. cycl_long_acti)  then 
+    if (cycl_long .eq. cycl_long_acti)  then
         cycl_long = 0
         cycl_ecod = 0
     endif

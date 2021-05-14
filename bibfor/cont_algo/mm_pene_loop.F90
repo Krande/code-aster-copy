@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -168,7 +168,7 @@ implicit none
 !
     time_curr = ds_contact%time_curr
 
-        ds_contact%calculated_penetration = 1.d-100
+    ds_contact%calculated_penetration = r8prem()
 !
 ! - Loop on contact zones
 !
@@ -245,7 +245,7 @@ implicit none
             end do
         end do
     end do
-!    if (continue_calcul .eq. 10 ) ds_contact%calculated_penetration = 1.d-100
+!    if (continue_calcul .eq. 10 ) ds_contact%calculated_penetration = r8prem()
 !
 ! - Cleaning
 !
