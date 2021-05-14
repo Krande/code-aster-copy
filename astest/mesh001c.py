@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ code_aster.init("--test")
 
 # check ParallelMesh object API
 test = code_aster.TestCase()
+rank = code_aster.getMPIRank()
 
 # from MED format
 mesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
@@ -40,6 +41,17 @@ test.assertEqual(pmesh.getDimension(), 3)
 global_grp = mesh.getGroupsOfCells()
 test.assertSequenceEqual(sorted(pmesh.getGroupsOfNodes()), sorted(global_grp))
 test.assertTrue( pmesh.hasGroupOfNodes("TOUT"))
+
+pmesh.printMedFile("mesh_%d.med"%rank)
+
+pmesh2 = code_aster.ParallelMesh()
+pmesh2.readMedFile("mesh_%d.med"%rank, True)
+
+
+#test global numbering of nodes
+nodes_gnum = pmesh.getNodes(localNumbering=False)
+nodes2_gnum = pmesh2.getNodes(localNumbering=False)
+test.assertSequenceEqual(nodes_gnum, nodes2_gnum)
 
 test.printSummary()
 

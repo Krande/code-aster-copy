@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,6 +43,8 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail,&
 #include "asterfort/mdnoma.h"
 #include "asterfort/ulisog.h"
 #include "asterfort/utmess.h"
+#include "asterfort/isParallelMesh.h"
+#include "asterfort/irmhpc.h"
 !
 integer :: connex(*), typma(*), point(*)
 integer :: ifi, ndim, nbnoeu, nbmail, nbgrno, nbgrma
@@ -260,7 +262,15 @@ real(kind=8) :: coordo(*)
 !     CALL IRMMEQ ()  ! NE FAIT RIEN ...
 !
 !====
-! 8. FERMETURE DU FICHIER MED
+! 9. IMPRESSION NUMEROTATION GLOBALE ET JOINTS EN HPC
+!====
+!
+        if(isParallelMesh(nomast)) then
+            call irmhpc(fid, nomamd, nomast, nbnoeu)
+        endif
+!
+!====
+! 10. FERMETURE DU FICHIER MED
 !====
 !
         call as_mficlo(fid, codret)
@@ -270,7 +280,7 @@ real(kind=8) :: coordo(*)
         endif
 !
 !====
-! 9. LA FIN
+! 11. LA FIN
 !====
 !
         call jedetc('V', '&&'//nompro, 1)
