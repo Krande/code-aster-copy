@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -125,6 +125,10 @@ character(len=19) :: trange
     ctype = 'K24'
     sdnoli = trange(1:8)
     krefe = nomres
+    lcoc(:) = ASTER_FALSE
+    lcumu(:) = ASTER_FALSE
+    lcoer(:) = 1.d0
+    lcoec = dcmplx(1.d0, 0.d0)
 !
 ! --- RECUPERATION BASE MODALE
 !
