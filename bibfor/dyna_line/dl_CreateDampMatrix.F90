@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -97,7 +97,7 @@ character(len=19), intent(out)  :: matr_damp
         call utmess('A', 'DYNALINE1_96', ni=3, vali=[nb_mode, nb_damp_read, nb_mode])
         l_coef(1:nb_damp) = l_damp_read(1:nb_damp)
     else if (nb_damp_read .lt. nb_mode) then
-        l_coef(1:nb_damp) = l_damp_read(1:nb_damp)
+        l_coef(1:nb_damp_read) = l_damp_read(1:nb_damp_read)
         idiff = nb_mode - nb_damp_read
         call utmess('I', 'DYNALINE1_97', ni=3, vali=[idiff, nb_mode, idiff])
         do i_damp = nb_damp_read+1, nb_damp
