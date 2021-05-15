@@ -65,7 +65,7 @@ def post_roche_ops(self, **kwargs):
         calcul.epsiMp()
         calcul.reversibilite_locale()
         calcul.reversibilite_totale()
-        calcul.effet_ressort()
+        calcul.effet_ressort('Monotone')
         calcul.contrainteVraie()
         calcul.veriContrainte()
         calcul.coef_abattement()
@@ -77,7 +77,7 @@ def post_roche_ops(self, **kwargs):
         calculS2.epsiMp()
         calculS2.reversibilite_locale()
         calculS2.reversibilite_totale()
-        calculS2.effet_ressort()
+        calculS2.effet_ressort('Sismique')
         calculS2.contrainteVraie()
         calculS2.veriContrainte()
         calculS2.coef_abattement()
@@ -888,22 +888,39 @@ class PostRocheCommon():
                                            **self.dicAllZones),))
         # effet de ressort
 
-        def fress(t, T):
+        def fressMono(t, T):
             if t == 0.:
                 return 0.
             else:
                 return max(T/t-1,0)
+        
+        def fressSism(t, T):
+            if t == 0.:
+                return 0.
+            else:
+                return T/t-1
 
 
-        fRessort = FORMULE(NOM_PARA=('X1', 'X2'),
-                           VALE='fress(X1,X2)',fress=fress)
+        fRessortMono = FORMULE(NOM_PARA=('X1', 'X2'),
+                           VALE='fress(X1,X2)',fress=fressMono)
+        
+        fRessortSism = FORMULE(NOM_PARA=('X1', 'X2'),
+                           VALE='fress(X1,X2)',fress=fressSism)
 
-        self.chFRessort = CREA_CHAMP(OPERATION='AFFE',
+        self.chFRessortMono = CREA_CHAMP(OPERATION='AFFE',
                                 TYPE_CHAM='ELNO_NEUT_F',
                                 MODELE=self.model,
                                 PROL_ZERO='OUI',
                                 AFFE= (_F(NOM_CMP=('X1'),
-                                          VALE_F=(fRessort,),
+                                          VALE_F=(fRessortMono,),
+                                          **self.dicAllZones),))
+        
+        self.chFRessortSism = CREA_CHAMP(OPERATION='AFFE',
+                                TYPE_CHAM='ELNO_NEUT_F',
+                                MODELE=self.model,
+                                PROL_ZERO='OUI',
+                                AFFE= (_F(NOM_CMP=('X1'),
+                                          VALE_F=(fRessortSism,),
                                           **self.dicAllZones),))
 
         # contrainte vraie
@@ -1393,7 +1410,7 @@ class PostRocheCalc():
                                  AFFE= affe)
         self.chReversTot = chReversTot
 
-    def effet_ressort(self,):
+    def effet_ressort(self,typChar):
         """
             Calcul de l'effet de ressort
         """
@@ -1418,10 +1435,18 @@ class PostRocheCalc():
                                              )
                                )
 
-        chRessort = CREA_CHAMP(OPERATION='EVAL',
-                                TYPE_CHAM='ELNO_NEUT_R',
-                                CHAM_F=self.param.chFRessort,
-                                CHAM_PARA=(chReversAll))
+        if typChar == 'Monotone':
+            chRessort = CREA_CHAMP(OPERATION='EVAL',
+                                    TYPE_CHAM='ELNO_NEUT_R',
+                                    CHAM_F=self.param.chFRessortMono,
+                                    CHAM_PARA=(chReversAll))
+        elif typChar == 'Sismique':
+            chRessort = CREA_CHAMP(OPERATION='EVAL',
+                                    TYPE_CHAM='ELNO_NEUT_R',
+                                    CHAM_F=self.param.chFRessortSism,
+                                    CHAM_PARA=(chReversAll))
+        else:
+            raise Exception('erreur effet_ressort : typChar "%s" inconnu'%typChar)
 
         self.chRessort = chRessort
 
