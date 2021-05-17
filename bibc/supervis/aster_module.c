@@ -1402,190 +1402,207 @@ PyObject *args;
 
 /* ------------------------------------------------------------------ */
 static PyObject* aster_GetResu(self, args)
-PyObject *self; /* Not used */
-PyObject *args;
+     PyObject *self; /* Not used */
+     PyObject *args;
 
-/* Construit sous forme d'un dictionnaire Python l'architecture d'une SD resultat
+     /* Construit sous forme d'un dictionnaire Python l'architecture d'une SD resultat
 
-   Arguments :
-     IN Nom de la SD resultat
-     IN Nature des informations recherchees
-          CHAMPS      -> Champs de resultats
-          COMPOSANTES -> Liste des composantes des champs
-          VARI_ACCES  -> Variables d'acces
-          PARAMETRES  -> Parametres
+        Arguments :
+        IN Nom de la SD resultat
+        IN Nature des informations recherchees
+        CHAMPS      -> Champs de resultats
+        COMPOSANTES -> Liste des composantes des champs
+        VARI_ACCES  -> Variables d'acces
+        PARAMETRES  -> Parametres
 
 
-     OUT dico
-       Si 'CHAMPS'
-       dico['NOM_CHAM'] -> [] si le champ n'est pas calcule
-                        -> Liste des numeros d'ordre ou le champ est calcule
+        OUT dico
+        Si 'CHAMPS'
+        dico['NOM_CHAM'] -> [] si le champ n'est pas calcule
+        -> Liste des numeros d'ordre ou le champ est calcule
 
-       Si 'COMPOSANTES'
-       dico['NOM_CHAM'] -> [] si le champ n'est pas calcule
-                        -> Liste des composantes du champ (enveloppe sur tous les instants)
+        Si 'COMPOSANTES'
+        dico['NOM_CHAM'] -> [] si le champ n'est pas calcule
+        -> Liste des composantes du champ (enveloppe sur tous les instants)
 
-       Si 'VARI_ACCES'
-       dico['NOM_VA']   -> Liste des valeurs de la variable d'acces
+        Si 'VARI_ACCES'
+        dico['NOM_VA']   -> Liste des valeurs de la variable d'acces
 
-       Si 'PARAMETRES'
-       dico['NOM_VA']   -> Liste des valeurs du parametre
+        Si 'PARAMETRES'
+        dico['NOM_VA']   -> Liste des valeurs du parametre
 
-*/
+     */
 {
-   ASTERINTEGER nbchmx, nbpamx, nbord, numch, numva, ier, nbcmp ;
-   ASTERINTEGER *liord, *ival;
-   ASTERINTEGER *val, nbval ;
-   ASTERDOUBLE *rval;
-   char *nomsd, *mode, *liscmp, *nom, *nomsd32, *cmp;
-   char *kval, *kvar;
-   char *nomch, *nomva;
-   int i, lo, ksize=0, ksizemax=80, inbord;
-   ASTERINTEGER icode, ctype;
-   PyObject *dico=NULL, *liste, *key;
-   char blanc[80];
+  ASTERINTEGER nbchmx, nbpamx, nbord, numch, numva, ier, nbcmp ;
+  ASTERINTEGER *liord, *ival;
+  ASTERINTEGER *val, nbval ;
+  ASTERDOUBLE *rval;
+  char *nomsd, *mode, *liscmp, *nom, *nomsd32, *cmp;
+  char *kval, *kvar;
+  char *nomch, *nomva;
+  int i, lo, ksize=0, ksizemax=80, inbord;
+  ASTERINTEGER icode, ctype;
+  PyObject *dico=NULL, *liste, *key, *value;
+  char blanc[80];
 
-   BlankStr(blanc, 80);
+  BlankStr(blanc, 80);
 
-   if (!PyArg_ParseTuple(args, "ss",&nomsd, &mode)) return NULL;
-   nomsd32 = MakeFStrFromCStr(nomsd, 32);
+  if (!PyArg_ParseTuple(args, "ss",&nomsd, &mode)) return NULL;
+  nomsd32 = MakeFStrFromCStr(nomsd, 32);
 
-/* Identifiant de la SD resultat */
-   nbval = 3;
-   val = (ASTERINTEGER *)malloc((nbval)*sizeof(ASTERINTEGER));
-   nom = MakeFStrFromCStr("LIST_RESULTAT", 24);
+  /* Identifiant de la SD resultat */
+  nbval = 3;
+  val = (ASTERINTEGER *)malloc((nbval)*sizeof(ASTERINTEGER));
+  nom = MakeFStrFromCStr("LIST_RESULTAT", 24);
 
-/* Taille de la SD resultat : nbr champs, nbr paras, nbr numeros d'ordre */
-   CALL_JEMARQ();
-   try {
-        CALL_TAILSD(nom, nomsd32, val, &nbval);
-   }
-   exceptAll {
-        FreeStr(nomsd32);
-        FreeStr(nom);
-        free(val);
-        raiseException();
-   }
-   endTry();
-   nbchmx = val[0];
-   nbpamx = val[1];
-   nbord  = val[2];
-   inbord = (int)nbord;
-
-    if (strcmp(mode,"CHAMPS") == 0 || strcmp(mode,"COMPOSANTES") == 0) {
-/* Construction du dictionnaire : cle d'acces = nom du champ */
-        liord  = (ASTERINTEGER *)malloc(inbord*sizeof(ASTERINTEGER));
-        liscmp = MakeTabFStr(500, 8);
-        dico = PyDict_New();
-        for (numch=1; numch<=nbchmx; numch++) {
-            nomch = MakeBlankFStr(16);
-            try {
-                CALL_RSACCH(nomsd32, &numch, nomch, &nbord, liord, &nbcmp, liscmp);
-                inbord = (int)nbord;
-                lo = FStrlen(nomch, 16),
-                key = PyUnicode_FromStringAndSize(nomch,lo);
-                liste = PyList_New(0);
-                if (strcmp(mode,"CHAMPS") == 0) {
-                    for (i=0; i<inbord; i++)
-                        PyList_Append(liste,PyLong_FromLong((long)liord[i]));
-                }
-                if (strcmp(mode,"COMPOSANTES") == 0) {
-                    for (i=0; i<nbcmp; i++) {
-                        cmp = &(liscmp[i*8]);
-                        lo = FStrlen(cmp, 8);
-                        PyList_Append(liste,PyUnicode_FromStringAndSize(cmp,lo));
-                    }
-                }
-                PyDict_SetItem(dico,key,liste);
-                Py_DECREF(key);
-                Py_DECREF(liste);
-                FreeStr(nomch);
-            }
-            exceptAll {
-                FreeStr(nomch);
-                raiseException();
-            }
-            endTry();
-        }
-        free(liord);
-        FreeStr(liscmp);
-    }
-    else if (strcmp(mode,"VARI_ACCES") == 0 || strcmp(mode,"PARAMETRES") == 0) {
-        icode = 2;
-        if (strcmp(mode,"VARI_ACCES") == 0) {
-            icode = 0;
-        }
-/* Extraction des paramètres ou variables d'accès */
-          ival = (ASTERINTEGER *)malloc(inbord*sizeof(ASTERINTEGER));
-          rval = (ASTERDOUBLE *)malloc(inbord*sizeof(ASTERDOUBLE) );
-          kval = MakeTabFStr(inbord, ksizemax);
-
-          dico = PyDict_New();
-          for (numva=0; numva<=nbpamx; numva++)
-          {
-            nomva = MakeBlankFStr(16);
-            CALL_RSACPA(nomsd32, &numva, &icode, nomva, &ctype, ival, rval, kval, &ier);
-            if (ier != 0) continue;
-
-            lo = FStrlen(nomva, 16);
-            key = PyUnicode_FromStringAndSize(nomva,lo);
-
-            liste = PyList_New(0);
-            if(ctype < 0){
-                /* Erreur */
-                PyErr_SetString(PyExc_KeyError, "Type incorrect");
-                return NULL;
-            }
-            else if (ctype == 1) {
-                for (i=0; i<inbord; i++) {
-                    if (rval[i] != CALL_R8VIDE() ) {
-                        PyList_Append(liste, PyFloat_FromDouble((double)rval[i]));
-                    } else {
-                        PyList_Append(liste, Py_None);
-                    }
-                }
-            }
-            else if (ctype == 2) {
-                for (i=0; i<inbord; i++) {
-                    if (ival[i] != CALL_ISNNEM() ) {
-                        PyList_Append(liste, PyLong_FromLong((long)ival[i]));
-                    } else {
-                        PyList_Append(liste, Py_None);
-                    }
-                }
-            }
-            else if (ctype == 4 || ctype == 5 || ctype == 6 || ctype == 7 || ctype == 8) {
-                switch ( ctype ) {
-                    case 4 : ksize = 8;  break;
-                    case 5 : ksize = 16; break;
-                    case 6 : ksize = 24; break;
-                    case 7 : ksize = 32; break;
-                    case 8 : ksize = 80; break;
-                }
-                for (i=0; i<inbord; i++) {
-                    kvar = kval + i*ksizemax;
-                    if ( strncmp(kvar, blanc, ksize) != 0 ) {
-                        PyList_Append(liste, PyUnicode_FromStringAndSize(kvar, ksize));
-                    } else {
-                        PyList_Append(liste, Py_None);
-                    }
-                }
-            }
-            PyDict_SetItem(dico,key,liste);
-            Py_DECREF(key);
-            Py_DECREF(liste);
-            FreeStr(nomva);
-          }
-
-          free(ival);
-          free(rval);
-          FreeStr(kval);
-    }
-    CALL_JEDEMA();
-    FreeStr(nom);
+  /* Taille de la SD resultat : nbr champs, nbr paras, nbr numeros d'ordre */
+  CALL_JEMARQ();
+  try {
+    CALL_TAILSD(nom, nomsd32, val, &nbval);
+  }
+  exceptAll {
     FreeStr(nomsd32);
+    FreeStr(nom);
     free(val);
-    return dico;
+    raiseException();
+  }
+  endTry();
+  nbchmx = val[0];
+  nbpamx = val[1];
+  nbord  = val[2];
+  inbord = (int)nbord;
+
+  if (strcmp(mode,"CHAMPS") == 0 || strcmp(mode,"COMPOSANTES") == 0) {
+    /* Construction du dictionnaire : cle d'acces = nom du champ */
+    liord  = (ASTERINTEGER *)malloc(inbord*sizeof(ASTERINTEGER));
+    liscmp = MakeTabFStr(500, 8);
+    dico = PyDict_New();
+    for (numch=1; numch<=nbchmx; numch++) {
+      nomch = MakeBlankFStr(16);
+      try {
+        CALL_RSACCH(nomsd32, &numch, nomch, &nbord, liord, &nbcmp, liscmp);
+        inbord = (int)nbord;
+        lo = FStrlen(nomch, 16);
+        key = PyUnicode_FromStringAndSize(nomch,lo);
+        liste = PyList_New(0);
+        if (strcmp(mode,"CHAMPS") == 0) {
+          for (i=0; i<inbord; i++){
+            value = PyLong_FromLong((long)liord[i]);
+            PyList_Append(liste, value);
+            Py_DECREF(value);
+          }
+        }
+        if (strcmp(mode,"COMPOSANTES") == 0) {
+          for (i=0; i<nbcmp; i++) {
+            cmp = &(liscmp[i*8]);
+            lo = FStrlen(cmp, 8);
+            value = PyUnicode_FromStringAndSize(cmp,lo);
+            PyList_Append(liste, value);
+            Py_DECREF(value);
+          }
+        }
+        PyDict_SetItem(dico,key,liste);
+        Py_DECREF(key);
+        Py_DECREF(liste);
+        FreeStr(nomch);
+      }
+      exceptAll {
+        FreeStr(nomch);
+        raiseException();
+      }
+      endTry();
+    }
+    free(liord);
+    FreeStr(liscmp);
+  }
+  else if (strcmp(mode,"VARI_ACCES") == 0 || strcmp(mode,"PARAMETRES") == 0) {
+    icode = 2;
+    if (strcmp(mode,"VARI_ACCES") == 0) {
+      icode = 0;
+    }
+    /* Extraction des paramètres ou variables d'accès */
+    ival = (ASTERINTEGER *)malloc(inbord*sizeof(ASTERINTEGER));
+    rval = (ASTERDOUBLE *)malloc(inbord*sizeof(ASTERDOUBLE) );
+    kval = MakeTabFStr(inbord, ksizemax);
+
+    dico = PyDict_New();
+    for (numva=0; numva<=nbpamx; numva++){
+      nomva = MakeBlankFStr(16);
+      CALL_RSACPA(nomsd32, &numva, &icode, nomva, &ctype, ival, rval, kval, &ier);
+      if (ier != 0){
+        FreeStr(nomva);
+        continue;
+      }
+
+      lo = FStrlen(nomva, 16);
+      key = PyUnicode_FromStringAndSize(nomva,lo);
+
+      liste = PyList_New(0);
+      if(ctype < 0){
+        /* Erreur */
+        PyErr_SetString(PyExc_KeyError, "Type incorrect");
+        return NULL;
+      }
+      else if (ctype == 1) {
+        for (i=0; i<inbord; i++) {
+          if (rval[i] != CALL_R8VIDE() ) {
+            value = PyFloat_FromDouble((double)rval[i]);
+            PyList_Append(liste, value);
+            Py_DECREF(value);
+          } else {
+            PyList_Append(liste, Py_None);
+          }
+        }
+      }
+      else if (ctype == 2) {
+        for (i=0; i<inbord; i++) {
+          if (ival[i] != CALL_ISNNEM() ) {
+            value = PyLong_FromLong((long)ival[i]);
+            PyList_Append(liste, value);
+            Py_DECREF(value);
+          } else {
+            PyList_Append(liste, Py_None);
+          }
+        }
+      }
+      else if (ctype == 4 || ctype == 5 || ctype == 6 || ctype == 7 || ctype == 8) {
+        switch ( ctype ) {
+        case 4 : ksize = 8;  break;
+        case 5 : ksize = 16; break;
+        case 6 : ksize = 24; break;
+        case 7 : ksize = 32; break;
+        case 8 : ksize = 80; break;
+        }
+        for (i=0; i<inbord; i++) {
+          kvar = kval + i*ksizemax;
+          if ( strncmp(kvar, blanc, ksize) != 0 ) {
+            value = PyUnicode_FromStringAndSize(kvar, ksize);
+            PyList_Append(liste, value);
+            Py_DECREF(value);
+          } else {
+            PyList_Append(liste, Py_None);
+          }
+        }
+      }
+      PyDict_SetItem(dico,key,liste);
+      Py_DECREF(key);
+      Py_DECREF(liste);
+      FreeStr(nomva);
+    }
+
+    free(ival);
+    free(rval);
+    FreeStr(kval);
+  }
+  else {
+    PyErr_SetString(PyExc_KeyError, "Mode incorrect");
+    return NULL;
+  }
+  CALL_JEDEMA();
+  FreeStr(nom);
+  FreeStr(nomsd32);
+  free(val);
+  return dico;
 }
 
 
