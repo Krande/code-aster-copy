@@ -685,20 +685,20 @@ class CALCULS_ASTER:
                         UTMESS('A', 'RECAL0_82', valk=resudir)
                     resudir = None
         if not resudir:
-            # Par defaut, dans un sous-repertoire du repertoire d'execution
-            pref = 'tmp_macr_recal_'
             # On cherche s'il y a un fichier hostfile pour placer les fichiers dans un repertoire partage
             l_fr = getattr(prof, 'data')
             l_tmp = l_fr[:]
             for dico in l_tmp:
                 if dico['type'] == 'hostfile':
-                    pref = get_shared_tmpdir('tmp_macr_recal_')
+                    resudir = get_shared_tmpdir('tmp_macr_recal_')
                     break
             # Si batch alors on place les fichiers dans un repertoire partage
             if prof['mode'][0] == 'batch':
-                pref = get_shared_tmpdir('tmp_macr_recal1_')
+                resudir = get_shared_tmpdir('tmp_macr_recal1_')
 
-            resudir = tempfile.mkdtemp(prefix=pref)
+            # Par defaut, dans un sous-repertoire du repertoire d'execution
+            if not resudir:
+                resudir = tempfile.mkdtemp(prefix='tmp_macr_recal_')
         flashdir = os.path.join(resudir, 'flash')
         if info >= 1:
             UTMESS('I', 'RECAL0_81', valk=resudir)
