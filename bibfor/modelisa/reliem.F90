@@ -17,11 +17,13 @@
 ! --------------------------------------------------------------------
 
 subroutine reliem(mo, ma, typem, motfaz, iocc,&
-                  nbmocl, limocl, tymocl, litroz, nbtrou)
+                  nbmocl, limocl, tymocl, litroz, nbtrou, l_keep_propz)
     implicit none
+#include "asterf_types.h"
 #include "asterfort/addPhantomNodesFromCells.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
@@ -46,6 +48,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
     character(len=8) :: ma, modele
     character(len=*) :: limocl(nbmocl), tymocl(nbmocl), mo
     character(len=*) :: litroz, typem, motfaz
+    aster_logical, optional, intent(in) :: l_keep_propz
 ! ----------------------------------------------------------------------
 ! person_in_charge: jacques.pellet at edf.fr
 !
@@ -77,10 +80,15 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 ! IN/JXOUT : LITROZ : NOM DE L'OBJET JEVEUX QUI CONTIENDRA LA LISTE DES
 !                     ENTITES (MAILLE OU NOEUD) TROUVEES
 ! OUT : NBTROU : NOMBRE D'ENTITES TROUVEES
+! IN, OPTIONAL : L_KEEP_PROP : PRIS EN COMPTE UNIQUEMENT UN MAILLAGE PARALLELE
+!    (CELA NE CHANGE RIEN DANS LES AUTRES CAS)
+!    POUR UN PARALLEL_MESH, SI TRUE ON NE GARDE QUE LES MAILLES/NOEUDS DONT LE SOUS-DOMAINE
+!    EST PROPRIETAIRE SI FALSE ON GARDE TOUT
+!    SI L'ARGUMENT N'EST PAS PRESENT ON GARDE TOUT (=FALSE).
 ! ----------------------------------------------------------------------
     character(len=24) :: litrou
     integer :: jno, jma, kno, kma, iacnex, iem, nem, numno, nno, nma, nbenc
-    integer :: ibid, ient
+    integer :: ibid, ient, rank
     integer ::  itrma, ima, ino, nbma, nbno, nbnoma, imo, ier
     integer :: lma, lno, itbma, itbno, iret, inoem, ntou, k, ifm, niv
     character(len=8) :: type2, oui, noent, nomgd
@@ -88,9 +96,12 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
     character(len=19) :: ligrel
     character(len=24) :: karg
     integer :: iarg
-    aster_logical :: l_parallel_mesh, l_group_ma
+    mpi_int :: mrank
+    aster_logical :: l_parallel_mesh, l_group_ma, l_keep_prop
     integer, pointer :: maille(:) => null()
     integer, pointer :: prnm(:) => null()
+    integer, pointer :: v_maex(:) => null()
+    integer, pointer :: v_noex(:) => null()
     integer(kind=4), pointer :: indic_noeud(:) => null()
 !     ------------------------------------------------------------------
 !
@@ -99,7 +110,15 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
     motfac = motfaz
     modele = mo
     l_parallel_mesh = isParallelMesh(ma)
+    if(present(l_keep_propz)) then
+        l_keep_prop = l_keep_propz
+    else
+        l_keep_prop = ASTER_FALSE
+    end if
     call infniv(ifm, niv)
+!
+    call asmpi_info(rank = mrank)
+    rank = to_aster_int(mrank)
 !
 !     --- VERIFICATIONS PRELIMINAIRES ---
 !
@@ -285,9 +304,23 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !
 !        --- COMPTAGE DES MAILLES ---
 !
+        if(l_parallel_mesh) then
+            call jeveuo(ma//'.MAEX', 'L', vi=v_maex)
+        end if
+
         nbtrou = 0
         do ima = 1, nbma
-            if (zi4(itrma-1+ima) .ne. 0) nbtrou = nbtrou + 1
+            if (zi4(itrma-1+ima) .ne. 0) then
+                if(l_parallel_mesh .and. l_keep_prop) then
+                    if( v_maex(ima) == rank ) then
+                        nbtrou = nbtrou + 1
+                    else
+                        zi4(itrma-1+ima) = 0
+                    end if
+                else
+                    nbtrou = nbtrou + 1
+                end if
+            end if
         end do
         if (nbtrou .eq. 0) goto 200
 !
@@ -346,9 +379,23 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !
 !        --- COMPTAGE DES NOEUDS ---
 !
+        if(l_parallel_mesh) then
+            call jeveuo(ma//'.NOEX', 'L', vi=v_noex)
+        end if
+!
         nbtrou = 0
         do ino = 1, nbno
-            if (indic_noeud(ino) .ne. 0) nbtrou = nbtrou + 1
+            if (indic_noeud(ino) .ne. 0) then
+                if(l_parallel_mesh .and. l_keep_prop) then
+                    if( v_noex(ino) == rank ) then
+                        nbtrou = nbtrou + 1
+                    else
+                        indic_noeud(ino) = 0
+                    end if
+                else
+                    nbtrou = nbtrou + 1
+                end if
+            end if
         end do
         if (nbtrou .eq. 0) goto 200
 !

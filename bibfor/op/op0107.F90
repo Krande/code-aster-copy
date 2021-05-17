@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,16 @@ subroutine op0107()
 !     OPERATEUR   POST_ELEM
 !     ------------------------------------------------------------------
 !
-#include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
+#include "asterfort/assert.h"
 #include "asterfort/chpve2.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -52,10 +54,11 @@ subroutine op0107()
 #include "asterfort/rsutnu.h"
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
+#include "jeveux.h"
 !
     integer :: nh, iret, jordr, n1, n2, nbocc, nbordr, nc, np, nr, ier
     real(kind=8) :: prec
-    character(len=8) :: k8b, modele, carele, deform, resuco, crit
+    character(len=8) :: k8b, modele, carele, deform, resuco, crit, mesh
     character(len=16) :: concep, nomcmd
     character(len=19) :: resu, knum, tabtyp(3)
     character(len=24) :: mate, mateco, chdef
@@ -79,18 +82,24 @@ subroutine op0107()
     call getfac('CHAR_LIMITE', nbocc)
     if (nbocc .ne. 0) then
         call medomp(resuco, modele, mateco=mateco)
+        call dismoi('NOM_MAILLA', modele, 'MODELE', repk = mesh)
+        ASSERT( .not.isParallelMesh(mesh))
         call pechli(resu, modele, mateco)
     endif
 !
     call getfac('AIRE_INTERNE', nbocc)
     if (nbocc .ne. 0) then
         call medomp(resuco, modele)
+        call dismoi('NOM_MAILLA', modele, 'MODELE', repk = mesh)
+        ASSERT( .not.isParallelMesh(mesh))
         call peaire(resu, modele, nbocc)
     endif
 !
     call getfac('MASS_INER', nbocc)
     if (nbocc .ne. 0) then
         call medomp(resuco, modele, mate, mateco, carele, nh)
+        call dismoi('NOM_MAILLA', modele, 'MODELE', repk = mesh)
+        ASSERT( .not.isParallelMesh(mesh))
         chdef = ' '
         call getvtx(' ', 'GEOMETRIE', scal=deform, nbret=n1)
         if (deform .eq. 'DEFORMEE') then
@@ -123,6 +132,8 @@ subroutine op0107()
     call getfac('ENER_POT', nbocc)
     if (nbocc .ne. 0) then
         call medomp(resuco, modele, mate, mateco, carele, nh)
+        call dismoi('NOM_MAILLA', modele, 'MODELE', repk = mesh)
+        ASSERT( .not.isParallelMesh(mesh))
         call peepot(resu, modele, mate, mateco,  carele, nh,&
                     nbocc)
 !
@@ -131,6 +142,8 @@ subroutine op0107()
     call getfac('ENER_CIN', nbocc)
     if (nbocc .ne. 0) then
         call medomp(resuco, modele, mate, mateco,  carele, nh)
+        call dismoi('NOM_MAILLA', modele, 'MODELE', repk = mesh)
+        ASSERT( .not.isParallelMesh(mesh))
         call peecin(resu, modele, mate, mateco,  carele, nh,&
                     nbocc)
 !
@@ -158,6 +171,8 @@ subroutine op0107()
     call getfac('VOLUMOGRAMME', nbocc)
     if (nbocc .ne. 0) then
         call medomp(resuco, modele, carele=carele)
+        call dismoi('NOM_MAILLA', modele, 'MODELE', repk = mesh)
+        ASSERT( .not.isParallelMesh(mesh))
         call pevolu(resu, modele, carele, nbocc)
     endif
 !
@@ -170,12 +185,16 @@ subroutine op0107()
             call getvid('MINMAX', 'RESULTAT', iocc=1, scal=resuco, nbret=nr)
             call medomp(resuco, modele)
         endif
+        call dismoi('NOM_MAILLA', modele, 'MODELE', repk = mesh)
+        ASSERT( .not.isParallelMesh(mesh))
         call pemima(n1, chdef, resu, modele, nbocc)
     endif
 !
     call getfac('WEIBULL', nbocc)
     if (nbocc .ne. 0) then
         call medomp(resuco, modele, mate, mateco, carele, nh)
+        call dismoi('NOM_MAILLA', modele, 'MODELE', repk = mesh)
+        ASSERT( .not.isParallelMesh(mesh))
         call peweib(resu, modele, mate, mateco, carele, k8b,&
                     nh, nbocc, 0, nomcmd)
     endif
@@ -183,24 +202,32 @@ subroutine op0107()
     call getfac('RICE_TRACEY', nbocc)
     if (nbocc .ne. 0) then
         call medomp(resuco, modele, carele=carele, nh=nh)
+        call dismoi('NOM_MAILLA', modele, 'MODELE', repk = mesh)
+        ASSERT( .not.isParallelMesh(mesh))
         call peritr(resu, modele, carele, nh, nbocc)
     endif
 !
     call getfac('CARA_GEOM', nbocc)
     if (nbocc .ne. 0) then
         call medomp(resuco, modele)
+        call dismoi('NOM_MAILLA', modele, 'MODELE', repk = mesh)
+        ASSERT( .not.isParallelMesh(mesh))
         call pecage(resu, modele, nbocc)
     endif
 !
     call getfac('CARA_POUTRE', nbocc)
     if (nbocc .ne. 0) then
         call medomp(resuco, modele, carele=carele, nh=nh)
+        call dismoi('NOM_MAILLA', modele, 'MODELE', repk = mesh)
+        ASSERT( .not.isParallelMesh(mesh))
         call pecapo(resu, modele, carele, nh)
     endif
 !
     call getfac('INDIC_ENER', nbocc)
     if (nbocc .ne. 0) then
         call medomp(resuco, modele, mate, mateco, carele, nh)
+        call dismoi('NOM_MAILLA', modele, 'MODELE', repk = mesh)
+        ASSERT( .not.isParallelMesh(mesh))
         call peingl(resu, modele, mate, mateco, carele, nh,&
                     nbocc, 'INDIC_ENER')
     endif
@@ -208,6 +235,8 @@ subroutine op0107()
     call getfac('INDIC_SEUIL', nbocc)
     if (nbocc .ne. 0) then
         call medomp(resuco, modele, mate, mateco, carele, nh)
+        call dismoi('NOM_MAILLA', modele, 'MODELE', repk = mesh)
+        ASSERT( .not.isParallelMesh(mesh))
         call peingl(resu, modele, mate, mateco, carele, nh,&
                     nbocc, 'INDIC_SEUIL')
     endif
@@ -215,6 +244,8 @@ subroutine op0107()
     call getfac('ENER_ELAS', nbocc)
     if (nbocc .ne. 0) then
         call medomp(resuco, modele, mate, mateco, carele, nh)
+        call dismoi('NOM_MAILLA', modele, 'MODELE', repk = mesh)
+        ASSERT( .not.isParallelMesh(mesh))
         call peingl(resu, modele, mate, mateco, carele, nh,&
                     nbocc, 'ENER_ELAS')
     endif
@@ -222,6 +253,8 @@ subroutine op0107()
     call getfac('ENER_ELTR', nbocc)
     if (nbocc .ne. 0) then
         call medomp(resuco, modele, mate, mateco, carele, nh)
+        call dismoi('NOM_MAILLA', modele, 'MODELE', repk = mesh)
+        ASSERT( .not.isParallelMesh(mesh))
         call peingl(resu, modele, mate, mateco, carele, nh,&
                     nbocc, 'ENER_ELTR')
     endif
@@ -230,6 +263,8 @@ subroutine op0107()
     call getfac('ENER_TOTALE', nbocc)
     if (nbocc .ne. 0) then
         call medomp(resuco, modele, mate, mateco, carele, nh)
+        call dismoi('NOM_MAILLA', modele, 'MODELE', repk = mesh)
+        ASSERT( .not.isParallelMesh(mesh))
         call peingl(resu, modele, mate, mateco, carele, nh,&
                     nbocc, 'ENER_TOTALE')
     endif
@@ -237,6 +272,8 @@ subroutine op0107()
     call getfac('ENER_DISS', nbocc)
     if (nbocc .ne. 0) then
         call medomp(resuco, modele, mate, mateco, carele, nh)
+        call dismoi('NOM_MAILLA', modele, 'MODELE', repk = mesh)
+        ASSERT( .not.isParallelMesh(mesh))
         call peingl(resu, modele, mate, mateco, carele, nh,&
                     nbocc, 'ENER_DISS')
     endif

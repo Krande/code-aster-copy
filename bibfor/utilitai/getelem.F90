@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
-                   nb_elem, suffix     , model)
+                   nb_elem, suffix     , model, l_keep_propz)
 !
     implicit none
 !
@@ -40,6 +40,7 @@ subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
     character(len=24), intent(in) :: list_elem
     character(len=8), intent(in), optional :: model
     character(len=*), intent(in), optional :: suffix
+    aster_logical, optional, intent(in) :: l_keep_propz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,6 +70,11 @@ subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
 ! Out nb_elem      : number of elements read
 ! In  model        : <optional> check elements belongs to model
 ! In  suffix       : <optional> suffix add to keywords
+! IN, OPTIONAL     : L_KEEP_PROP : PRIS EN COMPTE UNIQUEMENT UN MAILLAGE PARALLELE
+!    (CELA NE CHANGE RIEN DANS LES AUTRES CAS)
+!    POUR UN PARALLEL_MESH, SI TRUE ON NE GARDE QUE LES MAILLES/NOEUDS DONT LE SOUS-DOMAINE
+!    EST PROPRIETAIRE SI FALSE ON GARDE TOUT
+!    SI L'ARGUMENT N'EST PAS PRESENT ON GARDE TOUT (=FALSE).
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -81,6 +87,7 @@ subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
     integer, pointer :: p_list_elem(:) => null()
     character(len=24) :: keyword
     character(len=8) :: model_name, suffix_name
+    aster_logical :: l_keep_prop
     integer :: nb_mocl
     integer :: nb_lect, nb_excl, nb_elim
     integer :: nume_lect, nume_excl
@@ -105,6 +112,11 @@ subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
     if (present(suffix)) then
         suffix_name = suffix
     endif
+    if(present(l_keep_propz)) then
+        l_keep_prop = l_keep_propz
+    else
+        l_keep_prop = ASTER_FALSE
+    end if
 !
 ! - Read elements
 !
@@ -128,7 +140,7 @@ subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
     endif
     if (nb_mocl .ne. 0) then
         call reliem(model_name, mesh, 'NU_MAILLE', keywordfact, iocc,&
-                    nb_mocl, moclm, typmcl, list_lect, nb_lect)
+                    nb_mocl, moclm, typmcl, list_lect, nb_lect, l_keep_prop)
     endif
 !
 ! - Read elements excludes
@@ -152,7 +164,7 @@ subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
     endif
 
 !
-! - Access to list of elements 
+! - Access to list of elements
 !
     if (nb_lect .ne. 0) then
         call jeveuo(list_lect, 'E', vi = p_list_lect)

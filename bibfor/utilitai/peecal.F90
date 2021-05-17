@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,6 +50,9 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma,&
 #include "asterfort/jexnum.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/panbno.h"
+#include "asterfort/isParallelMesh.h"
+#include "asterfort/asmpi_comm_vect.h"
+!
     integer :: nbcmp, nuord, iocc, nbma, list_ma(*)
     character(len=8) :: nomcmp(nbcmp), nomcp2(nbcmp), modele, lieu
     character(len=19) :: chpost, resu, cespoi, ligrel
@@ -93,7 +96,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma,&
     character(len=4) :: dejain
     character(len=19) :: cesout
     character(len=24) :: valk(3), nomte
-    aster_logical :: exist, l_red
+    aster_logical :: exist, l_red, l_pmesh
     real(kind=8), pointer :: pdsm(:) => null()
     character(len=8), pointer :: cesk(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
@@ -110,6 +113,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma,&
 !
 !
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
+    l_pmesh = isParallelMesh(noma)
 
     call jeveuo(ligrel//'.REPE', 'L', vi=repe)
 !
@@ -254,6 +258,12 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma,&
             valk(3)=nomcmp(icmp)
             call utmess('F', 'UTILITAI7_12', nk=3, valk=valk)
         endif
+!
+! --- Sum Value in HPC
+        if(l_pmesh) then
+            call asmpi_comm_vect("MPI_SUM", 'R', scr=vol)
+            call asmpi_comm_vect("MPI_SUM", 'R', scr=val)
+        end if
 !
         if (icmp .eq. 1) zr(jintr+icmp+ind2-1)=vol
         zr(jintr+icmp+ind2)=val

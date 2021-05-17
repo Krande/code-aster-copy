@@ -148,7 +148,7 @@ character(len=19) :: tableOut
     do iocc = 1, nbocc
 
 ! ----- Get list of cells fro user to create reduced domain
-        call getelem(mesh, keywFact, iocc, 'F', listCellUser, nbCellUser)
+        call getelem(mesh, keywFact, iocc, 'F', listCellUser, nbCellUser, l_keep_propz=ASTER_TRUE)
 
 ! ----- Sort with topological dimension of cells
         call getvtx(keywFact, 'TYPE_MAILLE', iocc = iocc, scal = filterTypeName, nbret = iret)
@@ -232,7 +232,7 @@ character(len=19) :: tableOut
                 cmpNameInit(iCmp) = cmpName(iCmp)
             endif
         end do
-        
+
 ! ----- No structural elements !
 !       Except POU_D_T, components N, VY, VZ, MFT, MFY, MFZ
         call dismlg('EXI_RDM', ligrel, ibid, lStructElem, iret)

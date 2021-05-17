@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+#include "asterf_types.h"
 !
 !
 interface
     subroutine reliem(mo, ma, typem, motfaz, iocc,&
-                      nbmocl, limocl, tymocl, litroz, nbtrou)
+                      nbmocl, limocl, tymocl, litroz, nbtrou, l_keep_propz)
         integer :: nbmocl
         character(len=*) :: mo
         character(len=8) :: ma
@@ -31,5 +31,6 @@ interface
         character(len=*) :: tymocl(nbmocl)
         character(len=*) :: litroz
         integer :: nbtrou
+        aster_logical, optional, intent(in) :: l_keep_propz
     end subroutine reliem
 end interface

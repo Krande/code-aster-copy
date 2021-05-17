@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,6 +65,8 @@ subroutine penorm(resu, modele)
 #include "asterfort/utflmd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/isParallelMesh.h"
+#include "asterfort/asmpi_comm_vect.h"
     character(len=8) :: modele
     character(len=19) :: resu
 !     OPERATEUR :  POST_ELEM
@@ -84,7 +86,7 @@ subroutine penorm(resu, modele)
     integer :: nb_cmp_act, nfiss, ndim
     real(kind=8) :: prec, inst, vnorm(1)
     complex(kind=8) :: c16b
-    aster_logical :: exiord, filtr
+    aster_logical :: exiord, filtr, l_pmesh
     character(len=4) :: tych, ki, exirdm
     character(len=8) :: mailla, k8b, resuco, chamg, typmcl(1), tout
     character(len=8) :: tmpres, nomgd, crit
@@ -133,6 +135,7 @@ subroutine penorm(resu, modele)
 !     ===================================================
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla)
     call dismoi('NB_MA_MAILLA', mailla, 'MAILLAGE', repi=nbmato)
+    l_pmesh = isParallelMesh(mailla)
 !
 !
 ! --- 2- RECUPERATION DU RESULTAT ET DES NUMEROS D'ORDRE
@@ -336,7 +339,7 @@ subroutine penorm(resu, modele)
 !
 !       - MAILLES FOURNIES PAR L'UTILISATEUR -
         call reliem(modele, mailla, 'NU_MAILLE', 'NORME', 1,&
-                    1, mocles, typmcl, mesmai, nbma)
+                    1, mocles, typmcl, mesmai, nbma, ASTER_TRUE)
 !
 !       - MAILLES EVENTUELLEMENT FILTREES EN FONCTION DE LA DIMENSION
 !         GEOMETRIQUE (2D OU 3D)
@@ -372,7 +375,7 @@ subroutine penorm(resu, modele)
                 mesmai = mesmaf
             else
                 call utmess('F', 'PREPOST2_6')
-            endif 
+            endif
         endif
 
 !       -- calcul de ligrel :
@@ -495,6 +498,9 @@ subroutine penorm(resu, modele)
 !      -- 4.8 SOMMATION DE LA NORME SUR LES ELEMENTS DESIRES --
 !
         call mesomm(field_resu, 1, vr=vnorm)
+        if( l_pmesh ) then
+            call asmpi_comm_vect("MPI_SUM", 'R', scr=vnorm(1))
+        end if
 !
 !      -- 4.9 ON REMPLIT LA TABLE --
 !
