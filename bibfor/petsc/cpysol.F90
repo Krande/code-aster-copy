@@ -53,7 +53,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 #ifdef ASTER_HAVE_MPI
 #include "mpif.h"
 !
-    integer :: rang, nbproc, jnbjoi, nbjoin, numpro, jjointr, jjointe,lmat
+    integer :: rang, nbproc, jnbjoi, nbjoin, numpro, jjointr, jjointe, lmat
     integer :: lgenvo, lgrecep, jvaleue, jvaleur, iaux, jaux, jnulg
     integer :: jprddl, jnequ, nloc, nlili, ili, iret, jjoin, ijoin
     integer :: numglo, jdeeq, jrefn, jmlogl, nuno1, nucmp1, numloc
@@ -68,7 +68,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
     character(len=4) :: chnbjo
     character(len=8) :: k8bid, noma
     character(len=19) :: nomlig
-    character(len=24) :: nojoinr, nojoine, nonulg, join
+    character(len=24) :: nonbjo, nojoinr, nojoine, nonulg, join
 !----------------------------------------------------------------------
     integer :: zzprno
 !
@@ -81,18 +81,19 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 !     ZZPRNO(ILI,NUNOEL,2+1) = 1ER CODE
 !     ZZPRNO(ILI,NUNOEL,2+NEC) = NEC IEME CODE
 !
-    zzprno(ili,nunoel,l) = zi(idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)
+    zzprno(ili, nunoel, l) = zi(idprn1 - 1 + zi(idprn2 + ili - 1) + (nunoel - 1)*(nec + 2) + l - 1)
 !
     call jemarq()
-    ldebug=.false.
+    ldebug = .false.
 !
     call asmpi_comm('GET', mpicou)
 !
-    call asmpi_info(rank = mrank, size = msize)
+    call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
 !
-    call jeveuo(numddl//'.NUME.NBJO', 'L', jnbjoi)
+    nonbjo = numddl//'.NUME.NBJO'
+    call jeveuo(nonbjo, 'L', jnbjoi)
     nbjoin = zi(jnbjoi)
 !
     call jeveuo(numddl//'.NUME.NULG', 'L', jnulg)
@@ -104,8 +105,8 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
         if (zi(jprddl + iaux) .eq. rang) then
             numglo = zi(jnulg + iaux)
             rsolu(iaux + 1) = vecpet(numglo - debglo + 1)
-        endif
-    enddo
+        end if
+    end do
 !
     do iaux = 0, nbjoin - 1
         numpro = zi(jnbjoi + iaux + 1)
@@ -113,47 +114,51 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
             call codent(iaux, 'G', chnbjo)
 !
             nojoinr = numddl//'.NUMER'//chnbjo(1:3)
-            call jeveuo(nojoinr, 'L', jjointr)
-            call jelira(nojoinr, 'LONMAX', lgrecep, k8bid)
             nojoine = numddl//'.NUMEE'//chnbjo(1:3)
-            call jeveuo(nojoine, 'L', jjointe)
-            call jelira(nojoine, 'LONMAX', lgenvo, k8bid)
-            ASSERT(lgenvo .gt. 0 .and. lgrecep .gt. 0)
+            call jeexin(nojoine, iret1)
+            call jeexin(nojoinr, iret2)
+            if ((iret1 + iret2) .ne. 0) then
+                call jeveuo(nojoinr, 'L', jjointr)
+                call jelira(nojoinr, 'LONMAX', lgrecep, k8bid)
+                call jeveuo(nojoine, 'L', jjointe)
+                call jelira(nojoine, 'LONMAX', lgenvo, k8bid)
+                ASSERT(lgenvo .gt. 0 .and. lgrecep .gt. 0)
 !
-            call wkvect('&&CPYSOL.TMP1E', 'V V R', lgenvo, jvaleue)
-            call wkvect('&&CPYSOL.TMP1R', 'V V R', lgrecep, jvaleur)
-            do jaux = 0, lgenvo - 1
-                numloc = zi(jjointe + jaux)
-                ASSERT(zi(jprddl + numloc - 1) .eq. rang)
-                zr(jvaleue + jaux) = rsolu(numloc)
-            enddo
+                call wkvect('&&CPYSOL.TMP1E', 'V V R', lgenvo, jvaleue)
+                call wkvect('&&CPYSOL.TMP1R', 'V V R', lgrecep, jvaleur)
+                do jaux = 0, lgenvo - 1
+                    numloc = zi(jjointe + jaux)
+                    ASSERT(zi(jprddl + numloc - 1) .eq. rang)
+                    zr(jvaleue + jaux) = rsolu(numloc)
+                end do
 !
-            n4e = lgenvo
-            n4r = lgrecep
-            num4 = iaux
-            numpr4 = numpro
-            if (rang .lt. numpro) then
-                call asmpi_send_r(zr(jvaleue), n4e, numpr4, num4,&
-                                  mpicou)
-                call asmpi_recv_r(zr(jvaleur), n4r, numpr4, num4,&
-                                  mpicou)
-            else if (rang.gt.numpro) then
-                call asmpi_recv_r(zr(jvaleur), n4r, numpr4, num4,&
-                                  mpicou)
-                call asmpi_send_r(zr(jvaleue), n4e, numpr4, num4,&
-                                  mpicou)
-            else
-                ASSERT(.false.)
-            endif
-            do jaux = 0, lgrecep - 1
-                numloc = zi(jjointr + jaux)
-                ASSERT(zi(jprddl + numloc - 1) .eq. numpro)
-                rsolu(numloc) = zr(jvaleur + jaux)
-            enddo
-            call jedetr('&&CPYSOL.TMP1E')
-            call jedetr('&&CPYSOL.TMP1R')
-        endif
-    enddo
+                n4e = lgenvo
+                n4r = lgrecep
+                num4 = iaux
+                numpr4 = numpro
+                if (rang .lt. numpro) then
+                    call asmpi_send_r(zr(jvaleue), n4e, numpr4, num4, &
+                                      mpicou)
+                    call asmpi_recv_r(zr(jvaleur), n4r, numpr4, num4, &
+                                      mpicou)
+                else if (rang .gt. numpro) then
+                    call asmpi_recv_r(zr(jvaleur), n4r, numpr4, num4, &
+                                      mpicou)
+                    call asmpi_send_r(zr(jvaleue), n4e, numpr4, num4, &
+                                      mpicou)
+                else
+                    ASSERT(.false.)
+                end if
+                do jaux = 0, lgrecep - 1
+                    numloc = zi(jjointr + jaux)
+                    ASSERT(zi(jprddl + numloc - 1) .eq. numpro)
+                    rsolu(numloc) = zr(jvaleur + jaux)
+                end do
+                call jedetr('&&CPYSOL.TMP1E')
+                call jedetr('&&CPYSOL.TMP1R')
+            end if
+        end if
+    end do
 
 !   RECHERCHE DES ADRESSES DU .PRNO DE .NUME
     call jeveuo(numddl//'.NUME.PRNO', 'E', idprn1)
@@ -172,16 +177,16 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
     call jelira(numddl//'.NUME.PRNO', 'NMAXOC', nlili, k8bid)
     do ili = 2, nlili
         call jeexin(jexnum(numddl//'.NUME.PRNO', ili), iret)
-        if( iret.ne.0 ) then
+        if (iret .ne. 0) then
             call jenuno(jexnum(numddl//'.NUME.LILI', ili), nomlig)
             join = nomlig//".NBJO"
             call jeexin(join, iret)
-            if( iret.eq.0 ) cycle
+            if (iret .eq. 0) cycle
             call jeveuo(join, 'L', jjoin)
             call jelira(join, 'LONMAX', nbjoin)
             do ijoin = 1, nbjoin
-                numpro = zi(jjoin+ijoin-1)
-                if( numpro.ne.-1 ) then
+                numpro = zi(jjoin + ijoin - 1)
+                if (numpro .ne. -1) then
                     numpr4 = numpro
                     num4 = ijoin
                     call codent(numpro, 'G', chnbjo)
@@ -189,55 +194,55 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
                     nojoinr = nomlig//'.R'//chnbjo
 
                     call jeexin(nojoine, iret1)
-                    if( iret1.ne.0 ) then
+                    if (iret1 .ne. 0) then
                         call jeveuo(nojoine, 'L', jjoine)
                         call jelira(nojoine, 'LONMAX', nbnoee, k8bid)
                         call wkvect('&&CRNUGL.NUM_DDL_GLOB_E', 'V V R', nbnoee, jnujoi1)
                         do jaux = 1, nbnoee
-                            numnoe = -zi(jjoine+jaux-1)
+                            numnoe = -zi(jjoine + jaux - 1)
                             nddll = zzprno(ili, numnoe, 1)
-                            zr(jnujoi1+jaux-1) = rsolu(nddll)
-                        enddo
+                            zr(jnujoi1 + jaux - 1) = rsolu(nddll)
+                        end do
                         n4e = nbnoee
-                    endif
+                    end if
 
                     call jeexin(nojoinr, iret2)
-                    if( iret2.ne.0 ) then
+                    if (iret2 .ne. 0) then
                         call jeveuo(nojoinr, 'L', jjoinr)
                         call jelira(nojoinr, 'LONMAX', nbnoer, k8bid)
                         call wkvect('&&CRNUGL.NUM_DDL_GLOB_R', 'V V R', nbnoer, jnujoi2)
                         n4r = nbnoer
-                    endif
+                    end if
 
                     if (rang .lt. numpro) then
-                        if( iret1.ne.0 ) then
+                        if (iret1 .ne. 0) then
                             call asmpi_send_r(zr(jnujoi1), n4e, numpr4, num4, mpicou)
-                        endif
-                        if( iret2.ne.0 ) then
+                        end if
+                        if (iret2 .ne. 0) then
                             call asmpi_recv_r(zr(jnujoi2), n4r, numpr4, num4, mpicou)
-                        endif
-                    else if (rang.gt.numpro) then
-                        if( iret2.ne.0 ) then
+                        end if
+                    else if (rang .gt. numpro) then
+                        if (iret2 .ne. 0) then
                             call asmpi_recv_r(zr(jnujoi2), n4r, numpr4, num4, mpicou)
-                        endif
-                        if( iret1.ne.0 ) then
+                        end if
+                        if (iret1 .ne. 0) then
                             call asmpi_send_r(zr(jnujoi1), n4e, numpr4, num4, mpicou)
-                        endif
-                    endif
+                        end if
+                    end if
 
-                    if( iret2.ne.0 ) then
+                    if (iret2 .ne. 0) then
                         do jaux = 1, nbnoer
-                            numnoe = -zi(jjoinr+jaux-1)
+                            numnoe = -zi(jjoinr + jaux - 1)
                             nddll = zzprno(ili, numnoe, 1)
-                            rsolu(nddll) = zr(jnujoi2+jaux-1)
-                        enddo
-                    endif
+                            rsolu(nddll) = zr(jnujoi2 + jaux - 1)
+                        end do
+                    end if
                     call jedetr('&&CRNUGL.NUM_DDL_GLOB_E')
                     call jedetr('&&CRNUGL.NUM_DDL_GLOB_R')
-                endif
-            enddo
-        endif
-    enddo
+                end if
+            end do
+        end if
+    end do
 !
 ! -- REMISE A L'ECHELLE DES LAGRANGES DANS LA SOLUTION
     call jeveuo(nomat//'.&INT', 'L', lmat)
@@ -245,22 +250,22 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 !
 !
 ! -- debug
-    if(ldebug) then
+    if (ldebug) then
         call jeveuo(numddl//'.NUME.DEEQ', 'L', jdeeq)
         call jeveuo(numddl//'.NUME.REFN', 'L', jrefn)
         noma = zk24(jrefn)
         nonulg = noma//'.NULOGL'
         call jeveuo(nonulg, 'L', jmlogl)
         do iaux = 1, nloc
-            if ( zi(jprddl + iaux - 1) .eq. rang ) then
-                nuno1 = zi(jdeeq + (iaux - 1) * 2)
-                if( nuno1.ne.0 ) nuno1 = zi(jmlogl + nuno1 - 1)+1
-                nucmp1 = zi(jdeeq + (iaux - 1) * 2 + 1)
-                write(30+rang,*) nuno1,nucmp1,rsolu(iaux)
-            endif
-        enddo
-        flush(30+rang)
-    endif
+            if (zi(jprddl + iaux - 1) .eq. rang) then
+                nuno1 = zi(jdeeq + (iaux - 1)*2)
+                if (nuno1 .ne. 0) nuno1 = zi(jmlogl + nuno1 - 1) + 1
+                nucmp1 = zi(jdeeq + (iaux - 1)*2 + 1)
+                write (30 + rang, *) nuno1, nucmp1, rsolu(iaux)
+            end if
+        end do
+        flush (30 + rang)
+    end if
 
     call jedema()
 #endif

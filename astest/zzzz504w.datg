@@ -1,0 +1,60 @@
+//================================================
+//    Maillage du carre
+//
+//    Utilisation :
+//    gmsh -2 carre.geo -format med -o carre.med
+//================================================
+
+Point(1) = {0, 0, 0, 0.5};
+Point(2) = {0.5, 0, 0, 0.5};
+Point(3) = {1.0, 0, 0, 0.5};
+Point(4) = {1.5, 0, 0, 0.5};
+Line (1) = {1, 2};
+Line (2) = {2, 3};
+Line (3) = {3, 4};
+
+
+Nb_Elem=1;
+
+Transfinite Line{1:3} = Nb_Elem+1;
+
+Extrude {0,1.5,0} {
+   Line{1:3}; Layers{ 1 }; Recombine;
+}
+Extrude {0,1.5,0} {
+   Line{4}; Layers{ 1 }; Recombine;
+}
+Extrude {0,1.5,0} {
+   Line{8}; Layers{ 1 }; Recombine;
+}
+Extrude {0,1.5,0} {
+   Line{12}; Layers{ 1 }; Recombine;
+}
+
+
+//+
+Physical Surface("S11") = {7};
+//+
+Physical Surface("S21") = {11};
+//+
+Physical Surface("S31") = {15};
+//+
+Physical Surface("S12") = {19};
+//+
+Physical Surface("S22") = {23};
+//+
+Physical Surface("S32") = {27};
+//+
+Physical Curve("Bas1") = {1};
+//+
+Physical Curve("Bas2") = {2};
+//+
+Physical Curve("Bas3") = {3};
+//+
+Physical Point("Point1") = {11};
+//+
+Physical Point("Point2") = {12};
+//+
+Physical Point("Point3") = {14};
+//+
+Physical Point("Point4") = {16};
