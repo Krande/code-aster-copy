@@ -41,7 +41,7 @@
 class GenericGeneralizedAssemblyVectorClass : public DataStructure {
   private:
     /** @brief Objet Jeveux '.DESC' */
-    JeveuxVectorReal _desc;
+    JeveuxVectorLong _desc;
     /** @brief Objet Jeveux '.REFE' */
     JeveuxVectorChar24 _refe;
 
@@ -51,7 +51,7 @@ class GenericGeneralizedAssemblyVectorClass : public DataStructure {
      */
     GenericGeneralizedAssemblyVectorClass( const std::string name )
         : DataStructure( name, 19, "VECT_ASSE_GENE", Permanent ),
-          _desc( JeveuxVectorReal( getName() + ".DISC" ) ),
+          _desc( JeveuxVectorLong( getName() + ".DISC" ) ),
           _refe( JeveuxVectorChar24( getName() + ".REFE" ) ){};
 };
 
@@ -64,7 +64,7 @@ template < class ValueType >
 class GeneralizedAssemblyVectorClass : public GenericGeneralizedAssemblyVectorClass {
   private:
     /** @brief Objet Jeveux '.VALE' */
-    JeveuxVector< ValueType > _valm;
+    JeveuxVector< ValueType > _vale;
 
     /**
      * @brief definir le type
@@ -103,7 +103,7 @@ class GeneralizedAssemblyVectorClass : public GenericGeneralizedAssemblyVectorCl
 
     GeneralizedAssemblyVectorClass( const std::string name )
         : GenericGeneralizedAssemblyVectorClass( name ),
-          _valm( JeveuxVector< ValueType >( getName() + ".VALE" ) ) {
+          _vale( JeveuxVector< ValueType >( getName() + ".VALE" ) ) {
         GeneralizedAssemblyVectorClass< ValueType >::setVectorType();
     };
 };

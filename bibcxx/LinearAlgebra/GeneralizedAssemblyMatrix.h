@@ -45,7 +45,7 @@ class GenericGeneralizedAssemblyMatrixClass: public DataStructure
 {
   private:
     /** @brief Objet Jeveux '.DESC' */
-    JeveuxVectorReal _desc;
+    JeveuxVectorLong _desc;
     /** @brief Objet Jeveux '.REFE' */
     JeveuxVectorChar24 _refe;
     /** @brief GeneralizedDOFNumbering */
@@ -68,7 +68,7 @@ class GenericGeneralizedAssemblyMatrixClass: public DataStructure
      */
     GenericGeneralizedAssemblyMatrixClass( const std::string name ):
         DataStructure( name, 19, "MATR_ASSE_GENE", Permanent ),
-        _desc( JeveuxVectorReal( getName() + ".DESC" ) ),
+        _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
         _refe( JeveuxVectorChar24( getName() + ".REFE" ) ),
         _dofNum( nullptr ),
         _mecaModeC( nullptr ),
@@ -156,7 +156,7 @@ class GeneralizedAssemblyMatrixClass : public GenericGeneralizedAssemblyMatrixCl
 {
   private:
     /** @brief Objet Jeveux '.VALM' */
-    JeveuxVector< ValueType > _valm;
+    JeveuxCollection< ValueType > _valm;
 
     /**
      * @brief definir le type
@@ -197,7 +197,7 @@ class GeneralizedAssemblyMatrixClass : public GenericGeneralizedAssemblyMatrixCl
      */
     GeneralizedAssemblyMatrixClass( const std::string name )
         : GenericGeneralizedAssemblyMatrixClass( name ),
-          _valm( JeveuxVector< ValueType >( getName() + ".VALM" ) )
+          _valm( JeveuxCollection< ValueType >( getName() + ".VALM" ) )
     {
         GeneralizedAssemblyMatrixClass< ValueType >::setMatrixType();
     };
