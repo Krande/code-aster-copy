@@ -560,7 +560,7 @@ use calcG_type
     endif
 !
 !   Ajout des valeurs dans la table de G
-    call cgTempNodes(cgStudy, cgTable)
+!    call cgTempNodes(cgStudy, cgTable)
 
     do i = 1, cgTheta%nnof
         if(cgField%ndim.eq.3) then

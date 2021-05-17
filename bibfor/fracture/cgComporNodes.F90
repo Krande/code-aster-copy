@@ -38,7 +38,6 @@ use Behaviour_type
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/wkvect.h"
 !
     character(len=8), intent(in) :: result
     integer, intent(in) :: nume_ordre, nb_point, fondNoeudNume(*)
@@ -70,7 +69,7 @@ use Behaviour_type
 !
     call dismoi('MODELE', result, 'RESULTAT', repk=model)
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
-    call wkvect("&&TABLEG.COMP", 'V V K8', nb_point, vk8=compValues)
+    compValues(:) = '        '
 !
 ! --- Read COMPOR <CARTE> in RESULT
 !
@@ -125,7 +124,6 @@ use Behaviour_type
             elseif( rela_comp(1:10) == "VMIS_ISOT_") then
                 compor_cell = PLAS
             else
-                print*, rela_comp
                 ASSERT(ASTER_FALSE)
             end if
             compor_node = max(compor_node, compor_cell)

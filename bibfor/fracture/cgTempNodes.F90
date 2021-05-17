@@ -51,28 +51,32 @@ use calcG_type
 ! IO compor    : name of <CARTE> COMPORTEMENT
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19), parameter :: celvrc = '&&TABLEG.CELVRC'
+ !   character(len=19), parameter :: celvrc = '&&TABLEG.CELVRC'
     ! character(len=19), parameter :: cesvrc = '&&TABLEG.CESVRC'
     ! character(len=19), parameter :: redvrc = '&&TABLEG.REDVRC'
 !    character(len=19), parameter :: cnovrc = '&&TABLEG.CNOVRC'
     ! character(len=19), parameter :: cnsvrc = '&&TABLEG.CNSVRC'
     ! character(len=19), parameter :: fpgvrc = '&&TABLEG.CELPFG'
 !    character(len=8) :: tych
-    character(len=2) :: codret
+!    character(len=2) :: codret
+    character(len=3) :: repk
     ! integer :: iret, nbma, i
     ! integer, pointer :: listma(:) => null()
 !
     call jemarq()
+!
+    call dismoi('EXI_VARC', cgStudy%material, 'CHAM_MATER', repk=repk)
+
 !    print*, cgStudy%model, cgStudy%material, cgStudy%carael, cgStudy%time
-    codret = 'XX'
-    call vrcins(cgStudy%model, cgStudy%material, "       ", cgStudy%time, celvrc, codret)
-    !, nompaz='PVARCNO')
-    if( codret .ne. 'OK' ) then
-        go to 999
-    end if
+    ! codret = 'XX'
+    ! call vrcins(cgStudy%model, cgStudy%material, "       ", cgStudy%time, celvrc, codret)
+    ! !, nompaz='PVARCNO')
+    ! if( codret .ne. 'OK' ) then
+    !     go to 999
+    ! end if
 
 ! pour le moment on oublie la suite
-    cgTable%v_TEMP(:) = 123456.d0
+    print*, cgTable%table_g
     go to 999
 
 ! On n'a un problème avec les éléments tardifs - passez par un TE ?

@@ -691,6 +691,8 @@ contains
     AS_DEALLOCATE(vr=this%v_K3)
     AS_DEALLOCATE(vr=this%v_G_IRWIN)
     AS_DEALLOCATE(vr=this%v_G_EPSI)
+    AS_DEALLOCATE(vk8=this%v_COMPOR)
+    AS_DEALLOCATE(vr=this%v_TEMP)
 !
     call jedema()
 !
@@ -1425,11 +1427,12 @@ contains
 ! --- Tempature
         if( cgField%l_temp ) then
 !            call this%addPara('TEMP', 'R')
-            call wkvect("&&TABLEG.TEMP", 'V V R', this%nb_point, vr=this%v_TEMP)
+            AS_ALLOCATE(vr=this%v_TEMP, size=this%nb_point)
         end if
 ! --- Behavior
         call this%addPara('COMPORTEMENT', 'K8')
         call cgTheta%getFondNoeudNume(fondNoeudNume)
+        AS_ALLOCATE(vk8=this%v_COMPOR, size=this%nb_point)
         call cgComporNodes(cgField%result_in, cgField%list_nume(1), this%nb_point, &
                                 fondNoeudNume, this%v_COMPOR)
 ! --- Option
@@ -1575,9 +1578,9 @@ contains
                             absfon(i_node)/cgTheta%lonfis, livr)
             endif
 !
-            ! if( cgField%l_temp ) then
-            !     call tbajvr(this%table_g, this%nb_para, 'TEMP', this%v_TEMP(i_node), livr)
-            ! end if
+            if( cgField%l_temp ) then
+!                call tbajvr(this%table_g, this%nb_para, 'TEMP', this%v_TEMP(i_node), livr)
+            end if
             call tbajvk(this%table_g, this%nb_para, 'COMPORTEMENT', this%v_COMPOR(i_node), livk)
 !
             do iopt = 1, cgField%nb_option
