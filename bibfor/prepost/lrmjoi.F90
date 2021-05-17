@@ -22,6 +22,7 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
 !
     implicit none
 #include "asterf.h"
+#include "asterf_med.h"
 #include "asterf_types.h"
 #include "jeveux.h"
 !
@@ -62,13 +63,12 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
     character(len=4) :: chrang, chnbjo, chdomdis
     character(len=8) :: mesh
     character(len=24) :: nonulg, nojoin, nojoin_old, nojoin_new, connex
-    character(len=64) :: nomjoi, nommad
-    character(len=200) :: descri
+    character(len=MED_NAME_SIZE) :: nomjoi, nommad
+    character(len=MED_COMMENT_SIZE) :: descri
     integer :: rang, nbproc, nbjoin, domdis, nstep, ncorre
     integer :: icor, entlcl, geolcl, entdst, geodst, ncorr2
     integer :: jnlogl, codret, i_join, ino, numno, deca
     integer :: ima, nbma, node_id, nbnoma
-    integer, parameter :: ednoeu=3, typnoe=0
     mpi_int :: mrank, msize
     integer, pointer :: v_noext(:) => null()
     integer, pointer :: v_nojoin(:) => null()
@@ -103,7 +103,7 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
 !
 ! --- Récupération de la numérotation globale des noeuds
 !
-        call as_mmhgnr(fid, nomam2, ednoeu, typnoe, zi(jnlogl), nbnoeu, codret)
+        call as_mmhgnr(fid, nomam2, MED_NODE, MED_NONE, zi(jnlogl), nbnoeu, codret)
         call codent(rang, 'G', chrang)
 !
 ! --- Récupération du nombre de joints
@@ -134,10 +134,10 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
                 ASSERT(ncorre == 1)
 !
                 do icor = 1, ncorre
-                    call as_msdszi(fid, nomam2, nomjoi, -1, -1, icor, entlcl, &
+                    call as_msdszi(fid, nomam2, nomjoi, MED_NO_DT, MED_NO_IT, icor, entlcl, &
                                 geolcl, entdst, geodst, ncorr2, codret)
 !
-                    if ( entlcl.eq.ednoeu.and.geolcl.eq.typnoe ) then
+                    if ( entlcl.eq.MED_NODE.and.geolcl.eq.MED_NONE ) then
                         call codent(domdis, 'G', chnbjo)
                         if ( nomjoi(1:4).eq.chrang ) then
                             nojoin = mesh//'.RT'//chnbjo

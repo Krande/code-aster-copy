@@ -31,6 +31,7 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#include "asterf_med.h"
 !
 integer, intent(out), optional :: nbtyp
 character(len=8), intent(out), optional :: nomtyp(MT_NTYMAX)
@@ -93,31 +94,32 @@ integer, intent(out), optional :: numnoa(MT_NTYMAX, MT_NNOMAX)
                                                          'SE3QU4  ','SE3QU8  ','SE3QU9  ',&
                                                          'H20H20  ','P15P15  ','T10T10  ',&
                                                          'HEXA9   ','PENTA7  '/)
-    integer, parameter :: nummed(MT_NTYMAX) = (/1  , 102, 0  ,&
-                                                103, 0  , 104,&
-                                                203, 0  , 206,&
-                                                0  , 207, 204,&
-                                                0  , 208, 0  ,&
-                                                209, 0  , 304,&
-                                                310, 306, 315,&
-                                                318, 305, 313,&
-                                                308, 320, 327,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0  , 0  ,&
-                                                0  , 0/)
+    integer, parameter :: nummed(MT_NTYMAX) = (/                                        &
+                                MED_POINT1       , MED_SEG2         , MED_UNDEF_GEOTYPE,&
+                                MED_SEG3         , MED_UNDEF_GEOTYPE, MED_SEG4         ,&
+                                MED_TRIA3        , MED_UNDEF_GEOTYPE, MED_TRIA6        ,&
+                                MED_UNDEF_GEOTYPE, MED_TRIA7        , MED_QUAD4        ,&
+                                MED_UNDEF_GEOTYPE, MED_QUAD8        , MED_UNDEF_GEOTYPE,&
+                                MED_QUAD9        , MED_UNDEF_GEOTYPE, MED_TETRA4       ,&
+                                MED_TETRA10      , MED_PENTA6       , MED_PENTA15      ,&
+                                MED_PENTA18      , MED_PYRA5        , MED_PYRA13       ,&
+                                MED_HEXA8        , MED_HEXA20       , MED_HEXA27       ,&
+                                MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE, &
+                                MED_UNDEF_GEOTYPE, MED_UNDEF_GEOTYPE /)
 !
 ! --------------------------------------------------------------------------------------------------
 !

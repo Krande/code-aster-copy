@@ -49,6 +49,7 @@ implicit none
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
 #include "jeveux.h"
+#include "asterf_med.h"
 !
 ! 0.1. ==> ARGUMENTS
 !
@@ -59,8 +60,6 @@ implicit none
 ! 0.3. ==> VARIABLES LOCALES
 !
 !
-    integer, parameter :: ednoeu=3, typnoe=0
-!
     integer :: codret, iret
     integer :: jnumno, nbjoin, i_join, nbnoj, jjoinr
     integer :: ifm, nivinf, domdis, rang, nbproc
@@ -70,8 +69,8 @@ implicit none
     character(len=4) :: chrang, chdomdis
     character(len=8) :: k8bid
     character(len=24) :: nonulg, domjoin, nojoin
-    character(len=64) :: nomjoi
-    character(len=200) :: descri
+    character(len=MED_NAME_SIZE) :: nomjoi
+    character(len=MED_COMMENT_SIZE) :: descri
 !
     aster_logical, pointer :: v_ldomj(:) => null()
 
@@ -93,7 +92,7 @@ implicit none
     nonulg = nomast//'.NULOGL'
     call jeveuo(nonulg, 'L', jnumno)
 !
-    call as_mmhgnw(idfimd, nomamd, ednoeu, typnoe, zi(jnumno), nbnoeu, codret)
+    call as_mmhgnw(idfimd, nomamd, MED_NODE, MED_NONE, zi(jnumno), nbnoeu, codret)
     ASSERT(codret == 0)
 !
 ! -- Impression des joints
@@ -146,8 +145,8 @@ implicit none
             call jelira(nojoin, 'LONMAX', nbnoj, k8bid)
             call jeveuo(nojoin, 'L', jjoinr)
 !
-            call as_msdcrw(idfimd, nomamd, nomjoi, -1, -1, ednoeu, typnoe, ednoeu, typnoe, &
-                            nbnoj/2, zi(jjoinr), codret)
+            call as_msdcrw(idfimd, nomamd, nomjoi, MED_NO_DT, MED_NO_IT, MED_NODE, &
+                            MED_NONE, MED_NODE, MED_NONE, nbnoj/2, zi(jjoinr), codret)
             ASSERT(codret == 0)
         end do
         call jedetr("&&IRMHPC.DOMJOINTS")
