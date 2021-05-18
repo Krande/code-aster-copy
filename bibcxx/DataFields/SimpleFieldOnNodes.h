@@ -109,11 +109,11 @@ template < class ValueType > class SimpleFieldOnNodesClass : public DataStructur
     if ( compNumber < 0 || compNumber > _nbComp) {
       throw std::runtime_error("Out of range");
     };
-    
+
         const long position = nodeNumber * _nbComp + compNumber;
         return ( *_values )[position];
     };
-    
+
     /**
      * @brief Get number of components
      */
@@ -146,7 +146,7 @@ template < class ValueType > class SimpleFieldOnNodesClass : public DataStructur
       if ( i < 0 || i >= _nbComp) {
         throw std::runtime_error( "Out of range");
       };
-      
+
       std::string name = trim(( *_component )[i].toString());
       return name;
     };
@@ -165,7 +165,7 @@ template < class ValueType > class SimpleFieldOnNodesClass : public DataStructur
       }
       return names;
     }
- 
+
     /**
      * @brief Mise a jour des pointeurs Jeveux
      * @return renvoie true si la mise a jour s'est bien deroulee, false sinon
@@ -206,7 +206,7 @@ typedef boost::shared_ptr< SimpleFieldOnNodesLongClass > SimpleFieldOnNodesLongP
 
 /** @typedef SimpleFieldOnNodesComplexClass
     @brief Class d'un champ simple de complexes */
-typedef SimpleFieldOnNodesClass< RealComplex > SimpleFieldOnNodesComplexClass;
+typedef SimpleFieldOnNodesClass< ASTERCOMPLEX > SimpleFieldOnNodesComplexClass;
 
 /**
  * @typedef SimpleFieldOnNodesComplexPtr

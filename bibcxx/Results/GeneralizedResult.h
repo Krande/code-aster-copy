@@ -123,8 +123,8 @@ typedef boost::shared_ptr< GeneralizedResultRealClass >
     GeneralizedResultRealPtr;
 
 /** @typedef Définition d'un résultat généralisé à valeurs complexes */
-template class GeneralizedResultClass< RealComplex >;
-typedef GeneralizedResultClass< RealComplex >
+template class GeneralizedResultClass< ASTERCOMPLEX >;
+typedef GeneralizedResultClass< ASTERCOMPLEX >
     GeneralizedResultComplexClass;
 typedef boost::shared_ptr< GeneralizedResultComplexClass >
     GeneralizedResultComplexPtr;

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MaterialProperty
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -66,19 +66,19 @@ template <> struct AllowedJeveuxType< ASTERINTEGER > {
     typedef ASTERINTEGER type;
 };
 
-template <> struct AllowedJeveuxType< short int > {
+template <> struct AllowedJeveuxType< ASTERINTEGER4 > {
     static const unsigned short numTypeJeveux = Integer4;
     typedef short type;
 };
 
-template <> struct AllowedJeveuxType< double > {
+template <> struct AllowedJeveuxType< ASTERDOUBLE > {
     static const unsigned short numTypeJeveux = Real;
     typedef double type;
 };
 
-template <> struct AllowedJeveuxType< RealComplex > {
+template <> struct AllowedJeveuxType< ASTERCOMPLEX > {
     static const unsigned short numTypeJeveux = Complex;
-    typedef RealComplex type;
+    typedef ASTERCOMPLEX type;
 };
 
 template <> struct AllowedJeveuxType< JeveuxChar8 > {

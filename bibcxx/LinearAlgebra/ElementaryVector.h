@@ -219,9 +219,9 @@ template class TemplateElementaryVectorClass< double, Temperature >;
 typedef TemplateElementaryVectorClass< double,
                                           Temperature > ElementaryVectorTemperatureRealClass;
 
-/** @typedef Definition d'une matrice élémentaire de RealComplex pression */
-template class TemplateElementaryVectorClass< RealComplex, Pressure >;
-typedef TemplateElementaryVectorClass< RealComplex,
+/** @typedef Definition d'une matrice élémentaire de ASTERCOMPLEX pression */
+template class TemplateElementaryVectorClass< ASTERCOMPLEX, Pressure >;
+typedef TemplateElementaryVectorClass< ASTERCOMPLEX,
                                           Pressure > ElementaryVectorPressureComplexClass;
 
 typedef boost::shared_ptr< ElementaryVectorDisplacementRealClass >

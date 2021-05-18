@@ -171,7 +171,7 @@ class GeneralizedAssemblyMatrixClass : public GenericGeneralizedAssemblyMatrixCl
      * @brief definir le type
      */
     template < class type = ValueType >
-    typename std::enable_if< std::is_same< type, RealComplex >::value, void >::type
+    typename std::enable_if< std::is_same< type, ASTERCOMPLEX >::value, void >::type
     setMatrixType()
     {
         setType( "MATR_ASSE_GENE_C" );
@@ -206,7 +206,7 @@ class GeneralizedAssemblyMatrixClass : public GenericGeneralizedAssemblyMatrixCl
 /** @typedef Definition d'une matrice assemblee généralisée de double */
 typedef GeneralizedAssemblyMatrixClass< double > GeneralizedAssemblyMatrixRealClass;
 /** @typedef Definition d'une matrice assemblee généralisée de complexe */
-typedef GeneralizedAssemblyMatrixClass< RealComplex > GeneralizedAssemblyMatrixComplexClass;
+typedef GeneralizedAssemblyMatrixClass< ASTERCOMPLEX > GeneralizedAssemblyMatrixComplexClass;
 
 /**
  * @typedef GenericGeneralizedAssemblyMatrixPtr

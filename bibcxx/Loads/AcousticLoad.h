@@ -186,7 +186,7 @@ class AcousticLoadClass : public DataStructure {
             new CapyConvertibleValue< ModelPtr >( true, "MODELE", _model, true ) );
     };
 
-    void addImposedNormalSpeedOnMesh( const RealComplex &speed ) {
+    void addImposedNormalSpeedOnMesh( const ASTERCOMPLEX &speed ) {
         ImposedComplexNormalSpeedPtr toAdd( new ImposedComplexNormalSpeedClass() );
         toAdd->setValue( Vnor, speed );
         toAdd->setOnAllMeshEntities();
@@ -194,7 +194,7 @@ class AcousticLoadClass : public DataStructure {
     };
 
     void addImposedNormalSpeedOnGroupOfCells( const VectorString &names,
-                                              const RealComplex &speed ) {
+                                              const ASTERCOMPLEX &speed ) {
         ImposedComplexNormalSpeedPtr toAdd( new ImposedComplexNormalSpeedClass() );
         toAdd->setValue( Vnor, speed );
         for ( auto name : names )
@@ -202,14 +202,14 @@ class AcousticLoadClass : public DataStructure {
         _speed.push_back( toAdd );
     };
 
-    void addImpedanceOnMesh( const RealComplex &impe ) {
+    void addImpedanceOnMesh( const ASTERCOMPLEX &impe ) {
         ComplexImpedancePtr toAdd( new ComplexImpedanceClass() );
         toAdd->setValue( Impe, impe );
         toAdd->setOnAllMeshEntities();
         _impedance.push_back( toAdd );
     };
 
-    void addImpedanceOnGroupOfCells( const VectorString &names, const RealComplex &impe ) {
+    void addImpedanceOnGroupOfCells( const VectorString &names, const ASTERCOMPLEX &impe ) {
         ComplexImpedancePtr toAdd( new ComplexImpedanceClass() );
         toAdd->setValue( Impe, impe );
         for ( auto name : names )
@@ -217,14 +217,14 @@ class AcousticLoadClass : public DataStructure {
         _impedance.push_back( toAdd );
     };
 
-    void addImposedPressureOnMesh( const RealComplex &pres ) {
+    void addImposedPressureOnMesh( const ASTERCOMPLEX &pres ) {
         ImposedComplexPressurePtr toAdd( new ImposedComplexPressureClass() );
         toAdd->setValue( Pres, pres );
         toAdd->setOnAllMeshEntities();
         _pressure.push_back( toAdd );
     };
 
-    void addImposedPressureOnGroupOfCells( const VectorString &names, const RealComplex &pres ) {
+    void addImposedPressureOnGroupOfCells( const VectorString &names, const ASTERCOMPLEX &pres ) {
         ImposedComplexPressurePtr toAdd( new ImposedComplexPressureClass() );
         toAdd->setValue( Pres, pres );
         for ( auto name : names )
@@ -232,7 +232,7 @@ class AcousticLoadClass : public DataStructure {
         _pressure.push_back( toAdd );
     };
 
-    void addImposedPressureOnGroupOfNodes( const VectorString &names, const RealComplex &pres ) {
+    void addImposedPressureOnGroupOfNodes( const VectorString &names, const ASTERCOMPLEX &pres ) {
         ImposedComplexPressurePtr toAdd( new ImposedComplexPressureClass() );
         toAdd->setValue( Pres, pres );
         for ( auto name : names )

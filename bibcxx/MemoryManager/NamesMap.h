@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe JeveuxBidirectionnalMap
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -168,14 +168,14 @@ template < class ValueType > class NamesMap {
     };
 };
 
-/** @typedef Definition d'un pointeur de nom Jeveux long */
+/** @typedef Definition d'un pointeur de nom Jeveux entier long */
 typedef NamesMap< ASTERINTEGER > NamesMapLong;
-/** @typedef Definition d'un pointeur de nom Jeveux short int */
-typedef NamesMap< short int > NamesMapShort;
+/** @typedef Definition d'un pointeur de nom Jeveux entier court */
+typedef NamesMap< ASTERINTEGER4 > NamesMapShort;
 /** @typedef Definition d'un pointeur de nom Jeveux double */
-typedef NamesMap< double > NamesMapReal;
+typedef NamesMap< ASTERDOUBLE > NamesMapReal;
 /** @typedef Definition d'un pointeur de nom Jeveux double complex */
-typedef NamesMap< RealComplex > NamesMapComplex;
+typedef NamesMap< ASTERCOMPLEX > NamesMapComplex;
 /** @typedef Definition d'un vecteur de JeveuxChar8 */
 typedef NamesMap< JeveuxChar8 > NamesMapChar8;
 /** @typedef Definition d'un pointeur de nom JeveuxChar16 */
@@ -187,6 +187,6 @@ typedef NamesMap< JeveuxChar32 > NamesMapChar32;
 /** @typedef Definition d'un pointeur de nom JeveuxChar80 */
 typedef NamesMap< JeveuxChar80 > NamesMapChar80;
 /** @typedef Definition d'un pointeur de nom JeveuxLogical */
-typedef NamesMap< bool > NamesMapLogical;
+typedef NamesMap< ASTERBOOL > NamesMapLogical;
 
 #endif /* NAMESMAP_H_ */

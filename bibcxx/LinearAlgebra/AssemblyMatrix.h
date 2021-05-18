@@ -341,8 +341,8 @@ template <> void AssemblyMatrixClass< double, Displacement >::setValues(const Ve
 typedef AssemblyMatrixClass< double, Displacement > AssemblyMatrixDisplacementRealClass;
 
 /** @typedef Definition d'une matrice assemblee de complexe */
-template class AssemblyMatrixClass< RealComplex, Displacement >;
-typedef AssemblyMatrixClass< RealComplex, Displacement > AssemblyMatrixDisplacementComplexClass;
+template class AssemblyMatrixClass< ASTERCOMPLEX, Displacement >;
+typedef AssemblyMatrixClass< ASTERCOMPLEX, Displacement > AssemblyMatrixDisplacementComplexClass;
 
 /** @typedef Definition d'une matrice assemblee de double temperature */
 template <> void AssemblyMatrixClass< double, Temperature >::setValues(const VectorLong idx,
@@ -354,13 +354,13 @@ template <> void AssemblyMatrixClass< double, Pressure >::setValues(const Vector
             const VectorLong jdx, const VectorReal values);
 typedef AssemblyMatrixClass< double, Pressure > AssemblyMatrixPressureRealClass;
 
-/** @typedef Definition d'une matrice assemblee de RealComplex temperature */
-template class AssemblyMatrixClass< RealComplex, Temperature >;
-typedef AssemblyMatrixClass< RealComplex, Temperature > AssemblyMatrixTemperatureComplexClass;
+/** @typedef Definition d'une matrice assemblee de ASTERCOMPLEX temperature */
+template class AssemblyMatrixClass< ASTERCOMPLEX, Temperature >;
+typedef AssemblyMatrixClass< ASTERCOMPLEX, Temperature > AssemblyMatrixTemperatureComplexClass;
 
-/** @typedef Definition d'une matrice assemblee de RealComplex pression */
-template class AssemblyMatrixClass< RealComplex, Pressure >;
-typedef AssemblyMatrixClass< RealComplex, Pressure > AssemblyMatrixPressureComplexClass;
+/** @typedef Definition d'une matrice assemblee de ASTERCOMPLEX pression */
+template class AssemblyMatrixClass< ASTERCOMPLEX, Pressure >;
+typedef AssemblyMatrixClass< ASTERCOMPLEX, Pressure > AssemblyMatrixPressureComplexClass;
 
 typedef boost::shared_ptr< AssemblyMatrixDisplacementRealClass >
     AssemblyMatrixDisplacementRealPtr;

@@ -57,7 +57,7 @@ template <> struct AllowedFieldType< ASTERINTEGER > {
 
 template <> struct AllowedFieldType< double > { static const unsigned short numTypeJeveux = Real; };
 
-template <> struct AllowedFieldType< RealComplex > {
+template <> struct AllowedFieldType< ASTERCOMPLEX > {
     static const unsigned short numTypeJeveux = Complex;
 };
 
@@ -618,7 +618,7 @@ typedef FieldOnNodesClass< ASTERINTEGER > FieldOnNodesLongClass;
 typedef boost::shared_ptr< FieldOnNodesLongClass > FieldOnNodesLongPtr;
 
 /** @typedef FieldOnNodesClassComplex Class d'un champ aux noeuds de complexes */
-typedef FieldOnNodesClass< RealComplex > FieldOnNodesComplexClass;
+typedef FieldOnNodesClass< ASTERCOMPLEX > FieldOnNodesComplexClass;
 
 /**
  * @typedef FieldOnNodesComplexPtr

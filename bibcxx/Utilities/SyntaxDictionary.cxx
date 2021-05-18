@@ -75,8 +75,8 @@ PyObject *SyntaxMapContainer::convertToPythonDictionnary( PyObject *returnDict )
             }
             PyDict_SetItemString( returnDict, ( *curIter ).first.c_str(), listValues );
             Py_DECREF( listValues );
-        } else if ( ( *curIter ).second.type() == typeid( RealComplex ) ) {
-            const RealComplex &tmp = boost::get< RealComplex >( ( *curIter ).second );
+        } else if ( ( *curIter ).second.type() == typeid( ASTERCOMPLEX ) ) {
+            const ASTERCOMPLEX &tmp = boost::get< ASTERCOMPLEX >( ( *curIter ).second );
             PyObject *value = PyComplex_FromDoubles( tmp.real(), tmp.imag() );
             PyDict_SetItemString( returnDict, ( *curIter ).first.c_str(), value );
             Py_DECREF( value );

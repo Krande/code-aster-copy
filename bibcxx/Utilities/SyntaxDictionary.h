@@ -6,7 +6,7 @@
  * @brief Fichier entete de la struct SyntaxMapContainer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -84,7 +84,7 @@ class SyntaxMapContainer {
     /** @brief Typedef definissant un map associant une chaine a divers types */
     typedef std::map<
         std::string,
-        boost::variant< ASTERINTEGER, std::string, double, RealComplex, VectorLong, VectorString,
+        boost::variant< ASTERINTEGER, std::string, double, ASTERCOMPLEX, VectorLong, VectorString,
                         VectorReal, VectorComplex, ListSyntaxMapContainer > > SyntaxMap;
     typedef SyntaxMap::iterator SyntaxMapIter;
     typedef SyntaxMap::const_iterator SyntaxMapCIter;

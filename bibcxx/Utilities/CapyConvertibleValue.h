@@ -6,7 +6,7 @@
  * @brief Fichier entete de la class CapyConvertibleValue
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -213,7 +213,7 @@ template <
     // Pour le reste, le MatchingType sera un std::string
     typename MatchingType = typename std::conditional<
         std::is_same< Type, ASTERINTEGER >::value || std::is_same< Type, double >::value ||
-            std::is_same< Type, RealComplex >::value ||
+            std::is_same< Type, ASTERCOMPLEX >::value ||
             std::is_same< Type, VectorReal >::value ||
             std::is_same< Type, VectorComplex >::value ||
             std::is_same< Type, VectorLong >::value,
@@ -294,7 +294,7 @@ class CapyConvertibleValue : public GenericCapyConvertibleValue {
     template < typename T = Type, typename M = MatchingType >
     typename std::enable_if< ( std::is_same< T, ASTERINTEGER >::value ||
                                std::is_same< T, double >::value ||
-                               std::is_same< T, RealComplex >::value ||
+                               std::is_same< T, ASTERCOMPLEX >::value ||
                                std::is_same< T, VectorReal >::value ||
                                std::is_same< T, VectorComplex >::value ||
                                std::is_same< T, VectorLong >::value ) &&
@@ -411,7 +411,7 @@ class CapyConvertibleValue : public GenericCapyConvertibleValue {
     template < typename T = Type, typename M = MatchingType >
     typename std::enable_if<
         !std::is_same< T, ASTERINTEGER >::value && !std::is_same< T, double >::value &&
-            !std::is_same< T, RealComplex >::value &&
+            !std::is_same< T, ASTERCOMPLEX >::value &&
             !std::is_same< T, VectorReal >::value &&
             !std::is_same< T, VectorComplex >::value &&
             !std::is_same< T, VectorLong >::value && !is_vector< T >::value &&

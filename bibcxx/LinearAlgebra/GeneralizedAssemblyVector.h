@@ -78,7 +78,7 @@ class GeneralizedAssemblyVectorClass : public GenericGeneralizedAssemblyVectorCl
      * @brief definir le type
      */
     template < class type = ValueType >
-    typename std::enable_if< std::is_same< type, RealComplex >::value, void >::type
+    typename std::enable_if< std::is_same< type, ASTERCOMPLEX >::value, void >::type
     setVectorType() {
         setType( "VECT_ASSE_GENE_C" );
     };
@@ -111,7 +111,7 @@ class GeneralizedAssemblyVectorClass : public GenericGeneralizedAssemblyVectorCl
 /** @typedef Definition d'une matrice assemblee généralisée de double */
 typedef GeneralizedAssemblyVectorClass< double > GeneralizedAssemblyVectorRealClass;
 /** @typedef Definition d'une matrice assemblee généralisée de complexe */
-typedef GeneralizedAssemblyVectorClass< RealComplex > GeneralizedAssemblyVectorComplexClass;
+typedef GeneralizedAssemblyVectorClass< ASTERCOMPLEX > GeneralizedAssemblyVectorComplexClass;
 
 /**
  * @typedef GenericGeneralizedAssemblyVectorPtr

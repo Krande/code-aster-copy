@@ -3,7 +3,7 @@
  * @brief Utilitaires pour convertir un vector en list et inversement
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,9 +32,9 @@
 
 void exportConverters() {
 
-    exportVectorConverter< int >();
+    exportVectorConverter< ASTERINTEGER4 >();
     exportVectorConverter< ASTERINTEGER >();
-    exportVectorConverter< double >();
+    exportVectorConverter< ASTERDOUBLE >();
     exportVectorConverter< std::string >();
     exportVectorConverter< PhysicalQuantityComponent >();
     exportVectorConverter< MaterialPtr >();
@@ -45,11 +45,11 @@ void exportConverters() {
     exportVectorConverter< GenericMaterialPropertyPtr >();
     exportVectorConverter< DataStructurePtr >();
 
-    exportJeveuxVectorConverter< short int >();
+    exportJeveuxVectorConverter< ASTERINTEGER4 >();
     exportJeveuxVectorConverter< ASTERINTEGER >();
-    exportJeveuxVectorConverter< double >();
+    exportJeveuxVectorConverter< ASTERDOUBLE >();
 
-    exportJeveuxCollectionConverter< short int >();
+    exportJeveuxCollectionConverter< ASTERINTEGER4 >();
     exportJeveuxCollectionConverter< ASTERINTEGER >();
-    exportJeveuxCollectionConverter< double >();
+    exportJeveuxCollectionConverter< ASTERDOUBLE >();
 };

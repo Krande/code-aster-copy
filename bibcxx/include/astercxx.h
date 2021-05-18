@@ -37,13 +37,14 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 
-typedef std::complex< double > RealComplex;
+typedef bool ASTERBOOL;
+typedef std::complex< ASTERDOUBLE > ASTERCOMPLEX;
 
-typedef std::vector< bool > VectorBool;
-typedef std::vector< int > VectorInt;
+typedef std::vector< ASTERBOOL > VectorBool;
+typedef std::vector< ASTERINTEGER4 > VectorInt;
 typedef std::vector< ASTERINTEGER > VectorLong;
-typedef std::vector< double > VectorReal;
-typedef std::vector< RealComplex > VectorComplex;
+typedef std::vector< ASTERDOUBLE > VectorReal;
+typedef std::vector< ASTERCOMPLEX > VectorComplex;
 typedef std::vector< std::string > VectorString;
 
 #define AS_ABORT(message) \

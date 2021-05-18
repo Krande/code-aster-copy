@@ -219,8 +219,8 @@ template class ElementaryMatrixClass< double, Displacement >;
 typedef ElementaryMatrixClass< double, Displacement > ElementaryMatrixDisplacementRealClass;
 
 /** @typedef Definition d'une matrice élémentaire de complexe */
-template class ElementaryMatrixClass< RealComplex, Displacement >;
-typedef ElementaryMatrixClass< RealComplex,
+template class ElementaryMatrixClass< ASTERCOMPLEX, Displacement >;
+typedef ElementaryMatrixClass< ASTERCOMPLEX,
                                   Displacement > ElementaryMatrixDisplacementComplexClass;
 
 /** @typedef Definition d'une matrice élémentaire de double temperature */
@@ -228,9 +228,9 @@ template class ElementaryMatrixClass< double, Temperature >;
 typedef ElementaryMatrixClass< double,
                                   Temperature > ElementaryMatrixTemperatureRealClass;
 
-/** @typedef Definition d'une matrice élémentaire de RealComplex pression */
-template class ElementaryMatrixClass< RealComplex, Pressure >;
-typedef ElementaryMatrixClass< RealComplex,
+/** @typedef Definition d'une matrice élémentaire de ASTERCOMPLEX pression */
+template class ElementaryMatrixClass< ASTERCOMPLEX, Pressure >;
+typedef ElementaryMatrixClass< ASTERCOMPLEX,
                                   Pressure > ElementaryMatrixPressureComplexClass;
 
 typedef boost::shared_ptr< ElementaryMatrixDisplacementRealClass >

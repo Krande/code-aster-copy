@@ -6,7 +6,7 @@
  * @brief Definition of the  Physical Quantities used in Code_Aster
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -557,8 +557,8 @@ typedef PhysicalQuantityClass< double, Pressure > PressureRealClass;
 typedef boost::shared_ptr< PressureRealClass > PressureRealPtr;
 
 /** @typedef PressureComplex Pression */
-template class PhysicalQuantityClass< RealComplex, Pressure >;
-typedef PhysicalQuantityClass< RealComplex, Pressure > PressureComplexClass;
+template class PhysicalQuantityClass< ASTERCOMPLEX, Pressure >;
+typedef PhysicalQuantityClass< ASTERCOMPLEX, Pressure > PressureComplexClass;
 typedef boost::shared_ptr< PressureComplexClass > PressureComplexPtr;
 
 /** @typedef TemperatureReal Temperature */
@@ -577,8 +577,8 @@ typedef PhysicalQuantityClass< double, Impedance > ImpedanceRealClass;
 typedef boost::shared_ptr< ImpedanceRealClass > ImpedanceRealPtr;
 
 /** @typedef ImpedanceComplex Impedance */
-template class PhysicalQuantityClass< RealComplex, Impedance >;
-typedef PhysicalQuantityClass< RealComplex, Impedance > ImpedanceComplexClass;
+template class PhysicalQuantityClass< ASTERCOMPLEX, Impedance >;
+typedef PhysicalQuantityClass< ASTERCOMPLEX, Impedance > ImpedanceComplexClass;
 typedef boost::shared_ptr< ImpedanceComplexClass > ImpedanceComplexPtr;
 
 /** @typedef NormalSpeedReal Normal Speed  */
@@ -587,8 +587,8 @@ typedef PhysicalQuantityClass< double, NormalSpeed > NormalSpeedRealClass;
 typedef boost::shared_ptr< NormalSpeedRealClass > NormalSpeedRealPtr;
 
 /** @typedef NormalSpeedComplex Normal Speed  */
-template class PhysicalQuantityClass< RealComplex, NormalSpeed >;
-typedef PhysicalQuantityClass< RealComplex, NormalSpeed > NormalSpeedComplexClass;
+template class PhysicalQuantityClass< ASTERCOMPLEX, NormalSpeed >;
+typedef PhysicalQuantityClass< ASTERCOMPLEX, NormalSpeed > NormalSpeedComplexClass;
 typedef boost::shared_ptr< NormalSpeedComplexClass > NormalSpeedComplexPtr;
 
 /** @typedef HeatFluxReal Normal Speed  */

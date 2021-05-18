@@ -149,7 +149,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      * @param length Longueur du vecteur Jeveux a allouer
      * @return true si l'allocation s'est bien passee
      */
-    bool allocate( JeveuxMemory jeveuxBase, unsigned ASTERINTEGER length ) {
+    bool allocate( JeveuxMemory jeveuxBase, ASTERINTEGER length ) {
         if ( _name != "" && length > 0 ) {
             std::string strJeveuxBase( "V" );
             if ( jeveuxBase == Permanent )
@@ -174,7 +174,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      * @param length Longueur du vecteur Jeveux a allouer
      * @return true si l'allocation s'est bien passee
      */
-    bool allocate( unsigned ASTERINTEGER length ) {
+    bool allocate( ASTERINTEGER length ) {
         if ( _name != "" && length > 0 ) {
             std::string strJeveuxBase( "V" );
             if ( _mem == Permanent )
@@ -371,14 +371,14 @@ template < class ValueType > class JeveuxVector {
     };
 };
 
-/** @typedef Definition d'un vecteur Jeveux long */
+/** @typedef Definition d'un vecteur Jeveux entier long */
 typedef JeveuxVector< ASTERINTEGER > JeveuxVectorLong;
-/** @typedef Definition d'un vecteur Jeveux short int */
-typedef JeveuxVector< short int > JeveuxVectorShort;
+/** @typedef Definition d'un vecteur Jeveux entier court */
+typedef JeveuxVector< ASTERINTEGER4 > JeveuxVectorShort;
 /** @typedef Definition d'un vecteur Jeveux double */
-typedef JeveuxVector< double > JeveuxVectorReal;
+typedef JeveuxVector< ASTERDOUBLE > JeveuxVectorReal;
 /** @typedef Definition d'un vecteur Jeveux double complex */
-typedef JeveuxVector< RealComplex > JeveuxVectorComplex;
+typedef JeveuxVector< ASTERCOMPLEX > JeveuxVectorComplex;
 /** @typedef Definition d'un vecteur de JeveuxChar8 */
 typedef JeveuxVector< JeveuxChar8 > JeveuxVectorChar8;
 /** @typedef Definition d'un vecteur JeveuxChar16 */

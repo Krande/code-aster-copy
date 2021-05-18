@@ -610,7 +610,7 @@ typedef ConstantFieldOnCellsClass< double > ConstantFieldOnCellsRealClass;
 /** @typedef ConstantFieldOnCellsLongClass Class d'une carte de long */
 typedef ConstantFieldOnCellsClass< ASTERINTEGER > ConstantFieldOnCellsLongClass;
 /** @typedef ConstantFieldOnCellsComplexClass Class d'une carte de complexe */
-typedef ConstantFieldOnCellsClass< RealComplex > ConstantFieldOnCellsComplexClass;
+typedef ConstantFieldOnCellsClass< ASTERCOMPLEX > ConstantFieldOnCellsComplexClass;
 /** @typedef ConstantFieldOnCellsChar8Class Class d'une carte de char*8 */
 typedef ConstantFieldOnCellsClass< JeveuxChar8 > ConstantFieldOnCellsChar8Class;
 /** @typedef ConstantFieldOnCellsChar16Class Class d'une carte de char*16 */

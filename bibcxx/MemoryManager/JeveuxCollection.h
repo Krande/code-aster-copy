@@ -258,14 +258,14 @@ template < class ValueType > class JeveuxCollectionObject : private AllowedJeveu
     };
 };
 
-/** @typedef Definition d'un objet de collection de type long */
+/** @typedef Definition d'un objet de collection de type entier long */
 typedef JeveuxCollectionObject< ASTERINTEGER > JeveuxCollectionObjectLong;
-/** @typedef Definition d'un objet de collection de type short int */
-typedef JeveuxCollectionObject< short int > JeveuxCollectionObjectShort;
+/** @typedef Definition d'un objet de collection de type entier court */
+typedef JeveuxCollectionObject< ASTERINTEGER4 > JeveuxCollectionObjectShort;
 /** @typedef Definition d'un objet de collection de type double */
-typedef JeveuxCollectionObject< double > JeveuxCollectionObjectReal;
+typedef JeveuxCollectionObject< ASTERDOUBLE > JeveuxCollectionObjectReal;
 /** @typedef Definition d'un objet de collection de type double complex */
-typedef JeveuxCollectionObject< RealComplex > JeveuxCollectionObjectComplex;
+typedef JeveuxCollectionObject< ASTERCOMPLEX > JeveuxCollectionObjectComplex;
 /** @typedef Definition d'un objet de collection de JeveuxChar8 */
 typedef JeveuxCollectionObject< JeveuxChar8 > JeveuxCollectionObjectChar8;
 /** @typedef Definition d'un objet de collection de JeveuxChar16 */
@@ -760,14 +760,14 @@ template < class ValueType, class AccessType = int > class JeveuxCollection {
     };
 };
 
-/** @typedef Definition d'une collection de type long */
+/** @typedef Definition d'une collection de type entier long */
 typedef JeveuxCollection< ASTERINTEGER > JeveuxCollectionLong;
-/** @typedef Definition d'une collection de type short int */
-typedef JeveuxCollection< short int > JeveuxCollectionShort;
+/** @typedef Definition d'une collection de type entier court */
+typedef JeveuxCollection< ASTERINTEGER4 > JeveuxCollectionShort;
 /** @typedef Definition d'une collection de type double */
-typedef JeveuxCollection< double > JeveuxCollectionReal;
+typedef JeveuxCollection< ASTERDOUBLE > JeveuxCollectionReal;
 /** @typedef Definition d'une collection de type double complex */
-typedef JeveuxCollection< RealComplex > JeveuxCollectionComplex;
+typedef JeveuxCollection< ASTERCOMPLEX > JeveuxCollectionComplex;
 /** @typedef Definition d'une collection de JeveuxChar8 */
 typedef JeveuxCollection< JeveuxChar8 > JeveuxCollectionChar8;
 /** @typedef Definition d'une collection de JeveuxChar16 */

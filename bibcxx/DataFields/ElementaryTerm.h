@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ElementaryTerm
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -81,6 +81,6 @@ typedef boost::shared_ptr< ElementaryTermClass< double > > ElementaryTermRealPtr
 /**
  * @typedef ElementaryTermComplexPtr
  */
-typedef boost::shared_ptr< ElementaryTermClass< RealComplex > > ElementaryTermComplexPtr;
+typedef boost::shared_ptr< ElementaryTermClass< ASTERCOMPLEX > > ElementaryTermComplexPtr;
 
 #endif /* ELEMENTARYTERM_H_ */

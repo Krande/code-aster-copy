@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe BaseMaterialProperty
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -55,7 +55,7 @@ template < typename T > struct AllowedMaterialPropertyType;
 
 template <> struct AllowedMaterialPropertyType< double > {};
 
-template <> struct AllowedMaterialPropertyType< RealComplex > {};
+template <> struct AllowedMaterialPropertyType< ASTERCOMPLEX > {};
 
 template <> struct AllowedMaterialPropertyType< std::string > {};
 
@@ -210,7 +210,7 @@ class ElementaryMaterialPropertyClass : private AllowedMaterialPropertyType< Val
 /** @typedef Definition d'une propriete materiau de type double */
 typedef ElementaryMaterialPropertyClass< double > ElementaryMaterialPropertyReal;
 /** @typedef Definition d'une propriete materiau de type double */
-typedef ElementaryMaterialPropertyClass< RealComplex > ElementaryMaterialPropertyComplex;
+typedef ElementaryMaterialPropertyClass< ASTERCOMPLEX > ElementaryMaterialPropertyComplex;
 /** @typedef Definition d'une propriete materiau de type string */
 typedef ElementaryMaterialPropertyClass< std::string > ElementaryMaterialPropertyString;
 /** @typedef Definition d'une propriete materiau de type Function */
@@ -389,7 +389,7 @@ class GenericMaterialPropertyClass {
         throw std::runtime_error( nameOfProperty + " is not a double value" );
     };
 
-    RealComplex getComplexValue( std::string nameOfProperty )
+    ASTERCOMPLEX getComplexValue( std::string nameOfProperty )
     {
         auto curIter = _mapOfComplexMaterialProperties.find( nameOfProperty );
         if ( curIter != _mapOfComplexMaterialProperties.end() )
@@ -488,7 +488,7 @@ class GenericMaterialPropertyClass {
      * @param value Real correspondant a la valeur donnee par l'utilisateur
      * @return Booleen valant true si la tache s'est bien deroulee
      */
-    bool setComplexValue( std::string nameOfProperty, RealComplex value ) {
+    bool setComplexValue( std::string nameOfProperty, ASTERCOMPLEX value ) {
         // Recherche de la propriete materielle
         mapStrEMPCIterator curIter = _mapOfComplexMaterialProperties.find( nameOfProperty );
         if ( curIter == _mapOfComplexMaterialProperties.end() )
