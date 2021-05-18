@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -141,7 +141,7 @@ subroutine rc32rs(lfat, lefat)
     do 130 im = 1, 2
 !
         valek(2) = lieu(im)
-        call jeveuo('&&RC3200.MAX_RESU.'//lieu(im), 'L', jmax)
+        call jeveuo('&&RC3200.MAX_RESU.'//lieu(im), 'E', jmax)
 !
         do 131 k = 1,7
             valer(k) = zr(jmax-1+k)
@@ -172,7 +172,6 @@ subroutine rc32rs(lfat, lefat)
         do 132 k = 1,3
             valer(10+k) = zr(jmax-1+8+k)
 132     continue
-        valer(14) = zr(jmax+12)
         if(lefat) then
             call getvr8('ENVIRONNEMENT', 'FEN_INTEGRE', iocc=1, scal=fenint, nbret=n5)
             if(n5 .eq. 0 .or. abs(fenint) .lt. 1e-8) call utmess('F', 'POSTRCCM_54')
@@ -180,6 +179,7 @@ subroutine rc32rs(lfat, lefat)
             if (abs(zr(jmax+10)) .gt. 1e-8) fenglobal = zr(jmax+12)/zr(jmax+10)
             if(fenglobal .gt. fenint) zr(jmax+12)=zr(jmax+12)/fenint
         endif
+        valer(14) = zr(jmax+12)
 !
         call tbajli(nomres, npar1, nopar1, [ibid], valer,&
                     [c16b], valek, 0)
@@ -480,10 +480,6 @@ subroutine rc32rs(lfat, lefat)
               valer(12) = zr(jfactenv+2*k)
               valer(13) = fenint
               valer(14) = zr(jfactenv+2*k+1)
-              if(fenglobal .gt. fenint) then
-                valer(12) = zr(jfactenv+2*k)/fenint
-                valer(14) = zr(jfactenv+2*k+1)/fenint
-              endif
           else
               valer(12) = r8vide()
               valer(13) = r8vide()
@@ -510,10 +506,6 @@ subroutine rc32rs(lfat, lefat)
               valer(12) = zr(jfactenv+2*k)
               valer(13) = fenint
               valer(14) = zr(jfactenv+2*k+1)
-              if(fenglobal .gt. fenint) then
-                valer(12) = zr(jfactenv+2*k)/fenint
-                valer(14) = zr(jfactenv+2*k+1)/fenint
-              endif
           else
               valer(12) = r8vide()
               valer(13) = r8vide()
