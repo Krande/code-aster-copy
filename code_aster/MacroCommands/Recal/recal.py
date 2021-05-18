@@ -645,7 +645,9 @@ class CALCULS_ASTER:
         # Generation des etudes esclaves
         # ----------------------------------------------------------------------------
         sys.argv = ['']
-        run = AsRunFactory()
+        run = AsRunFactory(
+            debug_stderr=False, log_progress="asrun.log"
+        )
         # if info<=2: run.options['debug_stderr'] = False  # pas d'output d'executions des esclaves dans l'output maitre
         if self.unity_follow and info == 2:
             run.options['debug_stderr'] = True

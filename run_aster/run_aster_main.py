@@ -295,7 +295,7 @@ def main(argv=None):
     # use FACMTPS from environment
     try:
         mult = float(os.environ.get("FACMTPS", 1))
-        limit = export.get("time_limit", 0) * mult
+        limit = export.get("time_limit", 86400.0) * mult
         export.set_time_limit(limit)
     except ValueError:
         pass
