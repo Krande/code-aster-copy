@@ -41,7 +41,7 @@ import aster
 from ...Messages import ASSERT, UTMESS
 
 from ...Helpers.UniteAster import UniteAster
-from ...Utilities import force_list, transpose
+from ...Utilities import force_list
 from ...Utilities.misc import _printDBG, get_shared_tmpdir
 
 dict_format = {
@@ -68,7 +68,6 @@ class MISS_PARAMETER(object):
         # defauts hors du mot-clé PARAMETRE
         self._defaults = {
             '_INIDIR': initial_dir,
-            '_WRKDIR': get_shared_tmpdir('tmp_miss3d', initial_dir),
             'NBM_TOT': None,
             'NBM_DYN': None,
             'NBM_STA': None,
@@ -103,12 +102,10 @@ class MISS_PARAMETER(object):
             self._keywords[key] = val
         if self['REPERTOIRE']:
             self._keywords['_WRKDIR'] = self['REPERTOIRE']
+        else:
+            self._keywords['_WRKDIR'] = get_shared_tmpdir('tmp_miss3d', initial_dir)
         self.UL = UniteAster()
         self.check()
-
-    def __del__(self):
-        """A la destruction."""
-        self.UL.EtatInit()
 
     def check(self):
         """Vérification des règles impossible à écrire dans le .capy"""
