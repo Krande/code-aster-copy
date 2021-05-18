@@ -64,7 +64,7 @@ subroutine op0060()
     character(len=13) :: motcl(8)
     character(len=16) :: typres, oper
     character(len=19) :: basnof, basloc, cnxinv, lnno, ltno
-    character(len=24) :: valk(2), entnom, abscur, fonoeu, absfon
+    character(len=24) :: valk(2), entnom, abscur, fonoeu, absfon, coorfond
 ! DEB-------------------------------------------------------------------
 !
     call jemarq()
@@ -249,9 +249,11 @@ subroutine op0060()
         ASSERT(.FALSE.)
     endif
 !
-!   CALCUL DE L'ABSCISSE CURVILIGNE ET STOCKAGE DANS OBJET INTERNE OP0060
+!   CALCUL DE L'ABSCISSE CURVILIGNE ET DES COORDONNES DES NOEUDS DU FOND
     absfon = resu//'.ABSFON'
-    call fonfis2(noma, nbnoff, fonoeu, absfon)
+    coorfond = '&&OP0060.COORFOND'
+!
+    call fonfis2(noma, nbnoff, fonoeu, absfon, coorfond)
 !
 !     ---------------------------------------------------------------
 !     CREATION DE LA BASE LOCALE, DES LEVEL SETS ET DE L'ABCISSE
@@ -266,8 +268,8 @@ subroutine op0060()
         basloc = resu//'.BASLOC'
         lnno = resu//'.LNNO'
         ltno = resu//'.LTNO'
-        call fonbas2(noma, basnof, typm, fonoeu, nbnoff,absfon,&
-                    basloc,abscur, lnno, ltno)
+        call fonbas2(noma, basnof, typm, fonoeu, coorfond, nbnoff, &
+                    absfon, basloc, abscur, lnno, ltno)
     endif
 !
 !     ---------------------------------------------------------------
@@ -295,6 +297,8 @@ subroutine op0060()
     if (niv .eq. 2) then
         call fonimp(resu)
     endif
-!
+
+    call jedetr('&&OP0060.COORFOND')
+
     call jedema()
 end subroutine

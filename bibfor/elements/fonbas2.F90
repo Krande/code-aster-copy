@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine fonbas2(noma, basnof, typm, fonoeu, nbnoff, absfon,&
+subroutine fonbas2(noma, basnof, typm, fonoeu, coorfond, nbnoff, absfon,&
                   basloc, abscur, lnno, ltno)
 !
     implicit none
@@ -38,7 +38,7 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, nbnoff, absfon,&
     integer           :: nbnoff
     character(len=8)  :: noma, typm
     character(len=19) :: basnof, basloc, lnno, ltno
-    character(len=24) :: fonoeu, absfon, abscur
+    character(len=24) :: fonoeu, absfon, abscur, coorfond
 !
 ! FONCTION REALISEE:
 !
@@ -54,6 +54,7 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, nbnoff, absfon,&
 !        NBNOFF : NOMBRE DE NOEUDS AU FOND DE FISSURE
 !        TYPM   : TYPE DE FOND DE FISSURE : LIN OU QUAD
 !        ABSFON : ABSCISSE CURVILGNE DE CHAQUE NOEUD DU FOND DE FISSURE
+!        COORFOND : COORDONNE DES NOEUDS DU FOND 
 !     SORTIES:
 !        BASLOC : BASE LOCALE EN CHAQUE NOEUD DU MAILLAGE
 !        ABSCUR : ABSCISSE CURVILIGNE DU PROJETE SUR LE FOND DE FISSURE
@@ -63,7 +64,7 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, nbnoff, absfon,&
 !-----------------------------------------------------------------------
 !
     integer :: ibid, indica, indicb, ina, inb, ino, ni, nj, jnoe
-    integer :: iseg, jbas, jabsf, jabscur
+    integer :: iseg, jbas, jabsf, jabscur, coorfd
     integer :: jgsl,   jlnsl,  jltsl
     integer :: k, nbno, ndim, nseg
     real(kind=8) :: d, dmin, eps, norm2, s, sn, xln, xlt
@@ -142,6 +143,8 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, nbnoff, absfon,&
 !   SUR LE FOND DE FISSURE DE CHAQUE NOEUD DU MAILLAGE
     call wkvect(abscur, 'G V R', nbno, jabscur)
 !
+!   COORDONNE DES NOEUDS DU FOND
+    call jeveuo(coorfond, 'L', coorfd)
 !     ------------------------------------------------------------------
 !                BOUCLE SUR LES NOEUDS DU MAILLAGE
 !     ------------------------------------------------------------------
@@ -156,13 +159,10 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, nbnoff, absfon,&
 !
 !       CAS 2D : LE PROJETE EST TRIVIAL !
         if (ndim .eq. 2) then
-
-!         NUMERO (ABSOLUS) DU NOEUD DU FOND
-            call jenonu(jexnom(noma//'.NOMNOE', zk8(jnoe)), ni)
 !
 !         COORD PT N
-            n(1) = vale((ni-1)*3 + 1)
-            n(2) = vale((ni-1)*3 + 2)
+            n(1) = zr(coorfd)
+            n(2) = zr(coorfd+1)
             n(3) = 0.d0
 !
 !         VECTEUR NM
@@ -208,17 +208,13 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, nbnoff, absfon,&
                     inb = 2*iseg+1
                 endif
 !
-!         NUMEROS (ABSOLUS) DES NOEUDS DU FOND: NI ET NJ
-            call jenonu(jexnom(noma//'.NOMNOE', zk8(jnoe-1+ina)), ni)
-            call jenonu(jexnom(noma//'.NOMNOE', zk8(jnoe-1+inb)), nj)
-!
 !           COORD DES POINTS A ET B, EXTREMITES DU SEGMENT ISEG
-                xa = vale((ni-1)*3 + 1)
-                ya = vale((ni-1)*3 + 2)
-                za = vale((ni-1)*3 + 3)
-                xb = vale((nj-1)*3 + 1)
-                yb = vale((nj-1)*3 + 2)
-                zb = vale((nj-1)*3 + 3)
+                xa = zr(coorfd-1+3*(ina-1)+1)
+                ya = zr(coorfd-1+3*(ina-1)+2)
+                za = zr(coorfd-1+3*(ina-1)+3)
+                xb = zr(coorfd-1+3*(inb-1)+1)
+                yb = zr(coorfd-1+3*(inb-1)+2)
+                zb = zr(coorfd-1+3*(inb-1)+3)
 !
 !           VECTEUR AB ET AM
                 xab = xb-xa

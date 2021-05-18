@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,11 @@
 !
 !
 interface
-    subroutine fonfis2(noma, nbnoff, fonoeu, absfon)
+    subroutine fonfis2(noma, nbnoff, fonoeu, absfon, coorfond)
         character(len=8)  :: noma
         integer           :: nbnoff
         character(len=24) :: fonoeu
         character(len=24) :: absfon
+        character(len=24) :: coorfond
     end subroutine fonfis2
 end interface
