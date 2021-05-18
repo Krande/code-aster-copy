@@ -133,6 +133,7 @@ class RunAster:
             Status: Status object.
         """
         timer = Timer()
+        timer.load("__timer__")
         logger.info("TITLE Execution of code_aster")
         timer.start("Preparation of environment")
         self.prepare_current_directory()
@@ -140,13 +141,14 @@ class RunAster:
         timer.start("Execution of code_aster")
         status = self.execute_study()
         timer.stop()
-        timer.start("Copying results")
         if self._last:
+            timer.start("Copying results")
             self.ending_execution(status.is_completed())
             logger.info("TITLE Execution summary")
             logger.info(timer.report())
             if self._procid == 0:
                 logger.info(FMT_DIAG.format(state=status.diag))
+        timer.save("__timer__")
         return status
 
     def prepare_current_directory(self):
