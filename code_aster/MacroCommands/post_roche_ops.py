@@ -24,7 +24,7 @@ from ..Cata.Syntax import _F
 from ..Commands import (CREA_CHAMP, CALC_CHAM_ELEM, CREA_TABLE,
                         POST_ELEM, FORMULE,
                         MODI_MAILLAGE, DEFI_CONSTANTE,
-                        COPIER,CREA_RESU)
+                        COPIER,CREA_RESU, IMPR_RESU)
 
 # ===========================================================================
 #           CORPS DE LA MACRO "POST_ROCHE"
@@ -925,7 +925,7 @@ class PostRocheCommon():
 
         # contrainte vraie
 
-        def fsolve(sigRef, epsiMpRef,e, k, n, r, nbIterMax,seuil):
+        def fsolve(sigRef, e, k, n, r, nbIterMax,seuil):
 
             """
                resolution de _funcToSolve par algo de Newton
@@ -940,7 +940,7 @@ class PostRocheCommon():
 
 
             def funcToSolve(sigV):
-                return r*(sigV-sigRef)/e + sigV/e + epsip(sigV, e, k, n) - epsiMpRef
+                return r*(sigV-sigRef)/e + sigV/e + epsip(sigV, e, k, n) - sigRef/e
 
             # param
             dSig = sigRef/1000
@@ -954,7 +954,7 @@ class PostRocheCommon():
 
             # print('f0',f0)
 
-            while ratio > tol or nbIter>nbIterMax:
+            while ratio > tol and nbIter<=nbIterMax:
                 fkp = funcToSolve(sigVk+dSig)
                 dfk = (fkp-fk)/dSig
 
@@ -964,9 +964,9 @@ class PostRocheCommon():
                 ratio = abs(fkp1/f0)
                 fk = fkp1
                 nbIter =nbIter+1
-                # print(nbIter,"ratio",ratio,'f',fk, 'sig',sigVk)
+                # print('nbIter',nbIter, 'ratio',ratio, 'fk',fk, 'sigVk',sigVk)
 
-            if nbIter > nbIterMax :
+            if ratio > tol :
                 return -1.
             else:
                 return sigVk
@@ -976,10 +976,10 @@ class PostRocheCommon():
         # calcul à partir de l'effet de ressort
 
         # SigRef = N
-        # EspiMpRef = X1
+        # EspiMpRef = X1 : plus utilisé
         # Ressort = X2
-        fSigVraie = FORMULE(NOM_PARA=('N', 'X1', 'X2' ,'E', 'K_FACT', 'N_EXPO'),
-                            VALE='fsolve(N,X1,E,K_FACT,N_EXPO,X2,nbIterMax,seuil)',
+        fSigVraie = FORMULE(NOM_PARA=('N', 'X2' ,'E', 'K_FACT', 'N_EXPO'),
+                            VALE='fsolve(N,E,K_FACT,N_EXPO,X2,nbIterMax,seuil)',
                             fsolve=fsolve, nbIterMax=self.nbIterMax,
                             seuil=self.seuilSigRef)
 
@@ -989,8 +989,8 @@ class PostRocheCommon():
         # EspiMpRef = X1
         # RessortMax = X3
 
-        fSigVraieMax = FORMULE(NOM_PARA=('N', 'X1', 'X3' ,'E', 'K_FACT', 'N_EXPO'),
-                            VALE='fsolve(N,X1,E,K_FACT,N_EXPO,X3,nbIterMax,seuil)',
+        fSigVraieMax = FORMULE(NOM_PARA=('N', 'X3' ,'E', 'K_FACT', 'N_EXPO'),
+                            VALE='fsolve(N,E,K_FACT,N_EXPO,X3,nbIterMax,seuil)',
                             fsolve=fsolve, nbIterMax=self.nbIterMax,
                             seuil=self.seuilSigRef)
 
@@ -1488,7 +1488,7 @@ class PostRocheCalc():
         """
 
         # assemblage de champs
-        # X1 = epsiMpRef
+        # X1 = epsiMpRef => plus utilisé
         # X2 = effet de ressort
         # X3 = effet de ressort max
 
@@ -1496,10 +1496,11 @@ class PostRocheCalc():
                                 MODELE=self.param.model,
                                 TYPE_CHAM = 'ELNO_NEUT_R',
                                 PROL_ZERO = 'OUI',
-                                ASSE      = (_F(CHAM_GD = self.chEpsiMp,
-                                               TOUT = 'OUI',
-                                               NOM_CMP = ('X1',),
-                                               ),
+                                ASSE      = (
+                                             # _F(CHAM_GD = self.chEpsiMp,
+                                               # TOUT = 'OUI',
+                                               # NOM_CMP = ('X1',),
+                                               # ),
                                              _F(CHAM_GD = self.chRessort,
                                                TOUT = 'OUI',
                                                NOM_CMP = ('X1',),
