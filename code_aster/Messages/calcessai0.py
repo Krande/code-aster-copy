@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -68,6 +68,11 @@ ne seront pas possibles.
 
     10: _("""
 Le modèle associé aux matrices MATR_RIGI et MATR_MASS doit être le même que MODELE_2.
+"""),
+
+    11: _("""
+Dans le mot-clé VIS_A_VIS de la commande OBSERVATION, il faut pour chaque occurrence
+que GROUP_MA_1 == GROUP_MA_2.
 """),
 
     13: _("""

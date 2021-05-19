@@ -63,6 +63,12 @@ def observation_ops(self,
     # recuperation du maillage associe au modele numerique
     mayanum = MODELE_1.getMesh()
 
+    # vis_a_vis
+    if "VIS_A_VIS" in mcfact.keys():
+        for arg in mcfact["VIS_A_VIS"]:
+            if arg["GROUP_MA_1"] != arg["GROUP_MA_2"]:
+                UTMESS('F', 'CALCESSAI0_11')
+
     # modele numerique 2D ou 3D
     typmod = mayanum.getDimension()
 
@@ -92,6 +98,7 @@ def observation_ops(self,
                 cham_maters += [RESULTAT.getMaterialField(j)]
             except RuntimeError:
                 pass
+        cham_maters=list(set(cham_maters))
         assert len(cham_maters) <= 1
         if(len(cham_maters)):
             cham_mater = cham_maters[0]
