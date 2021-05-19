@@ -649,7 +649,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='EXTR',),),
            TABLE=FAT34ENV,)
 
-# FATIGUE ENVIRONNEMENTALE : FEN et FU_EN_CUMU
+# FATIGUE ENVIRONNEMENTALE : FEN, FEN_TOTAL et FUEN_TOTAL
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=1.0,
            VALE_REFE=1.0,
@@ -663,6 +663,24 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.2176376,
            VALE_REFE=0.2176376,
            NOM_PARA='FEN',
+           TABLE=FAT34ENV,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+           
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='FEN_TOTAL',
+           TABLE=FAT34ENV,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.2176376,
+           VALE_REFE=0.2176376,
+           NOM_PARA='FEN_TOTAL',
            TABLE=FAT34ENV,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),
@@ -686,7 +704,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='EXTR',),
            )
            
-# FATIGUE ENVIRONNEMENTALE AVEC FEN_INTEGRE ACTIF : FEN,  FUEN_TOTAL 
+# FATIGUE ENVIRONNEMENTALE AVEC FEN_INTEGRE ACTIF : FEN, FEN_TOTAL, FUEN_TOTAL 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=1.0,
            VALE_REFE=1.0,
@@ -700,6 +718,24 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.2176376,
            VALE_REFE=0.2176376,
            NOM_PARA='FEN',
+           TABLE=FAT34ENV2,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+           
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.0,
+           VALE_REFE=1.0,
+           NOM_PARA='FEN_TOTAL',
+           TABLE=FAT34ENV2,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.2176376,
+           VALE_REFE=0.2176376,
+           NOM_PARA='FEN_TOTAL',
            TABLE=FAT34ENV2,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),
