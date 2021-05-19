@@ -18,12 +18,14 @@
 # --------------------------------------------------------------------
 
 import code_aster
+from code_aster import MPI
+
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
 
 test = code_aster.TestCase()
 
-rank = code_aster.getMPIRank()
+rank = MPI.COMM_WORLD.Get_rank()
 
 POUTRE0 = code_aster.ParallelMesh()
 POUTRE0.readMedFile("zzzz504v/%d.med" % rank, True)

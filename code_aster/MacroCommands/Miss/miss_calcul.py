@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,6 @@ from math import cos, pi, sin
 
 import numpy as NP
 
-import aster_core
 import aster
 
 from ...Cata.Syntax import _F
@@ -50,6 +49,7 @@ from ...Messages import UTMESS
 from ...Utilities import ASTER_TIMER, ExecutionParameter
 from ...Utilities.misc import (_print, _printDBG, decode_str, encode_str,
                                send_file, set_debug)
+from ...Utilities.mpi_utils import MPI
 from ...Utilities.System import ExecCommand
 from .miss_fichier_cmde import MissCmdeGen
 from .miss_fichier_interf import (fichier_chp, fichier_ext, fichier_mvol,
@@ -375,7 +375,8 @@ class CalculMissFichierTemps(CalculMiss):
 
     def init_attr(self):
         """Initialisations"""
-        rank, size = aster_core.MPI_CommRankSize()
+        rank = MPI.COMM_WORLD.Get_rank()
+        size = MPI.COMM_WORLD.Get_size()
         cwd = osp.join(os.getcwd(), self.param['_WRKDIR'])
         host = socket.gethostname()
         path = "{}:{}".format(host, cwd)
@@ -384,10 +385,10 @@ class CalculMissFichierTemps(CalculMiss):
         ipath = encode_str(path)
         # send proc #0 directory to others
         self._results_path = []
-        buffer = aster_core.MPI_Bcast(ipath, 0)
+        buffer = MPI.COMM_WORLD.bcast(ipath, 0)
         self._results_path.append(decode_str(buffer))
         # proc #0 gathers all working directories
-        alldirs = aster_core.MPI_GatherStr(path, 0)
+        alldirs = MPI.COMM_WORLD.gather(path, 0)
         if rank == 0:
             self._results_path.extend(alldirs[1:])
 
@@ -453,7 +454,8 @@ class CalculMissFichierTemps(CalculMiss):
         freq_list1 = NP.arange(0, fc * reduc_factor)
         freq_list2 = NP.arange(fc * reduc_factor, self.nbr_freq, reduc_factor)
         self.freq_list = freq_list1.tolist() + freq_list2.tolist()
-        rank, size = aster_core.MPI_CommRankSize()
+        rank = MPI.COMM_WORLD.Get_rank()
+        size = MPI.COMM_WORLD.Get_size()
 
         for k in self.freq_list:
             # round-robin partition
@@ -488,11 +490,12 @@ class CalculMissFichierTemps(CalculMiss):
 
         # libérer la structure contenant les données numériques
         CalculMiss.init_data(self)
-        aster_core.MPI_Barrier()
+        MPI.COMM_WORLD.Barrier()
 
     def build_global_file(self):
         """Build the file by concatenating those on each frequency"""
-        rank, size = aster_core.MPI_CommRankSize()
+        rank = MPI.COMM_WORLD.Get_rank()
+        size = MPI.COMM_WORLD.Get_size()
         if rank == 0:
             fimpe = self._fichier_tmp("impe_Laplace")
             fd = open(fimpe, 'w')
@@ -504,7 +507,7 @@ class CalculMissFichierTemps(CalculMiss):
             for k in range(1, size):
                 UTMESS('I', 'PARALLEL_2', valk=(fimpe, self._results_path[k]))
                 send_file(fimpe, self._results_path[k])
-        aster_core.MPI_Barrier()
+        MPI.COMM_WORLD.Barrier()
 
     def cree_commande_miss(self):
         """Produit le fichier de commandes Miss du champ incident (.inci)"""

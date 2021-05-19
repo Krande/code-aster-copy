@@ -20,6 +20,8 @@
 import code_aster
 from code_aster.Commands import *
 from code_aster import LinearAlgebra
+from code_aster import MPI
+
 
 # force PETSc to start before solves for testing purpose only - no need in regular study
 LinearAlgebra.petscInitialize("-ksp_view -log_view -ksp_monitor")
@@ -28,9 +30,9 @@ code_aster.init("--test")
 
 test = code_aster.TestCase()
 
-rank = code_aster.getMPIRank()
-print("Nb procs", code_aster.getMPINumberOfProcs())
-print("Rank", code_aster.getMPIRank())
+rank = MPI.COMM_WORLD.Get_rank()
+print("Nb procs", MPI.COMM_WORLD.Get_size())
+print("Rank", MPI.COMM_WORLD.Get_rank())
 
 pMesh2 = code_aster.ParallelMesh()
 pMesh2.readMedFile("mesh004a/%d.med"%rank, True)

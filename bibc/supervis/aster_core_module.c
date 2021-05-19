@@ -720,17 +720,6 @@ PyObject *args;
 /*
  * Functions to communicate the execution status in parallel
  */
-static PyObject* aster_mpi_info(self, args)
-PyObject *self; /* Not used */
-PyObject *args;
-{
-    /* Get MPI informations on the current communicator */
-    PyObject *res;
-    int rank, size;
-    aster_get_mpi_info(aster_get_current_comm(), &rank, &size);
-    res = Py_BuildValue("ii", rank, size);
-    return res;
-}
 
 static PyObject* aster_mpi_warn(self, args)
 PyObject *self; /* Not used */
@@ -749,178 +738,6 @@ PyObject *args;
     return Py_None;
 }
 
-static PyObject* aster_mpi_barrier(self, args)
-PyObject *self; /* Not used */
-PyObject *args;
-{
-    /* Set a MPI barrier */
-    if ( aster_set_mpi_barrier(aster_get_current_comm()) ) {
-        return NULL;
-    }
-    Py_INCREF( Py_None );
-    return Py_None;
-}
-
-static char aster_mpi_bcast_doc[] =
-"values = MPI_Bcast(list_or_tuple, root)\n\n"
-"Broadcasts a list/tuple from one process to all other processes.\n"
-"All items of the list/tuple must have the same type (int or double).\n"
-"Returns the values of the root processor.";
-
-static PyObject* aster_mpi_bcast_py(self, args)
-PyObject *self; /* Not used */
-PyObject *args;
-{
-    /*! Broadcasts a list/tuple from one process to all other processes
-        All items of the list/tuple must have the same type (int or double).
-     */
-    PyObject *tupl, *item, *res;
-    int count, root;
-    int iret, idecref;
-    MPI_Datatype type;
-    void *buff;
-    int i;
-
-    if ( !PyArg_ParseTuple(args, "Oi:MPI_Bcast", &tupl, &root) ) return NULL;
-
-    idecref = 0;
-    if ( PyList_Check(tupl) ) {
-        DEBUG_MPI("convert <%s> to <%s>\n", "list", "tuple");
-        idecref = 1;
-        tupl = PyList_AsTuple(tupl);
-    }
-    if ( ! PyTuple_Check(tupl) ) {
-        return NULL;
-    } else {
-        count = (int)PyTuple_Size(tupl);
-        item = PyTuple_GetItem(tupl, 0);
-        if ( PyLong_Check(item) || PyLong_Check(item) ) {
-            type = MPI_INTEGER8;
-            buff = (void *)malloc((size_t)count * sizeof(ASTERINTEGER));
-            convert(count, tupl, (ASTERINTEGER *)buff);
-        } else if ( PyFloat_Check(item) ) {
-            type = MPI_DOUBLE_PRECISION;
-            buff = (void *)malloc((size_t)count * sizeof(ASTERDOUBLE));
-            convr8(count, tupl, (ASTERDOUBLE *)buff);
-        } else {
-            // unsupported type
-            return NULL;
-        }
-    }
-    if (idecref == 1) {
-        DEBUG_MPI("DECREF %s <%s>\n", "converted", "tuple");
-        Py_DECREF(tupl);
-    }
-
-    /* `buff` is unchanged without MPI and directly used to create `res` */
-    DEBUG_MPI("Broadcast from %d for %d values\n", root, count);
-    iret = aster_mpi_bcast(buff, count, type, root, aster_get_current_comm());
-    if ( iret != 0 ) {
-        free(buff);
-        return NULL;
-    }
-    if ( type == MPI_INTEGER8 ) {
-        res = MakeTupleInt(count, (ASTERINTEGER *)buff);
-    } else if ( type == MPI_DOUBLE_PRECISION ) {
-        res = MakeTupleFloat(count, (ASTERDOUBLE *)buff);
-    }
-    return res;
-}
-
-static char aster_mpi_gather_str_doc[] =
-"tuple_of_strings = MPI_GatherStr(string, root)\n\n"
-"Gathers a string from a group of processes.\n"
-"Returns a tuple of strings, one by processor.";
-
-static PyObject* aster_mpi_gather_str(self, args)
-PyObject *self; /* Not used */
-PyObject *args;
-{
-    /*! Gathers a string from a group of processes.
-        Returns a tuple of strings, one by processor.
-     */
-    PyObject *tupl, *item, *res;
-    char *instr, *arraystr, *wrk;
-    int count, total, root, rank, size;
-    int *length, *displ;
-    int iret, idecref;
-    MPI_Datatype type;
-    void *buff;
-    int i;
-    aster_comm_t *node;
-
-    if ( !PyArg_ParseTuple(args, "s#i:MPI_GatherStr", &instr, &count, &root) ) return NULL;
-
-#ifdef ASTER_HAVE_MPI
-    // root gathers the size of the string on each processor
-    node = aster_get_current_comm();
-    aster_get_mpi_info(node, &rank, &size);
-    length = (int *)malloc(size * sizeof(int));
-    iret = aster_mpi_gather((void *)&count, 1, MPI_INTEGER4,
-                            (void *)length, 1, MPI_INTEGER4,
-                            root, node);
-    if ( iret != 0 ) {
-        free(length);
-        return NULL;
-    }
-
-    displ = (int *)malloc(size * sizeof(int));
-    total = 0;
-    if (rank == root) {
-        displ[0] = 0;
-        for (i = 0; i < size; i++) {
-            total += length[i];
-            if ( i < size -1 ) {
-                displ[i + 1] = displ[i] + length[i];
-            }
-            DEBUG_MPI("string length = %d, displ = %d\n", length[i], displ[i]);
-        }
-        DEBUG_MPI("%s = %d\n", "total length", total);
-    }
-
-    arraystr = (char *)malloc(total * sizeof(char));
-    iret = aster_mpi_gatherv((void *)instr, count, MPI_CHAR,
-                             (void *)arraystr, length, displ, MPI_CHAR,
-                             root, node);
-    if ( iret != 0 ) {
-        free(displ);
-        free(length);
-        return NULL;
-    }
-
-    if (rank == root) {
-        res = PyTuple_New((Py_ssize_t)size);
-        for (i = 0; i < size; i++) {
-            wrk = (char*)malloc((length[i] + 1) * sizeof(char));
-            strncpy(wrk, &arraystr[displ[i]], length[i]);
-            wrk[length[i]] = '\0';
-            DEBUG_MPI("arraystr: %s (len=%d)\n", wrk, (int)strlen(wrk));
-            if( PyTuple_SetItem(res, i, PyUnicode_FromString(wrk))) {
-                Py_DECREF(res);
-                free(wrk);
-                free(displ);
-                free(length);
-                return NULL;
-            }
-            free(wrk);
-        }
-    } else {
-        Py_INCREF(Py_None);
-        res = Py_None;
-    }
-    free(length);
-    free(arraystr);
-#else
-    // without MPI, create a tuple with in input string
-    res = PyTuple_New((Py_ssize_t)1);
-    if( PyTuple_SetItem(res, 0, PyUnicode_FromString(instr))) {
-        Py_DECREF(res);
-        return NULL;
-    }
-#endif
-    return res;
-}
-
 
 /*
  * Methods of the aster_core module.
@@ -930,11 +747,7 @@ static PyMethodDef methods[] = {
     { "matfpe",         asterc_matfpe,       METH_VARARGS, matfpe_doc },
     { "get_mem_stat",   asterc_get_mem_stat, METH_VARARGS, get_mem_stat_doc },
     { "set_mem_stat",   asterc_set_mem_stat, METH_VARARGS, set_mem_stat_doc },
-    { "MPI_CommRankSize", aster_mpi_info,    METH_VARARGS },
     { "MPI_Warn",       aster_mpi_warn,      METH_VARARGS },
-    { "MPI_Barrier",    aster_mpi_barrier,   METH_VARARGS },
-    { "MPI_Bcast",      aster_mpi_bcast_py,  METH_VARARGS, aster_mpi_bcast_doc },
-    { "MPI_GatherStr",  aster_mpi_gather_str, METH_VARARGS, aster_mpi_gather_str_doc },
     { "set_option",     asterc_setopt,       METH_VARARGS },
     // { "get_option",  ... } : method added in register_jdc
     { NULL, NULL, 0, NULL }

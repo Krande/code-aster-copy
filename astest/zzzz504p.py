@@ -18,12 +18,13 @@
 
 import code_aster
 from code_aster.Commands import *
+from code_aster import MPI
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),INFO=1,)
 
-nProc = code_aster.getMPINumberOfProcs()
+nProc = MPI.COMM_WORLD.Get_size()
 parallel= (nProc>1)
-rank = code_aster.getMPIRank()
+rank = MPI.COMM_WORLD.Get_rank()
 
 if (parallel):
     MAIL = code_aster.ParallelMesh()

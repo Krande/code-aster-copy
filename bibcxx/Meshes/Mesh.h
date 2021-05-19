@@ -29,7 +29,7 @@
 
 #include "Meshes/BaseMesh.h"
 #include "Supervis/ResultNaming.h"
-#include "ParallelUtilities/MPIInfos.h"
+#include "ParallelUtilities/AsterMPI.h"
 
 /**
  * @class MeshClass

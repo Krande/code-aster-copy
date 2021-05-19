@@ -18,6 +18,8 @@
 # --------------------------------------------------------------------
 
 import code_aster
+from code_aster import MPI
+
 
 import medcoupling as mc
 from mpi4py import MPI
@@ -27,8 +29,8 @@ code_aster.init("--test")
 
 test = code_aster.TestCase()
 
-rank = code_aster.getMPIRank()
-nbproc = code_aster.getMPINumberOfProcs()
+rank = MPI.COMM_WORLD.Get_rank()
+nbproc = MPI.COMM_WORLD.Get_size()
 
 if nbproc > 1:
     is_parallel = True

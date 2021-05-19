@@ -28,7 +28,6 @@
 #include "Meshes/ConnectionMesh.h"
 #include "Modeling/PhysicalQuantityManager.h"
 #include "Modeling/PhysicsAndModelings.h"
-#include "ParallelUtilities/MPIInfos.h"
 #include "ParallelUtilities/AsterMPI.h"
 
 FiniteElementDescriptorClass::FiniteElementDescriptorClass( const std::string &name,

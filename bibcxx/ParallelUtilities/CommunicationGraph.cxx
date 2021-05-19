@@ -29,7 +29,7 @@
 
 #include "aster_mpi.h"
 #include "ParallelUtilities/CommunicationGraph.h"
-#include "ParallelUtilities/MPIInfos.h"
+#include "ParallelUtilities/AsterMPI.h"
 
 CommunicationGraph::CommunicationGraph( const std::string &name, const JeveuxVectorLong &pFED )
     : _graph( JeveuxVectorLong( name + ".NBJO" ) ) {
@@ -37,7 +37,7 @@ CommunicationGraph::CommunicationGraph( const std::string &name, const JeveuxVec
     const auto &joins = *( pFED );
     auto nbJoin = joins.size();
 
-    int nbProcs = getMPINumberOfProcs(), rank = getMPIRank();
+    int nbProcs = getMPISize(), rank = getMPIRank();
     VectorInt commGraph( nbProcs * nbProcs, 0 );
     for ( int i = 0; i < nbJoin; ++i )
         commGraph[rank * nbProcs + joins[i]] = 1;

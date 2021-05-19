@@ -20,17 +20,20 @@
 import os
 import code_aster
 from code_aster.Commands import *
+from code_aster import MPI
+
+
 test = code_aster.TestCase()
 
 code_aster.init("--test")
-nProc = code_aster.getMPINumberOfProcs()
-rank = code_aster.getMPIRank()
+nProc = MPI.COMM_WORLD.Get_size()
+rank = MPI.COMM_WORLD.Get_rank()
 
 
 pMesh2 = code_aster.ParallelMesh()
 pMesh2.readMedFile("mesh004a/%d.med"%rank, True)
 
-rank = code_aster.getMPIRank()
+rank = MPI.COMM_WORLD.Get_rank()
 
 model = AFFE_MODELE(MAILLAGE = pMesh2,
                     AFFE = _F(MODELISATION = "3D",

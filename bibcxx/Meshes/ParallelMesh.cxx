@@ -28,7 +28,6 @@
 
 #include "aster_fort_mesh.h"
 #include "Meshes/ParallelMesh.h"
-#include "ParallelUtilities/MPIInfos.h"
 #include "ParallelUtilities/AsterMPI.h"
 #include "Utilities/Tools.h"
 
@@ -48,7 +47,8 @@ bool ParallelMeshClass::updateGlobalGroupOfNodes( void ) {
 
     _groupsOfNodes->buildFromJeveux();
     auto gONNames = _groupsOfNodes->getObjectNames();
-    auto allgONNames = AsterMPI::gatheringVectorsOnAllProcs( gONNames );
+    std::vector< JeveuxChar32 > allgONNames;
+    AsterMPI::all_gather( gONNames, allgONNames );
 
     for ( auto &nameOfGrp : allgONNames )
         _setOfAllGON.insert( trim( nameOfGrp.toString() ) );
@@ -70,7 +70,8 @@ bool ParallelMeshClass::updateGlobalGroupOfCells( void ) {
 
     _groupsOfCells->buildFromJeveux();
     auto gOENames = _groupsOfCells->getObjectNames();
-    auto allgOENames = AsterMPI::gatheringVectorsOnAllProcs( gOENames );
+    std::vector< JeveuxChar32 > allgOENames;
+    AsterMPI::all_gather( gOENames, allgOENames );
 
     for ( auto &nameOfGrp : allgOENames )
         _setOfAllGOE.insert( trim( nameOfGrp.toString() ) );

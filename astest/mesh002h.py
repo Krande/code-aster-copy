@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,8 @@
 
 import code_aster
 from code_aster.Commands import *
+from code_aster import MPI
+
 
 code_aster.init("--test")
 
@@ -29,8 +31,8 @@ pMesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH")
 model = AFFE_MODELE(MAILLAGE=pMesh,
                     AFFE=_F(MODELISATION='3D', PHENOMENE='MECANIQUE', TOUT='OUI'),)
 
-rank = code_aster.getMPIRank()
-nbproc = code_aster.getMPINumberOfProcs()
+rank = MPI.COMM_WORLD.Get_rank()
+nbproc = MPI.COMM_WORLD.Get_size()
 
 if nbproc == 2:
     nbNodes = [1740,1682]

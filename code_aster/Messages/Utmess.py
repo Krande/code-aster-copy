@@ -32,6 +32,7 @@ from ..Utilities import (Singleton, _, center, clean_string, config, convert,
                          copy_text_to, cut_long_lines, force_list, textbox,
                          to_unicode, ufmt)
 from ..Utilities.misc import get_time
+from ..Utilities.mpi_utils import MPI
 
 DEBUG = False
 CENTER = 1
@@ -117,7 +118,8 @@ class MESSAGE_LOGGER(metaclass=Singleton):
         """Stocke les informations nécessaires pour la gestion des erreurs en MPI."""
         if not config["ASTER_HAVE_MPI"]:
             return
-        self._mpi_rank, self._mpi_nbcpu = aster_core.MPI_CommRankSize()
+        self._mpi_rank = MPI.COMM_WORLD.Get_rank()
+        self._mpi_nbcpu = MPI.COMM_WORLD.Get_size()
 
     def __call__(self, *args, **kwargs):
         """Raccourci pour simplifier l'appel depuis astermodule.c et UTMESS.

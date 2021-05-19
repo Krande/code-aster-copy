@@ -23,9 +23,28 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "astercxx.h"
-#include "aster_mpi.h"
+#include "ParallelUtilities/AsterMPI.h"
 
+int getMPISize( aster_comm_t* comm ) {
 #ifdef ASTER_HAVE_MPI
+    int rank = -1, nbProcs = -1;
+    aster_get_mpi_info( comm, &rank, &nbProcs );
+    if ( rank == -1 || nbProcs == -1 )
+        throw std::runtime_error( "Error with MPI Infos" );
+#else
+    int nbProcs = 1;
+#endif
+    return nbProcs;
+};
 
-#endif /* ASTER_HAVE_MPI */
+int getMPIRank( aster_comm_t* comm ) {
+#ifdef ASTER_HAVE_MPI
+    int rank = -1, nbProcs = -1;
+    aster_get_mpi_info( comm, &rank, &nbProcs );
+    if ( rank == -1 || nbProcs == -1 )
+        throw std::runtime_error( "Error with MPI Infos" );
+#else
+    int rank = 0;
+#endif
+    return rank;
+};

@@ -40,7 +40,6 @@
 #include "Numbering/DOFNumbering.h"
 #include "Numbering/FieldOnNodesDescription.h"
 #include "ParallelUtilities/AsterMPI.h"
-#include "ParallelUtilities/MPIInfos.h"
 #include "PythonBindings/LogicalUnitManager.h"
 
 

@@ -21,16 +21,18 @@ import os
 import code_aster
 from code_aster.Commands import *
 from code_aster.Utilities.MedUtils.MEDPartitioner import MEDPartitioner
+from code_aster import MPI
+
 
 code_aster.init("--test")
 
 test = code_aster.TestCase()
 
-rank = code_aster.getMPIRank()
-print("Nb procs", code_aster.getMPINumberOfProcs())
-print("Rank", code_aster.getMPIRank())
+rank = MPI.COMM_WORLD.Get_rank()
+print("Nb procs", MPI.COMM_WORLD.Get_size())
+print("Rank", MPI.COMM_WORLD.Get_rank())
 
-if code_aster.getMPINumberOfProcs() > 1:
+if MPI.COMM_WORLD.Get_size() > 1:
     is_parallel = True
 else:
     is_parallel = False
@@ -44,7 +46,7 @@ ms.partitionMesh(True)
 
 # Where to save the mesh in a single folder
 path = os.getcwd()
-path.replace("/proc."+str(code_aster.getMPIRank()), "")
+path.replace("/proc."+str(MPI.COMM_WORLD.Get_rank()), "")
 
 meshFolder = path+"/meshFolder"
 

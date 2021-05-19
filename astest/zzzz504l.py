@@ -19,10 +19,12 @@
 
 import code_aster
 from code_aster.Commands import *
+from code_aster import MPI
+
 import os
 
 code_aster.init("--test")
-nProc = code_aster.getMPINumberOfProcs()
+nProc = MPI.COMM_WORLD.Get_size()
 parallel= (nProc>1)
 
 test = code_aster.TestCase()

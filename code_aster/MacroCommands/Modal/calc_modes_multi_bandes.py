@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,12 +18,12 @@
 # --------------------------------------------------------------------
 
 import aster
-import aster_core
 from ...Messages import UTMESS
 
 from ...Cata.Syntax import _F
 from ...Commands import EXTR_MODE, IMPR_CO, INFO_MODE, MODI_MODELE, NUME_DDL
 from ...Objects import AssemblyMatrixDisplacementReal
+from ...Utilities.mpi_utils import MPI
 from .mode_iter_simult import MODE_ITER_SIMULT
 
 
@@ -76,13 +76,14 @@ def calc_modes_multi_bandes( self, stop_erreur, sturm, INFO, **args):
     # on bluffe l'algo en posant rang=0/nbproc=1 pour tous les procs.
     # Cependant si le solveur est autre que MUMPS on s'arrete en erreur.
     if CALC_FREQ['NIVEAU_PARALLELISME'] == 'COMPLET':
-        rang, nbproc = aster_core.MPI_CommRankSize()
+        rang = MPI.COMM_WORLD.Get_rank()
+        nbproc = MPI.COMM_WORLD.Get_size()
         niv_par = 'COMPLET'
     elif CALC_FREQ['NIVEAU_PARALLELISME'] == 'PARTIEL':
         rang = 0
         nbproc = 1
         niv_par = 'PARTIEL'
-        nbproc_real = aster_core.MPI_CommRankSize()[1]
+        nbproc_real = MPI.COMM_WORLD.Get_size()
         if ((nbproc_real > 1) & (solveur_lineaire != 'MUMPS')):
             aster.affiche('MESSAGE', 72 * '-')
             UTMESS('F', 'MODAL_14', vali=nbproc_real, valk=solveur_lineaire)

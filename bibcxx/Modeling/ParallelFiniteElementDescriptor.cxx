@@ -22,7 +22,7 @@
  */
 
 #include "Modeling/ParallelFiniteElementDescriptor.h"
-#include "ParallelUtilities/MPIInfos.h"
+#include "ParallelUtilities/AsterMPI.h"
 #include <algorithm>
 
 #ifdef ASTER_HAVE_MPI
@@ -38,7 +38,7 @@ ParallelFiniteElementDescriptorClass::ParallelFiniteElementDescriptorClass
                     _globalNumberingDelayedNodes( JeveuxVectorLong( getName() + ".NULG" ) )
 {
     const int rank = getMPIRank();
-    const int nbProcs = getMPINumberOfProcs();
+    const int nbProcs = getMPISize();
 
     const auto& owner = *(mesh->getOwner());
     const auto& explorer = FEDesc->getDelayedElementsExplorer();

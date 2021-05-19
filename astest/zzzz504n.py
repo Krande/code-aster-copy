@@ -19,11 +19,13 @@
 
 import code_aster
 from code_aster.Commands import *
+from code_aster import MPI
+
 test = code_aster.TestCase()
 
 code_aster.init("--test")
 
-rank = code_aster.getMPIRank()
+rank = MPI.COMM_WORLD.Get_rank()
 
 pMesh2 = code_aster.Mesh()
 pMesh2.readMedFile("zzzz504a.med")

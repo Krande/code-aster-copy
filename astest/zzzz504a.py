@@ -19,19 +19,21 @@
 
 import code_aster
 from code_aster.Commands import *
+from code_aster import MPI
+
 test = code_aster.TestCase()
 
 code_aster.init("--test")
 
-nProc = code_aster.getMPINumberOfProcs()
+nProc = MPI.COMM_WORLD.Get_size()
 parallel= (nProc>1)
 
 import os
 
-rank = code_aster.getMPIRank()
+rank = MPI.COMM_WORLD.Get_rank()
 
 if (parallel):
-    rank=code_aster.getMPIRank()
+    rank=MPI.COMM_WORLD.Get_rank()
     pMesh2 = code_aster.ParallelMesh()
     pMesh2.readMedFile("mesh004c/%d.med"%rank, True )
        #os.system('echo "-mat_view :/tmp/par.txt:ascii_matlab " > ~/.petscrc')
@@ -84,7 +86,7 @@ resu = STAT_NON_LINE(CHAM_MATER=AFFMAT,
                      SOLVEUR=_F(METHODE='PETSC',RESI_RELA=1.e-7,PRE_COND='LDLT_SP'),)
 
 #if (parallel):
-   #rank = code_aster.getMPIRank()
+   #rank = MPI.COMM_WORLD.Get_rank()
    #myFile='par.txt'
    #os.system("sed 's/Mat_.*\=/par\ \=/g' /tmp/par.txt > /tmp/par_clean.txt && mv /tmp/par_clean.txt /tmp/par.txt")
    #if (rank==0): os.system( """grep -v %% /tmp/%s | grep -v zzz | grep -v \] | grep -v Mat | awk '{print $3}' | LANG=en_US.UTF-8  sort -g > /tmp/%s_sorted"""%(myFile,myFile) )
@@ -98,7 +100,7 @@ resu = STAT_NON_LINE(CHAM_MATER=AFFMAT,
    #os.system( """grep -v Object /tmp/sol_seq.txt | grep -v type | grep -v Process | LANG=en_US.UTF-8  sort -g > /tmp/sol_seq_sorted.txt  """)
 
 #if (parallel):
-    #rank = code_aster.getMPIRank()
+    #rank = MPI.COMM_WORLD.Get_rank()
     #if (rank==0):
         #os.system( """cp fort.11 /tmp/ddl0.txt """ )
         #os.system( """cp fort.30 /tmp/sol_petsc_par_0.txt """ )
@@ -110,7 +112,7 @@ resu = STAT_NON_LINE(CHAM_MATER=AFFMAT,
     #os.system( """cp fort.19 /tmp/sol_petsc_seq.txt """ )
 
 #if parallel:
-    #rank = code_aster.getMPIRank()
+    #rank = MPI.COMM_WORLD.Get_rank()
     #resu.printMedFile('/tmp/par_%d.resu.med'%rank)
 #else:
     #resu.printMedFile('/tmp/seq.resu.med')

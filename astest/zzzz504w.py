@@ -20,12 +20,13 @@
 import numpy as N
 import code_aster
 from code_aster.Commands import *
+from code_aster import MPI
 
 code_aster.init("--test")
 
 test = code_aster.TestCase()
 
-rank = code_aster.getMPIRank()
+rank = MPI.COMM_WORLD.Get_rank()
 
 MAIL= LIRE_MAILLAGE(FORMAT='MED',
                        PARTITIONNEUR='PTSCOTCH',

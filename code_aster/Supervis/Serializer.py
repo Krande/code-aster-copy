@@ -67,7 +67,7 @@ import numpy
 from .. import Objects
 from ..Objects import DataStructure, ResultNaming, WithEmbeddedObjects
 from ..Utilities import (DEBUG, ExecutionParameter, Options,
-                         get_caller_context, logger, no_new_attributes)
+                         get_caller_context, logger, no_new_attributes, MPI)
 
 ARGS = '_MARK_DS_ARGS_'
 NOARGS = '_MARK_DS_NOARGS_'
@@ -307,7 +307,7 @@ def saveObjects(level=1, delete=True, options=0):
     """
     gc.collect()
     options |= FinalizeOptions.SaveBase
-    rank = libaster.getMPIRank()
+    rank = MPI.COMM_WORLD.Get_rank()
     if options & FinalizeOptions.OnlyProc0 and rank != 0:
         logger.info("Objects not saved on processor #{0}".format(rank))
         libaster.jeveux_finalize(FinalizeOptions.OnlyProc0)

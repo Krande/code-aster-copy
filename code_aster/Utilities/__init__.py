@@ -41,6 +41,7 @@ from .i18n import localization
 from .i18n import translate as _
 from .injector import injector
 from .logger import DEBUG, ERROR, INFO, WARNING, logger
+from .mpi_utils import haveMPI, MPI
 from .options import Options
 from .report import CR
 from .strfunc import (center, clean_string, convert, copy_text_to,
@@ -57,17 +58,7 @@ except ImportError:
     version_info = ()
 try:
     from .aster_config import config as _cfg
-
     config = ReadOnlyDict(**_cfg)
     del _cfg
 except ImportError:
     config = defaultdict(lambda: None)
-
-
-def haveMPI():
-    """Tell if the library is built with MPI support.
-
-    Returns:
-    bool: *True* if use MPI librairies, *False* else
-    """
-    return config.get("ASTER_HAVE_MPI", 0) == 1

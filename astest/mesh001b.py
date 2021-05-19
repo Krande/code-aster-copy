@@ -21,6 +21,8 @@ import code_aster
 import numpy as np
 
 from code_aster.Commands import DEFI_GROUP
+from code_aster import MPI
+
 
 code_aster.init("--test")
 
@@ -28,8 +30,8 @@ code_aster.init("--test")
 test = code_aster.TestCase()
 
 # MPI test
-rank = code_aster.getMPIRank()
-nbproc = code_aster.getMPINumberOfProcs()
+rank = MPI.COMM_WORLD.Get_rank()
+nbproc = MPI.COMM_WORLD.Get_size()
 
 test.assertEqual(nbproc, 3)
 

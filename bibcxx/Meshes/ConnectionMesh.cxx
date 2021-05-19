@@ -27,7 +27,6 @@
 
 #include "aster_fort_mesh.h"
 #include "Meshes/ConnectionMesh.h"
-#include "ParallelUtilities/MPIInfos.h"
 #include "ParallelUtilities/AsterMPI.h"
 
 #ifdef ASTER_HAVE_MPI
@@ -583,7 +582,7 @@ VectorLong ConnectionMeshClass::getCellsGlobalNumbering( const JeveuxVectorLong&
     /* Rank of the current MPI proc */
     const int rank = getMPIRank();
     /* Total number of processors */
-    const int numberOfProcessors = getMPINumberOfProcs();
+    const int numberOfProcessors = getMPISize();
 
     rankOfCells->updateValuePointer();
     const int nbCells = _pMesh->getNumberOfCells();

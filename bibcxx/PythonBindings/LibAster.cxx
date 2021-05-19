@@ -93,7 +93,6 @@
 #include "PythonBindings/ListOfFloatsInterface.h"
 #include "PythonBindings/ListOfIntegersInterface.h"
 #include "PythonBindings/LoadResultInterface.h"
-#include "PythonBindings/MPIInfosInterface.h"
 #include "PythonBindings/MaterialFieldBuilderInterface.h"
 #include "PythonBindings/MaterialFieldInterface.h"
 #include "PythonBindings/MaterialInterface.h"
@@ -290,7 +289,6 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportParallelMechanicalLoadToPython();
     exportParallelFiniteElementDescriptorToPython();
 #endif /* ASTER_HAVE_MPI */
-    exportMPIInfosToPython();
 
     exportConnectionMeshToPython();
     exportResultNamingToPython();

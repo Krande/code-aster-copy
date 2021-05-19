@@ -23,7 +23,7 @@
 
 #include "Loads/ParallelMechanicalLoad.h"
 #include "Meshes/MeshExplorer.h"
-#include "ParallelUtilities/MPIInfos.h"
+#include "ParallelUtilities/AsterMPI.h"
 #include "Supervis/ResultNaming.h"
 
 #ifdef ASTER_HAVE_MPI

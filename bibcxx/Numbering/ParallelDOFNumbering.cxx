@@ -26,6 +26,7 @@
 #include "Numbering/ParallelDOFNumbering.h"
 #include <stdexcept>
 #include "ParallelUtilities/AsterMPI.h"
+#include "Utilities/Tools.h"
 
 #ifdef ASTER_HAVE_MPI
 
@@ -168,7 +169,7 @@ VectorString ParallelDOFNumberingClass::getComponents() const {
     // Communicate with others
     AsterMPI::all_gather(localComp, globalComp);
 
-    return globalComp;
+    return unique(globalComp);
 };
 
 VectorString ParallelDOFNumberingClass::getComponentsAssociatedToNode(const ASTERINTEGER node,

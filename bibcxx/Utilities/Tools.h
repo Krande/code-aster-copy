@@ -6,7 +6,7 @@
  * @brief Fichier entete des outils
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -25,6 +25,7 @@
  */
 
 #include <string>
+#include <set>
 
 #include "astercxx.h"
 
@@ -44,5 +45,23 @@ VectorLong irange(const long begin, const long end);
  *      The output array must be freed by the caller.
  */
 char *vectorStringAsFStrArray( const VectorString &vector, const int size );
+
+
+// Set and sort a vector
+template<typename T>
+std::vector<T>
+unique(const std::vector<T>& vec)
+{
+    // make unique & sort
+    std::set<T> s;
+    std::copy(vec.begin(), vec.end(), std::inserter(s, s.end()));
+
+    // recopy
+    std::vector<T> r;
+    r.resize(s.size());
+    std::copy(s.begin(), s.end(), r.begin());
+
+    return r;
+}
 
 #endif /* TOOLS_H_ */

@@ -19,6 +19,7 @@
 
 import code_aster
 from code_aster.Commands import *
+from code_aster import MPI
 
 code_aster.init("--test")
 
@@ -28,7 +29,7 @@ test = code_aster.TestCase()
 parallel = True
 
 if parallel:
-    rank=code_aster.getMPIRank()
+    rank=MPI.COMM_WORLD.Get_rank()
     MAIL = code_aster.ParallelMesh()
     MAIL.readMedFile("petsc04g/%d.med"%rank, True)
 else:
@@ -132,7 +133,7 @@ TEST_RESU(
 test.printSummary()
 
 # if parallel:
-#     rank = code_aster.getMPIRank()
+#     rank = MPI.COMM_WORLD.Get_rank()
 #     resnonl.printMedFile('/tmp/par_%d.resu.med'%rank)
 # else:
 #     resnonl.printMedFile('/tmp/seq.resu.med')
