@@ -284,7 +284,7 @@ subroutine trchno(ific, nocc)
                 nl2 = lxlgut(lign2)
                 lign1(1:nl1+16)=lign1(1:nl1-1)//' NOEUD'
                 lign2(1:nl2+16)=lign2(1:nl2-1)//' '//nonoeu(1:8)
-            else
+!
                 if (l_parallel_mesh) then
                     call utmess('F', 'MODELISA7_86')
                 endif

@@ -53,44 +53,59 @@ CHT1 = AFFE_CHAR_MECA(MODELE=MODT,
                                    DIRECTION=(0.0, -1.0, 0.0),),
                       INFO=1,
                       VERI_NORM='NON',)
+charCine = code_aster.MechanicalDirichletBC(MODT)
+charCine.addBCOnCells(code_aster.PhysicalQuantityComponent.Dx, 0., "Bas1")
+charCine.addBCOnCells(code_aster.PhysicalQuantityComponent.Dy, 1., "Bas1")
+charCine.addBCOnCells(code_aster.PhysicalQuantityComponent.Dx, 0., "Bas3")
+charCine.addBCOnCells(code_aster.PhysicalQuantityComponent.Dy, -1., "Bas3")
+charCine.build()
 
-charCine = AFFE_CHAR_CINE(MODELE=MODT,
-            MECA_IMPO=(_F(GROUP_MA=("Bas1"), DX=0., DY=1.),
-                       _F(GROUP_MA=("Bas3"), DX=0., DY=-1.),))
+study = code_aster.StudyDescription(MODT, affectMat)
+study.addDirichletBC(charCine)
+study.addLoad(CHT1)
+dProblem = code_aster.DiscreteProblem(study)
+vect_elem = dProblem.buildElementaryMechanicalLoadsVector()
+matr_elem = dProblem.computeMechanicalStiffnessMatrix()
 
+monSolver = code_aster.MumpsSolver( )
 
-resu=MECA_STATIQUE( MODELE=MODT,
-                        CHAM_MATER=affectMat,
-                        EXCIT  =(_F( CHARGE = CHT1), _F( CHARGE = charCine)),
-                       )
+numeDDL = code_aster.ParallelDOFNumbering()
+numeDDL.setElementaryMatrix(matr_elem)
+numeDDL.computeNumbering()
+test.assertEqual(numeDDL.getType(), "NUME_DDL_P")
 
+matrAsse = code_aster.AssemblyMatrixDisplacementReal()
+matrAsse.appendElementaryMatrix(matr_elem)
+matrAsse.setDOFNumbering(numeDDL)
+matrAsse.addDirichletBC(charCine)
+matrAsse.build()
+test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 
-# resu.printMedFile('/tmp/test2_{}.resu.med'.format(rank))
+retour = vect_elem.assembleVector( numeDDL )
+
+monSolver.matrixFactorization( matrAsse )
+
+vcine = CALC_CHAR_CINE(NUME_DDL=numeDDL, CHAR_CINE=charCine,)
+resu = monSolver.solveRealLinearSystemWithDirichletBC(matrAsse, vcine, retour)
 
 TEST_RESU(
-    RESU=_F(
+    CHAM_NO=_F(
         CRITERE='ABSOLU',
         GROUP_NO='Point1',
-        NOM_CHAM='DEPL',
         NOM_CMP='DY',
-        NUME_ORDRE=1,
-        PRECISION=1.e-6,
         REFERENCE='AUTRE_ASTER',
-        RESULTAT=resu,
+        CHAM_GD=resu,
         VALE_CALC=0.999549999999998,
         VALE_REFE=0.999549999999998,
     ))
 
 TEST_RESU(
-    RESU=_F(
+    CHAM_NO=_F(
         CRITERE='ABSOLU',
         GROUP_NO='Point4',
-        NOM_CHAM='DEPL',
         NOM_CMP='DY',
-        NUME_ORDRE=1,
-        PRECISION=1.e-6,
         REFERENCE='AUTRE_ASTER',
-        RESULTAT=resu,
+        CHAM_GD=resu,
         VALE_CALC=-1.0004499999999994,
         VALE_REFE=-1.0004499999999994,
     ))
