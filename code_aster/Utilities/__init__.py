@@ -48,6 +48,7 @@ from .strfunc import (center, clean_string, convert, copy_text_to,
                       maximize_lines, textbox, to_unicode, ufmt)
 from .Tester import TestCase
 from .transpose import transpose
+from .user_extensions import WithEmbeddedObjects
 from .version import get_version, get_version_desc
 
 # aster_pkginfo/aster_config will only be available after installation
@@ -57,10 +58,12 @@ except ImportError:
     version_info = ()
 try:
     from .aster_config import config as _cfg
+
     config = ReadOnlyDict(**_cfg)
     del _cfg
 except ImportError:
     config = defaultdict(lambda: None)
+
 
 def haveMPI():
     """Tell if the library is built with MPI support.
@@ -68,4 +71,4 @@ def haveMPI():
     Returns:
     bool: *True* if use MPI librairies, *False* else
     """
-    return config.get('ASTER_HAVE_MPI', 0) == 1
+    return config.get("ASTER_HAVE_MPI", 0) == 1

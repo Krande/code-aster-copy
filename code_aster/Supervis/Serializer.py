@@ -47,6 +47,9 @@ Objects are reloaded by the function :func:`loadObjects` called just after the
 Jeveux database has been reloaded by :func:`~code_aster.Commands.debut.init`
 if the ``--continue`` argument is passed.
 The command :func:`~code_aster.Commands.debut.POURSUITE` does also the same.
+
+To be properly pickled, the classes defined by the user must be inherit
+from :class:`~code_aster.Utilities.user_extensions.WithEmbeddedObjects`.
 """
 
 import gc
@@ -63,7 +66,7 @@ import numpy
 
 from .. import Objects
 from ..Objects import DataStructure, ResultNaming
-from ..Utilities import (DEBUG, ExecutionParameter, Options,
+from ..Utilities import (DEBUG, WithEmbeddedObjects, ExecutionParameter, Options,
                          get_caller_context, logger, no_new_attributes)
 
 ARGS = '_MARK_DS_ARGS_'
@@ -276,16 +279,21 @@ class Serializer(object):
 def _restore(name, obj):
     """Build instance from BufferObject."""
     if isinstance(obj, list):
-        new = [_restore(name, i) for i in obj]
-    elif isinstance(obj, tuple):
-        new = tuple(_restore(name, list(obj)))
-    elif isinstance(obj, dict):
-        new = obj.__class__([(i, _restore(name, obj[i])) for i in obj])
-    elif isinstance(obj, AsterUnpickler.BufferObject):
-        new = obj.instance
-    else:
-        new = obj
-    return new
+        return [_restore(name, i) for i in obj]
+    if isinstance(obj, tuple):
+        return tuple(_restore(name, list(obj)))
+    if isinstance(obj, dict):
+        return obj.__class__([(i, _restore(name, obj[i])) for i in obj])
+    if isinstance(obj, AsterUnpickler.BufferObject):
+        return obj.instance
+    if isinstance(obj, WithEmbeddedObjects):
+        logger.debug(f"restoring object {name}, attrs: {obj.aster_embedded}")
+        for attr in obj.aster_embedded:
+            logger.debug(f"attr: {attr}, was: {getattr(obj, attr)}")
+            setattr(obj, attr, _restore(name, getattr(obj, attr)))
+            logger.debug(f"new: {getattr(obj, attr)}")
+        return obj
+    return obj
 
 
 def saveObjects(level=1, delete=True, options=0):
