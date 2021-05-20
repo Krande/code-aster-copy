@@ -249,7 +249,7 @@ RESUTH=THER_NON_LINE(MODELE=MODTHER,
                        ARCHIVAGE=_F(LIST_INST=LISTARCH,),
                        ETAT_INIT=_F(VALE=20.0,),);
 
-RESUTH = CALC_CHAMP(reuse= RESUTH,PARALLELISME_TEMPS='OUI',
+RESUTH = CALC_CHAMP(reuse= RESUTH, # PARALLELISME_TEMPS='OUI',
                     RESULTAT = RESUTH,
                     THERMIQUE='HYDR_NOEU' )
 #----------------------------------------
