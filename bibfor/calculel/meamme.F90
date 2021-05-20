@@ -107,6 +107,7 @@ character(len=*), intent(in), optional :: variz_, comporz_
     character(len=19) :: matrElem, resuElem, ligrel
     integer :: iLoad, indxResuElem
     integer :: nbResuElem, iResuElem, idxResuElemRigi
+    integer :: nbSubstruct
     character(len=24), pointer :: rerr(:) => null()
     character(len=24), pointer :: listResuElem(:) => null()
     aster_logical :: hasDirichlet
@@ -134,6 +135,9 @@ character(len=*), intent(in), optional :: variz_, comporz_
     lchin  = ' '
     lpaout = ' '
     lchout = ' '
+
+! - Prepare flags
+    call dismoi('NB_SS_ACTI', model, 'MODELE', repi = nbSubstruct)
 
 ! - Behaviour when non-linear case, multi-behaviour (PMF) for linear case
     compor = ' '
@@ -193,8 +197,10 @@ character(len=*), intent(in), optional :: variz_, comporz_
 ! - Prepare RESU_ELEM objects
     call memare(base, matrElem, model, mate, caraElem, 'AMOR_MECA')
     call jeveuo(matrElem//'.RERR', 'E', vk24 = rerr)
-    rerr(3) (1:3) = 'OUI'
     call jedetr(matrElem//'.RELR')
+    if (nbSubstruct .gt. 0) then
+        rerr(3) = 'OUI_SOUS_STRUC'
+    endif
 
 ! - Input fields
     lpain(1) = 'PGEOMER'

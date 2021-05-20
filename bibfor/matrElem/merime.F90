@@ -30,6 +30,7 @@ implicit none
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/exixfe.h"
 #include "asterfort/jedema.h"
@@ -100,6 +101,7 @@ aster_logical, intent(in), optional :: hasExteStatVari_, onlyDirichlet_
     character(len=24) :: mate, mateco
     character(len=19) :: matrElem, resuElem
     integer :: iLoad, indxResuElem
+    integer :: nbSubstruct
     aster_logical :: lxfem, hasFiniteElement, hasExteStatVari, onlyDirichlet
     character(len=24), pointer :: rerr(:) => null()
     character(len=8) :: loadName
@@ -136,6 +138,7 @@ aster_logical, intent(in), optional :: hasExteStatVari_, onlyDirichlet_
     if (present(hasExteStatVari_)) then
         hasExteStatVari = hasExteStatVari_
     endif
+    call dismoi('NB_SS_ACTI', model, 'MODELE', repi = nbSubstruct)
 
 ! - Preparation of input fields
     call mecham(option, model, caraElem, modeFourier, chgeom,&
@@ -154,8 +157,10 @@ aster_logical, intent(in), optional :: hasExteStatVari_, onlyDirichlet_
 ! - Prepare RESU_ELEM objects
     call memare(base, matrElem, model, mate, caraElem, option)
     call jeveuo(matrElem//'.RERR', 'E', vk24 = rerr)
-    rerr(3) (1:3) = 'OUI'
     call jedetr(matrElem//'.RELR')
+    if (nbSubstruct .gt. 0) then
+        rerr(3) = 'OUI_SOUS_STRUC'
+    endif
 
 ! - Input fields
     lpain(1) = 'PGEOMER'
