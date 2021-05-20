@@ -127,7 +127,7 @@ ConnectionMeshClass::ConnectionMeshClass( const std::string &name,
     VectorLong numNodesGathered;
     VectorLong numNodesToSend;
 
-    std::map< long, long> numNodesGloLoc, numCellsGloLoc;
+    std::map< long, long> numNodesGloLoc, numCellsGloLoc, renumNodes;
 
     int totalNumberOfNodes = 0, totalNumberOfCells = 0, numOwner = 0;
 
@@ -426,6 +426,23 @@ ConnectionMeshClass::ConnectionMeshClass( const std::string &name,
     /* Part of the code dealing with the definition of ConnectionMesh variables */
     /* ************************************************************************ */
 
+    /* Renumbering to have always the same thing */
+    for ( int i = 0; i < totalNumberOfNodes; ++i )
+    {
+        const int globalNum = numNodesGathered[3 * i + 1];
+        renumNodes[globalNum] = i;
+    }
+
+    int pos = 0;
+    VectorInt renumNodesLocNew(totalNumberOfNodes, -1);
+    for ( auto& it : renumNodes )
+    {
+        renumNodesLocNew[it.second] = pos;
+        pos++;
+    }
+    renumNodes.clear();
+
+
     /* Add numbering */
     _localNumbering->allocate( Permanent, totalNumberOfNodes );
     _globalNumbering->allocate( Permanent, totalNumberOfNodes );
@@ -433,15 +450,10 @@ ConnectionMeshClass::ConnectionMeshClass( const std::string &name,
 
     for ( int i = 0; i < totalNumberOfNodes; ++i )
     {
-        ( *_localNumbering )[i] = numNodesGathered[3 * i];
-        ( *_globalNumbering )[i] = numNodesGathered[3 * i + 1];
-        ( *_owner )[i] = numNodesGathered[3 * i + 2];
-        numNodesGloLoc[ ( *_globalNumbering )[i] ] = i + 1;
-
-        /* The nodes have to be ordered by proc to speed up tansfert of DofNum */
-        if( numOwner > ( *_owner )[i] )
-            throw std::runtime_error("Nodes not ordered");
-        numOwner = ( *_owner )[i];
+        ( *_localNumbering )[renumNodesLocNew[i]] = numNodesGathered[3 * i];
+        ( *_globalNumbering )[renumNodesLocNew[i]] = numNodesGathered[3 * i + 1];
+        ( *_owner )[renumNodesLocNew[i]] = numNodesGathered[3 * i + 2];
+        numNodesGloLoc[ ( *_globalNumbering )[renumNodesLocNew[i]] ] = renumNodesLocNew[i] + 1;
     }
 
     /* Add coordinates */
@@ -451,18 +463,21 @@ ConnectionMeshClass::ConnectionMeshClass( const std::string &name,
     auto values = _coordinates->getValues();
     values->allocate( Permanent, numberOfConnectionMeshCoordinates );
     values->updateValuePointer();
-    for ( int i = 0; i < numberOfConnectionMeshCoordinates; ++i )
+    for ( int i = 0; i < totalNumberOfNodes; ++i )
     {
-        ( *values )[i] = coordinatesGathered[i];
+        ( *values )[3*renumNodesLocNew[i]]   = coordinatesGathered[3*i];
+        ( *values )[3*renumNodesLocNew[i]+1] = coordinatesGathered[3*i+1];
+        ( *values )[3*renumNodesLocNew[i]+2] = coordinatesGathered[3*i+2];
     }
 
     /* Add nodes */
     _nameOfNodes->allocate( Permanent, totalNumberOfNodes );
-    for ( int i = 1; i <= totalNumberOfNodes; ++i )
+    for ( int i = 0; i < totalNumberOfNodes; ++i )
     {
         std::stringstream sstream;
-        sstream << std::setfill( '0' ) << std::setw( 7 ) << std::hex << i;
-        _nameOfNodes->add( i, std::string( "N" + sstream.str() ) );
+        const int newNum = renumNodesLocNew[i] + 1;
+        sstream << std::setfill( '0' ) << std::setw( 7 ) << std::hex << newNum;
+        _nameOfNodes->add( newNum, std::string( "N" + sstream.str() ) );
     }
 
     /* Add group of nodes */

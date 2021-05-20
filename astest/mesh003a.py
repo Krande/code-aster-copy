@@ -155,7 +155,7 @@ test.assertSequenceEqual(sorted(cMesh10.getGroupsOfCells()), ["DROITE", "GAUCHE"
 test.assertSequenceEqual(sorted(cMesh10.getCells()), [1,2,3,4,5,6,7,8])
 test.assertSequenceEqual(sorted(cMesh10.getCells("GAUCHE")), [1])
 test.assertSequenceEqual(sorted(cMesh10.getCells("DROITE")), [5])
-test.assertSequenceEqual(sorted(cMesh10.getGlobalNumbering()), [0,1,2,3,4,5,6,7])
+test.assertSequenceEqual(cMesh10.getGlobalNumbering(), [0,1,2,3,4,5,6,7])
 test.assertSequenceEqual(sorted(cMesh10.getLocalNumbering()), [1, 1, 2, 2, 3, 4, 5, 6])
 
 
@@ -210,7 +210,7 @@ test.assertEqual(cMesh15.getNumberOfNodes(), 8)
 test.assertEqual(cMesh15.getNumberOfCells(), 11)
 test.assertSequenceEqual(sorted(cMesh15.getGroupsOfNodes()), ["N0", "N1", "N2", "N3"])
 test.assertSequenceEqual(sorted(cMesh15.getGroupsOfCells()), ["BAS", "DROITE", "GAUCHE", "HAUT"])
-test.assertSequenceEqual(sorted(cMesh15.getGlobalNumbering()), [0,1,2,3,4,5,6,7])
+test.assertSequenceEqual(cMesh15.getGlobalNumbering(), [0,1,2,3,4,5,6,7])
 test.assertSequenceEqual(sorted(cMesh15.getLocalNumbering()), [1, 1, 2, 2, 3, 4, 5, 6])
 
 # Test ConnectionMesh - Isolated node
@@ -221,7 +221,7 @@ test.assertEqual(cMesh16.getNumberOfNodes(), 6)
 test.assertEqual(cMesh16.getNumberOfCells(), 4)
 test.assertSequenceEqual(sorted(cMesh16.getGroupsOfNodes()), ["N4"])
 test.assertSequenceEqual(sorted(cMesh16.getGroupsOfCells()), [])
-test.assertSequenceEqual(sorted(cMesh16.getGlobalNumbering()), [2, 3, 4, 5, 6, 7])
+test.assertSequenceEqual(cMesh16.getGlobalNumbering(), [2, 3, 4, 5, 6, 7])
 test.assertSequenceEqual(sorted(cMesh16.getLocalNumbering()), [1, 2, 3, 4, 5, 6])
 
 
