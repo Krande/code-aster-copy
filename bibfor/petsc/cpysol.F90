@@ -40,6 +40,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 #include "asterfort/jexnum.h"
 #include "asterfort/mrconl.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/crnustd.h"
 #include "jeveux.h"
 !
 #ifdef ASTER_HAVE_PETSC
@@ -59,10 +60,13 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
     integer :: numglo, jdeeq, jrefn, jmlogl, nuno1, nucmp1, numloc
     integer :: iret1, iret2, jjoine, nbnoee, idprn1, idprn2, nec, dime
     integer :: nunoel, l, jjoinr, jnujoi1, jnujoi2, nbnoer, nddll, ntot
-    integer :: numnoe
-    logical :: ldebug
+    integer :: numnoe, step
+    aster_logical :: ldebug
+    integer, pointer :: v_nuls(:) => null()
+    integer, pointer :: v_deeg(:) => null()
+    integer, save :: nstep = 0
 !
-    integer(kind=4) :: n4r, n4e, iaux4, num4, numpr4
+    mpi_int :: n4r, n4e, iaux4, num4, numpr4
     mpi_int :: mrank, msize, iermpi, mpicou
 !
     character(len=4) :: chnbjo
@@ -84,7 +88,10 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
     zzprno(ili, nunoel, l) = zi(idprn1 - 1 + zi(idprn2 + ili - 1) + (nunoel - 1)*(nec + 2) + l - 1)
 !
     call jemarq()
-    ldebug = .false.
+!
+    step = -1
+    ldebug = ASTER_FALSE .and. step == nstep
+    nstep = nstep + 1
 !
     call asmpi_comm('GET', mpicou)
 !
@@ -251,17 +258,19 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 !
 ! -- debug
     if (ldebug) then
-        call jeveuo(numddl//'.NUME.DEEQ', 'L', jdeeq)
-        call jeveuo(numddl//'.NUME.REFN', 'L', jrefn)
-        noma = zk24(jrefn)
-        nonulg = noma//'.NULOGL'
-        call jeveuo(nonulg, 'L', jmlogl)
+        print*, "DEBUG IN CPYSOL"
+        call jeexin(numddl//'.NUME.NULS', iret)
+        if(iret == 0) then
+            call crnustd(numddl)
+        end if
+        call jeveuo(numddl//'.NUME.NULS', 'L', vi=v_nuls)
+        call jeveuo(numddl//'.NUME.DEEG', 'L', vi=v_deeg)
         do iaux = 1, nloc
             if (zi(jprddl + iaux - 1) .eq. rang) then
-                nuno1 = zi(jdeeq + (iaux - 1)*2)
-                if (nuno1 .ne. 0) nuno1 = zi(jmlogl + nuno1 - 1) + 1
-                nucmp1 = zi(jdeeq + (iaux - 1)*2 + 1)
-                write (30 + rang, *) nuno1, nucmp1, rsolu(iaux)
+                nuno1  = v_deeg(2*(iaux-1) + 1)
+                nucmp1 = v_deeg(2*(iaux-1) + 2)
+                write (30 + rang, *) nuno1, nucmp1, v_nuls(iaux), rsolu(iaux)
+                !,zi(jnulg - 1 + iaux)
             end if
         end do
         flush (30 + rang)

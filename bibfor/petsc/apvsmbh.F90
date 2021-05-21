@@ -53,7 +53,7 @@ use petsc_data_module
 !     VARIABLES LOCALES
     integer :: jnequ, jnequl, jnugll, jprddl, jdeeq, iret
     integer :: nloc, nglo, jrefn, jmlogl, ndprop
-    integer :: bs, jcoll, jvaleu, iterm, nuno, nucmp
+    integer :: bs, jcoll, jvaleu, iterm, nuno, nucmp, step
     integer, pointer :: v_nuls(:) => null()
     integer, pointer :: v_deeg(:) => null()
 
@@ -62,7 +62,8 @@ use petsc_data_module
     character(len=8) :: mesh
     character(len=14) :: nonu
 
-    aster_logical, parameter :: dbg = ASTER_FALSE
+    aster_logical :: dbg
+    integer, save :: nstep = 0
 !
 !----------------------------------------------------------------
 !     Variables PETSc
@@ -72,6 +73,11 @@ use petsc_data_module
     mpi_int :: rang
 !----------------------------------------------------------------
     call jemarq()
+!
+! -- DEBUG
+    step = -1
+    dbg = ASTER_FALSE .and. step == nstep
+    nstep = nstep + 1
 !
 !   -- COMMUNICATEUR MPI DE TRAVAIL
     call asmpi_comm('GET', mpicomm)
@@ -128,8 +134,9 @@ use petsc_data_module
             if(dbg) then
                 nuno  = v_deeg(2*(jcoll) + 1)
                 nucmp = v_deeg(2*(jcoll) + 2)
-!                    numéro noeud global, num comp du noeud, nume eq std, nume eq glob, rhs
-                write(601+rang,*) nuno, nucmp, v_nuls(jcoll+1), zi(jnugll + jcoll), rsolu(jcoll + 1)
+!                    numéro noeud global, num comp du noeud, nume eq std, rhs, nume eq glob
+                write(601+rang,*) nuno, nucmp, v_nuls(jcoll+1), rsolu(jcoll + 1)
+                !,zi(jnugll + jcoll)
             end if
         endif
     end do

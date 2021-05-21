@@ -378,8 +378,6 @@ subroutine crnustd(numddl)
                     nbno_lili_lc = nbno_lili_lc + 1
                     nbddl_lag = nbddl_lag + 1
                     numloc = numloc + 1
-                    i_ddl = zzprno(ili, ino, 1)
-                    nbcmp = zzprno(ili, ino, 2)
                     ASSERT(nbcmp.eq.1)
                     v_nuls(i_ddl) = nbddl_phys_gl - 1 - v_deeg(2*(i_ddl-1)+1)
                 endif
