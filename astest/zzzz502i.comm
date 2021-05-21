@@ -39,7 +39,7 @@ MATE=AFFE_MATERIAU(MAILLAGE=pMesh,
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                 VALE=(0.0,0.0,1.0,1.0,),)
 
-LINSTC=DEFI_LIST_REEL(VALE=(0., 1.0,),)
+LINSTC=DEFI_LIST_REEL(VALE=(0., 0.5, 1.0,),)
 
 loads = []
 
@@ -116,7 +116,7 @@ for load in loads:
         RESU=STAT_NON_LINE(MODELE=model,
                         CHAM_MATER=MATE,
                         EXCIT=_F(CHARGE=load, FONC_MULT=RAMPE,),
-                        CONVERGENCE=_F(RESI_GLOB_MAXI=2e-4),
+                        CONVERGENCE=_F(RESI_GLOB_MAXI=2.5e-4),
                         SOLVEUR=_F(METHODE=solver,RESI_RELA=1e-9,),
                         INCREMENT=_F(LIST_INST=LINSTC,),
                         )

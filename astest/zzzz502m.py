@@ -25,8 +25,8 @@ test = code_aster.TestCase()
 
 code_aster.init("--test")
 
-nProc = code_aster.getMPINumberOfProcs()
-rank = code_aster.getMPIRank()
+nProc = code_aster.MPI.COMM_WORLD.Get_size()
+rank = code_aster.MPI.COMM_WORLD.Get_rank()
 
 
 pMesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH", INFO_MED=1)
@@ -133,6 +133,76 @@ TEST_RESU(
                     PRECISION=0.00001,
                     REFERENCE='AUTRE_ASTER',
                     RESULTAT=pRESU,
+                    VALE_CALC=19999999999.380936,
+                    VALE_REFE=19999999999.380936,
+                ),
+            ),)
+
+
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                VALE=(0.0,0.0,1.0,1.0,),)
+
+LINSTC=DEFI_LIST_REEL(VALE=(0., 0.5, 0.75, 1.0,),)
+
+nRESU=STAT_NON_LINE(MODELE=pmodel,
+                        CHAM_MATER=pMATE,
+                        EXCIT=(_F(CHARGE=pload0, FONC_MULT=RAMPE,),
+                                _F(CHARGE=pload1, FONC_MULT=RAMPE,),
+                                _F(CHARGE=pload2, FONC_MULT=RAMPE,), _F(CHARGE=pload3, FONC_MULT=RAMPE,),),
+                        INCREMENT=_F(LIST_INST=LINSTC,),
+                        SOLVEUR=_F(METHODE="PETSC",RESI_RELA=1e-9,),
+                        )
+
+TEST_RESU(
+                RESU=(_F(
+                    GROUP_NO=('GN0', ),
+                    NOM_CHAM='DEPL',
+                    NOM_CMP='DX',
+                    INST=1.0,
+                    PRECISION=0.00001,
+                    REFERENCE='AUTRE_ASTER',
+                    RESULTAT=nRESU,
+                    CRITERE='ABSOLU',
+                    VALE_CALC=-0.33333333333333204,
+                    VALE_REFE=-0.33333333333333204,
+                ),
+            _F(
+                    GROUP_NO=('GN0', ),
+                    NOM_CHAM='DEPL',
+                    NOM_CMP='DY',
+                    INST=1.0,
+                    REFERENCE='AUTRE_ASTER',
+                    RESULTAT=nRESU,
+                    ORDRE_GRANDEUR=1e-6,
+                    CRITERE='ABSOLU',
+                    VALE_CALC=2.6988334396258498E-17,
+                    VALE_REFE=0.0,
+                ),
+            ),)
+
+
+TEST_RESU(
+                RESU=(_F(
+                    GROUP_NO=('GN1', ),
+                    NOM_CHAM='DEPL',
+                    NOM_CMP='DX',
+                    INST=1.0,
+                    PRECISION=0.00001,
+                    REFERENCE='AUTRE_ASTER',
+                    RESULTAT=nRESU,
+                    CRITERE='RELATIF',
+                    VALE_CALC=0.33333333333333515,
+                    VALE_REFE=0.33333333333333515,
+                ),
+            _F(
+                    CRITERE=('RELATIF', ),
+                    GROUP_NO=('GN1', ),
+                    NOM_CHAM='DEPL',
+                    NOM_CMP='PRES',
+                    INST=1.0,
+                    PRECISION=0.00001,
+                    REFERENCE='AUTRE_ASTER',
+                    RESULTAT=nRESU,
                     VALE_CALC=19999999999.380936,
                     VALE_REFE=19999999999.380936,
                 ),
