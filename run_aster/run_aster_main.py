@@ -312,18 +312,15 @@ def main(argv=None):
     if args.only_proc0 is None:
         args.only_proc0 = CFG.get("only-proc0", False)
 
-    wrkdir = args.wrkdir or create_temporary_dir()
+    wrkdir = args.wrkdir or create_temporary_dir(dir=CFG.get("tmpdir"))
     try:
         if need_split or need_mpiexec:
             run_aster = osp.join(ROOT, "bin", "run_aster")
-            os.makedirs(wrkdir, exist_ok=True)
+            expdir = create_temporary_dir(dir=os.getenv("HOME", "/tmp"))
             for exp_i in split_export(export):
-                fexp = osp.join(wrkdir, "export." + str(exp_i.get("step")))
+                fexp = osp.join(expdir, "export." + str(exp_i.get("step")))
                 exp_i.write_to(fexp)
                 argv_i = [i for i in argv if i != args.export]
-                if not args.wrkdir:
-                    argv_i.append("--wrkdir")
-                    argv_i.append(wrkdir)
                 argv_i.append(fexp)
                 cmd = f"{run_aster} {' '.join(argv_i)}"
                 if need_mpiexec:
@@ -333,6 +330,7 @@ def main(argv=None):
                 proc = run(cmd, shell=True)
                 if proc.returncode != 0:
                     break
+            shutil.rmtree(expdir)
             return proc.returncode
 
         if args.only_proc0 and procid > 0:

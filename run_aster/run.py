@@ -49,13 +49,13 @@ FMT_DIAG = """
 """
 
 
-def create_temporary_dir():
+def create_temporary_dir(dir):
     """Create a temporarry directory.
 
     Returns:
         str: Path of the directory.
     """
-    return tempfile.mkdtemp(prefix="run_aster_", dir=CFG.get("tmpdir"))
+    return tempfile.mkdtemp(prefix="run_aster_", dir=dir)
 
 
 class RunAster:
