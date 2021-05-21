@@ -30,29 +30,42 @@ from libaster import (AssemblyMatrixDisplacementComplex, AssemblyMatrixDisplacem
 
 from ..SD.sd_stoc_morse import sd_stoc_morse
 from ..Utilities import injector
+from .Serialization import InternalStateBuilder
+
+
+class AssemblyMatrixStateBuilder(InternalStateBuilder):
+    """Class that returns the internal state of a *AssemblyMatrix* to be pickled."""
+
+    def save(self, matrix):
+        """Return the internal state of a *AssemblyMatrix* to be pickled.
+
+        Arguments:
+            matrix (*AssemblyMatrix*): The *AssemblyMatrix* object to be pickled.
+
+        Returns:
+            *InternalStateBuilder*: The internal state itself.
+        """
+        super().save(matrix)
+        self._st["numbering"] = matrix.getDOFNumbering()
+        return self
+
+    def restore(self, matrix):
+        """Restore the *AssemblyMatrix* content from the previously saved internal
+        state.
+
+        Arguments:
+            matrix (*AssemblyMatrix*): The *DataStructure* object to be pickled.
+        """
+        super().restore(matrix)
+        matrix.setDOFNumbering(self._st["numbering"])
+
 
 _orig_DisplReal_getType = AssemblyMatrixDisplacementReal.getType
 
 @injector(AssemblyMatrixDisplacementReal)
 class ExtendedAssemblyMatrixDisplacementReal(object):
     cata_sdj = "SD.sd_matr_asse.sd_matr_asse"
-
-    def __getstate__(self):
-        """Return internal state.
-
-        Returns:
-            list: Internal state.
-        """
-        return [self.getDOFNumbering(), ]
-
-    def __setstate__(self, state):
-        """Restore internal state.
-
-        Arguments:
-            state (list): Internal state.
-        """
-        if state[0]:
-            self.setDOFNumbering(state[0])
+    internalStateBuilder = AssemblyMatrixStateBuilder
 
     def getType(self):
         """Returns the type of the matrix object.
@@ -189,6 +202,7 @@ class ExtendedAssemblyMatrixDisplacementReal(object):
 @injector(AssemblyMatrixDisplacementComplex)
 class ExtendedAssemblyMatrixDisplacementComplex(object):
     cata_sdj = "SD.sd_matr_asse.sd_matr_asse"
+    internalStateBuilder = AssemblyMatrixStateBuilder
 
     def EXTR_MATR(self, sparse=False, epsilon=None) :
         """Returns the matrix values as `numpy.array`.
@@ -305,23 +319,7 @@ class ExtendedAssemblyMatrixDisplacementComplex(object):
 @injector(AssemblyMatrixTemperatureReal)
 class ExtendedAssemblyMatrixTemperatureReal(object):
     cata_sdj = "SD.sd_matr_asse.sd_matr_asse"
-
-    def __getstate__(self):
-        """Return internal state.
-
-        Returns:
-            list: Internal state.
-        """
-        return [self.getDOFNumbering(), ]
-
-    def __setstate__(self, state):
-        """Restore internal state.
-
-        Arguments:
-            state (list): Internal state.
-        """
-        if state[0]:
-            self.setDOFNumbering(state[0])
+    internalStateBuilder = AssemblyMatrixStateBuilder
 
     def toPetsc(self):
         """Convert the matrix to a PETSc matrix object.
@@ -330,4 +328,3 @@ class ExtendedAssemblyMatrixTemperatureReal(object):
             PetscMat: PETSc matrix.
         """
         return assemblyMatrixToPetsc(self)
-

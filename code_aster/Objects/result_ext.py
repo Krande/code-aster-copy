@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,59 +27,60 @@ import aster
 from libaster import MaterialField, Model, Result
 
 from ..Utilities import injector
+from .Serialization import InternalStateBuilder
+
+
+class ResultStateBuilder(InternalStateBuilder):
+    """Class that returns the internal state of a *Result*."""
+
+    def save(self, result):
+        """Return the internal state of a *Result* to be pickled.
+
+        Arguments:
+            result (*Result*): The *Result* object to be pickled.
+
+        Returns:
+            *InternalStateBuilder*: The internal state itself.
+        """
+        super().save(result)
+        self._st["model"] = []
+        self._st["mater"] = []
+        self._st["rank"] = result.getRanks()
+        for i in self._st["rank"]:
+            try:
+                self._st["model"].append(result.getModel(i))
+            except RuntimeError:
+                pass
+            try:
+                self._st["mater"].append(result.getMaterialField(i))
+            except RuntimeError:
+                pass
+        if len(self._st["rank"]) != len(self._st["model"]):
+            self._st["model"] = []
+        if len(self._st["rank"]) != len(self._st["mater"]):
+            self._st["mater"] = []
+        return self
+
+    def restore(self, result):
+        """Restore the *DataStructure* content from the previously saved internal
+        state.
+
+        Arguments:
+            result (*DataStructure*): The *DataStructure* object to be pickled.
+        """
+        super().restore(result)
+        for i, rank in enumerate(self._st["rank"]):
+            if self._st["model"]:
+                result.addModel(self._st["model"][i], rank)
+            if self._st["mater"]:
+                result.addMaterialField(self._st["mater"][i], rank)
 
 
 @injector(Result)
 class ExtendedResult(object):
+
     cata_sdj = "SD.sd_resultat.sd_resultat"
-
-    def __getstate__(self):
-        """Return internal state.
-
-        Returns:
-            list: Internal state.
-        """
-        models = []
-        materials = []
-        ranks = self.getRanks()
-        for i in ranks:
-            try:
-                models.append(self.getModel(i))
-            except:
-                pass
-            try:
-                materials.append(self.getMaterialField(i))
-            except:
-                pass
-        if len(ranks) != len(models):
-            models = []
-        if len(ranks) != len(materials):
-            materials = []
-        state = []
-        state.append(len(ranks))
-        state.extend(ranks)
-        state.append(len(models))
-        state.extend(models)
-        state.append(len(materials))
-        state.extend(materials)
-        return state
-
-    def __setstate__(self, state):
-        """Restore internal state.
-
-        Arguments:
-            state (list): Internal state.
-        """
-        nbranks = state.pop(0)
-        ranks = []
-        for _ in range(nbranks):
-            ranks.append(state.pop(0))
-        nbmod = state.pop(0)
-        for i in range(nbmod):
-            self.addModel(state.pop(0), ranks[i])
-        nbmat = state.pop(0)
-        for i in range(nbmat):
-            self.addMaterialField(state.pop(0), ranks[i])
+    internalStateBuilder = ResultStateBuilder
 
     def LIST_CHAMPS (self) :
         return aster.GetResu(self.getName(), "CHAMPS")

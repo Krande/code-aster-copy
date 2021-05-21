@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ from libaster import (GeneralizedAssemblyMatrixComplex,
                       GeneralizedAssemblyMatrixReal)
 
 from ..Utilities import injector
+from .Serialization import InternalStateBuilder
 
 
 def VALM_triang2array(dict_VALM, dim, dtype=None):
@@ -58,28 +59,40 @@ def VALM_diag2array(dict_VALM, dim, dtype=None):
         valeur[i,i] =  diag[i]
     return valeur
 
+
+class GeneralizedAssemblyMatrixStateBuilder(InternalStateBuilder):
+    """Class that returns the internal state of a *GeneralizedAssemblyMatrix* to be pickled."""
+
+    def save(self, matrix):
+        """Return the internal state of a *GeneralizedAssemblyMatrix* to be pickled.
+
+        Arguments:
+            matrix (*GeneralizedAssemblyMatrix*): The *GeneralizedAssemblyMatrix* object to be pickled.
+
+        Returns:
+            *InternalStateBuilder*: The internal state itself.
+        """
+        super().save(matrix)
+        self._st["numbering"] = matrix.getGeneralizedDOFNumbering()
+        self._st["base"] = matrix.getModalBasis()
+        return self
+
+    def restore(self, matrix):
+        """Restore the *GeneralizedAssemblyMatrix* content from the previously saved internal
+        state.
+
+        Arguments:
+            matrix (*GeneralizedAssemblyMatrix*): The *DataStructure* object to be pickled.
+        """
+        super().restore(matrix)
+        matrix.setGeneralizedDOFNumbering(self._st["numbering"])
+        matrix.setModalBasis(self._st["base"])
+
+
 @injector(GeneralizedAssemblyMatrixComplex)
 class ExtendedGeneralizedAssemblyMatrixComplex(object):
     cata_sdj = "SD.sd_matr_asse_gene.sd_matr_asse_gene"
-
-    def __getstate__(self):
-        """Return internal state.
-
-        Returns:
-            list: Internal state.
-        """
-        return [self.getGeneralizedDOFNumbering(), self.getModalBasis()]
-
-    def __setstate__(self, state):
-        """Restore internal state.
-
-        Arguments:
-            state (list): Internal state.
-        """
-        if state[0]:
-            self.setGeneralizedDOFNumbering(state[0])
-        if state[1]:
-            self.setModalBasis(state[1])
+    internalStateBuilder = GeneralizedAssemblyMatrixStateBuilder
 
     def EXTR_MATR_GENE(self) :
         desc = self.sdj.DESC.get()
@@ -149,25 +162,7 @@ class ExtendedGeneralizedAssemblyMatrixComplex(object):
 @injector(GeneralizedAssemblyMatrixReal)
 class ExtendedGeneralizedAssemblyMatrixReal():
     cata_sdj = "SD.sd_matr_asse_gene.sd_matr_asse_gene"
-
-    def __getstate__(self):
-        """Return internal state.
-
-        Returns:
-            dict: Internal state.
-        """
-        return (True, self.getGeneralizedDOFNumbering(), self.getModalBasis())
-
-    def __setstate__(self, state):
-        """Restore internal state.
-
-        Arguments:
-            state (dict): Internal state.
-        """
-        if state[1] is not None:
-            self.setGeneralizedDOFNumbering(state[1])
-        if state[2] is not None:
-            self.setModalBasis(state[2])
+    internalStateBuilder = GeneralizedAssemblyMatrixStateBuilder
 
     def EXTR_MATR(self, sparse=False):
 

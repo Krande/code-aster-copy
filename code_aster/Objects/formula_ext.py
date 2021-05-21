@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,42 +29,55 @@ from pickle import dumps, loads
 from libaster import Formula
 
 from ..Utilities import force_list, initial_context, injector, logger
+from .Serialization import InternalStateBuilder
+
+
+class FormulaStateBuilder(InternalStateBuilder):
+    """Class that returns the internal state of a *Formula*."""
+
+    def save(self, form):
+        """Return the internal state of a *Formula* to be pickled.
+
+        Arguments:
+            form (*Formula*): The *Formula* object to be pickled.
+
+        Returns:
+            *InternalStateBuilder*: The internal state itself.
+        """
+        super().save(form)
+        init = initial_context()
+        user_ctxt = {}
+        for key, val in form.getContext().items():
+            if val is not init.get(key):
+                user_ctxt[key] = val
+        self._st["expr"] = form.getExpression()
+        self._st["ctxt"] = dumps(user_ctxt)
+        return self
+
+    def restore(self, form):
+        """Restore the *DataStructure* content from the previously saved internal
+        state.
+
+        Arguments:
+            form (*DataStructure*): The *DataStructure* object to be pickled.
+        """
+        super().restore(form)
+        form.setExpression(self._st["expr"])
+        # try to load the context
+        try:
+            ctxt = initial_context()
+            ctxt.update(loads(self._st["ctxt"]))
+            form.setContext(ctxt)
+        except:
+            logger.warning(f"can not restore context of formula '{form.getName()}'")
+            logger.debug(traceback.format_exc())
 
 
 @injector(Formula)
 class ExtendedFormula(object):
+
     cata_sdj = "SD.sd_fonction.sd_formule"
-
-    def __getstate__(self):
-        """Return internal state.
-
-        Returns:
-            list: Internal state.
-        """
-        init = initial_context()
-        user_ctxt = {}
-        for key, val in self.getContext().items():
-            if val is not init.get(key):
-                user_ctxt[key] = val
-        return [self.getExpression(), dumps(user_ctxt)]
-
-    def __setstate__(self, state):
-        """Restore internal state.
-
-        Arguments:
-            state (list): Internal state.
-        """
-        assert len(state) == 2, state
-        self.setExpression(state[0])
-        # try to load the context
-        try:
-            ctxt = initial_context()
-            ctxt.update(loads(state[1]))
-            self.setContext(ctxt)
-        except:
-            name = self.getName()
-            logger.warning(f"can not restore context of formula '{name}'")
-            logger.debug(traceback.format_exc())
+    internalStateBuilder = FormulaStateBuilder
 
     def __call__(self, *val):
         """Evaluate the formula with the given variables values.

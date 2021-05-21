@@ -27,6 +27,7 @@ import libaster
 from libaster import DataStructure
 
 from ..Utilities import deprecated, import_object, injector
+from .Serialization import InternalStateBuilder
 
 
 @injector(DataStructure)
@@ -39,6 +40,7 @@ class ExtendedDataStructure(object):
     cata_sdj = None
     ptr_class_sdj = None
     ptr_sdj = None
+    internalStateBuilder = InternalStateBuilder
 
     orig_getName = DataStructure.getName
 
@@ -66,17 +68,19 @@ class ExtendedDataStructure(object):
     def __getstate__(self):
         """Return internal state.
 
-        Returns:
-            list: Internal state.
+        Derivated *DataStructure* types should defined a dedicated *InternalStateBuilder*
+        class to serialize its specific content.
         """
-        return []
+        return self.internalStateBuilder().save(self)
 
     def __setstate__(self, state):
         """Restore internal state.
 
         Arguments:
-            state (list): Internal state.
+            state (*InternalStateBuilder*): Internal state.
         """
+        assert isinstance(state, InternalStateBuilder), f"unexpected type: {state}"
+        state.restore(self)
 
     @property
     def sdj(self):

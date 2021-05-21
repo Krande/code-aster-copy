@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,38 +36,17 @@ from ..Utilities import injector
 class ExtendedElementaryMatrixDisplacementReal():
     cata_sdj = "SD.sd_matr_elem.sd_matr_elem"
 
-    def __getinitargs__(self):
-        """Returns the argument required to reinitialize a ElementaryMatrix
-        object during unpickling.
-        """
-        return (self.getName(), )
 
 @injector(ElementaryMatrixDisplacementComplex)
 class ExtendedElementaryMatrixDisplacementComplex(object):
     cata_sdj = "SD.sd_matr_elem.sd_matr_elem"
 
-    def __getinitargs__(self):
-        """Returns the argument required to reinitialize a ElementaryMatrix
-        object during unpickling.
-        """
-        return (self.getName(), )
 
 @injector(ElementaryMatrixTemperatureReal)
 class ExtendedElementaryMatrixTemperatureReal(object):
     cata_sdj = "SD.sd_matr_elem.sd_matr_elem"
 
-    def __getinitargs__(self):
-        """Returns the argument required to reinitialize a ElementaryMatrix
-        object during unpickling.
-        """
-        return (self.getName(), )
 
 @injector(ElementaryMatrixPressureComplex)
 class ExtendedElementaryMatrixPressureComplex(object):
     cata_sdj = "SD.sd_matr_elem.sd_matr_elem"
-
-    def __getinitargs__(self):
-        """Returns the argument required to reinitialize a ElementaryMatrix
-        object during unpickling.
-        """
-        return (self.getName(), )

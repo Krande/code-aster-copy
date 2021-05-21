@@ -71,6 +71,9 @@ from .thermalload_ext import ThermalLoad
 from .transientgeneralizedresultscontainer_ext import TransientGeneralizedResult
 from .xfemcrack_ext import XfemCrack
 
+# pickling
+from .Serialization import InternalStateBuilder
+
 # user extensions
 from .user_extensions import WithEmbeddedObjects
 
