@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -129,6 +129,8 @@ def build(self):
     except:
         Logs.error("ASTER_ENVIRON not found. Please run 'waf configure...'")
         raise Errors.BuildError
+    # do ignore warnings compiling umat libs
+    dict_conv['FCFLAGS'] = dict_conv['FCFLAGS'].replace("-Werror", "")
     change_tests(dict_conv, self.env.install_tests)
     self(
         features='subst',
