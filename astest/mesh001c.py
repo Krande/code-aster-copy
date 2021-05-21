@@ -25,7 +25,7 @@ code_aster.init("--test")
 
 # check ParallelMesh object API
 test = code_aster.TestCase()
-rank = code_aster.getMPIRank()
+rank = code_aster.MPI.COMM_WORLD.Get_rank()
 
 # from MED format
 mesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")

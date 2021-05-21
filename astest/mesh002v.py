@@ -30,12 +30,12 @@ code_aster.init("--test")
 
 test = code_aster.TestCase()
 
-rank = code_aster.getMPIRank()
-nbproc = code_aster.getMPINumberOfProcs()
+rank = code_aster.MPI.COMM_WORLD.Get_rank()
+nbproc = code_aster.MPI.COMM_WORLD.Get_size()
 print("Nb procs", nbproc)
 print("Rank", rank)
 
-if code_aster.getMPINumberOfProcs() > 1:
+if nbproc > 1:
     is_parallel = True
 else:
     is_parallel = False
