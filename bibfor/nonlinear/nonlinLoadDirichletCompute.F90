@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,9 @@ implicit none
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/nmdebg.h"
+#include "asterfort/ap_assembly_vector.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/isParallelMesh.h"
 !
 character(len=19), intent(in) :: list_load
 character(len=24), intent(in) :: model, nume_dof
@@ -63,6 +66,7 @@ character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
 !
     integer :: ifm, niv
     character(len=19) :: vebudi, cnbudi
+    character(len=8) :: mesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -86,6 +90,13 @@ character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
     call vebume(model, matr_asse, disp, list_load, vebudi)
     call assvec('V', cnbudi, 1, vebudi, [1.d0],&
                 nume_dof, ' ', 'ZERO', 1)
+!
+! - Pour les lagrange distribués, il faut assembler le vecteur pour avoir les contrib
+!   des autres procs (ceci arrive quand un Lagrange est relié à plusieurs sous-domaines)
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk = mesh)
+    if( isParallelMesh(mesh) ) then
+        call ap_assembly_vector(cnbudi)
+    end if
 !
 ! - Stop timer
 !

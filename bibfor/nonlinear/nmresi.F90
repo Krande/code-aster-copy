@@ -58,7 +58,6 @@ implicit none
 #include "asterfort/romAlgoNLCorrEFMecaResidual.h"
 #include "asterfort/nmequi.h"
 #include "asterfort/utmess.h"
-#include "asterfort/ap_assembly_vector.h"
 !
 character(len=8), intent(in) :: mesh
 integer, intent(in) :: list_func_acti(*)
@@ -247,7 +246,6 @@ real(kind=8), intent(out) :: r_char_vale, r_equi_vale
 !
 ! --- COMPLETION DES CHAMPS PRODUITS PAR ASSEMBLAGE :
 #ifdef ASTER_HAVE_MPI
-    call ap_assembly_vector(cnbudi)
     call cnoadd(cnfext, cnfexp)
     call cnoadd(ds_system%cnfint, cnfinp)
     call cnoadd(cndiri, cndirp)

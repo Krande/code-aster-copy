@@ -70,20 +70,19 @@ resu = MECA_STATIQUE( MODELE = model,
                       SOLVEUR = _F( METHODE = "MUMPS",),
                       INFO=2,)
 
-
-POST=POST_ELEM( MINMAX=_F(NOM_CHAM='DEPL',
-                            NOM_CMP=('DX',),
-                            TOUT='OUI',
+TEST_RESU(
+                        RESU=(_F(
+                            GROUP_MA=('Surf', ),
+                            NOM_CHAM='SIEF_ELGA',
+                            NOM_CMP='SIYY',
+                            POINT=1,
+                            SOUS_POINT=2,
+                            NUME_ORDRE=1,
                             RESULTAT=resu,
-                            MODELE=model))
-
-value_test = [0.00023576994388906295, 0.0002350130298428169]
-
-TEST_TABLE(
-           VALE_CALC=value_test[rank],
-           NOM_PARA='MAX_DX',
-           TABLE=POST,
-           )
+                            CRITERE='RELATIF',
+                            VALE_CALC=-405.5059907903177,
+                        ),
+                    ),)
 
 
 

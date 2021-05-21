@@ -41,6 +41,9 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/crnustd.h"
+!
     character(len=*), intent(in) :: chno
 !----------------------------------------------------------------
 !
@@ -51,10 +54,12 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
 #ifdef ASTER_HAVE_PETSC
 !
 !     VARIABLES LOCALES
-    integer :: rang, nbproc, jnequ, numglo, jnulg
-    integer :: iloc, nloc, nglo, ndprop, nval, jvale
-    integer, dimension(:), pointer         :: pddl => null()
-    real(kind=8) :: value
+    integer :: rang, nbproc, jnequ, numglo, jnulg, nuno, nucmp
+    integer :: iloc, nloc, nglo, ndprop, nval, jvale, iret
+    integer, save :: nstep = 0, step
+    integer, pointer :: pddl(:) => null()
+    integer, pointer :: v_nuls(:) => null()
+    integer, pointer :: v_deeg(:) => null()
 
     mpi_int :: mpicomm
 !
@@ -63,7 +68,7 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
     real(kind=8), dimension(:), pointer :: val => null()
     character(len=16) :: typsd
     character(len=19) :: cn19, pfchno, nommai
-    aster_logical :: petscInit
+    aster_logical :: petscInit, dbg
 !
 !----------------------------------------------------------------
 !     Variables PETSc
@@ -81,6 +86,9 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
 !
     cn19=chno
     typsd='****'
+    step = 1
+    dbg = .false. .and. nstep == step
+    nstep = nstep + 1
 
     call dismoi('PROF_CHNO',cn19,'CHAM_NO', repk=pfchno)
     ASSERT(pfchno(15:19).eq.'.NUME')
@@ -96,6 +104,16 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
     call jeveuo(cn19//'.VALE', 'E', jvale)
     nloc = zi(jnequ)
     nglo = zi(jnequ+1)
+!
+    if(dbg) then
+        print*, "DEBUG IN AS_ASSEMBLY_VECTOR"
+        call jeexin(numddl//'.NUME.NULS', iret)
+        if(iret == 0) then
+            call crnustd(numddl)
+        end if
+        call jeveuo(numddl//'.NUME.NULS', 'L', vi=v_nuls)
+        call jeveuo(numddl//'.NUME.DEEG', 'L', vi=v_deeg)
+    end if
 !
 !   -- COMMUNICATEUR MPI DE TRAVAIL
     call asmpi_comm('GET', mpicomm)
@@ -126,13 +144,21 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
     AS_ALLOCATE( vr=val, size=nloc )
     nval = 0
     do iloc = 1, nloc
-        value = zr(jvale+iloc-1)
-        if( value.ne.0.d0 ) then
-            nval = nval+1
-            ig_petsc_c(nval) = zi(jnulg+iloc-1)
-            val(nval) = value
-        endif
+        if(dbg) then
+            nuno  = v_deeg(2*(iloc-1) + 1)
+            nucmp = v_deeg(2*(iloc-1) + 2)
+!           numéro noeud global, num comp du noeud, nume eq std, rhs, nume eq glob
+            write(701+rang,*) nuno, nucmp, v_nuls(iloc), zr(jvale+iloc-1)
+
+        end if
+        !if( pddl(iloc) .eq. rang ) then
+        nval = nval+1
+        ig_petsc_c(nval) = zi(jnulg+iloc-1)
+        val(nval) = zr(jvale+iloc-1)
+        !endif
     end do
+    if(dbg) flush(701+rang)
+!
     call VecSetValues(assembly, to_petsc_int(nval), ig_petsc_c, val, ADD_VALUES, ierr)
     ASSERT(ierr.eq.0)
     call VecAssemblyBegin(assembly, ierr)
@@ -146,11 +172,19 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
     call VecGetArray(assembly, xx, xidx, ierr)
     ASSERT(ierr.eq.0)
     do iloc = 0, nloc-1
-        if( pddl(iloc+1) .eq. rang ) then
-            numglo = zi(jnulg+iloc)
-            zr(jvale+iloc) = xx(xidx+numglo-low+1)
+        if( pddl(iloc) .eq. rang ) then
+            numglo = zi(jnulg-1+iloc)
+            zr(jvale-1+iloc) = xx(xidx+numglo-low+1)
         endif
+        if(dbg) then
+            nuno  = v_deeg(2*(iloc-1) + 1)
+            nucmp = v_deeg(2*(iloc-1) + 2)
+!           numéro noeud global, num comp du noeud, nume eq std, rhs, nume eq glob
+            write(801+rang,*) nuno, nucmp, v_nuls(iloc), zr(jvale-1+iloc)
+
+        end if
     enddo
+    if(dbg) flush(801+rang)
 !
     call VecRestoreArray(assembly, xx, xidx, ierr)
     ASSERT(ierr.eq.0)
@@ -166,6 +200,10 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
 999 continue
     call jedema()
 !
+#else
+    character(len=19) :: cn19
+!
+    cn19 = chno
 #endif
 !
 end subroutine

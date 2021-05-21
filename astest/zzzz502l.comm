@@ -35,9 +35,8 @@ MATE=AFFE_MATERIAU(MAILLAGE=pMesh,
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                 VALE=(0.0,0.0,1.0,1.0,),)
 
-# Bug with two step: to fix
-#LINSTC=DEFI_LIST_REEL(VALE=(0., 0.5, 1.0,),)
-LINSTC=DEFI_LIST_REEL(VALE=(0., 1.0,),)
+
+LINSTC=DEFI_LIST_REEL(VALE=(0., 0.5, 1.0,),)
 
 loads = []
 
