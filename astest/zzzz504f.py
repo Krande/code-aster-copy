@@ -77,9 +77,57 @@ sfon.debugPrint(10+rank)
 sfon.updateValuePointers()
 
 # DX displacement on nodes "N1" and "N3", comparison with sequential results
-if rank == 0:
-    test.assertAlmostEqual(sfon.getValue(1, 0), 1.020408114214617)
-elif rank == 1:
-    test.assertAlmostEqual(sfon.getValue(1, 0), 0.979591885789513)
+TEST_RESU(
+                RESU=(_F(
+                    GROUP_NO=('N1', ),
+                    NOM_CHAM='DEPL',
+                    NOM_CMP='DX',
+                    NUME_ORDRE=1,
+                    RESULTAT=resu,
+                    VALE_CALC=0.979591885789513,
+                ),
+            _F(
+                    GROUP_NO=('N3', ),
+                    NOM_CHAM='DEPL',
+                    NOM_CMP='DX',
+                    NUME_ORDRE=1,
+                    RESULTAT=resu,
+                    VALE_CALC=1.020408114214617,
+                ),
+            ),)
+
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                VALE=(0.0,0.0,1.0,1.0,),)
+
+
+LINSTC=DEFI_LIST_REEL(VALE=(0., 0.5, 1.0,),)
+
+snl = STAT_NON_LINE(CHAM_MATER=AFFMAT,
+                     MODELE=model,
+                     EXCIT=(_F(CHARGE=char_cin,FONC_MULT=RAMPE),
+                            _F(CHARGE=char_meca,FONC_MULT=RAMPE),),
+                    INCREMENT=_F(LIST_INST=LINSTC,),
+                     SOLVEUR=_F(METHODE='PETSC',
+                                PRE_COND='SANS',
+                                RESI_RELA=1.E-10,),)
+
+TEST_RESU(
+                RESU=(_F(
+                    GROUP_NO=('N1', ),
+                    NOM_CHAM='DEPL',
+                    NOM_CMP='DX',
+                    INST=1.0,
+                    RESULTAT=snl,
+                    VALE_CALC=0.979591885789513,
+                ),
+            _F(
+                    GROUP_NO=('N3', ),
+                    NOM_CHAM='DEPL',
+                    NOM_CMP='DX',
+                    INST=1.0,
+                    RESULTAT=snl,
+                    VALE_CALC=1.020408114214617,
+                ),
+            ),)
 
 FIN()
