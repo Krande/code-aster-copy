@@ -17,6 +17,10 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from itertools import chain
+
+from libaster import DataStructure
+
 from ..Utilities import logger
 
 
@@ -60,3 +64,31 @@ class InternalStateBuilder:
         logger.debug(f"restoring dependencies for {obj}: {self._st['deps']}")
         for ref in self._st["deps"]:
             obj.addDependency(ref)
+
+    def flat(self):
+        """Return all *DataStructure* objects as a flat list.
+
+        Returns:
+            list[*DataStructure*]: List of *DataStructure* objects.
+        """
+        return flatten(self._st, lambda obj: isinstance(obj, DataStructure))
+
+
+def flatten(compo, filter_type):
+    """Return instances of a type as a flat list.
+
+    Arguments:
+        compo (misc): Nested list, tuple or dict objects.
+        filter_type (function): Function to select expected objects.
+
+    Returns:
+        list: List of objects.
+    """
+    ret = []
+    if filter_type(compo):
+        ret.append(compo)
+    elif isinstance(compo, (list, tuple)):
+        ret.extend(chain.from_iterable([flatten(i, filter_type) for i in compo]))
+    elif isinstance(compo, dict):
+        ret.extend(chain.from_iterable([flatten(i, filter_type) for i in compo.values()]))
+    return ret

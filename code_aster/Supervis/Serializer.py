@@ -427,6 +427,12 @@ class AsterPickler(pickle.Pickler):
                 self.save_one(len(obj))
                 for item in obj.values():
                     self.save_one(item)
+        elif isinstance(obj, InternalStateBuilder):
+            self.save_one(STATE)
+            flat = obj.flat()
+            self.save_one(len(flat))
+            for item in flat:
+                self.save_one(item)
         elif isinstance(obj, DataStructure):
             ds_id = unique_id(obj)
             if ds_id not in self._memods:
@@ -447,7 +453,6 @@ class AsterPickler(pickle.Pickler):
                 # save state
                 state = obj.__getstate__()
                 assert isinstance(state, InternalStateBuilder), state
-                self.save_one(STATE)
                 logger.debug(f"saved state: {state}")
                 self.save_one(state)
             else:
@@ -631,6 +636,9 @@ class AsterUnpickler(pickle.Unpickler):
             # expecting the STATE mark
             mark = self.load_one()
             assert mark == STATE, mark
+            nbobj = self.load_one()
+            for _ in range(nbobj):
+                self.load_one()
             try:
                 buffer.state = self.load_one()
             except:
