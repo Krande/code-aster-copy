@@ -321,6 +321,9 @@ def main(argv=None):
                 fexp = osp.join(expdir, "export." + str(exp_i.get("step")))
                 exp_i.write_to(fexp)
                 argv_i = [i for i in argv if i != args.export]
+                if not args.wrkdir:
+                    argv_i.append("--wrkdir")
+                    argv_i.append(wrkdir)
                 argv_i.append(fexp)
                 cmd = f"{run_aster} {' '.join(argv_i)}"
                 if need_mpiexec:
