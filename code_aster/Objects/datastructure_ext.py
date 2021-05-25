@@ -116,6 +116,7 @@ DICT_SDJ = {
     "DynamicMacroElement": "SD.sd_macr_elem_dyna.sd_macr_elem_dyna",
     "HarmoGeneralizedResult": "SD.sd_dyna_gene.sd_dyna_gene",
     "Material": "SD.sd_mater.sd_mater",
+    "MeshesMapping": "SD.sd_corresp_2_mailla.sd_corresp_2_mailla",
 }
 
 
