@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!
 #include "asterf_types.h"
 !
 interface
@@ -28,7 +27,6 @@ interface
                       tabwk, force0, force1, ds_energy, kineLoad)
         use NonLin_Datastructure_type
         integer :: neq
-        character(len=8) :: result
         integer :: imat(3)
         character(len=8) :: masse
         character(len=8) :: rigid
@@ -59,6 +57,7 @@ interface
         real(kind=8) :: tabwk(*)
         character(len=19) :: force0
         character(len=19) :: force1
-        type(NL_DS_Energy), intent(inout) :: ds_energy
+        character(len=8), intent(in) :: result
+        type(NL_DS_Energy), intent(out) :: ds_energy
     end subroutine dltali
 end interface

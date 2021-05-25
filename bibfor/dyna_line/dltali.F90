@@ -43,9 +43,13 @@ implicit none
 #include "asterfort/mrmult.h"
 #include "asterfort/preres.h"
 #include "asterfort/resoud.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
+!
+character(len=8), intent(in) :: result
+type(NL_DS_Energy), intent(out) :: ds_energy
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -86,8 +90,6 @@ implicit none
     real(kind=8) :: fexte0(*), famor0(*), fliai0(*)
     real(kind=8) :: t0
     real(kind=8) :: tabwk(*)
-    type(NL_DS_Energy), intent(inout) :: ds_energy
-    character(len=8) :: result
     character(len=8) :: masse, rigid
     character(len=19) :: solveu
     character(len=24) :: charge, infoch, fomult, mate, mateco, carele
@@ -207,5 +209,9 @@ implicit none
     endif
     call jedetr('FEXT0M')
     call jedetr('FEXT0C')
+!
+    if (ds_energy%l_comp .and. kineLoad .ne. ' ') then
+        call utmess('F', 'DYNALINE2_11')
+    endif
 !
 end subroutine

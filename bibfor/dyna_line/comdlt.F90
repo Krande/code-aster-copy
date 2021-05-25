@@ -25,20 +25,21 @@ implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/r8vide.h"
 #include "asterc/r8prem.h"
+#include "asterc/r8vide.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/cochre.h"
-#include "asterfort/nonlinDSEnergyCreate.h"
-#include "asterfort/nonlinDSEnergyInit.h"
-#include "asterfort/nonlinDSEnergyClean.h"
+#include "asterfort/compStrx.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/dladap.h"
 #include "asterfort/dldiff.h"
-#include "asterfort/dyGetKineLoad.h"
 #include "asterfort/dlnewi.h"
 #include "asterfort/dltali.h"
 #include "asterfort/dltlec.h"
+#include "asterfort/dvcrob.h"
+#include "asterfort/dyGetKineLoad.h"
 #include "asterfort/fointe.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
@@ -50,9 +51,17 @@ implicit none
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/compStrx.h"
+#include "asterfort/lobs.h"
 #include "asterfort/mecham.h"
 #include "asterfort/mechti.h"
+#include "asterfort/nmch1p.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmobse.h"
+#include "asterfort/nmobsw.h"
+#include "asterfort/nonlinDSEnergyClean.h"
+#include "asterfort/nonlinDSInOutClean.h"
+#include "asterfort/nonlinDSInOutInit.h"
+#include "asterfort/nonlinDSInOutRead.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
@@ -60,19 +69,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/dvcrob.h"
-#include "asterfort/nmobsw.h"
-#include "asterfort/nmobse.h"
-#include "asterfort/lobs.h"
-#include "asterfort/nonlinDSInOutRead.h"
-#include "asterfort/nonlinDSInOutInit.h"
-#include "asterfort/nonlinDSInOutClean.h"
-#include "asterfort/nmch1p.h"
-#include "asterfort/nmchex.h"
 #include "asterfort/vtcreb.h"
+#include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -314,12 +312,16 @@ implicit none
 
     call getvtx('ARCHIVAGE', 'CHAM_EXCLU', iocc=1, nbval=0, nbret=iret)
 
+    nomsym = ' '
     nomsym(1) ='DEPL'
     nomsym(2) ='VITE'
     nomsym(3) ='ACCE'
-    nomsym(4) ='FORC_EXTE'
-    nomsym(5) ='FORC_AMOR'
-    nomsym(6) ='FORC_LIAI'
+    if (ds_energy%l_comp) then
+        nomsym(4) ='FORC_EXTE'
+        nomsym(5) ='FORC_AMOR'
+        nomsym(6) ='FORC_LIAI'
+    endif
+    
     if (iret .ne. 0) then
         nbexcl = -iret
         AS_ALLOCATE(vk8 = chexc, size=nbexcl)
@@ -331,23 +333,7 @@ implicit none
         end do
         AS_DEALLOCATE(vk8 = chexc)
     endif
-!
-! - Energy management
-!
-    call nonlinDSEnergyCreate(ds_energy)
-    call getfac('ENERGIE', iret)
-    ds_energy%l_comp  = iret.gt.0
-    ds_energy%command = 'DYNA_VIBRA'
-    call nonlinDSEnergyInit(result, ds_energy)
-    if (ds_energy%l_comp .and. kineLoad .ne. ' ') then
-        call utmess('F', 'DYNALINE2_11')
-    endif
 
-    if (iret .eq. 0) then
-        nomsym(4) = ' '
-        nomsym(5) = ' '
-        nomsym(6) = ' '
-    endif
     champs  = ' '
     counter = 0
     do i = 1, 6

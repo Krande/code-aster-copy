@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,12 +33,17 @@ implicit none
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/nonlinDSEnergyCreate.h"
+#include "asterfort/nonlinDSEnergyInit.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsrusd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
 #include "asterfort/vtcreb.h"
 #include "blas/dcopy.h"
+!
+character(len=8), intent(in) :: result
+type(NL_DS_Energy), intent(out) :: ds_energy
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,13 +65,9 @@ implicit none
 !
     real(kind=8) :: depini(*), vitini(*), accini(*)
     real(kind=8) :: fexini(*), famini(*), fliini(*)
-    type(NL_DS_Energy), intent(in) :: ds_energy
-    character(len=8) :: result
     character(len=24) :: numedd
-    aster_logical :: lcrea, lener, linfo
-    integer :: nume
-    integer :: neq
-    integer :: inchac
+    aster_logical :: lcrea
+    integer :: nume, neq, inchac
     integer :: ire, iret, jvale
     integer :: nai, ndi, ndy, nvi
     integer :: ierr
@@ -77,14 +78,16 @@ implicit none
 !
     call jemarq()
     lcrea = .true.
-    linfo = .false.
-!
-!====
-! 2.  --- EST-ON EN REPRISE ? ---
-!====
-!
+
+! - Energy management
+    call nonlinDSEnergyCreate(ds_energy)
+    call getfac('ENERGIE', iret)
+    ds_energy%l_comp  = iret.gt.0
+    ds_energy%command = 'DYNA_VIBRA'
+    call nonlinDSEnergyInit(result, ds_energy)
+
+! - Reuse or not ?
     call getvid('ETAT_INIT', 'RESULTAT', iocc=1, scal=reuse, nbret=ndy)
-    lener=ds_energy%l_comp
 !
 !====
 ! 3. EN REPRISE
@@ -93,10 +96,6 @@ implicit none
     if (ndy .ne. 0) then
 
         call utmess('I', 'DYNAMIQUE_78', sk=reuse)
-
-        if (lener) then
-            linfo = .true.
-        endif
 !
 !        --- RECUPERATION DES CHAMPS DEPL VITE ET ACCE ---
         call rsexch(' ', reuse, 'DEPL', nume, champ,&
@@ -160,9 +159,6 @@ implicit none
         nume = 0
         call getvid('ETAT_INIT', 'DEPL', iocc=1, scal=champ, nbret=ndi)
         if (ndi .gt. 0) then
-            if (lener) then
-                linfo = .true.
-            endif
             call chpver('F', champ, 'NOEU', 'DEPL_R', ierr)
             inchac = 1
             cham2 = '&&COMDLT.DEPINI'
@@ -179,9 +175,6 @@ implicit none
 !
         call getvid('ETAT_INIT', 'VITE', iocc=1, scal=champ, nbret=nvi)
         if (nvi .gt. 0) then
-            if (lener) then
-                linfo = .true.
-            endif
             call chpver('F', champ, 'NOEU', 'DEPL_R', ierr)
             inchac = 1
             cham2 = '&&COMDLT.VITINI'
@@ -200,9 +193,6 @@ implicit none
 !
         call getvid('ETAT_INIT', 'ACCE', iocc=1, scal=champ, nbret=nai)
         if (nai .gt. 0) then
-            if (lener) then
-                linfo = .true.
-            endif
             call chpver('F', champ, 'NOEU', 'DEPL_R', ierr)
             inchac = 0
             cham2 = '&&COMDLT.ACCINI'
@@ -219,7 +209,7 @@ implicit none
 !
     endif
 !
-    if (linfo) then
+    if (ds_energy%l_comp) then
         call utmess('I', 'ETATINIT_5')
     endif
 !
