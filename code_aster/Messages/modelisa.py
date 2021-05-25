@@ -126,7 +126,8 @@ La caractéristique %(k1)s, coefficient de cisaillement, pour les poutres doit t
 """),
 
     26 : _("""
-  Il y a un problème lors de l'affectation du mot clé MODI_METRIQUE sur la maille %(k1)s
+La maille %(k1)s est affectée d'une modélisation de type tuyau. La valeur du mot-clé SECTION
+doit nécessairement être CERCLE. 
 """),
 
     27 : _("""
