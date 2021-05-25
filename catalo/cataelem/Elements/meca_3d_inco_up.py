@@ -607,7 +607,7 @@ class MIUP_HEXA20(Element):
         ),
 
         OP.SIEF_ELGA(te=97,
-            para_in=((SP.PCAMASS, CCAMASS), (SP.PDEPLAR, NDEPLAR),
+            para_in=((SP.PCAMASS, CCAMASS), (SP.PDEPLAR, DDL_MECA),
                      (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                      (OP.SIEF_ELGA.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
                      ),

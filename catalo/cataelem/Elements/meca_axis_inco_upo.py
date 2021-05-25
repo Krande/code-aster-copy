@@ -555,15 +555,6 @@ class MIAXOSQU4(Element):
                      ),
         ),
 
-        OP.SIEF_ELGA(te=97,
-            para_in=((SP.PCAMASS, CCAMASS), (SP.PDEPLAR, NDEPLAR),
-                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
-                     (OP.SIEF_ELGA.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
-                     ),
-            para_out=((SP.PCONTRC, ECONTPC), (OP.SIEF_ELGA.PCONTRR, ECONTPG),
-                     ),
-        ),
-
         OP.SIEF_ELNO(te=4,
             para_in=((OP.SIEF_ELNO.PCONTRR, ECONTPG), (OP.SIEF_ELNO.PVARCPR, LC.ZVARCPG),
                      ),
