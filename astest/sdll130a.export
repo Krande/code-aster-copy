@@ -6,5 +6,6 @@ P mpi_nbnoeud 1
 P testlist ci verification sequential
 
 F comm sdll130a.comm D 1
+F comm sdll130a.com1 D 1
 F libr sdll130a.19 D 19
 F nom  sdll130a.py D 0

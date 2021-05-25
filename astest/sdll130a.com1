@@ -1,0 +1,130 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#        ELEMENT POU_D_E COMPORTEMENT LINEAIRE
+#
+POURSUITE(CODE='OUI',DEBUG=_F(SDVERI='NON'))
+
+
+kineClamp=AFFE_CHAR_CINE(MODELE=MOPOU,
+                       MECA_IMPO=(_F(GROUP_NO='A',
+                                    DX=0.0,
+                                    DY=0.0,),
+                                 _F(GROUP_NO='B',
+                                    DY=0.0,),
+                                 _F(GROUP_NO='TOUS_NO',
+                                    DZ=0.0,
+                                    DRX=0.0,
+                                    DRY=0.0,),),);
+
+# Matrix
+rigiElem=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                        MODELE=MOPOU,
+                        CHAM_MATER=CHMAT,
+                        CARA_ELEM=POUCA,);
+
+massElem=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                        MODELE=MOPOU,
+                        CHAM_MATER=CHMAT,
+                        CARA_ELEM=POUCA,);
+
+dampElem=CALC_MATR_ELEM(OPTION='AMOR_MECA',
+                        MODELE=MOPOU,
+                        CARA_ELEM=POUCA,
+                        CHAM_MATER=CHMAT,
+                        RIGI_MECA=rigiElem,
+                        MASS_MECA=massElem,);
+
+numeDof=NUME_DDL(MATR_RIGI=rigiElem, );
+
+rigiAsse=ASSE_MATRICE(MATR_ELEM = rigiElem,
+                      NUME_DDL  = numeDof,
+                      CHAR_CINE = kineClamp)
+
+massAsse=ASSE_MATRICE(MATR_ELEM = massElem,
+                      NUME_DDL  = numeDof,
+                      CHAR_CINE = kineClamp)
+
+dampAsse=ASSE_MATRICE(MATR_ELEM = dampElem,
+                      NUME_DDL  = numeDof,
+                      CHAR_CINE = kineClamp)
+
+# Seismic load
+seismDir = CALC_CHAR_SEISME(MATR_MASS  = massAsse,
+                            DIRECTION  = (0.0,-1.0,0.0),
+                            MONO_APPUI = 'OUI',);
+
+# CALCUL DYNAMIQUE LINEAIRE TRANSITOIRE
+U2=DYNA_VIBRA(TYPE_CALCUL  = 'TRAN',
+              BASE_CALCUL  = 'PHYS',
+              MATR_MASS    = massAsse,
+              MATR_RIGI    = rigiAsse,
+              MATR_AMOR    = dampAsse,
+              MODELE       = MOPOU,
+              CARA_ELEM    = POUCA,
+              SCHEMA_TEMPS = _F(SCHEMA='NEWMARK',),
+              EXCIT        = (_F(VECT_ASSE = seismDir,
+                                 FONC_MULT = ACCELERO,),
+                              _F(CHARGE    = kineClamp),
+                             ),
+              INCREMENT    = _F(LIST_INST = LINST,),)
+
+
+# QUELQUES TEST DE RESULTATS, REFERENCE='NON_DEFINI',
+TEST_RESU(RESU=(
+                _F(NUME_ORDRE=100,
+                   GROUP_NO='C',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=U2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-6.06935894E-04,
+                   VALE_REFE=-6.0693599999999998E-4,
+                   PRECISION=0.014,),
+                _F(NUME_ORDRE=200,
+                   GROUP_NO='C',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=U2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-2.35072694E-03,
+                   VALE_REFE=-2.3507300000000001E-3,
+                   PRECISION=1.E-2,),
+                _F(NUME_ORDRE=268,
+                   GROUP_NO='C',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=U2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC= 8.57904253E-03,
+                   VALE_REFE=8.5790399999999996E-3,
+                   PRECISION=0.021999999999999999,),
+                _F(NUME_ORDRE=468,
+                   GROUP_NO='C',
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=U2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=-9.10839869E-03,
+                   VALE_REFE=-9.1083999999999991E-3,
+                   PRECISION=0.02,),
+                ),
+          )
+
+FIN();

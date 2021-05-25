@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
@@ -38,7 +35,7 @@ interface
                       vitini, vitent, valmod, basmod,&
                       veanec, vaanec, vaonde, veonde, dt,&
                       theta, tempm, temps, iforc2, tabwk1,&
-                      tabwk2, archiv, nbtyar, typear, numrep, ds_energy)
+                      tabwk2, archiv, nbtyar, typear, numrep, ds_energy, kineLoad)
         use NonLin_Datastructure_type
         integer :: nbtyar
         integer :: nondp
@@ -69,7 +66,7 @@ interface
         character(len=24) :: charge
         character(len=24) :: infoch
         character(len=24) :: fomult
-        character(len=24) :: numedd
+        character(len=24) :: numedd, kineLoad
         real(kind=8) :: depla(neq)
         real(kind=8) :: vitea(neq)
         real(kind=8) :: accea(neq)

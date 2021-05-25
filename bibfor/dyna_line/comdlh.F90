@@ -29,7 +29,6 @@ implicit none
 #include "asterc/r8depi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
-#include "asterfort/copisd.h"
 #include "asterfort/cresol.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/dy2mbr.h"
@@ -73,9 +72,10 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
-#include "asterfort/vecinc.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/dyGetKineLoad.h"
+#include "asterfort/vtcrec.h"
 #include "blas/zcopy.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -95,18 +95,18 @@ implicit none
     character(len=8) :: k8bid
     character(len=8) :: resuco, result, resu1
     character(len=19) :: cn2mbr, vediri, veneum, vevoch, vassec
-    character(len=19) :: lischa
+    character(len=19) :: listLoad
     integer :: nbsym, i, n1
     integer :: lfreq, nbfreq
     integer :: nb_equa, nb_matr, ifm, niv
     integer :: ifreq, ieq, inom, ier, ierc
-    integer :: lsecmb, jvezer, nbmodi, nbmody, nbbas, j
+    integer :: lsecmb, nbmodi, nbmody, nbbas, j
     integer :: icoef, icode, nbmode, jrefe
     integer :: linst, iret, ladpa, dec
     integer :: ldgec, lvgec, lagec, jordr, jfreq
     integer :: jdepl, jvite, jacce
     integer :: nbord, sstruct, nbsst
-    integer :: freqpr, last_prperc, perc, nbpheq
+    integer :: freqpr, last_prperc, perc, nbpheq, nbEqua
     aster_logical :: newcal, calgen
     aster_logical :: l_damp, l_damp_modal, l_impe
     real(kind=8) :: depi, freq, omega, omeg2, fmin, fmax, last_freq
@@ -120,10 +120,10 @@ implicit none
     character(len=14) :: numddl, nddlphys
     character(len=16) :: typcon, nomcmd, tysd, champs
     character(len=19) :: lifreq, masse, raide, amor, dynam, impe, chamno
-    character(len=19) :: solveu, maprec, secmbr, soluti, vezero, crgc
+    character(len=19) :: solveu, maprec, secmbr, soluti, crgc
     character(len=19) :: print_type
     character(len=24) :: matr_list(4), basemo, nume24, typco
-    character(len=24) :: exreco, exresu
+    character(len=24) :: exreco, exresu, kineLoadReal, kineLoad
     integer :: nbexre, tmod(1)
     integer, pointer :: ordr(:) => null()
     character(len=24), pointer :: refa(:) => null()
@@ -135,6 +135,8 @@ implicit none
     real(kind=8), pointer :: mass_dia(:) => null()
     real(kind=8), pointer :: rigi_dia(:) => null()
     real(kind=8), pointer :: puls(:)     => null()
+    real(kind=8), pointer :: kineRealVale(:) => null()
+    complex(kind=8), pointer :: kineVale(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -155,8 +157,7 @@ implicit none
 !
     maprec = '&&COMDLH.MAPREC'
     soluti = '&&COMDLH.SOLUTI'
-    vezero = '&&COMDLH.VEZERO'
-    lischa = '&&COMDLH.LISCHA'
+    listLoad = '&&COMDLH.LISCHA'
     vediri = '&&VEDIRI'
     veneum = '&&VENEUM'
     vevoch = '&&VEVOCH'
@@ -243,14 +244,32 @@ implicit none
 ! --- LECTURE INFORMATIONS MECANIQUES
 !
     call dydome(nomo, mate, mateco, carele)
-!
-! --- LECTURE DU CHARGEMENT
-!
-    call dylech(nomo, lischa, nbexre, exreco, exresu)
-!
-! --- CALCUL ET PRE-ASSEMBLAGE DU CHARGEMENT
-!
-    call dylach(nomo, mate, mateco, carele, lischa, numddl,&
+
+! - Get loads
+    call dylech(nomo, listLoad, nbexre, exreco, exresu)
+
+! - Get kinematic loads
+    call dyGetKineLoad(masse, raide, amor, l_damp, listLoad, kineLoadReal)
+
+! - Convert value in complex
+    kineLoad = ' '
+    if (kineLoadReal .ne. ' ') then
+        kineLoad = '&&COMDLH.KINE'
+        call dismoi('NB_EQUA', kineLoadReal, 'CHAM_NO', repi = nbEqua)
+        call vtcrec(kineLoad, kineLoadReal, 'V', 'C', nbEqua)
+        call jeveuo(kineLoadReal(1:19)//'.VALE', 'L', vr = kineRealVale)
+        call jeveuo(kineLoad(1:19)//'.VALE', 'E', vc = kineVale)
+        kineVale(1:nbEqua) = kineRealVale(1:nbEqua)
+    endif
+
+    if (kineLoad .ne. ' ') then
+        if (calgen) then
+            call utmess('F', 'DYNALINE2_12')
+        endif
+    endif 
+
+! - CALCUL ET PRE-ASSEMBLAGE DU CHARGEMENT
+    call dylach(nomo, mate, mateco, carele, listLoad, numddl,&
                 vediri, veneum, vevoch, vassec)
 !
 !============================================
@@ -319,10 +338,7 @@ implicit none
 !
     secmbr = '&&COMDLH.SECMBR'
     call vtcrem(secmbr, dynam, 'V', typres)
-    call copisd('CHAMP_GD', 'V', secmbr, vezero)
     call jeveuo(secmbr(1:19)//'.VALE', 'E', vc=secmb)
-    call jeveuo(vezero(1:19)//'.VALE', 'E', jvezer)
-    call vecinc(nb_equa, czero, zc(jvezer))
 !
 ! --- INFORMATIONS SOLVEUR
     solveu = '&&COMDLH.SOLVEUR'
@@ -487,7 +503,7 @@ implicit none
 !
 ! ----- CALCUL DU SECOND MEMBRE
 !
-        call dy2mbr(numddl, nb_equa, lischa, freq, vediri,&
+        call dy2mbr(numddl, nb_equa, listLoad, freq, vediri,&
                     veneum, vevoch, vassec, lsecmb)
 !
 ! ----- APPLICATION EVENTUELLE EXCIT_RESU
@@ -516,7 +532,7 @@ implicit none
 ! ----- RESOLUTION DU SYSTEME, CELUI DU CHARGEMENT STANDARD
 !
         call zcopy(nb_equa, zc(lsecmb), 1, secmb, 1)
-        call resoud(dynam, maprec, solveu, vezero, 0,&
+        call resoud(dynam, maprec, solveu, kineLoad, 0,&
                     secmbr, soluti, 'V', [0.d0], [c16bid],&
                     crgc, .true._1, 0, iret)
         call jeveuo(soluti(1:19)//'.VALE', 'L', vc=solut)

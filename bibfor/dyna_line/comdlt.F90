@@ -35,6 +35,7 @@ implicit none
 #include "asterfort/dismoi.h"
 #include "asterfort/dladap.h"
 #include "asterfort/dldiff.h"
+#include "asterfort/dyGetKineLoad.h"
 #include "asterfort/dlnewi.h"
 #include "asterfort/dltali.h"
 #include "asterfort/dltlec.h"
@@ -98,13 +99,13 @@ implicit none
     character(len=8) :: k8b, masse, rigid, amort, result
     character(len=8) :: kstr, nomfon, charep
     character(len=9) :: nomsym(6)
-    character(len=19) :: solveu, infcha, ligrel, linst
+    character(len=19) :: solveu, listLoad, ligrel, linst
     character(len=12) :: allschemes(4), schema, schtyp
     character(len=24) :: modele, carele, charge, fomult, mateco, materi
     character(len=24) :: numedd, chamgd
     character(len=24) :: infoch, criter
     character(len=24) :: chgeom, chcara(18), chharm, chtime
-    character(len=24) :: chvarc, chvref, chstru, compor
+    character(len=24) :: chvarc, chvref, chstru, compor, kineLoad
     complex(kind=8) :: calpha
     character(len=19) :: force0, force1
     character(len=19) :: sd_obsv
@@ -154,25 +155,23 @@ implicit none
 !
 ! - Names of datastructures
 !
-    solveu = '&&COMDLT.SOLVEUR   '
-    infcha = '&&COMDLT.INFCHA    '
-    charge = '&&COMDLT.INFCHA    .LCHA'
-    infoch = '&&COMDLT.INFCHA    .INFC'
-    chvarc = '&&COMDLT.VARC'
-    chvref = '&&COMDLT.VREF'
-!
-!====
-! 2. LES DONNEES DU CALCUL
-!====
-!
-!---CREATION et lecture DATA_STRUCTURE ds_inout pour observation
+    solveu   = '&&COMDLT.SOLVEUR   '
+    listLoad = '&&COMDLT.LISTLOAD'
+    charge   = listLoad(1:19)//'.LCHA'
+    infoch   = listLoad(1:19)//'.INFC'
+    chvarc   = '&&COMDLT.VARC'
+    chvref   = '&&COMDLT.VREF'
 
+! - Get parameters
     call dltlec(result, modele, numedd, materi, mateco,&
                 carele, imat, masse, rigid,&
-                amort, lamort, nchar, nveca, infcha,&
+                amort, lamort, nchar, nveca, listLoad,&
                 charge, infoch, fomult, iaadve, ialifo,&
                 nondp, iondp, solveu, iinteg, t0,&
                 nume, numrep, ds_inout)
+
+! - Get kinematic loads
+    call dyGetKineLoad(masse, rigid, amort, lamort, listLoad, kineLoad, iinteg)
 !
     neq = zi(imat(1)+2)
 !
@@ -198,12 +197,6 @@ implicit none
     call jeveuo(depmoi//'.VALE', 'L', idepl0)
     call jeveuo(vitmoi//'.VALE', 'L', ivite0)
     call jeveuo(accmoi//'.VALE', 'L', iacce0)
-
-!    ANCIENS OBJETS DEPL VITE ACCE DE DYNA_LINE_TRAN
-!-----------------------------------------------------------
-!    call wkvect('&&COMDLT.DEPL0', 'V V R', neq, idepl0)
-!    call wkvect('&&COMDLT.VITE0', 'V V R', neq, ivite0)
-!    call wkvect('&&COMDLT.ACCE0', 'V V R', neq, iacce0)
 
     call wkvect('&&COMDLT.FEXTE', 'V V R', 2*neq, ifexte)
     call wkvect('&&COMDLT.FAMOR', 'V V R', 2*neq, ifamor)
@@ -300,7 +293,7 @@ implicit none
                 charge, infoch, fomult, modele, numedd,&
                 nume, solveu, criter, zr(idepl0), zr(ivite0),&
                 zr(iacce0), zr(ifexte+neq), zr(ifamor+neq), zr(ifliai+neq), &
-                zr(iwk), force0, force1, ds_energy)
+                zr(iwk), force0, force1, ds_energy, kineLoad)
 
     call utmess('I', 'DYNAMIQUE_80', nr=2, valr=[tinit, tfin])
 
@@ -346,6 +339,9 @@ implicit none
     ds_energy%l_comp  = iret.gt.0
     ds_energy%command = 'DYNA_VIBRA'
     call nonlinDSEnergyInit(result, ds_energy)
+    if (ds_energy%l_comp .and. kineLoad .ne. ' ') then
+        call utmess('F', 'DYNALINE2_11')
+    endif
 
     if (iret .eq. 0) then
         nomsym(4) = ' '
@@ -399,7 +395,7 @@ implicit none
                     zi(iaadve), zk24(ialifo), modele, materi, mateco, carele,&
                     charge, infoch, fomult, numedd, nume,&
                     solveu, criter, zk8(iondp), nondp, numrep, ds_energy,&
-                    sd_obsv, mesh)
+                    sd_obsv, mesh, kineLoad)
 !
     else if (iinteg.eq.2) then
 !
@@ -410,7 +406,7 @@ implicit none
                     zi(iaadve), zk24(ialifo), modele, materi, mateco, carele,&
                     charge, infoch, fomult, numedd, nume,&
                     solveu, criter, zk8(iondp), nondp, numrep, ds_energy,&
-                    sd_obsv, mesh)
+                    sd_obsv, mesh, kineLoad)
 !
     else if (iinteg.eq.3) then
 !
@@ -442,13 +438,11 @@ implicit none
     call jeveuo(result//'           .ORDR', 'L', vi=ordr)
     call jelira(result//'           .ORDR', 'LONUTI', nbord)
     do iordr = 1, nbord
-        call rsadpa(result, 'E', 1, 'MODELE', ordr(iordr),&
-                    0, sjv=ladpa)
+        call rsadpa(result, 'E', 1, 'MODELE', ordr(iordr), 0, sjv=ladpa)
         zk8(ladpa)=modele(1:8)
         if (materi .ne. ' ') then
-            call rsadpa(result, 'E', 1, 'CHAMPMAT', ordr(iordr),&
-                        0, sjv=ladpa)
-            zk8(ladpa)=materi
+            call rsadpa(result, 'E', 1, 'CHAMPMAT', ordr(iordr), 0, sjv=ladpa)
+            zk8(ladpa)=materi(1:8)
         else
             call utmess('A', 'CHAMPS_21')
         endif

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine dltali(neq, result, imat, masse, rigid,&
                   charge, infoch, fomult, modele, numedd,&
                   nume, solveu, criter, dep0, vit0,&
                   acc0, fexte0, famor0, fliai0, &
-                  tabwk, force0, force1, ds_energy)
+                  tabwk, force0, force1, ds_energy, kineLoad)
 !
 use NonLin_Datastructure_type
 !
@@ -93,7 +93,7 @@ implicit none
     character(len=24) :: charge, infoch, fomult, mate, mateco, carele
     character(len=24) :: modele, numedd
     character(len=24) :: lifo(*)
-    character(len=24) :: criter
+    character(len=24) :: criter, kineLoad
     character(len=19) :: force0, force1
     aster_logical :: lcrea, lprem
     aster_logical :: lamort
@@ -103,7 +103,6 @@ implicit none
     character(len=8) :: matrei, maprei, dyna
     character(len=19) :: chsol
     integer :: iforc0, iforc1
-    character(len=24) :: cine
     integer :: iret
     cbid = dcmplx(0.d0, 0.d0)
 !
@@ -121,7 +120,6 @@ implicit none
 ! 1.2. ==> NOM DES STRUCTURES DE TRAVAIL
 !
     chsol = '&&DLTALI.SOLUTION'
-    cine = ' '
     maprei = ' '
 !
 !====
@@ -169,7 +167,7 @@ implicit none
 ! 5.3. ==> RESOLUTION DU PROBLEME:  M.X  =  F - C.X - K.X
 !                                       ..          .
 !
-        call resoud(matrei, maprei, solveu, cine, 0,&
+        call resoud(matrei, maprei, solveu, kineLoad, 0,&
                     force1, chsol, 'V', [0.d0], [cbid],&
                     criter, .true._1, 0, iret)
 !
