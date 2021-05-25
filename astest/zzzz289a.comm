@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -135,11 +135,11 @@ TEST_RESU(OBJET=_F(VALE_CALC=2.6950725246896E+06,
                    NOM=MATRUPG.getName()[:8] + '.ME001     .RESL',),
           )
 
-TEST_RESU(OBJET=_F(VALE_CALC=1.5333753473997E+06,
+TEST_RESU(OBJET=_F(VALE_CALC=958359.5921090409,
                    NOM=MATRUPQ.getName()[:8] + '.ME001     .RESL',),
           )
 
-TEST_RESU(OBJET=_F(VALE_CALC=3.3334246679193E+05,
+TEST_RESU(OBJET=_F(VALE_CALC=208339.0417339281,
                    NOM=MATRUPL.getName()[:8] + '.ME001     .RESL',),
           )
 

@@ -15,14 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W1306
+!
 subroutine nurmtd(ndim, nno1, nno2, npg, iw,&
                   vff1, vff2, ivf1, idff1, vu,&
                   vp, typmod, igeom, mate, mini,&
                   matr)
-! person_in_charge: sebastien.fayolle at edf.fr
-! aslint: disable=W1306
-    implicit none
+!
+implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 !
@@ -188,6 +189,11 @@ subroutine nurmtd(ndim, nno1, nno2, npg, iw,&
 ! - CALCUL DE LA MATRICE D'ELASTICITE BULLE
         call tanbul(option, ndim, g, mate, compor,&
                     .false._1, .true._1, alpha, dsidep, trepst)
+        dsidep(4,4) = dsidep(4,4) / 2.d0
+        if (ndim .eq. 3) then
+            dsidep(5,5) = dsidep(5,5) / 2.d0
+            dsidep(6,6) = dsidep(6,6) / 2.d0
+        endif
 !
 ! - CALCUL DE LA MATRICE DE CONDENSATION STATIQUE
         if (mini) then
