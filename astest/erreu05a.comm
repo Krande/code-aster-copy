@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -101,11 +101,6 @@ try:
                       INCREMENT=_F(LIST_INST=inst),)
 except AsterError as err:
    assert err.id_message == "CALCULEL6_63"
-
-# the initialization is partial because of exception raised
-resu.appendModelOnAllRanks(model)
-resu.appendMaterialFieldOnAllRanks(chmat)
-resu.update()
 
 resu = EXTR_RESU(RESULTAT=resu,ARCHIVAGE=_F(NUME_ORDRE=1))
 

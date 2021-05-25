@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -200,11 +200,6 @@ if ok_poursuite == 1:
         if err.id_message == "MECANONLINE9_7":
             ok_poursuite = 2
 
-# the initialization is partial because of exception raised
-U1MAZAR.appendModelOnAllRanks(MOPOU)
-U1MAZAR.appendMaterialFieldOnAllRanks(MATMAZAR)
-U1MAZAR.appendElementaryCharacteristicsOnAllRanks(POUCA)
-U1MAZAR.update()
 
 U1MAZAR=CALC_CHAMP(FORCE='REAC_NODA', reuse =U1MAZAR, RESULTAT=U1MAZAR, );
 U1MAZAR=CALC_CHAMP(reuse=U1MAZAR, RESULTAT=U1MAZAR, DEFORMATION=('EPSI_ELGA'), )

@@ -48,7 +48,6 @@ with test.assertRaisesRegex(RuntimeError, "Unexpected value.*COMPORTEMENT"):
     dProblem.createBehaviour(COMPORTEMENT="ELAS")
 
 
-U2_2.update() # 2021_03 L'appel de update est necessaire en poursuite
 dico_par = U2_2.getAccessParameters()
 test.assertEqual(sorted(dico_par.keys()), ['INST', 'NUME_ORDRE'])
 test.assertEqual(dico_par['NUME_ORDRE'], [0, 1, 2])

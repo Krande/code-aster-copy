@@ -43,9 +43,12 @@ class ResultStateBuilder(InternalStateBuilder):
             *InternalStateBuilder*: The internal state itself.
         """
         super().save(result)
-        self._st["model"] = []
-        self._st["mater"] = []
+        # list of ranks
         self._st["rank"] = result.getRanks()
+        # list of Model objects
+        self._st["model"] = []
+        # list of MaterialField objects
+        self._st["mater"] = []
         for i in self._st["rank"]:
             try:
                 self._st["model"].append(result.getModel(i))
@@ -74,6 +77,7 @@ class ResultStateBuilder(InternalStateBuilder):
                 result.addModel(self._st["model"][i], rank)
             if self._st["mater"]:
                 result.addMaterialField(self._st["mater"][i], rank)
+        result.update()
 
 
 @injector(Result)
