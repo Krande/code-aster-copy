@@ -53,8 +53,10 @@ DirichletBCClass::DirichletBCClass(   const std::string &name,
 
 bool DirichletBCClass::build() {
     std::string cmd = "AFFE_CHAR_CINE";
-    if ( _listOfFunctionImposedTemperature.size() != 0 )
+    if ( _listOfFunctionImposedTemperature.size() != 0 ) {
         cmd += "_F";
+        throw std::runtime_error("Not implemented");
+    }
     CommandSyntax cmdSt( cmd );
     cmdSt.setResult( ResultNaming::getCurrentName(), getType() );
 
@@ -71,7 +73,7 @@ bool DirichletBCClass::build() {
             SyntaxMapContainer dict2;
             const MeshEntityPtr &tmp = curIter->getMeshEntityPtr();
             if ( tmp->getType() == AllMeshEntitiesType ) {
-                dict2.container["TOUI"] = "OUI";
+                dict2.container["TOUT"] = "OUI";
             } else {
                 if ( tmp->getType() == GroupOfNodesType )
                     dict2.container["GROUP_NO"] = tmp->getName();
@@ -87,14 +89,15 @@ bool DirichletBCClass::build() {
 
         dict.container["MECA_IMPO"] = listeMecaImpo;
     }
-    if ( _listOfFunctionImposedTemperature.size() != 0 ) {
+    // Definition de mot cle facteur THER_IMPO
+    if ( _listOfRealImposedTemperature.size() != 0 ) {
         ListSyntaxMapContainer listeTempImpo;
-        for ( ListFunctionTemp::iterator curIter = _listOfFunctionImposedTemperature.begin();
-              curIter != _listOfFunctionImposedTemperature.end(); ++curIter ) {
+        for ( ListRealTempIter curIter = _listOfRealImposedTemperature.begin();
+              curIter != _listOfRealImposedTemperature.end(); ++curIter ) {
             SyntaxMapContainer dict2;
             const MeshEntityPtr &tmp = curIter->getMeshEntityPtr();
             if ( tmp->getType() == AllMeshEntitiesType ) {
-                dict2.container["TOUI"] = "OUI";
+                dict2.container["TOUT"] = "OUI";
             } else {
                 if ( tmp->getType() == GroupOfNodesType )
                     dict2.container["GROUP_NO"] = tmp->getName();
@@ -102,7 +105,7 @@ bool DirichletBCClass::build() {
                     dict2.container["GROUP_MA"] = tmp->getName();
             }
             const std::string nomComp = curIter->getAsterCoordinateName();
-            dict2.container[nomComp] = curIter->getValue()->getName();
+            dict2.container[nomComp] = curIter->getValue();
 
             listeTempImpo.push_back( dict2 );
         }
