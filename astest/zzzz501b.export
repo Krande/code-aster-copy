@@ -6,4 +6,5 @@ P mpi_nbnoeud 1
 P testlist submit ci verification sequential
 
 F comm zzzz501b.py D 1
+F comm zzzz501b_1.py D 1
 F mmed ssnp170k.mmed D 20

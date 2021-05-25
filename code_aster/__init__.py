@@ -72,7 +72,7 @@ try:
     from .Supervis import (AsterError, ContactError, ConvergenceError,
                            IntegrationError, SolverError,
                            TimeLimitError, saveObjects)
-    from .Utilities import WithEmbeddedObjects, TestCase
+    from .Utilities import TestCase
 
 except ImportError:
     pass

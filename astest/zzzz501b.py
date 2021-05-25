@@ -148,6 +148,16 @@ test.assertFalse(mesh in deps)
 test.assertFalse(same in deps)
 test.assertEqual(len(deps), 0)
 
+# recreate material field to check dependencies after restarting
+material = DEFI_MATERIAU(ELAS=_F(E=2000,
+                                 NU=0.3))
+fieldmat = AFFE_MATERIAU(MAILLAGE=mesh,
+                         MODELE=model,
+                         AFFE=_F(TOUT='OUI',
+                                 MATER=material))
+deps = fieldmat.getDependencies()
+test.assertEqual(len(deps), 3)
+
 test.printSummary()
 
 code_aster.close()

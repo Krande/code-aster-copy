@@ -49,7 +49,7 @@ if the ``--continue`` argument is passed.
 The command :func:`~code_aster.Commands.debut.POURSUITE` does also the same.
 
 To be properly pickled, the classes defined by the user must be inherit
-from :class:`~code_aster.Utilities.user_extensions.WithEmbeddedObjects`.
+from :class:`~code_aster.Objects.user_extensions.WithEmbeddedObjects`.
 """
 
 import gc
@@ -65,13 +65,14 @@ import libaster
 import numpy
 
 from .. import Objects
-from ..Objects import DataStructure, ResultNaming
-from ..Utilities import (DEBUG, WithEmbeddedObjects, ExecutionParameter, Options,
+from ..Objects import DataStructure, ResultNaming, WithEmbeddedObjects
+from ..Utilities import (DEBUG, ExecutionParameter, Options,
                          get_caller_context, logger, no_new_attributes)
 
 ARGS = '_MARK_DS_ARGS_'
 NOARGS = '_MARK_DS_NOARGS_'
 STATE = '_MARK_DS_STATE_'
+DEPS = '_MARK_DS_DEPS_'
 LIST = '_MARK_LIST_'
 DICT = '_MARK_DICT_'
 UNSTACKED = object()
@@ -431,6 +432,12 @@ class AsterPickler(pickle.Pickler):
                 self.save_one(name)
                 for item in init_args:
                     self.save_one(item)
+                # save dependencies
+                self.save_one(DEPS)
+                deps = obj.getDependencies()
+                self.save_one(len(deps))
+                for item in deps:
+                    self.save_one(item)
                 # save state
                 if hasattr(obj, "__getstate__"):
                     state = obj.__getstate__()
@@ -499,6 +506,7 @@ class AsterUnpickler(pickle.Unpickler):
         Attributes:
             _name (str): *Jeveux* name of the object.
             _args (tuple[misc]): Initial arguments to pass to the constructor.
+            _deps (tuple[misc]): Dependencies to be restored.
             _state (tuple[misc]): Arguments pass to the ``__setstate__`` method
                 if it exists.
             _class (str): Class name of the *DataStructure* (in Objects module).
@@ -508,6 +516,7 @@ class AsterUnpickler(pickle.Unpickler):
         def __init__(self, name):
             self._name = name
             self._args = None
+            self._deps = None
             self._state = None
             self._class = None
             self._inst = None
@@ -522,9 +531,20 @@ class AsterUnpickler(pickle.Unpickler):
             return self._args
 
         @args.setter
-        def args(self, args):
+        def args(self, args_):
             """Register the initial arguments."""
-            self._args = args
+            self._args = args_
+
+        @property
+        def deps(self):
+            """Dependencies of the DataStructure."""
+            assert self._deps is not None, self._name
+            return self._deps
+
+        @deps.setter
+        def deps(self, deps_):
+            """Register the object dependencies to restore."""
+            self._deps = deps_
 
         @property
         def state(self):
@@ -533,9 +553,9 @@ class AsterUnpickler(pickle.Unpickler):
             return self._state
 
         @state.setter
-        def state(self, state):
+        def state(self, state_):
             """Register the object state to restore."""
-            self._state = state
+            self._state = state_
 
         @property
         def classname(self):
@@ -544,9 +564,9 @@ class AsterUnpickler(pickle.Unpickler):
             return self._class
 
         @classname.setter
-        def classname(self, classname):
+        def classname(self, classname_):
             """Register the name of the class to create."""
-            self._class = classname
+            self._class = classname_
 
         @property
         def instance(self):
@@ -568,6 +588,8 @@ class AsterUnpickler(pickle.Unpickler):
                          for i in self.state]
                 logger.debug(f"initargs: {args}")
                 self._inst = getattr(Objects, self.classname)(*args)
+                for i in self.deps:
+                    self._inst.addDependency(i.instance)
                 setstate = getattr(self._inst, "__setstate__", None)
                 if setstate:
                     logger.debug(f"setting state: {state}")
@@ -623,6 +645,14 @@ class AsterUnpickler(pickle.Unpickler):
             buffer = self._stack.buffer(name)
             buffer.args = init_args
             logger.debug(f"loaded init args: {init_args}")
+            # expecting the DEPS mark
+            mark = self.load_one()
+            assert mark == DEPS, mark
+            nbobj = self.load_one()
+            deps = []
+            for _ in range(nbobj):
+                deps.append(self.load_one())
+            buffer.deps = deps
             # expecting the STATE mark
             mark = self.load_one()
             assert mark == STATE, mark

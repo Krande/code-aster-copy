@@ -48,7 +48,6 @@ from .strfunc import (center, clean_string, convert, copy_text_to,
                       maximize_lines, textbox, to_unicode, ufmt)
 from .Tester import TestCase
 from .transpose import transpose
-from .user_extensions import WithEmbeddedObjects
 from .version import get_version, get_version_desc
 
 # aster_pkginfo/aster_config will only be available after installation

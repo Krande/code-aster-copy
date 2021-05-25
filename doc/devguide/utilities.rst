@@ -53,8 +53,3 @@ Common utilities
    :show-inheritance:
    :members:
    :special-members: __init__
-
-.. automodule:: code_aster.Utilities.user_extensions
-   :show-inheritance:
-   :members:
-   :special-members: __init__
