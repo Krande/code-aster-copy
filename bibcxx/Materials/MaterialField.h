@@ -241,6 +241,12 @@ class MaterialFieldClass : public DataStructure {
     std::vector< PartOfMaterialFieldPtr > getVectorOfPartOfMaterialField() const;
 
     /**
+     * @brief Function to know if Calculation Input Variables are present
+     * @return true if present
+     */
+    bool hasExternalVariablesComputation() const;
+
+    /**
      * @brief Function to know if a given Calculation Input Variables exists
      * @return true if exists
      */

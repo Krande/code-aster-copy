@@ -36,7 +36,7 @@ from ...Messages import MessageLog as mess
 from ...Objects import DataStructure
 from ..Modal.mode_iter_inv import MODE_ITER_INV
 from ..Modal.mode_iter_simult import MODE_ITER_SIMULT
-from .cata_ce import ModeMeca, Resultat
+from .cata_ce import ModeMeca
 from .ce_calcul_expansion import extract_mac_array
 
 #parametre pour MODE_ITER_SIMULT
@@ -237,7 +237,11 @@ class CalcEssaiModifStruct:
         conserves en references.
         """
         for name, resu in list(self.objects.resultats.items()):
-            if aster.jeveux_exists(name.ljust(19) + '.NOVA'):
+            
+            model = resu.getModel()
+            if not model:
+                model = resu.getDOFNumbering().getModel()
+            if model:
                 iret, ibid, modele_name = aster.dismoi(
                     'MODELE', name, 'RESULTAT', 'F')
                 modele_name = modele_name.rstrip()

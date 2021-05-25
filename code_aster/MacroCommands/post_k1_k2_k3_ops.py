@@ -1717,11 +1717,9 @@ def is_present_varc(RESULTAT):
     contenue dans la sd_resultat RESULTAT, retourne false sinon.
     """
 
-    nom_chamat = RESULTAT.getMaterialField().getName()
-    assert not ( nom_chamat in ['#AUCUN', '#PLUSIEURS'] )
-    nom_jvx = nom_chamat.ljust(8)+'.CVRCVARC'
-
-    return aster.jeveux_exists(nom_jvx.ljust(24))
+    chamat = RESULTAT.getMaterialField()
+    assert not ( chamat.getName() in ['#AUCUN', '#PLUSIEURS'] )
+    return chamat.hasExternalVariablesComputation()
 
 #---------------------------------------------------------------------------------------------------------------
 #                 CORPS DE LA MACRO POST_K1_K2_K3

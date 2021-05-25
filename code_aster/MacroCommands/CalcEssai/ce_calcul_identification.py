@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ from numpy import arctan, array, conjugate, dot, identity, log, pi, transpose, z
 
 import aster
 import aster_core
-from .cata_ce import InterSpectre, Resultat, nume_ddl_gene, nume_ddl_phy
+from .cata_ce import InterSpectre, nume_ddl_gene, nume_ddl_phy
 from ...Cata.Syntax import _F
 from ...Messages import UTMESS
 

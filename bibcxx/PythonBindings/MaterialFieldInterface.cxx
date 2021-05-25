@@ -89,6 +89,8 @@ void exportMaterialFieldToPython() {
         .def( "getVectorOfMaterial", &MaterialFieldClass::getVectorOfMaterial )
         .def( "getVectorOfPartOfMaterialField",
               &MaterialFieldClass::getVectorOfPartOfMaterialField )
+        .def( "hasExternalVariablesComputation",
+              &MaterialFieldClass::hasExternalVariablesComputation )
         .def( "setModel", &MaterialFieldClass::setModel )
 
         .def( "addExternalStateVariables",

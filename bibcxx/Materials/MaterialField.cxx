@@ -98,6 +98,10 @@ std::vector< PartOfMaterialFieldPtr > MaterialFieldClass::getVectorOfPartOfMater
     return toReturn;
 };
 
+bool MaterialFieldClass::hasExternalVariablesComputation() const {
+    return _cvrcVarc->exists();
+};
+
 bool MaterialFieldClass::existsExternalVariablesComputation( const std::string &name ) {
     if ( _cvrcVarc->exists() ) {
         _cvrcVarc->updateValuePointer();

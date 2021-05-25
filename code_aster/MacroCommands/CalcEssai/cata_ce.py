@@ -61,15 +61,15 @@ class Resultat:
     def get_modele(self):
         """Recherche le modele associe au resultat. Routine generique pour les dyna_harmo et mode_meca"""
         if not self.modele:
-            if aster.jeveux_exists(self.nom.ljust(19) + '.NOVA'):
-                iret, ibid, modele_name = aster.dismoi(
-                    'MODELE', self.nom, 'RESULTAT', 'F')
-                modele_name = modele_name.rstrip()
+            model = self.obj.getModel()
+            if not model:
+                model = self.obj.getDOFNumbering().getModel()
+            if model:
+                modele_name = model.getName()
                 if modele_name[0:1] != "#":
-                    self.modele_name = modele_name
+                    self.modele_name = modele_name.rstrip()
                     self.modele = self.objects.modeles[self.modele_name]
                     return
-
         # Si cela ne marche pas, on passe par le maillage
         if not self.modele:
             for _mod in list(self.objects.modeles.values()):

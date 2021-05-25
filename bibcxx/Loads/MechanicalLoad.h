@@ -307,7 +307,7 @@ class GenericMechanicalLoadClass : public DataStructure, public ListOfTablesClas
         /** @brief Carte '.FORNO' */
         ConstantFieldOnCellsRealPtr _forno;
         /** @brief Carte '.IMPE' */
-        ConstantFieldOnCellsRealPtr _impe;
+        ConstantFieldOnCellsRealPtr _imped;
         /** @brief Carte '.PESAN' */
         ConstantFieldOnCellsRealPtr _pesan;
         /** @brief Carte '.PRESS' */
@@ -345,7 +345,7 @@ class GenericMechanicalLoadClass : public DataStructure, public ListOfTablesClas
               _fl101( new ConstantFieldOnCellsRealClass( name + ".FL101", _FEDesc ) ),
               _fl102( new ConstantFieldOnCellsRealClass( name + ".FL102", _FEDesc ) ),
               _forno( new ConstantFieldOnCellsRealClass( name + ".FORNO", _FEDesc ) ),
-              _impe( new ConstantFieldOnCellsRealClass( name + ".IMPE", _FEDesc ) ),
+              _imped( new ConstantFieldOnCellsRealClass( name + ".IMPED", _FEDesc ) ),
               _pesan( new ConstantFieldOnCellsRealClass( name + ".PESAN", _FEDesc ) ),
               _press( new ConstantFieldOnCellsRealClass( name + ".PRESS", _FEDesc ) ),
               _rotat( new ConstantFieldOnCellsRealClass( name + ".ROTAT", _FEDesc ) ),
@@ -414,6 +414,11 @@ class GenericMechanicalLoadClass : public DataStructure, public ListOfTablesClas
      * @brief Get the finite element descriptor
      */
     FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _mecaLoad._FEDesc; };
+
+    /**
+     * @brief Return true if has impe_face
+     */
+    bool hasImpeFace() const { return _mecaLoad._imped->exists(); };
 
     /**
      * @brief Get the model

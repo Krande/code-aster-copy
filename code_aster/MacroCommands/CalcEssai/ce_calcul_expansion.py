@@ -35,7 +35,7 @@ from ...Commands import (AFFE_MODELE, CREA_CHAMP, CREA_RESU, DEFI_FICHIER,
 from ...Messages import UTMESS
 from ...Messages import MessageLog as mess
 from ...Supervis import CO
-from .cata_ce import DynaHarmo, Resultat
+from .cata_ce import DynaHarmo
 
 
 def extract_mac_array(mac_mode, nom_table="MAC"):
