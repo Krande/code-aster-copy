@@ -109,7 +109,11 @@ def check_boost_aster(self):
                      toolset='cxx')
     if self.env.BOOST_VERSION_NUMBER < 106000:
         self.start_msg('Adding C++ flags (old boost version)')
-        flags = ["-Wno-deprecated-declarations", "-Wno-return-type"]
+        flags = [
+            "-Wno-deprecated-declarations",
+            "-Wno-return-type",
+            "-Wplacement-new=0"
+        ]
         self.env.append_unique("CXXFLAGS", flags)
         self.end_msg(flags)
     self.env["STLIBPATH_BOOST"] = []
