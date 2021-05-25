@@ -397,6 +397,44 @@ template < class ValueType > class ConstantFieldOnCellsClass : public DataFieldC
     };
 
     /**
+     * @brief Get values of zones from 0 to position_max
+     */
+    std::vector<ConstantFieldValues< ValueType >> getAllValues() const {
+        _valuesList->updateValuePointer();
+        _descriptor->updateValuePointer();
+        std::vector<ConstantFieldValues< ValueType >> vectorOfConstantFieldValues;
+        ASTERINTEGER nbZoneMax = ( *_descriptor )[1];
+        ASTERINTEGER gdeur = ( *_descriptor )[0];
+        ASTERINTEGER nec = PhysicalQuantityManager::Class().getNumberOfEncodedInteger( gdeur );
+        const auto &compNames = PhysicalQuantityManager::Class().getComponentNames( gdeur );
+        const ASTERINTEGER nbCmpMax = compNames.size();
+        for(int position = 0; position < ( *_descriptor )[2]; ++position)
+        {
+            VectorString cmpToReturn;
+            cmpToReturn.reserve(30*nec);
+            std::vector< ValueType > valToReturn;
+            valToReturn.reserve(30*nec);
+            for ( int i = 0; i < nec; ++i ) {
+                ASTERINTEGER encodedInt = ( *_descriptor )[3 + 2 * nbZoneMax + position * nec + i];
+                VectorLong vecOfComp( 30, -1 );
+                CALL_ISDECO( &encodedInt, vecOfComp.data(), &nec );
+                ASTERINTEGER pos = 0;
+                for ( const auto &val : vecOfComp ) {
+                    if ( val == 1 ) {
+                        cmpToReturn.push_back( compNames[pos + i * 30].toString() );
+                        const ASTERINTEGER posInVale = pos + i * 30 + nbCmpMax * position;
+                        valToReturn.push_back( ( *_valuesList )[posInVale] );
+                    }
+                    ++pos;
+                }
+            }
+            vectorOfConstantFieldValues.push_back(
+            ConstantFieldValues< ValueType >( cmpToReturn, valToReturn ) );
+        }
+        return vectorOfConstantFieldValues;
+    };
+
+    /**
      * @brief Get zone description
      */
     ConstantFieldOnZone getZoneDescription( const int &position ) const {

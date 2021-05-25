@@ -62,6 +62,7 @@ ParallelMechanicalLoadClass::transferConstantFieldOnCells( const ConstantFieldOn
     std::string savedName( "" );
     fieldOut->allocate( Permanent, fieldIn );
     const auto sizeFieldIn = (*fieldIn).size();
+    const auto vect_resu = fieldIn->getAllValues();
 
     fieldIn->updateValuePointers();
     for( int pos = 0; pos < sizeFieldIn; ++pos )
@@ -88,7 +89,7 @@ ParallelMechanicalLoadClass::transferConstantFieldOnCells( const ConstantFieldOn
         if( toCopy.size() != 0 )
         {
             const auto newZone = ConstantFieldOnZone( zone.getFiniteElementDescriptor(), toCopy );
-            const auto resu = fieldIn->getValues( pos );
+            const auto resu = vect_resu[pos];
             fieldOut->setValueOnZone( newZone, resu );
         }
     }
