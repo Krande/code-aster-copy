@@ -26,7 +26,6 @@ import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
-
 PVARCPR = InputParameter(phys=PHY.VARI_R)
 
 
@@ -47,38 +46,38 @@ PDEG = InputParameter(phys=PHY.NEUT_I)
 
 PLAG = InputParameter(phys=PHY.NEUT_R)
 
-CALCH_G = Option(
+CALC_G_F = Option(
     para_in=(
         SP.PACCELE,
         PCOMPOR,
         SP.PCONTGR,
         PCONTRR,
         SP.PDEPLAR,
-        SP.PEPSINR,
-        SP.PFR1D2D,
-        SP.PFR2D3D,
-        SP.PFRVOLU,
+        SP.PEPSINF,
+        SP.PFF1D2D,
+        SP.PFF2D3D,
+        SP.PFFVOLU,
         SP.PGEOMER,
         SP.PMATERC,
         SP.PPESANR,
-        SP.PPRESSR,
+        SP.PPRESSF,
         SP.PROTATR,
         SP.PSIGINR,
+        SP.PTEMPSR,
         PTHETAR,
         PVARCPR,
         SP.PVARCRR,
         SP.PVITESS,
         PDEG,
         PLAG,
-
     ),
     para_out=(
         SP.PGTHETA,
     ),
     condition=(
-        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '0'),)),
-        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.BORD, '-1'),)),
-        CondCalcul('-', ((AT.PHENO, 'ME'), (AT.ABSO, 'OUI'),)),
-        CondCalcul('-', ((AT.PHENO, 'ME'), (AT.DISCRET, 'OUI'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'-1'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.ABSO,'OUI'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.DISCRET,'OUI'),)),
     ),
 )

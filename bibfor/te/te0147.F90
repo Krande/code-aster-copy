@@ -27,10 +27,10 @@ subroutine te0147(option, nomte)
 !
 !      ELEMENTS DE BORDS ISOPARAMETRIQUES 2D/3D
 !
-!      OPTION : 'CALCH_G'          (LOCAL,CHARGES REELLES)
-!               'CALCH_G_F'        (LOCAL,CHARGES FONCTIONS)
-!               'CALCH_K_G'        (LOCAL,CHARGES REELLES)
-!               'CALCH_K_G_F'      (LOCAL,CHARGES FONCTIONS)
+!      OPTION : 'CALC_G'          (LOCAL,CHARGES REELLES)
+!               'CALC_G_F'        (LOCAL,CHARGES FONCTIONS)
+!               'CALC_K_G'        (LOCAL,CHARGES REELLES)
+!               'CALC_K_G_F'      (LOCAL,CHARGES FONCTIONS)
 !
 ! ENTREES  ---> OPTION : OPTION DE CALCUL
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
@@ -192,14 +192,14 @@ implicit none
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PDEPLAR', 'L', idepl)
-    if (option .eq. 'CALCH_K_G' .or. option .eq. 'CALCH_K_G_F') then
+    if (option .eq. 'CALC_K_G' .or. option .eq. 'CALC_K_G_F') then
         call jevech('PMATERC', 'L', imate)
         call jevech('PBASLOR', 'L', ibalo)
         call jevech('PLSN', 'L', jlsn)
         call jevech('PLST', 'L', jlst)
     endif
 !
-    if (option .eq. 'CALCH_G_F' .or. option .eq. 'CALCH_K_G_F' ) then
+    if (option .eq. 'CALC_G_F' .or. option .eq. 'CALC_K_G_F' ) then
         fonc = ASTER_TRUE
         call jevech('PPRESSF', 'L', ipref)
         call jevech('PTEMPSR', 'L', itemps)
@@ -509,7 +509,7 @@ implicit none
         !         CALCUL DES SIFS ; OPTION K
         ! ===========================================
 !
-        if ( option .eq. 'CALCH_K_G' .or. option .eq. 'CALCH_K_G_F' ) then
+        if ( option .eq. 'CALC_K_G' .or. option .eq. 'CALC_K_G_F' ) then
 !
             ! ===========================================
             !      RECUPERATION DES DONNEES MATERIAU
@@ -627,7 +627,7 @@ implicit none
             do j = 1, 3
                 forc = forcg(j) - press*a3(j)
                 tcla = tcla + poids*(forc*divt+dfor(j))*depl(j)
-                if ( option .eq. 'CALCH_K_G' .or. option .eq. 'CALCH_K_G_F' ) then
+                if ( option .eq. 'CALC_K_G' .or. option .eq. 'CALC_K_G_F' ) then
                     tcla1 = tcla1 + 0.5d0*poids*(forc*divt+dfor(j))*u1g(j)
                     tcla2 = tcla2 + 0.5d0*poids*(forc*divt+dfor(j))*u2g(j)
                     tcla3 = tcla3 + 0.5d0*poids*(forc*divt+dfor(j))*u3g(j)
@@ -639,7 +639,7 @@ implicit none
             prod = (divt*fx+dfxde*(th1+th2))*depl(1) + (divt*fy+dfyde*(th1+th2))*depl(2)
             tcla = tcla + prod*poids
 !
-            if ( option .eq. 'CALCH_K_G' .or. option .eq. 'CALCH_K_G_F' ) then
+            if ( option .eq. 'CALC_K_G' .or. option .eq. 'CALC_K_G_F' ) then
                 prod1 = (divt*fx+dfxde*(th1+th2))*u1g(1) + (divt*fy+dfyde*(th1+th2))*u1g(2)
                 prod2 = (divt*fx+dfxde*(th1+th2))*u2g(1) + (divt*fy+dfyde*(th1+th2))*u2g(2)
                 tcla1 = tcla1 + 0.5d0*poids*prod1

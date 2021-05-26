@@ -243,7 +243,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
                             ASSERT(occur <= 1)
 !               traitement du champ pour les elements finis classiques
                             call detrsd('CHAMP', cepsi)
-                            call alchml(ligrmo, 'CALCH_G', 'PEPSINR', 'V', cepsi, iret, ' ')
+                            call alchml(ligrmo, 'CALC_G', 'PEPSINR', 'V', cepsi, iret, ' ')
                             call chpchd(cartei(1:19), 'ELNO', cepsi, 'OUI', 'V', epselno)
                             call chpver('F', epselno(1:19), 'ELNO', 'EPSI_R', iret)
                             cartei(1:19) = epselno(1:19)

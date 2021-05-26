@@ -19,8 +19,6 @@
 
 # person_in_charge: matthieu-m.le-cren at edf.fr
 
-
-
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
 import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
@@ -39,13 +37,16 @@ PTHETAR = InputParameter(phys=PHY.THET_R)
 PVARIPR = InputParameter(phys=PHY.VARI_R)
 
 
-PCONTRR = InputParameter(phys=PHY.SIEF_R)
+#PCONTRR = InputParameter(phys=PHY.SIEF_R)
+
 
 
 PBASLOR = InputParameter(phys=PHY.NEUT_R)
 
 
+
 PLSN = InputParameter(phys=PHY.NEUT_R)
+
 
 
 PLST = InputParameter(phys=PHY.NEUT_R)
@@ -56,28 +57,26 @@ PDEG = InputParameter(phys=PHY.NEUT_I)
 
 PLAG = InputParameter(phys=PHY.NEUT_R)
 
-CALCH_K_G_F = Option(
+CALC_K_G = Option(
     para_in=(
         PBASLOR,
         PCOMPOR,
-        PCONTRR,
         PVARIPR,
         SP.PCOURB,
         SP.PDEPLAR,
-        SP.PEPSINF,
-        SP.PFF1D2D,
-        SP.PFF2D3D,
-        SP.PFFVOLU,
+        SP.PEPSINR,
+        SP.PFR1D2D,
+        SP.PFR2D3D,
+        SP.PFRVOLU,
         SP.PGEOMER,
         PLSN,
         PLST,
         SP.PMATERC,
         SP.PPESANR,
-        SP.PPRESSF,
+        SP.PPRESSR,
         SP.PPULPRO,
         SP.PROTATR,
         SP.PSIGINR,
-        SP.PTEMPSR,
         PTHETAR,
         PVARCPR,
         SP.PVARCRR,

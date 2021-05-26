@@ -29,10 +29,8 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, coorfond, nbnoff, absfon,&
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/wkvect.h"
 
     integer           :: nbnoff
@@ -63,7 +61,7 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, coorfond, nbnoff, absfon,&
 !        LNNO   : LEVLE-SETS NORMAUX EN CHAQUE NOEUD DU MAILLAGE
 !-----------------------------------------------------------------------
 !
-    integer :: ibid, indica, indicb, ina, inb, ino, ni, nj, jnoe
+    integer :: ibid, indica, indicb, ina, inb, ino, jnoe
     integer :: iseg, jbas, jabsf, jabscur, coorfd
     integer :: jgsl,   jlnsl,  jltsl
     integer :: k, nbno, ndim, nseg

@@ -169,7 +169,7 @@ use calcG_type
 
 !               Traitement du champ pour les elements finis classiques
                 call detrsd('CHAMP', celmod)
-                call alchml(ligrmo, 'CALCH_G', 'PSIGINR', 'V', celmod, iret, ' ')
+                call alchml(ligrmo, 'CALC_G', 'PSIGINR', 'V', celmod, iret, ' ')
                 call chpchd(chsigi(1:19), 'ELNO', celmod, 'OUI', 'V', sigelno)
                 call chpver('F', sigelno(1:19), 'ELNO', 'SIEF_R', ibid)
             endif
@@ -201,9 +201,9 @@ use calcG_type
         endif
 !
         if (cgStudy%option .eq. 'K') then
-            opti   = 'CALCH_K_G_F'
+            opti   = 'CALC_K_G_F'
         else if (cgStudy%option .eq. 'G'.or.cgStudy%option .eq. 'G_EPSI') then
-            opti   = 'CALCH_G_F'
+            opti   = 'CALC_G_F'
         else
             ASSERT(ASTER_FALSE)
         endif
@@ -221,9 +221,9 @@ use calcG_type
         endif
 !
         if (cgStudy%option .eq. 'K') then
-            opti   = 'CALCH_K_G'
+            opti   = 'CALC_K_G'
         else if (cgStudy%option .eq. 'G'.or.cgStudy%option .eq. 'G_EPSI') then
-            opti   = 'CALCH_G'
+            opti   = 'CALC_G'
         else
             ASSERT(ASTER_FALSE)
         endif
@@ -319,7 +319,7 @@ use calcG_type
             nchin = nchin + 3
         endif
 !
-        if (opti .eq. 'CALCH_G_F' .or. opti .eq. 'CALCH_K_G_F') then
+        if (opti .eq. 'CALC_G_F' .or. opti .eq. 'CALC_K_G_F') then
             call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R',&
                         ncmp=1, nomcmp='INST', sr=cgStudy%time)
             lpain(nchin+1) = 'PTEMPSR'
@@ -336,7 +336,7 @@ use calcG_type
         endif
 !
         if (cgField%l_incr ) then
-            if (opti .eq. 'CALCH_G_F' .or. opti .eq. 'CALCH_G') then
+            if (opti .eq. 'CALC_G_F' .or. opti .eq. 'CALC_G') then
                 lpain(nchin+1) = 'PCONTRR'
                 lchin(nchin+1) = chsig
                 nchin = nchin + 1

@@ -135,7 +135,7 @@ use calcG_type
 !
         if (cgTheta%discretization.eq.'LEGENDRE') then
 !           Conversion du champ par élément simple en champ par éléments
-            call cescel(chsdeg, ligrmo, 'CALCH_G', 'PDEG', 'NON',&
+            call cescel(chsdeg, ligrmo, 'CALC_G', 'PDEG', 'NON',&
                             nncp, 'V', chdeg, 'F', iret)
 !
             lpain(nchin+1) = 'PDEG'
@@ -143,7 +143,7 @@ use calcG_type
 !
         elseif (cgtheta%discretization .eq.'LINEAIRE') then
 !           Conversion du champ par élément simple en champ par éléments
-            call cescel(chslag, ligrmo, 'CALCH_G', 'PLAG', 'NON',&
+            call cescel(chslag, ligrmo, 'CALC_G', 'PLAG', 'NON',&
                             nncp, 'V', chlag, 'F', iret)
 !
             lpain(nchin+1) = 'PLAG'

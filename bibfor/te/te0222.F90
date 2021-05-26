@@ -242,7 +242,7 @@ implicit none
     call jevech('PDEPLAR', 'L', idepl)
     call jevech('PMATERC', 'L', imate)
     call jevech('PCOMPOR', 'L', icomp)
-    if (option == 'CALCH_K_G' .or. option == 'CALCH_K_G_F') then
+    if (option == 'CALC_K_G' .or. option == 'CALC_K_G_F') then
         call jevech('PBASLOR', 'L', ibalo)
         if (ndim == 3) then
             call jevech('PCOURB', 'L', icour)
@@ -255,7 +255,7 @@ implicit none
 !
 !-- Recuperation du champ local (carte) associe au pre-epsi
 !-- Ce champ est issu d un chargement pre epsi
-    if ( option == 'CALCH_G_F' .or. option == 'CALCH_K_G_F' ) then
+    if ( option == 'CALC_G_F' .or. option == 'CALC_K_G_F' ) then
         fonc = ASTER_TRUE
         call jevech('PFFVOLU', 'L', iforf)
         call jevech('PTEMPSR', 'L', itemps)
@@ -298,7 +298,7 @@ implicit none
     call tecach('ONO', 'PROTATR', 'L', iret, iad=irota)
     call tecach('ONO', 'PSIGINR', 'L', iret, iad=isigi)
 !
-    if (option == 'CALCH_G' .or. option == 'CALCH_G_F') then
+    if (option == 'CALC_G' .or. option == 'CALC_G_F') then
         call tecach('ONO', 'PVITESS', 'L', iret, iad=ivites)
         call tecach('ONO', 'PACCELE', 'L', iret, iad=iaccel)
         if (incr) then
@@ -859,7 +859,7 @@ implicit none
         !         UTILISATION DE LA FORME BILINEAIRE
         ! ===========================================================
 !
-        if ( option == 'CALCH_K_G' .or. option == 'CALCH_K_G_F' ) then
+        if ( option == 'CALC_K_G' .or. option == 'CALC_K_G_F' ) then
 !
 !---------- Base locale associée au PDG KP
             do i = 1, nno
