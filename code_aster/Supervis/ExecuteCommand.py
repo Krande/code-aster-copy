@@ -83,6 +83,7 @@ from ..Utilities import (
 from ..Utilities.outputs import command_text, decorate_name
 from .code_file import track_coverage
 from .CommandSyntax import CommandSyntax
+from .ctopy import check_sd_object
 from .Serializer import saveObjects
 
 
@@ -216,7 +217,9 @@ class ExecuteCommand(object):
             # try to push the result in the user context
             valid = "VALID" in libaster.onFatalError()
             if valid and hasattr(self._result, "userName"):
-                publish_in(self._caller["context"], {self._result.userName: self._result})
+                publish_in(
+                    self._caller["context"], {self._result.userName: self._result}
+                )
             stop = (
                 isinstance(self._exc, libaster.TimeLimitError)
                 and not ExecutionParameter().option & Options.SlaveMode
@@ -372,7 +375,8 @@ class ExecuteCommand(object):
 
         logger.info(
             "\n.. _stg{0}_{1}".format(
-                ExecutionParameter().get_option("stage_number"), self._caller["identifier"]
+                ExecutionParameter().get_option("stage_number"),
+                self._caller["identifier"],
             )
         )
         logger.info(command_separator())
@@ -429,7 +433,8 @@ class ExecuteCommand(object):
             self._result = None
         else:
             raise NotImplementedError(
-                "Method 'create_result' must be " "overridden for {0!r}.".format(self.name)
+                "Method 'create_result' must be "
+                "overridden for {0!r}.".format(self.name)
             )
 
     @property
@@ -476,6 +481,14 @@ class ExecuteCommand(object):
             self.post_exec(keywords)
             if isinstance(self._result, DataStructure):
                 self.add_dependencies(keywords)
+                if ExecutionParameter().get_option("sdveri"):
+                    timer = ExecutionParameter().timer
+                    timer.Start(" . sdveri", num=1.3e6)
+                    try:
+                        iret = check_sd_object(self._result.sdj)
+                        assert iret == 0, "Error(s) raised by checksd"
+                    finally:
+                        timer.Stop(" . sdveri")
             if self.hook:
                 self.hook(keywords)
         finally:
@@ -501,7 +514,12 @@ class ExecuteCommand(object):
             level (Optional[int]): Number of frames to rewind to find the
                 caller. Defaults to 2 (1: *here*, 2: *run_*, 3: *run*).
         """
-        self._caller = {"filename": "unknown", "lineno": 0, "context": {}, "identifier": ""}
+        self._caller = {
+            "filename": "unknown",
+            "lineno": 0,
+            "context": {},
+            "identifier": "",
+        }
         caller = inspect.currentframe()
         try:
             for _ in range(level):
@@ -591,7 +609,9 @@ class ExecuteMacro(ExecuteCommand):
         self._sdprods = search_for(keywords, _predicate)
         if self._sdprods:
             names_i = (
-                (ii.getName() for ii in i) if (type(i) in (list, tuple)) else [i.getName()]
+                (ii.getName() for ii in i)
+                if (type(i) in (list, tuple))
+                else [i.getName()]
                 for i in self._sdprods
             )
             names = [ii for i in names_i for ii in i]
@@ -607,7 +627,11 @@ class ExecuteMacro(ExecuteCommand):
             logger.info(command_result(self._counter, self.name, self._result))
         if self._result_names:
             for name in self._result_names:
-                logger.info(command_result(self._counter, self.name, self._add_results.get(name)))
+                logger.info(
+                    command_result(
+                        self._counter, self.name, self._add_results.get(name)
+                    )
+                )
         self._print_stats()
 
     def exec_(self, keywords):
@@ -812,7 +836,9 @@ def command_header(counter, filename, lineno):
     Returns:
         str: String representation.
     """
-    return MessageLog.GetText("I", "SUPERVIS2_71", vali=(counter, lineno), valk=filename)
+    return MessageLog.GetText(
+        "I", "SUPERVIS2_71", vali=(counter, lineno), valk=filename
+    )
 
 
 def _get_object_repr(obj):
@@ -874,4 +900,6 @@ def command_time(counter, cpu, system, elapsed):
     Returns:
         str: String representation.
     """
-    return MessageLog.GetText("I", "SUPERVIS2_75", vali=counter, valr=(cpu, system, elapsed))
+    return MessageLog.GetText(
+        "I", "SUPERVIS2_75", vali=counter, valr=(cpu, system, elapsed)
+    )

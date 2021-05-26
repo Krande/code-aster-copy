@@ -116,22 +116,32 @@ def checksd(nomsd, typesd):
     try:
         sd_module = __import__("code_aster.SD.%s" % typesd, globals(), locals(),
                                [typesd])
-    except ImportError as msg:
+    except ImportError:
         UTMESS('F', 'SDVERI_1', valk=typesd)
         return iret
     # on récupère la classe typesd
     clas = getattr(sd_module, typesd, None)
     if not clas:
         return iret
+    return check_sd_object(clas(nomj=nomsd))
 
-    objsd = clas(nomj=nomsd)
+
+def check_sd_object(objsd):
+    """Check the base jeveux objects.
+
+    Arguments:
+        objsd (*asojb*): Description of Jeveux Objects.
+
+    Returns:
+        int: 0 in case of success.
+    """
     chk = objsd.check()
-    ichk = min([1, ] + [level for level, obj, msg in chk.msg])
+    ichk = min([1, ] + [level for level, _, _ in chk.msg])
     if ichk == 0:
         iret = 1
     else:
         iret = 0
-    # on imprime les messages d'erreur (level=0):
+    # print error messages (level=0):
     for level, obj, msg in chk.msg:
         if level == 0:
             aster.affiche('MESSAGE', repr(obj) + msg)

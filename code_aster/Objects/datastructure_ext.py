@@ -114,6 +114,7 @@ class ExtendedDataStructure(object):
 # This dictionnary avoids to add the DataStructure "_ext.py" file just
 # to define the SD definition.
 DICT_SDJ = {
+    "Contact": "SD.sd_contact.sd_contact",
     "CrackTip": "SD.sd_fond_fiss.sd_fond_fiss",
     "Crack": "SD.sd_fond_fissure.sd_fond_fissure",
     "DOFNumbering": "SD.sd_nume_ddl.sd_nume_ddl",

@@ -25,7 +25,6 @@ implicit none
 #include "jeveux.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
-#include "asterc/cheksd.h"
 #include "asterfort/cescre.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/detrsd.h"
