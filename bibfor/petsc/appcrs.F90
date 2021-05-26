@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -185,12 +185,12 @@ use petsc_data_module
 #endif
 #if PETSC_VERSION_LT(3,8,0)
 #else
-! Ne pas supprimer VecCreate: si xglobal vaut PETSC_NULL_VEC en entrée de VecScatterCreateToAll,
-! il n'est pas alloué en sortie
         call VecCreate( mpicou, xglobal, ierr )
         ASSERT( ierr == 0 )
 #endif
-        call VecScatterCreateToAll(xlocal, xscatt, xglobal, ierr)
+! On passe un PETSC_NULL_VEC en lieu et place de xglobal en entrée de VecScatterCreateToAll
+! car ainsi, il n'est pas realloué
+        call VecScatterCreateToAll(xlocal, xscatt, PETSC_NULL_VEC, ierr)     
         ASSERT(ierr.eq.0)
 !-----------------------------------------------------------------------
     else if (precon.eq.'SOR') then
