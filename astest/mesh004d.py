@@ -25,7 +25,7 @@ code_aster.init("--test")
 
 test = code_aster.TestCase()
 
-rank = code_aster.getMPIRank()
+rank = code_aster.MPI.COMM_WORLD.Get_rank()
 
 MAIL = code_aster.ParallelMesh()
 MAIL.readMedFile("mesh004b/%d.med" % rank, True)
