@@ -499,12 +499,12 @@ bool ResultClass::update()
                 const std::string resu( trim( repk.toString() ) );
 
                 if ( resu == "NOEU" ) {
-                    const auto &curIter2 = _dictOfVectorOfFieldsNodes.find( nomSymb );
-                    if ( curIter2 == _dictOfVectorOfFieldsNodes.end() )
+                    const auto &iterField = _dictOfVectorOfFieldsNodes.find( nomSymb );
+                    if ( iterField == _dictOfVectorOfFieldsNodes.end() )
                         _dictOfVectorOfFieldsNodes[nomSymb] = VectorOfFieldsNodes(
                             numberOfSerialNum, FieldOnNodesRealPtr( nullptr ) );
-                    else if ( int(curIter2->second.size()) != numberOfSerialNum ) {
-                        curIter2->second.resize( numberOfSerialNum,
+                    else if ( int(iterField->second.size()) != numberOfSerialNum ) {
+                        iterField->second.resize( numberOfSerialNum,
                                                  FieldOnNodesRealPtr( nullptr ) );
                     }
 
@@ -515,12 +515,12 @@ bool ResultClass::update()
                         _dictOfVectorOfFieldsNodes[nomSymb][rank] = result;
                     }
                 } else if ( resu == "ELEM" || resu == "ELNO" || resu == "ELGA" ) {
-                    const auto &curIter2 = _dictOfVectorOfFieldsCells.find( nomSymb );
-                    if ( curIter2 == _dictOfVectorOfFieldsCells.end() )
+                    const auto &iterField = _dictOfVectorOfFieldsCells.find( nomSymb );
+                    if ( iterField == _dictOfVectorOfFieldsCells.end() )
                         _dictOfVectorOfFieldsCells[nomSymb] = VectorOfFieldsCells(
                             numberOfSerialNum, FieldOnCellsRealPtr( nullptr ) );
-                    else if ( int(curIter2->second.size()) != numberOfSerialNum ) {
-                        curIter2->second.resize( numberOfSerialNum,
+                    else if ( int(iterField->second.size()) != numberOfSerialNum ) {
+                        iterField->second.resize( numberOfSerialNum,
                                                  FieldOnCellsRealPtr( nullptr ) );
                     }
 
@@ -529,10 +529,10 @@ bool ResultClass::update()
                         AS_ASSERT( curMesh != nullptr );
                         FieldOnCellsRealPtr result =
                             _fieldBuidler.buildFieldOnCells< double >( name, curMesh );
-                        auto curIter = _mapModel.find(( *_serialNumber )[rank]);
-                        if ( curIter != _mapModel.end() )
-                            if ( not((( *curIter ).second)->isEmpty()) )
-                                result->setModel(( *curIter ).second);
+                        auto iterModel = _mapModel.find(( *_serialNumber )[rank]);
+                        if ( iterModel != _mapModel.end() )
+                            if ( not((( *iterModel ).second)->isEmpty()) )
+                                result->setModel(( *iterModel ).second);
                         else if (not(hasMultipleModel())){
                             ModelPtr curModel = getModel();
                             if ( not(curModel->isEmpty()) )

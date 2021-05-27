@@ -26,7 +26,7 @@
 import aster
 from libaster import MaterialField, Model, Result
 
-from ..Utilities import injector
+from ..Utilities import injector, logger
 from .Serialization import InternalStateBuilder
 
 
@@ -59,8 +59,16 @@ class ResultStateBuilder(InternalStateBuilder):
             except RuntimeError:
                 pass
         if len(self._st["rank"]) != len(self._st["model"]):
+            logger.debug(
+                f"Inconsistent definition of models: "
+                f"{len(self._st['rank'])} ranks, {len(self._st['model'])} models"
+            )
             self._st["model"] = []
         if len(self._st["rank"]) != len(self._st["mater"]):
+            logger.debug(
+                f"Inconsistent definition of materials fields: "
+                f"{len(self._st['rank'])} ranks, {len(self._st['mater'])} materials"
+            )
             self._st["mater"] = []
         return self
 
@@ -77,7 +85,8 @@ class ResultStateBuilder(InternalStateBuilder):
                 result.addModel(self._st["model"][i], rank)
             if self._st["mater"]:
                 result.addMaterialField(self._st["mater"][i], rank)
-        result.update()
+        if self._st["model"]:
+            result.update()
 
 
 @injector(Result)
@@ -86,11 +95,11 @@ class ExtendedResult(object):
     cata_sdj = "SD.sd_resultat.sd_resultat"
     internalStateBuilder = ResultStateBuilder
 
-    def LIST_CHAMPS (self) :
+    def LIST_CHAMPS(self):
         return aster.GetResu(self.getName(), "CHAMPS")
 
-    def LIST_VARI_ACCES (self):
+    def LIST_VARI_ACCES(self):
         return aster.GetResu(self.getName(), "VARI_ACCES")
 
-    def LIST_PARA (self):
+    def LIST_PARA(self):
         return aster.GetResu(self.getName(), "PARAMETRES")
