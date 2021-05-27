@@ -31,7 +31,7 @@ from ..Utilities.MedUtils.MEDConverter import convertMesh2MedCoupling
 
 
 @injector(Mesh)
-class ExtendedMesh(object):
+class ExtendedMesh:
     cata_sdj = "SD.sd_maillage.sd_maillage"
 
     def LIST_GROUP_NO(self) :

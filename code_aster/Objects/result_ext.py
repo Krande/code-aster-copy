@@ -90,7 +90,7 @@ class ResultStateBuilder(InternalStateBuilder):
 
 
 @injector(Result)
-class ExtendedResult(object):
+class ExtendedResult:
 
     cata_sdj = "SD.sd_resultat.sd_resultat"
     internalStateBuilder = ResultStateBuilder

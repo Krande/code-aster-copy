@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ from ..Utilities import injector
 
 
 @injector(GeneralizedAssemblyVectorComplex)
-class ExtendedGeneralizedAssemblyVectorComplex(object):
+class ExtendedGeneralizedAssemblyVectorComplex:
     cata_sdj = "SD.sd_cham_gene.sd_cham_gene"
 
     def EXTR_VECT_GENE_C(self):
@@ -66,7 +66,7 @@ class ExtendedGeneralizedAssemblyVectorComplex(object):
         return
 
 @injector(GeneralizedAssemblyVectorReal)
-class ExtendedGeneralizedAssemblyVectorReal(object):
+class ExtendedGeneralizedAssemblyVectorReal:
     cata_sdj = "SD.sd_cham_gene.sd_cham_gene"
 
     def EXTR_VECT_GENE_R(self) :

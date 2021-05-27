@@ -33,20 +33,20 @@ from ..Utilities import injector
 
 
 @injector(ElementaryMatrixDisplacementReal)
-class ExtendedElementaryMatrixDisplacementReal():
+class ExtendedElementaryMatrixDisplacementReal:
     cata_sdj = "SD.sd_matr_elem.sd_matr_elem"
 
 
 @injector(ElementaryMatrixDisplacementComplex)
-class ExtendedElementaryMatrixDisplacementComplex(object):
+class ExtendedElementaryMatrixDisplacementComplex:
     cata_sdj = "SD.sd_matr_elem.sd_matr_elem"
 
 
 @injector(ElementaryMatrixTemperatureReal)
-class ExtendedElementaryMatrixTemperatureReal(object):
+class ExtendedElementaryMatrixTemperatureReal:
     cata_sdj = "SD.sd_matr_elem.sd_matr_elem"
 
 
 @injector(ElementaryMatrixPressureComplex)
-class ExtendedElementaryMatrixPressureComplex(object):
+class ExtendedElementaryMatrixPressureComplex:
     cata_sdj = "SD.sd_matr_elem.sd_matr_elem"

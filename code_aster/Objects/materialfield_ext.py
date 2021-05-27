@@ -77,7 +77,7 @@ class MaterialFieldStateBuilder(InternalStateBuilder):
 
 
 @injector(MaterialField)
-class ExtendedMaterialField(object):
+class ExtendedMaterialField:
 
     cata_sdj = "SD.sd_cham_mater.sd_cham_mater"
     internalStateBuilder = MaterialFieldStateBuilder

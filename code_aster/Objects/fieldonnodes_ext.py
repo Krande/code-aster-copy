@@ -32,7 +32,7 @@ from ..Utilities import injector
 
 
 @injector(FieldOnNodesReal)
-class ExtendedFieldOnNodesReal(object):
+class ExtendedFieldOnNodesReal:
     cata_sdj = "SD.sd_champ.sd_cham_no_class"
 
     def EXTR_COMP(self, comp=' ', lgno=[], topo=0):

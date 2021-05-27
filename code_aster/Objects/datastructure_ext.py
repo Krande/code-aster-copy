@@ -31,9 +31,9 @@ from .Serialization import InternalStateBuilder
 
 
 @injector(DataStructure)
-class ExtendedDataStructure(object):
-    """This class defines the base class of the DataStructures.
-    """
+class ExtendedDataStructure:
+    """This class defines the base class of the DataStructures."""
+
     # Tell Boost that __get_state__/__set_state__ must manage __dict__
     # Search for python reference guide at https://www.boost.org/doc/libs/
     __getstate_manages_dict__ = 1
@@ -63,7 +63,7 @@ class ExtendedDataStructure(object):
             base DataStructure. But most of the derivated class should have
             a constructor accepting the Jeveux name.
         """
-        return (self.getName(), )
+        return (self.getName(),)
 
     def __getstate__(self):
         """Return internal state.
@@ -86,11 +86,14 @@ class ExtendedDataStructure(object):
     def sdj(self):
         """Return the DataStructure catalog."""
         if self.ptr_sdj is None:
-            cata_sdj = getattr(self, 'cata_sdj', None)
+            cata_sdj = getattr(self, "cata_sdj", None)
             if not cata_sdj:
-                 cata_sdj = DICT_SDJ.get(self.__class__.__name__)
-            assert cata_sdj, ("The attribute 'cata_sdj' must be defined in "
-                              "the class {}".format(self.__class__.__name__))
+                cata_sdj = DICT_SDJ.get(self.__class__.__name__)
+            assert (
+                cata_sdj
+            ), "The attribute 'cata_sdj' must be defined in " "the class {}".format(
+                self.__class__.__name__
+            )
             if self.ptr_class_sdj is None:
                 self.ptr_class_sdj = import_object("code_aster." + cata_sdj)
             self.ptr_sdj = self.ptr_class_sdj(nomj=self.getName())
@@ -111,26 +114,14 @@ class ExtendedDataStructure(object):
         return self.getName()
 
 
-# This dictionnary avoids to add the DataStructure "_ext.py" file just
-# to define the SD definition.
-DICT_SDJ = {
-    "Contact": "SD.sd_contact.sd_contact",
-    "CrackTip": "SD.sd_fond_fiss.sd_fond_fiss",
-    "Crack": "SD.sd_fond_fissure.sd_fond_fissure",
-    "DOFNumbering": "SD.sd_nume_ddl.sd_nume_ddl",
-    "DynamicMacroElement": "SD.sd_macr_elem_dyna.sd_macr_elem_dyna",
-    "HarmoGeneralizedResult": "SD.sd_dyna_gene.sd_dyna_gene",
-    "Material": "SD.sd_mater.sd_mater",
-    "MeshesMapping": "SD.sd_corresp_2_mailla.sd_corresp_2_mailla",
-}
-
-
 class OnlyParallelObject:
     """This object is only available in parallel."""
 
     def __init__(self, *args, **kwargs):
-        raise NameError("The object '{0}' is only available in parallel "
-                        "executions.".format(self.__class__.__name__))
+        raise NameError(
+            "The object '{0}' is only available in parallel "
+            "executions.".format(self.__class__.__name__)
+        )
 
 
 class PyDataStructure:
@@ -163,11 +154,62 @@ class AsInteger(PyDataStructure):
 
     @classmethod
     def getType(cls):
-        return 'ENTIER'
+        """Return type as string."""
+        return "ENTIER"
+
 
 class AsFloat(PyDataStructure):
     """This class defines a simple float used as a DataStructure."""
 
     @classmethod
     def getType(cls):
-        return 'REEL'
+        """Return type as string."""
+        return "REEL"
+
+
+# This dictionnary avoids to add the DataStructure "_ext.py" file just
+# to define the SD definition.
+DICT_SDJ = {
+    "Contact": "SD.sd_contact.sd_contact",
+    "CrackTip": "SD.sd_fond_fiss.sd_fond_fiss",
+    "Crack": "SD.sd_fond_fissure.sd_fond_fissure",
+    "HarmoGeneralizedResult": "SD.sd_dyna_gene.sd_dyna_gene",
+    "MeshesMapping": "SD.sd_corresp_2_mailla.sd_corresp_2_mailla",
+
+    "AcousticModeResult": "SD.sd_dyna_phys.sd_dyna_phys",
+    "BehaviourDefinition": "SD.sd_compor.sd_compor",
+    "BucklingModeResult": "SD.sd_dyna_phys.sd_dyna_phys",
+    "CyclicSymmetryMode": "SD.sd_mode_cycl.sd_mode_cycl",
+    "ElementaryVector": "SD.sd_vect_elem.sd_vect_elem",
+    "ElementaryVectorDisplacementReal": "SD.sd_vect_elem.sd_vect_elem",
+    "ElementaryVectorPressureComplex": "SD.sd_vect_elem.sd_vect_elem",
+    "ElementaryVectorTemperatureReal": "SD.sd_vect_elem.sd_vect_elem",
+    "FiberGeometry": "SD.sd_gfibre.sd_gfibre",
+    "FieldOnNodesComplex": "SD.sd_champ.sd_cham_no_class",
+    "FieldOnNodesDescription" : "SD.sd_prof_chno.sd_prof_chno",
+    "FiniteElementDescriptor": "SD.sd_ligrel.sd_ligrel",
+    "FluidStructureInteraction": "SD.sd_type_flui_stru.sd_type_flui_stru",
+    "FluidStructureModalBasis": "SD.sd_melasflu.sd_melasflu",
+    "FullHarmonicAcousticResult": "SD.sd_dyna_phys.sd_dyna_phys",
+    "FullHarmonicResult": "SD.sd_dyna_gene.sd_dyna_gene",
+    "FullTransientResult": "SD.sd_dyna_phys.sd_dyna_phys",
+    "GcpcSolver": "SD.sd_solveur.sd_solveur",
+    "GeneralizedModeResult": "SD.sd_dyna_gene.sd_dyna_gene",
+    "GeneralizedResultComplex": "SD.sd_dyna_gene.sd_dyna_gene",
+    "GeneralizedResultReal": "SD.sd_dyna_gene.sd_dyna_gene",
+    "GenericModalBasis": "SD.sd_dyna_phys.sd_dyna_phys",
+    "Grid": "SD.sd_grille.sd_grille",
+    "InterspectralMatrix": "SD.sd_interspectre.sd_interspectre",
+    "LdltSolver": "SD.sd_solveur.sd_solveur",
+    "ModeResult": "SD.sd_dyna_phys.sd_dyna_phys",
+    "ModeResultComplex": "SD.sd_dyna_phys.sd_dyna_phys",
+    "MultFrontSolver": "SD.sd_solveur.sd_solveur",
+    "MumpsSolver": "SD.sd_solveur.sd_solveur",
+    "PetscSolver": "SD.sd_solveur.sd_solveur",
+    "RitzBasis": "SD.sd_dyna_phys.sd_dyna_phys",
+    "Skeleton": "SD.sd_grille.sd_grille",
+    "StaticMacroElement": "SD.sd_macr_elem_stat.sd_macr_elem_stat",
+    "StructureInterface": "SD.sd_resu_dyna.sd_resu_dyna",
+    "TimeStepper": "SD.sd_list_inst.sd_list_inst",
+    "TurbulentSpectrum": "SD.sd_spectre.sd_spectre",
+}

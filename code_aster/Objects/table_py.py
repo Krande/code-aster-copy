@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ DicForm = {
 Kdef = 'K24'
 
 
-class TableBase(object):
+class TableBase:
 
     """Classe pour partager les méthodes d'impression entre Table et Colonne
     (c'est surtout utile pour vérifier que l'extraction et les filtres sur les
@@ -935,7 +935,7 @@ def sort_table(rows, l_para, l_type, w_para, reverse=False):
     return new_rows
 
 
-class OrderableRow(object):
+class OrderableRow:
     """A row that can be compared to another.
 
     Arguments:

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ from .generalizedassemblymatrix_ext import VALM_triang2array
 
 
 @injector(DynamicMacroElement)
-class ExtendedDynamicMacroElement(object):
+class ExtendedDynamicMacroElement:
     cata_sdj = "SD.sd_macr_elem_dyna.sd_macr_elem_dyna"
 
     def EXTR_MATR_GENE(self,typmat) :

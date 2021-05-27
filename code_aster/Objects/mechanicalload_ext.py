@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ from ..Utilities import injector
 
 
 @injector(GenericMechanicalLoad)
-class ExtendedGenericMechanicalLoad(object):
+class ExtendedGenericMechanicalLoad:
     cata_sdj = "SD.sd_char_meca.sd_char_meca"
 
     def __getinitargs__(self):

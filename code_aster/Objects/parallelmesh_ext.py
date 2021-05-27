@@ -30,7 +30,7 @@ from ..Utilities.MedUtils.MEDPartitioner import MEDPartitioner
 
 
 @injector(ParallelMesh)
-class ExtendedParallelMesh(object):
+class ExtendedParallelMesh:
 
     def readMedFile(self, filename, partitioned=False, verbose=0) :
         """Read a MED file containing a mesh and eventually partition it

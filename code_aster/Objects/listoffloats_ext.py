@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ from ..Utilities import accept_array, deprecated, injector
 
 
 @injector(ListOfFloats)
-class ExtendedListOfFloats(object):
+class ExtendedListOfFloats:
     cata_sdj = "SD.sd_listr8.sd_listr8"
 
     def __getattr__(self, attr):

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ from .table_graph import Graph
 
 
 @injector(Function)
-class ExtendedFunction(object):
+class ExtendedFunction:
     cata_sdj = "SD.sd_fonction.sd_fonction_aster"
 
     setValues = accept_array(Function.setValues)
@@ -131,7 +131,7 @@ class ExtendedFunction(object):
 
 
 @injector(FunctionComplex)
-class ExtendedFunctionComplex(object):
+class ExtendedFunctionComplex:
     cata_sdj = "SD.sd_fonction.sd_fonction_aster"
 
     setValues = accept_array(FunctionComplex.setValues)

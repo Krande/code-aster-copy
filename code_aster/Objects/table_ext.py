@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,14 +24,14 @@
 """
 
 import aster
-from libaster import Table
+from libaster import Table, TableOfFunctions
 from .table_py import Table as TablePy
 
 from ..Utilities import injector
 
 
 @injector(Table)
-class ExtendedTable(object):
+class ExtendedTable:
     cata_sdj = "SD.sd_table.sd_table"
 
     def __getitem__(self, key):
@@ -145,13 +145,11 @@ class ExtendedTable(object):
         return [parameters, values]
 
 
-# class table_fonction(table_sdaster):
-#     """Table contenant une colonne FONCTION et/ou FONCTION_C dont les
-#     valeurs des cellules sont des noms de fonction_sdaster ou
-#     fonction_c."""
-#     cata_sdj = "SD.sd_table_fonction.sd_table_fonction"
-#
-#
+@injector(TableOfFunctions)
+class ExtendedTableOfFunctions:
+    cata_sdj = "SD.sd_table_fonction.sd_table_fonction"
+
+
 # class table_container(table_sdaster):
 #     """Table contenant les colonnes NOM_OBJET, TYPE_OBJET et NOM_SD."""
 #     cata_sdj = "SD.sd_table_container.sd_table_container"

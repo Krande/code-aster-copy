@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ except ImportError:
     HAS_MATPLOTLIB = False
 
 
-class Graph(object):
+class Graph:
 
     """Cette classe définit l'objet Graph pour Code_Aster.
 

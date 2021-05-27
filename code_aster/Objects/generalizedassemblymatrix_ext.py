@@ -90,7 +90,7 @@ class GeneralizedAssemblyMatrixStateBuilder(InternalStateBuilder):
 
 
 @injector(GeneralizedAssemblyMatrixComplex)
-class ExtendedGeneralizedAssemblyMatrixComplex(object):
+class ExtendedGeneralizedAssemblyMatrixComplex:
     cata_sdj = "SD.sd_matr_asse_gene.sd_matr_asse_gene"
     internalStateBuilder = GeneralizedAssemblyMatrixStateBuilder
 
@@ -160,7 +160,7 @@ class ExtendedGeneralizedAssemblyMatrixComplex(object):
         return
 
 @injector(GeneralizedAssemblyMatrixReal)
-class ExtendedGeneralizedAssemblyMatrixReal():
+class ExtendedGeneralizedAssemblyMatrixReal:
     cata_sdj = "SD.sd_matr_asse_gene.sd_matr_asse_gene"
     internalStateBuilder = GeneralizedAssemblyMatrixStateBuilder
 

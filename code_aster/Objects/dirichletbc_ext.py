@@ -29,7 +29,7 @@ from ..Utilities import injector
 
 
 @injector(MechanicalDirichletBC)
-class ExtendedMechanicalDirichletBC(object):
+class ExtendedMechanicalDirichletBC:
     cata_sdj = "SD.sd_char_cine.sd_char_cine"
 
     def __getinitargs__(self):
@@ -39,7 +39,7 @@ class ExtendedMechanicalDirichletBC(object):
         return (self.getName(), self.getModel())
 
 @injector(ThermalDirichletBC)
-class ExtendedThermalDirichletBC(object):
+class ExtendedThermalDirichletBC:
     cata_sdj = "SD.sd_char_cine.sd_char_cine"
 
     def __getinitargs__(self):
@@ -49,7 +49,7 @@ class ExtendedThermalDirichletBC(object):
         return (self.getName(), self.getModel())
 
 @injector(AcousticDirichletBC)
-class ExtendedAcousticDirichletBC(object):
+class ExtendedAcousticDirichletBC:
     cata_sdj = "SD.sd_char_cine.sd_char_cine"
 
     def __getinitargs__(self):

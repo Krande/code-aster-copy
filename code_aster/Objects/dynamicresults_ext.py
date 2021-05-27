@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ from ..Utilities import injector
 
 
 @injector(TransientGeneralizedResult)
-class ExtendedTransientGeneralizedResult(object):
+class ExtendedTransientGeneralizedResult:
     cata_sdj = "SD.sd_dyna_gene.sd_dyna_gene"
 
     def _check_input_inoli(self, inoli):

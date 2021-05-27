@@ -39,12 +39,15 @@ def injector(boost_class):
         class: Decorated class.
     """
     def decorated(cls):
-        for name, attr in cls.__dict__.items():
-            if name.startswith("__"):
-                if name not in ("__call__", "__getattr__", "__getinitargs__",
-                                "__getitem__", "__getstate__",
-                                "__getstate_manages_dict__", "__len__",
-                                "__setstate__", "__add__", "__mult__", "__iadd__"):
-                    continue
-            setattr(boost_class, name, attr)
+        for parent in reversed(cls.mro()):
+            if parent is object:
+                continue
+            for name, attr in parent.__dict__.items():
+                if name.startswith("__"):
+                    if name not in ("__call__", "__getattr__", "__getinitargs__",
+                                    "__getitem__", "__getstate__",
+                                    "__getstate_manages_dict__", "__len__",
+                                    "__setstate__", "__add__", "__mult__", "__iadd__"):
+                        continue
+                setattr(boost_class, name, attr)
     return decorated

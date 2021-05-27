@@ -30,7 +30,7 @@ from ..Utilities import injector
 
 
 @injector(ConstantFieldOnCellsReal)
-class ExtendedConstantFieldOnCellsReal(object):
+class ExtendedConstantFieldOnCellsReal:
     cata_sdj = "SD.sd_carte.sd_carte"
 
     def __getinitargs__(self):
@@ -41,7 +41,7 @@ class ExtendedConstantFieldOnCellsReal(object):
 
 
 @injector(ConstantFieldOnCellsChar16)
-class ExtendedConstantFieldOnCellsChar16(object):
+class ExtendedConstantFieldOnCellsChar16:
     cata_sdj = "SD.sd_carte.sd_carte"
 
     def __getinitargs__(self):

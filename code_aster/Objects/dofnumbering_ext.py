@@ -58,6 +58,6 @@ class DOFNumberingStateBuilder(InternalStateBuilder):
 
 
 @injector(DOFNumbering)
-class ExtendedDOFNumbering(object):
+class ExtendedDOFNumbering:
     cata_sdj = "SD.sd_nume_ddl.sd_nume_ddl"
     internalStateBuilder = DOFNumberingStateBuilder

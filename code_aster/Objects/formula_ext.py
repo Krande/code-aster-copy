@@ -74,7 +74,7 @@ class FormulaStateBuilder(InternalStateBuilder):
 
 
 @injector(Formula)
-class ExtendedFormula(object):
+class ExtendedFormula:
 
     cata_sdj = "SD.sd_fonction.sd_formule"
     internalStateBuilder = FormulaStateBuilder

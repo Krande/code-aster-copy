@@ -35,6 +35,8 @@ from .acousticload_ext import AcousticLoad
 from .assemblymatrix_ext import (AssemblyMatrixDisplacementComplex,
                                  AssemblyMatrixDisplacementReal)
 from .constantfieldoncells_ext import ConstantFieldOnCellsReal
+from .dirichletbc_ext import (MechanicalDirichletBC,
+                              ThermalDirichletBC, AcousticDirichletBC)
 from .dofnumbering_ext import DOFNumbering
 from .dynamicmacroelement_ext import DynamicMacroElement
 from .dynamicresults_ext import TransientGeneralizedResult
@@ -55,8 +57,6 @@ from .generalizedassemblyvector_ext import (GeneralizedAssemblyVectorComplex,
 from .generalizedmodel_ext import GeneralizedModel
 from .listoffloats_ext import ListOfFloats
 from .listofintegers_ext import ListOfIntegers
-from .dirichletbc_ext import (MechanicalDirichletBC,
-                                 ThermalDirichletBC, AcousticDirichletBC)
 from .material_ext import Material
 from .materialfield_ext import MaterialField
 from .mechanicalload_ext import GenericMechanicalLoad
