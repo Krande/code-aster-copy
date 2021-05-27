@@ -350,9 +350,8 @@ class MGSPQU8(Element):
         ),
 
         OP.EPVC_ELGA(te=529,
-            para_in=((OP.EPVC_ELGA.PCOMPOR, LC.CCOMPOR), (SP.PGEOMER, NGEOMER),
-                     (SP.PMATERC, LC.CMATERC), (OP.EPVC_ELGA.PVARCPR, LC.ZVARCPG),
-                     (SP.PVARCRR, LC.ZVARCPG), ),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC), 
+                     (OP.EPVC_ELGA.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG), ),
             para_out=((OP.EPVC_ELGA.PDEFOPG, EDFVCPG), ),
         ),
 
