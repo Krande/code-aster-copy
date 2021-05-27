@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,17 +22,20 @@ subroutine nmiret(codret, tabret)
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
+#include "asterfort/asmpi_comm_logical.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/sdmpic.h"
 #include "asterfort/utmess.h"
-#include "asterfort/exisd.h"
+#include "jeveux.h"
 !
 aster_logical :: tabret(0:10)
 character(len=19) :: codret
@@ -57,7 +60,7 @@ character(len=19) :: codret
 !
     integer :: iret, jcesd, jcesl, nbmail, icmp
     integer :: ima, iad, vali
-    character(len=8) :: nomgd
+    character(len=8) :: nomgd, mesh
     character(len=19) :: chamns
     integer, pointer :: cesv(:) => null()
     character(len=8), pointer :: cesk(:) => null()
@@ -74,7 +77,7 @@ character(len=19) :: codret
 !
     chamns = '&&NMIRET.CHAMNS'
     call exisd('CHAM_ELEM', codret, iret)
-    if (iret .eq. 0) then 
+    if (iret .eq. 0) then
         goto 99
     endif
 
@@ -119,6 +122,15 @@ character(len=19) :: codret
             call utmess('A', 'MECANONLINE2_67', si=vali)
         endif
     end do
+!
+! --- Il faut faire une synthèse en HPC
+!
+    call dismoi('NOM_MAILLA', codret, 'CHAM_ELEM', repk = mesh)
+    if( isParallelMesh(mesh) ) then
+        do iret = 1, 10
+            call asmpi_comm_logical("MPI_LOR", tabret(iret))
+        end do
+    end if
 !
     do iret = 1, 10
         if (tabret(iret)) tabret(0) = .true.
