@@ -163,6 +163,10 @@ character(len=16), intent(in) :: relaComp, relaCompPY
                 endif
             endif
 
+            if (l_dkt .and. defoComp .eq. 'GDEF_LOG') then
+                call utmess('F', 'COMPOR1_99')
+            endif
+
 ! --------- Check model of strains for Mfront
             if (lMfront) then
                 if (exteDefo .eq. MFRONT_STRAIN_SMALL) then
