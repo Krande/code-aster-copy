@@ -106,14 +106,6 @@ Contactez le support technique.
  paramètre matériau AFFINITE non trouvé
 """),
 
-    49 : _("""
-  -> La phase de vérification du maillage a été volontairement désactivée.
-
-  -> Risque & Conseil :
-     Soyez sur de votre maillage. Si des mailles dégénérées sont présentes elles
-     ne seront pas détectées. Cela pourra nuire à la qualité des résultats.
-"""),
-
     51 : _("""
 DEFI_CABLE_BP : Échec de projection du noeud de câble %(k1)s.
 
