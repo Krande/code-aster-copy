@@ -85,7 +85,7 @@ class PostRocheAnalytic(object):
         """calcule self._sigma_deplacement, self._sigma_sismique, self._g, self._g_s"""
         def func(x):
             """equation de contrainte vrai"""
-            return (x/self._E + self._epsi_p(x) - self._epsi_p(sigma_ref)) + r * (x-sigma_ref) / self._E
+            return (x/self._E + self._epsi_p(x) - sigma_ref/self._E) + r * (x-sigma_ref) / self._E
         # resolution sigma_deplacement
         sigma_deplacement = []
         for sigma_ref, r in zip(self._sigma_deplacement_ref, self._r_m):
