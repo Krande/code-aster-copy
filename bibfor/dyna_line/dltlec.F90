@@ -285,7 +285,7 @@ implicit none
     call dismoi('NOM_MODELE', rigid, 'MATR_ASSE', repk=modele)
     call dismoi('CARA_ELEM', rigid, 'MATR_ASSE', repk=carael)
 
-    if(nchar .ne. 0) then
+    if((nchar .ne. 0).and.(len_trim(carele) .ne. 0)) then
         !- S'ASSURER DE LA COHRENCE ENTRE LES CARA_ELEM RECUPEREES
         ASSERT(carael(1:8).eq.carele(1:8))
     else
