@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -94,21 +94,24 @@ class ComputeAdditionalField(ExecuteCommand):
         if "reuse" not in keywords:
             # only if there is only one model, fieldmat...
             try:
-                model = keywords["RESULTAT"].getModel()
-                if model:
-                    self._result.addDependency(model)
+                models = keywords["RESULTAT"].getModels()
+                for model in models:
+                    if model:
+                        self._result.addDependency(model)
             except RuntimeError:
                 pass
             try:
-                fieldmat = keywords["RESULTAT"].getMaterialField()
-                if fieldmat:
-                    self._result.addDependency(fieldmat)
+                fieldmats = keywords["RESULTAT"].getMaterialFields()
+                for fieldmat in fieldmats:
+                    if fieldmat:
+                        self._result.addDependency(fieldmat)
             except RuntimeError:
                 pass
             try:
-                elem = keywords["RESULTAT"].getElementaryCharacteristics()
-                if elem:
-                    self._result.addDependency(elem)
+                elems = keywords["RESULTAT"].getAllElementaryCharacteristics()
+                for elem in elems:
+                    if elem:
+                        self._result.addDependency(elem)
             except RuntimeError:
                 pass
 

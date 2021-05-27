@@ -65,11 +65,29 @@ void exportResultToPython() {
               &ResultClass::appendMaterialFieldOnAllRanks )
         .def( "appendModelOnAllRanks", &ResultClass::appendModelOnAllRanks )
         .def( "listFields", &ResultClass::listFields )
+        .def( "getAllElementaryCharacteristics", &ResultClass::getAllElementaryCharacteristics, R"(
+Return the list of all elementary characteristics used in the result
+
+Returns:
+    list[ElementaryCharacteristicsPtr]: list of ElementaryCharacteristics.
+        )", ( py::arg("self" )) )
         .def( "getElementaryCharacteristics", c5 )
         .def( "getElementaryCharacteristics", c6 )
+        .def( "getMaterialFields", &ResultClass::getMaterialFields, R"(
+Return the list of all material fields used in the result
+
+Returns:
+    list[MaterialFieldPtr]: list of material field.
+        )", ( py::arg("self" )) )
         .def( "getMaterialField", c1 )
         .def( "getMaterialField", c2 )
         .def( "getMesh", &ResultClass::getMesh )
+        .def( "getModels", &ResultClass::getModels, R"(
+Return the list of all models used in the result
+
+Returns:
+    list[ModelPtr]: list of models.
+        )", ( py::arg("self" )) )
         .def( "getModel", c3 )
         .def( "getModel", c4 )
         .def( "getNumberOfRanks", &ResultClass::getNumberOfRanks )

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -49,6 +49,10 @@ class NonLinearThermalAnalysis(ExecuteCommand):
             self._result.update()
         else:
             self._result.appendModelOnAllRanks(keywords["MODELE"])
+            self._result.appendMaterialFieldOnAllRanks(keywords["CHAM_MATER"])
+            if "CARA_ELEM" in keywords:
+                self._result.appendElementaryCharacteristicsOnAllRanks(keywords["CARA_ELEM"])
+
             self._result.update()
 
     def add_dependencies(self, keywords):

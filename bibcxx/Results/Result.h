@@ -271,10 +271,21 @@ class ResultClass : public DataStructure, public ListOfTablesClass {
 
     /**
      * @brief Get elementary characteristics
+     */
+    std::vector< ElementaryCharacteristicsPtr >
+    getAllElementaryCharacteristics() const;
+
+    /**
+     * @brief Get elementary characteristics
      * @param rank
      */
     ElementaryCharacteristicsPtr
     getElementaryCharacteristics( int rank ) ;
+
+    /**
+     * @brief Get material
+     */
+    std::vector< MaterialFieldPtr > getMaterialFields() const;
 
     /**
      * @brief Get material
@@ -295,7 +306,12 @@ class ResultClass : public DataStructure, public ListOfTablesClass {
     /**
      * @brief check for multiple models
      */
-    bool isMultiModel() ;
+    bool hasMultipleModel() ;
+
+    /**
+     * @brief Get models
+     */
+    std::vector< ModelPtr > getModels() const;
 
     /**
      * @brief Get model

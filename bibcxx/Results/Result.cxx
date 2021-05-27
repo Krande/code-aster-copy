@@ -36,8 +36,7 @@
 void
 ResultClass::addElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara,
                                                         int rank ) {
-    if( !cara )
-        throw std::runtime_error( "ElementaryCharacteristics is empty" );
+    AS_ASSERT( cara != nullptr );
     _mapElemCara[rank] = cara;
     ASTERINTEGER rang = rank;
     std::string type( "CARAELEM" );
@@ -54,8 +53,7 @@ void ResultClass::addListOfLoads( const ListOfLoadsPtr &load,
 
 void ResultClass::addMaterialField( const MaterialFieldPtr &mater,
                                                   int rank ) {
-    if( !mater )
-        throw std::runtime_error( "MaterialField is empty" );
+    AS_ASSERT( mater  != nullptr );
     _mapMaterial[rank] = mater;
     ASTERINTEGER rang = rank;
     std::string type( "CHAMPMAT" );
@@ -64,8 +62,7 @@ void ResultClass::addMaterialField( const MaterialFieldPtr &mater,
 
 void ResultClass::addModel( const ModelPtr &model,
                                          int rank ) {
-    if( !model )
-        throw std::runtime_error( "Model is empty" );
+    AS_ASSERT( model  != nullptr );
     _mapModel[rank] = model;
     ASTERINTEGER rang = rank;
     std::string type( "MODELE" );
@@ -133,8 +130,7 @@ BaseDOFNumberingPtr ResultClass::getEmptyDOFNumbering() {
 FieldOnNodesRealPtr
 ResultClass::getEmptyFieldOnNodesReal( const std::string name,
                                                       const int rank ) {
-    if ( rank > _nbRanks || rank <= 0 )
-        throw std::runtime_error( "Order number out of range" );
+    AS_ASSERT( rank <= _nbRanks && rank > 0 );
     ASTERINTEGER retour;
     retour = 0;
     const ASTERINTEGER rankLong = rank;
@@ -165,18 +161,20 @@ BaseDOFNumberingPtr ResultClass::getEmptyParallelDOFNumbering() {
 };
 #endif /* ASTER_HAVE_MPI */
 
+std::vector< ElementaryCharacteristicsPtr >
+ResultClass::getAllElementaryCharacteristics() const
+{
+    return unique(_mapElemCara);
+};
+
 ElementaryCharacteristicsPtr ResultClass::getElementaryCharacteristics() {
-    std::string name( "" );
-    ElementaryCharacteristicsPtr toReturn( nullptr );
-    for ( const auto &curIter : _mapElemCara ) {
-        if ( name == "" ) {
-            toReturn = curIter.second;
-            name = toReturn->getName();
-        }
-        if ( name != curIter.second->getName() )
-            throw std::runtime_error( "Error: multiple elementary characteristics" );
-    }
-    return toReturn;
+    const auto cara = getAllElementaryCharacteristics();
+    AS_ASSERT(cara.size() <= 1);
+
+    if( cara.size() == 1 )
+        return cara[0];
+
+    return ElementaryCharacteristicsPtr( nullptr );
 };
 
 ElementaryCharacteristicsPtr
@@ -194,18 +192,19 @@ ListOfLoadsPtr ResultClass::getListOfLoads( int rank ) {
     return ( *curIter ).second;
 };
 
+std::vector< MaterialFieldPtr > ResultClass::getMaterialFields() const
+{
+    return unique(_mapMaterial);
+};
+
 MaterialFieldPtr ResultClass::getMaterialField() {
-    std::string name( "" );
-    MaterialFieldPtr toReturn( nullptr );
-    for ( const auto &curIter : _mapMaterial ) {
-        if ( name == "" ) {
-            toReturn = curIter.second;
-            name = toReturn->getName();
-        }
-        if ( name != curIter.second->getName() )
-            throw std::runtime_error( "Error: multiple materials" );
-    }
-    return toReturn;
+    const auto mate = getMaterialFields();
+    AS_ASSERT(mate.size() <= 1);
+
+    if( mate.size() == 1 )
+        return mate[0];
+
+    return MaterialFieldPtr( nullptr );
 };
 
 MaterialFieldPtr
@@ -226,7 +225,7 @@ BaseMeshPtr ResultClass::getMesh()
     return nullptr;
 };
 
-bool ResultClass::isMultiModel()
+bool ResultClass::hasMultipleModel()
 {
     std::string name( "" );
     for ( const auto &curIter : _mapModel ) {
@@ -239,16 +238,24 @@ bool ResultClass::isMultiModel()
     return false;
 }
 
+std::vector< ModelPtr > ResultClass::getModels() const
+{
+    return unique(_mapModel);
+};
+
 ModelPtr ResultClass::getModel() {
-    ModelPtr toReturn( nullptr );
-    if ( isMultiModel() ){
-            throw std::runtime_error( "Error: multiple models" );
+    if ( hasMultipleModel() ){
+        throw std::runtime_error( "Error: multiple models" );
     }
-    auto curIter= _mapModel.begin();
-    if ( curIter != _mapModel.end() ){
-        toReturn = ( *curIter ).second;
-    }
-    return toReturn;
+
+    const auto models = getModels();
+    AS_ASSERT(models.size() <= 1 );
+
+    if(models.size() == 1)
+        return models[0];
+
+    return ModelPtr( nullptr );
+
 };
 
 ModelPtr ResultClass::getModel( int rank )
@@ -277,12 +284,10 @@ VectorLong ResultClass::getRanks() const
 FieldOnCellsRealPtr ResultClass::getFieldOnCellsReal( const std::string name,
                                                                            const int rank ) const
 {
-    if ( rank > _nbRanks || rank <= 0 )
-        throw std::runtime_error( "Order number out of range" );
+    AS_ASSERT(rank <= _nbRanks && rank > 0);
 
     auto curIter = _dictOfVectorOfFieldsCells.find( trim( name ) );
-    if ( curIter == _dictOfVectorOfFieldsCells.end() )
-        throw std::runtime_error( "Field " + name + " unknown in the results container" );
+    AS_ASSERT( curIter != _dictOfVectorOfFieldsCells.end() );
 
     FieldOnCellsRealPtr toReturn = curIter->second[rank - 1];
     return toReturn;
@@ -352,7 +357,7 @@ PyObject *ResultClass::getAccessParameters() const
             str_val = trim((( *_rs24 )[index]).toString());
           }
           else {
-            throw std::runtime_error( "Uknown type for access variable : " + nosuff);
+            AS_ASSERT( false );
           }
 
           if (str_val.length()==0){
@@ -399,12 +404,10 @@ VectorString ResultClass::getFieldsOnCellsNames() const
 FieldOnNodesRealPtr ResultClass::getFieldOnNodesReal( const std::string name,
                                                                      const int rank ) const
 {
-    if ( rank > _nbRanks || rank <= 0 )
-        throw std::runtime_error( "Order number out of range" );
+    AS_ASSERT(rank <= _nbRanks && rank > 0);
 
     auto curIter = _dictOfVectorOfFieldsNodes.find( trim( name ) );
-    if ( curIter == _dictOfVectorOfFieldsNodes.end() )
-        throw std::runtime_error( "Field " + name + " unknown in the results container" );
+    AS_ASSERT( curIter != _dictOfVectorOfFieldsNodes.end() );
 
     FieldOnNodesRealPtr toReturn = curIter->second[rank - 1];
     return toReturn;
@@ -453,7 +456,7 @@ bool ResultClass::printMedFile( const std::string fileName,
         ASTERINTEGER op = 39;
         CALL_EXECOP( &op );
     } catch ( ... ) {
-        throw;
+        AS_ASSERT(false);
     }
 
     return true;
@@ -464,15 +467,8 @@ bool ResultClass::update()
     CALL_JEMARQ();
     _serialNumber->updateValuePointer();
 
-    bool check_tava = _calculationParameter->buildFromJeveux( true );
-    if (check_tava == false){
-      throw std::runtime_error( "Cannot build .TAVA from Jeveux");
-    }
-
-    bool check_tach = _namesOfFields->buildFromJeveux( true );
-    if (check_tach == false){
-      throw std::runtime_error( "Cannot build .TACH from Jeveux");
-    }
+    AS_ASSERT( _calculationParameter->buildFromJeveux( true ) );
+    AS_ASSERT( _namesOfFields->buildFromJeveux( true ) );
 
     const auto numberOfSerialNum = _serialNumber->usedSize();
     _nbRanks = numberOfSerialNum;
@@ -487,8 +483,7 @@ bool ResultClass::update()
     int cmpt = 1;
     for ( const auto curIter : _namesOfFields->getVectorOfObjects() ) {
         auto nomSymb = trim( _symbolicNamesOfFields->getStringFromIndex( cmpt ) );
-        if ( numberOfSerialNum > curIter.size() )
-            throw std::runtime_error( "Programming error" );
+        AS_ASSERT ( numberOfSerialNum <= curIter.size() );
 
         for ( int rank = 0; rank < numberOfSerialNum; ++rank ) {
             std::string name( trim( curIter[rank].toString() ) );
@@ -531,16 +526,14 @@ bool ResultClass::update()
 
                     ASTERINTEGER test2 = _dictOfVectorOfFieldsCells[nomSymb][rank].use_count();
                     if ( test2 == 0 ) {
-                        if ( curMesh == nullptr )
-                            throw std::runtime_error(
-                                "No mesh, can not build FieldOnCells" );
+                        AS_ASSERT( curMesh != nullptr );
                         FieldOnCellsRealPtr result =
                             _fieldBuidler.buildFieldOnCells< double >( name, curMesh );
                         auto curIter = _mapModel.find(( *_serialNumber )[rank]);
                         if ( curIter != _mapModel.end() )
                             if ( not((( *curIter ).second)->isEmpty()) )
                                 result->setModel(( *curIter ).second);
-                        else if (not(isMultiModel())){
+                        else if (not(hasMultipleModel())){
                             ModelPtr curModel = getModel();
                             if ( not(curModel->isEmpty()) )
                                 result->setModel(curModel);

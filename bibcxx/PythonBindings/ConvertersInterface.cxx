@@ -21,29 +21,36 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "PythonBindings/ConvertersInterface.h"
 #include "DataStructures/DataStructure.h"
+#include "Discretization/ElementaryCharacteristics.h"
 #include "Functions/Function.h"
+#include "Loads/ListOfLoads.h"
 #include "Loads/PhysicalQuantity.h"
 #include "Materials/Material.h"
 #include "Materials/MaterialField.h"
 #include "Materials/MaterialProperty.h"
+#include "Modeling/Model.h"
 #include "Modeling/FiniteElementDescriptor.h"
+#include "PythonBindings/ConvertersInterface.h"
 
 void exportConverters() {
 
-    exportVectorConverter< ASTERINTEGER4 >();
-    exportVectorConverter< ASTERINTEGER >();
     exportVectorConverter< ASTERDOUBLE >();
-    exportVectorConverter< std::string >();
-    exportVectorConverter< PhysicalQuantityComponent >();
-    exportVectorConverter< MaterialPtr >();
-    exportVectorConverter< FiniteElementDescriptorPtr >();
+    exportVectorConverter< ASTERINTEGER >();
+    exportVectorConverter< ASTERINTEGER4 >();
     exportVectorConverter< BaseFunctionPtr >();
-    exportVectorConverter< FunctionPtr >();
-    exportVectorConverter< PartOfMaterialFieldPtr >();
-    exportVectorConverter< GenericMaterialPropertyPtr >();
     exportVectorConverter< DataStructurePtr >();
+    exportVectorConverter< ElementaryCharacteristicsPtr >();
+    exportVectorConverter< FiniteElementDescriptorPtr >();
+    exportVectorConverter< FunctionPtr >();
+    exportVectorConverter< GenericMaterialPropertyPtr >();
+    exportVectorConverter< ListOfLoadsPtr >();
+    exportVectorConverter< MaterialFieldPtr >();
+    exportVectorConverter< MaterialPtr >();
+    exportVectorConverter< ModelPtr >();
+    exportVectorConverter< PartOfMaterialFieldPtr >();
+    exportVectorConverter< PhysicalQuantityComponent >();
+    exportVectorConverter< std::string >();
 
     exportJeveuxVectorConverter< ASTERINTEGER4 >();
     exportJeveuxVectorConverter< ASTERINTEGER >();
