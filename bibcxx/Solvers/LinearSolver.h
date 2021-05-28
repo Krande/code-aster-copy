@@ -150,6 +150,7 @@ class BaseLinearSolverClass : public DataStructure {
     JeveuxVectorChar24 _charValues;
     JeveuxVectorReal _doubleValues;
     JeveuxVectorLong _integerValues;
+    JeveuxVectorChar80 _petscOptions;
 
     GenParamPtr _acceleration;
     GenParamPtr _algo;

@@ -486,7 +486,13 @@ class ExecuteCommand(object):
                     timer.Start(" . sdveri", num=1.3e6)
                     try:
                         iret = check_sd_object(self._result.sdj)
-                        assert iret == 0, "Error(s) raised by checksd"
+                        if iret != 0:
+                            logger.error(
+                                "SDVERI ended with exit code {0} "
+                                "for {1!r} ({2!r})".format(
+                                    iret, self._result.getName(), self._result.getType()
+                                )
+                            )
                     finally:
                         timer.Stop(" . sdveri")
             if self.hook:
