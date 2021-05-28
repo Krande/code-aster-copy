@@ -31,7 +31,7 @@ from ..Utilities import injector
 
 @injector(GeneralizedModel)
 class ExtendedGeneralizedModel:
-    cata_sdj = "SD.sd_model_gene.sd_model_gene"
+    cata_sdj = "SD.sd_modele_gene.sd_modele_gene"
 
     def LIST_SOUS_STRUCT(self) :
         """ retourne la liste des sous structures du modele generalise
