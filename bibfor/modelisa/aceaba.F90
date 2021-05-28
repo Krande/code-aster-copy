@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,6 +60,7 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -92,6 +93,8 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
     character(len=24) :: tmpnba, tmpvba, tmpgen, nomsec, typca
     character(len=24) :: tmpnbf, tmpvbf, tmpgef, modmai, mlggma, mlgnma
 ! --------------------------------------------------------------------------------------------------
+    aster_logical :: l_parallel_mesh
+! --------------------------------------------------------------------------------------------------
     integer, pointer :: tab_para(:) => null()
     integer, pointer :: tbnp(:) => null()
     real(kind=8), pointer :: vale(:) => null()
@@ -105,6 +108,13 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
     character(len=24), pointer :: tblp(:) => null()
 ! --------------------------------------------------------------------------------------------------
     call jemarq()
+! --- MAILLAGE DISTRIBUE OU PAS
+    l_parallel_mesh = isParallelMesh(noma)
+    if (nbarre.eq.0.and.l_parallel_mesh) goto 999
+    if (nbarre.eq.0.and..not.l_parallel_mesh) then
+        ASSERT(.false.)
+    endif
+!
     call getres(nomu, concep, cmd)
 !
     AS_ALLOCATE(vi=tab_para, size=10)
@@ -360,5 +370,6 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
     call jedetr(tmpnbf)
     call jedetr(tmpvbf)
 !
+999 continue
     call jedema()
 end subroutine
