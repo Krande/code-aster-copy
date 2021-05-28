@@ -47,7 +47,7 @@ class PostRocheAnalytic(object):
     _D_21 = 0.712
     _D_22 = 0.429*(0.02/0.005)**0.16
     _D_23 = _D_22
-    def __init__(self, mfy_poids_propre, mt_deplacement_impose, mfy_sismique_dyn, mfz_sismique_dyn, mfy_sismique_qs, mfz_sismique_qs,  mfy_sismique, mfz_sismique):
+    def __init__(self, mfy_poids_propre, mt_deplacement_impose, mfy_sismique_dyn, mfz_sismique_dyn, mfy_sismique_qs, mfz_sismique_qs,  mfy_sismique, mfz_sismique,pression=None):
         self._mfy_poids_propre = mfy_poids_propre
         self._mt_deplacement_impose = mt_deplacement_impose
         self._mfy_sismique_dyn = mfy_sismique_dyn
@@ -56,6 +56,9 @@ class PostRocheAnalytic(object):
         self._mfz_sismique_qs = mfz_sismique_qs
         self._mfy_sismique = mfy_sismique
         self._mfz_sismique = mfz_sismique
+        if pression is not None:
+            _pression = pression
+            
     def _epsi_p(self, sigma):
         """epsi plastique pour Ranberg osgood"""
         return self._K*(sigma/self._E)**(1/self._n)
@@ -70,13 +73,31 @@ class PostRocheAnalytic(object):
         # reversibilites locales
         sig_over_E = self._sigma_deplacement_ref/self._E
         sig_over_E = (sig_over_E > 1e-6)*sig_over_E
-        self._t = sig_over_E / self._epsi_p(self._sigma_deplacement_ref)
+        self._t = sig_over_E
+        ii=0
+        for s_E, s in zip(sig_over_E, self._sigma_deplacement_ref):
+            if s_E != 0.:
+                self._t[ii] = s_E/self._epsi_p(s)
+            ii+=1
         sig_over_E = self._sigma_sismique_ref/self._E
         sig_over_E = (sig_over_E > 1e-6)*sig_over_E
-        self._t_s = sig_over_E / self._epsi_p(self._sigma_sismique_ref)
+        self._t_s = sig_over_E
+        ii=0
+        for s_E, s in zip(sig_over_E, self._sigma_sismique_ref):
+            if s_E != 0.:
+                self._t_s[ii] = s_E/self._epsi_p(s)
+            ii+=1
         # reversibilité totales
-        self._T = sum(self._sigma_deplacement_ref[self._t!=0]**2) / sum(self._sigma_deplacement_ref[self._t!=0]**2/self._t[self._t!=0])
-        self._T_s = sum(self._sigma_sismique_ref[self._t_s!=0]**2) / sum(self._sigma_sismique_ref[self._t_s!=0]**2/self._t_s[self._t_s!=0])
+        
+        print(sum(self._sigma_sismique_ref[self._t_s!=0]**2))
+        if (sum(self._sigma_deplacement_ref[self._t!=0]**2)==0):
+            self._T = 0.
+        else:
+            self._T = sum(self._sigma_deplacement_ref[self._t!=0]**2) / sum(self._sigma_deplacement_ref[self._t!=0]**2/self._t[self._t!=0])
+        if sum(self._sigma_sismique_ref[self._t_s!=0]**2)==0:
+            self._T_s = 0.
+        else:
+            self._T_s = sum(self._sigma_sismique_ref[self._t_s!=0]**2) / sum(self._sigma_sismique_ref[self._t_s!=0]**2/self._t_s[self._t_s!=0])
         # ressorts
         self._r_m = np.maximum(np.array([self._T/t-1 if t!=0. else 0. for t in self._t]), np.zeros([4]))
         self._r_s = np.array([self._T_s/t-1 if t!=0. else 0. for t in self._t_s])
@@ -85,6 +106,7 @@ class PostRocheAnalytic(object):
         """calcule self._sigma_deplacement, self._sigma_sismique, self._g, self._g_s"""
         def func(x):
             """equation de contrainte vrai"""
+            if x<0 : x=0.
             return (x/self._E + self._epsi_p(x) - sigma_ref/self._E) + r * (x-sigma_ref) / self._E
         # resolution sigma_deplacement
         sigma_deplacement = []
