@@ -326,7 +326,6 @@ subroutine trchel(ific, nocc)
                 lign2(1:nl2+16)=lign2(1:nl2-1)//' '//nonoeu(1:8)
                 lign1(nl1+17:nl1+17)='.'
                 lign2(nl2+17:nl2+17)='.'
-            else
                 if (l_parallel_mesh) then
                     call utmess('F', 'MODELISA7_86')
                 endif

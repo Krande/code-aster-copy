@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ UN    =DEFI_CONSTANTE(VALE = 1.0)
 ZERO  =DEFI_CONSTANTE(VALE = 0.0)
 
 # [][][][][][][][] Maillage et Modele [][][][][][][][]
-mail = LIRE_MAILLAGE(FORMAT="ASTER",);
+mail = LIRE_MAILLAGE(FORMAT="MED", PARTITIONNEUR="PTSCOTCH");
 
 mode = AFFE_MODELE( MAILLAGE=mail,
    AFFE = ( _F(PHENOMENE='MECANIQUE',MODELISATION='3D', TOUT='OUI' ,), ), )
@@ -145,15 +145,15 @@ FDepla=DEFI_FONCTION(
 CDepl=AFFE_CHAR_MECA_F(
    MODELE=mode,
    DDL_IMPO=(
-      _F(NOEUD='N1',DX=ZERO,DY=ZERO,DZ=ZERO),
-      _F(NOEUD='N4',DX=ZERO,        DZ=ZERO),
-      _F(NOEUD='N8',DX=ZERO,),
-      _F(NOEUD='N5',DX=ZERO,DY=ZERO),
+      _F(GROUP_NO='N1',DX=ZERO,DY=ZERO,DZ=ZERO),
+      _F(GROUP_NO='N4',DX=ZERO,        DZ=ZERO),
+      _F(GROUP_NO='N8',DX=ZERO,),
+      _F(GROUP_NO='N5',DX=ZERO,DY=ZERO),
 
-      _F(NOEUD='N2',DX=FDepla,DY=ZERO,DZ=ZERO),
-      _F(NOEUD='N3',DX=FDepla,        DZ=ZERO),
-      _F(NOEUD='N7',DX=FDepla,),
-      _F(NOEUD='N6',DX=FDepla,DY=ZERO),
+      _F(GROUP_NO='N2',DX=FDepla,DY=ZERO,DZ=ZERO),
+      _F(GROUP_NO='N3',DX=FDepla,        DZ=ZERO),
+      _F(GROUP_NO='N7',DX=FDepla,),
+      _F(GROUP_NO='N6',DX=FDepla,DY=ZERO),
    )
 )
 
@@ -247,7 +247,7 @@ REFER= [
 
 for ii in range(len(REFER)):
    TEST_RESU(
-      RESU= _F(RESULTAT=STATS, INST=REFER[ii][itps], MAILLE='CUBE', POINT=1,
+      RESU= _F(RESULTAT=STATS, INST=REFER[ii][itps], GROUP_MA='CUBE', POINT=1,
                NOM_CHAM=REFER[ii][icha], NOM_CMP=REFER[ii][icmp],
                VALE_CALC=REFER[ii][irefe]),
    )
@@ -351,7 +351,7 @@ REFER= [
 
 for ii in range(len(REFER)):
    TEST_RESU(
-      RESU= _F(RESULTAT=STATI, INST=REFER[ii][itps], MAILLE='CUBE', POINT=1,
+      RESU= _F(RESULTAT=STATI, INST=REFER[ii][itps], GROUP_MA='CUBE', POINT=1,
                NOM_CHAM=REFER[ii][icha], NOM_CMP=REFER[ii][icmp],
                VALE_CALC=REFER[ii][irefe]),
    )
