@@ -123,10 +123,10 @@ def checksd(nomsd, typesd):
     clas = getattr(sd_module, typesd, None)
     if not clas:
         return iret
-    return check_sd_object(clas(nomj=nomsd))
+    return check_ds_object(clas(nomj=nomsd))
 
 
-def check_sd_object(objsd):
+def check_ds_object(objsd):
     """Check the base jeveux objects.
 
     Arguments:

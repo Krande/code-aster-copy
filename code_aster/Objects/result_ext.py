@@ -24,7 +24,7 @@
 """
 
 import aster
-from libaster import MaterialField, Model, Result
+from libaster import Result
 
 from ..Utilities import injector, logger
 from .Serialization import InternalStateBuilder

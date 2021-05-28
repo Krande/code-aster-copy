@@ -83,7 +83,7 @@ from ..Utilities import (
 from ..Utilities.outputs import command_text, decorate_name
 from .code_file import track_coverage
 from .CommandSyntax import CommandSyntax
-from .ctopy import check_sd_object
+from .ctopy import check_ds_object
 from .Serializer import saveObjects
 
 
@@ -481,20 +481,8 @@ class ExecuteCommand(object):
             self.post_exec(keywords)
             if isinstance(self._result, DataStructure):
                 self.add_dependencies(keywords)
-                if ExecutionParameter().get_option("sdveri"):
-                    timer = ExecutionParameter().timer
-                    timer.Start(" . sdveri", num=1.3e6)
-                    try:
-                        iret = check_sd_object(self._result.sdj)
-                        if iret != 0:
-                            logger.error(
-                                "SDVERI ended with exit code {0} "
-                                "for {1!r} ({2!r})".format(
-                                    iret, self._result.getName(), self._result.getType()
-                                )
-                            )
-                    finally:
-                        timer.Stop(" . sdveri")
+            if not self._exc and ExecutionParameter().get_option("sdveri"):
+                self.check_ds()
             if self.hook:
                 self.hook(keywords)
         finally:
@@ -511,6 +499,38 @@ class ExecuteCommand(object):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
+
+    def check_ds(self):
+        """Check a result created by the command.
+
+        Arguments:
+            result (*DataStructure*): Object to be checked.
+        """
+        if not self.show_syntax():
+            return
+        self.check_ds_result(self.result)
+
+    @staticmethod
+    def check_ds_result(result):
+        """Check a *DataStructure* object.
+
+        Arguments:
+            result (*DataStructure*): Object to be checked.
+        """
+        if not isinstance(result, DataStructure):
+            return
+        timer = ExecutionParameter().timer
+        timer.Start(" . sdveri", num=1.3e6)
+        try:
+            iret = check_ds_object(result.sdj)
+            if iret != 0:
+                logger.error(
+                    "SDVERI ended with exit code {0} for {1!r} ({2!r})".format(
+                        iret, result.getName(), result.getType()
+                    )
+                )
+        finally:
+            timer.Stop(" . sdveri")
 
     def keep_caller_infos(self, keywords, level=3):
         """Register the caller frame infos.
@@ -686,6 +706,19 @@ class ExecuteMacro(ExecuteCommand):
         self._add_results[name] = result
         if ExecutionParameter().option & Options.ShowChildCmd:
             logger.info(MessageLog.GetText("I", "SUPERVIS2_69", valk=(orig, name)))
+
+    def check_ds(self):
+        """Check all results created by the command.
+
+        Arguments:
+            result (*DataStructure*): Object to be checked.
+        """
+        if not self.show_syntax():
+            return
+        super().check_ds()
+        if self._add_results:
+            for additional in self._add_results.values():
+                self.check_ds_result(additional)
 
     @property
     @deprecated(case=2)
