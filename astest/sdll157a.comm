@@ -80,7 +80,7 @@ ch_mater=AFFE_MATERIAU(MAILLAGE=maillage,
                                     VALE_REF=20.0,),
                        AFFE=_F(TOUT="OUI", MATER = acier))
 
-cara_elem=AFFE_CARA_ELEM(MODELE=modele, INFO=2,
+cara_elem=AFFE_CARA_ELEM(MODELE=modele, 
                          POUTRE=_F(GROUP_MA="tuyau", SECTION = 'CERCLE',
                                    CARA = ('R', 'EP'),
                                    VALE = (Dext/2, hc)))
@@ -240,7 +240,7 @@ sismique_dyn=CREA_RESU(OPERATION='AFFE',
                           ),
                     )
 
-# appel à POST_ROCHE
+# appel à POST_ROCHE : tous chargements
 
 chPostRocheTout = POST_ROCHE(ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
@@ -313,12 +313,10 @@ TEST_RESU(CHAM_ELEM=(
                         VALE_CALC=51345567.86167478),
                     # X2 = contrainte de référence S2
                      _F(TYPE_TEST="MAX",
-                        REFERENCE="SOURCE_EXTERNE",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X2',
                         VALE_CALC=438204716.4853147,
-                        PRECISION=0.01,
-                        VALE_REFE=441.9e6),
+                        ),
                     # X3 = réversibilité locale t
                      _F(TYPE_TEST="MAX",
                         CHAM_GD=chPostRocheTout,
@@ -346,12 +344,10 @@ TEST_RESU(CHAM_ELEM=(
                         VALE_CALC=5.35433317228734),
                     # X8 = facteur d'effet de ressort r_S
                      _F(TYPE_TEST="MAX",
-                        REFERENCE="SOURCE_EXTERNE",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X8',
                         VALE_CALC=5.756885902039125,
-                        PRECISION=0.11,
-                        VALE_REFE=5.21),
+                        ),
                     # X9 = facteur d'effet de ressort maximal r_M_Max
                      _F(TYPE_TEST="MAX",
                         CHAM_GD=chPostRocheTout,
@@ -371,41 +367,185 @@ TEST_RESU(CHAM_ELEM=(
                      _F(TYPE_TEST="MAX",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X12',
-                        VALE_CALC=0.9999871458465225),
+                        VALE_CALC=0.3798975672222097),
                     # X13 = coefficient d'abattement optimisé gOpt
                      _F(TYPE_TEST="MAX",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X13',
-                        VALE_CALC=0.8398268996182074),
+                        VALE_CALC=0.9999999999945832),
                     # X14 = coefficient d'abattement optimisé gsOpt
                      _F(TYPE_TEST="MAX",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X14',
-                        VALE_CALC=0.9999871124380207),
+                        VALE_CALC=0.9797215653800634),
                     # X15 = contrainte équivalente
                      _F(TYPE_TEST="MAX",
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X15',
-                        VALE_CALC=317470752.6180332,
-                        PRECISION=0.33,
+                        VALE_CALC=255101038.56277984,
+                        PRECISION=0.07,
                         VALE_REFE=240.2e6),
-                     _F(TYPE_TEST="MAX",
-                        REFERENCE="SOURCE_EXTERNE",
-                        CHAM_GD=chPostRocheTout,
-                        NOM_CMP='X15',
-                        VALE_CALC=317470752.6180332,
-                        PRECISION=0.15,
-                        VALE_REFE=366.2e6),
                     # X16 = contrainte équivalente optimisée
                      _F(TYPE_TEST="MAX",
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X16',
-                        VALE_CALC=314969838.9116381,
-                        PRECISION=0.32,
+                        VALE_CALC=260845949.74637172,
+                        PRECISION=0.09,
                         VALE_REFE=240.2e6),
                     )
         )
+
+# appel à POST_ROCHE : comparaison à CAST3M
+
+
+chPostRoche3M = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     TOUT='OUI',
+                                     GROUP_NO_ORIG = 'ENCA1',
+                                    ),
+                                  ),
+                    CHAM_MATER=ch_mater,
+                    CARA_ELEM=cara_elem,
+                    RESU_MECA=(
+                                _F(TYPE_CHAR='SISM_INER_SPEC',
+                                 RESULTAT=sismique_dyn,
+                                 DIRECTION='COMBI',
+                                 TYPE_RESU='DYN'
+                                 ),
+                                _F(TYPE_CHAR='SISM_INER_SPEC',
+                                 RESULTAT=sismique_qs,
+                                 DIRECTION='COMBI',
+                                 TYPE_RESU='QS'
+                                 ),
+                                ),
+                     PRESSION=(_F(
+                                     TOUT='OUI',
+                                     VALE = 7.5E5,
+                                    ),
+                                  ),
+                     COUDE=(_F(GROUP_MA = 'Arc_1',
+                               ANGLE    = 90,
+                               RCOURB   = 0.152,
+                               SY       = Sy),
+                            _F(GROUP_MA = 'Arc_2',
+                               ANGLE    = 90,
+                               RCOURB   = 0.152,
+                               SY       = Sy),
+                            _F(GROUP_MA = 'Arc_3',
+                               ANGLE    = 90,
+                               RCOURB   = 0.152,
+                               SY       = Sy),
+                            _F(GROUP_MA = 'Arc_4',
+                               ANGLE    = 90,
+                               RCOURB   = 0.152,
+                               SY       = Sy),
+                            _F(GROUP_MA = 'Arc_5',
+                               ANGLE    = 90,
+                               RCOURB   = 0.152,
+                               SY       = Sy),
+                            _F(GROUP_MA = 'Arc_6',
+                               ANGLE    = 90,
+                               RCOURB   = 0.152,
+                               SY       = Sy),
+                           )
+                    )
+
+# TEST_RESU
+
+TEST_RESU(CHAM_ELEM=(
+                    # X1 = contrainte de référence
+                     _F(TYPE_TEST="MAX",
+                        CHAM_GD=chPostRoche3M,
+                        NOM_CMP='X1',
+                        VALE_CALC=0.),
+                    # X2 = contrainte de référence S2
+                     _F(TYPE_TEST="MAX",
+                        REFERENCE="SOURCE_EXTERNE",
+                        CHAM_GD=chPostRoche3M,
+                        NOM_CMP='X2',
+                        VALE_CALC=438204716.4853147,
+                        PRECISION=0.01,
+                        VALE_REFE=441.9e6),
+                    # X3 = réversibilité locale t
+                     _F(TYPE_TEST="MAX",
+                        CHAM_GD=chPostRoche3M,
+                        NOM_CMP='X3',
+                        VALE_CALC=0.),
+                    # X4 = réversibilité locale ts
+                     _F(TYPE_TEST="MAX",
+                        CHAM_GD=chPostRoche3M,
+                        NOM_CMP='X4',
+                        VALE_CALC=6.270055579409988),
+                    # X5 = réversibilité totale T
+                     _F(TYPE_TEST="MAX",
+                        CHAM_GD=chPostRoche3M,
+                        NOM_CMP='X5',
+                        VALE_CALC=0),
+                    # X6 = réversibilité totale Ts
+                     _F(TYPE_TEST="MAX",
+                        CHAM_GD=chPostRoche3M,
+                        NOM_CMP='X6',
+                        VALE_CALC=0.0006976230682976864),
+                    # X7 = facteur d'effet de ressort r_M
+                     _F(TYPE_TEST="MAX",
+                        CHAM_GD=chPostRoche3M,
+                        NOM_CMP='X7',
+                        VALE_CALC=0),
+                    # X8 = facteur d'effet de ressort r_S
+                     _F(TYPE_TEST="MAX",
+                        REFERENCE="SOURCE_EXTERNE",
+                        CHAM_GD=chPostRoche3M,
+                        NOM_CMP='X8',
+                        VALE_CALC=5.756885902039125,
+                        PRECISION=0.11,
+                        VALE_REFE=5.21),
+                    # X9 = facteur d'effet de ressort maximal r_M_Max
+                     _F(TYPE_TEST="MAX",
+                        CHAM_GD=chPostRoche3M,
+                        NOM_CMP='X9',
+                        VALE_CALC=0),
+                    # X10 = facteur d'effet de ressort maximal r_S_Max
+                     _F(TYPE_TEST="MAX",
+                        CHAM_GD=chPostRoche3M,
+                        NOM_CMP='X10',
+                        VALE_CALC=5.756885902039125),
+                    # X11 = coefficient d'abattement g
+                     _F(TYPE_TEST="MAX",
+                        CHAM_GD=chPostRoche3M,
+                        NOM_CMP='X11',
+                        VALE_CALC=1.0),
+                    # X12 = coefficient d'abattement gs
+                     _F(TYPE_TEST="MAX",
+                        CHAM_GD=chPostRoche3M,
+                        NOM_CMP='X12',
+                        VALE_CALC=0.3802519481497717),
+                    # X13 = coefficient d'abattement optimisé gOpt
+                     _F(TYPE_TEST="MAX",
+                        CHAM_GD=chPostRoche3M,
+                        NOM_CMP='X13',
+                        VALE_CALC=1.0),
+                    # X14 = coefficient d'abattement optimisé gsOpt
+                     _F(TYPE_TEST="MAX",
+                        CHAM_GD=chPostRoche3M,
+                        NOM_CMP='X14',
+                        VALE_CALC=0.9797773732024181),
+                    # X15 = contrainte équivalente
+                     _F(TYPE_TEST="MAX",
+                        REFERENCE="SOURCE_EXTERNE",
+                        CHAM_GD=chPostRoche3M,
+                        NOM_CMP='X15',
+                        VALE_CALC=274469505.1176244,
+                        PRECISION=0.26,
+                        VALE_REFE=366.2e6),
+                    # X16 = contrainte équivalente optimisée
+                     _F(TYPE_TEST="MAX",
+                        CHAM_GD=chPostRoche3M,
+                        NOM_CMP='X16',
+                        VALE_CALC=274469505.1176244,
+                        ),
+                    )
+        )
+
 
 FIN()
