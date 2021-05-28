@@ -31,6 +31,7 @@ from ..Utilities.MedUtils.MEDPartitioner import MEDPartitioner
 
 @injector(ParallelMesh)
 class ExtendedParallelMesh:
+    cata_sdj = "SD.sd_maillage.sd_maillage"
 
     def readMedFile(self, filename, partitioned=False, verbose=0) :
         """Read a MED file containing a mesh and eventually partition it

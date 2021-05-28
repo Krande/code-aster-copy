@@ -30,6 +30,7 @@ from ..Utilities import injector
 
 @injector(AcousticLoad)
 class ExtendedAcousticLoad:
+    cata_sdj = "SD.sd_char_acou.sd_char_acou"
 
     def __getinitargs__(self):
         """Returns the argument required to reinitialize a

@@ -66,7 +66,6 @@ from .model_ext import Model
 from .prestressingcable_ext import PrestressingCable
 from .result_ext import Result
 from .table_ext import Table
-from .tablecontainer_ext import TableContainer
 from .thermalload_ext import ThermalLoad
 from .transientgeneralizedresultscontainer_ext import TransientGeneralizedResult
 from .xfemcrack_ext import XfemCrack

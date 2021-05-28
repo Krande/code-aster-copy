@@ -24,7 +24,7 @@
 """
 
 import aster
-from libaster import Table, TableOfFunctions
+from libaster import Table, TableContainer, TableOfFunctions
 from .table_py import Table as TablePy
 
 from ..Utilities import injector
@@ -43,7 +43,7 @@ class ExtendedTable:
             raise RuntimeError("Table.__getitem__ takes exactly 2 arguments.")
         tabnom = self.sdj.TBLP.get()
         try:
-            i = tabnom.index('%-24s' % para)
+            i = tabnom.index("%-24s" % para)
             resu = aster.getvectjev(tabnom[i + 2])
             exist = aster.getvectjev(tabnom[i + 3])
             assert resu is not None
@@ -62,77 +62,79 @@ class ExtendedTable:
         """
         titj = self.sdj.TITR.get()
         if titj != None:
-            titr = '\n'.join(titj)
+            titr = "\n".join(titj)
         else:
-            titr = ''
+            titr = ""
         return titr
 
     def get_nrow(self):
-        """Renvoie le nombre de lignes
-        """
+        """Renvoie le nombre de lignes"""
         shape = self.sdj.TBNP.get()
         return shape[1]
 
     def get_nom_para(self):
-        """Produit une liste des noms des colonnes
-        """
+        """Produit une liste des noms des colonnes"""
         l_name = []
         shape = self.sdj.TBNP.get()
-        desc  = self.sdj.TBLP.get()
+        desc = self.sdj.TBLP.get()
         for n in range(shape[0]):
-            nom = desc[4*n]
-            l_name.append( nom.strip() )
+            nom = desc[4 * n]
+            l_name.append(nom.strip())
         return l_name
 
-    def EXTR_TABLE(self, para=None) :
+    def EXTR_TABLE(self, para=None):
         """Produit un objet TablePy à partir du contenu d'une table Aster.
         On peut limiter aux paramètres listés dans 'para'.
         """
-        def Nonefy(l1,l2) :
+
+        def Nonefy(l1, l2):
             if l2 == 0:
                 return None
             else:
                 return l1
+
         # titre
         titr = self.TITRE()
         # récupération des paramètres
-        #v_tblp = aster.getvectjev('%-19s.TBLP' % self.getName())
+        # v_tblp = aster.getvectjev('%-19s.TBLP' % self.getName())
         v_tblp = self.sdj.TBLP.get()
         if v_tblp == None:
             # retourne une table vide
             return TablePy(titr=titr, nom=self.getName())
-        tabnom=list(v_tblp)
-        nparam=len(tabnom) // 4
-        lparam=[tabnom[4*i:4*i+4] for i in range(nparam)]
+        tabnom = list(v_tblp)
+        nparam = len(tabnom) // 4
+        lparam = [tabnom[4 * i : 4 * i + 4] for i in range(nparam)]
         # restriction aux paramètres demandés
         if para is not None:
             if not isinstance(para, (list, tuple)):
-                para = [para, ]
+                para = [
+                    para,
+                ]
             para = [p.strip() for p in para]
             restr = []
             for ip in lparam:
                 if ip[0].strip() in para:
                     restr.append(ip)
             lparam = restr
-        dval={}
+        dval = {}
         # liste des paramètres et des types
-        lpar=[]
-        ltyp=[]
-        for i in lparam :
-            value=list(aster.getvectjev(i[2]))
+        lpar = []
+        ltyp = []
+        for i in lparam:
+            value = list(aster.getvectjev(i[2]))
             if i[1].strip().startswith("K"):
                 value = [j.strip() for j in value]
-            exist=aster.getvectjev(i[3])
+            exist = aster.getvectjev(i[3])
             dval[i[0].strip()] = list(map(Nonefy, value, exist))
             lpar.append(i[0].strip())
             ltyp.append(i[1].strip())
-        n=len(dval[lpar[0]])
+        n = len(dval[lpar[0]])
         # contenu : liste de dict
-        lisdic=[]
-        for i in range(n) :
-            d={}
+        lisdic = []
+        for i in range(n):
+            d = {}
             for p in lpar:
-               d[p]=dval[p][i]
+                d[p] = dval[p][i]
             lisdic.append(d)
         return TablePy(lisdic, lpar, ltyp, titr, self.getName())
 
@@ -150,6 +152,6 @@ class ExtendedTableOfFunctions:
     cata_sdj = "SD.sd_table_fonction.sd_table_fonction"
 
 
-# class table_container(table_sdaster):
-#     """Table contenant les colonnes NOM_OBJET, TYPE_OBJET et NOM_SD."""
-#     cata_sdj = "SD.sd_table_container.sd_table_container"
+@injector(TableContainer)
+class ExtendedTableContainer:
+    cata_sdj = "SD.sd_table_container.sd_table_container"

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,12 +46,12 @@ class sd_table_container(sd_table):
                         "pas exister" % (self.nomj()))
 
         # on vérifie la présence des paramètres
-        # 'NOM_OBJET','TYPE_OBJET','NOM_SD'
+        # 'NOM_OBJET', 'TYPE_OBJET', 'NOM_SD'
         param = ['NOM_OBJET', 'TYPE_OBJET', 'NOM_SD']
         shape = self.TBNP.get()
-        assert shape[0] > 2  # la table à au moins 3 paramètres
+        assert shape[0] >= 3  # la table à au moins 3 paramètres
         for n in param:
-            col, dummy = self.get_column_name(n)
+            col = self.get_column_name(n)[0]
             if col is None:
                 checker.err(self, "Paramètre %s manquant!" % (n))
 
@@ -63,10 +63,10 @@ class sd_table_container(sd_table):
                                 (col.data.lonuti, shape[1]))
 
         # on vérifie le contenu de la colonne NOM_SD
-        col1, dummy = self.get_column_name('TYPE_OBJET')
-        col2, dummy = self.get_column_name('NOM_SD')
+        col1 = self.get_column_name('TYPE_OBJET')[0]
+        col2 = self.get_column_name('NOM_SD')[0]
         # CARA_CHOC pour MODE_NON_LINE
-        col3, dummy = self.get_column_name('CARA_CHOC')
+        col3 = self.get_column_name('CARA_CHOC')[0]
         nbli = col1.data.lonuti
         lnom1 = col1.data.get_stripped()
         lnom2 = col2.data.get_stripped()

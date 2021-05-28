@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,11 +73,11 @@ class sd_table(sd_titre):
             col_d.check(checker)
             col_m.check(checker)
             if col_d.data.lonuti != shape[1]:
-                checker.err(self, "La taille du vecteur data pour le paramètre '%s' de la " +
+                checker.err(self, "La taille du vecteur data pour le paramètre '%s' de la "
                             "table est inconsistante %d!=%d"
                             % (param_name, col_d.data.lonuti, shape[1]))
             if col_m.mask.lonuti != shape[1]:
-                checker.err(self, "La taille du vecteur mask pour le paramètre '%s' de la " +
+                checker.err(self, "La taille du vecteur mask pour le paramètre '%s' de la "
                             "table est inconsistante %d!=%d"
                             % (param_name, col_m.mask.lonuti, shape[1]))
 
