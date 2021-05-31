@@ -525,8 +525,11 @@ class ExecuteCommand(object):
             iret = check_ds_object(result.sdj)
             if iret != 0:
                 logger.error(
-                    "SDVERI ended with exit code {0} for {1!r} ({2!r})".format(
-                        iret, result.getName(), result.getType()
+                    "SDVERI ended with exit code {0} for {1!r} ({2!r}, {3!r})".format(
+                        iret,
+                        result.getName(),
+                        result.getType(),
+                        result.sdj.__class__.__name__,
                     )
                 )
         finally:

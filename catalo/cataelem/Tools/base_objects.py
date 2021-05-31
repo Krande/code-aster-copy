@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -286,9 +286,9 @@ class LocatedComponents(BaseCataEntity):
         a_creer_seulement_dans(self, ['located_components', 'Elements'])
         check_type([phys], PhysicalQuantity)
         assert type in ('ELEM', 'ELNO', 'ELGA')
-        if type is not 'ELNO':
+        if type != 'ELNO':
             assert diff is False
-        if type is 'ELGA':
+        if type == 'ELGA':
             assert location is not None, location
         else:
             assert location is None, location

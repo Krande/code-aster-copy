@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ class sd_partition(AsBase):
         assert prtk[0] in (
             'GROUP_ELEM', 'SOUS_DOMAINE', 'MAIL_DISPERSE', 'MAIL_CONTIGU'), prtk
 
-        if prtk[0] is 'SOUS_DOMAINE':
+        if prtk[0] == 'SOUS_DOMAINE':
             assert prtk[1] != '', prtk
             sd2 = sd_partit(prtk[1])
             sd2.check(checker)

@@ -169,7 +169,7 @@ def post_newmark_ops(self,**args):
  ### RECUPERATION DES POSITIONS DU CERCLE DE GLISSEMENT
   fac_cercle = 1.
   if args['POSITION'] is not None  :
-    if args['POSITION'] is "AMONT":
+    if args['POSITION'] == "AMONT":
         fac_cercle = -1.
 
   if args['RAYON'] is not None  :

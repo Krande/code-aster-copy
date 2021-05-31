@@ -33,7 +33,7 @@ def verif_nb_table(OPERATION, TABLE):
     nb_tabin = len(TABLE)
 
     # seule PILO_PROPA autorise plusieurs tables
-    if OPERATION is not 'PILO_PROPA':
+    if OPERATION != 'PILO_PROPA':
         if nb_tabin != 1:
             UTMESS('F', 'RUPTURE1_66', valk=(OPERATION), vali=nb_tabin)
 
