@@ -39,8 +39,8 @@ acier=DEFI_MATERIAU(ELAS=_F(E = 2.E11,
                             RHO = 7800,
                             ALPHA = 1.2E-5,
                             NU = 0.3),
-                    RAMBERG_OSGOOD=_F(FACTEUR=0.01,
-                                     EXPOSANT=2)
+                    POST_ROCHE=_F(RAMB_OSGO_FACT=0.01,
+                                  RAMB_OSGO_EXPO=2)
                     )
 
 

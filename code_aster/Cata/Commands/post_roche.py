@@ -50,7 +50,6 @@ POST_ROCHE=MACRO(nom="POST_ROCHE",
             GROUP_MA     =SIMP( statut='f',typ=grma,validators=NoRepeat(),max='**'),
             ANGLE        =SIMP(statut='o',typ='R',),
             RCOURB       =SIMP(statut='o',typ='R',),
-            SY           =SIMP(statut='o',typ='R',),
          ),
 
 #        pour le cas ou un mode_meca est donné en première occurence

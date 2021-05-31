@@ -254,9 +254,9 @@ class PostRocheCommon():
 
         for fact in self.dCoude:
 
-            dicAffe = {'NOM_CMP'  : ('X1','X2','X3'),}
+            dicAffe = {'NOM_CMP'  : ('X1','X2',),}
             dicAffe['GROUP_MA'] = fact.get('GROUP_MA')
-            dicAffe['VALE'] = (fact.get('ANGLE')*pi/180,fact.get('RCOURB'), fact.get('SY'))
+            dicAffe['VALE'] = (fact.get('ANGLE')*pi/180,fact.get('RCOURB'),)
             affe.append(dicAffe)
             lGrmaCoude.extend(fact.get('GROUP_MA'))
 
@@ -335,7 +335,6 @@ class PostRocheCommon():
         # X1 = Pression
         # X2 = Angle
         # X3 = Rayon de courbure
-        # X4 = Sy = (Rp_0,2)_min
 
         chUtil= CREA_CHAMP(OPERATION = 'ASSE',
                                 MODELE=self.model,
@@ -347,8 +346,13 @@ class PostRocheCommon():
                                                ),
                                              _F(CHAM_GD = self.chCoude,
                                                TOUT = 'OUI',
-                                               NOM_CMP = ('X1','X2','X3'),
-                                               NOM_CMP_RESU = ('X2','X3','X4'),
+                                               NOM_CMP = ('X1','X2',),
+                                               NOM_CMP_RESU = ('X2','X3',),
+                                               ),
+                                             _F(CHAM_GD = self.chCoude,
+                                               TOUT = 'OUI',
+                                               NOM_CMP = ('X1','X2',),
+                                               NOM_CMP_RESU = ('X2','X3',),
                                                ),
                                              )
                                )
@@ -371,16 +375,16 @@ class PostRocheCommon():
         fD22_droit = FORMULE(NOM_PARA=('R', 'EP','R2','EP2'),VALE='0.429*pow(2*max(R/EP,R2/EP2),0.16)')
         # fD22_droit = FORMULE(NOM_PARA=('R', 'EP',),VALE='0.429*pow(2*R/EP,0.16)')
 
-        fpourD2X = FORMULE(NOM_PARA=('R', 'EP','X1','X3','X4'),VALE='1.0+0.142*(X1*(2*(R-EP))/(2*EP*X4*flambda(R,EP,X3)**1.45))',
+        fpourD2X = FORMULE(NOM_PARA=('R', 'EP','X1','X3','RP02_MIN'),VALE='1.0+0.142*(X1*(2*(R-EP))/(2*EP*RP02_MIN*flambda(R,EP,X3)**1.45))',
                    flambda=flambda)
 
 
-        fD22_coude = FORMULE(NOM_PARA=('R', 'EP','X1','X2','X3','X4'),
-                             VALE='max(1.07*pow(pi/X2,-0.4)/flambda(R,EP,X3)**(2./3)/fpourD2X(R,EP,X1,X3,X4),1.02)',
+        fD22_coude = FORMULE(NOM_PARA=('R', 'EP','X1','X2','X3','RP02_MIN'),
+                             VALE='max(1.07*pow(pi/X2,-0.4)/flambda(R,EP,X3)**(2./3)/fpourD2X(R,EP,X1,X3,RP02_MIN),1.02)',
                                    fpourD2X=fpourD2X, flambda=flambda)
 
-        fD23_coude = FORMULE(NOM_PARA=('R', 'EP','X1','X3','X4'),
-                             VALE='max(0.809/flambda(R,EP,X3)**(0.44)/fpourD2X(R,EP,X1,X3,X4),1.02)',
+        fD23_coude = FORMULE(NOM_PARA=('R', 'EP','X1','X3','RP02_MIN'),
+                             VALE='max(0.809/flambda(R,EP,X3)**(0.44)/fpourD2X(R,EP,X1,X3,RP02_MIN),1.02)',
                                    fpourD2X=fpourD2X, flambda=flambda)
 
         chfonc = CREA_CHAMP(OPERATION='AFFE',

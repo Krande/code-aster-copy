@@ -2705,6 +2705,9 @@ ROCH_R   = PhysicalQuantity(type='R',
        'E',
        'K_FACT',
        'N_EXPO',
+       'RP02_MIN',
+       'RM_MIN',
+       'RP02_MOY',
        'A',
        'I',
        'R',
@@ -2717,6 +2720,9 @@ ROCH_R   = PhysicalQuantity(type='R',
        E   : module d'Young
        K_FACT : Mot-clé FACTEUR de RAMBERG_OSGOOD
        N_EXPO : Mot-clé EXPOSANT de RAMBERG_OSGOOD
+       RP02_MIN : limite conventionnelle d'élasticité min à 0,2% de défo
+       RM_MIN :   résistance à la traction minimale
+       RP02_MOY : limite conventionnelle d'élasticité moy à 0,2% de défo
        A : aire de la section
        I : Inertie de la section
        R : Rayon extérieur de la section

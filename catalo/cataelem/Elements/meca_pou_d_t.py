@@ -50,7 +50,8 @@ CCAGNPO = LocatedComponents(phys=PHY.CAGNPO, type='ELEM',
                                         'RY2', 'RZ2', 'RT2', 'JG2', 'TVAR',))
 
 ENROCH_R = LocatedComponents(phys=PHY.ROCH_R, type='ELNO',
-                             components=('E','K_FACT','N_EXPO','A','I','R','EP','I2','R2','EP2'))
+                             components=('E','K_FACT','N_EXPO','RP02_MIN','RM_MIN','RP02_MOY',
+                                         'A','I','R','EP','I2','R2','EP2'))
 
 CCAORIE = LocatedComponents(phys=PHY.CAORIE, type='ELEM',
                             components=('ALPHA', 'BETA', 'GAMMA',))

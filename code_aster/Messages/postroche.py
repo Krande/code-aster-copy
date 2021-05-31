@@ -88,4 +88,7 @@ maille/noeud pour lequel le nombre maximal d'itérations autorisées (%(i1)d) a 
 parvenir à vérifier le critère de convergence lors du calcul de %(k1)s .
 """),
 
+   16 : _("""Le matériau POST_ROCHE est absent.
+"""),
+
 }

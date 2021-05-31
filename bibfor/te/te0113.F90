@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,13 +36,13 @@ subroutine te0113(option, nomte)
 !       ELEMENTS POU_D_T
 ! ---------------------------------------------------------------------
 !
-    integer :: icodre(2), iret
+    integer :: icodre(5), iret
     integer :: imate, nno, nbcmp, ino, ival, ndim, ino2
 !
-    real(kind=8) :: valres(2), young, k, nexpo
+    real(kind=8) :: valres(5), young, k, nexpo, rp02_min, rm_min, rp02_moy 
     real(kind=8) :: caragene(4), carageo(4)
     character(len=8)  :: valp(4)
-    character(len=16) :: nomres(2)
+    character(len=16) :: nomres(5)
 !
 ! ----------------------------------------------------------------------
 !
@@ -52,7 +52,7 @@ subroutine te0113(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call jevech('PROCHRR', 'E', ival)
     
-    nbcmp = 10
+    nbcmp = 13
 
 !   parametres elastique
     nomres(1) = 'E'
@@ -62,14 +62,25 @@ subroutine te0113(option, nomte)
     young = valres(1)
 
 !   parametres de RAMBERG_OSGOOD
-    nomres(1) = 'FACTEUR'
-    nomres(2) = 'EXPOSANT'
+    nomres(1) = 'RAMB_OSGO_FACT'
+    nomres(2) = 'RAMB_OSGO_EXPO'
+    nomres(3) = 'RP02_MIN'
+    nomres(4) = 'RM_MIN'
+    nomres(5) = 'RP02_MOY'
     call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                ' ', 'RAMBERG_OSGOOD', 0, '', [0.d0],&
-                2, nomres, valres, icodre, 1)
-                
+                ' ', 'POST_ROCHE', 0, '', [0.d0],&
+                5, nomres, valres, icodre, 0)
+    if (icodre(1).ne.0) call utmess('F','POSTROCHE_16')
     k = valres(1)
     nexpo = valres(2)
+    rp02_min = valres(3) ! nan si absent
+    rm_min = valres(4)   ! nan si absent
+    if (icodre(5).eq.0)then
+        rp02_moy = valres(5)
+    elseif (icodre(3).eq.0)then
+        rp02_moy = 1.25d0*rp02_min
+    ! nan sinon
+    endif
     
 !   caractéristiques de poutre
     valp = ['A1 ','IY1','A2 ','IY2']
@@ -86,21 +97,24 @@ subroutine te0113(option, nomte)
         zr(ival+(ino-1)*nbcmp-1+1) = young
         zr(ival+(ino-1)*nbcmp-1+2) = k
         zr(ival+(ino-1)*nbcmp-1+3) = nexpo
+        zr(ival+(ino-1)*nbcmp-1+4) = rp02_min
+        zr(ival+(ino-1)*nbcmp-1+5) = rm_min
+        zr(ival+(ino-1)*nbcmp-1+6) = rp02_moy
 !       A
-        zr(ival+(ino-1)*nbcmp-1+4) = caragene(2*(ino-1)+1)
+        zr(ival+(ino-1)*nbcmp-1+7) = caragene(2*(ino-1)+1)
 !       I
-        zr(ival+(ino-1)*nbcmp-1+5) = caragene(2*(ino-1)+2)
+        zr(ival+(ino-1)*nbcmp-1+8) = caragene(2*(ino-1)+2)
 !       R
-        zr(ival+(ino-1)*nbcmp-1+6) = carageo(2*(ino-1)+1)
+        zr(ival+(ino-1)*nbcmp-1+9) = carageo(2*(ino-1)+1)
 !       EP
-        zr(ival+(ino-1)*nbcmp-1+7) = carageo(2*(ino-1)+2)
+        zr(ival+(ino-1)*nbcmp-1+10) = carageo(2*(ino-1)+2)
 !       valeur de l'autre noeud pour réduction
 !       I2
-        zr(ival+(ino-1)*nbcmp-1+8) = caragene(2*(ino2-1)+2)
+        zr(ival+(ino-1)*nbcmp-1+11) = caragene(2*(ino2-1)+2)
 !       R2
-        zr(ival+(ino-1)*nbcmp-1+9) = carageo(2*(ino2-1)+1)
+        zr(ival+(ino-1)*nbcmp-1+12) = carageo(2*(ino2-1)+1)
 !       EP        
-        zr(ival+(ino-1)*nbcmp-1+10) = carageo(2*(ino2-1)+2)
+        zr(ival+(ino-1)*nbcmp-1+13) = carageo(2*(ino2-1)+2)
     enddo
 ! ----------------------------------------------------------------------
 end subroutine
