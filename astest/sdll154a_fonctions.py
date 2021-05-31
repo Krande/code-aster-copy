@@ -89,7 +89,6 @@ class PostRocheAnalytic(object):
             ii+=1
         # reversibilité totales
         
-        print(sum(self._sigma_sismique_ref[self._t_s!=0]**2))
         if (sum(self._sigma_deplacement_ref[self._t!=0]**2)==0):
             self._T = 0.
         else:
