@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,6 +37,7 @@ implicit none
 #include "asterfort/lac_rela.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/isParallelMesh.h"
 !
 character(len=8), intent(in) :: mesh
 character(len=8), intent(in) :: model
@@ -92,6 +93,10 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
         if (niv .ge. 2) then
             call utmess('I', 'MECANONLINE13_3')
         endif
+!
+! ----- Forbiden for a ParallelMesh
+!
+        ASSERT(.not.isParallelMesh(mesh))
 !
 ! ----- Datastructure from DEFI_CONTACT
 !
