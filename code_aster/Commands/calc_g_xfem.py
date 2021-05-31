@@ -65,7 +65,8 @@ def calc_g_xfem_with_co(self, **args):
                 FILTRE=_F(NOM_PARA='NOM_OBJET', VALE_K='NB_CHAM_THETA'),
             )
 
-        for i_cham in range(0, _nb_cham_theta):
+        reuse = {}
+        for i_cham in range(_nb_cham_theta):
             # get i-th CHAM_THETA field
             _cham_theta_no = EXTR_TABLE(TYPE_RESU='CHAM_NO_SDASTER',
                     TABLE=_result_calc_g_xfem, NOM_PARA='NOM_SD',
@@ -73,18 +74,16 @@ def calc_g_xfem_with_co(self, **args):
                             _F(NOM_PARA='NUME_ORDRE', VALE_I=i_cham+1))
                 )
 
-            if (i_cham == 0):
-                _cham_theta = CREA_RESU(OPERATION='AFFE',
-                                    TYPE_RESU='EVOL_NOLI',
-                                    NOM_CHAM='DEPL',
-                                    AFFE=(_F(CHAM_GD=_cham_theta_no,INST=i_cham,),),)
-            else:
-                _cham_theta = CREA_RESU(reuse=_cham_theta,
-                                    RESULTAT=_cham_theta,
-                                    OPERATION='AFFE',
-                                    TYPE_RESU='EVOL_NOLI',
-                                    NOM_CHAM='DEPL',
-                                    AFFE=(_F(CHAM_GD=_cham_theta_no,INST=i_cham,),),)
+            _cham_theta = CREA_RESU(
+                OPERATION='AFFE',
+                TYPE_RESU='EVOL_NOLI',
+                NOM_CHAM='DEPL',
+                AFFE=(_F(CHAM_GD=_cham_theta_no,
+                         MODELE=args["RESULTAT"].getModel(),
+                         INST=i_cham,),),
+                **reuse)
+            # for next iteration
+            reuse = dict(reuse=_cham_theta, RESULTAT=_cham_theta)
 
         self.register_result(_cham_theta, args["CHAM_THETA"])
 

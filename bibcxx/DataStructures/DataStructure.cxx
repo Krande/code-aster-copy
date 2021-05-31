@@ -136,7 +136,7 @@ void DataStructure::debugPrint( int logicalUnit ) const {
     JeveuxString< 3 > no( "NON" );
     std::string nameWithoutBlanks = trim( _name );
     try {
-        CALLO_UTIMSD( &unit, &niveau, &True, &True, nameWithoutBlanks, &ipos, base, no );
+        CALLO_UTIMSD( &unit, &niveau, &False, &True, nameWithoutBlanks, &ipos, base, no );
     } catch ( ... ) {
         throw std::runtime_error( "debugPrint failed!" );
     }

@@ -40,7 +40,7 @@ class sd_fond_fissure(AsBase):
 #   Vecteur de réels contenant pour chacun des noeuds du fond, une estimation de la taille suivant la direction radiale, des mailles qui leur sont connectées.
     FOND_TAILLE_R = Facultatif(AsVR(SDNom(nomj='.FOND.TAILLE_R'),))
 #   Vecteur de réels contenant les abscisses curvilignes des noeuds du fond de fissure.
-    ABSFON = AsVR()  
+    ABSFON = AsVR()
 #   Vecteur de réels contenant les abscisses curvilignes des projetés de chaque noeud sur le fond de fissure
     ABSCUR = AsVR()
 #   Champ aux noeuds scalaire qui contient pour chaque noeud du maillage la valeur réelle de la level set normale à la fissure.
@@ -50,11 +50,7 @@ class sd_fond_fissure(AsBase):
 #   Champ aux noeuds contenant les coordonnées des noeuds projetés sur le fond de fissure ainsi que les bases locales pour tous les noeuds du maillage.
     BASLOC = Facultatif(sd_cham_no())
 
-    def check_BASLOC(self, checker):
+    def check_config(self, checker):
         info = self.INFO.get_stripped()
         config = info[1]
-        basloc = self.BASLOC.VALE.get()
-        if config == 'DECOLLEE':
-            assert basloc is None, config
-        else:
-            pass
+        assert config in ("COLLEE", "DECOLLEE")
