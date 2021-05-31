@@ -64,13 +64,13 @@ class ExtendedFunction:
         values.shape = (2, size)
         return values.transpose()
 
-    def convert(self, arg='real'):
+    def convert(self, arg="real"):
         """
         Retourne un objet de la classe t_fonction
         représentation python de la fonction
         """
         class_fonction = t_fonction
-        if arg == 'complex':
+        if arg == "complex":
             class_fonction = t_fonction_c
         absc, ordo = self.Valeurs()
         return class_fonction(absc, ordo, self.Parametres(), nom=self.getName())
@@ -90,7 +90,7 @@ class ExtendedFunction:
         """Retourne la liste des ordonnées"""
         return self.Valeurs()[1]
 
-    def __call__(self, val, tol=1.e-6):
+    def __call__(self, val, tol=1.0e-6):
         """Evaluate a function at 'val'. If provided, 'tol' is a relative
         tolerance to match an abscissa value."""
         try:
@@ -106,28 +106,28 @@ class ExtendedFunction:
         le type jeveux (FONCTION, FONCT_C, NAPPE) n'est pas retourne,
         le dictionnaire peut ainsi etre fourni a CALC_FONC_INTERP tel quel.
         """
-        TypeProl = {'E': 'EXCLU', 'L': 'LINEAIRE', 'C': 'CONSTANT'}
-        objev = '%-19s.PROL' % self.getName()
+        TypeProl = {"E": "EXCLU", "L": "LINEAIRE", "C": "CONSTANT"}
+        objev = "%-19s.PROL" % self.getName()
         prol = self.sdj.PROL.get()
         dico = {
-            'INTERPOL': [prol[1][0:3], prol[1][4:7]],
-            'NOM_PARA': prol[2][0:16].strip(),
-            'NOM_RESU': prol[3][0:16].strip(),
-            'PROL_DROITE': TypeProl[prol[4][1]],
-            'PROL_GAUCHE': TypeProl[prol[4][0]],
+            "INTERPOL": [prol[1][0:3], prol[1][4:7]],
+            "NOM_PARA": prol[2][0:16].strip(),
+            "NOM_RESU": prol[3][0:16].strip(),
+            "PROL_DROITE": TypeProl[prol[4][1]],
+            "PROL_GAUCHE": TypeProl[prol[4][0]],
         }
         return dico
 
-    def Trace(self, FORMAT='TABLEAU', **kargs):
+    def Trace(self, FORMAT="TABLEAU", **kargs):
         """Tracé d'une fonction"""
         gr = Graph()
         para = self.Parametres()
         gr.AjoutCourbe(
             Val=self.Valeurs(),
-            Lab=[para['NOM_PARA'], para['NOM_RESU']],
-            Leg=os.linesep.join(self.sdj.TITR.get() or []))
+            Lab=[para["NOM_PARA"], para["NOM_RESU"]],
+            Leg=os.linesep.join(self.sdj.TITR.get() or []),
+        )
         gr.Trace(FORMAT=FORMAT, **kargs)
-
 
 
 @injector(FunctionComplex)
@@ -170,40 +170,40 @@ class ExtendedFunctionComplex:
         """Retourne la liste des parties imaginaires des ordonnées"""
         return self.Valeurs()[2]
 
-    def convert(self, arg='real'):
+    def convert(self, arg="real"):
         """
         Retourne un objet de la classe t_fonction ou t_fonction_c,
         représentation python de la fonction complexe
         """
         class_fonction = t_fonction
-        if arg == 'complex':
+        if arg == "complex":
             class_fonction = t_fonction_c
         absc = self.Absc()
         para = self.Parametres()
-        if arg == 'real':
+        if arg == "real":
             ordo = self.Ordo()
-        elif arg == 'imag':
+        elif arg == "imag":
             ordo = self.OrdoImg()
-        elif arg == 'modul':
-            ordo = NP.sqrt(
-                NP.array(self.Ordo())**2 + NP.array(self.OrdoImg())**2)
-        elif arg == 'phase':
-            ordo = NP.arctan2(
-                NP.array(self.OrdoImg()), NP.array(self.Ordo())) * 180. / pi
-        elif arg == 'complex':
+        elif arg == "modul":
+            ordo = NP.sqrt(NP.array(self.Ordo()) ** 2 + NP.array(self.OrdoImg()) ** 2)
+        elif arg == "phase":
+            ordo = (
+                NP.arctan2(NP.array(self.OrdoImg()), NP.array(self.Ordo())) * 180.0 / pi
+            )
+        elif arg == "complex":
             ordo = list(map(complex, self.Ordo(), self.OrdoImg()))
         else:
-            assert False, 'unexpected value for arg: %r' % arg
+            assert False, "unexpected value for arg: %r" % arg
         return class_fonction(self.Absc(), ordo, self.Parametres(), nom=self.getName())
 
-    def __call__(self, val, tol=1.e-6):
+    def __call__(self, val, tol=1.0e-6):
         """Evaluate a function at 'val'. If provided, 'tol' is a relative
         tolerance to match an abscissa value."""
         try:
             val = val.valeur
         except AttributeError:
             val = float(val)
-        __ff = self.convert(arg='complex')
+        __ff = self.convert(arg="complex")
         return __ff(val, tol=tol)
 
     def Parametres(self):
@@ -212,24 +212,25 @@ class ExtendedFunctionComplex:
         le type jeveux (FONCTION, FONCT_C, NAPPE) n'est pas retourne,
         le dictionnaire peut ainsi etre fourni a CALC_FONC_INTERP tel quel.
         """
-        TypeProl = {'E': 'EXCLU', 'L': 'LINEAIRE', 'C': 'CONSTANT'}
-        objev = '%-19s.PROL' % self.getName()
+        TypeProl = {"E": "EXCLU", "L": "LINEAIRE", "C": "CONSTANT"}
+        objev = "%-19s.PROL" % self.getName()
         prol = self.sdj.PROL.get()
         dico = {
-            'INTERPOL': [prol[1][0:3], prol[1][4:7]],
-            'NOM_PARA': prol[2][0:16].strip(),
-            'NOM_RESU': prol[3][0:16].strip(),
-            'PROL_DROITE': TypeProl[prol[4][1]],
-            'PROL_GAUCHE': TypeProl[prol[4][0]],
+            "INTERPOL": [prol[1][0:3], prol[1][4:7]],
+            "NOM_PARA": prol[2][0:16].strip(),
+            "NOM_RESU": prol[3][0:16].strip(),
+            "PROL_DROITE": TypeProl[prol[4][1]],
+            "PROL_GAUCHE": TypeProl[prol[4][0]],
         }
         return dico
 
-    def Trace(self, FORMAT='TABLEAU', **kargs):
+    def Trace(self, FORMAT="TABLEAU", **kargs):
         """Tracé d'une fonction"""
         gr = Graph()
         para = self.Parametres()
         gr.AjoutCourbe(
             Val=self.Valeurs(),
-            Lab=[para['NOM_PARA'], para['NOM_RESU']],
-            Leg=os.linesep.join(self.sdj.TITR.get() or []))
+            Lab=[para["NOM_PARA"], para["NOM_RESU"] + "_R", para["NOM_RESU"] + "_I"],
+            Leg=os.linesep.join(self.sdj.TITR.get() or []),
+        )
         gr.Trace(FORMAT=FORMAT, **kargs)

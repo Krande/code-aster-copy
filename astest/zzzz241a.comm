@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -217,7 +217,12 @@ REP_4 = LIRE_FONCTION(UNITE=11,
 tab_rep=CREA_TABLE(LISTE=(_F(PARA='NOM_CHAM',LISTE_K='Rep_Temp',),
                           _F(PARA='NUME_ORDRE_I',LISTE_I=(1,2,3,4,5),),
                           _F(PARA='NUME_MES',LISTE_I=(1,1,1,1,1),),
-                          _F(PARA='FONCTION',LISTE_K=('EFFORT','REP_1','REP_2','REP_3','REP_4'),),
+                          _F(PARA='FONCTION',
+                             LISTE_K=(EFFORT.getName(),
+                                      REP_1.getName(),
+                                      REP_2.getName(),
+                                      REP_3.getName(),
+                                      REP_4.getName()),),
                           ),
                           TITRE='',
                           TYPE_TABLE='TABLE_FONCTION',

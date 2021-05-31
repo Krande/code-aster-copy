@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,8 +62,8 @@ fc1 = DEFI_FONCTION(NOM_PARA='INST',
 tabf = CREA_TABLE(
         LISTE=(
             _F(PARA='NUME_ORDRE', LISTE_I=1),
-            _F(PARA='FONCTION',   LISTE_K='fr1'),
-            _F(PARA='FONCTION_C', LISTE_K='fc1'),
+            _F(PARA='FONCTION',   LISTE_K=fr1.getName()),
+            _F(PARA='FONCTION_C', LISTE_K=fc1.getName()),
         ),
         TYPE_TABLE='TABLE_FONCTION',
 )
