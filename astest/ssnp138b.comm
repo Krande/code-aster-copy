@@ -18,9 +18,9 @@
 # --------------------------------------------------------------------
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI'),)
+      DEBUG=_F(SDVERI='NON'),)
 
-from math import *
+from math import sqrt
 
 # MODELISATION B : CHARGEMENT VOLUMIQUE, MAILLES QUAD4, ENRICHISSEMENT GEOMETRIQUE
 

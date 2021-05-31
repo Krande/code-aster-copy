@@ -21,7 +21,7 @@
 # CALCUL DE K AVEC CALC_G
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'))
+      DEBUG=_F(SDVERI='NON'))
 
 nb_pas = 4
 Damax = 2.
