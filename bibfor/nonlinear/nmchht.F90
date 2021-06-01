@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,7 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/nmcha0.h"
 #include "asterfort/nmchai.h"
+#include "asterfort/nmvcle.h"
 #include "asterfort/nd_mstp_time.h"
 #include "asterfort/nonlinSubStruCompute.h"
 #include "asterfort/nonlinLoadCompute.h"
@@ -153,6 +154,10 @@ type(NL_DS_InOut), intent(in) :: ds_inout
                ncmp=1, nomcmp='INST', sr=time_prev_step)
     call mecact('V', time_curr, 'MODELE', model(1:8)//'.MODELE', 'INST_R',&
                 ncmp=1, nomcmp='INST', sr=time_init)
+! ----- Create external state variables
+        call nmvcle(model, ds_material%mater, cara_elem, time_prev_step, varc_prev)
+        call nmvcle(model, ds_material%mater, cara_elem, time_init, varc_curr)
+
 !
 ! - Get fields from hat-variables -
 !
