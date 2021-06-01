@@ -28,7 +28,7 @@ from libaster import *
 
 # ensure DataStructure is extended first
 from .datastructure_ext import (AsFloat, AsInteger, DataStructure,
-                                OnlyParallelObject, PyDataStructure)
+                                PyDataStructure)
 
 # extend DataStructures using metaclasses
 from .acousticload_ext import AcousticLoad
@@ -37,7 +37,7 @@ from .assemblymatrix_ext import (AssemblyMatrixDisplacementComplex,
 from .constantfieldoncells_ext import ConstantFieldOnCellsReal
 from .dirichletbc_ext import (MechanicalDirichletBC,
                               ThermalDirichletBC, AcousticDirichletBC)
-from .dofnumbering_ext import DOFNumbering
+from .dofnumbering_ext import DOFNumbering, ParallelDOFNumbering
 from .dynamicmacroelement_ext import DynamicMacroElement
 from .dynamicresults_ext import TransientGeneralizedResult
 from .elementarycharacteristics_ext import ElementaryCharacteristics
@@ -59,10 +59,11 @@ from .listoffloats_ext import ListOfFloats
 from .listofintegers_ext import ListOfIntegers
 from .material_ext import Material
 from .materialfield_ext import MaterialField
-from .mechanicalload_ext import GenericMechanicalLoad
+from .mechanicalload_ext import GenericMechanicalLoad, ParallelMechanicalLoad
 from .mesh_ext import Mesh
 from .meshcoordinatesfield_ext import MeshCoordinatesField
-from .model_ext import Model
+from .model_ext import Model, ParallelFiniteElementDescriptor
+from .parallelmesh_ext import ConnectionMesh, ParallelMesh
 from .prestressingcable_ext import PrestressingCable
 from .result_ext import Result
 from .table_ext import Table
@@ -75,33 +76,3 @@ from .Serialization import InternalStateBuilder
 
 # user extensions
 from .user_extensions import WithEmbeddedObjects
-
-# Define unusable import
-try:
-    from .parallelmesh_ext import ParallelMesh
-except ImportError:
-    class ParallelMesh(OnlyParallelObject):
-        pass
-
-# Define unusable objects
-try:
-    ConnectionMesh
-except NameError:
-    class ConnectionMesh(OnlyParallelObject):
-        pass
-try:
-    ParallelMechanicalLoad
-except NameError:
-    class ParallelMechanicalLoad(OnlyParallelObject):
-        pass
-try:
-    ParallelDOFNumbering
-except NameError:
-    class ParallelDOFNumbering(OnlyParallelObject):
-        pass
-
-try:
-    ParallelFiniteElementDescriptor
-except NameError:
-    class ParallelFiniteElementDescriptor(OnlyParallelObject):
-        pass

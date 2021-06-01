@@ -20,7 +20,7 @@ import code_aster
 from code_aster.Commands import *
 from code_aster import MPI
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),INFO=1,)
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',))
 
 nProc = MPI.COMM_WORLD.Get_size()
 parallel= (nProc>1)

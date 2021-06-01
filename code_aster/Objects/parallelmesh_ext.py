@@ -23,17 +23,35 @@
 ************************************************************************
 """
 
-from libaster import ParallelMesh
+from ..Utilities import injector, logger
+from .datastructure_ext import OnlyParallelObject
 
-from ..Utilities import injector
-from ..Utilities.MedUtils.MEDPartitioner import MEDPartitioner
+try:
+    from libaster import ParallelMesh
+
+    from ..Utilities.MedUtils.MEDPartitioner import MEDPartitioner
+
+    HAS_MEDCOUPLING = True
+except ImportError:
+    HAS_MEDCOUPLING = False
+
+    class ParallelMesh(OnlyParallelObject):
+        pass
+
+
+try:
+    from libaster import ConnectionMesh
+except ImportError:
+
+    class ConnectionMesh(OnlyParallelObject):
+        pass
 
 
 @injector(ParallelMesh)
 class ExtendedParallelMesh:
     cata_sdj = "SD.sd_maillage.sd_maillage"
 
-    def readMedFile(self, filename, partitioned=False, verbose=0) :
+    def readMedFile(self, filename, partitioned=False, verbose=0):
         """Read a MED file containing a mesh and eventually partition it
 
         Arguments:
@@ -47,6 +65,9 @@ class ExtendedParallelMesh:
         Returns:
             bool: True if reading and partionning is ok
         """
+        if not HAS_MEDCOUPLING:
+            logger.info("The MEDCoupling module is required")
+            return
 
         if partitioned:
             filename_partitioned = filename
@@ -57,3 +78,8 @@ class ExtendedParallelMesh:
             filename_partitioned = ms.writedFilename()
 
         return self._readPartitionedMedFile(filename_partitioned)
+
+
+@injector(ConnectionMesh)
+class ExtendedGenericConnectionMesh:
+    cata_sdj = "SD.sd_maillage.sd_connection_mesh"

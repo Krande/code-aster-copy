@@ -25,41 +25,48 @@ from ..logger import logger
 try :
     import medcoupling as mc
     HAS_MEDCOUPLING = True
-    
+
 except ImportError:
     HAS_MEDCOUPLING = False
 
 
 def convertMesh2MedCoupling(asmesh):
-    
+    """Convert a *Mesh* into a MEDCoupling mesh.
+
+    Arguments:
+        asmesh (*Mesh*): Mesh object to be converted.
+
+    Returns:
+        *MEDCouplingMesh*: MEDCoupling object.
+    """
     if not HAS_MEDCOUPLING:
-        logger.info('The MEDCoupling module is missing')
+        logger.info("The MEDCoupling module is required")
         return
-    
+
     cells, groups_c, groups_n = libaster.getMedCouplingConversionData(asmesh)
-    
+
     mcmesh = mc.MEDFileUMesh()
     coords = mc.DataArrayDouble(asmesh.getCoordinates().getValues(),
                                 asmesh.getNumberOfNodes(),
                                 3)[:, :asmesh.getDimension()]
-        
+
     maxdim = max(cells.keys())
     levels = {i : i-maxdim for i in range(maxdim,-1,-1)}
 
     # Creation du maillage par niveau, depart par le plus haut (0)
     for dim in sorted(cells.keys())[::-1]:
-        
+
         mesh_at_current_level = mc.MEDCouplingUMesh(asmesh.getName(), dim)
         mesh_at_current_level.setCoords(coords)
-        
+
         conn, connI = cells[dim]
         mesh_at_current_level.setConnectivity(mc.DataArrayInt(conn),
                                               mc.DataArrayInt(connI))
-        
+
         o2n = mesh_at_current_level.sortCellsInMEDFileFrmt()
         mesh_at_current_level.checkConsistencyLight()
         mcmesh.setMeshAtLevel(levels[dim], mesh_at_current_level)
-        
+
         # Groupes de mailles
         try :
             groups_c_at_level = []

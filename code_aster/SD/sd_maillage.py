@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -125,3 +125,7 @@ class sd_maillage(sd_titre):
         typl = self.TYPL.get()
         for k in typl:
             assert k in (-1, -2), typl
+
+
+class sd_connection_mesh(AsBase):
+    nomj = SDNom(fin=8)

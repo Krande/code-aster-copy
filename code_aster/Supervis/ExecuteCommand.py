@@ -59,7 +59,6 @@ Base classes
 
 import inspect
 import linecache
-import os
 import re
 from collections import namedtuple
 
@@ -73,6 +72,7 @@ from ..Cata.SyntaxUtils import force_list, mixedcopy, remove_none, search_for
 from ..Messages import UTMESS, MessageLog
 from ..Objects import DataStructure, PyDataStructure
 from ..Utilities import (
+    DEBUG,
     ExecutionParameter,
     Options,
     deprecated,
@@ -524,6 +524,8 @@ class ExecuteCommand(object):
         try:
             iret = check_ds_object(result.sdj)
             if iret != 0:
+                if logger.getEffectiveLevel() == DEBUG:
+                    result.debugPrint()
                 logger.error(
                     "SDVERI ended with exit code {0} for {1!r} ({2!r}, {3!r})".format(
                         iret,

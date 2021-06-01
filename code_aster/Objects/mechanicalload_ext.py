@@ -27,6 +27,15 @@ import aster
 from libaster import GenericMechanicalLoad
 
 from ..Utilities import injector
+from .datastructure_ext import OnlyParallelObject
+
+try:
+    from libaster import ParallelMechanicalLoad
+
+except ImportError:
+
+    class ParallelMechanicalLoad(OnlyParallelObject):
+        pass
 
 
 @injector(GenericMechanicalLoad)
@@ -38,3 +47,8 @@ class ExtendedGenericMechanicalLoad:
         object during unpickling.
         """
         return (self.getName(), self.getModel())
+
+
+@injector(ParallelMechanicalLoad)
+class ExtendedGenericParallelMechanicalLoad:
+    cata_sdj = "SD.sd_char_meca.sd_parallel_char_meca"

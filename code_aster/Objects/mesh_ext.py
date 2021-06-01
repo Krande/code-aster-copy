@@ -34,27 +34,27 @@ from ..Utilities.MedUtils.MEDConverter import convertMesh2MedCoupling
 class ExtendedMesh:
     cata_sdj = "SD.sd_maillage.sd_maillage"
 
-    def LIST_GROUP_NO(self) :
-        """ retourne la liste des groupes de noeuds sous la forme :
-            [ (gno1, nb noeuds  gno1), ...] """
+    def LIST_GROUP_NO(self):
+        """Retourne la liste des groupes de noeuds sous la forme :
+        [ (gno1, nb noeuds  gno1), ...]"""
         dic_gpno = self.sdj.GROUPENO.get()
         if dic_gpno is None:
             return []
-        return [(gpno.strip(),len(dic_gpno[gpno])) for gpno in dic_gpno]
+        return [(gpno.strip(), len(dic_gpno[gpno])) for gpno in dic_gpno]
 
-    def LIST_GROUP_MA(self) :
-        """ retourne la liste des groupes de mailles sous la forme :
-            [ (gma1, nb mailles gma1, dime max des mailles gma1), ...] """
+    def LIST_GROUP_MA(self):
+        """Retourne la liste des groupes de mailles sous la forme :
+        [ (gma1, nb mailles gma1, dime max des mailles gma1), ...]"""
         ltyma = aster.getvectjev("&CATA.TM.NOMTM")
         catama = aster.getcolljev("&CATA.TM.TMDIM")
         dic_gpma = self.sdj.GROUPEMA.get()
         if dic_gpma is None:
             return []
-        dimama = [catama[ltyma[ma-1].ljust(24)][0] for ma in self.sdj.TYPMAIL.get()]
+        dimama = [catama[ltyma[ma - 1].ljust(24)][0] for ma in self.sdj.TYPMAIL.get()]
         ngpma = []
         for grp in list(dic_gpma.keys()):
-            dim = max([dimama[ma-1] for ma in dic_gpma[grp]])
-            ngpma.append((grp.strip(), len(dic_gpma[grp]),dim))
+            dim = max([dimama[ma - 1] for ma in dic_gpma[grp]])
+            ngpma.append((grp.strip(), len(dic_gpma[grp]), dim))
         return ngpma
 
     def createMedCouplingMesh(self):
