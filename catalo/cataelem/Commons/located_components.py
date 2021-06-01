@@ -572,6 +572,18 @@ NFAMILK = LocatedComponents(phys=PHY.NEUT_K8, type='ELEM',
 NINFORR = LocatedComponents(phys=PHY.NEUT_R, type='ELEM',
                             components=('X[26]',))
 
+# Field for load VITE_FACE (complex)
+EVITEFC = LocatedComponents(phys=PHY.VFAC_C, type='ELEM',
+                            components=('VITE', 'INDC', 'DIRX', 'DIRY', 'DIRZ', ))
+
+# Field for load VITE_FACE (function)
+EVITEFF = LocatedComponents(phys=PHY.VFAC_F, type='ELEM',
+                            components=('VITE', 'INDC', 'DIRX', 'DIRY', 'DIRZ', ))
+
+# Field for load VITE_FACE (real)
+EVITEFR = LocatedComponents(phys=PHY.VFAC_R, type='ELEM',
+                            components=('VITE', 'INDC', 'DIRX', 'DIRY', 'DIRZ', ))
+
 #----------------------------------------------------------------------------------------------
 # Located components - ELNO - Field on nodes by element
 #----------------------------------------------------------------------------------------------
@@ -822,19 +834,6 @@ EGFC3DR = LocatedComponents(phys=PHY.FACY_R, type='ELGA', location='RIGI',
 # Field for time
 EGINST_R = LocatedComponents(phys=PHY.INST_R, type='ELGA', location='RIGI',
                              components=('INST',))
-
-# Field for load VITE_FACE (complex)
-EVITEFC = LocatedComponents(phys=PHY.VFAC_C, type='ELGA', location='RIGI',
-                            components=('VITE', 'INDC', 'DIRX', 'DIRY', 'DIRZ', ))
-
-# Field for load VITE_FACE (function)
-EVITEFF = LocatedComponents(phys=PHY.VFAC_F, type='ELGA', location='RIGI',
-                            components=('VITE', 'INDC', 'DIRX', 'DIRY', 'DIRZ', ))
-
-# Field for load VITE_FACE (real)
-EVITEFR = LocatedComponents(phys=PHY.VFAC_R, type='ELGA', location='RIGI',
-                            components=('VITE', 'INDC', 'DIRX', 'DIRY', 'DIRZ', ))
-
 
 E1GNEUT = LocatedComponents(phys=PHY.NEUT_R, type='ELGA', location='RIGI',
                             components=('X1',))

@@ -38,7 +38,6 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbCmpInMap = 5
     integer :: jvGeom, jvMate, jvLoad, jvVect
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9)
     real(kind=8) :: rho, jac
@@ -110,7 +109,7 @@ character(len=16), intent(in) :: option, nomte
         jac   = sqrt (nx*nx + ny*ny + nz*nz)
 
 ! ----- Get value of speed
-        speedVale = zc(jvLoad-1+nbCmpInMap*(ipg-1)+1)
+        speedVale = zc(jvLoad-1+1)
 
 ! ----- Compute vector
         do i = 1, nbNode

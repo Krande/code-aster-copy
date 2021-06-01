@@ -60,7 +60,6 @@ real(kind=8), optional, intent(out) :: z_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbCmpInMap = 5
     real(kind=8) :: z
     character(len=8) :: funcName
     integer :: i_node, ldec, iret
@@ -100,11 +99,11 @@ real(kind=8), optional, intent(out) :: z_
             nbPara = nbPara + 1
             paraVale(nbPara) = time
         endif
-        funcName = zk8(jvLoad-1+nbCmpInMap*(ipg-1)+1)
+        funcName = zk8(jvLoad)
         call fointe('FM', funcName, nbPara, paraName, paraVale, speedVale, iret)
 
     else
-        speedVale = zr(jvLoad-1+nbCmpInMap*(ipg-1)+1)
+        speedVale = zr(jvLoad)
 
     endif
 

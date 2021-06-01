@@ -64,7 +64,6 @@ real(kind=8), optional, intent(in) :: z_, nz_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbCmpInMap = 5
     aster_logical :: lSpeedNorm
     aster_logical :: lFunc, lReal, lCplx, lTime
     character(len=8) :: funcName
@@ -109,13 +108,13 @@ real(kind=8), optional, intent(in) :: z_, nz_
 ! - Flag if normal speed or not
     lSpeedNorm = ASTER_TRUE
     if (lFunc) then
-        lSpeedNorm = zk8(jvLoad-1+nbCmpInMap*(ipg-1)+2) .eq. '&FOZERO'
+        lSpeedNorm = zk8(jvLoad-1+2) .eq. '&FOZERO'
 
     elseif (lReal) then
-        lSpeedNorm = zr(jvLoad-1+nbCmpInMap*(ipg-1)+2) .le. 0.d0
+        lSpeedNorm = zr(jvLoad-1+2) .le. 0.d0
 
     elseif (lCplx) then
-        lSpeedNorm = dble(zc(jvLoad-1+nbCmpInMap*(ipg-1)+2)) .le. 0.d0
+        lSpeedNorm = dble(zc(jvLoad-1+2)) .le. 0.d0
 
     else
         ASSERT(ASTER_FALSE)
@@ -144,27 +143,27 @@ real(kind=8), optional, intent(in) :: z_, nz_
                 nbPara = nbPara + 1
                 paraVale(nbPara) = time
             endif
-            funcName = zk8(jvLoad-1+nbCmpInMap*(ipg-1)+3)
+            funcName = zk8(jvLoad-1+3)
             call fointe('FM', funcName, nbPara, paraname, paraVale, nvx, iret)
-            funcName = zk8(jvLoad-1+nbCmpInMap*(ipg-1)+4)
+            funcName = zk8(jvLoad-1+4)
             call fointe('FM', funcName, nbPara, paraname, paraVale, nvy, iret)
             if (cellDime .eq. 2) then
-                funcName = zk8(jvLoad-1+nbCmpInMap*(ipg-1)+5)
+                funcName = zk8(jvLoad-1+5)
                 call fointe('FM', funcName, nbPara, paraname, paraVale, nvz, iret)
             endif
 
         elseif (lReal) then
-            nvx = zr(jvLoad-1+nbCmpInMap*(ipg-1)+3)
-            nvy = zr(jvLoad-1+nbCmpInMap*(ipg-1)+4)
+            nvx = zr(jvLoad-1+3)
+            nvy = zr(jvLoad-1+4)
             if (cellDime .eq. 2) then
-                nvz = zr(jvLoad-1+nbCmpInMap*(ipg-1)+5)
+                nvz = zr(jvLoad-1+5)
             endif
 
         elseif (lCplx) then
-            nvx = dble(zc(jvLoad-1+nbCmpInMap*(ipg-1)+3))
-            nvy = dble(zc(jvLoad-1+nbCmpInMap*(ipg-1)+4))
+            nvx = dble(zc(jvLoad-1+3))
+            nvy = dble(zc(jvLoad-1+4))
             if (cellDime .eq. 2) then
-                nvz = dble(zc(jvLoad-1+nbCmpInMap*(ipg-1)+5))
+                nvz = dble(zc(jvLoad-1+5))
             endif
 
         endif
