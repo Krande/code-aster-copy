@@ -28,7 +28,7 @@ from libaster import *
 
 # ensure DataStructure is extended first
 from .datastructure_ext import (AsFloat, AsInteger, DataStructure,
-                                PyDataStructure)
+                                OnlyParallelObject, PyDataStructure)
 
 # extend DataStructures using metaclasses
 from .acousticload_ext import AcousticLoad

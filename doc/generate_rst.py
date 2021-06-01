@@ -95,7 +95,8 @@ def all_objects(destdir):
         # if obj is not OBJ.Material:
         #     continue
         if not isinstance(obj, type) or issubclass(
-            obj, (OBJ.OnlyParallelObject, OBJ.WithEmbeddedObjects)
+            obj, (OBJ.OnlyParallelObject, OBJ.InternalStateBuilder,
+                  OBJ.WithEmbeddedObjects)
         ):
             continue
         found = False
