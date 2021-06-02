@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -116,11 +116,12 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 #include "asterfort/lcinma.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/utmess.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/trace.h"
 #include "asterfort/get_varc.h"
     integer      :: imat, ndt, ndi, nvi, iret, iret1, kpg, ksp
     integer      :: i, inc, incmax, ndtt, limsup
-    real(kind=8) :: carcri(*), vind(50), vinf(50), vind0(50)
+    real(kind=8) :: carcri(*), vind(50), vinf(50), vind0(50), variTmp(50)
     real(kind=8) :: epsd(6), deps(6), deps0(6)
     real(kind=8) :: sigd(6), sigf(6), dsde(6, 6), seuil
     real(kind=8) :: piso, depsr(6), depsq(6), tin(3)
@@ -137,7 +138,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
     real(kind=8), parameter :: degr  = 0.0174532925199d0, tole = 0.1d0
     real(kind=8) :: neps, nsig, ptrac, rtrac
     real(kind=8) :: crit, dpiso
-    aster_logical:: debug, conv, reorie, tract
+    aster_logical:: debug, conv, reorie, tract, lVari
 !
 !     ----------------------------------------------------------------
     common /tdim/   ndt, ndi
@@ -148,7 +149,11 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
     tract = ASTER_FALSE
     conv  = ASTER_TRUE
     reorie= ASTER_FALSE
+
+! - Flag to modify internal state variable
+    lVari = L_VARI(opt)
 !
+    variTmp = 0.d0
     materf(:,:) = 0.d0
     vind0(:) = 0.d0
     depsth(:) = 0.d0
@@ -354,7 +359,9 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
         if (abs(vind(27+i)-un) .lt. r8prem()) vind(23+i)=-un
     enddo
 !
-    if (opt(1:9) .ne. 'RIGI_MECA') call lceqvn(50, vind, vinf)
+    if (opt(1:9) .ne. 'RIGI_MECA') then
+        call lceqvn(50, vind, variTmp)
+    endif
 !
 ! ---> ETAT ELASTIQUE OU PLASTIQUE A T
     if (( (vind(24) .eq. zero) .or. &
@@ -461,11 +468,11 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 ! CALCUL DE L'ETAT DE CONTRAINTES CORRESPONDANT
 ! ---------------------------------------------
         if (debug) write(6,*)&
-        '!!!@_@!!! NMHUJ -- VINF =',(vinf(i),i=24,31),' !!!@_@!!!'
+        '!!!@_@!!! NMHUJ -- VINF =',(variTmp(i),i=24,31),' !!!@_@!!!'
 !
         call hujres(fami, kpg, ksp, mod, carcri,&
                     materf, imat, nvi, depsr, sigd,&
-                    vind, sigf, vinf, iret, etatf)
+                    vind, sigf, variTmp, iret, etatf)
         if (iret .eq. 1) goto 999
 !
 ! -------------------------------------------
@@ -479,7 +486,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 !
         if (.not.conv) then
             call lceqve(sigf, sigd)
-            call lceqvn(nvi, vinf, vind)
+            call lceqvn(nvi, variTmp, vind)
             goto 100
         endif
 !
@@ -496,9 +503,9 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 !
 ! --- NORMALISATION DU CRITERE : VARIE ENTRE -1 ET 1
         if (neps.gt.r8prem() .and. nsig.gt.r8prem()) then
-            vinf(32) = hill/sqrt(neps*nsig)
+            variTmp(32) = hill/sqrt(neps*nsig)
         else
-            vinf(32) = zero
+            variTmp(32) = zero
         endif
 !
     endif
@@ -543,7 +550,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 ! ---> CALCUL MATRICE TANGENTE DU PROBLEME CONTINU
         if (etatf .eq. 'PLASTIC') then
             call hujtid(fami, kpg, ksp, mod, imat,&
-                        sigf, vinf, dsde, iret)
+                        sigf, variTmp, dsde, iret)
             if (iret.eq.1) goto 999
         endif
 !
@@ -572,10 +579,10 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
             call mgauss('NCSD', dsde, sigd, 6, 6,&
                         1, det, iret)
             if (iret .eq. 1) then
-                vinf(33) = un
+                variTmp(33) = un
                 iret     = 0
             else
-                vinf(33) = det
+                variTmp(33) = det
             endif
         endif
 !
@@ -636,7 +643,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
                    call hujtel(mod, materf, sigd, dsde)
                 endif
 !
-                call lceqvn(50, vind0, vinf)
+                call lceqvn(50, vind0, variTmp)
 ! fin   ---new dvp 23/01/2019---
                 if (debug) then
                     write(6,'(A)') ' ----------- FIN NMHUJ -----------------'
@@ -644,7 +651,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
                     write(6,*) ' * SIGD =',(sigd0(i),i=1,ndt)
                     write(6,*) ' * VIND =',(vind0(i),i=1,50)
                     write(6,*) ' * SIGF =',(sigf(i),i=1,ndt)
-                    write(6,*) ' * VINF =',(vinf(i),i=1,50)
+                    write(6,*) ' * VINF =',(variTmp(i),i=1,50)
                     write(6,'(A)')' ----------------------------------------'
                 endif
             else
@@ -655,7 +662,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
                     sigf(i) = -deux*rtrac+ptrac
                     sigf(i+3) = zero
                 enddo
-                call lceqvn(50, vind0, vinf)
+                call lceqvn(50, vind0, variTmp)
                 iret = 0
             endif
         endif
@@ -675,7 +682,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 ! On normalise les seuils de la meme facon que dans hujjid
 ! i.e. par le module d'Young materf(1,1)/Pcr0
 ! pour assurer la coherence du controle avec RESI_INTE_RELA
-                call hujcrd(i, materf, sigf, vinf, seuil, iret)
+                call hujcrd(i, materf, sigf, variTmp, seuil, iret)
                 if (iret .ne. 0) then
                     goto 999
                 endif
@@ -694,7 +701,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 ! i.e. par le module d'Young materf(1,1)/Pcr0
 ! pour assurer la coherence du controle avec RESI_INTE_RELA
 !
-            call hujcri(materf, sigf, vinf, seuil)
+            call hujcri(materf, sigf, variTmp, seuil)
             seuil   = seuil/materf(1,1)*abs(materf(7,2))
 
             if (seuil.gt.zero) then
@@ -712,12 +719,12 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 !
               if (i.lt.8 .and. bid16(i-4).eq.zero) then
 
-                 call hujcdc(i-4, materf, sigf, vinf, seuil)
+                 call hujcdc(i-4, materf, sigf, variTmp, seuil)
                  seuil = seuil*det
 
               elseif (bid16(4).eq.zero) then
 
-                 call hujcic(materf, sigf, vinf, seuil)
+                 call hujcic(materf, sigf, variTmp, seuil)
                  seuil = seuil/materf(1,1)*abs(materf(7,2))
               endif
               crit = max(seuil,crit)
@@ -725,9 +732,14 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
            enddo
         endif
 !
-        vinf(34)=crit
-        vinf(35)=zero
+        variTmp(34)=crit
+        variTmp(35)=zero
 ! fin   ---new dvp 23/01/2019---
+    endif
+
+! - Copy internal state variables
+    if (lVari) then
+        vinf = variTmp
     endif
 !
 end subroutine
