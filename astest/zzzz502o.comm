@@ -47,9 +47,10 @@ MINUS_UN = FORMULE(VALE='2*sin(X) - 2*sin(X) -1',
 ZERO = FORMULE(VALE='2*sin(X*Y) - 2*sin(X*Y)',
               NOM_PARA=['X', 'Y'],)
 
+
 loads = []
-"""
-loads.append(AFFE_CHAR_MECA_F(MODELE=model,
+
+loads.append(AFFE_CHAR_MECA_F(MODELE=model, INFO=2,
                     DDL_IMPO=(_F(GROUP_MA='BAS', DY=MINUS_UN, ),
                               _F(GROUP_MA='HAUT', DY=UN, ),
                               _F(GROUP_MA='GAUCHE',  DX=MINUS_UN),
@@ -102,7 +103,7 @@ loads.append(AFFE_CHAR_MECA_F(MODELE=model,
                     LIAISON_OBLIQUE=(
                               _F(GROUP_NO='BAS',  DY=MINUS_UN, ANGL_NAUT=(0.0,0.0,0.0)),
                       ),))
-"""
+
 loads.append(AFFE_CHAR_CINE_F(MODELE=model,
                     MECA_IMPO=(_F(GROUP_MA='BAS', DY=MINUS_UN, ),
                               _F(GROUP_MA='HAUT', DY=UN, ),
@@ -124,7 +125,7 @@ loads.append(AFFE_CHAR_CINE_F(MODELE=model,
                               _F(GROUP_NO='DROITE',  DX=UN),
                       ),))
 
-solvers = ["MUMPS", "PETSC"]
+solvers = [ "PETSC"]
 for load in loads:
     for solver in solvers:
 

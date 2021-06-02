@@ -64,7 +64,7 @@ class MechanicalLoadDescriptionClass : public DataStructure
     /** @brief Carte '.CIMPO' */
     ConstantFieldOnCellsTypePtr _cimpo;
     /** @brief Carte '.CMULT' */
-    ConstantFieldOnCellsTypePtr _cmult;
+    ConstantFieldOnCellsRealPtr _cmult;
     /** @brief Carte '.DPGEN' */
     ConstantFieldOnCellsTypePtr _dpgen;
     /** @brief Carte '.EPSIN' */
@@ -124,7 +124,7 @@ class MechanicalLoadDescriptionClass : public DataStructure
             _FEDesc( boost::make_shared<FiniteElementDescriptorClass>(
                 name + ".LIGRE", _model->getMesh() ) ),
             _cimpo(boost::make_shared<ConstantFieldOnCellsType>( name + ".CIMPO", _FEDesc ) ),
-            _cmult(boost::make_shared<ConstantFieldOnCellsType>( name + ".CMULT", _FEDesc ) ),
+            _cmult(boost::make_shared<ConstantFieldOnCellsRealClass>( name + ".CMULT", _FEDesc ) ),
             _dpgen(boost::make_shared<ConstantFieldOnCellsType>( name + ".DPGEN", _FEDesc ) ),
             _epsin(boost::make_shared<ConstantFieldOnCellsType>( name + ".EPSIN", _FEDesc ) ),
             _f1d2d(boost::make_shared<ConstantFieldOnCellsType>( name + ".F1D2D", _FEDesc ) ),
@@ -155,8 +155,8 @@ class MechanicalLoadDescriptionClass : public DataStructure
 
     ModelPtr getModel() const { return _model; }
 
-    ConstantFieldOnCellsTypePtr getImpositionValues() const { return _cimpo; }
-    ConstantFieldOnCellsTypePtr getCoefficient() const { return _cmult; }
+    ConstantFieldOnCellsTypePtr getImpositionField() const { return _cimpo; }
+    ConstantFieldOnCellsRealPtr getMultiplicativeField() const { return _cmult; }
 };
 
 /**********************************************************/

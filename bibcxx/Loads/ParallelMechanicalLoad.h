@@ -53,8 +53,10 @@ class ParallelMechanicalLoadClass: public DataStructure
     typedef boost::shared_ptr< ConstantFieldOnCellsType > ConstantFieldOnCellsTypePtr;
 
 private:
-    void transferConstantFieldOnCells( const ConstantFieldOnCellsTypePtr& fieldIn,
-                                ConstantFieldOnCellsTypePtr& fieldOut )
+
+    template< typename ConstantFieldOnCellsType2Ptr >
+    void transferConstantFieldOnCells( const ConstantFieldOnCellsType2Ptr& fieldIn,
+                                ConstantFieldOnCellsType2Ptr& fieldOut )
     {
         const auto& toKeep = _FEDesc->getDelayedElementsToKeep();
 
@@ -104,7 +106,7 @@ protected:
     /** @brief Carte '.CIMPO' */
     ConstantFieldOnCellsTypePtr        _cimpo;
     /** @brief Carte '.CMULT' */
-    ConstantFieldOnCellsTypePtr        _cmult;
+    ConstantFieldOnCellsRealPtr        _cmult;
     /** @brief Vecteur Jeveux '.TYPE' */
     JeveuxVectorChar8                  _type;
     /** @brief Vecteur Jeveux '.MODEL.NOMO' */
@@ -137,7 +139,7 @@ public:
                     ( getName() + ".CHME.LIGRE", load->getFiniteElementDescriptor(),
                       load->getModel()->getConnectionMesh(), model ) ),
     _cimpo(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".CHME.CIMPO", _FEDesc )),
-    _cmult(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".CHME.CMULT", _FEDesc )),
+    _cmult(boost::make_shared<ConstantFieldOnCellsRealClass>( getName() + ".CHME.CMULT", _FEDesc )),
     _type( getName() + ".TYPE" ),
     _modelName( getName() + ".CHME.MODEL.NOMO" ),
     _model( model )
@@ -151,9 +153,9 @@ public:
         (*_modelName)[0] = model->getName();
 
         transferConstantFieldOnCells(
-            load->getMechanicalLoadDescription()->getImpositionValues(), _cimpo );
+            load->getMechanicalLoadDescription()->getImpositionField(), _cimpo );
         transferConstantFieldOnCells(
-            load->getMechanicalLoadDescription()->getCoefficient(), _cmult );
+            load->getMechanicalLoadDescription()->getMultiplicativeField(), _cmult );
     };
 
     /**

@@ -49,7 +49,7 @@ ZERO = FORMULE(VALE='2*sin(X*Y) - 2*sin(X*Y)',
 for lagr in ["OUI", "NON"]:
 
     loads = []
-    """
+
     loads.append(AFFE_CHAR_MECA_F(MODELE=model, DOUBLE_LAGRANGE=lagr,
                         DDL_IMPO=(_F(GROUP_MA='BAS', DY=MINUS_UN, ),
                                 _F(GROUP_MA='HAUT', DY=UN, ),
@@ -103,7 +103,7 @@ for lagr in ["OUI", "NON"]:
                         LIAISON_OBLIQUE=(
                                 _F(GROUP_NO='BAS',  DY=MINUS_UN, ANGL_NAUT=(0.,0.,0.)),
                         ),))
-    """
+
     loads.append(AFFE_CHAR_CINE_F(MODELE=model,
                         MECA_IMPO=(_F(GROUP_MA='BAS', DY=MINUS_UN, ),
                                 _F(GROUP_MA='HAUT', DY=UN, ),

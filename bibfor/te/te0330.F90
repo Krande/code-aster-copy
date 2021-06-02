@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,6 +71,7 @@ subroutine te0330(option, nomte)
 140      continue
 !
     else if (option(6:11) .eq. 'DDLM_C') then
+        ASSERT(.false.)
         call jevech('PDDLMUC', 'L', jdmul)
         do 115 i = 1, ndl + 2
             do 105 j = 1, ndl + 2
@@ -122,17 +123,15 @@ subroutine te0330(option, nomte)
         if (option(1:4) .eq. 'THER') call jevech('PVECTTC', 'E', jvec)
         if (option(1:4) .eq. 'ACOU') call jevech('PVECTTC', 'E', jvec)
         zc(jvec-1+ndl+1) = zc(jdimp-1+1)
-        zc(jvec-1+ndl+2) = zc(jdimp-1+1)
 !
     else if (option(6:11) .eq. 'DDLI_F') then
-        ASSERT(.false.)
         call jevech('PDDLIMF', 'L', jdimp)
         call jevech('PGEOMER', 'L', jgeom)
         call jevech('PTEMPSR', 'L', jtime)
         if (option(1:4) .eq. 'MECA') call jevech('PVECTUR', 'E', jvec)
         if (option(1:4) .eq. 'THER') call jevech('PVECTTR', 'E', jvec)
         if (option(1:4) .eq. 'ACOU') call jevech('PVECTTC', 'E', jvec)
-        nomfon = zk24(jdimp-1+1)
+        nomfon = zk24(jdimp-1+1)(1:19)
         nbpar = 4
         nompar(1) = 'X'
         nompar(2) = 'Y'
@@ -146,10 +145,8 @@ subroutine te0330(option, nomte)
                     result, ier)
         if (option(1:4) .eq. 'ACOU') then
             zc(jvec-1+ndl+1) = result
-            zc(jvec-1+ndl+2) = result
         else
             zr(jvec-1+ndl+1) = result
-            zr(jvec-1+ndl+2) = result
         endif
     endif
 ! ----------------------------------------------------------------------
