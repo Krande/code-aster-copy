@@ -38,7 +38,7 @@ void exportElementaryVectorToPython() {
         &ElementaryVectorClass::assembleVector;
 #endif /* ASTER_HAVE_MPI */
 
-    void ( ElementaryVectorClass::*c3 )( const GenericMechanicalLoadPtr & ) =
+    void ( ElementaryVectorClass::*c3 )( const MechanicalLoadRealPtr & ) =
         &ElementaryVectorClass::addLoad;
 
     py::class_< ElementaryVectorClass, ElementaryVectorClass::ElementaryVectorPtr,

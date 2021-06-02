@@ -59,7 +59,7 @@ class ExcitationClass {
   private:
     ExcitationEnum _typeExcit;
     DirichletBCPtr _dirichletBC;
-    GenericMechanicalLoadPtr _mecaLoad;
+    MechanicalLoadRealPtr _mecaLoad;
     FunctionPtr _multFunction;
     CapyConvertibleContainer _toCapyConverter;
 
@@ -81,9 +81,9 @@ class ExcitationClass {
     /** @function setMechanicalLoad
      * @brief sets the mecaLoad attribut
      */
-    void setMechanicalLoad( const GenericMechanicalLoadPtr &mecaLoad ) {
+    void setMechanicalLoad( const MechanicalLoadRealPtr &mecaLoad ) {
         _mecaLoad = mecaLoad;
-        _toCapyConverter.add( new CapyConvertibleValue< GenericMechanicalLoadPtr >(
+        _toCapyConverter.add( new CapyConvertibleValue< MechanicalLoadRealPtr >(
             true, "CHARGE", _mecaLoad, true ) );
     };
     /** @function setMultiplicativeFunction

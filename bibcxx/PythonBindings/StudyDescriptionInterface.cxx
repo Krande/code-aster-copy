@@ -97,23 +97,41 @@ Returns:
     ListDiriBC: a list of DirichletBC
         )",
               ( py::arg( "self" ) )   );
-    c1.def( "getListOfMechanicalLoads",
-        &StudyDescriptionClass::getListOfMechanicalLoads,
+    c1.def( "getListOfMechanicalLoadsReal",
+        &StudyDescriptionClass::getListOfMechanicalLoadsReal,
         py::return_value_policy<py::copy_const_reference>(), R"(
-Return list of mechanical loads
+Return list of real mechanical loads
 
 Returns:
-    ListMecaLoad: a list of mechanical loads
+    ListMecaLoadReal: a list of real mechanical loads
+        )",
+              ( py::arg( "self" ) )   );
+    c1.def( "getListOfMechanicalLoadsFunction",
+        &StudyDescriptionClass::getListOfMechanicalLoadsFunction,
+        py::return_value_policy<py::copy_const_reference>(), R"(
+Return list of Function mechanical loads
+
+Returns:
+    ListMecaLoadFunction: a list of Function mechanical loads
         )",
               ( py::arg( "self" ) )   );
 #ifdef ASTER_HAVE_MPI
-    c1.def( "getListOfParallelMechanicalLoads",
-        &StudyDescriptionClass::getListOfParallelMechanicalLoads,
+    c1.def( "getListOfParallelMechanicalLoadsReal",
+        &StudyDescriptionClass::getListOfParallelMechanicalLoadsReal,
         py::return_value_policy<py::copy_const_reference>(), R"(
-Return list of parallel mechanical loads
+Return list of real parallel mechanical loads
 
 Returns:
-    ListParaMecaLoad: a list of parallel mechanical loads
+    ListParaMecaLoadReal: a list of real parallel mechanical loads
+        )",
+              ( py::arg( "self" ) )   );
+    c1.def( "getListOfParallelMechanicalLoadsFunction",
+        &StudyDescriptionClass::getListOfParallelMechanicalLoadsFunction,
+        py::return_value_policy<py::copy_const_reference>(), R"(
+Return list of function parallel mechanical loads
+
+Returns:
+    ListParaMecaLoadFunction: a list of function parallel mechanical loads
         )",
               ( py::arg( "self" ) )   );
 #endif /* ASTER_HAVE_MPI */

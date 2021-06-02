@@ -72,9 +72,9 @@ class StudyDescriptionClass {
     StudyDescriptionClass( const ModelPtr &curModel, const MaterialFieldPtr &curMat,
                               const ElementaryCharacteristicsPtr &cara = nullptr )
         : _model( curModel ), _materialField( curMat ),
-          _listOfLoads( ListOfLoadsPtr( new ListOfLoadsClass() ) ), _elemChara( cara ),
-          _codedMater( new CodedMaterialClass( _materialField, _model ) ),
-          _varCom( new ExternalVariablesComputationClass( _model, _materialField,
+          _listOfLoads( boost::make_shared< ListOfLoadsClass >() ), _elemChara( cara ),
+          _codedMater( boost::make_shared<  CodedMaterialClass >( _materialField, _model ) ),
+          _varCom( boost::make_shared< ExternalVariablesComputationClass >( _model, _materialField,
                                                           _elemChara, _codedMater ) ){
         if( _elemChara ){
             if( _model->getName() != _elemChara->getModel()->getName())
@@ -126,16 +126,30 @@ class StudyDescriptionClass {
     /**
      * @brief Obtenir la liste des chargements mecaniques
      */
-    const ListMecaLoad &getListOfMechanicalLoads() const {
-        return _listOfLoads->getListOfMechanicalLoads();
+    const ListMecaLoadReal &getListOfMechanicalLoadsReal() const {
+        return _listOfLoads->getListOfMechanicalLoadsReal();
+    };
+
+    /**
+     * @brief Obtenir la liste des chargements mecaniques
+     */
+    const ListMecaLoadFunction &getListOfMechanicalLoadsFunction() const {
+        return _listOfLoads->getListOfMechanicalLoadsFunction();
     };
 
 #ifdef ASTER_HAVE_MPI
     /**
      * @brief Obtenir la liste des chargements mecaniques
      */
-    const ListParaMecaLoad &getListOfParallelMechanicalLoads() const {
-        return _listOfLoads->getListOfParallelMechanicalLoads();
+    const ListParaMecaLoadReal &getListOfParallelMechanicalLoadsReal() const {
+        return _listOfLoads->getListOfParallelMechanicalLoadsReal();
+    };
+
+    /**
+     * @brief Obtenir la liste des chargements mecaniques
+     */
+    const ListParaMecaLoadFunction &getListOfParallelMechanicalLoadsFunction() const {
+        return _listOfLoads->getListOfParallelMechanicalLoadsFunction();
     };
 #endif /* ASTER_HAVE_MPI */
 

@@ -1,7 +1,9 @@
+#ifndef UNITARYMECHANICALLOADINTERFACE_H_
+#define UNITARYMECHANICALLOADINTERFACE_H_
+
 /**
- * @file ParallelMechanicalLoad.cxx
- * @brief Implementation de ParallelMechanicalLoad
- * @author Nicolas Sellenet
+ * @file MechanicalLoadInterface.h
+ * @brief Fichier entete de la classe MechanicalLoadInterface
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
@@ -21,4 +23,9 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Loads/ParallelMechanicalLoad.h"
+#include "astercxx.h"
+#include "Loads/UnitaryMechanicalLoad.h"
+
+void exportUnitaryMechanicalLoadToPython();
+
+#endif /* UNITARYMECHANICALLOADINTERFACE_H_ */

@@ -77,9 +77,13 @@ class ListOfLoadsClass : public DataStructure {
     /** @brief List of functions for DirichletBCs */
     ListOfLoadFunctions _listOfDiriFun;
     /** @brief Chargements Mecaniques */
-    ListMecaLoad _listOfMechanicalLoads;
+    ListMecaLoadReal _listOfMechanicalLoadsReal;
     /** @brief List of functions for MechanicalLoads */
-    ListOfLoadFunctions _listOfMechaFun;
+    ListOfLoadFunctions _listOfMechaFuncReal;
+    /** @brief Chargements Mecaniques */
+    ListMecaLoadFunction _listOfMechanicalLoadsFunction;
+    /** @brief List of functions for MechanicalLoads */
+    ListOfLoadFunctions _listOfMechaFuncFunction;
     /** @brief Chargements Thermique */
     ListTherLoad _listOfThermalLoads;
     /** @brief List of functions for ThermalLoads */
@@ -90,9 +94,13 @@ class ListOfLoadsClass : public DataStructure {
     ListOfLoadFunctions _listOfAcouFun;
 #ifdef ASTER_HAVE_MPI
     /** @brief Chargements Mecaniques paralleles */
-    ListParaMecaLoad _listOfParallelMechanicalLoads;
+    ListParaMecaLoadReal _listOfParallelMechanicalLoadsReal;
     /** @brief List of functions for ParallelMechanicalLoads */
-    ListOfLoadFunctions _listOfParaMechaFun;
+    ListOfLoadFunctions _listOfParaMechaFuncReal;
+        /** @brief Chargements Mecaniques paralleles */
+    ListParaMecaLoadFunction _listOfParallelMechanicalLoadsFunction;
+    /** @brief List of functions for ParallelMechanicalLoads */
+    ListOfLoadFunctions _listOfParaMechaFuncFunction;
 #endif /* ASTER_HAVE_MPI */
     /** @brief .INFC */
     JeveuxVectorLong _loadInformations;
@@ -153,12 +161,12 @@ class ListOfLoadsClass : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
-    void addLoad( const GenericMechanicalLoadPtr &currentLoad,
+    void addLoad( const MechanicalLoadRealPtr &currentLoad,
                   const FunctionPtr &func = emptyRealFunction ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
-        _listOfMechanicalLoads.push_back( currentLoad );
-        _listOfMechaFun.push_back( func );
+        _listOfMechanicalLoadsReal.push_back( currentLoad );
+        _listOfMechaFuncReal.push_back( func );
     };
 
     /**
@@ -166,11 +174,11 @@ class ListOfLoadsClass : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier formula
      */
-    void addLoad( const GenericMechanicalLoadPtr &currentLoad, const FormulaPtr &func ) {
+    void addLoad( const  MechanicalLoadRealPtr &currentLoad, const FormulaPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
-        _listOfMechanicalLoads.push_back( currentLoad );
-        _listOfMechaFun.push_back( func );
+        _listOfMechanicalLoadsReal.push_back( currentLoad );
+        _listOfMechaFuncReal.push_back( func );
     };
 
     /**
@@ -178,11 +186,48 @@ class ListOfLoadsClass : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function2d
      */
-    void addLoad( const GenericMechanicalLoadPtr &currentLoad, const Function2DPtr &func ) {
+    void addLoad( const  MechanicalLoadRealPtr &currentLoad, const Function2DPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
-        _listOfMechanicalLoads.push_back( currentLoad );
-        _listOfMechaFun.push_back( func );
+        _listOfMechanicalLoadsReal.push_back( currentLoad );
+        _listOfMechaFuncReal.push_back( func );
+    };
+
+      /**
+     * @brief Function d'ajout d'une charge mécanique
+     * @param currentLoad charge a ajouter a la sd
+     * @param func multiplier function
+     */
+    void addLoad( const MechanicalLoadFunctionPtr &currentLoad,
+                  const FunctionPtr &func = emptyRealFunction ) {
+        _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
+        _listOfMechanicalLoadsFunction.push_back( currentLoad );
+        _listOfMechaFuncFunction.push_back( func );
+    };
+
+    /**
+     * @brief Function d'ajout d'une charge mécanique
+     * @param currentLoad charge a ajouter a la sd
+     * @param func multiplier formula
+     */
+    void addLoad( const  MechanicalLoadFunctionPtr &currentLoad, const FormulaPtr &func ) {
+        _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
+        _listOfMechanicalLoadsFunction.push_back( currentLoad );
+        _listOfMechaFuncFunction.push_back( func );
+    };
+
+    /**
+     * @brief Function d'ajout d'une charge mécanique
+     * @param currentLoad charge a ajouter a la sd
+     * @param func multiplier function2d
+     */
+    void addLoad( const  MechanicalLoadFunctionPtr &currentLoad, const Function2DPtr &func ) {
+        _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
+        _listOfMechanicalLoadsFunction.push_back( currentLoad );
+        _listOfMechaFuncFunction.push_back( func );
     };
 
 #ifdef ASTER_HAVE_MPI
@@ -191,12 +236,12 @@ class ListOfLoadsClass : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
-    void addLoad( const ParallelMechanicalLoadPtr &currentLoad,
+    void addLoad( const ParallelMechanicalLoadRealPtr &currentLoad,
                   const FunctionPtr &func = emptyRealFunction ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
-        _listOfParallelMechanicalLoads.push_back( currentLoad );
-        _listOfParaMechaFun.push_back( func );
+        _listOfParallelMechanicalLoadsReal.push_back( currentLoad );
+        _listOfParaMechaFuncReal.push_back( func );
     };
 
     /**
@@ -204,11 +249,11 @@ class ListOfLoadsClass : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier formula
      */
-    void addLoad( const ParallelMechanicalLoadPtr &currentLoad, const FormulaPtr &func ) {
+    void addLoad( const ParallelMechanicalLoadRealPtr &currentLoad, const FormulaPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
-        _listOfParallelMechanicalLoads.push_back( currentLoad );
-        _listOfParaMechaFun.push_back( func );
+        _listOfParallelMechanicalLoadsReal.push_back( currentLoad );
+        _listOfParaMechaFuncReal.push_back( func );
     };
 
     /**
@@ -216,11 +261,49 @@ class ListOfLoadsClass : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function2d
      */
-    void addLoad( const ParallelMechanicalLoadPtr &currentLoad, const Function2DPtr &func ) {
+    void addLoad( const ParallelMechanicalLoadRealPtr &currentLoad, const Function2DPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
-        _listOfParallelMechanicalLoads.push_back( currentLoad );
-        _listOfParaMechaFun.push_back( func );
+        _listOfParallelMechanicalLoadsReal.push_back( currentLoad );
+        _listOfParaMechaFuncReal.push_back( func );
+    };
+
+    /**
+     * @brief Function d'ajout d'une charge mécanique
+     * @param currentLoad charge a ajouter a la sd
+     * @param func multiplier function
+     */
+    void addLoad( const ParallelMechanicalLoadFunctionPtr &currentLoad,
+                  const FunctionPtr &func = emptyRealFunction ) {
+        _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
+        _listOfParallelMechanicalLoadsFunction.push_back( currentLoad );
+        _listOfParaMechaFuncFunction.push_back( func );
+    };
+
+    /**
+     * @brief Function d'ajout d'une charge mécanique
+     * @param currentLoad charge a ajouter a la sd
+     * @param func multiplier formula
+     */
+    void addLoad( const ParallelMechanicalLoadFunctionPtr &currentLoad, const FormulaPtr &func ) {
+        _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
+        _listOfParallelMechanicalLoadsFunction.push_back( currentLoad );
+        _listOfParaMechaFuncFunction.push_back( func );
+    };
+
+    /**
+     * @brief Function d'ajout d'une charge mécanique
+     * @param currentLoad charge a ajouter a la sd
+     * @param func multiplier function2d
+     */
+    void addLoad( const ParallelMechanicalLoadFunctionPtr &currentLoad, const Function2DPtr &func )
+    {
+        _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
+        _listOfParallelMechanicalLoadsFunction.push_back( currentLoad );
+        _listOfParaMechaFuncFunction.push_back( func );
     };
 #endif /* ASTER_HAVE_MPI */
 
@@ -328,15 +411,31 @@ class ListOfLoadsClass : public DataStructure {
      * @brief Function de récupération de la liste des charges mécaniques
      * @return _listOfMechanicalLoads
      */
-    const ListMecaLoad &getListOfMechanicalLoads() const { return _listOfMechanicalLoads; };
+    const ListMecaLoadReal &getListOfMechanicalLoadsReal() const
+    { return _listOfMechanicalLoadsReal; };
+
+    /**
+     * @brief Function de récupération de la liste des charges mécaniques
+     * @return _listOfMechanicalLoads
+     */
+    const ListMecaLoadFunction &getListOfMechanicalLoadsFunction() const
+    { return _listOfMechanicalLoadsFunction; };
 
 #ifdef ASTER_HAVE_MPI
     /**
      * @brief Function de récupération de la liste des charges mécaniques
      * @return _listOfMechanicalLoads
      */
-    const ListParaMecaLoad &getListOfParallelMechanicalLoads() const {
-        return _listOfParallelMechanicalLoads;
+    const ListParaMecaLoadReal &getListOfParallelMechanicalLoadsReal() const {
+        return _listOfParallelMechanicalLoadsReal;
+    };
+
+    /**
+     * @brief Function de récupération de la liste des charges mécaniques
+     * @return _listOfMechanicalLoads
+     */
+    const ListParaMecaLoadFunction &getListOfParallelMechanicalLoadsFunction() const {
+        return _listOfParallelMechanicalLoadsFunction;
     };
 #endif /* ASTER_HAVE_MPI */
 
@@ -371,9 +470,11 @@ class ListOfLoadsClass : public DataStructure {
      * @return taille de _listOfMechanicalLoads + taille de _listOfDirichletBCs
      */
     int getNumberOfLoads() const {
-        return _listOfMechanicalLoads.size() +
+        return _listOfMechanicalLoadsReal.size() +
+               _listOfMechanicalLoadsFunction.size() +
 #ifdef ASTER_HAVE_MPI
-               _listOfParallelMechanicalLoads.size() +
+               _listOfParallelMechanicalLoadsReal.size() +
+               _listOfParallelMechanicalLoadsFunction.size() +
 #endif /* ASTER_HAVE_MPI */
                _listOfThermalLoads.size() +
                _listOfAcousticLoads.size() +

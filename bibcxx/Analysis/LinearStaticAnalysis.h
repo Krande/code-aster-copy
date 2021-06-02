@@ -42,21 +42,6 @@
 
 class LinearStaticAnalysisClass : public GenericAnalysis {
   private:
-    /** @typedef std::list de MechanicalLoad */
-    typedef std::list< GenericMechanicalLoadPtr > ListMecaLoad;
-    /** @typedef Iterateur sur une std::list de MechanicalLoad */
-    typedef ListMecaLoad::iterator ListMecaLoadIter;
-    /** @typedef std::list de DirichletBC */
-    typedef std::list< DirichletBCPtr > ListDiriBC;
-    /** @typedef Iterateur sur une std::list de DirichletBC */
-    typedef ListDiriBC::iterator ListDiriBCIter;
-#ifdef ASTER_HAVE_MPI
-    /** @typedef std::list de ParallelMechanicalLoad */
-    typedef std::list< ParallelMechanicalLoadPtr > ListParaMechaLoad;
-    /** @typedef Iterateur sur une std::list de ParallelMechanicalLoad */
-    typedef ListDiriBC::iterator ListParaMechaLoadIter;
-#endif /* ASTER_HAVE_MPI */
-
     /** @brief Modele */
     ModelPtr _model;
     /** @brief Champ de materiau a utiliser */

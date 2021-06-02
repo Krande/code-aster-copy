@@ -91,21 +91,39 @@ bool ListOfLoadsClass::build( ModelPtr model ) {
     {
         CommandSyntax cmdSt( "MECA_STATIQUE" );
         int pos = 0;
-        for ( const auto &curIter : _listOfMechanicalLoads ) {
+        for ( const auto &curIter : _listOfMechanicalLoadsReal ) {
             SyntaxMapContainer dict2;
             dict2.container["CHARGE"] = curIter->getName();
-            if ( _listOfMechaFun[pos].getName() != emptyRealFunction->getName() )
-                dict2.container["FONC_MULT"] = _listOfMechaFun[pos].getName();
+            if ( _listOfMechaFuncReal[pos].getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfMechaFuncReal[pos].getName();
+            ++pos;
+            listeExcit.push_back( dict2 );
+        }
+        pos = 0;
+        for ( const auto &curIter : _listOfMechanicalLoadsFunction ) {
+            SyntaxMapContainer dict2;
+            dict2.container["CHARGE"] = curIter->getName();
+            if ( _listOfMechaFuncFunction[pos].getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfMechaFuncFunction[pos].getName();
             ++pos;
             listeExcit.push_back( dict2 );
         }
 #ifdef ASTER_HAVE_MPI
         pos = 0;
-        for ( const auto &curIter : _listOfParallelMechanicalLoads ) {
+        for ( const auto &curIter : _listOfParallelMechanicalLoadsReal ) {
             SyntaxMapContainer dict2;
             dict2.container["CHARGE"] = curIter->getName();
-            if ( _listOfParaMechaFun[pos].getName() != emptyRealFunction->getName() )
-                dict2.container["FONC_MULT"] = _listOfParaMechaFun[pos].getName();
+            if ( _listOfParaMechaFuncReal[pos].getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfParaMechaFuncReal[pos].getName();
+            ++pos;
+            listeExcit.push_back( dict2 );
+        }
+        pos = 0;
+        for ( const auto &curIter : _listOfParallelMechanicalLoadsFunction ) {
+            SyntaxMapContainer dict2;
+            dict2.container["CHARGE"] = curIter->getName();
+            if ( _listOfParaMechaFuncFunction[pos].getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfParaMechaFuncFunction[pos].getName();
             ++pos;
             listeExcit.push_back( dict2 );
         }
@@ -174,11 +192,17 @@ std::vector< FiniteElementDescriptorPtr > ListOfLoadsClass::getFiniteElementDesc
 
     if( physic == Physics::Mechanics)
     {
-        for ( const auto &curIter : _listOfMechanicalLoads ) {
+        for ( const auto &curIter : _listOfMechanicalLoadsReal ) {
+            FEDesc.push_back( curIter->getFiniteElementDescriptor() );
+        }
+        for ( const auto &curIter : _listOfMechanicalLoadsFunction ) {
             FEDesc.push_back( curIter->getFiniteElementDescriptor() );
         }
 #ifdef ASTER_HAVE_MPI
-        for ( const auto &curIter : _listOfParallelMechanicalLoads ) {
+        for ( const auto &curIter : _listOfParallelMechanicalLoadsReal ) {
+            FEDesc.push_back( curIter->getFiniteElementDescriptor() );
+        }
+        for ( const auto &curIter : _listOfParallelMechanicalLoadsFunction ) {
             FEDesc.push_back( curIter->getFiniteElementDescriptor() );
         }
 #endif /* ASTER_HAVE_MPI */

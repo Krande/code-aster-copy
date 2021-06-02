@@ -20,7 +20,7 @@
 # person_in_charge: nicolas.sellenet@edf.fr
 
 from ..Cata.Language.SyntaxObjects import FactorKeyword
-from ..Objects import (GenericMechanicalLoad, ParallelMechanicalLoad,
+from ..Objects import (MechanicalLoadReal, ParallelMechanicalLoadReal,
                        ConnectionMesh)
 from ..Supervis import ExecuteCommand
 from .affe_modele import AFFE_MODELE
@@ -29,7 +29,7 @@ from ..Utilities import deprecate, force_list
 
 class MechanicalLoadDefinition(ExecuteCommand):
 
-    """Command that defines :class:`~code_aster.Objects.GenericMechanicalLoad`.
+    """Command that defines :class:`~code_aster.Objects.MechanicalLoadReal`.
     """
     command_name = "AFFE_CHAR_MECA"
     neumannLoads = ['PESANTEUR', 'ROTATION', 'FORCE_FACE', 'FORCE_ARETE', 'FORCE_CONTOUR', 'FORCE_INTERNE', 'PRE_SIGM', 'PRES_REP', 'EFFE_FOND', 'PRE_EPSI', 'FORCE_POUTRE', \
@@ -131,21 +131,21 @@ class MechanicalLoadDefinition(ExecuteCommand):
         l_neum = self._hasNeumannLoadings(keywords)
         l_diri = self._hasDirichletLoadings(keywords)
         if not model.getMesh().isParallel():
-            self._result = GenericMechanicalLoad(model)
+            self._result = MechanicalLoadReal(model)
         else :
             if l_neum:
                 if l_diri:
                     raise TypeError("Not allowed to mix up Dirichlet and Neumann loadings in the same parallel AFFE_CHAR_MECA")
                 else:
-                    self._result = GenericMechanicalLoad(model)
+                    self._result = MechanicalLoadReal(model)
             if self._hasOnlyDDL_IMPO(keywords):
-                self._result = GenericMechanicalLoad(model)
+                self._result = MechanicalLoadReal(model)
 
 
     def exec_(self, keywords):
         """Override default _exec in case of parallel load
         """
-        if isinstance(self._result, GenericMechanicalLoad):
+        if isinstance(self._result, MechanicalLoadReal):
             super(MechanicalLoadDefinition, self).exec_(keywords)
         else:
             model = keywords.pop("MODELE")
@@ -175,6 +175,6 @@ class MechanicalLoadDefinition(ExecuteCommand):
             keywords["MODELE"] = partialModel
             partialMechanicalLoad = AFFE_CHAR_MECA(**keywords)
             keywords["MODELE"] = model
-            self._result = ParallelMechanicalLoad(partialMechanicalLoad, model)
+            self._result = ParallelMechanicalLoadReal(partialMechanicalLoad, model)
 
 AFFE_CHAR_MECA = MechanicalLoadDefinition.run

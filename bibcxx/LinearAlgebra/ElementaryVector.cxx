@@ -72,7 +72,9 @@ ElementaryVectorClass::assembleVector( const BaseDOFNumberingPtr &currentNumerot
     cmdSt.define( dict );
     if ( !_corichRept->exists() ) {
         _listOfElementaryTerms->updateValuePointer();
-        for ( ASTERINTEGER i = 1; i <= int(_listOfLoads->getListOfMechanicalLoads().size()); ++i ) {
+        int size = _listOfLoads->getListOfMechanicalLoadsReal().size() +
+            _listOfLoads->getListOfMechanicalLoadsFunction().size();
+        for ( ASTERINTEGER i = 1; i <= size; ++i ) {
             std::string detr( "E" );
             std::string vectElem( ( *_listOfElementaryTerms )[i - 1].c_str() );
             vectElem.resize( 24, ' ' );
@@ -80,8 +82,9 @@ ElementaryVectorClass::assembleVector( const BaseDOFNumberingPtr &currentNumerot
             CALLO_CORICH( detr, vectElem, &i, &in );
         }
 #ifdef ASTER_HAVE_MPI
-        for ( ASTERINTEGER i = 1;
-                         i <= int(_listOfLoads->getListOfParallelMechanicalLoads().size()); ++i ) {
+        size = _listOfLoads->getListOfParallelMechanicalLoadsReal().size() +
+            _listOfLoads->getListOfParallelMechanicalLoadsFunction().size();
+        for ( ASTERINTEGER i = 1; i <= size; ++i ) {
             std::string detr( "E" );
             std::string vectElem( ( *_listOfElementaryTerms )[i - 1].c_str() );
             vectElem.resize( 24, ' ' );

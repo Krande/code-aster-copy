@@ -41,6 +41,7 @@
 #include "Numbering/FieldOnNodesDescription.h"
 #include "ParallelUtilities/AsterMPI.h"
 #include "PythonBindings/LogicalUnitManager.h"
+#include "Supervis/CommandSyntax.h"
 
 
 /**

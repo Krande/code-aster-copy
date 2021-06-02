@@ -19,7 +19,7 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import GenericMechanicalLoad
+from ..Objects import MechanicalLoadComplex
 from ..Supervis import ExecuteCommand
 from ..Utilities import deprecate, force_list
 from .affe_char_meca import MechanicalLoadDefinition
@@ -27,7 +27,7 @@ from .affe_char_meca import MechanicalLoadDefinition
 
 class MechanicalLoadComplexDefinition(ExecuteCommand):
     """Command that creates the
-    :class:`~code_aster.Objects.GenericMechanicalLoad`"""
+    :class:`~code_aster.Objects.MechanicalLoadComplex`"""
     command_name = "AFFE_CHAR_MECA_C"
 
     def compat_syntax(self, keywords):
@@ -40,7 +40,7 @@ class MechanicalLoadComplexDefinition(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        self._result = GenericMechanicalLoad(keywords["MODELE"])
+        self._result = MechanicalLoadComplex(keywords["MODELE"])
 
 
 AFFE_CHAR_MECA_C = MechanicalLoadComplexDefinition.run

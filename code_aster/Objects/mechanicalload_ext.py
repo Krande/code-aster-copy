@@ -19,36 +19,67 @@
 
 # person_in_charge: mathieu.courtois@edf.fr
 """
-:py:class:`GenericMechanicalLoad` --- Assignment of mechanical load
+:py:class:`MechanicalLoad` --- Assignment of mechanical load
 *******************************************************************
 """
 
 import aster
-from libaster import GenericMechanicalLoad
+from libaster import MechanicalLoadReal, MechanicalLoadFunction, MechanicalLoadComplex
 
 from ..Utilities import injector
 from .datastructure_ext import OnlyParallelObject
 
 try:
-    from libaster import ParallelMechanicalLoad
+    from libaster import ParallelMechanicalLoadReal
 
 except ImportError:
 
-    class ParallelMechanicalLoad(OnlyParallelObject):
+    class ParallelMechanicalLoadReal(OnlyParallelObject):
+        pass
+
+try:
+    from libaster import ParallelMechanicalLoadFunction
+
+except ImportError:
+
+    class ParallelMechanicalLoadFunction(OnlyParallelObject):
         pass
 
 
-@injector(GenericMechanicalLoad)
-class ExtendedGenericMechanicalLoad:
+@injector(MechanicalLoadReal)
+class ExtendedMechanicalLoadReal(object):
     cata_sdj = "SD.sd_char_meca.sd_char_meca"
 
     def __getinitargs__(self):
-        """Returns the argument required to reinitialize a GenericMechanicalLoad
+        """Returns the argument required to reinitialize a MechanicalLoadReal
         object during unpickling.
         """
         return (self.getName(), self.getModel())
 
+@injector(MechanicalLoadFunction)
+class ExtendedMechanicalLoadFunction(object):
+    cata_sdj = "SD.sd_char_meca.sd_char_meca"
 
-@injector(ParallelMechanicalLoad)
-class ExtendedGenericParallelMechanicalLoad:
+    def __getinitargs__(self):
+        """Returns the argument required to reinitialize a MechanicalLoadFunction
+        object during unpickling.
+        """
+        return (self.getName(), self.getModel())
+
+@injector(MechanicalLoadComplex)
+class ExtendedMechanicalLoadComplex(object):
+    cata_sdj = "SD.sd_char_meca.sd_char_meca"
+
+    def __getinitargs__(self):
+        """Returns the argument required to reinitialize a MechanicalLoadComplex
+        object during unpickling.
+        """
+        return (self.getName(), self.getModel())
+
+@injector(ParallelMechanicalLoadReal)
+class ExtendedParallelMechanicalLoadReal:
+    cata_sdj = "SD.sd_char_meca.sd_parallel_char_meca"
+
+@injector(ParallelMechanicalLoadFunction)
+class ExtendedParallelMechanicalLoadFunction:
     cata_sdj = "SD.sd_char_meca.sd_parallel_char_meca"

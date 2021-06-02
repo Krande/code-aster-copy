@@ -19,8 +19,9 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import (GenericMechanicalLoad, DirichletBC,
-                       ParallelMechanicalLoad, LinearStaticAnalysis)
+from ..Objects import ( MechanicalLoadReal, DirichletBC, MechanicalLoadFunction,
+                        ParallelMechanicalLoadReal, ParallelMechanicalLoadFunction,
+                        LinearStaticAnalysis)
 from ..Supervis import ExecuteCommand
 from ..Utilities import force_list, unsupported
 from .calc_champ import CALC_CHAMP
@@ -42,14 +43,16 @@ class MechanicalSolver(ExecuteCommand):
         if func !=  None:
             if isinstance(load, DirichletBC):
                 mechaSolv.addDirichletBC(load, func)
-            elif isinstance(load, (GenericMechanicalLoad, ParallelMechanicalLoad)):
+            elif isinstance(load, ( MechanicalLoadReal, MechanicalLoadFunction,
+                                ParallelMechanicalLoadReal, ParallelMechanicalLoadFunction )):
                 mechaSolv.addLoad(load, func)
             else:
                 assert False
         else:
             if isinstance(load, DirichletBC):
                 mechaSolv.addDirichletBC(load)
-            elif isinstance(load, (GenericMechanicalLoad, ParallelMechanicalLoad)):
+            elif isinstance(load, ( MechanicalLoadReal, MechanicalLoadFunction,
+                                ParallelMechanicalLoadReal, ParallelMechanicalLoadFunction )):
                 mechaSolv.addLoad(load)
             else:
                 assert False

@@ -46,7 +46,7 @@
 class ElementaryVectorClass : public DataStructure {
   private:
     /** @typedef std::list de MechanicalLoad */
-    typedef std::list< GenericMechanicalLoadPtr > ListMechanicalLoad;
+    typedef ListMecaLoadReal ListMechanicalLoad;
     /** @typedef Iterateur sur une std::list de MechanicalLoad */
     typedef ListMechanicalLoad::iterator ListMechanicalLoadIter;
 

@@ -264,18 +264,34 @@ ElementaryVectorPtr DiscreteProblemClass::buildElementaryMechanicalLoadsVector()
     if ( _study->getMaterialField() )
         dict.container["CHAM_MATER"] = _study->getMaterialField()->getName();
 
-    const ListMecaLoad listOfMechanicalLoad = _study->getListOfMechanicalLoads();
-    if ( listOfMechanicalLoad.size() != 0 ) {
+    const auto listOfMechanicalLoadReal = _study->getListOfMechanicalLoadsReal();
+    if ( listOfMechanicalLoadReal.size() != 0 ) {
         VectorString tmp;
-        for ( const auto curIter : listOfMechanicalLoad )
+        for ( const auto curIter : listOfMechanicalLoadReal )
+            tmp.push_back( curIter->getName() );
+        dict.container["CHARGE"] = tmp;
+    }
+
+    const auto listOfMechanicalLoadFunction = _study->getListOfMechanicalLoadsFunction();
+    if ( listOfMechanicalLoadFunction.size() != 0 ) {
+        VectorString tmp;
+        for ( const auto curIter : listOfMechanicalLoadFunction )
             tmp.push_back( curIter->getName() );
         dict.container["CHARGE"] = tmp;
     }
 #ifdef ASTER_HAVE_MPI
-    auto listParaMecaLoad = _study->getListOfParallelMechanicalLoads();
-    if ( listParaMecaLoad.size() != 0 ) {
+    auto listParaMecaLoadReal = _study->getListOfParallelMechanicalLoadsReal();
+    if ( listParaMecaLoadReal.size() != 0 ) {
         VectorString tmp;
-        for ( const auto curIter : listParaMecaLoad )
+        for ( const auto curIter : listParaMecaLoadReal )
+            tmp.push_back( curIter->getName() );
+        dict.container["CHARGE"] = tmp;
+    }
+
+    auto listParaMecaLoadFunction = _study->getListOfParallelMechanicalLoadsFunction();
+    if ( listParaMecaLoadFunction.size() != 0 ) {
+        VectorString tmp;
+        for ( const auto curIter : listParaMecaLoadFunction )
             tmp.push_back( curIter->getName() );
         dict.container["CHARGE"] = tmp;
     }
@@ -307,18 +323,34 @@ SyntaxMapContainer DiscreteProblemClass::computeMatrixSyntax( const std::string 
         throw std::runtime_error( "Material is empty" );
     dict.container["CHAM_MATER"] = _study->getMaterialField()->getName();
 
-    ListMecaLoad listMecaLoad = _study->getListOfMechanicalLoads();
-    if ( listMecaLoad.size() != 0 ) {
+    const auto listOfMechanicalLoadReal = _study->getListOfMechanicalLoadsReal();
+    if ( listOfMechanicalLoadReal.size() != 0 ) {
         VectorString tmp;
-        for ( const auto curIter : listMecaLoad )
+        for ( const auto curIter : listOfMechanicalLoadReal )
+            tmp.push_back( curIter->getName() );
+        dict.container["CHARGE"] = tmp;
+    }
+
+    const auto listOfMechanicalLoadFunction = _study->getListOfMechanicalLoadsFunction();
+    if ( listOfMechanicalLoadFunction.size() != 0 ) {
+        VectorString tmp;
+        for ( const auto curIter : listOfMechanicalLoadFunction )
             tmp.push_back( curIter->getName() );
         dict.container["CHARGE"] = tmp;
     }
 #ifdef ASTER_HAVE_MPI
-    auto listParaMecaLoad = _study->getListOfParallelMechanicalLoads();
-    if ( listParaMecaLoad.size() != 0 ) {
+    auto listParaMecaLoadReal = _study->getListOfParallelMechanicalLoadsReal();
+    if ( listParaMecaLoadReal.size() != 0 ) {
         VectorString tmp;
-        for ( const auto curIter : listParaMecaLoad )
+        for ( const auto curIter : listParaMecaLoadReal )
+            tmp.push_back( curIter->getName() );
+        dict.container["CHARGE"] = tmp;
+    }
+
+    auto listParaMecaLoadFunction = _study->getListOfParallelMechanicalLoadsFunction();
+    if ( listParaMecaLoadFunction.size() != 0 ) {
+        VectorString tmp;
+        for ( const auto curIter : listParaMecaLoadFunction )
             tmp.push_back( curIter->getName() );
         dict.container["CHARGE"] = tmp;
     }

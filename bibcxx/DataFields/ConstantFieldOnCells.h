@@ -606,7 +606,7 @@ template < class ValueType > class ConstantFieldOnCellsClass : public DataFieldC
 };
 
 /** @typedef ConstantFieldOnCellsRealClass Class d'une carte de double */
-typedef ConstantFieldOnCellsClass< double > ConstantFieldOnCellsRealClass;
+typedef ConstantFieldOnCellsClass< ASTERDOUBLE > ConstantFieldOnCellsRealClass;
 /** @typedef ConstantFieldOnCellsLongClass Class d'une carte de long */
 typedef ConstantFieldOnCellsClass< ASTERINTEGER > ConstantFieldOnCellsLongClass;
 /** @typedef ConstantFieldOnCellsComplexClass Class d'une carte de complexe */
@@ -614,7 +614,9 @@ typedef ConstantFieldOnCellsClass< ASTERCOMPLEX > ConstantFieldOnCellsComplexCla
 /** @typedef ConstantFieldOnCellsChar8Class Class d'une carte de char*8 */
 typedef ConstantFieldOnCellsClass< JeveuxChar8 > ConstantFieldOnCellsChar8Class;
 /** @typedef ConstantFieldOnCellsChar16Class Class d'une carte de char*16 */
-typedef ConstantFieldOnCellsClass< JeveuxChar8 > ConstantFieldOnCellsChar16Class;
+typedef ConstantFieldOnCellsClass< JeveuxChar16 > ConstantFieldOnCellsChar16Class;
+/** @typedef ConstantFieldOnCellsChar24Class Class d'une carte de char*16 */
+typedef ConstantFieldOnCellsClass< JeveuxChar24 > ConstantFieldOnCellsChar24Class;
 
 /**
  * @typedef ConstantFieldOnBaseMeshPtrReal
@@ -645,4 +647,11 @@ typedef boost::shared_ptr< ConstantFieldOnCellsChar8Class > ConstantFieldOnCells
  * @brief Pointeur intelligent vers un ConstantFieldOnCellsClass
  */
 typedef boost::shared_ptr< ConstantFieldOnCellsChar16Class > ConstantFieldOnCellsChar16Ptr;
+
+/**
+ * @typedef ConstantFieldOnBaseMeshPtrChar16 Definition d'une carte de char[24]
+ * @brief Pointeur intelligent vers un ConstantFieldOnCellsClass
+ */
+typedef boost::shared_ptr< ConstantFieldOnCellsChar24Class > ConstantFieldOnCellsChar24Ptr;
+
 #endif /* CONSTANTFIELDONCELLS_H_ */

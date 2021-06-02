@@ -57,18 +57,30 @@ template < class firstClass, typename... Args >
 void addMechanicalLoadToInterface( py::class_< firstClass, Args... > myInstance ) {
     typedef firstClass myClass;
 
-    void ( myClass::*c5 )( const GenericMechanicalLoadPtr & ) = &myClass::addLoad;
-    void ( myClass::*c6 )( const GenericMechanicalLoadPtr &currentLoad, const FunctionPtr &func ) =
+    void ( myClass::*c5 )( const MechanicalLoadRealPtr & ) = &myClass::addLoad;
+    void ( myClass::*c6 )( const MechanicalLoadRealPtr &currentLoad, const FunctionPtr &func ) =
         &myClass::addLoad;
-    void ( myClass::*c7 )( const GenericMechanicalLoadPtr &currentLoad, const FormulaPtr &func ) =
+    void ( myClass::*c7 )( const MechanicalLoadRealPtr &currentLoad, const FormulaPtr &func ) =
         &myClass::addLoad;
-    void ( myClass::*c8 )( const GenericMechanicalLoadPtr &currentLoad, const Function2DPtr &func )
+    void ( myClass::*c8 )( const MechanicalLoadRealPtr &currentLoad, const Function2DPtr &func )
+        = &myClass::addLoad;
+
+    void ( myClass::*c9 )( const MechanicalLoadFunctionPtr & ) = &myClass::addLoad;
+    void ( myClass::*c10 )( const MechanicalLoadFunctionPtr &currentLoad, const FunctionPtr &func )=
+        &myClass::addLoad;
+    void ( myClass::*c11 )( const MechanicalLoadFunctionPtr &currentLoad, const FormulaPtr &func ) =
+        &myClass::addLoad;
+    void ( myClass::*c12 )( const MechanicalLoadFunctionPtr &currentLoad, const Function2DPtr &func)
         = &myClass::addLoad;
 
     myInstance.def( "addLoad", c5 );
     myInstance.def( "addLoad", c6 );
     myInstance.def( "addLoad", c7 );
     myInstance.def( "addLoad", c8 );
+    myInstance.def( "addLoad", c9 );
+    myInstance.def( "addLoad", c10 );
+    myInstance.def( "addLoad", c11 );
+    myInstance.def( "addLoad", c12 );
 };
 
 #ifdef ASTER_HAVE_MPI
@@ -77,18 +89,37 @@ void
 addParallelMechanicalLoadToInterface( py::class_< firstClass, Args... > myInstance ) {
     typedef firstClass myClass;
 
-    void ( myClass::*c9 )( const ParallelMechanicalLoadPtr & ) = &myClass::addLoad;
-    void ( myClass::*c10 )( const ParallelMechanicalLoadPtr &currentLoad, const FunctionPtr &func )=
+    void ( myClass::*c9 )( const ParallelMechanicalLoadRealPtr & ) = &myClass::addLoad;
+    void ( myClass::*c10 )( const ParallelMechanicalLoadRealPtr &currentLoad,
+                            const FunctionPtr &func )=
         &myClass::addLoad;
-    void ( myClass::*c11 )( const ParallelMechanicalLoadPtr &currentLoad, const FormulaPtr &func ) =
+    void ( myClass::*c11 )( const ParallelMechanicalLoadRealPtr &currentLoad,
+                            const FormulaPtr &func ) =
         &myClass::addLoad;
-    void ( myClass::*c12 )( const ParallelMechanicalLoadPtr &currentLoad, const Function2DPtr &func)
+    void ( myClass::*c12 )( const ParallelMechanicalLoadRealPtr &currentLoad,
+                            const Function2DPtr &func)
         = &myClass::addLoad;
+
+    void ( myClass::*c13 )( const ParallelMechanicalLoadFunctionPtr & ) = &myClass::addLoad;
+    void ( myClass::*c14 )( const ParallelMechanicalLoadFunctionPtr &currentLoad,
+                            const FunctionPtr &func )=
+        &myClass::addLoad;
+    void ( myClass::*c15 )( const ParallelMechanicalLoadFunctionPtr &currentLoad,
+                            const FormulaPtr &func ) =
+        &myClass::addLoad;
+    void ( myClass::*c16 )( const ParallelMechanicalLoadFunctionPtr &currentLoad,
+                            const Function2DPtr &func)
+        = &myClass::addLoad;
+
 
     myInstance.def( "addLoad", c9 );
     myInstance.def( "addLoad", c10 );
     myInstance.def( "addLoad", c11 );
     myInstance.def( "addLoad", c12 );
+    myInstance.def( "addLoad", c13 );
+    myInstance.def( "addLoad", c14 );
+    myInstance.def( "addLoad", c15 );
+    myInstance.def( "addLoad", c16 );
 };
 #endif /* ASTER_HAVE_MPI */
 

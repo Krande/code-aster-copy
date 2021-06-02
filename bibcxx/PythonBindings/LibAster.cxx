@@ -133,6 +133,7 @@
 #include "PythonBindings/TransientResultInterface.h"
 #include "PythonBindings/TurbulentSpectrumInterface.h"
 #include "PythonBindings/UnitaryThermalLoadInterface.h"
+#include "PythonBindings/UnitaryMechanicalLoadInterface.h"
 #include "PythonBindings/VariantModalBasisInterface.h"
 #include "PythonBindings/VariantStiffnessMatrixInterface.h"
 #include "PythonBindings/XfemCrackInterface.h"
@@ -233,6 +234,7 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportAcousticLoadToPython();
     exportDirichletBCToPython();
     exportMechanicalLoadToPython();
+    exportUnitaryMechanicalLoadToPython();
     exportPhysicalQuantityToPython();
     exportThermalLoadToPython();
     exportUnitaryThermalLoadToPython();

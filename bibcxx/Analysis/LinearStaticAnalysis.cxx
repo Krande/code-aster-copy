@@ -38,13 +38,13 @@ LinearStaticAnalysisClass::LinearStaticAnalysisClass(
     const ModelPtr &model, const MaterialFieldPtr &mater,
     const ElementaryCharacteristicsPtr &cara )
     : _model( model ), _materialField( mater ), _linearSolver( BaseLinearSolverPtr() ),
-      _timeStep( TimeStepperPtr( new TimeStepperClass() ) ),
-      _study( new StudyDescriptionClass( _model, _materialField, cara ) ) {
+      _timeStep( boost::make_shared< TimeStepperClass >()  ),
+      _study( boost::make_shared< StudyDescriptionClass >( _model, _materialField, cara ) ) {
     _timeStep->setValues( VectorReal( 1, 0. ) );
 };
 
 ElasticResultPtr LinearStaticAnalysisClass::execute() {
-    ElasticResultPtr resultC( new ElasticResultClass() );
+    ElasticResultPtr resultC( boost::make_shared< ElasticResultClass >() );
 
     _study->getCodedMaterial()->allocate(true);
 
@@ -56,7 +56,7 @@ ElasticResultPtr LinearStaticAnalysisClass::execute() {
         resultC->allocate( _timeStep->size() );
 
     // Define the discrete problem
-    DiscreteProblemPtr dProblem( new DiscreteProblemClass( _study ) );
+    DiscreteProblemPtr dProblem( boost::make_shared< DiscreteProblemClass >( _study ) );
 
     if ( _model->getMesh()->isParallel() ) {
         if ( !_linearSolver->isHPCCompliant() )
