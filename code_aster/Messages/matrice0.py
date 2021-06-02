@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,11 +62,6 @@ cata_msg = {
 
     11: _("""
  Pour calculer AMOR_MECA, il faut avoir calculé RIGI_MECA et MASS_MECA auparavant (dans le même appel).
-"""),
-
-    12: _("""
- Une des charges renseignées pour l'assemblage des vecteurs est déjà présente dans le mot-clé
- CHARGE définissant les conditions de Dirichlet. Il est interdit de renseigner plus d'une fois la même charge.
 """),
 
     13: _("""

@@ -21,7 +21,7 @@
 #=======================================================================
 # SDLL158A                 COMMANDES                            24/05/21
 # VALIDATION DES PARAMETRES MODAUX DE POUTRE
-# PROBLEME 1 : BASE DE RITZ CALCULEE AVEC METHODE DE CRAIG-BAMPTON 
+# PROBLEME 1 : BASE DE RITZ CALCULEE AVEC METHODE DE CRAIG-BAMPTON
 # SANS MODE DE CORPS RIGIDE
 # MODELISATION : 'POU_D_E'
 #=======================================================================
@@ -37,12 +37,12 @@ MODELE = AFFE_MODELE(
          AFFE=(
                 _F(GROUP_MA="Poutre", PHENOMENE="MECANIQUE", MODELISATION="POU_D_E",),
               ),
-         )    
+         )
 
 MAT = DEFI_MATERIAU(ELAS=_F(E=2.1e11, NU=0.3, RHO=7800.0,),)
 
-CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL, 
-                      MODELE=MODELE, 
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL,
+                      MODELE=MODELE,
                       AFFE=_F(GROUP_MA="Poutre", MATER=MAT,),
                       )
 
@@ -53,7 +53,7 @@ CARA = AFFE_CARA_ELEM(MODELE=MODELE,
                                 VALE=(50e-3),
                                ),
                      )
-    
+
 #*****************************************************
 # Calcul de la base modale de la poutre apuyée-apuyée
 #*****************************************************
@@ -63,7 +63,7 @@ CHARG_BM = AFFE_CHAR_MECA(MODELE=MODELE,
                                     _F(GROUP_NO="C", DY=0.0,),
                                    ),
                          )
-    
+
 ASSEMBLAGE(MODELE=MODELE,
            CHARGE=CHARG_BM,
            CHAM_MATER=CHMAT,
@@ -102,10 +102,10 @@ IMPR_TABLE(TABLE=LIMODE0,
 '''
 for i in range(len(modes0.NUME_ORDRE)):
    print(modes0.NUME_ORDRE[i])
-   print(modes0.FREQ[i]) 
+   print(modes0.FREQ[i])
    print(modes0.MASS_EFFE_DY[i])
-   print(modes0.MASS_EFFE_UN_DY[i])  
-   print(modes0.FACT_PARTICI_DY[i]) 
+   print(modes0.MASS_EFFE_UN_DY[i])
+   print(modes0.FACT_PARTICI_DY[i])
 '''
 
 
@@ -121,7 +121,6 @@ CHARGE = AFFE_CHAR_MECA(
     ),
 )
 
-
 ASSEMBLAGE(
     MODELE=MODELE,
     CHARGE=CHARGE,
@@ -131,7 +130,7 @@ ASSEMBLAGE(
     MATR_ASSE=(_F(MATRICE=CO("MATRRIGI"), OPTION="RIGI_MECA"),
                _F(MATRICE=CO("MATRMASS"), OPTION="MASS_MECA"),
               ),
-    VECT_ASSE=(_F(VECTEUR=CO("VECTASS"), OPTION="CHAR_MECA", CHARGE=CHARGE),),
+    VECT_ASSE=(_F(VECTEUR=CO("VECTASS"), OPTION="CHAR_MECA"),),
 )
 
 
@@ -154,12 +153,12 @@ MODE_STA = MODE_STATIQUE(
 # Création de la base de Ritz contenant les modes dynamiques et relèvements statiques
 MODES_1 = DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES_R),
                                  _F(MODE_INTF=MODE_STA),
-                                ), 
+                                ),
                            NUME_REF=NUME,
                            )
 
 # Normalistion des modes
-MODES_1 = NORM_MODE(reuse=MODES_1, MODE=MODES_1, 
+MODES_1 = NORM_MODE(reuse=MODES_1, MODE=MODES_1,
                     MASSE=MATRMASS, RAIDE=MATRRIGI, NORME="MASS_GENE",
                    )
 
@@ -180,18 +179,18 @@ MODES_2 = CALC_MODES(
     MATR_RIGI=RIGIDGE1,
     MATR_MASS=MASSEGE1,
     OPTION="PLUS_PETITE",
-    NORM_MODE=_F(NORME="MASS_GENE",), 
+    NORM_MODE=_F(NORME="MASS_GENE",),
     CALC_FREQ=_F(NMAX_FREQ=(Nb_modes),),
     VERI_MODE=_F(STOP_ERREUR="NON", STURM="NON",),
     )
 
 # Restitution des modes_gene
-MODES_PH=REST_GENE_PHYS(RESU_GENE=MODES_2, 
+MODES_PH=REST_GENE_PHYS(RESU_GENE=MODES_2,
                         TOUT_ORDRE='OUI',
                         NOM_CHAM='DEPL',);
 
 # Normalisation des modes et calcul des facteurs de participation et masses effectives
-MODES_PH = NORM_MODE( MODE=MODES_PH, reuse=MODES_PH,MASSE=MATRMASS, NORME="MASS_GENE" )  
+MODES_PH = NORM_MODE( MODE=MODES_PH, reuse=MODES_PH,MASSE=MATRMASS, NORME="MASS_GENE" )
 
 # Extraction des 5 premiers modes
 MODES_2=EXTR_MODE(FILTRE_MODE=_F(MODE=MODES_PH,
@@ -203,7 +202,7 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                    NUME_MODE=1,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=MODES_2,
-                   VALE_CALC=5.660047119622371, 
+                   VALE_CALC=5.660047119622371,
                    VALE_REFE=modes0.FREQ[0],
                    CRITERE='RELATIF',
                    PRECISION=0.001,),
