@@ -571,4 +571,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 #       AVEC MATRICE_DISTRIBUEE
 #----------------------------------------------------------
 # REALISE DANS LE FICHIER COM2
-FIN(PROC0='NON')
+FIN()

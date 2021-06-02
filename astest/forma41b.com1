@@ -35,4 +35,4 @@ RESUSEC=THER_NON_LINE(MODELE=MODTHER,
                       INCREMENT=_F(LIST_INST=LISTARCH,),
                       ETAT_INIT=_F(VALE=120,),);
 
-FIN(PROC0='NON')
+FIN()

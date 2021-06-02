@@ -20,6 +20,7 @@
 from ..Utilities import _
 
 cata_msg = {
+    1 : _("""<INFO> Activation du mode parallélisme distribué."""),
 
     2 : _("""
 Les commandes DEBUT et POURSUITE doivent être appelées une fois et une seule.

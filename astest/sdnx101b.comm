@@ -849,4 +849,4 @@ RESUGLO1=REST_COND_TRAN(  RESULTAT=EVOL,
                           TOUT_CHAM='OUI',
                                         )
 
-FIN(PROC0="NON")
+FIN()

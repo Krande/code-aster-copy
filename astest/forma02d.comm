@@ -403,4 +403,4 @@ TEST_RESU (CHAM_ELEM=(_F(CHAM_GD        = MINABSAB,
                          ),)
 
 
-FIN(PROC0="NON")
+FIN()

@@ -24,6 +24,7 @@
 *********************************************************
 """
 
+
 def injector(boost_class):
     """Decorator to inject methods into boost objects.
 
@@ -38,16 +39,28 @@ def injector(boost_class):
     Returns:
         class: Decorated class.
     """
+
     def decorated(cls):
         for parent in reversed(cls.mro()):
             if parent is object:
                 continue
             for name, attr in parent.__dict__.items():
                 if name.startswith("__"):
-                    if name not in ("__call__", "__getattr__", "__getinitargs__",
-                                    "__getitem__", "__getstate__",
-                                    "__getstate_manages_dict__", "__len__",
-                                    "__setstate__", "__add__", "__mult__", "__iadd__"):
+                    if name not in (
+                        "__add__",
+                        "__call__",
+                        "__getattr__",
+                        "__getinitargs__",
+                        "__getitem__",
+                        "__getstate__",
+                        "__getstate_manages_dict__",
+                        "__iadd__",
+                        "__init__",
+                        "__len__",
+                        "__mult__",
+                        "__setstate__",
+                    ):
                         continue
                 setattr(boost_class, name, attr)
+
     return decorated

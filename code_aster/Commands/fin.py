@@ -35,8 +35,8 @@ is equivalent.
 import sys
 import libaster
 
-from ..Supervis import ExecuteCommand, saveObjects, FinalizeOptions as Options
-from ..Utilities import ExecutionParameter, logger
+from ..Supervis import ExecuteCommand, saveObjects, FinalizeOptions
+from ..Utilities import ExecutionParameter, Options, haveMPI, logger
 
 
 class Closer(ExecuteCommand):
@@ -46,13 +46,21 @@ class Closer(ExecuteCommand):
     _exit = None
 
     def compat_syntax(self, keywords):
-        """Consume argument to force to exit after the command.
+        """Adapt syntax before checking syntax.
+
+        Change defaults depending on the parallel execution context and consume
+        argument to force to exit after the command.
 
         Arguments:
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
         self._exit = keywords.pop("exit", False)
+        # if PROC0 is not provided by the user
+        if not keywords.get("PROC0") and haveMPI():
+            option = ExecutionParameter().option
+            if option & Options.HPCMode or not option & Options.LastStep:
+                keywords["PROC0"] = "NON"
         # removed keyword
         keywords.pop("FORMAT_HDF", None)
 
@@ -62,13 +70,13 @@ class Closer(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        self._options = Options.SaveBase
+        self._options = FinalizeOptions.SaveBase
         if keywords.get("INFO_RESU") == "OUI":
-            self._options |= Options.InfoResu
+            self._options |= FinalizeOptions.InfoResu
         if keywords.get("RETASSAGE") == "OUI":
-            self._options |= Options.Repack
+            self._options |= FinalizeOptions.Repack
         if keywords.get("PROC0") == "OUI":
-            self._options |= Options.OnlyProc0
+            self._options |= FinalizeOptions.OnlyProc0
         super().exec_(keywords)
 
     def _call_oper(self, dummy):

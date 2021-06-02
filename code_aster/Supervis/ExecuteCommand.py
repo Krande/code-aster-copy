@@ -854,7 +854,7 @@ def get_user_name(command, filename, lineno, strict=True):
             mat = re_name.search(line)
             if mat:
                 # str() because of linecache in ipython, remove it in py3
-                return str(mat.group("name"))
+                return str(mat.group("name")).strip()
             break
 
     return ""

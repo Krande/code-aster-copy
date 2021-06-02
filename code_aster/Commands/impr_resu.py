@@ -22,13 +22,26 @@
 from ..Cata.Syntax import _F
 from ..Messages import UTMESS
 from ..Supervis import ExecuteCommand
-from ..Utilities import force_list
+from ..Utilities import ExecutionParameter, Options, force_list
 
 
 class ImprResu(ExecuteCommand):
     """Command IMPR_RESU.
     """
     command_name = "IMPR_RESU"
+
+    def compat_syntax(self, keywords):
+        """Adapt syntax before checking syntax.
+
+        Change defaults depending on the parallel execution context.
+
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords, changed
+                in place.
+        """
+        # if PROC0 is not provided by the user
+        if not keywords.get("PROC0") and ExecutionParameter().option & Options.HPCMode:
+            keywords["PROC0"] = "NON"
 
     def add_result_name(self, resu):
         """Try to add NOM_RESU_MED keyword if not set.

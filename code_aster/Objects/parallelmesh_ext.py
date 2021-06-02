@@ -23,7 +23,8 @@
 ************************************************************************
 """
 
-from ..Utilities import injector, logger
+from ..Utilities import ExecutionParameter, Options, injector, logger
+from ..Messages import UTMESS
 from .datastructure_ext import OnlyParallelObject
 
 try:
@@ -50,6 +51,13 @@ except ImportError:
 @injector(ParallelMesh)
 class ExtendedParallelMesh:
     cata_sdj = "SD.sd_maillage.sd_maillage"
+    orig_init = ParallelMesh.__init__
+
+    def __init__(self):
+        self.orig_init()
+        if not ExecutionParameter().option & Options.HPCMode:
+            UTMESS("I", "SUPERVIS_1")
+            ExecutionParameter().enable(Options.HPCMode)
 
     def readMedFile(self, filename, partitioned=False, verbose=0):
         """Read a MED file containing a mesh and eventually partition it
