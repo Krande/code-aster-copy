@@ -19,8 +19,7 @@
 
 # person_in_charge: mathieu.courtois at edf.fr
 
-"""from .logger import DEBUG, ERROR, INFO, WARNING, logger
-
+"""
 :py:mod:`ExecutionParameter` --- Management of the execution parameters
 ***********************************************************************
 
@@ -342,14 +341,17 @@ class ExecutionParameter(metaclass=Singleton):
         parser.add_argument('--continue', dest='Continue',
             action='store_const', const=1, default=0,
             help="turn on to continue a previous execution")
+        parser.add_argument('--last', dest='LastStep',
+            action='store_const', const=1, default=0,
+            help="to be used for the last step of a study")
         parser.add_argument('--use_legacy_mode', dest='UseLegacyMode',
             action='store', default=1,
             help="use (=1) or not (=0) the legacy mode for macro-commands "
                  "results. (default: 1)")
+
         parser.add_argument('--deprecated', dest='ShowDeprecated',
             action='store_const', const=1, default=1,
             help="turn on deprecation warnings")
-
         parser.add_argument('--no-deprecated', dest='ShowDeprecated',
             action='store_const', const=0,
             help="turn off deprecation warnings (default: on)")

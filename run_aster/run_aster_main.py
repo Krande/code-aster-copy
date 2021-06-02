@@ -316,7 +316,7 @@ def main(argv=None):
     try:
         if need_split or need_mpiexec:
             run_aster = osp.join(ROOT, "bin", "run_aster")
-            expdir = create_temporary_dir(dir=os.getenv("HOME", "/tmp"))
+            expdir = create_temporary_dir(dir=os.getenv("HOME", "/tmp") + "/.tmp_run_aster")
             for exp_i in split_export(export):
                 fexp = osp.join(expdir, "export." + str(exp_i.get("step")))
                 exp_i.write_to(fexp)

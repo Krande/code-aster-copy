@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,24 @@ Definition of options/flags for execution.
 
 class Options(object):
     """Enumerator for execution options.
+
+    Some options are enabled and/or disabled from command line options.
+    Some others are internally used by programming.
+
+    - *Debug*: Debug mode.
+    - *Abort*: Abort instead of raising an exception in case of errors.
+    - *Continue*: Restart from an existing database.
+    - *StrictUnpickling*: Fail when an object can not be unpickled.
+    - *UseLegacyMode*: Create 'CO' objects instead of namedtuple.
+    - *ShowDeprecated*: Show deprecation warnings.
+    - *ShowChildCmd*: Show children commands called in depth.
+    - *TestMode*: Testcase mode.
+    - *SlaveMode*: Execution embedded by another program (do not abort, do not
+      exit in case of time limit...).
+    - *LastStep*: Last step of a study, database won't be reloaded from the
+      temporary directory
+    - *HPCMode*: High Performance Computing mode, parallel computing using
+      domain decomposition.
     """
     Null = 0x0000
     Debug = 0x0001
@@ -36,6 +54,9 @@ class Options(object):
     ShowChildCmd = 0x0040
     TestMode = 0x0080
     SlaveMode = 0x0100
+    LastStep = 0x0200
+    HPCMode = 0x0400
+    # do not forget to document each new option
 
     @classmethod
     def by_name(cls, name):

@@ -55,6 +55,7 @@ def create_temporary_dir(dir):
     Returns:
         str: Path of the directory.
     """
+    os.makedirs(dir, exist_ok=True)
     return tempfile.mkdtemp(prefix="run_aster_", dir=dir)
 
 
@@ -254,6 +255,8 @@ class RunAster:
         cmd.append(commfile)
         if self._test:
             cmd.append("--test")
+        if self._last:
+            cmd.append("--last")
         # copy datafiles only the first time because all share the same workdir
         if idx == 0:
             for obj in self.export.datafiles:
