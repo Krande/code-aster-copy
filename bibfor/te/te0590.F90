@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -211,7 +211,7 @@ character(len=16), intent(in) :: option, nomte
                     option, zi(imate), zk16(icompo), lgpg, zr(icarcr),&
                     zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), angl_naut,&
                     zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), &
-                    lMatr, lVect, &
+                    lMatr, lVect, lSigm, lVari,&
                     zr(ivectu), zr(imatuu), matsym, codret)
     else if (defo_comp .eq. 'SIMO_MIEHE') then
 !

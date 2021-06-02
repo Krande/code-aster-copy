@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ interface
                       option, mate, compor, lgpg, carcri,&
                       instm, instp, ddlm, ddld, angmas,&
                       sigm, vim, sigp, vip,&
-                      lMatr, lVect, &
+                      lMatr, lVect, lSigm, lVari,&
                       vect, matr, matsym, codret)
         integer :: lgpg
         integer :: npg
@@ -59,7 +59,7 @@ interface
         aster_logical :: rigi
         real(kind=8) :: vect(*)
         real(kind=8) :: matr(*)
-        aster_logical :: matsym, lMatr, lVect
+        aster_logical :: matsym, lMatr, lVect, lSigm, lVari
         integer :: codret
     end subroutine nifilg
 end interface

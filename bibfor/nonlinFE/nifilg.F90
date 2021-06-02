@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine nifilg(ndim, nnod, nnog, nnop, npg,&
                   option, mate, compor, lgpg, carcri,&
                   instm, instp, ddlm, ddld, angmas,&
                   sigm, vim, sigp, vip,&
-                  lMatr, lVect, &
+                  lMatr, lVect, lSigm, lVari,&
                   vect, matr, matsym, codret)
 !
 use Behaviour_type
@@ -50,7 +50,7 @@ implicit none
 #include "blas/ddot.h"
 #include "blas/dscal.h"
 !
-aster_logical :: matsym, lMatr, lVect
+aster_logical :: matsym, lMatr, lVect, lSigm, lVari
 integer :: ndim, nnod, nnog, nnop, npg, iw, idff1, lgpg
 integer :: mate
 integer :: vu(3, 27), vg(27), vp(27)
@@ -255,11 +255,11 @@ character(len=16) :: compor(*), option
 !
         call prelog(ndim, lgpg, vim(1, g), gn, lamb,&
                     logl, ftm, ftp, epsml, deps,&
-                    tn, lVect, cod(g))
+                    tn, lSigm, cod(g))
 !
         if (cod(g) .ne. 0) then
             codret = cod(g)
-            ASSERT(lVect)
+            ASSERT(lSigm)
             goto 999
         endif
 !
@@ -279,7 +279,7 @@ character(len=16) :: compor(*), option
             sigm_ldc(ia) = sigm(ia,g)
         end do
 !
-        call poslog(lVect, lMatr, tn, tp, ftm,&
+        call poslog(lVari, lMatr, tn, tp, ftm,&
                     lgpg, vip(1, g), ndim, ftp, g,&
                     dtde, sigm_ldc, .false._1, 'RIGI', mate,&
                     instp, angmas, gn, lamb, logl,&
@@ -287,25 +287,27 @@ character(len=16) :: compor(*), option
 !
         if (cod(g) .ne. 0) then
             codret = cod(g)
-            ASSERT(lVect)
             goto 999
         endif
-!
-! - CALCUL DE LA FORCE INTERIEURE ET DES CONTRAINTES DE CAUCHY
-        if (lVect) then
-            call dscal(2*ndim, exp(gp), sigp_ldc, 1)
-            call dcopy(2*ndim, sigp_ldc, 1, taup, 1)
+
 !
 ! - CONTRAINTE HYDROSTATIQUE ET DEVIATEUR
-            tauhy = (taup(1)+taup(2)+taup(3))/3.d0
-            do ia = 1, 6
-                taudv(ia) = taup(ia) - tauhy*kr(ia)
-            end do
-!
+        call dscal(2*ndim, exp(gp), sigp_ldc, 1)
+        call dcopy(2*ndim, sigp_ldc, 1, taup, 1)
+        tauhy = (taup(1)+taup(2)+taup(3))/3.d0
+        do ia = 1, 6
+            taudv(ia) = taup(ia) - tauhy*kr(ia)
+        end do
+
+! ----- Evaluate stress
+        if (lSigm) then
             do ia = 1, 2*ndim
                 sigp(ia,g) = (taudv(ia) + pp*bb*kr(ia))/jp
             end do
             sigp(2*ndim+1,g) = (tauhy - pp*bb)/jp
+        endif
+
+        if (lVect) then
 !
 ! - VECTEUR FINT:U
             do na = 1, nnod

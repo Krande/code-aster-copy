@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -103,6 +103,7 @@ subroutine poslog(resi, rigi, tn, tp, fm,&
     pk2p = 0.d0
     codret = 0
     sig = 0.d0
+    sigp = 0.d0
 !
 !     CALCUL DES PRODUITS SYMETR. DE F PAR N
     if (resi) then
