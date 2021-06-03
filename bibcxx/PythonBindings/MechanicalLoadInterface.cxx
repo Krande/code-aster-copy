@@ -40,6 +40,8 @@ void exportMechanicalLoadToPython() {
                   &initFactoryPtr< MechanicalLoadRealClass, std::string, ModelPtr >))
         .def( "getFiniteElementDescriptor",
               &MechanicalLoadRealClass::getFiniteElementDescriptor )
+        .def( "hasLoad", &MechanicalLoadRealClass::hasLoad )
+        .def( "updateValuePointers", &MechanicalLoadRealClass::updateValuePointers)
         .def( "getModel", &MechanicalLoadRealClass::getModel)
         .def( "getMesh", &MechanicalLoadRealClass::getMesh)
         .def( "getTable", &ListOfTablesClass::getTable, R"(
@@ -63,6 +65,8 @@ Returns:
                   &initFactoryPtr<  MechanicalLoadFunctionClass, std::string, ModelPtr >))
         .def( "getFiniteElementDescriptor",
               & MechanicalLoadFunctionClass::getFiniteElementDescriptor )
+        .def( "hasLoad", &MechanicalLoadFunctionClass::hasLoad )
+        .def( "updateValuePointers", &MechanicalLoadFunctionClass::updateValuePointers)
         .def( "getModel", & MechanicalLoadFunctionClass::getModel)
         .def( "getMesh", & MechanicalLoadFunctionClass::getMesh)
         .def( "getTable", &ListOfTablesClass::getTable, R"(
@@ -87,6 +91,8 @@ Returns:
                   &initFactoryPtr<  MechanicalLoadComplexClass, std::string, ModelPtr >))
         .def( "getFiniteElementDescriptor",
               & MechanicalLoadComplexClass::getFiniteElementDescriptor )
+        .def( "hasLoad", &MechanicalLoadComplexClass::hasLoad )
+        .def( "updateValuePointers", &MechanicalLoadComplexClass::updateValuePointers)
         .def( "getModel", & MechanicalLoadComplexClass::getModel)
         .def( "getMesh", & MechanicalLoadComplexClass::getMesh)
         .def( "getTable", &ListOfTablesClass::getTable, R"(

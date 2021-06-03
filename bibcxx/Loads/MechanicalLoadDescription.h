@@ -87,8 +87,8 @@ class MechanicalLoadDescriptionClass : public DataStructure
     ConstantFieldOnCellsTypePtr _fl102;
     /** @brief Carte '.FORNO' */
     ConstantFieldOnCellsTypePtr _forno;
-    /** @brief Carte '.IMPE' */
-    ConstantFieldOnCellsTypePtr _impe;
+    /** @brief Carte '.IMPED' */
+    ConstantFieldOnCellsTypePtr _imped;
     /** @brief Carte '.PESAN' */
     ConstantFieldOnCellsTypePtr _pesan;
     /** @brief Carte '.PRESS' */
@@ -114,7 +114,7 @@ class MechanicalLoadDescriptionClass : public DataStructure
      * @brief Constructor
      */
     MechanicalLoadDescriptionClass( const std::string name, const ModelPtr &currentModel )
-        : DataStructure( name, 14, "CHAR_CHME" ),
+        : DataStructure( name, 13, "CHAR_CHME" ),
             _model( currentModel ),
             _temperatureField( getName() + ".TEMPE.TEMP" ),
             _modelName( getName() + ".MODEL.NOMO" ),
@@ -137,7 +137,7 @@ class MechanicalLoadDescriptionClass : public DataStructure
             _fl101(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".FL101", _FEDesc ) ),
             _fl102(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".FL102", _FEDesc ) ),
             _forno(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".FORNO", _FEDesc ) ),
-            _impe(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".IMPE", _FEDesc ) ),
+            _imped(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".IMPED", _FEDesc ) ),
             _pesan(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".PESAN", _FEDesc ) ),
             _press(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".PRESS", _FEDesc ) ),
             _rotat(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".ROTAT", _FEDesc ) ),
@@ -159,6 +159,56 @@ class MechanicalLoadDescriptionClass : public DataStructure
 
     ConstantFieldOnCellsTypePtr getImpositionField() const { return _cimpo; }
     ConstantFieldOnCellsRealPtr getMultiplicativeField() const { return _cmult; }
+
+    bool hasLoad( const std::string load_name) const
+    {
+        if( load_name == "IMPE_FACE")
+        {
+            _imped->updateValuePointers();
+            return _imped->exists();
+        }
+        else
+        {
+            AS_ASSERT(false);
+        }
+
+        return false;
+    }
+
+    /**
+     * @brief Mise a jour des pointeurs Jeveux
+     * @return true si la mise a jour s'est bien deroulee, false sinon
+     */
+    bool updateValuePointers() {
+        bool retour = _temperatureField->updateValuePointer();
+        retour = ( retour && _modelName->updateValuePointer() );
+        retour = ( retour && _nameOfAssemblyVector->updateValuePointer() );
+        retour = ( retour && _veiss->updateValuePointer() );
+        retour = ( retour && _evolChar->updateValuePointer() );
+        retour = ( retour && _cimpo->updateValuePointers() );
+        retour = ( retour && _cmult->updateValuePointers() );
+        retour = ( retour && _dpgen->updateValuePointers() );
+        retour = ( retour && _epsin->updateValuePointers() );
+        retour = ( retour && _f1d2d->updateValuePointers() );
+        retour = ( retour && _f1d3d->updateValuePointers() );
+        retour = ( retour && _f2d3d->updateValuePointers() );
+        retour = ( retour && _fco2d->updateValuePointers() );
+        retour = ( retour && _fco3d->updateValuePointers() );
+        retour = ( retour && _felec->updateValuePointers() );
+        retour = ( retour && _fl101->updateValuePointers() );
+        retour = ( retour && _fl102->updateValuePointers() );
+        retour = ( retour && _forno->updateValuePointers() );
+        retour = ( retour && _imped->updateValuePointers() );
+        retour = ( retour && _pesan->updateValuePointers() );
+        retour = ( retour && _press->updateValuePointers() );
+        retour = ( retour && _sigin->updateValuePointers() );
+        retour = ( retour && _rotat->updateValuePointers() );
+        retour = ( retour && _siint->updateValuePointers() );
+        retour = ( retour && _vnor->updateValuePointers() );
+        retour = ( retour && _ondpl->updateValuePointers() );
+        retour = ( retour && _ondpr->updateValuePointers() );
+        return retour;
+    };
 };
 
 /**********************************************************/

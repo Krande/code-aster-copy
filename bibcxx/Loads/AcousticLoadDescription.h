@@ -99,7 +99,7 @@ class AcousticLoadDescriptionClass : public DataStructure {
      * @brief Constructeur
      */
     AcousticLoadDescriptionClass( const std::string name, const ModelPtr &model )
-        : DataStructure( name, 14, "CHAR_CHAC" ), _model( model ),
+        : DataStructure( name, 13, "CHAR_CHAC" ), _model( model ),
           _FEDesc( boost::make_shared< FiniteElementDescriptorClass >( getName() + ".LIGRE",
                                                                 model->getMesh() ) ),
           _modelName( JeveuxVectorChar8( getName() + ".MODEL.NOMO" ) ),

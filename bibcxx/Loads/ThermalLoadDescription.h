@@ -75,7 +75,7 @@ class ThermalLoadDescriptionClass : public DataStructure {
 
         /** @brief Constructeur */
     ThermalLoadDescriptionClass( const std::string &name, const ModelPtr &currentModel ):
-        DataStructure( name, 14, "CHAR_CHTH" ),
+        DataStructure( name, 13, "CHAR_CHTH" ),
         _model( currentModel ),
         _modelName( getName() + ".MODEL.NOMO" ), _convection( getName() + ".CONVE.VALE" ),
         _FEDesc( boost::make_shared< FiniteElementDescriptorClass >( getName() + ".LIGRE",

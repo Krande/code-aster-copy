@@ -120,6 +120,27 @@ class MechanicalLoadClass : public DataStructure, public ListOfTablesClass {
     {
         return _type;
     }
+
+    bool hasLoad(const std::string& load_name) const
+    {
+        return _mecaLoadDesc->hasLoad(load_name);
+    }
+
+    /**
+     * @brief Mise a jour des pointeurs Jeveux
+     * @return true si la mise a jour s'est bien deroulee, false sinon
+     */
+    bool updateValuePointers() {
+        bool retour = _mecaLoadDesc->updateValuePointers();
+        retour = ( retour && _type->updateValuePointer() );
+        retour = ( retour && _lisma01->updateValuePointer() );
+        retour = ( retour && _lisma02->updateValuePointer() );
+        retour = ( retour && _trans01->updateValuePointer() );
+        retour = ( retour && _trans02->updateValuePointer() );
+        retour = ( retour && _poidsMaille->updateValuePointer() );
+
+        return retour;
+    };
 };
 
 /**********************************************************/

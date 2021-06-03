@@ -167,7 +167,7 @@ class DynaLineFEM:
         self.__impePhy = None
         if "CHARGE" in self.keywords:
             for charge in self.keywords['CHARGE']:
-                if charge.hasImpeFace():
+                if charge.hasLoad("IMPE_FACE"):
                     __impePhy = ASSE_MATRICE(MATR_ELEM=self.__getImpeelem(), NUME_DDL=self.getNumeddl(), **self.char_cine)
                     self.__impePhy = __impePhy
                     break
