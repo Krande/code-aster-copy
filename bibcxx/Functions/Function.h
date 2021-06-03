@@ -5,7 +5,7 @@
  * @file Function.h
  * @brief Implementation of functions.
  * @section LICENCE
- * Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+ * Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
  * This file is part of code_aster.
  *
  * code_aster is free software: you can redistribute it and/or modify
@@ -135,7 +135,7 @@ class BaseFunctionClass : public GenericFunctionClass {
     /**
      * @brief Return a pointer to the vector of data
      */
-    const double *getDataPtr() const { return _value->getDataPtr(); }
+    const ASTERDOUBLE *getDataPtr() const { return _value->getDataPtr(); }
 
     /**
      * @brief Return the number of points of the function

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MaterialProperty
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -68,48 +68,48 @@ class MaterialPropertyClass : public GenericMaterialPropertyClass {
     MaterialPropertyClass( const std::string asterName, const std::string asterNewName = "" )
         : GenericMaterialPropertyClass( asterName, asterNewName ){};
 
-    bool addNewRealProperty( std::string name, const bool mandatory ) {
-        return addRealProperty( capitalizeName( name ),
+    bool addRealProperty( std::string name, const bool mandatory ) {
+        return GenericMaterialPropertyClass::addRealProperty( capitalizeName( name ),
                                   ElementaryMaterialPropertyReal( name, mandatory ) );
     };
 
-    bool addNewRealProperty( std::string name, const double &value, const bool mandatory ) {
-        return addRealProperty( capitalizeName( name ),
+    bool addRealProperty( std::string name, const ASTERDOUBLE &value, const bool mandatory ) {
+        return GenericMaterialPropertyClass::addRealProperty( capitalizeName( name ),
                                   ElementaryMaterialPropertyReal( name, value, mandatory ) );
     };
 
-    bool addNewComplexProperty( std::string name, const bool mandatory ) {
-        return addComplexProperty( capitalizeName( name ),
+    bool addComplexProperty( std::string name, const bool mandatory ) {
+        return GenericMaterialPropertyClass::addComplexProperty( capitalizeName( name ),
                                    ElementaryMaterialPropertyComplex( name, mandatory ) );
     };
 
-    bool addNewStringProperty( std::string name, const bool mandatory ) {
-        return addStringProperty( capitalizeName( name ),
+    bool addStringProperty( std::string name, const bool mandatory ) {
+        return GenericMaterialPropertyClass::addStringProperty( capitalizeName( name ),
                                   ElementaryMaterialPropertyString( name, mandatory ) );
     };
 
-    bool addNewStringProperty( std::string name, const std::string &value, const bool mandatory ) {
-        return addStringProperty( capitalizeName( name ),
+    bool addStringProperty( std::string name, const std::string &value, const bool mandatory ) {
+        return GenericMaterialPropertyClass::addStringProperty( capitalizeName( name ),
                                   ElementaryMaterialPropertyString( name, value, mandatory ) );
     };
 
-    bool addNewFunctionProperty( std::string name, const bool mandatory ) {
-        return addFunctionProperty( capitalizeName( name ),
+    bool addFunctionProperty( std::string name, const bool mandatory ) {
+        return GenericMaterialPropertyClass::addFunctionProperty( capitalizeName( name ),
                                     ElementaryMaterialPropertyDataStructure( name, mandatory ) );
     };
 
-    bool addNewTableProperty( std::string name, const bool mandatory ) {
-        return addTableProperty( capitalizeName( name ),
+    bool addTableProperty( std::string name, const bool mandatory ) {
+        return GenericMaterialPropertyClass::addTableProperty( capitalizeName( name ),
                                  ElementaryMaterialPropertyTable( name, mandatory ) );
     };
 
-    bool addNewVectorOfRealProperty( std::string name, const bool mandatory ) {
-        return addVectorOfRealProperty(
+    bool addVectorOfRealProperty( std::string name, const bool mandatory ) {
+        return GenericMaterialPropertyClass::addVectorOfRealProperty(
             capitalizeName( name ), ElementaryMaterialPropertyVectorReal( name, mandatory ) );
     };
 
-    bool addNewVectorOfFunctionProperty( std::string name, const bool mandatory ) {
-        return addVectorOfFunctionProperty(
+    bool addVectorOfFunctionProperty( std::string name, const bool mandatory ) {
+        return GenericMaterialPropertyClass::addVectorOfFunctionProperty(
             capitalizeName( name ), ElementaryMaterialPropertyVectorFunction( name, mandatory ) );
     };
 

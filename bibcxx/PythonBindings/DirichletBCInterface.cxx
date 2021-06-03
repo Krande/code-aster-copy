@@ -30,30 +30,30 @@ namespace py = boost::python;
 void exportDirichletBCToPython() {
 
     bool ( MechanicalDirichletBCClass::*c1 )( const PhysicalQuantityComponent &,
-                                                    const double &, const std::string & ) =
+                                                    const ASTERDOUBLE &, const std::string & ) =
         &MechanicalDirichletBCClass::addBCOnCells;
     bool ( MechanicalDirichletBCClass::*c2 )(
-        const PhysicalQuantityComponent &, const double &, const VectorString & ) =
+        const PhysicalQuantityComponent &, const ASTERDOUBLE &, const VectorString & ) =
         &MechanicalDirichletBCClass::addBCOnCells;
 
     bool ( MechanicalDirichletBCClass::*c3 )( const PhysicalQuantityComponent &,
-                                                    const double &, const std::string & ) =
+                                                    const ASTERDOUBLE &, const std::string & ) =
         &MechanicalDirichletBCClass::addBCOnNodes;
     bool ( MechanicalDirichletBCClass::*c4 )(
-        const PhysicalQuantityComponent &, const double &, const VectorString & ) =
+        const PhysicalQuantityComponent &, const ASTERDOUBLE &, const VectorString & ) =
         &MechanicalDirichletBCClass::addBCOnNodes;
 
-    bool ( ThermalDirichletBCClass::*c5 )( const PhysicalQuantityComponent &, const double &,
+    bool ( ThermalDirichletBCClass::*c5 )( const PhysicalQuantityComponent &, const ASTERDOUBLE &,
                                                  const std::string & ) =
         &ThermalDirichletBCClass::addBCOnCells;
-    bool ( ThermalDirichletBCClass::*c6 )( const PhysicalQuantityComponent &, const double &,
+    bool ( ThermalDirichletBCClass::*c6 )( const PhysicalQuantityComponent &, const ASTERDOUBLE &,
                                                  const VectorString & ) =
         &ThermalDirichletBCClass::addBCOnCells;
 
-    bool ( ThermalDirichletBCClass::*c7 )( const PhysicalQuantityComponent &, const double &,
+    bool ( ThermalDirichletBCClass::*c7 )( const PhysicalQuantityComponent &, const ASTERDOUBLE &,
                                                  const std::string & ) =
         &ThermalDirichletBCClass::addBCOnNodes;
-    bool ( ThermalDirichletBCClass::*c8 )( const PhysicalQuantityComponent &, const double &,
+    bool ( ThermalDirichletBCClass::*c8 )( const PhysicalQuantityComponent &, const ASTERDOUBLE &,
                                                  const VectorString & ) =
         &ThermalDirichletBCClass::addBCOnNodes;
     bool ( ThermalDirichletBCClass::*c9 )( const PhysicalQuantityComponent &,

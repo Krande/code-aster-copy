@@ -139,7 +139,7 @@ template < typename Type > class GenericParameter {
 
 /** @typedef Definition d'un GenericParameter d'un type boost::variant */
 typedef GenericParameter<
-    boost::variant< double, ASTERINTEGER, std::string, ASTERCOMPLEX, VectorReal,
+    boost::variant< ASTERDOUBLE, ASTERINTEGER, std::string, ASTERCOMPLEX, VectorReal,
                     VectorLong, VectorComplex,
                     VectorString > > GenParam;
 

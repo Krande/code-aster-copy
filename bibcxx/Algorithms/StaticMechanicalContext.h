@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe StaticMechanicalContext
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -50,7 +50,7 @@ class StaticMechanicalContext {
     /** @brief Chargements */
     ListOfLoadsPtr _listOfLoads;
     /** @brief Pas de temps courant */
-    double _time;
+    ASTERDOUBLE _time;
     /** @brief rank */
     int _rank;
     /** @brief Assembly matrix */
@@ -85,7 +85,7 @@ class StaticMechanicalContext {
      * @param time time value
      * @param rank number of iteration
      */
-    void setStep( const double &time, const int &rank ) {
+    void setStep( const ASTERDOUBLE &time, const int &rank ) {
         _time = time;
         _rank = rank;
     };

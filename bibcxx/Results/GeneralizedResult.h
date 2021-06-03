@@ -116,8 +116,8 @@ public:
 };
 
 /** @typedef Définition d'un résultat généralisé à valeurs réelles */
-template class GeneralizedResultClass< double >;
-typedef GeneralizedResultClass< double >
+template class GeneralizedResultClass< ASTERDOUBLE >;
+typedef GeneralizedResultClass< ASTERDOUBLE >
     GeneralizedResultRealClass;
 typedef boost::shared_ptr< GeneralizedResultRealClass >
     GeneralizedResultRealPtr;

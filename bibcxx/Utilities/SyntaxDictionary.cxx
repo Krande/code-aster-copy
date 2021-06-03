@@ -60,7 +60,7 @@ PyObject *SyntaxMapContainer::convertToPythonDictionnary( PyObject *returnDict )
             PyDict_SetItemString( returnDict, ( *curIter ).first.c_str(), listValues );
             Py_DECREF( listValues );
         } else if ( ( *curIter ).second.type() == typeid(double)) {
-            const double &tmp = boost::get< double >( ( *curIter ).second );
+            const ASTERDOUBLE &tmp = boost::get< ASTERDOUBLE >( ( *curIter ).second );
             PyObject *value = PyFloat_FromDouble( tmp );
             PyDict_SetItemString( returnDict, ( *curIter ).first.c_str(),value );
             Py_DECREF( value );

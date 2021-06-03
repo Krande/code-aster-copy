@@ -210,13 +210,13 @@ class TemplateElementaryVectorClass: public ElementaryVectorClass
 };
 
 /** @typedef Definition d'une matrice élémentaire de double */
-template class TemplateElementaryVectorClass< double, Displacement >;
-typedef TemplateElementaryVectorClass< double,
+template class TemplateElementaryVectorClass< ASTERDOUBLE, Displacement >;
+typedef TemplateElementaryVectorClass< ASTERDOUBLE,
                                           Displacement > ElementaryVectorDisplacementRealClass;
 
 /** @typedef Definition d'une matrice élémentaire de double temperature */
-template class TemplateElementaryVectorClass< double, Temperature >;
-typedef TemplateElementaryVectorClass< double,
+template class TemplateElementaryVectorClass< ASTERDOUBLE, Temperature >;
+typedef TemplateElementaryVectorClass< ASTERDOUBLE,
                                           Temperature > ElementaryVectorTemperatureRealClass;
 
 /** @typedef Definition d'une matrice élémentaire de ASTERCOMPLEX pression */

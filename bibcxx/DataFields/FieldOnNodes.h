@@ -55,7 +55,8 @@ template <> struct AllowedFieldType< ASTERINTEGER > {
     static const unsigned short numTypeJeveux = Integer;
 };
 
-template <> struct AllowedFieldType< double > { static const unsigned short numTypeJeveux = Real; };
+template <> struct AllowedFieldType< ASTERDOUBLE >
+    { static const unsigned short numTypeJeveux = Real; };
 
 template <> struct AllowedFieldType< ASTERCOMPLEX > {
     static const unsigned short numTypeJeveux = Complex;
@@ -232,7 +233,7 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
      * @brief TimesEqual overloading
      * @return Updated field
      */
-    FieldOnNodesClass< ValueType > &operator*=( const double &scal ) {
+    FieldOnNodesClass< ValueType > &operator*=( const ASTERDOUBLE &scal ) {
         bool retour = _valuesList->updateValuePointer();
         int taille = _valuesList->size();
         for ( int pos = 0; pos < taille; ++pos )
@@ -263,7 +264,7 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
      * @return New field
      */
     friend FieldOnNodesClass< ValueType > operator*( FieldOnNodesClass< ValueType > lhs,
-                                                     const double &scal ) {
+                                                     const ASTERDOUBLE &scal ) {
         bool retour = lhs.updateValuePointers();
         int taille = lhs._valuesList->size();
         for ( int pos = 0; pos < taille; ++pos )
@@ -275,7 +276,7 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
      * @brief Multiply by a scalar on left overloading
      * @return New field
      */
-    friend FieldOnNodesClass< ValueType > operator*( const double &scal,
+    friend FieldOnNodesClass< ValueType > operator*( const ASTERDOUBLE &scal,
                                                      FieldOnNodesClass< ValueType > rhs) {
         return rhs * scal;
     };
@@ -411,9 +412,9 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
      * @brief Comput norm
      * @param normType Type of norm ("NORM_1","NORM_2","NORM_INFINITY")
      */
-    double norm(const std::string normType) const
+    ASTERDOUBLE norm(const std::string normType) const
     {
-        double norme = 0.0;
+        ASTERDOUBLE norme = 0.0;
         bool retour =  _valuesList->updateValuePointer();
         int taille = _valuesList->size();
         const int rank = getMPIRank();
@@ -459,7 +460,7 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
 #ifdef ASTER_HAVE_MPI
         if( _mesh->isParallel() )
         {
-            double norm2 = norme;
+            ASTERDOUBLE norm2 = norme;
             if( normType == "NORM_1" || normType == "NORM_2")
                 AsterMPI::all_reduce(norm2, norme, MPI_SUM);
             else
@@ -477,7 +478,7 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
      * @brief Dot product
      * @param tmp object FieldOnNodesDescriptionPtr
      */
-    double dot( const FieldOnNodesPtr &tmp ) const
+    ASTERDOUBLE dot( const FieldOnNodesPtr &tmp ) const
     {
         bool retour = tmp->updateValuePointers();
         retour = ( retour && _valuesList->updateValuePointer() );
@@ -497,7 +498,7 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
 
         const int rank = getMPIRank();
 
-        double ret = 0.0;
+        ASTERDOUBLE ret = 0.0;
         for( int pos = 0; pos < taille; ++pos )
         {
             const int node_id = std::abs(nodesId[pos]);
@@ -508,7 +509,7 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
 #ifdef ASTER_HAVE_MPI
         if( _mesh->isParallel() )
         {
-            double ret2 = ret;
+            ASTERDOUBLE ret2 = ret;
             AsterMPI::all_reduce(ret2, ret, MPI_SUM);
         }
 #endif
@@ -600,7 +601,7 @@ bool FieldOnNodesClass< ValueType >::printMedFile( const std::string fileName ) 
 };
 
 /** @typedef FieldOnNodesClassReal Class d'un champ aux noeuds de double */
-typedef FieldOnNodesClass< double > FieldOnNodesRealClass;
+typedef FieldOnNodesClass< ASTERDOUBLE > FieldOnNodesRealClass;
 
 /**
  * @typedef FieldOnNodesPtrReal

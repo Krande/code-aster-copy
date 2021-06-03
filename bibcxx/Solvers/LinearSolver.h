@@ -360,7 +360,7 @@ class BaseLinearSolverClass : public DataStructure {
             _stopSingular->setValue( "NON");
     };
 
-    void setFilling( double filLevel ) {
+    void setFilling( ASTERDOUBLE filLevel ) {
         if ( _linearSolver != Petsc && _linearSolver != Gcpc )
             throw std::runtime_error( "Filling level only allowed with Gcpc or Petsc" );
         if ( _preconditioning != IncompleteLdlt )
@@ -380,11 +380,11 @@ class BaseLinearSolverClass : public DataStructure {
         _lagr->setValue( std::string( LagrangeTreatmentNames[(int)lagrTreat] ));
     };
 
-    void setLowRankSize( double size ) { _lowRankSize->setValue( size); };
+    void setLowRankSize( ASTERDOUBLE size ) { _lowRankSize->setValue( size); };
 
-    void setLowRankThreshold( double threshold ) { _lowRankThreshold->setValue( threshold); };
+    void setLowRankThreshold( ASTERDOUBLE threshold ) { _lowRankThreshold->setValue( threshold); };
 
-    void setMatrixFilter( double filter ) { _matrFilter->setValue( filter); };
+    void setMatrixFilter( ASTERDOUBLE filter ) { _matrFilter->setValue( filter); };
 
     void setMatrixType( MatrixType matType ) {
         _resolutionType->setValue( MatrixTypeNames[(int)matType]); };
@@ -418,13 +418,14 @@ class BaseLinearSolverClass : public DataStructure {
 
     void setPreconditioning( Preconditioning precond ) ;
 
-    void setPreconditioningResidual( double residual ) { _precondResidual->setValue( residual); };
+    void setPreconditioningResidual( ASTERDOUBLE residual )
+    { _precondResidual->setValue( residual); };
 
     void setRenumbering( Renumbering reum ) { _renumber = reum; };
 
     void setSingularityDetectionThreshold( ASTERINTEGER nprec ) { _nPrec->setValue(nprec); };
 
-    void setSolverResidual( double residual )
+    void setSolverResidual( ASTERDOUBLE residual )
     {
         _residual->setValue( residual);
     };

@@ -49,7 +49,7 @@
 
 FieldOnNodesRealPtr
 ElementaryVectorClass::assembleVector( const BaseDOFNumberingPtr &currentNumerotation,
-                                          const double &time,
+                                          const ASTERDOUBLE &time,
                                           const JeveuxMemory memType ) {
     if ( _isEmpty )
         throw std::runtime_error( "The ElementaryVector is empty" );
@@ -126,7 +126,7 @@ bool ElementaryVectorClass::update()
         const std::string name = ( *_listOfElementaryTerms )[pos].toString();
         if ( trim( name ) != "" )
         {
-            ElementaryTermRealPtr toPush( new ElementaryTermClass< double >( name ) );
+            ElementaryTermRealPtr toPush( new ElementaryTermClass< ASTERDOUBLE >( name ) );
             _realVector.push_back( toPush );
         }
     }

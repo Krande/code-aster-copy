@@ -3,7 +3,7 @@
  * @brief Implementation de ExternalVariablesComputationClass
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -46,7 +46,7 @@ ExternalVariablesComputationClass::ExternalVariablesComputationClass(
     CALLO_VRCREF( modName, matName, carName, _varRef->getName() );
 };
 
-void ExternalVariablesComputationClass::compute( const double &time )
+void ExternalVariablesComputationClass::compute( const ASTERDOUBLE &time )
 {
     _currentTime = time;
     _varInst->deallocate();
@@ -62,7 +62,7 @@ void ExternalVariablesComputationClass::compute( const double &time )
     std::string comp( "INST_R" );
     _timeValue->allocate( Permanent, comp );
     ConstantFieldOnZone a( _model->getMesh() );
-    ConstantFieldValues< double > b( {"INST"}, {time} );
+    ConstantFieldValues< ASTERDOUBLE > b( {"INST"}, {time} );
     _timeValue->setValueOnZone( a, b );
 };
 

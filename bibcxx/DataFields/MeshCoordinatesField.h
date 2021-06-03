@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MeshCoordinatesField
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -34,7 +34,7 @@
 /** @brief Forward declaration of FieldOnNodesClass */
 template < class ValueType > class FieldOnNodesClass;
 
-typedef FieldOnNodesClass< double > FieldOnNodesRealClass;
+typedef FieldOnNodesClass< ASTERDOUBLE > FieldOnNodesRealClass;
 
 /**
  * @class MeshCoordinatesFieldClass
@@ -91,7 +91,7 @@ class MeshCoordinatesFieldClass : public DataStructure {
      * @param i Indice dans le tableau Jeveux
      * @return la valeur du tableau Jeveux a la position i
      */
-    double operator[]( int i ) const { return _valuesList->operator[]( i ); };
+    ASTERDOUBLE operator[]( int i ) const { return _valuesList->operator[]( i ); };
 
     /**
      * @brief Mise a jour des pointeurs Jeveux

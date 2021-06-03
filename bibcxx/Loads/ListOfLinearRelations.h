@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ListOfLinearRelations
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D     www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D     www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -83,7 +83,7 @@ template < class ValueType > class ListOfLinearRelationsClass : public DataStruc
 };
 
 /** @typedef ConstantFieldOnCellsClassReal Class d'une carte de double */
-typedef ListOfLinearRelationsClass< double > ListOfLinearRelationsReal;
+typedef ListOfLinearRelationsClass< ASTERDOUBLE > ListOfLinearRelationsReal;
 
 /**
  * @typedef ListOfLinearRelationsReal

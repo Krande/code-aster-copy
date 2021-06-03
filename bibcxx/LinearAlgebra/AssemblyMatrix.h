@@ -336,23 +336,23 @@ class AssemblyMatrixClass : public DataStructure {
 };
 
 /** @typedef Definition d'une matrice assemblee de double */
-template <> void AssemblyMatrixClass< double, Displacement >::setValues(const VectorLong idx,
+template <> void AssemblyMatrixClass< ASTERDOUBLE, Displacement >::setValues(const VectorLong idx,
             const VectorLong jdx, const VectorReal values);
-typedef AssemblyMatrixClass< double, Displacement > AssemblyMatrixDisplacementRealClass;
+typedef AssemblyMatrixClass< ASTERDOUBLE, Displacement > AssemblyMatrixDisplacementRealClass;
 
 /** @typedef Definition d'une matrice assemblee de complexe */
 template class AssemblyMatrixClass< ASTERCOMPLEX, Displacement >;
 typedef AssemblyMatrixClass< ASTERCOMPLEX, Displacement > AssemblyMatrixDisplacementComplexClass;
 
 /** @typedef Definition d'une matrice assemblee de double temperature */
-template <> void AssemblyMatrixClass< double, Temperature >::setValues(const VectorLong idx,
+template <> void AssemblyMatrixClass< ASTERDOUBLE, Temperature >::setValues(const VectorLong idx,
             const VectorLong jdx, const VectorReal values);
-typedef AssemblyMatrixClass< double, Temperature > AssemblyMatrixTemperatureRealClass;
+typedef AssemblyMatrixClass< ASTERDOUBLE, Temperature > AssemblyMatrixTemperatureRealClass;
 
 /** @typedef Definition d'une matrice assemblee de double pression */
-template <> void AssemblyMatrixClass< double, Pressure >::setValues(const VectorLong idx,
+template <> void AssemblyMatrixClass< ASTERDOUBLE, Pressure >::setValues(const VectorLong idx,
             const VectorLong jdx, const VectorReal values);
-typedef AssemblyMatrixClass< double, Pressure > AssemblyMatrixPressureRealClass;
+typedef AssemblyMatrixClass< ASTERDOUBLE, Pressure > AssemblyMatrixPressureRealClass;
 
 /** @typedef Definition d'une matrice assemblee de ASTERCOMPLEX temperature */
 template class AssemblyMatrixClass< ASTERCOMPLEX, Temperature >;
@@ -379,7 +379,7 @@ template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 AssemblyMatrixClass< ValueType, PhysicalQuantity >::AssemblyMatrixClass(
     const JeveuxMemory memType )
     : DataStructure( "MATR_ASSE_" + std::string( PhysicalQuantityNames[PhysicalQuantity] ) +
-                         ( typeid( ValueType ) == typeid( double ) ? "_R" : "_C" ),
+                         ( typeid( ValueType ) == typeid( ASTERDOUBLE ) ? "_R" : "_C" ),
                      memType, 19 ),
       _description( JeveuxVectorChar24( getName() + ".REFA" ) ),
       _matrixValues( JeveuxCollection< ValueType >( getName() + ".VALM" ) ),
@@ -400,7 +400,7 @@ template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 AssemblyMatrixClass< ValueType, PhysicalQuantity >::AssemblyMatrixClass( const std::string &name )
     : DataStructure( name, 19,
                      "MATR_ASSE_" + std::string( PhysicalQuantityNames[PhysicalQuantity] ) +
-                         ( typeid( ValueType ) == typeid( double ) ? "_R" : "_C" ) ),
+                         ( typeid( ValueType ) == typeid( ASTERDOUBLE ) ? "_R" : "_C" ) ),
       _description( JeveuxVectorChar24( getName() + ".REFA" ) ),
       _matrixValues( JeveuxCollection< ValueType >( getName() + ".VALM" ) ),
       _scaleFactorLagrangian( JeveuxVectorReal( getName() + ".CONL" ) ),
@@ -425,7 +425,7 @@ bool AssemblyMatrixClass< ValueType, PhysicalQuantity >::build() {
         throw std::runtime_error( "Elementary matrix is empty" );
 
     ASTERINTEGER typscal = 2;
-    if ( typeid( ValueType ) == typeid( double ) )
+    if ( typeid( ValueType ) == typeid( ASTERDOUBLE ) )
         typscal = 1;
     VectorString names;
     for ( const auto elemIt : _elemMatrix )

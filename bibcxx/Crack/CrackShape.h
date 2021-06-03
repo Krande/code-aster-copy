@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe XfemCrack
  * @author Nicolas Tardieu
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -37,14 +37,14 @@ enum Shape { NoShape, Ellipse, Square, Cylinder, Notch, HalfPlane, Segment, Half
 class CrackShapeClass {
   private:
     Shape _shape;
-    double _semiMajorAxis;
-    double _semiMinorAxis;
+    ASTERDOUBLE _semiMajorAxis;
+    ASTERDOUBLE _semiMinorAxis;
     VectorReal _center;
     VectorReal _vectX;
     VectorReal _vectY;
     std::string _crackSide;
-    double _filletRadius;
-    double _halfLength;
+    ASTERDOUBLE _filletRadius;
+    ASTERDOUBLE _halfLength;
     VectorReal _endPoint;
     VectorReal _normal;
     VectorReal _tangent;
@@ -65,28 +65,29 @@ class CrackShapeClass {
     /**
      * @brief Define the Crack Shape as Ellise
      */
-    void setEllipseCrackShape( double semiMajorAxis, double semiMinorAxis,
+    void setEllipseCrackShape( ASTERDOUBLE semiMajorAxis, ASTERDOUBLE semiMinorAxis,
                                VectorReal center, VectorReal vectX,
                                VectorReal vectY, std::string crackSide = "IN" );
 
     /**
      * @brief Define the Crack Shape as Square
      */
-    void setSquareCrackShape( double semiMajorAxis, double semiMinorAxis, double filletRadius,
+    void setSquareCrackShape( ASTERDOUBLE semiMajorAxis, ASTERDOUBLE semiMinorAxis,
+                              ASTERDOUBLE filletRadius,
                               VectorReal center, VectorReal vectX,
                               VectorReal vectY, std::string crackSide = "IN" );
 
     /**
      * @brief Define the Crack Shape as Cylinder
      */
-    void setCylinderCrackShape( double semiMajorAxis, double semiMinorAxis,
+    void setCylinderCrackShape( ASTERDOUBLE semiMajorAxis, ASTERDOUBLE semiMinorAxis,
                                 VectorReal center, VectorReal vectX,
                                 VectorReal vectY );
 
     /**
      * @brief Define the Crack Shape as Notch
      */
-    void setNotchCrackShape( double halfLength, double filletRadius, VectorReal center,
+    void setNotchCrackShape( ASTERDOUBLE halfLength, ASTERDOUBLE filletRadius, VectorReal center,
                              VectorReal vectX, VectorReal vectY );
 
     /**
@@ -116,9 +117,9 @@ class CrackShapeClass {
 
     std::string getShapeName() const;
 
-    double getSemiMajorAxis() const { return _semiMajorAxis; };
+    ASTERDOUBLE getSemiMajorAxis() const { return _semiMajorAxis; };
 
-    double getSemiMinorAxis() const { return _semiMinorAxis; };
+    ASTERDOUBLE getSemiMinorAxis() const { return _semiMinorAxis; };
 
     const VectorReal getCenter() const { return _center; };
 
@@ -127,9 +128,9 @@ class CrackShapeClass {
 
     std::string getCrackSide() const { return _crackSide; };
 
-    double getFilletRadius() const { return _filletRadius; };
+    ASTERDOUBLE getFilletRadius() const { return _filletRadius; };
 
-    double getHalfLength() const { return _halfLength; };
+    ASTERDOUBLE getHalfLength() const { return _halfLength; };
 
     const VectorReal getEndPoint() const { return _endPoint; };
 

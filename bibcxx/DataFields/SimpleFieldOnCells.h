@@ -133,7 +133,7 @@ template < class ValueType > class SimpleFieldOnCellsClass : public DataStructur
 };
 
 /** @typedef SimpleFieldOnCellsClassReal Class d'une carte de double */
-typedef SimpleFieldOnCellsClass< double > SimpleFieldOnCellsRealClass;
+typedef SimpleFieldOnCellsClass< ASTERDOUBLE > SimpleFieldOnCellsRealClass;
 
 /**
  * @typedef SimpleFieldOnCellsPtrReal

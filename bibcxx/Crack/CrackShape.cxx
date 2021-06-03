@@ -3,7 +3,7 @@
  * @brief Class to describe the possible shape of cracks for XFEM
  * @author Nicolas Tardieu
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,7 +24,7 @@
 
 CrackShapeClass::CrackShapeClass() { _shape = Shape::NoShape; };
 
-void CrackShapeClass::setEllipseCrackShape( double semiMajorAxis, double semiMinorAxis,
+void CrackShapeClass::setEllipseCrackShape( ASTERDOUBLE semiMajorAxis, ASTERDOUBLE semiMinorAxis,
                                                VectorReal center,
                                                VectorReal vectX,
                                                VectorReal vectY,
@@ -38,8 +38,8 @@ void CrackShapeClass::setEllipseCrackShape( double semiMajorAxis, double semiMin
     _crackSide = crackSide;
 };
 
-void CrackShapeClass::setSquareCrackShape( double semiMajorAxis, double semiMinorAxis,
-                                              double filletRadius, VectorReal center,
+void CrackShapeClass::setSquareCrackShape( ASTERDOUBLE semiMajorAxis, ASTERDOUBLE semiMinorAxis,
+                                              ASTERDOUBLE filletRadius, VectorReal center,
                                               VectorReal vectX,
                                               VectorReal vectY, std::string crackSide ) {
     _shape = Shape::Square;
@@ -52,7 +52,7 @@ void CrackShapeClass::setSquareCrackShape( double semiMajorAxis, double semiMino
     _crackSide = crackSide;
 };
 
-void CrackShapeClass::setCylinderCrackShape( double semiMajorAxis, double semiMinorAxis,
+void CrackShapeClass::setCylinderCrackShape( ASTERDOUBLE semiMajorAxis, ASTERDOUBLE semiMinorAxis,
                                                 VectorReal center,
                                                 VectorReal vectX,
                                                 VectorReal vectY ) {
@@ -64,7 +64,7 @@ void CrackShapeClass::setCylinderCrackShape( double semiMajorAxis, double semiMi
     _vectY = vectY;
 };
 
-void CrackShapeClass::setNotchCrackShape( double halfLength, double filletRadius,
+void CrackShapeClass::setNotchCrackShape( ASTERDOUBLE halfLength, ASTERDOUBLE filletRadius,
                                              VectorReal center,
                                              VectorReal vectX,
                                              VectorReal vectY ) {

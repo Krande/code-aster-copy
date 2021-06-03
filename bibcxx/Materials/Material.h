@@ -93,10 +93,10 @@ class MaterialClass: public DataStructure
 
         MaterialClass( const std::string& name ):
             DataStructure( name, 8, "MATER" ),
-            _materialBehaviourNames( JeveuxVectorChar32( name + ".MATERIAU.NOMRC " ) ),
+            _materialBehaviourNames( JeveuxVectorChar32( getName() + ".MATERIAU.NOMRC " ) ),
             _nbMaterialProperty( 0 ),
             _nbUserMaterialProperty( 0 ),
-            _doubleValues( new FunctionClass( name + ".&&RDEP" ) ),
+            _doubleValues( boost::make_shared< FunctionClass >( getName() + ".&&RDEP" ) ),
             _mater( nullptr )
         {};
 
@@ -189,7 +189,7 @@ class MaterialClass: public DataStructure
         /**
          * @brief Get vector of material behaviours
          */
-        VectorOfGenericMaterialProperty getVectorOfMaterialPropertys()
+        VectorOfGenericMaterialProperty getVectorOfMaterialProperties()
         {
             return _vecMatBehaviour;
         };

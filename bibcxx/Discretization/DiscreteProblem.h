@@ -89,7 +89,7 @@ class DiscreteProblemClass {
      * @param time Instant de calcul
      * @return Vecteur élémentaire
      */
-    ElementaryVectorPtr buildElementaryDirichletVector( double time = 0. );
+    ElementaryVectorPtr buildElementaryDirichletVector( ASTERDOUBLE time = 0. );
 
     /**
      * @brief Fonction permettant de calculer les vecteurs élémentaires pour les
@@ -113,22 +113,23 @@ class DiscreteProblemClass {
      * @param time Instant de calcul
      * @return Vecteur élémentaire contenant la rigidité mécanique
      */
-    ElementaryMatrixDisplacementRealPtr buildElementaryStiffnessMatrix( double time = 0. );
+    ElementaryMatrixDisplacementRealPtr buildElementaryStiffnessMatrix( ASTERDOUBLE time = 0. );
     /**
      * @brief Fonction permettant de calculer les matrices élémentaires pour la matrice tangente
      * utilisée pour l'étape de prédiction de la méthode de Newton
      * @param time Instant de calcul
      * @return Matrice élémentaire contenant la rigidité mécanique
      */
-    ElementaryMatrixDisplacementRealPtr buildElementaryTangentMatrix( double time = 0. );
+    ElementaryMatrixDisplacementRealPtr buildElementaryTangentMatrix( ASTERDOUBLE time = 0. );
 
-    ElementaryMatrixDisplacementRealPtr buildElementaryJacobianMatrix( double time = 0. );
+    ElementaryMatrixDisplacementRealPtr buildElementaryJacobianMatrix( ASTERDOUBLE time = 0. );
 
     /**
      * @brief Construction d'un vecteur de chargement cinématique
      * @return Booleen indiquant que tout s'est bien passe
      */
-    FieldOnNodesRealPtr buildDirichletBC( const BaseDOFNumberingPtr &curDOFNum, const double &time,
+    FieldOnNodesRealPtr buildDirichletBC( const BaseDOFNumberingPtr &curDOFNum,
+                                          const ASTERDOUBLE &time,
                                           const JeveuxMemory &memType = Permanent ) const;
 
     /**

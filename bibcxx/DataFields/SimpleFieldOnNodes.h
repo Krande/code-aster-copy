@@ -187,7 +187,7 @@ template < class ValueType > class SimpleFieldOnNodesClass : public DataStructur
 };
 
 /** @typedef SimpleFieldOnNodesRealClass Class d'une champ simple de doubles */
-typedef SimpleFieldOnNodesClass< double > SimpleFieldOnNodesRealClass;
+typedef SimpleFieldOnNodesClass< ASTERDOUBLE > SimpleFieldOnNodesRealClass;
 
 /**
  * @typedef SimpleFieldOnNodesPtrReal

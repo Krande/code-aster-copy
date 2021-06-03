@@ -71,7 +71,7 @@ void ResultClass::addModel( const ModelPtr &model,
     _fieldBuidler.addFiniteElementDescriptor( fed );
 };
 
-void ResultClass::addTimeValue( double value, int rank ) {
+void ResultClass::addTimeValue( ASTERDOUBLE value, int rank ) {
     ASTERINTEGER rang = rank;
     std::string type( "INST" );
     CALLO_RSADPA_ZR_WRAP( getName(), &rang, &value, type );
@@ -511,7 +511,7 @@ bool ResultClass::update()
                     ASTERINTEGER test2 = _dictOfVectorOfFieldsNodes[nomSymb][rank].use_count();
                     if ( test2 == 0 ) {
                         FieldOnNodesRealPtr result =
-                            _fieldBuidler.buildFieldOnNodes< double >( name );
+                            _fieldBuidler.buildFieldOnNodes< ASTERDOUBLE >( name );
                         _dictOfVectorOfFieldsNodes[nomSymb][rank] = result;
                     }
                 } else if ( resu == "ELEM" || resu == "ELNO" || resu == "ELGA" ) {
@@ -528,7 +528,7 @@ bool ResultClass::update()
                     if ( test2 == 0 ) {
                         AS_ASSERT( curMesh != nullptr );
                         FieldOnCellsRealPtr result =
-                            _fieldBuidler.buildFieldOnCells< double >( name, curMesh );
+                            _fieldBuidler.buildFieldOnCells< ASTERDOUBLE >( name, curMesh );
                         auto iterModel = _mapModel.find(( *_serialNumber )[rank]);
                         if ( iterModel != _mapModel.end() )
                             if ( not((( *iterModel ).second)->isEmpty()) )

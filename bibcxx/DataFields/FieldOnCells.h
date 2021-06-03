@@ -207,7 +207,7 @@ bool FieldOnCellsClass< ValueType >::printMedFile( const std::string fileName ) 
 };
 
 /** @typedef FieldOnCellsClassReal Class d'une carte de double */
-typedef FieldOnCellsClass< double > FieldOnCellsRealClass;
+typedef FieldOnCellsClass< ASTERDOUBLE > FieldOnCellsRealClass;
 
 /**
  * @typedef FieldOnCellsPtrReal

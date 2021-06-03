@@ -162,7 +162,7 @@ class BaseExternalVariablesClass {
   private:
     BaseMeshPtr _mesh;
     MeshEntityPtr _localization;
-    double _refValue;
+    ASTERDOUBLE _refValue;
     bool _refValueSet;
     DataFieldPtr _chamGd;
     EvolutionParameterPtr _evolParam;
@@ -210,7 +210,7 @@ class BaseExternalVariablesClass {
     /**
      * @brief Get the reference value of input variable
      */
-    double getReferenceValue() const {
+    ASTERDOUBLE getReferenceValue() const {
         if ( !_refValueSet )
             throw std::runtime_error( "Reference value not set" );
         return _refValue;
@@ -243,7 +243,7 @@ class BaseExternalVariablesClass {
     /**
      * @brief Function to set the reference value of input variable
      */
-    void setReferenceValue( const double &value ) {
+    void setReferenceValue( const ASTERDOUBLE &value ) {
         _refValue = value;
         _refValueSet = true;
     };

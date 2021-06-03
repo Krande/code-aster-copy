@@ -167,26 +167,26 @@ class MaterialDefinition(ExecuteCommand):
                     if kwName == "ORDRE_PARAM":
                         continue
                     if curType in (float, int, numpy.float64):
-                        mater.addNewRealProperty(kwName, mandatory)
+                        mater.addRealProperty(kwName, mandatory)
                     elif curType is complex:
-                        mater.addNewComplexProperty(kwName, mandatory)
+                        mater.addComplexProperty(kwName, mandatory)
                     elif curType is str:
-                        mater.addNewStringProperty(kwName, mandatory)
+                        mater.addStringProperty(kwName, mandatory)
                     elif isinstance(kwValue, Function) or\
                             isinstance(kwValue, Function2D) or\
                             isinstance(kwValue, Formula):
-                        mater.addNewFunctionProperty(kwName, mandatory)
+                        mater.addFunctionProperty(kwName, mandatory)
                     elif isinstance(kwValue, Table):
-                        mater.addNewTableProperty(kwName, mandatory)
+                        mater.addTableProperty(kwName, mandatory)
                     elif type(kwValue) in (list, tuple):
                         if type(kwValue[0]) is float:
-                            mater.addNewVectorOfRealProperty(
+                            mater.addVectorOfRealProperty(
                                 kwName, mandatory)
                         elif isinstance(kwValue[0], DataStructure):
-                            mater.addNewVectorOfFunctionProperty(
+                            mater.addVectorOfFunctionProperty(
                                 kwName, mandatory)
                         elif kwValue[0] == 'RI':
-                            mater.addNewComplexProperty(kwName, mandatory)
+                            mater.addComplexProperty(kwName, mandatory)
                         elif type(kwValue[0]) is str:
                             pass
                         else:

@@ -50,6 +50,6 @@ void jeveux_delete( const std::string prefix );
 
 std::string onFatalError( const std::string value = "" );
 
-void set_option( const std::string &option, double value );
+void set_option( const std::string &option, ASTERDOUBLE value );
 
 #endif

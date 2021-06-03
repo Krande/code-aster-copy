@@ -68,12 +68,12 @@ class TimeStepperClass : public DataStructure, public GenericStepper {
     ~TimeStepperClass(){};
 
     struct const_iterator {
-        double *position;
+        ASTERDOUBLE *position;
         int rank;
 
         inline const_iterator() : position( NULL ), rank( 1 ){};
 
-        inline const_iterator( int curRank, double *memoryPosition )
+        inline const_iterator( int curRank, ASTERDOUBLE *memoryPosition )
             : position( memoryPosition ), rank( curRank ){};
 
         inline const_iterator( const const_iterator &iter )
@@ -103,9 +103,9 @@ class TimeStepperClass : public DataStructure, public GenericStepper {
             return false;
         };
 
-        inline const double &operator->() const { return *position; };
+        inline const ASTERDOUBLE &operator->() const { return *position; };
 
-        inline const double &operator*() const { return *position; };
+        inline const ASTERDOUBLE &operator*() const { return *position; };
     };
 
     /**

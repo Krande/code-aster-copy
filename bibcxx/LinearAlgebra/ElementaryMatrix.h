@@ -204,7 +204,7 @@ class ElementaryMatrixClass : public BaseElementaryMatrixClass
         for ( int pos = 0; pos < _listOfElementaryTerms->size(); ++pos ) {
             const std::string name = ( *_listOfElementaryTerms )[pos].toString();
             if ( trim( name ) != "" ) {
-                ElementaryTermRealPtr toPush( new ElementaryTermClass< double >( name ) );
+                ElementaryTermRealPtr toPush( new ElementaryTermClass< ASTERDOUBLE >( name ) );
                 _realVector.push_back( toPush );
             }
         }
@@ -215,8 +215,8 @@ class ElementaryMatrixClass : public BaseElementaryMatrixClass
 };
 
 /** @typedef Definition d'une matrice élémentaire de double */
-template class ElementaryMatrixClass< double, Displacement >;
-typedef ElementaryMatrixClass< double, Displacement > ElementaryMatrixDisplacementRealClass;
+template class ElementaryMatrixClass< ASTERDOUBLE, Displacement >;
+typedef ElementaryMatrixClass< ASTERDOUBLE, Displacement > ElementaryMatrixDisplacementRealClass;
 
 /** @typedef Definition d'une matrice élémentaire de complexe */
 template class ElementaryMatrixClass< ASTERCOMPLEX, Displacement >;
@@ -224,8 +224,8 @@ typedef ElementaryMatrixClass< ASTERCOMPLEX,
                                   Displacement > ElementaryMatrixDisplacementComplexClass;
 
 /** @typedef Definition d'une matrice élémentaire de double temperature */
-template class ElementaryMatrixClass< double, Temperature >;
-typedef ElementaryMatrixClass< double,
+template class ElementaryMatrixClass< ASTERDOUBLE, Temperature >;
+typedef ElementaryMatrixClass< ASTERDOUBLE,
                                   Temperature > ElementaryMatrixTemperatureRealClass;
 
 /** @typedef Definition d'une matrice élémentaire de ASTERCOMPLEX pression */

@@ -36,7 +36,7 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-ElementaryVectorPtr DiscreteProblemClass::buildElementaryDirichletVector( double time ) {
+ElementaryVectorPtr DiscreteProblemClass::buildElementaryDirichletVector( ASTERDOUBLE time ) {
     ElementaryVectorPtr retour( new ElementaryVectorClass( Permanent ) );
 
     ModelPtr curModel = _study->getModel();
@@ -113,7 +113,7 @@ DiscreteProblemClass::buildElementaryNeumannVector( const VectorReal time,
     JeveuxVectorLong jvInfo = _study->getListOfLoads()->getInformationVector();
     std::string nameInfc = jvInfo->getName();
 
-    const double &inst = time[0];
+    const ASTERDOUBLE &inst = time[0];
     std::string stop( "S" );
     std::string blanc( "        " );
     std::string varCName( blanc );
@@ -141,7 +141,7 @@ DiscreteProblemClass::buildElementaryNeumannVector( const VectorReal time,
 };
 
 ElementaryMatrixDisplacementRealPtr
-DiscreteProblemClass::buildElementaryStiffnessMatrix( double time ) {
+DiscreteProblemClass::buildElementaryStiffnessMatrix( ASTERDOUBLE time ) {
     ElementaryMatrixDisplacementRealPtr retour(
         new ElementaryMatrixDisplacementRealClass( Permanent ) );
     ModelPtr curModel = _study->getModel();
@@ -190,18 +190,18 @@ DiscreteProblemClass::buildElementaryStiffnessMatrix( double time ) {
 
 // TODO calcul de la matrice tangente pour l'étape de prédiction de la méthode de Newton
 ElementaryMatrixDisplacementRealPtr
-DiscreteProblemClass::buildElementaryTangentMatrix( double time ) {
+DiscreteProblemClass::buildElementaryTangentMatrix( ASTERDOUBLE time ) {
     return this->buildElementaryStiffnessMatrix( time );
 };
 
 // TODO calcul de la matrice jacobienne pour l'étape de correction de la méthode de Newton
 ElementaryMatrixDisplacementRealPtr
-DiscreteProblemClass::buildElementaryJacobianMatrix( double time ) {
+DiscreteProblemClass::buildElementaryJacobianMatrix( ASTERDOUBLE time ) {
     return this->buildElementaryStiffnessMatrix( time );
 };
 
 FieldOnNodesRealPtr DiscreteProblemClass::buildDirichletBC( const BaseDOFNumberingPtr &curDOFNum,
-                                                            const double &time,
+                                                            const ASTERDOUBLE &time,
                                                             const JeveuxMemory &memType ) const {
     const auto &_listOfLoad = _study->getListOfLoads();
     const auto &list = _listOfLoad->getListVector();

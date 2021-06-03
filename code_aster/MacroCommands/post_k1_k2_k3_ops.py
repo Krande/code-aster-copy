@@ -393,8 +393,8 @@ def get_direction(Nnoff, ndim, Lnoff, FOND_FISS, MAILLAGE):
     # On récupère ces informations dans BASELOC
     # Attendtion à l'odre des veccteurs dans BASELOC
     basloc = FOND_FISS.sdj.BASLOC.VALE.get()
-    
-    # extraction, à partir de baseloc, un objet basefon reduit aux noeud 
+
+    # extraction, à partir de baseloc, un objet basefon reduit aux noeud
     # du fonr tde fissure.
     nb_comp_basloc = 3*ndim
     #suppresion des coordonnées du projeté du noeud, non utilisées ici
@@ -1877,7 +1877,7 @@ def post_k1_k2_k3_ops(self, RESULTAT, FOND_FISS =None, FISSURE=None, MATER=None,
 
         nom_fonc_e = None
         nom_fonc_nu = None
-        for matBehav in MATER.getVectorOfMaterialPropertys():
+        for matBehav in MATER.getVectorOfMaterialProperties():
             if matBehav.hasGenericFunctionValue( "E" ):
                 nom_fonc_e = matBehav.getGenericFunctionValue( "E" )
             if matBehav.hasGenericFunctionValue( "Nu" ):

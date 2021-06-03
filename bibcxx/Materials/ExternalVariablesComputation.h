@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ExternalVariablesComputation
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -51,7 +51,7 @@ class ExternalVariablesComputationClass : public DataStructure {
     FieldOnCellsRealPtr _varRef;
     FieldOnCellsRealPtr _varInst;
     ConstantFieldOnCellsRealPtr _timeValue;
-    double _currentTime;
+    ASTERDOUBLE _currentTime;
     bool _pTot;
     bool _hydr;
     bool _sech;
@@ -79,7 +79,7 @@ class ExternalVariablesComputationClass : public DataStructure {
     /**
      * @brief Compute Input Variables at a given time
      */
-    void compute( const double &time );
+    void compute( const ASTERDOUBLE &time );
 
     /**
      * @brief Compute Loads after computing of input variables

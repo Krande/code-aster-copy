@@ -76,7 +76,7 @@ template < class ValueType > class ElementaryTermClass : public DataStructure {
 /**
  * @typedef ElementaryTermRealPtr
  */
-typedef boost::shared_ptr< ElementaryTermClass< double > > ElementaryTermRealPtr;
+typedef boost::shared_ptr< ElementaryTermClass< ASTERDOUBLE > > ElementaryTermRealPtr;
 
 /**
  * @typedef ElementaryTermComplexPtr

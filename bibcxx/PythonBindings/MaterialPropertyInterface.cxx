@@ -3,7 +3,7 @@
  * @brief Interface python de MaterialProperty
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,13 +32,13 @@ namespace py = boost::python;
 void exportMaterialPropertyToPython() {
 
     bool ( MaterialPropertyClass::*c1 )( std::string, const bool ) =
-        &MaterialPropertyClass::addNewRealProperty;
-    bool ( MaterialPropertyClass::*c2 )( std::string, const double &, const bool ) =
-        &MaterialPropertyClass::addNewRealProperty;
+        &MaterialPropertyClass::addRealProperty;
+    bool ( MaterialPropertyClass::*c2 )( std::string, const ASTERDOUBLE &, const bool ) =
+        &MaterialPropertyClass::addRealProperty;
     bool ( MaterialPropertyClass::*c3 )( std::string, const bool ) =
-        &MaterialPropertyClass::addNewStringProperty;
+        &MaterialPropertyClass::addStringProperty;
     bool ( MaterialPropertyClass::*c4 )( std::string, const std::string &, const bool ) =
-        &MaterialPropertyClass::addNewStringProperty;
+        &MaterialPropertyClass::addStringProperty;
 
     py::class_< MaterialPropertyClass, MaterialPropertyPtr,
                 py::bases< GenericMaterialPropertyClass > >( "MaterialProperty", py::no_init )
@@ -47,16 +47,16 @@ void exportMaterialPropertyToPython() {
         .def( "__init__",
               py::make_constructor(
                   &initFactoryPtr< MaterialPropertyClass, std::string, std::string >))
-        .def( "addNewRealProperty", c1 )
-        .def( "addNewRealProperty", c2 )
-        .def( "addNewComplexProperty", &MaterialPropertyClass::addNewComplexProperty )
-        .def( "addNewStringProperty", c3 )
-        .def( "addNewStringProperty", c4 )
-        .def( "addNewFunctionProperty", &MaterialPropertyClass::addNewFunctionProperty )
-        .def( "addNewTableProperty", &MaterialPropertyClass::addNewTableProperty )
-        .def( "addNewVectorOfRealProperty",
-              &MaterialPropertyClass::addNewVectorOfRealProperty )
-        .def( "addNewVectorOfFunctionProperty",
-              &MaterialPropertyClass::addNewVectorOfFunctionProperty )
+        .def( "addRealProperty", c1 )
+        .def( "addRealProperty", c2 )
+        .def( "addComplexProperty", &MaterialPropertyClass::addComplexProperty )
+        .def( "addStringProperty", c3 )
+        .def( "addStringProperty", c4 )
+        .def( "addFunctionProperty", &MaterialPropertyClass::addFunctionProperty )
+        .def( "addTableProperty", &MaterialPropertyClass::addTableProperty )
+        .def( "addVectorOfRealProperty",
+              &MaterialPropertyClass::addVectorOfRealProperty )
+        .def( "addVectorOfFunctionProperty",
+              &MaterialPropertyClass::addVectorOfFunctionProperty )
         .def( "getName", &MaterialPropertyClass::getName );
 };

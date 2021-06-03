@@ -52,7 +52,7 @@ class StructureInterfaceClass : public DataStructure {
   private:
     /** @brief Numérotation */
     const DOFNumberingPtr _dofNum;
-    double _frequency;
+    ASTERDOUBLE _frequency;
     bool _isEmpty;
 
     JeveuxCollectionLong _codingNumbers;
@@ -144,7 +144,7 @@ class StructureInterfaceClass : public DataStructure {
         _container.add(
             new CapyConvertibleValue< DOFNumberingPtr >( true, "NUME_DDL", _dofNum, true ) );
         _container.add(
-            new CapyConvertibleValue< double >( false, "NUME_DDL", _frequency, false ) );
+            new CapyConvertibleValue< ASTERDOUBLE >( false, "NUME_DDL", _frequency, false ) );
     };
 
     void addInterface( const std::string &name, const InterfaceTypeEnum &type,

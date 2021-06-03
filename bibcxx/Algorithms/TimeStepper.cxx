@@ -3,7 +3,7 @@
  * @brief Implementation de TimeStepper
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -35,10 +35,10 @@ bool TimeStepperClass::setValues( const VectorReal &values ) {
         throw std::runtime_error( "Unable to update pointers of TimeStepperClass" );
 
     int compteur = 0;
-    double save = 0.;
+    ASTERDOUBLE save = 0.;
     for ( VectorRealCIter tmp = values.begin(); tmp != values.end(); ++tmp ) {
         ( *_values )[compteur] = *tmp;
-        const double &curVal = *tmp;
+        const ASTERDOUBLE &curVal = *tmp;
         if ( compteur != 0 && save >= curVal )
             throw std::runtime_error( "Time function not strictly increasing" );
         save = *tmp;

@@ -149,7 +149,7 @@ class MechanicalDirichletBCClass : public DirichletBCClass {
      * @return Booleen indiquant que tout s'est bien passe
      */
     bool addBCOnCells(
-        const PhysicalQuantityComponent &coordinate, const double &value,
+        const PhysicalQuantityComponent &coordinate, const ASTERDOUBLE &value,
         const std::string &nameOfGroup ) {
         if ( !_model->getMesh()->hasGroupOfCells( nameOfGroup ) )
             throw std::runtime_error( nameOfGroup + " not in mesh" );
@@ -167,7 +167,7 @@ class MechanicalDirichletBCClass : public DirichletBCClass {
      * @return Booleen indiquant que tout s'est bien passe
      */
     bool addBCOnCells(
-        const PhysicalQuantityComponent &coordinate, const double &value,
+        const PhysicalQuantityComponent &coordinate, const ASTERDOUBLE &value,
         const VectorString &namesOfGroup ) {
         for ( const auto &nameOfGroup : namesOfGroup )
             addBCOnCells( coordinate, value, nameOfGroup );
@@ -182,7 +182,7 @@ class MechanicalDirichletBCClass : public DirichletBCClass {
      */
     bool
     addBCOnNodes( const PhysicalQuantityComponent &coordinate,
-                                    const double &value,
+                                    const ASTERDOUBLE &value,
                                     const std::string &nameOfGroup ) {
         if ( !_model->getMesh()->hasGroupOfNodes( nameOfGroup ) )
             throw std::runtime_error( nameOfGroup + " not in mesh" );
@@ -200,7 +200,7 @@ class MechanicalDirichletBCClass : public DirichletBCClass {
      * @return Booleen indiquant que tout s'est bien passe
      */
     bool addBCOnNodes(
-        const PhysicalQuantityComponent &coordinate, const double &value,
+        const PhysicalQuantityComponent &coordinate, const ASTERDOUBLE &value,
         const VectorString &namesOfGroup ) {
         for ( const auto &nameOfGroup : namesOfGroup )
             addBCOnNodes( coordinate, value, nameOfGroup );
@@ -250,7 +250,7 @@ class ThermalDirichletBCClass : public DirichletBCClass {
      */
     bool
     addBCOnCells( const PhysicalQuantityComponent &coordinate,
-                                    const double &value,
+                                    const ASTERDOUBLE &value,
                                     const std::string &nameOfGroup ) {
         if ( !_model->getMesh()->hasGroupOfCells( nameOfGroup ) )
             throw std::runtime_error( nameOfGroup + " not in mesh" );
@@ -268,7 +268,7 @@ class ThermalDirichletBCClass : public DirichletBCClass {
      * @return Booleen indiquant que tout s'est bien passe
      */
     bool addBCOnCells(
-        const PhysicalQuantityComponent &coordinate, const double &value,
+        const PhysicalQuantityComponent &coordinate, const ASTERDOUBLE &value,
         const VectorString &namesOfGroup ) {
         for ( const auto &nameOfGroup : namesOfGroup )
             addBCOnCells( coordinate, value, nameOfGroup );
@@ -282,7 +282,7 @@ class ThermalDirichletBCClass : public DirichletBCClass {
      * @return Booleen indiquant que tout s'est bien passe
      */
     bool addBCOnNodes( const PhysicalQuantityComponent &coordinate,
-                                      const double &value,
+                                      const ASTERDOUBLE &value,
                                       const std::string &nameOfGroup ) {
         if ( !_model->getMesh()->hasGroupOfNodes( nameOfGroup ) )
             throw std::runtime_error( nameOfGroup + " not in mesh" );
@@ -300,7 +300,7 @@ class ThermalDirichletBCClass : public DirichletBCClass {
      * @return Booleen indiquant que tout s'est bien passe
      */
     bool addBCOnNodes(
-        const PhysicalQuantityComponent &coordinate, const double &value,
+        const PhysicalQuantityComponent &coordinate, const ASTERDOUBLE &value,
         const VectorString &namesOfGroup ) {
         for ( const auto &nameOfGroup : namesOfGroup )
             addBCOnNodes( coordinate, value, nameOfGroup );
@@ -382,7 +382,7 @@ class AcousticDirichletBCClass : public DirichletBCClass {
      * @return Booleen indiquant que tout s'est bien passe
      */
     bool addBCOnCells( const std::string &nameOfGroup,
-                                          const double &value ) {
+                                          const ASTERDOUBLE &value ) {
         throw std::runtime_error( "Not yet implemented" );
     };
 
@@ -393,7 +393,7 @@ class AcousticDirichletBCClass : public DirichletBCClass {
      * @return Booleen indiquant que tout s'est bien passe
      */
     bool addBCOnNodes( const std::string &nameOfGroup,
-                                       double value ) {
+                                       ASTERDOUBLE value ) {
         throw std::runtime_error( "Not yet implemented" );
     };
 };

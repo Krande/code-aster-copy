@@ -44,7 +44,7 @@ typedef std::vector< FunctionPtr > VectorFunction;
 
 
 
-typedef ConvertibleValue< std::string, double > StringToRealValue;
+typedef ConvertibleValue< std::string, ASTERDOUBLE > StringToRealValue;
 
 /**
  * @struct template AllowedMaterialPropertyType
@@ -53,7 +53,7 @@ typedef ConvertibleValue< std::string, double > StringToRealValue;
  */
 template < typename T > struct AllowedMaterialPropertyType;
 
-template <> struct AllowedMaterialPropertyType< double > {};
+template <> struct AllowedMaterialPropertyType< ASTERDOUBLE > {};
 
 template <> struct AllowedMaterialPropertyType< ASTERCOMPLEX > {};
 
@@ -208,7 +208,7 @@ class ElementaryMaterialPropertyClass : private AllowedMaterialPropertyType< Val
 };
 
 /** @typedef Definition d'une propriete materiau de type double */
-typedef ElementaryMaterialPropertyClass< double > ElementaryMaterialPropertyReal;
+typedef ElementaryMaterialPropertyClass< ASTERDOUBLE > ElementaryMaterialPropertyReal;
 /** @typedef Definition d'une propriete materiau de type double */
 typedef ElementaryMaterialPropertyClass< ASTERCOMPLEX > ElementaryMaterialPropertyComplex;
 /** @typedef Definition d'une propriete materiau de type string */
@@ -381,7 +381,7 @@ class GenericMaterialPropertyClass {
         return _mapOfVectorFunctionMaterialProperties.size();
     };
 
-    double getRealValue( std::string nameOfProperty )
+    ASTERDOUBLE getRealValue( std::string nameOfProperty )
     {
         auto curIter = _mapOfRealMaterialProperties.find( nameOfProperty );
         if ( curIter != _mapOfRealMaterialProperties.end() )
@@ -421,7 +421,7 @@ class GenericMaterialPropertyClass {
         throw std::runtime_error( nameOfProperty + " is not a table value" );
     };
 
-    double hasRealValue( std::string nameOfProperty )
+    ASTERDOUBLE hasRealValue( std::string nameOfProperty )
     {
         auto curIter = _mapOfRealMaterialProperties.find( nameOfProperty );
         if ( curIter == _mapOfRealMaterialProperties.end() )
@@ -472,7 +472,7 @@ class GenericMaterialPropertyClass {
      * @param value Real correspondant a la valeur donnee par l'utilisateur
      * @return Booleen valant true si la tache s'est bien deroulee
      */
-    bool setRealValue( std::string nameOfProperty, double value ) {
+    bool setRealValue( std::string nameOfProperty, ASTERDOUBLE value ) {
         // Recherche de la propriete materielle
         mapStrEMPDIterator curIter = _mapOfRealMaterialProperties.find( nameOfProperty );
         if ( curIter == _mapOfRealMaterialProperties.end() )
