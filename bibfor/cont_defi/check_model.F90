@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine check_model(mesh, model, cont_form)
 !
 implicit none
@@ -24,14 +24,9 @@ implicit none
 #include "asterfort/exipat.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/utmess.h"
-#include "asterfort/asmpi_info.h"
-#include "asterc/asmpi_comm.h"
 !
-! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
-!
-    character(len=8), intent(in) :: mesh
-    character(len=8), intent(in) :: model
-    integer, intent(in) :: cont_form
+character(len=8), intent(in) :: mesh, model
+integer, intent(in) :: cont_form
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,31 +43,19 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: iret
-    character(len=8)  ::  partit
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    mpi_int :: nb_proc, mpicou
-!
-! - Mpi informations
-!
-    call asmpi_comm('GET', mpicou)
-    call asmpi_info(mpicou, size=nb_proc)
-!
-! --------------------------------------------------------------------------------------------------
-!
-!
+
 ! - Check if exist XFEM in model
-!
     if (cont_form .eq. 3) then
         call exixfe(model, iret)
         if (iret .eq. 0) then
             call utmess('F', 'XFEM2_8', sk=model)
         endif
     endif
-!
+
 ! - Check if exist PATCH in mesh (LAC method)
-!
     if (cont_form .eq. 5) then
         call exipat(mesh, iret)
         if (iret .eq. 0) then
@@ -80,14 +63,4 @@ implicit none
         endif
     endif
 !
-! issue25897 : Pour les formulations discrètes, la méthode de décomposition par sous_domaine
-! est interdite.
-    if ((cont_form .eq. 1) .or. (cont_form .eq. 4)) then
-        if (nb_proc .gt. 1) then
-        call dismoi('PARTITION', model//'.MODELE', 'LIGREL', repk=partit)
-            if ((partit .ne. ' ')) then
-                call utmess('F', 'CONTACT3_45')
-            endif
-        endif
-    endif
 end subroutine
