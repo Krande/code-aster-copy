@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,12 +19,12 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import ThermalLoad
+from ..Objects import ThermalLoadFunction
 from ..Supervis import ExecuteCommand
 
 
 class ThermalLoadDefinition(ExecuteCommand):
-    """Command that creates the :class:`~code_aster.Objects.ThermalLoad`"""
+    """Command that creates the :class:`~code_aster.Objects.ThermalLoadFunction`"""
     command_name = "AFFE_CHAR_THER_F"
 
     def create_result(self, keywords):
@@ -34,7 +34,7 @@ class ThermalLoadDefinition(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
 
-        self._result = ThermalLoad(keywords["MODELE"])
+        self._result = ThermalLoadFunction(keywords["MODELE"])
 
 
 AFFE_CHAR_THER_F = ThermalLoadDefinition.run

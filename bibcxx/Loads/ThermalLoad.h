@@ -24,19 +24,14 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <list>
-#include <stdexcept>
-#include <string>
 
 #include "astercxx.h"
 
 #include "DataFields/ConstantFieldOnCells.h"
-#include "Loads/UnitaryThermalLoad.h"
-#include "Meshes/BaseMesh.h"
-#include "Meshes/MeshEntities.h"
+#include "MemoryManager/JeveuxVector.h"
+#include "Loads/ThermalLoadDescription.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/Model.h"
-#include "Utilities/CapyConvertibleValue.h"
 #include "Supervis/ResultNaming.h"
 
 /**
@@ -44,74 +39,13 @@
  * @brief Classe definissant une charge thermique (issue d'AFFE_CHAR_THER)
  * @author Jean-Pierre Lefebvre
  */
+template< class ConstantFieldOnCellsType>
 class ThermalLoadClass : public DataStructure {
   private:
-    struct TherLoad {
-        /** @brief Modele */
-        ModelPtr _model;
-        /** @brief mesh */
-        BaseMeshPtr _mesh;
-        /** @brief Vecteur Jeveux '.MODEL.NOMO' */
-        JeveuxVectorChar8 _modelName;
-        /** @brief Vecteur Jeveux '.CONVE.VALE' */
-        JeveuxVectorChar8 _convection;
-        /** @brief Vecteur Jeveux '.LIGRE' */
-        FiniteElementDescriptorPtr _FEDesc;
-        /** @brief Carte '.CIMPO' */
-        ConstantFieldOnCellsRealPtr _cimpo;
-        /** @brief Carte '.CMULT' */
-        ConstantFieldOnCellsRealPtr _cmult;
-        /** @brief Carte '.COEFH' */
-        ConstantFieldOnCellsRealPtr _coefh;
-        /** @brief Carte '.FLUNL' */
-        ConstantFieldOnCellsRealPtr _flunl;
-        /** @brief Carte '.FLURE' */
-        ConstantFieldOnCellsRealPtr _flure;
-        /** @brief Carte '.GRAIN' */
-        ConstantFieldOnCellsRealPtr _grain;
-        /** @brief Carte '.HECHP' */
-        ConstantFieldOnCellsRealPtr _hechp;
-        /** @brief Carte '.SOURE' */
-        ConstantFieldOnCellsRealPtr _soure;
-        /** @brief Carte '.T_EXT' */
-        ConstantFieldOnCellsRealPtr _tExt;
-
-        /** @brief Constructeur */
-        TherLoad( const std::string &name, const ModelPtr &currentModel )
-            : _model( currentModel ), _mesh( _model->getMesh() ),
-              _modelName( name + ".MODEL.NOMO" ), _convection( name + ".CONVE.VALE" ),
-              _FEDesc( new FiniteElementDescriptorClass( name + ".LIGRE", _mesh ) ),
-              _cimpo( new ConstantFieldOnCellsRealClass( name + ".CIMPO", _FEDesc ) ),
-              _cmult( new ConstantFieldOnCellsRealClass( name + ".CMULT", _FEDesc ) ),
-              _coefh( new ConstantFieldOnCellsRealClass( name + ".COEFH", _FEDesc ) ),
-              _flunl( new ConstantFieldOnCellsRealClass( name + ".FLUNL", _FEDesc ) ),
-              _flure( new ConstantFieldOnCellsRealClass( name + ".FLURE", _FEDesc ) ),
-              _grain( new ConstantFieldOnCellsRealClass( name + ".GRAIN", _FEDesc ) ),
-              _hechp( new ConstantFieldOnCellsRealClass( name + ".HECHP", _FEDesc ) ),
-              _soure( new ConstantFieldOnCellsRealClass( name + ".SOURE", _FEDesc ) ),
-              _tExt( new ConstantFieldOnCellsRealClass( name + ".T_EXT", _FEDesc ) ){};
-    };
-
-    /** @typedef Pointeur intelligent sur un VirtualMeshEntity */
-    typedef boost::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
-    /** @brief std::list de std::pair de UnitaryThermalLoadPtr et MeshEntityPtr */
-    typedef std::vector< UnitaryThermalLoadPtr > listOfLoads;
-    /** @brief Valeur contenue dans listOfLoads */
-    typedef listOfLoads::value_type listOfLoadsValue;
-    /** @brief Iterateur sur un listOfLoads */
-    typedef listOfLoads::iterator listOfLoadsIter;
-
     /** @brief Vecteur Jeveux '.TYPE' */
     JeveuxVectorChar8 _type;
-    TherLoad _therLoad;
-    /** @brief Modele */
-    ModelPtr _model;
-    /** @brief La SD est-elle vide ? */
-    bool _isEmpty;
-    listOfLoads _thermalLoads;
-
-    /** @brief Conteneur des mots-clés avec traduction */
-    CapyConvertibleContainer _toCapyConverter;
+    /** @brief sd_char_chth '.CHTH' */
+    ThermalLoadDescriptionPtr< ConstantFieldOnCellsType > _therLoadDesc;
 
   public:
     /**
@@ -135,50 +69,60 @@ class ThermalLoadClass : public DataStructure {
      * @brief Constructeur
      */
     ThermalLoadClass( const std::string name, const ModelPtr &currentModel )
-        : DataStructure( name, 8, "CHAR_THER" ), _therLoad( getName() + ".CHTH", currentModel ),
-          _type( getName() + ".TYPE" ), _model( currentModel ), _isEmpty( true ){};
+        : DataStructure( name, 8, "CHAR_THER" ),
+        _therLoadDesc( boost::make_shared<
+            ThermalLoadDescriptionClass< ConstantFieldOnCellsType > >(getName() + ".CHTH",
+                                                                            currentModel )),
+          _type( getName() + ".TYPE" ){};
 
-    /**
-     * @brief Ajout d'une valeur acoustique imposee sur un groupe de mailles
-     * @param nameOfGroup Nom du groupe sur lequel imposer la valeur
-     * @param value Valeur imposee
-     * @return Booleen indiquant que tout s'est bien passe
-     */
-    bool addUnitaryThermalLoad( const UnitaryThermalLoadPtr &toAdd ) {
-
-        _thermalLoads.push_back( toAdd );
-
-        return true;
-    };
-
-    /**
-     * @brief Construction de la charge (appel a OP0101)
-     * @return Booleen indiquant que tout s'est bien passe
-     */
-    bool build();
 
     /**
      * @brief Get the finite element descriptor
      */
-    FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _therLoad._FEDesc; };
+    FiniteElementDescriptorPtr getFiniteElementDescriptor() const
+    { return _therLoadDesc->getFiniteElementDescriptor(); };
 
     /**
      * @brief Get the model
      */
-    ModelPtr getModel() const { return _model; };
+    ModelPtr getModel() const { return _therLoadDesc->getModel(); };
+
+    /**
+     * @brief Get the mesh
+     */
+    BaseMeshPtr getMesh() const { return _therLoadDesc->getMesh(); };
 };
 
-/**
- * @typedef ThermalLoad
- * @brief Pointeur intelligent vers un ThermalLoadClass
- */
-typedef boost::shared_ptr< ThermalLoadClass > ThermalLoadPtr;
+/**********************************************************/
+/*  Explicit instantiation of template classes
+/**********************************************************/
+
+/** @typedef ThermalLoadRealClass Class d'une charge mécanique réelle */
+typedef ThermalLoadClass< ConstantFieldOnCellsRealClass > ThermalLoadRealClass;
+/** @typedef ThermalLoadFuncClass Class d'une charge mécanique de fonctions */
+typedef ThermalLoadClass< ConstantFieldOnCellsChar24Class > ThermalLoadFunctionClass;
+
+/** @typedef ThermalLoad  */
+template< class ConstantFieldOnCellsType>
+using ThermalLoadPtr =
+    boost::shared_ptr< ThermalLoadClass< ConstantFieldOnCellsType > >;
+
+typedef boost::shared_ptr< ThermalLoadRealClass > ThermalLoadRealPtr;
+typedef boost::shared_ptr< ThermalLoadFunctionClass > ThermalLoadFunctionPtr;
+
 
 /** @typedef std::list de ThermalLoad */
-typedef std::list< ThermalLoadPtr > ListTherLoad;
+typedef std::list< ThermalLoadRealPtr > ListTherLoadReal;
 /** @typedef Iterateur sur une std::list de ThermalLoad */
-typedef ListTherLoad::iterator ListTherLoadIter;
+typedef ListTherLoadReal::iterator ListTherLoadRealIter;
 /** @typedef Iterateur constant sur une std::list de ThermalLoad */
-typedef ListTherLoad::const_iterator ListTherLoadCIter;
+typedef ListTherLoadReal::const_iterator ListTherLoadRealCIter;
+
+/** @typedef std::list de ThermalLoad */
+typedef std::list< ThermalLoadFunctionPtr > ListTherLoadFunction;
+/** @typedef Iterateur sur une std::list de ThermalLoad */
+typedef ListTherLoadFunction::iterator ListTherLoadFunctionIter;
+/** @typedef Iterateur constant sur une std::list de ThermalLoad */
+typedef ListTherLoadFunction::const_iterator ListTherLoadFunctionCIter;
 
 #endif /* THERMALLOAD_H_ */

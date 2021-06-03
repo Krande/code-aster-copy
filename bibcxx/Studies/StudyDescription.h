@@ -157,8 +157,15 @@ class StudyDescriptionClass {
      * @brief Function de récupération de la liste des charges thermiques
      * @return _listOfThermalLoads
      */
-    const ListTherLoad &getListOfThermalLoads() const
-    { return _listOfLoads->getListOfThermalLoads(); };
+    const ListTherLoadReal &getListOfThermalLoadsReal() const
+    { return _listOfLoads->getListOfThermalLoadsReal(); };
+
+    /**
+     * @brief Function de récupération de la liste des charges thermiques
+     * @return _listOfThermalLoads
+     */
+    const ListTherLoadFunction &getListOfThermalLoadsFunction() const
+    { return _listOfLoads->getListOfThermalLoadsFunction(); };
 
     /**
      * @brief Obtenir le matériau affecté

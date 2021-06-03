@@ -271,6 +271,12 @@ class UnitaryMechanicalLoadRealClass : public MechanicalLoadRealClass
     /** @typedef PhysicalQuantity que l'on veut imposer*/
     PhysicalQuantityPtr _physicalQuantity;
 
+    /** @typedef Definition d'un pointeur intelligent sur un VirtualMeshEntity */
+    typedef boost::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
+
+    /** @brief MeshEntity sur laquelle repose le "blocage" */
+    MeshEntityPtr _meshEntity;
+
   public:
     /**
      * @typedef MechanicalLoadPtr

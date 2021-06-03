@@ -85,13 +85,17 @@ class ListOfLoadsClass : public DataStructure {
     /** @brief List of functions for MechanicalLoads */
     ListOfLoadFunctions _listOfMechaFuncFunction;
     /** @brief Chargements Thermique */
-    ListTherLoad _listOfThermalLoads;
+    ListTherLoadReal _listOfThermalLoadsReal;
     /** @brief List of functions for ThermalLoads */
-    ListOfLoadFunctions _listOfTherFun;
+    ListOfLoadFunctions _listOfTherFuncReal;
+    /** @brief Chargements Thermique */
+    ListTherLoadFunction _listOfThermalLoadsFunction;
+    /** @brief List of functions for ThermalLoads */
+    ListOfLoadFunctions _listOfTherFuncFunction;
     /** @brief Chargements Acoustique */
-    ListAcouLoad _listOfAcousticLoads;
+    ListAcouLoadComplex _listOfAcousticLoadsComplex;
     /** @brief List of functions for AcousticLoads */
-    ListOfLoadFunctions _listOfAcouFun;
+    ListOfLoadFunctions _listOfAcouFuncComplex;
 #ifdef ASTER_HAVE_MPI
     /** @brief Chargements Mecaniques paralleles */
     ListParaMecaLoadReal _listOfParallelMechanicalLoadsReal;
@@ -313,12 +317,12 @@ class ListOfLoadsClass : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
-    void addLoad( const ThermalLoadPtr &currentLoad,
+    void addLoad( const ThermalLoadRealPtr &currentLoad,
                   const FunctionPtr &func = emptyRealFunction ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
-        _listOfThermalLoads.push_back( currentLoad );
-        _listOfTherFun.push_back( func );
+        _listOfThermalLoadsReal.push_back( currentLoad );
+        _listOfTherFuncReal.push_back( func );
     };
 
     /**
@@ -326,11 +330,11 @@ class ListOfLoadsClass : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier formula
      */
-    void addLoad( const ThermalLoadPtr &currentLoad, const FormulaPtr &func ) {
+    void addLoad( const ThermalLoadRealPtr &currentLoad, const FormulaPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
-        _listOfThermalLoads.push_back( currentLoad );
-        _listOfTherFun.push_back( func );
+        _listOfThermalLoadsReal.push_back( currentLoad );
+        _listOfTherFuncReal.push_back( func );
     };
 
     /**
@@ -338,11 +342,48 @@ class ListOfLoadsClass : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function2d
      */
-    void addLoad( const ThermalLoadPtr &currentLoad, const Function2DPtr &func ) {
+    void addLoad( const ThermalLoadRealPtr &currentLoad, const Function2DPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
-        _listOfThermalLoads.push_back( currentLoad );
-        _listOfTherFun.push_back( func );
+        _listOfThermalLoadsReal.push_back( currentLoad );
+        _listOfTherFuncReal.push_back( func );
+    };
+
+        /**
+     * @brief Function d'ajout d'une charge mécanique
+     * @param currentLoad charge a ajouter a la sd
+     * @param func multiplier function
+     */
+    void addLoad( const ThermalLoadFunctionPtr &currentLoad,
+                  const FunctionPtr &func = emptyRealFunction ) {
+        _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
+        _listOfThermalLoadsFunction.push_back( currentLoad );
+        _listOfTherFuncFunction.push_back( func );
+    };
+
+    /**
+     * @brief Function d'ajout d'une charge mécanique
+     * @param currentLoad charge a ajouter a la sd
+     * @param func multiplier formula
+     */
+    void addLoad( const ThermalLoadFunctionPtr &currentLoad, const FormulaPtr &func ) {
+        _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
+        _listOfThermalLoadsFunction.push_back( currentLoad );
+        _listOfTherFuncFunction.push_back( func );
+    };
+
+    /**
+     * @brief Function d'ajout d'une charge mécanique
+     * @param currentLoad charge a ajouter a la sd
+     * @param func multiplier function2d
+     */
+    void addLoad( const ThermalLoadFunctionPtr &currentLoad, const Function2DPtr &func ) {
+        _isEmpty = true;
+        this->setModel( currentLoad->getModel() );
+        _listOfThermalLoadsFunction.push_back( currentLoad );
+        _listOfTherFuncFunction.push_back( func );
     };
 
 
@@ -351,12 +392,12 @@ class ListOfLoadsClass : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
-    void addLoad( const AcousticLoadPtr &currentLoad,
+    void addLoad( const AcousticLoadComplexPtr &currentLoad,
                   const FunctionPtr &func = emptyRealFunction ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
-        _listOfAcousticLoads.push_back( currentLoad );
-        _listOfAcouFun.push_back( func );
+        _listOfAcousticLoadsComplex.push_back( currentLoad );
+        _listOfAcouFuncComplex.push_back( func );
     };
 
     /**
@@ -364,11 +405,11 @@ class ListOfLoadsClass : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier formula
      */
-    void addLoad( const AcousticLoadPtr &currentLoad, const FormulaPtr &func ) {
+    void addLoad( const AcousticLoadComplexPtr &currentLoad, const FormulaPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
-        _listOfAcousticLoads.push_back( currentLoad );
-        _listOfAcouFun.push_back( func );
+        _listOfAcousticLoadsComplex.push_back( currentLoad );
+        _listOfAcouFuncComplex.push_back( func );
     };
 
     /**
@@ -376,11 +417,11 @@ class ListOfLoadsClass : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function2d
      */
-    void addLoad( const AcousticLoadPtr &currentLoad, const Function2DPtr &func ) {
+    void addLoad( const AcousticLoadComplexPtr &currentLoad, const Function2DPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
-        _listOfAcousticLoads.push_back( currentLoad );
-        _listOfAcouFun.push_back( func );
+        _listOfAcousticLoadsComplex.push_back( currentLoad );
+        _listOfAcouFuncComplex.push_back( func );
     };
 
     /**
@@ -441,9 +482,17 @@ class ListOfLoadsClass : public DataStructure {
 
     /**
      * @brief Function de récupération de la liste des charges thermiques
-     * @return _listOfThermalLoads
+     * @return _listOfThermalLoadsReal
      */
-    const ListTherLoad &getListOfThermalLoads() const { return _listOfThermalLoads; };
+    const ListTherLoadReal& getListOfThermalLoadsReal() const
+    { return _listOfThermalLoadsReal; };
+
+        /**
+     * @brief Function de récupération de la liste des charges thermiques
+     * @return _listOfThermalLoadsFunction
+     */
+    const ListTherLoadFunction&getListOfThermalLoadsFunction() const
+    { return _listOfThermalLoadsFunction; };
 
     /**
      * @brief Function de récupération de la liste des charges
@@ -476,8 +525,9 @@ class ListOfLoadsClass : public DataStructure {
                _listOfParallelMechanicalLoadsReal.size() +
                _listOfParallelMechanicalLoadsFunction.size() +
 #endif /* ASTER_HAVE_MPI */
-               _listOfThermalLoads.size() +
-               _listOfAcousticLoads.size() +
+               _listOfThermalLoadsReal.size() +
+               _listOfThermalLoadsFunction.size() +
+               _listOfAcousticLoadsComplex.size() +
                _listOfDirichletBCs.size();
         };
 

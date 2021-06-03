@@ -116,35 +116,37 @@ class MechanicalLoadDescriptionClass : public DataStructure
     MechanicalLoadDescriptionClass( const std::string name, const ModelPtr &currentModel )
         : DataStructure( name, 14, "CHAR_CHME" ),
             _model( currentModel ),
-            _temperatureField( name + ".TEMPE.TEMP" ),
-            _modelName( name + ".MODEL.NOMO" ),
-            _nameOfAssemblyVector( name + ".VEASS" ),
-            _veiss( name + ".VEISS" ),
-            _evolChar( name + ".EVOL.CHAR" ),
+            _temperatureField( getName() + ".TEMPE.TEMP" ),
+            _modelName( getName() + ".MODEL.NOMO" ),
+            _nameOfAssemblyVector( getName() + ".VEASS" ),
+            _veiss( getName() + ".VEISS" ),
+            _evolChar( getName() + ".EVOL.CHAR" ),
             _FEDesc( boost::make_shared<FiniteElementDescriptorClass>(
-                name + ".LIGRE", _model->getMesh() ) ),
-            _cimpo(boost::make_shared<ConstantFieldOnCellsType>( name + ".CIMPO", _FEDesc ) ),
-            _cmult(boost::make_shared<ConstantFieldOnCellsRealClass>( name + ".CMULT", _FEDesc ) ),
-            _dpgen(boost::make_shared<ConstantFieldOnCellsType>( name + ".DPGEN", _FEDesc ) ),
-            _epsin(boost::make_shared<ConstantFieldOnCellsType>( name + ".EPSIN", _FEDesc ) ),
-            _f1d2d(boost::make_shared<ConstantFieldOnCellsType>( name + ".F1D2D", _FEDesc ) ),
-            _f1d3d(boost::make_shared<ConstantFieldOnCellsType>( name + ".F1D3D", _FEDesc ) ),
-            _f2d3d(boost::make_shared<ConstantFieldOnCellsType>( name + ".F2D3D", _FEDesc ) ),
-            _fco2d(boost::make_shared<ConstantFieldOnCellsType>( name + ".FCO2D", _FEDesc ) ),
-            _fco3d(boost::make_shared<ConstantFieldOnCellsType>( name + ".FCO3D", _FEDesc ) ),
-            _felec(boost::make_shared<ConstantFieldOnCellsType>( name + ".FELEC", _FEDesc ) ),
-            _fl101(boost::make_shared<ConstantFieldOnCellsType>( name + ".FL101", _FEDesc ) ),
-            _fl102(boost::make_shared<ConstantFieldOnCellsType>( name + ".FL102", _FEDesc ) ),
-            _forno(boost::make_shared<ConstantFieldOnCellsType>( name + ".FORNO", _FEDesc ) ),
-            _impe(boost::make_shared<ConstantFieldOnCellsType>( name + ".IMPE", _FEDesc ) ),
-            _pesan(boost::make_shared<ConstantFieldOnCellsType>( name + ".PESAN", _FEDesc ) ),
-            _press(boost::make_shared<ConstantFieldOnCellsType>( name + ".PRESS", _FEDesc ) ),
-            _rotat(boost::make_shared<ConstantFieldOnCellsType>( name + ".ROTAT", _FEDesc ) ),
-            _sigin(boost::make_shared<ConstantFieldOnCellsType>( name + ".SIGIN", _FEDesc ) ),
-            _siint(boost::make_shared<ConstantFieldOnCellsType>( name + ".SIINT", _FEDesc ) ),
-            _vnor(boost::make_shared<ConstantFieldOnCellsType>( name + ".VNOR", _FEDesc ) ),
-            _ondpl(boost::make_shared<ConstantFieldOnCellsType>( name + ".ONDPL", _FEDesc ) ),
-            _ondpr(boost::make_shared<ConstantFieldOnCellsType>( name + ".ONDPR", _FEDesc ) ){};
+                getName() + ".LIGRE", _model->getMesh() ) ),
+            _cimpo(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".CIMPO", _FEDesc ) ),
+            _cmult(boost::make_shared<ConstantFieldOnCellsRealClass>(
+                                                                 getName() + ".CMULT", _FEDesc ) ),
+            _dpgen(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".DPGEN", _FEDesc ) ),
+            _epsin(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".EPSIN", _FEDesc ) ),
+            _f1d2d(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".F1D2D", _FEDesc ) ),
+            _f1d3d(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".F1D3D", _FEDesc ) ),
+            _f2d3d(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".F2D3D", _FEDesc ) ),
+            _fco2d(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".FCO2D", _FEDesc ) ),
+            _fco3d(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".FCO3D", _FEDesc ) ),
+            _felec(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".FELEC", _FEDesc ) ),
+            _fl101(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".FL101", _FEDesc ) ),
+            _fl102(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".FL102", _FEDesc ) ),
+            _forno(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".FORNO", _FEDesc ) ),
+            _impe(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".IMPE", _FEDesc ) ),
+            _pesan(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".PESAN", _FEDesc ) ),
+            _press(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".PRESS", _FEDesc ) ),
+            _rotat(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".ROTAT", _FEDesc ) ),
+            _sigin(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".SIGIN", _FEDesc ) ),
+            _siint(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".SIINT", _FEDesc ) ),
+            _vnor(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".VNOR", _FEDesc ) ),
+            _ondpl(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".ONDPL", _FEDesc ) ),
+            _ondpr(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".ONDPR", _FEDesc ) )
+            {};
 
     /**
      * @brief Get the finite element descriptor
@@ -175,7 +177,7 @@ typedef MechanicalLoadDescriptionClass< ConstantFieldOnCellsComplexClass >
 
 
 template< typename ConstantFieldOnCellsType >
-using MechanicalLoadDescriptionClassPtr =
+using MechanicalLoadDescriptionPtr =
     boost::shared_ptr< MechanicalLoadDescriptionClass< ConstantFieldOnCellsType > >;
 
 

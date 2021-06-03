@@ -31,7 +31,7 @@ from .datastructure_ext import (AsFloat, AsInteger, DataStructure,
                                 OnlyParallelObject, PyDataStructure)
 
 # extend DataStructures using metaclasses
-from .acousticload_ext import AcousticLoad
+from .acousticload_ext import AcousticLoadComplex
 from .assemblymatrix_ext import (AssemblyMatrixDisplacementComplex,
                                  AssemblyMatrixDisplacementReal)
 from .constantfieldoncells_ext import ConstantFieldOnCellsReal
@@ -70,7 +70,7 @@ from .parallelmesh_ext import ConnectionMesh, ParallelMesh
 from .prestressingcable_ext import PrestressingCable
 from .result_ext import Result
 from .table_ext import Table
-from .thermalload_ext import ThermalLoad
+from .thermalload_ext import ThermalLoadReal, ThermalLoadFunction
 from .transientgeneralizedresultscontainer_ext import TransientGeneralizedResult
 from .xfemcrack_ext import XfemCrack
 

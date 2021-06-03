@@ -21,9 +21,7 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stdexcept>
 #include <typeinfo>
-#include <string>
 #include "astercxx.h"
 
 #include "aster_fort_superv.h"
@@ -68,7 +66,7 @@ bool DirichletBCClass::build() {
     // Definition de mot cle facteur MECA_IMPO
     if ( _listOfRealImposedDisplacement.size() != 0 ) {
         ListSyntaxMapContainer listeMecaImpo;
-        for ( ListRealDispIter curIter = _listOfRealImposedDisplacement.begin();
+        for ( ListDispRealIter curIter = _listOfRealImposedDisplacement.begin();
               curIter != _listOfRealImposedDisplacement.end(); ++curIter ) {
             SyntaxMapContainer dict2;
             const MeshEntityPtr &tmp = curIter->getMeshEntityPtr();
@@ -92,7 +90,7 @@ bool DirichletBCClass::build() {
     // Definition de mot cle facteur THER_IMPO
     if ( _listOfRealImposedTemperature.size() != 0 ) {
         ListSyntaxMapContainer listeTempImpo;
-        for ( ListRealTempIter curIter = _listOfRealImposedTemperature.begin();
+        for ( ListDispTempIter curIter = _listOfRealImposedTemperature.begin();
               curIter != _listOfRealImposedTemperature.end(); ++curIter ) {
             SyntaxMapContainer dict2;
             const MeshEntityPtr &tmp = curIter->getMeshEntityPtr();

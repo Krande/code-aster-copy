@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,12 +19,12 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import AcousticLoad
+from ..Objects import AcousticLoadComplex
 from ..Supervis import ExecuteCommand
 
 
 class AffeCharAcou(ExecuteCommand):
-    """Command that defines :class:`~code_aster.Objects.AcousticLoad`.
+    """Command that defines :class:`~code_aster.Objects.AcousticLoadComplex`.
     """
     command_name = "AFFE_CHAR_ACOU"
 
@@ -34,6 +34,6 @@ class AffeCharAcou(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        self._result = AcousticLoad(keywords["MODELE"])
+        self._result = AcousticLoadComplex(keywords["MODELE"])
 
 AFFE_CHAR_ACOU = AffeCharAcou.run

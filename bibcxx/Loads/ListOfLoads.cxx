@@ -147,11 +147,21 @@ bool ListOfLoadsClass::build( ModelPtr model ) {
     {
         CommandSyntax cmdSt( "THER_NON_LINE" );
         int pos = 0;
-        for ( const auto &curIter : _listOfThermalLoads ) {
+        for ( const auto &curIter : _listOfThermalLoadsReal ) {
             SyntaxMapContainer dict2;
             dict2.container["CHARGE"] = curIter->getName();
-            if ( _listOfTherFun[pos].getName() != emptyRealFunction->getName() )
-                dict2.container["FONC_MULT"] = _listOfTherFun[pos].getName();
+            if ( _listOfTherFuncReal[pos].getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfTherFuncReal[pos].getName();
+            ++pos;
+            listeExcit.push_back( dict2 );
+        }
+
+        pos = 0;
+        for ( const auto &curIter : _listOfThermalLoadsFunction ) {
+            SyntaxMapContainer dict2;
+            dict2.container["CHARGE"] = curIter->getName();
+            if ( _listOfTherFuncFunction[pos].getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfTherFuncFunction[pos].getName();
             ++pos;
             listeExcit.push_back( dict2 );
         }
@@ -209,13 +219,16 @@ std::vector< FiniteElementDescriptorPtr > ListOfLoadsClass::getFiniteElementDesc
     }
     else if( physic == Physics::Thermal)
     {
-        for ( const auto &curIter : _listOfThermalLoads ) {
+        for ( const auto &curIter : _listOfThermalLoadsReal ) {
+            FEDesc.push_back( curIter->getFiniteElementDescriptor() );
+        }
+        for ( const auto &curIter : _listOfThermalLoadsFunction ) {
             FEDesc.push_back( curIter->getFiniteElementDescriptor() );
         }
     }
     else if( physic == Physics::Acoustic)
     {
-        for ( const auto &curIter : _listOfAcousticLoads ) {
+        for ( const auto &curIter : _listOfAcousticLoadsComplex ) {
             FEDesc.push_back( curIter->getFiniteElementDescriptor() );
         }
     }

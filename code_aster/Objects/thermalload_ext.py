@@ -24,17 +24,27 @@
 """
 
 import aster
-from libaster import ThermalLoad
+from libaster import ThermalLoadReal, ThermalLoadFunction
 
 from ..Utilities import injector
 
 
-@injector(ThermalLoad)
-class ExtendedThermalLoad:
+@injector(ThermalLoadReal)
+class ExtendedThermalLoadReal:
     cata_sdj = "SD.sd_char_ther.sd_char_ther"
 
     def __getinitargs__(self):
-        """Returns the argument required to reinitialize a ThermalLoad
+        """Returns the argument required to reinitialize a ThermalLoadReal
+        object during unpickling.
+        """
+        return (self.getName(), self.getModel())
+
+@injector(ThermalLoadFunction)
+class ExtendedThermalLoadFunction:
+    cata_sdj = "SD.sd_char_ther.sd_char_ther"
+
+    def __getinitargs__(self):
+        """Returns the argument required to reinitialize a ThermalLoadFunction
         object during unpickling.
         """
         return (self.getName(), self.getModel())

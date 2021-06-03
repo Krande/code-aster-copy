@@ -23,17 +23,17 @@
 **********************************************************************************
 """
 
-from libaster import AcousticLoad
+from libaster import AcousticLoadComplex
 
 from ..Utilities import injector
 
 
-@injector(AcousticLoad)
-class ExtendedAcousticLoad:
+@injector(AcousticLoadComplex)
+class ExtendedAcousticLoadComplex:
     cata_sdj = "SD.sd_char_acou.sd_char_acou"
 
     def __getinitargs__(self):
         """Returns the argument required to reinitialize a
-        AcousticLoad object during unpickling.
+        AcousticLoadComplex object during unpickling.
         """
         return (self.getName(), self.getModel())

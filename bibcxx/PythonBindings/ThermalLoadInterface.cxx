@@ -3,7 +3,7 @@
  * @brief Interface python de ThermalLoad
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,13 +29,25 @@ namespace py = boost::python;
 
 void exportThermalLoadToPython() {
 
-    py::class_< ThermalLoadClass, ThermalLoadClass::ThermalLoadPtr,
-                py::bases< DataStructure > >( "ThermalLoad", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ThermalLoadClass, ModelPtr & >))
+    py::class_< ThermalLoadRealClass, ThermalLoadRealClass::ThermalLoadPtr,
+                py::bases< DataStructure > >( "ThermalLoadReal", py::no_init )
+        .def( "__init__", py::make_constructor(&initFactoryPtr< ThermalLoadRealClass, ModelPtr & >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ThermalLoadClass, std::string, ModelPtr & >))
-        .def( "addUnitaryThermalLoad", &ThermalLoadClass::addUnitaryThermalLoad )
-        .def( "build", &ThermalLoadClass::build )
-        .def( "getFiniteElementDescriptor", &ThermalLoadClass::getFiniteElementDescriptor )
-        .def( "getModel", &ThermalLoadClass::getModel );
+              py::make_constructor(
+                  &initFactoryPtr< ThermalLoadRealClass, std::string, ModelPtr & >))
+        .def( "getFiniteElementDescriptor", &ThermalLoadRealClass::getFiniteElementDescriptor )
+        .def( "getMesh", &ThermalLoadRealClass::getMesh )
+        .def( "getModel", &ThermalLoadRealClass::getModel );
+
+
+            py::class_< ThermalLoadFunctionClass, ThermalLoadFunctionClass::ThermalLoadPtr,
+                py::bases< DataStructure > >( "ThermalLoadFunction", py::no_init )
+        .def( "__init__", py::make_constructor(
+                &initFactoryPtr< ThermalLoadFunctionClass, ModelPtr & >))
+        .def( "__init__",
+              py::make_constructor(
+                  &initFactoryPtr< ThermalLoadFunctionClass, std::string, ModelPtr & >))
+        .def( "getFiniteElementDescriptor", &ThermalLoadFunctionClass::getFiniteElementDescriptor )
+        .def( "getMesh", &ThermalLoadFunctionClass::getMesh )
+        .def( "getModel", &ThermalLoadFunctionClass::getModel );
 };

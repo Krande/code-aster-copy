@@ -6,7 +6,7 @@
  * @brief Fichier definissant la classe template UnitaryLoad
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -85,10 +85,10 @@ template < class PhysicalQuantityType > class UnitaryLoad {
 };
 
 /** @typedef Definition d'un chargement sur DEPL_R */
-typedef UnitaryLoad< DisplacementRealClass > RealLoadDisplacement;
+typedef UnitaryLoad< DisplacementRealClass > DisplacementLoadReal;
 /** @typedef Definition d'un chargement sur TEMP_R */
-typedef UnitaryLoad< TemperatureRealClass > RealLoadTemperature;
-typedef UnitaryLoad< TemperatureFunctionClass > FunctionLoadTemperature;
+typedef UnitaryLoad< TemperatureRealClass > TemperatureLoadReal;
+typedef UnitaryLoad< TemperatureFunctionClass > TemperatureLoadFunction;
 /** @typedef Definition d'un chargement pression */
-typedef UnitaryLoad< PressureRealClass > RealLoadPressure;
+typedef UnitaryLoad< PressureRealClass > PressureLoadReal;
 #endif /* UNITARYLOAD_H_ */

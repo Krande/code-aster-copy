@@ -44,11 +44,6 @@ template< class ConstantFieldOnCellsType>
 class MechanicalLoadClass : public DataStructure, public ListOfTablesClass {
 
   protected:
-    /** @typedef Definition d'un pointeur intelligent sur un VirtualMeshEntity */
-    typedef boost::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
-
-    /** @brief MeshEntity sur laquelle repose le "blocage" */
-    MeshEntityPtr _meshEntity;
     /** @brief Vecteur Jeveux '.TYPE' */
     JeveuxVectorChar8 _type;
     /** @brief Vecteur Jeveux '.LISMA01' */
@@ -62,8 +57,7 @@ class MechanicalLoadClass : public DataStructure, public ListOfTablesClass {
     /** @brief Vecteur Jeveux '.POIDS_MAILLE' */
     JeveuxVectorReal _poidsMaille;
     /** @brief sd_char_chme '.CHME' */
-    MechanicalLoadDescriptionClassPtr< ConstantFieldOnCellsType > _mecaLoadDesc;
-
+    MechanicalLoadDescriptionPtr< ConstantFieldOnCellsType > _mecaLoadDesc;
 
   public:
     /**
@@ -99,7 +93,7 @@ class MechanicalLoadClass : public DataStructure, public ListOfTablesClass {
     /**
      * @brief Get the model
      */
-    const MechanicalLoadDescriptionClassPtr< ConstantFieldOnCellsType >&
+    const MechanicalLoadDescriptionPtr< ConstantFieldOnCellsType >&
     getMechanicalLoadDescription() const { return _mecaLoadDesc; };
 
     /**

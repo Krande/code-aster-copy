@@ -127,30 +127,43 @@ template < class firstClass, typename... Args >
 void addThermalLoadToInterface( py::class_< firstClass, Args... > myInstance ) {
     typedef firstClass myClass;
 
-    void ( myClass::*c13 )( const ThermalLoadPtr & ) = &myClass::addLoad;
-    void ( myClass::*c14 )( const ThermalLoadPtr &currentLoad, const FunctionPtr &func ) =
+    void ( myClass::*c13 )( const ThermalLoadRealPtr & ) = &myClass::addLoad;
+    void ( myClass::*c14 )( const ThermalLoadRealPtr &currentLoad, const FunctionPtr &func ) =
         &myClass::addLoad;
-    void ( myClass::*c15 )( const ThermalLoadPtr &currentLoad, const FormulaPtr &func ) =
+    void ( myClass::*c15 )( const ThermalLoadRealPtr &currentLoad, const FormulaPtr &func ) =
         &myClass::addLoad;
-    void ( myClass::*c16 )( const ThermalLoadPtr &currentLoad, const Function2DPtr &func )
+    void ( myClass::*c16 )( const ThermalLoadRealPtr &currentLoad, const Function2DPtr &func )
+        = &myClass::addLoad;
+
+
+    void ( myClass::*c17 )( const ThermalLoadFunctionPtr & ) = &myClass::addLoad;
+    void ( myClass::*c18 )( const ThermalLoadFunctionPtr &currentLoad, const FunctionPtr &func ) =
+        &myClass::addLoad;
+    void ( myClass::*c19 )( const ThermalLoadFunctionPtr &currentLoad, const FormulaPtr &func ) =
+        &myClass::addLoad;
+    void ( myClass::*c20 )( const ThermalLoadFunctionPtr &currentLoad, const Function2DPtr &func )
         = &myClass::addLoad;
 
     myInstance.def( "addLoad", c13 );
     myInstance.def( "addLoad", c14 );
     myInstance.def( "addLoad", c15 );
     myInstance.def( "addLoad", c16 );
+    myInstance.def( "addLoad", c17 );
+    myInstance.def( "addLoad", c18 );
+    myInstance.def( "addLoad", c19 );
+    myInstance.def( "addLoad", c20 );
 };
 
 template < class firstClass, typename... Args >
 void addAcousticLoadToInterface( py::class_< firstClass, Args... > myInstance ) {
     typedef firstClass myClass;
 
-    void ( myClass::*c17 )( const AcousticLoadPtr & ) = &myClass::addLoad;
-    void ( myClass::*c18 )( const AcousticLoadPtr &currentLoad, const FunctionPtr &func ) =
+    void ( myClass::*c17 )( const AcousticLoadComplexPtr & ) = &myClass::addLoad;
+    void ( myClass::*c18 )( const AcousticLoadComplexPtr &currentLoad, const FunctionPtr &func ) =
         &myClass::addLoad;
-    void ( myClass::*c19 )( const AcousticLoadPtr &currentLoad, const FormulaPtr &func ) =
+    void ( myClass::*c19 )( const AcousticLoadComplexPtr &currentLoad, const FormulaPtr &func ) =
         &myClass::addLoad;
-    void ( myClass::*c20 )( const AcousticLoadPtr &currentLoad, const Function2DPtr &func )
+    void ( myClass::*c20 )( const AcousticLoadComplexPtr &currentLoad, const Function2DPtr &func )
         = &myClass::addLoad;
 
     myInstance.def( "addLoad", c17 );

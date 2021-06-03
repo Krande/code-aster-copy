@@ -23,9 +23,6 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <list>
-#include <stdexcept>
-#include <string>
 
 #include "astercxx.h"
 #include "Functions/Function.h"
@@ -43,22 +40,22 @@ class DirichletBCClass : public DataStructure {
     /** @typedef Pointeur intelligent sur un VirtualMeshEntity */
     typedef boost::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
 
-    /** @typedef std::list de RealLoadDisplacement */
-    typedef std::list< RealLoadDisplacement > ListRealDisp;
-    /** @typedef Iterateur sur ListRealDisp */
-    typedef ListRealDisp::iterator ListRealDispIter;
+    /** @typedef std::list de DisplacementLoadReal */
+    typedef std::list< DisplacementLoadReal > ListDispReal;
+    /** @typedef Iterateur sur ListDispReal */
+    typedef ListDispReal::iterator ListDispRealIter;
 
-    /** @typedef std::list de RealLoadTemperature */
-    typedef std::list< RealLoadTemperature > ListRealTemp;
-    typedef std::list< FunctionLoadTemperature > ListFunctionTemp;
-    /** @typedef Iterateur sur ListRealTemp */
-    typedef ListRealTemp::iterator ListRealTempIter;
+    /** @typedef std::list de TemperatureLoadReal */
+    typedef std::list< TemperatureLoadReal > ListDispTemp;
+    typedef std::list< TemperatureLoadFunction > ListFunctionTemp;
+    /** @typedef Iterateur sur ListDispTemp */
+    typedef ListDispTemp::iterator ListDispTempIter;
 
     /** @brief Modele */
     ModelPtr _model;
     /** @brief Listes des valeurs imposees DEPL_R et TEMP_R */
-    ListRealDisp _listOfRealImposedDisplacement;
-    ListRealTemp _listOfRealImposedTemperature;
+    ListDispReal _listOfRealImposedDisplacement;
+    ListDispTemp _listOfRealImposedTemperature;
     ListFunctionTemp _listOfFunctionImposedTemperature;
     JeveuxVectorLong _intParam;
     JeveuxVectorChar8 _charParam;
@@ -158,7 +155,7 @@ class MechanicalDirichletBCClass : public DirichletBCClass {
             throw std::runtime_error( nameOfGroup + " not in mesh" );
 
         MeshEntityPtr meshEnt( new GroupOfCells( nameOfGroup ) );
-        RealLoadDisplacement resu( meshEnt, coordinate, value );
+        DisplacementLoadReal resu( meshEnt, coordinate, value );
         _listOfRealImposedDisplacement.push_back( resu );
         return true;
     };
@@ -191,7 +188,7 @@ class MechanicalDirichletBCClass : public DirichletBCClass {
             throw std::runtime_error( nameOfGroup + " not in mesh" );
 
         MeshEntityPtr meshEnt( new GroupOfNodes( nameOfGroup ) );
-        RealLoadDisplacement resu( meshEnt, coordinate, value );
+        DisplacementLoadReal resu( meshEnt, coordinate, value );
         _listOfRealImposedDisplacement.push_back( resu );
         return true;
     };
@@ -259,7 +256,7 @@ class ThermalDirichletBCClass : public DirichletBCClass {
             throw std::runtime_error( nameOfGroup + " not in mesh" );
 
         MeshEntityPtr meshEnt( new GroupOfCells( nameOfGroup ) );
-        RealLoadTemperature resu( meshEnt, coordinate, value );
+        TemperatureLoadReal resu( meshEnt, coordinate, value );
         _listOfRealImposedTemperature.push_back( resu );
         return true;
     };
@@ -291,7 +288,7 @@ class ThermalDirichletBCClass : public DirichletBCClass {
             throw std::runtime_error( nameOfGroup + " not in mesh" );
 
         MeshEntityPtr meshEnt( new GroupOfNodes( nameOfGroup ) );
-        RealLoadTemperature resu( meshEnt, coordinate, value );
+        TemperatureLoadReal resu( meshEnt, coordinate, value );
         _listOfRealImposedTemperature.push_back( resu );
         return true;
     };
@@ -323,7 +320,7 @@ class ThermalDirichletBCClass : public DirichletBCClass {
             throw std::runtime_error( nameOfGroup + " not in mesh" );
 
         MeshEntityPtr meshEnt( new GroupOfNodes( nameOfGroup ) );
-        FunctionLoadTemperature resu( meshEnt, coordinate, function );
+        TemperatureLoadFunction resu( meshEnt, coordinate, function );
         _listOfFunctionImposedTemperature.push_back( resu );
         return true;
     };

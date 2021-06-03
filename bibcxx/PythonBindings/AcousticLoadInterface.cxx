@@ -3,7 +3,7 @@
  * @brief Interface python de AcousticLoad
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,28 +29,14 @@ namespace py = boost::python;
 
 void exportAcousticLoadToPython() {
 
-    py::class_< AcousticLoadClass, AcousticLoadClass::AcousticLoadPtr,
-            py::bases< DataStructure > >( "AcousticLoad", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< AcousticLoadClass, ModelPtr >))
+    py::class_< AcousticLoadComplexClass, AcousticLoadComplexClass::AcousticLoadPtr,
+            py::bases< DataStructure > >( "AcousticLoadComplex", py::no_init )
+        .def( "__init__", py::make_constructor(
+                &initFactoryPtr< AcousticLoadComplexClass, ModelPtr >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< AcousticLoadClass, std::string, ModelPtr >))
-        .def( "addImposedNormalSpeedOnMesh",
-              &AcousticLoadClass::addImposedNormalSpeedOnMesh )
-        .def( "addImposedNormalSpeedOnGroupOfCells",
-              &AcousticLoadClass::addImposedNormalSpeedOnGroupOfCells )
-        .def( "addImpedanceOnMesh", &AcousticLoadClass::addImpedanceOnMesh )
-        .def( "addImpedanceOnGroupOfCells",
-              &AcousticLoadClass::addImpedanceOnGroupOfCells )
-        .def( "addImposedPressureOnMesh", &AcousticLoadClass::addImposedPressureOnMesh )
-        .def( "addImposedPressureOnGroupOfCells",
-              &AcousticLoadClass::addImposedPressureOnGroupOfCells )
-        .def( "addImposedPressureOnGroupOfNodes",
-              &AcousticLoadClass::addImposedPressureOnGroupOfNodes )
-        .def( "addUniformConnectionOnGroupOfCells",
-              &AcousticLoadClass::addUniformConnectionOnGroupOfCells )
-        .def( "addUniformConnectionOnGroupOfNodes",
-              &AcousticLoadClass::addUniformConnectionOnGroupOfNodes )
-        .def( "build", &AcousticLoadClass::build )
-        .def( "getFiniteElementDescriptor", &AcousticLoadClass::getFiniteElementDescriptor )
-        .def( "getModel", &AcousticLoadClass::getModel );
+              py::make_constructor(
+                    &initFactoryPtr< AcousticLoadComplexClass, std::string, ModelPtr >))
+        .def( "getFiniteElementDescriptor", &AcousticLoadComplexClass::getFiniteElementDescriptor )
+        .def( "getMesh", &AcousticLoadComplexClass::getMesh )
+        .def( "getModel", &AcousticLoadComplexClass::getModel );
 };
