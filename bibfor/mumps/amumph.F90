@@ -289,8 +289,8 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 ! ----- ASTUCE POUR DETRUIRE TOUTES LES OCCURENCES (QQES SOIT LEUR
 !       ARITHMETIQUE) ASSOCIEES A UNE MATRICE SI 'DETR_MAT'
         if (action(1:8) .eq. 'DETR_MAT') prec=precs(k)
-        if ((nomats(k).eq.matas) .and. (nonus(k).eq.nu) .and. (roucs(k) .eq.rouc) .and.&
-            (precs(k).eq.prec)) then
+        if ((nomats(k).eq.matas) .and. ((nonus(k).eq.nu).or.(lpreco)) .and.&
+             (roucs(k) .eq.rouc) .and. (precs(k).eq.prec)) then
             if (rouc .eq. 'R') then
                 if (prec .eq. 'S') then
                     smpsk=>smps(k)
@@ -379,8 +379,10 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
             ASSERT(solveu.eq.nosolv)
             ASSERT(etam.eq.'FNUM')
         endif
-        call dismoi('NOM_NUME_DDL', matas, 'MATR_ASSE', repk=nu)
-        ASSERT(nonu.eq.nu)
+        if (.not.lpreco) then
+          call dismoi('NOM_NUME_DDL', matas, 'MATR_ASSE', repk=nu)
+          ASSERT(nonu.eq.nu)
+        endif
 !
     else if (action(1:5).eq.'DETR_') then
         nomat=nomats(kxmps)
