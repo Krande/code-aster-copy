@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -522,6 +522,11 @@ implicit none
         if (cont_form .eq. 2) then
             call jeveuo(sdcont_caracf, 'L', vr = v_sdcont_caracf)
             vale_r = v_sdcont_caracf(zcmcf*(i_zone-1)+15)
+            if (nint(vale_r) .eq. 1) then
+                vale_l = .true.
+            else
+                vale_l = .false.
+            endif
         else
             ASSERT(.false.)
         endif

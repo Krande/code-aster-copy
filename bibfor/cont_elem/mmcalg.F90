@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -105,7 +105,7 @@ real(kind=8), intent(out) :: dnepmait1, dnepmait2
 !
     integer :: i, j, inom, idim
     real(kind=8) :: ddgeo1(3), ddgeo2(3), ddgeo3(3), detkap, ddepmait1(3), ddepmait2(3)
-    real(kind=8) :: long_mmait(24), valmoy, kappa_in(2,2)
+    real(kind=8) :: long_mmait(24), valmoy=0.0, kappa_in(2,2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -138,9 +138,11 @@ real(kind=8), intent(out) :: dnepmait1, dnepmait2
     ddepmait1(:)  = 0.d0
     ddepmait2(:)  = 0.d0
     long_mmait(:) = 0.d0
-    valmoy        = 0.d0
 
-    if (l_large_slip) then
+    if (l_large_slip .and. .false.) then
+        ! this quantity compute the contribution from the 1st derivative of master displ 
+        ! it is very likely that it can cause convergence issue
+        ! we then to shut it down until further investigations:  ".and. .false." in the if
         do idim = 1, ndim
             do inom = 1, nnm
                 ddepmait1(idim) = ddepmait1(idim) + dffm(1,inom)*ddepmam(inom,idim)
@@ -178,12 +180,13 @@ real(kind=8), intent(out) :: dnepmait1, dnepmait2
         long_mmait(24) = sqrt(abs(elem_mast_coor(1,3) - elem_mast_coor(9,3)))**2
         valmoy =  0.
         do i = 1,24
-            valmoy = valmoy + long_mmait(i)/24
+            valmoy = valmoy + long_mmait(i)
         end do
+        valmoy=valmoy/24
 
         do  idim = 1, ndim
-           if ((abs(jeu) .lt. 1.d-6) .and. (norm2(ddepmait1) .lt. 1.d-2*valmoy) .and.&
-               (norm2(ddepmait2) .lt. 1.d-2*valmoy)) then
+           if ((abs(jeu) .lt. 1.d-10*valmoy) .and. (norm2(ddepmait1) .lt. 1.d-10*valmoy) .and.&
+               (norm2(ddepmait2) .lt. 1.d-10*valmoy)) then
           ! On rajoute ce terme au grand glissement seulement si on est sur
           ! d'avoir converge en DEPDEL
           ! increment de deplacement
