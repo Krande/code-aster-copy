@@ -79,7 +79,6 @@ real(kind=8), optional, intent(out) :: lambds_prev_, jeu_prev_
     ndexfr       = nint(zr(jpcf-1+21))
     i_reso_geom  = nint(zr(jpcf-1+25))
     l_large_slip = nint(zr(jpcf-1+48)) .eq. 1
-    l_large_slip =  .false.
     lambds_prev  = zr(jpcf-1+26)
     jeu_prev     = zr(jpcf-1+29)
     l_pena_cont  = (ialgoc .eq. 3) .or. nint(zr(jpcf-1+45)) .eq. 4
