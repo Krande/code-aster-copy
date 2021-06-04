@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ subroutine nmresd(fonact     , sddyna        , ds_measure, solveu,&
 !
 use NonLin_Datastructure_type
 use ROM_Datastructure_type
+use ldlt_xp_data_module
 !
 implicit none
 !
@@ -135,5 +136,11 @@ integer :: rescvg
 !
     call nmtime(ds_measure, 'Stop', 'Solve')
     call nmrinc(ds_measure, 'Solve')
+!   la stratégie ap2foi a causé une factorisation : on incrémente
+    if (ap2foi_called) then
+        call nmrinc(ds_measure, 'Factor')
+        ap2foi_called = ASTER_FALSE
+    endif
+
 !
 end subroutine

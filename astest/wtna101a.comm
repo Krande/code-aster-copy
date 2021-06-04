@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -201,6 +201,7 @@ U2 = STAT_NON_LINE(  MODELE     = MODELE, CHAM_MATER = CHMAT,
        INCREMENT  = _F( LIST_INST  = TEMPS2),
        NEWTON     = _F( MATRICE    = 'TANGENTE', REAC_ITER  = 1),
        CONVERGENCE= _F( RESI_GLOB_RELA = 1.E-7, ITER_GLOB_MAXI = 30),
+       MESURE     = _F(TABLE='OUI'),                 
                         )
 
 U2=CALC_CHAMP(reuse=U2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U2)
@@ -210,6 +211,65 @@ U2       = CALC_CHAMP( reuse    = U2,
                     RESULTAT = U2,
                     CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU'
                   )
+
+#
+#-------------------------
+#    TEST_TABLE DES NB DE FACTORISATIONS
+#-------------------------
+
+STATIS=RECU_TABLE(CO=U2,NOM_TABLE='STAT',)
+IMPR_TABLE(TABLE=STATIS, UNITE=6)
+
+TEST_TABLE(CRITERE='ABSOLU',
+          VALE_REFE_I=1,
+           VALE_CALC_I=1,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='Count_Factor',
+           TABLE=STATIS,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.004,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_REFE_I=0,
+           VALE_CALC_I=0,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='Count_Factor',
+           TABLE=STATIS,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.16,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_REFE_I=1,
+           VALE_CALC_I=1,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='Count_Factor',
+           TABLE=STATIS,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.34,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+          VALE_REFE_I=0,
+           VALE_CALC_I=0,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='Count_Factor',
+           TABLE=STATIS,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.6,),
+           )
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_REFE_I=0,
+           VALE_CALC_I=0,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='Count_Factor',
+           TABLE=STATIS,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.,),
+           )
+
 
 #
 #-------------------------

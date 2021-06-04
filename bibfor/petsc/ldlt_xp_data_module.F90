@@ -23,6 +23,7 @@ implicit none
 !
 ! used for printing purpose in STAT/DYNA_NON_LINE (nb of factorization)
 aster_logical:: really_factored=ASTER_TRUE
+aster_logical:: ap2foi_called=ASTER_FALSE
 !
 end module ldlt_xp_data_module
 

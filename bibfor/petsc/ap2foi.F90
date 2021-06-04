@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic,&
 use aster_petsc_module
 use petsc_data_module
 use lmp_module, only : lmp_destroy
+use ldlt_xp_data_module
 
 implicit none
 #include "jeveux.h"
@@ -67,6 +68,10 @@ implicit none
 !   -- bascule pour la mesure du temps CPU : RESOUD -> PRERES :
     call uttcpu('CPU.RESO.5', 'FIN', ' ')
     call uttcpu('CPU.RESO.4', 'DEBUT', ' ')
+
+!   -- booleen stocke dans ldlt_xp_data_module pour impression
+    ap2foi_called = ASTER_TRUE
+
 !
 !
 !   -- avant de refabriquer une matrice de preconditionnement,
