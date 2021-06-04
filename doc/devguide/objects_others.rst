@@ -279,51 +279,6 @@ Documentation of all other types.
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.UnitaryThermalLoad` subclasses
-********************************************************************************
-
-.. autoclass:: code_aster.Objects.UnitaryThermalLoad
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.RealDistributedFlow
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.RealExchange
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.RealExchangeWall
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.RealImposedTemperature
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.RealNonLinearFlow
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.RealNonLinearSource
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.RealSource
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.RealThermalGradient
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.RealThermalRadiation
-   :show-inheritance:
-   :members:
-
-
-********************************************************************************
 :py:class:`~code_aster.Objects.enum` subclasses
 ********************************************************************************
 

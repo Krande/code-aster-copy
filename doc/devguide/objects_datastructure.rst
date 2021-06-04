@@ -29,10 +29,10 @@
 
 
 ================================================================================
-:py:class:`~code_aster.Objects.AcousticLoad` object
+:py:class:`~code_aster.Objects.AcousticLoadComplex` object
 ================================================================================
 
-.. autoclass:: code_aster.Objects.AcousticLoad
+.. autoclass:: code_aster.Objects.AcousticLoadComplex
    :show-inheritance:
    :members:
 
@@ -677,15 +677,6 @@
 
 
 ================================================================================
-:py:class:`~code_aster.Objects.GenericMechanicalLoad` object
-================================================================================
-
-.. autoclass:: code_aster.Objects.GenericMechanicalLoad
-   :show-inheritance:
-   :members:
-
-
-================================================================================
 :py:class:`~code_aster.Objects.GenericModalBasis` object
 ================================================================================
 
@@ -843,6 +834,33 @@
 ================================================================================
 
 .. autoclass:: code_aster.Objects.MechanicalDirichletBC
+   :show-inheritance:
+   :members:
+
+
+================================================================================
+:py:class:`~code_aster.Objects.MechanicalLoadComplex` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.MechanicalLoadComplex
+   :show-inheritance:
+   :members:
+
+
+================================================================================
+:py:class:`~code_aster.Objects.MechanicalLoadFunction` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.MechanicalLoadFunction
+   :show-inheritance:
+   :members:
+
+
+================================================================================
+:py:class:`~code_aster.Objects.MechanicalLoadReal` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.MechanicalLoadReal
    :show-inheritance:
    :members:
 
@@ -1154,10 +1172,19 @@
 
 
 ================================================================================
-:py:class:`~code_aster.Objects.ThermalLoad` object
+:py:class:`~code_aster.Objects.ThermalLoadFunction` object
 ================================================================================
 
-.. autoclass:: code_aster.Objects.ThermalLoad
+.. autoclass:: code_aster.Objects.ThermalLoadFunction
+   :show-inheritance:
+   :members:
+
+
+================================================================================
+:py:class:`~code_aster.Objects.ThermalLoadReal` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.ThermalLoadReal
    :show-inheritance:
    :members:
 
