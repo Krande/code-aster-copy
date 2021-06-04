@@ -55,6 +55,10 @@ class ExtendedDataStructure:
         """
         return self.orig_getName().strip()
 
+    def is_typco(self):
+        """Tell if it is an auxiliary result."""
+        return False
+
     def __getinitargs__(self):
         """Returns the argument required to reinitialize a derivated
         DataStructure object during unpickling.

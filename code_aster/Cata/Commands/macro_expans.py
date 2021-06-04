@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ def macro_expans_prod(self, MODELE_MESURE, RESU_NX=None, RESU_EX=None, RESU_ET=N
     if RESU_NX is not None:
         self.type_sdprod(RESU_NX, mode_meca)
     for res in (RESU_EX, RESU_ET, RESU_RD):
-        if res is not None and isinstance(res, CO):
+        if res is not None and res.is_typco():
             if AsType(RESU_EXP) == mode_meca:
                 self.type_sdprod(res, mode_meca)
             else:

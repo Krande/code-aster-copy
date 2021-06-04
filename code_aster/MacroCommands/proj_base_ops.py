@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ def proj_base_ops(self, **args):
         _num = NUME_DDL_GENE_CMD(BASE=BASE, NB_VECT=NB_VECT, STOCKAGE=STOCKAGE)
     elif isinstance(numgen, GeneralizedDOFNumbering):
         _num = numgen
-    elif isinstance(numgen, CO):
+    elif numgen.is_typco():
         _num = NUME_DDL_GENE_CMD(BASE=BASE, NB_VECT=NB_VECT, STOCKAGE=STOCKAGE)
         self.register_result(_num, numgen)
     else:

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ def proj_base_prod(self,MATR_ASSE_GENE,VECT_ASSE_GENE,
               [None, vect_asse_gene],
               [None, tran_gene])
 
-  if NUME_DDL_GENE is not None and isinstance(NUME_DDL_GENE, CO):
+  if NUME_DDL_GENE is not None and NUME_DDL_GENE.is_typco():
       self.type_sdprod(NUME_DDL_GENE, nume_ddl_gene)
   if MATR_ASSE_GENE is not None:
     for m in MATR_ASSE_GENE:
