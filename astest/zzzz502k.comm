@@ -136,7 +136,7 @@ for lagr in ["OUI", "NON"]:
                         PRECISION=0.00001,
                         REFERENCE='ANALYTIQUE',
                         RESULTAT=RESU,
-                        ORDRE_GRANDEUR=1e-6,
+                        ORDRE_GRANDEUR=1e-4,
                         CRITERE='ABSOLU',
                         VALE_CALC=2.6988334396258498E-17,
                         VALE_REFE=0.0,
