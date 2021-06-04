@@ -217,21 +217,25 @@ use petsc_data_module
         call jelira(nonu//'.NUME.MDLA', 'LONMAX', nblag)
         nblag = nblag/3
         do ipos = 0, nblag-1
-            jcoll = zi(jmdla + ipos*3)
+            iligl = zi(jmdla + ipos*3)
             imult = zi(jmdla + ipos*3 + 1)
             imults = zi(jmdla + ipos*3 + 2)-imult
-            jcolg = zi(jnugll + jcoll - 1)
+            iligg = zi(jnugll + iligl - 1)
 !           Le but ici est de rajouter juste le bon nombre de termes
 !           On utilise le nombre de fois qu'apparaissent les noeuds de Lagrange
 !           dans des mailles tardives (sur tous les procs et sur les autres procs
 !           que le proc courant)
 !           On suppose qu'un ddl de Lagrange sera connecte aux autres ddl de la
 !           même maniere que sur le proc qui les possede
-!           C'est pour cette raison qu'on utilise v_idxd(jcolg - low +1)
+!           C'est pour cette raison qu'on utilise v_idxd(iligg - low +1)
 !           divise par le nombre de fois qu'apparait un noeud de Lagrange sur le
 !           proc courant
-            ibid = (v_idxd(jcolg - low -1)/imults)*(imult)
-            v_idxo(jcolg - low +1) = v_idxo(jcolg - low +1) + ibid
+!           Dans le cas des doubles Lagrange, la division (v_idxd(iligg - low +1)/imults)
+!           ne tombe pas juste à cause des 2 termes diagonaux +1 et -1 qui sont là pour fixer
+!           l'égalité des 2 Lagrange
+!           Dans le cas des simples Lagrange, elle tombe juste
+            ibid = (v_idxd(iligg - low +1)/imults)*(imult)
+            v_idxo(iligg - low +1) = v_idxo(iligg - low +1) + ibid
         enddo
     endif
 

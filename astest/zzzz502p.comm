@@ -1,0 +1,201 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import code_aster
+
+import code_aster.LinearAlgebra
+
+code_aster.LinearAlgebra.petscInitialize('-mat_view ::ascii_info -ksp_monitor -log_view')
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
+
+rank = code_aster.MPI.COMM_WORLD.Get_rank()
+
+MA = LIRE_MAILLAGE(FORMAT='MED', PARTITIONNEUR='PTSCOTCH')
+
+MO = AFFE_MODELE(MAILLAGE=MA,
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='3D'))
+
+MAT = DEFI_MATERIAU(ELAS=_F(E=10., NU=0.0))
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE=_F(TOUT='OUI',  MATER=MAT))
+
+CH12 = AFFE_CHAR_MECA(MODELE=MO,  INFO=1,
+                      LIAISON_MAIL=_F(GROUP_MA_MAIT=('Volume1',),
+                                      GROUP_MA_ESCL=('Esclave',),),
+                      DDL_IMPO=(_F(GROUP_MA=('Bloq1',), DX=0, DY=0, DZ=0),
+                                _F(GROUP_MA=('Bloq2',), DX=1, DY=0, DZ=0),)
+                )
+
+
+LI = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=2))
+
+RAMPE = DEFI_FONCTION(NOM_PARA='INST',
+                      VALE=(0, 0,
+                            1, 1,),
+                      PROL_DROITE='LINEAIRE')
+
+# Résolution (LOW_RANK_SEUIL exagérement élevé pour faire plus d'itérations de solveur linéaire)
+resu = STAT_NON_LINE(CHAM_MATER=CHMAT,
+                     METHODE='NEWTON',
+                     COMPORTEMENT=_F(RELATION='ELAS',),
+                     CONVERGENCE=_F(RESI_GLOB_MAXI=1.e-8),
+                     EXCIT=(_F(CHARGE=CH12, FONC_MULT=RAMPE,)),
+                     INCREMENT=_F(LIST_INST=LI),
+                     MODELE=MO,
+                     NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
+                     SOLVEUR=_F(METHODE='PETSC', RESI_RELA=1.e-9, LOW_RANK_SEUIL=1e-2,),
+                     INFO=1,
+                     )
+
+# Vérification
+INT_DX = POST_ELEM(INTEGRALE=_F(TOUT='OUI',
+                                NOM_CHAM='DEPL',
+                                NOM_CMP='DX',
+                                TYPE_MAILLE='3D',),
+                   MODELE=MO,
+                   RESULTAT=resu,)
+IMPR_TABLE(UNITE=6, TABLE=INT_DX)
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_REFE=8.03119E-02, VALE_CALC=8.03119E-02,
+           NOM_PARA='INTE_DX',
+           TABLE=INT_DX,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           VALE_REFE=0.1606237, VALE_CALC=0.1606237,
+           NOM_PARA='INTE_DX',
+           TABLE=INT_DX,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=2,),
+           )
+
+
+TEST_RESU(RESU=(_F(GROUP_NO='Point1',
+                   INST=0.5,
+                   RESULTAT=resu,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=0.04457677742998222,
+                   VALE_CALC=0.04457677742998222,),
+                _F(GROUP_NO='Point1',
+                   INST=1.,
+                   RESULTAT=resu,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=0.0891535548603111,
+                   VALE_CALC=0.0891535548603111,),
+                _F(GROUP_NO='Point1',
+                   INST=0.5,
+                   RESULTAT=resu,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=-0.018972652936542142,
+                   VALE_CALC=-0.018972652936542142,),
+                _F(GROUP_NO='Point1',
+                   INST=1.,
+                   RESULTAT=resu,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=-0.03794530587349336,
+                   VALE_CALC=-0.03794530587349336,),
+                _F(GROUP_NO='Point1',
+                   INST=0.5,
+                   RESULTAT=resu,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=0.0189726529369438,
+                   VALE_CALC=0.0189726529369438,),
+                _F(GROUP_NO='Point1',
+                   INST=1.,
+                   RESULTAT=resu,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=0.03794530587389001,
+                   VALE_CALC=0.03794530587389001,),
+                ),
+          )
+
+TEST_RESU(RESU=(_F(GROUP_NO='Point2',
+                   INST=0.5,
+                   RESULTAT=resu,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=0.14832571020286972,
+                   VALE_CALC=0.14832571020286972,),
+                _F(GROUP_NO='Point2',
+                   INST=1.,
+                   RESULTAT=resu,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=0.2966514204061531,
+                   VALE_CALC=0.2966514204061531,),
+                _F(GROUP_NO='Point2',
+                   INST=0.5,
+                   RESULTAT=resu,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=-0.021715596639995432,
+                   VALE_CALC=-0.021715596639995432,),
+                _F(GROUP_NO='Point2',
+                   INST=1.,
+                   RESULTAT=resu,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=-0.04343119328032774,
+                   VALE_CALC=-0.04343119328032774,),
+                _F(GROUP_NO='Point2',
+                   INST=0.5,
+                   RESULTAT=resu,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=0.02171559664036942,
+                   VALE_CALC=0.02171559664036942,),
+                _F(GROUP_NO='Point2',
+                   INST=1.,
+                   RESULTAT=resu,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=0.04343119328070272,
+                   VALE_CALC=0.04343119328070272,),
+                ),
+          )
+
+
+resu.printMedFile(f'/tmp/toto_{rank}.resu.med')
+
+FIN()

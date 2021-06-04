@@ -1,0 +1,57 @@
+//================================================
+//    Maillage du cube
+//
+//    Utilisation :
+//    gmsh -3 -format med -o Cube.med Cube.geo
+//================================================
+
+d1 = 1;
+Point(1) = {0, 0, 0, 0.5};
+Point(2) = {d1, 0, 0, 0.5};
+Line (1) = {1, 2};
+
+Nb_Elem=20;
+
+Transfinite Line{1} = Nb_Elem+1;
+
+
+Extrude {0,d1,0} {
+  Line{1}; Layers{Nb_Elem};Recombine;
+}
+
+Extrude {0,0,d1} {
+  Surface{5}; Layers{Nb_Elem};Recombine;
+}
+
+eps=0.1;
+d2 = 0.4;
+p = newp;
+Point(p) = {d1+eps, (d1-d2)/2, (d1-d2)/2, 0.5};
+Point(p+1) = {d1+d2+eps, (d1-d2)/2, (d1-d2)/2, 0.5};
+l = newl;
+Line (l) = {p, p+1};
+
+
+Transfinite Line{l} = Nb_Elem+1;
+
+
+Extrude {0,d2,0} {
+  Line{l}; Layers{Nb_Elem};Recombine;
+}
+
+Extrude {0,0,d2} {
+  Surface{l+4}; Layers{Nb_Elem};Recombine;
+}
+
+//+
+Physical Volume("Volume1") = {1};
+//+
+Physical Volume("Volume2") = {2};
+//+
+Physical Surface("Bloq1") = {26};
+//+
+Physical Surface("Bloq2") = {45};
+//+
+Physical Surface("Maitre") = {18};
+//+
+Physical Surface("Esclave") = {53};
