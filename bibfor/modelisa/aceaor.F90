@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
     character(len=4) :: exituy
     character(len=8) :: nomu
     character(len=10) :: oricara
-    character(len=16) :: concep, cmd, nunoel
+    character(len=16) :: concep, cmd, nunomel
     character(len=19) :: cartor
     character(len=24) :: tmpnor, tmpvor, tmpori,tmpini
     character(len=24) :: mlgnma, mlgnno, mlgtma, mlggno, mlggma, mlgcoo, mlgcnx
@@ -257,10 +257,17 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
             nutyel = zi(jdme+nummai-1)
             do jj = 1, ACE_NB_TYPE_ELEM
                 if (nutyel .eq. ntyele(jj)) then
-!                   Recuperation des numeros des noms des elements
-                    call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), nunoel)
-                    if ((nunoel.ne.'MET3SEG3') .and. ( nunoel.ne.'MET3SEG4') .and.&
-                        (nunoel.ne.'MET6SEG3')) then
+!                   Récupération des numéros des noms des éléments
+                    call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), nunomel)
+                    ! Pas de carte d'orientation sur les :
+                    !   TUYAUX                  : MET3SEG3 MET3SEG4 MET6SEG3
+                    !   "meca_plate_skin"       : MEBODKT  MEBODST  MEBOQ4G
+                    !   "meca_coque_3d_skin"    : MEBOCQ3
+                    if ((nunomel.ne.'MET3SEG3') .and. (nunomel.ne.'MET3SEG4') .and. &
+                        (nunomel.ne.'MET6SEG3') .and. &
+                        (nunomel.ne.'MEBODKT')  .and. (nunomel.ne.'MEBODST')  .and. &
+                        (nunomel.ne.'MEBOQ4G')  .and. &
+                        (nunomel.ne.'MEBOCQ3') ) then
                         zr(jdvlvo)   = zr(jdori+nummai*3-3)
                         zr(jdvlvo+1) = zr(jdori+nummai*3-2)
                         zr(jdvlvo+2) = zr(jdori+nummai*3-1)

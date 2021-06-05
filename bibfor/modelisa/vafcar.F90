@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ subroutine vafcar(tpgz, imclf, nmobjz, nutyel, ntyele, car, ncar, ivr, kioc, ier
 !
 !   Vérification du bon type de l'élément
     npd=0;npf=0
-    if      ( imclf.eq.ACE_POUTRE )then
+    if      ( (imclf.eq.ACE_POUTRE) .or. (imclf.eq.ACE_POUTRE_FLUI)) then
         npd = 1
         npf = ACE_NB_POUTRE
     else if ( (imclf.eq.ACE_DISCRET) .or. (imclf.eq.ACE_DISCRET_2D) .or. &
