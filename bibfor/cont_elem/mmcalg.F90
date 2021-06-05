@@ -105,7 +105,7 @@ real(kind=8), intent(out) :: dnepmait1, dnepmait2
 !
     integer :: i, j, inom, idim
     real(kind=8) :: ddgeo1(3), ddgeo2(3), ddgeo3(3), detkap, ddepmait1(3), ddepmait2(3)
-    real(kind=8) :: long_mmait(24), valmoy=0.0, kappa_in(2,2)
+    real(kind=8) :: long_mmait(24), valmoy, kappa_in(2,2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
