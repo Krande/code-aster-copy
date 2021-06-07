@@ -357,12 +357,12 @@ COMBINAISON_CHARGE (
                                _F(NOM_CHAM= 'SIEF_ELNO', NOM_CMP = ('SIXX', 'SIYY'), ),
                                ),   
                     TABLE_RESU = (
-                                  _F(OPTION = 'COEF_COMB', TABLE = CO('tab1'),),   
-                                  _F(OPTION = 'CALC_COMB', TABLE = CO('tab2'),),   
-                                  _F(OPTION = 'EXTREMA',   TABLE = CO('tab3'),
-                                     CRIT_COMP = ('MAXI','MAXI_ABS'), ),   
+                                  _F(OPTION = 'COEF_COMB', TABLE = CO('tab1'), UNITE=16),   
+                                  _F(OPTION = 'CALC_COMB', TABLE = CO('tab2'), UNITE=17),   
+                                  _F(OPTION = 'EXTREMA',   TABLE = CO('tab3'), UNITE=18,
+                                     CRIT_COMP = ('TOUT'), ),   
                                   ),   
-                    # IMPRESSION = 'OUI', UNITE=21,                                                                
+                    IMPRESSION = 'OUI', UNITE=21,                                                                
                     )     
 
 #  test_table

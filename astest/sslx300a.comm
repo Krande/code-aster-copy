@@ -310,9 +310,9 @@ COMBINAISON_CHARGE (
                                   _F(OPTION = 'COEF_COMB', TABLE = CO('tab1'),),   
                                   _F(OPTION = 'CALC_COMB', TABLE = CO('tab2'),),   
                                   _F(OPTION = 'EXTREMA',   TABLE = CO('tab3'),
-                                     CRIT_COMP = ('MAXI','MAXI_ABS'), ),   
+                                     CRIT_COMP = ('MAXI','MAXI_ABS','MINI','MINI_ABS'), ),   
                                   ),   
-                    # IMPRESSION = 'OUI', UNITE=21,                              
+                    IMPRESSION = 'NON',                              
                     )
 
 TEST_TABLE(CRITERE='RELATIF',
