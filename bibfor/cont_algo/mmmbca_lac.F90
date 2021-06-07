@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -106,7 +106,6 @@ type(NL_DS_Contact), intent(inout) :: ds_contact
 !
     loop_cont_conv = ASTER_TRUE
     loop_cont_vali = 0
-    ds_contact%lContStab = ASTER_FALSE
 !
 ! - Get parameters
 !
