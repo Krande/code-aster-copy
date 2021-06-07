@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine rc32rs(lfat, lefat)
     integer :: jcombi, jresucomb, jresucombs, npar3, jfact, npar4
     integer :: num1, num2, noccpris, ind1, ind2, n5, jfactenv
     complex(kind=8) :: c16b
-    parameter    ( npar0 = 49 , npar1 = 16 , npar2 = 25, npar3 = 23, npar4 = 26 )
+    parameter    ( npar0 = 50 , npar1 = 18 , npar2 = 25, npar3 = 23, npar4 = 25 )
     character(len=16) :: nopar1(npar1), nopar0(npar0), nopar2(npar2)
     character(len=8) :: typar1(npar1), typar0(npar0)
     character(len=16) :: nopar3(npar3), nopar4(npar4)
@@ -66,31 +66,31 @@ subroutine rc32rs(lfat, lefat)
      &            'INST_SN_2', 'SN*', 'INST_SN*_1', 'INST_SN*_2',&
      &            'SIG_PRES_MOY', 'SN_THER', 'CRIT_LINE', 'SP_THER', 'CRIT_PARAB',&
      &            'SP1(MECA)', 'INST_SALT_1', 'INST_SALT_2', 'SALT',&
-     &            'FU_UNIT', 'NOCC_PRIS', 'FU_PARTIEL', 'FEN', 'FEN_INTEGRE',&
+     &            'FU_UNIT', 'NOCC_PRIS', 'FU_PARTIEL', 'FEN', &
      &            'FUEN_PARTIEL', 'PM_MAX', 'PB_MAX', 'PMPB_MAX', 'SN_MAX',&
      &            'SN*_MAX', 'SIGM_M_PRES', 'SN_THER_MAX', 'CRIT_LINE_MAX',&
      &            'SP_THER_MAX', 'CRIT_PARA_MAX', 'SP_MAX', 'SALT_MAX', 'FU_TOTAL',&
-     &            'FUEN_TOTAL' /
+     &            'FEN_TOTAL', 'FEN_INTEGRE', 'FUEN_TOTAL'  /
     data typar0 / 'K8', 'K8', 'K8', 'K16',&
      &             'I', 'I', 'I', 'R','R','R',&
      &             'K16', 'I', 'I', 'I', 'R', 'R',&
      &             'R', 'R','R','R',&
      &             'R', 'R', 'R', 'R', 'R',&
      &             'R', 'R', 'R', 'R',&
-     &             'R', 'I', 'R', 'R', 'R', &
+     &             'R', 'I', 'R', 'R', &
      &             'R', 'R', 'R', 'R', 'R',&
-     &             'R', 'R' , 'R', 'R',&
+     &             'R', 'R', 'R', 'R',&
      &             'R', 'R', 'R', 'R', 'R',&
-     &             'R' /
+     &             'R', 'R', 'R' /
 !
     data nopar1 / 'TYPE', 'LIEU', 'PM_MAX', 'PB_MAX', 'PMPB_MAX', 'SN_MAX',&
      &            'SN*_MAX', 'SIGM_M_PRES', 'SN_THER_MAX', 'CRIT_LINE_MAX',&
      &            'SP_THER_MAX', 'CRIT_PARA_MAX', 'SP_MAX', 'SALT_MAX', 'FU_TOTAL',&
-     &            'FUEN_TOTAL' /
+     &            'FEN_TOTAL', 'FEN_INTEGRE','FUEN_TOTAL' /
     data typar1 / 'K8', 'K8', 'R', 'R', 'R', 'R',&
      &            'R', 'R', 'R', 'R',&
      &            'R', 'R', 'R', 'R', 'R',&
-     &            'R' /
+     &            'R', 'R', 'R' /
 !
     data nopar2 / 'TYPE', 'SEISME', 'LIEU',&
      &            'NOM_SIT1', 'NUM_SIT1', 'GROUP_SIT1', 'PM', 'PB', 'PMPB',&
@@ -113,7 +113,7 @@ subroutine rc32rs(lfat, lefat)
      &            'INST_SN_1','INST_SN_2', 'SN*', 'INST_SN*_1',&
      &            'INST_SN*_2', 'INST_SALT_1', 'INST_SALT_2',&
      &            'SALT', 'FU_UNIT', 'NOCC_PRIS', 'FU_PARTIEL', 'FEN',&
-                  'FEN_INTEGRE', 'FUEN_PARTIEL' /
+                  'FUEN_PARTIEL' /
 !
 ! DEB ------------------------------------------------------------------
 !
@@ -141,7 +141,7 @@ subroutine rc32rs(lfat, lefat)
     do 130 im = 1, 2
 !
         valek(2) = lieu(im)
-        call jeveuo('&&RC3200.MAX_RESU.'//lieu(im), 'L', jmax)
+        call jeveuo('&&RC3200.MAX_RESU.'//lieu(im), 'E', jmax)
 !
         do 131 k = 1,7
             valer(k) = zr(jmax-1+k)
@@ -172,13 +172,18 @@ subroutine rc32rs(lfat, lefat)
         do 132 k = 1,3
             valer(10+k) = zr(jmax-1+8+k)
 132     continue
-        valer(14) = zr(jmax+12)
+        valer(16)= zr(jmax+12)
         if(lefat) then
             call getvr8('ENVIRONNEMENT', 'FEN_INTEGRE', iocc=1, scal=fenint, nbret=n5)
             if(n5 .eq. 0 .or. abs(fenint) .lt. 1e-8) call utmess('F', 'POSTRCCM_54')
             fenglobal =0.d0
             if (abs(zr(jmax+10)) .gt. 1e-8) fenglobal = zr(jmax+12)/zr(jmax+10)
-            if(fenglobal .gt. fenint) zr(jmax+12)=zr(jmax+12)/fenint
+            if(fenglobal .gt. fenint) valer(16)=zr(jmax+12)/fenint
+            valer(14)=fenglobal
+            valer(15)=fenint
+        else
+            valer(14)=r8vide()
+            valer(15)=r8vide()
         endif
 !
         call tbajli(nomres, npar1, nopar1, [ibid], valer,&
@@ -478,16 +483,10 @@ subroutine rc32rs(lfat, lefat)
 !
           if(lefat) then
               valer(12) = zr(jfactenv+2*k)
-              valer(13) = fenint
-              valer(14) = zr(jfactenv+2*k+1)
-              if(fenglobal .gt. fenint) then
-                valer(12) = zr(jfactenv+2*k)/fenint
-                valer(14) = zr(jfactenv+2*k+1)/fenint
-              endif
+              valer(13) = zr(jfactenv+2*k+1)
           else
               valer(12) = r8vide()
               valer(13) = r8vide()
-              valer(14) = r8vide()
           endif
 !
           call tbajli(nomres, npar4, nopar4, valei, valer, [c16b], valek, 0)
@@ -508,16 +507,10 @@ subroutine rc32rs(lfat, lefat)
 !
           if(lefat) then
               valer(12) = zr(jfactenv+2*k)
-              valer(13) = fenint
-              valer(14) = zr(jfactenv+2*k+1)
-              if(fenglobal .gt. fenint) then
-                valer(12) = zr(jfactenv+2*k)/fenint
-                valer(14) = zr(jfactenv+2*k+1)/fenint
-              endif
+              valer(13) = zr(jfactenv+2*k+1)
           else
               valer(12) = r8vide()
               valer(13) = r8vide()
-              valer(14) = r8vide()
           endif
 !
           call tbajli(nomres, npar4, nopar4, valei, valer, [c16b], valek, 0)
@@ -535,7 +528,7 @@ subroutine rc32rs(lfat, lefat)
           valer(11) = r8vide()
           valer(12) = r8vide()
           valer(13) = r8vide()
-          valer(14) = r8vide()
+        
 !
           call tbajli(nomres, npar4, nopar4, valei, valer, [c16b], valek, 0)
 !
