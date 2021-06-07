@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,8 @@
 #  Utilisable en mode EXTERNE, voir les flags avec "python recal.py -h"
 #___________________________________________________________________________
 
+# MACR_RECAL is on the next deprecations list!
+# aslint: disable=C4007
 
 import os
 import sys
@@ -783,20 +785,20 @@ class CALCULS_ASTER:
                         UTMESS('A', 'RECAL0_82', valk=resudir)
                     resudir = None
         if not resudir:
-            # Par defaut, dans un sous-repertoire du repertoire d'execution
-            pref = 'tmp_macr_recal_'
             # On cherche s'il y a un fichier hostfile pour placer les fichiers dans un repertoire partage
             l_fr = getattr(prof, 'data')
             l_tmp = l_fr[:]
             for dico in l_tmp:
                 if dico['type'] == 'hostfile':
-                    pref = get_shared_tmpdir('tmp_macr_recal_')
+                    resudir = get_shared_tmpdir('tmp_macr_recal_')
                     break
             # Si batch alors on place les fichiers dans un repertoire partage
             if prof['mode'][0] == 'batch':
-                pref = get_shared_tmpdir('tmp_macr_recal1_')
-
-            resudir = tempfile.mkdtemp(prefix=pref)
+                resudir = get_shared_tmpdir('tmp_macr_recal1_')
+            # Par defaut, dans un sous-repertoire du repertoire d'execution
+            if not resudir:
+                resudir = tempfile.mkdtemp(prefix='tmp_macr_recal_')
+        
         flashdir = os.path.join(resudir, 'flash')
         if info >= 1:
             UTMESS('I', 'RECAL0_81', valk=resudir)
