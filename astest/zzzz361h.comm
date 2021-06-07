@@ -21,7 +21,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 # MODELISATION H : X-FEM FISSURE NON-COINCIDENTE PUR - TRACTION
 # LE FOND DE FISSURE EST AU CENTRE DES ELEMENTS
-# ON TESTE : 
+# ON TESTE :
 # - CALC_G pour XFEM quadratique
 
 #----------------------------------------------
@@ -147,12 +147,13 @@ UTOT2x=MECA_STATIQUE(MODELE=MODELEK,
                           _F(CHARGE=CHB),
                           _F(CHARGE=CHPRES),
                           ),
-                   ); 
+                   );
 
 
 
 # unique test de CALC_G, option CALC_G avec pression sur levres
 G2=CALC_G_XFEM(RESULTAT=UTOT2x,
+               CHAM_THETA=CO('cham_theta_no2'),
           THETA=_F(FISSURE=FISS,
                    R_INF=2.,
                    R_SUP=4.,),

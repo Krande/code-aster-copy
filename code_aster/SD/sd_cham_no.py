@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,14 +60,14 @@ class sd_cham_no(sd_titre):
             return
 
         mail, prof_chno = self.u_refe()
+        gd, num = self.u_desc()
 
         # faut-il vérifier le sd_maillage de chaque sd_cham_no ?   AJACOT_PB
         #  - cela risque de couter cher
         #  - cela pose un problème "import circulaire" avec sd_maillage -> sd_cham_no => import ici
         sd2 = sd_maillage(mail)
         sd2.check(checker)
-
-        if prof_chno:
+        if prof_chno and num > 0 :
             if prof_chno[:14] + '.NUME.PRNO' in checker.names:
                 return
             sd2 = sd_prof_chno(prof_chno)
