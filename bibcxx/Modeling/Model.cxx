@@ -30,6 +30,7 @@
 
 #include "aster_fort_superv.h"
 #include "aster_fort_utils.h"
+#include "ParallelUtilities/AsterMPI.h"
 #include "Modeling/Model.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/ResultNaming.h"
@@ -167,3 +168,39 @@ void ModelClass::addModelingOnGroupOfNodes( Physics phys, Modelings mod, std::st
     _modelisations.push_back( listOfModsAndGrpsValue(
         ElementaryModeling( phys, mod ), MeshEntityPtr( new GroupOfNodes( nameOfGroup ) ) ) );
     };
+
+
+#ifdef ASTER_HAVE_MPI
+bool ModelClass::transferFrom( const ModelPtr model)
+{
+    // "the mesh associated to finiteElementDescriptorClass is not a partial mesh"
+    AS_ASSERT( getMesh()->isConnection() );
+    const ConnectionMeshPtr connectionMesh =
+        boost::static_pointer_cast< ConnectionMeshClass >( getMesh() );
+
+    // "parallel mesh associated to partial mesh of FiniteElementDescriptorClass \n"
+    //        "does not correspond to other FiniteElementDescriptorClass mesh"
+    AS_ASSERT( connectionMesh->getParallelMesh() == model->getMesh() );
+
+    // tranfer LIGREL
+    auto Fed = model->getFiniteElementDescriptor();
+    this->getFiniteElementDescriptor()->transferFrom(Fed);
+
+    // tranfer .MAILLE
+    const auto nbCells = connectionMesh->getNumberOfCells();
+    _typeOfCells->allocate(nbCells);
+    auto& cellsLocNum = connectionMesh->getCellsLocalNumbering();
+    auto& cellsOwner = connectionMesh->getCellsOwner();
+
+    const auto rank = getMPIRank();
+
+    int nbCellsLoc = 0;
+    for ( int i = 0; i < nbCells; ++i ) {
+        if ( ( *cellsOwner )[i] == rank )
+            nbCellsLoc++;
+    }
+
+    return true;
+};
+
+#endif

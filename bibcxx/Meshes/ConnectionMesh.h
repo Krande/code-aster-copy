@@ -49,6 +49,10 @@ class ConnectionMeshClass : public BaseMeshClass {
     JeveuxVectorLong _globalNumbering;
     /** @brief number of owner proc for each nodes */
     JeveuxVectorLong _owner;
+    /** @brief id of cell in local numbering */
+    JeveuxVectorLong _cellsLocalNumbering;
+    /** @brief number of owner proc for each cells */
+    JeveuxVectorLong _cellsOwner;
 
 
     VectorLong getCellsGlobalNumbering( const JeveuxVectorLong& rankOfCells ) const;
@@ -80,6 +84,10 @@ class ConnectionMeshClass : public BaseMeshClass {
 
     const JeveuxVectorLong &getOwner() const { return _owner; };
 
+    const JeveuxVectorLong &getCellsLocalNumbering() const { return _cellsLocalNumbering; };
+
+    const JeveuxVectorLong &getCellsOwner() const { return _cellsOwner; };
+
     const ParallelMeshPtr &getParallelMesh() const { return _pMesh; };
 
     VectorString getGroupsOfCells( ) const;
@@ -101,7 +109,7 @@ class ConnectionMeshClass : public BaseMeshClass {
      * @brief Fonction permettant de savoir si un maillage est partiel
      * @return retourne true si le maillage est partiel
      */
-    virtual bool isPartial() const { return true; };
+    virtual bool isConnection() const { return true; };
 };
 
 /**

@@ -160,7 +160,7 @@ bool BaseMeshClass::printMedFile( const std::string fileName ) const
 
     SyntaxMapContainer dict;
 
-    if( isParallel() || isPartial()  )
+    if( isParallel() || isConnection()  )
         dict.container["PROC0"] = "NON";
     else
         dict.container["PROC0"] = "OUI";

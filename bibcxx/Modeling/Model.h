@@ -147,7 +147,8 @@ class ModelClass : public DataStructure, public ListOfTablesClass {
           _typeOfNodes( JeveuxVectorLong( getName() + ".NOEUD     " ) ),
           _partition( JeveuxVectorChar8( getName() + ".PARTIT    " ) ), _saneModel( nullptr ),
           _baseMesh( mesh ), _splitMethod( SubDomain ), _graphPartitioner( MetisPartitioner ),
-          _ligrel( new FiniteElementDescriptorClass( getName() + ".MODELE", _baseMesh ) ) {
+          _ligrel( boost::make_shared< FiniteElementDescriptorClass >(
+                getName() + ".MODELE", _baseMesh ) ) {
         if ( _baseMesh->isEmpty() )
             throw std::runtime_error( "Mesh is empty" );
 #ifdef ASTER_HAVE_MPI
@@ -165,11 +166,10 @@ class ModelClass : public DataStructure, public ListOfTablesClass {
           _partition( JeveuxVectorChar8( getName() + ".PARTIT    " ) ), _saneModel( nullptr ),
           _baseMesh( mesh ), _connectionMesh( mesh ), _splitMethod( Centralized ),
           _graphPartitioner( MetisPartitioner ),
-          _ligrel( new FiniteElementDescriptorClass( getName() + ".MODELE", _baseMesh ) ) {
-        if ( _baseMesh->isEmpty() )
-            throw std::runtime_error( "Mesh is empty" );
-        if ( _connectionMesh->isEmpty() )
-            throw std::runtime_error( "Partial mesh is empty" );
+          _ligrel( boost::make_shared< FiniteElementDescriptorClass >(
+                                                        getName() + ".MODELE", _baseMesh ) ) {
+        AS_ASSERT( !_baseMesh->isEmpty() );
+        AS_ASSERT( !_connectionMesh->isEmpty() );
     };
 
     ModelClass( const ConnectionMeshPtr mesh )
@@ -323,6 +323,10 @@ class ModelClass : public DataStructure, public ListOfTablesClass {
     {
         return _ligrel->getPhysics();
     }
+
+#ifdef ASTER_HAVE_MPI
+    bool transferFrom( const ModelPtr model);
+#endif
 };
 
 /**

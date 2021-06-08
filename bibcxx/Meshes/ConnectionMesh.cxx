@@ -44,7 +44,9 @@ ConnectionMeshClass::ConnectionMeshClass( const std::string &name,
   _pMesh( mesh ),
   _localNumbering( getName() + ".LOCAL" ),
   _globalNumbering( getName() + ".GLOBAL" ),
-  _owner( getName() + ".POSSESSEUR" )
+  _owner( getName() + ".POSSESSEUR" ),
+  _cellsLocalNumbering( getName() + ".CELLLOCAL"),
+  _cellsOwner( getName() + ".CELLPOS")
 {
 
     /* Stop if no group is given */
@@ -386,7 +388,9 @@ ConnectionMeshClass::ConnectionMeshClass( const std::string &name,
     {
         const auto cell = connecExp[cellId];
         connectivitiesToSend.push_back( cell.getType() );
+        connectivitiesToSend.push_back( cellId );
         connectivitiesToSend.push_back( globalCellIds[ cellId - 1 ] );
+        connectivitiesToSend.push_back( rank );
         connectivitiesToSend.push_back( cell.getNumberOfNodes() );
         for (const auto vertex : cell )
         {
@@ -504,6 +508,8 @@ ConnectionMeshClass::ConnectionMeshClass( const std::string &name,
     }
 
     /* Add cells */
+    _cellsLocalNumbering->allocate( Permanent, totalNumberOfCells );
+    _cellsOwner->allocate( Permanent, totalNumberOfCells );
     _nameOfCells->allocate( Permanent, totalNumberOfCells );
     _cellsType->allocate( Permanent, totalNumberOfCells );
     _connectivity->allocateContiguous( Permanent, totalNumberOfCells,
@@ -516,8 +522,10 @@ ConnectionMeshClass::ConnectionMeshClass( const std::string &name,
         sstream << std::setfill( '0' ) << std::setw( 7 ) << std::hex << i;
         _nameOfCells->add( i, std::string( "M" + sstream.str() ) );
         ( *_cellsType )[i - 1] = connectivitiesGathered[offset++];
+        ( *_cellsLocalNumbering )[i - 1] = connectivitiesGathered[offset++];
         const auto globCellId = connectivitiesGathered[offset++];
         numCellsGloLoc[ globCellId ] = i;
+        ( *_cellsOwner )[i - 1] = connectivitiesGathered[offset++];
 
         const auto nbNodes = connectivitiesGathered[offset++];
         VectorLong listNodes( nbNodes );

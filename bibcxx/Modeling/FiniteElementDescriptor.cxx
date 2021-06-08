@@ -65,24 +65,25 @@ int FiniteElementDescriptorClass::getPhysics( void ) const
 
 #ifdef ASTER_HAVE_MPI
 void FiniteElementDescriptorClass::transferDofDescriptorFrom( FiniteElementDescriptorPtr &other ) {
-    if ( !getMesh()->isPartial() )
-        throw std::runtime_error(
-            "the mesh associated to finiteElementDescriptorClass is not a partial mesh" );
+    // "the mesh associated to finiteElementDescriptorClass is not a partial mesh"
+    AS_ASSERT( getMesh()->isConnection() );
     const ConnectionMeshPtr connectionMesh =
         boost::static_pointer_cast< ConnectionMeshClass >( getMesh() );
-    if ( connectionMesh->getParallelMesh() != other->getMesh() )
-        throw std::runtime_error(
-            "parallel mesh associated to partial mesh of FiniteElementDescriptorClass \n"
-            "does not correspond to other FiniteElementDescriptorClass mesh" );
-    getPhysicalNodesComponentDescriptor();
+
+    // "parallel mesh associated to partial mesh of FiniteElementDescriptorClass \n"
+    //        "does not correspond to other FiniteElementDescriptorClass mesh"
+    AS_ASSERT( connectionMesh->getParallelMesh() == other->getMesh() );
+
+    const JeveuxVectorLong &otherDofDescriptor = other->getPhysicalNodesComponentDescriptor();
 
     const int rank = getMPIRank();
     int nbNodes = connectionMesh->getNumberOfNodes();
-    int nec = _dofDescriptor->size() / nbNodes;
+    int nec = otherDofDescriptor->size() / other->getMesh()->getNumberOfNodes();
+
+    std::cout << "NEC: " << nec << ", " << nbNodes << std::endl;
 
     const JeveuxVectorLong &localNumbering = connectionMesh->getLocalNumbering();
     const JeveuxVectorLong &owner = connectionMesh->getOwner();
-    const JeveuxVectorLong &otherDofDescriptor = other->getPhysicalNodesComponentDescriptor();
 
     int nbNodesLoc = 0;
     for ( int i = 0; i < nbNodes; ++i ) {
@@ -102,9 +103,51 @@ void FiniteElementDescriptorClass::transferDofDescriptorFrom( FiniteElementDescr
         }
     }
 
-    VectorLong bufferGathered;
+    // Ils ne sont pas rangé dans le bon ordre
     AsterMPI::all_gather( buffer, _dofDescriptor );
     buffer.clear();
 
 };
+
+void FiniteElementDescriptorClass::transferListOfGroupOfCellFrom( FiniteElementDescriptorPtr& other)
+{
+    // "the mesh associated to finiteElementDescriptorClass is not a partial mesh"
+    AS_ASSERT( getMesh()->isConnection() );
+    const ConnectionMeshPtr connectionMesh =
+        boost::static_pointer_cast< ConnectionMeshClass >( getMesh() );
+
+    // "parallel mesh associated to partial mesh of FiniteElementDescriptorClass \n"
+    //        "does not correspond to other FiniteElementDescriptorClass mesh"
+    AS_ASSERT( connectionMesh->getParallelMesh() == other->getMesh() );
+};
+
+
+void FiniteElementDescriptorClass::transferFrom( FiniteElementDescriptorPtr &other )
+{
+    // "the mesh associated to finiteElementDescriptorClass is not a partial mesh"
+    AS_ASSERT( getMesh()->isConnection() );
+    const ConnectionMeshPtr connectionMesh =
+        boost::static_pointer_cast< ConnectionMeshClass >( getMesh() );
+
+    // "parallel mesh associated to partial mesh of FiniteElementDescriptorClass \n"
+    //        "does not correspond to other FiniteElementDescriptorClass mesh"
+    AS_ASSERT( connectionMesh->getParallelMesh() == other->getMesh() );
+
+    // Fill '.LGRF'
+    _parameters->allocate(3);
+    (*_parameters)[0] = getMesh()->getName();
+    _parameters->setInformationParameter(other->getParameters()->getInformationParameter());
+
+    // Fill '.NBNO'
+    _numberOfDelayedNumberedConstraintNodes->allocate(1);
+    (*_numberOfDelayedNumberedConstraintNodes)[0] = 0;
+
+    // Fill '.PRNM'
+    transferDofDescriptorFrom(other);
+    auto dof = _dofDescriptor;
+    std::cout << "NEC2: " << dof->size()/connectionMesh->getNumberOfNodes() << ", " << connectionMesh->getNumberOfNodes() << std::endl;
+
+    // Fill 'LIEL'
+    transferListOfGroupOfCellFrom(other);
+}
 #endif /* ASTER_HAVE_MPI */

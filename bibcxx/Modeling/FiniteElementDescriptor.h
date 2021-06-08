@@ -157,6 +157,11 @@ public:
      * this should be associated to a ConnectionMesh,
      * other should be associated to the parallelMesh of the ConnectionMesh */
     void transferDofDescriptorFrom( FiniteElementDescriptorPtr& );
+
+    void transferFrom( FiniteElementDescriptorPtr& );
+
+    void transferListOfGroupOfCellFrom( FiniteElementDescriptorPtr& );
+
 #endif /* ASTER_HAVE_MPI */
 };
 

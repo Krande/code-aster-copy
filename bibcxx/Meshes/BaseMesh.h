@@ -259,7 +259,7 @@ class BaseMeshClass : public DataStructure, public ListOfTablesClass {
      * @brief Fonction permettant de savoir si un maillage est partiel
      * @return retourne true si le maillage est partiel
      */
-    virtual bool isPartial() const { return false; };
+    virtual bool isConnection() const { return false; };
 
     /**
      * @brief Tester le maillage a des cells quadratiques

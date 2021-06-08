@@ -101,7 +101,9 @@ Returns:
         .def( "setSplittingMethod", split1 )
         .def( "setSplittingMethod", split2 )
         .def( "getFiniteElementDescriptor", &ModelClass::getFiniteElementDescriptor )
-
+#ifdef ASTER_HAVE_MPI
+        .def( "transferFrom", &ModelClass::transferFrom )
+#endif
         .def( "getTable", &ListOfTablesClass::getTable, R"(
 Extract a Table from the datastructure.
 

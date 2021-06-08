@@ -21,7 +21,7 @@
 
 from ..Cata.Language.SyntaxObjects import FactorKeyword
 from ..Objects import (MechanicalLoadReal, ParallelMechanicalLoadReal,
-                       ConnectionMesh)
+                       ConnectionMesh, Model)
 from ..Supervis import ExecuteCommand
 from .affe_modele import AFFE_MODELE
 from ..Utilities import deprecate, force_list
@@ -152,27 +152,39 @@ class MechanicalLoadDefinition(ExecuteCommand):
             nodeGroups, cellGroups = self._getGroups(keywords)
             connectionMesh = ConnectionMesh(model.getMesh(), nodeGroups, cellGroups)
 
-            if connectionMesh.getDimension()==3:
-                partialModel = AFFE_MODELE(MAILLAGE=connectionMesh,
-                                       AFFE=(_F(TOUT='OUI',
-                                               PHENOMENE='MECANIQUE',
-                                               MODELISATION="3D",),
-                                             _F(TOUT='OUI',
-                                               PHENOMENE='MECANIQUE',
-                                               MODELISATION='DIS_T',),
-                                               ),
-                                       VERI_JACOBIEN='NON',
-                                       DISTRIBUTION=_F(METHODE='CENTRALISE',),)
-            else:
-                partialModel = AFFE_MODELE(MAILLAGE=connectionMesh,
-                                       AFFE=(_F(TOUT='OUI',
-                                               PHENOMENE='MECANIQUE',
-                                               MODELISATION="D_PLAN",),),
-                                       VERI_JACOBIEN='NON',
-                                       DISTRIBUTION=_F(METHODE='CENTRALISE',),)
+            # if connectionMesh.getDimension()==3:
+            #     partialModel = AFFE_MODELE(MAILLAGE=connectionMesh,
+            #                            AFFE=(_F(TOUT='OUI',
+            #                                    PHENOMENE='MECANIQUE',
+            #                                    MODELISATION="3D",),
+            #                                  _F(TOUT='OUI',
+            #                                    PHENOMENE='MECANIQUE',
+            #                                    MODELISATION="COQUE_3D",),
+            #                                  _F(TOUT='OUI',
+            #                                    PHENOMENE='MECANIQUE',
+            #                                    MODELISATION='DIS_T',),
+            #                                    ),
+            #                            VERI_JACOBIEN='NON',
+            #                            DISTRIBUTION=_F(METHODE='CENTRALISE',),)
+            # else:
+            #     partialModel = AFFE_MODELE(MAILLAGE=connectionMesh,
+            #                            AFFE=(_F(TOUT='OUI',
+            #                                    PHENOMENE='MECANIQUE',
+            #                                    MODELISATION="D_PLAN",),
+            #                                    _F(TOUT='OUI',
+            #                                    PHENOMENE='MECANIQUE',
+            #                                    MODELISATION="COQUE_3D",),
+            #                                     _F(TOUT='OUI',
+            #                                    PHENOMENE='MECANIQUE',
+            #                                    MODELISATION='DIS_T',),),
+            #                            VERI_JACOBIEN='NON',
+            #                            DISTRIBUTION=_F(METHODE='CENTRALISE',),)
 
-            partialModel.getFiniteElementDescriptor().transferDofDescriptorFrom(model.getFiniteElementDescriptor())
-            keywords["MODELE"] = partialModel
+            connectionModel = Model( connectionMesh )
+            connectionModel.transferFrom( model )
+
+            # partialModel.getFiniteElementDescriptor().transferDofDescriptorFrom(model.getFiniteElementDescriptor())
+            keywords["MODELE"] = connectionModel
             partialMechanicalLoad = AFFE_CHAR_MECA(**keywords)
             keywords["MODELE"] = model
             self._result = ParallelMechanicalLoadReal(partialMechanicalLoad, model)
