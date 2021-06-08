@@ -33,7 +33,7 @@ def configure(self):
     opts = self.options
 
     official_programs.configure(self)
-    official_programs.check_prerequisites_package(self, ROOT, "20190513")
+    official_programs.check_prerequisites_package(self, ROOT, "20190513-med41")
     opts.with_prog_salome = False
     opts.with_prog_europlexus = False
     opts.with_prog_xmgrace = False
@@ -61,7 +61,7 @@ def configure(self):
 
     self.env.append_value('LIBPATH', [
         ROOT + '/hdf5-1.10.3/lib',
-        ROOT + '/med-4.0.0/lib',
+        ROOT + '/med-4.1.0/lib',
         ROOT + '/metis-5.1.0_aster4/lib',
         ROOT + '/scotch-6.0.4_aster7/lib',
         ROOT + '/mumps-5.1.2_consortium_aster5/lib',
@@ -70,7 +70,7 @@ def configure(self):
 
     self.env.append_value('INCLUDES', [
         ROOT + '/hdf5-1.10.3/include',
-        ROOT + '/med-4.0.0/include',
+        ROOT + '/med-4.1.0/include',
         ROOT + '/metis-5.1.0_aster4/include',
         ROOT + '/scotch-6.0.4_aster7/include',
         ROOT + '/mumps-5.1.2_consortium_aster5/include',
