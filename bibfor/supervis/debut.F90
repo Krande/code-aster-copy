@@ -39,7 +39,7 @@ subroutine debut()
 #include "asterfort/onerrf.h"
 #include "asterfort/ulopen.h"
 #include "asterfort/utmess.h"
-    character(len=8) :: k8b, repons
+    character(len=8) :: k8b
     character(len=16) :: nomcmd, k16b
     integer :: ier, n, dummy
     integer, save :: ipass=0
@@ -78,9 +78,8 @@ subroutine debut()
 !
 !
 ! --- DEBUG / VERI_BASE : lu ici et non dans ibdbgs car après ibbase
-    repons = ' '
-    call getvtx('DEBUG', 'VERI_BASE', iocc=1, scal=repons, nbret=n)
-    if (n .eq. 1 .and. repons .eq. 'OUI') then
+    call getvtx('DEBUG', 'VERI_BASE', iocc=1, nbret=n)
+    if (n .eq. 1) then
         ! message et debug_jeveux forcé dans ibdbgs
         call dbg_base()
     endif

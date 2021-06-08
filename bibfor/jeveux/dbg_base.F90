@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,11 +24,13 @@ subroutine dbg_base()
 ! Check that the splitting of the results databases works as expected.
 !
 ! This subroutine is only used by unittest and enabled using:
-!   DEBUT(DEBUG=_F(VERI_BASE='OUI'))
+!   DEBUT(DEBUG=_F(VERI_BASE='GLOBALE' or 'VOLATILE'))
 !
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
@@ -50,20 +52,29 @@ subroutine dbg_base()
      &               kitlec(n) , kitecr(n) ,             kiadm(n) ,&
      &               iitlec(n) , iitecr(n) , nitecr(n) , kmarq(n)
 !
+    character(len=1) :: dblett
+    character(len=4) :: dbname, valk(2)
+    character(len=16) :: answer
     character(len=19) :: objname
     integer :: dbsize, recsize, recint
-    integer :: nbrec, objint, nbobj, ic, i, total
-    integer :: jadr, vali(8)
+    integer :: nbrec, objint, nbobj, ic, i, total, perc
+    integer :: jadr, vali(8), more
 !
-    ic = index(classe, 'V')
+    answer = ' '
+    call getvtx('DEBUG', 'VERI_BASE', iocc=1, scal=answer)
+    call getvis('DEBUG', 'VERI_BASE_NB', iocc=1, scal=perc)
+    dblett = answer(1:1)
+!
+    ic = index(classe, dblett)
     ASSERT(ic .ne. 0)
+    dbname = nomfic(ic)
     recint = longbl(ic) * 1024
     recsize = 8 * recint
     nbrec = nblmax(ic)
     dbsize = recsize * nbrec
     objint = recint / 4
-    ! with 48 GB, noobj=245768, force a failure quickly after 1000 objects
-    nbobj = min(4 * nbrec + 8, 1000)
+!   with 48 GB, noobj=245768, here create at most 1000 objects
+    nbobj = min(4 * nbrec * perc / 100, 1000)
     vali(1) = dbsize
     vali(2) = recsize
     vali(3) = recint
@@ -74,30 +85,34 @@ subroutine dbg_base()
     vali(8) = nbobj * objint
     call utmess('I', 'JEVEUX1_97', vali=vali, ni=8)
 
-    inquire(file='vola.1', exist=exist)
+    inquire(file=dbname//'.1', exist=exist)
     ASSERT(exist)
-    inquire(file='vola.2', exist=exist)
+    inquire(file=dbname//'.2', exist=exist)
     ASSERT(.not. exist)
 
-!   The creation of an additional database should occur before the 16th object
-!   because of the system objects.
     i = 0
     total = 0
-    do while (i < nbobj .and. .not. exist)
+    more = 10
+    do while ((i < nbobj .and. .not. exist) .or. (exist .and. more .gt. 0))
         i = i + 1
         write(objname, '(A12,I7)') '&&VERI_BASE.', i
         total = total + objint
-        call wkvect(objname, 'V V I', objint, jadr)
+        call wkvect(objname, dblett//' V I', objint, jadr)
         call jelibe(objname)
-        inquire(file='vola.2', exist=exist)
+        inquire(file=dbname//'.2', exist=exist)
+        if (exist) then
+            more = more - 1
+        endif
         call utmess('I', 'JEVEUX1_98', sk=objname, si=total)
     end do
 
 !   TEST_RESU
-    inquire(file='vola.2', exist=exist)
+    inquire(file=dbname//'.2', exist=exist)
+    valk(1) = dbname
     if (exist) then
-        call utmess('I', 'JEVEUX1_99', sk='OK')
+        valk(2) = "OK"
     else
-        call utmess('I', 'JEVEUX1_99', sk='NOOK')
+        valk(2) = "NOOK"
     endif
+    call utmess('I', 'JEVEUX1_99', nk=2, valk=valk)
 end subroutine

@@ -50,12 +50,12 @@ from ..Supervis import CommandSyntax, ExecuteCommand, Serializer, loadObjects
 from ..Supervis.code_file import track_coverage
 from ..Supervis.ctopy import checksd, print_header
 from ..Supervis.TestResult import testresu_print
-from ..Utilities import (ExecutionParameter, Options, deprecate, import_object,
-                         logger)
+from ..Utilities import ExecutionParameter, Options, deprecate, import_object, logger
 from ..Utilities.i18n import localization
 
 try:
     import debugpy
+
     HAS_DEBUGPY = True
 except ImportError:
     HAS_DEBUGPY = False
@@ -65,6 +65,7 @@ class ExecutionStarter:
     """Initialize the
     :class:`~code_aster.Utilities.ExecutionParameter.ExecutionParameter` object
     for requests from the both sides Python/Fortran."""
+
     params = _is_initialized = None
 
     @classmethod
@@ -97,6 +98,7 @@ class ExecutionStarter:
 
 class Starter(ExecuteCommand):
     """Define the command DEBUT."""
+
     command_name = "DEBUT"
     arg_init = []
 
@@ -161,54 +163,57 @@ class Starter(ExecuteCommand):
         stop_with = "EXCEPTION"
         if ExecutionParameter().option & Options.Abort:
             stop_with = "ABORT"
-        if (ExecutionParameter().option & Options.TestMode or
-                self._code_enabled(keywords)):
+        if ExecutionParameter().option & Options.TestMode or self._code_enabled(
+            keywords
+        ):
             ExecutionParameter().enable(Options.TestMode)
             stop_with = "ABORT"
             iwarn = True
             track_coverage(self._cata, self.command_name, keywords)
 
-        erreur = keywords.get('ERREUR')
+        erreur = keywords.get("ERREUR")
         if erreur:
-            if erreur.get('ERREUR_F'):
-                stop_with = erreur['ERREUR_F']
+            if erreur.get("ERREUR_F"):
+                stop_with = erreur["ERREUR_F"]
         if ExecutionParameter().option & Options.SlaveMode:
             stop_with = "EXCEPTION"
         # must be the first call to correctly set 'vini' in onerrf
         libaster.onFatalError(stop_with)
 
-        debug = keywords.get('DEBUG')
+        debug = keywords.get("DEBUG")
         if debug:
-            jxveri = debug.get('JXVERI', 'NON') == 'OUI'
+            jxveri = debug.get("JXVERI", "NON") == "OUI"
             ExecutionParameter().set_option("jxveri", int(jxveri))
             if jxveri:
                 UTMESS("I", "SUPERVIS_23")
-            sdveri = debug.get('SDVERI', 'NON') == 'OUI'
+            sdveri = debug.get("SDVERI", "NON") == "OUI"
             ExecutionParameter().set_option("sdveri", int(sdveri))
             if sdveri:
                 UTMESS("I", "SUPERVIS_24")
-            dbgjeveux = 'OUI' in (debug.get('JEVEUX', 'NON'),
-                                  debug.get('VERI_BASE', 'NON'))
+            dbgjeveux = (
+                debug.get("JEVEUX", "NON") == "OUI"
+                or debug.get("VERI_BASE") is not None
+            )
             ExecutionParameter().set_option("dbgjeveux", int(dbgjeveux))
             if dbgjeveux:
                 UTMESS("I", "SUPERVIS_12")
             iwarn = iwarn or jxveri or sdveri or dbgjeveux
         if iwarn:
-            UTMESS('I', 'SUPERVIS_22', valk=("--test", "code_aster.init()"))
+            UTMESS("I", "SUPERVIS_22", valk=("--test", "code_aster.init()"))
         if ExecutionParameter().get_option("hook_post_exec"):
             path = ExecutionParameter().get_option("hook_post_exec")
             hook = import_object(path)
             self.register_hook(hook)
 
-        if keywords.get('IMPR_MACRO') == 'OUI':
+        if keywords.get("IMPR_MACRO") == "OUI":
             ExecutionParameter().enable(Options.ShowChildCmd)
 
-        if keywords.get('LANG'):
-            translation = localization.translation(keywords['LANG'])
+        if keywords.get("LANG"):
+            translation = localization.translation(keywords["LANG"])
             tr.set_translator(translation.gettext)
 
-        if keywords.get('IGNORE_ALARM'):
-            for idmess in keywords['IGNORE_ALARM']:
+        if keywords.get("IGNORE_ALARM"):
+            for idmess in keywords["IGNORE_ALARM"]:
                 MessageLog.disable_alarm(idmess)
         super(Starter, self).exec_(keywords)
 
@@ -224,6 +229,7 @@ class Starter(ExecuteCommand):
 
 class Restarter(Starter):
     """Define the command POURSUITE."""
+
     command_name = "POURSUITE"
     arg_init = ["--continue"]
 
@@ -284,25 +290,25 @@ def init(*argv, **kwargs):
             'debug' same as -g/--debug,
             'noargv' to ignore previously passed arguments.
     """
-    if kwargs.get('noargv'):
+    if kwargs.get("noargv"):
         ExecutionParameter().set_argv([])
-    kwargs.pop('noargv', None)
+    kwargs.pop("noargv", None)
     if not ExecutionStarter.init(argv):
         return
 
-    if kwargs.get('debug'):
+    if kwargs.get("debug"):
         ExecutionParameter().enable(Options.Debug)
-    kwargs.pop('debug', None)
+    kwargs.pop("debug", None)
 
-    if kwargs.get('debugpy') and HAS_DEBUGPY:
-        debugpy.listen(("localhost", kwargs['debugpy']))
+    if kwargs.get("debugpy") and HAS_DEBUGPY:
+        debugpy.listen(("localhost", kwargs["debugpy"]))
         print("Waiting for debugger attach")
         debugpy.wait_for_client()
         debugpy.breakpoint()
         # add 10 hours for debugging
         tpmax = ExecutionParameter().get_option("tpmax")
         ExecutionParameter().set_option("tpmax", tpmax + 36000)
-    kwargs.pop('debugpy', None)
+    kwargs.pop("debugpy", None)
 
     if ExecutionStarter.params.option & Options.Continue:
         Restarter.run_with_argv(**kwargs)

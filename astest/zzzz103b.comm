@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -53,6 +53,10 @@ Le test affiche (avec les valeurs par défaut pour les autres paramètres)::
 
 Principe du test :
 
+- En utilisant la base volatile, les seuls objets créés le sont dans
+  ``dbg_base.F90``. Sur la base globale, la découpe se
+  fera alors plus tôt, en fonction des objets présents (catalogue...).
+
 - On alloue des vecteurs de taille 1/4 par rapport à un enregistrement.
   On fixe une limite du nombre d'objets créés à 4 fois le nombre
   d'enregistrements (plus 8 pour être certain de dépasser la taille de la base
@@ -65,12 +69,14 @@ Principe du test :
 - La création d'une deuxième base se produit donc quand on a besoin d'écrire
   l'objet 384 (= 128 * 3).
 
-- Le test s'arrête dès qu'il détecte la création de la base ``vola.2``.
+- Le test s'arrête dès qu'il détecte la création de la base numéro 2.
 
-- Le test est OK si la base ``vola.2`` existe, NOOK dans le cas contraire.
+- Le test est OK si la base numéro 2 existe, NOOK dans le cas contraire.
 
 """
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(VERI_BASE='OUI'))
+from code_aster.Commands import DEBUT, FIN
 
-FIN()
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(VERI_BASE='VOLATILE'))
+
+FIN(RETASSAGE="OUI")

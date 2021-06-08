@@ -498,9 +498,9 @@ Vérification de l'extension automatique des bases JEVEUX:
 
     99 : _("""
 
-Résultat de VERI_BASE : existence de 'vola.2' :
+Résultat de VERI_BASE : existence de '%(k1)s.2' :
 
-    %(k1)s   test VERI_BASE
+    %(k2)s   test VERI_BASE
 
 """),
 }

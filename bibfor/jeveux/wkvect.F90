@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine wkvect(nom, carac, dim, jadr, vl,&
 ! Creation d'un vecteur jeveux
 ! ------------------------------------------------------------------
 ! in  nom   : ch*24 : nom du vecteur jeveux
-! in  carac : ch    : descrivion des caracteristiques pour jecreo
+! in  carac : ch    : description des caracteristiques pour jecreo
 ! in  dim   : is    : taille du vecteur
 ! out jadr  : is    : adresse de l'objet dans ZI, ZR ...
 ! out vl   : l     : vecteur de logiques
