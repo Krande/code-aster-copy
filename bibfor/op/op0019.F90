@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -486,14 +486,6 @@ subroutine op0019()
         call aceaco(nomu, noma, lmax, locagb, locamb, nbocc(ACE_COQUE))
     endif
 ! --------------------------------------------------------------------------------------------------
-!   AFFECTATION DES MATRICES AUX ELEMENTS DISCRETS
-    if (nbocc(ACE_DISCRET) .ne. 0 .or. nbocc(ACE_DISCRET_2D) .ne. 0) then
-        nboccd = nbocc(ACE_DISCRET) + nbocc(ACE_DISCRET_2D)
-        if (nbocc(ACE_DISCRET) .ne. 0)    k16bid = ACE_MCLEF(ACE_DISCRET)
-        if (nbocc(ACE_DISCRET_2D) .ne. 0) k16bid = ACE_MCLEF(ACE_DISCRET_2D)
-        call aceadi(noma, nomo, k16bid, lmax, nboccd, info_carte, ivr)
-    endif
-! --------------------------------------------------------------------------------------------------
 !   Affectation des coefficients de correction pour les COUDES
     if (nbocc(ACE_POUTRE) .ne. 0) then
         call aceapc(nomu, noma, lmax, nbocc(ACE_POUTRE))
@@ -527,6 +519,14 @@ subroutine op0019()
 !   AFFECTATION DES MATRICES AUX RAIDEURS REPARTIES
     if (nbocc(ACE_RIGI_PARASOL) .ne. 0) then
         call acearp(info_concept, lmax, noemaf, nbocc(ACE_RIGI_PARASOL), info_carte, ivr)
+    endif
+! --------------------------------------------------------------------------------------------------
+!   AFFECTATION DES MATRICES AUX ELEMENTS DISCRETS
+    if (nbocc(ACE_DISCRET) .ne. 0 .or. nbocc(ACE_DISCRET_2D) .ne. 0) then
+        nboccd = nbocc(ACE_DISCRET) + nbocc(ACE_DISCRET_2D)
+        if (nbocc(ACE_DISCRET) .ne. 0)    k16bid = ACE_MCLEF(ACE_DISCRET)
+        if (nbocc(ACE_DISCRET_2D) .ne. 0) k16bid = ACE_MCLEF(ACE_DISCRET_2D)
+        call aceadi(noma, nomo, k16bid, lmax, nboccd, info_carte, ivr)
     endif
 ! --------------------------------------------------------------------------------------------------
 !   AFFECTATION DES CARACTERISTIQUES POUR L'ELEMENT "GRILLE"
