@@ -60,9 +60,8 @@ subroutine op9999(options)
 !   Same values are in 'fin.py'
 
     integer :: iunres, iunmes
-    integer :: i, iret, nbext
+    integer :: iret, nbext
     aster_logical :: close_base
-    character(len=256) :: fbase
 
     call jemarq()
 
@@ -129,15 +128,8 @@ subroutine op9999(options)
     call jefini('NORMAL', close_base)
 
     if ( .not. close_base ) then
-        do i=1,99
-            call get_jvbasename('glob', i, fbase)
-            call rmfile(fbase, 0, iret)
-            if (iret .ne. 0) then
-                exit
-            endif
-            call get_jvbasename('vola', i, fbase)
-            call rmfile(fbase, 0, iret)
-        end do
+        call rmfile("glob.*", 1, iret)
+        call rmfile("vola.*", 1, iret)
     endif
 
 end subroutine

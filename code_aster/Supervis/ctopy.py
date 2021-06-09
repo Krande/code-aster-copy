@@ -26,7 +26,6 @@ import time
 from datetime import datetime
 
 import aster
-import aster_core
 import numpy
 
 from ..Messages import UTMESS

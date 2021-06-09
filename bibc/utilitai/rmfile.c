@@ -28,27 +28,24 @@ Remove a file
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 void DEFSPP( RMFILE, rmfile, char *nom1, STRING_SIZE lnom1, ASTERINTEGER *info,
              ASTERINTEGER *iret ) {
+    char cmd[256] = "rm ";
     char *fname;
     FILE *fp;
 
     fname = MakeCStrFromFStr( nom1, lnom1 );
 
-    if ( !( fp = fopen( fname, "r" ) ) ) {
-        // file does not exist
-        iret = 0;
-    }
-    else {
-        *iret = (ASTERINTEGER)remove( fname );
-        if ( *info == 1 ) {
-            if ( *iret == 0 ) {
-                fprintf( stderr, "Deleted: '%s'\n", fname );
-            } else {
-                fprintf( stderr, "Deleting '%s':", fname );
-                perror( "" );
-            }
+    strcat( cmd, fname );
+    *iret = (ASTERINTEGER)system( cmd );
+    if ( *info == 1 ) {
+        if ( *iret == 0 ) {
+            fprintf( stderr, "INFO '%s' deleted\n", fname );
+        } else {
+            fprintf( stderr, "Deleting '%s':", fname );
+            perror( "" );
         }
     }
 
