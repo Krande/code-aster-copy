@@ -1,0 +1,106 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',), )
+
+
+mesh = LIRE_MAILLAGE(FORMAT='MED',
+                     PARTITIONNEUR='PTSCOTCH',
+                     UNITE=20)
+
+model = AFFE_MODELE(AFFE=(_F(GROUP_MA=('force_arete', ),
+                             MODELISATION='3D',
+                             PHENOMENE='MECANIQUE'),
+                          _F(GROUP_MA=('coque_enca', 'coque_force'),
+                             MODELISATION='COQUE_3D',
+                             PHENOMENE='MECANIQUE')),
+                    INFO=2,
+                    MAILLAGE=mesh)
+
+elemprop = AFFE_CARA_ELEM(COQUE=_F(A_CIS=0.8333333,
+                                   COEF_RIGI_DRZ=1e-05,
+                                   COQUE_NCOU=1,
+                                   EPAIS=1.0,
+                                   GROUP_MA=('coque_enca', 'coque_force'),
+                                   MODI_METRIQUE='NON'),
+                          MODELE=model)
+
+mater = DEFI_MATERIAU(ELAS=_F(COEF_AMOR=1.0,
+                              E=2100.0,
+                              NU=0.3))
+
+fieldmat = AFFE_MATERIAU(AFFE=_F(MATER=(mater, ),
+                                 TOUT='OUI'),
+                         MAILLAGE=mesh,
+                         MODELE=model)
+
+load = AFFE_CHAR_MECA(DDL_IMPO=_F(DRX=0.0,
+                                  DRY=0.0,
+                                  DRZ=0.0,
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0,
+                                  GROUP_MA=('encastrement', )),
+                      MODELE=model)
+
+load0 = AFFE_CHAR_MECA(FORCE_ARETE=_F(FZ=-1.0,
+                                      GROUP_MA=('force_arete', )),
+                       MODELE=model)
+
+load1 = AFFE_CHAR_MECA(LIAISON_MAIL=_F(ELIM_MULT='NON',
+                                       GROUP_MA_MAIT=('coque_enca', ),
+                                       GROUP_NO_ESCL=('nds_escl', ),
+                                       TYPE_RACCORD='COQUE'),
+                       MODELE=model)
+
+reslin = MECA_STATIQUE(CARA_ELEM=elemprop,
+                       CHAM_MATER=fieldmat,
+                       EXCIT=(_F(CHARGE=load,
+                                 TYPE_CHARGE='FIXE_CSTE'),
+                              _F(CHARGE=load0,
+                                 TYPE_CHARGE='FIXE_CSTE'),
+                              _F(CHARGE=load1,
+                                 TYPE_CHARGE='FIXE_CSTE')),
+                       MODELE=model)
+
+
+
+TEST_RESU(RESU=(_F(GROUP_NO=('nd_ed', ),
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NUME_ORDRE=1,
+                   RESULTAT=reslin,
+                   VALE_ABS='NON',
+                   VALE_CALC=(-1.93304815269096, )),
+                _F(GROUP_NO=('nd_eg', ),
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NUME_ORDRE=1,
+                   RESULTAT=reslin,
+                   VALE_ABS='NON',
+                   VALE_CALC=(-1.93325996750104, )),
+                _F(GROUP_NO=('nd_em', ),
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NUME_ORDRE=1,
+                   RESULTAT=reslin,
+                   VALE_ABS='NON',
+                   VALE_CALC=(-1.93367074969751, ))))
+
+FIN()

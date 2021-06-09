@@ -84,7 +84,7 @@ for lagr in ["OUI", "NON"]:
                                 _F(GROUP_NO='BAS',  DDL="DY"),
                         ),))
 
-    loads.append(AFFE_CHAR_MECA(MODELE=model, DOUBLE_LAGRANGE=lagr,
+    loads.append(AFFE_CHAR_MECA(MODELE=model, DOUBLE_LAGRANGE=lagr, INFO=2,
                         DDL_IMPO=(_F(GROUP_MA='GAUCHE', DX=-1.0, ),
                         _F(GROUP_MA='DROITE',  DX=1.0), ),
                         LIAISON_DDL=_F(GROUP_NO=("GN0", "GN1"), COEF_MULT=(1.0,1.0),

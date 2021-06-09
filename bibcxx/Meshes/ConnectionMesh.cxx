@@ -42,11 +42,11 @@ ConnectionMeshClass::ConnectionMeshClass( const std::string &name,
                                           const VectorString &groupsOfCells )
 : BaseMeshClass( name, "MAILLAGE_PARTIEL" ),
   _pMesh( mesh ),
-  _localNumbering( getName() + ".LOCAL" ),
-  _globalNumbering( getName() + ".GLOBAL" ),
-  _owner( getName() + ".POSSESSEUR" ),
-  _cellsLocalNumbering( getName() + ".CELLLOCAL"),
-  _cellsOwner( getName() + ".CELLPOS")
+  _nodesLocalNumbering( getName() + ".NOLOCAL" ),
+  _nodesGlobalNumbering( getName() + ".NOGLOBAL" ),
+  _nodesOwner( getName() + ".NOPROPRIO" ),
+  _cellsLocalNumbering( getName() + ".MALOCAL"),
+  _cellsOwner( getName() + ".MAPROPRIO")
 {
 
     /* Stop if no group is given */
@@ -448,16 +448,16 @@ ConnectionMeshClass::ConnectionMeshClass( const std::string &name,
 
 
     /* Add numbering */
-    _localNumbering->allocate( Permanent, totalNumberOfNodes );
-    _globalNumbering->allocate( Permanent, totalNumberOfNodes );
-    _owner->allocate( Permanent, totalNumberOfNodes );
+    _nodesLocalNumbering->allocate( Permanent, totalNumberOfNodes );
+    _nodesGlobalNumbering->allocate( Permanent, totalNumberOfNodes );
+    _nodesOwner->allocate( Permanent, totalNumberOfNodes );
 
     for ( int i = 0; i < totalNumberOfNodes; ++i )
     {
-        ( *_localNumbering )[renumNodesLocNew[i]] = numNodesGathered[3 * i];
-        ( *_globalNumbering )[renumNodesLocNew[i]] = numNodesGathered[3 * i + 1];
-        ( *_owner )[renumNodesLocNew[i]] = numNodesGathered[3 * i + 2];
-        numNodesGloLoc[ ( *_globalNumbering )[renumNodesLocNew[i]] ] = renumNodesLocNew[i] + 1;
+        ( *_nodesLocalNumbering )[renumNodesLocNew[i]] = numNodesGathered[3 * i];
+        ( *_nodesGlobalNumbering )[renumNodesLocNew[i]] = numNodesGathered[3 * i + 1];
+        ( *_nodesOwner )[renumNodesLocNew[i]] = numNodesGathered[3 * i + 2];
+        numNodesGloLoc[ ( *_nodesGlobalNumbering )[renumNodesLocNew[i]] ] = renumNodesLocNew[i] + 1;
     }
 
     /* Add coordinates */

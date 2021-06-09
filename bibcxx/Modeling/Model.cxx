@@ -193,11 +193,32 @@ bool ModelClass::transferFrom( const ModelPtr model)
     auto& cellsOwner = connectionMesh->getCellsOwner();
 
     const auto rank = getMPIRank();
+    const auto size = getMPISize();
 
     int nbCellsLoc = 0;
     for ( int i = 0; i < nbCells; ++i ) {
         if ( ( *cellsOwner )[i] == rank )
             nbCellsLoc++;
+    }
+
+    auto typeCellsOther = model->getTypeOfCells();
+    typeCellsOther->updateValuePointer();
+
+    VectorLong buffer;
+    buffer.reserve( nbCellsLoc );
+    for ( int i = 0; i < nbCells; ++i ) {
+        if ( ( *cellsOwner )[i] == rank )
+            buffer.push_back( (*typeCellsOther)[ (*cellsLocNum)[i] - 1 ] );
+    }
+
+    std::vector<VectorLong> gathered;
+    AsterMPI::all_gather(buffer, gathered);
+
+    VectorLong nbCellsProc( size, 0);
+    for ( int i = 0; i < nbCells; ++i ) {
+        auto rowner = ( *cellsOwner )[i];
+        (*_typeOfCells)[i] = gathered[rowner][nbCellsProc[rowner]];
+        nbCellsProc[rowner]++;
     }
 
     return true;

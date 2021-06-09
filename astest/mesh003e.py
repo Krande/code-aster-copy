@@ -50,8 +50,8 @@ test.assertSequenceEqual(sorted(cMesh1.getGroupsOfCells()), ["VTOT"])
 test.assertFalse( cMesh1.hasGroupOfNodes("AFCE") )
 test.assertTrue( cMesh1.hasGroupOfCells("VTOT") )
 test.assertEqual(sum(list(cMesh1.getCells())), 38706801)
-test.assertEqual(sum(list(cMesh1.getGlobalNumbering())), 150173315)
-test.assertEqual(sum(list(cMesh1.getLocalNumbering())), 50096296)
+test.assertEqual(sum(list(cMesh1.getNodesGlobalNumbering())), 150173315)
+test.assertEqual(sum(list(cMesh1.getNodesLocalNumbering())), 50096296)
 
 
 # Test ConnectionMesh - The full mesh
@@ -67,8 +67,8 @@ test.assertFalse( cMesh2.hasGroupOfCells("AFCE") )
 test.assertFalse( cMesh2.hasGroupOfNodes("FACE") )
 test.assertEqual(sum(list(cMesh2.getCells())), 839160)
 test.assertEqual(sum(list(cMesh2.getCells("AB1"))), 23650)
-test.assertEqual(sum(list(cMesh2.getGlobalNumbering())), 5193300)
-test.assertEqual(sum(list(cMesh2.getLocalNumbering())), 1851292)
+test.assertEqual(sum(list(cMesh2.getNodesGlobalNumbering())), 5193300)
+test.assertEqual(sum(list(cMesh2.getNodesLocalNumbering())), 1851292)
 
 test.printSummary()
 

@@ -44,11 +44,11 @@ class ConnectionMeshClass : public BaseMeshClass {
     /** @brief Base ParallelMesh */
     ParallelMeshPtr _pMesh;
     /** @brief id of node in local numbering */
-    JeveuxVectorLong _localNumbering;
+    JeveuxVectorLong _nodesLocalNumbering;
     /** @brief id of node in global numbering */
-    JeveuxVectorLong _globalNumbering;
+    JeveuxVectorLong _nodesGlobalNumbering;
     /** @brief number of owner proc for each nodes */
-    JeveuxVectorLong _owner;
+    JeveuxVectorLong _nodesOwner;
     /** @brief id of cell in local numbering */
     JeveuxVectorLong _cellsLocalNumbering;
     /** @brief number of owner proc for each cells */
@@ -78,11 +78,11 @@ class ConnectionMeshClass : public BaseMeshClass {
     ConnectionMeshClass( const std::string &name, const ParallelMeshPtr &mesh,
         const VectorString &groupsOfNodes, const VectorString &groupsOfCells );
 
-    const JeveuxVectorLong &getGlobalNumbering() const { return _globalNumbering; };
+    const JeveuxVectorLong &getNodesGlobalNumbering() const { return _nodesGlobalNumbering; };
 
-    const JeveuxVectorLong &getLocalNumbering() const { return _localNumbering; };
+    const JeveuxVectorLong &getNodesLocalNumbering() const { return _nodesLocalNumbering; };
 
-    const JeveuxVectorLong &getOwner() const { return _owner; };
+    const JeveuxVectorLong &getNodesOwner() const { return _nodesOwner; };
 
     const JeveuxVectorLong &getCellsLocalNumbering() const { return _cellsLocalNumbering; };
 

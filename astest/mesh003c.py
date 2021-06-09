@@ -75,8 +75,8 @@ test.assertEqual(cMesh3.getNumberOfCells(), 20)
 test.assertSequenceEqual(sorted(cMesh3.getGroupsOfNodes()), ["N0", "N2"])
 test.assertSequenceEqual(sorted(cMesh3.getCells()), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
 test.assertSequenceEqual(sorted(cMesh3.getCells("CUBE")), [])
-test.assertSequenceEqual(cMesh3.getGlobalNumbering(), [3, 4, 16, 23, 27, 28, 44, 51, 77, 103, 135])
-test.assertSequenceEqual(sorted(cMesh3.getLocalNumbering()), [1, 2, 11, 12, 13, 18, 18, 25, 33, 45, 66])
+test.assertSequenceEqual(cMesh3.getNodesGlobalNumbering(), [3, 4, 16, 23, 27, 28, 44, 51, 77, 103, 135])
+test.assertSequenceEqual(sorted(cMesh3.getNodesLocalNumbering()), [1, 2, 11, 12, 13, 18, 18, 25, 33, 45, 66])
 
 # Test ConnectionMesh - a part mesh
 print("cMesh4", flush=True)

@@ -100,8 +100,8 @@ test.assertEqual(cMesh6.getNumberOfNodes(), 8928)
 test.assertEqual(cMesh6.getNumberOfCells(), 3486)
 test.assertSequenceEqual(sorted(cMesh6.getGroupsOfNodes()), ["nfondfis"])
 test.assertSequenceEqual(sorted(cMesh6.getGroupsOfCells()), sorted(["bas", "haut", "bords", "affVols"]))
-test.assertEqual(sum(list(cMesh6.getGlobalNumbering())), 192089986)
-test.assertEqual(sum(list(cMesh6.getLocalNumbering())), 52960885)
+test.assertEqual(sum(list(cMesh6.getNodesGlobalNumbering())), 192089986)
+test.assertEqual(sum(list(cMesh6.getNodesLocalNumbering())), 52960885)
 
 
 # Test model

@@ -116,10 +116,16 @@ public:
         return _delayedNodesNumbering;
     };
 
-    const ConnectivityDelayedElementsExplorer& getListOfGroupOfCells() const
+    const ConnectivityDelayedElementsExplorer& getListOfGroupOfCellsExplorer() const
     {
         _listOfGroupOfCells->buildFromJeveux();
         return _explorer2;
+    };
+
+    const JeveuxCollectionLong& getListOfGroupOfCells() const
+    {
+        _listOfGroupOfCells->buildFromJeveux();
+        return _listOfGroupOfCells;
     };
 
     ASTERINTEGER getNumberOfDelayedNodes() const
@@ -138,6 +144,12 @@ public:
     {
         _dofDescriptor->updateValuePointer();
         return _dofDescriptor;
+    };
+
+    const JeveuxVectorLong& getListOfGroupOfCellsbyCell() const
+    {
+        _groupsOfCellsNumberByElement->updateValuePointer();
+        return _groupsOfCellsNumberByElement;
     };
 
     const BaseMeshPtr getMesh() const

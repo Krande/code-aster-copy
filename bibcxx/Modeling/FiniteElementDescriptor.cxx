@@ -77,13 +77,12 @@ void FiniteElementDescriptorClass::transferDofDescriptorFrom( FiniteElementDescr
     const JeveuxVectorLong &otherDofDescriptor = other->getPhysicalNodesComponentDescriptor();
 
     const int rank = getMPIRank();
+    const int size = getMPISize();
     int nbNodes = connectionMesh->getNumberOfNodes();
     int nec = otherDofDescriptor->size() / other->getMesh()->getNumberOfNodes();
 
-    std::cout << "NEC: " << nec << ", " << nbNodes << std::endl;
-
-    const JeveuxVectorLong &localNumbering = connectionMesh->getLocalNumbering();
-    const JeveuxVectorLong &owner = connectionMesh->getOwner();
+    const JeveuxVectorLong &localNumbering = connectionMesh->getNodesLocalNumbering();
+    const JeveuxVectorLong &owner = connectionMesh->getNodesOwner();
 
     int nbNodesLoc = 0;
     for ( int i = 0; i < nbNodes; ++i ) {
@@ -103,9 +102,18 @@ void FiniteElementDescriptorClass::transferDofDescriptorFrom( FiniteElementDescr
         }
     }
 
-    // Ils ne sont pas rangé dans le bon ordre
-    AsterMPI::all_gather( buffer, _dofDescriptor );
+    std::vector<VectorLong> gathered;
+    AsterMPI::all_gather( buffer, gathered );
     buffer.clear();
+
+    _dofDescriptor->allocate(nbNodes * nec);
+    VectorLong nbNodesProc( size, 0);
+    for ( int i = 0; i < nbNodes; ++i ) {
+        auto rowner = ( *owner )[i];
+        for( int j = 0; j < nec; ++j )
+            (*_dofDescriptor)[i*nec + j] = gathered[rowner][nbNodesProc[rowner]*nec + j];
+        nbNodesProc[rowner]++;
+    }
 
 };
 
@@ -119,6 +127,97 @@ void FiniteElementDescriptorClass::transferListOfGroupOfCellFrom( FiniteElementD
     // "parallel mesh associated to partial mesh of FiniteElementDescriptorClass \n"
     //        "does not correspond to other FiniteElementDescriptorClass mesh"
     AS_ASSERT( connectionMesh->getParallelMesh() == other->getMesh() );
+
+    const int rank = getMPIRank();
+    const int size = getMPISize();
+
+    auto& otherRepe = other->getListOfGroupOfCellsbyCell();
+    auto& otherLiel = other->getListOfGroupOfCells();
+
+    const auto nbCells = connectionMesh->getNumberOfCells();
+    auto& cellsLocNum = connectionMesh->getCellsLocalNumbering();
+    auto& cellsOwner = connectionMesh->getCellsOwner();
+
+    int nbCellsLoc = 0;
+    for ( int i = 0; i < nbCells; ++i ) {
+        if ( ( *cellsOwner )[i] == rank )
+            nbCellsLoc++;
+    }
+
+    VectorLong typeCellFE;
+    typeCellFE.reserve( nbCellsLoc );
+    for ( int i = 0; i < nbCells; ++i ) {
+        if ( ( *cellsOwner )[i] == rank )
+        {
+            auto cellId = (*cellsLocNum)[i] - 1;
+            auto numGrel = (*otherRepe)[ 2*cellId];
+            if( numGrel > 0)
+            {
+                auto& grel = otherLiel->getObject( numGrel );
+                auto typeFE = grel[grel.size()-1];
+                typeCellFE.push_back( typeFE );
+            }
+            else
+            {
+                typeCellFE.push_back( 0 );
+            }
+        }
+    }
+
+    std::vector<VectorLong> typeFEGathered;
+    AsterMPI::all_gather(typeCellFE, typeFEGathered);
+    typeCellFE.clear();
+
+    std::vector< VectorLong > listOfGrel;
+    std::map< ASTERINTEGER, ASTERINTEGER> listOfGrelNume, listOfGrelNumeInv;
+
+    _groupsOfCellsNumberByElement->allocate( 2*nbCells );
+
+    VectorLong nbCellsProc( size, 0);
+    for ( int i = 0; i < nbCells; ++i ) {
+        auto rowner = ( *cellsOwner )[i];
+        auto typeEF = typeFEGathered[rowner][nbCellsProc[rowner]];
+        nbCellsProc[rowner]++;
+
+        if( typeEF > 0)
+        {
+            if(listOfGrelNume.count(typeEF) == 0 )
+            {
+                listOfGrelNume[typeEF] = listOfGrelNume.size();
+                listOfGrelNumeInv[listOfGrelNumeInv.size()] = typeEF;
+                listOfGrel.push_back( VectorLong() );
+                listOfGrel[listOfGrelNume[typeEF]].reserve(nbCells);
+            }
+
+            listOfGrel[listOfGrelNume[typeEF]].push_back(i+1);
+
+            (*_groupsOfCellsNumberByElement)[2*i] = listOfGrelNume[typeEF] + 1;
+            (*_groupsOfCellsNumberByElement)[2*i + 1] = listOfGrel[listOfGrelNume[typeEF]].size();
+        }
+        else
+        {
+            (*_groupsOfCellsNumberByElement)[2*i] = 0;
+            (*_groupsOfCellsNumberByElement)[2*i + 1] = 0;
+        }
+    }
+
+    int totalSize = listOfGrelNume.size();
+    int pos = 0;
+    for( auto& grel : listOfGrel)
+    {
+        // il faut rajouter le nom de l'EF à la fin
+        grel.push_back(listOfGrelNumeInv[pos++]);
+        totalSize += grel.size();
+    }
+
+    _listOfGroupOfCells->allocateContiguous(Permanent, listOfGrel.size(), totalSize, Numbered);
+    int posInCollection = 1;
+    for( auto& grel : listOfGrel)
+    {
+        _listOfGroupOfCells->allocateObject( grel.size() );
+        _listOfGroupOfCells->getObject( posInCollection ).setValues( grel );
+        ++posInCollection;
+    }
 };
 
 
@@ -144,8 +243,6 @@ void FiniteElementDescriptorClass::transferFrom( FiniteElementDescriptorPtr &oth
 
     // Fill '.PRNM'
     transferDofDescriptorFrom(other);
-    auto dof = _dofDescriptor;
-    std::cout << "NEC2: " << dof->size()/connectionMesh->getNumberOfNodes() << ", " << connectionMesh->getNumberOfNodes() << std::endl;
 
     // Fill 'LIEL'
     transferListOfGroupOfCellFrom(other);

@@ -40,7 +40,7 @@ ParallelFiniteElementDescriptorClass::ParallelFiniteElementDescriptorClass
     const int rank = getMPIRank();
     const int nbProcs = getMPISize();
 
-    const auto& owner = *(mesh->getOwner());
+    const auto& owner = *(mesh->getNodesOwner());
     const auto& explorer = FEDesc->getDelayedElementsExplorer();
 
     VectorInt delayedElemToKeep;
@@ -129,7 +129,7 @@ ParallelFiniteElementDescriptorClass::ParallelFiniteElementDescriptorClass
     }
 
     auto nbPartialNodes = mesh->getNumberOfNodes();
-    const auto& localNum = mesh->getLocalNumbering();
+    const auto& localNum = mesh->getNodesLocalNumbering();
     const auto& pNodesComp = FEDesc->getPhysicalNodesComponentDescriptor();
     // Calcul du nombre d'entier code
     int nec = pNodesComp->size()/nbPartialNodes;
@@ -228,14 +228,13 @@ ParallelFiniteElementDescriptorClass::ParallelFiniteElementDescriptorClass
             ++posInCollection;
         }
 
-        const auto& liel = FEDesc->getListOfGroupOfCells();
+        const auto& liel = FEDesc->getListOfGroupOfCellsExplorer();
         int nbCollObj = 0, totalCollSize = 0;
         std::vector< VectorLong > toLiel( liel.size(), VectorLong() );
         ASTERINTEGER type = 0;
         nbCollObj = 1;
         for( const auto& colObj : liel )
         {
-            const ASTERINTEGER numInColl = colObj.getCellIndex();
             bool addedElem = false;
             for( const auto& val : colObj )
             {

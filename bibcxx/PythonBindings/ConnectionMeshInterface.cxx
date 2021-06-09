@@ -106,7 +106,7 @@ Returns:
     ParallelMeshPtr: pointer to the ParallelMesh
         )",
               ( py::arg( "self" )) )
-        .def( "getGlobalNumbering", &ConnectionMeshClass::getGlobalNumbering,
+        .def( "getNodesGlobalNumbering", &ConnectionMeshClass::getNodesGlobalNumbering,
             py::return_value_policy<py::copy_const_reference>(), R"(
 Return a tuple of the nodes of the mesh with a global numbering
 
@@ -114,7 +114,7 @@ Returns:
     tuple[int]: list of nodes with global numbering
         )",
               ( py::arg( "self" )) )
-        .def( "getLocalNumbering", &ConnectionMeshClass::getLocalNumbering,
+        .def( "getNodesLocalNumbering", &ConnectionMeshClass::getNodesLocalNumbering,
             py::return_value_policy<py::copy_const_reference>(), R"(
 Return a tuple of the nodes of the mesh with a local numbering.
 The local numbering is the one coming from the owner of the node,

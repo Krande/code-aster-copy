@@ -260,6 +260,11 @@ class ModelClass : public DataStructure, public ListOfTablesClass {
         return _baseMesh;
     };
 
+    JeveuxVectorLong getTypeOfCells() const
+    {
+        return _typeOfCells;
+    }
+
     /**
      * @brief Methode permettant de savoir si le modele est vide
      * @return true si le modele est vide

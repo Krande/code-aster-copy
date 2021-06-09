@@ -20,10 +20,9 @@
 # person_in_charge: nicolas.sellenet@edf.fr
 
 from ..Objects import (MechanicalLoadFunction, ParallelMechanicalLoadFunction,
-                       ConnectionMesh)
+                       ConnectionMesh, Model)
 from ..Supervis import ExecuteCommand
 from ..Utilities import deprecate, force_list
-from .affe_modele import AFFE_MODELE
 from .affe_char_meca import MechanicalLoadDefinition
 
 
@@ -67,27 +66,10 @@ class MechanicalLoadFunctionDefinition(ExecuteCommand):
             nodeGroups, cellGroups = MechanicalLoadDefinition()._getGroups(keywords)
             connectionMesh = ConnectionMesh(model.getMesh(), nodeGroups, cellGroups)
 
-            if connectionMesh.getDimension()==3:
-                partialModel = AFFE_MODELE(MAILLAGE=connectionMesh,
-                                       AFFE=(_F(TOUT='OUI',
-                                               PHENOMENE='MECANIQUE',
-                                               MODELISATION="3D",),
-                                             _F(TOUT='OUI',
-                                               PHENOMENE='MECANIQUE',
-                                               MODELISATION='DIS_T',),
-                                               ),
-                                       VERI_JACOBIEN='NON',
-                                       DISTRIBUTION=_F(METHODE='CENTRALISE',),)
-            else:
-                partialModel = AFFE_MODELE(MAILLAGE=connectionMesh,
-                                       AFFE=(_F(TOUT='OUI',
-                                               PHENOMENE='MECANIQUE',
-                                               MODELISATION="D_PLAN",),),
-                                       VERI_JACOBIEN='NON',
-                                       DISTRIBUTION=_F(METHODE='CENTRALISE',),)
+            connectionModel = Model( connectionMesh )
+            connectionModel.transferFrom( model )
 
-            partialModel.getFiniteElementDescriptor().transferDofDescriptorFrom(model.getFiniteElementDescriptor())
-            keywords["MODELE"] = partialModel
+            keywords["MODELE"] = connectionModel
             partialMechanicalLoad = AFFE_CHAR_MECA_F(**keywords)
             keywords["MODELE"] = model
             self._result = ParallelMechanicalLoadFunction(partialMechanicalLoad, model)
