@@ -66,8 +66,6 @@ POURSUITE=MACRO(nom="POURSUITE",
                                  statut='f',typ='TXM',into=('GLOBALE','VOLATILE')),
            VERI_BASE_NB = SIMP(fr=tr("pourcentage de la taille de base à écrire"),
                              statut='f', typ='I', defaut=125),
-           HIST_ETAPE = SIMP(fr=tr("permet de conserver toutes les étapes du jeu de commandes"),
-                             statut='f', typ='TXM', into=('OUI', 'NON'), defaut='NON'),
          ),
 
          MESURE_TEMPS     =FACT(fr=tr("Pour choisir les mesures de temps consommé dans les commandes"),

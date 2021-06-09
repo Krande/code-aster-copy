@@ -17,9 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-      IMPR_MACRO='NON',
-      DEBUG=_F(HIST_ETAPE='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',))
 
 pr_int   = 10.E5
 pr_atmos = 1.E5
