@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-
-# person_in_charge: josselin.delmas at edf.fr
 
 from code_aster.Cata.Syntax import *
 from code_aster.Cata.DataStructure import *
@@ -36,7 +34,6 @@ CALC_CHAM_ELEM=OPER(nom="CALC_CHAM_ELEM",op=38,sd_prod=cham_elem,
          MAILLE          =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
 
          INST            =SIMP(statut='f',typ='R',defaut= 0.E+0),
-         ACCE            =SIMP(statut='f',typ=cham_no_sdaster),
          MODE_FOURIER    =SIMP(statut='f',typ='I',),
 
          OPTION          =SIMP(statut='o',typ='TXM',
