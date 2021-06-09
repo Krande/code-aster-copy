@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -523,7 +523,7 @@ class MIPLQU8(Element):
         ),
 
         OP.SIEF_ELGA(te=97,
-            para_in=((SP.PCAMASS, CCAMASS), (SP.PDEPLAR, NDEPLAR),
+            para_in=((SP.PCAMASS, CCAMASS), (SP.PDEPLAR, DDL_MECA),
                      (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                      (OP.SIEF_ELGA.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
                      ),

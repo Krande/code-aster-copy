@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,22 @@
 ! --------------------------------------------------------------------
 
 subroutine te0097(option, nomte)
-    implicit none
-    character(len=16) :: option, nomte
-! person_in_charge: sebastien.fayolle at edf.fr
-!.......................................................................
+implicit none
+!
+character(len=16) :: option, nomte
+!
+#include "jeveux.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/assert.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nbsigm.h"
+#include "asterfort/ortrep.h"
+#include "asterfort/elref2.h"
+#include "asterfort/niinit.h"
+#include "asterfort/sigvmc.h"
+#include "asterfort/lteatt.h"
+!
+! --------------------------------------------------------------------------------------------------
 !
 !     BUT: CALCUL DES CONTRAINTES AUX POINTS DE GAUSS
 !          ELEMENTS INCOMPRESSIBLE EN PETITES DEFORMATIONS
@@ -29,88 +41,156 @@ subroutine te0097(option, nomte)
 !
 !     ENTREES  ---> OPTION : OPTION DE CALCUL
 !              ---> NOMTE  : NOM DU TYPE ELEMENT
-!.......................................................................
 !
-#include "jeveux.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
-#include "asterfort/nbsigm.h"
-#include "asterfort/ortrep.h"
-#include "asterfort/sigvmc.h"
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
+    integer, parameter :: npgMax = 27, nbNodeMax = 27
+    integer :: ndim, npg, jvWeightDisp, jvShapeDisp, jvDShapeDisp, jvShapePres
     integer :: idim
-    integer :: i, icont, idepl, igeom, imate, nbsig
-    integer :: igau, isig
-
-    real(kind=8) :: sigma(162), repere(7), instan, nharm
+    integer :: jvSigm, jvDisp, jvGeom, jvMate, nbsig
+    integer :: kpg, isig, iNodeDisp, iNodePres, iOSGS
+    integer :: nbNodeDisp, nbNodePres, nbNodeGonf
+    real(kind=8) :: sigmDisp(npgMax*6), repere(7), instan, nharm, sigmTrac(npgMax)
     real(kind=8) :: bary(3)
-    real(kind=8) :: zero
+    real(kind=8) :: presGaus(npgMax), dispU(3*nbNodeMax), dispP(nbNodeMax)
+    integer :: vu(3, nbNodeMax), vg(nbNodeMax), vp(nbNodeMax), vpi(3, nbNodeMax)
+    integer :: nbElrefe, iRefePres, iRefeGonf
+    character(len=8) :: listElrefe(10), typmod(2)
+    aster_logical :: lGonf
 !
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
-!
-! - NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
-!   -----------------------------------------
+    instan = 0.d0
+    nharm  = 0
+
+! - Some unknonws
+    if (lteatt('INCO','C2 ')) then
+        lGonf = ASTER_FALSE
+        iOSGS = 0
+    elseif (lteatt('INCO','C2O')) then
+        lGonf = ASTER_FALSE
+        iOSGS = 1
+    elseif (lteatt('INCO','C3 ')) then
+        lGonf = ASTER_TRUE
+        iOSGS = 0
+    else
+        ASSERT(ASTER_FALSE)
+    endif
+
+! - List of ELREFE
+    call elref2(nomte, 10, listElrefe, nbElrefe)
+    ASSERT(nbElrefe .ge. 2)
     nbsig = nbsigm()
-!
-! - INITIALISATIONS :
-!   -----------------
-    zero = 0.0d0
-    instan = zero
-    nharm = zero
-!
-    do 10 i = 1, nbsig*npg
-        sigma(i) = zero
-10  end do
-!
-! - RECUPERATION DES COORDONNEES DES CONNECTIVITES
-!   ----------------------------------------------
-    call jevech('PGEOMER', 'L', igeom)
-!
-! - RECUPERATION DU MATERIAU
-!   ------------------------
-    call jevech('PMATERC', 'L', imate)
-!
-! - RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
-!   ------------------------------------------------------------
-!   COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
-!
-    bary(1) = 0.d0
-    bary(2) = 0.d0
-    bary(3) = 0.d0
-    do 30 i = 1, nno
-        do 20 idim = 1, ndim
-            bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-20      continue
-30  end do
+    ASSERT(nbsig .le. 6)
+    if (lGonf) then
+        iRefePres = 3
+        iRefeGonf = 2
+    else
+        iRefePres = 2
+        iRefeGonf = 0
+    endif
+
+! - Get paramers of finite element for displacements
+    call elrefe_info(elrefe=listElrefe(1), fami='RIGI',&
+                     ndim=ndim, nno=nbNodeDisp, npg=npg,&
+                     jpoids=jvWeightDisp, jvf=jvShapeDisp, jdfde=jvDShapeDisp)
+    ASSERT(npg .le. npgMax)
+    ASSERT(nbNodeDisp .le. nbNodeMax)
+
+! - Get paramers of finite element for pres
+    call elrefe_info(elrefe=listElrefe(iRefePres), fami='RIGI',&
+                     nno=nbNodePres,&
+                     jvf=jvShapePres)
+    ASSERT(nbNodePres .le. nbNodeMax)
+
+! - Get paramers of finite element for gonf
+    nbNodeGonf = 0
+    if (iRefeGonf .ne. 0) then
+        call elrefe_info(elrefe=listElrefe(iRefeGonf), fami='RIGI',&
+                         nno=nbNodeGonf)
+    endif
+    ASSERT(nbNodeGonf .le. nbNodeMax)
+
+! - Modelling 
+    typmod = ' '
+    if (ndim .eq. 2 .and. lteatt('AXIS','OUI')) then
+        typmod(1) = 'AXIS'
+    else if (ndim .eq. 2 .and. lteatt('D_PLAN','OUI')) then
+        typmod(1) = 'D_PLAN'
+    else if (ndim .eq. 3) then
+        typmod(1) = '3D'
+    else
+        ASSERT(ASTER_FALSE)
+    endif
+
+! - Get index of dof
+    call niinit(typmod,&
+                ndim, nbNodeDisp, nbNodeGonf, nbNodePres, iOSGS,&
+                vu, vg, vp, vpi)
+
+! - Get input fields
+    call jevech('PGEOMER', 'L', jvGeom)
+    call jevech('PMATERC', 'L', jvMate)
+    call jevech('PDEPLAR', 'L', jvDisp)
+
+! - Compute barycentric center
+    bary = 0.d0
+    do iNodeDisp = 1, nbNodeDisp
+        do idim = 1, ndim
+            bary(idim) = bary(idim) + zr(jvGeom+idim+ndim*(iNodeDisp-1)-1)/nbNodeDisp
+        end do
+    end do
+
+! - Construct local anisotropic basis
     call ortrep(ndim, bary, repere)
-!
-! ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
-!      --------------------------------------------------
-    call jevech('PDEPLAR', 'L', idepl)
-!
-    call sigvmc('RIGI', nno, ndim, nbsig, npg,&
-                ipoids, ivf, idfde, zr(igeom), zr(idepl),&
-                instan, repere, zi(imate), nharm, sigma)
-!
-!
-! ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE
-! ---- AVEC LE VECTEUR DES CONTRAINTES AUX POINTS D'INTEGRATION
-!      --------------------------------------------------------
-    call jevech('PCONTRR', 'E', icont)
-!
-    do 80 igau = 1, npg
-        do 81 isig = 1, nbsig+1
-            if (isig .le. nbsig) then
-                zr(icont+(nbsig+1)*(igau-1)+isig-1)=sigma(nbsig*(igau-&
-                1)+isig)
+
+! - Get displacements for u, v, w
+    dispU = 0.d0
+    do iNodeDisp = 1, nbNodeDisp
+        do idim = 1, ndim
+            dispU(idim+ndim*(iNodeDisp-1)) = zr(jvDisp-1+vu(iDim, iNodeDisp))
+        end do
+    end do
+
+! - Get displacements for p
+    dispP = 0.d0
+    do iNodePres = 1, nbNodePres
+        dispP(iNodePres) = zr(jvDisp-1+vp(iNodePres))
+    end do
+
+! - Compute stresses for displacement unknowns
+    sigmDisp = 0.d0
+    call sigvmc('RIGI', nbNodeDisp, ndim, nbsig, npg,&
+                jvWeightDisp, jvShapeDisp, jvDShapeDisp, zr(jvGeom), dispU,&
+                instan, repere, zi(jvMate), nharm, sigmDisp)
+
+    do kpg = 1, npg
+        presGaus(kpg) = 0.d0
+        do iNodePres = 1, nbNodePres
+            presGaus(kpg) = presGaus(kpg) + &
+                            zr(jvShapePres-1+nbNodePres*(kpg-1)+iNodePres)*dispP(iNodePres)
+        end do
+        sigmTrac(kpg) = 0.d0
+        do isig = 1, 3
+            sigmTrac(kpg) = sigmTrac(kpg) + sigmDisp(nbsig*(kpg-1)+isig)
+        end do 
+    end do
+
+! - Output field
+    call jevech('PCONTRR', 'E', jvSigm)
+
+    do kpg = 1, npg
+        do isig = 1, nbsig+1
+            if (isig .le. 3) then
+                zr(jvSigm+(nbsig+1)*(kpg-1)+isig-1) = sigmDisp(nbsig*(kpg-1)+isig) -&
+                                                       sigmTrac(kpg)/ 3.d0 + presGaus(kpg)
+            elseif (isig .le. nbsig) then
+                zr(jvSigm+(nbsig+1)*(kpg-1)+isig-1) = sigmDisp(nbsig*(kpg-1)+isig)
             else
-                zr(icont+(nbsig+1)*(igau-1)+isig-1) = 0.d0
+                zr(jvSigm+(nbsig+1)*(kpg-1)+isig-1) = sigmTrac(kpg) / 3.d0 - presGaus(kpg)
             endif
-81      end do
-80  end do
+        end do
+    end do
 !
 end subroutine
+

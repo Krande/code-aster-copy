@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -364,57 +364,20 @@ TBB6=POST_ELEM(NORME=_F(TYPE_NORM='L2',
 #  tests
 # =======
 
-#-------------------------
-# champ DEPL (3D)
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.5E-3,
-           VALE_CALC=0.90995358928277,
-           VALE_REFE=0.911296070573,
-           NOM_PARA='VALE_NORM',
-           TABLE=NDEPL3D,);
-
-# champ SIEF_ELGA (3D)
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-06,
-           VALE_CALC=9.8102201161002E+10,
-           VALE_REFE=98102201161.0,
-           NOM_PARA='VALE_NORM',
-           TABLE=NSIEGA,);
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-06,
-           VALE_CALC=9.8102201161002E+10,
-           VALE_REFE=98102201161.0,
-           NOM_PARA='VALE_NORM',
-           TABLE=NSIEGA2,);
-
-# champ SIGM_ELNO (3D)
-
-TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=1.E-06,
-           VALE_CALC=9.8102201161002E+10,
-           VALE_REFE=98102201161.0,
-           NOM_PARA='VALE_NORM',
-           TABLE=NSIGNO,);
-
-#-------------------------
-
 # champ DEPL (2D et 3D) : TOUT='OUI'
-TEST_TABLE(VALE_CALC=2.3901787005686,
+TEST_TABLE(VALE_CALC=2.4296305040333404,
            NOM_PARA='VALE_NORM',
            TABLE=TB3,);
 
 # champ DEPL (2D et 3D) : GROUP_MA='CUBE'
-TEST_TABLE(VALE_CALC=2.3901787005686,
+TEST_TABLE(VALE_CALC=2.4296305040333404,
            NOM_PARA='VALE_NORM',
            TABLE=TB4,);
 
 # champ DEPL (2D) : GROUP_MA='CUBE'
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           PRECISION=5.E-3,
-           VALE_CALC=2.2101897398194,
+           PRECISION=1.1E-2,
+           VALE_CALC=2.2437238017569907,
            VALE_REFE=2.22064182302,
            NOM_PARA='VALE_NORM',
            TABLE=TB6,);
@@ -424,16 +387,16 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 # champ SIEF_ELGA (3D) : TOUT='OUI'
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-06,
-           VALE_CALC=9.8102201161002E+10,
-           VALE_REFE=98102201161.0,
+           VALE_CALC=86545353454.47694,
+           VALE_REFE=86545353454.47694,
            NOM_PARA='VALE_NORM',
            TABLE=TBA1,);
 
 # champ SIEF_ELGA (3D) : GROUP_MA='CUBE'
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.0E-06,
-           VALE_CALC=9.8102201161002E+10,
-           VALE_REFE=98102201161.0,
+           VALE_CALC=86545353454.47694,
+           VALE_REFE=86545353454.47694,
            NOM_PARA='VALE_NORM',
            TABLE=TBA2,);
 
@@ -441,20 +404,20 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
 # champ SIEF_ELGA (3D) : GROUP_MA='CUBE'
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.0E-06,
-           VALE_CALC=9.2945333742089E+10,
-           VALE_REFE=92945333742.1,
+           VALE_CALC=78072059214.3294,
+           VALE_REFE=78072059214.3294,
            NOM_PARA='VALE_NORM',
            TABLE=TCA2,);
 
 # champ SIEF_ELGA (2D et 3D) :  TOUT='OUI'
 # apres interpolation aux noeuds
-TEST_TABLE(VALE_CALC=2.794985225701E+11,
+TEST_TABLE(VALE_CALC=263294322419.71957,
            NOM_PARA='VALE_NORM',
            TABLE=TBA3,);
 
 # champ SIEF_ELGA (2D et 3D) :  GROUP_MA='CUBE'
 # apres interpolation aux noeuds
-TEST_TABLE(VALE_CALC=2.794985225701E+11,
+TEST_TABLE(VALE_CALC=263294322419.71957,
            NOM_PARA='VALE_NORM',
            TABLE=TBA4,);
 
@@ -463,34 +426,34 @@ TEST_TABLE(VALE_CALC=2.794985225701E+11,
 # champ SIGM_ELNO (3D) : TOUT='OUI'
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.0E-06,
-           VALE_CALC=9.8102201161002E+10,
-           VALE_REFE=98102201161.0,
+           VALE_CALC=86545353454.47694,
+           VALE_REFE=86545353454.47694,
            NOM_PARA='VALE_NORM',
            TABLE=TBB1,);
 
 # champ SIGM_ELNO (3D) : GROUP_MA='CUBE'
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=1.0E-06,
-           VALE_CALC=9.8102201161002E+10,
-           VALE_REFE=98102201161.0,
+           VALE_CALC=86545353454.47694,
+           VALE_REFE=86545353454.47694,
            NOM_PARA='VALE_NORM',
            TABLE=TBB2,);
 
 # champ SIGM_ELNO (2D et 3D) :  TOUT='OUI'
 # apres interpolation aux noeuds
-TEST_TABLE(VALE_CALC=2.794985225701E+11,
+TEST_TABLE(VALE_CALC=263294322419.71957,
            NOM_PARA='VALE_NORM',
            TABLE=TBB3,);
 
 # champ SIGM_ELNO (2D et 3D) :  GROUP_MA='CUBE'
 # apres interpolation aux noeuds
-TEST_TABLE(VALE_CALC=2.794985225701E+11,
+TEST_TABLE(VALE_CALC=263294322419.71957,
            NOM_PARA='VALE_NORM',
            TABLE=TBB4,);
 
 # champ SIGM_ELNO (2D) :  GROUP_MA='CUBE'
 # apres interpolation aux noeuds
-TEST_TABLE(VALE_CALC=2.7160736351218E+11,
+TEST_TABLE(VALE_CALC=256448487687.7402,
            NOM_PARA='VALE_NORM',
            TABLE=TBB6,);
 
