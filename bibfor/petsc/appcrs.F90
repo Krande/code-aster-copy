@@ -174,12 +174,12 @@ use petsc_data_module
         ASSERT(ierr.eq.0)
 !
 #if PETSC_VERSION_LT(3,8,0)
-!            ASSERT( xscatt == PETSC_NULL_OBJECT )
+            ASSERT( xscatt == PETSC_NULL_OBJECT )
 #else
             ASSERT( xscatt == PETSC_NULL_VECSCATTER )
 #endif
 #if PETSC_VERSION_LT(3,8,0)
-!            ASSERT( xglobal == PETSC_NULL_OBJECT )
+            ASSERT( xglobal == PETSC_NULL_OBJECT )
 #else
             ASSERT( xglobal == PETSC_NULL_VEC )
 #endif
@@ -190,7 +190,7 @@ use petsc_data_module
 #endif
 ! On passe un PETSC_NULL_VEC en lieu et place de xglobal en entrée de VecScatterCreateToAll
 ! car ainsi, il n'est pas realloué
-        call VecScatterCreateToAll(xlocal, xscatt, xglobal, ierr)     
+        call VecScatterCreateToAll(xlocal, xscatt, PETSC_NULL_VEC, ierr)     
         ASSERT(ierr.eq.0)
 !-----------------------------------------------------------------------
     else if (precon.eq.'SOR') then
