@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -74,6 +74,8 @@ Le champ STRX_ELGA n'est pas possible sur une modélisation XFEM.
 """),
 
 8 : _("""Il y a des chargements pilotées dans le résultat, mais on ne peut pas récupérer la valeur du coefficient de pilotage."""),
+
+9 : _("""L'utilisation de COEF_MULT n'est permise qu'avec des éléments de poutre."""),
 
 19 : _("""
 Problème lors de l'appel de l'option %(k1)s.

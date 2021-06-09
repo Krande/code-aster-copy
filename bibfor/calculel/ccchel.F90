@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,13 +26,16 @@ implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/getexm.h"
 #include "asterfort/ccaccl.h"
 #include "asterfort/cclpci.h"
 #include "asterfort/cclpco.h"
 #include "asterfort/ccpara.h"
 #include "asterfort/ccpoux.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/meceuc.h"
+#include "asterfort/utmess.h"
 !
 aster_logical, intent(in) :: l_poux, exitim
 integer :: nbchre, ioccur, numord, nordm1
@@ -74,7 +77,7 @@ character(len=24) :: mateco, ligrel, resout, suropt
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, nbpaou, nbpain
+    integer :: iret, nbpaou, nbpain, nbRet
     character(len=8) :: lipain(100), lipaou(1)
     character(len=24) :: lichin(100), lichou(2)
 !
@@ -109,6 +112,13 @@ character(len=24) :: mateco, ligrel, resout, suropt
                     suropt, iret)
         if (iret .ne. 0) then
             goto 999
+        endif
+    else 
+        if ((getexm('EXCIT', 'COEF_MULT') .eq. 1) .and. (ioccur .ne. 0)) then
+            call getvr8('EXCIT', 'COEF_MULT', iocc=ioccur, nbval = 0, nbret=nbRet)
+            if (nbRet .ne. 0) then
+                call utmess('F', 'CALCCHAMP_9')
+            endif
         endif
     endif
 !
