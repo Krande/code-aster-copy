@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -98,12 +98,14 @@ subroutine pmfd02(noma, cesdec)
     do iocc = 1, nbocc
         call reliem(' ', noma, 'NU_MAILLE', 'COQUE', iocc,&
                     2, mocles, typmcl, mesmai, nbma)
-        call getvis('COQUE', 'COQUE_NCOU', iocc=iocc, scal=nbcou, nbret=nbv)
-        ncmp(1) = 'COQ_NCOU'
-        valv(1) = nbcou
-        call jeveuo(mesmai, 'L', jma)
-        call nocart(carte, 3, 1, mode='NUM', nma=nbma, limanu=zi(jma))
-        call jedetr(mesmai)
+        if( nbma > 0) then
+            call getvis('COQUE', 'COQUE_NCOU', iocc=iocc, scal=nbcou, nbret=nbv)
+            ncmp(1) = 'COQ_NCOU'
+            valv(1) = nbcou
+            call jeveuo(mesmai, 'L', jma)
+            call nocart(carte, 3, 1, mode='NUM', nma=nbma, limanu=zi(jma))
+            call jedetr(mesmai)
+        end if
     enddo
 !
 !   MOT CLE "POUTRE" :
@@ -111,15 +113,17 @@ subroutine pmfd02(noma, cesdec)
     do iocc = 1, nbocc
         call reliem(' ', noma, 'NU_MAILLE', 'POUTRE', iocc,&
                     2, mocles, typmcl, mesmai, nbma)
-        call getvis('POUTRE', 'TUYAU_NCOU', iocc=iocc, scal=nbcou, nbret=nbv)
-        call getvis('POUTRE', 'TUYAU_NSEC', iocc=iocc, scal=nbsec, nbret=nbv)
-        ncmp(1) = 'TUY_NCOU'
-        ncmp(2) = 'TUY_NSEC'
-        valv(1) = nbcou
-        valv(2) = nbsec
-        call jeveuo(mesmai, 'L', jma)
-        call nocart(carte, 3, 2, mode='NUM', nma=nbma, limanu=zi(jma))
-        call jedetr(mesmai)
+        if( nbma > 0 ) then
+            call getvis('POUTRE', 'TUYAU_NCOU', iocc=iocc, scal=nbcou, nbret=nbv)
+            call getvis('POUTRE', 'TUYAU_NSEC', iocc=iocc, scal=nbsec, nbret=nbv)
+            ncmp(1) = 'TUY_NCOU'
+            ncmp(2) = 'TUY_NSEC'
+            valv(1) = nbcou
+            valv(2) = nbsec
+            call jeveuo(mesmai, 'L', jma)
+            call nocart(carte, 3, 2, mode='NUM', nma=nbma, limanu=zi(jma))
+            call jedetr(mesmai)
+        end if
     enddo
 !
 !   MOT CLE "GRILLE" :
@@ -127,11 +131,13 @@ subroutine pmfd02(noma, cesdec)
     do iocc = 1, nbocc
         call reliem(' ', noma, 'NU_MAILLE', 'GRILLE', iocc,&
                     2, mocles, typmcl, mesmai, nbma)
-        ncmp(1) = 'COQ_NCOU'
-        valv(1) = 1
-        call jeveuo(mesmai, 'L', jma)
-        call nocart(carte, 3, 1, mode='NUM', nma=nbma, limanu=zi(jma))
-        call jedetr(mesmai)
+        if( nbma > 0 ) then
+            ncmp(1) = 'COQ_NCOU'
+            valv(1) = 1
+            call jeveuo(mesmai, 'L', jma)
+            call nocart(carte, 3, 1, mode='NUM', nma=nbma, limanu=zi(jma))
+            call jedetr(mesmai)
+        end if
     enddo
 !
 !   TRANSFORME LA CARTE EN CHAM_ELEM_S
