@@ -121,8 +121,6 @@ resnonl = LIRE_RESU(MODELE=model,
                              _F(NOM_RESU="resnonl", NOM_CHAM='VARI_ELGA')),
                  TOUT_ORDRE="OUI")
 
-print("MATE:", resnonl.getMaterialField(), flush=True)
-
 #Check ETAT_INIT
 resnonl = STAT_NON_LINE(
     reuse=resnonl,
