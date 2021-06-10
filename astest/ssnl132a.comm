@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -99,7 +99,7 @@ RESULT = STAT_NON_LINE(
     EXCIT=(
         _F(CHARGE=BLOCAGE, FONC_MULT=FOBLOC,),
     ),
-    COMPORTEMENT=_F(RELATION=relation),
+    COMPORTEMENT=_F(RELATION=relation,DEFORMATION='PETIT'),
     INCREMENT=_F(LIST_INST=L_INIT,),
     CONVERGENCE=_F(ITER_GLOB_MAXI=15),
     NEWTON=_F(REAC_INCR=1, MATRICE='TANGENTE', REAC_ITER=1,),

@@ -83,7 +83,7 @@ character(len=16), intent(in) :: relaComp, relaCompPY
     integer :: nbCellMesh, nbCell
     integer, pointer :: cellAffectedByModel(:) => null()
     integer, pointer :: listCellAffe(:) => null()
-    aster_logical :: l_coq3d, l_dkt, l_dktg, lShell, l_hho, lGrotGdep, lPetitReac
+    aster_logical :: l_coq3d, l_dkt, l_dktg, lShell, l_hho, lGrotGdep, lPetitReac, lPipe
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -140,16 +140,20 @@ character(len=16), intent(in) :: relaComp, relaCompPY
             l_dkt   = lteatt('MODELI','DKT', typel = elemTypeName)
             l_dktg  = lteatt('MODELI','DTG', typel = elemTypeName)
             lShell  = lteatt('COQUE' ,'OUI', typel = elemTypeName)
+            lPipe   = lteatt('TUYAU' ,'OUI', typel = elemTypeName)
 
-! --------- Specific checks
+! --------- Specific checks: alarm (outside loop on cells)
             if (l_dkt .and. defoComp .eq. 'PETIT_REAC') then
                 lPetitReac = ASTER_TRUE
-              !  call utmess('A', 'COMPOR1_50')
             endif
 
             if (l_coq3d .and. (defoComp .eq. 'GROT_GDEP')) then
                 lGrotGdep = ASTER_TRUE
-              !  call utmess('A', 'COMPOR1_47')
+            endif
+
+! --------- Specific checks: fatal error
+            if (lPipe .and. defoComp .ne. 'PETIT') then
+                call utmess('F', 'COMPOR1_51')
             endif
 
             if (l_hho .and.&

@@ -237,6 +237,10 @@ Les grandes rotations ne sont pas modélisées correctement.
 En présence de grands déplacements et grandes rotations, il est préférable d'utiliser pour les modélisations type COQUE_3D ou COQUE_SOLIDE.
 """),
 
+    51: _("""
+  La modélisation TUYAU n'est compatible qu'avec DEFORMATION='PETIT'.
+"""),
+
     53: _("""
  ECRO_LINE : la plasticité parfaite n'est pas autorisée !
              Par conséquent la pente d'écrouissage H doit être strictement positive.
