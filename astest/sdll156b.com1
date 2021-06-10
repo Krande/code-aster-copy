@@ -20,7 +20,7 @@
 import numpy as np
 
 POURSUITE(CODE='OUI', DEBUG=_F(SDVERI='OUI'),)
-
+"""
 # calcul des references pour POST_ROCHE, on extrait uniquement les valeurs de MT, MFY et MFZ non nulles
 
 table = CREA_TABLE(RESU=_F(RESULTAT=poids_propre,
@@ -75,7 +75,7 @@ post_roche_analytic = PostRocheAnalytic(mfy_poids_propre, mt_deplacement_impose,
 post_roche_analytic.calcul_ressort()
 post_roche_analytic.calcul_abattement()
 post_roche_analytic.calcul_sigma_eq()
-
+"""
 # TEST_RESU
 
 TEST_RESU(RESU=(# X1 = contrainte de référence
