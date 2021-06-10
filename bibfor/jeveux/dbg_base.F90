@@ -58,7 +58,7 @@ subroutine dbg_base()
     character(len=19) :: objname
     integer :: dbsize, recsize, recint
     integer :: nbrec, objint, nbobj, ic, i, total, perc
-    integer :: jadr, vali(8), more
+    integer :: jadr, vali(10), more
 !
     answer = ' '
     call getvtx('DEBUG', 'VERI_BASE', iocc=1, scal=answer)
@@ -73,8 +73,8 @@ subroutine dbg_base()
     nbrec = nblmax(ic)
     dbsize = recsize * nbrec
     objint = recint / 4
-!   with 48 GB, noobj=245768, here create at most 1000 objects
-    nbobj = min(4 * nbrec * perc / 100, 1000)
+!   with 48 GB, noobj=245768
+    nbobj = 4 * nbrec * perc / 100
     vali(1) = dbsize
     vali(2) = recsize
     vali(3) = recint
@@ -83,7 +83,9 @@ subroutine dbg_base()
     vali(6) = nbobj
     vali(7) = nbobj * objint * 8
     vali(8) = nbobj * objint
-    call utmess('I', 'JEVEUX1_97', vali=vali, ni=8)
+    vali(9) = lfic(ic) * 1000
+    vali(10) = mfic * 1024
+    call utmess('I', 'JEVEUX1_97', vali=vali, ni=10)
 
     inquire(file=dbname//'.1', exist=exist)
     ASSERT(exist)

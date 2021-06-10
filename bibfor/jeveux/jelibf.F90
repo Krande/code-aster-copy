@@ -83,6 +83,8 @@ subroutine jelibf(cond, clas, info)
     common /kficje/  classe    , nomfic(n) , kstout(n) , kstini(n) , dn2(n)
     character(len=8) :: nombas
     common /kbasje/  nombas(n)
+    integer :: idn, iext, nbenrg
+    common /iextje/  idn(n) , iext(n) , nbenrg(n)
 !
     integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common /iatcje/  iclas ,iclaos , iclaco , idatos , idatco , idatoc
@@ -97,15 +99,12 @@ subroutine jelibf(cond, clas, info)
     integer :: lundef, idebug
     common /undfje/  lundef,idebug
 ! ----------------------------------------------------------------------
-    integer :: nbenrg, lgenrg, nbenrv, lgenrv, nbenrl, lgenrl
-    common /stacod/  nbenrg, lgenrg, nbenrv, lgenrv, nbenrl, lgenrl
-! ----------------------------------------------------------------------
     integer :: lidbas, lideff
     parameter      ( lidbas = 20 , lideff = 15 )
     character(len=1) :: kclas
     character(len=8) :: kcond, valk(1), nom
     character(len=32) :: nomcar
-    integer :: iadcar, iaddac(2), lgbl, vali(8), iadcdy, iaddad(2)
+    integer :: iadcar, iaddac(2), lgbl, vali(9), iadcdy, iaddad(2)
     real(kind=8) :: valr(2)
     aster_logical :: bool
 ! DEB ------------------------------------------------------------------
@@ -215,6 +214,7 @@ subroutine jelibf(cond, clas, info)
         cara(jcara(ic)+4) = nbluti(ic)
         cara(jcara(ic)+6) = iadd(jiadd(ic) + 3)
         cara(jcara(ic)+7) = iadd(jiadd(ic) + 4)
+        cara(jcara(ic)+12) = nbenrg(ic)
         if (iadcar .ne. 0) then
             idatos = 1
             call jjlide('JELIBF', nomcar, 1)
@@ -255,19 +255,6 @@ subroutine jelibf(cond, clas, info)
         if (litlec(ic)) then
             call jxecrb(ic, iitlec(ic), kitlec(ic)+1, lgbl, 0, 0)
         endif
-!
-!     GLUTE STAT CODE
-!
-        if (clas(1:1) .eq. 'G') then
-            nbenrg = nbluti(ic)
-            lgenrg = 1024*longbl(ic)*lois
-        else if (clas(1:1) .eq. 'V') then
-            nbenrv = nbluti(ic)
-            lgenrv = 1024*longbl(ic)*lois
-        else if (clas(1:1) .eq. 'L') then
-            nbenrl = nbluti(ic)
-            lgenrl = 1024*longbl(ic)*lois
-        endif
     endif
     if (kcond .eq. 'SAUVE   ' .or. kcond .eq. 'DETRUIT  ') then
 !       ---- ON DECHARGE MAINTENANT LA DESCRIPTION DES ENREGISTREMENTS
@@ -287,20 +274,21 @@ subroutine jelibf(cond, clas, info)
         iadacc = 0
     endif
 !
-    valk(1)= nombas(ic)
-    vali(1)= nbluti(ic)
-    vali(2)= nblmax(ic)
-    vali(3)= 1024*longbl(ic)*lois
-    vali(4)= nbacce(2*ic-1)
-    valr(1)= nbacce(2*ic-1)*longbl(ic)*lois/1024.d0
-    vali(5)= nbacce(2*ic  )
-    valr(2)= nbacce(2*ic  )*longbl(ic)*lois/1024.d0
-    vali(6)= nreuti(ic)
-    vali(7)= nremax(ic)
-    vali(8)= (nreuti(ic)*100)/nremax(ic)
+    valk(1) = nombas(ic)
+    vali(1) = nbluti(ic)
+    vali(2) = nblmax(ic)
+    vali(3) = 1024*longbl(ic)*lois
+    vali(4) = nbacce(2*ic-1)
+    valr(1) = nbacce(2*ic-1)*longbl(ic)*lois/1024.d0
+    vali(5) = nbacce(2*ic  )
+    valr(2) = nbacce(2*ic  )*longbl(ic)*lois/1024.d0
+    vali(6) = nreuti(ic)
+    vali(7) = nremax(ic)
+    vali(8) = (nreuti(ic)*100)/nremax(ic)
+    vali(9) = nbenrg(ic)
 !
     if (info .ge. 1) then
-        call utmess('I', 'JEVEUX_22', sk=valk(1), ni=8, vali=vali, nr=2, valr=valr)
+        call utmess('I', 'JEVEUX_22', sk=valk(1), ni=9, vali=vali, nr=2, valr=valr)
     endif
 !
     if (kcond .ne. 'LIBERE  ') then

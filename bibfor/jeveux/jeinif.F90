@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -122,7 +122,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
     character(len=24) :: valk(3)
     integer :: ncar, itlec(1), itecr(1), iadadd(2), lgbl
     integer :: vali(7), irt, ind, iesup
-    parameter      ( ncar = 12 )
+    parameter      ( ncar = 13 )
 ! ----------------------------------------------------------------------
     aster_logical :: lenrg
     integer :: lidbas, lideff
@@ -453,6 +453,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
         iadadd(1) = cara(jcara(ic) + 6 )
         iadadd(2) = cara(jcara(ic) + 7 )
         lfic(ic) = cara(jcara(ic) + 11 )
+        nbenrg(ic) = cara(jcara(ic) + 12 )
         if (cversu .ne. cversb) then
             valk(1) = nombas(ic)
             valk(2) = cversb
@@ -480,16 +481,17 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
             lenrg = .true.
         endif
 !
-        valk(1)= nombas(ic)
-        valk(2)= cversb
-        vali(1)= nbluti(ic)
-        vali(2)= nblmax(ic)
-        vali(3)= 1024*longbl(ic)*lois
-        vali(4)= nreuti(ic)
-        vali(5)= nremax(ic)
-        vali(6)= (nreuti(ic)*100)/nremax(ic)
+        valk(1) = nombas(ic)
+        valk(2) = cversb
+        vali(1) = nbluti(ic)
+        vali(2) = nblmax(ic)
+        vali(3) = 1024*longbl(ic)*lois
+        vali(4) = nreuti(ic)
+        vali(5) = nremax(ic)
+        vali(6) = (nreuti(ic)*100)/nremax(ic)
+        vali(7) = nbenrg(ic)
 !
-        call utmess('I', 'JEVEUX_21', nk=2, valk=valk, ni=6,&
+        call utmess('I', 'JEVEUX_21', nk=2, valk=valk, ni=7,&
                     vali=vali)
 !
         nblmax(ic)= nblma2
@@ -505,7 +507,9 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
         call jjecrs(kat(1), ic, 1, 0, 'E',&
                     imarq(jmarq(ic)+2*1-1))
 !
-        nbenrg(ic) = min ( lfic(ic)/(longbl(ic)*lois) , nblma2 )
+        if (nbenrg(ic) .eq. 0) then
+            nbenrg(ic) = min ( lfic(ic)/(longbl(ic)*lois) , nblma2 )
+        endif
 !
 ! ----- NOUVEL OPEN DE LA BASE
         iesup=1

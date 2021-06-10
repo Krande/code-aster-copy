@@ -483,7 +483,9 @@ Contactez le support technique.
 
 Vérification de l'extension automatique des bases JEVEUX:
 
-    Taille de la base          : %(i1)12d octets
+    Taille maximale de la base : %(i1)12d octets
+    Taille pour vérification   : %(i10)12d octets
+    Taille d'un fichier        : %(i9)12d octets
     Taille d'un enregistrement : %(i2)12d octets
     Taille d'un enregistrement : %(i3)12d entiers
     Nombre d'enregistrements   : %(i4)12d

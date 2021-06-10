@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,8 +54,8 @@ subroutine jxlir1(ic, caralu)
     integer :: lbis, lois, lols, lor8, loc8
     common /ienvje/  lbis , lois , lols , lor8 , loc8
 !     ------------------------------------------------------------------
-    integer :: npar, np2
-    parameter ( npar = 12, np2 = npar+3 )
+    integer :: ncar, np2
+    parameter ( ncar = 13, np2 = ncar + 3 )
     integer :: tampon(np2), mode
     aster_logical :: lexist
     character(len=8) :: nom
@@ -90,7 +90,7 @@ subroutine jxlir1(ic, caralu)
     if (ierr .ne. 0) then
         call utmess('F', 'JEVEUX_14', sk=nombas(ic))
     endif
-    do k = 1, npar
+    do k = 1, ncar
         caralu(k) = tampon(k+3)
     end do
 ! FIN ------------------------------------------------------------------

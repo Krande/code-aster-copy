@@ -110,6 +110,7 @@ Contactez le support technique.
      Créée avec la version                   :  %(k2)s
      Nombre d'enregistrements utilisés       :  %(i1)d
      Nombre d'enregistrements maximum        :  %(i2)d
+     Nombre d'enregistrements par fichier    :  %(i7)d
      Longueur d'enregistrement (octets)      :  %(i3)d
      Nombre d'identificateurs utilisés       :  %(i4)d
      Taille maximum du répertoire            :  %(i5)d
@@ -121,6 +122,7 @@ Contactez le support technique.
      Nom de la base                          :  %(k1)s
      Nombre d'enregistrements utilisés       :  %(i1)d
      Nombre d'enregistrements maximum        :  %(i2)d
+     Nombre d'enregistrements par fichier    :  %(i9)d
      Longueur d'enregistrement (octets)      :  %(i3)d
      Nombre total d'accès en lecture         :  %(i4)d
      Volume des accès en lecture             :  %(r1)12.2f Mo.
