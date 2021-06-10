@@ -203,14 +203,6 @@ de fournir la masse volumique du matériau considéré.
 RHO doit être défini dans l'opérateur DEFI_MATERIAU.
 """),
 
-    27: _("""
-La connexité entre les mailles caractérisant les zones de calcul n'est pas valide.
--> Risque et Conseil :
-Veuillez vous assurer que les copeaux de chaque tranche définies dans
-GROUP_MA du mot-clé facteur TRANCHE_3D, suivent les règles précisées dans
-la documentation U de CALC_GP.
-"""),
-
     29: _("""
 Au moins une des mailles caractérisant les zones de calcul a une forme trop
 trapézoïdale.

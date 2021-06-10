@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import numpy as NP
+import numpy as np
 from numpy import cos, pi, sin
 
 import aster
@@ -67,132 +67,79 @@ def NRJ(ENEL_ELGA, X, Y, X0, Y0, R, lc, Nume_cop, ccos, ssin):
 #
 
 
-def CalDist(coor_nd, coor_nds):
-    # on calcule la distance du noeud 1 aux autres noeuds
-
-    dist = NP.sqrt((coor_nds[0] - coor_nd[0]) ** 2 +
-                   (coor_nds[1] - coor_nd[1]) ** 2 +
-                   (coor_nds[2] - coor_nd[2]) ** 2)
-    return dist
-
-#--
-
-
-def Recup_Noeuds_Copeaux(maya, Copeau_k):
-
-    # Recuperation des noeuds appartenant a la surface de symetrie
-    # et aux copeaux
-    dicno = []
-    dicno.append(_F(NOM=Copeau_k))
-    dicno.append(_F(NOM='Cop_Pl'))
-    DEFI_GROUP(reuse=maya, MAILLAGE=maya, DETR_GROUP_NO=dicno)
-
-    dicno = []
-    dicno.append(_F(NOM=Copeau_k, GROUP_MA=Copeau_k))
-    dicno.append(_F(NOM='Cop_Pl', INTERSEC=(Copeau_k, 'Nds_Plan',)))
-    DEFI_GROUP(reuse=maya, MAILLAGE=maya, CREA_GROUP_NO=dicno)
-
-#--
-
-
-def Crea_grp_ma(maya, C_k):
-    if C_k == 0:
-        dicma = {'NOM': 'Mai_Plan'}
-        DEFI_GROUP(reuse=maya, MAILLAGE=maya, DETR_GROUP_MA=dicma),
-
-        dicma = {'NOM': 'Mai_Plan', 'OPTION': 'APPUI', 'GROUP_NO':
-                 'Cop_Pl', 'TYPE_APPUI': 'TOUT', 'TYPE_MAILLE': '2D'}
-        DEFI_GROUP(reuse=maya, MAILLAGE=maya, CREA_GROUP_MA=dicma),
-
-        dicma = {'NOM': 'Mai_Pla2'}
-        DEFI_GROUP(reuse=maya, MAILLAGE=maya, DETR_GROUP_MA=dicma),
-
-        dicma = {'NOM': 'Mai_Pla2', 'GROUP_MA': 'Mai_Plan'}
-        DEFI_GROUP(reuse=maya, MAILLAGE=maya, CREA_GROUP_MA=dicma),
-
-    else:
-        dicma = {'NOM': 'Mai_Pla1'}
-        DEFI_GROUP(reuse=maya, MAILLAGE=maya, DETR_GROUP_MA=dicma),
-
-        dicma = {'NOM': 'Mai_Pla1', 'OPTION': 'APPUI',
-                 'GROUP_NO': 'Cop_Pl', 'TYPE_APPUI': 'TOUT'}
-        DEFI_GROUP(reuse=maya, MAILLAGE=maya, CREA_GROUP_MA=dicma),
-
-        dicma = {'NOM': 'Mai_Plan'}
-        DEFI_GROUP(reuse=maya, MAILLAGE=maya, DETR_GROUP_MA=dicma),
-
-        dicma = {'NOM': 'Mai_Plan', 'DIFFE':
-                 ('Mai_Pla1', 'Mai_Pla2'), 'TYPE_MAILLE': '2D'}
-        DEFI_GROUP(reuse=maya, MAILLAGE=maya, CREA_GROUP_MA=dicma),
-
-        dicma = {'NOM': 'Mai_Pla2'}
-        DEFI_GROUP(reuse=maya, MAILLAGE=maya, DETR_GROUP_MA=dicma),
-
-        dicma = {'NOM': 'Mai_Pla2', 'GROUP_MA': 'Mai_Pla1'}
-        DEFI_GROUP(reuse=maya, MAILLAGE=maya, CREA_GROUP_MA=dicma)
-
-#--
-
-
 def Calcul_mesure_3D(maya, nbcop, l_copo_tot, ltyma, nd_fiss, normale):
     # Calcul de la mesure des mailles appartenant au plan de symetrie
     # On est en petites deformations alors on ne tient pas compte de la deformee
     # lors du calcul de la surface
 
+    connectivity = maya.getConnectivity()
+    coordinates = maya.getCoordinates()
 
     mesure = [0] * len(l_copo_tot)
 
-    COOR = maya.sdj.COORDO.VALE.get()
-
     # Recuperation des noeuds appartenant a la surface de symetrie
-    DEFI_GROUP(reuse=maya, MAILLAGE=maya, DETR_GROUP_NO={'NOM': 'Nds_Plan'})
-    dicno = {'NOM': 'Nds_Plan', 'OPTION': 'PLAN', 'VECT_NORMALE':
-             normale, 'PRECISION': 1e-6, 'NOEUD_CENTRE': nd_fiss}
-    DEFI_GROUP(reuse=maya, MAILLAGE=maya, CREA_GROUP_NO=dicno)
+    DEFI_GROUP(reuse=maya, MAILLAGE=maya,
+                CREA_GROUP_NO=_F(NOM='Nds_Plan', OPTION='PLAN',
+                                VECT_NORMALE=normale,
+                                NOEUD_CENTRE=nd_fiss,
+                                PRECISION=1e-6))
 
-    # boucle sur l'ensemble des copeaux
+    # cration des groupes
+    crea_group_no = []
+    crea_group_ma = []
+    detr_group_no = []
+    detr_group_ma = []
     for C_k, Copeau_k in enumerate(l_copo_tot):
+        # groupe de noeuds appartenant au copeau courant
+        crea_group_no.append({"NOM": Copeau_k,
+                              "GROUP_MA":Copeau_k})
+        detr_group_no.append(Copeau_k)
+        crea_group_no.append({"NOM": "Cop_Pl_%s"%C_k,
+                              "INTERSEC": (Copeau_k, 'Nds_Plan')})
+        detr_group_no.append("Cop_Pl_%s"%C_k)
+        # groupe de maille de l'interface du copeau avec la fissure
+        crea_group_ma.append({"NOM": "Mai_Plan_%s"%C_k,
+                              "OPTION": "APPUI",
+                              "GROUP_NO": "Cop_Pl_%s"%C_k, 
+                              "TYPE_APPUI": "TOUT",
+                              "TYPE_MAILLE": "2D"})
+        detr_group_ma.append("Mai_Plan_%s"%C_k)
+    # on regroupe la creation dans un seul appel à DEFI_GROUP pour améliorer les performances
+    DEFI_GROUP(reuse=maya, MAILLAGE=maya,
+                CREA_GROUP_NO=crea_group_no)
+    DEFI_GROUP(reuse=maya, MAILLAGE=maya,
+                CREA_GROUP_MA=crea_group_ma)
 
-        # Recuperation des groupes de noeuds appartenant au copeau courant
-        Recup_Noeuds_Copeaux(maya, Copeau_k)
-        Crea_grp_ma(maya, C_k % nbcop)
+    groupma = maya.sdj.GROUPEMA.get()
 
-        # La mesure de la surface est cumulee
-        if C_k % nbcop != 0:
-            mesure[C_k] = mesure[C_k - 1]
-
+    # calcul de la surface pour chacun des coppeaux
+    for C_k, Copeau_k in enumerate(l_copo_tot):
         # Recuperation des coordonnees des noeuds appartenant au copeau courant
-        maille_courante = maya.sdj.GROUPEMA.get()['Mai_Plan'.ljust(24)][0]
-        if ltyma[maya.sdj.TYPMAIL.get()[maille_courante]][0:4] == 'QUAD':
-            connexe = maya.sdj.CONNEX.get()[maille_courante]
-            if C_k % nbcop != 0:
-                if len(set(connexe[:4] + connexe_C_k_moins1)) != 6:
-                    UTMESS('F', 'RUPTURE1_27')
-            connexe_C_k_moins1 = connexe[:4]
-        else:
-            UTMESS('F', 'RUPTURE1_22')
+        cells = groupma[("Mai_Plan_%s"%C_k).ljust(24)]
+        for cell in cells:
+            nodes = connectivity[cell-1]
+            if len(nodes) not in (4, 8):
+                UTMESS('F', 'RUPTURE1_22')
+            # Calcul de la surface de la maille 2D du copeau courant appartenant au plan de symetrie
+            coords = [np.array([coordinates[3*(node-1)], coordinates[3*(node-1)+1], coordinates[3*(node-1)+2]]) \
+                            for node in nodes[:4]]
+            dAB = np.linalg.norm(coords[1]-coords[0])
+            dBC = np.linalg.norm(coords[2]-coords[1])
+            dCD = np.linalg.norm(coords[3]-coords[2])
+            dDA = np.linalg.norm(coords[0]-coords[3])
 
-        # Calcul de la surface de la maille 2D du copeau courant appartenant au
-        # plan de symetrie
-        Coord_nds = [(COOR[(connexe[x] - 1) * 3], COOR[(connexe[x] - 1) * 3 + 1], COOR[(connexe[x] - 1) * 3 + 2])
-                     for x in range(4)]
+            if abs(dAB - dCD) / dAB > 0.2 or abs(dDA - dBC) / dDA > 0.2:
+                UTMESS('A', 'RUPTURE1_29')
+            mesure[C_k] += (dAB + dCD) / 2. * (dBC + dDA) / 2.
 
-        dAB = CalDist(Coord_nds[1], Coord_nds[0])
-        dBC = CalDist(Coord_nds[2], Coord_nds[1])
-        dCD = CalDist(Coord_nds[3], Coord_nds[2])
-        dDA = CalDist(Coord_nds[0], Coord_nds[3])
-
-        if abs(dAB - dCD) / dAB > 0.2 or abs(dDA - dBC) / dDA > 0.2:
-            UTMESS('A', 'RUPTURE1_29')
-
-        mesure[C_k] = mesure[C_k] + (dAB + dCD) / 2. * (dBC + dDA) / 2.
 
     # Destruction des groupes de noeuds et de mailles temporaires
-    dicno = [_F(NOM='Cop_Pl'), _F(NOM='Nds_Plan')]
-    dicma = [_F(NOM='Mai_Plan'), _F(NOM='Mai_Pla1'), _F(NOM='Mai_Pla2')]
-
     DEFI_GROUP(reuse=maya, MAILLAGE=maya,
-               DETR_GROUP_NO=dicno, DETR_GROUP_MA=dicma)
+                DETR_GROUP_MA=_F(NOM=detr_group_ma))
+    DEFI_GROUP(reuse=maya, MAILLAGE=maya,
+                DETR_GROUP_NO=_F(NOM=detr_group_no))
+    DEFI_GROUP(reuse=maya, MAILLAGE=maya,
+               DETR_GROUP_NO=_F(NOM='Nds_Plan'))
 
     return mesure
 
