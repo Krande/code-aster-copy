@@ -142,7 +142,7 @@ class RunAster:
         timer.start("Execution of code_aster")
         status = self.execute_study()
         timer.stop()
-        if self._last:
+        if self._last or not status.is_completed():
             timer.start("Copying results")
             self.ending_execution(status.is_completed())
             logger.info("TITLE Execution summary")

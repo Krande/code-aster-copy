@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,8 @@ if there is no TEST_RESU or if it is NOOK.
 """
 
 import argparse
+import os
+import pickle
 import re
 import sys
 
@@ -101,6 +103,27 @@ class Status:
         self.state = StateOptions.effective(self.state | other.state)
         self.exitcode = max(self.exitcode, other.exitcode)
         self.times = [i + j for i, j in zip(self.times, other.times)]
+
+    def save(self, filename="__status__"):
+        """Save the status content to a file.
+
+        Arguments:
+            filename (str): Filename to be written.
+        """
+        with open(filename, "wb") as fpick:
+            pickle.dump(self, fpick)
+
+    @staticmethod
+    def load(filename="__status__"):
+        """Restore a status object from a file.
+
+        Arguments:
+            filename (str): Filename to be read.
+        """
+        if not os.path.exists(filename):
+            return Status()
+        with open(filename, "rb") as fpick:
+            return pickle.load(fpick)
 
 
 class StateOptions:

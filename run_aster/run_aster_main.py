@@ -76,6 +76,7 @@ from .config import CFG
 from .export import Export, File, split_export
 from .logger import DEBUG, WARNING, logger
 from .run import RunAster, create_temporary_dir, get_procid
+from .status import StateOptions, Status
 from .utils import ROOT
 
 try:
@@ -213,6 +214,9 @@ def parse_args(argv):
         "--debugpy-rank", action="store", type=int, default=0, help=argparse.SUPPRESS
     )
     parser.add_argument(
+        "--status-file", action="store", dest="statusfile", help=argparse.SUPPRESS
+    )
+    parser.add_argument(
         "export",
         metavar="EXPORT",
         nargs="?",
@@ -316,7 +320,10 @@ def main(argv=None):
     try:
         if need_split or need_mpiexec:
             run_aster = osp.join(ROOT, "bin", "run_aster")
-            expdir = create_temporary_dir(dir=os.getenv("HOME", "/tmp") + "/.tmp_run_aster")
+            expdir = create_temporary_dir(
+                dir=os.getenv("HOME", "/tmp") + "/.tmp_run_aster"
+            )
+            statfile = osp.join(expdir, "__status__")
             for exp_i in split_export(export):
                 fexp = osp.join(expdir, "export." + str(exp_i.get("step")))
                 exp_i.write_to(fexp)
@@ -324,6 +331,7 @@ def main(argv=None):
                 if not args.wrkdir:
                     argv_i.append("--wrkdir")
                     argv_i.append(wrkdir)
+                argv_i.extend(["--status-file", statfile])
                 argv_i.append(fexp)
                 cmd = f"{run_aster} {' '.join(argv_i)}"
                 if need_mpiexec:
@@ -331,7 +339,8 @@ def main(argv=None):
                     cmd = CFG.get("mpiexec").format(**args_cmd)
                 logger.info("Running: " + cmd)
                 proc = run(cmd, shell=True)
-                if proc.returncode != 0:
+                status = Status.load(statfile)
+                if proc.returncode != 0 and not status.is_completed():
                     break
             shutil.rmtree(expdir)
             return proc.returncode
@@ -354,6 +363,8 @@ def main(argv=None):
             opts["exectool"] = wrapper
         calc = RunAster.factory(export, **opts)
         status = calc.execute(wrkdir)
+        if args.statusfile:
+            status.save(args.statusfile)
         if tmpf and not opts["env"]:
             os.remove(tmpf)
     finally:
