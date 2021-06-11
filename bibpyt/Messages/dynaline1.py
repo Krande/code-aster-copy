@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ Nombre d'itérations     : %(i2)d
 """),
 
     22 : _("""
-Il n'est pas possible de combiner les chargements CHARGE et VECT_ASSE sauf pour les ondes planes.
+Il n'est pas possible de combiner les chargements CHARGE et VECT_ASSE sauf pour les ondes planes et les chargements cinématiques.
 """),
 
     23 : _("""

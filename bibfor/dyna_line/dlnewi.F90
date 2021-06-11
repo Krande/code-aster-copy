@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
                   liad, lifo, modele, mate, carele,&
                   charge, infoch, fomult, numedd, nume,&
                   solveu, criter, chondp, nondp, numrep, ds_energy,&
-                  sd_obsv, mesh)
+                  sd_obsv, mesh, kineLoad)
 !
 use NonLin_Datastructure_type
 !
@@ -121,7 +121,7 @@ implicit none
     character(len=19) :: force0, force1
     character(len=19) :: solveu
     character(len=24) :: modele, mate, carele, charge, infoch, fomult, numedd
-    character(len=24) :: criter
+    character(len=24) :: criter, kineLoad
     character(len=24) :: lifo(*)
     real(kind=8) :: dep0(*), vit0(*), acc0(*), t0, fexte(*), famor(*), fliai(*)
     aster_logical :: lcrea, lamort, limped, lmodst, l_harm, l_matr_impe, l_damp_modal
@@ -518,7 +518,7 @@ implicit none
                         vitini, vitent, valmod, basmod,&
                         veanec, vaanec, vaonde, veonde, dt,&
                         theta, tempm, temps, iforc2, zr(iwk1),&
-                        zr(iwk2), archiv, nbtyar, typear, numrep, ds_energy)
+                        zr(iwk2), archiv, nbtyar, typear, numrep, ds_energy,kineLoad)
 !
             if (archiv .eq. 1) lastarch = temps
             perc = int(100.d0*(real(ipas)/real(npatot)))

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,7 @@ implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
+#include "asterfort/gettco.h"
 #include "asterfort/chpver.h"
 #include "asterfort/codent.h"
 #include "asterfort/cresol.h"
@@ -101,9 +102,9 @@ implicit none
     character(len=8) :: materi, carael
     character(len=19) :: lischa, solveu
     character(len=24) :: modele, numedd, mate, carele
-    character(len=24) :: charge, infoch, fomult
+    character(len=24) :: charge, infoch, fomult, loadType
     integer :: niv, ifm
-    integer :: nr, nm, na, nvect, ivec, n1
+    integer :: nr, nm, na, nvect, ivec, n1, nbCine
     integer :: iaux, ibid
     integer :: indic, nond, jinf, ialich, ich
     real(kind=8) :: rval
@@ -159,6 +160,7 @@ implicit none
 !
     call getfac('EXCIT', nvect)
 !
+    nbCine = 0
     if (nvect .gt. 0) then
 !
 ! 3.1.1. ==> DECODAGE DU CHARGEMENT
@@ -173,6 +175,10 @@ implicit none
             call getvid('EXCIT', 'CHARGE', iocc=ivec, scal=channo, nbret=iaux)
             if (iaux .eq. 1) then
                 nchar = nchar + 1
+            endif
+            call gettco(channo, loadType)
+            if (loadType .eq. 'CHAR_CINE_MECA') then
+                nbCine = nbCine + 1
             endif
         end do
 !
@@ -246,7 +252,7 @@ implicit none
         end do
     endif
 !
-    if (nveca .ne. 0 .and. nchar .ne. 0) then
+    if (nveca .ne. 0 .and. nchar .ne. nbCine) then
         if (nchar .ne. nondp) then
             call utmess('F', 'DYNALINE1_22')
         endif

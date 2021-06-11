@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W1504
 subroutine dlnew0(result, force0, force1, iinteg, neq,&
                   istoc, iarchi, nbexci, nondp, nmodam,&
                   lamort, limped, lmodst, imat, masse,&
@@ -33,7 +33,7 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
                   vitini, vitent, valmod, basmod,&
                   veanec, vaanec, vaonde, veonde, dt,&
                   theta, tempm, temps, iforc2, tabwk1,&
-                  tabwk2, archiv, nbtyar, typear, numrep, ds_energy)
+                  tabwk2, archiv, nbtyar, typear, numrep, ds_energy, kineLoad)
 !
 !     CALCUL MECANIQUE TRANSITOIRE PAR INTEGRATION DIRECTE
 !     AVEC METHODES IMPLICITES :                  - THETA-WILSON
@@ -75,7 +75,6 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
 ! IN  NUMREP : NUMERO DE REUSE POUR LA TABLE PARA_CALC
 !
 ! CORPS DU PROGRAMME
-! aslint: disable=W1504
 !
 use NonLin_Datastructure_type
 !
@@ -86,6 +85,7 @@ implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
+#include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dlarch.h"
@@ -139,7 +139,7 @@ implicit none
     character(len=16) :: typear(nbtyar)
     character(len=19) :: solveu
     character(len=19) :: maprec
-    character(len=24) :: criter
+    character(len=24) :: criter, kineLoad
     character(len=24) :: modele, mate, carele, charge, infoch, fomult, numedd
     character(len=24) :: vitini, vitent, valmod, basmod
     character(len=24) :: lifo(*)
@@ -162,7 +162,7 @@ implicit none
     character(len=16) :: typa(6)
     character(len=19) :: chsol, cham19, chamno, chamn2, k19bid
     character(len=19) :: masse1, amort1, rigid1
-    character(len=24) :: cine, veccor, vecond
+    character(len=24) :: veccor, vecond
     complex(kind=8) :: cbid
     character(len=8), pointer :: listresu(:) => null()
     real(kind=8), pointer :: coef_rre(:) => null()
@@ -177,7 +177,6 @@ implicit none
     chsol = '&&'//nompro//'.SOLUTION '
     veccor = '&&VECCOR'
     vecond = '&&VECOND'
-    cine = '  '
     chamno = '&&'//nompro//'.CHAMNO'
     call jeexin(chamno(1:19)//'.REFE', iret)
     if (iret .eq. 0) then
@@ -404,7 +403,7 @@ implicit none
 ! 6.  RESOLUTION DU PROBLEME K*  . U*  =  P*
 !           --- RESOLUTION AVEC FORCE1 COMME SECOND MEMBRE ---
 !====
-    call resoud(matres, maprec, solveu, cine, 0,&
+    call resoud(matres, maprec, solveu, kineLoad, 0,&
                 force1, chsol, 'V', [0.d0], [cbid],&
                 criter, .true._1, 0, iret)
     call copisd('CHAMP_GD', 'V', chsol(1:19), force1(1:19))
@@ -441,6 +440,7 @@ implicit none
         masse1=masse//'           '
         amort1=amort//'           '
         rigid1=rigid//'           '
+        ASSERT(kineLoad .eq. ' ')
         call wkvect('FNODABID', 'V V R', 2*neq, ifnobi)
         call wkvect('FCINEBID', 'V V R', 2*neq, ifcibi)
         call enerca(k19bid, dep0, vit0, depl1, vite1,&

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -284,7 +284,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
                                                            UN_PARMI('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),),
             VECT_ASSE   =     SIMP(statut='f',typ=cham_no_sdaster),
             VECT_ASSE_GENE=   SIMP(statut='f',typ=vect_asse_gene),
-            CHARGE      =     SIMP(statut='f',typ=char_meca),
+            CHARGE      =     SIMP(statut='f',typ=(char_meca, char_cine_meca),),
             FONC_MULT_C =     SIMP(statut='f',typ=(fonction_c,formule_c),),
             COEF_MULT_C =     SIMP(statut='f',typ='C'),
             FONC_MULT   =     SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),),
@@ -303,7 +303,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
                                         EXCLUS('CHARGE','COEF_MULT'), EXCLUS('FONC_MULT','COEF_MULT'), EXCLUS('ACCE','COEF_MULT'),
                                         PRESENT_ABSENT('ACCE','FONC_MULT'), PRESENT_PRESENT('ACCE','VITE','DEPL'),),
             VECT_ASSE    =     SIMP(statut='f',typ=cham_no_sdaster),
-            CHARGE       =     SIMP(statut='f',typ=char_meca),
+            CHARGE       =     SIMP(statut='f',typ=(char_meca,char_cine_meca,)),
             FONC_MULT    =     SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),),
             COEF_MULT    =     SIMP(statut='f',typ='R'),
             ACCE         =     SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),),

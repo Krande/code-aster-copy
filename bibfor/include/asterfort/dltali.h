@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1504
 !
 #include "asterf_types.h"
 !
@@ -26,7 +25,7 @@ interface
                       charge, infoch, fomult, modele, numedd,&
                       nume, solveu, criter, dep0, vit0,&
                       acc0, fexte0, famor0, fliai0, &
-                      tabwk, force0, force1, ds_energy)
+                      tabwk, force0, force1, ds_energy, kineLoad)
         use NonLin_Datastructure_type
         integer :: neq
         character(len=8) :: result
@@ -41,7 +40,7 @@ interface
         aster_logical :: lprem
         aster_logical :: lamort
         real(kind=8) :: t0
-        character(len=24) :: mate
+        character(len=24) :: mate, kineLoad
         character(len=24) :: carele
         character(len=24) :: charge
         character(len=24) :: infoch
