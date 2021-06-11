@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -24,8 +24,8 @@ from ..Supervis import ExecuteCommand
 
 
 class CalcChamFlui(ExecuteCommand):
-    """Command that defines :class:`~code_aster.Objects.ThermalResult`.
-    """
+    """Command that defines :class:`~code_aster.Objects.ThermalResult`."""
+
     command_name = "CALC_CHAM_FLUI"
 
     def create_result(self, keywords):
@@ -35,5 +35,16 @@ class CalcChamFlui(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         self._result = ThermalResult()
+
+    def post_exec(self, keywords):
+        """Post-treatments of the command.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+        mesh = keywords["RIGI_THER"].getMesh()
+        if mesh:
+            self._result.setMesh(mesh)
+
 
 CALC_CHAM_FLUI = CalcChamFlui.run

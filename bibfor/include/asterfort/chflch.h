@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,9 @@
 !
 !
 interface
-    subroutine chflch(rigthe, vec2nd)
+    subroutine chflch(rigthe, vec2nd,infcha)
         character(len=8) :: rigthe
         character(len=24) :: vec2nd
+        character(len=19) :: infcha
     end subroutine chflch
 end interface

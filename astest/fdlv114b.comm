@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -186,6 +186,9 @@ result = CALC_CHAM_FLUI(RIGI_THER = RIGITH,
                         MODE_MECA = modes,
                         POTENTIEL = 'DEPL',
                         EXCIT = _F(CHARGE=PRESIMPO,))
+
+# pour vérification que le chargement est correctement stocké dans la SD issue de CALC_CHAM_FLUI
+result = CALC_CHAMP(reuse=result, RESULTAT=result, THERMIQUE=('FLUX_NOEU','FLUX_ELGA'))
 
 # TEST DES RESULTATS SUR LA MASSE AJOUTEE DU PREMIER MODE
 DEPROJ=PROJ_CHAMP(RESULTAT=result,

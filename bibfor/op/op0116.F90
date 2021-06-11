@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/lisccr.h"
 #include "asterfort/ntarch.h"
 #include "asterfort/ntetcr.h"
 #include "asterfort/ntnoli.h"
@@ -69,7 +70,7 @@ implicit none
     character(len=8) :: rigthe, modmec, nomres, potentiel
     character(len=8) :: mailla, maflui, nume
     character(len=19) :: chamno, vectas, solve1, solve2, resuas, nomch(3)
-    character(len=19) :: tmpmod
+    character(len=19) :: tmpmod,infcha
     character(len=24) :: typres, nomcom, mateco, metres, arcinf, inflis, mater
     character(len=24) :: chcmb2, vesolx, vesoly, vesolz, vect2
     character(len=24) :: liditr, nuddl, modele, bl24, chcomb, chamnx, chamny, chamnz
@@ -129,9 +130,6 @@ implicit none
 
     modelisa = ['2D' , '3D']
     modelis = modelisa(dim-1)
-
-    vect2 = '&&OP0116.2ND.MEMBRE'
-    call chflch(rigthe,vect2)
 !
 ! - Create input/output management datastructure
 !
@@ -140,6 +138,10 @@ implicit none
 ! - Read parameters for input/output management
 !
     call nonlinDSInOutRead('THER', nomres, ds_inout)
+    
+    vect2 = '&&OP0116.2ND.MEMBRE'    
+    call chflch(rigthe,vect2,infcha)
+    ds_inout%list_load_resu=infcha
 
 !---------------------------------------------------------------------
 !---------- APPEL A CALFLU -------------------------------------------

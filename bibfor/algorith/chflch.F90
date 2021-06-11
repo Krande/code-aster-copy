@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine chflch(rigthe, vec2nd)
+subroutine chflch(rigthe, vec2nd,infcha)
     implicit none
 !
 ! person_in_charge: hassan.berro at edf.fr
@@ -36,6 +36,7 @@ subroutine chflch(rigthe, vec2nd)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/lisccr.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vechth.h"
@@ -49,6 +50,7 @@ subroutine chflch(rigthe, vec2nd)
     character(len=8) :: rigthe
 !       <-- Output variables
     character(len=24) :: vec2nd
+    character(len=19) :: infcha
 !
 !   ------------------------------------------------------------------------------------
 !   *** Definition of local variables
@@ -58,7 +60,7 @@ subroutine chflch(rigthe, vec2nd)
     real(kind=8) :: tpsthe(1)
     logical :: fmult, coecst
     character(len=8) :: typch, parcha, mate, carele, numedd
-    character(len=19) :: infcha, nomcha
+    character(len=19) :: nomcha
     character(len=24) :: charge, fomult, vechtp, vechtn, infoch, ligrch, lchin, cnchci, modele
     character(len=24) :: vachtp, cnchtp, nomfct, vediri, vadirp, cndirp, inst
 !   ------------------------------------------------------------------------------------
@@ -92,11 +94,15 @@ subroutine chflch(rigthe, vec2nd)
     fomult = infcha//'.FCHA'
 
     call getfac('EXCIT', nchar)
+    call lisccr('THER',infcha,nchar,'G')
 
     if (nchar .ne. 0) then
-        call wkvect(charge, 'V V K24', nchar, ialich)
-        call wkvect(infoch, 'V V IS', 2*nchar+1, jinf)
-        call wkvect(fomult, 'V V K24', nchar, ialifc)
+        ! call wkvect(charge, 'V V K24', nchar, ialich)
+        ! call wkvect(infoch, 'V V IS', 2*nchar+1, jinf)
+        ! call wkvect(fomult, 'V V K24', nchar, ialifc)
+        call jeveuo(charge,'E',ialich)
+        call jeveuo(infoch,'E',jinf)
+        call jeveuo(fomult,'E',ialifc)
         zi(jinf) = nchar
         nchci = 0
         do 32 , ich = 1 , nchar
@@ -185,6 +191,7 @@ subroutine chflch(rigthe, vec2nd)
 32      continue
     endif
 !
+
 !   --- Dirichlet
     call vedith(modele, infcha, inst, vediri)
     call asasve(vediri, numedd, 'R', vadirp)
