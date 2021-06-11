@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/cresol.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -69,7 +70,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: matcst, coecst, prem, reasmt, reasvt
-    integer :: parcri(9), iifm, jlagp, jinst
+    integer :: parcri(9), iifm, jlagp, jvPara
     integer :: k, iret
     integer :: itmaxl, iterl, ifm, niv, num
     integer :: iocc, n1, n2
@@ -79,11 +80,11 @@ implicit none
     real(kind=8) :: parcrr(9), testi, epsr, epsl
     real(kind=8) :: r8aux(1)
     character(len=1) :: ci1, ci2, creas, ce1, ce2
-    character(len=8) :: k8bid
+    character(len=8) :: k8bid, answer
     character(len=16) :: k16bid, nomcvg
-    character(len=19) :: list_load, solver, maprec, list_load_save
+    character(len=19) :: listLoad, solver, maprec, listLoadResu
     character(len=24) :: model, mate, cara_elem
-    character(len=24) :: nomch, vtemp, vtempm, vtempp, vec2nd
+    character(len=24) :: fieldInResult, vtemp, vtempm, vtempp, vec2nd
     character(len=24) :: result, ligrmo, tempev, tempin
     character(len=24) :: time, matass, noojb, nume_dof
     character(len=24) :: cndirp, cnchci, cnchtp
@@ -112,27 +113,34 @@ implicit none
     ce1 = ' '
     ce2 = ' '
     solver    = '&&OP0171.SOLVER'
-    list_load = '&&OP0171.LISCHA'
+    listLoad = '&&OP0171.LISCHA'
 !
 ! - Get datastructure for results
 !
     call getres(result, k16bid, k8bid)
-!
-! - Read parameters
-!
-    call ntdoth(model, mate, cara_elem, list_load,&
+
+! - Read main parameters
+    call ntdoth(model, mate, cara_elem, listLoad,&    
                 matcst_ = matcst, coecst_ = coecst )
 !
 ! - EVOL_CHAR is prohibden
 !
-    call load_neut_excl('THER_NON_LINE_MO', list_load_ = list_load)
+    call load_neut_excl('THER_NON_LINE_MO', list_load_ = listLoad)
 !
 ! - Save list of loads in results datastructure
 !
     noobj ='12345678.1234.EXCIT'
     call gnomsd(' ', noobj, 10, 13)
-    list_load_save = noobj(1:19)
-    call copisd('LISTE_CHARGES', 'G', list_load, list_load_save)
+    listLoadResu = noobj(1:19)
+    call copisd('LISTE_CHARGES', 'G', listLoad, listLoadResu)
+
+! - No structural elements for this command
+    cara_elem = ' '
+    call dismoi('EXI_RDM', model, 'MODELE', repk = answer)
+    if (answer .eq. 'OUI') then
+        call utmess('F', 'THERNONLINE4_2')
+    endif
+
 !
 ! - Solver parameters
 !
@@ -148,10 +156,10 @@ implicit none
 !
         call getvis(nomcvg, 'ITER_GLOB_MAXI', iocc=1, scal=parcri(1), nbret=n1)
 !
-        call getvtx(nomcvg, 'ARRET', iocc=1, scal=k8bid, nbret=n1)
+        call getvtx(nomcvg, 'ARRET', iocc=1, scal=answer, nbret=n1)
         parcri(9) = 0
         if (n1 .gt. 0) then
-            if (k8bid .eq. 'NON') then
+            if (answer .eq. 'NON') then
                 parcri(9) = 1
             endif
         endif
@@ -169,7 +177,7 @@ implicit none
     call gnomsd(' ', noojb, 10, 14)
     nume_dof=noojb(1:14)
     call numero(nume_dof, 'VG',&
-                modelz = model , list_loadz = list_load)
+                modelz = model , list_loadz = listLoad)
 !
     call vtcreb(vtemp, 'V', 'R', nume_ddlz=nume_dof)
 !
@@ -247,7 +255,7 @@ implicit none
 !
 ! --- ACTUALISATION EVENTUELLE DES VECTEURS ET DES MATRICES
 !
-    call nttcmv(model , mate  , cara_elem, list_load, nume_dof,&
+    call nttcmv(model , mate  , cara_elem, listLoad, nume_dof,&
                 solver, time  , tpsthe   , tpsnp1   , reasvt  ,&
                 reasmt, creas , vtemp    , vtempm   , vec2nd  ,&
                 matass, maprec, cndirp   , cnchci   , cnchtp)
@@ -264,7 +272,7 @@ implicit none
 !
 ! - ITERATIONS INTERNES
 !
-        call nttain(model , mate  , cara_elem, list_load, nume_dof,&
+        call nttain(model , mate  , cara_elem, listLoad, nume_dof,&
                     solver, time  , epsr     , lonch    , matass  ,&
                     maprec, cnchci, cnresi   , vtemp    , vtempm  ,&
                     vtempp, vec2nd, chlapm   , chlapp   , ci1     ,&
@@ -348,18 +356,12 @@ implicit none
 ! ======================================================================
 !
     call rscrsd('G', result, 'EVOL_THER', 1)
-    call rsexch(' ', result, 'TEMP', 0, nomch,&
-                iret)
-    call rsadpa(result, 'E', 1, 'INST', 0,&
-                0, sjv=jinst, styp=k8bid)
-    zr(jinst) = 0.d0
-    call copisd('CHAMP_GD', 'G', vtempp(1:19), nomch(1:19))
+    call rsexch(' ', result, 'TEMP', 0, fieldInResult, iret)
+    call rsadpa(result, 'E', 1, 'INST', 0, 0, sjv=jvPara)
+    zr(jvPara) = 0.d0
+    call copisd('CHAMP_GD', 'G', vtempp,fieldInResult)
     call rsnoch(result, 'TEMP', 0)
-!
-!      ARCHIVAGE DU MODELE, MATERIAU, CARA_ELEM ET DE LA SD CHARGE
-!
-    call rssepa(result(1:8), 0, model(1:8), mate(1:8), cara_elem(1:8),&
-                list_load_save)
+    call rssepa(result, 0, model, mate, cara_elem,listLoadResu)
 !
     call titre()
 !
