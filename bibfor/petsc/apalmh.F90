@@ -234,11 +234,13 @@ use petsc_data_module
 !           ne tombe pas juste à cause des 2 termes diagonaux +1 et -1 qui sont là pour fixer
 !           l'égalité des 2 Lagrange
 !           Dans le cas des simples Lagrange, elle tombe juste
-            ibid = (v_idxd(iligg - low +1)/imults)*(imult)
+!           Le "+1" est là dans le cas de double Lagrange qui vivent chacun sur 2 processus 
+!           différents (il y a alors un terme de couplage dans le bloc hors-diagonal) 
+!           (voir issue31132)
+            ibid = (v_idxd(iligg - low +1)/imults)*(imult) + 1
             v_idxo(iligg - low +1) = v_idxo(iligg - low +1) + ibid
         enddo
     endif
-
     unused_nz = -1
     call MatMPIAIJSetPreallocation(a, unused_nz, v_idxd,&
                                    unused_nz, v_idxo, ierr)
