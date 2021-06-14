@@ -24,7 +24,8 @@ import medcoupling as mc
 import string
 import random
 
-from .myMEDSplitter_mpi import BuildPartNameFromOrig, MakeThePartition, GetGraphPartitioner, setVerbose
+from .myMEDSplitter_mpi import (BuildPartNameFromOrig, MakeThePartition,
+                                    GetGraphPartitioner, setVerbose)
 from .deal_with_pt1_post_process import add_pt1
 
 from ...Messages import UTMESS
@@ -81,7 +82,8 @@ class MEDPartitioner:
         level = logger.getEffectiveLevel()
         setVerbose(verbose, True)
 
-        self._meshPartitioned = MakeThePartition(self._filename, self._meshname, GetGraphPartitioner(None))
+        self._meshPartitioned = MakeThePartition(self._filename, self._meshname,
+                                                GetGraphPartitioner(None))
 
         logger.setLevel(level)
 
@@ -106,7 +108,7 @@ class MEDPartitioner:
                     full_path = path + "/" + new_name
 
             self._writedFilename = BuildPartNameFromOrig(full_path, MPI.COMM_WORLD.rank)
-            self._meshPartitioned.write33( self.writedFilename(), 2)
+            self._meshPartitioned.write( self.writedFilename(), 2)
 
     def addPO1(self):
         """ Add PO1 in the partitionning meshes

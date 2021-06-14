@@ -1,4 +1,3 @@
-
 # coding=utf-8
 # --------------------------------------------------------------------
 # Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
@@ -18,14 +17,15 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import medcoupling as mc
-import logging
+
 import argparse
-import sys
+import glob
+import logging
 import os
 import re
-import glob
+import sys
 
+import medcoupling as mc
 
 logger = logging.getLogger()
 
@@ -56,30 +56,7 @@ def setVerbose(verbose=1, code_aster=False):
     verbose_map = { 0: logging.WARNING, 1: logging.INFO, 2: logging.DEBUG}
     logger.setLevel(verbose_map[verbose])
 
-
-def add_pt1(args):
-    setVerbose(args["verbosity"])
-
-    if args["nb_dest_par"] < 2:
-        logger.warn("Le nb de proc de destination {} est < 2 : Rien à faire".format(args["nb_dest_par"]))
-        sys.exit(0)
-
-    logger.info("Le fichier MED original depuis lequel on prend les MED_POINT1 : \"{}\"".format(args["origin_seq"]))
-
-    effective_dest_file_name = glob.glob(args["dest_par"])
-
-    if len(effective_dest_file_name) != args["nb_dest_par"]:
-        logger.error("Le nombre de fichiers MED dans le pattern {} ({}) est different de celui attendu {}".format(args["dest_par"],len(effective_dest_file_name),args["nb_dest_par"]))
-        sys.exit(1)
-
-    logger.info("Les fichiers MED destinations dans lesquels on va rajouter les MED_POINT1 : \"{}\"".format(effective_dest_file_name))
-
-    if not args["force"]:
-        res = input("Confirmez vous l'ecriture dans les fichiers {}. Taper 0 pour arreter".format(effective_dest_file_name))
-        if res == "0":
-            logger.warn("Operation arretée. Les fichiers destinations ne seront pas modifiés")
-            sys.exit(1)
-
+def operate(isTopCall,effective_dest_file_name,nb_dest_par,origin_seq):
     pat = re.compile("([\d]+)([\s\S]+)$")
 
     check_remain = set()
@@ -87,7 +64,6 @@ def add_pt1(args):
     dest_fns = []
 
     for fn in effective_dest_file_name:
-        dn = os.path.dirname(fn)
         bn = os.path.basename(fn)
         base,ext = os.path.splitext(bn)
         if ext not in [".med",".rmed"]:
@@ -107,12 +83,12 @@ def add_pt1(args):
         logger.error("Il y a un probleme dans la detection des procIds")
         sys.exit(1)
 
-    if set([nb for _,nb in dest_fns]) != set(range(args["nb_dest_par"])):
+    if set([nb for _,nb in dest_fns]) != set(range(nb_dest_par)):
         logger.error("Il y a un probleme dans la detection des procIds (sur les entiers dans les noms de fichiers)")
         sys.exit(1)
 
-    logger.info("Lecture du fichier MED original {}".format(args["origin_seq"]))
-    mm_orginal = mc.MEDFileMesh.New(args["origin_seq"])
+    logger.info("Lecture du fichier MED original {}".format(origin_seq))
+    mm_orginal = mc.MEDFileMesh.New(origin_seq)
     meshDim = mm_orginal.getMeshDimension()
     orig_pt1 = mc.MEDCoupling1SGTUMesh(mm_orginal[-meshDim]).getNodalConnectivity() # -mm_orginal.getMeshDimension() pour dire que l'on prend les MED_POINT1
     # orig_pt1 contient les node ids qui doivent porter un MED_POINT
@@ -173,14 +149,67 @@ def add_pt1(args):
         if pt1_num:
             dest_mm.setRenumFieldArr(-meshDim,pt1_num)
         logger.warn("On reecrit le proc {} avec les {} MED_POINT1 dans {}".format(dest_proc,len(pt1_to_be_present),dest_fn))
-        dest_mm.write33(dest_fn,2)
+        dest_mm.write(dest_fn,2)
     check = mc.DataArrayInt.Aggregate(check_all_pts1)
     check.sort()
     check = check.buildUnique()
-    if not check.isEqual(orig_pt1):
+    isok = check.isEqual(orig_pt1)
+    if isok:
+        return True
+    if not isTopCall:
+        return False
+    pt1_simply_ignored = orig_pt1.buildSubstraction(check)
+    # par defaut on prend le premier fichier pour lui rajouter les points manquants
+    filename_with_pts_to_add = dest_fns[0][0]
+    logger.warn("Des noeuds (au nombre de {}) ont été oubliés ainsi que les cellules MED_POINT1 dessus ! On va les rajouter dans le fichier {}".format(len(pt1_simply_ignored),filename_with_pts_to_add))
+    first_part_mm = mc.MEDFileMesh.New(filename_with_pts_to_add)
+    coo = first_part_mm.getCoords()
+    node_num = first_part_mm.getNumberFieldAtLevel(1)
+    node_fam = first_part_mm.getFamilyFieldAtLevel(1)
+    node_glob = first_part_mm.getGlobalNumFieldAtLevel(1)
+    coo = mc.DataArrayDouble.Aggregate([coo,mm_orginal.getCoords()[pt1_simply_ignored]])
+    if node_num:
+        node_num = mc.DataArrayInt.Aggregate([node_num,mm_orginal.getNumberFieldAtLevel(1)[pt1_simply_ignored]])
+    if node_fam:
+        node_fam = mc.DataArrayInt.Aggregate([node_fam,mm_orginal.getFamilyFieldAtLevel(1)[pt1_simply_ignored]])
+    if node_glob:
+        node_glob = mc.DataArrayInt.Aggregate([node_glob,pt1_simply_ignored])
+    first_part_mm.setCoords(coo)
+    first_part_mm.setFamilyFieldArr(1,node_fam)
+    first_part_mm.setRenumFieldArr(1,node_num)
+    first_part_mm.setGlobalNumFieldAtLevel(1,node_glob)
+    first_part_mm.write(filename_with_pts_to_add,2)
+    logger.warn("Les {} noeuds ont ete rajouter dans ! On va lui rajouter les MED_POINT1 dessus".format(len(pt1_simply_ignored),filename_with_pts_to_add))
+    return operate(False,effective_dest_file_name,nb_dest_par,origin_seq)
+
+def add_pt1(args):
+    setVerbose(args["verbosity"])
+
+    if args["nb_dest_par"] < 2:
+        logger.warn("Le nb de proc de destination {} est < 2 : Rien à faire".format(args["nb_dest_par"]))
+        sys.exit(0)
+
+    logger.info("Le fichier MED original depuis lequel on prend les MED_POINT1 : \"{}\"".format(args["origin_seq"]))
+
+    effective_dest_file_name = glob.glob(args["dest_par"])
+
+    if len(effective_dest_file_name) != args["nb_dest_par"]:
+        logger.error("Le nombre de fichiers MED dans le pattern {} ({}) est different de celui attendu {}".format(args["dest_par"],len(effective_dest_file_name),args["nb_dest_par"]))
+        sys.exit(1)
+
+    logger.info("Les fichiers MED destinations dans lesquels on va rajouter les MED_POINT1 : \"{}\"".format(effective_dest_file_name))
+
+    if not args["force"]:
+        res = input("Confirmez vous l'ecriture dans les fichiers {}. Taper 0 pour arreter".format(effective_dest_file_name))
+        if res == "0":
+            logger.warn("Operation arretée. Les fichiers destinations ne seront pas modifiés")
+            sys.exit(1)
+
+    isok = operate(True,effective_dest_file_name,args["nb_dest_par"],args["origin_seq"])
+
+    if not isok:
         raise RuntimeError("Il y a des MED_POINT1 manquant :(")
     logger.info("Tout semble OK.")
-
 
 if __name__ == '__main__':
 
@@ -191,12 +220,32 @@ if __name__ == '__main__':
     parser.add_argument('-v','--verbose', dest = "verbosity", type=int , default=1, help="verbosity. Default 1 (print info). 0 only errors reported. 2 and higher all debug messages")
     parser.add_argument('-f','--force', dest = "force", type=int , default=0, help="No question, file in destination parallel will be overwritten.")
 
-    # this a sequential script.
-    # to use python deal_with_pt1_post_process.py --orig mesh.mmed --dest "mesh_new_*.med" -f 1 --verbose 2 --nb_dest_par nb_sous_domaine
-
     args = parser.parse_args()
 
-    args_dict = {"verbosity": args.verbosity, "nb_dest_par": args.nb_dest_par, \
-        "origin_seq": args.origin_seq, "dest_par": args.dest_par, "force": args.force}
+    setVerbose(args.verbosity)
 
-    add_pt1(args_dict)
+    if args.nb_dest_par < 2:
+        logger.warn("Le nb de proc de destination {} est < 2 : Rien à faire".format(args.nb_dest_par))
+        sys.exit(0)
+
+    logger.info("Le fichier MED original depuis lequel on prend les MED_POINT1 : \"{}\"".format(args.origin_seq))
+
+    effective_dest_file_name = glob.glob(args.dest_par)
+
+    if len(effective_dest_file_name) != args.nb_dest_par:
+        logger.error("Le nombre de fichiers MED dans le pattern {} ({}) est different de celui attendu {}".format(args.dest_par,len(effective_dest_file_name),args.nb_dest_par))
+        sys.exit(1)
+
+    logger.info("Les fichiers MED destinations dans lesquels on va rajouter les MED_POINT1 : \"{}\"".format(effective_dest_file_name))
+
+    if not args.force:
+        res = input("Confirmez vous l'ecriture dans les fichiers {}. Taper 0 pour arreter".format(effective_dest_file_name))
+        if res == "0":
+            logger.warn("Operation arretée. Les fichiers destinations ne seront pas modifiés")
+            sys.exit(1)
+
+    isok = operate(True,effective_dest_file_name,args.nb_dest_par,args.origin_seq)
+
+    if not isok:
+        raise RuntimeError("Il y a des MED_POINT1 manquant :(")
+    logger.info("Tout semble OK.")

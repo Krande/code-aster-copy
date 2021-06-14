@@ -145,6 +145,7 @@ def RetrieveFamGrpsMapInternal(fn,mn):
           famName = "{}@".format(famName)
       famsPy[famName] = famId
       grps2 = ["".join(gro[i*med.MED_LNAME_SIZE:(i+1)*med.MED_LNAME_SIZE]).rstrip() for i in range(nbGrps)]
+      grps2 = [elt.rstrip("\x00") for elt in grps2]
       grpsPy[famName] = grps2
       s.add(famName)
       pass
@@ -352,6 +353,29 @@ class NeighborsOfNodes(metaclass=abc.ABCMeta):
         """return node connectivities"""
         raise NotImplementedError("pure virtual, should be reimplemented")
 
+def computeEnlargedNeighborsOfNodesLowMem(m):
+    """
+    Surcharge de mc.MEDCouplingUMesh.computeEnlargedNeighborsOfNodes qui reduit la conso mémoire
+    """
+    #n,ni = m.computeEnlargedNeighborsOfNodes()
+    m_dup = m.deepCopyConnectivityOnly()
+    fni_m = m_dup.computeFetchedNodeIds()
+    ni3 = mc.DataArrayInt(m_dup.getNumberOfNodes()) ; ni3[:]=0
+    m_dup.zipCoords()
+    n2,ni2 = m_dup.computeEnlargedNeighborsOfNodes()
+    if len(ni2)==1:
+        ni2 = mc.DataArrayInt(m.getNumberOfNodes()+1) ; ni2[:] = 0
+        #assert(n.isEqual(n2))
+        #assert(ni.isEqual(ni2))
+        return n2,ni2
+    dsi = ni2.deltaShiftIndex()
+    ni3[fni_m] = dsi
+    ni3.computeOffsetsFull()
+    n3 = fni_m[n2]
+    #assert(n.isEqual(n3))
+    #assert(ni.isEqual(ni3))
+    return n3,ni3
+
 class IncompleteNeighborsOfNodes(NeighborsOfNodes):
     """Retrieve neighbors of nodes (global numbering) for partialMedFileUMesh"""
     def __init__(self, partialMedFileUMesh):
@@ -359,7 +383,7 @@ class IncompleteNeighborsOfNodes(NeighborsOfNodes):
         self._nodes = partialMedFileUMesh.getFetchedNodeIds()
         sks = []
         for lev in partialMedFileUMesh._medFileUMesh.getNonEmptyLevels():
-            neighbors, neighborsIdx = partialMedFileUMesh._medFileUMesh[lev].computeEnlargedNeighborsOfNodes()
+            neighbors, neighborsIdx = computeEnlargedNeighborsOfNodesLowMem( partialMedFileUMesh._medFileUMesh[lev] )
             neighbors.transformWithIndArr(self._nodes)
             sks.append(mc.MEDCouplingSkyLineArray(neighborsIdx, neighbors))
         sk = mc.MEDCouplingSkyLineArray.AggregatePacks(sks)
