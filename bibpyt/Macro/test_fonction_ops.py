@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -157,10 +157,6 @@ def RoundValues(crit, res, vtc, err, curEps, nreg=False):
          curEpsr (K)  :  chaine représentant "curEps" (arrondie pour l'affichage)
     """
     import math
-    # valeur calculee, valeur de reference:
-    #--------------------------------------
-    res2 = """%20.15E """ % res
-    vtc2 = """%20.15E """ % vtc
 
     # détermination du nombre de digits à afficher pour resr et vtc : ndigit
     # ----------------------------------------------------------------------
@@ -251,7 +247,7 @@ def AfficherResultat(dicoValeur, nomPara, ref, legende, crit, res, valPu, txt, l
     if crit[0:4] == 'RELA':
         pourcent = '%'
 
-    if is_complex(res):
+    if is_complex(res) or is_complex(vtc):
         if not is_complex(vtc):
             vtc0 = complex(vtc, 0)
         else:
@@ -266,7 +262,7 @@ def AfficherResultat(dicoValeur, nomPara, ref, legende, crit, res, valPu, txt, l
         res2, vtc2, errr, curEpsr = RoundValues(
             crit, res, vtc0, err, curEps, nreg=nreg)
 
-    if is_complex(res):
+    if is_complex(res) or is_complex(vtc):
         if(res.imag < 0):
             val_cal = resr.upper() + resc.upper() + 'j'
         else:

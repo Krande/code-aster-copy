@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -502,11 +502,13 @@ def build_formule(self, d):
                                     " : %s" % repr(para))
     if self.sd is None:
         return
+    cmplx = False
     if VALE is not None:
         texte = ''.join(VALE.splitlines())
     elif VALE_C is not None:
+        cmplx = True
         texte = ''.join(VALE_C.splitlines())
-    self.sd.setFormule(NOM_PARA, texte.strip())
+    self.sd.setFormule(NOM_PARA, texte.strip(), cmplx)
 
     _ctxt = {}
     keys = list(self.valeur.keys())

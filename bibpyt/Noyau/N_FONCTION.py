@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,6 +57,7 @@ class formule(ASSD):
         self.expression = None
         self.code = None
         self.ctxt = None
+        self.complex = False
 
     def __call__(self, *val, **dval):
         """Evaluation of the formula.
@@ -78,18 +79,23 @@ class formule(ASSD):
             context.update(dval)
         try:
             res = eval(self.code, self._initial_context, context)
+            if not self.complex:
+                res = res.real
         except Exception as exc:
             message.error(SUPERV, "ERREUR LORS DE L'ÉVALUATION DE LA FORMULE '%s' "
                           ":\n>> %s", self.nom, str(exc))
             raise
         return res
 
-    def setFormule(self, nom_para, texte):
+    def setFormule(self, nom_para, texte, cmplx):
         """Cette methode sert a initialiser les attributs
         nompar, expression et code qui sont utilisés
-        dans l'évaluation de la formule."""
+        dans l'évaluation de la formule.
+        On dit également si cette formule est complexe.
+        """
         self.nompar = nom_para
         self.expression = texte
+        self.complex = cmplx
         try:
             self.code = compile(texte, texte, 'eval')
         except SyntaxError as exc:
@@ -120,8 +126,9 @@ class formule(ASSD):
 
     def __setstate__(self, state):
         """Cette methode sert a restaurer l'attribut code lors d'un unpickle."""
-        self.__dict__.update(state)                   # update attributes
-        self.setFormule(self.nompar, self.expression)  # restore code attribute
+        self.__dict__.update(state)
+        # restore code attribute
+        self.setFormule(self.nompar, self.expression, self.complex)
 
     def __getstate__(self):
         """Pour les formules, il faut enlever l'attribut code qui n'est

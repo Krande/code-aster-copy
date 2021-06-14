@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,6 +56,10 @@ IMPR_FONCTION( COURBE=_F(FONCTION=DFC3,
 
 IMPR_CO(   CONCEPT=_F(NOM=DFC3 ))
 
+FFC3 = FORMULE(NOM_PARA='INST', VALE="DFC3(INST)", DFC3=DFC3)
+
+FFFC3 = FORMULE(NOM_PARA='INST', VALE_C="FFC3(INST)", FFC3=FFC3)
+
 TEST_FONCTION(VALEUR=(_F(VALE_CALC_C=(-1+4j),
                          VALE_REFE_C=(-1+4j),
                          VALE_PARA=0.0,
@@ -70,9 +74,41 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC_C=(-1+4j),
                          VALE_REFE_C=(-10+14j),
                          VALE_PARA=5.0,
                          REFERENCE='ANALYTIQUE',
-                         FONCTION=DFC3,),
-                      ),
-              )
+                         FONCTION=DFC3,)))
+
+TEST_FONCTION(VALEUR=(
+                      _F(VALE_CALC=-1.,
+                         VALE_REFE=-1.,
+                         VALE_PARA=0.0,
+                         REFERENCE='ANALYTIQUE',
+                         FONCTION=FFC3,),
+                      _F(VALE_CALC=0.,
+                         VALE_REFE=0.,
+                         VALE_PARA=1.0,
+                         REFERENCE='ANALYTIQUE',
+                         FONCTION=FFC3,),
+                      _F(VALE_CALC=-10.,
+                         VALE_REFE=-10.,
+                         VALE_PARA=5.0,
+                         REFERENCE='ANALYTIQUE',
+                         FONCTION=FFC3,)))
+
+TEST_FONCTION(VALEUR=(
+                      _F(VALE_CALC_C=(-1+0j),
+                         VALE_REFE_C=(-1+0j),
+                         VALE_PARA=0.0,
+                         REFERENCE='ANALYTIQUE',
+                         FONCTION=FFFC3,),
+                      _F(VALE_CALC_C=0,
+                         VALE_REFE_C=0,
+                         VALE_PARA=1.0,
+                         REFERENCE='ANALYTIQUE',
+                         FONCTION=FFFC3,),
+                      _F(VALE_CALC_C=-10.,
+                         VALE_REFE_C=-10.,
+                         VALE_PARA=5.0,
+                         REFERENCE='ANALYTIQUE',
+                         FONCTION=FFFC3,)))
 
 # abscisses inversees pour tester le tri avec VERIF='NON'
 DFR1=DEFI_FONCTION( NOM_PARA='INST',
