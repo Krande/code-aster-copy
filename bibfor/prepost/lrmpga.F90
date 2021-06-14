@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -104,23 +104,21 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
     med_idt :: idfimd
     integer :: codret, nloc, iret, igrel, jtyelm
     integer :: j, nbgrel, jtypge, jnonpg, iprof, lgproa, codre2
-    integer :: numte, i, ityg, ngaulu, npdt, jprof, ima2
+    integer :: numte, i, ityg, ngaulu, npdt
     integer :: tygeo(ntygeo), nbpg, nbpgm
     integer :: nufgpg, jnoloc
     integer :: dime, jtymed
     integer :: nbtyel, nbmag, igr, ima
     integer :: jngaok
     integer :: nutyma, ipg, ipgm, jperm
-    integer :: npr, n
+    integer :: npr, n, l_iprof, l_fapg
     integer :: iopt, imod, jmod, igrd, iadgd, nec, nbsp
-    integer :: iterma, nbtm, tymasv, typv
-    integer, pointer :: typmail(:) => null()
-    integer, pointer :: min_tm(:) => null()
+    integer :: iterma, typv
     parameter (iterma=1)
 !
     character(len=1) :: saux01
     character(len=8) :: saux08, fapg, elref, nomtm, tyele(ntygeo)
-    character(len=8) :: typma(ntygeo), nommai
+    character(len=8) :: typma(ntygeo)
     character(len=16) :: nomte, nofgpg
     character(len=24) :: liel, nolipr, nlnbpg
     character(len=64) :: nomprf, nomloc, nomam2
@@ -130,7 +128,6 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
     character(len=16), pointer :: cunit(:) => null()
     character(len=8), pointer :: typema(:) => null()
     integer, pointer :: tmfpg(:) => null()
-    aster_logical :: hasprof
 !
     data tygeo /    1,          102,        103,        104,&
      &                203,        204,        206,        207,&
@@ -164,7 +161,7 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
 !
 !  == 1.1. INITIALISATIONS
     do i=1,nbma
-    pgmail(i)=0
+        pgmail(i)=0
     end do
 !
 !  == 1.2. NOM DU FICHIER MED
@@ -195,7 +192,6 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
         write(ifm, 2001) nochmd
     endif
 !
-    hasprof = .false.
     call as_mfdncn(idfimd, nochmd, ncmp, iret)
     AS_ALLOCATE(vk16=cname, size=ncmp)
     AS_ALLOCATE(vk16=cunit, size=ncmp)
@@ -217,7 +213,6 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
                     call as_mfdonv(idfimd, nochmd, edmail, tygeo(ityg), nomam2,&
                                    numpt, numord, iprof, nomprf, edcomp,&
                                    npr, nomloc, ngaulu, n, iret)
-                    if ( nomprf.ne.' ' ) hasprof = .true.
                     zk80(jnopro+2*iprof-2) = nomprf
                     zk80(jnopro+2*iprof-1) = nomloc
                     zi(jnonpg+iprof-1) = ngaulu
@@ -257,20 +252,6 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
             endif
 !
         end do
-        if ( hasprof .eqv. .true. ) then
-            call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=nommai,&
-                        arret='F', ier=codret)
-            call jeveuo(nommai//'.TYPMAIL', 'L', vi=typmail)
-            call jelira('&CATA.TM.NOMTM', 'NOMMAX', nbtm)
-            call wkvect('&&LRMPGA.NUM_MIN_TM', 'V V I', nbtm, vi=min_tm)
-            tymasv = -1
-            do ima = 1, nbma
-                if( typmail(ima) .ne. tymasv ) then
-                    tymasv = typmail(ima)
-                    min_tm(tymasv) = ima - 1
-                endif
-            enddo
-        endif
     endif
     if (nivinf .gt. 1) then
         write(ifm,*) ' '
@@ -345,6 +326,7 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
             if (nivinf .gt. 1) then
                 write(ifm,2003) nomte, fapg
             endif
+            l_fapg= len(trim(adjustl(fapg)))
 !
 !           ON PARCOURT LES ELEMENTS DE REFERENCE MED
             do j=1,nbtyel
@@ -361,23 +343,33 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
                     nbprof = nbprof/2
                     nlnbpg = zk80(jnoloc+2*j-1)
                     call jeveuo(nlnbpg, 'L', jnonpg)
+
+                    ! initialiser le cumul des mailles du meme type d'element
+                    l_iprof = 0
                     do iprof = 1, nbprof
                         nomprf = zk80(jnopro + 2*iprof - 2)
                         nomloc = zk80(jnopro + 2*iprof - 1)
                         nbpgm = zi(jnonpg + iprof - 1)
+
+                        ! on ne compare que le meme profile du meme type element
+                        if ((fapg(1:l_fapg) .ne. nomloc(9:8+l_fapg) ) .and. &
+                           (nomloc .ne. ' ')) then
+                            if (nomloc(1:17) .ne. "NOM_LOC_GAUSS_001") goto 999
+                        endif
+
                         call lrvcpg(idfimd, nbpgm, nbpg, nomtm, zi(jtypge+j-1),&
                                     elref, fapg, nloc, nomloc, zi(jperm),&
                                     nutyma, nbsp, codret)
                         if ( codret.ne.4 ) then
                             if ( nomprf.ne.' ' ) then
                                 call lrcmpr(idfimd, nomprf, '&&LRMPGA.TMP', lgproa, codre2)
-                                call jeveuo('&&LRMPGA.TMP', 'L', jprof)
-                                do ima2 = 1, lgproa
-                                    ima = zi(jprof+ima2-1) + min_tm(typv)
-                                    pgmail(ima)=nbpg
-                                    pgmmil(ima)=nbpgm
-                                    spmmil(ima)=nbsp
+                                do ima = 1, lgproa
+                                    pgmail(zi(igr+ima-1+l_iprof))=nbpg
+                                    pgmmil(zi(igr+ima-1+l_iprof))=nbpgm
+                                    spmmil(zi(igr+ima-1+l_iprof))=nbsp
                                 end do
+                                ! mettre à jour le cumul
+                                l_iprof = l_iprof + lgproa
                                 call jedetr('&&LRMPGA.TMP')
                             else
                                 do ima = 1, nbmag-1
@@ -419,11 +411,16 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
                                 end do
                             else
                                 do ipg = 1, nbpg
-                                    ASSERT(indpg(nutyma,ipg).eq.ipg)
+                                    if (indpg(nutyma,ipg) .ne. 0 ) then
+                                        ASSERT(indpg(nutyma,ipg).eq.ipg)
+                                    else
+                                        indpg(nutyma,ipg)=ipg
+                                    endif                                   
                                 end do
                             endif
                             zi(jngaok+j-1) = 1
                         endif
+                        999 continue
                     enddo
 !
 !                   DESTRUCTION DU TABLEAU TEMPORAIRE
@@ -447,7 +444,7 @@ subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
     call jedetr('&&LRMPGA_TYPGEO_OKPG_MED')
     call jedetr('&&LRMPGA_TYPGEO_TYPGEO')
     call jedetr('&&LRMPGA_TYPGEO_NOMLOC')
-    call jedetr('&&LRMPGA.NUM_MIN_TM')
+!    call jedetr('&&LRMPGA.NUM_MIN_TM')
 !
     call jedema()
 !
