@@ -170,7 +170,7 @@ public:
      * other should be associated to the parallelMesh of the ConnectionMesh */
     void transferDofDescriptorFrom( FiniteElementDescriptorPtr& );
 
-    void transferFrom( FiniteElementDescriptorPtr& );
+    void setFrom( FiniteElementDescriptorPtr& );
 
     void transferListOfGroupOfCellFrom( FiniteElementDescriptorPtr& );
 

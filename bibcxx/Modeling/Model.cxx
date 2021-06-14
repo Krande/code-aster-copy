@@ -171,7 +171,7 @@ void ModelClass::addModelingOnGroupOfNodes( Physics phys, Modelings mod, std::st
 
 
 #ifdef ASTER_HAVE_MPI
-bool ModelClass::transferFrom( const ModelPtr model)
+bool ModelClass::setFrom( const ModelPtr model)
 {
     // "the mesh associated to finiteElementDescriptorClass is not a partial mesh"
     AS_ASSERT( getMesh()->isConnection() );
@@ -184,7 +184,7 @@ bool ModelClass::transferFrom( const ModelPtr model)
 
     // tranfer LIGREL
     auto Fed = model->getFiniteElementDescriptor();
-    this->getFiniteElementDescriptor()->transferFrom(Fed);
+    this->getFiniteElementDescriptor()->setFrom(Fed);
 
     // tranfer .MAILLE
     const auto nbCells = connectionMesh->getNumberOfCells();

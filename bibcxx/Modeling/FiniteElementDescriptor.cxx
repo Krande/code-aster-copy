@@ -221,7 +221,7 @@ void FiniteElementDescriptorClass::transferListOfGroupOfCellFrom( FiniteElementD
 };
 
 
-void FiniteElementDescriptorClass::transferFrom( FiniteElementDescriptorPtr &other )
+void FiniteElementDescriptorClass::setFrom( FiniteElementDescriptorPtr &other )
 {
     // "the mesh associated to finiteElementDescriptorClass is not a partial mesh"
     AS_ASSERT( getMesh()->isConnection() );

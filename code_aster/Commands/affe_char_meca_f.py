@@ -67,7 +67,7 @@ class MechanicalLoadFunctionDefinition(ExecuteCommand):
             connectionMesh = ConnectionMesh(model.getMesh(), nodeGroups, cellGroups)
 
             connectionModel = Model( connectionMesh )
-            connectionModel.transferFrom( model )
+            connectionModel.setFrom( model )
 
             keywords["MODELE"] = connectionModel
             partialMechanicalLoad = AFFE_CHAR_MECA_F(**keywords)

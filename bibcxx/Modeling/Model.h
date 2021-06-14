@@ -330,7 +330,7 @@ class ModelClass : public DataStructure, public ListOfTablesClass {
     }
 
 #ifdef ASTER_HAVE_MPI
-    bool transferFrom( const ModelPtr model);
+    bool setFrom( const ModelPtr model);
 #endif
 };
 

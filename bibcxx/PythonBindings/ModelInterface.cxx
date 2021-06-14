@@ -102,7 +102,14 @@ Returns:
         .def( "setSplittingMethod", split2 )
         .def( "getFiniteElementDescriptor", &ModelClass::getFiniteElementDescriptor )
 #ifdef ASTER_HAVE_MPI
-        .def( "transferFrom", &ModelClass::transferFrom )
+        .def( "setFrom", &ModelClass::setFrom, R"(
+Set a model defined on a ConnectionMesh from an other model
+
+Arguments:
+    model (Model): Table identifier.
+
+        )",
+              ( py::arg( "self" ), py::arg( "model" ) ) )
 #endif
         .def( "getTable", &ListOfTablesClass::getTable, R"(
 Extract a Table from the datastructure.
