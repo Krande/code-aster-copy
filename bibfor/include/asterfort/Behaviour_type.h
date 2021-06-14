@@ -110,6 +110,10 @@
 !
 #define CABLE_NAME   9
 #define SHEATH_NAME  10
+#define CABLE_NUME   13
+#define SHEATH_NUME  14
+#define CABLE_NVAR   17
+#define SHEATH_NVAR  18
 
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -112,6 +112,10 @@ character(len=16), pointer, optional :: v_compor_(:)
         if (l_kit_cg) then
             v_compor_(CABLE_NAME)   = v_para(i_comp)%kit_comp(1)
             v_compor_(SHEATH_NAME)  = v_para(i_comp)%kit_comp(2)
+            write (v_compor_(CABLE_NUME),'(I16)') v_para(i_comp)%nume_comp(2)
+            write (v_compor_(SHEATH_NUME),'(I16)')  v_para(i_comp)%nume_comp(3)
+            write (v_compor_(CABLE_NVAR),'(I16)') v_para(i_comp)%nb_vari_comp(1)
+            write (v_compor_(SHEATH_NVAR),'(I16)')  v_para(i_comp)%nb_vari_comp(2)
         endif
     endif
     if (present(l_compor_)) then
@@ -146,6 +150,10 @@ character(len=16), pointer, optional :: v_compor_(:)
         if (l_kit_cg) then
             l_compor_(CABLE_NAME)   = v_para(i_comp)%kit_comp(1)
             l_compor_(SHEATH_NAME)  = v_para(i_comp)%kit_comp(2)
+            write (l_compor_(CABLE_NUME),'(I16)') v_para(i_comp)%nume_comp(2)
+            write (l_compor_(SHEATH_NUME),'(I16)')  v_para(i_comp)%nume_comp(3)
+            write (l_compor_(CABLE_NVAR),'(I16)') v_para(i_comp)%nb_vari_comp(1)
+            write (l_compor_(SHEATH_NVAR),'(I16)')  v_para(i_comp)%nb_vari_comp(2)
         endif
     endif
 !

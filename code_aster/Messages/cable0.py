@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -118,5 +118,9 @@ Les coefficients de frottement considérés sont ceux de la loi CABLE_GAINE_FROT
 
     25: _("""
 Erreur de mise en donnée
+"""),
+
+    26: _("""
+La loi de comportement  %(k1)s n'est pas utilisable pour CABLE_GAINE; elle n'existe pas en format unidimensionnel.
 """),
 }

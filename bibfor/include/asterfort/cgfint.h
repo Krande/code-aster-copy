@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
+#include "asterfort/Behaviour_type.h"
 !
 interface
     subroutine cgfint(ndim, nno1, nno2, npg, wref,&
                       vff1, vff2, dffr1, geom, tang,&
-                      typmod, option, mat, compor, lgpg,&
-                      crit, instam, instap, ddlm, ddld,&
+                      typmod, option, mat, comporKit, lgpg,&
+                      carcri, instam, instap, ddlm, ddld,&
                       iu, iuc, im, a, sigm,&
                       vim, sigp, vip, matr, vect,&
                       codret)
@@ -40,8 +39,8 @@ interface
         character(len=8) :: typmod(*)
         character(len=16) :: option
         integer :: mat
-        character(len=16) :: compor(*)
-        real(kind=8) :: crit(*)
+        character(len=16) :: comporKit(COMPOR_SIZE)
+        real(kind=8) :: carcri(CARCRI_SIZE)
         real(kind=8) :: instam
         real(kind=8) :: instap
         real(kind=8) :: ddlm(nno1*(ndim+1)+nno2)
