@@ -185,12 +185,12 @@ use petsc_data_module
 #endif
 #if PETSC_VERSION_LT(3,8,0)
 #else
-        call VecCreate( mpicou, xglobal, ierr )
+        call VecCreateSeq( PETSC_COMM_SELF, to_petsc_int(neq), xglobal, ierr )
         ASSERT( ierr == 0 )
 #endif
 ! On passe un PETSC_NULL_VEC en lieu et place de xglobal en entrée de VecScatterCreateToAll
 ! car ainsi, il n'est pas realloué
-        call VecScatterCreateToAll(xlocal, xscatt, PETSC_NULL_VEC, ierr)     
+        call VecScatterCreateToAll(xlocal, xscatt, PETSC_NULL_VEC, ierr)
         ASSERT(ierr.eq.0)
 !-----------------------------------------------------------------------
     else if (precon.eq.'SOR') then
