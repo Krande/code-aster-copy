@@ -68,12 +68,12 @@ integer, intent(in) :: nbOccPresRep
     integer, pointer :: meshTypmail(:) => null()
     character(len=19) :: carte
     character(len=24), parameter :: cellSkinJv = '&&LIST_ELEM'
-    integer, pointer :: cellVolu(:) => null(), cellSkin(:) => null()
+    integer, pointer :: cellVoluHexa9(:) => null(), cellSkin(:) => null()
     integer, pointer :: presCell(:) => null()
     real(kind=8), pointer :: presFaceR(:) => null()
     character(len=8), pointer :: presFaceK(:) => null()
-    integer :: nbCellSkin, nbCrack, nbCellVolu, nbCellMesh
-    integer :: iocc, iCell, iCellVolu
+    integer :: nbCellSkin, nbCrack, nbCellHexa9, nbCellMesh
+    integer :: iocc, iCell, iCellVoluHexa9
     integer :: cellVoluNume, cellTypeNume
 !
 ! --------------------------------------------------------------------------------------------------
@@ -109,24 +109,24 @@ integer, intent(in) :: nbOccPresRep
 !
 ! - Create list of all volumes
 !
-    nbCellVolu = 0
-    AS_ALLOCATE(vi = cellVolu, size = nbCellMesh)
+    nbCellHexa9 = 0
+    AS_ALLOCATE(vi = cellVoluHexa9, size = nbCellMesh)
     do iCell = 1 , nbCellMesh
         cellTypeNume = meshTypmail(iCell)
         call jenuno(jexnum('&CATA.TM.NOMTM', cellTypeNume), cellTypeName)
         if (cellTypeName .eq. 'HEXA9') then
-            nbCellVolu = nbCellVolu + 1
-            cellVolu(nbCellVolu) = iCell
+            nbCellHexa9 = nbCellHexa9 + 1
+            cellVoluHexa9(nbCellHexa9) = iCell
         endif
     end do
-    ASSERT(nbCellVolu .gt. 0)
+    ASSERT(nbCellHexa9 .gt. 0)
 !
 ! - Prepare vector
 !
-    AS_ALLOCATE(vi = presCell, size = nbCellVolu)
-    AS_ALLOCATE(vr = presFaceR, size = 2*nbCellVolu)
-    AS_ALLOCATE(vk8 = presFaceK, size = 2*nbCellVolu)
-    presFaceK(:) = '&FOZERO'
+    AS_ALLOCATE(vi = presCell, size = nbCellHexa9)
+    AS_ALLOCATE(vr = presFaceR, size = 2*nbCellHexa9)
+    AS_ALLOCATE(vk8 = presFaceK, size = 2*nbCellHexa9)
+    presFaceK = '&FOZERO'
 !
 ! - Set values in CARTE
 !
@@ -154,7 +154,7 @@ integer, intent(in) :: nbOccPresRep
 ! ----- Get volume elements from list of faces
         call setValueOnFace(mesh      ,&
                             presUserR , presUserK,&
-                            nbCellVolu, cellVolu ,&
+                            nbCellHexa9, cellVoluHexa9 ,&
                             nbCellSkin, cellSkin ,&
                             presCell  , presFaceR, presFaceK)
 !
@@ -163,17 +163,19 @@ integer, intent(in) :: nbOccPresRep
 !
 ! - Set values
 !
-    do iCellVolu = 1, nbCellVolu
-        cellVoluNume = presCell(iCellVolu)
+    do iCellVoluHexa9 = 1, nbCellHexa9
+        cellVoluNume = presCell(iCellVoluHexa9)
         if (valeType .eq. 'REEL') then
-            mapCmpValeR(1) = presFaceR(2*(iCellVolu-1)+1)
-            mapCmpValeR(2) = presFaceR(2*(iCellVolu-1)+2)
+            mapCmpValeR(1) = presFaceR(2*(iCellVoluHexa9-1)+1)
+            mapCmpValeR(2) = presFaceR(2*(iCellVoluHexa9-1)+2)
         else
-            mapCmpValeK(1) = presFaceK(2*(iCellVolu-1)+1)
-            mapCmpValeK(2) = presFaceK(2*(iCellVolu-1)+2)
+            mapCmpValeK(1) = presFaceK(2*(iCellVoluHexa9-1)+1)
+            mapCmpValeK(2) = presFaceK(2*(iCellVoluHexa9-1)+2)
         endif
-        call nocart(carte, 3, nbCmp, mode='NUM', nma=1,&
-                    limanu=[cellVoluNume])
+        if (cellVoluNume .ne. 0) then
+            call nocart(carte, 3, nbCmp, mode='NUM', nma=1,&
+                        limanu=[cellVoluNume])
+        endif
     end do
 !
 ! - Clean
@@ -181,7 +183,7 @@ integer, intent(in) :: nbOccPresRep
     AS_DEALLOCATE(vi = presCell)
     AS_DEALLOCATE(vr = presFaceR)
     AS_DEALLOCATE(vk8 = presFaceK)
-    AS_DEALLOCATE(vi = cellVolu)
+    AS_DEALLOCATE(vi = cellVoluHexa9)
 !
     call jedema()
 end subroutine
