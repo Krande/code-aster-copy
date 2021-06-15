@@ -17,11 +17,11 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'), IMPR_MACRO="OUI")
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 tfin = 0.1
 
-pa = 0.002
+pas = 0.002
 
 fc = 15.0
 
@@ -34,209 +34,279 @@ rho = 8000.0
 nu = 0.3
 
 
-LISTR=DEFI_LIST_REEL(DEBUT=0.,
-                     INTERVALLE=_F(JUSQU_A=tfin,
-                                   PAS=pa,),)
+MAIL = LIRE_MAILLAGE(UNITE=20,
+                     FORMAT='MED',)
 
-MAIL=LIRE_MAILLAGE(UNITE=20,
-                   FORMAT='MED',)
+MODELE = AFFE_MODELE(MAILLAGE=MAIL,
+                     AFFE=_F(GROUP_MA='VOL',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='3D',),)
 
-MODELE=AFFE_MODELE(MAILLAGE=MAIL,
-                   AFFE=_F(GROUP_MA='VOL',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),)
+MAT = DEFI_MATERIAU(ELAS=_F(E=E,
+                            NU=nu,
+                            RHO=rho,),)
 
-MAT=DEFI_MATERIAU(ELAS=_F(E=E,
-                          NU=nu,
-                          RHO=rho,),)
+CHMAT = AFFE_MATERIAU(MAILLAGE=MAIL,
+                      AFFE=_F(GROUP_MA='VOL',
+                              MATER=MAT,),)
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
-                    AFFE=_F(GROUP_MA='VOL',
-                            MATER=MAT,),)
-
-TAMAS=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
-                MODELE=MODELE,
-                CHAM_MATER=CHMAT,)
+TAMAS = POST_ELEM(MASS_INER=_F(TOUT='OUI',),
+                  MODELE=MODELE,
+                  CHAM_MATER=CHMAT,)
 
 IMPR_TABLE(TABLE=TAMAS,)
 
-BLOCAGE=AFFE_CHAR_MECA(MODELE=MODELE,
-                       DDL_IMPO=_F(GROUP_MA='ENCAS',
-                                   BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),)
+BLOCAGE = AFFE_CHAR_MECA(MODELE=MODELE,
+                         DDL_IMPO=_F(GROUP_MA='ENCAS',
+                                     BLOCAGE=('DEPLACEMENT'),),)
 
-
-GRAV=AFFE_CHAR_MECA(MODELE=MODELE,
-                    PESANTEUR=_F(GRAVITE=300.,
-                                 DIRECTION=(-1.,0,1,),),)
-
+GRAV = AFFE_CHAR_MECA(MODELE=MODELE,
+                      PESANTEUR=_F(GRAVITE=300.,
+                                   DIRECTION=(-1., 0, 1,),),)
 
 sinom = FORMULE(VALE='sin(om*INST)',
                 om=om,
                 NOM_PARA='INST',)
 
+LISTR = DEFI_LIST_REEL(DEBUT=0.,
+                       INTERVALLE=_F(JUSQU_A=tfin,
+                                     PAS=pas,),)
 
-TRANGENE=DYNA_LINE(TYPE_CALCUL='TRAN', BASE_CALCUL='GENE',
-                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
-                    MODELE=MODELE,
-                    CHAM_MATER=CHMAT,
-                    CHARGE=BLOCAGE,
-                    BANDE_ANALYSE = 50,
-                    INCREMENT=_F(INST_FIN=tfin,
-                                 PAS=pa,
-                                 ),
-                    EXCIT=_F(CHARGE=GRAV,
-                             FONC_MULT=sinom,),
+# Assemblage des matrices de masse et de rigidité
+ASSEMBLAGE(MODELE=MODELE,
+           CHAM_MATER=CHMAT,
+           CHARGE=BLOCAGE,
+           NUME_DDL=CO('NUMEDDL'),
+           MATR_ASSE=(_F(MATRICE=CO('rigiPhy'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('massPhy'),
+                         OPTION='MASS_MECA',),),)
 
-                    BASE_RESU = CO('MODE2'),
-                    RESU_GENE = CO('TRANGEN'),
-                    ENRI_STAT = 'NON',
+# Assemblage du second membre (chargement)
+vectElem = CALC_VECT_ELEM(CHAM_MATER=CHMAT,
+                          CHARGE=(BLOCAGE, GRAV),
+                          OPTION='CHAR_MECA')
+
+vectCharge = ASSE_VECTEUR(NUME_DDL=NUMEDDL,
+                          VECT_ELEM=vectElem)
+
+# ==========================================================================================
+#                    CALCUL SUR BASE MODALE
+# ==========================================================================================
+
+# Calcul des modes dans la bande de fréquence 0-50 Hz
+dynaModes = CALC_MODES(CALC_FREQ=_F(FREQ=(0.0, 50),),
+                       MATR_MASS=massPhy,
+                       MATR_RIGI=rigiPhy,
+                       OPTION='BANDE',
+                       STOP_BANDE_VIDE='NON',
+                       TYPE_RESU='DYNAMIQUE',)
+
+# Définition de la base modale
+MODES = DEFI_BASE_MODALE(NUME_REF=NUMEDDL,
+                         RITZ=_F(MODE_MECA=dynaModes),)
+
+# Numérotation généralisée
+numeDdlGene = NUME_DDL_GENE(BASE=MODES,
+                            STOCKAGE='DIAG')
+
+# Projection second membre
+vectorGen = PROJ_VECT_BASE(BASE=MODES,
+                           NUME_DDL_GENE=numeDdlGene,
+                           TYPE_VECT='FORC',
+                           VECT_ASSE=vectCharge)
+
+# Projection matrices
+massGen = PROJ_MATR_BASE(BASE=MODES,
+                         MATR_ASSE=massPhy,
+                         NUME_DDL_GENE=numeDdlGene)
+rigiGen = PROJ_MATR_BASE(BASE=MODES,
+                         MATR_ASSE=rigiPhy,
+                         NUME_DDL_GENE=numeDdlGene)
+
+# Résolution
+TRANGEN = DYNA_VIBRA(BASE_CALCUL='GENE',
+                     TYPE_CALCUL='TRAN',
+                     EXCIT=_F(FONC_MULT=sinom,
+                              VECT_ASSE_GENE=vectorGen),
+                     INCREMENT=_F(INST_FIN=tfin,
+                                  PAS=pas,),
+                     MATR_MASS=massGen,
+                     MATR_RIGI=rigiGen,
+                     SCHEMA_TEMPS=_F(SCHEMA='NEWMARK'),
+                     )
+
+'''
+# Résolution avec DYNA_LINE
+TRANGENE = DYNA_LINE(TYPE_CALCUL='TRAN', BASE_CALCUL='GENE',
+                     SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                     MODELE=MODELE,
+                     CHAM_MATER=CHMAT,
+                     CHARGE=BLOCAGE,
+                     BANDE_ANALYSE=50,
+                     INCREMENT=_F(INST_FIN=tfin,
+                                  PAS=pas,),
+                     EXCIT=_F(CHARGE=GRAV,
+                              FONC_MULT=sinom,),
+                     BASE_RESU=CO('MODES'),
+                     RESU_GENE=CO('TRANGEN'),
+                     ENRI_STAT='NON',
+                     )
+'''
+
+DEPLPDZ = RECU_FONCTION(RESU_GENE=TRANGEN,
+                        NOM_CHAM='DEPL',
+                        NOM_CMP='DZ',
+                        GROUP_NO='P',)
+
+DEPLPDX = RECU_FONCTION(RESU_GENE=TRANGEN,
+                        NOM_CHAM='DEPL',
+                        NOM_CMP='DX',
+                        GROUP_NO='P',)
+
+TEST_FONCTION(VALEUR=_F(FONCTION=DEPLPDZ,
+                        VALE_PARA=0.05,
+                        VALE_CALC=0.14758711700494
+                        ))
+
+TEST_FONCTION(VALEUR=_F(FONCTION=DEPLPDX,
+                        VALE_PARA=0.05,
+                        VALE_CALC=5.667541668703E-05
+                        ))
+
+# ==========================================================================================
+#                    CALCUL SUR BASE MODALE AVEC CORRECTION STATIQUE
+# ==========================================================================================
+pa_s100 = pas/100
+
+"""
+# Résolution avec DYNA_LINE
+tranPhy2 = DYNA_LINE(TYPE_CALCUL='TRAN', BASE_CALCUL='GENE',
+                     MODELE=MODELE,
+                     CHAM_MATER=CHMAT,
+                     CHARGE=BLOCAGE,
+                     INCREMENT=_F(INST_FIN=tfin,),
+                     EXCIT=_F(CHARGE=GRAV,
+                              FONC_MULT=sinom,),
+                     ARCHIVAGE=_F(LIST_INST=LISTR, PAS_ARCH=10**8),
+                     ORTHO='OUI',
+                     ENRI_STAT='OUI',
+                     )
+"""
+
+# Factorisation de la matrice de rigidité
+rigiPhy = FACTORISER(MATR_ASSE=rigiPhy,
+                     reuse=rigiPhy)
+
+# Résolution
+depl = RESOUDRE(CHAM_NO=vectCharge,
+                MATR=rigiPhy,
+                RESI_RELA=1e-05,)
+
+# Création d'une structure de données résultat
+nomres = CREA_RESU(AFFE=_F(CHAM_GD=depl,
+                           CHAM_MATER=CHMAT,
+                           CHARGE=(GRAV, BLOCAGE),
+                           MODELE=MODELE,
+                           NOM_CAS='CAS_0'),
+                   NOM_CHAM='DEPL',
+                   OPERATION='AFFE',
+                   TYPE_RESU='MULT_ELAS')
+
+# Définition de la fréquence de coupure
+f_coup = 18.3  # contient 90% de l'énergie du signal d'entée
+pas = 1. / (5*f_coup)
+
+# Extraction des modes jusqu'à 2 fois la fréquence de coupure
+dynaModes2 = EXTR_MODE(FILTRE_MODE=_F(MODE=dynaModes,
+                                      FREQ_MIN=0.0,
+                                      FREQ_MAX=2*f_coup,),
+                       IMPRESSION=_F(CUMUL='OUI',),)
+
+
+# Définition d'une base modale comprenant les modes et les modes statiques
+baseModale = DEFI_BASE_MODALE(MATRICE=rigiPhy,
+                              NUME_REF=NUMEDDL,
+                              ORTHO='OUI',
+                              RITZ=(_F(MODE_MECA=dynaModes2),
+                                    _F(MODE_INTF=nomres)),
+                              )
+
+# # Orthonormalisation de la base
+# baseModale = DEFI_BASE_MODALE(ORTHO_BASE=_F(BASE=baseModale,
+#                                             MATRICE=rigiPhy))
+
+# Numérotation généralisée
+numeDdlGene = NUME_DDL_GENE(BASE=baseModale,
+                            STOCKAGE='DIAG')
+
+# Projection second membre
+vectorGen = PROJ_VECT_BASE(BASE=baseModale,
+                           NUME_DDL_GENE=numeDdlGene,
+                           TYPE_VECT='FORC',
+                           VECT_ASSE=vectCharge)
+
+# Projection matrices
+massGen = PROJ_MATR_BASE(BASE=baseModale,
+                         MATR_ASSE=massPhy,
+                         NUME_DDL_GENE=numeDdlGene)
+rigiGen = PROJ_MATR_BASE(BASE=baseModale,
+                         MATR_ASSE=rigiPhy,
+                         NUME_DDL_GENE=numeDdlGene)
+
+# Résolution
+tranGene2 = DYNA_VIBRA(ARCHIVAGE=_F(LIST_INST=LISTR,
+                                     PAS_ARCH=10**8),
+                        BASE_CALCUL='GENE',
+                        EXCIT=_F(FONC_MULT=sinom,
+                                 VECT_ASSE_GENE=vectorGen),
+                        INCREMENT=_F(INST_FIN=tfin,
+                                     PAS=pas,
+                                     VERI_PAS='NON'),
+                        MATR_MASS=massGen,
+                        MATR_RIGI=rigiGen,
+                        SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
+                        TYPE_CALCUL='TRAN',)
+
+# Retour sur base physique
+tranPhy2 = REST_GENE_PHYS(MODE_MECA=baseModale,
+                          RESU_GENE=tranGene2,
+                          TOUT_CHAM='OUI')
+
+UZ4 = RECU_FONCTION(RESULTAT=tranPhy2,
+                    NOM_CHAM='DEPL',
+                    NOM_CMP='DZ',
+                    GROUP_NO='P',
                     )
 
-
-DEPLPDZ=RECU_FONCTION(RESU_GENE=TRANGEN,
-                      NOM_CHAM='DEPL',
-                      NOM_CMP='DZ',
-                      GROUP_NO='P',)
-
-DEPLPDX=RECU_FONCTION(RESU_GENE=TRANGEN,
-                      NOM_CHAM='DEPL',
-                      NOM_CMP='DX',
-                      GROUP_NO='P',)
-
-TEST_FONCTION(VALEUR=(_F(
-                         FONCTION=DEPLPDZ,
-                         VALE_PARA=0.05,
-                         VALE_CALC=0.14758711700494
-                      )))
-
-TEST_FONCTION(VALEUR=(_F(
-                         FONCTION=DEPLPDX,
-                         VALE_PARA=0.05,
-                         VALE_CALC=5.667541668703E-05
-                       )))
-
-# calcul avec correction statique
-
-pa_s10 = pa/10
-
-TRANPHY=DYNA_LINE(TYPE_CALCUL='TRAN', BASE_CALCUL='PHYS',
-                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
-                    MODELE=MODELE,
-                    CHAM_MATER=CHMAT,
-                    CHARGE=BLOCAGE,
-                    INCREMENT=_F(INST_FIN=tfin,
-                                 PAS=pa_s10),
-                    EXCIT=_F(CHARGE=GRAV,
-                             FONC_MULT=sinom,
-                             ),
-                    ARCHIVAGE=_F(LIST_INST=LISTR, PAS_ARCH=10**8),
+UX4 = RECU_FONCTION(RESULTAT=tranPhy2,
+                    NOM_CHAM='DEPL',
+                    NOM_CMP='DX',
+                    GROUP_NO='P',
                     )
 
-UZ3=RECU_FONCTION(RESULTAT=TRANPHY,
-                      NOM_CHAM='DEPL',
-                      NOM_CMP='DZ',
-                      GROUP_NO='P',)
-
-UX3=RECU_FONCTION(RESULTAT=TRANPHY,
-                      NOM_CHAM='DEPL',
-                      NOM_CMP='DX',
-                      GROUP_NO='P',)
-
-TEST_FONCTION(VALEUR=(_F(
-                         FONCTION=UZ3,
-                         VALE_PARA=0.05,
-                         VALE_CALC=0.14604340154756
-                      )))
-
-TEST_FONCTION(VALEUR=(_F(
-                         FONCTION=UX3,
-                         VALE_PARA=0.05,
-                         CRITERE = "ABSOLU",
-                         VALE_CALC=1.749786405277E-04,
-                      )))
-
-# calcul avec pas adaptatif
-
-pa_s100 = pa/100
-
-LIST0 = DEFI_LIST_REEL(
-                        DEBUT=0.,
-                        INTERVALLE = (_F( JUSQU_A = tfin, PAS = pa_s100, ),)
-                        )
-
-sinomv =CALC_FONC_INTERP(
-                        FONCTION = sinom,
-                        LIST_PARA = LIST0,
-                        NOM_RESU = 'SINTHER',
-                        PROL_GAUCHE = 'CONSTANT',
-                        PROL_DROITE = 'CONSTANT',
-                        INTERPOL = 'LIN',
-                         )
-
-
-TRANGEN2=DYNA_LINE(TYPE_CALCUL='TRAN', BASE_CALCUL='GENE',
-                    # SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
-                    MODELE=MODELE,
-                    CHAM_MATER=CHMAT,
-                    CHARGE=BLOCAGE,
-                    INCREMENT=_F(INST_FIN=tfin,
-                                 ),
-                    EXCIT=_F(CHARGE=GRAV,
-                             FONC_MULT=sinomv,),
-
-                    ARCHIVAGE=_F(LIST_INST=LISTR, PAS_ARCH=10**8),
-
-                    ORTHO = 'OUI',
-                    )
-
-
-
-UZ4=RECU_FONCTION(RESULTAT=TRANGEN2,
-                      NOM_CHAM='DEPL',
-                      NOM_CMP='DZ',
-                      GROUP_NO='P',
-                      )
-
-UX4=RECU_FONCTION(RESULTAT=TRANGEN2,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
-                  GROUP_NO='P',
-                   )
-
-TEST_FONCTION(VALEUR=(_F(
-                         FONCTION=UZ4,
+TEST_FONCTION(VALEUR=(_F(FONCTION=UZ4,
                          VALE_PARA=0.05,
                          VALE_CALC=0.14665350269746,
-                       )))
+                         )))
 
 
-
-TEST_FONCTION(VALEUR=(_F(
-                         FONCTION=UX4,
+TEST_FONCTION(VALEUR=(_F(FONCTION=UX4,
                          VALE_PARA=0.05,
-                         CRITERE = "ABSOLU",
+                         CRITERE='ABSOLU',
                          VALE_CALC=2.191476390357E-04,
-                       )))
+                         )))
 
-
-DUX34 = CALC_FONCTION(COMB=( _F(  FONCTION = UX3, COEF = 1.),
-                              _F(  FONCTION = UX4, COEF = -1.)),
+'''
+DUX34 = CALC_FONCTION(COMB=(_F(FONCTION=UX3, COEF=1.),
+                            _F(FONCTION=UX4, COEF=-1.)),
                       )
-DUZ34 = CALC_FONCTION(COMB=( _F(  FONCTION = UZ3, COEF = 1.),
-                             _F(  FONCTION = UZ4, COEF = -1.)),
+DUZ34 = CALC_FONCTION(COMB=(_F(FONCTION=UZ3, COEF=1.),
+                            _F(FONCTION=UZ4, COEF=-1.)),
                       )
 
-MAXDUX34 = INFO_FONCTION( MAX=_F(  FONCTION = DUX34))
-MAXDUZ34 = INFO_FONCTION( MAX=_F(  FONCTION = DUZ34))
-
-# unite = 85
-# for st in ['UX3','UZ3','UX4','UZ4','DUZ34']:
-    # fichier = 'REPE_OUT/%s.txt' %(st)
-    # DEFI_FICHIER(UNITE=unite,FICHIER=  fichier )
-    # IMPR_FONCTION(FORMAT='TABLEAU',
-              # COURBE=_F(FONCTION=eval(st),),
-              # UNITE=unite,)
-    # DEFI_FICHIER(UNITE=unite,ACTION='LIBERER')
+MAXDUX34 = INFO_FONCTION(MAX=_F(FONCTION=DUX34))
+MAXDUZ34 = INFO_FONCTION(MAX=_F(FONCTION=DUZ34))
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
@@ -253,9 +323,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            NOM_PARA='DZ',
            TYPE_TEST='SOMM_ABS',
            TABLE=MAXDUZ34,
-           PRECISION = 0.005,
+           PRECISION=0.005,
            )
-
-
-
+'''
 FIN()

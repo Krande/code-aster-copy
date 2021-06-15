@@ -9,7 +9,7 @@
 # (at your option) any later version.
 #
 # code_aster is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# but WITHOUT ANY WARRANTY without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
@@ -23,20 +23,20 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-E = 200.E9;
+E = 200.E9
 
-rho = 8000.0;
+rho = 8000.0
 
-nu = 0.3;
+nu = 0.3
 
 
 MAIL=LIRE_MAILLAGE(UNITE=20,
-                   FORMAT='MED',);
+                   FORMAT='MED',)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(GROUP_MA='VOL',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),);
+                           MODELISATION='3D',),)
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=E,
                           NU=nu,
@@ -44,17 +44,17 @@ MAT=DEFI_MATERIAU(ELAS=_F(E=E,
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(GROUP_MA='VOL',
-                            MATER=MAT,),);
+                            MATER=MAT,),)
 
 TAMAS=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
                 MODELE=MODELE,
-                CHAM_MATER=CHMAT,);
+                CHAM_MATER=CHMAT,)
 
-IMPR_TABLE(TABLE=TAMAS,);
+IMPR_TABLE(TABLE=TAMAS,)
 
 BLOCAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_MA='ENCAS',
-                                   BLOCAGE = ('DEPLACEMENT', 'ROTATION'),),);
+                                   BLOCAGE = 'DEPLACEMENT',),)
 
 ASSEMBLAGE(MODELE=MODELE,
            CHAM_MATER=CHMAT,
@@ -63,22 +63,21 @@ ASSEMBLAGE(MODELE=MODELE,
            MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
                          OPTION='RIGI_MECA',),
                       _F(MATRICE=CO('MASSE'),
-                         OPTION='MASS_MECA',),),);
+                         OPTION='MASS_MECA',),),)
 
 MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
                  OPTION='BANDE',
-                 CALC_FREQ=_F(FREQ=(0,50.0,),
-                              ),
+                 CALC_FREQ=_F(FREQ=(0,50.0,),),
                  MATR_MASS=MASSE,
                  )
 
 MODES=NORM_MODE(reuse =MODES,
                 MODE=MODES,
-                NORME='MASS_GENE',);
+                NORME='MASS_GENE',)
 
 IMPR_RESU(FORMAT='MED',
           UNITE=80,
-          RESU=_F(RESULTAT=MODES,),);
+          RESU=_F(RESULTAT=MODES,),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -99,4 +98,4 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-FIN();
+FIN()
