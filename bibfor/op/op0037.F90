@@ -90,7 +90,7 @@ subroutine op0037()
     character(len=24) :: valk(4)
     character(len=8) :: modeou, modein, nomcmp(7), k8b, cmp, noma, mat1, mat2, mat3, noeud
     character(len=14) :: nume
-    character(len=16) :: typcon, nomcmd, norm, nomsy
+    character(len=16) :: typcon, nomcmd, norm, normini, nomsy
     character(len=19) :: k19b, chamno
     character(len=24) :: masse, amor, raide, refe, method, kvec, kvali, kvalr
     character(len=24) :: kvalk, noparm(nbpamt), noparf(nbpaft), nopara(nbpamt)
@@ -348,6 +348,7 @@ subroutine op0037()
 !     --- OPTION DE NORMALISATION  ---
     method = '                        '
     call getvtx(' ', 'NORME', scal=norm, nbret=l)
+    normini = norm
     if (l .ne. 0) then
         if (norm .eq. 'MASS_GENE') then
 !        --- CALCUL DE LA MASSE DU MODELE
@@ -649,7 +650,36 @@ subroutine op0037()
     call jeveuo(kvalr, 'E', lvalr)
     call jeveuo(kvalk, 'E', lvalk)
 !
-    if (lbasm .and. .not.(lparam)) then
+!
+    if (lparam .and. .not. lbasm) then
+!       FIX ISSUE 30730 POUR LE CALCUL DES PARAMETRES GENERALISES
+        if (normini .eq. 'MASS_GENE') then
+            call jeexin (masse(1:19)//'.&INT', exmasse)
+            if (exmasse.ne. 0) then 
+                call mtdscr(masse)
+                call jeveuo(masse(1:19)//'.&INT', 'E', lmasse)
+                call mtdscr(raide)
+                call jeveuo(raide(1:19)//'.&INT', 'E', lraide)
+!
+                call jeveuo(kvec, 'L', lmod)  
+!  
+!               CALCUL DES PARAMETRES GENERALISES
+                call wkvect('&&OP0037.POSI.DDL', 'V V I', neq, lddl2)
+                call wkvect('&&OP0037.DDL.BLOQ.CINE', 'V V I', neq, lprod)
+                call vpddl(raide(1:19), masse(1:19), neq, ib, ib,&
+                   ib, zi(lddl2), zi(lprod), ierd)
+
+!               CALCUL DES FACTEURS DE PARTICIPATIONS ET DES MASSES EFFECTIVES
+                call vppfac(lmasse, zr(lvalr+3*nbmode), zr(lmod), neq, nbmode,&
+                   nbmode, zr(lvalr+6*nbmode), zr(lvalr+9*nbmode))
+            else
+                call utmess('A', 'ALGELINE2_89')
+            endif
+        else
+            call utmess('A', 'ALGELINE2_90', sk=normini)
+        endif
+!
+    else if (lbasm .and. .not.(lparam)) then
         call mtdscr(masse)
         call jeveuo(masse(1:19)//'.&INT', 'E', lmasse)
         call mtdscr(raide)
@@ -676,37 +706,6 @@ subroutine op0037()
                     nbmode, zr(lvalr+6*nbmode), zr(lvalr+9*nbmode))
         lparam = .true.
     endif
-
-
-! 
-!   FIX ISSUE 30730 
-    if (lparam .and. .not.(lbasm).and. (norm .eq. 'MASS_GENE')) then
-      call jeexin (masse(1:19)//'.&INT', exmasse)
-      if (exmasse.ne. 0) then 
-          call mtdscr(masse)
-          call jeveuo(masse(1:19)//'.&INT', 'E', lmasse)
-          call mtdscr(raide)
-          call jeveuo(raide(1:19)//'.&INT', 'E', lraide)
-!
-          call jeveuo(kvec, 'L', lmod)  
-   
-!         CALCUL DES PARAMETRES GENERALISES
-          call wkvect('&&OP0037.POSI.DDL', 'V V I', neq, lddl2)
-          call wkvect('&&OP0037.DDL.BLOQ.CINE', 'V V I', neq, lprod)
-          call vpddl(raide(1:19), masse(1:19), neq, ib, ib,&
-               ib, zi(lddl2), zi(lprod), ierd)
-
-!         CALCUL DES FACTEURS DE PARTICIPATIONS ET DES MASSES EFFECTIVES
-          call vppfac(lmasse, zr(lvalr+3*nbmode), zr(lmod), neq, nbmode,&
-               nbmode, zr(lvalr+6*nbmode), zr(lvalr+9*nbmode))
-      else
-          call utmess('A', 'ALGELINE2_89')
-      endif
-    else
-        call utmess('A', 'ALGELINE2_90', sk=norm)
-    endif
-
-
 !
 !     --- NORMALISATION DES MODES ET ARCHIVAGE ---
     ilgcon = lxlgut(typcon)
