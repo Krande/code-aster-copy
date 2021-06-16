@@ -107,9 +107,15 @@ def operate(isTopCall,effective_dest_file_name,nb_dest_par,origin_seq):
 
     for dest_fn,dest_proc in dest_fns:
         dest_mm = mc.MEDFileMesh.New(dest_fn)
-        pt1_in_current_dest = dest_mm.getGlobalNumFieldAtLevel(1).buildIntersection(orig_pt1)
+
+        globalNodeIdsCur = mc.DataArrayInt(dest_mm.getGlobalNumFieldAtLevel(1).getValues())
+        # bug in medcoupling wrapping of MCAuto<DataArrayIdType> into V970 in configuration 64 for medcoupling 64 for medfile -> getValues pour bypass
+        pt1_in_current_dest = globalNodeIdsCur.buildIntersection(orig_pt1)
+        #pt1_in_current_dest = dest_mm.getGlobalNumFieldAtLevel(1).buildIntersection(orig_pt1)
+        # end of bug
+
         check_all_pts1.append(pt1_in_current_dest)
-        pt1_to_be_present = dest_mm.getGlobalNumFieldAtLevel(1).findIdForEach(pt1_in_current_dest)
+        pt1_to_be_present = globalNodeIdsCur.findIdForEach(pt1_in_current_dest)
 
         pt1_cur_mesh = None
         pt1_already_present = mc.DataArrayInt([])
@@ -129,7 +135,7 @@ def operate(isTopCall,effective_dest_file_name,nb_dest_par,origin_seq):
             logger.info("Pour le proc {} il y a {} MED_POINT1 et rien à faire !".format(dest_proc,len(pt1_already_present)))
             continue
 
-        pt1_entry_to_be_present = orig_pt1.findIdForEach(dest_mm.getGlobalNumFieldAtLevel(1)[pt1_to_add])
+        pt1_entry_to_be_present = orig_pt1.findIdForEach(globalNodeIdsCur[pt1_to_add])
         logger.info("Pour le proc {} on rajoute {} MED_POINT1 (avant {} apres {})".format(dest_proc,len(pt1_to_add),len(pt1_already_present),len(pt1_to_be_present)))
         # on rajoute le mesh
         pt1_to_add_mesh = mc.MEDCoupling1SGTUMesh(dest_mm.getName(),mc.NORM_POINT1)
@@ -166,7 +172,7 @@ def operate(isTopCall,effective_dest_file_name,nb_dest_par,origin_seq):
     coo = first_part_mm.getCoords()
     node_num = first_part_mm.getNumberFieldAtLevel(1)
     node_fam = first_part_mm.getFamilyFieldAtLevel(1)
-    node_glob = first_part_mm.getGlobalNumFieldAtLevel(1)
+    node_glob = mc.DataArrayInt(first_part_mm.getGlobalNumFieldAtLevel(1).getValues())
     coo = mc.DataArrayDouble.Aggregate([coo,mm_orginal.getCoords()[pt1_simply_ignored]])
     if node_num:
         node_num = mc.DataArrayInt.Aggregate([node_num,mm_orginal.getNumberFieldAtLevel(1)[pt1_simply_ignored]])
