@@ -411,6 +411,8 @@ Comportement  %(k1)s : avec ELAS_ORTH, il faut renseigner le mot clé MU_MOY.
 Vérifiez les valeurs de la fonction.
 """),
 
+    92: _("""La modélisation COQUE_SOLIDE n'est compatible qu'avec DEFORMATION='GDEF_LOG' ou DEFORMATION='PETIT'."""),
+
     93 : _("""
 La donnée de l'énergie de fissuration initiale G_INIT est trop élevée. Elle doit être inférieure à 0.453*GF.
 """),

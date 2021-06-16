@@ -83,7 +83,8 @@ character(len=16), intent(in) :: relaComp, relaCompPY
     integer :: nbCellMesh, nbCell
     integer, pointer :: cellAffectedByModel(:) => null()
     integer, pointer :: listCellAffe(:) => null()
-    aster_logical :: l_coq3d, l_dkt, l_dktg, lShell, l_hho, lGrotGdep, lPetitReac, lPipe
+    aster_logical :: l_coq3d, l_dkt, l_dktg, lShell, l_hho, lPipe, lSolidShell
+    aster_logical :: lGrotGdep, lPetitReac
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -141,6 +142,7 @@ character(len=16), intent(in) :: relaComp, relaCompPY
             l_dktg  = lteatt('MODELI','DTG', typel = elemTypeName)
             lShell  = lteatt('COQUE' ,'OUI', typel = elemTypeName)
             lPipe   = lteatt('TUYAU' ,'OUI', typel = elemTypeName)
+            lSolidShell = lteatt('MODELI','SSH', typel = elemTypeName)
 
 ! --------- Specific checks: alarm (outside loop on cells)
             if (l_dkt .and. defoComp .eq. 'PETIT_REAC') then
@@ -169,6 +171,10 @@ character(len=16), intent(in) :: relaComp, relaCompPY
 
             if (l_dkt .and. defoComp .eq. 'GDEF_LOG') then
                 call utmess('F', 'COMPOR1_99')
+            endif
+
+            if (lSolidShell .and. defoComp .ne. 'GDEF_LOG' .and. defoComp .ne. 'PETIT') then
+                call utmess('F', 'COMPOR1_92')
             endif
 
 ! --------- Check model of strains for Mfront
