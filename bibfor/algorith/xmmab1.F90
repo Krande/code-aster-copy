@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -120,7 +120,7 @@ aster_logical :: lpenaf
     tt(:,:) = 0.d0
 
     v(1) = ddot(ndim,dvitet,1,tau1,1)
-    if (ndim .eq. 3) v(2) = ddot(ndim,dvitet,1,tau2,2)
+    if (ndim .eq. 3) v(2) = ddot(ndim,dvitet,1,tau2,1)
 !     TT = ID
     do i = 1, ndim
         tt(1,1) = tau1(i)*tau1(i) + tt(1,1)
