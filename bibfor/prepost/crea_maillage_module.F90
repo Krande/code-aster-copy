@@ -49,6 +49,7 @@ private
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/sdmail.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
@@ -1169,7 +1170,7 @@ contains
             character(len=24) :: nommai, nomnoe, cooval, coodsc, cooref, grpnoe
             character(len=24) :: gpptnn, grpmai, gpptnm, connex, titre, typmai, adapma
             character(len=4) :: dimesp
-            integer :: i_node, nno, i_cell, ntgeo, nbnoma, node_id
+            integer :: i_node, nno, i_cell, ntgeo, nbnoma, node_id, iret
             real(kind=8):: start, end
             real(kind=8), pointer :: v_coor(:) => null()
             integer, pointer :: v_int(:) => null()
@@ -1196,7 +1197,12 @@ contains
             call jeecra(nomnoe, 'NOMMAX', this%nb_nodes)
             do i_node = 1 , this%nb_total_nodes
                 if(this%nodes(i_node)%keep) then
-                    call jecroc(jexnom(nomnoe, this%nodes(i_node)%name))
+                    call jeexin(jexnom(nomnoe, this%nodes(i_node)%name), iret)
+                    if( iret == 0) then
+                        call jecroc(jexnom(nomnoe, this%nodes(i_node)%name))
+                    else
+                        call utmess('F', 'MESH2_3', sk=this%nodes(i_node)%name)
+                    end if
                 end if
             end do
 ! ------ Copy coordinates
@@ -1228,7 +1234,12 @@ contains
             call jecreo(nommai, 'G N K8')
             call jeecra(nommai, 'NOMMAX', this%nb_cells)
             do i_cell = 1, this%nb_cells
-                call jecroc(jexnom(nommai, this%cells(i_cell)%name))
+                call jeexin(jexnom(nommai, this%cells(i_cell)%name), iret)
+                if( iret == 0) then
+                    call jecroc(jexnom(nommai, this%cells(i_cell)%name))
+                else
+                    call utmess('F', 'MESH2_2', sk=this%cells(i_cell)%name)
+                end if
             end do
 ! ------ Count total number of nodes (repeated)
             nbnoma = 0
