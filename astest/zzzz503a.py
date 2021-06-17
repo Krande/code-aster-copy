@@ -150,7 +150,7 @@ else:
 monSolver.factorize(matrAsse)
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 
-vcine = dProblem.buildDirichletBC(numeDDL, 0.)
+vcine = dProblem.computeDirichletBC(numeDDL, 0.)
 resu = monSolver.solveWithDirichletBC(matrAsse, vcine, retour)
 
 
