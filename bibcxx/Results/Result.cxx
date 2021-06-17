@@ -31,12 +31,16 @@
 #include "Results/Result.h"
 #include "PythonBindings/LogicalUnitManager.h"
 #include "Supervis/CommandSyntax.h"
+#include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
 
 void
 ResultClass::addElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara,
                                                         int rank ) {
-    AS_ASSERT( cara != nullptr );
+
+    if( !cara )
+      raiseAsterError( "ValueError: ElementaryCharacteristics is empty" );
+
     _mapElemCara[rank] = cara;
     ASTERINTEGER rang = rank;
     std::string type( "CARAELEM" );
@@ -53,7 +57,10 @@ void ResultClass::addListOfLoads( const ListOfLoadsPtr &load,
 
 void ResultClass::addMaterialField( const MaterialFieldPtr &mater,
                                                   int rank ) {
-    AS_ASSERT( mater  != nullptr );
+
+    if( !mater )
+      raiseAsterError( "ValueError: MaterialField is empty" );
+
     _mapMaterial[rank] = mater;
     ASTERINTEGER rang = rank;
     std::string type( "CHAMPMAT" );
@@ -62,7 +69,10 @@ void ResultClass::addMaterialField( const MaterialFieldPtr &mater,
 
 void ResultClass::addModel( const ModelPtr &model,
                                          int rank ) {
-    AS_ASSERT( model  != nullptr );
+
+    if( !model )
+      raiseAsterError( "ValueError: Model is empty" );
+
     _mapModel[rank] = model;
     ASTERINTEGER rang = rank;
     std::string type( "MODELE" );
@@ -130,7 +140,10 @@ BaseDOFNumberingPtr ResultClass::getEmptyDOFNumbering() {
 FieldOnNodesRealPtr
 ResultClass::getEmptyFieldOnNodesReal( const std::string name,
                                                       const int rank ) {
-    AS_ASSERT( rank <= _nbRanks && rank > 0 );
+
+    if ( rank > _nbRanks || rank <= 0 )
+      raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' is out of range" );
+
     ASTERINTEGER retour;
     retour = 0;
     const ASTERINTEGER rankLong = rank;
@@ -284,10 +297,12 @@ VectorLong ResultClass::getRanks() const
 FieldOnCellsRealPtr ResultClass::getFieldOnCellsReal( const std::string name,
                                                                            const int rank ) const
 {
-    AS_ASSERT(rank <= _nbRanks && rank > 0);
+    if ( rank > _nbRanks || rank <= 0 )
+      raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' is out of range" );
 
     auto curIter = _dictOfVectorOfFieldsCells.find( trim( name ) );
-    AS_ASSERT( curIter != _dictOfVectorOfFieldsCells.end() );
+    if ( curIter == _dictOfVectorOfFieldsCells.end() )
+      raiseAsterError( "ValueError: Field " + name + " unknown in the results container" );
 
     FieldOnCellsRealPtr toReturn = curIter->second[rank - 1];
     return toReturn;
@@ -404,10 +419,13 @@ VectorString ResultClass::getFieldsOnCellsNames() const
 FieldOnNodesRealPtr ResultClass::getFieldOnNodesReal( const std::string name,
                                                                      const int rank ) const
 {
-    AS_ASSERT(rank <= _nbRanks && rank > 0);
+
+    if ( rank > _nbRanks || rank <= 0 )
+      raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' is out of range" );
 
     auto curIter = _dictOfVectorOfFieldsNodes.find( trim( name ) );
-    AS_ASSERT( curIter != _dictOfVectorOfFieldsNodes.end() );
+    if ( curIter == _dictOfVectorOfFieldsNodes.end() )
+      raiseAsterError( "ValueError: Field " + name + " unknown in the results container" );
 
     FieldOnNodesRealPtr toReturn = curIter->second[rank - 1];
     return toReturn;

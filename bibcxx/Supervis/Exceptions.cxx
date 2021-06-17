@@ -79,8 +79,10 @@ PyObject *createPyException( const char *name, PyObject *baseTypeObj ) {
 }
 
 void raiseAsterError( const std::string idmess ) {
-    std::cout << "Raising C++ AsterErrorCpp with id '" << idmess << "'..." << std::endl;
-    throw AsterErrorCpp( idmess );
+#ifdef ASTER_DEBUG_CXX
+  std::cout << "Raising C++ AsterErrorCpp with id '" << idmess << "'..." << std::endl;
+#endif
+  throw AsterErrorCpp( idmess );
 }
 
 extern "C" void DEFPSPSPPPP( UEXCEP, uexcep, _IN ASTERINTEGER *exc_id, _IN char *idmess,
