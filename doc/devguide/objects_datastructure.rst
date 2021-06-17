@@ -389,10 +389,10 @@
 
 
 ================================================================================
-:py:class:`~code_aster.Objects.ExternalVariablesResult` object
+:py:class:`~code_aster.Objects.ExternalStateVariablesResult` object
 ================================================================================
 
-.. autoclass:: code_aster.Objects.ExternalVariablesResult
+.. autoclass:: code_aster.Objects.ExternalStateVariablesResult
    :show-inheritance:
    :members:
 

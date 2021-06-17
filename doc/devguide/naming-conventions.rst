@@ -24,7 +24,7 @@ that does not recommend *CamelCase* naming.
 - The names of **methods**/**members** start with a lower case and
   does not contain the object name (example: *getValues* and not *getFieldValues*).
 
-- The names of specialized **methods**/**classes** depends on the type and have to be always at the end. (exemple: *FieldOnNodesReal* and *FieldOnNodesComplex* for classes, and *getValueReal* and *getValueVectorOfReal* for methods)
+- The names of specialized **methods**/**classes** depending on the type have to add this type always at the end. (exemple: *FieldOnNodesReal* and *FieldOnNodesComplex* for classes, and *getValueReal* and *getValueVectorOfReal* for methods)
 
 - Reuse existing names in newly created objects. Have a look to the :ref:`genindex` page
   should give good ideas for new methods.
@@ -53,11 +53,11 @@ that does not recommend *CamelCase* naming.
 
 - Strings values are returned without trailing spaces.
 
-- build : method to construct or modify internal objects of the class. This method return voir or boll
+- build : method to construct or modify internal objects of the class. This method return *void* or *bool*
 
 - updateValuePointers : method to update all JeveuxVector of a class
 
-- *compute* : a method begins with compute if it return a object which is explicitely computed and not an internal object (exemple: computeDirichletBC, computeLoads)
+- computeSomething : a method begins with compute if it return an object which is explicitely computed and not an internal object (exemple: computeDirichletBC, computeLoads)
 
 Another rule is to define elementary methods not to create objects with a huge size.
 For example, the groups names can be extracted from a mesh and cells indexes can be
@@ -67,7 +67,7 @@ Another example: do not create shortcuts as *mesh.getCoordinatesValues()*
 but *mesh.getCoordinates().getValues()*.
 
 A senior developer must validate any changes to the user API (C++/Python bindings and
-pure Python API).
+pure Python API). Do not hesitate to ask a precion to a senior developper for C++/Python and complete this documentation
 
 
 ========
@@ -81,11 +81,11 @@ Terms for the :py:class:`~code_aster.Objects.Mesh` object:
 
 - *mesh* is an object composed of *nodes* and *cells*.
 - *node* for a node.
-- *cell* for an element of the mesh (*element* term is used for a *finite element*).
-- *virtual nodes* for a node not originally present in the mesh (it is used to create loads). "Noeud tardif" in french
-- *virtual cell* for a cell not originally present in the mesh (it is used to connect nodes or virtual nodes). "Elément tardif" in french
-- *GroupOfNodes* for a group of nodes, named with at most 24 chars.
-- *GroupOfCells* for a group of cells, named with at most 24 chars.
+- *cell* for an element of the mesh (*element* term is used for a *finite element*). It was "Maille" in old french code_aster terminology
+- *virtual nodes* for a node not originally present in the mesh (it is used to create loads). It was "Noeud tardif" in old french code_aster terminology
+- *virtual cell* for a cell not originally present in the mesh (it is used to connect nodes or virtual nodes). It was "Elément tardif" in old french code_aster terminology
+- *GroupOfNodes* for a group of nodes, named with at most 24 chars.  It was "GROUP_NO" in old french code_aster terminology
+- *GroupOfCells* for a group of cells, named with at most 24 chars.  It was "GROUP_MA" in old french code_aster terminology
 - *Connectivity* for the mesh connectivity.
 - For a *ParallelMesh*, an additional boolean argument named *local* allows to work
   on the local part (that belongs to each MPI process, *local=True*) or on the

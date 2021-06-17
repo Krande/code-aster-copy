@@ -12,66 +12,66 @@ Documentation of all other types.
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.BaseExternalVariables` subclasses
+:py:class:`~code_aster.Objects.BaseExternalStateVariable` subclasses
 ********************************************************************************
 
-.. autoclass:: code_aster.Objects.BaseExternalVariables
+.. autoclass:: code_aster.Objects.BaseExternalStateVariable
    :show-inheritance:
    :members:
 
-.. autoclass:: code_aster.Objects.ConcreteDryingExternalVariable
+.. autoclass:: code_aster.Objects.ConcreteDryingExternalStateVariable
    :show-inheritance:
    :members:
 
-.. autoclass:: code_aster.Objects.ConcreteHydratationExternalVariable
+.. autoclass:: code_aster.Objects.ConcreteHydratationExternalStateVariable
    :show-inheritance:
    :members:
 
-.. autoclass:: code_aster.Objects.CorrosionExternalVariable
+.. autoclass:: code_aster.Objects.CorrosionExternalStateVariable
    :show-inheritance:
    :members:
 
-.. autoclass:: code_aster.Objects.GeometryExternalVariable
+.. autoclass:: code_aster.Objects.GeometryExternalStateVariable
    :show-inheritance:
    :members:
 
-.. autoclass:: code_aster.Objects.IrradiationExternalVariable
+.. autoclass:: code_aster.Objects.IrradiationExternalStateVariable
    :show-inheritance:
    :members:
 
-.. autoclass:: code_aster.Objects.IrreversibleDeformationExternalVariable
+.. autoclass:: code_aster.Objects.IrreversibleDeformationExternalStateVariable
    :show-inheritance:
    :members:
 
-.. autoclass:: code_aster.Objects.Neutral1ExternalVariable
+.. autoclass:: code_aster.Objects.Neutral1ExternalStateVariable
    :show-inheritance:
    :members:
 
-.. autoclass:: code_aster.Objects.Neutral2ExternalVariable
+.. autoclass:: code_aster.Objects.Neutral2ExternalStateVariable
    :show-inheritance:
    :members:
 
-.. autoclass:: code_aster.Objects.Neutral3ExternalVariable
+.. autoclass:: code_aster.Objects.Neutral3ExternalStateVariable
    :show-inheritance:
    :members:
 
-.. autoclass:: code_aster.Objects.SteelPhasesExternalVariable
+.. autoclass:: code_aster.Objects.SteelPhasesExternalStateVariable
    :show-inheritance:
    :members:
 
-.. autoclass:: code_aster.Objects.TemperatureExternalVariable
+.. autoclass:: code_aster.Objects.TemperatureExternalStateVariable
    :show-inheritance:
    :members:
 
-.. autoclass:: code_aster.Objects.TotalFluidPressureExternalVariable
+.. autoclass:: code_aster.Objects.TotalFluidPressureExternalStateVariable
    :show-inheritance:
    :members:
 
-.. autoclass:: code_aster.Objects.VolumetricDeformationExternalVariable
+.. autoclass:: code_aster.Objects.VolumetricDeformationExternalStateVariable
    :show-inheritance:
    :members:
 
-.. autoclass:: code_aster.Objects.ZircaloyPhasesExternalVariable
+.. autoclass:: code_aster.Objects.ZircaloyPhasesExternalStateVariable
    :show-inheritance:
    :members:
 
@@ -108,15 +108,6 @@ Documentation of all other types.
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.EvolutionParameter
-   :show-inheritance:
-   :members:
-
-
-********************************************************************************
-:py:class:`~code_aster.Objects.ExternalVariablesField` object
-********************************************************************************
-
-.. autoclass:: code_aster.Objects.ExternalVariablesField
    :show-inheritance:
    :members:
 
@@ -180,6 +171,15 @@ Documentation of all other types.
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.LinearStaticAnalysis
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.ListOfExternalStateVariables` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.ListOfExternalStateVariables
    :show-inheritance:
    :members:
 
