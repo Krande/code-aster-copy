@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -64,9 +64,21 @@ cata_msg = {
 """),
 
     10 : _("""
- <INFO> Pour l'occurrence numéro %(i1)d du mot-clé facteur CHOC, RIGI_TAN est
- renseigné mais pas AMOR_TAN. Le code a donc attribué à AMOR_TAN une valeur
- optimisée : %(r1)f
+Pour l'occurrence numéro %(i1)d du mot-clé facteur COMPORTEMENT (DIS_CHOC),
+RIGI_TAN est renseigné mais pas AMOR_TAN.
+
+Le code a donc attribué à AMOR_TAN une valeur optimisée : %(r1)f
+
+Cette valeur est basée sur le mode numéro %(i2)d, mode prépondérant compte
+tenu de la localisation du choc et les propriétés géométriques de l'obstacle.
+
+La normalisation du mode pour un déplacement tangentiel unitaire révèle les
+caractéristiques modales suivantes :
+
+> La masse modale est égale à                   : %(r2)f
+> La rigidité modale correspondante est égale à : %(r3)f
+> L'amortissement modal réduit est égale à      : %(r4)f
+> La rigidité tangentielle du choc est égale à  : %(r5)f
 """),
 
     14 : _("""
