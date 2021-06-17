@@ -206,6 +206,16 @@ indiquer l'objet qui est modifié.
 
     80 : _("""# Dépend de :"""),
 
+    90 : _("""
+Une macro-commande ne peut pas créer un "%(k1)s" avec plus de 255 résultats.
+Il faudrait une version de Python 3.7 ou plus pour cela.
+
+Conseil :
+    Activer l'option de compatibilité qui publie les résultats dans le contexte
+    global en faisant :
+        %(k2)s
+"""),
+
     98 : _("""
  <INFO> Démarrage de l'exécution.
 """),

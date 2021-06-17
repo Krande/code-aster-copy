@@ -57,9 +57,13 @@ Base classes
 ============
 """
 
+# aslint: disable=C4009
+# because of HELP_LEGACY_MODE string
+
 import inspect
 import linecache
 import re
+import sys
 from collections import namedtuple
 
 import aster_core
@@ -592,6 +596,11 @@ class ExecuteCommandOps(ExecuteCommand):
         return libaster.call_ops(syntax, self._op)
 
 
+HELP_LEGACY_MODE = """
+        from code_aster.Utilities import ExecutionParameter, Options
+        ExecutionParameter().enable(Options.UseLegacyMode)
+"""
+
 class ExecuteMacro(ExecuteCommand):
 
     """This implements an executor of *legacy* macro-commands.
@@ -605,20 +614,19 @@ class ExecuteMacro(ExecuteCommand):
     a *DataStructure* object (for one result) or a *namedtuple* (for several
     results). ``result`` is created by the *ops* function.
 
-    For compatibility: :meth:`create_result` builds the type of the
-    *namedtuple*. The *ops* function returns the "main" result and registers
-    others with :meth:`register_result`.
+    For compatibility: :meth:`create_result` gets the names of the results.
+    The *ops* function returns the "main" result and registers others with
+    :meth:`register_result`.
     :meth:`exec_` adds it at first position of the *namedtuple* under the
     name "main".
 
     Attributes:
         _sdprods (list[CO]): List of CO objects.
-        _result_type (type): *namedtuple* type.
         _result_names (list[str]): List of expected results names.
         _add_results (dict): Dict of additional results.
     """
 
-    _sdprods = _result_type = _result_names = _add_results = None
+    _sdprods = _result_names = _add_results = None
 
     def __init__(self):
         """Initialization"""
@@ -646,7 +654,6 @@ class ExecuteMacro(ExecuteCommand):
                 for i in self._sdprods
             )
             names = [ii for i in names_i for ii in i]
-            self._result_type = namedtuple("Result", ["main"] + names)
             self._result_names = names
             self._add_results = {}
 
@@ -693,7 +700,11 @@ class ExecuteMacro(ExecuteCommand):
             missing = set(self._result_names).difference(list(dres.keys()))
             if missing:
                 raise ValueError("Missing results: {0}".format(tuple(missing)))
-            self._result = self._result_type(**dres)
+            # explicit message for python < 3.7
+            if len(self._result_names) > 254 and sys.version_info[:2] < (3, 7):
+                UTMESS("F", "SUPERVIS2_90", valk=("namedtuple", HELP_LEGACY_MODE))
+            result_type = namedtuple("Result", ["main"] + self._result_names)
+            self._result = result_type(**dres)
 
     def register_result(self, result, target):
         """Register an additional result.
