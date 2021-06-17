@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -111,6 +111,8 @@ ModeStr=CALC_MODES(MATR_RIGI=Rigidite,
                    OPTION='BANDE',
                    CALC_FREQ=_F(FREQ=(0.0,3.0,),
                                 ),
+                   SOLVEUR=_F( METHODE='MUMPS',
+                                POSTTRAITEMENTS='FORCE',),
                    MATR_MASS=Masse,
                    )
 #
@@ -119,6 +121,8 @@ ModeSta=MODE_STATIQUE(
     MATR_RIGI=Rigidite,
     MATR_MASS=Masse,
     MODE_STAT=_F(TOUT='OUI',AVEC_CMP='DX',),
+    SOLVEUR=_F( METHODE='MUMPS',
+                                POSTTRAITEMENTS='FORCE',),
 )
 #
 DeplSis1=CALC_CHAR_SEISME(
@@ -169,6 +173,8 @@ Resultat=DYNA_VIBRA(
         NOEUD_1='N01', NOEUD_2='N02',
         K1=120.0, K2=10.0, K3=60.0, C=1.7, PUIS_ALPHA=0.5,
     ),
+    SOLVEUR=_F( METHODE='MUMPS',
+                                POSTTRAITEMENTS='FORCE',),
     IMPRESSION=_F(UNITE_DIS_VISC =25),
     ARCHIVAGE=_F(INST=ARCHLIST, PAS_ARCH=10**8)
 )
@@ -332,7 +338,7 @@ TEST_TABLE(TABLE=TDDepl,
     FILTRE=_F(NOM_PARA='Depl',CRIT_COMP ='MAXI_ABS',),
     NOM_PARA='Depl',
     REFERENCE='SOURCE_EXTERNE', CRITERE='ABSOLU',PRECISION=5.0E-03,
-    VALE_REFE=2.81E-04, VALE_CALC=0.000721101175341999,
+    VALE_REFE=2.81E-04, VALE_CALC=0.0007223154900647634,
 )
 TEST_TABLE(TABLE=TDForc,
     FILTRE=_F(NOM_PARA='Forc',CRIT_COMP ='MAXI_ABS',),
@@ -442,7 +448,7 @@ TEST_TABLE(TABLE=TDDeplAB,
     NOM_PARA='Depl',
     REFERENCE='SOURCE_EXTERNE', CRITERE='ABSOLU',
      PRECISION=5.0E-03,
-    VALE_REFE= 6.0E-08, VALE_CALC=0.0004127770837238,
+    VALE_REFE= 6.0E-08, VALE_CALC=0.0004140505225772482,
 )
 TEST_TABLE(TABLE=TDForcAB,
     FILTRE=_F(NOM_PARA='Forc',CRIT_COMP ='MAXI_ABS',),
