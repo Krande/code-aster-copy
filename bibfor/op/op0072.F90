@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ subroutine op0072()
 #include "asterfort/exisd.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/idensd.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
@@ -120,10 +121,10 @@ subroutine op0072()
             endif
         else
             call dismoi('NUME_DDL', basemo, 'RESU_DYNA', repk=nume2)
-            proch2 = nume2(1:8)//'.NUME'
+            proch2 = nume2(1:14)//'.NUME'
         endif
 !
-        if (proch1 .ne. proch2) then
+        if (.not. idensd('PROF_CHNO',proch1,proch2))then
             call utmess('I', 'ALGORITH9_41')
         endif
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,6 +61,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/idensd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelibe.h"
@@ -92,7 +93,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
 !     0.2 - DECLARATION DES VARIABLES LOCALES
 !
     character(len=1) :: typc
-    aster_logical :: modnum, exnume, chnoeud
+    aster_logical :: modnum, exnume, chnoeud, lprchno1
     integer :: i, iret, neq, nbmode
     integer :: jdeeq, jval
     character(len=16) :: champ2
@@ -110,10 +111,19 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
     ASSERT(UN_PARMI2(bmodr, bmodz))
     if (present(bmodz)) typc = 'C'
 !
+    neq = 0
     champ2 = 'DEPL'
     numer2 = ' '
+    exnume = .false.
     if (present(champ)) champ2 = champ
-    if (present(numer)) numer2 = numer
+    if (present(numer)) then 
+        numer2 = numer
+        call jeexin(numer2(1:14)//'.NUME.NEQU', iret)
+        if (iret .ne. 0) then
+            exnume = .true.
+            numer2 = numer2(1:14)//'.NUME'
+        endif
+    endif
     if (present(nequa)) neq = nequa
 !
     chnoeud = .true.
@@ -122,13 +132,10 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
 !   --- RECUPERATION/VERIFICATION DU NOMBRE D'EQUATIONS RENSEIGNE
 !   --- 1. CHAMP AUX NOEUDS : PAR RAPPORT A L'INFORMATION DANS LE NUME_DDL 
     if (chnoeud) then
-        if (numer2 .ne. ' ') then
-            call jeexin(numer2(1:14)//'.NUME.NEQU', iret)
-            if (iret .ne. 0) then
-                call dismoi('NB_EQUA', numer2, 'NUME_DDL', repi=neq)
-                if (present(nequa)) then
-                    ASSERT(nequa .eq. neq)
-                endif
+        if (exnume) then
+            call dismoi('NB_EQUA', numer2, 'NUME_DDL', repi=neq)
+            if (present(nequa)) then
+                ASSERT(nequa .eq. neq)
             endif
         else 
             call dismoi('NUME_DDL', base, 'RESU_DYNA', repk=numer1, arret='C',&
@@ -153,6 +160,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
             ASSERT(nequa .eq. neq)
         endif
     endif
+    ASSERT(neq .ne. 0)
 !   --- FIN DE LA RECUPERATION/VERIFICATION DU NOMBRE D'EQUATIONS
 !
     call dismoi('NB_MODES_TOT', base, 'RESULTAT', repi=nbmode)
@@ -191,17 +199,21 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
 !     1.3 - TRAITEMENT DES CAS AVEC UN PROF_CHNO ET NON PAS UN NUME_DDL
 !           COMPLET.
 !
-    exnume = .false.
-    numer2 = numer
-    if (numer1(15:15) .eq. ' ') numer1 = numer1(1:14)//'.NUME'
-    if (numer2(15:15) .eq. ' ') then
-        exnume = .true.
-        numer2 = numer2(1:14)//'.NUME'
+    lprchno1 = .false.
+    call jeexin(numer1(1:14)//'.NUME.NEQU', iret)
+    if (iret .ne. 0) then
+        numer1 = numer1(1:14)//'.NUME'
     else
+        if (exnume) lprchno1 = .true.
+    endif
+    
+    if (exnume) then
+        call dismoi('NOM_MAILLA', numer2(1:14), 'NUME_DDL', repk=maill2)
 !       --- ON NE FAIT PAS DE TEST DE COMPATIBILITE SUR LES MAILLAGES
 !         - SI ON NE DISPOSE PAS DE NUMEDDL COMPLET
 !         - IMPORTANT : LE TEST DOIT SE FAIRE QUAND MEME EN DEHORS DE
 !                       L'APPEL A COPMOD (VOIR OP0072 PAR EXEMPLE)
+    else
         maill2 = maill1
     endif
 !
@@ -220,7 +232,7 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
     call jeexin(maill1(1:8)//'.INV.SKELETON', iret)
     modnum = .false.
     if (numer2 .ne. ' ') then
-        if ((numer2.ne.numer1) .and. (iret.eq.0) .and. (exnume)) then
+        if ((.not.idensd('PROF_CHNO', numer2, numer1)) .and. (iret.eq.0) .and. (exnume)) then
             call dismoi('NOM_MAILLA', numer2(1:14), 'NUME_DDL', repk=maill2)
             if (maill1 .ne. maill2) then
                 valk (1) = numer2
@@ -230,8 +242,14 @@ subroutine copmod(base, bmodr, bmodz, champ, numer,&
                 call utmess('F', 'ALGORITH12_62', nk=4, valk=valk)
             endif
         endif
-        if ((numer2.ne.numer1) .and. (iret.eq.0)) then
-            modnum = .true.
+        if (lprchno1)then
+            if ((numer2.ne.numer1) .and. (iret.eq.0)) then
+                modnum = .true.
+            endif
+        else
+            if ((.not.idensd('PROF_CHNO', numer2, numer1)) .and. (iret.eq.0)) then
+                modnum = .true.
+            endif
         endif
     endif
 !

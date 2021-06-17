@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ subroutine vecgen(nomres, numeg)
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/idensd.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
@@ -316,7 +317,8 @@ subroutine vecgen(nomres, numeg)
 !     PAR SECURITE, ON S'ASSURE QUE LE NUME_DDL ASSOCIE AU CHARGEMENT
 !     COINCIDE AVEC CELUI ASSOCIE A LA SOUS-STRUCTURE.
 !
-        if (nuchar(1:14) .ne. nubamo(1:14)) then
+        if (.not. idensd('PROF_CHNO', nuchar(1:19), nubamo(1:19)))then
+!        if (nuchar(1:14) .ne. nubamo(1:14)) then
             valk (1) = nomsst
             valk (2) = nubamo
             valk (3) = nuchar

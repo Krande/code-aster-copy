@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ implicit none
     character(len=8) :: tsca, nogd, nomgd1, nompar, ma2, ta, ma3
     character(len=16) :: tychr1, opera, optio2, typco, option
     character(len=19) :: ligrel, chatmp, celmod, prchn1, cns1, ch1, prchn2, chin, chou2
-    character(len=8) :: nu1
+    character(len=8) :: nu1, nu2
     character(len=24), pointer :: v_refe(:) => null()
     character(len=24), pointer :: v_celmod_celk(:) => null()
     aster_logical :: dbg
@@ -352,24 +352,28 @@ implicit none
   1         continue
 !
             call dismoi('PROF_CHNO', chou, 'CHAM_NO', repk=prchn2)
-            if (idensd('PROF_CHNO',prchn1,prchn2)) then
-                call detrsd('PROF_CHNO', prchn2)
-                call jeveuo(chou(1:8)//'           .REFE', 'E', vk24 = v_refe)
-                v_refe(2) = prchn1
-            else
+            if (.not. idensd('PROF_CHNO', prchn1, prchn2)) then
                 call getfac('COMB', nocc)
                 if (nocc .ne. 0) then
                     call utmess('A', 'CREACHAMP1_14')
                 endif
-                cns1 = '&&OP0195.CNS1'
-                call cnocns(chou, 'V', cns1)
-                if (prchn2(1:8) .eq. chou(1:8)) call detrsd('PROF_CHNO', prchn2)
                 call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=iret)
                 if (iret .eq. 0) then
                     prol0 = 'NON'
                 endif
-                call cnscno(cns1, prchn1, prol0, 'G', chou,&
+!               chacun son PROF_CHNO pour éviter les problèmes en cas de suppression
+                cns1 = '&&OP0195.CNS1'
+                call cnocns(chou, 'V', cns1)
+                call detrsd('PROF_CHNO', prchn2)
+!               si NUME_DDL pas de problèmes, donc on partage le prof_CHNO
+                if (i12.eq.1)then
+                    call cnscno(cns1, prchn1, prol0, 'G', chou,&
                             'F', ibid)
+                else
+                    call copisd('PROF_CHNO', 'G', prchn1, prchn2)
+                    call cnscno(cns1, prchn2, prol0, 'G', chou,&
+                            'F', ibid)
+                endif
                 call detrsd('CHAM_NO_S', cns1)
             endif
         endif
