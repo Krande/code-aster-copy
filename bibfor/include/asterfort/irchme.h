@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
                       nomsym, typech, numord, nbrcmp, nomcmp,&
                       nbnoec, linoec, nbmaec, limaec, lvarie,&
                       sdcarm, carael, paraListNb, paraListName,&
-                      codret)
+                      nbCmpDyna, codret)
         integer :: ifichi
         character(len=19) :: chanom
         character(len=*) :: partie
@@ -42,6 +42,7 @@ interface
         character(len=8) :: sdcarm, carael
         integer, intent(in) :: paraListNb
         character(len=16), pointer :: paraListName(:)
+        integer, intent(inout) :: nbCmpDyna
         integer :: codret
     end subroutine irchme
 end interface

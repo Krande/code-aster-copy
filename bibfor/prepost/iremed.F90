@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -100,7 +100,7 @@ character(len=8), intent(in) :: caraElem
     character(len=24) :: valk(2), resultType
     character(len=64) :: fieldNameMed
     integer :: storeIndx, iField, iStore, iret, ibid, codret
-    integer :: lnochm, ierd
+    integer :: lnochm, ierd, nbCmpDyna
     aster_logical :: lfirst, l_mult_model, l_vari_name, l_meta_name
     integer, pointer :: cmpListNume(:) => null()
     character(len=24), pointer :: celk(:) => null()
@@ -116,6 +116,7 @@ character(len=8), intent(in) :: caraElem
 !
     dsName = dsNameZ
     lfirst = .true.
+    nbCmpDyna = 0
 !
     sdcarm = ' '
     if (caraElem .ne. ' ') then
@@ -264,7 +265,8 @@ character(len=8), intent(in) :: caraElem
                         nodeUserNb, nodeUserNume,&
                         cellUserNb, cellUserNume, lVariName,&
                         sdcarm, caraElem, paraListNb, paraListName,&
-                        codret)
+                        nbCmpDyna, codret)
+ 
 !
 999         continue
 !

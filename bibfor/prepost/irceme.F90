@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine irceme(ifi, nochmd, chanom, typech, modele,&
                   nbcmp, nomcmp, etiqcp, partie, numpt,&
                   instan, numord, nbmaec, limaec, sdcarm,&
-                  carael, field_type, codret)
+                  carael, field_type, nbCmpDyna, codret)
 !_______________________________________________________________________
 ! person_in_charge: nicolas.sellenet at edf.fr
 !        IMPRESSION DU CHAMP CHANOM ELEMENT ENTIER/REEL
@@ -72,6 +72,7 @@ subroutine irceme(ifi, nochmd, chanom, typech, modele,&
 !
     real(kind=8) :: instan
 !
+    integer, intent(inout) :: nbCmpDyna
     integer :: codret
 !
 ! 0.2. ==> COMMUNS
@@ -90,7 +91,7 @@ subroutine irceme(ifi, nochmd, chanom, typech, modele,&
 !====
 ! 1. PREALABLE
 !====
-!
+
 !    --- CONVERSION CHAM_ELEM -> CHAM_ELEM_S
 !               1234567890123456789
     chamns = '&&      .CES.MED'
@@ -119,7 +120,7 @@ subroutine irceme(ifi, nochmd, chanom, typech, modele,&
                 nbcmp, nomcmp, etiqcp, partie, numpt,&
                 instan, numord, jcesk, jcesd, jcesc,&
                 jcesv, jcesl, nbmaec, limaec, sdcarm,&
-                carael, field_type, codret)
+                carael, field_type, nbCmpDyna, codret)
 !
 !====
 ! 3. ON NETTOIE

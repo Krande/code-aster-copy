@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 !
 !
     integer :: iret,  ima, nbma, izone, nuzone
-    integer ::  jcesd, jcesl, iad, dec1, dec2, ifm, ifr, nncp, iexi
+    integer ::  jcesd, jcesl, iad, dec1, dec2, ifm, ifr, nncp, iexi, nbCmpDyna
     integer :: jdesc, jvale, ngedit, nugd, ncmpmx, kgedit,  kzone, kcmp
     character(len=19) :: cart1, cel2, ces2
     character(len=64) :: nommed
@@ -209,7 +209,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
         call irceme(ifi, nommed, cel2, typech, modele,&
                     0, ' ', ' ', ' ', 0,&
                     0.d0, 0, 0, [0], sdcarm, sdcarm,&
-                    field_type, iret)
+                    field_type, nbCmpDyna, iret)
         ASSERT(iret.eq.0)
 
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,7 @@ subroutine ircnme(ifi, nochmd, chanom, typech, modele,&
 !
     character(len=19) :: chamns
 !
-    integer :: jcnsk, jcnsd, jcnsc, jcnsv, jcnsl
+    integer :: jcnsk, jcnsd, jcnsc, jcnsv, jcnsl, nbCmpDyna
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -111,7 +111,7 @@ subroutine ircnme(ifi, nochmd, chanom, typech, modele,&
                 nbcmp, nomcmp, ' ', partie, numpt,&
                 instan, numord, jcnsk, jcnsd, jcnsc,&
                 jcnsv, jcnsl, nbnoec, linoec, sdcarm,&
-                carael, field_type, codret)
+                carael, field_type, nbCmpDyna, codret)
 !
 !====
 ! 3. ON NETTOIE

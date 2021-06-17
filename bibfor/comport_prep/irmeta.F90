@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -97,7 +97,7 @@ integer, intent(out) :: codret
     integer :: nb_vari, nb_pt, nb_spt, nb_vari_zone
     integer :: nb_vari_redu, nb_zone, nb_elem, nb_vari_maxi, nb_elem_mesh, nb_elem_zone
     integer :: nt_vari, codret_dummy
-    integer :: posit, iret, affe_type, affe_indx, nume_elem
+    integer :: posit, iret, affe_type, affe_indx, nume_elem, nbCmpDyna
     integer :: jv_elno_cesd, jv_elno_cesl, jv_elnr_cesd, jv_elnr_cesl, jv_elno, jv_elnr
     character(len=7) :: saux07
     character(len=8) :: saux08
@@ -266,7 +266,7 @@ integer, intent(out) :: codret
     call irceme(ifi, nomres, meta_elnr, field_loca, model,&
                 nb_cmp_sele, cmp_name_sele, label_med, partie, numpt,&
                 instan, nume_store, nbmaec, limaec, cara_elem,&
-                cara_elem, field_type, codret)
+                cara_elem, field_type, nbCmpDyna, codret)
 !
  99 continue
 !
