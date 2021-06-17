@@ -3,7 +3,7 @@
  * @brief Interface python de CrackShape
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,29 +29,29 @@ namespace py = boost::python;
 
 void exportCrackShapeToPython() {
 
-    py::class_< CrackShapeClass, CrackShapeClass::CrackShapePtr >( "CrackShape", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< CrackShapeClass >))
+    py::class_< CrackShape, CrackShape::CrackShapePtr >( "CrackShape", py::no_init )
+        .def( "__init__", py::make_constructor(&initFactoryPtr< CrackShape >))
         // fake initFactoryPtr: not a DataStructure
-        .def( "setEllipseCrackShape", &CrackShapeClass::setEllipseCrackShape )
-        .def( "setSquareCrackShape", &CrackShapeClass::setSquareCrackShape )
-        .def( "setCylinderCrackShape", &CrackShapeClass::setCylinderCrackShape )
-        .def( "setNotchCrackShape", &CrackShapeClass::setNotchCrackShape )
-        .def( "setHalfPlaneCrackShape", &CrackShapeClass::setHalfPlaneCrackShape )
-        .def( "setSegmentCrackShape", &CrackShapeClass::setSegmentCrackShape )
-        .def( "setHalfLineCrackShape", &CrackShapeClass::setHalfLineCrackShape )
-        .def( "setLineCrackShape", &CrackShapeClass::setLineCrackShape )
-        .def( "getShape", &CrackShapeClass::getShape )
-        .def( "getShapeName", &CrackShapeClass::getShapeName )
-        .def( "getSemiMajorAxis", &CrackShapeClass::getSemiMajorAxis )
-        .def( "getSemiMinorAxis", &CrackShapeClass::getSemiMinorAxis )
-        .def( "getCenter", &CrackShapeClass::getCenter )
-        .def( "getVectX", &CrackShapeClass::getVectX )
-        .def( "getVectY", &CrackShapeClass::getVectY )
-        .def( "getCrackSide", &CrackShapeClass::getCrackSide )
-        .def( "getFilletRadius", &CrackShapeClass::getFilletRadius )
-        .def( "getHalfLength", &CrackShapeClass::getHalfLength )
-        .def( "getEndPoint", &CrackShapeClass::getEndPoint )
-        .def( "getNormal", &CrackShapeClass::getNormal )
-        .def( "getTangent", &CrackShapeClass::getTangent )
-        .def( "getStartingPoint", &CrackShapeClass::getStartingPoint );
+        .def( "setEllipseCrackShape", &CrackShape::setEllipseCrackShape )
+        .def( "setSquareCrackShape", &CrackShape::setSquareCrackShape )
+        .def( "setCylinderCrackShape", &CrackShape::setCylinderCrackShape )
+        .def( "setNotchCrackShape", &CrackShape::setNotchCrackShape )
+        .def( "setHalfPlaneCrackShape", &CrackShape::setHalfPlaneCrackShape )
+        .def( "setSegmentCrackShape", &CrackShape::setSegmentCrackShape )
+        .def( "setHalfLineCrackShape", &CrackShape::setHalfLineCrackShape )
+        .def( "setLineCrackShape", &CrackShape::setLineCrackShape )
+        .def( "getShape", &CrackShape::getShape )
+        .def( "getShapeName", &CrackShape::getShapeName )
+        .def( "getSemiMajorAxis", &CrackShape::getSemiMajorAxis )
+        .def( "getSemiMinorAxis", &CrackShape::getSemiMinorAxis )
+        .def( "getCenter", &CrackShape::getCenter )
+        .def( "getVectX", &CrackShape::getVectX )
+        .def( "getVectY", &CrackShape::getVectY )
+        .def( "getCrackSide", &CrackShape::getCrackSide )
+        .def( "getFilletRadius", &CrackShape::getFilletRadius )
+        .def( "getHalfLength", &CrackShape::getHalfLength )
+        .def( "getEndPoint", &CrackShape::getEndPoint )
+        .def( "getNormal", &CrackShape::getNormal )
+        .def( "getTangent", &CrackShape::getTangent )
+        .def( "getStartingPoint", &CrackShape::getStartingPoint );
 };

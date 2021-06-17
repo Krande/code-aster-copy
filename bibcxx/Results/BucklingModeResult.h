@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe BucklingModeResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,11 +32,11 @@
 #include "LinearAlgebra/GeneralizedAssemblyMatrix.h"
 
 /**
- * @class BucklingModeResultClass
+ * @class BucklingModeResult
  * @brief Cette classe correspond a un mode_flamb
  * @author Natacha Béreux
  */
-class BucklingModeResultClass : public FullResultClass
+class BucklingModeResult : public FullResult
 {
   private:
     /** @brief Stiffness double displacement matrix */
@@ -56,12 +56,12 @@ class BucklingModeResultClass : public FullResultClass
     /**
      * @brief Constructeur
      */
-    BucklingModeResultClass():
-        BucklingModeResultClass( ResultNaming::getNewResultName() )
+    BucklingModeResult():
+        BucklingModeResult( ResultNaming::getNewResultName() )
     {};
 
-    BucklingModeResultClass( const std::string &name ):
-        FullResultClass( name, "MODE_FLAMB" ),
+    BucklingModeResult( const std::string &name ):
+        FullResult( name, "MODE_FLAMB" ),
         _rigidityDispDMatrix( nullptr ),
         _rigidityDispCMatrix( nullptr ),
         _rigidityTempDMatrix( nullptr ),
@@ -192,7 +192,7 @@ class BucklingModeResultClass : public FullResultClass
         return true;
     };
 
-    bool update()
+    bool build()
     {
         BaseDOFNumberingPtr numeDdl( nullptr );
         if ( _rigidityDispDMatrix != nullptr )
@@ -210,14 +210,14 @@ class BucklingModeResultClass : public FullResultClass
             if ( model != nullptr )
                 _mesh = model->getMesh();
         }
-        return ResultClass::update();
+        return Result::build();
     };
 };
 
 /**
  * @typedef BucklingModeResultPtr
- * @brief Pointeur intelligent vers un BucklingModeResultClass
+ * @brief Pointeur intelligent vers un BucklingModeResult
  */
-typedef boost::shared_ptr< BucklingModeResultClass > BucklingModeResultPtr;
+typedef boost::shared_ptr< BucklingModeResult > BucklingModeResultPtr;
 
 #endif /* BUCKLINGMODERESULT_H_ */

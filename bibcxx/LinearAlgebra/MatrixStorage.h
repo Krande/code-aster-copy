@@ -33,26 +33,26 @@
 #include "MemoryManager/JeveuxCollection.h"
 
 /**
- * @class MatrixStorageClass
+ * @class MatrixStorage
  * @brief Cette classe correspond a un stockage
  * @author Nicolas Sellenet
  */
-class MatrixStorageClass : public DataStructure {
+class MatrixStorage : public DataStructure {
   private:
   public:
     /**
      * @brief Constructeur
      */
-    MatrixStorageClass( const std::string &name )
+    MatrixStorage( const std::string &name )
         : DataStructure( name, 19, "STOCKAGE", Permanent ){};
 };
 
 /**
- * @class LigneDeCielClass
+ * @class LigneDeCiel
  * @brief Cette classe correspond a un stockage ligne de ciel
  * @author Nicolas Sellenet
  */
-class LigneDeCielClass : public MatrixStorageClass {
+class LigneDeCiel : public MatrixStorage {
   private:
     /** @brief Objet Jeveux '.SCBL' */
     JeveuxVectorLong _scbl;
@@ -73,8 +73,8 @@ class LigneDeCielClass : public MatrixStorageClass {
     /**
      * @brief Constructeur
      */
-    LigneDeCielClass( const std::string &name )
-        : MatrixStorageClass( name ), _scbl( JeveuxVectorLong( getName() + ".SCBL" ) ),
+    LigneDeCiel( const std::string &name )
+        : MatrixStorage( name ), _scbl( JeveuxVectorLong( getName() + ".SCBL" ) ),
           _scdi( JeveuxVectorLong( getName() + ".SCDI" ) ),
           _scde( JeveuxVectorLong( getName() + ".SCDE" ) ),
           _schc( JeveuxVectorLong( getName() + ".SCHC" ) ),
@@ -85,16 +85,16 @@ class LigneDeCielClass : public MatrixStorageClass {
 
 /**
  * @typedef LigneDeCielPtr
- * @brief Pointeur intelligent vers un LigneDeCielClass
+ * @brief Pointeur intelligent vers un LigneDeCiel
  */
-typedef boost::shared_ptr< LigneDeCielClass > LigneDeCielPtr;
+typedef boost::shared_ptr< LigneDeCiel > LigneDeCielPtr;
 
 /**
- * @class MorseStorageClass
+ * @class MorseStorage
  * @brief Cette classe correspond a un stockage ligne de ciel
  * @author Nicolas Sellenet
  */
-class MorseStorageClass : public MatrixStorageClass {
+class MorseStorage : public MatrixStorage {
   private:
     /** @brief Objet Jeveux '.SMDI' */
     JeveuxVectorLong _smdi;
@@ -107,24 +107,24 @@ class MorseStorageClass : public MatrixStorageClass {
     /**
      * @brief Constructeur
      */
-    MorseStorageClass( const std::string &name )
-        : MatrixStorageClass( name ), _smdi( JeveuxVectorLong( getName() + ".SMDI" ) ),
+    MorseStorage( const std::string &name )
+        : MatrixStorage( name ), _smdi( JeveuxVectorLong( getName() + ".SMDI" ) ),
           _smde( JeveuxVectorLong( getName() + ".SMDE" ) ),
           _smhc( JeveuxVectorShort( getName() + ".SMHC" ) ){};
 };
 
 /**
  * @typedef MorseStoragePtr
- * @brief Pointeur intelligent vers un MorseStorageClass
+ * @brief Pointeur intelligent vers un MorseStorage
  */
-typedef boost::shared_ptr< MorseStorageClass > MorseStoragePtr;
+typedef boost::shared_ptr< MorseStorage > MorseStoragePtr;
 
 /**
- * @class MultFrontStorageClass
+ * @class MultFrontStorage
  * @brief Cette classe correspond a un stockage ligne de ciel
  * @author Nicolas Sellenet
  */
-class MultFrontStorageClass : public MatrixStorageClass {
+class MultFrontStorage : public MatrixStorage {
   private:
     /** @brief Objet Jeveux '.ADNT' */
     JeveuxVectorShort _adnt;
@@ -139,8 +139,8 @@ class MultFrontStorageClass : public MatrixStorageClass {
     /**
      * @brief Constructeur
      */
-    MultFrontStorageClass( const std::string &name )
-        : MatrixStorageClass( name ), _adnt( JeveuxVectorShort( getName() + ".ADNT" ) ),
+    MultFrontStorage( const std::string &name )
+        : MatrixStorage( name ), _adnt( JeveuxVectorShort( getName() + ".ADNT" ) ),
           _glob( JeveuxVectorShort( getName() + ".GLOB" ) ),
           _locl( JeveuxVectorShort( getName() + ".LOCL" ) ),
           _pnti( JeveuxVectorShort( getName() + ".PNTI" ) ){};
@@ -148,8 +148,8 @@ class MultFrontStorageClass : public MatrixStorageClass {
 
 /**
  * @typedef MultFrontStoragePtr
- * @brief Pointeur intelligent vers un MultFrontStorageClass
+ * @brief Pointeur intelligent vers un MultFrontStorage
  */
-typedef boost::shared_ptr< MultFrontStorageClass > MultFrontStoragePtr;
+typedef boost::shared_ptr< MultFrontStorage > MultFrontStoragePtr;
 
 #endif /* MATRIXSTORAGE_H_ */

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MeshesMapping
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -34,11 +34,11 @@
 #include "Meshes/Mesh.h"
 
 /**
- * @class MeshesMappingClass
+ * @class MeshesMapping
  * @brief Cette classe decrit un corresp_2_mailla
  * @author Nicolas Sellenet
  */
-class MeshesMappingClass : public DataStructure {
+class MeshesMapping : public DataStructure {
   private:
     /** @brief Objet Jeveux '.PJXX_K1' */
     JeveuxVectorChar24 _pjxxK1;
@@ -68,14 +68,14 @@ class MeshesMappingClass : public DataStructure {
   public:
     /**
      * @typedef MeshesMappingPtr
-     * @brief Pointeur intelligent vers un MeshesMappingClass
+     * @brief Pointeur intelligent vers un MeshesMapping
      */
-    typedef boost::shared_ptr< MeshesMappingClass > MeshesMappingPtr;
+    typedef boost::shared_ptr< MeshesMapping > MeshesMappingPtr;
 
     /**
      * @brief Constructeur
      */
-    MeshesMappingClass( const std::string name = ResultNaming::getNewResultName() );
+    MeshesMapping( const std::string name = ResultNaming::getNewResultName() );
 
     bool setFirstMesh( MeshPtr &currentMesh ) {
         if ( currentMesh->isEmpty() )
@@ -87,8 +87,8 @@ class MeshesMappingClass : public DataStructure {
 
 /**
  * @typedef MeshesMappingPtr
- * @brief Pointeur intelligent vers un MeshesMappingClass
+ * @brief Pointeur intelligent vers un MeshesMapping
  */
-typedef boost::shared_ptr< MeshesMappingClass > MeshesMappingPtr;
+typedef boost::shared_ptr< MeshesMapping > MeshesMappingPtr;
 
 #endif /* MATCHINGMESHES_H_ */

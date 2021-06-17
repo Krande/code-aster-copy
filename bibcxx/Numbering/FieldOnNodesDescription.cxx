@@ -23,13 +23,13 @@
 
 #include "Numbering/FieldOnNodesDescription.h"
 
-FieldOnNodesDescriptionClass::FieldOnNodesDescriptionClass( const JeveuxMemory memType )
+FieldOnNodesDescription::FieldOnNodesDescription( const JeveuxMemory memType )
     : DataStructure( ResultNaming::getNewResultName(), 19, "PROF_CHNO", memType ),
       _componentsOnNodes( getName() + ".PRNO" ), _namesOfGroupOfCells( getName() + ".LILI" ),
       _indexationVector( getName() + ".NUEQ" ),
       _nodeAndComponentsNumberFromDOF( getName() + ".DEEQ" ){};
 
-FieldOnNodesDescriptionClass::FieldOnNodesDescriptionClass( const std::string name,
+FieldOnNodesDescription::FieldOnNodesDescription( const std::string name,
                                                             const JeveuxMemory memType )
     : DataStructure( name, 19, "PROF_CHNO", memType ), _componentsOnNodes( getName() + ".PRNO" ),
       _namesOfGroupOfCells( getName() + ".LILI" ), _indexationVector( getName() + ".NUEQ" ),
@@ -37,12 +37,12 @@ FieldOnNodesDescriptionClass::FieldOnNodesDescriptionClass( const std::string na
 
 
 
-ASTERINTEGER FieldOnNodesDescriptionClass::getNumberOfDofs() const
+ASTERINTEGER FieldOnNodesDescription::getNumberOfDofs() const
 {
     return _nodeAndComponentsNumberFromDOF->size() / 2;
 };
 
-VectorLong FieldOnNodesDescriptionClass::getNodesFromDOF() const
+VectorLong FieldOnNodesDescription::getNodesFromDOF() const
 {
     const bool retour = _nodeAndComponentsNumberFromDOF->updateValuePointer();
     const ASTERINTEGER nb_eq = this->getNumberOfDofs();

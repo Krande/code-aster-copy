@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe CyclicSymmetryMode
  * @author Natacha Bereux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -36,11 +36,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class CyclicSymmetryModeClass
+ * @class CyclicSymmetryMode
  * @brief Cette classe correspond a un MOD_CYCL
  * @author Natacha Bereux
  */
-class CyclicSymmetryModeClass : public DataStructure {
+class CyclicSymmetryMode : public DataStructure {
   private:
     /** @brief Objet Jeveux '.CYCL_TYPE */
     JeveuxVectorChar8 _type;
@@ -68,14 +68,14 @@ class CyclicSymmetryModeClass : public DataStructure {
   public:
     /**
      * @typedef CyclicSymmetryModePtr
-     * @brief Pointeur intelligent vers un CyclicSymmetryModeClass
+     * @brief Pointeur intelligent vers un CyclicSymmetryMode
      */
-    typedef boost::shared_ptr< CyclicSymmetryModeClass > CyclicSymmetryModePtr;
+    typedef boost::shared_ptr< CyclicSymmetryMode > CyclicSymmetryModePtr;
 
     /**
      * @brief Constructeur
      */
-    CyclicSymmetryModeClass( const std::string name = ResultNaming::getNewResultName() )
+    CyclicSymmetryMode( const std::string name = ResultNaming::getNewResultName() )
         : DataStructure( name, 8, "MODE_CYCL", Permanent ),
           _type( JeveuxVectorChar8( getName() + ".CYCL_TYPE" ) ),
           _desc( JeveuxVectorLong( getName() + ".CYCL_DESC" ) ),
@@ -109,9 +109,9 @@ class CyclicSymmetryModeClass : public DataStructure {
 
 /**
  * @typedef CyclicSymmetryModePtr
- * @brief Pointeur intelligent vers un CyclicSymmetryModeClass
+ * @brief Pointeur intelligent vers un CyclicSymmetryMode
  */
-typedef boost::shared_ptr< CyclicSymmetryModeClass > CyclicSymmetryModePtr;
+typedef boost::shared_ptr< CyclicSymmetryMode > CyclicSymmetryModePtr;
 
 /**
  * @brief Definition du maillage

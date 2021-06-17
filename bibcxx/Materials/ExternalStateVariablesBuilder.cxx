@@ -1,6 +1,6 @@
 /**
- * @file ExternalVariablesComputation.cxx
- * @brief Implementation de ExternalVariablesComputationClass
+ * @file ExternalStateVariables.cxx
+ * @brief Implementation de ExternalStateVariable
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
@@ -23,21 +23,22 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "Materials/ExternalVariablesComputation.h"
+#include "Materials/BaseExternalStateVariables.h"
+#include "Materials/ExternalStateVariablesBuilder.h"
 
-ExternalVariablesComputationClass::ExternalVariablesComputationClass(
+ExternalStateVariablesBuilder::ExternalStateVariablesBuilder(
     const ModelPtr &model, const MaterialFieldPtr &mater,
     const ElementaryCharacteristicsPtr &cara, const CodedMaterialPtr &codMater ):
         DataStructure( "VARI_COM", Permanent, 14 ), _model( model ), _mater( mater ),
         _codMater( codMater ), _elemCara( cara ),
-        _varRef( new FieldOnCellsRealClass( _model->getName() + ".CHVCREF" ) ),
-        _varInst( new FieldOnCellsRealClass( getName() + ".TOUT" ) ),
+        _varRef( new FieldOnCellsReal( _model->getName() + ".CHVCREF" ) ),
+        _varInst( new FieldOnCellsReal( getName() + ".TOUT" ) ),
         _timeValue(
-          new ConstantFieldOnCellsRealClass( getName() + ".INST", _model->getMesh() ) ),
-        _currentTime( -1.0 ), _pTot( _mater->existsExternalVariablesComputation( "PTOT" ) ),
-        _hydr( _mater->existsExternalVariablesComputation( "HYDR" ) ),
-        _sech( _mater->existsExternalVariablesComputation( "SECH" ) ),
-        _temp( _mater->existsExternalVariablesComputation( "TEMP" ) )
+          new ConstantFieldOnCellsReal( getName() + ".INST", _model->getMesh() ) ),
+        _currentTime( -1.0 ), _pTot( _mater->hasExternalStateVariables( "PTOT" ) ),
+        _hydr( _mater->hasExternalStateVariables( "HYDR" ) ),
+        _sech( _mater->hasExternalStateVariables( "SECH" ) ),
+        _temp( _mater->hasExternalStateVariables( "TEMP" ) )
 {
     std::string modName( _model->getName(), 0, 8 ), matName( _mater->getName(), 0, 8 );
     std::string carName( ' ', 8 );
@@ -46,7 +47,7 @@ ExternalVariablesComputationClass::ExternalVariablesComputationClass(
     CALLO_VRCREF( modName, matName, carName, _varRef->getName() );
 };
 
-void ExternalVariablesComputationClass::compute( const ASTERDOUBLE &time )
+void ExternalStateVariablesBuilder::build( const ASTERDOUBLE &time )
 {
     _currentTime = time;
     _varInst->deallocate();
@@ -67,7 +68,7 @@ void ExternalVariablesComputationClass::compute( const ASTERDOUBLE &time )
 };
 
 FieldOnNodesRealPtr
-ExternalVariablesComputationClass::computeMechanicalLoads( const BaseDOFNumberingPtr &dofNUM )
+ExternalStateVariablesBuilder::computeExternalStateVariablesLoad( const BaseDOFNumberingPtr &dofNUM)
 {
     const auto &codedMater = _codMater->getCodedMaterialField();
     std::string modName( _model->getName(), 0, 8 );
@@ -90,7 +91,7 @@ ExternalVariablesComputationClass::computeMechanicalLoads( const BaseDOFNumberin
                   compor->getName(), getName(), out, &a, &b, &c, &d );
     JeveuxVectorChar24 vectOut( out );
     vectOut->updateValuePointer();
-    FieldOnNodesRealPtr toReturn( new FieldOnNodesRealClass( ( *vectOut )[0].toString() ) );
+    FieldOnNodesRealPtr toReturn( new FieldOnNodesReal( ( *vectOut )[0].toString() ) );
     toReturn->updateValuePointers();
     return toReturn;
 };

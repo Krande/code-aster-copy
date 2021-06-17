@@ -36,11 +36,11 @@
 
 
 /**
- * @class MechanicalLoadDescriptionClass
+ * @class MechanicalLoadDescription
  * @brief Encapsulation of sd_char_chme
  */
 template< typename ConstantFieldOnCellsType>
-class MechanicalLoadDescriptionClass : public DataStructure
+class MechanicalLoadDescription : public DataStructure
 {
 
   public:
@@ -108,12 +108,12 @@ class MechanicalLoadDescriptionClass : public DataStructure
 
   public:
 
-    MechanicalLoadDescriptionClass( void ) = delete;
+    MechanicalLoadDescription( void ) = delete;
 
     /**
      * @brief Constructor
      */
-    MechanicalLoadDescriptionClass( const std::string name, const ModelPtr &currentModel )
+    MechanicalLoadDescription( const std::string name, const ModelPtr &currentModel )
         : DataStructure( name, 13, "CHAR_CHME" ),
             _model( currentModel ),
             _temperatureField( getName() + ".TEMPE.TEMP" ),
@@ -121,10 +121,10 @@ class MechanicalLoadDescriptionClass : public DataStructure
             _nameOfAssemblyVector( getName() + ".VEASS" ),
             _veiss( getName() + ".VEISS" ),
             _evolChar( getName() + ".EVOL.CHAR" ),
-            _FEDesc( boost::make_shared<FiniteElementDescriptorClass>(
+            _FEDesc( boost::make_shared<FiniteElementDescriptor>(
                 getName() + ".LIGRE", _model->getMesh() ) ),
             _cimpo(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".CIMPO", _FEDesc ) ),
-            _cmult(boost::make_shared<ConstantFieldOnCellsRealClass>(
+            _cmult(boost::make_shared<ConstantFieldOnCellsReal>(
                                                                  getName() + ".CMULT", _FEDesc ) ),
             _dpgen(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".DPGEN", _FEDesc ) ),
             _epsin(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".EPSIN", _FEDesc ) ),
@@ -215,20 +215,20 @@ class MechanicalLoadDescriptionClass : public DataStructure
 /*  Explicit instantiation of template classes
 /**********************************************************/
 
-/** @typedef MechanicalLoadDescriptionRealClass Class d'une charge mécanique réelle */
-typedef MechanicalLoadDescriptionClass< ConstantFieldOnCellsRealClass >
-    MechanicalLoadDescriptionRealClass;
-/** @typedef MechanicalLoadDescriptionFuncClass Class d'une charge mécanique de fonctions */
-typedef MechanicalLoadDescriptionClass< ConstantFieldOnCellsChar24Class >
-MechanicalLoadDescriptionFunctionClass;
-/** @typedef MechanicalLoadDescriptionComplexClass Class d'une charge mécanique de complexe */
-typedef MechanicalLoadDescriptionClass< ConstantFieldOnCellsComplexClass >
-        MechanicalLoadDescriptionComplexClass;
+/** @typedef MechanicalLoadDescriptionReal Class d'une charge mécanique réelle */
+typedef MechanicalLoadDescription< ConstantFieldOnCellsReal >
+    MechanicalLoadDescriptionReal;
+/** @typedef MechanicalLoadDescriptionFunc Class d'une charge mécanique de fonctions */
+typedef MechanicalLoadDescription< ConstantFieldOnCellsChar24 >
+MechanicalLoadDescriptionFunction;
+/** @typedef MechanicalLoadDescriptionComplex Class d'une charge mécanique de complexe */
+typedef MechanicalLoadDescription< ConstantFieldOnCellsComplex >
+        MechanicalLoadDescriptionComplex;
 
 
 template< typename ConstantFieldOnCellsType >
 using MechanicalLoadDescriptionPtr =
-    boost::shared_ptr< MechanicalLoadDescriptionClass< ConstantFieldOnCellsType > >;
+    boost::shared_ptr< MechanicalLoadDescription< ConstantFieldOnCellsType > >;
 
 
 

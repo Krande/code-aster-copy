@@ -3,7 +3,7 @@
  * @brief Interface python de MaterialProperty
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,45 +29,66 @@ namespace py = boost::python;
 
 void exportBaseMaterialPropertyToPython() {
 
-    bool ( GenericMaterialPropertyClass::*c1 )(  ) const =
-        &GenericMaterialPropertyClass::hasTractionFunction;
-    void ( GenericMaterialPropertyClass::*c2 )( const bool )=
-        &GenericMaterialPropertyClass::hasTractionFunction;
+    bool ( GenericMaterialProperty::*c1 )(  ) const =
+        &GenericMaterialProperty::hasTractionFunction;
+    void ( GenericMaterialProperty::*c2 )( const bool )=
+        &GenericMaterialProperty::hasTractionFunction;
 
-    py::class_< GenericMaterialPropertyClass, GenericMaterialPropertyPtr >(
+    // Candidates for setValue
+    bool ( GenericMaterialProperty::*d1 )( std::string, ASTERDOUBLE ) =
+        &GenericMaterialProperty::setValue;
+    bool ( GenericMaterialProperty::*d2 )( std::string, ASTERCOMPLEX ) =
+        &GenericMaterialProperty::setValue;
+    bool ( GenericMaterialProperty::*d3 )( std::string, std::string ) =
+        &GenericMaterialProperty::setValue;
+    bool ( GenericMaterialProperty::*d4 )( std::string, FunctionPtr ) =
+        &GenericMaterialProperty::setValue;
+    bool ( GenericMaterialProperty::*d5 )( std::string, TablePtr ) =
+        &GenericMaterialProperty::setValue;
+    bool ( GenericMaterialProperty::*d6 )( std::string, Function2DPtr ) =
+        &GenericMaterialProperty::setValue;
+    bool ( GenericMaterialProperty::*d7 )( std::string, VectorReal ) =
+        &GenericMaterialProperty::setValue;
+    bool ( GenericMaterialProperty::*d8 )( std::string, VectorFunction ) =
+        &GenericMaterialProperty::setValue;
+    bool ( GenericMaterialProperty::*d9 )( std::string, FormulaPtr ) =
+        &GenericMaterialProperty::setValue;
+
+    py::class_< GenericMaterialProperty, GenericMaterialPropertyPtr >(
         "GenericMaterialProperty", py::no_init )
         // fake initFactoryPtr: created by subclasses
-        .def( "__init__", py::make_constructor(&initFactoryPtr< GenericMaterialPropertyClass >))
-        .def( "getAsterName", &GenericMaterialPropertyClass::getAsterName )
+        .def( "__init__", py::make_constructor(&initFactoryPtr< GenericMaterialProperty >))
+        .def( "getAsterName", &GenericMaterialProperty::getAsterName )
         .def( "hasTractionFunction", c1 )
         .def( "hasTractionFunction", c2 )
-        .def( "getComplexValue", &GenericMaterialPropertyClass::getComplexValue )
-        .def( "getRealValue", &GenericMaterialPropertyClass::getRealValue )
-        .def( "getStringValue", &GenericMaterialPropertyClass::getStringValue )
-        .def( "getGenericFunctionValue",
-              &GenericMaterialPropertyClass::getGenericFunctionValue )
-        .def( "getNumberOfListOfRealProperties",
-              &GenericMaterialPropertyClass::getNumberOfListOfRealProperties )
-        .def( "getNumberOfListOfFunctionProperties",
-              &GenericMaterialPropertyClass::getNumberOfListOfFunctionProperties )
-        .def( "getTableValue", &GenericMaterialPropertyClass::getTableValue )
-        .def( "hasComplexValue", &GenericMaterialPropertyClass::hasComplexValue )
-        .def( "hasRealValue", &GenericMaterialPropertyClass::hasRealValue )
-        .def( "hasStringValue", &GenericMaterialPropertyClass::hasStringValue )
-        .def( "hasGenericFunctionValue",
-              &GenericMaterialPropertyClass::hasGenericFunctionValue )
-        .def( "hasTableValue", &GenericMaterialPropertyClass::hasTableValue )
-        .def( "setComplexValue", &GenericMaterialPropertyClass::setComplexValue )
-        .def( "setRealValue", &GenericMaterialPropertyClass::setRealValue )
-        .def( "setStringValue", &GenericMaterialPropertyClass::setStringValue )
-        .def( "setFunctionValue", &GenericMaterialPropertyClass::setFunctionValue )
-        .def( "setTableValue", &GenericMaterialPropertyClass::setTableValue )
-        .def( "setFunction2DValue", &GenericMaterialPropertyClass::setFunction2DValue )
-        .def( "setFormulaValue", &GenericMaterialPropertyClass::setFormulaValue )
-        .def( "setVectorOfRealValue", &GenericMaterialPropertyClass::setVectorOfRealValue )
-        .def( "setVectorOfFunctionValue",
-              &GenericMaterialPropertyClass::setVectorOfFunctionValue )
+        .def( "getValueComplex", &GenericMaterialProperty::getValueComplex )
+        .def( "getValueReal", &GenericMaterialProperty::getValueReal )
+        .def( "getValueString", &GenericMaterialProperty::getValueString )
+        .def( "getValueGenericFunction",
+              &GenericMaterialProperty::getValueGenericFunction )
+        .def( "getNumberOfListOfPropertiesReal",
+              &GenericMaterialProperty::getNumberOfListOfPropertiesReal )
+        .def( "getNumberOfListOfPropertiesFunction",
+              &GenericMaterialProperty::getNumberOfListOfPropertiesFunction )
+        .def( "getValueTable", &GenericMaterialProperty::getValueTable )
+        .def( "hasValueComplex", &GenericMaterialProperty::hasValueComplex )
+        .def( "hasValueReal", &GenericMaterialProperty::hasValueReal )
+        .def( "hasValueString", &GenericMaterialProperty::hasValueString )
+        .def( "hasValueGenericFunction",
+              &GenericMaterialProperty::hasValueGenericFunction )
+        .def( "hasValueTable", &GenericMaterialProperty::hasValueTable )
+        // J'ai changé le nom pour setValueReal car il y a une conversion implite
+        // float -> complex sinon (à changer un jour)
+        .def( "setValueReal", d1 )
+        .def( "setValue", d2 )
+        .def( "setValue", d3 )
+        .def( "setValue", d4 )
+        .def( "setValue", d5 )
+        .def( "setValue", d6 )
+        .def( "setValueVectorReal", d7 )
+        .def( "setValue", d8 )
+        .def( "setValue", d9 )
         .def( "setSortedListParameters",
-              &GenericMaterialPropertyClass::setSortedListParameters );
+              &GenericMaterialProperty::setSortedListParameters );
 
 };

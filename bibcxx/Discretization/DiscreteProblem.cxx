@@ -28,6 +28,7 @@
 #include "Loads/DirichletBC.h"
 #include "Loads/MechanicalLoad.h"
 #include "Materials/MaterialField.h"
+#include "Materials/ExternalStateVariablesBuilder.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/Model.h"
 #include "Numbering/ParallelDOFNumbering.h"
@@ -36,8 +37,8 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-ElementaryVectorPtr DiscreteProblemClass::buildElementaryDirichletVector( ASTERDOUBLE time ) {
-    ElementaryVectorPtr retour( new ElementaryVectorClass( Permanent ) );
+ElementaryVectorPtr DiscreteProblem::computeElementaryDirichletVector( ASTERDOUBLE time ) {
+    ElementaryVectorPtr retour( new ElementaryVector( Permanent ) );
 
     ModelPtr curModel = _study->getModel();
     std::string modelName = curModel->getName();
@@ -59,14 +60,14 @@ ElementaryVectorPtr DiscreteProblemClass::buildElementaryDirichletVector( ASTERD
     cmdSt.setResult( resultName, "AUCUN" );
 
     CALLO_VEDIME( modelName, nameLcha, nameInfc, &time, typres, resultName );
-    retour->setEmpty( false );
+    retour->isEmpty( false );
 
     retour->setListOfLoads( _study->getListOfLoads() );
     return retour;
 };
 
-ElementaryVectorPtr DiscreteProblemClass::buildElementaryLaplaceVector() {
-    ElementaryVectorPtr retour( new ElementaryVectorClass( Permanent ) );
+ElementaryVectorPtr DiscreteProblem::computeElementaryLaplaceVector() {
+    ElementaryVectorPtr retour( new ElementaryVector( Permanent ) );
 
     ModelPtr curModel = _study->getModel();
     std::string modelName = curModel->getName();
@@ -88,19 +89,19 @@ ElementaryVectorPtr DiscreteProblemClass::buildElementaryLaplaceVector() {
     cmdSt.setResult( resultName, "AUCUN" );
 
     CALLO_VELAME( modelName, nameLcha, nameInfc, blanc, resultName );
-    retour->setEmpty( false );
+    retour->isEmpty( false );
 
     retour->setListOfLoads( _study->getListOfLoads() );
     return retour;
 };
 
 ElementaryVectorPtr
-DiscreteProblemClass::buildElementaryNeumannVector( const VectorReal time,
-                                                    ExternalVariablesComputationPtr varCom ) {
+DiscreteProblem::computeElementaryNeumannVector( const VectorReal time,
+                                                    ExternalStateVariablesBuilderPtr varCom ) {
     if ( time.size() != 3 )
         throw std::runtime_error( "Invalid number of parameter" );
 
-    ElementaryVectorPtr retour( new ElementaryVectorClass( Permanent ) );
+    ElementaryVectorPtr retour( new ElementaryVector( Permanent ) );
     const auto &curCodedMater = _study->getCodedMaterial()->getCodedMaterialField();
     const auto &curMater = _study->getCodedMaterial()->getMaterialField();
 
@@ -134,23 +135,23 @@ DiscreteProblemClass::buildElementaryNeumannVector( const VectorReal time,
 
     CALLO_VECHME_WRAP( stop, modelName, nameLcha, nameInfc, &inst, caraName, materName, codmaName,
                        retour->getName(), varCName );
-    retour->setEmpty( false );
+    retour->isEmpty( false );
 
     retour->setListOfLoads( _study->getListOfLoads() );
     return retour;
 };
 
 ElementaryMatrixDisplacementRealPtr
-DiscreteProblemClass::buildElementaryStiffnessMatrix( ASTERDOUBLE time ) {
+DiscreteProblem::computeElementaryStiffnessMatrix( ASTERDOUBLE time ) {
     ElementaryMatrixDisplacementRealPtr retour(
-        new ElementaryMatrixDisplacementRealClass( Permanent ) );
+        new ElementaryMatrixDisplacementReal( Permanent ) );
     ModelPtr curModel = _study->getModel();
     retour->setModel( curModel );
     MaterialFieldPtr curMater = _study->getMaterialField();
     retour->setMaterialField( curMater );
     auto compor = curMater->getBehaviourField();
 
-    _study->buildListOfLoads();
+    _study->computeListOfLoads();
     JeveuxVectorChar24 jvListOfLoads = _study->getListOfLoads()->getListVector();
     jvListOfLoads->updateValuePointer();
     ASTERINTEGER nbLoad = jvListOfLoads->size();
@@ -184,23 +185,23 @@ DiscreteProblemClass::buildElementaryStiffnessMatrix( ASTERDOUBLE time ) {
                        caraName, &time, compor->getName(), retour->getName(), &nh,
                        JeveuxMemoryTypesNames[0] );
 
-    retour->setEmpty( false );
+    retour->isEmpty( false );
     return retour;
 };
 
 // TODO calcul de la matrice tangente pour l'étape de prédiction de la méthode de Newton
 ElementaryMatrixDisplacementRealPtr
-DiscreteProblemClass::buildElementaryTangentMatrix( ASTERDOUBLE time ) {
-    return this->buildElementaryStiffnessMatrix( time );
+DiscreteProblem::computeElementaryTangentMatrix( ASTERDOUBLE time ) {
+    return this->computeElementaryStiffnessMatrix( time );
 };
 
 // TODO calcul de la matrice jacobienne pour l'étape de correction de la méthode de Newton
 ElementaryMatrixDisplacementRealPtr
-DiscreteProblemClass::buildElementaryJacobianMatrix( ASTERDOUBLE time ) {
-    return this->buildElementaryStiffnessMatrix( time );
+DiscreteProblem::computeElementaryJacobianMatrix( ASTERDOUBLE time ) {
+    return this->computeElementaryStiffnessMatrix( time );
 };
 
-FieldOnNodesRealPtr DiscreteProblemClass::buildDirichletBC( const BaseDOFNumberingPtr &curDOFNum,
+FieldOnNodesRealPtr DiscreteProblem::computeDirichletBC( const BaseDOFNumberingPtr &curDOFNum,
                                                             const ASTERDOUBLE &time,
                                                             const JeveuxMemory &memType ) const {
     const auto &_listOfLoad = _study->getListOfLoads();
@@ -211,7 +212,7 @@ FieldOnNodesRealPtr DiscreteProblemClass::buildDirichletBC( const BaseDOFNumberi
         _listOfLoad->build( _study->getModel() );
     //         throw std::runtime_error( "ListOfLoads is empty" );
 
-    FieldOnNodesRealPtr retour = boost::make_shared< FieldOnNodesRealClass >( memType );
+    FieldOnNodesRealPtr retour = boost::make_shared< FieldOnNodesReal >( memType );
     std::string resuName = retour->getName();
     std::string dofNumName = curDOFNum->getName();
 
@@ -226,19 +227,19 @@ FieldOnNodesRealPtr DiscreteProblemClass::buildDirichletBC( const BaseDOFNumberi
                        JeveuxMemoryTypesNames[memType] );
 
     retour->setDOFNumbering( curDOFNum );
-    retour->update();
+    retour->build();
 
     return retour;
 };
 
-BaseDOFNumberingPtr DiscreteProblemClass::computeDOFNumbering( BaseDOFNumberingPtr dofNum ) {
+BaseDOFNumberingPtr DiscreteProblem::computeDOFNumbering( BaseDOFNumberingPtr dofNum ) {
     if ( !dofNum ) {
 #ifdef ASTER_HAVE_MPI
         if ( _study->getModel()->getMesh()->isParallel() )
-            dofNum = ParallelDOFNumberingPtr( new ParallelDOFNumberingClass() );
+            dofNum = ParallelDOFNumberingPtr( new ParallelDOFNumbering() );
         else
 #endif /* ASTER_HAVE_MPI */
-            dofNum = DOFNumberingPtr( new DOFNumberingClass() );
+            dofNum = DOFNumberingPtr( new DOFNumbering() );
     }
 
     dofNum->setModel( _study->getModel() );
@@ -248,8 +249,8 @@ BaseDOFNumberingPtr DiscreteProblemClass::computeDOFNumbering( BaseDOFNumberingP
     return dofNum;
 };
 
-ElementaryVectorPtr DiscreteProblemClass::buildElementaryMechanicalLoadsVector() {
-    ElementaryVectorPtr retour( new ElementaryVectorClass( Permanent ) );
+ElementaryVectorPtr DiscreteProblem::computeElementaryMechanicalLoadsVector() {
+    ElementaryVectorPtr retour( new ElementaryVector( Permanent ) );
 
     // Comme on calcul RIGI_MECA, il faut preciser le type de la sd
     retour->setType( retour->getType() + "_DEPL_R" );
@@ -305,12 +306,12 @@ ElementaryVectorPtr DiscreteProblemClass::buildElementaryMechanicalLoadsVector()
     } catch ( ... ) {
         throw;
     }
-    retour->setEmpty( false );
+    retour->isEmpty( false );
 
     return retour;
 };
 
-SyntaxMapContainer DiscreteProblemClass::computeMatrixSyntax( const std::string &optionName ) {
+SyntaxMapContainer DiscreteProblem::computeMatrixSyntax( const std::string &optionName ) {
     SyntaxMapContainer dict;
 
     // Definition du mot cle simple MODELE
@@ -363,9 +364,9 @@ SyntaxMapContainer DiscreteProblemClass::computeMatrixSyntax( const std::string 
 };
 
 ElementaryMatrixDisplacementRealPtr
-DiscreteProblemClass::computeMechanicalMatrix( const std::string &optionName ) {
+DiscreteProblem::computeMechanicalMatrix( const std::string &optionName ) {
     ElementaryMatrixDisplacementRealPtr retour(
-        new ElementaryMatrixDisplacementRealClass( Permanent ) );
+        new ElementaryMatrixDisplacementReal( Permanent ) );
     retour->setModel( _study->getModel() );
 
     // Definition du bout de fichier de commande correspondant a CALC_MATR_ELEM
@@ -381,16 +382,16 @@ DiscreteProblemClass::computeMechanicalMatrix( const std::string &optionName ) {
     } catch ( ... ) {
         throw;
     }
-    retour->setEmpty( false );
+    retour->isEmpty( false );
 
     return retour;
 };
 
-ElementaryMatrixDisplacementRealPtr DiscreteProblemClass::computeMechanicalDampingMatrix(
+ElementaryMatrixDisplacementRealPtr DiscreteProblem::computeMechanicalDampingMatrix(
     const ElementaryMatrixDisplacementRealPtr &rigidity,
     const ElementaryMatrixDisplacementRealPtr &mass ) {
     ElementaryMatrixDisplacementRealPtr retour(
-        new ElementaryMatrixDisplacementRealClass( Permanent ) );
+        new ElementaryMatrixDisplacementReal( Permanent ) );
     retour->setModel( rigidity->getModel() );
 
     // Definition du bout de fichier de commande correspondant a CALC_MATR_ELEM
@@ -408,26 +409,26 @@ ElementaryMatrixDisplacementRealPtr DiscreteProblemClass::computeMechanicalDampi
     } catch ( ... ) {
         throw;
     }
-    retour->setEmpty( false );
+    retour->isEmpty( false );
 
     return retour;
 };
 
-ElementaryMatrixDisplacementRealPtr DiscreteProblemClass::computeMechanicalMassMatrix() {
+ElementaryMatrixDisplacementRealPtr DiscreteProblem::computeMechanicalMassMatrix() {
     return computeMechanicalMatrix( "RIGI_MECA" );
 };
 
-ElementaryMatrixDisplacementRealPtr DiscreteProblemClass::computeMechanicalStiffnessMatrix() {
+ElementaryMatrixDisplacementRealPtr DiscreteProblem::computeMechanicalStiffnessMatrix() {
     return computeMechanicalMatrix( "RIGI_MECA" );
 };
 
-void DiscreteProblemClass::createBehaviour( PyObject *keywords, const std::string &initialState,
+void DiscreteProblem::createBehaviour( PyObject *keywords, const std::string &initialState,
                                             const std::string &implex, const int info ) {
 
     // Create object for behaviour
     BehaviourPropertyPtr _behavProp;
     _behavProp = BehaviourPropertyPtr(
-        new BehaviourPropertyClass( _study->getModel(), _study->getMaterialField() ) );
+        new BehaviourProperty( _study->getModel(), _study->getMaterialField() ) );
     _behavProp->setInitialState( initialState == "OUI" );
     _behavProp->setImplex( implex == "OUI" );
     _behavProp->setVerbosity( info > 1 );
@@ -443,6 +444,6 @@ void DiscreteProblemClass::createBehaviour( PyObject *keywords, const std::strin
     cmdSt.define( kwfact );
 
     // Build objects
-    _behavProp->buildObjects();
+    _behavProp->build();
     Py_DECREF( kwfact );
 };

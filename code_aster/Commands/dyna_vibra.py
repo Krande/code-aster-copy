@@ -69,7 +69,7 @@ class VibrationDynamics(ExecuteCommand):
             dofn = massMatrix.getDOFNumbering()
             self._result.appendModelOnAllRanks(dofn.getModel())
             self._result.setDOFNumbering(dofn)
-            self._result.update()
+            self._result.build()
         if keywords["BASE_CALCUL"] == "GENE":
             stiffnessMatrix = keywords["MATR_RIGI"]
             dofGeneNum = stiffnessMatrix.getGeneralizedDOFNumbering()

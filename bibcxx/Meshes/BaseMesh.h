@@ -32,10 +32,10 @@
 #include "Meshes/MeshExplorer.h"
 
 /**
- * @class BaseMeshClass
+ * @class BaseMesh
  * @brief This object is the base class for all meshes variants
  */
-class BaseMeshClass : public DataStructure, public ListOfTablesClass {
+class BaseMesh : public DataStructure, public ListOfTables {
   public:
     typedef MeshExplorer< CellsIteratorFromConnectivity, const JeveuxCollectionLong &,
                           const JeveuxVectorLong & >
@@ -75,12 +75,12 @@ class BaseMeshClass : public DataStructure, public ListOfTablesClass {
      * @param name nom jeveux de l'objet
      * @param type jeveux de l'objet
      */
-    BaseMeshClass( const std::string &name, const std::string &type )
+    BaseMesh( const std::string &name, const std::string &type )
         : DataStructure( name, 8, type ),
-          ListOfTablesClass( name ),
+          ListOfTables( name ),
           _dimensionInformations( JeveuxVectorLong( getName() + ".DIME      " ) ),
           _nameOfNodes( NamesMapChar8( getName() + ".NOMNOE    " ) ),
-          _coordinates( new MeshCoordinatesFieldClass( getName() + ".COORDO    " ) ),
+          _coordinates( new MeshCoordinatesField( getName() + ".COORDO    " ) ),
           _nameOfGrpNodes( NamesMapChar24( getName() + ".PTRNOMNOE " ) ),
           _groupsOfNodes(
               JeveuxCollectionLongNamePtr( getName() + ".GROUPENO  ", _nameOfGrpNodes ) ),
@@ -103,16 +103,16 @@ class BaseMeshClass : public DataStructure, public ListOfTablesClass {
   public:
     /**
      * @typedef BaseMeshPtr
-     * @brief Pointeur intelligent vers un BaseMeshClass
+     * @brief Pointeur intelligent vers un BaseMesh
      */
-    typedef boost::shared_ptr< BaseMeshClass > BaseMeshPtr;
+    typedef boost::shared_ptr< BaseMesh > BaseMeshPtr;
 
     /**
      * @brief Get the connectivity
      */
     const ConnectivityMeshExplorer &getConnectivityExplorer() const {
         _cellsType->updateValuePointer();
-        _connectivity->buildFromJeveux();
+        _connectivity->build();
         return _explorer;
     };
 
@@ -285,8 +285,8 @@ class BaseMeshClass : public DataStructure, public ListOfTablesClass {
 
 /**
  * @typedef BaseMeshPtr
- * @brief Pointeur intelligent vers un BaseMeshClass
+ * @brief Pointeur intelligent vers un BaseMesh
  */
-typedef boost::shared_ptr< BaseMeshClass > BaseMeshPtr;
+typedef boost::shared_ptr< BaseMesh > BaseMeshPtr;
 
 #endif /* BASEMESH_H_ */

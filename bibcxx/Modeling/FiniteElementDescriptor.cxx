@@ -30,7 +30,7 @@
 #include "Modeling/PhysicsAndModelings.h"
 #include "ParallelUtilities/AsterMPI.h"
 
-FiniteElementDescriptorClass::FiniteElementDescriptorClass( const std::string &name,
+FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name,
                                                             const BaseMeshPtr mesh,
                                                             const JeveuxMemory memType )
     : DataStructure( name, 19, "LIGREL", memType ),
@@ -40,14 +40,14 @@ FiniteElementDescriptorClass::FiniteElementDescriptorClass( const std::string &n
       _groupsOfCellsNumberByElement( getName() + ".REPE" ),
       _delayedNumberedConstraintElementsDescriptor( getName() + ".NEMA" ),
       _dofOfDelayedNumberedConstraintNodes( getName() + ".PRNS" ),
-      _delayedNodesNumbering( getName() + ".LGNS" ),
+      _virtualNodesNumbering( getName() + ".LGNS" ),
       _superElementsDescriptor( getName() + ".SSSA" ),
       _nameOfNeighborhoodStructure( getName() + ".NVGE" ), _mesh( mesh ),
       _explorer(
-          ConnectivityDelayedElementsExplorer( _delayedNumberedConstraintElementsDescriptor ) ),
-      _explorer2( ConnectivityDelayedElementsExplorer( _listOfGroupOfCells ) ){};
+          ConnectivityVirtualCellsExplorer( _delayedNumberedConstraintElementsDescriptor ) ),
+      _explorer2( ConnectivityVirtualCellsExplorer( _listOfGroupOfCells ) ){};
 
-int FiniteElementDescriptorClass::getPhysics( void ) const
+int FiniteElementDescriptor::getPhysics( void ) const
 {
     const std::string docu = trim(_parameters->getInformationParameter());
 
@@ -64,14 +64,14 @@ int FiniteElementDescriptorClass::getPhysics( void ) const
 };
 
 #ifdef ASTER_HAVE_MPI
-void FiniteElementDescriptorClass::transferDofDescriptorFrom( FiniteElementDescriptorPtr &other ) {
-    // "the mesh associated to finiteElementDescriptorClass is not a partial mesh"
+void FiniteElementDescriptor::transferDofDescriptorFrom( FiniteElementDescriptorPtr &other ) {
+    // "the mesh associated to finiteElementDescriptor is not a partial mesh"
     AS_ASSERT( getMesh()->isConnection() );
     const ConnectionMeshPtr connectionMesh =
-        boost::static_pointer_cast< ConnectionMeshClass >( getMesh() );
+        boost::static_pointer_cast< ConnectionMesh >( getMesh() );
 
-    // "parallel mesh associated to partial mesh of FiniteElementDescriptorClass \n"
-    //        "does not correspond to other FiniteElementDescriptorClass mesh"
+    // "parallel mesh associated to partial mesh of FiniteElementDescriptor \n"
+    //        "does not correspond to other FiniteElementDescriptor mesh"
     AS_ASSERT( connectionMesh->getParallelMesh() == other->getMesh() );
 
     const JeveuxVectorLong &otherDofDescriptor = other->getPhysicalNodesComponentDescriptor();
@@ -117,15 +117,15 @@ void FiniteElementDescriptorClass::transferDofDescriptorFrom( FiniteElementDescr
 
 };
 
-void FiniteElementDescriptorClass::transferListOfGroupOfCellFrom( FiniteElementDescriptorPtr& other)
+void FiniteElementDescriptor::transferListOfGroupOfCellFrom( FiniteElementDescriptorPtr& other)
 {
-    // "the mesh associated to finiteElementDescriptorClass is not a partial mesh"
+    // "the mesh associated to finiteElementDescriptor is not a partial mesh"
     AS_ASSERT( getMesh()->isConnection() );
     const ConnectionMeshPtr connectionMesh =
-        boost::static_pointer_cast< ConnectionMeshClass >( getMesh() );
+        boost::static_pointer_cast< ConnectionMesh >( getMesh() );
 
-    // "parallel mesh associated to partial mesh of FiniteElementDescriptorClass \n"
-    //        "does not correspond to other FiniteElementDescriptorClass mesh"
+    // "parallel mesh associated to partial mesh of FiniteElementDescriptor \n"
+    //        "does not correspond to other FiniteElementDescriptor mesh"
     AS_ASSERT( connectionMesh->getParallelMesh() == other->getMesh() );
 
     const int rank = getMPIRank();
@@ -221,15 +221,15 @@ void FiniteElementDescriptorClass::transferListOfGroupOfCellFrom( FiniteElementD
 };
 
 
-void FiniteElementDescriptorClass::setFrom( FiniteElementDescriptorPtr &other )
+void FiniteElementDescriptor::setFrom( FiniteElementDescriptorPtr &other )
 {
-    // "the mesh associated to finiteElementDescriptorClass is not a partial mesh"
+    // "the mesh associated to finiteElementDescriptor is not a partial mesh"
     AS_ASSERT( getMesh()->isConnection() );
     const ConnectionMeshPtr connectionMesh =
-        boost::static_pointer_cast< ConnectionMeshClass >( getMesh() );
+        boost::static_pointer_cast< ConnectionMesh >( getMesh() );
 
-    // "parallel mesh associated to partial mesh of FiniteElementDescriptorClass \n"
-    //        "does not correspond to other FiniteElementDescriptorClass mesh"
+    // "parallel mesh associated to partial mesh of FiniteElementDescriptor \n"
+    //        "does not correspond to other FiniteElementDescriptor mesh"
     AS_ASSERT( connectionMesh->getParallelMesh() == other->getMesh() );
 
     // Fill '.LGRF'

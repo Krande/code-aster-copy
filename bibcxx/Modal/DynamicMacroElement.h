@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe DynamicMacroElement
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -38,11 +38,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class DynamicMacroElementClass
+ * @class DynamicMacroElement
  * @brief Cette classe correspond a un MACR_ELEM_DYNA
  * @author Nicolas Sellenet
  */
-class DynamicMacroElementClass : public DataStructure {
+class DynamicMacroElement : public DataStructure {
   private:
     /** @brief Objet Jeveux '.DESM' */
     JeveuxVectorLong _desm;
@@ -106,17 +106,17 @@ class DynamicMacroElementClass : public DataStructure {
   public:
     /**
      * @typedef DynamicMacroElementPtr
-     * @brief Pointeur intelligent vers un DynamicMacroElementClass
+     * @brief Pointeur intelligent vers un DynamicMacroElement
      */
-    typedef boost::shared_ptr< DynamicMacroElementClass > DynamicMacroElementPtr;
+    typedef boost::shared_ptr< DynamicMacroElement > DynamicMacroElementPtr;
 
     /**
      * @brief Constructeur
      */
-    DynamicMacroElementClass()
-        : DynamicMacroElementClass( ResultNaming::getNewResultName() ){};
+    DynamicMacroElement()
+        : DynamicMacroElement( ResultNaming::getNewResultName() ){};
 
-    DynamicMacroElementClass( const std::string name )
+    DynamicMacroElement( const std::string name )
         : DataStructure( name, 8, "MACR_ELEM_DYNA", Permanent ),
           _desm( JeveuxVectorLong( getName() + ".DESM" ) ),
           _refm( JeveuxVectorChar8( getName() + ".REFM" ) ),
@@ -186,12 +186,12 @@ class DynamicMacroElementClass : public DataStructure {
     /**
      * @brief Get rigidity matrix
      */
-    AssemblyMatrixDisplacementComplexPtr getComplexStiffnessMatrix() { return _rigidityCMatrix; };
+    AssemblyMatrixDisplacementComplexPtr getStiffnessMatrixComplex() { return _rigidityCMatrix; };
 
     /**
      * @brief Get rigidity matrix
      */
-    AssemblyMatrixDisplacementRealPtr getRealStiffnessMatrix() { return _rigidityDMatrix; };
+    AssemblyMatrixDisplacementRealPtr getStiffnessMatrixReal() { return _rigidityDMatrix; };
 
     /**
      * @brief Set damping matrix
@@ -285,8 +285,8 @@ class DynamicMacroElementClass : public DataStructure {
 
 /**
  * @typedef DynamicMacroElementPtr
- * @brief Pointeur intelligent vers un DynamicMacroElementClass
+ * @brief Pointeur intelligent vers un DynamicMacroElement
  */
-typedef boost::shared_ptr< DynamicMacroElementClass > DynamicMacroElementPtr;
+typedef boost::shared_ptr< DynamicMacroElement > DynamicMacroElementPtr;
 
 #endif /* DYNAMICMACROELEMENT_H_ */

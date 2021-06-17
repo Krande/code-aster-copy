@@ -33,11 +33,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class SkeletonClass
+ * @class Skeleton
  * @brief Cette classe correspond a une sd_squelette
  * @author Nicolas Sellenet
  */
-class SkeletonClass : public BaseMeshClass {
+class Skeleton : public BaseMesh {
   private:
     /** @brief Objet Jeveux '.INV.SKELETON' */
     JeveuxVectorLong _invSkeleton;
@@ -53,20 +53,20 @@ class SkeletonClass : public BaseMeshClass {
   public:
     /**
      * @typedef SkeletonPtr
-     * @brief Pointeur intelligent vers un SkeletonClass
+     * @brief Pointeur intelligent vers un Skeleton
      */
-    typedef boost::shared_ptr< SkeletonClass > SkeletonPtr;
+    typedef boost::shared_ptr< Skeleton > SkeletonPtr;
 
     /**
      * @brief Constructeur
      */
-    SkeletonClass() : SkeletonClass( ResultNaming::getNewResultName() ){};
+    Skeleton() : Skeleton( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Constructeur
      */
-    SkeletonClass( const std::string &name )
-        : BaseMeshClass( name, "SQUELETTE" ),
+    Skeleton( const std::string &name )
+        : BaseMesh( name, "SQUELETTE" ),
           _invSkeleton( JeveuxVectorLong( getName() + ".INV.SKELETON" ) ),
           _corres( JeveuxVectorLong( getName() + ".CORRES" ) ),
           _nomSst( JeveuxVectorChar24( getName() + ".NOMSST" ) ),
@@ -76,8 +76,8 @@ class SkeletonClass : public BaseMeshClass {
 
 /**
  * @typedef SkeletonPtr
- * @brief Pointeur intelligent vers un SkeletonClass
+ * @brief Pointeur intelligent vers un Skeleton
  */
-typedef boost::shared_ptr< SkeletonClass > SkeletonPtr;
+typedef boost::shared_ptr< Skeleton > SkeletonPtr;
 
 #endif /* SKELETON_H_ */

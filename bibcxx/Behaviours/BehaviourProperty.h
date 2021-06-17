@@ -35,10 +35,10 @@
 
 // TODO doit être une DataStructure
 /**
- * @class BehaviourPropertyClass
+ * @class BehaviourProperty
  * @brief Class to define behaviour
  */
-class BehaviourPropertyClass {
+class BehaviourProperty {
   private:
     /** @brief Mesh */
     BaseMeshPtr _mesh;
@@ -76,15 +76,15 @@ class BehaviourPropertyClass {
 
   public:
     /** @brief Constructor */
-    BehaviourPropertyClass(
+    BehaviourProperty(
       ModelPtr         model,
       MaterialFieldPtr materialField );
 
     /** @brief Destructor */
-    ~BehaviourPropertyClass( ){};
+    ~BehaviourProperty( ){};
 
     /** @brief Build object */
-    void buildObjects( );
+    void build( );
 
     /** @brief Get model */
     ModelPtr getModel( ) const { return _model; }
@@ -104,7 +104,7 @@ class BehaviourPropertyClass {
 };
 
 /** @typedef Smart-pointer to behaviour class */
-typedef boost::shared_ptr< BehaviourPropertyClass > BehaviourPropertyPtr;
+typedef boost::shared_ptr< BehaviourProperty > BehaviourPropertyPtr;
 
 
 #endif

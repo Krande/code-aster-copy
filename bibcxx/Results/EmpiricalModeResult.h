@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe EmpiricalModeResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,29 +29,29 @@
 #include "Results/Result.h"
 
 /**
- * @class EmpiricalModeResultClass
+ * @class EmpiricalModeResult
  * @brief Cette classe correspond a un mode_empi
  * @author Nicolas Sellenet
  */
-class EmpiricalModeResultClass : public ResultClass {
+class EmpiricalModeResult : public Result {
   private:
   public:
     /**
      * @brief Constructeur
      */
-    EmpiricalModeResultClass() : ResultClass( "MODE_EMPI" ){};
+    EmpiricalModeResult() : Result( "MODE_EMPI" ){};
 
     /**
      * @brief Constructeur
      */
-    EmpiricalModeResultClass( const std::string &name )
-        : ResultClass( name, "MODE_EMPI" ){};
+    EmpiricalModeResult( const std::string &name )
+        : Result( name, "MODE_EMPI" ){};
 };
 
 /**
  * @typedef EmpiricalModeResultPtr
- * @brief Pointeur intelligent vers un EmpiricalModeResultClass
+ * @brief Pointeur intelligent vers un EmpiricalModeResult
  */
-typedef boost::shared_ptr< EmpiricalModeResultClass > EmpiricalModeResultPtr;
+typedef boost::shared_ptr< EmpiricalModeResult > EmpiricalModeResultPtr;
 
 #endif /* MODEEMPICONTAINER_H_ */

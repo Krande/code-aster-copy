@@ -34,11 +34,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class InterspectralMatrixClass
+ * @class InterspectralMatrix
  * @brief Cette classe correspond a un comb_fourier
  * @author Nicolas Sellenet
  */
-class InterspectralMatrixClass : public DataStructure {
+class InterspectralMatrix : public DataStructure {
   private:
     /** @brief Objet Jeveux '.REFE' */
     JeveuxVectorChar16 _refe;
@@ -66,18 +66,18 @@ class InterspectralMatrixClass : public DataStructure {
      * @typedef InterspectralMatrixPtr
      * @brief Pointeur intelligent vers un InterspectralMatrix
      */
-    typedef boost::shared_ptr< InterspectralMatrixClass > InterspectralMatrixPtr;
+    typedef boost::shared_ptr< InterspectralMatrix > InterspectralMatrixPtr;
 
     /**
      * @brief Constructeur
      */
-    InterspectralMatrixClass()
-        : InterspectralMatrixClass( ResultNaming::getNewResultName() ){};
+    InterspectralMatrix()
+        : InterspectralMatrix( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Constructeur
      */
-    InterspectralMatrixClass( const std::string name )
+    InterspectralMatrix( const std::string name )
         : DataStructure( name, 8, "INTERSPECTRE", Permanent ),
           _refe( JeveuxVectorChar16( getName() + ".REFE" ) ),
           _disc( JeveuxVectorReal( getName() + ".DISC" ) ),
@@ -93,8 +93,8 @@ class InterspectralMatrixClass : public DataStructure {
 
 /**
  * @typedef InterspectralMatrixPtr
- * @brief Pointeur intelligent vers un InterspectralMatrixClass
+ * @brief Pointeur intelligent vers un InterspectralMatrix
  */
-typedef boost::shared_ptr< InterspectralMatrixClass > InterspectralMatrixPtr;
+typedef boost::shared_ptr< InterspectralMatrix > InterspectralMatrixPtr;
 
 #endif /* INTERSPECTRAL_H_ */

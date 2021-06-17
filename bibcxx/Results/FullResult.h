@@ -32,11 +32,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class FullResultClass
+ * @class FullResult
  * @brief Cette classe correspond à un sd_dyna_phys
  * @author Natacha Béreux
  */
-class FullResultClass : public ResultClass {
+class FullResult : public Result {
   protected:
     /** @brief indexage des résultats de calcul dynamiques */
     DynamicResultsIndexingPtr _index;
@@ -48,12 +48,12 @@ class FullResultClass : public ResultClass {
      * @brief Constructeur
      * @todo  Ajouter les objets Jeveux de la SD
      */
-    FullResultClass( const std::string &name, const std::string &resuTyp )
-        : ResultClass( name, resuTyp ),
-          _index( new DynamicResultsIndexingClass( name, resuTyp ) ), _dofNum( nullptr ){};
+    FullResult( const std::string &name, const std::string &resuTyp )
+        : Result( name, resuTyp ),
+          _index( new DynamicResultsIndexing( name, resuTyp ) ), _dofNum( nullptr ){};
 
-    FullResultClass( const std::string &resuTyp )
-        : FullResultClass( ResultNaming::getNewResultName(), resuTyp ){};
+    FullResult( const std::string &resuTyp )
+        : FullResult( ResultNaming::getNewResultName(), resuTyp ){};
 
     BaseDOFNumberingPtr getDOFNumbering() const
     {
@@ -69,8 +69,8 @@ class FullResultClass : public ResultClass {
 
 /**
  * @typedef FullResultPtr
- * @brief Pointeur intelligent vers un FullResultClass
+ * @brief Pointeur intelligent vers un FullResult
  */
-typedef boost::shared_ptr< FullResultClass > FullResultPtr;
+typedef boost::shared_ptr< FullResult > FullResultPtr;
 
 #endif /* FULLRESULTSCONTAINER_H_ */

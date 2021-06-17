@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FullHarmonicAcousticResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -30,28 +30,28 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class FullHarmonicAcousticResultClass
+ * @class FullHarmonicAcousticResult
  * @brief Cette classe correspond à un acou_harmo
  * @author Natacha Béreux
  */
-class FullHarmonicAcousticResultClass : public FullResultClass {
+class FullHarmonicAcousticResult : public FullResult {
   private:
   public:
     /**
      * @brief Constructeur
      * @todo  Ajouter les objets Jeveux de la SD
      */
-    FullHarmonicAcousticResultClass( const std::string &name )
-        : FullResultClass( name, "ACOU_HARMO" ){};
-    FullHarmonicAcousticResultClass()
-        : FullResultClass( ResultNaming::getNewResultName(), "ACOU_HARMO" ){};
+    FullHarmonicAcousticResult( const std::string &name )
+        : FullResult( name, "ACOU_HARMO" ){};
+    FullHarmonicAcousticResult()
+        : FullResult( ResultNaming::getNewResultName(), "ACOU_HARMO" ){};
 };
 
 /**
  * @typedef FullHarmonicAcousticResultPtr
- * @brief Pointeur intelligent vers un FullHarmonicAcousticResultClass
+ * @brief Pointeur intelligent vers un FullHarmonicAcousticResult
  */
-typedef boost::shared_ptr< FullHarmonicAcousticResultClass >
+typedef boost::shared_ptr< FullHarmonicAcousticResult >
     FullHarmonicAcousticResultPtr;
 
 #endif /* FULLACOUSTICHARMONICRESULTSCONTAINER_H_ */

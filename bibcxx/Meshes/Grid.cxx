@@ -1,9 +1,9 @@
 /**
  * @file Grid.cxx
- * @brief Implementation de GridClass
+ * @brief Implementation de Grid
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -25,7 +25,7 @@
 
 #include "Meshes/Grid.h"
 
-GridClass::GridClass( const std::string name )
-    : MeshClass( name, "GRILLE" ),
+Grid::Grid( const std::string name )
+    : Mesh( name, "GRILLE" ),
       _grlr( JeveuxVectorReal( getName() + ".GRLR" ) ),
       _grli( JeveuxVectorLong( getName() + ".GRLI" ) ){};

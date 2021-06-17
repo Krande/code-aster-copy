@@ -36,12 +36,12 @@
 
 
 /**
- * @class MechanicalLoadClass
+ * @class MechanicalLoad
  * @brief Define a generic mechanical load
  * @author Nicolas Sellenet
  */
 template< class ConstantFieldOnCellsType>
-class MechanicalLoadClass : public DataStructure, public ListOfTablesClass {
+class MechanicalLoad : public DataStructure, public ListOfTables {
 
   protected:
     /** @brief Vecteur Jeveux '.TYPE' */
@@ -64,27 +64,27 @@ class MechanicalLoadClass : public DataStructure, public ListOfTablesClass {
      * @typedef MechanicalLoadPtr
      * @brief Pointeur intelligent vers un MechanicalLoad
      */
-    typedef boost::shared_ptr< MechanicalLoadClass > MechanicalLoadPtr;
+    typedef boost::shared_ptr< MechanicalLoad > MechanicalLoadPtr;
 
     /**
      * @brief Constructor
      */
-    MechanicalLoadClass( void ) = delete;
+    MechanicalLoad( void ) = delete;
 
     /**
      * @brief Constructor
      */
-    MechanicalLoadClass( const ModelPtr &currentModel )
-        : MechanicalLoadClass( ResultNaming::getNewResultName(), currentModel ){};
+    MechanicalLoad( const ModelPtr &currentModel )
+        : MechanicalLoad( ResultNaming::getNewResultName(), currentModel ){};
 
     /**
      * @brief Constructor
      */
-    MechanicalLoadClass( const std::string name, const ModelPtr &currentModel )
+    MechanicalLoad( const std::string name, const ModelPtr &currentModel )
         : DataStructure( name, 8, "CHAR_MECA" ),
-          ListOfTablesClass( name ),
+          ListOfTables( name ),
             _mecaLoadDesc( boost::make_shared<
-                MechanicalLoadDescriptionClass< ConstantFieldOnCellsType > >
+                MechanicalLoadDescription< ConstantFieldOnCellsType > >
                     (getName() + ".CHME", currentModel) ),
             _type( getName() + ".TYPE" ), _lisma01( getName() + ".LISMA01" ),
             _lisma02( getName() + ".LISMA02" ), _trans01( getName() + ".TRANS01" ),
@@ -147,21 +147,21 @@ class MechanicalLoadClass : public DataStructure, public ListOfTablesClass {
 /*  Explicit instantiation of template classes
 /**********************************************************/
 
-/** @typedef MechanicalLoadRealClass Class d'une charge mécanique réelle */
-typedef MechanicalLoadClass< ConstantFieldOnCellsRealClass > MechanicalLoadRealClass;
-/** @typedef MechanicalLoadFuncClass Class d'une charge mécanique de fonctions */
-typedef MechanicalLoadClass< ConstantFieldOnCellsChar24Class > MechanicalLoadFunctionClass;
-/** @typedef MechanicalLoadComplexClass Class d'une charge mécanique de complexe */
-typedef MechanicalLoadClass< ConstantFieldOnCellsComplexClass > MechanicalLoadComplexClass;
+/** @typedef MechanicalLoadReal Class d'une charge mécanique réelle */
+typedef MechanicalLoad< ConstantFieldOnCellsReal > MechanicalLoadReal;
+/** @typedef MechanicalLoadFunc Class d'une charge mécanique de fonctions */
+typedef MechanicalLoad< ConstantFieldOnCellsChar24 > MechanicalLoadFunction;
+/** @typedef MechanicalLoadComplex Class d'une charge mécanique de complexe */
+typedef MechanicalLoad< ConstantFieldOnCellsComplex > MechanicalLoadComplex;
 
 /** @typedef MechanicalLoad  */
 template< class ConstantFieldOnCellsType>
 using MechanicalLoadPtr =
-    boost::shared_ptr< MechanicalLoadClass< ConstantFieldOnCellsType > >;
+    boost::shared_ptr< MechanicalLoad< ConstantFieldOnCellsType > >;
 
-typedef boost::shared_ptr< MechanicalLoadRealClass > MechanicalLoadRealPtr;
-typedef boost::shared_ptr< MechanicalLoadFunctionClass > MechanicalLoadFunctionPtr;
-typedef boost::shared_ptr< MechanicalLoadComplexClass > MechanicalLoadComplexPtr;
+typedef boost::shared_ptr< MechanicalLoadReal > MechanicalLoadRealPtr;
+typedef boost::shared_ptr< MechanicalLoadFunction > MechanicalLoadFunctionPtr;
+typedef boost::shared_ptr< MechanicalLoadComplex > MechanicalLoadComplexPtr;
 
 
 /** @typedef std::list de MechanicalLoad */

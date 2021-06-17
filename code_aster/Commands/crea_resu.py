@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -24,7 +24,7 @@ from ..Objects import (LoadResult, ThermalResult,
                        ElasticFourierResult, ThermalFourierResult,
                        FullHarmonicResult,
                        FullTransientResult,
-                       ExternalVariablesResult,
+                       ExternalStateVariablesResult,
                        ElasticResult,
                        ModeResultComplex, ModeResult,
                        MultipleElasticResult, NonLinearResult)
@@ -54,7 +54,7 @@ class ResultCreator(ExecuteCommand):
             elif typ == "EVOL_ELAS":
                 self._result = ElasticResult()
             elif typ == "EVOL_VARC":
-                self._result = ExternalVariablesResult()
+                self._result = ExternalStateVariablesResult()
             elif typ == "FOURIER_ELAS":
                 self._result = ElasticFourierResult()
             elif typ == "FOURIER_THER":
@@ -129,7 +129,7 @@ class ResultCreator(ExecuteCommand):
                 except:
                     pass
 
-        self._result.update()
+        self._result.build()
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.

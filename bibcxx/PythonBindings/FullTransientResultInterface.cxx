@@ -3,7 +3,7 @@
  * @brief Interface python de FullTransientResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,13 +29,13 @@ namespace py = boost::python;
 
 void exportFullTransientResultToPython() {
 
-    py::class_< FullTransientResultClass, FullTransientResultPtr,
-                py::bases< FullResultClass > >( "FullTransientResult",
+    py::class_< FullTransientResult, FullTransientResultPtr,
+                py::bases< FullResult > >( "FullTransientResult",
                                                              py::no_init )
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< FullTransientResultClass, std::string >))
+                  &initFactoryPtr< FullTransientResult, std::string >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< FullTransientResultClass >));
+              py::make_constructor(&initFactoryPtr< FullTransientResult >));
 };
 //

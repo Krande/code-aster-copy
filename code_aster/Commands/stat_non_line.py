@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -53,7 +53,7 @@ class NonLinearStaticAnalysis(ExecuteCommand):
 
         if self.exception and self.exception.id_message in ("MECANONLINE5_2", ):
             return
-        self._result.update()
+        self._result.build()
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.

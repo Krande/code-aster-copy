@@ -3,7 +3,7 @@
  * @brief Interface python de XfemCrack
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,54 +29,54 @@ namespace py = boost::python;
 
 void exportXfemCrackToPython() {
 
-    py::class_< XfemCrackClass, XfemCrackClass::XfemCrackPtr, py::bases< DataStructure > >(
+    py::class_< XfemCrack, XfemCrack::XfemCrackPtr, py::bases< DataStructure > >(
         "XfemCrack", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< XfemCrackClass, MeshPtr >))
+        .def( "__init__", py::make_constructor(&initFactoryPtr< XfemCrack, MeshPtr >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< XfemCrackClass, std::string, MeshPtr >))
-        .def( "build", &XfemCrackClass::build )
-        .def( "enrichModelWithXfem", &XfemCrackClass::enrichModelWithXfem )
-        .def( "getMesh", &XfemCrackClass::getMesh )
-        .def( "setMesh", &XfemCrackClass::setMesh )
-        .def( "getAuxiliaryGrid", &XfemCrackClass::getAuxiliaryGrid )
-        .def( "setAuxiliaryGrid", &XfemCrackClass::setAuxiliaryGrid )
-        .def( "getExistingCrackWithGrid", &XfemCrackClass::getExistingCrackWithGrid )
-        .def( "setExistingCrackWithGrid", &XfemCrackClass::setExistingCrackWithGrid )
-        .def( "getDiscontinuityType", &XfemCrackClass::getDiscontinuityType )
-        .def( "setDiscontinuityType", &XfemCrackClass::setDiscontinuityType )
-        .def( "getCrackLipsEntity", &XfemCrackClass::getCrackLipsEntity )
-        .def( "setCrackLipsEntity", &XfemCrackClass::setCrackLipsEntity )
-        .def( "getCrackTipEntity", &XfemCrackClass::getCrackTipEntity )
-        .def( "setCrackTipEntity", &XfemCrackClass::setCrackTipEntity )
+              py::make_constructor(&initFactoryPtr< XfemCrack, std::string, MeshPtr >))
+        .def( "build", &XfemCrack::build )
+        .def( "enrichModelWithXfem", &XfemCrack::enrichModelWithXfem )
+        .def( "getMesh", &XfemCrack::getMesh )
+        .def( "setMesh", &XfemCrack::setMesh )
+        .def( "getAuxiliaryGrid", &XfemCrack::getAuxiliaryGrid )
+        .def( "setAuxiliaryGrid", &XfemCrack::setAuxiliaryGrid )
+        .def( "getExistingCrackWithGrid", &XfemCrack::getExistingCrackWithGrid )
+        .def( "setExistingCrackWithGrid", &XfemCrack::setExistingCrackWithGrid )
+        .def( "getDiscontinuityType", &XfemCrack::getDiscontinuityType )
+        .def( "setDiscontinuityType", &XfemCrack::setDiscontinuityType )
+        .def( "getCrackLipsEntity", &XfemCrack::getCrackLipsEntity )
+        .def( "setCrackLipsEntity", &XfemCrack::setCrackLipsEntity )
+        .def( "getCrackTipEntity", &XfemCrack::getCrackTipEntity )
+        .def( "setCrackTipEntity", &XfemCrack::setCrackTipEntity )
         .def( "getCohesiveCrackTipForPropagation",
-              &XfemCrackClass::getCohesiveCrackTipForPropagation )
+              &XfemCrack::getCohesiveCrackTipForPropagation )
         .def( "setCohesiveCrackTipForPropagation",
-              &XfemCrackClass::setCohesiveCrackTipForPropagation )
-        .def( "getNormalLevelSetFunction", &XfemCrackClass::getNormalLevelSetFunction )
-        .def( "setNormalLevelSetFunction", &XfemCrackClass::setNormalLevelSetFunction )
-        .def( "getTangentialLevelSetFunction", &XfemCrackClass::getTangentialLevelSetFunction )
-        .def( "setTangentialLevelSetFunction", &XfemCrackClass::setTangentialLevelSetFunction )
-        .def( "getCrackShape", &XfemCrackClass::getCrackShape )
-        .def( "setCrackShape", &XfemCrackClass::setCrackShape )
-        .def( "getNormalLevelSetField", &XfemCrackClass::getNormalLevelSetField )
-        .def( "setNormalLevelSetField", &XfemCrackClass::setNormalLevelSetField )
-        .def( "getTangentialLevelSetField", &XfemCrackClass::getTangentialLevelSetField )
-        .def( "setTangentialLevelSetField", &XfemCrackClass::setTangentialLevelSetField )
-        .def( "getEnrichedCells", &XfemCrackClass::getEnrichedCells )
-        .def( "setEnrichedCells", &XfemCrackClass::setEnrichedCells )
-        .def( "getDiscontinuousField", &XfemCrackClass::getDiscontinuousField )
-        .def( "setDiscontinuousField", &XfemCrackClass::setDiscontinuousField )
-        .def( "getEnrichmentType", &XfemCrackClass::getEnrichmentType )
-        .def( "setEnrichmentType", &XfemCrackClass::setEnrichmentType )
-        .def( "getEnrichmentRadiusZone", &XfemCrackClass::getEnrichmentRadiusZone )
-        .def( "setEnrichmentRadiusZone", &XfemCrackClass::setEnrichmentRadiusZone )
-        .def( "getEnrichedLayersNumber", &XfemCrackClass::getEnrichedLayersNumber )
-        .def( "setEnrichedLayersNumber", &XfemCrackClass::setEnrichedLayersNumber )
-        .def( "getJunctingCracks", &XfemCrackClass::getJunctingCracks )
-        .def( "insertJunctingCracks", &XfemCrackClass::insertJunctingCracks )
-        .def( "setPointForJunction", &XfemCrackClass::setPointForJunction )
+              &XfemCrack::setCohesiveCrackTipForPropagation )
+        .def( "getNormalLevelSetFunction", &XfemCrack::getNormalLevelSetFunction )
+        .def( "setNormalLevelSetFunction", &XfemCrack::setNormalLevelSetFunction )
+        .def( "getTangentialLevelSetFunction", &XfemCrack::getTangentialLevelSetFunction )
+        .def( "setTangentialLevelSetFunction", &XfemCrack::setTangentialLevelSetFunction )
+        .def( "getCrackShape", &XfemCrack::getCrackShape )
+        .def( "setCrackShape", &XfemCrack::setCrackShape )
+        .def( "getNormalLevelSetField", &XfemCrack::getNormalLevelSetField )
+        .def( "setNormalLevelSetField", &XfemCrack::setNormalLevelSetField )
+        .def( "getTangentialLevelSetField", &XfemCrack::getTangentialLevelSetField )
+        .def( "setTangentialLevelSetField", &XfemCrack::setTangentialLevelSetField )
+        .def( "getEnrichedCells", &XfemCrack::getEnrichedCells )
+        .def( "setEnrichedCells", &XfemCrack::setEnrichedCells )
+        .def( "getDiscontinuousField", &XfemCrack::getDiscontinuousField )
+        .def( "setDiscontinuousField", &XfemCrack::setDiscontinuousField )
+        .def( "getEnrichmentType", &XfemCrack::getEnrichmentType )
+        .def( "setEnrichmentType", &XfemCrack::setEnrichmentType )
+        .def( "getEnrichmentRadiusZone", &XfemCrack::getEnrichmentRadiusZone )
+        .def( "setEnrichmentRadiusZone", &XfemCrack::setEnrichmentRadiusZone )
+        .def( "getEnrichedLayersNumber", &XfemCrack::getEnrichedLayersNumber )
+        .def( "setEnrichedLayersNumber", &XfemCrack::setEnrichedLayersNumber )
+        .def( "getJunctingCracks", &XfemCrack::getJunctingCracks )
+        .def( "insertJunctingCracks", &XfemCrack::insertJunctingCracks )
+        .def( "setPointForJunction", &XfemCrack::setPointForJunction )
 
-        .def( "getTable", &ListOfTablesClass::getTable, R"(
+        .def( "getTable", &ListOfTables::getTable, R"(
 Extract a Table from the datastructure.
 
 Arguments:

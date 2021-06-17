@@ -24,7 +24,7 @@
 #include "LinearAlgebra/ElementaryMatrix.h"
 
 
-BaseMeshPtr BaseElementaryMatrixClass::getMesh( void ) const
+BaseMeshPtr BaseElementaryMatrix::getMesh( void ) const
 {
     if( _model )
         return _model->getMesh();

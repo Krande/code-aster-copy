@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe Function2D
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -34,11 +34,11 @@
 #include "Functions/GenericFunction.h"
 
 /**
- * @class Function2DClass
+ * @class Function2D
  * @brief Cette classe correspond a une nappe
  * @author Nicolas Sellenet
  */
-class Function2DClass : public GenericFunctionClass {
+class Function2D : public GenericFunction {
   private:
     // Vecteur Jeveux '.PARA'
     JeveuxVectorReal _parameters;
@@ -50,18 +50,18 @@ class Function2DClass : public GenericFunctionClass {
      * @typedef Function2DPtr
      * @brief Pointeur intelligent vers un Function2D
      */
-    typedef boost::shared_ptr< Function2DClass > Function2DPtr;
+    typedef boost::shared_ptr< Function2D > Function2DPtr;
 
     /**
      * @brief Constructeur
      */
-    Function2DClass() : Function2DClass( ResultNaming::getNewResultName() ){};
+    Function2D() : Function2D( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Constructeur
      */
-    Function2DClass( const std::string name )
-        : GenericFunctionClass( name, "NAPPE", "NAPPE" ),
+    Function2D( const std::string name )
+        : GenericFunction( name, "NAPPE", "NAPPE" ),
           _parameters( JeveuxVectorReal( getName() + ".PARA" ) ),
           _value( JeveuxCollectionReal( getName() + ".VALE" ) ){};
 
@@ -98,7 +98,7 @@ class Function2DClass : public GenericFunctionClass {
      * @brief Return the number of points of the function
      */
     ASTERINTEGER maximumSize() const {
-        _value->buildFromJeveux();
+        _value->build();
         ASTERINTEGER toReturn = 0;
         for ( const auto &curIter : *_value ) {
             if ( curIter.size() > toReturn )
@@ -111,7 +111,7 @@ class Function2DClass : public GenericFunctionClass {
      * @brief Return the number of points of the function
      */
     ASTERINTEGER size() const {
-        _value->buildFromJeveux();
+        _value->build();
         ASTERINTEGER toReturn = 0;
         for ( const auto &curIter : *_value ) {
             toReturn += curIter.size();
@@ -122,8 +122,8 @@ class Function2DClass : public GenericFunctionClass {
 
 /**
  * @typedef Function2DPtr
- * @brief Pointeur intelligent vers un Function2DClass
+ * @brief Pointeur intelligent vers un Function2D
  */
-typedef boost::shared_ptr< Function2DClass > Function2DPtr;
+typedef boost::shared_ptr< Function2D > Function2DPtr;
 
 #endif /* FUNCTION2D_H_ */

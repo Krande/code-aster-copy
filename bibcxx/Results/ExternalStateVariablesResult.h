@@ -2,11 +2,11 @@
 #define EXTERNALVARIABLEEVOLUTIONCONTAINER_H_
 
 /**
- * @file ExternalVariablesResult.h
- * @brief Fichier entete de la classe ExternalVariablesResult
+ * @file ExternalStateVariablesResult.h
+ * @brief Fichier entete de la classe ExternalStateVariablesResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,27 +32,27 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class ExternalVariablesResultClass
+ * @class ExternalStateVariablesResult
  * @brief Cette classe correspond a un evol_varc, elle hérite de Result
           et stocke des champs
  * @author Natacha Béreux
  */
-class ExternalVariablesResultClass : public TransientResultClass {
+class ExternalStateVariablesResult : public TransientResult {
   private:
   public:
     /**
      * @brief Constructeur
      */
-    ExternalVariablesResultClass(
+    ExternalStateVariablesResult(
         const std::string name = ResultNaming::getNewResultName() )
-        : TransientResultClass( name, "EVOL_VARC" ){};
+        : TransientResult( name, "EVOL_VARC" ){};
 };
 
 /**
- * @typedef ExternalVariablesResultPtr
- * @brief Pointeur intelligent vers un ExternalVariablesResultClass
+ * @typedef ExternalStateVariablesResultPtr
+ * @brief Pointeur intelligent vers un ExternalStateVariablesResult
  */
-typedef boost::shared_ptr< ExternalVariablesResultClass >
-    ExternalVariablesResultPtr;
+typedef boost::shared_ptr< ExternalStateVariablesResult >
+    ExternalStateVariablesResultPtr;
 
 #endif /* EXTERNALVARIABLEEVOLUTIONCONTAINER_H_ */

@@ -49,6 +49,8 @@ class ResultStateBuilder(InternalStateBuilder):
         self._st["model"] = []
         # list of MaterialField objects
         self._st["mater"] = []
+        # list of ElementaryCharacteristics
+        self._st["cara_elem"] = []
         for i in self._st["rank"]:
             try:
                 self._st["model"].append(result.getModel(i))
@@ -56,6 +58,10 @@ class ResultStateBuilder(InternalStateBuilder):
                 pass
             try:
                 self._st["mater"].append(result.getMaterialField(i))
+            except RuntimeError:
+                pass
+            try:
+                self._st["cara_elem"].append(result.getElementaryCharacteristics(i))
             except RuntimeError:
                 pass
         if len(self._st["rank"]) != len(self._st["model"]):
@@ -70,6 +76,12 @@ class ResultStateBuilder(InternalStateBuilder):
                 f"{len(self._st['rank'])} ranks, {len(self._st['mater'])} materials"
             )
             self._st["mater"] = []
+        if len(self._st["rank"]) != len(self._st["cara_elem"]):
+            logger.debug(
+                f"Inconsistent definition of elementary characteristics fields: "
+                f"{len(self._st['rank'])} ranks, {len(self._st['cara_elem'])} elementary characteristics"
+            )
+            self._st["cara_elem"] = []
         return self
 
     def restore(self, result):
@@ -85,8 +97,10 @@ class ResultStateBuilder(InternalStateBuilder):
                 result.addModel(self._st["model"][i], rank)
             if self._st["mater"]:
                 result.addMaterialField(self._st["mater"][i], rank)
+            if self._st["cara_elem"]:
+                result.addElementaryCharacteristics(self._st["cara_elem"][i], rank)
         if self._st["model"]:
-            result.update()
+            result.build()
 
 
 @injector(Result)

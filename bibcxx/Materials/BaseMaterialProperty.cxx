@@ -1,10 +1,10 @@
 /**
  * @file MaterialProperty.cxx
- * @brief Implementation de GenericMaterialPropertyClass
+ * @brief Implementation de GenericMaterialProperty
  * @author Nicolas Sellenet
  * @todo autoriser le type Function pour les paramètres matériau
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -27,7 +27,7 @@
 #include <stdexcept>
 #include "Materials/BaseMaterialProperty.h"
 
-bool GenericMaterialPropertyClass::buildJeveuxVectors(
+bool GenericMaterialProperty::buildJeveuxVectors(
     JeveuxVectorComplex &complexValues, JeveuxVectorReal &doubleValues,
     JeveuxVectorChar16 &char16Values, JeveuxVectorChar16 &ordr, JeveuxVectorLong &kOrd,
     std::vector< JeveuxVectorReal > &userReals,
@@ -205,13 +205,13 @@ bool GenericMaterialPropertyClass::buildJeveuxVectors(
     return true;
 };
 
-bool GenericMaterialPropertyClass::buildTractionFunction( FunctionPtr &doubleValues ) const
+bool GenericMaterialProperty::computeTractionFunction( FunctionPtr &doubleValues ) const
 {
     return true;
 };
 
 
-int GenericMaterialPropertyClass::getNumberOfPropertiesWithValue() const {
+int GenericMaterialProperty::getNumberOfPropertiesWithValue() const {
     int toReturn = 0;
     for ( auto curIter : _mapOfRealMaterialProperties )
         if ( curIter.second.hasValue() )
@@ -246,4 +246,109 @@ int GenericMaterialPropertyClass::getNumberOfPropertiesWithValue() const {
             ++toReturn;
 
     return toReturn;
+};
+
+
+
+bool GenericMaterialProperty::setValue( std::string nameOfProperty, ASTERDOUBLE value ) {
+        // Recherche de la propriete materielle
+        mapStrEMPDIterator curIter = _mapOfRealMaterialProperties.find( nameOfProperty );
+        if ( curIter == _mapOfRealMaterialProperties.end() )
+            return false;
+        // Ajout de la valeur
+        ( *curIter ).second.setValue( value );
+        return true;
+};
+
+bool GenericMaterialProperty::setValue( std::string nameOfProperty, ASTERCOMPLEX value ) {
+        // Recherche de la propriete materielle
+        mapStrEMPCIterator curIter = _mapOfComplexMaterialProperties.find( nameOfProperty );
+        if ( curIter == _mapOfComplexMaterialProperties.end() )
+            return false;
+        // Ajout de la valeur
+        ( *curIter ).second.setValue( value );
+        return true;
+};
+
+
+bool GenericMaterialProperty::setValue( std::string nameOfProperty, std::string value ) {
+        // Recherche de la propriete materielle dans les Convertible
+        const auto &curIter = _mapOfConvertibleMaterialProperties.find( nameOfProperty );
+        if ( curIter != _mapOfConvertibleMaterialProperties.end() ) {
+            ( *curIter ).second.setValue( value );
+            return true;
+        }
+
+        // Recherche de la propriete materielle
+        mapStrEMPSIterator curIter2 = _mapOfStringMaterialProperties.find( nameOfProperty );
+        if ( curIter2 == _mapOfStringMaterialProperties.end() )
+            return false;
+        // Ajout de la valeur
+        ( *curIter2 ).second.setValue( value );
+        return true;
+};
+
+
+bool GenericMaterialProperty::setValue( std::string nameOfProperty, FunctionPtr value ) {
+        // Recherche de la propriete materielle
+        mapStrEMPFIterator curIter = _mapOfFunctionMaterialProperties.find( nameOfProperty );
+        if ( curIter == _mapOfFunctionMaterialProperties.end() )
+            return false;
+        // Ajout de la valeur
+        _mapOfFunctionMaterialProperties[nameOfProperty].setValue( value );
+        return true;
+};
+
+
+bool GenericMaterialProperty::setValue( std::string nameOfProperty, TablePtr value ) {
+        // Recherche de la propriete materielle
+        mapStrEMPTIterator curIter = _mapOfTableMaterialProperties.find( nameOfProperty );
+        if ( curIter == _mapOfTableMaterialProperties.end() )
+            return false;
+        // Ajout de la valeur
+        ( *curIter ).second.setValue( value );
+        return true;
+};
+
+
+bool GenericMaterialProperty::setValue( std::string nameOfProperty, Function2DPtr value ) {
+        // Recherche de la propriete materielle
+        mapStrEMPFIterator curIter = _mapOfFunctionMaterialProperties.find( nameOfProperty );
+        if ( curIter == _mapOfFunctionMaterialProperties.end() )
+            return false;
+        // Ajout de la valeur
+        _mapOfFunctionMaterialProperties[nameOfProperty].setValue( value );
+        return true;
+};
+
+bool GenericMaterialProperty::setValue( std::string nameOfProperty, FormulaPtr value ) {
+        // Recherche de la propriete materielle
+        mapStrEMPFIterator curIter = _mapOfFunctionMaterialProperties.find( nameOfProperty );
+        if ( curIter == _mapOfFunctionMaterialProperties.end() )
+            return false;
+        // Ajout de la valeur
+        _mapOfFunctionMaterialProperties[nameOfProperty].setValue( value );
+        return true;
+};
+
+bool GenericMaterialProperty::setValue( std::string nameOfProperty, VectorReal value ) {
+        // Recherche de la propriete materielle
+        auto curIter = _mapOfVectorRealMaterialProperties.find( nameOfProperty );
+        if ( curIter == _mapOfVectorRealMaterialProperties.end() )
+            return false;
+        // Ajout de la valeur
+        ( *curIter ).second._value = value;
+        ( *curIter ).second._existsValue = true;
+        return true;
+};
+
+bool GenericMaterialProperty::setValue( std::string nameOfProperty, VectorFunction value ) {
+        // Recherche de la propriete materielle
+        auto curIter = _mapOfVectorFunctionMaterialProperties.find( nameOfProperty );
+        if ( curIter == _mapOfVectorFunctionMaterialProperties.end() )
+            return false;
+        // Ajout de la valeur
+        ( *curIter ).second._value = value;
+        ( *curIter ).second._existsValue = true;
+        return true;
 };

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ElementaryCharacteristics
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -35,11 +35,11 @@
 #include "definition.h"
 
 /**
- * @class ElementaryCharacteristicsClass
+ * @class ElementaryCharacteristics
  * @brief Cette classe decrit un cara_elem
  * @author Nicolas Sellenet
  */
-class ElementaryCharacteristicsClass : public DataStructure {
+class ElementaryCharacteristics : public DataStructure {
   private:
     /** @brief Model */
     ModelPtr _model;
@@ -80,23 +80,23 @@ class ElementaryCharacteristicsClass : public DataStructure {
      * @typedef ElementaryCharacteristicsPtr
      * @brief Pointeur intelligent vers un ElementaryCharacteristics
      */
-    typedef boost::shared_ptr< ElementaryCharacteristicsClass > ElementaryCharacteristicsPtr;
+    typedef boost::shared_ptr< ElementaryCharacteristics > ElementaryCharacteristicsPtr;
 
     /**
      * @brief Constructeur
      */
-    ElementaryCharacteristicsClass( const std::string name, const ModelPtr &model );
+    ElementaryCharacteristics( const std::string name, const ModelPtr &model );
 
     /**
      * @brief Constructeur
      */
-    ElementaryCharacteristicsClass( const ModelPtr &model )
-        : ElementaryCharacteristicsClass( ResultNaming::getNewResultName(), model ){};
+    ElementaryCharacteristics( const ModelPtr &model )
+        : ElementaryCharacteristics( ResultNaming::getNewResultName(), model ){};
 
     /**
      * @brief Destructeur
      */
-    ~ElementaryCharacteristicsClass(){};
+    ~ElementaryCharacteristics(){};
 
     /**
      * @brief Get the model
@@ -116,8 +116,8 @@ class ElementaryCharacteristicsClass : public DataStructure {
 
 /**
  * @typedef ElementaryCharacteristicsPtr
- * @brief Pointeur intelligent vers un ElementaryCharacteristicsClass
+ * @brief Pointeur intelligent vers un ElementaryCharacteristics
  */
-typedef boost::shared_ptr< ElementaryCharacteristicsClass > ElementaryCharacteristicsPtr;
+typedef boost::shared_ptr< ElementaryCharacteristics > ElementaryCharacteristicsPtr;
 
 #endif /* ELEMENTARYCHARACTERISTICS_H_ */

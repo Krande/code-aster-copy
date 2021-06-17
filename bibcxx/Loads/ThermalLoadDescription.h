@@ -31,12 +31,12 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class ThermalLoadDescriptionClass
+ * @class ThermalLoadDescription
  * @brief Classe definissant une charge thermique sd_char_chth
  * @author Jean-Pierre Lefebvre
  */
 template< typename ConstantFieldOnCellsType>
-class ThermalLoadDescriptionClass : public DataStructure {
+class ThermalLoadDescription : public DataStructure {
 
   public:
     typedef boost::shared_ptr< ConstantFieldOnCellsType > ConstantFieldOnCellsTypePtr;
@@ -71,17 +71,17 @@ class ThermalLoadDescriptionClass : public DataStructure {
 
   public:
 
-    ThermalLoadDescriptionClass( void ) = delete;
+    ThermalLoadDescription( void ) = delete;
 
         /** @brief Constructeur */
-    ThermalLoadDescriptionClass( const std::string &name, const ModelPtr &currentModel ):
+    ThermalLoadDescription( const std::string &name, const ModelPtr &currentModel ):
         DataStructure( name, 13, "CHAR_CHTH" ),
         _model( currentModel ),
         _modelName( getName() + ".MODEL.NOMO" ), _convection( getName() + ".CONVE.VALE" ),
-        _FEDesc( boost::make_shared< FiniteElementDescriptorClass >( getName() + ".LIGRE",
+        _FEDesc( boost::make_shared< FiniteElementDescriptor >( getName() + ".LIGRE",
                                                                     _model->getMesh() ) ),
         _cimpo( boost::make_shared< ConstantFieldOnCellsType >( getName() + ".CIMPO", _FEDesc ) ),
-        _cmult( boost::make_shared< ConstantFieldOnCellsRealClass >(
+        _cmult( boost::make_shared< ConstantFieldOnCellsReal >(
                                                                 getName() + ".CMULT", _FEDesc ) ),
         _coefh( boost::make_shared< ConstantFieldOnCellsType >( getName() + ".COEFH", _FEDesc ) ),
         _flunl( boost::make_shared< ConstantFieldOnCellsType >( getName() + ".FLUNL", _FEDesc ) ),
@@ -112,16 +112,16 @@ class ThermalLoadDescriptionClass : public DataStructure {
 /*  Explicit instantiation of template classes
 /**********************************************************/
 
-/** @typedef ThermalLoadDescriptionRealClass Class d'une charge mécanique réelle */
-typedef ThermalLoadDescriptionClass< ConstantFieldOnCellsRealClass >
-    ThermalLoadDescriptionRealClass;
-/** @typedef ThermalLoadDescriptionFuncClass Class d'une charge mécanique de fonctions */
-typedef ThermalLoadDescriptionClass< ConstantFieldOnCellsChar24Class >
-    ThermalLoadDescriptionFunctionClass;
+/** @typedef ThermalLoadDescriptionReal Class d'une charge mécanique réelle */
+typedef ThermalLoadDescription< ConstantFieldOnCellsReal >
+    ThermalLoadDescriptionReal;
+/** @typedef ThermalLoadDescriptionFunc Class d'une charge mécanique de fonctions */
+typedef ThermalLoadDescription< ConstantFieldOnCellsChar24 >
+    ThermalLoadDescriptionFunction;
 
 
 template< typename ConstantFieldOnCellsType >
 using ThermalLoadDescriptionPtr =
-    boost::shared_ptr< ThermalLoadDescriptionClass< ConstantFieldOnCellsType > >;
+    boost::shared_ptr< ThermalLoadDescription< ConstantFieldOnCellsType > >;
 
 #endif /* THERMALLOADDESCRIPTION_H_ */

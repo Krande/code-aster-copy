@@ -3,7 +3,7 @@
  * @brief Interface python de TableContainer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,45 +32,45 @@ namespace py = boost::python;
 
 void exportTableContainerToPython() {
 
-    void ( TableContainerClass::*c1 )( const std::string &,
+    void ( TableContainer::*c1 )( const std::string &,
                                           ElementaryMatrixDisplacementRealPtr ) =
-        &TableContainerClass::addObject;
-    void ( TableContainerClass::*c2 )( const std::string &,
+        &TableContainer::addObject;
+    void ( TableContainer::*c2 )( const std::string &,
                                           ElementaryMatrixTemperatureRealPtr ) =
-        &TableContainerClass::addObject;
-    void ( TableContainerClass::*c3 )( const std::string &,
+        &TableContainer::addObject;
+    void ( TableContainer::*c3 )( const std::string &,
                                           ElementaryVectorDisplacementRealPtr ) =
-        &TableContainerClass::addObject;
-    void ( TableContainerClass::*c4 )( const std::string &,
+        &TableContainer::addObject;
+    void ( TableContainer::*c4 )( const std::string &,
                                           ElementaryVectorTemperatureRealPtr ) =
-        &TableContainerClass::addObject;
-    void ( TableContainerClass::*c5 )( const std::string &, FieldOnCellsRealPtr ) =
-        &TableContainerClass::addObject;
-    void ( TableContainerClass::*c6 )( const std::string &, FieldOnNodesRealPtr ) =
-        &TableContainerClass::addObject;
-    void ( TableContainerClass::*c7 )( const std::string &, FunctionPtr ) =
-        &TableContainerClass::addObject;
-    void ( TableContainerClass::*c8 )( const std::string &, FunctionComplexPtr ) =
-        &TableContainerClass::addObject;
-    void ( TableContainerClass::*c9 )( const std::string &,
+        &TableContainer::addObject;
+    void ( TableContainer::*c5 )( const std::string &, FieldOnCellsRealPtr ) =
+        &TableContainer::addObject;
+    void ( TableContainer::*c6 )( const std::string &, FieldOnNodesRealPtr ) =
+        &TableContainer::addObject;
+    void ( TableContainer::*c7 )( const std::string &, FunctionPtr ) =
+        &TableContainer::addObject;
+    void ( TableContainer::*c8 )( const std::string &, FunctionComplexPtr ) =
+        &TableContainer::addObject;
+    void ( TableContainer::*c9 )( const std::string &,
                                           GeneralizedAssemblyMatrixRealPtr ) =
-        &TableContainerClass::addObject;
-    void ( TableContainerClass::*c10 )( const std::string &, DataFieldPtr ) =
-        &TableContainerClass::addObject;
-    void ( TableContainerClass::*c11 )( const std::string &, ModeResultPtr ) =
-        &TableContainerClass::addObject;
-    void ( TableContainerClass::*c12 )( const std::string &, ConstantFieldOnCellsRealPtr ) =
-        &TableContainerClass::addObject;
-    void ( TableContainerClass::*c13 )( const std::string &, Function2DPtr ) =
-        &TableContainerClass::addObject;
-    void ( TableContainerClass::*c14 )( const std::string &, TablePtr ) =
-        &TableContainerClass::addObject;
+        &TableContainer::addObject;
+    void ( TableContainer::*c10 )( const std::string &, DataFieldPtr ) =
+        &TableContainer::addObject;
+    void ( TableContainer::*c11 )( const std::string &, ModeResultPtr ) =
+        &TableContainer::addObject;
+    void ( TableContainer::*c12 )( const std::string &, ConstantFieldOnCellsRealPtr ) =
+        &TableContainer::addObject;
+    void ( TableContainer::*c13 )( const std::string &, Function2DPtr ) =
+        &TableContainer::addObject;
+    void ( TableContainer::*c14 )( const std::string &, TablePtr ) =
+        &TableContainer::addObject;
 
-    py::class_< TableContainerClass, TableContainerClass::TableContainerPtr,
-                py::bases< TableClass > >( "TableContainer", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< TableContainerClass >))
+    py::class_< TableContainer, TableContainer::TableContainerPtr,
+                py::bases< Table > >( "TableContainer", py::no_init )
+        .def( "__init__", py::make_constructor(&initFactoryPtr< TableContainer >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< TableContainerClass, std::string >))
+              py::make_constructor(&initFactoryPtr< TableContainer, std::string >))
         .def( "addObject", c1 )
         .def( "addObject", c2 )
         .def( "addObject", c3 )
@@ -86,22 +86,22 @@ void exportTableContainerToPython() {
         .def( "addObject", c13 )
         .def( "addObject", c14 )
         .def( "getElementaryMatrixDisplacementReal",
-              &TableContainerClass::getElementaryMatrixDisplacementReal )
+              &TableContainer::getElementaryMatrixDisplacementReal )
         .def( "getElementaryMatrixTemperatureReal",
-              &TableContainerClass::getElementaryMatrixTemperatureReal )
+              &TableContainer::getElementaryMatrixTemperatureReal )
         .def( "getElementaryVectorDisplacementReal",
-              &TableContainerClass::getElementaryVectorDisplacementReal )
+              &TableContainer::getElementaryVectorDisplacementReal )
         .def( "getElementaryVectorTemperatureReal",
-              &TableContainerClass::getElementaryVectorTemperatureReal )
-        .def( "getFieldOnCellsReal", &TableContainerClass::getFieldOnCellsReal )
-        .def( "getFieldOnNodesReal", &TableContainerClass::getFieldOnNodesReal )
-        .def( "getFunction", &TableContainerClass::getFunction )
-        .def( "getFunctionComplex", &TableContainerClass::getFunctionComplex )
+              &TableContainer::getElementaryVectorTemperatureReal )
+        .def( "getFieldOnCellsReal", &TableContainer::getFieldOnCellsReal )
+        .def( "getFieldOnNodesReal", &TableContainer::getFieldOnNodesReal )
+        .def( "getFunction", &TableContainer::getFunction )
+        .def( "getFunctionComplex", &TableContainer::getFunctionComplex )
         .def( "getGeneralizedAssemblyMatrix",
-              &TableContainerClass::getGeneralizedAssemblyMatrix )
-        .def( "getDataField", &TableContainerClass::getDataField )
-        .def( "getModeResult", &TableContainerClass::getModeResult )
-        .def( "getConstantFieldOnCellsReal", &TableContainerClass::getConstantFieldOnCellsReal )
-        .def( "getFunction2D", &TableContainerClass::getFunction2D )
-        .def( "getTable", &TableContainerClass::getTable );
+              &TableContainer::getGeneralizedAssemblyMatrix )
+        .def( "getDataField", &TableContainer::getDataField )
+        .def( "getModeResult", &TableContainer::getModeResult )
+        .def( "getConstantFieldOnCellsReal", &TableContainer::getConstantFieldOnCellsReal )
+        .def( "getFunction2D", &TableContainer::getFunction2D )
+        .def( "getTable", &TableContainer::getTable );
 };

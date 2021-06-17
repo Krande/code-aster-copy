@@ -66,11 +66,11 @@ class GenericLoadFunction {
 typedef std::vector< GenericLoadFunction > ListOfLoadFunctions;
 
 /**
- * @class ListOfLoadClass
+ * @class ListOfLoad
  * @brief Classe definissant une liste de charge
  * @author Nicolas Sellenet
  */
-class ListOfLoadsClass : public DataStructure {
+class ListOfLoads : public DataStructure {
   private:
     /** @brief Chargements cinematiques */
     ListDiriBC _listOfDirichletBCs;
@@ -121,7 +121,7 @@ class ListOfLoadsClass : public DataStructure {
     /**
      * @brief Constructeur
      */
-    ListOfLoadsClass( const JeveuxMemory memType = Permanent );
+    ListOfLoads( const JeveuxMemory memType = Permanent );
 
     /**
      * @brief Function d'ajout d'une charge cinematique
@@ -547,8 +547,8 @@ class ListOfLoadsClass : public DataStructure {
 
 /**
  * @typedef ListOfLoad
- * @brief Pointeur intelligent vers un ListOfLoadClass
+ * @brief Pointeur intelligent vers un ListOfLoad
  */
-typedef boost::shared_ptr< ListOfLoadsClass > ListOfLoadsPtr;
+typedef boost::shared_ptr< ListOfLoads > ListOfLoadsPtr;
 
 #endif /* LISTOFLOADS_H_ */

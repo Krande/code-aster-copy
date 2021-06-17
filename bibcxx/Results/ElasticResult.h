@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ElasticResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,28 +32,28 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class ElasticResultClass
+ * @class ElasticResult
  * @brief Cette classe correspond a un evol_elas
  * @author Nicolas Sellenet
  */
-class ElasticResultClass : public ResultClass {
+class ElasticResult : public Result {
   public:
     /**
      * @brief Constructeur
      * @todo  Ajouter les objets Jeveux de la SD
      */
-    ElasticResultClass()
-        : ElasticResultClass( ResultNaming::getNewResultName() ){};
+    ElasticResult()
+        : ElasticResult( ResultNaming::getNewResultName() ){};
 
-    ElasticResultClass( const std::string &name )
-        : ResultClass( name, "EVOL_ELAS" ){};
+    ElasticResult( const std::string &name )
+        : Result( name, "EVOL_ELAS" ){};
 };
 
 /**
  * @typedef ElasticResultPtr
- * @brief Pointeur intelligent vers un ElasticResultClass
+ * @brief Pointeur intelligent vers un ElasticResult
  */
-typedef boost::shared_ptr< ElasticResultClass >
+typedef boost::shared_ptr< ElasticResult >
     ElasticResultPtr;
 
 #endif /* LINEARDISPLACEMENTEVOLUTIONCONTAINER_H_ */

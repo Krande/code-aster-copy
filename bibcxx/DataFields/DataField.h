@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe DataField
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,24 +29,24 @@
 #include "DataStructures/DataStructure.h"
 
 /**
- * @class DataFieldClass
+ * @class DataField
  * @brief class which describe a field of data
  * @author Nicolas Sellenet
  */
-class DataFieldClass : public DataStructure {
+class DataField : public DataStructure {
   private:
   public:
     /**
      * @typedef DataFieldPtr
      * @brief Pointeur intelligent vers un DataField
      */
-    typedef boost::shared_ptr< DataFieldClass > DataFieldPtr;
+    typedef boost::shared_ptr< DataField > DataFieldPtr;
 
     /**
      * @brief Constructor
      * @param name Jeveux name
      */
-    DataFieldClass( const std::string name, const std::string type = "CHAM_GD",
+    DataField( const std::string name, const std::string type = "CHAM_GD",
                               const JeveuxMemory memType = Permanent )
         : DataStructure( name, 19, type, memType ){};
 
@@ -54,7 +54,7 @@ class DataFieldClass : public DataStructure {
      * @brief Constructor
      * @param memType allocation memory
      */
-    DataFieldClass( const JeveuxMemory memType = Permanent,
+    DataField( const JeveuxMemory memType = Permanent,
                               const std::string type = "CHAM_GD" )
         : DataStructure( type, memType, 19 ){};
 };
@@ -62,6 +62,6 @@ class DataFieldClass : public DataStructure {
 /**
  * @typedef DataFieldPtrReal
  */
-typedef boost::shared_ptr< DataFieldClass > DataFieldPtr;
+typedef boost::shared_ptr< DataField > DataFieldPtr;
 
 #endif /* DATAFIELD_H_ */

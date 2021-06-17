@@ -3,7 +3,7 @@
  * @brief Interface python de LoadResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,9 +29,9 @@ namespace py = boost::python;
 
 void exportLoadResultToPython() {
 
-    py::class_< LoadResultClass, LoadResultPtr,
-            py::bases< TransientResultClass > >( "LoadResult", py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< LoadResultClass > ) )
+    py::class_< LoadResult, LoadResultPtr,
+            py::bases< TransientResult > >( "LoadResult", py::no_init )
+        .def( "__init__", py::make_constructor( &initFactoryPtr< LoadResult > ) )
         .def( "__init__",
-              py::make_constructor( &initFactoryPtr< LoadResultClass, std::string > ) );
+              py::make_constructor( &initFactoryPtr< LoadResult, std::string > ) );
 };

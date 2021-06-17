@@ -3,7 +3,7 @@
  * @brief Interface python de Table
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,16 +32,16 @@ namespace py = boost::python;
 
 void exportTableToPython() {
 
-    py::class_< TableClass, TableClass::TablePtr, py::bases< DataStructure > >( "Table",
+    py::class_< Table, Table::TablePtr, py::bases< DataStructure > >( "Table",
                                                                                       py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< TableClass >))
-        .def( "__init__", py::make_constructor(&initFactoryPtr< TableClass, std::string >));
-    py::class_< TableOfFunctionsClass, TableOfFunctionsClass::TableOfFunctionsPtr,
-                py::bases< TableClass > >( "TableOfFunctions", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< TableOfFunctionsClass >))
+        .def( "__init__", py::make_constructor(&initFactoryPtr< Table >))
+        .def( "__init__", py::make_constructor(&initFactoryPtr< Table, std::string >));
+    py::class_< TableOfFunctions, TableOfFunctions::TableOfFunctionsPtr,
+                py::bases< Table > >( "TableOfFunctions", py::no_init )
+        .def( "__init__", py::make_constructor(&initFactoryPtr< TableOfFunctions >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< TableOfFunctionsClass, std::string >))
-        .def( "addFunction", &TableOfFunctionsClass::addFunction )
-        .def( "getFunction", &TableOfFunctionsClass::getFunction )
-        .def( "getNumberOfFunctions", &TableOfFunctionsClass::getNumberOfFunctions );
+              py::make_constructor(&initFactoryPtr< TableOfFunctions, std::string >))
+        .def( "addFunction", &TableOfFunctions::addFunction )
+        .def( "getFunction", &TableOfFunctions::getFunction )
+        .def( "getNumberOfFunctions", &TableOfFunctions::getNumberOfFunctions );
 };

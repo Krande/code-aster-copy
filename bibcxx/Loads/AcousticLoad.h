@@ -36,7 +36,7 @@
 
 
 template< class ConstantFieldOnCellsType>
-class AcousticLoadClass : public DataStructure {
+class AcousticLoad : public DataStructure {
   private:
     /** @brief Vecteur Jeveux '.TYPE' */
     JeveuxVectorChar8 _type;
@@ -48,26 +48,26 @@ class AcousticLoadClass : public DataStructure {
      * @typedef AcousticLoadPtr
      * @brief Pointeur intelligent vers un AcousticLoad
      */
-    typedef boost::shared_ptr< AcousticLoadClass > AcousticLoadPtr;
+    typedef boost::shared_ptr< AcousticLoad > AcousticLoadPtr;
 
     /**
      * @brief Constructeur
      */
-    AcousticLoadClass( void ) = delete;
+    AcousticLoad( void ) = delete;
 
     /**
      * @brief Constructeur
      */
-    AcousticLoadClass( const ModelPtr &model )
-        : AcousticLoadClass( ResultNaming::getNewResultName(), model ){};
+    AcousticLoad( const ModelPtr &model )
+        : AcousticLoad( ResultNaming::getNewResultName(), model ){};
 
     /**
      * @brief Constructeur
      */
-    AcousticLoadClass( const std::string name, const ModelPtr &model )
+    AcousticLoad( const std::string name, const ModelPtr &model )
         : DataStructure( name, 8, "CHAR_ACOU" ),
           _acouLoadDesc( boost::make_shared<
-            AcousticLoadDescriptionClass< ConstantFieldOnCellsType > >(getName() + ".CHAC",
+            AcousticLoadDescription< ConstantFieldOnCellsType > >(getName() + ".CHAC",
                                                                             model) ),
           _type( getName() + ".TYPE" ){};
 
@@ -92,15 +92,15 @@ class AcousticLoadClass : public DataStructure {
 /*  Explicit instantiation of template classes
 /**********************************************************/
 
-/** @typedef AcousticLoadComplexClass Class d'une charge mécanique réelle */
-typedef AcousticLoadClass< ConstantFieldOnCellsComplexClass > AcousticLoadComplexClass;
+/** @typedef AcousticLoadComplex Class d'une charge mécanique réelle */
+typedef AcousticLoad< ConstantFieldOnCellsComplex > AcousticLoadComplex;
 
 /** @typedef AcousticLoad  */
 template< class ConstantFieldOnCellsType>
 using AcousticLoadPtr =
-    boost::shared_ptr< AcousticLoadClass< ConstantFieldOnCellsType > >;
+    boost::shared_ptr< AcousticLoad< ConstantFieldOnCellsType > >;
 
-typedef boost::shared_ptr< AcousticLoadComplexClass > AcousticLoadComplexPtr;
+typedef boost::shared_ptr< AcousticLoadComplex > AcousticLoadComplexPtr;
 
 
 /** @typedef std::list de AcousticLoad */

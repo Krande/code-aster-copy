@@ -33,11 +33,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class CrackClass
+ * @class Crack
  * @brief Cette classe decrit une sd fond_fissure
  * @author Nicolas Pignet
  */
-class CrackClass : public DataStructure {
+class Crack : public DataStructure {
   private:
     /** @brief Objet Jeveux '.LEVREINF.MAIL' : Vecteur (K8) contenant la liste
     des mailles de la lèvre inférieure de la fissure. */
@@ -80,20 +80,20 @@ class CrackClass : public DataStructure {
   public:
     /**
      * @typedef CrackPtr
-     * @brief Pointeur intelligent vers un CrackClass
+     * @brief Pointeur intelligent vers un Crack
      */
-    typedef boost::shared_ptr< CrackClass > CrackPtr;
+    typedef boost::shared_ptr< Crack > CrackPtr;
 
     /**
      * @brief Constructeur
      */
-    CrackClass( const std::string name = ResultNaming::getNewResultName() );
+    Crack( const std::string name = ResultNaming::getNewResultName() );
 };
 
 /**
  * @typedef CrackPtr
- * @brief Pointeur intelligent vers un CrackClass
+ * @brief Pointeur intelligent vers un Crack
  */
-typedef boost::shared_ptr< CrackClass > CrackPtr;
+typedef boost::shared_ptr< Crack > CrackPtr;
 
 #endif /* CRACK_H_ */

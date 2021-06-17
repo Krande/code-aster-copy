@@ -71,16 +71,16 @@ const int nbGraphPartitioner = 2;
 extern const char *const GraphPartitionerNames[nbGraphPartitioner];
 
 /**
- * @class ModelClass
+ * @class Model
  * @brief Produit une sd identique a celle produite par AFFE_MODELE
  * @author Nicolas Sellenet
  */
-class ModelClass : public DataStructure, public ListOfTablesClass {
+class Model : public DataStructure, public ListOfTables {
   public:
     /**
      * @brief Forward declaration for the XFEM enrichment
      */
-    typedef boost::shared_ptr< ModelClass > ModelPtr;
+    typedef boost::shared_ptr< Model > ModelPtr;
 
   protected:
     // On redefinit le type MeshEntityPtr afin de pouvoir stocker les MeshEntity
@@ -138,16 +138,16 @@ class ModelClass : public DataStructure, public ListOfTablesClass {
     /**
      * @brief Constructor: a mesh is mandatory
      */
-    ModelClass( void ) = delete;
+    Model( void ) = delete;
 
-    ModelClass( const std::string name, const BaseMeshPtr mesh )
+    Model( const std::string name, const BaseMeshPtr mesh )
         : DataStructure( name, 8, "MODELE" ),
-          ListOfTablesClass( name ),
+          ListOfTables( name ),
           _typeOfCells( JeveuxVectorLong( getName() + ".MAILLE    " ) ),
           _typeOfNodes( JeveuxVectorLong( getName() + ".NOEUD     " ) ),
           _partition( JeveuxVectorChar8( getName() + ".PARTIT    " ) ), _saneModel( nullptr ),
           _baseMesh( mesh ), _splitMethod( SubDomain ), _graphPartitioner( MetisPartitioner ),
-          _ligrel( boost::make_shared< FiniteElementDescriptorClass >(
+          _ligrel( boost::make_shared< FiniteElementDescriptor >(
                 getName() + ".MODELE", _baseMesh ) ) {
         if ( _baseMesh->isEmpty() )
             throw std::runtime_error( "Mesh is empty" );
@@ -156,24 +156,24 @@ class ModelClass : public DataStructure, public ListOfTablesClass {
 #endif
     };
 
-    ModelClass( const BaseMeshPtr mesh ) : ModelClass( ResultNaming::getNewResultName(), mesh ){};
+    Model( const BaseMeshPtr mesh ) : Model( ResultNaming::getNewResultName(), mesh ){};
 
 #ifdef ASTER_HAVE_MPI
-    ModelClass( const std::string name, const ConnectionMeshPtr mesh )
+    Model( const std::string name, const ConnectionMeshPtr mesh )
         : DataStructure( name, 8, "MODELE" ),
           _typeOfCells( JeveuxVectorLong( getName() + ".MAILLE    " ) ),
           _typeOfNodes( JeveuxVectorLong( getName() + ".NOEUD     " ) ),
           _partition( JeveuxVectorChar8( getName() + ".PARTIT    " ) ), _saneModel( nullptr ),
           _baseMesh( mesh ), _connectionMesh( mesh ), _splitMethod( Centralized ),
           _graphPartitioner( MetisPartitioner ),
-          _ligrel( boost::make_shared< FiniteElementDescriptorClass >(
+          _ligrel( boost::make_shared< FiniteElementDescriptor >(
                                                         getName() + ".MODELE", _baseMesh ) ) {
         AS_ASSERT( !_baseMesh->isEmpty() );
         AS_ASSERT( !_connectionMesh->isEmpty() );
     };
 
-    ModelClass( const ConnectionMeshPtr mesh )
-        : ModelClass( ResultNaming::getNewResultName(), mesh ){};
+    Model( const ConnectionMeshPtr mesh )
+        : Model( ResultNaming::getNewResultName(), mesh ){};
 #endif /* ASTER_HAVE_MPI */
 
     /**
@@ -336,8 +336,8 @@ class ModelClass : public DataStructure, public ListOfTablesClass {
 
 /**
  * @typedef Model
- * @brief Pointeur intelligent vers un ModelClass
+ * @brief Pointeur intelligent vers un Model
  */
-typedef boost::shared_ptr< ModelClass > ModelPtr;
+typedef boost::shared_ptr< Model > ModelPtr;
 
 #endif /* MODEL_H_ */

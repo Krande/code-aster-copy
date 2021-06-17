@@ -1,6 +1,6 @@
 /**
  * @file BaseMesh.cxx
- * @brief Implementation de BaseMeshClass
+ * @brief Implementation de BaseMesh
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
@@ -38,7 +38,7 @@
 #include "Utilities/Tools.h"
 
 
-int BaseMeshClass::getNumberOfNodes() const {
+int BaseMesh::getNumberOfNodes() const {
     if ( isEmpty() )
         return 0;
     if ( !_dimensionInformations->updateValuePointer() )
@@ -46,7 +46,7 @@ int BaseMeshClass::getNumberOfNodes() const {
     return ( *_dimensionInformations )[0];
 }
 
-int BaseMeshClass::getNumberOfCells() const {
+int BaseMesh::getNumberOfCells() const {
     if ( isEmpty() )
         return 0;
     if ( !_dimensionInformations->updateValuePointer() )
@@ -54,7 +54,7 @@ int BaseMeshClass::getNumberOfCells() const {
     return ( *_dimensionInformations )[2];
 }
 
-int BaseMeshClass::getDimension() const {
+int BaseMesh::getDimension() const {
     if ( isEmpty() )
         return 0;
     if ( !_dimensionInformations->updateValuePointer() )
@@ -76,7 +76,7 @@ int BaseMeshClass::getDimension() const {
     return dimGeom;
 }
 
-bool BaseMeshClass::readMeshFile( const std::string &fileName, const std::string &format ) {
+bool BaseMesh::readMeshFile( const std::string &fileName, const std::string &format ) {
     FileType type = Ascii;
     if ( format == "MED" )
         type = Binary;
@@ -134,25 +134,25 @@ bool BaseMeshClass::readMeshFile( const std::string &fileName, const std::string
     return update_tables();
 }
 
-bool BaseMeshClass::readMedFile( const std::string &fileName ) {
+bool BaseMesh::readMedFile( const std::string &fileName ) {
     return readMeshFile( fileName, "MED" );
 }
 
-const JeveuxCollectionLong BaseMeshClass::getMedConnectivity() const {
+const JeveuxCollectionLong BaseMesh::getMedConnectivity() const {
     JeveuxChar24 objv( " " );
     CALLO_GET_MED_CONNECTIVITY( getName(), objv );
     JeveuxCollectionLong result( objv.toString() );
     return result;
 }
 
-const JeveuxVectorLong BaseMeshClass::getMedCellsTypes() const {
+const JeveuxVectorLong BaseMesh::getMedCellsTypes() const {
     JeveuxChar24 objv( " " );
     CALLO_GET_MED_TYPES( getName(), objv );
     JeveuxVectorLong result( objv.toString() );
     return result;
 }
 
-bool BaseMeshClass::printMedFile( const std::string fileName ) const
+bool BaseMesh::printMedFile( const std::string fileName ) const
 {
     LogicalUnitFile a( fileName, Binary, New );
     ASTERINTEGER retour = a.getLogicalUnit();
@@ -186,7 +186,7 @@ bool BaseMeshClass::printMedFile( const std::string fileName ) const
     return true;
 };
 
-const JeveuxCollectionLong BaseMeshClass::getInverseConnectivity() const {
+const JeveuxCollectionLong BaseMesh::getInverseConnectivity() const {
     JeveuxChar24 objv( DataStructureNaming::getNewName( Permanent, 24 ) );
     std::string base( JeveuxMemoryTypesNames[Permanent] );
 
@@ -198,12 +198,12 @@ const JeveuxCollectionLong BaseMeshClass::getInverseConnectivity() const {
     return result;
 };
 
-std::string BaseMeshClass::getNodeName( const ASTERINTEGER& index) const
+std::string BaseMesh::getNodeName( const ASTERINTEGER& index) const
 {
     return trim(_nameOfNodes->getStringFromIndex(index));
 };
 
-std::string BaseMeshClass::getCellName( const ASTERINTEGER& index) const
+std::string BaseMesh::getCellName( const ASTERINTEGER& index) const
 {
     return trim(_nameOfCells->getStringFromIndex(index));
 };

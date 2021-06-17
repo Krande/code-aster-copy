@@ -3,7 +3,7 @@
  * @brief Implementation de TableContainer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -26,54 +26,54 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-void TableContainerClass::addObject( const std::string &a, ElementaryMatrixDisplacementRealPtr b ) {
+void TableContainer::addObject( const std::string &a, ElementaryMatrixDisplacementRealPtr b ) {
     _mapEMDD[a] = b;
 };
 
-void TableContainerClass::addObject( const std::string &a, ElementaryMatrixTemperatureRealPtr b ) {
+void TableContainer::addObject( const std::string &a, ElementaryMatrixTemperatureRealPtr b ) {
     _mapEMTD[a] = b;
 };
 
-void TableContainerClass::addObject( const std::string &a, ElementaryVectorDisplacementRealPtr b ) {
+void TableContainer::addObject( const std::string &a, ElementaryVectorDisplacementRealPtr b ) {
     _mapEVDD[a] = b;
 };
 
-void TableContainerClass::addObject( const std::string &a, ElementaryVectorTemperatureRealPtr b ) {
+void TableContainer::addObject( const std::string &a, ElementaryVectorTemperatureRealPtr b ) {
     _mapEVTD[a] = b;
 };
 
-void TableContainerClass::addObject( const std::string &a, FieldOnCellsRealPtr b ) {
+void TableContainer::addObject( const std::string &a, FieldOnCellsRealPtr b ) {
     _mapFOED[a] = b;
 };
 
-void TableContainerClass::addObject( const std::string &a, FieldOnNodesRealPtr b ) {
+void TableContainer::addObject( const std::string &a, FieldOnNodesRealPtr b ) {
     _mapFOND[a] = b;
 };
 
-void TableContainerClass::addObject( const std::string &a, FunctionPtr b ) { _mapF[a] = b; };
+void TableContainer::addObject( const std::string &a, FunctionPtr b ) { _mapF[a] = b; };
 
-void TableContainerClass::addObject( const std::string &a, FunctionComplexPtr b ) {
+void TableContainer::addObject( const std::string &a, FunctionComplexPtr b ) {
     _mapFC[a] = b;
 };
 
-void TableContainerClass::addObject( const std::string &a, GeneralizedAssemblyMatrixRealPtr b ) {
+void TableContainer::addObject( const std::string &a, GeneralizedAssemblyMatrixRealPtr b ) {
     _mapGAMD[a] = b;
 };
 
-void TableContainerClass::addObject( const std::string &a, DataFieldPtr b ) { _mapGDF[a] = b; };
+void TableContainer::addObject( const std::string &a, DataFieldPtr b ) { _mapGDF[a] = b; };
 
-void TableContainerClass::addObject( const std::string &a, ModeResultPtr b ) { _mapMMC[a] = b; };
+void TableContainer::addObject( const std::string &a, ModeResultPtr b ) { _mapMMC[a] = b; };
 
-void TableContainerClass::addObject( const std::string &a, ConstantFieldOnCellsRealPtr b ) {
+void TableContainer::addObject( const std::string &a, ConstantFieldOnCellsRealPtr b ) {
     _mapPCFOMD[a] = b;
 };
 
-void TableContainerClass::addObject( const std::string &a, Function2DPtr b ) { _mapS[a] = b; };
+void TableContainer::addObject( const std::string &a, Function2DPtr b ) { _mapS[a] = b; };
 
-void TableContainerClass::addObject( const std::string &a, TablePtr b ) { _mapT[a] = b; };
+void TableContainer::addObject( const std::string &a, TablePtr b ) { _mapT[a] = b; };
 
 ElementaryMatrixDisplacementRealPtr
-TableContainerClass::getElementaryMatrixDisplacementReal( const std::string &a ) const {
+TableContainer::getElementaryMatrixDisplacementReal( const std::string &a ) const {
     const auto aa = trim( a );
     const auto curIter = _mapEMDD.find( aa );
     if ( curIter == _mapEMDD.end() )
@@ -82,7 +82,7 @@ TableContainerClass::getElementaryMatrixDisplacementReal( const std::string &a )
 };
 
 ElementaryMatrixTemperatureRealPtr
-TableContainerClass::getElementaryMatrixTemperatureReal( const std::string &a ) const {
+TableContainer::getElementaryMatrixTemperatureReal( const std::string &a ) const {
     const auto aa = trim( a );
     const auto curIter = _mapEMTD.find( aa );
     if ( curIter == _mapEMTD.end() )
@@ -91,7 +91,7 @@ TableContainerClass::getElementaryMatrixTemperatureReal( const std::string &a ) 
 };
 
 ElementaryVectorDisplacementRealPtr
-TableContainerClass::getElementaryVectorDisplacementReal( const std::string &a ) const {
+TableContainer::getElementaryVectorDisplacementReal( const std::string &a ) const {
     const auto aa = trim( a );
     const auto curIter = _mapEVDD.find( aa );
     if ( curIter == _mapEVDD.end() )
@@ -100,7 +100,7 @@ TableContainerClass::getElementaryVectorDisplacementReal( const std::string &a )
 };
 
 ElementaryVectorTemperatureRealPtr
-TableContainerClass::getElementaryVectorTemperatureReal( const std::string &a ) const {
+TableContainer::getElementaryVectorTemperatureReal( const std::string &a ) const {
     const auto aa = trim( a );
     const auto curIter = _mapEVTD.find( aa );
     if ( curIter == _mapEVTD.end() )
@@ -108,7 +108,7 @@ TableContainerClass::getElementaryVectorTemperatureReal( const std::string &a ) 
     return curIter->second;
 };
 
-FieldOnCellsRealPtr TableContainerClass::getFieldOnCellsReal( const std::string &a ) const {
+FieldOnCellsRealPtr TableContainer::getFieldOnCellsReal( const std::string &a ) const {
     const auto aa = trim( a );
     const auto curIter = _mapFOED.find( aa );
     if ( curIter == _mapFOED.end() )
@@ -116,7 +116,7 @@ FieldOnCellsRealPtr TableContainerClass::getFieldOnCellsReal( const std::string 
     return curIter->second;
 };
 
-FieldOnNodesRealPtr TableContainerClass::getFieldOnNodesReal( const std::string &a ) const {
+FieldOnNodesRealPtr TableContainer::getFieldOnNodesReal( const std::string &a ) const {
     const auto aa = trim( a );
     const auto curIter = _mapFOND.find( aa );
     if ( curIter == _mapFOND.end() )
@@ -124,7 +124,7 @@ FieldOnNodesRealPtr TableContainerClass::getFieldOnNodesReal( const std::string 
     return curIter->second;
 };
 
-FunctionPtr TableContainerClass::getFunction( const std::string &a ) const {
+FunctionPtr TableContainer::getFunction( const std::string &a ) const {
     const auto aa = trim( a );
     const auto curIter = _mapF.find( aa );
     if ( curIter == _mapF.end() )
@@ -132,7 +132,7 @@ FunctionPtr TableContainerClass::getFunction( const std::string &a ) const {
     return curIter->second;
 };
 
-FunctionComplexPtr TableContainerClass::getFunctionComplex( const std::string &a ) const {
+FunctionComplexPtr TableContainer::getFunctionComplex( const std::string &a ) const {
     const auto aa = trim( a );
     const auto curIter = _mapFC.find( aa );
     if ( curIter == _mapFC.end() )
@@ -141,7 +141,7 @@ FunctionComplexPtr TableContainerClass::getFunctionComplex( const std::string &a
 };
 
 GeneralizedAssemblyMatrixRealPtr
-TableContainerClass::getGeneralizedAssemblyMatrix( const std::string &a ) const {
+TableContainer::getGeneralizedAssemblyMatrix( const std::string &a ) const {
     const auto aa = trim( a );
     const auto curIter = _mapGAMD.find( aa );
     if ( curIter == _mapGAMD.end() )
@@ -149,7 +149,7 @@ TableContainerClass::getGeneralizedAssemblyMatrix( const std::string &a ) const 
     return curIter->second;
 };
 
-DataFieldPtr TableContainerClass::getDataField( const std::string &a ) const {
+DataFieldPtr TableContainer::getDataField( const std::string &a ) const {
     const auto aa = trim( a );
     const auto curIter = _mapGDF.find( aa );
     if ( curIter == _mapGDF.end() )
@@ -157,7 +157,7 @@ DataFieldPtr TableContainerClass::getDataField( const std::string &a ) const {
     return curIter->second;
 };
 
-ModeResultPtr TableContainerClass::getModeResult( const std::string &a ) const {
+ModeResultPtr TableContainer::getModeResult( const std::string &a ) const {
     const auto aa = trim( a );
     const auto curIter = _mapMMC.find( aa );
     if ( curIter == _mapMMC.end() )
@@ -166,7 +166,7 @@ ModeResultPtr TableContainerClass::getModeResult( const std::string &a ) const {
 };
 
 ConstantFieldOnCellsRealPtr
-TableContainerClass::getConstantFieldOnCellsReal( const std::string &a ) const {
+TableContainer::getConstantFieldOnCellsReal( const std::string &a ) const {
     const auto aa = trim( a );
     const auto curIter = _mapPCFOMD.find( aa );
     if ( curIter == _mapPCFOMD.end() )
@@ -174,7 +174,7 @@ TableContainerClass::getConstantFieldOnCellsReal( const std::string &a ) const {
     return curIter->second;
 };
 
-Function2DPtr TableContainerClass::getFunction2D( const std::string &a ) const {
+Function2DPtr TableContainer::getFunction2D( const std::string &a ) const {
     const auto aa = trim( a );
     const auto curIter = _mapS.find( aa );
     if ( curIter == _mapS.end() )
@@ -182,7 +182,7 @@ Function2DPtr TableContainerClass::getFunction2D( const std::string &a ) const {
     return curIter->second;
 };
 
-TablePtr TableContainerClass::getTable( const std::string &a ) const {
+TablePtr TableContainer::getTable( const std::string &a ) const {
     const auto aa = trim( a );
     const auto curIter = _mapT.find( aa );
     if ( curIter == _mapT.end() )
@@ -190,7 +190,7 @@ TablePtr TableContainerClass::getTable( const std::string &a ) const {
     return curIter->second;
 };
 
-bool TableContainerClass::update() {
+bool TableContainer::build() {
 
     _parameterDescription->updateValuePointer();
     const int size = _parameterDescription->size() / 4;
@@ -249,51 +249,51 @@ bool TableContainerClass::update() {
             } else if ( type == "MATR_ASSE_GENE_R" ) {
                 if ( _mapGAMD[name] == nullptr )
                     _mapGAMD[name] = GeneralizedAssemblyMatrixRealPtr(
-                        new GeneralizedAssemblyMatrixRealClass( sdName ) );
+                        new GeneralizedAssemblyMatrixReal( sdName ) );
             } else if ( type == "MATR_ELEM_DEPL_R" ) {
                 if ( _mapEMDD[name] == nullptr )
                     _mapEMDD[name] = ElementaryMatrixDisplacementRealPtr(
-                        new ElementaryMatrixDisplacementRealClass( sdName ) );
+                        new ElementaryMatrixDisplacementReal( sdName ) );
             } else if ( type == "MATR_ELEM_TEMP_R" ) {
                 if ( _mapEMTD[name] == nullptr )
                     _mapEMTD[name] = ElementaryMatrixTemperatureRealPtr(
-                        new ElementaryMatrixTemperatureRealClass( sdName ) );
+                        new ElementaryMatrixTemperatureReal( sdName ) );
             } else if ( type == "VECT_ELEM_DEPL_R" ) {
                 if ( _mapEVDD[name] == nullptr )
                     _mapEVDD[name] = ElementaryVectorDisplacementRealPtr(
-                        new ElementaryVectorDisplacementRealClass( sdName ) );
+                        new ElementaryVectorDisplacementReal( sdName ) );
             } else if ( type == "VECT_ELEM_TEMP_R" ) {
                 if ( _mapEVTD[name] == nullptr )
                     _mapEVTD[name] = ElementaryVectorTemperatureRealPtr(
-                        new ElementaryVectorTemperatureRealClass( sdName ) );
+                        new ElementaryVectorTemperatureReal( sdName ) );
             } else if ( type == "CHAM_GD_SDASTER" ) {
                 if ( _mapGDF[name] == nullptr )
-                    _mapGDF[name] = DataFieldPtr( new DataFieldClass( sdName ) );
+                    _mapGDF[name] = DataFieldPtr( new DataField( sdName ) );
             } else if ( type == "CHAM_NO_SDASTER" ) {
                 if ( _mapFOND[name] == nullptr )
-                    _mapFOND[name] = FieldOnNodesRealPtr( new FieldOnNodesRealClass( sdName ) );
+                    _mapFOND[name] = FieldOnNodesRealPtr( new FieldOnNodesReal( sdName ) );
             }
             //             else if( type == "CARTE_SDASTER" )
             //                 _mapPCFOMD[name] = ConstantFieldOnCellsRealPtr
-            //                                     ( new ConstantFieldOnCellsRealClass( sdName ) );
+            //                                     ( new ConstantFieldOnCellsReal( sdName ) );
             else if ( type == "CHAM_ELEM" ) {
                 if ( _mapFOED[name] == nullptr )
-                    _mapFOED[name] = FieldOnCellsRealPtr( new FieldOnCellsRealClass( sdName ) );
+                    _mapFOED[name] = FieldOnCellsRealPtr( new FieldOnCellsReal( sdName ) );
             } else if ( type == "MODE_MECA" ) {
                 if ( _mapMMC[name] == nullptr )
-                    _mapMMC[name] = ModeResultPtr( new ModeResultClass( sdName ) );
+                    _mapMMC[name] = ModeResultPtr( new ModeResult( sdName ) );
             } else if ( type == "TABLE_SDASTER" ) {
                 if ( _mapT[name] == nullptr )
-                    _mapT[name] = TablePtr( new TableClass( sdName ) );
+                    _mapT[name] = TablePtr( new Table( sdName ) );
             } else if ( type == "FONCTION_SDASTER" ) {
                 if ( _mapF[name] == nullptr )
-                    _mapF[name] = FunctionPtr( new FunctionClass( sdName ) );
+                    _mapF[name] = FunctionPtr( new Function( sdName ) );
             } else if ( type == "FONCTION_C" ) {
                 if ( _mapFC[name] == nullptr )
-                    _mapFC[name] = FunctionComplexPtr( new FunctionComplexClass( sdName ) );
+                    _mapFC[name] = FunctionComplexPtr( new FunctionComplex( sdName ) );
             } else if ( type == "NAPPE_SDASTER" ) {
                 if ( _mapS[name] == nullptr )
-                    _mapS[name] = Function2DPtr( new Function2DClass( sdName ) );
+                    _mapS[name] = Function2DPtr( new Function2D( sdName ) );
             } else
                 throw std::runtime_error( "Type not implemented '" + type + "' for '" + name +
                                           "'" );

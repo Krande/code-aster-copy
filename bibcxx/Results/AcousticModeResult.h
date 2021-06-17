@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe AcousticModeResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,11 +31,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class AcousticModeResultClass
+ * @class AcousticModeResult
  * @brief Cette classe correspond a un mode_acou
  * @author Natacha Béreux
  */
-class AcousticModeResultClass : public FullResultClass {
+class AcousticModeResult : public FullResult {
   private:
     /** @brief Stiffness displacement matrix */
     AssemblyMatrixPressureRealPtr _rigidityMatrix;
@@ -44,11 +44,11 @@ class AcousticModeResultClass : public FullResultClass {
     /**
      * @brief Constructeur
      */
-    AcousticModeResultClass( const std::string &name )
-        : FullResultClass( name, "MODE_ACOU" ), _rigidityMatrix( nullptr ){};
+    AcousticModeResult( const std::string &name )
+        : FullResult( name, "MODE_ACOU" ), _rigidityMatrix( nullptr ){};
 
-    AcousticModeResultClass()
-        : AcousticModeResultClass( ResultNaming::getNewResultName() ){};
+    AcousticModeResult()
+        : AcousticModeResult( ResultNaming::getNewResultName() ){};
     /**
      * @brief Set the rigidity matrix
      * @param matr AssemblyMatrixPressureRealPtr
@@ -58,13 +58,13 @@ class AcousticModeResultClass : public FullResultClass {
         return true;
     };
 
-    bool update() { return ResultClass::update(); };
+    bool build() { return Result::build(); };
 };
 
 /**
  * @typedef AcousticModeResultPtr
- * @brief Pointeur intelligent vers un AcousticModeResultClass
+ * @brief Pointeur intelligent vers un AcousticModeResult
  */
-typedef boost::shared_ptr< AcousticModeResultClass > AcousticModeResultPtr;
+typedef boost::shared_ptr< AcousticModeResult > AcousticModeResultPtr;
 
 #endif /* ACOUSTICMODERESULT_H_ */

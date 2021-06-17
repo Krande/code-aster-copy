@@ -46,7 +46,7 @@
 
 /**
  * @struct AllowedFieldType
- * @brief Structure template permettant de limiter le type instanciable de JeveuxVectorClass
+ * @brief Structure template permettant de limiter le type instanciable de JeveuxVector
  * @tparam T Type autorise
  */
 template < typename T > struct AllowedFieldType; // undefined for bad types!
@@ -65,15 +65,15 @@ template <> struct AllowedFieldType< ASTERCOMPLEX > {
 class FieldBuilder;
 
 /**
- * @class FieldOnNodesClass
+ * @class FieldOnNodes
  * @brief Cette classe template permet de definir un champ aux noeuds Aster
  * @author Nicolas Sellenet
  */
 template < class ValueType >
-class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< ValueType > {
+class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
   private:
-    typedef SimpleFieldOnNodesClass< ValueType > SimpleFieldOnNodesValueTypeClass;
-    typedef boost::shared_ptr< SimpleFieldOnNodesValueTypeClass > SimpleFieldOnNodesValueTypePtr;
+    typedef SimpleFieldOnNodes< ValueType > SimpleFieldOnNodesValueType;
+    typedef boost::shared_ptr< SimpleFieldOnNodesValueType > SimpleFieldOnNodesValueTypePtr;
 
     /** @brief Vecteur Jeveux '.DESC' */
     JeveuxVectorLong _descriptor;
@@ -95,14 +95,14 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
      * @typedef FieldOnNodesPtr
      * @brief Smart pointer to a FieldOnNodes
      */
-    typedef boost::shared_ptr< FieldOnNodesClass > FieldOnNodesPtr;
+    typedef boost::shared_ptr< FieldOnNodes > FieldOnNodesPtr;
 
     /**
      * @brief Constructor
      * @param name Jeveux name of the field on nodes
      */
-    FieldOnNodesClass( const std::string name )
-        : DataFieldClass( name, "CHAM_NO" ), _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
+    FieldOnNodes( const std::string name )
+        : DataField( name, "CHAM_NO" ), _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
           _reference( JeveuxVectorChar24( getName() + ".REFE" ) ),
           _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ), _dofNum( nullptr ),
           _dofDescription( nullptr ), _title( JeveuxVectorChar80( getName() + ".TITR" ) ),
@@ -112,8 +112,8 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
      * @brief Constructor
      * @param memType Type of memory allocation
      */
-    FieldOnNodesClass( const JeveuxMemory memType = Permanent )
-        : DataFieldClass( memType, "CHAM_NO" ),
+    FieldOnNodes( const JeveuxMemory memType = Permanent )
+        : DataField( memType, "CHAM_NO" ),
           _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
           _reference( JeveuxVectorChar24( getName() + ".REFE" ) ),
           _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ), _dofNum( nullptr ),
@@ -123,8 +123,8 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
     /**
      * @brief Copy constructor
      */
-    FieldOnNodesClass( const FieldOnNodesClass &toCopy )
-        :DataFieldClass( toCopy.getMemoryType(), "CHAM_NO" ),
+    FieldOnNodes( const FieldOnNodes &toCopy )
+        :DataField( toCopy.getMemoryType(), "CHAM_NO" ),
           _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
           _reference( JeveuxVectorChar24( getName() + ".REFE" ) ),
           _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ), _dofNum( nullptr ),
@@ -144,8 +144,8 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
     /**
      * @brief Constructor with DOFNumbering
      */
-    FieldOnNodesClass( const BaseDOFNumberingPtr &dofNum, JeveuxMemory memType = Permanent )
-        : DataFieldClass( memType, "CHAM_NO" ),
+    FieldOnNodes( const BaseDOFNumberingPtr &dofNum, JeveuxMemory memType = Permanent )
+        : DataField( memType, "CHAM_NO" ),
           _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
           _reference( JeveuxVectorChar24( getName() + ".REFE" ) ),
           _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ), _dofNum( dofNum ),
@@ -162,15 +162,15 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
     /**
      * @brief Wrap of copy constructor
      */
-    FieldOnNodesClass duplicate() {
+    FieldOnNodes duplicate() {
         return *this;
     }
 
     /**
      * @brief Constructeur from a MeshCoordinatesFieldPtr&
      */
-    FieldOnNodesClass( MeshCoordinatesFieldPtr &toCopy )
-        : DataFieldClass( toCopy->getMemoryType(), "CHAM_NO" ), _descriptor( toCopy->_descriptor ),
+    FieldOnNodes( MeshCoordinatesFieldPtr &toCopy )
+        : DataField( toCopy->getMemoryType(), "CHAM_NO" ), _descriptor( toCopy->_descriptor ),
           _reference( toCopy->_reference ), _valuesList( toCopy->_valuesList ), _dofNum( nullptr ),
           _dofDescription( nullptr ), _title( JeveuxVectorChar80( getName() + ".TITR" ) ),
           _mesh( nullptr ){};
@@ -193,7 +193,7 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
      * @brief Check if fields are OK for +, +=, ...
      * @return true if compatible
      */
-    bool isSimilarTo(const FieldOnNodesClass< ValueType >  &tmp2 ) const {
+    bool isSimilarTo(const FieldOnNodes< ValueType >  &tmp2 ) const {
         bool similar = (this->_descriptor->size() == tmp2._descriptor->size());
         similar = (similar && (this->_reference->size() == tmp2._reference->size()));
         similar = (similar && (this->_valuesList->size() == tmp2._valuesList->size()));
@@ -204,9 +204,9 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
      * @brief PlusEqual overloading
      * @return Updated field
      */
-    FieldOnNodesClass< ValueType > &operator+=( FieldOnNodesClass< ValueType > const &rhs ) {
+    FieldOnNodes< ValueType > &operator+=( FieldOnNodes< ValueType > const &rhs ) {
         if (!this->isSimilarTo(rhs)) throw std::runtime_error("Fields have incompatible shapes");
-        const_cast<FieldOnNodesClass< ValueType >&> (rhs).updateValuePointers() ;
+        const_cast<FieldOnNodes< ValueType >&> (rhs).updateValuePointers() ;
         bool retour = _valuesList->updateValuePointer();
         int taille = _valuesList->size();
         for ( int pos = 0; pos < taille; ++pos )
@@ -219,9 +219,9 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
      * @return Updated field
      * @todo ajouter une vérification sur la structure des champs
      */
-    FieldOnNodesClass< ValueType > &operator-=( FieldOnNodesClass< ValueType > const &rhs ) {
+    FieldOnNodes< ValueType > &operator-=( FieldOnNodes< ValueType > const &rhs ) {
         if (!this->isSimilarTo(rhs)) throw std::runtime_error("Fields have incompatible shapes");
-        const_cast<FieldOnNodesClass< ValueType >&> (rhs).updateValuePointers() ;
+        const_cast<FieldOnNodes< ValueType >&> (rhs).updateValuePointers() ;
         bool retour = _valuesList->updateValuePointer();
         int taille = _valuesList->size();
         for ( int pos = 0; pos < taille; ++pos )
@@ -233,7 +233,7 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
      * @brief TimesEqual overloading
      * @return Updated field
      */
-    FieldOnNodesClass< ValueType > &operator*=( const ASTERDOUBLE &scal ) {
+    FieldOnNodes< ValueType > &operator*=( const ASTERDOUBLE &scal ) {
         bool retour = _valuesList->updateValuePointer();
         int taille = _valuesList->size();
         for ( int pos = 0; pos < taille; ++pos )
@@ -245,7 +245,7 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
      * @brief Unary Minus overloading
      * @return Updated field
      */
-    FieldOnNodesClass< ValueType > &operator-() {
+    FieldOnNodes< ValueType > &operator-() {
         bool retour = _valuesList->updateValuePointer();
         int taille = _valuesList->size();
         for ( int pos = 0; pos < taille; ++pos )
@@ -263,7 +263,7 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
      * @brief Multiply by a scalar on right overloading
      * @return New field
      */
-    friend FieldOnNodesClass< ValueType > operator*( FieldOnNodesClass< ValueType > lhs,
+    friend FieldOnNodes< ValueType > operator*( FieldOnNodes< ValueType > lhs,
                                                      const ASTERDOUBLE &scal ) {
         bool retour = lhs.updateValuePointers();
         int taille = lhs._valuesList->size();
@@ -276,8 +276,8 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
      * @brief Multiply by a scalar on left overloading
      * @return New field
      */
-    friend FieldOnNodesClass< ValueType > operator*( const ASTERDOUBLE &scal,
-                                                     FieldOnNodesClass< ValueType > rhs) {
+    friend FieldOnNodes< ValueType > operator*( const ASTERDOUBLE &scal,
+                                                     FieldOnNodes< ValueType > rhs) {
         return rhs * scal;
     };
 
@@ -285,8 +285,8 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
      * @brief Plus overloading
      * @return New field
      */
-    friend FieldOnNodesClass< ValueType > operator+(FieldOnNodesClass< ValueType > lhs,
-                                                    const FieldOnNodesClass< ValueType > &rhs ) {
+    friend FieldOnNodes< ValueType > operator+(FieldOnNodes< ValueType > lhs,
+                                                    const FieldOnNodes< ValueType > &rhs ) {
         if (!lhs.isSimilarTo(rhs)) throw std::runtime_error("Fields have incompatible shapes");
         lhs += rhs;
         return lhs;
@@ -297,8 +297,8 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
      * @return New field
      * @todo ajouter une vérification sur la structure des champs
      */
-    friend FieldOnNodesClass< ValueType > operator-(FieldOnNodesClass< ValueType > lhs,
-                                                    const FieldOnNodesClass< ValueType > &rhs ) {
+    friend FieldOnNodes< ValueType > operator-(FieldOnNodes< ValueType > lhs,
+                                                    const FieldOnNodes< ValueType > &rhs ) {
         if (!lhs.isSimilarTo(rhs)) throw std::runtime_error("Fields have incompatible shapes");
         lhs -= rhs;
         return lhs;
@@ -308,7 +308,7 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
      * @brief Allouer un champ au noeud à partir d'un autre
      * @return renvoit true
      */
-    bool allocateFrom( const FieldOnNodesClass< ValueType > &tmp ) {
+    bool allocateFrom( const FieldOnNodes< ValueType > &tmp ) {
         this->_descriptor->deallocate();
         this->_reference->deallocate();
         this->_valuesList->deallocate();
@@ -325,7 +325,7 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
      */
     SimpleFieldOnNodesValueTypePtr exportToSimpleFieldOnNodes() {
         SimpleFieldOnNodesValueTypePtr toReturn(
-            new SimpleFieldOnNodesValueTypeClass( getMemoryType() ) );
+            new SimpleFieldOnNodesValueType( getMemoryType() ) );
         const std::string resultName = toReturn->getName();
         const std::string inName = getName();
         CALLO_CNOCNS( inName, JeveuxMemoryTypesNames[getMemoryType()], resultName );
@@ -544,12 +544,12 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
     /**
      * @brief Update field and build FieldOnNodesDescription if necessary
      */
-    bool update() {
+    bool build() {
         if ( _dofNum != nullptr ) {
             _dofDescription = _dofNum->getDescription();
             _mesh = _dofNum->getMesh();
         } else if ( _dofDescription == nullptr && updateValuePointers() ) {
-            typedef FieldOnNodesDescriptionClass FONDesc;
+            typedef FieldOnNodesDescription FONDesc;
             typedef FieldOnNodesDescriptionPtr FONDescP;
 
             const std::string name2 = trim( ( *_reference )[1].toString() );
@@ -573,7 +573,7 @@ class FieldOnNodesClass : public DataFieldClass, private AllowedFieldType< Value
 };
 
 template < class ValueType >
-bool FieldOnNodesClass< ValueType >::printMedFile( const std::string fileName ) const {
+bool FieldOnNodes< ValueType >::printMedFile( const std::string fileName ) const {
     LogicalUnitFile a( fileName, Binary, New );
     int retour = a.getLogicalUnit();
     CommandSyntax cmdSt( "IMPR_RESU" );
@@ -600,31 +600,31 @@ bool FieldOnNodesClass< ValueType >::printMedFile( const std::string fileName ) 
     return true;
 };
 
-/** @typedef FieldOnNodesClassReal Class d'un champ aux noeuds de double */
-typedef FieldOnNodesClass< ASTERDOUBLE > FieldOnNodesRealClass;
+/** @typedef FieldOnNodesReal Class d'un champ aux noeuds de double */
+typedef FieldOnNodes< ASTERDOUBLE > FieldOnNodesReal;
 
 /**
  * @typedef FieldOnNodesPtrReal
  * @brief Definition d'un champ aux noeuds de double
  */
-typedef boost::shared_ptr< FieldOnNodesRealClass > FieldOnNodesRealPtr;
+typedef boost::shared_ptr< FieldOnNodesReal > FieldOnNodesRealPtr;
 
-/** @typedef FieldOnNodesLongClass Class d'une carte de long */
-typedef FieldOnNodesClass< ASTERINTEGER > FieldOnNodesLongClass;
+/** @typedef FieldOnNodesLong Class d'une carte de long */
+typedef FieldOnNodes< ASTERINTEGER > FieldOnNodesLong;
 
 /**
  * @typedef FieldOnNodesLongPtr
  * @brief Definition d'un champ aux noeuds de long
  */
-typedef boost::shared_ptr< FieldOnNodesLongClass > FieldOnNodesLongPtr;
+typedef boost::shared_ptr< FieldOnNodesLong > FieldOnNodesLongPtr;
 
-/** @typedef FieldOnNodesClassComplex Class d'un champ aux noeuds de complexes */
-typedef FieldOnNodesClass< ASTERCOMPLEX > FieldOnNodesComplexClass;
+/** @typedef FieldOnNodesComplex Class d'un champ aux noeuds de complexes */
+typedef FieldOnNodes< ASTERCOMPLEX > FieldOnNodesComplex;
 
 /**
  * @typedef FieldOnNodesComplexPtr
  * @brief Definition d'un champ aux noeuds de complexes
  */
-typedef boost::shared_ptr< FieldOnNodesComplexClass > FieldOnNodesComplexPtr;
+typedef boost::shared_ptr< FieldOnNodesComplex > FieldOnNodesComplexPtr;
 
 #endif /* FIELDONNODES_H_ */

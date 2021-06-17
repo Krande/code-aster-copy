@@ -35,11 +35,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class ParallelMeshClass
+ * @class ParallelMesh
  * @brief Cette classe decrit un maillage Aster parallèle
  * @author Nicolas Sellenet
  */
-class ParallelMeshClass : public BaseMeshClass {
+class ParallelMesh : public BaseMesh {
   private:
     typedef std::set< std::string > SetOfString;
     typedef SetOfString::iterator SetOfStringIter;
@@ -65,20 +65,20 @@ class ParallelMeshClass : public BaseMeshClass {
   public:
     /**
      * @typedef ParallelMeshPtr
-     * @brief Pointeur intelligent vers un ParallelMeshClass
+     * @brief Pointeur intelligent vers un ParallelMesh
      */
-    typedef boost::shared_ptr< ParallelMeshClass > ParallelMeshPtr;
+    typedef boost::shared_ptr< ParallelMesh > ParallelMeshPtr;
 
     /**
      * @brief Constructeur
      */
-    ParallelMeshClass() : ParallelMeshClass( ResultNaming::getNewResultName() ){};
+    ParallelMesh() : ParallelMesh( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Constructeur
      */
-    ParallelMeshClass( const std::string &name )
-        : BaseMeshClass( name, "MAILLAGE_P" ), _globalGroupOfNodes( getName() + ".PAR_GRPNOE" ),
+    ParallelMesh( const std::string &name )
+        : BaseMesh( name, "MAILLAGE_P" ), _globalGroupOfNodes( getName() + ".PAR_GRPNOE" ),
           _globalGroupOfCells( getName() + ".PAR_GRPMAI" ), _outerNodes( getName() + ".NOEX" ),
           _outerCells( getName() + ".MAEX" ), _globalNumbering( getName() + ".NULOGL" ),
           _listOfOppositeDomain( getName() + ".DOMJOINTS" ){};
@@ -201,9 +201,9 @@ class ParallelMeshClass : public BaseMeshClass {
 
 /**
  * @typedef ParallelMeshPtr
- * @brief Pointeur intelligent vers un ParallelMeshClass
+ * @brief Pointeur intelligent vers un ParallelMesh
  */
-typedef boost::shared_ptr< ParallelMeshClass > ParallelMeshPtr;
+typedef boost::shared_ptr< ParallelMesh > ParallelMeshPtr;
 
 #endif /* ASTER_HAVE_MPI */
 

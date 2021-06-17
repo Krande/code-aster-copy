@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe DynamicResultsIndexing
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -33,12 +33,12 @@
 #include "MemoryManager/JeveuxCollection.h"
 #include "Supervis/ResultNaming.h"
 /**
- * @class DynamicResultsIndexingClass
+ * @class DynamicResultsIndexing
  * @brief Cette classe correspond aux objets Aster permettant d'indexer les résultats "généralisés"
  * i.e. les résultats sur base modale.
  * @author Natacha Béreux
  */
-class DynamicResultsIndexingClass : public DataStructure {
+class DynamicResultsIndexing : public DataStructure {
   private:
     /** @brief Collection '.REFD' */
     /** Collection de vecteurs contenant les informations sur les matrices de masse, amortissement
@@ -55,25 +55,25 @@ class DynamicResultsIndexingClass : public DataStructure {
   public:
     /**
      * @typedef DynamicResultsIndexingPtr
-     * @brief Pointeur intelligent vers un DynamicResultsIndexingClass
+     * @brief Pointeur intelligent vers un DynamicResultsIndexing
      */
-    typedef boost::shared_ptr< DynamicResultsIndexingClass > DynamicResultsIndexingPtr;
+    typedef boost::shared_ptr< DynamicResultsIndexing > DynamicResultsIndexingPtr;
 
     /**
      * @brief Constructeur
      */
-    DynamicResultsIndexingClass( const std::string resuTyp )
-        : DynamicResultsIndexingClass( ResultNaming::getNewResultName(), resuTyp ){};
+    DynamicResultsIndexing( const std::string resuTyp )
+        : DynamicResultsIndexing( ResultNaming::getNewResultName(), resuTyp ){};
 
     /**
      * @brief Constructeur
      */
-    DynamicResultsIndexingClass( const std::string &name, std::string resuTyp )
+    DynamicResultsIndexing( const std::string &name, std::string resuTyp )
         : DataStructure( name, 19, resuTyp ),
           _refd( JeveuxCollectionChar24( getName() + ".REFD" ) ),
           _indi( JeveuxVectorLong( getName() + ".INDI" ) ){};
 };
 
-typedef boost::shared_ptr< DynamicResultsIndexingClass > DynamicResultsIndexingPtr;
+typedef boost::shared_ptr< DynamicResultsIndexing > DynamicResultsIndexingPtr;
 
 #endif /* DYNAMICRESULTSINDEXING_H_ */

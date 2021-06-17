@@ -37,14 +37,14 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class GeneralizedResultClass
+ * @class GeneralizedResult
  * @brief Cette classe correspond a la sd_dyna_gene de Code_Aster.
  * Un objet sd_dyna_gene est un concept produit par un opérateur
  * dynamique sur base généralisée.
  * @author Natacha Béreux
  */
 template <class ValueType>
-class GeneralizedResultClass: public DataStructure
+class GeneralizedResult: public DataStructure
 {
 private:
     /** @brief DynamicResultsIndexing */
@@ -72,22 +72,22 @@ public:
     /**
      * @brief Constructeur
      */
-    GeneralizedResultClass( const std::string &name, const std::string &resuTyp ):
+    GeneralizedResult( const std::string &name, const std::string &resuTyp ):
         DataStructure( name, 19, resuTyp ),
-        _index( new DynamicResultsIndexingClass( getName(), resuTyp )),
+        _index( new DynamicResultsIndexing( getName(), resuTyp )),
         _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
         _abscissasOfSamples( JeveuxVectorReal( getName() +".DISC"  ) ),
         _indicesOfSamples( JeveuxVectorLong ( getName() +".ORDR"  ) ),
         _displacement( JeveuxVector<ValueType>( getName() +".DEPL"  ) ),
         _velocity( JeveuxVector<ValueType>( getName() +".VITE"  ) ),
         _acceleration( JeveuxVector<ValueType>( getName() +".ACCE"  ) ),
-        _projM( new ProjMesuClass( getName() + ".PROJM" ) ),
+        _projM( new ProjMesu( getName() + ".PROJM" ) ),
         _genDOFNum( nullptr ),
         _DOFNum( nullptr )
     {};
 
-    GeneralizedResultClass( const std::string &resuTyp ):
-        GeneralizedResultClass( ResultNaming::getNewResultName(), resuTyp )
+    GeneralizedResult( const std::string &resuTyp ):
+        GeneralizedResult( ResultNaming::getNewResultName(), resuTyp )
     {};
 
     GeneralizedDOFNumberingPtr getGeneralizedDOFNumbering() const
@@ -116,17 +116,17 @@ public:
 };
 
 /** @typedef Définition d'un résultat généralisé à valeurs réelles */
-template class GeneralizedResultClass< ASTERDOUBLE >;
-typedef GeneralizedResultClass< ASTERDOUBLE >
-    GeneralizedResultRealClass;
-typedef boost::shared_ptr< GeneralizedResultRealClass >
+template class GeneralizedResult< ASTERDOUBLE >;
+typedef GeneralizedResult< ASTERDOUBLE >
+    GeneralizedResultReal;
+typedef boost::shared_ptr< GeneralizedResultReal >
     GeneralizedResultRealPtr;
 
 /** @typedef Définition d'un résultat généralisé à valeurs complexes */
-template class GeneralizedResultClass< ASTERCOMPLEX >;
-typedef GeneralizedResultClass< ASTERCOMPLEX >
-    GeneralizedResultComplexClass;
-typedef boost::shared_ptr< GeneralizedResultComplexClass >
+template class GeneralizedResult< ASTERCOMPLEX >;
+typedef GeneralizedResult< ASTERCOMPLEX >
+    GeneralizedResultComplex;
+typedef boost::shared_ptr< GeneralizedResultComplex >
     GeneralizedResultComplexPtr;
 
 class NonLinearDescriptor
@@ -152,8 +152,8 @@ class NonLinearDescriptor
     {};
 };
 
-class TransientGeneralizedResultClass:
-    public GeneralizedResultRealClass
+class TransientGeneralizedResult:
+    public GeneralizedResultReal
 {
 private:
     /** @brief Vecteur Jeveux '.PTEM' */
@@ -176,23 +176,23 @@ private:
 public:
     /**
      * @typedef TransientGeneralizedResultPtr
-     * @brief Pointeur intelligent vers un TransientGeneralizedResultClass
+     * @brief Pointeur intelligent vers un TransientGeneralizedResult
      */
-    typedef boost::shared_ptr< TransientGeneralizedResultClass >
+    typedef boost::shared_ptr< TransientGeneralizedResult >
         TransientGeneralizedResultPtr;
 
     /**
      * @brief Constructeur
      */
-    TransientGeneralizedResultClass():
-        TransientGeneralizedResultClass( ResultNaming::getNewResultName() )
+    TransientGeneralizedResult():
+        TransientGeneralizedResult( ResultNaming::getNewResultName() )
     {};
 
     /**
      * @brief Constructeur
      */
-    TransientGeneralizedResultClass( const std::string &name ):
-        GeneralizedResultRealClass( name, "TRAN_GENE" ),
+    TransientGeneralizedResult( const std::string &name ):
+        GeneralizedResultReal( name, "TRAN_GENE" ),
         _nonLinDesc( name ),
         _timeSteps( JeveuxVectorReal( getName() +".PTEM"  ) ),
         _acceExcitFunction(  JeveuxVectorChar8( getName() +".FACC"  ) ),
@@ -203,16 +203,16 @@ public:
 
 
 };
-typedef boost::shared_ptr< TransientGeneralizedResultClass >
+typedef boost::shared_ptr< TransientGeneralizedResult >
     TransientGeneralizedResultPtr;
 
 /**
- * @class HarmoGeneralizedResultClass
+ * @class HarmoGeneralizedResult
  * @brief Cette classe correspond aux concepts  harm_gene,
  * résultats de calcul dynamique harmonique sur base généralisée
  * @author Natacha Béreux
  */
-class HarmoGeneralizedResultClass: public GeneralizedResultComplexClass
+class HarmoGeneralizedResult: public GeneralizedResultComplex
 {
 private:
 
@@ -220,27 +220,27 @@ private:
 public:
     /**
      * @typedef HarmoGeneralizedResultPtr
-     * @brief Pointeur intelligent vers un HarmoGeneralizedResultClass
+     * @brief Pointeur intelligent vers un HarmoGeneralizedResult
      */
-    typedef boost::shared_ptr< HarmoGeneralizedResultClass >
+    typedef boost::shared_ptr< HarmoGeneralizedResult >
         HarmoGeneralizedResultPtr;
 
     /**
      * @brief Constructeur
      */
-    HarmoGeneralizedResultClass():
-        HarmoGeneralizedResultClass( ResultNaming::getNewResultName() )
+    HarmoGeneralizedResult():
+        HarmoGeneralizedResult( ResultNaming::getNewResultName() )
     {};
 
     /**
      * @brief Constructeur
      */
-    HarmoGeneralizedResultClass( const std::string &name ):
-        GeneralizedResultComplexClass( name, "HARM_GENE" )
+    HarmoGeneralizedResult( const std::string &name ):
+        GeneralizedResultComplex( name, "HARM_GENE" )
     {};
 };
 
-typedef boost::shared_ptr< HarmoGeneralizedResultClass >
+typedef boost::shared_ptr< HarmoGeneralizedResult >
     HarmoGeneralizedResultPtr;
 
 #endif /* GENERALIZEDRESULTSCONTAINER_H_ */

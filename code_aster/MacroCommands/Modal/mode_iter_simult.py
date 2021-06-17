@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -254,7 +254,7 @@ class ModalCalculationSimult(ExecuteCommand):
         matrAmor = keywords.get("MATR_AMOR")
         if matrAmor is not None:
             self._result.setDampingMatrix(matrAmor)
-        self._result.update()
+        self._result.build()
 
 
 MODE_ITER_SIMULT = ModalCalculationSimult.run

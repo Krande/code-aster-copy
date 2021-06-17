@@ -90,53 +90,45 @@ class MaterialDefinition(ExecuteCommand):
                     continue
                 iName = skwName.capitalize()
                 if fkwName in ("MFRONT", "UMAT"):
-                    matBehav.setVectorOfRealValue(iName, list(skw))
+                    matBehav.setValueVectorReal(iName, list(skw))
                     continue
                 if fkwName in ("MFRONT_FO", "UMAT_FO"):
-                    matBehav.setVectorOfFunctionValue(iName, list(skw))
+                    matBehav.setValue(iName, list(skw))
                     continue
+
+                cRet = None
                 if type(skw) in (float, int, numpy.float64):
-                    cRet = matBehav.setRealValue(iName, float(skw))
+                    cRet = matBehav.setValueReal(iName, float(skw))
                     if not cRet:
                         print(ValueError("Can not assign keyword '{1}'/'{0}' "
                                          "(as '{3}'/'{2}') "
                                          .format(skwName, fkwName, iName,
                                                  klassName)))
-                elif type(skw) is complex:
-                    cRet = matBehav.setComplexValue(iName, skw)
+                elif type(skw) in (complex, str, Table, Function, Function2D, Formula):
+                    cRet = matBehav.setValue(iName, skw)
                     if not cRet:
                         print(ValueError("Can not assign keyword '{1}'/'{0}' "
                                          "(as '{3}'/'{2}') "
                                          .format(skwName, fkwName, iName,
                                                  klassName)))
-                elif type(skw) is str:
-                    cRet = matBehav.setStringValue(iName, skw)
-                elif type(skw) is Table:
-                    cRet = matBehav.setTableValue(iName, skw)
-                elif type(skw) is Function:
-                    cRet = matBehav.setFunctionValue(iName, skw)
-                elif type(skw) is Function2D:
-                    cRet = matBehav.setFunction2DValue(iName, skw)
-                elif type(skw) is Formula:
-                    cRet = matBehav.setFormulaValue(iName, skw)
                 elif type(skw) is tuple and type(skw[0]) is str:
                     if skw[0] == "RI":
                         comp = complex(skw[1], skw[2])
-                        cRet = matBehav.setComplexValue(iName, comp)
+                        cRet = matBehav.setValue(iName, comp)
                     else:
                         raise NotImplementedError("Unsupported type for keyword: "
                                                   "{0} <{1}>"
                                                   .format(skwName, type(skw)))
                 elif type(skw) in (list, tuple) and type(skw[0]) in (float, int, numpy.float64):
-                    cRet = matBehav.setVectorOfRealValue(iName, list(skw))
+                    cRet = matBehav.setValueVectorReal(iName, list([float(x) for x in skw]))
                 else:
                     raise NotImplementedError("Unsupported type for keyword: "
                                               "{0} <{1}>"
                                               .format(skwName, type(skw)))
                 if not cRet:
                     raise NotImplementedError("Unsupported keyword: "
-                                              "{0}"
-                                              .format(iName))
+                                              "{0} <{1}>"
+                                              .format(iName, type(skw)))
             self._result.addMaterialProperty(matBehav)
 
         self._result.build()
@@ -167,26 +159,26 @@ class MaterialDefinition(ExecuteCommand):
                     if kwName == "ORDRE_PARAM":
                         continue
                     if curType in (float, int, numpy.float64):
-                        mater.addRealProperty(kwName, mandatory)
+                        mater.addPropertyReal(kwName, mandatory)
                     elif curType is complex:
-                        mater.addComplexProperty(kwName, mandatory)
+                        mater.addPropertyComplex(kwName, mandatory)
                     elif curType is str:
-                        mater.addStringProperty(kwName, mandatory)
+                        mater.addPropertyString(kwName, mandatory)
                     elif isinstance(kwValue, Function) or\
                             isinstance(kwValue, Function2D) or\
                             isinstance(kwValue, Formula):
-                        mater.addFunctionProperty(kwName, mandatory)
+                        mater.addPropertyFunction(kwName, mandatory)
                     elif isinstance(kwValue, Table):
-                        mater.addTableProperty(kwName, mandatory)
+                        mater.addPropertyTable(kwName, mandatory)
                     elif type(kwValue) in (list, tuple):
                         if type(kwValue[0]) is float:
-                            mater.addVectorOfRealProperty(
+                            mater.addPropertyVectorOfReal(
                                 kwName, mandatory)
                         elif isinstance(kwValue[0], DataStructure):
-                            mater.addVectorOfFunctionProperty(
+                            mater.addPropertyVectorOfFunction(
                                 kwName, mandatory)
                         elif kwValue[0] == 'RI':
-                            mater.addComplexProperty(kwName, mandatory)
+                            mater.addPropertyComplex(kwName, mandatory)
                         elif type(kwValue[0]) is str:
                             pass
                         else:

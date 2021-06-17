@@ -3,7 +3,7 @@
  * @brief Interface python de NonLinearResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,11 +29,11 @@ namespace py = boost::python;
 
 void exportNonLinearResultToPython() {
 
-    py::class_< NonLinearResultClass, NonLinearResultPtr,
-                py::bases< TransientResultClass > >( "NonLinearResult",
+    py::class_< NonLinearResult, NonLinearResultPtr,
+                py::bases< TransientResult > >( "NonLinearResult",
                                                                       py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< NonLinearResultClass >))
+              py::make_constructor(&initFactoryPtr< NonLinearResult >))
         .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< NonLinearResultClass, std::string >));
+                              &initFactoryPtr< NonLinearResult, std::string >));
 };

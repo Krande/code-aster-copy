@@ -34,13 +34,13 @@ namespace py = boost::python;
 
 void exportParallelDOFNumberingToPython() {
 
-    py::class_< ParallelDOFNumberingClass, ParallelDOFNumberingClass::ParallelDOFNumberingPtr,
-            py::bases< BaseDOFNumberingClass > >( "ParallelDOFNumbering", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ParallelDOFNumberingClass >))
+    py::class_< ParallelDOFNumbering, ParallelDOFNumbering::ParallelDOFNumberingPtr,
+            py::bases< BaseDOFNumbering > >( "ParallelDOFNumbering", py::no_init )
+        .def( "__init__", py::make_constructor(&initFactoryPtr< ParallelDOFNumbering >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ParallelDOFNumberingClass, std::string >))
+              py::make_constructor(&initFactoryPtr< ParallelDOFNumbering, std::string >))
 // ------------------------------------------------------------------------------------------------
-        .def( "useLagrangeMultipliers", &ParallelDOFNumberingClass::useLagrangeMultipliers, R"(
+        .def( "useLagrangeMultipliers", &ParallelDOFNumbering::useLagrangeMultipliers, R"(
 Lagrange multipliers are used for BC or MPC.
 
 Returns:
@@ -48,7 +48,7 @@ Returns:
         )",
               ( py::arg( "self" ) )  )
 // ------------------------------------------------------------------------------------------------
-        .def( "useSingleLagrangeMultipliers", &ParallelDOFNumberingClass::useSingleLagrangeMultipliers, R"(
+        .def( "useSingleLagrangeMultipliers", &ParallelDOFNumbering::useSingleLagrangeMultipliers, R"(
 Single Lagrange multipliers are used for BC or MPC.
 
 Returns:
@@ -56,8 +56,8 @@ Returns:
         )",
               ( py::arg( "self" ) )   )
 // ------------------------------------------------------------------------------------------------
-        .def( "getNodeAssociatedToRow", static_cast<ASTERINTEGER (ParallelDOFNumberingClass::*)
-                (const ASTERINTEGER, bool) const> (&ParallelDOFNumberingClass::getNodeAssociatedToRow),
+        .def( "getNodeAssociatedToRow", static_cast<ASTERINTEGER (ParallelDOFNumbering::*)
+                (const ASTERINTEGER, bool) const> (&ParallelDOFNumbering::getNodeAssociatedToRow),
                 R"(
 Returns the node index associated to a dof index.
 
@@ -82,8 +82,8 @@ Returns:
         )",
               ( py::arg( "self"), py::args( "row", "local") ) )
 // ------------------------------------------------------------------------------------------------
-        .def( "getNodeAssociatedToRow", static_cast<ASTERINTEGER (ParallelDOFNumberingClass::*)
-                   (const ASTERINTEGER) const> (&ParallelDOFNumberingClass::getNodeAssociatedToRow),
+        .def( "getNodeAssociatedToRow", static_cast<ASTERINTEGER (ParallelDOFNumbering::*)
+                   (const ASTERINTEGER) const> (&ParallelDOFNumbering::getNodeAssociatedToRow),
                    R"(
 Returns the node index associated to a dof index.
 
@@ -106,8 +106,8 @@ Returns:
         )",
               ( py::arg( "self"), py::args( "row", "local") ) )
 // ------------------------------------------------------------------------------------------------
-        .def( "getRowsAssociatedToPhysicalDofs", static_cast<VectorLong (ParallelDOFNumberingClass::*)
-                   () const> (&ParallelDOFNumberingClass::getRowsAssociatedToPhysicalDofs), R"(
+        .def( "getRowsAssociatedToPhysicalDofs", static_cast<VectorLong (ParallelDOFNumbering::*)
+                   () const> (&ParallelDOFNumbering::getRowsAssociatedToPhysicalDofs), R"(
 Returns the indexes of the physical dof.
 
 Returns:
@@ -115,8 +115,8 @@ Returns:
         )",
               ( py::arg( "self" ) )  )
 // ------------------------------------------------------------------------------------------------
-        .def( "getRowsAssociatedToPhysicalDofs", static_cast<VectorLong (ParallelDOFNumberingClass::*)
-                   (bool) const> (&ParallelDOFNumberingClass::getRowsAssociatedToPhysicalDofs), R"(
+        .def( "getRowsAssociatedToPhysicalDofs", static_cast<VectorLong (ParallelDOFNumbering::*)
+                   (bool) const> (&ParallelDOFNumbering::getRowsAssociatedToPhysicalDofs), R"(
 Returns the indexes of the physical dof.
 
 Arguments:
@@ -127,8 +127,8 @@ Returns:
         )",
               ( py::arg( "self" ) , py::arg( "local" ))  )
 // ------------------------------------------------------------------------------------------------
-        .def( "getRowAssociatedToNodeComponent", static_cast<ASTERINTEGER (ParallelDOFNumberingClass::*)
-                   (const ASTERINTEGER, const std::string) const> (&ParallelDOFNumberingClass::getRowAssociatedToNodeComponent), R"(
+        .def( "getRowAssociatedToNodeComponent", static_cast<ASTERINTEGER (ParallelDOFNumbering::*)
+                   (const ASTERINTEGER, const std::string) const> (&ParallelDOFNumbering::getRowAssociatedToNodeComponent), R"(
 Returns the index of the dof associated to a node.
 
 Arguments:
@@ -140,8 +140,8 @@ Returns:
         )",
               ( py::arg( "self" ), py::args( "node", "component" )  )  )
 // ------------------------------------------------------------------------------------------------
-        .def( "getRowAssociatedToNodeComponent", static_cast<ASTERINTEGER (ParallelDOFNumberingClass::*)
-                   (const ASTERINTEGER, const std::string, bool) const> (&ParallelDOFNumberingClass::getRowAssociatedToNodeComponent), R"(
+        .def( "getRowAssociatedToNodeComponent", static_cast<ASTERINTEGER (ParallelDOFNumbering::*)
+                   (const ASTERINTEGER, const std::string, bool) const> (&ParallelDOFNumbering::getRowAssociatedToNodeComponent), R"(
 Returns the index of the dof associated to a node.
 
 Arguments:
@@ -154,15 +154,15 @@ Returns:
         )",
               ( py::arg( "self" ), py::args( "node", "component", "local" )  )  )
 // ------------------------------------------------------------------------------------------------
-        .def( "getRowsAssociatedToLagrangeMultipliers", static_cast<VectorLong (ParallelDOFNumberingClass::*)
-                   () const> (&ParallelDOFNumberingClass::getRowsAssociatedToLagrangeMultipliers), R"(
+        .def( "getRowsAssociatedToLagrangeMultipliers", static_cast<VectorLong (ParallelDOFNumbering::*)
+                   () const> (&ParallelDOFNumbering::getRowsAssociatedToLagrangeMultipliers), R"(
 Returns the indexes of the Lagrange multipliers dof.
 
 Returns:
     [int]: indexes of the Lagrange multipliers dof.
         )",
               ( py::arg( "self" ) )  )
-        .def( "getComponents", &ParallelDOFNumberingClass::getComponents, R"(
+        .def( "getComponents", &ParallelDOFNumbering::getComponents, R"(
 Returns all the component names assigned in the numbering.
 
 Returns:
@@ -170,8 +170,8 @@ Returns:
         )",
               ( py::arg( "self" ) )  )
 // ------------------------------------------------------------------------------------------------
-        .def( "getRowsAssociatedToLagrangeMultipliers", static_cast<VectorLong (ParallelDOFNumberingClass::*)
-                   (bool) const> (&ParallelDOFNumberingClass::getRowsAssociatedToLagrangeMultipliers), R"(
+        .def( "getRowsAssociatedToLagrangeMultipliers", static_cast<VectorLong (ParallelDOFNumbering::*)
+                   (bool) const> (&ParallelDOFNumbering::getRowsAssociatedToLagrangeMultipliers), R"(
 Returns the indexes of the Lagrange multipliers dof.
 
 Arguments:
@@ -182,7 +182,7 @@ Returns:
         )",
               ( py::arg( "self" ), py::arg( "local" ) )  )
 // ------------------------------------------------------------------------------------------------
-        .def( "getComponents", &ParallelDOFNumberingClass::getComponents, R"(
+        .def( "getComponents", &ParallelDOFNumbering::getComponents, R"(
 Returns all the component names assigned in the numbering.
 
 Returns:
@@ -190,16 +190,16 @@ Returns:
         )",
               ( py::arg( "self" ) )  )
 // ------------------------------------------------------------------------------------------------
-        .def( "getComponentAssociatedToRow", static_cast<std::string (ParallelDOFNumberingClass::*)
-                   (const ASTERINTEGER) const> (&ParallelDOFNumberingClass::getComponentAssociatedToRow), R"( )",
+        .def( "getComponentAssociatedToRow", static_cast<std::string (ParallelDOFNumbering::*)
+                   (const ASTERINTEGER) const> (&ParallelDOFNumbering::getComponentAssociatedToRow), R"( )",
               ( py::arg( "self" ), py::arg( "row" ))  )
 // ------------------------------------------------------------------------------------------------
-        .def( "getComponentAssociatedToRow", static_cast<std::string (ParallelDOFNumberingClass::*)
-                   (const ASTERINTEGER, bool) const> (&ParallelDOFNumberingClass::getComponentAssociatedToRow), R"( )",
+        .def( "getComponentAssociatedToRow", static_cast<std::string (ParallelDOFNumbering::*)
+                   (const ASTERINTEGER, bool) const> (&ParallelDOFNumbering::getComponentAssociatedToRow), R"( )",
               ( py::arg( "self" ), py::args( "row", "local"))  )
 // ------------------------------------------------------------------------------------------------
-        .def( "getComponentsAssociatedToNode", static_cast<VectorString (ParallelDOFNumberingClass::*)
-                   (const ASTERINTEGER) const> (&ParallelDOFNumberingClass::getComponentsAssociatedToNode), R"(
+        .def( "getComponentsAssociatedToNode", static_cast<VectorString (ParallelDOFNumbering::*)
+                   (const ASTERINTEGER) const> (&ParallelDOFNumbering::getComponentsAssociatedToNode), R"(
 Returns the components name associated to a node index.
 
 Arguments:
@@ -210,8 +210,8 @@ Returns:
         )",
               ( py::arg( "self" ), py::arg( "node" ))  )
 // ------------------------------------------------------------------------------------------------
-        .def( "getComponentsAssociatedToNode", static_cast<VectorString (ParallelDOFNumberingClass::*)
-                   (const ASTERINTEGER, bool) const> (&ParallelDOFNumberingClass::getComponentsAssociatedToNode), R"(
+        .def( "getComponentsAssociatedToNode", static_cast<VectorString (ParallelDOFNumbering::*)
+                   (const ASTERINTEGER, bool) const> (&ParallelDOFNumbering::getComponentsAssociatedToNode), R"(
 Returns the components name associated to a node index.
 
 Arguments:
@@ -223,8 +223,8 @@ Returns:
         )",
               ( py::arg( "self" ), py::args( "node" , "local"))  )
 // ------------------------------------------------------------------------------------------------
-        .def( "getNumberOfDofs", static_cast<ASTERINTEGER (ParallelDOFNumberingClass::*) () const>
-                    (&ParallelDOFNumberingClass::getNumberOfDofs), R"(
+        .def( "getNumberOfDofs", static_cast<ASTERINTEGER (ParallelDOFNumbering::*) () const>
+                    (&ParallelDOFNumbering::getNumberOfDofs), R"(
 Returns the number of DOFs.
 
 Returns:
@@ -232,8 +232,8 @@ Returns:
         )",
               ( py::arg( "self" ))  )
 // ------------------------------------------------------------------------------------------------
-        .def( "getNumberOfDofs", static_cast<ASTERINTEGER (ParallelDOFNumberingClass::*) (const bool) const>
-                   (&ParallelDOFNumberingClass::getNumberOfDofs), R"(
+        .def( "getNumberOfDofs", static_cast<ASTERINTEGER (ParallelDOFNumbering::*) (const bool) const>
+                   (&ParallelDOFNumbering::getNumberOfDofs), R"(
 Returns the number of DOFs.
 
 Arguments:

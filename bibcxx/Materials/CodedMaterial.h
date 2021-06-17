@@ -33,11 +33,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class CodedMaterialClass
+ * @class CodedMaterial
  * @brief Coded material
  * @author Nicolas Sellenet
  */
-class CodedMaterialClass
+class CodedMaterial
 {
 private:
     std::string                       _name;
@@ -56,26 +56,26 @@ public:
      * @typedef CodedMaterialPtr
      * @brief Pointeur intelligent vers un CodedMaterial
      */
-    typedef boost::shared_ptr< CodedMaterialClass > CodedMaterialPtr;
+    typedef boost::shared_ptr< CodedMaterial > CodedMaterialPtr;
 
     /**
      * @brief Constructeur
      */
-    CodedMaterialClass(void) = delete;
+    CodedMaterial(void) = delete;
 
 
-    CodedMaterialClass( const std::string& name,
+    CodedMaterial( const std::string& name,
                         const MaterialFieldPtr& mater,
                         const ModelPtr& model );
 
 
-    CodedMaterialClass( const MaterialFieldPtr& mater, const ModelPtr& model ):
-                    CodedMaterialClass(ResultNaming::getNewResultName(), mater, model){};
+    CodedMaterial( const MaterialFieldPtr& mater, const ModelPtr& model ):
+                    CodedMaterial(ResultNaming::getNewResultName(), mater, model){};
 
     /**
      * @brief Destructeur
      */
-    ~CodedMaterialClass()
+    ~CodedMaterial()
     {
         return;
     };
@@ -130,9 +130,9 @@ public:
 
 /**
  * @typedef CodedMaterialPtr
- * @brief Pointeur intelligent vers un CodedMaterialClass
+ * @brief Pointeur intelligent vers un CodedMaterial
  */
-typedef boost::shared_ptr< CodedMaterialClass > CodedMaterialPtr;
+typedef boost::shared_ptr< CodedMaterial > CodedMaterialPtr;
 
 
 #endif /* CODEDMATERIAL_H_ */

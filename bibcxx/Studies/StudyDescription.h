@@ -28,23 +28,24 @@
 
 #include "astercxx.h"
 
-#include "MemoryManager/JeveuxVector.h"
-#include "Modeling/Model.h"
-#include "Materials/MaterialField.h"
-#include "Materials/CodedMaterial.h"
-#include "Loads/MechanicalLoad.h"
+#include "Discretization/ElementaryCharacteristics.h"
 #include "Loads/DirichletBC.h"
 #include "Loads/ListOfLoads.h"
+#include "Loads/MechanicalLoad.h"
+#include "Materials/BaseExternalStateVariables.h"
+#include "Materials/CodedMaterial.h"
+#include "Materials/ExternalStateVariablesBuilder.h"
+#include "Materials/MaterialField.h"
+#include "MemoryManager/JeveuxVector.h"
+#include "Modeling/Model.h"
 #include "Numbering/DOFNumbering.h"
-#include "Discretization/ElementaryCharacteristics.h"
-#include "Materials/ExternalVariablesComputation.h"
 
 /**
- * @class StudyDescriptionClass
+ * @class StudyDescription
  * @brief Cette classe permet de definir une étude au sens Aster
  * @author Nicolas Sellenet
  */
-class StudyDescriptionClass {
+class StudyDescription {
   private:
     /** @brief Modele */
     ModelPtr _model;
@@ -57,24 +58,24 @@ class StudyDescriptionClass {
     /** @brief coded material */
     CodedMaterialPtr _codedMater;
     /** @brief Input variables */
-    ExternalVariablesComputationPtr _varCom;
+    ExternalStateVariablesBuilderPtr _varCom;
 
   public:
 
     // No default constructor
-    StudyDescriptionClass( void ) = delete;
+    StudyDescription( void ) = delete;
 
     /**
      * @brief Constructeur
      * @param ModelPtr Modèle de l'étude
      * @param MaterialFieldPtr Matériau de l'étude
      */
-    StudyDescriptionClass( const ModelPtr &curModel, const MaterialFieldPtr &curMat,
+    StudyDescription( const ModelPtr &curModel, const MaterialFieldPtr &curMat,
                               const ElementaryCharacteristicsPtr &cara = nullptr )
         : _model( curModel ), _materialField( curMat ),
-          _listOfLoads( boost::make_shared< ListOfLoadsClass >() ), _elemChara( cara ),
-          _codedMater( boost::make_shared<  CodedMaterialClass >( _materialField, _model ) ),
-          _varCom( boost::make_shared< ExternalVariablesComputationClass >( _model, _materialField,
+          _listOfLoads( boost::make_shared< ListOfLoads >() ), _elemChara( cara ),
+          _codedMater( boost::make_shared<  CodedMaterial >( _materialField, _model ) ),
+          _varCom( boost::make_shared< ExternalStateVariablesBuilder >( _model, _materialField,
                                                           _elemChara, _codedMater ) ){
         if( _elemChara ){
             if( _model->getName() != _elemChara->getModel()->getName())
@@ -85,7 +86,7 @@ class StudyDescriptionClass {
             throw std::runtime_error("Inconsistent mesh");
     };
 
-    ~StudyDescriptionClass(){};
+    ~StudyDescription(){};
 
     /**
      * @brief Add a load (mechanical or dirichlet) with function, formula...
@@ -99,7 +100,7 @@ class StudyDescriptionClass {
      * @brief Construction de la liste de chargements
      * @return true si tout s'est bien passé
      */
-    bool buildListOfLoads() { return _listOfLoads->build(_model); };
+    bool computeListOfLoads() { return _listOfLoads->build(_model); };
 
     /**
      * @brief Get elementary characteristics
@@ -187,6 +188,6 @@ class StudyDescriptionClass {
  * @typedef StudyDescriptionPtr
  * @brief Pointeur intelligent vers un StudyDescription
  */
-typedef boost::shared_ptr< StudyDescriptionClass > StudyDescriptionPtr;
+typedef boost::shared_ptr< StudyDescription > StudyDescriptionPtr;
 
 #endif /* STUDYDESCRIPTION_H_ */

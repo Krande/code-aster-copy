@@ -19,10 +19,12 @@ The rest of the Python code, *low level* functions, should follow the
 `PEP8 Style Guide for Python code <https://www.python.org/dev/peps/pep-0008/>`_
 that does not recommend *CamelCase* naming.
 
-- The names of **classes** start with an upper case (example: *MeshCoordinatesField*).
+- The names of **classes** start with an upper case (example: *MeshCoordinatesField*). The shared_ptr on this class has the same name with Ptr at the end (example: *MeshCoordinatesFieldPtr*)
 
 - The names of **methods**/**members** start with a lower case and
   does not contain the object name (example: *getValues* and not *getFieldValues*).
+
+- The names of specialized **methods**/**classes** depends on the type and have to be always at the end. (exemple: *FieldOnNodesReal* and *FieldOnNodesComplex* for classes, and *getValueReal* and *getValueVectorOfReal* for methods)
 
 - Reuse existing names in newly created objects. Have a look to the :ref:`genindex` page
   should give good ideas for new methods.
@@ -36,6 +38,12 @@ that does not recommend *CamelCase* naming.
   :py:meth:`~code_aster.Objects.MaterialField.addMaterialsOnMesh` with the both
   interfaces.
 
+- Use same method name to pass a differents values.
+  Example: Do not define :py:meth:`addRealValue( realVal )` and
+  :py:meth:`addComplexValue(cmplxVal)`, but only
+  :py:meth:`addValue` with the both
+  interfaces.
+
 - At least at the beginning, only pure Python objects are returned (example: *list* or
   *list[list]* and not *numpy* arrays).
 
@@ -44,6 +52,12 @@ that does not recommend *CamelCase* naming.
   See :file:`PythonBindings/ConvertersInterface` for supported converters.
 
 - Strings values are returned without trailing spaces.
+
+- build : method to construct or modify internal objects of the class. This method return voir or boll
+
+- updateValuePointers : method to update all JeveuxVector of a class
+
+- *compute* : a method begins with compute if it return a object which is explicitely computed and not an internal object (exemple: computeDirichletBC, computeLoads)
 
 Another rule is to define elementary methods not to create objects with a huge size.
 For example, the groups names can be extracted from a mesh and cells indexes can be
@@ -68,6 +82,8 @@ Terms for the :py:class:`~code_aster.Objects.Mesh` object:
 - *mesh* is an object composed of *nodes* and *cells*.
 - *node* for a node.
 - *cell* for an element of the mesh (*element* term is used for a *finite element*).
+- *virtual nodes* for a node not originally present in the mesh (it is used to create loads). "Noeud tardif" in french
+- *virtual cell* for a cell not originally present in the mesh (it is used to connect nodes or virtual nodes). "Elément tardif" in french
 - *GroupOfNodes* for a group of nodes, named with at most 24 chars.
 - *GroupOfCells* for a group of cells, named with at most 24 chars.
 - *Connectivity* for the mesh connectivity.

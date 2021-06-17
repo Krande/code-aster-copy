@@ -36,11 +36,11 @@
 #include "DataStructures/DataStructure.h"
 
 /**
- * @class SimpleFieldOnNodesClass
+ * @class SimpleFieldOnNodes
  * @brief Cette classe template permet de definir un champ aux noeuds Aster
  * @author Nicolas Sellenet
  */
-template < class ValueType > class SimpleFieldOnNodesClass : public DataStructure {
+template < class ValueType > class SimpleFieldOnNodes : public DataStructure {
   private:
     /** @brief Vecteur Jeveux '.CNSK' */
     JeveuxVectorChar8 _descriptor;
@@ -62,13 +62,13 @@ template < class ValueType > class SimpleFieldOnNodesClass : public DataStructur
      * @typedef SimpleFieldOnNodesPtr
      * @brief Pointeur intelligent vers un SimpleFieldOnNodes
      */
-    typedef boost::shared_ptr< SimpleFieldOnNodesClass > SimpleFieldOnNodesPtr;
+    typedef boost::shared_ptr< SimpleFieldOnNodes > SimpleFieldOnNodesPtr;
 
     /**
      * @brief Constructeur
      * @param name Nom Jeveux du champ aux noeuds
      */
-    SimpleFieldOnNodesClass( const std::string name )
+    SimpleFieldOnNodes( const std::string name )
         : DataStructure( name, 19, "CHAM_NO_S" ),
           _descriptor( JeveuxVectorChar8( getName() + ".CNSK" ) ),
           _size( JeveuxVectorLong( getName() + ".CNSD" ) ),
@@ -80,7 +80,7 @@ template < class ValueType > class SimpleFieldOnNodesClass : public DataStructur
      * @brief Constructeur
      * @param memType Mémoire d'allocation
      */
-    SimpleFieldOnNodesClass( const JeveuxMemory memType = Permanent )
+    SimpleFieldOnNodes( const JeveuxMemory memType = Permanent )
         : DataStructure( "CHAM_NO_S", memType, 19 ),
           _descriptor( JeveuxVectorChar8( getName() + ".CNSK" ) ),
           _size( JeveuxVectorLong( getName() + ".CNSD" ) ),
@@ -186,31 +186,31 @@ template < class ValueType > class SimpleFieldOnNodesClass : public DataStructur
     };
 };
 
-/** @typedef SimpleFieldOnNodesRealClass Class d'une champ simple de doubles */
-typedef SimpleFieldOnNodesClass< ASTERDOUBLE > SimpleFieldOnNodesRealClass;
+/** @typedef SimpleFieldOnNodesReal Class d'une champ simple de doubles */
+typedef SimpleFieldOnNodes< ASTERDOUBLE > SimpleFieldOnNodesReal;
 
 /**
  * @typedef SimpleFieldOnNodesPtrReal
  * @brief Definition d'un champ simple de doubles
  */
-typedef boost::shared_ptr< SimpleFieldOnNodesRealClass > SimpleFieldOnNodesRealPtr;
+typedef boost::shared_ptr< SimpleFieldOnNodesReal > SimpleFieldOnNodesRealPtr;
 
-/** @typedef SimpleFieldOnNodesClassLong Class d'un champ simple de long */
-typedef SimpleFieldOnNodesClass< long > SimpleFieldOnNodesLongClass;
+/** @typedef SimpleFieldOnNodesLong Class d'un champ simple de long */
+typedef SimpleFieldOnNodes< long > SimpleFieldOnNodesLong;
 
 /**
  * @typedef SimpleFieldOnNodesPtrLong
  * @brief Definition d'un champ simple de long
  */
-typedef boost::shared_ptr< SimpleFieldOnNodesLongClass > SimpleFieldOnNodesLongPtr;
+typedef boost::shared_ptr< SimpleFieldOnNodesLong > SimpleFieldOnNodesLongPtr;
 
-/** @typedef SimpleFieldOnNodesComplexClass
+/** @typedef SimpleFieldOnNodesComplex
     @brief Class d'un champ simple de complexes */
-typedef SimpleFieldOnNodesClass< ASTERCOMPLEX > SimpleFieldOnNodesComplexClass;
+typedef SimpleFieldOnNodes< ASTERCOMPLEX > SimpleFieldOnNodesComplex;
 
 /**
  * @typedef SimpleFieldOnNodesComplexPtr
  * @brief Definition d'un champ simple aux noeuds de complexes
  */
-typedef boost::shared_ptr< SimpleFieldOnNodesComplexClass > SimpleFieldOnNodesComplexPtr;
+typedef boost::shared_ptr< SimpleFieldOnNodesComplex > SimpleFieldOnNodesComplexPtr;
 #endif /* SIMPLEFIELDONNODES_H_ */

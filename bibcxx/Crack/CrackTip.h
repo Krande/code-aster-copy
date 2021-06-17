@@ -33,11 +33,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class CrackTipClass
+ * @class CrackTip
  * @brief Cette classe decrit un fond_fiss
  * @author Nicolas Sellenet
  */
-class CrackTipClass : public DataStructure {
+class CrackTip : public DataStructure {
   private:
     /** @brief Objet Jeveux '.INFO' */
     JeveuxVectorChar8 _info;
@@ -81,20 +81,20 @@ class CrackTipClass : public DataStructure {
   public:
     /**
      * @typedef CrackTipPtr
-     * @brief Pointeur intelligent vers un CrackTipClass
+     * @brief Pointeur intelligent vers un CrackTip
      */
-    typedef boost::shared_ptr< CrackTipClass > CrackTipPtr;
+    typedef boost::shared_ptr< CrackTip > CrackTipPtr;
 
     /**
      * @brief Constructeur
      */
-    CrackTipClass( const std::string name = ResultNaming::getNewResultName() );
+    CrackTip( const std::string name = ResultNaming::getNewResultName() );
 };
 
 /**
  * @typedef CrackTipPtr
- * @brief Pointeur intelligent vers un CrackTipClass
+ * @brief Pointeur intelligent vers un CrackTip
  */
-typedef boost::shared_ptr< CrackTipClass > CrackTipPtr;
+typedef boost::shared_ptr< CrackTip > CrackTipPtr;
 
 #endif /* CRACKTIP_H_ */

@@ -27,24 +27,24 @@
 #include <string>
 
 /**
- * @class BehaviourPropertyClass
+ * @class BehaviourProperty
  * @brief Class to define behaviour
  */
 
 /** @brief Create objects (maps) */
-void BehaviourPropertyClass ::createObjects() {
+void BehaviourProperty ::createObjects() {
     _COMPOR = ConstantFieldOnCellsChar16Ptr(
-        new ConstantFieldOnCellsChar16Class( _baseName + ".COMPOR", _mesh ) );
+        new ConstantFieldOnCellsChar16( _baseName + ".COMPOR", _mesh ) );
 
     _MULCOM = ConstantFieldOnCellsChar16Ptr(
-        new ConstantFieldOnCellsChar16Class( _baseName + ".MULCOM", _mesh ) );
+        new ConstantFieldOnCellsChar16( _baseName + ".MULCOM", _mesh ) );
 
     _CARCRI = ConstantFieldOnCellsRealPtr(
-        new ConstantFieldOnCellsRealClass( _baseName + ".CARCRI", _mesh ) );
+        new ConstantFieldOnCellsReal( _baseName + ".CARCRI", _mesh ) );
 };
 
 /** @brief Constructor */
-BehaviourPropertyClass ::BehaviourPropertyClass( ModelPtr model, MaterialFieldPtr materialField )
+BehaviourProperty ::BehaviourProperty( ModelPtr model, MaterialFieldPtr materialField )
     : _initialState( false ), _implex( false ), _verbosity( false ), _model( model ),
       _materialField( materialField ) {
     _mesh = _model->getMesh();
@@ -53,7 +53,7 @@ BehaviourPropertyClass ::BehaviourPropertyClass( ModelPtr model, MaterialFieldPt
 };
 
 /** @brief Build objects (maps) */
-void BehaviourPropertyClass ::buildObjects() {
+void BehaviourProperty ::build() {
     std::string modelName = getModel()->getName();
     modelName.resize( 8, ' ' );
 

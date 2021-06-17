@@ -3,7 +3,7 @@
  * @brief Interface python de BucklingModeResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -30,20 +30,20 @@ namespace py = boost::python;
 
 void exportBucklingModeResultToPython() {
 
-    bool ( BucklingModeResultClass::*c1 )( const AssemblyMatrixDisplacementRealPtr & ) =
-        &BucklingModeResultClass::setStiffnessMatrix;
-    bool ( BucklingModeResultClass::*c2 )( const AssemblyMatrixTemperatureRealPtr & ) =
-        &BucklingModeResultClass::setStiffnessMatrix;
-    bool ( BucklingModeResultClass::*c3 )( const AssemblyMatrixDisplacementComplexPtr & ) =
-        &BucklingModeResultClass::setStiffnessMatrix;
-    bool ( BucklingModeResultClass::*c4 )( const AssemblyMatrixPressureRealPtr & ) =
-        &BucklingModeResultClass::setStiffnessMatrix;
+    bool ( BucklingModeResult::*c1 )( const AssemblyMatrixDisplacementRealPtr & ) =
+        &BucklingModeResult::setStiffnessMatrix;
+    bool ( BucklingModeResult::*c2 )( const AssemblyMatrixTemperatureRealPtr & ) =
+        &BucklingModeResult::setStiffnessMatrix;
+    bool ( BucklingModeResult::*c3 )( const AssemblyMatrixDisplacementComplexPtr & ) =
+        &BucklingModeResult::setStiffnessMatrix;
+    bool ( BucklingModeResult::*c4 )( const AssemblyMatrixPressureRealPtr & ) =
+        &BucklingModeResult::setStiffnessMatrix;
 
-    py::class_< BucklingModeResultClass, BucklingModeResultPtr,
-            py::bases< FullResultClass > >( "BucklingModeResult", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< BucklingModeResultClass >))
+    py::class_< BucklingModeResult, BucklingModeResultPtr,
+            py::bases< FullResult > >( "BucklingModeResult", py::no_init )
+        .def( "__init__", py::make_constructor(&initFactoryPtr< BucklingModeResult >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< BucklingModeResultClass, std::string >))
+              py::make_constructor(&initFactoryPtr< BucklingModeResult, std::string >))
         .def( "getStiffnessMatrix", &getStiffnessMatrix< BucklingModeResultPtr > )
         .def( "setStiffnessMatrix", c1 )
         .def( "setStiffnessMatrix", c2 )

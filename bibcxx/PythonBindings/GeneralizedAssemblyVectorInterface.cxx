@@ -3,7 +3,7 @@
  * @brief Interface python de GeneralizedAssemblyVector
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,27 +31,27 @@ namespace py = boost::python;
 
 void exportGeneralizedAssemblyVectorToPython() {
 
-    py::class_< GenericGeneralizedAssemblyVectorClass, GenericGeneralizedAssemblyVectorPtr,
+    py::class_< GenericGeneralizedAssemblyVector, GenericGeneralizedAssemblyVectorPtr,
                 py::bases< DataStructure > >( "GeneralizedAssemblyVector", py::no_init );
     // fake initFactoryPtr: created by subclasses
     // fake initFactoryPtr: created by subclasses
 
-    py::class_< GeneralizedAssemblyVectorRealClass, GeneralizedAssemblyVectorRealPtr,
-                py::bases< GenericGeneralizedAssemblyVectorClass > >(
+    py::class_< GeneralizedAssemblyVectorReal, GeneralizedAssemblyVectorRealPtr,
+                py::bases< GenericGeneralizedAssemblyVector > >(
         "GeneralizedAssemblyVectorReal", py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< GeneralizedAssemblyVectorRealClass >))
+              py::make_constructor(&initFactoryPtr< GeneralizedAssemblyVectorReal >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< GeneralizedAssemblyVectorRealClass, std::string >));
+                  &initFactoryPtr< GeneralizedAssemblyVectorReal, std::string >));
 
-    py::class_< GeneralizedAssemblyVectorComplexClass, GeneralizedAssemblyVectorComplexPtr,
-                py::bases< GenericGeneralizedAssemblyVectorClass > >(
+    py::class_< GeneralizedAssemblyVectorComplex, GeneralizedAssemblyVectorComplexPtr,
+                py::bases< GenericGeneralizedAssemblyVector > >(
         "GeneralizedAssemblyVectorComplex", py::no_init )
 #include <PythonBindings/factory.h>
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< GeneralizedAssemblyVectorComplexClass >))
+              py::make_constructor(&initFactoryPtr< GeneralizedAssemblyVectorComplex >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< GeneralizedAssemblyVectorComplexClass, std::string >));
+                  &initFactoryPtr< GeneralizedAssemblyVectorComplex, std::string >));
 };

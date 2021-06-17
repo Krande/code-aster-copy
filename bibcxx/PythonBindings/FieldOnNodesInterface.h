@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FieldOnNodesInterface
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -36,7 +36,7 @@ struct MeshCoordinatesFieldToFieldOnNodes {
     static PyObject *convert( MeshCoordinatesFieldPtr toConvert ) {
         return py::incref(
             py::object(
-                FieldOnNodesRealPtr( new FieldOnNodesRealClass( toConvert ) ) ).ptr() );
+                FieldOnNodesRealPtr( new FieldOnNodesReal( toConvert ) ) ).ptr() );
     }
 };
 

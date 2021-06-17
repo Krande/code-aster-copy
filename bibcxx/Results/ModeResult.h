@@ -34,11 +34,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class ModeResultClass
+ * @class ModeResult
  * @brief Cette classe correspond a un mode_meca
  * @author Nicolas Sellenet
  */
-class ModeResultClass : public FullResultClass
+class ModeResult : public FullResult
 {
   private:
     StructureInterfacePtr _structureInterface;
@@ -71,16 +71,16 @@ class ModeResultClass : public FullResultClass
     /**
      * @brief Constructeur
      */
-    ModeResultClass():
-        ModeResultClass( ResultNaming::getNewResultName(), "MODE_MECA" )
+    ModeResult():
+        ModeResult( ResultNaming::getNewResultName(), "MODE_MECA" )
     {};
 
     /**
      * @brief Constructeur
      */
-    ModeResultClass( const std::string &name,
+    ModeResult( const std::string &name,
                                      const std::string type = "MODE_MECA" ):
-        FullResultClass( name, type ),
+        FullResult( name, type ),
         _structureInterface( StructureInterfacePtr() ),
         _rigidityDispDMatrix( nullptr ),
         _rigidityDispCMatrix( nullptr ),
@@ -363,7 +363,7 @@ class ModeResultClass : public FullResultClass
         return true;
     };
 
-    bool update() {
+    bool build() {
         BaseDOFNumberingPtr numeDdl( nullptr );
         if ( _rigidityDispDMatrix != nullptr )
             numeDdl = _rigidityDispDMatrix->getDOFNumbering();
@@ -380,14 +380,14 @@ class ModeResultClass : public FullResultClass
             if ( model != nullptr )
                 _mesh = model->getMesh();
         }
-        return ResultClass::update();
+        return Result::build();
     };
 };
 
 /**
  * @typedef ModeResultPtr
- * @brief Pointeur intelligent vers un ModeResultClass
+ * @brief Pointeur intelligent vers un ModeResult
  */
-typedef boost::shared_ptr< ModeResultClass > ModeResultPtr;
+typedef boost::shared_ptr< ModeResult > ModeResultPtr;
 
 #endif /* MECHANICALMODERESULT_H_ */

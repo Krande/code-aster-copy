@@ -29,7 +29,7 @@
 #include "Loads/ListOfLoads.h"
 #include "Supervis/CommandSyntax.h"
 
-ListOfLoadsClass::ListOfLoadsClass( const JeveuxMemory memType )
+ListOfLoads::ListOfLoads( const JeveuxMemory memType )
     : DataStructure( DataStructureNaming::getNewName( memType, 8 ) + ".LIST_LOAD", 19, "L_CHARGES",
                      memType ),
       _loadInformations( JeveuxVectorLong( getName() + ".INFC" ) ),
@@ -38,7 +38,7 @@ ListOfLoadsClass::ListOfLoadsClass( const JeveuxMemory memType )
       _isEmpty( true ), _model( nullptr ){};
 
 
-bool ListOfLoadsClass::checkModelConsistency( const ModelPtr& model ) const
+bool ListOfLoads::checkModelConsistency( const ModelPtr& model ) const
 {
     if( _model ){
         if( _model->getName() != model->getName())
@@ -47,7 +47,7 @@ bool ListOfLoadsClass::checkModelConsistency( const ModelPtr& model ) const
     return true;
 };
 
-bool ListOfLoadsClass::setModel( const ModelPtr& model )
+bool ListOfLoads::setModel( const ModelPtr& model )
 {
     if( _model ){
         if( !this->checkModelConsistency( model ) )
@@ -59,7 +59,7 @@ bool ListOfLoadsClass::setModel( const ModelPtr& model )
     return true;
 };
 
-int ListOfLoadsClass::getPhysics( void ) const
+int ListOfLoads::getPhysics( void ) const
 {
     if( _model )
         return _model->getPhysics();
@@ -67,7 +67,7 @@ int ListOfLoadsClass::getPhysics( void ) const
     return -1;
 };
 
-bool ListOfLoadsClass::build( ModelPtr model ) {
+bool ListOfLoads::build( ModelPtr model ) {
     if ( !_isEmpty )
         return true;
 
@@ -194,7 +194,7 @@ bool ListOfLoadsClass::build( ModelPtr model ) {
 };
 
 
-std::vector< FiniteElementDescriptorPtr > ListOfLoadsClass::getFiniteElementDescriptors() const
+std::vector< FiniteElementDescriptorPtr > ListOfLoads::getFiniteElementDescriptors() const
 {
     std::vector< FiniteElementDescriptorPtr > FEDesc;
 

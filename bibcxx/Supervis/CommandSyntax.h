@@ -47,7 +47,7 @@ class CommandSyntax {
     /** @brief CommandSyntax Python class object, cached to be retreive
      *  only once.
      */
-    static PyObject *pyClass;
+    static PyObject *py;
 
     /**
      * @brief Constructeur

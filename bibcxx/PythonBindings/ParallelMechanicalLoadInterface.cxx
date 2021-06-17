@@ -31,32 +31,32 @@ namespace py = boost::python;
 
 void exportParallelMechanicalLoadToPython() {
 
-    py::class_< ParallelMechanicalLoadRealClass,
-            ParallelMechanicalLoadRealClass::ParallelMechanicalLoadPtr,
+    py::class_< ParallelMechanicalLoadReal,
+            ParallelMechanicalLoadReal::ParallelMechanicalLoadPtr,
                 py::bases< DataStructure > >( "ParallelMechanicalLoadReal", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ParallelMechanicalLoadRealClass,
+        .def( "__init__", py::make_constructor(&initFactoryPtr< ParallelMechanicalLoadReal,
                                                             MechanicalLoadRealPtr, ModelPtr >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ParallelMechanicalLoadRealClass, std::string,
+              py::make_constructor(&initFactoryPtr< ParallelMechanicalLoadReal, std::string,
                                                 MechanicalLoadRealPtr, ModelPtr >))
         .def( "getFiniteElementDescriptor",
-              &ParallelMechanicalLoadRealClass::getFiniteElementDescriptor )
+              &ParallelMechanicalLoadReal::getFiniteElementDescriptor )
         .def( "getModel",
-              &ParallelMechanicalLoadRealClass::getModel );
+              &ParallelMechanicalLoadReal::getModel );
 
-    py::class_< ParallelMechanicalLoadFunctionClass,
-            ParallelMechanicalLoadFunctionClass::ParallelMechanicalLoadPtr,
+    py::class_< ParallelMechanicalLoadFunction,
+            ParallelMechanicalLoadFunction::ParallelMechanicalLoadPtr,
                 py::bases< DataStructure > >( "ParallelMechanicalLoadFunction", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ParallelMechanicalLoadFunctionClass,
+        .def( "__init__", py::make_constructor(&initFactoryPtr< ParallelMechanicalLoadFunction,
                                                             MechanicalLoadFunctionPtr, ModelPtr >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ParallelMechanicalLoadFunctionClass,
+              py::make_constructor(&initFactoryPtr< ParallelMechanicalLoadFunction,
                                                 std::string,
                                                 MechanicalLoadFunctionPtr, ModelPtr >))
         .def( "getFiniteElementDescriptor",
-              &ParallelMechanicalLoadFunctionClass::getFiniteElementDescriptor )
+              &ParallelMechanicalLoadFunction::getFiniteElementDescriptor )
         .def( "getModel",
-              &ParallelMechanicalLoadFunctionClass::getModel );
+              &ParallelMechanicalLoadFunction::getModel );
 };
 
 #endif /* ASTER_HAVE_MPI */

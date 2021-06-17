@@ -1,6 +1,6 @@
 /**
  * @file Model.cxx
- * @brief Implementation de ModelClass
+ * @brief Implementation de Model
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
@@ -39,7 +39,7 @@ const char *const ModelSplitingMethodNames[nbModelSplitingMethod] = {"CENTRALISE
                                                                      "GROUP_ELEM"};
 const char *const GraphPartitionerNames[nbGraphPartitioner] = {"SCOTCH", "METIS"};
 
-SyntaxMapContainer ModelClass::buildModelingsSyntaxMapContainer() const {
+SyntaxMapContainer Model::buildModelingsSyntaxMapContainer() const {
     SyntaxMapContainer dict;
 
     dict.container["VERI_JACOBIEN"] = "OUI";
@@ -68,7 +68,7 @@ SyntaxMapContainer ModelClass::buildModelingsSyntaxMapContainer() const {
     return dict;
 };
 
-bool ModelClass::buildWithSyntax( SyntaxMapContainer &dict ) {
+bool Model::buildWithSyntax( SyntaxMapContainer &dict ) {
     CommandSyntax cmdSt( "AFFE_MODELE" );
     cmdSt.setResult( ResultNaming::getCurrentName(), "MODELE" );
     cmdSt.define( dict );
@@ -86,7 +86,7 @@ bool ModelClass::buildWithSyntax( SyntaxMapContainer &dict ) {
     return true;
 };
 
-bool ModelClass::build() {
+bool Model::build() {
     SyntaxMapContainer dict = buildModelingsSyntaxMapContainer();
     if ( _baseMesh->isParallel() ) {
         ListSyntaxMapContainer listeDISTRIBUTION;
@@ -106,7 +106,7 @@ bool ModelClass::build() {
     return buildWithSyntax( dict ) && update_tables();
 };
 
-bool ModelClass::existsThm() {
+bool Model::existsThm() {
     const std::string typeco( "MODELE" );
     ASTERINTEGER repi = 0, ier = 0;
     JeveuxChar32 repk( " " );
@@ -120,7 +120,7 @@ bool ModelClass::existsThm() {
     return false;
 };
 
-bool ModelClass::existsMultiFiberBeam() {
+bool Model::existsMultiFiberBeam() {
     const std::string typeco( "MODELE" );
     ASTERINTEGER repi = 0, ier = 0;
     JeveuxChar32 repk( " " );
@@ -134,7 +134,7 @@ bool ModelClass::existsMultiFiberBeam() {
     return false;
 };
 
-bool ModelClass::xfemPreconditioningEnable() {
+bool Model::xfemPreconditioningEnable() {
     const std::string typeco( "MODELE" );
     ASTERINTEGER repi = 0, ier = 0;
     JeveuxChar32 repk( " " );
@@ -149,7 +149,7 @@ bool ModelClass::xfemPreconditioningEnable() {
 };
 
 
-void ModelClass::addModelingOnGroupOfCells( Physics phys, Modelings mod, std::string nameOfGroup ) {
+void Model::addModelingOnGroupOfCells( Physics phys, Modelings mod, std::string nameOfGroup ) {
     if ( !_baseMesh )
         throw std::runtime_error( "Mesh is not defined" );
     if ( !_baseMesh->hasGroupOfCells( nameOfGroup ) )
@@ -159,7 +159,7 @@ void ModelClass::addModelingOnGroupOfCells( Physics phys, Modelings mod, std::st
         ElementaryModeling( phys, mod ), MeshEntityPtr( new GroupOfCells( nameOfGroup ) ) ) );
 };
 
-void ModelClass::addModelingOnGroupOfNodes( Physics phys, Modelings mod, std::string nameOfGroup ) {
+void Model::addModelingOnGroupOfNodes( Physics phys, Modelings mod, std::string nameOfGroup ) {
     if ( !_baseMesh )
         throw std::runtime_error( "Mesh is not defined" );
     if ( !_baseMesh->hasGroupOfNodes( nameOfGroup ) )
@@ -171,15 +171,15 @@ void ModelClass::addModelingOnGroupOfNodes( Physics phys, Modelings mod, std::st
 
 
 #ifdef ASTER_HAVE_MPI
-bool ModelClass::setFrom( const ModelPtr model)
+bool Model::setFrom( const ModelPtr model)
 {
-    // "the mesh associated to finiteElementDescriptorClass is not a partial mesh"
+    // "the mesh associated to finiteElementDescriptor is not a partial mesh"
     AS_ASSERT( getMesh()->isConnection() );
     const ConnectionMeshPtr connectionMesh =
-        boost::static_pointer_cast< ConnectionMeshClass >( getMesh() );
+        boost::static_pointer_cast< ConnectionMesh >( getMesh() );
 
-    // "parallel mesh associated to partial mesh of FiniteElementDescriptorClass \n"
-    //        "does not correspond to other FiniteElementDescriptorClass mesh"
+    // "parallel mesh associated to partial mesh of FiniteElementDescriptor \n"
+    //        "does not correspond to other FiniteElementDescriptor mesh"
     AS_ASSERT( connectionMesh->getParallelMesh() == model->getMesh() );
 
     // tranfer LIGREL

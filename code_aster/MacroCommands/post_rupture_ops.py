@@ -251,10 +251,10 @@ def caract_mater(self, mater):
             nom_fonc_e = None
             nom_fonc_nu = None
             for matBehav in mater.getVectorOfMaterialProperties():
-                if matBehav.hasGenericFunctionValue( "E" ):
-                    nom_fonc_e = matBehav.getGenericFunctionValue( "E" )
-                if matBehav.hasGenericFunctionValue( "Nu" ):
-                    nom_fonc_nu = matBehav.getGenericFunctionValue( "Nu" )
+                if matBehav.hasValueGenericFunction( "E" ):
+                    nom_fonc_e = matBehav.getValueGenericFunction( "E" )
+                if matBehav.hasValueGenericFunction( "Nu" ):
+                    nom_fonc_nu = matBehav.getValueGenericFunction( "Nu" )
 
             if (nom_fonc_e.sdj.PROL.get()[0].strip() == 'CONSTANT' and
                     nom_fonc_nu.sdj.PROL.get()[0].strip() == 'CONSTANT'):

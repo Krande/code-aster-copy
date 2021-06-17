@@ -66,13 +66,13 @@ PyObject *getMedCouplingConversionData( const BaseMeshPtr &mesh ) {
       throw std::runtime_error( "Mesh contains non-med types and cannot be converted" );
     }
   }
-  
+
   JeveuxCollectionLong med_connectivity = mesh->getMedConnectivity();
-  med_connectivity->buildFromJeveux();
+  med_connectivity->build();
 
   // Tri des mailles par dimension
   for ( ASTERINTEGER i = 0; i < cells_types->size(); ++i ) {
-    
+
     auto aster_index = i+1;
     auto type_med = ( *cells_types )[i];
     auto nodes_med = med_connectivity->getObject( aster_index );
@@ -93,7 +93,7 @@ PyObject *getMedCouplingConversionData( const BaseMeshPtr &mesh ) {
       connectivity_index[dim].push_back(0);
     }
     connectivity_index[dim].push_back(1 + connectivity_index[dim].back() + cell_size);
-    
+
     // Passage entre numerotation globale aster et par dimension medcoupling
     auto sz = corresponding_cells[dim].size();
     corresponding_cells[dim][aster_index] = sz;
@@ -106,34 +106,34 @@ PyObject *getMedCouplingConversionData( const BaseMeshPtr &mesh ) {
       groups_c[dim][group_name].push_back(corresponding_cells[dim][aster_cell]);
     }
   }
-  
+
   // Tri des groupes de noeuds avec shift sur l'indexe des noeuds
   for(const auto &group_name : mesh->getGroupsOfNodes()){
     for(const auto &aster_node : mesh->getNodes(group_name)){
       groups_n[group_name].push_back(aster_node -1);
     }
   }
-  
+
   // Creation des dict Python pour retourner les infos
 
   PyObject *cells_dict = PyDict_New();
 
   for ( const auto &iter : connectivity ) {
     auto dim = iter.first;
-    
+
     PyObject *conn_item = PyTuple_New( 2 );
     PyObject *conn_at_dim = PyTuple_New( connectivity[dim].size() );
     for( ASTERINTEGER j = 0; j < connectivity[dim].size(); ++j){
       PyTuple_SetItem(conn_at_dim, j, PyLong_FromLong( connectivity[dim][j] ));
     }
     PyTuple_SetItem(conn_item, 0, conn_at_dim);
-    
+
     PyObject *connI_at_dim = PyTuple_New( connectivity_index[dim].size() );
     for( ASTERINTEGER j = 0; j < connectivity_index[dim].size(); ++j){
       PyTuple_SetItem(connI_at_dim, j, PyLong_FromLong( connectivity_index[dim][j] ));
     }
     PyTuple_SetItem(conn_item, 1, connI_at_dim);
-    
+
     PyObject *py_dim = PyLong_FromLong( dim );
     PyDict_SetItem(cells_dict, py_dim, conn_item);
 
@@ -176,12 +176,12 @@ PyObject *getMedCouplingConversionData( const BaseMeshPtr &mesh ) {
     PyDict_SetItemString( groups_n_dict, gname.c_str(), group_items );
     Py_DECREF( group_items );
   }
-  
+
   PyObject *resu_tuple = PyTuple_New( 3 );
   PyTuple_SetItem(resu_tuple, 0, cells_dict);
   PyTuple_SetItem(resu_tuple, 1, groups_c_dict);
   PyTuple_SetItem(resu_tuple, 2, groups_n_dict);
 
   return resu_tuple;
-  
+
 }

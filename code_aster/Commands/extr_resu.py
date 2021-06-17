@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -50,7 +50,7 @@ class ExtrResu(ExecuteCommand):
                 self._result.appendModelOnAllRanks(resultat.getModel())
             if resultat.getMaterialField() is not None:
                 self._result.appendMaterialFieldOnAllRanks(resultat.getMaterialField())
-            self._result.update()
+            self._result.build()
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.

@@ -31,11 +31,11 @@
 #include "Modeling/Model.h"
 
 /**
- * @class DirichletBCClass
+ * @class DirichletBC
  * @brief Classe definissant une charge cinematique (issue d'AFFE_CHAR_CINE)
  * @author Nicolas Sellenet
  */
-class DirichletBCClass : public DataStructure {
+class DirichletBC : public DataStructure {
   protected:
     /** @typedef Pointeur intelligent sur un VirtualMeshEntity */
     typedef boost::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
@@ -63,24 +63,24 @@ class DirichletBCClass : public DataStructure {
     /** @brief La SD est-elle vide ? */
     bool _isEmpty;
 
-    DirichletBCClass( void ) = delete;
+    DirichletBC( void ) = delete;
 
     /**
      * @brief Constructeur
      */
-    DirichletBCClass( const std::string &type, const ModelPtr& model );
+    DirichletBC( const std::string &type, const ModelPtr& model );
 
     /**
      * @brief Constructeur
      */
-    DirichletBCClass( const std::string &name, const std::string &type, const ModelPtr& model );
+    DirichletBC( const std::string &name, const std::string &type, const ModelPtr& model );
 
   public:
     /**
      * @typedef DirichletBCPtr
      * @brief Pointeur intelligent vers un DirichletBC
      */
-    typedef boost::shared_ptr< DirichletBCClass > DirichletBCPtr;
+    typedef boost::shared_ptr< DirichletBC > DirichletBCPtr;
 
     /**
      * @brief Construction de la charge (appel a OP0101)
@@ -111,32 +111,32 @@ class DirichletBCClass : public DataStructure {
 };
 
 /**
- * @class MechanicalDirichletBCClass
+ * @class MechanicalDirichletBC
  * @brief Classe definissant une charge cinematique (issue d'AFFE_CHAR_CINE)
  * @author Nicolas Sellenet
  */
-class MechanicalDirichletBCClass : public DirichletBCClass {
+class MechanicalDirichletBC : public DirichletBC {
   public:
     /**
      * @brief Constructeur
      */
-    MechanicalDirichletBCClass( void ) = delete;
+    MechanicalDirichletBC( void ) = delete;
 
 
-    MechanicalDirichletBCClass( const ModelPtr& model)
-        : DirichletBCClass( "_MECA", model ){};
+    MechanicalDirichletBC( const ModelPtr& model)
+        : DirichletBC( "_MECA", model ){};
 
     /**
      * @brief Constructeur
      */
-    MechanicalDirichletBCClass( const std::string name, const ModelPtr& model )
-        : DirichletBCClass( name, "_MECA", model ){};
+    MechanicalDirichletBC( const std::string name, const ModelPtr& model )
+        : DirichletBC( name, "_MECA", model ){};
 
     /**
      * @typedef MechanicalDirichletBCPtr
      * @brief Pointeur intelligent vers un MechanicalDirichletBC
      */
-    typedef boost::shared_ptr< MechanicalDirichletBCClass > MechanicalDirichletBCPtr;
+    typedef boost::shared_ptr< MechanicalDirichletBC > MechanicalDirichletBCPtr;
 
     virtual int getPhysics( void ) const {
         return Physics::Mechanics;
@@ -209,34 +209,34 @@ class MechanicalDirichletBCClass : public DirichletBCClass {
 };
 
 /**
- * @class ThermalDirichletBCClass
+ * @class ThermalDirichletBC
  * @brief Classe definissant une charge cinematique (issue d'AFFE_CHAR_CINE)
  * @author Nicolas Sellenet
  */
-class ThermalDirichletBCClass : public DirichletBCClass {
+class ThermalDirichletBC : public DirichletBC {
   public:
     /**
      * @brief Constructeur
      */
-    ThermalDirichletBCClass( void ) = delete;
+    ThermalDirichletBC( void ) = delete;
 
     /**
      * @brief Constructeur
      */
-    ThermalDirichletBCClass(const ModelPtr& model)
-        : DirichletBCClass( "_THER", model ){};
+    ThermalDirichletBC(const ModelPtr& model)
+        : DirichletBC( "_THER", model ){};
 
     /**
      * @brief Constructeur
      */
-    ThermalDirichletBCClass( const std::string name, const ModelPtr& model )
-        : DirichletBCClass( name, "_THER", model ){};
+    ThermalDirichletBC( const std::string name, const ModelPtr& model )
+        : DirichletBC( name, "_THER", model ){};
 
     /**
      * @typedef ThermalDirichletBCPtr
      * @brief Pointeur intelligent vers un ThermalDirichletBC
      */
-    typedef boost::shared_ptr< ThermalDirichletBCClass > ThermalDirichletBCPtr;
+    typedef boost::shared_ptr< ThermalDirichletBC > ThermalDirichletBCPtr;
 
     virtual int getPhysics( void ) const {
         return Physics::Thermal;
@@ -341,35 +341,35 @@ class ThermalDirichletBCClass : public DirichletBCClass {
 };
 
 /**
- * @class AcousticDirichletBCClass
+ * @class AcousticDirichletBC
  * @brief Classe definissant une charge cinematique (issue d'AFFE_CHAR_CINE)
  * @author Nicolas Sellenet
  */
-class AcousticDirichletBCClass : public DirichletBCClass {
+class AcousticDirichletBC : public DirichletBC {
   public:
 
   /**
      * @brief Constructeur
      */
-    AcousticDirichletBCClass( void ) = delete;
+    AcousticDirichletBC( void ) = delete;
 
     /**
      * @brief Constructeur
      */
-    AcousticDirichletBCClass(const ModelPtr& model)
-        : DirichletBCClass( "_ACOU", model ){};
+    AcousticDirichletBC(const ModelPtr& model)
+        : DirichletBC( "_ACOU", model ){};
 
     /**
      * @brief Constructeur
      */
-    AcousticDirichletBCClass( const std::string name, const ModelPtr& model )
-        : DirichletBCClass( name, "_ACOU", model ){};
+    AcousticDirichletBC( const std::string name, const ModelPtr& model )
+        : DirichletBC( name, "_ACOU", model ){};
 
     /**
      * @typedef AcousticDirichletBCPtr
      * @brief Pointeur intelligent vers un AcousticDirichletBC
      */
-    typedef boost::shared_ptr< AcousticDirichletBCClass > AcousticDirichletBCPtr;
+    typedef boost::shared_ptr< AcousticDirichletBC > AcousticDirichletBCPtr;
 
     virtual int getPhysics( void ) const {
         return Physics::Acoustic;
@@ -400,27 +400,27 @@ class AcousticDirichletBCClass : public DirichletBCClass {
 
 /**
  * @typedef DirichletBC
- * @brief Pointeur intelligent vers un DirichletBCClass
+ * @brief Pointeur intelligent vers un DirichletBC
  */
-typedef boost::shared_ptr< DirichletBCClass > DirichletBCPtr;
+typedef boost::shared_ptr< DirichletBC > DirichletBCPtr;
 
 /**
  * @typedef MechanicalDirichletBCPtr
  * @brief Pointeur intelligent vers un MechanicalDirichletBC
  */
-typedef boost::shared_ptr< MechanicalDirichletBCClass > MechanicalDirichletBCPtr;
+typedef boost::shared_ptr< MechanicalDirichletBC > MechanicalDirichletBCPtr;
 
 /**
  * @typedef ThermalDirichletBCPtr
  * @brief Pointeur intelligent vers un ThermalDirichletBC
  */
-typedef boost::shared_ptr< ThermalDirichletBCClass > ThermalDirichletBCPtr;
+typedef boost::shared_ptr< ThermalDirichletBC > ThermalDirichletBCPtr;
 
 /**
  * @typedef AcousticDirichletBCPtr
  * @brief Pointeur intelligent vers un AcousticDirichletBC
  */
-typedef boost::shared_ptr< AcousticDirichletBCClass > AcousticDirichletBCPtr;
+typedef boost::shared_ptr< AcousticDirichletBC > AcousticDirichletBCPtr;
 
 /** @typedef std::list de DirichletBC */
 typedef std::list< DirichletBCPtr > ListDiriBC;

@@ -50,7 +50,7 @@ class Compute(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
-        self._result.update()
+        self._result.build()
 
 _CALCUL_ = Compute.run
 

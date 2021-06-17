@@ -26,18 +26,18 @@
 #include "Algorithms/StaticMechanicalAlgorithm.h"
 
 template <>
-void updateContextFromStepper< TimeStepperClass::const_iterator, StaticMechanicalContext >(
-    const TimeStepperClass::const_iterator &curStep, StaticMechanicalContext &context ) {
+void updateContextFromStepper< TimeStepper::const_iterator, StaticMechanicalContext >(
+    const TimeStepper::const_iterator &curStep, StaticMechanicalContext &context ) {
     context.setStep( *curStep, curStep.rank );
 };
 
 void StaticMechanicalAlgorithm::oneStep( const CurrentContext &ctx ) {
     BaseDOFNumberingPtr dofNum1 = ctx._results->getLastDOFNumbering();
 
-    ctx._varCom->compute( ctx._time );
+    ctx._varCom->build( ctx._time );
 
     if ( ctx._rank == 1 || !ctx._isConst ) {
-        auto matrElem = ctx._discreteProblem->buildElementaryStiffnessMatrix( ctx._time );
+        auto matrElem = ctx._discreteProblem->computeElementaryStiffnessMatrix( ctx._time );
 
         // Build assembly matrix
         ctx._aMatrix->clearElementaryMatrix();
@@ -47,33 +47,33 @@ void StaticMechanicalAlgorithm::oneStep( const CurrentContext &ctx ) {
         ctx._aMatrix->build();
 
         // Matrix factorization
-        ctx._linearSolver->matrixFactorization( ctx._aMatrix );
+        ctx._linearSolver->factorize( ctx._aMatrix );
     }
 
     // Build Dirichlet loads
     ElementaryVectorPtr vectElem1 =
-        ctx._discreteProblem->buildElementaryDirichletVector( ctx._time );
-    FieldOnNodesRealPtr chNoDir = vectElem1->assembleVector( dofNum1, ctx._time, Temporary );
+        ctx._discreteProblem->computeElementaryDirichletVector( ctx._time );
+    FieldOnNodesRealPtr chNoDir = vectElem1->assemble( dofNum1, ctx._time, Temporary );
 
     // Build Laplace forces
-    ElementaryVectorPtr vectElem2 = ctx._discreteProblem->buildElementaryLaplaceVector();
-    FieldOnNodesRealPtr chNoLap = vectElem2->assembleVector( dofNum1, ctx._time, Temporary );
+    ElementaryVectorPtr vectElem2 = ctx._discreteProblem->computeElementaryLaplaceVector();
+    FieldOnNodesRealPtr chNoLap = vectElem2->assemble( dofNum1, ctx._time, Temporary );
 
     // Build Neumann loads
     VectorReal times;
     times.push_back( ctx._time );
     times.push_back( 0. );
     times.push_back( 0. );
-    ElementaryVectorPtr vectElem3 = ctx._discreteProblem->buildElementaryNeumannVector( times,
+    ElementaryVectorPtr vectElem3 = ctx._discreteProblem->computeElementaryNeumannVector( times,
                                                                                         ctx._varCom
                                                                                       );
-    FieldOnNodesRealPtr chNoNeu = vectElem3->assembleVector( dofNum1, ctx._time, Temporary );
+    FieldOnNodesRealPtr chNoNeu = vectElem3->assemble( dofNum1, ctx._time, Temporary );
 
     *chNoDir += *chNoLap;
     *chNoDir += *chNoNeu;
 
-    if ( ctx._varCom->existsMechanicalLoads() ) {
-        auto varComLoad = ctx._varCom->computeMechanicalLoads( dofNum1 );
+    if ( ctx._varCom->hasExternalStateVariables() ) {
+        auto varComLoad = ctx._varCom->computeExternalStateVariablesLoad( dofNum1 );
         *chNoDir += *varComLoad;
     }
 
@@ -81,12 +81,12 @@ void StaticMechanicalAlgorithm::oneStep( const CurrentContext &ctx ) {
     cmdSt.setResult( ctx._results->getName(), ctx._results->getType() );
 
     FieldOnNodesRealPtr diriBCsFON =
-        ctx._discreteProblem->buildDirichletBC( dofNum1, ctx._time, Temporary );
+        ctx._discreteProblem->computeDirichletBC( dofNum1, ctx._time, Temporary );
 
     FieldOnNodesRealPtr resultField =
         ctx._results->getEmptyFieldOnNodesReal( "DEPL", ctx._rank );
 
-    resultField = ctx._linearSolver->solveRealLinearSystemWithDirichletBC(
+    resultField = ctx._linearSolver->solveWithDirichletBC(
         ctx._aMatrix, diriBCsFON, chNoDir, resultField );
 
     const auto &study = ctx._discreteProblem->getStudyDescription();

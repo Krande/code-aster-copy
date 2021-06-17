@@ -29,7 +29,7 @@
 #include "Supervis/ResultNaming.h"
 
 
-bool DOFNumberingClass::useLagrangeMultipliers() const {
+bool DOFNumbering::useLagrangeMultipliers() const {
     const std::string typeco( "NUME_DDL" );
     ASTERINTEGER repi = 0, ier = 0;
     JeveuxChar32 repk( " " );
@@ -44,7 +44,7 @@ bool DOFNumberingClass::useLagrangeMultipliers() const {
 
 };
 
-VectorLong DOFNumberingClass::getRowsAssociatedToPhysicalDofs(const bool local) const {
+VectorLong DOFNumbering::getRowsAssociatedToPhysicalDofs(const bool local) const {
     getGlobalNumbering()->getLagrangianInformations()->updateValuePointer();
     ASTERINTEGER size = getGlobalNumbering()->getLagrangianInformations()->size();
     VectorLong physicalRows;
@@ -57,7 +57,7 @@ VectorLong DOFNumberingClass::getRowsAssociatedToPhysicalDofs(const bool local) 
     return physicalRows;
 };
 
-VectorLong DOFNumberingClass::getRowsAssociatedToLagrangeMultipliers(const bool local) const {
+VectorLong DOFNumbering::getRowsAssociatedToLagrangeMultipliers(const bool local) const {
     getGlobalNumbering()->getLagrangianInformations()->updateValuePointer();
     ASTERINTEGER size = getGlobalNumbering()->getLagrangianInformations()->size();
     VectorLong lagrangeRows;
@@ -70,7 +70,7 @@ VectorLong DOFNumberingClass::getRowsAssociatedToLagrangeMultipliers(const bool 
     return lagrangeRows;
 };
 
-std::string DOFNumberingClass::getComponentAssociatedToRow(const ASTERINTEGER row,
+std::string DOFNumbering::getComponentAssociatedToRow(const ASTERINTEGER row,
                                                            const bool local) const {
     if (row<1 or row>getNumberOfDofs())
         throw std::runtime_error("Invalid row index");
@@ -84,7 +84,7 @@ std::string DOFNumberingClass::getComponentAssociatedToRow(const ASTERINTEGER ro
     return cmpName.rstrip();
 };
 
-ASTERINTEGER DOFNumberingClass::getRowAssociatedToNodeComponent(const ASTERINTEGER node,
+ASTERINTEGER DOFNumbering::getRowAssociatedToNodeComponent(const ASTERINTEGER node,
                                                             const std::string compoName,
                                                             const bool local) const {
     if (node<1 or node>getMesh()->getNumberOfNodes())
@@ -103,7 +103,7 @@ ASTERINTEGER DOFNumberingClass::getRowAssociatedToNodeComponent(const ASTERINTEG
     return row;
 };
 
-ASTERINTEGER DOFNumberingClass::getNodeAssociatedToRow(const ASTERINTEGER row,
+ASTERINTEGER DOFNumbering::getNodeAssociatedToRow(const ASTERINTEGER row,
                                                             const bool local) const {
     if (row<1 or row>getNumberOfDofs(local))
         throw std::runtime_error("Invalid row index");
@@ -113,12 +113,12 @@ ASTERINTEGER DOFNumberingClass::getNodeAssociatedToRow(const ASTERINTEGER row,
     return isPhysical*(*descriptor)[2*(row-1)];
 };
 
-ASTERINTEGER DOFNumberingClass::getNumberOfDofs(const bool local) const {
+ASTERINTEGER DOFNumbering::getNumberOfDofs(const bool local) const {
     getGlobalNumbering()->getNumberOfEquations()->updateValuePointer();
     return (*getGlobalNumbering()->getNumberOfEquations())[0];
 };
 
-bool DOFNumberingClass::useSingleLagrangeMultipliers() const {
+bool DOFNumbering::useSingleLagrangeMultipliers() const {
     const std::string typeco( "NUME_DDL" );
     ASTERINTEGER repi = 0, ier = 0;
     JeveuxChar32 repk( " " );
@@ -132,7 +132,7 @@ bool DOFNumberingClass::useSingleLagrangeMultipliers() const {
     return false;
 };
 
-VectorString DOFNumberingClass::getComponents() const {
+VectorString DOFNumbering::getComponents() const {
     ASTERINTEGER ncmp, maxCmp = 100, ibid=0;
     char *stringArray;
     VectorString stringVector;
@@ -147,7 +147,7 @@ VectorString DOFNumberingClass::getComponents() const {
     return stringVector;
 };
 
-VectorString DOFNumberingClass::getComponentsAssociatedToNode(const ASTERINTEGER node,
+VectorString DOFNumbering::getComponentsAssociatedToNode(const ASTERINTEGER node,
                                                               const bool local) const {
     ASTERINTEGER ncmp, maxCmp = 100;
     char *stringArray;

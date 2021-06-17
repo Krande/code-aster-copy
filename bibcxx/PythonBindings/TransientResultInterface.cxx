@@ -3,7 +3,7 @@
  * @brief Interface python de TransientResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,12 +29,12 @@ namespace py = boost::python;
 
 void exportTransientResultToPython() {
 
-    py::class_< TransientResultClass, TransientResultPtr,
-                py::bases< ResultClass > >( "TransientResult",
+    py::class_< TransientResult, TransientResultPtr,
+                py::bases< Result > >( "TransientResult",
                                                          py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< TransientResultClass >))
+              py::make_constructor(&initFactoryPtr< TransientResult >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< TransientResultClass,
+              py::make_constructor(&initFactoryPtr< TransientResult,
                                                     std::string, std::string >));
 };

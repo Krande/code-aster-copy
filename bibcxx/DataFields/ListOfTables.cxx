@@ -2,7 +2,7 @@
  * @file ListOfTables.cxx
  * @brief Implementation de ListOfTables
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -26,13 +26,13 @@
 #include "Utilities/Tools.h"
 
 
-ListOfTablesClass::ListOfTablesClass( const std::string &name ) : _name( name ) {
+ListOfTables::ListOfTables( const std::string &name ) : _name( name ) {
     _name.resize( 19, ' ' );
     _dsId = JeveuxVectorChar16( _name + ".LTNT" );
     _dsName = JeveuxVectorChar24( _name + ".LTNS" );
 }
 
-bool ListOfTablesClass::update_tables() {
+bool ListOfTables::update_tables() {
     CALL_JEMARQ();
 
     if ( ! _dsId->updateValuePointer() || ! _dsName->updateValuePointer() ) {
@@ -47,7 +47,7 @@ bool ListOfTablesClass::update_tables() {
         if ( id == "" )
             continue;
         if ( _mapTables[id] == nullptr )
-            _mapTables[id] = TablePtr( new TableClass( name ) );
+            _mapTables[id] = TablePtr( new Table( name ) );
     }
     // todo: remove previously registered and not available anymore
 
@@ -55,7 +55,7 @@ bool ListOfTablesClass::update_tables() {
     return true;
 }
 
-TablePtr ListOfTablesClass::getTable( const std::string id ) {
+TablePtr ListOfTables::getTable( const std::string id ) {
     this->update_tables();
     const auto id_ = trim ( id );
     const auto curIter = _mapTables.find( id_ );

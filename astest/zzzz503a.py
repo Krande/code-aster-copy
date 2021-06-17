@@ -70,7 +70,7 @@ test.assertEqual(acier.getType(), "MATER_SDASTER")
 affectMat = code_aster.MaterialField(monMaillage)
 affectMat.addMaterialsOnMesh(acier)
 affectMat.addMaterialsOnGroupOfCells(acier, ['Haut', 'Bas'])
-affectMat.buildWithoutExternalVariable()
+affectMat.buildWithoutExternalStateVariables()
 test.assertEqual(affectMat.getType(), "CHAM_MATER")
 
 imposedDof1 = code_aster.DisplacementReal()
@@ -93,7 +93,7 @@ study = code_aster.StudyDescription(monModel, affectMat)
 study.addLoad(CharMeca1)
 study.addLoad(CharMeca2)
 dProblem = code_aster.DiscreteProblem(study)
-vectElem = dProblem.buildElementaryMechanicalLoadsVector()
+vectElem = dProblem.computeElementaryMechanicalLoadsVector()
 matr_elem = dProblem.computeMechanicalStiffnessMatrix()
 
 test.assertEqual(matr_elem.getType(), "MATR_ELEM_DEPL_R")
@@ -109,7 +109,7 @@ test.assertEqual(numeDDL.getType(), "NUME_DDL_SDASTER")
 # vectElem.debugPrint(6)
 test.assertEqual(vectElem.getType(), "VECT_ELEM_DEPL_R")
 
-retour = vectElem.assembleVector(numeDDL)
+retour = vectElem.assemble( numeDDL )
 
 matrAsse = code_aster.AssemblyMatrixDisplacementReal()
 matrAsse.appendElementaryMatrix(matr_elem)
@@ -147,11 +147,11 @@ else:
     v.pushFormat(petsc4py.PETSc.Viewer.Format.ASCII_MATLAB)
     A.view(v)
 
-monSolver.matrixFactorization(matrAsse)
+monSolver.factorize(matrAsse)
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 
 vcine = dProblem.buildDirichletBC(numeDDL, 0.)
-resu = monSolver.solveRealLinearSystemWithDirichletBC(matrAsse, vcine, retour)
+resu = monSolver.solveWithDirichletBC(matrAsse, vcine, retour)
 
 
 y = resu.EXTR_COMP()
@@ -166,8 +166,8 @@ resu.printMedFile("fort.med")
 # test setValues + solve
 # ----------------------
 matrAsse.setValues(idx.tolist(), jdx.tolist(), [10*v for v in values])
-monSolver.matrixFactorization(matrAsse)
-resu = monSolver.solveRealLinearSystem(matrAsse, retour)
+monSolver.factorize(matrAsse)
+resu = monSolver.solve(matrAsse, retour)
 resu2 = resu.exportToSimpleFieldOnNodes()
 resu2.updateValuePointers()
 test.assertAlmostEqual(resu2.getValue(5, 3), 0.000757555469653289/10.)

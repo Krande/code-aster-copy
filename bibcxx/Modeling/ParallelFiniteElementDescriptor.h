@@ -35,15 +35,15 @@
 #include "ParallelUtilities/CommunicationGraph.h"
 
 /**
- * @class ParallelFiniteElementDescriptorClass
+ * @class ParallelFiniteElementDescriptor
  * @brief Classe definissant un ligrel parallèle
  * @author Nicolas Sellenet
  */
-class ParallelFiniteElementDescriptorClass: public FiniteElementDescriptorClass
+class ParallelFiniteElementDescriptor: public FiniteElementDescriptor
 {
 protected:
     /** @brief Matching numbering between keeped delayed elements and base elements */
-    VectorLong                       _delayedElemToKeep;
+    VectorLong                       _virtualCellToKeep;
     /** @brief Join to send */
     std::vector< JeveuxVectorLong >  _joinToSend;
     /** @brief Join to receive */
@@ -59,13 +59,13 @@ protected:
     /** @brief Communication graph */
     CommunicationGraphPtr            _commGraph;
     /** @brief Global numbering for delayed nodes */
-    JeveuxVectorLong                 _globalNumberingDelayedNodes;
+    JeveuxVectorLong                 _globalNumberingVirtualNodes;
 
 public:
     /**
      * @brief Constructeur
      */
-    ParallelFiniteElementDescriptorClass( const std::string& name,
+    ParallelFiniteElementDescriptor( const std::string& name,
                                              const FiniteElementDescriptorPtr& FEDesc,
                                              const ConnectionMeshPtr& mesh,
                                              const ModelPtr& model,
@@ -75,9 +75,9 @@ public:
      * @brief Get vector of delayed elements keeped from the base FiniteElementDescriptor
      * @return reference on VectorLong
      */
-    const VectorLong& getDelayedElementsToKeep() const
+    const VectorLong& getVirtualCellsToKeep() const
     {
-        return _delayedElemToKeep;
+        return _virtualCellToKeep;
     };
 
     /**
@@ -94,15 +94,15 @@ public:
      * @typedef ParallelFiniteElementDescriptorPtr
      * @brief Pointeur intelligent vers un ParallelFiniteElementDescriptor
      */
-    typedef boost::shared_ptr< ParallelFiniteElementDescriptorClass >
+    typedef boost::shared_ptr< ParallelFiniteElementDescriptor >
         ParallelFiniteElementDescriptorPtr;
 };
 
 /**
  * @typedef ParallelFiniteElementDescriptorPtr
- * @brief Pointeur intelligent vers un ParallelFiniteElementDescriptorClass
+ * @brief Pointeur intelligent vers un ParallelFiniteElementDescriptor
  */
-typedef boost::shared_ptr< ParallelFiniteElementDescriptorClass >
+typedef boost::shared_ptr< ParallelFiniteElementDescriptor >
     ParallelFiniteElementDescriptorPtr;
 
 #endif /* PARALLELFINITEELEMENTDESCRIPTOR_H_ */

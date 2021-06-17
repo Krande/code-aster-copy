@@ -47,10 +47,10 @@
 #include <map>
 
 /**
- * @typedef TableContainerClass
- * @brief Definition of TableContainerClass (table_container)
+ * @typedef TableContainer
+ * @brief Definition of TableContainer (table_container)
  */
-class TableContainerClass : public TableClass
+class TableContainer : public Table
 {
   private:
     JeveuxVectorChar16 _objectName;
@@ -79,23 +79,23 @@ class TableContainerClass : public TableClass
   public:
     /**
     * @typedef TableContainerPtr
-    * @brief Definition of a smart pointer to a TableContainerClass
+    * @brief Definition of a smart pointer to a TableContainer
     */
-    typedef boost::shared_ptr< TableContainerClass > TableContainerPtr;
+    typedef boost::shared_ptr< TableContainer > TableContainerPtr;
 
     /**
     * @brief Constructeur
     * @param name Nom Jeveux du champ aux noeuds
     */
-    TableContainerClass( const std::string &name ):
-        TableClass( name, "TABLE_CONTAINER" )
+    TableContainer( const std::string &name ):
+        Table( name, "TABLE_CONTAINER" )
     {};
 
     /**
      * @brief Constructeur
      */
-    TableContainerClass():
-        TableContainerClass( ResultNaming::getNewResultName() )
+    TableContainer():
+        TableContainer( ResultNaming::getNewResultName() )
     {};
 
     /**
@@ -275,7 +275,7 @@ class TableContainerClass : public TableClass
      * @brief Update the table
      * @todo add the case of ConstantFieldOnCells
      */
-    bool update();
+    bool build();
 };
 
 #endif /* TABLECONTAINER_H_ */

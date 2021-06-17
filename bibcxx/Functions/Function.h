@@ -31,11 +31,11 @@
 #include "Functions/GenericFunction.h"
 
 /**
- * class BaseFunctionClass
+ * class BaseFunction
  *   Create a datastructure for a function with real values
  * @author Mathieu Courtois
  */
-class BaseFunctionClass : public GenericFunctionClass {
+class BaseFunction : public GenericFunction {
   private:
 
   protected:
@@ -47,17 +47,17 @@ class BaseFunctionClass : public GenericFunctionClass {
      * @typedef BaseFunctionPtr
      * @brief Pointeur intelligent vers un BaseFunction
      */
-    typedef boost::shared_ptr< BaseFunctionClass > BaseFunctionPtr;
+    typedef boost::shared_ptr< BaseFunction > BaseFunctionPtr;
 
     /**
      * Constructeur
      */
-    BaseFunctionClass( const std::string type, const std::string type2 );
+    BaseFunction( const std::string type, const std::string type2 );
 
-    BaseFunctionClass( const std::string name, const std::string type,
+    BaseFunction( const std::string name, const std::string type,
                        const std::string type2 );
 
-    ~BaseFunctionClass(){};
+    ~BaseFunction(){};
 
     /**
      * @brief Allocate function
@@ -157,49 +157,49 @@ class BaseFunctionClass : public GenericFunctionClass {
 };
 
 /**
- * class FunctionClass
+ * class Function
  *   Create a datastructure for a function with real values
  * @author Mathieu Courtois
  */
-class FunctionClass : public BaseFunctionClass {
+class Function : public BaseFunction {
 
   public:
     /**
      * @typedef FunctionPtr
      * @brief Pointeur intelligent vers un Function
      */
-    typedef boost::shared_ptr< FunctionClass > FunctionPtr;
+    typedef boost::shared_ptr< Function > FunctionPtr;
 
     /**
     * Constructeur
     */
-    FunctionClass() : BaseFunctionClass( "FONCTION", "FONCTION" ){};
+    Function() : BaseFunction( "FONCTION", "FONCTION" ){};
 
-    FunctionClass( const std::string name )
-        : BaseFunctionClass( name, "FONCTION", "FONCTION" ){};
+    Function( const std::string name )
+        : BaseFunction( name, "FONCTION", "FONCTION" ){};
 };
 
 /**
- * class FunctionComplexClass
+ * class FunctionComplex
  *   Create a datastructure for a function with complex values
  * @author Mathieu Courtois
  */
-class FunctionComplexClass : public BaseFunctionClass {
+class FunctionComplex : public BaseFunction {
 
   public:
     /**
      * @typedef FunctionPtr
      * @brief Pointeur intelligent vers un FunctionComplex
      */
-    typedef boost::shared_ptr< FunctionComplexClass > FunctionComplexPtr;
+    typedef boost::shared_ptr< FunctionComplex > FunctionComplexPtr;
 
     /**
     * Constructeur
     */
-    FunctionComplexClass( const std::string name )
-        : BaseFunctionClass( name, "FONCTION_C", "FONCT_C" ) {};
+    FunctionComplex( const std::string name )
+        : BaseFunction( name, "FONCTION_C", "FONCT_C" ) {};
 
-    FunctionComplexClass() : BaseFunctionClass( "FONCTION_C", "FONCT_C" ) {};
+    FunctionComplex() : BaseFunction( "FONCTION_C", "FONCT_C" ) {};
 
     /**
      * @brief Allocate function
@@ -240,21 +240,21 @@ class FunctionComplexClass : public BaseFunctionClass {
 
 /**
  * @typedef BaseFunctionPtr
- * @brief  Pointer to a BaseFunctionClass
+ * @brief  Pointer to a BaseFunction
  */
-typedef boost::shared_ptr< BaseFunctionClass > BaseFunctionPtr;
+typedef boost::shared_ptr< BaseFunction > BaseFunctionPtr;
 
 /**
  * @typedef FunctionPtr
- * @brief  Pointer to a FunctionClass
+ * @brief  Pointer to a Function
  */
-typedef boost::shared_ptr< FunctionClass > FunctionPtr;
+typedef boost::shared_ptr< Function > FunctionPtr;
 
 /**
  * @typedef FunctionComplexPtr
- * @brief  Pointer to a FunctionComplexClass
+ * @brief  Pointer to a FunctionComplex
  */
-typedef boost::shared_ptr< FunctionComplexClass > FunctionComplexPtr;
+typedef boost::shared_ptr< FunctionComplex > FunctionComplexPtr;
 
 /**
  * @name emptyRealFunction

@@ -1,12 +1,9 @@
-#ifndef EXTERNALVARIABLEEVOLUTIONCONTAINERINTERFACE_H_
-#define EXTERNALVARIABLEEVOLUTIONCONTAINERINTERFACE_H_
-
 /**
- * @file ExternalVariablesResultInterface.h
- * @brief Fichier entete de la classe ExternalVariablesResultInterface
- * @author Natacha Béreux
+ * @file ExternalStateVariables.cxx
+ * @brief Implementation de ExternalStateVariables
+ * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,9 +21,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "astercxx.h"
-#include "Results/ExternalVariablesResult.h"
+/* person_in_charge: nicolas.sellenet at edf.fr */
 
-void exportExternalVariablesResultToPython();
-
-#endif /* EXTERNALVARIABLEEVOLUTIONCONTAINERINTERFACE_H_ */
+#include "Materials/ListOfExternalStateVariables.h"

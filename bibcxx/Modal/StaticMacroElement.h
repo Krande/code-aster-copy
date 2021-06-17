@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe StaticMacroElement
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -35,11 +35,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class ProjMesuClass
+ * @class ProjMesu
  * @brief Cette classe correspond a un PROJ_MESU
  * @author Nicolas Sellenet
  */
-class ProjMesuClass : public DataStructure {
+class ProjMesu : public DataStructure {
   private:
     /** @brief Objet Jeveux '.PJMNO' */
     JeveuxVectorLong _pjmno;
@@ -60,7 +60,7 @@ class ProjMesuClass : public DataStructure {
     /**
      * @brief Constructeur
      */
-    ProjMesuClass( const std::string &name )
+    ProjMesu( const std::string &name )
         : DataStructure( name, 18, "PROJ_MESU", Permanent ),
           _pjmno( JeveuxVectorLong( getName() + ".PJMNO" ) ),
           _pjmrg( JeveuxVectorChar8( getName() + ".PJMRG" ) ),
@@ -72,17 +72,17 @@ class ProjMesuClass : public DataStructure {
 };
 
 /**
- * @typedef ProjMesuClassPtr
- * @brief Pointeur intelligent vers un ProjMesuClass
+ * @typedef ProjMesuPtr
+ * @brief Pointeur intelligent vers un ProjMesu
  */
-typedef boost::shared_ptr< ProjMesuClass > ProjMesuPtr;
+typedef boost::shared_ptr< ProjMesu > ProjMesuPtr;
 
 /**
- * @class StaticMacroElementClass
+ * @class StaticMacroElement
  * @brief Cette classe correspond a un MACR_ELEM_STAT
  * @author Nicolas Sellenet
  */
-class StaticMacroElementClass : public DataStructure {
+class StaticMacroElement : public DataStructure {
   private:
     /** @brief Objet Jeveux '.DESM' */
     JeveuxVectorLong _desm;
@@ -116,35 +116,35 @@ class StaticMacroElementClass : public DataStructure {
   public:
     /**
      * @typedef StaticMacroElementPtr
-     * @brief Pointeur intelligent vers un StaticMacroElementClass
+     * @brief Pointeur intelligent vers un StaticMacroElement
      */
-    typedef boost::shared_ptr< StaticMacroElementClass > StaticMacroElementPtr;
+    typedef boost::shared_ptr< StaticMacroElement > StaticMacroElementPtr;
 
     /**
      * @brief Constructeur
      */
-    StaticMacroElementClass( const std::string name = ResultNaming::getNewResultName() )
+    StaticMacroElement( const std::string name = ResultNaming::getNewResultName() )
         : DataStructure( name, 8, "MACR_ELEM_STAT", Permanent ),
           _desm( JeveuxVectorLong( getName() + ".DESM" ) ),
           _lino( JeveuxVectorLong( getName() + ".LINO" ) ),
           _refm( JeveuxVectorChar8( getName() + ".REFM" ) ),
           _varm( JeveuxVectorReal( getName() + ".VARM" ) ),
           _conx( JeveuxVectorLong( getName() + ".CONX" ) ),
-          _rigiMeca( new AssemblyMatrixDisplacementRealClass( getName() + ".RIGIMECA" ) ),
+          _rigiMeca( new AssemblyMatrixDisplacementReal( getName() + ".RIGIMECA" ) ),
           _maelRaidVale( JeveuxVectorReal( getName() + ".MAEL_RAID_VALE" ) ),
           _phiIe( JeveuxCollectionReal( getName() + ".PHI_IE" ) ),
-          _masseMeca( new AssemblyMatrixDisplacementRealClass( getName() + ".MASSMECA" ) ),
+          _masseMeca( new AssemblyMatrixDisplacementReal( getName() + ".MASSMECA" ) ),
           _maelMassVale( JeveuxVectorReal( getName() + ".MAEL_MASS_VALE" ) ),
           _maelAmorVale( JeveuxVectorReal( getName() + ".MAEL_AMOR_VALE" ) ),
           _lica( JeveuxCollectionReal( getName() + ".LICA" ) ),
           _lich( JeveuxCollectionChar8( getName() + ".LICH" ) ),
-          _projM( new ProjMesuClass( getName() + ".PROJM    " ) ){};
+          _projM( new ProjMesu( getName() + ".PROJM    " ) ){};
 };
 
 /**
  * @typedef StaticMacroElementPtr
- * @brief Pointeur intelligent vers un StaticMacroElementClass
+ * @brief Pointeur intelligent vers un StaticMacroElement
  */
-typedef boost::shared_ptr< StaticMacroElementClass > StaticMacroElementPtr;
+typedef boost::shared_ptr< StaticMacroElement > StaticMacroElementPtr;
 
 #endif /* STATICMACROELEMENT_H_ */

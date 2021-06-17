@@ -3,7 +3,7 @@
  * @brief Interface python de ListOfIntegers
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,9 +31,9 @@ namespace py = boost::python;
 
 void exportListOfIntegersToPython() {
 
-    py::class_< ListOfIntegersClass, ListOfIntegersClass::ListOfIntegersPtr,
+    py::class_< ListOfIntegers, ListOfIntegers::ListOfIntegersPtr,
                 py::bases< DataStructure > >( "ListOfIntegers", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ListOfIntegersClass >))
+        .def( "__init__", py::make_constructor(&initFactoryPtr< ListOfIntegers >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ListOfIntegersClass, std::string >));
+              py::make_constructor(&initFactoryPtr< ListOfIntegers, std::string >));
 };

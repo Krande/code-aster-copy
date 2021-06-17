@@ -58,7 +58,7 @@ class SolveLinearSystem(ExecuteCommand):
             if desc is not None:
                 self._result.setDescription(desc)
 
-        self._result.update()
+        self._result.build()
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.

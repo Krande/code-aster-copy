@@ -35,7 +35,7 @@
 #include "Utilities/Tools.h"
 
 void
-ResultClass::addElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara,
+Result::addElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara,
                                                         int rank ) {
 
     if( !cara )
@@ -47,7 +47,7 @@ ResultClass::addElementaryCharacteristics( const ElementaryCharacteristicsPtr &c
     CALLO_RSADPA_ZK8_WRAP( getName(), &rang, cara->getName(), type );
 };
 
-void ResultClass::addListOfLoads( const ListOfLoadsPtr &load,
+void Result::addListOfLoads( const ListOfLoadsPtr &load,
                                                int rank ) {
     _mapLoads[rank] = load;
     ASTERINTEGER rang = rank;
@@ -55,7 +55,7 @@ void ResultClass::addListOfLoads( const ListOfLoadsPtr &load,
     CALLO_RSADPA_ZK24_WRAP( getName(), &rang, load->getName(), type );
 };
 
-void ResultClass::addMaterialField( const MaterialFieldPtr &mater,
+void Result::addMaterialField( const MaterialFieldPtr &mater,
                                                   int rank ) {
 
     if( !mater )
@@ -67,7 +67,7 @@ void ResultClass::addMaterialField( const MaterialFieldPtr &mater,
     CALLO_RSADPA_ZK8_WRAP( getName(), &rang, mater->getName(), type );
 };
 
-void ResultClass::addModel( const ModelPtr &model,
+void Result::addModel( const ModelPtr &model,
                                          int rank ) {
 
     if( !model )
@@ -81,13 +81,13 @@ void ResultClass::addModel( const ModelPtr &model,
     _fieldBuidler.addFiniteElementDescriptor( fed );
 };
 
-void ResultClass::addTimeValue( ASTERDOUBLE value, int rank ) {
+void Result::addTimeValue( ASTERDOUBLE value, int rank ) {
     ASTERINTEGER rang = rank;
     std::string type( "INST" );
     CALLO_RSADPA_ZR_WRAP( getName(), &rang, &value, type );
 };
 
-bool ResultClass::allocate( int nbRanks ) {
+bool Result::allocate( int nbRanks ) {
     std::string base( JeveuxMemoryTypesNames[getMemoryType()] );
     ASTERINTEGER nbordr = nbRanks;
     CALLO_RSCRSD( base, getName(), getType(), &nbordr );
@@ -95,7 +95,7 @@ bool ResultClass::allocate( int nbRanks ) {
     return true;
 };
 
-void ResultClass::appendElementaryCharacteristicsOnAllRanks
+void Result::appendElementaryCharacteristicsOnAllRanks
     ( const ElementaryCharacteristicsPtr& cara )
 {
     _serialNumber->updateValuePointer();
@@ -107,7 +107,7 @@ void ResultClass::appendElementaryCharacteristicsOnAllRanks
     }
 };
 
-void ResultClass::appendMaterialFieldOnAllRanks( const MaterialFieldPtr &mater ) {
+void Result::appendMaterialFieldOnAllRanks( const MaterialFieldPtr &mater ) {
     _serialNumber->updateValuePointer();
     ASTERINTEGER nbRanks = _serialNumber->usedSize();
     for ( int rank = 0; rank < nbRanks; ++rank ) {
@@ -117,7 +117,7 @@ void ResultClass::appendMaterialFieldOnAllRanks( const MaterialFieldPtr &mater )
     }
 };
 
-void ResultClass::appendModelOnAllRanks( const ModelPtr &model ) {
+void Result::appendModelOnAllRanks( const ModelPtr &model ) {
     _serialNumber->updateValuePointer();
     ASTERINTEGER nbRanks = _serialNumber->usedSize();
     for ( int rank = 0; rank < nbRanks; ++rank ) {
@@ -127,18 +127,18 @@ void ResultClass::appendModelOnAllRanks( const ModelPtr &model ) {
     }
 };
 
-BaseDOFNumberingPtr ResultClass::getEmptyDOFNumbering() {
+BaseDOFNumberingPtr Result::getEmptyDOFNumbering() {
     std::string resuName( getName() );
     std::string name( "12345678.00000          " );
     ASTERINTEGER a = 10, b = 14;
     CALLO_GNOMSD( resuName, name, &a, &b );
-    DOFNumberingPtr retour( new DOFNumberingClass( name.substr( 0, 14 ) ) );
+    DOFNumberingPtr retour( new DOFNumbering( name.substr( 0, 14 ) ) );
     _listOfDOFNum.push_back( retour );
     return retour;
 };
 
 FieldOnNodesRealPtr
-ResultClass::getEmptyFieldOnNodesReal( const std::string name,
+Result::getEmptyFieldOnNodesReal( const std::string name,
                                                       const int rank ) {
 
     if ( rank > _nbRanks || rank <= 0 )
@@ -152,7 +152,7 @@ ResultClass::getEmptyFieldOnNodesReal( const std::string name,
     CALLO_RSEXCH( null, getName(), name, &rankLong, returnName, &retour );
     CALLO_RSNOCH( getName(), name, &rankLong );
     std::string bis( returnName.c_str(), 19 );
-    FieldOnNodesRealPtr result( new FieldOnNodesRealClass( bis ) );
+    FieldOnNodesRealPtr result( new FieldOnNodesReal( bis ) );
 
     auto curIter = _dictOfVectorOfFieldsNodes.find( name );
     if ( curIter == _dictOfVectorOfFieldsNodes.end() ) {
@@ -163,24 +163,24 @@ ResultClass::getEmptyFieldOnNodesReal( const std::string name,
 };
 
 #ifdef ASTER_HAVE_MPI
-BaseDOFNumberingPtr ResultClass::getEmptyParallelDOFNumbering() {
+BaseDOFNumberingPtr Result::getEmptyParallelDOFNumbering() {
     std::string resuName( getName() );
     std::string name( "12345678.00000          " );
     ASTERINTEGER a = 10, b = 14;
     CALLO_GNOMSD( resuName, name, &a, &b );
-    ParallelDOFNumberingPtr retour( new ParallelDOFNumberingClass( name.substr( 0, 14 ) ) );
+    ParallelDOFNumberingPtr retour( new ParallelDOFNumbering( name.substr( 0, 14 ) ) );
     _listOfDOFNum.push_back( retour );
     return retour;
 };
 #endif /* ASTER_HAVE_MPI */
 
 std::vector< ElementaryCharacteristicsPtr >
-ResultClass::getAllElementaryCharacteristics() const
+Result::getAllElementaryCharacteristics() const
 {
     return unique(_mapElemCara);
 };
 
-ElementaryCharacteristicsPtr ResultClass::getElementaryCharacteristics() {
+ElementaryCharacteristicsPtr Result::getElementaryCharacteristics() {
     const auto cara = getAllElementaryCharacteristics();
     AS_ASSERT(cara.size() <= 1);
 
@@ -191,26 +191,26 @@ ElementaryCharacteristicsPtr ResultClass::getElementaryCharacteristics() {
 };
 
 ElementaryCharacteristicsPtr
-ResultClass::getElementaryCharacteristics( int rank ) {
+Result::getElementaryCharacteristics( int rank ) {
     auto curIter = _mapElemCara.find( rank );
     if ( curIter == _mapElemCara.end() )
         throw std::runtime_error( "Rank not found" );
     return ( *curIter ).second;
 };
 
-ListOfLoadsPtr ResultClass::getListOfLoads( int rank ) {
+ListOfLoadsPtr Result::getListOfLoads( int rank ) {
     auto curIter = _mapLoads.find( rank );
     if ( curIter == _mapLoads.end() )
         throw std::runtime_error( "Rank not found" );
     return ( *curIter ).second;
 };
 
-std::vector< MaterialFieldPtr > ResultClass::getMaterialFields() const
+std::vector< MaterialFieldPtr > Result::getMaterialFields() const
 {
     return unique(_mapMaterial);
 };
 
-MaterialFieldPtr ResultClass::getMaterialField() {
+MaterialFieldPtr Result::getMaterialField() {
     const auto mate = getMaterialFields();
     AS_ASSERT(mate.size() <= 1);
 
@@ -221,14 +221,14 @@ MaterialFieldPtr ResultClass::getMaterialField() {
 };
 
 MaterialFieldPtr
-ResultClass::getMaterialField( int rank ) {
+Result::getMaterialField( int rank ) {
     auto curIter = _mapMaterial.find( rank );
     if ( curIter == _mapMaterial.end() )
         throw std::runtime_error( "Rank not found" );
     return ( *curIter ).second;
 };
 
-BaseMeshPtr ResultClass::getMesh()
+BaseMeshPtr Result::getMesh()
 {
     if( _mesh != nullptr )
         return _mesh;
@@ -238,7 +238,7 @@ BaseMeshPtr ResultClass::getMesh()
     return nullptr;
 };
 
-bool ResultClass::hasMultipleModel()
+bool Result::hasMultipleModel()
 {
     std::string name( "" );
     for ( const auto &curIter : _mapModel ) {
@@ -251,12 +251,12 @@ bool ResultClass::hasMultipleModel()
     return false;
 }
 
-std::vector< ModelPtr > ResultClass::getModels() const
+std::vector< ModelPtr > Result::getModels() const
 {
     return unique(_mapModel);
 };
 
-ModelPtr ResultClass::getModel() {
+ModelPtr Result::getModel() {
     if ( hasMultipleModel() ){
         throw std::runtime_error( "Error: multiple models" );
     }
@@ -271,7 +271,7 @@ ModelPtr ResultClass::getModel() {
 
 };
 
-ModelPtr ResultClass::getModel( int rank )
+ModelPtr Result::getModel( int rank )
 {
     auto curIter = _mapModel.find( rank );
     if ( curIter == _mapModel.end() )
@@ -279,12 +279,12 @@ ModelPtr ResultClass::getModel( int rank )
     return ( *curIter ).second;
 };
 
-int ResultClass::getNumberOfRanks() const
+int Result::getNumberOfRanks() const
 {
     return _serialNumber->usedSize();
 };
 
-VectorLong ResultClass::getRanks() const
+VectorLong Result::getRanks() const
 {
     VectorLong v;
     _serialNumber->updateValuePointer();
@@ -294,7 +294,7 @@ VectorLong ResultClass::getRanks() const
     return v;
 };
 
-FieldOnCellsRealPtr ResultClass::getFieldOnCellsReal( const std::string name,
+FieldOnCellsRealPtr Result::getFieldOnCellsReal( const std::string name,
                                                                            const int rank ) const
 {
     if ( rank > _nbRanks || rank <= 0 )
@@ -308,7 +308,7 @@ FieldOnCellsRealPtr ResultClass::getFieldOnCellsReal( const std::string name,
     return toReturn;
 };
 
-PyObject *ResultClass::getAccessParameters() const
+PyObject *Result::getAccessParameters() const
 {
 
   PyObject *returnDict = PyDict_New();
@@ -391,7 +391,7 @@ PyObject *ResultClass::getAccessParameters() const
   return returnDict;
 }
 
-VectorString ResultClass::getFieldsOnNodesNames() const
+VectorString Result::getFieldsOnNodesNames() const
 {
   VectorString names;
   names.reserve( _dictOfVectorOfFieldsNodes.size());
@@ -403,7 +403,7 @@ VectorString ResultClass::getFieldsOnNodesNames() const
   return names;
 };
 
-VectorString ResultClass::getFieldsOnCellsNames() const
+VectorString Result::getFieldsOnCellsNames() const
 {
   VectorString names;
   names.reserve( _dictOfVectorOfFieldsCells.size());
@@ -416,7 +416,7 @@ VectorString ResultClass::getFieldsOnCellsNames() const
 };
 
 
-FieldOnNodesRealPtr ResultClass::getFieldOnNodesReal( const std::string name,
+FieldOnNodesRealPtr Result::getFieldOnNodesReal( const std::string name,
                                                                      const int rank ) const
 {
 
@@ -431,7 +431,7 @@ FieldOnNodesRealPtr ResultClass::getFieldOnNodesReal( const std::string name,
     return toReturn;
 };
 
-void ResultClass::listFields() const
+void Result::listFields() const
 {
     std::cout << "Content of DataStructure : ";
     for ( auto curIter : _dictOfVectorOfFieldsNodes ) {
@@ -443,12 +443,12 @@ void ResultClass::listFields() const
     std::cout << std::endl;
 }
 
-void ResultClass::printInfo() const {
+void Result::printInfo() const {
     ASTERINTEGER umess( 6 );
     CALLO_RSINFO( getName(), &umess );
 }
 
-bool ResultClass::printMedFile( const std::string fileName,
+bool Result::printMedFile( const std::string fileName,
                                 std::string medName ) const
 {
     LogicalUnitFile a( fileName, Binary, New );
@@ -480,13 +480,13 @@ bool ResultClass::printMedFile( const std::string fileName,
     return true;
 };
 
-bool ResultClass::update()
+bool Result::build()
 {
     CALL_JEMARQ();
     _serialNumber->updateValuePointer();
 
-    AS_ASSERT( _calculationParameter->buildFromJeveux( true ) );
-    AS_ASSERT( _namesOfFields->buildFromJeveux( true ) );
+    AS_ASSERT( _calculationParameter->build( true ) );
+    AS_ASSERT( _namesOfFields->build( true ) );
 
     const auto numberOfSerialNum = _serialNumber->usedSize();
     _nbRanks = numberOfSerialNum;

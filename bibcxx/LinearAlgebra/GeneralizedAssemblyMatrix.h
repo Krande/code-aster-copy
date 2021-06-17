@@ -37,11 +37,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class GenericGeneralizedAssemblyMatrixClass
+ * @class GenericGeneralizedAssemblyMatrix
  * @brief Cette classe correspond a un matr_asse_gene
  * @author Nicolas Sellenet
  */
-class GenericGeneralizedAssemblyMatrixClass: public DataStructure
+class GenericGeneralizedAssemblyMatrix: public DataStructure
 {
   private:
     /** @brief Objet Jeveux '.DESC' */
@@ -60,13 +60,13 @@ class GenericGeneralizedAssemblyMatrixClass: public DataStructure
      * @typedef GeneralizedAssemblyMatrixPtr
      * @brief Pointeur intelligent vers un GeneralizedAssemblyMatrix
      */
-    typedef boost::shared_ptr< GenericGeneralizedAssemblyMatrixClass >
+    typedef boost::shared_ptr< GenericGeneralizedAssemblyMatrix >
         GenericGeneralizedAssemblyMatrixPtr;
 
     /**
      * @brief Constructeur
      */
-    GenericGeneralizedAssemblyMatrixClass( const std::string name ):
+    GenericGeneralizedAssemblyMatrix( const std::string name ):
         DataStructure( name, 19, "MATR_ASSE_GENE", Permanent ),
         _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
         _refe( JeveuxVectorChar24( getName() + ".REFE" ) ),
@@ -147,12 +147,12 @@ class GenericGeneralizedAssemblyMatrixClass: public DataStructure
 };
 
 /**
- * @class GeneralizedAssemblyMatrixClass
+ * @class GeneralizedAssemblyMatrix
  * @brief Cette classe correspond a un matr_asse_gene
  * @author Nicolas Sellenet
  */
 template < class ValueType >
-class GeneralizedAssemblyMatrixClass : public GenericGeneralizedAssemblyMatrixClass
+class GeneralizedAssemblyMatrix : public GenericGeneralizedAssemblyMatrix
 {
   private:
     /** @brief Objet Jeveux '.VALM' */
@@ -182,51 +182,51 @@ class GeneralizedAssemblyMatrixClass : public GenericGeneralizedAssemblyMatrixCl
      * @typedef GeneralizedAssemblyMatrixPtr
      * @brief Pointeur intelligent vers un GeneralizedAssemblyMatrix
      */
-    typedef boost::shared_ptr< GeneralizedAssemblyMatrixClass< ValueType > >
+    typedef boost::shared_ptr< GeneralizedAssemblyMatrix< ValueType > >
         GeneralizedAssemblyMatrixPtr;
 
     /**
      * @brief Constructeur
      */
-    GeneralizedAssemblyMatrixClass()
-        : GeneralizedAssemblyMatrixClass( ResultNaming::getNewResultName() )
+    GeneralizedAssemblyMatrix()
+        : GeneralizedAssemblyMatrix( ResultNaming::getNewResultName() )
     {};
 
     /**
      * @brief Constructeur
      */
-    GeneralizedAssemblyMatrixClass( const std::string name )
-        : GenericGeneralizedAssemblyMatrixClass( name ),
+    GeneralizedAssemblyMatrix( const std::string name )
+        : GenericGeneralizedAssemblyMatrix( name ),
           _valm( JeveuxCollection< ValueType >( getName() + ".VALM" ) )
     {
-        GeneralizedAssemblyMatrixClass< ValueType >::setMatrixType();
+        GeneralizedAssemblyMatrix< ValueType >::setMatrixType();
     };
 };
 
 /** @typedef Definition d'une matrice assemblee généralisée de double */
-typedef GeneralizedAssemblyMatrixClass< ASTERDOUBLE > GeneralizedAssemblyMatrixRealClass;
+typedef GeneralizedAssemblyMatrix< ASTERDOUBLE > GeneralizedAssemblyMatrixReal;
 /** @typedef Definition d'une matrice assemblee généralisée de complexe */
-typedef GeneralizedAssemblyMatrixClass< ASTERCOMPLEX > GeneralizedAssemblyMatrixComplexClass;
+typedef GeneralizedAssemblyMatrix< ASTERCOMPLEX > GeneralizedAssemblyMatrixComplex;
 
 /**
  * @typedef GenericGeneralizedAssemblyMatrixPtr
- * @brief Pointeur intelligent vers un GenericGeneralizedAssemblyMatrixClass
+ * @brief Pointeur intelligent vers un GenericGeneralizedAssemblyMatrix
  */
-typedef boost::shared_ptr< GenericGeneralizedAssemblyMatrixClass >
+typedef boost::shared_ptr< GenericGeneralizedAssemblyMatrix >
     GenericGeneralizedAssemblyMatrixPtr;
 
 /**
  * @typedef GeneralizedAssemblyMatrixRealPtr
- * @brief Pointeur intelligent vers un GeneralizedAssemblyMatrixRealClass
+ * @brief Pointeur intelligent vers un GeneralizedAssemblyMatrixReal
  */
-typedef boost::shared_ptr< GeneralizedAssemblyMatrixRealClass >
+typedef boost::shared_ptr< GeneralizedAssemblyMatrixReal >
     GeneralizedAssemblyMatrixRealPtr;
 
 /**
  * @typedef GeneralizedAssemblyMatrixComplexPtr
- * @brief Pointeur intelligent vers un GeneralizedAssemblyMatrixComplexClass
+ * @brief Pointeur intelligent vers un GeneralizedAssemblyMatrixComplex
  */
-typedef boost::shared_ptr< GeneralizedAssemblyMatrixComplexClass >
+typedef boost::shared_ptr< GeneralizedAssemblyMatrixComplex >
     GeneralizedAssemblyMatrixComplexPtr;
 
 #endif /* GENERALIZEDASSEMBLYMATRIX_H_ */

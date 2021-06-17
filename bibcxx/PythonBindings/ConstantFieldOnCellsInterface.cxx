@@ -32,21 +32,21 @@ namespace py = boost::python;
 #include "PythonBindings/ConstantFieldOnCellsInterface.h"
 
 void exportConstantFieldOnCellsToPython() {
-    py::class_< ConstantFieldOnCellsRealClass, ConstantFieldOnCellsRealPtr,
-            py::bases< DataFieldClass > >( "ConstantFieldOnCellsReal", py::no_init )
+    py::class_< ConstantFieldOnCellsReal, ConstantFieldOnCellsRealPtr,
+            py::bases< DataField > >( "ConstantFieldOnCellsReal", py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ConstantFieldOnCellsRealClass, BaseMeshPtr >))
+              py::make_constructor(&initFactoryPtr< ConstantFieldOnCellsReal, BaseMeshPtr >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< ConstantFieldOnCellsRealClass, std::string, BaseMeshPtr >))
-        .def( "getMesh", &ConstantFieldOnCellsRealClass::getMesh );
+                  &initFactoryPtr< ConstantFieldOnCellsReal, std::string, BaseMeshPtr >))
+        .def( "getMesh", &ConstantFieldOnCellsReal::getMesh );
 
-    py::class_< ConstantFieldOnCellsChar16Class, ConstantFieldOnCellsChar16Ptr,
-            py::bases< DataFieldClass > >( "ConstantFieldOnCellsChar16", py::no_init )
+    py::class_< ConstantFieldOnCellsChar16, ConstantFieldOnCellsChar16Ptr,
+            py::bases< DataField > >( "ConstantFieldOnCellsChar16", py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ConstantFieldOnCellsChar16Class, BaseMeshPtr >))
+              py::make_constructor(&initFactoryPtr< ConstantFieldOnCellsChar16, BaseMeshPtr >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< ConstantFieldOnCellsChar16Class, std::string, BaseMeshPtr >))
-        .def( "getMesh", &ConstantFieldOnCellsChar16Class::getMesh );
+                  &initFactoryPtr< ConstantFieldOnCellsChar16, std::string, BaseMeshPtr >))
+        .def( "getMesh", &ConstantFieldOnCellsChar16::getMesh );
 };

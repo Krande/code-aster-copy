@@ -54,7 +54,7 @@
 
 
 template< typename ConstantFieldOnCellsType>
-class AcousticLoadDescriptionClass : public DataStructure {
+class AcousticLoadDescription : public DataStructure {
 
   public:
     typedef boost::shared_ptr< ConstantFieldOnCellsType > ConstantFieldOnCellsTypePtr;
@@ -82,30 +82,30 @@ class AcousticLoadDescriptionClass : public DataStructure {
      * @typedef AcousticLoadPtr
      * @brief Pointeur intelligent vers un AcousticLoad
      */
-    typedef boost::shared_ptr< AcousticLoadDescriptionClass > AcousticLoadDescriptionPtr;
+    typedef boost::shared_ptr< AcousticLoadDescription > AcousticLoadDescriptionPtr;
 
     /**
      * @brief Constructeur
      */
-    AcousticLoadDescriptionClass( void ) = delete;
+    AcousticLoadDescription( void ) = delete;
 
     /**
      * @brief Constructeur
      */
-    AcousticLoadDescriptionClass( const ModelPtr &model )
-        : AcousticLoadDescriptionClass( ResultNaming::getNewResultName(), model ){};
+    AcousticLoadDescription( const ModelPtr &model )
+        : AcousticLoadDescription( ResultNaming::getNewResultName(), model ){};
 
     /**
      * @brief Constructeur
      */
-    AcousticLoadDescriptionClass( const std::string name, const ModelPtr &model )
+    AcousticLoadDescription( const std::string name, const ModelPtr &model )
         : DataStructure( name, 13, "CHAR_CHAC" ), _model( model ),
-          _FEDesc( boost::make_shared< FiniteElementDescriptorClass >( getName() + ".LIGRE",
+          _FEDesc( boost::make_shared< FiniteElementDescriptor >( getName() + ".LIGRE",
                                                                 model->getMesh() ) ),
           _modelName( JeveuxVectorChar8( getName() + ".MODEL.NOMO" ) ),
           _imposedValues( boost::make_shared< ConstantFieldOnCellsType >(
                         getName() + ".CIMPO", _FEDesc ) ),
-          _multiplier( boost::make_shared< ConstantFieldOnCellsComplexClass >(
+          _multiplier( boost::make_shared< ConstantFieldOnCellsComplex >(
                         getName() + ".CMULT", _FEDesc ) ),
           _impedanceValues( boost::make_shared< ConstantFieldOnCellsType >(
                         getName() + ".IMPED", _FEDesc ) ),
@@ -133,14 +133,14 @@ class AcousticLoadDescriptionClass : public DataStructure {
 /**********************************************************/
 
 
-/** @typedef AcousticLoadDescriptionFuncClass Class d'une charge mécanique de fonctions */
-typedef AcousticLoadDescriptionClass< ConstantFieldOnCellsComplexClass >
-   AcousticLoadDescriptionComplexClass;
+/** @typedef AcousticLoadDescriptionFunc Class d'une charge mécanique de fonctions */
+typedef AcousticLoadDescription< ConstantFieldOnCellsComplex >
+   AcousticLoadDescriptionComplex;
 
 
 template< typename ConstantFieldOnCellsType >
 using AcousticLoadDescriptionPtr =
-    boost::shared_ptr<AcousticLoadDescriptionClass< ConstantFieldOnCellsType > >;
+    boost::shared_ptr<AcousticLoadDescription< ConstantFieldOnCellsType > >;
 
 
 #endif /* ACOUSTICLOADDESCRIPTION_H_ */

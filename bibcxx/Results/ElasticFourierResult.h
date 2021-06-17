@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ElasticFourierResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -30,24 +30,24 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class ElasticFourierResultClass
+ * @class ElasticFourierResult
  * @brief Cette classe correspond a un fourier_elas
  * @author Nicolas Sellenet
  */
-class ElasticFourierResultClass : public ResultClass {
+class ElasticFourierResult : public Result {
   private:
   public:
     /**
      * @brief Constructeur
      */
-    ElasticFourierResultClass( const std::string name = ResultNaming::getNewResultName() )
-        : ResultClass( name, "FOURIER_ELAS" ){};
+    ElasticFourierResult( const std::string name = ResultNaming::getNewResultName() )
+        : Result( name, "FOURIER_ELAS" ){};
 };
 
 /**
  * @typedef ElasticFourierResultPtr
- * @brief Pointeur intelligent vers un ElasticFourierResultClass
+ * @brief Pointeur intelligent vers un ElasticFourierResult
  */
-typedef boost::shared_ptr< ElasticFourierResultClass > ElasticFourierResultPtr;
+typedef boost::shared_ptr< ElasticFourierResult > ElasticFourierResultPtr;
 
 #endif /* FOURIERELASCONTAINER_H_ */

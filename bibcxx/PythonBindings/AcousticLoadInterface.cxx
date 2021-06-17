@@ -29,14 +29,14 @@ namespace py = boost::python;
 
 void exportAcousticLoadToPython() {
 
-    py::class_< AcousticLoadComplexClass, AcousticLoadComplexClass::AcousticLoadPtr,
+    py::class_< AcousticLoadComplex, AcousticLoadComplex::AcousticLoadPtr,
             py::bases< DataStructure > >( "AcousticLoadComplex", py::no_init )
         .def( "__init__", py::make_constructor(
-                &initFactoryPtr< AcousticLoadComplexClass, ModelPtr >))
+                &initFactoryPtr< AcousticLoadComplex, ModelPtr >))
         .def( "__init__",
               py::make_constructor(
-                    &initFactoryPtr< AcousticLoadComplexClass, std::string, ModelPtr >))
-        .def( "getFiniteElementDescriptor", &AcousticLoadComplexClass::getFiniteElementDescriptor )
-        .def( "getMesh", &AcousticLoadComplexClass::getMesh )
-        .def( "getModel", &AcousticLoadComplexClass::getModel );
+                    &initFactoryPtr< AcousticLoadComplex, std::string, ModelPtr >))
+        .def( "getFiniteElementDescriptor", &AcousticLoadComplex::getFiniteElementDescriptor )
+        .def( "getMesh", &AcousticLoadComplex::getMesh )
+        .def( "getModel", &AcousticLoadComplex::getModel );
 };

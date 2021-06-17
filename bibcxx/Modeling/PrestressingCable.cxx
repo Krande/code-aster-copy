@@ -1,6 +1,6 @@
 /**
  * @file PrestressingCable.cxx
- * @brief Implementation de PrestressingCableClass
+ * @brief Implementation de PrestressingCable
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 22018 EDF R&D                www.code-aster.org
@@ -28,19 +28,19 @@
 #include "Modeling/PrestressingCable.h"
 #include "Supervis/ResultNaming.h"
 
-PrestressingCableClass::PrestressingCableClass(
+PrestressingCable::PrestressingCable(
     const std::string name, const ModelPtr &model, const MaterialFieldPtr &mater,
     const ElementaryCharacteristicsPtr &cara )
     : DataStructure( name, 8, "CABL_PRECONT" ), _model( model ), _mater( mater ),
       _cara( cara ),
-      _mesh( boost::static_pointer_cast< MeshClass >( _model->getMesh() ) ),
-      _sigin( new ConstantFieldOnCellsRealClass( getName() + ".CHME.SIGIN", _mesh ) ),
-      _cableBP( new TableClass( getName() + "CABLEBP    " ) ),
-      _cableGL( new TableClass( getName() + "CABLEGL    " ) ),
+      _mesh( boost::static_pointer_cast< Mesh >( _model->getMesh() ) ),
+      _sigin( new ConstantFieldOnCellsReal( getName() + ".CHME.SIGIN", _mesh ) ),
+      _cableBP( new Table( getName() + "CABLEBP    " ) ),
+      _cableGL( new Table( getName() + "CABLEGL    " ) ),
       _lirela( new ListOfLinearRelationsReal( getName() + ".LIRELA    " ) ), _isEmpty( true ) {}
 
-PrestressingCableClass::PrestressingCableClass(
+PrestressingCable::PrestressingCable(
     const ModelPtr &model, const MaterialFieldPtr &mater,
     const ElementaryCharacteristicsPtr &cara )
-    : PrestressingCableClass::PrestressingCableClass(
+    : PrestressingCable::PrestressingCable(
           ResultNaming::getNewResultName(), model, mater, cara ) {}

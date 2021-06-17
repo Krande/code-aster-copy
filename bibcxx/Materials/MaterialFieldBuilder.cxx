@@ -1,6 +1,6 @@
 /**
  * @file MaterialFieldBuilder.cxx
- * @brief Implementation de MaterialFieldBuilderClass::build
+ * @brief Implementation de MaterialFieldBuilder::build
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
@@ -31,8 +31,8 @@
 #include "Supervis/CommandSyntax.h"
 #include "Utilities/SyntaxDictionary.h"
 
-void MaterialFieldBuilderClass::buildClass( MaterialFieldClass &curMater,
-                                             const ExternalVariablesFieldPtr &curExternalVariable)
+void MaterialFieldBuilder::buildClass( MaterialField &curMater,
+                                    const ListOfExternalStateVariablesPtr &curExternalStateVariable)
 {
     SyntaxMapContainer dict;
 
@@ -81,14 +81,14 @@ void MaterialFieldBuilderClass::buildClass( MaterialFieldClass &curMater,
     }
     dict.container["AFFE_COMPOR"] = listeAFFE_COMPOR;
 
-    if( curExternalVariable != nullptr ) {
+    if( curExternalStateVariable != nullptr ) {
         ListSyntaxMapContainer listeAFFE_VARC;
-        for ( auto &curIter : curExternalVariable->_externalVars ) {
+        for ( auto &curIter : curExternalStateVariable->_externalVars ) {
             SyntaxMapContainer dict2;
 
             const auto &externalVar = ( *curIter.first );
             dict2.container["NOM_VARC"] = externalVar.getVariableName();
-            const auto &inputField = externalVar.getInputValuesField();
+            const auto &inputField = externalVar.getValue();
             const auto &evolParam = externalVar.getEvolutionParameter();
             if ( inputField != nullptr )
                 dict2.container["CHAM_GD"] = inputField->getName();
@@ -104,7 +104,7 @@ void MaterialFieldBuilderClass::buildClass( MaterialFieldClass &curMater,
                 if ( evolParam->getTimeFunction() != nullptr )
                     dict2.container["FONC_INST"] = evolParam->getTimeFunction()->getName();
             }
-            if ( externalVar.existsReferenceValue() )
+            if ( externalVar.hasReferenceValue() )
                 dict2.container["VALE_REF"] = externalVar.getReferenceValue();
 
             const MeshEntityPtr &tmp = curIter.second;
@@ -134,10 +134,10 @@ void MaterialFieldBuilderClass::buildClass( MaterialFieldClass &curMater,
 };
 
 MaterialFieldPtr
-MaterialFieldBuilderClass::build( MaterialFieldPtr &curMater,
-                                      const ExternalVariablesFieldPtr &curExternalVariable)
+MaterialFieldBuilder::build( MaterialFieldPtr &curMater,
+                            const ListOfExternalStateVariablesPtr &curExternalStateVariable)
 
 {
-    MaterialFieldBuilderClass::buildClass( *curMater, curExternalVariable);
+    MaterialFieldBuilder::buildClass( *curMater, curExternalStateVariable);
     return curMater;
 };

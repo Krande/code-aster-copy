@@ -3,7 +3,7 @@
  * @brief Implementation de Function2D
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,7 +28,7 @@
 
 namespace py = boost::python;
 
-PyObject *Function2DClass::exportExtensionToPython() const {
+PyObject *Function2D::exportExtensionToPython() const {
     if ( !_property->exists() )
         throw std::runtime_error( getName() + " does not exist" );
 
@@ -42,7 +42,7 @@ PyObject *Function2DClass::exportExtensionToPython() const {
     return py::incref( toReturn.ptr() );
 };
 
-PyObject *Function2DClass::exportParametersToPython() const {
+PyObject *Function2D::exportParametersToPython() const {
     if ( !_parameters->exists() )
         throw std::runtime_error( getName() + " does not exist" );
 
@@ -55,11 +55,11 @@ PyObject *Function2DClass::exportParametersToPython() const {
     return py::incref( toReturn.ptr() );
 };
 
-PyObject *Function2DClass::exportValuesToPython() const {
+PyObject *Function2D::exportValuesToPython() const {
     if ( !_value->exists() )
         throw std::runtime_error( getName() + " does not exist" );
 
-    _value->buildFromJeveux();
+    _value->build();
 
     py::list toReturn;
     for ( const auto &curIter : *_value ) {

@@ -24,7 +24,7 @@
 #include "LinearAlgebra/AssemblyMatrix.h"
 
 // Specialization for <double, Displacement>
-template <> void AssemblyMatrixClass< ASTERDOUBLE, Displacement >::setValues(const VectorLong idx,
+template <> void AssemblyMatrix< ASTERDOUBLE, Displacement >::setValues(const VectorLong idx,
         const VectorLong jdx, const VectorReal values) {
         if (get_sh_jeveux_status() == 1 ) {
             const ASTERINTEGER dim = idx.size();
@@ -37,7 +37,7 @@ template <> void AssemblyMatrixClass< ASTERDOUBLE, Displacement >::setValues(con
     };
 
 // Specialization for <double, Temperature>
-template <> void AssemblyMatrixClass< ASTERDOUBLE, Temperature >::setValues(const VectorLong idx,
+template <> void AssemblyMatrix< ASTERDOUBLE, Temperature >::setValues(const VectorLong idx,
         const VectorLong jdx, const VectorReal values) {
         if (get_sh_jeveux_status() == 1 ) {
             const ASTERINTEGER dim = idx.size();
@@ -50,7 +50,7 @@ template <> void AssemblyMatrixClass< ASTERDOUBLE, Temperature >::setValues(cons
     };
 
 // Specialization for <double, Pressure>
-template <> void AssemblyMatrixClass< ASTERDOUBLE, Pressure >::setValues(const VectorLong idx,
+template <> void AssemblyMatrix< ASTERDOUBLE, Pressure >::setValues(const VectorLong idx,
         const VectorLong jdx, const VectorReal values) {
         if (get_sh_jeveux_status() == 1 ) {
             const ASTERINTEGER dim = idx.size();

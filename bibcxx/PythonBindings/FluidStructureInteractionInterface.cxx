@@ -3,7 +3,7 @@
  * @brief Interface python de FluidStructureInteraction
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,11 +31,11 @@ namespace py = boost::python;
 
 void exportFluidStructureInteractionToPython() {
 
-    py::class_< FluidStructureInteractionClass,
-                FluidStructureInteractionClass::FluidStructureInteractionPtr,
+    py::class_< FluidStructureInteraction,
+                FluidStructureInteraction::FluidStructureInteractionPtr,
                 py::bases< DataStructure > >( "FluidStructureInteraction", py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< FluidStructureInteractionClass >))
+              py::make_constructor(&initFactoryPtr< FluidStructureInteraction >))
         .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< FluidStructureInteractionClass, std::string >));
+                              &initFactoryPtr< FluidStructureInteraction, std::string >));
 };

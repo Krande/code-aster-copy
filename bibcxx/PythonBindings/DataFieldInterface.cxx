@@ -3,7 +3,7 @@
  * @brief Interface python de DataField
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,9 +32,9 @@ namespace py = boost::python;
 
 void exportDataFieldToPython() {
 
-    py::class_< DataFieldClass, DataFieldPtr, py::bases< DataStructure > >(
+    py::class_< DataField, DataFieldPtr, py::bases< DataStructure > >(
         "DataField", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< DataFieldClass >))
+        .def( "__init__", py::make_constructor(&initFactoryPtr< DataField >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< DataFieldClass, std::string >));
+              py::make_constructor(&initFactoryPtr< DataField, std::string >));
 };

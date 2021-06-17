@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ForwardGeneralizedModeResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,8 +28,8 @@
 
 #include "astercxx.h"
 
-class GeneralizedModeResultClass;
-typedef boost::shared_ptr< GeneralizedModeResultClass > GeneralizedModeResultPtr;
+class GeneralizedModeResult;
+typedef boost::shared_ptr< GeneralizedModeResult > GeneralizedModeResultPtr;
 
 /**
  * @class ForwardGeneralizedModeResultPtr
@@ -38,7 +38,7 @@ typedef boost::shared_ptr< GeneralizedModeResultClass > GeneralizedModeResultPtr
  */
 class ForwardGeneralizedModeResultPtr {
   private:
-    /** @brief Pointer to GeneralizedModeResultClass */
+    /** @brief Pointer to GeneralizedModeResult */
     GeneralizedModeResultPtr _ptr;
     bool _isSet;
 

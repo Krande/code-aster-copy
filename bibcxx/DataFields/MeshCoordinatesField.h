@@ -31,17 +31,17 @@
 #include "MemoryManager/JeveuxVector.h"
 #include "DataStructures/DataStructure.h"
 
-/** @brief Forward declaration of FieldOnNodesClass */
-template < class ValueType > class FieldOnNodesClass;
+/** @brief Forward declaration of FieldOnNodes */
+template < class ValueType > class FieldOnNodes;
 
-typedef FieldOnNodesClass< ASTERDOUBLE > FieldOnNodesRealClass;
+typedef FieldOnNodes< ASTERDOUBLE > FieldOnNodesReal;
 
 /**
- * @class MeshCoordinatesFieldClass
+ * @class MeshCoordinatesField
  * @brief Cette classe template permet de definir un champ aux noeuds Aster
  * @author Nicolas Sellenet
  */
-class MeshCoordinatesFieldClass : public DataStructure {
+class MeshCoordinatesField : public DataStructure {
   private:
     /** @brief Vecteur Jeveux '.DESC' */
     JeveuxVectorLong _descriptor;
@@ -50,20 +50,20 @@ class MeshCoordinatesFieldClass : public DataStructure {
     /** @brief Vecteur Jeveux '.VALE' */
     JeveuxVectorReal _valuesList;
 
-    friend FieldOnNodesRealClass;
+    friend FieldOnNodesReal;
 
   public:
     /**
      * @typedef MeshCoordinatesFieldPtr
      * @brief Pointeur intelligent vers un MeshCoordinatesField
      */
-    typedef boost::shared_ptr< MeshCoordinatesFieldClass > MeshCoordinatesFieldPtr;
+    typedef boost::shared_ptr< MeshCoordinatesField > MeshCoordinatesFieldPtr;
 
     /**
      * @brief Constructeur
      * @param name Nom Jeveux du champ aux noeuds
      */
-    MeshCoordinatesFieldClass( const std::string &name )
+    MeshCoordinatesField( const std::string &name )
         : DataStructure( name, 19, "CHAM_NO" ),
           _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
           _reference( JeveuxVectorChar24( getName() + ".REFE" ) ),
@@ -109,12 +109,12 @@ class MeshCoordinatesFieldClass : public DataStructure {
  * @typedef MeshCoordinatesFieldPtr
  * @brief Definition d'un champ aux noeuds de double
  */
-typedef boost::shared_ptr< MeshCoordinatesFieldClass > MeshCoordinatesFieldPtr;
+typedef boost::shared_ptr< MeshCoordinatesField > MeshCoordinatesFieldPtr;
 
 /**
  * @typedef MeshCoordinatesFieldPtr
  * @brief Definition d'un champ aux noeuds de double
  */
-typedef boost::shared_ptr< const MeshCoordinatesFieldClass > ConstMeshCoordinatesFieldPtr;
+typedef boost::shared_ptr< const MeshCoordinatesField > ConstMeshCoordinatesFieldPtr;
 
 #endif /* MESHCOORDINATESFIELD_H_ */

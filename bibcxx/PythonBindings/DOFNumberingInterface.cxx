@@ -31,14 +31,14 @@ namespace py = boost::python;
 void exportDOFNumberingToPython() {
 
 
-    py::class_< DOFNumberingClass, DOFNumberingClass::DOFNumberingPtr,
-                py::bases< BaseDOFNumberingClass > >( "DOFNumbering", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< DOFNumberingClass >))
+    py::class_< DOFNumbering, DOFNumbering::DOFNumberingPtr,
+                py::bases< BaseDOFNumbering > >( "DOFNumbering", py::no_init )
+        .def( "__init__", py::make_constructor(&initFactoryPtr< DOFNumbering >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< DOFNumberingClass, std::string >))
-        .def( "getDescription", &DOFNumberingClass::getDescription )
+              py::make_constructor(&initFactoryPtr< DOFNumbering, std::string >))
+        .def( "getDescription", &DOFNumbering::getDescription )
 // -------------------------------------------------------------------------------------------------
-        .def( "useLagrangeMultipliers", &DOFNumberingClass::useLagrangeMultipliers, R"(
+        .def( "useLagrangeMultipliers", &DOFNumbering::useLagrangeMultipliers, R"(
 Lagrange multipliers are used for BC or MPC.
 
 Returns:
@@ -46,7 +46,7 @@ Returns:
         )",
               ( py::arg( "self" ) )  )
 // -------------------------------------------------------------------------------------------------
-        .def( "useSingleLagrangeMultipliers", &DOFNumberingClass::useSingleLagrangeMultipliers, R"(
+        .def( "useSingleLagrangeMultipliers", &DOFNumbering::useSingleLagrangeMultipliers, R"(
 Single Lagrange multipliers are used for BC or MPC.
 
 Returns:
@@ -54,8 +54,8 @@ Returns:
         )",
               ( py::arg( "self" ) )   )
 // -------------------------------------------------------------------------------------------------
-        .def( "getNodeAssociatedToRow", static_cast<ASTERINTEGER (DOFNumberingClass::*)
-                (const ASTERINTEGER, bool) const> (&DOFNumberingClass::getNodeAssociatedToRow),
+        .def( "getNodeAssociatedToRow", static_cast<ASTERINTEGER (DOFNumbering::*)
+                (const ASTERINTEGER, bool) const> (&DOFNumbering::getNodeAssociatedToRow),
                 R"(
 Returns the node index associated to a dof index.
 
@@ -80,8 +80,8 @@ Returns:
         )",
               ( py::arg( "self"), py::args( "row", "local") ) )
 // -------------------------------------------------------------------------------------------------
-        .def( "getNodeAssociatedToRow", static_cast<ASTERINTEGER (DOFNumberingClass::*)
-                   (const ASTERINTEGER) const> (&DOFNumberingClass::getNodeAssociatedToRow),
+        .def( "getNodeAssociatedToRow", static_cast<ASTERINTEGER (DOFNumbering::*)
+                   (const ASTERINTEGER) const> (&DOFNumbering::getNodeAssociatedToRow),
                    R"(
 Returns the node index associated to a dof index.
 
@@ -104,8 +104,8 @@ Returns:
         )",
               ( py::arg( "self"), py::args( "row", "local") ) )
 // -------------------------------------------------------------------------------------------------
-        .def( "getRowsAssociatedToPhysicalDofs", static_cast<VectorLong (DOFNumberingClass::*)
-                   () const> (&DOFNumberingClass::getRowsAssociatedToPhysicalDofs), R"(
+        .def( "getRowsAssociatedToPhysicalDofs", static_cast<VectorLong (DOFNumbering::*)
+                   () const> (&DOFNumbering::getRowsAssociatedToPhysicalDofs), R"(
 Returns the indexes of the physical dof.
 
 Returns:
@@ -113,8 +113,8 @@ Returns:
         )",
               ( py::arg( "self" ) )  )
 // -------------------------------------------------------------------------------------------------
-        .def( "getRowsAssociatedToPhysicalDofs", static_cast<VectorLong (DOFNumberingClass::*)
-                   (bool) const> (&DOFNumberingClass::getRowsAssociatedToPhysicalDofs), R"(
+        .def( "getRowsAssociatedToPhysicalDofs", static_cast<VectorLong (DOFNumbering::*)
+                   (bool) const> (&DOFNumbering::getRowsAssociatedToPhysicalDofs), R"(
 Returns the indexes of the physical dof.
 
 Arguments:
@@ -125,9 +125,9 @@ Returns:
         )",
               ( py::arg( "self" ) , py::arg( "local" ))  )
 // -------------------------------------------------------------------------------------------------
-        .def( "getRowAssociatedToNodeComponent", static_cast<ASTERINTEGER (DOFNumberingClass::*)
+        .def( "getRowAssociatedToNodeComponent", static_cast<ASTERINTEGER (DOFNumbering::*)
                 (const ASTERINTEGER, const std::string) const>
-                    (&DOFNumberingClass::getRowAssociatedToNodeComponent),
+                    (&DOFNumbering::getRowAssociatedToNodeComponent),
                     R"(
 Returns the index of the dof associated to a node.
 
@@ -140,9 +140,9 @@ Returns:
         )",
               ( py::arg( "self" ), py::args( "node", "component" )  )  )
 // -------------------------------------------------------------------------------------------------
-        .def( "getRowAssociatedToNodeComponent", static_cast<ASTERINTEGER (DOFNumberingClass::*)
+        .def( "getRowAssociatedToNodeComponent", static_cast<ASTERINTEGER (DOFNumbering::*)
                    (const ASTERINTEGER, const std::string, bool) const>
-                    (&DOFNumberingClass::getRowAssociatedToNodeComponent),
+                    (&DOFNumbering::getRowAssociatedToNodeComponent),
                     R"(
 Returns the index of the dof associated to a node.
 
@@ -156,15 +156,15 @@ Returns:
         )",
               ( py::arg( "self" ), py::args( "node", "component", "local" )  )  )
 // -------------------------------------------------------------------------------------------------
-        .def( "getRowsAssociatedToLagrangeMultipliers",static_cast<VectorLong (DOFNumberingClass::*)
-                   () const> (&DOFNumberingClass::getRowsAssociatedToLagrangeMultipliers), R"(
+        .def( "getRowsAssociatedToLagrangeMultipliers",static_cast<VectorLong (DOFNumbering::*)
+                   () const> (&DOFNumbering::getRowsAssociatedToLagrangeMultipliers), R"(
 Returns the indexes of the Lagrange multipliers dof.
 
 Returns:
     int: indexes of the Lagrange multipliers dof.
         )",
               ( py::arg( "self" ) )  )
-        .def( "getComponents", &DOFNumberingClass::getComponents, R"(
+        .def( "getComponents", &DOFNumbering::getComponents, R"(
 Returns all the component names assigned in the numbering.
 
 Returns:
@@ -172,8 +172,8 @@ Returns:
         )",
               ( py::arg( "self" ) )  )
 // -------------------------------------------------------------------------------------------------
-        .def( "getRowsAssociatedToLagrangeMultipliers",static_cast<VectorLong (DOFNumberingClass::*)
-                   (bool) const> (&DOFNumberingClass::getRowsAssociatedToLagrangeMultipliers), R"(
+        .def( "getRowsAssociatedToLagrangeMultipliers",static_cast<VectorLong (DOFNumbering::*)
+                   (bool) const> (&DOFNumbering::getRowsAssociatedToLagrangeMultipliers), R"(
 Returns the indexes of the Lagrange multipliers dof.
 
 Arguments:
@@ -184,7 +184,7 @@ Returns:
         )",
               ( py::arg( "self" ), py::arg( "local" ) )  )
 // -------------------------------------------------------------------------------------------------
-        .def( "getComponents", &DOFNumberingClass::getComponents, R"(
+        .def( "getComponents", &DOFNumbering::getComponents, R"(
 Returns all the component names assigned in the numbering.
 
 Returns:
@@ -192,8 +192,8 @@ Returns:
         )",
               ( py::arg( "self" ) )  )
 // -------------------------------------------------------------------------------------------------
-        .def( "getComponentAssociatedToRow", static_cast<std::string (DOFNumberingClass::*)
-                   (const ASTERINTEGER) const> (&DOFNumberingClass::getComponentAssociatedToRow),
+        .def( "getComponentAssociatedToRow", static_cast<std::string (DOFNumbering::*)
+                   (const ASTERINTEGER) const> (&DOFNumbering::getComponentAssociatedToRow),
                    R"(
 Returns the component name associated to a dof index.
 
@@ -215,8 +215,8 @@ Returns:
         )",
               ( py::arg( "self" ), py::arg( "row" ))  )
 // ------------------------------------------------------------------------------------------------
-        .def( "getComponentAssociatedToRow", static_cast<std::string (DOFNumberingClass::*)
-                (const ASTERINTEGER, bool) const> (&DOFNumberingClass::getComponentAssociatedToRow),
+        .def( "getComponentAssociatedToRow", static_cast<std::string (DOFNumbering::*)
+                (const ASTERINTEGER, bool) const> (&DOFNumbering::getComponentAssociatedToRow),
                 R"(
 Returns the component name associated to a dof index.
 
@@ -240,8 +240,8 @@ Returns:
         )",
               ( py::arg( "self" ), py::args( "row", "local"))  )
 // ------------------------------------------------------------------------------------------------
-        .def( "getComponentsAssociatedToNode", static_cast<VectorString (DOFNumberingClass::*)
-                   (const ASTERINTEGER) const> (&DOFNumberingClass::getComponentsAssociatedToNode),
+        .def( "getComponentsAssociatedToNode", static_cast<VectorString (DOFNumbering::*)
+                   (const ASTERINTEGER) const> (&DOFNumbering::getComponentsAssociatedToNode),
                     R"(
 Returns the components name associated to a node index.
 
@@ -253,8 +253,8 @@ Returns:
         )",
               ( py::arg( "self" ), py::arg( "node" ))  )
 // -------------------------------------------------------------------------------------------------
-        .def( "getComponentsAssociatedToNode", static_cast<VectorString (DOFNumberingClass::*)
-            (const ASTERINTEGER, bool) const> (&DOFNumberingClass::getComponentsAssociatedToNode),
+        .def( "getComponentsAssociatedToNode", static_cast<VectorString (DOFNumbering::*)
+            (const ASTERINTEGER, bool) const> (&DOFNumbering::getComponentsAssociatedToNode),
             R"(
 Returns the components name associated to a node index.
 
@@ -268,8 +268,8 @@ Returns:
         )",
               ( py::arg( "self" ), py::args( "node" , "local")) )
 // -------------------------------------------------------------------------------------------------
-        .def( "getNumberOfDofs", static_cast<ASTERINTEGER (DOFNumberingClass::*) () const>
-                    (&DOFNumberingClass::getNumberOfDofs), R"(
+        .def( "getNumberOfDofs", static_cast<ASTERINTEGER (DOFNumbering::*) () const>
+                    (&DOFNumbering::getNumberOfDofs), R"(
 Returns the number of DOFs.
 
 Returns:
@@ -277,8 +277,8 @@ Returns:
         )",
               ( py::arg( "self" ))  )
 // -------------------------------------------------------------------------------------------------
-        .def( "getNumberOfDofs", static_cast<ASTERINTEGER (DOFNumberingClass::*) (const bool) const>
-                   (&DOFNumberingClass::getNumberOfDofs), R"(
+        .def( "getNumberOfDofs", static_cast<ASTERINTEGER (DOFNumbering::*) (const bool) const>
+                   (&DOFNumbering::getNumberOfDofs), R"(
 Returns the number of DOFs.
 
 Arguments:

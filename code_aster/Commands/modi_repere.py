@@ -54,7 +54,7 @@ class ModiRepere(ExecuteCommand):
             modele = keywords["RESULTAT"].getModel()
             if modele is not None:
                 self._result.appendModelOnAllRanks(modele)
-                self._result.update()
+                self._result.build()
         except:
             pass
 

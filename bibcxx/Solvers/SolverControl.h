@@ -36,11 +36,11 @@ enum ConvergenceState { failure, success, iterate };
  * @brief Base control class used to check convergence of an iterative solver
  * @author Natacha Béreux
  */
-class SolverControlClass {
+class SolverControl {
   public:
-    SolverControlClass( ASTERDOUBLE rTol = 1.e-6, ASTERINTEGER nIterMax = 100 );
+    SolverControl( ASTERDOUBLE rTol = 1.e-6, ASTERINTEGER nIterMax = 100 );
 
-    ~SolverControlClass() {}
+    ~SolverControl() {}
 
     virtual ConvergenceState check( const ASTERDOUBLE relativeResNorm, const ASTERINTEGER iter )
         const;
@@ -61,6 +61,6 @@ class SolverControlClass {
  * @typedef SolverControlPtr
  * @brief Pointeur intelligent vers un SolverControl
  */
-typedef boost::shared_ptr< SolverControlClass > SolverControlPtr;
+typedef boost::shared_ptr< SolverControl > SolverControlPtr;
 
 #endif

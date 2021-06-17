@@ -29,51 +29,57 @@ namespace py = boost::python;
 
 void exportMaterialFieldToPython() {
 
-    py::class_< PartOfMaterialFieldClass, PartOfMaterialFieldPtr >( "PartOfMaterialField",
+    py::class_< PartOfMaterialField, PartOfMaterialFieldPtr >( "PartOfMaterialField",
                                                                     py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< PartOfMaterialFieldClass > ) )
+        .def( "__init__", py::make_constructor( &initFactoryPtr< PartOfMaterialField > ) )
         .def( "__init__",
-              py::make_constructor( &initFactoryPtr< PartOfMaterialFieldClass,
+              py::make_constructor( &initFactoryPtr< PartOfMaterialField,
                                                      std::vector< MaterialPtr >, MeshEntityPtr > ) )
-        .def( "getVectorOfMaterial", &PartOfMaterialFieldClass::getVectorOfMaterial )
-        .def( "getMeshEntity", &PartOfMaterialFieldClass::getMeshEntity );
+        .def( "getVectorOfMaterial", &PartOfMaterialField::getVectorOfMaterial )
+        .def( "getMeshEntity", &PartOfMaterialField::getMeshEntity );
 
-    void ( MaterialFieldClass::*addmat1all )( std::vector< MaterialPtr > curMaters ) =
-        &MaterialFieldClass::addMaterialsOnMesh;
-    void ( MaterialFieldClass::*addmat2all )( MaterialPtr & curMater ) =
-        &MaterialFieldClass::addMaterialsOnMesh;
+    void ( MaterialField::*addmat1all )( std::vector< MaterialPtr > curMaters ) =
+        &MaterialField::addMaterialsOnMesh;
+    void ( MaterialField::*addmat2all )( MaterialPtr & curMater ) =
+        &MaterialField::addMaterialsOnMesh;
 
-    void ( MaterialFieldClass::*addmat1grp )( std::vector< MaterialPtr > curMaters,
+    void ( MaterialField::*addmat1grp )( std::vector< MaterialPtr > curMaters,
                                               VectorString namesOfGroup ) =
-        &MaterialFieldClass::addMaterialsOnGroupOfCells;
-    void ( MaterialFieldClass::*addmat2grp )( MaterialPtr & curMater, VectorString namesOfGroup ) =
-        &MaterialFieldClass::addMaterialsOnGroupOfCells;
+        &MaterialField::addMaterialsOnGroupOfCells;
+    void ( MaterialField::*addmat2grp )( MaterialPtr & curMater, VectorString namesOfGroup ) =
+        &MaterialField::addMaterialsOnGroupOfCells;
 
-    void ( MaterialFieldClass::*addmat1cell )( std::vector< MaterialPtr > curMaters,
+    void ( MaterialField::*addmat1cell )( std::vector< MaterialPtr > curMaters,
                                                VectorString namesOfCells ) =
-        &MaterialFieldClass::addMaterialsOnCell;
-    void ( MaterialFieldClass::*addmat2cell )( MaterialPtr & curMater, VectorString namesOfCells ) =
-        &MaterialFieldClass::addMaterialsOnCell;
+        &MaterialField::addMaterialsOnCell;
+    void ( MaterialField::*addmat2cell )( MaterialPtr & curMater, VectorString namesOfCells ) =
+        &MaterialField::addMaterialsOnCell;
 
-    py::class_< MaterialFieldClass, MaterialFieldClass::MaterialFieldPtr,
+
+    bool ( MaterialField::*hasESV1 )(  ) const =
+        &MaterialField::hasExternalStateVariables;
+    bool ( MaterialField::*hasESV2 )( const std::string & ) =
+        &MaterialField::hasExternalStateVariables;
+
+    py::class_< MaterialField, MaterialField::MaterialFieldPtr,
                 py::bases< DataStructure > >( "MaterialField", py::no_init )
         .def( "__init__",
-              py::make_constructor( &initFactoryPtr< MaterialFieldClass, const MeshPtr & > ) )
+              py::make_constructor( &initFactoryPtr< MaterialField, const MeshPtr & > ) )
         .def( "__init__",
-              py::make_constructor( &initFactoryPtr< MaterialFieldClass, const SkeletonPtr & > ) )
+              py::make_constructor( &initFactoryPtr< MaterialField, const SkeletonPtr & > ) )
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< MaterialFieldClass, const std::string &, const MeshPtr & > ) )
+                  &initFactoryPtr< MaterialField, const std::string &, const MeshPtr & > ) )
 #ifdef ASTER_HAVE_MPI
         .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< MaterialFieldClass, const ParallelMeshPtr & > ) )
+                              &initFactoryPtr< MaterialField, const ParallelMeshPtr & > ) )
         .def( "__init__",
-              py::make_constructor( &initFactoryPtr< MaterialFieldClass, const std::string &,
+              py::make_constructor( &initFactoryPtr< MaterialField, const std::string &,
                                                      const ParallelMeshPtr & > ) )
 #endif /* ASTER_HAVE_MPI */
-        .def( "addBehaviourOnMesh", &MaterialFieldClass::addBehaviourOnMesh )
-        .def( "addBehaviourOnGroupOfCells", &MaterialFieldClass::addBehaviourOnGroupOfCells )
-        .def( "addBehaviourOnCell", &MaterialFieldClass::addBehaviourOnCell )
+        .def( "addBehaviourOnMesh", &MaterialField::addBehaviourOnMesh )
+        .def( "addBehaviourOnGroupOfCells", &MaterialField::addBehaviourOnGroupOfCells )
+        .def( "addBehaviourOnCell", &MaterialField::addBehaviourOnCell )
 
         .def( "addMaterialsOnMesh", addmat1all )
         .def( "addMaterialsOnMesh", addmat2all )
@@ -84,18 +90,19 @@ void exportMaterialFieldToPython() {
         .def( "addMaterialsOnCell", addmat1cell )
         .def( "addMaterialsOnCell", addmat2cell )
 
-        .def( "buildWithoutExternalVariable", &MaterialFieldClass::buildWithoutExternalVariable )
-        .def( "getMesh", &MaterialFieldClass::getMesh )
-        .def( "getVectorOfMaterial", &MaterialFieldClass::getVectorOfMaterial )
+        .def( "buildWithoutExternalStateVariables",
+        &MaterialField::buildWithoutExternalStateVariables )
+        .def( "getMesh", &MaterialField::getMesh )
+        .def( "getVectorOfMaterial", &MaterialField::getVectorOfMaterial )
         .def( "getVectorOfPartOfMaterialField",
-              &MaterialFieldClass::getVectorOfPartOfMaterialField )
-        .def( "hasExternalVariablesComputation",
-              &MaterialFieldClass::hasExternalVariablesComputation )
-        .def( "setModel", &MaterialFieldClass::setModel )
+              &MaterialField::getVectorOfPartOfMaterialField )
+        .def( "hasExternalStateVariables", hasESV1)
+        .def( "hasExternalStateVariables", hasESV2)
+        .def( "setModel", &MaterialField::setModel )
 
         .def( "addExternalStateVariables",
-              static_cast< void ( MaterialFieldClass::* )( PyObject * ) >(
-                  &MaterialFieldClass::addExternalStateVariables ),
+              static_cast< void ( MaterialField::* )( PyObject * ) >(
+                  &MaterialField::addExternalStateVariables ),
               R"(
 Add external state variables of material field
 

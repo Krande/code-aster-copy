@@ -3,7 +3,7 @@
  * @brief Interface python de Crack
  * @author Nicolas Pignet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,8 +29,8 @@ namespace py = boost::python;
 
 void exportCrackToPython() {
 
-    py::class_< CrackClass, CrackClass::CrackPtr, py::bases< DataStructure > >( "Crack",
+    py::class_< Crack, Crack::CrackPtr, py::bases< DataStructure > >( "Crack",
                                                                                        py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< CrackClass > ) )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< CrackClass, std::string > ) );
+        .def( "__init__", py::make_constructor( &initFactoryPtr< Crack > ) )
+        .def( "__init__", py::make_constructor( &initFactoryPtr< Crack, std::string > ) );
 };

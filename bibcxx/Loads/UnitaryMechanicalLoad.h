@@ -251,12 +251,12 @@ template <> struct LoadTraits< THMFlux > {
 };
 
 /**
- * @class MechanicalLoadClass
+ * @class MechanicalLoad
  * @brief Define a mechanical load
  * @author Natacha Bereux
  */
 template < class PhysicalQuantity, LoadEnum Load >
-class UnitaryMechanicalLoadRealClass : public MechanicalLoadRealClass
+class UnitaryMechanicalLoadReal : public MechanicalLoadReal
 {
   public:
     /** @typedef Traits Define the Traits type */
@@ -282,19 +282,19 @@ class UnitaryMechanicalLoadRealClass : public MechanicalLoadRealClass
      * @typedef MechanicalLoadPtr
      * @brief Pointeur intelligent vers un MechanicalLoad
      */
-    typedef boost::shared_ptr< UnitaryMechanicalLoadRealClass< PhysicalQuantity, Load > >
+    typedef boost::shared_ptr< UnitaryMechanicalLoadReal< PhysicalQuantity, Load > >
     UnitaryMechanicalLoadRealPtr;
 
     /**
      * @brief Constructor
      */
-    UnitaryMechanicalLoadRealClass( const ModelPtr &model ) : MechanicalLoadRealClass( model ){};
+    UnitaryMechanicalLoadReal( const ModelPtr &model ) : MechanicalLoadReal( model ){};
 
     /**
      * @brief Constructor
      */
-    UnitaryMechanicalLoadRealClass( const std::string name, const ModelPtr &model )
-        : MechanicalLoadRealClass( name, model ){};
+    UnitaryMechanicalLoadReal( const std::string name, const ModelPtr &model )
+        : MechanicalLoadReal( name, model ){};
 
 
     /**
@@ -387,134 +387,134 @@ class UnitaryMechanicalLoadRealClass : public MechanicalLoadRealClass
 
 /* Appliquer une force nodale sur une modélisation 3D */
 /** @typedef NodalForceReal  */
-template class UnitaryMechanicalLoadRealClass< ForceRealClass, NodalForce >;
-typedef UnitaryMechanicalLoadRealClass< ForceRealClass, NodalForce > NodalForceRealClass;
-typedef boost::shared_ptr< NodalForceRealClass > NodalForceRealPtr;
+template class UnitaryMechanicalLoadReal< ForceReal, NodalForce >;
+typedef UnitaryMechanicalLoadReal< ForceReal, NodalForce > NodalForceReal;
+typedef boost::shared_ptr< NodalForceReal > NodalForceRealPtr;
 
 /* Appliquer une force nodale sur des éléments de structure */
 /** @typedef NodalStructuralForceReal  */
-template class UnitaryMechanicalLoadRealClass< StructuralForceRealClass, NodalForce >;
-typedef UnitaryMechanicalLoadRealClass< StructuralForceRealClass, NodalForce >
-    NodalStructuralForceRealClass;
-typedef boost::shared_ptr< NodalStructuralForceRealClass > NodalStructuralForceRealPtr;
+template class UnitaryMechanicalLoadReal< StructuralForceReal, NodalForce >;
+typedef UnitaryMechanicalLoadReal< StructuralForceReal, NodalForce >
+    NodalStructuralForceReal;
+typedef boost::shared_ptr< NodalStructuralForceReal > NodalStructuralForceRealPtr;
 
 /** @typedef ForceOnFaceReal  */
-template class UnitaryMechanicalLoadRealClass< ForceRealClass, ForceOnFace >;
-typedef UnitaryMechanicalLoadRealClass< ForceRealClass, ForceOnFace > ForceOnFaceRealClass;
-typedef boost::shared_ptr< ForceOnFaceRealClass > ForceOnFaceRealPtr;
+template class UnitaryMechanicalLoadReal< ForceReal, ForceOnFace >;
+typedef UnitaryMechanicalLoadReal< ForceReal, ForceOnFace > ForceOnFaceReal;
+typedef boost::shared_ptr< ForceOnFaceReal > ForceOnFaceRealPtr;
 
 /* Appliquer une force sur une arête d'élément volumique */
 /** @typedef ForceOnEdgeReal  */
-template class UnitaryMechanicalLoadRealClass< ForceRealClass, ForceOnEdge >;
-typedef UnitaryMechanicalLoadRealClass< ForceRealClass, ForceOnEdge > ForceOnEdgeRealClass;
-typedef boost::shared_ptr< ForceOnEdgeRealClass > ForceOnEdgeRealPtr;
+template class UnitaryMechanicalLoadReal< ForceReal, ForceOnEdge >;
+typedef UnitaryMechanicalLoadReal< ForceReal, ForceOnEdge > ForceOnEdgeReal;
+typedef boost::shared_ptr< ForceOnEdgeReal > ForceOnEdgeRealPtr;
 
 /* Appliquer une force sur une arête d'élément de structure (coque/plaque) */
 /** @typedef StructuralForceOnEdgeReal  */
-template class UnitaryMechanicalLoadRealClass< StructuralForceRealClass, ForceOnEdge >;
-typedef UnitaryMechanicalLoadRealClass< StructuralForceRealClass, ForceOnEdge >
-    StructuralForceOnEdgeRealClass;
-typedef boost::shared_ptr< StructuralForceOnEdgeRealClass > StructuralForceOnEdgeRealPtr;
+template class UnitaryMechanicalLoadReal< StructuralForceReal, ForceOnEdge >;
+typedef UnitaryMechanicalLoadReal< StructuralForceReal, ForceOnEdge >
+    StructuralForceOnEdgeReal;
+typedef boost::shared_ptr< StructuralForceOnEdgeReal > StructuralForceOnEdgeRealPtr;
 
 /** @typedef LineicForceReal  */
-template class UnitaryMechanicalLoadRealClass< ForceRealClass, LineicForce >;
-typedef UnitaryMechanicalLoadRealClass< ForceRealClass, LineicForce > LineicForceRealClass;
-typedef boost::shared_ptr< LineicForceRealClass > LineicForceRealPtr;
+template class UnitaryMechanicalLoadReal< ForceReal, LineicForce >;
+typedef UnitaryMechanicalLoadReal< ForceReal, LineicForce > LineicForceReal;
+typedef boost::shared_ptr< LineicForceReal > LineicForceRealPtr;
 
 /** @typedef InternalForceReal  */
-template class UnitaryMechanicalLoadRealClass< ForceRealClass, InternalForce >;
-typedef UnitaryMechanicalLoadRealClass< ForceRealClass, InternalForce > InternalForceRealClass;
-typedef boost::shared_ptr< InternalForceRealClass > InternalForceRealPtr;
+template class UnitaryMechanicalLoadReal< ForceReal, InternalForce >;
+typedef UnitaryMechanicalLoadReal< ForceReal, InternalForce > InternalForceReal;
+typedef boost::shared_ptr< InternalForceReal > InternalForceRealPtr;
 
 /* Appliquer une force (définie dans le repère global) à une poutre */
 /** @typedef StructuralForceOnBeamReal  */
-template class UnitaryMechanicalLoadRealClass< StructuralForceRealClass, ForceOnBeam >;
-typedef UnitaryMechanicalLoadRealClass< StructuralForceRealClass, ForceOnBeam >
-    StructuralForceOnBeamRealClass;
-typedef boost::shared_ptr< StructuralForceOnBeamRealClass > StructuralForceOnBeamRealPtr;
+template class UnitaryMechanicalLoadReal< StructuralForceReal, ForceOnBeam >;
+typedef UnitaryMechanicalLoadReal< StructuralForceReal, ForceOnBeam >
+    StructuralForceOnBeamReal;
+typedef boost::shared_ptr< StructuralForceOnBeamReal > StructuralForceOnBeamRealPtr;
 
 /* Appliquer une force (définie dans le repère local) à une poutre */
 /** @typedef LocalForceOnBeamReal  */
-template class UnitaryMechanicalLoadRealClass< LocalBeamForceRealClass, ForceOnBeam >;
-typedef UnitaryMechanicalLoadRealClass< LocalBeamForceRealClass, ForceOnBeam >
-    LocalForceOnBeamRealClass;
-typedef boost::shared_ptr< LocalForceOnBeamRealClass > LocalForceOnBeamRealPtr;
+template class UnitaryMechanicalLoadReal< LocalBeamForceReal, ForceOnBeam >;
+typedef UnitaryMechanicalLoadReal< LocalBeamForceReal, ForceOnBeam >
+    LocalForceOnBeamReal;
+typedef boost::shared_ptr< LocalForceOnBeamReal > LocalForceOnBeamRealPtr;
 
 /* Appliquer une force (définie dans le repère global) à une coque/plaque */
 /** @typedef StructuralForceOnShellReal  */
-template class UnitaryMechanicalLoadRealClass< StructuralForceRealClass, ForceOnShell >;
-typedef UnitaryMechanicalLoadRealClass< StructuralForceRealClass, ForceOnShell >
-    StructuralForceOnShellRealClass;
-typedef boost::shared_ptr< StructuralForceOnShellRealClass > StructuralForceOnShellRealPtr;
+template class UnitaryMechanicalLoadReal< StructuralForceReal, ForceOnShell >;
+typedef UnitaryMechanicalLoadReal< StructuralForceReal, ForceOnShell >
+    StructuralForceOnShellReal;
+typedef boost::shared_ptr< StructuralForceOnShellReal > StructuralForceOnShellRealPtr;
 
 /* Appliquer une force (définie dans le repère local) à une coque/plaque */
 /** @typedef LocalForceOnShellReal  */
-template class UnitaryMechanicalLoadRealClass< LocalShellForceRealClass, ForceOnShell >;
-typedef UnitaryMechanicalLoadRealClass< LocalShellForceRealClass, ForceOnShell >
-    LocalForceOnShellRealClass;
-typedef boost::shared_ptr< LocalForceOnShellRealClass > LocalForceOnShellRealPtr;
+template class UnitaryMechanicalLoadReal< LocalShellForceReal, ForceOnShell >;
+typedef UnitaryMechanicalLoadReal< LocalShellForceReal, ForceOnShell >
+    LocalForceOnShellReal;
+typedef boost::shared_ptr< LocalForceOnShellReal > LocalForceOnShellRealPtr;
 
 /* Appliquer une pression à une coque/plaque */
 /** @typedef PressureOnShellReal  */
-template class UnitaryMechanicalLoadRealClass< PressureRealClass, ForceOnShell >;
-typedef UnitaryMechanicalLoadRealClass< PressureRealClass, ForceOnShell > PressureOnShellRealClass;
-typedef boost::shared_ptr< PressureOnShellRealClass > PressureOnShellRealPtr;
+template class UnitaryMechanicalLoadReal< PressureReal, ForceOnShell >;
+typedef UnitaryMechanicalLoadReal< PressureReal, ForceOnShell > PressureOnShellReal;
+typedef boost::shared_ptr< PressureOnShellReal > PressureOnShellRealPtr;
 
 /* Appliquer une pression à un tuyau */
 /** @typedef PressureOnPipeReal  */
-template class UnitaryMechanicalLoadRealClass< PressureRealClass, PressureOnPipe >;
-typedef UnitaryMechanicalLoadRealClass< PressureRealClass, PressureOnPipe > PressureOnPipeRealClass;
-typedef boost::shared_ptr< PressureOnPipeRealClass > PressureOnPipeRealPtr;
+template class UnitaryMechanicalLoadReal< PressureReal, PressureOnPipe >;
+typedef UnitaryMechanicalLoadReal< PressureReal, PressureOnPipe > PressureOnPipeReal;
+typedef boost::shared_ptr< PressureOnPipeReal > PressureOnPipeRealPtr;
 
 /* Imposer un déplacement sur des noeuds */
 /** @typedef ImposedDisplacementReal  */
-template class UnitaryMechanicalLoadRealClass< DisplacementRealClass, ImposedDoF >;
-typedef UnitaryMechanicalLoadRealClass< DisplacementRealClass, ImposedDoF >
-    ImposedDisplacementRealClass;
-typedef boost::shared_ptr< ImposedDisplacementRealClass > ImposedDisplacementRealPtr;
+template class UnitaryMechanicalLoadReal< DisplacementReal, ImposedDoF >;
+typedef UnitaryMechanicalLoadReal< DisplacementReal, ImposedDoF >
+    ImposedDisplacementReal;
+typedef boost::shared_ptr< ImposedDisplacementReal > ImposedDisplacementRealPtr;
 
 /* Imposer une pression sur des noeuds */
 /** @typedef ImposedPressureReal  */
-template class UnitaryMechanicalLoadRealClass< PressureRealClass, ImposedDoF >;
-typedef UnitaryMechanicalLoadRealClass< PressureRealClass, ImposedDoF >
-    ImposedPressureRealClass;
-typedef boost::shared_ptr< ImposedPressureRealClass > ImposedPressureRealPtr;
+template class UnitaryMechanicalLoadReal< PressureReal, ImposedDoF >;
+typedef UnitaryMechanicalLoadReal< PressureReal, ImposedDoF >
+    ImposedPressureReal;
+typedef boost::shared_ptr< ImposedPressureReal > ImposedPressureRealPtr;
 
 /** @typedef DistributedPressureReal  */
-template class UnitaryMechanicalLoadRealClass< PressureRealClass, DistributedPressure >;
-typedef UnitaryMechanicalLoadRealClass< PressureRealClass, DistributedPressure >
-    DistributedPressureRealClass;
-typedef boost::shared_ptr< DistributedPressureRealClass > DistributedPressureRealPtr;
+template class UnitaryMechanicalLoadReal< PressureReal, DistributedPressure >;
+typedef UnitaryMechanicalLoadReal< PressureReal, DistributedPressure >
+    DistributedPressureReal;
+typedef boost::shared_ptr< DistributedPressureReal > DistributedPressureRealPtr;
 
 /** @typedef ImpedanceOnFaceReal  */
-template class UnitaryMechanicalLoadRealClass< ImpedanceRealClass, ImpedanceOnFace >;
-typedef UnitaryMechanicalLoadRealClass< ImpedanceRealClass, ImpedanceOnFace >
-    ImpedanceOnFaceRealClass;
-typedef boost::shared_ptr< ImpedanceOnFaceRealClass > ImpedanceOnFaceRealPtr;
+template class UnitaryMechanicalLoadReal< ImpedanceReal, ImpedanceOnFace >;
+typedef UnitaryMechanicalLoadReal< ImpedanceReal, ImpedanceOnFace >
+    ImpedanceOnFaceReal;
+typedef boost::shared_ptr< ImpedanceOnFaceReal > ImpedanceOnFaceRealPtr;
 
 /** @typedef NormalSpeedOnFaceReal  */
-template class UnitaryMechanicalLoadRealClass< NormalSpeedRealClass, NormalSpeedOnFace >;
-typedef UnitaryMechanicalLoadRealClass< NormalSpeedRealClass, NormalSpeedOnFace >
-    NormalSpeedOnFaceRealClass;
-typedef boost::shared_ptr< NormalSpeedOnFaceRealClass > NormalSpeedOnFaceRealPtr;
+template class UnitaryMechanicalLoadReal< NormalSpeedReal, NormalSpeedOnFace >;
+typedef UnitaryMechanicalLoadReal< NormalSpeedReal, NormalSpeedOnFace >
+    NormalSpeedOnFaceReal;
+typedef boost::shared_ptr< NormalSpeedOnFaceReal > NormalSpeedOnFaceRealPtr;
 
 /** @typedef WavePressureOnFaceReal  */
-template class UnitaryMechanicalLoadRealClass< PressureRealClass, WavePressureOnFace >;
-typedef UnitaryMechanicalLoadRealClass< PressureRealClass, WavePressureOnFace >
-    WavePressureOnFaceRealClass;
-typedef boost::shared_ptr< WavePressureOnFaceRealClass > WavePressureOnFaceRealPtr;
+template class UnitaryMechanicalLoadReal< PressureReal, WavePressureOnFace >;
+typedef UnitaryMechanicalLoadReal< PressureReal, WavePressureOnFace >
+    WavePressureOnFaceReal;
+typedef boost::shared_ptr< WavePressureOnFaceReal > WavePressureOnFaceRealPtr;
 
 /** @typedef DistributedHeatFluxReal  */
-template class UnitaryMechanicalLoadRealClass< HeatFluxRealClass, THMFlux >;
-typedef UnitaryMechanicalLoadRealClass< HeatFluxRealClass, THMFlux >
-    DistributedHeatFluxRealClass;
-typedef boost::shared_ptr< DistributedHeatFluxRealClass > DistributedHeatFluxRealPtr;
+template class UnitaryMechanicalLoadReal< HeatFluxReal, THMFlux >;
+typedef UnitaryMechanicalLoadReal< HeatFluxReal, THMFlux >
+    DistributedHeatFluxReal;
+typedef boost::shared_ptr< DistributedHeatFluxReal > DistributedHeatFluxRealPtr;
 
 /** @typedef DistributedHydraulicFluxReal  */
-template class UnitaryMechanicalLoadRealClass< HydraulicFluxRealClass, THMFlux >;
-typedef UnitaryMechanicalLoadRealClass< HydraulicFluxRealClass, THMFlux >
-    DistributedHydraulicFluxRealClass;
-typedef boost::shared_ptr< DistributedHydraulicFluxRealClass > DistributedHydraulicFluxRealPtr;
+template class UnitaryMechanicalLoadReal< HydraulicFluxReal, THMFlux >;
+typedef UnitaryMechanicalLoadReal< HydraulicFluxReal, THMFlux >
+    DistributedHydraulicFluxReal;
+typedef boost::shared_ptr< DistributedHydraulicFluxReal > DistributedHydraulicFluxRealPtr;
 
 
 #endif /* UNITARYMECHANICALLOAD_H_ */

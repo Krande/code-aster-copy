@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe PrestressingCable
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -40,12 +40,12 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class PrestressingCableClass
+ * @class PrestressingCable
  * @brief Produit une sd identique a celle produite par DEFI_CABLE_BP
  * @author Nicolas Sellenet
  * @todo ajouter un test pour valider des qu'on aura les macros
  */
-class PrestressingCableClass : public DataStructure {
+class PrestressingCable : public DataStructure {
   private:
     ModelPtr _model;
     ElementaryCharacteristicsPtr _cara;
@@ -65,17 +65,17 @@ class PrestressingCableClass : public DataStructure {
   public:
     /**
      * @typedef PrestressingCable
-     * @brief Pointeur intelligent vers un PrestressingCableClass
+     * @brief Pointeur intelligent vers un PrestressingCable
      */
-    typedef boost::shared_ptr< PrestressingCableClass > PrestressingCablePtr;
+    typedef boost::shared_ptr< PrestressingCable > PrestressingCablePtr;
 
     /**
      * @brief Constructeur
      */
-    PrestressingCableClass( const ModelPtr &, const MaterialFieldPtr &,
+    PrestressingCable( const ModelPtr &, const MaterialFieldPtr &,
                             const ElementaryCharacteristicsPtr & );
 
-    PrestressingCableClass( const std::string name, const ModelPtr &,
+    PrestressingCable( const std::string name, const ModelPtr &,
                             const MaterialFieldPtr &, const ElementaryCharacteristicsPtr & );
 
     // Since no constructor allows to have null or empty objects,
@@ -95,8 +95,8 @@ class PrestressingCableClass : public DataStructure {
 
 /**
  * @typedef PrestressingCable
- * @brief Pointeur intelligent vers un PrestressingCableClass
+ * @brief Pointeur intelligent vers un PrestressingCable
  */
-typedef boost::shared_ptr< PrestressingCableClass > PrestressingCablePtr;
+typedef boost::shared_ptr< PrestressingCable > PrestressingCablePtr;
 
 #endif /* PRESTRESSINGCABLE_H_ */

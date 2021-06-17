@@ -35,7 +35,7 @@ MATER = DEFI_MATERIAU(THER=_F(LAMBDA=6.E9, RHO_CP=1.))
 
 affectMat = code_aster.MaterialField(MAIL)
 affectMat.addMaterialsOnMesh(MATER)
-affectMat.buildWithoutExternalVariable()
+affectMat.buildWithoutExternalStateVariables()
 
 MODT = AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
@@ -81,13 +81,13 @@ matrAsse.build()
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_TEMP_R")
 # matrAsse.debugPrint()
 
-# retour = vect_elem.assembleVector( numeDDL )
+# retour = vect_elem.assemble( numeDDL )
 vecass = ASSE_VECTEUR(VECT_ELEM=vect_elem, NUME_DDL=numeDDL)
 vcine = CALC_CHAR_CINE(NUME_DDL=numeDDL,
                        CHAR_CINE=charCine,)
 
-# monSolver.matrixFactorization( matrAsse )
-# resu = monSolver.solveRealLinearSystemWithDirichletBC(matrAsse, vcine, vecass)
+# monSolver.factorize( matrAsse )
+# resu = monSolver.solveWithDirichletBC(matrAsse, vcine, vecass)
 # resu.debugPrint(6)
 
 matrAsse = FACTORISER(reuse=matrAsse,

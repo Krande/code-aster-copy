@@ -35,12 +35,12 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class ThermalLoadClass
+ * @class ThermalLoad
  * @brief Classe definissant une charge thermique (issue d'AFFE_CHAR_THER)
  * @author Jean-Pierre Lefebvre
  */
 template< class ConstantFieldOnCellsType>
-class ThermalLoadClass : public DataStructure {
+class ThermalLoad : public DataStructure {
   private:
     /** @brief Vecteur Jeveux '.TYPE' */
     JeveuxVectorChar8 _type;
@@ -52,26 +52,26 @@ class ThermalLoadClass : public DataStructure {
      * @typedef ThermalLoadPtr
      * @brief Pointeur intelligent vers un ThermalLoad
      */
-    typedef boost::shared_ptr< ThermalLoadClass > ThermalLoadPtr;
+    typedef boost::shared_ptr< ThermalLoad > ThermalLoadPtr;
 
     /**
      * @brief Constructeur
      */
-    ThermalLoadClass( void ) = delete;
+    ThermalLoad( void ) = delete;
 
     /**
      * @brief Constructeur
      */
-    ThermalLoadClass( const ModelPtr &currentModel )
-        : ThermalLoadClass( ResultNaming::getNewResultName(), currentModel ){};
+    ThermalLoad( const ModelPtr &currentModel )
+        : ThermalLoad( ResultNaming::getNewResultName(), currentModel ){};
 
     /**
      * @brief Constructeur
      */
-    ThermalLoadClass( const std::string name, const ModelPtr &currentModel )
+    ThermalLoad( const std::string name, const ModelPtr &currentModel )
         : DataStructure( name, 8, "CHAR_THER" ),
         _therLoadDesc( boost::make_shared<
-            ThermalLoadDescriptionClass< ConstantFieldOnCellsType > >(getName() + ".CHTH",
+            ThermalLoadDescription< ConstantFieldOnCellsType > >(getName() + ".CHTH",
                                                                             currentModel )),
           _type( getName() + ".TYPE" ){};
 
@@ -97,18 +97,18 @@ class ThermalLoadClass : public DataStructure {
 /*  Explicit instantiation of template classes
 /**********************************************************/
 
-/** @typedef ThermalLoadRealClass Class d'une charge mécanique réelle */
-typedef ThermalLoadClass< ConstantFieldOnCellsRealClass > ThermalLoadRealClass;
-/** @typedef ThermalLoadFuncClass Class d'une charge mécanique de fonctions */
-typedef ThermalLoadClass< ConstantFieldOnCellsChar24Class > ThermalLoadFunctionClass;
+/** @typedef ThermalLoadReal Class d'une charge mécanique réelle */
+typedef ThermalLoad< ConstantFieldOnCellsReal > ThermalLoadReal;
+/** @typedef ThermalLoadFunc Class d'une charge mécanique de fonctions */
+typedef ThermalLoad< ConstantFieldOnCellsChar24 > ThermalLoadFunction;
 
 /** @typedef ThermalLoad  */
 template< class ConstantFieldOnCellsType>
 using ThermalLoadPtr =
-    boost::shared_ptr< ThermalLoadClass< ConstantFieldOnCellsType > >;
+    boost::shared_ptr< ThermalLoad< ConstantFieldOnCellsType > >;
 
-typedef boost::shared_ptr< ThermalLoadRealClass > ThermalLoadRealPtr;
-typedef boost::shared_ptr< ThermalLoadFunctionClass > ThermalLoadFunctionPtr;
+typedef boost::shared_ptr< ThermalLoadReal > ThermalLoadRealPtr;
+typedef boost::shared_ptr< ThermalLoadFunction > ThermalLoadFunctionPtr;
 
 
 /** @typedef std::list de ThermalLoad */

@@ -33,54 +33,54 @@
 
 #include "Materials/MaterialFieldBuilder.h"
 
-MaterialFieldClass::MaterialFieldClass( const std::string &name, const MeshPtr &mesh )
+MaterialField::MaterialField( const std::string &name, const MeshPtr &mesh )
     : _mesh( mesh ), _model( nullptr ), DataStructure( name, 8, "CHAM_MATER" ),
       _listOfMaterials( ConstantFieldOnCellsChar8Ptr(
-          new ConstantFieldOnCellsChar8Class( getName() + ".CHAMP_MAT ", mesh ) ) ),
+          new ConstantFieldOnCellsChar8( getName() + ".CHAMP_MAT ", mesh ) ) ),
       _listOfTemperatures( ConstantFieldOnCellsRealPtr(
-          new ConstantFieldOnCellsRealClass( getName() + ".TEMPE_REF ", mesh ) ) ),
+          new ConstantFieldOnCellsReal( getName() + ".TEMPE_REF ", mesh ) ) ),
       _behaviourField( ConstantFieldOnCellsRealPtr(
-          new ConstantFieldOnCellsRealClass( getName() + ".COMPOR ", mesh ) ) ),
+          new ConstantFieldOnCellsReal( getName() + ".COMPOR ", mesh ) ) ),
       _cvrcNom( JeveuxVectorChar8( getName() + ".CVRCNOM" ) ),
       _cvrcGd( JeveuxVectorChar8( getName() + ".CVRCGD" ) ),
       _cvrcVarc( JeveuxVectorChar8( getName() + ".CVRCVARC" ) ),
       _cvrcCmp( JeveuxVectorChar8( getName() + ".CVRCCMP" ) ){};
 
-MaterialFieldClass::MaterialFieldClass( const std::string &name, const SkeletonPtr &mesh )
+MaterialField::MaterialField( const std::string &name, const SkeletonPtr &mesh )
     : _mesh( mesh ), _model( nullptr ), DataStructure( name, 8, "CHAM_MATER" ),
       _listOfMaterials( ConstantFieldOnCellsChar8Ptr(
-          new ConstantFieldOnCellsChar8Class( getName() + ".CHAMP_MAT ", mesh ) ) ),
+          new ConstantFieldOnCellsChar8( getName() + ".CHAMP_MAT ", mesh ) ) ),
       _listOfTemperatures( ConstantFieldOnCellsRealPtr(
-          new ConstantFieldOnCellsRealClass( getName() + ".TEMPE_REF ", mesh ) ) ),
+          new ConstantFieldOnCellsReal( getName() + ".TEMPE_REF ", mesh ) ) ),
       _behaviourField( ConstantFieldOnCellsRealPtr(
-          new ConstantFieldOnCellsRealClass( getName() + ".COMPOR ", mesh ) ) ),
+          new ConstantFieldOnCellsReal( getName() + ".COMPOR ", mesh ) ) ),
       _cvrcNom( JeveuxVectorChar8( getName() + ".CVRCNOM" ) ),
       _cvrcGd( JeveuxVectorChar8( getName() + ".CVRCGD" ) ),
       _cvrcVarc( JeveuxVectorChar8( getName() + ".CVRCVARC" ) ),
       _cvrcCmp( JeveuxVectorChar8( getName() + ".CVRCCMP" ) ){};
 
 #ifdef ASTER_HAVE_MPI
-MaterialFieldClass::MaterialFieldClass( const std::string &name, const ParallelMeshPtr &mesh )
+MaterialField::MaterialField( const std::string &name, const ParallelMeshPtr &mesh )
     : _mesh( mesh ), _model( nullptr ), DataStructure( name, 8, "CHAM_MATER" ),
       _listOfMaterials( ConstantFieldOnCellsChar8Ptr(
-          new ConstantFieldOnCellsChar8Class( getName() + ".CHAMP_MAT ", mesh ) ) ),
+          new ConstantFieldOnCellsChar8( getName() + ".CHAMP_MAT ", mesh ) ) ),
       _listOfTemperatures( ConstantFieldOnCellsRealPtr(
-          new ConstantFieldOnCellsRealClass( getName() + ".TEMPE_REF ", mesh ) ) ),
+          new ConstantFieldOnCellsReal( getName() + ".TEMPE_REF ", mesh ) ) ),
       _behaviourField( ConstantFieldOnCellsRealPtr(
-          new ConstantFieldOnCellsRealClass( getName() + ".COMPOR ", mesh ) ) ),
+          new ConstantFieldOnCellsReal( getName() + ".COMPOR ", mesh ) ) ),
       _cvrcNom( JeveuxVectorChar8( getName() + ".CVRCNOM" ) ),
       _cvrcGd( JeveuxVectorChar8( getName() + ".CVRCGD" ) ),
       _cvrcVarc( JeveuxVectorChar8( getName() + ".CVRCVARC" ) ),
       _cvrcCmp( JeveuxVectorChar8( getName() + ".CVRCCMP" ) ){};
 #endif /* ASTER_HAVE_MPI */
 
-bool MaterialFieldClass::buildWithoutExternalVariable() {
-    MaterialFieldBuilderClass::buildClass( *this );
+bool MaterialField::buildWithoutExternalStateVariables() {
+    MaterialFieldBuilder::buildClass( *this );
 
     return true;
 };
 
-std::vector< MaterialPtr > MaterialFieldClass::getVectorOfMaterial() const {
+std::vector< MaterialPtr > MaterialField::getVectorOfMaterial() const {
     std::vector< MaterialPtr > toReturn;
     for ( const auto &curIter : _materialsFieldEntity )
         for ( const auto &curIter2 : curIter.first )
@@ -88,21 +88,21 @@ std::vector< MaterialPtr > MaterialFieldClass::getVectorOfMaterial() const {
     return toReturn;
 };
 
-std::vector< PartOfMaterialFieldPtr > MaterialFieldClass::getVectorOfPartOfMaterialField() const {
+std::vector< PartOfMaterialFieldPtr > MaterialField::getVectorOfPartOfMaterialField() const {
     std::vector< PartOfMaterialFieldPtr > toReturn;
     for ( const auto &curIter : _materialsFieldEntity ) {
         PartOfMaterialFieldPtr toPush(
-            new PartOfMaterialFieldClass( curIter.first, curIter.second ) );
+            new PartOfMaterialField( curIter.first, curIter.second ) );
         toReturn.push_back( toPush );
     }
     return toReturn;
 };
 
-bool MaterialFieldClass::hasExternalVariablesComputation() const {
+bool MaterialField::hasExternalStateVariables() const {
     return _cvrcVarc->exists();
 };
 
-bool MaterialFieldClass::existsExternalVariablesComputation( const std::string &name ) {
+bool MaterialField::hasExternalStateVariables( const std::string &name ) {
     if ( _cvrcVarc->exists() ) {
         _cvrcVarc->updateValuePointer();
         JeveuxChar8 toTest( name );
@@ -116,12 +116,12 @@ bool MaterialFieldClass::existsExternalVariablesComputation( const std::string &
     return false;
 };
 
-void MaterialFieldClass::addBehaviourOnMesh( BehaviourDefinitionPtr &curBehav ) {
+void MaterialField::addBehaviourOnMesh( BehaviourDefinitionPtr &curBehav ) {
     _behaviours.push_back(
         listOfBehavAndGrpsValue( curBehav, MeshEntityPtr( new AllMeshEntities() ) ) );
 }
 
-void MaterialFieldClass::addBehaviourOnGroupOfCells( BehaviourDefinitionPtr &curBehav,
+void MaterialField::addBehaviourOnGroupOfCells( BehaviourDefinitionPtr &curBehav,
                                                      std::string nameOfGroup ) {
     if ( !_mesh )
         throw std::runtime_error( "Mesh is not defined" );
@@ -132,7 +132,7 @@ void MaterialFieldClass::addBehaviourOnGroupOfCells( BehaviourDefinitionPtr &cur
         listOfBehavAndGrpsValue( curBehav, MeshEntityPtr( new GroupOfCells( nameOfGroup ) ) ) );
 }
 
-void MaterialFieldClass::addBehaviourOnCell( BehaviourDefinitionPtr &curBehav,
+void MaterialField::addBehaviourOnCell( BehaviourDefinitionPtr &curBehav,
                                              std::string nameOfCell ) {
     if ( !_mesh )
         throw std::runtime_error( "Mesh is not defined" );
@@ -141,16 +141,16 @@ void MaterialFieldClass::addBehaviourOnCell( BehaviourDefinitionPtr &curBehav,
         listOfBehavAndGrpsValue( curBehav, MeshEntityPtr( new Cell( nameOfCell ) ) ) );
 }
 
-void MaterialFieldClass::addMaterialsOnMesh( std::vector< MaterialPtr > curMaters ) {
+void MaterialField::addMaterialsOnMesh( std::vector< MaterialPtr > curMaters ) {
     _materialsFieldEntity.push_back(
         listOfMatsAndGrpsValue( curMaters, MeshEntityPtr( new AllMeshEntities() ) ) );
 }
 
-void MaterialFieldClass::addMaterialsOnMesh( MaterialPtr &curMater ) {
+void MaterialField::addMaterialsOnMesh( MaterialPtr &curMater ) {
     addMaterialsOnMesh( (std::vector< MaterialPtr >){curMater} );
 }
 
-void MaterialFieldClass::addMaterialsOnGroupOfCells( std::vector< MaterialPtr > curMaters,
+void MaterialField::addMaterialsOnGroupOfCells( std::vector< MaterialPtr > curMaters,
                                                      VectorString namesOfGroup ) {
     if ( !_mesh )
         throw std::runtime_error( "Mesh is not defined" );
@@ -162,12 +162,12 @@ void MaterialFieldClass::addMaterialsOnGroupOfCells( std::vector< MaterialPtr > 
         listOfMatsAndGrpsValue( curMaters, MeshEntityPtr( new GroupOfCells( namesOfGroup ) ) ) );
 }
 
-void MaterialFieldClass::addMaterialsOnGroupOfCells( MaterialPtr &curMater,
+void MaterialField::addMaterialsOnGroupOfCells( MaterialPtr &curMater,
                                                      VectorString namesOfGroup ) {
     addMaterialsOnGroupOfCells( (std::vector< MaterialPtr >){curMater}, namesOfGroup );
 }
 
-void MaterialFieldClass::addMaterialsOnCell( std::vector< MaterialPtr > curMaters,
+void MaterialField::addMaterialsOnCell( std::vector< MaterialPtr > curMaters,
                                              VectorString namesOfCells ) {
     if ( !_mesh )
         throw std::runtime_error( "Mesh is not defined" );
@@ -176,12 +176,12 @@ void MaterialFieldClass::addMaterialsOnCell( std::vector< MaterialPtr > curMater
         listOfMatsAndGrpsValue( curMaters, MeshEntityPtr( new Cell( namesOfCells ) ) ) );
 }
 
-void MaterialFieldClass::addMaterialsOnCell( MaterialPtr &curMater, VectorString namesOfCells ) {
+void MaterialField::addMaterialsOnCell( MaterialPtr &curMater, VectorString namesOfCells ) {
     addMaterialsOnCell( (std::vector< MaterialPtr >){curMater}, namesOfCells );
 }
 
 
-void MaterialFieldClass::addExternalStateVariables( PyObject *keywords ) {
+void MaterialField::addExternalStateVariables( PyObject *keywords ) {
 
     // Check input PyObject
     if ( !PyDict_Check( keywords ) && !PyList_Check( keywords ) && !PyTuple_Check( keywords ) )

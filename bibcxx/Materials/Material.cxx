@@ -1,9 +1,9 @@
 /**
  * @file Material.cxx
- * @brief Implementation de MaterialClass
+ * @brief Implementation de Material
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,7 +29,7 @@
 #include "Materials/Material.h"
 #include "Supervis/ResultNaming.h"
 
-void MaterialClass::addMaterialProperty( const GenericMaterialPropertyPtr& curMaterBehav )
+void Material::addMaterialProperty( const GenericMaterialPropertyPtr& curMaterBehav )
 {
     ++_nbMaterialProperty;
     _vecMatBehaviour.push_back( curMaterBehav );
@@ -37,21 +37,21 @@ void MaterialClass::addMaterialProperty( const GenericMaterialPropertyPtr& curMa
     std::ostringstream numString;
     numString << std::setw( 6 ) << std::setfill( '0' ) << _nbMaterialProperty;
     const std::string currentName = getName() + ".CPT." + numString.str();
-    _vectorOfComplexValues.push_back( JeveuxVectorComplex( currentName + ".VALC" ) );
-    _vectorOfRealValues.push_back( JeveuxVectorReal( currentName + ".VALR" ) );
+    _vectorOfValuesComplex.push_back( JeveuxVectorComplex( currentName + ".VALC" ) );
+    _vectorOfValuesReal.push_back( JeveuxVectorReal( currentName + ".VALR" ) );
     _vectorOfChar16Values.push_back( JeveuxVectorChar16( currentName + ".VALK" ) );
     _vectorOrdr.push_back( JeveuxVectorChar16( currentName + ".ORDR" ) );
     _vectorKOrdr.push_back( JeveuxVectorLong( currentName + ".KORD" ) );
 
     auto test1 = curMaterBehav->hasVectorOfRealParameters();
     auto test2 = curMaterBehav->hasVectorOfFunctionParameters();
-    const auto cP = _vectorOfUserRealValues.size();
-    _vectorOfUserRealValues.push_back( VectorOfJeveuxVectorReal() );
+    const auto cP = _vectorOfUserValuesReal.size();
+    _vectorOfUserValuesReal.push_back( VectorOfJeveuxVectorReal() );
     _vectorOfUserFunctionValues.push_back( VectorOfJeveuxVectorChar8() );
     if( test1 || test2 )
     {
-        const int num1 = curMaterBehav->getNumberOfListOfRealProperties();
-        const int num2 = curMaterBehav->getNumberOfListOfFunctionProperties();
+        const int num1 = curMaterBehav->getNumberOfListOfPropertiesReal();
+        const int num2 = curMaterBehav->getNumberOfListOfPropertiesFunction();
         const int numTot = num1 + num2;
         for( int pos = 0; pos < numTot; ++pos )
         {
@@ -60,7 +60,7 @@ void MaterialClass::addMaterialProperty( const GenericMaterialPropertyPtr& curMa
             numUser2 << std::setw( 7 ) << std::setfill( '0' ) << _nbUserMaterialProperty;
             std::string currentName2 = getName() + "." + numUser2.str() + ".LISV_R8";
             auto o1 = JeveuxVectorReal( currentName2 );
-            _vectorOfUserRealValues[cP].push_back( o1 );
+            _vectorOfUserValuesReal[cP].push_back( o1 );
             std::string currentName3 = getName() + "." + numUser2.str() + ".LISV_FO";
             auto o2 = JeveuxVectorChar8( currentName3 );
             _vectorOfUserFunctionValues[cP].push_back( o2 );
@@ -70,25 +70,25 @@ void MaterialClass::addMaterialProperty( const GenericMaterialPropertyPtr& curMa
     {
         ++_nbUserMaterialProperty;
         auto o1 = JeveuxVectorReal( "EMPTY" );
-        _vectorOfUserRealValues[cP].push_back( o1 );
+        _vectorOfUserValuesReal[cP].push_back( o1 );
         auto o2 = JeveuxVectorChar8( "EMPTY" );
         _vectorOfUserFunctionValues[cP].push_back( o2 );
     }
 };
 
-void MaterialClass::deallocateJeveuxVectors()
+void Material::deallocateJeveuxVectors()
 {
     _materialBehaviourNames->deallocate();
     _doubleValues->deallocate();
     int num = 0;
     for ( const auto &curIter : _vecMatBehaviour )
     {
-        _vectorOfComplexValues[num]->deallocate();
-        _vectorOfRealValues[num]->deallocate();
+        _vectorOfValuesComplex[num]->deallocate();
+        _vectorOfValuesReal[num]->deallocate();
         _vectorOfChar16Values[num]->deallocate();
         _vectorOrdr[num]->deallocate();
         _vectorKOrdr[num]->deallocate();
-        for( auto curIter2 : _vectorOfUserRealValues[num] )
+        for( auto curIter2 : _vectorOfUserValuesReal[num] )
             curIter2->deallocate();
         for( auto curIter2 : _vectorOfUserFunctionValues[num] )
             curIter2->deallocate();
@@ -96,7 +96,7 @@ void MaterialClass::deallocateJeveuxVectors()
     }
 };
 
-bool MaterialClass::build() {
+bool Material::build() {
     if( _mater != nullptr )
     {
         if( getName() == _mater->getName() )
@@ -108,7 +108,7 @@ bool MaterialClass::build() {
 
     // Recuperation du nombre de GenericMaterialPropertyPtr ajoutes par l'utilisateur
     const int nbMCF = _vecMatBehaviour.size();
-    if ( nbMCF != _vectorOfComplexValues.size() || nbMCF != _vectorOfRealValues.size() ||
+    if ( nbMCF != _vectorOfValuesComplex.size() || nbMCF != _vectorOfValuesReal.size() ||
          nbMCF != _vectorOfChar16Values.size() )
         throw std::runtime_error( "Bad number of material properties" );
 
@@ -129,16 +129,16 @@ bool MaterialClass::build() {
         ( *_materialBehaviourNames )[num] = curStr.c_str();
 
         // Construction des objets Jeveux .CPT.XXXXXX.VALR, .CPT.XXXXXX.VALK, ...
-        JeveuxVectorComplex &vec1 = _vectorOfComplexValues[num];
-        JeveuxVectorReal &vec2 = _vectorOfRealValues[num];
+        JeveuxVectorComplex &vec1 = _vectorOfValuesComplex[num];
+        JeveuxVectorReal &vec2 = _vectorOfValuesReal[num];
         JeveuxVectorChar16 &vec3 = _vectorOfChar16Values[num];
         JeveuxVectorChar16 &vec4 = _vectorOrdr[num];
         JeveuxVectorLong &vec5 = _vectorKOrdr[num];
-        auto &vec6 = _vectorOfUserRealValues[num];
+        auto &vec6 = _vectorOfUserValuesReal[num];
         auto &vec7 = _vectorOfUserFunctionValues[num];
 
         const bool retour = curIter->buildJeveuxVectors( vec1, vec2, vec3, vec4, vec5, vec6, vec7 );
-        const bool retour2 = curIter->buildTractionFunction( _doubleValues );
+        const bool retour2 = curIter->computeTractionFunction( _doubleValues );
 
         if ( !retour || !retour2 )
             throw std::runtime_error( "Fail to build Material" );
@@ -147,7 +147,7 @@ bool MaterialClass::build() {
     return true;
 };
 
-void MaterialClass::setStateAfterUnpickling( const VectorInt& vec )
+void Material::setStateAfterUnpickling( const VectorInt& vec )
 {
     if( _nbMaterialProperty != 0 )
         throw std::runtime_error( "Object already fill in" );
@@ -158,14 +158,14 @@ void MaterialClass::setStateAfterUnpickling( const VectorInt& vec )
         std::ostringstream numString;
         numString << std::setw( 6 ) << std::setfill( '0' ) << _nbMaterialProperty;
         const std::string currentName = getName() + ".CPT." + numString.str();
-        _vectorOfComplexValues.push_back( JeveuxVectorComplex( currentName + ".VALC" ) );
-        _vectorOfRealValues.push_back( JeveuxVectorReal( currentName + ".VALR" ) );
+        _vectorOfValuesComplex.push_back( JeveuxVectorComplex( currentName + ".VALC" ) );
+        _vectorOfValuesReal.push_back( JeveuxVectorReal( currentName + ".VALR" ) );
         _vectorOfChar16Values.push_back( JeveuxVectorChar16( currentName + ".VALK" ) );
         _vectorOrdr.push_back( JeveuxVectorChar16( currentName + ".ORDR" ) );
         _vectorKOrdr.push_back( JeveuxVectorLong( currentName + ".KORD" ) );
 
-        const auto cP = _vectorOfUserRealValues.size();
-        _vectorOfUserRealValues.push_back( VectorOfJeveuxVectorReal() );
+        const auto cP = _vectorOfUserValuesReal.size();
+        _vectorOfUserValuesReal.push_back( VectorOfJeveuxVectorReal() );
         _vectorOfUserFunctionValues.push_back( VectorOfJeveuxVectorChar8() );
         for( int i = 1; i <= curVal; ++i )
         {
@@ -174,7 +174,7 @@ void MaterialClass::setStateAfterUnpickling( const VectorInt& vec )
             numUser2 << std::setw( 7 ) << std::setfill( '0' ) << _nbUserMaterialProperty;
             std::string currentName2 = getName() + "." + numUser2.str() + ".LISV_R8";
             auto o1 = JeveuxVectorReal( currentName2 );
-            _vectorOfUserRealValues[cP].push_back( o1 );
+            _vectorOfUserValuesReal[cP].push_back( o1 );
             std::string currentName3 = getName() + "." + numUser2.str() + ".LISV_FO";
             auto o2 = JeveuxVectorChar8( currentName3 );
             _vectorOfUserFunctionValues[cP].push_back( o2 );

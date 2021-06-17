@@ -65,7 +65,7 @@ class FieldProjector(ExecuteCommand):
                 self._result.appendModelOnAllRanks(keywords["MODELE_2"])
             if "MAILLAGE_2" in keywords:
                 self._result.setMesh(keywords["MAILLAGE_2"])
-            self._result.update()
+            self._result.build()
         elif "CHAM_GD" in keywords:
             pass
         else:

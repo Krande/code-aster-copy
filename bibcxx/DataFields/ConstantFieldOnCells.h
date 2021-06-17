@@ -121,11 +121,11 @@ template < class ValueType > class ConstantFieldValues {
 };
 
 /**
- * @class ConstantFieldOnCellsClass Constant Field on Mesh template
+ * @class ConstantFieldOnCells Constant Field on Mesh template
  * @brief Cette classe permet de definir une carte (champ défini sur les mailles)
  * @author Natacha Bereux
  */
-template < class ValueType > class ConstantFieldOnCellsClass : public DataFieldClass {
+template < class ValueType > class ConstantFieldOnCells : public DataField {
   private:
     /** @brief Vecteur Jeveux '.NOMA' */
     JeveuxVectorChar8 _meshName;
@@ -159,7 +159,7 @@ template < class ValueType > class ConstantFieldOnCellsClass : public DataFieldC
         bool test = _componentNames->updateValuePointer();
         test = test && _valuesListTmp->updateValuePointer();
         if ( !test )
-            throw std::runtime_error( "ConstantFieldOnCellsClass not allocate" );
+            throw std::runtime_error( "ConstantFieldOnCells not allocate" );
         const ASTERINTEGER taille = _componentNames->size();
 
         const ASTERINTEGER tVerif1 = component->size();
@@ -191,7 +191,7 @@ template < class ValueType > class ConstantFieldOnCellsClass : public DataFieldC
         bool test = _componentNames->updateValuePointer();
         test = test && _valuesListTmp->updateValuePointer();
         if ( !test )
-            throw std::runtime_error( "ConstantFieldOnCellsClass not allocate" );
+            throw std::runtime_error( "ConstantFieldOnCells not allocate" );
         const ASTERINTEGER taille = _componentNames->size();
 
         const ASTERINTEGER tVerif1 = component.size();
@@ -229,16 +229,16 @@ template < class ValueType > class ConstantFieldOnCellsClass : public DataFieldC
      * @typedef ConstantFieldOnBaseMeshPtr
      * @brief Pointeur intelligent vers un ConstantFieldOnCells
      */
-    typedef boost::shared_ptr< ConstantFieldOnCellsClass > ConstantFieldOnBaseMeshPtr;
+    typedef boost::shared_ptr< ConstantFieldOnCells > ConstantFieldOnBaseMeshPtr;
 
     /**
      * @brief Constructeur
      * @param name Nom Jeveux de la carte
      * @param mesh Maillage
      */
-    ConstantFieldOnCellsClass( const std::string &name, const BaseMeshPtr &mesh,
+    ConstantFieldOnCells( const std::string &name, const BaseMeshPtr &mesh,
                                const JeveuxMemory memType = Permanent )
-        : DataFieldClass( name, "CARTE", memType ),
+        : DataField( name, "CARTE", memType ),
           _meshName( JeveuxVectorChar8( getName() + ".NOMA" ) ),
           _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
           _nameOfLigrels( JeveuxVectorChar24( getName() + ".NOLI" ) ),
@@ -252,9 +252,9 @@ template < class ValueType > class ConstantFieldOnCellsClass : public DataFieldC
      * @param name Nom Jeveux de la carte
      * @param ligrel Ligrel support
      */
-    ConstantFieldOnCellsClass( std::string name, const FiniteElementDescriptorPtr &ligrel,
+    ConstantFieldOnCells( std::string name, const FiniteElementDescriptorPtr &ligrel,
                                const JeveuxMemory memType = Permanent )
-        : DataFieldClass( name, "CARTE", memType ),
+        : DataField( name, "CARTE", memType ),
           _meshName( JeveuxVectorChar8( getName() + ".NOMA" ) ),
           _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
           _nameOfLigrels( JeveuxVectorChar24( getName() + ".NOLI" ) ),
@@ -268,8 +268,8 @@ template < class ValueType > class ConstantFieldOnCellsClass : public DataFieldC
      * @param mesh Maillage
      * @param name Nom Jeveux de la carte
      */
-    ConstantFieldOnCellsClass( const BaseMeshPtr &mesh, const JeveuxMemory memType = Permanent )
-        : DataFieldClass( memType, "CARTE" ), _meshName( JeveuxVectorChar8( getName() + ".NOMA" ) ),
+    ConstantFieldOnCells( const BaseMeshPtr &mesh, const JeveuxMemory memType = Permanent )
+        : DataField( memType, "CARTE" ), _meshName( JeveuxVectorChar8( getName() + ".NOMA" ) ),
           _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
           _nameOfLigrels( JeveuxVectorChar24( getName() + ".NOLI" ) ),
           _listOfMeshCells( JeveuxCollectionLong( getName() + ".LIMA" ) ),
@@ -282,9 +282,9 @@ template < class ValueType > class ConstantFieldOnCellsClass : public DataFieldC
      * @param ligrel Ligrel support
      * @param name Nom Jeveux de la carte
      */
-    ConstantFieldOnCellsClass( const FiniteElementDescriptorPtr &ligrel,
+    ConstantFieldOnCells( const FiniteElementDescriptorPtr &ligrel,
                                const JeveuxMemory memType = Permanent )
-        : DataFieldClass( memType, "CARTE" ), _meshName( JeveuxVectorChar8( getName() + ".NOMA" ) ),
+        : DataField( memType, "CARTE" ), _meshName( JeveuxVectorChar8( getName() + ".NOMA" ) ),
           _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
           _nameOfLigrels( JeveuxVectorChar24( getName() + ".NOLI" ) ),
           _listOfMeshCells( JeveuxCollectionLong( getName() + ".LIMA" ) ),
@@ -292,13 +292,13 @@ template < class ValueType > class ConstantFieldOnCellsClass : public DataFieldC
           _mesh( ligrel->getMesh() ), _FEDesc( ligrel ), _isAllocated( false ),
           _componentNames( getName() + ".NCMP" ), _valuesListTmp( getName() + ".VALV" ){};
 
-    typedef boost::shared_ptr< ConstantFieldOnCellsClass< ValueType > >
+    typedef boost::shared_ptr< ConstantFieldOnCells< ValueType > >
         ConstantFieldOnCellsValueTypePtr;
 
     /**
      * @brief Destructeur
      */
-    ~ConstantFieldOnCellsClass(){};
+    ~ConstantFieldOnCells(){};
 
     /**
      * @brief Allocation de la carte
@@ -397,18 +397,22 @@ template < class ValueType > class ConstantFieldOnCellsClass : public DataFieldC
     };
 
     /**
-     * @brief Get values of zones from 0 to position_max
+     * @brief Get values of all zones
      */
-    std::vector<ConstantFieldValues< ValueType >> getAllValues() const {
+    std::vector<ConstantFieldValues< ValueType >> getValues() const {
         _valuesList->updateValuePointer();
         _descriptor->updateValuePointer();
-        std::vector<ConstantFieldValues< ValueType >> vectorOfConstantFieldValues;
         ASTERINTEGER nbZoneMax = ( *_descriptor )[1];
         ASTERINTEGER gdeur = ( *_descriptor )[0];
+        auto size = ( *_descriptor )[2];
         ASTERINTEGER nec = PhysicalQuantityManager::Class().getNumberOfEncodedInteger( gdeur );
         const auto &compNames = PhysicalQuantityManager::Class().getComponentNames( gdeur );
         const ASTERINTEGER nbCmpMax = compNames.size();
-        for(int position = 0; position < ( *_descriptor )[2]; ++position)
+
+        std::vector<ConstantFieldValues< ValueType >> vectorOfConstantFieldValues;
+        vectorOfConstantFieldValues.reserve(size);
+
+        for(int position = 0; position < size; ++position)
         {
             VectorString cmpToReturn;
             cmpToReturn.reserve(30*nec);
@@ -599,59 +603,59 @@ template < class ValueType > class ConstantFieldOnCellsClass : public DataFieldC
         retour = ( retour && _descriptor->updateValuePointer() );
         retour = ( retour && _valuesList->updateValuePointer() );
         // Les deux elements suivants sont facultatifs
-        _listOfMeshCells->buildFromJeveux();
+        _listOfMeshCells->build();
         _nameOfLigrels->updateValuePointer();
         return retour;
     };
 };
 
-/** @typedef ConstantFieldOnCellsRealClass Class d'une carte de double */
-typedef ConstantFieldOnCellsClass< ASTERDOUBLE > ConstantFieldOnCellsRealClass;
-/** @typedef ConstantFieldOnCellsLongClass Class d'une carte de long */
-typedef ConstantFieldOnCellsClass< ASTERINTEGER > ConstantFieldOnCellsLongClass;
-/** @typedef ConstantFieldOnCellsComplexClass Class d'une carte de complexe */
-typedef ConstantFieldOnCellsClass< ASTERCOMPLEX > ConstantFieldOnCellsComplexClass;
-/** @typedef ConstantFieldOnCellsChar8Class Class d'une carte de char*8 */
-typedef ConstantFieldOnCellsClass< JeveuxChar8 > ConstantFieldOnCellsChar8Class;
-/** @typedef ConstantFieldOnCellsChar16Class Class d'une carte de char*16 */
-typedef ConstantFieldOnCellsClass< JeveuxChar16 > ConstantFieldOnCellsChar16Class;
-/** @typedef ConstantFieldOnCellsChar24Class Class d'une carte de char*16 */
-typedef ConstantFieldOnCellsClass< JeveuxChar24 > ConstantFieldOnCellsChar24Class;
+/** @typedef ConstantFieldOnCellsReal Class d'une carte de double */
+typedef ConstantFieldOnCells< ASTERDOUBLE > ConstantFieldOnCellsReal;
+/** @typedef ConstantFieldOnCellsLong Class d'une carte de long */
+typedef ConstantFieldOnCells< ASTERINTEGER > ConstantFieldOnCellsLong;
+/** @typedef ConstantFieldOnCellsComplex Class d'une carte de complexe */
+typedef ConstantFieldOnCells< ASTERCOMPLEX > ConstantFieldOnCellsComplex;
+/** @typedef ConstantFieldOnCellsChar8 Class d'une carte de char*8 */
+typedef ConstantFieldOnCells< JeveuxChar8 > ConstantFieldOnCellsChar8;
+/** @typedef ConstantFieldOnCellsChar16 Class d'une carte de char*16 */
+typedef ConstantFieldOnCells< JeveuxChar16 > ConstantFieldOnCellsChar16;
+/** @typedef ConstantFieldOnCellsChar24 Class d'une carte de char*16 */
+typedef ConstantFieldOnCells< JeveuxChar24 > ConstantFieldOnCellsChar24;
 
 /**
  * @typedef ConstantFieldOnBaseMeshPtrReal
  * @brief   Definition d'une carte de double
  */
-typedef boost::shared_ptr< ConstantFieldOnCellsRealClass > ConstantFieldOnCellsRealPtr;
+typedef boost::shared_ptr< ConstantFieldOnCellsReal > ConstantFieldOnCellsRealPtr;
 
 /**
  * @typedef ConstantFieldOnCellsLongPtr
  * @brief   Definition d'une carte de double
  */
-typedef boost::shared_ptr< ConstantFieldOnCellsLongClass > ConstantFieldOnCellsLongPtr;
+typedef boost::shared_ptr< ConstantFieldOnCellsLong > ConstantFieldOnCellsLongPtr;
 
 /**
  * @typedef ConstantFieldOnBaseMeshPtrComplex
  * @brief   Definition d'une carte de complexe
  */
-typedef boost::shared_ptr< ConstantFieldOnCellsComplexClass > ConstantFieldOnCellsComplexPtr;
+typedef boost::shared_ptr< ConstantFieldOnCellsComplex > ConstantFieldOnCellsComplexPtr;
 
 /**
  * @typedef ConstantFieldOnBaseMeshPtrChar8 Definition d'une carte de char[8]
- * @brief Pointeur intelligent vers un ConstantFieldOnCellsClass
+ * @brief Pointeur intelligent vers un ConstantFieldOnCells
  */
-typedef boost::shared_ptr< ConstantFieldOnCellsChar8Class > ConstantFieldOnCellsChar8Ptr;
+typedef boost::shared_ptr< ConstantFieldOnCellsChar8 > ConstantFieldOnCellsChar8Ptr;
 
 /**
  * @typedef ConstantFieldOnBaseMeshPtrChar16 Definition d'une carte de char[16]
- * @brief Pointeur intelligent vers un ConstantFieldOnCellsClass
+ * @brief Pointeur intelligent vers un ConstantFieldOnCells
  */
-typedef boost::shared_ptr< ConstantFieldOnCellsChar16Class > ConstantFieldOnCellsChar16Ptr;
+typedef boost::shared_ptr< ConstantFieldOnCellsChar16 > ConstantFieldOnCellsChar16Ptr;
 
 /**
  * @typedef ConstantFieldOnBaseMeshPtrChar16 Definition d'une carte de char[24]
- * @brief Pointeur intelligent vers un ConstantFieldOnCellsClass
+ * @brief Pointeur intelligent vers un ConstantFieldOnCells
  */
-typedef boost::shared_ptr< ConstantFieldOnCellsChar24Class > ConstantFieldOnCellsChar24Ptr;
+typedef boost::shared_ptr< ConstantFieldOnCellsChar24 > ConstantFieldOnCellsChar24Ptr;
 
 #endif /* CONSTANTFIELDONCELLS_H_ */

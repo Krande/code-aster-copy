@@ -48,11 +48,11 @@
 #include "Python.h"
 
 /**
- * @class ResultClass
+ * @class Result
  * @brief Cette classe correspond a la sd_resultat de Code_Aster, elle stocke des champs
  * @author Nicolas Sellenet
  */
-class ResultClass : public DataStructure, public ListOfTablesClass {
+class Result : public DataStructure, public ListOfTables {
   private:
     typedef std::vector< FieldOnNodesRealPtr > VectorOfFieldsNodes;
     typedef std::vector< FieldOnCellsRealPtr > VectorOfFieldsCells;
@@ -128,22 +128,22 @@ class ResultClass : public DataStructure, public ListOfTablesClass {
   public:
     /**
      * @typedef ResultPtr
-     * @brief Pointeur intelligent vers un ResultClass
+     * @brief Pointeur intelligent vers un Result
      */
-    typedef boost::shared_ptr< ResultClass > ResultPtr;
+    typedef boost::shared_ptr< Result > ResultPtr;
 
     /**
      * @brief Constructeur
      */
-    ResultClass( const std::string &resuTyp )
-        : ResultClass( ResultNaming::getNewResultName(), resuTyp ){};
+    Result( const std::string &resuTyp )
+        : Result( ResultNaming::getNewResultName(), resuTyp ){};
 
     /**
      * @brief Constructeur
      */
-    ResultClass( const std::string &name, const std::string &resuTyp )
+    Result( const std::string &name, const std::string &resuTyp )
         : DataStructure( name, 19, resuTyp ),
-          ListOfTablesClass( name ),
+          ListOfTables( name ),
           _symbolicNamesOfFields( NamesMapChar16( getName() + ".DESC" ) ),
           _namesOfFields( JeveuxCollectionChar24( getName() + ".TACH" ) ),
           _accessVariables( NamesMapChar16( getName() + ".NOVA" ) ),
@@ -206,7 +206,7 @@ class ResultClass : public DataStructure, public ListOfTablesClass {
      * @brief Add time value for one rank
      * @param rank
      */
-    void addTimeValue( double, int rank );
+    void addTimeValue( ASTERDOUBLE, int rank );
 
     /**
      * @brief Append a elementary characteristics on all rank of Result
@@ -401,13 +401,13 @@ class ResultClass : public DataStructure, public ListOfTablesClass {
      * @return true si l'allocation s'est bien passée
      * @todo revoir l'agrandissement de dictOfVectorOfFieldsNodes et dictOfVectorOfFieldsCells
      */
-    bool update() ;
+    bool build() ;
 };
 
 /**
  * @typedef ResultPtr
- * @brief Pointeur intelligent vers un ResultClass
+ * @brief Pointeur intelligent vers un Result
  */
-typedef boost::shared_ptr< ResultClass > ResultPtr;
+typedef boost::shared_ptr< Result > ResultPtr;
 
 #endif /* RESULTS_H_ */

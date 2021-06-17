@@ -109,7 +109,7 @@ class MeshReader(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        self._result.update()
+        self._result.build()
 
 
 LIRE_MAILLAGE = MeshReader.run

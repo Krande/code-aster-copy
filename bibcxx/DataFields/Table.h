@@ -36,11 +36,11 @@
 #include "Functions/Function.h"
 
 /**
- * @class TableClass
+ * @class Table
  * @brief Cette classe template permet de definir une table Aster
  * @author Nicolas Sellenet
  */
-class TableClass : public DataStructure {
+class Table : public DataStructure {
   protected:
     /** @brief Vecteur Jeveux '.TBBA' */
     JeveuxVectorChar8 _memoryLocation;
@@ -54,9 +54,9 @@ class TableClass : public DataStructure {
   public:
     /**
     * @typedef TablePtr
-    * @brief Definition of a smart pointer to a TableClass
+    * @brief Definition of a smart pointer to a Table
     */
-    typedef boost::shared_ptr< TableClass > TablePtr;
+    typedef boost::shared_ptr< Table > TablePtr;
 
     // FIXME: Development documentation says 17 chars + "  ", for 'LG' logicals.
 
@@ -64,7 +64,7 @@ class TableClass : public DataStructure {
      * @brief Constructeur
      * @param name Nom Jeveux du champ aux noeuds
      */
-    TableClass( const std::string &name, const std::string type = "TABLE" )
+    Table( const std::string &name, const std::string type = "TABLE" )
         : DataStructure( name, 19, type ),
           _memoryLocation( JeveuxVectorChar8( getName() + ".TBBA" ) ),
           _description( JeveuxVectorLong( getName() + ".TBNP" ) ),
@@ -73,13 +73,13 @@ class TableClass : public DataStructure {
     /**
      * @brief Constructeur
      */
-    TableClass()
+    Table()
         : DataStructure( ResultNaming::getNewResultName(), 19, "TABLE" ),
           _memoryLocation( JeveuxVectorChar8( getName() + ".TBBA" ) ),
           _description( JeveuxVectorLong( getName() + ".TBNP" ) ),
           _parameterDescription( JeveuxVectorChar24( getName() + ".TBLP" ) ) {};
 
-    ~TableClass() {
+    ~Table() {
 // #ifdef ASTER_DEBUG_CXX
 //         std::cout << "DEBUG: Table.destr: " << this->getName() << std::endl;
 // #endif
@@ -101,38 +101,38 @@ class TableClass : public DataStructure {
 
 /**
   * @typedef TablePtr
-  * @brief Definition of a smart pointer to a TableClass
+  * @brief Definition of a smart pointer to a Table
   */
-typedef boost::shared_ptr< TableClass > TablePtr;
+typedef boost::shared_ptr< Table > TablePtr;
 
 /**
- * @typedef TableOfFunctionsClass
- * @brief Definition of TableOfFunctionsClass (table_fonction)
+ * @typedef TableOfFunctions
+ * @brief Definition of TableOfFunctions (table_fonction)
  */
-class TableOfFunctionsClass : public TableClass {
+class TableOfFunctions : public Table {
   private:
     std::vector< GenericFunctionPtr > _vecOfFunctions;
 
   public:
     /**
     * @typedef TableOfFunctionsPtr
-    * @brief Definition of a smart pointer to a TableOfFunctionsClass
+    * @brief Definition of a smart pointer to a TableOfFunctions
     */
-    typedef boost::shared_ptr< TableOfFunctionsClass > TableOfFunctionsPtr;
+    typedef boost::shared_ptr< TableOfFunctions > TableOfFunctionsPtr;
 
     /**
     * @brief Constructeur
     * @param name Nom Jeveux du champ aux noeuds
     */
-    TableOfFunctionsClass( const std::string &name ):
-        TableClass( name, "TABLE_FONCTION" )
+    TableOfFunctions( const std::string &name ):
+        Table( name, "TABLE_FONCTION" )
     {};
 
     /**
      * @brief Constructeur
      */
-    TableOfFunctionsClass():
-        TableClass( ResultNaming::getNewResultName(), "TABLE_FONCTION" )
+    TableOfFunctions():
+        Table( ResultNaming::getNewResultName(), "TABLE_FONCTION" )
     {};
 
     /**

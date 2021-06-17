@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ class RestGenePhys(ExecuteCommand):
                 modele = dofNum.getModel()
                 if modele is not None:
                     self._result.appendModelOnAllRanks(modele)
-                    self._result.update()
+                    self._result.build()
             else:
                 geneDofNum = resu_gene.getGeneralizedDOFNumbering()
                 if geneDofNum is not None:
@@ -74,7 +74,7 @@ class RestGenePhys(ExecuteCommand):
                             modele = dofNum.getModel()
                             if modele is not None:
                                 self._result.appendModelOnAllRanks(modele)
-                                self._result.update()
+                                self._result.build()
 
         elif isinstance(resu_gene, GeneralizedModeResult):
             matrRigi = resu_gene.getStiffnessMatrix()

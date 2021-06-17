@@ -39,22 +39,22 @@
 #include "astercxx.h"
 #include <stdexcept>
 
-class MaterialFieldBuilderClass;
+class MaterialFieldBuilder;
 
 /**
- * @class PartOfMaterialFieldClass
+ * @class PartOfMaterialField
  * @brief It contains a BehaviourDefinitionPtr and a MeshEntityPtr
  * @author Nicolas Sellenet
  */
-class PartOfMaterialFieldClass {
+class PartOfMaterialField {
   private:
     std::vector< MaterialPtr > _vecOfMater;
     MeshEntityPtr _entity;
 
   public:
-    PartOfMaterialFieldClass() : _entity( nullptr ){};
+    PartOfMaterialField() : _entity( nullptr ){};
 
-    PartOfMaterialFieldClass( const std::vector< MaterialPtr > &vecOfMater,
+    PartOfMaterialField( const std::vector< MaterialPtr > &vecOfMater,
                               const MeshEntityPtr &entity )
         : _vecOfMater( vecOfMater ), _entity( entity ){};
 
@@ -71,17 +71,17 @@ class PartOfMaterialFieldClass {
 
 /**
  * @typedef PartOfMaterialFieldPtr
- * @brief Smart pointer on PartOfMaterialFieldClass
+ * @brief Smart pointer on PartOfMaterialField
  */
-typedef boost::shared_ptr< PartOfMaterialFieldClass > PartOfMaterialFieldPtr;
+typedef boost::shared_ptr< PartOfMaterialField > PartOfMaterialFieldPtr;
 
 /**
- * @class MaterialFieldClass
+ * @class MaterialField
  * @brief produit une sd identique a celle produite par AFFE_MATERIAU
  * @author Nicolas Sellenet
  */
-class MaterialFieldClass : public DataStructure {
-    friend class MaterialFieldBuilderClass;
+class MaterialField : public DataStructure {
+    friend class MaterialFieldBuilder;
 
   private:
     // On redefinit le type MeshEntityPtr afin de pouvoir stocker les MeshEntity
@@ -128,49 +128,49 @@ class MaterialFieldClass : public DataStructure {
   public:
     /**
      * @typedef MaterialFieldPtr
-     * @brief Pointeur intelligent vers un MaterialFieldClass
+     * @brief Pointeur intelligent vers un MaterialField
      */
-    typedef boost::shared_ptr< MaterialFieldClass > MaterialFieldPtr;
+    typedef boost::shared_ptr< MaterialField > MaterialFieldPtr;
 
     /**
      * @brief Constructeur
      */
-    MaterialFieldClass( const MeshPtr &mesh )
-        : MaterialFieldClass( ResultNaming::getNewResultName(), mesh ){};
+    MaterialField( const MeshPtr &mesh )
+        : MaterialField( ResultNaming::getNewResultName(), mesh ){};
 
     /**
      * @brief Constructeur
      */
-    MaterialFieldClass( const SkeletonPtr &mesh )
-        : MaterialFieldClass( ResultNaming::getNewResultName(), mesh ){};
+    MaterialField( const SkeletonPtr &mesh )
+        : MaterialField( ResultNaming::getNewResultName(), mesh ){};
 
     /**
      * @brief Constructeur
      */
-    MaterialFieldClass( const std::string &, const MeshPtr & );
+    MaterialField( const std::string &, const MeshPtr & );
 
     /**
      * @brief Constructeur
      */
-    MaterialFieldClass( const std::string &, const SkeletonPtr & );
+    MaterialField( const std::string &, const SkeletonPtr & );
 
 #ifdef ASTER_HAVE_MPI
     /**
      * @brief Constructeur
      */
-    MaterialFieldClass( const ParallelMeshPtr &mesh )
-        : MaterialFieldClass( ResultNaming::getNewResultName(), mesh ){};
+    MaterialField( const ParallelMeshPtr &mesh )
+        : MaterialField( ResultNaming::getNewResultName(), mesh ){};
 
     /**
      * @brief Constructeur
      */
-    MaterialFieldClass( const std::string &, const ParallelMeshPtr & );
+    MaterialField( const std::string &, const ParallelMeshPtr & );
 #endif /* ASTER_HAVE_MPI */
 
     /**
      * @brief Destructor
      */
-    ~MaterialFieldClass(){};
+    ~MaterialField(){};
 
     /**
      * @brief Add a behaviour on all mesh
@@ -217,10 +217,10 @@ class MaterialFieldClass : public DataStructure {
     void addMaterialsOnCell( MaterialPtr &curMater, VectorString namesOfCells );
 
     /**
-     * @brief Build MaterialFieldPtr without ExternalVariable
+     * @brief Build MaterialFieldPtr without ExternalStateVariable
      * @return true
      */
-    bool buildWithoutExternalVariable();
+    bool buildWithoutExternalStateVariables();
 
     /**
      * @brief Return the ConstantFieldOnCells of behaviour
@@ -244,13 +244,13 @@ class MaterialFieldClass : public DataStructure {
      * @brief Function to know if Calculation Input Variables are present
      * @return true if present
      */
-    bool hasExternalVariablesComputation() const;
+    bool hasExternalStateVariables() const;
 
     /**
      * @brief Function to know if a given Calculation Input Variables exists
      * @return true if exists
      */
-    bool existsExternalVariablesComputation( const std::string & );
+    bool hasExternalStateVariables( const std::string & );
 
     /**
      * @brief Obtenir le maillage
@@ -278,8 +278,8 @@ class MaterialFieldClass : public DataStructure {
 
 /**
  * @typedef MaterialFieldPtr
- * @brief Pointeur intelligent vers un MaterialFieldClass
+ * @brief Pointeur intelligent vers un MaterialField
  */
-typedef boost::shared_ptr< MaterialFieldClass > MaterialFieldPtr;
+typedef boost::shared_ptr< MaterialField > MaterialFieldPtr;
 
 #endif /* MATERIALONMESH_H_ */

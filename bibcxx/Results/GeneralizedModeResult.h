@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe GeneralizedModeResult
  * @author Nicolas Tardieu
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,11 +32,11 @@
 #include "Numbering/GeneralizedDOFNumbering.h"
 
 /**
- * @class GeneralizedModeResultClass
+ * @class GeneralizedModeResult
  * @brief Cette classe correspond à un mode_gene
  * @author Nicolas Sellenet
  */
-class GeneralizedModeResultClass : public FullResultClass {
+class GeneralizedModeResult : public FullResult {
   private:
     /** @brief Damping matrix */
     GeneralizedAssemblyMatrixRealPtr _dampingMatrix;
@@ -52,16 +52,16 @@ class GeneralizedModeResultClass : public FullResultClass {
      * @brief Constructeur
      * @todo  Ajouter les objets Jeveux de la SD
      */
-    GeneralizedModeResultClass( const std::string &name )
-        : FullResultClass( name, "MODE_GENE" ), _rigidityRealMatrix( nullptr ),
+    GeneralizedModeResult( const std::string &name )
+        : FullResult( name, "MODE_GENE" ), _rigidityRealMatrix( nullptr ),
           _rigidityComplexMatrix( nullptr ), _genDOFNum( nullptr ){};
 
     /**
      * @brief Constructeur
      * @todo  Ajouter les objets Jeveux de la SD
      */
-    GeneralizedModeResultClass()
-        : GeneralizedModeResultClass( ResultNaming::getNewResultName() ){};
+    GeneralizedModeResult()
+        : GeneralizedModeResult( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Get GeneralizedDOFNumering
@@ -124,7 +124,7 @@ class GeneralizedModeResultClass : public FullResultClass {
      * @brief Get the stiffness matrix
      * @param matr GeneralizedAssemblyMatrixRealPtr
      */
-    GeneralizedAssemblyMatrixRealPtr getRealGeneralizedStiffnessMatrix( void ) const {
+    GeneralizedAssemblyMatrixRealPtr getGeneralizedStiffnessMatrixReal( void ) const {
         return _rigidityRealMatrix;
     };
 
@@ -132,17 +132,17 @@ class GeneralizedModeResultClass : public FullResultClass {
      * @brief Get the stiffness matrix
      * @param matr GeneralizedAssemblyMatrixComplexPtr
      */
-    GeneralizedAssemblyMatrixComplexPtr getComplexGeneralizedStiffnessMatrix( void ) const {
+    GeneralizedAssemblyMatrixComplexPtr getGeneralizedStiffnessMatrixComplex( void ) const {
         return _rigidityComplexMatrix;
     };
 
-    bool update() { return ResultClass::update(); };
+    bool build() { return Result::build(); };
 };
 
 /**
  * @typedef GeneralizedModeResultPtr
- * @brief Pointeur intelligent vers un GeneralizedModeResultClass
+ * @brief Pointeur intelligent vers un GeneralizedModeResult
  */
-typedef boost::shared_ptr< GeneralizedModeResultClass > GeneralizedModeResultPtr;
+typedef boost::shared_ptr< GeneralizedModeResult > GeneralizedModeResultPtr;
 
 #endif /* GENERALIZEDMODERESULT_H_ */

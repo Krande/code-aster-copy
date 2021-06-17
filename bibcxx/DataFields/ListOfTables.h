@@ -5,7 +5,7 @@
  * @file ListOfTables.h
  * @brief Fichier entete de la classe ListOfTables
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -34,11 +34,11 @@
 #include "DataFields/Table.h"
 
 /**
- * @class ListOfTablesClass
+ * @class ListOfTables
  * @brief Cette classe template permet de definir une table Aster
  * @author Nicolas Sellenet
  */
-class ListOfTablesClass {
+class ListOfTables {
   private:
     /** @brief Nom de la sd */
     std::string _name;
@@ -57,20 +57,20 @@ class ListOfTablesClass {
   public:
     /**
      * @typedef ListOfTablesPtr
-     * @brief Definition of a smart pointer to a ListOfTablesClass
+     * @brief Definition of a smart pointer to a ListOfTables
      */
-    typedef boost::shared_ptr< ListOfTablesClass > ListOfTablesPtr;
+    typedef boost::shared_ptr< ListOfTables > ListOfTablesPtr;
 
     /**
      * @brief Constructeur
      * @param name Nom Jeveux
      */
-    ListOfTablesClass( const std::string &name );
+    ListOfTables( const std::string &name );
 
     /**
      * @brief Constructeur
      */
-    ListOfTablesClass() : ListOfTablesClass( ResultNaming::getNewResultName() ){};
+    ListOfTables() : ListOfTables( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Construire une sd_l_tabke à partir d'objet produit dans le Fortran

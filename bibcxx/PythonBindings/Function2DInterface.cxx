@@ -3,7 +3,7 @@
  * @brief Interface python de Function2D
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,11 +31,11 @@ namespace py = boost::python;
 
 void exportFunction2DToPython() {
 
-    py::class_< Function2DClass, Function2DClass::Function2DPtr, py::bases< DataStructure > >(
+    py::class_< Function2D, Function2D::Function2DPtr, py::bases< DataStructure > >(
         "Function2D", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< Function2DClass >))
-        .def( "__init__", py::make_constructor(&initFactoryPtr< Function2DClass, std::string >))
-        .def( "exportExtensionToPython", &Function2DClass::exportExtensionToPython )
-        .def( "exportValuesToPython", &Function2DClass::exportValuesToPython )
-        .def( "exportParametersToPython", &Function2DClass::exportParametersToPython );
+        .def( "__init__", py::make_constructor(&initFactoryPtr< Function2D >))
+        .def( "__init__", py::make_constructor(&initFactoryPtr< Function2D, std::string >))
+        .def( "exportExtensionToPython", &Function2D::exportExtensionToPython )
+        .def( "exportValuesToPython", &Function2D::exportValuesToPython )
+        .def( "exportParametersToPython", &Function2D::exportParametersToPython );
 };

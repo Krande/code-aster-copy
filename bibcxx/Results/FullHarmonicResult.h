@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FullHarmonicResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -30,27 +30,27 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class FullHarmonicResultClass
+ * @class FullHarmonicResult
  * @brief Cette classe correspond à un dyna_harmo
  * @author Natacha Béreux
  */
-class FullHarmonicResultClass : public FullResultClass {
+class FullHarmonicResult : public FullResult {
   private:
   public:
     /**
      * @brief Constructeur
      * @todo  Ajouter les objets Jeveux de la SD
      */
-    FullHarmonicResultClass( const std::string &name )
-        : FullResultClass( name, "DYNA_HARMO" ){};
-    FullHarmonicResultClass()
-        : FullHarmonicResultClass( ResultNaming::getNewResultName() ){};
+    FullHarmonicResult( const std::string &name )
+        : FullResult( name, "DYNA_HARMO" ){};
+    FullHarmonicResult()
+        : FullHarmonicResult( ResultNaming::getNewResultName() ){};
 };
 
 /**
  * @typedef FullHarmonicResultPtr
- * @brief Pointeur intelligent vers un FullHarmonicResultClass
+ * @brief Pointeur intelligent vers un FullHarmonicResult
  */
-typedef boost::shared_ptr< FullHarmonicResultClass > FullHarmonicResultPtr;
+typedef boost::shared_ptr< FullHarmonicResult > FullHarmonicResultPtr;
 
 #endif /* FULLHARMONICRESULTSCONTAINER_H_ */

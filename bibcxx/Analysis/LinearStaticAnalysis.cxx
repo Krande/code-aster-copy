@@ -34,17 +34,17 @@
 #include "Analysis/LinearStaticAnalysis.h"
 #include "Supervis/CommandSyntax.h"
 
-LinearStaticAnalysisClass::LinearStaticAnalysisClass(
+LinearStaticAnalysis::LinearStaticAnalysis(
     const ModelPtr &model, const MaterialFieldPtr &mater,
     const ElementaryCharacteristicsPtr &cara )
     : _model( model ), _materialField( mater ), _linearSolver( BaseLinearSolverPtr() ),
-      _timeStep( boost::make_shared< TimeStepperClass >()  ),
-      _study( boost::make_shared< StudyDescriptionClass >( _model, _materialField, cara ) ) {
+      _timeStep( boost::make_shared< TimeStepper >()  ),
+      _study( boost::make_shared< StudyDescription >( _model, _materialField, cara ) ) {
     _timeStep->setValues( VectorReal( 1, 0. ) );
 };
 
-ElasticResultPtr LinearStaticAnalysisClass::execute() {
-    ElasticResultPtr resultC( boost::make_shared< ElasticResultClass >() );
+ElasticResultPtr LinearStaticAnalysis::execute() {
+    ElasticResultPtr resultC( boost::make_shared< ElasticResult >() );
 
     _study->getCodedMaterial()->allocate(true);
 
@@ -56,7 +56,7 @@ ElasticResultPtr LinearStaticAnalysisClass::execute() {
         resultC->allocate( _timeStep->size() );
 
     // Define the discrete problem
-    DiscreteProblemPtr dProblem( boost::make_shared< DiscreteProblemClass >( _study ) );
+    DiscreteProblemPtr dProblem( boost::make_shared< DiscreteProblem >( _study ) );
 
     if ( _model->getMesh()->isParallel() ) {
         if ( !_linearSolver->isHPCCompliant() )
@@ -77,7 +77,7 @@ ElasticResultPtr LinearStaticAnalysisClass::execute() {
     dofNum1 = dProblem->computeDOFNumbering( dofNum1 );
 
     StaticMechanicalContext currentContext( dProblem, _linearSolver, resultC );
-    typedef Algorithm< TimeStepperClass, StaticMechanicalContext, StaticMechanicalAlgorithm >
+    typedef Algorithm< TimeStepper, StaticMechanicalContext, StaticMechanicalAlgorithm >
         MSAlgo;
     MSAlgo::runAllStepsOverAlgorithm( *_timeStep, currentContext );
 

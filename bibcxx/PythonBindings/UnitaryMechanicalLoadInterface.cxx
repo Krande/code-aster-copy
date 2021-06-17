@@ -45,227 +45,227 @@ void exportUnitaryMechanicalLoadToPython() {
         .value( "THMFlux", THMFlux );
 
 
-    py::class_< NodalForceRealClass, NodalForceRealClass::UnitaryMechanicalLoadRealPtr,
-                py::bases< MechanicalLoadRealClass > >( "NodalForceReal", py::no_init )
+    py::class_< NodalForceReal, NodalForceReal::UnitaryMechanicalLoadRealPtr,
+                py::bases< MechanicalLoadReal > >( "NodalForceReal", py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< NodalForceRealClass, ModelPtr >))
+              py::make_constructor(&initFactoryPtr< NodalForceReal, ModelPtr >))
         .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< NodalForceRealClass, std::string, ModelPtr >))
-        .def( "build", &NodalForceRealClass::build )
-        .def( "setValue", &NodalForceRealClass::setValue );
+                              &initFactoryPtr< NodalForceReal, std::string, ModelPtr >))
+        .def( "build", &NodalForceReal::build )
+        .def( "setValue", &NodalForceReal::setValue );
 
     py::class_<
-        NodalStructuralForceRealClass, NodalStructuralForceRealClass::UnitaryMechanicalLoadRealPtr,
-        py::bases< MechanicalLoadRealClass > >( "NodalStructuralForceReal", py::no_init )
+        NodalStructuralForceReal, NodalStructuralForceReal::UnitaryMechanicalLoadRealPtr,
+        py::bases< MechanicalLoadReal > >( "NodalStructuralForceReal", py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< NodalStructuralForceRealClass, ModelPtr >))
+              py::make_constructor(&initFactoryPtr< NodalStructuralForceReal, ModelPtr >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< NodalStructuralForceRealClass, std::string, ModelPtr >))
-        .def( "build", &NodalStructuralForceRealClass::build )
-        .def( "setValue", &NodalStructuralForceRealClass::setValue );
+                  &initFactoryPtr< NodalStructuralForceReal, std::string, ModelPtr >))
+        .def( "build", &NodalStructuralForceReal::build )
+        .def( "setValue", &NodalStructuralForceReal::setValue );
 
-    py::class_< ForceOnFaceRealClass, ForceOnFaceRealClass::UnitaryMechanicalLoadRealPtr,
-                py::bases< MechanicalLoadRealClass > >( "ForceOnFaceReal", py::no_init )
+    py::class_< ForceOnFaceReal, ForceOnFaceReal::UnitaryMechanicalLoadRealPtr,
+                py::bases< MechanicalLoadReal > >( "ForceOnFaceReal", py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ForceOnFaceRealClass, ModelPtr >))
+              py::make_constructor(&initFactoryPtr< ForceOnFaceReal, ModelPtr >))
         .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< ForceOnFaceRealClass, std::string, ModelPtr >))
-        .def( "build", &ForceOnFaceRealClass::build )
-        .def( "setValue", &ForceOnFaceRealClass::setValue );
+                              &initFactoryPtr< ForceOnFaceReal, std::string, ModelPtr >))
+        .def( "build", &ForceOnFaceReal::build )
+        .def( "setValue", &ForceOnFaceReal::setValue );
 
-    py::class_< ForceOnEdgeRealClass, ForceOnEdgeRealClass::UnitaryMechanicalLoadRealPtr,
-                py::bases< MechanicalLoadRealClass > >( "ForceOnEdgeReal", py::no_init )
+    py::class_< ForceOnEdgeReal, ForceOnEdgeReal::UnitaryMechanicalLoadRealPtr,
+                py::bases< MechanicalLoadReal > >( "ForceOnEdgeReal", py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ForceOnEdgeRealClass, ModelPtr >))
+              py::make_constructor(&initFactoryPtr< ForceOnEdgeReal, ModelPtr >))
         .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< ForceOnEdgeRealClass, std::string, ModelPtr >))
-        .def( "build", &ForceOnEdgeRealClass::build )
-        .def( "setValue", &ForceOnEdgeRealClass::setValue );
+                              &initFactoryPtr< ForceOnEdgeReal, std::string, ModelPtr >))
+        .def( "build", &ForceOnEdgeReal::build )
+        .def( "setValue", &ForceOnEdgeReal::setValue );
 
     py::class_<
-        StructuralForceOnEdgeRealClass,
-            StructuralForceOnEdgeRealClass::UnitaryMechanicalLoadRealPtr,
-        py::bases< MechanicalLoadRealClass > >( "StructuralForceOnEdgeReal", py::no_init )
+        StructuralForceOnEdgeReal,
+            StructuralForceOnEdgeReal::UnitaryMechanicalLoadRealPtr,
+        py::bases< MechanicalLoadReal > >( "StructuralForceOnEdgeReal", py::no_init )
         .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< StructuralForceOnEdgeRealClass, ModelPtr >))
+                              &initFactoryPtr< StructuralForceOnEdgeReal, ModelPtr >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< StructuralForceOnEdgeRealClass, std::string, ModelPtr >))
-        .def( "build", &StructuralForceOnEdgeRealClass::build )
-        .def( "setValue", &StructuralForceOnEdgeRealClass::setValue );
+                  &initFactoryPtr< StructuralForceOnEdgeReal, std::string, ModelPtr >))
+        .def( "build", &StructuralForceOnEdgeReal::build )
+        .def( "setValue", &StructuralForceOnEdgeReal::setValue );
 
-    py::class_< LineicForceRealClass, LineicForceRealClass::UnitaryMechanicalLoadRealPtr,
-                py::bases< MechanicalLoadRealClass > >( "LineicForceReal", py::no_init )
+    py::class_< LineicForceReal, LineicForceReal::UnitaryMechanicalLoadRealPtr,
+                py::bases< MechanicalLoadReal > >( "LineicForceReal", py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< LineicForceRealClass, ModelPtr >))
+              py::make_constructor(&initFactoryPtr< LineicForceReal, ModelPtr >))
         .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< LineicForceRealClass, std::string, ModelPtr >))
-        .def( "build", &LineicForceRealClass::build )
-        .def( "setValue", &LineicForceRealClass::setValue );
+                              &initFactoryPtr< LineicForceReal, std::string, ModelPtr >))
+        .def( "build", &LineicForceReal::build )
+        .def( "setValue", &LineicForceReal::setValue );
 
-    py::class_< InternalForceRealClass, InternalForceRealClass::UnitaryMechanicalLoadRealPtr,
-                py::bases< MechanicalLoadRealClass > >( "InternalForceReal", py::no_init )
+    py::class_< InternalForceReal, InternalForceReal::UnitaryMechanicalLoadRealPtr,
+                py::bases< MechanicalLoadReal > >( "InternalForceReal", py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< InternalForceRealClass, ModelPtr >))
+              py::make_constructor(&initFactoryPtr< InternalForceReal, ModelPtr >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< InternalForceRealClass, std::string, ModelPtr >))
-        .def( "build", &InternalForceRealClass::build )
-        .def( "setValue", &InternalForceRealClass::setValue );
+                  &initFactoryPtr< InternalForceReal, std::string, ModelPtr >))
+        .def( "build", &InternalForceReal::build )
+        .def( "setValue", &InternalForceReal::setValue );
 
     py::class_<
-        StructuralForceOnBeamRealClass,
-            StructuralForceOnBeamRealClass::UnitaryMechanicalLoadRealPtr,
-        py::bases< MechanicalLoadRealClass > >( "StructuralForceOnBeamReal", py::no_init )
+        StructuralForceOnBeamReal,
+            StructuralForceOnBeamReal::UnitaryMechanicalLoadRealPtr,
+        py::bases< MechanicalLoadReal > >( "StructuralForceOnBeamReal", py::no_init )
         .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< StructuralForceOnBeamRealClass, ModelPtr >))
+                              &initFactoryPtr< StructuralForceOnBeamReal, ModelPtr >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< StructuralForceOnBeamRealClass, std::string, ModelPtr >))
-        .def( "build", &StructuralForceOnBeamRealClass::build )
-        .def( "setValue", &StructuralForceOnBeamRealClass::setValue );
+                  &initFactoryPtr< StructuralForceOnBeamReal, std::string, ModelPtr >))
+        .def( "build", &StructuralForceOnBeamReal::build )
+        .def( "setValue", &StructuralForceOnBeamReal::setValue );
 
-    py::class_< LocalForceOnBeamRealClass, LocalForceOnBeamRealClass::UnitaryMechanicalLoadRealPtr,
-                py::bases< MechanicalLoadRealClass > >( "LocalForceOnBeamReal",
+    py::class_< LocalForceOnBeamReal, LocalForceOnBeamReal::UnitaryMechanicalLoadRealPtr,
+                py::bases< MechanicalLoadReal > >( "LocalForceOnBeamReal",
                                                               py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< LocalForceOnBeamRealClass, ModelPtr >))
+              py::make_constructor(&initFactoryPtr< LocalForceOnBeamReal, ModelPtr >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< LocalForceOnBeamRealClass, std::string, ModelPtr >))
-        .def( "build", &LocalForceOnBeamRealClass::build )
-        .def( "setValue", &LocalForceOnBeamRealClass::setValue );
+                  &initFactoryPtr< LocalForceOnBeamReal, std::string, ModelPtr >))
+        .def( "build", &LocalForceOnBeamReal::build )
+        .def( "setValue", &LocalForceOnBeamReal::setValue );
 
-    py::class_< StructuralForceOnShellRealClass,
-                StructuralForceOnShellRealClass::UnitaryMechanicalLoadRealPtr,
-                py::bases< MechanicalLoadRealClass > >( "StructuralForceOnShellReal",
+    py::class_< StructuralForceOnShellReal,
+                StructuralForceOnShellReal::UnitaryMechanicalLoadRealPtr,
+                py::bases< MechanicalLoadReal > >( "StructuralForceOnShellReal",
                                                               py::no_init )
         .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< StructuralForceOnShellRealClass, ModelPtr >))
+                              &initFactoryPtr< StructuralForceOnShellReal, ModelPtr >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< StructuralForceOnShellRealClass, std::string, ModelPtr >))
-        .def( "build", &StructuralForceOnShellRealClass::build )
-        .def( "setValue", &StructuralForceOnShellRealClass::setValue );
+                  &initFactoryPtr< StructuralForceOnShellReal, std::string, ModelPtr >))
+        .def( "build", &StructuralForceOnShellReal::build )
+        .def( "setValue", &StructuralForceOnShellReal::setValue );
 
-    py::class_< LocalForceOnShellRealClass,
-        LocalForceOnShellRealClass::UnitaryMechanicalLoadRealPtr,
-                py::bases< MechanicalLoadRealClass > >( "LocalForceOnShellReal",
+    py::class_< LocalForceOnShellReal,
+        LocalForceOnShellReal::UnitaryMechanicalLoadRealPtr,
+                py::bases< MechanicalLoadReal > >( "LocalForceOnShellReal",
                                                               py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< LocalForceOnShellRealClass, ModelPtr >))
+              py::make_constructor(&initFactoryPtr< LocalForceOnShellReal, ModelPtr >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< LocalForceOnShellRealClass, std::string, ModelPtr >))
-        .def( "build", &LocalForceOnShellRealClass::build )
-        .def( "setValue", &LocalForceOnShellRealClass::setValue );
+                  &initFactoryPtr< LocalForceOnShellReal, std::string, ModelPtr >))
+        .def( "build", &LocalForceOnShellReal::build )
+        .def( "setValue", &LocalForceOnShellReal::setValue );
 
-    py::class_< PressureOnShellRealClass, PressureOnShellRealClass::UnitaryMechanicalLoadRealPtr,
-                py::bases< MechanicalLoadRealClass > >( "PressureOnShellReal", py::no_init )
+    py::class_< PressureOnShellReal, PressureOnShellReal::UnitaryMechanicalLoadRealPtr,
+                py::bases< MechanicalLoadReal > >( "PressureOnShellReal", py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< PressureOnShellRealClass, ModelPtr >))
+              py::make_constructor(&initFactoryPtr< PressureOnShellReal, ModelPtr >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< PressureOnShellRealClass, std::string, ModelPtr >))
-        .def( "build", &PressureOnShellRealClass::build )
-        .def( "setValue", &PressureOnShellRealClass::setValue );
+                  &initFactoryPtr< PressureOnShellReal, std::string, ModelPtr >))
+        .def( "build", &PressureOnShellReal::build )
+        .def( "setValue", &PressureOnShellReal::setValue );
 
-    py::class_< PressureOnPipeRealClass, PressureOnPipeRealClass::UnitaryMechanicalLoadRealPtr,
-                py::bases< MechanicalLoadRealClass > >( "PressureOnPipeReal", py::no_init )
+    py::class_< PressureOnPipeReal, PressureOnPipeReal::UnitaryMechanicalLoadRealPtr,
+                py::bases< MechanicalLoadReal > >( "PressureOnPipeReal", py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< PressureOnPipeRealClass, ModelPtr >))
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< PressureOnPipeRealClass, std::string, ModelPtr >))
-        .def( "build", &PressureOnPipeRealClass::build )
-        .def( "setValue", &PressureOnPipeRealClass::setValue );
-
-    py::class_<
-        ImposedDisplacementRealClass, ImposedDisplacementRealClass::UnitaryMechanicalLoadRealPtr,
-        py::bases< MechanicalLoadRealClass > >( "ImposedDisplacementReal", py::no_init )
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ImposedDisplacementRealClass, ModelPtr >))
+              py::make_constructor(&initFactoryPtr< PressureOnPipeReal, ModelPtr >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< ImposedDisplacementRealClass, std::string, ModelPtr >))
-        .def( "build", &ImposedDisplacementRealClass::build )
-        .def( "setValue", &ImposedDisplacementRealClass::setValue );
-
-    py::class_< ImposedPressureRealClass, ImposedPressureRealClass::UnitaryMechanicalLoadRealPtr,
-                py::bases< MechanicalLoadRealClass > >( "ImposedPressureReal", py::no_init )
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ImposedPressureRealClass, ModelPtr >))
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< ImposedPressureRealClass, std::string, ModelPtr >))
-        .def( "build", &ImposedPressureRealClass::build )
-        .def( "setValue", &ImposedPressureRealClass::setValue );
+                  &initFactoryPtr< PressureOnPipeReal, std::string, ModelPtr >))
+        .def( "build", &PressureOnPipeReal::build )
+        .def( "setValue", &PressureOnPipeReal::setValue );
 
     py::class_<
-        DistributedPressureRealClass, DistributedPressureRealClass::UnitaryMechanicalLoadRealPtr,
-        py::bases< MechanicalLoadRealClass > >( "DistributedPressureReal", py::no_init )
+        ImposedDisplacementReal, ImposedDisplacementReal::UnitaryMechanicalLoadRealPtr,
+        py::bases< MechanicalLoadReal > >( "ImposedDisplacementReal", py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< DistributedPressureRealClass, ModelPtr >))
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< DistributedPressureRealClass, std::string, ModelPtr >))
-        .def( "build", &DistributedPressureRealClass::build )
-        .def( "setValue", &DistributedPressureRealClass::setValue );
-
-    py::class_< ImpedanceOnFaceRealClass, ImpedanceOnFaceRealClass::UnitaryMechanicalLoadRealPtr,
-                py::bases< MechanicalLoadRealClass > >( "ImpedanceOnFaceReal", py::no_init )
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ImpedanceOnFaceRealClass, ModelPtr >))
+              py::make_constructor(&initFactoryPtr< ImposedDisplacementReal, ModelPtr >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< ImpedanceOnFaceRealClass, std::string, ModelPtr >))
-        .def( "build", &ImpedanceOnFaceRealClass::build )
-        .def( "setValue", &ImpedanceOnFaceRealClass::setValue );
+                  &initFactoryPtr< ImposedDisplacementReal, std::string, ModelPtr >))
+        .def( "build", &ImposedDisplacementReal::build )
+        .def( "setValue", &ImposedDisplacementReal::setValue );
 
-    py::class_< NormalSpeedOnFaceRealClass,
-        NormalSpeedOnFaceRealClass::UnitaryMechanicalLoadRealPtr,
-                py::bases< MechanicalLoadRealClass > >( "NormalSpeedOnFaceReal",
+    py::class_< ImposedPressureReal, ImposedPressureReal::UnitaryMechanicalLoadRealPtr,
+                py::bases< MechanicalLoadReal > >( "ImposedPressureReal", py::no_init )
+        .def( "__init__",
+              py::make_constructor(&initFactoryPtr< ImposedPressureReal, ModelPtr >))
+        .def( "__init__",
+              py::make_constructor(
+                  &initFactoryPtr< ImposedPressureReal, std::string, ModelPtr >))
+        .def( "build", &ImposedPressureReal::build )
+        .def( "setValue", &ImposedPressureReal::setValue );
+
+    py::class_<
+        DistributedPressureReal, DistributedPressureReal::UnitaryMechanicalLoadRealPtr,
+        py::bases< MechanicalLoadReal > >( "DistributedPressureReal", py::no_init )
+        .def( "__init__",
+              py::make_constructor(&initFactoryPtr< DistributedPressureReal, ModelPtr >))
+        .def( "__init__",
+              py::make_constructor(
+                  &initFactoryPtr< DistributedPressureReal, std::string, ModelPtr >))
+        .def( "build", &DistributedPressureReal::build )
+        .def( "setValue", &DistributedPressureReal::setValue );
+
+    py::class_< ImpedanceOnFaceReal, ImpedanceOnFaceReal::UnitaryMechanicalLoadRealPtr,
+                py::bases< MechanicalLoadReal > >( "ImpedanceOnFaceReal", py::no_init )
+        .def( "__init__",
+              py::make_constructor(&initFactoryPtr< ImpedanceOnFaceReal, ModelPtr >))
+        .def( "__init__",
+              py::make_constructor(
+                  &initFactoryPtr< ImpedanceOnFaceReal, std::string, ModelPtr >))
+        .def( "build", &ImpedanceOnFaceReal::build )
+        .def( "setValue", &ImpedanceOnFaceReal::setValue );
+
+    py::class_< NormalSpeedOnFaceReal,
+        NormalSpeedOnFaceReal::UnitaryMechanicalLoadRealPtr,
+                py::bases< MechanicalLoadReal > >( "NormalSpeedOnFaceReal",
                                                               py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< NormalSpeedOnFaceRealClass, ModelPtr >))
+              py::make_constructor(&initFactoryPtr< NormalSpeedOnFaceReal, ModelPtr >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< NormalSpeedOnFaceRealClass, std::string, ModelPtr >))
-        .def( "build", &NormalSpeedOnFaceRealClass::build )
-        .def( "setValue", &NormalSpeedOnFaceRealClass::setValue );
+                  &initFactoryPtr< NormalSpeedOnFaceReal, std::string, ModelPtr >))
+        .def( "build", &NormalSpeedOnFaceReal::build )
+        .def( "setValue", &NormalSpeedOnFaceReal::setValue );
 
     py::class_<
-        WavePressureOnFaceRealClass, WavePressureOnFaceRealClass::UnitaryMechanicalLoadRealPtr,
-        py::bases< MechanicalLoadRealClass > >( "WavePressureOnFaceReal", py::no_init )
+        WavePressureOnFaceReal, WavePressureOnFaceReal::UnitaryMechanicalLoadRealPtr,
+        py::bases< MechanicalLoadReal > >( "WavePressureOnFaceReal", py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< WavePressureOnFaceRealClass, ModelPtr >))
+              py::make_constructor(&initFactoryPtr< WavePressureOnFaceReal, ModelPtr >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< WavePressureOnFaceRealClass, std::string, ModelPtr >))
-        .def( "build", &WavePressureOnFaceRealClass::build )
-        .def( "setValue", &WavePressureOnFaceRealClass::setValue );
+                  &initFactoryPtr< WavePressureOnFaceReal, std::string, ModelPtr >))
+        .def( "build", &WavePressureOnFaceReal::build )
+        .def( "setValue", &WavePressureOnFaceReal::setValue );
 
     py::class_<
-        DistributedHeatFluxRealClass, DistributedHeatFluxRealClass::UnitaryMechanicalLoadRealPtr,
-        py::bases< MechanicalLoadRealClass > >( "DistributedHeatFluxReal", py::no_init )
+        DistributedHeatFluxReal, DistributedHeatFluxReal::UnitaryMechanicalLoadRealPtr,
+        py::bases< MechanicalLoadReal > >( "DistributedHeatFluxReal", py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< DistributedHeatFluxRealClass, ModelPtr >))
+              py::make_constructor(&initFactoryPtr< DistributedHeatFluxReal, ModelPtr >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< DistributedHeatFluxRealClass, std::string, ModelPtr >))
-        .def( "build", &DistributedHeatFluxRealClass::build )
-        .def( "setValue", &DistributedHeatFluxRealClass::setValue );
+                  &initFactoryPtr< DistributedHeatFluxReal, std::string, ModelPtr >))
+        .def( "build", &DistributedHeatFluxReal::build )
+        .def( "setValue", &DistributedHeatFluxReal::setValue );
 
-    py::class_< DistributedHydraulicFluxRealClass,
-                DistributedHydraulicFluxRealClass::UnitaryMechanicalLoadRealPtr,
-                py::bases< MechanicalLoadRealClass > >( "DistributedHydraulicFluxReal",
+    py::class_< DistributedHydraulicFluxReal,
+                DistributedHydraulicFluxReal::UnitaryMechanicalLoadRealPtr,
+                py::bases< MechanicalLoadReal > >( "DistributedHydraulicFluxReal",
                                                               py::no_init )
         .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< DistributedHydraulicFluxRealClass, ModelPtr >))
+                              &initFactoryPtr< DistributedHydraulicFluxReal, ModelPtr >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< DistributedHydraulicFluxRealClass, std::string, ModelPtr >))
-        .def( "build", &DistributedHydraulicFluxRealClass::build )
-        .def( "setValue", &DistributedHydraulicFluxRealClass::setValue );
+                  &initFactoryPtr< DistributedHydraulicFluxReal, std::string, ModelPtr >))
+        .def( "build", &DistributedHydraulicFluxReal::build )
+        .def( "setValue", &DistributedHydraulicFluxReal::setValue );
 };

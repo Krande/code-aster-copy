@@ -40,7 +40,7 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=10000.0,
 
 affectMat = code_aster.MaterialField(MAIL)
 affectMat.addMaterialsOnMesh(MATER)
-affectMat.buildWithoutExternalVariable()
+affectMat.buildWithoutExternalStateVariables()
 
 MODT=AFFE_MODELE(MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
@@ -65,7 +65,7 @@ study = code_aster.StudyDescription(MODT, affectMat)
 study.addDirichletBC(charCine)
 study.addLoad(CHT1)
 dProblem = code_aster.DiscreteProblem(study)
-vect_elem = dProblem.buildElementaryMechanicalLoadsVector()
+vect_elem = dProblem.computeElementaryMechanicalLoadsVector()
 matr_elem = dProblem.computeMechanicalStiffnessMatrix()
 
 monSolver = code_aster.PetscSolver( code_aster.Renumbering.Sans )
@@ -85,10 +85,10 @@ matrAsse.build()
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 #matrAsse.debugPrint()
 
-retour = vect_elem.assembleVector( numeDDL )
+retour = vect_elem.assemble( numeDDL )
 
-monSolver.matrixFactorization( matrAsse )
-resu = monSolver.solveRealLinearSystem( matrAsse, retour )
+monSolver.factorize( matrAsse )
+resu = monSolver.solve( matrAsse, retour )
     #resu.debugPrint(6)
 
 try:

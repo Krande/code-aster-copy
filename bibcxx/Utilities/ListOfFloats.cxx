@@ -3,7 +3,7 @@
  * @brief Implementation de ListOfFloats
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -25,7 +25,7 @@
 
 #include "Utilities/ListOfFloats.h"
 
-VectorReal ListOfFloatsClass::getValues() const {
+VectorReal ListOfFloats::getValues() const {
     if ( !_vale->exists() )
         throw std::runtime_error( "No list of values in ListOfFloats" );
 
@@ -37,11 +37,11 @@ VectorReal ListOfFloatsClass::getValues() const {
     return toReturn;
 };
 
-void ListOfFloatsClass::setVectorValues( const VectorReal &vec ) {
+void ListOfFloats::setVectorValues( const VectorReal &vec ) {
     ( *_vale ) = vec;
 };
 
-int ListOfFloatsClass::size() {
+int ListOfFloats::size() {
     _vale->updateValuePointer();
     return _vale->size();
 };

@@ -2,7 +2,7 @@
  * @file ResultNaming.cxx
  * @brief Implementation of automatic naming of jeveux objects.
  * @section LICENCE
- * Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+ * Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
  * This file is part of code_aster.
  *
  * code_aster is free software: you can redistribute it and/or modify
@@ -29,18 +29,18 @@
 #include "Supervis/ResultNaming.h"
 #include "astercxx.h"
 
-FunctionPtr emptyRealFunction( new FunctionClass( "" ) );
+FunctionPtr emptyRealFunction( new Function( "" ) );
 
-BaseFunctionClass::BaseFunctionClass( const std::string name, const std::string type,
+BaseFunction::BaseFunction( const std::string name, const std::string type,
                                       const std::string type2 )
-    : GenericFunctionClass( name, type, type2 ),
+    : GenericFunction( name, type, type2 ),
       _value( JeveuxVectorReal( getName() + ".VALE" ) ) {}
 
-BaseFunctionClass::BaseFunctionClass( const std::string type,
+BaseFunction::BaseFunction( const std::string type,
                                       const std::string type2 )
-    : BaseFunctionClass::BaseFunctionClass( ResultNaming::getNewResultName(), type, type2 ) {}
+    : BaseFunction::BaseFunction( ResultNaming::getNewResultName(), type, type2 ) {}
 
-void BaseFunctionClass::allocate( JeveuxMemory mem,
+void BaseFunction::allocate( JeveuxMemory mem,
                                      ASTERINTEGER size ) {
     if ( _property->exists() )
         _property->deallocate();
@@ -51,18 +51,18 @@ void BaseFunctionClass::allocate( JeveuxMemory mem,
     _value->allocate( mem, 2 * size );
 }
 
-void BaseFunctionClass::deallocate()
+void BaseFunction::deallocate()
 {
     _property->deallocate();
     _value->deallocate();
 }
 
-void FunctionComplexClass::allocate( JeveuxMemory mem,
+void FunctionComplex::allocate( JeveuxMemory mem,
                                         ASTERINTEGER size ) {
     throw std::runtime_error( "Not yet implemented!" );
 }
 
-void BaseFunctionClass::setValues( const VectorReal &absc,
+void BaseFunction::setValues( const VectorReal &absc,
                                       const VectorReal &ordo ) {
     if ( absc.size() != ordo.size() )
         throw std::runtime_error( "Function: length of abscissa and ordinates must be equal" );
@@ -82,7 +82,7 @@ void BaseFunctionClass::setValues( const VectorReal &absc,
     }
 }
 
-void BaseFunctionClass::setInterpolation( const std::string type ) {
+void BaseFunction::setInterpolation( const std::string type ) {
     std::string interp;
     if ( !_property->isAllocated() )
         propertyAllocate();
@@ -101,7 +101,7 @@ void BaseFunctionClass::setInterpolation( const std::string type ) {
     ( *_property )[1] = type.c_str();
 }
 
-void BaseFunctionClass::setAsConstant() {
+void BaseFunction::setAsConstant() {
     if ( !_property->isAllocated() )
         propertyAllocate();
     _funct_type = "CONSTANT";
@@ -109,7 +109,7 @@ void BaseFunctionClass::setAsConstant() {
 }
 
 /* Complex function */
-void FunctionComplexClass::setValues( const VectorReal &absc,
+void FunctionComplex::setValues( const VectorReal &absc,
                                          const VectorReal &ordo ) {
     if ( absc.size() * 2 != ordo.size() )
         throw std::runtime_error(
@@ -132,7 +132,7 @@ void FunctionComplexClass::setValues( const VectorReal &absc,
     }
 }
 
-void FunctionComplexClass::setValues( const VectorReal &absc,
+void FunctionComplex::setValues( const VectorReal &absc,
                                          const VectorComplex &ordo ) {
     throw std::runtime_error( "Not yet implemented!" );
 }

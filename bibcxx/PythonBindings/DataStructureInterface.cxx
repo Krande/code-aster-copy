@@ -3,7 +3,7 @@
  * @brief Interface python de DataStructure
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -97,7 +97,7 @@ Returns:
             ( py::arg( "self" ) ) )
         .def( "debugPrint", c1 )
         .def( "debugPrint", c2 )
-        .def( "update", &DataStructure::update,
+        .def( "build", &DataStructure::build,
         R"(
 Update the *DataStructure* attributes from the *Jeveux* objects.
 *Only use internally after calling fortran subroutines*.

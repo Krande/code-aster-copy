@@ -34,11 +34,11 @@
 typedef VectorReal::const_iterator VectorRealCIter;
 
 /**
- * @class TimeStepperClass
+ * @class TimeStepper
  * @brief Cette classe permet de definir une liste d'instants
  * @author Nicolas Sellenet
  */
-class TimeStepperClass : public DataStructure, public GenericStepper {
+class TimeStepper : public DataStructure, public GenericStepper {
   private:
     /** @brief Liste des instants */
     JeveuxVectorReal _values;
@@ -48,24 +48,24 @@ class TimeStepperClass : public DataStructure, public GenericStepper {
      * @typedef TimeStepperPtr
      * @brief Pointeur intelligent vers un TimeStepper
      */
-    typedef boost::shared_ptr< TimeStepperClass > TimeStepperPtr;
+    typedef boost::shared_ptr< TimeStepper > TimeStepperPtr;
 
     /**
      * @brief Constructeur
      */
-    TimeStepperClass( const std::string name, const JeveuxMemory memType = Permanent )
+    TimeStepper( const std::string name, const JeveuxMemory memType = Permanent )
         : DataStructure( name, 8, "LIST_INST", memType ), _values( getName() + ".LIST" ){};
 
     /**
      * @brief Constructeur
      */
-    TimeStepperClass( JeveuxMemory memType = Permanent )
-        : TimeStepperClass( DataStructureNaming::getNewName( memType, 8 ), memType ){};
+    TimeStepper( JeveuxMemory memType = Permanent )
+        : TimeStepper( DataStructureNaming::getNewName( memType, 8 ), memType ){};
 
     /**
      * @brief Destructeur
      */
-    ~TimeStepperClass(){};
+    ~TimeStepper(){};
 
     struct const_iterator {
         ASTERDOUBLE *position;
@@ -145,13 +145,13 @@ class TimeStepperClass : public DataStructure, public GenericStepper {
      * @brief Fonction permettant de mettre a jour le stepper
      * @return true si tout s'est bien passé
      */
-    bool update() const { return _values->updateValuePointer(); };
+    bool build() const { return _values->updateValuePointer(); };
 };
 
 /**
  * @typedef TimeStepperPtr
  * @brief Pointeur intelligent vers un TimeStepper
  */
-typedef boost::shared_ptr< TimeStepperClass > TimeStepperPtr;
+typedef boost::shared_ptr< TimeStepper > TimeStepperPtr;
 
 #endif /* TIMESTEPPER_H_ */

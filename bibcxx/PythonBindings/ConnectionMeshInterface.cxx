@@ -33,35 +33,35 @@ void exportConnectionMeshToPython() {
 
 #ifdef ASTER_HAVE_MPI
 
-    const VectorLong ( ConnectionMeshClass::*c1 )(   ) const =
-        &ConnectionMeshClass::getCells;
-    const VectorLong ( ConnectionMeshClass::*c2 )( const std::string ) const =
-        &ConnectionMeshClass::getCells;
+    const VectorLong ( ConnectionMesh::*c1 )(   ) const =
+        &ConnectionMesh::getCells;
+    const VectorLong ( ConnectionMesh::*c2 )( const std::string ) const =
+        &ConnectionMesh::getCells;
 
-    py::class_< ConnectionMeshClass, ConnectionMeshClass::ConnectionMeshPtr,
-                py::bases< BaseMeshClass > >( "ConnectionMesh", py::no_init )
+    py::class_< ConnectionMesh, ConnectionMesh::ConnectionMeshPtr,
+                py::bases< BaseMesh > >( "ConnectionMesh", py::no_init )
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< ConnectionMeshClass, ParallelMeshPtr,
+                  &initFactoryPtr< ConnectionMesh, ParallelMeshPtr,
                                     VectorString, VectorString >))
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ConnectionMeshClass, std::string,
+        .def( "__init__", py::make_constructor(&initFactoryPtr< ConnectionMesh, std::string,
                                                                 ParallelMeshPtr, VectorString,
                                                                 VectorString >))
-        .def( "getGroupsOfCells", &ConnectionMeshClass::getGroupsOfCells, R"(
+        .def( "getGroupsOfCells", &ConnectionMesh::getGroupsOfCells, R"(
 Return the list of the existing groups of cells.
 
 Returns:
     list[str]: List of groups names (stripped).
         )",
               ( py::arg( "self" )) )
-        .def( "getGroupsOfNodes", &ConnectionMeshClass::getGroupsOfNodes, R"(
+        .def( "getGroupsOfNodes", &ConnectionMesh::getGroupsOfNodes, R"(
 Return the list of the existing groups of nodes.
 
 Returns:
     list[str]: List of groups names (stripped).
         )",
               ( py::arg( "self" )) )
-        .def( "hasGroupOfCells", &ConnectionMeshClass::hasGroupOfCells, R"(
+        .def( "hasGroupOfCells", &ConnectionMesh::hasGroupOfCells, R"(
 Allows to know if the given group of cells is present in the mesh
 
 Arguments:
@@ -71,7 +71,7 @@ Returns:
     bool: True if the group is present
         )",
               ( py::arg( "self" ), py::arg( "name")) )
-        .def( "hasGroupOfNodes", &ConnectionMeshClass::hasGroupOfNodes, R"(
+        .def( "hasGroupOfNodes", &ConnectionMesh::hasGroupOfNodes, R"(
 Allows to know if the given group of nodes is present in the mesh
 
 Arguments:
@@ -98,7 +98,7 @@ Returns:
     list[int]: Indexes of the cells of the local group.
         )",
               ( py::arg( "self" ), py::arg( "group_name" ) ) )
-        .def( "getParallelMesh", &ConnectionMeshClass::getParallelMesh,
+        .def( "getParallelMesh", &ConnectionMesh::getParallelMesh,
             py::return_value_policy<py::copy_const_reference>(), R"(
 Return a pointer to the ParallelMesh used to built it.
 
@@ -106,7 +106,7 @@ Returns:
     ParallelMeshPtr: pointer to the ParallelMesh
         )",
               ( py::arg( "self" )) )
-        .def( "getNodesGlobalNumbering", &ConnectionMeshClass::getNodesGlobalNumbering,
+        .def( "getNodesGlobalNumbering", &ConnectionMesh::getNodesGlobalNumbering,
             py::return_value_policy<py::copy_const_reference>(), R"(
 Return a tuple of the nodes of the mesh with a global numbering
 
@@ -114,7 +114,7 @@ Returns:
     tuple[int]: list of nodes with global numbering
         )",
               ( py::arg( "self" )) )
-        .def( "getNodesLocalNumbering", &ConnectionMeshClass::getNodesLocalNumbering,
+        .def( "getNodesLocalNumbering", &ConnectionMesh::getNodesLocalNumbering,
             py::return_value_policy<py::copy_const_reference>(), R"(
 Return a tuple of the nodes of the mesh with a local numbering.
 The local numbering is the one coming from the owner of the node,

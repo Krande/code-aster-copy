@@ -3,7 +3,7 @@
  * @brief Interface python de MultipleElasticResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,9 +29,9 @@ namespace py = boost::python;
 
 void exportMultipleElasticResultToPython() {
 
-    py::class_< MultipleElasticResultClass, MultipleElasticResultPtr,
-                py::bases< ResultClass > >( "MultipleElasticResult", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< MultipleElasticResultClass >))
+    py::class_< MultipleElasticResult, MultipleElasticResultPtr,
+                py::bases< Result > >( "MultipleElasticResult", py::no_init )
+        .def( "__init__", py::make_constructor(&initFactoryPtr< MultipleElasticResult >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< MultipleElasticResultClass, std::string >));
+              py::make_constructor(&initFactoryPtr< MultipleElasticResult, std::string >));
 };

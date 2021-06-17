@@ -29,40 +29,40 @@ namespace py = boost::python;
 #include "PythonBindings/DiscreteProblemInterface.h"
 #include <PythonBindings/factory.h>
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( buildDirichletBC_overloads, buildDirichletBC, 2, 2 )
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeDirichletBC_overloads, computeDirichletBC, 2, 2 )
 
 void exportDiscreteProblemToPython() {
 
-    py::class_< DiscreteProblemClass, DiscreteProblemClass::DiscreteProblemPtr >( "DiscreteProblem",
+    py::class_< DiscreteProblem, DiscreteProblem::DiscreteProblemPtr >( "DiscreteProblem",
                                                                                   py::no_init )
         .def( "__init__",
-              py::make_constructor( &initFactoryPtr< DiscreteProblemClass, StudyDescriptionPtr > ) )
+              py::make_constructor( &initFactoryPtr< DiscreteProblem, StudyDescriptionPtr > ) )
         // fake initFactoryPtr: not a DataStructure
-        .def( "buildElementaryMechanicalLoadsVector",
-              &DiscreteProblemClass::buildElementaryMechanicalLoadsVector )
-        .def( "buildElementaryDirichletVector",
-              &DiscreteProblemClass::buildElementaryDirichletVector )
-        .def( "buildElementaryLaplaceVector", &DiscreteProblemClass::buildElementaryLaplaceVector )
-        .def( "buildElementaryNeumannVector", &DiscreteProblemClass::buildElementaryNeumannVector )
-        .def( "buildElementaryStiffnessMatrix",
-              &DiscreteProblemClass::buildElementaryStiffnessMatrix )
-        .def( "buildElementaryTangentMatrix", &DiscreteProblemClass::buildElementaryTangentMatrix )
-        .def( "buildElementaryJacobianMatrix",
-              &DiscreteProblemClass::buildElementaryJacobianMatrix )
-        .def( "buildDirichletBC", &DiscreteProblemClass::buildDirichletBC,
-              buildDirichletBC_overloads() )
-        .def( "computeDOFNumbering", &DiscreteProblemClass::computeDOFNumbering )
+        .def( "computeElementaryMechanicalLoadsVector",
+              &DiscreteProblem::computeElementaryMechanicalLoadsVector )
+        .def( "computeElementaryDirichletVector",
+              &DiscreteProblem::computeElementaryDirichletVector )
+        .def( "computeElementaryLaplaceVector", &DiscreteProblem::computeElementaryLaplaceVector )
+        .def( "computeElementaryNeumannVector", &DiscreteProblem::computeElementaryNeumannVector )
+        .def( "computeElementaryStiffnessMatrix",
+              &DiscreteProblem::computeElementaryStiffnessMatrix )
+        .def( "computeElementaryTangentMatrix", &DiscreteProblem::computeElementaryTangentMatrix )
+        .def( "computeElementaryJacobianMatrix",
+              &DiscreteProblem::computeElementaryJacobianMatrix )
+        .def( "computeDirichletBC", &DiscreteProblem::computeDirichletBC,
+              computeDirichletBC_overloads() )
+        .def( "computeDOFNumbering", &DiscreteProblem::computeDOFNumbering )
         .def( "computeMechanicalDampingMatrix",
-              &DiscreteProblemClass::computeMechanicalDampingMatrix )
+              &DiscreteProblem::computeMechanicalDampingMatrix )
         .def( "computeMechanicalStiffnessMatrix",
-              &DiscreteProblemClass::computeMechanicalStiffnessMatrix )
-        .def( "computeMechanicalMassMatrix", &DiscreteProblemClass::computeMechanicalMassMatrix )
-        .def( "getStudyDescription", &DiscreteProblemClass::getStudyDescription )
+              &DiscreteProblem::computeMechanicalStiffnessMatrix )
+        .def( "computeMechanicalMassMatrix", &DiscreteProblem::computeMechanicalMassMatrix )
+        .def( "getStudyDescription", &DiscreteProblem::getStudyDescription )
 
         .def( "createBehaviour",
-              static_cast< void ( DiscreteProblemClass::* )( PyObject *, const std::string &,
+              static_cast< void ( DiscreteProblem::* )( PyObject *, const std::string &,
                                                              const std::string &, const int ) >(
-                  &DiscreteProblemClass::createBehaviour ),
+                  &DiscreteProblem::createBehaviour ),
               R"(
 Create constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
 
@@ -75,8 +75,8 @@ Arguments:
               ( py::arg( "self" ), py::arg( "COMPORTEMENT" ), py::arg( "SIGM_INIT" ),
                 py::arg( "IMPLEX" ), py::arg( "INFO" ) ) )
         .def( "createBehaviour",
-              static_cast< void ( DiscreteProblemClass::* )( PyObject * ) >(
-                  &DiscreteProblemClass::createBehaviour ),
+              static_cast< void ( DiscreteProblem::* )( PyObject * ) >(
+                  &DiscreteProblem::createBehaviour ),
               R"(
 Create constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
 

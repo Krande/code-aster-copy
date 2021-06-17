@@ -27,10 +27,10 @@
 
 #include "Solvers/SolverControl.h"
 
-SolverControlClass::SolverControlClass( ASTERDOUBLE rTol, ASTERINTEGER nIterMax )
+SolverControl::SolverControl( ASTERDOUBLE rTol, ASTERINTEGER nIterMax )
     : _relativeTol( rTol ), _nIterMax( nIterMax ) {}
 
-ConvergenceState SolverControlClass::check( const ASTERDOUBLE relativeResNorm,
+ConvergenceState SolverControl::check( const ASTERDOUBLE relativeResNorm,
                                                const ASTERINTEGER iter ) const {
     if ( abs( relativeResNorm ) <= _relativeTol ) {
         return success;

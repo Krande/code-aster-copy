@@ -48,7 +48,7 @@
 #include "Supervis/CommandSyntax.h"
 
 FieldOnNodesRealPtr
-ElementaryVectorClass::assembleVector( const BaseDOFNumberingPtr &currentNumerotation,
+ElementaryVector::assemble( const BaseDOFNumberingPtr &currentNumerotation,
                                           const ASTERDOUBLE &time,
                                           const JeveuxMemory memType ) {
     if ( _isEmpty )
@@ -57,7 +57,7 @@ ElementaryVectorClass::assembleVector( const BaseDOFNumberingPtr &currentNumerot
     if ( ( !currentNumerotation ) || currentNumerotation->isEmpty() )
         throw std::runtime_error( "Numerotation is empty" );
 
-    FieldOnNodesRealPtr vectTmp( new FieldOnNodesRealClass( memType ) );
+    FieldOnNodesRealPtr vectTmp( new FieldOnNodesReal( memType ) );
     std::string name( " " );
     name.resize( 24, ' ' );
 
@@ -72,26 +72,14 @@ ElementaryVectorClass::assembleVector( const BaseDOFNumberingPtr &currentNumerot
     cmdSt.define( dict );
     if ( !_corichRept->exists() ) {
         _listOfElementaryTerms->updateValuePointer();
-        int size = _listOfLoads->getListOfMechanicalLoadsReal().size() +
-            _listOfLoads->getListOfMechanicalLoadsFunction().size();
+        auto size = _listOfElementaryTerms->size();
+        std::string detr( "E" );
         for ( ASTERINTEGER i = 1; i <= size; ++i ) {
-            std::string detr( "E" );
-            std::string vectElem( ( *_listOfElementaryTerms )[i - 1].c_str() );
+            std::string vectElem( ( *_listOfElementaryTerms )[i - 1].toString() );
             vectElem.resize( 24, ' ' );
             ASTERINTEGER in;
             CALLO_CORICH( detr, vectElem, &i, &in );
         }
-#ifdef ASTER_HAVE_MPI
-        size = _listOfLoads->getListOfParallelMechanicalLoadsReal().size() +
-            _listOfLoads->getListOfParallelMechanicalLoadsFunction().size();
-        for ( ASTERINTEGER i = 1; i <= size; ++i ) {
-            std::string detr( "E" );
-            std::string vectElem( ( *_listOfElementaryTerms )[i - 1].c_str() );
-            vectElem.resize( 24, ' ' );
-            ASTERINTEGER in;
-            CALLO_CORICH( detr, vectElem, &i, &in );
-        }
-#endif /* ASTER_HAVE_MPI */
     }
     /**/
 
@@ -108,7 +96,7 @@ ElementaryVectorClass::assembleVector( const BaseDOFNumberingPtr &currentNumerot
     JeveuxVectorChar24 vectTmp2( name );
     vectTmp2->updateValuePointer();
     std::string name2( ( *vectTmp2 )[0].toString(), 0, 19 );
-    FieldOnNodesRealPtr vectTmp3( new FieldOnNodesRealClass( name2 ) );
+    FieldOnNodesRealPtr vectTmp3( new FieldOnNodesReal( name2 ) );
     vectTmp->allocateFrom( *vectTmp3 );
     std::string base = JeveuxMemoryTypesNames[memType];
 
@@ -117,16 +105,19 @@ ElementaryVectorClass::assembleVector( const BaseDOFNumberingPtr &currentNumerot
     return vectTmp;
 };
 
-bool ElementaryVectorClass::update()
+bool ElementaryVector::build()
 {
     _listOfElementaryTerms->updateValuePointer();
     _realVector.clear();
-    for ( int pos = 0; pos < _listOfElementaryTerms->size(); ++pos )
+    auto size = _listOfElementaryTerms->size();
+    _realVector.reserve( size );
+    for ( int pos = 0; pos < size; ++pos )
     {
         const std::string name = ( *_listOfElementaryTerms )[pos].toString();
         if ( trim( name ) != "" )
         {
-            ElementaryTermRealPtr toPush( new ElementaryTermClass< ASTERDOUBLE >( name ) );
+            ElementaryTermRealPtr toPush =
+                boost::make_shared< ElementaryTerm< ASTERDOUBLE > >( name ) ;
             _realVector.push_back( toPush );
         }
     }

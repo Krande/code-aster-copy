@@ -34,11 +34,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class GenericGeneralizedAssemblyVectorClass
+ * @class GenericGeneralizedAssemblyVector
  * @brief Cette classe correspond a un matr_asse_gene
  * @author Nicolas Sellenet
  */
-class GenericGeneralizedAssemblyVectorClass : public DataStructure {
+class GenericGeneralizedAssemblyVector : public DataStructure {
   private:
     /** @brief Objet Jeveux '.DESC' */
     JeveuxVectorLong _desc;
@@ -49,19 +49,19 @@ class GenericGeneralizedAssemblyVectorClass : public DataStructure {
     /**
      * @brief Constructeur
      */
-    GenericGeneralizedAssemblyVectorClass( const std::string name )
+    GenericGeneralizedAssemblyVector( const std::string name )
         : DataStructure( name, 19, "VECT_ASSE_GENE", Permanent ),
           _desc( JeveuxVectorLong( getName() + ".DISC" ) ),
           _refe( JeveuxVectorChar24( getName() + ".REFE" ) ){};
 };
 
 /**
- * @class GeneralizedAssemblyVectorClass
+ * @class GeneralizedAssemblyVector
  * @brief Cette classe correspond a un vect_asse_gene
  * @author Nicolas Sellenet
  */
 template < class ValueType >
-class GeneralizedAssemblyVectorClass : public GenericGeneralizedAssemblyVectorClass {
+class GeneralizedAssemblyVector : public GenericGeneralizedAssemblyVector {
   private:
     /** @brief Objet Jeveux '.VALE' */
     JeveuxVector< ValueType > _vale;
@@ -89,50 +89,50 @@ class GeneralizedAssemblyVectorClass : public GenericGeneralizedAssemblyVectorCl
      * @typedef GeneralizedAssemblyVectorPtr
      * @brief Pointeur intelligent vers un GeneralizedAssemblyVector
      */
-    typedef boost::shared_ptr< GeneralizedAssemblyVectorClass< ValueType > >
+    typedef boost::shared_ptr< GeneralizedAssemblyVector< ValueType > >
         GeneralizedAssemblyVectorPtr;
 
     /**
      * @brief Constructeur
      */
-    GeneralizedAssemblyVectorClass()
-        : GeneralizedAssemblyVectorClass( ResultNaming::getNewResultName() ){};
+    GeneralizedAssemblyVector()
+        : GeneralizedAssemblyVector( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Constructeur
      */
 
-    GeneralizedAssemblyVectorClass( const std::string name )
-        : GenericGeneralizedAssemblyVectorClass( name ),
+    GeneralizedAssemblyVector( const std::string name )
+        : GenericGeneralizedAssemblyVector( name ),
           _vale( JeveuxVector< ValueType >( getName() + ".VALE" ) ) {
-        GeneralizedAssemblyVectorClass< ValueType >::setVectorType();
+        GeneralizedAssemblyVector< ValueType >::setVectorType();
     };
 };
 
 /** @typedef Definition d'une matrice assemblee généralisée de double */
-typedef GeneralizedAssemblyVectorClass< ASTERDOUBLE > GeneralizedAssemblyVectorRealClass;
+typedef GeneralizedAssemblyVector< ASTERDOUBLE > GeneralizedAssemblyVectorReal;
 /** @typedef Definition d'une matrice assemblee généralisée de complexe */
-typedef GeneralizedAssemblyVectorClass< ASTERCOMPLEX > GeneralizedAssemblyVectorComplexClass;
+typedef GeneralizedAssemblyVector< ASTERCOMPLEX > GeneralizedAssemblyVectorComplex;
 
 /**
  * @typedef GenericGeneralizedAssemblyVectorPtr
- * @brief Pointeur intelligent vers un GenericGeneralizedAssemblyVectorClass
+ * @brief Pointeur intelligent vers un GenericGeneralizedAssemblyVector
  */
-typedef boost::shared_ptr< GenericGeneralizedAssemblyVectorClass >
+typedef boost::shared_ptr< GenericGeneralizedAssemblyVector >
     GenericGeneralizedAssemblyVectorPtr;
 
 /**
  * @typedef GeneralizedAssemblyVectorRealPtr
- * @brief Pointeur intelligent vers un GeneralizedAssemblyVectorRealClass
+ * @brief Pointeur intelligent vers un GeneralizedAssemblyVectorReal
  */
-typedef boost::shared_ptr< GeneralizedAssemblyVectorRealClass >
+typedef boost::shared_ptr< GeneralizedAssemblyVectorReal >
     GeneralizedAssemblyVectorRealPtr;
 
 /**
  * @typedef GeneralizedAssemblyVectorComplexPtr
- * @brief Pointeur intelligent vers un GeneralizedAssemblyVectorComplexClass
+ * @brief Pointeur intelligent vers un GeneralizedAssemblyVectorComplex
  */
-typedef boost::shared_ptr< GeneralizedAssemblyVectorComplexClass >
+typedef boost::shared_ptr< GeneralizedAssemblyVectorComplex >
     GeneralizedAssemblyVectorComplexPtr;
 
 #endif /* GENERALIZEDASSEMBLYVECTOR_H_ */

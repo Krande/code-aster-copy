@@ -27,34 +27,34 @@
 
 #ifdef ASTER_HAVE_MPI
 
-ParallelFiniteElementDescriptorClass::ParallelFiniteElementDescriptorClass
+ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor
     ( const std::string& name, const FiniteElementDescriptorPtr& FEDesc,
       const ConnectionMeshPtr& mesh, const ModelPtr& model, const JeveuxMemory memType ):
-                    FiniteElementDescriptorClass( name, model->getMesh(), memType ),
+                    FiniteElementDescriptor( name, model->getMesh(), memType ),
                     _joins( JeveuxVectorLong( getName() + ".DOMJ" ) ),
                     _owner( JeveuxVectorLong( getName() + ".PNOE" ) ),
                     _multiplicity( JeveuxVectorLong( getName() + ".MULT" ) ),
                     _outerMultiplicity( JeveuxVectorLong( getName() + ".MUL2" ) ),
-                    _globalNumberingDelayedNodes( JeveuxVectorLong( getName() + ".NULG" ) )
+                    _globalNumberingVirtualNodes( JeveuxVectorLong( getName() + ".NULG" ) )
 {
     const int rank = getMPIRank();
     const int nbProcs = getMPISize();
 
     const auto& owner = *(mesh->getNodesOwner());
-    const auto& explorer = FEDesc->getDelayedElementsExplorer();
+    const auto& explorer = FEDesc->getVirtualCellsExplorer();
 
-    VectorInt delayedElemToKeep;
+    VectorInt virtualCellToKeep;
     VectorInt meshNodesToKeep( owner.size(), -1 );
-    ASTERINTEGER nbOldDelayedNodes = FEDesc->getNumberOfDelayedNodes();
-    _delayedElemToKeep = VectorLong( explorer.size(), 1 );
-    VectorInt delayedNodesToKeep( nbOldDelayedNodes, -1 );
-    VectorInt delayedNodesNumbering( nbOldDelayedNodes, -1 );
-    VectorInt delayedNodesMult( nbOldDelayedNodes, 0 );
-    VectorInt delayedNodesOuterMult( nbOldDelayedNodes, 0 );
-    VectorInt delayedNodesOwner( nbOldDelayedNodes, -1 );
-    VectorInt nbOwnedDelayedNodes( nbProcs, 0 );
-    std::vector< std::set< int > > sharedDelayedNodes( nbOldDelayedNodes );
-    ASTERINTEGER nbDelayedNodes = 0, nbElemToKeep = 0, totalSizeToKeep = 0;
+    ASTERINTEGER nbOldVirtualNodes = FEDesc->getNumberOfVirtualNodes();
+    _virtualCellToKeep = VectorLong( explorer.size(), 1 );
+    VectorInt virtualNodesToKeep( nbOldVirtualNodes, -1 );
+    VectorInt virtualNodesNumbering( nbOldVirtualNodes, -1 );
+    VectorInt virtualNodesMult( nbOldVirtualNodes, 0 );
+    VectorInt virtualNodesOuterMult( nbOldVirtualNodes, 0 );
+    VectorInt virtualNodesOwner( nbOldVirtualNodes, -1 );
+    VectorInt nbOwnedVirtualNodes( nbProcs, 0 );
+    std::vector< std::set< int > > sharedVirtualNodes( nbOldVirtualNodes );
+    ASTERINTEGER nbVirtualNodes = 0, nbElemToKeep = 0, totalSizeToKeep = 0;
     // On commence par regarder les noeuds et elements qui doivent etre
     // gardes dans le nouveau ligrel
     for( const auto meshElem : explorer )
@@ -83,47 +83,47 @@ ParallelFiniteElementDescriptorClass::ParallelFiniteElementDescriptorClass
             // Si on est sur un noeud tardif...
             if( numNode < 0 )
             {
-                ++delayedNodesMult[ -numNode - 1 ];
+                ++virtualNodesMult[ -numNode - 1 ];
                 if( keepElem )
                 {
                     // ... et qu'il faut conserver l'element
                     // Alors on conserve les noeuds tardifs aussi
-                    if( delayedNodesToKeep[ -numNode - 1 ] == -1 )
+                    if( virtualNodesToKeep[ -numNode - 1 ] == -1 )
                     {
-                        delayedNodesNumbering[ -numNode - 1 ] = nbDelayedNodes;
-                        ++nbDelayedNodes;
+                        virtualNodesNumbering[ -numNode - 1 ] = nbVirtualNodes;
+                        ++nbVirtualNodes;
                     }
                     ++totalSizeToKeep;
-                    delayedNodesToKeep[ -numNode - 1 ] = rank;
+                    virtualNodesToKeep[ -numNode - 1 ] = rank;
                 }
                 else
-                    ++delayedNodesOuterMult[ -numNode - 1 ];
+                    ++virtualNodesOuterMult[ -numNode - 1 ];
                 // On cherche a equilibrer la charge des noeuds tardifs
-                auto curOwner2 = delayedNodesOwner[ -numNode - 1 ];
+                auto curOwner2 = virtualNodesOwner[ -numNode - 1 ];
                 if( curOwner2 == -1 )
                 {
-                    delayedNodesOwner[ -numNode - 1 ] = curOwner;
-                    ++nbOwnedDelayedNodes[ curOwner ];
+                    virtualNodesOwner[ -numNode - 1 ] = curOwner;
+                    ++nbOwnedVirtualNodes[ curOwner ];
                 }
                 else
                 {
-                    if( nbOwnedDelayedNodes[ curOwner2 ] > nbOwnedDelayedNodes[ curOwner ] )
+                    if( nbOwnedVirtualNodes[ curOwner2 ] > nbOwnedVirtualNodes[ curOwner ] )
                     {
-                        delayedNodesOwner[ -numNode - 1 ] = curOwner;
-                        ++nbOwnedDelayedNodes[ curOwner ];
-                        --nbOwnedDelayedNodes[ curOwner2 ];
+                        virtualNodesOwner[ -numNode - 1 ] = curOwner;
+                        ++nbOwnedVirtualNodes[ curOwner ];
+                        --nbOwnedVirtualNodes[ curOwner2 ];
                     }
                 }
                 // On note tous les procs qui possèdent un noeud tardif
-                sharedDelayedNodes[ -numNode - 1 ].insert( curOwner );
+                sharedVirtualNodes[ -numNode - 1 ].insert( curOwner );
             }
             ++pos;
         }
         // Si l'element est a conserver, on le note
         if( keepElem )
         {
-            delayedElemToKeep.push_back( numElem );
-            _delayedElemToKeep[ numElem-1 ] = nbElemToKeep-1;
+            virtualCellToKeep.push_back( numElem );
+            _virtualCellToKeep[ numElem-1 ] = nbElemToKeep-1;
             --nbElemToKeep;
         }
     }
@@ -134,50 +134,50 @@ ParallelFiniteElementDescriptorClass::ParallelFiniteElementDescriptorClass
     // Calcul du nombre d'entier code
     int nec = pNodesComp->size()/nbPartialNodes;
     // Si des noeuds tardifs sont a conserver, on peut creer le ligrel
-    if( nbDelayedNodes > 0 )
+    if( nbVirtualNodes > 0 )
     {
-        _owner->allocate( Permanent, nbDelayedNodes );
-        _multiplicity->allocate( Permanent, nbDelayedNodes );
-        _outerMultiplicity->allocate( Permanent, nbDelayedNodes );
+        _owner->allocate( Permanent, nbVirtualNodes );
+        _multiplicity->allocate( Permanent, nbVirtualNodes );
+        _outerMultiplicity->allocate( Permanent, nbVirtualNodes );
         int i = 0, nbJoins = 0, j = 0;
         std::vector< VectorLong > toSend( nbProcs );
         std::vector< VectorLong > toReceive( nbProcs );
-        for( const auto& curSet : sharedDelayedNodes )
+        for( const auto& curSet : sharedVirtualNodes )
         {
-            if( delayedNodesToKeep[i] == rank )
+            if( virtualNodesToKeep[i] == rank )
             {
-                if( delayedNodesOwner[i] == rank )
+                if( virtualNodesOwner[i] == rank )
                 {
                     for( const auto& proc : curSet )
                         if( proc != rank )
-                            toSend[proc].push_back(-delayedNodesNumbering[i]-1);
+                            toSend[proc].push_back(-virtualNodesNumbering[i]-1);
                 }
                 else
                 {
-                    toReceive[delayedNodesOwner[i]].push_back(-delayedNodesNumbering[i]-1);
+                    toReceive[virtualNodesOwner[i]].push_back(-virtualNodesNumbering[i]-1);
                 }
-                (*_owner)[j] = delayedNodesOwner[i];
-                (*_outerMultiplicity)[j] = delayedNodesOuterMult[i];
-                (*_multiplicity)[j] = delayedNodesMult[i];
+                (*_owner)[j] = virtualNodesOwner[i];
+                (*_outerMultiplicity)[j] = virtualNodesOuterMult[i];
+                (*_multiplicity)[j] = virtualNodesMult[i];
                 ++j;
             }
             ++i;
         }
-        if( j != nbDelayedNodes )
+        if( j != nbVirtualNodes )
             throw std::runtime_error( "Out of bound error" );
 
         // Creation numérotation globale pour les noeuds tardifs
-        _globalNumberingDelayedNodes->allocate(Permanent, nbDelayedNodes);
+        _globalNumberingVirtualNodes->allocate(Permanent, nbVirtualNodes);
         int count = 0;
-        for(int iNode = 0; iNode < nbOldDelayedNodes; iNode++)
+        for(int iNode = 0; iNode < nbOldVirtualNodes; iNode++)
         {
-            if( delayedNodesNumbering[iNode] != -1)
+            if( virtualNodesNumbering[iNode] != -1)
             {
-                (*_globalNumberingDelayedNodes)[delayedNodesNumbering[iNode]] = -(iNode+1);
+                (*_globalNumberingVirtualNodes)[virtualNodesNumbering[iNode]] = -(iNode+1);
                 count++;
             }
         }
-        AS_ASSERT(nbDelayedNodes == count);
+        AS_ASSERT(nbVirtualNodes == count);
 
         // Creation des raccords
         VectorLong joins;
@@ -208,7 +208,7 @@ ParallelFiniteElementDescriptorClass::ParallelFiniteElementDescriptorClass
 
         // Remplissage du .NEMA avec les elements tardifs a conserver
         int posInCollection = 1;
-        for( int numElem : delayedElemToKeep )
+        for( int numElem : virtualCellToKeep )
         {
             const auto curElem = explorer[numElem];
             VectorLong toCopy;
@@ -218,7 +218,7 @@ ParallelFiniteElementDescriptorClass::ParallelFiniteElementDescriptorClass
                     toCopy.push_back( (*localNum)[numNode-1] );
                 }
                 else{
-                    toCopy.push_back( -delayedNodesNumbering[-numNode-1] - 1 );
+                    toCopy.push_back( -virtualNodesNumbering[-numNode-1] - 1 );
                 }
             }
             toCopy.push_back( explorer[numElem].getType() );
@@ -238,9 +238,9 @@ ParallelFiniteElementDescriptorClass::ParallelFiniteElementDescriptorClass
             bool addedElem = false;
             for( const auto& val : colObj )
             {
-                if( _delayedElemToKeep[-val-1] != 1 )
+                if( _virtualCellToKeep[-val-1] != 1 )
                 {
-                    toLiel[nbCollObj-1].push_back(_delayedElemToKeep[-val-1]);
+                    toLiel[nbCollObj-1].push_back(_virtualCellToKeep[-val-1]);
                     addedElem = true;
                     ++totalCollSize;
                 }
@@ -271,7 +271,7 @@ ParallelFiniteElementDescriptorClass::ParallelFiniteElementDescriptorClass
 
     // Remplissage du .NBNO avec le nouveau nombre de noeuds tardifs
     _numberOfDelayedNumberedConstraintNodes->allocate( memType, 1 );
-    (*_numberOfDelayedNumberedConstraintNodes)[0] = nbDelayedNodes;
+    (*_numberOfDelayedNumberedConstraintNodes)[0] = nbVirtualNodes;
 
     const auto param = FEDesc->getParameters();
     // Creation du .LGRF en y mettant les noms du maillage et modele d'origine
@@ -296,25 +296,25 @@ ParallelFiniteElementDescriptorClass::ParallelFiniteElementDescriptorClass
                 (*_dofDescriptor)[newPos] = (*pNodesComp)[i*nec+j];
             }
     }
-    if( nbDelayedNodes > 0 )
+    if( nbVirtualNodes > 0 )
     {
         // Creation des .LGNS et .PRNM
         // Recopie des valeurs sur les noeuds tardifs du nouveau ligrel
-        _delayedNodesNumbering->allocate( memType, nbDelayedNodes+2 );
-        _dofOfDelayedNumberedConstraintNodes->allocate( memType, nbDelayedNodes*nec );
-        const auto& dNodesComp = FEDesc->getDelayedNodesComponentDescriptor();
-        const auto& numbering = FEDesc->getDelayedNodesNumbering();
-        for( ASTERINTEGER num = 0; num < nbOldDelayedNodes; ++num )
+        _virtualNodesNumbering->allocate( memType, nbVirtualNodes+2 );
+        _dofOfDelayedNumberedConstraintNodes->allocate( memType, nbVirtualNodes*nec );
+        const auto& dNodesComp = FEDesc->getVirtualNodesComponentDescriptor();
+        const auto& numbering = FEDesc->getVirtualNodesNumbering();
+        for( ASTERINTEGER num = 0; num < nbOldVirtualNodes; ++num )
         {
-            if( delayedNodesToKeep[ num ] == rank )
+            if( virtualNodesToKeep[ num ] == rank )
             {
-                const ASTERINTEGER newNum = delayedNodesNumbering[ num ];
+                const ASTERINTEGER newNum = virtualNodesNumbering[ num ];
                 for( int j = 0; j < nec; ++j )
                 {
                     const int newPos = nec*newNum + j;
                     (*_dofOfDelayedNumberedConstraintNodes)[newPos] = (*dNodesComp)[num*nec+j];
                 }
-                (*_delayedNodesNumbering)[newNum] = (*numbering)[num];
+                (*_virtualNodesNumbering)[newNum] = (*numbering)[num];
             }
         }
     }

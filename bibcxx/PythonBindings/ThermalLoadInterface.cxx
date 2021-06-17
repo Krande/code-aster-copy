@@ -29,25 +29,25 @@ namespace py = boost::python;
 
 void exportThermalLoadToPython() {
 
-    py::class_< ThermalLoadRealClass, ThermalLoadRealClass::ThermalLoadPtr,
+    py::class_< ThermalLoadReal, ThermalLoadReal::ThermalLoadPtr,
                 py::bases< DataStructure > >( "ThermalLoadReal", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ThermalLoadRealClass, ModelPtr & >))
+        .def( "__init__", py::make_constructor(&initFactoryPtr< ThermalLoadReal, ModelPtr & >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< ThermalLoadRealClass, std::string, ModelPtr & >))
-        .def( "getFiniteElementDescriptor", &ThermalLoadRealClass::getFiniteElementDescriptor )
-        .def( "getMesh", &ThermalLoadRealClass::getMesh )
-        .def( "getModel", &ThermalLoadRealClass::getModel );
+                  &initFactoryPtr< ThermalLoadReal, std::string, ModelPtr & >))
+        .def( "getFiniteElementDescriptor", &ThermalLoadReal::getFiniteElementDescriptor )
+        .def( "getMesh", &ThermalLoadReal::getMesh )
+        .def( "getModel", &ThermalLoadReal::getModel );
 
 
-            py::class_< ThermalLoadFunctionClass, ThermalLoadFunctionClass::ThermalLoadPtr,
+            py::class_< ThermalLoadFunction, ThermalLoadFunction::ThermalLoadPtr,
                 py::bases< DataStructure > >( "ThermalLoadFunction", py::no_init )
         .def( "__init__", py::make_constructor(
-                &initFactoryPtr< ThermalLoadFunctionClass, ModelPtr & >))
+                &initFactoryPtr< ThermalLoadFunction, ModelPtr & >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< ThermalLoadFunctionClass, std::string, ModelPtr & >))
-        .def( "getFiniteElementDescriptor", &ThermalLoadFunctionClass::getFiniteElementDescriptor )
-        .def( "getMesh", &ThermalLoadFunctionClass::getMesh )
-        .def( "getModel", &ThermalLoadFunctionClass::getModel );
+                  &initFactoryPtr< ThermalLoadFunction, std::string, ModelPtr & >))
+        .def( "getFiniteElementDescriptor", &ThermalLoadFunction::getFiniteElementDescriptor )
+        .def( "getMesh", &ThermalLoadFunction::getMesh )
+        .def( "getModel", &ThermalLoadFunction::getModel );
 };

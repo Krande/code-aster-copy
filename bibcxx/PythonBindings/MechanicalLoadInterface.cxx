@@ -30,21 +30,21 @@ namespace py = boost::python;
 void exportMechanicalLoadToPython() {
 
 
-    py::class_< MechanicalLoadRealClass,
-                MechanicalLoadRealClass::MechanicalLoadPtr,
+    py::class_< MechanicalLoadReal,
+                MechanicalLoadReal::MechanicalLoadPtr,
                 py::bases< DataStructure > >( "MechanicalLoadReal", py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< MechanicalLoadRealClass, ModelPtr >))
+              py::make_constructor(&initFactoryPtr< MechanicalLoadReal, ModelPtr >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< MechanicalLoadRealClass, std::string, ModelPtr >))
+                  &initFactoryPtr< MechanicalLoadReal, std::string, ModelPtr >))
         .def( "getFiniteElementDescriptor",
-              &MechanicalLoadRealClass::getFiniteElementDescriptor )
-        .def( "hasLoad", &MechanicalLoadRealClass::hasLoad )
-        .def( "updateValuePointers", &MechanicalLoadRealClass::updateValuePointers)
-        .def( "getModel", &MechanicalLoadRealClass::getModel)
-        .def( "getMesh", &MechanicalLoadRealClass::getMesh)
-        .def( "getTable", &ListOfTablesClass::getTable, R"(
+              &MechanicalLoadReal::getFiniteElementDescriptor )
+        .def( "hasLoad", &MechanicalLoadReal::hasLoad )
+        .def( "updateValuePointers", &MechanicalLoadReal::updateValuePointers)
+        .def( "getModel", &MechanicalLoadReal::getModel)
+        .def( "getMesh", &MechanicalLoadReal::getMesh)
+        .def( "getTable", &ListOfTables::getTable, R"(
 Extract a Table from the datastructure.
 
 Arguments:
@@ -55,21 +55,21 @@ Returns:
         )",
               ( py::arg( "self" ), py::arg( "identifier" ) ) );
 
-    py::class_<  MechanicalLoadFunctionClass,
-                 MechanicalLoadFunctionClass::MechanicalLoadPtr,
+    py::class_<  MechanicalLoadFunction,
+                 MechanicalLoadFunction::MechanicalLoadPtr,
                 py::bases< DataStructure > >( "MechanicalLoadFunction", py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr<  MechanicalLoadFunctionClass, ModelPtr >))
+              py::make_constructor(&initFactoryPtr<  MechanicalLoadFunction, ModelPtr >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr<  MechanicalLoadFunctionClass, std::string, ModelPtr >))
+                  &initFactoryPtr<  MechanicalLoadFunction, std::string, ModelPtr >))
         .def( "getFiniteElementDescriptor",
-              & MechanicalLoadFunctionClass::getFiniteElementDescriptor )
-        .def( "hasLoad", &MechanicalLoadFunctionClass::hasLoad )
-        .def( "updateValuePointers", &MechanicalLoadFunctionClass::updateValuePointers)
-        .def( "getModel", & MechanicalLoadFunctionClass::getModel)
-        .def( "getMesh", & MechanicalLoadFunctionClass::getMesh)
-        .def( "getTable", &ListOfTablesClass::getTable, R"(
+              & MechanicalLoadFunction::getFiniteElementDescriptor )
+        .def( "hasLoad", &MechanicalLoadFunction::hasLoad )
+        .def( "updateValuePointers", &MechanicalLoadFunction::updateValuePointers)
+        .def( "getModel", & MechanicalLoadFunction::getModel)
+        .def( "getMesh", & MechanicalLoadFunction::getMesh)
+        .def( "getTable", &ListOfTables::getTable, R"(
 Extract a Table from the datastructure.
 
 Arguments:
@@ -81,21 +81,21 @@ Returns:
               ( py::arg( "self" ), py::arg( "identifier" ) ) );
 
 
-    py::class_<  MechanicalLoadComplexClass,
-                 MechanicalLoadComplexClass::MechanicalLoadPtr,
+    py::class_<  MechanicalLoadComplex,
+                 MechanicalLoadComplex::MechanicalLoadPtr,
                 py::bases< DataStructure > >( "MechanicalLoadComplex", py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr<  MechanicalLoadComplexClass, ModelPtr >))
+              py::make_constructor(&initFactoryPtr<  MechanicalLoadComplex, ModelPtr >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr<  MechanicalLoadComplexClass, std::string, ModelPtr >))
+                  &initFactoryPtr<  MechanicalLoadComplex, std::string, ModelPtr >))
         .def( "getFiniteElementDescriptor",
-              & MechanicalLoadComplexClass::getFiniteElementDescriptor )
-        .def( "hasLoad", &MechanicalLoadComplexClass::hasLoad )
-        .def( "updateValuePointers", &MechanicalLoadComplexClass::updateValuePointers)
-        .def( "getModel", & MechanicalLoadComplexClass::getModel)
-        .def( "getMesh", & MechanicalLoadComplexClass::getMesh)
-        .def( "getTable", &ListOfTablesClass::getTable, R"(
+              & MechanicalLoadComplex::getFiniteElementDescriptor )
+        .def( "hasLoad", &MechanicalLoadComplex::hasLoad )
+        .def( "updateValuePointers", &MechanicalLoadComplex::updateValuePointers)
+        .def( "getModel", & MechanicalLoadComplex::getModel)
+        .def( "getMesh", & MechanicalLoadComplex::getMesh)
+        .def( "getTable", &ListOfTables::getTable, R"(
 Extract a Table from the datastructure.
 
 Arguments:

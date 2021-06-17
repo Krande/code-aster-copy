@@ -116,7 +116,7 @@ class FieldCreator(ExecuteCommand):
                             self._result.setDOFNumbering(dofNum)
                             break
 
-        self._result.update()
+        self._result.build()
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.

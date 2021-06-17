@@ -29,7 +29,7 @@
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/ResultNaming.h"
 
-DirichletBCClass::DirichletBCClass( const std::string &type, const ModelPtr& model )
+DirichletBC::DirichletBC( const std::string &type, const ModelPtr& model )
     : DataStructure( ResultNaming::getNewResultName(), 19, "CHAR_CINE" + type ),
       _intParam( JeveuxVectorLong( getName() + ".AFCI" ) ),
       _charParam( JeveuxVectorChar8( getName() + ".AFCK" ) ),
@@ -38,7 +38,7 @@ DirichletBCClass::DirichletBCClass( const std::string &type, const ModelPtr& mod
           this->setModel(model);
       };
 
-DirichletBCClass::DirichletBCClass(   const std::string &name,
+DirichletBC::DirichletBC(   const std::string &name,
                                             const std::string &type,
                                             const ModelPtr& model )
     : DataStructure( name, 19, "CHAR_CINE" + type ),
@@ -49,7 +49,7 @@ DirichletBCClass::DirichletBCClass(   const std::string &name,
           this->setModel(model);
       };
 
-bool DirichletBCClass::build() {
+bool DirichletBC::build() {
     std::string cmd = "AFFE_CHAR_CINE";
     if ( _listOfFunctionImposedTemperature.size() != 0 ) {
         cmd += "_F";

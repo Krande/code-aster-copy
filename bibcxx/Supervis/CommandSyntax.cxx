@@ -29,19 +29,19 @@
 #include "Utilities/SyntaxDictionary.h"
 #include "Utilities/CapyConvertibleValue.h"
 
-PyObject *CommandSyntax::pyClass = NULL;
+PyObject *CommandSyntax::py = NULL;
 
-void _check_pyClass() {
-    if ( CommandSyntax::pyClass == NULL ) {
-        CommandSyntax::pyClass = GetJdcAttr( (char *)"syntax" );
+void _check_py() {
+    if ( CommandSyntax::py == NULL ) {
+        CommandSyntax::py = GetJdcAttr( (char *)"syntax" );
     }
 }
 
 CommandSyntax::CommandSyntax( const std::string name ) : _commandName( name ) {
-    _check_pyClass();
+    _check_py();
 
     std::string format( "s" );
-    _pySyntax = PyObject_CallFunction( CommandSyntax::pyClass, format.c_str(), name.c_str() );
+    _pySyntax = PyObject_CallFunction( CommandSyntax::py, format.c_str(), name.c_str() );
     if ( _pySyntax == NULL ) {
         throw std::runtime_error( "Error during `CommandSyntax.__init__`." );
     }
@@ -56,7 +56,7 @@ void CommandSyntax::free() {
     if ( _pySyntax == NULL ) {
         return;
     }
-    
+
     register_sh_etape( pop_etape() );
     PyObject *res = PyObject_CallMethod( _pySyntax, (char *)"free", NULL );
     if ( res == NULL ) {
@@ -64,7 +64,7 @@ void CommandSyntax::free() {
     }
     Py_DECREF( res );
     Py_CLEAR( _pySyntax );
-    Py_CLEAR( pyClass );
+    Py_CLEAR( py );
 }
 
 void CommandSyntax::debugPrint() const {
@@ -82,7 +82,7 @@ void CommandSyntax::define( SyntaxMapContainer &syntax ) {
         throw std::runtime_error( "Error calling `CommandSyntax.define`." );
     }
     Py_DECREF( res );
-    Py_DECREF( keywords );   
+    Py_DECREF( keywords );
 }
 
 void CommandSyntax::define( PyObject *keywords ) {

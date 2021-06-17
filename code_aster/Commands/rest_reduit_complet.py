@@ -48,7 +48,7 @@ class RestReduitComplet(ExecuteCommand):
                 self._result.appendMaterialFieldOnAllRanks(materField)
         except RuntimeError:
             pass
-        self._result.update()
+        self._result.build()
 
 
 REST_REDUIT_COMPLET = RestReduitComplet.run

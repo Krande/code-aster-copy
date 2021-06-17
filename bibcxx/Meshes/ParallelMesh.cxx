@@ -1,6 +1,6 @@
 /**
  * @file ParallelMesh.cxx
- * @brief Implementation de ParallelMeshClass
+ * @brief Implementation de ParallelMesh
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
@@ -32,8 +32,8 @@
 #include "Utilities/Tools.h"
 
 
-bool ParallelMeshClass::readPartitionedMedFile( const std::string &fileName ) {
-    const bool ret = BaseMeshClass::readMedFile( fileName );
+bool ParallelMesh::readPartitionedMedFile( const std::string &fileName ) {
+    const bool ret = BaseMesh::readMedFile( fileName );
 
     CALLO_LRMJOI_WRAP( getName(), fileName );
 
@@ -43,9 +43,9 @@ bool ParallelMeshClass::readPartitionedMedFile( const std::string &fileName ) {
     return ret;
 };
 
-bool ParallelMeshClass::updateGlobalGroupOfNodes( void ) {
+bool ParallelMesh::updateGlobalGroupOfNodes( void ) {
 
-    _groupsOfNodes->buildFromJeveux();
+    _groupsOfNodes->build();
     auto gONNames = _groupsOfNodes->getObjectNames();
     std::vector< JeveuxChar32 > allgONNames;
     AsterMPI::all_gather( gONNames, allgONNames );
@@ -66,9 +66,9 @@ bool ParallelMeshClass::updateGlobalGroupOfNodes( void ) {
     return true;
 };
 
-bool ParallelMeshClass::updateGlobalGroupOfCells( void ) {
+bool ParallelMesh::updateGlobalGroupOfCells( void ) {
 
-    _groupsOfCells->buildFromJeveux();
+    _groupsOfCells->build();
     auto gOENames = _groupsOfCells->getObjectNames();
     std::vector< JeveuxChar32 > allgOENames;
     AsterMPI::all_gather( gOENames, allgOENames );
@@ -89,11 +89,11 @@ bool ParallelMeshClass::updateGlobalGroupOfCells( void ) {
     return true;
 };
 
-bool ParallelMeshClass::hasGroupOfCells( const std::string &name, const bool local ) const {
+bool ParallelMesh::hasGroupOfCells( const std::string &name, const bool local ) const {
 
     if(local)
     {
-        if ( _groupsOfCells->size() < 0 && !_groupsOfCells->buildFromJeveux() ) {
+        if ( _groupsOfCells->size() < 0 && !_groupsOfCells->build() ) {
                 return false;
         }
 
@@ -106,10 +106,10 @@ bool ParallelMeshClass::hasGroupOfCells( const std::string &name, const bool loc
     return false;
 }
 
-bool ParallelMeshClass::hasGroupOfNodes( const std::string &name, const bool local) const {
+bool ParallelMesh::hasGroupOfNodes( const std::string &name, const bool local) const {
     if( local)
     {
-        if ( _groupsOfNodes->size() < 0 && !_groupsOfNodes->buildFromJeveux() ) {
+        if ( _groupsOfNodes->size() < 0 && !_groupsOfNodes->build() ) {
             return false;
         }
         return _groupsOfNodes->existsObject( name );
@@ -122,7 +122,7 @@ bool ParallelMeshClass::hasGroupOfNodes( const std::string &name, const bool loc
 
 }
 
-VectorString ParallelMeshClass::getGroupsOfCells(const bool local) const {
+VectorString ParallelMesh::getGroupsOfCells(const bool local) const {
 
     if( local )
     {
@@ -138,7 +138,7 @@ VectorString ParallelMeshClass::getGroupsOfCells(const bool local) const {
 
 }
 
-VectorString ParallelMeshClass::getGroupsOfNodes(const bool local) const {
+VectorString ParallelMesh::getGroupsOfNodes(const bool local) const {
 
     if( local )
     {
@@ -153,7 +153,7 @@ VectorString ParallelMeshClass::getGroupsOfNodes(const bool local) const {
     return VectorString(_setOfAllGON.begin(), _setOfAllGON.end());
 }
 
-const VectorLong ParallelMeshClass::getCells( const std::string name ) const {
+const VectorLong ParallelMesh::getCells( const std::string name ) const {
 
     if ( name.empty())
     {
@@ -166,7 +166,7 @@ const VectorLong ParallelMeshClass::getCells( const std::string name ) const {
     return _groupsOfCells->getObjectFromName( name ).toVector();
 }
 
-const VectorLong ParallelMeshClass::getNodes( const std::string name , const bool localNumbering )
+const VectorLong ParallelMesh::getNodes( const std::string name , const bool localNumbering )
 const {
 
     VectorLong listOfNodes;
@@ -195,7 +195,7 @@ const {
     return newNumbering;
 }
 
-const VectorLong ParallelMeshClass::getNodes( const std::string name, const bool localNumbering,
+const VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbering,
                                               const bool same_rank ) const {
 
     VectorLong listOfNodes;

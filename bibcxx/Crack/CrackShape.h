@@ -34,7 +34,7 @@
  * @author Nicolas Tardieu
  */
 enum Shape { NoShape, Ellipse, Square, Cylinder, Notch, HalfPlane, Segment, HalfLine, Line };
-class CrackShapeClass {
+class CrackShape {
   private:
     Shape _shape;
     ASTERDOUBLE _semiMajorAxis;
@@ -53,14 +53,14 @@ class CrackShapeClass {
   public:
     /**
      * @typedef CrackShapePtr
-     * @brief Pointeur intelligent vers un CrackShapeClass
+     * @brief Pointeur intelligent vers un CrackShape
      */
-    typedef boost::shared_ptr< CrackShapeClass > CrackShapePtr;
+    typedef boost::shared_ptr< CrackShape > CrackShapePtr;
 
     /**
      * @brief Constructeur
      */
-    CrackShapeClass();
+    CrackShape();
 
     /**
      * @brief Define the Crack Shape as Ellise
@@ -143,8 +143,8 @@ class CrackShapeClass {
 
 /**
  * @typedef CrackShapePtr
- * @brief Pointeur intelligent vers un CrackShapeClass
+ * @brief Pointeur intelligent vers un CrackShape
  */
-typedef boost::shared_ptr< CrackShapeClass > CrackShapePtr;
+typedef boost::shared_ptr< CrackShape > CrackShapePtr;
 
 #endif /* CRACKSHAPE_H_ */

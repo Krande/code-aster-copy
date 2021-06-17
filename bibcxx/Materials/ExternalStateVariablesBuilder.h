@@ -2,8 +2,8 @@
 #define CALCULATIONEXTERNALVARIABLE_H_
 
 /**
- * @file ExternalVariablesComputation.h
- * @brief Fichier entete de la classe ExternalVariablesComputation
+ * @file BaseExternalStateVariables.h
+ * @brief Fichier entete de la classe ExternalStateVariables
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
@@ -38,11 +38,11 @@
 #include "Numbering/DOFNumbering.h"
 
 /**
- * @class ExternalVariablesComputationClass
+ * @class ExternalStateVariable
  * @brief Calculation Input Variables
  * @author Nicolas Sellenet
  */
-class ExternalVariablesComputationClass : public DataStructure {
+class ExternalStateVariablesBuilder : public DataStructure {
   private:
     ModelPtr _model;
     MaterialFieldPtr _mater;
@@ -59,40 +59,40 @@ class ExternalVariablesComputationClass : public DataStructure {
 
   public:
     /**
-     * @typedef ExternalVariablesComputationPtr
-     * @brief Pointeur intelligent vers un ExternalVariablesComputation
+     * @typedef ExternalStateVariablesPtr
+     * @brief Pointeur intelligent vers un ExternalStateVariables
      */
-    typedef boost::shared_ptr< ExternalVariablesComputationClass > ExternalVariablesComputationPtr;
+    typedef boost::shared_ptr< ExternalStateVariablesBuilder > ExternalStateVariablesBuilderPtr;
 
     /**
      * @brief Constructeur
      */
-    ExternalVariablesComputationClass( const ModelPtr &model, const MaterialFieldPtr &mater,
+    ExternalStateVariablesBuilder( const ModelPtr &model, const MaterialFieldPtr &mater,
                                        const ElementaryCharacteristicsPtr &cara,
                                        const CodedMaterialPtr &codMater );
 
     /**
      * @brief Destructeur
      */
-    ~ExternalVariablesComputationClass() { return; };
+    ~ExternalStateVariablesBuilder() { return; };
 
     /**
      * @brief Compute Input Variables at a given time
      */
-    void compute( const ASTERDOUBLE &time );
+    void build( const ASTERDOUBLE &time );
 
     /**
      * @brief Compute Loads after computing of input variables
      */
-    FieldOnNodesRealPtr computeMechanicalLoads( const BaseDOFNumberingPtr &dofNUM );
+    FieldOnNodesRealPtr computeExternalStateVariablesLoad( const BaseDOFNumberingPtr &dofNUM );
 
-    bool existsMechanicalLoads() { return _pTot || _hydr || _sech || _temp; };
+    bool hasExternalStateVariables() { return _pTot || _hydr || _sech || _temp; };
 };
 
 /**
- * @typedef ExternalVariablesComputationPtr
- * @brief Pointeur intelligent vers un ExternalVariablesComputationClass
+ * @typedef ExternalStateVariablesPtr
+ * @brief Pointeur intelligent vers un ExternalStateVariable
  */
-typedef boost::shared_ptr< ExternalVariablesComputationClass > ExternalVariablesComputationPtr;
+typedef boost::shared_ptr< ExternalStateVariablesBuilder > ExternalStateVariablesBuilderPtr;
 
 #endif /* CALCULATIONEXTERNALVARIABLE_H_ */

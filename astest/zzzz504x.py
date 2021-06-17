@@ -40,7 +40,7 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=10000.0,
 
 affectMat = code_aster.MaterialField(MAIL)
 affectMat.addMaterialsOnMesh(MATER)
-affectMat.buildWithoutExternalVariable()
+affectMat.buildWithoutExternalStateVariables()
 
 MODT=AFFE_MODELE(MAILLAGE=MAIL,
                  AFFE=_F(GROUP_MA=('S11',    'S31', 'S12',     'S32'),
@@ -64,7 +64,7 @@ study = code_aster.StudyDescription(MODT, affectMat)
 study.addDirichletBC(charCine)
 study.addLoad(CHT1)
 dProblem = code_aster.DiscreteProblem(study)
-vect_elem = dProblem.buildElementaryMechanicalLoadsVector()
+vect_elem = dProblem.computeElementaryMechanicalLoadsVector()
 matr_elem = dProblem.computeMechanicalStiffnessMatrix()
 
 monSolver = code_aster.MumpsSolver( )
@@ -81,12 +81,12 @@ matrAsse.addDirichletBC(charCine)
 matrAsse.build()
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 
-retour = vect_elem.assembleVector( numeDDL )
+retour = vect_elem.assemble( numeDDL )
 
-monSolver.matrixFactorization( matrAsse )
+monSolver.factorize( matrAsse )
 
 vcine = CALC_CHAR_CINE(NUME_DDL=numeDDL, CHAR_CINE=charCine,)
-resu = monSolver.solveRealLinearSystemWithDirichletBC(matrAsse, vcine, retour)
+resu = monSolver.solveWithDirichletBC(matrAsse, vcine, retour)
 
 TEST_RESU(
     CHAM_NO=_F(

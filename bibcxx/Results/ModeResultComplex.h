@@ -33,13 +33,13 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class ModeResultComplexClass
+ * @class ModeResultComplex
  * @brief Cette classe correspond a un mode_meca_c
- * On a choisi de définir un ModeResultComplexClass comme
+ * On a choisi de définir un ModeResultComplex comme
    un résultat disposant, en plus des membres usuels d'un résultat, de champs aux noeuds complexes.
  * @author Natacha Béreux
  */
-class ModeResultComplexClass : public ModeResultClass {
+class ModeResultComplex : public ModeResult {
   private:
     typedef std::vector< FieldOnNodesComplexPtr > VectorOfComplexFieldsNodes;
 
@@ -72,15 +72,15 @@ class ModeResultComplexClass : public ModeResultClass {
     /**
      * @brief Constructeur
      */
-    ModeResultComplexClass():
-        ModeResultComplexClass( ResultNaming::getNewResultName() )
+    ModeResultComplex():
+        ModeResultComplex( ResultNaming::getNewResultName() )
     {};
 
     /**
      * @brief Constructeur
      */
-    ModeResultComplexClass( const std::string &name ):
-       ModeResultClass ( name, "MODE_MECA_C" ),
+    ModeResultComplex( const std::string &name ):
+       ModeResult ( name, "MODE_MECA_C" ),
         _structureInterface( StructureInterfacePtr() ),
         _dampingMatrix( nullptr ),
         _rigidityDispDMatrix( nullptr ),
@@ -219,7 +219,7 @@ class ModeResultComplexClass : public ModeResultClass {
         return true;
     };
 
-    bool update() {
+    bool build() {
         BaseDOFNumberingPtr numeDdl( nullptr );
         if ( _dampingMatrix != nullptr )
             numeDdl = _dampingMatrix->getDOFNumbering();
@@ -237,15 +237,15 @@ class ModeResultComplexClass : public ModeResultClass {
             if ( model != nullptr )
                 _mesh = model->getMesh();
         }
-        return ResultClass::update();
+        return Result::build();
     };
 };
 
 /**
  * @typedef ModeResultComplexPtr
- * @brief Pointeur intelligent vers un ModeResultComplexClass
+ * @brief Pointeur intelligent vers un ModeResultComplex
  */
-typedef boost::shared_ptr< ModeResultComplexClass >
+typedef boost::shared_ptr< ModeResultComplex >
     ModeResultComplexPtr;
 
 #endif /* MECHANICALMODECOMPLEXCONTAINER_H_ */

@@ -51,11 +51,11 @@ extern const std::vector< ExcitationEnum > allExcitation;
 extern const VectorString allExcitationNames;
 
 /**
- * @class ExcitationClass
+ * @class Excitation
  * @brief It is a source term used in a nonlinear static analysis
  * @author Natacha Béreux
  */
-class ExcitationClass {
+class Excitation {
   private:
     ExcitationEnum _typeExcit;
     DirichletBCPtr _dirichletBC;
@@ -64,7 +64,7 @@ class ExcitationClass {
     CapyConvertibleContainer _toCapyConverter;
 
   public:
-    ExcitationClass( ExcitationEnum typeExcit = StandardExcitation ) : _typeExcit( typeExcit ) {
+    Excitation( ExcitationEnum typeExcit = StandardExcitation ) : _typeExcit( typeExcit ) {
         _toCapyConverter.add(
             new CapyConvertibleValue< FunctionPtr >( false, "FONC_MULT", _multFunction, false ) );
         _toCapyConverter.add( new CapyConvertibleValue< ExcitationEnum >(
@@ -116,6 +116,6 @@ class ExcitationClass {
  * @typedef
  * @brief Pointeur intelligent vers une excitation
  */
-typedef boost::shared_ptr< ExcitationClass > ExcitationPtr;
+typedef boost::shared_ptr< Excitation > ExcitationPtr;
 
 #endif /*EXCITATION_H_ */

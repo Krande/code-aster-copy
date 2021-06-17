@@ -1,9 +1,9 @@
 /**
  * @file ElementaryCharacteristics.cxx
- * @brief Implementation de ElementaryCharacteristicsClass
+ * @brief Implementation de ElementaryCharacteristics
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,20 +28,20 @@
 #include "Python.h"
 #include "Discretization/ElementaryCharacteristics.h"
 
-ElementaryCharacteristicsClass::ElementaryCharacteristicsClass( const std::string name,
+ElementaryCharacteristics::ElementaryCharacteristics( const std::string name,
                                                                       const ModelPtr &model )
     : DataStructure( name, 8, "CARA_ELEM" ), _model( model ), _mesh( model->getMesh() ),
-      _numberOfSubpoints( new ConstantFieldOnCellsLongClass( getName() + ".CANBSP", _mesh ) ),
-      _curveBeam( new ConstantFieldOnCellsRealClass( getName() + ".CARARCPO", _mesh ) ),
-      _cable( new ConstantFieldOnCellsRealClass( getName() + ".CARCABLE", _mesh ) ),
-      _shell( new ConstantFieldOnCellsRealClass( getName() + ".CARCOQUE", _mesh ) ),
-      _dumping( new ConstantFieldOnCellsRealClass( getName() + ".CARDISCA", _mesh ) ),
-      _rigidity( new ConstantFieldOnCellsRealClass( getName() + ".CARDISCK", _mesh ) ),
-      _mass( new ConstantFieldOnCellsRealClass( getName() + ".CARDISCM", _mesh ) ),
-      _bar( new ConstantFieldOnCellsRealClass( getName() + ".CARGENBA", _mesh ) ),
-      _beamSection( new ConstantFieldOnCellsRealClass( getName() + ".CARGENPO", _mesh ) ),
-      _beamGeometry( new ConstantFieldOnCellsRealClass( getName() + ".CARGEOPO", _mesh ) ),
-      _orthotropicBasis( new ConstantFieldOnCellsRealClass( getName() + ".CARMASSI", _mesh ) ),
-      _localBasis( new ConstantFieldOnCellsRealClass( getName() + ".CARORIEN", _mesh ) ),
-      _beamCharacteristics( new ConstantFieldOnCellsRealClass( getName() + ".CARPOUFL", _mesh ) ),
+      _numberOfSubpoints( new ConstantFieldOnCellsLong( getName() + ".CANBSP", _mesh ) ),
+      _curveBeam( new ConstantFieldOnCellsReal( getName() + ".CARARCPO", _mesh ) ),
+      _cable( new ConstantFieldOnCellsReal( getName() + ".CARCABLE", _mesh ) ),
+      _shell( new ConstantFieldOnCellsReal( getName() + ".CARCOQUE", _mesh ) ),
+      _dumping( new ConstantFieldOnCellsReal( getName() + ".CARDISCA", _mesh ) ),
+      _rigidity( new ConstantFieldOnCellsReal( getName() + ".CARDISCK", _mesh ) ),
+      _mass( new ConstantFieldOnCellsReal( getName() + ".CARDISCM", _mesh ) ),
+      _bar( new ConstantFieldOnCellsReal( getName() + ".CARGENBA", _mesh ) ),
+      _beamSection( new ConstantFieldOnCellsReal( getName() + ".CARGENPO", _mesh ) ),
+      _beamGeometry( new ConstantFieldOnCellsReal( getName() + ".CARGEOPO", _mesh ) ),
+      _orthotropicBasis( new ConstantFieldOnCellsReal( getName() + ".CARMASSI", _mesh ) ),
+      _localBasis( new ConstantFieldOnCellsReal( getName() + ".CARORIEN", _mesh ) ),
+      _beamCharacteristics( new ConstantFieldOnCellsReal( getName() + ".CARPOUFL", _mesh ) ),
       _isEmpty( true ){};

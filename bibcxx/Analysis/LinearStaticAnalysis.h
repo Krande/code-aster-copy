@@ -40,7 +40,7 @@
 #include "Analysis/GenericAnalysis.h"
 #include "Studies/StudyDescription.h"
 
-class LinearStaticAnalysisClass : public GenericAnalysis {
+class LinearStaticAnalysis : public GenericAnalysis {
   private:
     /** @brief Modele */
     ModelPtr _model;
@@ -57,7 +57,7 @@ class LinearStaticAnalysisClass : public GenericAnalysis {
     /**
      * @brief Constructeur
      */
-    LinearStaticAnalysisClass( const ModelPtr &, const MaterialFieldPtr &,
+    LinearStaticAnalysis( const ModelPtr &, const MaterialFieldPtr &,
                                     const ElementaryCharacteristicsPtr &cara = nullptr );
 
     /**
@@ -88,8 +88,8 @@ class LinearStaticAnalysisClass : public GenericAnalysis {
 
 /**
  * @typedef LinearStaticAnalysisPtr
- * @brief Enveloppe d'un pointeur intelligent vers un LinearStaticAnalysisClass
+ * @brief Enveloppe d'un pointeur intelligent vers un LinearStaticAnalysis
  */
-typedef boost::shared_ptr< LinearStaticAnalysisClass > LinearStaticAnalysisPtr;
+typedef boost::shared_ptr< LinearStaticAnalysis > LinearStaticAnalysisPtr;
 
 #endif /* LINEARSTATICANALYSIS_H_ */

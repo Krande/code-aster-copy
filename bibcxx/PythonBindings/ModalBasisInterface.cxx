@@ -3,7 +3,7 @@
  * @brief Interface python de StandardModalBasis
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,19 +31,19 @@ namespace py = boost::python;
 
 void exportModalBasisToPython() {
 
-    py::class_< GenericModalBasisClass, GenericModalBasisClass::GenericModalBasisPtr,
+    py::class_< GenericModalBasis, GenericModalBasis::GenericModalBasisPtr,
             py::bases< DataStructure > >( "GenericModalBasis", py::no_init );
         // fake initFactoryPtr: created by subclass
         // fake initFactoryPtr: created by subclass
 
-    py::class_< StandardModalBasisClass, StandardModalBasisClass::StandardModalBasisPtr,
-            py::bases< GenericModalBasisClass > >( "StandardModalBasis", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< StandardModalBasisClass >))
+    py::class_< StandardModalBasis, StandardModalBasis::StandardModalBasisPtr,
+            py::bases< GenericModalBasis > >( "StandardModalBasis", py::no_init )
+        .def( "__init__", py::make_constructor(&initFactoryPtr< StandardModalBasis >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< StandardModalBasisClass, std::string >));
+              py::make_constructor(&initFactoryPtr< StandardModalBasis, std::string >));
 
-    py::class_< RitzBasisClass, RitzBasisClass::RitzBasisPtr,
-            py::bases< GenericModalBasisClass > >( "RitzBasis", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< RitzBasisClass >))
-        .def( "__init__", py::make_constructor(&initFactoryPtr< RitzBasisClass, std::string >));
+    py::class_< RitzBasis, RitzBasis::RitzBasisPtr,
+            py::bases< GenericModalBasis > >( "RitzBasis", py::no_init )
+        .def( "__init__", py::make_constructor(&initFactoryPtr< RitzBasis >))
+        .def( "__init__", py::make_constructor(&initFactoryPtr< RitzBasis, std::string >));
 };

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ThermalFourierResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -30,24 +30,24 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class ThermalFourierResultClass
+ * @class ThermalFourierResult
  * @brief Cette classe correspond a un fourier_elas
  * @author Nicolas Sellenet
  */
-class ThermalFourierResultClass : public ResultClass {
+class ThermalFourierResult : public Result {
   private:
   public:
     /**
      * @brief Constructeur
      */
-    ThermalFourierResultClass( const std::string name = ResultNaming::getNewResultName() )
-        : ResultClass( name, "FOURIER_THER" ){};
+    ThermalFourierResult( const std::string name = ResultNaming::getNewResultName() )
+        : Result( name, "FOURIER_THER" ){};
 };
 
 /**
  * @typedef ThermalFourierResultPtr
- * @brief Pointeur intelligent vers un ThermalFourierResultClass
+ * @brief Pointeur intelligent vers un ThermalFourierResult
  */
-typedef boost::shared_ptr< ThermalFourierResultClass > ThermalFourierResultPtr;
+typedef boost::shared_ptr< ThermalFourierResult > ThermalFourierResultPtr;
 
 #endif /* FOURIERTHERCONTAINER_H_ */

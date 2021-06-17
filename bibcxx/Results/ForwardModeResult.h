@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ForwardModeResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,8 +28,8 @@
 
 #include "astercxx.h"
 
-class ModeResultClass;
-typedef boost::shared_ptr< ModeResultClass > ModeResultPtr;
+class ModeResult;
+typedef boost::shared_ptr< ModeResult > ModeResultPtr;
 
 /**
  * @class ForwardModeResultPtr
@@ -38,7 +38,7 @@ typedef boost::shared_ptr< ModeResultClass > ModeResultPtr;
  */
 class ForwardModeResultPtr {
   private:
-    /** @brief Pointer to ModeResultClass */
+    /** @brief Pointer to ModeResult */
     ModeResultPtr _ptr;
     bool _isSet;
 

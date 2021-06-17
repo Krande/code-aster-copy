@@ -31,8 +31,8 @@
 #include "Supervis/ResultNaming.h"
 #include "Utilities/Tools.h"
 
-FormulaClass::FormulaClass( const std::string name )
-    : GenericFunctionClass( name, "FORMULE", "INTERPRE" ),
+Formula::Formula( const std::string name )
+    : GenericFunction( name, "FORMULE", "INTERPRE" ),
       _variables( JeveuxVectorChar24( getName() + ".NOVA" ) ),
       _pointers( JeveuxVectorLong( getName() + ".ADDR" ) ),
       _expression( "" ),
@@ -41,18 +41,18 @@ FormulaClass::FormulaClass( const std::string name )
     _context = PyDict_New();
 }
 
-FormulaClass::FormulaClass()
-    : FormulaClass::FormulaClass( ResultNaming::getNewResultName() ) {
+Formula::Formula()
+    : Formula::Formula( ResultNaming::getNewResultName() ) {
     propertyAllocate();
     _pointers->allocate( Permanent, 2 );
 }
 
-FormulaClass::~FormulaClass() {
+Formula::~Formula() {
     Py_XDECREF( _code );
     Py_XDECREF( _context );
 }
 
-void FormulaClass::setVariables( const VectorString &names ) {
+void Formula::setVariables( const VectorString &names ) {
     const int nbvar = names.size();
     _variables->allocate( Permanent, nbvar );
 
@@ -63,7 +63,7 @@ void FormulaClass::setVariables( const VectorString &names ) {
         ++idx;
     }
 }
-VectorString FormulaClass::getVariables() const {
+VectorString Formula::getVariables() const {
     _variables->updateValuePointer();
     long nbvars = _variables->size();
     VectorString vars;
@@ -73,7 +73,7 @@ VectorString FormulaClass::getVariables() const {
     return vars;
 }
 
-void FormulaClass::setExpression( const std::string expression ) {
+void Formula::setExpression( const std::string expression ) {
     const std::string name = "formula";
     _expression = expression;
     Py_XDECREF( _code );
@@ -88,7 +88,7 @@ void FormulaClass::setExpression( const std::string expression ) {
     }
 }
 
-VectorReal FormulaClass::evaluate( const VectorReal &values ) const
+VectorReal Formula::evaluate( const VectorReal &values ) const
     {
     int iret = 0;
     VectorString vars = getVariables();

@@ -38,71 +38,71 @@ void exportModelToPython() {
         "Metis", MetisPartitioner );
 
 
-    void ( ModelClass::*split1 )( ModelSplitingMethod ) = &ModelClass::setSplittingMethod;
+    void ( Model::*split1 )( ModelSplitingMethod ) = &Model::setSplittingMethod;
 
-    void ( ModelClass::*split2 )( ModelSplitingMethod, GraphPartitioner ) =
-        &ModelClass::setSplittingMethod;
+    void ( Model::*split2 )( ModelSplitingMethod, GraphPartitioner ) =
+        &Model::setSplittingMethod;
 
-    py::class_< ModelClass, ModelClass::ModelPtr, py::bases< DataStructure > >( "Model",
+    py::class_< Model, Model::ModelPtr, py::bases< DataStructure > >( "Model",
                                                                                  py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ModelClass, BaseMeshPtr>))
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ModelClass, std::string,
+        .def( "__init__", py::make_constructor(&initFactoryPtr< Model, BaseMeshPtr>))
+        .def( "__init__", py::make_constructor(&initFactoryPtr< Model, std::string,
                                                                 BaseMeshPtr>))
 #ifdef ASTER_HAVE_MPI
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ModelClass, ConnectionMeshPtr>))
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ModelClass, std::string,
+        .def( "__init__", py::make_constructor(&initFactoryPtr< Model, ConnectionMeshPtr>))
+        .def( "__init__", py::make_constructor(&initFactoryPtr< Model, std::string,
                                                                             ConnectionMeshPtr>))
 #endif /* ASTER_HAVE_MPI */
-        .def( "addModelingOnMesh", &ModelClass::addModelingOnMesh )
-        .def( "addModelingOnGroupOfCells", &ModelClass::addModelingOnGroupOfCells )
-        .def( "addModelingOnGroupOfNodes", &ModelClass::addModelingOnGroupOfNodes )
-        .def( "build", &ModelClass::build )
-        .def( "existsThm", &ModelClass::existsThm )
-        .def( "existsMultiFiberBeam", &ModelClass::existsMultiFiberBeam )
-        .def( "getSaneModel", &ModelClass::getSaneModel )
-        .def( "getMesh", &ModelClass::getMesh, R"(
+        .def( "addModelingOnMesh", &Model::addModelingOnMesh )
+        .def( "addModelingOnGroupOfCells", &Model::addModelingOnGroupOfCells )
+        .def( "addModelingOnGroupOfNodes", &Model::addModelingOnGroupOfNodes )
+        .def( "build", &Model::build )
+        .def( "existsThm", &Model::existsThm )
+        .def( "existsMultiFiberBeam", &Model::existsMultiFiberBeam )
+        .def( "getSaneModel", &Model::getSaneModel )
+        .def( "getMesh", &Model::getMesh, R"(
 Return the mesh
 
 Returns:
     MeshPtr: a pointer to the mesh
         )",
               ( py::arg( "self" ) )  )
-        .def( "isMechanical", &ModelClass::isMechanical, R"(
+        .def( "isMechanical", &Model::isMechanical, R"(
 To know if the model is mechanical or not
 
 Returns:
     Bool: True - if the model is mechanical
         )",
               ( py::arg( "self" ) )  )
-        .def( "isThermal", &ModelClass::isThermal, R"(
+        .def( "isThermal", &Model::isThermal, R"(
 To know if the model is thermal or not
 
 Returns:
     Bool: True - if the model is thermal
         )",
               ( py::arg( "self" ) )  )
-        .def( "isAcoustic", &ModelClass::isAcoustic, R"(
+        .def( "isAcoustic", &Model::isAcoustic, R"(
 To know if the model is acoustic or not
 
 Returns:
     Bool: True - if the model is acoustic
         )",
               ( py::arg( "self" ) )  )
-        .def( "getPhysics", &ModelClass::getPhysics, R"(
+        .def( "getPhysics", &Model::getPhysics, R"(
 To know the physics supported by the model
 
 Returns:
     str: Mechanics or Thermal or Acoustic
         )",
               ( py::arg( "self" ) )  )
-        .def( "getSplittingMethod", &ModelClass::getSplittingMethod )
-        .def( "getGraphPartitioner", &ModelClass::getGraphPartitioner )
-        .def( "setSaneModel", &ModelClass::setSaneModel )
+        .def( "getSplittingMethod", &Model::getSplittingMethod )
+        .def( "getGraphPartitioner", &Model::getGraphPartitioner )
+        .def( "setSaneModel", &Model::setSaneModel )
         .def( "setSplittingMethod", split1 )
         .def( "setSplittingMethod", split2 )
-        .def( "getFiniteElementDescriptor", &ModelClass::getFiniteElementDescriptor )
+        .def( "getFiniteElementDescriptor", &Model::getFiniteElementDescriptor )
 #ifdef ASTER_HAVE_MPI
-        .def( "setFrom", &ModelClass::setFrom, R"(
+        .def( "setFrom", &Model::setFrom, R"(
 Set a model defined on a ConnectionMesh from an other model
 
 Arguments:
@@ -111,7 +111,7 @@ Arguments:
         )",
               ( py::arg( "self" ), py::arg( "model" ) ) )
 #endif
-        .def( "getTable", &ListOfTablesClass::getTable, R"(
+        .def( "getTable", &ListOfTables::getTable, R"(
 Extract a Table from the datastructure.
 
 Arguments:

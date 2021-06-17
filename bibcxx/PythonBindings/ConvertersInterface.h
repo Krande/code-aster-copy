@@ -57,7 +57,7 @@ template < typename T > struct JeveuxVectorToPythonList {
 template < typename T > struct JeveuxCollectionToPythonList {
     static PyObject *convert( JeveuxCollection< T > const &coll ) {
         py::list pylist;
-        if ( coll->size() < 0 && !coll->buildFromJeveux() ) {
+        if ( coll->size() < 0 && !coll->build() ) {
             return py::incref( pylist.ptr() );
         }
         for ( int i = 0; i < coll->size(); ++i ) {

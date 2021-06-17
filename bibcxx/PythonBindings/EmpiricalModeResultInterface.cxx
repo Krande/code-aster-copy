@@ -3,7 +3,7 @@
  * @brief Interface python de EmpiricalModeResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,9 +29,9 @@ namespace py = boost::python;
 
 void exportEmpiricalModeResultToPython() {
 
-    py::class_< EmpiricalModeResultClass, EmpiricalModeResultPtr,
-                py::bases< ResultClass > >( "EmpiricalModeResult", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< EmpiricalModeResultClass >))
+    py::class_< EmpiricalModeResult, EmpiricalModeResultPtr,
+                py::bases< Result > >( "EmpiricalModeResult", py::no_init )
+        .def( "__init__", py::make_constructor(&initFactoryPtr< EmpiricalModeResult >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< EmpiricalModeResultClass, std::string >));
+              py::make_constructor(&initFactoryPtr< EmpiricalModeResult, std::string >));
 };

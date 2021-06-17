@@ -58,12 +58,12 @@
 #include "Numbering/FieldOnNodesDescription.h"
 
 /**
- * @class BaseDOFNumberingClass
+ * @class BaseDOFNumbering
  * @brief Class definissant un nume_ddl
  *        Cette classe est volontairement succinte car on n'en connait pas encore l'usage
  * @author Nicolas Sellenet
  */
-class BaseDOFNumberingClass : public DataStructure {
+class BaseDOFNumbering : public DataStructure {
   private:
     typedef boost::variant< ElementaryMatrixDisplacementRealPtr,
                             ElementaryMatrixDisplacementComplexPtr,
@@ -94,7 +94,7 @@ class BaseDOFNumberingClass : public DataStructure {
     };
 
   private:
-    class MultFrontGarbageClass {
+    class MultFrontGarbage {
         /** @brief Objet Jeveux '.ADNT' */
         JeveuxVectorShort _adnt;
         /** @brief Objet Jeveux '.GLOB' */
@@ -144,7 +144,7 @@ class BaseDOFNumberingClass : public DataStructure {
         /** @brief Objet Jeveux '.SUPN' */
         JeveuxVectorLong _supn;
 
-        MultFrontGarbageClass( const std::string &DOFNumName )
+        MultFrontGarbage( const std::string &DOFNumName )
             : _adnt( DOFNumName + ".ADNT" ), _glob( DOFNumName + ".GLOB" ),
               _locl( DOFNumName + ".LOCL" ), _pnti( DOFNumName + ".PNTI" ),
               _renu( DOFNumName + ".RENU" ), _adpi( DOFNumName + ".ADPI" ),
@@ -157,11 +157,11 @@ class BaseDOFNumberingClass : public DataStructure {
               _nbli( DOFNumName + ".NBLI" ), _nbcl( DOFNumName + ".NCBL" ),
               _nouv( DOFNumName + ".NOUV" ), _pare( DOFNumName + ".PARE" ),
               _sequ( DOFNumName + ".SEQU" ), _supn( DOFNumName + ".SUPN" ){};
-        friend class BaseDOFNumberingClass;
+        friend class BaseDOFNumbering;
     };
-    typedef boost::shared_ptr< MultFrontGarbageClass > MultFrontGarbagePtr;
+    typedef boost::shared_ptr< MultFrontGarbage > MultFrontGarbagePtr;
 
-    class GlobalEquationNumberingClass {
+    class GlobalEquationNumbering {
         /** @brief Objet Jeveux '.NEQU' */
         JeveuxVectorLong _numberOfEquations;
         /** @brief Objet Jeveux '.REFN' */
@@ -169,7 +169,7 @@ class BaseDOFNumberingClass : public DataStructure {
         /** @brief Objet Jeveux '.DELG' */
         JeveuxVectorLong _lagrangianInformations;
 
-        GlobalEquationNumberingClass( const std::string &DOFNumName )
+        GlobalEquationNumbering( const std::string &DOFNumName )
             : _numberOfEquations( DOFNumName + ".NEQU" ), _informations( DOFNumName + ".REFN" ),
               _lagrangianInformations( DOFNumName + ".DELG" ){};
 
@@ -187,11 +187,11 @@ class BaseDOFNumberingClass : public DataStructure {
                 return _numberOfEquations;
             }
 
-        friend class BaseDOFNumberingClass;
+        friend class BaseDOFNumbering;
     };
-    typedef boost::shared_ptr< GlobalEquationNumberingClass > GlobalEquationNumberingPtr;
+    typedef boost::shared_ptr< GlobalEquationNumbering > GlobalEquationNumberingPtr;
 
-    class LocalEquationNumberingClass {
+    class LocalEquationNumbering {
         /** @brief Objet Jeveux '.NEQU' */
         JeveuxVectorLong _numberOfEquations;
         /** @brief Objet Jeveux '.DELG' */
@@ -205,7 +205,7 @@ class BaseDOFNumberingClass : public DataStructure {
         /** @brief Objet Jeveux '.NUGL' */
         JeveuxVectorLong _LocalToGlobal;
 
-        LocalEquationNumberingClass( const std::string &DOFNumName )
+        LocalEquationNumbering( const std::string &DOFNumName )
             : _numberOfEquations( DOFNumName + ".NEQU" ),
               _lagrangianInformations( DOFNumName + ".DELG" ),
               _componentsOnNodes( DOFNumName + ".PRNO" ), _indexationVector( DOFNumName + ".NUEQ" ),
@@ -224,9 +224,9 @@ class BaseDOFNumberingClass : public DataStructure {
             const JeveuxVectorLong getGlobalToLocal() const {
                 return _globalToLocal;
             }
-        friend class BaseDOFNumberingClass;
+        friend class BaseDOFNumbering;
     };
-    typedef boost::shared_ptr< LocalEquationNumberingClass > LocalEquationNumberingPtr;
+    typedef boost::shared_ptr< LocalEquationNumbering > LocalEquationNumberingPtr;
 
     // !!! Classe succinte car on ne sait pas comment elle sera utiliser !!!
     /** @brief Objet Jeveux '.NSLV' */
@@ -260,13 +260,13 @@ class BaseDOFNumberingClass : public DataStructure {
     /**
      * @brief Constructeur
      */
-    BaseDOFNumberingClass( const std::string &type, const JeveuxMemory memType = Permanent );
+    BaseDOFNumbering( const std::string &type, const JeveuxMemory memType = Permanent );
 
     /**
      * @brief Constructeur
-     * @param name nom souhaité de la sd (utile pour le BaseDOFNumberingClass d'une sd_resu)
+     * @param name nom souhaité de la sd (utile pour le BaseDOFNumbering d'une sd_resu)
      */
-    BaseDOFNumberingClass( const std::string name, const std::string &type,
+    BaseDOFNumbering( const std::string name, const std::string &type,
                            const JeveuxMemory memType = Permanent );
 
   public:
@@ -274,7 +274,7 @@ class BaseDOFNumberingClass : public DataStructure {
      * @typedef BaseDOFNumberingPtr
      * @brief Pointeur intelligent vers un BaseDOFNumbering
      */
-    typedef boost::shared_ptr< BaseDOFNumberingClass > BaseDOFNumberingPtr;
+    typedef boost::shared_ptr< BaseDOFNumbering > BaseDOFNumberingPtr;
 
     /**
      * @brief Add a FiniteElementDescriptor to elementary matrix
@@ -524,9 +524,9 @@ class BaseDOFNumberingClass : public DataStructure {
 
 /**
  * @typedef BaseDOFNumberingPtr
- * @brief Enveloppe d'un pointeur intelligent vers un BaseDOFNumberingClass
+ * @brief Enveloppe d'un pointeur intelligent vers un BaseDOFNumbering
  * @author Nicolas Sellenet
  */
-typedef boost::shared_ptr< BaseDOFNumberingClass > BaseDOFNumberingPtr;
+typedef boost::shared_ptr< BaseDOFNumbering > BaseDOFNumberingPtr;
 
 #endif /* BASEDOFNUMBERING_H_ */

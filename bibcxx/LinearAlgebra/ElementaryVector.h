@@ -39,11 +39,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class ElementaryVectorClass
+ * @class ElementaryVector
  * @brief Class definissant une sd_vect_elem
  * @author Nicolas Sellenet
  */
-class ElementaryVectorClass : public DataStructure {
+class ElementaryVector : public DataStructure {
   private:
     /** @typedef std::list de MechanicalLoad */
     typedef ListMecaLoadReal ListMechanicalLoad;
@@ -69,25 +69,25 @@ class ElementaryVectorClass : public DataStructure {
      * @typedef ElementaryVectorPtr
      * @brief Pointeur intelligent vers un ElementaryVector
      */
-    typedef boost::shared_ptr< ElementaryVectorClass > ElementaryVectorPtr;
+    typedef boost::shared_ptr< ElementaryVector > ElementaryVectorPtr;
 
     /**
      * @brief Constructeur
      */
-    ElementaryVectorClass( const std::string name,
+    ElementaryVector( const std::string name,
                               const JeveuxMemory memType = Permanent,
                               const std::string type = "VECT_ELEM" )
         : DataStructure( name, 19, type, memType ),
           _description( JeveuxVectorChar24( getName() + ".RERR" ) ),
           _listOfElementaryTerms( JeveuxVectorChar24( getName() + ".RELR" ) ), _isEmpty( true ),
-          _listOfLoads( new ListOfLoadsClass( memType ) ),
+          _listOfLoads( new ListOfLoads( memType ) ),
           _corichRept( NamesMapChar24( "&&CORICH." + getName8() + ".REPT" ) ){};
 
     /**
      * @brief Constructeur
      */
-    ElementaryVectorClass( const JeveuxMemory memType = Permanent )
-        : ElementaryVectorClass( ResultNaming::getNewResultName(), memType ){};
+    ElementaryVector( const JeveuxMemory memType = Permanent )
+        : ElementaryVector( ResultNaming::getNewResultName(), memType ){};
 
     /* FIXME: temporay for _corich .REPT initialiezation! */
     const std::string getName8() const {
@@ -116,8 +116,8 @@ class ElementaryVectorClass : public DataStructure {
      * @todo prendre en compte les fonctions multiplicatrices
      */
     FieldOnNodesRealPtr
-    assembleVector( const DOFNumberingPtr &currentNumerotation ) {
-        return assembleVector( currentNumerotation, 0., Permanent );
+    assemble( const DOFNumberingPtr &currentNumerotation ) {
+        return assemble( currentNumerotation, 0., Permanent );
     };
 
 /**
@@ -126,9 +126,9 @@ class ElementaryVectorClass : public DataStructure {
  * @todo prendre en compte les fonctions multiplicatrices
  */
 #ifdef ASTER_HAVE_MPI
-    FieldOnNodesRealPtr assembleVector(
+    FieldOnNodesRealPtr assemble(
         const ParallelDOFNumberingPtr &currentNumerotation ) {
-        return assembleVector( currentNumerotation, 0., Permanent );
+        return assemble( currentNumerotation, 0., Permanent );
     };
 #endif /* ASTER_HAVE_MPI */
 
@@ -138,7 +138,7 @@ class ElementaryVectorClass : public DataStructure {
      * @todo prendre en compte les fonctions multiplicatrices
      */
     FieldOnNodesRealPtr
-    assembleVector( const BaseDOFNumberingPtr &currentNumerotation, const double &time = 0.,
+    assemble( const BaseDOFNumberingPtr &currentNumerotation, const double &time = 0.,
                     const JeveuxMemory memType = Permanent ) ;
 
     /**
@@ -151,7 +151,7 @@ class ElementaryVectorClass : public DataStructure {
      * @brief Methode permettant de changer l'état de remplissage
      * @param bEmpty booleen permettant de dire que l'objet est vide ou pas
      */
-    void setEmpty( bool bEmpty ) { _isEmpty = bEmpty; };
+    void isEmpty( bool bEmpty ) { _isEmpty = bEmpty; };
 
     /**
      * @brief Methode permettant de definir la liste de charge
@@ -160,26 +160,26 @@ class ElementaryVectorClass : public DataStructure {
     void setListOfLoads( const ListOfLoadsPtr &currentList ) { _listOfLoads = currentList; };
 
     /**
-     * @brief function to update ElementaryTermClass
+     * @brief function to build ElementaryTerm
      */
-    bool update();
+    bool build();
 
-    friend class DiscreteProblemClass;
+    friend class DiscreteProblem;
 };
 
 /**
  * @typedef ElementaryVectorPtr
- * @brief Pointeur intelligent vers un ElementaryVectorClass
+ * @brief Pointeur intelligent vers un ElementaryVector
  */
-typedef boost::shared_ptr< ElementaryVectorClass > ElementaryVectorPtr;
+typedef boost::shared_ptr< ElementaryVector > ElementaryVectorPtr;
 
 /**
- * @class TemplateElementaryVectorClass
+ * @class TemplateElementaryVector
  * @brief Classe definissant une sd_vect_elem template
  * @author Nicolas Sellenet
  */
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
-class TemplateElementaryVectorClass: public ElementaryVectorClass
+class TemplateElementaryVector: public ElementaryVector
 {
   private:
 
@@ -188,15 +188,15 @@ class TemplateElementaryVectorClass: public ElementaryVectorClass
      * @typedef TemplateElementaryVectorPtr
      * @brief Pointeur intelligent vers un TemplateElementaryVector
      */
-    typedef boost::shared_ptr< TemplateElementaryVectorClass< ValueType, PhysicalQuantity > >
+    typedef boost::shared_ptr< TemplateElementaryVector< ValueType, PhysicalQuantity > >
         TemplateElementaryVectorPtr;
 
     /**
      * @brief Constructor with a name
      */
-    TemplateElementaryVectorClass( const std::string name,
+    TemplateElementaryVector( const std::string name,
                                       const JeveuxMemory memType = Permanent ):
-        ElementaryVectorClass( name, memType,
+        ElementaryVector( name, memType,
             "VECT_ELEM_" + std::string( PhysicalQuantityNames[PhysicalQuantity] ) +
             ( typeid( ValueType ) == typeid(double)? "_R" : "_C" ) )
     {};
@@ -204,31 +204,31 @@ class TemplateElementaryVectorClass: public ElementaryVectorClass
     /**
      * @brief Constructor
      */
-    TemplateElementaryVectorClass( const JeveuxMemory memType = Permanent ):
-        TemplateElementaryVectorClass( ResultNaming::getNewResultName(), memType )
+    TemplateElementaryVector( const JeveuxMemory memType = Permanent ):
+        TemplateElementaryVector( ResultNaming::getNewResultName(), memType )
     {};
 };
 
 /** @typedef Definition d'une matrice élémentaire de double */
-template class TemplateElementaryVectorClass< ASTERDOUBLE, Displacement >;
-typedef TemplateElementaryVectorClass< ASTERDOUBLE,
-                                          Displacement > ElementaryVectorDisplacementRealClass;
+template class TemplateElementaryVector< ASTERDOUBLE, Displacement >;
+typedef TemplateElementaryVector< ASTERDOUBLE,
+                                          Displacement > ElementaryVectorDisplacementReal;
 
 /** @typedef Definition d'une matrice élémentaire de double temperature */
-template class TemplateElementaryVectorClass< ASTERDOUBLE, Temperature >;
-typedef TemplateElementaryVectorClass< ASTERDOUBLE,
-                                          Temperature > ElementaryVectorTemperatureRealClass;
+template class TemplateElementaryVector< ASTERDOUBLE, Temperature >;
+typedef TemplateElementaryVector< ASTERDOUBLE,
+                                          Temperature > ElementaryVectorTemperatureReal;
 
 /** @typedef Definition d'une matrice élémentaire de ASTERCOMPLEX pression */
-template class TemplateElementaryVectorClass< ASTERCOMPLEX, Pressure >;
-typedef TemplateElementaryVectorClass< ASTERCOMPLEX,
-                                          Pressure > ElementaryVectorPressureComplexClass;
+template class TemplateElementaryVector< ASTERCOMPLEX, Pressure >;
+typedef TemplateElementaryVector< ASTERCOMPLEX,
+                                          Pressure > ElementaryVectorPressureComplex;
 
-typedef boost::shared_ptr< ElementaryVectorDisplacementRealClass >
+typedef boost::shared_ptr< ElementaryVectorDisplacementReal >
     ElementaryVectorDisplacementRealPtr;
-typedef boost::shared_ptr< ElementaryVectorTemperatureRealClass >
+typedef boost::shared_ptr< ElementaryVectorTemperatureReal >
     ElementaryVectorTemperatureRealPtr;
-typedef boost::shared_ptr< ElementaryVectorPressureComplexClass >
+typedef boost::shared_ptr< ElementaryVectorPressureComplex >
     ElementaryVectorPressureComplexPtr;
 
 #endif /* ELEMENTARYVECTOR_H_ */

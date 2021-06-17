@@ -1,9 +1,9 @@
 /**
- * @file ExternalVariablesResultInterface.cxx
- * @brief Interface python de ExternalVariablesResult
+ * @file ExternalStateVariablesResultInterface.cxx
+ * @brief Interface python de ExternalStateVariablesResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,20 +21,20 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "PythonBindings/ExternalVariablesResultInterface.h"
+#include "PythonBindings/ExternalStateVariablesResultInterface.h"
 #include "PythonBindings/factory.h"
 #include <boost/python.hpp>
 
 namespace py = boost::python;
 
-void exportExternalVariablesResultToPython() {
+void exportExternalStateVariablesResultToPython() {
 
-    py::class_< ExternalVariablesResultClass, ExternalVariablesResultPtr,
-            py::bases< TransientResultClass > >( "ExternalVariablesResult",
+    py::class_< ExternalStateVariablesResult, ExternalStateVariablesResultPtr,
+            py::bases< TransientResult > >( "ExternalStateVariablesResult",
                                                               py::no_init )
         .def( "__init__",
-              py::make_constructor( &initFactoryPtr< ExternalVariablesResultClass > ) )
+              py::make_constructor( &initFactoryPtr< ExternalStateVariablesResult > ) )
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< ExternalVariablesResultClass, std::string > ) );
+                  &initFactoryPtr< ExternalStateVariablesResult, std::string > ) );
 };

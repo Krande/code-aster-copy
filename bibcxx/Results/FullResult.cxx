@@ -22,7 +22,7 @@
 #include "Results/FullResult.h"
 
 
-bool FullResultClass::_setDOFNumbering( const BaseDOFNumberingPtr &dofNum ) {
+bool FullResult::_setDOFNumbering( const BaseDOFNumberingPtr &dofNum ) {
     if ( dofNum != nullptr ) {
         _dofNum = dofNum;
         _mesh = _dofNum->getMesh();
@@ -32,13 +32,13 @@ bool FullResultClass::_setDOFNumbering( const BaseDOFNumberingPtr &dofNum ) {
     return false;
 }
 
-bool FullResultClass::setDOFNumbering( const DOFNumberingPtr &dofNum ) {
-   return FullResultClass::_setDOFNumbering( dofNum );
+bool FullResult::setDOFNumbering( const DOFNumberingPtr &dofNum ) {
+   return FullResult::_setDOFNumbering( dofNum );
 }
 
 #ifdef ASTER_HAVE_MPI
-bool FullResultClass::setParallelDOFNumbering(
+bool FullResult::setParallelDOFNumbering(
         const ParallelDOFNumberingPtr &dofNum ) {
-    return FullResultClass::_setDOFNumbering( dofNum );
+    return FullResult::_setDOFNumbering( dofNum );
 }
 #endif

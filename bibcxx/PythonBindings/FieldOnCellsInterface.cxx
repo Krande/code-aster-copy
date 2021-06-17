@@ -32,18 +32,18 @@ namespace py = boost::python;
 #include "PythonBindings/FieldOnCellsInterface.h"
 
 void exportFieldOnCellsToPython() {
-    py::class_< FieldOnCellsRealClass, FieldOnCellsRealPtr,
-            py::bases< DataFieldClass > >( "FieldOnCellsReal", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< FieldOnCellsRealClass >))
+    py::class_< FieldOnCellsReal, FieldOnCellsRealPtr,
+            py::bases< DataField > >( "FieldOnCellsReal", py::no_init )
+        .def( "__init__", py::make_constructor(&initFactoryPtr< FieldOnCellsReal >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< FieldOnCellsRealClass, std::string >))
+              py::make_constructor(&initFactoryPtr< FieldOnCellsReal, std::string >))
         .def( "exportToSimpleFieldOnCells",
-              &FieldOnCellsRealClass::exportToSimpleFieldOnCells )
-        .def( "getModel", &FieldOnCellsRealClass::getModel )
-        .def( "setDescription", &FieldOnCellsRealClass::setDescription )
-        .def( "setModel", &FieldOnCellsRealClass::setModel )
-        .def( "update", &FieldOnCellsRealClass::update )
-        .def( "printMedFile", &FieldOnCellsRealClass::printMedFile, R"(
+              &FieldOnCellsReal::exportToSimpleFieldOnCells )
+        .def( "getModel", &FieldOnCellsReal::getModel )
+        .def( "setDescription", &FieldOnCellsReal::setDescription )
+        .def( "setModel", &FieldOnCellsReal::setModel )
+        .def( "build", &FieldOnCellsReal::build )
+        .def( "printMedFile", &FieldOnCellsReal::printMedFile, R"(
 Print the field in MED format.
 
 Arguments:

@@ -35,11 +35,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class FieldOnNodesDescriptionClass
+ * @class FieldOnNodesDescription
  * @brief This class describes the structure of dof stored in a field on nodes
  * @author Nicolas Sellenet
  */
-class FieldOnNodesDescriptionClass : public DataStructure {
+class FieldOnNodesDescription : public DataStructure {
     /** @brief Objet Jeveux '.PRNO' */
     JeveuxCollectionLong _componentsOnNodes;
     /** @brief Objet Jeveux '.LILI' */
@@ -53,19 +53,19 @@ class FieldOnNodesDescriptionClass : public DataStructure {
     /**
      * @brief Constructeur
      */
-    FieldOnNodesDescriptionClass( const JeveuxMemory memType = Permanent );
+    FieldOnNodesDescription( const JeveuxMemory memType = Permanent );
 
     /**
      * @brief Destructor
      */
-    ~FieldOnNodesDescriptionClass(){};
+    ~FieldOnNodesDescription(){};
 
     /**
      * @brief Constructeur
-     * @param name nom souhaité de la sd (utile pour le FieldOnNodesDescriptionClass d'une
+     * @param name nom souhaité de la sd (utile pour le FieldOnNodesDescription d'une
      * sd_resu)
      */
-    FieldOnNodesDescriptionClass( const std::string name, const JeveuxMemory memType = Permanent );
+    FieldOnNodesDescription( const std::string name, const JeveuxMemory memType = Permanent );
 
     /**
      * @brief Returns a vector of information of the numbering
@@ -84,9 +84,9 @@ class FieldOnNodesDescriptionClass : public DataStructure {
      */
     ASTERINTEGER getNumberOfDofs() const;
 
-    // friend class BaseDOFNumberingClass;
+    // friend class BaseDOFNumbering;
 };
-typedef boost::shared_ptr< FieldOnNodesDescriptionClass > FieldOnNodesDescriptionPtr;
+typedef boost::shared_ptr< FieldOnNodesDescription > FieldOnNodesDescriptionPtr;
 
 
 #endif /* FIELDONNODESDESCRIPTION_H_ */

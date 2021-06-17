@@ -45,14 +45,14 @@ const std::set< Renumbering >
 const std::set< Renumbering >
     WrapGcpc::setOfAllowedRenumbering( GcpcRenumbering, GcpcRenumbering + nbRenumberingGcpc );
 
-ListSyntaxMapContainer BaseLinearSolverClass::buildListSyntax() {
+ListSyntaxMapContainer BaseLinearSolver::buildListSyntax() {
     ListSyntaxMapContainer listeSolver;
     SyntaxMapContainer dict1 = buildSyntaxMapFromParamList( _listOfParameters );
     listeSolver.push_back( dict1 );
     return listeSolver;
 };
 
-BaseLinearSolverClass::BaseLinearSolverClass( const std::string name,
+BaseLinearSolver::BaseLinearSolver( const std::string name,
                                               const LinearSolverEnum currentBaseLinearSolver,
                                               const Renumbering currentRenumber )
     : DataStructure( name, 19, "SOLVEUR" ), _linearSolver( currentBaseLinearSolver ),
@@ -89,7 +89,7 @@ BaseLinearSolverClass::BaseLinearSolverClass( const std::string name,
       _resolutionType( boost::make_shared< GenParam >( "TYPE_RESOL", false ) ),
       _stopSingular( boost::make_shared< GenParam >( "STOP_SINGULIER", false ) ),
       _matrixPrec(
-          new AssemblyMatrixDisplacementRealClass( ResultNaming::getNewResultName() + ".PREC" ) ),
+          new AssemblyMatrixDisplacementReal( ResultNaming::getNewResultName() + ".PREC" ) ),
       _commandName( "SOLVEUR" ), _xfem( false ) {
     _renum->setValue( RenumberingNames[(int)_renumber] );
 
@@ -167,7 +167,7 @@ BaseLinearSolverClass::BaseLinearSolverClass( const std::string name,
     _listOfParameters.push_back( _cmpPartition );
 };
 
-void BaseLinearSolverClass::setPreconditioning( Preconditioning precond ) {
+void BaseLinearSolver::setPreconditioning( Preconditioning precond ) {
     if ( _linearSolver != Petsc && _linearSolver != Gcpc )
         throw std::runtime_error( "Preconditionong only allowed with Gcpc or Petsc" );
     _preconditioning = precond;
@@ -185,7 +185,7 @@ void BaseLinearSolverClass::setPreconditioning( Preconditioning precond ) {
     }
 };
 
-bool BaseLinearSolverClass::build() {
+bool BaseLinearSolver::build() {
     if ( _charValues->exists() ) {
         _charValues->deallocate();
         _doubleValues->deallocate();
@@ -214,7 +214,7 @@ bool BaseLinearSolverClass::build() {
     return true;
 };
 
-bool BaseLinearSolverClass::matrixFactorization( AssemblyMatrixDisplacementRealPtr currentMatrix ) {
+bool BaseLinearSolver::factorize( AssemblyMatrixDisplacementRealPtr currentMatrix ) {
     if ( _isEmpty )
         build();
 
@@ -245,7 +245,7 @@ bool BaseLinearSolverClass::matrixFactorization( AssemblyMatrixDisplacementRealP
     return true;
 };
 
-FieldOnNodesRealPtr BaseLinearSolverClass::solveRealLinearSystem(
+FieldOnNodesRealPtr BaseLinearSolver::solve(
     const AssemblyMatrixDisplacementRealPtr &currentMatrix, const FieldOnNodesRealPtr &currentRHS,
     FieldOnNodesRealPtr result ) const {
 
@@ -254,7 +254,7 @@ FieldOnNodesRealPtr BaseLinearSolverClass::solveRealLinearSystem(
     }
 
     if ( result->getName() == "" )
-        result = FieldOnNodesRealPtr( new FieldOnNodesRealClass( Permanent ) );
+        result = FieldOnNodesRealPtr( new FieldOnNodesReal( Permanent ) );
 
     try{
        if ( !result->getDOFNumbering() && currentRHS->getDOFNumbering()){
@@ -279,7 +279,7 @@ FieldOnNodesRealPtr BaseLinearSolverClass::solveRealLinearSystem(
     return result;
 };
 
-FieldOnNodesRealPtr BaseLinearSolverClass::solveRealLinearSystemWithDirichletBC(
+FieldOnNodesRealPtr BaseLinearSolver::solveWithDirichletBC(
     const AssemblyMatrixDisplacementRealPtr &currentMatrix,
     const FieldOnNodesRealPtr &dirichletBCField, const FieldOnNodesRealPtr &currentRHS,
     FieldOnNodesRealPtr result ) const {
@@ -289,7 +289,7 @@ FieldOnNodesRealPtr BaseLinearSolverClass::solveRealLinearSystemWithDirichletBC(
     }
 
     if ( result->getName().empty() )
-        result = boost::make_shared< FieldOnNodesRealClass >( Permanent );
+        result = boost::make_shared< FieldOnNodesReal >( Permanent );
 
     std::string blanc( " " );
     ASTERINTEGER nsecm = 0, istop = 0, iret = 0;

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe CombinedFourierResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,23 +32,23 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class CombinedFourierResultClass
+ * @class CombinedFourierResult
  * @brief Cette classe correspond a un comb_fourier
  * @author Nicolas Sellenet
  */
-class CombinedFourierResultClass : public ResultClass {
+class CombinedFourierResult : public Result {
   public:
     /**
      * @brief Constructeur
      */
-    CombinedFourierResultClass( const std::string name = ResultNaming::getNewResultName() )
-        : ResultClass( name, "COMB_FOURIER" ){};
+    CombinedFourierResult( const std::string name = ResultNaming::getNewResultName() )
+        : Result( name, "COMB_FOURIER" ){};
 };
 
 /**
  * @typedef CombinedFourierResultPtr
- * @brief Pointeur intelligent vers un CombinedFourierResultClass
+ * @brief Pointeur intelligent vers un CombinedFourierResult
  */
-typedef boost::shared_ptr< CombinedFourierResultClass > CombinedFourierResultPtr;
+typedef boost::shared_ptr< CombinedFourierResult > CombinedFourierResultPtr;
 
 #endif /* FOURIERCOMBINATION_H_ */

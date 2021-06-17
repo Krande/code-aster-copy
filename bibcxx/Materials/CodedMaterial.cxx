@@ -1,6 +1,6 @@
 /**
  * @file CodedMaterial.cxx
- * @brief Implementation de CodedMaterialClass
+ * @brief Implementation de CodedMaterial
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
@@ -28,15 +28,15 @@
 #include "aster_fort_material.h"
 #include "aster_fort_utils.h"
 
-CodedMaterialClass::CodedMaterialClass( const std::string &name, const MaterialFieldPtr &mater,
+CodedMaterial::CodedMaterial( const std::string &name, const MaterialFieldPtr &mater,
                                         const ModelPtr &model )
     : _name( name ), _type( "MATER_CODE" ), _mater( mater ), _model( model ),
-      _field( new ConstantFieldOnCellsLongClass( getName() + ".MATE_CODE", _model->getMesh(),
+      _field( new ConstantFieldOnCellsLong( getName() + ".MATE_CODE", _model->getMesh(),
                                                  Permanent ) ),
       _grp( JeveuxVectorChar8( getName() + ".MATE_CODE.GRP" ) ),
       _nGrp( JeveuxVectorLong( getName() + ".MATE_CODE.NGRP" ) ){};
 
-bool CodedMaterialClass::allocate( bool force ) {
+bool CodedMaterial::allocate( bool force ) {
     if ( !force && _field->exists() )
         return false;
     if ( _field->exists() ) {
@@ -81,9 +81,9 @@ bool CodedMaterialClass::allocate( bool force ) {
             }
         }
 
-        const int nbMB = curIter->getNumberOfMaterialBehaviour();
+        const int nbMB = curIter->getNumberOfMaterialProperties();
         for ( int i = 0; i < nbMB; ++i ) {
-            auto vecVec1 = curIter->getBehaviourVectorOfRealValues( i );
+            auto vecVec1 = curIter->getBehaviourVectorOfValuesReal( i );
             auto vecVec2 = curIter->getBehaviourVectorOfFunctions( i );
             for ( auto vec1 : vecVec1 )
                 if ( vec1->exists() ) {
@@ -106,7 +106,7 @@ bool CodedMaterialClass::allocate( bool force ) {
     return true;
 };
 
-bool CodedMaterialClass::constant() const {
+bool CodedMaterial::constant() const {
     const std::string typeco( "CHAM_MATER" );
     ASTERINTEGER repi = 0, ier = 0;
     JeveuxChar32 repk( " " );

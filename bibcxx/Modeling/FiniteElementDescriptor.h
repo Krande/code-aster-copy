@@ -31,24 +31,24 @@
 #include "Meshes/MeshExplorer.h"
 #include "Meshes/BaseMesh.h"
 
-class FiniteElementDescriptorClass;
+class FiniteElementDescriptor;
 
 /**
  * @typedef FiniteElementDescriptor
- * @brief Pointeur intelligent vers un FiniteElementDescriptorClass
+ * @brief Pointeur intelligent vers un FiniteElementDescriptor
  */
-typedef boost::shared_ptr< FiniteElementDescriptorClass > FiniteElementDescriptorPtr;
+typedef boost::shared_ptr< FiniteElementDescriptor > FiniteElementDescriptorPtr;
 
 /**
- * @class FiniteElementDescriptorClass
+ * @class FiniteElementDescriptor
  * @brief Class which describes the finite elements
  * @author Nicolas Sellenet
  */
-class FiniteElementDescriptorClass: public DataStructure
+class FiniteElementDescriptor: public DataStructure
 {
 public:
     typedef MeshExplorer< CellsIteratorFromFiniteElementDescriptor,
-                          const JeveuxCollectionLong& > ConnectivityDelayedElementsExplorer;
+                          const JeveuxCollectionLong& > ConnectivityVirtualCellsExplorer;
 
 protected:
     /** @brief Vecteur Jeveux '.NBNO' */
@@ -66,7 +66,7 @@ protected:
     /** @brief Vecteur Jeveux '.PRNS' */
     JeveuxVectorLong                          _dofOfDelayedNumberedConstraintNodes;
     /** @brief Vecteur Jeveux '.LGNS' */
-    JeveuxVectorLong                          _delayedNodesNumbering;
+    JeveuxVectorLong                          _virtualNodesNumbering;
     /** @brief Vecteur Jeveux '.SSSA' */
     JeveuxVectorLong                          _superElementsDescriptor;
     /** @brief Vecteur Jeveux '.NVGE' */
@@ -74,61 +74,61 @@ protected:
     /** @brief Base mesh */
     BaseMeshPtr                               _mesh;
     /** @brief Object to loop over connectivity of delayed numbered cells */
-    const ConnectivityDelayedElementsExplorer _explorer;
+    const ConnectivityVirtualCellsExplorer _explorer;
     /** @brief Object to loop over list of group of cells */
-    const ConnectivityDelayedElementsExplorer _explorer2;
+    const ConnectivityVirtualCellsExplorer _explorer2;
 
 public:
     /**
      * @brief Constructeur
      */
-    FiniteElementDescriptorClass( const std::string& name,
+    FiniteElementDescriptor( const std::string& name,
                                      const BaseMeshPtr mesh,
                                      const JeveuxMemory memType = Permanent );
 
     /**
      * @brief Destructor
      */
-    ~FiniteElementDescriptorClass()
+    ~FiniteElementDescriptor()
     {};
 
     /**
      * @typedef FiniteElementDescriptorPtr
      * @brief Pointeur intelligent vers un FiniteElementDescriptor
      */
-    typedef boost::shared_ptr< FiniteElementDescriptorClass > FiniteElementDescriptorPtr;
+    typedef boost::shared_ptr< FiniteElementDescriptor > FiniteElementDescriptorPtr;
 
-    const ConnectivityDelayedElementsExplorer& getDelayedElementsExplorer() const
+    const ConnectivityVirtualCellsExplorer& getVirtualCellsExplorer() const
     {
-        _delayedNumberedConstraintElementsDescriptor->buildFromJeveux();
+        _delayedNumberedConstraintElementsDescriptor->build();
         return _explorer;
     };
 
-    const JeveuxVectorLong& getDelayedNodesComponentDescriptor() const
+    const JeveuxVectorLong& getVirtualNodesComponentDescriptor() const
     {
         _dofOfDelayedNumberedConstraintNodes->updateValuePointer();
         return _dofOfDelayedNumberedConstraintNodes;
     };
 
-    const JeveuxVectorLong& getDelayedNodesNumbering() const
+    const JeveuxVectorLong& getVirtualNodesNumbering() const
     {
-        _delayedNodesNumbering->updateValuePointer();
-        return _delayedNodesNumbering;
+        _virtualNodesNumbering->updateValuePointer();
+        return _virtualNodesNumbering;
     };
 
-    const ConnectivityDelayedElementsExplorer& getListOfGroupOfCellsExplorer() const
+    const ConnectivityVirtualCellsExplorer& getListOfGroupOfCellsExplorer() const
     {
-        _listOfGroupOfCells->buildFromJeveux();
+        _listOfGroupOfCells->build();
         return _explorer2;
     };
 
     const JeveuxCollectionLong& getListOfGroupOfCells() const
     {
-        _listOfGroupOfCells->buildFromJeveux();
+        _listOfGroupOfCells->build();
         return _listOfGroupOfCells;
     };
 
-    ASTERINTEGER getNumberOfDelayedNodes() const
+    ASTERINTEGER getNumberOfVirtualNodes() const
     {
         _numberOfDelayedNumberedConstraintNodes->updateValuePointer();
         return (*_numberOfDelayedNumberedConstraintNodes)[0];

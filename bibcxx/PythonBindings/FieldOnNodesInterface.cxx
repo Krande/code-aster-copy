@@ -33,28 +33,28 @@ namespace py = boost::python;
 
 void exportFieldOnNodesToPython() {
 
-    py::class_< FieldOnNodesRealClass, FieldOnNodesRealPtr,
-                py::bases< DataFieldClass > >( "FieldOnNodesReal", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< FieldOnNodesRealClass >))
+    py::class_< FieldOnNodesReal, FieldOnNodesRealPtr,
+                py::bases< DataField > >( "FieldOnNodesReal", py::no_init )
+        .def( "__init__", py::make_constructor(&initFactoryPtr< FieldOnNodesReal >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< FieldOnNodesRealClass, std::string >))
-        .def(py::init<const FieldOnNodesRealClass&>())
-        .def( "duplicate", &FieldOnNodesRealClass::duplicate)
+              py::make_constructor(&initFactoryPtr< FieldOnNodesReal, std::string >))
+        .def(py::init<const FieldOnNodesReal&>())
+        .def( "duplicate", &FieldOnNodesReal::duplicate)
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< FieldOnNodesRealClass,
+              py::make_constructor(&initFactoryPtr< FieldOnNodesReal,
                                                     BaseDOFNumberingPtr>))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< FieldOnNodesRealClass,
+              py::make_constructor(&initFactoryPtr< FieldOnNodesReal,
                                                     BaseDOFNumberingPtr, JeveuxMemory >))
         .def( "exportToSimpleFieldOnNodes",
-              &FieldOnNodesRealClass::exportToSimpleFieldOnNodes )
-        .def( "getMesh", &FieldOnNodesRealClass::getMesh )
+              &FieldOnNodesReal::exportToSimpleFieldOnNodes )
+        .def( "getMesh", &FieldOnNodesReal::getMesh )
         .def( "__getitem__",
-              +[]( const FieldOnNodesRealClass &v, int i ) { return v.operator[]( i ); } )
+              +[]( const FieldOnNodesReal &v, int i ) { return v.operator[]( i ); } )
         .def( "__setitem__",
-              +[]( FieldOnNodesRealClass &v, int i, float f ) { return v.operator[]( i )=f; } )
+              +[]( FieldOnNodesReal &v, int i, float f ) { return v.operator[]( i )=f; } )
         .def( "__add__",
-              +[]( FieldOnNodesRealClass &v1, FieldOnNodesRealClass &v2 ) { return (v1 + v2); } )
+              +[]( FieldOnNodesReal &v1, FieldOnNodesReal &v2 ) { return (v1 + v2); } )
         .def( py::self += py::self )
         .def( py::self -= py::self )
         .def( py::self + py::self )
@@ -63,16 +63,16 @@ void exportFieldOnNodesToPython() {
         .def( float() * py::self )
         .def( py::self *= float() )
         .def( - py::self)
-        .def( "printMedFile", &FieldOnNodesRealClass::printMedFile )
-        .def( "setDOFNumbering", &FieldOnNodesRealClass::setDOFNumbering )
-        .def( "setMesh", &FieldOnNodesRealClass::setMesh )
-        .def( "setDescription", &FieldOnNodesRealClass::setDescription )
-        .def( "update", &FieldOnNodesRealClass::update )
-        .def( "getDOFNumbering", &FieldOnNodesRealClass::getDOFNumbering )
-        .def( "getMesh", &FieldOnNodesRealClass::getMesh )
-        .def( "getDescription", &FieldOnNodesRealClass::getDescription )
-        .def( "updateValuePointers", &FieldOnNodesRealClass::updateValuePointers )
-        .def( "norm", &FieldOnNodesRealClass::norm,
+        .def( "printMedFile", &FieldOnNodesReal::printMedFile )
+        .def( "setDOFNumbering", &FieldOnNodesReal::setDOFNumbering )
+        .def( "setMesh", &FieldOnNodesReal::setMesh )
+        .def( "setDescription", &FieldOnNodesReal::setDescription )
+        .def( "build", &FieldOnNodesReal::build )
+        .def( "getDOFNumbering", &FieldOnNodesReal::getDOFNumbering )
+        .def( "getMesh", &FieldOnNodesReal::getMesh )
+        .def( "getDescription", &FieldOnNodesReal::getDescription )
+        .def( "updateValuePointers", &FieldOnNodesReal::updateValuePointers )
+        .def( "norm", &FieldOnNodesReal::norm,
                R"(
 Return the euclidean norm of the field
 
@@ -83,7 +83,7 @@ Returns:
     double: euclidean norm
         )",
               ( py::arg( "self" ) ) )
-        .def( "dot", &FieldOnNodesRealClass::dot,
+        .def( "dot", &FieldOnNodesReal::dot,
                R"(
 Return the dot product of two fields
 
@@ -94,7 +94,7 @@ Returns:
     double: dot produc
         )",
               ( py::arg( "self"), py::arg( "field") ) )
-        .def( "size", &FieldOnNodesRealClass::size,
+        .def( "size", &FieldOnNodesReal::size,
                R"(
 Return the size of the field
 
@@ -102,7 +102,7 @@ Return:
     int: number of element in the field
         )",
               ( py::arg( "self" ) ) )
-        .def( "setValues", &FieldOnNodesRealClass::setValues,
+        .def( "setValues", &FieldOnNodesReal::setValues,
                R"(
 Set values of the field
 
@@ -110,7 +110,7 @@ Argument:
     float: value to set
         )",
               ( py::arg( "self" ), py::arg( "value" ) ) )
-        .def( "getValues", &FieldOnNodesRealClass::getValues,
+        .def( "getValues", &FieldOnNodesReal::getValues,
         py::return_value_policy<py::copy_const_reference>(), R"(
 Return a list of values as (x1, y1, z1, x2, y2, z2...)
 
@@ -118,24 +118,23 @@ Returns:
     list[float]: List of values.
         )",
               ( py::arg( "self" ) )   );
-    py::class_< FieldOnNodesComplexClass, FieldOnNodesComplexPtr,
-                py::bases< DataFieldClass > >( "FieldOnNodesComplex", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< FieldOnNodesComplexClass >))
+    py::class_< FieldOnNodesComplex, FieldOnNodesComplexPtr,
+                py::bases< DataField > >( "FieldOnNodesComplex", py::no_init )
+        .def( "__init__", py::make_constructor(&initFactoryPtr< FieldOnNodesComplex >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< FieldOnNodesComplexClass, std::string >))
+              py::make_constructor(&initFactoryPtr< FieldOnNodesComplex, std::string >))
         .def( "exportToSimpleFieldOnNodes",
-              &FieldOnNodesComplexClass::exportToSimpleFieldOnNodes )
-        .def( "getMesh", &FieldOnNodesComplexClass::getMesh )
+              &FieldOnNodesComplex::exportToSimpleFieldOnNodes )
+        .def( "getMesh", &FieldOnNodesComplex::getMesh )
         .def( "__getitem__",
-              +[]( const FieldOnNodesComplexClass &v, int i ) { return v.operator[]( i ); } )
-        .def( "printMedFile", &FieldOnNodesComplexClass::printMedFile )
-        .def( "setDOFNumbering", &FieldOnNodesComplexClass::setDOFNumbering )
-        .def( "setMesh", &FieldOnNodesComplexClass::setMesh )
-        .def( "setDescription", &FieldOnNodesComplexClass::setDescription )
-        .def( "update", &FieldOnNodesComplexClass::update )
-        .def( "getDOFNumbering", &FieldOnNodesComplexClass::getDOFNumbering )
-        .def( "getMesh", &FieldOnNodesComplexClass::getMesh )
-        .def( "getDescription", &FieldOnNodesComplexClass::getDescription )
-        .def( "update", &FieldOnNodesComplexClass::update )
-        .def( "updateValuePointers", &FieldOnNodesComplexClass::updateValuePointers );
+              +[]( const FieldOnNodesComplex &v, int i ) { return v.operator[]( i ); } )
+        .def( "printMedFile", &FieldOnNodesComplex::printMedFile )
+        .def( "setDOFNumbering", &FieldOnNodesComplex::setDOFNumbering )
+        .def( "setMesh", &FieldOnNodesComplex::setMesh )
+        .def( "setDescription", &FieldOnNodesComplex::setDescription )
+        .def( "build", &FieldOnNodesComplex::build )
+        .def( "getDOFNumbering", &FieldOnNodesComplex::getDOFNumbering )
+        .def( "getMesh", &FieldOnNodesComplex::getMesh )
+        .def( "getDescription", &FieldOnNodesComplex::getDescription )
+        .def( "updateValuePointers", &FieldOnNodesComplex::updateValuePointers );
 };

@@ -3,7 +3,7 @@
  * @brief Interface python de ElasticFourierResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,9 +29,9 @@ namespace py = boost::python;
 
 void exportElasticFourierResultToPython() {
 
-    py::class_< ElasticFourierResultClass, ElasticFourierResultPtr,
-                py::bases< ResultClass > >( "ElasticFourierResult", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ElasticFourierResultClass >))
+    py::class_< ElasticFourierResult, ElasticFourierResultPtr,
+                py::bases< Result > >( "ElasticFourierResult", py::no_init )
+        .def( "__init__", py::make_constructor(&initFactoryPtr< ElasticFourierResult >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ElasticFourierResultClass, std::string >));
+              py::make_constructor(&initFactoryPtr< ElasticFourierResult, std::string >));
 };

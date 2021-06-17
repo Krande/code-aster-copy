@@ -31,12 +31,12 @@
 #include "DataStructures/DataStructure.h"
 
 /**
- * @class ListOfLinearRelationsClass
+ * @class ListOfLinearRelations
  * @brief Classe definissant une liste_rela
  * @author Nicolas Sellenet
  * @todo Prendre en compte le cas Function
  */
-template < class ValueType > class ListOfLinearRelationsClass : public DataStructure {
+template < class ValueType > class ListOfLinearRelations : public DataStructure {
   private:
     /** @brief Objet '.RLCO' */
     JeveuxVector< ValueType > _coefficients;
@@ -65,7 +65,7 @@ template < class ValueType > class ListOfLinearRelationsClass : public DataStruc
     /**
         * @brief Constructeur
         */
-    ListOfLinearRelationsClass( const std::string name )
+    ListOfLinearRelations( const std::string name )
         : DataStructure( name, 19, "LISTE_RELA" ),
           _coefficients( JeveuxVector< ValueType >( getName() + ".RLCO" ) ),
           _rhs( JeveuxVector< ValueType >( getName() + ".RLBE" ) ),
@@ -82,12 +82,12 @@ template < class ValueType > class ListOfLinearRelationsClass : public DataStruc
     };
 };
 
-/** @typedef ConstantFieldOnCellsClassReal Class d'une carte de double */
-typedef ListOfLinearRelationsClass< ASTERDOUBLE > ListOfLinearRelationsReal;
+/** @typedef ConstantFieldOnCellsReal Class d'une carte de double */
+typedef ListOfLinearRelations< ASTERDOUBLE > ListOfLinearRelationsReal;
 
 /**
  * @typedef ListOfLinearRelationsReal
- * @brief Pointeur intelligent vers un ListOfLinearRelationsClass
+ * @brief Pointeur intelligent vers un ListOfLinearRelations
  */
 typedef boost::shared_ptr< ListOfLinearRelationsReal > ListOfLinearRelationsRealPtr;
 

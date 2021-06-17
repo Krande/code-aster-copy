@@ -35,18 +35,18 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import (ConcreteDryingExternalVariable,
-                       ConcreteHydratationExternalVariable,
-                       CorrosionExternalVariable, EvolutionParameter,
-                       GeometryExternalVariable, 
-                       ExternalVariablesField, IrradiationExternalVariable,
-                       IrreversibleDeformationExternalVariable, MaterialField,
-                       MaterialFieldBuilder, Neutral1ExternalVariable,
-                       Neutral2ExternalVariable, Neutral3ExternalVariable,
-                       SteelPhasesExternalVariable, TemperatureExternalVariable,
-                       TotalFluidPressureExternalVariable,
-                       VolumetricDeformationExternalVariable,
-                       ZircaloyPhasesExternalVariable)
+from ..Objects import (ConcreteDryingExternalStateVariable,
+                       ConcreteHydratationExternalStateVariable,
+                       CorrosionExternalStateVariable, EvolutionParameter,
+                       GeometryExternalStateVariable,
+                       ListOfExternalStateVariables, IrradiationExternalStateVariable,
+                       IrreversibleDeformationExternalStateVariable, MaterialField,
+                       MaterialFieldBuilder, Neutral1ExternalStateVariable,
+                       Neutral2ExternalStateVariable, Neutral3ExternalStateVariable,
+                       SteelPhasesExternalStateVariable, TemperatureExternalStateVariable,
+                       TotalFluidPressureExternalStateVariable,
+                       VolumetricDeformationExternalStateVariable,
+                       ZircaloyPhasesExternalStateVariable)
 from ..Supervis import ExecuteCommand
 from ..Utilities import force_list
 
@@ -105,14 +105,14 @@ class MaterialAssignment(ExecuteCommand):
         else:
             mesh = keywords["MODELE"].getMesh()
 
-        externalVarOnMesh = ExternalVariablesField(mesh)
+        externalVarOnMesh = ListOfExternalStateVariables(mesh)
         fkw = keywords.get("AFFE_VARC")
         if fkw is not None:
             if isinstance(fkw, dict):
-                self._addExternalVariable(externalVarOnMesh, fkw, mesh)
+                self._addExternalStateVariable(externalVarOnMesh, fkw, mesh)
             elif type(fkw) in (list, tuple):
                 for curDict in fkw:
-                    self._addExternalVariable(externalVarOnMesh, curDict, mesh)
+                    self._addExternalStateVariable(externalVarOnMesh, curDict, mesh)
             else:
                 raise TypeError("Unexpected type: {0!r} {1}".format(fkw, type(fkw)))
 
@@ -133,7 +133,7 @@ class MaterialAssignment(ExecuteCommand):
             raise TypeError("At least {0} or {1} is required"
                             .format("TOUT", "GROUP_MA"))
 
-    def _addExternalVariable(self, externalVarOnMesh, fkw, mesh):
+    def _addExternalStateVariable(self, externalVarOnMesh, fkw, mesh):
         kwTout = fkw.get("TOUT")
         kwGrMa = fkw.get("GROUP_MA")
         kwMail = fkw.get("MAILLE")
@@ -144,33 +144,33 @@ class MaterialAssignment(ExecuteCommand):
 
         obj = None
         if nomVarc == "TEMP":
-            obj = TemperatureExternalVariable
+            obj = TemperatureExternalStateVariable
         elif nomVarc == "GEOM":
-            obj = GeometryExternalVariable
+            obj = GeometryExternalStateVariable
         elif nomVarc == "CORR":
-            obj = CorrosionExternalVariable
+            obj = CorrosionExternalStateVariable
         elif nomVarc == "EPSA":
-            obj = IrreversibleDeformationExternalVariable
+            obj = IrreversibleDeformationExternalStateVariable
         elif nomVarc == "HYDR":
-            obj = ConcreteHydratationExternalVariable
+            obj = ConcreteHydratationExternalStateVariable
         elif nomVarc == "IRRA":
-            obj = IrradiationExternalVariable
+            obj = IrradiationExternalStateVariable
         elif nomVarc == "M_ACIER":
-            obj = SteelPhasesExternalVariable
+            obj = SteelPhasesExternalStateVariable
         elif nomVarc == "M_ZIRC":
-            obj = ZircaloyPhasesExternalVariable
+            obj = ZircaloyPhasesExternalStateVariable
         elif nomVarc == "NEUT1":
-            obj = Neutral1ExternalVariable
+            obj = Neutral1ExternalStateVariable
         elif nomVarc == "NEUT2":
-            obj = Neutral2ExternalVariable
+            obj = Neutral2ExternalStateVariable
         elif nomVarc == "NEUT3":
-            obj = Neutral3ExternalVariable
+            obj = Neutral3ExternalStateVariable
         elif nomVarc == "SECH":
-            obj = ConcreteDryingExternalVariable
+            obj = ConcreteDryingExternalStateVariable
         elif nomVarc == "PTOT":
-            obj = TotalFluidPressureExternalVariable
+            obj = TotalFluidPressureExternalStateVariable
         elif nomVarc == "DIVU":
-            obj = VolumetricDeformationExternalVariable
+            obj = VolumetricDeformationExternalStateVariable
         else:
             raise TypeError("Input Variable not allowed")
 
@@ -179,7 +179,7 @@ class MaterialAssignment(ExecuteCommand):
             externalVar.setReferenceValue(valeRef)
 
         if chamGd is not None:
-            externalVar.setInputValuesField(chamGd)
+            externalVar.setValue(chamGd)
 
         if evol is not None:
             evolParam = EvolutionParameter(evol)
@@ -209,17 +209,17 @@ class MaterialAssignment(ExecuteCommand):
             externalVar.setEvolutionParameter(evolParam)
 
         if kwTout is not None:
-            externalVarOnMesh.addExternalVariableOnMesh(externalVar)
+            externalVarOnMesh.addExternalStateVariableOnMesh(externalVar)
         elif kwMail is not None:
             kwMail = force_list(kwMail)
             for elem in kwMail:
-                externalVarOnMesh.addExternalVariableOnCell(externalVar, elem)
+                externalVarOnMesh.addExternalStateVariableOnCell(externalVar, elem)
         elif kwGrMa is not None:
             kwGrMa = force_list(kwGrMa)
             for grp in kwGrMa:
-                externalVarOnMesh.addExternalVariableOnGroupOfCells(externalVar, grp)
+                externalVarOnMesh.addExternalStateVariableOnGroupOfCells(externalVar, grp)
         else:
-            externalVarOnMesh.addExternalVariableOnMesh(externalVar)
+            externalVarOnMesh.addExternalStateVariableOnMesh(externalVar)
 
     def _addMaterial(self, fkw):
         kwTout = fkw.get("TOUT")

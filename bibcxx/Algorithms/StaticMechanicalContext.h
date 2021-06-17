@@ -30,7 +30,7 @@
 #include "Solvers/LinearSolver.h"
 #include "Results/Result.h"
 #include "Loads/ListOfLoads.h"
-#include "Materials/ExternalVariablesComputation.h"
+#include "Materials/BaseExternalStateVariables.h"
 
 class StaticMechanicalAlgorithm;
 
@@ -58,7 +58,7 @@ class StaticMechanicalContext {
     /** @brief Are elastic properties constant */
     bool _isConst;
     /** @brief Input variables */
-    ExternalVariablesComputationPtr _varCom;
+    ExternalStateVariablesBuilderPtr _varCom;
 
   public:
     /**
@@ -72,9 +72,9 @@ class StaticMechanicalContext {
         : _discreteProblem( curPb ), _linearSolver( linSolv ),
           _listOfLoads( _discreteProblem->getStudyDescription()->getListOfLoads() ),
           _results( container ), _time( 0. ), _rank( 1 ),
-          _aMatrix( new AssemblyMatrixDisplacementRealClass( Temporary ) ),
+          _aMatrix( new AssemblyMatrixDisplacementReal( Temporary ) ),
           _isConst( _discreteProblem->getStudyDescription()->getCodedMaterial()->constant() ),
-          _varCom( new ExternalVariablesComputationClass(
+          _varCom( new ExternalStateVariablesBuilder(
               _discreteProblem->getStudyDescription()->getModel(),
               _discreteProblem->getStudyDescription()->getMaterialField(),
               _discreteProblem->getStudyDescription()->getElementaryCharacteristics(),

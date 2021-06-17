@@ -3,7 +3,7 @@
  * @brief Interface python de GeneralizedModeResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -30,24 +30,24 @@ namespace py = boost::python;
 
 void exportGeneralizedModeResultToPython() {
 
-    bool ( GeneralizedModeResultClass::*c1 )( const GeneralizedAssemblyMatrixRealPtr & ) =
-        &GeneralizedModeResultClass::setStiffnessMatrix;
-    bool ( GeneralizedModeResultClass::*c2 )( const GeneralizedAssemblyMatrixComplexPtr & ) =
-        &GeneralizedModeResultClass::setStiffnessMatrix;
+    bool ( GeneralizedModeResult::*c1 )( const GeneralizedAssemblyMatrixRealPtr & ) =
+        &GeneralizedModeResult::setStiffnessMatrix;
+    bool ( GeneralizedModeResult::*c2 )( const GeneralizedAssemblyMatrixComplexPtr & ) =
+        &GeneralizedModeResult::setStiffnessMatrix;
 
-    py::class_< GeneralizedModeResultClass, GeneralizedModeResultPtr,
-                py::bases< FullResultClass > >( "GeneralizedModeResult",
+    py::class_< GeneralizedModeResult, GeneralizedModeResultPtr,
+                py::bases< FullResult > >( "GeneralizedModeResult",
                                                              py::no_init )
         .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< GeneralizedModeResultClass, std::string >))
-        .def( "__init__", py::make_constructor(&initFactoryPtr< GeneralizedModeResultClass >))
-        .def( "setDampingMatrix", &GeneralizedModeResultClass::setDampingMatrix )
+                              &initFactoryPtr< GeneralizedModeResult, std::string >))
+        .def( "__init__", py::make_constructor(&initFactoryPtr< GeneralizedModeResult >))
+        .def( "setDampingMatrix", &GeneralizedModeResult::setDampingMatrix )
         .def( "getGeneralizedDOFNumbering",
-              &GeneralizedModeResultClass::getGeneralizedDOFNumbering )
+              &GeneralizedModeResult::getGeneralizedDOFNumbering )
         .def( "setGeneralizedDOFNumbering",
-              &GeneralizedModeResultClass::setGeneralizedDOFNumbering )
+              &GeneralizedModeResult::setGeneralizedDOFNumbering )
         .def( "setStiffnessMatrix", c1 )
         .def( "setStiffnessMatrix", c2 )
-        .def( "getDampingMatrix", &GeneralizedModeResultClass::getDampingMatrix )
+        .def( "getDampingMatrix", &GeneralizedModeResult::getDampingMatrix )
         .def( "getStiffnessMatrix", &getGeneralizedStiffnessMatrix< GeneralizedModeResultPtr > );
 };

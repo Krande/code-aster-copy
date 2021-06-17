@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe GenericFunction
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,11 +31,11 @@
 #include "MemoryManager/JeveuxVector.h"
 
 /**
- * @class GenericFunctionClass
+ * @class GenericFunction
  * @brief Base class of Function, Formula and Table
  * @author Nicolas Sellenet
  */
-class GenericFunctionClass : public DataStructure {
+class GenericFunction : public DataStructure {
   protected:
     // Vecteur Jeveux '.PROL'
     JeveuxVectorChar24 _property;
@@ -58,12 +58,12 @@ class GenericFunctionClass : public DataStructure {
      * @typedef GenericFunctionPtr
      * @brief Pointeur intelligent vers un GenericFunction
      */
-    typedef boost::shared_ptr< GenericFunctionClass > GenericFunctionPtr;
+    typedef boost::shared_ptr< GenericFunction > GenericFunctionPtr;
 
     /**
      * @brief Constructeur
      */
-    GenericFunctionClass( const std::string &name, const std::string &type,
+    GenericFunction( const std::string &name, const std::string &type,
                              const std::string& functType ):
         DataStructure( name, 19, type ),
         _property( JeveuxVectorChar24( getName() + ".PROL" ) ),
@@ -116,8 +116,8 @@ class GenericFunctionClass : public DataStructure {
 
 /**
  * @typedef GenericFunctionPtr
- * @brief Pointeur intelligent vers un GenericFunctionClass
+ * @brief Pointeur intelligent vers un GenericFunction
  */
-typedef boost::shared_ptr< GenericFunctionClass > GenericFunctionPtr;
+typedef boost::shared_ptr< GenericFunction > GenericFunctionPtr;
 
 #endif /* GENERICFUNCTION_H_ */

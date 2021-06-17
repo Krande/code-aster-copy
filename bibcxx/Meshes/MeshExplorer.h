@@ -166,7 +166,7 @@ public:
     CellsIteratorFromFiniteElementDescriptor( const JeveuxCollectionLong& connect ):
         _connectAndType( connect )
     {
-        _connectAndType->buildFromJeveux();
+        _connectAndType->build();
     };
 
     CellObject getCellObject( const int& pos ) const

@@ -38,11 +38,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class BaseElementaryMatrixClass
+ * @class BaseElementaryMatrix
  * @brief Class definissant une sd_matr_elem
  * @author Nicolas Sellenet
  */
-class BaseElementaryMatrixClass : public DataStructure
+class BaseElementaryMatrix : public DataStructure
 {
 protected:
     /** @brief Objet Jeveux '.RERR' */
@@ -62,7 +62,7 @@ protected:
     /**
      * @brief Constructor with a name
      */
-    BaseElementaryMatrixClass( const std::string name,
+    BaseElementaryMatrix( const std::string name,
                                   const JeveuxMemory memType = Permanent,
                                   const std::string type = "MATR_ELEM" ):
         DataStructure( name, 19, type, memType ),
@@ -75,9 +75,9 @@ protected:
     /**
      * @brief Constructor
      */
-    BaseElementaryMatrixClass( const JeveuxMemory memType = Permanent,
+    BaseElementaryMatrix( const JeveuxMemory memType = Permanent,
                                   const std::string type = "MATR_ELEM" ):
-        BaseElementaryMatrixClass( ResultNaming::getNewResultName(), memType, type )
+        BaseElementaryMatrix( ResultNaming::getNewResultName(), memType, type )
     {};
 
 
@@ -131,7 +131,7 @@ public:
      * @brief Methode permettant de changer l'état de remplissage
      * @param bEmpty booleen permettant de dire que l'objet est vide ou pas
      */
-    void setEmpty( bool bEmpty ) { _isEmpty = bEmpty; };
+    void isEmpty( bool bEmpty ) { _isEmpty = bEmpty; };
 
     /**
      * @brief Set the MaterialField
@@ -156,15 +156,15 @@ public:
     };
 };
 
-typedef boost::shared_ptr< BaseElementaryMatrixClass > BaseElementaryMatrixPtr;
+typedef boost::shared_ptr< BaseElementaryMatrix > BaseElementaryMatrixPtr;
 
 /**
- * @class ElementaryMatrixClass
+ * @class ElementaryMatrix
  * @brief Class definissant une sd_matr_elem template
  * @author Nicolas Sellenet
  */
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
-class ElementaryMatrixClass : public BaseElementaryMatrixClass
+class ElementaryMatrix : public BaseElementaryMatrix
 {
   private:
     /** @brief Vectors of RESUELEM */
@@ -176,14 +176,14 @@ class ElementaryMatrixClass : public BaseElementaryMatrixClass
      * @typedef ElementaryMatrixPtr
      * @brief Pointeur intelligent vers un ElementaryMatrix
      */
-    typedef boost::shared_ptr< ElementaryMatrixClass< ValueType, PhysicalQuantity > >
+    typedef boost::shared_ptr< ElementaryMatrix< ValueType, PhysicalQuantity > >
         ElementaryMatrixPtr;
 
     /**
      * @brief Constructor with a name
      */
-    ElementaryMatrixClass( const std::string name,  const JeveuxMemory memType = Permanent ):
-        BaseElementaryMatrixClass( name, memType,
+    ElementaryMatrix( const std::string name,  const JeveuxMemory memType = Permanent ):
+        BaseElementaryMatrix( name, memType,
             "MATR_ELEM_" + std::string( PhysicalQuantityNames[PhysicalQuantity] ) +
             ( typeid( ValueType ) == typeid(double)? "_R" : "_C" ) )
     {};
@@ -191,55 +191,55 @@ class ElementaryMatrixClass : public BaseElementaryMatrixClass
     /**
      * @brief Constructor
      */
-    ElementaryMatrixClass( const JeveuxMemory memType = Permanent ):
-        ElementaryMatrixClass( ResultNaming::getNewResultName(), memType )
+    ElementaryMatrix( const JeveuxMemory memType = Permanent ):
+        ElementaryMatrix( ResultNaming::getNewResultName(), memType )
     {};
 
     /**
-     * @brief function to update ElementaryTermClass
+     * @brief function to update ElementaryTerm
      */
-    bool update() {
+    bool build() {
         _listOfElementaryTerms->updateValuePointer();
         _realVector.clear();
         for ( int pos = 0; pos < _listOfElementaryTerms->size(); ++pos ) {
             const std::string name = ( *_listOfElementaryTerms )[pos].toString();
             if ( trim( name ) != "" ) {
-                ElementaryTermRealPtr toPush( new ElementaryTermClass< ASTERDOUBLE >( name ) );
+                ElementaryTermRealPtr toPush( new ElementaryTerm< ASTERDOUBLE >( name ) );
                 _realVector.push_back( toPush );
             }
         }
         return true;
     };
 
-    friend class DiscreteProblemClass;
+    friend class DiscreteProblem;
 };
 
 /** @typedef Definition d'une matrice élémentaire de double */
-template class ElementaryMatrixClass< ASTERDOUBLE, Displacement >;
-typedef ElementaryMatrixClass< ASTERDOUBLE, Displacement > ElementaryMatrixDisplacementRealClass;
+template class ElementaryMatrix< ASTERDOUBLE, Displacement >;
+typedef ElementaryMatrix< ASTERDOUBLE, Displacement > ElementaryMatrixDisplacementReal;
 
 /** @typedef Definition d'une matrice élémentaire de complexe */
-template class ElementaryMatrixClass< ASTERCOMPLEX, Displacement >;
-typedef ElementaryMatrixClass< ASTERCOMPLEX,
-                                  Displacement > ElementaryMatrixDisplacementComplexClass;
+template class ElementaryMatrix< ASTERCOMPLEX, Displacement >;
+typedef ElementaryMatrix< ASTERCOMPLEX,
+                                  Displacement > ElementaryMatrixDisplacementComplex;
 
 /** @typedef Definition d'une matrice élémentaire de double temperature */
-template class ElementaryMatrixClass< ASTERDOUBLE, Temperature >;
-typedef ElementaryMatrixClass< ASTERDOUBLE,
-                                  Temperature > ElementaryMatrixTemperatureRealClass;
+template class ElementaryMatrix< ASTERDOUBLE, Temperature >;
+typedef ElementaryMatrix< ASTERDOUBLE,
+                                  Temperature > ElementaryMatrixTemperatureReal;
 
 /** @typedef Definition d'une matrice élémentaire de ASTERCOMPLEX pression */
-template class ElementaryMatrixClass< ASTERCOMPLEX, Pressure >;
-typedef ElementaryMatrixClass< ASTERCOMPLEX,
-                                  Pressure > ElementaryMatrixPressureComplexClass;
+template class ElementaryMatrix< ASTERCOMPLEX, Pressure >;
+typedef ElementaryMatrix< ASTERCOMPLEX,
+                                  Pressure > ElementaryMatrixPressureComplex;
 
-typedef boost::shared_ptr< ElementaryMatrixDisplacementRealClass >
+typedef boost::shared_ptr< ElementaryMatrixDisplacementReal >
     ElementaryMatrixDisplacementRealPtr;
-typedef boost::shared_ptr< ElementaryMatrixDisplacementComplexClass >
+typedef boost::shared_ptr< ElementaryMatrixDisplacementComplex >
     ElementaryMatrixDisplacementComplexPtr;
-typedef boost::shared_ptr< ElementaryMatrixTemperatureRealClass >
+typedef boost::shared_ptr< ElementaryMatrixTemperatureReal >
     ElementaryMatrixTemperatureRealPtr;
-typedef boost::shared_ptr< ElementaryMatrixPressureComplexClass >
+typedef boost::shared_ptr< ElementaryMatrixPressureComplex >
     ElementaryMatrixPressureComplexPtr;
 
 #endif /* ELEMENTARYMATRIX_H_ */

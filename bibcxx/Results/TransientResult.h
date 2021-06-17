@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe TransientResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,30 +32,30 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class TransientResultClass
+ * @class TransientResult
  * @brief Cette classe correspond a un evol_sd_aster
  * @author Natacha Béreux
  */
-class TransientResultClass : public ResultClass {
+class TransientResult : public Result {
   private:
   public:
     /**
      * @brief Constructeur
      */
-    TransientResultClass( const std::string resuTyp = "EVOL" )
-        : TransientResultClass( ResultNaming::getNewResultName(), resuTyp ){};
+    TransientResult( const std::string resuTyp = "EVOL" )
+        : TransientResult( ResultNaming::getNewResultName(), resuTyp ){};
 
     /**
      * @brief Constructeur
      */
-    TransientResultClass( const std::string name, const std::string resuTyp )
-        : ResultClass( name, resuTyp ){};
+    TransientResult( const std::string name, const std::string resuTyp )
+        : Result( name, resuTyp ){};
 };
 
 /**
  * @typedef TransientResultPtr
- * @brief Pointeur intelligent vers un TransientResultClass
+ * @brief Pointeur intelligent vers un TransientResult
  */
-typedef boost::shared_ptr< TransientResultClass > TransientResultPtr;
+typedef boost::shared_ptr< TransientResult > TransientResultPtr;
 
 #endif /* TIMEDEPENDANTRESULTSCONTAINER_H_ */

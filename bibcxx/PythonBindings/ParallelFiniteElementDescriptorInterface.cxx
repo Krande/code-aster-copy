@@ -33,14 +33,14 @@ namespace py = boost::python;
 
 void exportParallelFiniteElementDescriptorToPython() {
 
-    py::class_< ParallelFiniteElementDescriptorClass,
-                ParallelFiniteElementDescriptorClass::ParallelFiniteElementDescriptorPtr,
-                py::bases< FiniteElementDescriptorClass > >( "ParallelFiniteElementDescriptor",
+    py::class_< ParallelFiniteElementDescriptor,
+                ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptorPtr,
+                py::bases< FiniteElementDescriptor > >( "ParallelFiniteElementDescriptor",
                 py::no_init )
 // fake initFactoryPtr: not directly created by user
 // fake initFactoryPtr: not directly created by user
         .def( "getJoins",
-              &ParallelFiniteElementDescriptorClass::getJoins,
+              &ParallelFiniteElementDescriptor::getJoins,
               py::return_value_policy< py::return_by_value >(),
         R"(
 Return the vector of joins between the curent domain and the others subdomains.

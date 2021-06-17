@@ -3,7 +3,7 @@
  * @brief Implementation de PhysicalQuantityManager
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -30,7 +30,7 @@ PhysicalQuantityManager::PhysicalQuantityManager()
 
 const JeveuxCollectionObjectChar8 &
 PhysicalQuantityManager::getComponentNames( const ASTERINTEGER &quantityNumber ) const {
-    _nameOfCmp->buildFromJeveux();
+    _nameOfCmp->build();
     return _nameOfCmp->getObject( quantityNumber );
 };
 

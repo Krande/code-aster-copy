@@ -36,11 +36,11 @@
 #include <vector>
 
 /**
- * @class DiscreteProblemClass
+ * @class DiscreteProblem
  * @brief Cette classe permet de definir une étude au sens Aster
  * @author Nicolas Sellenet
  */
-class DiscreteProblemClass {
+class DiscreteProblem {
   private:
     /** @brief Etude definie par l'utilisateur */
     StudyDescriptionPtr _study;
@@ -63,25 +63,25 @@ class DiscreteProblemClass {
      * @typedef DiscreteProblemPtr
      * @brief Pointeur intelligent vers un DiscreteProblem
      */
-    typedef boost::shared_ptr< DiscreteProblemClass > DiscreteProblemPtr;
+    typedef boost::shared_ptr< DiscreteProblem > DiscreteProblemPtr;
 
-    DiscreteProblemClass( void ) = delete;
+    DiscreteProblem( void ) = delete;
 
     /**
      * @brief Constructeur
      * @param StudyDescriptionPtr Etude utilisateur
      */
-    DiscreteProblemClass( const StudyDescriptionPtr &currentStudy ) : _study( currentStudy ){};
+    DiscreteProblem( const StudyDescriptionPtr &currentStudy ) : _study( currentStudy ){};
 
     /**
      * @brief Desctructeur
      */
-    ~DiscreteProblemClass(){};
+    ~DiscreteProblem(){};
 
     /**
      * @brief Calcul des matrices elementaires pour l'option CHAR_MECA
      */
-    ElementaryVectorPtr buildElementaryMechanicalLoadsVector();
+    ElementaryVectorPtr computeElementaryMechanicalLoadsVector();
 
     /**
      * @brief Fonction permettant de calculer les vecteurs élémentaires pour les
@@ -89,14 +89,14 @@ class DiscreteProblemClass {
      * @param time Instant de calcul
      * @return Vecteur élémentaire
      */
-    ElementaryVectorPtr buildElementaryDirichletVector( ASTERDOUBLE time = 0. );
+    ElementaryVectorPtr computeElementaryDirichletVector( ASTERDOUBLE time = 0. );
 
     /**
      * @brief Fonction permettant de calculer les vecteurs élémentaires pour les
               forces de Laplace
      * @return Vecteur élémentaire
      */
-    ElementaryVectorPtr buildElementaryLaplaceVector();
+    ElementaryVectorPtr computeElementaryLaplaceVector();
 
     /**
      * @brief Fonction permettant de calculer les vecteurs élémentaires pour les
@@ -105,30 +105,30 @@ class DiscreteProblemClass {
      theta
      * @return Vecteur élémentaire
      */
-    ElementaryVectorPtr buildElementaryNeumannVector( const VectorReal time,
-                                                      ExternalVariablesComputationPtr );
+    ElementaryVectorPtr computeElementaryNeumannVector( const VectorReal time,
+                                                      ExternalStateVariablesBuilderPtr );
 
     /**
      * @brief Fonction permettant de calculer les matrices élémentaires de rigidité
      * @param time Instant de calcul
      * @return Vecteur élémentaire contenant la rigidité mécanique
      */
-    ElementaryMatrixDisplacementRealPtr buildElementaryStiffnessMatrix( ASTERDOUBLE time = 0. );
+    ElementaryMatrixDisplacementRealPtr computeElementaryStiffnessMatrix( ASTERDOUBLE time = 0. );
     /**
      * @brief Fonction permettant de calculer les matrices élémentaires pour la matrice tangente
      * utilisée pour l'étape de prédiction de la méthode de Newton
      * @param time Instant de calcul
      * @return Matrice élémentaire contenant la rigidité mécanique
      */
-    ElementaryMatrixDisplacementRealPtr buildElementaryTangentMatrix( ASTERDOUBLE time = 0. );
+    ElementaryMatrixDisplacementRealPtr computeElementaryTangentMatrix( ASTERDOUBLE time = 0. );
 
-    ElementaryMatrixDisplacementRealPtr buildElementaryJacobianMatrix( ASTERDOUBLE time = 0. );
+    ElementaryMatrixDisplacementRealPtr computeElementaryJacobianMatrix( ASTERDOUBLE time = 0. );
 
     /**
      * @brief Construction d'un vecteur de chargement cinématique
      * @return Booleen indiquant que tout s'est bien passe
      */
-    FieldOnNodesRealPtr buildDirichletBC( const BaseDOFNumberingPtr &curDOFNum,
+    FieldOnNodesRealPtr computeDirichletBC( const BaseDOFNumberingPtr &curDOFNum,
                                           const ASTERDOUBLE &time,
                                           const JeveuxMemory &memType = Permanent ) const;
 
@@ -175,6 +175,6 @@ class DiscreteProblemClass {
  * @typedef DiscreteProblemPtr
  * @brief Pointeur intelligent vers un DiscreteProblem
  */
-typedef boost::shared_ptr< DiscreteProblemClass > DiscreteProblemPtr;
+typedef boost::shared_ptr< DiscreteProblem > DiscreteProblemPtr;
 
 #endif /* DISCRETEPROBLEM_H_ */

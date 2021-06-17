@@ -3,7 +3,7 @@
  * @brief Interface python de MeshCoordinates
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -33,13 +33,13 @@ namespace py = boost::python;
 
 void exportMeshCoordinatesFieldToPython() {
 
-    py::class_< MeshCoordinatesFieldClass, MeshCoordinatesFieldPtr, py::bases< DataStructure > >(
+    py::class_< MeshCoordinatesField, MeshCoordinatesFieldPtr, py::bases< DataStructure > >(
         "MeshCoordinatesField", py::no_init )
         // fake initFactoryPtr: no default constructor, only for restart
         .def( "__init__",
-              py::make_constructor( &initFactoryPtr< MeshCoordinatesFieldClass, std::string > ) )
+              py::make_constructor( &initFactoryPtr< MeshCoordinatesField, std::string > ) )
         .def( "__getitem__",
-              +[]( const MeshCoordinatesFieldClass &v, int i ) { return v.operator[]( i ); }, R"(
+              +[]( const MeshCoordinatesField &v, int i ) { return v.operator[]( i ); }, R"(
 Return the coordinate at index *idx* in the vector.
 
 The value is the same as *getValues()[idx]* without creating the entire vector.
@@ -48,7 +48,7 @@ Returns:
     float: Values of the *idx*-th coordinate.
         )",
             ( py::arg( "self" ), py::arg( "idx" ) ) )
-        .def( "getValues", &MeshCoordinatesFieldClass::getValues, R"(
+        .def( "getValues", &MeshCoordinatesField::getValues, R"(
 Return a list of values of the coordinates as (x1, y1, z1, x2, y2, z2...)
 
 Returns:

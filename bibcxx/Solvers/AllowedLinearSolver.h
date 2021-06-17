@@ -107,7 +107,7 @@ extern const char *IterativeSolverAlgorithmNames[nbIterativeSolverAlgorithms];
  * @enum LagrangeTreatment
  * @author Nicolas Sellenet
  */
-enum LagrangeTreatment { Eliminate, NotEliminate, RealLagrangeEliminate };
+enum LagrangeTreatment { Eliminate, NotEliminate, LagrangeEliminateReal };
 const int nbLagrangeTreatments = 3;
 extern const char *LagrangeTreatmentNames[nbLagrangeTreatments];
 

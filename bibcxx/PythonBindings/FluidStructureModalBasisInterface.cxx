@@ -3,7 +3,7 @@
  * @brief Interface python de FluidStructureModalBasis
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,14 +31,14 @@ namespace py = boost::python;
 
 void exportFluidStructureModalBasisToPython() {
 
-    py::class_< FluidStructureModalBasisClass,
-                FluidStructureModalBasisClass::FluidStructureModalBasisPtr,
+    py::class_< FluidStructureModalBasis,
+                FluidStructureModalBasis::FluidStructureModalBasisPtr,
                 py::bases< DataStructure > >( "FluidStructureModalBasis", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< FluidStructureModalBasisClass >))
+        .def( "__init__", py::make_constructor(&initFactoryPtr< FluidStructureModalBasis >))
         .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< FluidStructureModalBasisClass, std::string >))
+                              &initFactoryPtr< FluidStructureModalBasis, std::string >))
 
-        .def( "getTable", &ListOfTablesClass::getTable, R"(
+        .def( "getTable", &ListOfTables::getTable, R"(
 Extract a Table from the datastructure.
 
 Arguments:

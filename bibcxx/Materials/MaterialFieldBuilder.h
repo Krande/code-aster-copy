@@ -26,41 +26,42 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "Materials/ExternalVariablesDefinition.h"
+#include "Materials/BaseExternalStateVariables.h"
+#include "Materials/ListOfExternalStateVariables.h"
 #include "Materials/MaterialField.h"
 #include "astercxx.h"
 #include <stdexcept>
 
 /**
- * @class MaterialFieldBuilderClass
+ * @class MaterialFieldBuilder
  * @author Nicolas Sellenet
  */
-class MaterialFieldBuilderClass : public DataStructure {
-    friend class MaterialFieldClass;
+class MaterialFieldBuilder : public DataStructure {
+    friend class MaterialField;
 
   protected:
     /**
      * @brief Build MaterialFieldPtr
      * @param curMater Material to build
-     * @param curExternalVariable Input variables to add in MaterialFieldPtr
+     * @param curExternalStateVariable Input variables to add in MaterialFieldPtr
      */
-    static void buildClass( MaterialFieldClass &curMater,
-                               const ExternalVariablesFieldPtr &curExternalVariable = nullptr);
+    static void buildClass( MaterialField &curMater,
+                        const ListOfExternalStateVariablesPtr &curExternalStateVariable = nullptr);
 
   public:
     /**
      * @typedef MaterialFieldBuilderPtr
-     * @brief Pointeur intelligent vers un MaterialFieldBuilderClass
+     * @brief Pointeur intelligent vers un MaterialFieldBuilder
      */
-    typedef boost::shared_ptr< MaterialFieldBuilderClass > MaterialFieldBuilderPtr;
+    typedef boost::shared_ptr< MaterialFieldBuilder > MaterialFieldBuilderPtr;
 
     /**
      * @brief Build MaterialFieldPtr
      * @param curMater Material to build
-     * @param curExternalVariable Input variables to add in MaterialFieldPtr
+     * @param curExternalStateVariable Input variables to add in MaterialFieldPtr
      */
     static MaterialFieldPtr build( MaterialFieldPtr &curMater,
-                                    const ExternalVariablesFieldPtr &curExternalVariable = nullptr);
+                        const ListOfExternalStateVariablesPtr &curExternalStateVariable = nullptr);
 };
 
 #endif /* MATERIALONMESHBUILDER_H_ */

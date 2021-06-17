@@ -3,7 +3,7 @@
  * @brief Interface python de GenericFunction
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,14 +31,14 @@ namespace py = boost::python;
 
 void exportGenericFunctionToPython() {
 
-    py::class_< GenericFunctionClass, GenericFunctionClass::GenericFunctionPtr,
+    py::class_< GenericFunction, GenericFunction::GenericFunctionPtr,
             py::bases< DataStructure > >( "GenericFunction", py::no_init )
         //         .def( "__init__", py::make_constructor(
-        //             &initFactoryPtr< GenericFunctionClass >) )
+        //             &initFactoryPtr< GenericFunction >) )
         //         .def( "__init__", py::make_constructor(
-        //             &initFactoryPtr< GenericFunctionClass,
+        //             &initFactoryPtr< GenericFunction,
         //                              std::string >) )
-        .def( "getProperties", &GenericFunctionClass::getProperties )
-        .def( "setExtrapolation", &GenericFunctionClass::setExtrapolation )
+        .def( "getProperties", &GenericFunction::getProperties )
+        .def( "setExtrapolation", &GenericFunction::setExtrapolation )
         ;
 };

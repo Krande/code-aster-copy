@@ -40,11 +40,11 @@
 
 
 /**
- * @class GeneralizedDOFNumberingClass
+ * @class GeneralizedDOFNumbering
  * @brief Cette classe correspond a un sd_nume_ddl_gene
  * @author Nicolas Sellenet
  */
-class GeneralizedDOFNumberingClass : public DataStructure {
+class GeneralizedDOFNumbering : public DataStructure {
   private:
     /** @brief Objet Jeveux '.BASE' */
     JeveuxVectorReal _base;
@@ -70,25 +70,25 @@ class GeneralizedDOFNumberingClass : public DataStructure {
      * @typedef GeneralizedDOFNumberingPtr
      * @brief Pointeur intelligent vers un GeneralizedDOFNumbering
      */
-    typedef boost::shared_ptr< GeneralizedDOFNumberingClass > GeneralizedDOFNumberingPtr;
+    typedef boost::shared_ptr< GeneralizedDOFNumbering > GeneralizedDOFNumberingPtr;
 
     /**
      * @brief Constructeur
      */
-    GeneralizedDOFNumberingClass()
-        : GeneralizedDOFNumberingClass( ResultNaming::getNewResultName() ){};
+    GeneralizedDOFNumbering()
+        : GeneralizedDOFNumbering( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Constructeur
      */
-    GeneralizedDOFNumberingClass( const std::string name ):
+    GeneralizedDOFNumbering( const std::string name ):
         DataStructure( name, 14, "NUME_DDL_GENE", Permanent ),
         _base( JeveuxVectorReal( getName() + ".ELIM.BASE" ) ),
         _noms( JeveuxVectorChar8( getName() + ".ELIM.NOMS" ) ),
         _tail( JeveuxVectorLong( getName() + ".ELIM.TAIL" ) ),
-        _smos( new MorseStorageClass( getName() + ".SMOS" ) ),
-        _slcs( new LigneDeCielClass( getName() + ".SLCS" ) ),
-        _nume( new GeneralizedFieldOnNodesDescriptionClass( getName() + ".NUME" ) ),
+        _smos( new MorseStorage( getName() + ".SMOS" ) ),
+        _slcs( new LigneDeCiel( getName() + ".SLCS" ) ),
+        _nume( new GeneralizedFieldOnNodesDescription( getName() + ".NUME" ) ),
         _model( nullptr ),
         _basis1( nullptr ),
         _basis2( nullptr )
@@ -158,8 +158,8 @@ class GeneralizedDOFNumberingClass : public DataStructure {
 
 /**
  * @typedef GeneralizedDOFNumberingPtr
- * @brief Pointeur intelligent vers un GeneralizedDOFNumberingClass
+ * @brief Pointeur intelligent vers un GeneralizedDOFNumbering
  */
-typedef boost::shared_ptr< GeneralizedDOFNumberingClass > GeneralizedDOFNumberingPtr;
+typedef boost::shared_ptr< GeneralizedDOFNumbering > GeneralizedDOFNumberingPtr;
 
 #endif /* GENERALIZEDDOFNUMBERING_H_ */

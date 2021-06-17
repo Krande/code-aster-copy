@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ForwardGeneralizedDOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,8 +28,8 @@
 
 #include "astercxx.h"
 
-class GeneralizedDOFNumberingClass;
-typedef boost::shared_ptr< GeneralizedDOFNumberingClass > GeneralizedDOFNumberingPtr;
+class GeneralizedDOFNumbering;
+typedef boost::shared_ptr< GeneralizedDOFNumbering > GeneralizedDOFNumberingPtr;
 
 /**
  * @class ForwardGeneralizedDOFNumberingPtr
@@ -38,7 +38,7 @@ typedef boost::shared_ptr< GeneralizedDOFNumberingClass > GeneralizedDOFNumberin
  */
 class ForwardGeneralizedDOFNumberingPtr {
   private:
-    /** @brief Pointer to GeneralizedDOFNumberingClass */
+    /** @brief Pointer to GeneralizedDOFNumbering */
     GeneralizedDOFNumberingPtr _ptr;
     bool _isSet;
 

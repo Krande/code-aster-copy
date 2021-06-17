@@ -58,30 +58,30 @@
 
 
 /**
- * @class DOFNumberingClass
+ * @class DOFNumbering
  * @brief Class definissant un nume_ddl
  * @author Nicolas Sellenet
  */
-class DOFNumberingClass : public BaseDOFNumberingClass {
+class DOFNumbering : public BaseDOFNumbering {
   public:
     /**
      * @typedef DOFNumberingPtr
      * @brief Pointeur intelligent vers un DOFNumbering
      */
-    typedef boost::shared_ptr< DOFNumberingClass > DOFNumberingPtr;
+    typedef boost::shared_ptr< DOFNumbering > DOFNumberingPtr;
 
     /**
      * @brief Constructeur
      */
-    DOFNumberingClass( const JeveuxMemory memType = Permanent )
-        : BaseDOFNumberingClass( "NUME_DDL", memType ){};
+    DOFNumbering( const JeveuxMemory memType = Permanent )
+        : BaseDOFNumbering( "NUME_DDL", memType ){};
 
     /**
      * @brief Constructeur
-     * @param name nom souhaité de la sd (utile pour le BaseDOFNumberingClass d'une sd_resu)
+     * @param name nom souhaité de la sd (utile pour le BaseDOFNumbering d'une sd_resu)
      */
-    DOFNumberingClass( const std::string name, const JeveuxMemory memType = Permanent )
-        : BaseDOFNumberingClass( name, "NUME_DDL", memType ){};
+    DOFNumbering( const std::string name, const JeveuxMemory memType = Permanent )
+        : BaseDOFNumbering( name, "NUME_DDL", memType ){};
 
     /**
      * @brief Methode permettant de definir les matrices elementaires
@@ -92,7 +92,7 @@ class DOFNumberingClass : public BaseDOFNumberingClass {
     {
         if ( currentMatrix->getModel()->getMesh()->isParallel() )
             throw std::runtime_error( "Mesh must not be parallel" );
-        BaseDOFNumberingClass::setElementaryMatrix( currentMatrix );
+        BaseDOFNumbering::setElementaryMatrix( currentMatrix );
     };
 
     /**
@@ -104,7 +104,7 @@ class DOFNumberingClass : public BaseDOFNumberingClass {
     {
         if ( currentMatrix->getModel()->getMesh()->isParallel() )
             throw std::runtime_error( "Mesh must not be parallel" );
-        BaseDOFNumberingClass::setElementaryMatrix( currentMatrix );
+        BaseDOFNumbering::setElementaryMatrix( currentMatrix );
     };
 
     /**
@@ -116,7 +116,7 @@ class DOFNumberingClass : public BaseDOFNumberingClass {
     {
         if ( currentMatrix->getModel()->getMesh()->isParallel() )
             throw std::runtime_error( "Mesh must not be parallel" );
-        BaseDOFNumberingClass::setElementaryMatrix( currentMatrix );
+        BaseDOFNumbering::setElementaryMatrix( currentMatrix );
     };
 
     /**
@@ -128,7 +128,7 @@ class DOFNumberingClass : public BaseDOFNumberingClass {
     {
         if ( currentMatrix->getModel()->getMesh()->isParallel() )
             throw std::runtime_error( "Mesh must not be parallel" );
-        BaseDOFNumberingClass::setElementaryMatrix( currentMatrix );
+        BaseDOFNumbering::setElementaryMatrix( currentMatrix );
     };
 
     /**
@@ -138,7 +138,7 @@ class DOFNumberingClass : public BaseDOFNumberingClass {
     void setModel( const ModelPtr &currentModel ) {
         if ( currentModel->getMesh()->isParallel() )
             throw std::runtime_error( "Mesh must not be parallel" );
-        BaseDOFNumberingClass::setModel( currentModel );
+        BaseDOFNumbering::setModel( currentModel );
     };
 
     /**
@@ -219,16 +219,16 @@ class DOFNumberingClass : public BaseDOFNumberingClass {
 
 /**
  * @typedef BaseDOFNumberingPtr
- * @brief Enveloppe d'un pointeur intelligent vers un BaseDOFNumberingClass
+ * @brief Enveloppe d'un pointeur intelligent vers un BaseDOFNumbering
  * @author Nicolas Sellenet
  */
-typedef boost::shared_ptr< BaseDOFNumberingClass > BaseDOFNumberingPtr;
+typedef boost::shared_ptr< BaseDOFNumbering > BaseDOFNumberingPtr;
 
 /**
  * @typedef DOFNumberingPtr
- * @brief Enveloppe d'un pointeur intelligent vers un DOFNumberingClass
+ * @brief Enveloppe d'un pointeur intelligent vers un DOFNumbering
  * @author Nicolas Sellenet
  */
-typedef boost::shared_ptr< DOFNumberingClass > DOFNumberingPtr;
+typedef boost::shared_ptr< DOFNumbering > DOFNumberingPtr;
 
 #endif /* DOFNUMBERING_H_ */

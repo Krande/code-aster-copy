@@ -3,7 +3,7 @@
  * @brief Interface python de PrestressingCable
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,25 +29,25 @@ namespace py = boost::python;
 
 void exportPrestressingCableToPython() {
 
-    py::class_< PrestressingCableClass,
-            PrestressingCableClass::PrestressingCablePtr,
+    py::class_< PrestressingCable,
+            PrestressingCable::PrestressingCablePtr,
             py::bases< DataStructure > >( "PrestressingCable", py::no_init )
         .def( "__init__",
-              py::make_constructor( &initFactoryPtr< PrestressingCableClass,
+              py::make_constructor( &initFactoryPtr< PrestressingCable,
                                                  const ModelPtr &, const MaterialFieldPtr &,
                                                  const ElementaryCharacteristicsPtr & > ) )
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< PrestressingCableClass, std::string,
+                  &initFactoryPtr< PrestressingCable, std::string,
                                    const ModelPtr &, const MaterialFieldPtr &,
                                    const ElementaryCharacteristicsPtr & > ) )
-        .def( "getModel", &PrestressingCableClass::getModel, R"(
+        .def( "getModel", &PrestressingCable::getModel, R"(
 Return the Model.
 
 Returns:
     *Model*: Model object.
         )" )
-        .def( "getMaterialField", &PrestressingCableClass::getMaterialField )
+        .def( "getMaterialField", &PrestressingCable::getMaterialField )
         .def( "getElementaryCharacteristics",
-              &PrestressingCableClass::getElementaryCharacteristics );
+              &PrestressingCable::getElementaryCharacteristics );
 };

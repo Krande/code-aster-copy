@@ -33,12 +33,12 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class ConnectionMeshClass
+ * @class ConnectionMesh
  * @brief Cette classe decrit un maillage partiel reconstruit a partir d'une liste de groupe de
  * noeuds
  * @author Nicolas Sellenet
  */
-class ConnectionMeshClass : public BaseMeshClass {
+class ConnectionMesh : public BaseMesh {
   private:
     typedef JeveuxCollection< ASTERINTEGER, NamesMapChar24 > JeveuxCollectionLongNamePtr;
     /** @brief Base ParallelMesh */
@@ -60,22 +60,22 @@ class ConnectionMeshClass : public BaseMeshClass {
   public:
     /**
      * @typedef ConnectionMeshPtr
-     * @brief Pointeur intelligent vers un ConnectionMeshClass
+     * @brief Pointeur intelligent vers un ConnectionMesh
      */
-    typedef boost::shared_ptr< ConnectionMeshClass > ConnectionMeshPtr;
+    typedef boost::shared_ptr< ConnectionMesh > ConnectionMeshPtr;
 
     /**
      * @brief Constructeur
      */
-    ConnectionMeshClass( const ParallelMeshPtr &mesh, const VectorString &groupsOfNodes,
+    ConnectionMesh( const ParallelMeshPtr &mesh, const VectorString &groupsOfNodes,
         const VectorString &groupsOfCells )
-        : ConnectionMeshClass( ResultNaming::getNewResultName(), mesh,
+        : ConnectionMesh( ResultNaming::getNewResultName(), mesh,
                             groupsOfNodes, groupsOfCells ){};
 
     /**
      * @brief Constructeur
      */
-    ConnectionMeshClass( const std::string &name, const ParallelMeshPtr &mesh,
+    ConnectionMesh( const std::string &name, const ParallelMeshPtr &mesh,
         const VectorString &groupsOfNodes, const VectorString &groupsOfCells );
 
     const JeveuxVectorLong &getNodesGlobalNumbering() const { return _nodesGlobalNumbering; };
@@ -114,9 +114,9 @@ class ConnectionMeshClass : public BaseMeshClass {
 
 /**
  * @typedef ConnectionMeshPtr
- * @brief Pointeur intelligent vers un ConnectionMeshClass
+ * @brief Pointeur intelligent vers un ConnectionMesh
  */
-typedef boost::shared_ptr< ConnectionMeshClass > ConnectionMeshPtr;
+typedef boost::shared_ptr< ConnectionMesh > ConnectionMeshPtr;
 
 #endif /* ASTER_HAVE_MPI */
 

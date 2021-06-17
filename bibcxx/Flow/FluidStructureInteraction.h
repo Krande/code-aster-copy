@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FluidStructureInteraction
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -33,11 +33,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class FluidStructureInteractionClass
+ * @class FluidStructureInteraction
  * @brief Cette classe correspond a une sd spectre
  * @author Nicolas Sellenet
  */
-class FluidStructureInteractionClass : public DataStructure {
+class FluidStructureInteraction : public DataStructure {
   private:
     /** @brief Objet Jeveux '.FSIC' */
     JeveuxVectorLong _fsic;
@@ -63,17 +63,17 @@ class FluidStructureInteractionClass : public DataStructure {
      * @typedef FluidStructureInteractionPtr
      * @brief Pointeur intelligent vers un FluidStructureInteraction
      */
-    typedef boost::shared_ptr< FluidStructureInteractionClass > FluidStructureInteractionPtr;
+    typedef boost::shared_ptr< FluidStructureInteraction > FluidStructureInteractionPtr;
 
     /**
      * @brief Constructeur
      */
-    FluidStructureInteractionClass()
-        : FluidStructureInteractionClass( ResultNaming::getNewResultName() ){};
+    FluidStructureInteraction()
+        : FluidStructureInteraction( ResultNaming::getNewResultName() ){};
     /**
      * @brief Constructeur
      */
-    FluidStructureInteractionClass( const std::string name )
+    FluidStructureInteraction( const std::string name )
         : DataStructure( name, 8, "TYPE_FLUI_STRU", Permanent ),
           _fsic( JeveuxVectorLong( getName() + "           .FSIC" ) ),
           _fsvi( JeveuxVectorLong( getName() + "           .FSVI" ) ),
@@ -88,8 +88,8 @@ class FluidStructureInteractionClass : public DataStructure {
 
 /**
  * @typedef FluidStructureInteractionPtr
- * @brief Pointeur intelligent vers un FluidStructureInteractionClass
+ * @brief Pointeur intelligent vers un FluidStructureInteraction
  */
-typedef boost::shared_ptr< FluidStructureInteractionClass > FluidStructureInteractionPtr;
+typedef boost::shared_ptr< FluidStructureInteraction > FluidStructureInteractionPtr;
 
 #endif /* FLUIDSTRUCTUREINTERACTION_H_ */

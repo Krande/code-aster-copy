@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FullTransientResult
  * @author Nicolas Tardieu
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,27 +29,27 @@
 #include "Results/FullResult.h"
 #include "Supervis/ResultNaming.h"
 /**
- * @class FullTransientResultClass
+ * @class FullTransientResult
  * @brief Cette classe correspond à un dyna_tran
  * @author Nicolas Tardieu
  */
-class FullTransientResultClass : public FullResultClass {
+class FullTransientResult : public FullResult {
   private:
   public:
     /**
      * @brief Constructeur
      * @todo  Ajouter les objets Jeveux de la SD
      */
-    FullTransientResultClass( const std::string &name )
-        : FullResultClass( name, "DYNA_TRANS" ){};
-    FullTransientResultClass()
-        : FullResultClass( ResultNaming::getNewResultName(), "DYNA_TRANS" ){};
+    FullTransientResult( const std::string &name )
+        : FullResult( name, "DYNA_TRANS" ){};
+    FullTransientResult()
+        : FullResult( ResultNaming::getNewResultName(), "DYNA_TRANS" ){};
 };
 
 /**
  * @typedef FullTransientResultPtr
- * @brief Pointeur intelligent vers un FullTransientResultClass
+ * @brief Pointeur intelligent vers un FullTransientResult
  */
-typedef boost::shared_ptr< FullTransientResultClass > FullTransientResultPtr;
+typedef boost::shared_ptr< FullTransientResult > FullTransientResultPtr;
 
 #endif /* FULLTRANSIENTRESULTSCONTAINER_H_ */

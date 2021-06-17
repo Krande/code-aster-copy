@@ -64,7 +64,7 @@ testMesh2 = affectMat.getMesh()
 test.assertEqual(testMesh2.getType(), "MAILLAGE_P")
 
 affectMat.addMaterialsOnMesh(acier)
-affectMat.buildWithoutExternalVariable()
+affectMat.buildWithoutExternalStateVariables()
 
 charCine = code_aster.MechanicalDirichletBC(model)
 charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dx, 0., "COTE_B")

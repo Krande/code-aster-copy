@@ -3,7 +3,7 @@
  * @brief Interface python de ThermalResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,10 +29,10 @@ namespace py = boost::python;
 
 void exportThermalResultToPython() {
 
-    py::class_< ThermalResultClass, ThermalResultPtr,
-                py::bases< TransientResultClass > >( "ThermalResult",
+    py::class_< ThermalResult, ThermalResultPtr,
+                py::bases< TransientResult > >( "ThermalResult",
                                                                       py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ThermalResultClass >))
+        .def( "__init__", py::make_constructor(&initFactoryPtr< ThermalResult >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ThermalResultClass, std::string >));
+              py::make_constructor(&initFactoryPtr< ThermalResult, std::string >));
 };

@@ -31,16 +31,16 @@
 
 #ifdef ASTER_HAVE_MPI
 
-/* Initial constructor for an object of ConnectionMeshClass. This class is only
+/* Initial constructor for an object of ConnectionMesh. This class is only
    defined for the parallel use of a ParrallelMesh. The idea is to rebuild on
    each processor a temporary mesh associated with all the cells and nodes
    concerned by the groups given.
 */
-ConnectionMeshClass::ConnectionMeshClass( const std::string &name,
+ConnectionMesh::ConnectionMesh( const std::string &name,
                                           const ParallelMeshPtr &mesh,
                                           const VectorString &groupsOfNodes,
                                           const VectorString &groupsOfCells )
-: BaseMeshClass( name, "MAILLAGE_PARTIEL" ),
+: BaseMesh( name, "MAILLAGE_PARTIEL" ),
   _pMesh( mesh ),
   _nodesLocalNumbering( getName() + ".NOLOCAL" ),
   _nodesGlobalNumbering( getName() + ".NOGLOBAL" ),
@@ -121,7 +121,7 @@ ConnectionMeshClass::ConnectionMeshClass( const std::string &name,
 
     /* Inverse connectivity nodes -> cell */
     const JeveuxCollectionLong connecInv = mesh->getInverseConnectivity();
-    connecInv->buildFromJeveux();
+    connecInv->build();
 
     VectorReal coordinatesToSend;
     VectorReal coordinatesGathered;
@@ -578,7 +578,7 @@ ConnectionMeshClass::ConnectionMeshClass( const std::string &name,
     CALLO_CARGEO( getName() );
 };
 
-VectorString ConnectionMeshClass::getGroupsOfCells( ) const {
+VectorString ConnectionMesh::getGroupsOfCells( ) const {
     ASTERINTEGER size = _nameOfGrpCells->size();
     VectorString names;
     for ( int i = 0; i < size; i++ ) {
@@ -587,7 +587,7 @@ VectorString ConnectionMeshClass::getGroupsOfCells( ) const {
     return names;
 }
 
-VectorString ConnectionMeshClass::getGroupsOfNodes( ) const {
+VectorString ConnectionMesh::getGroupsOfNodes( ) const {
     ASTERINTEGER size = _nameOfGrpNodes->size();
     VectorString names;
     for ( int i = 0; i < size; i++ ) {
@@ -597,7 +597,7 @@ VectorString ConnectionMeshClass::getGroupsOfNodes( ) const {
 }
 
 
-VectorLong ConnectionMeshClass::getCellsGlobalNumbering( const JeveuxVectorLong& rankOfCells ) const
+VectorLong ConnectionMesh::getCellsGlobalNumbering( const JeveuxVectorLong& rankOfCells ) const
 {
     /* Local variables gathering the basic MPI informations needed */
     AsterMPI AsterMPI;
@@ -642,21 +642,21 @@ VectorLong ConnectionMeshClass::getCellsGlobalNumbering( const JeveuxVectorLong&
     return globalNum;
 };
 
-bool ConnectionMeshClass::hasGroupOfCells( const std::string &name) const {
-    if ( _groupsOfCells->size() < 0 && !_groupsOfCells->buildFromJeveux() ) {
+bool ConnectionMesh::hasGroupOfCells( const std::string &name) const {
+    if ( _groupsOfCells->size() < 0 && !_groupsOfCells->build() ) {
         return false;
     }
     return _groupsOfCells->existsObject( name );
 }
 
-bool ConnectionMeshClass::hasGroupOfNodes( const std::string &name) const {
-    if ( _groupsOfNodes->size() < 0 && !_groupsOfNodes->buildFromJeveux() ) {
+bool ConnectionMesh::hasGroupOfNodes( const std::string &name) const {
+    if ( _groupsOfNodes->size() < 0 && !_groupsOfNodes->build() ) {
         return false;
     }
     return _groupsOfNodes->existsObject( name );
 }
 
-const VectorLong ConnectionMeshClass::getCells( const std::string name ) const {
+const VectorLong ConnectionMesh::getCells( const std::string name ) const {
 
     if ( name.empty())
     {

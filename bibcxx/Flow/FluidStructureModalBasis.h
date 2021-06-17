@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FluidStructureModalBasis
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -34,11 +34,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class FluidStructureModalBasisClass
+ * @class FluidStructureModalBasis
  * @brief Cette classe correspond a une sd_melasflu
  * @author Natacha Béreux
  */
-class FluidStructureModalBasisClass : public DataStructure, public ListOfTablesClass {
+class FluidStructureModalBasis : public DataStructure, public ListOfTables {
   private:
     /** @brief Objet Jeveux '.REMF' */
     JeveuxVectorChar8 _remf;
@@ -60,19 +60,19 @@ class FluidStructureModalBasisClass : public DataStructure, public ListOfTablesC
      * @typedef FluidStructureModalBasisPtr
      * @brief Pointeur intelligent vers un FluidStructureModalBasis
      */
-    typedef boost::shared_ptr< FluidStructureModalBasisClass > FluidStructureModalBasisPtr;
+    typedef boost::shared_ptr< FluidStructureModalBasis > FluidStructureModalBasisPtr;
 
     /**
      * @brief Constructeur
      */
-    FluidStructureModalBasisClass()
-        : FluidStructureModalBasisClass( ResultNaming::getNewResultName() ){};
+    FluidStructureModalBasis()
+        : FluidStructureModalBasis( ResultNaming::getNewResultName() ){};
     /**
      * @brief Constructeur
      */
-    FluidStructureModalBasisClass( const std::string name )
+    FluidStructureModalBasis( const std::string name )
         : DataStructure( name, 8, "MELASFLU", Permanent ),
-          ListOfTablesClass( name ),
+          ListOfTables( name ),
           _remf( JeveuxVectorChar8( getName() + ".REMF" ) ),
           _desc( JeveuxVectorChar16( getName() + ".DESC" ) ),
           _fact( JeveuxVectorReal( getName() + ".FACT" ) ),
@@ -84,8 +84,8 @@ class FluidStructureModalBasisClass : public DataStructure, public ListOfTablesC
 
 /**
  * @typedef FluidStructureModalBasisPtr
- * @brief Pointeur intelligent vers un FluidStructureModalBasisClass
+ * @brief Pointeur intelligent vers un FluidStructureModalBasis
  */
-typedef boost::shared_ptr< FluidStructureModalBasisClass > FluidStructureModalBasisPtr;
+typedef boost::shared_ptr< FluidStructureModalBasis > FluidStructureModalBasisPtr;
 
 #endif /* FLUIDSTRUCTMODALBASIS_H_ */

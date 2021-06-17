@@ -3,7 +3,7 @@
  * @brief Interface python de GeneralizedDOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,20 +32,20 @@ namespace py = boost::python;
 
 void exportGeneralizedDOFNumberingToPython() {
 
-    bool ( GeneralizedDOFNumberingClass::*c1 )( const ModeResultPtr & ) =
-        &GeneralizedDOFNumberingClass::setModalBasis;
-    bool ( GeneralizedDOFNumberingClass::*c2 )( const GeneralizedModeResultPtr & ) =
-        &GeneralizedDOFNumberingClass::setModalBasis;
+    bool ( GeneralizedDOFNumbering::*c1 )( const ModeResultPtr & ) =
+        &GeneralizedDOFNumbering::setModalBasis;
+    bool ( GeneralizedDOFNumbering::*c2 )( const GeneralizedModeResultPtr & ) =
+        &GeneralizedDOFNumbering::setModalBasis;
 
-    py::class_< GeneralizedDOFNumberingClass,
-                GeneralizedDOFNumberingClass::GeneralizedDOFNumberingPtr,
+    py::class_< GeneralizedDOFNumbering,
+                GeneralizedDOFNumbering::GeneralizedDOFNumberingPtr,
                 py::bases< DataStructure > >( "GeneralizedDOFNumbering", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< GeneralizedDOFNumberingClass >))
+        .def( "__init__", py::make_constructor(&initFactoryPtr< GeneralizedDOFNumbering >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< GeneralizedDOFNumberingClass, std::string >))
-        .def( "getGeneralizedModel", &GeneralizedDOFNumberingClass::getGeneralizedModel )
+              py::make_constructor(&initFactoryPtr< GeneralizedDOFNumbering, std::string >))
+        .def( "getGeneralizedModel", &GeneralizedDOFNumbering::getGeneralizedModel )
         .def("getModalBasis", &getModalBasis< GeneralizedDOFNumberingPtr >)
-        .def( "setGeneralizedModel", &GeneralizedDOFNumberingClass::setGeneralizedModel )
+        .def( "setGeneralizedModel", &GeneralizedDOFNumbering::setGeneralizedModel )
         .def( "setModalBasis", c1 )
         .def( "setModalBasis", c2 );
 };

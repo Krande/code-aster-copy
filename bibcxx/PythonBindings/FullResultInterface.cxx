@@ -30,17 +30,17 @@ namespace py = boost::python;
 void exportFullResultToPython() {
 
 
-    py::class_< FullResultClass, FullResultPtr,
-            py::bases< ResultClass > >( "FullResult", py::no_init )
+    py::class_< FullResult, FullResultPtr,
+            py::bases< Result > >( "FullResult", py::no_init )
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< FullResultClass, std::string, std::string > ) )
+                  &initFactoryPtr< FullResult, std::string, std::string > ) )
         .def( "__init__",
-              py::make_constructor( &initFactoryPtr< FullResultClass, std::string > ) )
-        .def( "getDOFNumbering", &FullResultClass::getDOFNumbering )
-        .def( "setDOFNumbering", &FullResultClass::setDOFNumbering )
+              py::make_constructor( &initFactoryPtr< FullResult, std::string > ) )
+        .def( "getDOFNumbering", &FullResult::getDOFNumbering )
+        .def( "setDOFNumbering", &FullResult::setDOFNumbering )
 #ifdef ASTER_HAVE_MPI
-        .def( "setDOFNumbering", &FullResultClass::setParallelDOFNumbering )
+        .def( "setDOFNumbering", &FullResult::setParallelDOFNumbering )
 #endif
         ;
 };

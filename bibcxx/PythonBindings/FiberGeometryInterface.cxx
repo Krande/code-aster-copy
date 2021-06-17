@@ -3,7 +3,7 @@
  * @brief Interface python de FiberGeometry
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,9 +31,9 @@ namespace py = boost::python;
 
 void exportFiberGeometryToPython() {
 
-    py::class_< FiberGeometryClass, FiberGeometryClass::FiberGeometryPtr,
+    py::class_< FiberGeometry, FiberGeometry::FiberGeometryPtr,
                 py::bases< DataStructure > >( "FiberGeometry", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< FiberGeometryClass >))
+        .def( "__init__", py::make_constructor(&initFactoryPtr< FiberGeometry >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< FiberGeometryClass, std::string >));
+              py::make_constructor(&initFactoryPtr< FiberGeometry, std::string >));
 };

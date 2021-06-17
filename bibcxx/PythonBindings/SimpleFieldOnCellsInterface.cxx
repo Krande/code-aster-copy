@@ -3,7 +3,7 @@
  * @brief Interface python de SimpleFieldOnCells
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,13 +31,13 @@ namespace py = boost::python;
 #include "PythonBindings/SimpleFieldOnCellsInterface.h"
 
 void exportSimpleFieldOnCellsToPython() {
-    py::class_< SimpleFieldOnCellsRealClass, SimpleFieldOnCellsRealPtr,
+    py::class_< SimpleFieldOnCellsReal, SimpleFieldOnCellsRealPtr,
                 py::bases< DataStructure > >( "SimpleFieldOnCellsReal", py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< SimpleFieldOnCellsRealClass >))
+              py::make_constructor(&initFactoryPtr< SimpleFieldOnCellsReal >))
         .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< SimpleFieldOnCellsRealClass, std::string >))
-        .def( "getValue", &SimpleFieldOnCellsRealClass::getValue,
+                              &initFactoryPtr< SimpleFieldOnCellsReal, std::string >))
+        .def( "getValue", &SimpleFieldOnCellsReal::getValue,
               py::return_value_policy< py::return_by_value >() )
-        .def( "updateValuePointers", &SimpleFieldOnCellsRealClass::updateValuePointers );
+        .def( "updateValuePointers", &SimpleFieldOnCellsReal::updateValuePointers );
 };

@@ -30,23 +30,23 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class ThermalResultClass
+ * @class ThermalResult
  * @brief Cette classe correspond a un evol_ther
  * @author Nicolas Sellenet
  */
-class ThermalResultClass : public TransientResultClass {
+class ThermalResult : public TransientResult {
   public:
     /**
      * @brief Constructeur
      */
-    ThermalResultClass( const std::string name = ResultNaming::getNewResultName() )
-        : TransientResultClass( name, "EVOL_THER" ){};
+    ThermalResult( const std::string name = ResultNaming::getNewResultName() )
+        : TransientResult( name, "EVOL_THER" ){};
 };
 
 /**
  * @typedef ThermalResultPtr
- * @brief Pointeur intelligent vers un ThermalResultClass
+ * @brief Pointeur intelligent vers un ThermalResult
  */
-typedef boost::shared_ptr< ThermalResultClass > ThermalResultPtr;
+typedef boost::shared_ptr< ThermalResult > ThermalResultPtr;
 
 #endif /* EVOLUTIVETHERMALLOAD_H_ */

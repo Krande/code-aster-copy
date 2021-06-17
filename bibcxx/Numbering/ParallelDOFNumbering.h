@@ -34,33 +34,33 @@
 #include "Numbering/BaseDOFNumbering.h"
 
 /**
- * @class ParallelDOFNumberingClass
+ * @class ParallelDOFNumbering
  * @brief Cette classe decrit un maillage Aster parallèle
  * @author Nicolas Sellenet
  */
-class ParallelDOFNumberingClass : public BaseDOFNumberingClass {
+class ParallelDOFNumbering : public BaseDOFNumbering {
   private:
 
 
   public:
     /**
      * @typedef ParallelDOFNumberingPtr
-     * @brief Pointeur intelligent vers un ParallelDOFNumberingClass
+     * @brief Pointeur intelligent vers un ParallelDOFNumbering
      */
-    typedef boost::shared_ptr< ParallelDOFNumberingClass > ParallelDOFNumberingPtr;
+    typedef boost::shared_ptr< ParallelDOFNumbering > ParallelDOFNumberingPtr;
 
     /**
      * @brief Constructeur
      */
-    ParallelDOFNumberingClass( const JeveuxMemory memType = Permanent )
-        : BaseDOFNumberingClass( "NUME_DDL_P", memType ){};
+    ParallelDOFNumbering( const JeveuxMemory memType = Permanent )
+        : BaseDOFNumbering( "NUME_DDL_P", memType ){};
 
     /**
      * @brief Constructeur
-     * @param name nom souhaité de la sd (utile pour le BaseDOFNumberingClass d'une sd_resu)
+     * @param name nom souhaité de la sd (utile pour le BaseDOFNumbering d'une sd_resu)
      */
-    ParallelDOFNumberingClass( const std::string name, const JeveuxMemory memType = Permanent )
-        : BaseDOFNumberingClass( name, "NUME_DDL_P", memType ){};
+    ParallelDOFNumbering( const std::string name, const JeveuxMemory memType = Permanent )
+        : BaseDOFNumbering( name, "NUME_DDL_P", memType ){};
 
     /**
      * @brief Methode permettant de savoir si l'objet est parallel
@@ -77,7 +77,7 @@ class ParallelDOFNumberingClass : public BaseDOFNumberingClass {
     {
         if ( !currentMatrix->getModel()->getMesh()->isParallel() )
             throw std::runtime_error( "Mesh must be parallel" );
-        BaseDOFNumberingClass::setElementaryMatrix( currentMatrix );
+        BaseDOFNumbering::setElementaryMatrix( currentMatrix );
     };
 
     /**
@@ -89,7 +89,7 @@ class ParallelDOFNumberingClass : public BaseDOFNumberingClass {
     {
         if ( !currentMatrix->getModel()->getMesh()->isParallel() )
             throw std::runtime_error( "Mesh must be parallel" );
-        BaseDOFNumberingClass::setElementaryMatrix( currentMatrix );
+        BaseDOFNumbering::setElementaryMatrix( currentMatrix );
     };
 
     /**
@@ -101,7 +101,7 @@ class ParallelDOFNumberingClass : public BaseDOFNumberingClass {
     {
         if ( !currentMatrix->getModel()->getMesh()->isParallel() )
             throw std::runtime_error( "Mesh must be parallel" );
-        BaseDOFNumberingClass::setElementaryMatrix( currentMatrix );
+        BaseDOFNumbering::setElementaryMatrix( currentMatrix );
     };
 
     /**
@@ -113,7 +113,7 @@ class ParallelDOFNumberingClass : public BaseDOFNumberingClass {
     {
         if ( !currentMatrix->getModel()->getMesh()->isParallel() )
             throw std::runtime_error( "Mesh must be parallel" );
-        BaseDOFNumberingClass::setElementaryMatrix( currentMatrix );
+        BaseDOFNumbering::setElementaryMatrix( currentMatrix );
     };
 
     /**
@@ -123,7 +123,7 @@ class ParallelDOFNumberingClass : public BaseDOFNumberingClass {
     void setModel( const ModelPtr &currentModel ) {
         if ( !currentModel->getMesh()->isParallel() )
             throw std::runtime_error( "Mesh must be parallel" );
-        BaseDOFNumberingClass::setModel( currentModel );
+        BaseDOFNumbering::setModel( currentModel );
     };
 
 
@@ -219,9 +219,9 @@ class ParallelDOFNumberingClass : public BaseDOFNumberingClass {
 
 /**
  * @typedef ParallelDOFNumberingPtr
- * @brief Pointeur intelligent vers un ParallelDOFNumberingClass
+ * @brief Pointeur intelligent vers un ParallelDOFNumbering
  */
-typedef boost::shared_ptr< ParallelDOFNumberingClass > ParallelDOFNumberingPtr;
+typedef boost::shared_ptr< ParallelDOFNumbering > ParallelDOFNumberingPtr;
 
 #endif /* PARALLELDOFNUMBERING_H_ */
 

@@ -1,6 +1,6 @@
 /**
  * @file Mesh.cxx
- * @brief Implementation de MeshClass
+ * @brief Implementation de Mesh
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
@@ -29,36 +29,36 @@
 #include "Utilities/Tools.h"
 
 
-bool MeshClass::readAsterFile( const std::string &fileName ) {
+bool Mesh::readAsterFile( const std::string &fileName ) {
     readMeshFile( fileName, "ASTER" );
     return true;
 }
 
-bool MeshClass::readGibiFile( const std::string &fileName ) {
+bool Mesh::readGibiFile( const std::string &fileName ) {
     readMeshFile( fileName, "GIBI" );
     return true;
 }
 
-bool MeshClass::readGmshFile( const std::string &fileName ) {
+bool Mesh::readGmshFile( const std::string &fileName ) {
     readMeshFile( fileName, "GMSH" );
     return true;
 }
 
-bool MeshClass::hasGroupOfCells( const std::string &name, const bool local ) const {
-    if ( _groupsOfCells->size() < 0 && !_groupsOfCells->buildFromJeveux() ) {
+bool Mesh::hasGroupOfCells( const std::string &name, const bool local ) const {
+    if ( _groupsOfCells->size() < 0 && !_groupsOfCells->build() ) {
         return false;
     }
     return _groupsOfCells->existsObject( name );
 }
 
-bool MeshClass::hasGroupOfNodes( const std::string &name, const bool local ) const {
-    if ( _groupsOfNodes->size() < 0 && !_groupsOfNodes->buildFromJeveux() ) {
+bool Mesh::hasGroupOfNodes( const std::string &name, const bool local ) const {
+    if ( _groupsOfNodes->size() < 0 && !_groupsOfNodes->build() ) {
         return false;
     }
     return _groupsOfNodes->existsObject( name );
 }
 
-VectorString MeshClass::getGroupsOfCells(const bool local) const {
+VectorString Mesh::getGroupsOfCells(const bool local) const {
     ASTERINTEGER size = _nameOfGrpCells->size();
     VectorString names;
     for ( int i = 0; i < size; i++ ) {
@@ -67,7 +67,7 @@ VectorString MeshClass::getGroupsOfCells(const bool local) const {
     return names;
 }
 
-VectorString MeshClass::getGroupsOfNodes(const bool local) const {
+VectorString Mesh::getGroupsOfNodes(const bool local) const {
     ASTERINTEGER size = _nameOfGrpNodes->size();
     VectorString names;
     for ( int i = 0; i < size; i++ ) {
@@ -76,7 +76,7 @@ VectorString MeshClass::getGroupsOfNodes(const bool local) const {
     return names;
 }
 
-const VectorLong MeshClass::getCells( const std::string name ) const {
+const VectorLong Mesh::getCells( const std::string name ) const {
 
     if ( name.empty())
     {
@@ -89,7 +89,7 @@ const VectorLong MeshClass::getCells( const std::string name ) const {
     return _groupsOfCells->getObjectFromName( name ).toVector();
 }
 
-const VectorLong MeshClass::getNodes( const std::string name, const bool localNumbering,
+const VectorLong Mesh::getNodes( const std::string name, const bool localNumbering,
                                       const bool same_rank) const {
     if ( name.empty())
     {
@@ -101,7 +101,7 @@ const VectorLong MeshClass::getNodes( const std::string name, const bool localNu
     return _groupsOfNodes->getObjectFromName( name ).toVector();
 }
 
-bool MeshClass::isQuadratic() const
+bool Mesh::isQuadratic() const
 {
     auto cellsType = getMedCellsTypes();
     cellsType->updateValuePointer();

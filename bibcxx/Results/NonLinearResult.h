@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe NonLinearResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,30 +31,30 @@
 #include "Results/TransientResult.h"
 
 /**
- * @class NonLinearResultClass
+ * @class NonLinearResult
  * @brief Cette classe correspond a un evol_noli, elle hérite de Result
           et stocke des champs
  * @author Natacha Béreux
  */
-class NonLinearResultClass : public TransientResultClass {
+class NonLinearResult : public TransientResult {
   private:
   public:
     /**
      * @brief Constructeur
      */
-    NonLinearResultClass() : TransientResultClass( "EVOL_NOLI" ){};
+    NonLinearResult() : TransientResult( "EVOL_NOLI" ){};
 
     /**
      * @brief Constructeur
      */
-    NonLinearResultClass( const std::string name )
-        : TransientResultClass( name, "EVOL_NOLI" ){};
+    NonLinearResult( const std::string name )
+        : TransientResult( name, "EVOL_NOLI" ){};
 };
 
 /**
  * @typedef NonLinearResultPtr
- * @brief Pointeur intelligent vers un NonLinearResultClass
+ * @brief Pointeur intelligent vers un NonLinearResult
  */
-typedef boost::shared_ptr< NonLinearResultClass > NonLinearResultPtr;
+typedef boost::shared_ptr< NonLinearResult > NonLinearResultPtr;
 
 #endif /* NonLinearResult_H_ */

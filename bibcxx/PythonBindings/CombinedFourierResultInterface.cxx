@@ -3,7 +3,7 @@
  * @brief Interface python de CombinedFourierResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,9 +29,9 @@ namespace py = boost::python;
 
 void exportCombinedFourierResultToPython() {
 
-    py::class_< CombinedFourierResultClass, CombinedFourierResultPtr,
-                py::bases< ResultClass > >( "CombinedFourierResult", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< CombinedFourierResultClass >))
+    py::class_< CombinedFourierResult, CombinedFourierResultPtr,
+                py::bases< Result > >( "CombinedFourierResult", py::no_init )
+        .def( "__init__", py::make_constructor(&initFactoryPtr< CombinedFourierResult >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< CombinedFourierResultClass, std::string >));
+              py::make_constructor(&initFactoryPtr< CombinedFourierResult, std::string >));
 };

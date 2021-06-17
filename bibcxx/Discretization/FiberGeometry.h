@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FiberGeometry
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -34,11 +34,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class FiberGeometryClass
+ * @class FiberGeometry
  * @brief Cette classe decrit la sd gfibre
  * @author Nicolas Sellenet
  */
-class FiberGeometryClass : public DataStructure {
+class FiberGeometry : public DataStructure {
   private:
     /** @brief Objet Jeveux '.NOMS_GROUPES' */
     NamesMapChar24 _nomsGroupes;
@@ -63,17 +63,17 @@ class FiberGeometryClass : public DataStructure {
      * @typedef FiberGeometryPtr
      * @brief Pointeur intelligent vers un FiberGeometry
      */
-    typedef boost::shared_ptr< FiberGeometryClass > FiberGeometryPtr;
+    typedef boost::shared_ptr< FiberGeometry > FiberGeometryPtr;
 
     /**
      * @brief Constructeur
      */
-    FiberGeometryClass() : FiberGeometryClass( ResultNaming::getNewResultName() ){};
+    FiberGeometry() : FiberGeometry( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Constructeur
      */
-    FiberGeometryClass( const std::string name )
+    FiberGeometry( const std::string name )
         : DataStructure( name, 8, "GFIBRE" ),
           _nomsGroupes( NamesMapChar24( getName() + ".NOMS_GROUPES" ) ),
           _nbFibreGroupe( JeveuxVectorLong( getName() + ".NB_FIBRE_GROUPE" ) ),
@@ -86,7 +86,7 @@ class FiberGeometryClass : public DataStructure {
     /**
      * @brief Destructeur
      */
-    ~FiberGeometryClass(){};
+    ~FiberGeometry(){};
 
     /**
      * @brief Fonction permettant de savoir si un maillage est vide (non relu par exemple)
@@ -97,8 +97,8 @@ class FiberGeometryClass : public DataStructure {
 
 /**
  * @typedef FiberGeometryPtr
- * @brief Pointeur intelligent vers un FiberGeometryClass
+ * @brief Pointeur intelligent vers un FiberGeometry
  */
-typedef boost::shared_ptr< FiberGeometryClass > FiberGeometryPtr;
+typedef boost::shared_ptr< FiberGeometry > FiberGeometryPtr;
 
 #endif /* FIBERGEOMETRY_H_ */

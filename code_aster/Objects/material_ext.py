@@ -40,8 +40,8 @@ class ExtendedMaterial:
         """
         toReturn = (self.getName(), )
         state = []
-        for i in range(self.getNumberOfMaterialBehaviour()):
-            state.append(self.getNumberOfListOfRealProperties(i))
+        for i in range(self.getNumberOfMaterialProperties()):
+            state.append(self.getNumberOfListOfPropertiesReal(i))
         toReturn = toReturn + (state, )
         return toReturn
 

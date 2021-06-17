@@ -57,6 +57,6 @@ class ProdMatrCham(ExecuteCommand):
             if desc is not None:
                 self._result.setDescription(desc)
 
-        self._result.update()
+        self._result.build()
 
 PROD_MATR_CHAM = ProdMatrCham.run

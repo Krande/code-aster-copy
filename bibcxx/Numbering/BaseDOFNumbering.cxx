@@ -27,30 +27,30 @@
 #include "Supervis/ResultNaming.h"
 
 
-BaseDOFNumberingClass::BaseDOFNumberingClass( const std::string &type, const JeveuxMemory memType )
+BaseDOFNumbering::BaseDOFNumbering( const std::string &type, const JeveuxMemory memType )
     : DataStructure( ResultNaming::getNewResultName(), 14, type, memType ),
       _nameOfSolverDataStructure( JeveuxVectorChar24( getName() + ".NSLV" ) ),
-      _globalNumbering( new GlobalEquationNumberingClass( getName() + ".NUME" ) ),
-      _dofDescription( new FieldOnNodesDescriptionClass( getName() + ".NUME" ) ),
-      _localNumbering( new LocalEquationNumberingClass( getName() + ".NUML" ) ),
-      _model( ModelPtr( nullptr ) ), _listOfLoads( new ListOfLoadsClass() ),
-      _smos( new MorseStorageClass( getName() + ".SMOS" ) ),
-      _slcs( new LigneDeCielClass( getName() + ".SLCS" ) ),
-      _mltf( new MultFrontGarbageClass( getName() + ".MLTF" ) ), _isEmpty( true ){};
+      _globalNumbering( new GlobalEquationNumbering( getName() + ".NUME" ) ),
+      _dofDescription( new FieldOnNodesDescription( getName() + ".NUME" ) ),
+      _localNumbering( new LocalEquationNumbering( getName() + ".NUML" ) ),
+      _model( ModelPtr( nullptr ) ), _listOfLoads( new ListOfLoads() ),
+      _smos( new MorseStorage( getName() + ".SMOS" ) ),
+      _slcs( new LigneDeCiel( getName() + ".SLCS" ) ),
+      _mltf( new MultFrontGarbage( getName() + ".MLTF" ) ), _isEmpty( true ){};
 
-BaseDOFNumberingClass::BaseDOFNumberingClass( const std::string name, const std::string &type,
+BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &type,
                                               const JeveuxMemory memType )
     : DataStructure( name, 14, type, memType ),
       _nameOfSolverDataStructure( JeveuxVectorChar24( getName() + ".NSLV" ) ),
-      _globalNumbering( new GlobalEquationNumberingClass( getName() + ".NUME" ) ),
-      _dofDescription( new FieldOnNodesDescriptionClass( getName() + ".NUME" ) ),
-      _localNumbering( new LocalEquationNumberingClass( getName() + ".NUML" ) ),
-      _model( ModelPtr( nullptr ) ), _listOfLoads( new ListOfLoadsClass() ),
-      _smos( new MorseStorageClass( getName() + ".SMOS" ) ),
-      _slcs( new LigneDeCielClass( getName() + ".SLCS" ) ),
-      _mltf( new MultFrontGarbageClass( getName() + ".MLTF" ) ), _isEmpty( true ){};
+      _globalNumbering( new GlobalEquationNumbering( getName() + ".NUME" ) ),
+      _dofDescription( new FieldOnNodesDescription( getName() + ".NUME" ) ),
+      _localNumbering( new LocalEquationNumbering( getName() + ".NUML" ) ),
+      _model( ModelPtr( nullptr ) ), _listOfLoads( new ListOfLoads() ),
+      _smos( new MorseStorage( getName() + ".SMOS" ) ),
+      _slcs( new LigneDeCiel( getName() + ".SLCS" ) ),
+      _mltf( new MultFrontGarbage( getName() + ".MLTF" ) ), _isEmpty( true ){};
 
-bool BaseDOFNumberingClass::computeNumbering() {
+bool BaseDOFNumbering::computeNumbering() {
     if ( _model ) {
         if ( _model->isEmpty() )
             throw std::runtime_error( "Model is empty" );
@@ -88,7 +88,7 @@ bool BaseDOFNumberingClass::computeNumbering() {
     return true;
 };
 
-std::string BaseDOFNumberingClass::getPhysicalQuantity() const {
+std::string BaseDOFNumbering::getPhysicalQuantity() const {
     _globalNumbering->_informations->updateValuePointer();
     JeveuxChar24 physicalQuantity = ( *_globalNumbering->_informations )[1];
     return physicalQuantity.rstrip();

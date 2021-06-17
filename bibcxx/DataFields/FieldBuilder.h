@@ -35,7 +35,7 @@
 #include "Numbering/DOFNumbering.h"
 
 /**
- * @class FieldBuilderClass
+ * @class FieldBuilder
  * @brief This class builds FieldOnNodes and FieldOnCells with respect of
  *        FieldOnNodesDescription and FiniteElementDescriptor
  * @author Nicolas Sellenet
@@ -69,13 +69,13 @@ class FieldBuilder {
      * @brief Build a FieldOnCells with a FiniteElementDescriptor
      */
     template < typename ValueType >
-    boost::shared_ptr< FieldOnCellsClass< ValueType > >
+    boost::shared_ptr< FieldOnCells< ValueType > >
     buildFieldOnCells( const std::string &name, const BaseMeshPtr mesh ) {
-        typedef FiniteElementDescriptorClass FEDDesc;
+        typedef FiniteElementDescriptor FEDDesc;
         typedef FiniteElementDescriptorPtr FEDDescP;
 
-        boost::shared_ptr< FieldOnCellsClass< ValueType > > result(
-            new FieldOnCellsRealClass( name ) );
+        boost::shared_ptr< FieldOnCells< ValueType > > result(
+            new FieldOnCellsReal( name ) );
         result->updateValuePointers();
 
         const std::string name2 = trim( ( *( *result )._reference )[0].toString() );
@@ -97,12 +97,12 @@ class FieldBuilder {
      * @brief Build a FieldOnNodes with a FieldOnNodesDescription
      */
     template < typename ValueType >
-    boost::shared_ptr< FieldOnNodesClass< ValueType > > buildFieldOnNodes( std::string name ) {
-        typedef FieldOnNodesDescriptionClass FONDesc;
+    boost::shared_ptr< FieldOnNodes< ValueType > > buildFieldOnNodes( std::string name ) {
+        typedef FieldOnNodesDescription FONDesc;
         typedef FieldOnNodesDescriptionPtr FONDescP;
 
-        boost::shared_ptr< FieldOnNodesClass< ValueType > > result(
-            new FieldOnNodesRealClass( name ) );
+        boost::shared_ptr< FieldOnNodes< ValueType > > result(
+            new FieldOnNodesReal( name ) );
         result->updateValuePointers();
 
         const std::string name2 = trim( ( *( *result )._reference )[1].toString() );

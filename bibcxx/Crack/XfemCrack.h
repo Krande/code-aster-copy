@@ -36,16 +36,16 @@
 #include "Crack/CrackShape.h"
 
 /**
- * @class XfemCrackClass
+ * @class XfemCrack
  * @brief generates a data structure identical to DEFI_FISS_XFEM
  * @author Nicolas Tardieu
  */
-class XfemCrackClass : public DataStructure, public ListOfTablesClass {
+class XfemCrack : public DataStructure, public ListOfTables {
   public:
     /**
          * @brief kind of forward declaration
          */
-    typedef boost::shared_ptr< XfemCrackClass > XfemCrackPtr;
+    typedef boost::shared_ptr< XfemCrack > XfemCrackPtr;
 
   private:
     /** @typedef Definition of a smart pointer on VirtualMeshEntity */
@@ -120,15 +120,15 @@ class XfemCrackClass : public DataStructure, public ListOfTablesClass {
     /**
          * @brief Constructeur
          */
-    XfemCrackClass( MeshPtr mesh );
+    XfemCrack( MeshPtr mesh );
 
     /**
          * @brief Constructeur
          */
-    XfemCrackClass( const std::string name, MeshPtr mesh );
+    XfemCrack( const std::string name, MeshPtr mesh );
 
     /**
-         * @brief Construction du XfemCrackClass
+         * @brief Construction du XfemCrack
          * @return Booleen indiquant que la construction s'est bien deroulee
          */
     bool build() ;
@@ -297,8 +297,8 @@ class XfemCrackClass : public DataStructure, public ListOfTablesClass {
 
 /**
  * @typedef MaterialPtr
- * @brief Pointeur intelligent vers un XfemCrackClass
+ * @brief Pointeur intelligent vers un XfemCrack
  */
-typedef boost::shared_ptr< XfemCrackClass > XfemCrackPtr;
+typedef boost::shared_ptr< XfemCrack > XfemCrackPtr;
 
 #endif /* XFEMCRACK_H_ */

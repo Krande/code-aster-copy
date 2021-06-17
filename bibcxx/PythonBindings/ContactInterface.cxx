@@ -3,7 +3,7 @@
  * @brief Interface python de Contact
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,9 +31,9 @@ namespace py = boost::python;
 
 void exportContactToPython() {
 
-    py::class_< ContactClass, ContactClass::ContactPtr,
+    py::class_< Contact, Contact::ContactPtr,
             py::bases< DataStructure > >( "Contact", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ContactClass >))
+        .def( "__init__", py::make_constructor(&initFactoryPtr< Contact >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ContactClass, std::string >));
+              py::make_constructor(&initFactoryPtr< Contact, std::string >));
 };

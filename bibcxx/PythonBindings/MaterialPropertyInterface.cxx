@@ -31,32 +31,32 @@ namespace py = boost::python;
 
 void exportMaterialPropertyToPython() {
 
-    bool ( MaterialPropertyClass::*c1 )( std::string, const bool ) =
-        &MaterialPropertyClass::addRealProperty;
-    bool ( MaterialPropertyClass::*c2 )( std::string, const ASTERDOUBLE &, const bool ) =
-        &MaterialPropertyClass::addRealProperty;
-    bool ( MaterialPropertyClass::*c3 )( std::string, const bool ) =
-        &MaterialPropertyClass::addStringProperty;
-    bool ( MaterialPropertyClass::*c4 )( std::string, const std::string &, const bool ) =
-        &MaterialPropertyClass::addStringProperty;
+    bool ( MaterialProperty::*c1 )( std::string, const bool ) =
+        &MaterialProperty::addPropertyReal;
+    bool ( MaterialProperty::*c2 )( std::string, const ASTERDOUBLE &, const bool ) =
+        &MaterialProperty::addPropertyReal;
+    bool ( MaterialProperty::*c3 )( std::string, const bool ) =
+        &MaterialProperty::addPropertyString;
+    bool ( MaterialProperty::*c4 )( std::string, const std::string &, const bool ) =
+        &MaterialProperty::addPropertyString;
 
-    py::class_< MaterialPropertyClass, MaterialPropertyPtr,
-                py::bases< GenericMaterialPropertyClass > >( "MaterialProperty", py::no_init )
+    py::class_< MaterialProperty, MaterialPropertyPtr,
+                py::bases< GenericMaterialProperty > >( "MaterialProperty", py::no_init )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< MaterialPropertyClass, std::string >))
+              py::make_constructor(&initFactoryPtr< MaterialProperty, std::string >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< MaterialPropertyClass, std::string, std::string >))
-        .def( "addRealProperty", c1 )
-        .def( "addRealProperty", c2 )
-        .def( "addComplexProperty", &MaterialPropertyClass::addComplexProperty )
-        .def( "addStringProperty", c3 )
-        .def( "addStringProperty", c4 )
-        .def( "addFunctionProperty", &MaterialPropertyClass::addFunctionProperty )
-        .def( "addTableProperty", &MaterialPropertyClass::addTableProperty )
-        .def( "addVectorOfRealProperty",
-              &MaterialPropertyClass::addVectorOfRealProperty )
-        .def( "addVectorOfFunctionProperty",
-              &MaterialPropertyClass::addVectorOfFunctionProperty )
-        .def( "getName", &MaterialPropertyClass::getName );
+                  &initFactoryPtr< MaterialProperty, std::string, std::string >))
+        .def( "addPropertyReal", c1 )
+        .def( "addPropertyReal", c2 )
+        .def( "addPropertyComplex", &MaterialProperty::addPropertyComplex )
+        .def( "addPropertyString", c3 )
+        .def( "addPropertyString", c4 )
+        .def( "addPropertyFunction", &MaterialProperty::addPropertyFunction )
+        .def( "addPropertyTable", &MaterialProperty::addPropertyTable )
+        .def( "addPropertyVectorOfReal",
+              &MaterialProperty::addPropertyVectorOfReal )
+        .def( "addPropertyVectorOfFunction",
+              &MaterialProperty::addPropertyVectorOfFunction )
+        .def( "getName", &MaterialProperty::getName );
 };

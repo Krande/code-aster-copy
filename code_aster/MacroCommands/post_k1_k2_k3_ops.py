@@ -1719,7 +1719,7 @@ def is_present_varc(RESULTAT):
 
     chamat = RESULTAT.getMaterialField()
     assert not ( chamat.getName() in ['#AUCUN', '#PLUSIEURS'] )
-    return chamat.hasExternalVariablesComputation()
+    return chamat.hasExternalStateVariables()
 
 #---------------------------------------------------------------------------------------------------------------
 #                 CORPS DE LA MACRO POST_K1_K2_K3
@@ -1878,10 +1878,10 @@ def post_k1_k2_k3_ops(self, RESULTAT, FOND_FISS =None, FISSURE=None, MATER=None,
         nom_fonc_e = None
         nom_fonc_nu = None
         for matBehav in MATER.getVectorOfMaterialProperties():
-            if matBehav.hasGenericFunctionValue( "E" ):
-                nom_fonc_e = matBehav.getGenericFunctionValue( "E" )
-            if matBehav.hasGenericFunctionValue( "Nu" ):
-                nom_fonc_nu = matBehav.getGenericFunctionValue( "Nu" )
+            if matBehav.hasValueGenericFunction( "E" ):
+                nom_fonc_e = matBehav.getValueGenericFunction( "E" )
+            if matBehav.hasValueGenericFunction( "Nu" ):
+                nom_fonc_nu = matBehav.getValueGenericFunction( "Nu" )
         nom_fonc_e_prol = nom_fonc_e.sdj.PROL.get()[0].strip()
         nom_fonc_nu_prol = nom_fonc_nu.sdj.PROL.get()[0].strip()
 

@@ -30,20 +30,20 @@ namespace py = boost::python;
 
 void exportLinearStaticAnalysisToPython() {
 
-    py::class_< LinearStaticAnalysisClass, LinearStaticAnalysisPtr > c1(
+    py::class_< LinearStaticAnalysis, LinearStaticAnalysisPtr > c1(
         "LinearStaticAnalysis", py::no_init );
     c1.def( "__init__",
             py::make_constructor(
-                &initFactoryPtr< LinearStaticAnalysisClass, ModelPtr, MaterialFieldPtr >));
+                &initFactoryPtr< LinearStaticAnalysis, ModelPtr, MaterialFieldPtr >));
     c1.def( "__init__",
-            py::make_constructor(&initFactoryPtr< LinearStaticAnalysisClass, ModelPtr,
+            py::make_constructor(&initFactoryPtr< LinearStaticAnalysis, ModelPtr,
                                               MaterialFieldPtr, ElementaryCharacteristicsPtr >));
     addDirichletBCToInterface( c1 );
     addMechanicalLoadToInterface( c1 );
 #ifdef ASTER_HAVE_MPI
     addParallelMechanicalLoadToInterface( c1 );
 #endif /* ASTER_HAVE_MPI */
-    c1.def( "execute", &LinearStaticAnalysisClass::execute );
-    c1.def( "setLinearSolver", &LinearStaticAnalysisClass::setLinearSolver );
-    c1.def( "setTimeStepManager", &LinearStaticAnalysisClass::setTimeStepManager );
+    c1.def( "execute", &LinearStaticAnalysis::execute );
+    c1.def( "setLinearSolver", &LinearStaticAnalysis::setLinearSolver );
+    c1.def( "setTimeStepManager", &LinearStaticAnalysis::setTimeStepManager );
 };

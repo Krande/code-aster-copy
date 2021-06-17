@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe GenericAlgorithm
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -48,7 +48,7 @@ class Algorithm {
      */
     static bool runAllStepsOverAlgorithm( StepperAlgo &timeStep,
                                           CurrentContext &context ) {
-        if ( !timeStep.update() )
+        if ( !timeStep.build() )
             throw std::runtime_error( "Error with the Stepper" );
 
         typedef typename StepperAlgo::const_iterator it;

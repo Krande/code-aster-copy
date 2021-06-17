@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -43,10 +43,10 @@ class TherNonLineMo(ExecuteCommand):
             keywords (dict): User's keywords.
         """
         if("reuse" in keywords):
-            self._result.update()
+            self._result.build()
         else:
             self._result.appendModelOnAllRanks(keywords["MODELE"])
-            self._result.update()
+            self._result.build()
 
 
 THER_NON_LINE_MO = TherNonLineMo.run

@@ -33,11 +33,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class ListOfIntegersClass
+ * @class ListOfIntegers
  * @brief Cette classe correspond a une listr8
  * @author Nicolas Sellenet
  */
-class ListOfIntegersClass : public DataStructure {
+class ListOfIntegers : public DataStructure {
   private:
     /** @brief Objet Jeveux '.BINT' */
     JeveuxVectorReal _bint;
@@ -53,17 +53,17 @@ class ListOfIntegersClass : public DataStructure {
      * @typedef ListOfIntegersPtr
      * @brief Pointeur intelligent vers un ListOfIntegers
      */
-    typedef boost::shared_ptr< ListOfIntegersClass > ListOfIntegersPtr;
+    typedef boost::shared_ptr< ListOfIntegers > ListOfIntegersPtr;
 
     /**
      * @brief Constructeur
      */
-    ListOfIntegersClass() : ListOfIntegersClass( ResultNaming::getNewResultName() ){};
+    ListOfIntegers() : ListOfIntegers( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Constructeur
      */
-    ListOfIntegersClass( const std::string name )
+    ListOfIntegers( const std::string name )
         : DataStructure( name, 19, "LISTIS", Permanent ),
           _bint( JeveuxVectorReal( getName() + ".BINT" ) ),
           _lpas( JeveuxVectorReal( getName() + ".LPAS" ) ),
@@ -73,8 +73,8 @@ class ListOfIntegersClass : public DataStructure {
 
 /**
  * @typedef ListOfIntegersPtr
- * @brief Pointeur intelligent vers un ListOfIntegersClass
+ * @brief Pointeur intelligent vers un ListOfIntegers
  */
-typedef boost::shared_ptr< ListOfIntegersClass > ListOfIntegersPtr;
+typedef boost::shared_ptr< ListOfIntegers > ListOfIntegersPtr;
 
 #endif /* LISTOFINTEGERS_H_ */

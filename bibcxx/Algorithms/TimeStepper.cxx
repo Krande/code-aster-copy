@@ -25,14 +25,14 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-bool TimeStepperClass::setValues( const VectorReal &values ) {
+bool TimeStepper::setValues( const VectorReal &values ) {
     if ( _values->isAllocated() )
         _values->deallocate();
 
     //     _values->allocate( getMemoryType(), values.size() + 1 );
     _values->allocate( getMemoryType(), values.size() );
     if ( !_values->updateValuePointer() )
-        throw std::runtime_error( "Unable to update pointers of TimeStepperClass" );
+        throw std::runtime_error( "Unable to update pointers of TimeStepper" );
 
     int compteur = 0;
     ASTERDOUBLE save = 0.;

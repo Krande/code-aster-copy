@@ -553,7 +553,7 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
      *   existante en memoire Jeveux
      * @return Renvoit true si la construction s'est bien deroulee
      */
-    bool buildFromJeveux( bool force = false );
+    bool build( bool force = false );
 
     /**
      * @brief Methode verifiant l'existence d'un objet de collection dans la collection
@@ -633,7 +633,7 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
 };
 
 template < class ValueType, class AccessType >
-bool JeveuxCollectionClass< ValueType, AccessType >::buildFromJeveux( bool force ) {
+bool JeveuxCollectionClass< ValueType, AccessType >::build( bool force ) {
     ASTERINTEGER iret = 0;
     CALLO_JEEXIN( _name, &iret );
     if ( iret == 0 )

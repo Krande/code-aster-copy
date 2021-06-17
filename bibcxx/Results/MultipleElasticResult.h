@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MultipleElasticResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -30,24 +30,24 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class MultipleElasticResultClass
+ * @class MultipleElasticResult
  * @brief Cette classe correspond a un mode_meca
  * @author Nicolas Sellenet
  */
-class MultipleElasticResultClass : public ResultClass {
+class MultipleElasticResult : public Result {
   private:
   public:
     /**
      * @brief Constructeur
      */
-    MultipleElasticResultClass( const std::string name = ResultNaming::getNewResultName() )
-        : ResultClass( name, "MULT_ELAS" ){};
+    MultipleElasticResult( const std::string name = ResultNaming::getNewResultName() )
+        : Result( name, "MULT_ELAS" ){};
 };
 
 /**
  * @typedef MultipleElasticResultPtr
- * @brief Pointeur intelligent vers un MultipleElasticResultClass
+ * @brief Pointeur intelligent vers un MultipleElasticResult
  */
-typedef boost::shared_ptr< MultipleElasticResultClass > MultipleElasticResultPtr;
+typedef boost::shared_ptr< MultipleElasticResult > MultipleElasticResultPtr;
 
 #endif /* MULTELASCONTAINER_H_ */

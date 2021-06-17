@@ -39,27 +39,27 @@
 typedef std::vector< ModeResultPtr > VectorOfMechaModePtr;
 
 /**
- * @class GenericModalBasisClass
+ * @class GenericModalBasis
  * @brief Cette classe permet de definir une base modale
  * @author Nicolas Sellenet
  */
-class GenericModalBasisClass : public DataStructure {
+class GenericModalBasis : public DataStructure {
   public:
     /**
      * @typedef GenericModalBasisPtr
      * @brief Pointeur intelligent vers un GenericModalBasis
      */
-    typedef boost::shared_ptr< GenericModalBasisClass > GenericModalBasisPtr;
+    typedef boost::shared_ptr< GenericModalBasis > GenericModalBasisPtr;
 
     /**
      * @brief Constructeur
      */
-    GenericModalBasisClass() : GenericModalBasisClass( ResultNaming::getNewResultName() ){};
+    GenericModalBasis() : GenericModalBasis( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Constructeur
      */
-    GenericModalBasisClass( const std::string name )
+    GenericModalBasis( const std::string name )
         : DataStructure( name, 8, "MODE_MECA", Permanent ), _isEmpty( true ){};
 
   protected:
@@ -171,27 +171,27 @@ class GenericModalBasisClass : public DataStructure {
 
 /**
  * @typedef ModalBasisPtr
- * @brief Enveloppe d'un pointeur intelligent vers un GenericModalBasisClass
+ * @brief Enveloppe d'un pointeur intelligent vers un GenericModalBasis
  */
-typedef boost::shared_ptr< GenericModalBasisClass > GenericModalBasisPtr;
+typedef boost::shared_ptr< GenericModalBasis > GenericModalBasisPtr;
 
-class StandardModalBasisClass : public GenericModalBasisClass {
+class StandardModalBasis : public GenericModalBasis {
   public:
     /**
      * @typedef StandardModalBasisPtr
      * @brief Pointeur intelligent vers un StandardModalBasis
      */
-    typedef boost::shared_ptr< StandardModalBasisClass > StandardModalBasisPtr;
+    typedef boost::shared_ptr< StandardModalBasis > StandardModalBasisPtr;
 
     /**
      * @brief Constructeur
      */
-    StandardModalBasisClass(){};
+    StandardModalBasis(){};
 
     /**
      * @brief Constructeur
      */
-    StandardModalBasisClass( const std::string name ) : GenericModalBasisClass( name ){};
+    StandardModalBasis( const std::string name ) : GenericModalBasis( name ){};
 
     void setModalBasis( const StructureInterfacePtr &structInterf,
                         const VectorOfMechaModePtr &vecOfMechaMode,
@@ -208,7 +208,7 @@ class StandardModalBasisClass : public GenericModalBasisClass {
     };
 };
 
-class RitzBasisClass : public GenericModalBasisClass {
+class RitzBasis : public GenericModalBasis {
   private:
     StructureInterfacePtr _interf;
     DOFNumberingPtr _dofNum;
@@ -222,19 +222,19 @@ class RitzBasisClass : public GenericModalBasisClass {
      * @typedef RitzBasisPtr
      * @brief Pointeur intelligent vers un RitzBasis
      */
-    typedef boost::shared_ptr< RitzBasisClass > RitzBasisPtr;
+    typedef boost::shared_ptr< RitzBasis > RitzBasisPtr;
 
     /**
      * @brief Constructeur
      */
-    RitzBasisClass() : RitzBasisClass( ResultNaming::getNewResultName() ){};
+    RitzBasis() : RitzBasis( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Constructeur
      */
 
-    RitzBasisClass( const std::string name )
-        : GenericModalBasisClass( name ), _reortho( false ) {
+    RitzBasis( const std::string name )
+        : GenericModalBasis( name ), _reortho( false ) {
         _container.add( new CapyConvertibleValue< bool >( false, "ORTHO", _reortho, {true, false},
                                                           {"OUI", "NON"}, true ) );
     };
@@ -298,7 +298,7 @@ class RitzBasisClass : public GenericModalBasisClass {
     };
 };
 
-class OrthonormalizedBasisClass : public GenericModalBasisClass {
+class OrthonormalizedBasis : public GenericModalBasis {
   private:
     ModeResultPtr _basis;
     AssemblyMatrixDisplacementRealPtr _matrD;
@@ -309,42 +309,42 @@ class OrthonormalizedBasisClass : public GenericModalBasisClass {
      * @typedef OrthonormalizedBasisPtr
      * @brief Pointeur intelligent vers un OrthonormalizedBasis
      */
-    typedef boost::shared_ptr< OrthonormalizedBasisClass > OrthonormalizedBasisPtr;
+    typedef boost::shared_ptr< OrthonormalizedBasis > OrthonormalizedBasisPtr;
 
     /**
      * @brief Constructeur
      */
-    OrthonormalizedBasisClass( const ModeResultPtr &basis,
+    OrthonormalizedBasis( const ModeResultPtr &basis,
                                   const AssemblyMatrixDisplacementRealPtr &matr )
-        : OrthonormalizedBasisClass( ResultNaming::getNewResultName(), basis, matr ){};
+        : OrthonormalizedBasis( ResultNaming::getNewResultName(), basis, matr ){};
 
     /**
      * @brief Constructeur
      */
-    OrthonormalizedBasisClass( const std::string name, const ModeResultPtr &basis,
+    OrthonormalizedBasis( const std::string name, const ModeResultPtr &basis,
                                   const AssemblyMatrixDisplacementRealPtr &matr )
-        : GenericModalBasisClass( name ), _basis( basis ), _matrD( matr ) {
+        : GenericModalBasis( name ), _basis( basis ), _matrD( matr ) {
         _vectorOfModalBasis.emplace_back( "ORTHO_BASE", basis, matr );
     };
 
     /**
      * @brief Constructeur
      */
-    OrthonormalizedBasisClass( const ModeResultPtr &basis,
+    OrthonormalizedBasis( const ModeResultPtr &basis,
                                   const AssemblyMatrixDisplacementComplexPtr &matr )
-        : OrthonormalizedBasisClass( ResultNaming::getNewResultName(), basis, matr ){};
+        : OrthonormalizedBasis( ResultNaming::getNewResultName(), basis, matr ){};
 
     /**
      * @brief Constructeur
      */
-    OrthonormalizedBasisClass( const std::string name, const ModeResultPtr &basis,
+    OrthonormalizedBasis( const std::string name, const ModeResultPtr &basis,
                                   const AssemblyMatrixDisplacementComplexPtr &matr )
-        : GenericModalBasisClass( name ), _basis( basis ), _matrC( matr ) {
+        : GenericModalBasis( name ), _basis( basis ), _matrC( matr ) {
         _vectorOfModalBasis.emplace_back( "ORTHO_BASE", basis, matr );
     };
 };
 
-class OrthogonalBasisWithoutMassClass : public GenericModalBasisClass {
+class OrthogonalBasisWithoutMass : public GenericModalBasis {
   private:
     ModeResultPtr _modeStat;
     VectorOfMechaModePtr _modeMeca;
@@ -354,29 +354,29 @@ class OrthogonalBasisWithoutMassClass : public GenericModalBasisClass {
      * @typedef OrthogonalBasisWithoutMassPtr
      * @brief Pointeur intelligent vers un OrthogonalBasisWithoutMass
      */
-    typedef boost::shared_ptr< OrthogonalBasisWithoutMassClass > OrthogonalBasisWithoutMassPtr;
+    typedef boost::shared_ptr< OrthogonalBasisWithoutMass > OrthogonalBasisWithoutMassPtr;
 
     /**
      * @brief Constructeur
      */
-    OrthogonalBasisWithoutMassClass( const ModeResultPtr &basis,
+    OrthogonalBasisWithoutMass( const ModeResultPtr &basis,
                                         const VectorOfMechaModePtr &vec )
-        : OrthogonalBasisWithoutMassClass( ResultNaming::getNewResultName(), basis, vec ){};
+        : OrthogonalBasisWithoutMass( ResultNaming::getNewResultName(), basis, vec ){};
 
     /**
      * @brief Constructeur
      */
-    OrthogonalBasisWithoutMassClass( const std::string name,
+    OrthogonalBasisWithoutMass( const std::string name,
                                         const ModeResultPtr &basis,
                                         const VectorOfMechaModePtr &vec )
-        : GenericModalBasisClass( name ), _modeStat( basis ), _modeMeca( vec ) {
+        : GenericModalBasis( name ), _modeStat( basis ), _modeMeca( vec ) {
         _vectorOfModalBasis.emplace_back( "DIAG_MASS", basis, vec );
     };
 };
 
-typedef boost::shared_ptr< StandardModalBasisClass > StandardModalBasisPtr;
-typedef boost::shared_ptr< RitzBasisClass > RitzBasisPtr;
-typedef boost::shared_ptr< OrthonormalizedBasisClass > OrthonormalizedBasisPtr;
-typedef boost::shared_ptr< OrthogonalBasisWithoutMassClass > OrthogonalBasisWithoutMassPtr;
+typedef boost::shared_ptr< StandardModalBasis > StandardModalBasisPtr;
+typedef boost::shared_ptr< RitzBasis > RitzBasisPtr;
+typedef boost::shared_ptr< OrthonormalizedBasis > OrthonormalizedBasisPtr;
+typedef boost::shared_ptr< OrthogonalBasisWithoutMass > OrthogonalBasisWithoutMassPtr;
 
 #endif /* MODALBASISDEFINITION_H_ */

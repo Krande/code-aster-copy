@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe GeneralizedModel
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -35,11 +35,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class GeneralizedModelClass
+ * @class GeneralizedModel
  * @brief Cette classe correspond a un sd_modele_gene
  * @author Nicolas Sellenet
  */
-class GeneralizedModelClass : public DataStructure {
+class GeneralizedModel : public DataStructure {
   private:
     /** @brief Objet Jeveux '.MODG.DESC' */
     JeveuxVectorLong _modgDesc;
@@ -65,14 +65,14 @@ class GeneralizedModelClass : public DataStructure {
   public:
     /**
      * @typedef GeneralizedModelPtr
-     * @brief Pointeur intelligent vers un GeneralizedModelClass
+     * @brief Pointeur intelligent vers un GeneralizedModel
      */
-    typedef boost::shared_ptr< GeneralizedModelClass > GeneralizedModelPtr;
+    typedef boost::shared_ptr< GeneralizedModel > GeneralizedModelPtr;
 
     /**
      * @brief Constructeur
      */
-    GeneralizedModelClass( const std::string name = ResultNaming::getNewResultName())
+    GeneralizedModel( const std::string name = ResultNaming::getNewResultName())
         : DataStructure( name, 14, "MODELE_GENE", Permanent ),
           _modgDesc( JeveuxVectorLong( getName() + ".MODG.DESC" ) ),
           _modgLidf( JeveuxCollectionChar8( getName() + ".MODG.DESC" ) ),
@@ -101,8 +101,8 @@ class GeneralizedModelClass : public DataStructure {
 
 /**
  * @typedef GeneralizedModelPtr
- * @brief Pointeur intelligent vers un GeneralizedModelClass
+ * @brief Pointeur intelligent vers un GeneralizedModel
  */
-typedef boost::shared_ptr< GeneralizedModelClass > GeneralizedModelPtr;
+typedef boost::shared_ptr< GeneralizedModel > GeneralizedModelPtr;
 
 #endif /* GENERALIZEDMODEL_H_ */

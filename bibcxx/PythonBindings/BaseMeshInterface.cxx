@@ -33,53 +33,53 @@ namespace py = boost::python;
 
 void exportBaseMeshToPython() {
 
-    py::class_< BaseMeshClass, BaseMeshClass::BaseMeshPtr, py::bases< DataStructure > >(
+    py::class_< BaseMesh, BaseMesh::BaseMeshPtr, py::bases< DataStructure > >(
         "BaseMesh", py::no_init )
         // fake initFactoryPtr: created by subclass
         // fake initFactoryPtr: created by subclass
-        .def( "getNumberOfNodes", &BaseMeshClass::getNumberOfNodes, R"(
+        .def( "getNumberOfNodes", &BaseMesh::getNumberOfNodes, R"(
 Return the number of nodes of the mesh.
 
 Returns:
     int: Number of nodes.
         )",
               ( py::arg( "self" ) ) )
-        .def( "getNumberOfCells", &BaseMeshClass::getNumberOfCells, R"(
+        .def( "getNumberOfCells", &BaseMesh::getNumberOfCells, R"(
 Return the number of cells of the mesh.
 
 Returns:
     int: Number of cells.
         )",
               ( py::arg( "self" ) ) )
-        .def( "getCoordinates", &BaseMeshClass::getCoordinates, R"(
+        .def( "getCoordinates", &BaseMesh::getCoordinates, R"(
 Return the coordinates of the mesh.
 
 Returns:
     MeshCoordinatesField: Field of the coordinates.
         )",
               ( py::arg( "self" ) ) )
-        .def( "isParallel", &BaseMeshClass::isParallel, R"(
+        .def( "isParallel", &BaseMesh::isParallel, R"(
 Tell if the mesh is distributed on parallel instances.
 
 Returns:
     bool: *False* for a centralized mesh, *True* for a parallel mesh.
         )",
               ( py::arg( "self" ) ) )
-        .def( "getDimension", &BaseMeshClass::getDimension, R"(
+        .def( "getDimension", &BaseMesh::getDimension, R"(
 Return the dimension of the mesh.
 
 Returns:
     int: 2 or 3
         )",
               ( py::arg( "self" ) ) )
-        .def( "getConnectivity", &BaseMeshClass::getConnectivity, R"(
+        .def( "getConnectivity", &BaseMesh::getConnectivity, R"(
 Return the connectivity of the mesh as Python lists.
 
 Returns:
     list[list[int]]: List of, for each cell, a list of the nodes indexes.
         )",
               ( py::arg( "self" ) ) )
-        .def( "getNodeName", &BaseMeshClass::getNodeName,   R"(
+        .def( "getNodeName", &BaseMesh::getNodeName,   R"(
 Return the name of the given node
 
 Arguments:
@@ -89,7 +89,7 @@ Returns:
     str : name of the node (stripped)
         )",
               ( py::arg( "self" ), py::arg( "index" )  ) )
-        .def( "getCellName", &BaseMeshClass::getCellName,   R"(
+        .def( "getCellName", &BaseMesh::getCellName,   R"(
 Return the name of the given cell
 
 Arguments:
@@ -99,14 +99,14 @@ Returns:
     str : name of the cell (stripped)
         )",
               ( py::arg( "self" ), py::arg( "index" )  ) )
-        .def( "getMedConnectivity", &BaseMeshClass::getMedConnectivity, R"(
+        .def( "getMedConnectivity", &BaseMesh::getMedConnectivity, R"(
 Return the connectivity of the mesh as Python lists following the Med numbering.
 
 Returns:
     list[list[int]]: List of, for each cell, a list of the nodes indexes.
         )",
               ( py::arg( "self" ) ) )
-        .def( "getMedCellsTypes", &BaseMeshClass::getMedCellsTypes, R"(
+        .def( "getMedCellsTypes", &BaseMesh::getMedCellsTypes, R"(
 Return the Med type of each cell.
 
 Returns:
@@ -114,14 +114,14 @@ Returns:
         )",
               ( py::arg( "self" ) ) )
 
-        .def( "update", &ListOfTablesClass::update_tables, R"(
+        .def( "update", &ListOfTables::update_tables, R"(
 Update the internal state of the datastructure.
 
 Returns:
     bool: *True* in case of success, *False* otherwise.
         )",
               ( py::arg( "self" ) ) )
-        .def( "getTable", &ListOfTablesClass::getTable, R"(
+        .def( "getTable", &ListOfTables::getTable, R"(
 Extract a Table from the datastructure.
 
 Arguments:
@@ -131,7 +131,7 @@ Returns:
     Table: Table stored with the given identifier.
         )",
               ( py::arg( "self" ), py::arg( "identifier" ) ) )
-        .def( "printMedFile", &BaseMeshClass::printMedFile, R"(
+        .def( "printMedFile", &BaseMesh::printMedFile, R"(
 Print the mesh in the MED format
 
 Arguments:

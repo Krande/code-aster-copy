@@ -22,7 +22,7 @@
 from ..Objects import (LoadResult, ThermalResult,
                        FullHarmonicResult,
                        FullTransientResult,
-                       ExternalVariablesResult,
+                       ExternalStateVariablesResult,
                        ElasticResult,
                        ModeResultComplex, ModeResult,
                        EmpiricalModeResult, NonLinearResult)
@@ -62,7 +62,7 @@ class ResultsReader(ExecuteCommand):
         elif typ == "MODE_MECA_C":
             self._result = ModeResultComplex()
         elif typ == "EVOL_VARC":
-            self._result = ExternalVariablesResult()
+            self._result = ExternalStateVariablesResult()
         else:
             raise NotImplementedError("Type of result {0!r} not yet "
                                       "implemented".format(typ))
@@ -85,7 +85,7 @@ class ResultsReader(ExecuteCommand):
         if "CARA_ELEM" in keywords:
             self._result.appendElementaryCharacteristicsOnAllRanks(keywords["CARA_ELEM"])
 
-        self._result.update()
+        self._result.build()
 
 
 LIRE_RESU = ResultsReader.run

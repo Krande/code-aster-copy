@@ -3,7 +3,7 @@
  * @brief Interface python de StructureInterface
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -27,7 +27,7 @@ namespace py = boost::python;
 #include <PythonBindings/factory.h>
 #include "PythonBindings/StructureInterfaceInterface.h"
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( StructureInterfaceClass_overloads, addInterface, 3, 4 )
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( StructureInterface_overloads, addInterface, 3, 4 )
 
 void exportStructureInterfaceToPython() {
 
@@ -37,16 +37,16 @@ void exportStructureInterfaceToPython() {
         .value( "HarmonicCraigBampton", HarmonicCraigBampton )
         .value( "None", NoInterfaceType );
 
-    py::class_< StructureInterfaceClass, StructureInterfaceClass::StructureInterfacePtr,
+    py::class_< StructureInterface, StructureInterface::StructureInterfacePtr,
             py::bases< DataStructure > >( "StructureInterface", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< StructureInterfaceClass >))
+        .def( "__init__", py::make_constructor(&initFactoryPtr< StructureInterface >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< StructureInterfaceClass, std::string >))
+              py::make_constructor(&initFactoryPtr< StructureInterface, std::string >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< StructureInterfaceClass, DOFNumberingPtr >))
+              py::make_constructor(&initFactoryPtr< StructureInterface, DOFNumberingPtr >))
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< StructureInterfaceClass, std::string, DOFNumberingPtr >))
-        .def( "addInterface", &StructureInterfaceClass::addInterface,
-              StructureInterfaceClass_overloads() );
+                  &initFactoryPtr< StructureInterface, std::string, DOFNumberingPtr >))
+        .def( "addInterface", &StructureInterface::addInterface,
+              StructureInterface_overloads() );
 };

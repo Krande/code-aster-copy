@@ -43,7 +43,7 @@ acier = DEFI_MATERIAU(ELAS = _F(E = 2.e11,
 
 affectMat = code_aster.MaterialField(pMesh)
 affectMat.addMaterialsOnMesh( acier )
-affectMat.buildWithoutExternalVariable()
+affectMat.buildWithoutExternalStateVariables()
 
 testMesh2 = affectMat.getMesh()
 test.assertEqual(testMesh2.getType(), "MAILLAGE_P")

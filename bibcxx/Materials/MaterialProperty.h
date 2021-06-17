@@ -45,11 +45,11 @@ typedef std::vector< FunctionPtr > VectorFunction;
 
 
 /**
- * @class MaterialPropertyClass
- * @brief Classe fille de GenericMaterialPropertyClass
+ * @class MaterialProperty
+ * @brief Classe fille de GenericMaterialProperty
  * @author Jean-Pierre Lefebvre
  */
-class MaterialPropertyClass : public GenericMaterialPropertyClass {
+class MaterialProperty : public GenericMaterialProperty {
     std::string capitalizeName( const std::string &nameInit ) {
         std::string name( nameInit );
         if ( !name.empty() ) {
@@ -65,51 +65,51 @@ class MaterialPropertyClass : public GenericMaterialPropertyClass {
     /**
      * @brief Constructeur
      */
-    MaterialPropertyClass( const std::string asterName, const std::string asterNewName = "" )
-        : GenericMaterialPropertyClass( asterName, asterNewName ){};
+    MaterialProperty( const std::string asterName, const std::string asterNewName = "" )
+        : GenericMaterialProperty( asterName, asterNewName ){};
 
-    bool addRealProperty( std::string name, const bool mandatory ) {
-        return GenericMaterialPropertyClass::addRealProperty( capitalizeName( name ),
+    bool addPropertyReal( std::string name, const bool mandatory ) {
+        return GenericMaterialProperty::addPropertyReal( capitalizeName( name ),
                                   ElementaryMaterialPropertyReal( name, mandatory ) );
     };
 
-    bool addRealProperty( std::string name, const ASTERDOUBLE &value, const bool mandatory ) {
-        return GenericMaterialPropertyClass::addRealProperty( capitalizeName( name ),
+    bool addPropertyReal( std::string name, const ASTERDOUBLE &value, const bool mandatory ) {
+        return GenericMaterialProperty::addPropertyReal( capitalizeName( name ),
                                   ElementaryMaterialPropertyReal( name, value, mandatory ) );
     };
 
-    bool addComplexProperty( std::string name, const bool mandatory ) {
-        return GenericMaterialPropertyClass::addComplexProperty( capitalizeName( name ),
+    bool addPropertyComplex( std::string name, const bool mandatory ) {
+        return GenericMaterialProperty::addPropertyComplex( capitalizeName( name ),
                                    ElementaryMaterialPropertyComplex( name, mandatory ) );
     };
 
-    bool addStringProperty( std::string name, const bool mandatory ) {
-        return GenericMaterialPropertyClass::addStringProperty( capitalizeName( name ),
+    bool addPropertyString( std::string name, const bool mandatory ) {
+        return GenericMaterialProperty::addPropertyString( capitalizeName( name ),
                                   ElementaryMaterialPropertyString( name, mandatory ) );
     };
 
-    bool addStringProperty( std::string name, const std::string &value, const bool mandatory ) {
-        return GenericMaterialPropertyClass::addStringProperty( capitalizeName( name ),
+    bool addPropertyString( std::string name, const std::string &value, const bool mandatory ) {
+        return GenericMaterialProperty::addPropertyString( capitalizeName( name ),
                                   ElementaryMaterialPropertyString( name, value, mandatory ) );
     };
 
-    bool addFunctionProperty( std::string name, const bool mandatory ) {
-        return GenericMaterialPropertyClass::addFunctionProperty( capitalizeName( name ),
+    bool addPropertyFunction( std::string name, const bool mandatory ) {
+        return GenericMaterialProperty::addPropertyFunction( capitalizeName( name ),
                                     ElementaryMaterialPropertyDataStructure( name, mandatory ) );
     };
 
-    bool addTableProperty( std::string name, const bool mandatory ) {
-        return GenericMaterialPropertyClass::addTableProperty( capitalizeName( name ),
+    bool addPropertyTable( std::string name, const bool mandatory ) {
+        return GenericMaterialProperty::addPropertyTable( capitalizeName( name ),
                                  ElementaryMaterialPropertyTable( name, mandatory ) );
     };
 
-    bool addVectorOfRealProperty( std::string name, const bool mandatory ) {
-        return GenericMaterialPropertyClass::addVectorOfRealProperty(
+    bool addPropertyVectorOfReal( std::string name, const bool mandatory ) {
+        return GenericMaterialProperty::addPropertyVectorOfReal(
             capitalizeName( name ), ElementaryMaterialPropertyVectorReal( name, mandatory ) );
     };
 
-    bool addVectorOfFunctionProperty( std::string name, const bool mandatory ) {
-        return GenericMaterialPropertyClass::addVectorOfFunctionProperty(
+    bool addPropertyVectorOfFunction( std::string name, const bool mandatory ) {
+        return GenericMaterialProperty::addPropertyVectorOfFunction(
             capitalizeName( name ), ElementaryMaterialPropertyVectorFunction( name, mandatory ) );
     };
 
@@ -117,7 +117,7 @@ class MaterialPropertyClass : public GenericMaterialPropertyClass {
      * @brief Build ".RDEP"
      * @return true
      */
-    bool buildTractionFunction( FunctionPtr &doubleValues ) const;
+    bool computeTractionFunction( FunctionPtr &doubleValues ) const;
 
     /**
      * @brief Get name link to the class
@@ -127,7 +127,7 @@ class MaterialPropertyClass : public GenericMaterialPropertyClass {
 };
 
 /** @typedef Pointeur intelligent vers un comportement materiau */
-typedef boost::shared_ptr< MaterialPropertyClass > MaterialPropertyPtr;
+typedef boost::shared_ptr< MaterialProperty > MaterialPropertyPtr;
 
 
 #endif

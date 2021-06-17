@@ -33,11 +33,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class ListOfFloatsClass
+ * @class ListOfFloats
  * @brief Cette classe correspond a une listr8
  * @author Nicolas Sellenet
  */
-class ListOfFloatsClass : public DataStructure {
+class ListOfFloats : public DataStructure {
   private:
     /** @brief Objet Jeveux '.BINT' */
     JeveuxVectorReal _bint;
@@ -53,17 +53,17 @@ class ListOfFloatsClass : public DataStructure {
      * @typedef ListOfFloatsPtr
      * @brief Pointeur intelligent vers un ListOfFloats
      */
-    typedef boost::shared_ptr< ListOfFloatsClass > ListOfFloatsPtr;
+    typedef boost::shared_ptr< ListOfFloats > ListOfFloatsPtr;
 
     /**
      * @brief Constructeur
      */
-    ListOfFloatsClass() : ListOfFloatsClass( ResultNaming::getNewResultName() ){};
+    ListOfFloats() : ListOfFloats( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Constructeur
      */
-    ListOfFloatsClass( const std::string name )
+    ListOfFloats( const std::string name )
         : DataStructure( name, 19, "LISTR8", Permanent ),
           _bint( JeveuxVectorReal( getName() + ".BINT" ) ),
           _lpas( JeveuxVectorReal( getName() + ".LPAS" ) ),
@@ -79,8 +79,8 @@ class ListOfFloatsClass : public DataStructure {
 
 /**
  * @typedef ListOfFloatsPtr
- * @brief Pointeur intelligent vers un ListOfFloatsClass
+ * @brief Pointeur intelligent vers un ListOfFloats
  */
-typedef boost::shared_ptr< ListOfFloatsClass > ListOfFloatsPtr;
+typedef boost::shared_ptr< ListOfFloats > ListOfFloatsPtr;
 
 #endif /* LISTOFFLOATS_H_ */

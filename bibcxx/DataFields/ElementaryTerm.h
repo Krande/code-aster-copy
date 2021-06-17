@@ -31,11 +31,11 @@
 #include "MemoryManager/JeveuxCollection.h"
 
 /**
- * @class ElementaryTermClass
+ * @class ElementaryTerm
  * @brief Class which describe a RESUELEM
  * @author Nicolas Sellenet
  */
-template < class ValueType > class ElementaryTermClass : public DataStructure {
+template < class ValueType > class ElementaryTerm : public DataStructure {
   private:
     /** @brief Objet Jeveux '.NOLI' */
     JeveuxVectorChar24 _noli;
@@ -49,13 +49,13 @@ template < class ValueType > class ElementaryTermClass : public DataStructure {
      * @typedef ElementaryTermPtr
      * @brief Pointeur intelligent vers un ElementaryTerm
      */
-    typedef boost::shared_ptr< ElementaryTermClass > ElementaryTermPtr;
+    typedef boost::shared_ptr< ElementaryTerm > ElementaryTermPtr;
 
     /**
      * @brief Constructor
      * @param name Jeveux name
      */
-    ElementaryTermClass( const std::string name, const std::string type = "RESUELEM",
+    ElementaryTerm( const std::string name, const std::string type = "RESUELEM",
                               const JeveuxMemory memType = Permanent )
         : DataStructure( name, 19, type, memType ),
           _noli( JeveuxVectorChar24( getName() + ".NOLI" ) ),
@@ -66,7 +66,7 @@ template < class ValueType > class ElementaryTermClass : public DataStructure {
      * @brief Constructor
      * @param memType allocation memory
      */
-    ElementaryTermClass( const JeveuxMemory memType = Permanent,
+    ElementaryTerm( const JeveuxMemory memType = Permanent,
                               const std::string type = "RESUELEM" )
         : DataStructure( type, memType, 19 ), _noli( JeveuxVectorChar24( getName() + ".NOLI" ) ),
           _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
@@ -76,11 +76,11 @@ template < class ValueType > class ElementaryTermClass : public DataStructure {
 /**
  * @typedef ElementaryTermRealPtr
  */
-typedef boost::shared_ptr< ElementaryTermClass< ASTERDOUBLE > > ElementaryTermRealPtr;
+typedef boost::shared_ptr< ElementaryTerm< ASTERDOUBLE > > ElementaryTermRealPtr;
 
 /**
  * @typedef ElementaryTermComplexPtr
  */
-typedef boost::shared_ptr< ElementaryTermClass< ASTERCOMPLEX > > ElementaryTermComplexPtr;
+typedef boost::shared_ptr< ElementaryTerm< ASTERCOMPLEX > > ElementaryTermComplexPtr;
 
 #endif /* ELEMENTARYTERM_H_ */

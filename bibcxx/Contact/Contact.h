@@ -6,7 +6,7 @@
  * @brief Fichier entete de la class Contact
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -35,7 +35,7 @@
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/ResultNaming.h"
 
-class ContactClass : public DataStructure {
+class Contact : public DataStructure {
   private:
     /** @brief La SD est-elle vide ? */
     bool _isEmpty;
@@ -47,16 +47,16 @@ class ContactClass : public DataStructure {
     * @typedef ContactPt
     * @brief Pointeur intelligent vers un Contact
     */
-    typedef boost::shared_ptr< ContactClass > ContactPtr;
+    typedef boost::shared_ptr< Contact > ContactPtr;
     /**
      * @brief Constructeur
      */
-    ContactClass() : ContactClass( ResultNaming::getNewResultName() ){};
+    Contact() : Contact( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Constructeur
      */
-    ContactClass( const std::string name )
+    Contact( const std::string name )
         : DataStructure( name, 8, "CHAR_CONTACT" ), _model( ModelPtr() ), _isEmpty( true ){};
 };
 
@@ -64,6 +64,6 @@ class ContactClass : public DataStructure {
 * @typedef ContactPt
 * @brief Pointeur intelligent vers un Contact
 */
-typedef boost::shared_ptr< ContactClass > ContactPtr;
+typedef boost::shared_ptr< Contact > ContactPtr;
 
 #endif /* CONTACT_H_ */

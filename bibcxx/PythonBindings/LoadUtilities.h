@@ -35,17 +35,17 @@ namespace py = boost::python;
 #include "Loads/ThermalLoad.h"
 #include "Loads/ParallelMechanicalLoad.h"
 
-template < class firstClass, typename... Args >
-void addDirichletBCToInterface( py::class_< firstClass, Args... > myInstance ) {
-    typedef firstClass myClass;
+template < class first, typename... Args >
+void addDirichletBCToInterface( py::class_< first, Args... > myInstance ) {
+    typedef first my;
 
-    void ( myClass::*c1 )( const DirichletBCPtr & ) = &myClass::addLoad;
-    void ( myClass::*c2 )( const DirichletBCPtr &currentLoad, const FunctionPtr &func ) =
-        &myClass::addLoad;
-    void ( myClass::*c3 )( const DirichletBCPtr &currentLoad, const FormulaPtr &func ) =
-        &myClass::addLoad;
-    void ( myClass::*c4 )( const DirichletBCPtr &currentLoad, const Function2DPtr &func ) =
-        &myClass::addLoad;
+    void ( my::*c1 )( const DirichletBCPtr & ) = &my::addLoad;
+    void ( my::*c2 )( const DirichletBCPtr &currentLoad, const FunctionPtr &func ) =
+        &my::addLoad;
+    void ( my::*c3 )( const DirichletBCPtr &currentLoad, const FormulaPtr &func ) =
+        &my::addLoad;
+    void ( my::*c4 )( const DirichletBCPtr &currentLoad, const Function2DPtr &func ) =
+        &my::addLoad;
 
     myInstance.def( "addDirichletBC", c1 );
     myInstance.def( "addDirichletBC", c2 );
@@ -53,25 +53,25 @@ void addDirichletBCToInterface( py::class_< firstClass, Args... > myInstance ) {
     myInstance.def( "addDirichletBC", c4 );
 };
 
-template < class firstClass, typename... Args >
-void addMechanicalLoadToInterface( py::class_< firstClass, Args... > myInstance ) {
-    typedef firstClass myClass;
+template < class first, typename... Args >
+void addMechanicalLoadToInterface( py::class_< first, Args... > myInstance ) {
+    typedef first my;
 
-    void ( myClass::*c5 )( const MechanicalLoadRealPtr & ) = &myClass::addLoad;
-    void ( myClass::*c6 )( const MechanicalLoadRealPtr &currentLoad, const FunctionPtr &func ) =
-        &myClass::addLoad;
-    void ( myClass::*c7 )( const MechanicalLoadRealPtr &currentLoad, const FormulaPtr &func ) =
-        &myClass::addLoad;
-    void ( myClass::*c8 )( const MechanicalLoadRealPtr &currentLoad, const Function2DPtr &func )
-        = &myClass::addLoad;
+    void ( my::*c5 )( const MechanicalLoadRealPtr & ) = &my::addLoad;
+    void ( my::*c6 )( const MechanicalLoadRealPtr &currentLoad, const FunctionPtr &func ) =
+        &my::addLoad;
+    void ( my::*c7 )( const MechanicalLoadRealPtr &currentLoad, const FormulaPtr &func ) =
+        &my::addLoad;
+    void ( my::*c8 )( const MechanicalLoadRealPtr &currentLoad, const Function2DPtr &func )
+        = &my::addLoad;
 
-    void ( myClass::*c9 )( const MechanicalLoadFunctionPtr & ) = &myClass::addLoad;
-    void ( myClass::*c10 )( const MechanicalLoadFunctionPtr &currentLoad, const FunctionPtr &func )=
-        &myClass::addLoad;
-    void ( myClass::*c11 )( const MechanicalLoadFunctionPtr &currentLoad, const FormulaPtr &func ) =
-        &myClass::addLoad;
-    void ( myClass::*c12 )( const MechanicalLoadFunctionPtr &currentLoad, const Function2DPtr &func)
-        = &myClass::addLoad;
+    void ( my::*c9 )( const MechanicalLoadFunctionPtr & ) = &my::addLoad;
+    void ( my::*c10 )( const MechanicalLoadFunctionPtr &currentLoad, const FunctionPtr &func )=
+        &my::addLoad;
+    void ( my::*c11 )( const MechanicalLoadFunctionPtr &currentLoad, const FormulaPtr &func ) =
+        &my::addLoad;
+    void ( my::*c12 )( const MechanicalLoadFunctionPtr &currentLoad, const Function2DPtr &func)
+        = &my::addLoad;
 
     myInstance.def( "addLoad", c5 );
     myInstance.def( "addLoad", c6 );
@@ -84,32 +84,32 @@ void addMechanicalLoadToInterface( py::class_< firstClass, Args... > myInstance 
 };
 
 #ifdef ASTER_HAVE_MPI
-template < class firstClass, typename... Args >
+template < class first, typename... Args >
 void
-addParallelMechanicalLoadToInterface( py::class_< firstClass, Args... > myInstance ) {
-    typedef firstClass myClass;
+addParallelMechanicalLoadToInterface( py::class_< first, Args... > myInstance ) {
+    typedef first my;
 
-    void ( myClass::*c9 )( const ParallelMechanicalLoadRealPtr & ) = &myClass::addLoad;
-    void ( myClass::*c10 )( const ParallelMechanicalLoadRealPtr &currentLoad,
+    void ( my::*c9 )( const ParallelMechanicalLoadRealPtr & ) = &my::addLoad;
+    void ( my::*c10 )( const ParallelMechanicalLoadRealPtr &currentLoad,
                             const FunctionPtr &func )=
-        &myClass::addLoad;
-    void ( myClass::*c11 )( const ParallelMechanicalLoadRealPtr &currentLoad,
+        &my::addLoad;
+    void ( my::*c11 )( const ParallelMechanicalLoadRealPtr &currentLoad,
                             const FormulaPtr &func ) =
-        &myClass::addLoad;
-    void ( myClass::*c12 )( const ParallelMechanicalLoadRealPtr &currentLoad,
+        &my::addLoad;
+    void ( my::*c12 )( const ParallelMechanicalLoadRealPtr &currentLoad,
                             const Function2DPtr &func)
-        = &myClass::addLoad;
+        = &my::addLoad;
 
-    void ( myClass::*c13 )( const ParallelMechanicalLoadFunctionPtr & ) = &myClass::addLoad;
-    void ( myClass::*c14 )( const ParallelMechanicalLoadFunctionPtr &currentLoad,
+    void ( my::*c13 )( const ParallelMechanicalLoadFunctionPtr & ) = &my::addLoad;
+    void ( my::*c14 )( const ParallelMechanicalLoadFunctionPtr &currentLoad,
                             const FunctionPtr &func )=
-        &myClass::addLoad;
-    void ( myClass::*c15 )( const ParallelMechanicalLoadFunctionPtr &currentLoad,
+        &my::addLoad;
+    void ( my::*c15 )( const ParallelMechanicalLoadFunctionPtr &currentLoad,
                             const FormulaPtr &func ) =
-        &myClass::addLoad;
-    void ( myClass::*c16 )( const ParallelMechanicalLoadFunctionPtr &currentLoad,
+        &my::addLoad;
+    void ( my::*c16 )( const ParallelMechanicalLoadFunctionPtr &currentLoad,
                             const Function2DPtr &func)
-        = &myClass::addLoad;
+        = &my::addLoad;
 
 
     myInstance.def( "addLoad", c9 );
@@ -123,26 +123,26 @@ addParallelMechanicalLoadToInterface( py::class_< firstClass, Args... > myInstan
 };
 #endif /* ASTER_HAVE_MPI */
 
-template < class firstClass, typename... Args >
-void addThermalLoadToInterface( py::class_< firstClass, Args... > myInstance ) {
-    typedef firstClass myClass;
+template < class first, typename... Args >
+void addThermalLoadToInterface( py::class_< first, Args... > myInstance ) {
+    typedef first my;
 
-    void ( myClass::*c13 )( const ThermalLoadRealPtr & ) = &myClass::addLoad;
-    void ( myClass::*c14 )( const ThermalLoadRealPtr &currentLoad, const FunctionPtr &func ) =
-        &myClass::addLoad;
-    void ( myClass::*c15 )( const ThermalLoadRealPtr &currentLoad, const FormulaPtr &func ) =
-        &myClass::addLoad;
-    void ( myClass::*c16 )( const ThermalLoadRealPtr &currentLoad, const Function2DPtr &func )
-        = &myClass::addLoad;
+    void ( my::*c13 )( const ThermalLoadRealPtr & ) = &my::addLoad;
+    void ( my::*c14 )( const ThermalLoadRealPtr &currentLoad, const FunctionPtr &func ) =
+        &my::addLoad;
+    void ( my::*c15 )( const ThermalLoadRealPtr &currentLoad, const FormulaPtr &func ) =
+        &my::addLoad;
+    void ( my::*c16 )( const ThermalLoadRealPtr &currentLoad, const Function2DPtr &func )
+        = &my::addLoad;
 
 
-    void ( myClass::*c17 )( const ThermalLoadFunctionPtr & ) = &myClass::addLoad;
-    void ( myClass::*c18 )( const ThermalLoadFunctionPtr &currentLoad, const FunctionPtr &func ) =
-        &myClass::addLoad;
-    void ( myClass::*c19 )( const ThermalLoadFunctionPtr &currentLoad, const FormulaPtr &func ) =
-        &myClass::addLoad;
-    void ( myClass::*c20 )( const ThermalLoadFunctionPtr &currentLoad, const Function2DPtr &func )
-        = &myClass::addLoad;
+    void ( my::*c17 )( const ThermalLoadFunctionPtr & ) = &my::addLoad;
+    void ( my::*c18 )( const ThermalLoadFunctionPtr &currentLoad, const FunctionPtr &func ) =
+        &my::addLoad;
+    void ( my::*c19 )( const ThermalLoadFunctionPtr &currentLoad, const FormulaPtr &func ) =
+        &my::addLoad;
+    void ( my::*c20 )( const ThermalLoadFunctionPtr &currentLoad, const Function2DPtr &func )
+        = &my::addLoad;
 
     myInstance.def( "addLoad", c13 );
     myInstance.def( "addLoad", c14 );
@@ -154,17 +154,17 @@ void addThermalLoadToInterface( py::class_< firstClass, Args... > myInstance ) {
     myInstance.def( "addLoad", c20 );
 };
 
-template < class firstClass, typename... Args >
-void addAcousticLoadToInterface( py::class_< firstClass, Args... > myInstance ) {
-    typedef firstClass myClass;
+template < class first, typename... Args >
+void addAcousticLoadToInterface( py::class_< first, Args... > myInstance ) {
+    typedef first my;
 
-    void ( myClass::*c17 )( const AcousticLoadComplexPtr & ) = &myClass::addLoad;
-    void ( myClass::*c18 )( const AcousticLoadComplexPtr &currentLoad, const FunctionPtr &func ) =
-        &myClass::addLoad;
-    void ( myClass::*c19 )( const AcousticLoadComplexPtr &currentLoad, const FormulaPtr &func ) =
-        &myClass::addLoad;
-    void ( myClass::*c20 )( const AcousticLoadComplexPtr &currentLoad, const Function2DPtr &func )
-        = &myClass::addLoad;
+    void ( my::*c17 )( const AcousticLoadComplexPtr & ) = &my::addLoad;
+    void ( my::*c18 )( const AcousticLoadComplexPtr &currentLoad, const FunctionPtr &func ) =
+        &my::addLoad;
+    void ( my::*c19 )( const AcousticLoadComplexPtr &currentLoad, const FormulaPtr &func ) =
+        &my::addLoad;
+    void ( my::*c20 )( const AcousticLoadComplexPtr &currentLoad, const Function2DPtr &func )
+        = &my::addLoad;
 
     myInstance.def( "addLoad", c17 );
     myInstance.def( "addLoad", c18 );

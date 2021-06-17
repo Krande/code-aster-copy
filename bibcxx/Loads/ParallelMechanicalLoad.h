@@ -42,12 +42,12 @@
 
 
 /**
- * @class ParallelMechanicalLoadClass
+ * @class ParallelMechanicalLoad
  * @brief Classe definissant une charge dualisée parallèle
  * @author Nicolas Sellenet
  */
 template< typename ConstantFieldOnCellsType>
-class ParallelMechanicalLoadClass: public DataStructure
+class ParallelMechanicalLoad: public DataStructure
 {
   public:
     typedef boost::shared_ptr< ConstantFieldOnCellsType > ConstantFieldOnCellsTypePtr;
@@ -58,12 +58,12 @@ private:
     void transferConstantFieldOnCells( const ConstantFieldOnCellsType2Ptr& fieldIn,
                                 ConstantFieldOnCellsType2Ptr& fieldOut )
     {
-        const auto& toKeep = _FEDesc->getDelayedElementsToKeep();
+        const auto& toKeep = _FEDesc->getVirtualCellsToKeep();
 
         std::string savedName( "" );
         fieldOut->allocate( Permanent, fieldIn );
         const auto sizeFieldIn = (*fieldIn).size();
-        const auto vect_resu = fieldIn->getAllValues();
+        const auto vect_resu = fieldIn->getValues();
 
         fieldIn->updateValuePointers();
         for( int pos = 0; pos < sizeFieldIn; ++pos )
@@ -116,30 +116,30 @@ public:
     /**
      * @brief Constructeur
      */
-    ParallelMechanicalLoadClass( void ) = delete;
+    ParallelMechanicalLoad( void ) = delete;
 
     /**
      *
      * @brief Constructeur
      */
-    ParallelMechanicalLoadClass(
+    ParallelMechanicalLoad(
         const MechanicalLoadPtr< ConstantFieldOnCellsType >& load,
         const ModelPtr& model ):
-        ParallelMechanicalLoadClass( ResultNaming::getNewResultName(), load, model )
+        ParallelMechanicalLoad( ResultNaming::getNewResultName(), load, model )
     {};
 
     /**
      * @brief Constructeur
      */
-    ParallelMechanicalLoadClass( const std::string& name,
+    ParallelMechanicalLoad( const std::string& name,
                                 const MechanicalLoadPtr< ConstantFieldOnCellsType >& load,
                                 const ModelPtr& model ):
     DataStructure( name, 8, "CHAR_MECA" ),
-    _FEDesc( boost::make_shared<ParallelFiniteElementDescriptorClass>
+    _FEDesc( boost::make_shared<ParallelFiniteElementDescriptor>
                     ( getName() + ".CHME.LIGRE", load->getFiniteElementDescriptor(),
                       load->getModel()->getConnectionMesh(), model ) ),
     _cimpo(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".CHME.CIMPO", _FEDesc )),
-    _cmult(boost::make_shared<ConstantFieldOnCellsRealClass>( getName() + ".CHME.CMULT", _FEDesc )),
+    _cmult(boost::make_shared<ConstantFieldOnCellsReal>( getName() + ".CHME.CMULT", _FEDesc )),
     _type( getName() + ".TYPE" ),
     _modelName( getName() + ".CHME.MODEL.NOMO" ),
     _model( model )
@@ -172,23 +172,23 @@ public:
         return _model;
     };
 
-    typedef boost::shared_ptr< ParallelMechanicalLoadClass > ParallelMechanicalLoadPtr;
+    typedef boost::shared_ptr< ParallelMechanicalLoad > ParallelMechanicalLoadPtr;
 
 };
 
 /**
  * @typedef ParallelMechanicalLoadPtr
- * @brief Pointeur intelligent vers un ParallelMechanicalLoadClass
+ * @brief Pointeur intelligent vers un ParallelMechanicalLoad
  */
-typedef ParallelMechanicalLoadClass< ConstantFieldOnCellsRealClass >
-    ParallelMechanicalLoadRealClass;
+typedef ParallelMechanicalLoad< ConstantFieldOnCellsReal >
+    ParallelMechanicalLoadReal;
 
-typedef ParallelMechanicalLoadClass< ConstantFieldOnCellsChar24Class >
-    ParallelMechanicalLoadFunctionClass;
+typedef ParallelMechanicalLoad< ConstantFieldOnCellsChar24 >
+    ParallelMechanicalLoadFunction;
 
-typedef boost::shared_ptr< ParallelMechanicalLoadRealClass > ParallelMechanicalLoadRealPtr;
+typedef boost::shared_ptr< ParallelMechanicalLoadReal > ParallelMechanicalLoadRealPtr;
 
-typedef boost::shared_ptr< ParallelMechanicalLoadFunctionClass > ParallelMechanicalLoadFunctionPtr;
+typedef boost::shared_ptr< ParallelMechanicalLoadFunction > ParallelMechanicalLoadFunctionPtr;
 
 /** @typedef std::list de ParallelMechanicalLoad */
 typedef std::list< ParallelMechanicalLoadRealPtr > ListParaMecaLoadReal;

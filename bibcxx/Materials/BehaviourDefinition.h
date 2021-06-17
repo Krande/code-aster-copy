@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe BehaviourDefinition
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,11 +32,11 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class BehaviourDefinitionClass
+ * @class BehaviourDefinition
  * @brief produit une sd identique a celle produite par DEFI_COMPOR
  * @author Nicolas Sellenet
  */
-class BehaviourDefinitionClass : public DataStructure {
+class BehaviourDefinition : public DataStructure {
   private:
     /** @brief Objet '.CPRK' */
     JeveuxVectorChar24 _cprk;
@@ -50,18 +50,18 @@ class BehaviourDefinitionClass : public DataStructure {
      * @typedef BehaviourDefinitionPtr
      * @brief Pointeur intelligent vers un BehaviourDefinition
      */
-    typedef boost::shared_ptr< BehaviourDefinitionClass > BehaviourDefinitionPtr;
+    typedef boost::shared_ptr< BehaviourDefinition > BehaviourDefinitionPtr;
 
     /**
      * @brief Constructeur
      */
-    BehaviourDefinitionClass()
-        : BehaviourDefinitionClass( ResultNaming::getNewResultName() ){};
+    BehaviourDefinition()
+        : BehaviourDefinition( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Constructeur
      */
-    BehaviourDefinitionClass( const std::string &name )
+    BehaviourDefinition( const std::string &name )
         : DataStructure( name, 19, "COMPOR", Permanent ),
           _cprk( JeveuxVectorChar24( getName() + ".CPRK" ) ),
           _cprr( JeveuxVectorReal( getName() + ".CPRR" ) ),
@@ -70,8 +70,8 @@ class BehaviourDefinitionClass : public DataStructure {
 
 /**
  * @typedef BehaviourDefinitionPtr
- * @brief Pointeur intelligent vers un BehaviourDefinitionClass
+ * @brief Pointeur intelligent vers un BehaviourDefinition
  */
-typedef boost::shared_ptr< BehaviourDefinitionClass > BehaviourDefinitionPtr;
+typedef boost::shared_ptr< BehaviourDefinition > BehaviourDefinitionPtr;
 
 #endif /* BEHAVIOURDEFINITION_H_ */

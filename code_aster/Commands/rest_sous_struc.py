@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -77,8 +77,8 @@ class RestSousStrucOper(ExecuteCommand):
                     if mat is None: mat = macroElem.getImpedanceMassMatrix()
                     if mat is None: mat = macroElem.getImpedanceStiffnessMatrix()
                     if mat is None: mat = macroElem.getMassMatrix()
-                    if mat is None: mat = macroElem.getComplexStiffnessMatrix()
-                    if mat is None: mat = macroElem.getRealStiffnessMatrix()
+                    if mat is None: mat = macroElem.getStiffnessMatrixComplex()
+                    if mat is None: mat = macroElem.getStiffnessMatrixReal()
                     if mat is not None:
                         modele = mat.getModel()
                         self._result.appendModelOnAllRanks(modele)

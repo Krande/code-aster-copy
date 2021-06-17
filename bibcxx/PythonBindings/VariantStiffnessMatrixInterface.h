@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe VairantStiffmessMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -78,10 +78,10 @@ MatrixVariant getStiffnessMatrix( ObjectPointer self )
 template< typename ObjectPointer >
 GeneralizedMatrixVariant getGeneralizedStiffnessMatrix( ObjectPointer self)
 {
-    auto mat1 = self->getRealGeneralizedStiffnessMatrix();
+    auto mat1 = self->getGeneralizedStiffnessMatrixReal();
     if ( mat1 != nullptr )
         return GeneralizedMatrixVariant( mat1 );
-    auto mat2 = self->getComplexGeneralizedStiffnessMatrix();
+    auto mat2 = self->getGeneralizedStiffnessMatrixComplex();
     return GeneralizedMatrixVariant( mat2);
 };
 

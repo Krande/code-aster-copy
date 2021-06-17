@@ -3,7 +3,7 @@
  * @brief Interface python de Function
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,15 +32,15 @@ namespace py = boost::python;
 
 void exportFunctionToPython() {
 
-    py::class_< BaseFunctionClass, BaseFunctionClass::BaseFunctionPtr,
-                py::bases< GenericFunctionClass > >( "BaseFunction", py::no_init )
+    py::class_< BaseFunction, BaseFunction::BaseFunctionPtr,
+                py::bases< GenericFunction > >( "BaseFunction", py::no_init )
         // fake initFactoryPtr: created by subclasses
         // fake initFactoryPtr: created by subclasses
-        .def( "setParameterName", &FunctionClass::setParameterName )
-        .def( "setResultName", &FunctionClass::setResultName )
-        .def( "setInterpolation", &FunctionClass::setInterpolation )
-        .def( "setValues", &FunctionClass::setValues )
-        .def( "getValues", &FunctionClass::getValues, R"(
+        .def( "setParameterName", &Function::setParameterName )
+        .def( "setResultName", &Function::setResultName )
+        .def( "setInterpolation", &Function::setInterpolation )
+        .def( "setValues", &Function::setValues )
+        .def( "getValues", &Function::getValues, R"(
 Return a list of the values of the functions as (x1, x2, ..., y1, y2, ...)
 
 Returns:
@@ -49,12 +49,12 @@ Returns:
         )",
         ( py::arg( "self" ) ) );
 
-    py::class_< FunctionClass, FunctionClass::FunctionPtr,
-                py::bases< BaseFunctionClass > >( "Function", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< FunctionClass >))
-        .def( "__init__", py::make_constructor(&initFactoryPtr< FunctionClass, std::string >))
-        .def( "setValues", &FunctionClass::setValues )
-        .def( "size", &FunctionClass::size, R"(
+    py::class_< Function, Function::FunctionPtr,
+                py::bases< BaseFunction > >( "Function", py::no_init )
+        .def( "__init__", py::make_constructor(&initFactoryPtr< Function >))
+        .def( "__init__", py::make_constructor(&initFactoryPtr< Function, std::string >))
+        .def( "setValues", &Function::setValues )
+        .def( "size", &Function::size, R"(
 Return the number of points of the function.
 
 Returns:
@@ -62,22 +62,22 @@ Returns:
 
         )",
         ( py::arg( "self" ) ) )
-        .def( "setAsConstant", &FunctionClass::setAsConstant );
+        .def( "setAsConstant", &Function::setAsConstant );
 
     // Candidates for setValues
-    void ( FunctionComplexClass::*c1 )( const VectorReal &absc, const VectorReal &ord ) =
-        &FunctionComplexClass::setValues;
-    void ( FunctionComplexClass::*c2 )( const VectorReal &absc, const VectorComplex &ord ) =
-        &FunctionComplexClass::setValues;
+    void ( FunctionComplex::*c1 )( const VectorReal &absc, const VectorReal &ord ) =
+        &FunctionComplex::setValues;
+    void ( FunctionComplex::*c2 )( const VectorReal &absc, const VectorComplex &ord ) =
+        &FunctionComplex::setValues;
 
-    py::class_< FunctionComplexClass, FunctionComplexClass::FunctionComplexPtr,
-                py::bases< BaseFunctionClass > >( "FunctionComplex", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< FunctionComplexClass >))
+    py::class_< FunctionComplex, FunctionComplex::FunctionComplexPtr,
+                py::bases< BaseFunction > >( "FunctionComplex", py::no_init )
+        .def( "__init__", py::make_constructor(&initFactoryPtr< FunctionComplex >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< FunctionComplexClass, std::string >))
+              py::make_constructor(&initFactoryPtr< FunctionComplex, std::string >))
         .def( "setValues", c1 )
         .def( "setValues", c2 )
-        .def( "size", &FunctionComplexClass::size, R"(
+        .def( "size", &FunctionComplex::size, R"(
 Return the number of points of the function.
 
 Returns:

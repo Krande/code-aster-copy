@@ -35,48 +35,48 @@ namespace py = boost::python;
 
 void exportMeshToPython() {
 
-     VectorString ( MeshClass::*c1 )(  ) const =
-        &MeshClass::getGroupsOfCells;
-    VectorString ( MeshClass::*c2 )( const bool ) const =
-        &MeshClass::getGroupsOfCells;
+     VectorString ( Mesh::*c1 )(  ) const =
+        &Mesh::getGroupsOfCells;
+    VectorString ( Mesh::*c2 )( const bool ) const =
+        &Mesh::getGroupsOfCells;
 
-    VectorString ( MeshClass::*c3 )(  ) const =
-        &MeshClass::getGroupsOfNodes;
-    VectorString ( MeshClass::*c4 )( const bool ) const =
-        &MeshClass::getGroupsOfNodes;
+    VectorString ( Mesh::*c3 )(  ) const =
+        &Mesh::getGroupsOfNodes;
+    VectorString ( Mesh::*c4 )( const bool ) const =
+        &Mesh::getGroupsOfNodes;
 
-    bool ( MeshClass::*c5 )( const std::string&  ) const =
-        &MeshClass::hasGroupOfCells;
-    bool ( MeshClass::*c6 )( const std::string&, const bool ) const =
-        &MeshClass::hasGroupOfCells;
+    bool ( Mesh::*c5 )( const std::string&  ) const =
+        &Mesh::hasGroupOfCells;
+    bool ( Mesh::*c6 )( const std::string&, const bool ) const =
+        &Mesh::hasGroupOfCells;
 
-    bool ( MeshClass::*c7 )( const std::string& ) const =
-        &MeshClass::hasGroupOfNodes;
-    bool ( MeshClass::*c8 )( const std::string&, const bool ) const =
-        &MeshClass::hasGroupOfNodes;
+    bool ( Mesh::*c7 )( const std::string& ) const =
+        &Mesh::hasGroupOfNodes;
+    bool ( Mesh::*c8 )( const std::string&, const bool ) const =
+        &Mesh::hasGroupOfNodes;
 
-    const VectorLong ( MeshClass::*c9 )(   ) const =
-        &MeshClass::getCells;
-    const VectorLong ( MeshClass::*c10 )( const std::string ) const =
-        &MeshClass::getCells;
+    const VectorLong ( Mesh::*c9 )(   ) const =
+        &Mesh::getCells;
+    const VectorLong ( Mesh::*c10 )( const std::string ) const =
+        &Mesh::getCells;
 
-    const VectorLong ( MeshClass::*n1 )(   ) const =
-        &MeshClass::getNodes;
-    const VectorLong ( MeshClass::*n2 )( const std::string ) const =
-        &MeshClass::getNodes;
-    const VectorLong ( MeshClass::*n3 )( const std::string, const bool  ) const =
-        &MeshClass::getNodes;
-    const VectorLong ( MeshClass::*n4 )( const std::string, const bool, const bool ) const =
-        &MeshClass::getNodes;
-    const VectorLong ( MeshClass::*n5 )( const bool  ) const =
-        &MeshClass::getNodes;
-    const VectorLong ( MeshClass::*n6 )( const bool, const bool ) const =
-        &MeshClass::getNodes;
+    const VectorLong ( Mesh::*n1 )(   ) const =
+        &Mesh::getNodes;
+    const VectorLong ( Mesh::*n2 )( const std::string ) const =
+        &Mesh::getNodes;
+    const VectorLong ( Mesh::*n3 )( const std::string, const bool  ) const =
+        &Mesh::getNodes;
+    const VectorLong ( Mesh::*n4 )( const std::string, const bool, const bool ) const =
+        &Mesh::getNodes;
+    const VectorLong ( Mesh::*n5 )( const bool  ) const =
+        &Mesh::getNodes;
+    const VectorLong ( Mesh::*n6 )( const bool, const bool ) const =
+        &Mesh::getNodes;
 
 
-    py::class_< MeshClass, MeshClass::MeshPtr, py::bases< BaseMeshClass > >( "Mesh", py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< MeshClass > ) )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< MeshClass, std::string > ) )
+    py::class_< Mesh, Mesh::MeshPtr, py::bases< BaseMesh > >( "Mesh", py::no_init )
+        .def( "__init__", py::make_constructor( &initFactoryPtr< Mesh > ) )
+        .def( "__init__", py::make_constructor( &initFactoryPtr< Mesh, std::string > ) )
                 .def( "getGroupsOfCells", c1, R"(
 Return the list of the existing groups of cells.
 
@@ -237,14 +237,14 @@ Returns:
         )",
               ( py::arg( "self" ), py::args("localNumbering", "same_rank") )
                )
-        .def( "getInnerNodes", &MeshClass::getInnerNodes, R"(
+        .def( "getInnerNodes", &Mesh::getInnerNodes, R"(
 Return the list of the indexes of the nodes in the mesh
 
 Returns:
     list[int]: Indexes of the nodes.
         )",
               ( py::arg( "self" ) ) )
-        .def( "readAsterFile", &MeshClass::readAsterFile, R"(
+        .def( "readAsterFile", &Mesh::readAsterFile, R"(
 Read a mesh file from ASTER format.
 
 Arguments:
@@ -254,7 +254,7 @@ Returns:
     bool: *True* if succeeds, *False* otherwise.
         )",
               ( py::arg( "self" ), py::arg( "filename" ) ) )
-        .def( "readGibiFile", &MeshClass::readGibiFile, R"(
+        .def( "readGibiFile", &Mesh::readGibiFile, R"(
 Read a mesh file from GIBI format.
 
 Arguments:
@@ -264,7 +264,7 @@ Returns:
     bool: *True* if succeeds, *False* otherwise.
         )",
               ( py::arg( "self" ), py::arg( "filename" ) ) )
-        .def( "readGmshFile", &MeshClass::readGmshFile, R"(
+        .def( "readGmshFile", &Mesh::readGmshFile, R"(
 Read a mesh file from GMSH format.
 
 Arguments:
@@ -274,7 +274,7 @@ Returns:
     bool: *True* if succeeds, *False* otherwise.
         )",
               ( py::arg( "self" ), py::arg( "filename" ) ) )
-        .def( "readMedFile", &MeshClass::readMedFile, R"(
+        .def( "readMedFile", &Mesh::readMedFile, R"(
 Read a mesh file from MED format.
 
 Arguments:
@@ -284,7 +284,7 @@ Returns:
     bool: *True* if succeeds, *False* otherwise.
         )",
               ( py::arg( "self" ), py::arg( "filename" ) ) )
-        .def( "isQuadratic", &MeshClass::isQuadratic, R"(
+        .def( "isQuadratic", &Mesh::isQuadratic, R"(
 To know if the mesh contains quadratic cells
 
 Returns:

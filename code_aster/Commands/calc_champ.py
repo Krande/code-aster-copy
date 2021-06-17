@@ -79,7 +79,7 @@ class ComputeAdditionalField(ExecuteCommand):
             if modele is not None:
                 self._result.appendModelOnAllRanks(modele)
 
-        self._result.update()
+        self._result.build()
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.

@@ -32,32 +32,32 @@
 #include "ParallelUtilities/AsterMPI.h"
 
 /**
- * @class MeshClass
+ * @class Mesh
  * @brief Cette classe decrit un maillage Aster
  */
-class MeshClass : public BaseMeshClass {
+class Mesh : public BaseMesh {
   protected:
     /**
      * @brief Constructeur
      */
-    MeshClass( const std::string name, const std::string type ) : BaseMeshClass( name, type ){};
+    Mesh( const std::string name, const std::string type ) : BaseMesh( name, type ){};
 
   public:
     /**
      * @typedef MeshPtr
-     * @brief Pointeur intelligent vers un MeshClass
+     * @brief Pointeur intelligent vers un Mesh
      */
-    typedef boost::shared_ptr< MeshClass > MeshPtr;
+    typedef boost::shared_ptr< Mesh > MeshPtr;
 
     /**
      * @brief Constructeur
      */
-    MeshClass() : BaseMeshClass( ResultNaming::getNewResultName(), "MAILLAGE" ){};
+    Mesh() : BaseMesh( ResultNaming::getNewResultName(), "MAILLAGE" ){};
 
     /**
      * @brief Constructeur
      */
-    MeshClass( const std::string name ) : BaseMeshClass( name, "MAILLAGE" ){};
+    Mesh( const std::string name ) : BaseMesh( name, "MAILLAGE" ){};
 
     bool hasGroupOfCells( const std::string &name, const bool local) const;
 
@@ -176,8 +176,8 @@ class MeshClass : public BaseMeshClass {
 
 /**
  * @typedef MeshPtr
- * @brief Pointeur intelligent vers un MeshClass
+ * @brief Pointeur intelligent vers un Mesh
  */
-typedef boost::shared_ptr< MeshClass > MeshPtr;
+typedef boost::shared_ptr< Mesh > MeshPtr;
 
 #endif /* MESH_H_ */

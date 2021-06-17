@@ -1,9 +1,9 @@
 /**
  * @file Crack.cxx
- * @brief Implementation de CrackClass
+ * @brief Implementation de Crack
  * @author Nicolas Pignet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -25,7 +25,7 @@
 
 #include "Crack/Crack.h"
 
-CrackClass::CrackClass( const std::string name )
+Crack::Crack( const std::string name )
     : DataStructure( name, 8, "FOND_FISSURE", Permanent ),
       _levreInfMail( JeveuxVectorChar8( getName() + ".LEVREINF.MAIL" ) ),
       _normale( JeveuxVectorReal( getName() + ".NORMALE" ) ),
@@ -36,6 +36,6 @@ CrackClass::CrackClass( const std::string name )
       _info( JeveuxVectorChar8( getName() + ".INFO" ) ),
       _fondTailleR( JeveuxVectorReal( getName() + ".FOND.TAILLE_R" ) ),
       _abscur( JeveuxVectorReal( getName() + ".ABSCUR" ) ),
-      _ltno( new FieldOnNodesRealClass( getName() + ".LTNO      " ) ),
-      _lnno( new FieldOnNodesRealClass( getName() + ".LNNO      " ) ),
-      _basLoc( new FieldOnNodesRealClass( getName() + ".BASLOC    " ) ){};
+      _ltno( new FieldOnNodesReal( getName() + ".LTNO      " ) ),
+      _lnno( new FieldOnNodesReal( getName() + ".LNNO      " ) ),
+      _basLoc( new FieldOnNodesReal( getName() + ".BASLOC    " ) ){};

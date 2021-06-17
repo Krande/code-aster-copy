@@ -3,7 +3,7 @@
  * @brief Interface python de Formula
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,12 +32,12 @@ namespace py = boost::python;
 
 void exportFormulaToPython() {
 
-    py::class_< FormulaClass, FormulaClass::FormulaPtr, py::bases< GenericFunctionClass > >
+    py::class_< Formula, Formula::FormulaPtr, py::bases< GenericFunction > >
         ( "Formula", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< FormulaClass >))
-        .def( "__init__", py::make_constructor(&initFactoryPtr< FormulaClass, std::string >))
+        .def( "__init__", py::make_constructor(&initFactoryPtr< Formula >))
+        .def( "__init__", py::make_constructor(&initFactoryPtr< Formula, std::string >))
 
-        .def( "setVariables", &FormulaClass::setVariables, R"(
+        .def( "setVariables", &Formula::setVariables, R"(
 Define the variables names.
 
 Arguments:
@@ -45,7 +45,7 @@ Arguments:
         )",
               ( py::arg( "self" ), py::arg( "varnames" ) ) )
 
-        .def( "setExpression", &FormulaClass::setExpression, R"(
+        .def( "setExpression", &Formula::setExpression, R"(
 Define the expression of the formula.
 
 If the expression uses non builtin objects, the evaluation context must be
@@ -56,12 +56,12 @@ Arguments:
         )",
               ( py::arg( "self" ), py::arg( "expression" ) ) )
 
-        .def( "setComplex", &FormulaClass::setComplex, R"(
+        .def( "setComplex", &Formula::setComplex, R"(
 Set the type of the formula as complex.
         )",
               ( py::arg( "self" ) ) )
 
-        .def( "setContext", &FormulaClass::setContext, R"(
+        .def( "setContext", &Formula::setContext, R"(
 Define the context holding objects required to evaluate the expression.
 
 Arguments:
@@ -69,7 +69,7 @@ Arguments:
         )",
               ( py::arg( "self" ), py::arg( "context" ) ) )
 
-        .def( "evaluate", &FormulaClass::evaluate, R"(
+        .def( "evaluate", &Formula::evaluate, R"(
 Evaluate the formula with the given variables values.
 
 Arguments:
@@ -80,7 +80,7 @@ Returns:
         )",
               ( py::arg( "self" ), py::arg( "*val" ) ) )
 
-        .def( "getVariables", &FormulaClass::getVariables, R"(
+        .def( "getVariables", &Formula::getVariables, R"(
 Return the variables names.
 
 Returns:
@@ -88,7 +88,7 @@ Returns:
         )",
               ( py::arg( "self" ) ) )
 
-        .def( "getExpression", &FormulaClass::getExpression, R"(
+        .def( "getExpression", &Formula::getExpression, R"(
 Return expression of the formula.
 
 Returns:
@@ -96,7 +96,7 @@ Returns:
         )",
               ( py::arg( "self" ) ) )
 
-        .def( "getContext", &FormulaClass::getContext, R"(
+        .def( "getContext", &Formula::getContext, R"(
 Return the context used to evaluate the formula.
 
 Returns:
@@ -104,7 +104,7 @@ Returns:
         )",
               py::arg( "self" ) )
 
-        .def( "getProperties", &FormulaClass::getProperties, R"(
+        .def( "getProperties", &Formula::getProperties, R"(
 Return the properties of the formula (for compatibility with function objects).
 
 Returns:

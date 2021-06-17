@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -52,7 +52,7 @@ class XfemFieldPostprocessing(ExecuteCommand):
             keywords (dict): User's keywords.
         """
         self._result.appendModelOnAllRanks(keywords["MODELE_VISU"])
-        self._result.update()
+        self._result.build()
 
 
 POST_CHAM_XFEM = XfemFieldPostprocessing.run

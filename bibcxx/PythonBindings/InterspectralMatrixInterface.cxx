@@ -3,7 +3,7 @@
  * @brief Interface python de InterspectralMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,9 +31,9 @@ namespace py = boost::python;
 
 void exportInterspectralMatrixToPython() {
 
-    py::class_< InterspectralMatrixClass, InterspectralMatrixClass::InterspectralMatrixPtr,
+    py::class_< InterspectralMatrix, InterspectralMatrix::InterspectralMatrixPtr,
             py::bases< DataStructure > >( "InterspectralMatrix", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< InterspectralMatrixClass >))
+        .def( "__init__", py::make_constructor(&initFactoryPtr< InterspectralMatrix >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< InterspectralMatrixClass, std::string >));
+              py::make_constructor(&initFactoryPtr< InterspectralMatrix, std::string >));
 };

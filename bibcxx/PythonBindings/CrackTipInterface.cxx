@@ -3,7 +3,7 @@
  * @brief Interface python de CrackTip
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,8 +29,8 @@ namespace py = boost::python;
 
 void exportCrackTipToPython() {
 
-    py::class_< CrackTipClass, CrackTipClass::CrackTipPtr, py::bases< DataStructure > >(
+    py::class_< CrackTip, CrackTip::CrackTipPtr, py::bases< DataStructure > >(
         "CrackTip", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< CrackTipClass >))
-        .def( "__init__", py::make_constructor(&initFactoryPtr< CrackTipClass, std::string >));
+        .def( "__init__", py::make_constructor(&initFactoryPtr< CrackTip >))
+        .def( "__init__", py::make_constructor(&initFactoryPtr< CrackTip, std::string >));
 };

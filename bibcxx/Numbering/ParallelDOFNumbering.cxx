@@ -1,6 +1,6 @@
 /**
  * @file ParallelDOFNumbering.cxx
- * @brief Implementation de ParallelDOFNumberingClass
+ * @brief Implementation de ParallelDOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
@@ -30,7 +30,7 @@
 
 #ifdef ASTER_HAVE_MPI
 
-bool ParallelDOFNumberingClass::useLagrangeMultipliers() const {
+bool ParallelDOFNumbering::useLagrangeMultipliers() const {
     const std::string typeco( "NUME_DDL" );
     ASTERINTEGER repi = 0, ier = 0;
     JeveuxChar32 repk( " " );
@@ -48,7 +48,7 @@ bool ParallelDOFNumberingClass::useLagrangeMultipliers() const {
     return global_answer;
 };
 
-VectorLong ParallelDOFNumberingClass::getRowsAssociatedToPhysicalDofs(const bool local) const {
+VectorLong ParallelDOFNumbering::getRowsAssociatedToPhysicalDofs(const bool local) const {
     if (!local)
         throw std::runtime_error("Only local operation is supported") ;
     getGlobalNumbering()->getLagrangianInformations()->updateValuePointer();
@@ -63,7 +63,7 @@ VectorLong ParallelDOFNumberingClass::getRowsAssociatedToPhysicalDofs(const bool
     return physicalRows;
 };
 
-VectorLong ParallelDOFNumberingClass::getRowsAssociatedToLagrangeMultipliers(const bool local)
+VectorLong ParallelDOFNumbering::getRowsAssociatedToLagrangeMultipliers(const bool local)
                                                                                         const {
     if (!local)
         throw std::runtime_error("Only local operation is supported") ;
@@ -79,7 +79,7 @@ VectorLong ParallelDOFNumberingClass::getRowsAssociatedToLagrangeMultipliers(con
     return lagrangeRows;
 };
 
-std::string ParallelDOFNumberingClass::getComponentAssociatedToRow(const ASTERINTEGER row,
+std::string ParallelDOFNumbering::getComponentAssociatedToRow(const ASTERINTEGER row,
                                                                    const bool local) const {
     if (!local)
         throw std::runtime_error("Only local operation is supported") ;
@@ -95,7 +95,7 @@ std::string ParallelDOFNumberingClass::getComponentAssociatedToRow(const ASTERIN
     return cmpName.rstrip();
 };
 
-ASTERINTEGER ParallelDOFNumberingClass::getRowAssociatedToNodeComponent(const ASTERINTEGER node,
+ASTERINTEGER ParallelDOFNumbering::getRowAssociatedToNodeComponent(const ASTERINTEGER node,
                                                             const std::string compoName,
                                                             const bool local) const {
     if (!local)
@@ -116,7 +116,7 @@ ASTERINTEGER ParallelDOFNumberingClass::getRowAssociatedToNodeComponent(const AS
     return row;
 };
 
-ASTERINTEGER ParallelDOFNumberingClass::getNodeAssociatedToRow(const ASTERINTEGER row,
+ASTERINTEGER ParallelDOFNumbering::getNodeAssociatedToRow(const ASTERINTEGER row,
                                                             const bool local) const {
     if (!local)
         throw std::runtime_error("Only local operation is supported") ;
@@ -128,7 +128,7 @@ ASTERINTEGER ParallelDOFNumberingClass::getNodeAssociatedToRow(const ASTERINTEGE
     return isPhysical*(*descriptor)[2*(row-1)];
 };
 
-ASTERINTEGER ParallelDOFNumberingClass::getNumberOfDofs(const bool local) const {
+ASTERINTEGER ParallelDOFNumbering::getNumberOfDofs(const bool local) const {
     getGlobalNumbering()->getNumberOfEquations()->updateValuePointer();
     if (local)
         return (*getGlobalNumbering()->getNumberOfEquations())[0];
@@ -136,7 +136,7 @@ ASTERINTEGER ParallelDOFNumberingClass::getNumberOfDofs(const bool local) const 
         return (*getGlobalNumbering()->getNumberOfEquations())[1];
 };
 
-bool ParallelDOFNumberingClass::useSingleLagrangeMultipliers() const {
+bool ParallelDOFNumbering::useSingleLagrangeMultipliers() const {
     const std::string typeco( "NUME_DDL" );
     ASTERINTEGER repi = 0, ier = 0;
     JeveuxChar32 repk( " " );
@@ -153,7 +153,7 @@ bool ParallelDOFNumberingClass::useSingleLagrangeMultipliers() const {
     return global_answer;
 };
 
-VectorString ParallelDOFNumberingClass::getComponents() const {
+VectorString ParallelDOFNumbering::getComponents() const {
     ASTERINTEGER ncmp, maxCmp = 100, ibid=0;
     char *stringArray;
     VectorString localComp, globalComp;
@@ -172,7 +172,7 @@ VectorString ParallelDOFNumberingClass::getComponents() const {
     return unique(globalComp);
 };
 
-VectorString ParallelDOFNumberingClass::getComponentsAssociatedToNode(const ASTERINTEGER node,
+VectorString ParallelDOFNumbering::getComponentsAssociatedToNode(const ASTERINTEGER node,
                                                                       const bool local) const {
     if (!local)
         throw std::runtime_error("Only local operation is supported") ;

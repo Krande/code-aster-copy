@@ -32,23 +32,23 @@
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class LoadResultClass
+ * @class LoadResult
  * @brief Cette classe correspond a un comb_fourier
  * @author Nicolas Sellenet
  */
-class LoadResultClass : public TransientResultClass {
+class LoadResult : public TransientResult {
   public:
     /**
      * @brief Constructeur
      */
-    LoadResultClass( const std::string name = ResultNaming::getNewResultName() )
-        : TransientResultClass( name, "EVOL_CHAR" ){};
+    LoadResult( const std::string name = ResultNaming::getNewResultName() )
+        : TransientResult( name, "EVOL_CHAR" ){};
 };
 
 /**
  * @typedef LoadResultPtr
- * @brief Pointeur intelligent vers un LoadResultClass
+ * @brief Pointeur intelligent vers un LoadResult
  */
-typedef boost::shared_ptr< LoadResultClass > LoadResultPtr;
+typedef boost::shared_ptr< LoadResult > LoadResultPtr;
 
 #endif /* EVOLUTIVELOAD_H_ */

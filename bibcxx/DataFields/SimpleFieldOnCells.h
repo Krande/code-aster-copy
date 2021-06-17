@@ -35,11 +35,11 @@
 #include "DataStructures/DataStructure.h"
 
 /**
- * @class SimpleFieldOnCellsClass
+ * @class SimpleFieldOnCells
  * @brief Cette classe template permet de definir un champ aux éléments Aster
  * @author Nicolas Sellenet
  */
-template < class ValueType > class SimpleFieldOnCellsClass : public DataStructure {
+template < class ValueType > class SimpleFieldOnCells : public DataStructure {
   private:
     /** @brief Vecteur Jeveux '.CESK' */
     JeveuxVectorChar8 _descriptor;
@@ -65,13 +65,13 @@ template < class ValueType > class SimpleFieldOnCellsClass : public DataStructur
      * @typedef SimpleFieldOnCellsPtr
      * @brief Pointeur intelligent vers un SimpleFieldOnCells
      */
-    typedef boost::shared_ptr< SimpleFieldOnCellsClass > SimpleFieldOnCellsPtr;
+    typedef boost::shared_ptr< SimpleFieldOnCells > SimpleFieldOnCellsPtr;
 
     /**
      * @brief Constructeur
      * @param name Nom Jeveux du champ aux éléments
      */
-    SimpleFieldOnCellsClass( const std::string name )
+    SimpleFieldOnCells( const std::string name )
         : DataStructure( name, 19, "CHAM_ELEM_S" ),
           _descriptor( JeveuxVectorChar8( getName() + ".CESK" ) ),
           _size( JeveuxVectorLong( getName() + ".CESD" ) ),
@@ -84,7 +84,7 @@ template < class ValueType > class SimpleFieldOnCellsClass : public DataStructur
      * @brief Constructeur
      * @param memType Mémoire d'allocation
      */
-    SimpleFieldOnCellsClass( const JeveuxMemory memType = Permanent )
+    SimpleFieldOnCells( const JeveuxMemory memType = Permanent )
         : DataStructure( "CHAM_NO_S", memType, 19 ),
           _descriptor( JeveuxVectorChar8( getName() + ".CESK" ) ),
           _size( JeveuxVectorLong( getName() + ".CESD" ) ),
@@ -132,22 +132,22 @@ template < class ValueType > class SimpleFieldOnCellsClass : public DataStructur
     };
 };
 
-/** @typedef SimpleFieldOnCellsClassReal Class d'une carte de double */
-typedef SimpleFieldOnCellsClass< ASTERDOUBLE > SimpleFieldOnCellsRealClass;
+/** @typedef SimpleFieldOnCellsReal Class d'une carte de double */
+typedef SimpleFieldOnCells< ASTERDOUBLE > SimpleFieldOnCellsReal;
 
 /**
  * @typedef SimpleFieldOnCellsPtrReal
  * @brief Definition d'un champ aux éléments de double
  */
-typedef boost::shared_ptr< SimpleFieldOnCellsRealClass > SimpleFieldOnCellsRealPtr;
+typedef boost::shared_ptr< SimpleFieldOnCellsReal > SimpleFieldOnCellsRealPtr;
 
-/** @typedef SimpleFieldOnCellsClassLong Class d'une carte de long */
-typedef SimpleFieldOnCellsClass< ASTERINTEGER > SimpleFieldOnCellsLongClass;
+/** @typedef SimpleFieldOnCellsLong Class d'une carte de long */
+typedef SimpleFieldOnCells< ASTERINTEGER > SimpleFieldOnCellsLong;
 
 /**
  * @typedef SimpleFieldOnCellsPtrLong
  * @brief Definition d'un champ aux éléments de long
  */
-typedef boost::shared_ptr< SimpleFieldOnCellsLongClass > SimpleFieldOnCellsLongPtr;
+typedef boost::shared_ptr< SimpleFieldOnCellsLong > SimpleFieldOnCellsLongPtr;
 
 #endif /* SIMPLEFIELDONCELLS_H_ */

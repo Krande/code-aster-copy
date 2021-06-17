@@ -3,7 +3,7 @@
  * @brief Interface python de Grid
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,8 +29,8 @@ namespace py = boost::python;
 
 void exportGridToPython() {
 
-    py::class_< GridClass, GridClass::GridPtr, py::bases< MeshClass > >( "Grid",
+    py::class_< Grid, Grid::GridPtr, py::bases< Mesh > >( "Grid",
                                                                                   py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< GridClass >))
-        .def( "__init__", py::make_constructor(&initFactoryPtr< GridClass, std::string >));
+        .def( "__init__", py::make_constructor(&initFactoryPtr< Grid >))
+        .def( "__init__", py::make_constructor(&initFactoryPtr< Grid, std::string >));
 };

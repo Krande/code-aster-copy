@@ -1,12 +1,12 @@
-#ifndef EXTERNALVARIABLEDEFINITIONINTERFACE_H_
-#define EXTERNALVARIABLEDEFINITIONINTERFACE_H_
+#ifndef EXTERNALVARIABLEFIELDINTERFACE_H_
+#define EXTERNALVARIABLEFIELDINTERFACE_H_
 
 /**
- * @file ExternalVariablesInterface.h
- * @brief Fichier entete de la classe ExternalVariablesInterface
+ * @file ExternalStateVariablesInterface.h
+ * @brief Fichier entete de la classe ExternalStateVariablesInterface
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,9 +24,7 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "astercxx.h"
-#include "Materials/ExternalVariablesDefinition.h"
 
-void exportExternalVariablesToPython();
+void exportListOfExternalStateVariablesToPython();
 
-#endif /* EXTERNALVARIABLEDEFINITIONINTERFACE_H_ */
+#endif /* EXTERNALVARIABLEFIELDINTERFACE_H_ */

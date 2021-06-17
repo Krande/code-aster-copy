@@ -106,6 +106,6 @@ class MechanicalSolver(ExecuteCommand):
                         RESULTAT=self._result,
                         CONTRAINTE=contrainte)
             else:
-                self._result.update()
+                self._result.build()
 
 MECA_STATIQUE = MechanicalSolver.run

@@ -33,50 +33,50 @@ namespace py = boost::python;
 
 void exportParallelMeshToPython() {
 
-    VectorString ( ParallelMeshClass::*c1 )(  ) const =
-        &ParallelMeshClass::getGroupsOfCells;
-    VectorString ( ParallelMeshClass::*c2 )( const bool ) const =
-        &ParallelMeshClass::getGroupsOfCells;
+    VectorString ( ParallelMesh::*c1 )(  ) const =
+        &ParallelMesh::getGroupsOfCells;
+    VectorString ( ParallelMesh::*c2 )( const bool ) const =
+        &ParallelMesh::getGroupsOfCells;
 
-    VectorString ( ParallelMeshClass::*c3 )(  ) const =
-        &ParallelMeshClass::getGroupsOfNodes;
-    VectorString ( ParallelMeshClass::*c4 )( const bool ) const =
-        &ParallelMeshClass::getGroupsOfNodes;
+    VectorString ( ParallelMesh::*c3 )(  ) const =
+        &ParallelMesh::getGroupsOfNodes;
+    VectorString ( ParallelMesh::*c4 )( const bool ) const =
+        &ParallelMesh::getGroupsOfNodes;
 
-    bool ( ParallelMeshClass::*c5 )( const std::string&  ) const =
-        &ParallelMeshClass::hasGroupOfCells;
-    bool ( ParallelMeshClass::*c6 )( const std::string&, const bool ) const =
-        &ParallelMeshClass::hasGroupOfCells;
+    bool ( ParallelMesh::*c5 )( const std::string&  ) const =
+        &ParallelMesh::hasGroupOfCells;
+    bool ( ParallelMesh::*c6 )( const std::string&, const bool ) const =
+        &ParallelMesh::hasGroupOfCells;
 
-    bool ( ParallelMeshClass::*c7 )( const std::string& ) const =
-        &ParallelMeshClass::hasGroupOfNodes;
-    bool ( ParallelMeshClass::*c8 )( const std::string&, const bool ) const =
-        &ParallelMeshClass::hasGroupOfNodes;
+    bool ( ParallelMesh::*c7 )( const std::string& ) const =
+        &ParallelMesh::hasGroupOfNodes;
+    bool ( ParallelMesh::*c8 )( const std::string&, const bool ) const =
+        &ParallelMesh::hasGroupOfNodes;
 
-    const VectorLong ( ParallelMeshClass::*c9 )(   ) const =
-        &ParallelMeshClass::getCells;
-    const VectorLong ( ParallelMeshClass::*c10 )( const std::string ) const =
-        &ParallelMeshClass::getCells;
+    const VectorLong ( ParallelMesh::*c9 )(   ) const =
+        &ParallelMesh::getCells;
+    const VectorLong ( ParallelMesh::*c10 )( const std::string ) const =
+        &ParallelMesh::getCells;
 
-    const VectorLong ( ParallelMeshClass::*n1 )(   ) const =
-        &ParallelMeshClass::getNodes;
-    const VectorLong ( ParallelMeshClass::*n2 )( const std::string ) const =
-        &ParallelMeshClass::getNodes;
-    const VectorLong ( ParallelMeshClass::*n3 )( const std::string, const bool  ) const =
-        &ParallelMeshClass::getNodes;
-    const VectorLong ( ParallelMeshClass::*n4 )( const std::string, const bool, const bool ) const =
-        &ParallelMeshClass::getNodes;
-    const VectorLong ( ParallelMeshClass::*n5 )( const bool  ) const =
-        &ParallelMeshClass::getNodes;
-    const VectorLong ( ParallelMeshClass::*n6 )( const bool, const bool ) const =
-        &ParallelMeshClass::getNodes;
+    const VectorLong ( ParallelMesh::*n1 )(   ) const =
+        &ParallelMesh::getNodes;
+    const VectorLong ( ParallelMesh::*n2 )( const std::string ) const =
+        &ParallelMesh::getNodes;
+    const VectorLong ( ParallelMesh::*n3 )( const std::string, const bool  ) const =
+        &ParallelMesh::getNodes;
+    const VectorLong ( ParallelMesh::*n4 )( const std::string, const bool, const bool ) const =
+        &ParallelMesh::getNodes;
+    const VectorLong ( ParallelMesh::*n5 )( const bool  ) const =
+        &ParallelMesh::getNodes;
+    const VectorLong ( ParallelMesh::*n6 )( const bool, const bool ) const =
+        &ParallelMesh::getNodes;
 
 
-    py::class_< ParallelMeshClass, ParallelMeshClass::ParallelMeshPtr,
-                py::bases< BaseMeshClass > >( "ParallelMesh", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ParallelMeshClass >))
+    py::class_< ParallelMesh, ParallelMesh::ParallelMeshPtr,
+                py::bases< BaseMesh > >( "ParallelMesh", py::no_init )
+        .def( "__init__", py::make_constructor(&initFactoryPtr< ParallelMesh >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ParallelMeshClass, std::string >))
+              py::make_constructor(&initFactoryPtr< ParallelMesh, std::string >))
         .def( "getGroupsOfCells", c1, R"(
 Return the list of the existing global groups of cells.
 
@@ -241,21 +241,21 @@ and a restriction to MPI-rank.
         )",
               ( py::arg( "self" ), py::args("localNumbering", "same_rank") )
                )
-        .def( "getInnerNodes", &ParallelMeshClass::getInnerNodes, R"(
+        .def( "getInnerNodes", &ParallelMesh::getInnerNodes, R"(
 Return the list of the indexes of the inner nodes in the mesh
 
 Returns:
     list[int]: Indexes of the nodes.
         )",
               ( py::arg( "self" ) ) )
-        .def( "getOuterNodes", &ParallelMeshClass::getOuterNodes, R"(
+        .def( "getOuterNodes", &ParallelMesh::getOuterNodes, R"(
 Return the list of the indexes of the outer nodes in the mesh
 
 Returns:
     list[int]: Indexes of the nodes.
         )",
               ( py::arg( "self" ) ) )
-        .def( "readMedFile", &ParallelMeshClass::readMedFile, R"(
+        .def( "readMedFile", &ParallelMesh::readMedFile, R"(
 Read a mesh file from MED format.
 
 Arguments:
@@ -265,21 +265,21 @@ Returns:
     bool: *True* if succeeds, *False* otherwise.
         )",
               ( py::arg( "self" ), py::arg( "filename" ) ) )
-        .def( "getNodesRank", &ParallelMeshClass::getNodesRank, R"(
+        .def( "getNodesRank", &ParallelMesh::getNodesRank, R"(
 Return the rank of the processor which owns the nodes
 
 Returns:
     list[int]: MPI-Rank of the owners of the nodes
         )",
               ( py::arg( "self" ) ) )
-        .def( "getCellsRank", &ParallelMeshClass::getCellsRank, R"(
+        .def( "getCellsRank", &ParallelMesh::getCellsRank, R"(
 Return the rank of the processor which owns the cells
 
 Returns:
     list[int]: MPI-Rank of the owners of the cells
         )",
               ( py::arg( "self" ) ) )
-        .def( "_updateGlobalGroupOfCells", &ParallelMeshClass::updateGlobalGroupOfCells, R"(
+        .def( "_updateGlobalGroupOfCells", &ParallelMesh::updateGlobalGroupOfCells, R"(
 Share and update global groups of cells betwenn MPI process.
 
 This function has to be used by developper only and not user
@@ -288,7 +288,7 @@ Returns:
     bool: *True* if succeeds, *False* otherwise.
         )",
               ( py::arg( "self" )) )
-        .def( "_updateGlobalGroupOfNodes", &ParallelMeshClass::updateGlobalGroupOfNodes, R"(
+        .def( "_updateGlobalGroupOfNodes", &ParallelMesh::updateGlobalGroupOfNodes, R"(
 Share and update global groups of nodes betwenn MPI process.
 
 This function has to be used by developper only and not user
@@ -297,7 +297,7 @@ Returns:
     bool: *True* if succeeds, *False* otherwise.
         )",
               ( py::arg( "self" )) )
-        .def( "_readPartitionedMedFile", &ParallelMeshClass::readPartitionedMedFile, R"(
+        .def( "_readPartitionedMedFile", &ParallelMesh::readPartitionedMedFile, R"(
 Read a partitioned MED file (alaready partitioned by the MEDPartitioner)
 
 This function has to be used by developper only and not user
