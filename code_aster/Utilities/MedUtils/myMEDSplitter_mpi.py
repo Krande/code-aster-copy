@@ -141,8 +141,7 @@ def RetrieveFamGrpsMapInternal(fn,mn):
       nbGrps = med.MEDnFamilyGroup(fid,mn,elt+1)
       gro    = med.MEDCHAR(med.MED_LNAME_SIZE*nbGrps+1)
       famName, famId, grps = med.MEDfamilyInfo(fid,mn,elt+1,gro)
-      if famName in s:
-          famName = "{}@".format(famName)
+      famName = "FAM_" + str(famId)
       famsPy[famName] = famId
       grps2 = ["".join(gro[i*med.MED_LNAME_SIZE:(i+1)*med.MED_LNAME_SIZE]).rstrip() for i in range(nbGrps)]
       grps2 = [elt.rstrip("\x00") for elt in grps2]
