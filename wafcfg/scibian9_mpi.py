@@ -48,7 +48,7 @@ def configure(self):
 
 def configure_legacy(self):
     import scibian9_std
-    YAMMROOT = scibian9_std.YAMMROOT
+    YAMMROOT = os.environ['ROOT_SALOME']
     opts = self.options
 
     opts.parallel = True
