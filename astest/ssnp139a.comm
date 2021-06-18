@@ -249,10 +249,10 @@ U_ELAS=STAT_NON_LINE( INFO=1,
     )
   )
 
-IMPR_RESU(FORMAT='MED',RESU=(_F(RESULTAT=U_PLAS,
+IMPR_RESU(FORMAT='MED',INFO=2,RESU=(_F(RESULTAT=U_PLAS,
                                 NOM_CHAM='SIEF_ELGA',
                                 GROUP_MA='DCBJ',),
-                             _F(RESULTAT=U_PLAS,
+                             _F(RESULTAT=U_PLAS,IMPR_NOM_VARI='NON',
                                 NOM_CHAM='VARI_ELGA',
                                 GROUP_MA='DCBJ',),),)
 
