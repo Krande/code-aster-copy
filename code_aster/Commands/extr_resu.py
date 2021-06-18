@@ -33,10 +33,7 @@ class ExtrResu(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        if keywords["RESULTAT"].getType() == "EVOL_ELAS":
-            self._result = type(keywords["RESULTAT"])()
-        else:
-            self._result = type(keywords["RESULTAT"])()
+        self._result = type(keywords["RESULTAT"])()
 
     def post_exec(self, keywords):
         """Execute the command.
@@ -45,12 +42,37 @@ class ExtrResu(ExecuteCommand):
             keywords (dict): User's keywords.
         """
         resultat = keywords["RESULTAT"]
-        if resultat != None:
-            if resultat.getModel() is not None:
-                self._result.appendModelOnAllRanks(resultat.getModel())
-            if resultat.getMaterialField() is not None:
-                self._result.appendMaterialFieldOnAllRanks(resultat.getMaterialField())
-            self._result.build()
+        restreint = keywords.get("RESTREINT")
+        mesh, model, mate, cara_elem = None, None, None, None
+        if restreint is not None:
+            if "MODELE" in restreint:
+                model = restreint["MODELE"]
+                mesh = model.getMesh()
+            if "MAILLAGE" in restreint:
+                mesh = restreint["MAILLAGE"]
+            if "CHAM_MATER" in restreint:
+                mate = restreint["CHAM_MATER"]
+            if "CARA_ELEM" in restreint:
+                cara_elem = restreint["CARA_ELEM"]
+        else:
+            model = resultat.getModel()
+            if model is not None:
+                mesh = model.getMesh()
+            else:
+                mesh = resultat.getMesh()
+            mate = resultat.getMaterialField()
+            cara_elem = resultat.getElementaryCharacteristics()
+
+        if model is not None:
+            self._result.appendModelOnAllRanks(model)
+        if mesh is not None:
+            self._result.setMesh(mesh)
+        if mate is not None:
+            self._result.appendMaterialFieldOnAllRanks(mate)
+        if cara_elem is not None:
+            self._result.appendElementaryCharacteristicsOnAllRanks(cara_elem)
+
+        self._result.build()
 
     def add_dependencies(self, keywords):
         """Register input *DataStructure* objects as dependencies.
