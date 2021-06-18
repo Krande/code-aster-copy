@@ -23,9 +23,31 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
+from ..Language.SyntaxUtils import deprecate, force_list
+
+
+def compat_syntax(keywords):
+    """Hook to adapt syntax from a old version or for compatibility reasons.
+
+    Arguments:
+        keywords (dict): User's keywords, changed in place.
+    """
+    to_del = []
+    kwlist = force_list(keywords.pop("CONCEPT", []))
+    if kwlist:
+        deprecate("DETRUIRE/CONCEPT/NOM", case=3,
+                  help="Just use DETRUIRE/NOM=... instead.")
+        for occ in kwlist:
+            to_del.extend(force_list(occ["NOM"]))
+        keywords["NOM"] = to_del
+    if keywords.pop("OBJET", None):
+        deprecate("DETRUIRE/OBJET", case=2,
+                  help="Use DETRUIRE/NOM=... instead.")
+
 DETRUIRE = MACRO(
     nom="DETRUIRE",
     op=None,
+    compat_syntax=compat_syntax,
     fr=tr("Détruit des concepts utilisateurs du contexte courant"),
     NOM=SIMP(statut='o', typ=assd, validators=NoRepeat(), max='**'),
     INFO=SIMP(statut='f', typ='I', into=(1, 2), defaut=1),

@@ -23,9 +23,12 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
+from .affe_char_meca import compat_syntax
+
 AFFE_CHAR_MECA_C=OPER(nom="AFFE_CHAR_MECA_C",op=   7,sd_prod=char_meca,
                      fr=tr("Affectation de charges et conditions aux limites mécaniques complexes"),
                      reentrant='n',
+                     compat_syntax=compat_syntax,
          regles=(AU_MOINS_UN('DDL_IMPO','FORCE_POUTRE','LIAISON_DDL', ),),
          MODELE          =SIMP(statut='o',typ=modele_sdaster ),
          DOUBLE_LAGRANGE =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="OUI"),

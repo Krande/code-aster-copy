@@ -45,24 +45,31 @@ class Closer(ExecuteCommand):
     _options = None
     _exit = None
 
-    def compat_syntax(self, keywords):
+    def change_syntax(self, keywords):
         """Adapt syntax before checking syntax.
 
-        Change defaults depending on the parallel execution context and consume
-        argument to force to exit after the command.
+        Consume argument to force to exit after the command.
 
         Arguments:
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
         self._exit = keywords.pop("exit", False)
+
+    def adapt_syntax(self, keywords):
+        """Adapt syntax after checking syntax.
+
+        Change defaults depending on the parallel execution context.
+
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords, changed
+                in place.
+        """
         # if PROC0 is not provided by the user
         if not keywords.get("PROC0") and haveMPI():
             option = ExecutionParameter().option
             if option & Options.HPCMode or not option & Options.LastStep:
                 keywords["PROC0"] = "NON"
-        # removed keyword
-        keywords.pop("FORMAT_HDF", None)
 
     def exec_(self, keywords):
         """Execute the command.

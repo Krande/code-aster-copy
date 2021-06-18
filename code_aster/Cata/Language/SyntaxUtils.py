@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,13 +27,55 @@ List of utilities for syntax objects.
 import inspect
 import math
 import os
+import sys
+import warnings
 from array import array
 from collections import OrderedDict
 from functools import partial
+from warnings import showwarning, warn
 
 import numpy
 
 from .DataStructure import AsType
+
+
+def warn_to_stdout(message, category, filename, lineno, file=None, line=None):
+    """Same as `showwarning` but on stdout"""
+    return showwarning(message, category, filename, lineno,
+                       file=sys.stdout, line=line)
+
+warnings.showwarning = warn_to_stdout
+
+
+def deprecate(feature, case=1, help=None, level=6):
+    """Deprecate a feature, emit a deprecation warning depending on the case.
+
+    Arguments:
+        feature (str): Deprecated feature.
+        case (int):
+            Case 1: the feature still works but it will be removed.
+            Case 2: the feature does nothing, it has been removed.
+            Case 3: the feature still works but has a new implementation.
+            Case 4: the feature does nothing but has a new implementation.
+        help (str): Additional help message, should be present for case 3.
+        level (int): Level of the caller in the stack.
+    """
+    if case == 1:
+        msg = ("This feature is obsoleted, {0!r} will be "
+               "removed in the future.")
+    elif case == 2:
+        msg = "This feature is obsoleted, {0!r} has been removed."
+    elif case == 3:
+        msg = ("This feature has a new implementation, {0!r} will be "
+               "removed in the future.")
+    elif case == 4:
+        msg = ("This feature has a new implementation, {0!r} has been "
+               "removed.")
+    else:
+        msg = "This feature is obsoleted: {0!r}"
+    if help:
+        msg += " " + help
+    warn(msg.format(feature), DeprecationWarning, stacklevel=level)
 
 
 def mixedcopy(obj):
@@ -121,6 +163,21 @@ def value_is_sequence(value):
     """Tell if *value* is a valid object if max > 1."""
     return type(value) in (list, tuple, array, numpy.ndarray)
 
+def array_to_list(obj):
+    """Convert an object to a list if possible (using `tolist()`) or keep it
+    unchanged otherwise.
+
+    Arguments:
+        obj (misc): Object to convert.
+
+    Returns:
+        misc: Object unchanged or a list.
+    """
+    try:
+        return obj.tolist()
+    except AttributeError:
+        return obj
+
 # same function exist in asterstudy.datamodel.aster_parser
 def old_complex(value):
     """Convert an old-style complex."""
@@ -156,7 +213,7 @@ def disable_0key(values):
         if isinstance(kw, dict) and 0 in kw:
             del kw[0]
 
-# Keep consistency with SyntaxUtils.block_utils from AsterStudy, AsterXX
+# Keep consistency with SyntaxUtils.block_utils from AsterStudy
 def block_utils(evaluation_context):
     """Define some helper functions to write block conditions.
 

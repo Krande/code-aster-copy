@@ -23,6 +23,24 @@
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
+from ..Language.SyntaxUtils import deprecate
+
+
+def compat_syntax(keywords):
+    """Hook to adapt syntax from a old version or for compatibility reasons.
+
+    Arguments:
+        keywords (dict): Keywords arguments of user's keywords, changed
+            in place.
+    """
+    # SEPAR is deprecated but tolerated syntax replaced by SEPARATEUR
+    separ = keywords.pop("SEPAR", None)
+    if separ:
+        deprecate("LIRE_FONCTION/SEPAR", case=3,
+                  help="Prefer use SEPARATEUR=... instead.")
+        if "SEPARATEUR" not in keywords:
+            if separ in ("None", ",", ";", "/"):
+                keywords["SEPARATEUR"] = separ
 
 
 def lire_fonction_prod(self,TYPE,**args):
@@ -40,6 +58,7 @@ LIRE_FONCTION=MACRO(nom="LIRE_FONCTION",
                     fr=tr("Lit les valeurs réelles dans un fichier de données représentant une "
                          "fonction et crée un concept de type fonction ou nappe"),
                     reentrant='n',
+                    compat_syntax=compat_syntax,
          FORMAT          =SIMP(statut='f',typ='TXM',into=("LIBRE","NUMPY"),
                                defaut="LIBRE"  ),
          TYPE            =SIMP(statut='f',typ='TXM',into=("FONCTION","FONCTION_C","NAPPE"),defaut="FONCTION"  ),

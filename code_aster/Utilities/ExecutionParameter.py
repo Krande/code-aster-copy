@@ -218,7 +218,7 @@ class ExecutionParameter(metaclass=Singleton):
         if option & Options.Debug:
             logger.setLevel(DEBUG)
         if option & Options.ShowDeprecated:
-            # disabled by default in python2.7
+            # disabled by default in python>=2.7
             warnings.simplefilter('default')
 
     def disable(self, option):

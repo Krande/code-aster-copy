@@ -22,9 +22,24 @@
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
+from ..Language.SyntaxUtils import deprecate
+
+def compat_syntax(keywords):
+    """Hook to adapt syntax from a old version or for compatibility reasons.
+
+    Arguments:
+        keywords (dict): User's keywords, changed in place.
+    """
+    if keywords.pop("PAR_LOT", None):
+        deprecate("DEBUT/PAR_LOT", case=2, level=7)
+    if keywords.get("DEBUG", {}):
+        if keywords["DEBUG"].pop("HIST_ETAPE", None):
+            deprecate("DEBUT/DEBUG/HIST_ETAPE", case=2, level=7)
+
 
 DEBUT=MACRO(nom="DEBUT",
             op=None,
+            compat_syntax=compat_syntax,
             repetable='n',
             fr=tr("Ouverture d'une étude. Allocation des ressources mémoire et disque et fichiers"),
 

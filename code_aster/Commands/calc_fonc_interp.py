@@ -29,8 +29,8 @@ class FunctionInterpolation(ExecuteCommand):
     :py:class:`~code_aster.Objects.Function`."""
     command_name = "CALC_FONC_INTERP"
 
-    def compat_syntax(self, keywords):
-        """Hook to adapt syntax *after* syntax checking.
+    def adapt_syntax(self, keywords):
+        """Change syntax *after* syntax checking.
 
         Arguments:
             keywords (dict): Keywords arguments of user's keywords, changed

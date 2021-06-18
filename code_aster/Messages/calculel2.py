@@ -192,9 +192,9 @@ Erreur utilisateur :
   La maille "coupable" est : %(k1)s
 
 Risques et conseils :
-  Si le problème concerne les mots clés ORIE_PEAU_3D (ou ORIE_PEAU_2D)
-  de la commande MODI_MAILLAGE, vous pouvez utiliser les mots clés
-  GROUP_MA_VOLU (ou GROUP_MA_SURF) pour éviter de traiter certaines mailles.
+  Si le problème concerne le mots clé ORIE_PEAU de la commande MODI_MAILLAGE,
+  vous pouvez utiliser le mot clé GROUP_MA_INTERNE pour éviter de traiter
+  certaines mailles.
 """),
 
     33: _("""

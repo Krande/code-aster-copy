@@ -21,18 +21,12 @@
 
 from ..Objects import MechanicalLoadComplex
 from ..Supervis import ExecuteCommand
-from ..Utilities import deprecate, force_list
-from .affe_char_meca import MechanicalLoadDefinition
 
 
 class MechanicalLoadComplexDefinition(ExecuteCommand):
     """Command that creates the
     :class:`~code_aster.Objects.MechanicalLoadComplex`"""
     command_name = "AFFE_CHAR_MECA_C"
-
-    def compat_syntax(self, keywords):
-        """Compatibility support, common with AFFE_CHAR_MECA."""
-        return MechanicalLoadDefinition.compat_syntax(keywords)
 
     def create_result(self, keywords):
         """Initialize the result.

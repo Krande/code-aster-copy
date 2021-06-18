@@ -30,24 +30,5 @@ class ReadFunctionProperly(ExecuteMacro):
     """
     command_name = "LIRE_FONCTION"
 
-    def compat_syntax(self, keywords):
-        """Hook to adapt syntax from a old version or for compatibility reasons.
-
-        Arguments:
-            keywords (dict): Keywords arguments of user's keywords, changed
-                in place.
-        """
-        # SEPAR is deprecated but tolerated syntax replaced by SEPARATEUR
-        separ = keywords.pop("SEPAR", None)
-        if separ:
-            deprecate("LIRE_FONCTION/SEPAR", case=3,
-                      help="Prefer use SEPARATEUR=... instead.")
-            if "SEPARATEUR" not in keywords:
-                if separ in ("None", ",", ";", "/"):
-                    keywords["SEPARATEUR"] = separ
-                else:
-                    UTMESS('F', 'FONCT0_26')
-            else:
-                UTMESS('F', 'FONCT0_11')
 
 LIRE_FONCTION = ReadFunctionProperly.run

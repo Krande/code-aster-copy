@@ -22,10 +22,32 @@
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
+from ..Language.SyntaxUtils import deprecate, force_list
+
+
+def compat_syntax(keywords):
+    """Replace LIAISON='ENCASTRE' by BLOCAGE.
+
+    Arguments:
+        keywords (dict): Keywords arguments of user's keywords, changed
+            in place.
+    """
+    if not keywords.get("DDL_IMPO"):
+        return
+    # replace DDL_IMPO/LIAISON=ENCASTRE by DDL_IMPO/BLOCAGE
+    keywords["DDL_IMPO"] = force_list(keywords.get("DDL_IMPO", []))
+    for fact in keywords["DDL_IMPO"]:
+        block = fact.pop("LIAISON", None)
+        if block == 'ENCASTRE':
+            deprecate("DLL_IMPO/LIAISON='ENCASTRE'", case=3,
+                      help="Use BLOCAGE = ('DEPLACEMENT', 'ROTATION')")
+            fact["BLOCAGE"] = ('DEPLACEMENT', 'ROTATION')
+
 
 AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                     fr=tr("Affectation de charges et conditions aux limites mécaniques constantes"),
-                     reentrant='n',
+                    compat_syntax=compat_syntax,
+                    reentrant='n',
          regles=(AU_MOINS_UN('EVOL_CHAR','PESANTEUR','ROTATION','DDL_IMPO','DDL_POUTRE','FACE_IMPO',
                              'CHAMNO_IMPO','ARETE_IMPO',
                              'LIAISON_DDL','LIAISON_OBLIQUE','LIAISON_GROUP','LIAISON_MAIL',
@@ -469,7 +491,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                MAILLE_2    =SIMP(statut='c',typ=ma  ),
                ANGL_MAX    =SIMP(statut='f',typ='R',defaut= 1. ),
             ),
-            
+
             b_3d_pou_arlequin =BLOC( condition = """equal_to("OPTION", '3D_POU_ARLEQUIN')""",
                                      regles    =(UN_PARMI('GROUP_MA_1','MAILLE_1'), UN_PARMI('GROUP_MA_2','MAILLE_2'),),
                GROUP_MA_1  =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
@@ -479,7 +501,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                CARA_ELEM      =SIMP(statut='o',typ=cara_elem ),
                CHAM_MATER     =SIMP(statut='o',typ=cham_mater ),
             ),
-            
+
             b_2d_pou =BLOC( condition = """equal_to("OPTION", '2D_POU')""",
                             regles    =(UN_PARMI('GROUP_MA_1','MAILLE_1'), UN_PARMI('GROUP_NO_2','NOEUD_2','GROUP_MA_2','MAILLE_2'),),
                GROUP_MA_1  =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
@@ -490,7 +512,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                MAILLE_2    =SIMP(statut='c',typ=ma  ),
                # ANGL_MAX    =SIMP(statut='f',typ='R',defaut= 1. ), ??? voir fortran, pas mis dans la doc
             ),
-            
+
             b_coq_pou_tuy =BLOC( condition = """equal_to("OPTION", 'COQ_POU') or equal_to("OPTION", 'COQ_TUYAU')""",
                             regles    =(UN_PARMI('GROUP_MA_1','MAILLE_1'), UN_PARMI('GROUP_NO_2','NOEUD_2',),),
                GROUP_MA_1  =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
@@ -500,7 +522,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                CARA_ELEM   =SIMP(statut='o',typ=(cara_elem) ),
                AXE_POUTRE  =SIMP(statut='o',typ='R',max=3),
             ),
-            
+
             b_3d_tuyau =BLOC( condition = """equal_to("OPTION", '3D_TUYAU')""",
                             regles    =(UN_PARMI('GROUP_MA_1','MAILLE_1'), UN_PARMI('GROUP_NO_2','NOEUD_2',),),
                GROUP_MA_1  =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
@@ -729,7 +751,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                     VZ              =SIMP(statut='f',typ='R' ),
                     MT              =SIMP(statut='f',typ='R' ),
                     MFY             =SIMP(statut='f',typ='R' ),
-                    MFZ             =SIMP(statut='f',typ='R' ),                   
+                    MFZ             =SIMP(statut='f',typ='R' ),
                     MGX             =SIMP(statut='f',typ='R' ),
                     MGY             =SIMP(statut='f',typ='R' ),
                     MGZ             =SIMP(statut='f',typ='R' ),
@@ -966,4 +988,4 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
             "AFFE_CHAR_MECA": "Assign mechanical load",
             "EVOL_CHAR": "Pressure from a result",
          }
-)  ;
+)

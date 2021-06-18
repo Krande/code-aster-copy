@@ -207,7 +207,7 @@ Alarme utilisateur pour le calcul de SIRO_ELEM :
 Conseil :
   Le problème vient peut-être du fait que la peau du maillage est mal
   orientée. On peut réorienter les mailles de peau avec la commande
-  MODI_MAILLAGE / ORIE_PEAU_3D.
+  MODI_MAILLAGE / ORIE_PEAU.
 """),
 
     48 : _("""

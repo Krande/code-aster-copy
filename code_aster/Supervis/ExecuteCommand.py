@@ -101,9 +101,14 @@ class ExecuteCommand(object):
     The :meth:`run` factory creates an instance of one of these classes and
     executes successively these steps:
 
-        - :meth:`compat_syntax` to eventually change the user's keywords to
+        - :meth:`compat_syntax_` to eventually change the user's keywords to
           adapt the syntax from an older version **before** syntax checking.
-          Does nothing by default.
+          Subclasses **must not overload** this method.
+          The compatibility changes must be defined in ``compat_syntax``
+          attribute in the catalog.
+          Subclasses may define a :meth:`change_syntax` method for modifications
+          on non-keywords arguments. This should be limited to very specific
+          cases.
 
         - :meth:`check_syntax` to check the user's keywords conformance to
           to catalog definition.
@@ -184,7 +189,7 @@ class ExecuteCommand(object):
         if self.show_syntax():
             timer.Start(str(self._counter), name=self.command_name)
         timer.Start(" . check syntax", num=1.1e6)
-        self.compat_syntax(keywords)
+        self.compat_syntax_(keywords)
         self._cata.addDefaultKeywords(keywords)
         remove_none(keywords)
         try:
@@ -341,11 +346,28 @@ class ExecuteCommand(object):
                     for obj in force_list(value):
                         self._result.removeDependency(obj)
 
-    def compat_syntax(self, keywords):
-        """Hook to adapt syntax from a old version or for compatibility reasons.
+    def compat_syntax_(self, keywords):
+        """Call the compatibility function defined in catalog.
 
         As the keywords have not been checked, no assumptions can be done about
         the presence or the number of values for example.
+        If the syntax is already valid, call :meth:`adapt_syntax` instead.
+
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords, changed
+                in place.
+        """
+        self._cata.get_compat_syntax()(keywords)
+        self.change_syntax(keywords)
+
+    def change_syntax(self, keywords):
+        """Hook to change keywords before checking syntax.
+
+        You must define `compat_syntax` in the command catalog to adapt the
+        syntax from an old version or for compatibility.
+        `compat_syntax` is also used by AsterStudy, `change_syntax` is only
+        called during execution and limited to very specific cases.
+
         If the syntax is already valid, call :meth:`adapt_syntax` instead.
 
         Arguments:

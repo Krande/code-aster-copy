@@ -30,8 +30,8 @@ class ImprResu(ExecuteCommand):
     """
     command_name = "IMPR_RESU"
 
-    def compat_syntax(self, keywords):
-        """Adapt syntax before checking syntax.
+    def adapt_syntax(self, keywords):
+        """Adapt syntax after checking syntax.
 
         Change defaults depending on the parallel execution context.
 

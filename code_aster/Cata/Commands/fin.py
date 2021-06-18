@@ -22,12 +22,28 @@
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
+from ..Language.SyntaxUtils import deprecate
+
+
+def compat_syntax(keywords):
+    """Adapt syntax before checking syntax.
+
+    Change defaults depending on the parallel execution context and consume
+    argument to force to exit after the command.
+
+    Arguments:
+        keywords (dict): Keywords arguments of user's keywords, changed
+            in place.
+    """
+    if keywords.pop("FORMAT_HDF", None):
+        deprecate("FIN/FORMAT_HDF", case=2)
+
 
 FIN = FIN_PROC(nom="FIN",
                op=9999,
                repetable='n',
                fr=tr("Fin d'une étude, fin du travail engagé par une des commandes DEBUT ou POURSUITE"),
-
+               compat_syntax=compat_syntax,
         # FIN est appelé prématurément en cas d'exception ("SIGUSR1", ArretCPUError,
         # NonConvergenceError..., erreurs <S> ou erreurs <F> récupérées).
         # En cas d'ArretCPUError, on limite au maximum le travail à faire dans FIN.

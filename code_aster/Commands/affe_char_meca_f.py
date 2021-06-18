@@ -22,18 +22,13 @@
 from ..Objects import (MechanicalLoadFunction, ParallelMechanicalLoadFunction,
                        ConnectionMesh, Model)
 from ..Supervis import ExecuteCommand
-from ..Utilities import deprecate, force_list
-from .affe_char_meca import MechanicalLoadDefinition
+from .affe_char_meca import MechanicalLoadDefinition, _getGroups
 
 
 class MechanicalLoadFunctionDefinition(ExecuteCommand):
     """Command that defines :class:`~code_aster.Objects.MechanicalLoadFunc`.
     """
     command_name = "AFFE_CHAR_MECA_F"
-
-    def compat_syntax(self, keywords):
-        """Compatibility support, common with AFFE_CHAR_MECA."""
-        return MechanicalLoadDefinition.compat_syntax(keywords)
 
     def create_result(self, keywords):
         """Initialize the result.
@@ -42,8 +37,8 @@ class MechanicalLoadFunctionDefinition(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         model = keywords["MODELE"]
-        l_neum = MechanicalLoadDefinition()._hasNeumannLoadings(keywords)
-        l_diri = MechanicalLoadDefinition()._hasDirichletLoadings(keywords)
+        l_neum = MechanicalLoadDefinition._hasNeumannLoadings(keywords)
+        l_diri = MechanicalLoadDefinition._hasDirichletLoadings(keywords)
         if not model.getMesh().isParallel():
             self._result = MechanicalLoadFunction(model)
         else :
@@ -52,7 +47,7 @@ class MechanicalLoadFunctionDefinition(ExecuteCommand):
                     raise TypeError("Not allowed to mix up Dirichlet and Neumann loadings in the same parallel AFFE_CHAR_MECA_F")
                 else:
                     self._result = MechanicalLoadFunction(model)
-            if MechanicalLoadDefinition()._hasOnlyDDL_IMPO(keywords):
+            if MechanicalLoadDefinition._hasOnlyDDL_IMPO(keywords):
                 self._result = MechanicalLoadFunction(model)
 
 
@@ -63,7 +58,7 @@ class MechanicalLoadFunctionDefinition(ExecuteCommand):
             super(MechanicalLoadFunctionDefinition, self).exec_(keywords)
         else:
             model = keywords.pop("MODELE")
-            nodeGroups, cellGroups = MechanicalLoadDefinition()._getGroups(keywords)
+            nodeGroups, cellGroups = _getGroups(self._cata, keywords)
             connectionMesh = ConnectionMesh(model.getMesh(), nodeGroups, cellGroups)
 
             connectionModel = Model( connectionMesh )

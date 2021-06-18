@@ -22,11 +22,35 @@
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
+from ..Language.SyntaxUtils import deprecate, force_list
+
+
+def compat_syntax(keywords):
+    """ Update Keyword ORIE_PEAU_2D(3D) to ORIE_PEAU"""
+    keywords_mapping = {
+        'ORIE_PEAU_2D': {'GROUP_MA': 'GROUP_MA_PEAU', 'GROUP_MA_SURF': 'GROUP_MA_INTERNE'},
+        'ORIE_PEAU_3D': {'GROUP_MA': 'GROUP_MA_PEAU', 'GROUP_MA_VOLU': 'GROUP_MA_INTERNE'}
+    }
+    for kw in keywords_mapping:
+        kws = force_list(keywords.get(kw, []))
+        if kws:
+            deprecate("MODI_MAILLAGE/ORIE_PEAU_2D(3D)=_F(GROUP_MA=(...), GROUP_MA_SURF(VOLU)=(...))",
+                      case=3,
+                      help="Use MODI_MAILLAGE/ORIE_PEAU=_F(GROUP_MA_PEAU=(...), GROUP_MA_INTERNE=(...))")
+            keywords['ORIE_PEAU'] = keywords.get(kw)
+            keywords.pop(kw)
+            for fact in kws:
+                keys = list(fact.keys())
+                for key in keys:
+                    fact[keywords_mapping[kw][key]] = fact[key]
+                    fact.pop(key)
+
 
 MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage_sdaster,
                    fr=tr("Effectuer des modifications sur un maillage existant: réorienter des mailles servant,"
                       " à l'application d'une pression, à la modélisation du contact,..."),
                    reentrant='o:MAILLAGE',
+                   compat_syntax=compat_syntax,
       regles=(AU_MOINS_UN('ORIE_FISSURE','DEFORME','ORIE_PEAU',
                         'ORIE_NORM_COQUE','MODI_MAILLE',
                        'TRANSLATION','ROTATION','MODI_BASE','ECHELLE',

@@ -35,8 +35,8 @@ class FormulaDefinition(ExecuteCommand):
         # context used for evaluation
         self._ctxt = initial_context()
 
-    def compat_syntax(self, keywords):
-        """Adapt syntax to store the evaluation context.
+    def change_syntax(self, keywords):
+        """Change syntax to store the evaluation context.
 
         Arguments:
             keywords (dict): Keywords arguments of user's keywords, changed

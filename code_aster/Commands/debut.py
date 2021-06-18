@@ -102,15 +102,6 @@ class Starter(ExecuteCommand):
     command_name = "DEBUT"
     arg_init = []
 
-    def compat_syntax(self, keywords):
-        """Hook to adapt syntax from a old version or for compatibility reasons.
-
-        Arguments:
-            keywords (dict): User's keywords, changed in place.
-        """
-        if keywords.pop("PAR_LOT", None):
-            deprecate("DEBUT/PAR_LOT", case=2, level=6)
-
     @staticmethod
     def _code_enabled(keywords):
         """Tell if CODE is enabled.
@@ -232,15 +223,6 @@ class Restarter(Starter):
 
     command_name = "POURSUITE"
     arg_init = ["--continue"]
-
-    def compat_syntax(self, keywords):
-        """Ignore obsolete keywords.
-
-        Arguments:
-            keywords (dict): Keywords arguments of user's keywords, changed
-                in place.
-        """
-        keywords.pop("FORMAT_HDF", None)
 
     @staticmethod
     def _code_enabled(keywords):

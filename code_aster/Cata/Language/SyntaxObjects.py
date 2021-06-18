@@ -665,6 +665,10 @@ class Command(PartOfSyntax):
     """
     _call_callback = None
 
+    def get_compat_syntax(self):
+        """Return the `compat_syntax` keywords converter."""
+        return self.definition.get("compat_syntax", lambda _: None)
+
     @classmethod
     def register_call_callback(cls, callback):
         """Register *callback* to be called in place of the default method.

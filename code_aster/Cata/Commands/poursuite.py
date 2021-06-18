@@ -22,9 +22,28 @@
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
+from ..Language.SyntaxUtils import deprecate
+
+
+def compat_syntax(keywords):
+    """Ignore obsolete keywords.
+
+    Arguments:
+        keywords (dict): Keywords arguments of user's keywords, changed
+            in place.
+    """
+    if keywords.pop("PAR_LOT", None):
+        deprecate("POURSUITE/PAR_LOT", case=2, level=7)
+    if keywords.pop("FORMAT_HDF", None):
+        deprecate("POURSUITE/FORMAT_HDF", case=2, level=7)
+    if keywords.get("DEBUG", {}):
+        if keywords["DEBUG"].pop("HIST_ETAPE", None):
+            deprecate("POURSUITE/DEBUG/HIST_ETAPE", case=2, level=7)
+
 
 POURSUITE=MACRO(nom="POURSUITE",
                 op=None,
+                compat_syntax=compat_syntax,
                 repetable='n',
                 fr=tr("Poursuite d'une étude à partir de la sauvegarde de sa base globale"),
          IMPR_MACRO      =SIMP(fr=tr("affichage des sous-commandes produites par les macros dans le fichier mess"),

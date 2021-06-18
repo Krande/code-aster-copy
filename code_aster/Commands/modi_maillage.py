@@ -44,26 +44,4 @@ class MeshModification(ExecuteCommand):
             keywords (dict): User's keywords.
         """
 
-    @staticmethod
-    def compat_syntax(keywords):
-        """ Update Keyword ORIE_PEAU_2D(3D) to ORIE_PEAU"""
-        keywords_mapping = {
-            'ORIE_PEAU_2D': {'GROUP_MA': 'GROUP_MA_PEAU', 'GROUP_MA_SURF': 'GROUP_MA_INTERNE'},
-            'ORIE_PEAU_3D': {'GROUP_MA': 'GROUP_MA_PEAU', 'GROUP_MA_VOLU': 'GROUP_MA_INTERNE'}
-        }
-        for kw in keywords_mapping:
-            kws = force_list(keywords.get(kw, []))
-            if kws:
-                deprecate("MODI_MAILLAGE/ORIE_PEAU_2D(3D)=_F(GROUP_MA=(...), GROUP_MA_SURF(VOLU)=(...))", case=3,
-                          level=5,
-                          help="Use MODI_MAILLAGE/ORIE_PEAU=_F(GROUP_MA_PEAU=(...), GROUP_MA_INTERNE=(...))")
-                keywords['ORIE_PEAU'] = keywords.get(kw)
-                keywords.pop(kw)
-                for fact in kws:
-                    keys = list(fact.keys())
-                    for key in keys:
-                        fact[keywords_mapping[kw][key]] = fact[key]
-                        fact.pop(key)
-
-
 MODI_MAILLAGE = MeshModification.run

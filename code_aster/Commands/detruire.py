@@ -21,34 +21,14 @@
 import gc
 
 from ..Messages import UTMESS
-from ..Objects import DataStructure, Function
+from ..Objects import DataStructure
 from ..Supervis import ExecuteCommand
-from ..Utilities import deprecate, force_list, get_caller_context
+from ..Utilities import deprecate, get_caller_context
 
 
 class Deleter(ExecuteCommand):
     """Command that deletes *DataStructure* instances from the calling stack."""
     command_name = "DETRUIRE"
-
-    def compat_syntax(self, keywords):
-        """Hook to adapt syntax from a old version or for compatibility reasons.
-
-        Arguments:
-            keywords (dict): User's keywords, changed in place.
-        """
-        to_del = []
-        kwlist = force_list(keywords.pop("CONCEPT", []))
-        if kwlist:
-            deprecate("DETRUIRE/CONCEPT/NOM", case=4, level=5,
-                      help="Just use DETRUIRE/NOM=... instead.")
-            for occ in kwlist:
-                to_del.extend(force_list(occ["NOM"]))
-            keywords["NOM"] = to_del
-        if keywords.pop("OBJET", None):
-            deprecate("DETRUIRE/OBJET", case=4, level=5,
-                      help="Use DETRUIRE/NOM=... instead.")
-            # to have at least one object
-            keywords.setdefault("NOM", Function())
 
     def exec_(self, keywords):
         """Execute the command.
