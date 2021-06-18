@@ -382,6 +382,10 @@ class Table(TableBase):
         if isinstance(state, tuple) and len(state) == 5:
             self.rows, self.para, self.type, self.titr, self.nom = state
 
+    def getName(self):
+        """Return name of the Table"""
+        return self.nom
+
     def copy(self):
         """Retourne une copie de la table.
         """
