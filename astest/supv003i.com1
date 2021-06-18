@@ -18,6 +18,35 @@
 # --------------------------------------------------------------------
 
 # aslint: disable=C2020
+# Check other deprecation warnings
+# + 'max' behaviour in commands catalogs
+import code_aster
+from code_aster.Commands import *
+
 POURSUITE(CODE="OUI", PAR_LOT="NON", DEBUG=_F(HIST_ETAPE="OUI"), FORMAT_HDF="OUI")
+
+test = code_aster.TestCase()
+
+# check default value for "max" attribute: must be equivalent to "max=1"
+# for simple keywords...
+with test.assertRaisesRegexp(code_aster.AsterError, "SUPERVIS_4"):
+    LIRE_MAILLAGE(FORMAT=("MED", "ASTER"))
+
+# ... and factor keywords
+with test.assertRaisesRegexp(code_aster.AsterError, "SUPERVIS_4"):
+    MODI_MAILLAGE(
+        reuse=MA,
+        MAILLAGE=MA,
+        ORIE_FISSURE=(_F(GROUP_MA="DCB_J"), _F(GROUP_MA="DCB_I")),
+        INFO=1,
+    )
+
+with test.assertRaisesRegexp(code_aster.AsterError, "SUPERVIS_4"):
+    CREA_MAILLAGE(
+        COQUE_SOLIDE=(_F(GROUP_MA="CoqueVoluCells"), _F(GROUP_MA="CoqueVolu2")),
+        MAILLAGE=MA,
+    )
+
+test.printSummary()
 
 FIN(FORMAT_HDF="OUI")

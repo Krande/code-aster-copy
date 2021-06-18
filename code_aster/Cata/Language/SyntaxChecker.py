@@ -256,7 +256,7 @@ class SyntaxCheckerVisitor:
         if value_is_sequence(skwValue):
             # Vérification du nombre de valeurs
             nbMin = step.definition.get('min')
-            nbMax = step.definition.get('max')
+            nbMax = step.definition.get('max', 1)
             if nbMax == "**":
                 nbMax = None
             if nbMax is not None and len(skwValue) > nbMax:
@@ -385,7 +385,7 @@ class SyntaxCheckerVisitor:
                        "Too few factor keyword, at least {0} "
                        "occurrence(s) expected"
                            .format(step.definition.get('min', 0)))
-        max_occurences = step.definition.get('max', 1000000000)
+        max_occurences = step.definition.get('max', 1)
         if max_occurences != '**' and len(userDict) > max_occurences:
             self.error(ValueError,
                        "Too much factor keyword, at most {0} "
