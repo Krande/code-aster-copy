@@ -238,6 +238,22 @@ Arguments:
 // ------------------------------------------------------------------------------------------------------
         .def( "getDOFNumbering", &AssemblyMatrixTemperatureReal::getDOFNumbering )
 // ------------------------------------------------------------------------------------------------------
+        .def( "getModel", &AssemblyMatrixTemperatureReal::getModel, R"(
+Return the model.
+
+Returns:
+    ModelPtr: a pointer to the model
+        )",
+              ( py::arg( "self" )))
+// ------------------------------------------------------------------------------------------------------
+        .def( "getMesh", &AssemblyMatrixTemperatureReal::getMesh, R"(
+Return the mesh.
+
+Returns:
+    MeshPtr: a pointer to the mesh
+        )",
+              ( py::arg( "self" ) ) )
+// ------------------------------------------------------------------------------------------------------
         .def( "getMaterialField", &AssemblyMatrixTemperatureReal::getMaterialField )
 // ------------------------------------------------------------------------------------------------------
         .def( "getNumberOfElementaryMatrix",
