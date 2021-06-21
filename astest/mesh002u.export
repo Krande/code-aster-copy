@@ -1,5 +1,5 @@
 # aslint: disable=C2002
-P time_limit 80
+P time_limit 120
 P memory_limit 1024
 P ncpus 1
 P mpi_nbcpu 4

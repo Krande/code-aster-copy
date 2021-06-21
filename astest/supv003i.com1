@@ -43,7 +43,7 @@ with test.assertRaisesRegexp(code_aster.AsterError, "SUPERVIS_4"):
 
 with test.assertRaisesRegexp(code_aster.AsterError, "SUPERVIS_4"):
     CREA_MAILLAGE(
-        COQUE_SOLIDE=(_F(GROUP_MA="CoqueVoluCells"), _F(GROUP_MA="CoqueVolu2")),
+        RESTREINT=(_F(GROUP_MA="group1"), _F(GROUP_MA="group2")),
         MAILLAGE=MA,
     )
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ def post_champ_prod(RESULTAT_REDUIT,**args):
 REST_REDUIT_COMPLET=OPER(nom="REST_REDUIT_COMPLET",op=54,
                          sd_prod=post_champ_prod,
                          reentrant='n',
-    CHAM_GD          = FACT(statut='o',min = 1,
+    CHAM_GD          = FACT(statut='o',max="**",
          NOM_CHAM        = SIMP(statut='o', typ='TXM', validators=NoRepeat(), into=("DEPL","TEMP", "SIEF_NOEU", "FLUX_NOEU", "SIEF_ELGA", "VARI_ELGA")),
          BASE            = SIMP(statut='o', typ=mode_empi, max=1),
          OPERATION       = SIMP(statut='o', typ='TXM', into=("GAPPY_POD", "COMB")),
