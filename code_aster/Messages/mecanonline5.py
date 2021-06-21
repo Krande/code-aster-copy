@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -298,6 +298,15 @@ A cause des erreurs précédentes, le code s'arrête.
   dans le concept EVOL_NOLI fourni ou par le champ SIGM.
   On a comparé son nombre des sous-points avec celui correspondant au mot-clef COMPORTEMENT,
   il y a incohérence.
+"""),
+
+    59 : _("""
+  Vous utilisez le critère de convergence RESI_REFE_RELA et une modélisation %(k1)s.
+  Le résidu calculé à partir de %(k2)s dans CONVERGENCE, conduit à des valeurs nulles 
+  ce qui peut se produire si des éléments de ce type sont plans. 
+
+  Conseil :
+  Utiliser un autre critère de convergence.
 """),
 
     60 : _("""La formulation HHO est incompatible avec le contact."""),

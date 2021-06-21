@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -112,6 +112,7 @@ subroutine forngr(option, nomte)
     real(kind=8) :: vecpe ( 51 )
 !    POUR_RESI_REFE_RELA
     real(kind=8) :: sigtmp(5), ftemp(51), effint(51)
+    character(len=16) :: kmess(2)
 !
 !---- DECLARATIONS ROTATION GLOBAL LOCAL AU NOEUDS
 !
@@ -491,6 +492,13 @@ subroutine forngr(option, nomte)
         nval=nbcou*npge*npgsn*5
         call daxpy(51, 1.d0/nval, ftemp, 1, zr ( ivectu ),&
                    1)
+        do j = 1, 51
+            if (zr ( ivectu + j -1)  .eq. 0.) then
+                kmess(1) = 'COQUE3D'
+                kmess(2) = 'SIGM_REFE' 
+                call utmess('F', 'MECANONLINE5_59', nk=2, valk=kmess) 
+            endif
+        end do
     endif
 !
 end subroutine
