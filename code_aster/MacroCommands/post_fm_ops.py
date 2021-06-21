@@ -46,7 +46,7 @@ class PostFM(object):
         nodes = mesh.getNodes(group_no)
         # on vérifie qu'il y a un unique noeud dans le groupe de noeud => ERREUR
         if len(nodes) != 1:
-            UTMESS("E", "POSTFM_1", vali=len(nodes), valk=group_no)
+            UTMESS("F", "POSTFM_1", vali=len(nodes), valk=group_no)
         node = nodes[0]
         # récupération des entrées : inst, temp, g_elas et g_plas
         self._inst = np.array(inst)
@@ -86,17 +86,17 @@ class PostFM(object):
             if self.is_node_in_cell_groups(mesh, connectivity, cell_groups, node):
                 # on vérifie qu'il n'y a pas une deuxième affectation => ERREUR
                 if self._material is not None:
-                    UTMESS("E", "POSTFM_2")
+                    UTMESS("F", "POSTFM_2")
                 materials = part.getVectorOfMaterial()
                 assert len(materials) == 1
                 self._material = materials[0]
                 # on vérifie que le materiau est bien affecté par RUPT_FM => ERREUR
                 valres, codret = self._material.RCVALE("RUPT_FM", "TEMP", self._temp[0], "KIC", 2)
                 if codret[0] != 0:
-                    UTMESS("E", "POSTFM_3", valk=("KIC", "RUPT_FM"))
+                    UTMESS("F", "POSTFM_3", valk=("KIC", "RUPT_FM"))
         # on vérifie qu'on a bien trouvé un materiau => ERREUR
         if self._material is None:
-            UTMESS("E", "POSTFM_4")
+            UTMESS("F", "POSTFM_4")
 
     def _retrieve_material_properties(self):
         """retrieve Young modulus, Poisson ratio and KIC
@@ -209,6 +209,9 @@ def post_fm_ops(self, **kwargs):
     inst = table_g_values["INST"]
     g_elas = table_g_values["G_ELAS"]
     g_plas = table_g_values["G_PLAS"]
+
+    if resultat.getMaterialField() is None:
+        UTMESS("F", "POSTFM_5")
 
     temp = []
     for i in inst:
