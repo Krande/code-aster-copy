@@ -35,4 +35,6 @@ Vérifiez que le matériau utilisé est bien défini avec le mot-clé facteur %(
 
     4 : _("""Il n'a pas été possible de récupérer le matériau en fond de fissure."""),
 
+    5 : _("""On ne trouve pas de champ matériau dans le résultat fourni sous le mot clé RESULTAT."""),
+
 }
