@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,8 @@
 !
 subroutine cgfint(ndim, nno1, nno2, npg, wref,&
                   vff1, vff2, dffr1, geom, tang,&
-                  typmod, option, mat, compor, lgpg,&
-                  crit, instam, instap, ddlm, ddld,&
+                  typmod, option, mat, comporKit, lgpg,&
+                  carcri, instam, instap, ddlm, ddld,&
                   iu, iuc, im, a, sigm,&
                   vim, sigp, vip, matr, vect,&
                   codret)
@@ -38,13 +38,14 @@ implicit none
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/Behaviour_type.h"
+#include "asterfort/utmess.h"
     character(len=8) :: typmod(*)
-    character(len=16) :: option, compor(*), compoz(7)
+    character(len=16) :: option, comporKit(COMPOR_SIZE)
 !
     integer :: ndim, nno1, nno2, npg, mat, lgpg, iu(3, 3), iuc(3), im(3)
     integer :: codret
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), geom(ndim, nno1), wref(npg)
-    real(kind=8) :: crit(*), instam, instap, sigm(3, npg)
+    real(kind=8) :: carcri(CARCRI_SIZE), instam, instap, sigm(3, npg)
     real(kind=8) :: ddlm(nno1*(ndim+1) + nno2), ddld(nno1*(ndim+1) + nno2)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg), vect(nno1*(ndim+1) + nno2)
     real(kind=8) :: dffr1(nno1, npg), tang(*), sigp(3, npg), matr(*)
@@ -87,15 +88,16 @@ implicit none
 ! OUT VECT    : FORCES INTERIEURES    (RAPH_MECA   ET FULL_MECA_*)
 ! OUT CODRET  : CODE RETOUR
 ! ----------------------------------------------------------------------
-    character(len=16) :: cmp1, cmp2
+    character(len=16) :: relaSheath, relaCable
+    integer :: numeSheath, nbviSheath, nbviCable
     aster_logical :: resi, rigi
-    integer :: nddl, g, cod(27), n, i, m, j, kk, codm(1), nbvifr, nbvica
-    integer :: nbvi
+    integer :: nddl, g, cod(27), n, i, m, j, kk, codm(1)
+    integer :: nume
     real(kind=8) :: r, mu, epsm, deps, wg, l(3), de(1), ddedt, t1
     real(kind=8) :: b(4, 3), gliss
     real(kind=8) :: sigcab, dsidep, dde(2), ddedn, courb
-    real(kind=8) :: angmas(3), val(1), wkin(2), wkout(1)
-    character(len=16) :: nom(1)
+    real(kind=8) ::  val(1), wkin(2), wkout(1)
+    character(len=16) :: nom(1), comporSheath(COMPOR_SIZE)
     character(len=1) :: poum
 !
     data nom /'PENA_LAGR'/
@@ -107,22 +109,21 @@ implicit none
     resi = option(1:4).eq.'FULL' .or. option(1:4).eq.'RAPH'
     rigi = option(1:4).eq.'FULL' .or. option(1:4).eq.'RIGI'
     nddl = nno1*(ndim+1) + nno2
-!
-!
-    ASSERT(compor(RELA_NAME).eq.'KIT_CG')
-    cmp2(1:16)=compor(CABLE_NAME)
-    cmp1(1:16)=compor(SHEATH_NAME)
-    do i = 1, 7
-        compoz(i)=compor(i)
-    end do
-    compoz(1)=cmp1
-    write (compoz(NUME),'(I16)') 152
-    do g = 1, npg
-        cod(g)=0
-    end do
-    read (compor(NVAR),'(I16)') nbvi
-    nbvifr = 2
-    nbvica = nbvi - nbvifr
+    cod = 0
+
+! - Prepare compor maps
+    ASSERT(comporKit(RELA_NAME) .eq. 'KIT_CG')
+    relaSheath = comporKit(SHEATH_NAME)
+    relaCable = comporKit(CABLE_NAME)
+    read (comporKit(NUME),'(I16)') nume
+    read (comporKit(SHEATH_NUME),'(I16)') numeSheath
+    read (comporKit(SHEATH_NVAR),'(I16)') nbviSheath
+    read (comporKit(CABLE_NVAR),'(I16)') nbviCable
+    comporSheath = comporKit
+    comporSheath(RELA_NAME) = relaSheath
+    write (comporSheath(NUME),'(I16)') numeSheath
+    write (comporSheath(NVAR),'(I16)') nbviSheath
+
 !
     if (rigi) call r8inir(nddl*nddl, 0.d0, matr, 1)
     if (resi) call r8inir(nddl, 0.d0, vect, 1)
@@ -169,22 +170,18 @@ implicit none
 !                DES VARIABLES INTERNES DU CABLE (VIP)
 !                DE LA TANGENTE D(SIGCAB)/D(EPSCAB)
 !
-        if (cmp2 .eq. 'ELAS' .or. cmp2 .eq. 'VMIS_ISOT_LINE' .or. cmp2 .eq.&
-            'VMIS_ISOT_TRAC' .or. cmp2 .eq. 'CORR_ACIER' .or. cmp2 .eq. 'VMIS_CINE_LINE'&
-            .or. cmp2 .eq. 'PINTO_MENEGOTTO' .or. cmp2 .eq. 'VMIS_ASYM_LINE' .or. cmp2 .eq.&
-            'SANS') then
-!     ---------------------------------------------------
-!
-!
-            call nmiclg('RIGI', g, 1, option, cmp2,&
+        if (relaCable .eq. 'ELAS'  .or. relaCable .eq. 'VMIS_ISOT_TRAC' .or.&
+            relaCable .eq. 'VMIS_ISOT_LINE' .or.&
+            relaCable .eq. 'CORR_ACIER' .or. relaCable .eq. 'VMIS_CINE_LINE' .or.&
+            relaCable .eq. 'PINTO_MENEGOTTO' .or. relaCable .eq. 'VMIS_ASYM_LINE' .or.&
+            relaCable .eq. 'SANS') then
+
+            call nmiclg('RIGI', g, 1, option, relaCable,&
                         mat, epsm, deps, sigm(1, g)/a, vim(1, g),&
-                        sigcab, vip(1, g), dsidep, crit, codret)
+                        sigcab, vip(1, g), dsidep, carcri, codret)
 !
         else
-            call r8inir(3, r8nnem(), angmas, 1)
-            call comp1d('RIGI', g, 1, option, sigm(1, g)/a,&
-                        epsm, deps, angmas, vim(1, g), vip(1, g),&
-                        sigcab, dsidep, codret)
+            call utmess('F', 'CABLE0_26')
 !
         endif
 !
@@ -215,10 +212,10 @@ implicit none
         wkin(2)=courb
 !
         call nmcomp('RIGI', g, 1, ndim, typmod,&
-                    mat, compoz, crit, instam, instap,&
+                    mat, comporSheath, carcri, instam, instap,&
                     1, [mu], [gliss], 1, [0.d0],&
-                    vim(nbvica+1, g), option, [0.d0], 2, wkin,&
-                    de, vip(nbvica+1, g), 36, dde, 1,&
+                    vim(nbviCable+1, g), option, [0.d0], 2, wkin,&
+                    de, vip(nbviCable+1, g), 36, dde, 1,&
                     wkout, cod(g))
         if (cod(g) .eq. 1) goto 999
 !

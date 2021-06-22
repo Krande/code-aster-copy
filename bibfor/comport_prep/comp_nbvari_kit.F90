@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ aster_logical, intent(out) :: l_meca_mfront
     character(len=16) :: rela_flua, rela_plas, rela_cpla, rela_coup
     integer :: nb_vari_flua, nb_vari_plas, nb_vari_cpla, nb_vari_coup
     character(len=16) :: rela_comp_cg(2)
-    integer :: nb_vari_cg(2)
+    integer :: nb_vari_cg(2), numeCompCG(2)
     integer :: nume_comp_plas, nume_comp_flua
     integer :: nume_comp_thmc, nume_comp_hydr, nume_comp_meca, nume_comp_ther
 !
@@ -141,9 +141,11 @@ aster_logical, intent(out) :: l_meca_mfront
     if (l_kit_cg) then
         rela_comp_cg(1) = kit_comp(1)
         rela_comp_cg(2) = kit_comp(2)
-        call cg_kit_nvar(rela_comp_cg, nb_vari_cg)
+        call cg_kit_nvar(rela_comp_cg, nb_vari_cg, numeCompCG)
         nb_vari_comp(1) = nb_vari_cg(1)
         nb_vari_comp(2) = nb_vari_cg(2)
+        nume_comp(2)    = numeCompCG(1)
+        nume_comp(3)    = numeCompCG(2)
     endif
 !
 end subroutine

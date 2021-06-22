@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -87,6 +87,10 @@
 !
 #define CABLE_NAME   9
 #define SHEATH_NAME  10
+#define CABLE_NUME   13
+#define SHEATH_NUME  14
+#define CABLE_NVAR   17
+#define SHEATH_NVAR  18
 
 ! --------------------------------------------------------------------------------------------------
 !

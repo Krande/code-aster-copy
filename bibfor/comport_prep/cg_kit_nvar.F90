@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine cg_kit_nvar(rela_comp_cg, nb_vari_cg)
+! person_in_charge: mickael.abbas at edf.fr
+!
+subroutine cg_kit_nvar(rela_comp_cg, nb_vari_cg, numeCompCG)
 !
 implicit none
 !
@@ -25,10 +26,9 @@ implicit none
 #include "asterc/lcinfo.h"
 #include "asterc/lcdiscard.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=16), intent(in) :: rela_comp_cg(2)
-    integer, intent(out) :: nb_vari_cg(2)
+character(len=16), intent(in) :: rela_comp_cg(2)
+integer, intent(out) :: nb_vari_cg(2)
+integer, intent(out) :: numeCompCG(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,13 +48,13 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_vari_cg(1) = 0
-    nb_vari_cg(2) = 0
+    nb_vari_cg = 0
+    numeCompCG = 0
     call lccree(1, rela_comp_cg(1), rela_py)
-    call lcinfo(rela_py, numlc, nb_vari_cg(1), nbvari_ext)
+    call lcinfo(rela_py, numeCompCG(1), nb_vari_cg(1), nbvari_ext)
     call lcdiscard(rela_py)
     call lccree(1, rela_comp_cg(2), rela_py)
-    call lcinfo(rela_py, numlc, nb_vari_cg(2), nbvari_ext)
+    call lcinfo(rela_py, numeCompCG(2), nb_vari_cg(2), nbvari_ext)
     call lcdiscard(rela_py)
 !
 end subroutine
