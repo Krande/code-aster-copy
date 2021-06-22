@@ -127,9 +127,9 @@ Contactez le support technique.
    - soit plusieurs noeuds
 """),
 
-
-
-
+    23 : _("""
+Le champ fourni doit être issu de l'option EFGE_ELNO et non %(k1)s.
+"""),
 
 
     26 : _("""

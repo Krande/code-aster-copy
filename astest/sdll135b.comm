@@ -36,13 +36,9 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
 CHABSC = CREA_CHAMP(OPERATION = 'EXTR' , TYPE_CHAM = 'CART_ABSC_R',
                      NOM_CHAM = 'ABSC_CURV' , MAILLAGE = MAIL , )
 
-ABSC=CREA_TABLE(RESU=_F(CHAM_GD=CHABSC,
+TAB_ABSC=CREA_TABLE(RESU=_F(CHAM_GD=CHABSC,
             TOUT='OUI',
             TOUT_CMP='OUI',),)
-
-IMPR_TABLE(TABLE=ABSC,UNITE = 6,)
-
-
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
@@ -513,7 +509,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=32,
                   PRECISION=1.E-08,),
           )
 
-# Validation de POST_RCCM/OPTION='MOMENT_EQUIVALENT'
+# Validation de POST_RCCM/OPTION='MOMENT_EQUIVALENT' / RESULTAT
 
 TAB_MEQ = POST_RCCM(TYPE_RESU_MECA='B3600',
                     OPTION = 'MOMENT_EQUIVALENT',
@@ -543,6 +539,8 @@ TABM937N939 = CALC_TABLE(TABLE=TABMO,
                                 VALE_K ='N939'),
                             ) 
                     )
+# IMPR_TABLE(UNITE=6, TABLE=TABM937N939)
+
 
 MOMEQ_FO = FORMULE(VALE='sqrt(MT*MT+MFY*MFY+MFZ*MFY)',
                  NOM_PARA=('MT', 'MFY', 'MFZ'),)
@@ -561,6 +559,7 @@ TABM937N939MAX = CALC_TABLE(TABLE=TABM937N939,
                                 TYPE_CALCUL = 'MAXI_ABS'),
                             ) 
                     )
+
 # MFY et MFZ sont nulles sur toutes les mailles
 TEST_TABLE(  TABLE=TABM937N939MAX,
              NOM_PARA='MT',
@@ -598,6 +597,107 @@ TEST_TABLE(  TABLE=TAB_MEQ,
              REFERENCE='AUTRE_ASTER',
              VALE_REFE=1.005623252173637, 
              VALE_CALC=1.005623252173637,
+             )
+
+# N939 est le deuxième noeud de la maille M937
+TEST_TABLE(  TABLE=TAB_ABSC,
+             NOM_PARA='ABSC2',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M937',
+                       ),
+                    ),
+             VALE_CALC=0.937000000000001,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQ,
+             NOM_PARA='ABSC_CURV',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M937',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='N939',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=0.937000000000001, 
+             VALE_CALC=0.937000000000001,
+             )
+
+# Validation de POST_RCCM/OPTION='MOMENT_EQUIVALENT' / CHAM_GD
+
+CHMOM = CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
+                     NOM_CHAM='EFGE_ELNO', RESULTAT=DYNATRAM,
+                     NUME_ORDRE=30,
+                               )
+
+
+TAB_MEQ2 = POST_RCCM(TYPE_RESU_MECA='B3600',
+                    OPTION = 'MOMENT_EQUIVALENT',
+                    ZONE_ANALYSE=_F(TOUT='OUI', ),
+                    RESU_MECA=_F(CHAM_GD=CHMOM,
+                                 )
+                    )
+
+# -- on construit les résultats de référence pour un couple maille/noeud
+TABMOCH = CREA_TABLE(RESU=_F(CHAM_GD=CHMOM, 
+                           NOM_CMP=('MT', 'MFY', 'MFZ'),
+                           TOUT='OUI', ))
+
+TABM937N939CH = CALC_TABLE(TABLE=TABMOCH,
+                     ACTION=(_F(OPERATION='FILTRE',
+                                NOM_PARA='MAILLE',
+                                VALE_K ='M937'),
+                             _F(OPERATION='FILTRE',
+                                NOM_PARA='NOEUD',
+                                VALE_K ='N939'),
+                            ) 
+                    )
+
+TABM937N939CH = CALC_TABLE(TABLE=TABM937N939CH,reuse=TABM937N939CH,
+                     ACTION=(_F(OPERATION='OPER',
+                                FORMULE=MOMEQ_FO,
+                                NOM_PARA='MEQ',
+                                NOM_COLONNE=('MT', 'MFY', 'MFZ'),),
+                            ) 
+                    )  
+
+# MFY et MFZ sont nulles sur toutes les mailles
+TEST_TABLE(  TABLE=TABM937N939CH,
+             NOM_PARA='MT',
+             VALE_CALC=0.9998954707298446,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQ2,
+             NOM_PARA='MT',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M937',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='N939',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=0.9998954707298446, 
+             VALE_CALC=0.9998954707298446,
+             )
+
+TEST_TABLE(  TABLE=TABM937N939CH,
+             NOM_PARA='MEQ',
+             VALE_CALC=0.9998954707298446,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQ2,
+             NOM_PARA='MEQ',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M937',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='N939',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=0.9998954707298446, 
+             VALE_CALC=0.9998954707298446,
              )
 
 FIN();
