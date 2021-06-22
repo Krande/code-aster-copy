@@ -519,7 +519,7 @@ TAB_MEQ = POST_RCCM(TYPE_RESU_MECA='B3600',
                                  TOUT_ORDRE='OUI',
                                  )
                     )
-
+IMPR_RESU(UNITE=6, FORMAT='RESULTAT',RESU=_F(RESULTAT=DYNATRAM, NOM_CHAM='EFGE_ELNO', MAILLE='M1'))
 # IMPR_TABLE(TABLE=TAB_MEQ, UNITE=6)
 
 
@@ -807,5 +807,86 @@ TEST_TABLE(  TABLE=TAB_MEQ2,
              VALE_REFE=0.9998954707298446, 
              VALE_CALC=0.9998954707298446,
              )
+
+
+# Validation de POST_RCCM/OPTION='MOMENT_EQUIVALENT' / RESULTAT / NUME_ORDRE
+
+TAB_MEQ3 = POST_RCCM(TYPE_RESU_MECA='B3600',
+                    OPTION = 'MOMENT_EQUIVALENT',
+                    ZONE_ANALYSE=_F(TOUT='OUI', ),
+                    RESU_MECA=_F(RESULTAT=DYNATRAM,
+                                 NOM_CHAM='EFGE_ELNO',
+                                 NUME_ORDRE=30,
+                                 )
+                    )
+
+TEST_TABLE(  TABLE=TAB_MEQ3,
+             NOM_PARA='MT',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M937',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='N939',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=0.9998954707298446, 
+             VALE_CALC=0.9998954707298446,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQ3,
+             NOM_PARA='MEQ',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M937',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='N939',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=0.9998954707298446, 
+             VALE_CALC=0.9998954707298446,
+             )
+
+
+# Validation de POST_RCCM/OPTION='MOMENT_EQUIVALENT' / RESULTAT / INST
+
+TAB_MEQ4 = POST_RCCM(TYPE_RESU_MECA='B3600',
+                    OPTION = 'MOMENT_EQUIVALENT',
+                    ZONE_ANALYSE=_F(TOUT='OUI', ),
+                    RESU_MECA=_F(RESULTAT=DYNATRAM,
+                                 #NOM_CHAM='EFGE_ELNO', # EFGE_ELNO par defaut
+                                 INST=3E-4,
+                                 )
+                    )
+
+TEST_TABLE(  TABLE=TAB_MEQ4,
+             NOM_PARA='MT',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M937',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='N939',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=0.9998954707298446, 
+             VALE_CALC=0.9998954707298446,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQ4,
+             NOM_PARA='MEQ',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M937',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='N939',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=0.9998954707298446, 
+             VALE_CALC=0.9998954707298446,
+             )
+
 
 FIN();

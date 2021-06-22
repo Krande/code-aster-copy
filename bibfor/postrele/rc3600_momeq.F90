@@ -172,6 +172,47 @@ subroutine rc3600_momeq()
                 call utmess('F','CALCULEL2_26', sk=nomsym, si=nuordr)
             endif
         end do
+        
+
+!
+!       -- 3. RECOPIE DES PARAMETRES DE RESU VERS resuTmp :
+!       --------------------------------------------------
+        nompar='&&RC3600'//'.NOMS_PARA'
+        call rsnopa(resu, 2, nompar, nbac, nbpa)
+        nbpara=nbac+nbpa
+        call jeveuo(nompar, 'L', jnompa)
+        resuTmp19 = resuTmp
+        call jeveuo(resuTmp19//'.ORDR', 'L', jordr)
+        call jelira(resuTmp19//'.ORDR', 'LONUTI', nbordr)
+!
+        do i = 1, nbordr
+            nuordr=zi(jordr-1+i)
+            do j = 1, nbpara
+                nopara=zk16(jnompa-1+j)
+                call rsadpa(resu, 'L', 1, nopara, nuordr,&
+                            1, sjv=iadin, styp=type, istop=0)
+                call rsadpa(resuTmp, 'E', 1, nopara, nuordr,&
+                            1, sjv=iadou, styp=type)
+                if (type(1:1) .eq. 'I') then
+                    zi(iadou)=zi(iadin)
+                else if (type(1:1).eq.'R') then
+                    zr(iadou)=zr(iadin)
+                else if (type(1:1).eq.'C') then
+                    zc(iadou)=zc(iadin)
+                else if (type(1:3).eq.'K80') then
+                    zk80(iadou)=zk80(iadin)
+                else if (type(1:3).eq.'K32') then
+                    zk32(iadou)=zk32(iadin)
+                else if (type(1:3).eq.'K24') then
+                    zk24(iadou)=zk24(iadin)
+                else if (type(1:3).eq.'K16') then
+                    zk16(iadou)=zk16(iadin)
+                else if (type(1:2).eq.'K8') then
+                    zk8(iadou)=zk8(iadin)
+                endif
+            enddo
+        enddo
+        call jedetr(nompar)        
 !
         call jedetr('&&RC3600.NUME_ORDRE')
         ASSERT(.not. lvide)
