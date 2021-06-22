@@ -37,8 +37,6 @@ EFGE_EQUIV = Option(
     ),
     condition=(
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.EFGE,'OUI'),(AT.BORD,'0'),)),
-      # CondCalcul('+', ((AT.MODELI,'PDT'),)),
     ),
-    comment="""  EFGE_EQUIV : CALCUL DU MOMENT EQUIVALENT
-           POUR LES POU_D_T """,
+    comment="""  EFGE_EQUIV : CALCUL DU MOMENT EQUIVALENT (RCCM B3600)""",
 )

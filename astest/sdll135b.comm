@@ -509,7 +509,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=32,
                   PRECISION=1.E-08,),
           )
 
-# Validation de POST_RCCM/OPTION='MOMENT_EQUIVALENT' / RESULTAT
+# Validation de POST_RCCM/OPTION='MOMENT_EQUIVALENT' / RESULTAT / TOUT
 
 TAB_MEQ = POST_RCCM(TYPE_RESU_MECA='B3600',
                     OPTION = 'MOMENT_EQUIVALENT',
@@ -622,6 +622,114 @@ TEST_TABLE(  TABLE=TAB_MEQ,
              VALE_REFE=0.937000000000001, 
              VALE_CALC=0.937000000000001,
              )
+
+
+# Validation de POST_RCCM/OPTION='MOMENT_EQUIVALENT' / RESULTAT / GROUP_MA
+
+TAB_MEQGR = POST_RCCM(TYPE_RESU_MECA='B3600',
+                    OPTION = 'MOMENT_EQUIVALENT',
+                    ZONE_ANALYSE=_F(GROUP_MA='PART1', ),
+                    RESU_MECA=_F(RESULTAT=DYNATRAM,
+                                 NOM_CHAM='EFGE_ELNO',
+                                 TOUT_ORDRE='OUI',
+                                 )
+                    )
+
+# IMPR_TABLE(TABLE=TAB_MEQGR, UNITE=6)
+
+
+TABM420N421 = CALC_TABLE(TABLE=TABMO,
+                     ACTION=(_F(OPERATION='FILTRE',
+                                NOM_PARA='MAILLE',
+                                VALE_K ='M420'),
+                             _F(OPERATION='FILTRE',
+                                NOM_PARA='NOEUD',
+                                VALE_K ='N421'),
+                            ) 
+                    )
+
+
+
+
+TABM420N421 = CALC_TABLE(TABLE=TABM420N421,reuse=TABM420N421,
+                     ACTION=(_F(OPERATION='OPER',
+                                FORMULE=MOMEQ_FO,
+                                NOM_PARA='MEQ',
+                                NOM_COLONNE=('MT', 'MFY', 'MFZ'),),
+                            ) 
+                    )
+                    
+TABM420N421MAX = CALC_TABLE(TABLE=TABM420N421,
+                     ACTION=(_F(OPERATION='CALCUL',
+                                NOM_PARA=('MT', 'MFY', 'MFZ','MEQ'),
+                                TYPE_CALCUL = 'MAXI_ABS'),
+                            ) 
+                    )
+
+# MFY et MFZ sont nulles sur toutes les mailles
+TEST_TABLE(  TABLE=TABM420N421MAX,
+             NOM_PARA='MT',
+             VALE_CALC=1.0070055724914786,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQGR,
+             NOM_PARA='MT',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M420',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='N421',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=1.0070055724914786, 
+             VALE_CALC=1.0070055724914786,
+             )
+
+TEST_TABLE(  TABLE=TABM420N421MAX,
+             NOM_PARA='MEQ',
+             VALE_CALC=1.0070055724914786,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQGR,
+             NOM_PARA='MEQ',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M420',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='N421',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=1.0070055724914786, 
+             VALE_CALC=1.0070055724914786,
+             )
+
+# N421 est le premier noeud de la maille M420
+TEST_TABLE(  TABLE=TAB_ABSC,
+             NOM_PARA='ABSC1',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M420',
+                       ),
+                    ),
+             VALE_CALC=0.41900000000000004,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQGR,
+             NOM_PARA='ABSC_CURV',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M420',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='N421',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=0.41900000000000004, 
+             VALE_CALC=0.41900000000000004,
+             )
+
+
 
 # Validation de POST_RCCM/OPTION='MOMENT_EQUIVALENT' / CHAM_GD
 

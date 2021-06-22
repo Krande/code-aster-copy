@@ -325,6 +325,11 @@ class MECA_POU_D_E(Element):
                        (OP.EFGE_ELNO.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG), ),
             para_out=( (SP.PEFFORC, EEFGENC), (OP.EFGE_ELNO.PEFFORR, EEFGENO), ),
         ),
+        
+        OP.EFGE_EQUIV(te=83,
+            para_in =( (SP.PEFFONR, EEFGENO), ),
+            para_out=( (SP.PEFFOENR, LC.EEFGENOQ), ),
+        ),
 
         OP.EPOT_ELEM(te=151,
             para_in =( (SP.PCAGNPO, CCAGNPO), (OP.EPOT_ELEM.PCAORIE, CCAORIE), 

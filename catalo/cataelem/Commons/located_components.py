@@ -676,6 +676,10 @@ EDOMGNO = LocatedComponents(phys=PHY.DOMA_R, type='ELNO',
 EDURTNO = LocatedComponents(phys=PHY.DURT_R, type='ELNO',
                             components=('HV',))
 
+EEFGENOQ = LocatedComponents(phys=PHY.SIEF_R, type='ELNO',
+                            components=('MT', 'MFY',
+                                        'MFZ','MEQ'))
+
 EEINST_R = LocatedComponents(phys=PHY.INST_R, type='ELNO',
                              components=('INST',))
 

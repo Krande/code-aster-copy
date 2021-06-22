@@ -52,7 +52,7 @@ subroutine rc3600_momeq()
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsutnu.h"
 #include "asterfort/utmess.h"
-!#include "asterfort/imprsd.h"
+#include "asterfort/imprsd.h"
     character(len=8) :: resu, champ
 
     integer :: ifm, niv
@@ -73,7 +73,7 @@ subroutine rc3600_momeq()
     character(len=19) :: chin, chextr, ligrel, resu19, lchin(1), lchout(1)
     character(len=19) :: noch19, tychlu, mcf
     integer :: vali(2), iexi
-    aster_logical :: lreel, lnoeu, ldetli
+    aster_logical :: lreel, lnoeu, ldetli, lvide
     
 
     
@@ -93,9 +93,9 @@ subroutine rc3600_momeq()
     
     lpain(1)='PEFFONR'
     lpaout(1)='PEFFOENR'
-
     
     if (n0.ge.1) then
+        lvide=.true.
         conceptin = resu
         resu19=resu
         call dismoi('TYPE_RESU', resu, 'RESULTAT', repk=typesd)
@@ -130,6 +130,7 @@ subroutine rc3600_momeq()
             nuordr=zi(jordr-1+i)
             call rsexch(' ', resu19, nomsym, nuordr, chin,&
                         iret)
+
             if (iret .eq. 0) then
 !
 !         -- 3.1 : MODELE, LIGREL :
@@ -162,14 +163,18 @@ subroutine rc3600_momeq()
                 if (iexi .eq. 0) then
                     call utmess('A', 'CALCULEL2_18', si=nuordr)
                 else
-!                    call imprsd('CHAMP',chextr, 6, 'test')
+!                    if (nuordr.eq.6)call imprsd('CHAMP',chextr, 6, 'test')
                     ldetli=.false.
                     call rsnoch(resuTmp, nomsym, nuordr)
+                    lvide = .false.
                 endif
+            else
+                call utmess('F','CALCULEL2_26', sk=nomsym, si=nuordr)
             endif
         end do
 !
         call jedetr('&&RC3600.NUME_ORDRE')
+        ASSERT(.not. lvide)
 
 !       sélection des maximas
 !       ---------------------

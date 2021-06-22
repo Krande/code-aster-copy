@@ -182,6 +182,11 @@ Conseil :
   Il s'agit certainement d'éléments de joint 2D.
 """),
 
+    26: _("""
+On ne trouve pas le champ de nom %(k1)s pour le numéro d'ordre %(i1)d dans
+le concept résultat fourni.
+"""),
+
     31: _("""
 Erreur utilisateur dans la commande AFFE_CARA_ELEM :
   On a affecté un excentrement non nul (mot clé COQUE / EXCENTREMENT)

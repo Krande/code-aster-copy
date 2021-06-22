@@ -22,9 +22,10 @@ subroutine te0083(option, nomte)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
+#include "asterfort/tecach.h"
 !
     character(len=16) :: option, nomte
-!     OPTION : EFGE_EQUIV / POU_D_T
+!     OPTION : EFGE_EQUIV
 !     IN   K16   OPTION : NOM DE L'OPTION A CALCULER
 !     IN   K16   NOMTE  : NOM DU TYPE_ELEMENT
 !
@@ -32,20 +33,24 @@ subroutine te0083(option, nomte)
 !     4 composantes en sortie :
 !     MT, MFY, MFZ et MEQ = sqrt(MT**2+MFY**2+MFZ**2)
 !     ------------------------------------------------------------------
-    integer :: jin, jout, i
+    integer :: jin, jout, i, ibid, itab(7), lgcata
     integer :: nbpoin, nbcompin, nbcompout
     real(kind=8) :: mt, mfy, mfz, meq
 !     ------------------------------------------------------------------
 !
     ASSERT(option.eq.'EFGE_EQUIV')
     call jevech('PEFFONR', 'L', jin)
+    call tecach('OOO', 'PEFFONR', 'L', ibid, nval=7,&
+                    itab=itab)
     call jevech('PEFFOENR', 'E', jout)
     
-    nbcompin  = 6
+    jin=itab(1)
+    nbpoin=itab(3)
+    lgcata=itab(2)
+    nbcompin=lgcata/nbpoin
+    ASSERT(nbcompin.eq.6 .or. nbcompin.eq.7)
     nbcompout = 4
-    nbpoin = 2
     do i=1, nbpoin
-        
         mt  = zr(jin+nbcompin*(i-1)-1+4)
         mfy = zr(jin+nbcompin*(i-1)-1+5)
         mfz = zr(jin+nbcompin*(i-1)-1+6)
