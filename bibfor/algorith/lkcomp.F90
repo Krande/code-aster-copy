@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,6 +33,7 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 #include "asterfort/lcsove.h"
 #include "asterfort/lkcrip.h"
 #include "asterfort/lkcriv.h"
+#include "asterfort/Behaviour_type.h"
 #include "asterfort/lkdgde.h"
 #include "asterfort/lkelas.h"
 #include "asterfort/lkgamp.h"
@@ -106,7 +107,7 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
     real(kind=8) :: dsig(6), vecd(6)
     real(kind=8) :: de(6, 6), kk, mu
     real(kind=8) :: kron(6), vintr
-    real(kind=8) :: somme
+    real(kind=8) :: somme, variTmp(9)
     character(len=3) :: matcst
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------
@@ -124,6 +125,7 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 !
     dt = instap - instam
     retcom = 0
+    variTmp = 0.d0
     call r8inir(6, 0.d0, depsp, 1)
     call r8inir(6, 0.d0, depsv, 1)
     dgamp = zero
@@ -284,14 +286,14 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 !
 !---- XIV A T + DT ------------------------------------------------
 !
-            vinp(3) = vinm(3)
+            variTmp(3) = vinm(3)
 !
 !---- GAMMAV A T + DT ---------------------------------------------
 !
-            vinp(4) = vinm(4)
+            variTmp(4) = vinm(4)
 !
 ! --  INDICATEUR DE VISCOSITE
-            vinp(6) = 0.d0
+            variTmp(6) = 0.d0
 !
         else
 ! =================================================================
@@ -318,14 +320,14 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 !
 !---- XIV A T + DT ------------------------------------------------
 !
-            vinp(3) = vinm(3) + dxiv
+            variTmp(3) = vinm(3) + dxiv
 !
 !---- GAMMAV A T + DT ---------------------------------------------
 !
-            vinp(4) = vinm(4) + dgamv
+            variTmp(4) = vinm(4) + dgamv
 !
 ! --  INDICATEUR DE VISCOSITE
-            vinp(6) = 1.d0
+            variTmp(6) = 1.d0
 !
         endif
 !
@@ -380,7 +382,7 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 !--------- CONTRACTANCE
 !---------- ELASTICITE EN DESSOUS DU CRITERE VISQUEUX MAX
                 dxip = zero
-                vinp(5) = 0.0d0
+                variTmp(5) = 0.0d0
 !
             else if (varv.eq.1) then
 !
@@ -388,20 +390,20 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 !---------- ELASTICITE EN DESSUS DU CRITERE VISQUEUX MAX
 !
                 dxip = dgamv
-                vinp(5) = 1.0d0
+                variTmp(5) = 1.0d0
 !
             endif
 !
 !---- XIP A T + DT ------------------------------------------------
 !
-            vinp(1) = vinm(1) + dxip
+            variTmp(1) = vinm(1) + dxip
 !
 !---- GAMMAP A T + DT ---------------------------------------------
 !
-            vinp(2) = vinm(2)
+            variTmp(2) = vinm(2)
 !
 ! --  INDICATEUR DE PLASTICITE
-            vinp(7) = 0.d0
+            variTmp(7) = 0.d0
 !
         else
 ! =================================================================
@@ -433,7 +435,7 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 !--------- PLASTIFICATION ET EN DESSOUS DU CRITERE VISQUEUX MAX
 !
                 dxip = dgamp
-                vinp(5) = 0.0d0
+                variTmp(5) = 0.0d0
 !
             else if (varv.eq.1) then
 !
@@ -441,7 +443,7 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 !--------- PLASTIFICATION ET EN DESSUS DU CRITERE VISQUEUX MAX
 !
                 dxip = dgamp + dgamv
-                vinp(5) = 1.0d0
+                variTmp(5) = 1.0d0
 !
             endif
 ! =================================================================
@@ -464,15 +466,15 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 !==================================================================
 !---- XIP A T + DT ------------------------------------------------
 !
-            vinp(1) = vinm(1) + dxip
+            variTmp(1) = vinm(1) + dxip
 !
 !---- GAMMAP A T + DT ---------------------------------------------
 !
-            vinp(2) = vinm(2) + dgamp
+            variTmp(2) = vinm(2) + dgamp
 !
 ! --  INDICATEUR DE PLASTICITE
 !
-            vinp(7) = 1.d0
+            variTmp(7) = 1.d0
         endif
     endif
 !
@@ -493,9 +495,9 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
             endif
         endif
         if (option(1:9) .eq. 'FULL_MECA') then
-            if ((vinp(7) .eq. 0.d0) .and. (vinp(6) .eq. 0.d0)) then
+            if ((variTmp(7) .eq. 0.d0) .and. (variTmp(6) .eq. 0.d0)) then
                 matr = 0
-            else if ((vinp(7) .eq. 1.d0).or.(vinp(6) .eq. 1.d0)) then
+            else if ((variTmp(7) .eq. 1.d0).or.(variTmp(6) .eq. 1.d0)) then
                 matr = 1
             endif
         endif
@@ -561,4 +563,5 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
     end do
 ! =================================================================
 999 continue
+    vinp = variTmp
 end subroutine
