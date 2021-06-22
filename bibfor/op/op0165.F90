@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ subroutine op0165()
 #include "jeveux.h"
 #include "asterfort/infmaj.h"
 #include "asterc/r8vide.h"
+#include "asterfort/assert.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
@@ -36,6 +37,7 @@ subroutine op0165()
 #include "asterfort/utmess.h"
 #include "asterfort/rcevol.h"
 #include "asterfort/rc3600.h"
+#include "asterfort/rc3600_momeq.h"
 #include "asterc/getfac.h"
 #include "asterfort/rc3200.h"
 #include "asterfort/titre.h"
@@ -43,6 +45,7 @@ subroutine op0165()
 !
     real(kind=8) :: symax
     character(len=16) :: typtab, typmec, kopt(4)
+    character(len=24) :: option
     integer :: n1, nbopt, icodre
     character(len=8) :: nommat
 !
@@ -86,7 +89,14 @@ subroutine op0165()
 !
     else if (typmec .eq. 'B3600') then
 !
-        call rc3600()
+        call getvtx(' ', 'OPTION', scal=option, nbret=n1)
+        if (option.eq.'FATIGUE') then
+            call rc3600()
+        elseif (option.eq.'MOMENT_EQUIVALENT')then
+            call rc3600_momeq()
+        else
+            ASSERT(.false.)
+        endif
 !
 !     ------------------------------------------------------------------
 !

@@ -16,7 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine chmima(nomsd, nomsy, typcha, typmax, nocham)
+subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu,&
+                  mcfz)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -47,6 +48,8 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham)
 !
     integer :: nbordr
     character(len=*) :: nomsd, nomsy, typmax, nocham, typcha
+    character(len=8), optional :: typresu
+    character(len=*), optional :: mcfz
 !      AFFECTATION DU CHAMP-GD DE NOM NOCHAM  AVEC LES
 !      VALEURS MINMAX EN TOUT POINT DES CHAMPS-GD DE TYPE
 !      NOMSY DU RESULTAT DE NOM NOMSD
@@ -64,10 +67,11 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham)
     character(len=19) :: prno, prn2
     character(len=16) :: noms2
     character(len=19) :: nocha2, chextr, knum, chs1, chs2
+    character(len=19) :: mcf
     character(len=24) :: nomnoe
     character(len=5) :: sufv, sufsl
 !-----------------------------------------------------------------------
-    integer :: i, iad, in, inoe, inumer
+    integer :: i, iad, in, inoe, inumer, iocc
     integer :: iret, ivale, j, jddlx, jddly, jddlz, jdlrx
     integer :: jdlry, jdlrz, jordr, jvpnt, n2, nbnoe, nc
     integer :: neq, np, nvale, neq2, icsl
@@ -84,14 +88,27 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham)
 !
 !     --- LECTURE DU MOT-CLE TYPE_RESU ---
 !
-    call getvtx(' ', 'TYPE_RESU', scal=valeur, nbret=n2)
+    if (present(typresu)) then
+        valeur = typresu
+    else
+        call getvtx(' ', 'TYPE_RESU', scal=valeur, nbret=n2)
+    endif
 !
 !     --- RECUPERATION DES NUMEROS D'ORDRE ---
 !
-    call getvr8(' ', 'PRECISION', scal=epsi, nbret=np)
-    call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
+    if (present(mcfz))then
+        mcf=mcfz
+        iocc = 1
+    else
+        mcf = ' '
+        iocc = 0
+    endif
+    
+    
+    call getvr8(mcf, 'PRECISION', iocc=iocc, scal=epsi, nbret=np)
+    call getvtx(mcf, 'CRITERE', iocc=iocc, scal=crit, nbret=nc)
 !
-    call rsutnu(nomsd, ' ', 0, knum, nbordr,&
+    call rsutnu(nomsd, mcf, 1, knum, nbordr,&
                 epsi, crit, iret)
     if (nbordr .eq. 0) then
         call utmess('F', 'UTILITAI_23')

@@ -19,8 +19,11 @@
 !
 !
 interface
-    subroutine te0083(option, nomte)
-        character(len=16) :: option
-        character(len=16) :: nomte
-    end subroutine te0083
+    subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
+        character(len=8) :: nomtb
+        character(len=8) :: conceptin
+        character(len=16) :: nsymb
+        character(len=8) :: modele
+        character(len=19) :: champ
+    end subroutine rc3600_chtotab
 end interface

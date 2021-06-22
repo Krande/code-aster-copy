@@ -25,6 +25,25 @@ NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 
+MAIL=MODI_MAILLAGE(reuse =MAIL,
+           MAILLAGE=MAIL,
+           ABSC_CURV=_F(
+                TOUT='OUI',
+                # GROUP_MA ='PART1',
+                GROUP_NO_ORIG=('A',),),
+                );
+
+CHABSC = CREA_CHAMP(OPERATION = 'EXTR' , TYPE_CHAM = 'CART_ABSC_R',
+                     NOM_CHAM = 'ABSC_CURV' , MAILLAGE = MAIL , )
+
+ABSC=CREA_TABLE(RESU=_F(CHAM_GD=CHABSC,
+            TOUT='OUI',
+            TOUT_CMP='OUI',),)
+
+IMPR_TABLE(TABLE=ABSC,UNITE = 6,)
+
+
+
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
@@ -97,7 +116,7 @@ DYNATRAF=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                         INCREMENT=_F(LIST_INST=LISTE,),
                         ARCHIVAGE=_F(PAS_ARCH=100,),);
 
-DYNATRAF=CALC_CHAMP(reuse=DYNATRAF,RESULTAT=DYNATRAF,CONTRAINTE=('SIEF_ELGA','SIEF_ELNO'))
+DYNATRAF=CALC_CHAMP(reuse=DYNATRAF,RESULTAT=DYNATRAF,CONTRAINTE=('SIEF_ELGA','SIEF_ELNO','EFGE_ELNO'))
 
 
 DYNATRAF=CALC_CHAMP(reuse =DYNATRAF,
@@ -261,6 +280,8 @@ MODE_FZ=CALC_MODES(MATR_RIGI=RIGID,VERI_MODE=_F(STURM='NON'),
                    MATR_MASS=MASSE,
                    )
 
+MODE_FZ=CALC_CHAMP(reuse=MODE_FZ,RESULTAT=MODE_FZ,CONTRAINTE=('EFGE_ELNO'))
+
 # REMARQUE : LA COMPARAISON DES VALEURS DES FREQUENCES PAR RAPPORT
 # AUX VALEURS ANALYTIQUES SONT PLUS DEFAVORABLES QUE DANS LES AUTRES CAS
 # LA RAISON EST LA VALEUR DU COEFFICIENT DE SECTION REDUITE DIFFERENT ENRE LA
@@ -378,8 +399,7 @@ DYNATRAM=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                         INCREMENT=_F(LIST_INST=LISTE2,),
                         ARCHIVAGE=_F(PAS_ARCH=100,),);
 
-DYNATRAM=CALC_CHAMP(reuse=DYNATRAM,RESULTAT=DYNATRAM,CONTRAINTE=('SIEF_ELGA','SIEF_ELNO'))
-
+DYNATRAM=CALC_CHAMP(reuse=DYNATRAM,RESULTAT=DYNATRAM,CONTRAINTE=('SIEF_ELGA','SIEF_ELNO', 'EFGE_ELNO'))
 
 DYNATRAM=CALC_CHAMP(reuse =DYNATRAM,
                     RESULTAT=DYNATRAM,
@@ -492,5 +512,92 @@ TEST_RESU(RESU=_F(NUME_ORDRE=32,
                   CRITERE='ABSOLU',
                   PRECISION=1.E-08,),
           )
+
+# Validation de POST_RCCM/OPTION='MOMENT_EQUIVALENT'
+
+TAB_MEQ = POST_RCCM(TYPE_RESU_MECA='B3600',
+                    OPTION = 'MOMENT_EQUIVALENT',
+                    ZONE_ANALYSE=_F(TOUT='OUI', ),
+                    RESU_MECA=_F(RESULTAT=DYNATRAM,
+                                 NOM_CHAM='EFGE_ELNO',
+                                 TOUT_ORDRE='OUI',
+                                 )
+                    )
+
+# IMPR_TABLE(TABLE=TAB_MEQ, UNITE=6)
+
+
+# -- on construit les résultats de référence pour un couple maille/noeud
+TABMO = CREA_TABLE(RESU=_F(RESULTAT=DYNATRAM, 
+                           NOM_CMP=('MT', 'MFY', 'MFZ'),
+                           NOM_CHAM='EFGE_ELNO',
+                           TOUT='OUI', 
+                           TOUT_ORDRE='OUI'))
+
+TABM937N939 = CALC_TABLE(TABLE=TABMO,
+                     ACTION=(_F(OPERATION='FILTRE',
+                                NOM_PARA='MAILLE',
+                                VALE_K ='M937'),
+                             _F(OPERATION='FILTRE',
+                                NOM_PARA='NOEUD',
+                                VALE_K ='N939'),
+                            ) 
+                    )
+
+MOMEQ_FO = FORMULE(VALE='sqrt(MT*MT+MFY*MFY+MFZ*MFY)',
+                 NOM_PARA=('MT', 'MFY', 'MFZ'),)
+
+TABM937N939 = CALC_TABLE(TABLE=TABM937N939,reuse=TABM937N939,
+                     ACTION=(_F(OPERATION='OPER',
+                                FORMULE=MOMEQ_FO,
+                                NOM_PARA='MEQ',
+                                NOM_COLONNE=('MT', 'MFY', 'MFZ'),),
+                            ) 
+                    )
+                    
+TABM937N939MAX = CALC_TABLE(TABLE=TABM937N939,
+                     ACTION=(_F(OPERATION='CALCUL',
+                                NOM_PARA=('MT', 'MFY', 'MFZ','MEQ'),
+                                TYPE_CALCUL = 'MAXI_ABS'),
+                            ) 
+                    )
+# MFY et MFZ sont nulles sur toutes les mailles
+TEST_TABLE(  TABLE=TABM937N939MAX,
+             NOM_PARA='MT',
+             VALE_CALC=1.005623252173637,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQ,
+             NOM_PARA='MT',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M937',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='N939',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=1.005623252173637, 
+             VALE_CALC=1.005623252173637,
+             )
+
+TEST_TABLE(  TABLE=TABM937N939MAX,
+             NOM_PARA='MEQ',
+             VALE_CALC=1.005623252173637,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQ,
+             NOM_PARA='MEQ',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M937',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='N939',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=1.005623252173637, 
+             VALE_CALC=1.005623252173637,
+             )
 
 FIN();

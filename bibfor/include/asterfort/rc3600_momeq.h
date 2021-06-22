@@ -19,8 +19,6 @@
 !
 !
 interface
-    subroutine te0083(option, nomte)
-        character(len=16) :: option
-        character(len=16) :: nomte
-    end subroutine te0083
+    subroutine rc3600_momeq()
+    end subroutine rc3600_momeq
 end interface

@@ -161,6 +161,10 @@ EEFGENO = LocatedComponents(phys=PHY.SIEF_R, type='ELNO',
                             components=('N', 'VY', 'VZ', 'MT', 'MFY',
                                         'MFZ',))
 
+EEFGENOQ = LocatedComponents(phys=PHY.SIEF_R, type='ELNO',
+                            components=('MT', 'MFY',
+                                        'MFZ','MEQ'))
+
 
 ESTRAUX = LocatedComponents(phys=PHY.STRX_R, type='ELGA', location='RIGI',
                             components=('ALPHA', 'BETA', 'GAMMA',))
@@ -358,6 +362,12 @@ class MECA_POU_D_T(Element):
                        (SP.PVARCRR, LC.ZVARCPG), ),
             para_out=( (SP.PEFFORC, EEFGENC), (OP.EFGE_ELNO.PEFFORR, EEFGENO), ),
         ),
+        
+        OP.EFGE_EQUIV(te=83,
+            para_in =( (SP.PEFFONR, EEFGENO), ),
+            para_out=( (SP.PEFFOENR, EEFGENOQ), ),
+        ),
+
 
         OP.EPOT_ELEM(te=151,
             para_in =( (SP.PCAARPO, CCAARPO), (SP.PCAGNPO, CCAGNPO),

@@ -16,9 +16,44 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine te0083(nomopt, nomte)
+subroutine te0083(option, nomte)
     implicit none
-#include "asterfort/utmess.h"
-    character(len=16) :: nomte, nomopt
-    call utmess('F', 'FERMETUR_8')
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jevech.h"
+!
+    character(len=16) :: option, nomte
+!     OPTION : EFGE_EQUIV / POU_D_T
+!     IN   K16   OPTION : NOM DE L'OPTION A CALCULER
+!     IN   K16   NOMTE  : NOM DU TYPE_ELEMENT
+!
+!     POST_RCCM/MOMENT_EQUIVALENT
+!     4 composantes en sortie :
+!     MT, MFY, MFZ et MEQ = sqrt(MT**2+MFY**2+MFZ**2)
+!     ------------------------------------------------------------------
+    integer :: jin, jout, i
+    integer :: nbpoin, nbcompin, nbcompout
+    real(kind=8) :: mt, mfy, mfz, meq
+!     ------------------------------------------------------------------
+!
+    ASSERT(option.eq.'EFGE_EQUIV')
+    call jevech('PEFFONR', 'L', jin)
+    call jevech('PEFFOENR', 'E', jout)
+    
+    nbcompin  = 6
+    nbcompout = 4
+    nbpoin = 2
+    do i=1, nbpoin
+        
+        mt  = zr(jin+nbcompin*(i-1)-1+4)
+        mfy = zr(jin+nbcompin*(i-1)-1+5)
+        mfz = zr(jin+nbcompin*(i-1)-1+6)
+        meq = sqrt(mt*mt+mfy*mfy+mfz*mfz)
+        zr(jout+nbcompout*(i-1)-1+1) = mt
+        zr(jout+nbcompout*(i-1)-1+2) = mfy
+        zr(jout+nbcompout*(i-1)-1+3) = mfz
+        zr(jout+nbcompout*(i-1)-1+4) = meq
+    enddo
+!
 end subroutine

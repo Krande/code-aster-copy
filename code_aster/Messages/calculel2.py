@@ -132,6 +132,11 @@ Erreur utilisateur dans la commande CREA_CHAMP :
  et le maillage %(k3)s
 """),
 
+    18: _("""
+Erreur utilisateur dans la commande POST_RCCM / MOMENT_EQUIVALENT :
+Le champ calculé est vide pour le numéro d'ordre %(i1)d .
+"""),
+
     19: _("""
 Erreur utilisateur dans la commande POST_CHAMP / COQUE_EXCENT :
  Pour l'occurrence %(i1)d du mot clé COQUE_EXCENT,

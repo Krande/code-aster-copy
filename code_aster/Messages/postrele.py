@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,12 @@ cata_msg = {
  post-traitement numéro :  %(i1)d
  aucune maille ne correspond aux critères demandés
  pas de post-traitement
+"""),
+
+    4 : _("""
+Les données d'abscisses curvilignes ne sont pas disponibles pour la maille %(k1)s. 
+Les valeurs sont mises à -1 dans la table.
+Si vous souhaitez les calculer il faut intégrer cette maille lors de l'appel à MODI_MAILLAGE/ABSC_CURV.
 """),
 
     5 : _("""
@@ -86,7 +92,10 @@ Ce message est un message d'erreur développeur.
 Contactez le support technique.
 """),
 
-
+   16 : _("""
+Les données d'abscisses curvilignes ne sont pas présentes dans le maillage.
+Pour les créer, il faut utiliser MODI_MAILLAGE/ABSC_CURV.
+"""),
 
     17 : _("""
  on ne traite que des champs de type "DEPL_R" pour un changement de repère
