@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -378,5 +378,9 @@ def verif_sol_homogene(tab):
             hyst = row['AMOR_HYST']
         else:
             sol_homogene = sol_homogene and (row['E'] == young) and (row['NU'] == nu) and (row['RHO'] == rho) and (row['AMOR_HYST'] == hyst)
-    vs = (young/(2.*(1.+nu)*rho))**.5
-    return sol_homogene, vs
+
+    vs      = (young/(2.*(1.+nu)*rho))**.5
+    vp      = (young*(1-nu)/((1+nu)*(1-2*nu)*rho))**.5
+    betamin = hyst
+    return sol_homogene, vs, vp, betamin
+

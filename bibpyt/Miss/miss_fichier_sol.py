@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 # person_in_charge: mathieu.courtois at edf.fr
 
 import os
+from math import log
 import aster
 
 from Utilitai.Utmess import UTMESS
@@ -116,10 +117,6 @@ def fichier_sol(tab, struct, param=None):
         surf = param['SURF']
         coef_offset = param['COEF_OFFSET']
         dref_auto, rfic_auto, offset_max_auto, offset_nb_auto = calc_param_auto(l_coor_x,l_coor_y,l_coor_z,surf,coef_offset)
-        sol_homo, vs = verif_sol_homogene(tab)
-        if param['SURF'] == "OUI" and sol_homo:
-            spec_max_auto = True
-            spec_max = vs/15.
         if param['OFFSET_MAX'] is None:
             param['OFFSET_MAX'] = offset_max_auto
         else:
@@ -140,22 +137,29 @@ def fichier_sol(tab, struct, param=None):
                 UTMESS('A', 'MISS0_43', valk='RFIC')
         else:
             param['RFIC'] = 0.
-        if spec_max_auto:
-            if param['SPEC_MAX'] is None:
-                param['SPEC_MAX'] = spec_max
-            else:
-                UTMESS('A', 'MISS0_43', valk='SPEC_MAX')
         #
         print('Mode automatique :')
         print('-    OFFSET_MAX auto = ',param['OFFSET_MAX'])
         print('-    OFFSET_NB auto = ',param['OFFSET_NB'])
         print('-    DREF auto = ',param['DREF'])
         print('-    RFIC auto = ',param['RFIC'])
-        if spec_max_auto:
-            print('-    SPEC_MAX auto = ',param['SPEC_MAX'])
         # Pour Laplace-temps, on ne recalcule les parametre qu'une fois
         if param['_auto_first_LT'] is None:
             param['_auto_first_LT'] = False
+
+    if param['SPEC_MAX'] is None and param['SPEC_NB'] is None:
+        sol_homo, vs, vp, betamin = verif_sol_homogene(tab)
+        if param['SURF'] == "OUI" and sol_homo:
+            spec_max_auto = True
+            spec_max = 15./vs
+            dp = betamin/vp
+            k_nb = int(log(spec_max/dp + 1.)/log(2.))
+            k_nb = k_nb+1
+            spec_nb = 2**k_nb
+        if spec_max_auto:
+            param['SPEC_MAX'] = spec_max
+            param['SPEC_NB'] = spec_nb
+
     #
     if (param and param.get('OFFSET_MAX')) or (param and param.get('AUTO') == "OUI"):
         # ALGO
@@ -168,7 +172,7 @@ def fichier_sol(tab, struct, param=None):
         # DREF / SPEC / OFFSET
         if param['DREF']:
             content.append(("DREF" + sfmt) % param['DREF'])
-        if param['SPEC_MAX']:
+        if param['SPEC_MAX'] or param['SPEC_NB']:
             content.append(("SPEC" + sfmt + " / %d") %
                        (param['SPEC_MAX'], param['SPEC_NB']))
         else:

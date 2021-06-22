@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -371,8 +371,8 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-1.041417570891E-03,
                          REFERENCE='AUTRE_ASTER',
                          PRECISION=3.e-2,
                          FONCTION=depl_z1,),
-                      _F(VALE_CALC=-8.076207972800E-05,
-                         VALE_REFE=0.0781346*kd,
+                      _F(VALE_CALC=-8.076217972695E-05,
+                         VALE_REFE=0.07970944923689126*kd,
                          CRITERE='RELATIF',
                          VALE_PARA=0.20,
                          REFERENCE='AUTRE_ASTER',

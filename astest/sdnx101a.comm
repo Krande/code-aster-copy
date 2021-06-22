@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -624,7 +624,7 @@ TEST_RESU(RESU=(_F(INST=0.0,
                    NOM_CHAM='DEPL',
                    NOEUD='N739',
                    NOM_CMP='DZ',
-                   VALE_CALC=-5.0919738653709E-03,
+                   VALE_CALC=-5.106502140386322E-03,
                    CRITERE=('RELATIF', 'RELATIF'),
                    ),
                 _F(INST=0.0,
@@ -632,7 +632,7 @@ TEST_RESU(RESU=(_F(INST=0.0,
                    NOM_CHAM='DEPL',
                    NOEUD='N731',
                    NOM_CMP='DZ',
-                   VALE_CALC=-5.1000210192651E-03,
+                   VALE_CALC=-5.114559919314128E-03,
                    CRITERE=('RELATIF', 'RELATIF'),
                    ),
                 _F(INST=tfin,
@@ -640,7 +640,7 @@ TEST_RESU(RESU=(_F(INST=0.0,
                    NOM_CHAM='DEPL',
                    NOEUD='N739',
                    NOM_CMP='DZ',
-                   VALE_CALC=-5.2450018798605E-03,
+                   VALE_CALC=-5.258443333735857E-03,
                    CRITERE=('RELATIF', 'RELATIF'),
                    ),
                 _F(INST=tfin,
@@ -648,7 +648,7 @@ TEST_RESU(RESU=(_F(INST=0.0,
                    NOM_CHAM='DEPL',
                    NOEUD='N1',
                    NOM_CMP='DX',
-                   VALE_CALC=-3.6555389040987E-04,TOLE_MACHINE=6.E-6,  # En attente issue24202 
+                   VALE_CALC=-3.5973226569627437E-04,
                    CRITERE=('RELATIF', 'RELATIF'),
                    ),
                 ),
