@@ -39,6 +39,7 @@ implicit none
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -116,10 +117,11 @@ real(kind=8), intent(out) :: r_char_vale, r_equi_vale
     aster_logical :: l_stat, l_load_cine, l_cont_cont, l_cont_lac, l_rom, l_macr
     aster_logical :: l_resi_refe, l_varc_init, l_resi_comp, l_rela
     aster_logical :: l_no_disp, l_pilo, l_disp
+    aster_logical :: l_parallel_mesh
     character(len=19) :: profch
     character(len=19) :: varc_prev, disp_prev
     character(len=19) :: cndiri, cnbudi, cnfext, cnfexp
-    character(len=19) :: cnrefe, cnfinp, cndirp, cnbudp
+    character(len=19) :: cnrefe, cnfinp, cndirp, cnbudp, cnrefp
     character(len=19) :: cndfdo, cnequi, cndipi, cnsstr
     real(kind=8) :: vale_equi, vale_refe, vale_varc
     integer :: r_rela_indx, r_resi_indx, r_equi_indx
@@ -198,6 +200,7 @@ real(kind=8), intent(out) :: r_char_vale, r_equi_vale
     l_varc_init = (nume_inst .eq. 1) .and. (.not.ds_inout%l_state_init)
     l_no_disp   = .not.(ndynlo(sddyna,'FORMUL_DEPL').or.l_stat)
     l_disp      = ASTER_TRUE
+    l_parallel_mesh = isParallelMesh(mesh)
 !
 ! - Get hat variables
 !
@@ -214,6 +217,7 @@ real(kind=8), intent(out) :: r_char_vale, r_equi_vale
     cnfinp = '&&NMRESI.CNFINP'
     cndirp = '&&NMRESI.CNDIRP'
     cnbudp = '&&NMRESI.CNBUDP'
+    cnrefp = '&&NMRESI.CNREFP'
 !
 ! - Compute external forces
 !
@@ -250,11 +254,13 @@ real(kind=8), intent(out) :: r_char_vale, r_equi_vale
     call cnoadd(ds_system%cnfint, cnfinp)
     call cnoadd(cndiri, cndirp)
     call cnoadd(cnbudi, cnbudp)
+    if (l_resi_refe) call cnoadd(cnrefe, cnrefp)
 #else
     cnfexp = cnfext
     cnfinp = ds_system%cnfint
     cndirp = cndiri
     cnbudp = cnbudi
+    cnrefp = cnrefe
 #endif
 !
 ! - Compute lack of balance forces
@@ -282,7 +288,7 @@ real(kind=8), intent(out) :: r_char_vale, r_equi_vale
         call jeveuo(ds_material%fvarc_init(1:19)//'.VALE', 'L', vr=v_fvarc_init)
     endif
     if (l_resi_refe) then
-        call jeveuo(cnrefe(1:19)//'.VALE', 'L', vr=v_cnrefe)
+        call jeveuo(cnrefp(1:19)//'.VALE', 'L', vr=v_cnrefe)
     endif
     call jeveuo(cnequi(1:19)//'.VALE', 'L', vr=v_cnequi)
 !
@@ -313,7 +319,12 @@ real(kind=8), intent(out) :: r_char_vale, r_equi_vale
 ! ----- For RESI_REFE_RELA
         if (l_resi_refe) then
             if (v_deeq(2*i_equa) .gt. 0) then
-                vale_refe = abs(v_cnequi(i_equa))/v_cnrefe(i_equa)
+                ! in HPC, the ghost entries of v_cnrefe  are set to 0
+                if (v_cnrefe(i_equa).gt.0.d0) then 
+                    vale_refe = abs(v_cnequi(i_equa))/v_cnrefe(i_equa)
+                else
+                    vale_refe = 0.d0
+                endif
                 if (r_refe_vale .le. vale_refe) then
                     r_refe_vale = vale_refe
                     r_refe_indx = i_equa
@@ -328,6 +339,10 @@ real(kind=8), intent(out) :: r_char_vale, r_equi_vale
             endif
         endif
     end do
+    if (l_resi_refe.and.l_parallel_mesh) then
+        call asmpi_comm_vect('MPI_MAX', 'R', scr=r_refe_vale)
+    endif
+
 !
 ! - Evaluate residuals in applying HYPER-REDUCTION
 !
