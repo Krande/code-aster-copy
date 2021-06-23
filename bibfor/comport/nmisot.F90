@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -620,7 +620,7 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
 ! - "false" prediction for RIGI_MECA_TANG
 !
     if (option .eq. 'RIGI_MECA_TANG') then
-        sigp(:) = sigm(:)
+        sigp(1:ndimsi) = sigm(1:ndimsi)
     endif
 ! FIN ------------------------------------------------------------------
 end subroutine
