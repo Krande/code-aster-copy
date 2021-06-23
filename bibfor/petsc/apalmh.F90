@@ -237,7 +237,8 @@ use petsc_data_module
 !           Le "+1" est là dans le cas de double Lagrange qui vivent chacun sur 2 processus 
 !           différents (il y a alors un terme de couplage dans le bloc hors-diagonal) 
 !           (voir issue31132)
-            ibid = (v_idxd(iligg - low +1)/imults)*(imult) + 1
+            !ibid = (v_idxd(iligg - low +1)/imults)*(imult) + 1
+            ibid = imult * 6
             v_idxo(iligg - low +1) = v_idxo(iligg - low +1) + ibid
         enddo
     endif

@@ -1,0 +1,195 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import code_aster
+from code_aster.Commands import *
+import code_aster.LinearAlgebra
+
+code_aster.LinearAlgebra.petscInitialize('-mat_view ::ascii_info -ksp_monitor -log_view')
+
+
+code_aster.init('--test')
+
+rank = code_aster.MPI.COMM_WORLD.Get_rank()
+
+MA = code_aster.ParallelMesh()
+MA.readMedFile("zzzz502r/%d.med" % rank, True)
+
+MO = AFFE_MODELE(MAILLAGE=MA,
+                 AFFE=(_F(TOUT='OUI',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='3D'),
+                       _F(GROUP_MA='Discret',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DIS_TR')))
+
+val = 100.
+cara_ele = AFFE_CARA_ELEM(MODELE=MO,
+                          DISCRET=(_F(CARA='K_TR_D_N',
+                                      GROUP_MA='Discret',
+                                      VALE=(val, val, val, val, val, val,),),))
+
+MAT = DEFI_MATERIAU(ELAS=_F(E=10., NU=0.0))
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE=_F(TOUT='OUI',  MATER=MAT))
+
+CH12 = AFFE_CHAR_MECA(MODELE=MO,
+                      DDL_IMPO=(_F(GROUP_MA=('Discret',), DX=0, DY=0, DZ=0, DRX=0.1, DRY=0., DRZ=0,)),
+                      LIAISON_RBE3=(
+                          _F(GROUP_NO_MAIT='Discret',
+                              DDL_MAIT=('DX'),
+                              GROUP_NO_ESCL=('Surf'),
+                              DDL_ESCL=('DX-DY-DZ'),
+                              COEF_ESCL=(1.,)),
+                          _F(GROUP_NO_MAIT='Discret',
+                              DDL_MAIT=('DY'),
+                              GROUP_NO_ESCL=('Surf'),
+                              DDL_ESCL=('DX-DY-DZ'),
+                              COEF_ESCL=(1.,)),
+                          _F(GROUP_NO_MAIT='Discret',
+                              DDL_MAIT=('DZ'),
+                              GROUP_NO_ESCL=('Surf'),
+                              DDL_ESCL=('DX-DY-DZ'),
+                              COEF_ESCL=(1.,)),
+                          _F(GROUP_NO_MAIT='Discret',
+                              DDL_MAIT=('DRX'),
+                              GROUP_NO_ESCL=('Surf'),
+                              DDL_ESCL=('DX-DY-DZ'),
+                              COEF_ESCL=(1.,)),
+                          _F(GROUP_NO_MAIT='Discret',
+                              DDL_MAIT=('DRY'),
+                              GROUP_NO_ESCL=('Surf'),
+                              DDL_ESCL=('DX-DY-DZ'),
+                              COEF_ESCL=(1.,)),
+                          _F(GROUP_NO_MAIT='Discret',
+                              DDL_MAIT=('DRZ'),
+                              GROUP_NO_ESCL=('Surf'),
+                              DDL_ESCL=('DX-DY-DZ'),
+                              COEF_ESCL=(1.,)),
+                      ))
+
+
+LI = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=2))
+
+RAMPE = DEFI_FONCTION(NOM_PARA='INST',
+                      VALE=(0, 0,
+                            1, 1,),
+                      PROL_DROITE='LINEAIRE')
+
+# Résolution (LOW_RANK_SEUIL exagérement élevé pour faire plus d'itérations de solveur linéaire)
+resu = STAT_NON_LINE(CHAM_MATER=CHMAT,
+                     CARA_ELEM=cara_ele,
+                     METHODE='NEWTON',
+                     COMPORTEMENT=_F(RELATION='ELAS',),
+                     CONVERGENCE=_F(RESI_GLOB_MAXI=1.e-8),
+                     EXCIT=(_F(CHARGE=CH12, FONC_MULT=RAMPE,)),
+                     INCREMENT=_F(LIST_INST=LI),
+                     MODELE=MO,
+                     NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
+                     SOLVEUR=_F(METHODE='PETSC', RESI_RELA=1.e-9, LOW_RANK_SEUIL=1e-2,),
+                     INFO=1,
+                     )
+
+# Vérification
+INT_DY = POST_ELEM(INTEGRALE=_F(TOUT='OUI',
+                                NOM_CHAM='DEPL',
+                                NOM_CMP='DY',
+                                TYPE_MAILLE='3D',),
+                   MODELE=MO,
+                   RESULTAT=resu,)
+IMPR_TABLE(UNITE=6, TABLE=INT_DY)
+
+# Mvt de corps rigide
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           CRITERE='ABSOLU', PRECISION=1.e-10,
+           VALE_REFE=0., VALE_CALC=1.e-11,
+           NOM_PARA='INTE_DY',
+           TABLE=INT_DY,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           )
+
+# Mvt de corps rigide
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           CRITERE='ABSOLU', PRECISION=1.e-10,
+           VALE_REFE=0., VALE_CALC=1.e-11,
+           NOM_PARA='INTE_DY',
+           TABLE=INT_DY,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=2,),
+           )
+
+
+TEST_RESU(RESU=(_F(GROUP_NO='Point1',
+                   INST=0.5,
+                   CRITERE='ABSOLU', PRECISION=1.e-10,
+                   RESULTAT=resu,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=0.,
+                   VALE_CALC=1.e-11,),
+                _F(GROUP_NO='Point1',
+                   INST=1.,
+                   CRITERE='ABSOLU', PRECISION=1.e-10,
+                   RESULTAT=resu,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=0.,
+                   VALE_CALC=1.e-11,),
+                _F(GROUP_NO='Point1',
+                   INST=0.5,
+                   RESULTAT=resu,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=-0.025,
+                   VALE_CALC=-0.025,),
+                _F(GROUP_NO='Point1',
+                   INST=1.,
+                   RESULTAT=resu,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=-0.05,
+                   VALE_CALC=-0.05,),
+                _F(GROUP_NO='Point1',
+                   INST=0.5,
+                   RESULTAT=resu,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=-0.025,
+                   VALE_CALC=-0.025,),
+                _F(GROUP_NO='Point1',
+                   INST=1.,
+                   RESULTAT=resu,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=-0.05,
+                   VALE_CALC=-0.05,),
+                ),
+          )
+
+# resu.printMedFile(f'/tmp/resu_{rank}.resu.med')
+
+FIN()
