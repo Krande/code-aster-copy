@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,5 +44,10 @@ cata_msg = {
 
     6: _("""
   Degré de liberté d'un système généralisé pour la liaison %(i1)d et l'équation %(i2)d.
+"""),
+
+    7: _("""
+  En mode calcul haute performance, la composante n'est pas fournie. 
+Développement à réaliser si nécessaire.
 """),
 }
