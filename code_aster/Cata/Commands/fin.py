@@ -54,5 +54,5 @@ FIN = FIN_PROC(nom="FIN",
             fr=tr("impression des informations sur les structures de données résultats"),
             statut='f', typ='TXM', defaut="NON", into=("OUI", "NON",)),
 
-        PROC0=SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+        PROC0=SIMP(statut='f',typ='TXM',into=("OUI","NON") ),
 )

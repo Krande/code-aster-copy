@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,6 +71,9 @@ implicit none
     rank = to_aster_int(mrank)
 !
     call getvtx(' ', 'PROC0', scal=proc0, nbret=nbRet)
+    if (nbRet .ne. 1) then
+        proc0 = 'OUI'
+    endif
 !
 !XX if (nbrank .eq. 0) then
         call getfac(keywf, keywfNb)

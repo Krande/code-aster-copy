@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -199,7 +199,7 @@ SNL=STAT_NON_LINE(MODELE=MODELE,
                                  ),
                   SOLVEUR=_F(METHODE='MULT_FRONT',),);
 
-IMPR_RESU(PROC0='NON', FORMAT='MED', UNITE=81,
+IMPR_RESU(FORMAT='MED', UNITE=81,
           RESU=_F(RESULTAT=SNL,
           NOM_CHAM='DEPL',),);
 

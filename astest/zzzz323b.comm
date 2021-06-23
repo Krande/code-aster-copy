@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
 
 # Pour vérifier que l'on peut lire et ecrire des noms de groupe de plus 8 caracteres :
 MA1=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=20)
-IMPR_RESU(RESU=_F(MAILLAGE=MA1),UNITE=21,FORMAT='ASTER',PROC0='NON',)
+IMPR_RESU(RESU=_F(MAILLAGE=MA1),UNITE=21,FORMAT='ASTER',)
 MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",UNITE=21)
 
 
@@ -92,7 +92,7 @@ IMPR_CONCEPT(FORMAT="RESULTAT",
 
 DEFI_FICHIER(UNITE=82, FICHIER='./fort.82', TYPE = 'BINARY')
 
-IMPR_CONCEPT(FORMAT='MED',UNITE=82, 
+IMPR_CONCEPT(FORMAT='MED',UNITE=82,
              CONCEPT=_F(CARA_ELEM=CARAELEM,REPERE_LOCAL='ELEM',MODELE=MODELE
                       ))
 

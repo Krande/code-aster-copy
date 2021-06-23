@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -116,7 +116,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 # FORMAT GMSH
 # -----------
 
-IMPR_RESU(FORMAT='GMSH', UNITE=60, RESU=_F(MAILLAGE=MAYA,), PROC0='NON',);
+IMPR_RESU(FORMAT='GMSH', UNITE=60, RESU=_F(MAILLAGE=MAYA,), );
 
 
 MA22 = LIRE_MAILLAGE(FORMAT='GMSH',
@@ -127,7 +127,7 @@ MA22 = LIRE_MAILLAGE(FORMAT='GMSH',
 # FORMAT IDEAS
 # ------------
 
-IMPR_RESU(FORMAT='IDEAS', UNITE=62, RESU=_F(MAILLAGE=MAYA,), PROC0='NON',);
+IMPR_RESU(FORMAT='IDEAS', UNITE=62, RESU=_F(MAILLAGE=MAYA,), );
 
 
 MA23 = LIRE_MAILLAGE(FORMAT='IDEAS',
@@ -138,7 +138,7 @@ MA23 = LIRE_MAILLAGE(FORMAT='IDEAS',
 # --------------------------------------------------
 uniideas=DEFI_FICHIER(FICHIER='./REPE_OUT/fic_ideas');
 
-IMPR_RESU(FORMAT='IDEAS', UNITE=uniideas, RESU=_F(MAILLAGE=MAYA,), PROC0='NON',);
+IMPR_RESU(FORMAT='IDEAS', UNITE=uniideas, RESU=_F(MAILLAGE=MAYA,), );
 
 TEST_FICHIER(FICHIER="./REPE_OUT/fic_ideas",
              NB_VALE_I=659,

@@ -30,19 +30,6 @@ class ImprResu(ExecuteCommand):
     """
     command_name = "IMPR_RESU"
 
-    def adapt_syntax(self, keywords):
-        """Adapt syntax after checking syntax.
-
-        Change defaults depending on the parallel execution context.
-
-        Arguments:
-            keywords (dict): Keywords arguments of user's keywords, changed
-                in place.
-        """
-        # if PROC0 is not provided by the user
-        if not keywords.get("PROC0") and ExecutionParameter().option & Options.HPCMode:
-            keywords["PROC0"] = "NON"
-
     def add_result_name(self, resu):
         """Try to add NOM_RESU_MED keyword if not set.
 
@@ -81,6 +68,9 @@ class ImprResu(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
+        # if PROC0 is not provided by the user
+        if not keywords.get("PROC0") and ExecutionParameter().option & Options.HPCMode:
+            keywords["PROC0"] = "NON"
         if keywords.get("FORMAT") in (None, "MED"):
             keywords["RESU"] = force_list(keywords["RESU"])
             for resu in keywords["RESU"]:

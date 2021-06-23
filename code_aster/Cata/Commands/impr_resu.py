@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
          FORMAT          =SIMP(statut='f',typ='TXM',defaut="MED",
                                  into=("RESULTAT","IDEAS","ASTER","MED","GMSH") ),
 
-         PROC0           =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+         PROC0           =SIMP(statut='f',typ='TXM',into=("OUI","NON") ),
 
          b_modele =BLOC(condition="""not equal_to("FORMAT", 'MED')""",fr=tr("Modèle"),
            MODELE          =SIMP(statut='f',typ=modele_sdaster),

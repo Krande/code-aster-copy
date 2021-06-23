@@ -85,7 +85,7 @@ COND_LIM=AFFE_CHAR_MECA(     MODELE=MODELE,DDL_IMPO=(
 #                                      UI6 = 0., VI6 = 0., WI6 = 0.,
 #                                      UO6 = 0., VO6 = 0., WO6 = 0.,
 #                                      WI1 = 0., WO1 = 0., WO = 0.
-                                BLOCAGE = ('DEPLACEMENT','ROTATION','TUYAU_FOURIER') 
+                                BLOCAGE = ('DEPLACEMENT','ROTATION','TUYAU_FOURIER')
                                 ),
                              _F( GROUP_NO = 'B',
                                       DX = 0., DZ = 0.),
@@ -122,7 +122,6 @@ MOD_CAL=CALC_MODES(MATR_RIGI=K,
 # CE BLOC POUR TESTER LIRE_RESU POUR LES BASES
 IMPR_RESU(FORMAT='MED',
           UNITE=81,
-          PROC0='NON',
           RESU=_F(MAILLAGE=MAILLAGE,
                   RESULTAT=MOD_CAL,
                   NOM_CHAM='DEPL',),);

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -344,7 +344,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 # Pareil que TACR2, mais avec le format MED
-IMPR_RESU(FORMAT='MED',UNITE=39,RESU=_F(MAILLAGE=mail),PROC0='NON')
+IMPR_RESU(FORMAT='MED',UNITE=39,RESU=_F(MAILLAGE=mail))
 #
 TCAR4=MACR_CARA_POUTRE(UNITE=39,FORMAT='MED', GROUP_MA=('GR1', 'GR2',), ORIG_INER=(0.005, 0.0,),  NOM=nom, )
 
