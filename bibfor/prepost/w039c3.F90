@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine w039c3(carele, modele, ifi, form, titre, aunoeud)
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !
-    integer :: iret,jaux
+    integer :: iret,jaux, nbCmpDyna
     character(len=1), parameter :: nomcmp(3) = ['X' , 'Y' , 'Z']
     character(len=8) :: typech, sdcarm, carele8
     character(len=19) :: chrel1, chrel2, chrel3, chrelno1, chrelno2, chrelno3, ligrel, celmod
@@ -128,16 +128,16 @@ subroutine w039c3(carele, modele, ifi, form, titre, aunoeud)
     if (form .eq. 'MED') then
 !     -------------------------
         call irceme(ifi, nommed(1), chrmed(1), typech, modele, 0, nomcmp, ' ', ' ', 0,&
-                    0.d0, 0, 0, [0], sdcarm, sdcarm, field_type, iret)
+                    0.d0, 0, 0, [0], sdcarm, sdcarm, field_type, nbCmpDyna, iret)
         ASSERT(iret.eq.0)
 !
         call irceme(ifi, nommed(2), chrmed(2), typech, modele, 0, nomcmp, ' ', ' ', 0,&
-                    0.d0, 0, 0, [0], sdcarm, sdcarm, field_type, iret)
+                    0.d0, 0, 0, [0], sdcarm, sdcarm, field_type, nbCmpDyna, iret)
         ASSERT(iret.eq.0)
 !
         if (l3d) then
             call irceme(ifi, nommed(3), chrmed(3), typech, modele, 0, nomcmp, ' ', ' ', 0,&
-                        0.d0, 0, 0, [0], sdcarm, sdcarm, field_type, iret)
+                        0.d0, 0, 0, [0], sdcarm, sdcarm, field_type, nbCmpDyna, iret)
             ASSERT(iret.eq.0)
         endif
 !

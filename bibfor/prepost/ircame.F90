@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
                   nbcmp, nomcmp, etiqcp, partie, numpt,&
                   instan, numord, adsk, adsd, adsc,&
                   adsv, adsl, nbenec, lienec, sdcarm,&
-                  carael, field_type, codret)
+                  carael, field_type, nbCmpDyna, codret)
 !
 implicit none
 !
@@ -59,6 +59,7 @@ integer :: lienec(*)
 integer :: typent, tygeom
 real(kind=8) :: instan
 character(len=16), intent(in) :: field_type
+integer, intent(inout) :: nbCmpDyna
 integer :: codret
 !
 ! --------------------------------------------------------------------------------------------------
@@ -202,6 +203,17 @@ integer :: codret
                 lienec, adsd, adsl, nomaas, modele,&
                 typgeo, nomtyp, ntproa, chanom, sdcarm,&
                 field_type)
+
+! - Get number of components
+    if (field_type .eq. 'VARI_ELGA') then
+        if (nbCmpDyna .eq. 0) then
+            nbCmpDyna = ncmpve
+        else
+            if (nbCmpDyna .gt. ncmpve) then
+                call utmess('F', 'MED_31', sk = field_type)
+            endif
+        endif
+    endif
 !
     if ( nbimpr.gt.0 ) then
         call jeveuo(ncaimi, 'L', adcaii)

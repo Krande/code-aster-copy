@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
     character(len=64) :: field_name
 !
     integer :: numord, isy, iordr, iret, ibid, codret, nbcham
-    integer :: lnochm, nbcmdu, jnosym, ierd
+    integer :: lnochm, nbcmdu, jnosym, ierd, nbCmpDyna
     integer :: jnocha, jliord, nbordr, nbrcmp, jnocmp
     aster_logical :: lfirst, l_mult_model, l_vari_name, l_meta_name
 !
@@ -96,6 +96,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
 !
     result_name=nomcon
     lfirst=.true.
+    nbCmpDyna = 0
 !
     call jeveuo(nocham, 'L', jnocha)
     call jelira(nocham, 'LONMAX', nbcham)
@@ -280,7 +281,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
             call irchme(ifichi, cham19, partie, field_name, result_name,&
                         field_type, typech, numord, nbrcmp, zk8(jnocmp),&
                         nbnoec, linoec, nbmaec, limaec, lvarie,&
-                        sdcarm, carael, linopa, codret)
+                        sdcarm, carael, linopa, nbCmpDyna, codret)
 !
 999         continue
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 subroutine irvari(ifi        , field_med    , vari_elga, field_loca, model    ,&
                   nb_cmp_sele, cmp_name_sele, partie   , numpt     , instan   ,&
                   nume_store , nbmaec       , limaec   , result    , cara_elem,&
-                  carael     , codret)
+                  carael     , nbCmpDyna    , codret)
 !
 implicit none
 !
@@ -61,6 +61,7 @@ integer, intent(in) :: nbmaec
 integer, intent(in) :: limaec(*)
 character(len=8), intent(in) :: result
 character(len=8), intent(in) :: cara_elem, carael
+integer, intent(inout) :: nbCmpDyna
 integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
@@ -279,7 +280,7 @@ integer, intent(out) :: codret
     call irceme(ifi, nomres, vari_elgr, field_loca, model,&
                 nb_cmp_sele, cmp_name_sele, label_med, partie, numpt,&
                 instan, nume_store, nbmaec, limaec, cara_elem,&
-                carael, field_type, codret)
+                carael, field_type, nbCmpDyna, codret)
 !
 999 continue
 !

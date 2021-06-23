@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
                   nomsym, typech, numord, nbrcmp, nomcmp,&
                   nbnoec, linoec, nbmaec, limaec, lvarie,&
-                  sdcarm, carael, linopa, codret)
+                  sdcarm, carael, linopa, nbCmpDyna, codret)
 !_______________________________________________________________________
 ! person_in_charge: nicolas.sellenet at edf.fr
 !        IMPRESSION DU CHAMP CHANOM NOEUD/ELEMENT ENTIER/REEL
@@ -94,6 +94,7 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
 !
     aster_logical :: lvarie
 !
+    integer, intent(inout) :: nbCmpDyna
     integer :: codret
 !
 ! 0.2. ==> COMMUNS
@@ -256,7 +257,7 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
                 call irvari(ifichi, nochmd, chanom, typech, modele,&
                             nbrcmp, nomcmp, partie, numpt, instan,&
                             numord, nbmaec, limaec, noresu, sdcarm,&
-                            carael, codret_vari)
+                            carael, nbCmpDyna, codret_vari)
             endif
             if ((nomsym.eq.'META_ELNO') .and. lvarie) then
                 call irmeta(ifichi, nochmd, chanom, typech, modele,&
@@ -267,7 +268,7 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
             call irceme(ifichi, nochmd, chanom, typech, modele,&
                         nbrcmp, nomcmp, ' ', partie, numpt,&
                         instan, numord, nbmaec, limaec, sdcarm,&
-                        carael, nomsym, codret)
+                        carael, nomsym, nbCmpDyna, codret)
             if (codret_vari .ne. 0 .and. codret .eq. 0) then
                 codret = codret_vari
             endif
@@ -275,7 +276,7 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
             call irceme(ifichi, nochmd, chanom, typech, modele,&
                         nbrcmp, nomcmp, ' ', partie, numpt,&
                         instan, numord, nbmaec, limaec, sdcarm,&
-                        carael, nomsym, codret)
+                        carael, nomsym, nbCmpDyna, codret)
         else
             codret = 1
             call utmess('A', 'MED_92', sk=typech(1:4))
