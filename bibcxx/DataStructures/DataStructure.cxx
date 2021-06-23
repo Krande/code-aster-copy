@@ -59,6 +59,8 @@ DataStructure::~DataStructure() {
     // empty name or no memory manager : skip silently
     if ( nameWithoutBlanks == "" || get_sh_jeveux_status() != 1 )
         return;
+    _tco->deallocate();
+#ifdef ASTER_DEBUG_CXX
     // Allow to see when the datastructure is really deleted.
     // In case of embraced datastructures, '_tco' is deallocated the first time (no type)
     if ( mainDs && this->getType() != "not_found" ) {
@@ -67,8 +69,6 @@ DataStructure::~DataStructure() {
             << " <" << this->getType() << "> "
             << this->getUserName() << std::endl;
     }
-    _tco->deallocate();
-#ifdef ASTER_DEBUG_CXX
     std::string base( " " );
     ASTERINTEGER pos = 1;
     ASTERINTEGER nbval2 = 0;
