@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -99,12 +99,14 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
     character(len=16) :: metres
     character(len=24) :: kpiv
     character(len=40) ::  valk(2)
+    character(len=3) :: mathpc
     integer :: istop, lmat, ildeb, ilfin, ndigit, ndigi2, iret, npvneg, iretz
-    integer :: ifm, niv,  nom, neq,  iretp, npvnez
+    integer :: ifm, niv,  nom, neq,  iretp, npvnez, neqg, jnequ
     integer :: typvar, typsym, nbbloc, ilfin1, iexi
     integer :: ieq3, isingu, ieq, ndeci, jdigs, npivot
     integer :: ndeci1, ndeci2, ieq4, nzero, vali(6), ipiv
     real(kind=8) :: eps, dmax, dmin, d1
+    aster_logical :: lmhpc
     complex(kind=8) :: cbid
     integer, pointer :: schc(:) => null()
     character(len=24), pointer :: refa(:) => null()
@@ -157,6 +159,14 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
         endif
     endif
 !
+!   -- EST-ON EN HPC :
+    call dismoi('MATR_HPC', noma19, 'MATR_ASSE', repk=mathpc)
+    lmhpc = mathpc.eq.'OUI'
+    neqg = -1
+    if (lmhpc) then
+        call jeveuo(nu//'.NUME.NEQU', 'L', jnequ)
+        neqg = zi(jnequ+1)
+    endif
 !
 !   -- VALEUR DE NDIGIT PAR DEFAUT : 8
     if (ndigit .eq. 0) then
@@ -280,7 +290,11 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
 !                   -- AU MOINS UNE SINGULARITE
                     iretz=1
                     isingu=zi(ipiv+2)
-                    ASSERT(isingu.gt.0 .and. isingu.le.neq)
+                    if (lmhpc) then 
+                        ASSERT(isingu.gt.0 .and. isingu.le.neqg)
+                    else
+                        ASSERT(isingu.gt.0 .and. isingu.le.neq)
+                    endif
                     npivot=-zi(ipiv+1)
                 else
                     ASSERT(.false.)
@@ -404,7 +418,11 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
     endif
     if (isingu .gt. 0) then
         if (refa(20) =='') then  
-          call rgndas(nu, isingu, l_print = .true.)
+          if (lmhpc) then
+            call utmess('I', 'FACTOR2_7')
+          else
+            call rgndas(nu, isingu, l_print = .true.)
+          endif
         endif 
         if (ndeci.eq.-999) then
             call utmess(codmes, 'FACTOR_11', si=isingu)
