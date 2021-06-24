@@ -321,6 +321,8 @@ REPBASE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                MODE_STAT=MODESTA,
                            )
 
+
+
 #
 #
 # PROJECTION DANS LA BASE PHYSIQUE DES DEPLACEMENTS ABSOLUS
@@ -332,6 +334,103 @@ REP_LIN1=REST_GENE_PHYS(     RESU_GENE=REPBASE1,
                                 MULT_APPUI='OUI',
                                 LIST_INST = L_INSTA,
                             )
+
+REP_LIN1=CALC_CHAMP(reuse=REP_LIN1,RESULTAT=REP_LIN1,CONTRAINTE=('EFGE_ELNO'))
+
+
+# Validation de POST_RCCM/OPTION='MOMENT_EQUIVALENT' / RESULTAT / TOUT
+
+TAB_MEQ = POST_RCCM(TYPE_RESU_MECA='B3600',
+                    OPTION = 'MOMENT_EQUIVALENT',
+                    ZONE_ANALYSE=_F(TOUT='OUI', ),
+                    RESU_MECA=_F(RESULTAT=REP_LIN1,
+                                 NOM_CHAM='EFGE_ELNO',
+                                 TOUT_ORDRE='OUI',
+                                 )
+                    )
+# IMPR_RESU(UNITE=6, FORMAT='RESULTAT',RESU=_F(RESULTAT=REP_LIN1, NOM_CHAM='EFGE_ELNO', MAILLE='M1'))
+# IMPR_TABLE(TABLE=TAB_MEQ, UNITE=6)
+
+
+# -- on construit les résultats de référence pour un couple maille/noeud
+TABMO = CREA_TABLE(RESU=_F(RESULTAT=REP_LIN1, 
+                           NOM_CMP=('MT', 'MFY', 'MFZ'),
+                           NOM_CHAM='EFGE_ELNO',
+                           TOUT='OUI', 
+                           TOUT_ORDRE='OUI'))
+
+
+# IMPR_TABLE(TABLE=TABMO, UNITE=6)
+
+
+TABM10N12 = CALC_TABLE(TABLE=TABMO,
+                     ACTION=(_F(OPERATION='FILTRE',
+                                NOM_PARA='MAILLE',
+                                VALE_K ='M10'),
+                             _F(OPERATION='FILTRE',
+                                NOM_PARA='NOEUD',
+                                VALE_K ='N12'),
+                            ) 
+                    )
+# IMPR_TABLE(UNITE=6, TABLE=TABM10N12)
+
+
+MOMEQ_FO = FORMULE(VALE='sqrt(MT*MT+MFY*MFY+MFZ*MFZ)',
+                 NOM_PARA=('MT', 'MFY', 'MFZ'),)
+
+TABM10N12 = CALC_TABLE(TABLE=TABM10N12,reuse=TABM10N12,
+                     ACTION=(_F(OPERATION='OPER',
+                                FORMULE=MOMEQ_FO,
+                                NOM_PARA='MEQ',
+                                NOM_COLONNE=('MT', 'MFY', 'MFZ'),),
+                            ) 
+                    )
+                    
+TABM10N12MAX = CALC_TABLE(TABLE=TABM10N12,
+                     ACTION=(_F(OPERATION='CALCUL',
+                                NOM_PARA=('MT', 'MFY', 'MFZ','MEQ'),
+                                TYPE_CALCUL = 'MAXI_ABS'),
+                            ) 
+                    )
+
+# MFY et MFZ sont nulles sur toutes les mailles
+TEST_TABLE(  TABLE=TABM10N12MAX,
+             NOM_PARA='MFZ',
+             VALE_CALC=125.7293341104791,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQ,
+             NOM_PARA='MFZ',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M10',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='N12',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=125.7293341104791, 
+             VALE_CALC=125.7293341104791,
+             )
+
+TEST_TABLE(  TABLE=TABM10N12MAX,
+             NOM_PARA='MEQ',
+             VALE_CALC=125.7293341104791,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQ,
+             NOM_PARA='MEQ',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M10',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='N12',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=125.7293341104791, 
+             VALE_CALC=125.7293341104791,
+             )
 
 #
 # DEPLACEMENTS ABSOLUS AU POINT P1

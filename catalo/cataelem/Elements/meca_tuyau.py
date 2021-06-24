@@ -306,6 +306,11 @@ class MET3SEG3(Element):
                        (OP.EFGE_ELNO.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG), ),
             para_out=( (SP.PEFFORC, EEFGENOC), (OP.EFGE_ELNO.PEFFORR, EEFGENOR), ),
         ),
+        
+        OP.EFGE_EQUIV(te=83,
+            para_in =( (SP.PEFFONR, EEFGENOR), ),
+            para_out=( (SP.PEFFOENR, LC.EEFGENOQ), ),
+        ),
 
         OP.EPEQ_ELGA(te=335,
             para_in =( (OP.EPEQ_ELGA.PDEFORR, EDEFOPG), ),

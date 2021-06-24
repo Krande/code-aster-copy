@@ -24,6 +24,20 @@ DEBUT(CODE=_F(
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 
+MAIL=MODI_MAILLAGE(reuse =MAIL,
+           MAILLAGE=MAIL,
+           ABSC_CURV=_F(
+                TOUT='OUI',
+                GROUP_NO_ORIG=('A',),),
+                );
+
+CHABSC = CREA_CHAMP(OPERATION = 'EXTR' , TYPE_CHAM = 'CART_ABSC_R',
+                     NOM_CHAM = 'ABSC_CURV' , MAILLAGE = MAIL , )
+
+TAB_ABSC=CREA_TABLE(RESU=_F(CHAM_GD=CHABSC,
+            TOUT='OUI',
+            TOUT_CMP='OUI',),)
+
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
@@ -366,7 +380,7 @@ DYNATRAM=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                         INCREMENT=_F(LIST_INST=LISTE2,),
                         ARCHIVAGE=_F(PAS_ARCH=50,),);
 
-DYNATRAM=CALC_CHAMP(reuse=DYNATRAM,GROUP_MA=('MAILF','MAILI'),PARALLELISME_TEMPS='OUI',
+DYNATRAM=CALC_CHAMP(reuse=DYNATRAM,TOUT='OUI',PARALLELISME_TEMPS='OUI',
                     RESULTAT=DYNATRAM,CONTRAINTE=('SIEF_ELGA','EFGE_ELNO'))
 
 
@@ -473,5 +487,121 @@ TEST_RESU(RESU=_F(NUME_ORDRE=32,
                   CRITERE='ABSOLU',
                   PRECISION=1.0000000000000001E-05,),
           )
+
+# Validation de POST_RCCM/OPTION='MOMENT_EQUIVALENT' / RESULTAT
+
+TAB_MEQ = POST_RCCM(TYPE_RESU_MECA='B3600',
+                    OPTION = 'MOMENT_EQUIVALENT',
+                    ZONE_ANALYSE=_F(TOUT='OUI', ),
+                    RESU_MECA=_F(RESULTAT=DYNATRAM,
+                                 NOM_CHAM='EFGE_ELNO',
+                                 TOUT_ORDRE='OUI',
+                                 )
+                    )
+
+ # IMPR_TABLE(TABLE=TAB_MEQ, UNITE=6)
+
+
+# -- on construit les résultats de référence pour un couple maille/noeud
+TABMO = CREA_TABLE(RESU=_F(RESULTAT=DYNATRAM, 
+                           NOM_CMP=('MT', 'MFY', 'MFZ'),
+                           NOM_CHAM='EFGE_ELNO',
+                           TOUT='OUI', 
+                           TOUT_ORDRE='OUI'))
+
+# IMPR_TABLE(TABLE=TABMO, UNITE=6)
+
+TABM479N959 = CALC_TABLE(TABLE=TABMO,
+                     ACTION=(_F(OPERATION='FILTRE',
+                                NOM_PARA='MAILLE',
+                                VALE_K ='M479'),
+                             _F(OPERATION='FILTRE',
+                                NOM_PARA='NOEUD',
+                                VALE_K ='N959'),
+                            ) 
+                    )
+# IMPR_TABLE(UNITE=6, TABLE=TABM937N939)
+
+
+MOMEQ_FO = FORMULE(VALE='sqrt(MT*MT+MFY*MFY+MFZ*MFZ)',
+                 NOM_PARA=('MT', 'MFY', 'MFZ'),)
+
+TABM479N959 = CALC_TABLE(TABLE=TABM479N959,reuse=TABM479N959,
+                     ACTION=(_F(OPERATION='OPER',
+                                FORMULE=MOMEQ_FO,
+                                NOM_PARA='MEQ',
+                                NOM_COLONNE=('MT', 'MFY', 'MFZ'),),
+                            ) 
+                    )
+                    
+TABM479N959MAX = CALC_TABLE(TABLE=TABM479N959,
+                     ACTION=(_F(OPERATION='CALCUL',
+                                NOM_PARA=('MT', 'MFY', 'MFZ','MEQ'),
+                                TYPE_CALCUL = 'MAXI_ABS'),
+                            ) 
+                    )
+
+# MFY et MFZ sont nulles sur toutes les mailles
+TEST_TABLE(  TABLE=TABM479N959MAX,
+             NOM_PARA='MT',
+             VALE_CALC=1.0074000416351803,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQ,
+             NOM_PARA='MT',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K ='M479',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K ='N959',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=1.0074000416351803, 
+             VALE_CALC=1.0074000416351803,
+             )
+
+TEST_TABLE(  TABLE=TABM479N959MAX,
+             NOM_PARA='MEQ',
+             VALE_CALC=1.0074000416351803,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQ,
+             NOM_PARA='MEQ',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K ='M479',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K ='N959',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=1.0074000416351803, 
+             VALE_CALC=1.0074000416351803,
+             )
+
+# N959 est le troisième noeud de la maille M479 (noeud milieu)
+TEST_TABLE(  TABLE=TAB_ABSC,
+             NOM_PARA='ABSC3',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M479',
+                       ),
+                    ),
+             VALE_CALC=0.9570000000000012,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQ,
+             NOM_PARA='ABSC_CURV',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K ='M479',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K ='N959',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=0.9570000000000012, 
+             VALE_CALC=0.9570000000000012,
+             )
 
 FIN();
