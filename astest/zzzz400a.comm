@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -120,8 +120,12 @@ RESU20=STAT_NON_LINE(  MODELE=MODELE,  CHAM_MATER=CHM0,
                       CONVERGENCE=_F(ITER_GLOB_MAXI=40, RESI_GLOB_RELA=1.E-06,),
                       SOLVEUR=_F(METHODE='LDLT',),);
 
-IMPR_RESU(UNITE=80, FORMAT='MED', RESU=_F(RESULTAT=RESU20,), PROC0='NON',)
- 
+IMPR_RESU(UNITE=80,
+          FORMAT='MED',
+          RESU=_F(RESULTAT=RESU20,
+                  IMPR_NOM_VARI='NON'),
+          PROC0='NON')
+
 RESU21=LIRE_RESU(TYPE_RESU='EVOL_NOLI', FORMAT='MED', MODELE=MODELE, UNITE=80,
                 TOUT_ORDRE='OUI', CHAM_MATER=CHM0,
                 COMPORTEMENT=(

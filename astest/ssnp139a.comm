@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -173,7 +173,7 @@ FCT_P = DEFI_FONCTION(
 FCT_E = DEFI_FONCTION(
   NOM_PARA = 'INST',
   VALE     = (-1,0 ,  0,0,   tfin ,dep_fe ),
-  
+
                 )
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INST ),
                         ECHEC=_F(
@@ -218,7 +218,7 @@ U_PLAS=STAT_NON_LINE( INFO=1,
      LIST_INST     = INS_ARCH
     )
   )
-  
+
 # CALCUL ELASTIQUE
 U_ELAS=STAT_NON_LINE( INFO=1,
   MODELE     = MO,
@@ -254,6 +254,7 @@ IMPR_RESU(FORMAT='MED',RESU=(_F(RESULTAT=U_PLAS,
                                 GROUP_MA='DCBJ',),
                              _F(RESULTAT=U_PLAS,
                                 NOM_CHAM='VARI_ELGA',
+                                IMPR_NOM_VARI='NON',
                                 GROUP_MA='DCBJ',),),)
 
 # POST_TRAITEMENT
@@ -333,16 +334,16 @@ D_ELAS = POST_RELEVE_T(
 
 
 # POST TRAITEMENT DE LA LONGUEUR DE FISSURE COHESIVE
-L_CZM_P = POST_CZM_FISS(RESULTAT = U_PLAS, 
-                      OPTION='LONGUEUR', 
-                      GROUP_MA='DCBJ', 
+L_CZM_P = POST_CZM_FISS(RESULTAT = U_PLAS,
+                      OPTION='LONGUEUR',
+                      GROUP_MA='DCBJ',
                       POINT_ORIG=(0.0,-0.025),
                       VECT_TANG=(1.,0.))
 IMPR_TABLE(TABLE=L_CZM_P);
 
-L_CZM_E = POST_CZM_FISS(RESULTAT = U_ELAS, 
-                      OPTION='LONGUEUR', 
-                      GROUP_MA='DCBJ', 
+L_CZM_E = POST_CZM_FISS(RESULTAT = U_ELAS,
+                      OPTION='LONGUEUR',
+                      GROUP_MA='DCBJ',
                       POINT_ORIG=(0.0,-0.025),
                       VECT_TANG=(1.0,0.0))
 IMPR_TABLE(TABLE=L_CZM_E);
