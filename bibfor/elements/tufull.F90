@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8pi.h"
+#include "asterfort/assert.h"
 #include "asterfort/bcoudc.h"
 #include "asterfort/bcoude.h"
 #include "asterfort/carcou.h"
@@ -58,7 +59,7 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
     integer :: nbres, nbrddl, nc, kpgs, nbcoum, nbsecm
     integer :: vali
     parameter (nbres=9)
-    character(len=16) :: nomres(nbres), nomte
+    character(len=16) :: nomres(nbres), nomte, defo_comp
     character(len=8) :: typmod(2)
     character(len=32) :: phenom
     integer :: valret(nbres)
@@ -120,6 +121,9 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
             call utmess('F', 'ELEMENTS2_90')
         endif
     endif
+    defo_comp = zk16(icompo-1+3)
+    ASSERT(defo_comp .eq. 'PETIT')
+
 !
     call jevech('PNBSP_I', 'L', jnbspi)
     nbcou = zi(jnbspi-1+1)

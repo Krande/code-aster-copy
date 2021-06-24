@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -244,7 +244,7 @@ RESULT=DYNA_NON_LINE(MODELE=MO,
                      COMPORTEMENT=(_F(RELATION='ELAS',
                                    GROUP_MA=('PATBIELA','PATBIELB','PATBIELC','PATVAN','CDGVAN','BIELA','BIELB','BIELC',),),
                                 _F(RELATION='VMIS_ECMI_LINE',
-                                   GROUP_MA='COUDES',
+                                   GROUP_MA='COUDES',DEFORMATION='PETIT',
                                    RESI_INTE_RELA=1.E-6,
                                    ITER_INTE_MAXI=100,),
                                 _F(RELATION='ELAS',

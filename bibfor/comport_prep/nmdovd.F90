@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ implicit none
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
 !
@@ -77,6 +78,7 @@ character(len=16), intent(in) :: defo_comp_py
     integer :: nb_elem_mesh, nb_elem, nb_elem_grel
     integer :: nume_elem, nume_grel
     integer, pointer :: repe(:) => null()
+    aster_logical :: lPipe
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -139,6 +141,10 @@ character(len=16), intent(in) :: defo_comp_py
             call jelira(jexnum(ligrmo(1:19)//'.LIEL', nume_grel), 'LONMAX', nb_elem_grel)
             nutyel = zi(j_grel-1+nb_elem_grel)
             call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), notype)
+            lPipe   = lteatt('TUYAU' ,'OUI', typel = notype)
+            if (lPipe .and. defo_comp .ne. 'PETIT') then
+                call utmess('F', 'COMPOR1_51')
+            endif
 !
 ! --------- Type of modelization
 !

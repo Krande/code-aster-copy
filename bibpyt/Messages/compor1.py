@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -227,6 +227,10 @@ Ne renseignez pas le mot-clé COMPORTEMENT/%(k2)s, afin de sélectionner l'algor
   La modélisation DKT n'est compatible avec DEFORMATION='GROT_GDEP' que lorsque RELATION = 'ELAS' est utilisé.
   Pour prendre en compte correctement les grands déplacements, et surtout les grandes rotations, 
   il est recommandé d’utiliser la modélisation COQUE_3D, avec DEFORMATION='GROT_GDEP'.
+"""),
+
+    51: _("""
+  La modélisation TUYAU n'est compatible qu'avec DEFORMATION='PETIT'.
 """),
 
     53: _("""
