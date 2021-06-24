@@ -23,7 +23,13 @@
 import code_aster
 from code_aster.Commands import *
 
-POURSUITE(CODE="OUI", PAR_LOT="NON", DEBUG=_F(HIST_ETAPE="OUI"), FORMAT_HDF="OUI")
+POURSUITE(
+    CODE="OUI",
+    PAR_LOT="NON",
+    ERREUR=_F(ERREUR_F="EXCEPTION"),
+    DEBUG=_F(HIST_ETAPE="OUI"),
+    FORMAT_HDF="OUI",
+)
 
 test = code_aster.TestCase()
 

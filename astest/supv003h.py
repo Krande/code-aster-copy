@@ -23,7 +23,7 @@ import code_aster
 from code_aster.Commands import *
 from code_aster.Utilities import ExecutionParameter, Options
 
-code_aster.init("--test")
+code_aster.init("--test", ERREUR=_F(ERREUR_F="EXCEPTION"))
 test = code_aster.TestCase()
 
 MAIL = LIRE_MAILLAGE(
