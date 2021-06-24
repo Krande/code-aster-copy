@@ -199,7 +199,9 @@ SNL=STAT_NON_LINE(MODELE=MODELE,
                                  ),
                   SOLVEUR=_F(METHODE='MULT_FRONT',),);
 
-IMPR_RESU(FORMAT='MED', UNITE=81,
+IMPR_RESU(FORMAT='MED',
+          UNITE=81,
+          PROC0='NON',
           RESU=_F(RESULTAT=SNL,
           NOM_CHAM='DEPL',),);
 
