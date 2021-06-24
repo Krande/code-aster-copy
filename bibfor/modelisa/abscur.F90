@@ -260,7 +260,7 @@ subroutine abscur(ma)
 !   ------------------------------
     call exisd('CHAMP', ma//'.ABSC_CURV', iexi)
     if (iexi .eq. 1) then
-        call utmess('F', 'INTEMAIL_35')
+        call utmess('A', 'INTEMAIL_35')
         call detrsd('CHAMP', ma//'.ABSC_CURV')
     endif
     call alcart('G', ma//'.ABSC_CURV', ma, 'ABSC_R')
