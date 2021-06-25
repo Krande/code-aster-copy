@@ -99,7 +99,7 @@ subroutine abscur(ma)
     typmcl(2) = 'NOEUD'
     call reliem(' ', ma, 'NU_NOEUD', 'ABSC_CURV', 1,&
                 2, motcle, typmcl, mesnoe, nbno)
-    ASSERT(nbno.eq.1)
+    if (nbno.ne.1) call utmess('F','MODELISA_5', sk = motcle(1))
     call jeveuo(mesnoe, 'L', jmesno)
     nunorig=zi(jmesno)
 !

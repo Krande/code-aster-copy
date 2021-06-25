@@ -2810,6 +2810,7 @@ SIEF_C   = PhysicalQuantity(type='C',
        'MFY',
        'MFZ',
        'BX',
+       'MEQ',
        'NXX',
        'NYY',
        'NXY',
@@ -2973,6 +2974,7 @@ SIEF_C   = PhysicalQuantity(type='C',
        MFY : moment de flexion suivant GY
        MFZ : moment de flexion suivant GZ
        BX : bi-moment (poutre avec gauchissement)
+       MEQ : moment équivalent (RCCM)
        NXX : efforts internes des coques
        NYY : efforts internes des coques
        NXY : efforts internes des coques

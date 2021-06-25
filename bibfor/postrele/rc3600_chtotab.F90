@@ -67,7 +67,7 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nbcmp = 4
-    integer :: nbma, nbpara, jlma, iret, jcesl, jcesl2, jcesd, jcesd2
+    integer :: nbma, nbpara, jlma, iret, jcesl, jcesl2, jcesd, jcesd2, nbpara_tmp
     integer :: jconx2, nbcmpx, nr, nk, kk, ima, nbmax, indma, nbpt, nbcmpt
     integer :: nbabsc, icmp, iad, ipt, inot, ispt, kcp, iexi
     real(kind=8) :: table_valr(5), val_cmp(nbcmp), val_absc(4)
@@ -83,7 +83,7 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
     real(kind=8),       pointer :: cesv2(:) => null()
     integer,            pointer :: connex(:) => null()
 
-    character(len=9) :: parata1(9),parata2(8), parata(9)
+    character(len=9) :: parata1(9),parata2(8), parata(9), parata_tmp(9)
     character(len=3) :: typarata1(9), typarata2(8), typarata(9), nomcmp(nbcmp)
     data  nomcmp / 'MT ','MFY','MFZ', 'MEQ'/
     data  parata1 / 'RESULTAT ','NOM_CHAM ','MAILLE   ','NOEUD    ','ABSC_CURV',&
@@ -230,14 +230,19 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
                 endif
             enddo
 
-            if (l_abscurv) then
+            if (l_abscurv .and. val_absc(ipt).gt.-1.d0) then
                 table_valr(1) = val_absc(ipt)
+                table_valr(2: nbcmp+1) = val_cmp(1:nbcmp)
+                parata_tmp(:)=parata(:)
+                nbpara_tmp = nbpara
             else
-                table_valr(1) = -1.d0
+                table_valr(1: nbcmp) = val_cmp(1:nbcmp)
+                parata_tmp(1:nbpara-nbcmp-1)=parata(1:nbpara-nbcmp-1)
+                parata_tmp(nbpara-nbcmp : nbpara -1)=parata(nbpara-nbcmp+1 : nbpara)
+                nbpara_tmp = nbpara - 1
             endif
-            table_valr(2: nbcmp+1) = val_cmp(1:nbcmp)
 
-            call tbajli(nomtb, nbpara, parata, [0], table_valr,&
+            call tbajli(nomtb, nbpara_tmp, parata_tmp, [0], table_valr,&
                             [cbid], table_valk, 0)
         enddo
     enddo

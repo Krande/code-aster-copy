@@ -25,7 +25,7 @@ subroutine te0083(option, nomte)
 #include "asterfort/tecach.h"
 !
     character(len=16) :: option, nomte
-!     OPTION : EFGE_EQUIV
+!     OPTION : EFEQ_ELNO
 !     IN   K16   OPTION : NOM DE L'OPTION A CALCULER
 !     IN   K16   NOMTE  : NOM DU TYPE_ELEMENT
 !
@@ -38,7 +38,7 @@ subroutine te0083(option, nomte)
     real(kind=8) :: mt, mfy, mfz, meq
 !     ------------------------------------------------------------------
 !
-    ASSERT(option.eq.'EFGE_EQUIV')
+    ASSERT(option.eq.'EFEQ_ELNO')
     call jevech('PEFFONR', 'L', jin)
     call tecach('OOO', 'PEFFONR', 'L', ibid, nval=7,&
                     itab=itab)

@@ -307,7 +307,7 @@ class MET3SEG3(Element):
             para_out=( (SP.PEFFORC, EEFGENOC), (OP.EFGE_ELNO.PEFFORR, EEFGENOR), ),
         ),
         
-        OP.EFGE_EQUIV(te=83,
+        OP.EFEQ_ELNO(te=83,
             para_in =( (SP.PEFFONR, EEFGENOR), ),
             para_out=( (SP.PEFFOENR, LC.EEFGENOQ), ),
         ),

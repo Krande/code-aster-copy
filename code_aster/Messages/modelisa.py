@@ -53,11 +53,10 @@ Risques et conseils :
 
 """),
 
-
-
-
-
-
+    5 : _("""
+Erreur utilisateur dans MODI_MAILLAGE / ABSC_CURV :
+Le groupe de noeuds fourni via le mot-clé GROUP_NO_ORIG comporte plusieurs noeuds.
+"""),
 
     6 : _("""
  méthode AU-YANG : la géométrie doit être cylindrique

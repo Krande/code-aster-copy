@@ -39,7 +39,6 @@ cata_msg = {
 
     4 : _("""
 Les données d'abscisses curvilignes ne sont pas disponibles pour la maille %(k1)s. 
-Les valeurs sont mises à -1 dans la table.
 Si vous souhaitez les calculer il faut intégrer cette maille lors de l'appel à MODI_MAILLAGE/ABSC_CURV.
 """),
 

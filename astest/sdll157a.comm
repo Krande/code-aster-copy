@@ -40,7 +40,7 @@ hc=0.0135
 maillage = LIRE_MAILLAGE()
 
 
-MAIL=MODI_MAILLAGE(reuse =maillage,
+maillage=MODI_MAILLAGE(reuse =maillage,
            MAILLAGE=maillage,
            ABSC_CURV=_F(
                 TOUT='OUI',
@@ -48,7 +48,7 @@ MAIL=MODI_MAILLAGE(reuse =maillage,
                 );
 
 CHABSC = CREA_CHAMP(OPERATION = 'EXTR' , TYPE_CHAM = 'CART_ABSC_R',
-                     NOM_CHAM = 'ABSC_CURV' , MAILLAGE = MAIL , )
+                     NOM_CHAM = 'ABSC_CURV' , MAILLAGE = maillage , )
 
 TAB_ABSC=CREA_TABLE(RESU=_F(CHAM_GD=CHABSC,
             TOUT='OUI',

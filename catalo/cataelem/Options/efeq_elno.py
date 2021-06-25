@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: 
+# person_in_charge: sylvie.audebert at edf.fr
 
 
 
@@ -28,7 +28,7 @@ import cataelem.Commons.attributes as AT
 
 
 
-EFGE_EQUIV = Option(
+EFEQ_ELNO = Option(
     para_in=(
         SP.PEFFONR,
     ),
@@ -38,5 +38,5 @@ EFGE_EQUIV = Option(
     condition=(
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.EFGE,'OUI'),(AT.BORD,'0'),)),
     ),
-    comment="""  EFGE_EQUIV : CALCUL DU MOMENT EQUIVALENT (RCCM B3600)""",
+    comment="""  EFEQ_ELNO : CALCUL DU MOMENT EQUIVALENT (RCCM B3600)""",
 )

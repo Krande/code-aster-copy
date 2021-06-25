@@ -45,6 +45,10 @@ M1=DEFI_GROUP(reuse =M1,
                              _F(GROUP_MA='BIELB',),
                              _F(GROUP_MA='BIELC',),),);
 
+
+# IMPR_RESU(UNITE=6, FORMAT='ASTER', RESU=_F(MAILLAGE=M1))
+
+
 MA=CREA_MAILLAGE(MAILLAGE=M1,
                  MODI_MAILLE=_F(GROUP_MA=('POUTRES','COUDES',),
                                 OPTION='SEG3_4',),);
@@ -59,6 +63,20 @@ MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
                                         _F( NOM = 'N1', NOEUD = 'N1'),
                                      ),
          )
+
+MA=MODI_MAILLAGE(reuse =MA,
+           MAILLAGE=MA,
+           ABSC_CURV=_F(
+                GROUP_MA=('POUTRES','COUDES',),
+                GROUP_NO_ORIG=('B',),),
+                );
+
+CHABSC = CREA_CHAMP(OPERATION = 'EXTR' , TYPE_CHAM = 'CART_ABSC_R',
+                     NOM_CHAM = 'ABSC_CURV' , MAILLAGE = MA , )
+
+TAB_ABSC=CREA_TABLE(RESU=_F(CHAM_GD=CHABSC,
+            TOUT='OUI',
+            TOUT_CMP='OUI',),)
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=(_F(GROUP_MA=('PATBIELA','PATBIELC','PATVAN','BIELA','BIELB','BIELC',),
@@ -272,6 +290,161 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=4.303804E-06,
               )
 
 RESULT=CALC_CHAMP(reuse=RESULT,RESULTAT=RESULT,INST=(0.01,TFIN),CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'))
+
+# Validation de POST_RCCM/OPTION='MOMENT_EQUIVALENT' / RESULTAT / TOUT
+
+TAB_MEQ = POST_RCCM(TYPE_RESU_MECA='B3600',
+                    OPTION = 'MOMENT_EQUIVALENT',
+                    ZONE_ANALYSE=_F(GROUP_MA=('COUDES','POUTRES') ),
+                    RESU_MECA=_F(RESULTAT=RESULT,
+                                 NOM_CHAM='EFGE_ELNO',
+                                 INST=(0.01, 0.17),
+                                 )
+                    )
+# IMPR_RESU(UNITE=6, FORMAT='RESULTAT',RESU=_F(RESULTAT=RESULT, NOM_CHAM='EFGE_ELNO',))
+# IMPR_TABLE(TABLE=TAB_MEQ, UNITE=6)
+
+# -- on construit les résultats de référence pour un couple maille/noeud
+TABMO = CREA_TABLE(RESU=_F(RESULTAT=RESULT, 
+                           NOM_CMP=('MT', 'MFY', 'MFZ'),
+                           NOM_CHAM='EFGE_ELNO',
+                           TOUT='OUI', 
+                           INST=(0.01, 0.17),))
+
+TABM64NS64 = CALC_TABLE(TABLE=TABMO,
+                     ACTION=(_F(OPERATION='FILTRE',
+                                NOM_PARA='MAILLE',
+                                VALE_K ='M64'),
+                             _F(OPERATION='FILTRE',
+                                NOM_PARA='NOEUD',
+                                VALE_K ='NS64'),
+                            ) 
+                    )
+# IMPR_TABLE(UNITE=6, TABLE=TABM64NS64)
+
+
+MOMEQ_FO = FORMULE(VALE='sqrt(MT*MT+MFY*MFY+MFZ*MFZ)',
+                 NOM_PARA=('MT', 'MFY', 'MFZ'),)
+
+TABM64NS64 = CALC_TABLE(TABLE=TABM64NS64,reuse=TABM64NS64,
+                     ACTION=(_F(OPERATION='OPER',
+                                FORMULE=MOMEQ_FO,
+                                NOM_PARA='MEQ',
+                                NOM_COLONNE=('MT', 'MFY', 'MFZ'),),
+                            ) 
+                    )
+                    
+TABM64NS64MAX = CALC_TABLE(TABLE=TABM64NS64,
+                     ACTION=(_F(OPERATION='CALCUL',
+                                NOM_PARA=('MT', 'MFY', 'MFZ','MEQ'),
+                                TYPE_CALCUL = 'MAXI_ABS'),
+                            ) 
+                    )
+
+TEST_TABLE(  TABLE=TABM64NS64MAX,
+             NOM_PARA='MT',
+             VALE_CALC=24.049111092022407,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQ,
+             NOM_PARA='MT',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M64',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='NS64',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=24.049111092022407, 
+             VALE_CALC=24.049111092022407,
+             )
+
+
+
+TEST_TABLE(  TABLE=TABM64NS64MAX,
+             NOM_PARA='MFY',
+             VALE_CALC=38.16540576851001,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQ,
+             NOM_PARA='MFY',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M64',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='NS64',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=38.16540576851001, 
+             VALE_CALC=38.16540576851001,
+             )
+             
+TEST_TABLE(  TABLE=TABM64NS64MAX,
+             NOM_PARA='MFZ',
+             VALE_CALC=80.37127397983554,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQ,
+             NOM_PARA='MFZ',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M64',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='NS64',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=80.37127397983554, 
+             VALE_CALC=80.37127397983554,
+             )
+
+TEST_TABLE(  TABLE=TABM64NS64MAX,
+             NOM_PARA='MEQ',
+             VALE_CALC=92.16560976271595,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQ,
+             NOM_PARA='MEQ',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M64',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='NS64',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=92.16560976271595, 
+             VALE_CALC=92.16560976271595,
+             )
+
+# NS64 est le quatrième noeud de la maille M64
+TEST_TABLE(  TABLE=TAB_ABSC,
+             NOM_PARA='ABSC4',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M64',
+                       ),
+                    ),
+             VALE_CALC=9.182718336002361,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQ,
+             NOM_PARA='ABSC_CURV',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M64',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='NS64',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=9.182718336002361, 
+             VALE_CALC=9.182718336002361,
+             )
+
+
+
 
 RESULT=CALC_CHAMP(reuse =RESULT,
                RESULTAT=RESULT,

@@ -64,16 +64,16 @@ subroutine rc3600_momeq()
     character(len=16) :: crit, typesd, nomsym
     character(len=19) ::resuTmp19
     
-    integer ::ibid, nbac, nbpa, nbpara, jnompa, nbma
-    character(len=8) :: modele, resuTmp, noma, nomtab, conceptin
+    integer ::ibid, nbac, nbpa, nbpara, jnompa
+    character(len=8) :: modele, resuTmp, nomtab, conceptin
     character(len=8) :: modeav, lpain(1), lpaout(1), typmax, typresu
     character(len=4) :: tsca
     character(len=24) :: nompar
     character(len=16) :: nomcmd, concep, nopara, nomopt
     character(len=19) :: chin, chextr, ligrel, resu19, lchin(1), lchout(1)
     character(len=19) :: noch19, tychlu, mcf
-    integer :: vali(2), iexi
-    aster_logical :: lreel, lnoeu, ldetli, lvide
+    integer :: iexi
+    aster_logical :: lnoeu, ldetli, lvide
     
 
     
@@ -155,7 +155,7 @@ subroutine rc3600_momeq()
                 lchin(1)=chin
                 lchout(1)=chextr
 !
-                call calcul('C', 'EFGE_EQUIV', ligrel, 1, lchin,&
+                call calcul('C', 'EFEQ_ELNO', ligrel, 1, lchin,&
                             lpain, 1, lchout, lpaout, 'V',&
                             'OUI')
 !
@@ -239,7 +239,7 @@ subroutine rc3600_momeq()
         lchin(1)=champ
         lchout(1)=noch19
 !
-        call calcul('C', 'EFGE_EQUIV', ligrel, 1, lchin,&
+        call calcul('C', 'EFEQ_ELNO', ligrel, 1, lchin,&
                     lpain, 1, lchout, lpaout, 'V',&
                     'OUI')
     endif
