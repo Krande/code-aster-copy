@@ -990,7 +990,7 @@ class PostRocheCommon():
         # calcul à partir de l'effet de ressort max
 
         # SigRef = N
-        # EspiMpRef = X1
+        # EspiMpRef = X1 : plus utilisé
         # RessortMax = X3
 
         fSigVraieMax = FORMULE(NOM_PARA=('N', 'X3' ,'E', 'K_FACT', 'N_EXPO'),
@@ -1005,7 +1005,23 @@ class PostRocheCommon():
                                 AFFE= (_F(NOM_CMP=('X1','X2'),
                                           VALE_F=(fSigVraie,fSigVraieMax),
                                           **self.dicAllZones),))
-
+        # epsilon vraie
+        
+        fEpsVraie = FORMULE(NOM_PARA = ('X1', 'E', 'K_FACT', 'N_EXPO'),
+                          VALE     =  'X1/E+K_FACT*pow(X1/E,1/N_EXPO)')
+        
+        fEpsVraieMax = FORMULE(NOM_PARA = ('X2', 'E', 'K_FACT', 'N_EXPO'),
+                          VALE     =  'X1/E+K_FACT*pow(X1/E,1/N_EXPO)')
+        
+        
+        self.chFEpsVraie = CREA_CHAMP(OPERATION='AFFE',
+                                TYPE_CHAM='ELNO_NEUT_F',
+                                MODELE=self.model,
+                                PROL_ZERO='OUI',
+                                AFFE= (_F(NOM_CMP=('X1','X2'),
+                                          VALE_F=(fEpsVraie,fEpsVraieMax),
+                                          **self.dicAllZones),))
+        
         # veriContrainte
 
         def veriSupSigP(sigP, sigV):
@@ -1257,13 +1273,13 @@ class PostRocheCommon():
                                 PROL_ZERO = 'OUI',
                                 ASSE      = (_F(CHAM_GD = chVale,
                                                TOUT = 'OUI',
-                                               NOM_CMP      = ('X1','X2','X3','X4','X5','X6','X7','X8','X9'),
-                                               NOM_CMP_RESU = ('X1','X3','X5','X7','X9','X11','X13','X17','X19'),
+                                               NOM_CMP      = ('X1','X2','X3','X4','X5', 'X6', 'X7', 'X8', 'X9','X10','X11','X12','X13'),
+                                               NOM_CMP_RESU = ('X1','X3','X5','X7','X9','X11','X13','X17','X19','X21','X23','X25','X27'),
                                                ),
                                              _F(CHAM_GD = chValeS2,
                                                TOUT = 'OUI',
-                                               NOM_CMP      = ('X1','X2','X3','X4','X5','X6','X7','X8','X9'),
-                                               NOM_CMP_RESU = ('X2','X4','X6','X8','X10','X12','X14','X18','X20'),
+                                               NOM_CMP      = ('X1','X2','X3','X4', 'X5', 'X6', 'X7', 'X8', 'X9','X10','X11','X12','X13'),
+                                               NOM_CMP_RESU = ('X2','X4','X6','X8','X10','X12','X14','X18','X20','X22','X24','X26','X28'),
                                                ),
                                              _F(CHAM_GD = self.chContEquiv,
                                                TOUT = 'OUI',
@@ -1274,21 +1290,6 @@ class PostRocheCommon():
                                                TOUT = 'OUI',
                                                NOM_CMP = ('X1',),
                                                NOM_CMP_RESU = ('X16',),
-                                               ),
-                                              _F(CHAM_GD = self.M,
-                                               TOUT = 'OUI',
-                                               NOM_CMP = ('MT','MFY','MFZ'),
-                                               NOM_CMP_RESU = ('X21','X22','X23'),
-                                               ),
-                                              _F(CHAM_GD = self.m,
-                                               TOUT = 'OUI',
-                                               NOM_CMP = ('MT','MFY','MFZ'),
-                                               NOM_CMP_RESU = ('X24','X25','X26'),
-                                               ),
-                                              _F(CHAM_GD = self.msi,
-                                               TOUT = 'OUI',
-                                               NOM_CMP = ('MT','MFY','MFZ'),
-                                               NOM_CMP_RESU = ('X27','X28','X29'),
                                                ),
                                              )
                                )
@@ -1348,7 +1349,9 @@ class PostRocheCalc():
         chReversLoc= CREA_CHAMP(OPERATION='EVAL',
                                 TYPE_CHAM='ELNO_NEUT_R',
                                 CHAM_F=self.param.chFRevesLoc,
-                                CHAM_PARA=(self.chSigRef, self.param.chRochElno, self.chEpsiMp))
+                                CHAM_PARA=(self.chSigRef, self.param.chRochElno, 
+                                self.chEpsiMp
+                                ))
 
         self.chReversLoc = chReversLoc
 
@@ -1524,6 +1527,15 @@ class PostRocheCalc():
                                 CHAM_PARA=(self.chSigRef, chUtil, self.param.chRochElno ))
 
         self.chSigVraie = chSigVraie
+        
+        # calcul de epsilon vraie
+        
+        chEpsVraie = CREA_CHAMP(OPERATION='EVAL',
+                                TYPE_CHAM='ELNO_NEUT_R',
+                                CHAM_F=self.param.chFEpsVraie,
+                                CHAM_PARA=(self.chSigVraie, self.param.chRochElno ))
+        
+        self.chEpsVraie = chEpsVraie
 
     def veriContrainte(self,):
         """
@@ -1649,6 +1661,12 @@ class PostRocheCalc():
         # X5 = facteur d'effet de ressort maximal
         # X6 = coefficient d'abattement
         # X7 = coefficient d'abattement optimisé
+        
+        
+        # X10 = contrainte vraie 
+        # X11 = contrainte vraie optimisée 
+        # X12 = epsilon vraie 
+        # X13 = epsilon vraie optimisée
 
         chOutput= CREA_CHAMP(OPERATION = 'ASSE',
                             MODELE=self.param.model,
@@ -1689,7 +1707,16 @@ class PostRocheCalc():
                                            NOM_CMP = ('X1','X2'),
                                            NOM_CMP_RESU = ('X8','X9'),
                                            ),
-
+                                         _F(CHAM_GD = self.chSigVraie,
+                                           TOUT = 'OUI',
+                                           NOM_CMP = ('X1','X2'),
+                                           NOM_CMP_RESU = ('X10','X11'),
+                                           ),
+                                         _F(CHAM_GD = self.chEpsVraie,
+                                           TOUT = 'OUI',
+                                           NOM_CMP = ('X1','X2'),
+                                           NOM_CMP_RESU = ('X12','X13'),
+                                           ),
                                          )
                            )
 
