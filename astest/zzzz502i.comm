@@ -109,7 +109,7 @@ loads.append(AFFE_CHAR_CINE(MODELE=model,
                               _F(GROUP_MA='GAUCHE',  DX=-1.0),
                               _F(GROUP_NO='DROIT',  DX=1.0),
                       ),))
-solvers = [ "MUMPS", "PETSC"]
+solvers = [ "MUMPS"]#, "PETSC"]
 for load in loads:
     for solver in solvers:
 
@@ -180,6 +180,55 @@ for load in loads:
 
         TEST_RESU(
                     RESU=(_F(
+                        NOM_CHAM='DEPL',
+                        NOM_CMP='DY',
+                        INST=1.0,
+                        RESULTAT=RESU,
+                        CRITERE='RELATIF',
+                        VALE_CALC=-1.0,
+                        TYPE_TEST='MIN',
+                    ),
+                ),)
+
+        TEST_RESU(
+                    RESU=(_F(
+                        NOM_CHAM='DEPL',
+                        NOM_CMP='DY',
+                        INST=1.0,
+                        RESULTAT=RESU,
+                        CRITERE='RELATIF',
+                        VALE_CALC=1.0,
+                        TYPE_TEST='MAX',
+                    ),
+                ),)
+
+        TEST_RESU(
+                    RESU=(_F(
+                        NOM_CHAM='DEPL',
+                        NOM_CMP='DY',
+                        INST=1.0,
+                        RESULTAT=RESU,
+                        CRITERE='RELATIF',
+                        VALE_CALC=12.231502162811067,
+                        TYPE_TEST='SOMM',
+                    ),
+                ),)
+
+        TEST_RESU(
+                    RESU=(_F(
+                        NOM_CHAM='DEPL',
+                        NOM_CMP='DY',
+                        INST=1.0,
+                        RESULTAT=RESU,
+                        CRITERE='RELATIF',
+                        VALE_CALC=200.1877536476705,
+                        TYPE_TEST='SOMM_ABS',
+                    ),
+                ),)
+
+
+        TEST_RESU(
+                    RESU=(_F(
                         GROUP_MA=('M1', ),
                         NOM_CHAM='SIEF_ELGA',
                         NOM_CMP='SIXX',
@@ -203,6 +252,57 @@ for load in loads:
                         VALE_CALC=13730769230.769226,
                     ),
                 ),)
+
+        TEST_RESU(
+                    RESU=(_F(
+                        NOM_CHAM='SIEF_ELGA',
+                        NOM_CMP='SIXX',
+                        INST=1.0,
+                        RESULTAT=RESU,
+                        TYPE_TEST='MIN',
+                        CRITERE='RELATIF',
+                        VALE_CALC=10500000000.0,
+                    ),
+                ),)
+
+        TEST_RESU(
+                    RESU=(_F(
+                        NOM_CHAM='SIEF_ELGA',
+                        NOM_CMP='SIXX',
+                        INST=1.0,
+                        RESULTAT=RESU,
+                        TYPE_TEST='MAX',
+                        CRITERE='RELATIF',
+                        VALE_CALC=10500000000.0,
+                    ),
+                ),)
+
+        TEST_RESU(
+                    RESU=(_F(
+                        NOM_CHAM='SIEF_ELGA',
+                        NOM_CMP='SIXX',
+                        INST=1.0,
+                        RESULTAT=RESU,
+                        TYPE_TEST='SOMM',
+                        CRITERE='RELATIF',
+                        VALE_CALC=5418000000000.001,
+                    ),
+                ),)
+
+        TEST_RESU(
+                    RESU=(_F(
+                        NOM_CHAM='SIEF_ELGA',
+                        NOM_CMP='SIXX',
+                        INST=1.0,
+                        RESULTAT=RESU,
+                        TYPE_TEST='SOMM_ABS',
+                        CRITERE='RELATIF',
+                        VALE_CALC=5418000000000.001,
+                    ),
+                ),)
+
+
+
 
 
 

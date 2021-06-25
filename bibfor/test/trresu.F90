@@ -299,12 +299,12 @@ integer, intent(in) :: ific, nocc
             call getvtx('RESU', 'TYPE_TEST', iocc=iocc, scal=typtes, nbret=n1)
 !
             if (n1 .ne. 0) then
-                if (l_parallel_mesh) then
-                    call utmess('F', 'MODELISA7_87')
-                endif
 !
                 !EXCLUS('NOEUD','GROUP_NO','POINT') avec 'TYPE_TEST'
                 call getvtx('RESU', 'NOEUD', iocc=iocc, scal=exclgr, nbret=n2)
+                if (n2>0 .and. l_parallel_mesh) then
+                    call utmess('F', 'MODELISA7_87')
+                endif
                 call getvtx('RESU', 'GROUP_NO', iocc=iocc, scal=exclgr, nbret=n3)
                 call getvtx('RESU', 'POINT', iocc=iocc, scal=exclgr, nbret=n4)
                 if ((n2+n3+n4) .gt. 0) then

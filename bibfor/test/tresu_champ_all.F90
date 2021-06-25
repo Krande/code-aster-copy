@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,16 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/tresu_print_all.h"
 #include "asterfort/utmess.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/isParallelMesh.h"
+#include "asterfort/asmpi_info.h"
+#include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/wkvect.h"
+#include "asterc/ismaem.h"
+#include "asterc/r8maem.h"
+#include "asterc/r8miem.h"
+!
     character(len=*), intent(in) :: chamgd
     character(len=8), intent(in) :: typtes
     character(len=*), intent(in) :: typres
@@ -56,15 +66,20 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
 ! IN  : LLAB   : FLAG D IMPRESSION DES LABELS
 ! OUT : IMPRESSION SUR LISTING
 ! ----------------------------------------------------------------------
-    integer :: vali, jvale, neq, i, iret1, iret2
+    integer :: vali, jvale, neq, i, iret1, iret2, rank, jvale2, neq2
     real(kind=8) :: valr, ordgrd
     complex(kind=8) :: valc
     character(len=1) :: typrez
     character(len=24) :: valk(3)
     character(len=4) :: type
+    character(len=8) :: mesh
     character(len=5) :: sufv
-    character(len=19) :: cham19
-    aster_logical :: skip
+    character(len=19) :: cham19, prof_chno
+    aster_logical :: skip, l_parallel_mesh, cham_no
+    mpi_int :: irank
+    integer, pointer :: v_noex(:) => null()
+    integer, pointer :: v_maex(:) => null()
+    integer, pointer :: v_deeq(:) => null()
 !     ------------------------------------------------------------------
     if (present(ignore)) then
         skip = ignore
@@ -82,13 +97,25 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
     cham19 = chamgd
     typrez = typres(1:1)
 !
+    call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=mesh, arret='F')
+    l_parallel_mesh = isParallelMesh(mesh)
+!
+    if(l_parallel_mesh) then
+        call asmpi_info(rank = irank)
+        rank = to_aster_int(irank)
+        call jeveuo(mesh//'.NOEX', 'L', vi=v_noex)
+        call jeveuo(mesh//'.MAEX', 'L', vi=v_maex)
+    end if
+!
 !     -- LE CHAMP EXISTE-T-IL ?
 !     =========================
     sufv = ' '
     call jeexin(cham19//'.VALE', iret1)
     if (iret1 .gt. 0) then
         sufv='.VALE'
+        cham_no = ASTER_TRUE
     else
+        cham_no = ASTER_FALSE
         call jeexin(cham19//'.CELV', iret2)
         if (iret2 .gt. 0) then
             sufv='.CELV'
@@ -103,90 +130,147 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
         valk(2) = type
         valk(3) = typrez
         call utmess('F', 'TEST0_9', nk=3, valk=valk)
-        goto 9999
+        goto 999
     endif
 !
     call jelira(cham19//sufv, 'LONMAX', neq)
     call jeveuo(cham19//sufv, 'L', jvale)
 !
+! --- Pour un ParallelMesh il faut retailler les champs
+!
+    if( l_parallel_mesh ) then
+        call wkvect('&&TRESU_CH.ALL', 'V V '//type(1:1), neq, jvale2)
+        neq2 = 0
+        if( cham_no ) then
+            call dismoi('PROF_CHNO', cham19, 'CHAM_NO', repk=prof_chno, arret='F')
+            call jeveuo(prof_chno//".DEEQ", 'L', vi=v_deeq)
+            do i = 1, neq
+                if( v_noex(v_deeq(2*(i-1)+1)) == rank ) then
+                    neq2 = neq2 + 1
+                    if(type == 'I' ) then
+                        zi(jvale2-1+neq2) = zi(jvale-1+i)
+                    elseif(type == 'R') then
+                        zr(jvale2-1+neq2) = zr(jvale-1+i)
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                end if
+            end do
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+!
+        jvale = jvale2
+        neq = neq2
+    end if
+!
 !
     if (type .eq. 'I') then
         if (typtes .eq. 'SOMM_ABS') then
             vali = 0
-            do 100 i = 1, neq
+            do i = 1, neq
                 vali = vali + abs( zi(jvale+i-1) )
-100         continue
+            end do
+            if(l_parallel_mesh) then
+                call asmpi_comm_vect('MPI_SUM', 'I', sci=vali)
+            end if
         else if (typtes .eq. 'SOMM') then
             vali = 0
-            do 102 i = 1, neq
+            do i = 1, neq
                 vali = vali + zi(jvale+i-1)
-102         continue
+            end do
+            if(l_parallel_mesh) then
+                call asmpi_comm_vect('MPI_SUM', 'I', sci=vali)
+            end if
         else if (typtes .eq. 'MAX') then
-            vali = zi(jvale-1+1)
-            do 104 i = 2, neq
+            vali = -ismaem()
+            do i = 1, neq
                 vali = max( vali , zi(jvale+i-1) )
-104         continue
+            end do
+            if(l_parallel_mesh) then
+                call asmpi_comm_vect('MPI_MAX', 'I', sci=vali)
+            end if
         else if (typtes .eq. 'MIN') then
-            vali = zi(jvale-1+1)
-            do 106 i = 2, neq
+            vali = ismaem()
+            do i = 1, neq
                 vali = min( vali , zi(jvale+i-1) )
-106         continue
+            end do
+            if(l_parallel_mesh) then
+                call asmpi_comm_vect('MPI_MIN', 'I', sci=vali)
+            end if
         else
             call utmess('F', 'TEST0_8', sk=typtes)
-            goto 9999
+            goto 999
         endif
 !
 !
     else if (type .eq. 'R') then
         if (typtes .eq. 'SOMM_ABS') then
             valr = 0.d0
-            do 200 i = 1, neq
+            do i = 1, neq
                 valr = valr + abs( zr(jvale+i-1) )
-200         continue
+            end do
+            if(l_parallel_mesh) then
+                call asmpi_comm_vect('MPI_SUM', 'R', scr=valr)
+            end if
         else if (typtes .eq. 'SOMM') then
             valr = 0.d0
-            do 202 i = 1, neq
+            do i = 1, neq
                 valr = valr + zr(jvale+i-1)
-202         continue
+            end do
+            if(l_parallel_mesh) then
+                call asmpi_comm_vect('MPI_SUM', 'R', scr=valr)
+            end if
         else if (typtes .eq. 'MAX') then
-            valr = zr(jvale)
-            do 204 i = 2, neq
+            valr = r8miem()
+            do i = 1, neq
                 valr = max( valr , zr(jvale+i-1) )
-204         continue
+            end do
+            if(l_parallel_mesh) then
+                call asmpi_comm_vect('MPI_MAX', 'R', scr=valr)
+            end if
         else if (typtes .eq. 'MIN') then
-            valr = zr(jvale)
-            do 206 i = 2, neq
+            valr = r8maem()
+            do i = 1, neq
                 valr = min( valr , zr(jvale+i-1) )
-206         continue
+            end do
+            if(l_parallel_mesh) then
+                call asmpi_comm_vect('MPI_MIN', 'R', scr=valr)
+            end if
         else
             call utmess('F', 'TEST0_8', sk=typtes)
-            goto 9999
+            goto 999
         endif
 !
 !
     else if (type .eq. 'C') then
+        if(l_parallel_mesh) then
+            ASSERT(ASTER_FALSE)
+        end if
         if (typtes .eq. 'SOMM_ABS') then
             valc = dcmplx(0.d0,0.d0)
-            do 300 i = 1, neq
+            do i = 1, neq
                 valc = valc + abs( zc(jvale+i-1) )
-300         continue
+            end do
         else if (typtes .eq. 'SOMM') then
             valc = dcmplx(0.d0,0.d0)
-            do 302 i = 1, neq
+            do i = 1, neq
                 valc = valc + zc(jvale+i-1)
-302         continue
+            end do
         else
             call utmess('F', 'TEST0_8', sk=typtes)
-            goto 9999
+            goto 999
         endif
     endif
+!
+    call jedetr('&&TRESU_CH.ALL')
 !
     call tresu_print_all(tbtxt(1), tbtxt(2), llab, typres, nbref,&
                          crit, epsi, ssigne, refr, valr,&
                          refi, vali, refc, valc, ignore=skip,&
                          compare=ordgrd)
 !
-9999 continue
+999 continue
 !
     call jedema()
 end subroutine

@@ -196,12 +196,11 @@ subroutine trchno(ific, nocc)
         call getvtx('CHAM_NO', 'TYPE_TEST', iocc=iocc, scal=typtes, nbret=n1)
 !
         if (n1 .ne. 0) then
-            if (l_parallel_mesh) then
-                call utmess('F', 'MODELISA7_87')
-            endif
-!
             !EXCLUS('NOEUD','GROUP_NO') avec 'TYPE_TEST'
             call getvtx('RESU', 'NOEUD', iocc=iocc, scal=exclgr, nbret=n2)
+            if (n2 > 0 .and. l_parallel_mesh) then
+                call utmess('F', 'MODELISA7_86')
+            endif
             call getvtx('RESU', 'GROUP_NO', iocc=iocc, scal=exclgr, nbret=n3)
             if ((n2+n3) .gt. 0) then
                 call utmess('A', 'CALCULEL6_96')

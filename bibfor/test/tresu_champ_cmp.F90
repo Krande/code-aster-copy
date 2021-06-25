@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesred.h"
+#include "asterfort/cnsred.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -38,6 +39,10 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
 #include "asterfort/tresu_print_all.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/isParallelMesh.h"
+#include "asterfort/asmpi_info.h"
+#include "asterfort/asmpi_comm_vect.h"
+!
     character(len=*), intent(in) :: chamgd
     character(len=8), intent(in) :: typtes
     character(len=*), intent(in) :: typres
@@ -74,16 +79,20 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
 ! ----------------------------------------------------------------------
     integer :: vali, neq, i, j, k, iret1, valii, icmp
     integer :: ncmp, vnocmp, jcsd, jcsc, jcsv, jcsl, jcmp, ind
-    integer :: nl1, nl11, nl2, nl22
+    integer :: nl1, nl11, nl2, nl22, rank, nbno, nbno_list, nbma, nbma_list
     real(kind=8) :: valr, valrr
     complex(kind=8) :: valc
     character(len=1) :: typrez
     character(len=24) :: valk(3)
     character(len=4) :: type
-    character(len=8) :: tych, noddl
+    character(len=8) :: tych, noddl, mesh
     character(len=19) :: cham19, cnsinr, cnsin1
-    aster_logical :: skip
+    aster_logical :: skip, l_parallel_mesh
     real(kind=8) :: ordgrd
+    mpi_int :: irank
+    integer, pointer :: v_noex(:) => null()
+    integer, pointer :: v_maex(:) => null()
+    integer, pointer :: v_list(:) => null()
 !     ------------------------------------------------------------------
 !
     skip = .false.
@@ -101,6 +110,16 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
     cham19 = chamgd
     typrez = typres(1:1)
 !
+    call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=mesh, arret='F')
+    l_parallel_mesh = isParallelMesh(mesh)
+!
+    if(l_parallel_mesh) then
+        call asmpi_info(rank = irank)
+        rank = to_aster_int(irank)
+        call jeveuo(mesh//'.NOEX', 'L', vi=v_noex)
+        call jeveuo(mesh//'.MAEX', 'L', vi=v_maex)
+    end if
+!
     call wkvect('&&TRESU_CH.CMP', 'V V I', nbcmp, jcmp)
 !
 !     -- LE CHAMP EXISTE-T-IL ?
@@ -113,8 +132,30 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
 
     if (tych(1:4) .eq. 'NOEU') then
 !   --------------------------------
+        cnsin1 = '&&TRESU_CH.CNSIN1'
         cnsinr = '&&TRESU_CH.CNSINR'
-        call cnocns(cham19, 'V', cnsinr)
+        call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nbno)
+        call wkvect('&&TRESU_CH.LST', 'V V I', nbno, vi=v_list)
+        nbno_list = 0
+        if(l_parallel_mesh) then
+            do i = 1, nbno
+                if(v_noex(i) == rank) then
+                    nbno_list = nbno_list + 1
+                    v_list(nbno_list) = i
+                end if
+            end do
+        else
+            do i = 1, nbno
+                v_list(i) = i
+            end do
+            nbno_list = nbno
+        end if
+        call cnocns(cham19, 'V', cnsin1)
+        call cnsred(cnsin1, nbno_list, v_list, 0, ['XXX'],&
+                  'V', cnsinr)
+        call detrsd('CHAM_NO_S', cnsin1)
+        call jedetr('&&TRESU_CH.LST')
+
         call jeveuo(cnsinr//'.CNSV', 'L', jcsv)
         call jeveuo(cnsinr//'.CNSC', 'L', jcsc)
         call jeveuo(cnsinr//'.CNSL', 'L', jcsl)
@@ -147,11 +188,28 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
 !   -----------------------------------
         cnsin1 = '&&TRESU_CH.CNSIN1'
         cnsinr = '&&TRESU_CH.CNSINR'
+        call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbma)
+        call wkvect('&&TRESU_CH.LST', 'V V I', nbma, vi=v_list)
+        nbma_list = 0
+        if(l_parallel_mesh) then
+            do i = 1, nbma
+                if(v_maex(i) == rank) then
+                    nbma_list = nbma_list + 1
+                    v_list(nbma_list) = i
+                end if
+            end do
+        else
+            do i = 1, nbma
+                v_list(i) = i
+            end do
+            nbma_list = nbma
+        end if
         call celces(cham19, 'V', cnsin1)
 !       -- tres important : cesred avec nbcmp permet la division neq=neq/ncmp
-        call cesred(cnsin1, 0, [0], 1, nocmp(1),&
+        call cesred(cnsin1, nbma_list, v_list, 1, nocmp(1),&
                   'V', cnsinr)
         call detrsd('CHAM_ELEM_S', cnsin1)
+        call jedetr('&&TRESU_CH.LST')
 
         call jeveuo(cnsinr//'.CESV', 'L', jcsv)
         call jeveuo(cnsinr//'.CESC', 'L', jcsc)
@@ -204,6 +262,9 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                     endif
                 end do
             end do
+            if(l_parallel_mesh) then
+                call asmpi_comm_vect('MPI_SUM', 'I', sci=vali)
+            end if
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
             lign2(nl2+17:nl2+17)='.'
@@ -219,6 +280,9 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                     endif
                 end do
             end do
+            if(l_parallel_mesh) then
+                call asmpi_comm_vect('MPI_SUM', 'I', sci=vali)
+            end if
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
             lign2(nl2+17:nl2+17)='.'
@@ -250,6 +314,9 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                     endif
                 endif
             end do
+            if(l_parallel_mesh) then
+                call asmpi_comm_vect('MPI_MAX', 'I', sci=vali)
+            end if
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp-&
             1+icmp))
@@ -283,6 +350,9 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                     endif
                 endif
             end do
+            if(l_parallel_mesh) then
+                call asmpi_comm_vect('MPI_MIN', 'I', sci=vali)
+            end if
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp-&
             1+icmp))
@@ -306,6 +376,9 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                     endif
                 end do
             end do
+            if(l_parallel_mesh) then
+                call asmpi_comm_vect('MPI_SUM', 'R', scr=valr)
+            end if
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
             lign2(nl2+17:nl2+17)='.'
@@ -320,6 +393,9 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                     endif
                 end do
             end do
+            if(l_parallel_mesh) then
+                call asmpi_comm_vect('MPI_SUM', 'R', scr=valr)
+            end if
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp))
             lign2(nl2+17:nl2+17)='.'
@@ -344,6 +420,9 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                     endif
                 endif
             end do
+            if(l_parallel_mesh) then
+                call asmpi_comm_vect('MPI_MAX', 'R', scr=valr)
+            end if
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp-1+icmp))
             lign2(nl2+17:nl2+17)='.'
@@ -368,6 +447,9 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
                     endif
                 endif
             end do
+            if(l_parallel_mesh) then
+                call asmpi_comm_vect('MPI_MIN', 'R', scr=valr)
+            end if
             nl2 = lxlgut(lign2)
             lign2(1:nl2+16)=lign2(1:nl2-1)//' '// zk8(jcsc-1+zi(jcmp-&
             1+icmp))
@@ -380,6 +462,9 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
 
 !    ================================================================================
     else if (type .eq. 'C') then
+        if (l_parallel_mesh) then
+            ASSERT(ASTER_FALSE)
+        endif
         if (typtes .eq. 'SOMM_ABS') then
             valr = 0.d0
             do i = 1, nbcmp
@@ -425,18 +510,18 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
         if (nl11 .lt. 80) then
             write (ific,*) lign1(1:nl11)
         else if (nl11.lt.160) then
-            write (ific,1160) lign1(1:80),lign1(81:nl11)
+            write (ific,160) lign1(1:80),lign1(81:nl11)
         else
-            write (ific,1200) lign1(1:80),lign1(81:160),lign1(161:&
+            write (ific,120) lign1(1:80),lign1(81:160),lign1(161:&
             nl11)
         endif
 !
         if (nl22 .lt. 80) then
             write (ific,*) lign2(1:nl22)
         else if (nl22.lt.160) then
-            write (ific,1160) lign2(1:80),lign2(81:nl22)
+            write (ific,160) lign2(1:80),lign2(81:nl22)
         else
-            write (ific,1200) lign2(1:80),lign2(81:160),lign2(161:&
+            write (ific,120) lign2(1:80),lign2(81:160),lign2(161:&
             nl22)
         endif
     endif
@@ -455,8 +540,8 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt,&
 999 continue
     call jedetr('&&TRESU_CH.CMP')
 !
-    1160 format(1x,a80,a)
-    1200 format(1x,2(a80),a)
+    160 format(1x,a80,a)
+    120 format(1x,2(a80),a)
 !
     call jedema()
 end subroutine

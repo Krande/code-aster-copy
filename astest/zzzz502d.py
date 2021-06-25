@@ -46,6 +46,14 @@ field = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                               VALE=(-1.0, 2.0, 3.0),
                               ),)
 
+TEST_RESU(CHAM_NO=_F(CHAM_GD=field,
+                REFERENCE='ANALYTIQUE',
+            VALE_CALC=-1.0,
+            VALE_REFE=-1.0,
+            NOM_CMP='DX',
+            TYPE_TEST='MIN',)
+)
+
 norm_1 = (1.0 + 2.0 + 3.0)*nbNodes
 norm_2 = sqrt(14.0*nbNodes)
 norm_inf = 3.0
@@ -115,6 +123,80 @@ f3.EXTR_COMP().valeurs
 test.assertAlmostEqual(f3.norm("NORM_2"), 0)
 
 
+# Test TEST_RESU with TEST_TYPE='MIN','MAX', 'SOMME', 'SOMME_ABS'
+
 test.printSummary()
+ftest = fieldp.duplicate()
+values_test = {'MAX': 4.0, 'MIN':-7.0, 'SOMM':25*1.0+4.0-7.0, 'SOMM_ABS': 25*1.0+4.0+7.0}
+# for 'MAX' - DX
+ftest[0] = 4.0
+# for 'MIN' - DX
+ftest[3] = -7.0
+
+
+# Avec NOM_CMP
+TEST_RESU(CHAM_NO=_F(CHAM_GD=ftest,
+                REFERENCE='ANALYTIQUE',
+            VALE_CALC=-7.0,
+            VALE_REFE=values_test['MIN'],
+            NOM_CMP='DX',
+            TYPE_TEST='MIN',)
+)
+
+TEST_RESU(CHAM_NO=_F(CHAM_GD=ftest,
+                REFERENCE='ANALYTIQUE',
+            VALE_CALC=4.0,
+            VALE_REFE=values_test['MAX'],
+            NOM_CMP='DX',
+            TYPE_TEST='MAX',)
+)
+
+TEST_RESU(CHAM_NO=_F(CHAM_GD=ftest,
+                REFERENCE='ANALYTIQUE',
+            VALE_CALC=22.0,
+            VALE_REFE=values_test['SOMM'],
+            NOM_CMP='DX',
+            TYPE_TEST='SOMM',)
+)
+
+TEST_RESU(CHAM_NO=_F(CHAM_GD=ftest,
+                REFERENCE='ANALYTIQUE',
+            VALE_CALC=36.0,
+            VALE_REFE=values_test['SOMM_ABS'],
+            NOM_CMP='DX',
+            TYPE_TEST='SOMM_ABS',)
+)
+
+
+# Sans NOM_CMP
+TEST_RESU(CHAM_NO=_F(CHAM_GD=ftest,
+                REFERENCE='ANALYTIQUE',
+            VALE_CALC=-7.0,
+            VALE_REFE=values_test['MIN'],
+            TYPE_TEST='MIN',)
+)
+
+TEST_RESU(CHAM_NO=_F(CHAM_GD=ftest,
+                REFERENCE='ANALYTIQUE',
+            VALE_CALC=4.0,
+            VALE_REFE=values_test['MAX'],
+            TYPE_TEST='MAX',)
+)
+
+TEST_RESU(CHAM_NO=_F(CHAM_GD=ftest,
+                REFERENCE='ANALYTIQUE',
+            VALE_CALC=157.0,
+            VALE_REFE=157.0,
+            TYPE_TEST='SOMM',)
+)
+
+TEST_RESU(CHAM_NO=_F(CHAM_GD=ftest,
+                REFERENCE='ANALYTIQUE',
+            VALE_CALC=171.0,
+            VALE_REFE=171.0,
+            TYPE_TEST='SOMM_ABS',)
+)
+
+
 
 code_aster.close()
