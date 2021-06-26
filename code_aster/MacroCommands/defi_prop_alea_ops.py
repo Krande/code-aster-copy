@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,31 +59,34 @@ def evaluate_KL1D(X1, DIM, RANGE, XLISTE, Ux, beta, mediane, pseed ):
 
 def evaluate_KL2D(X1, X2, DIM, RANGE, XLISTE, Ux, beta, mediane, pseed ):
         np.random.seed(pseed)
-        nb = len(Ux[0])
+        nb1 = len(Ux[0])
+        nb2 = len(Ux[1])
         x1 = (X1 - RANGE[0][0]) / DIM[0]
         x2 = (X2 - RANGE[1][0]) / DIM[1]
         U1 = [np.interp(x1, XLISTE[0], term)  for term in Ux[0]]
         U2 = [np.interp(x2, XLISTE[1], term)  for term in Ux[1]]
-        U1 = np.array(U1).reshape((nb, 1))
-        U2 = np.array(U2).reshape((1, nb))
-        rand = np.random.normal(0., 1., nb * nb)
+        U1 = np.array(U1).reshape((nb1, 1))
+        U2 = np.array(U2).reshape((1, nb2))
+        rand = np.random.normal(0., 1., nb1 * nb2)
         Ux_12 = mediane * np.exp(beta * np.sum((U1 * U2).ravel() * rand))
         return Ux_12
 
 
 def evaluate_KL3D(X1, X2, X3, DIM, RANGE, XLISTE, Ux, beta, mediane, pseed ):
         np.random.seed(pseed)
-        nb = len(Ux[0])
+        nb1 = len(Ux[0])
+        nb2 = len(Ux[1])
+        nb3 = len(Ux[2])
         x1 = (X1 - RANGE[0][0]) / DIM[0]
         x2 = (X2 - RANGE[1][0]) / DIM[1]
         x3 = (X3 - RANGE[2][0]) / DIM[2]
         U1 = [np.interp(x1, XLISTE[0], term)  for term in Ux[0]]
         U2 = [np.interp(x2, XLISTE[1], term)  for term in Ux[1]]
         U3 = [np.interp(x3, XLISTE[2], term)  for term in Ux[2]]
-        U1 = np.array(U1).reshape((nb, 1, 1))
-        U2 = np.array(U2).reshape((1, nb, 1))
-        U3 = np.array(U3).reshape((1, 1, nb))
-        rand = np.random.normal(0., 1., nb * nb * nb)
+        U1 = np.array(U1).reshape((nb1, 1, 1))
+        U2 = np.array(U2).reshape((1, nb2, 1))
+        U3 = np.array(U3).reshape((1, 1, nb3))
+        rand = np.random.normal(0., 1., nb1 * nb2 * nb3)
         Ux_123 = mediane * np.exp(beta * np.sum((U1 * U2 * U3).ravel() * rand))
         return Ux_123
 

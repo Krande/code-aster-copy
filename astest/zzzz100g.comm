@@ -183,19 +183,20 @@ FONC_E  = DEFI_FONCTION ( NOM_RESU    = 'ACCE',  NOM_PARA    = 'INST',
 
 # -------------- FONCTION 3D------------
 Lcz = 0.1*Lcx
+Lcy = 1.5 * Lcx
 E_vari3 = DEFI_PROP_ALEA (
             INIT_ALEA       = pseed,
             MEDIANE         = Am_E,
             COEF_VARI       =  cov_E,
             LONG_CORR_X     = Lcx,
-            LONG_CORR_Y     = Lcx,
+            LONG_CORR_Y     = Lcy,
             LONG_CORR_Z     = Lcz,
             X_MINI     = xmin,
             X_MAXI     = xmax,
             NB_TERM_X  = 60,
             Y_MINI     = ymin,
             Y_MAXI     = ymax ,
-            NB_TERM_Y  = 60,
+            NB_TERM_Y  = 50,
             Z_MINI     = 0.0,
             Z_MAXI     = 50. ,
             NB_TERM_Z  = 30,
@@ -220,7 +221,7 @@ E_vari = DEFI_PROP_ALEA (
             NB_TERM_X  = 60,
             Y_MINI     = ymin,
             Y_MAXI     = ymax ,
-            NB_TERM_Y  = 60,)
+            NB_TERM_Y  = 50,)
 
 mail=LIRE_MAILLAGE(FORMAT='MED',);
 
