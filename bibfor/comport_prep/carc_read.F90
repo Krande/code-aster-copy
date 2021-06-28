@@ -24,32 +24,29 @@ use Behaviour_type
 implicit none
 !
 #include "asterf_types.h"
-
-#include "asterfort/dismoi.h"
 #include "asterc/getexm.h"
-#include "asterfort/assert.h"
-#include "asterfort/getvis.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/getvtx.h"
-#include "asterc/lcalgo.h"
-#include "asterc/lctest.h"
-#include "asterc/lcsymm.h"
-#include "asterfort/jeveuo.h"
+#include "asterc/lccree.h"
 #include "asterc/lcdiscard.h"
+#include "asterc/lcsymm.h"
+#include "asterc/lctest.h"
+#include "asterfort/assert.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_meca_rkit.h"
-#include "asterfort/comp_meca_code.h"
 #include "asterfort/comp_read_mesh.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exicp.h"
-#include "asterfort/getHHOPara.h"
-#include "asterfort/getExternalBehaviourPara.h"
 #include "asterfort/getBehaviourAlgo.h"
 #include "asterfort/getBehaviourPara.h"
+#include "asterfort/getExternalBehaviourPara.h"
 #include "asterfort/getExternalBehaviourPntr.h"
 #include "asterfort/getExternalStateVariable.h"
 #include "asterfort/getExternalStrainModel.h"
+#include "asterfort/getHHOPara.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utmess.h"
 !
 type(Behaviour_PrepCrit), intent(inout) :: ds_compor_para
 character(len=8), intent(in), optional :: model_
@@ -79,7 +76,7 @@ aster_logical, intent(in), optional :: l_implex_
     integer :: type_matr_t, iter_inte_pas, iter_deborst_max
     integer :: ipostiter, ipostincr, iveriborne
     character(len=8) :: mesh
-    character(len=16) :: rela_code_py, defo_code_py, meca_code_py, comp_code_py
+    character(len=16) :: rela_code_py, defo_code_py, meca_code_py
     character(len=16) :: veri_borne
     character(len=16) :: kit_comp(4)
     character(len=16) :: defo_comp,  rela_comp
@@ -92,7 +89,7 @@ aster_logical, intent(in), optional :: l_implex_
     integer :: nb_elem_affe
     integer :: cptr_nbvarext, cptr_namevarext, cptr_fct_ldc
     integer :: cptr_nameprop, cptr_nbprop
-    integer :: jvariext1, jvariext2, exte_strain
+    integer :: variExteCode(2), exte_strain
     character(len=16) :: texte(3)
     integer, pointer :: v_model_elem(:) => null()
     character(len=16) :: algo_inte
@@ -122,10 +119,6 @@ aster_logical, intent(in), optional :: l_implex_
     ipostincr=0
     iveriborne=0
     mesh = ' '
-    rela_code_py=' '
-    defo_code_py=' '
-    meca_code_py=' '
-    comp_code_py=' '
     veri_borne=' '
     kit_comp(1:4) = (/'VIDE','VIDE','VIDE','VIDE'/)
     defo_comp=' '
@@ -187,14 +180,10 @@ aster_logical, intent(in), optional :: l_implex_
             meca_comp = rela_comp
         endif
 ! ----- Coding comportment (Python)
-        call comp_meca_code(rela_comp_    = rela_comp   ,&
-                            defo_comp_    = defo_comp   ,&
-                            kit_comp_     = kit_comp    ,&
-                            meca_comp_    = meca_comp   ,&
-                            comp_code_py_ = comp_code_py,&
-                            rela_code_py_ = rela_code_py,&
-                            defo_code_py_ = defo_code_py,&
-                            meca_code_py_ = meca_code_py)
+        call lccree(1, rela_comp, rela_code_py)
+        call lccree(1, defo_comp, defo_code_py)
+        call lccree(1, meca_comp, meca_code_py)
+
 ! ----- Symmetric or not ?
         l_matr_unsymm = ASTER_FALSE
         call lcsymm(rela_code_py, answer)
@@ -354,23 +343,24 @@ aster_logical, intent(in), optional :: l_implex_
         call getBehaviourPara(l_mfront_offi , l_mfront_proto, l_kit_thm,&
                               keywordfact   , i_comp        , algo_inte,&
                               iter_inte_maxi, resi_inte_rela)
+
 ! ----- Get external state variables
-        jvariext1 = 0
-        jvariext2 = 0
-        call getExternalStateVariable(rela_comp    , comp_code_py   ,&
+        call getExternalStateVariable(rela_comp, rela_code_py ,&
                                       l_mfront_offi, l_mfront_proto ,&
                                       cptr_nbvarext, cptr_namevarext,&
-                                      jvariext1    , jvariext2)
+                                      variExteCode)
+
 ! ----- Get model of strains for external programs (MFRONT)
         exte_strain = 0
         call getExternalStrainModel(l_mfront_offi, l_mfront_proto,&
                                     paraExte,&
                                     defo_comp, exte_strain)
+
 ! ----- Discard
-        call lcdiscard(comp_code_py)
         call lcdiscard(meca_code_py)
         call lcdiscard(rela_code_py)
         call lcdiscard(defo_code_py)
+
 ! ----- Save options in list
         ds_compor_para%v_crit(i_comp)%type_matr_t      = type_matr_t
         ds_compor_para%v_crit(i_comp)%parm_theta       = parm_theta
@@ -392,8 +382,8 @@ aster_logical, intent(in), optional :: l_implex_
         ds_compor_para%v_crit(i_comp)%cptr_namevarext  = cptr_namevarext
         ds_compor_para%v_crit(i_comp)%cptr_nbprop      = cptr_nbprop
         ds_compor_para%v_crit(i_comp)%cptr_nameprop    = cptr_nameprop
-        ds_compor_para%v_crit(i_comp)%jvariext1        = jvariext1
-        ds_compor_para%v_crit(i_comp)%jvariext2        = jvariext2
+        ds_compor_para%v_crit(i_comp)%jvariext1        = variExteCode(1)
+        ds_compor_para%v_crit(i_comp)%jvariext2        = variExteCode(2)
         ds_compor_para%v_crit(i_comp)%exte_strain      = exte_strain
         ds_compor_para%v_crit(i_comp)%paraExte         = paraExte
     end do
