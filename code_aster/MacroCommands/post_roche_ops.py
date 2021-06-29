@@ -1011,7 +1011,7 @@ class PostRocheCommon():
                           VALE     =  'X1/E+K_FACT*pow(X1/E,1/N_EXPO)')
         
         fEpsVraieMax = FORMULE(NOM_PARA = ('X2', 'E', 'K_FACT', 'N_EXPO'),
-                          VALE     =  'X1/E+K_FACT*pow(X1/E,1/N_EXPO)')
+                          VALE     =  'X2/E+K_FACT*pow(X2/E,1/N_EXPO)')
         
         
         self.chFEpsVraie = CREA_CHAMP(OPERATION='AFFE',
