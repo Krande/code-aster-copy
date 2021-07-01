@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,18 +63,18 @@ CHMAT=AFFE_MATERIAU(    MAILLAGE=MAILLAGE,
 #***********************************************************************
 
 CHAR_U1=AFFE_CHAR_MECA(    MODELE=MODELE,
-                              PRES_REP=_F(   MAILLE = ( 'M5', 'M6', ),
+                              PRES_REP=_F(   GROUP_MA = ( 'M5', 'M6', ),
                                           PRES = 1.)
                        )
 
 CHAR_U2=AFFE_CHAR_MECA(    MODELE=MODELE,
-                             PRES_REP=_F(   MAILLE = 'M3',  PRES = 1.)
+                             PRES_REP=_F(   GROUP_MA = 'M3',  PRES = 1.)
                         )
 
 DEPL_1=AFFE_CHAR_MECA(    MODELE=MODELE,FACE_IMPO=(
-                              _F(  MAILLE = 'M2',  DZ = 0.),
-                              _F(  MAILLE = 'M7',  DX = 0.),
-                              _F(  MAILLE = 'M4',  DY = 0.))
+                              _F(  GROUP_MA = 'M2',  DZ = 0.),
+                              _F(  GROUP_MA = 'M7',  DX = 0.),
+                              _F(  GROUP_MA = 'M4',  DY = 0.))
                            )
 
 COEF1=DEFI_FONCTION(      NOM_PARA='INST',
@@ -130,7 +130,7 @@ NOM_CHAM='VARI_ELGA', RESULTAT=U1,
                       )
 
 DEPL_2=AFFE_CHAR_MECA(    MODELE=MODELE,
-                              FACE_IMPO=_F(  MAILLE = 'M3',  DZ = 1.)
+                              FACE_IMPO=_F(  GROUP_MA = 'M3',  DZ = 1.)
                            )
 
 COEF2=DEFI_FONCTION(      NOM_PARA='INST',
@@ -141,8 +141,8 @@ COEF2=DEFI_FONCTION(      NOM_PARA='INST',
                        )
 
 DEPL_3=AFFE_CHAR_MECA(    MODELE=MODELE,FACE_IMPO=(
-                              _F(  MAILLE = 'M6',  DY = 1.),
-                              _F(  MAILLE = 'M5',  DX = 1.))
+                              _F(  GROUP_MA = 'M6',  DY = 1.),
+                              _F(  GROUP_MA = 'M5',  DX = 1.))
                            )
 
 F = FORMULE(VALE='- COEF2(INST) / 2.0 ',

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,17 +24,17 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
 MA0=LIRE_MAILLAGE(FORMAT="ASTER",    UNITE=20 )
 
 MAILLAGE=CREA_MAILLAGE(MAILLAGE=MA0,
-                 LINE_QUAD=_F(MAILLE='HEX2'),)
+                 LINE_QUAD=_F(GROUP_MA='HEX2'),)
 
 #
 MODELE=AFFE_MODELE(
                    MAILLAGE=MAILLAGE,
                    AFFE=(
-                         _F(  MAILLE='HEX1',
+                         _F(  GROUP_MA='HEX1',
                               PHENOMENE = 'MECANIQUE',
                               MODELISATION = '3D',
                            ),
-                         _F(  MAILLE='HEX2',
+                         _F(  GROUP_MA='HEX2',
                               PHENOMENE = 'MECANIQUE',
                               MODELISATION = '3D_INTERFACE',
                            ),
@@ -44,10 +44,10 @@ MODELE=AFFE_MODELE(
 #
 CARAELEM=AFFE_CARA_ELEM(
                         MODELE=MODELE,
-                        MASSIF=(_F(MAILLE='HEX1',
+                        MASSIF=(_F(GROUP_MA='HEX1',
                                    ANGL_REP=(45.0,45.0,90.0)
                                   ),
-                                _F(MAILLE='HEX2',
+                                _F(GROUP_MA='HEX2',
                                    ORIG_AXE=(100.0,0.5,0.5),
                                    ANGL_AXE=(0.0,-45.0),
                                   )
@@ -108,7 +108,7 @@ REPLO_3 = LIRE_CHAMP(
 #VECTEUR x local
 TEST_RESU(CHAM_ELEM=(_F(
                         CHAM_GD = REPLO_1,
-                        MAILLE='HEX1',
+                        GROUP_MA='HEX1',
                         POINT= 1,
                         NOM_CMP = 'X',
                         VALE_CALC=0.5E0,
@@ -118,7 +118,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLO_1,
-                        MAILLE='HEX1',
+                        GROUP_MA='HEX1',
                         POINT= 1,
                         NOM_CMP = 'Y',
                         VALE_CALC=0.5E0,
@@ -128,7 +128,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLO_1,
-                        MAILLE='HEX1',
+                        GROUP_MA='HEX1',
                         POINT= 1,
                         NOM_CMP = 'Z',
                         VALE_CALC=-0.707106781186547E0,
@@ -138,7 +138,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                      _F(
                         CHAM_GD = REPLO_1,
-                        MAILLE='HEX2',
+                        GROUP_MA='HEX2',
                         POINT= 1,
                         NOM_CMP = 'X',
                         VALE_CALC=0.707106781186547E0,
@@ -148,7 +148,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLO_1,
-                        MAILLE='HEX2',
+                        GROUP_MA='HEX2',
                         POINT= 1,
                         NOM_CMP = 'Y',
                         VALE_CALC=0.E0,
@@ -159,7 +159,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLO_1,
-                        MAILLE='HEX2',
+                        GROUP_MA='HEX2',
                         POINT= 1,
                         NOM_CMP = 'Z',
                         VALE_CALC=0.707106781186547E0,
@@ -173,7 +173,7 @@ TEST_RESU(CHAM_ELEM=(_F(
 #VECTEUR y local
 TEST_RESU(CHAM_ELEM=(_F(
                         CHAM_GD = REPLO_2,
-                        MAILLE='HEX1',
+                        GROUP_MA='HEX1',
                         POINT= 1,
                         NOM_CMP = 'X',
                         VALE_CALC=0.5E0,
@@ -183,7 +183,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLO_2,
-                        MAILLE='HEX1',
+                        GROUP_MA='HEX1',
                         POINT= 1,
                         NOM_CMP = 'Y',
                         VALE_CALC=0.5E0,
@@ -193,7 +193,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLO_2,
-                        MAILLE='HEX1',
+                        GROUP_MA='HEX1',
                         POINT= 1,
                         NOM_CMP = 'Z',
                         VALE_CALC=0.707106781186547E0,
@@ -203,7 +203,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                      _F(
                         CHAM_GD = REPLO_2,
-                        MAILLE='HEX2',
+                        GROUP_MA='HEX2',
                         POINT= 1,
                         NOM_CMP = 'Y',
                         VALE_CALC=1.E0,
@@ -218,7 +218,7 @@ TEST_RESU(CHAM_ELEM=(_F(
 TEST_RESU(CHAM_ELEM=(
                      _F(
                         CHAM_GD = REPLO_3,
-                        MAILLE='HEX2',
+                        GROUP_MA='HEX2',
                         POINT= 1,
                         NOM_CMP = 'X',
                         VALE_CALC=-0.707106781186547E0,
@@ -228,7 +228,7 @@ TEST_RESU(CHAM_ELEM=(
                        ),
                       _F(
                         CHAM_GD = REPLO_3,
-                        MAILLE='HEX2',
+                        GROUP_MA='HEX2',
                         POINT= 1,
                         NOM_CMP = 'Y',
                         VALE_CALC=0.E0,
@@ -239,7 +239,7 @@ TEST_RESU(CHAM_ELEM=(
                        ),
                       _F(
                         CHAM_GD = REPLO_3,
-                        MAILLE='HEX2',
+                        GROUP_MA='HEX2',
                         POINT= 1,
                         NOM_CMP = 'Z',
                         VALE_CALC=0.707106781186547E0,

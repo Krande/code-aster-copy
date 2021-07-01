@@ -1,45 +1,70 @@
-TITRE
-% SSLL108/A                                                      
-% MODELISATION : 10 ELEMENTS DISCRETS A 2 NOEUDS SELON LAXE X
-FINSF
-%  ---------------------------------------------------------------------
-%
-COOR_2D                 % 11 NOEUDS
-%  NOEUD      X         Y     
-    P1       0.         0.  
-    P2       1.         0.   
-    P3       2.         0.   
-    P4       3.         0.  
-    P5       4.         0.   
-    P6       5.         0.   
-    P7       6.         0.   
-    P8       7.         0.   
-    P9       8.         0.   
-    P10      9.         0.   
-    P11     10.         0.   
-%
-FINSF
-%
-%                10 MAILLES
-SEG2
-   S1    P1   P2
-   S2    P2   P3
-   S3    P3   P4
-   S4    P4   P5
-   S5    P5   P6
-   S6    P6   P7
-   S7    P7   P8
-   S8    P8   P9
-   S9    P9   P10
-   S10   P10  P11
-FINSF
-%
-GROUP_NO
-    P       P1  P2  P3  P4  P5  P6  P7  P8  P9  P10  P11
-FINSF
-%
-GROUP_MA
-    GRMA    S1  S2  S3  S4  S5  S6  S7  S8  S9  S10
-FINSF
-%
-FIN
+ TITRE
+% SSLL108/A                                                                     
+% MODELISATION : 10 ELEMENTS DISCRETS A 2 NOEUDS SELON LAXE X                   
+ FINSF
+ %
+ COOR_2D
+ P1        0.00000000000000E+00  0.00000000000000E+00
+ P2        1.00000000000000E+00  0.00000000000000E+00
+ P3        2.00000000000000E+00  0.00000000000000E+00
+ P4        3.00000000000000E+00  0.00000000000000E+00
+ P5        4.00000000000000E+00  0.00000000000000E+00
+ P6        5.00000000000000E+00  0.00000000000000E+00
+ P7        6.00000000000000E+00  0.00000000000000E+00
+ P8        7.00000000000000E+00  0.00000000000000E+00
+ P9        8.00000000000000E+00  0.00000000000000E+00
+ P10       9.00000000000000E+00  0.00000000000000E+00
+ P11       1.00000000000000E+01  0.00000000000000E+00
+ FINSF
+ %
+ SEG2    
+ S1       P1       P2      
+ S2       P2       P3      
+ S3       P3       P4      
+ S4       P4       P5      
+ S5       P5       P6      
+ S6       P6       P7      
+ S7       P7       P8      
+ S8       P8       P9      
+ S9       P9       P10     
+ S10      P10      P11     
+ FINSF
+ %
+ GROUP_NO
+ P                       
+ P1       P2       P3       P4       P5       P6       P7      
+ P8       P9       P10      P11     
+ FINSF
+ %
+ GROUP_NO
+ P11                     
+ P11     
+ FINSF
+ %
+ GROUP_NO
+ P6                      
+ P6      
+ FINSF
+ %
+ GROUP_NO
+ P1                      
+ P1      
+ FINSF
+ %
+ GROUP_MA
+ GRMA                    
+ S1       S2       S3       S4       S5       S6       S7      
+ S8       S9       S10     
+ FINSF
+ %
+ GROUP_MA
+ S10                     
+ S10     
+ FINSF
+ %
+ GROUP_MA
+ S5                      
+ S5      
+ FINSF
+ %
+ FIN

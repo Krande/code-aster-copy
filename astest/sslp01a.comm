@@ -91,7 +91,7 @@ DEF=CALC_CHAMP(reuse=DEF,
 #
 # TEST_RESU DU DEPLACEMENT
 #
-TEST_RESU(CHAM_NO=_F(NOEUD='N33',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='N33',
                      NOM_CMP='DY',
                      PRECISION=0.023,
                      CHAM_GD=U,
@@ -106,13 +106,13 @@ TEST_RESU(CHAM_NO=_F(NOEUD='N33',
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=DEF,
                   NOM_CHAM='SIGM_ELNO',
-                  NOEUD='N1',
+                  GROUP_NO='N1',
                   NOM_CMP='SIXX',
                   VALE_CALC= 8.13652308E+07,
                   VALE_REFE=8.E7,
                   REFERENCE='NON_DEFINI',
                   PRECISION=0.017999999999999999,
-                  MAILLE='M1',),
+                  GROUP_MA='M1',),
           )
 
 #----------------------------------------------------------
@@ -157,7 +157,7 @@ DEF_R=CALC_CHAMP(reuse=DEF_R,
 #
 # TEST_RESU DU DEPLACEMENT
 #
-TEST_RESU(CHAM_NO=_F(NOEUD='N33',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='N33',
                      REFERENCE='AUTRE_ASTER',
                      NOM_CMP='DY',
                      PRECISION=0.023,
@@ -173,12 +173,12 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=DEF_R,
                   NOM_CHAM='SIGM_ELNO',
-                  NOEUD='N1',
+                  GROUP_NO='N1',
                   NOM_CMP='SIXX',
                   VALE_CALC= 8.13651021E+07,
                   VALE_REFE=8.E7,
                   PRECISION=0.017999999999999999,
-                  MAILLE='M1',),
+                  GROUP_MA='M1',),
           )
 
 FIN()

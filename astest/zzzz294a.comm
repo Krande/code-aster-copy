@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -83,7 +83,7 @@ CH=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                NUME_ORDRE=1,
                NOM_CHAM='SIEF_ELGA',)
 
-TBCH=CREA_TABLE(RESU=_F(CHAM_GD=CH, MAILLE='QUA1', TOUT_CMP='OUI',CARA_ELEM=PLAQUE),)
+TBCH=CREA_TABLE(RESU=_F(CHAM_GD=CH, GROUP_MA='QUA1', TOUT_CMP='OUI',CARA_ELEM=PLAQUE),)
 IMPR_TABLE(TABLE=TBCH)
 #------------------------------------------------------------------------------------
 

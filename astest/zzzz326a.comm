@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,14 +42,14 @@ CHMUL1=AFFE_MATERIAU(MAILLAGE=MA,
                              MATER=MAT1A,),);
 
 CHME=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=(_F(NOEUD='N1',
+                    DDL_IMPO=(_F(GROUP_NO='N1',
                                  DX=0.0,
                                  DY=0.0,
                                  DZ=0.0,
                                  DRX=0.0,
                                  DRY=0.0,
                                  DRZ=0.0,),
-                              _F(NOEUD='N4',
+                              _F(GROUP_NO='N4',
                                  DX=0.0707099974155,
                                  DY=0.0707099974155,),),);
 
@@ -71,7 +71,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='NON_DEFINI',
                    RESULTAT=STA1,
                    NOM_CHAM='DEPL',
-                   NOEUD='N4',
+                   GROUP_NO='N4',
                    NOM_CMP='DY',
                    VALE_CALC=0.0707099974155,
                    VALE_REFE=0.0707099974155,

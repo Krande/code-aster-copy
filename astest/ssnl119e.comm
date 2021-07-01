@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -187,7 +187,7 @@ Betot = [  2.92412E+06 ,   8.52817E+02 ,   5.02952E+03 ]
 U1MAZAR=CALC_CHAMP(reuse=U1MAZAR, RESULTAT=U1MAZAR, DEFORMATION=('EPSI_ELGA','EPME_ELGA','EPSP_ELGA'), )
 
 
-IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=U1MAZAR, MAILLE='M9',NOM_CHAM='VARI_ELGA',INST=(2.68)))
+IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=U1MAZAR, GROUP_MA='M9',NOM_CHAM='VARI_ELGA',INST=(2.68)))
 
 # validation de EPSP_ELGA et EPSI_ELGA
 
@@ -200,7 +200,7 @@ TEST_RESU(RESU=(
                 _F(POINT=2,
                    NOM_CMP='SIXX',
                    SOUS_POINT=43,
-                   MAILLE=('M9', ),
+                   GROUP_MA=('M9', ),
                    INST=2.68,
                    NOM_CHAM='SIEF_ELGA',
                    RESULTAT=U1MAZAR,
@@ -210,7 +210,7 @@ TEST_RESU(RESU=(
                 _F(POINT=2,
                    NOM_CMP='V1',
                    SOUS_POINT=43,
-                   MAILLE=('M9', ),
+                   GROUP_MA=('M9', ),
                    INST=2.68,
                    NOM_CHAM='VARI_ELGA',
                    RESULTAT=U1MAZAR,
@@ -220,7 +220,7 @@ TEST_RESU(RESU=(
                 _F(POINT=2,
                    NOM_CMP='EPXX',
                    SOUS_POINT=43,
-                   MAILLE=('M9', ),
+                   GROUP_MA=('M9', ),
                    INST=2.68,
                    NOM_CHAM='EPSP_ELGA',
                    RESULTAT=U1MAZAR,
@@ -230,7 +230,7 @@ TEST_RESU(RESU=(
                 _F(POINT=2,
                    NOM_CMP='EPXX',
                    SOUS_POINT=43,
-                   MAILLE=('M9', ),
+                   GROUP_MA=('M9', ),
                    INST=2.68,
                    NOM_CHAM='EPSI_ELGA',
                    RESULTAT=U1MAZAR,

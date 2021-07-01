@@ -140,7 +140,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC=0.015854340000000001,
                   
                   CRITERE='RELATIF',
-                  MAILLE='M1',),
+                  GROUP_MA='M1',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -151,18 +151,18 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC=3.18399928E-3,
                   
                   CRITERE='RELATIF',
-                  MAILLE='M1',),
+                  GROUP_MA='M1',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=RESUPRIM,
                   NOM_CHAM='QIRE_ELNO',
-                  NOEUD='N1',
+                  GROUP_NO='N1',
                   NOM_CMP='ERREST',
                   VALE_CALC=6.3703922700000007E-05,
                   
                   CRITERE='RELATIF',
-                  MAILLE='M4',),
+                  GROUP_MA='M4',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -176,7 +176,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='SIYY',
                   VALE_CALC= 2.1370946597035E+06,
                   VALE_REFE=2.137500E6,
-                  MAILLE='M1',),
+                  GROUP_MA='M1',),
           )
 
 # CAS ORTHOTROPE : SOLUTION ANALYTIQUE AUSSI
@@ -255,7 +255,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='SIYY',
                   VALE_CALC= 2.1374716131107E+06,
                   VALE_REFE=2.137500E6,
-                  MAILLE='M1',),
+                  GROUP_MA='M1',),
           )
 
 FIN();

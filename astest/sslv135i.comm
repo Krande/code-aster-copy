@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,6 +57,15 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
                IGNORE_ALARM=('PREPOST4_27'))
 
 CUBE = LIRE_MAILLAGE(FORMAT='MED', )
+
+CUBE = DEFI_GROUP( reuse = CUBE, MAILLAGE = CUBE,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M60', MAILLE = 'M60'),
+                                     ),
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N1', NOEUD = 'N1'),
+                                     ),
+         )
 
 CUBE=DEFI_GROUP(reuse = CUBE,
                 ALARME='OUI',
@@ -214,7 +223,7 @@ FATN_WF1=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                            FORMULE_VIE = MANCO1,
                            PROJECTION    = 'UN_AXE'
                          )
-TEST_RESU(CHAM_NO=_F(NOEUD='N1',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='N1',
                      REFERENCE='ANALYTIQUE',
                      NOM_CMP='ENDO1',
                      PRECISION=5.0000000000000002E-05,
@@ -243,7 +252,7 @@ TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
                        POINT=3,
                        NOM_CMP='ENDO1',
                        PRECISION=5.0000000000000002E-05,
-                       MAILLE='M60',
+                       GROUP_MA='M60',
                        CHAM_GD=FATM_WF1,
                        VALE_CALC= 1.08363975E-05,
                        VALE_REFE=1.0836397304524899E-05,),
@@ -264,7 +273,7 @@ FATN_W1=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                            COURBE_GRD_VIE  = 'MANSON_COFFIN',
                            PROJECTION    = 'UN_AXE'
                          )
-TEST_RESU(CHAM_NO=_F(NOEUD='N1',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='N1',
                      REFERENCE='ANALYTIQUE',
                      NOM_CMP='ENDO1',
                      PRECISION=2.0000000000000002E-05,
@@ -292,7 +301,7 @@ TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
                        POINT=3,
                        NOM_CMP='ENDO1',
                        PRECISION=1.0000000000000001E-05,
-                       MAILLE='M60',
+                       GROUP_MA='M60',
                        CHAM_GD=FATM_W1,
                        VALE_CALC= 3.26558686E-05,
                        VALE_REFE=3.2655868578361902E-05,),

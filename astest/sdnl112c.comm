@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,11 +31,11 @@ DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #
 
 TUBE=LIRE_MAILLAGE(FORMAT='MED')
-MODI_MAILLAGE(reuse=TUBE, MAILLAGE=TUBE,ABSC_CURV=_F(NOEUD_ORIG='N_01_001',TOUT='OUI'))
+MODI_MAILLAGE(reuse=TUBE, MAILLAGE=TUBE,ABSC_CURV=_F(GROUP_NO_ORIG='N_01_001',TOUT='OUI'))
 
 TUBE=DEFI_GROUP( reuse=TUBE,   MAILLAGE=TUBE,
                        CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'),
-                       CREA_GROUP_NO =_F(NOEUD = 'N_04_001',
+                       CREA_GROUP_NO =_F(GROUP_NO = 'N_04_001',
                                          NOM = 'G_NO_04'),)
 
 
@@ -121,10 +121,10 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=TUBE,
 )
 
 CHDDL=AFFE_CHAR_MECA(  MODELE=MODELE,
-                       DDL_IMPO=( _F(  NOEUD = 'N_01_001',
+                       DDL_IMPO=( _F(  GROUP_NO = 'N_01_001',
                                        DX  = 0.0, DY  = 0.0, DZ  = 0.0,
                                        DRX = 0.0, DRY = 0.0, DRZ = 0.0 ),
-                                  _F(  NOEUD = 'N_06_007',
+                                  _F(  GROUP_NO = 'N_06_007',
                                        DX  = 0.0, DY  = 0.0, DZ  = 0.0,
                                        DRX = 0.0, DRY = 0.0, DRZ = 0.0 ),)
 )

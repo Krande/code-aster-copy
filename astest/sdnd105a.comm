@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ MAILLAG0=LIRE_MAILLAGE(FORMAT="ASTER", )
 MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
     CREA_POI1=(
         _F(NOM_GROUP_MA='AUTRE', GROUP_NO=('AUTRE',),),
-        _F(NOM_GROUP_MA='N02',   NOEUD=('N02',),),
+        _F(NOM_GROUP_MA='N02',   GROUP_NO=('N02',),),
     ),
 )
 
@@ -142,7 +142,7 @@ TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                       ETAT_INIT=_F(  VITE = VIT_GENE),
                       COMPORTEMENT=_F( RELATION='FLAMBAGE',
                                        INTITULE='FLAMBAGE_SDND105a',
-                                       NOEUD_1 = 'N02',
+                                       GROUP_NO_1 = 'N02',
                                        OBSTACLE = PLANY,
                                        NORM_OBST = (0., 1., 0.,),
                                        ORIG_OBST = (0., 0., 0.,),
@@ -165,7 +165,7 @@ TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                   INST_INIT = 0.5),
                       COMPORTEMENT=_F( RELATION='FLAMBAGE',
                                        INTITULE='FLAMBAGE_SDND105a',
-                                       NOEUD_1 = 'N02',
+                                       GROUP_NO_1 = 'N02',
                                        OBSTACLE = PLANY,
                                        NORM_OBST = (0., 1., 0.,),
                                        ORIG_OBST = (0., 0., 0.,),
@@ -183,7 +183,7 @@ TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                       ETAT_INIT=_F(  RESULTAT = TRAN_GEN),
                       COMPORTEMENT=_F( RELATION='FLAMBAGE',
                                        INTITULE='FLAMBAGE_SDND105a',
-                                       NOEUD_1 = 'N02',
+                                       GROUP_NO_1 = 'N02',
                                        OBSTACLE = PLANY,
                                        NORM_OBST = (0., 1., 0.,),
                                        ORIG_OBST = (0., 0., 0.,),
@@ -240,7 +240,7 @@ TEST_RESU(RESU=_F(INST=10.45178254693452,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=TRAN,
                   NOM_CHAM='DEPL',
-                  NOEUD='N02',
+                  GROUP_NO='N02',
                   NOM_CMP='DX',
                   VALE_CALC=-0.00205677193395,
                   TOLE_MACHINE=(1.E-6, 5.0E-05), # ce n'est pas un "vrai" TOLE_MACHINE ! (1.e-6)

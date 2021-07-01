@@ -1,60 +1,103 @@
-COOR_2D
-N1  0. 0.
-N3  0. 1.
-N5  0. 2.
-N2  1. 0.
-N4  1. 1.
-N6  1. 2.
-FINSF
-
-QUAD4
-Q1 N1 N2 N4 N3
-Q2 N3 N4 N6 N5
-FINSF
-
-SEG2
-S1  N1 N2
-S2  N2 N4
-S3  N4 N6
-S4  N6 N5
-S5  N5 N3
-S6  N3 N1
-FINSF
-
-GROUP_MA NOM=GXXXXXX_BAS
-S1
-FINSF
-
-GROUP_MA NOM=GXXXXXX_GAUCHE
-S5 S6
-FINSF
-
-GROUP_MA NOM=GXXXXXX_HAUT
-S4
-FINSF
-
-GROUP_MA NOM=GXXXXXX_DROIT
-S2 S3
-FINSF
-
-GROUP_NO NOM=GXXXXXX_NBAS
-N1 N2
-FINSF
-
-GROUP_NO NOM=GXXXXXX_NGAUCHE
-N1 N3 N5
-FINSF
-
-GROUP_NO NOM=GXXXXXX_NHAUT
-N5 N6
-FINSF
-
-GROUP_NO NOM=GXXXXXX_NDROIT
-N2 N4 N6
-FINSF
-
-GROUP_NO NOM=GXXXXXX_N2N6
-N2 N6
-FINSF
-
-FIN
+ TITRE
+ME-30-JUIN-2021 09:25:50                                                        
+ FINSF
+ %
+ COOR_2D
+ N1        0.00000000000000E+00  0.00000000000000E+00
+ N3        0.00000000000000E+00  1.00000000000000E+00
+ N5        0.00000000000000E+00  2.00000000000000E+00
+ N2        1.00000000000000E+00  0.00000000000000E+00
+ N4        1.00000000000000E+00  1.00000000000000E+00
+ N6        1.00000000000000E+00  2.00000000000000E+00
+ FINSF
+ %
+ QUAD4   
+ Q1       N1       N2       N4       N3      
+ Q2       N3       N4       N6       N5      
+ FINSF
+ %
+ SEG2    
+ S1       N1       N2      
+ S2       N2       N4      
+ S3       N4       N6      
+ S4       N6       N5      
+ S5       N5       N3      
+ S6       N3       N1      
+ FINSF
+ %
+ GROUP_NO
+ GXXXXXX_NBAS            
+ N1       N2      
+ FINSF
+ %
+ GROUP_NO
+ GXXXXXX_NGAUCHE         
+ N1       N3       N5      
+ FINSF
+ %
+ GROUP_NO
+ GXXXXXX_NHAUT           
+ N5       N6      
+ FINSF
+ %
+ GROUP_NO
+ GXXXXXX_NDROIT          
+ N2       N4       N6      
+ FINSF
+ %
+ GROUP_NO
+ GXXXXXX_N2N6            
+ N2       N6      
+ FINSF
+ %
+ GROUP_NO
+ N3                      
+ N3      
+ FINSF
+ %
+ GROUP_NO
+ N2                      
+ N2      
+ FINSF
+ %
+ GROUP_NO
+ N5                      
+ N5      
+ FINSF
+ %
+ GROUP_NO
+ N4                      
+ N4      
+ FINSF
+ %
+ GROUP_NO
+ N1                      
+ N1      
+ FINSF
+ %
+ GROUP_NO
+ N6                      
+ N6      
+ FINSF
+ %
+ GROUP_MA
+ GXXXXXX_BAS             
+ S1      
+ FINSF
+ %
+ GROUP_MA
+ GXXXXXX_GAUCHE          
+ S5       S6      
+ FINSF
+ %
+ GROUP_MA
+ GXXXXXX_HAUT            
+ S4      
+ FINSF
+ %
+ GROUP_MA
+ GXXXXXX_DROIT           
+ S2       S3      
+ FINSF
+ %
+ FIN

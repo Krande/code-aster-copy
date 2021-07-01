@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -91,7 +91,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=DYNAHARM,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO1',
+                   GROUP_NO='NO1',
                    NOM_CMP='PRES',),
                 _F(NUME_ORDRE=1,
                    VALE_REFE_C=(0.5+0j),
@@ -100,7 +100,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=DYNAHARM,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO780',
+                   GROUP_NO='NO780',
                    NOM_CMP='PRES',),
                 _F(NUME_ORDRE=1,
                    VALE_REFE_C=(-0.4825-0.1313j),
@@ -109,7 +109,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=DYNAHARM,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO751',
+                   GROUP_NO='NO751',
                    NOM_CMP='PRES',),
                 _F(NUME_ORDRE=1,
                    VALE_REFE_C=(-0.4825-0.1313j),
@@ -118,7 +118,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=DYNAHARM,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO763',
+                   GROUP_NO='NO763',
                    NOM_CMP='PRES',),
                 ),
           )

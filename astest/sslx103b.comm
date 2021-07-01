@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,13 @@
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),);
 MA=LIRE_MAILLAGE(FORMAT='MED');
+
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M795', MAILLE = 'M795'),
+                                        _F( NOM = 'M21', MAILLE = 'M21'),
+                                     ),
+         )
 
 # section acier
 SA = 3e-3 
@@ -108,7 +115,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC= 7.71443845E+05,
                   VALE_REFE=7.65317E5,
                   PRECISION=1.E-2,
-                  MAILLE='M795',),
+                  GROUP_MA='M795',),
           )
 
 # effort acier milieu poutre
@@ -121,7 +128,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC= 1.61313100E+04,
                   VALE_REFE=1.6260E4,
                   PRECISION=1.E-2,
-                  MAILLE='M21',),
+                  GROUP_MA='M21',),
           )
 
 # " deplacement milieu de poutre
@@ -140,7 +147,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIXX',
                   VALE_CALC=7.7144384489478997E5,
-                  MAILLE='M795',),
+                  GROUP_MA='M795',),
           )
 
 # effort acier milieu poutre
@@ -150,7 +157,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='EFGE_ELNO',
                   NOM_CMP='N',
                   VALE_CALC=1.6131310005641E4,
-                  MAILLE='M21',),
+                  GROUP_MA='M21',),
           )
 
 FIN()

@@ -1,36 +1,115 @@
-TITRE
-  FICHIER GENERE PAR L'INTERFACE ALIBABA
-  LE  JE-06-SEPT-90 14:37:41
-FINSF
-COOR_2D %    15 NOEUDS
-  N1     0.0000000000000E+00  0.0000000000000E+00
-  N2     0.5000000000000E+00  0.0000000000000E+00
-  N3     1.0000000000000E+00  0.0000000000000E+00
-  N4     0.0000000000000E+00  3.0000000000000E+00
-  N6     1.0000000000000E+00  3.0000000000000E+00
-  N7     0.0000000000000E+00  6.0000000000000E+00
-  N8     0.5000000000000E+00  6.0000000000000E+00
-  N9     1.0000000000000E+00  6.0000000000000E+00
-  N10    0.0000000000000E+00  9.0000000000000E+00
-  N12    1.0000000000000E+00  9.0000000000000E+00
-  N13    0.0000000000000E+00  1.2000000000000E+01
-  N14    0.5000000000000E+00  1.2000000000000E+01
-  N15    1.0000000000000E+00  1.2000000000000E+01
-FINSF
-QUAD8    %     2 MAILLES
-  M1       N1       N3      N9      N7      N2      N6     N8     N4
-  M2       N7       N9      N15     N13     N8      N12    N14    N10
-FINSF
-% NOMBRE TOTAL DE SOUS-DOMAINES    1
-SEG3     %     1 MAILLES
-  M3       N3       N9       N6
-  M4       N9       N15      N12
-  M5       N15      N13      N14
-FINSF
-GROUP_MA %     1 MAILLE
- BAS       M3       M4
-FINSF
-GROUP_MA %     1 MAILLE
- BOUT      M5
-FINSF
-FIN
+ TITRE
+  FICHIER GENERE PAR L'INTERFACE ALIBABA                                        
+  LE  JE-06-SEPT-90 14:37:41                                                    
+ FINSF
+ %
+ COOR_2D
+ N1        0.00000000000000E+00  0.00000000000000E+00
+ N2        5.00000000000000E-01  0.00000000000000E+00
+ N3        1.00000000000000E+00  0.00000000000000E+00
+ N4        0.00000000000000E+00  3.00000000000000E+00
+ N6        1.00000000000000E+00  3.00000000000000E+00
+ N7        0.00000000000000E+00  6.00000000000000E+00
+ N8        5.00000000000000E-01  6.00000000000000E+00
+ N9        1.00000000000000E+00  6.00000000000000E+00
+ N10       0.00000000000000E+00  9.00000000000000E+00
+ N12       1.00000000000000E+00  9.00000000000000E+00
+ N13       0.00000000000000E+00  1.20000000000000E+01
+ N14       5.00000000000000E-01  1.20000000000000E+01
+ N15       1.00000000000000E+00  1.20000000000000E+01
+ FINSF
+ %
+ QUAD8   
+ M1       N1       N3       N9       N7       N2       N6       N8      
+          N4      
+ M2       N7       N9       N15      N13      N8       N12      N14     
+          N10     
+ FINSF
+ %
+ SEG3    
+ M3       N3       N9       N6      
+ M4       N9       N15      N12     
+ M5       N15      N13      N14     
+ FINSF
+ %
+ GROUP_NO
+ N7                      
+ N7      
+ FINSF
+ %
+ GROUP_NO
+ N2                      
+ N2      
+ FINSF
+ %
+ GROUP_NO
+ N3                      
+ N3      
+ FINSF
+ %
+ GROUP_NO
+ N9                      
+ N9      
+ FINSF
+ %
+ GROUP_NO
+ N8                      
+ N8      
+ FINSF
+ %
+ GROUP_NO
+ N13                     
+ N13     
+ FINSF
+ %
+ GROUP_NO
+ N1                      
+ N1      
+ FINSF
+ %
+ GROUP_NO
+ N15                     
+ N15     
+ FINSF
+ %
+ GROUP_NO
+ N10                     
+ N10     
+ FINSF
+ %
+ GROUP_NO
+ N14                     
+ N14     
+ FINSF
+ %
+ GROUP_NO
+ N12                     
+ N12     
+ FINSF
+ %
+ GROUP_NO
+ N4                      
+ N4      
+ FINSF
+ %
+ GROUP_MA
+ BAS                     
+ M3       M4      
+ FINSF
+ %
+ GROUP_MA
+ BOUT                    
+ M5      
+ FINSF
+ %
+ GROUP_MA
+ M2                      
+ M2      
+ FINSF
+ %
+ GROUP_MA
+ M1                      
+ M1      
+ FINSF
+ %
+ FIN

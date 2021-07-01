@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -182,6 +182,17 @@ SQUEL=DEFI_SQUELETTE(MODELE_GENE=MODGEN,
                                  _F(NOM='BR_MY',
                                     GROUP_MA='bras',),),);
 
+SQUEL = DEFI_GROUP( reuse = SQUEL, MAILLAGE = SQUEL,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'NO1', NOEUD = 'NO1'),
+                                        _F( NOM = 'NO46', NOEUD = 'NO46'),
+                                        _F( NOM = 'NO3', NOEUD = 'NO3'),
+                                        _F( NOM = 'NO131', NOEUD = 'NO131'),
+                                        _F( NOM = 'NO5', NOEUD = 'NO5'),
+                                        _F( NOM = 'NO216', NOEUD = 'NO216'),
+                                     ),
+         )
+
 MOGS=CALC_MODES(MATR_RIGI=KGEN,
                 MATR_MASS=MGEN,
                 OPTION='CENTRE',SOLVEUR=_F(NPREC=11),
@@ -198,37 +209,37 @@ TAB_N1=CREA_TABLE(RESU=_F(RESULTAT=MOGECOMP,
                            NOM_CHAM='DEPL',
                            TOUT_ORDRE='OUI',
                            TOUT_CMP='OUI',
-                           NOEUD='NO1',
+                           GROUP_NO='NO1',
                            ),)
 TAB_N2=CREA_TABLE(RESU=_F(RESULTAT=MOGECOMP,
                            NOM_CHAM='DEPL',
                            TOUT_ORDRE='OUI',
                            TOUT_CMP='OUI',
-                           NOEUD='NO3',
+                           GROUP_NO='NO3',
                            ),)
 TAB_N3=CREA_TABLE(RESU=_F(RESULTAT=MOGECOMP,
                             NOM_CHAM='DEPL',
                             TOUT_ORDRE='OUI',
                             TOUT_CMP='OUI',
-                            NOEUD='NO5',
+                            GROUP_NO='NO5',
                             ),)
 TAB_N4=CREA_TABLE(RESU=_F(RESULTAT=MOGECOMP,
                             NOM_CHAM='DEPL',
                             TOUT_ORDRE='OUI',
                             TOUT_CMP='OUI',
-                            NOEUD='NO46',
+                            GROUP_NO='NO46',
                             ),)
 TAB_N5=CREA_TABLE(RESU=_F(RESULTAT=MOGECOMP,
                         NOM_CHAM='DEPL',
                         TOUT_ORDRE='OUI',
                         TOUT_CMP='OUI',
-                        NOEUD='NO216',
+                        GROUP_NO='NO216',
                         ),)
 TAB_N6=CREA_TABLE(RESU=_F(RESULTAT=MOGECOMP,
                         NOM_CHAM='DEPL',
                         TOUT_ORDRE='OUI',
                         TOUT_CMP='OUI',
-                        NOEUD='NO131',
+                        GROUP_NO='NO131',
                         ),)                           
                            
 extrX = FORMULE(VALE='DX',

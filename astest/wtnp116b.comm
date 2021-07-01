@@ -121,9 +121,15 @@ MAIL_00=CREA_MAILLAGE(MAILLAGE=MAIL_AUX,
 # 2.3.Creation de groupes de noeuds
 # 'POURTEST' : noeud au centre pour les TEST_RESU
 
+MAIL_00 = DEFI_GROUP( reuse = MAIL_00, MAILLAGE = MAIL_00,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N29', NOEUD = 'N29'),
+                                     ),
+         )
+
 MAIL_00=DEFI_GROUP(reuse =MAIL_00,
                    MAILLAGE=MAIL_00,
-                   CREA_GROUP_NO=_F(NOEUD='N29',
+                   CREA_GROUP_NO=_F(GROUP_NO='N29',
                                     NOM='POURTEST',),);
 # 'GM1', 'GM2','GM3' : pour la liaison oblique
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -206,7 +206,7 @@ TEST_RESU(RESU=_F(INST=10.0,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V2',
                   VALE_CALC=0.033601415477662676,
-                  MAILLE='M1',),
+                  GROUP_MA='M1',),
           )
 
 TEST_RESU(RESU=_F(INST=10.0,
@@ -215,7 +215,7 @@ TEST_RESU(RESU=_F(INST=10.0,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V2',
                   VALE_CALC=0.3926636127478796,
-                  MAILLE='M1',),
+                  GROUP_MA='M1',),
           )
 
 TEST_RESU(RESU=_F(INST=10.0,
@@ -224,7 +224,7 @@ TEST_RESU(RESU=_F(INST=10.0,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V2',
                   VALE_CALC=0.03439977602064925,
-                  MAILLE='M1',),
+                  GROUP_MA='M1',),
           )
 
 FIN()

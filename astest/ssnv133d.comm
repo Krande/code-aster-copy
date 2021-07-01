@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,10 +62,10 @@ MOMECA = AFFE_MODELE(MAILLAGE=MAIL,
 
 CHMECA = AFFE_CHAR_CINE(
     MODELE=MOMECA, MECA_IMPO=(
-        _F(MAILLE='DEVANT',  DZ=0.),
-        _F(MAILLE='BAS',    DY=0.),
-        _F(MAILLE='HAUT',   DY=1.),
-        _F(MAILLE='GAUCHE', DX=0.))
+        _F(GROUP_MA='DEVANT',  DZ=0.),
+        _F(GROUP_MA='BAS',    DY=0.),
+        _F(GROUP_MA='HAUT',   DY=1.),
+        _F(GROUP_MA='GAUCHE', DX=0.))
 )
 
 U = STAT_NON_LINE(MODELE=MOMECA,
@@ -84,43 +84,43 @@ U = CALC_CHAMP(reuse=U, CONTRAINTE=('SIGM_ELNO'),
 TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    RESULTAT=U,
                    NOM_CHAM='SIGM_ELNO',
-                   NOEUD='N1',
+                   GROUP_NO='N1',
                    NOM_CMP='SIYY',
                    REFERENCE='ANALYTIQUE',
                    VALE_REFE=400.0,
                    VALE_CALC=400.0000000000007,
                    PRECISION=1.E-3,
-                   MAILLE='M1',),
+                   GROUP_MA='M1',),
                 _F(NUME_ORDRE=4,
                    RESULTAT=U,
                    NOM_CHAM='SIGM_ELNO',
-                   NOEUD='N1',
+                   GROUP_NO='N1',
                    NOM_CMP='SIYY',
                    REFERENCE='ANALYTIQUE',
                    VALE_REFE=500.0,
                    VALE_CALC=499.9998720053985,
                    PRECISION=1.E-3,
-                   MAILLE='M1',),
+                   GROUP_MA='M1',),
                 _F(NUME_ORDRE=6,
                    RESULTAT=U,
                    NOM_CHAM='SIGM_ELNO',
-                   NOEUD='N1',
+                   GROUP_NO='N1',
                    NOM_CMP='SIYY',
                    REFERENCE='ANALYTIQUE',
                    VALE_REFE=-380.0,
                    VALE_CALC=-380.0000000000965,
                    PRECISION=1.E-3,
-                   MAILLE='M1',),
+                   GROUP_MA='M1',),
                 _F(NUME_ORDRE=8,
                    RESULTAT=U,
                    NOM_CHAM='SIGM_ELNO',
-                   NOEUD='N1',
+                   GROUP_NO='N1',
                    NOM_CMP='SIYY',
                    REFERENCE='ANALYTIQUE',
                    VALE_REFE=-464.0,
                    VALE_CALC=-463.9999999980259,
                    PRECISION=1.E-3,
-                   MAILLE='M1',),
+                   GROUP_MA='M1',),
                 ),
           )
 

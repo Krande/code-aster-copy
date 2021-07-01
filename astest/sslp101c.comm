@@ -37,7 +37,7 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=_F(  TOUT = 'OUI',MATER = MAT))
 
 CH=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
                             _F(  GROUP_NO = 'GRNM5', DY = 0.),
-                                     _F(  NOEUD = 'N451',  DX = 0.)),
+                                     _F(  GROUP_NO = 'N451',  DX = 0.)),
                             PRES_REP=_F(  GROUP_MA = 'GRMA4', PRES = 1.) )
 
 L_INST=DEFI_LIST_REEL(  DEBUT=0.0,
@@ -62,7 +62,7 @@ RESU=CALC_CHAMP(reuse=RESU,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),R
 FOND=DEFI_FOND_FISS( MAILLAGE=MA,
                      FOND_FISS=_F( GROUP_NO = 'GRNO9'),
                      SYME='OUI',
-                     LEVRE_SUP=_F(MAILLE='M306'),
+                     LEVRE_SUP=_F(GROUP_MA='M306'),
 )
 
 G1=CALC_G(              RESULTAT=RESU,

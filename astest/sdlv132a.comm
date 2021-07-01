@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -438,7 +438,7 @@ MODE1N=NORM_MODE(MODE=MODE1_CB,
 INTERF1=DEFI_INTERF_DYNA(NUME_DDL=NUM1_CB,
                         INTERFACE=(_F(NOM='PALIER_S',
                                       TYPE='CRAIGB',
-                                      NOEUD=('N31','N32'),
+                                      GROUP_NO=('N31','N32'),
                                       #MASQUE=('DX','DRX','DRY','DRZ',),
                                       ),),);
 
@@ -521,7 +521,7 @@ CH2=AFFE_CHAR_MECA(MODELE=MO2,
                                DRY=0.0,
                                DRZ=0.0,
                                ),
-                             _F(NOEUD=('N37'),
+                             _F(GROUP_NO=('N37'),
                                DX=0.0,
                                DRX=0.0,),
                              ),
@@ -653,7 +653,7 @@ MODE2N=NORM_MODE(MODE=MODE2,
 INTERF2=DEFI_INTERF_DYNA(NUME_DDL=NUM2,
                         INTERFACE=(_F(NOM='PALIER_R',
                                       TYPE='CRAIGB',
-                                      NOEUD=('N31','N32'),
+                                      GROUP_NO=('N31','N32'),
                                       #MASQUE=('DX','DRX','DRY','DRZ',),
                                       ),),);
 

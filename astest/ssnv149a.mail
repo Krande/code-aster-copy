@@ -1,46 +1,77 @@
-% Cas testb Benchmark
-TITRE
-test loi BETON_ENDO_LOCAL
-element cube a 8 noeuds
-FINSF
-
-COOR_3D
-n1       0.     0.    0.
-n2       0.01   0.    0.
-n3       0.01   0.01  0.
-n4       0.     0.01  0.
-n5       0.     0.    0.01
-n6       0.01   0.    0.01
-n7       0.01   0.01  0.01
-n8       0.     0.01  0.01
-FINSF
-
-HEXA8
-ma1   n1 n2 n3 n4 n5 n6 n7 n8
-FINSF
-
-GROUP_NO
-facexyp  n5  n6  n7  n8
-FINSF
-
-GROUP_NO
-facexyn  n1  n2  n3  n4
-FINSF
-
-GROUP_NO
-faceyzp  n2  n3  n7  n6
-FINSF
-
-GROUP_NO
-faceyzn  n1  n4  n8  n5
-FINSF
-
-GROUP_NO
-facexzp  n3  n7  n8  n4
-FINSF
-
-GROUP_NO
-facexzn  n1  n2  n6  n5
-FINSF
-
-FIN
+ TITRE
+test loi BETON_ENDO_LOCAL                                                       
+element cube a 8 noeuds                                                         
+ FINSF
+ %
+ COOR_3D
+ n1        0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ n2        1.00000000000000E-02  0.00000000000000E+00  0.00000000000000E+00
+ n3        1.00000000000000E-02  1.00000000000000E-02  0.00000000000000E+00
+ n4        0.00000000000000E+00  1.00000000000000E-02  0.00000000000000E+00
+ n5        0.00000000000000E+00  0.00000000000000E+00  1.00000000000000E-02
+ n6        1.00000000000000E-02  0.00000000000000E+00  1.00000000000000E-02
+ n7        1.00000000000000E-02  1.00000000000000E-02  1.00000000000000E-02
+ n8        0.00000000000000E+00  1.00000000000000E-02  1.00000000000000E-02
+ FINSF
+ %
+ HEXA8   
+ ma1      n1       n2       n3       n4       n5       n6       n7      
+          n8      
+ FINSF
+ %
+ GROUP_NO
+ facexyp                 
+ n5       n6       n7       n8      
+ FINSF
+ %
+ GROUP_NO
+ facexyn                 
+ n1       n2       n3       n4      
+ FINSF
+ %
+ GROUP_NO
+ faceyzp                 
+ n2       n3       n7       n6      
+ FINSF
+ %
+ GROUP_NO
+ faceyzn                 
+ n1       n4       n8       n5      
+ FINSF
+ %
+ GROUP_NO
+ facexzp                 
+ n3       n7       n8       n4      
+ FINSF
+ %
+ GROUP_NO
+ facexzn                 
+ n1       n2       n6       n5      
+ FINSF
+ %
+ GROUP_NO
+ n2                      
+ n2      
+ FINSF
+ %
+ GROUP_NO
+ n6                      
+ n6      
+ FINSF
+ %
+ GROUP_NO
+ n1                      
+ n1      
+ FINSF
+ %
+ GROUP_NO
+ n5                      
+ n5      
+ FINSF
+ %
+ GROUP_MA
+ ma1                     
+ ma1     
+ FINSF
+ %
+ FIN

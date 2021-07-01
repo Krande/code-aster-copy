@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -247,7 +247,7 @@ TEMPS = DEFI_LIST_REEL(
 DEPLT = AFFE_CHAR_MECA_F(
    MODELE= MO,
    DDL_IMPO=(
-      _F( NOEUD= ('G00202',),
+      _F( GROUP_NO= ('G00202',),
           DX =FCHG0002, DY =FCHG0002, DZ =FCHG0002,
           DRX=FCHG0002, DRY=FCHG0002, DRZ=FCHG0002,),
 ))
@@ -257,7 +257,7 @@ DEPLT = AFFE_CHAR_MECA_F(
 FORCT = AFFE_CHAR_MECA_F(
    MODELE= MO,
    FORCE_NODALE=(
-      _F( NOEUD= ('G00101',),
+      _F( GROUP_NO= ('G00101',),
           FX=FCHG000X, FY=FCHG000Y, FZ=FCHG000Z) ) )
 
 # **********************************************************************
@@ -292,7 +292,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=3.8986351560614E+08,
                    VALE_REFE=3.89884000E8,
                    PRECISION=2.0E-4,
-                   MAILLE='E00200',),
+                   GROUP_MA='E00200',),
                 _F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    POINT=1,
@@ -303,7 +303,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=1.6472680445584E+08,
                    VALE_REFE=1.64717000E8,
                    PRECISION=2.0E-4,
-                   MAILLE='E00200',),
+                   GROUP_MA='E00200',),
                 _F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    POINT=1,
@@ -314,7 +314,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=-1.8986351560614E+08,
                    VALE_REFE=-1.89884000E8,
                    PRECISION=2.0E-4,
-                   MAILLE='E00200',),
+                   GROUP_MA='E00200',),
                 _F(NUME_ORDRE=2,
                    POINT=1,
                    SOUS_POINT=36,
@@ -322,7 +322,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIXX',
                    VALE_CALC=4.0008645809153E8,
-                   MAILLE='E00200',),
+                   GROUP_MA='E00200',),
                 _F(NUME_ORDRE=2,
                    POINT=1,
                    SOUS_POINT=33,
@@ -330,7 +330,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIXX',
                    VALE_CALC=1.972374273323E8,
-                   MAILLE='E00200',),
+                   GROUP_MA='E00200',),
                 _F(NUME_ORDRE=2,
                    POINT=1,
                    SOUS_POINT=34,
@@ -338,7 +338,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIXX',
                    VALE_CALC=-3.7661217073954E8,
-                   MAILLE='E00200',),
+                   GROUP_MA='E00200',),
                 ),
           )
 
@@ -353,7 +353,7 @@ U1=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R', INFO=1,
 
 U2 = CREA_CHAMP ( OPERATION = 'ASSE' , MODELE = MO , TYPE_CHAM = 'NOEU_DEPL_R' , INFO=1,
                     ASSE = (_F ( TOUT = 'OUI' ,      CHAM_GD = U1 ,  COEF_R=1.E0),
-                            _F ( MAILLE = 'E00203' , CHAM_GD = U1 ,  COEF_R=0.E0),
+                            _F ( GROUP_MA = 'E00203' , CHAM_GD = U1 ,  COEF_R=0.E0),
                                 ) , )
 
 SIG1=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R', INFO=1,
@@ -362,7 +362,7 @@ SIG1=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R', INFO=1,
 
 SIG2 = CREA_CHAMP ( OPERATION = 'ASSE' , MODELE = MO , TYPE_CHAM = 'ELGA_SIEF_R' , INFO=1,
                     ASSE = (_F ( TOUT = 'OUI' ,      CHAM_GD = SIG1 ,  COEF_R=1.E0),
-                            _F ( MAILLE = 'E00203' , CHAM_GD = SIG1 ,  COEF_R=0.E0),
+                            _F ( GROUP_MA = 'E00203' , CHAM_GD = SIG1 ,  COEF_R=0.E0),
                                 ) , )
 
 
@@ -371,7 +371,7 @@ VAR1=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_VARI_R', INFO=1,
 
 VAR2 = CREA_CHAMP ( OPERATION = 'ASSE' , MODELE = MO , TYPE_CHAM = 'ELGA_VARI_R' , INFO=1,
                     ASSE = (_F ( TOUT = 'OUI' ,      CHAM_GD = VAR1 ,  COEF_R=1.E0),
-                            _F ( MAILLE = 'E00200' , CHAM_GD = VAR1 ,  COEF_R=0.E0),
+                            _F ( GROUP_MA = 'E00200' , CHAM_GD = VAR1 ,  COEF_R=0.E0),
                                 ) , )
 
 
@@ -379,7 +379,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                         POINT=2,
                         NOM_CMP='SIXX',
                         SOUS_POINT=12,
-                        MAILLE='E00204',
+                        GROUP_MA='E00204',
                         CHAM_GD=SIG2,
                         VALE_CALC=-1.2457142859999999E7,
                         ),
@@ -389,7 +389,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                         NOM_CMP='SIXX',
                         PRECISION=1.E-10,
                         SOUS_POINT=12,
-                        MAILLE='E00203',
+                        GROUP_MA='E00203',
                         CHAM_GD=SIG2,
                         VALE_CALC=0.0E+00,
                         VALE_REFE=0.0,
@@ -398,7 +398,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                         POINT=3,
                         NOM_CMP='V1',
                         SOUS_POINT=36,
-                        MAILLE='E00201',
+                        GROUP_MA='E00201',
                         CHAM_GD=VAR2,
                         VALE_CALC=2.3565526629057E-04,
                         ),
@@ -408,18 +408,18 @@ TEST_RESU(CHAM_ELEM=(_F(
                         NOM_CMP='V1',
                         PRECISION=1.E-10,
                         SOUS_POINT=12,
-                        MAILLE='E00203',
+                        GROUP_MA='E00203',
                         CHAM_GD=VAR2,
                         VALE_CALC=0.0E+00,
                         VALE_REFE=0.0,
                         ),
                      ),)
 
-TEST_RESU(CHAM_NO=(_F(NOEUD='I00201',
+TEST_RESU(CHAM_NO=(_F(GROUP_NO='I00201',
                       NOM_CMP='DZ',
                       CHAM_GD=U2,
                       VALE_CALC=-0.013291790632804,),
-                   _F(NOEUD='I00203',
+                   _F(GROUP_NO='I00203',
                       CRITERE='ABSOLU',
                       REFERENCE='ANALYTIQUE',
                       NOM_CMP='DZ',
@@ -445,7 +445,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   NOM_CHAM='SIGM_ELGA',
                   NOM_CMP='SIXX',
                   VALE_CALC=6.5714285714286E6,
-                  MAILLE='E00202',),
+                  GROUP_MA='E00202',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=2,
@@ -457,19 +457,19 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   VALE_CALC=6.5714285714E+06,
                   VALE_REFE=6.5714285714285998E6,
                   PRECISION=1.E-10,
-                  MAILLE='E00202',),
+                  GROUP_MA='E00202',),
           )
 
 #-----------------------------------------------------------------------------------------
 # validation de POST_CHAMP / MIN_MAX_SP pour les poutres PMF :
 #-------------------------------------------------------------
-STNLC=POST_CHAMP(  RESULTAT=STNL, MAILLE='E00200',
+STNLC=POST_CHAMP(  RESULTAT=STNL, GROUP_MA='E00200',
               NUME_ORDRE=(1,2),
               MIN_MAX_SP=(
                 _F( NOM_CHAM='SIEF_ELGA', NOM_CMP='SIXX', TYPE_MAXI='MAXI', NUME_CHAM_RESU=1),
                 _F( NOM_CHAM='SIEF_ELGA', NOM_CMP='SIXX', TYPE_MAXI='MINI', NUME_CHAM_RESU=2),
              ))
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=STNL, NOM_CHAM='SIEF_ELGA', MAILLE='E00200',NUME_ORDRE=(1,2), ))
+#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=STNL, NOM_CHAM='SIEF_ELGA', GROUP_MA='E00200',NUME_ORDRE=(1,2), ))
 #IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=STNLC))
 
 # TEST_RESU pour le max de SIXX (UT01_ELGA):
@@ -482,7 +482,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    VALE_CALC=4.0008645809153E+08,
                    VALE_REFE=4.0008644731129003E8,
                    PRECISION=1.E-6,
-                   MAILLE='E00200',),
+                   GROUP_MA='E00200',),
                 _F(NUME_ORDRE=2,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -492,7 +492,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    VALE_CALC=36.0,
                    VALE_REFE=36.0,
                    PRECISION=1.E-6,
-                   MAILLE='E00200',),
+                   GROUP_MA='E00200',),
                 _F(NUME_ORDRE=2,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -502,7 +502,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    VALE_CALC=-999.0,
                    VALE_REFE=-999.0,
                    PRECISION=1.E-6,
-                   MAILLE='E00200',),
+                   GROUP_MA='E00200',),
                 ),
           )
 
@@ -516,7 +516,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    VALE_CALC=-3.7661217073954E+08,
                    VALE_REFE=-3.7658987468305999E8,
                    PRECISION=1.E-4,
-                   MAILLE='E00200',),
+                   GROUP_MA='E00200',),
                 _F(NUME_ORDRE=2,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -526,11 +526,11 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    VALE_CALC=34.0,
                    VALE_REFE=34.0,
                    PRECISION=1.E-6,
-                   MAILLE='E00200',),
+                   GROUP_MA='E00200',),
                 ),
           )
 # Pour valider POST_CHAMP / MIN_MAX_SP / NOM_VARI :
-XXX2=POST_CHAMP(  RESULTAT=STNL, MAILLE='E00200',
+XXX2=POST_CHAMP(  RESULTAT=STNL, GROUP_MA='E00200',
               NUME_ORDRE=(1,2),
               MIN_MAX_SP=(
                 _F( NOM_CHAM='VARI_ELGA', NOM_CMP='V1', TYPE_MAXI='MAXI', NUME_CHAM_RESU=1),

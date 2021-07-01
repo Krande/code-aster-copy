@@ -39,7 +39,7 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                  MAILLAGE=MAILLAG1,
-                 CREA_GROUP_NO=(_F(NOM='NXFEM',NOEUD=('N501','N502','N503','N504','N505','N506','N1069',
+                 CREA_GROUP_NO=(_F(NOM='NXFEM',GROUP_NO=('N501','N502','N503','N504','N505','N506','N1069',
                                                       'N534','N535','N536','N537','N538','N539','N1072',
 
                                                       'N512','N513','N514','N515','N516','N517','N1070',

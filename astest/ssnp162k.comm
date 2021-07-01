@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -83,6 +83,26 @@ MA0=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MA=CREA_MAILLAGE(MAILLAGE  = MA0, LINE_QUAD = _F(TOUT='OUI'))
 
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'GAUCHE2', MAILLE = 'GAUCHE2'),
+                                        _F( NOM = 'DROITE', MAILLE = 'DROITE'),
+                                        _F( NOM = 'CUBEDEG', MAILLE = 'CUBEDEG'),
+                                        _F( NOM = 'CUBE', MAILLE = 'CUBE'),
+                                     ),
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'NO12', NOEUD = 'NO12'),
+                                        _F( NOM = 'NS20', NOEUD = 'NS20'),
+                                        _F( NOM = 'NS19', NOEUD = 'NS19'),
+                                        _F( NOM = 'NS18', NOEUD = 'NS18'),
+                                        _F( NOM = 'NS5', NOEUD = 'NS5'),
+                                        _F( NOM = 'NS8', NOEUD = 'NS8'),
+                                        _F( NOM = 'NS4', NOEUD = 'NS4'),
+                                        _F( NOM = 'NS17', NOEUD = 'NS17'),
+                                        _F( NOM = 'NS12', NOEUD = 'NS12'),
+                                     ),
+         )
+
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
@@ -107,12 +127,12 @@ MO=AFFE_MODELE(
 
                 AFFE= (
                 _F(
-                   MAILLE = 'CUBE',
+                   GROUP_MA = 'CUBE',
                    PHENOMENE = 'MECANIQUE',
                    MODELISATION = '3D'
                      ),
                  _F(
-                   MAILLE = 'CUBEDEG',
+                   GROUP_MA = 'CUBEDEG',
                    PHENOMENE = 'MECANIQUE',
                    MODELISATION = '3D_JOINT_HYME'
                    )
@@ -142,15 +162,15 @@ MAT_JF=DEFI_MATERIAU(
 
 CM_F=AFFE_MATERIAU(MAILLAGE=MA,
                  AFFE=(
-                      _F(MAILLE='CUBE',MATER = MAT_CUB),
-                      _F(MAILLE='CUBEDEG',  MATER = MAT_JF))
+                      _F(GROUP_MA='CUBE',MATER = MAT_CUB),
+                      _F(GROUP_MA='CUBEDEG',  MATER = MAT_JF))
                  );
 
 # ENCASTREMENT D'UNE DES LEVRES DU JOINT
 LIAISON=AFFE_CHAR_CINE(
   MODELE=MO,
   MECA_IMPO= (
-    _F(MAILLE='GAUCHE2', DX=0, DY=0, DZ=0),
+    _F(GROUP_MA='GAUCHE2', DX=0, DY=0, DZ=0),
     )
   )
 
@@ -167,12 +187,12 @@ LIAISON=AFFE_CHAR_CINE(
 PAM_J = AFFE_CHAR_CINE(
   MODELE = MO,
   MECA_IMPO = (
-                _F(NOEUD='NS17', PRE1=press ),
-                _F(NOEUD='NS12', PRE1=press*1.0000001 ),
-                _F(NOEUD='NS18', PRE1=press ),
-                _F(NOEUD='NS19', PRE1=press*1.0000002 ),
-                _F(NOEUD='NS4' , PRE1=press*1.0000003 ),
-                _F(NOEUD='NS20', PRE1=press*1.0000004 ),
+                _F(GROUP_NO='NS17', PRE1=press ),
+                _F(GROUP_NO='NS12', PRE1=press*1.0000001 ),
+                _F(GROUP_NO='NS18', PRE1=press ),
+                _F(GROUP_NO='NS19', PRE1=press*1.0000002 ),
+                _F(GROUP_NO='NS4' , PRE1=press*1.0000003 ),
+                _F(GROUP_NO='NS20', PRE1=press*1.0000004 ),
               )
   );
 
@@ -181,7 +201,7 @@ PAM_J = AFFE_CHAR_CINE(
 TRAC_1=AFFE_CHAR_CINE(
   MODELE=MO,
   MECA_IMPO= (
-    _F(MAILLE='DROITE', DX=cos(angle), DY= sin(angle), DZ=0.),
+    _F(GROUP_MA='DROITE', DX=cos(angle), DY= sin(angle), DZ=0.),
     )
   )
 
@@ -210,9 +230,9 @@ U_F=STAT_NON_LINE(
   ),
   COMPORTEMENT  = (
           _F(RELATION = 'JOINT_MECA_FROT',
-             MAILLE = 'CUBEDEG', ),
+             GROUP_MA = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
-             MAILLE = 'CUBE',),
+             GROUP_MA = 'CUBE',),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
   CONVERGENCE = _F(
@@ -240,7 +260,7 @@ U_F=CALC_CHAMP(reuse =U_F,
 U_F=CALC_CHAMP(reuse =U_F,
              RESULTAT=U_F,
              VARI_INTERNE='VARI_NOEU',CONTRAINTE='SIEF_NOEU',
-             MAILLE='CUBEDEG'
+             GROUP_MA='CUBEDEG'
              );
 
 
@@ -381,7 +401,7 @@ TEST_RESU (
       NOM_CMP   = 'PRE1',
       VALE_REFE = press,
       VALE_CALC = 50000.0068,
-      NOEUD     = 'NS5',
+      GROUP_NO     = 'NS5',
       INST      = insfin,
       ),
     )
@@ -391,7 +411,7 @@ TEST_RESU(RESU=_F(INST=insfin,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=U_F,
                   NOM_CHAM='DEPL',
-                  NOEUD='NS8',
+                  GROUP_NO='NS8',
                   NOM_CMP='PRE1',
                   VALE_CALC=50000.000000065,
                   VALE_REFE=press,),
@@ -403,7 +423,7 @@ TEST_RESU(RESU=_F(INST=insfin,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=U_F,
                   NOM_CHAM='VARI_NOEU',
-                  NOEUD='NS18',
+                  GROUP_NO='NS18',
                   NOM_CMP='V18',
                   VALE_CALC=50000.000000002,
                   VALE_REFE=press,),
@@ -415,7 +435,7 @@ TEST_RESU(RESU=_F(INST=insfin,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=U_F,
                   NOM_CHAM='VARI_NOEU',
-                  NOEUD='NO12',
+                  GROUP_NO='NO12',
                   NOM_CMP='V18',
                   VALE_CALC=50000.0000000002,
                   VALE_REFE=press,),
@@ -428,7 +448,7 @@ TEST_RESU (
       NOM_CHAM  = 'VARI_NOEU',
       NOM_CMP   = 'V15',
       VALE_CALC = 0.0588099274448,
-      NOEUD     = 'NS17',
+      GROUP_NO     = 'NS17',
       INST      = linst[2],
       ),
     _F(
@@ -436,7 +456,7 @@ TEST_RESU (
       NOM_CHAM  = 'VARI_NOEU',
       NOM_CMP   = 'V16',
       VALE_CALC = -0.101861782324,
-      NOEUD     = 'NS17',
+      GROUP_NO     = 'NS17',
       INST      = linst[2],
       ),
     _F(
@@ -444,7 +464,7 @@ TEST_RESU (
       NOM_CHAM  = 'VARI_NOEU',
       NOM_CMP   = 'V17',
       VALE_CALC = -0.0543233967518,
-      NOEUD     = 'NS17',
+      GROUP_NO     = 'NS17',
       INST      = linst[2],
       ),
     )
@@ -501,9 +521,9 @@ U_2=STAT_NON_LINE(
   ),
   COMPORTEMENT  = (
           _F(RELATION = 'JOINT_MECA_FROT',
-             MAILLE = 'CUBEDEG', ),
+             GROUP_MA = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
-             MAILLE = 'CUBE',),
+             GROUP_MA = 'CUBE',),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
   CONVERGENCE = _F(
@@ -673,7 +693,7 @@ TEST_RESU (
       NOM_CMP   = 'PRE1',
       VALE_REFE = press,
       VALE_CALC = 50000.012,
-      NOEUD     = 'NS17',
+      GROUP_NO     = 'NS17',
       INST      = insfin,
       ),
     )
@@ -687,7 +707,7 @@ TEST_RESU (
       NOM_CHAM  = 'VARI_NOEU',
       NOM_CMP   = 'V15',
       VALE_CALC = 1.56160780633E-13,
-      NOEUD     = 'NS12',
+      GROUP_NO     = 'NS12',
       INST      = linst2[1],
       ),
     )
@@ -695,6 +715,6 @@ TEST_RESU (
 
 #IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_F,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')))),
 #IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_2,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')))),
-#IMPR_RESU(FORMAT='MED',RESU=(_F(RESULTAT=U_2,NOM_CHAM='SIEF_ELGA',NOM_CMP=('SIGN','SITX',),MAILLE=('CUBEDEG'))))
-#IMPR_RESU(FORMAT='RESULTAT',RESU=(_F(RESULTAT=U_2,NOM_CHAM='SIEF_ELGA',NOM_CMP=('SIGN','SITX',),MAILLE=('CUBEDEG'))))
+#IMPR_RESU(FORMAT='MED',RESU=(_F(RESULTAT=U_2,NOM_CHAM='SIEF_ELGA',NOM_CMP=('SIGN','SITX',),GROUP_MA=('CUBEDEG'))))
+#IMPR_RESU(FORMAT='RESULTAT',RESU=(_F(RESULTAT=U_2,NOM_CHAM='SIEF_ELGA',NOM_CMP=('SIGN','SITX',),GROUP_MA=('CUBEDEG'))))
 FIN()

@@ -74,6 +74,14 @@ MA0=LIRE_MAILLAGE(FORMAT='MED',
 
 MA=CREA_MAILLAGE(MAILLAGE = MA0, LINE_QUAD = _F(TOUT='OUI'));
 
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'NS5193', NOEUD = 'NS5193'),
+                                        _F( NOM = 'N1037', NOEUD = 'N1037'),
+                                        _F( NOM = 'N1331', NOEUD = 'N1331'),
+                                     ),
+         )
+
 
 MA = DEFI_GROUP(reuse = MA,
        MAILLAGE = MA,
@@ -333,7 +341,7 @@ U_1=STAT_NON_LINE(
 TEST_RESU(RESU=_F(NUME_ORDRE=9,
                   RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOEUD='N1037',
+                  GROUP_NO='N1037',
                   NOM_CMP='PRE1',
                   VALE_CALC=1.0734152591956E+05,),
           )
@@ -341,7 +349,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=9,
 TEST_RESU(RESU=_F(NUME_ORDRE=9,
                   RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOEUD='N1331',
+                  GROUP_NO='N1331',
                   NOM_CMP='PRE1',
                   VALE_CALC=1.0042198232688E+05,),
           )
@@ -349,7 +357,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=9,
 TEST_RESU(RESU=_F(NUME_ORDRE=9,
                   RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOEUD='NS5193',
+                  GROUP_NO='NS5193',
                   NOM_CMP='PRE1',
                   VALE_CALC=1.1472755118204E5,),
           )
@@ -357,7 +365,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=9,
 TEST_RESU(RESU=_F(NUME_ORDRE=24,
                   RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOEUD='N1037',
+                  GROUP_NO='N1037',
                   NOM_CMP='PRE1',
                   VALE_CALC=1.1300449700802E+05 ,),
           )
@@ -365,7 +373,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=24,
 TEST_RESU(RESU=_F(NUME_ORDRE=24,
                   RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOEUD='N1331',
+                  GROUP_NO='N1331',
                   NOM_CMP='PRE1',
                   VALE_CALC=1.0540280086949E+05 ,),
           )
@@ -373,7 +381,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=24,
 TEST_RESU(RESU=_F(NUME_ORDRE=24,
                   RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOEUD='NS5193',
+                  GROUP_NO='NS5193',
                   NOM_CMP='PRE1',
                   VALE_CALC=1.1477160712521E+05,),
           )

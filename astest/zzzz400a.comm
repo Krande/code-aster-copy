@@ -24,6 +24,13 @@ MAIL = LIRE_MAILLAGE(FORMAT='GIBI',
                      )
 #IMPR_RESU(FORMAT="RESULTAT",UNITE=8, RESU=_F(MAILLAGE=MAIL))
 
+MAIL = DEFI_GROUP( reuse = MAIL, MAILLAGE = MAIL,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M1', MAILLE = 'M1'),
+                                        _F( NOM = 'M26', MAILLE = 'M26'),
+                                     ),
+         )
+
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_NO=(_F(GROUP_MA='BBAS',),
@@ -94,14 +101,14 @@ RESU1=STAT_NON_LINE(  MODELE=MODELE,  CHAM_MATER=CHM0,
 
 
 TEST_RESU(RESU=(
-                _F(MAILLE='M1', POINT=1, INST=1.E4, RESULTAT=RESU1, NOM_CHAM='VARI_ELGA',
+                _F(GROUP_MA='M1', POINT=1, INST=1.E4, RESULTAT=RESU1, NOM_CHAM='VARI_ELGA',
                     NOM_CMP='V1', VALE_CALC=4.02506835439875E+01,),
-                _F(MAILLE='M1', POINT=1, INST=1.E4, RESULTAT=RESU1, NOM_CHAM='VARI_ELGA',
+                _F(GROUP_MA='M1', POINT=1, INST=1.E4, RESULTAT=RESU1, NOM_CHAM='VARI_ELGA',
                     NOM_CMP='V2', VALE_CALC=1.0,),
 
-                _F(MAILLE='M26', POINT=1, INST=1.E4, RESULTAT=RESU1, NOM_CHAM='VARI_ELGA',
+                _F(GROUP_MA='M26', POINT=1, INST=1.E4, RESULTAT=RESU1, NOM_CHAM='VARI_ELGA',
                     NOM_CMP='V1', VALE_CALC=-3.50286336548130E+06,),
-                _F(MAILLE='M26', POINT=1, INST=1.E4, RESULTAT=RESU1, NOM_CHAM='VARI_ELGA',
+                _F(GROUP_MA='M26', POINT=1, INST=1.E4, RESULTAT=RESU1, NOM_CHAM='VARI_ELGA',
                     NOM_CMP='V7', VALE_CALC=1.0,),
           ))
 
@@ -153,14 +160,14 @@ RESU2=STAT_NON_LINE(  MODELE=MODELE,  CHAM_MATER=CHM0,
 
 
 TEST_RESU(RESU=(
-                _F(MAILLE='M1', POINT=1, INST=1.E4, RESULTAT=RESU2, NOM_CHAM='VARI_ELGA',
+                _F(GROUP_MA='M1', POINT=1, INST=1.E4, RESULTAT=RESU2, NOM_CHAM='VARI_ELGA',
                     NOM_CMP='V1', VALE_CALC=4.02506835439875E+01,),
-                _F(MAILLE='M1', POINT=1, INST=1.E4, RESULTAT=RESU2, NOM_CHAM='VARI_ELGA',
+                _F(GROUP_MA='M1', POINT=1, INST=1.E4, RESULTAT=RESU2, NOM_CHAM='VARI_ELGA',
                     NOM_CMP='V2', VALE_CALC=1.0,),
 
-                _F(MAILLE='M26', POINT=1, INST=1.E4, RESULTAT=RESU2, NOM_CHAM='VARI_ELGA',
+                _F(GROUP_MA='M26', POINT=1, INST=1.E4, RESULTAT=RESU2, NOM_CHAM='VARI_ELGA',
                     NOM_CMP='V1', VALE_CALC=-3.50286336548130E+06,),
-                _F(MAILLE='M26', POINT=1, INST=1.E4, RESULTAT=RESU2, NOM_CHAM='VARI_ELGA',
+                _F(GROUP_MA='M26', POINT=1, INST=1.E4, RESULTAT=RESU2, NOM_CHAM='VARI_ELGA',
                     NOM_CMP='V7', VALE_CALC=1.0,),
           ))
 

@@ -195,11 +195,11 @@ RESUMECA=STAT_NON_LINE(
                                        NOM_CHAM='VARI_ELGA',
                                        POINT = 1,
                                        NOM_CMP='V1',
-                                       MAILLE='M1',),
+                                       GROUP_MA='M1',),
                                        _F(NOM_CHAM='VARI_ELGA',
                                        POINT = 1,
                                        NOM_CMP='V2',
-                                       MAILLE='M1',),
+                                       GROUP_MA='M1',),
                                       ),
                         ARCHIVAGE =_F(LIST_INST =LINST),
              );
@@ -215,7 +215,7 @@ RESUMECA=CALC_CHAMP(reuse=RESUMECA,RESULTAT=RESUMECA,DEFORMATION=('EPSI_ELGA'))
 
 
 
-CHAMELG=CALC_CHAM_ELEM(MODELE=MODELEME,MAILLE='M1',OPTION='COOR_ELGA')
+CHAMELG=CALC_CHAM_ELEM(MODELE=MODELEME,GROUP_MA='M1',OPTION='COOR_ELGA')
 
 TABLE=RECU_TABLE(CO=RESUMECA,NOM_TABLE='OBSERVATION',);
 

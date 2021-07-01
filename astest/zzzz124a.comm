@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -83,16 +83,16 @@ EFGE_ELNO['R3_global'] ={'N' :  5.0E+08, 'VY' : 10.0E+08, 'VZ' : 15.0E+08,
 for nom_cmp,valer in EFGE_ELNO['R1_local'].items():
     TEST_RESU(
         RESU=(
-            _F(NUME_ORDRE=1, REFERENCE='AUTRE_ASTER', RESULTAT=RESU01, MAILLE='S12',
-                NOM_CHAM='EFGE_ELNO', NOEUD='R1', NOM_CMP=nom_cmp,
+            _F(NUME_ORDRE=1, REFERENCE='AUTRE_ASTER', RESULTAT=RESU01, GROUP_MA='S12',
+                NOM_CHAM='EFGE_ELNO', GROUP_NO='R1', NOM_CMP=nom_cmp,
                 VALE_CALC= valer, VALE_REFE=valer, ),
         ),
     )
 for nom_cmp,valer in EFGE_ELNO['R3_local'].items():
     TEST_RESU(
         RESU=(
-            _F(NUME_ORDRE=1, REFERENCE='AUTRE_ASTER', RESULTAT=RESU01, MAILLE='S23',
-                NOM_CHAM='EFGE_ELNO', NOEUD='R3', NOM_CMP=nom_cmp,
+            _F(NUME_ORDRE=1, REFERENCE='AUTRE_ASTER', RESULTAT=RESU01, GROUP_MA='S23',
+                NOM_CHAM='EFGE_ELNO', GROUP_NO='R3', NOM_CMP=nom_cmp,
                 VALE_CALC= valer, VALE_REFE=valer, ),
         ),
     )
@@ -116,8 +116,8 @@ RESU02=MODI_REPERE(
 for nom_cmp,valer in REAC_NODA['R1_global'].items():
     TEST_RESU(
         RESU=(
-            _F(NUME_ORDRE=1, REFERENCE='AUTRE_ASTER', RESULTAT=RESU02, MAILLE='S12',
-                NOM_CHAM='EFGE_ELNO', NOEUD='R1', NOM_CMP=nom_cmp,
+            _F(NUME_ORDRE=1, REFERENCE='AUTRE_ASTER', RESULTAT=RESU02, GROUP_MA='S12',
+                NOM_CHAM='EFGE_ELNO', GROUP_NO='R1', NOM_CMP=nom_cmp,
                 VALE_CALC=-valer, VALE_REFE=-valer, ),
         ),
     )
@@ -125,8 +125,8 @@ for nom_cmp,valer in REAC_NODA['R1_global'].items():
 for nom_cmp,valer in EFGE_ELNO['R3_global'].items():
     TEST_RESU(
         RESU=(
-            _F(NUME_ORDRE=1, REFERENCE='AUTRE_ASTER', RESULTAT=RESU02, MAILLE='S23',
-                NOM_CHAM='EFGE_ELNO', NOEUD='R3', NOM_CMP=nom_cmp,
+            _F(NUME_ORDRE=1, REFERENCE='AUTRE_ASTER', RESULTAT=RESU02, GROUP_MA='S23',
+                NOM_CHAM='EFGE_ELNO', GROUP_NO='R3', NOM_CMP=nom_cmp,
                 VALE_CALC= valer, VALE_REFE=valer, ),
         ),
     )

@@ -26,9 +26,9 @@ MO=AFFE_MODELE(  MAILLAGE=MA,
                           MODELISATION = 'D_PLAN'))
 
 CH0=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
-             _F(  NOEUD = ('A',),     DX = 0., DY = 0.),
-             _F(  NOEUD = ('D',),     DX = 0.)),
-             FORCE_NODALE=_F(  NOEUD = 'F',   FY = 4.)
+             _F(  GROUP_NO = ('A',),     DX = 0., DY = 0.),
+             _F(  GROUP_NO = ('D',),     DX = 0.)),
+             FORCE_NODALE=_F(  GROUP_NO = 'F',   FY = 4.)
                     )
 
 MAT=DEFI_MATERIAU(    ELAS=_F( E = 10.,   NU = 0.0) )
@@ -48,9 +48,9 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
 # --------------------
 
 CH11=AFFE_CHAR_MECA(  MODELE=MO,LIAISON_DDL=(
-        _F( NOEUD = ('E','D','C',),
+        _F( GROUP_NO = ('E','D','C',),
          DDL = ('DX','DY','DY',), COEF_MULT = (1.,-0.5,-0.5,), COEF_IMPO = 0.),
-        _F( NOEUD = ('E','D','C',),
+        _F( GROUP_NO = ('E','D','C',),
          DDL = ('DY','DX','DX',), COEF_MULT = (1.,0.5,0.5,), COEF_IMPO = 0.))
              )
 
@@ -62,8 +62,8 @@ MEST11=MECA_STATIQUE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
 # --------------------
 
 CH12=AFFE_CHAR_MECA(  MODELE=MO,
-            LIAISON_MAIL=_F( MAILLE_MAIT = ('Q1','Q2',),
-                             NOEUD_ESCL = 'E',
+            LIAISON_MAIL=_F( GROUP_MA_MAIT = ('Q1','Q2',),
+                             GROUP_NO_ESCL = 'E',
                              DISTANCE_MAX = 1.E-6 ,
                              TRAN = ( -5., 0.,),
                              CENTRE = (10., 0.,),
@@ -75,7 +75,7 @@ MEST12=MECA_STATIQUE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=MEST11,
                    NOM_CHAM='DEPL',
-                   NOEUD='F',
+                   GROUP_NO='F',
                    NOM_CMP='DY',
                    VALE_CALC=1.4153582447719999,
                    ),
@@ -83,7 +83,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=MEST12,
                    NOM_CHAM='DEPL',
-                   NOEUD='F',
+                   GROUP_NO='F',
                    NOM_CMP='DY',
                    VALE_CALC=1.4153582447720,
                    VALE_REFE=1.4153582447719999,
@@ -103,9 +103,9 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 # --------------------
 
 CH21=AFFE_CHAR_MECA(  MODELE=MO,LIAISON_DDL=(
-        _F( NOEUD = ('E','D','C',),
+        _F( GROUP_NO = ('E','D','C',),
          DDL = ('DY','DY','DY',), COEF_MULT = (1.,0.5,0.5,), COEF_IMPO = 0.),
-        _F( NOEUD = ('B','C','F',),
+        _F( GROUP_NO = ('B','C','F',),
          DDL = ('DY','DY','DY',), COEF_MULT = (1.,0.5,0.5,), COEF_IMPO = 0.))
              )
 
@@ -117,8 +117,8 @@ MEST21=MECA_STATIQUE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
 # --------------------
 
 CH22=AFFE_CHAR_MECA(  MODELE=MO,
-            LIAISON_MAIL=_F( MAILLE_MAIT = ('Q1','Q2',),
-                             MAILLE_ESCL = 'S1',
+            LIAISON_MAIL=_F( GROUP_MA_MAIT = ('Q1','Q2',),
+                             GROUP_MA_ESCL = 'S1',
                              DISTANCE_MAX = 1.E-6 ,
                              TRAN = ( 5., 10.,),
                              CENTRE = (10., 0.,),
@@ -132,7 +132,7 @@ MEST22=MECA_STATIQUE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=MEST21,
                    NOM_CHAM='DEPL',
-                   NOEUD='F',
+                   GROUP_NO='F',
                    NOM_CMP='DY',
                    VALE_CALC=1.0561898652982999,
                    ),
@@ -140,7 +140,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=MEST22,
                    NOM_CHAM='DEPL',
-                   NOEUD='F',
+                   GROUP_NO='F',
                    NOM_CMP='DY',
                    VALE_CALC=1.0561898652983,
                    VALE_REFE=1.0561898652982999,
@@ -175,8 +175,8 @@ MO=AFFE_MODELE(  MAILLAGE=MA,
                           MODELISATION = 'PLAN'))
 
 CH0=AFFE_CHAR_THER(  MODELE=MO,TEMP_IMPO=(
-             _F(  NOEUD = ('A',),     TEMP = 0.),
-             _F(  NOEUD = ('D',),     TEMP = 4.))
+             _F(  GROUP_NO = ('A',),     TEMP = 0.),
+             _F(  GROUP_NO = ('D',),     TEMP = 4.))
                     )
 
 MAT=DEFI_MATERIAU(    THER=_F( LAMBDA = 10.) )
@@ -189,7 +189,7 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
 # --------------------
 
 CH11=AFFE_CHAR_THER(  MODELE=MO,
-    LIAISON_DDL=_F( NOEUD = ('E','D','C',),
+    LIAISON_DDL=_F( GROUP_NO = ('E','D','C',),
      DDL = ('TEMP','TEMP','TEMP',), COEF_MULT = (1.,-0.5,-0.5,), COEF_IMPO = 0.)
          )
 
@@ -201,8 +201,8 @@ MEST11=THER_LINEAIRE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
 # --------------------
 
 CH12=AFFE_CHAR_THER(  MODELE=MO,   INFO=2,
-            LIAISON_MAIL=_F( MAILLE_MAIT = ('Q1','Q2',),
-                             NOEUD_ESCL = 'E',
+            LIAISON_MAIL=_F( GROUP_MA_MAIT = ('Q1','Q2',),
+                             GROUP_NO_ESCL = 'E',
                              DISTANCE_MAX = 1.E-6 ,
                              TRAN = ( -5., 0.,),
                              CENTRE = (10., 0.,),
@@ -214,7 +214,7 @@ MEST12=THER_LINEAIRE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
 TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                    RESULTAT=MEST11,
                    NOM_CHAM='TEMP',
-                   NOEUD='F',
+                   GROUP_NO='F',
                    NOM_CMP='TEMP',
                    VALE_CALC=2.5,
                    ),
@@ -222,7 +222,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=MEST12,
                    NOM_CHAM='TEMP',
-                   NOEUD='F',
+                   GROUP_NO='F',
                    NOM_CMP='TEMP',
                    VALE_CALC=2.5000000000000,
                    VALE_REFE=2.5,

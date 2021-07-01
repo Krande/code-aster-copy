@@ -45,7 +45,7 @@ MAYA=LIRE_MAILLAGE(FORMAT='MED',);
 
 MAYA=DEFI_GROUP(reuse=MAYA,
                 MAILLAGE=MAYA,
-                CREA_GROUP_NO=_F(NOEUD='N994',
+                CREA_GROUP_NO=_F(GROUP_NO='N994',
                                  NOM='TOTO',),);
 
 MODEL=AFFE_MODELE(MAILLAGE=MAYA,
@@ -166,7 +166,7 @@ DYNATRAN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                                     ),
                                     );
 
-DYNATRAN=CALC_CHAMP(reuse=DYNATRAN,RESULTAT=DYNATRAN,MAILLE='M1145',LIST_INST=LISTRD,PRECISION=1.E-6,CRITERE='ABSOLU',
+DYNATRAN=CALC_CHAMP(reuse=DYNATRAN,RESULTAT=DYNATRAN,GROUP_MA='M1145',LIST_INST=LISTRD,PRECISION=1.E-6,CRITERE='ABSOLU',
    CONTRAINTE=('SIEF_ELGA','SIGM_ELNO'),
    DEFORMATION=('EPSI_ELNO','EPSI_ELGA'),
    ENERGIE=('EPOT_ELEM','ECIN_ELEM','ENEL_ELGA','ENEL_ELNO'))
@@ -180,7 +180,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='TOTALE',
                   VALE_CALC=7.0286174923062E-07,
                   CRITERE='RELATIF',
-                  MAILLE='M1145',),
+                  GROUP_MA='M1145',),
           )
 
 #######################################################
@@ -218,7 +218,7 @@ DYNHASS=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                              COEF_MULT=1.,),
                              );
 
-DYNHASS=CALC_CHAMP(reuse=DYNHASS,MAILLE='M1145',RESULTAT=DYNHASS,CRITERE='ABSOLU',PRECISION=1.E-3,
+DYNHASS=CALC_CHAMP(reuse=DYNHASS,GROUP_MA='M1145',RESULTAT=DYNHASS,CRITERE='ABSOLU',PRECISION=1.E-3,
    CONTRAINTE=('SIEF_ELGA','SIGM_ELNO'),
    DEFORMATION=('EPSI_ELNO','EPSI_ELGA'),
    ENERGIE=('EPOT_ELEM','ECIN_ELEM','ENEL_ELGA','ENEL_ELNO'))
@@ -264,7 +264,7 @@ if plus:
                        INTERPOL='LIN',
                                  );
 
-  DYNTPHY=CALC_CHAMP(reuse=DYNTPHY,RESULTAT=DYNTPHY,LIST_INST=LISTRD,PRECISION=1.E-6,CRITERE='ABSOLU',MAILLE='M1145',
+  DYNTPHY=CALC_CHAMP(reuse=DYNTPHY,RESULTAT=DYNTPHY,LIST_INST=LISTRD,PRECISION=1.E-6,CRITERE='ABSOLU',GROUP_MA='M1145',
    CONTRAINTE=('SIEF_ELGA','SIGM_ELNO'),
    DEFORMATION=('EPSI_ELNO','EPSI_ELGA'),
    ENERGIE=('EPOT_ELEM','ECIN_ELEM','ENEL_ELGA','ENEL_ELNO'))
@@ -276,7 +276,7 @@ DYNHPHY=REST_GENE_PHYS(RESU_GENE=DYNHGEN,
                        FREQ=freq,);
 
 
-DYNHPHY=CALC_CHAMP(reuse=DYNHPHY,MODELE=MODEL,CHAM_MATER=CHMAT,RESULTAT=DYNHPHY,MAILLE='M1145',CRITERE='ABSOLU',PRECISION=1.E-3,
+DYNHPHY=CALC_CHAMP(reuse=DYNHPHY,MODELE=MODEL,CHAM_MATER=CHMAT,RESULTAT=DYNHPHY,GROUP_MA='M1145',CRITERE='ABSOLU',PRECISION=1.E-3,
    CONTRAINTE=('SIEF_ELGA','SIGM_ELNO'),
    DEFORMATION=('EPSI_ELNO','EPSI_ELGA'),
    ENERGIE=('EPOT_ELEM','ECIN_ELEM','ENEL_ELGA','ENEL_ELNO'))
@@ -292,7 +292,7 @@ DYNHPHY=CALC_CHAMP(reuse=DYNHPHY,MODELE=MODEL,CHAM_MATER=CHMAT,RESULTAT=DYNHPHY,
 # resultats temporels
 DTX1=RECU_FONCTION (RESULTAT = DYNATRAN,
                     NOM_CMP = 'DX',
-                    NOEUD = 'N433',
+                    GROUP_NO = 'N433',
                     NOM_CHAM = 'DEPL',
                     TOUT_ORDRE = 'OUI',
                     );
@@ -300,7 +300,7 @@ DTX1=RECU_FONCTION (RESULTAT = DYNATRAN,
 if plus:
   DTX2=RECU_FONCTION (   RESULTAT = DYNTPHY,
                           NOM_CMP = 'DX',
-                          NOEUD = 'N433',
+                          GROUP_NO = 'N433',
                           NOM_CHAM = 'DEPL',
                           TOUT_ORDRE = 'OUI',
                           );
@@ -308,27 +308,27 @@ if plus:
 # resultats harmonique
 DHX1=RECU_FONCTION (   RESULTAT = DYNHASS,
                       NOM_CMP = 'DX',
-                      NOEUD = 'N433',
+                      GROUP_NO = 'N433',
                       NOM_CHAM = 'DEPL',
                       TOUT_ORDRE = 'OUI');
 
 DHX2=RECU_FONCTION (   RESULTAT = DYNHPHY,
                       NOM_CMP = 'DX',
-                      NOEUD = 'N433',
+                      GROUP_NO = 'N433',
                       NOM_CHAM = 'DEPL',
                       TOUT_ORDRE = 'OUI');
 
 # TEST DE RECU_FONCTION SUR UN HARM_GENE
 DGX2=RECU_FONCTION (   RESU_GENE = DYNHGEN,
                       NOM_CMP = 'DX',
-                      NOEUD = 'N433',
+                      GROUP_NO = 'N433',
                       NOM_CHAM = 'DEPL')
 
 # TEST DE POST_GENE_PHYS SUR UN HARM_GENE
 PGP_DGX2=POST_GENE_PHYS(RESU_GENE=DYNHGEN,
                        OBSERVATION=(_F(NOM_CHAM = 'DEPL',
                                        NOM_CMP='DX',
-                                       NOEUD = 'N433',
+                                       GROUP_NO = 'N433',
                                        FREQ=freq),),)
 
 FON_DGX2 = RECU_FONCTION(TABLE=PGP_DGX2,PARA_X='FREQ',PARA_Y='VALE_C',)
@@ -396,7 +396,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=8.96432120282e-07,
 
 SIT1=RECU_FONCTION (RESULTAT = DYNATRAN,
                     NOM_CMP = 'SIXX',
-                    MAILLE = 'M1145',
+                    GROUP_MA = 'M1145',
                     POINT=1,
                     NOM_CHAM = 'SIEF_ELGA',
                     TOUT_ORDRE = 'OUI',
@@ -404,7 +404,7 @@ SIT1=RECU_FONCTION (RESULTAT = DYNATRAN,
 
 SIH1=RECU_FONCTION (RESULTAT = DYNHASS,
                     NOM_CMP = 'SIXX',
-                    MAILLE = 'M1145',
+                    GROUP_MA = 'M1145',
                     POINT=1,
                     NOM_CHAM = 'SIEF_ELGA',
                     TOUT_ORDRE = 'OUI');
@@ -436,16 +436,16 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=4590176.44097,
 
 SET1=RECU_FONCTION (RESULTAT = DYNATRAN,
                     NOM_CMP = 'SIXX',
-                    MAILLE = 'M1145',
-                    NOEUD='N627',
+                    GROUP_MA = 'M1145',
+                    GROUP_NO='N627',
                     NOM_CHAM = 'SIGM_ELNO',
                     TOUT_ORDRE = 'OUI',
                     );
 
 SEH1=RECU_FONCTION (RESULTAT = DYNHASS,
                     NOM_CMP = 'SIXX',
-                    MAILLE = 'M1145',
-                    NOEUD='N627',
+                    GROUP_MA = 'M1145',
+                    GROUP_NO='N627',
                     NOM_CHAM = 'SIGM_ELNO',
                     TOUT_ORDRE = 'OUI');
 
@@ -476,16 +476,16 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=4715493.552,
 
 EPT1=RECU_FONCTION (RESULTAT = DYNATRAN,
                     NOM_CMP = 'EPXX',
-                    MAILLE = 'M1145',
-                    NOEUD='N627',
+                    GROUP_MA = 'M1145',
+                    GROUP_NO='N627',
                     NOM_CHAM = 'EPSI_ELNO',
                     TOUT_ORDRE = 'OUI',
                     );
 
 EPH1=RECU_FONCTION (RESULTAT = DYNHASS,
                     NOM_CMP = 'EPXX',
-                    MAILLE = 'M1145',
-                    NOEUD='N627',
+                    GROUP_MA = 'M1145',
+                    GROUP_NO='N627',
                     NOM_CHAM = 'EPSI_ELNO',
                     TOUT_ORDRE = 'OUI');
 
@@ -516,7 +516,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=2.31913955511e-05,
 
 EGT1=RECU_FONCTION (RESULTAT = DYNATRAN,
                     NOM_CMP = 'EPXX',
-                    MAILLE = 'M1145',
+                    GROUP_MA = 'M1145',
                     POINT=1,
                     NOM_CHAM = 'EPSI_ELGA',
                     TOUT_ORDRE = 'OUI',
@@ -524,7 +524,7 @@ EGT1=RECU_FONCTION (RESULTAT = DYNATRAN,
 
 EGH1=RECU_FONCTION (RESULTAT = DYNHASS,
                     NOM_CMP = 'EPXX',
-                    MAILLE = 'M1145',
+                    GROUP_MA = 'M1145',
                     POINT=1,
                     NOM_CHAM = 'EPSI_ELGA',
                     TOUT_ORDRE = 'OUI');

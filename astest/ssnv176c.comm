@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,11 +50,11 @@ r33 = 3**-0.5
 
 C_RIGIDE = AFFE_CHAR_MECA(
   MODELE = MO,
-  DDL_IMPO = _F(NOEUD = 'N0',DX = 0,DY = 0,DZ = 0),
+  DDL_IMPO = _F(GROUP_NO = 'N0',DX = 0,DY = 0,DZ = 0),
   LIAISON_DDL = (
-    _F(NOEUD=('N2','N1'),DDL=('DX','DY'),COEF_MULT=(1,-1),COEF_IMPO=0),
-    _F(NOEUD=('N3','N1'),DDL=('DX','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
-    _F(NOEUD=('N3','N2'),DDL=('DY','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
+    _F(GROUP_NO=('N2','N1'),DDL=('DX','DY'),COEF_MULT=(1,-1),COEF_IMPO=0),
+    _F(GROUP_NO=('N3','N1'),DDL=('DX','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
+    _F(GROUP_NO=('N3','N2'),DDL=('DY','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
     )
   );
 
@@ -65,7 +65,7 @@ U_COMP=DEFI_FONCTION(NOM_PARA='INST',
 
 
 CHR_C = AFFE_CHAR_MECA( MODELE = MO,
-                        DDL_IMPO = _F(NOEUD='N1', DX= 1.),
+                        DDL_IMPO = _F(GROUP_NO='N1', DX= 1.),
                        );
 
 BETON= DEFI_MATERIAU(
@@ -134,7 +134,7 @@ U=CALC_CHAMP(reuse=U,RESULTAT=U,DEFORMATION=('EPSI_ELGA'))
 TEST_RESU(RESU=(_F(NUME_ORDRE=51,
                    RESULTAT=U,
                    NOM_CHAM='DEPL',
-                   NOEUD='N1',
+                   GROUP_NO='N1',
                    NOM_CMP='DX',
                    VALE_CALC=1.4474363969804E-4,),
                 _F(NUME_ORDRE=51,
@@ -143,28 +143,28 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=51,
                    NOM_CHAM='EPSI_ELGA',
                    NOM_CMP='EPXX',
                    VALE_CALC=1.4474363969804E-4,
-                   MAILLE='VOLUME',),
+                   GROUP_MA='VOLUME',),
                 _F(NUME_ORDRE=51,
                    POINT=1,
                    RESULTAT=U,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIXX',
                    VALE_CALC=2.899453186116,
-                   MAILLE='VOLUME',),
+                   GROUP_MA='VOLUME',),
                 _F(NUME_ORDRE=51,
                    POINT=1,
                    RESULTAT=U,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V1',
                    VALE_CALC=0.20879325029112,
-                   MAILLE='VOLUME',),
+                   GROUP_MA='VOLUME',),
                 _F(NUME_ORDRE=51,
                    POINT=1,
                    RESULTAT=U,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V7',
                    VALE_CALC=2.3023544529471E-4,
-                   MAILLE='VOLUME',),
+                   GROUP_MA='VOLUME',),
                 ),
           )
 

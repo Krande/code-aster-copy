@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ nom='SECT1'
 
 TCARS=MACR_CARA_POUTRE(   GROUP_MA_BORD='LPOU',FORMAT='MED',
      # UNIQUEMENT POUR NE PAS AVOIR DE MATRICE SINGULIERE:
-                               NOEUD='N1',NOM=nom )
+                               GROUP_NO='N1',NOM=nom )
 
 
 IMPR_TABLE(TABLE=TCARS, UNITE=6, INFO=2)

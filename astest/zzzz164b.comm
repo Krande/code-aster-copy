@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -267,21 +267,21 @@ CH_POS=CREA_CHAMP(TITRE = 'POSITION DES NOEUDS MILIEU',
 
 POS_N17 = POST_RELEVE_T(ACTION=_F(INTITULE = 'POSITION',
                                  OPERATION = 'EXTRACTION',
-                                 NOEUD = 'N17',
+                                 GROUP_NO = 'N17',
                                  CHAM_GD = CH_POS,
                                  TOUT_CMP ='OUI'),
                                  INFO = 2,)
 
 POS_N24 = POST_RELEVE_T(ACTION=_F(INTITULE = 'POSITION',
                                  OPERATION = 'EXTRACTION',
-                                 NOEUD = 'N24',
+                                 GROUP_NO = 'N24',
                                  CHAM_GD = CH_POS,
                                  TOUT_CMP ='OUI'),
                                  INFO = 2,)
 
 POS_N12 = POST_RELEVE_T(ACTION=_F(INTITULE = 'POSITION',
                                  OPERATION = 'EXTRACTION',
-                                 NOEUD = 'N12',
+                                 GROUP_NO = 'N12',
                                  CHAM_GD = CH_POS,
                                  TOUT_CMP ='OUI'),
                                  INFO = 2,)

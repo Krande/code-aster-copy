@@ -139,17 +139,17 @@ M37P23=DEFI_FONCTION(
 CH1=AFFE_CHAR_MECA(
             MODELE=MO,
              DDL_IMPO=(
-           _F( NOEUD = 'NO4', DX = 0.,DY = 0.),
-                    _F( NOEUD = 'NO8', DX = 0.,DY = 0.,DZ = 0.),
-                    _F( NOEUD = 'NO2', DX = 0.),
-                    _F( NOEUD = 'NO6', DX = 0.))
+           _F( GROUP_NO = 'NO4', DX = 0.,DY = 0.),
+                    _F( GROUP_NO = 'NO8', DX = 0.,DY = 0.,DZ = 0.),
+                    _F( GROUP_NO = 'NO2', DX = 0.),
+                    _F( GROUP_NO = 'NO6', DX = 0.))
            )
 
 CH2=AFFE_CHAR_MECA_F(
             MODELE=MO,FORCE_NODALE=(
-           _F( NOEUD = ('NO1', 'NO5',), FX = M37P23,  FY = M23),
-                        _F( NOEUD = ('NO2', 'NO6',),  FY = P23),
-                        _F( NOEUD = ('NO3', 'NO7',),  FX = M37M23,  FY = M23)))
+           _F( GROUP_NO = ('NO1', 'NO5',), FX = M37P23,  FY = M23),
+                        _F( GROUP_NO = ('NO2', 'NO6',),  FY = P23),
+                        _F( GROUP_NO = ('NO3', 'NO7',),  FX = M37M23,  FY = M23)))
 
 
 U=STAT_NON_LINE(
@@ -225,38 +225,38 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U,
                    NOM_CHAM='EPSP_ELNO',
-                   NOEUD='NO2',
+                   GROUP_NO='NO2',
                    NOM_CMP='EPXX',
                    VALE_CALC=2.81403735316E-05,
                    VALE_REFE=2.8140000000000002E-05,
-                   MAILLE='MA2',),
+                   GROUP_MA='MA2',),
                 _F(NUME_ORDRE=10,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U,
                    NOM_CHAM='EPSP_ELNO',
-                   NOEUD='NO2',
+                   GROUP_NO='NO2',
                    NOM_CMP='EPXY',
                    VALE_CALC=2.59907616646E-05,
                    VALE_REFE=2.599E-05,
-                   MAILLE='MA2',),
+                   GROUP_MA='MA2',),
                 _F(NUME_ORDRE=20,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U,
                    NOM_CHAM='EPSP_ELNO',
-                   NOEUD='NO2',
+                   GROUP_NO='NO2',
                    NOM_CMP='EPXX',
                    VALE_CALC=0.000139873843971,
                    VALE_REFE=1.3990000000000001E-4,
-                   MAILLE='MA2',),
+                   GROUP_MA='MA2',),
                 _F(NUME_ORDRE=20,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U,
                    NOM_CHAM='EPSP_ELNO',
-                   NOEUD='NO2',
+                   GROUP_NO='NO2',
                    NOM_CMP='EPXY',
                    VALE_CALC=0.000129189036445,
                    VALE_REFE=1.293E-4,
-                   MAILLE='MA2',),
+                   GROUP_MA='MA2',),
                 ),
           )
 

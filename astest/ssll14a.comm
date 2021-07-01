@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,12 @@ MA=DEFI_GROUP(reuse=MA,MAILLAGE=MA,
                     CREA_GROUP_NO=(
                           _F(OPTION='NOEUD_ORDO',GROUP_MA='PORTI1',
                              NOM='PORTI1',
-                             NOEUD_ORIG='N11',
-                             NOEUD_EXTR='N1',),
+                             GROUP_NO_ORIG='N11',
+                             GROUP_NO_EXTR='N1',),
                           _F(OPTION='NOEUD_ORDO',GROUP_MA='PORTI3',
                              NOM='PORTI3',
-                             NOEUD_ORIG='N31',
-                             NOEUD_EXTR='N20',),
+                             GROUP_NO_ORIG='N31',
+                             GROUP_NO_EXTR='N20',),
                             ))
 I1=5.E-04
 
@@ -175,7 +175,7 @@ STATIQUE=CALC_CHAMP(reuse= STATIQUE,
 TEST_RESU(RESU=_F(REFERENCE='ANALYTIQUE',
                   RESULTAT=STATIQUE,
                   NOM_CHAM='REAC_NODA',
-                  NOEUD='N21',
+                  GROUP_NO='N21',
                   NOM_CMP='DY',
                   VALE_CALC=-3.3509877539473E-08,
                   VALE_REFE=0.0,
@@ -188,7 +188,7 @@ TAB_REAC=POST_RELEVE_T(
        ACTION=_F(  RESULTAT = STATIQUE,      INTITULE = 'REACTION',
          NOM_CHAM = 'REAC_NODA',   TOUT_ORDRE = 'OUI',
          REPERE = 'GLOBAL',  OPERATION = 'EXTRACTION',
-         NOEUD = ( 'N41', 'N1', ),  RESULTANTE = ( 'DX',  'DY',  'DZ', ),
+         GROUP_NO = ( 'N41', 'N1', ),  RESULTANTE = ( 'DX',  'DY',  'DZ', ),
          MOMENT = ( 'DRX',  'DRY',  'DRZ', ),  POINT = ( 10., 12., 0., ))
             )
 IMPR_TABLE ( TABLE = TAB_REAC)
@@ -570,7 +570,7 @@ NOM_CHAM='REAC_NODA', RESULTAT=STATIQUE,
 TR1=POST_RELEVE_T(
        ACTION=_F(  CHAM_GD = REAC5,     INTITULE = 'REA1',
          REPERE = 'GLOBAL',  OPERATION = 'EXTRACTION',
-         NOEUD = ( 'N41', 'N1', ),  RESULTANTE = ( 'DX',  'DY',  'DZ', ),
+         GROUP_NO = ( 'N41', 'N1', ),  RESULTANTE = ( 'DX',  'DY',  'DZ', ),
          MOMENT = ( 'DRX',  'DRY',  'DRZ', ),  POINT = ( 10., 12., 0., ))
             )
 
@@ -607,7 +607,7 @@ TEST_TABLE(VALE_CALC=-21554.944200697,
 TR2=POST_RELEVE_T(
        ACTION=_F(  CHAM_GD = REAC5,     INTITULE = 'REA2',
          REPERE = 'GLOBAL',  OPERATION = 'EXTRACTION',
-         NOEUD = ( 'N41', 'N1', ),  RESULTANTE = ( 'DX',  'DY',  'DZ', ),
+         GROUP_NO = ( 'N41', 'N1', ),  RESULTANTE = ( 'DX',  'DY',  'DZ', ),
          MOMENT = ( 'DRX',  'DRY',  'DRZ', ),  POINT = ( 10., 12., 0., ))
             )
 

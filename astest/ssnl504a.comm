@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -377,7 +377,7 @@ for i, ddl in enumerate('DRGX DRGY DRGZ'.split()):
   EF3_1[i+3]+=tmp3[ddl][1]
 
 # Tests
-TEST_RESU(RESU = [_F(NOEUD = 'N1',
+TEST_RESU(RESU = [_F(GROUP_NO = 'N1',
                      NOM_CMP = ncmp,
                      VALE_CALC = EF2_0[i],
                      VALE_REFE = EF1_0[i],
@@ -389,7 +389,7 @@ TEST_RESU(RESU = [_F(NOEUD = 'N1',
                      CRITERE = 'RELATIF',)
                   for i, ncmp in enumerate(NOMS_CMP)])
 
-TEST_RESU(RESU = [_F(NOEUD = 'N1',
+TEST_RESU(RESU = [_F(GROUP_NO = 'N1',
                      NOM_CMP = ncmp,
                      VALE_CALC = EF2_0[i],
                      VALE_REFE = EF3_0[i],
@@ -401,7 +401,7 @@ TEST_RESU(RESU = [_F(NOEUD = 'N1',
                      CRITERE = 'RELATIF',)
                   for i, ncmp in enumerate(NOMS_CMP)])
 
-TEST_RESU(RESU = [_F(NOEUD = 'N2',
+TEST_RESU(RESU = [_F(GROUP_NO = 'N2',
                      NOM_CMP = ncmp,
                      VALE_CALC = EF2_1[i],
                      VALE_REFE = EF1_1[i],
@@ -413,7 +413,7 @@ TEST_RESU(RESU = [_F(NOEUD = 'N2',
                      CRITERE = 'RELATIF',)
                   for i, ncmp in enumerate(NOMS_CMP)])
 
-TEST_RESU(RESU = [_F(NOEUD = 'N2',
+TEST_RESU(RESU = [_F(GROUP_NO = 'N2',
                      NOM_CMP = ncmp,
                      VALE_CALC = EF2_1[i],
                      VALE_REFE = EF3_1[i],

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,12 +30,12 @@ MO=AFFE_MODELE(
 
                 AFFE= (
                 _F(
-                        MAILLE = ('PRISM','DROITE'),
+                        GROUP_MA = ('PRISM','DROITE'),
                         PHENOMENE = 'MECANIQUE',
                         MODELISATION = '3D'
                      ),
                  _F(
-                   MAILLE = 'PRISMDEG',
+                   GROUP_MA = 'PRISMDEG',
                    PHENOMENE = 'MECANIQUE',
                    MODELISATION = '3D_JOINT'
                    )
@@ -67,7 +67,7 @@ CM=AFFE_MATERIAU(
 LIAISON=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-    _F(MAILLE='GAUCHE2', DX=0, DY=0, DZ=0 ),
+    _F(GROUP_MA='GAUCHE2', DX=0, DY=0, DZ=0 ),
     )
   )
 
@@ -75,15 +75,15 @@ LIAISON=AFFE_CHAR_MECA(
 TRAC_1=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-    _F(MAILLE='DROITE', DX=2.16506350946110, DY= 1.250, DZ=0 ),
+    _F(GROUP_MA='DROITE', DX=2.16506350946110, DY= 1.250, DZ=0 ),
     ))
 
 # CHARGEMENT MODE II PUR
 TRAC_2=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-     _F(MAILLE='GAUCHE',  DX=-1.250, DY= 2.16506350946110, DZ=0 ),
-     _F(MAILLE='DROITE',  DX=-1.250, DY= 2.16506350946110, DZ=0 ),
+     _F(GROUP_MA='GAUCHE',  DX=-1.250, DY= 2.16506350946110, DZ=0 ),
+     _F(GROUP_MA='DROITE',  DX=-1.250, DY= 2.16506350946110, DZ=0 ),
     )
   )
 
@@ -91,8 +91,8 @@ TRAC_2=AFFE_CHAR_MECA(
 TRAC_3=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-     _F(MAILLE='GAUCHE', DX=0.0, DY= 0.0, DZ= 2.5 ),
-     _F(MAILLE='DROITE', DX=0.0, DY= 0.0, DZ= 2.5 ),
+     _F(GROUP_MA='GAUCHE', DX=0.0, DY= 0.0, DZ= 2.5 ),
+     _F(GROUP_MA='DROITE', DX=0.0, DY= 0.0, DZ= 2.5 ),
     ))
 
 
@@ -142,9 +142,9 @@ U_1=STAT_NON_LINE(
   ),
   COMPORTEMENT  = (
           _F(RELATION = 'CZM_EXP_REG',
-             MAILLE = 'PRISMDEG', ),
+             GROUP_MA = 'PRISMDEG', ),
           _F(RELATION = 'ELAS',
-             MAILLE = 'PRISM',),
+             GROUP_MA = 'PRISM',),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_FIN = 0.),
   CONVERGENCE= _F(ITER_GLOB_MAXI = 5),
@@ -165,14 +165,14 @@ STAT_NON_LINE(reuse = U_1,
   PILOTAGE   = _F(
     SELECTION = 'RESIDU',
     TYPE = 'PRED_ELAS',
-    MAILLE = 'PRISMDEG',
+    GROUP_MA = 'PRISMDEG',
     COEF_MULT = 1,
     ETA_PILO_R_MIN = 0.,
     ETA_PILO_MAX = 1
     ),
   COMPORTEMENT  = (
           _F(RELATION = 'CZM_EXP_REG',
-             MAILLE = 'PRISMDEG', ),
+             GROUP_MA = 'PRISMDEG', ),
           _F(RELATION = 'ELAS',
              GROUP_MA = 'G_PRISM',),
           ),
@@ -198,9 +198,9 @@ U_2=STAT_NON_LINE(
   ),
   COMPORTEMENT  = (
           _F(RELATION = 'CZM_EXP_REG',
-             MAILLE = 'PRISMDEG', ),
+             GROUP_MA = 'PRISMDEG', ),
           _F(RELATION = 'ELAS',
-             MAILLE = 'PRISM',),
+             GROUP_MA = 'PRISM',),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_FIN = 0.),
   CONVERGENCE= _F(ITER_GLOB_MAXI = 5),
@@ -218,14 +218,14 @@ STAT_NON_LINE(reuse = U_2,
   PILOTAGE   = _F(
     SELECTION = 'RESIDU',
     TYPE = 'PRED_ELAS',
-    MAILLE = 'PRISMDEG',
+    GROUP_MA = 'PRISMDEG',
     COEF_MULT = 1,
     ETA_PILO_R_MIN = 0.,
     ETA_PILO_MAX = 1
     ),
   COMPORTEMENT  = (
           _F(RELATION = 'CZM_EXP_REG',
-             MAILLE = 'PRISMDEG', ),
+             GROUP_MA = 'PRISMDEG', ),
           _F(RELATION = 'ELAS',
              GROUP_MA = 'G_PRISM',),
           ),
@@ -249,9 +249,9 @@ U_3=STAT_NON_LINE(
   ),
   COMPORTEMENT  = (
           _F(RELATION = 'CZM_EXP_REG',
-             MAILLE = 'PRISMDEG', ),
+             GROUP_MA = 'PRISMDEG', ),
           _F(RELATION = 'ELAS',
-             MAILLE = 'PRISM',),
+             GROUP_MA = 'PRISM',),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_FIN = 0.),
   CONVERGENCE= _F(ITER_GLOB_MAXI = 5),
@@ -269,14 +269,14 @@ STAT_NON_LINE(reuse = U_3,
   PILOTAGE   = _F(
     SELECTION = 'RESIDU',
     TYPE = 'PRED_ELAS',
-    MAILLE = 'PRISMDEG',
+    GROUP_MA = 'PRISMDEG',
     COEF_MULT = 1,
     ETA_PILO_R_MIN = 0.,
     ETA_PILO_MAX = 1
     ),
   COMPORTEMENT  = (
           _F(RELATION = 'CZM_EXP_REG',
-             MAILLE = 'PRISMDEG', ),
+             GROUP_MA = 'PRISMDEG', ),
           _F(RELATION = 'ELAS',
              GROUP_MA = 'G_PRISM',),
           ),
@@ -306,21 +306,21 @@ IMPR_TABLE(TABLE=T_ETA_1)
 
 F_SIGN_1=RECU_FONCTION( RESULTAT=U_1, NOM_CHAM = 'SIEF_ELGA',
           NOM_CMP = 'SIGN',
-          MAILLE  = 'PRISMDEG',POINT=1)
+          GROUP_MA  = 'PRISMDEG',POINT=1)
 T_SIGN_1=CREA_TABLE(FONCTION=_F(FONCTION=F_SIGN_1))
 IMPR_TABLE(TABLE=T_SIGN_1)
 
 
 F_SITX_1=RECU_FONCTION( RESULTAT=U_1, NOM_CHAM = 'SIEF_ELGA',
           NOM_CMP = 'SITX',
-          MAILLE  = 'PRISMDEG',POINT=1)
+          GROUP_MA  = 'PRISMDEG',POINT=1)
 T_SITX_1=CREA_TABLE(FONCTION=_F(FONCTION=F_SITX_1))
 IMPR_TABLE(TABLE=T_SITX_1)
 
 
 F_SITY_1=RECU_FONCTION( RESULTAT=U_1, NOM_CHAM = 'SIEF_ELGA',
           NOM_CMP = 'SITY',
-          MAILLE  = 'PRISMDEG',POINT=1)
+          GROUP_MA  = 'PRISMDEG',POINT=1)
 T_SITY_1=CREA_TABLE(FONCTION=_F(FONCTION=F_SITY_1))
 IMPR_TABLE(TABLE=T_SITY_1)
 
@@ -365,7 +365,7 @@ TEST_RESU(RESU=_F(INST=2.2000449999999998,
                   NOM_CMP='SIXX',
                   VALE_CALC=0.044991140,
                   VALE_REFE=0.044991099999999999,
-                  MAILLE='PRISM',),
+                  GROUP_MA='PRISM',),
           )
 
 TEST_RESU(RESU=_F(INST=1.7000575,
@@ -376,7 +376,7 @@ TEST_RESU(RESU=_F(INST=1.7000575,
                   NOM_CMP='SIGN',
                   VALE_CALC=0.156379309,
                   VALE_REFE=0.15637899999999999,
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=1.800055,
@@ -388,7 +388,7 @@ TEST_RESU(RESU=_F(INST=1.800055,
                   VALE_CALC=-6.86489752E-18,
                   VALE_REFE=0.0,
                   CRITERE='ABSOLU',
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=1.800055,
@@ -400,7 +400,7 @@ TEST_RESU(RESU=_F(INST=1.800055,
                   VALE_CALC=-8.35892126E-18,
                   VALE_REFE=0.0,
                   CRITERE='ABSOLU',
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 #----------------------------------------------------------------------------------
@@ -421,21 +421,21 @@ IMPR_TABLE(TABLE=T_ETA_2)
 
 F_SIGN_2=RECU_FONCTION( RESULTAT=U_2, NOM_CHAM = 'SIEF_ELGA',
           NOM_CMP = 'SIGN',
-          MAILLE  = 'PRISMDEG',POINT=1)
+          GROUP_MA  = 'PRISMDEG',POINT=1)
 T_SIGN_2=CREA_TABLE(FONCTION=_F(FONCTION=F_SIGN_2))
 IMPR_TABLE(TABLE=T_SIGN_2)
 
 
 F_SITX_2=RECU_FONCTION( RESULTAT=U_2, NOM_CHAM = 'SIEF_ELGA',
           NOM_CMP = 'SITX',
-          MAILLE  = 'PRISMDEG',POINT=1)
+          GROUP_MA  = 'PRISMDEG',POINT=1)
 T_SITX_2=CREA_TABLE(FONCTION=_F(FONCTION=F_SITX_2))
 IMPR_TABLE(TABLE=T_SITX_2)
 
 
 F_SITY_2=RECU_FONCTION( RESULTAT=U_2, NOM_CHAM = 'SIEF_ELGA',
           NOM_CMP = 'SITY',
-          MAILLE  = 'PRISMDEG',POINT=1)
+          GROUP_MA  = 'PRISMDEG',POINT=1)
 T_SITY_2=CREA_TABLE(FONCTION=_F(FONCTION=F_SITY_2))
 IMPR_TABLE(TABLE=T_SITY_2)
 
@@ -449,7 +449,7 @@ TEST_RESU(RESU=_F(INST=1.800055,
                   VALE_CALC=-3.02888075E-13,
                   VALE_REFE=0.0,
                   CRITERE='ABSOLU',
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=1.7000575,
@@ -460,7 +460,7 @@ TEST_RESU(RESU=_F(INST=1.7000575,
                   NOM_CMP='SITX',
                   VALE_CALC=0.156379309,
                   VALE_REFE=0.15637899999999999,
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=1.800055,
@@ -472,7 +472,7 @@ TEST_RESU(RESU=_F(INST=1.800055,
                   VALE_CALC=-3.58546562E-20,
                   VALE_REFE=0.0,
                   CRITERE='ABSOLU',
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 #----------------------------------------------------------------------------------
@@ -493,21 +493,21 @@ IMPR_TABLE(TABLE=T_ETA_3)
 
 F_SIGN_3=RECU_FONCTION( RESULTAT=U_3, NOM_CHAM = 'SIEF_ELGA',
           NOM_CMP = 'SIGN',
-          MAILLE  = 'PRISMDEG',POINT=1)
+          GROUP_MA  = 'PRISMDEG',POINT=1)
 T_SIGN_3=CREA_TABLE(FONCTION=_F(FONCTION=F_SIGN_3))
 IMPR_TABLE(TABLE=T_SIGN_3)
 
 
 F_SITX_3=RECU_FONCTION( RESULTAT=U_3, NOM_CHAM = 'SIEF_ELGA',
           NOM_CMP = 'SITX',
-          MAILLE  = 'PRISMDEG',POINT=1)
+          GROUP_MA  = 'PRISMDEG',POINT=1)
 T_SITX_3=CREA_TABLE(FONCTION=_F(FONCTION=F_SITX_3))
 IMPR_TABLE(TABLE=T_SITX_3)
 
 
 F_SITY_3=RECU_FONCTION( RESULTAT=U_3, NOM_CHAM = 'SIEF_ELGA',
           NOM_CMP = 'SITY',
-          MAILLE  = 'PRISMDEG',POINT=1)
+          GROUP_MA  = 'PRISMDEG',POINT=1)
 T_SITY_3=CREA_TABLE(FONCTION=_F(FONCTION=F_SITY_3))
 IMPR_TABLE(TABLE=T_SITY_3)
 
@@ -521,7 +521,7 @@ TEST_RESU(RESU=_F(INST=1.1000725,
                   VALE_CALC= 1.84092049E-21,
                   VALE_REFE=0.0,
                   CRITERE='ABSOLU',
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=1.1000725,
@@ -533,7 +533,7 @@ TEST_RESU(RESU=_F(INST=1.1000725,
                   VALE_CALC=-4.27151562E-20,
                   VALE_REFE=0.0,
                   CRITERE='ABSOLU',
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=1.7000575,
@@ -544,7 +544,7 @@ TEST_RESU(RESU=_F(INST=1.7000575,
                   NOM_CMP='SITY',
                   VALE_CALC=0.156379309,
                   VALE_REFE=0.15637899999999999,
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_1,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),

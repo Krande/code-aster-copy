@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -679,7 +679,7 @@ MA0=LIRE_MAILLAGE(FORMAT="ASTER",  )
 
 MA=CREA_MAILLAGE(MAILLAGE=MA0,
     CREA_POI1=(
-        _F(NOM_GROUP_MA='P2',   NOEUD='P2', ),
+        _F(NOM_GROUP_MA='P2',   GROUP_NO='P2', ),
     ),
 )
 
@@ -715,7 +715,7 @@ CHARGE=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
                             _F( TOUT = 'OUI',
                                       DZ = 0.0,
                                       DY = 0.0),
-                            _F( NOEUD = ('P1',),
+                            _F( GROUP_NO = ('P1',),
                                       DX = 0.0))
                         )
 
@@ -729,7 +729,7 @@ CARELE02=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
                               _F( GROUP_MA = ('P2',),
                                        CARA = 'K_T_D_N',
                                        VALE = (0.,0.,0.,)),
-                              _F( MAILLE = ('M1',),
+                              _F( GROUP_MA = ('M1',),
                                        CARA = 'K_T_D_L',
                                        VALE = (1.E15, 0., 0.,)))
                           )
@@ -744,7 +744,7 @@ CARELE1=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
                              _F( GROUP_MA = ('P2',),
                                       CARA = 'K_T_D_N',
                                       VALE = (0.,0.,0.,)),
-                             _F( MAILLE = ('M1',),
+                             _F( GROUP_MA = ('M1',),
                                       CARA = 'K_T_D_L',
                                       VALE = (1.E15, 0., 0.,)))
                          )
@@ -759,7 +759,7 @@ CARELE5=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
                              _F( GROUP_MA = ('P2',),
                                       CARA = 'K_T_D_N',
                                       VALE = (0.,0.,0.,)),
-                             _F( MAILLE = ('M1',),
+                             _F( GROUP_MA = ('M1',),
                                       CARA = 'K_T_D_L',
                                       VALE = (1.E15, 0., 0.,)))
                          )
@@ -774,7 +774,7 @@ CARELE10=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
                              _F( GROUP_MA = ('P2',),
                                       CARA = 'K_T_D_N',
                                       VALE = (0.,0.,0.,)),
-                              _F( MAILLE = ('M1',),
+                              _F( GROUP_MA = ('M1',),
                                        CARA = 'K_T_D_L',
                                        VALE = (1.E15, 0., 0.,)))
                           )
@@ -789,7 +789,7 @@ CARELE15=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
                              _F( GROUP_MA = ('P2',),
                                       CARA = 'K_T_D_N',
                                       VALE = (0.,0.,0.,)),
-                              _F( MAILLE = ('M1',),
+                              _F( GROUP_MA = ('M1',),
                                        CARA = 'K_T_D_L',
                                        VALE = (1.E15, 0., 0.,)))
                           )
@@ -804,7 +804,7 @@ CARELE20=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
                              _F( GROUP_MA = ('P2',),
                                       CARA = 'K_T_D_N',
                                       VALE = (0.,0.,0.,)),
-                              _F( MAILLE = ('M1',),
+                              _F( GROUP_MA = ('M1',),
                                        CARA = 'K_T_D_L',
                                        VALE = (1.E15, 0., 0.,)))
                           )
@@ -819,7 +819,7 @@ CARELE25=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
                              _F( GROUP_MA = ('P2',),
                                       CARA = 'K_T_D_N',
                                       VALE = (0.,0.,0.,)),
-                              _F( MAILLE = ('M1',),
+                              _F( GROUP_MA = ('M1',),
                                        CARA = 'K_T_D_L',
                                        VALE = (1.E15, 0., 0.,)))
                           )
@@ -834,7 +834,7 @@ CARELE29=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
                              _F( GROUP_MA = ('P2',),
                                       CARA = 'K_T_D_N',
                                       VALE = (0.,0.,0.,)),
-                              _F( MAILLE = ('M1',),
+                              _F( GROUP_MA = ('M1',),
                                        CARA = 'K_T_D_L',
                                        VALE = (1.E15, 0., 0.,)))
                           )
@@ -849,7 +849,7 @@ CARELE35=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
                              _F( GROUP_MA = ('P2',),
                                       CARA = 'K_T_D_N',
                                       VALE = (0.,0.,0.,)),
-                              _F( MAILLE = ('M1',),
+                              _F( GROUP_MA = ('M1',),
                                        CARA = 'K_T_D_L',
                                        VALE = (1.E15, 0., 0.,)))
                           )
@@ -1355,7 +1355,7 @@ NOM_CHAM='DEPL', RESULTAT=SISM02,
                      )
 
 #
-TEST_RESU(CHAM_NO=_F(NOEUD='P2',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='P2',
                      NOM_CMP='DX',
                      CHAM_GD=DEPLX02,
                      VALE_CALC=0.0842807740134,),
@@ -1385,7 +1385,7 @@ NOM_CHAM='DEPL', RESULTAT=SISM1,
                      )
 
 #
-TEST_RESU(CHAM_NO=_F(NOEUD='P2',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='P2',
                      NOM_CMP='DX',
                      CHAM_GD=DEPLX1,
                      VALE_CALC=0.0447638480023,),
@@ -1415,7 +1415,7 @@ NOM_CHAM='DEPL', RESULTAT=SISM5,
                      )
 
 #
-TEST_RESU(CHAM_NO=_F(NOEUD='P2',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='P2',
                      NOM_CMP='DX',
                      CHAM_GD=DEPLX5,
                      VALE_CALC=0.00183322183302,),
@@ -1445,7 +1445,7 @@ NOM_CHAM='DEPL', RESULTAT=SISM10,
                       )
 
 #
-TEST_RESU(CHAM_NO=_F(NOEUD='P2',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='P2',
                      NOM_CMP='DX',
                      CHAM_GD=DEPLX10,
                      VALE_CALC=0.000274285747923,),
@@ -1475,7 +1475,7 @@ NOM_CHAM='DEPL', RESULTAT=SISM15,
                       )
 
 #
-TEST_RESU(CHAM_NO=_F(NOEUD='P2',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='P2',
                      NOM_CMP='DX',
                      CHAM_GD=DEPLX15,
                      VALE_CALC=8.60969479687E-05,),
@@ -1505,7 +1505,7 @@ NOM_CHAM='DEPL', RESULTAT=SISM20,
                       )
 
 #
-TEST_RESU(CHAM_NO=_F(NOEUD='P2',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='P2',
                      NOM_CMP='DX',
                      CHAM_GD=DEPLX20,
                      VALE_CALC=4.31112271697E-05,),
@@ -1535,7 +1535,7 @@ NOM_CHAM='DEPL', RESULTAT=SISM25,
                       )
 
 #
-TEST_RESU(CHAM_NO=_F(NOEUD='P2',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='P2',
                      NOM_CMP='DX',
                      CHAM_GD=DEPLX25,
                      VALE_CALC=2.68693573384E-05,),
@@ -1565,7 +1565,7 @@ NOM_CHAM='DEPL', RESULTAT=SISM29,
                       )
 
 #
-TEST_RESU(CHAM_NO=_F(NOEUD='P2',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='P2',
                      NOM_CMP='DX',
                      CHAM_GD=DEPLX29,
                      VALE_CALC=1.93413192556E-05,),
@@ -1596,7 +1596,7 @@ NOM_CHAM='DEPL', RESULTAT=SISM35,
                       )
 
 #
-TEST_RESU(CHAM_NO=_F(NOEUD='P2',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='P2',
                      NOM_CMP='DX',
                      CHAM_GD=DEPLX35,
                      VALE_CALC=1.33494981286E-05,),

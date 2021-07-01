@@ -1,5 +1,5 @@
  TITRE
- %  GIBI FECIT
+ %  GIBI FECIT                                                                  
  FINSF
  %
  COOR_3D
@@ -15,79 +15,93 @@
  FINSF
  %
  TRIA3   
-  M1       N2       N6       N9      
-  M2       N2       N9       N5      
-  M3       N6       N4       N9      
-  M4       N4       N7       N9      
-  M5       N5       N9       N8      
-  M6       N5       N8       N1      
-  M7       N9       N7       N8      
-  M8       N7       N3       N8      
+ M1       N2       N6       N9      
+ M2       N2       N9       N5      
+ M3       N6       N4       N9      
+ M4       N4       N7       N9      
+ M5       N5       N9       N8      
+ M6       N5       N8       N1      
+ M7       N9       N7       N8      
+ M8       N7       N3       N8      
  FINSF
  %
  SEG2    
-  M9       N2       N6      
-  M10      N6       N4      
-  M11      N4       N7      
-  M12      N7       N3      
-  M13      N3       N8      
-  M14      N8       N1      
-  M15      N1       N5      
-  M16      N5       N2      
+ M9       N2       N6      
+ M10      N6       N4      
+ M11      N4       N7      
+ M12      N7       N3      
+ M13      N3       N8      
+ M14      N8       N1      
+ M15      N1       N5      
+ M16      N5       N2      
  FINSF
  %
  GROUP_NO
- A1       N1      
+ A1                      
+ N1      
  FINSF
  %
  GROUP_NO
- A2       N2      
+ A2                      
+ N2      
  FINSF
  %
  GROUP_NO
- A3       N3      
+ A3                      
+ N3      
  FINSF
  %
  GROUP_NO
- A4       N4      
+ A4                      
+ N4      
  FINSF
  %
  GROUP_NO
- A6       N6      
+ A6                      
+ N6      
+ FINSF
+ %
+ GROUP_NO
+ N7                      
+ N7      
  FINSF
  %
  GROUP_MA
-   MESH    
+ MESH                    
+ M1       M2       M3       M4       M5       M6       M7      
+ M8       M9       M10      M11      M12      M13      M14     
+ M15      M16     
+ FINSF
+ %
+ GROUP_MA
+ DALLE                   
  M1       M2       M3       M4       M5       M6       M7      
  M8      
- M9       M10      M11      M12      M13      M14      M15     
- M16     
  FINSF
  %
  GROUP_MA
-   DALLE   
- M1       M2       M3       M4       M5       M6       M7      
- M8      
- FINSF
- %
- GROUP_MA
-   A2A4    
+ A2A4                    
  M9       M10     
  FINSF
  %
  GROUP_MA
-   A4A3    
+ A4A3                    
  M11      M12     
  FINSF
  %
  GROUP_MA
-   A3A1    
+ A3A1                    
  M13      M14     
  FINSF
  %
  GROUP_MA
-   A1A2    
+ A1A2                    
  M15      M16     
+ FINSF
+ %
+ GROUP_MA
+ M8                      
+ M8      
  FINSF
  %
  FIN

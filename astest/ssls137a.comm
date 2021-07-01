@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ CAB_BP1=DEFI_CABLE_BP(MODELE=MODELE,
                       RECUL_ANCRAGE=0.00,);
 
 
-DEFI_GROUP(reuse = MAIL, MAILLAGE = MAIL, 
+DEFI_GROUP(reuse = MAIL, MAILLAGE = MAIL,
            CREA_GROUP_NO = _F(OPTION = 'RELA_CINE_BP', CABLE_BP = CAB_BP1)
           )
 
@@ -89,7 +89,7 @@ TEST_RESU(MAILLAGE=(
        _F( REFERENCE='ANALYTIQUE', MAILLAGE=MAIL,
            CARA='NB_NOEUD', VALE_REFE_I=7172, VALE_CALC_I=7172,),
        _F( REFERENCE='ANALYTIQUE', MAILLAGE=MAIL,
-           CARA='NB_GROUP_MA', VALE_REFE_I=3, VALE_CALC_I=3,),
+           CARA='NB_GROUP_MA', VALE_REFE_I=6, VALE_CALC_I=6,),
        _F( REFERENCE='ANALYTIQUE', MAILLAGE=MAIL,
            CARA='NB_GROUP_NO', VALE_REFE_I=106, VALE_CALC_I=106,),
        _F( REFERENCE='ANALYTIQUE', MAILLAGE=MAIL,
@@ -196,7 +196,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   VALE_REFE=3.75000E5,
                   CRITERE='RELATIF',
                   PRECISION=1.E-08,
-                  MAILLE='M564',),
+                  GROUP_MA='M564',),
           )
 
 TEST_RESU(RESU=_F(INST=1.0,
@@ -209,7 +209,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   VALE_REFE=3.75000E5,
                   CRITERE='RELATIF',
                   PRECISION=1.E-08,
-                  MAILLE='M562',),
+                  GROUP_MA='M562',),
           )
 
 TEST_RESU(RESU=_F(INST=1.0,
@@ -222,7 +222,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   VALE_REFE=3.75000E5,
                   CRITERE='RELATIF',
                   PRECISION=1.E-08,
-                  MAILLE='M547',),
+                  GROUP_MA='M547',),
           )
 
 #  Plaque - inst 2s

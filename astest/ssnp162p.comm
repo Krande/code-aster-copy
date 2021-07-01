@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -79,12 +79,12 @@ MO=AFFE_MODELE(
 
                 AFFE= (
                 _F(
-                   MAILLE = 'CUBE',
+                   GROUP_MA = 'CUBE',
                    PHENOMENE = 'MECANIQUE',
                    MODELISATION = 'D_PLAN'
                      ),
                  _F(
-                   MAILLE = 'CUBEDEG',
+                   GROUP_MA = 'CUBEDEG',
                    PHENOMENE = 'MECANIQUE',
                    MODELISATION = 'PLAN_JOINT'
                    )
@@ -111,15 +111,15 @@ MAT_JF=DEFI_MATERIAU(
 
 CM_F=AFFE_MATERIAU(MAILLAGE=MA,
                  AFFE=(
-                      _F(MAILLE='CUBE',MATER = MAT_CUB),
-                      _F(MAILLE='CUBEDEG',  MATER = MAT_JF))
+                      _F(GROUP_MA='CUBE',MATER = MAT_CUB),
+                      _F(GROUP_MA='CUBEDEG',  MATER = MAT_JF))
                  );
 
 # ENCASTREMENT D'UNE DES LEVRES DU JOINT
 LIAISON=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-    _F(MAILLE='GAUCHE2', DX=0, DY=0),
+    _F(GROUP_MA='GAUCHE2', DX=0, DY=0),
     )
   )
 
@@ -138,7 +138,7 @@ L_INST=DEFI_LIST_REEL(VALE=list(range(insfin+1)))
 TRAC_1=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-    _F(MAILLE='DROITE', DX=cos(angle), DY= sin(angle)),
+    _F(GROUP_MA='DROITE', DX=cos(angle), DY= sin(angle)),
     )
   )
 
@@ -164,9 +164,9 @@ U_F=STAT_NON_LINE(
   ),
   COMPORTEMENT  = (
           _F(RELATION = 'JOINT_MECA_FROT',
-             MAILLE = 'CUBEDEG', ),
+             GROUP_MA = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
-             MAILLE = 'CUBE',),
+             GROUP_MA = 'CUBE',),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
   CONVERGENCE= _F(ITER_GLOB_MAXI = 20,
@@ -214,7 +214,7 @@ TDELTA_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               RESULTAT=U_F,
                               NOM_CHAM='DEPL',
                               TOUT_ORDRE='OUI',
-                              NOEUD='NO2',
+                              GROUP_NO='NO2',
                               NOM_CMP=('DX','DY',),),);
 
 # INSERTION D'UNE COLONNE AVEC LA PROJECTION NORMALE DE DEPLACEMENT
@@ -355,9 +355,9 @@ U_2=STAT_NON_LINE(
   ),
   COMPORTEMENT  = (
           _F(RELATION = 'JOINT_MECA_FROT',
-             MAILLE = 'CUBEDEG', ),
+             GROUP_MA = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
-             MAILLE = 'CUBE',),
+             GROUP_MA = 'CUBE',),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
   CONVERGENCE= _F(ITER_GLOB_MAXI = 20,
@@ -388,7 +388,7 @@ U_2=CALC_CHAMP(reuse =U_2,
 F_SITX_2=RECU_FONCTION(RESULTAT=U_2,
                        NOM_CHAM='SIEF_ELGA',
                        NOM_CMP='SITX',
-                       MAILLE='CUBEDEG',
+                       GROUP_MA='CUBEDEG',
                        POINT=2,);
 
 TFORCET=CREA_TABLE(FONCTION=_F(FONCTION=F_SITX_2,),);
@@ -399,7 +399,7 @@ TDEPLT=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               RESULTAT=U_2,
                               NOM_CHAM='DEPL',
                               TOUT_ORDRE='OUI',
-                              NOEUD='NO2',
+                              GROUP_NO='NO2',
                               NOM_CMP=('DX','DY',),),);
 
 # OUVERTURE TANGENTIEL du JOINT

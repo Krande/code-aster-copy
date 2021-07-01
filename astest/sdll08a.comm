@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,12 +63,12 @@ CH=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
 
                           # LIAISON ROTULEE
               # NOEUDS B<==>H
-   _F( NOEUD = ('N6', 'N41',),DDL = ('DZ','DZ',),COEF_MULT = (1.,-1.,),COEF_IMPO = 0.),
+   _F( GROUP_NO = ('N6', 'N41',),DDL = ('DZ','DZ',),COEF_MULT = (1.,-1.,),COEF_IMPO = 0.),
                           # NOEUDS E<==>I
-   _F( NOEUD = ('N26','N51',),DDL = ('DZ','DZ',),COEF_MULT = (1.,-1.,),COEF_IMPO = 0.)),
+   _F( GROUP_NO = ('N26','N51',),DDL = ('DZ','DZ',),COEF_MULT = (1.,-1.,),COEF_IMPO = 0.)),
 
                           # FORCE EN G
-      FORCE_NODALE=_F(  NOEUD = 'N46',    FZ = -1.E5)   )
+      FORCE_NODALE=_F(  GROUP_NO = 'N46',    FZ = -1.E5)   )
 
 # ------------------------------------------------------------------
 
@@ -141,7 +141,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PRECISION=5.0000000000000001E-3,),
                 ),)
 
-TEST_RESU(CHAM_NO=(_F(NOEUD='N6',
+TEST_RESU(CHAM_NO=(_F(GROUP_NO='N6',
                       CRITERE='RELATIF',
                       NOM_CMP='DZ',
                       PRECISION=0.029999999999999999,
@@ -149,7 +149,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N6',
                       VALE_CALC=-0.100377195,
                       VALE_REFE=-0.098000000000000004,
                       REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='N26',
+                   _F(GROUP_NO='N26',
                       CRITERE='RELATIF',
                       NOM_CMP='DZ',
                       PRECISION=0.029999999999999999,
@@ -157,7 +157,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N6',
                       VALE_CALC=-0.100377195,
                       VALE_REFE=-0.098000000000000004,
                       REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='N46',
+                   _F(GROUP_NO='N46',
                       CRITERE='RELATIF',
                       NOM_CMP='DZ',
                       PRECISION=0.029999999999999999,

@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist ci verification sequential
 
 F comm ssnp303c.comm D 1
-F mail ssnp303c.mail D 20
+F mail ssnp303a.mail D 20

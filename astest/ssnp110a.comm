@@ -99,7 +99,7 @@ TEST_TABLE(CRITERE='RELATIF',
 FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
                         FOND_FISS=_F( GROUP_NO = ('P0',)),
                         SYME='OUI',
-                        LEVRE_SUP=_F(MAILLE='M458'),
+                        LEVRE_SUP=_F(GROUP_MA='M458'),
                       )
 
 # TEST CALC_G  AVEC 3 COURONNES

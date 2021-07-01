@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -183,6 +183,14 @@ SQUEL=DEFI_SQUELETTE(MODELE_GENE=MODGEN,
                                  _F(NOM='BR_MY',
                                     GROUP_MA='bras',),),);
 
+SQUEL = DEFI_GROUP( reuse = SQUEL, MAILLAGE = SQUEL,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'NO244', NOEUD = 'NO244'),
+                                        _F( NOM = 'NO56', NOEUD = 'NO56'),
+                                        _F( NOM = 'NO141', NOEUD = 'NO141'),
+                                     ),
+         )
+
 
 ksi1=0.15
 om1=2*pi*10.
@@ -214,7 +222,7 @@ MOGEST=REST_SOUS_STRUC(RESU_GENE=MOGS,
 TAB_RE1=POST_RELEVE_T(ACTION=_F(
                   INTITULE='PARTIE_RE',
                   OPERATION='EXTRACTION',
-                  NOEUD=('NO56'),
+                  GROUP_NO=('NO56'),
                   FORMAT_C='REEL',
                   RESULTAT=MOGECOMP,
                   NOM_CHAM='DEPL',
@@ -223,7 +231,7 @@ TAB_RE1=POST_RELEVE_T(ACTION=_F(
 TAB_RE2=POST_RELEVE_T(ACTION=_F(
                   INTITULE='PARTIE_RE',
                   OPERATION='EXTRACTION',
-                  NOEUD=('NO141'),
+                  GROUP_NO=('NO141'),
                   FORMAT_C='REEL',
                   RESULTAT=MOGECOMP,
                   NOM_CHAM='DEPL',
@@ -232,7 +240,7 @@ TAB_RE2=POST_RELEVE_T(ACTION=_F(
 TAB_RE3=POST_RELEVE_T(ACTION=_F(
                   INTITULE='PARTIE_RE',
                   OPERATION='EXTRACTION',
-                  NOEUD=('NO244'),
+                  GROUP_NO=('NO244'),
                   FORMAT_C='REEL',
                   RESULTAT=MOGECOMP,
                   NOM_CHAM='DEPL',
@@ -242,7 +250,7 @@ TAB_RE3=POST_RELEVE_T(ACTION=_F(
 TAB_IM1=POST_RELEVE_T(ACTION=_F(
                   INTITULE='PARTIE_RE',
                   OPERATION='EXTRACTION',
-                  NOEUD=('NO56'),
+                  GROUP_NO=('NO56'),
                   FORMAT_C='IMAG',
                   RESULTAT=MOGECOMP,
                   NOM_CHAM='DEPL',
@@ -251,7 +259,7 @@ TAB_IM1=POST_RELEVE_T(ACTION=_F(
 TAB_IM2=POST_RELEVE_T(ACTION=_F(
                   INTITULE='PARTIE_RE',
                   OPERATION='EXTRACTION',
-                  NOEUD=('NO141'),
+                  GROUP_NO=('NO141'),
                   FORMAT_C='IMAG',
                   RESULTAT=MOGECOMP,
                   NOM_CHAM='DEPL',
@@ -260,7 +268,7 @@ TAB_IM2=POST_RELEVE_T(ACTION=_F(
 TAB_IM3=POST_RELEVE_T(ACTION=_F(
                   INTITULE='PARTIE_RE',
                   OPERATION='EXTRACTION',
-                  NOEUD=('NO244'),
+                  GROUP_NO=('NO244'),
                   FORMAT_C='IMAG',
                   RESULTAT=MOGECOMP,
                   NOM_CHAM='DEPL',

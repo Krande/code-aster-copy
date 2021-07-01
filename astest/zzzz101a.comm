@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -98,35 +98,35 @@ EZ_D=0.003
 MAT_DIS=DEFI_MATERIAU( ELAS=_F(  E = 2.E11,  RHO = RHO_D,  NU = 0.3) )
 
 CHM_D1=AFFE_MATERIAU(  MAILLAGE=MA,
-                           AFFE=_F(  MAILLE = 'P1',    MATER = MAT_DIS)     )
+                           AFFE=_F(  GROUP_MA = 'P1',    MATER = MAT_DIS)     )
 
 CHM_D2=AFFE_MATERIAU(  MAILLAGE=MA,
-                           AFFE=_F(  MAILLE = 'MA1',   MATER = MAT_DIS)     )
+                           AFFE=_F(  GROUP_MA = 'MA1',   MATER = MAT_DIS)     )
 
 MO_D_TR1=AFFE_MODELE(  MAILLAGE=MA,
-                     AFFE=_F(  MAILLE = 'P1',   PHENOMENE = 'MECANIQUE',
+                     AFFE=_F(  GROUP_MA = 'P1',   PHENOMENE = 'MECANIQUE',
                             MODELISATION = 'DIS_TR')     )
 
 MO_D_TR2=AFFE_MODELE(  MAILLAGE=MA,
-                     AFFE=_F(  MAILLE = 'MA1',  PHENOMENE = 'MECANIQUE',
+                     AFFE=_F(  GROUP_MA = 'MA1',  PHENOMENE = 'MECANIQUE',
                             MODELISATION = 'DIS_TR')     )
 
 MO_D_T1=AFFE_MODELE(  MAILLAGE=MA,
-                     AFFE=_F(  MAILLE = 'P1',   PHENOMENE = 'MECANIQUE',
+                     AFFE=_F(  GROUP_MA = 'P1',   PHENOMENE = 'MECANIQUE',
                             MODELISATION = 'DIS_T')    )
 
 MO_D_T2=AFFE_MODELE(  MAILLAGE=MA,
-                     AFFE=_F(  MAILLE = 'MA1',  PHENOMENE = 'MECANIQUE',
+                     AFFE=_F(  GROUP_MA = 'MA1',  PHENOMENE = 'MECANIQUE',
                             MODELISATION = 'DIS_T')    )
 
 # --- ELEMENT 'M_T_D_N'
 
 CP_D_T1=AFFE_CARA_ELEM(  MODELE=MO_D_T1,
-                              DISCRET=_F(  MAILLE = 'P1',
+                              DISCRET=_F(  GROUP_MA = 'P1',
                                         CARA = 'M_T_D_N',
                                         VALE = M_D)    )
 
-MP_D_T1=POST_ELEM(  MODELE=MO_D_T1,      MASS_INER=_F(  MAILLE = 'P1'),
+MP_D_T1=POST_ELEM(  MODELE=MO_D_T1,      MASS_INER=_F(  GROUP_MA = 'P1'),
                          CHAM_MATER=CHM_D1,    CARA_ELEM=CP_D_T1      )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -168,12 +168,12 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 # --- ELEMENT 'M_T_N'
 
 CP_D_T2=AFFE_CARA_ELEM(  MODELE=MO_D_T1,
-                              DISCRET=_F(  MAILLE = 'P1',
+                              DISCRET=_F(  GROUP_MA = 'P1',
                                         CARA = 'M_T_N',
                                         VALE = ( M_D,  -1.,  M_D,
                                                 0.5,  0.5,  M_D,  ))  )
 
-MP_D_T2=POST_ELEM(  MODELE=MO_D_T1,      MASS_INER=_F(  MAILLE = 'P1'),
+MP_D_T2=POST_ELEM(  MODELE=MO_D_T1,      MASS_INER=_F(  GROUP_MA = 'P1'),
                          CHAM_MATER=CHM_D1,    CARA_ELEM=CP_D_T2      )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -215,12 +215,12 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 # --- ELEMENT 'M_TR_D_N'
 
 CP_D_TR1=AFFE_CARA_ELEM(  MODELE=MO_D_TR1,
-                              DISCRET=_F(  MAILLE = 'P1',
+                              DISCRET=_F(  GROUP_MA = 'P1',
                                         CARA = 'M_TR_D_N',
                                         VALE = ( M_D,  IX_D, IY_D, IZ_D,
                                        0., 0., 0.,  EX_D, EY_D, EZ_D, )) )
 
-MP_D_TR1=POST_ELEM(  MODELE=MO_D_TR1,     MASS_INER=_F(  MAILLE = 'P1'),
+MP_D_TR1=POST_ELEM(  MODELE=MO_D_TR1,     MASS_INER=_F(  GROUP_MA = 'P1'),
                          CHAM_MATER=CHM_D1,    CARA_ELEM=CP_D_TR1     )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -322,7 +322,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 # --- ELEMENT 'M_TR_N'
 
 CP_D_TR2=AFFE_CARA_ELEM(  MODELE=MO_D_TR1,
-                              DISCRET=_F(  MAILLE = 'P1',
+                              DISCRET=_F(  GROUP_MA = 'P1',
                                         CARA = 'M_TR_N',
                                         VALE = (   5.158E+01,  0.000E+00,
       5.158E+01,  0.000E+00,  0.000E+00,  5.158E+01,  0.000E+00, -1.548E-01,
@@ -330,7 +330,7 @@ CP_D_TR2=AFFE_CARA_ELEM(  MODELE=MO_D_TR1,
       5.296E-04, -1.032E-01,  5.158E-02,  0.000E+00, -1.548E-04, -3.095E-04,
       2.717E-04,             ))     )
 
-MP_D_TR2=POST_ELEM(  MODELE=MO_D_TR1,     MASS_INER=_F(  MAILLE = 'P1'),
+MP_D_TR2=POST_ELEM(  MODELE=MO_D_TR1,     MASS_INER=_F(  GROUP_MA = 'P1'),
                          CHAM_MATER=CHM_D1,    CARA_ELEM=CP_D_TR2     )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -432,13 +432,13 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 # --- ELEMENT 'M_T_L'
 
 CS_D_T1=AFFE_CARA_ELEM(  MODELE=MO_D_T2,
-                              DISCRET=_F(  MAILLE = 'MA1',
+                              DISCRET=_F(  GROUP_MA = 'MA1',
                                         CARA = 'M_T_L',
                                         VALE = ( 1., 0., 1., 0., 0., 1.,
                                          1., 0., -1., 1., 0., -2., 0., 0., 1.,
                                            1., 0., 1., 0.5, -0.5, 1.,  )) )
 
-MS_D_T1=POST_ELEM(  MODELE=MO_D_T2,      MASS_INER=_F(  MAILLE = 'MA1'),
+MS_D_T1=POST_ELEM(  MODELE=MO_D_T2,      MASS_INER=_F(  GROUP_MA = 'MA1'),
                          CHAM_MATER=CHM_D2,    CARA_ELEM=CS_D_T1      )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -480,7 +480,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 # --- ELEMENT 'M_TR_L'
 
 CS_D_TR1=AFFE_CARA_ELEM(  MODELE=MO_D_TR2,
-                              DISCRET=_F(  MAILLE = 'MA1',
+                              DISCRET=_F(  GROUP_MA = 'MA1',
                                         CARA = 'M_TR_L',
                                         VALE = (
        1.71950E+01,  0.00000E+00,  1.88867E+01,  0.00000E+00,  0.00000E+00,
@@ -501,7 +501,7 @@ CS_D_TR1=AFFE_CARA_ELEM(  MODELE=MO_D_TR2,
        0.00000E+00,  0.00000E+00,  4.95074E-01,
                                                ))      )
 
-MS_D_TR1=POST_ELEM(  MODELE=MO_D_TR2,     MASS_INER=_F(  MAILLE = 'MA1'),
+MS_D_TR1=POST_ELEM(  MODELE=MO_D_TR2,     MASS_INER=_F(  GROUP_MA = 'MA1'),
                          CHAM_MATER=CHM_D2,    CARA_ELEM=CS_D_TR1     )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',

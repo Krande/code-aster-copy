@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -83,16 +83,16 @@ CARA=AFFE_CARA_ELEM(    MODELE=STRUCTUR,DISCRET=(
                        REPERE = 'LOCAL',
                   VALE = ( 10.,10.,10.,10.,0.,0.,0.,0.,0.,0., ))),ORIENTATION=(
 
-                    _F(  MAILLE = 'M1',
+                    _F(  GROUP_MA = 'M1',
                                   CARA = 'VECT_Y',
                                   VALE = ( -0.866025, -0.5, 0., )),
-                                _F(  MAILLE = 'M2',
+                                _F(  GROUP_MA = 'M2',
                                   CARA = 'VECT_Y',
                                   VALE = ( 0.5, -0.866025,  0., )),
-                                _F(  MAILLE = 'M3',
+                                _F(  GROUP_MA = 'M3',
                                   CARA = 'VECT_Y',
                                   VALE = (  0.866025,  0.5, 0., )),
-                                _F(  MAILLE = 'M4',
+                                _F(  GROUP_MA = 'M4',
                                   CARA = 'VECT_Y',
                                   VALE = (-0.5,  0.866025,  0., )))
 

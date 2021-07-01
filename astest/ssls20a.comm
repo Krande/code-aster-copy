@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ VECASS=RESOUDRE(reuse=VECASS, MATR=MATASS,     CHAM_NO=VECASS)
 #---------------------------------------------------------------------
 
 
-TEST_RESU(CHAM_NO=_F(NOEUD='NO176',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='NO176',
                      CRITERE='RELATIF',
                      REFERENCE='SOURCE_EXTERNE',
                      NOM_CMP='DY',
@@ -105,7 +105,7 @@ CH_INIT=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R', MAILLAGE=MAILLA_1
 
 CH_PRO0=PROJ_CHAMP( METHODE='NUAGE_DEG_0',  CHAM_GD=VECASS, CHAM_NO_REFE=CH_INIT,MAILLAGE_1=MAILLA_1, MAILLAGE_2=MAILLA_1,   )
 
-TEST_RESU(CHAM_NO=_F(NOEUD='NO176',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='NO176',
                      CRITERE='RELATIF',
                      REFERENCE='SOURCE_EXTERNE',
                      NOM_CMP='DY',
@@ -118,7 +118,7 @@ TEST_RESU(CHAM_NO=_F(NOEUD='NO176',
 CH_PRO1=PROJ_CHAMP( METHODE='NUAGE_DEG_1',  CHAM_GD=VECASS, CHAM_NO_REFE=CH_INIT,MAILLAGE_1=MAILLA_1, MAILLAGE_2=MAILLA_1,
                     TITRE='CH_PRO1',)
 
-TEST_RESU(CHAM_NO=_F(NOEUD='NO176',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='NO176',
                      CRITERE='RELATIF',
                      REFERENCE='SOURCE_EXTERNE',
                      NOM_CMP='DY',
@@ -134,10 +134,10 @@ TEST_RESU(CHAM_NO=_F(NOEUD='NO176',
 CH_PRO2=PROJ_CHAMP( METHODE='NUAGE_DEG_0',  CHAM_GD=VECASS, CHAM_NO_REFE=CH_INIT,MAILLAGE_1=MAILLA_1, MAILLAGE_2=MAILLA_1,
                     VIS_A_VIS=(
                         _F(TOUT_1     ='OUI',  TOUT_2='OUI',),
-                        _F(GROUP_MA_1 ='GMA1', MAILLE_2='MA19',),
-                        _F(GROUP_MA_1 ='GMA1', NOEUD_2='NO164',),
+                        _F(GROUP_MA_1 ='GMA1', GROUP_MA_2='MA19',),
+                        _F(GROUP_MA_1 ='GMA1', GROUP_NO_2='NO164',),
                   ))
-TEST_RESU(CHAM_NO=_F(NOEUD='NO164',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='NO164',
                      CRITERE='RELATIF',
                      NOM_CMP='DY',
                      CHAM_GD=CH_PRO2,
@@ -148,10 +148,10 @@ TEST_RESU(CHAM_NO=_F(NOEUD='NO164',
 CH_PRO3=PROJ_CHAMP( METHODE='NUAGE_DEG_1',  CHAM_GD=VECASS, CHAM_NO_REFE=CH_INIT,MAILLAGE_1=MAILLA_1, MAILLAGE_2=MAILLA_1,
                     VIS_A_VIS=(
                         _F(TOUT_1     ='OUI',  TOUT_2='OUI',),
-                        _F(GROUP_MA_1 ='GMA1', MAILLE_2='MA19',),
-                        _F(GROUP_MA_1 ='GMA1', NOEUD_2='NO164',),
+                        _F(GROUP_MA_1 ='GMA1', GROUP_MA_2='MA19',),
+                        _F(GROUP_MA_1 ='GMA1', GROUP_NO_2='NO164',),
                   ))
-TEST_RESU(CHAM_NO=_F(NOEUD='NO164',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='NO164',
                      CRITERE='RELATIF',
                      NOM_CMP='DY',
                      CHAM_GD=CH_PRO3,

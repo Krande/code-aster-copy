@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -51,15 +51,15 @@ CHAM3=CREA_CHAMP(OPERATION='DISC',
                  INFO=2,);
 
 TEST_RESU(CHAM_NO=(_F(CHAM_GD=CHAM3,
-                      NOEUD='N1',
+                      GROUP_NO='N1',
                       NOM_CMP='V1',
                       VALE_CALC=1.,),
                    _F(CHAM_GD=CHAM3,
-                      NOEUD='N15',
+                      GROUP_NO='N15',
                       NOM_CMP='V2',
                       VALE_CALC=25.,),
                    _F(CHAM_GD=CHAM3,
-                      NOEUD='N27',
+                      GROUP_NO='N27',
                       NOM_CMP='V3',
                       VALE_CALC=129.,),),);
 

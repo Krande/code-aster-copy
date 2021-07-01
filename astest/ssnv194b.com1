@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,8 +35,8 @@ NUMCMP=3
 for IP in range (NB_GRAINS):
   VEVPG ='V'+str(NVIE+78*IP+NUMCMP)
   VSIGG ='V'+str(NVIS+ 6*IP+NUMCMP)
-  EVPG1[IP]=RECU_FONCTION(NOM_CHAM='VARI_ELGA',RESULTAT=SOLNL, NOM_CMP=VEVPG,MAILLE='MA1',POINT=1);
-  SIGG1[IP]=RECU_FONCTION(NOM_CHAM='VARI_ELGA',RESULTAT=SOLNL, NOM_CMP=VSIGG,MAILLE='MA1',POINT=1);
+  EVPG1[IP]=RECU_FONCTION(NOM_CHAM='VARI_ELGA',RESULTAT=SOLNL, NOM_CMP=VEVPG,GROUP_MA='MA1',POINT=1);
+  SIGG1[IP]=RECU_FONCTION(NOM_CHAM='VARI_ELGA',RESULTAT=SOLNL, NOM_CMP=VSIGG,GROUP_MA='MA1',POINT=1);
 
 
 motcles = {}

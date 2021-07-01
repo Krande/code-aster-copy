@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -94,12 +94,12 @@ MO=AFFE_MODELE(
 
                 AFFE= (
                 _F(
-                   MAILLE = 'CUBE',
+                   GROUP_MA = 'CUBE',
                    PHENOMENE = 'MECANIQUE',
                    MODELISATION = '3D'
                      ),
                  _F(
-                   MAILLE = 'CUBEDEG',
+                   GROUP_MA = 'CUBEDEG',
                    PHENOMENE = 'MECANIQUE',
                    MODELISATION = '3D_JOINT'
                    )
@@ -125,15 +125,15 @@ MAT_JOI=DEFI_MATERIAU(
 
 CM=AFFE_MATERIAU(MAILLAGE=MA,
                  AFFE=(
-                      _F(MAILLE='CUBE', MATER = MAT_CUB),
-                      _F(MAILLE='CUBEDEG', MATER = MAT_JOI))
+                      _F(GROUP_MA='CUBE', MATER = MAT_CUB),
+                      _F(GROUP_MA='CUBEDEG', MATER = MAT_JOI))
                  );
 
 # ENCASTREMENT D'UNE DES LEVRES DU JOINT
 LIAISON=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-    _F(MAILLE='GAUCHE2', DX=0, DY=0, DZ=0),
+    _F(GROUP_MA='GAUCHE2', DX=0, DY=0, DZ=0),
     )
   )
 
@@ -148,7 +148,7 @@ LIAISON=AFFE_CHAR_MECA(
 TRAC_1=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-    _F(MAILLE='DROITE', DX=cos(angle), DY= sin(angle), DZ=0),
+    _F(GROUP_MA='DROITE', DX=cos(angle), DY= sin(angle), DZ=0),
     )
   )
 
@@ -175,9 +175,9 @@ U_1=STAT_NON_LINE(
   ),
   COMPORTEMENT  = (
           _F(RELATION = 'JOINT_MECA_RUPT',
-             MAILLE = 'CUBEDEG', ),
+             GROUP_MA = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
-             MAILLE = 'CUBE',),
+             GROUP_MA = 'CUBE',),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
   CONVERGENCE= _F(ITER_GLOB_MAXI = 20),
@@ -368,9 +368,9 @@ U_2=STAT_NON_LINE(
   ),
   COMPORTEMENT  = (
           _F(RELATION = 'JOINT_MECA_RUPT',
-             MAILLE = 'CUBEDEG', ),
+             GROUP_MA = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
-             MAILLE = 'CUBE',),
+             GROUP_MA = 'CUBE',),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
   CONVERGENCE= _F(ITER_GLOB_MAXI = 20),
@@ -393,20 +393,20 @@ IMPR_TABLE(TABLE=T_DY_2)
 
 F_SIGN_2=RECU_FONCTION( RESULTAT=U_2, NOM_CHAM = 'SIEF_ELGA',
           NOM_CMP = 'SIGN',
-          MAILLE  = 'CUBEDEG',POINT=1)
+          GROUP_MA  = 'CUBEDEG',POINT=1)
 T_SIGN_2=CREA_TABLE(FONCTION=_F(FONCTION=F_SIGN_2))
 IMPR_TABLE(TABLE=T_SIGN_2)
 
 
 F_SITX_2=RECU_FONCTION( RESULTAT=U_2, NOM_CHAM = 'SIEF_ELGA',
           NOM_CMP = 'SITX',
-          MAILLE  = 'CUBEDEG',POINT=2)
+          GROUP_MA  = 'CUBEDEG',POINT=2)
 T_SITX_2=CREA_TABLE(FONCTION=_F(FONCTION=F_SITX_2))
 IMPR_TABLE(TABLE=T_SITX_2)
 
 F_SITY_2=RECU_FONCTION( RESULTAT=U_2, NOM_CHAM = 'SIEF_ELGA',
           NOM_CMP = 'SITY',
-          MAILLE  = 'CUBEDEG',POINT=1)
+          GROUP_MA  = 'CUBEDEG',POINT=1)
 T_SITY_2=CREA_TABLE(FONCTION=_F(FONCTION=F_SITY_2))
 IMPR_TABLE(TABLE=T_SITY_2)
 
@@ -419,7 +419,7 @@ TEST_RESU(RESU=_F(INST=linst2[2],
                   NOM_CMP='SIGN',
                   VALE_CALC=80000.0,
                   VALE_REFE=sigma_max*(1.-beta),
-                  MAILLE='CUBEDEG',),
+                  GROUP_MA='CUBEDEG',),
           )
 
 # LCT - LONGEUR CRITIQUE TANGENTIELLE
@@ -436,7 +436,7 @@ TEST_RESU(RESU=_F(INST=linst2[2],
                   NOM_CMP='SITX',
                   VALE_CALC=208873.016278,
                   VALE_REFE=k_t_endo*delta_max_tan,
-                  MAILLE='CUBEDEG',),
+                  GROUP_MA='CUBEDEG',),
           )
 
 
@@ -449,7 +449,7 @@ TEST_RESU(RESU=_F(INST=linst2[3],
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SITX',
                   VALE_CALC=281774.603256,
-                  MAILLE='CUBEDEG',),
+                  GROUP_MA='CUBEDEG',),
           )
 
 # TEST SIGMA_TAN ENDOMAGEMENT PARTIEL DANS LA DIRECTION TRANSVERSE
@@ -461,7 +461,7 @@ TEST_RESU(RESU=_F(
                   NOM_CMP='SITY',
                   VALE_REFE=0,
                   CRITERE='ABSOLU',
-                  MAILLE='CUBEDEG',
+                  GROUP_MA='CUBEDEG',
                   POINT=1,
                   INST=linst2[3],
                   VALE_CALC=3.09636675329E-13,
@@ -485,7 +485,7 @@ TEST_RESU (
       NOM_CHAM  = 'VARI_ELGA',
       NOM_CMP   = 'V1',
       VALE_REFE = delta_joint,
-      MAILLE    = 'CUBEDEG',
+      GROUP_MA    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
       VALE_CALC=1.1E-07,
@@ -498,7 +498,7 @@ TEST_RESU (
       VALE_REFE = 0,
       ORDRE_GRANDEUR=1,
       CRITERE   = 'ABSOLU',
-      MAILLE    = 'CUBEDEG',
+      GROUP_MA    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
       VALE_CALC=0.,
@@ -510,7 +510,7 @@ TEST_RESU (
       NOM_CMP   = 'V3',
       VALE_REFE = 1,
       CRITERE   = 'ABSOLU',
-      MAILLE    = 'CUBEDEG',
+      GROUP_MA    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
       VALE_CALC=1.0,
@@ -522,7 +522,7 @@ TEST_RESU (
       NOM_CHAM  = 'VARI_ELGA',
       NOM_CMP   = 'V4',
       VALE_REFE = beta,
-      MAILLE    = 'CUBEDEG',
+      GROUP_MA    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
       VALE_CALC=0.2,
@@ -534,7 +534,7 @@ TEST_RESU (
       NOM_CMP   = 'V5',
       VALE_REFE = 1,
       CRITERE   = 'ABSOLU',
-      MAILLE    = 'CUBEDEG',
+      GROUP_MA    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
       VALE_CALC=1.0,
@@ -545,7 +545,7 @@ TEST_RESU (
       NOM_CHAM  = 'VARI_ELGA',
       NOM_CMP   = 'V6',
       VALE_REFE = delta_joint5/LCT,
-      MAILLE    = 'CUBEDEG',
+      GROUP_MA    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
       VALE_CALC = 0.0607513224814,
@@ -557,7 +557,7 @@ TEST_RESU (
       NOM_CMP   = 'V7',
       VALE_REFE = delta_joint5,
       CRITERE   = 'ABSOLU',
-      MAILLE    = 'CUBEDEG',
+      GROUP_MA    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
       VALE_CALC = 2.2E-08,
@@ -568,7 +568,7 @@ TEST_RESU (
       NOM_CHAM  = 'VARI_ELGA',
       NOM_CMP   = 'V8',
       VALE_REFE = delta_max_tan,
-      MAILLE    = 'CUBEDEG',
+      GROUP_MA    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
       VALE_CALC = 1.5E-07,
@@ -581,7 +581,7 @@ TEST_RESU (
       VALE_REFE = 0.,
       ORDRE_GRANDEUR=delta_joint,
       CRITERE   = 'ABSOLU',
-      MAILLE    = 'CUBEDEG',
+      GROUP_MA    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
       VALE_CALC = 0.,
@@ -594,7 +594,7 @@ TEST_RESU (
       VALE_REFE = 0.,
       ORDRE_GRANDEUR=delta_joint,
       CRITERE   = 'ABSOLU',
-      MAILLE    = 'CUBEDEG',
+      GROUP_MA    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
       VALE_CALC = 0.,
@@ -656,9 +656,9 @@ U_3=STAT_NON_LINE(
   ),
   COMPORTEMENT  = (
           _F(RELATION = 'JOINT_MECA_RUPT',
-             MAILLE = 'CUBEDEG', ),
+             GROUP_MA = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
-             MAILLE = 'CUBE',),
+             GROUP_MA = 'CUBE',),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
   CONVERGENCE= _F(ITER_GLOB_MAXI = 20),
@@ -681,14 +681,14 @@ IMPR_TABLE(TABLE=T_DY_3)
 
 F_SIGN_3=RECU_FONCTION( RESULTAT=U_3, NOM_CHAM = 'SIEF_ELGA',
           NOM_CMP = 'SIGN',
-          MAILLE  = 'CUBEDEG',POINT=1)
+          GROUP_MA  = 'CUBEDEG',POINT=1)
 T_SIGN_3=CREA_TABLE(FONCTION=_F(FONCTION=F_SIGN_3))
 IMPR_TABLE(TABLE=T_SIGN_3)
 
 
 F_SITX_3=RECU_FONCTION( RESULTAT=U_3, NOM_CHAM = 'SIEF_ELGA',
           NOM_CMP = 'SITX',
-          MAILLE  = 'CUBEDEG',POINT=2)
+          GROUP_MA  = 'CUBEDEG',POINT=2)
 T_SITX_3=CREA_TABLE(FONCTION=_F(FONCTION=F_SITX_3))
 IMPR_TABLE(TABLE=T_SITX_3)
 
@@ -701,7 +701,7 @@ TEST_RESU(RESU=_F(INST=linst3[2],
                   NOM_CMP='SIGN',
                   VALE_CALC=80000.0,
                   VALE_REFE=sigma_max*(1.-beta),
-                  MAILLE='CUBEDEG',),
+                  GROUP_MA='CUBEDEG',),
           )
 
 # LCT - LONGEUR CRITIQUE TANGENTIELLE
@@ -716,7 +716,7 @@ TEST_RESU(RESU=_F(INST=linst3[2],
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SITY',
                   VALE_CALC=-208873.016278,
-                  MAILLE='CUBEDEG',),
+                  GROUP_MA='CUBEDEG',),
           )
 
 # TEST SIGMA_TAN ENDOMAGEMENT PARTIEL
@@ -728,7 +728,7 @@ TEST_RESU(RESU=_F(INST=linst3[4],
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SITY',
                   VALE_CALC=289874.779586,
-                  MAILLE='CUBEDEG',),
+                  GROUP_MA='CUBEDEG',),
           )
 
 # TEST SIGMA_TAN ENDOMAGEMENT PARTIEL DANS LA DIRECTION TRANSVERSE
@@ -741,7 +741,7 @@ TEST_RESU(RESU=_F(INST=linst3[4],
                   VALE_CALC=2.06760115747E-11,
                   VALE_REFE=0.0,
                   CRITERE='ABSOLU',
-                  MAILLE='CUBEDEG',),
+                  GROUP_MA='CUBEDEG',),
           )
 
 #IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_1,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),

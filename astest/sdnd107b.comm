@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -70,9 +70,9 @@ CaraElem=AFFE_CARA_ELEM(
 Blocage=AFFE_CHAR_MECA(
    MODELE=Modele,
    DDL_IMPO= (
-        _F(NOEUD='N01', DX=0.0, DY=0.0, DZ=0.0,),
-        _F(NOEUD='N02',         DY=0.0, DZ=0.0,),
-        _F(NOEUD='N03', DX=0.0, DY=0.0, DZ=0.0,),
+        _F(GROUP_NO='N01', DX=0.0, DY=0.0, DZ=0.0,),
+        _F(GROUP_NO='N02',         DY=0.0, DZ=0.0,),
+        _F(GROUP_NO='N03', DX=0.0, DY=0.0, DZ=0.0,),
     ),
 )
 #
@@ -151,7 +151,7 @@ Resultat=CALC_CHAMP(reuse=Resultat,
 Depl=RECU_FONCTION(NOM_RESU='Depl',
     RESULTAT=Resultat, LIST_INST=Linst,
     NOM_CHAM='DEPL', NOM_CMP='DX',
-    NOEUD='N02',
+    GROUP_NO='N02',
     PROL_DROITE='LINEAIRE',
     PROL_GAUCHE='LINEAIRE',
 )
@@ -159,7 +159,7 @@ Depl=RECU_FONCTION(NOM_RESU='Depl',
 Force=RECU_FONCTION(NOM_RESU='Force',
     RESULTAT=Resultat, LIST_INST=Linst,
     NOM_CHAM='FORC_NODA', NOM_CMP='DX',
-    NOEUD='N01',
+    GROUP_NO='N01',
     PROL_DROITE='LINEAIRE',
     PROL_GAUCHE='LINEAIRE',
 )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -74,11 +74,11 @@ CARA=AFFE_CARA_ELEM(  MODELE=POUTRE,
 GUIDAGE=AFFE_CHAR_MECA(    MODELE=POUTRE,DDL_IMPO=(
                            _F( TOUT = 'OUI',
                                      DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.),
-                           _F( NOEUD = 'A',    DX = 0.)));
+                           _F( GROUP_NO = 'A',    DX = 0.)));
 
 #
 CHARTRAN=AFFE_CHAR_MECA(        MODELE=POUTRE,
-                           FORCE_NODALE=_F( NOEUD = 'N10',  FX = -100.));
+                           FORCE_NODALE=_F( GROUP_NO = 'N10',  FX = -100.));
 
 #
 K_ELEM=CALC_MATR_ELEM(      MODELE=POUTRE,
@@ -148,7 +148,7 @@ EVOL=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
 TEST_RESU(RESU=_F(INST=0.0195,
                   RESULTAT=EVOL,
                   NOM_CHAM='DEPL',
-                  NOEUD='N10',
+                  GROUP_NO='N10',
                   NOM_CMP='DX',
                   VALE_REFE=-9.5640299999999994E-07,
                   VALE_CALC=-9.5640316992125E-07,
@@ -162,7 +162,7 @@ TEST_RESU(RESU=_F(INST=0.0195,
 TEST_RESU(RESU=_F(INST=0.0195,
                   RESULTAT=EVOL,
                   NOM_CHAM='VITE',
-                  NOEUD='N10',
+                  GROUP_NO='N10',
                   NOM_CMP='DX',
                   VALE_REFE=1.22331E-3,
                   VALE_CALC=1.2233063266151E-3,
@@ -176,7 +176,7 @@ TEST_RESU(RESU=_F(INST=0.0195,
 TEST_RESU(RESU=_F(INST=0.0195,
                   RESULTAT=EVOL,
                   NOM_CHAM='ACCE',
-                  NOEUD='N10',
+                  GROUP_NO='N10',
                   NOM_CMP='DX',
                   VALE_REFE=-1.90788,
                   VALE_CALC=-1.9078843292439,
@@ -211,7 +211,7 @@ COND_LI1=AFFE_CHAR_MECA(    MODELE=MODELE1,
                            _F( TOUT = 'OUI',
                                 DY = 0., DZ = 0., 
                                 DRX = 0., DRY = 0., DRZ = 0.),
-                           _F( NOEUD = 'N4',    DX = 0.),
+                           _F( GROUP_NO = 'N4',    DX = 0.),
                                ),
                         ); 
                         
@@ -241,7 +241,7 @@ MODE1=CALC_MODES(MATR_RIGI=MATR1,
                          
 MODSTA1=MODE_STATIQUE(MATR_RIGI=MATR1,
                       MATR_MASS=MATM1,
-                      MODE_STAT=_F(NOEUD='N4',
+                      MODE_STAT=_F(GROUP_NO='N4',
                                    TOUT_CMP='OUI',
                                    ),
                                   );
@@ -249,7 +249,7 @@ MODSTA1=MODE_STATIQUE(MATR_RIGI=MATR1,
 INTERDY1=DEFI_INTERF_DYNA(  NUME_DDL=NUME1,
             INTERFACE=_F( NOM = 'DROITE',
                        TYPE = 'CRAIGB',
-                       NOEUD='N4',)
+                       GROUP_NO='N4',)
            );                        
 
 BAMO1=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODE1,
@@ -261,7 +261,7 @@ BAMO1=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODE1,
                        NUME_REF=NUME1,);
                        
 CHPE11=AFFE_CHAR_MECA(MODELE=MODELE1,
-                        FORCE_NODALE=_F( NOEUD = 'N10',  FX = -100.));
+                        FORCE_NODALE=_F( GROUP_NO = 'N10',  FX = -100.));
 
                      
 VEC1_ELE=CALC_VECT_ELEM(  OPTION='CHAR_MECA',
@@ -328,10 +328,10 @@ ELEMB=AFFE_CARA_ELEM(MODELE=MODELB,
                                            
 COND_LIB=AFFE_CHAR_MECA(    MODELE=MODELB,
                      DDL_IMPO=(
-                           _F( NOEUD = 'A',
+                           _F( GROUP_NO = 'A',
                                 DX = 0., DY = 0., DZ = 0., 
                                 DRX = 0., DRY = 0., DRZ = 0.),
-                           _F( NOEUD = ('N1','N2','N3','N4',),
+                           _F( GROUP_NO = ('N1','N2','N3','N4',),
                                 DY = 0., DZ = 0., 
                                 DRX = 0., DRY = 0., DRZ = 0.),
                                ),
@@ -362,7 +362,7 @@ MODEB=CALC_MODES(MATR_RIGI=MATRRIGB,
 
                          
 CHFONO=AFFE_CHAR_MECA(MODELE=MODELB,
-                        FORCE_NODALE=_F( NOEUD = 'N4',  FX = 0.));                         
+                        FORCE_NODALE=_F( GROUP_NO = 'N4',  FX = 0.));                         
                          
                          
 VELFO=CALC_VECT_ELEM(    OPTION='CHAR_MECA',
@@ -402,7 +402,7 @@ TEST_RESU(RESU=_F(INST=0.0195,
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=RESUGLOB,
                   NOM_CHAM='DEPL',
-                  NOEUD='N10',
+                  GROUP_NO='N10',
                   NOM_CMP='DX',
                   VALE_CALC=-9.564031687987E-07,
                   VALE_REFE=-9.5488200000000009E-07,
@@ -415,7 +415,7 @@ TEST_RESU(RESU=_F(INST=0.0195,
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=RESUGLOB,
                   NOM_CHAM='VITE',
-                  NOEUD='N10',
+                  GROUP_NO='N10',
                   NOM_CMP='DX',
                   VALE_CALC= 1.223306324531E-03,
                   VALE_REFE=1.2218999999999999E-3,
@@ -428,7 +428,7 @@ TEST_RESU(RESU=_F(INST=0.0195,
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=RESUGLOB,
                   NOM_CHAM='ACCE',
-                  NOEUD='N10',
+                  GROUP_NO='N10',
                   NOM_CMP='DX',
                   VALE_CALC=-1.9078843300342,
                   VALE_REFE=-1.9171199999999999,
@@ -439,7 +439,7 @@ TEST_RESU(RESU=_F(INST=0.0195,
 TEST_RESU(RESU=_F(INST=0.0195,
                   RESULTAT=RESUGLOB,
                   NOM_CHAM='DEPL',
-                  NOEUD='N10',
+                  GROUP_NO='N10',
                   NOM_CMP='DX',
                   VALE_REFE=-9.5640299999999994E-07,
                   VALE_CALC=-9.564031687987E-07,
@@ -453,7 +453,7 @@ TEST_RESU(RESU=_F(INST=0.0195,
 TEST_RESU(RESU=_F(INST=0.0195,
                   RESULTAT=RESUGLOB,
                   NOM_CHAM='VITE',
-                  NOEUD='N10',
+                  GROUP_NO='N10',
                   NOM_CMP='DX',
                   VALE_REFE=1.22331E-3,
                   VALE_CALC=1.223306324531E-3,
@@ -467,7 +467,7 @@ TEST_RESU(RESU=_F(INST=0.0195,
 TEST_RESU(RESU=_F(INST=0.0195,
                   RESULTAT=RESUGLOB,
                   NOM_CHAM='ACCE',
-                  NOEUD='N10',
+                  GROUP_NO='N10',
                   NOM_CMP='DX',
                   VALE_REFE=-1.90788,
                   VALE_CALC=-1.9078843300342,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,8 +31,8 @@ MASRES0=LIRE_MAILLAGE(FORMAT="ASTER", )
 #
 MASRES=CREA_MAILLAGE(MAILLAGE=MASRES0,
     CREA_POI1=(
-        _F(NOM_GROUP_MA='B',   NOEUD = 'B', ),
-        _F(NOM_GROUP_MA='C',   NOEUD = 'C', ),
+        _F(NOM_GROUP_MA='B',   GROUP_NO = 'B', ),
+        _F(NOM_GROUP_MA='C',   GROUP_NO = 'C', ),
     ),
 )
 
@@ -54,10 +54,10 @@ RIGMAS=AFFE_CARA_ELEM(  MODELE=MODELE,
                                        VALE = (0.,0.,0.,0.,0.,0.,0.,0.,0.,
                                     0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),
                                        AMOR_HYST = 0.1),
-                                  _F(  MAILLE = 'K2',
+                                  _F(  GROUP_MA = 'K2',
                                        CARA = 'K_T_D_L',
                                        VALE = (28000., .001, .001,)),
-                                  _F(  MAILLE = 'K2',
+                                  _F(  GROUP_MA = 'K2',
                                        CARA = 'M_T_L',
                                        VALE = (0.,0.,0.,0.,0.,0.,0.,0.,0.,
                                     0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
@@ -72,11 +72,11 @@ RIGMAS=AFFE_CARA_ELEM(  MODELE=MODELE,
 #
 CONDLIM=AFFE_CHAR_MECA(  MODELE=MODELE,
                          DDL_IMPO=( _F(  TOUT = 'OUI', DY = 0., DZ = 0.),
-                                    _F(  NOEUD = 'A',  DX = 0.))
+                                    _F(  GROUP_NO = 'A',  DX = 0.))
                         )
 
 FORCENO=AFFE_CHAR_MECA(  MODELE=MODELE,
-                         FORCE_NODALE=_F(  NOEUD = 'C', FX = 100.)  )
+                         FORCE_NODALE=_F(  GROUP_NO = 'C', FX = 100.)  )
 
 
 # DEFINITION DES PULSATIONS/FREQUENCES DE LA REPONSE HARMONIQUE
@@ -103,7 +103,7 @@ REPHARM=DYNA_LINE(MODELE=MODELE,
 
 
 F=RECU_FONCTION(  RESULTAT=REPHARM,    NOM_CHAM='DEPL',
-                   LIST_FREQ=LISFREQ,   NOEUD='C',  NOM_CMP='DX'  )
+                   LIST_FREQ=LISFREQ,   GROUP_NO='C',  NOM_CMP='DX'  )
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC_C=(0.00710749646393-0.00035360678925j),
                          VALE_REFE_C=(0.0071075000000000001-0.00035359999999999998j),

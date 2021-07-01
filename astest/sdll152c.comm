@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 
 TUBE=LIRE_MAILLAGE(FORMAT='ASTER')
 MODI_MAILLAGE(reuse=TUBE, MAILLAGE=TUBE,
-              ABSC_CURV=_F(NOEUD_ORIG='N001',
+              ABSC_CURV=_F(GROUP_NO_ORIG='N001',
                            TOUT='OUI'))
 
 MODEL=AFFE_MODELE(MAILLAGE=TUBE,
@@ -205,7 +205,7 @@ RPP0=REST_SPEC_PHYS(
                  NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                    OPTION='TOUT_TOUT',
-                    NOEUD=('N024', )
+                    GROUP_NO=('N024', )
                 )
 
 DYN0=POST_DYNA_ALEA(INTERSPECTRE=_F(
@@ -256,7 +256,7 @@ RPP02=REST_SPEC_PHYS(
                  NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                    OPTION='TOUT_TOUT',
-                    NOEUD=('N024', )
+                    GROUP_NO=('N024', )
                 )
 
 DYN02=POST_DYNA_ALEA(INTERSPECTRE=_F(

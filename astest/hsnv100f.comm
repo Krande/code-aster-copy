@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -108,15 +108,15 @@ MOMECA=AFFE_MODELE(  MAILLAGE=MAIL,
 
 
 CAREL=AFFE_CARA_ELEM(   MODELE=MOMECA,
-           POUTRE=_F(MAILLE = 'M1',SECTION = 'RECTANGLE',
+           POUTRE=_F(GROUP_MA = 'M1',SECTION = 'RECTANGLE',
           CARA = (   'H',  ), VALE = ( 1.0 ))
 )
 
 
 CHMECA=AFFE_CHAR_MECA(
             MODELE=MOMECA,DDL_IMPO=(
-           _F( NOEUD = 'N2',     DX = 0., DY=0,DZ=0,DRX=0,DRY=0,DRZ=0),
-           _F( NOEUD = 'N3',     DY = 0.),
+           _F( GROUP_NO = 'N2',     DX = 0., DY=0,DZ=0,DRX=0,DRY=0,DRZ=0),
+           _F( GROUP_NO = 'N3',     DY = 0.),
            ), )
 
 CM=AFFE_MATERIAU( MAILLAGE=MAIL,

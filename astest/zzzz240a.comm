@@ -141,8 +141,8 @@ U1=CALC_CHAMP(reuse =U1,
 #  ------------------------------------------------------------------------------------------
 
 MA1B=CREA_MAILLAGE(MAILLAGE=MA1,
-                   RESTREINT=_F(GROUP_MA=('GXXXXXX_CARRE1','GXXXXXX_G1',),
-                                MAILLE=('M1','M16',),),);
+                   RESTREINT=_F(GROUP_MA=('GXXXXXX_CARRE1','GXXXXXX_G1','M1','M16',),
+                ),);
 
 MOTH1B=AFFE_MODELE(MAILLAGE=MA1B,
                    AFFE=_F(TOUT='OUI',
@@ -286,7 +286,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U1,
                    INST=5,
                    NOM_CHAM='ENEL_ELGA',
                    NOM_CMP='TOTALE',
-                   MAILLE='M16',
+                   GROUP_MA='M16',
                    POINT=4,
                    CRITERE='RELATIF',
                    VALE_CALC=14.3256,),
@@ -294,7 +294,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U1,
                    INST=5,
                    NOM_CHAM='ENEL_ELGA',
                    NOM_CMP='TOTALE',
-                   MAILLE='M16',
+                   GROUP_MA='M16',
                    POINT=4,
                    CRITERE='RELATIF',
                    VALE_REFE=14.3256,

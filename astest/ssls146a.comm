@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -48,6 +48,18 @@ mesh = LIRE_MAILLAGE (
     FORMAT = 'MED',
     UNITE=2
 )
+
+mesh = DEFI_GROUP( reuse = mesh, MAILLAGE = mesh,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M5114', MAILLE = 'M5114'),
+                                        _F( NOM = 'M7652', MAILLE = 'M7652'),
+                                        _F( NOM = 'M3452', MAILLE = 'M3452'),
+                                        _F( NOM = 'M4511', MAILLE = 'M4511'),
+                                        _F( NOM = 'M5960', MAILLE = 'M5960'),
+                                        _F( NOM = 'M8601', MAILLE = 'M8601'),
+                                        _F( NOM = 'M6815', MAILLE = 'M6815'),
+                                     ),
+         )
 
 mesh = DEFI_GROUP (
     reuse = mesh,
@@ -417,7 +429,7 @@ TEST_RESU(
             NOM_CHAM = 'FERRAILLAGE',
             CRITERE='RELATIF',
             NOM_CMP='DNSXS',
-            MAILLE='M3452',
+            GROUP_MA='M3452',
             POINT=1,
             PRECISION = 1.E-6,
             VALE_CALC = 0.00013212564350356624,
@@ -430,7 +442,7 @@ TEST_RESU(
             NOM_CHAM = 'FERRAILLAGE',
             CRITERE='RELATIF',
             NOM_CMP='DNSXS',
-            MAILLE='M4511',
+            GROUP_MA='M4511',
             POINT=1,
             PRECISION = 1.E-6,
             VALE_CALC = 0.0001535226008530567,
@@ -443,7 +455,7 @@ TEST_RESU(
             NOM_CHAM = 'FERRAILLAGE',
             CRITERE='RELATIF',
             NOM_CMP='DNSXS',
-            MAILLE='M5114',
+            GROUP_MA='M5114',
             POINT=1,
             PRECISION = 1.E-6,
             VALE_CALC = 0.0001503579881182019,
@@ -456,7 +468,7 @@ TEST_RESU(
             NOM_CHAM = 'FERRAILLAGE',
             CRITERE='RELATIF',
             NOM_CMP='DNSXS',
-            MAILLE='M5960',
+            GROUP_MA='M5960',
             POINT=1,
             PRECISION = 1.E-6,
             VALE_CALC = 0.00015055222516976698,
@@ -469,7 +481,7 @@ TEST_RESU(
             NOM_CHAM = 'FERRAILLAGE',
             CRITERE='RELATIF',
             NOM_CMP='DNSXS',
-            MAILLE='M6815',
+            GROUP_MA='M6815',
             POINT=1,
             PRECISION = 1.E-6,
             VALE_CALC = 0.0001705187656042732,
@@ -482,7 +494,7 @@ TEST_RESU(
             NOM_CHAM = 'FERRAILLAGE',
             CRITERE='RELATIF',
             NOM_CMP='DNSXS',
-            MAILLE='M7652',
+            GROUP_MA='M7652',
             POINT=1,
             PRECISION = 1.E-6,
             VALE_CALC = 0.00016007857254689213,
@@ -495,7 +507,7 @@ TEST_RESU(
             NOM_CHAM = 'FERRAILLAGE',
             CRITERE='RELATIF',
             NOM_CMP='DNSXS',
-            MAILLE='M8601',
+            GROUP_MA='M8601',
             POINT=1,
             PRECISION = 1.E-6,
             VALE_CALC = 0.00018584785356479968,
@@ -517,7 +529,7 @@ TOTEST = CREA_CHAMP (
 TEST_RESU(
     CARTE = _F(
         CHAM_GD = TOTEST,
-        MAILLE='M3452',
+        GROUP_MA='M3452',
         NOM_CMP='X2',
         REFERENCE='ANALYTIQUE',
         PRECISION=1.E-6,
@@ -529,7 +541,7 @@ TEST_RESU(
 TEST_RESU(
     CARTE = _F(
         CHAM_GD = TOTEST,
-        MAILLE='M4511',
+        GROUP_MA='M4511',
         NOM_CMP='X2',
         REFERENCE='ANALYTIQUE',
         PRECISION=1.E-6,
@@ -541,7 +553,7 @@ TEST_RESU(
 TEST_RESU(
     CARTE = _F(
         CHAM_GD = TOTEST,
-        MAILLE='M5114',
+        GROUP_MA='M5114',
         NOM_CMP='X2',
         REFERENCE='ANALYTIQUE',
         PRECISION=1.E-6,
@@ -553,7 +565,7 @@ TEST_RESU(
 TEST_RESU(
     CARTE = _F(
         CHAM_GD = TOTEST,
-        MAILLE='M5960',
+        GROUP_MA='M5960',
         NOM_CMP='X2',
         REFERENCE='ANALYTIQUE',
         PRECISION=1.E-6,
@@ -565,7 +577,7 @@ TEST_RESU(
 TEST_RESU(
     CARTE = _F(
         CHAM_GD = TOTEST,
-        MAILLE='M6815',
+        GROUP_MA='M6815',
         NOM_CMP='X2',
         REFERENCE='ANALYTIQUE',
         PRECISION=1.E-6,
@@ -577,7 +589,7 @@ TEST_RESU(
 TEST_RESU(
     CARTE = _F(
         CHAM_GD = TOTEST,
-        MAILLE='M7652',
+        GROUP_MA='M7652',
         NOM_CMP='X2',
         REFERENCE='ANALYTIQUE',
         PRECISION=1.E-6,
@@ -589,7 +601,7 @@ TEST_RESU(
 TEST_RESU(
     CARTE = _F(          
         CHAM_GD = TOTEST,
-        MAILLE='M8601',
+        GROUP_MA='M8601',
         NOM_CMP='X2',
         REFERENCE='ANALYTIQUE',
         PRECISION=1.E-6,

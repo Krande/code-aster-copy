@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ mail0 = LIRE_MAILLAGE(FORMAT='MED', VERI_MAIL=_F(VERIF='OUI'));
 mail=CREA_MAILLAGE(MAILLAGE=mail0,
                       CREA_POI1 =(
                                   _F(NOM_GROUP_MA = 'PBASE',
-                                    NOEUD = 'N316'),
+                                    GROUP_NO = 'N316'),
                                   _F(NOM_GROUP_MA = 'PFONDAT',
                                     GROUP_MA = 'SURFBAS2'),
                                  ),
@@ -53,16 +53,16 @@ mail=DEFI_GROUP(reuse =mail,
 mail=MODI_MAILLAGE( reuse=mail,
                     MAILLAGE=mail,
                     ORIE_NORM_COQUE=(_F( VECT_NORM = (0., 0., 1.,),
-                                         NOEUD = 'N963',
+                                         GROUP_NO = 'N963',
                                          GROUP_MA = 'IFLUSOL2'),
                                      _F( VECT_NORM = (1., 0., 0.,),
-                                         NOEUD = 'N221',
+                                         GROUP_NO = 'N221',
                                          GROUP_MA = 'IFLUSTR2'),
                                      _F( VECT_NORM = (0., 0., -1.,),
-                                         NOEUD = 'N316',
+                                         GROUP_NO = 'N316',
                                          GROUP_MA = 'SURFBAS2'),
                                      _F( VECT_NORM = (0., 0., 1.,),
-                                         NOEUD = 'N1043',
+                                         GROUP_NO = 'N1043',
                                          GROUP_MA = 'SLIBREM2'),
                                     ),
                    );
@@ -113,7 +113,7 @@ cara_ele=AFFE_CARA_ELEM(MODELE=modele,
 cond_lim = AFFE_CHAR_MECA( MODELE= modele,
                            DDL_IMPO=_F(
                                           #GROUP_NO=('ISOLSTR',),
-                                          NOEUD = 'N316',
+                                          GROUP_NO = 'N316',
                                           DX= 0.,
                                           DY= 0.,
                                           DZ= 0.,
@@ -188,7 +188,7 @@ mode_rig=CALC_MODES(MATR_RIGI=MATRIGI,
 interdy = DEFI_INTERF_DYNA (NUME_DDL= nume_ddl,
                             INTERFACE=_F(NOM= 'SOLBAR',
                                          TYPE= 'CRAIGB',
-                                         NOEUD=('N316',),),
+                                         GROUP_NO=('N316',),),
                                          #GROUP_NO=('ISOLSTR',),),
                            );
 #
@@ -300,7 +300,7 @@ Trg1i = DYNA_ISS_VARI(
 
 
 ax253i = RECU_FONCTION ( RESU_GENE = Trg1i, NOM_CHAM = 'ACCE',
-                        NOEUD = 'N253', NOM_CMP = 'DX', );
+                        GROUP_NO = 'N253', NOM_CMP = 'DX', );
 
 from math import pi
 p_alpha = 0.5 / 2. / pi
@@ -328,7 +328,7 @@ Trg1 = DYNA_ISS_VARI(
                        INFO   =1 ,);
 
 ax253 = RECU_FONCTION ( RESU_GENE = Trg1, NOM_CHAM = 'ACCE',
-                        NOEUD = 'N253', NOM_CMP = 'DX', );
+                        GROUP_NO = 'N253', NOM_CMP = 'DX', );
 
 freqspec = DEFI_LIST_REEL ( DEBUT = 0.1,
                           INTERVALLE = (
@@ -443,7 +443,7 @@ RN253Xi=REST_SPEC_PHYS( MODE_MECA=bamo,
                      TOUT_ORDRE = 'OUI',
                      INTE_SPEC_GENE = Spg1i,
                      NOM_CHAM='DEPL',
-                     NOEUD=( 'N253'  ),
+                     GROUP_NO=( 'N253'  ),
                      NOM_CMP=('DX', ),
                      OPTION='TOUT_TOUT'   );
 
@@ -456,7 +456,7 @@ RN253X=REST_SPEC_PHYS( MODE_MECA=bamo,
                      TOUT_ORDRE = 'OUI',
                      INTE_SPEC_GENE = Spg1,
                      NOM_CHAM='DEPL',
-                     NOEUD=( 'N253'  ),
+                     GROUP_NO=( 'N253'  ),
                      NOM_CMP=('DX', ),
                      OPTION='TOUT_TOUT'   );
 

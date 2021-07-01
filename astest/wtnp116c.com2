@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -204,7 +204,7 @@ RESUM4=STAT_NON_LINE(MODELE=MODE2,
 
 MAIL_ME=DEFI_GROUP(reuse =MAIL_ME,
                    MAILLAGE=MAIL_ME,
-                   CREA_GROUP_NO=(_F(NOEUD='N14',
+                   CREA_GROUP_NO=(_F(GROUP_NO='N14',
                                      NOM='GXXXXXX_POURTEST',),
                                   _F(GROUP_MA='GXXXXXX_GM3',),),);
 

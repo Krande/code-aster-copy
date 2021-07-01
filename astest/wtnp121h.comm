@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -218,7 +218,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=cal1,
                   NOM_CHAM='DEPL',
-                  NOEUD='N108',
+                  GROUP_NO='N108',
                   NOM_CMP='PRE1',
                   VALE_CALC=-894.000955949,
                   VALE_REFE=-889.31760999999995,
@@ -231,7 +231,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=cal1,
                   NOM_CHAM='DEPL',
-                  NOEUD='N306',
+                  GROUP_NO='N306',
                   NOM_CMP='PRE1',
                   VALE_CALC=-894.000955949,
                   VALE_REFE=-889.31760999999995,

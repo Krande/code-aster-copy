@@ -275,12 +275,12 @@ MSTA_BIC=MODE_STATIQUE(MATR_RIGI=RIGI_BIC,
 MULT_X1=CALC_CHAR_SEISME(MATR_MASS=MASS_BIC,
                          DIRECTION=(1.,0.,0.,),
                          MODE_STAT=MSTA_BIC,
-                         NOEUD='NO1',);
+                         GROUP_NO='NO1',);
 
 MULT_X2=CALC_CHAR_SEISME(MATR_MASS=MASS_BIC,
                          DIRECTION=(1.,0.,0.,),
                          MODE_STAT=MSTA_BIC,
-                         NOEUD='NO11',);
+                         GROUP_NO='NO11',);
 
 CHAR_SE1=AFFE_CHAR_MECA(MODELE=BICHOC,
                         VECT_ASSE=MULT_X1,);
@@ -316,14 +316,14 @@ TRAN_DY2=DYNA_NON_LINE(MODELE=BICHOC,
                                  VITE=VITESSE1,
                                  MULT_APPUI='OUI',
                                  DIRECTION=(1.,0.,0.,),
-                                 NOEUD='NO1',),
+                                 GROUP_NO='NO1',),
                               _F(CHARGE=CHAR_SE2,
                                  DEPL=DEPLACE2,
                                  ACCE=ACCELER2,
                                  VITE=VITESSE2,
                                  MULT_APPUI='OUI',
                                  DIRECTION=(1.,0.,0.,),
-                                 NOEUD='NO11',),),
+                                 GROUP_NO='NO11',),),
                        AMOR_MODAL=_F(MODE_MECA=MODE_BIC,
                                      AMOR_REDUIT=0.07,
                                      REAC_VITE='OUI',),
@@ -356,14 +356,14 @@ TRAN_DY2=DYNA_NON_LINE(reuse = TRAN_DY2,ETAT_INIT=_F(EVOL_NOLI = TRAN_DY2),
                                  VITE=VITESSE1,
                                  MULT_APPUI='OUI',
                                  DIRECTION=(1.,0.,0.,),
-                                 NOEUD='NO1',),
+                                 GROUP_NO='NO1',),
                               _F(CHARGE=CHAR_SE2,
                                  DEPL=DEPLACE2,
                                  ACCE=ACCELER2,
                                  VITE=VITESSE2,
                                  MULT_APPUI='OUI',
                                  DIRECTION=(1.,0.,0.,),
-                                 NOEUD='NO11',),),
+                                 GROUP_NO='NO11',),),
                        AMOR_MODAL=_F(MODE_MECA=MODE_BIC,
                                      AMOR_REDUIT=0.07,
                                      REAC_VITE='OUI',),
@@ -388,8 +388,8 @@ TRAN_DY2=DYNA_NON_LINE(reuse = TRAN_DY2,ETAT_INIT=_F(EVOL_NOLI = TRAN_DY2),
 
 #import matplotlib.pyplot as plt
 
-DEPL10=RECU_FONCTION(RESULTAT=TRAN_DY2, NOM_CHAM='DEPL',      NOM_CMP='DX',NOEUD='NO1') 
-DEPL11=RECU_FONCTION(RESULTAT=TRAN_DY2, NOM_CHAM='DEPL_ABSOLU',      NOM_CMP='DX',NOEUD='NO1') 
+DEPL10=RECU_FONCTION(RESULTAT=TRAN_DY2, NOM_CHAM='DEPL',      NOM_CMP='DX',GROUP_NO='NO1') 
+DEPL11=RECU_FONCTION(RESULTAT=TRAN_DY2, NOM_CHAM='DEPL_ABSOLU',      NOM_CMP='DX',GROUP_NO='NO1') 
 #plt.plot(DEPL10.Absc(), DEPL10.Ordo(),'r')
 #plt.plot(DEPL11.Absc(), DEPL11.Ordo(),'b')
 #plt.savefig('/tmp/TOTO.png')

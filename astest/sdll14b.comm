@@ -30,10 +30,10 @@ MAILLAGE=LIRE_MAILLAGE(FORMAT='MED', )
 
 #
 MAILLAGE=DEFI_GROUP( reuse=MAILLAGE,         MAILLAGE=MAILLAGE,CREA_GROUP_NO=(
-                          _F(  NOM = 'A',  NOEUD = 'NO23'),
-                          _F(  NOM = 'B',  NOEUD = 'NO2'),
-                          _F(  NOM = 'C',  NOEUD = 'NO40'),
-                          _F(  NOM = 'D',  NOEUD = 'NO1')))
+                          _F(  NOM = 'A',  GROUP_NO = 'NO23'),
+                          _F(  NOM = 'B',  GROUP_NO = 'NO2'),
+                          _F(  NOM = 'C',  GROUP_NO = 'NO40'),
+                          _F(  NOM = 'D',  GROUP_NO = 'NO1')))
 
 MODELE=AFFE_MODELE(   MAILLAGE=MAILLAGE,
                             AFFE=_F( TOUT = 'OUI',

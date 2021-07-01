@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -189,7 +189,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=22,
                    VALE_CALC=-7.398247688,
                    VALE_REFE=-7.2000000000000002,
                    PRECISION=0.050000000000000003,
-                   MAILLE='M74',),
+                   GROUP_MA='M74',),
                 _F(NUME_ORDRE=34,
                    REFERENCE='SOURCE_EXTERNE',
                    POINT=2,
@@ -199,7 +199,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=22,
                    VALE_CALC=-11.782055268,
                    VALE_REFE=-11.4,
                    PRECISION=0.050000000000000003,
-                   MAILLE='M74',),
+                   GROUP_MA='M74',),
                 _F(NUME_ORDRE=38,
                    REFERENCE='SOURCE_EXTERNE',
                    POINT=2,
@@ -209,7 +209,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=22,
                    VALE_CALC=-12.116091998,
                    VALE_REFE=-12.6,
                    PRECISION=0.050000000000000003,
-                   MAILLE='M74',),
+                   GROUP_MA='M74',),
                 _F(NUME_ORDRE=50,
                    REFERENCE='SOURCE_EXTERNE',
                    POINT=2,
@@ -219,7 +219,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=22,
                    VALE_CALC=-11.995160490,
                    VALE_REFE=-12.199999999999999,
                    PRECISION=0.050000000000000003,
-                   MAILLE='M74',),
+                   GROUP_MA='M74',),
                 ),
           )
 
@@ -246,7 +246,7 @@ UYP=RECU_FONCTION(RESULTAT=U1,
 SXY661=RECU_FONCTION(RESULTAT=U1,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SITX',
-                   MAILLE ='M66',
+                   GROUP_MA ='M66',
                    POINT = 1,
 
                    );
@@ -254,7 +254,7 @@ SXY661=RECU_FONCTION(RESULTAT=U1,
 SXY672=RECU_FONCTION(RESULTAT=U1,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SITX',
-                   MAILLE ='M67',
+                   GROUP_MA ='M67',
                    POINT = 2,
 
                    );
@@ -262,7 +262,7 @@ SXY672=RECU_FONCTION(RESULTAT=U1,
 SXY681=RECU_FONCTION(RESULTAT=U1,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SITX',
-                   MAILLE ='M68',
+                   GROUP_MA ='M68',
                    POINT = 1,
 
                    );
@@ -270,7 +270,7 @@ SXY681=RECU_FONCTION(RESULTAT=U1,
 SXY692=RECU_FONCTION(RESULTAT=U1,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SITX',
-                   MAILLE ='M69',
+                   GROUP_MA ='M69',
                    POINT = 2,
 
                    );
@@ -278,7 +278,7 @@ SXY692=RECU_FONCTION(RESULTAT=U1,
 SXY701=RECU_FONCTION(RESULTAT=U1,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SITX',
-                   MAILLE ='M70',
+                   GROUP_MA ='M70',
                    POINT = 1,
 
                    );
@@ -286,7 +286,7 @@ SXY701=RECU_FONCTION(RESULTAT=U1,
 SXY712=RECU_FONCTION(RESULTAT=U1,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SITX',
-                   MAILLE ='M71',
+                   GROUP_MA ='M71',
                    POINT = 2,
 
                    );
@@ -294,7 +294,7 @@ SXY712=RECU_FONCTION(RESULTAT=U1,
 SXY721=RECU_FONCTION(RESULTAT=U1,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SITX',
-                   MAILLE ='M72',
+                   GROUP_MA ='M72',
                    POINT = 1,
 
                    );
@@ -302,7 +302,7 @@ SXY721=RECU_FONCTION(RESULTAT=U1,
 SXY732=RECU_FONCTION(RESULTAT=U1,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SITX',
-                   MAILLE ='M73',
+                   GROUP_MA ='M73',
                    POINT = 2,
 
                    );
@@ -310,7 +310,7 @@ SXY732=RECU_FONCTION(RESULTAT=U1,
 SXY741=RECU_FONCTION(RESULTAT=U1,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SITX',
-                   MAILLE ='M74',
+                   GROUP_MA ='M74',
                    POINT = 1,
 
                    );
@@ -320,7 +320,7 @@ SXY741=RECU_FONCTION(RESULTAT=U1,
 V2PG1_66=RECU_FONCTION(RESULTAT=U1,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V2',
-                   MAILLE ='M66',
+                   GROUP_MA ='M66',
                    POINT = 1,
 
                    );
@@ -328,7 +328,7 @@ V2PG1_66=RECU_FONCTION(RESULTAT=U1,
 V2PG2_66=RECU_FONCTION(RESULTAT=U1,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V2',
-                   MAILLE ='M66',
+                   GROUP_MA ='M66',
                    POINT = 2,
 
                    );

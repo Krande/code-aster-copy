@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -362,7 +362,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #----------------------
 COUI_MOY=POST_ELEM(NUME_ORDRE=(1,2,3,4),
               RICE_TRACEY=_F(LOCAL='OUI',
-                             MAILLE=('M1','M2','M3','M4','M5','M6','M7',
+                             GROUP_MA=('M1','M2','M3','M4','M5','M6','M7',
                                      'M8','M9','M10','M11','M12','M13','M14'),
                              OPTION='SIGM_ELMOY',),
               RESULTAT=U,)
@@ -415,7 +415,7 @@ EOUI_ELG=POST_ELEM(NUME_ORDRE=(1,2,3,4),
 
 FOUI_ELG=POST_ELEM(NUME_ORDRE=(1,2,3,4),
               RICE_TRACEY=_F(LOCAL='OUI',
-                             MAILLE=('M1','M2','M3','M4','M5','M6','M7',
+                             GROUP_MA=('M1','M2','M3','M4','M5','M6','M7',
                                      'M8','M9','M10','M11','M12','M13','M14'),
                              OPTION='SIGM_ELGA',),
               RESULTAT=U,)
@@ -452,7 +452,7 @@ BNON_MOY=POST_ELEM(NUME_ORDRE=(1,2,3,4),
 
 CNON_MOY=POST_ELEM(NUME_ORDRE=(1,2,3,4),
               RICE_TRACEY=_F(LOCAL='NON',
-                             MAILLE=('M1','M2','M3','M4','M5','M6','M7',
+                             GROUP_MA=('M1','M2','M3','M4','M5','M6','M7',
                                      'M8','M9','M10','M11','M12','M13','M14'),
                              OPTION='SIGM_ELMOY',),
               RESULTAT=U,)
@@ -485,7 +485,7 @@ ENON_ELG=POST_ELEM(NUME_ORDRE=(1,2,3,4),
 
 FNON_ELG=POST_ELEM(NUME_ORDRE=(1,2,3,4),
               RICE_TRACEY=_F(LOCAL='NON',
-                             MAILLE=('M1','M2','M3','M4','M5','M6','M7',
+                             GROUP_MA=('M1','M2','M3','M4','M5','M6','M7',
                                      'M8','M9','M10','M11','M12','M13','M14'),
                              OPTION='SIGM_ELGA',),
               RESULTAT=U,)

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -101,7 +101,7 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
 CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_MA=('LB'),DZ=0.0, H1Z=0.0,),
                              _F(GROUP_MA=('LH'),DZ=0.0, H1Z=0.0,),
-                             _F(NOEUD=('N87','N93','N156','N169'),DZ=0.0,H1Z=0.0,H2Z=0.),),
+                             _F(GROUP_NO=('N87','N93','N156','N169'),DZ=0.0,H1Z=0.0,H2Z=0.),),
                    INFO=1,);
 
 CH3=AFFE_CHAR_MECA(MODELE=MODELEK,
@@ -112,24 +112,24 @@ HYDR=AFFE_CHAR_MECA(MODELE=MODELEK,
                     DDL_IMPO=(
                              _F(TOUT='OUI',H2PRE1=0.0),
                              _F(TOUT='OUI',H1PRE1=0.0),
-                             _F(NOEUD=('N2','N25','N26','N27','N28','N6','N9','N41','N45','N49','N53','N17','N46','N50'),PRE1=2.0E5,),
-                             _F(NOEUD=('N8','N36','N35','N34','N33','N4','N21','N57','N61','N65','N69','N13','N62','N66'),PRE1=2.0E5,),
-                             _F(NOEUD=('N54','N18','N55','N19'),PRE1=4.0E5,),
-                             _F(NOEUD=('N22','N23','N58','N59'),PRE1=4.0E5,),
-                             _F(NOEUD=('N10','N42','N11','N43','N47','N51','N12','N44','N48','N52','N56','N20','N1','N29','N30','N31','N32','N5'),PRE1=6.0E5,),
-                             _F(NOEUD=('N70','N14','N15','N71','N67','N63','N24','N60','N64','N68','N72','N16','N7','N40','N39','N38','N37','N3'),PRE1=6.0E5,),
-                             _F(NOEUD=('N49','N53','N17','N19','N52','N56','N20'),H1PRE1=1.0E5),
-                             _F(NOEUD=('N61','N57','N21','N23','N64','N60','N24'),H1PRE1=1.0E5),
-                             _F(NOEUD=('N9','N41','N45','N10','N42','N43'),H1PRE1=2.0E5),
-                             _F(NOEUD=('N13','N69','N65','N14','N70','N71'),H1PRE1=2.0E5),
-                             _F(NOEUD=('N46','N50','N62','N66'),H1PRE1=2.0E5,H2PRE1=1.0E5),
-                             _F(NOEUD=('N55','N59'),H1PRE1=1.0E5,H2PRE1=-1.0E5),
-                             _F(NOEUD=('N54','N58'),H1PRE1=1.0E5,H2PRE1=-1.0E5),                            
-                             _F(NOEUD=('N47','N67'),H1PRE1=-2.0E5,H2PRE1=-1.0E5),
-                             _F(NOEUD=('N51','N63'),H1PRE1=-1.0E5,H2PRE1=-2.0E5),
-                             _F(NOEUD=('N18','N22'),H1PRE1=1.0E5),
-#                             _F(NOEUD=('N53','N49','N17','N18'),H2PRE1=0.0E5),
-#                             _F(NOEUD=('N61','N57','N21','N22'),H2PRE1=0.0E5),
+                             _F(GROUP_NO=('N2','N25','N26','N27','N28','N6','N9','N41','N45','N49','N53','N17','N46','N50'),PRE1=2.0E5,),
+                             _F(GROUP_NO=('N8','N36','N35','N34','N33','N4','N21','N57','N61','N65','N69','N13','N62','N66'),PRE1=2.0E5,),
+                             _F(GROUP_NO=('N54','N18','N55','N19'),PRE1=4.0E5,),
+                             _F(GROUP_NO=('N22','N23','N58','N59'),PRE1=4.0E5,),
+                             _F(GROUP_NO=('N10','N42','N11','N43','N47','N51','N12','N44','N48','N52','N56','N20','N1','N29','N30','N31','N32','N5'),PRE1=6.0E5,),
+                             _F(GROUP_NO=('N70','N14','N15','N71','N67','N63','N24','N60','N64','N68','N72','N16','N7','N40','N39','N38','N37','N3'),PRE1=6.0E5,),
+                             _F(GROUP_NO=('N49','N53','N17','N19','N52','N56','N20'),H1PRE1=1.0E5),
+                             _F(GROUP_NO=('N61','N57','N21','N23','N64','N60','N24'),H1PRE1=1.0E5),
+                             _F(GROUP_NO=('N9','N41','N45','N10','N42','N43'),H1PRE1=2.0E5),
+                             _F(GROUP_NO=('N13','N69','N65','N14','N70','N71'),H1PRE1=2.0E5),
+                             _F(GROUP_NO=('N46','N50','N62','N66'),H1PRE1=2.0E5,H2PRE1=1.0E5),
+                             _F(GROUP_NO=('N55','N59'),H1PRE1=1.0E5,H2PRE1=-1.0E5),
+                             _F(GROUP_NO=('N54','N58'),H1PRE1=1.0E5,H2PRE1=-1.0E5),                            
+                             _F(GROUP_NO=('N47','N67'),H1PRE1=-2.0E5,H2PRE1=-1.0E5),
+                             _F(GROUP_NO=('N51','N63'),H1PRE1=-1.0E5,H2PRE1=-2.0E5),
+                             _F(GROUP_NO=('N18','N22'),H1PRE1=1.0E5),
+#                             _F(GROUP_NO=('N53','N49','N17','N18'),H2PRE1=0.0E5),
+#                             _F(GROUP_NO=('N61','N57','N21','N22'),H2PRE1=0.0E5),
                              ),
                     INFO=1,
                    );

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -150,8 +150,8 @@ HYDR=AFFE_CHAR_MECA(MODELE=MODELEK,
 
 HYDR2=AFFE_CHAR_MECA(MODELE=MODELEK,
                     DDL_IMPO=(
-                             _F(NOEUD=('N20','N21','N26','N27','N32','N11','N24','N9'),PRE_FLU=0.,LAG_FLI=0.,LAG_FLS=0.,),
-                             _F(NOEUD=('N27'),LA2_FLI=0.,LA2_FLS=0.,),
+                             _F(GROUP_NO=('N20','N21','N26','N27','N32','N11','N24','N9'),PRE_FLU=0.,LAG_FLI=0.,LAG_FLS=0.,),
+                             _F(GROUP_NO=('N27'),LA2_FLI=0.,LA2_FLS=0.,),
                              ),
                     INFO=1,
                    );

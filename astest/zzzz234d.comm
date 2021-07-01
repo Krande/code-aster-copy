@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -147,7 +147,7 @@ SELG01=CREA_CHAMP(
 TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
                        POINT=1,
                        NOM_CMP='N',
-                       MAILLE='M1',
+                       GROUP_MA='M1',
                        CHAM_GD=SELG01,
                        VALE_CALC=-4000.0,
                        VALE_REFE=-4000.0,),
@@ -187,10 +187,10 @@ SELN01=CREA_CHAMP(
    MODELE=MO_DISTL,  PROL_ZERO='OUI',
    ASSE=_F( TOUT='OUI',   CHAM_GD = VELN01, NOM_CMP = ('X1'), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_ELEM=_F(NOEUD='N2',
+TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N2',
                        REFERENCE='ANALYTIQUE',
                        NOM_CMP='N',
-                       MAILLE='M1',
+                       GROUP_MA='M1',
                        CHAM_GD=SELN01,
                        VALE_CALC=-4000.0,
                        VALE_REFE=-4000.0,),
@@ -230,7 +230,7 @@ SNOE01=CREA_CHAMP(
    MODELE=MO_DISTL,
    ASSE=_F( TOUT='OUI',   CHAM_GD = VNOE01, NOM_CMP = ('X1',  ), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_NO=_F(NOEUD='N2',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='N2',
                      REFERENCE='ANALYTIQUE',
                      NOM_CMP='N',
                      CHAM_GD=SNOE01,
@@ -245,6 +245,12 @@ TEST_RESU(CHAM_NO=_F(NOEUD='N2',
 MA_POI=CREA_MAILLAGE(MAILLAGE=MA,INFO=2,
                       CREA_POI1=_F(GROUP_NO='A', NOM_GROUP_MA='POI_A'),
                       )
+
+MA_POI = DEFI_GROUP( reuse = MA_POI, MAILLAGE = MA_POI,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'N1', MAILLE = 'N1'),
+                                     ),
+         )
 
 CHMAT_D = AFFE_MATERIAU(MAILLAGE=MA_POI,
                       AFFE        = _F(TOUT='OUI',MATER=MATE,),)
@@ -265,7 +271,7 @@ CA_DISTN = AFFE_CARA_ELEM(   MODELE=MO_DISTN,
 
 
 CH_DISTN = AFFE_CHAR_MECA(MODELE=MO_DISTN,
-                        DDL_IMPO=_F(NOEUD='N1',DRX=0.,DRY=0.,DRZ=0.),
+                        DDL_IMPO=_F(GROUP_NO='N1',DRX=0.,DRY=0.,DRZ=0.),
                         FORCE_NODALE=_F(GROUP_NO='B',FY=-1000.,),
                         PRE_EPSI=_F(GROUP_MA ='POI_A', EPXX=0.))
 
@@ -339,7 +345,7 @@ SELG02=CREA_CHAMP(
 TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
                        POINT=1,
                        NOM_CMP='N',
-                       MAILLE='N1',
+                       GROUP_MA='N1',
                        CHAM_GD=SELG02,
                        VALE_CALC=-4000.0,
                        VALE_REFE=-4000.0,),
@@ -378,10 +384,10 @@ SELN02=CREA_CHAMP(
    MODELE=MO_DISTN,  PROL_ZERO='OUI',
    ASSE=_F( GROUP_MA = 'POI_A',   CHAM_GD = VELN02, NOM_CMP = ('X1'), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_ELEM=_F(NOEUD='N1',
+TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N1',
                        REFERENCE='ANALYTIQUE',
                        NOM_CMP='N',
-                       MAILLE='N1',
+                       GROUP_MA='N1',
                        CHAM_GD=SELN02,
                        VALE_CALC=-4000.0,
                        VALE_REFE=-4000.0,),
@@ -421,7 +427,7 @@ SNOE02=CREA_CHAMP(
    MODELE=MO_DISTN,
    ASSE=_F( GROUP_MA = 'POI_A',   CHAM_GD = VNOE02, NOM_CMP = ('X1',  ), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_NO=_F(NOEUD='N1',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='N1',
                      REFERENCE='ANALYTIQUE',
                      NOM_CMP='N',
                      CHAM_GD=SNOE02,
@@ -547,7 +553,7 @@ SELG03=CREA_CHAMP(
 TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
                        POINT=1,
                        NOM_CMP='N',
-                       MAILLE='M1',
+                       GROUP_MA='M1',
                        CHAM_GD=SELG03,
                        VALE_CALC=2000.0,
                        VALE_REFE=2000.0,),
@@ -587,10 +593,10 @@ SELN03=CREA_CHAMP(
    MODELE=MO_DITRL,  PROL_ZERO='OUI',
    ASSE=_F( TOUT='OUI',   CHAM_GD = VELN03, NOM_CMP = ('X1'), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_ELEM=_F(NOEUD='N2',
+TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N2',
                        REFERENCE='ANALYTIQUE',
                        NOM_CMP='N',
-                       MAILLE='M1',
+                       GROUP_MA='M1',
                        CHAM_GD=SELN03,
                        VALE_CALC=2000.0,
                        VALE_REFE=2000.0,),
@@ -629,7 +635,7 @@ SNOE03=CREA_CHAMP(
    MODELE=MO_DITRL,
    ASSE=_F( TOUT='OUI',   CHAM_GD = VNOE03, NOM_CMP = ('X1',  ), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_NO=_F(NOEUD='N2',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='N2',
                      REFERENCE='ANALYTIQUE',
                      NOM_CMP='N',
                      CHAM_GD=SNOE03,
@@ -730,7 +736,7 @@ SELG04=CREA_CHAMP(
 TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
                        POINT=1,
                        NOM_CMP='N',
-                       MAILLE='N1',
+                       GROUP_MA='N1',
                        CHAM_GD=SELG04,
                        VALE_CALC=2000.0,
                        VALE_REFE=2000.0,),
@@ -770,10 +776,10 @@ SELN04=CREA_CHAMP(
    MODELE=MO_DITRN,  PROL_ZERO='OUI',
    ASSE=_F( GROUP_MA = 'POI_A',   CHAM_GD = VELN04, NOM_CMP = ('X1'), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_ELEM=_F(NOEUD='N1',
+TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N1',
                        REFERENCE='ANALYTIQUE',
                        NOM_CMP='N',
-                       MAILLE='N1',
+                       GROUP_MA='N1',
                        CHAM_GD=SELN04,
                        VALE_CALC=2000.0,
                        VALE_REFE=2000.0,),
@@ -813,7 +819,7 @@ SNOE04=CREA_CHAMP(
    MODELE=MO_DITRN,
    ASSE=_F( GROUP_MA = 'POI_A',   CHAM_GD = VNOE04, NOM_CMP = ('X1',  ), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_NO=_F(NOEUD='N1',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='N1',
                      REFERENCE='ANALYTIQUE',
                      NOM_CMP='N',
                      CHAM_GD=SNOE04,

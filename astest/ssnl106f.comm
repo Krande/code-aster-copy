@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -197,7 +197,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC= 1.4996013222191E+08,
                    VALE_REFE=1.50000000E8,
                    PRECISION=1.E-3,
-                   MAILLE='M2',),
+                   GROUP_MA='M2',),
                 _F(NUME_ORDRE=6,
                    GROUP_NO='B',
                    REFERENCE='ANALYTIQUE',

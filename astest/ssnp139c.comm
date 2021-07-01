@@ -294,7 +294,7 @@ IMPR_TABLE(TABLE = F_ELAS);
 IMPR_RESU(FORMAT='RESULTAT',RESU=(_F(RESULTAT=U_ELAS,
                                      NOM_CHAM='VARI_ELGA',
                                      INST=tfin,
-                                     MAILLE=('M9788','M9789','M9790','M9791','M9792'),
+                                     GROUP_MA=('M9788','M9789','M9790','M9791','M9792'),
                                      NOM_CMP=('V3','V7'))))
 
 

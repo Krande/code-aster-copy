@@ -381,13 +381,13 @@ IMPR_TABLE(TABLE=TB_FRONT,UNITE=6,);
 
 # pour l instant post traitement commente
 # TABLSN= POST_RELEVE_T(ACTION=_F(INTITULE='Test LSN',
-#                                 NOEUD=('N1130','N1028','N926',),
+#                                 GROUP_NO=('N1130','N1028','N926',),
 #                                 CHAM_GD=LSN[i],
 #                                 TOUT_CMP='OUI',
 #                                 OPERATION='EXTRACTION',),);
 #
 # TABLST= POST_RELEVE_T(ACTION=_F(INTITULE='Test LST',
-#                                 NOEUD=('N1130','N1028','N926',),
+#                                 GROUP_NO=('N1130','N1028','N926',),
 #                                 CHAM_GD=LST[i],
 #                                 TOUT_CMP='OUI',
 #                                 OPERATION='EXTRACTION',),);

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,7 +73,7 @@ STATS=STAT_NON_LINE(
 
 for ii in range(len(REFER)):
    TEST_RESU(
-      RESU= _F(RESULTAT=STATS, INST=REFER[ii][itps], MAILLE='CUBE', POINT=1,
+      RESU= _F(RESULTAT=STATS, INST=REFER[ii][itps], GROUP_MA='CUBE', POINT=1,
                NOM_CHAM=REFER[ii][icha], NOM_CMP=REFER[ii][icmp],
                CRITERE=REFER[ii][icrit],
                TOLE_MACHINE=(REFER[ii][iprec],1.0E-08), PRECISION=REFER[ii][iprec],
@@ -184,7 +184,7 @@ REFER= [
 
 for ii in range(len(REFER)):
    TEST_RESU(
-      RESU= _F(RESULTAT=STATI, INST=REFER[ii][itps], MAILLE='CUBE', POINT=1,
+      RESU= _F(RESULTAT=STATI, INST=REFER[ii][itps], GROUP_MA='CUBE', POINT=1,
                NOM_CHAM=REFER[ii][icha], NOM_CMP=REFER[ii][icmp],
                CRITERE=REFER[ii][icrit],
                TOLE_MACHINE=(REFER[ii][iprec],1.0E-08), PRECISION=REFER[ii][iprec],

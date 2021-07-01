@@ -210,29 +210,29 @@ DEPBX=RECU_FONCTION(RESULTAT=U1MAZAR, NOM_CHAM='DEPL',      NOM_CMP='DX', GROUP_
 REACA=RECU_FONCTION(RESULTAT=U1MAZAR, NOM_CHAM='REAC_NODA', NOM_CMP='DY', GROUP_NO='A', )
 # Déformation acier tendu
 DEFAT=RECU_FONCTION(RESULTAT=U1MAZAR, NOM_CHAM='EPSI_ELGA', NOM_CMP='EPXX',
-                    MAILLE='M9', POINT=1, SOUS_POINT=spat)
+                    GROUP_MA='M9', POINT=1, SOUS_POINT=spat)
 # Déformation acier comprimé
 DEFAC=RECU_FONCTION(RESULTAT=U1MAZAR, NOM_CHAM='EPSI_ELGA', NOM_CMP='EPXX',
-                    MAILLE='M9', POINT=1, SOUS_POINT=spac)
+                    GROUP_MA='M9', POINT=1, SOUS_POINT=spac)
 # Déformation béton tendu
 DEFBT=RECU_FONCTION(RESULTAT=U1MAZAR, NOM_CHAM='EPSI_ELGA', NOM_CMP='EPXX',
-                    MAILLE='M9', POINT=1, SOUS_POINT=spbt)
+                    GROUP_MA='M9', POINT=1, SOUS_POINT=spbt)
 # Déformation béton comprimé
 DEFBC=RECU_FONCTION(RESULTAT=U1MAZAR, NOM_CHAM='EPSI_ELGA', NOM_CMP='EPXX',
-                    MAILLE='M9', POINT=1, SOUS_POINT=spbc)
+                    GROUP_MA='M9', POINT=1, SOUS_POINT=spbc)
 #
 # Contrainte acier tendu
 CONAT=RECU_FONCTION(RESULTAT=U1MAZAR, NOM_CHAM='SIEF_ELGA', NOM_CMP='SIXX',
-                    MAILLE='M9', POINT=1, SOUS_POINT=spat)
+                    GROUP_MA='M9', POINT=1, SOUS_POINT=spat)
 # Contrainte acier comprime
 CONAC=RECU_FONCTION(RESULTAT=U1MAZAR, NOM_CHAM='SIEF_ELGA', NOM_CMP='SIXX',
-                    MAILLE='M9', POINT=1, SOUS_POINT=spac)
+                    GROUP_MA='M9', POINT=1, SOUS_POINT=spac)
 # Contrainte beton tendu
 CONBT=RECU_FONCTION(RESULTAT=U1MAZAR, NOM_CHAM='SIEF_ELGA', NOM_CMP='SIXX',
-                    MAILLE='M9', POINT=1, SOUS_POINT=spbt)
+                    GROUP_MA='M9', POINT=1, SOUS_POINT=spbt)
 # Contrainte beton comprime
 CONBC=RECU_FONCTION(RESULTAT=U1MAZAR, NOM_CHAM='SIEF_ELGA', NOM_CMP='SIXX',
-                    MAILLE='M9', POINT=1, SOUS_POINT=spbc)
+                    GROUP_MA='M9', POINT=1, SOUS_POINT=spbc)
 
 TEST_FONCTION(VALEUR=_F(FONCTION=DEPCY, NOM_PARA='INST', VALE_PARA = 3.480,
                         VALE_CALC=-3.48000E-02, VALE_REFE=-3.48000E-02, REFERENCE='AUTRE_ASTER'))

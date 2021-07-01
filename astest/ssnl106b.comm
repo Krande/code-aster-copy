@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -101,21 +101,21 @@ DEGE_DE=CREA_CHAMP(
 
 TEST_RESU(
     CHAM_ELEM=(
-        _F( NOEUD='C3', REFERENCE='ANALYTIQUE', NOM_CMP='EPXX',
-            MAILLE='SC2', CHAM_GD=DEGE_DE,
+        _F( GROUP_NO='C3', REFERENCE='ANALYTIQUE', NOM_CMP='EPXX',
+            GROUP_MA='SC2', CHAM_GD=DEGE_DE,
             VALE_CALC= 2.250E-03,
             VALE_REFE= 2.250E-03,),
-        _F( NOEUD='C2', REFERENCE='ANALYTIQUE', NOM_CMP='EPXX',
-            MAILLE='SC1', CHAM_GD=DEGE_DE,
+        _F( GROUP_NO='C2', REFERENCE='ANALYTIQUE', NOM_CMP='EPXX',
+            GROUP_MA='SC1', CHAM_GD=DEGE_DE,
             VALE_CALC= 2.250E-03,
             VALE_REFE= 2.250E-03,),
 
-        _F( NOEUD='R3', REFERENCE='ANALYTIQUE', NOM_CMP='EPXX',
-            MAILLE='SR2', CHAM_GD=DEGE_DE,
+        _F( GROUP_NO='R3', REFERENCE='ANALYTIQUE', NOM_CMP='EPXX',
+            GROUP_MA='SR2', CHAM_GD=DEGE_DE,
             VALE_CALC= 2.250E-03,
             VALE_REFE= 2.250E-03,),
-        _F( NOEUD='R2', REFERENCE='ANALYTIQUE', NOM_CMP='EPXX',
-            MAILLE='SR1', CHAM_GD=DEGE_DE,
+        _F( GROUP_NO='R2', REFERENCE='ANALYTIQUE', NOM_CMP='EPXX',
+            GROUP_MA='SR1', CHAM_GD=DEGE_DE,
             VALE_CALC= 2.250E-03,
             VALE_REFE= 2.250E-03,),
     ),

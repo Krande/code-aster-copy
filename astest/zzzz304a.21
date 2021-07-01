@@ -1,5 +1,5 @@
  TITRE
- %  CARR2
+ %  CARR2                                                                       
  FINSF
  %
  COOR_2D
@@ -87,106 +87,121 @@
  N82       1.66666666666667E-01  9.16666666666667E-01
  FINSF
  %
- QUAD8
- M1       N1       N2       N5       N4       N10      N22      N13
-          N38
- M2       N2       N3       N6       N5       N11      N23      N14
-          N22
- M3       N3       N19      N20      N6       N12      N24      N15
-          N23
- M4       N4       N5       N8       N7       N13      N25      N16
-          N39
- M5       N5       N6       N9       N8       N14      N26      N17
-          N25
- M6       N6       N20      N21      N9       N15      N27      N18
-          N26
- M7       N7       N8       N31      N37      N16      N28      N34
-          N40
- M8       N8       N9       N32      N31      N17      N29      N35
-          N28
- M9       N9       N21      N33      N32      N18      N30      N36
-          N29
+ QUAD8   
+ M1       N1       N2       N5       N4       N10      N22      N13     
+          N38     
+ M2       N2       N3       N6       N5       N11      N23      N14     
+          N22     
+ M3       N3       N19      N20      N6       N12      N24      N15     
+          N23     
+ M4       N4       N5       N8       N7       N13      N25      N16     
+          N39     
+ M5       N5       N6       N9       N8       N14      N26      N17     
+          N25     
+ M6       N6       N20      N21      N9       N15      N27      N18     
+          N26     
+ M7       N7       N8       N31      N37      N16      N28      N34     
+          N40     
+ M8       N8       N9       N32      N31      N17      N29      N35     
+          N28     
+ M9       N9       N21      N33      N32      N18      N30      N36     
+          N29     
  FINSF
  %
- TRIA6
- M10      N33      N32      N41      N36      N65      N77
- M11      N41      N43      N33      N50      N66      N77
- M12      N32      N31      N41      N35      N67      N65
- M13      N31      N45      N41      N51      N54      N67
- M14      N31      N37      N42      N34      N68      N78
- M15      N42      N45      N31      N52      N51      N78
- M16      N43      N41      N46      N50      N69      N79
- M17      N41      N48      N46      N53      N57      N69
- M18      N41      N45      N44      N54      N70      N80
- M19      N44      N48      N41      N55      N53      N80
- M20      N45      N42      N44      N52      N71      N70
- M21      N42      N62      N44      N56      N60      N71
- M22      N46      N48      N47      N57      N72      N81
- M23      N47      N63      N46      N58      N73      N81
- M24      N48      N44      N47      N55      N74      N72
- M25      N44      N64      N47      N59      N75      N74
- M26      N44      N62      N49      N60      N76      N82
- M27      N49      N64      N44      N61      N59      N82
+ TRIA6   
+ M10      N33      N32      N41      N36      N65      N77     
+ M11      N41      N43      N33      N50      N66      N77     
+ M12      N32      N31      N41      N35      N67      N65     
+ M13      N31      N45      N41      N51      N54      N67     
+ M14      N31      N37      N42      N34      N68      N78     
+ M15      N42      N45      N31      N52      N51      N78     
+ M16      N43      N41      N46      N50      N69      N79     
+ M17      N41      N48      N46      N53      N57      N69     
+ M18      N41      N45      N44      N54      N70      N80     
+ M19      N44      N48      N41      N55      N53      N80     
+ M20      N45      N42      N44      N52      N71      N70     
+ M21      N42      N62      N44      N56      N60      N71     
+ M22      N46      N48      N47      N57      N72      N81     
+ M23      N47      N63      N46      N58      N73      N81     
+ M24      N48      N44      N47      N55      N74      N72     
+ M25      N44      N64      N47      N59      N75      N74     
+ M26      N44      N62      N49      N60      N76      N82     
+ M27      N49      N64      N44      N61      N59      N82     
  FINSF
  %
- SEG3
- M28      N1       N2       N10
- M29      N2       N3       N11
- M30      N3       N19      N12
- M34      N33      N32      N36
- M35      N32      N31      N35
- M36      N31      N37      N34
- FINSF
- %
- GROUP_NO
- D
- N49
+ SEG3    
+ M28      N1       N2       N10     
+ M29      N2       N3       N11     
+ M30      N3       N19      N12     
+ M34      N33      N32      N36     
+ M35      N32      N31      N35     
+ M36      N31      N37      N34     
  FINSF
  %
  GROUP_NO
- C
- N63
+ D                       
+ N49     
  FINSF
  %
  GROUP_NO
- A
- N1
+ C                       
+ N63     
  FINSF
  %
  GROUP_NO
- B
- N19
+ A                       
+ N1      
+ FINSF
+ %
+ GROUP_NO
+ B                       
+ N19     
+ FINSF
+ %
+ GROUP_NO
+ N36                     
+ N36     
  FINSF
  %
  GROUP_MA
- CARRE
- M1       M2       M3       M4       M5       M6       M7
- M8       M9       M10      M11      M12      M13      M14
- M15      M16      M17      M18      M19      M20      M21
- M22      M23      M24      M25      M26      M27
+ CARRE                   
+ M1       M2       M3       M4       M5       M6       M7      
+ M8       M9       M10      M11      M12      M13      M14     
+ M15      M16      M17      M18      M19      M20      M21     
+ M22      M23      M24      M25      M26      M27     
  FINSF
  %
  GROUP_MA
- CARR1
- M1       M2       M3       M4       M5       M6       M7
- M8       M9
+ CARR1                   
+ M1       M2       M3       M4       M5       M6       M7      
+ M8       M9      
  FINSF
  %
  GROUP_MA
- CARR2
- M10      M11      M12      M13      M14      M15      M16
- M17      M18      M19      M20      M21      M22      M23
- M24      M25      M26      M27
+ CARR2                   
+ M10      M11      M12      M13      M14      M15      M16     
+ M17      M18      M19      M20      M21      M22      M23     
+ M24      M25      M26      M27     
  FINSF
  %
  GROUP_MA
- BORD1
- M28      M29      M30
+ BORD1                   
+ M28      M29      M30     
  FINSF
  %
  GROUP_MA
- BORD2
- M34      M35      M36
+ BORD2                   
+ M34      M35      M36     
+ FINSF
+ %
+ GROUP_MA
+ M9                      
+ M9      
+ FINSF
+ %
+ GROUP_MA
+ M10                     
+ M10     
  FINSF
  %
  FIN

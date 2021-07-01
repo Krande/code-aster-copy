@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -321,7 +321,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='POINT',
 # on refait l'étude avec l'affectation MAILLE au lieu de GROUP_MA dans AFFE_CARA_ELEM
 # mais on ne teste que les déplacements
 CARA2=AFFE_CARA_ELEM(MODELE = MODE,
-                    MEMBRANE =(_F(MAILLE     = ('M21','M22','M23','M24','M25',
+                    MEMBRANE =(_F(GROUP_MA     = ('M21','M22','M23','M24','M25',
                                                 'M26','M27','M28','M29','M30',
                                                 'M31','M32','M33','M34','M35',
                                                 'M36','M37','M38','M39','M40',

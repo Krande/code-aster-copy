@@ -81,10 +81,10 @@ CHMEC1=AFFE_CHAR_MECA( MODELE=MOMEC1,DDL_IMPO=(
 U1=STAT_NON_LINE(MODELE=MOMEC1,  CHAM_MATER=CHMAT,
                  EXCIT=_F( CHARGE = CHMEC1),
                  COMPORTEMENT=(
-                       _F( RELATION = 'VMIS_CINE_LINE', MAILLE=('M1','M2','M3')),
-                       _F( RELATION = 'VMIS_ISOT_TRAC', MAILLE=('M4','M5')),
-                       _F( RELATION = 'VMIS_ISOT_LINE', MAILLE=('M6')),
-                       _F( RELATION = 'ELAS',           MAILLE=('M7')),
+                       _F( RELATION = 'VMIS_CINE_LINE', GROUP_MA=('M1','M2','M3')),
+                       _F( RELATION = 'VMIS_ISOT_TRAC', GROUP_MA=('M4','M5')),
+                       _F( RELATION = 'VMIS_ISOT_LINE', GROUP_MA=('M6')),
+                       _F( RELATION = 'ELAS',           GROUP_MA=('M7')),
                        ),
                  INCREMENT=_F( LIST_INST = L_INST),
                  CONVERGENCE=_F( ITER_GLOB_MAXI=50),
@@ -123,10 +123,10 @@ U2_1=STAT_NON_LINE(MODELE=MOMEC2,  CHAM_MATER=CHMAT,
                  ETAT_INIT=_F( EVOL_NOLI = U1, INST=60.),
                  EXCIT=_F( CHARGE = CHMEC2),
                  COMPORTEMENT=(
-                       _F( RELATION = 'VMIS_CINE_LINE', MAILLE=('M1','M3','M7','M8','M9')),
-                       _F( RELATION = 'VMIS_ISOT_TRAC', MAILLE=('M6')),
-                       _F( RELATION = 'VMIS_ISOT_LINE', MAILLE=('M4')),
-                       _F( RELATION = 'ELAS',           MAILLE=('M5')),
+                       _F( RELATION = 'VMIS_CINE_LINE', GROUP_MA=('M1','M3','M7','M8','M9')),
+                       _F( RELATION = 'VMIS_ISOT_TRAC', GROUP_MA=('M6')),
+                       _F( RELATION = 'VMIS_ISOT_LINE', GROUP_MA=('M4')),
+                       _F( RELATION = 'ELAS',           GROUP_MA=('M5')),
                        ),
                  INCREMENT=_F( LIST_INST = L_INST,INST_INIT=60. ),
                  CONVERGENCE=_F( ITER_GLOB_MAXI=50),
@@ -144,10 +144,10 @@ U2_2=STAT_NON_LINE(MODELE=MOMEC2,  CHAM_MATER=CHMAT,
                  ETAT_INIT=_F( DEPL=D1, SIGM=S1, VARI=V1),
                  EXCIT=_F( CHARGE = CHMEC2),
                  COMPORTEMENT=(
-                       _F( RELATION = 'VMIS_CINE_LINE', MAILLE=('M1','M3','M7','M8','M9')),
-                       _F( RELATION = 'VMIS_ISOT_TRAC', MAILLE=('M6')),
-                       _F( RELATION = 'VMIS_ISOT_LINE', MAILLE=('M4')),
-                       _F( RELATION = 'ELAS',           MAILLE=('M5')),
+                       _F( RELATION = 'VMIS_CINE_LINE', GROUP_MA=('M1','M3','M7','M8','M9')),
+                       _F( RELATION = 'VMIS_ISOT_TRAC', GROUP_MA=('M6')),
+                       _F( RELATION = 'VMIS_ISOT_LINE', GROUP_MA=('M4')),
+                       _F( RELATION = 'ELAS',           GROUP_MA=('M5')),
                        ),
                  INCREMENT=_F( LIST_INST = L_INST,INST_INIT=60. ),
                  CONVERGENCE=_F( ITER_GLOB_MAXI=50),
@@ -187,11 +187,11 @@ IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MAIL),UNITE=50)
 DEFI_FICHIER(ACTION='LIBERER',UNITE=50)
 
 TEST_FICHIER(FICHIER="./REPE_OUT/zzzz258a.pos",
-             NB_VALE_I=181,
-             VALE_CALC_I=2498,
+             NB_VALE_I=199,
+             VALE_CALC_I=885874,
              NB_VALE=33,
-             VALE_CALC=27.000000000,
-             VALE_CALC_K="dd686a4b7c7aa4b1913867c4e97c370b"
+             VALE_CALC=31.03,
+             VALE_CALC_K="7cf4febebf25e1e397db2ea29e30e226"
 )
 
 # 3.2 : Pour valider l'orientation du pourtour, on utilise MACR_LIGN_COUP :

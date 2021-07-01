@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -218,15 +218,15 @@ CHP_MATT=AFFE_MATERIAU(
 CHR_LIAI=AFFE_CHAR_MECA(
               MODELE=MO,DDL_IMPO=(
 
-               _F( NOEUD = 'NO2',  DX = 0.,  DY = 0.,  DZ = 0.),
-               _F( NOEUD = 'NO6',  DX = 0.,  DY = 0.),
-               _F( NOEUD = 'NO1',  DX = 0.,          DZ = 0.),
-               _F( NOEUD = ('NO9', 'NO13', 'NO14', 'NO5', 'NO17',),  DX = 0.))
+               _F( GROUP_NO = 'NO2',  DX = 0.,  DY = 0.,  DZ = 0.),
+               _F( GROUP_NO = 'NO6',  DX = 0.,  DY = 0.),
+               _F( GROUP_NO = 'NO1',  DX = 0.,          DZ = 0.),
+               _F( GROUP_NO = ('NO9', 'NO13', 'NO14', 'NO5', 'NO17',),  DX = 0.))
              )
 
 CHR_TRAC=AFFE_CHAR_MECA(
                      MODELE=MO,
-                  FACE_IMPO=_F( MAILLE = 'MA2',  DX = 1.)
+                  FACE_IMPO=_F( GROUP_MA = 'MA2',  DX = 1.)
              )
 
 VT=STAT_NON_LINE(
@@ -280,7 +280,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    REFERENCE='NON_DEFINI',
                    RESULTAT=VT,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO8',
+                   GROUP_NO='NO8',
                    NOM_CMP='DX',
                    VALE_CALC=303.35016708416816,
                    VALE_REFE=303.35,
@@ -289,7 +289,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    REFERENCE='NON_DEFINI',
                    RESULTAT=VT,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO8',
+                   GROUP_NO='NO8',
                    NOM_CMP='DY',
                    VALE_CALC=-108.39247278501608,
                    VALE_REFE=-108.39,
@@ -298,7 +298,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    REFERENCE='NON_DEFINI',
                    RESULTAT=VT,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO8',
+                   GROUP_NO='NO8',
                    NOM_CMP='DZ',
                    VALE_CALC=-108.39247272318366,
                    VALE_REFE=-108.39,
@@ -312,7 +312,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_CALC= 2644.267136994804,
                    VALE_REFE=2644.27,
                    PRECISION=1.E-2,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 _F(INST=2.0,
                    REFERENCE='NON_DEFINI',
                    POINT=1,
@@ -322,7 +322,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_CALC=0.2412391542947752,
                    VALE_REFE=0.24124,
                    PRECISION=0.015,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 ),
           )
 
@@ -381,7 +381,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    REFERENCE='NON_DEFINI',
                    RESULTAT=VP,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO8',
+                   GROUP_NO='NO8',
                    NOM_CMP='DX',
                    VALE_CALC=303.35016708416816,
                    VALE_REFE=303.35,
@@ -390,7 +390,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    REFERENCE='NON_DEFINI',
                    RESULTAT=VP,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO8',
+                   GROUP_NO='NO8',
                    NOM_CMP='DY',
                    VALE_CALC=-108.39245404367465,
                    VALE_REFE=-108.39,
@@ -399,7 +399,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    REFERENCE='NON_DEFINI',
                    RESULTAT=VP,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO8',
+                   GROUP_NO='NO8',
                    NOM_CMP='DZ',
                    VALE_CALC=-108.39245415691822,
                    VALE_REFE=-108.39,
@@ -413,7 +413,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_CALC= 2644.2864367350376,
                    VALE_REFE=2644.27,
                    PRECISION=1.E-2,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 _F(INST=2.0,
                    REFERENCE='NON_DEFINI',
                    POINT=1,
@@ -423,7 +423,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_CALC=0.24123905627318917,
                    VALE_REFE=0.24124,
                    PRECISION=0.015,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 ),
           )
 

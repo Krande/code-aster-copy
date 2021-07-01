@@ -147,7 +147,7 @@ EPSISTA2=POST_CHAMP(RESULTAT=MECASTAT,
 # TEST OF SIXZ,SIYZ BETWEEN STAT_NON_LINE VS MECA_STATIQUE       
 TEST_RESU(RESU=(
                _F(NUME_ORDRE=1,
-                  MAILLE='M1533',
+                  GROUP_MA='M1533',
                   POINT=1,
                   SOUS_POINT=1,
                   RESULTAT=MECASTA2,
@@ -156,7 +156,7 @@ TEST_RESU(RESU=(
                   VALE_CALC= 7.97446387680735E+04 ,),
                   
                _F(NUME_ORDRE=1,
-                  MAILLE='M1533',
+                  GROUP_MA='M1533',
                   POINT=1,
                   SOUS_POINT=1,
                   RESULTAT=MECASTA2,
@@ -165,7 +165,7 @@ TEST_RESU(RESU=(
                   VALE_CALC= 14377.0954149 ,), 
                   
                _F(NUME_ORDRE=1,
-                  MAILLE='M1533',
+                  GROUP_MA='M1533',
                   POINT=1,
                   SOUS_POINT=1,
                   RESULTAT=EPSISTA2,
@@ -174,7 +174,7 @@ TEST_RESU(RESU=(
                   VALE_CALC= 1.16809048336333E-06 ,),
                   
                _F(NUME_ORDRE=1,
-                  MAILLE='M1533',
+                  GROUP_MA='M1533',
                   POINT=1,
                   SOUS_POINT=1,
                   RESULTAT=EPSISTA2,
@@ -184,7 +184,7 @@ TEST_RESU(RESU=(
                   
                   
                _F(NUME_ORDRE=1,
-                  MAILLE='M1533',
+                  GROUP_MA='M1533',
                   POINT=1,
                   SOUS_POINT=1,
                   RESULTAT=MECASTN2,
@@ -196,7 +196,7 @@ TEST_RESU(RESU=(
                   ),
                   
                _F(NUME_ORDRE=1,
-                  MAILLE='M1533',
+                  GROUP_MA='M1533',
                   POINT=1,
                   SOUS_POINT=1,
                   RESULTAT=MECASTN2,
@@ -208,7 +208,7 @@ TEST_RESU(RESU=(
                   ),                    
                   
                _F(NUME_ORDRE=1,
-                  MAILLE='M1533',
+                  GROUP_MA='M1533',
                   POINT=1,
                   SOUS_POINT=1,
                   RESULTAT=EPSISTN2,
@@ -220,7 +220,7 @@ TEST_RESU(RESU=(
                   ),
                   
                _F(NUME_ORDRE=1,
-                  MAILLE='M1533',
+                  GROUP_MA='M1533',
                   POINT=1,
                   SOUS_POINT=1,
                   RESULTAT=EPSISTN2,
@@ -242,16 +242,16 @@ TEST_RESU(RESU=(
 
 TEST_RESU(RESU=(
                _F(NUME_ORDRE=1,
-                  MAILLE='M1533',
-                  NOEUD='N2168',
+                  GROUP_MA='M1533',
+                  GROUP_NO='N2168',
                   RESULTAT=MECASTAT,
                   NOM_CHAM='EFGE_ELNO',
                   NOM_CMP='QX',
                   VALE_CALC= 5.31630925120490E+01,),
                  
                _F(NUME_ORDRE=1,
-                  MAILLE='M1533',
-                  NOEUD='N2168',
+                  GROUP_MA='M1533',
+                  GROUP_NO='N2168',
                   RESULTAT=MECASTAT,
                   NOM_CHAM='EFGE_ELNO',
                   NOM_CMP='QY',
@@ -259,8 +259,8 @@ TEST_RESU(RESU=(
                   
                   
                _F(NUME_ORDRE=1,
-                  MAILLE='M1533',
-                  NOEUD='N2168',
+                  GROUP_MA='M1533',
+                  GROUP_NO='N2168',
                   RESULTAT=MECASTAN,
                   NOM_CHAM='EFGE_ELNO',
                   REFERENCE='AUTRE_ASTER',
@@ -270,7 +270,7 @@ TEST_RESU(RESU=(
                   ),
                   
                _F(NUME_ORDRE=1,
-                  MAILLE='M1533',
+                  GROUP_MA='M1533',
                   POINT=1,
                   SOUS_POINT=1,
                   RESULTAT=MECASTAN,

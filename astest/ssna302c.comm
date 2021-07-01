@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -66,22 +66,22 @@ CONDLIM=AFFE_CHAR_MECA(     MODELE=MODEL,
                               DY = 0.),LIAISON_DDL=(
 
                              _F(
-                             NOEUD = ('N4', 'N6',),
+                             GROUP_NO = ('N4', 'N6',),
                              DDL = ('DX','DX',),
                              COEF_MULT = (1.,1.,),
                              COEF_IMPO = 0.),
                              _F(
-                             NOEUD = ('N18', 'N13',),
+                             GROUP_NO = ('N18', 'N13',),
                              DDL = ('DX','DX',),
                              COEF_MULT = (1.,1.,),
                              COEF_IMPO = 0.),
                              _F(
-                             NOEUD = ('N17', 'N14',),
+                             GROUP_NO = ('N17', 'N14',),
                              DDL = ('DX','DX',),
                              COEF_MULT = (1.,1.,),
                              COEF_IMPO = 0.),
                              _F(
-                             NOEUD = ('N16', 'N15',),
+                             GROUP_NO = ('N16', 'N15',),
                              DDL = ('DX','DX',),
                              COEF_MULT = (1.,1.,),
                              COEF_IMPO = 0.))
@@ -125,7 +125,7 @@ CALCNL=CALC_CHAMP(
 TEST_RESU(RESU=(_F(NUME_ORDRE=6,
                    RESULTAT=CALCNL,
                    NOM_CHAM='DEPL',
-                   NOEUD='N1',
+                   GROUP_NO='N1',
                    NOM_CMP='DY',
                    VALE_CALC=-1.43814518E-03,
                    VALE_REFE=-1.43041E-3,
@@ -134,7 +134,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=6,
                 _F(NUME_ORDRE=6,
                    RESULTAT=CALCNL,
                    NOM_CHAM='SIGM_NOEU',
-                   NOEUD='N1',
+                   GROUP_NO='N1',
                    NOM_CMP='SIXX',
                    VALE_CALC= 3.90893659E+09,
                    VALE_REFE=3.899880000E9,
@@ -144,7 +144,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=6,
                 _F(NUME_ORDRE=6,
                    RESULTAT=CALCNL,
                    NOM_CHAM='SIGM_NOEU',
-                   NOEUD='N1',
+                   GROUP_NO='N1',
                    NOM_CMP='SIZZ',
                    VALE_CALC= 3.89589173E+09,
                    VALE_REFE=3.899530000E9,

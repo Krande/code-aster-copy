@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -240,7 +240,7 @@ TRAN_GE1=DYNA_VIBRA( TYPE_CALCUL='TRAN',
                        VITE = VITESSE1,  DEPL = DEPLACE1,
                        MULT_APPUI = 'OUI',
                        DIRECTION = ( 1., 0., 0.,),
-                       NOEUD = 'NO1'),
+                       GROUP_NO = 'NO1'),
 # CONDITION DE CHOC D'UN NOEUD PAR RAPPORT A UN OBSTACLE
 # IMMOBILE DANS LE REFERENTIEL ABSOLU
                COMPORTEMENT=_F(RELATION='DIS_CHOC',
@@ -266,10 +266,10 @@ TRAN_GE1=DYNA_VIBRA( TYPE_CALCUL='TRAN',
 #----------------------------------------------------------------------
 #
 MULT_X1=CALC_CHAR_SEISME(  MATR_MASS=MASS_BIC,  DIRECTION=( 1., 0., 0.,),
-                             MODE_STAT=MSTA_BIC,   NOEUD='NO1' )
+                             MODE_STAT=MSTA_BIC,   GROUP_NO='NO1' )
 
 MULT_X2=CALC_CHAR_SEISME(  MATR_MASS=MASS_BIC,   DIRECTION=( 1., 0., 0.,),
-                             MODE_STAT=MSTA_BIC,   NOEUD='NO11' )
+                             MODE_STAT=MSTA_BIC,   GROUP_NO='NO11' )
 
 #
 # PROJECTION DES MATRICES MET K SUR LA BASE MODALE
@@ -297,11 +297,11 @@ TRAN_GE2=DYNA_VIBRA(  TYPE_CALCUL='TRAN',
                 EXCIT=(
                 _F(  VECT_ASSE_GENE = VECT_X1,  ACCE = ACCELER1,
                        MULT_APPUI = 'OUI',
-                       DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO1',
+                       DIRECTION = ( 1., 0., 0.,), GROUP_NO = 'NO1',
                        VITE = VITESSE1, DEPL = DEPLACE1),
                 _F(  VECT_ASSE_GENE = VECT_X2,  ACCE = ACCELER2,
                        MULT_APPUI = 'OUI',
-                       DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO11',
+                       DIRECTION = ( 1., 0., 0.,), GROUP_NO = 'NO11',
                        VITE = VITESSE2, DEPL = DEPLACE2)),
 # CONDITION DE CHOC ENTRE LE NOEUD 2 ET LE NOEUD 12
 # TEST SUR LA DIFFERENCE DES DEPLACEMENTS ABSOLUS
@@ -344,11 +344,11 @@ RESUR1=REST_GENE_PHYS(  RESU_GENE=TRAN_GE1,
 #
 # RECUPERATION DES DEPL ABSOLUS CALCULES
 #----------------------------------------
-NO2_DXA=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',  NOM_CHAM='DEPL',
+NO2_DXA=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DX',  NOM_CHAM='DEPL',
                            RESULTAT=RESUA1,
                            LIST_INST=LISTIMP,   INTERPOL='LIN' )
 
-NO2_DX_A=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',  NOM_CHAM='DEPL',
+NO2_DX_A=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DX',  NOM_CHAM='DEPL',
                             RESU_GENE=TRAN_GE2,
                           MULT_APPUI='OUI',        INTERP_NUME='LIN',
                            LIST_INST=LISTIMP,   INTERPOL='LIN' )
@@ -356,12 +356,12 @@ NO2_DX_A=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',  NOM_CHAM='DEPL',
 #
 # RECUPERATION DES DEPL RELATIFS CALCULES
 #----------------------------------------
-NO2_DX_R=RECU_FONCTION(  NOEUD='NO12',  NOM_CMP='DX',  NOM_CHAM='DEPL',
+NO2_DX_R=RECU_FONCTION(  GROUP_NO='NO12',  NOM_CMP='DX',  NOM_CHAM='DEPL',
                             RESU_GENE=TRAN_GE2,
                           INTERP_NUME='LIN',
                            LIST_INST=LISTIMP,   INTERPOL='LIN' )
 
-NO2_DXR=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',  NOM_CHAM='DEPL',
+NO2_DXR=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DX',  NOM_CHAM='DEPL',
                            RESULTAT=RESUR1,
                            LIST_INST=LISTIMP,   INTERPOL='LIN' )
 

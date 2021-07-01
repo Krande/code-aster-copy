@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -170,7 +170,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V1',
                   VALE_CALC=0.86689831579605,
-                  MAILLE='M19',),
+                  GROUP_MA='M19',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
@@ -179,7 +179,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIXX',
                   VALE_CALC=8888.8888999999999,
-                  MAILLE='M19',),
+                  GROUP_MA='M19',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=12,
@@ -188,7 +188,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=12,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V2',
                   VALE_CALC=0.85897368291594,
-                  MAILLE='M19',),
+                  GROUP_MA='M19',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=20,
@@ -197,7 +197,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIYY',
                   VALE_CALC=8333.2066895869,
-                  MAILLE='M19',),
+                  GROUP_MA='M19',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=22,
@@ -206,7 +206,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=22,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V3',
                   VALE_CALC=0.86689831579605,
-                  MAILLE='M19',),
+                  GROUP_MA='M19',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=25,
@@ -215,7 +215,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=25,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIZZ',
                   VALE_CALC=24072.934392415,
-                  MAILLE='M19',),
+                  GROUP_MA='M19',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=31,
@@ -224,7 +224,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=31,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V7',
                   VALE_CALC=0.89161679569913,
-                  MAILLE='M19',),
+                  GROUP_MA='M19',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=40,
@@ -233,7 +233,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=40,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIZZ',
                   VALE_CALC=-5.3333333333331E5,
-                  MAILLE='M19',),
+                  GROUP_MA='M19',),
           )
 
 # Validation croisee des calculs d'energie :

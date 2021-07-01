@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -323,10 +323,10 @@ ENDO=CALC_CHAMP(reuse=ENDO,
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=ENDO,
                    NOM_CHAM='VAEX_ELNO',
-                   NOEUD='N90',
+                   GROUP_NO='N90',
                    NOM_CMP='X1',
                    VALE_CALC=3.8947800000000001E-4,
-                   MAILLE='M10',),
+                   GROUP_MA='M10',),
                 _F(GROUP_NO='E',
                    INST=0.5,
                    RESULTAT=ENDO,

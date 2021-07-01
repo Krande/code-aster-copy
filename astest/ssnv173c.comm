@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -67,11 +67,11 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
 DEPZ=1.E-6
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
-                   DDL_IMPO=(_F(NOEUD=('N21','N22','N23','N24',),
+                   DDL_IMPO=(_F(GROUP_NO=('N21','N22','N23','N24',),
                                 DX=0.0,
                                 DY=0.0,
                                 DZ=0.0,),
-                             _F(NOEUD=('N13','N14','N15','N16',),
+                             _F(GROUP_NO=('N13','N14','N15','N16',),
                                 DX=0.0,
                                 DY=0.0,
                                 DZ=DEPZ,),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -290,7 +290,7 @@ TEST_RESU(RESU=(
                    NOM_CHAM='TEMP_ELGA',
                    NOM_CMP='TEMP',
                    NUME_ORDRE = 0,
-                   MAILLE='M3',
+                   GROUP_MA='M3',
                    POINT=1,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=10.,
@@ -299,7 +299,7 @@ TEST_RESU(RESU=(
                    NOM_CHAM='TEMP_ELGA',
                    NOM_CMP='TEMP',
                    NUME_ORDRE = 0,
-                   MAILLE='M8',
+                   GROUP_MA='M8',
                    POINT=1,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=20.,

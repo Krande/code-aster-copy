@@ -1,31 +1,56 @@
-COOR_3D
-N1  0.  0.  0.
-N2  0.  0.  1.
-N3  0.  0.  2.
-FINSF
-%
-SEG2
-M1 N1 N2
-M2 N2 N3
-FINSF
-%
-GROUP_NO   NOM = TOUT 
-N1       N2       N3
-FINSF
-%
-GROUP_MA  NOM=RAID1
-M1
-FINSF
-%
-GROUP_MA  NOM=RAID2
-M2
-FINSF
-%
-GROUP_NO  NOM=MASSES
-N2       N3
-FINSF
-%
-GROUP_MA  NOM=LIAI
-M1       M2
-FINSF
-FIN
+ TITRE
+ME-30-JUIN-2021 09:24:47                                                        
+ FINSF
+ %
+ COOR_3D
+ N1        0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ N2        0.00000000000000E+00  0.00000000000000E+00  1.00000000000000E+00
+ N3        0.00000000000000E+00  0.00000000000000E+00  2.00000000000000E+00
+ FINSF
+ %
+ SEG2    
+ M1       N1       N2      
+ M2       N2       N3      
+ FINSF
+ %
+ GROUP_NO
+ TOUT                    
+ N1       N2       N3      
+ FINSF
+ %
+ GROUP_NO
+ MASSES                  
+ N2       N3      
+ FINSF
+ %
+ GROUP_NO
+ N3                      
+ N3      
+ FINSF
+ %
+ GROUP_NO
+ N2                      
+ N2      
+ FINSF
+ %
+ GROUP_NO
+ N1                      
+ N1      
+ FINSF
+ %
+ GROUP_MA
+ RAID1                   
+ M1      
+ FINSF
+ %
+ GROUP_MA
+ RAID2                   
+ M2      
+ FINSF
+ %
+ GROUP_MA
+ LIAI                    
+ M1       M2      
+ FINSF
+ %
+ FIN

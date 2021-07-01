@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,15 +32,15 @@ MA=CREA_MAILLAGE(MAILLAGE=MA2,
 
 MA = DEFI_GROUP(reuse=MA, MAILLAGE=MA,
                 CREA_GROUP_NO=(_F(GROUP_MA='DROITE'),
-                               _F(NOEUD='N7' , NOM = 'H'),
-                               _F(NOEUD='N58', NOM = 'I'),
-                               _F(NOEUD='N60', NOM = 'J'),))
+                               _F(GROUP_NO='N7' , NOM = 'H'),
+                               _F(GROUP_NO='N58', NOM = 'I'),
+                               _F(GROUP_NO='N60', NOM = 'J'),))
 
 MA=DEFI_GROUP(reuse =MA,
                 MAILLAGE=MA,
                 CREA_GROUP_NO=_F(OPTION='PLAN',
                                  NOM='GAUCH',
-                                 NOEUD_CENTRE='N1',
+                                 GROUP_NO_CENTRE='N1',
                                  VECT_NORMALE=(-0.707,-0.707,0.,),
                                  PRECISION=1E-4,),);
 MO=AFFE_MODELE(

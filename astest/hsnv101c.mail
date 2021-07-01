@@ -1,5 +1,5 @@
  TITRE
- %  GIBI FECIT
+ %  GIBI FECIT                                                                  
  FINSF
  %
  COOR_2D
@@ -20,70 +20,140 @@
  N15       2.50000000000000E-02  5.00000000000000E-02
  FINSF
  %
- TRIA6
-  M1      N14      N12      N10      N13      N11      N15
-  M2      N14      N10      N8       N15      N9       N7
-  M3      N8       N10      N5       N9       N6       N4
-  M4      N10      N2       N5       N3       N1       N6
+ TRIA6   
+ M1       N14      N12      N10      N13      N11      N15     
+ M2       N14      N10      N8       N15      N9       N7      
+ M3       N8       N10      N5       N9       N6       N4      
+ M4       N10      N2       N5       N3       N1       N6      
  FINSF
  %
- SEG3
-  M5      N14      N12      N13
- FINSF
- %
- SEG3
-  M6      N12      N10      N11
-  M7      N10      N2       N3
- FINSF
- %
- SEG3
-  M8      N2       N5       N1
- FINSF
- %
- SEG3
-  M9      N5       N8       N4
-  M10     N8       N14      N7
+ SEG3    
+ M5       N14      N12      N13     
+ M6       N12      N10      N11     
+ M7       N10      N2       N3      
+ M8       N2       N5       N1      
+ M9       N5       N8       N4      
+ M10      N8       N14      N7      
  FINSF
  %
  GROUP_NO
- D        N2
+ D                       
+ N2      
  FINSF
  %
  GROUP_NO
- C        N5
+ C                       
+ N5      
  FINSF
  %
  GROUP_NO
- A        N14
+ A                       
+ N14     
  FINSF
  %
  GROUP_NO
- B        N12
+ B                       
+ N12     
+ FINSF
+ %
+ GROUP_NO
+ N3                      
+ N3      
+ FINSF
+ %
+ GROUP_NO
+ N2                      
+ N2      
+ FINSF
+ %
+ GROUP_NO
+ N8                      
+ N8      
+ FINSF
+ %
+ GROUP_NO
+ N10                     
+ N10     
+ FINSF
+ %
+ GROUP_NO
+ N1                      
+ N1      
+ FINSF
+ %
+ GROUP_NO
+ N14                     
+ N14     
+ FINSF
+ %
+ GROUP_NO
+ N5                      
+ N5      
+ FINSF
+ %
+ GROUP_NO
+ N12                     
+ N12     
+ FINSF
+ %
+ GROUP_NO
+ N4                      
+ N4      
+ FINSF
+ %
+ GROUP_NO
+ N13                     
+ N13     
+ FINSF
+ %
+ GROUP_NO
+ N6                      
+ N6      
+ FINSF
+ %
+ GROUP_NO
+ N9                      
+ N9      
  FINSF
  %
  GROUP_MA
-   AB
- M5
+ AB                      
+ M5      
  FINSF
  %
  GROUP_MA
-   BD
- M6       M7
+ BD                      
+ M6       M7      
  FINSF
  %
  GROUP_MA
-   DC
- M8
+ DC                      
+ M8      
  FINSF
  %
  GROUP_MA
-   CA
- M9       M10
+ CA                      
+ M9       M10     
  FINSF
  %
  GROUP_MA
-   MAIL
- M1       M2       M3       M4
+ MAIL                    
+ M1       M2       M3       M4      
+ FINSF
+ %
+ GROUP_MA
+ M4                      
+ M4      
+ FINSF
+ %
+ GROUP_MA
+ M8                      
+ M8      
+ FINSF
+ %
+ GROUP_MA
+ M3                      
+ M3      
  FINSF
  %
  FIN

@@ -40,9 +40,9 @@ MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=(_F(NOEUD='N12',
+                    CREA_GROUP_NO=(_F(GROUP_NO='N12',
                                       NOM='A',),
-                                   _F(NOEUD='N6',
+                                   _F(GROUP_NO='N6',
                                       NOM='B',),),
                     INFO=2,);
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ cara=AFFE_CARA_ELEM(MODELE=mo,
                  );
 
 encas14=AFFE_CHAR_MECA(MODELE=mo,
-                       DDL_IMPO=_F(NOEUD=('N0001','N0004',),
+                       DDL_IMPO=_F(GROUP_NO=('N0001','N0004',),
                                    DX=0.,
                                    DY=0.,
                                    DZ=0.,
@@ -132,12 +132,12 @@ visqueux=AFFE_CHAR_MECA_F(MODELE=mo,
                                      FZ=FZP,),);
 
 liaiz=AFFE_CHAR_MECA(MODELE=mo,
-                    LIAISON_DDL=_F(NOEUD=('N0002','N0003',),
+                    LIAISON_DDL=_F(GROUP_NO=('N0002','N0003',),
                                    DDL=('DZ','DZ',),
                                    COEF_MULT=(1.0,-1.0,),
                                    COEF_IMPO=0.,),);
 liaix=AFFE_CHAR_MECA(MODELE=mo,
-                    LIAISON_DDL=_F(NOEUD=('N0002','N0003',),
+                    LIAISON_DDL=_F(GROUP_NO=('N0002','N0003',),
                                    DDL=('DX','DX',),
                                    COEF_MULT=(1.0,-1.0,),
                                    COEF_IMPO=0.,),);
@@ -187,7 +187,7 @@ dyna=DYNA_NON_LINE(MODELE=mo,
 #TEST_RESU(RESU=_F(RESULTAT=dyna,
 #                   INST= 40.4,
 #                   NOM_CHAM='DEPL',
-#                   NOEUD='N0002',
+#                   GROUP_NO='N0002',
 #                   NOM_CMP='DX',
 #                   VALE_CALC=1.52081231539,
 #                   VALE_REFE=1.48,
@@ -197,7 +197,7 @@ dyna=DYNA_NON_LINE(MODELE=mo,
 #TEST_RESU(RESU=_F(RESULTAT=dyna,
 #                   INST= 40.4,
 #                   NOM_CHAM='DEPL',
-#                   NOEUD='N0002',
+#                   GROUP_NO='N0002',
 #                   NOM_CMP='DZ',
 #                   VALE_CALC=-0.760406157696,
 #                   VALE_REFE=-0.74,
@@ -209,14 +209,14 @@ dyna=DYNA_NON_LINE(MODELE=mo,
 TEST_RESU(RESU=_F(RESULTAT=dyna,
                    INST= 1.,
                    NOM_CHAM='DEPL',
-                   NOEUD='N0002',
+                   GROUP_NO='N0002',
                    NOM_CMP='DX',
                    VALE_CALC=0.31906496211665625,
                    ),)
 TEST_RESU(RESU=_F(RESULTAT=dyna,
                    INST= 1.,
                    NOM_CHAM='DEPL',
-                   NOEUD='N0002',
+                   GROUP_NO='N0002',
                    NOM_CMP='DZ',
                    VALE_CALC=-0.15953248105832818,
                    ),)
@@ -225,14 +225,14 @@ TEST_RESU(RESU=_F(RESULTAT=dyna,
 TEST_RESU(RESU=_F(RESULTAT=dyna,
                    INST= 2.,
                    NOM_CHAM='DEPL',
-                   NOEUD='N0002',
+                   GROUP_NO='N0002',
                    NOM_CMP='DX',
                    VALE_CALC=0.836120871263743,
                    ),)
 TEST_RESU(RESU=_F(RESULTAT=dyna,
                    INST= 2.,
                    NOM_CHAM='DEPL',
-                   NOEUD='N0002',
+                   GROUP_NO='N0002',
                    NOM_CMP='DZ',
                    VALE_CALC=-0.4180604356318712,
                    ),)

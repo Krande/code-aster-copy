@@ -35,8 +35,8 @@ MA=CREA_MAILLAGE(     MAILLAGE=MAIL,
                  )
 
 MA=DEFI_GROUP( reuse=MA,MAILLAGE=MA,CREA_GROUP_NO=(
-                  _F( NOM = 'A', NOEUD = 'NO1'),
-                  _F( NOM = 'D', NOEUD = 'NO4'))
+                  _F( NOM = 'A', GROUP_NO = 'NO1'),
+                  _F( NOM = 'D', GROUP_NO = 'NO4'))
                  )
 
 #

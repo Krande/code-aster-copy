@@ -198,13 +198,13 @@ for i in range(0,NPS) :
 # ON PEUT DONC CALCULER LA VALEUR DES LEVEL SETS POUR CES NOEUDS:
 
 TABLSN= POST_RELEVE_T(ACTION=_F(INTITULE='Test LSN',
-                                NOEUD=('N304','N1040','N1512'),
+                                GROUP_NO=('N304','N1040','N1512'),
                                 CHAM_GD=LSN[i],
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
 
 TABLST= POST_RELEVE_T(ACTION=_F(INTITULE='Test LST',
-                                NOEUD=('N304','N1040','N1512'),
+                                GROUP_NO=('N304','N1040','N1512'),
                                 CHAM_GD=LST[i],
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);

@@ -6,5 +6,5 @@ P mpi_nbnoeud 1
 P testlist submit ci verification sequential
 
 F comm sslv07d.comm D 1
-F libr sslv07a.19 D 19
-F libr sslv07a.23 D 23
+F mail sslv07a.19 D 19
+F mail sslv07a.23 D 23

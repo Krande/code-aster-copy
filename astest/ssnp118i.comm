@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,12 +40,12 @@ MO=AFFE_MODELE(
 
                 AFFE= (
                 _F(
-                        MAILLE = ('PRISM','DROITE'),
+                        GROUP_MA = ('PRISM','DROITE'),
                         PHENOMENE = 'MECANIQUE',
                         MODELISATION = '3D'
                      ),
                  _F(
-                   MAILLE = 'PRISMDEG',
+                   GROUP_MA = 'PRISMDEG',
                    PHENOMENE = 'MECANIQUE',
                    MODELISATION = '3D_INTERFACE_S'
                    )
@@ -94,14 +94,14 @@ CM=AFFE_MATERIAU(
 
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
                      MASSIF=(
-           _F(MAILLE='PRISMDEG',ANGL_REP=(30,0,0)),
+           _F(GROUP_MA='PRISMDEG',ANGL_REP=(30,0,0)),
                                  ));
 
 
 LIAISON=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-    _F(MAILLE='GAUCHE2', DX=0, DY=0, DZ=0 ),
+    _F(GROUP_MA='GAUCHE2', DX=0, DY=0, DZ=0 ),
     )
   )
 
@@ -109,7 +109,7 @@ LIAISON=AFFE_CHAR_MECA(
 TRAC_N=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-    _F(MAILLE='DROITE', DX=cos(pi/6), DY= sin(pi/6)),
+    _F(GROUP_MA='DROITE', DX=cos(pi/6), DY= sin(pi/6)),
     ))
 
 L_INST=DEFI_LIST_REEL(
@@ -145,9 +145,9 @@ U_OUV=STAT_NON_LINE(
   ),
   COMPORTEMENT  = (
           _F(RELATION = 'CZM_OUV_MIX',
-             MAILLE = 'PRISMDEG'),
+             GROUP_MA = 'PRISMDEG'),
           _F(RELATION = 'ELAS',
-             MAILLE = 'PRISM'),
+             GROUP_MA = 'PRISM'),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_FIN = 0.),
   CONVERGENCE = _F(
@@ -172,13 +172,13 @@ STAT_NON_LINE(reuse = U_OUV,
   PILOTAGE   = _F(
     SELECTION = 'RESIDU',
     TYPE = 'PRED_ELAS',
-    MAILLE = 'PRISMDEG',
+    GROUP_MA = 'PRISMDEG',
     COEF_MULT = cmupi,
     ETA_PILO_R_MIN = 0.,
     ),
   COMPORTEMENT  = (
           _F(RELATION = 'CZM_OUV_MIX',
-             MAILLE = 'PRISMDEG'),
+             GROUP_MA = 'PRISMDEG'),
           _F(RELATION = 'ELAS',
              GROUP_MA = 'G_PRISM'),
           ),
@@ -199,7 +199,7 @@ U_OUV=CALC_CHAMP(reuse = U_OUV,
                  RESULTAT = U_OUV,
                  VARI_INTERNE='VARI_ELNO',
                  CONTRAINTE='SIEF_ELNO',
-                 MAILLE='PRISMDEG'
+                 GROUP_MA='PRISMDEG'
                 );
 
 U_OUV=CALC_CHAMP(
@@ -207,7 +207,7 @@ U_OUV=CALC_CHAMP(
                  RESULTAT = U_OUV,
                  VARI_INTERNE='VARI_NOEU',
                  CONTRAINTE='SIEF_NOEU',
-                 MAILLE='PRISMDEG'
+                 GROUP_MA='PRISMDEG'
                  );
 
 #----------------------------------------------------------------------------------
@@ -224,9 +224,9 @@ U_TAC=STAT_NON_LINE(
   ),
   COMPORTEMENT  = (
           _F(RELATION = 'CZM_TAC_MIX',
-             MAILLE = 'PRISMDEG'),
+             GROUP_MA = 'PRISMDEG'),
           _F(RELATION = 'ELAS',
-             MAILLE = 'PRISM'),
+             GROUP_MA = 'PRISM'),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_FIN = 0.),
   CONVERGENCE = _F(
@@ -251,13 +251,13 @@ STAT_NON_LINE(reuse = U_TAC,
   PILOTAGE   = _F(
     SELECTION = 'RESIDU',
     TYPE = 'PRED_ELAS',
-    MAILLE = 'PRISMDEG',
+    GROUP_MA = 'PRISMDEG',
     COEF_MULT = cmupi,
     ETA_PILO_R_MIN = 0.,
     ),
   COMPORTEMENT  = (
           _F(RELATION = 'CZM_TAC_MIX',
-             MAILLE = 'PRISMDEG'),
+             GROUP_MA = 'PRISMDEG'),
           _F(RELATION = 'ELAS',
              GROUP_MA = 'G_PRISM'),
           ),
@@ -278,7 +278,7 @@ U_TAC=CALC_CHAMP(reuse =U_TAC,
                  RESULTAT=U_TAC,
                  VARI_INTERNE='VARI_ELNO',
                  CONTRAINTE='SIEF_ELNO',
-                 MAILLE='PRISMDEG'
+                 GROUP_MA='PRISMDEG'
                 );
 
 U_TAC=CALC_CHAMP(
@@ -286,7 +286,7 @@ U_TAC=CALC_CHAMP(
                  RESULTAT=U_TAC,
                  VARI_INTERNE='VARI_NOEU',
                  CONTRAINTE='SIEF_NOEU',
-                 MAILLE='PRISMDEG'
+                 GROUP_MA='PRISMDEG'
                  );
 
 #----------------------------------------------------------------------------------
@@ -339,7 +339,7 @@ TEST_RESU(RESU=_F(INST=2.0000800000000001,
                   NOM_CMP='SIXX',
                   VALE_CALC=0.737898743,
                   VALE_REFE=0.73789899999999997,
-                  MAILLE='PRISM',),
+                  GROUP_MA='PRISM',),
           )
 
 TEST_RESU(RESU=_F(INST=9.0000099999999996,
@@ -350,14 +350,14 @@ TEST_RESU(RESU=_F(INST=9.0000099999999996,
                   NOM_CMP='SIGN',
                   VALE_CALC=0.347848803,
                   VALE_REFE=0.34784900000000002,
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=9.0000099999999996,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=U_OUV,
                   NOM_CHAM='DEPL',
-                  NOEUD='NS15',
+                  GROUP_NO='NS15',
                   NOM_CMP='SIGN',
                   VALE_CALC=0.347848803,
                   VALE_REFE=0.34784900000000002,),
@@ -372,7 +372,7 @@ TEST_RESU(RESU=_F(INST=8.0000199999999992,
                   VALE_CALC= 4.10028602E-15,
                   VALE_REFE=0.0,
                   CRITERE='ABSOLU',
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=3.00007,
@@ -383,7 +383,7 @@ TEST_RESU(RESU=_F(INST=3.00007,
                   NOM_CMP='V1',
                   VALE_CALC=0.267290438,
                   VALE_REFE=0.26729000000000003,
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=7.0000299999999998,
@@ -394,31 +394,31 @@ TEST_RESU(RESU=_F(INST=7.0000299999999998,
                   NOM_CMP='V4',
                   VALE_CALC=0.700003000,
                   VALE_REFE=0.70000300000000004,
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 # TESTS DES INTERPOLATIONS AUX NOEUDS
 
 TEST_RESU(RESU=_F(INST=9.0000099999999996,
                   REFERENCE='ANALYTIQUE',
-                  NOEUD='NS15',
+                  GROUP_NO='NS15',
                   RESULTAT=U_OUV,
                   NOM_CHAM='SIEF_NOEU',
                   NOM_CMP='SIGN',
                   VALE_CALC=0.347848803,
                   VALE_REFE=0.34784900000000002,
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=7.0000299999999998,
                   REFERENCE='ANALYTIQUE',
-                  NOEUD='NO1',
+                  GROUP_NO='NO1',
                   RESULTAT=U_OUV,
                   NOM_CHAM='VARI_NOEU',
                   NOM_CMP='V4',
                   VALE_CALC=0.700003000,
                   VALE_REFE=0.70000300000000004,
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 
@@ -473,7 +473,7 @@ TEST_RESU(RESU=_F(INST=2.0000800000000001,
                   NOM_CMP='SIXX',
                   VALE_CALC=0.737898743,
                   VALE_REFE=0.73789899999999997,
-                  MAILLE='PRISM',),
+                  GROUP_MA='PRISM',),
           )
 
 TEST_RESU(RESU=_F(INST=9.0000099999999996,
@@ -484,14 +484,14 @@ TEST_RESU(RESU=_F(INST=9.0000099999999996,
                   NOM_CMP='SIGN',
                   VALE_CALC=0.347848803,
                   VALE_REFE=0.34784900000000002,
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=9.0000099999999996,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=U_TAC,
                   NOM_CHAM='DEPL',
-                  NOEUD='NS15',
+                  GROUP_NO='NS15',
                   NOM_CMP='SIGN',
                   VALE_CALC=0.347848803,
                   VALE_REFE=0.34784900000000002,),
@@ -506,7 +506,7 @@ TEST_RESU(RESU=_F(INST=8.0000199999999992,
                   VALE_CALC= 2.60260746E-15,
                   VALE_REFE=0.0,
                   CRITERE='ABSOLU',
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=3.00007,
@@ -517,7 +517,7 @@ TEST_RESU(RESU=_F(INST=3.00007,
                   NOM_CMP='V1',
                   VALE_CALC=0.267290438,
                   VALE_REFE=0.26729000000000003,
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=7.0000299999999998,
@@ -528,7 +528,7 @@ TEST_RESU(RESU=_F(INST=7.0000299999999998,
                   NOM_CMP='V4',
                   VALE_CALC=0.700003000,
                   VALE_REFE=0.70000300000000004,
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 #-----------------------------------------------------------------------------------
@@ -539,7 +539,7 @@ IMPR_TABLE(TABLE=TETA_OUV)
 IMPR_RESU(
   FORMAT   = 'RESULTAT',
   RESU=_F(
-          RESULTAT = U_OUV, MAILLE  = 'PRISMDEG',
+          RESULTAT = U_OUV, GROUP_MA  = 'PRISMDEG',
     ))
 
 IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_OUV,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),

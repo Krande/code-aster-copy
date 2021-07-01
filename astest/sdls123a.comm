@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -110,21 +110,21 @@ DYNA_AMO = DYNA_NON_LINE( MODELE=MODEL,
 DAMO_DEP=RECU_FONCTION(RESULTAT=DYNA_AMO,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DZ',
-                     NOEUD='N9',);
+                     GROUP_NO='N9',);
 
 IMPR_FONCTION(COURBE=(_F(FONCTION=DAMO_DEP,),),);
 
 DAMO_VIT=RECU_FONCTION(RESULTAT=DYNA_AMO,
                      NOM_CHAM='VITE',
                      NOM_CMP='DZ',
-                     NOEUD='N9',);
+                     GROUP_NO='N9',);
 
 IMPR_FONCTION(COURBE=(_F(FONCTION=DAMO_VIT,),),);
 
 DAMO_ACC=RECU_FONCTION(RESULTAT=DYNA_AMO,
                      NOM_CHAM='ACCE',
                      NOM_CMP='DZ',
-                     NOEUD='N9',);
+                     GROUP_NO='N9',);
 
 IMPR_FONCTION(COURBE=(_F(FONCTION=DAMO_ACC,),),);
 
@@ -139,7 +139,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=DYNA_AMO,
                   NOM_CHAM='DEPL',
-                  NOEUD='N9',
+                  GROUP_NO='N9',
                   NOM_CMP='DZ',
                   VALE_CALC=-1.79374804001E-05,
                   VALE_REFE=-1.7949730000000001E-05,
@@ -157,7 +157,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=DYNA_AMO,
                   NOM_CHAM='VITE',
-                  NOEUD='N9',
+                  GROUP_NO='N9',
                   NOM_CMP='DZ',
                   VALE_CALC=-0.0375364496162,
                   VALE_REFE=-0.037620710000000002,
@@ -175,7 +175,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=DYNA_AMO,
                   NOM_CHAM='ACCE',
-                  NOEUD='N9',
+                  GROUP_NO='N9',
                   NOM_CMP='DZ',
                   VALE_CALC=-38.7155400905,
                   VALE_REFE=-39.09299,

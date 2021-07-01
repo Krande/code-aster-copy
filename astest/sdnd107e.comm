@@ -40,7 +40,7 @@ Modele=AFFE_MODELE(
     MAILLAGE=MAIL,
     AFFE=(
         _F(GROUP_MA=('MASSE','GM0203'), PHENOMENE='MECANIQUE', MODELISATION='DIS_T',),
-        _F(MAILLE=('PT01'), PHENOMENE='MECANIQUE', MODELISATION='DIS_T',),
+        _F(GROUP_MA=('PT01'), PHENOMENE='MECANIQUE', MODELISATION='DIS_T',),
     ),
 )
 # Caractéristiques : Ressorts / Masse
@@ -48,8 +48,8 @@ kbid = 1.0E+10
 caraElem=AFFE_CARA_ELEM(
     MODELE=Modele,
     DISCRET=(
-        _F( REPERE='LOCAL',CARA='M_T_D_N', MAILLE='PT01', VALE=( 0.0), ),
-        _F( REPERE='LOCAL',CARA='K_T_D_N', MAILLE='PT01', VALE=( 0.0,0.0,0.0,), ),
+        _F( REPERE='LOCAL',CARA='M_T_D_N', GROUP_MA='PT01', VALE=( 0.0), ),
+        _F( REPERE='LOCAL',CARA='K_T_D_N', GROUP_MA='PT01', VALE=( 0.0,0.0,0.0,), ),
 
         _F( REPERE='LOCAL',CARA='M_T_D_N', GROUP_MA='MASSE', VALE=( 1.0), ),
         _F( REPERE='LOCAL',CARA='K_T_D_N', GROUP_MA='MASSE', VALE=( 0.0,0.0,0.0,), ),
@@ -63,9 +63,9 @@ caraElem=AFFE_CARA_ELEM(
 Blocage=AFFE_CHAR_MECA(
    MODELE=Modele,
    DDL_IMPO= (
-        _F(NOEUD='N01', DX=0.0, DY=0.0, DZ=0.0,),
-        _F(NOEUD='N02',         DY=0.0, DZ=0.0,),
-        _F(NOEUD='N03', DX=0.0, DY=0.0, DZ=0.0,),
+        _F(GROUP_NO='N01', DX=0.0, DY=0.0, DZ=0.0,),
+        _F(GROUP_NO='N02',         DY=0.0, DZ=0.0,),
+        _F(GROUP_NO='N03', DX=0.0, DY=0.0, DZ=0.0,),
     ),
 )
 #
@@ -127,13 +127,13 @@ ModeSta=MODE_STATIQUE(
 #
 DeplSis1=CALC_CHAR_SEISME(
     MATR_MASS=Masse,
-    MODE_STAT=ModeSta, NOEUD='N01',
+    MODE_STAT=ModeSta, GROUP_NO='N01',
     DIRECTION=(1.0, 0.0, 0.0),
 )
 #
 DeplSis3=CALC_CHAR_SEISME(
     MATR_MASS=Masse,
-    MODE_STAT=ModeSta, NOEUD='N03',
+    MODE_STAT=ModeSta, GROUP_NO='N03',
     DIRECTION=(1.0, 0.0, 0.0),
 )
 #
@@ -170,7 +170,7 @@ Resultat=DYNA_VIBRA(
         _F(VECT_ASSE_GENE=Depl3Gen, FONC_MULT=DEPLAI,),
     ),
     COMPORTEMENT=_F(RELATION='DIS_VISC',
-        NOEUD_1='N01', NOEUD_2='N02',
+        GROUP_NO_1='N01', GROUP_NO_2='N02',
         K1=120.0, K2=10.0, K3=60.0, C=1.7, PUIS_ALPHA=0.5,
     ),
     SOLVEUR=_F( METHODE='MUMPS',
@@ -373,7 +373,7 @@ ResultA=DYNA_VIBRA(
         _F(VECT_ASSE_GENE=Depl3Gen, FONC_MULT=DEPLAI,),
     ),
     COMPORTEMENT=_F(RELATION='DIS_VISC',
-        NOEUD_1='N01', NOEUD_2='N02',
+        GROUP_NO_1='N01', GROUP_NO_2='N02',
         K1=120.0, K2=10.0, K3=60.0, C=1.7, PUIS_ALPHA=0.5,
     ),
     IMPRESSION=_F(UNITE_DIS_VISC =35),
@@ -392,7 +392,7 @@ ResultB=DYNA_VIBRA(
         _F(VECT_ASSE_GENE=Depl3Gen, FONC_MULT=DEPLAI,),
     ),
     COMPORTEMENT=_F(RELATION='DIS_VISC',
-        NOEUD_1='N01', NOEUD_2='N02',
+        GROUP_NO_1='N01', GROUP_NO_2='N02',
         K1=120.0, K2=10.0, K3=60.0, C=1.7, PUIS_ALPHA=0.5,
     ),
     IMPRESSION=_F(UNITE_DIS_VISC =35),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,34 +25,34 @@ MA=LIRE_MAILLAGE(FORMAT="ASTER",)
 BETON=DEFI_MATERIAU(ELAS=_F(E = 1.E9,NU = 0.3,),)
 
 MATAF=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=(_F(MAILLE = 'M1',
+                    AFFE=(_F(GROUP_MA = 'M1',
                              MATER = BETON,)))
 
 LEMOD=AFFE_MODELE(MAILLAGE=MA,     
-                  AFFE=(_F(MAILLE = 'M1',
+                  AFFE=(_F(GROUP_MA = 'M1',
                            PHENOMENE = 'MECANIQUE',
                            MODELISATION = 'DKTG',)))
 
 
 LACAR=AFFE_CARA_ELEM(MODELE=LEMOD,
-                     COQUE=(_F(MAILLE = 'M1',
+                     COQUE=(_F(GROUP_MA = 'M1',
                                EPAIS = .2,
                                ANGL_REP = (0.0, 0.0,),),),)
 
 
 ZCHM=AFFE_CHAR_MECA(MODELE=LEMOD,
-                    DDL_IMPO=(_F(NOEUD = ('N1',),
+                    DDL_IMPO=(_F(GROUP_NO = ('N1',),
                                  DX = 0., 
                                  DY=0., DZ = 0., 
                                  ),
-                              _F(NOEUD = ('N2','N3',),
+                              _F(GROUP_NO = ('N2','N3',),
                                  DZ = 0., 
                                  ),
-                              _F(NOEUD = ('N4'),
+                              _F(GROUP_NO = ('N4'),
                                  DX = 0., 
                                  ),
                              ),
-                    PRE_EPSI = _F(MAILLE = 'M1',
+                    PRE_EPSI = _F(GROUP_MA = 'M1',
                                   EXX     = 1.E-3,
                                   EYY     = 2.E-3,
                                   EXY     = 3.E-3,
@@ -89,7 +89,7 @@ LEDEP=CALC_CHAMP(reuse =LEDEP,
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=LEDEP, INST = 1.0, NOM_CHAM=('DEGE_ELGA')))
 
-TEST_RESU(RESU=(_F(MAILLE='M1',
+TEST_RESU(RESU=(_F(GROUP_MA='M1',
                    POINT = 1,
                    CRITERE='RELATIF',
                    INST = 1.0,
@@ -99,7 +99,7 @@ TEST_RESU(RESU=(_F(MAILLE='M1',
                    NOM_CHAM='DEGE_ELGA',
                    VALE_CALC=1E-3,
                    VALE_REFE=1E-3,),
-                _F(MAILLE='M1',
+                _F(GROUP_MA='M1',
                    POINT = 1,
                    CRITERE='RELATIF',
                    INST = 1.0,
@@ -109,7 +109,7 @@ TEST_RESU(RESU=(_F(MAILLE='M1',
                    NOM_CHAM='DEGE_ELGA',
                    VALE_CALC=2E-3,
                    VALE_REFE=2E-3,),
-                _F(MAILLE='M1',
+                _F(GROUP_MA='M1',
                    POINT = 1,
                    CRITERE='RELATIF',
                    INST = 1.0,
@@ -119,7 +119,7 @@ TEST_RESU(RESU=(_F(MAILLE='M1',
                    NOM_CHAM='DEGE_ELGA',
                    VALE_CALC=3E-3,
                    VALE_REFE=3E-3,),
-                _F(MAILLE='M1',
+                _F(GROUP_MA='M1',
                    POINT = 1,
                    CRITERE='RELATIF',
                    INST = 1.0,
@@ -129,7 +129,7 @@ TEST_RESU(RESU=(_F(MAILLE='M1',
                    NOM_CHAM='DEGE_ELGA',
                    VALE_CALC=4E-3,
                    VALE_REFE=4E-3,),
-                _F(MAILLE='M1',
+                _F(GROUP_MA='M1',
                    POINT = 1,
                    CRITERE='RELATIF',
                    INST = 1.0,
@@ -139,7 +139,7 @@ TEST_RESU(RESU=(_F(MAILLE='M1',
                    NOM_CHAM='DEGE_ELGA',
                    VALE_CALC=5E-3,
                    VALE_REFE=5E-3,),
-                _F(MAILLE='M1',
+                _F(GROUP_MA='M1',
                    POINT = 1,
                    CRITERE='RELATIF',
                    INST = 1.0,

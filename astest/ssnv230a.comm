@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -237,14 +237,14 @@ REFER2= [
 
 for ii in range(len(REFER1)):
    TEST_RESU(
-      RESU= _F(RESULTAT=STAT1, INST=REFER1[ii][itps], MAILLE='M1', POINT=1,
+      RESU= _F(RESULTAT=STAT1, INST=REFER1[ii][itps], GROUP_MA='M1', POINT=1,
                NOM_CHAM=REFER1[ii][icha], NOM_CMP=REFER1[ii][icmp],
                VALE_CALC=REFER1[ii][irefe],),
    )
 
 for ii in range(len(REFER2)):
    TEST_RESU(
-      RESU= _F(RESULTAT=STAT2, INST=REFER2[ii][itps], MAILLE='M1', POINT=1,
+      RESU= _F(RESULTAT=STAT2, INST=REFER2[ii][itps], GROUP_MA='M1', POINT=1,
                NOM_CHAM=REFER2[ii][icha], NOM_CMP=REFER2[ii][icmp],
                VALE_CALC=REFER2[ii][irefe],),
    )

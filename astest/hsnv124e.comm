@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -132,13 +132,13 @@ MOMECA=AFFE_MODELE(MAILLAGE=MA,
                            MODELISATION='BARRE',),);
 
 CARAELEM=AFFE_CARA_ELEM(MODELE=MOMECA,
-                        BARRE=_F(MAILLE='M1',
+                        BARRE=_F(GROUP_MA='M1',
                                  SECTION='GENERALE',
                                  CARA='A',
                                  VALE=1.0,),);
 
 PRESSION=AFFE_CHAR_MECA(MODELE=MOMECA,
-                        FORCE_NODALE=_F(NOEUD='N7',
+                        FORCE_NODALE=_F(GROUP_NO='N7',
                                         FZ=210.0,),);
 
 FTEMP=DEFI_FONCTION(NOM_PARA='INST',
@@ -165,11 +165,11 @@ CHMATH=AFFE_MATERIAU(MAILLAGE=MA,
                       AFFE_VARC=_F(NOM_VARC='TEMP',VALE_REF=0.,TOUT='OUI',EVOL=RTEMP,NOM_CHAM='TEMP',),)
 
 LIAISON=AFFE_CHAR_MECA(MODELE=MOMECA,
-                       DDL_IMPO=(_F(NOEUD='N3',
+                       DDL_IMPO=(_F(GROUP_NO='N3',
                                     DX=0.0,
                                     DY=0.0,
                                     DZ=0.0,),
-                                 _F(NOEUD='N7',
+                                 _F(GROUP_NO='N7',
                                     DX=0.0,
                                     DY=0.0,),),);
 
@@ -190,17 +190,17 @@ U=STAT_NON_LINE(MODELE=MOMECA,
 TEMP7=RECU_FONCTION(RESULTAT=RTEMP,
                   NOM_CHAM='TEMP',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                   NOM_CMP='TEMP',
-                  NOEUD='N7',);
+                  GROUP_NO='N7',);
 
 FU1=RECU_FONCTION(RESULTAT=U,
                   NOM_CHAM='DEPL',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                   NOM_CMP='DZ',
-                  NOEUD='N7',);
+                  GROUP_NO='N7',);
 
 FN1=RECU_FONCTION(RESULTAT=U,
                   NOM_CHAM='SIEF_ELGA',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                   NOM_CMP='N',
-                  MAILLE='M1',
+                  GROUP_MA='M1',
                   POINT=1,);
 
 EPSP1=CALC_FONCTION(COMB=(_F(FONCTION=FU1,
@@ -236,7 +236,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   NOM_CMP='N',
                   VALE_CALC=210.000000000,
                   VALE_REFE=210.0,
-                  MAILLE='M1',),
+                  GROUP_MA='M1',),
           )
 
 CHMATH2=AFFE_MATERIAU(MAILLAGE=MA,
@@ -272,19 +272,19 @@ TEST_RESU(RESU=_F(INST=1.0,
                   NOM_CMP='N',
                   VALE_CALC=210.000000000,
                   VALE_REFE=210.0,
-                  MAILLE='M1',),
+                  GROUP_MA='M1',),
           )
 
 FU2=RECU_FONCTION(RESULTAT=U2,
                   NOM_CHAM='DEPL',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                   NOM_CMP='DZ',
-                  NOEUD='N7',);
+                  GROUP_NO='N7',);
 
 
 FN2=RECU_FONCTION(RESULTAT=U2,
                   NOM_CHAM='SIEF_ELGA',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                   NOM_CMP='N',
-                  MAILLE='M1',
+                  GROUP_MA='M1',
                   POINT=1,);
 
 EPSP2=CALC_FONCTION(COMB=(_F(FONCTION=FU2,
@@ -356,18 +356,18 @@ TEST_RESU(RESU=_F(INST=1.0,
                   NOM_CMP='N',
                   VALE_CALC=210.000000000,
                   VALE_REFE=210.0,
-                  MAILLE='M1',),
+                  GROUP_MA='M1',),
           )
 
 FU3=RECU_FONCTION(RESULTAT=U3,
                   NOM_CHAM='DEPL',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                   NOM_CMP='DZ',
-                  NOEUD='N7',);
+                  GROUP_NO='N7',);
 
 FN3=RECU_FONCTION(RESULTAT=U3,
                   NOM_CHAM='SIEF_ELGA',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                   NOM_CMP='N',
-                  MAILLE='M1',
+                  GROUP_MA='M1',
                   POINT=1,);
 
 EPSP3=CALC_FONCTION(COMB=(_F(FONCTION=FU3,

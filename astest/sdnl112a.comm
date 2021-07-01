@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ TUBE=LIRE_MAILLAGE(FORMAT='MED')
 
 # Pertubation legere des coordonnes du maillage pour eviter les modes multiples ou retournes :
 TUBE=MODI_MAILLAGE(reuse =TUBE, MAILLAGE=TUBE, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),)
-MODI_MAILLAGE(reuse=TUBE, MAILLAGE=TUBE,ABSC_CURV=_F(NOEUD_ORIG='N_01_001',TOUT='OUI'))
+MODI_MAILLAGE(reuse=TUBE, MAILLAGE=TUBE,ABSC_CURV=_F(GROUP_NO_ORIG='N_01_001',TOUT='OUI'))
 
 TUBE=DEFI_GROUP( reuse=TUBE,   MAILLAGE=TUBE,
                        CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
@@ -131,14 +131,14 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=TUBE,
 )
 
 CHDDL=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
-                           _F(  NOEUD = 'N_01_001',
+                           _F(  GROUP_NO = 'N_01_001',
                                       DX = 0.0,
                                       DY = 0.0,
                                       DZ = 0.0,
                                       DRX = 0.0,
                                       DRY = 0.0,
                                       DRZ = 0.0),
-                           _F(  NOEUD = 'N_06_007',
+                           _F(  GROUP_NO = 'N_06_007',
                                       DX = 0.0,
                                       DY = 0.0,
                                       DZ = 0.0,
@@ -304,7 +304,7 @@ REPP0=REST_SPEC_PHYS(
                      NOM_CHAM='DEPL',
                       NOM_CMP='DX',
                        OPTION='TOUT_TOUT',
-                        NOEUD=('N_04_001', )
+                        GROUP_NO=('N_04_001', )
 )
 
 DYN0=POST_DYNA_ALEA(INTERSPECTRE=_F(
@@ -361,7 +361,7 @@ REPP45=REST_SPEC_PHYS(BASE_ELAS_FLUI = MELFLU45,
                       NOM_CHAM       = 'DEPL',
                       NOM_CMP        = 'DX',
                       OPTION         = 'TOUT_TOUT',
-                      NOEUD          = 'N_04_001')
+                      GROUP_NO          = 'N_04_001')
 
 DYN45=POST_DYNA_ALEA(INTERSPECTRE=_F(INTE_SPEC = REPP45,
                                      OPTION    = 'DIAG'))

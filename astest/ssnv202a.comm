@@ -136,14 +136,14 @@ U1=CALC_CHAMP(reuse=U1,VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'),RESU
 
 
 TAB_VARI=POST_RELEVE_T(ACTION=_F(INTITULE='VARI_NOEU',
-                                 NOEUD='NO8',
+                                 GROUP_NO='NO8',
                                  RESULTAT=U1,
                                  NOM_CHAM='VARI_ELNO',
                                  NOM_CMP=('V1','V3','V4','V5','V6','V7'),
                                  OPERATION='EXTRACTION'));
 
 TAB_EPSZ=POST_RELEVE_T(ACTION=_F(INTITULE='EPSI_ELNO',
-                                 NOEUD='NO8',
+                                 GROUP_NO='NO8',
                                  RESULTAT=U1,
                                  NOM_CHAM='EPSI_ELNO',
                                  NOM_CMP='EPZZ',

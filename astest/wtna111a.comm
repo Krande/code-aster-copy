@@ -70,6 +70,15 @@ MA0=LIRE_MAILLAGE(FORMAT='MED',
 
 MA=CREA_MAILLAGE(MAILLAGE = MA0, LINE_QUAD = _F(TOUT='OUI'));
 
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'NS749', NOEUD = 'NS749'),
+                                        _F( NOM = 'N25', NOEUD = 'N25'),
+                                        _F( NOM = 'NS761', NOEUD = 'NS761'),
+                                        _F( NOM = 'N66', NOEUD = 'N66'),
+                                     ),
+         )
+
 MA=DEFI_GROUP(reuse = MA,
        MAILLAGE = MA,
        CREA_GROUP_MA = (
@@ -294,7 +303,7 @@ U_1=STAT_NON_LINE(
 TEST_RESU(RESU=_F(NUME_ORDRE=25,
                   RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOEUD='NS749',
+                  GROUP_NO='NS749',
                   NOM_CMP='PRE1',
                   VALE_CALC=9.4763131675963E+05,)
           )
@@ -302,7 +311,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=25,
 TEST_RESU(RESU=_F(NUME_ORDRE=50,
                   RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOEUD='NS749',
+                  GROUP_NO='NS749',
                   NOM_CMP='PRE1',
                   VALE_CALC=9.6844171265784E+05,)
           )
@@ -310,7 +319,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=50,
 TEST_RESU(RESU=_F(NUME_ORDRE=25,
                   RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOEUD='NS761',
+                  GROUP_NO='NS761',
                   NOM_CMP='PRE1',
                   VALE_CALC=8.2236864577301E+05,)
           )
@@ -318,7 +327,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=25,
 TEST_RESU(RESU=_F(NUME_ORDRE=50,
                   RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOEUD='NS761',
+                  GROUP_NO='NS761',
                   NOM_CMP='PRE1',
                   VALE_CALC=8.8930350209485E+05,)
           )
@@ -328,7 +337,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=50,
 TEST_RESU(RESU=_F(NUME_ORDRE=25,
                   RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOEUD='N25',
+                  GROUP_NO='N25',
                   NOM_CMP='DX',
                   VALE_CALC=2.9250681241318E-04,)
           )
@@ -336,7 +345,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=25,
 TEST_RESU(RESU=_F(NUME_ORDRE=50,
                   RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOEUD='N25',
+                  GROUP_NO='N25',
                   NOM_CMP='DX',
                   VALE_CALC=4.7861972503557E-04,)
           )
@@ -344,7 +353,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=50,
 TEST_RESU(RESU=_F(NUME_ORDRE=25,
                   RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOEUD='N66',
+                  GROUP_NO='N66',
                   NOM_CMP='DX',
                   VALE_CALC=2.9252068901988E-04,)
           )
@@ -352,7 +361,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=25,
 TEST_RESU(RESU=_F(NUME_ORDRE=50,
                   RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOEUD='N66',
+                  GROUP_NO='N66',
                   NOM_CMP='DX',
                   VALE_CALC=4.7863366082016E-04,)
           )

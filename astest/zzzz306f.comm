@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),)
 MAILLAGE = LIRE_MAILLAGE(FORMAT="ASTER", )
 
 MODELE   = AFFE_MODELE(  MAILLAGE =    MAILLAGE, INFO=2,
-           AFFE= _F( MAILLE='M1', PHENOMENE = 'MECANIQUE', MODELISATION = '3D', ))
+           AFFE= _F( GROUP_MA='M1', PHENOMENE = 'MECANIQUE', MODELISATION = '3D', ))
 
 LN = FORMULE(VALE='Z-0.5',
              NOM_PARA=['X', 'Y', 'Z'],)
@@ -76,7 +76,7 @@ IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=CH2,NOM_CMP='SIXX',),)
 TEST_RESU(CHAM_ELEM=(_F(
                         POINT=1,
                         NOM_CMP='SIXX',
-                        MAILLE='M1',
+                        GROUP_MA='M1',
                         CHAM_GD=CH1,
                         VALE_CALC=26.7425,),
                      ),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ mail0=LIRE_MAILLAGE(FORMAT='MED',
 
 mail=CREA_MAILLAGE(MAILLAGE=mail0,
                    CREA_POI1=(_F(NOM_GROUP_MA='PBASE',
-                                 NOEUD='N316',),
+                                 GROUP_NO='N316',),
                               _F(NOM_GROUP_MA='PFONDAT',
                                  GROUP_MA='SURFBAS2',),
                               _F(NOM_GROUP_MA='PC',
@@ -54,16 +54,16 @@ mail=MODI_MAILLAGE(reuse =mail,
                    MAILLAGE=mail,
                    ORIE_NORM_COQUE=(_F(GROUP_MA='IFLUSOL2',
                                        VECT_NORM=(0.,0.,1.,),
-                                       NOEUD='N963',),
+                                       GROUP_NO='N963',),
                                     _F(GROUP_MA='IFLUSTR2',
                                        VECT_NORM=(1.,0.,0.,),
-                                       NOEUD='N221',),
+                                       GROUP_NO='N221',),
                                     _F(GROUP_MA='SURFBAS2',
                                        VECT_NORM=(0.,0.,-1.,),
-                                       NOEUD='N316',),
+                                       GROUP_NO='N316',),
                                     _F(GROUP_MA='SLIBREM2',
                                        VECT_NORM=(0.,0.,1.,),
-                                       NOEUD='N1043',),),);
+                                       GROUP_NO='N1043',),),);
 
 #IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=mail,));
 
@@ -117,7 +117,7 @@ cara_ele=AFFE_CARA_ELEM(MODELE=modele,
 #-----------------------------------------
 
 cond_lim=AFFE_CHAR_MECA(MODELE=modele,
-                        DDL_IMPO=(_F(NOEUD='N316',
+                        DDL_IMPO=(_F(GROUP_NO='N316',
                                      DX=0.,
                                      DY=0.,
                                      DZ=0.,
@@ -199,7 +199,7 @@ mode_rig=CALC_MODES(MATR_RIGI=MATRIGI,
 interdy=DEFI_INTERF_DYNA(NUME_DDL=nume_ddl,
                          INTERFACE=_F(NOM='SOLBAR',
                                       TYPE='CRAIGB',
-                                      NOEUD='N316',),);
+                                      GROUP_NO='N316',),);
 
 #
 

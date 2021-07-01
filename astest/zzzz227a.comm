@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -69,15 +69,15 @@ L1=DEFI_LIST_REEL(VALE=(1.))
 #---------------------------------------------------------------------------
 CHMAT2=AFFE_MATERIAU(MAILLAGE=MA,AFFE=(
            _F(TOUT='OUI', MATER=MAT),
-           _F(MAILLE='M1', MATER=MAT2),
-           _F(MAILLE='M8', MATER=MAT3),
-           _F(MAILLE='M18',MATER=MAT),
+           _F(GROUP_MA='M1', MATER=MAT2),
+           _F(GROUP_MA='M8', MATER=MAT3),
+           _F(GROUP_MA='M18',MATER=MAT),
         ),
         AFFE_VARC=(
            _F(TOUT='OUI',NOM_VARC='TEMP',CHAM_GD=CHT1,VALE_REF=0.),
-           _F(MAILLE='M1',NOM_VARC='TEMP',CHAM_GD=CHT1,VALE_REF=100.),
-           _F(MAILLE='M8',NOM_VARC='TEMP',CHAM_GD=CHT1,VALE_REF=200.),
-           _F(MAILLE='M18',NOM_VARC='TEMP',CHAM_GD=CHT1,VALE_REF=300.),
+           _F(GROUP_MA='M1',NOM_VARC='TEMP',CHAM_GD=CHT1,VALE_REF=100.),
+           _F(GROUP_MA='M8',NOM_VARC='TEMP',CHAM_GD=CHT1,VALE_REF=200.),
+           _F(GROUP_MA='M18',NOM_VARC='TEMP',CHAM_GD=CHT1,VALE_REF=300.),
          ),
          )
 
@@ -105,7 +105,7 @@ TEST_RESU(CARTE=_F(REFERENCE='ANALYTIQUE',
                    NOM_CMP='TEMP',
                    VALE_CALC=30.000000000,
                    VALE_REFE=30.0,
-                   MAILLE='M1',
+                   GROUP_MA='M1',
                    CHAM_GD=CH1,),
           )
 
@@ -115,7 +115,7 @@ TEST_RESU(CARTE=_F(REFERENCE='ANALYTIQUE',
                    VALE_CALC_C=1.000000000+0.500000000j,
                    VALE_REFE_C=('RI', 1.0, 0.5),
                    NOM_CMP='DZ',
-                   MAILLE='M1',
+                   GROUP_MA='M1',
                    CHAM_GD=CH2,),
           )
 
@@ -125,7 +125,7 @@ TEST_RESU(CARTE=_F(REFERENCE='ANALYTIQUE',
                    NOM_CMP='X3',
                    VALE_CALC_I=17,
                    VALE_REFE_I=17,
-                   MAILLE='M1',
+                   GROUP_MA='M1',
                    CHAM_GD=CH3,),
           )
 
@@ -140,14 +140,14 @@ CART2=CREA_CHAMP(TYPE_CHAM='CART_TEMP_R', OPERATION='AFFE', MAILLAGE=MA,
 
 CART3=CREA_CHAMP(TYPE_CHAM='CART_TEMP_R', OPERATION='ASSE', MAILLAGE=MA,
                  ASSE=( _F(TOUT='OUI' , CHAM_GD=CART1, CUMUL='OUI', COEF_R=2.,),
-                        _F(MAILLE='M3', CHAM_GD=CART2, CUMUL='OUI', COEF_R=3.,),
+                        _F(GROUP_MA='M3', CHAM_GD=CART2, CUMUL='OUI', COEF_R=3.,),
                  ),INFO=1,)
 # 158=3*32 + 2*31
 TEST_RESU(CARTE=_F(REFERENCE='ANALYTIQUE',
                    NOM_CMP='TEMP',
                    VALE_CALC=158.000000000,
                    VALE_REFE=158.0,
-                   MAILLE='M3',
+                   GROUP_MA='M3',
                    CHAM_GD=CART3,),
           )
 
@@ -155,7 +155,7 @@ TEST_RESU(CARTE=_F(REFERENCE='ANALYTIQUE',
                    NOM_CMP='TEMP',
                    VALE_CALC=62.000000000,
                    VALE_REFE=62.0,
-                   MAILLE='M1',
+                   GROUP_MA='M1',
                    CHAM_GD=CART3,),
           )
 

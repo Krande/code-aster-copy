@@ -134,11 +134,11 @@ val_eff= 1.0;
 FUN=DEFI_CONSTANTE(VALE=1.0,);
 
 EF_HAR_X=AFFE_CHAR_MECA(MODELE=modele,
-                        FORCE_NODALE=_F(NOEUD='N13',
+                        FORCE_NODALE=_F(GROUP_NO='N13',
                                         FX=(val_eff),),);
 
 EF_HAR_Z=AFFE_CHAR_MECA(MODELE=modele,
-                        FORCE_NODALE=_F(NOEUD='N13',
+                        FORCE_NODALE=_F(GROUP_NO='N13',
                                         FZ=(val_eff),),);
 
 ASSEMBLAGE(MODELE=modele,
@@ -202,12 +202,12 @@ for i, RPM in enumerate(VIT):
   DX_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   NOEUD='N13',);
+                   GROUP_NO='N13',);
 
   DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   NOEUD='N13',);
+                   GROUP_NO='N13',);
 
   if i == 0:
     TABMODX = CREA_TABLE(FONCTION=_F(FONCTION=DX_DIS2))
@@ -395,12 +395,12 @@ for i, RPM in enumerate(VIT):
   DX_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   NOEUD='N13',);
+                   GROUP_NO='N13',);
 
   DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   NOEUD='N13',);
+                   GROUP_NO='N13',);
 
   if i == 0:
     TABMODX = CREA_TABLE(FONCTION=_F(FONCTION=DX_DIS2))
@@ -601,12 +601,12 @@ for i, RPM in enumerate(VIT):
   DX_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   NOEUD='N13',);
+                   GROUP_NO='N13',);
 
   DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   NOEUD='N13',);
+                   GROUP_NO='N13',);
 
   if i == 0:
     TABMODX = CREA_TABLE(FONCTION=_F(FONCTION=DX_DIS2))
@@ -790,12 +790,12 @@ for i, RPM in enumerate(VIT):
   DX_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   NOEUD='N13',);
+                   GROUP_NO='N13',);
 
   DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   NOEUD='N13',);
+                   GROUP_NO='N13',);
 
   if i == 0:
     TABMODX = CREA_TABLE(FONCTION=_F(FONCTION=DX_DIS2))
@@ -986,12 +986,12 @@ for i, RPM in enumerate(VIT):
   DX_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   NOEUD='N13',);
+                   GROUP_NO='N13',);
 
   DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   NOEUD='N13',);
+                   GROUP_NO='N13',);
 
   if i == 0:
     TABMODX = CREA_TABLE(FONCTION=_F(FONCTION=DX_DIS2))
@@ -1173,12 +1173,12 @@ for i, RPM in enumerate(VIT):
   DX_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   NOEUD='N13',);
+                   GROUP_NO='N13',);
 
   DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   NOEUD='N13',);
+                   GROUP_NO='N13',);
 
   if i == 0:
     TABMODX = CREA_TABLE(FONCTION=_F(FONCTION=DX_DIS2))
@@ -1368,12 +1368,12 @@ for i, RPM in enumerate(VIT):
   DX_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   NOEUD='N13',);
+                   GROUP_NO='N13',);
 
   DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   NOEUD='N13',);
+                   GROUP_NO='N13',);
 
   if i == 0:
     TABMODX = CREA_TABLE(FONCTION=_F(FONCTION=DX_DIS2))
@@ -1565,12 +1565,12 @@ for i, RPM in enumerate(VIT):
   DX_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   NOEUD='N13',);
+                   GROUP_NO='N13',);
 
   DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   NOEUD='N13',);
+                   GROUP_NO='N13',);
 
   if i == 0:
     TABMODX = CREA_TABLE(FONCTION=_F(FONCTION=DX_DIS2))

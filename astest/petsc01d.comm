@@ -45,7 +45,7 @@ RESREF=MECA_STATIQUE(MODELE=MO,
                     EXCIT=(_F(CHARGE=CHA1,),
                            _F(CHARGE=CHA2,),),
                     SOLVEUR=_F(METHODE='MUMPS',),);
-TREF=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'UREF', NOEUD =('NO2958','NO2974'), OPERATION = 'EXTRACTION',
+TREF=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'UREF', GROUP_NO =('NO2958','NO2974'), OPERATION = 'EXTRACTION',
                      RESULTAT = RESREF, NUME_ORDRE=1, NOM_CHAM='DEPL', NOM_CMP = 'DY', ));
 
 DETRUIRE(NOM=(MO,CHA1,CHA2,),INFO=1,);
@@ -111,7 +111,7 @@ for matr_distribuee in ('OUI', 'NON') :
                             NUME_ORDRE=1,
                             NOM_CHAM='DEPL',
                             NOM_CMP='DY',
-                            NOEUD='NO2958',
+                            GROUP_NO='NO2958',
                             VALE_CALC=vcalc[ico],
                             VALE_REFE=TREF['DY',1],
                             PRECISION=1.E-06,
@@ -121,7 +121,7 @@ for matr_distribuee in ('OUI', 'NON') :
                             NUME_ORDRE=1,
                             NOM_CHAM='DEPL',
                             NOM_CMP='DY',
-                            NOEUD='NO2974',
+                            GROUP_NO='NO2974',
                             VALE_CALC=vcalc[ico+1],
                             VALE_REFE=TREF['DY',2],
                             PRECISION=1.E-06,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,9 +44,9 @@ CH=AFFE_CHAR_MECA(MODELE=MO,DDL_IMPO=(
          _F( GROUP_NO = 'X_NUL', DX = 0., DRY = 0., DRZ = 0.),
          _F( GROUP_NO = 'Y_NUL', DY = 0., DRX = 0., DRZ = 0.),
          _F( GROUP_NO = 'Z_NUL', DZ = 0., DRX = 0., DRY = 0.),
-         _F( NOEUD = 'NO2', DX = 0., DY = 0., DRX = 0., DRY = 0., DRZ = 0.),
-         _F( NOEUD = 'NO1', DZ = 0., DY = 0., DRX = 0., DRY = 0., DRZ = 0.),
-         _F( NOEUD = 'NO3', DX = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.)))
+         _F( GROUP_NO = 'NO2', DX = 0., DY = 0., DRX = 0., DRY = 0., DRZ = 0.),
+         _F( GROUP_NO = 'NO1', DZ = 0., DY = 0., DRX = 0., DRY = 0., DRZ = 0.),
+         _F( GROUP_NO = 'NO3', DX = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.)))
 
 KE=CALC_MATR_ELEM(MODELE=MO, CHARGE=CH, CHAM_MATER=CHMAT,
                         CARA_ELEM=EP, OPTION='RIGI_MECA')

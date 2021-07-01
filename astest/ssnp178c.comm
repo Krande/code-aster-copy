@@ -175,7 +175,7 @@ TEST_RESU(RESU=_F(INST=1.0,
           )
 
 TEST_RESU(RESU=_F(INST=1.0,
-                  MAILLE=('M200'),
+                  GROUP_MA=('M200'),
                   POINT=1,
                   RESULTAT=resnonl,
                   NOM_CHAM='EPSP_ELGA',
@@ -185,7 +185,7 @@ TEST_RESU(RESU=_F(INST=1.0,
           )
 
 TEST_RESU(RESU=_F(INST=1.0,
-                  MAILLE=('M200'),
+                  GROUP_MA=('M200'),
                   POINT=1,
                   RESULTAT=resnonl,
                   NOM_CHAM='EPSI_ELGA',
@@ -198,7 +198,7 @@ TEST_RESU(RESU=_F(INST=1.0,
 TEST_RESU(CHAM_ELEM=_F(
                        POINT=1,
                        NOM_CMP='X',
-                       MAILLE='M200',
+                       GROUP_MA='M200',
                        CHAM_GD=rescoor,
                    VALE_CALC=21.63397459621556,
                        ),

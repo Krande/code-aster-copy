@@ -130,7 +130,7 @@ CH=AFFE_CHAR_MECA(           MODELE=MO,
                                                DX = 0.),
                                              _F(  GROUP_NO = 'P11',
                                                DY = 0.),
-                                             _F(  NOEUD = 'N55',
+                                             _F(  GROUP_NO = 'N55',
                                                DY = 0.))
                             )
 

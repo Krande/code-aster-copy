@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ COLONNE=AFFE_MODELE(MAILLAGE=MAYA,
 SURFLIBR=AFFE_CHAR_MECA( MODELE=COLONNE,
 #             DDL_IMPO:(GROUP_NO:NOEUSURF  PRES:0.  PHI:0.));
 #  -- POUR TESTER LIAISON_UNIF :
-              DDL_IMPO=_F( NOEUD = 'N19',  PRES = 0.,),
+              DDL_IMPO=_F( GROUP_NO = 'N19',  PRES = 0.,),
               LIAISON_UNIF=_F( GROUP_NO = 'NOEUSURF', DDL = ('PRES',)))
 
 GUIDAGE=AFFE_CHAR_MECA( MODELE=COLONNE,

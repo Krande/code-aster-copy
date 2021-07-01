@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,22 +46,22 @@ CHMAT_2D=AFFE_MATERIAU(  MAILLAGE=MA_2D,
 
 MOD1=AFFE_MODELE(  MAILLAGE=MA_2D,AFFE=(
             _F( PHENOMENE = 'MECANIQUE', MODELISATION = 'D_PLAN',
-            MAILLE = ('ABCD','BE1','BE2','BE3',)),
+            GROUP_MA = ('ABCD','BE1','BE2','BE3',)),
             _F( PHENOMENE = 'MECANIQUE', MODELISATION = 'COQUE_AXIS',
-            MAILLE = ('ABE1',))) )
+            GROUP_MA = ('ABE1',))) )
 
 CELEM1=AFFE_CARA_ELEM(   MODELE=MOD1,
-            COQUE=_F( MAILLE = ('ABE1',), EPAIS = 1., A_CIS = 1.))
+            COQUE=_F( GROUP_MA = ('ABE1',), EPAIS = 1., A_CIS = 1.))
 
 CH1=AFFE_CHAR_MECA(    MODELE=MOD1,LIAISON_SOLIDE=(
 #         -- CAS GENERAL :
-          _F( NOEUD = ('A','B','C','D',)),
+          _F( GROUP_NO = ('A','B','C','D',)),
 #         -- CAS PARTICULIER : NOEUDS CONFONDUS
-          _F( NOEUD = ('E1','E2','E3',))),DDL_IMPO=(
+          _F( GROUP_NO = ('E1','E2','E3',))),DDL_IMPO=(
 
-           _F(  NOEUD = ('A','E1',), DX = 2., DY = 3.),
-           _F(  NOEUD = ('B',),    DY = 3.001),
-           _F(  NOEUD = ('E1',),   DRZ = 0.001)) )
+           _F(  GROUP_NO = ('A','E1',), DX = 2., DY = 3.),
+           _F(  GROUP_NO = ('B',),    DY = 3.001),
+           _F(  GROUP_NO = ('E1',),   DRZ = 0.001)) )
 
 MES1=MECA_STATIQUE(    MODELE=MOD1,  CHAM_MATER=CHMAT_2D,
             EXCIT=_F( CHARGE = CH1),   CARA_ELEM=CELEM1 )
@@ -70,7 +70,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MES1,
                    NOM_CHAM='DEPL',
-                   NOEUD='C',
+                   GROUP_NO='C',
                    NOM_CMP='DX',
                    VALE_REFE=1.999,
                    VALE_CALC=1.999,
@@ -79,7 +79,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MES1,
                    NOM_CHAM='DEPL',
-                   NOEUD='C',
+                   GROUP_NO='C',
                    NOM_CMP='DY',
                    VALE_REFE=3.001,
                    VALE_CALC=3.001,
@@ -88,7 +88,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MES1,
                    NOM_CHAM='DEPL',
-                   NOEUD='E2',
+                   GROUP_NO='E2',
                    NOM_CMP='DX',
                    VALE_REFE=2.0,
                    VALE_CALC=2.0,
@@ -97,7 +97,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MES1,
                    NOM_CHAM='DEPL',
-                   NOEUD='E2',
+                   GROUP_NO='E2',
                    NOM_CMP='DY',
                    VALE_REFE=3.0,
                    VALE_CALC=3.0,
@@ -113,17 +113,17 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 
 MOD2=AFFE_MODELE(  MAILLAGE=MA_3D,AFFE=(
             _F( PHENOMENE = 'MECANIQUE', MODELISATION = '3D',
-            MAILLE = ('FGHIJKLM','ON','NP','IQ1','IQ2','IQ3',)),
+            GROUP_MA = ('FGHIJKLM','ON','NP','IQ1','IQ2','IQ3',)),
             _F( PHENOMENE = 'MECANIQUE', MODELISATION = 'POU_D_E',
-            MAILLE = ('IN','NQ1',))) )
+            GROUP_MA = ('IN','NQ1',))) )
 
 VAL = DEFI_CONSTANTE (VALE =  1.997)
 
 CH2=AFFE_CHAR_MECA(    MODELE=MOD2,
-           DDL_IMPO=_F(  NOEUD = ('I',), DX = 1.997),
+           DDL_IMPO=_F(  GROUP_NO = ('I',), DX = 1.997),
            LIAISON_SOLIDE=(
 #         -- CAS GENERAL :
-          _F( MAILLE = ('FGHIJKLM',)),
+          _F( GROUP_MA = ('FGHIJKLM',)),
 #         -- CAS PARTICULIER : NOEUDS ALIGNES
           _F( GROUP_MA = ('GROUP_MA_ONP',)),
 #         -- CAS PARTICULIER : NOEUDS CONFONDUS
@@ -132,16 +132,16 @@ CH2=AFFE_CHAR_MECA(    MODELE=MOD2,
 CH2B=AFFE_CHAR_MECA(    MODELE=MOD2,
                         DDL_IMPO=(
 
-           _F(  NOEUD = ('F','N','Q1',), DX = 2., DY = 3., DZ = 4.),
-           _F(  NOEUD = ('J','O',),    DX = 2.002),
-           _F(  NOEUD = ('J','O',),    DY = 2.999),
-           _F(  NOEUD = ('N',),      DRZ = 0.003),
-           _F(  NOEUD = ('Q1',),     DRX = 0.001),
-           _F(  NOEUD = ('Q1',),     DRY = 0.002),
-           _F(  NOEUD = ('Q1',),     DRZ = 0.003)) )
+           _F(  GROUP_NO = ('F','N','Q1',), DX = 2., DY = 3., DZ = 4.),
+           _F(  GROUP_NO = ('J','O',),    DX = 2.002),
+           _F(  GROUP_NO = ('J','O',),    DY = 2.999),
+           _F(  GROUP_NO = ('N',),      DRZ = 0.003),
+           _F(  GROUP_NO = ('Q1',),     DRX = 0.001),
+           _F(  GROUP_NO = ('Q1',),     DRY = 0.002),
+           _F(  GROUP_NO = ('Q1',),     DRZ = 0.003)) )
 
 CELEM2=AFFE_CARA_ELEM(   MODELE=MOD2,
-            POUTRE=_F( MAILLE = ('IN','NQ1',), SECTION = 'CERCLE',
+            POUTRE=_F( GROUP_MA = ('IN','NQ1',), SECTION = 'CERCLE',
            CARA = ('R',),   VALE = (2.,)) )
 
 MES2=MECA_STATIQUE(    MODELE=MOD2,  CHAM_MATER=CHMAT_3D,
@@ -152,7 +152,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MES2,
                    NOM_CHAM='DEPL',
-                   NOEUD='L',
+                   GROUP_NO='L',
                    NOM_CMP='DX',
                    VALE_REFE=1.999,
                    VALE_CALC=1.999,
@@ -161,7 +161,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MES2,
                    NOM_CHAM='DEPL',
-                   NOEUD='L',
+                   GROUP_NO='L',
                    NOM_CMP='DY',
                    VALE_REFE=3.002,
                    VALE_CALC=3.002,
@@ -170,7 +170,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MES2,
                    NOM_CHAM='DEPL',
-                   NOEUD='L',
+                   GROUP_NO='L',
                    NOM_CMP='DZ',
                    VALE_REFE=3.999,
                    VALE_CALC=3.999,
@@ -179,7 +179,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MES2,
                    NOM_CHAM='DEPL',
-                   NOEUD='P',
+                   GROUP_NO='P',
                    NOM_CMP='DX',
                    VALE_REFE=1.998,
                    VALE_CALC=1.998,
@@ -188,7 +188,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MES2,
                    NOM_CHAM='DEPL',
-                   NOEUD='P',
+                   GROUP_NO='P',
                    NOM_CMP='DY',
                    VALE_REFE=3.001,
                    VALE_CALC=3.001,
@@ -197,7 +197,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MES2,
                    NOM_CHAM='DEPL',
-                   NOEUD='P',
+                   GROUP_NO='P',
                    NOM_CMP='DZ',
                    VALE_REFE=4.0,
                    VALE_CALC=4.0,
@@ -206,7 +206,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MES2,
                    NOM_CHAM='DEPL',
-                   NOEUD='Q3',
+                   GROUP_NO='Q3',
                    NOM_CMP='DX',
                    VALE_REFE=2.0,
                    VALE_CALC=2.0,
@@ -215,7 +215,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MES2,
                    NOM_CHAM='DEPL',
-                   NOEUD='Q3',
+                   GROUP_NO='Q3',
                    NOM_CMP='DY',
                    VALE_REFE=3.0,
                    VALE_CALC=3.0,
@@ -224,7 +224,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MES2,
                    NOM_CHAM='DEPL',
-                   NOEUD='Q3',
+                   GROUP_NO='Q3',
                    NOM_CMP='DZ',
                    VALE_REFE=4.0,
                    VALE_CALC=4.0,

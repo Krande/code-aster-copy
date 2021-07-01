@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,12 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI'),);
 
 MBI=LIRE_MAILLAGE(FORMAT='MED',UNITE=20,);
+
+MBI = DEFI_GROUP( reuse = MBI, MAILLAGE = MBI,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N5822', NOEUD = 'N5822'),
+                                     ),
+         )
 
 MOD=AFFE_MODELE(MAILLAGE=MBI,
                    AFFE=(_F(GROUP_MA=('EL1_RO','EL2_RO','EL3_RO','EL4_RO','EL5_RO',
@@ -48,7 +54,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MBI,
 
 CLDG=AFFE_CHAR_MECA(MODELE=MOD,
                   DDL_IMPO=(
-                            _F(NOEUD='N5822',DX=0,),
+                            _F(GROUP_NO='N5822',DX=0,),
                             ),);
 
 # --------------------------------

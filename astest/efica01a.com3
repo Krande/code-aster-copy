@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,11 +28,11 @@ RESUR1=REST_GENE_PHYS(  RESU_GENE=TRAN_GE1,
                        )
 
 
-NO2_DXA=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',  NOM_CHAM='DEPL',
+NO2_DXA=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DX',  NOM_CHAM='DEPL',
                         RESULTAT=RESUA1,
                         LIST_INST=LISTIMP,   INTERPOL='LIN' )
 
-NO2_DX_A=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',  NOM_CHAM='DEPL',
+NO2_DX_A=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DX',  NOM_CHAM='DEPL',
                          RESU_GENE=TRAN_GE2,
                          MULT_APPUI='OUI',        INTERP_NUME='LIN',
                          LIST_INST=LISTIMP,   INTERPOL='LIN' )

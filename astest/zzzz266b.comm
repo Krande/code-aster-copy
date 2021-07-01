@@ -32,7 +32,7 @@ modelcp=AFFE_MODELE(MAILLAGE=mail,
                             PHENOMENE='MECANIQUE',MODELISATION='C_PLAN',), )
 
 model3d=AFFE_MODELE(MAILLAGE=mail,
-                    AFFE=_F(MAILLE=('M5','M6',),
+                    AFFE=_F(GROUP_MA=('M5','M6',),
                             PHENOMENE='MECANIQUE',MODELISATION='3D',), )
 
 modelFluidUPPHI=AFFE_MODELE(MAILLAGE=mail,

@@ -81,7 +81,7 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MA,
 CHAR1=AFFE_CHAR_MECA(MODELE=MODELEK,
                      DDL_IMPO=(
                                _F(GROUP_NO='PEAUEXT',DX=0.,H1X=0.),
-                               _F(NOEUD='N99',DZ=0,),
+                               _F(GROUP_NO='N99',DZ=0,),
                                _F(GROUP_NO='BORD1',DY=0.,H1Y=0.),
                                ))
 

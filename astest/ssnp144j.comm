@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -166,7 +166,7 @@ CH22=AFFE_CHAR_MECA(MODELE=MODELEK,
                                 DY=0.0),
                              _F(GROUP_NO='SURF_SUP',
                                 DY=DEPY2),
-                             _F(NOEUD=('N6','N11'),
+                             _F(GROUP_NO=('N6','N11'),
                                 H1Y=DEPY2)),
                       LIAISON_GROUP=(_F(GROUP_NO_1 = ('NINF'),
                                         GROUP_NO_2 = ('NINF'),

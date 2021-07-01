@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,8 +35,8 @@ MASRES0=LIRE_MAILLAGE(FORMAT="ASTER", )
 
 MASRES=CREA_MAILLAGE(MAILLAGE=MASRES0,
     CREA_POI1=(
-        _F(NOM_GROUP_MA='B',   NOEUD = 'B', ),
-        _F(NOM_GROUP_MA='C',   NOEUD = 'C', ),
+        _F(NOM_GROUP_MA='B',   GROUP_NO = 'B', ),
+        _F(NOM_GROUP_MA='C',   GROUP_NO = 'C', ),
     ),
 )
 
@@ -59,11 +59,11 @@ RIGMAS=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
                           0., 0., 0.,0., 0., 0.,0., 0., 0.,0., 0., 0.,),
                           AMOR_HYST = 0.1),
 
-                _F(  MAILLE = 'K2',
+                _F(  GROUP_MA = 'K2',
                           CARA = 'K_T_D_L',
                           VALE = (28000., .001, .001,),
                           AMOR_HYST = 0.1),
-                _F(  MAILLE = 'K2',
+                _F(  GROUP_MA = 'K2',
                           CARA = 'M_T_L',
                           VALE = (0., 0., 0.,0., 0., 0.,0., 0., 0.,
                           0., 0., 0.,0., 0., 0.,0., 0., 0.,0., 0., 0.,),
@@ -81,7 +81,7 @@ RIGMAS=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
 #
 CONDLIM=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
                          _F(  TOUT = 'OUI', DY = 0., DZ = 0.),
-                                  _F(  NOEUD = 'A',  DX = 0.))
+                                  _F(  GROUP_NO = 'A',  DX = 0.))
                         )
 
 RIGIELEM=CALC_MATR_ELEM(  MODELE=MODELE,       OPTION='RIGI_MECA',

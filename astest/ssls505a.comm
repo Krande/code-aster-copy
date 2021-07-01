@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,9 +56,9 @@ Alu=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=E,
 
 
 Char=AFFE_CHAR_MECA(MODELE=Mod,
-                    DDL_IMPO=(_F(NOEUD=('N1', 'N2', 'N3', 'N4',), DZ=0,),
-                              _F(NOEUD=('N1', 'N2'), DY=0,),
-                              _F(NOEUD=('N1'), DX=0,),
+                    DDL_IMPO=(_F(GROUP_NO=('N1', 'N2', 'N3', 'N4',), DZ=0,),
+                              _F(GROUP_NO=('N1', 'N2'), DY=0,),
+                              _F(GROUP_NO=('N1'), DX=0,),
                               ),);
 
 EpPli = 0.1
@@ -68,7 +68,7 @@ Strat = DEFI_COMPOSITE(COUCHE=_F(EPAIS=EpPli, MATER=Alu, ORIENTATION=0));
 
 Chmat = AFFE_MATERIAU(MAILLAGE=Mail, AFFE=_F(TOUT='OUI', MATER=Strat), AFFE_VARC=_F(TOUT='OUI', NOM_VARC='TEMP', CHAM_GD=chT, VALE_REF=0,));
 
-Cara = AFFE_CARA_ELEM(MODELE=Mod, COQUE=_F(MAILLE='M1', EPAIS=nbPli*EpPli, COQUE_NCOU=nbPli, ANGL_REP=(0,0)));
+Cara = AFFE_CARA_ELEM(MODELE=Mod, COQUE=_F(GROUP_MA='M1', EPAIS=nbPli*EpPli, COQUE_NCOU=nbPli, ANGL_REP=(0,0)));
 
 Resu = MECA_STATIQUE(MODELE=Mod, CHAM_MATER=Chmat, CARA_ELEM=Cara, EXCIT=_F(CHARGE=Char,), OPTION='SANS',);
 
@@ -79,13 +79,13 @@ CALC_CHAMP(reuse=Resu,RESULTAT=Resu,DEFORMATION=('EPSI_ELGA',),);
 #IMPR_RESU(UNITE=6,FORMAT='RESULTAT',RESU=_F(RESULTAT=Resu,NOM_CHAM='EPSI_ELGA',NOM_CMP=('EXX','EYY','EXY'),TOUT='OUI'));
 
 TEST_RESU(RESU=_F(RESULTAT=Resu,NOM_CHAM='EPSI_ELGA',NUME_ORDRE=1,
-                     MAILLE='M1',POINT=1,SOUS_POINT=1,
+                     GROUP_MA='M1',POINT=1,SOUS_POINT=1,
                      VALE_REFE=l1,NOM_CMP='EPXX',
                      VALE_CALC=l1 ,
                      REFERENCE='ANALYTIQUE',),);
 
 TEST_RESU(RESU=_F(RESULTAT=Resu,NOM_CHAM='EPSI_ELGA',NUME_ORDRE=1,
-                     MAILLE='M1',POINT=1,SOUS_POINT=1,
+                     GROUP_MA='M1',POINT=1,SOUS_POINT=1,
                      VALE_REFE=l2,NOM_CMP='EPYY',
                      VALE_CALC=l2 ,
                      REFERENCE='ANALYTIQUE',),);

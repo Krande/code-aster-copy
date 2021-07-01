@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -116,6 +116,17 @@ MODCYC=MODE_ITER_CYCL(  BASE_MODALE=BAMO,
 #
 SQUEL1=DEFI_SQUELETTE(  CYCLIQUE    =_F(MODE_CYCL=MODCYC),
                              SECTEUR=_F( TOUT = 'OUI'))
+
+SQUEL1 = DEFI_GROUP( reuse = SQUEL1, MAILLAGE = SQUEL1,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'NO000335', NOEUD = 'NO000335'),
+                                        _F( NOM = 'NO000104', NOEUD = 'NO000104'),
+                                        _F( NOM = 'NO000412', NOEUD = 'NO000412'),
+                                        _F( NOM = 'NO000258', NOEUD = 'NO000258'),
+                                        _F( NOM = 'NO000181', NOEUD = 'NO000181'),
+                                        _F( NOM = 'NO000027', NOEUD = 'NO000027'),
+                                     ),
+         )
                              
 SQUEL1=DEFI_GROUP(reuse=SQUEL1,
                   MAILLAGE=SQUEL1,
@@ -142,37 +153,37 @@ TAB_N1=CREA_TABLE(RESU=_F(RESULTAT=MODGL1,
                            NOM_CHAM='DEPL',
                            TOUT_ORDRE='OUI',
                            TOUT_CMP='OUI',
-                           NOEUD='NO000027',
+                           GROUP_NO='NO000027',
                            ),)
 TAB_N2=CREA_TABLE(RESU=_F(RESULTAT=MODGL1,
                            NOM_CHAM='DEPL',
                            TOUT_ORDRE='OUI',
                            TOUT_CMP='OUI',
-                           NOEUD='NO000104',
+                           GROUP_NO='NO000104',
                            ),)
 TAB_N3=CREA_TABLE(RESU=_F(RESULTAT=MODGL1,
                             NOM_CHAM='DEPL',
                             TOUT_ORDRE='OUI',
                             TOUT_CMP='OUI',
-                            NOEUD='NO000181',
+                            GROUP_NO='NO000181',
                             ),)
 TAB_N4=CREA_TABLE(RESU=_F(RESULTAT=MODGL1,
                             NOM_CHAM='DEPL',
                             TOUT_ORDRE='OUI',
                             TOUT_CMP='OUI',
-                            NOEUD='NO000258',
+                            GROUP_NO='NO000258',
                             ),)
 TAB_N5=CREA_TABLE(RESU=_F(RESULTAT=MODGL1,
                         NOM_CHAM='DEPL',
                         TOUT_ORDRE='OUI',
                         TOUT_CMP='OUI',
-                        NOEUD='NO000335',
+                        GROUP_NO='NO000335',
                         ),)
 TAB_N6=CREA_TABLE(RESU=_F(RESULTAT=MODGL1,
                         NOM_CHAM='DEPL',
                         TOUT_ORDRE='OUI',
                         TOUT_CMP='OUI',
-                        NOEUD='NO000412',
+                        GROUP_NO='NO000412',
                         ),)                           
                            
 module = FORMULE(VALE='(DX**2+DY**2+DZ**2)**(0.5)',

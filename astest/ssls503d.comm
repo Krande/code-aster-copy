@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,15 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 #PRE_IDEAS ();
 #
 MA=LIRE_MAILLAGE(FORMAT='MED', )
+
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'MA1', MAILLE = 'MA1'),
+                                        _F( NOM = 'MA6', MAILLE = 'MA6'),
+                                        _F( NOM = 'MA31', MAILLE = 'MA31'),
+                                        _F( NOM = 'MA36', MAILLE = 'MA36'),
+                                     ),
+         )
 
 #
 MO=AFFE_MODELE(   MAILLAGE=MA,
@@ -150,7 +159,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC= 2.43880861E+07,
                    VALE_REFE=2.4216000E7,
                    PRECISION=1.E-2,
-                   MAILLE='MA6',),
+                   GROUP_MA='MA6',),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='A',
                    REFERENCE='SOURCE_EXTERNE',
@@ -160,7 +169,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC= 5.79292589E+06,
                    VALE_REFE=5.781000E6,
                    PRECISION=1.E-2,
-                   MAILLE='MA6',),
+                   GROUP_MA='MA6',),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='C',
                    REFERENCE='SOURCE_EXTERNE',
@@ -170,7 +179,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC= 1.22814934E+06,
                    VALE_REFE=1.282500E6,
                    PRECISION=0.070000000000000007,
-                   MAILLE='MA31',),
+                   GROUP_MA='MA31',),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='D',
                    REFERENCE='SOURCE_EXTERNE',
@@ -180,7 +189,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=-2.02642887E+05,
                    VALE_REFE=-2.35250E5,
                    PRECISION=0.14000000000000001,
-                   MAILLE='MA36',),
+                   GROUP_MA='MA36',),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='B',
                    REFERENCE='SOURCE_EXTERNE',
@@ -190,7 +199,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC= 8.74856871E+04,
                    VALE_REFE=8.8950E4,
                    PRECISION=0.02,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 ),
           )
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -84,13 +84,13 @@ CHMAT = AFFE_MATERIAU(MAILLAGE = MAILLAGE,
 # ::: CHARGEMENT MECANIQUE : FORCE DE COMPRESSION + DDL IMPOSES ---------------------
 # ***********************************************************************************
 CHAR_U1 = AFFE_CHAR_MECA(MODELE = MODELE,
-                         PRES_REP = _F(MAILLE = 'M4', PRES = 1.),)
+                         PRES_REP = _F(GROUP_MA = 'M4', PRES = 1.),)
 
 CHAR_U2 = AFFE_CHAR_MECA(MODELE = MODELE,
-                         PRES_REP = _F(MAILLE = 'M3', PRES = 1.),)
+                         PRES_REP = _F(GROUP_MA = 'M3', PRES = 1.),)
 
 DEPL_1 = AFFE_CHAR_MECA(MODELE = MODELE,
-                        FACE_IMPO = _F(MAILLE = 'M2', DY = 0.),)
+                        FACE_IMPO = _F(GROUP_MA = 'M2', DY = 0.),)
 
 COEF1 = DEFI_FONCTION(NOM_PARA = 'INST',
                       PROL_DROITE = 'CONSTANT',
@@ -170,7 +170,7 @@ VAR_INI = CREA_CHAMP(OPERATION = 'EXTR',
                      INST = 7000.)
 
 DEPL_2 = AFFE_CHAR_MECA(MODELE = MODELE,
-                        FACE_IMPO = _F(MAILLE = 'M4', DY = 1.),)
+                        FACE_IMPO = _F(GROUP_MA = 'M4', DY = 1.),)
 
 COEF2 = DEFI_FONCTION(NOM_PARA = 'INST',
                       PROL_DROITE = 'LINEAIRE',
@@ -213,7 +213,7 @@ U2 = CALC_CHAMP(reuse = U2,
                 VARI_INTERNE ='VARI_NOEU',)
 
 tab_depl = POST_RELEVE_T(ACTION = _F(INTITULE='DEPL',
-                         NOEUD = 'N4',
+                         GROUP_NO = 'N4',
                          RESULTAT = U2,
                          NOM_CHAM = 'DEPL',
                          TOUT_CMP = 'OUI',
@@ -223,7 +223,7 @@ tab_depl = POST_RELEVE_T(ACTION = _F(INTITULE='DEPL',
 IMPR_TABLE(TABLE = tab_depl)
 
 tab_sigm = POST_RELEVE_T(ACTION = _F(INTITULE = 'SIGM_NOEU',
-                                     NOEUD = 'N4',
+                                     GROUP_NO = 'N4',
                                      RESULTAT = U2,
                                      NOM_CHAM = 'SIGM_NOEU',
                                      TOUT_CMP = 'OUI',
@@ -233,7 +233,7 @@ tab_sigm = POST_RELEVE_T(ACTION = _F(INTITULE = 'SIGM_NOEU',
 IMPR_TABLE(TABLE = tab_sigm)
 
 tab_vari = POST_RELEVE_T(ACTION = _F(INTITULE='VARI_NOEU',
-                                     NOEUD = 'N4',
+                                     GROUP_NO = 'N4',
                                      RESULTAT = U2,
                                      NOM_CHAM = 'VARI_NOEU',
                                      TOUT_CMP = 'OUI',
@@ -247,26 +247,26 @@ TFIN2 = 13000.
 TEST_RESU(RESU = (_F(INST = 7000.0,
                      RESULTAT = U1,
                      NOM_CHAM = 'DEPL',
-                     NOEUD = 'N4',
+                     GROUP_NO = 'N4',
                      NOM_CMP = 'DX',
                      VALE_CALC = -7.6E-4,),
                   _F(INST = 1.3000E4,
                      RESULTAT = U2,
                      NOM_CHAM = 'DEPL',
-                     NOEUD = 'N4',
+                     GROUP_NO = 'N4',
                      NOM_CMP = 'DX',
                      VALE_CALC = 0.028962643377,),),)
 
 TEST_RESU(RESU = (_F(INST = 7000.0,
                      RESULTAT = U1,
                      NOM_CHAM = 'SIGM_NOEU',
-                     NOEUD = 'N4',
+                     GROUP_NO = 'N4',
                      NOM_CMP = 'SIYY',
                      VALE_CALC = -5.0,),
                 _F(INST = 1.3000E4,
                    RESULTAT = U2,
                    NOM_CHAM = 'SIGM_NOEU',
-                   NOEUD = 'N4',
+                   GROUP_NO = 'N4',
                    NOM_CMP = 'SIYY',
                    VALE_CALC = -14.0245661533,),),)
 

@@ -1,34 +1,53 @@
-COOR_3D
-N1  0.0   0.0  0.0
-N2  1.0   1.0  0.5
-N3  0.0   0.0  1.0
-N4  1.0   1.0  0.0
-FINSF
-
-
-SEG2
-POU1  N1  N2
-POU2  N2  N3
-RES   N2  N4
-FINSF
-
-GROUP_NO NOM=BLOC
-N1 N3 N4
-FINSF
-
-GROUP_MA    NOM=POUTRES
-POU1 POU2
-FINSF
-
-GROUP_MA    NOM=POU1
-POU1
-FINSF
-
-GROUP_MA    NOM=POU2
-POU2
-FINSF
-
-GROUP_MA    NOM=RESSORT
-RES
-FINSF
-FIN
+ TITRE
+ME-30-JUIN-2021 09:24:10                                                        
+ FINSF
+ %
+ COOR_3D
+ N1        0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ N2        1.00000000000000E+00  1.00000000000000E+00  5.00000000000000E-01
+ N3        0.00000000000000E+00  0.00000000000000E+00  1.00000000000000E+00
+ N4        1.00000000000000E+00  1.00000000000000E+00  0.00000000000000E+00
+ FINSF
+ %
+ SEG2    
+ POU1     N1       N2      
+ POU2     N2       N3      
+ RES      N2       N4      
+ FINSF
+ %
+ GROUP_NO
+ BLOC                    
+ N1       N3       N4      
+ FINSF
+ %
+ GROUP_NO
+ N3                      
+ N3      
+ FINSF
+ %
+ GROUP_NO
+ N1                      
+ N1      
+ FINSF
+ %
+ GROUP_MA
+ POUTRES                 
+ POU1     POU2    
+ FINSF
+ %
+ GROUP_MA
+ POU1                    
+ POU1    
+ FINSF
+ %
+ GROUP_MA
+ POU2                    
+ POU2    
+ FINSF
+ %
+ GROUP_MA
+ RESSORT                 
+ RES     
+ FINSF
+ %
+ FIN

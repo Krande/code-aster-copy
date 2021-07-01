@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ CHM=AFFE_MATERIAU(MAILLAGE=MA,
 
 
 SURFLIBR=AFFE_CHAR_MECA(MODELE=MO,
-                        DDL_IMPO=_F(NOEUD='NO1',
+                        DDL_IMPO=_F(GROUP_NO='NO1',
                                     PRES=0.0,
                                     PHI=0.0,),);
 
@@ -72,7 +72,7 @@ TUYAU=AFFE_CHAR_MECA(MODELE=MO,
                                   DRX=0.0,
                                   DRY=0.0,
                                   DRZ=0.0,),
-                               _F(NOEUD='NO1',
+                               _F(GROUP_NO='NO1',
                                   DX=0.0,
                                   DY=0.0,
                                   DZ=0.0,

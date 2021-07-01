@@ -1,38 +1,74 @@
-TITRE
-% XXXX
-FINSF
-%
-COOR_3D
-%   NOEUD       X         Y      Z
-     P1        0.00       0.     0.
-     P2        0.10       0.     0.
-     P3        0.20       0.     0.
-     P4        0.30       0.     0.
-     P5        0.40       0.     0.
-     P6        0.50       0.     0.
-     P7        0.60       0.     0.
-     P8        0.70       0.     0.
-     P9        0.80       0.     0.
-FINSF
-%
-SEG2
-%     SEG      ND-I.    ND-F.
-       S1      P1       P2
-       S2      P2       P3
-       S3      P3       P4
-       S4      P4       P5
-       S5      P5       P6
-       S6      P6       P7
-       S7      P7       P8
-       S8      P8       P9
-FINSF
-%
-GROUP_NO  NOM=NOEUDDL
-P1 P2 P3 P4 P5 P6 P7 P8 P9
-FINSF
-%
-GROUP_NO  NOM=RESTIT
-P2 P3 P4
-FINSF
-%
-FIN
+ TITRE
+% XXXX                                                                          
+ FINSF
+ %
+ COOR_3D
+ P1        0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ P2        1.00000000000000E-01  0.00000000000000E+00  0.00000000000000E+00
+ P3        2.00000000000000E-01  0.00000000000000E+00  0.00000000000000E+00
+ P4        3.00000000000000E-01  0.00000000000000E+00  0.00000000000000E+00
+ P5        4.00000000000000E-01  0.00000000000000E+00  0.00000000000000E+00
+ P6        5.00000000000000E-01  0.00000000000000E+00  0.00000000000000E+00
+ P7        6.00000000000000E-01  0.00000000000000E+00  0.00000000000000E+00
+ P8        7.00000000000000E-01  0.00000000000000E+00  0.00000000000000E+00
+ P9        8.00000000000000E-01  0.00000000000000E+00  0.00000000000000E+00
+ FINSF
+ %
+ SEG2    
+ S1       P1       P2      
+ S2       P2       P3      
+ S3       P3       P4      
+ S4       P4       P5      
+ S5       P5       P6      
+ S6       P6       P7      
+ S7       P7       P8      
+ S8       P8       P9      
+ FINSF
+ %
+ GROUP_NO
+ NOEUDDL                 
+ P1       P2       P3       P4       P5       P6       P7      
+ P8       P9      
+ FINSF
+ %
+ GROUP_NO
+ RESTIT                  
+ P2       P3       P4      
+ FINSF
+ %
+ GROUP_NO
+ P2                      
+ P2      
+ FINSF
+ %
+ GROUP_NO
+ P5                      
+ P5      
+ FINSF
+ %
+ GROUP_NO
+ P9                      
+ P9      
+ FINSF
+ %
+ GROUP_NO
+ P3                      
+ P3      
+ FINSF
+ %
+ GROUP_NO
+ P4                      
+ P4      
+ FINSF
+ %
+ GROUP_NO
+ P6                      
+ P6      
+ FINSF
+ %
+ GROUP_NO
+ P1                      
+ P1      
+ FINSF
+ %
+ FIN

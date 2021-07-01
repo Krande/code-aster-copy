@@ -364,14 +364,14 @@ numpg=5
 epsDIR=RECU_FONCTION(RESULTAT=SOLNL,
                    NOM_CHAM='EPSG_ELGA',
                    NOM_CMP='EPZZ',
-                   MAILLE='CUBE',
+                   GROUP_MA='CUBE',
                    POINT=numpg,
                    INTERPOL='LIN');
 
 sigDIR=RECU_FONCTION(RESULTAT=SOLNL,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIZZ',
-                   MAILLE='CUBE',
+                   GROUP_MA='CUBE',
                    POINT=numpg,
                    INTERPOL='LIN');
 
@@ -427,14 +427,14 @@ for i in range(1,13):
 
     gamma[i]=RECU_FONCTION(RESULTAT=SOLNL,
                    NOM_CHAM='VARI_ELGA',
-                   MAILLE='CUBE',
+                   GROUP_MA='CUBE',
                    POINT=numpg,
                    NOM_CMP='V'+str(8+3*(i-1)),
                            INTERPOL='LIN');
 
     rho[i]=RECU_FONCTION(RESULTAT=SOLNL,
                    NOM_CHAM='VARI_ELGA',
-                   MAILLE='CUBE',
+                   GROUP_MA='CUBE',
                    POINT=numpg,
                    NOM_CMP='V'+str(7+3*(i-1)),
                    INTERPOL='LIN');
@@ -702,28 +702,28 @@ tdep=t1
 sigDIRE=RECU_FONCTION(RESULTAT=SOLEXPL,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIZZ',
-                   MAILLE='CUBE',
+                   GROUP_MA='CUBE',
                    POINT=numpg,
                    INTERPOL='LIN');
 
 epsDIRE=RECU_FONCTION(RESULTAT=SOLEXPL,
                    NOM_CHAM='EPSG_ELGA',
                    NOM_CMP='EPZZ',
-                   MAILLE='CUBE',
+                   GROUP_MA='CUBE',
                    POINT=numpg,
                    INTERPOL='LIN');
 
 sigDIRN=RECU_FONCTION(RESULTAT=SOLIMPN,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIZZ',
-                   MAILLE='CUBE',
+                   GROUP_MA='CUBE',
                    POINT=numpg,
                    INTERPOL='LIN');
 
 epsDIRN=RECU_FONCTION(RESULTAT=SOLIMPN,
                    NOM_CHAM='EPSG_ELGA',
                    NOM_CMP='EPZZ',
-                   MAILLE='CUBE',
+                   GROUP_MA='CUBE',
                    POINT=numpg,
                    INTERPOL='LIN');
 

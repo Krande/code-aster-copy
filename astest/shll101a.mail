@@ -1,21 +1,29 @@
-% MAILLAGE D'UNE POUTRE ENCASTREE AU NOEUD N1 : ANALYSE HARMONIQUE
-%----------------------------------------------------------------------
-%----------------COORDONNEES DES EXTREMITES DE POUTRE-------------------
-  COOR_3D
-%
-%                 X                Y               Z
-  N1      0.000000000E+00  0.000000000E+00  0.000000000E+00
-  N2      1.000000000E+01  0.000000000E+00  0.000000000E+00
-%
-  FINSF
-%-----------------------------------------------------------------------
-%----------------DEFINITION DES ELEMENTS DE POUTRES---------------------
-  SEG2
-%-----------------------------------------------------------------------
-%  POUTRES DROITES A SECTION CONSTANTE
-%          ND-I.    ND-F.
-  E1       N1       N2
-%
-  FINSF  % FIN DEFINITION DES ELEMENTS DE POUTRES
-%
-  FIN
+ TITRE
+ME-30-JUIN-2021 09:22:08                                                        
+ FINSF
+ %
+ COOR_3D
+ N1        0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ N2        1.00000000000000E+01  0.00000000000000E+00  0.00000000000000E+00
+ FINSF
+ %
+ SEG2    
+ E1       N1       N2      
+ FINSF
+ %
+ GROUP_NO
+ N1                      
+ N1      
+ FINSF
+ %
+ GROUP_NO
+ N2                      
+ N2      
+ FINSF
+ %
+ GROUP_MA
+ E1                      
+ E1      
+ FINSF
+ %
+ FIN

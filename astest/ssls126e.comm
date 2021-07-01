@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -197,7 +197,7 @@ TEST_RESU(RESU=(_F(
                 NOM_CHAM = 'EFGE_ELNO',
                 CRITERE='RELATIF',
                 NOM_CMP='MXX',
-                MAILLE='M266',
+                GROUP_MA='M266',
                 GROUP_NO='A1',
                 PRECISION=0.005,
                 REFERENCE='ANALYTIQUE',
@@ -245,7 +245,7 @@ TEST_RESU(RESU=(_F(
                   NOM_CHAM = 'FERRAILLAGE',
                   CRITERE='RELATIF',
                   NOM_CMP='DNSXS',
-                  MAILLE='M124',
+                  GROUP_MA='M124',
                   POINT=1,
                   PRECISION=1.E-6,
                   VALE_CALC=lst_resudnsxs[1],
@@ -259,7 +259,7 @@ TEST_RESU(RESU=(_F(
 #                  CRITERE='RELATIF',
 #                  NOM_CMP='DNSXS',
 #                  NOM_CMP='X2',
-#                  MAILLE='M124',
+#                  GROUP_MA='M124',
 #                  POINT=1,
 #                  PRECISION=1.E-6,
 #                  VALE_CALC=2.,
@@ -279,7 +279,7 @@ TOTEST = CREA_CHAMP (
 TEST_RESU(
     CARTE = _F(
         CHAM_GD = TOTEST,
-        MAILLE='M124',
+        GROUP_MA='M124',
         NOM_CMP='X2',
         REFERENCE='ANALYTIQUE',
         PRECISION=1.E-6,

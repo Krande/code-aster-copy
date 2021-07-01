@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -120,7 +120,7 @@ TEST_FONCTION(VALEUR= _F( REFERENCE='ANALYTIQUE', VALE_REFE=287.5, VALE_CALC=287
 
 # type : table
 #----------------
-XXX6=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL', NOEUD='N1', RESULTAT=RESU0,
+XXX6=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL', GROUP_NO='N1', RESULTAT=RESU0,
                            NOM_CHAM='DEPL',  NUME_ORDRE=1,
                            TOUT_CMP='OUI', OPERATION='EXTRACTION',))
 

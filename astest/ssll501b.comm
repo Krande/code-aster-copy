@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2016  EDF R2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2016  EDF R2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,6 +73,13 @@ DEFI_FICHIER(ACTION='ASSOCIER', ACCES='OLD', FICHIER=nom_maillage, UNITE=20)
 
 MAILL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='ASTER',UNITE=20)
 
+MAILL = DEFI_GROUP( reuse = MAILL, MAILLAGE = MAILL,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M1', MAILLE = 'M1'),
+                                        _F( NOM = 'M49', MAILLE = 'M49'),
+                                     ),
+         )
+
 DEFI_FICHIER(ACTION='LIBERER', UNITE=20)
 
 # CREATION DES GROUPES DE NOEUDS **************************
@@ -100,8 +107,8 @@ CARA_POU=AFFE_CARA_ELEM(
     MODELE=MODELE,
     POUTRE=(
         _F(SECTION = 'CERCLE', CARA = ('R', 'EP',), VALE = (RTUB, EPTUB,), GROUP_MA = 'TUYAU'),
-        _F(SECTION = 'CERCLE', CARA = ('R', 'EP',), VALE = (RGV,  EPGV,), MAILLE = 'M1'),
-        _F(SECTION = 'CERCLE', CARA = ('R', 'EP',), VALE = (RBR, EPBR,), MAILLE = 'M49'),
+        _F(SECTION = 'CERCLE', CARA = ('R', 'EP',), VALE = (RGV,  EPGV,), GROUP_MA = 'M1'),
+        _F(SECTION = 'CERCLE', CARA = ('R', 'EP',), VALE = (RBR, EPBR,), GROUP_MA = 'M49'),
         _F(SECTION = 'CERCLE', CARA = ('R', 'EP',), VALE = (RCOU, EPCOU,),
            GROUP_MA = ('L2', 'L6', 'L18', 'L21', 'L26', 'L30', 'L35', 'L39', 'L44', 'L46',),),
         # Poutre coudées

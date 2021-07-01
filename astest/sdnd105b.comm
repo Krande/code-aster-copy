@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,11 +26,11 @@ MAILLAG0=LIRE_MAILLAGE(FORMAT="ASTER", )
 MAILLAG0=DEFI_GROUP(reuse=MAILLAG0,
                     MAILLAGE=MAILLAG0,
                     CREA_GROUP_NO=_F( NOM='GROUP_NO_GN2',
-                                      NOEUD=('N02',),),);
+                                      GROUP_NO=('N02',),),);
 MAILLAG0=DEFI_GROUP(reuse=MAILLAG0,
                     MAILLAGE=MAILLAG0,
                     CREA_GROUP_NO=_F( NOM='GROUP_NO_GN3',
-                                      NOEUD=('N03',),),);
+                                      GROUP_NO=('N03',),),);
 
 MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
     CREA_POI1=(
@@ -123,8 +123,8 @@ VIT_INI1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R',
                _F(  TOUT = 'OUI', NOM_CMP = 'DRX', VALE = 0.),
                _F(  TOUT = 'OUI', NOM_CMP = 'DRY', VALE = 0.),
                _F(  TOUT = 'OUI', NOM_CMP = 'DRZ', VALE = 0.),
-               _F(  NOEUD = 'N02',  NOM_CMP = 'DX', VALE = V02),
-               _F(  NOEUD = 'N03',  NOM_CMP = 'DX', VALE = V03))
+               _F(  GROUP_NO = 'N02',  NOM_CMP = 'DX', VALE = V02),
+               _F(  GROUP_NO = 'N03',  NOM_CMP = 'DX', VALE = V03))
                   )
 
 # POUR TESTER LES MOTS CLES NUME_DDL ET CHAM_NO DE CREA_CHAMP :
@@ -191,8 +191,8 @@ TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                   INST_INIT = 3.),
 
                       COMPORTEMENT=_F(RELATION='FLAMBAGE',
-                                 NOEUD_1 = 'N02',
-                                 NOEUD_2 = 'N03',
+                                 GROUP_NO_1 = 'N02',
+                                 GROUP_NO_2 = 'N03',
                                  OBSTACLE = BI_PLANY,
                                  NORM_OBST = (0., 1., 0.,),
                                  DIST_1 = 5.,
@@ -248,7 +248,7 @@ TEST_RESU(RESU=_F(INST=t0,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=TRAN,
                   NOM_CHAM='DEPL',
-                  NOEUD='N02',
+                  GROUP_NO='N02',
                   NOM_CMP='DX',
                   VALE_CALC=7.4534998622E-06,
                   VALE_REFE=0.0,

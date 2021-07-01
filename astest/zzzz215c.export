@@ -6,5 +6,5 @@ P mpi_nbnoeud 1
 P testlist submit ci verification sequential
 
 F comm zzzz215c.comm D 1
-F libr zzzz215c.22 D 22
-F libr zzzz215a.23 D 23
+F mmed zzzz215c.22 D 22
+F mmed zzzz215a.23 D 23

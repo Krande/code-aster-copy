@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -76,8 +76,8 @@ CHMAT1=AFFE_MATERIAU(  MAILLAGE=MA,
 
 CH1=AFFE_CHAR_MECA(  MODELE=MO1,DDL_IMPO=(
            _F(  GROUP_NO = 'AB',  DZ = 0., DRX = 0.,  DRY = 0.),
-                    _F(  NOEUD = 'N100',   DX = 0., DY = 0.),
-                    _F(  NOEUD = 'N200',   DY = 0.))   )
+                    _F(  GROUP_NO = 'N100',   DX = 0., DY = 0.),
+                    _F(  GROUP_NO = 'N200',   DY = 0.))   )
 
 CHMAT2=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=(
                           _F(  GROUP_MA = 'FIBRE',  MATER = MAT),
@@ -85,8 +85,8 @@ CHMAT2=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=(
 
 CH2=AFFE_CHAR_MECA(  MODELE=MO2,DDL_IMPO=(
           _F(  TOUT = 'OUI',   DZ = 0., DRX = 0.,  DRY = 0.),
-                   _F(  NOEUD = 'N300',  DX = 0., DY = 0.),
-                   _F(  NOEUD = 'N400',  DY = 0.))       )
+                   _F(  GROUP_NO = 'N300',  DX = 0., DY = 0.),
+                   _F(  GROUP_NO = 'N400',  DY = 0.))       )
 
 # ------------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,6 +63,13 @@ MA2 = LIRE_MAILLAGE(FORMAT='GMSH',
 MA=CREA_MAILLAGE(
             MAILLAGE = MA2,
             LINE_QUAD = _F(TOUT='OUI'))
+
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N17', NOEUD = 'N17'),
+                                        _F( NOM = 'N6', NOEUD = 'N6'),
+                                     ),
+         )
 
 
 BETON=DEFI_MATERIAU(ELAS=_F(E=E,
@@ -172,7 +179,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
-                   NOEUD='N6',
+                   GROUP_NO='N6',
                    NOM_CMP='DX',
                    VALE_CALC= 6.76937630E-04,
                    VALE_REFE=6.7692299999999996E-4,
@@ -181,7 +188,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
-                   NOEUD='N17',
+                   GROUP_NO='N17',
                    NOM_CMP='DX',
                    VALE_CALC= 3.84613179E-04,
                    VALE_REFE=3.8462000000000001E-4,

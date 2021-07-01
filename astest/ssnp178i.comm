@@ -187,8 +187,8 @@ TEST_RESU(RESU=_F(INST=1.0,
                   CRITERE='RELATIF',),
           )
 TEST_RESU(RESU=_F(INST=1.0,
-                  MAILLE=('M1797'),
-                  NOEUD=('N187',),
+                  GROUP_MA=('M1797'),
+                  GROUP_NO=('N187',),
                   RESULTAT=resnonl,
                   NOM_CHAM='EPSI_ELNO',
                   NOM_CMP='EPXY',
@@ -197,7 +197,7 @@ TEST_RESU(RESU=_F(INST=1.0,
           )
 
 TEST_RESU(RESU=_F(INST=1.0,
-                  MAILLE=('M1797'),
+                  GROUP_MA=('M1797'),
 
                   POINT=1,
                   RESULTAT=resnonl,
@@ -209,7 +209,7 @@ TEST_RESU(RESU=_F(INST=1.0,
 TEST_RESU(CHAM_ELEM=_F(
                        POINT=1,
                        NOM_CMP='X',
-                       MAILLE='M1797',
+                       GROUP_MA='M1797',
                        CHAM_GD=rescoor,
                        VALE_CALC=23.733112877082352,
                        ),

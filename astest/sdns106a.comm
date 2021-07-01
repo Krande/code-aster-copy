@@ -452,10 +452,10 @@ ENER=POST_ELEM(RESULTAT=RESU1,
 TEST_RESU(RESU=_F(INST=2.E-06,
                   RESULTAT=RESU1,
                   NOM_CHAM='ENEL_ELNO',
-                  NOEUD='N2',
+                  GROUP_NO='N2',
                   NOM_CMP='TOTALE',
                   VALE_CALC=1.0415873730713,
-                  MAILLE='M1',),
+                  GROUP_MA='M1',),
           )
 
 ENEL=1.46067E-01

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,22 +43,22 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                                       NOM='VOL'),
                                    _F(NOM='VOL_SUP',
                                       OPTION = 'PLAN',
-                                      NOEUD_CENTRE='N157',
+                                      GROUP_NO_CENTRE='N157',
                                       PRECISION=12.49,
                                       VECT_NORMALE=(0.0,0.0,1.0)),
                                    _F(NOM='VOL_INF',
                                       OPTION = 'PLAN',
-                                      NOEUD_CENTRE='N1',
+                                      GROUP_NO_CENTRE='N1',
                                       PRECISION=12.49,
                                       VECT_NORMALE=(0.0,0.0,1.0)),
                                    _F(NOM='FISS_INF',
                                       OPTION = 'PLAN',
-                                      NOEUD_CENTRE='N31',
+                                      GROUP_NO_CENTRE='N31',
                                       PRECISION=1.0E-10,
                                       VECT_NORMALE=(0.0,0.0,1.0)),
                                    _F(NOM='FISS_SUP',
                                       OPTION = 'PLAN',
-                                      NOEUD_CENTRE='N36',
+                                      GROUP_NO_CENTRE='N36',
                                       PRECISION=1.0E-10,
                                       VECT_NORMALE=(0.0,0.0,1.0)),
                                    ));

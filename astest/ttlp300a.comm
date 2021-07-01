@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -100,28 +100,28 @@ TEMP_3=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
 NOM_CHAM='TEMP', RESULTAT=TEMPE,
             INST=3.0 )
 
-TEST_RESU(CHAM_NO=(_F(NOEUD='N26',
+TEST_RESU(CHAM_NO=(_F(GROUP_NO='N26',
                       NOM_CMP='TEMP',
                       PRECISION=0.02,
                       CHAM_GD=TEMP_3,
                       VALE_CALC=238.951169183,
                       VALE_REFE=237.5,
                       REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='N113',
+                   _F(GROUP_NO='N113',
                       NOM_CMP='TEMP',
                       PRECISION=0.029999999999999999,
                       CHAM_GD=TEMP_3,
                       VALE_CALC=140.707361188,
                       VALE_REFE=137.22,
                       REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='N82',
+                   _F(GROUP_NO='N82',
                       NOM_CMP='TEMP',
                       PRECISION=0.02,
                       CHAM_GD=TEMP_3,
                       VALE_CALC=66.189678601,
                       VALE_REFE=65.980000000000004,
                       REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='N1',
+                   _F(GROUP_NO='N1',
                       NOM_CMP='TEMP',
                       PRECISION=0.02,
                       CHAM_GD=TEMP_3,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ from code_aster.Utilities import ExecutionParameter
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 TUBE=LIRE_MAILLAGE(FORMAT='MED')
-MODI_MAILLAGE(reuse=TUBE, MAILLAGE=TUBE,ABSC_CURV=_F(NOEUD_ORIG='N_01_001',TOUT='OUI'))
+MODI_MAILLAGE(reuse=TUBE, MAILLAGE=TUBE,ABSC_CURV=_F(GROUP_NO_ORIG='N_01_001',TOUT='OUI'))
 
 TUBE=DEFI_GROUP( reuse=TUBE,
    MAILLAGE=TUBE,
@@ -78,8 +78,8 @@ RHOE=DEFI_FONCTION(
 
 PROFVIT1=DEFI_FONC_FLUI(
    MAILLAGE=TUBE,
-   NOEUD_INIT='N_02_001',
-   NOEUD_FIN='N_02_060',
+   GROUP_NO_INIT='N_02_001',
+   GROUP_NO_FIN='N_02_060',
    VITE=_F( PROFIL = 'UNIFORME', VALE = 1.000000E+00)
 )
 
@@ -144,13 +144,13 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=TUBE,
 
 
 CHDDL=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
-                           _F(  NOEUD = 'N_01_001',
+                           _F(  GROUP_NO = 'N_01_001',
                                       DX = 0.0,
                                       DY = 0.0,
                                       DZ = 0.0,
                                       DRZ = 0.0,
                                        ),
-                           _F(  NOEUD = 'N_04_001',
+                           _F(  GROUP_NO = 'N_04_001',
                                       DX = 0.0,
                                       DY = 0.0,
                                       DZ = 0.0,
@@ -261,7 +261,7 @@ for i in range(len(vite)):
                      NOM_CHAM='DEPL',
                       NOM_CMP='DX',
                        OPTION='TOUT_TOUT',
-                        NOEUD=('N_02_030', )
+                        GROUP_NO=('N_02_030', )
 )
 
   DYN0[i]=POST_DYNA_ALEA(INTERSPECTRE=_F(

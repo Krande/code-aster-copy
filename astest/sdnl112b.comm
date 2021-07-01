@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ from code_aster.Utilities import ExecutionParameter
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 TUBE=LIRE_MAILLAGE(FORMAT='MED')
-MODI_MAILLAGE(reuse=TUBE, MAILLAGE=TUBE,ABSC_CURV=_F(NOEUD_ORIG='N_01_001',TOUT='OUI'))
+MODI_MAILLAGE(reuse=TUBE, MAILLAGE=TUBE,ABSC_CURV=_F(GROUP_NO_ORIG='N_01_001',TOUT='OUI'))
 
 TUBE=DEFI_GROUP( reuse=TUBE,   MAILLAGE=TUBE,
                        CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
@@ -122,14 +122,14 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=TUBE,
 )
 
 CHDDL=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
-                           _F(  NOEUD = 'N_01_001',
+                           _F(  GROUP_NO = 'N_01_001',
                                       DX = 0.0,
                                       DY = 0.0,
                                       DZ = 0.0,
                                       DRX = 0.0,
                                       DRY = 0.0,
                                       DRZ = 0.0),
-                           _F(  NOEUD = 'N_06_007',
+                           _F(  GROUP_NO = 'N_06_007',
                                       DX = 0.0,
                                       DY = 0.0,
                                       DZ = 0.0,
@@ -505,7 +505,7 @@ TRANGENE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                         _F(  NUME_ORDRE = 4,
                              FONC_MULT = EFPROJ4)),
           COMPORTEMENT=_F(RELATION='DIS_CHOC',
-                   NOEUD_1 = 'N_04_001',
+                   GROUP_NO_1 = 'N_04_001',
                    OBSTACLE = OBST1,
                   ORIG_OBST = ( 0.000000E+00,
                                 3.626403E-07,
@@ -541,14 +541,14 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      )
 
 DYNATRAN=REST_GENE_PHYS(    RESU_GENE=TRANGENE,
-                               NOEUD=('N_04_001','N_04_002',),
+                               GROUP_NO=('N_04_001','N_04_002',),
                            NOM_CHAM=('DEPL','ACCE'),
                            LIST_INST=LINST,
                            INTERPOL='LIN',)
 
 DYNATRA=CALC_CHAMP(  CONTRAINTE=('SIPO_ELNO'),
                             RESULTAT=DYNATRAN,
-                              MAILLE='S_05_001',
+                              GROUP_MA='S_05_001',
                               MODELE=MODELE,
                           CHAM_MATER=CHMAT,
                            CARA_ELEM=CARA,
@@ -571,7 +571,7 @@ DX_04_1=RECU_FONCTION(
                        RESULTAT=DYNATRAN,
                        NOM_CHAM='DEPL',
                      TOUT_ORDRE='OUI',
-                          NOEUD='N_04_001',
+                          GROUP_NO='N_04_001',
                         NOM_CMP='DX',
                        NOM_RESU='DX',
                        NOM_PARA='INST',
@@ -583,7 +583,7 @@ AX_04_1=RECU_FONCTION(
                        RESULTAT=DYNATRAN,
                        NOM_CHAM='ACCE',
                      TOUT_ORDRE='OUI',
-                          NOEUD='N_04_001',
+                          GROUP_NO='N_04_001',
                         NOM_CMP='DX',
                        NOM_RESU='AC_X ',
                        NOM_PARA='INST',
@@ -597,8 +597,8 @@ F_04_001=RECU_FONCTION(
                         NOM_CMP='SMFZ',
                        NOM_RESU='SMFZ',
                      TOUT_ORDRE='OUI',
-                          NOEUD='N_04_001',
-                         MAILLE='S_05_001',
+                          GROUP_NO='N_04_001',
+                         GROUP_MA='S_05_001',
                        NOM_PARA='INST',
                        INTERPOL='LIN',
                     PROL_DROITE='LINEAIRE',

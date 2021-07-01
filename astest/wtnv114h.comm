@@ -221,7 +221,7 @@ RESU0=CALC_CHAMP( reuse= RESU0, RESULTAT= RESU0, CONTRAINTE=('SIGM_ELGA',), )
 #IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RESU0,))
 
 DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='P_SUP',
-                             NOEUD=('N5','N6','N7','N8',),
+                             GROUP_NO=('N5','N6','N7','N8',),
                              RESULTAT=RESU0,
                              NOM_CHAM='DEPL',
                              NUME_ORDRE=8,
@@ -231,7 +231,7 @@ DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='P_SUP',
                   );
 
 DEP2=POST_RELEVE_T(ACTION=_F(INTITULE='P_INF',
-                             NOEUD=('N1','N2','N3','N4',),
+                             GROUP_NO=('N1','N2','N3','N4',),
                              RESULTAT=RESU0,
                              NOM_CHAM='DEPL',
                              NUME_ORDRE=8,

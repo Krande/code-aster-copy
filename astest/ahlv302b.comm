@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -134,7 +134,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE = 'ANALYTIQUE',
                    RESULTAT=HARMO,
                    NOM_CHAM='DEPL',
-                   NOEUD='N33',
+                   GROUP_NO='N33',
                    NOM_CMP='PRES',),
                 _F(NUME_ORDRE=1,
                    VALE_CALC_C=-289.77126944227+7.7618654468389E-03j,
@@ -142,7 +142,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE = 'ANALYTIQUE',
                    RESULTAT=HARMO,
                    NOM_CHAM='DEPL',
-                   NOEUD='N3',
+                   GROUP_NO='N3',
                    NOM_CMP='PRES',),
                 _F(NUME_ORDRE=1,
                    VALE_CALC_C=284.78961779319-53.505696059775j,
@@ -151,7 +151,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PRECISION = 3.E-3,
                    RESULTAT=HARMO,
                    NOM_CHAM='DEPL',
-                   NOEUD='N4',
+                   GROUP_NO='N4',
                    NOM_CMP='PRES',),
                 _F(NUME_ORDRE=1,
                    VALE_CALC_C=284.78962351866-53.505698422958j,
@@ -160,7 +160,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PRECISION = 3.E-3,
                    RESULTAT=HARMO,
                    NOM_CHAM='DEPL',
-                   NOEUD='N34',
+                   GROUP_NO='N34',
                    NOM_CMP='PRES',),
                 ),
           )

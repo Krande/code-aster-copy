@@ -1,21 +1,50 @@
-COOR_3D
-
-N1  0.0   0.0   0.0
-N2  1.0   0.0   0.0
-N3  2.0   0.0   0.0
-N4  1.0   -1.0   0.0
-N5  1.0   1.0   0.0
-FINSF
-%
-SEG2       NOM=INDEFINI   NBOBJ=1
-M1       N1       N2
-M2       N3       N2
-M3       N4       N2
-M4       N5       N2
-FINSF
-%
-GROUP_MA    NOM=LI1
-  M1       M2    M3     M4
-FINSF
-%
-FIN
+ TITRE
+ME-30-JUIN-2021 09:23:33                                                        
+ FINSF
+ %
+ COOR_3D
+ N1        0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ N2        1.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ N3        2.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ N4        1.00000000000000E+00 -1.00000000000000E+00  0.00000000000000E+00
+ N5        1.00000000000000E+00  1.00000000000000E+00  0.00000000000000E+00
+ FINSF
+ %
+ SEG2    
+ M1       N1       N2      
+ M2       N3       N2      
+ M3       N4       N2      
+ M4       N5       N2      
+ FINSF
+ %
+ GROUP_NO
+ N3                      
+ N3      
+ FINSF
+ %
+ GROUP_NO
+ N1                      
+ N1      
+ FINSF
+ %
+ GROUP_NO
+ N5                      
+ N5      
+ FINSF
+ %
+ GROUP_NO
+ N2                      
+ N2      
+ FINSF
+ %
+ GROUP_NO
+ N4                      
+ N4      
+ FINSF
+ %
+ GROUP_MA
+ LI1                     
+ M1       M2       M3       M4      
+ FINSF
+ %
+ FIN

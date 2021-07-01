@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -321,20 +321,20 @@ CHEPS120=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
 
 #------------------------------------------------------------------
 
-TEST_RESU(CHAM_ELEM=(_F(NOEUD='N5',
+TEST_RESU(CHAM_ELEM=(_F(GROUP_NO='N5',
                         CRITERE='RELATIF',
                         NOM_CMP='EPYY',
                         PRECISION=0.10000000000000001,
-                        MAILLE='M3',
+                        GROUP_MA='M3',
                         CHAM_GD=CHEPS120,
                         VALE_CALC=-0.028883482,
                         VALE_REFE=-0.031,
                         REFERENCE='NON_DEFINI',),
-                     _F(NOEUD='N5',
+                     _F(GROUP_NO='N5',
                         CRITERE='RELATIF',
                         NOM_CMP='SIYY',
                         PRECISION=0.10000000000000001,
-                        MAILLE='M3',
+                        GROUP_MA='M3',
                         CHAM_GD=CHSIG120,
                         VALE_CALC=-24.999977738,
                         VALE_REFE=-25.0,

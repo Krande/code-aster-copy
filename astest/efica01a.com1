@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                   DEPL=DEPLACE1,
                                   MULT_APPUI='OUI',
                                   DIRECTION=(1.0,0.0,0.0,),
-                                  NOEUD='NO1',),
+                                  GROUP_NO='NO1',),
                          COMPORTEMENT=_F(RELATION='DIS_CHOC',
                                  INTITULE='NO2/MUR',
                                  GROUP_NO_1='MASSES',
@@ -76,12 +76,12 @@ TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
 MULT_X1=CALC_CHAR_SEISME(MATR_MASS=MASS_BIC,
                          DIRECTION=(1.0,0.0,0.0,),
                          MODE_STAT=MSTA_BIC,
-                         NOEUD='NO1',)
+                         GROUP_NO='NO1',)
 
 MULT_X2=CALC_CHAR_SEISME(MATR_MASS=MASS_BIC,
                          DIRECTION=(1.0,0.0,0.0,),
                          MODE_STAT=MSTA_BIC,
-                         NOEUD='NO11',)
+                         GROUP_NO='NO11',)
 
 PROJ_BASE(BASE=MODE_BIC,
           STOCKAGE='DIAG',

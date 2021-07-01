@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,6 +27,12 @@ MAILLAGE=CREA_MAILLAGE(MAILLAGE=MA,
                     CREA_MAILLE=(_F(NOM  = 'ROCHE_RE',
                                       GROUP_MA    = 'ROCHE',
                                       PREF_MAILLE = 'MR')));
+
+MAILLAGE = DEFI_GROUP( reuse = MAILLAGE, MAILLAGE = MAILLAGE,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'MRM1', MAILLE = 'MRM1'),
+                                     ),
+         )
 
 MAILLAGE = DEFI_GROUP( reuse    = MAILLAGE,
                    MAILLAGE = MAILLAGE,
@@ -120,7 +126,7 @@ U1 = STAT_NON_LINE(
 TEST_RESU(RESU=(_F(INST=1.0,
                    RESULTAT=U1,
                    NOM_CHAM='DEPL',
-                   NOEUD='N1',
+                   GROUP_NO='N1',
                    NOM_CMP='GONF',
                    VALE_CALC=-0.099999636671320,
                    CRITERE='RELATIF',
@@ -128,7 +134,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                 _F(INST=1.0,
                    RESULTAT=U1,
                    NOM_CHAM='DEPL',
-                   NOEUD='N5',
+                   GROUP_NO='N5',
                    NOM_CMP='DX',
                    VALE_CALC=0.025000340828762,
                    CRITERE='RELATIF',
@@ -140,7 +146,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOM_CMP='SIG1',
                    VALE_CALC=1.4999945500698,
                    CRITERE='RELATIF',
-                   MAILLE='MRM1',),
+                   GROUP_MA='MRM1',),
                 ),
           )
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -72,34 +72,34 @@ CHPOU=AFFE_CHAR_MECA(
 CARELX=AFFE_CARA_ELEM(    MODELE=MOPOU, INFO=2,
                           POUTRE=(
 
-     _F(  MAILLE = 'M1', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+     _F(  GROUP_MA = 'M1', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
           CARA = ( 'HY',  'HZ1',    'HZ2',   ),
           VALE = (  0.05,  0.0600,   0.0570, )),
-     _F(  MAILLE = 'M2', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+     _F(  GROUP_MA = 'M2', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
           CARA = ( 'HY',  'HZ1',    'HZ2',   ),
           VALE = (  0.05,  0.0570,   0.0540, )),
-     _F(  MAILLE = 'M3', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+     _F(  GROUP_MA = 'M3', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
           CARA = ( 'HY',  'HZ1',    'HZ2',   ),
           VALE = (  0.05,  0.0540,   0.0510, )),
-     _F(  MAILLE = 'M4', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+     _F(  GROUP_MA = 'M4', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
           CARA = ( 'HY',  'HZ1',    'HZ2',   ),
           VALE = (  0.05,  0.0510,   0.0480, )),
-     _F(  MAILLE = 'M5', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+     _F(  GROUP_MA = 'M5', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
           CARA = ( 'HY',  'HZ1',    'HZ2',   ),
           VALE = (  0.05,  0.0480,   0.0450, )),
-     _F(  MAILLE = 'M6', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+     _F(  GROUP_MA = 'M6', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
           CARA = ( 'HY',  'HZ1',    'HZ2',   ),
           VALE = (  0.05,  0.0450,   0.0420, )),
-     _F(  MAILLE = 'M7', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+     _F(  GROUP_MA = 'M7', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
           CARA = ( 'HY',  'HZ1',    'HZ2',   ),
           VALE = (  0.05,  0.0420,   0.0390, )),
-     _F(  MAILLE = 'M8', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+     _F(  GROUP_MA = 'M8', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
           CARA = ( 'HY',  'HZ1',    'HZ2',   ),
           VALE = (  0.05,  0.0390,   0.0360, )),
-     _F(  MAILLE = 'M9', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+     _F(  GROUP_MA = 'M9', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
           CARA = ( 'HY',  'HZ1',    'HZ2',   ),
           VALE = (  0.05,  0.0360,   0.0330, )),
-     _F(  MAILLE = 'M10', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+     _F(  GROUP_MA = 'M10', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
           CARA = ( 'HY',  'HZ1',    'HZ2',   ),
           VALE = (  0.05,  0.0330,   0.0300, )))
 
@@ -113,34 +113,34 @@ CARELY=AFFE_CARA_ELEM(    MODELE=MOPOU, INFO=2,
 
    POUTRE=(
 
-     _F(  MAILLE = 'M1', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+     _F(  GROUP_MA = 'M1', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
           CARA = ( 'HY',   'HZ1',     'HZ2',   ),
           VALE = (  0.05,   0.0600,    0.0570, )),
-     _F(  MAILLE = 'M2', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+     _F(  GROUP_MA = 'M2', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
           CARA = ( 'HY',  'HZ1',     'HZ2',   ),
           VALE = (  0.05,  0.0570,     0.0540, )),
-     _F(  MAILLE = 'M3', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+     _F(  GROUP_MA = 'M3', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
           CARA = ( 'HY',  'HZ1',     'HZ2',   ),
           VALE = (  0.05,  0.0540,    0.0510, )),
-     _F(  MAILLE = 'M4', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+     _F(  GROUP_MA = 'M4', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
           CARA = ( 'HY',  'HZ1',     'HZ2',   ),
           VALE = (  0.05,  0.0510,    0.0480, )),
-     _F(  MAILLE = 'M5', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+     _F(  GROUP_MA = 'M5', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
           CARA = ( 'HY',  'HZ1',     'HZ2',   ),
           VALE = (  0.05,  0.0480,    0.0450, )),
-     _F(  MAILLE = 'M6', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+     _F(  GROUP_MA = 'M6', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
           CARA = ( 'HY',  'HZ1',     'HZ2',   ),
           VALE = (  0.05,  0.0450,    0.0420, )),
-     _F(  MAILLE = 'M7', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+     _F(  GROUP_MA = 'M7', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
           CARA = ( 'HY',  'HZ1',     'HZ2',   ),
           VALE = (  0.05,  0.0420,    0.0390, )),
-     _F(  MAILLE = 'M8', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+     _F(  GROUP_MA = 'M8', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
           CARA = ( 'HY',  'HZ1',     'HZ2',   ),
           VALE = (  0.05,  0.0390,    0.0360, )),
-     _F(  MAILLE = 'M9', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+     _F(  GROUP_MA = 'M9', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
           CARA = ( 'HY',  'HZ1',     'HZ2',   ),
           VALE = (  0.05,  0.0360,    0.0330, )),
-     _F(  MAILLE = 'M10', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+     _F(  GROUP_MA = 'M10', SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
           CARA = ( 'HY',  'HZ1',     'HZ2',   ),
           VALE = (  0.05,  0.0330,    0.0300, )))
                         )
@@ -151,7 +151,7 @@ MASSX=POST_ELEM(    MODELE=MOPOU,
                       CHAM_MATER=AMPOU,
                       CARA_ELEM=CARELX,
                       MASS_INER=(_F(  GROUP_MA = 'POU', ),
-                      _F( MAILLE = 'M1'),),
+                      _F( GROUP_MA = 'M1'),),
                       TITRE=( 'POUTRE AFFINE  ',)
                   )
 
@@ -159,7 +159,7 @@ MASSY=POST_ELEM(    MODELE=MOPOU,
                       CHAM_MATER=AMPOU,
                       CARA_ELEM=CARELY,
                       MASS_INER=(_F(  GROUP_MA = 'POU', ),
-                      _F( MAILLE = 'M1'),),
+                      _F( GROUP_MA = 'M1'),),
                       TITRE=( 'POUTRE AFFINE ROTATION 90',)
                   )
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -50,8 +50,8 @@ POUCA=AFFE_CARA_ELEM(MODELE=MOPOU,
                           CARA='ANGL_VRIL', VALE=0.0,),
 
            GEOM_FIBRE=GF,
-           MULTIFIBRE = (_F(MAILLE = 'M1',GROUP_FIBRE=('SEC1',), PREC_AIRE = 1.0E-06, PREC_INERTIE = 1.0E-06,),
-                         _F(MAILLE = 'M2',GROUP_FIBRE=('SEC1',), PREC_AIRE = 1.0E-06, PREC_INERTIE = 1.0E-06,),
+           MULTIFIBRE = (_F(GROUP_MA = 'M1',GROUP_FIBRE=('SEC1',), PREC_AIRE = 1.0E-06, PREC_INERTIE = 1.0E-06,),
+                         _F(GROUP_MA = 'M2',GROUP_FIBRE=('SEC1',), PREC_AIRE = 1.0E-06, PREC_INERTIE = 1.0E-06,),
                         )
                   )
 

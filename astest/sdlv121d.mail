@@ -58,14 +58,14 @@ CODE_ASTER - 11.01.04 - VERSION DE DEVELOPPEMENT          - FRONTAL1         - L
  M22      N1       N3      
  M23      N3       N5      
  M24      N5       N7      
- M25      N7       N9     
+ M25      N7       N9      
  M26      N9       N11     
  M27      N11      N13     
  M28      N13      N15     
  M29      N15      N17     
  M30      N17      N19     
  M31      N19      N22     
- M32      N2       N4  
+ M32      N2       N4      
  M33      N4       N6      
  M34      N6       N8      
  M35      N8       N10     
@@ -74,7 +74,7 @@ CODE_ASTER - 11.01.04 - VERSION DE DEVELOPPEMENT          - FRONTAL1         - L
  M38      N14      N16     
  M39      N16      N18     
  M40      N18      N20     
- M41      N20      N21         
+ M41      N20      N21     
  FINSF
  %
  GROUP_NO
@@ -152,6 +152,11 @@ CODE_ASTER - 11.01.04 - VERSION DE DEVELOPPEMENT          - FRONTAL1         - L
  N1       N2      
  FINSF
  %
+ GROUP_NO
+ N11                     
+ N11     
+ FINSF
+ %
  GROUP_MA
  GLOBAL                  
  M20      M19      M18      M17      M16      M15      M14     
@@ -222,11 +227,9 @@ CODE_ASTER - 11.01.04 - VERSION DE DEVELOPPEMENT          - FRONTAL1         - L
  %
  GROUP_MA
  CONTOUR                 
- M20       M22       M23       M24       M25       M26       M27      
- M28       M29       M30       M31       M32       M33       M34
- M35       M36       M37       M38       M39       M40       M41
+ M20      M22      M23      M24      M25      M26      M27     
+ M28      M29      M30      M31      M32      M33      M34     
+ M35      M36      M37      M38      M39      M40      M41     
  FINSF
  %
  FIN
- 
-

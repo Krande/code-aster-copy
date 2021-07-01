@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,6 +43,16 @@ MAINI=DEFI_GROUP( reuse=MAINI,   MAILLAGE=MAINI,
 MAILAST=CREA_MAILLAGE(   MAILLAGE=MAINI,
                       MODI_MAILLE=_F( OPTION = 'QUAD8_9',
                                    TOUT = 'OUI')  )
+
+MAILAST = DEFI_GROUP( reuse = MAILAST, MAILLAGE = MAILAST,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M102', MAILLE = 'M102'),
+                                        _F( NOM = 'M1', MAILLE = 'M1'),
+                                     ),
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N1', NOEUD = 'N1'),
+                                     ),
+         )
 
 MODAST=AFFE_MODELE(   MAILLAGE=MAILAST,  INFO=2,AFFE=(
                         _F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
@@ -128,12 +138,12 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    VALE_CALC=93.104660099057,
                    VALE_REFE=100.0,
                    PRECISION=0.070000000000000007,
-                   MAILLE='M1',),
+                   GROUP_MA='M1',),
                 _F(INST=1.0,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=RESU2,
                    NOM_CHAM='DEPL',
-                   NOEUD='N1',
+                   GROUP_NO='N1',
                    NOM_CMP='DY',
                    VALE_CALC=-4.8590399660082E-11,
                    VALE_REFE=-5.0000000000000002E-11,
@@ -167,7 +177,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   NOM_CHAM='EFGE_ELGA',
                   NOM_CMP='N',
                   VALE_CALC=2.4527023426964E-3,
-                  MAILLE='M102',),
+                  GROUP_MA='M102',),
           )
 
 RESU2B=CALC_CHAMP(RESULTAT= RESU2, CONTRAINTE=('EFGE_ELGA',), )
@@ -178,7 +188,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   NOM_CHAM='EFGE_ELGA',
                   NOM_CMP='N',
                   VALE_CALC=2.4527023426964E-3,
-                  MAILLE='M102',),
+                  GROUP_MA='M102',),
           )
 
 #----------------------------------------------------------------------------

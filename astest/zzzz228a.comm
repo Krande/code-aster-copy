@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,8 +41,8 @@ M=LIRE_MAILLAGE(FORMAT='MED',)
 M=DEFI_GROUP(reuse =M, MAILLAGE=M, CREA_GROUP_MA=_F(NOM='TOUT', TOUT='OUI'))
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               AFFE=(_F(MAILLE=('M1','M2','M3'), PHENOMENE='MECANIQUE', MODELISATION='DKT'),
-                     _F(MAILLE=('M4','M5','M6'), PHENOMENE='MECANIQUE', MODELISATION='COQUE_3D')))
+               AFFE=(_F(GROUP_MA=('M1','M2','M3'), PHENOMENE='MECANIQUE', MODELISATION='DKT'),
+                     _F(GROUP_MA=('M4','M5','M6'), PHENOMENE='MECANIQUE', MODELISATION='COQUE_3D')))
 
 CARAC=AFFE_CARA_ELEM(MODELE=MO,
                      COQUE=_F(GROUP_MA='TOUT', EPAIS=0.1, A_CIS=100000.0, COQUE_NCOU=5, MODI_METRIQUE='OUI'))
@@ -72,7 +72,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='TEMP',
                    VALE_CALC=10.000000000,
                    VALE_REFE=10.0,
-                   MAILLE='M2',),
+                   GROUP_MA='M2',),
                 _F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    POINT=1,
@@ -82,7 +82,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='TEMP',
                    VALE_CALC=10.000000000,
                    VALE_REFE=10.0,
-                   MAILLE='M5',),
+                   GROUP_MA='M5',),
                 ),
           )
 
@@ -107,7 +107,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='TEMP',
                    VALE_CALC=10.000000000,
                    VALE_REFE=10.0,
-                   MAILLE='M2',),
+                   GROUP_MA='M2',),
                 _F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    POINT=1,
@@ -117,7 +117,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='TEMP',
                    VALE_CALC=10.000000000,
                    VALE_REFE=10.0,
-                   MAILLE='M5',),
+                   GROUP_MA='M5',),
                 ),
           )
 

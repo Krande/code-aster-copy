@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,14 +29,14 @@ from code_aster.Utilities import ExecutionParameter
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 TUBE=LIRE_MAILLAGE(FORMAT='MED')
-TUBE=MODI_MAILLAGE(reuse=TUBE, MAILLAGE=TUBE,ABSC_CURV=_F(NOEUD_ORIG='N_01_001',TOUT='OUI'))
+TUBE=MODI_MAILLAGE(reuse=TUBE, MAILLAGE=TUBE,ABSC_CURV=_F(GROUP_NO_ORIG='N_01_001',TOUT='OUI'))
 
 TUBE=DEFI_GROUP(reuse=TUBE,
                 MAILLAGE=TUBE,
                 CREA_GROUP_NO=(_F(NOM='GR_NO_INIT',
-                                  NOEUD='N_02_001',),
+                                  GROUP_NO='N_02_001',),
                                _F(NOM='GR_NO_FIN',
-                                  NOEUD='N_02_060',),),
+                                  GROUP_NO='N_02_060',),),
                 CREA_GROUP_MA=_F(NOM='POUTRE',
                                  TOUT='OUI',),);
 
@@ -70,7 +70,7 @@ RHOE=DEFI_FONCTION(
 
 PROFVIT1=DEFI_FONC_FLUI(MAILLAGE=TUBE,
                         GROUP_NO_INIT='GR_NO_INIT',
-                        NOEUD_FIN='N_02_060',
+                        GROUP_NO_FIN='N_02_060',
                         VITE=_F(PROFIL='UNIFORME',
                                 VALE=1.000000E+00),);
 
@@ -119,12 +119,12 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=TUBE,
 )
 
 CHDDL=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
-                           _F(  NOEUD = 'N_01_001',
+                           _F(  GROUP_NO = 'N_01_001',
                                       DX = 0.0,
                                       DY = 0.0,
                                       DZ = 0.0,
                                       DRZ = 0.0),
-                           _F(  NOEUD = 'N_04_001',
+                           _F(  GROUP_NO = 'N_04_001',
                                       DX = 0.0,
                                       DY = 0.0,
                                       DZ = 0.0,

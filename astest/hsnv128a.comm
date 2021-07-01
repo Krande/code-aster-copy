@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -258,7 +258,7 @@ TRACTION=AFFE_CHAR_MECA(
                       MODELE=MO,
 
                 FORCE_FACE=_F(
-                MAILLE = 'GAUCHE',
+                GROUP_MA = 'GAUCHE',
                 FX = -1.)
               )
 
@@ -266,20 +266,20 @@ CISAIL=AFFE_CHAR_MECA(
 
                       MODELE=MO,FORCE_FACE=(
 
-                _F( MAILLE = 'GAUCHE',          FY = -1.),
-                _F( MAILLE = 'DROITE',          FY = 1.),
-                _F( MAILLE = 'HAUT',    FX = 1.),
-                _F( MAILLE = 'BAS',     FX = -1.))
+                _F( GROUP_MA = 'GAUCHE',          FY = -1.),
+                _F( GROUP_MA = 'DROITE',          FY = 1.),
+                _F( GROUP_MA = 'HAUT',    FX = 1.),
+                _F( GROUP_MA = 'BAS',     FX = -1.))
               )
 
 LIAISON=AFFE_CHAR_MECA(
 
                MODELE=MO,DDL_IMPO=(
 
-                _F( NOEUD = 'NO4',     DX = 0.,  DY = 0.),
-                _F( NOEUD = 'NO8',     DX = 0.,  DY = 0.,  DZ = 0.),
-                _F( NOEUD = 'NO2',     DX = 0.),
-                _F( NOEUD = 'NO6',     DX = 0.))
+                _F( GROUP_NO = 'NO4',     DX = 0.,  DY = 0.),
+                _F( GROUP_NO = 'NO8',     DX = 0.,  DY = 0.,  DZ = 0.),
+                _F( GROUP_NO = 'NO2',     DX = 0.),
+                _F( GROUP_NO = 'NO6',     DX = 0.))
               )
 
 L_INST=DEFI_LIST_REEL(   DEBUT=0.,
@@ -329,7 +329,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    NOM_CMP='EPXX',
                    VALE_CALC=0.048177397,
                    VALE_REFE=0.048177499999999998,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=10.0,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -338,7 +338,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    NOM_CMP='EPXX',
                    VALE_CALC=0.048177396854,
                    VALE_REFE=0.0481774706024,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=10.0,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -347,7 +347,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    NOM_CMP='EPXX',
                    VALE_CALC=0.046936371213,
                    VALE_REFE=0.0469364450785,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=10.0,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -356,7 +356,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    NOM_CMP='EPTHER_L',
                    VALE_CALC=-3.64952904749E-18,
                    VALE_REFE=0.0,
-                   MAILLE='CUBE',
+                   GROUP_MA='CUBE',
                    CRITERE='ABSOLU',
                    ORDRE_GRANDEUR = 1.E-6),
                 _F(INST=10.0,
@@ -367,7 +367,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    NOM_CMP='EPXY',
                    VALE_CALC=0.043448810,
                    VALE_REFE=0.043448899999999999,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=10.0,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -376,7 +376,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    NOM_CMP='EPXY',
                    VALE_CALC=0.0434488097616,
                    VALE_REFE=0.0434488765009,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=10.0,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -385,7 +385,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    NOM_CMP='EPXY',
                    VALE_CALC=0.0424754764283,
                    VALE_REFE=0.0424755432735,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=60.0,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -394,7 +394,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    NOM_CMP='EPXX',
                    VALE_CALC=0.093046407,
                    VALE_REFE=0.093046400000000001,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=60.0,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -403,7 +403,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    NOM_CMP='EPXX',
                    VALE_CALC=0.0930464068787,
                    VALE_REFE=0.0930464037976,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=60.0,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -412,7 +412,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    NOM_CMP='EPXX',
                    VALE_CALC=0.0918053812377,
                    VALE_REFE=0.0918053783424,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=60.0,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -421,7 +421,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    NOM_CMP='EPXY',
                    VALE_CALC=0.084053410,
                    VALE_REFE=0.0840534,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=60.0,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -430,7 +430,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    NOM_CMP='EPXY',
                    VALE_CALC=0.0840534097427,
                    VALE_REFE=0.0840534069543,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=60.0,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -439,7 +439,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    NOM_CMP='EPXY',
                    VALE_CALC=0.0830800764093,
                    VALE_REFE=0.0830800737892,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 ),
           )
 

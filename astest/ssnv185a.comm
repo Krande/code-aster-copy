@@ -75,9 +75,9 @@ CHAMPMA=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
 
 PRES=-1.E6 
 CHARBL1=AFFE_CHAR_MECA(MODELE=MODELEIN,
-                   DDL_IMPO=(_F(NOEUD='N4265',DX=0.0,DY=0.0,DZ=0.0,),
-                             _F(NOEUD='N3751',DZ=0.0,),
-                             _F(NOEUD='N4256',DX=0.0,DZ=0.0,),),);
+                   DDL_IMPO=(_F(GROUP_NO='N4265',DX=0.0,DY=0.0,DZ=0.0,),
+                             _F(GROUP_NO='N3751',DZ=0.0,),
+                             _F(GROUP_NO='N4256',DX=0.0,DZ=0.0,),),);
                              
 CHF1=AFFE_CHAR_MECA(MODELE=MODELEIN,PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),PRES=PRES,),);
 

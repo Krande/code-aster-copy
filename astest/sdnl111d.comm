@@ -78,8 +78,8 @@ CONTACT = DEFI_CONTACT(MODELE      = MODELE,
                        ZONE =_F(
                              ALGO_CONT = 'PENALISATION',
                              E_N       = 1.E10,
-                             MAILLE_MAIT='M101',
-                             MAILLE_ESCL='M103',
+                             GROUP_MA_MAIT='M101',
+                             GROUP_MA_ESCL='M103',
                            ),
                       );
 

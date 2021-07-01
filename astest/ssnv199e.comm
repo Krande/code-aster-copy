@@ -47,6 +47,16 @@ MA0 = LIRE_MAILLAGE(FORMAT='GMSH',
 
 MA=CREA_MAILLAGE(MAILLAGE  = MA0, LINE_QUAD = _F(TOUT='OUI'))
 
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M373', MAILLE = 'M373'),
+                                        _F( NOM = 'M428', MAILLE = 'M428'),
+                                     ),
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N2', NOEUD = 'N2'),
+                                     ),
+         )
+
 MA  =  DEFI_GROUP(
   reuse  = MA,
   MAILLAGE = MA,
@@ -365,7 +375,7 @@ TEST_RESU(RESU=_F(INST=4.0,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V7',
                   VALE_CALC=3.8815534202991,
-                  MAILLE='M428',),
+                  GROUP_MA='M428',),
           )
 
 TEST_RESU(RESU=_F(INST=4.0,
@@ -375,7 +385,7 @@ TEST_RESU(RESU=_F(INST=4.0,
                   NOM_CMP='SIGN',
                   VALE_CALC=0.0,
                   CRITERE='ABSOLU',
-                  MAILLE='M428',),
+                  GROUP_MA='M428',),
           )
 
 # TESTS DES EXTRAPOLATIONS NODALES
@@ -384,7 +394,7 @@ TEST_RESU(RESU=_F(INST=4.0,
                   NOM_CHAM='VARI_NOEU',
                   NOM_CMP='V7',
                   VALE_CALC=3.9847560480361,
-                  NOEUD='N2'
+                  GROUP_NO='N2'
                   ),
           )
 
@@ -394,7 +404,7 @@ TEST_RESU(RESU=_F(INST=4.0,
                   NOM_CMP='SIGN',
                   VALE_CALC=0.0,
                   CRITERE='ABSOLU',
-                  NOEUD='N2'
+                  GROUP_NO='N2'
                   ),
           )
 
@@ -403,7 +413,7 @@ CHAMEL=CALC_CHAM_ELEM(MODELE=MO,GROUP_MA = 'DCB_J',OPTION='COOR_ELGA')
 
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=CHAMEL,
                        NOM_CMP='X',
-                       MAILLE='M373',
+                       GROUP_MA='M373',
                        POINT=1,
                        REFERENCE='ANALYTIQUE',
                        VALE_REFE=1.90493232129063E+01,
@@ -413,7 +423,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=CHAMEL,
 
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=CHAMEL,
                        NOM_CMP='Y',
-                       MAILLE='M373',
+                       GROUP_MA='M373',
                        POINT=1,
                        REFERENCE='ANALYTIQUE',
                        VALE_REFE=0.,
@@ -423,7 +433,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=CHAMEL,
 
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=CHAMEL,
                        NOM_CMP='Z',
-                       MAILLE='M373',
+                       GROUP_MA='M373',
                        POINT=1,
                        REFERENCE='ANALYTIQUE',
                        VALE_REFE=-4.66905249806892,

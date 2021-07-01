@@ -198,7 +198,7 @@ CHAMDEP0=STAT_NON_LINE(MODELE=MO,
 FOND_NEW=DEFI_FOND_FISS(    MAILLAGE=MA,
                         FOND_FISS=_F( GROUP_NO = ('P0',)),
                         SYME='OUI',
-                        LEVRE_SUP=_F(MAILLE='M1609'),
+                        LEVRE_SUP=_F(GROUP_MA='M1609'),
                       )
 
 #  RT = 0.01 (RAYON DU MAILLAGE RAYONNANT)

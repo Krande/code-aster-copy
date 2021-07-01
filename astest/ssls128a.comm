@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,16 @@ MAIL = LIRE_MAILLAGE(FORMAT='GMSH',
                      UNITE=19,
                      )
 
+MAIL = DEFI_GROUP( reuse = MAIL, MAILLAGE = MAIL,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M49', MAILLE = 'M49'),
+                                     ),
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N62', NOEUD = 'N62'),
+                                        _F( NOM = 'N1', NOEUD = 'N1'),
+                                     ),
+         )
+
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_MA=(_F(NOM='DROITE',
@@ -39,7 +49,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                   NOM='DROITE',),
                                _F(OPTION='PLAN',
                                   NOM='MILIEU',
-                                  NOEUD_CENTRE='N62',
+                                  GROUP_NO_CENTRE='N62',
                                   VECT_NORMALE=(1.0,0.0,),
                                   PRECISION=0.2,),),
                 INFO=2,);
@@ -121,7 +131,7 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                                MATER=COMPO,),);
 
 CONDLIM=AFFE_CHAR_MECA(MODELE=MOD,
-                       DDL_IMPO=(_F(NOEUD='N1',
+                       DDL_IMPO=(_F(GROUP_NO='N1',
                                     DY=0.0,
                                     DZ=0.0,
                                     DRX=0.0,
@@ -148,26 +158,26 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=RESU1,
                   NOM_CHAM='SIGM_ELNO',
-                  NOEUD='N1',
+                  GROUP_NO='N1',
                   NOM_CMP='SIXX',
                   VALE_CALC=-241.622880344,
                   VALE_REFE=-242,
                   CRITERE='RELATIF',
                   PRECISION=5.0000000000000001E-3,
-                  MAILLE='M49',),
+                  GROUP_MA='M49',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=RESU1,
                   NOM_CHAM='SIGM_ELNO',
-                  NOEUD='N1',
+                  GROUP_NO='N1',
                   NOM_CMP='SIYY',
                   VALE_CALC=66.622880344,
                   VALE_REFE=67,
                   CRITERE='RELATIF',
                   PRECISION=6.0000000000000001E-3,
-                  MAILLE='M49',),
+                  GROUP_MA='M49',),
           )
 
 RESU2=POST_CHAMP(RESULTAT=RESU,
@@ -178,26 +188,26 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=RESU2,
                   NOM_CHAM='SIGM_ELNO',
-                  NOEUD='N1',
+                  GROUP_NO='N1',
                   NOM_CMP='SIXX',
                   VALE_CALC=-108.377119656,
                   VALE_REFE=-108,
                   CRITERE='RELATIF',
                   PRECISION=5.0000000000000001E-3,
-                  MAILLE='M49',),
+                  GROUP_MA='M49',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=RESU2,
                   NOM_CHAM='SIGM_ELNO',
-                  NOEUD='N1',
+                  GROUP_NO='N1',
                   NOM_CMP='SIYY',
                   VALE_CALC=-66.622880344,
                   VALE_REFE=-67,
                   CRITERE='RELATIF',
                   PRECISION=6.0000000000000001E-3,
-                  MAILLE='M49',),
+                  GROUP_MA='M49',),
           )
 
 FIN();

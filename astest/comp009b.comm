@@ -79,7 +79,7 @@ MOMECA=AFFE_MODELE(MAILLAGE=MA,
                            MODELISATION='BARRE',),);
 
 CARAELEM=AFFE_CARA_ELEM(MODELE=MOMECA,
-                        BARRE=_F(MAILLE='M1',
+                        BARRE=_F(GROUP_MA='M1',
                                  SECTION='GENERALE',
                                  CARA='A',
                                  VALE=1.0,),);
@@ -122,11 +122,11 @@ CHMTH=AFFE_MATERIAU(MAILLAGE=MA,
                       AFFE_VARC=_F(NOM_VARC='TEMP',VALE_REF=TREF,TOUT='OUI',EVOL=RTEMP,NOM_CHAM='TEMP',),)
 
 LIAISON=AFFE_CHAR_MECA(MODELE=MOMECA,
-                       DDL_IMPO=(_F(NOEUD='N3',
+                       DDL_IMPO=(_F(GROUP_NO='N3',
                                     DX=0.0,
                                     DY=0.0,
                                     DZ=0.0,),
-                                 _F(NOEUD='N7',
+                                 _F(GROUP_NO='N7',
                                     DX=0.0,
                                     DY=0.0,
                                     DZ=0.0,),
@@ -168,7 +168,7 @@ U=CALC_CHAMP(reuse =U,
 
 
 SIGN3=POST_RELEVE_T(ACTION=_F(INTITULE='N_N3',
-                                NOEUD='N3',
+                                GROUP_NO='N3',
                                 RESULTAT=U,
                                 NOM_CHAM='SIEF_NOEU',
                                 NOM_CMP='N',
@@ -234,17 +234,17 @@ for i in range(1,NCAL+1):
                               MATER=MATER[i],),);
 
           LIAISON2=AFFE_CHAR_MECA(MODELE=MOMECA,
-                       DDL_IMPO=(_F(NOEUD='N3',
+                       DDL_IMPO=(_F(GROUP_NO='N3',
                                     DX=0.0,
                                     DY=0.0,
                                     DZ=0.0,),
-                                 _F(NOEUD='N7',
+                                 _F(GROUP_NO='N7',
                                     DX=0.0,
                                     DY=0.0,),
                                     ),);
 
           CHRGE[i]=AFFE_CHAR_MECA_F(MODELE=MOMECA,
-                       DDL_IMPO=(_F(NOEUD='N7',
+                       DDL_IMPO=(_F(GROUP_NO='N7',
                                     DZ=epsimp,),),);
 
 
@@ -330,7 +330,7 @@ for i in range(1,NCAL+1):
           DETRUIRE(NOM =LIAISON2);
 
           SN3[i]=POST_RELEVE_T(ACTION=_F(INTITULE='N_N3',
-                                NOEUD='N3',
+                                GROUP_NO='N3',
                                 RESULTAT=RESU[i],
                                 NOM_CHAM='SIEF_NOEU',
                                 NOM_CMP='N',

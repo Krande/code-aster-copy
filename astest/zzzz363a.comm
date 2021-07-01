@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -170,7 +170,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIXX',
                   VALE_CALC=-49.325967753,
-                  MAILLE='M160',),
+                  GROUP_MA='M160',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=7,
@@ -179,7 +179,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=7,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIXX',
                   VALE_CALC=-19.556261498,
-                  MAILLE='M160',),
+                  GROUP_MA='M160',),
           )
 
 
@@ -192,7 +192,7 @@ TEST_RESU(RESU=(_F(CRITERE='RELATIF',
                    PRECISION=1.E-3,
                    VALE_CALC=7703.1024464 ,
                    VALE_REFE=7703.1024464 ,
-                   MAILLE='M1324',
+                   GROUP_MA='M1324',
                    RESULTAT=EVOL,
                    NOM_CHAM='SIEF_ELGA',
                    VALE_ABS='NON'),),);
@@ -205,7 +205,7 @@ TEST_RESU(RESU=(_F(CRITERE='RELATIF',
                    PRECISION=1.E-3,
                    VALE_CALC=30022.1081035 ,
                    VALE_REFE=30022.1081035 ,
-                   MAILLE='M1324',
+                   GROUP_MA='M1324',
                    RESULTAT=EVOL,
                    NOM_CHAM='SIEF_ELGA',
                    VALE_ABS='NON'),),);
@@ -218,7 +218,7 @@ TEST_RESU(RESU=(_F(CRITERE='RELATIF',
                    PRECISION=1.E-3,
                    VALE_CALC=174.020347593 ,
                    VALE_REFE=174.020347593 ,
-                   MAILLE='M1324',
+                   GROUP_MA='M1324',
                    RESULTAT=EVOL,
                    NOM_CHAM='SIEF_ELGA',
                    VALE_ABS='NON'),),);

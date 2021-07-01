@@ -1,5 +1,5 @@
  TITRE
- %  GIBI FECIT
+ %  GIBI FECIT                                                                  
  FINSF
  %
  COOR_3D
@@ -10,24 +10,36 @@
  N5        7.50000000000000E-01  0.00000000000000E+00  0.00000000000000E+00
  FINSF
  %
- SEG2      
-  M1      N1       N3      
-  M2      N3       N4    
-  M3      N4       N5    
-  M4      N5       N2    
+ SEG2    
+ M1       N1       N3      
+ M2       N3       N4      
+ M3       N4       N5      
+ M4       N5       N2      
  FINSF
  %
  GROUP_NO
- B        N2      
+ B                       
+ N2      
  FINSF
  %
  GROUP_NO
- A        N1      
+ A                       
+ N1      
+ FINSF
+ %
+ GROUP_NO
+ N2                      
+ N2      
  FINSF
  %
  GROUP_MA
-   TUYAU   
- M1   M2  M3  M4       
+ TUYAU                   
+ M1       M2       M3       M4      
+ FINSF
+ %
+ GROUP_MA
+ M4                      
+ M4      
  FINSF
  %
  FIN

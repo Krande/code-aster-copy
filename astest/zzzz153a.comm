@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,6 +43,12 @@ ecrouissage=k_t*0.1
 ##################################
 
 MA=LIRE_MAILLAGE(FORMAT='MED');
+
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N1', NOEUD = 'N1'),
+                                     ),
+         )
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,

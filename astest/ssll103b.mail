@@ -1,29 +1,79 @@
-TITRE
-SSLL103B
-FLAMBEMENT D'UNE CORNIERE ELASTIQUE (POU_D_T)
-FINSF
-COOR_3D
-  A1       0.0D0    0.0D0    0.0D0
-  N2     150.0D0    0.0D0    0.0D0
-  N3     300.0D0    0.0D0    0.0D0
-  N4     450.0D0    0.0D0    0.0D0
-  N5     600.0D0    0.0D0    0.0D0
-  N6     750.0D0    0.0D0    0.0D0
-  N7     900.0D0    0.0D0    0.0D0
-  N8    1050.0D0    0.0D0    0.0D0
-  A2    1200.0D0    0.0D0    0.0D0
-FINSF
-SEG2
-  S1       A1       N2
-  S2       N2       N3
-  S3       N3       N4
-  S4       N4       N5
-  S5       N5       N6
-  S6       N6       N7
-  S7       N7       N8
-  S8       N8       A2
-FINSF
-FIN
-GROUP_NO
- B         N3     M3
-FINSF
+ TITRE
+SSLL103B                                                                        
+FLAMBEMENT D'UNE CORNIERE ELASTIQUE (POU_D_T)                                   
+ FINSF
+ %
+ COOR_3D
+ A1        0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ N2        1.50000000000000E+02  0.00000000000000E+00  0.00000000000000E+00
+ N3        3.00000000000000E+02  0.00000000000000E+00  0.00000000000000E+00
+ N4        4.50000000000000E+02  0.00000000000000E+00  0.00000000000000E+00
+ N5        6.00000000000000E+02  0.00000000000000E+00  0.00000000000000E+00
+ N6        7.50000000000000E+02  0.00000000000000E+00  0.00000000000000E+00
+ N7        9.00000000000000E+02  0.00000000000000E+00  0.00000000000000E+00
+ N8        1.05000000000000E+03  0.00000000000000E+00  0.00000000000000E+00
+ A2        1.20000000000000E+03  0.00000000000000E+00  0.00000000000000E+00
+ FINSF
+ %
+ SEG2    
+ S1       A1       N2      
+ S2       N2       N3      
+ S3       N3       N4      
+ S4       N4       N5      
+ S5       N5       N6      
+ S6       N6       N7      
+ S7       N7       N8      
+ S8       N8       A2      
+ FINSF
+ %
+ GROUP_NO
+ A1                      
+ A1      
+ FINSF
+ %
+ GROUP_NO
+ A2                      
+ A2      
+ FINSF
+ %
+ GROUP_MA
+ S8                      
+ S8      
+ FINSF
+ %
+ GROUP_MA
+ S5                      
+ S5      
+ FINSF
+ %
+ GROUP_MA
+ S1                      
+ S1      
+ FINSF
+ %
+ GROUP_MA
+ S7                      
+ S7      
+ FINSF
+ %
+ GROUP_MA
+ S4                      
+ S4      
+ FINSF
+ %
+ GROUP_MA
+ S2                      
+ S2      
+ FINSF
+ %
+ GROUP_MA
+ S6                      
+ S6      
+ FINSF
+ %
+ GROUP_MA
+ S3                      
+ S3      
+ FINSF
+ %
+ FIN

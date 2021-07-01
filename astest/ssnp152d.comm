@@ -28,6 +28,12 @@ MA = LIRE_MAILLAGE(FORMAT='GMSH',
                    UNITE=19,
                    )
 
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N10', NOEUD = 'N10'),
+                                     ),
+         )
+
 #+----------------------------------------+
 #| noms des groupes de noeuds et mailles  |
 #+----------------------------------------+
@@ -224,7 +230,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESU1,
                   NOM_CHAM='DEPL',
-                  NOEUD='N10',
+                  GROUP_NO='N10',
                   NOM_CMP='LAGS_C',
                   VALE_CALC= 2.3226295413012E+06,
                   VALE_REFE=2.4177949709864603E6,
@@ -236,7 +242,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESU2,
                   NOM_CHAM='DEPL',
-                  NOEUD='N10',
+                  GROUP_NO='N10',
                   NOM_CMP='LAGS_C',
                   VALE_CALC= 2.32740964E+06,
                   VALE_REFE=2.4177949709864603E6,

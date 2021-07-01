@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ MO=AFFE_MODELE( MAILLAGE=MA,   AFFE=_F( TOUT = 'OUI',
        PHENOMENE = 'MECANIQUE',     MODELISATION = 'POU_D_T',))
 
 CARAC=AFFE_CARA_ELEM( MODELE=MO,POUTRE=(
-         _F( MAILLE = ( 'S1', 'S2', 'S3', 'S4', ),  SECTION = 'GENERALE',
+         _F( GROUP_MA = ( 'S1', 'S2', 'S3', 'S4', ),  SECTION = 'GENERALE',
         CARA = ('A',         'IY',           'IZ',
                 'AY',        'AZ',           'EY',
                 'EZ',        'JX',           'JG',
@@ -50,7 +50,7 @@ CARAC=AFFE_CARA_ELEM( MODELE=MO,POUTRE=(
                # 0.      , 39595.        , 44398819.         ,
                  0.,       39595.,         0.,
               84948392.,   0.,                                ), ),
-         _F( MAILLE = ( 'S5', 'S6', 'S7', 'S8', ),
+         _F( GROUP_MA = ( 'S5', 'S6', 'S7', 'S8', ),
              SECTION = 'GENERALE', VARI_SECT = 'HOMOTHETIQUE',
         CARA = ('A1',        'IY1',          'IZ1',
                 'AY1',       'AZ1',          'EY1',
@@ -73,8 +73,8 @@ CARAC=AFFE_CARA_ELEM( MODELE=MO,POUTRE=(
       )
 
 BLOQ=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
-          _F( NOEUD = 'A1',    DX = 0., DY = 0., DZ = 0., DRX = 0.,       ),
-          _F( NOEUD = 'A2',          DY = 0., DZ = 0., DRX = 0.,       )) )
+          _F( GROUP_NO = 'A1',    DX = 0., DY = 0., DZ = 0., DRX = 0.,       ),
+          _F( GROUP_NO = 'A2',          DY = 0., DZ = 0., DRX = 0.,       )) )
 
 RIGEL=CALC_MATR_ELEM(MODELE=MO,    OPTION='RIGI_MECA',
           CHAM_MATER=CHMAT,  CARA_ELEM=CARAC, CHARGE=BLOQ )
@@ -87,7 +87,7 @@ RIGAS=ASSE_MATRICE(MATR_ELEM=RIGEL,NUME_DDL=NU)
 # ------------------------------
 
 CHFORC_1=AFFE_CHAR_MECA(MODELE=MO,
-                       FORCE_NODALE=_F( NOEUD = 'A2',   FX = -1.,      ))
+                       FORCE_NODALE=_F( GROUP_NO = 'A2',   FX = -1.,      ))
 
 STAT1=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,
@@ -148,8 +148,8 @@ TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
 # ------------------------------
 
 CHFORC_2=AFFE_CHAR_MECA(MODELE=MO,FORCE_NODALE=(
-                       _F( NOEUD = 'A1',          MZ = +41.012, ),
-                       _F( NOEUD = 'A2',   FX = -1., MZ = -41.012, )))
+                       _F( GROUP_NO = 'A1',          MZ = +41.012, ),
+                       _F( GROUP_NO = 'A2',   FX = -1., MZ = -41.012, )))
 
 STAT2=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,
@@ -217,8 +217,8 @@ TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
 # ------------------------------
 
 CHFORC_3=AFFE_CHAR_MECA(MODELE=MO,FORCE_NODALE=(
-                       _F( NOEUD = 'A1',          MY = -41.012, ),
-                       _F( NOEUD = 'A2',   FX = -1., MY = +41.012, )))
+                       _F( GROUP_NO = 'A1',          MY = -41.012, ),
+                       _F( GROUP_NO = 'A2',   FX = -1., MY = +41.012, )))
 
 STAT3=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,
@@ -273,8 +273,8 @@ TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
 # -------------------------------------
 
 CHFORC_4=AFFE_CHAR_MECA(MODELE=MO,FORCE_NODALE=(
-                       _F( NOEUD = 'A1',   MY = -1.,      ),
-                       _F( NOEUD = 'A2',   MY = +1.,      )))
+                       _F( GROUP_NO = 'A1',   MY = -1.,      ),
+                       _F( GROUP_NO = 'A2',   MY = +1.,      )))
 
 STAT4=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,

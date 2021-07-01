@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,15 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 MAIL = LIRE_MAILLAGE(FORMAT='GMSH',
                      UNITE=19,
                      )
+
+MAIL = DEFI_GROUP( reuse = MAIL, MAILLAGE = MAIL,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N46', NOEUD = 'N46'),
+                                        _F( NOM = 'N3', NOEUD = 'N3'),
+                                        _F( NOM = 'N92', NOEUD = 'N92'),
+                                        _F( NOM = 'N15', NOEUD = 'N15'),
+                                     ),
+         )
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
@@ -187,7 +196,7 @@ TEMPD - COEFH*(TEMPD-TEMPG)/(CONDUC+COEFH*LONTOT)*(LONMAX-X)""",
                 NOM_PARA='X',)
 #
 
-TEST_RESU(CHAM_NO=(_F(NOEUD='N46',
+TEST_RESU(CHAM_NO=(_F(GROUP_NO='N46',
                       CRITERE='RELATIF',
                       NOM_CMP='TEMP',
                       CHAM_GD=TSTAT,
@@ -195,7 +204,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N46',
                       REFERENCE='ANALYTIQUE',
                       VALE_REFE=TINTG(0.2475,),
                       ),
-                   _F(NOEUD='N3',
+                   _F(GROUP_NO='N3',
                       CRITERE='RELATIF',
                       NOM_CMP='TEMP',
                       CHAM_GD=TSTAT,
@@ -203,7 +212,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N46',
                       REFERENCE='ANALYTIQUE',
                       VALE_REFE=TINTG(0.495,),
                       ),
-                   _F(NOEUD='N15',
+                   _F(GROUP_NO='N15',
                       CRITERE='RELATIF',
                       NOM_CMP='TEMP',
                       CHAM_GD=TSTAT,
@@ -211,7 +220,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N46',
                       REFERENCE='ANALYTIQUE',
                       VALE_REFE=TINTD(0.505,),
                       ),
-                   _F(NOEUD='N92',
+                   _F(GROUP_NO='N92',
                       CRITERE='RELATIF',
                       NOM_CMP='TEMP',
                       CHAM_GD=TSTAT,

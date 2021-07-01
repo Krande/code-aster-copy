@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -97,13 +97,13 @@ TEST_RESU(RESU=_F(INST=0.10000000000000001,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=STAT,
                   NOM_CHAM='EPSI_ELNO',
-                  NOEUD='N2',
+                  GROUP_NO='N2',
                   NOM_CMP='EPYY',
                   VALE_CALC= 8.88071840E-03,
                   VALE_REFE=8.8807184009660391E-3,
                   CRITERE='RELATIF',
                   PRECISION=3.0000000000000001E-06,
-                  MAILLE='M1',
+                  GROUP_MA='M1',
                   ),
           )
 
@@ -117,7 +117,7 @@ TEST_RESU(RESU=_F(INST=0.10000000000000001,
                   VALE_REFE=8.8807184009660391E-3,
                   CRITERE='RELATIF',
                   PRECISION=3.0000000000000001E-06,
-                  MAILLE='M1',
+                  GROUP_MA='M1',
                   ),
           )
 
@@ -125,13 +125,13 @@ TEST_RESU(RESU=_F(INST=1.0,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=STAT,
                   NOM_CHAM='EPSI_ELNO',
-                  NOEUD='N2',
+                  GROUP_NO='N2',
                   NOM_CMP='EPYY',
                   VALE_CALC=0.097080717,
                   VALE_REFE=0.097080716818737214,
                   CRITERE='RELATIF',
                   PRECISION=2.9999999999999999E-07,
-                  MAILLE='M1',
+                  GROUP_MA='M1',
                   ),
           )
 
@@ -145,7 +145,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   VALE_REFE=0.097080716818737214,
                   CRITERE='RELATIF',
                   PRECISION=2.9999999999999999E-07,
-                  MAILLE='M1',
+                  GROUP_MA='M1',
                   ),
           )
 

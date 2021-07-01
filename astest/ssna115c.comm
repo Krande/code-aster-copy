@@ -31,6 +31,15 @@ MA_0 = LIRE_MAILLAGE(FORMAT='GMSH',
                      )
 MA = CREA_MAILLAGE(MAILLAGE  = MA_0, LINE_QUAD = _F(TOUT='OUI'))
 
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M2380', MAILLE = 'M2380'),
+                                     ),
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N2', NOEUD = 'N2'),
+                                     ),
+         )
+
 MA  =  DEFI_GROUP(
   reuse  = MA,
   MAILLAGE = MA,
@@ -350,7 +359,7 @@ TEST_RESU(RESU=_F(INST=tfinc,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V8',
                   VALE_CALC=0.41026334038946,
-                  MAILLE='M2380',),
+                  GROUP_MA='M2380',),
           )
 
 TEST_RESU(RESU=_F(INST=tfinc,
@@ -359,7 +368,7 @@ TEST_RESU(RESU=_F(INST=tfinc,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SITX',
                   VALE_CALC=0.94868329805283,
-                  MAILLE='M2380',),
+                  GROUP_MA='M2380',),
           )
 
 # TESTS DES EXTRAPOLATIONS NODALES
@@ -368,7 +377,7 @@ TEST_RESU(RESU=_F(INST=tfinc,
                   NOM_CHAM='VARI_NOEU',
                   NOM_CMP='V8',
                   VALE_CALC=0.41026334038946,
-                  NOEUD='N2'
+                  GROUP_NO='N2'
                   ),
           )
 
@@ -377,7 +386,7 @@ TEST_RESU(RESU=_F(INST=tfinc,
                   NOM_CHAM='SIEF_NOEU',
                   NOM_CMP='SITX',
                   VALE_CALC=0.94868329805283,
-                  NOEUD='N2'
+                  GROUP_NO='N2'
                   ),
           )
 

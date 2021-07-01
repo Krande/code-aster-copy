@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,15 +57,15 @@ DYNPHYF = DYNA_LINE(TYPE_CALCUL='HARM',
                     BANDE_ANALYSE=23,
                     EXCIT=(_F(TYPE_APPUI = "MONO",
                               DIRECTION =(1., 0., 0., ),
-                              NOEUD='NO130',
+                              GROUP_NO='NO130',
                               FONC_MULT_C=F_ACC_X,),
                            _F(TYPE_APPUI = "MONO",
                               DIRECTION =(0., 1., 0., ),
-                              NOEUD='NO130',
+                              GROUP_NO='NO130',
                               FONC_MULT_C=F_ACC_Y),
                            _F(TYPE_APPUI = "MONO",
                               DIRECTION =(0., 0., 1., ),
-                              NOEUD='NO130',
+                              GROUP_NO='NO130',
                               FONC_MULT_C=F_ACC_Z,),),
                     IFS='OUI',
                     GROUP_MA_FLUIDE='RETENUE',
@@ -83,17 +83,17 @@ DYNPHYF = DYNA_LINE(TYPE_CALCUL='HARM',
 f_a_x2=RECU_FONCTION(RESULTAT=DYNPHYF,
                      NOM_CHAM='ACCE',
                      NOM_CMP='DX',
-                     NOEUD='NO2815',);
+                     GROUP_NO='NO2815',);
 
 f_a_y2=RECU_FONCTION(RESULTAT=DYNPHYF,
                      NOM_CHAM='ACCE',
                      NOM_CMP='DY',
-                     NOEUD='NO2815',);
+                     GROUP_NO='NO2815',);
 
 f_a_z2=RECU_FONCTION(RESULTAT=DYNPHYF,
                      NOM_CHAM='ACCE',
                      NOM_CMP='DZ',
-                     NOEUD='NO2815',);
+                     GROUP_NO='NO2815',);
 
 
 f_Abs_x2=CALC_FONCTION(INTERPOL='LIN',
@@ -221,23 +221,23 @@ MACRO_MATR_AJOU(MAILLAGE=MAILLAGE,
 
 MODESSTA=MODE_STATIQUE(MATR_RIGI=RIGIDITE,
                        MATR_MASS=MASSE,
-                       MODE_STAT=_F(NOEUD='NO130',
+                       MODE_STAT=_F(GROUP_NO='NO130',
                                    AVEC_CMP=('DX','DY','DZ'),),);
 
 CHARSISX=CALC_CHAR_SEISME(MATR_MASS=MASSE,
                           DIRECTION=(1.0,0.0,0.0),
                           MODE_STAT=MODESSTA,
-                          NOEUD='NO130',);
+                          GROUP_NO='NO130',);
 
 CHARSISY=CALC_CHAR_SEISME(MATR_MASS=MASSE,
                           DIRECTION=(0.0,1.0,0.0),
                           MODE_STAT=MODESSTA,
-                          NOEUD='NO130',);
+                          GROUP_NO='NO130',);
 
 CHARSISZ=CALC_CHAR_SEISME(MATR_MASS=MASSE,
                           DIRECTION=(0.0,0.0,1.0),
                           MODE_STAT=MODESSTA,
-                          NOEUD='NO130',);
+                          GROUP_NO='NO130',);
 CHARGENX=PROJ_VECT_BASE(BASE=MODMECA,
                         NUME_DDL_GENE=NUMGEN2,
                         VECT_ASSE=CHARSISX,
@@ -296,8 +296,8 @@ C_FREQ2=CALC_TRANSFERT(NOM_CHAM='ACCE',
                        RESULTAT_Y=FDYNGENY,
                        RESULTAT_Z=FDYNGENZ,
                        REPERE='RELATIF',
-                       ENTREE=_F(NOEUD='NO1996',),
-                       SORTIE=_F(NOEUD='NO2815',),
+                       ENTREE=_F(GROUP_NO='NO1996',),
+                       SORTIE=_F(GROUP_NO='NO2815',),
                        ENTRAINEMENT=_F(DX=F_ACC_X,
                                         DY=F_ACC_Y,
                                         DZ=F_ACC_Z,

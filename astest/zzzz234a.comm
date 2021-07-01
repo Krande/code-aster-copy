@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -163,7 +163,7 @@ SELG01=CREA_CHAMP(
 TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
                        POINT=1,
                        NOM_CMP='N',
-                       MAILLE='M1',
+                       GROUP_MA='M1',
                        CHAM_GD=SELG01,
                        VALE_CALC=2000.0,
                        VALE_REFE=2000.0,),
@@ -203,10 +203,10 @@ SELN01=CREA_CHAMP(
    ASSE=_F( GROUP_MA='POUD',   CHAM_GD = VELN01, NOM_CMP = ('X1',  ), NOM_CMP_RESU = ('N'),), )
 
 
-TEST_RESU(CHAM_ELEM=_F(NOEUD='N2',
+TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N2',
                        REFERENCE='ANALYTIQUE',
                        NOM_CMP='N',
-                       MAILLE='M1',
+                       GROUP_MA='M1',
                        CHAM_GD=SELN01,
                        VALE_CALC=2000.0,
                        VALE_REFE=2000.0,),
@@ -246,7 +246,7 @@ SNOE01=CREA_CHAMP(
    ASSE=_F( GROUP_MA='POUD',   CHAM_GD = VNOE01, NOM_CMP = ('X1',  ), NOM_CMP_RESU = ('N'),), )
 
 
-TEST_RESU(CHAM_NO=_F(NOEUD='N2',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='N2',
                      REFERENCE='ANALYTIQUE',
                      NOM_CMP='N',
                      CHAM_GD=SNOE01,
@@ -351,7 +351,7 @@ SELG02=CREA_CHAMP(
 TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
                        POINT=1,
                        NOM_CMP='N',
-                       MAILLE='M1',
+                       GROUP_MA='M1',
                        CHAM_GD=SELG02,
                        VALE_CALC=2000.0,
                        VALE_REFE=2000.0,),
@@ -390,10 +390,10 @@ SELN02=CREA_CHAMP(
    MODELE=MO_D_E,  PROL_ZERO='OUI',
    ASSE=_F( GROUP_MA='POUD',   CHAM_GD = VELN02, NOM_CMP = ('X1',  ), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_ELEM=_F(NOEUD='N2',
+TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N2',
                        REFERENCE='ANALYTIQUE',
                        NOM_CMP='N',
-                       MAILLE='M1',
+                       GROUP_MA='M1',
                        CHAM_GD=SELN02,
                        VALE_CALC=2000.0,
                        VALE_REFE=2000.0,),
@@ -432,7 +432,7 @@ SNOE02=CREA_CHAMP(
    MODELE=MO_D_E,
    ASSE=_F( GROUP_MA='POUD',   CHAM_GD = VNOE02, NOM_CMP = ('X1',  ), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_NO=_F(NOEUD='N2',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='N2',
                      REFERENCE='ANALYTIQUE',
                      NOM_CMP='N',
                      CHAM_GD=SNOE02,
@@ -537,7 +537,7 @@ SELG03=CREA_CHAMP(
 TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
                        POINT=1,
                        NOM_CMP='N',
-                       MAILLE='M1',
+                       GROUP_MA='M1',
                        CHAM_GD=SELG03,
                        VALE_CALC=2000.0,
                        VALE_REFE=2000.0,),
@@ -577,10 +577,10 @@ SELN03=CREA_CHAMP(
    ASSE=_F( GROUP_MA='POUD',   CHAM_GD = VELN03, NOM_CMP = ('X1',  ), NOM_CMP_RESU = ('N'),), )
 
 
-TEST_RESU(CHAM_ELEM=_F(NOEUD='N2',
+TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N2',
                        REFERENCE='ANALYTIQUE',
                        NOM_CMP='N',
-                       MAILLE='M1',
+                       GROUP_MA='M1',
                        CHAM_GD=SELN03,
                        VALE_CALC=2000.0,
                        VALE_REFE=2000.0,),
@@ -620,7 +620,7 @@ SNOE03=CREA_CHAMP(
    ASSE=_F( GROUP_MA='POUD',   CHAM_GD = VNOE03, NOM_CMP = ('X1',  ), NOM_CMP_RESU = ('N'),), )
 
 
-TEST_RESU(CHAM_NO=_F(NOEUD='N2',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='N2',
                      REFERENCE='ANALYTIQUE',
                      NOM_CMP='N',
                      CHAM_GD=SNOE03,
@@ -712,7 +712,7 @@ TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
                        POINT=2,
                        NOM_CMP='X1',
                        SOUS_POINT=1,
-                       MAILLE='M1',
+                       GROUP_MA='M1',
                        CHAM_GD=NELG04,
                        VALE_CALC=-222090484.507,
                        VALE_REFE=-2.220904845E8,),
@@ -729,10 +729,10 @@ NELN04=CREA_CHAMP(
    ASSE=_F( GROUP_MA='POUD',   CHAM_GD = NELN40, NOM_CMP = ('N' ), NOM_CMP_RESU = ('X1'),), )
 
 
-TEST_RESU(CHAM_ELEM=_F(NOEUD='N2',
+TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N2',
                        REFERENCE='ANALYTIQUE',
                        NOM_CMP='X1',
-                       MAILLE='M1',
+                       GROUP_MA='M1',
                        CHAM_GD=NELN04,
                        VALE_CALC=1000.0,
                        VALE_REFE=1000.0,),
@@ -749,7 +749,7 @@ NNOE04=CREA_CHAMP(
    ASSE=_F( GROUP_MA='POUD',   CHAM_GD = NNOE40, NOM_CMP = ('N' ), NOM_CMP_RESU = ('X1'),), )
 
 
-TEST_RESU(CHAM_NO=_F(NOEUD='N2',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='N2',
                      REFERENCE='ANALYTIQUE',
                      NOM_CMP='X1',
                      CHAM_GD=NNOE04,
@@ -838,7 +838,7 @@ TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
                        POINT=1,
                        NOM_CMP='X1',
                        SOUS_POINT=1,
-                       MAILLE='M1',
+                       GROUP_MA='M1',
                        CHAM_GD=NELG05,
                        VALE_CALC=-229909501.173,
                        VALE_REFE=-2.2990566066E8,),
@@ -855,10 +855,10 @@ NELN05=CREA_CHAMP(
    ASSE=_F( GROUP_MA='POUD',   CHAM_GD = NELN50, NOM_CMP = ('N' ), NOM_CMP_RESU = ('X1'),), )
 
 
-TEST_RESU(CHAM_ELEM=_F(NOEUD='N2',
+TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N2',
                        REFERENCE='ANALYTIQUE',
                        NOM_CMP='X1',
-                       MAILLE='M1',
+                       GROUP_MA='M1',
                        CHAM_GD=NELN05,
                        VALE_CALC=1000.0,
                        VALE_REFE=1000.0,),
@@ -875,7 +875,7 @@ NNOE05=CREA_CHAMP(
    ASSE=_F( GROUP_MA='POUD',   CHAM_GD = NNOE50, NOM_CMP = ('N' ), NOM_CMP_RESU = ('X1'),), )
 
 
-TEST_RESU(CHAM_NO=_F(NOEUD='N2',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='N2',
                      REFERENCE='ANALYTIQUE',
                      NOM_CMP='X1',
                      CHAM_GD=NNOE05,

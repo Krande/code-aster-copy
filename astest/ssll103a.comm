@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ MO=AFFE_MODELE( MAILLAGE=MA,   AFFE=_F( TOUT = 'OUI',
        PHENOMENE = 'MECANIQUE',     MODELISATION = 'POU_D_TG',))
 
 CARAC=AFFE_CARA_ELEM( MODELE=MO,POUTRE=(
-         _F( MAILLE = ( 'S1', 'S2', 'S3', 'S4', ),  SECTION = 'GENERALE',
+         _F( GROUP_MA = ( 'S1', 'S2', 'S3', 'S4', ),  SECTION = 'GENERALE',
         CARA = ('A',         'IY',           'IZ',
                 'AY',        'AZ',           'EY',
                 'EZ',        'JX',           'JG',
@@ -42,7 +42,7 @@ CARAC=AFFE_CARA_ELEM( MODELE=MO,POUTRE=(
                  1.,       1.,             41.012,
                  0.,       39595.,         44398819.,
               84948392.,   0.,                                ), ),
-         _F( MAILLE = ( 'S5', 'S6', 'S7', 'S8', ),
+         _F( GROUP_MA = ( 'S5', 'S6', 'S7', 'S8', ),
              SECTION = 'GENERALE', VARI_SECT = 'HOMOTHETIQUE',
         CARA = ('A1',        'IY1',          'IZ1',
                 'AY1',       'AZ1',          'EY1',
@@ -63,24 +63,24 @@ CARAC=AFFE_CARA_ELEM( MODELE=MO,POUTRE=(
       )
 
 BLOQ=AFFE_CHAR_MECA(   MODELE=MO,
-          DDL_IMPO=_F( NOEUD = 'A1',    DX = 0., DY = 0., DZ = 0., ),
+          DDL_IMPO=_F( GROUP_NO = 'A1',    DX = 0., DY = 0., DZ = 0., ),
           LIAISON_DDL=(
-       _F(     NOEUD = ( 'A1',    'A1',    'A1',  ),
+       _F(     GROUP_NO = ( 'A1',    'A1',    'A1',  ),
                           DDL = ('DRX', 'DRY', 'DRZ',),
                     COEF_MULT = (  1.,    1.,    1., ),
                     COEF_IMPO = 0.,                  ),
 #
-       _F(     NOEUD = ( 'A2',   'A2', ),
+       _F(     GROUP_NO = ( 'A2',   'A2', ),
                           DDL = ('DX', 'DY',),
                     COEF_MULT = ( 1.,   -1.,),
                     COEF_IMPO = 0.,            ),
 #
-       _F(     NOEUD = ( 'A2',   'A2', ),
+       _F(     GROUP_NO = ( 'A2',   'A2', ),
                           DDL = ('DX', 'DZ',),
                     COEF_MULT = ( 1.,   -1.,),
                     COEF_IMPO = 0.,            ),
 #
-       _F(     NOEUD = ( 'A2',    'A2',    'A2',  ),
+       _F(     GROUP_NO = ( 'A2',    'A2',    'A2',  ),
                           DDL = ('DRX', 'DRY', 'DRZ',),
                     COEF_MULT = (  1.,    1.,    1., ),
                     COEF_IMPO = 0.,                  ))    )
@@ -100,7 +100,7 @@ RIGAS=ASSE_MATRICE(MATR_ELEM=RIGEL,NUME_DDL=NU)
 # ------------------------------
 
 CHFORC_1=AFFE_CHAR_MECA(MODELE=MO,
-                   FORCE_NODALE=_F( NOEUD = 'A2',   FX = -5.7735026919E-01,
+                   FORCE_NODALE=_F( GROUP_NO = 'A2',   FX = -5.7735026919E-01,
                                             FY = -5.7735026919E-01,
                                             FZ = -5.7735026919E-01,  ))
 
@@ -202,11 +202,11 @@ TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
 # ------------------------------
 
 CHFORC_2=AFFE_CHAR_MECA(MODELE=MO,FORCE_NODALE=(
-               _F( NOEUD = 'A1',     MX = -1.6743078889E+01,
+               _F( GROUP_NO = 'A1',     MX = -1.6743078889E+01,
                                           MY = -1.6743078889E+01,
                                           MZ = 3.3486157777E+01,  ),
 #
-               _F( NOEUD = 'A2',     FX = -5.7735026919E-01,
+               _F( GROUP_NO = 'A2',     FX = -5.7735026919E-01,
                                           FY = -5.7735026919E-01,
                                           FZ = -5.7735026919E-01,
                                           MX = 1.6743078889E+01,
@@ -269,10 +269,10 @@ TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
 # ------------------------------
 
 CHFORC_3=AFFE_CHAR_MECA(MODELE=MO,FORCE_NODALE=(
-               _F( NOEUD = 'A1',     MX = 2.8999863310E+01,
+               _F( GROUP_NO = 'A1',     MX = 2.8999863310E+01,
                                           MY = -2.8999863310E+01, ),
 #
-               _F( NOEUD = 'A2',     FX = -5.7735026919E-01,
+               _F( GROUP_NO = 'A2',     FX = -5.7735026919E-01,
                                           FY = -5.7735026919E-01,
                                           FZ = -5.7735026919E-01,
                                           MX = -2.8999863310E+01,
@@ -336,10 +336,10 @@ TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
 # -------------------------------------
 
 CHFORC_4=AFFE_CHAR_MECA(MODELE=MO,FORCE_NODALE=(
-               _F( NOEUD = 'A1',     MX = 7.0710678119E-01,
+               _F( GROUP_NO = 'A1',     MX = 7.0710678119E-01,
                                           MY = -7.0710678119E-01, ),
 #
-               _F( NOEUD = 'A2',     MX = -7.0710678119E-01,
+               _F( GROUP_NO = 'A2',     MX = -7.0710678119E-01,
                                           MY = 7.0710678119E-01,  ))  )
 
 ###############################################################

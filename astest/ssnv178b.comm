@@ -282,7 +282,7 @@ TEST_RESU(RESU=_F(GROUP_NO='B',
                   NOM_CMP='SIXX',
                   VALE_CALC= 6210637.95811,
                   VALE_REFE=6.2111801242236029E6,
-                  MAILLE='M1403',),
+                  GROUP_MA='M1403',),
           )
 
 FIN()

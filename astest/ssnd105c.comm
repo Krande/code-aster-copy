@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -85,7 +85,7 @@ ACIER2=DEFI_MATERIAU(ELAS=_F(E=200000.,
                                  UN_SUR_K=0.0142857142857,),);
 
 MAT2=AFFE_MATERIAU(MAILLAGE=CUBE,
-                   AFFE=_F(MAILLE='MA1',
+                   AFFE=_F(GROUP_MA='MA1',
                            MATER=ACIER2,),);
 
 COND_LIM=AFFE_CHAR_CINE(MODELE=MOD2D,
@@ -331,25 +331,25 @@ VISCOCH=CALC_CHAMP(reuse=VISCOCH,RESULTAT=VISCOCH,DEFORMATION=('EPSI_ELGA'))
 FEPXX=RECU_FONCTION(RESULTAT=VISCMEMO,
                     NOM_CHAM='EPSI_ELGA',
                     NOM_CMP='EPYY',
-                    MAILLE='MA1',INTERPOL='LIN',
+                    GROUP_MA='MA1',INTERPOL='LIN',
                     POINT=1,);
 
 FSIXX=RECU_FONCTION(RESULTAT=VISCMEMO,
                     NOM_CHAM='SIEF_ELGA',
                     NOM_CMP='SIYY',
-                    MAILLE='MA1',INTERPOL='LIN',
+                    GROUP_MA='MA1',INTERPOL='LIN',
                     POINT=1,);
 
 FEPXX2=RECU_FONCTION(RESULTAT=VISCOCH,
                      NOM_CHAM='EPSI_ELGA',
                      NOM_CMP='EPYY',
-                     MAILLE='MA1',INTERPOL='LIN',
+                     GROUP_MA='MA1',INTERPOL='LIN',
                      POINT=1,);
 
 FSIXX2=RECU_FONCTION(RESULTAT=VISCOCH,
                      NOM_CHAM='SIEF_ELGA',
                      NOM_CMP='SIYY',
-                     MAILLE='MA1',INTERPOL='LIN',
+                     GROUP_MA='MA1',INTERPOL='LIN',
                      POINT=1,);
 
 TEST_RESU(RESU=(_F(INST=10.0,
@@ -360,7 +360,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    NOM_CMP='SIYY',
                    VALE_CALC=-220.000000950,
                    VALE_REFE=-220.0,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 _F(INST=11.0,
                    REFERENCE='ANALYTIQUE',
                    POINT=1,
@@ -370,7 +370,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    VALE_CALC= 6.39488462E-14,
                    VALE_REFE=0.0,
                    CRITERE='ABSOLU',
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 ),
           )
 
@@ -516,13 +516,13 @@ VMISCIN2=CALC_CHAMP(reuse=VMISCIN2,RESULTAT=VMISCIN2,DEFORMATION=('EPSI_ELGA'))
 FEPXX3=RECU_FONCTION(RESULTAT=VMISCIN2,
                      NOM_CHAM='EPSI_ELGA',
                      NOM_CMP='EPYY',INTERPOL='LIN',
-                     MAILLE='MA1',
+                     GROUP_MA='MA1',
                      POINT=1,);
 
 FSIXX3=RECU_FONCTION(RESULTAT=VMISCIN2,
                      NOM_CHAM='SIEF_ELGA',
                      NOM_CMP='SIYY',INTERPOL='LIN',
-                     MAILLE='MA1',
+                     GROUP_MA='MA1',
                      POINT=1,);
 
 IMPR_FONCTION(FORMAT='XMGRACE',

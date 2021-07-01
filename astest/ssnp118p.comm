@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -222,7 +222,7 @@ TEST_RESU(RESU=_F(INST      = 2.00008E+00,
                   NOM_CMP='SIXX',
                   VALE_CALC=0.737898743054,
                   VALE_REFE=7.37899E-01,
-                  MAILLE='M32',),
+                  GROUP_MA='M32',),
           )
 
 # pas de maille cohesive donc suppression test sur cette maille
@@ -231,7 +231,7 @@ TEST_RESU(RESU=_F(INST=9.00001,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=U_OUV,
                   NOM_CHAM='DEPL',
-                  NOEUD='N9',
+                  GROUP_NO='N9',
                   NOM_CMP='LAGS_C',
                   VALE_CALC=0.347848803363,
                   VALE_REFE=0.34784900000000002,),
@@ -241,7 +241,7 @@ TEST_RESU(RESU=_F(INST=8.00002,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=U_OUV,
                   NOM_CHAM='DEPL',
-                  NOEUD='N9',
+                  GROUP_NO='N9',
                   NOM_CMP='LAGS_F1',
                   VALE_CALC=-1.87258042835E-15,
                   VALE_REFE=0.0,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -135,12 +135,12 @@ EVOLNOLI=CALC_CHAMP(reuse =EVOLNOLI, PARALLELISME_TEMPS='OUI',INFO=1,
 
 EVOLNOL2=CALC_CHAMP(PARALLELISME_TEMPS='OUI',INFO=1,
                     FORCE=('FORC_NODA','REAC_NODA'),
-                    MAILLE=('M95'),
+                    GROUP_MA=('M95'),
                     RESULTAT=EVOLNOLI,);
 
 REACDY=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                 INTITULE='REACDY',
-                                NOEUD=('N1','N40'),
+                                GROUP_NO=('N1','N40'),
                                 RESULTANTE='DY',
                                 NUME_ORDRE=1,
                                 RESULTAT=EVOLNOLI,
@@ -175,7 +175,7 @@ TEST_RESU(RESU=(
                    VALE_REFE=2.9443664E6,
                    CRITERE='RELATIF',
                    PRECISION=1.E-3,
-                   MAILLE='M89',),
+                   GROUP_MA='M89',),
                 ),
           )
 

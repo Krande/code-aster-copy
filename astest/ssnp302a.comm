@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -53,16 +53,16 @@ MAILLAGE=MAYA,AFFE=(
 
 T_CAL=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
 MAILLAGE=MAYA,AFFE=(
-                               _F(  NOEUD = 'NO1',
+                               _F(  GROUP_NO = 'NO1',
                                       NOM_CMP = 'TEMP',
                                       VALE = 0.),
-                                    _F(  NOEUD = 'NO4',
+                                    _F(  GROUP_NO = 'NO4',
                                       NOM_CMP = 'TEMP',
                                       VALE = 0.),
-                                    _F(  NOEUD = 'NO2',
+                                    _F(  GROUP_NO = 'NO2',
                                       NOM_CMP = 'TEMP',
                                       VALE = 1000.),
-                                    _F(  NOEUD = 'NO3',
+                                    _F(  GROUP_NO = 'NO3',
                                       NOM_CMP = 'TEMP',
                                       VALE = 1000.))
                       )
@@ -82,16 +82,16 @@ TCALC=CREA_RESU( reuse =TCALC,
 
 
 TRAC=AFFE_CHAR_MECA(      MODELE=MODEL,FORCE_NODALE=(
-                             _F(  NOEUD = 'NO2',
+                             _F(  GROUP_NO = 'NO2',
                                              FX = 0.5),
-                                          _F(  NOEUD = 'NO3',
+                                          _F(  GROUP_NO = 'NO3',
                                              FX = 0.5))
                         )
 
 CONDLIM=AFFE_CHAR_MECA(     MODELE=MODEL,DDL_IMPO=(
-                              _F(  NOEUD = 'NO1',  DX = 0.,
+                              _F(  GROUP_NO = 'NO1',  DX = 0.,
                                                       DY = 0.),
-                                       _F(  NOEUD = 'NO4',  DX = 0.))
+                                       _F(  GROUP_NO = 'NO4',  DX = 0.))
                           )
 
 CAT=DEFI_LIST_REEL(    DEBUT=0.0,
@@ -132,47 +132,47 @@ CALCNL=CALC_CHAMP(reuse=CALCNL,DEFORMATION=('EPSI_ELNO'),RESULTAT=CALCNL)
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=CALCNL,
                    NOM_CHAM='SIGM_ELNO',
-                   NOEUD='NO1',
+                   GROUP_NO='NO1',
                    NOM_CMP='SIXX',
                    VALE_CALC=200.0,
                    VALE_REFE=200.0,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=1.E-3,
                    CRITERE='RELATIF',
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 _F(NUME_ORDRE=1,
                    RESULTAT=CALCNL,
                    NOM_CHAM='SIGM_ELNO',
-                   NOEUD='NO4',
+                   GROUP_NO='NO4',
                    NOM_CMP='SIXX',
                    VALE_CALC=200.0,
                    VALE_REFE=200.0,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=1.E-3,
                    CRITERE='RELATIF',
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 _F(NUME_ORDRE=1,
                    RESULTAT=CALCNL,
                    NOM_CHAM='SIGM_ELNO',
-                   NOEUD='NO2',
+                   GROUP_NO='NO2',
                    NOM_CMP='SIXX',
                    VALE_CALC=0.0,
                    VALE_REFE=0.0,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=1.E-3,
                    CRITERE='ABSOLU',
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 _F(NUME_ORDRE=1,
                    RESULTAT=CALCNL,
                    NOM_CHAM='SIGM_ELNO',
-                   NOEUD='NO3',
+                   GROUP_NO='NO3',
                    NOM_CMP='SIXX',
                    VALE_CALC=0.0,
                    VALE_REFE=0.0,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=1.E-3,
                    CRITERE='ABSOLU',
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 ),
           )
 

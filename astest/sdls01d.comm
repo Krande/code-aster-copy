@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ CHCAS1=AFFE_CHAR_MECA(  MODELE=MO,
 SSS=MACR_ELEM_STAT(
              DEFINITION=_F(  MODELE = MO, CHAM_MATER = CHMAT,
                         CARA_ELEM = CARELEM,   CHAR_MACR_ELEM = CHCAS1),
-              EXTERIEUR=_F(  NOEUD = ('N1', 'N7', 'N9', 'N17', 'N23', 'N25', 'N39', 'N41', 'N47', 'N49',
+              EXTERIEUR=_F(  GROUP_NO = ('N1', 'N7', 'N9', 'N17', 'N23', 'N25', 'N39', 'N41', 'N47', 'N49',
                         'N65', 'N71', 'N73', 'N78', 'N80', 'N99', 'N101', 'N107', 'N109', 'N121',
                         'N127', 'N129', 'N139', 'N141', 'N145',   )),
               RIGI_MECA=_F(),

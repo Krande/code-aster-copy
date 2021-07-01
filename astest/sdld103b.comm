@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -173,11 +173,11 @@ DEPLACE2=CALC_FONC_INTERP( FONCTION=DEPL2, LIST_PARA=L_INST,
 #
 MULT_X1=CALC_CHAR_SEISME(  MATR_MASS=MASSE,
                             DIRECTION=( 0., 0., 0., 1., 0., 0.,),
-                            MODE_STAT=MODE_STA,   NOEUD='NO1' )
+                            MODE_STAT=MODE_STA,   GROUP_NO='NO1' )
 
 MULT_X2=CALC_CHAR_SEISME(  MATR_MASS=MASSE,
                             DIRECTION=( 0., 0., 0., 1., 0., 0.,),
-                            MODE_STAT=MODE_STA,   NOEUD='NO5' )
+                            MODE_STAT=MODE_STA,   GROUP_NO='NO5' )
 
 #
 # PROJECTION DES MATRICES M ET K SUR LA BASE MODALE
@@ -203,14 +203,14 @@ TRAN_GEE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                         ACCE = ACCELER1,
                         MULT_APPUI = 'OUI',
                         DIRECTION = ( 0., 0., 0., 1., 0., 0.,),
-                        NOEUD = 'NO1',
+                        GROUP_NO = 'NO1',
                         VITE = VITESSE1,
                         DEPL = DEPLACE1),
                 _F( VECT_ASSE_GENE = VECT_X2,
                         ACCE = ACCELER2,
                         MULT_APPUI = 'OUI',
                         DIRECTION = ( 0., 0., 0., 1., 0., 0.,),
-                        NOEUD = 'NO5',
+                        GROUP_NO = 'NO5',
                         VITE = VITESSE2,
                         DEPL = DEPLACE2)),
                  ARCHIVAGE=_F(  PAS_ARCH = 1),
@@ -336,17 +336,17 @@ XRNOE4=CALC_FONC_INTERP(     FONCTION=XRNOE4a,
 
 # RECUPERATION DES DEPLACEMENTS RELATIFS CALCULES
 # -----------------------------------------------
-NO2DXR_E=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DRX',  NOM_CHAM='DEPL',
+NO2DXR_E=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DRX',  NOM_CHAM='DEPL',
                              RESU_GENE=TRAN_GEE,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 
-NO3DXR_E=RECU_FONCTION(  NOEUD='NO3',  NOM_CMP='DRX',  NOM_CHAM='DEPL',
+NO3DXR_E=RECU_FONCTION(  GROUP_NO='NO3',  NOM_CMP='DRX',  NOM_CHAM='DEPL',
                              RESU_GENE=TRAN_GEE,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 
-NO4DXR_E=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DRX',  NOM_CHAM='DEPL',
+NO4DXR_E=RECU_FONCTION(  GROUP_NO='NO4',  NOM_CMP='DRX',  NOM_CHAM='DEPL',
                              RESU_GENE=TRAN_GEE,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
@@ -354,19 +354,19 @@ NO4DXR_E=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DRX',  NOM_CHAM='DEPL',
 #
 # RECUPERATION DES DEPLACEMENTS ABSOLUS CALCULES
 # ----------------------------------------------
-NO2DXA_E=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DRX',  NOM_CHAM='DEPL',
+NO2DXA_E=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DRX',  NOM_CHAM='DEPL',
                             RESU_GENE=TRAN_GEE,
                           MULT_APPUI='OUI',         INTERP_NUME='LIN',
                              LIST_INST=L_RECU,     INTERPOL='LIN'
                         )
 
-NO3DXA_E=RECU_FONCTION(  NOEUD='NO3',  NOM_CMP='DRX',  NOM_CHAM='DEPL',
+NO3DXA_E=RECU_FONCTION(  GROUP_NO='NO3',  NOM_CMP='DRX',  NOM_CHAM='DEPL',
                             RESU_GENE=TRAN_GEE,
                           MULT_APPUI='OUI',         INTERP_NUME='LIN',
                              LIST_INST=L_RECU,     INTERPOL='LIN'
                         )
 
-NO4DXA_E=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DRX',  NOM_CHAM='DEPL',
+NO4DXA_E=RECU_FONCTION(  GROUP_NO='NO4',  NOM_CMP='DRX',  NOM_CHAM='DEPL',
                             RESU_GENE=TRAN_GEE,
                           MULT_APPUI='OUI',         INTERP_NUME='LIN',
                              LIST_INST=L_RECU,     INTERPOL='LIN'

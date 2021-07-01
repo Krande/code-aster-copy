@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -64,11 +64,11 @@ r33 = 3**-0.5
 
 C_RIGIDE = AFFE_CHAR_MECA(
   MODELE = MO,
-  DDL_IMPO = _F(NOEUD = 'N0',DX = 0,DY = 0,DZ = 0),
+  DDL_IMPO = _F(GROUP_NO = 'N0',DX = 0,DY = 0,DZ = 0),
   LIAISON_DDL = (
-    _F(NOEUD=('N2','N1'),DDL=('DX','DY'),COEF_MULT=(1,-1),COEF_IMPO=0),
-    _F(NOEUD=('N3','N1'),DDL=('DX','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
-    _F(NOEUD=('N3','N2'),DDL=('DY','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
+    _F(GROUP_NO=('N2','N1'),DDL=('DX','DY'),COEF_MULT=(1,-1),COEF_IMPO=0),
+    _F(GROUP_NO=('N3','N1'),DDL=('DX','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
+    _F(GROUP_NO=('N3','N2'),DDL=('DY','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
     )
   );
 
@@ -95,24 +95,24 @@ CHP_M=AFFE_MATERIAU(MAILLAGE=MA,
 
 CHR_1 = AFFE_CHAR_MECA( MODELE = MO,
                        FORCE_FACE = (
-                          _F(MAILLE='F1', FX= -1.),
-                          _F(MAILLE='F4', FX= r33*1.),
+                          _F(GROUP_MA='F1', FX= -1.),
+                          _F(GROUP_MA='F4', FX= r33*1.),
                                      ),
                       );
 
 CHR_2 = AFFE_CHAR_MECA( MODELE = MO,
                        FORCE_FACE = (
-                          _F(MAILLE='F1', FX= 1.),
-                          _F(MAILLE='F4', FX= -r33*1.),
+                          _F(GROUP_MA='F1', FX= 1.),
+                          _F(GROUP_MA='F4', FX= -r33*1.),
                                      ),
                       );
 
 CHR_3 = AFFE_CHAR_MECA( MODELE = MO,
                        FORCE_FACE = (
-                           _F(MAILLE='F2', FY= -0.2),
-                          _F(MAILLE='F4', FY= r33*0.2),
-                          _F(MAILLE='F1', FX= 1.),
-                          _F(MAILLE='F4', FX= -r33*1.),
+                           _F(GROUP_MA='F2', FY= -0.2),
+                          _F(GROUP_MA='F4', FY= r33*0.2),
+                          _F(GROUP_MA='F1', FX= 1.),
+                          _F(GROUP_MA='F4', FX= -r33*1.),
                                      ),
                       );
 
@@ -289,7 +289,7 @@ SIXX1=RECU_FONCTION(RESULTAT=U_1,
                  NOM_CHAM='SIEF_ELGA',
 
                  NOM_CMP='SIXX',
-                 MAILLE='VOLUME',
+                 GROUP_MA='VOLUME',
                  POINT=1,);
 
 
@@ -297,7 +297,7 @@ SIXX2=RECU_FONCTION(RESULTAT=U_2,
                  NOM_CHAM='SIEF_ELGA',
 
                  NOM_CMP='SIXX',
-                 MAILLE='VOLUME',
+                 GROUP_MA='VOLUME',
                  POINT=1,);
 
 
@@ -305,7 +305,7 @@ SIXX3=RECU_FONCTION(RESULTAT=U_3,
                  NOM_CHAM='SIEF_ELGA',
 
                  NOM_CMP='SIXX',
-                 MAILLE='VOLUME',
+                 GROUP_MA='VOLUME',
                  POINT=1,);
 
 
@@ -339,21 +339,21 @@ TEST_RESU(RESU=(_F(INST=4.1,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIXX',
                    VALE_CALC=3.206837140808,
-                   MAILLE='VOLUME',),
+                   GROUP_MA='VOLUME',),
                 _F(INST=7.5,
                    POINT=1,
                    RESULTAT=U_2,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIXX',
                    VALE_CALC=-31.799980216662,
-                   MAILLE='VOLUME',),
+                   GROUP_MA='VOLUME',),
                 _F(INST=7.3,
                    POINT=1,
                    RESULTAT=U_3,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIXX',
                    VALE_CALC=-14.203766625179,
-                   MAILLE='VOLUME',),
+                   GROUP_MA='VOLUME',),
                 ),
           )
 

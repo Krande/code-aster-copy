@@ -25,50 +25,50 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
 MAILLAGE=LIRE_MAILLAGE(FORMAT="ASTER",    UNITE=20 )
 
 MODELE=AFFE_MODELE( MAILLAGE=MAILLAGE,
-                    AFFE=(_F( MAILLE = 'POU1',
+                    AFFE=(_F( GROUP_MA = 'POU1',
                               PHENOMENE = 'MECANIQUE',
                               MODELISATION = 'POU_D_E'
                             ),
-                          _F( MAILLE = 'POU2',
+                          _F( GROUP_MA = 'POU2',
                               PHENOMENE = 'MECANIQUE',
                               MODELISATION = 'POU_D_T'
                             ),
-                          _F( MAILLE = 'POU3',
+                          _F( GROUP_MA = 'POU3',
                               PHENOMENE = 'MECANIQUE',
                               MODELISATION = 'POU_D_T'
                             ),
-                          _F( MAILLE = 'POU4',
+                          _F( GROUP_MA = 'POU4',
                               PHENOMENE = 'MECANIQUE',
                               MODELISATION = 'POU_D_TG'
                             ),
-                          _F( MAILLE = 'POU5',
+                          _F( GROUP_MA = 'POU5',
                               PHENOMENE = 'MECANIQUE',
                               MODELISATION = 'POU_D_T_GD'
                             ),
-                          _F( MAILLE = 'POU6',
+                          _F( GROUP_MA = 'POU6',
                               PHENOMENE = 'MECANIQUE',
                               MODELISATION = 'POU_D_EM'
                             ),
-                          _F( MAILLE = 'POU7',
+                          _F( GROUP_MA = 'POU7',
                               PHENOMENE = 'MECANIQUE',
                               MODELISATION = 'POU_D_TGM'
                             ),
 
-                          _F( MAILLE = ('DISN1','DISL1',),
+                          _F( GROUP_MA = ('DISN1','DISL1',),
                               PHENOMENE = 'MECANIQUE',
                               MODELISATION = 'DIS_T'
                             ),
-                          _F( MAILLE = ('DISN2','DISL2'),
+                          _F( GROUP_MA = ('DISN2','DISL2'),
                               PHENOMENE = 'MECANIQUE',
                               MODELISATION = 'DIS_TR'
                             ),
 
-                          _F( MAILLE = ('TUY31',
+                          _F( GROUP_MA = ('TUY31',
                           ),
                               PHENOMENE = 'MECANIQUE',
                               MODELISATION = 'TUYAU_3M'
                             ),
-                          _F( MAILLE = 'TUY32',
+                          _F( GROUP_MA = 'TUY32',
                               PHENOMENE = 'MECANIQUE',
                               MODELISATION = 'TUYAU_6M'
                             ),
@@ -88,47 +88,47 @@ GF=DEFI_GEOM_FIBRE( INFO=1,
 #
 CARAELEM=AFFE_CARA_ELEM(INFO=2,
                       MODELE=MODELE,
-                      POUTRE=(_F(MAILLE=('POU1','POU2','POU3','POU4','POU5','POU6','POU7',
+                      POUTRE=(_F(GROUP_MA=('POU1','POU2','POU3','POU4','POU5','POU6','POU7',
                                          'TUY31','TUY32',),
                                  SECTION='CERCLE',
                                  CARA= 'R',VALE=0.20,
                                  ),
                              ),
 
-                      DISCRET=(_F(MAILLE = 'DISN1',
+                      DISCRET=(_F(GROUP_MA = 'DISN1',
                                   CARA='K_T_D_N',
                                   VALE=(1.0,1.0,1.0),
                                  ),
-                               _F(MAILLE = 'DISN2',
+                               _F(GROUP_MA = 'DISN2',
                                   CARA='K_TR_D_N',
                                   VALE=(1.0,1.0,1.0,1.0,1.0,1.0),
                                  ),
-                               _F(MAILLE = 'DISL1',
+                               _F(GROUP_MA = 'DISL1',
                                   CARA='K_T_D_L',
                                   VALE=(1.0,1.0,1.0),
                                  ),
-                               _F(MAILLE = 'DISL2',
+                               _F(GROUP_MA = 'DISL2',
                                   CARA='K_TR_D_L',
                                   VALE=(1.0,1.0,1.0,1.0,1.0,1.0),
                                  ),
                               ),
 
-                      ORIENTATION=(_F(MAILLE=('POU1','POU2','POU3','POU4','POU5','POU6','POU7'),
+                      ORIENTATION=(_F(GROUP_MA=('POU1','POU2','POU3','POU4','POU5','POU6','POU7'),
                                      CARA='ANGL_VRIL',
                                      VALE=90.0,),
-                                   _F(MAILLE=('DISL1','DISL2',),
+                                   _F(GROUP_MA=('DISL1','DISL2',),
                                      CARA='ANGL_VRIL',
                                      VALE=-90.0,),
-                                   _F(NOEUD='N010',
-                                     #MAILLE=('TUY31','TUY32',),
+                                   _F(GROUP_NO='N010',
+                                     #GROUP_MA=('TUY31','TUY32',),
                                      CARA='GENE_TUYAU',
                                      VALE=(0.,0.,1.)),
-                                   _F(MAILLE=('DISN1','DISN2',),
+                                   _F(GROUP_MA=('DISN1','DISN2',),
                                      CARA='ANGL_NAUT',
                                      VALE=(90,-90.0,90.0)),
                                   ),
                       GEOM_FIBRE=GF,
-                      MULTIFIBRE=(_F( MAILLE=('POU6','POU7'),   PREC_AIRE=6.0E-04, PREC_INERTIE=1.1, GROUP_FIBRE=('SBET',)  ),  )
+                      MULTIFIBRE=(_F( GROUP_MA=('POU6','POU7'),   PREC_AIRE=6.0E-04, PREC_INERTIE=1.1, GROUP_FIBRE=('SBET',)  ),  )
 )
 
 IMPR_CONCEPT(FORMAT="RESULTAT",
@@ -179,7 +179,7 @@ REPLO_3 = LIRE_CHAMP(
 # VECTEUR x local
 TEST_RESU(CHAM_ELEM=(_F(
                         CHAM_GD = REPLO_1,
-                        MAILLE='POU1',
+                        GROUP_MA='POU1',
                         POINT= 1,
                         NOM_CMP = 'X',
                         VALE_CALC=0.707106781186E0,
@@ -189,7 +189,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLO_1,
-                        MAILLE='POU3',
+                        GROUP_MA='POU3',
                         POINT= 1,
                         NOM_CMP = 'Y',
                         VALE_CALC=0.707106781186E0,
@@ -199,7 +199,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLO_1,
-                        MAILLE='POU5',
+                        GROUP_MA='POU5',
                         POINT= 1,
                         NOM_CMP = 'X',
                         VALE_CALC=0.707106781186E0,
@@ -209,7 +209,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLO_1,
-                        MAILLE='POU7',
+                        GROUP_MA='POU7',
                         POINT= 1,
                         NOM_CMP = 'Y',
                         VALE_CALC=0.707106781186E0,
@@ -219,7 +219,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLO_1,
-                        MAILLE='DISL1',
+                        GROUP_MA='DISL1',
                         POINT= 1,
                         NOM_CMP = 'X',
                         VALE_CALC=0.707106781186E0,
@@ -229,7 +229,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLO_1,
-                        MAILLE='TUY32',
+                        GROUP_MA='TUY32',
                         POINT= 1,
                         NOM_CMP = 'Y',
                         VALE_CALC=0.707106781186E0,
@@ -239,7 +239,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLO_1,
-                        MAILLE='DISN2',
+                        GROUP_MA='DISN2',
                         POINT= 1,
                         NOM_CMP = 'Z',
                         VALE_CALC=1.0E0,
@@ -253,7 +253,7 @@ TEST_RESU(CHAM_ELEM=(_F(
 # VECTEUR y local
 TEST_RESU(CHAM_ELEM=(_F(
                         CHAM_GD = REPLO_2,
-                        MAILLE='POU2',
+                        GROUP_MA='POU2',
                         POINT= 1,
                         NOM_CMP = 'Z',
                         VALE_CALC=1.0E0,
@@ -263,7 +263,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLO_2,
-                        MAILLE='POU4',
+                        GROUP_MA='POU4',
                         POINT= 1,
                         NOM_CMP = 'Z',
                         VALE_CALC=1.0E0,
@@ -273,7 +273,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLO_2,
-                        MAILLE='POU6',
+                        GROUP_MA='POU6',
                         POINT= 1,
                         NOM_CMP = 'Z',
                         VALE_CALC=1.0E0,
@@ -283,7 +283,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLO_2,
-                        MAILLE='DISL2',
+                        GROUP_MA='DISL2',
                         POINT= 1,
                         NOM_CMP = 'Z',
                         VALE_CALC=-1.0E0,
@@ -293,7 +293,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLO_2,
-                        MAILLE='TUY31',
+                        GROUP_MA='TUY31',
                         POINT= 1,
                         NOM_CMP = 'Y',
                         VALE_CALC=-0.707106781186E0,
@@ -303,7 +303,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLO_2,
-                        MAILLE='DISN1',
+                        GROUP_MA='DISN1',
                         POINT= 1,
                         NOM_CMP = 'Y',
                         VALE_CALC=-1.0E0,
@@ -319,7 +319,7 @@ TEST_RESU(CHAM_ELEM=(_F(
 
 
 MODTUY4=AFFE_MODELE( MAILLAGE=MAILLAGE,
-                    AFFE=(_F( MAILLE = ('TUY41'),
+                    AFFE=(_F( GROUP_MA = ('TUY41'),
                               PHENOMENE = 'MECANIQUE',
                               MODELISATION = 'TUYAU_3M'
                             ),
@@ -331,13 +331,13 @@ MODTUY4=AFFE_MODELE( MAILLAGE=MAILLAGE,
 #
 CARATUY4=AFFE_CARA_ELEM(INFO=2,
                       MODELE=MODTUY4,
-                      POUTRE=(_F(MAILLE=('TUY41'),
+                      POUTRE=(_F(GROUP_MA=('TUY41'),
                                  SECTION='CERCLE',
                                  CARA= 'R',VALE=0.20,
                                  ),
                              ),
                       ORIENTATION=(
-                                   _F(NOEUD='N014',
+                                   _F(GROUP_NO='N014',
                                       CARA='GENE_TUYAU',
                                      VALE=(0.,0.,1.)),
                                   ),
@@ -389,7 +389,7 @@ REPLTU3 = LIRE_CHAMP(
                      )
 TEST_RESU(CHAM_ELEM=(_F(
                         CHAM_GD = REPLTU1,
-                        MAILLE='TUY41',
+                        GROUP_MA='TUY41',
                         POINT= 1,
                         NOM_CMP = 'X',
                         VALE_CALC=0.707106781186E0,
@@ -399,7 +399,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLTU1,
-                        MAILLE='TUY41',
+                        GROUP_MA='TUY41',
                         POINT= 1,
                         NOM_CMP = 'Y',
                         VALE_CALC=0.707106781186E0,
@@ -412,7 +412,7 @@ TEST_RESU(CHAM_ELEM=(_F(
 
 TEST_RESU(CHAM_ELEM=(_F(
                         CHAM_GD = REPLTU2,
-                        MAILLE='TUY41',
+                        GROUP_MA='TUY41',
                         POINT= 1,
                         NOM_CMP = 'X',
                         VALE_CALC=0.707106781186E0,
@@ -422,7 +422,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLTU2,
-                        MAILLE='TUY41',
+                        GROUP_MA='TUY41',
                         POINT= 1,
                         NOM_CMP = 'Y',
                         VALE_CALC=-0.707106781186E0,
@@ -435,7 +435,7 @@ TEST_RESU(CHAM_ELEM=(_F(
 
 TEST_RESU(CHAM_ELEM=(_F(
                         CHAM_GD = REPLTU3,
-                        MAILLE='TUY41',
+                        GROUP_MA='TUY41',
                         POINT= 1,
                         NOM_CMP = 'Z',
                         VALE_CALC=-1.0E0,
@@ -450,14 +450,14 @@ TEST_RESU(CHAM_ELEM=(_F(
 
 MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
                        MAILLAGE=MAILLAGE,
-                       ABSC_CURV=_F(MAILLE='TUY41',
-                       NOEUD_ORIG=('N017',),),
+                       ABSC_CURV=_F(GROUP_MA='TUY41',
+                       GROUP_NO_ORIG=('N017',),),
                       );
 
 CHABSC = CREA_CHAMP(OPERATION = 'EXTR' , TYPE_CHAM = 'CART_ABSC_R',
                      NOM_CHAM = 'ABSC_CURV' , MAILLAGE = MAILLAGE , )
 
-TEST_RESU(CARTE=_F(CHAM_GD=CHABSC, MAILLE='TUY41', REFERENCE='ANALYTIQUE',
+TEST_RESU(CARTE=_F(CHAM_GD=CHABSC, GROUP_MA='TUY41', REFERENCE='ANALYTIQUE',
                    NOM_CMP='ABSC4',  VALE_REFE=1.4142135623730954,   VALE_CALC= 1.4142135623730954 ))
 
 

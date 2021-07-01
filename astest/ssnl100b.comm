@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -55,24 +55,24 @@ CHMAT1=AFFE_MATERIAU(  MAILLAGE=MA1,
 
 CHA1=AFFE_CHAR_MECA(  MODELE=MO1,
                       DDL_IMPO=(_F( GROUP_NO = 'PORTEE',    DY = 0.        ),
-                                _F( NOEUD = 'N1',  DX = 0.,         DZ = 0.),
-                                _F( NOEUD = 'N14', DX = 0.,         DZ = 0.),
-                                _F( NOEUD = 'N24', DX = 0.,         DZ = 0.),
-                                _F( NOEUD = 'N25',                  DZ = 0.))
+                                _F( GROUP_NO = 'N1',  DX = 0.,         DZ = 0.),
+                                _F( GROUP_NO = 'N14', DX = 0.,         DZ = 0.),
+                                _F( GROUP_NO = 'N24', DX = 0.,         DZ = 0.),
+                                _F( GROUP_NO = 'N25',                  DZ = 0.))
                         )
 
 CHA2=AFFE_CHAR_MECA(  MODELE=MO1,
                       DDL_IMPO=(_F( GROUP_NO = 'PORTEE',     DY = 0.         ),
-                                _F( NOEUD = 'N1',  DX =  0.,          DZ = 0.),
-                                _F( NOEUD = 'N14', DX =  0.,          DZ = 0.),
-                                _F( NOEUD = 'N24', DX =  0.,          DZ = 0.),
-                                _F( NOEUD = 'N25', DX =-10., DY = 0., DZ = 0.))
+                                _F( GROUP_NO = 'N1',  DX =  0.,          DZ = 0.),
+                                _F( GROUP_NO = 'N14', DX =  0.,          DZ = 0.),
+                                _F( GROUP_NO = 'N24', DX =  0.,          DZ = 0.),
+                                _F( GROUP_NO = 'N25', DX =-10., DY = 0., DZ = 0.))
                         )
 
 CHA3=AFFE_CHAR_MECA(  MODELE=MO1,
-                      FORCE_NODALE=(_F( NOEUD = 'N12', FZ = -1.E3),
-                                    _F( NOEUD = 'N26', FZ = -1.E3),
-                                    _F( NOEUD = 'N25', FX =  1.E3))
+                      FORCE_NODALE=(_F( GROUP_NO = 'N12', FZ = -1.E3),
+                                    _F( GROUP_NO = 'N26', FZ = -1.E3),
+                                    _F( GROUP_NO = 'N25', FX =  1.E3))
                         )
 
 CHA4=AFFE_CHAR_MECA(  MODELE=MO1,
@@ -137,7 +137,7 @@ RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIEF_ELNO'),VARI_INTERNE=(
 TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
-                   NOEUD='N6',
+                   GROUP_NO='N6',
                    NOM_CMP='DZ',
                    VALE_CALC=-13.962397569131,
                    VALE_REFE=-13.962397569131,
@@ -145,7 +145,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                 _F(NUME_ORDRE=2,
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
-                   NOEUD='N19',
+                   GROUP_NO='N19',
                    NOM_CMP='DZ',
                    VALE_CALC=-13.895279336607,
                    VALE_REFE=-13.895279336607,

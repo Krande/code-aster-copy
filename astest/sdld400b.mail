@@ -1,17 +1,18 @@
-% TEST SDLD400B : SYSTEME MASSE RESSORT
-%
-%
-TITRE
-  TEST SDLD400B : SYSTEME MASSE RESSORT
-FINSF
-
-
-COOR_3D
-  N1    0.             0.        0.
-FINSF
-
-POI1
-  M1 N1
-FINSF
-
-FIN
+ TITRE
+  TEST SDLD400B : SYSTEME MASSE RESSORT                                         
+ FINSF
+ %
+ COOR_3D
+ N1        0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ FINSF
+ %
+ POI1    
+ M1       N1      
+ FINSF
+ %
+ GROUP_MA
+ M1                      
+ M1      
+ FINSF
+ %
+ FIN

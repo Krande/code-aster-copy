@@ -1,22 +1,58 @@
-COOR_3D
-  N1  -1  -1  -1
-  N2   1  -1  -1
-  N3   1   1  -1
-  N4  -1   1  -1
-  N5  -1  -1   1
-  N6   1  -1   1
-  N7   1   1   1
-  N8  -1   1   1
-FINSF
-
-HEXA8
-  CUBE     N1 N2 N3 N4 N5 N6 N7 N8
-  MASSIF   N1 N2 N3 N4 N5 N6 N7 N8
-FINSF
-GROUP_MA
- BETON CUBE
-FINSF
-GROUP_MA
- MASSIF MASSIF
-FINSF
-FIN
+ TITRE
+ME-30-JUIN-2021 09:24:10                                                        
+ FINSF
+ %
+ COOR_3D
+ N1       -1.00000000000000E+00 -1.00000000000000E+00 -1.00000000000000E+00
+ N2        1.00000000000000E+00 -1.00000000000000E+00 -1.00000000000000E+00
+ N3        1.00000000000000E+00  1.00000000000000E+00 -1.00000000000000E+00
+ N4       -1.00000000000000E+00  1.00000000000000E+00 -1.00000000000000E+00
+ N5       -1.00000000000000E+00 -1.00000000000000E+00  1.00000000000000E+00
+ N6        1.00000000000000E+00 -1.00000000000000E+00  1.00000000000000E+00
+ N7        1.00000000000000E+00  1.00000000000000E+00  1.00000000000000E+00
+ N8       -1.00000000000000E+00  1.00000000000000E+00  1.00000000000000E+00
+ FINSF
+ %
+ HEXA8   
+ CUBE     N1       N2       N3       N4       N5       N6       N7      
+          N8      
+ MASSIF   N1       N2       N3       N4       N5       N6       N7      
+          N8      
+ FINSF
+ %
+ GROUP_NO
+ N3                      
+ N3      
+ FINSF
+ %
+ GROUP_NO
+ N2                      
+ N2      
+ FINSF
+ %
+ GROUP_NO
+ N7                      
+ N7      
+ FINSF
+ %
+ GROUP_NO
+ N1                      
+ N1      
+ FINSF
+ %
+ GROUP_MA
+ BETON                   
+ CUBE    
+ FINSF
+ %
+ GROUP_MA
+ MASSIF                  
+ MASSIF  
+ FINSF
+ %
+ GROUP_MA
+ CUBE                    
+ CUBE    
+ FINSF
+ %
+ FIN

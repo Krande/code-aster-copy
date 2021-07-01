@@ -50,43 +50,53 @@ CODE_ASTER - 11.00.27 - VERSION DE DEVELOPPEMENT          - FRONTAL1         - L
  FINSF
  %
  GROUP_NO
- P1      
+ P1                      
  N1      
  FINSF
  %
  GROUP_NO
- P2      
+ P2                      
  N11     
  FINSF
  %
  GROUP_NO
- P3      
+ P3                      
  N17     
  FINSF
  %
  GROUP_NO
- P4      
+ P4                      
  N18     
  FINSF
  %
+ GROUP_NO
+ N6                      
+ N6      
+ FINSF
+ %
+ GROUP_NO
+ N12                     
+ N12     
+ FINSF
+ %
  GROUP_MA
- LPRESD  
+ LPRESD                  
  M25      M26      M27      M28      M29     
  FINSF
  %
  GROUP_MA
- LPRESG  
+ LPRESG                  
  M30      M31      M32      M33      M34     
  FINSF
  %
  GROUP_MA
- SPLAQ   
+ SPLAQ                   
  M1       M2       M3       M4       M5       M6       M7      
  M8       M9       M10     
  FINSF
  %
  GROUP_MA
- MTOT    
+ MTOT                    
  M1       M2       M3       M4       M5       M6       M7      
  M8       M9       M10     
  FINSF

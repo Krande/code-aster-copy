@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,16 +43,16 @@ MO=AFFE_MODELE(  MAILLAGE=MA,
 
 
 CHART=AFFE_CHAR_MECA(MODELE=MO,
-                     DDL_IMPO=(_F(NOEUD='N2',DZ=1.,),),
+                     DDL_IMPO=(_F(GROUP_NO='N2',DZ=1.,),),
                        );
 
 BLOC=AFFE_CHAR_MECA( MODELE=MO,
                      DDL_IMPO=(
-                          _F(NOEUD = ('N1','N3','N4','N5'),
+                          _F(GROUP_NO = ('N1','N3','N4','N5'),
                              DX = 0., DY = 0., DZ = 0.,
                              DRX = 0., DRY = 0., DRZ = 0.
                              ),
-                          _F(NOEUD = ('N2',),
+                          _F(GROUP_NO = ('N2',),
                              DX=0.,DY=0.,
                              DRX=0.,DRY=0.,
                              DRZ = 0.),
@@ -120,7 +120,7 @@ RESG=CALC_CHAMP(reuse =RESG,
 TABDEP=POST_RELEVE_T(
    ACTION=_F(
       INTITULE='DEPLACEMENTS DE N2',
-      NOEUD='N2',
+      GROUP_NO='N2',
       RESULTAT=RESG,
       NOM_CHAM='DEPL',
       NOM_CMP=('DZ'),
@@ -135,7 +135,7 @@ DEPN2=RECU_FONCTION(TABLE=TABDEP,
 TABFOR=POST_RELEVE_T(
    ACTION=_F(
       INTITULE='FORCE EN N2',
-      NOEUD='N2',
+      GROUP_NO='N2',
       RESULTAT=RESG,
       NOM_CHAM='FORC_NODA',
       NOM_CMP=('DZ'),
@@ -151,7 +151,7 @@ FORN2=RECU_FONCTION(TABLE=TABFOR,
 TEST_RESU(RESU=(_F(INST=0.10000000000000001,
                    RESULTAT=RESG,
                    NOM_CHAM='DEPL',
-                   NOEUD='N2',
+                   GROUP_NO='N2',
                    NOM_CMP='DZ',
                    VALE_CALC=1E-05,
 
@@ -159,7 +159,7 @@ TEST_RESU(RESU=(_F(INST=0.10000000000000001,
                 _F(INST=0.10000000000000001,
                    RESULTAT=RESG,
                    NOM_CHAM='FORC_NODA',
-                   NOEUD='N2',
+                   GROUP_NO='N2',
                    NOM_CMP='DZ',
                    VALE_CALC=5.0,
 
@@ -167,7 +167,7 @@ TEST_RESU(RESU=(_F(INST=0.10000000000000001,
                 _F(INST=1.0,
                    RESULTAT=RESG,
                    NOM_CHAM='DEPL',
-                   NOEUD='N2',
+                   GROUP_NO='N2',
                    NOM_CMP='DZ',
                    VALE_CALC=0.0001,
 
@@ -175,7 +175,7 @@ TEST_RESU(RESU=(_F(INST=0.10000000000000001,
                 _F(INST=1.0,
                    RESULTAT=RESG,
                    NOM_CHAM='FORC_NODA',
-                   NOEUD='N2',
+                   GROUP_NO='N2',
                    NOM_CMP='DZ',
                    VALE_CALC=10.000004,
 
@@ -183,7 +183,7 @@ TEST_RESU(RESU=(_F(INST=0.10000000000000001,
                 _F(INST=2.0,
                    RESULTAT=RESG,
                    NOM_CHAM='DEPL',
-                   NOEUD='N2',
+                   GROUP_NO='N2',
                    NOM_CMP='DZ',
                    VALE_CALC=-1E-05,
 
@@ -191,7 +191,7 @@ TEST_RESU(RESU=(_F(INST=0.10000000000000001,
                 _F(INST=2.0,
                    RESULTAT=RESG,
                    NOM_CHAM='FORC_NODA',
-                   NOEUD='N2',
+                   GROUP_NO='N2',
                    NOM_CMP='DZ',
                    VALE_CALC=-10.0000075,
 

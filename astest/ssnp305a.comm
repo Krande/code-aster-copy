@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,9 +52,9 @@ CAT=DEFI_LIST_REEL(    DEBUT=0.0,
                       )
 
 CONDLIM=AFFE_CHAR_MECA(     MODELE=MODEL,DDL_IMPO=(
-                              _F(  NOEUD = 'NO000007',
+                              _F(  GROUP_NO = 'NO000007',
                                                DX = 0.),
-                                       _F(  NOEUD = 'NO000001',
+                                       _F(  GROUP_NO = 'NO000001',
                                                DX = 0.,
                                                DY = 0.))
                           )
@@ -67,7 +67,7 @@ DY_FO=DEFI_FONCTION(       NOM_PARA='INST',
                         )
 
 CHA=AFFE_CHAR_MECA_F(     MODELE=MODEL,
-                                  DDL_IMPO=_F(  NOEUD = 'NO000007',
+                                  DDL_IMPO=_F(  GROUP_NO = 'NO000007',
                                              DY = DY_FO)
                          )
 
@@ -102,7 +102,7 @@ CALCNL=CALC_CHAMP( reuse=CALCNL,           RESULTAT=CALCNL,
 TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    RESULTAT=CALCNL,
                    NOM_CHAM='FORC_NODA',
-                   NOEUD='NO000007',
+                   GROUP_NO='NO000007',
                    NOM_CMP='DY',
                    VALE_CALC=-1510292.621,
                    VALE_REFE=-1.511441E6,
@@ -112,7 +112,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                 _F(NUME_ORDRE=20,
                    RESULTAT=CALCNL,
                    NOM_CHAM='FORC_NODA',
-                   NOEUD='NO000007',
+                   GROUP_NO='NO000007',
                    NOM_CMP='DY',
                    VALE_CALC=-2543928.9913,
                    VALE_REFE=-2.545584E6,
@@ -122,7 +122,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                 _F(NUME_ORDRE=30,
                    RESULTAT=CALCNL,
                    NOM_CHAM='FORC_NODA',
-                   NOEUD='NO000007',
+                   GROUP_NO='NO000007',
                    NOM_CMP='DY',
                    VALE_CALC=-3153716.43109,
                    VALE_REFE=-3.155464E6,
@@ -132,7 +132,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                 _F(NUME_ORDRE=42,
                    RESULTAT=CALCNL,
                    NOM_CHAM='FORC_NODA',
-                   NOEUD='NO000007',
+                   GROUP_NO='NO000007',
                    NOM_CMP='DY',
                    VALE_CALC=-3400418.4307,
                    VALE_REFE=-3.401961E6,
@@ -142,7 +142,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                 _F(NUME_ORDRE=60,
                    RESULTAT=CALCNL,
                    NOM_CHAM='FORC_NODA',
-                   NOEUD='NO000007',
+                   GROUP_NO='NO000007',
                    NOM_CMP='DY',
                    VALE_CALC=-2968847.95131,
                    VALE_REFE=-2.969848E6,
@@ -152,7 +152,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                 _F(NUME_ORDRE=80,
                    RESULTAT=CALCNL,
                    NOM_CHAM='FORC_NODA',
-                   NOEUD='NO000007',
+                   GROUP_NO='NO000007',
                    NOM_CMP='DY',
                    VALE_CALC=-1696621.43099,
                    VALE_REFE=-1.697056E6,
@@ -162,7 +162,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                 _F(NUME_ORDRE=100,
                    RESULTAT=CALCNL,
                    NOM_CHAM='FORC_NODA',
-                   NOEUD='NO000007',
+                   GROUP_NO='NO000007',
                    NOM_CMP='DY',
                    VALE_CALC=0.0,
                    VALE_REFE=0.0,

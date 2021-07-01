@@ -96,13 +96,13 @@ PRES = -10000000.0;
 
 
 CHARBL1=AFFE_CHAR_MECA(MODELE=MODELEIN,
-                       DDL_IMPO=(_F(NOEUD='N4265',
+                       DDL_IMPO=(_F(GROUP_NO='N4265',
                                     DX=0.0,
                                     DY=0.0,
                                     DZ=0.0,),
-                                 _F(NOEUD='N3751',
+                                 _F(GROUP_NO='N3751',
                                     DZ=0.0,),
-                                 _F(NOEUD='N4256',
+                                 _F(GROUP_NO='N4256',
                                     DX=0.0,
                                     DZ=0.0,),),);
 

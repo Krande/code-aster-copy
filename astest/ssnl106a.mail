@@ -1,36 +1,93 @@
-TITRE
-SSNL106A
-POUTRE DROITE ENCASTREE A UNE EXTREMITE
-ET SOUMISE A UNE TRACTION OU UN MOMENT EN PLASTICITE
-FINSF
-% LA MEME POUTRE EST MAILLEE 2 FOIS
-COOR_3D
-  R1       0.0D0    0.0D0    0.0D0
-  R2       0.5D0    0.0D0    0.0D0
-  R3       1.0D0    0.0D0    0.0D0
-%
-  C1       0.0D0    0.0D0    0.0D0
-  C2       0.5D0    0.0D0    0.0D0
-  C3       1.0D0    0.0D0    0.0D0
-%
-FINSF
-SEG2
-  SR1      R1       R2
-  SR2      R2       R3
-%
-  SC1      C1       C2
-  SC2      C2       C3
-FINSF
-GROUP_MA
- GR1       SR1   SR2
-FINSF
-GROUP_MA
- GC1       SC1   SC2
-FINSF
-GROUP_NO
-   A  R1  C1
-FINSF
-GROUP_NO
-   B  R3  C3
-FINSF
-FIN
+ TITRE
+SSNL106A                                                                        
+POUTRE DROITE ENCASTREE A UNE EXTREMITE                                         
+ET SOUMISE A UNE TRACTION OU UN MOMENT EN PLASTICITE                            
+ FINSF
+ %
+ COOR_3D
+ R1        0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ R2        5.00000000000000E-01  0.00000000000000E+00  0.00000000000000E+00
+ R3        1.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ C1        0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ C2        5.00000000000000E-01  0.00000000000000E+00  0.00000000000000E+00
+ C3        1.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ FINSF
+ %
+ SEG2    
+ SR1      R1       R2      
+ SR2      R2       R3      
+ SC1      C1       C2      
+ SC2      C2       C3      
+ FINSF
+ %
+ GROUP_NO
+ A                       
+ R1       C1      
+ FINSF
+ %
+ GROUP_NO
+ B                       
+ R3       C3      
+ FINSF
+ %
+ GROUP_NO
+ C2                      
+ C2      
+ FINSF
+ %
+ GROUP_NO
+ C3                      
+ C3      
+ FINSF
+ %
+ GROUP_NO
+ R3                      
+ R3      
+ FINSF
+ %
+ GROUP_NO
+ R2                      
+ R2      
+ FINSF
+ %
+ GROUP_NO
+ R1                      
+ R1      
+ FINSF
+ %
+ GROUP_NO
+ C1                      
+ C1      
+ FINSF
+ %
+ GROUP_MA
+ GR1                     
+ SR1      SR2     
+ FINSF
+ %
+ GROUP_MA
+ GC1                     
+ SC1      SC2     
+ FINSF
+ %
+ GROUP_MA
+ SR2                     
+ SR2     
+ FINSF
+ %
+ GROUP_MA
+ SR1                     
+ SR1     
+ FINSF
+ %
+ GROUP_MA
+ SC2                     
+ SC2     
+ FINSF
+ %
+ GROUP_MA
+ SC1                     
+ SC1     
+ FINSF
+ %
+ FIN

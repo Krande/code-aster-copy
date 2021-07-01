@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -82,6 +82,12 @@ MA=LIRE_MAILLAGE(FORMAT='MED',UNITE=19)
 DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',))
 MAT=DEFI_MATERIAU(ELAS=_F(E=1.E+05, NU=0.3))
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT='OUI',MATER=MAT))
+
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N61', NOEUD = 'N61'),
+                                     ),
+         )
 
 
 # 1. 1er modele et 1er calcul :
@@ -215,11 +221,11 @@ X2=CREA_CHAMP(OPERATION='COMB',TYPE_CHAM='NOEU_DEPL_R',
                    COMB=(_F(CHAM_GD=X1,COEF_R=0.75),
                          _F(CHAM_GD=X1,COEF_R=0.25),),)
 
-TEST_RESU(CHAM_NO=(_F(NOEUD='N61',
+TEST_RESU(CHAM_NO=(_F(GROUP_NO='N61',
                       NOM_CMP='DX',
                       CHAM_GD=X1,
                       VALE_CALC=0.055777803490583998,),
-                   _F(NOEUD='N61',
+                   _F(GROUP_NO='N61',
                       REFERENCE='AUTRE_ASTER',
                       NOM_CMP='DX',
                       CHAM_GD=X2,

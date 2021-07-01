@@ -32,9 +32,9 @@ MA=LIRE_MAILLAGE(FORMAT='MED',);
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=(_F(NOEUD='NO1',
+              CREA_GROUP_NO=(_F(GROUP_NO='NO1',
                                 NOM='A',),
-                             _F(NOEUD='NO4',
+                             _F(GROUP_NO='NO4',
                                 NOM='D',),),);
 
 #

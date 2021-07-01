@@ -166,9 +166,12 @@ test.assertFalse(mail.isParallel())
 test.assertEqual(mail.getDimension(), 3)
 test.assertEqual(mail.getNumberOfNodes(), 22)
 test.assertEqual(mail.getNumberOfCells(), 6)
-test.assertSequenceEqual(mail.getGroupsOfNodes(), [])
+test.assertSequenceEqual(mail.getGroupsOfNodes(),
+                                ['NO5', 'NO6', 'NO11', 'NO3', 'NO16', 'NO18', 'NO8', 'NO12', \
+                                    'NO2', 'NO17', 'NO20', 'NO4', 'NO14', 'NO7', 'NO21', 'NO19', \
+                                         'NO15', 'NO9', 'NO10', 'NO1'])
 test.assertSequenceEqual(sorted(mail.getGroupsOfCells()),
-                         ['BAS', 'DROITE', 'GAUCHE', 'HAUT'])
+                         ['BAS', 'DROITE', 'GAUCHE', 'HAUT', 'PENT2'])
 coord = mail.getCoordinates()
 test.assertEqual(coord[3], 1.0)
 values = coord.getValues()

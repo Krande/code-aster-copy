@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,15 +32,15 @@ MAILLAGE=CREA_MAILLAGE(MAILLAGE=MA2,
 
 
 MODELE=AFFE_MODELE( MAILLAGE=MAILLAGE,
-                    AFFE=(_F( MAILLE = ('CQ3D4','CQ3D3'),
+                    AFFE=(_F( GROUP_MA = ('CQ3D4','CQ3D3'),
                               PHENOMENE = 'MECANIQUE',
                               MODELISATION = 'COQUE_3D'
                             ),
-                          _F( MAILLE = ('GRME4','GRME3'),
+                          _F( GROUP_MA = ('GRME4','GRME3'),
                               PHENOMENE = 'MECANIQUE',
                               MODELISATION = 'GRILLE_MEMBRANE'
                             ),
-                          _F( MAILLE = ('MEMB4',),
+                          _F( GROUP_MA = ('MEMB4',),
                               PHENOMENE = 'MECANIQUE',
                               MODELISATION = 'MEMBRANE'
                             ),
@@ -63,7 +63,7 @@ CARAELEM=AFFE_CARA_ELEM(
                                    SECTION = 0.1,
                                    ANGL_REP_1=(45.0,-45.0),
                                 ),
-                       MEMBRANE=_F(  MAILLE='MEMB4',
+                       MEMBRANE=_F(  GROUP_MA='MEMB4',
                                    EPAIS = 0.1,
                                    ANGL_REP_1=(45.0,-45.0),
                                 ),  
@@ -117,7 +117,7 @@ REPLO_3 = LIRE_CHAMP(
 
 TEST_RESU(CHAM_ELEM=(_F(
                         CHAM_GD = REPLO_1,
-                        MAILLE='CQ3D4',
+                        GROUP_MA='CQ3D4',
                         POINT= 1,
                         NOM_CMP = 'X',
                         VALE_CALC=0.5E0,
@@ -127,7 +127,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLO_1,
-                        MAILLE='CQ3D3',
+                        GROUP_MA='CQ3D3',
                         POINT= 1,
                         NOM_CMP = 'Y',
                         VALE_CALC=0.5E0,
@@ -137,7 +137,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLO_1,
-                        MAILLE='CQ3D4',
+                        GROUP_MA='CQ3D4',
                         POINT= 1,
                         NOM_CMP = 'Z',
                         VALE_CALC=0.707106781186E0,
@@ -147,7 +147,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                      _F(
                         CHAM_GD = REPLO_1,
-                        MAILLE='GRME4',
+                        GROUP_MA='GRME4',
                         POINT= 1,
                         NOM_CMP = 'X',
                         VALE_CALC=0.5E0,
@@ -157,7 +157,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLO_1,
-                        MAILLE='GRME3',
+                        GROUP_MA='GRME3',
                         POINT= 1,
                         NOM_CMP = 'Y',
                         VALE_CALC=0.5E0,
@@ -167,7 +167,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLO_1,
-                        MAILLE='GRME4',
+                        GROUP_MA='GRME4',
                         POINT= 1,
                         NOM_CMP = 'Z',
                         VALE_CALC=0.707106781186E0,
@@ -177,7 +177,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                      _F(
                         CHAM_GD = REPLO_1,
-                        MAILLE='MEMB4',
+                        GROUP_MA='MEMB4',
                         POINT= 1,
                         NOM_CMP = 'Z',
                         VALE_CALC=0.707106781186E0,
@@ -191,7 +191,7 @@ TEST_RESU(CHAM_ELEM=(_F(
 # VECTEUR z local
 TEST_RESU(CHAM_ELEM=(_F(
                         CHAM_GD = REPLO_3,
-                        MAILLE='CQ3D4',
+                        GROUP_MA='CQ3D4',
                         POINT= 1,
                         NOM_CMP = 'X',
                         VALE_CALC=0.707106781186E0,
@@ -201,7 +201,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLO_3,
-                        MAILLE='CQ3D3',
+                        GROUP_MA='CQ3D3',
                         POINT= 1,
                         NOM_CMP = 'Y',
                         VALE_CALC=-0.707106781186E0,
@@ -211,7 +211,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                      _F(
                         CHAM_GD = REPLO_3,
-                        MAILLE='GRME4',
+                        GROUP_MA='GRME4',
                         POINT= 1,
                         NOM_CMP = 'X',
                         VALE_CALC=0.707106781186E0,
@@ -221,7 +221,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                       _F(
                         CHAM_GD = REPLO_3,
-                        MAILLE='GRME3',
+                        GROUP_MA='GRME3',
                         POINT= 1,
                         NOM_CMP = 'Y',
                         VALE_CALC=-0.707106781186E0,
@@ -231,7 +231,7 @@ TEST_RESU(CHAM_ELEM=(_F(
                        ),
                      _F(
                         CHAM_GD = REPLO_3,
-                        MAILLE='MEMB4',
+                        GROUP_MA='MEMB4',
                         POINT= 1,
                         NOM_CMP = 'X',
                         VALE_CALC=0.707106781186E0,

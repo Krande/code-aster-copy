@@ -61,12 +61,12 @@ MO=AFFE_MODELE(
 
                 AFFE= (
                 _F(
-                   MAILLE = ('PRISM','DROITE'),
+                   GROUP_MA = ('PRISM','DROITE'),
                    PHENOMENE = 'MECANIQUE',
                    MODELISATION = '3D'
                      ),
                  _F(
-                   MAILLE = 'PRISMDEG',
+                   GROUP_MA = 'PRISMDEG',
                    PHENOMENE = 'MECANIQUE',
                    MODELISATION = '3D_INTERFACE_S'
                    )
@@ -100,7 +100,7 @@ CM=AFFE_MATERIAU(
 # AFFECTATION DES ANGLES NAUTIQUES : POSITION DE LA FISSURE DANS LE REPERE GLOBAL
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,INFO=1,
                      MASSIF=(
-           _F(MAILLE='PRISMDEG',ANGL_REP=(30,0,0)),
+           _F(GROUP_MA='PRISMDEG',ANGL_REP=(30,0,0)),
                                  ));
 
 
@@ -108,7 +108,7 @@ ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,INFO=1,
 LIAISON=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-    _F(MAILLE='GAUCHE2', DX=0, DY=0, DZ=0),
+    _F(GROUP_MA='GAUCHE2', DX=0, DY=0, DZ=0),
     )
   )
 
@@ -116,7 +116,7 @@ LIAISON=AFFE_CHAR_MECA(
 TRAC_N=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-    _F(MAILLE='DROITE', DX=cos(angle), DY= sin(angle), DZ=0.),
+    _F(GROUP_MA='DROITE', DX=cos(angle), DY= sin(angle), DZ=0.),
     )
   )
 
@@ -224,8 +224,8 @@ U_TRA=STAT_NON_LINE(
     _F(CHARGE = TRAC_N, FONC_MULT = FCT),
   ),
   COMPORTEMENT  = (
-          _F(RELATION = 'CZM_TRA_MIX',  MAILLE = 'PRISMDEG'),
-          _F(RELATION = 'ELAS',         MAILLE = 'PRISM'),
+          _F(RELATION = 'CZM_TRA_MIX',  GROUP_MA = 'PRISMDEG'),
+          _F(RELATION = 'ELAS',         GROUP_MA = 'PRISM'),
           ),
   INCREMENT = _F(
     LIST_INST    = LISTCY,
@@ -252,8 +252,8 @@ U_MON=STAT_NON_LINE(
     _F(CHARGE = TRAC_N, FONC_MULT = FCTMON),
   ),
   COMPORTEMENT  = (
-          _F(RELATION = 'CZM_TRA_MIX',  MAILLE = 'PRISMDEG'),
-          _F(RELATION = 'ELAS',         MAILLE = 'PRISM'),
+          _F(RELATION = 'CZM_TRA_MIX',  GROUP_MA = 'PRISMDEG'),
+          _F(RELATION = 'ELAS',         GROUP_MA = 'PRISM'),
           ),
   INCREMENT = _F(
     LIST_INST    = LISTMO,
@@ -311,7 +311,7 @@ TU_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               RESULTAT=U_TRA,
                               NOM_CHAM='DEPL',
                               TOUT_ORDRE='OUI',
-                              NOEUD='NO2',
+                              GROUP_NO='NO2',
                               NOM_CMP=('DX','DY','DZ')));
 
 # INSERTION D'UNE COLONNE AVEC LA PROJECTION NORMALE DE DEPLACEMENT
@@ -337,7 +337,7 @@ DN=RECU_FONCTION(TABLE=TU_N,
 VARI_1=RECU_FONCTION(   RESULTAT=U_TRA,
                         NOM_CHAM='VARI_ELGA',
                         NOM_CMP=('V1'),
-                        MAILLE='PRISMDEG',
+                        GROUP_MA='PRISMDEG',
                         POINT=1)
 T_VARI_1=CREA_TABLE(FONCTION=_F(FONCTION=VARI_1))
 TRESU=CREA_TABLE(FONCTION=_F(FONCTION=VARI_1))
@@ -346,7 +346,7 @@ TRESU=CREA_TABLE(FONCTION=_F(FONCTION=VARI_1))
 VARI_2=RECU_FONCTION(   RESULTAT=U_TRA,
                         NOM_CHAM='VARI_ELGA',
                         NOM_CMP='V2',
-                        MAILLE='PRISMDEG',
+                        GROUP_MA='PRISMDEG',
                         POINT=1)
 T_VARI_2=CREA_TABLE(FONCTION=_F(FONCTION=VARI_2))
 
@@ -354,7 +354,7 @@ T_VARI_2=CREA_TABLE(FONCTION=_F(FONCTION=VARI_2))
 VARI_3=RECU_FONCTION(   RESULTAT=U_TRA,
                         NOM_CHAM='VARI_ELGA',
                         NOM_CMP='V3',
-                        MAILLE='PRISMDEG',
+                        GROUP_MA='PRISMDEG',
                         POINT=1)
 T_VARI_3=CREA_TABLE(FONCTION=_F(FONCTION=VARI_3))
 
@@ -363,7 +363,7 @@ T_VARI_3=CREA_TABLE(FONCTION=_F(FONCTION=VARI_3))
 VARI_4=RECU_FONCTION(   RESULTAT=U_TRA,
                         NOM_CHAM='VARI_ELGA',
                         NOM_CMP='V4',
-                        MAILLE='PRISMDEG',
+                        GROUP_MA='PRISMDEG',
                         POINT=1)
 T_VARI_4=CREA_TABLE(FONCTION=_F(FONCTION=VARI_4))
 
@@ -371,7 +371,7 @@ T_VARI_4=CREA_TABLE(FONCTION=_F(FONCTION=VARI_4))
 VARI_7=RECU_FONCTION(   RESULTAT=U_TRA,
                         NOM_CHAM='VARI_ELGA',
                         NOM_CMP='V7',
-                        MAILLE='PRISMDEG',
+                        GROUP_MA='PRISMDEG',
                         POINT=1)
 T_VARI_7=CREA_TABLE(FONCTION=_F(FONCTION=VARI_7))
 
@@ -379,7 +379,7 @@ T_VARI_7=CREA_TABLE(FONCTION=_F(FONCTION=VARI_7))
 SIGN=RECU_FONCTION( RESULTAT=U_TRA,
                         NOM_CHAM='SIEF_ELGA',
                         NOM_CMP='SIGN',
-                        MAILLE='PRISMDEG',
+                        GROUP_MA='PRISMDEG',
                         POINT=1)
 T_SIGN=CREA_TABLE(FONCTION=_F(FONCTION=SIGN))
 
@@ -432,7 +432,7 @@ TEST_RESU(RESU=_F(INST=9.0,
                   NOM_CMP='SIGN',
                   VALE_CALC=9.000000000,
                   VALE_REFE=9.0,
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 # TEST MULTIPLICATEUR DE LAGRANGE (DOIT ETRE EGAL A LA SIGN PRECEDENTE)
@@ -440,7 +440,7 @@ TEST_RESU(RESU=_F(INST=9.0,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=U_TRA,
                   NOM_CHAM='DEPL',
-                  NOEUD='NS15',
+                  GROUP_NO='NS15',
                   NOM_CMP='SIGN',
                   VALE_CALC=9.000000000,
                   VALE_REFE=9.0,),
@@ -456,7 +456,7 @@ TEST_RESU(RESU=_F(INST=9.5999999999999996,
                   VALE_CALC= 2.43272130E-14,
                   VALE_REFE=0.0,
                   CRITERE='ABSOLU',
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 # TEST DES VI1 ET VI4 (SAUT_N ET POURCENTAGE D'ENERGIE DISSIPEE)
@@ -471,7 +471,7 @@ TEST_RESU(RESU=_F(INST=2.5,
                   NOM_CMP='V1',
                   VALE_CALC=0.010000000,
                   VALE_REFE=1.E-2,
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=2.5,
@@ -483,7 +483,7 @@ TEST_RESU(RESU=_F(INST=2.5,
                   VALE_CALC= 0.00000000E+00,
                   VALE_REFE=0.0,
                   CRITERE='ABSOLU',
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 # PLATEAU (VI2 = 3)
@@ -495,7 +495,7 @@ TEST_RESU(RESU=_F(INST=5.4000000000000004,
                   NOM_CMP='V1',
                   VALE_CALC=0.017991000,
                   VALE_REFE=0.017991,
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=5.4000000000000004,
@@ -506,7 +506,7 @@ TEST_RESU(RESU=_F(INST=5.4000000000000004,
                   NOM_CMP='V4',
                   VALE_CALC=0.07991,
                   VALE_REFE=0.07991,
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 # ADHERENCE OU DECHARGE (VI2 = 0)
@@ -518,7 +518,7 @@ TEST_RESU(RESU=_F(INST=7.4000000000000004,
                   NOM_CMP='V1',
                   VALE_CALC=0.029991000,
                   VALE_REFE=0.029991,
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=7.4000000000000004,
@@ -529,7 +529,7 @@ TEST_RESU(RESU=_F(INST=7.4000000000000004,
                   NOM_CMP='V4',
                   VALE_CALC=0.199910000,
                   VALE_REFE=0.19991,
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 # ENDOMMAGEMENT (VI2 = 1)
@@ -541,7 +541,7 @@ TEST_RESU(RESU=_F(INST=12.6,
                   NOM_CMP='V1',
                   VALE_CALC=0.108662466,
                   VALE_REFE=0.10866199999999999,
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=12.6,
@@ -552,7 +552,7 @@ TEST_RESU(RESU=_F(INST=12.6,
                   NOM_CMP='V4',
                   VALE_CALC=0.86931194889073,
                   VALE_REFE=0.86931194889073,
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 # RUPTURE TOTALE (VI2 = 2)
@@ -564,7 +564,7 @@ TEST_RESU(RESU=_F(INST=23.0,
                   NOM_CMP='V1',
                   VALE_CALC=0.160000000,
                   VALE_REFE=0.16,
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=23.0,
@@ -575,7 +575,7 @@ TEST_RESU(RESU=_F(INST=23.0,
                   NOM_CMP='V4',
                   VALE_CALC=1.000000000,
                   VALE_REFE=1.0,
-                  MAILLE='PRISMDEG',),
+                  GROUP_MA='PRISMDEG',),
           )
 
 # IMPRESSION DES RESULTATS DANS LE FICHIER RESU

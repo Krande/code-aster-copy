@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -57,11 +57,11 @@ MOMECA=AFFE_MODELE(MAILLAGE=MAIL,
 
 CHMECA=AFFE_CHAR_MECA(  MODELE=MOMECA,
                         FACE_IMPO=(
-                              _F( MAILLE = 'DEVANT',  DZ = 0.),
-                              _F( MAILLE = 'BAS',     DY = 0.),
-                              _F( MAILLE = 'GAUCHE',  DX = 0 ),
+                              _F( GROUP_MA = 'DEVANT',  DZ = 0.),
+                              _F( GROUP_MA = 'BAS',     DY = 0.),
+                              _F( GROUP_MA = 'GAUCHE',  DX = 0 ),
                                    ),
-                        PRES_REP =_F(MAILLE='HAUT', PRES = -520),
+                        PRES_REP =_F(GROUP_MA='HAUT', PRES = -520),
                                )
 
 FPRES=DEFI_FONCTION(    NOM_PARA='INST',
@@ -93,20 +93,20 @@ TEST_RESU(RESU=(_F(INST=40.0,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=U,
                    NOM_CHAM='SIGM_ELNO',
-                   NOEUD='N6',
+                   GROUP_NO='N6',
                    NOM_CMP='SIYY',
                    VALE_CALC=173.333155641,
                    VALE_REFE=173.333155641,
-                   MAILLE='M1',),
+                   GROUP_MA='M1',),
                 _F(INST=168.0,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=U,
                    NOM_CHAM='SIGM_ELNO',
-                   NOEUD='N6',
+                   GROUP_NO='N6',
                    NOM_CMP='SIYY',
                    VALE_CALC=104.0,
                    VALE_REFE=104.0,
-                   MAILLE='M1',),
+                   GROUP_MA='M1',),
                 ),
           )
 

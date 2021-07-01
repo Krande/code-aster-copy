@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -140,8 +140,8 @@ DEPLIZ = CALC_FONC_INTERP(NOM_RESU='DEPLIZ',
 #
 CONDLIM =AFFE_CHAR_MECA_F(MODELE=Modele,
     DDL_IMPO = (
-        _F(NOEUD='N01', DX=DEPLIX, DY=DEPLIY, DZ=DEPLIZ,),
-        _F(NOEUD='N03', DX=DEPLIX, DY=DEPLIY, DZ=DEPLIZ,),
+        _F(GROUP_NO='N01', DX=DEPLIX, DY=DEPLIY, DZ=DEPLIZ,),
+        _F(GROUP_NO='N03', DX=DEPLIX, DY=DEPLIY, DZ=DEPLIZ,),
     ),
 )
 #

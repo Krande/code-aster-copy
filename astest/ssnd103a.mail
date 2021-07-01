@@ -1,5 +1,5 @@
  TITRE
- %  GIBI FECIT
+ %  GIBI FECIT                                                                  
  FINSF
  %
  COOR_3D
@@ -8,19 +8,31 @@
  FINSF
  %
  SEG2    
-  M1       N1       N2      
+ M1       N1       N2      
  FINSF
  %
  GROUP_NO
- PT1      N1      
+ PT1                     
+ N1      
  FINSF
  %
  GROUP_NO
- PT2      N2      
+ PT2                     
+ N2      
+ FINSF
+ %
+ GROUP_NO
+ N2                      
+ N2      
+ FINSF
+ %
+ GROUP_NO
+ N1                      
+ N1      
  FINSF
  %
  GROUP_MA
-   DISC    
+ DISC                    
  M1      
  FINSF
  %

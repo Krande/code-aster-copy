@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -146,7 +146,7 @@ VECASS2=RESOUDRE(reuse=VECASS2, MATR=MATASS,     CHAM_NO=VECASS2  )
 # ---------------------------------------------------------------------
 
 
-TEST_RESU(CHAM_NO=(_F(NOEUD='N13',
+TEST_RESU(CHAM_NO=(_F(GROUP_NO='N13',
                       CRITERE='RELATIF',
                       REFERENCE='ANALYTIQUE',
                       NOM_CMP='DZ',
@@ -154,7 +154,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N13',
                       CHAM_GD=VECASS1,
                       VALE_CALC=-3.52430938E-06,
                       VALE_REFE=-3.537E-06,),
-                   _F(NOEUD='N39',
+                   _F(GROUP_NO='N39',
                       CRITERE='ABSOLU',
                       REFERENCE='ANALYTIQUE',
                       NOM_CMP='DZ',
@@ -162,7 +162,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N13',
                       CHAM_GD=VECASS1,
                       VALE_CALC=-1.264604316032E-15,
                       VALE_REFE=0.0,),
-                   _F(NOEUD='N65',
+                   _F(GROUP_NO='N65',
                       CRITERE='RELATIF',
                       REFERENCE='ANALYTIQUE',
                       NOM_CMP='DZ',
@@ -170,7 +170,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N13',
                       CHAM_GD=VECASS1,
                       VALE_CALC= 3.52430938E-06,
                       VALE_REFE=3.537E-06,),
-                   _F(NOEUD='N13',
+                   _F(GROUP_NO='N13',
                       CRITERE='RELATIF',
                       REFERENCE='ANALYTIQUE',
                       NOM_CMP='DZ',
@@ -178,7 +178,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N13',
                       CHAM_GD=VECASS2,
                       VALE_CALC= 1.09495946E-03,
                       VALE_REFE=1.1059E-3,),
-                   _F(NOEUD='N39',
+                   _F(GROUP_NO='N39',
                       CRITERE='RELATIF',
                       REFERENCE='ANALYTIQUE',
                       NOM_CMP='DZ',
@@ -186,7 +186,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N13',
                       CHAM_GD=VECASS2,
                       VALE_CALC= 1.09497593E-03,
                       VALE_REFE=1.1059E-3,),
-                   _F(NOEUD='N65',
+                   _F(GROUP_NO='N65',
                       CRITERE='RELATIF',
                       REFERENCE='ANALYTIQUE',
                       NOM_CMP='DZ',

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,6 +37,17 @@ DEBUT( CODE = _F( NIV_PUB_WEB = 'INTERNET'), DEBUG = _F( SDVERI = 'NON'),);
 
 MAIL = LIRE_MAILLAGE( FORMAT = "MED");
 
+MAIL = DEFI_GROUP( reuse = MAIL, MAILLAGE = MAIL,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M1', MAILLE = 'M1'),
+                                     ),
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N5', NOEUD = 'N5'),
+                                        _F( NOM = 'N6', NOEUD = 'N6'),
+                                        _F( NOM = 'N1', NOEUD = 'N1'),
+                                     ),
+         )
+
 MODELE = AFFE_MODELE( MAILLAGE = MAIL,
                       AFFE =_F( TOUT = 'OUI',
                                 PHENOMENE = 'MECANIQUE',
@@ -67,8 +78,8 @@ CH_MAT = AFFE_MATERIAU( AFFE = _F( MATER = MATERIAU,
 
 CLIM = AFFE_CHAR_MECA( MODELE = MODELE,
                        DDL_IMPO = (_F( GROUP_NO = 'COTEG', DX = 0.0),
-                                   _F( NOEUD = 'N1', DY = 0.0, DZ = 0.0),
-                                   _F( NOEUD = 'N5', DY = 0.0),),);
+                                   _F( GROUP_NO = 'N1', DY = 0.0, DZ = 0.0),
+                                   _F( GROUP_NO = 'N5', DY = 0.0),),);
 
 F_DEPL = DEFI_FONCTION( NOM_PARA = 'INST',
                         VALE = ( 0.0, 0.0,
@@ -119,14 +130,14 @@ RESU = CALC_CHAMP( reuse = RESU, RESULTAT = RESU, CONTRAINTE = ('SIEF_ELNO'),);
 
 T_DEF = POST_RELEVE_T( ACTION = _F( OPERATION = 'EXTRACTION',
                                     INTITULE = 'epsi',
-                                    NOEUD='N6',
+                                    GROUP_NO='N6',
                                     RESULTAT = RESU,
                                     NOM_CHAM = 'DEPL',
                                     NOM_CMP = 'DX'),);
 
 T_SIG = POST_RELEVE_T( ACTION = _F( OPERATION = 'EXTRACTION',
                                     INTITULE = 'sigma',
-                                    NOEUD='N6',
+                                    GROUP_NO='N6',
                                     RESULTAT = RESU,
                                     NOM_CHAM = 'SIEF_ELNO',
                                     NOM_CMP = 'SIXX'),);
@@ -171,43 +182,43 @@ RESU = CALC_CHAMP( reuse = RESU, RESULTAT = RESU, CONTRAINTE = 'SIGM_ELNO');
 TEST_RESU( RESU = (_F( NUME_ORDRE = 282,
                        RESULTAT = RESU,
                        NOM_CHAM = 'SIGM_ELNO',
-                       NOEUD = 'N6',
+                       GROUP_NO = 'N6',
                        NOM_CMP = 'SIXX',
                        VALE_CALC = -18.08820482*coef,
-                       MAILLE = 'M1'),),);
+                       GROUP_MA = 'M1'),),);
 
 ## VALEURS EXPERIMENTALES
 TEST_RESU( RESU = (_F( NUME_ORDRE = 50,
                        REFERENCE = 'SOURCE_EXTERNE',
                        RESULTAT = RESU,
                        NOM_CHAM = 'SIGM_ELNO',
-                       NOEUD = 'N6',
+                       GROUP_NO = 'N6',
                        NOM_CMP = 'SIXX',
                        VALE_CALC = 2.939677*coef,
                        VALE_REFE = 3.0*coef,
                        PRECISION = 0.07,
-                       MAILLE = 'M1'),
+                       GROUP_MA = 'M1'),
                    _F( NUME_ORDRE = 150,
                        REFERENCE = 'SOURCE_EXTERNE',
                        RESULTAT = RESU,
                        NOM_CHAM = 'SIGM_ELNO',
-                       NOEUD = 'N6',
+                       GROUP_NO = 'N6',
                        NOM_CMP = 'SIXX',
                        VALE_CALC = 0.001452797752*coef,
                        VALE_REFE = 0.0*coef,
                        CRITERE = 'ABSOLU',
                        PRECISION = 0.02*coef,
-                       MAILLE = 'M1'),
+                       GROUP_MA = 'M1'),
                    _F( NUME_ORDRE = 332,
                        REFERENCE = 'SOURCE_EXTERNE',
                        RESULTAT = RESU,
                        NOM_CHAM = 'SIGM_ELNO',
-                       NOEUD = 'N6',
+                       GROUP_NO = 'N6',
                        NOM_CMP = 'SIXX',
                        VALE_CALC = 0.*coef,
                        VALE_REFE = 0.0*coef,
                        CRITERE = 'ABSOLU',
                        PRECISION=1.0E-05,
-                       MAILLE = 'M1'),),);
+                       GROUP_MA = 'M1'),),);
 
 FIN();

@@ -39,7 +39,7 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
 #-----------------------------------------------------------------------
 CH=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
                                  _F(  GROUP_NO = 'GRNM5', DY = 0.),
-                                          _F(  NOEUD = 'N451', DX = 0.)),
+                                          _F(  GROUP_NO = 'N451', DX = 0.)),
                             FORCE_CONTOUR=_F(  GROUP_MA = 'GRMA1', FY = 1.) )
 
 #-----------------------------------------------------------------------
@@ -56,7 +56,7 @@ CHAMDEPL=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,
 FOND=DEFI_FOND_FISS( MAILLAGE=MA,
                      FOND_FISS=_F( GROUP_NO = 'GRNO9'),
                      SYME='OUI',
-                     LEVRE_SUP=_F(MAILLE='M306'),
+                     LEVRE_SUP=_F(GROUP_MA='M306'),
                    )
 G1=CALC_G(              RESULTAT=CHAMDEPL,
                         THETA=_F(

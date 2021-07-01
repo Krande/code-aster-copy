@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -84,7 +84,7 @@ MACR1 = CREA_ELEM_SSD(
                  NUME_DDL=CO('NUMDDL1'),
                  INTERFACE=_F(NOM='PALIER_S',
                               TYPE='CRAIGB',
-                              GROUP_NO=('NOPAL1','NOPAL2'),), #NOEUD=('N31','N32')
+                              GROUP_NO=('NOPAL1','NOPAL2'),), #GROUP_NO=('N31','N32')
                  BASE_MODALE = _F( TYPE = 'CLASSIQUE',),
                  CALC_FREQ = _F(
                        OPTION='BANDE',
@@ -164,7 +164,7 @@ CH2=AFFE_CHAR_MECA(MODELE=MO2,
                                DRY=0.0,
                                DRZ=0.0,
                                ),
-                             _F(NOEUD=('N37'),
+                             _F(GROUP_NO=('N37'),
                                DX=0.0,
                                DRX=0.0,),
                              ),
@@ -180,7 +180,7 @@ MACR2 = CREA_ELEM_SSD(
                  CHARGE=CH2,
                  INTERFACE=_F(NOM='PALIER_R',
                               TYPE='CRAIGB',
-                              GROUP_NO=('NOPAL1','NOPAL2'),), #NOEUD=('N31','N32')
+                              GROUP_NO=('NOPAL1','NOPAL2'),), #GROUP_NO=('N31','N32')
                  BASE_MODALE = _F( TYPE = 'CLASSIQUE',),
                  CALC_FREQ = _F(
                        DIM_SOUS_ESPACE=9,

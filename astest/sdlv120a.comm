@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -181,19 +181,19 @@ DYN = DYNA_VIBRA(TYPE_CALCUL='TRAN', BASE_CALCUL='PHYS',
                  )
 
 DXN16 = RECU_FONCTION(LIST_INST=TEMPLI,   PRECISION=1.E-4,
-                      RESULTAT=DYN,   NOEUD='N16',
+                      RESULTAT=DYN,   GROUP_NO='N16',
                       NOM_CHAM='DEPL',
                       NOM_CMP='DX'
                       )
 
 DXN18 = RECU_FONCTION(LIST_INST=TEMPLI,   PRECISION=1.E-4,
-                      RESULTAT=DYN,   NOEUD='N18',
+                      RESULTAT=DYN,   GROUP_NO='N18',
                       NOM_CHAM='DEPL',
                       NOM_CMP='DX'
                       )
 
 DXN43 = RECU_FONCTION(LIST_INST=TEMPLI,   PRECISION=1.E-4,
-                      RESULTAT=DYN,   NOEUD='N43',
+                      RESULTAT=DYN,   GROUP_NO='N43',
                       NOM_CHAM='DEPL',
                       NOM_CMP='DX'
                       )
@@ -293,19 +293,19 @@ DYNC = DYNA_VIBRA(TYPE_CALCUL='TRAN', BASE_CALCUL='PHYS',
                  )
 
 DXN16C = RECU_FONCTION(LIST_INST=TEMPLI,   PRECISION=1.E-4,
-                      RESULTAT=DYNC,   NOEUD='N16',
+                      RESULTAT=DYNC,   GROUP_NO='N16',
                       NOM_CHAM='DEPL',
                       NOM_CMP='DX'
                       )
 
 DXN18C = RECU_FONCTION(LIST_INST=TEMPLI,   PRECISION=1.E-4,
-                      RESULTAT=DYNC,   NOEUD='N18',
+                      RESULTAT=DYNC,   GROUP_NO='N18',
                       NOM_CHAM='DEPL',
                       NOM_CMP='DX'
                       )
 
 DXN43C = RECU_FONCTION(LIST_INST=TEMPLI,   PRECISION=1.E-4,
-                      RESULTAT=DYNC,   NOEUD='N43',
+                      RESULTAT=DYNC,   GROUP_NO='N43',
                       NOM_CHAM='DEPL',
                       NOM_CMP='DX'
                       )
@@ -374,19 +374,19 @@ CALC_CHAMP(reuse=DYNA, RESULTAT=DYNA, PROPRIETES=('MATE_ELEM', 'MATE_ELGA'))
 
 
 DXNA16 = RECU_FONCTION(LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                       RESULTAT=DYNA,   NOEUD='N16',
+                       RESULTAT=DYNA,   GROUP_NO='N16',
                        NOM_CHAM='DEPL',
                        NOM_CMP='DX'
                        )
 
 DXNA18 = RECU_FONCTION(LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                       RESULTAT=DYNA,   NOEUD='N18',
+                       RESULTAT=DYNA,   GROUP_NO='N18',
                        NOM_CHAM='DEPL',
                        NOM_CMP='DX'
                        )
 
 DXNA43 = RECU_FONCTION(LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                       RESULTAT=DYNA,   NOEUD='N43',
+                       RESULTAT=DYNA,   GROUP_NO='N43',
                        NOM_CHAM='DEPL',
                        NOM_CMP='DX'
                        )
@@ -432,7 +432,7 @@ IMPR_RESU(FORMAT="RESULTAT", RESU=_F(RESULTAT=DYNA, NOM_CHAM='MATE_ELGA', NUME_O
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=DYNA,
                    NOM_CHAM='MATE_ELGA',
-                   MAILLE='M21',
+                   GROUP_MA='M21',
                    POINT=1,
                    NOM_CMP='E',
                    REFERENCE='ANALYTIQUE', VALE_REFE=3.6E+10,
@@ -440,7 +440,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 _F(NUME_ORDRE=1,
                    RESULTAT=DYNA,
                    NOM_CHAM='MATE_ELEM',
-                   MAILLE='M21',
+                   GROUP_MA='M21',
                    NOM_CMP='NU',
                    REFERENCE='ANALYTIQUE', VALE_REFE=0.2,
                    VALE_CALC=0.2),

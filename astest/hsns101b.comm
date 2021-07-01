@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -255,7 +255,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOM_CMP='SIYY',
                    VALE_CALC=210.000000177,
                    VALE_REFE=210.0,
-                   MAILLE='M1',),
+                   GROUP_MA='M1',),
                 _F(GROUP_NO='C',
                    INST=1.0,
                    REFERENCE='AUTRE_ASTER',
@@ -315,7 +315,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOM_CMP='SIYY',
                    VALE_CALC=209.999999965,
                    VALE_REFE=210.0,
-                   MAILLE='M1',),
+                   GROUP_MA='M1',),
                 _F(GROUP_NO='C',
                    INST=1.0,
                    REFERENCE='AUTRE_ASTER',
@@ -374,7 +374,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOM_CMP='SIYY',
                    VALE_CALC=210.000000832,
                    VALE_REFE=210.0,
-                   MAILLE='M1',),
+                   GROUP_MA='M1',),
                 _F(GROUP_NO='C',
                    INST=1.0,
                    REFERENCE='AUTRE_ASTER',
@@ -434,7 +434,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOM_CMP='SIYY',
                    VALE_CALC=210.000000832,
                    VALE_REFE=210.0,
-                   MAILLE='M1',),
+                   GROUP_MA='M1',),
                 _F(GROUP_NO='C',
                    INST=1.0,
                    REFERENCE='AUTRE_ASTER',

@@ -1,5 +1,5 @@
  TITRE
- % TUYAUTERIE DROITE EN TRACTION ET FLEXION. 2 MAILLES SEG3.
+ % TUYAUTERIE DROITE EN TRACTION ET FLEXION. 2 MAILLES SEG3.                    
  FINSF
  %
  COOR_3D
@@ -11,21 +11,38 @@
  FINSF
  %
  SEG3    
-  M1      N1       N4       N3      
-  M2      N4       N2       N5      
+ M1       N1       N4       N3      
+ M2       N4       N2       N5      
  FINSF
  %
  GROUP_NO
- B        N2      
+ B                       
+ N2      
  FINSF
  %
  GROUP_NO
- A        N1      
+ A                       
+ N1      
+ FINSF
+ %
+ GROUP_NO
+ N1                      
+ N1      
  FINSF
  %
  GROUP_MA
-   TUYAU   
- M1   M2         
+ TUYAU                   
+ M1       M2      
+ FINSF
+ %
+ GROUP_MA
+ M2                      
+ M2      
+ FINSF
+ %
+ GROUP_MA
+ M1                      
+ M1      
  FINSF
  %
  FIN

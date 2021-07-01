@@ -211,13 +211,13 @@ mclf = {}
 mclf['RESU'] = []
 for ii in range(len(Resultat)):
     instant,sigma,dommage,tempmax = Resultat[ii]
-    mclf['RESU'].append(_F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='SIXX',INST=instant,
+    mclf['RESU'].append(_F(RESULTAT=U1MAZAR,GROUP_MA='M1',POINT=1,SOUS_POINT=1,NOM_CMP='SIXX',INST=instant,
                         VALE_CALC=sigma, VALE_REFE=sigma,
                         NOM_CHAM='SIEF_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), ), )
-    mclf['RESU'].append(_F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V3',  INST=instant,
+    mclf['RESU'].append(_F(RESULTAT=U1MAZAR,GROUP_MA='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V3',  INST=instant,
                         VALE_CALC=dommage, VALE_REFE=dommage,
                         NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), ), )
-    mclf['RESU'].append(_F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V7',  INST=instant,
+    mclf['RESU'].append(_F(RESULTAT=U1MAZAR,GROUP_MA='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V7',  INST=instant,
                         VALE_CALC=tempmax, VALE_REFE=tempmax,
                         NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF'), ), )
 

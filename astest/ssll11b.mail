@@ -1,38 +1,93 @@
-TITRE
-CAS TEST DE TREILLIS SSLL11 CLUB UTILISATEUR ASTER
-FINSF
-COOR_3D
- A1  0.    0.    0.
- B2  1.    0.    0.
- B4  1.    0.    0.
- C1  0.5   0.5   0.
- C2  0.5   0.5   0.
- C3  0.5   0.5   0.
- D3  2.    1.    0.
- D4  2.    1.    0.
-FINSF
-SEG2
- AC    A1    C1
- BC    B2    C2
- BD    B4    D4
- CD    C3    D3
-FINSF
-GROUP_MA NOM=ACBC
-  AC BC
-FINSF
-GROUP_MA NOM=CDBD
-  CD BD
-FINSF
-GROUP_MA NOM=AC
-  AC
-FINSF
-GROUP_MA NOM=BC
-  BC
-FINSF
-GROUP_MA NOM=CD
-  CD
-FINSF
-GROUP_MA NOM=BD
-  BD
-FINSF
-FIN
+ TITRE
+CAS TEST DE TREILLIS SSLL11 CLUB UTILISATEUR ASTER                              
+ FINSF
+ %
+ COOR_3D
+ A1        0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ B2        1.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ B4        1.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ C1        5.00000000000000E-01  5.00000000000000E-01  0.00000000000000E+00
+ C2        5.00000000000000E-01  5.00000000000000E-01  0.00000000000000E+00
+ C3        5.00000000000000E-01  5.00000000000000E-01  0.00000000000000E+00
+ D3        2.00000000000000E+00  1.00000000000000E+00  0.00000000000000E+00
+ D4        2.00000000000000E+00  1.00000000000000E+00  0.00000000000000E+00
+ FINSF
+ %
+ SEG2    
+ AC       A1       C1      
+ BC       B2       C2      
+ BD       B4       D4      
+ CD       C3       D3      
+ FINSF
+ %
+ GROUP_NO
+ B4                      
+ B4      
+ FINSF
+ %
+ GROUP_NO
+ B2                      
+ B2      
+ FINSF
+ %
+ GROUP_NO
+ C2                      
+ C2      
+ FINSF
+ %
+ GROUP_NO
+ D3                      
+ D3      
+ FINSF
+ %
+ GROUP_NO
+ C1                      
+ C1      
+ FINSF
+ %
+ GROUP_NO
+ D4                      
+ D4      
+ FINSF
+ %
+ GROUP_NO
+ A1                      
+ A1      
+ FINSF
+ %
+ GROUP_NO
+ C3                      
+ C3      
+ FINSF
+ %
+ GROUP_MA
+ ACBC                    
+ AC       BC      
+ FINSF
+ %
+ GROUP_MA
+ CDBD                    
+ CD       BD      
+ FINSF
+ %
+ GROUP_MA
+ AC                      
+ AC      
+ FINSF
+ %
+ GROUP_MA
+ BC                      
+ BC      
+ FINSF
+ %
+ GROUP_MA
+ CD                      
+ CD      
+ FINSF
+ %
+ GROUP_MA
+ BD                      
+ BD      
+ FINSF
+ %
+ FIN

@@ -25,13 +25,73 @@ MAILLAGE_SDASTER
  M2       N1       N2       N3       N4      
  FINSF
  %
+ GROUP_NO
+ N1                      
+ N1      
+ FINSF
+ %
+ GROUP_NO
+ N7                      
+ N7      
+ FINSF
+ %
+ GROUP_NO
+ N9                      
+ N9      
+ FINSF
+ %
+ GROUP_NO
+ N5                      
+ N5      
+ FINSF
+ %
+ GROUP_NO
+ N6                      
+ N6      
+ FINSF
+ %
+ GROUP_NO
+ N2                      
+ N2      
+ FINSF
+ %
+ GROUP_NO
+ N10                     
+ N10     
+ FINSF
+ %
+ GROUP_NO
+ N3                      
+ N3      
+ FINSF
+ %
+ GROUP_NO
+ N8                      
+ N8      
+ FINSF
+ %
+ GROUP_NO
+ N4                      
+ N4      
+ FINSF
+ %
  GROUP_MA
- Tetra10               
+ Tetra10                 
  M1      
  FINSF
  %
  GROUP_MA
- Tetra4                
+ Tetra4                  
+ M2      
+ FINSF
+ %
+ GROUP_MA
+ M1                      
+ M1      
+ FINSF
+ %
+ GROUP_MA
+ M2                      
  M2      
  FINSF
  %

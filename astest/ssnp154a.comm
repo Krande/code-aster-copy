@@ -157,7 +157,7 @@ RESU = CALC_PRESSION(reuse=RESU,GROUP_MA=('Bottom_C', 'Top_B'),
 
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU, NOM_CHAM='PRES_NOEU',
-                      NOEUD='N5',INST=1.0,
+                      GROUP_NO='N5',INST=1.0,
                       REFERENCE='AUTRE_ASTER',
                       NOM_CMP='PRES',
                       VALE_CALC=-3806.70939176,
@@ -284,7 +284,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='B',
 
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU, NOM_CHAM='PRES_NOEU',
-                      NOEUD='N5',INST=1.0,
+                      GROUP_NO='N5',INST=1.0,
                       NOM_CMP='PRES',
                       VALE_CALC=-3801.536088,),))
 

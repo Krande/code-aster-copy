@@ -1,23 +1,57 @@
-TITRE
-  TEST SFM/VPCS SDLL23/A
-  POUTRE ENCASTREE-LIBRE SOUMISE A UN SEISME ( 3 NOEUDS )
-FINSF
-COOR_3D
-  A        0.    0.   0.
-  B        0.5   0.   0.
-  C       10.    0.   0.
-FINSF
-SEG2
-  E01       A        B
-  E02       B        C
-FINSF
-GROUP_MA  NOM = M_POUT
-   E01  E02
-FINSF
-GROUP_NO  NOM = N_POUT
-   A  B  C
-FINSF
-GROUP_NO  NOM = MASSE
-    B    C
-FINSF
-FIN
+ TITRE
+  TEST SFM/VPCS SDLL23/A                                                        
+  POUTRE ENCASTREE-LIBRE SOUMISE A UN SEISME ( 3 NOEUDS )                       
+ FINSF
+ %
+ COOR_3D
+ A         0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ B         5.00000000000000E-01  0.00000000000000E+00  0.00000000000000E+00
+ C         1.00000000000000E+01  0.00000000000000E+00  0.00000000000000E+00
+ FINSF
+ %
+ SEG2    
+ E01      A        B       
+ E02      B        C       
+ FINSF
+ %
+ GROUP_NO
+ N_POUT                  
+ A        B        C       
+ FINSF
+ %
+ GROUP_NO
+ MASSE                   
+ B        C       
+ FINSF
+ %
+ GROUP_NO
+ B                       
+ B       
+ FINSF
+ %
+ GROUP_NO
+ A                       
+ A       
+ FINSF
+ %
+ GROUP_NO
+ C                       
+ C       
+ FINSF
+ %
+ GROUP_MA
+ M_POUT                  
+ E01      E02     
+ FINSF
+ %
+ GROUP_MA
+ E02                     
+ E02     
+ FINSF
+ %
+ GROUP_MA
+ E01                     
+ E01     
+ FINSF
+ %
+ FIN

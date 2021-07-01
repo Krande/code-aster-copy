@@ -47,6 +47,19 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
 
 MA=LIRE_MAILLAGE(FORMAT='MED',UNITE=21)
 
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M445', MAILLE = 'M445'),
+                                        _F( NOM = 'M446', MAILLE = 'M446'),
+                                     ),
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N48', NOEUD = 'N48'),
+                                        _F( NOM = 'N4', NOEUD = 'N4'),
+                                        _F( NOM = 'N123', NOEUD = 'N123'),
+                                        _F( NOM = 'N66', NOEUD = 'N66'),
+                                     ),
+         )
+
 MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
   CREA_GROUP_MA=_F(  NOM = 'TOUTB', TOUT = 'OUI'))
 

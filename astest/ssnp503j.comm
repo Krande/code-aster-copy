@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -122,35 +122,35 @@ CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
                    # CONDITIONS IMPOSEES A LA MAIN
                    # POUR LES MAILLES XFEM INFERIEURE
                    # ET SUPERIEURE
-                   LIAISON_DDL=(_F(NOEUD=('N13','N13'),
+                   LIAISON_DDL=(_F(GROUP_NO=('N13','N13'),
                                    DDL=('DX','H1X'),
                                    COEF_MULT=(1,2),
                                    COEF_IMPO=DEPX),
-                                _F(NOEUD=('N43','N43'),
+                                _F(GROUP_NO=('N43','N43'),
                                    DDL=('DX','H1X'),
                                    COEF_MULT=(1,2),
                                    COEF_IMPO=DEPX),
-                                _F(NOEUD=('N61','N61'),
+                                _F(GROUP_NO=('N61','N61'),
                                    DDL=('DX','H1X'),
                                    COEF_MULT=(1,2),
                                    COEF_IMPO=DEPX),
-                                _F(NOEUD=('N76','N76'),
+                                _F(GROUP_NO=('N76','N76'),
                                    DDL=('DX','H1X'),
                                    COEF_MULT=(1,2),
                                    COEF_IMPO=DEPX),
-                                _F(NOEUD=('N13','N13'),
+                                _F(GROUP_NO=('N13','N13'),
                                    DDL=('DZ','H1Z'),
                                    COEF_MULT=(1,2),
                                    COEF_IMPO=DEPZ),
-                                _F(NOEUD=('N43','N43'),
+                                _F(GROUP_NO=('N43','N43'),
                                    DDL=('DZ','H1Z'),
                                    COEF_MULT=(1,2),
                                    COEF_IMPO=DEPZ),
-                                _F(NOEUD=('N61','N61'),
+                                _F(GROUP_NO=('N61','N61'),
                                    DDL=('DZ','H1Z'),
                                    COEF_MULT=(1,2),
                                    COEF_IMPO=DEPZ),
-                                _F(NOEUD=('N76','N76'),
+                                _F(GROUP_NO=('N76','N76'),
                                    DDL=('DZ','H1Z'),
                                    COEF_MULT=(1,2),
                                    COEF_IMPO=DEPZ)),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -118,12 +118,29 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='TOTALE',
                   VALE_REFE=6680.555556,
                   VALE_CALC=6680.555556,
-                  MAILLE='M19',),);
+                  GROUP_MA='M19',),);
 
 # MODELISATION 3D_SI
 
 MA1 = CREA_MAILLAGE(MAILLAGE = MA,
                     LINE_QUAD = _F(TOUT = 'OUI'),);
+
+MA1 = DEFI_GROUP( reuse = MA1, MAILLAGE = MA1,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'NS2', NOEUD = 'NS2'),
+                                        _F( NOM = 'NS12', NOEUD = 'NS12'),
+                                        _F( NOM = 'NS7', NOEUD = 'NS7'),
+                                        _F( NOM = 'NS3', NOEUD = 'NS3'),
+                                        _F( NOM = 'NS11', NOEUD = 'NS11'),
+                                        _F( NOM = 'NS4', NOEUD = 'NS4'),
+                                        _F( NOM = 'NS8', NOEUD = 'NS8'),
+                                        _F( NOM = 'NS9', NOEUD = 'NS9'),
+                                        _F( NOM = 'NS1', NOEUD = 'NS1'),
+                                        _F( NOM = 'NS5', NOEUD = 'NS5'),
+                                        _F( NOM = 'NS6', NOEUD = 'NS6'),
+                                        _F( NOM = 'NS10', NOEUD = 'NS10'),
+                                     ),
+         )
 
 MO1=AFFE_MODELE(MAILLAGE=MA1,
                AFFE=_F(TOUT='OUI',
@@ -204,51 +221,51 @@ BLOC1=AFFE_CHAR_MECA(MODELE=MO1,
                                     DX=HX,
                                     DY=HY,
                                     DZ=HZ,),
-                                 _F(NOEUD='NS1',
+                                 _F(GROUP_NO='NS1',
                                     DX=NS1X,
                                     DY=NS1Y,
                                     DZ=NS1Z,),
-                                 _F(NOEUD='NS2',
+                                 _F(GROUP_NO='NS2',
                                     DX=NS2X,
                                     DY=NS2Y,
                                     DZ=NS2Z,),
-                                 _F(NOEUD='NS3',
+                                 _F(GROUP_NO='NS3',
                                     DX=NS3X,
                                     DY=NS3Y,
                                     DZ=NS3Z,),
-                                 _F(NOEUD='NS4',
+                                 _F(GROUP_NO='NS4',
                                     DX=NS4X,
                                     DY=NS4Y,
                                     DZ=NS4Z,),
-                                 _F(NOEUD='NS5',
+                                 _F(GROUP_NO='NS5',
                                     DX=NS5X,
                                     DY=NS5Y,
                                     DZ=NS5Z,),
-                                 _F(NOEUD='NS6',
+                                 _F(GROUP_NO='NS6',
                                     DX=NS6X,
                                     DY=NS6Y,
                                     DZ=NS6Z,),
-                                 _F(NOEUD='NS7',
+                                 _F(GROUP_NO='NS7',
                                     DX=NS7X,
                                     DY=NS7Y,
                                     DZ=NS7Z,),
-                                 _F(NOEUD='NS8',
+                                 _F(GROUP_NO='NS8',
                                     DX=NS8X,
                                     DY=NS8Y,
                                     DZ=NS8Z,),
-                                 _F(NOEUD='NS9',
+                                 _F(GROUP_NO='NS9',
                                     DX=NS9X,
                                     DY=NS9Y,
                                     DZ=NS9Z,),
-                                 _F(NOEUD='NS10',
+                                 _F(GROUP_NO='NS10',
                                     DX=NS10X,
                                     DY=NS10Y,
                                     DZ=NS10Z,),
-                                 _F(NOEUD='NS11',
+                                 _F(GROUP_NO='NS11',
                                     DX=NS11X,
                                     DY=NS11Y,
                                     DZ=NS11Z,),
-                                 _F(NOEUD='NS12',
+                                 _F(GROUP_NO='NS12',
                                     DX=NS12X,
                                     DY=NS12Y,
                                     DZ=NS12Z,),),);
@@ -269,6 +286,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='TOTALE',
                   VALE_REFE=6680.555556,
                   VALE_CALC=6680.555556,
-                  MAILLE='M19',),);
+                  GROUP_MA='M19',),);
 
 FIN();

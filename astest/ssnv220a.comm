@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -140,7 +140,7 @@ EVOL   = STAT_NON_LINE( MODELE     = MO,
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=EVOL,
                   NOM_CHAM='DEPL',
-                  NOEUD='N7',
+                  GROUP_NO='N7',
                   NOM_CMP='DAMG',
                   VALE_CALC=0.10000000000000001,
 
@@ -150,7 +150,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   RESULTAT=EVOL,
                   NOM_CHAM='DEPL',
-                  NOEUD='N7',
+                  GROUP_NO='N7',
                   NOM_CMP='DAMG',
                   VALE_CALC=0.5,
 
@@ -160,7 +160,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
 TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   RESULTAT=EVOL,
                   NOM_CHAM='DEPL',
-                  NOEUD='N7',
+                  GROUP_NO='N7',
                   NOM_CMP='DAMG',
                   VALE_CALC=0.69999999999999996,
 
@@ -170,7 +170,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
 TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=EVOL,
                   NOM_CHAM='DEPL',
-                  NOEUD='N7',
+                  GROUP_NO='N7',
                   NOM_CMP='DAMG',
                   VALE_CALC=0.84999999999999998,
 

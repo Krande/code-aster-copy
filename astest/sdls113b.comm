@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ MAYA=LIRE_MAILLAGE(FORMAT='MED',);
 
 MAYA=DEFI_GROUP(reuse=MAYA,
                 MAILLAGE=MAYA,
-                CREA_GROUP_NO=_F(NOEUD='N433',
+                CREA_GROUP_NO=_F(GROUP_NO='N433',
                                  NOM='TOTO',),);
 
 MODEL=AFFE_MODELE(MAILLAGE=MAYA,
@@ -95,7 +95,7 @@ ACIERFO=DEFI_MATERIAU(ELAS_ORTH_FO=_F(E_L=E,
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAYA,
                     AFFE=(_F(GROUP_MA=('GM5',),
                             MATER=ACIER,),
-                          _F(MAILLE=('M194','M461','M87'),
+                          _F(GROUP_MA=('M194','M461','M87'),
                             MATER=ACIERFO,),
                         ));
 
@@ -194,7 +194,7 @@ DYNATRAN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                                     ),
                                     );
 
-DYNATRAN=CALC_CHAMP(reuse=DYNATRAN,RESULTAT=DYNATRAN,MAILLE=('M194','M461','M87'),LIST_INST=LISTRD,PRECISION=1.E-6,CRITERE='ABSOLU',
+DYNATRAN=CALC_CHAMP(reuse=DYNATRAN,RESULTAT=DYNATRAN,GROUP_MA=('M194','M461','M87'),LIST_INST=LISTRD,PRECISION=1.E-6,CRITERE='ABSOLU',
    CONTRAINTE=('SIEF_ELGA','SIGM_ELNO'),
    DEFORMATION=('EPSI_ELNO','EPSI_ELGA'),
    #ENERGIE=('EPOT_ELEM','ECIN_ELEM','ENEL_ELGA','ENEL_ELNO')
@@ -215,7 +215,7 @@ DYNHASS=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                              COEF_MULT=1.,),
                              );
 
-DYNHASS=CALC_CHAMP(reuse=DYNHASS,MAILLE=('M194','M461','M87'),RESULTAT=DYNHASS,CRITERE='ABSOLU',PRECISION=1.E-3,
+DYNHASS=CALC_CHAMP(reuse=DYNHASS,GROUP_MA=('M194','M461','M87'),RESULTAT=DYNHASS,CRITERE='ABSOLU',PRECISION=1.E-3,
    CONTRAINTE=('SIEF_ELGA','SIGM_ELNO'),
    DEFORMATION=('EPSI_ELNO','EPSI_ELGA'),
    #ENERGIE=('EPOT_ELEM','ECIN_ELEM','ENEL_ELGA','ENEL_ELNO')
@@ -235,7 +235,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=1.7891506766472E-06,
                    PRECISION = 1E-6,
                    CRITERE='RELATIF',
-                   MAILLE='M194',),
+                   GROUP_MA='M194',),
                 _F(NUME_ORDRE=1,
                    POINT=1,
                    RESULTAT=DYNHASS,
@@ -246,7 +246,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=1.9159851376498E-06,
                    PRECISION = 1E-6,
                    CRITERE='RELATIF',
-                   MAILLE='M194',),
+                   GROUP_MA='M194',),
                 ),
           )
 
@@ -259,7 +259,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 
 DTX1=RECU_FONCTION (RESULTAT = DYNATRAN,
                     NOM_CMP = 'DX',
-                    NOEUD = 'N433',
+                    GROUP_NO = 'N433',
                     NOM_CHAM = 'DEPL',
                     TOUT_ORDRE = 'OUI',
                     );
@@ -267,7 +267,7 @@ DTX1=RECU_FONCTION (RESULTAT = DYNATRAN,
 # resultats harmonique
 DHX1=RECU_FONCTION (   RESULTAT = DYNHASS,
                       NOM_CMP = 'DX',
-                      NOEUD = 'N433',
+                      GROUP_NO = 'N433',
                       NOM_CHAM = 'DEPL',
                       TOUT_ORDRE = 'OUI');
 
@@ -301,14 +301,14 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=3.99011179996e-08,
 SIT1=RECU_FONCTION (RESULTAT = DYNATRAN,
                     NOM_CMP = 'SIXX',
                     NOM_CHAM = 'SIEF_ELGA',
-                    MAILLE = 'M194',
+                    GROUP_MA = 'M194',
                     POINT=1,
                     NUME_ORDRE=list(range(1,archsize)),
                           );
 
 SIH1=RECU_FONCTION (RESULTAT = DYNHASS,
                     NOM_CMP = 'SIXX',
-                    MAILLE = 'M194',
+                    GROUP_MA = 'M194',
                     POINT=1,
                     NOM_CHAM = 'SIEF_ELGA',
                     NUME_ORDRE=1,
@@ -342,15 +342,15 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=98510.5400395,
 SET1=RECU_FONCTION (RESULTAT = DYNATRAN,
                     NOM_CMP = 'SIXX',
                     NOM_CHAM = 'SIGM_ELNO',
-                    MAILLE = 'M194',
-                    NOEUD='N1328',
+                    GROUP_MA = 'M194',
+                    GROUP_NO='N1328',
                     NUME_ORDRE=list(range(1,archsize)),
                           );
 
 SEH1=RECU_FONCTION (RESULTAT = DYNHASS,
                     NOM_CMP = 'SIXX',
-                    MAILLE = 'M194',
-                    NOEUD='N1328',
+                    GROUP_MA = 'M194',
+                    GROUP_NO='N1328',
                     NOM_CHAM = 'SIGM_ELNO',
                     NUME_ORDRE=1,
                       );
@@ -383,15 +383,15 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=98149.5819288,
 EPT1=RECU_FONCTION (RESULTAT = DYNATRAN,
                     NOM_CMP = 'EPXX',
                     NOM_CHAM = 'EPSI_ELNO',
-                    MAILLE = 'M194',
-                    NOEUD='N1328',
+                    GROUP_MA = 'M194',
+                    GROUP_NO='N1328',
                     NUME_ORDRE=list(range(1,archsize)),
                           );
 
 EPH1=RECU_FONCTION (RESULTAT = DYNHASS,
                     NOM_CMP = 'EPXX',
-                    MAILLE = 'M194',
-                    NOEUD='N1328',
+                    GROUP_MA = 'M194',
+                    GROUP_NO='N1328',
                     NOM_CHAM = 'EPSI_ELNO',
                     NUME_ORDRE=1,
                       );
@@ -424,14 +424,14 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=5.27795672536e-07,
 EGT1=RECU_FONCTION (RESULTAT = DYNATRAN,
                     NOM_CMP = 'EPXX',
                     NOM_CHAM = 'EPSI_ELGA',
-                    MAILLE = 'M194',
+                    GROUP_MA = 'M194',
                     POINT=1,
                     NUME_ORDRE=list(range(1,archsize)),
                           );
 
 EGH1=RECU_FONCTION (RESULTAT = DYNHASS,
                     NOM_CMP = 'EPXX',
-                    MAILLE = 'M194',
+                    GROUP_MA = 'M194',
                     POINT=1,
                     NOM_CHAM = 'EPSI_ELGA',
                     NUME_ORDRE=1,

@@ -117,9 +117,17 @@ MAIL_00=CREA_MAILLAGE(MAILLAGE=MAIL_AUX,
 # 2.3.Creation de groupes de noeuds
 # 'POURTEST' : noeud au centre pour les TEST_RESU
 
+MAIL_00 = DEFI_GROUP( reuse = MAIL_00, MAILLAGE = MAIL_00,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N2', NOEUD = 'N2'),
+                                        _F( NOM = 'N14', NOEUD = 'N14'),
+                                        _F( NOM = 'N1', NOEUD = 'N1'),
+                                     ),
+         )
+
 DEFI_GROUP(reuse =MAIL_00,  MAILLAGE=MAIL_00,
            CREA_GROUP_NO=(
-              _F(NOEUD='N14',    NOM='POURTEST',),
+              _F(GROUP_NO='N14',    NOM='POURTEST',),
            ))
 #
 # 3. Calcul en hydro-mecanique permanent sur le maillage 0
@@ -268,8 +276,8 @@ V_X_00=MACR_LIGN_COUPE(RESULTAT=RESU_00, NOM_CHAM='DEPL', INST=400000.0,
                         _F(TYPE='GROUP_MA',  MAILLAGE=MAIL_00, GROUP_MA='GM3',
                            INTITULE='Dx et P_liqu selon x',
                            NOM_CMP = ('PRE1','DX',),
-                           NOEUD_ORIG='N1',
-                           NOEUD_EXTR='N2',
+                           GROUP_NO_ORIG='N1',
+                           GROUP_NO_EXTR='N2',
                   )))
 
 
@@ -277,8 +285,8 @@ E_X_00=MACR_LIGN_COUPE(RESULTAT=RESU_00, NOM_CHAM='ERME_NOEU', INST=400000.0,
                      LIGN_COUPE=(
                         _F(TYPE='GROUP_MA',  MAILLAGE=MAIL_00, GROUP_MA='GM3',
                            NOM_CMP = ('ESTERG1',),
-                           NOEUD_ORIG='N1',
-                           NOEUD_EXTR='N2',
+                           GROUP_NO_ORIG='N1',
+                           GROUP_NO_EXTR='N2',
                   )))
 
 
@@ -445,8 +453,8 @@ V_X_01=MACR_LIGN_COUPE(RESULTAT=RESU_01, NOM_CHAM='DEPL', INST=400000.0,
                         _F(TYPE='GROUP_MA',  MAILLAGE=MAIL_00, GROUP_MA='GM3',
                            INTITULE='Dx et P_liqu selon x',
                            NOM_CMP = ('PRE1','DX',),
-                           NOEUD_ORIG='N1',
-                           NOEUD_EXTR='N2',
+                           GROUP_NO_ORIG='N1',
+                           GROUP_NO_EXTR='N2',
                   )))
 # 9.3. Impressions
 #IMPR_TABLE(TABLE=V_X_01,

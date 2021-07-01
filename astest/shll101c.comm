@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -146,7 +146,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=DYNA_F,
                    NOM_CHAM='EFGE_ELNO',
                    NOM_CMP='N',
-                   MAILLE='M18',
+                   GROUP_MA='M18',
                    ),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='B',
@@ -224,7 +224,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=DYNA_FL,
                    NOM_CHAM='EFGE_ELNO',
                    NOM_CMP='VY',
-                   MAILLE='M18',
+                   GROUP_MA='M18',
                    ),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='B',
@@ -333,7 +333,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=DYNA_AF,
                    NOM_CHAM='EFGE_ELNO',
                    NOM_CMP='N',
-                   MAILLE='M18',
+                   GROUP_MA='M18',
                    ),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='B',

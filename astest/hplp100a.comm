@@ -23,7 +23,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(FORMAT='MED',   )
 
-DEFI_GROUP(reuse = MA, MAILLAGE=MA, CREA_GROUP_NO=_F(NOM='GN3', NOEUD='N3'))
+DEFI_GROUP(reuse = MA, MAILLAGE=MA, CREA_GROUP_NO=_F(NOM='GN3', GROUP_NO='N3'))
 
 
 # -------------------------------------------------------------- #
@@ -91,7 +91,7 @@ CH=AFFE_CHAR_MECA(           MODELE=MO,
                          #TEMP_CALCULEE=TEMP,
                          DDL_IMPO=(
                               _F(  GROUP_NO = 'GRNM2', DY = 0.),
-                              _F(  NOEUD = 'N695', DX = 0.),
+                              _F(  GROUP_NO = 'N695', DX = 0.),
                               _F(  GROUP_NO = 'GRNM4', DY = 0.)))
 
 ME=CALC_MATR_ELEM(         MODELE=MO,
@@ -143,7 +143,7 @@ RESU=CREA_RESU(  OPERATION='AFFE',
 FOND_NEW=DEFI_FOND_FISS( MAILLAGE=MA,
                      FOND_FISS=_F( GROUP_NO = 'GN3'),
                      SYME='OUI',
-                     LEVRE_SUP=_F(MAILLE='M388'))
+                     LEVRE_SUP=_F(GROUP_MA='M388'))
 G1=CALC_G(
                  OPTION='G_EPSI',
                  RESULTAT=RESU,

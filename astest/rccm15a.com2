@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ TBRCCM1=POST_RCCM(TYPE_RESU='DETAILS',
                   MODELE=MODELE,
                   CARA_ELEM=CARA_POU,
                   INFO=2,
-          ZONE_ANALYSE=_F( MAILLE = ('M1','M2'),),
+          ZONE_ANALYSE=_F( GROUP_MA = ('M1','M2'),),
 
 # -------Résultats des calculs mecaniques
           RESU_MECA=(
@@ -127,7 +127,7 @@ TBRCCM1=POST_RCCM(TYPE_RESU='DETAILS',
                      K2=1.10,
                      C3=0.60,
                      K3=1.10,
-                     MAILLE=('M1'),
+                     GROUP_MA=('M1'),
                      TYPE_ELEM_STANDARD='COU',),
                   _F(C1=1.0,
                      K1=1.10,
@@ -135,7 +135,7 @@ TBRCCM1=POST_RCCM(TYPE_RESU='DETAILS',
                      K2=1.10,
                      C3=0.60,
                      K3=1.10,
-                     MAILLE=('M2'),
+                     GROUP_MA=('M2'),
                      GROUP_NO=('NONO2',),
                      TYPE_ELEM_STANDARD='COU',),
                      ),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -77,18 +77,18 @@ M52P30=DEFI_FONCTION(
 
 CH1=AFFE_CHAR_MECA(
             MODELE=MO,DDL_IMPO=(
-           _F( NOEUD = 'NO4', DX = 0.,DY = 0.),
-                    _F( NOEUD = 'NO8', DX = 0.,DY = 0.,DZ = 0.),
-                    _F( NOEUD = 'NO2', DX = 0.),
-                    _F( NOEUD = 'NO6', DX = 0.))
+           _F( GROUP_NO = 'NO4', DX = 0.,DY = 0.),
+                    _F( GROUP_NO = 'NO8', DX = 0.,DY = 0.,DZ = 0.),
+                    _F( GROUP_NO = 'NO2', DX = 0.),
+                    _F( GROUP_NO = 'NO6', DX = 0.))
            )
 
 CH2=AFFE_CHAR_MECA_F(
             MODELE=MO,FORCE_NODALE=(
-           _F( NOEUD = ('NO1', 'NO5',), FX = M52P30,  FY = M30),
-                        _F( NOEUD = ('NO2', 'NO6',), FX = P30,     FY = P30),
-                        _F( NOEUD = ('NO3', 'NO7',), FX = M52M30,  FY = M30),
-                        _F( NOEUD = ('NO4', 'NO8',), FX = M30,     FY = P30))
+           _F( GROUP_NO = ('NO1', 'NO5',), FX = M52P30,  FY = M30),
+                        _F( GROUP_NO = ('NO2', 'NO6',), FX = P30,     FY = P30),
+                        _F( GROUP_NO = ('NO3', 'NO7',), FX = M52M30,  FY = M30),
+                        _F( GROUP_NO = ('NO4', 'NO8',), FX = M30,     FY = P30))
                           )
 
 L_INST1=DEFI_LIST_REEL(  DEBUT=0.0,
@@ -229,63 +229,63 @@ U4=CALC_CHAMP(reuse=U4,RESULTAT=U4,DEFORMATION=('EPSP_ELNO'))
 TEST_RESU(RESU=(_F(NUME_ORDRE=15,
                    RESULTAT=U2,
                    NOM_CHAM='EPSP_ELNO',
-                   NOEUD='NO2',
+                   GROUP_NO='NO2',
                    NOM_CMP='EPXX',
                    VALE_CALC=0.090637326969979,
                    VALE_REFE=0.0906364,
                    REFERENCE = 'ANALYTIQUE',
                    PRECISION=1.E-3,
-                   MAILLE='MA2',),
+                   GROUP_MA='MA2',),
                 _F(NUME_ORDRE=15,
                    RESULTAT=U2,
                    NOM_CHAM='EPSP_ELNO',
-                   NOEUD='NO2',
+                   GROUP_NO='NO2',
                    NOM_CMP='EPXY',
                    VALE_CALC=0.078494227680760,
                    VALE_REFE=0.0784935,
                    REFERENCE = 'ANALYTIQUE',
                    PRECISION=1.E-3,
-                   MAILLE='MA2',),
+                   GROUP_MA='MA2',),
                 _F(NUME_ORDRE=1,
                    RESULTAT=U3,
                    NOM_CHAM='EPSP_ELNO',
-                   NOEUD='NO2',
+                   GROUP_NO='NO2',
                    NOM_CMP='EPXX',
                    VALE_CALC=0.17177486784236,
                    VALE_REFE=0.17177500000000001,
                    REFERENCE = 'ANALYTIQUE',
                    PRECISION=1.E-3,
-                   MAILLE='MA2',),
+                   GROUP_MA='MA2',),
                 _F(NUME_ORDRE=1,
                    RESULTAT=U3,
                    NOM_CHAM='EPSP_ELNO',
-                   NOEUD='NO2',
+                   GROUP_NO='NO2',
                    NOM_CMP='EPXY',
                    VALE_CALC=0.14876139927115,
                    VALE_REFE=0.148761,
                    REFERENCE = 'ANALYTIQUE',
                    PRECISION=1.E-3,
-                   MAILLE='MA2',),
+                   GROUP_MA='MA2',),
                 _F(NUME_ORDRE=3,
                    RESULTAT=U4,
                    NOM_CHAM='EPSP_ELNO',
-                   NOEUD='NO2',
+                   GROUP_NO='NO2',
                    NOM_CMP='EPXX',
                    VALE_CALC=0.28090857955241,
                    VALE_REFE=0.28073300000000001,
                    REFERENCE = 'ANALYTIQUE',
                    PRECISION=1.E-3,
-                   MAILLE='MA2',),
+                   GROUP_MA='MA2',),
                 _F(NUME_ORDRE=3,
                    RESULTAT=U4,
                    NOM_CHAM='EPSP_ELNO',
-                   NOEUD='NO2',
+                   GROUP_NO='NO2',
                    NOM_CMP='EPXY',
                    VALE_CALC=0.24327396601368,
                    VALE_REFE=0.243122,
                    REFERENCE = 'ANALYTIQUE',
                    PRECISION=1.E-3,
-                   MAILLE='MA2',),
+                   GROUP_MA='MA2',),
                 ),
           )
 

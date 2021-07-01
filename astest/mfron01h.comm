@@ -1,7 +1,7 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -76,15 +76,15 @@ CHP_MATT=AFFE_MATERIAU(
 
 CHR_LIAI=AFFE_CHAR_MECA(
               MODELE=MO,DDL_IMPO=(
-               _F( NOEUD = 'NO2',  DX = 0.,  DY = 0.,  DZ = 0.),
-               _F( NOEUD = 'NO6',  DX = 0.,  DY = 0.),
-               _F( NOEUD = 'NO1',  DX = 0.,          DZ = 0.),
-               _F( NOEUD = ('NO9', 'NO13', 'NO14', 'NO5', 'NO17',),  DX = 0.))
+               _F( GROUP_NO = 'NO2',  DX = 0.,  DY = 0.,  DZ = 0.),
+               _F( GROUP_NO = 'NO6',  DX = 0.,  DY = 0.),
+               _F( GROUP_NO = 'NO1',  DX = 0.,          DZ = 0.),
+               _F( GROUP_NO = ('NO9', 'NO13', 'NO14', 'NO5', 'NO17',),  DX = 0.))
              )
 
 CHR_TRAC=AFFE_CHAR_MECA(
                      MODELE=MO,
-                     FACE_IMPO=_F( MAILLE = 'MA2',  DX = 1.)
+                     FACE_IMPO=_F( GROUP_MA = 'MA2',  DX = 1.)
              )
 
 ###################################################
@@ -131,7 +131,7 @@ LOGMF=STAT_NON_LINE( MODELE=MO,
 TEST_RESU(RESU=(_F(INST=2.0,
                    RESULTAT=LOG,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO8',
+                   GROUP_NO='NO8',
                    NOM_CMP='DX',
                    VALE_CALC=290.000000000,
                    VALE_REFE=290.0,
@@ -145,7 +145,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_CALC= 1.49479541E+03,
                    VALE_REFE=1495.0,
                    REFERENCE='ANALYTIQUE',
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 _F(INST=2.0,
                    POINT=1,
                    RESULTAT=LOG,
@@ -155,7 +155,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_REFE=0.2475,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=0.002,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 ),
           )
 
@@ -164,7 +164,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
 TEST_RESU(RESU=(_F(INST=2.0,
                    RESULTAT=LOGMF,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO8',
+                   GROUP_NO='NO8',
                    NOM_CMP='DX',
                    VALE_CALC=290.000000000,
                    VALE_REFE=290.0,
@@ -177,7 +177,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_CALC=1494.79551526 ,
                    VALE_REFE=1.49479541E+03,
                    REFERENCE='AUTRE_ASTER',
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 _F(INST=2.0,
                    POINT=1,
                    RESULTAT=LOGMF,
@@ -186,7 +186,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_CALC=0.247145796467,
                    VALE_REFE=0.247145796,
                    REFERENCE='AUTRE_ASTER',
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 ),
           )
 
@@ -213,7 +213,7 @@ SM=STAT_NON_LINE( MODELE=MO,
 TEST_RESU(RESU=(_F(INST=2.0,
                    RESULTAT=SM,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO8',
+                   GROUP_NO='NO8',
                    NOM_CMP='DX',
                    VALE_CALC=290.000000000,
                    VALE_REFE=290.0,
@@ -227,7 +227,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_REFE=1495.0,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=0.004,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 _F(INST=2.0,
                    POINT=1,
                    RESULTAT=SM,
@@ -237,7 +237,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_REFE=0.2475,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=0.015,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 ),
           )
 
@@ -293,7 +293,7 @@ SMF=STAT_NON_LINE( MODELE=MO,INFO=2,
 TEST_RESU(RESU=(_F(INST=2.0,
                    RESULTAT=SMF,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO8',
+                   GROUP_NO='NO8',
                    NOM_CMP='DX',
                    VALE_CALC=290.000000000,
                    VALE_REFE=290.0,
@@ -308,7 +308,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_REFE=1.50055349E+03,
                    REFERENCE='AUTRE_ASTER',
                    PRECISION=1.E-2,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 _F(INST=2.0,
                    POINT=1,
                    RESULTAT=SMF,
@@ -318,7 +318,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_REFE=0.250006467,
                    REFERENCE='AUTRE_ASTER',
                    PRECISION=0.014999999999999999,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 ),
           )
 

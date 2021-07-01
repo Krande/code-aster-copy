@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -214,7 +214,7 @@ TEST_RESU(RESU=_F(INST=2000.0,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=STAT,
                   NOM_CHAM='DEPL',
-                  NOEUD='N4',
+                  GROUP_NO='N4',
                   NOM_CMP='DY',
                   VALE_CALC= 3.19124612E-03,
                   VALE_REFE=3.1912483747E-3,
@@ -231,7 +231,7 @@ TEST_RESU(RESU=_F(INST=2000.0,
                   VALE_CALC= 1.99999960E+03,
                   VALE_REFE=2000.0,
                   PRECISION=9.9999999999999995E-07,
-                  MAILLE='M1',
+                  GROUP_MA='M1',
                   ),
           )
 
@@ -239,12 +239,12 @@ TEST_RESU(RESU=_F(INST=2000.0,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=STAT,
                   NOM_CHAM='EPSI_ELNO',
-                  NOEUD='N2',
+                  GROUP_NO='N2',
                   NOM_CMP='EPYY',
                   VALE_CALC= 3.19124612E-03,
                   VALE_REFE=3.1912483747E-3,
                   PRECISION=9.9999999999999995E-07,
-                  MAILLE='M1',
+                  GROUP_MA='M1',
                   ),
           )
 

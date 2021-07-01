@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -94,7 +94,7 @@ TEST_RESU(RESU=_F(INST=200.0,
                   VALE_CALC=-583.783695885,
                   VALE_REFE=-583.79318661973548,
                   PRECISION=5.E-05, TOLE_MACHINE=(5.E-05, 1.E-08),
-                  MAILLE='M1',
+                  GROUP_MA='M1',
                   ),
           )
 
@@ -107,7 +107,7 @@ TEST_RESU(RESU=_F(INST=400.0,
                   VALE_CALC=-503.317186463,
                   VALE_REFE=-503.38485749675908,
                   PRECISION=1.4999999999999999E-4, TOLE_MACHINE=(1.5E-4, 1.E-08),
-                  MAILLE='M1',
+                  GROUP_MA='M1',
                   ),
           )
 
@@ -115,7 +115,7 @@ TEST_RESU(RESU=_F(INST=200.0,
                   REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=STAT,
                   NOM_CHAM='DEPL',
-                  NOEUD='N2',
+                  GROUP_NO='N2',
                   NOM_CMP='DX',
                   VALE_CALC= 4.42232880E-03,
                   VALE_REFE=4.4223303544619003E-3,
@@ -127,7 +127,7 @@ TEST_RESU(RESU=_F(INST=400.0,
                   REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=STAT,
                   NOM_CHAM='DEPL',
-                  NOEUD='N2',
+                  GROUP_NO='N2',
                   NOM_CMP='DX',
                   VALE_CALC= 9.79099203E-03,
                   VALE_REFE=9.7909881474074999E-3,
@@ -144,7 +144,7 @@ TEST_RESU(RESU=_F(INST=200.0,
                   VALE_CALC= 1.86928780E-04,
                   VALE_REFE=1.8687559558586673E-4,
                   PRECISION=2.9999999999999997E-4, TOLE_MACHINE=(2.9999999999999997E-4, 1.E-08),
-                  MAILLE='M1',
+                  GROUP_MA='M1',
                   ),
           )
 
@@ -157,7 +157,7 @@ TEST_RESU(RESU=_F(INST=400.0,
                   VALE_CALC= 3.88764388E-03,
                   VALE_REFE=3.8872406997980165E-3,
                   PRECISION=1.1E-4, TOLE_MACHINE=(1.1E-4, 1.E-08),
-                  MAILLE='M1',
+                  GROUP_MA='M1',
                   ),
           )
 

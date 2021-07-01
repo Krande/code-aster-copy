@@ -70,7 +70,7 @@ resuVect = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
 
 # The difference must be zero !
 TEST_RESU(CHAM_NO=_F(CHAM_GD=resuVect,
-                     NOEUD='N11',
+                     GROUP_NO='N11',
                      NOM_CMP='DX',
                      CRITERE = 'ABSOLU',
                      ORDRE_GRANDEUR = 1.,

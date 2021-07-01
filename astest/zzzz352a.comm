@@ -52,9 +52,9 @@ for czero in (False, True,) :
 
 
       CHAR1=AFFE_CHAR_MECA(MODELE=MODEL,
-                           DDL_IMPO= (  _F(NOEUD='N1', DX=c1,   DY=c2),
-                                        _F(NOEUD='N2',          DY=c3)),
-                           LIAISON_DDL= _F(NOEUD=('N3','N3'), DDL=('DX','DY',),
+                           DDL_IMPO= (  _F(GROUP_NO='N1', DX=c1,   DY=c2),
+                                        _F(GROUP_NO='N2',          DY=c3)),
+                           LIAISON_DDL= _F(GROUP_NO=('N3','N3'), DDL=('DX','DY',),
                                           COEF_MULT=(1.0,-1.0,), COEF_IMPO=c4),
                            FORCE_INTERNE=_F(TOUT='OUI',  FX=5.0, FY=7.0,),);
 
@@ -66,7 +66,7 @@ for czero in (False, True,) :
          REREF1=MECA_STATIQUE( MODELE=MODEL, CHAM_MATER=CHMAT,  SOLVEUR=_F(METHODE='MUMPS',),
                   EXCIT=(_F(CHARGE = CHAR1),   ))
 
-         TN1=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'XX1', NOEUD = 'N3', OPERATION = 'EXTRACTION',
+         TN1=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'XX1', GROUP_NO = 'N3', OPERATION = 'EXTRACTION',
                                       RESULTAT = REREF1, NUME_ORDRE=1, NOM_CHAM='DEPL', NOM_CMP = 'DY' ))
          VREF=TN1['DY',1]
 
@@ -93,7 +93,7 @@ for czero in (False, True,) :
                          SOLVEUR=solv1,
                          EXCIT=_F(CHARGE = CHAR1))
 
-                  TEST_RESU(RESU=_F(NUME_ORDRE=1, NOEUD='N3', RESULTAT=RESU1b,  NOM_CHAM='DEPL', NOM_CMP='DY',
+                  TEST_RESU(RESU=_F(NUME_ORDRE=1, GROUP_NO='N3', RESULTAT=RESU1b,  NOM_CHAM='DEPL', NOM_CMP='DY',
                                   REFERENCE='AUTRE_ASTER', VALE_REFE=VREF ,
                                   VALE_CALC=vcalc))
 
@@ -108,7 +108,7 @@ for czero in (False, True,) :
                         COMPORTEMENT=_F(RELATION='ELAS',), INCREMENT=_F(LIST_INST=LINST,),
                         EXCIT=(_F(CHARGE = CHAR1),  ))
 
-                  TEST_RESU(RESU=_F(NUME_ORDRE=1, NOEUD='N3', RESULTAT=RESU3a,  NOM_CHAM='DEPL', NOM_CMP='DY',
+                  TEST_RESU(RESU=_F(NUME_ORDRE=1, GROUP_NO='N3', RESULTAT=RESU3a,  NOM_CHAM='DEPL', NOM_CMP='DY',
                               REFERENCE='AUTRE_ASTER', VALE_REFE=VREF ,
                               VALE_CALC=vcalc))
 

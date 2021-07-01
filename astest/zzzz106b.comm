@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -97,11 +97,11 @@ IMPR_RESU(FORMAT="RESULTAT",UNITE=38,RESU=_F(MAILLAGE=MA2),)
 DEFI_FICHIER (ACTION='LIBERER',UNITE=38)
 
 TEST_FICHIER(FICHIER="fort.38",
-             NB_VALE_I=639,
-             VALE_CALC_I=9779,
+             NB_VALE_I=755,
+             VALE_CALC_I=10779,
              NB_VALE=213,
              VALE_CALC=1.0600500000e+03,
-             VALE_CALC_K="3721f3c4374819dc27240d615cfdc89f",
+             VALE_CALC_K="a12acfb12f91cab65e65a7bd00281486",
              EXPR_IGNORE=('ASTER'),
 )
 
@@ -170,7 +170,7 @@ CLDIRI1=AFFE_CHAR_MECA(  MODELE=MO,
 #
 CHMEC1=AFFE_CHAR_MECA(  MODELE=MO,
                          FORCE_INTERNE=_F(
-                        MAILLE = ('TR6A','TR6B','TR7A','TR10B','TR11A','TR11B',),
+                        GROUP_MA = ('TR6A','TR6B','TR7A','TR10B','TR11A','TR11B',),
                         FY = 1.))
 
 #
@@ -191,7 +191,7 @@ CHMEC2=AFFE_CHAR_MECA(  MODELE=MO,
 #    ---                CHARGEMENT 10
 
 CHMEC3=AFFE_CHAR_MECA(  MODELE=MO,
-                         FORCE_NODALE=_F( NOEUD = ('N14','N15','N16','N17','N18',),
+                         FORCE_NODALE=_F( GROUP_NO = ('N14','N15','N16','N17','N18',),
                                        FY = 1.) )
 
 #
@@ -204,7 +204,7 @@ CHMEC3=AFFE_CHAR_MECA(  MODELE=MO,
 CHMEC4=AFFE_CHAR_MECA(  MODELE=MO,
                           DDL_IMPO=_F(  GROUP_NO = 'GXXXXXX_COTE',
                          DX = 0., DY = 0.),
-                FORCE_INTERNE=_F( MAILLE = ('TR5A','TR5B','TR6A','TR6B','TR7A','TR7B',
+                FORCE_INTERNE=_F( GROUP_MA = ('TR5A','TR5B','TR6A','TR6B','TR7A','TR7B',
               'TR8A','TR8B','TR9A','TR9B','TR10A','TR10B','TR11A','TR11B','TR12A','TR12B',),
                FY = 1.) )
 
@@ -222,7 +222,7 @@ CHMEC5=AFFE_CHAR_MECA(  MODELE=MO,
 #    ---                 LES MAILLES SEG2 // A X
 #
 CHMEC6=AFFE_CHAR_MECA(  MODELE=MO,
-                         PRES_REP=_F( MAILLE = ('S1','S2','S3','S4',), PRES = 1.))
+                         PRES_REP=_F( GROUP_MA = ('S1','S2','S3','S4',), PRES = 1.))
 
 #
 #    --------------------------------------------------
@@ -238,7 +238,7 @@ CHMEC7=AFFE_CHAR_MECA(  MODELE=MO,
 #    ---                 SUR LES NOEUDS 3,5,7,9
 #
 CHMEC8=AFFE_CHAR_MECA(  MODELE=MO,
-                         FORCE_NODALE=_F( NOEUD = ('N3','N5','N7','N9',),
+                         FORCE_NODALE=_F( GROUP_NO = ('N3','N5','N7','N9',),
                                        FY = 1.))
 
 #
@@ -319,7 +319,7 @@ RESU5=MECA_STATIQUE(    MODELE=MO,       CHAM_MATER=CHMAT,EXCIT=(
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU1,
                    NOM_CHAM='DEPL',
-                   NOEUD='N18',
+                   GROUP_NO='N18',
                    NOM_CMP='DY',
                    VALE_CALC=0.0,
                    CRITERE='ABSOLU',
@@ -327,7 +327,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 _F(NUME_ORDRE=1,
                    RESULTAT=RESU2,
                    NOM_CHAM='DEPL',
-                   NOEUD='N18',
+                   GROUP_NO='N18',
                    NOM_CMP='DY',
                    VALE_CALC=0.0,
                    CRITERE='ABSOLU',
@@ -335,7 +335,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 _F(NUME_ORDRE=1,
                    RESULTAT=RESU3,
                    NOM_CHAM='DEPL',
-                   NOEUD='N18',
+                   GROUP_NO='N18',
                    NOM_CMP='DY',
                    VALE_CALC=0.0,
                    CRITERE='ABSOLU',
@@ -343,7 +343,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 _F(NUME_ORDRE=1,
                    RESULTAT=RESU4,
                    NOM_CHAM='DEPL',
-                   NOEUD='N18',
+                   GROUP_NO='N18',
                    NOM_CMP='DY',
                    VALE_CALC=0.0,
                    CRITERE='ABSOLU',
@@ -351,7 +351,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 _F(NUME_ORDRE=1,
                    RESULTAT=RESU5,
                    NOM_CHAM='DEPL',
-                   NOEUD='N18',
+                   GROUP_NO='N18',
                    NOM_CMP='DY',
                    VALE_CALC=0.0,
                    CRITERE='ABSOLU',

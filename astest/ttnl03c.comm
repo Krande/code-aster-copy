@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,6 +27,12 @@ MAIL=LIRE_MAILLAGE(FORMAT='MED',
 MAIL2=CREA_MAILLAGE(MAILLAGE=MAIL,
                     LINE_QUAD=_F(TOUT='OUI',),
                     INFO=2,);
+
+MAIL2 = DEFI_GROUP( reuse = MAIL2, MAILLAGE = MAIL2,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M143', MAILLE = 'M143'),
+                                     ),
+         )
 
 MAIL2=DEFI_GROUP(reuse =MAIL2,
                  MAILLAGE=MAIL2,
@@ -327,7 +333,7 @@ TEST_RESU(CHAM_ELEM=_F(REFERENCE='SOURCE_EXTERNE',
                        POINT=1,
                        NOM_CMP='HYDR',
                        PRECISION=0.02,
-                       MAILLE='M143',
+                       GROUP_MA='M143',
                        CHAM_GD=HYDRELNO,
                        VALE_CALC=0.603026672,
                        VALE_REFE=0.59399999999999997,),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -66,6 +66,12 @@ MAIL2=DEFI_GROUP(reuse =MAIL2,
 
 MAIL=CREA_MAILLAGE(MAILLAGE=MAIL2,
                    LINE_QUAD=_F(TOUT='OUI',),);
+
+MAIL = DEFI_GROUP( reuse = MAIL, MAILLAGE = MAIL,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M109', MAILLE = 'M109'),
+                                     ),
+         )
 
 #
 # DEFINITION DES CHARGEMENTS ET DU MATERIAU ----------------------------
@@ -289,7 +295,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                    NOM_CHAM='ETHE_ELEM',
                    NOM_CMP='TOTALE',
                    VALE_CALC=-332.36296035464,
-                   MAILLE='M109',),
+                   GROUP_MA='M109',),
                 ),
           )
 TEST_RESU(RESU=(_F(NUME_ORDRE=0,
@@ -298,7 +304,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                    NOM_CHAM='ETHE_ELEM',
                    NOM_CMP='TOTALE',
                    VALE_CALC=-170.1559513297,
-                   MAILLE='M109',),
+                   GROUP_MA='M109',),
                 ),
           )
 TEST_RESU(RESU=(_F(NUME_ORDRE=0,
@@ -309,7 +315,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                    VALE_CALC=-170.1559513297,
                    VALE_REFE=-170.1559513297,
                    REFERENCE = 'AUTRE_ASTER',
-                   MAILLE='M109',),
+                   GROUP_MA='M109',),
                 ),
           )
 

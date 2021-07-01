@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -85,22 +85,22 @@ CHMAT=AFFE_MATERIAU(    MAILLAGE=MAILLAGE,
 #***********************************************************************
 
 CHAR_U1=AFFE_CHAR_MECA(    MODELE=MODELE,
-                              PRES_REP=_F(   MAILLE = ( 'M21','M22','M29','M30',
+                              PRES_REP=_F(   GROUP_MA = ( 'M21','M22','M29','M30',
                                                      'M19','M20','M27','M28', ),
                                           PRES = 1.)
                        )
 
 CHAR_U2=AFFE_CHAR_MECA(    MODELE=MODELE,
-                             PRES_REP=_F(   MAILLE = ( 'M13','M14','M15','M16', ),
+                             PRES_REP=_F(   GROUP_MA = ( 'M13','M14','M15','M16', ),
                                          PRES = 1.)
                         )
 
 DEPL_1=AFFE_CHAR_MECA(    MODELE=MODELE,FACE_IMPO=(
-                              _F(  MAILLE = ( 'M9','M10','M11','M12',),
+                              _F(  GROUP_MA = ( 'M9','M10','M11','M12',),
                                           DZ = 0.),
-                              _F(  MAILLE = ( 'M17','M18','M25','M26',),
+                              _F(  GROUP_MA = ( 'M17','M18','M25','M26',),
                                           DX = 0.),
-                              _F(  MAILLE = ( 'M23','M24','M31','M32',),
+                              _F(  GROUP_MA = ( 'M23','M24','M31','M32',),
                                           DY = 0.))
                            )
 
@@ -152,7 +152,7 @@ NOM_CHAM='VARI_ELGA', RESULTAT=U1,
                       )
 
 DEPL_2=AFFE_CHAR_MECA(    MODELE=MODELE,
-                              FACE_IMPO=_F(  MAILLE = ( 'M13','M14','M15','M16', ),
+                              FACE_IMPO=_F(  GROUP_MA = ( 'M13','M14','M15','M16', ),
                                           DZ = 1.)
                            )
 

@@ -130,7 +130,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U,
                    NOM_CHAM='DEPL',
-                   NOEUD='N2',
+                   GROUP_NO='N2',
                    NOM_CMP='DY',
                    VALE_CALC=15.000000000,
                    VALE_REFE=15,),
@@ -138,7 +138,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U,
                    NOM_CHAM='DEPL',
-                   NOEUD='N2',
+                   GROUP_NO='N2',
                    NOM_CMP='DY',
                    VALE_CALC=16.000000000,
                    VALE_REFE=16,),
@@ -146,7 +146,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U,
                    NOM_CHAM='DEPL',
-                   NOEUD='N2',
+                   GROUP_NO='N2',
                    NOM_CMP='DY',
                    VALE_CALC=15.000000000,
                    VALE_REFE=15,),
@@ -154,7 +154,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U,
                    NOM_CHAM='DEPL',
-                   NOEUD='N2',
+                   GROUP_NO='N2',
                    NOM_CMP='DY',
                    VALE_CALC=16.000000000,
                    VALE_REFE=16,),
@@ -162,7 +162,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U,
                    NOM_CHAM='DEPL',
-                   NOEUD='N2',
+                   GROUP_NO='N2',
                    NOM_CMP='DY',
                    VALE_CALC=15.000000000,
                    VALE_REFE=15,),
@@ -170,7 +170,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U,
                    NOM_CHAM='DEPL',
-                   NOEUD='N2',
+                   GROUP_NO='N2',
                    NOM_CMP='DY',
                    VALE_CALC=16.000000000,
                    VALE_REFE=16,),
@@ -181,7 +181,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
 #----------------------------
 if 0 :
     UN2=POST_RELEVE_T( ACTION=_F( RESULTAT = U, INTITULE = 'DEPLACEMENT_N2',
-                       NOEUD = 'N2', NOM_CHAM = 'DEPL', NOM_CMP = ('DY',),
+                       GROUP_NO = 'N2', NOM_CHAM = 'DEPL', NOM_CMP = ('DY',),
                        OPERATION = 'EXTRACTION') )
 
     IMPR_TABLE( TABLE=UN2, UNITE=38,  NOM_PARA=('INST', 'DY',), FORMAT='XMGRACE',
@@ -194,9 +194,9 @@ U =CALC_CHAMP(reuse=U ,  RESULTAT=U ,  CONTRAINTE=('SIEF_ELGA'))
 U2=EXTR_RESU(RESULTAT=U, ARCHIVAGE=_F(NUME_ORDRE = (3,5,7,9),))
 # on appelle 3 fois CALC_CHAMP + MAILLE pour forcer la creation de 3 LIGREL differents
 # (validation de la fiche 15152)
-U2=CALC_CHAMP(reuse=U2,  RESULTAT=U2,  CONTRAINTE=('SIGM_ELNO'), NUME_ORDRE=5, MAILLE='M1')
-U2=CALC_CHAMP(reuse=U2,  RESULTAT=U2,  CONTRAINTE=('SIGM_ELNO'), NUME_ORDRE=7, MAILLE='M1')
-U2=CALC_CHAMP(reuse=U2,  RESULTAT=U2,  CONTRAINTE=('SIGM_ELNO'), NUME_ORDRE=9, MAILLE='M1')
+U2=CALC_CHAMP(reuse=U2,  RESULTAT=U2,  CONTRAINTE=('SIGM_ELNO'), NUME_ORDRE=5, GROUP_MA='M1')
+U2=CALC_CHAMP(reuse=U2,  RESULTAT=U2,  CONTRAINTE=('SIGM_ELNO'), NUME_ORDRE=7, GROUP_MA='M1')
+U2=CALC_CHAMP(reuse=U2,  RESULTAT=U2,  CONTRAINTE=('SIGM_ELNO'), NUME_ORDRE=9, GROUP_MA='M1')
 U2=CALC_CHAMP  (reuse=U2,  RESULTAT=U2, CONTRAINTE='SIGM_NOEU', NUME_ORDRE=(5,7,9))
 
 U3=EXTR_RESU(          RESULTAT=U2, ARCHIVAGE=_F(NUME_ORDRE = (5,9), CHAM_EXCLU = ('SIGM_NOEU') ))

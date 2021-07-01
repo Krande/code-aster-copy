@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,8 +41,8 @@ MODELE=AFFE_MODELE(
 CARA=AFFE_CARA_ELEM(
                   MODELE=MODELE,COQUE=(
                    _F(  GROUP_MA = ( 'MA_COQU1',  'MA_COQU2', ), EPAIS = 1.E-2),
-                   _F(  MAILLE = ( 'M100037',  ),                EPAIS = 1.0001E-2),
-                   _F(  MAILLE = ( 'M200017',  ),                EPAIS = 0.9999E-2),
+                   _F(  GROUP_MA = ( 'M100037',  ),                EPAIS = 1.0001E-2),
+                   _F(  GROUP_MA = ( 'M200017',  ),                EPAIS = 0.9999E-2),
                    _F(  GROUP_MA = ( 'MA_COURO', ),              EPAIS = 1.E-1))
                        )
 
@@ -78,7 +78,7 @@ CHARG=AFFE_CHAR_MECA(
                             DRX = 0.,
                             DRY = 0.,
                             DRZ = 0.),
-                 _F(  NOEUD = ( 'N100076','N200076', ),
+                 _F(  GROUP_NO = ( 'N100076','N200076', ),
                             DRX = 0.))
                         )
 

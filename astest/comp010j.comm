@@ -186,10 +186,10 @@ TIMP=DEFI_FONCTION(NOM_PARA='INST',  NOM_RESU='TEMP',
 
 CHMECA=AFFE_CHAR_MECA(  MODELE=MO,
                         FACE_IMPO=(
-                              _F( MAILLE = 'DEVANT',  DZ = 0.),
-                              _F( MAILLE = 'BAS',     DY = 0.),
-                              _F( MAILLE = 'HAUT',    DY = 1.),
-                              _F( MAILLE = 'GAUCHE',  DX = 0 )
+                              _F( GROUP_MA = 'DEVANT',  DZ = 0.),
+                              _F( GROUP_MA = 'BAS',     DY = 0.),
+                              _F( GROUP_MA = 'HAUT',    DY = 1.),
+                              _F( GROUP_MA = 'GAUCHE',  DX = 0 )
                                    )
                                )
 

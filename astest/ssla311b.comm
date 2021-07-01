@@ -58,7 +58,7 @@ IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MA))
 FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
                         FOND_FISS=_F( GROUP_NO = ('P0',)),
                         SYME='OUI',
-                        LEVRE_SUP=_F(MAILLE='M5309'),
+                        LEVRE_SUP=_F(GROUP_MA='M5309'),
                       )
 
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -71,16 +71,16 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_NORM_COQUE=(_F(GROUP_MA='ISOLSTR',
                                        VECT_NORM=(0.0,0.0,1.0,),
-                                       NOEUD='N18',),
+                                       GROUP_NO='N18',),
                                     _F(GROUP_MA='IFLUSTR',
                                        VECT_NORM=(0.0,0.0,1.0,),
-                                       NOEUD='N921',),
+                                       GROUP_NO='N921',),
                                     _F(GROUP_MA='IFLUSOL',
                                        VECT_NORM=(0.0,0.0,-1.0,),
-                                       NOEUD='N795',),
+                                       GROUP_NO='N795',),
                                     _F(GROUP_MA='SLIBRE',
                                        VECT_NORM=(0.0,0.0,1.0,),
-                                       NOEUD='N371',),),)
+                                       GROUP_NO='N371',),),)
 
 #
 
@@ -322,14 +322,14 @@ dyna=REST_GENE_PHYS(RESU_GENE=dyge,
 dxa1r7=RECU_FONCTION(RESULTAT=dyna,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DX',
-                     NOEUD='N1626',
+                     GROUP_NO='N1626',
                      INTERPOL='LIN',
                      PROL_DROITE='CONSTANT',)
 
 dzc1r7=RECU_FONCTION(RESULTAT=dyna,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DZ',
-                     NOEUD='N917',
+                     GROUP_NO='N917',
                      INTERPOL='LIN',
                      PROL_DROITE='CONSTANT',)
 

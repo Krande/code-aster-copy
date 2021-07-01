@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -101,6 +101,15 @@ MAIL=CREA_MAILLAGE( MAILLAGE=MAILINI,
           MODI_MAILLE=(
            _F( TOUT = 'OUI',OPTION = 'QUAD8_9',PREF_NOEUD='NQ'),
            ))
+
+MAIL = DEFI_GROUP( reuse = MAIL, MAILLAGE = MAIL,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N304', NOEUD = 'N304'),
+                                        _F( NOM = 'NQ95', NOEUD = 'NQ95'),
+                                        _F( NOM = 'N293', NOEUD = 'N293'),
+                                        _F( NOM = 'N469', NOEUD = 'N469'),
+                                     ),
+         )
 
 MAIL=DEFI_GROUP(reuse =MAIL,
          MAILLAGE=MAIL,
@@ -288,7 +297,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 REFERENCE='ANALYTIQUE',
                 RESULTAT=cal1,
                 NOM_CHAM='DEPL',
-                NOEUD='N304',
+                GROUP_NO='N304',
                 NOM_CMP='PRE1',
                 VALE_CALC=-1.33823454E+03,
                 VALE_REFE=-1330.51641,
@@ -301,7 +310,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 REFERENCE='ANALYTIQUE',
                 RESULTAT=cal1,
                 NOM_CHAM='DEPL',
-                NOEUD='N293',
+                GROUP_NO='N293',
                 NOM_CMP='PRE1',
                 VALE_CALC=-1.33823454E+03,
                 VALE_REFE=-1330.51641,
@@ -314,7 +323,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 REFERENCE='ANALYTIQUE',
                 RESULTAT=cal1,
                 NOM_CHAM='DEPL',
-                NOEUD='N469',
+                GROUP_NO='N469',
                 NOM_CMP='PRE1',
                 VALE_CALC=-893.106954993,
                 VALE_REFE=-889.31760999999995,
@@ -326,7 +335,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 REFERENCE='ANALYTIQUE',
                 RESULTAT=cal1,
                 NOM_CHAM='DEPL',
-                NOEUD='NQ95',
+                GROUP_NO='NQ95',
                 NOM_CMP='PRE1',
                 VALE_CALC=-1.33823454E+03,
                 VALE_REFE=-1330.51641,

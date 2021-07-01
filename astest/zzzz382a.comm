@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,12 +43,12 @@ CEM = [None]*nbT
 
 for i, nbTour in enumerate(tours):
     CEK[i] = AFFE_CARA_ELEM(MODELE=MODELE,
-                            POUTRE=(_F(MAILLE='M1',
+                            POUTRE=(_F(GROUP_MA='M1',
                                        SECTION='CERCLE',
                                        VARI_SECT='CONSTANT',
                                        CARA=('R', 'EP'),
                                        VALE=(0.265, 0.265,),),
-                                    _F(MAILLE='M2',
+                                    _F(GROUP_MA='M2',
                                        SECTION='CERCLE',
                                        VARI_SECT='CONSTANT',
                                        CARA=('R', 'EP'),
@@ -56,12 +56,12 @@ for i, nbTour in enumerate(tours):
 
 for i, nbTour in enumerate(tours):
     CEM[i] = AFFE_CARA_ELEM(MODELE=MODELE,
-                            POUTRE=(_F(MAILLE='M1',
+                            POUTRE=(_F(GROUP_MA='M1',
                                        SECTION='CERCLE',
                                        VARI_SECT='CONSTANT',
                                        CARA=('R', 'EP'),
                                        VALE=(0.265, 0.265,),),
-                                    _F(MAILLE='M2',
+                                    _F(GROUP_MA='M2',
                                        SECTION='CERCLE',
                                        VARI_SECT='CONSTANT',
                                        CARA=('R', 'EP'),
@@ -161,7 +161,7 @@ BASEAP = CALC_MODES(MATR_RIGI=K2,
                     CALC_FREQ=_F(NMAX_FREQ=(2,),),)
 
 MDST1 = MODE_STATIQUE(MATR_RIGI=K2, MATR_MASS=M[0],
-                      MODE_STAT=_F(NOEUD='N2', AVEC_CMP=('DX', 'DY'),),
+                      MODE_STAT=_F(GROUP_NO='N2', AVEC_CMP=('DX', 'DY'),),
                       SOLVEUR=_F(RENUM='METIS',
                                  STOP_SINGULIER='NON',
                                  NPREC=8,
@@ -207,7 +207,7 @@ for j, NTRIM in enumerate(tours):
     CHA[j] = CALC_CHAMP(RESULTAT=MODP[j], ENERGIE='EPOT_ELEM',)
 
     TEST_RESU(RESU=_F(NUME_ORDRE=j+1,
-                      MAILLE='M2',
+                      GROUP_MA='M2',
                       REFERENCE='NON_DEFINI',
                       RESULTAT=CHA[j],
                       NOM_CHAM='EPOT_ELEM',

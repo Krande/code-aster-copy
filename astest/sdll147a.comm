@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -131,7 +131,7 @@ CORRSTA=CALC_CHAMP(reuse=CORRSTA,
 
 MODESTA1=MODE_STATIQUE( MATR_RIGI=RIGIDITE,
                         MATR_MASS=MASSE,
-                        MODE_STAT=_F(NOEUD='N0',
+                        MODE_STAT=_F(GROUP_NO='N0',
                                      AVEC_CMP='DX',),);
 
 SPECTRE=DEFI_NAPPE(NOM_PARA='AMOR',

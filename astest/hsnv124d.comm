@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -125,7 +125,7 @@ MOMECA=AFFE_MODELE(
 
 PRESSION=AFFE_CHAR_MECA(        MODELE=MOMECA,
 
-                                  PRES_REP=_F(  MAILLE = 'HAUT',     PRES = -210.,      )
+                                  PRES_REP=_F(  GROUP_MA = 'HAUT',     PRES = -210.,      )
                            )
 
 FTEMP=DEFI_FONCTION(
@@ -176,10 +176,10 @@ CHMATER2=AFFE_MATERIAU(  MAILLAGE=MA,
 
 LIAISON=AFFE_CHAR_MECA(      MODELE=MOMECA,DDL_IMPO=(
 
-                               _F(  NOEUD = 'NO3',    DX = 0.,  DY = 0.,   DZ = 0., ),
-                               _F(  NOEUD = 'NO4',           DY = 0.,   DZ = 0., ),
-                               _F(  NOEUD = 'NO8',           DY = 0.,         ),
-                               _F(  NOEUD = 'NO7',           DY = 0.,         ))
+                               _F(  GROUP_NO = 'NO3',    DX = 0.,  DY = 0.,   DZ = 0., ),
+                               _F(  GROUP_NO = 'NO4',           DY = 0.,   DZ = 0., ),
+                               _F(  GROUP_NO = 'NO8',           DY = 0.,         ),
+                               _F(  GROUP_NO = 'NO7',           DY = 0.,         ))
                            )
 
 U=STAT_NON_LINE(
@@ -223,47 +223,47 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOM_CMP='SIYY',
                    VALE_CALC=209.999999994,
                    VALE_REFE=210.0,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(NUME_ORDRE=41,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U,
                    NOM_CHAM='EPSP_ELNO',
-                   NOEUD='NO1',
+                   GROUP_NO='NO1',
                    NOM_CMP='EPYY',
                    VALE_CALC= 2.11012381E-03,
                    VALE_REFE=2.1072E-3,
                    PRECISION=2.E-3,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=1.26,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=U,
                    NOM_CHAM='EPSP_ELNO',
-                   NOEUD='NO1',
+                   GROUP_NO='NO1',
                    NOM_CMP='EPYY',
                    VALE_CALC= 4.23081202E-03,
                    VALE_REFE=4.1894699999999998E-3,
                    PRECISION=1.E-2,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(NUME_ORDRE=61,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=U,
                    NOM_CHAM='EPSP_ELNO',
-                   NOEUD='NO1',
+                   GROUP_NO='NO1',
                    NOM_CMP='EPYY',
                    VALE_CALC= 4.23081202E-03,
                    VALE_REFE=4.1894699999999998E-3,
                    PRECISION=1.E-2,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(NUME_ORDRE=71,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=U,
                    NOM_CHAM='EPSP_ELNO',
-                   NOEUD='NO1',
+                   GROUP_NO='NO1',
                    NOM_CMP='EPYY',
                    VALE_CALC= 4.16262639E-03,
                    VALE_REFE=4.1213100000000004E-3,
                    PRECISION=0.010999999999999999,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 ),
           )
 
@@ -273,7 +273,7 @@ TAB1=POST_RELEVE_T(     ACTION=_F(
                           NOM_CHAM = 'EPSP_ELNO',
                           NOM_CMP = 'EPYY',
                           OPERATION = 'EXTRACTION',
-                          NOEUD = 'NO1',
+                          GROUP_NO = 'NO1',
                           TOUT_ORDRE = 'OUI',
                           )
              )
@@ -325,47 +325,47 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    NOM_CMP='SIYY',
                    VALE_CALC=209.999999994,
                    VALE_REFE=210.0,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(NUME_ORDRE=41,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U2,
                    NOM_CHAM='EPSP_ELNO',
-                   NOEUD='NO1',
+                   GROUP_NO='NO1',
                    NOM_CMP='EPYY',
                    VALE_CALC= 2.11012381E-03,
                    VALE_REFE=2.1072E-3,
                    PRECISION=2.E-3,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=1.26,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=U2,
                    NOM_CHAM='EPSP_ELNO',
-                   NOEUD='NO1',
+                   GROUP_NO='NO1',
                    NOM_CMP='EPYY',
                    VALE_CALC= 4.23081202E-03,
                    VALE_REFE=4.1894699999999998E-3,
                    PRECISION=1.E-2,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(NUME_ORDRE=61,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=U2,
                    NOM_CHAM='EPSP_ELNO',
-                   NOEUD='NO1',
+                   GROUP_NO='NO1',
                    NOM_CMP='EPYY',
                    VALE_CALC= 4.23081202E-03,
                    VALE_REFE=4.1894699999999998E-3,
                    PRECISION=1.E-2,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(NUME_ORDRE=71,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=U2,
                    NOM_CHAM='EPSP_ELNO',
-                   NOEUD='NO1',
+                   GROUP_NO='NO1',
                    NOM_CMP='EPYY',
                    VALE_CALC= 4.16262639E-03,
                    VALE_REFE=4.1213100000000004E-3,
                    PRECISION=0.010999999999999999,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 ),
           )
 
@@ -375,7 +375,7 @@ TAB2=POST_RELEVE_T(     ACTION=_F(
                           NOM_CHAM = 'EPSP_ELNO',
                           NOM_CMP = 'EPYY',
                           OPERATION = 'EXTRACTION',
-                          NOEUD = 'NO1',
+                          GROUP_NO = 'NO1',
                           TOUT_ORDRE = 'OUI',
                           )
              )

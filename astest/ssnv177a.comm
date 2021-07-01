@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -71,11 +71,11 @@ r33 = 3**-0.5
 
 C_RIGIDE = AFFE_CHAR_MECA(
   MODELE = MO,
-  DDL_IMPO = _F(NOEUD = 'N0',DX = 0,DY = 0,DZ = 0),
+  DDL_IMPO = _F(GROUP_NO = 'N0',DX = 0,DY = 0,DZ = 0),
   LIAISON_DDL = (
-    _F(NOEUD=('N2','N1'),DDL=('DX','DY'),COEF_MULT=(1,-1),COEF_IMPO=0),
-    _F(NOEUD=('N3','N1'),DDL=('DX','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
-    _F(NOEUD=('N3','N2'),DDL=('DY','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
+    _F(GROUP_NO=('N2','N1'),DDL=('DX','DY'),COEF_MULT=(1,-1),COEF_IMPO=0),
+    _F(GROUP_NO=('N3','N1'),DDL=('DX','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
+    _F(GROUP_NO=('N3','N2'),DDL=('DY','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
     )
   );
 
@@ -93,13 +93,13 @@ U_CIS=DEFI_FONCTION(NOM_PARA='INST',
 
 CHR_T = AFFE_CHAR_MECA(
                         MODELE = MO,
-                        DDL_IMPO = (_F(NOEUD='N1', DX=1.),),
+                        DDL_IMPO = (_F(GROUP_NO='N1', DX=1.),),
                         );
 
 CHR_C = AFFE_CHAR_MECA(
                        MODELE = MO,
-                       DDL_IMPO = (_F(NOEUD='N1', DX=0.5,DY=0.5),
-                                   _F(NOEUD='N2', DY=0.75),),
+                       DDL_IMPO = (_F(GROUP_NO='N1', DX=0.5,DY=0.5),
+                                   _F(GROUP_NO='N2', DY=0.75),),
                        );
 
 

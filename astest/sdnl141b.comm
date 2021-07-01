@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -74,7 +74,7 @@ cara=AFFE_CARA_ELEM(MODELE=mo,
 )
 
 encas14=AFFE_CHAR_MECA(MODELE=mo,
-                       DDL_IMPO=_F(NOEUD=('N0001','N0004',),
+                       DDL_IMPO=_F(GROUP_NO=('N0001','N0004',),
                                    DX=0.,
                                    DY=0.,
                                    DZ=0.,
@@ -91,7 +91,7 @@ DZ=AFFE_CHAR_MECA(MODELE=mo,
                               DZ=1.,),)
 
 liai=AFFE_CHAR_MECA(MODELE=mo,
-                    LIAISON_DDL=_F(NOEUD=('N0002','N0003',),
+                    LIAISON_DDL=_F(GROUP_NO=('N0002','N0003',),
                                    DDL=('DZ','DZ',),
                                    COEF_MULT=(1.0,-1.0,),
                                    COEF_IMPO=0.,),)
@@ -157,10 +157,10 @@ dyna=DYNA_NON_LINE(
 # Test de non-régression
 TEST_RESU(
     RESU=(
-        _F(RESULTAT=dyna, INST= 1.0, NOM_CHAM='DEPL', NOEUD='N0002', NOM_CMP='DZ',
+        _F(RESULTAT=dyna, INST= 1.0, NOM_CHAM='DEPL', GROUP_NO='N0002', NOM_CMP='DZ',
            VALE_CALC= 0.9482929760004651, REFERENCE='SOURCE_EXTERNE',
            VALE_REFE= 0.9483296224651554, PRECISION=0.5E-02,),
-        _F(RESULTAT=dyna, INST= 2.0, NOM_CHAM='DEPL', NOEUD='N0002', NOM_CMP='DZ',
+        _F(RESULTAT=dyna, INST= 2.0, NOM_CHAM='DEPL', GROUP_NO='N0002', NOM_CMP='DZ',
            VALE_CALC= 0.8036541785171513, REFERENCE='SOURCE_EXTERNE',
            VALE_REFE= 0.8039064669491974, PRECISION=0.5E-02,),
     ),

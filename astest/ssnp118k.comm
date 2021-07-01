@@ -43,12 +43,12 @@ MO=AFFE_MODELE(
 
                 AFFE= (
                 _F(
-                        MAILLE = ('CUBE','DROITE'),
+                        GROUP_MA = ('CUBE','DROITE'),
                         PHENOMENE = 'MECANIQUE',
                         MODELISATION = '3D'
                      ),
                  _F(
-                   MAILLE = 'CUBEDEG',
+                   GROUP_MA = 'CUBEDEG',
                    PHENOMENE = 'MECANIQUE',
                    MODELISATION = '3D_INTERFACE_S'
                    )
@@ -82,14 +82,14 @@ CM=AFFE_MATERIAU(
 
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
                      MASSIF=(
-           _F(MAILLE='CUBEDEG',ANGL_REP=(30,0,0)),
+           _F(GROUP_MA='CUBEDEG',ANGL_REP=(30,0,0)),
                                  ));
 
 
 LIAISON=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-    _F(MAILLE='GAUCHE2', DX=0, DY=0, DZ=0 ),
+    _F(GROUP_MA='GAUCHE2', DX=0, DY=0, DZ=0 ),
     )
   )
 
@@ -97,7 +97,7 @@ LIAISON=AFFE_CHAR_MECA(
 TRAC_N=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-    _F(MAILLE='DROITE', DX=ampl*0.86602540378444 , DY= ampl*0.5),
+    _F(GROUP_MA='DROITE', DX=ampl*0.86602540378444 , DY= ampl*0.5),
     )
   )
 
@@ -150,8 +150,8 @@ U_FAT=STAT_NON_LINE(
     _F(CHARGE = TRAC_N, FONC_MULT = FCT),
   ),
   COMPORTEMENT  = (
-          _F(RELATION = 'CZM_FAT_MIX',MAILLE = 'CUBEDEG'),
-          _F(RELATION = 'ELAS',       MAILLE = 'CUBE'),
+          _F(RELATION = 'CZM_FAT_MIX',GROUP_MA = 'CUBEDEG'),
+          _F(RELATION = 'ELAS',       GROUP_MA = 'CUBE'),
           ),
   INCREMENT = _F(
     LIST_INST    = DEFLIST,
@@ -182,7 +182,7 @@ TEST_RESU(RESU=_F(INST=3.0,
                   NOM_CMP='SIXX',
                   VALE_CALC=6.058264463,
                   VALE_REFE=6.0582599999999998,
-                  MAILLE='CUBE',),
+                  GROUP_MA='CUBE',),
           )
 
 TEST_RESU(RESU=_F(INST=9.0,
@@ -193,14 +193,14 @@ TEST_RESU(RESU=_F(INST=9.0,
                   NOM_CMP='SIGN',
                   VALE_CALC=1.452207065,
                   VALE_REFE=1.45221,
-                  MAILLE='CUBEDEG',),
+                  GROUP_MA='CUBEDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=9.0,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=U_FAT,
                   NOM_CHAM='DEPL',
-                  NOEUD='NS17',
+                  GROUP_NO='NS17',
                   NOM_CMP='SIGN',
                   VALE_CALC=1.452207065,
                   VALE_REFE=1.45221,),
@@ -215,7 +215,7 @@ TEST_RESU(RESU=_F(INST=7.0,
                   VALE_CALC= 8.50031658E-15,
                   VALE_REFE=0.0,
                   CRITERE='ABSOLU',
-                  MAILLE='CUBEDEG',),
+                  GROUP_MA='CUBEDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=3.0,
@@ -226,7 +226,7 @@ TEST_RESU(RESU=_F(INST=3.0,
                   NOM_CMP='V1',
                   VALE_CALC=0.020495868,
                   VALE_REFE=0.020495900000000001,
-                  MAILLE='CUBEDEG',),
+                  GROUP_MA='CUBEDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=3.0,
@@ -237,7 +237,7 @@ TEST_RESU(RESU=_F(INST=3.0,
                   NOM_CMP='V4',
                   VALE_CALC=0.194456663,
                   VALE_REFE=0.19445699999999999,
-                  MAILLE='CUBEDEG',),
+                  GROUP_MA='CUBEDEG',),
           )
 
 FIN()

@@ -22,7 +22,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),ERREUR= _F(ERREUR_F='ABORT',))
 # table des coefficients
 t1=LIRE_TABLE(UNITE=31, FORMAT='ASTER',
               )
-              
+
 #-----------------------------------------------------------------------
 #                         Lecture du maillage
 #
@@ -32,27 +32,36 @@ MA=LIRE_MAILLAGE(FORMAT='MED',);
 MA=DEFI_GROUP(reuse=MA,
               MAILLAGE=MA,
               CREA_GROUP_MA=(_F(NOM='ALL', TOUT= 'OUI',),),);
-              
+
 MA=DEFI_GROUP(reuse=MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',),),);
 
-MA=DEFI_GROUP(reuse=MA,
-              MAILLAGE=MA,
-              CREA_GROUP_NO=(_F(NOM = 'N30', NOEUD='N30',),),);              
-              
+
+
 MA2=CREA_MAILLAGE(MAILLAGE=MA,
                  MODI_MAILLE=_F(GROUP_MA='GRMA1',
                                 OPTION='QUAD8_9',),);
 
-MA2=DEFI_GROUP(reuse=MA2,
-              MAILLAGE=MA2,
-              CREA_GROUP_MA=(_F(NOM='HE1', TOUT='OUI', TYPE_MAILLE='3D',),),);
-                                               
+MA2 = DEFI_GROUP( reuse = MA2, MAILLAGE = MA2,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N11', NOEUD = 'N11'),
+                                        _F( NOM = 'N4', NOEUD = 'N4'),
+                                        _F( NOM = 'N6', NOEUD = 'N6'),
+                                        _F( NOM = 'N16', NOEUD = 'N16'),
+                                        _F( NOM = 'N12', NOEUD = 'N12'),
+                                        _F( NOM = 'N18', NOEUD = 'N18'),
+                                     ),
+         )
 
 MA2=DEFI_GROUP(reuse=MA2,
               MAILLAGE=MA2,
-              CREA_GROUP_MA=(_F(NOM='MORIG', TOUT='OUI', TYPE_MAILLE='POI1',),),);              
+              CREA_GROUP_MA=(_F(NOM='HE1', TOUT='OUI', TYPE_MAILLE='3D',),),);
+
+
+MA2=DEFI_GROUP(reuse=MA2,
+              MAILLAGE=MA2,
+              CREA_GROUP_MA=(_F(NOM='MORIG', TOUT='OUI', TYPE_MAILLE='POI1',),),);
 
 #-----------------------------------------------------------------------
 #                         modele mecanique
@@ -76,17 +85,17 @@ BETON=DEFI_MATERIAU(ELAS=_F(E=3.E10,
                            NU=0.2,
                            RHO=2400,
                            ALPHA=1.096e-05,),);
-                    
+
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
                             NU=0.0,
                             RHO=7800.0,
-                            ALPHA=1.096e-05,),);   
-                            
+                            ALPHA=1.096e-05,),);
+
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA2,
                     AFFE=(_F(TOUT=('OUI'),
-                             MATER=(BETON,),),));    
-                             
+                             MATER=(BETON,),),));
+
 #-----------------------------------------------------------------------
 #   carateristiques des elements de structure
 
@@ -106,10 +115,10 @@ CARAEL=AFFE_CARA_ELEM(MODELE=MO,
                              _F(GROUP_MA='MORIG',
                                CARA='K_TR_D_N',
                                VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),
-                          ));  
-                                                                                                    
+                          ));
+
 #-----------------------------------------------------------------------
-#                      defi et affe materiaux 
+#                      defi et affe materiaux
 #
 # ALPHA et THER sont necessaire pour le calcul thermique
 
@@ -146,7 +155,7 @@ ACIER_TH=DEFI_MATERIAU(ELAS_FO=(_F(E=YOUN_ACI,
                     THER=_F(LAMBDA=54.6,
                             RHO_CP=3710000.0,),);
 
-                    
+
 #
 # DEFINITION DU CHARGEMENT THERMIQUE
 CHAR_TH1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
@@ -159,8 +168,8 @@ FTEMP=DEFI_FONCTION(NOM_PARA='X',
                     NOM_RESU='TOUTRESU',
                     PROL_DROITE = 'CONSTANT',
                     PROL_GAUCHE = 'CONSTANT',
-                    VALE=(0,20.0,30.,50.0),); 
- 
+                    VALE=(0,20.0,30.,50.0),);
+
 CHAR_TH2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
                                       MAILLAGE=MA2,
                                AFFE=_F(  TOUT = 'OUI',
@@ -168,15 +177,15 @@ CHAR_TH2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
                                       VALE_F = FTEMP))
 
 LINST=DEFI_LIST_REEL(VALE=(0.,),);
-                                     
+
 RESUTF = CREA_RESU(OPERATION='AFFE',
                   TYPE_RESU = 'EVOL_THER',
                   NOM_CHAM= 'TEMP',
                   AFFE = _F ( CHAM_GD   = CHAR_TH2,
                               LIST_INST =LINST,
                             )
-                  )                                      
-                                      
+                  )
+
 # chargements thermiques finals
 CHMATTH1=AFFE_MATERIAU(    MAILLAGE=MA2,
                   AFFE=_F(  TOUT = 'OUI', MATER = BETON_TH),
@@ -186,14 +195,14 @@ CHMATTH1=AFFE_MATERIAU(    MAILLAGE=MA2,
 CHMATTH2=AFFE_MATERIAU(    MAILLAGE=MA2,
                   AFFE=_F(  TOUT = 'OUI', MATER = BETON_TH),
                   AFFE_VARC =_F(TOUT='OUI', EVOL=RESUTF,VALE_REF=20., NOM_VARC='TEMP',),
-                          )                          
-                           
+                          )
+
 #-----------------------------------------------------------------------
 #              chargements meca
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
-# général - blocage 
+# général - blocage
 
 CONDLIM=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=(_F(GROUP_NO='ORIG',
@@ -203,35 +212,35 @@ CONDLIM=AFFE_CHAR_MECA(MODELE=MO,
                                    DRX=0.0,
                                    DRY=0.0,
                                    DRZ=0.0,),),
-                       LIAISON_GROUP=(_F(NOEUD_1=('N5','N17',),
-                                      NOEUD_2=('N22','N27',),
+                       LIAISON_GROUP=(_F(GROUP_NO_1=('N5','N17',),
+                                      GROUP_NO_2=('N22','N27',),
                                       DDL_1='DX',
                                       COEF_MULT_1=1.0,
                                       DDL_2='DX',
                                       COEF_MULT_2=-1.0,
                                       COEF_IMPO=0.,),
-                                   _F(NOEUD_1=('N5','N17',),
-                                      NOEUD_2=('N22','N27',),
+                                   _F(GROUP_NO_1=('N5','N17',),
+                                      GROUP_NO_2=('N22','N27',),
                                       DDL_1='DY',
                                       COEF_MULT_1=1.0,
                                       DDL_2='DY',
                                       COEF_MULT_2=-1.0,
                                       COEF_IMPO=0.,),
-                                   _F(NOEUD_1=('N5','N17',),
-                                      NOEUD_2=('N22','N27',),
+                                   _F(GROUP_NO_1=('N5','N17',),
+                                      GROUP_NO_2=('N22','N27',),
                                       DDL_1='DZ',
                                       COEF_MULT_1=1.0,
                                       DDL_2='DZ',
                                       COEF_MULT_2=-1.0,
                                       COEF_IMPO=0.,),
-                                   _F(NOEUD_1=('N6','N12','N18',),
+                                   _F(GROUP_NO_1=('N6','N12','N18',),
                                       GROUP_NO_2='GRNO3',
                                       DDL_1='DX',
                                       COEF_MULT_1=1.0,
                                       DDL_2='DRZ',
                                       COEF_MULT_2=0.5,
                                       COEF_IMPO=0.,),
-                                   _F(NOEUD_1=('N4','N11','N16',),
+                                   _F(GROUP_NO_1=('N4','N11','N16',),
                                       GROUP_NO_2='GRNO3',
                                       DDL_1='DX',
                                       COEF_MULT_1=1.0,
@@ -247,14 +256,14 @@ CONDLIM=AFFE_CHAR_MECA(MODELE=MO,
                                       GROUP_MA_1='FACE1',
                                       GROUP_NO_2='ORIG',),),);
 
-               
+
 # 6 chargements mécaniques
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
 # chargement 1 - PLANC1-poid pression : 1 suivant -Z
 pesant = AFFE_CHAR_MECA(MODELE=MO,
-                        PESANTEUR = _F(GRAVITE =9.8, 
+                        PESANTEUR = _F(GRAVITE =9.8,
                                        DIRECTION = ( 0., 0., -1),),
                        )
 
@@ -272,7 +281,7 @@ fnod = AFFE_CHAR_MECA(MODELE=MO,
                                          FY = -1000.,),
                        )
 
-                       
+
 #-----------------------------------------------------------------------
 # chargement 4 - Force linéique : 1000N/m suivant -Y
 flin = AFFE_CHAR_MECA(MODELE=MO,
@@ -285,7 +294,7 @@ flin = AFFE_CHAR_MECA(MODELE=MO,
 depimp = AFFE_CHAR_MECA(MODELE=MO,
                         DDL_IMPO = _F(GROUP_NO='N30',
                                          DZ = -0.001,),
-                       )                       
+                       )
 
 #-----------------------------------------------------------------------
 # chargement 6 - Pression variable suivant -Y (fluide) : 10000 Pa pour X = 0, 0 pour X = 10 m
@@ -299,8 +308,8 @@ pvar = AFFE_CHAR_MECA_F(MODELE=MO,
                         FORCE_COQUE = _F(GROUP_MA='GRMA1',
                                         FY = PHYDR,
                                         ),
-                       );                       
- 
+                       );
+
 #-----------------------------------------------------------------------
 # Appel de la macro
 #-----------------------------------------------------------------------
@@ -322,20 +331,20 @@ COMBINAISON_CHARGE (
                                 ),
                     EXCIT_THER=(
                                 _F(CHAM_MATER_THER= CHMATTH1, NOM_CHAR = 'n7',),
-                                _F(CHAM_MATER_THER= CHMATTH2, NOM_CHAR = 'n8',), 
+                                _F(CHAM_MATER_THER= CHMATTH2, NOM_CHAR = 'n8',),
                                 ),
                     CHAM_RESU=(
                                _F(NOM_CHAM= 'EFGE_NOEU', NOM_CMP = ('N', 'VY', 'VZ', ), ),
                                _F(NOM_CHAM= 'DEPL',  NOM_CMP = ('DX', 'DZ',), ),
                                _F(NOM_CHAM= 'SIEF_ELNO', NOM_CMP = ('SIXX', 'SIYY'), ),
-                               ), 
+                               ),
                     TABLE_RESU = (
-                                  _F(OPTION = 'COEF_COMB', TABLE = CO('tab1'),),   
-                                  _F(OPTION = 'CALC_COMB', TABLE = CO('tab2'),),   
+                                  _F(OPTION = 'COEF_COMB', TABLE = CO('tab1'),),
+                                  _F(OPTION = 'CALC_COMB', TABLE = CO('tab2'),),
                                   _F(OPTION = 'EXTREMA',   TABLE = CO('tab3'),
-                                     CRIT_COMP = ('MAXI','MAXI_ABS'), ),   
-                                  ),   
-                    # IMPRESSION = 'OUI', UNITE=21,                              
+                                     CRIT_COMP = ('MAXI','MAXI_ABS'), ),
+                                  ),
+                    # IMPRESSION = 'OUI', UNITE=21,
                     )
 
 #----------------------------------
@@ -352,7 +361,7 @@ TEST_TABLE(CRITERE='RELATIF',
            FILTRE=_F(NOM_PARA='INTITULE',
                      VALE_K='COMB_15',),)
 
-#----------------------------------                     
+#----------------------------------
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC= -1200.,
            NOM_PARA='VALE',
@@ -363,7 +372,7 @@ TEST_TABLE(CRITERE='RELATIF',
                      VALE_K='VY',),
                    _F(NOM_PARA='EXTREMA',
                      VALE_K='MIN',),
-                  ),)                     
+                  ),)
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC= 11000.0,
            NOM_PARA='VALE',
@@ -374,7 +383,7 @@ TEST_TABLE(CRITERE='RELATIF',
                      VALE_K='VY',),
                    _F(NOM_PARA='EXTREMA',
                      VALE_K='MAXI_ABS',),
-                  ),)                   
+                  ),)
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC= 11885566.2010,
            NOM_PARA='VALE',
@@ -385,7 +394,7 @@ TEST_TABLE(CRITERE='RELATIF',
                      VALE_K='SIXX',),
                    _F(NOM_PARA='EXTREMA',
                      VALE_K='MAX',),
-                  ),)             
+                  ),)
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC= -22057255.75835,
            NOM_PARA='VALE',
@@ -397,7 +406,7 @@ TEST_TABLE(CRITERE='RELATIF',
                    _F(NOM_PARA='EXTREMA',
                      VALE_K='MIN',),
                   ),)
-#----------------------------------         
+#----------------------------------
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC_K= 'COMB_19',
            NOM_PARA='INTITULE',
@@ -407,7 +416,7 @@ TEST_TABLE(CRITERE='RELATIF',
                      VALE_K='VY',),
                    _F(NOM_PARA='EXTREMA',
                      VALE_K='MAXI_ABS',),
-                  ),)         
+                  ),)
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC_K= 'COMB_15',
            NOM_PARA='INTITULE',
@@ -417,7 +426,7 @@ TEST_TABLE(CRITERE='RELATIF',
                      VALE_K='VZ',),
                    _F(NOM_PARA='EXTREMA',
                      VALE_K='MAXI_ABS',),
-                  ),)        
+                  ),)
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC= 0.018426111312,
            NOM_PARA='VALE',
@@ -427,7 +436,7 @@ TEST_TABLE(CRITERE='RELATIF',
                      VALE_K='DX',),
                    _F(NOM_PARA='EXTREMA',
                      VALE_K='MAX',),
-                  ),)        
+                  ),)
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC_K= 'COMB_15',
            NOM_PARA='INTITULE',
@@ -437,7 +446,7 @@ TEST_TABLE(CRITERE='RELATIF',
                      VALE_K='SIYY',),
                    _F(NOM_PARA='EXTREMA',
                      VALE_K='MAXI_ABS',),
-                  ),)    
+                  ),)
 TEST_TABLE(CRITERE='RELATIF',
            VALE_CALC= 508355.43093,
            NOM_PARA='VALE',
@@ -447,7 +456,7 @@ TEST_TABLE(CRITERE='RELATIF',
                      VALE_K='SIYY',),
                    _F(NOM_PARA='EXTREMA',
                      VALE_K='MAXI_ABS',),
-                  ),)                 
+                  ),)
 
 
 FIN()

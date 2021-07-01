@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -59,13 +59,13 @@ CARA=AFFE_CARA_ELEM(MODELE=BARRE,
 GUIDAGE=AFFE_CHAR_MECA(MODELE=BARRE,
                        DDL_IMPO=(
                           _F( GROUP_MA = 'TOUT',DX = 0., DZ = 0., DRX = 0., DRY = 0.),
-                          _F( NOEUD = 'N1',    DY = 0.,  DRZ = 0.),
+                          _F( GROUP_NO = 'N1',    DY = 0.,  DRZ = 0.),
                        )
                       )
 
 #
 CHARTRAN=AFFE_CHAR_MECA(MODELE=BARRE,
-                        FORCE_NODALE=_F( NOEUD = 'N11',  FY = -1000.))
+                        FORCE_NODALE=_F( GROUP_NO = 'N11',  FY = -1000.))
 
 #
 # DEFINITION DE L'OBSTACLE
@@ -99,7 +99,7 @@ TRAN_PH1=DYNA_LINE(TYPE_CALCUL='TRAN',
                                 INST_FIN = t_fin,
                                 PAS = 1.E-5),
                    COMPORTEMENT=_F(RELATION='DIS_CHOC',
-                                   NOEUD_1 = 'N11',
+                                   GROUP_NO_1 = 'N11',
                                    OBSTACLE = OBSTACLE,
                                    ORIG_OBST = (1., 0., 0.,),
                                    NORM_OBST = (1., 0., 0.,),
@@ -156,7 +156,7 @@ MODES0=CALC_MODES(MATR_RIGI=K_ASSE,
 
 MS=MODE_STATIQUE(MATR_RIGI=K_ASSE,
                  MATR_MASS=M_ASSE,
-                 FORCE_NODALE=_F(NOEUD='N11',
+                 FORCE_NODALE=_F(GROUP_NO='N11',
                                  AVEC_CMP='DY',
                                 ),
                  )
@@ -250,7 +250,7 @@ TRAN_GE2=DYNA_VIBRA(TYPE_CALCUL='TRAN',
                                  PAS = 1.E-5),
                  #   ARCHIVAGE=_F( PAS_ARCH = 10),
                     COMPORTEMENT=_F(RELATION='DIS_CHOC',
-                            NOEUD_1 = 'N11',
+                            GROUP_NO_1 = 'N11',
                             OBSTACLE = OBSTACLE,
                             ORIG_OBST = (1., 0., 0.,),
                             NORM_OBST = (1., 0., 0.,),
@@ -270,7 +270,7 @@ TRAN_GE3=DYNA_VIBRA(TYPE_CALCUL='TRAN',
                                  PAS = 1.E-5),
               #      ARCHIVAGE=_F( PAS_ARCH = 10),
                     COMPORTEMENT=_F(RELATION='DIS_CHOC',
-                            NOEUD_1 = 'N11',
+                            GROUP_NO_1 = 'N11',
                             OBSTACLE = OBSTACLE,
                             ORIG_OBST = (1., 0., 0.,),
                             NORM_OBST = (1., 0., 0.,),
@@ -290,7 +290,7 @@ TRAN_GE4=DYNA_VIBRA(TYPE_CALCUL='TRAN',
                                  PAS = 1.E-5),
               #      ARCHIVAGE=_F( PAS_ARCH = 10),
                     COMPORTEMENT=_F(RELATION='DIS_CHOC',
-                            NOEUD_1 = 'N11',
+                            GROUP_NO_1 = 'N11',
                             OBSTACLE = OBSTACLE,
                             ORIG_OBST = (1., 0., 0.,),
                             NORM_OBST = (1., 0., 0.,),
@@ -327,7 +327,7 @@ TEST_RESU(RESU=(
                _F(INST=t_depl,
                   RESULTAT=TRAN_PH1,
                   NOM_CHAM='DEPL',
-                  NOEUD='N11',
+                  GROUP_NO='N11',
                   NOM_CMP='DY',
                   REFERENCE='AUTRE_ASTER',
                   VALE_REFE=valref,
@@ -339,7 +339,7 @@ TEST_RESU(RESU=(
                _F(INST=t_depl,
                   RESULTAT=TRAN2,
                   NOM_CHAM='DEPL',
-                  NOEUD='N11',
+                  GROUP_NO='N11',
                   NOM_CMP='DY',
                   REFERENCE='AUTRE_ASTER',
                   VALE_REFE=valref,
@@ -351,7 +351,7 @@ TEST_RESU(RESU=(
                _F(INST=t_depl,
                   RESULTAT=TRAN3,
                   NOM_CHAM='DEPL',
-                  NOEUD='N11',
+                  GROUP_NO='N11',
                   NOM_CMP='DY',
                   REFERENCE='AUTRE_ASTER',
                   VALE_REFE=valref,
@@ -363,7 +363,7 @@ TEST_RESU(RESU=(
                _F(INST=t_depl,
                   RESULTAT=TRAN4,
                   NOM_CHAM='DEPL',
-                  NOEUD='N11',
+                  GROUP_NO='N11',
                   NOM_CMP='DY',
                   REFERENCE='AUTRE_ASTER',
                   VALE_REFE=valref,
@@ -376,7 +376,7 @@ TEST_RESU(RESU=(
                _F(INST=t_vite,
                   RESULTAT=TRAN_PH1,
                   NOM_CHAM='VITE',
-                  NOEUD='N11',
+                  GROUP_NO='N11',
                   NOM_CMP='DY',
                   REFERENCE='AUTRE_ASTER',
                   VALE_REFE=valrefv,
@@ -388,7 +388,7 @@ TEST_RESU(RESU=(
                _F(INST=t_vite,
                   RESULTAT=TRAN2,
                   NOM_CHAM='VITE',
-                  NOEUD='N11',
+                  GROUP_NO='N11',
                   NOM_CMP='DY',
                   REFERENCE='AUTRE_ASTER',
                   VALE_REFE=valrefv,
@@ -399,7 +399,7 @@ TEST_RESU(RESU=(
                _F(INST=t_vite,
                   RESULTAT=TRAN3,
                   NOM_CHAM='VITE',
-                  NOEUD='N11',
+                  GROUP_NO='N11',
                   NOM_CMP='DY',
                   REFERENCE='AUTRE_ASTER',
                   VALE_REFE=valrefv,
@@ -410,7 +410,7 @@ TEST_RESU(RESU=(
                _F(INST=t_vite,
                   RESULTAT=TRAN4,
                   NOM_CHAM='VITE',
-                  NOEUD='N11',
+                  GROUP_NO='N11',
                   NOM_CMP='DY',
                   REFERENCE='AUTRE_ASTER',
                   VALE_REFE=valrefv,

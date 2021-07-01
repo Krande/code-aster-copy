@@ -1,14 +1,38 @@
-COOR_3D
-N1  0.  0.  0.
-N2  1.  0.  0.
-FINSF
-%
-POI1
-P2 N2
-FINSF
-%
-SEG2
-M1 N1 N2
-FINSF
-%
-FIN
+ TITRE
+ME-30-JUIN-2021 09:22:06                                                        
+ FINSF
+ %
+ COOR_3D
+ N1        0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ N2        1.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ FINSF
+ %
+ POI1    
+ P2       N2      
+ FINSF
+ %
+ SEG2    
+ M1       N1       N2      
+ FINSF
+ %
+ GROUP_NO
+ N1                      
+ N1      
+ FINSF
+ %
+ GROUP_NO
+ N2                      
+ N2      
+ FINSF
+ %
+ GROUP_MA
+ M1                      
+ M1      
+ FINSF
+ %
+ GROUP_MA
+ P2                      
+ P2      
+ FINSF
+ %
+ FIN

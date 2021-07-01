@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -118,6 +118,17 @@ MAIL=CREA_MAILLAGE(MAILLAGE=MA,INFO=2,
                  CREA_MAILLE=_F(NOM='PLAQ_P1I',
                                   GROUP_MA='PLAQ_P1S',
                                   PREF_MAILLE='S',),);
+
+MAIL = DEFI_GROUP( reuse = MAIL, MAILLAGE = MAIL,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M20', MAILLE = 'M20'),
+                                        _F( NOM = 'SM1', MAILLE = 'SM1'),
+                                        _F( NOM = 'M19', MAILLE = 'M19'),
+                                     ),
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N1', NOEUD = 'N1'),
+                                     ),
+         )
 
 MODEL=AFFE_MODELE(MAILLAGE=MAIL,
                   AFFE=_F(TOUT='OUI',
@@ -262,7 +273,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC=-5.07975446E+05,
                   VALE_REFE=-5.E5,
                   PRECISION=0.029999999999999999,
-                  MAILLE='M19',
+                  GROUP_MA='M19',
                   ),
           )
 
@@ -275,7 +286,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC=-5.24610344E+05,
                   VALE_REFE=-5.E5,
                   PRECISION=0.050000000000000003,
-                  MAILLE='M20',
+                  GROUP_MA='M20',
                   ),
           )
 
@@ -290,17 +301,17 @@ RESU2=POST_CHAMP(RESULTAT=RESU, GROUP_MA='PLAQ_P1I',
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU,
                    NOM_CHAM='EFGE_ELNO',
-                   NOEUD='N1',
+                   GROUP_NO='N1',
                    NOM_CMP='MXX',
                    VALE_CALC=-3.2785152036793E5,
-                   MAILLE='SM1',),
+                   GROUP_MA='SM1',),
                 _F(NUME_ORDRE=1,
                    RESULTAT=RESU2,
                    NOM_CHAM='EFGE_ELNO',
-                   NOEUD='N1',
+                   GROUP_NO='N1',
                    NOM_CMP='MXX',
                    VALE_CALC=-6.1984660030029001E4,
-                   MAILLE='SM1',),
+                   GROUP_MA='SM1',),
                 ),
           )
 

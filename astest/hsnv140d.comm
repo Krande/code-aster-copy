@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -85,7 +85,7 @@ MOMECA1 = AFFE_MODELE (MAILLAGE = MAIL,
 
 
 CHMECA1 = AFFE_CHAR_MECA (MODELE   = MOMECA1,
-                          DDL_IMPO = (_F( NOEUD = ('NO1','NO2','NO3','NO4',),DY = 0.,)
+                          DDL_IMPO = (_F( GROUP_NO = ('NO1','NO2','NO3','NO4',),DY = 0.,)
                                      )
                          )
 
@@ -239,7 +239,7 @@ TEST_RESU (RESU = (
                 _F(INST           = 89.0,
                    RESULTAT       = U1,
                    NOM_CHAM       = 'VARI_NOEU',
-                   NOEUD          = 'NO1',
+                   GROUP_NO          = 'NO1',
                    NOM_CMP        = 'V1',
                    VALE_CALC      = 0.0,
                    VALE_REFE      = 0.0,
@@ -250,7 +250,7 @@ TEST_RESU (RESU = (
                 _F(INST      = 200.0,
                    RESULTAT  = U1,
                    NOM_CHAM  = 'SIEF_NOEU',
-                   NOEUD     = 'NO1',
+                   GROUP_NO     = 'NO1',
                    NOM_CMP   = 'SIYY',
                    VALE_CALC = 313428673.238,
                    VALE_REFE = 303.0E+06,
@@ -260,7 +260,7 @@ TEST_RESU (RESU = (
                 _F(INST      = 400.0,
                    RESULTAT  = U1,
                    NOM_CHAM  = 'SIEF_NOEU',
-                   NOEUD     = 'NO1',
+                   GROUP_NO     = 'NO1',
                    NOM_CMP   = 'SIYY',
                    VALE_CALC = 312625512.106 ,
                    VALE_REFE = 316.0E+06,
@@ -270,7 +270,7 @@ TEST_RESU (RESU = (
                 _F(INST      = 600.0,
                    RESULTAT  = U1,
                    NOM_CHAM  = 'SIEF_NOEU',
-                   NOEUD     = 'NO1',
+                   GROUP_NO     = 'NO1',
                    NOM_CMP   = 'SIYY',
                    VALE_CALC = 308727844.316,
                    VALE_REFE = 325.0E+06,
@@ -280,7 +280,7 @@ TEST_RESU (RESU = (
                 _F(INST      = 800.0,
                    RESULTAT  = U1,
                    NOM_CHAM  = 'SIEF_NOEU',
-                   NOEUD     = 'NO1',
+                   GROUP_NO     = 'NO1',
                    NOM_CMP   = 'SIYY',
                    VALE_CALC = 309169759.399,
                    VALE_REFE = 327.0E+06,

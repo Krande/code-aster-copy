@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,8 +30,8 @@ MA0=LIRE_MAILLAGE(FORMAT='ASTER',)
 MA=CREA_MAILLAGE(MAILLAGE=MA0,
     CREA_POI1=(
         _F(NOM_GROUP_MA='MASSES', GROUP_NO = 'MASSES', ),
-        _F(NOM_GROUP_MA='N2', NOEUD = 'N2', ),
-        _F(NOM_GROUP_MA='N3', NOEUD = 'N3', ),
+        _F(NOM_GROUP_MA='N2', GROUP_NO = 'N2', ),
+        _F(NOM_GROUP_MA='N3', GROUP_NO = 'N3', ),
     ),
 )
 
@@ -51,7 +51,7 @@ CARA_ELE =AFFE_CARA_ELEM(  MODELE=MO,
                                         VALE = (0., 0., beta,),  REPERE = 'GLOBAL'),)
                          )
 
-CDL=AFFE_CHAR_CINE(  MODELE=MO,MECA_IMPO=(_F(  NOEUD='N1', DX = 0., DY = 0., DZ = 0.,),
+CDL=AFFE_CHAR_CINE(  MODELE=MO,MECA_IMPO=(_F(  GROUP_NO='N1', DX = 0., DY = 0., DZ = 0.,),
                                           _F(  GROUP_NO='TOUT', DY = 0., DX = 0.,),)
                   )
 
@@ -102,7 +102,7 @@ MNL = MODE_NON_LINE(MATR_RIGI=K,
                             ITER_NEWTON_MAXI=15),
                  ETAT_INIT=_F(MODE_LINE = MODES,NUME_ORDRE = 2,
                               DIR_EVOLUTION=1,),
-                 CHOC=(_F(NOEUD='N2',
+                 CHOC=(_F(GROUP_NO='N2',
                           OBSTACLE = 'BI_PLAN',
                           NOM_CMP='DZ',
                           JEU=1.,

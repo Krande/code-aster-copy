@@ -64,7 +64,7 @@ CHARCINE=AFFE_CHAR_CINE(MODELE=MODEL,
 
 # Affectation du chargement : force ponctuelle sur un noeud
 FORCE=AFFE_CHAR_MECA(MODELE=MODEL,
-                     FORCE_NODALE=_F(NOEUD='N107',
+                     FORCE_NODALE=_F(GROUP_NO='N107',
                                      FZ=1.0,),);
 
 # Calcul des matrices & vecteurs elementaires

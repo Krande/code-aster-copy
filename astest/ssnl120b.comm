@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -130,18 +130,18 @@ MPa = 1.0E+06
 mclf = {}
 mclf['RESU'] = []
 for ii in range(len(instant)):
-   mclf['RESU'].append( _F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='SIXX',INST=instant[ii],
+   mclf['RESU'].append( _F(RESULTAT=U1MAZAR,GROUP_MA='M1',POINT=1,SOUS_POINT=1,NOM_CMP='SIXX',INST=instant[ii],
                            VALE_CALC=sigma[ii]*MPa, VALE_REFE=sigma[ii]*MPa,
                            NOM_CHAM='SIEF_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), ), )
-   mclf['RESU'].append( _F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V1',  INST=instant[ii],
+   mclf['RESU'].append( _F(RESULTAT=U1MAZAR,GROUP_MA='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V1',  INST=instant[ii],
                            VALE_CALC=critels[ii], VALE_REFE=critels[ii],
                            NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), ), )
    if (sigma[ii] > 0.0 ):
-      mclf['RESU'].append( _F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V3',  INST=instant[ii],
+      mclf['RESU'].append( _F(RESULTAT=U1MAZAR,GROUP_MA='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V3',  INST=instant[ii],
                               VALE_CALC=domtrac[ii], VALE_REFE=domtrac[ii],
                               NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('ABSOLU'), ), )
    else:
-      mclf['RESU'].append( _F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V3',  INST=instant[ii],
+      mclf['RESU'].append( _F(RESULTAT=U1MAZAR,GROUP_MA='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V3',  INST=instant[ii],
                               VALE_CALC=domcomp[ii], VALE_REFE=domcomp[ii],
                               NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('ABSOLU'), ), )
 
@@ -153,7 +153,7 @@ critelu = NP.array( [ 1.4,  0.5, 10.0, -40.0, -20.0, -50.0, 0.0 ] ) * NP.sqrt(1.
 mclf = {}
 mclf['RESU'] = []
 for ii in range(len(instant)):
-   mclf['RESU'].append( _F(RESULTAT=U1MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V2',  INST=instant[ii],
+   mclf['RESU'].append( _F(RESULTAT=U1MAZAR,GROUP_MA='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V2',  INST=instant[ii],
                            VALE_CALC=critelu[ii], VALE_REFE=critelu[ii],
                            NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('ABSOLU'), ), )
 TEST_RESU(**mclf)
@@ -206,18 +206,18 @@ MPa = 1.0E+06
 mclf = {}
 mclf['RESU'] = []
 for ii in range(len(instant)):
-   mclf['RESU'].append( _F(RESULTAT=U2MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='SIXX',INST=instant[ii],
+   mclf['RESU'].append( _F(RESULTAT=U2MAZAR,GROUP_MA='M1',POINT=1,SOUS_POINT=1,NOM_CMP='SIXX',INST=instant[ii],
                            VALE_CALC=sigma[ii]*MPa, VALE_REFE=sigma[ii]*MPa,
                            NOM_CHAM='SIEF_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), ), )
-   mclf['RESU'].append( _F(RESULTAT=U2MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V1',  INST=instant[ii],
+   mclf['RESU'].append( _F(RESULTAT=U2MAZAR,GROUP_MA='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V1',  INST=instant[ii],
                            VALE_CALC=critels[ii], VALE_REFE=critels[ii],
                            NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('RELATIF','ABSOLU'), ), )
    if (sigma[ii] > 0.0 ):
-      mclf['RESU'].append( _F(RESULTAT=U2MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V3',  INST=instant[ii],
+      mclf['RESU'].append( _F(RESULTAT=U2MAZAR,GROUP_MA='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V3',  INST=instant[ii],
                               VALE_CALC=domtrac[ii], VALE_REFE=domtrac[ii],
                               NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('ABSOLU'), ), )
    else:
-      mclf['RESU'].append( _F(RESULTAT=U2MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V3',  INST=instant[ii],
+      mclf['RESU'].append( _F(RESULTAT=U2MAZAR,GROUP_MA='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V3',  INST=instant[ii],
                               VALE_CALC=domcomp[ii], VALE_REFE=domcomp[ii],
                               NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('ABSOLU'), ), )
 TEST_RESU(**mclf)
@@ -228,7 +228,7 @@ critelu = NP.array(  [ 1.4, -40.0, 10.0, -50.0, 0.0 ] ) * NP.sqrt(1.0+2.0*Nu*Nu)
 mclf = {}
 mclf['RESU'] = []
 for ii in range(len(instant)):
-   mclf['RESU'].append( _F(RESULTAT=U2MAZAR,MAILLE='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V2',  INST=instant[ii],
+   mclf['RESU'].append( _F(RESULTAT=U2MAZAR,GROUP_MA='M1',POINT=1,SOUS_POINT=1,NOM_CMP='V2',  INST=instant[ii],
                            VALE_CALC=critelu[ii], VALE_REFE=critelu[ii],
                            NOM_CHAM='VARI_ELGA', REFERENCE='ANALYTIQUE', CRITERE=('ABSOLU'), ), )
 TEST_RESU(**mclf)

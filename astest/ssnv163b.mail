@@ -3,10 +3,10 @@
  FINSF
  %
  COOR_2D
- N1        0.00000000000000D+00  0.00000000000000D+00
- N2        1.00000000000000D+00  0.00000000000000D+00
- N3        0.00000000000000D+00  1.00000000000000D+00
- N4        1.00000000000000D+00  1.00000000000000D+00
+ N1        0.00000000000000E+00  0.00000000000000E+00
+ N2        1.00000000000000E+00  0.00000000000000E+00
+ N3        0.00000000000000E+00  1.00000000000000E+00
+ N4        1.00000000000000E+00  1.00000000000000E+00
  FINSF
  %
  QUAD4   
@@ -21,48 +21,58 @@
  FINSF
  %
  GROUP_NO
- P1      
+ P1                      
  N1      
  FINSF
  %
  GROUP_NO
- P2      
+ P2                      
  N2      
  FINSF
  %
  GROUP_NO
- P3      
+ P3                      
  N3      
  FINSF
  %
  GROUP_NO
- P4      
+ P4                      
  N4      
  FINSF
  %
+ GROUP_NO
+ N3                      
+ N3      
+ FINSF
+ %
  GROUP_MA
- S_      
+ S_                      
  M1      
  FINSF
  %
  GROUP_MA
- L_INF   
+ L_INF                   
  M2      
  FINSF
  %
  GROUP_MA
- L_DRT   
+ L_DRT                   
  M3      
  FINSF
  %
  GROUP_MA
- L_SUP   
+ L_SUP                   
  M4      
  FINSF
  %
  GROUP_MA
- L_GCH   
+ L_GCH                   
  M5      
+ FINSF
+ %
+ GROUP_MA
+ M1                      
+ M1      
  FINSF
  %
  FIN

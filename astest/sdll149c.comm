@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -371,6 +371,14 @@ SQUEL=DEFI_SQUELETTE(MODELE_GENE=MODEGE,
 MODSQEL=REST_SOUS_STRUC(RESU_GENE=MODEGEN,
                         SQUELETTE=SQUEL,);
 
+SQUEL = DEFI_GROUP( reuse = SQUEL, MAILLAGE = SQUEL,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'NO20', NOEUD = 'NO20'),
+                                        _F( NOM = 'NO268', NOEUD = 'NO268'),
+                                        _F( NOM = 'NO10', NOEUD = 'NO10'),
+                                     ),
+         )
+
 # -------------------------------------------------------------
 # VALIDATION DES FREQUENCES PROPRES
 # -------------------------------------------------------------
@@ -573,7 +581,7 @@ TEST_RESU(RESU=(_F(RESULTAT=ANA_A2_S,
                    NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   NOEUD='NO10',
+                   GROUP_NO='NO10',
                    VALE_REFE=0.27432,
                    PRECISION=0.002,
                    REFERENCE='AUTRE_ASTER',
@@ -582,7 +590,7 @@ TEST_RESU(RESU=(_F(RESULTAT=ANA_A2_S,
                    NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   NOEUD='NO20',
+                   GROUP_NO='NO20',
                    VALE_REFE=0.179173,
                    PRECISION=0.002,
                    REFERENCE='AUTRE_ASTER',
@@ -591,7 +599,7 @@ TEST_RESU(RESU=(_F(RESULTAT=ANA_A2_S,
                    NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   NOEUD='NO268',
+                   GROUP_NO='NO268',
                    VALE_REFE=0.00825,
                    PRECISION=0.05,
                    REFERENCE='AUTRE_ASTER',
@@ -601,7 +609,7 @@ TEST_RESU(RESU=(_F(RESULTAT=ANA_A2_S,
                    NUME_ORDRE=1,
                    NOM_CHAM='ACCE_ABSOLU',
                    NOM_CMP='DX',
-                   NOEUD='NO10',
+                   GROUP_NO='NO10',
                    VALE_REFE=227.616,
                    PRECISION=0.002,
                    REFERENCE='AUTRE_ASTER',
@@ -610,7 +618,7 @@ TEST_RESU(RESU=(_F(RESULTAT=ANA_A2_S,
                    NUME_ORDRE=1,
                    NOM_CHAM='ACCE_ABSOLU',
                    NOM_CMP='DX',
-                   NOEUD='NO20',
+                   GROUP_NO='NO20',
                    VALE_REFE=285.906,
                    PRECISION=0.03,
                    REFERENCE='AUTRE_ASTER',
@@ -619,7 +627,7 @@ TEST_RESU(RESU=(_F(RESULTAT=ANA_A2_S,
                    NUME_ORDRE=1,
                    NOM_CHAM='ACCE_ABSOLU',
                    NOM_CMP='DX',
-                   NOEUD='NO268',
+                   GROUP_NO='NO268',
                    VALE_REFE=177.284,
                    PRECISION=0.04,
                    REFERENCE='AUTRE_ASTER',

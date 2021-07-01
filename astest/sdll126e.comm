@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -91,8 +91,8 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                      DZ=0.0,),
                                   _F(GROUP_MA='ROTOR',
                                      DRZ=0.0,),
-                                  _F(NOEUD='N1',DX=0.0,DY=0.0,),
-                                  _F(NOEUD='N14',DX=0.0,DY=0.0,),
+                                  _F(GROUP_NO='N1',DX=0.0,DY=0.0,),
+                                  _F(GROUP_NO='N14',DX=0.0,DY=0.0,),
                                      ),);
 
 balou = 0.05;
@@ -179,7 +179,7 @@ BASEI = CREA_RESU(OPERATION='AFFE',TYPE_RESU='MODE_MECA',AFFE=champi,NOM_CHAM='D
 
 MDST1=MODE_STATIQUE(MATR_RIGI=RIGIDITE,
                    MATR_MASS=MASSE,
-                   MODE_STAT=_F(NOEUD='N1',AVEC_CMP=('DX','DY'),),
+                   MODE_STAT=_F(GROUP_NO='N1',AVEC_CMP=('DX','DY'),),
                    SOLVEUR=_F(RENUM='METIS',
                               STOP_SINGULIER='NON',
                               NPREC=8,
@@ -189,7 +189,7 @@ MDST1=MODE_STATIQUE(MATR_RIGI=RIGIDITE,
 
 MDST2=MODE_STATIQUE(MATR_RIGI=RIGIDITE,
                    MATR_MASS=MASSE,
-                   MODE_STAT=_F(NOEUD='N14',AVEC_CMP=('DX','DY'),),
+                   MODE_STAT=_F(GROUP_NO='N14',AVEC_CMP=('DX','DY'),),
                    SOLVEUR=_F(RENUM='METIS',
                               STOP_SINGULIER='NON',
                               NPREC=8,

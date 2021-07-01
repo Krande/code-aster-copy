@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -70,12 +70,12 @@ MO=AFFE_MODELE(
 
                 AFFE= (
                 _F(
-                   MAILLE = ('PRISM','DROITE'),
+                   GROUP_MA = ('PRISM','DROITE'),
                    PHENOMENE = 'MECANIQUE',
                    MODELISATION = '3D'
                      ),
                  _F(
-                   MAILLE = 'PRISMDEG',
+                   GROUP_MA = 'PRISMDEG',
                    PHENOMENE = 'MECANIQUE',
                    MODELISATION = '3D_JOINT'
                    )
@@ -103,7 +103,7 @@ CM=AFFE_MATERIAU(MAILLAGE=MA,
 LIAISON=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-    _F(MAILLE='GAUCHE2', DX=0, DY=0, DZ=0),
+    _F(GROUP_MA='GAUCHE2', DX=0, DY=0, DZ=0),
     )
   )
 
@@ -116,7 +116,7 @@ LIAISON=AFFE_CHAR_MECA(
 
 
 TRAC_1=AFFE_CHAR_MECA(MODELE=MO,
-                      FACE_IMPO=_F(MAILLE='DROITE',
+                      FACE_IMPO=_F(GROUP_MA='DROITE',
                                    DX=cos(angle),
                                    DY=sin(angle),
                                    DZ=0,
@@ -144,9 +144,9 @@ U_1=STAT_NON_LINE(MODELE=MO,
                          _F(CHARGE=TRAC_1, FONC_MULT=FCT1,),
                          ),
                   COMPORTEMENT=(_F(RELATION='JOINT_MECA_FROT',
-                                MAILLE='PRISMDEG',),
+                                GROUP_MA='PRISMDEG',),
                              _F(RELATION='ELAS',
-                                MAILLE='PRISM',),),
+                                GROUP_MA='PRISM',),),
                   INCREMENT=_F(LIST_INST=L_INST,
                                INST_FIN=insfin/4,
                                INST_INIT=1),
@@ -197,9 +197,9 @@ U_1=STAT_NON_LINE(reuse=U_1,
                   EXCIT=(_F(CHARGE=LIAISON,),
                          _F(CHARGE=TRAC_2,),),
                   COMPORTEMENT=(_F(RELATION='JOINT_MECA_FROT',
-                                MAILLE='PRISMDEG',),
+                                GROUP_MA='PRISMDEG',),
                              _F(RELATION='ELAS',
-                                MAILLE='PRISM',),),
+                                GROUP_MA='PRISM',),),
                   INCREMENT=_F(LIST_INST=L_INST,
                                INST_FIN=insfin,
                                INST_INIT=insfin/4),

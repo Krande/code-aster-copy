@@ -1,32 +1,64 @@
-TITRE
-  TEST IRCN validation code_ASTER  SDLD313
-  SYSTEME MASSE-RESSORT A 2 DEGRES DE LIBERTE
-  AMORTISSEMENT HYSTERETIQUE
-  MODELISATION C
-FINSF
-COOR_3D
-  A        0.   0.  0.
-  B        1.   0.  0.
-  C        2.   0.  0.
-FINSF
-SEG2
-  K1       A        B
-  K2       B        C
-FINSF
-GROUP_MA  NOM=RESSORT
-    K1   K2   
-FINSF
-GROUP_NO  NOM=ENCAS
-    A   
-FINSF
-GROUP_NO  NOM=APPUIS
-    B C   
-FINSF
-GROUP_NO  NOM=MASSE
-    B C 
-FINSF
-GROUP_MA  NOM=AMORT
-    K1   
-
-FINSF
-FIN
+ TITRE
+  TEST IRCN validation code_ASTER  SDLD313                                      
+  SYSTEME MASSE-RESSORT A 2 DEGRES DE LIBERTE                                   
+  AMORTISSEMENT HYSTERETIQUE                                                    
+  MODELISATION C                                                                
+ FINSF
+ %
+ COOR_3D
+ A         0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ B         1.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ C         2.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ FINSF
+ %
+ SEG2    
+ K1       A        B       
+ K2       B        C       
+ FINSF
+ %
+ GROUP_NO
+ ENCAS                   
+ A       
+ FINSF
+ %
+ GROUP_NO
+ APPUIS                  
+ B        C       
+ FINSF
+ %
+ GROUP_NO
+ MASSE                   
+ B        C       
+ FINSF
+ %
+ GROUP_NO
+ A                       
+ A       
+ FINSF
+ %
+ GROUP_NO
+ C                       
+ C       
+ FINSF
+ %
+ GROUP_NO
+ B                       
+ B       
+ FINSF
+ %
+ GROUP_MA
+ RESSORT                 
+ K1       K2      
+ FINSF
+ %
+ GROUP_MA
+ AMORT                   
+ K1      
+ FINSF
+ %
+ GROUP_MA
+ K2                      
+ K2      
+ FINSF
+ %
+ FIN

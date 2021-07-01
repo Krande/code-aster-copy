@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -71,17 +71,17 @@ CHMAT=AFFE_MATERIAU(    MAILLAGE=MAILLAGE,
 #***********************************************************************
 
 CHAR_U1=AFFE_CHAR_MECA(    MODELE=MODELE,
-                              PRES_REP=_F(   MAILLE = 'M4',
+                              PRES_REP=_F(   GROUP_MA = 'M4',
                                           PRES = 1.)
                        )
 
 CHAR_U2=AFFE_CHAR_MECA(    MODELE=MODELE,
-                             PRES_REP=_F(   MAILLE = 'M3',
+                             PRES_REP=_F(   GROUP_MA = 'M3',
                                          PRES = 1.)
                         )
 
 DEPL_1=AFFE_CHAR_CINE(    MODELE=MODELE,
-                              MECA_IMPO=_F(  MAILLE = 'M2',
+                              MECA_IMPO=_F(  GROUP_MA = 'M2',
                                           DY = 0.)
                            )
 
@@ -158,7 +158,7 @@ VAR_INI=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_VARI_R',
                       )
 
 DEPL_2=AFFE_CHAR_MECA(    MODELE=MODELE,
-                              FACE_IMPO=_F(  MAILLE = 'M4',
+                              FACE_IMPO=_F(  GROUP_MA = 'M4',
                                           DY = 1.)
                            )
 
@@ -217,7 +217,7 @@ U2=CALC_CHAMP(  reuse      = U2,
 ############################################################################
 DEP      = POST_RELEVE_T ( ACTION    =_F( INTITULE   = 'DEPL'  ,
                                          RESULTAT   =  U2   ,
-                                         NOEUD   = ('N4',)  ,
+                                         GROUP_NO   = ('N4',)  ,
                                          NOM_CHAM   = 'DEPL'  ,
                                          NOM_CMP    = ( 'DY','DX') ,
                                          OPERATION  = 'EXTRACTION',),);
@@ -231,7 +231,7 @@ IMPR_TABLE ( TABLE = DEP ,
 
 SIG     = POST_RELEVE_T ( ACTION    =_F( INTITULE   = 'SIGM_NOEU'  ,
                                          RESULTAT   =  U2   ,
-                                         NOEUD   = ('N4',)  ,
+                                         GROUP_NO   = ('N4',)  ,
                                          NOM_CHAM   = 'SIGM_NOEU'  ,
                                          NOM_CMP    = ( 'SIXX','SIYY',) ,
                                          OPERATION  = 'EXTRACTION',),);
@@ -251,45 +251,45 @@ RODEPX=RECU_FONCTION(RESULTAT=U2,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DX',
                      INST = 4.5,
-                     NOEUD='N4',
+                     GROUP_NO='N4',
                      TITRE='DEP X',);
 RODEPY=RECU_FONCTION(RESULTAT=U2,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DY',
                      INST = 4.5,
-                     NOEUD='N4',
+                     GROUP_NO='N4',
                      TITRE='DEP Y',);
 ROSIGX=RECU_FONCTION(RESULTAT=U2,
                      NOM_CHAM='SIGM_NOEU',
                      NOM_CMP='SIXX',
                      INST = 4.5,
-                     NOEUD='N4',
+                     GROUP_NO='N4',
                      TITRE='SIG X',);
 ROSIGY=RECU_FONCTION(RESULTAT=U2,
                      NOM_CHAM='SIGM_NOEU',
                      NOM_CMP='SIYY',
                      INST = 4.5,
-                     NOEUD='N4',
+                     GROUP_NO='N4',
                      TITRE='SIG Y',);
 
 TEST_RESU(RESU=(_F(INST=4.5,
                    RESULTAT=U2,
                    NOM_CHAM='SIGM_NOEU',
-                   NOEUD='N4',
+                   GROUP_NO='N4',
                    NOM_CMP='SIXX',
                    VALE_CALC=-2.00000017278,
                    ),
                 _F(INST=4.5,
                    RESULTAT=U2,
                    NOM_CHAM='SIGM_NOEU',
-                   NOEUD='N4',
+                   GROUP_NO='N4',
                    NOM_CMP='SIZZ',
                    VALE_CALC=-2.00000011915,
                    ),
                 _F(INST=4.5,
                    RESULTAT=U2,
                    NOM_CHAM='SIGM_NOEU',
-                   NOEUD='N4',
+                   GROUP_NO='N4',
                    NOM_CMP='SIYY',
                    VALE_CALC=-6.66300261515,
                    ),
@@ -299,14 +299,14 @@ TEST_RESU(RESU=(_F(INST=4.5,
 TEST_RESU(RESU=(_F(INST=4.5,
                    RESULTAT=U2,
                    NOM_CHAM='DEPL',
-                   NOEUD='N4',
+                   GROUP_NO='N4',
                    NOM_CMP='DX',
                    VALE_CALC=0.0565008603456,
                    ),
                 _F(INST=4.5,
                    RESULTAT=U2,
                    NOM_CHAM='DEPL',
-                   NOEUD='N4',
+                   GROUP_NO='N4',
                    NOM_CMP='DY',
                    VALE_CALC=-0.1,
                    ),

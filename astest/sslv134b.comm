@@ -385,9 +385,9 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 # POST_K1_K2_K3 : VALIDATION GROUP_NO
 MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
-               CREA_GROUP_NO=(_F( NOEUD = ('N49','N56',),
+               CREA_GROUP_NO=(_F( GROUP_NO = ('N49','N56',),
                                   NOM = 'NOFF1'),
-                              _F( NOEUD = ('N1388','N1346'),
+                              _F( GROUP_NO = ('N1388','N1346'),
                                  NOM = 'NOFF2'),),);
 
 TABL_K4=POST_K1_K2_K3(FOND_FISS = FISSN,

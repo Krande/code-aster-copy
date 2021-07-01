@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -356,7 +356,7 @@ ACIER2=DEFI_MATERIAU(  ELAS=_F(     E = 250000.,
 CHMAT=AFFE_MATERIAU( MAILLAGE=MA,
                      AFFE=(_F( GROUP_MA = 'BLOC',
                                MATER = ACIER ),
-                           _F( MAILLE = 'M1',
+                           _F( GROUP_MA = 'M1',
                                MATER = ACIER2))
               )
 
@@ -447,7 +447,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='E',
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIZZ',
                    VALE_CALC=585.88463896235,
-                   MAILLE='M1',),
+                   GROUP_MA='M1',),
                 ),
           )
 

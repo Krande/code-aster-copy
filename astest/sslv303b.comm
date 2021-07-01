@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -178,28 +178,28 @@ SIG=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='ELNO_SIEF_R',
              RESULTAT=CO_FOUR5,ANGLE=0.,NOM_CHAM='SIGM_ELNO',)
 
 #
-TEST_RESU(CHAM_NO=(_F(NOEUD='N249',
+TEST_RESU(CHAM_NO=(_F(GROUP_NO='N249',
                       NOM_CMP='DX',
                       PRECISION=7.0000000000000001E-3,
                       CHAM_GD=U_GR,
                       VALE_CALC= 3.54116502E-07,
                       VALE_REFE=3.566E-07,
                       REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='N87',
+                   _F(GROUP_NO='N87',
                       NOM_CMP='DX',
                       PRECISION=8.9999999999999993E-3,
                       CHAM_GD=U_GR,
                       VALE_CALC= 3.53595278E-07,
                       VALE_REFE=3.566E-07,
                       REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='N249',
+                   _F(GROUP_NO='N249',
                       CRITERE='ABSOLU',
                       NOM_CMP='DY',
                       CHAM_GD=U_GR,
                       REFERENCE='ANALYTIQUE',
                       VALE_REFE=0.0,
                       VALE_CALC=0.0,),
-                   _F(NOEUD='N87',
+                   _F(GROUP_NO='N87',
                       CRITERE='ABSOLU',
                       NOM_CMP='DY',
                       CHAM_GD=U_GR,
@@ -229,14 +229,14 @@ TEST_TABLE(PRECISION=0.042000000000000003,
            )
 
 #
-TEST_RESU(CHAM_NO=(_F(NOEUD='N249',
+TEST_RESU(CHAM_NO=(_F(GROUP_NO='N249',
                       NOM_CMP='DX',
                       PRECISION=0.014,
                       CHAM_GD=U_PR,
                       VALE_CALC=-7.71291488E-06,
                       VALE_REFE=-7.8199999999999997E-06,
                       REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='N87',
+                   _F(GROUP_NO='N87',
                       NOM_CMP='DX',
                       PRECISION=0.016,
                       CHAM_GD=U_PR,
@@ -287,14 +287,14 @@ TEST_TABLE(PRECISION=0.087999999999999995,
 
 #
 #
-TEST_RESU(CHAM_NO=(_F(NOEUD='N249',
+TEST_RESU(CHAM_NO=(_F(GROUP_NO='N249',
                       NOM_CMP='DX',
                       PRECISION=0.014,
                       CHAM_GD=U,
                       VALE_CALC=-7.35879838E-06,
                       VALE_REFE=-7.4599999999999997E-06,
                       REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='N87',
+                   _F(GROUP_NO='N87',
                       NOM_CMP='DX',
                       PRECISION=0.016,
                       CHAM_GD=U,

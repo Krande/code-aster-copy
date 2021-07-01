@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -219,7 +219,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U0,
                    NOM_CHAM='DEPL',
-                   NOEUD='N241',
+                   GROUP_NO='N241',
                    NOM_CMP='PRE1',
                    VALE_CALC=28.750000121,
                    VALE_REFE=28.800000000000001,
@@ -228,7 +228,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U0,
                    NOM_CHAM='DEPL',
-                   NOEUD='N441',
+                   GROUP_NO='N441',
                    NOM_CMP='PRE1',
                    VALE_CALC=16.249999879,
                    VALE_REFE=16.300000000000001,
@@ -237,7 +237,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U0,
                    NOM_CHAM='DEPL',
-                   NOEUD='N341',
+                   GROUP_NO='N341',
                    NOM_CMP='PRE1',
                    VALE_CALC=22.500000000,
                    VALE_REFE=22.5,
@@ -254,7 +254,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 _F(NUME_ORDRE=1,
                    RESULTAT=U0,
                    NOM_CHAM='ERME_NOEU',
-                   NOEUD='N313',
+                   GROUP_NO='N313',
                    NOM_CMP='ERHMHY_G',
                    VALE_CALC=1.8983822585491999E-12,
                    CRITERE='ABSOLU',

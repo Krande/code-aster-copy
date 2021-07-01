@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,12 @@
 DEBUT( CODE = _F( NIV_PUB_WEB = 'INTERNET'), DEBUG = _F( SDVERI = 'OUI'),);
 
 MA = LIRE_MAILLAGE( FORMAT = "MED");
+
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M1', MAILLE = 'M1'),
+                                     ),
+         )
 
 MODEL = AFFE_MODELE( MAILLAGE = MA,
                      AFFE = _F( GROUP_MA = 'PLAQUE',
@@ -221,7 +227,7 @@ for j in range(len(D_ref)) :
                                   INST = j+1.0,
                                   NOM_CHAM = 'FERRAILLAGE',
                                   NOM_CMP = ncmp,
-                                  MAILLE = 'M1',
+                                  GROUP_MA = 'M1',
                                   LEGENDE = 'ELU',
                                   VALE_REFE = D_ref[j][i],
                                   VALE_CALC = D_calc[j][i],
@@ -233,7 +239,7 @@ for j in range(len(D_ref)) :
                                   INST = j+1.0,
                                   NOM_CHAM = 'FERRAILLAGE',
                                   NOM_CMP = ncmp,
-                                  MAILLE = 'M1',
+                                  GROUP_MA = 'M1',
                                   LEGENDE = 'ELU',
                                   VALE_REFE = D_ref[j][i],
                                   REFERENCE = 'ANALYTIQUE',
@@ -278,7 +284,7 @@ for j in range(len(D_ref)) :
                        NOM_CHAM = 'FERRAILLAGE',
                        NOM_CMP = ncmp,
                        LEGENDE = 'ELS',
-                       MAILLE = 'M1',
+                       GROUP_MA = 'M1',
                        VALE_CALC = D_calc[j][i],
                        VALE_REFE = D_ref[j][i],
                        REFERENCE = 'ANALYTIQUE',
@@ -290,7 +296,7 @@ for j in range(len(D_ref)) :
                        NOM_CHAM = 'FERRAILLAGE',
                        NOM_CMP = ncmp,
                        LEGENDE = 'ELS',
-                       MAILLE = 'M1',
+                       GROUP_MA = 'M1',
                        VALE_REFE = D_ref[j][i],
                        REFERENCE = 'ANALYTIQUE',
                        VALE_CALC = D_calc[j][i],),);
@@ -298,14 +304,14 @@ for j in range(len(D_ref)) :
 Telu = CREA_TABLE( RESU = _F( RESULTAT = RESUELU,
                               NOM_CHAM = 'FERRAILLAGE',
                               TOUT_CMP = 'OUI',
-                              MAILLE = 'M1'),);
+                              GROUP_MA = 'M1'),);
 
 IMPR_TABLE( UNITE = 8,TABLE = Telu, FORMAT = 'TABLEAU', SEPARATEUR = ';', TITRE ='');
 
 Tels = CREA_TABLE( RESU = _F( RESULTAT = RESUELS,
                               NOM_CHAM = 'FERRAILLAGE',
                               TOUT_CMP = 'OUI',
-                              MAILLE = 'M1'),);
+                              GROUP_MA = 'M1'),);
 
 IMPR_TABLE( UNITE = 8, TABLE = Tels, FORMAT = 'TABLEAU', SEPARATEUR = ';', TITRE = '');
 

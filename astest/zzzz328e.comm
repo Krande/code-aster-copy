@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -82,7 +82,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='TOTALE',
                   VALE_REFE=7.5,
                   VALE_CALC=7.5,
-                  MAILLE='M5',),);
+                  GROUP_MA='M5',),);
 
 # MODELISATION AXIS_SI
 
@@ -97,6 +97,15 @@ NS4Y=(DY+AY)/2.E0
 
 MA1 = CREA_MAILLAGE(MAILLAGE = MA,
                     LINE_QUAD = _F(TOUT = 'OUI'),);
+
+MA1 = DEFI_GROUP( reuse = MA1, MAILLAGE = MA1,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'NS4', NOEUD = 'NS4'),
+                                        _F( NOM = 'NS3', NOEUD = 'NS3'),
+                                        _F( NOM = 'NS2', NOEUD = 'NS2'),
+                                        _F( NOM = 'NS1', NOEUD = 'NS1'),
+                                     ),
+         )
 
 MO1=AFFE_MODELE(MAILLAGE=MA1,
                AFFE=_F(TOUT='OUI',
@@ -120,16 +129,16 @@ BLOC1=AFFE_CHAR_MECA(MODELE=MO1,
                                  _F(GROUP_NO='D',
                                     DX=DX,
                                     DY=DY,),
-                                 _F(NOEUD='NS1',
+                                 _F(GROUP_NO='NS1',
                                     DX=NS1X,
                                     DY=NS1Y,),
-                                 _F(NOEUD='NS2',
+                                 _F(GROUP_NO='NS2',
                                     DX=NS2X,
                                     DY=NS2Y,),
-                                 _F(NOEUD='NS3',
+                                 _F(GROUP_NO='NS3',
                                     DX=NS3X,
                                     DY=NS3Y,),
-                                 _F(NOEUD='NS4',
+                                 _F(GROUP_NO='NS4',
                                     DX=NS4X,
                                     DY=NS4Y,),),);
 
@@ -149,7 +158,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='TOTALE',
                   VALE_REFE=7.5,
                   VALE_CALC=7.5,
-                  MAILLE='M5',),);
+                  GROUP_MA='M5',),);
 
 # MODELISATION AXIS_ELDI
 
@@ -198,6 +207,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='TOTALE',
                   VALE_REFE=7.5,
                   VALE_CALC=7.5,
-                  MAILLE='M5',),);
+                  GROUP_MA='M5',),);
 
 FIN();

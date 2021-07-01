@@ -1,13 +1,46 @@
-COOR_3D
-P1 0. 0. 0.
-P2 1. 0. 0.
-P3 2. 0. 0.
-FINSF
-SEG2
-E1 P1 P2
-E2 P2 P3
-FINSF
-GROUP_NO NOM=NOEUDS
-  P1 P2 P3
-FINSF
-FIN
+ TITRE
+ME-30-JUIN-2021 09:24:27                                                        
+ FINSF
+ %
+ COOR_3D
+ P1        0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ P2        1.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ P3        2.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ FINSF
+ %
+ SEG2    
+ E1       P1       P2      
+ E2       P2       P3      
+ FINSF
+ %
+ GROUP_NO
+ NOEUDS                  
+ P1       P2       P3      
+ FINSF
+ %
+ GROUP_NO
+ P2                      
+ P2      
+ FINSF
+ %
+ GROUP_NO
+ P3                      
+ P3      
+ FINSF
+ %
+ GROUP_NO
+ P1                      
+ P1      
+ FINSF
+ %
+ GROUP_MA
+ E1                      
+ E1      
+ FINSF
+ %
+ GROUP_MA
+ E2                      
+ E2      
+ FINSF
+ %
+ FIN

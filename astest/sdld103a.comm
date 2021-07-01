@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,6 +47,16 @@ MAILLAGE = CREA_MAILLAGE(MAILLAGE  = MAILLAG0,
                                        GROUP_NO     = 'GROUP_NO_MASSES',
                                        ),
                          )
+
+MAILLAGE = DEFI_GROUP( reuse = MAILLAGE, MAILLAGE = MAILLAGE,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'NO1', NOEUD = 'NO1'),
+                                        _F( NOM = 'NO3', NOEUD = 'NO3'),
+                                        _F( NOM = 'NO2', NOEUD = 'NO2'),
+                                        _F( NOM = 'NO4', NOEUD = 'NO4'),
+                                        _F( NOM = 'NO5', NOEUD = 'NO5'),
+                                     ),
+         )
 
 MODELE = AFFE_MODELE(MAILLAGE = MAILLAGE,
                      AFFE     =_F(PHENOMENE    = 'MECANIQUE'                           ,
@@ -300,13 +310,13 @@ DEPLACE2 = CALC_FONC_INTERP(FONCTION    = DEPL2    ,
 MULT_X1 = CALC_CHAR_SEISME(MATR_MASS = MASSE       ,
                            DIRECTION = (1., 0., 0.),
                            MODE_STAT = MODE_STA    ,
-                           NOEUD     = 'NO1'       ,
+                           GROUP_NO     = 'NO1'       ,
                            )
 
 MULT_X2 = CALC_CHAR_SEISME(MATR_MASS = MASSE       ,
                            DIRECTION = (1., 0., 0.),
                            MODE_STAT = MODE_STA    ,
-                           NOEUD     = 'NO5'       ,
+                           GROUP_NO     = 'NO5'       ,
                            )
 
 #
@@ -351,7 +361,7 @@ TRAN_PH2=DYNA_LINE(TYPE_CALCUL  ='TRAN'  ,
                                      DEPL       = DEPLACE1      ,
                                      TYPE_APPUI = 'MULTI'       ,
                                      DIRECTION  = (1., 0., 0.)  ,
-                                     NOEUD      = 'NO1'         ,
+                                     GROUP_NO      = 'NO1'         ,
                                      ),
                                   _F(ACCE       = ACCELER2      ,
                                      VITE       = VITESSE2      ,
@@ -396,14 +406,14 @@ TRAN_GE2=DYNA_LINE(TYPE_CALCUL   = 'TRAN'  ,
                                       DEPL       = DEPLACE1     ,
                                       TYPE_APPUI ='MULTI'       ,
                                       DIRECTION  = ( 1., 0., 0.),
-                                      NOEUD      = 'NO1'        ,
+                                      GROUP_NO      = 'NO1'        ,
                                       ),
                                    _F(ACCE       = ACCELER2     ,
                                       VITE       = VITESSE2     ,
                                       DEPL       = DEPLACE2     ,
                                       TYPE_APPUI ='MULTI'       ,
                                       DIRECTION  = ( 1., 0., 0.),
-                                      NOEUD      = 'NO5'        ,
+                                      GROUP_NO      = 'NO5'        ,
                                       ),
                                    ),
                    ARCHIVAGE     =_F(PAS_ARCH  = 1.E8  ,
@@ -429,7 +439,7 @@ TRAN_GED = DYNA_VIBRA(TYPE_CALCUL  = 'TRAN'  ,
                                         ACCE           = ACCELER1     ,
                                         MULT_APPUI     = 'OUI'        ,
                                         DIRECTION      = ( 1., 0., 0.),
-                                        NOEUD          = 'NO1'        ,
+                                        GROUP_NO          = 'NO1'        ,
                                         VITE           = VITESSE1     ,
                                         DEPL           = DEPLACE1     ,
                                         ),
@@ -437,7 +447,7 @@ TRAN_GED = DYNA_VIBRA(TYPE_CALCUL  = 'TRAN'  ,
                                         ACCE           = ACCELER2     ,
                                         MULT_APPUI     = 'OUI'        ,
                                         DIRECTION      = ( 1., 0., 0.),
-                                        NOEUD          = 'NO5'        ,
+                                        GROUP_NO          = 'NO5'        ,
                                         VITE           = VITESSE2     ,
                                         DEPL           = DEPLACE2     ,
                                         ),
@@ -467,7 +477,7 @@ TRAN_GEA = DYNA_VIBRA(TYPE_CALCUL  ='TRAN'   ,
                                         ACCE           = ACCELER1     ,
                                         MULT_APPUI     = 'OUI'        ,
                                         DIRECTION      = ( 1., 0., 0.),
-                                        NOEUD          = 'NO1'        ,
+                                        GROUP_NO          = 'NO1'        ,
                                         VITE           = VITESSE1     ,
                                         DEPL           = DEPLACE1     ,
                                         ),
@@ -475,7 +485,7 @@ TRAN_GEA = DYNA_VIBRA(TYPE_CALCUL  ='TRAN'   ,
                                         ACCE           = ACCELER2     ,
                                         MULT_APPUI     = 'OUI'        ,
                                         DIRECTION      = ( 1., 0., 0.),
-                                        NOEUD          = 'NO5'        ,
+                                        GROUP_NO          = 'NO5'        ,
                                         VITE           = VITESSE2     ,
                                         DEPL           = DEPLACE2     ,
                                         ),
@@ -504,7 +514,7 @@ TRA_RK54 = DYNA_VIBRA(TYPE_CALCUL  = 'TRAN'  ,
                                         ACCE           = ACCELER1     ,
                                         MULT_APPUI     = 'OUI'        ,
                                         DIRECTION      = ( 1., 0., 0.),
-                                        NOEUD          = 'NO1'        ,
+                                        GROUP_NO          = 'NO1'        ,
                                         VITE           = VITESSE1     ,
                                         DEPL           = DEPLACE1     ,
                                         ),
@@ -512,7 +522,7 @@ TRA_RK54 = DYNA_VIBRA(TYPE_CALCUL  = 'TRAN'  ,
                                         ACCE           = ACCELER2     ,
                                         MULT_APPUI     = 'OUI'        ,
                                         DIRECTION      = ( 1., 0., 0.),
-                                        NOEUD          = 'NO5'        ,
+                                        GROUP_NO          = 'NO5'        ,
                                         VITE           = VITESSE2     ,
                                         DEPL           = DEPLACE2     ,
                                         ),
@@ -541,7 +551,7 @@ TRA_RK32 = DYNA_VIBRA(TYPE_CALCUL  = 'TRAN'  ,
                                         ACCE           = ACCELER1     ,
                                         MULT_APPUI     = 'OUI'        ,
                                         DIRECTION      = ( 1., 0., 0.),
-                                        NOEUD          = 'NO1'        ,
+                                        GROUP_NO          = 'NO1'        ,
                                         VITE           = VITESSE1     ,
                                         DEPL           = DEPLACE1     ,
                                         ),
@@ -549,7 +559,7 @@ TRA_RK32 = DYNA_VIBRA(TYPE_CALCUL  = 'TRAN'  ,
                                         ACCE           = ACCELER2     ,
                                         MULT_APPUI     = 'OUI'        ,
                                         DIRECTION      = ( 1., 0., 0.),
-                                        NOEUD          = 'NO5'        ,
+                                        GROUP_NO          = 'NO5'        ,
                                         VITE           = VITESSE2     ,
                                         DEPL           = DEPLACE2     ,
                                         ),
@@ -601,7 +611,7 @@ TRAN_EXT = DYNA_VIBRA(TYPE_CALCUL  = 'TRAN'  ,
                                         ACCE           = ACCELER1     ,
                                         MULT_APPUI     = 'OUI'        ,
                                         DIRECTION      = ( 1., 0., 0.),
-                                        NOEUD          = 'NO1'        ,
+                                        GROUP_NO          = 'NO1'        ,
                                         VITE           = VITESSE1     ,
                                         DEPL           = DEPLACE1     ,
                                         ),
@@ -609,7 +619,7 @@ TRAN_EXT = DYNA_VIBRA(TYPE_CALCUL  = 'TRAN'  ,
                                         ACCE           = ACCELER2     ,
                                         MULT_APPUI     = 'OUI'        ,
                                         DIRECTION      = ( 1., 0., 0.),
-                                        NOEUD          = 'NO5'        ,
+                                        GROUP_NO          = 'NO5'        ,
                                         VITE           = VITESSE2     ,
                                         DEPL           = DEPLACE2     ,
                                         ),
@@ -635,14 +645,14 @@ TRAN_DLI = DYNA_LINE(TYPE_CALCUL   = 'TRAN'  ,
                                         DEPL       = DEPLACE1     ,
                                         TYPE_APPUI ='MULTI'       ,
                                         DIRECTION  = ( 1., 0., 0.),
-                                        NOEUD      = 'NO1'        ,
+                                        GROUP_NO      = 'NO1'        ,
                                         ),
                                      _F(ACCE       = ACCELER2     ,
                                         VITE       = VITESSE2     ,
                                         DEPL       = DEPLACE2     ,
                                         TYPE_APPUI ='MULTI'       ,
                                         DIRECTION  = ( 1., 0., 0.),
-                                        NOEUD      = 'NO5'        ,
+                                        GROUP_NO      = 'NO5'        ,
                                         ),
                                      ),
                    ARCHIVAGE       =_F(PAS_ARCH  = 1.E8  ,
@@ -668,14 +678,14 @@ TRAN_DLJ = DYNA_LINE(TYPE_CALCUL    = 'TRAN'  ,
                                          DEPL       = DEPLACE1     ,
                                          TYPE_APPUI ='MULTI'       ,
                                          DIRECTION  = ( 1., 0., 0.),
-                                         NOEUD      = 'NO1'        ,
+                                         GROUP_NO      = 'NO1'        ,
                                          ),
                                       _F(ACCE       = ACCELER2     ,
                                          VITE       = VITESSE2     ,
                                          DEPL       = DEPLACE2     ,
                                          TYPE_APPUI ='MULTI'       ,
                                          DIRECTION  = ( 1., 0., 0.),
-                                         NOEUD      = 'NO5'        ,
+                                         GROUP_NO      = 'NO5'        ,
                                          ),
                                       ),
                      ARCHIVAGE      =_F(PAS_ARCH  = 1.E8  ,
@@ -873,87 +883,87 @@ XRNOE4=CALC_FONC_INTERP(     FONCTION=XRNOE4a,
 
 # RECUPERATION DES DEPLACEMENTS RELATIFS CALCULES
 # -----------------------------------------------
-# NO2DXR_P=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+# NO2DXR_P=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
 #                              RESULTAT=TRAN_PHY,
 #                            INTERP_NUME='LIN',      INTERPOL='LIN',
 #                              LIST_INST=L_RECU    )
 
-NO2DXRP2=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO2DXRP2=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                              RESULTAT=TRAN_PH2,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 
-NO2DXR_D=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO2DXR_D=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                              RESU_GENE=TRAN_GED,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 
-NO3DXR_D=RECU_FONCTION(  NOEUD='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO3DXR_D=RECU_FONCTION(  GROUP_NO='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                              RESU_GENE=TRAN_GED,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 
-NO4DXR_D=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO4DXR_D=RECU_FONCTION(  GROUP_NO='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                          RESU_GENE=TRAN_GED,
                          INTERP_NUME='LIN',      INTERPOL='LIN',
                          LIST_INST=L_RECU    )
 
-NO2DXR_A=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO2DXR_A=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                              RESU_GENE=TRAN_GEA,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 
-NO3DXR_A=RECU_FONCTION(  NOEUD='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO3DXR_A=RECU_FONCTION(  GROUP_NO='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                              RESU_GENE=TRAN_GEA,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 
-NO4DXR_A=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO4DXR_A=RECU_FONCTION(  GROUP_NO='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                              RESU_GENE=TRAN_GEA,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 
-NO2DXR_5=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO2DXR_5=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                          RESU_GENE=TRA_RK54,
                          INTERP_NUME='LIN', INTERPOL='LIN',
                          LIST_INST=L_RECU )
 
-NO3DXR_5=RECU_FONCTION(  NOEUD='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO3DXR_5=RECU_FONCTION(  GROUP_NO='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                          RESU_GENE=TRA_RK54,
                          INTERP_NUME='LIN', INTERPOL='LIN',
                          LIST_INST=L_RECU )
 
-NO4DXR_5=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO4DXR_5=RECU_FONCTION(  GROUP_NO='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                          RESU_GENE=TRA_RK54,
                          INTERP_NUME='LIN', INTERPOL='LIN',
                          LIST_INST=L_RECU )
 
-NO2DXR_3=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO2DXR_3=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                          RESU_GENE=TRA_RK32,
                          INTERP_NUME='LIN', INTERPOL='LIN',
                          LIST_INST=L_RECU )
 
-NO3DXR_3=RECU_FONCTION(  NOEUD='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO3DXR_3=RECU_FONCTION(  GROUP_NO='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                          RESU_GENE=TRA_RK32,
                          INTERP_NUME='LIN', INTERPOL='LIN',
                          LIST_INST=L_RECU )
 
-NO4DXR_3=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO4DXR_3=RECU_FONCTION(  GROUP_NO='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                          RESU_GENE=TRA_RK32,
                          INTERP_NUME='LIN', INTERPOL='LIN',
                          LIST_INST=L_RECU )
 
-NO2DXR_T=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO2DXR_T=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                              RESU_GENE=TRAN_EXT,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 
-NO3DXR_T=RECU_FONCTION(  NOEUD='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO3DXR_T=RECU_FONCTION(  GROUP_NO='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                              RESU_GENE=TRAN_EXT,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 
-NO4DXR_T=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO4DXR_T=RECU_FONCTION(  GROUP_NO='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                          RESU_GENE=TRAN_EXT,
                          INTERP_NUME='LIN',      INTERPOL='LIN',
                          LIST_INST=L_RECU    )
@@ -962,126 +972,126 @@ NO4DXR_T=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
 # RECUPERATION DES DEPLACEMENTS ABSOLUS CALCULES
 # ----------------------------------------------
 
-NO2DXAE2=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO2DXAE2=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                          RESULTAT=TRAN_GE2,
                          INTERP_NUME='LIN',
                          LIST_INST=L_RECU,     INTERPOL='LIN'
                         )
 
-NO3DXAE2=RECU_FONCTION(  NOEUD='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO3DXAE2=RECU_FONCTION(  GROUP_NO='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                             RESULTAT=TRAN_GE2,
                           INTERP_NUME='LIN',
                              LIST_INST=L_RECU,     INTERPOL='LIN'
                         )
 
-NO4DXAE2=RECU_FONCTION( NOEUD='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO4DXAE2=RECU_FONCTION( GROUP_NO='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                         RESULTAT=TRAN_GE2,
                         INTERP_NUME='LIN',
                         LIST_INST=L_RECU,     INTERPOL='LIN'
                         )
 
-NO2DXA_D=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO2DXA_D=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                          RESULTAT=RESUAD,
                          INTERP_NUME='LIN', INTERPOL='LIN',
                         LIST_INST=L_RECU    )
 
-NO3DXA_D=RECU_FONCTION(  NOEUD='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO3DXA_D=RECU_FONCTION(  GROUP_NO='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                               RESULTAT=RESUAD,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 
-NO4DXA_D=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO4DXA_D=RECU_FONCTION(  GROUP_NO='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                               RESULTAT=RESUAD,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 
-NO2DXA_A=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO2DXA_A=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                               RESULTAT=RESUAA,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 
-NO3DXA_A=RECU_FONCTION(  NOEUD='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO3DXA_A=RECU_FONCTION(  GROUP_NO='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                               RESULTAT=RESUAA,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 #
-NO4DXA_A=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO4DXA_A=RECU_FONCTION(  GROUP_NO='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                               RESULTAT=RESUAA,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 
-N2DXA_54=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+N2DXA_54=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                               RESULTAT=RESARK54,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 
-N3DXA_54=RECU_FONCTION(  NOEUD='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+N3DXA_54=RECU_FONCTION(  GROUP_NO='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                               RESULTAT=RESARK54,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 #
-N4DXA_54=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+N4DXA_54=RECU_FONCTION(  GROUP_NO='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                               RESULTAT=RESARK54,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 #
-N2DXA_32=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+N2DXA_32=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                          RESULTAT=RESARK32,
                          INTERP_NUME='LIN',      INTERPOL='LIN',
                          LIST_INST=L_RECU    )
 
-N3DXA_32=RECU_FONCTION(  NOEUD='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+N3DXA_32=RECU_FONCTION(  GROUP_NO='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                          RESULTAT=RESARK32,
                          INTERP_NUME='LIN',      INTERPOL='LIN',
                          LIST_INST=L_RECU    )
 #
-N4DXA_32=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+N4DXA_32=RECU_FONCTION(  GROUP_NO='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                          RESULTAT=RESARK32,
                          INTERP_NUME='LIN',      INTERPOL='LIN',
                          LIST_INST=L_RECU    )
 
-NO2DXA_T=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO2DXA_T=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                          RESULTAT=RESUAEX,
                          INTERP_NUME='LIN', INTERPOL='LIN',
                         LIST_INST=L_RECU    )
 
-NO3DXA_T=RECU_FONCTION(  NOEUD='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO3DXA_T=RECU_FONCTION(  GROUP_NO='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                               RESULTAT=RESUAEX,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 
-NO4DXA_T=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO4DXA_T=RECU_FONCTION(  GROUP_NO='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                               RESULTAT=RESUAEX,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 
 
-NO2DXAF2=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO2DXAF2=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                          RESULTAT=TRAN_DLI,
                          INTERP_NUME='LIN', INTERPOL='LIN',
                         LIST_INST=L_RECU    )
 
-NO3DXAF2=RECU_FONCTION(  NOEUD='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO3DXAF2=RECU_FONCTION(  GROUP_NO='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                               RESULTAT=TRAN_DLI,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 
-NO4DXAF2=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO4DXAF2=RECU_FONCTION(  GROUP_NO='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                               RESULTAT=TRAN_DLI,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 
-NO2DXAF3=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO2DXAF3=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                          RESULTAT=TRAN_DLJ,
                          INTERP_NUME='LIN', INTERPOL='LIN',
                         LIST_INST=L_RECU    )
 
-NO3DXAF3=RECU_FONCTION(  NOEUD='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO3DXAF3=RECU_FONCTION(  GROUP_NO='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                               RESULTAT=TRAN_DLJ,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 
-NO4DXAF3=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+NO4DXAF3=RECU_FONCTION(  GROUP_NO='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                               RESULTAT=TRAN_DLJ,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )

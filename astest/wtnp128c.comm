@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,6 +56,13 @@ LISTINST=DEFI_LIST_REEL(DEBUT = 0.,
 MA0=LIRE_MAILLAGE(FORMAT='MED');
 
 MA=CREA_MAILLAGE(MAILLAGE = MA0, LINE_QUAD = _F(TOUT='OUI'));
+
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'NS5768', NOEUD = 'NS5768'),
+                                        _F( NOM = 'N17', NOEUD = 'N17'),
+                                     ),
+         )
 
 MA = DEFI_GROUP(reuse = MA,
        MAILLAGE = MA,
@@ -305,7 +312,7 @@ U_1=CALC_CHAMP(reuse=U_1,
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
                   RESULTAT=U_1,
                   NOM_CHAM='FORC_NODA',
-                  NOEUD='N17',
+                  GROUP_NO='N17',
                   NOM_CMP='DY',
                   VALE_CALC=-16.317192736896,
                   ),
@@ -314,7 +321,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
 TEST_RESU(RESU=_F(NUME_ORDRE=15,
                   RESULTAT=U_1,
                   NOM_CHAM='FORC_NODA',
-                  NOEUD='N17',
+                  GROUP_NO='N17',
                   NOM_CMP='DY',
                   VALE_CALC=-6.8483010664037,
                   ),
@@ -325,7 +332,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=15,
 TEST_RESU(RESU=_F(NUME_ORDRE=19,
                   RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOEUD='NS5768',
+                  GROUP_NO='NS5768',
                   NOM_CMP='PRE1',
                   VALE_CALC=0.14729586262526,
                   ),
@@ -334,7 +341,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=19,
 TEST_RESU(RESU=_F(NUME_ORDRE=24,
                   RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOEUD='NS5768',
+                  GROUP_NO='NS5768',
                   NOM_CMP='PRE1',
                   VALE_CALC=0.18840963631266,
                   ),

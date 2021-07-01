@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ CUBE=LIRE_MAILLAGE(FORMAT="ASTER",    )
 TROISD=AFFE_MODELE(            MAILLAGE=CUBE,
                                     AFFE=_F(   PHENOMENE = 'MECANIQUE',
                                             MODELISATION = '3D',
-                                            MAILLE = 'ma1'))
+                                            GROUP_MA = 'ma1'))
 
 BETON=DEFI_MATERIAU(         ELAS=_F( E = 30000.0E6,
                                       NU = 0.2),
@@ -67,7 +67,7 @@ BETON=DEFI_MATERIAU(         ELAS=_F( E = 30000.0E6,
                    )
 
 MATBET=AFFE_MATERIAU(           MAILLAGE=CUBE,
-                                    AFFE=_F(  MAILLE = 'ma1',
+                                    AFFE=_F(  GROUP_MA = 'ma1',
                                            MATER = BETON)
                          )
 
@@ -75,15 +75,15 @@ COND_LIM=AFFE_CHAR_MECA(
                       MODELE=TROISD,DDL_IMPO=(
                     _F(  GROUP_NO = 'facexyn',   DZ = 0.),
                     _F(  GROUP_NO = 'faceyzn',   DX = 0.),
-                    _F(  NOEUD = 'n1',  DY = 0.),
-                    _F(  NOEUD = 'n5',  DY = 0.))
+                    _F(  GROUP_NO = 'n1',  DY = 0.),
+                    _F(  GROUP_NO = 'n5',  DY = 0.))
                )
 
 TRAC=AFFE_CHAR_MECA(
                       MODELE=TROISD,DDL_IMPO=(
                     _F(  GROUP_NO = 'faceyzp',  DX = 1.),
-                    _F(  NOEUD = 'n2',  DY = 0.),
-                    _F(  NOEUD = 'n6',  DY = 0.))
+                    _F(  GROUP_NO = 'n2',  DY = 0.),
+                    _F(  GROUP_NO = 'n6',  DY = 0.))
                             )
 
 LINST1=DEFI_LIST_REEL(             DEBUT=0.,INTERVALLE=(
@@ -121,7 +121,7 @@ SOLNL2=STAT_NON_LINE(TITRE='TEST LOI ENDO_ISOT_BETON',
 TEST_RESU(RESU=(_F(NUME_ORDRE=17,
                    RESULTAT=SOLNL2,
                    NOM_CHAM='DEPL',
-                   NOEUD='n2',
+                   GROUP_NO='n2',
                    NOM_CMP='DX',
                    VALE_CALC=-8.006E-06,),
                 _F(NUME_ORDRE=17,
@@ -130,14 +130,14 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=17,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIXX',
                    VALE_CALC=-2.0362854317491E7,
-                   MAILLE='ma1',),
+                   GROUP_MA='ma1',),
                 _F(NUME_ORDRE=17,
                    POINT=1,
                    RESULTAT=SOLNL2,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V1',
                    VALE_CALC=0.81406453783811,
-                   MAILLE='ma1',),
+                   GROUP_MA='ma1',),
                 ),
           )
 

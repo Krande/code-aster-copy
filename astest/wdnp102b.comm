@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -349,7 +349,7 @@ DYNB=DYNA_NON_LINE(reuse=DYNB,INFO=1,MODELE=MODELE,
 # TEST DE LA VITESSE
 
 DYNV56=RECU_FONCTION(RESULTAT=DYNB,
-                    NOEUD='N56',
+                    GROUP_NO='N56',
                     NOM_CHAM='VITE',
                     NOM_CMP='DY');
 
@@ -376,7 +376,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.08575917,
 # TEST DE LA PRESSION HYDRAULIQUE
 
 DYNP56=RECU_FONCTION(RESULTAT=DYNB,
-                    NOEUD='N56',
+                    GROUP_NO='N56',
                     NOM_CHAM='DEPL',
                     NOM_CMP='PRE1');
 

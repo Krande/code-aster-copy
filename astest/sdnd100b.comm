@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -61,15 +61,15 @@ CHAMPCAR=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
 mANG=-ANG
 CHARGE=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
              _F(  TOUT = 'OUI',  DZ = 0.0),
-             _F(  NOEUD = 'NO2',  DX = 0.0, DY = 0.0)),
-             LIAISON_DDL=_F(  NOEUD = (  'NO1',   'NO1', ),
+             _F(  GROUP_NO = 'NO2',  DX = 0.0, DY = 0.0)),
+             LIAISON_DDL=_F(  GROUP_NO = (  'NO1',   'NO1', ),
                            DDL = ( 'DX',  'DY', ),
                            COEF_MULT = (  ANG,  mANG, ),
                            COEF_IMPO = 0.))
 
 #
 FORCE=AFFE_CHAR_MECA(  MODELE=MODELE,
-                     FORCE_NODALE=_F( NOEUD = 'NO1',  FX = 1.)
+                     FORCE_NODALE=_F( GROUP_NO = 'NO1',  FX = 1.)
                        )
 
 #
@@ -173,8 +173,8 @@ DYNAMODA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                         INST_FIN = 0.3,
                                         PAS = 0.0001),
                             COMPORTEMENT=_F(RELATION='DIS_CHOC',
-                                   NOEUD_1 = 'NO1',
-                                   NOEUD_2 = 'NO2',
+                                   GROUP_NO_1 = 'NO1',
+                                   GROUP_NO_2 = 'NO2',
                                    INTITULE = 'LIAISON',
                                    OBSTACLE = PLANZ,
                                    NORM_OBST = (0., 1., 0.,),
@@ -203,7 +203,7 @@ DYNATRA1=REST_GENE_PHYS(   RESU_GENE=DYNAMODA,
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=DYNATRA1,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO1',
+                   GROUP_NO='NO1',
                    NOM_CMP='DY',
                    VALE_REFE=-4.596E-4,
                    VALE_CALC=-0.000459619406756,
@@ -213,7 +213,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 _F(NUME_ORDRE=2,
                    RESULTAT=DYNATRA1,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO1',
+                   GROUP_NO='NO1',
                    NOM_CMP='DY',
                    VALE_REFE=3.182E-4,
                    VALE_CALC=0.000318205928467,
@@ -223,7 +223,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 _F(NUME_ORDRE=3,
                    RESULTAT=DYNATRA1,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO1',
+                   GROUP_NO='NO1',
                    NOM_CMP='DY',
                    VALE_REFE=-1.768E-4,
                    VALE_CALC=-0.00017679343909,
@@ -233,7 +233,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 _F(NUME_ORDRE=4,
                    RESULTAT=DYNATRA1,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO1',
+                   GROUP_NO='NO1',
                    NOM_CMP='DY',
                    VALE_REFE=3.536E-05,
                    VALE_CALC=3.54014299343E-05,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -308,9 +308,9 @@ SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
                             _F( NOM = 'CARRE3',
                                         GROUP_MA = 'VISUAL'),
                             _F( NOM = 'CARRE4',
-                                        MAILLE = 'MV1'),
+                                        GROUP_MA = 'MV1'),
                             _F( NOM = 'CARRE4',
-                                        MAILLE = 'MV50')))
+                                        GROUP_MA = 'MV50')))
 
 #
 #   RESTITUTION SUR MAILLAGE SQUELETTE
@@ -483,7 +483,7 @@ SQUEL2=DEFI_GROUP( reuse=SQUEL2,   MAILLAGE=SQUEL2,
 
 #
 SQUEL3=DEFI_SQUELETTE(  CYCLIQUE    =_F(MODE_CYCL=MOD_CY),
-                        SECTEUR=_F( MAILLE = 'MA200'))
+                        SECTEUR=_F( GROUP_MA = 'MA200'))
 
 #
 #   RESTITUTION DES RESULTATS SUR LES MAILLAGES SQUELETTES

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -278,7 +278,7 @@ TEST_RESU(RESU=_F(INST=36000,
                   REFERENCE='SOURCE_EXTERNE',
                   RESULTAT=RESU0,
                   NOM_CHAM='DEPL',
-                  NOEUD='N58',
+                  GROUP_NO='N58',
                   NOM_CMP='PRE1',
                   VALE_CALC=0.462670787,
                   VALE_REFE=0.44,

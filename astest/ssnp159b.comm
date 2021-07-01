@@ -1,7 +1,7 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -58,12 +58,12 @@ F_CHAR=DEFI_FONCTION(
                   )
 
 CHR_LIAI=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
-                                  _F(  NOEUD = 'NO1',  DY = 0.),
-                                  _F(  NOEUD = 'NO2',  DY = 0.))
+                                  _F(  GROUP_NO = 'NO1',  DY = 0.),
+                                  _F(  GROUP_NO = 'NO2',  DY = 0.))
                           )
 
 CHR_TRAC=AFFE_CHAR_MECA(  MODELE=MO,
-                          FACE_IMPO=_F(  MAILLE = 'MA2',  DY = 1.)
+                          FACE_IMPO=_F(  GROUP_MA = 'MA2',  DY = 1.)
                           )
 
 CHP_MATL=AFFE_MATERIAU(   MAILLAGE=MA,
@@ -100,7 +100,7 @@ ENELOG=POST_ELEM(ENER_ELAS=_F(TOUT='OUI'),
 TEST_RESU(RESU=(_F(INST=2.0,
                    RESULTAT=LOG_T,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO3',
+                   GROUP_NO='NO3',
                    NOM_CMP='DY',
                    VALE_CALC=290.000000000,
                    VALE_REFE=290.0,
@@ -115,7 +115,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_REFE=1495.0,
                    REFERENCE='NON_DEFINI',
                    PRECISION=1.E-2,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 _F(INST=2.0,
                    POINT=1,
                    RESULTAT=LOG_T,
@@ -125,7 +125,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_REFE=0.2475,
                    REFERENCE='NON_DEFINI',
                    PRECISION=0.014999999999999999,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 ),
           )
 
@@ -145,7 +145,7 @@ LOG_T = CALC_CHAMP(reuse=LOG_T,RESULTAT=LOG_T,ENERGIE=('ENEL_ELGA'),)
 TEST_RESU(RESU=(_F(INST=2.0,
                    RESULTAT=LOG_T,
                    NOM_CHAM='ENEL_ELGA',
-                   MAILLE='MA1',POINT=1,
+                   GROUP_MA='MA1',POINT=1,
                    NOM_CMP='TOTALE',
                    VALE_CALC=2.80981728*2,
                    VALE_REFE=2.81*2,
@@ -227,7 +227,7 @@ ENELOG2=POST_ELEM(ENER_ELAS=_F(TOUT='OUI'),
 TEST_RESU(RESU=(_F(INST=2.0,
                    RESULTAT=LOG2,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO3',
+                   GROUP_NO='NO3',
                    NOM_CMP='DY',
                    VALE_CALC=290.000000000,
                    VALE_REFE=290.0,
@@ -242,7 +242,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_REFE=1495.0,
                    REFERENCE='NON_DEFINI',
                    PRECISION=1.E-2,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 _F(INST=2.0,
                    POINT=1,
                    RESULTAT=LOG2,
@@ -252,7 +252,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_REFE=0.2475,
                    REFERENCE='NON_DEFINI',
                    PRECISION=0.014999999999999999,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 ),
           )
 
@@ -272,7 +272,7 @@ LOG2 = CALC_CHAMP(reuse=LOG2,RESULTAT=LOG2,ENERGIE=('ENEL_ELGA'),)
 TEST_RESU(RESU=(_F(INST=2.0,
                    RESULTAT=LOG2,
                    NOM_CHAM='ENEL_ELGA',
-                   MAILLE='MA1',POINT=1,
+                   GROUP_MA='MA1',POINT=1,
                    NOM_CMP='TOTALE',
                    VALE_CALC=2.80981728*2,
                    VALE_REFE=2.81*2,
@@ -310,7 +310,7 @@ ENELOG1=POST_ELEM(ENER_ELAS=_F(TOUT='OUI'),
 TEST_RESU(RESU=(_F(INST=2.0,
                    RESULTAT=LOG1,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO3',
+                   GROUP_NO='NO3',
                    NOM_CMP='DY',
                    VALE_CALC=290.000000000,
                    VALE_REFE=290.0,
@@ -325,7 +325,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_REFE=1495.0,
                    REFERENCE='NON_DEFINI',
                    PRECISION=1.E-2,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 _F(INST=2.0,
                    POINT=1,
                    RESULTAT=LOG1,
@@ -335,7 +335,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_REFE=0.2475,
                    REFERENCE='NON_DEFINI',
                    PRECISION=0.014999999999999999,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 ),
           )
 
@@ -355,7 +355,7 @@ LOG1 = CALC_CHAMP(reuse=LOG1,RESULTAT=LOG1,ENERGIE=('ENEL_ELGA'),)
 TEST_RESU(RESU=(_F(INST=2.0,
                    RESULTAT=LOG1,
                    NOM_CHAM='ENEL_ELGA',
-                   MAILLE='MA1',POINT=1,
+                   GROUP_MA='MA1',POINT=1,
                    NOM_CMP='TOTALE',
                    VALE_CALC=2.80981728*2,
                    VALE_REFE=2.81*2,

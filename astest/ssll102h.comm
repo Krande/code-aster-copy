@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -297,7 +297,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_REFE=-4.8736345696747109E7,
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,
-                  MAILLE='M12',),
+                  GROUP_MA='M12',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -310,7 +310,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_REFE=-4.8736345696747109E7,
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,
-                  MAILLE='M11',),
+                  GROUP_MA='M11',),
           )
 
 SITU89=POST_CHAMP(RESULTAT=MEST1B,
@@ -330,7 +330,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_REFE=-4.8736345696747109E7,
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,
-                  MAILLE='M12',),
+                  GROUP_MA='M12',),
           )
 
 SITU91=POST_CHAMP(RESULTAT=MEST1B,
@@ -350,7 +350,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_REFE=-4.8736345696747109E7,
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,
-                  MAILLE='M12',),
+                  GROUP_MA='M12',),
           )
 
 SITU0=POST_CHAMP(RESULTAT=MEST1B,
@@ -370,7 +370,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_REFE=0.0,
                   CRITERE='ABSOLU',
                   PRECISION   =1.E-2,
-                  MAILLE='M12',),
+                  GROUP_MA='M12',),
           )
 
 FIN( )

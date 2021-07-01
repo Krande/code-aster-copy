@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -119,28 +119,28 @@ SIGNO3=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                   NOM_CHAM='SIGM_ELNO',
                   NUME_ORDRE=1,);
 
-TEST_RESU(CHAM_ELEM=(_F(NOEUD='N104',
+TEST_RESU(CHAM_ELEM=(_F(GROUP_NO='N104',
                         CRITERE='RELATIF',
                         NOM_CMP='SIXX',
-                        MAILLE='M98',
+                        GROUP_MA='M98',
                         CHAM_GD=SIGNO1,
                         VALE_CALC=-2.6948571428600001E8,),
-                     _F(NOEUD='N104',
+                     _F(GROUP_NO='N104',
                         CRITERE='RELATIF',
                         NOM_CMP='SIYY',
-                        MAILLE='M98',
+                        GROUP_MA='M98',
                         CHAM_GD=SIGNO1,
                         VALE_CALC=-2.6948571428600001E8,),
-                     _F(NOEUD='N104',
+                     _F(GROUP_NO='N104',
                         CRITERE='RELATIF',
                         NOM_CMP='SIXX',
-                        MAILLE='M98',
+                        GROUP_MA='M98',
                         CHAM_GD=SIGNO3,
                         VALE_CALC=-2.6948571428600001E8,),
-                     _F(NOEUD='N104',
+                     _F(GROUP_NO='N104',
                         CRITERE='RELATIF',
                         NOM_CMP='SIYY',
-                        MAILLE='M98',
+                        GROUP_MA='M98',
                         CHAM_GD=SIGNO3,
                         VALE_CALC=-2.6948571428600001E8,),
                      ),

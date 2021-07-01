@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -148,27 +148,27 @@ NEWAMO=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
 
 #
 # DEPLACEMENT AU POINT B LISTE 1
-B_X_DEP1=RECU_FONCTION(  NOEUD='B',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+B_X_DEP1=RECU_FONCTION(  GROUP_NO='B',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                              RESULTAT=NEWAMO,  LIST_INST=LRECUDV  )
 
 #
 # VITESSE AU POINT B LISTE 1
-B_X_VIT1=RECU_FONCTION(  NOEUD='B',  NOM_CMP='DX',   NOM_CHAM='VITE',
+B_X_VIT1=RECU_FONCTION(  GROUP_NO='B',  NOM_CMP='DX',   NOM_CHAM='VITE',
                              RESULTAT=NEWAMO,  LIST_INST=LRECUDV  )
 
 #
 # VITESSE AU POINT B LISTE 2
-B_X_VIT2=RECU_FONCTION(  NOEUD='B',  NOM_CMP='DX',   NOM_CHAM='VITE',
+B_X_VIT2=RECU_FONCTION(  GROUP_NO='B',  NOM_CMP='DX',   NOM_CHAM='VITE',
                              RESULTAT=NEWAMO,  LIST_INST=LRECUVA  )
 
 #
 # ACCELERATION AU POINT B LISTE 2
-B_X_ACC2=RECU_FONCTION(  NOEUD='B',  NOM_CMP='DX',   NOM_CHAM='ACCE',
+B_X_ACC2=RECU_FONCTION(  GROUP_NO='B',  NOM_CMP='DX',   NOM_CHAM='ACCE',
                              RESULTAT=NEWAMO,  LIST_INST=LRECUVA  )
 
 #
 # ACCELERATION AU POINT B LISTE 3
-B_X_ACC3=RECU_FONCTION(  NOEUD='B',  NOM_CMP='DX',   NOM_CHAM='ACCE',
+B_X_ACC3=RECU_FONCTION(  GROUP_NO='B',  NOM_CMP='DX',   NOM_CHAM='ACCE',
                              RESULTAT=NEWAMO,  LIST_INST=LRECUA  )
 
 #
@@ -244,7 +244,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.000873762508662,
 #
 #
 # DEPLACEMENT AU POINT C LISTE 1
-C_X_DEP1=RECU_FONCTION(  NOEUD='C',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+C_X_DEP1=RECU_FONCTION(  GROUP_NO='C',  NOM_CMP='DX',   NOM_CHAM='DEPL',
                              RESULTAT=NEWAMO,  LIST_INST=LRECUDV  )
 
 #

@@ -30,23 +30,28 @@ CODE_ASTER - 11.00.27 - VERSION DE DEVELOPPEMENT          - FRONTAL1         - L
  FINSF
  %
  GROUP_NO
- A       
+ A                       
  N11     
  FINSF
  %
  GROUP_NO
- B       
+ B                       
+ N1      
+ FINSF
+ %
+ GROUP_NO
+ N1                      
  N1      
  FINSF
  %
  GROUP_MA
- COTEAB  
+ COTEAB                  
  M1       M2       M3       M4       M5       M6       M7      
  M8       M9       M10     
  FINSF
  %
  GROUP_MA
- TOUT_ELT
+ TOUT_ELT                
  M1       M2       M3       M4       M5       M6       M7      
  M8       M9       M10     
  FINSF

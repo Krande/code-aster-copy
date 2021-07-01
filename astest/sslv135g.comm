@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,12 @@ DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
                IGNORE_ALARM=('PREPOST4_27'))
 
 CUBE = LIRE_MAILLAGE(FORMAT='MED')
+
+CUBE = DEFI_GROUP( reuse = CUBE, MAILLAGE = CUBE,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N1', NOEUD = 'N1'),
+                                     ),
+         )
 
 CUBE = DEFI_GROUP( reuse = CUBE,
                    ALARME='OUI',
@@ -246,7 +252,7 @@ for i in range(NBALP):
                          MAILLAGE      = CUBE,
                          GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)
    TABDC[i] = POST_RELEVE_T( ACTION =_F(INTITULE ='FATIGUE',
-                                        NOEUD = 'N1',
+                                        GROUP_NO = 'N1',
                                         CHAM_GD = FATDC[i],
                                       NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
                                         OPERATION='EXTRACTION',),);
@@ -276,7 +282,7 @@ for i in range(NBALP2):
                          MAILLAGE      = CUBE,
                          GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)
    TABDC2[i] = POST_RELEVE_T( ACTION =_F(INTITULE ='FATIGUE',
-                              NOEUD = 'N1',
+                              GROUP_NO = 'N1',
                               CHAM_GD = FATDC2[i],
                               NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
                               OPERATION='EXTRACTION',),);
@@ -329,7 +335,7 @@ for i in range(NBALP):
                          MAILLAGE      = CUBE,
                          GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)
    TABMC[i] = POST_RELEVE_T( ACTION =_F(INTITULE ='FATIGUE',
-                              NOEUD = 'N1',
+                              GROUP_NO = 'N1',
                               CHAM_GD = FATMC[i],
                               NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
                               OPERATION='EXTRACTION',),);
@@ -360,7 +366,7 @@ for i in range(NBALP2):
                          MAILLAGE      = CUBE,
                          GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)
    TABMC2[i] = POST_RELEVE_T( ACTION =_F(INTITULE ='FATIGUE',
-                              NOEUD = 'N1',
+                              GROUP_NO = 'N1',
                               CHAM_GD = FATMC2[i],
                               NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
                               OPERATION='EXTRACTION',),);
@@ -420,7 +426,7 @@ for i in range(NBALP):
                         MAILLAGE      = CUBE,
                         GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)
    TABDV[i] = POST_RELEVE_T( ACTION =_F(INTITULE ='FATIGUE',
-                              NOEUD = 'N1',
+                              GROUP_NO = 'N1',
                               CHAM_GD = FATDV[i],
                               NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
                               OPERATION='EXTRACTION',),);
@@ -450,7 +456,7 @@ for i in range(NBALP2):
                      MAILLAGE      = CUBE,
                      GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)
    TABDV2[i] = POST_RELEVE_T( ACTION =_F( INTITULE='FATIGUE',
-                              NOEUD = 'N1',
+                              GROUP_NO = 'N1',
                               CHAM_GD = FATDV2[i],
                               NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
                               OPERATION='EXTRACTION',),);
@@ -513,7 +519,7 @@ for i in range(1, NBALP):
                      MAILLAGE      = CUBE,
                      GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)
    TABMV[i] = POST_RELEVE_T( ACTION =_F( INTITULE='FATIGUE',
-                              NOEUD = 'N1',
+                              GROUP_NO = 'N1',
                               CHAM_GD = FATMV[i],
                               NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
                               OPERATION='EXTRACTION',),);
@@ -544,7 +550,7 @@ for i in range(1, NBALP2):
                         MAILLAGE      = CUBE,
                         GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)
    TABMV2[i] = POST_RELEVE_T( ACTION=_F( INTITULE='FATIGUE',
-                                         NOEUD = 'N1',
+                                         GROUP_NO = 'N1',
                                          CHAM_GD = FATMV2[i],
                                        NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
                                        OPERATION='EXTRACTION',),);
@@ -625,7 +631,7 @@ for i in range(NBALP):
                         MAILLAGE      = CUBE,
                         GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)
    TABF[i] = POST_RELEVE_T( ACTION =_F( INTITULE='FATIGUE',
-                              NOEUD = 'N1',
+                              GROUP_NO = 'N1',
                               CHAM_GD = FATF[i],
                               NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
                               OPERATION='EXTRACTION',),);
@@ -655,7 +661,7 @@ for i in range(NBALP2):
                            MAILLAGE      = CUBE,
                            GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),)
    TABF2[i] = POST_RELEVE_T( ACTION = _F(    INTITULE='FATIGUE',
-                                             NOEUD = 'N1',
+                                             GROUP_NO = 'N1',
                                              CHAM_GD = FATF2[i],
                                              NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z',),
                                              OPERATION='EXTRACTION',),);

@@ -1,5 +1,5 @@
  TITRE
- %  GIBI FECIT
+ %  GIBI FECIT                                                                  
  FINSF
  %
  COOR_3D
@@ -27,50 +27,67 @@
  FINSF
  %
  SEG2    
-  M1      N21      N20     
-  M2      N20      N19     
-  M3      N19      N18     
-  M4      N18      N17     
-  M5      N17      N16     
-  M6      N16      N15     
-  M7      N15      N14     
-  M8      N14      N13     
-  M9      N13      N12     
-  M10     N12      N11     
-  M11     N11      N10     
-  M12     N10      N9      
-  M13     N9       N8      
-  M14     N8       N7      
-  M15     N7       N6      
-  M16     N6       N5      
-  M17     N5       N4      
-  M18     N4       N3      
-  M19     N3       N2      
-  M20     N2       N1      
+ M1       N21      N20     
+ M2       N20      N19     
+ M3       N19      N18     
+ M4       N18      N17     
+ M5       N17      N16     
+ M6       N16      N15     
+ M7       N15      N14     
+ M8       N14      N13     
+ M9       N13      N12     
+ M10      N12      N11     
+ M11      N11      N10     
+ M12      N10      N9      
+ M13      N9       N8      
+ M14      N8       N7      
+ M15      N7       N6      
+ M16      N6       N5      
+ M17      N5       N4      
+ M18      N4       N3      
+ M19      N3       N2      
+ M20      N2       N1      
  FINSF
  %
  POI1    
-  M21     N1      
+ M21      N1      
  FINSF
  %
  GROUP_NO
- P2       N1      
+ P2                      
+ N1      
  FINSF
  %
  GROUP_NO
- P1       N21     
+ P1                      
+ N21     
+ FINSF
+ %
+ GROUP_NO
+ N21                     
+ N21     
+ FINSF
+ %
+ GROUP_NO
+ N1                      
+ N1      
  FINSF
  %
  GROUP_MA
-   MASS    
+ MASS                    
  M21     
  FINSF
  %
  GROUP_MA
-   POUTRE  
+ POUTRE                  
  M1       M2       M3       M4       M5       M6       M7      
  M8       M9       M10      M11      M12      M13      M14     
  M15      M16      M17      M18      M19      M20     
+ FINSF
+ %
+ GROUP_MA
+ M1                      
+ M1      
  FINSF
  %
  FIN

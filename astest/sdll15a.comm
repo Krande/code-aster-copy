@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ MA0=DEFI_GROUP( reuse=MA0,   MAILLAGE=MA0,
 
 MA=CREA_MAILLAGE(MAILLAGE=MA0,
     CREA_POI1=(
-        _F(NOM_GROUP_MA='N200',   NOEUD = 'N200', ),
+        _F(NOM_GROUP_MA='N200',   GROUP_NO = 'N200', ),
     ),
 )
 
@@ -90,7 +90,7 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
                        AFFE=_F(  TOUT = 'OUI',  MATER = MAT) )
 
 CH=AFFE_CHAR_MECA(  MODELE=MO,
-          DDL_IMPO=_F(  NOEUD = 'N100', DX = 0.,  DY = 0.,  DZ = 0.,
+          DDL_IMPO=_F(  GROUP_NO = 'N100', DX = 0.,  DY = 0.,  DZ = 0.,
                                   DRX = 0., DRY = 0., DRZ = 0.) )
 
 # -------------------------------------------------------------------
@@ -321,12 +321,12 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
           )
 
 #--------------------------------------------------------------
-MD2=NORM_MODE(reuse=MD2, MODE=MD2,  NOEUD='N200',  NOM_CMP='DZ' )
+MD2=NORM_MODE(reuse=MD2, MODE=MD2,  GROUP_NO='N200',  NOM_CMP='DZ' )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MD2,
                   NOM_CHAM='DEPL',
-                  NOEUD='N200',
+                  GROUP_NO='N200',
                   NOM_CMP='DRX',
                   VALE_CALC=0.030396282056796,
                   VALE_REFE=0.029999999999999999,
@@ -336,12 +336,12 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 
 #--------------------------------------------------------------
-MD2=NORM_MODE(reuse=MD2, MODE=MD2,  NOEUD='N200',  NOM_CMP='DZ' )
+MD2=NORM_MODE(reuse=MD2, MODE=MD2,  GROUP_NO='N200',  NOM_CMP='DZ' )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=MD2,
                   NOM_CHAM='DEPL',
-                  NOEUD='N200',
+                  GROUP_NO='N200',
                   NOM_CMP='DRX',
                   VALE_REFE=-1.922,
                   VALE_CALC=-1.9226824477664,

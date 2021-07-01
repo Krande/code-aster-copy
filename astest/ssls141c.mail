@@ -1793,27 +1793,27 @@ MA-24-JUIL-2012 11:55:50
  FINSF
  %
  GROUP_NO
- A1      
+ A1                      
  N1      
  FINSF
  %
  GROUP_NO
- A2      
+ A2                      
  N2      
  FINSF
  %
  GROUP_NO
- A3      
+ A3                      
  N3      
  FINSF
  %
  GROUP_NO
- A4      
+ A4                      
  N4      
  FINSF
  %
  GROUP_MA
- PLAQ1   
+ PLAQ1                   
  M121     M122     M123     M124     M125     M126     M127    
  M128     M129     M130     M131     M132     M133     M134    
  M135     M136     M137     M138     M139     M140     M141    
@@ -1932,7 +1932,7 @@ MA-24-JUIL-2012 11:55:50
  FINSF
  %
  GROUP_MA
- L11     
+ L11                     
  M1       M2       M3       M4       M5       M6       M7      
  M8       M9       M10      M11      M12      M13      M14     
  M15      M16      M17      M18      M19      M20      M21     
@@ -1942,14 +1942,14 @@ MA-24-JUIL-2012 11:55:50
  FINSF
  %
  GROUP_MA
- L12     
+ L12                     
  M41      M42      M43      M44      M45      M46      M47     
  M48      M49      M50      M51      M52      M53      M54     
  M55      M56      M57      M58      M59      M60     
  FINSF
  %
  GROUP_MA
- L13     
+ L13                     
  M61      M62      M63      M64      M65      M66      M67     
  M68      M69      M70      M71      M72      M73      M74     
  M75      M76      M77      M78      M79      M80      M81     
@@ -1959,10 +1959,20 @@ MA-24-JUIL-2012 11:55:50
  FINSF
  %
  GROUP_MA
- L14     
+ L14                     
  M101     M102     M103     M104     M105     M106     M107    
  M108     M109     M110     M111     M112     M113     M114    
  M115     M116     M117     M118     M119     M120    
+ FINSF
+ %
+ GROUP_MA
+ M901                    
+ M901    
+ FINSF
+ %
+ GROUP_MA
+ M141                    
+ M141    
  FINSF
  %
  FIN

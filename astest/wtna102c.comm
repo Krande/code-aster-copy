@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -336,7 +336,7 @@ IMPR_TABLE ( FORMAT = 'AGRAF',
 TEST_RESU(RESU=_F(NUME_ORDRE=60,
                   RESULTAT=U0,
                   NOM_CHAM='DEPL',
-                  NOEUD='N12',
+                  GROUP_NO='N12',
                   NOM_CMP='PRE2',
                   VALE_CALC=14682.194939639,
                   CRITERE='RELATIF',
@@ -346,7 +346,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=60,
 TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   RESULTAT=U0,
                   NOM_CHAM='DEPL',
-                  NOEUD='N12',
+                  GROUP_NO='N12',
                   NOM_CMP='PRE2',
                   VALE_CALC=14953.029905811,
                   CRITERE='RELATIF',

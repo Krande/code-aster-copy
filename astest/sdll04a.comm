@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -100,7 +100,7 @@ MDP=CALC_MODES(MATR_RIGI=MATASSRP,
 MODM=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
          _F(  PHENOMENE = 'MECANIQUE',
                 GROUP_MA = 'MPOUTRE',  MODELISATION = 'POU_D_T'),
-              _F(  MAILLE = ('CD','MC',),    MODELISATION = 'DIS_T',
+              _F(  GROUP_MA = ('CD','MC',),    MODELISATION = 'DIS_T',
               PHENOMENE = 'MECANIQUE')) )
 
 CHM=AFFE_CHAR_MECA(  MODELE=MODM,DDL_IMPO=(
@@ -123,13 +123,13 @@ CARLEM2=AFFE_CARA_ELEM(   MODELE=MODM,
                         VALE = ( 0.01,   1.,   0.39E-5,   1.,   1.2,   1.2,  )),
 
             #------ POINT C   MASSE + RAIDEUR
-            DISCRET=( _F(  MAILLE = 'MC',     CARA = 'M_T_D_N',
+            DISCRET=( _F(  GROUP_MA = 'MC',     CARA = 'M_T_D_N',
                                      #          M
                                      VALE =    0.78,            ),
-                      _F(  MAILLE = 'MC',     CARA = 'K_T_D_N',
+                      _F(  GROUP_MA = 'MC',     CARA = 'K_T_D_N',
                                      #         K
                                      VALE =   ( 0.,0.,0.,),            ),
-                      _F(  MAILLE = 'CD',     CARA = 'K_T_D_L',
+                      _F(  GROUP_MA = 'CD',     CARA = 'K_T_D_L',
                                      #       KX     KY       KZ
                                      VALE = ( 0.,   75.9791,  0., ),),),  )
 
@@ -176,13 +176,13 @@ CARLEM3=AFFE_CARA_ELEM(   MODELE=MODM,
                         VALE = ( 0.01,   1.,   0.39E-5,   1.,   1.2,   1.2,  )),
 
             #------ POINT C   MASSE + RAIDEUR
-            DISCRET=(_F(  MAILLE = 'MC',     CARA = 'M_T_D_N',
+            DISCRET=(_F(  GROUP_MA = 'MC',     CARA = 'M_T_D_N',
                                      #          M
                                      VALE =     7.80,           ),
-                     _F(  MAILLE = 'MC',     CARA = 'K_T_D_N',
+                     _F(  GROUP_MA = 'MC',     CARA = 'K_T_D_N',
                                      #          K
                                      VALE =     (0.,0.,0.),           ),
-                     _F(  MAILLE = 'CD',     CARA =  'K_T_D_L',
+                     _F(  GROUP_MA = 'CD',     CARA =  'K_T_D_L',
                                      #       KX     KY      KZ
                                      VALE = ( 0.,  759.791,  0., ),),),  )
 

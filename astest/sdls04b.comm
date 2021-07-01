@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -121,6 +121,12 @@ MODCYC=MODE_ITER_CYCL(  BASE_MODALE=BAMO,
 #
 SQUEL1=DEFI_SQUELETTE(  CYCLIQUE    =_F(MODE_CYCL=MODCYC),
                              SECTEUR=_F( TOUT = 'OUI'))
+
+SQUEL1 = DEFI_GROUP( reuse = SQUEL1, MAILLAGE = SQUEL1,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'NO000020', NOEUD = 'NO000020'),
+                                     ),
+         )
 
 #
 MODSE2=REST_SOUS_STRUC(  RESU_GENE=MODCYC,
@@ -252,25 +258,25 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
 TEST_RESU(RESU=(_F(NUME_MODE=1,
                    RESULTAT=MODSE2,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO20',
+                   GROUP_NO='NO20',
                    NOM_CMP='DZ',
                    VALE_CALC=-0.32626823663163,),
                 _F(NUME_MODE=1,
                    RESULTAT=MODGL1,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO000020',
+                   GROUP_NO='NO000020',
                    NOM_CMP='DZ',
                    VALE_CALC=-0.32626823663163,),
                 _F(NUME_MODE=8,
                    RESULTAT=MODSE2,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO20',
+                   GROUP_NO='NO20',
                    NOM_CMP='DZ',
                    VALE_CALC=1.2989851676364,),
                 _F(NUME_MODE=8,
                    RESULTAT=MODGL1,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO000020',
+                   GROUP_NO='NO000020',
                    NOM_CMP='DZ',
                    VALE_CALC=1.2989851676364,),
                 ),

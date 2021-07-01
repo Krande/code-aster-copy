@@ -1,16 +1,68 @@
-COOR_2D
-A    0.0    0.0
-D    0.0   10.0
-B   10.0    0.0
-C   10.0   10.0
-E   20.0    0.0
-F   20.0   10.0
-FINSF
-SEG2
-S1 B E
-FINSF
-QUAD4
-Q1 A B C D
-Q2 B E F C
-FINSF
-FIN
+ TITRE
+ME-30-JUIN-2021 09:25:49                                                        
+ FINSF
+ %
+ COOR_2D
+ A         0.00000000000000E+00  0.00000000000000E+00
+ D         0.00000000000000E+00  1.00000000000000E+01
+ B         1.00000000000000E+01  0.00000000000000E+00
+ C         1.00000000000000E+01  1.00000000000000E+01
+ E         2.00000000000000E+01  0.00000000000000E+00
+ F         2.00000000000000E+01  1.00000000000000E+01
+ FINSF
+ %
+ SEG2    
+ S1       B        E       
+ FINSF
+ %
+ QUAD4   
+ Q1       A        B        C        D       
+ Q2       B        E        F        C       
+ FINSF
+ %
+ GROUP_NO
+ E                       
+ E       
+ FINSF
+ %
+ GROUP_NO
+ F                       
+ F       
+ FINSF
+ %
+ GROUP_NO
+ C                       
+ C       
+ FINSF
+ %
+ GROUP_NO
+ D                       
+ D       
+ FINSF
+ %
+ GROUP_NO
+ A                       
+ A       
+ FINSF
+ %
+ GROUP_NO
+ B                       
+ B       
+ FINSF
+ %
+ GROUP_MA
+ S1                      
+ S1      
+ FINSF
+ %
+ GROUP_MA
+ Q1                      
+ Q1      
+ FINSF
+ %
+ GROUP_MA
+ Q2                      
+ Q2      
+ FINSF
+ %
+ FIN

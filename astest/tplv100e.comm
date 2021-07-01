@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ FL2 =DEFI_CONSTANTE (VALE= 2.)
 CH2 =DEFI_CONSTANTE (VALE= 2.)
 TE2 =DEFI_CONSTANTE (VALE= 2.)
 CH=AFFE_CHAR_THER_F(MODELE=MO,
-                  TEMP_IMPO=_F(NOEUD='N1',
+                  TEMP_IMPO=_F(GROUP_NO='N1',
                                TEMP=T0,),
                   FLUX_REP=_F(GROUP_MA='GRMA6',
                               FLUN=FL2,),
@@ -92,7 +92,7 @@ FLUXGA=CALC_CHAM_ELEM(MODELE=MO,
                       TEMP=TEMP,
                       MODE_FOURIER=2,);
 
-TEST_RESU(CHAM_NO=(_F(NOEUD='N76',
+TEST_RESU(CHAM_NO=(_F(GROUP_NO='N76',
                       CRITERE='RELATIF',
                       NOM_CMP='TEMP',
                       PRECISION=1.E-2,
@@ -100,7 +100,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N76',
                       VALE_CALC=0.250022244,
                       VALE_REFE=0.25,
                       REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='N78',
+                   _F(GROUP_NO='N78',
                       CRITERE='RELATIF',
                       NOM_CMP='TEMP',
                       PRECISION=1.E-2,
@@ -108,7 +108,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N76',
                       VALE_CALC=0.249808212,
                       VALE_REFE=0.25,
                       REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='N151',
+                   _F(GROUP_NO='N151',
                       CRITERE='RELATIF',
                       NOM_CMP='TEMP',
                       PRECISION=1.E-2,
@@ -116,7 +116,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N76',
                       VALE_CALC=0.999513377,
                       VALE_REFE=1.0,
                       REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='N152',
+                   _F(GROUP_NO='N152',
                       CRITERE='RELATIF',
                       NOM_CMP='TEMP',
                       PRECISION=1.E-2,
@@ -124,7 +124,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N76',
                       VALE_CALC=0.999928845,
                       VALE_REFE=1.0,
                       REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='N153',
+                   _F(GROUP_NO='N153',
                       CRITERE='RELATIF',
                       NOM_CMP='TEMP',
                       PRECISION=1.E-2,
@@ -140,7 +140,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N76',
 TR1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                             INTITULE='EXT_FLUX',
                             CHAM_GD=FLUXNO,
-                            NOEUD=('N151','N152','N153','N76','N78',),
+                            GROUP_NO=('N151','N152','N153','N76','N78',),
                             NOM_CMP=('FLUX','FLUY','FLUZ',),),);
 #
 

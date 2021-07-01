@@ -23,7 +23,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 M=LIRE_MAILLAGE(FORMAT='MED',);
-DEFI_GROUP(reuse = M, MAILLAGE=M, CREA_GROUP_NO=_F(NOM='GN3', NOEUD='N3'))
+DEFI_GROUP(reuse = M, MAILLAGE=M, CREA_GROUP_NO=_F(NOM='GN3', GROUP_NO='N3'))
 #--------------------------------------------------------------------
 #               DEBUT DU THERMIQUE                                  #
 #--------------------------------------------------------------------
@@ -44,7 +44,7 @@ CMTH=AFFE_MATERIAU(MAILLAGE=M,
 CHTH=AFFE_CHAR_THER(MODELE=MOTH,
                     TEMP_IMPO=(_F(GROUP_NO='GRNO3',
                                   TEMP=0.0,),
-                               _F(NOEUD='N3',
+                               _F(GROUP_NO='N3',
                                   TEMP=-1.0,),
                                _F(GROUP_NO='GRNO5',
                                   TEMP=-1.0,),),);

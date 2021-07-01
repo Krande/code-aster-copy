@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,12 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 CYLINDRE = LIRE_MAILLAGE(FORMAT='IDEAS',
                          UNITE=19,
                          )
+
+CYLINDRE = DEFI_GROUP( reuse = CYLINDRE, MAILLAGE = CYLINDRE,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N2', NOEUD = 'N2'),
+                                     ),
+         )
 
 CYLINDRE=DEFI_GROUP(reuse=CYLINDRE,
       MAILLAGE=CYLINDRE,CREA_GROUP_NO=(
@@ -102,7 +108,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=EVOC2,
                    NOM_CHAM='FVOL_3D',
-                   NOEUD='N2',
+                   GROUP_NO='N2',
                    NOM_CMP='FX',
                    VALE_CALC=0.707107,
                    VALE_REFE=0.707107,
@@ -112,7 +118,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=EVOC2,
                    NOM_CHAM='FSUR_3D',
-                   NOEUD='N2',
+                   GROUP_NO='N2',
                    NOM_CMP='FY',
                    VALE_CALC=0.707107,
                    VALE_REFE=0.707107,

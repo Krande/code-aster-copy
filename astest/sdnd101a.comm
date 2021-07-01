@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -146,7 +146,7 @@ DYNAMODA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                           INST_FIN = 0.5,
                                           PAS = 0.0005),
                              COMPORTEMENT=_F(RELATION='DIS_CHOC',
-                                    NOEUD_1 = 'NO1',
+                                    GROUP_NO_1 = 'NO1',
                                     OBSTACLE = PLANZ,
                                     ORIG_OBST = (-1., 0., 0.,),
                                     NORM_OBST = (0., 0., 1.,),

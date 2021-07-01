@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -133,14 +133,14 @@ CHP_MATT=AFFE_MATERIAU(
 CHR_LIAI=AFFE_CHAR_MECA(
               MODELE=MO,DDL_IMPO=(
 
-               _F( NOEUD = 'NO2',  DX = 0.,  DY = 0.,  DZ = 0.,
+               _F( GROUP_NO = 'NO2',  DX = 0.,  DY = 0.,  DZ = 0.,
                              DRX = 0., DRY = 0.,  DRZ = 0.),
-               _F( NOEUD = 'NO1',  DX = 0.,          DZ = 0.))
+               _F( GROUP_NO = 'NO1',  DX = 0.,          DZ = 0.))
              )
 
 CHR_TRAC=AFFE_CHAR_MECA(
                   MODELE=MO,
-                  FACE_IMPO=_F( MAILLE = 'MA2',  DX = 1.)
+                  FACE_IMPO=_F( GROUP_MA = 'MA2',  DX = 1.)
              )
 
 VT=STAT_NON_LINE(
@@ -190,7 +190,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=VT,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO4',
+                   GROUP_NO='NO4',
                    NOM_CMP='DX',
                    VALE_CALC=303.401010101,
                    VALE_REFE=303.0,
@@ -199,7 +199,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=VT,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO4',
+                   GROUP_NO='NO4',
                    NOM_CMP='DY',
                    VALE_CALC=-108.816370105,
                    VALE_REFE=-110.0,
@@ -214,7 +214,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_CALC=0.798277346698,
                    VALE_REFE=0.79919300000000004,
                    PRECISION=1.E-2,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 _F(INST=2.0,
                    REFERENCE='ANALYTIQUE',
                    POINT=1,
@@ -225,7 +225,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_CALC=1497.44471974,
                    VALE_REFE=1497.4400000000001,
                    PRECISION=1.E-2,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 _F(INST=2.0,
                    REFERENCE='ANALYTIQUE',
                    POINT=1,
@@ -236,7 +236,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_CALC=0.61088763833,
                    VALE_REFE=0.61080869999999998,
                    PRECISION=1.E-2,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 _F(INST=2.0,
                    REFERENCE='ANALYTIQUE',
                    POINT=1,
@@ -247,7 +247,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_CALC=0.246037826413,
                    VALE_REFE=0.2475,
                    PRECISION=0.014999999999999999,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 ),
           )
 

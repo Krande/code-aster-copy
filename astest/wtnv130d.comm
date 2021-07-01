@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -254,7 +254,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=U0,
                   NOM_CHAM='DEPL',
-                  NOEUD='N1',
+                  GROUP_NO='N1',
                   NOM_CMP='TEMP',
                   VALE_CALC=0.215832098,
                   VALE_REFE=0.216,
@@ -266,7 +266,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=U0,
                   NOM_CHAM='DEPL',
-                  NOEUD='N1',
+                  GROUP_NO='N1',
                   NOM_CMP='PRE1',
                   VALE_CALC= 1.49927748E+05,
                   VALE_REFE=1.49000E5,
@@ -278,7 +278,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=U0,
                   NOM_CHAM='DEPL',
-                  NOEUD='N1',
+                  GROUP_NO='N1',
                   NOM_CMP='PRE2',
                   VALE_CALC=110.207135421,
                   VALE_REFE=113.0,
@@ -290,13 +290,13 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=U0,
                   NOM_CHAM='VARI_ELNO',
-                  NOEUD='N1',
+                  GROUP_NO='N1',
                   NOM_CMP='V4',
                   VALE_CALC=44.245668923,
                   VALE_REFE=44.0,
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,
-                  MAILLE='M1',),
+                  GROUP_MA='M1',),
           )
 
 FIN();

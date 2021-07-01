@@ -290,7 +290,7 @@ TAB_VC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 IMPR_TABLE(TABLE=TAB_VC);
 
 # Validation for not-paired node
-TEST_RESU(RESU=(_F(NOEUD='N1',
+TEST_RESU(RESU=(_F(GROUP_NO='N1',
                    INST=5.0,
                    RESULTAT=U2,
                    NOM_CHAM='CONT_NOEU',

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,11 +38,11 @@ TRAN_GE2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                 EXCIT=(
                 _F(  VECT_ASSE_GENE = VECT_X1,  ACCE = ACCELER1,
                        MULT_APPUI = 'OUI',
-                       DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO1',
+                       DIRECTION = ( 1., 0., 0.,), GROUP_NO = 'NO1',
                        VITE = VITESSE1, DEPL = DEPLACE1),
                 _F(  VECT_ASSE_GENE = VECT_X2,  ACCE = ACCELER2,
                        MULT_APPUI = 'OUI',
-                       DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO11',
+                       DIRECTION = ( 1., 0., 0.,), GROUP_NO = 'NO11',
                        VITE = VITESSE2, DEPL = DEPLACE2)),
                 COMPORTEMENT=_F(RELATION='DIS_CHOC',
                        GROUP_NO_1 = 'MASSES1',

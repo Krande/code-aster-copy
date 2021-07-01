@@ -21,8 +21,48 @@ CODE_ASTER - 11.00.27 - VERSION DE DEVELOPPEMENT          - FRONTAL1         - L
  M5       N2       N1       N6       N7      
  FINSF
  %
+ GROUP_NO
+ N3                      
+ N3      
+ FINSF
+ %
+ GROUP_NO
+ N2                      
+ N2      
+ FINSF
+ %
+ GROUP_NO
+ N8                      
+ N8      
+ FINSF
+ %
+ GROUP_NO
+ N1                      
+ N1      
+ FINSF
+ %
+ GROUP_NO
+ N5                      
+ N5      
+ FINSF
+ %
+ GROUP_NO
+ N7                      
+ N7      
+ FINSF
+ %
+ GROUP_NO
+ N4                      
+ N4      
+ FINSF
+ %
+ GROUP_NO
+ N6                      
+ N6      
+ FINSF
+ %
  GROUP_MA
- VOL     
+ VOL                     
  M1       M2       M3       M4       M5      
  FINSF
  %

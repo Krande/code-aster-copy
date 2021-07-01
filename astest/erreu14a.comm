@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ CHARGT=AFFE_CHAR_MECA(    MODELE=MO,DDL_IMPO=(
 # 1. Toutes les mailles sont affectees mais la composante ne s'appelle pas TEMP
 #------------------------------------------------------------------------------
 CH1=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_TEMP_R', MAILLAGE=MAIL,
-               AFFE=( _F(MAILLE='M3', NOM_CMP= 'LAGR', VALE= 0.3)))
+               AFFE=( _F(GROUP_MA='M3', NOM_CMP= 'LAGR', VALE= 0.3)))
 CHMAT1=AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(  TOUT = 'OUI', MATER = ACIER),
        AFFE_VARC=(_F( TOUT='OUI',  CHAM_GD=CH1, NOM_VARC='SECH', VALE_REF=0.)))
 
@@ -91,7 +91,7 @@ DEF2=MECA_STATIQUE( MODELE=MO, CHAM_MATER=CHMAT2,  EXCIT=_F(CHARGE = CHARGT)  )
 # 3. Toutes les mailles sont ne sont pas correctement affectees (cas 1):
 #------------------------------------------------------------------------------
 CH3=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_TEMP_R', MAILLAGE=MAIL,
-             AFFE=( _F(MAILLE='M1', NOM_CMP= 'TEMP', VALE= 0.3)))
+             AFFE=( _F(GROUP_MA='M1', NOM_CMP= 'TEMP', VALE= 0.3)))
 CHMAT3=AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(  TOUT = 'OUI', MATER = ACIER),
        AFFE_VARC=(_F( TOUT='OUI',  CHAM_GD=CH3, NOM_VARC='SECH', VALE_REF=0.)))
 
@@ -118,7 +118,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE', VALE_CALC_I=1, VALE_REFE_I=1,
 CH4=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_TEMP_R', MAILLAGE=MAIL,
              AFFE=( _F(TOUT='OUI', NOM_CMP= 'TEMP', VALE= 0.3)))
 CHMAT4=AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(  TOUT = 'OUI', MATER = ACIER),
-       AFFE_VARC=(_F( MAILLE='M1',  CHAM_GD=CH4, NOM_VARC='SECH', VALE_REF=0.)))
+       AFFE_VARC=(_F( GROUP_MA='M1',  CHAM_GD=CH4, NOM_VARC='SECH', VALE_REF=0.)))
 
 is_ok = 0
 try :

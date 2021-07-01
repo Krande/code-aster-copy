@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ CHARGE_1=AFFE_CHAR_MECA(MODELE=MODELE_1,FORCE_NODALE=(
            )
 
 CHARGE_2=AFFE_CHAR_MECA(MODELE=MODELE_1,
-          FORCE_ARETE=_F( MAILLE = 'MA000009',   FX = 5.)
+          FORCE_ARETE=_F( GROUP_MA = 'MA000009',   FX = 5.)
            )
 
 CARAC__1=AFFE_CARA_ELEM(   MODELE=MODELE_1,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,15 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 
 M=LIRE_MAILLAGE(FORMAT='MED',);
+
+M = DEFI_GROUP( reuse = M, MAILLAGE = M,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M1', MAILLE = 'M1'),
+                                     ),
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N7', NOEUD = 'N7'),
+                                     ),
+         )
 
 mod=AFFE_MODELE(MAILLAGE=M,
                 AFFE=_F(TOUT='OUI',
@@ -228,31 +237,31 @@ IMPR_RESU(FORMAT='RESULTAT',
 TEST_RESU(RESU=(_F(INST=1,
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
-                   NOEUD='N7',
+                   GROUP_NO='N7',
                    NOM_CMP='DZ',
                    VALE_CALC=-0.00124667554155,
-                   MAILLE='M1',),
+                   GROUP_MA='M1',),
                 _F(INST=50,
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
-                   NOEUD='N7',
+                   GROUP_NO='N7',
                    NOM_CMP='DZ',
                    VALE_CALC=-0.00356989525653,
-                   MAILLE='M1',),
+                   GROUP_MA='M1',),
                 _F(INST=100,
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
-                   NOEUD='N7',
+                   GROUP_NO='N7',
                    NOM_CMP='DZ',
                    VALE_CALC=-0.00436072570467,
-                   MAILLE='M1',),
+                   GROUP_MA='M1',),
                 _F(INST=150,
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
-                   NOEUD='N7',
+                   GROUP_NO='N7',
                    NOM_CMP='DZ',
                    VALE_CALC=-0.00484902545408,
-                   MAILLE='M1',),
+                   GROUP_MA='M1',),
                 ),
           )
 

@@ -252,7 +252,7 @@ for num_mail in range(nb_mail_max) :
 #TEST_RESU(CHAM_ELEM=( _F( CHAM_GD=NIVEAU,
                       #CRITERE = 'ABSOLU',
                       #PRECISION = 1.E-3,
-                      #MAILLE='M43',
+                      #GROUP_MA='M43',
                       #NOM_CMP = 'X1',
                       #VALE = 1.5,
                       #REFERENCE = 'NON_DEFINI',

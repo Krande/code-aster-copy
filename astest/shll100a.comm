@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ GUIDAGED=AFFE_CHAR_MECA(   MODELE=BARRED,
                            DDL_IMPO=(
                              _F( GROUP_NO = 'NOEUDDL',
                                        DY = 0., DZ = 0.),
-                             _F( NOEUD = 'N1', DX = 0.)),
+                             _F( GROUP_NO = 'N1', DX = 0.)),
                             PESANTEUR =_F(GRAVITE=9.81,
                                           DIRECTION=(0.,-1.,0.),),)
 #
@@ -132,7 +132,7 @@ AMOPROD=PROJ_MATR_BASE( BASE=MODESD,
 
 #
 CHARHARD=AFFE_CHAR_MECA(   MODELE=BARRED,
-                           FORCE_NODALE=_F( NOEUD = 'N11', FX = -100.))
+                           FORCE_NODALE=_F( GROUP_NO = 'N11', FX = -100.))
 
 #
 VECTELD=CALC_VECT_ELEM( OPTION='CHAR_MECA',
@@ -165,7 +165,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=HARMDIR,
                   NOM_CHAM='DEPL',
-                  NOEUD='N11',
+                  GROUP_NO='N11',
                   NOM_CMP='DX',
                   CRITERE='RELATIF',
                   PRECISION=2.E-3,
@@ -205,7 +205,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC_C=(-5.50231e-11+4.11411e-09j),
 
 #
 DYNHARD=REST_GENE_PHYS(   RESU_GENE=DYNPROD,
-                          NOEUD = 'N11',
+                          GROUP_NO = 'N11',
                           FREQ=FD,
                           MODE_MECA=MODESD,
                           NOM_CHAM = 'DEPL',   )
@@ -216,7 +216,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=DYNHARD,
                   NOM_CHAM='DEPL',
-                  NOEUD='N11',
+                  GROUP_NO='N11',
                   NOM_CMP='DX',
                   CRITERE='RELATIF',
                   PRECISION=2.E-3,
@@ -226,7 +226,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 #
 HFX_NO11 = RECU_FONCTION ( RESU_GENE = DYNPROD,
                            NOM_CHAM = 'DEPL',
-                           NOEUD = 'N11',
+                           GROUP_NO = 'N11',
                            NOM_CMP = 'DX',  ) ;
 
 IMPR_FONCTION ( COURBE = _F( FONCTION = HFX_NO11 ) ) ;
@@ -284,11 +284,11 @@ CARA=AFFE_CARA_ELEM(  MODELE=BARRE,
 GUIDAGE1=AFFE_CHAR_MECA(   MODELE=BARRE,DDL_IMPO=(
                              _F( GROUP_NO = 'NOEUDDL',
                                        DY = 0., DZ = 0.),
-                             _F( NOEUD = 'A', DX = 0.)))
+                             _F( GROUP_NO = 'A', DX = 0.)))
 
 #
 CHARGE1=AFFE_CHAR_MECA(   MODELE=BARRE,
-                             DDL_IMPO=_F( NOEUD = 'N5', DX = 0.))
+                             DDL_IMPO=_F( GROUP_NO = 'N5', DX = 0.))
 
 #
 MATEL1_K=CALC_MATR_ELEM(  MODELE=BARRE,
@@ -343,7 +343,7 @@ INTERF1=DEFI_INTERF_DYNA(  NUME_DDL=NUM1,
 
                              TYPE = 'CB_HARMO',
                              MASQUE = ('DY','DZ',),
-                             NOEUD = 'N5'),
+                             GROUP_NO = 'N5'),
                              FREQ=300.
                             )
 
@@ -368,11 +368,11 @@ GUIDAGE2=AFFE_CHAR_MECA(   MODELE=BARRE,
 
 #
 CHARGE2=AFFE_CHAR_MECA(   MODELE=BARRE,
-                             DDL_IMPO=_F( NOEUD = 'A', DX = 0.))
+                             DDL_IMPO=_F( GROUP_NO = 'A', DX = 0.))
 
 #
 CHARHARM=AFFE_CHAR_MECA(   MODELE=BARRE,
-                             FORCE_NODALE=_F( NOEUD = 'N5', FX = -100.))
+                             FORCE_NODALE=_F( GROUP_NO = 'N5', FX = -100.))
 
 #
 MATEL2_K=CALC_MATR_ELEM(  MODELE=BARRE,
@@ -434,7 +434,7 @@ INTERF2=DEFI_INTERF_DYNA(  NUME_DDL=NUM2,
                              #TYPE:'CRAIGB'
                              TYPE = 'CB_HARMO',
                              MASQUE = ('DY','DZ',),
-                             NOEUD = 'A'),
+                             GROUP_NO = 'A'),
                              FREQ=300.,
                              INFO=2
                             )
@@ -522,6 +522,12 @@ SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,
                                        GROUP_MA='TOUT'
                                    )))
 
+SQUEL = DEFI_GROUP( reuse = SQUEL, MAILLAGE = SQUEL,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'NO12', NOEUD = 'NO12'),
+                                     ),
+         )
+
 #
 DEBUG(SDVERI='OUI')
 MODAIR=REST_SOUS_STRUC(RESU_GENE=RESGAIR, SQUELETTE=SQUEL, TOUT_ORDRE='OUI')
@@ -606,7 +612,7 @@ DYNHARC=REST_SOUS_STRUC(  RESU_GENE=DYNPRO,
                           FREQ=F,
                           MODE_MECA=MODCOT,
                           NOM_CHAM = 'DEPL',
-                          NOEUD = 'N5',        )
+                          GROUP_NO = 'N5',        )
 
 #
 DYNHARM=REST_SOUS_STRUC(  RESU_GENE=DYNGEN,
@@ -630,7 +636,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='NON_DEFINI',
                   RESULTAT=DYNHAR2,
                   NOM_CHAM='DEPL',
-                  NOEUD='N5',
+                  GROUP_NO='N5',
                   NOM_CMP='DX',
                   CRITERE='RELATIF',
                   PRECISION=2.E-3,
@@ -645,7 +651,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=DYNHARC,
                   NOM_CHAM='DEPL',
-                  NOEUD='N5',
+                  GROUP_NO='N5',
                   NOM_CMP='DX',
                   CRITERE='RELATIF',
                   PRECISION=2.E-3,
@@ -659,7 +665,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=DYNHAR2,
                   NOM_CHAM='VITE',
-                  NOEUD='N5',
+                  GROUP_NO='N5',
                   NOM_CMP='DX',
                   CRITERE='RELATIF',
                   PRECISION=2.E-3,
@@ -673,7 +679,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=DYNHAR2,
                   NOM_CHAM='ACCE',
-                  NOEUD='N5',
+                  GROUP_NO='N5',
                   NOM_CMP='DX',
                   CRITERE='RELATIF',
                   PRECISION=2.E-3,
@@ -687,7 +693,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=DYNHARM2,
                   NOM_CHAM='DEPL',
-                  NOEUD='NO12',
+                  GROUP_NO='NO12',
                   NOM_CMP='DX',
                   CRITERE='RELATIF',
                   PRECISION=2.E-3,

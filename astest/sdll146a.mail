@@ -1,12 +1,29 @@
-TITRE
-%  GIBI FECIT
-FINSF
-%
-COOR_3D
-N001    0.0 1.0 1.0
-N002    1.0 1.0 1.0
-FINSF
-SEG2
-SEG2001 N001 N002
-FINSF
-FIN
+ TITRE
+%  GIBI FECIT                                                                   
+ FINSF
+ %
+ COOR_3D
+ N001      0.00000000000000E+00  1.00000000000000E+00  1.00000000000000E+00
+ N002      1.00000000000000E+00  1.00000000000000E+00  1.00000000000000E+00
+ FINSF
+ %
+ SEG2    
+ SEG2001  N001     N002    
+ FINSF
+ %
+ GROUP_NO
+ N002                    
+ N002    
+ FINSF
+ %
+ GROUP_NO
+ N001                    
+ N001    
+ FINSF
+ %
+ GROUP_MA
+ SEG2001                 
+ SEG2001 
+ FINSF
+ %
+ FIN

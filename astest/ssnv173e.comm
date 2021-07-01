@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -64,12 +64,12 @@ DEPZ=3.E-6
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                        DDL_IMPO=(
-                                 _F(NOEUD=('N1','N8','N30','N19',),
+                                 _F(GROUP_NO=('N1','N8','N30','N19',),
                                     DX=ZERO,
                                     DY=ZERO,
                                     DZ=ZERO,
                                     ),
-                                 _F(NOEUD=('N16','N33','N29','N44',),
+                                 _F(GROUP_NO=('N16','N33','N29','N44',),
                                     DX=ZERO,
                                     DY=ZERO,
                                     DZ=DEPX,),
@@ -78,12 +78,12 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
 
 CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
                        DDL_IMPO=(
-                                 _F(NOEUD=('N1','N8','N30','N19',),
+                                 _F(GROUP_NO=('N1','N8','N30','N19',),
                                     DX=ZERO,
                                     DY=ZERO,
                                     DZ=ZERO,
                                     ),
-                                 _F(NOEUD=('N16','N33','N29','N44',),
+                                 _F(GROUP_NO=('N16','N33','N29','N44',),
                                     DX=DEPX,
                                     DY=DEPY,
                                     DZ=DEPZ,),

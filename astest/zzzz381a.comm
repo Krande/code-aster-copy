@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -129,11 +129,11 @@ POUCA=AFFE_CARA_ELEM(MODELE=MOPOU, INFO=1,
     ORIENTATION=_F(GROUP_MA=('POUTRE0','POUTRE1','POUTRE2'), CARA='ANGL_VRIL', VALE=0.0,),
     GEOM_FIBRE=GF,
     MULTIFIBRE = (
-        _F(MAILLE   = 'M10',     GROUP_FIBRE=('SEC1','SACI',)),
-        _F(MAILLE   = 'M20',     GROUP_FIBRE=('SEC2','SACI',)),
+        _F(GROUP_MA   = 'M10',     GROUP_FIBRE=('SEC1','SACI',)),
+        _F(GROUP_MA   = 'M20',     GROUP_FIBRE=('SEC2','SACI',)),
         _F(GROUP_MA = 'POUTRE1', GROUP_FIBRE=('TUB10',)),
-        _F(MAILLE   = 'M12',     GROUP_FIBRE=('TUB10','TUB20')),
-        _F(MAILLE   = 'M22',     GROUP_FIBRE=('TUB10','TUB20')),
+        _F(GROUP_MA   = 'M12',     GROUP_FIBRE=('TUB10','TUB20')),
+        _F(GROUP_MA   = 'M22',     GROUP_FIBRE=('TUB10','TUB20')),
     )
 )
 

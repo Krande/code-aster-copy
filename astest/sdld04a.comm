@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ MAILLAG0=LIRE_MAILLAGE(FORMAT='MED', )
 MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
     CREA_POI1=(
         _F(NOM_GROUP_MA='MASSES',   GROUP_NO = ('MASSES',) ),
-        _F(NOM_GROUP_MA='N020304',  NOEUD = ('N02',  'N03',  'N04',), ),
+        _F(NOM_GROUP_MA='N020304',  GROUP_NO = ('N02',  'N03',  'N04',), ),
     ),
 )
 
@@ -121,7 +121,7 @@ MODE_EXT=EXTR_MODE( FILTRE_MODE=_F( MODE = MODE_MEC,
                       )
 
 MODE_STA=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,
-                        MODE_STAT=_F(  NOEUD = 'N01', AVEC_CMP = 'DX') )
+                        MODE_STAT=_F(  GROUP_NO = 'N01', AVEC_CMP = 'DX') )
 
 #
 MONO_X=CALC_CHAR_SEISME(   MATR_MASS=MASSE,   DIRECTION=( 1., 0., 0.,),
@@ -129,7 +129,7 @@ MONO_X=CALC_CHAR_SEISME(   MATR_MASS=MASSE,   DIRECTION=( 1., 0., 0.,),
                              )
 
 MULT_X=CALC_CHAR_SEISME(   MATR_MASS=MASSE,   DIRECTION=( 1., 0., 0.,),
-                              MODE_STAT=MODE_STA,  NOEUD='N01'
+                              MODE_STAT=MODE_STA,  GROUP_NO='N01'
                              )
 
 ACCELERO = FORMULE(VALE='2.E+05*INST**2',
@@ -200,7 +200,7 @@ TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                   INCREMENT=_F(  INST_FIN = 0.1, PAS = dt1) ,
                   )
 
-N04_DX_1=RECU_FONCTION(  NOEUD='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
+N04_DX_1=RECU_FONCTION(  GROUP_NO='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
                            RESU_GENE=TRAN_GEN,  LIST_INST=L_RECU  )
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-2.666665554879E-03,
@@ -265,7 +265,7 @@ TRAN_NUM=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                   INCREMENT=_F( INST_INIT = 0.,  INST_FIN = 0.1,  PAS = 0.001)
                            )
 
-N04_DX_N=RECU_FONCTION(  NOEUD='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
+N04_DX_N=RECU_FONCTION(  GROUP_NO='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
                            RESU_GENE=TRAN_NUM,   LIST_INST=L_RECU  )
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-2.659998507783E-03,
@@ -321,7 +321,7 @@ TRAN_NUC=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                  INCREMENT=_F( INST_INIT = 0.,  INST_FIN = 0.1,  PAS = 0.001)
                            )
 
-N04_DX_C=RECU_FONCTION(  NOEUD='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
+N04_DX_C=RECU_FONCTION(  GROUP_NO='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
                              RESU_GENE=TRAN_NUC,  LIST_INST=L_RECU  )
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-5.319997476525E-03,
@@ -436,7 +436,7 @@ TRA_GCS=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
 
 TabPhy=POST_GENE_PHYS(RESU_GENE=TRA_GCS, 
                       OBSERVATION=(
-                                   _F(NOM_CHAM='DEPL', NOM_CMP=('DX',), NOEUD='N02', LIST_INST=L_RECU,
+                                   _F(NOM_CHAM='DEPL', NOM_CMP=('DX',), GROUP_NO='N02', LIST_INST=L_RECU,
                                       CRITERE='ABSOLU',
                                       PRECISION =1.e-6,
                                      ),
@@ -451,7 +451,7 @@ TEST_TABLE(
            )
 
 #
-N04_DXC3=RECU_FONCTION(  NOEUD='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
+N04_DXC3=RECU_FONCTION(  GROUP_NO='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
                            CORR_STAT='OUI',
                            RESU_GENE=TRA_GCS,  LIST_INST=L_RECU  )
 
@@ -564,7 +564,7 @@ TEST_TABLE(
            )
 
 N04_DX_2=RECU_FONCTION(
-                         NOEUD='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
+                         GROUP_NO='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
                              RESULTAT=TRAN_LI1,  LIST_INST=L_RECU  )
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-2.679998717479E-03,
@@ -695,10 +695,10 @@ DEPL_0_1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                      RESULTAT=TRAN_LI2, NOM_CHAM='DEPL', INST=0.10  )
 
 F_D_0_10=RECU_FONCTION(  CHAM_GD=DEPL_0_1,
-                             NOEUD='N04',   NOM_CMP='DX'  )
+                             GROUP_NO='N04',   NOM_CMP='DX'  )
 
 N04_DX_3=RECU_FONCTION(
-                        NOEUD='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
+                        GROUP_NO='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
                              RESULTAT=TRAN_LI2,  LIST_INST=L_RECU  )
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-2.679998717479E-03,
@@ -849,9 +849,9 @@ DEPLB0_1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                      RESULTAT=TRAN_LI4, NOM_CHAM='DEPL', INST=0.10  )
 
 F_DB0_10=RECU_FONCTION(  CHAM_GD=DEPLB0_1,
-                             NOEUD='N04',   NOM_CMP='DX'  )
+                             GROUP_NO='N04',   NOM_CMP='DX'  )
 
-N04BDX_3=RECU_FONCTION( NOEUD='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
+N04BDX_3=RECU_FONCTION( GROUP_NO='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
                              RESULTAT=TRAN_LI4,  LIST_INST=L_RECU  )
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-2.659998968742E-03,
@@ -945,7 +945,7 @@ TEST_TABLE(
 TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                    RESULTAT=TRAN_LI3,
                    NOM_CHAM='ACCE',
-                   NOEUD='N01',
+                   GROUP_NO='N01',
                    NOM_CMP='DX',
                    VALE_CALC=0.,
                    VALE_REFE=0.0,
@@ -955,7 +955,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                 _F(NUME_ORDRE=0,
                    RESULTAT=TRAN_LI3,
                    NOM_CHAM='ACCE',
-                   NOEUD='N02',
+                   GROUP_NO='N02',
                    NOM_CMP='DX',
                    VALE_CALC=-548.34247438,
                    VALE_REFE=-548.34199999999998,
@@ -964,7 +964,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                 _F(NUME_ORDRE=0,
                    RESULTAT=TRAN_LI3,
                    NOM_CHAM='ACCE',
-                   NOEUD='N03',
+                   GROUP_NO='N03',
                    NOM_CMP='DX',
                    VALE_CALC=-699.858795118,
                    VALE_REFE=-699.85900000000004,
@@ -973,7 +973,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                 _F(NUME_ORDRE=0,
                    RESULTAT=TRAN_LI3,
                    NOM_CHAM='ACCE',
-                   NOEUD='N04',
+                   GROUP_NO='N04',
                    NOM_CMP='DX',
                    VALE_CALC=-718.626338216,
                    VALE_REFE=-718.62599999999998,
@@ -982,7 +982,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=0,
                 ),
           )
 
-N04_DX_4=RECU_FONCTION(  NOEUD='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
+N04_DX_4=RECU_FONCTION(  GROUP_NO='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
                          RESULTAT=TRAN_LI3   )
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.21606092073620,
@@ -1007,63 +1007,63 @@ INST_MAX=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                      RESULTAT=TRAN_LI3, NOM_CHAM='ACCE',
                      TYPE_RESU='INST',     TYPE_MAXI='NORM_TRAN' )
 
-TEST_RESU(CHAM_NO=(_F(NOEUD='N02',
+TEST_RESU(CHAM_NO=(_F(GROUP_NO='N02',
                       NOM_CMP='DX',
                       CHAM_GD=INST_MAX,
                       VALE_CALC=0.11,
                       VALE_REFE=0.11,
                       REFERENCE = 'ANALYTIQUE',
                       PRECISION=1.E-3,),
-                   _F(NOEUD='N03',
+                   _F(GROUP_NO='N03',
                       NOM_CMP='DX',
                       CHAM_GD=INST_MAX,
                       VALE_CALC=0.11,
                       VALE_REFE=0.11,
                       REFERENCE = 'ANALYTIQUE',
                       PRECISION=1.E-3,),
-                   _F(NOEUD='N04',
+                   _F(GROUP_NO='N04',
                       NOM_CMP='DX',
                       CHAM_GD=INST_MAX,
                       VALE_CALC=0.11,
                       VALE_REFE=0.11,
                       REFERENCE = 'ANALYTIQUE',
                       PRECISION=1.E-3,),
-                   _F(NOEUD='N02',
+                   _F(GROUP_NO='N02',
                       NOM_CMP='DY',
                       CHAM_GD=INST_MAX,
                       VALE_CALC=0.11,
                       VALE_REFE=0.11,
                       REFERENCE = 'ANALYTIQUE',
                       PRECISION=1.E-3,),
-                   _F(NOEUD='N03',
+                   _F(GROUP_NO='N03',
                       NOM_CMP='DY',
                       CHAM_GD=INST_MAX,
                       VALE_CALC=0.11,
                       VALE_REFE=0.11,
                       REFERENCE = 'ANALYTIQUE',
                       PRECISION=1.E-3,),
-                   _F(NOEUD='N04',
+                   _F(GROUP_NO='N04',
                       NOM_CMP='DY',
                       CHAM_GD=INST_MAX,
                       VALE_CALC=0.11,
                       VALE_REFE=0.11,
                       REFERENCE = 'ANALYTIQUE',
                       PRECISION=1.E-3,),
-                   _F(NOEUD='N02',
+                   _F(GROUP_NO='N02',
                       NOM_CMP='DZ',
                       CHAM_GD=INST_MAX,
                       VALE_CALC=0.11,
                       VALE_REFE=0.11,
                       REFERENCE = 'ANALYTIQUE',
                       PRECISION=1.E-3,),
-                   _F(NOEUD='N03',
+                   _F(GROUP_NO='N03',
                       NOM_CMP='DZ',
                       CHAM_GD=INST_MAX,
                       VALE_CALC=0.11,
                       VALE_REFE=0.11,
                       REFERENCE = 'ANALYTIQUE',
                       PRECISION=1.E-3,),
-                   _F(NOEUD='N04',
+                   _F(GROUP_NO='N04',
                       NOM_CMP='DZ',
                       CHAM_GD=INST_MAX,
                       VALE_CALC=0.11,
@@ -1084,7 +1084,7 @@ LISTINST=DEFI_LIST_REEL( DEBUT=0.,
 
 ACCE_R_1=RECU_FONCTION(   RESU_GENE=TRAN_GEN,
                                 LIST_INST=LISTINST,
-                                    NOEUD='N04',
+                                    GROUP_NO='N04',
                                   NOM_CMP='DX',
                                  NOM_CHAM='ACCE',
                                  INTERPOL='LIN'
@@ -1098,11 +1098,11 @@ ACCE_A_1=CALC_FONCTION( COMB=(  _F( FONCTION = ACCE_R_1, COEF = 1.),
                                 _F( FONCTION = ACCE_ENT, COEF = 1.))
                              )
 
-RESTPHYS=REST_GENE_PHYS(   RESU_GENE=TRAN_GEN, NOM_CHAM='ACCE',  NOEUD='N04',
+RESTPHYS=REST_GENE_PHYS(   RESU_GENE=TRAN_GEN, NOM_CHAM='ACCE',  GROUP_NO='N04',
                            LIST_INST=LISTINST,  )
 
 ACCE_R_2=RECU_FONCTION(  RESULTAT=RESTPHYS,
-                         NOM_CHAM='ACCE', NOEUD='N04', NOM_CMP='DX',
+                         NOM_CHAM='ACCE', GROUP_NO='N04', NOM_CMP='DX',
                          INTERPOL='LIN',   )
 
 ACCE_A_2=CALC_FONCTION( COMB=(  _F( FONCTION = ACCE_R_2, COEF = 1.),
@@ -1114,18 +1114,18 @@ RESPHYA=REST_GENE_PHYS(        RESU_GENE=TRAN_GEN,
                                       NOM_CHAM='ACCE_ABSOLU',
                                ACCE_MONO_APPUI=ACCE_ENT,
                                      DIRECTION=( 1., 0., 0., ),
-                                  NOEUD='N04',
+                                  GROUP_NO='N04',
                              )
 
 REST_ABS=RECU_FONCTION(  RESULTAT=RESPHYA,
-                                  NOEUD='N04',
+                                  GROUP_NO='N04',
                                 NOM_CMP='DX',
                                NOM_CHAM='ACCE_ABSOLU',
                                INTERPOL='LIN'
                             )
 
 RECU_ABS=RECU_FONCTION(   RESU_GENE=TRAN_GEN,
-                          NOEUD='N04',  NOM_CMP='DX',   NOM_CHAM='ACCE',
+                          GROUP_NO='N04',  NOM_CMP='DX',   NOM_CHAM='ACCE',
                           ACCE_MONO_APPUI=ACCE_ENT,
                           LIST_INST=LISTINST,
                           INTERPOL='LIN'

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -83,7 +83,7 @@ TRACTION=AFFE_CHAR_MECA(
                       MODELE=MODEL,
 
                 FORCE_FACE=_F(
-                MAILLE = 'GAUCHE',
+                GROUP_MA = 'GAUCHE',
                 FX = -1.)
               )
 
@@ -91,20 +91,20 @@ CISAIL=AFFE_CHAR_MECA(
 
                       MODELE=MODEL,FORCE_FACE=(
 
-                _F( MAILLE = 'GAUCHE',          FY = -1.),
-                _F( MAILLE = 'DROITE',          FY = 1.),
-                _F( MAILLE = 'HAUT',    FX = 1.),
-                _F( MAILLE = 'BAS',     FX = -1.))
+                _F( GROUP_MA = 'GAUCHE',          FY = -1.),
+                _F( GROUP_MA = 'DROITE',          FY = 1.),
+                _F( GROUP_MA = 'HAUT',    FX = 1.),
+                _F( GROUP_MA = 'BAS',     FX = -1.))
               )
 
 LIAISON=AFFE_CHAR_MECA(
 
                MODELE=MODEL,DDL_IMPO=(
 
-                _F( NOEUD = 'NO4',     DX = 0.,  DY = 0.),
-                _F( NOEUD = 'NO8',     DX = 0.,  DY = 0.,  DZ = 0.),
-                _F( NOEUD = 'NO2',     DX = 0.),
-                _F( NOEUD = 'NO6',     DX = 0.))
+                _F( GROUP_NO = 'NO4',     DX = 0.,  DY = 0.),
+                _F( GROUP_NO = 'NO8',     DX = 0.,  DY = 0.,  DZ = 0.),
+                _F( GROUP_NO = 'NO2',     DX = 0.),
+                _F( GROUP_NO = 'NO6',     DX = 0.))
               )
 
 CAT=DEFI_LIST_REEL(    DEBUT=0.0,INTERVALLE=(
@@ -156,7 +156,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    VALE_CALC=0.048177468,
                    VALE_REFE=0.048177400000000002,
                    CRITERE='RELATIF',
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(NUME_ORDRE=20,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -165,7 +165,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    NOM_CMP='EPXX',
                    VALE_CALC=0.0481774706024,
                    VALE_REFE=0.048177396854,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(NUME_ORDRE=20,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -174,7 +174,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    NOM_CMP='EPXX',
                    VALE_CALC=0.0469364450785,
                    VALE_REFE=0.046936371213,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(NUME_ORDRE=20,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -183,7 +183,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    NOM_CMP='EPTHER_L',
                    VALE_CALC=0.0,
                    VALE_REFE=0.0,
-                   MAILLE='CUBE',
+                   GROUP_MA='CUBE',
                    CRITERE='ABSOLU',
                    ORDRE_GRANDEUR = 1.E-6),
                 _F(NUME_ORDRE=20,
@@ -195,7 +195,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    VALE_CALC=0.043448874,
                    VALE_REFE=0.043448800000000003,
                    CRITERE='RELATIF',
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(NUME_ORDRE=20,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -204,7 +204,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    NOM_CMP='EPXY',
                    VALE_CALC=0.0434488765009,
                    VALE_REFE=0.0434488097616,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(NUME_ORDRE=20,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -213,7 +213,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    NOM_CMP='EPXY',
                    VALE_CALC=0.0424755432735,
                    VALE_REFE=0.0424754764283,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(NUME_ORDRE=45,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -223,7 +223,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    VALE_CALC=0.093046415,
                    VALE_REFE=0.093046400000000001,
                    CRITERE='RELATIF',
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(NUME_ORDRE=45,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -232,7 +232,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    NOM_CMP='EPXX',
                    VALE_CALC=0.0930464037976,
                    VALE_REFE=0.0930464068787,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(NUME_ORDRE=45,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -241,7 +241,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    NOM_CMP='EPXX',
                    VALE_CALC=0.0918053783424,
                    VALE_REFE=0.0918053812377,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(NUME_ORDRE=45,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -251,7 +251,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    VALE_CALC=0.084053418,
                    VALE_REFE=0.0840534,
                    CRITERE='RELATIF',
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(NUME_ORDRE=45,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -260,7 +260,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    NOM_CMP='EPXY',
                    VALE_CALC=0.0840534069543,
                    VALE_REFE=0.0840534097427,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(NUME_ORDRE=45,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -269,7 +269,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    NOM_CMP='EPXY',
                    VALE_CALC=0.0830800737892,
                    VALE_REFE=0.0830800764093,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 ),
           )
 

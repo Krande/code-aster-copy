@@ -168,7 +168,7 @@ IMPR_TABLE(TABLE=ECITPS,)
 VITECONT=RECU_FONCTION(RESULTAT=U,
                        NOM_CHAM='VITE',
                        NOM_CMP='DZ',
-                       NOEUD='N5',
+                       GROUP_NO='N5',
                        LIST_INST=L_CONT,
                        TITRE='VITE',);
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -474,8 +474,8 @@ DYNA_REF=CREA_RESU(reuse=DYNA_REF,
               AFFE=(_F(CHAM_GD=ACCEA,INST=0.0,),),);
 
 
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=DYNA_REF, NOEUD='N11',))
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=DYNA_3DP, NOEUD='N11', NUME_ORDRE = 2))
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=DYNA_REF, GROUP_NO='N11',))
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=DYNA_3DP, GROUP_NO='N11', NUME_ORDRE = 2))
 
 # le résultat de référence n'a qu'un numéro d'ordre
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -483,37 +483,37 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
                    VALE_CALC=0.00108384851924,
-                   NOEUD='N11',),
+                   GROUP_NO='N11',),
                 _F(NUME_ORDRE=1,
                    RESULTAT=DYNA_REF,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DRX',
                    VALE_CALC=9.65779984763E-07,
-                   NOEUD='N11',),
+                   GROUP_NO='N11',),
                 _F(NUME_ORDRE=1,
                    RESULTAT=DYNA_REF,
                    NOM_CHAM='VITE',
                    NOM_CMP='DY',
                    VALE_CALC=-0.00917620109214,
-                   NOEUD='N11',),
+                   GROUP_NO='N11',),
                 _F(NUME_ORDRE=1,
                    RESULTAT=DYNA_REF,
                    NOM_CHAM='VITE',
                    NOM_CMP='DRY',
                    VALE_CALC=-2.6388744608E-07,
-                   NOEUD='N11',),
+                   GROUP_NO='N11',),
                 _F(NUME_ORDRE=1,
                    RESULTAT=DYNA_REF,
                    NOM_CHAM='ACCE',
                    NOM_CMP='DZ',
                    VALE_CALC=-0.207431127511,
-                   NOEUD='N11',),
+                   GROUP_NO='N11',),
                 _F(NUME_ORDRE=1,
                    RESULTAT=DYNA_REF,
                    NOM_CHAM='ACCE',
                    NOM_CMP='DRZ',
                    VALE_CALC=-0.000371704319503,
-                   NOEUD='N11',),
+                   GROUP_NO='N11',),
                 ),);
 
 
@@ -525,7 +525,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    VALE_REFE=0.00108384851924,
                    REFERENCE = 'AUTRE_ASTER',
                    PRECISION = 1E-8,
-                   NOEUD='N11',),
+                   GROUP_NO='N11',),
                 _F(NUME_ORDRE=2,
                    RESULTAT=DYNA_3DP,
                    NOM_CHAM='DEPL',
@@ -534,7 +534,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    VALE_REFE=9.65779984763E-07,
                    REFERENCE = 'AUTRE_ASTER',
                    PRECISION = 1E-8,
-                   NOEUD='N11',),
+                   GROUP_NO='N11',),
                 _F(NUME_ORDRE=2,
                    RESULTAT=DYNA_3DP,
                    NOM_CHAM='VITE',
@@ -543,7 +543,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    VALE_REFE=-0.00917620109214,
                    REFERENCE = 'AUTRE_ASTER',
                    PRECISION = 1E-8,
-                   NOEUD='N11',),
+                   GROUP_NO='N11',),
                 _F(NUME_ORDRE=2,
                    RESULTAT=DYNA_3DP,
                    NOM_CHAM='VITE',
@@ -552,7 +552,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    VALE_REFE=-2.6388744608E-07,
                    REFERENCE = 'AUTRE_ASTER',
                    PRECISION = 1E-8,
-                   NOEUD='N11',),
+                   GROUP_NO='N11',),
                 _F(NUME_ORDRE=2,
                    RESULTAT=DYNA_3DP,
                    NOM_CHAM='ACCE',
@@ -561,7 +561,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    VALE_REFE=-0.207431127511,
                    REFERENCE = 'AUTRE_ASTER',
                    PRECISION = 1E-8,
-                   NOEUD='N11',),
+                   GROUP_NO='N11',),
                 _F(NUME_ORDRE=2,
                    RESULTAT=DYNA_3DP,
                    NOM_CHAM='ACCE',
@@ -570,7 +570,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    VALE_REFE=-0.000371704319503,
                    REFERENCE = 'AUTRE_ASTER',
                    PRECISION = 1E-8,
-                   NOEUD='N11',),
+                   GROUP_NO='N11',),
                 ),);
 
 FIN();

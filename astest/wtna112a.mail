@@ -2172,8 +2172,18 @@
  M480     N123     N1       N122    
  FINSF
  %
+ GROUP_NO
+ N2                      
+ N2      
+ FINSF
+ %
+ GROUP_NO
+ N1                      
+ N1      
+ FINSF
+ %
  GROUP_MA
- COX     
+ COX                     
  M1       M2       M3       M4       M5       M6       M7      
  M8       M9       M10      M11      M12      M13      M14     
  M15      M16      M17      M18      M19      M20      M21     
@@ -2235,28 +2245,28 @@
  FINSF
  %
  GROUP_MA
- DROITE  
+ DROITE                  
  M401     M402     M403     M404     M405     M406     M407    
  M408     M409     M410     M411     M412     M413     M414    
  M415     M416     M417     M418     M419     M420    
  FINSF
  %
  GROUP_MA
- BAS     
+ BAS                     
  M421     M422     M423     M424     M425     M426     M427    
  M428     M429     M430     M431     M432     M433     M434    
  M435     M436     M437     M438     M439     M440    
  FINSF
  %
  GROUP_MA
- HAUT    
+ HAUT                    
  M441     M442     M443     M444     M445     M446     M447    
  M448     M449     M450     M451     M452     M453     M454    
  M455     M456     M457     M458     M459     M460    
  FINSF
  %
  GROUP_MA
- GAUCHE  
+ GAUCHE                  
  M461     M462     M463     M464     M465     M466     M467    
  M468     M469     M470     M471     M472     M473     M474    
  M475     M476     M477     M478     M479     M480    

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -301,7 +301,7 @@ print("Efforts faisceau de poutres :",EF1_0)
 EF2_0 = [round(tmp2[i][0],2) for i in NOMS_CMP]
 print("Effort élément squelette :",EF2_0)
 
-TEST_RESU(RESU = [_F(NOEUD = 'N1',
+TEST_RESU(RESU = [_F(GROUP_NO = 'N1',
                      NOM_CMP = ncmp,
                      VALE_CALC = EF2_0[i],
                      VALE_REFE = EF1_0[i],

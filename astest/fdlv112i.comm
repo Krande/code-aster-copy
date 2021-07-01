@@ -28,7 +28,7 @@ mail1 = CREA_MAILLAGE(MAILLAGE=mail0,
 
 mail = CREA_MAILLAGE(MAILLAGE=mail1,
           CREA_POI1 = (
-                _F(NOM_GROUP_MA='PC',NOEUD='NO6288',),
+                _F(NOM_GROUP_MA='PC',GROUP_NO='NO6288',),
                        ),
                      );
 

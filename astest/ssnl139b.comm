@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MOPOU,
                                   _F(GROUP_NO='B',  DY=0.0, ),
                                   ),
                                   # blocage de la rotation autour de l'axe de la poutre
-                                  LIAISON_DDL=_F(NOEUD=('N001','N001'),DDL=('DRX','DRZ'),COEF_MULT=(RAC2SUR2,RAC2SUR2),COEF_IMPO=0.0)
+                                  LIAISON_DDL=_F(GROUP_NO=('N001','N001'),DDL=('DRX','DRZ'),COEF_MULT=(RAC2SUR2,RAC2SUR2),COEF_IMPO=0.0)
                                   )
 CHARG=AFFE_CHAR_MECA(MODELE=MOPOU,
                         DDL_IMPO=(
@@ -103,7 +103,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=U1,
                    NOM_CHAM='DEPL',
-                   NOEUD='N006',
+                   GROUP_NO='N006',
                    NOM_CMP='DY',
                    VALE_CALC=0.15658191432102,
                    VALE_REFE=0.15658191432102,

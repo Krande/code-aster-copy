@@ -26,12 +26,12 @@ MAILLAG0=LIRE_MAILLAGE(FORMAT="ASTER", )
 MAILLAG0=DEFI_GROUP(reuse=MAILLAG0,
                     MAILLAGE=MAILLAG0,
                     CREA_GROUP_NO=_F( NOM='GROUP_NO_GN2',
-                                      NOEUD=('NO2',),),)
+                                      GROUP_NO=('NO2',),),)
 
 MAILLAG0=DEFI_GROUP(reuse=MAILLAG0,
                     MAILLAGE=MAILLAG0,
                     CREA_GROUP_NO=_F( NOM='GROUP_NO_GN12',
-                                      NOEUD=('NO12',),),)
+                                      GROUP_NO=('NO12',),),)
 
 #
 MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
@@ -163,10 +163,10 @@ NOM_PARA = 'INST',
 
 #
 MULT_X1=CALC_CHAR_SEISME(  MATR_MASS=MASSE,   DIRECTION=( 1., 0., 0.,),
-                             MODE_STAT=MODE_STA,    NOEUD='NO1' )
+                             MODE_STAT=MODE_STA,    GROUP_NO='NO1' )
 
 MULT_X2=CALC_CHAR_SEISME(  MATR_MASS=MASSE,   DIRECTION=( 1., 0., 0.,),
-                             MODE_STAT=MODE_STA,   NOEUD='NO11' )
+                             MODE_STAT=MODE_STA,   GROUP_NO='NO11' )
 
 #
 # PROJECTION DES MATRICES MET K SUR LA BASE MODALE
@@ -191,19 +191,19 @@ TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                     EXCIT=(
                 _F( VECT_ASSE_GENE = VECT_X1,
                        MULT_APPUI = 'OUI',
-                       DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO1',
+                       DIRECTION = ( 1., 0., 0.,), GROUP_NO = 'NO1',
 ###                       MODE_STAT=MODE_STA,
                        ACCE = ACCELER1,
                        VITE = VITESSE1,  DEPL = DEPLACE1),
                 _F( VECT_ASSE_GENE = VECT_X2,  ACCE = ACCELER2,
                        MULT_APPUI = 'OUI',
 ###                       MODE_STAT=MODE_STA,
-                       DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO11',
+                       DIRECTION = ( 1., 0., 0.,), GROUP_NO = 'NO11',
                        VITE = VITESSE2,  DEPL = DEPLACE2)),
                     ARCHIVAGE=_F(  PAS_ARCH = 80),
                     COMPORTEMENT=_F(RELATION='ANTI_SISM',
-                            NOEUD_1 = 'NO2',
-                            NOEUD_2 = 'NO12',
+                            GROUP_NO_1 = 'NO2',
+                            GROUP_NO_2 = 'NO12',
                             RIGI_K1 = 6.E+06,
                             RIGI_K2 = 0.53E+06,
                             SEUIL_FX = 1200.,
@@ -221,14 +221,14 @@ TRAN_GE2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                     EXCIT=(
                 _F( VECT_ASSE_GENE = VECT_X1,
                        MULT_APPUI = 'OUI',
-                       DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO1',
+                       DIRECTION = ( 1., 0., 0.,), GROUP_NO = 'NO1',
 ###                       MODE_STAT=MODE_STA,
                        ACCE = ACCELER1,
                        VITE = VITESSE1,  DEPL = DEPLACE1),
                 _F( VECT_ASSE_GENE = VECT_X2,  ACCE = ACCELER2,
                        MULT_APPUI = 'OUI',
 ###                       MODE_STAT=MODE_STA,
-                       DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO11',
+                       DIRECTION = ( 1., 0., 0.,), GROUP_NO = 'NO11',
                        VITE = VITESSE2,  DEPL = DEPLACE2)),
                     ARCHIVAGE=_F(  PAS_ARCH = 80),
                     COMPORTEMENT=_F(RELATION='ANTI_SISM',
@@ -250,7 +250,7 @@ LISTIMP=DEFI_LIST_REEL(  DEBUT=0.,
 
 # RECUPERATION DES DEPL ABSOLUS CALCULES
 #----------------------------------------
-N2_DXA1=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',  NOM_CHAM='DEPL',
+N2_DXA1=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DX',  NOM_CHAM='DEPL',
                             RESU_GENE=TRAN_GE1,    INFO=2,
                           MULT_APPUI='OUI',      INTERP_NUME='LIN',
                            LIST_INST=LISTIMP,   INTERPOL='LIN',
@@ -265,7 +265,7 @@ RMS_N2A1=INFO_FONCTION(RMS=_F(  FONCTION = N2_DXA1,
                                 PRECISION = 1.E-6)
                          )
 
-N2_DXA2=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',  NOM_CHAM='DEPL',
+N2_DXA2=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DX',  NOM_CHAM='DEPL',
                             RESU_GENE=TRAN_GE2,    INFO=2,
                           MULT_APPUI='OUI',      INTERP_NUME='LIN',
                            LIST_INST=LISTIMP,   INTERPOL='LIN',
@@ -320,7 +320,7 @@ TEST_TABLE(PRECISION=1.E-2,
 #
 #RECUPERATION DES DEPL RELATIFS CALCULES
 #----------------------------------------
-NO2_DX_R=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',  NOM_CHAM='DEPL',
+NO2_DX_R=RECU_FONCTION(  GROUP_NO='NO2',  NOM_CMP='DX',  NOM_CHAM='DEPL',
                             RESU_GENE=TRAN_GE1,    INFO=2,
                           INTERP_NUME='LIN',
                            LIST_INST=LISTIMP,   INTERPOL='LIN' )

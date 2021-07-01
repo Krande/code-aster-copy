@@ -60,8 +60,8 @@ LINST = DEFI_LIST_REEL   ( DEBUT      =  0.,
 FF=DEFI_FOND_FISS(MAILLAGE=M,
                   FOND_FISS=_F(TYPE_FOND='FERME',
                                GROUP_MA = 'LFF',
-                               NOEUD_ORIG = 'N49',
-                               MAILLE_ORIG = 'M3233',),
+                               GROUP_NO_ORIG = 'N49',
+                               GROUP_MA_ORIG = 'M3233',),
                    SYME='OUI',
                    LEVRE_SUP=_F(GROUP_MA = 'LEVINF',)
                  )
@@ -72,10 +72,10 @@ GLOC1 = [None]*2
 for i in range(2) :
    CH[i]=AFFE_CHAR_MECA(       MODELE=MO[i],
                               DDL_IMPO=(
-                         _F(  NOEUD = 'N9957',         DX = 0.,    ),
-                         _F(  NOEUD = 'N10021',        DX = 0.,    ),
-                         _F(  NOEUD = 'N9966',         DY = 0.,    ),
-                         _F(  NOEUD = 'N10094',        DY = 0.,    ),
+                         _F(  GROUP_NO = 'N9957',         DX = 0.,    ),
+                         _F(  GROUP_NO = 'N10021',        DX = 0.,    ),
+                         _F(  GROUP_NO = 'N9966',         DY = 0.,    ),
+                         _F(  GROUP_NO = 'N10094',        DY = 0.,    ),
                          _F(  GROUP_NO = 'SSUP_F',     DZ = 0.,    )),PRES_REP=(
                          _F(  GROUP_MA = 'SINF_1',   PRES = -1.E6, ),
                          _F(  GROUP_MA = 'SINF_2',   PRES = -1.E6, ),

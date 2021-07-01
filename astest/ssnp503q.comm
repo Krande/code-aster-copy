@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,13 @@ typma=1
 if (typma==1):
   MAILLAG2=LIRE_MAILLAGE(INFO=1,FORMAT='MED');
   Y=2.625
+
+MAILLAG2 = DEFI_GROUP( reuse = MAILLAG2, MAILLAGE = MAILLAG2,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N390', NOEUD = 'N390'),
+                                        _F( NOM = 'N70', NOEUD = 'N70'),
+                                     ),
+         )
 
 if (typma==2):
   MAILLAG1=LIRE_MAILLAGE(INFO=1,FORMAT='MED');
@@ -131,12 +138,12 @@ CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
                    # POUR LES MAILLES XFEM INFERIEURE
                    # ET SUPERIEURE
                     LIAISON_DDL=(_F(
-                                    NOEUD=('N390','N390'),
+                                    GROUP_NO=('N390','N390'),
                                     DDL=('DX','H1X'),
                                     COEF_MULT=(1,2),
                                     COEF_IMPO=DEPX),
                                  _F(
-                                    NOEUD=('N70','N70'),
+                                    GROUP_NO=('N70','N70'),
                                     DDL=('DX','H1X'),
                                     COEF_MULT=(1,2),
                                     COEF_IMPO=DEPX),

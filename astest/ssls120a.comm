@@ -155,7 +155,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC= 2.12998155E+06,
                   VALE_REFE=2.137500E6,
                   PRECISION=1.E-2,
-                  MAILLE='M2',),
+                  GROUP_MA='M2',),
           )
 
 # CAS ORTHOTROPE : SOLUTION ANALYTIQUE
@@ -217,7 +217,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC= 2.12998101E+06,
                   VALE_REFE=2.137500E6,
                   PRECISION=1.E-2,
-                  MAILLE='M2',),
+                  GROUP_MA='M2',),
           )
 
 LIST=DEFI_LIST_REEL(DEBUT=0.0,
@@ -278,7 +278,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC= 2.12998101E+06,
                   VALE_REFE=2.137500E6,
                   PRECISION=1.E-2,
-                  MAILLE='M2',),
+                  GROUP_MA='M2',),
           )
 
 FIN();

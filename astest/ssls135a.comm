@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -191,26 +191,26 @@ FERMAX=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELEM_FER2_R', INFO=1,
 TEST_RESU(CHAM_ELEM=(_F(CRITERE='RELATIF',
                         POINT=1,
                         NOM_CMP='DNSXI',
-                        MAILLE='M748',
+                        GROUP_MA='M748',
                         CHAM_GD=FERMAX,
                         VALE_CALC=0.00130323479922,),
                      _F(CRITERE='RELATIF',
                         POINT=1,
                         NOM_CMP='DNSXS',
-                        MAILLE='M748',
+                        GROUP_MA='M748',
                         CHAM_GD=FERMAX,
                         VALE_CALC=0.0,
                         ORDRE_GRANDEUR=1.0E-4),
                      _F(CRITERE='RELATIF',
                         POINT=1,
                         NOM_CMP='DNSYI',
-                        MAILLE='M748',
+                        GROUP_MA='M748',
                         CHAM_GD=FERMAX,
                         VALE_CALC=4.23403596532E-05,),
                      _F(CRITERE='RELATIF',
                         POINT=1,
                         NOM_CMP='DNSYS',
-                        MAILLE='M748',
+                        GROUP_MA='M748',
                         CHAM_GD=FERMAX,
                         VALE_CALC=0.0,
                         ORDRE_GRANDEUR=1.0E-4),

@@ -28,6 +28,13 @@ MA1 = LIRE_MAILLAGE(INFO=2,
                     FORMAT='GIBI',
                     UNITE=19,)
 
+MA1 = DEFI_GROUP( reuse = MA1, MAILLAGE = MA1,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M7', MAILLE = 'M7'),
+                                        _F( NOM = 'M3', MAILLE = 'M3'),
+                                     ),
+         )
+
 MA1=DEFI_GROUP(reuse=MA1,MAILLAGE=MA1,CREA_GROUP_NO=(
  _F( NOM = 'BAS',  OPTION = 'PLAN', POINT = (0., 0., 1.,),
   ANGL_NAUT = (0., 90.,), PRECISION = 0.01),
@@ -76,6 +83,13 @@ MA2 = LIRE_MAILLAGE(FORMAT='GIBI',
                     UNITE=21,
                     )
 
+MA2 = DEFI_GROUP( reuse = MA2, MAILLAGE = MA2,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M7', MAILLE = 'M7'),
+                                        _F( NOM = 'M3', MAILLE = 'M3'),
+                                     ),
+         )
+
 MO2=AFFE_MODELE(    MAILLAGE=MA2,
           AFFE=_F( GROUP_MA = 'CUBE6', PHENOMENE = 'MECANIQUE',
           MODELISATION = '3D') )
@@ -103,7 +117,7 @@ TEST_RESU(RESU=(_F(INST=3.2000000000000002,
                    VALE_CALC=-1.17480752E-12,
                    VALE_REFE=0.0,
                    CRITERE='ABSOLU',
-                   MAILLE='M3',),
+                   GROUP_MA='M3',),
                 _F(INST=3.2000000000000002,
                    REFERENCE='ANALYTIQUE',
                    POINT=1,
@@ -112,7 +126,7 @@ TEST_RESU(RESU=(_F(INST=3.2000000000000002,
                    NOM_CMP='SIZZ',
                    VALE_CALC=1.9999945578791762,
                    VALE_REFE=2.0,
-                   MAILLE='M3',),
+                   GROUP_MA='M3',),
                 _F(INST=3.2000000000000002,
                    REFERENCE='ANALYTIQUE',
                    POINT=1,
@@ -122,7 +136,7 @@ TEST_RESU(RESU=(_F(INST=3.2000000000000002,
                    VALE_CALC=-1.06753940E-12,
                    VALE_REFE=0.0,
                    CRITERE='ABSOLU',
-                   MAILLE='M7',),
+                   GROUP_MA='M7',),
                 _F(INST=3.2000000000000002,
                    REFERENCE='ANALYTIQUE',
                    POINT=1,
@@ -131,7 +145,7 @@ TEST_RESU(RESU=(_F(INST=3.2000000000000002,
                    NOM_CMP='SIZZ',
                    VALE_CALC=1.999995045845239,
                    VALE_REFE=2.0,
-                   MAILLE='M7',),
+                   GROUP_MA='M7',),
                 ),
           )
 

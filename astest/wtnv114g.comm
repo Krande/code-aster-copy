@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -195,7 +195,7 @@ RESU0=CALC_CHAMP( reuse= RESU0, RESULTAT= RESU0, CONTRAINTE=('SIGM_ELGA',), )
 
 
 DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='P_SUP',
-                             NOEUD=('NO1','NO3','NO6','NO8',),
+                             GROUP_NO=('NO1','NO3','NO6','NO8',),
                              RESULTAT=RESU0,
                              NOM_CHAM='DEPL',
                              NUME_ORDRE=8,
@@ -205,7 +205,7 @@ DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='P_SUP',
                   );
 
 DEP2=POST_RELEVE_T(ACTION=_F(INTITULE='P_INF',
-                             NOEUD=('NO13','NO15','NO18','NO20',),
+                             GROUP_NO=('NO13','NO15','NO18','NO20',),
                              RESULTAT=RESU0,
                              NOM_CHAM='DEPL',
                              NUME_ORDRE=8,

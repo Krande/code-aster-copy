@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,12 +60,12 @@ F_CHAR=DEFI_FONCTION(      NOM_PARA='INST',
 
 
 CHR_LIAI=AFFE_CHAR_MECA(      MODELE=MO,DDL_IMPO=(
-                              _F(  NOEUD = 'NO1',  DY = 0.),
-                                       _F(  NOEUD = 'NO2',  DY = 0.))
+                              _F(  GROUP_NO = 'NO1',  DY = 0.),
+                                       _F(  GROUP_NO = 'NO2',  DY = 0.))
                           )
 
 CHR_TRAC=AFFE_CHAR_MECA(       MODELE=MO,
-                              FACE_IMPO=_F(  MAILLE = 'MA2',  DY = 1.)
+                              FACE_IMPO=_F(  GROUP_MA = 'MA2',  DY = 1.)
                           )
 
 VL=STAT_NON_LINE(
@@ -122,7 +122,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=501,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=VL,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO3',
+                   GROUP_NO='NO3',
                    NOM_CMP='DX',
                    VALE_CALC=-527.42724700637,
                    VALE_REFE=-527.42590554164,
@@ -136,7 +136,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=501,
                    VALE_CALC=235.17731592299,
                    VALE_REFE=236.68597139133,
                    PRECISION=1.E-2,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 _F(NUME_ORDRE=501,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -146,7 +146,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=501,
                    VALE_CALC=1.4984193398407,
                    VALE_REFE=1.4984004816205,
                    PRECISION=0.015,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 ),
           )
 

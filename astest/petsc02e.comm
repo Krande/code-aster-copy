@@ -189,7 +189,7 @@ TEST_RESU(RESU=_F(RESULTAT=MESTAT2,
                   NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  NOEUD='N9',
+                  GROUP_NO='N9',
                   VALE_CALC=0.167785186858,),);
 
 # DISTRIBUTION PAR SOUS-DOMAINES
@@ -236,7 +236,7 @@ TEST_RESU(RESU=_F(RESULTAT=MESTAT3,
                   NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  NOEUD='N9',
+                  GROUP_NO='N9',
                   VALE_CALC=0.167785186858,),);
 
 FIN();

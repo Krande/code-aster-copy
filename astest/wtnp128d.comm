@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,6 +56,12 @@ LISTINST=DEFI_LIST_REEL(DEBUT = 0.,
 MA0=LIRE_MAILLAGE(FORMAT='MED');
 
 MA=CREA_MAILLAGE(MAILLAGE = MA0, LINE_QUAD = _F(TOUT='OUI'));
+
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'NS5768', NOEUD = 'NS5768'),
+                                     ),
+         )
 
 MA = DEFI_GROUP(reuse = MA,
        MAILLAGE = MA,
@@ -340,7 +346,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
 TEST_RESU(RESU=_F(NUME_ORDRE=7,
                   RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOEUD='NS5768',
+                  GROUP_NO='NS5768',
                   NOM_CMP='PRE1',
                   VALE_CALC=0.073701877958239,
                   ),
@@ -349,7 +355,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=7,
 TEST_RESU(RESU=_F(NUME_ORDRE=10,
                   RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOEUD='NS5768',
+                  GROUP_NO='NS5768',
                   NOM_CMP='PRE1',
                   VALE_CALC=0.16785844413280,
                   ),

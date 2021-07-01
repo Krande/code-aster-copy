@@ -1,78 +1,78 @@
  TITRE
- SSNL127E plaque carre 
+ SSNL127E plaque carre                                                          
  FINSF
  %
  COOR_2D
  N1        0.00000000000000E+00  0.00000000000000E+00
- N2        0.10000000000000E+00  0.00000000000000E+00
- N3        0.10000000000000E+00  0.10000000000000E+00
- N4        0.00000000000000E+00  0.10000000000000E+00
+ N2        1.00000000000000E-01  0.00000000000000E+00
+ N3        1.00000000000000E-01  1.00000000000000E-01
+ N4        0.00000000000000E+00  1.00000000000000E-01
  N5        5.00000000000000E-02  0.00000000000000E+00
- N6        0.10000000000000E+00  5.00000000000000E-02
- N7        5.00000000000000E-02  0.10000000000000E+00
+ N6        1.00000000000000E-01  5.00000000000000E-02
+ N7        5.00000000000000E-02  1.00000000000000E-01
  N8        0.00000000000000E+00  5.00000000000000E-02
  FINSF
  %
  QUAD8   
-  M1       N1       N2       N3       N4       N5       N6       N7      
-           N8      
+ M1       N1       N2       N3       N4       N5       N6       N7      
+          N8      
  FINSF
  %
  SEG3    
-  M2       N1       N2       N5      
- FINSF
- %
- SEG3    
-  M3       N2       N3       N6      
- FINSF
- %
- SEG3    
-  M4       N3       N4       N7      
- FINSF
- %
- SEG3    
-  M5       N4       N1       N8      
+ M2       N1       N2       N5      
+ M3       N2       N3       N6      
+ M4       N3       N4       N7      
+ M5       N4       N1       N8      
  FINSF
  %
  GROUP_NO
- P1       N1      
+ P1                      
+ N1      
  FINSF
  %
  GROUP_NO
- P2       N2      
+ P2                      
+ N2      
  FINSF
  %
  GROUP_NO
- P3       N3      
+ P3                      
+ N3      
  FINSF
  %
  GROUP_NO
- P4       N4      
+ P4                      
+ N4      
  FINSF
  %
  GROUP_MA
-   ELT     
+ ELT                     
  M1      
  FINSF
  %
  GROUP_MA
-   LI1     
+ LI1                     
  M2      
  FINSF
  %
  GROUP_MA
-   LI2     
+ LI2                     
  M3      
  FINSF
  %
  GROUP_MA
-   LI3     
+ LI3                     
  M4      
  FINSF
  %
  GROUP_MA
-   LI4     
+ LI4                     
  M5      
+ FINSF
+ %
+ GROUP_MA
+ M1                      
+ M1      
  FINSF
  %
  FIN

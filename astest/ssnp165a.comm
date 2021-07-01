@@ -347,7 +347,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    VALE_CALC=-89.156511065351,),),);
 
 # Validation for not-paired node
-TEST_RESU(RESU=(_F(NOEUD='N9',
+TEST_RESU(RESU=(_F(GROUP_NO='N9',
                    INST=0.1,
                    RESULTAT=RESU,
                    NOM_CHAM='CONT_NOEU',

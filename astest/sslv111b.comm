@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -385,7 +385,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PRECISION=7.2,
                    REFERENCE='ANALYTIQUE',
                    CRITERE='ABSOLU',
-                   MAILLE='M1',),
+                   GROUP_MA='M1',),
                 _F(NUME_ORDRE=1,
                    POINT=1,
                    RESULTAT=RESU,
@@ -396,7 +396,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PRECISION=9.9,
                    REFERENCE='ANALYTIQUE',
                    CRITERE='ABSOLU',
-                   MAILLE='M1',),
+                   GROUP_MA='M1',),
                 _F(NUME_ORDRE=1,
                    POINT=1,
                    RESULTAT=RESU,
@@ -407,7 +407,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    CRITERE='ABSOLU',
                    PRECISION=0.02,
-                   MAILLE='M1',),
+                   GROUP_MA='M1',),
                 _F(NUME_ORDRE=1,
                    POINT=1,
                    RESULTAT=RESU,
@@ -418,7 +418,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    CRITERE='ABSOLU',
                    PRECISION=15.0,
-                   MAILLE='M1',),
+                   GROUP_MA='M1',),
                 ),
           )
 

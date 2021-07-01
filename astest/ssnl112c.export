@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist submit ci verification sequential
 
 F comm ssnl112c.comm D 1
-F mail ssnl112c.mail D 20
+F mail ssnl112a.mail D 20

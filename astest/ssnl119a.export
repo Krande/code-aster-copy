@@ -7,5 +7,5 @@ P testlist submit ci verification sequential
 
 F comm ssnl119a.comm D 1
 F datg ssnl119a.datg D 16
-F libr ssnl119a.17 D 17
-F libr ssnl119a.18 D 18
+F mmed ssnl119a.17 D 17
+F mmed ssnl119a.18 D 18

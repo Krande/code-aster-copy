@@ -42,9 +42,9 @@ MAILLAG0=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'));
 
 MAILLAG1=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
                       CREA_POI1 =(_F(NOM_GROUP_MA = 'RESSORT1',
-                                     NOEUD = 'N230'),
+                                     GROUP_NO = 'N230'),
                                   _F(NOM_GROUP_MA = 'RESSORT2',
-                                     NOEUD = 'N111'),),);
+                                     GROUP_NO = 'N111'),),);
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,

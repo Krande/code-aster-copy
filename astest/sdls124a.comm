@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -122,7 +122,7 @@ U=DYNA_NON_LINE(MODELE=MO,
                    #NOM_CMP='SIXX',
                    #POINT= 1,
                    #SOUS_POINT=1,
-                   #MAILLE='M1',);
+                   #GROUP_MA='M1',);
 
 #IMPR_FONCTION(UNITE=56,FORMAT='XMGRACE',
               #COURBE=(_F(FONCTION=DEPX,
@@ -166,7 +166,7 @@ U=DYNA_NON_LINE(MODELE=MO,
 #TABLSI = CREA_TABLE( RESU = _F( RESULTAT = U,
                                #NOM_CHAM='SIEF_ELGA',
                                #NOM_CMP='SIXX',
-                               #MAILLE='M1',
+                               #GROUP_MA='M1',
                               #),
                    #)
 
@@ -206,7 +206,7 @@ TEST_RESU(RESU=(
                   REFERENCE='SOURCE_EXTERNE',
                   PRECISION = 6.0E-3),
                 _F(  RESULTAT=U,
-                  MAILLE='M1',
+                  GROUP_MA='M1',
                   NOM_CHAM = 'SIEF_ELGA',
                   NOM_CMP  = 'SIXX',
                   POINT=1,

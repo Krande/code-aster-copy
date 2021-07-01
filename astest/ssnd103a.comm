@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -128,7 +128,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=CALCULG,
                    NOM_CHAM='REAC_NODA',
-                   NOEUD='N1',
+                   GROUP_NO='N1',
                    NOM_CMP='DX',
                    VALE_CALC=-4.00000000E+04,
                    VALE_REFE=-4.E4,
@@ -137,7 +137,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=CALCULG,
                    NOM_CHAM='REAC_NODA',
-                   NOEUD='N2',
+                   GROUP_NO='N2',
                    NOM_CMP='DX',
                    VALE_CALC= 4.00000000E+04,
                    VALE_REFE=4.E4,
@@ -146,7 +146,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=CALCULG,
                    NOM_CHAM='REAC_NODA',
-                   NOEUD='N1',
+                   GROUP_NO='N1',
                    NOM_CMP='DX',
                    VALE_CALC=-1.05000000E+05,
                    VALE_REFE=-1.05000E5,
@@ -155,7 +155,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=CALCULG,
                    NOM_CHAM='REAC_NODA',
-                   NOEUD='N2',
+                   GROUP_NO='N2',
                    NOM_CMP='DX',
                    VALE_CALC= 1.05000000E+05,
                    VALE_REFE=1.05000E5,

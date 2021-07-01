@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -82,7 +82,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='TOTALE',
                   VALE_REFE=2395.833333,
                   VALE_CALC=2395.833333,
-                  MAILLE='M5',),);
+                  GROUP_MA='M5',),);
 
 # MODELISATION C_PLAN_SI
 
@@ -125,7 +125,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='TOTALE',
                   VALE_REFE=2395.833333,
                   VALE_CALC=2395.833333,
-                  MAILLE='M5',),);
+                  GROUP_MA='M5',),);
 
 
 FIN();

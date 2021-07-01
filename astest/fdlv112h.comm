@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ mail1=CREA_MAILLAGE(MAILLAGE=mail0,
 
 mail = CREA_MAILLAGE(MAILLAGE=mail1,
           CREA_POI1 = (
-                _F(NOM_GROUP_MA='PC',NOEUD='NO6288',),
+                _F(NOM_GROUP_MA='PC',GROUP_NO='NO6288',),
                        ),
                      )
 
@@ -140,7 +140,7 @@ C_LIM_1 = AFFE_CHAR_MECA( MODELE= ensembl2,
 
            LIAISON_SOLIDE=(_F( GROUP_NO = 'TH_SOL',),),
 
-           DDL_IMPO=(_F(NOEUD='NO6288',
+           DDL_IMPO=(_F(GROUP_NO='NO6288',
                         DX=0.0,
                         DY=0.0,
                         DZ=0.0,
@@ -182,14 +182,14 @@ RIGIDI1B = COMB_MATR_ASSE(
                          )
 
 MODE_ST1=MODE_STATIQUE(  MATR_RIGI=RIGIDI1B,   MATR_MASS=MASSE1,
-                          MODE_STAT=_F(  NOEUD='NO6288',
+                          MODE_STAT=_F(  GROUP_NO='NO6288',
                            AVEC_CMP=('DX','DY','DZ','DRX','DRY','DRZ',),
                                        ),
                       )
 
 VEC_X1=CALC_CHAR_SEISME(MATR_MASS=MASSE1,
                        DIRECTION=(1.0,0.0,0.0,),
-                       MODE_STAT=MODE_ST1, NOEUD='NO6288', )
+                       MODE_STAT=MODE_ST1, GROUP_NO='NO6288', )
 
 cond_lib = AFFE_CHAR_MECA( MODELE= ensemble,
            DDL_IMPO=_F(GROUP_NO='SLIBRE_N',  PRES=0., PHI=0.)
@@ -343,12 +343,12 @@ FILTRE=DEFI_FONCTION(NOM_PARA='FREQ',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       )
 
-axch = RECU_FONCTION( RESU_GENE= dyna, NOEUD= 'NO10027', NOM_CHAM= 'ACCE',
+axch = RECU_FONCTION( RESU_GENE= dyna, GROUP_NO= 'NO10027', NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                          NOM_CMP='DX')
 
-axcc = RECU_FONCTION( RESU_GENE= dyna, NOEUD= 'NO550', NOM_CHAM= 'ACCE',
+axcc = RECU_FONCTION( RESU_GENE= dyna, GROUP_NO= 'NO550', NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                          NOM_CMP='DX')

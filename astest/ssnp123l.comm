@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -185,22 +185,22 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER', TABLE=S_T,  NOM_PARA='SIYY',
 TEST_RESU(RESU=_F(INST=1.0,
                   RESULTAT=RESU,
                   NOM_CHAM='SIGM_ELNO',
-                  NOEUD='N5',
+                  GROUP_NO='N5',
                   NOM_CMP='SIYY',
                   VALE_CALC=Test6,
                   CRITERE='RELATIF',
-                  MAILLE='M1294',
+                  GROUP_MA='M1294',
                   ),
           )
 
 TEST_RESU(RESU=_F(INST=1.0,
                   RESULTAT=RESU,
                   NOM_CHAM='SIGM_ELNO',
-                  NOEUD='N5',
+                  GROUP_NO='N5',
                   NOM_CMP='SIXX',
                   VALE_CALC=Test7,
                   CRITERE='RELATIF',
-                  MAILLE='M1294',
+                  GROUP_MA='M1294',
                   ),
           )
 

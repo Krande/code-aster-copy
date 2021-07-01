@@ -1,7 +1,6 @@
-TITRE    NOM=CAS TEST INFO
-         AUTEUR=DELMAS                 DATE=09/11/2005
-FINSF
-
+ TITRE
+         AUTEUR=DELMAS                 DATE=09/11/2005                          
+ FINSF
  %
  COOR_2D
  N1        0.00000000000000E+00  0.00000000000000E+00
@@ -10,26 +9,39 @@ FINSF
  N4        0.00000000000000E+00  2.00000000000000E+00
  FINSF
  %
- TRIA3
-  M1      N1       N2       N3
-  M2      N1       N3       N4
+ TRIA3   
+ M1       N1       N2       N3      
+ M2       N1       N3       N4      
  FINSF
  %
- SEG2
-  M3      N2       N3
-  M4      N4       N1
- FINSF
-%
-GROUP_MA NOM=GROUP_MA_DOMAINE
- M1       M2
+ SEG2    
+ M3       N2       N3      
+ M4       N4       N1      
  FINSF
  %
-GROUP_MA NOM=GROUP_MA_BC
- M3
+ GROUP_MA
+ GROUP_MA_DOMAINE        
+ M1       M2      
  FINSF
  %
-GROUP_MA NOM=GROUP_MA_DA
- M4
+ GROUP_MA
+ GROUP_MA_BC             
+ M3      
+ FINSF
+ %
+ GROUP_MA
+ GROUP_MA_DA             
+ M4      
+ FINSF
+ %
+ GROUP_MA
+ M2                      
+ M2      
+ FINSF
+ %
+ GROUP_MA
+ M1                      
+ M1      
  FINSF
  %
  FIN

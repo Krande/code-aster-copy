@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,19 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 
 MAIL=LIRE_MAILLAGE(FORMAT="ASTER",);
+
+MAIL = DEFI_GROUP( reuse = MAIL, MAILLAGE = MAIL,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'NO1', NOEUD = 'NO1'),
+                                        _F( NOM = 'NO5', NOEUD = 'NO5'),
+                                        _F( NOM = 'NO4', NOEUD = 'NO4'),
+                                        _F( NOM = 'NO6', NOEUD = 'NO6'),
+                                        _F( NOM = 'NO2', NOEUD = 'NO2'),
+                                        _F( NOM = 'NO7', NOEUD = 'NO7'),
+                                        _F( NOM = 'NO8', NOEUD = 'NO8'),
+                                        _F( NOM = 'NO3', NOEUD = 'NO3'),
+                                     ),
+         )
 
 #
 # Chargement thermique
@@ -85,14 +98,14 @@ MOMECA1 = AFFE_MODELE (MAILLAGE = MAIL,
 
 
 CHMECA1 = AFFE_CHAR_MECA (MODELE   = MOMECA1,
-                          DDL_IMPO = (_F( NOEUD = 'NO3',     DX = 0.,  DY = 0.,  DZ = 0.),
-                                      _F( NOEUD = 'NO7',     DX = 0.,  DY = 0.),
-                                      _F( NOEUD = 'NO4',     DY = 0.,  ),
-                                      _F( NOEUD = 'NO8',     DY = 0.,  ),
-                                      _F( NOEUD = 'NO1',     DY = 0.),
-                                      _F( NOEUD = 'NO2',     DY = 0.),
-                                      _F( NOEUD = 'NO5',     DY = 0.),
-                                      _F( NOEUD = 'NO6',     DY = 0.)
+                          DDL_IMPO = (_F( GROUP_NO = 'NO3',     DX = 0.,  DY = 0.,  DZ = 0.),
+                                      _F( GROUP_NO = 'NO7',     DX = 0.,  DY = 0.),
+                                      _F( GROUP_NO = 'NO4',     DY = 0.,  ),
+                                      _F( GROUP_NO = 'NO8',     DY = 0.,  ),
+                                      _F( GROUP_NO = 'NO1',     DY = 0.),
+                                      _F( GROUP_NO = 'NO2',     DY = 0.),
+                                      _F( GROUP_NO = 'NO5',     DY = 0.),
+                                      _F( GROUP_NO = 'NO6',     DY = 0.)
                                      )
                          )
 
@@ -275,7 +288,7 @@ TEST_RESU (RESU = (
                 _F(INST           = 89.0,
                    RESULTAT       = U1,
                    NOM_CHAM       = 'VARI_NOEU',
-                   NOEUD       = 'NO6',
+                   GROUP_NO       = 'NO6',
                    NOM_CMP        = 'V1',
                    VALE_CALC      = 0.0,
                    VALE_REFE      = 0.0,
@@ -286,7 +299,7 @@ TEST_RESU (RESU = (
                 _F(INST      = 200.0,
                    RESULTAT  = U1,
                    NOM_CHAM  = 'SIEF_NOEU',
-                   NOEUD  = 'NO6',
+                   GROUP_NO  = 'NO6',
                    NOM_CMP   = 'SIYY',
                    VALE_CALC = 300740534.334,
                    VALE_REFE = 303.0E+06,
@@ -296,7 +309,7 @@ TEST_RESU (RESU = (
                 _F(INST      = 400.0,
                    RESULTAT  = U1,
                    NOM_CHAM  = 'SIEF_NOEU',
-                   NOEUD  = 'NO6',
+                   GROUP_NO  = 'NO6',
                    NOM_CMP   = 'SIYY',
                    VALE_CALC = 299723128.597 ,
                    VALE_REFE = 316.0E+06,
@@ -306,7 +319,7 @@ TEST_RESU (RESU = (
                 _F(INST      = 600.0,
                    RESULTAT  = U1,
                    NOM_CHAM  = 'SIEF_NOEU',
-                   NOEUD  = 'NO6',
+                   GROUP_NO  = 'NO6',
                    NOM_CMP   = 'SIYY',
                    VALE_CALC = 294505304.05,
                    VALE_REFE = 325.0E+06,
@@ -316,7 +329,7 @@ TEST_RESU (RESU = (
                 _F(INST      = 800.0,
                    RESULTAT  = U1,
                    NOM_CHAM  = 'SIEF_NOEU',
-                   NOEUD  = 'NO6',
+                   GROUP_NO  = 'NO6',
                    NOM_CMP   = 'SIYY',
                    VALE_CALC = 294214350.465,
                    VALE_REFE = 327.0E+06,

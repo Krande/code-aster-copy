@@ -32,6 +32,13 @@ MA = CREA_MAILLAGE(
                          LINE_QUAD = _F(TOUT = 'OUI'),
                        )
 
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N4', NOEUD = 'N4'),
+                                        _F( NOM = 'N1', NOEUD = 'N1'),
+                                     ),
+         )
+
 MA = MODI_MAILLAGE( reuse        = MA,
                     MAILLAGE     = MA,
                     ORIE_PEAU = _F( GROUP_MA_PEAU = ('DROITE','HAUT','BAS'),));
@@ -249,7 +256,7 @@ TEST_RESU(
              NUME_ORDRE = NORDRE,
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
-             NOEUD = 'N1',
+             GROUP_NO = 'N1',
              VALE_REFE = PREF,
              VALE_CALC = 14838612.8689 ,
              CRITERE = 'RELATIF',
@@ -261,7 +268,7 @@ TEST_RESU(
              NUME_ORDRE = NORDRE,
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
-             NOEUD = 'N4',
+             GROUP_NO = 'N4',
              VALE_REFE = PREF,
              VALE_CALC = 14838612.7266,
              CRITERE = 'RELATIF',

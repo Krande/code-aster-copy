@@ -215,12 +215,12 @@ DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                         SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                         )
 
-DXN11=RECU_FONCTION(     RESULTAT=DYNA,   NOEUD='N11',
+DXN11=RECU_FONCTION(     RESULTAT=DYNA,   GROUP_NO='N11',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DX'
                        )
 
-DYN11=RECU_FONCTION(     RESULTAT=DYNA,   NOEUD='N11',
+DYN11=RECU_FONCTION(     RESULTAT=DYNA,   GROUP_NO='N11',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DY'
                        )
@@ -320,12 +320,12 @@ DYNAC=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                         SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                         )
 
-DXN11C=RECU_FONCTION(     RESULTAT=DYNAC,   NOEUD='N11',
+DXN11C=RECU_FONCTION(     RESULTAT=DYNAC,   GROUP_NO='N11',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DX'
                        )
 
-DYN11C=RECU_FONCTION(     RESULTAT=DYNAC,   NOEUD='N11',
+DYN11C=RECU_FONCTION(     RESULTAT=DYNAC,   GROUP_NO='N11',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DY'
                        )
@@ -393,13 +393,13 @@ DYNB=DYNA_NON_LINE(     MODELE=MODELE,
                         )
 
 DXNB11=RECU_FONCTION(   LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                         RESULTAT=DYNB,   NOEUD='N11',
+                         RESULTAT=DYNB,   GROUP_NO='N11',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DX'
                        )
 
 DYNB11=RECU_FONCTION(   LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                         RESULTAT=DYNB,   NOEUD='N11',
+                         RESULTAT=DYNB,   GROUP_NO='N11',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DY'
                        )

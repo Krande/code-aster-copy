@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -88,7 +88,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=TEMPE,
                    NOM_CHAM='TEMP',
-                   NOEUD='N66',
+                   GROUP_NO='N66',
                    NOM_CMP='TEMP',
                    VALE_CALC=100.000000000,
                    VALE_REFE=100.0,),
@@ -104,12 +104,12 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=TEMPE,
                    NOM_CHAM='FLUX_ELNO',
-                   NOEUD='N66',
+                   GROUP_NO='N66',
                    NOM_CMP='FLUX',
                    VALE_CALC=15.951249140,
                    VALE_REFE=15.9155,
                    PRECISION=5.0000000000000001E-3,
-                   MAILLE='M50',),
+                   GROUP_MA='M50',),
                 ),
           )
 

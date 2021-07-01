@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,12 +36,12 @@ MO=AFFE_MODELE(
                 MAILLAGE=MA,
                 AFFE= (
                 _F(
-                   MAILLE = ('CUBE','DROITE'),
+                   GROUP_MA = ('CUBE','DROITE'),
                    PHENOMENE = 'MECANIQUE',
                    MODELISATION = 'D_PLAN'
                      ),
                  _F(
-                   MAILLE = 'CUBEDEG',
+                   GROUP_MA = 'CUBEDEG',
                    PHENOMENE = 'MECANIQUE',
                    MODELISATION = 'PLAN_INTERFACE_S'
                    )
@@ -75,14 +75,14 @@ CM=AFFE_MATERIAU(
 
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
                      MASSIF=(
-           _F(MAILLE='CUBEDEG',ANGL_REP=(30,0,0)),
+           _F(GROUP_MA='CUBEDEG',ANGL_REP=(30,0,0)),
                                  ));
 
 
 LIAISON=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-    _F(MAILLE='GAUCHE2', DX=0, DY=0),
+    _F(GROUP_MA='GAUCHE2', DX=0, DY=0),
     )
   )
 
@@ -91,7 +91,7 @@ LIAISON=AFFE_CHAR_MECA(
 TRAC_N=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-    _F(MAILLE='DROITE', DX=cos(pi/6), DY= sin(pi/6)),
+    _F(GROUP_MA='DROITE', DX=cos(pi/6), DY= sin(pi/6)),
     )
   )
 
@@ -131,8 +131,8 @@ U_1=STAT_NON_LINE(
     _F(CHARGE = TRAC_N, FONC_MULT = FCT),
   ),
   COMPORTEMENT  = (
-          _F(RELATION = 'CZM_EXP_MIX',  MAILLE = 'CUBEDEG'),
-          _F(RELATION = 'ELAS',         MAILLE = 'CUBE'),
+          _F(RELATION = 'CZM_EXP_MIX',  GROUP_MA = 'CUBEDEG'),
+          _F(RELATION = 'ELAS',         GROUP_MA = 'CUBE'),
           ),
   INCREMENT  = _F(LIST_INST = TEMP, INST_FIN = 0.),
   CONVERGENCE= _F(ITER_GLOB_MAXI = 5),
@@ -153,13 +153,13 @@ U_1 = STAT_NON_LINE(reuse = U_1,
   PILOTAGE   = _F(
     SELECTION = 'RESIDU',
     TYPE = 'PRED_ELAS',
-    MAILLE = 'CUBEDEG',
+    GROUP_MA = 'CUBEDEG',
    COEF_MULT = cmupi,
     ETA_PILO_R_MIN = 0.,
     ),
   COMPORTEMENT = (
-    _F(RELATION = 'CZM_EXP_MIX', MAILLE = 'CUBEDEG'),
-    _F(RELATION = 'ELAS',          MAILLE = 'CUBE'),
+    _F(RELATION = 'CZM_EXP_MIX', GROUP_MA = 'CUBEDEG'),
+    _F(RELATION = 'ELAS',          GROUP_MA = 'CUBE'),
     ),
   INCREMENT = _F(
     LIST_INST    = TEMP, INST_FIN = tfinc
@@ -180,7 +180,7 @@ U_1=CALC_CHAMP(reuse = U_1,
                  RESULTAT = U_1,
                  VARI_INTERNE='VARI_ELNO',
                  CONTRAINTE='SIEF_ELNO',
-                 MAILLE='CUBEDEG'
+                 GROUP_MA='CUBEDEG'
                 );
 
 U_1=CALC_CHAMP(
@@ -188,14 +188,14 @@ U_1=CALC_CHAMP(
                  RESULTAT = U_1,
                  VARI_INTERNE='VARI_NOEU',
                  CONTRAINTE='SIEF_NOEU',
-                 MAILLE='CUBEDEG'
+                 GROUP_MA='CUBEDEG'
                  );
 
 
 IMPR_RESU(
   FORMAT   = 'MED',UNITE= 46,
   RESU=_F(
-          RESULTAT = U_1, MAILLE  = 'CUBEDEG',
+          RESULTAT = U_1, GROUP_MA  = 'CUBEDEG',
     ))
 IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_1,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')))),
 
@@ -218,7 +218,7 @@ IMPR_TABLE(TABLE=T_ETA_1)
 
 F_SIGN_1=RECU_FONCTION( RESULTAT=U_1, NOM_CHAM = 'SIEF_ELGA',
           NOM_CMP = 'SIGN',
-          MAILLE  = 'CUBEDEG',POINT=1)
+          GROUP_MA  = 'CUBEDEG',POINT=1)
 T_SIGN_1=CREA_TABLE(FONCTION=_F(FONCTION=F_SIGN_1))
 IMPR_TABLE(TABLE=T_SIGN_1)
 
@@ -258,7 +258,7 @@ TEST_RESU(RESU=_F(INST=3.00007,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIXX',
                   VALE_REFE=0.4869,VALE_CALC=0.486989105726,
-                  MAILLE='CUBE',),
+                  GROUP_MA='CUBE',),
           )
 
 TEST_RESU(RESU=_F(INST=3.00007,
@@ -268,14 +268,14 @@ TEST_RESU(RESU=_F(INST=3.00007,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIGN',
                   VALE_REFE=0.649,VALE_CALC=0.649318807634,
-                  MAILLE='CUBEDEG',),
+                  GROUP_MA='CUBEDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=3.00007,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=U_1,
                   NOM_CHAM='DEPL',
-                  NOEUD='NS6',
+                  GROUP_NO='NS6',
                   NOM_CMP='SIGN',
                   VALE_CALC=0.649318807634,
                   VALE_REFE=0.649,),
@@ -289,7 +289,7 @@ TEST_RESU(RESU=_F(INST=3.00007,
                   NOM_CMP='SITX',
                   VALE_REFE=0.0,VALE_CALC=2.53530563433E-14,
                   CRITERE='ABSOLU',
-                  MAILLE='CUBEDEG',),
+                  GROUP_MA='CUBEDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=3.00007,
@@ -300,7 +300,7 @@ TEST_RESU(RESU=_F(INST=3.00007,
                   NOM_CMP='V1',
                   VALE_CALC=0.431297618338,
                   VALE_REFE=0.4312,
-                  MAILLE='CUBEDEG',),
+                  GROUP_MA='CUBEDEG',),
           )
 
 TEST_RESU(RESU=_F(INST=7.0000299999999998,
@@ -311,7 +311,7 @@ TEST_RESU(RESU=_F(INST=7.0000299999999998,
                   NOM_CMP='V4',
                   VALE_CALC=0.706426898165,
                   VALE_REFE=0.706,
-                  MAILLE='CUBEDEG',),
+                  GROUP_MA='CUBEDEG',),
           )
 ##-----------------------------------------------------------------------------------
 

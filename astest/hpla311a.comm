@@ -193,7 +193,7 @@ RESU=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',    NOM_CHAM='DEPL',
 FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
                         FOND_FISS=_F( GROUP_NO = ('P0',)),
                         SYME='OUI',
-                        LEVRE_SUP=_F(MAILLE=('M570')),
+                        LEVRE_SUP=_F(GROUP_MA=('M570')),
                       )
 
 # CALCUL DE G AVEC CALC_G / OPTION G_EPSI

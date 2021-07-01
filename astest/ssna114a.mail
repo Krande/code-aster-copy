@@ -1,5 +1,5 @@
  TITRE
- %  GIBI FECIT
+ %  GIBI FECIT                                                                  
  FINSF
  %
  COOR_2D
@@ -14,64 +14,64 @@
  FINSF
  %
  QUAD8   
-  M1      N1       N3       N5       N7       N2       N4       N6      
+ M1       N1       N3       N5       N7       N2       N4       N6      
           N8      
  FINSF
  %
  SEG3    
-  M2      N1       N3       N2      
- FINSF
- %
- SEG3    
-  M3      N3       N5       N4      
- FINSF
- %
- SEG3    
-  M4      N5       N7       N6      
- FINSF
- %
- SEG3    
-  M5      N7       N1       N8      
+ M2       N1       N3       N2      
+ M3       N3       N5       N4      
+ M4       N5       N7       N6      
+ M5       N7       N1       N8      
  FINSF
  %
  GROUP_NO
- P1       N1      
+ P1                      
+ N1      
  FINSF
  %
  GROUP_NO
- P2       N7      
+ P2                      
+ N7      
  FINSF
  %
  GROUP_NO
- P3       N5      
+ P3                      
+ N5      
  FINSF
  %
  GROUP_NO
- P4       N3      
+ P4                      
+ N3      
  FINSF
  %
  GROUP_MA
-   L14     
+ L14                     
  M2      
  FINSF
  %
  GROUP_MA
-   L43     
+ L43                     
  M3      
  FINSF
  %
  GROUP_MA
-   L32     
+ L32                     
  M4      
  FINSF
  %
  GROUP_MA
-   L21     
+ L21                     
  M5      
  FINSF
  %
  GROUP_MA
-   MESH    
+ MESH                    
+ M1      
+ FINSF
+ %
+ GROUP_MA
+ M1                      
  M1      
  FINSF
  %

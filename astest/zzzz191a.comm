@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -99,7 +99,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=3,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U2LA,
                    NOM_CHAM='DEPL',
-                   NOEUD='N1',
+                   GROUP_NO='N1',
                    NOM_CMP='DX',
                    VALE_CALC=8.750000000,
                    VALE_REFE=8.75,),
@@ -109,12 +109,12 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=3,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIXX',
                    VALE_CALC=19.797824675666,
-                   MAILLE='M6',),
+                   GROUP_MA='M6',),
                 _F(NUME_ORDRE=3,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=U2CI,
                    NOM_CHAM='DEPL',
-                   NOEUD='N1',
+                   GROUP_NO='N1',
                    NOM_CMP='DX',
                    VALE_CALC=8.750000000,
                    VALE_REFE=8.75,),
@@ -126,7 +126,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=3,
                    NOM_CMP='SIXX',
                    VALE_CALC=19.797824675666,
                    VALE_REFE=19.7978,
-                   MAILLE='M6',),
+                   GROUP_MA='M6',),
                 ),
           )
 

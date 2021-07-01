@@ -57,7 +57,7 @@ CHARGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                   DRZ=0.0,),);
 
 FORCE=AFFE_CHAR_MECA(MODELE=MODELE,
-                     FORCE_NODALE=_F(NOEUD='NO21',
+                     FORCE_NODALE=_F(GROUP_NO='NO21',
                                      FZ=1.0,),);
 #CALCUL DES VECTEURS ET MATRICES ASSEMBLEES
 
@@ -320,25 +320,25 @@ DYNEXPC=REST_GENE_PHYS(RESU_GENE=DYNGENC,
 #########################################################
 DHZ1=RECU_FONCTION (   RESULTAT = DYNEXP,
                       NOM_CMP = 'DZ',
-                      NOEUD = 'NO23',
+                      GROUP_NO = 'NO23',
                       NOM_CHAM = 'DEPL',
                       TOUT_ORDRE = 'OUI');
 
 DHZ2=RECU_FONCTION (   RESU_GENE = DYNGEN,
                        NOM_CMP = 'DZ',
-                       NOEUD = 'NO23',
+                       GROUP_NO = 'NO23',
                        NOM_CHAM = 'DEPL',
                        TOUT_ORDRE = 'OUI',);
 
 VHZ1=RECU_FONCTION (   RESULTAT = DYNEXP,
                       NOM_CMP = 'DZ',
-                      NOEUD = 'NO23',
+                      GROUP_NO = 'NO23',
                       NOM_CHAM = 'VITE',
                       TOUT_ORDRE = 'OUI');
 
 VHZ2=RECU_FONCTION (   RESU_GENE = DYNGEN,
                        NOM_CMP = 'DZ',
-                       NOEUD = 'NO23',
+                       GROUP_NO = 'NO23',
                        NOM_CHAM = 'VITE',
                        TOUT_ORDRE = 'OUI',);
 
@@ -358,7 +358,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=DYNEXP,
                   NOM_CHAM='DEPL',
-                  NOEUD='NO21',
+                  GROUP_NO='NO21',
                   NOM_CMP='DZ',
                   CRITERE='RELATIF',
                   PRECISION=0.10000000000000001,),

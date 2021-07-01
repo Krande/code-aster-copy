@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -67,15 +67,15 @@ CHARG=AFFE_CHAR_MECA(      MODELE=MO,DDL_IMPO=(
                            _F( TOUT = 'OUI',
                                      DZ = 0.,
                                      DRY = 0.),
-                                    _F( NOEUD = 'N1',
+                                    _F( GROUP_NO = 'N1',
                                      DX = 0.),
-                                    _F( NOEUD = 'N2',
+                                    _F( GROUP_NO = 'N2',
                                      DX = 0.)),LIAISON_DDL=(
-                        _F( NOEUD = ('N1', 'N1',),
+                        _F( GROUP_NO = ('N1', 'N1',),
                                      DDL = ('DY', 'DRX',),
                                      COEF_MULT = (1.,  -0.2215E0,),
                                      COEF_IMPO = 0.),
-                        _F( NOEUD = ('N2', 'N2',),
+                        _F( GROUP_NO = ('N2', 'N2',),
                                      DDL = ('DY', 'DRX',),
                                      COEF_MULT = (1.,  -0.2215E0,),
                                      COEF_IMPO = 0.))

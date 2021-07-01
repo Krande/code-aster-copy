@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -175,19 +175,19 @@ DYN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                         )
 
 DXN3=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
-                        RESULTAT=DYN,   NOEUD='N3',
+                        RESULTAT=DYN,   GROUP_NO='N3',
                         NOM_CHAM='DEPL',
                         NOM_CMP='DX'
                       )
 
 DXN32=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
-                        RESULTAT=DYN,   NOEUD='N32',
+                        RESULTAT=DYN,   GROUP_NO='N32',
                         NOM_CHAM='DEPL',
                         NOM_CMP='DX'
                       )
 
 DXN14=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
-                        RESULTAT=DYN,   NOEUD='N14',
+                        RESULTAT=DYN,   GROUP_NO='N14',
                         NOM_CHAM='DEPL',
                         NOM_CMP='DX'
                       )
@@ -279,19 +279,19 @@ DYNC=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                         )
 
 DXN3C=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
-                        RESULTAT=DYNC,   NOEUD='N3',
+                        RESULTAT=DYNC,   GROUP_NO='N3',
                         NOM_CHAM='DEPL',
                         NOM_CMP='DX'
                       )
 
 DXN32C=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
-                        RESULTAT=DYNC,   NOEUD='N32',
+                        RESULTAT=DYNC,   GROUP_NO='N32',
                         NOM_CHAM='DEPL',
                         NOM_CMP='DX'
                       )
 
 DXN14C=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
-                        RESULTAT=DYNC,   NOEUD='N14',
+                        RESULTAT=DYNC,   GROUP_NO='N14',
                         NOM_CHAM='DEPL',
                         NOM_CMP='DX'
                       )
@@ -355,19 +355,19 @@ DYNA=DYNA_NON_LINE(    MODELE=MODELE,
 CALC_CHAMP(reuse=DYNA, RESULTAT=DYNA, PROPRIETES=('MATE_ELEM', 'MATE_ELGA'))
 
 DXNA3=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                        RESULTAT=DYNA,   NOEUD='N3',
+                        RESULTAT=DYNA,   GROUP_NO='N3',
                         NOM_CHAM='DEPL',
                         NOM_CMP='DX'
                       )
 
 DXNA32=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                        RESULTAT=DYNA,   NOEUD='N32',
+                        RESULTAT=DYNA,   GROUP_NO='N32',
                         NOM_CHAM='DEPL',
                         NOM_CMP='DX'
                       )
 
 DXNA14=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                        RESULTAT=DYNA,   NOEUD='N14',
+                        RESULTAT=DYNA,   GROUP_NO='N14',
                         NOM_CHAM='DEPL',
                         NOM_CMP='DX'
                       )
@@ -408,7 +408,7 @@ IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=DYNA, NOM_CHAM='MATE_ELGA', NUME_OR
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,  
                   RESULTAT=DYNA,
                   NOM_CHAM='MATE_ELGA', 
-                  MAILLE = 'M16', 
+                  GROUP_MA = 'M16', 
                   POINT = 1, 
                   NOM_CMP='E',
                   REFERENCE='ANALYTIQUE', VALE_REFE=3.6E+10 , 
@@ -416,7 +416,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 _F(NUME_ORDRE=1,  
                   RESULTAT=DYNA,
                   NOM_CHAM='MATE_ELEM', 
-                  MAILLE = 'M16',
+                  GROUP_MA = 'M16',
                   NOM_CMP='NU',
                   REFERENCE='ANALYTIQUE', VALE_REFE=0.2 , 
                   VALE_CALC= 0.2),
@@ -427,7 +427,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,  
                   RESULTAT=DYNA,
                   NOM_CHAM='MATE_ELGA', 
-                  MAILLE = 'M46', 
+                  GROUP_MA = 'M46', 
                   POINT = 1, 
                   NOM_CMP='E',
                   REFERENCE='ANALYTIQUE', VALE_REFE=3.6E+10 , 
@@ -435,7 +435,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 _F(NUME_ORDRE=1,  
                   RESULTAT=DYNA,
                   NOM_CHAM='MATE_ELEM', 
-                  MAILLE = 'M46',
+                  GROUP_MA = 'M46',
                   NOM_CMP='NU',
                   REFERENCE='ANALYTIQUE', VALE_REFE=0.2 , 
                   VALE_CALC= 0.2),

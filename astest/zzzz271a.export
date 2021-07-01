@@ -6,7 +6,7 @@ P mpi_nbnoeud 1
 P testlist ci verification sequential
 
 F comm zzzz271a.comm D 1
-F libr zzzz271a.11 D 11
-F libr zzzz271a.12 D 12
-F libr zzzz271a.13 D 13
-F libr zzzz271a.14 D 14
+F mmed zzzz271a.11 D 11
+F mmed zzzz271a.12 D 12
+F mmed zzzz271a.13 D 13
+F mmed zzzz271a.14 D 14

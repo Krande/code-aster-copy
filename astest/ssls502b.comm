@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -188,7 +188,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=-4.70216849E+05,
                    VALE_REFE=-3.25000E5,
                    PRECISION=0.5,
-                   MAILLE='M368',),
+                   GROUP_MA='M368',),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='F',
                    REFERENCE='SOURCE_EXTERNE',
@@ -198,7 +198,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC= 4.00356976E+05,
                    VALE_REFE=6.E5,
                    PRECISION=0.4,
-                   MAILLE='M368',),
+                   GROUP_MA='M368',),
                 _F(NUME_ORDRE=1,
                    POINT=1,
                    SOUS_POINT=1,
@@ -206,7 +206,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIXX',
                    VALE_CALC=4.9919514420372999E5,
-                   MAILLE='M368',),
+                   GROUP_MA='M368',),
                 _F(NUME_ORDRE=1,
                    POINT=1,
                    SOUS_POINT=1,
@@ -214,7 +214,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIYY',
                    VALE_CALC=5.3215554257317004E5,
-                   MAILLE='M368',),
+                   GROUP_MA='M368',),
                 ),
           )
 
@@ -267,7 +267,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=-4.70216849E+05,
                    VALE_REFE=-3.50000E5,
                    PRECISION=0.5,
-                   MAILLE='M368',),
+                   GROUP_MA='M368',),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='F',
                    REFERENCE='ANALYTIQUE',
@@ -277,7 +277,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC= 4.00356976E+05,
                    VALE_REFE=5.E5,
                    PRECISION=0.2,
-                   MAILLE='M368',),
+                   GROUP_MA='M368',),
                 ),
           )
 

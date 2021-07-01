@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -77,21 +77,21 @@ TEMPE=THER_LINEAIRE(MODELE=MOTH,
 TPR=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
                  NOM_CHAM='TEMP', RESULTAT=TEMPE, NUME_ORDRE=0  )
 
-TEST_RESU(CHAM_NO=(_F(NOEUD='N21',
+TEST_RESU(CHAM_NO=(_F(GROUP_NO='N21',
                       NOM_CMP='TEMP',
                       PRECISION=0.02,
                       CHAM_GD=TPR,
                       VALE_CALC=17.953960815,
                       VALE_REFE=18.300000000000001,
                       REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='N1',
+                   _F(GROUP_NO='N1',
                       NOM_CMP='TEMP',
                       PRECISION=1.E-2,
                       CHAM_GD=TPR,
                       VALE_CALC=100.000000000,
                       VALE_REFE=100.0,
                       REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='N7',
+                   _F(GROUP_NO='N7',
                       NOM_CMP='TEMP',
                       PRECISION=1.E-2,
                       CHAM_GD=TPR,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -306,7 +306,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=10,
 
 #
 EFF1=AFFE_CHAR_MECA(          MODELE=MO,
-                              FORCE_NODALE=_F( NOEUD = 'N1',
+                              FORCE_NODALE=_F( GROUP_NO = 'N1',
                                             FX = 1000.)
                           )
 
@@ -389,7 +389,7 @@ INTEREP1=REST_SPEC_PHYS(         MODE_MECA=MODE1,
                                          BANDE=( 1., 101., ),
                                 INTE_SPEC_GENE=DYNALEA1,
                                       NOM_CHAM='DEPL',
-                                          NOEUD='N1',
+                                          GROUP_NO='N1',
                                        NOM_CMP='DX',
                                         OPTION='TOUT_TOUT'  )
 
@@ -397,8 +397,8 @@ INTEREP1=REST_SPEC_PHYS(         MODE_MECA=MODE1,
 INTEREP2=REST_SPEC_PHYS(         MODE_MECA=MODE1,
                                          BANDE=( 1., 101., ),
                                 INTE_SPEC_GENE=DYNALEA1,
-                                         NOEUD='N21',
-                                        MAILLE='M1',
+                                         GROUP_NO='N21',
+                                        GROUP_MA='M1',
                                       NOM_CHAM='SIPO_ELNO',
                                        NOM_CMP='SMFZ',
                                         OPTION='TOUT_TOUT'  )

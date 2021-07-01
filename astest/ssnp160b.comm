@@ -232,13 +232,13 @@ for k in range(1,NBPAS+1):
 CL2=RECU_FONCTION(RESULTAT=UTH,
                  NOM_CHAM='TEMP',
                  NOM_CMP='TEMP',
-                 NOEUD='NO2',
+                 GROUP_NO='NO2',
                   );
 
 P1=RECU_FONCTION(RESULTAT=UM,
                  NOM_CHAM='VARI_ELGA',
                  NOM_CMP='V1',
-                 MAILLE='CUBE',
+                 GROUP_MA='CUBE',
                  POINT=1,
                   );
 

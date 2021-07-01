@@ -6,5 +6,5 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm ssnl504c.comm D 1
-F mmed ssnl504c.mail D 20
-F mmed ssnl504c.21   D 21
+F mail ssnl504c.mail D 20
+F mail ssnl504c.21   D 21

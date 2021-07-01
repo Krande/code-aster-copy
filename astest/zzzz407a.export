@@ -6,8 +6,7 @@ P mpi_nbnoeud 1
 P testlist submit ci verification sequential
 
 F comm zzzz407a.comm D 1
-F libr zzzz407a.20 D 20
+F mail zzzz407a.20 D 20
 F libr zzzz407a.21 D 21
-F libr zzzz407a.22 D 22
-F libr zzzz407a.82 D 82
-
+F mail zzzz407a.22 D 22
+F mmed zzzz407a.82 D 82

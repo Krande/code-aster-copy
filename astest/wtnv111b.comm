@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -139,9 +139,9 @@ CHAR0=AFFE_CHAR_MECA(   MODELE=MODELE,DDL_IMPO=(
                           _F(  TOUT = 'OUI',
                                      DX = 0.,
                                      DY = 0.),
-                          _F(NOEUD=('N1','N2','N3','N4'),
+                          _F(GROUP_NO=('N1','N2','N3','N4'),
                                     PRE1=0.),
-                          _F(NOEUD=('N1','N2'),
+                          _F(GROUP_NO=('N1','N2'),
                                      TEMP = 0.)),
                         FLUX_THM_REP=_F(  GROUP_MA = 'HAUT',
                                    FLUN = 0.5,
@@ -167,7 +167,7 @@ MESTAT=STAT_NON_LINE(   MODELE=MODELE,
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MESTAT,
                   NOM_CHAM='DEPL',
-                  NOEUD='N1',
+                  GROUP_NO='N1',
                   NOM_CMP='TEMP',
                   VALE_CALC=0.0,
 
@@ -178,7 +178,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=MESTAT,
                   NOM_CHAM='DEPL',
-                  NOEUD='N3',
+                  GROUP_NO='N3',
                   NOM_CMP='TEMP',
                   VALE_CALC=0.294091352,
                   VALE_REFE=0.29411799999999999,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -36,13 +36,13 @@ U2=DEFI_FONCTION(NOM_PARA='Y',
 U3=DEFI_CONSTANTE(VALE=0.0,);
 
 CHARGY=AFFE_CHAR_MECA_F(MODELE=MO,
-                       DDL_IMPO=(_F(NOEUD='NO3',
+                       DDL_IMPO=(_F(GROUP_NO='NO3',
                                     DX=U3,
                                     DY=U3,
                                     DZ=U3,),
                                  _F(GROUP_NO='FACEXZ1',
                                     DY=U3,),
-                                 _F(NOEUD='NO7',
+                                 _F(GROUP_NO='NO7',
                                     DX=U3,),
                                  _F(GROUP_NO='FACEXZ2',
                                     DY=U2,),),);
@@ -88,7 +88,7 @@ U1=DEFI_FONCTION(NOM_PARA='X',
 
 
 CHARGX=AFFE_CHAR_MECA_F(MODELE=MO,
-                       DDL_IMPO=(_F(NOEUD='NO3',
+                       DDL_IMPO=(_F(GROUP_NO='NO3',
                                     DX=U3,
                                     DY=U3,
                                     DZ=U3,),
@@ -98,11 +98,11 @@ CHARGX=AFFE_CHAR_MECA_F(MODELE=MO,
 #                                    DZ=U3,),
 #                                _F(GROUP_NO='FACEXZ1',
 #                                    DY=U3,),
-                                 _F(NOEUD='NO1',
+                                 _F(GROUP_NO='NO1',
                                     DZ=U3,),
-                                 _F(NOEUD='NO4',
+                                 _F(GROUP_NO='NO4',
                                     DZ=U3,),
-                                 _F(NOEUD='NO10',
+                                 _F(GROUP_NO='NO10',
                                     DZ=U3,),
                                  _F(GROUP_NO='FACEZY2',
                                     DX=U1,),),);

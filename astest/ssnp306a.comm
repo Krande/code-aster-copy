@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ MO     = AFFE_MODELE(MAILLAGE=MAILLAGE,
                      );
 
 CH_U1  = AFFE_CHAR_CINE( MODELE   = MO,
-                         MECA_IMPO= ( _F( MAILLE = 'M7', DY = 1.,),),
+                         MECA_IMPO= ( _F( GROUP_MA = 'M7', DY = 1.,),),
                         )
 
 CH_U2  = AFFE_CHAR_CINE( MODELE   = MO,
@@ -71,11 +71,11 @@ CH_U2  = AFFE_CHAR_CINE( MODELE   = MO,
                         )
 
 CH_U3  = AFFE_CHAR_CINE( MODELE   = MO,
-                         MECA_IMPO= ( _F( MAILLE = 'M3', DY = 0.,),),
+                         MECA_IMPO= ( _F( GROUP_MA = 'M3', DY = 0.,),),
                         )
 
 CH_U4  = AFFE_CHAR_CINE( MODELE   = MO,
-                         MECA_IMPO= ( _F(NOEUD ='N1', DX = 0.,),),
+                         MECA_IMPO= ( _F(GROUP_NO ='N1', DX = 0.,),),
                         )
 
 

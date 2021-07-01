@@ -363,9 +363,9 @@ DEP1B=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 #                    FIN DU THERMO-MECANIQUE A  T = 0.312 S
 # -------------------------------------------------------------------
 #
-TEST_RESU(CHAM_ELEM=_F(NOEUD='N4526',
+TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N4526',
                        NOM_CMP='SIYY',
-                       MAILLE='M2787',
+                       GROUP_MA='M2787',
                        CHAM_GD=SIGM1A,
                        REFERENCE='ANALYTIQUE',
                        VALE_REFE=4.584029E6,
@@ -513,9 +513,9 @@ DEP2B=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 #                    FIN DU THERMO-MECANIQUE A  T = 12.48 S
 # -------------------------------------------------------------------
 #
-TEST_RESU(CHAM_ELEM=_F(NOEUD='N4526',
+TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N4526',
                        NOM_CMP='SIYY',
-                       MAILLE='M2787',
+                       GROUP_MA='M2787',
                        CHAM_GD=SIGM2A,
                        REFERENCE='ANALYTIQUE',
                        VALE_REFE=6.397099E7,
@@ -663,9 +663,9 @@ DEP3B=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 #
 #
 #
-TEST_RESU(CHAM_ELEM=_F(NOEUD='N4526',
+TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N4526',
                        NOM_CMP='SIYY',
-                       MAILLE='M2787',
+                       GROUP_MA='M2787',
                        CHAM_GD=SIGM3A,
                        REFERENCE='ANALYTIQUE',
                        VALE_REFE=8.200300E5,
@@ -676,7 +676,7 @@ TEST_RESU(CHAM_ELEM=_F(NOEUD='N4526',
 FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
                         FOND_FISS=_F( GROUP_NO = ('P0',)),
                         SYME='OUI',
-                        LEVRE_SUP=_F(MAILLE=('M3148')),
+                        LEVRE_SUP=_F(GROUP_MA=('M3148')),
                       )
 
 #

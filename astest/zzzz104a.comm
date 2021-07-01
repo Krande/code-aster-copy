@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -85,7 +85,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    RESULTAT=RESUREF,
                    VALE_CALC=-2.96705183243074E+11,
                    NOM_CHAM = "SIEF_ELGA",
-                   MAILLE = 'M30',
+                   GROUP_MA = 'M30',
                    POINT = 1,
                    NOM_CMP = 'SIXX',
                    ),
@@ -93,7 +93,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    RESULTAT=RESUREF,
                    VALE_CALC=-7.74128502855593E+09,
                    NOM_CHAM = "SIEF_ELGA",
-                   MAILLE = 'M31',
+                   GROUP_MA = 'M31',
                    POINT = 3,
                    NOM_CMP = 'SIXY',
                    ),
@@ -193,7 +193,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    VALE_REFE = -2.96705183243074E+11,
                    VALE_CALC=-2.96705183243074E+11,
                    NOM_CHAM = "SIEF_ELGA",
-                   MAILLE = 'M30',
+                   GROUP_MA = 'M30',
                    POINT = 1,
                    NOM_CMP = 'SIXX',
                    ),
@@ -203,7 +203,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    VALE_REFE = -7.74128502855593E+09,
                    VALE_CALC=-7.74128502855593E+09,
                    NOM_CHAM = "SIEF_ELGA",
-                   MAILLE = 'M31',
+                   GROUP_MA = 'M31',
                    POINT = 3,
                    NOM_CMP = 'SIXY',
                    ),

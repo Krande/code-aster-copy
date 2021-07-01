@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,30 +38,30 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
 
 MO=AFFE_MODELE(  MAILLAGE=MA,     AFFE= (
     _F( TOUT = 'OUI',      MODELISATION = 'D_PLAN',   PHENOMENE = 'MECANIQUE'),
-    _F( MAILLE = 'MISOLE', MODELISATION = '2D_DIS_T', PHENOMENE = 'MECANIQUE'),
+    _F( GROUP_MA = 'MISOLE', MODELISATION = '2D_DIS_T', PHENOMENE = 'MECANIQUE'),
 ))
 
-CARELE=AFFE_CARA_ELEM( MODELE=MO, DISCRET_2D=( _F(MAILLE='MISOLE',CARA = 'K_T_N',
+CARELE=AFFE_CARA_ELEM( MODELE=MO, DISCRET_2D=( _F(GROUP_MA='MISOLE',CARA = 'K_T_N',
                                      VALE = (180000.,0.,180000.,),),
                       ))
 CHBL=AFFE_CHAR_MECA_F(MODELE=MO,DDL_IMPO=(
 #                    J , N8, N17, N25 :
 
-                    _F( NOEUD = ('N8','N17','N25',), DX = ZERO, DY = ZERO),
-                    _F( NOEUD = ('N35',), DX = DEUX)),
+                    _F( GROUP_NO = ('N8','N17','N25',), DX = ZERO, DY = ZERO),
+                    _F( GROUP_NO = ('N35',), DX = DEUX)),
 #
 #  TEST DE LIAISON_DDL COEF_MULT_FONC
 #
                     LIAISON_DDL=(
 #           GH :
 
-  _F( NOEUD = ('N22','N22',),DDL = ('DY','DX',), COEF_MULT_FONC = (FONC,FONC,),
+  _F( GROUP_NO = ('N22','N22',),DDL = ('DY','DX',), COEF_MULT_FONC = (FONC,FONC,),
    COEF_IMPO = ZERO),
-  _F( NOEUD = ('N24','N24',),DDL = ('DY','DX',), COEF_MULT_FONC = (FONC,FONC,),
+  _F( GROUP_NO = ('N24','N24',),DDL = ('DY','DX',), COEF_MULT_FONC = (FONC,FONC,),
    COEF_IMPO = ZERO),
-  _F( NOEUD = ('N26','N26',),DDL = ('DY','DX',), COEF_MULT_FONC = (FONC,FONC,),
+  _F( GROUP_NO = ('N26','N26',),DDL = ('DY','DX',), COEF_MULT_FONC = (FONC,FONC,),
    COEF_IMPO = ZERO),
-  _F( NOEUD = ('N28','N28',),DDL = ('DY','DX',), COEF_MULT_FONC = (FONC,FONC,),
+  _F( GROUP_NO = ('N28','N28',),DDL = ('DY','DX',), COEF_MULT_FONC = (FONC,FONC,),
    COEF_IMPO = ZERO))
             )
 
@@ -72,7 +72,7 @@ CHF1=AFFE_CHAR_MECA(MODELE=MO,
 
 CHF2=AFFE_CHAR_MECA(MODELE=MO,
 #       NON-SUIVEUR:
-         FORCE_NODALE=_F( NOEUD = ('N11','N19','N27','N33','N31',), FY = -20.0)
+         FORCE_NODALE=_F( GROUP_NO = ('N11','N19','N27','N33','N31',), FY = -20.0)
                        )
 
 MELGR=CALC_MATR_ELEM(   OPTION='RIGI_MECA',  CARA_ELEM=CARELE,
@@ -97,82 +97,82 @@ U1=RESOUDRE( MATR=MATAS,   CHAM_NO=VECAS1)
 U2=RESOUDRE( MATR=MATAS,   CHAM_NO=VECAS2)
 
 
-TEST_RESU(CHAM_NO=(_F(NOEUD='N31',
+TEST_RESU(CHAM_NO=(_F(GROUP_NO='N31',
                       NOM_CMP='DX',
                       CHAM_GD=U1,
                       VALE_CALC=1.8832652708647,
                       ),
-                   _F(NOEUD='N31',
+                   _F(GROUP_NO='N31',
                       NOM_CMP='DY',
                       CHAM_GD=U1,
                       VALE_CALC=0.025922399211262,
                       ),
-                   _F(NOEUD='N28',
+                   _F(GROUP_NO='N28',
                       NOM_CMP='DX',
                       CHAM_GD=U1,
                       VALE_CALC=-0.082737184695115,
                       ),
-                   _F(NOEUD='N28',
+                   _F(GROUP_NO='N28',
                       NOM_CMP='DY',
                       CHAM_GD=U1,
                       VALE_CALC=0.082737184695115,
                       ),
-                   _F(NOEUD='N13',
+                   _F(GROUP_NO='N13',
                       NOM_CMP='DX',
                       CHAM_GD=U1,
                       VALE_CALC=0.27037492108666,
                       ),
-                   _F(NOEUD='N13',
+                   _F(GROUP_NO='N13',
                       NOM_CMP='DY',
                       CHAM_GD=U1,
                       VALE_CALC=0.56955184648386,
                       ),
-                   _F(NOEUD='N10',
+                   _F(GROUP_NO='N10',
                       NOM_CMP='DX',
                       CHAM_GD=U1,
                       VALE_CALC=0.51770335804207,
                       ),
-                   _F(NOEUD='N10',
+                   _F(GROUP_NO='N10',
                       NOM_CMP='DY',
                       CHAM_GD=U1,
                       VALE_CALC=0.54338669895341,
                       ),
-                   _F(NOEUD='N31',
+                   _F(GROUP_NO='N31',
                       NOM_CMP='DX',
                       CHAM_GD=U2,
                       VALE_CALC=1.7188307362546,
                       ),
-                   _F(NOEUD='N31',
+                   _F(GROUP_NO='N31',
                       NOM_CMP='DY',
                       CHAM_GD=U2,
                       VALE_CALC=-6.0436725555975,
                       ),
-                   _F(NOEUD='N28',
+                   _F(GROUP_NO='N28',
                       NOM_CMP='DX',
                       CHAM_GD=U2,
                       VALE_CALC=-0.046019646555591,
                       ),
-                   _F(NOEUD='N28',
+                   _F(GROUP_NO='N28',
                       NOM_CMP='DY',
                       CHAM_GD=U2,
                       VALE_CALC=0.046019646555591,
                       ),
-                   _F(NOEUD='N13',
+                   _F(GROUP_NO='N13',
                       NOM_CMP='DX',
                       CHAM_GD=U2,
                       VALE_CALC=0.22690259632066,
                       ),
-                   _F(NOEUD='N13',
+                   _F(GROUP_NO='N13',
                       NOM_CMP='DY',
                       CHAM_GD=U2,
                       VALE_CALC=-0.61429597203523,
                       ),
-                   _F(NOEUD='N10',
+                   _F(GROUP_NO='N10',
                       NOM_CMP='DX',
                       CHAM_GD=U2,
                       VALE_CALC=-0.95711048704247,
                       ),
-                   _F(NOEUD='N10',
+                   _F(GROUP_NO='N10',
                       NOM_CMP='DY',
                       CHAM_GD=U2,
                       VALE_CALC=-2.538780684867,

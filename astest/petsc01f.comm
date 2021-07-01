@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ RESREF=MECA_STATIQUE(MODELE=MO,
                     EXCIT=(_F(CHARGE=CHA1,),
                            _F(CHARGE=CHA2,),),
                     SOLVEUR=_F(METHODE='MUMPS',),);
-TREF=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'UREF', NOEUD =('NO2958','NO2974'), OPERATION = 'EXTRACTION',
+TREF=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'UREF', GROUP_NO =('NO2958','NO2974'), OPERATION = 'EXTRACTION',
                      RESULTAT = RESREF, NUME_ORDRE=1, NOM_CHAM='DEPL', NOM_CMP = ('DX','DY'), ));
 
 MEL=CALC_MATR_ELEM(OPTION='RIGI_MECA',
@@ -87,21 +87,21 @@ VECAS=RESOUDRE(reuse =VECAS,
                CHAM_CINE=VCINE,
                ALGORITHME='GCR',);
 TEST_RESU(CHAM_NO=(_F(CHAM_GD=VECAS,
-                      NOEUD='NO2958',
+                      GROUP_NO='NO2958',
                       NOM_CMP='DY',
                       VALE_CALC=0.01,
                       VALE_REFE=TREF['DY',1],
                       PRECISION=1.E-06,
                       REFERENCE='AUTRE_ASTER',),
                    _F(CHAM_GD=VECAS,
-                      NOEUD='NO2974',
+                      GROUP_NO='NO2974',
                       NOM_CMP='DX',
                       VALE_CALC=0.00430057955025,
                       VALE_REFE=TREF['DX',2],
                       PRECISION=1.E-06,
                       REFERENCE='AUTRE_ASTER',),
                    _F(CHAM_GD=VECAS,
-                      NOEUD='NO2974',
+                      GROUP_NO='NO2974',
                       NOM_CMP='DY',
                       VALE_CALC=0.00928897503726,
                       VALE_REFE=TREF['DY',2],
@@ -123,7 +123,7 @@ VECA2=RESOUDRE(MATR=MATAS2, MATR_PREC=MATAS2,
                ALGORITHME='GMRES',);
 
 TEST_RESU(CHAM_NO=(_F(CHAM_GD=VECA2,
-                      NOEUD='NO2958',
+                      GROUP_NO='NO2958',
                       NOM_CMP='DY',
                       VALE_CALC=0.0099999998941,
                       VALE_REFE=TREF['DY',1],

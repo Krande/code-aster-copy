@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,20 +27,20 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
 MA=LIRE_MAILLAGE(FORMAT='ASTER',);
 
 MO = AFFE_MODELE( MAILLAGE = MA,
-        AFFE = (_F(  MAILLE=('M1','P2',), PHENOMENE='MECANIQUE', MODELISATION = 'DIS_T'),
+        AFFE = (_F(  GROUP_MA=('M1','P2',), PHENOMENE='MECANIQUE', MODELISATION = 'DIS_T'),
                 ),)
 
 CARA_ELE =AFFE_CARA_ELEM(  MODELE=MO,
-                          DISCRET=(_F(  MAILLE = ('P2',  ),
+                          DISCRET=(_F(  GROUP_MA = ('P2',  ),
                                         CARA = 'M_T_D_N',  VALE = m),
-                                   _F(  MAILLE = 'M1',  CARA = 'K_T_D_L',
+                                   _F(  GROUP_MA = 'M1',  CARA = 'K_T_D_L',
                                         VALE = (k, 0., 0.,),  REPERE = 'GLOBAL'),
-                                   _F(  MAILLE = 'P2',  CARA = 'K_T_D_N',
+                                   _F(  GROUP_MA = 'P2',  CARA = 'K_T_D_N',
                                         VALE = (0, 0., 0.,),  ),
                          ),)
 
-CDL=AFFE_CHAR_CINE(  MODELE=MO,MECA_IMPO=( _F(  NOEUD='N1', DX = 0., DY = 0., DZ = 0.,),
-                                            _F(  NOEUD='N2', DY = 0., DZ = 0.,),
+CDL=AFFE_CHAR_CINE(  MODELE=MO,MECA_IMPO=( _F(  GROUP_NO='N1', DX = 0., DY = 0., DZ = 0.,),
+                                            _F(  GROUP_NO='N2', DY = 0., DZ = 0.,),
                   ),)
 
 Ke=CALC_MATR_ELEM(OPTION='RIGI_MECA',
@@ -93,7 +93,7 @@ MNL = MODE_NON_LINE(MATR_RIGI=K,
                             PREC_MAN=1.E-14,
                             PREC_NEWTON=1.E-09,
                             ITER_NEWTON_MAXI=15),
-                 CHOC=(_F(NOEUD='N2',
+                 CHOC=(_F(GROUP_NO='N2',
                           OBSTACLE = 'PLAN',
                           NOM_CMP='DX',
                           JEU=jeu,

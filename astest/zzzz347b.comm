@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -211,7 +211,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
 TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   RESULTAT=EVOLNOLI,
                   NOM_CHAM='SIEF_ELGA',
-                  MAILLE='M89',
+                  GROUP_MA='M89',
                   POINT = 1,
                   NOM_CMP='N',
                   VALE_CALC=7.8401249870166E+05,
@@ -224,7 +224,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
 TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   RESULTAT=EVOLNOLI,
                   NOM_CHAM='SIEF_ELGA',
-                  MAILLE='M89',
+                  GROUP_MA='M89',
                   POINT = 1,
                   NOM_CMP='N',
                   VALE_CALC=7.923705527632E+05,

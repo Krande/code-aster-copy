@@ -213,7 +213,7 @@ TEST_RESU(RESU=(_F(RESULTAT=ResX[1],
                    NOM_CHAM='ERME_ELEM',
                    NUME_ORDRE=1,
                    NOM_CMP='NUEST',
-                   MAILLE='M1',
+                   GROUP_MA='M1',
                    VALE_CALC=6.32800539407E-05,
                    CRITERE='ABSOLU',
                    ),),)

@@ -56,6 +56,20 @@ MA0 = LIRE_MAILLAGE(FORMAT='GMSH',
 
 MA = CREA_MAILLAGE(MAILLAGE  = MA0, LINE_QUAD = _F(TOUT='OUI'))
 
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M9791', MAILLE = 'M9791'),
+                                        _F( NOM = 'M9790', MAILLE = 'M9790'),
+                                        _F( NOM = 'M9788', MAILLE = 'M9788'),
+                                        _F( NOM = 'M9789', MAILLE = 'M9789'),
+                                        _F( NOM = 'M9293', MAILLE = 'M9293'),
+                                        _F( NOM = 'M9792', MAILLE = 'M9792'),
+                                     ),
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N137', NOEUD = 'N137'),
+                                     ),
+         )
+
 MA  =  DEFI_GROUP(
     reuse  = MA,
     MAILLAGE = MA,
@@ -426,7 +440,7 @@ TEST_RESU(RESU=_F(INST=10,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V7',
                   VALE_CALC=3.8705561473718E-03,
-                  MAILLE='M9788',),
+                  GROUP_MA='M9788',),
           )
 
 TEST_RESU(RESU=_F(INST=10,
@@ -435,7 +449,7 @@ TEST_RESU(RESU=_F(INST=10,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIGN',
                   VALE_CALC=16.693315519188,
-                  MAILLE='M9788',),
+                  GROUP_MA='M9788',),
           )
 
 # TESTS DES EXTRAPOLATIONS NODALES
@@ -444,7 +458,7 @@ TEST_RESU(RESU=_F(INST=10,
                   NOM_CHAM='VARI_NOEU',
                   NOM_CMP='V7',
                   VALE_CALC=4.809340930054E-03,
-                  NOEUD='N137'
+                  GROUP_NO='N137'
                   ),
           )
 
@@ -453,7 +467,7 @@ TEST_RESU(RESU=_F(INST=10,
                   NOM_CHAM='SIEF_NOEU',
                   NOM_CMP='SIGN',
                   VALE_CALC=12.253117222718,
-                  NOEUD='N137'
+                  GROUP_NO='N137'
                   ),
           )
 
@@ -466,7 +480,7 @@ IMPR_TABLE(TABLE = F_ELAS);
 IMPR_RESU(FORMAT='RESULTAT',RESU=(_F(RESULTAT=U_PLAS,
                                      NOM_CHAM='VARI_ELGA',
                                      INST=tfin,
-                                     MAILLE=('M9788','M9789','M9790','M9791','M9792'),
+                                     GROUP_MA=('M9788','M9789','M9790','M9791','M9792'),
                                      NOM_CMP=('V3','V7'))))
 
 
@@ -475,7 +489,7 @@ CHAMEL=CALC_CHAM_ELEM(MODELE=MO,GROUP_MA = 'DCBJ',OPTION='COOR_ELGA')
 
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=CHAMEL,
                        NOM_CMP='X',
-                       MAILLE='M9293',
+                       GROUP_MA='M9293',
                        POINT=1,
                        REFERENCE='ANALYTIQUE',
                        VALE_REFE=1.99822540333076E+02,
@@ -485,7 +499,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=CHAMEL,
 
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=CHAMEL,
                        NOM_CMP='Y',
-                       MAILLE='M9293',
+                       GROUP_MA='M9293',
                        POINT=1,
                        REFERENCE='ANALYTIQUE',
                        VALE_REFE=-0.025,

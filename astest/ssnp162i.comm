@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -89,6 +89,21 @@ MA0=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MA=CREA_MAILLAGE(MAILLAGE  = MA0, LINE_QUAD = _F(TOUT='OUI'))
 
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'PRISM', MAILLE = 'PRISM'),
+                                        _F( NOM = 'GAUCHE2', MAILLE = 'GAUCHE2'),
+                                        _F( NOM = 'DROITE', MAILLE = 'DROITE'),
+                                        _F( NOM = 'PRISMDEG', MAILLE = 'PRISMDEG'),
+                                     ),
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'NO6', NOEUD = 'NO6'),
+                                        _F( NOM = 'NS13', NOEUD = 'NS13'),
+                                        _F( NOM = 'NS14', NOEUD = 'NS14'),
+                                        _F( NOM = 'NS15', NOEUD = 'NS15'),
+                                     ),
+         )
+
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=(_F(NOEUD=('NO2','NO4','NO8','NS7','NS8','NS9'),
@@ -111,12 +126,12 @@ MO=AFFE_MODELE(
 
                 AFFE= (
                 _F(
-                   MAILLE = ('PRISM','DROITE'),
+                   GROUP_MA = ('PRISM','DROITE'),
                    PHENOMENE = 'MECANIQUE',
                    MODELISATION = '3D'
                      ),
                  _F(
-                   MAILLE = 'PRISMDEG',
+                   GROUP_MA = 'PRISMDEG',
                    PHENOMENE = 'MECANIQUE',
                    MODELISATION = '3D_JOINT_HYME'
                    )
@@ -145,15 +160,15 @@ MAT_JOI=DEFI_MATERIAU(
 
 CM=AFFE_MATERIAU(MAILLAGE=MA,
                  AFFE=(
-                      _F(MAILLE='PRISM', MATER = MAT_CUB),
-                      _F(MAILLE='PRISMDEG', MATER = MAT_JOI))
+                      _F(GROUP_MA='PRISM', MATER = MAT_CUB),
+                      _F(GROUP_MA='PRISMDEG', MATER = MAT_JOI))
                  );
 
 # ENCASTREMENT D'UNE DES LEVRES DU JOINT
 LIAISON=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-    _F(MAILLE='GAUCHE2', DX=0, DY=0, DZ=0),
+    _F(GROUP_MA='GAUCHE2', DX=0, DY=0, DZ=0),
     )
   )
 
@@ -168,7 +183,7 @@ LIAISON=AFFE_CHAR_MECA(
 TRAC_1=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-    _F(MAILLE='DROITE', DX=cos(angle), DY= sin(angle), DZ=0),
+    _F(GROUP_MA='DROITE', DX=cos(angle), DY= sin(angle), DZ=0),
     )
   )
 
@@ -176,7 +191,7 @@ TRAC_1=AFFE_CHAR_MECA(
 PAM_J = AFFE_CHAR_MECA(
   MODELE = MO,
   DDL_IMPO = (
-              _F(NOEUD=('NS13'), PRE1=press ),
+              _F(GROUP_NO=('NS13'), PRE1=press ),
               )
   );
 
@@ -204,9 +219,9 @@ U_HM=STAT_NON_LINE(
   ),
   COMPORTEMENT  = (
           _F(RELATION = 'JOINT_MECA_RUPT',
-             MAILLE = 'PRISMDEG'),
+             GROUP_MA = 'PRISMDEG'),
           _F(RELATION = 'ELAS',
-             MAILLE = 'PRISM'),
+             GROUP_MA = 'PRISM'),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
   CONVERGENCE= _F(ITER_GLOB_MAXI = 20),
@@ -232,7 +247,7 @@ U_HM=CALC_CHAMP(reuse =U_HM,
 U_HM=CALC_CHAMP(reuse =U_HM,
              RESULTAT=U_HM,
              VARI_INTERNE='VARI_NOEU',CONTRAINTE='SIEF_NOEU',
-             MAILLE='PRISMDEG'
+             GROUP_MA='PRISMDEG'
              );
 
 
@@ -372,7 +387,7 @@ TEST_RESU(RESU=_F(INST=insfin,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=U_HM,
                   NOM_CHAM='DEPL',
-                  NOEUD='NS14',
+                  GROUP_NO='NS14',
                   NOM_CMP='PRE1',
                   VALE_CALC=500.000000000,
                   VALE_REFE=press,),
@@ -383,7 +398,7 @@ TEST_RESU(RESU=_F(INST=insfin,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=U_HM,
                   NOM_CHAM='DEPL',
-                  NOEUD='NS15',
+                  GROUP_NO='NS15',
                   NOM_CMP='PRE1',
                   VALE_CALC=500.000000000,
                   VALE_REFE=press,),
@@ -394,7 +409,7 @@ TEST_RESU(RESU=_F(INST=insfin,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=U_HM,
                   NOM_CHAM='VARI_NOEU',
-                  NOEUD='NS15',
+                  GROUP_NO='NS15',
                   NOM_CMP='V18',
                   VALE_CALC=500.000000000,
                   VALE_REFE=press,),
@@ -405,7 +420,7 @@ TEST_RESU(RESU=_F(INST=insfin,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=U_HM,
                   NOM_CHAM='VARI_NOEU',
-                  NOEUD='NO6',
+                  GROUP_NO='NO6',
                   NOM_CMP='V18',
                   VALE_CALC=500.000000000,
                   VALE_REFE=press,),
@@ -437,7 +452,7 @@ IMPR_FONCTION(FORMAT='TABLEAU',
 #              TITRE='mode I avec charge-decharge',
 #              );
 #IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_HM,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),
-#IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_HM,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ'),MAILLE = ('PRISMDEG','PRISM'))))
-#IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_HM,NOM_CHAM='VARI_ELGA',TYPE_CHAM='VECT_2D',NOM_CMP=('V12','V13'),MAILLE = ('PRISMDEG'))))
+#IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_HM,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ'),GROUP_MA = ('PRISMDEG','PRISM'))))
+#IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_HM,NOM_CHAM='VARI_ELGA',TYPE_CHAM='VECT_2D',NOM_CMP=('V12','V13'),GROUP_MA = ('PRISMDEG'))))
 
 FIN()

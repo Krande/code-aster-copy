@@ -28,8 +28,8 @@ M=LIRE_MAILLAGE(FORMAT='MED',)
 FISS0=DEFI_FOND_FISS(MAILLAGE=M,
                    FOND_FISS=_F(TYPE_FOND='FERME',
                                 GROUP_MA = 'LFF',
-                                NOEUD_ORIG = 'N49',
-                                MAILLE_ORIG = 'M3233',),
+                                GROUP_NO_ORIG = 'N49',
+                                GROUP_MA_ORIG = 'M3233',),
                    SYME='OUI',
                    LEVRE_SUP=_F(GROUP_MA = 'LEVINF',)
                   )

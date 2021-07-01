@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -99,28 +99,28 @@ CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
                         COQUE=_F(GROUP_MA='SBAS',
                                  ANGL_REP=(45.,45.,),
                                  EPAIS=0.001,),
-                        DISCRET=(_F(MAILLE=('MASA1','MBSA1',),
+                        DISCRET=(_F(GROUP_MA=('MASA1','MBSA1',),
                                     CARA='M_TR_D_N',
                                     VALE=(79250.0,410720.0,482340.0,893060.0,0.0,0.0,0.0,0.0,0.0,0.0,),),
-                                 _F(MAILLE=('MASA1','MBSA1',),
+                                 _F(GROUP_MA=('MASA1','MBSA1',),
                                     CARA='K_TR_D_N',
                                     VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),
-                                 _F(MAILLE=('MASA2','MBSA2',),
+                                 _F(GROUP_MA=('MASA2','MBSA2',),
                                     CARA='M_TR_D_N',
                                     VALE=(104090.0,574750.0,694040.0,1268790.0,0.0,0.0,0.0,0.0,0.0,0.0,),),
-                                 _F(MAILLE=('MASA2','MBSA2',),
+                                 _F(GROUP_MA=('MASA2','MBSA2',),
                                     CARA='K_TR_D_N',
                                     VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),
-                                 _F(MAILLE=('MASA3','MBSA3',),
+                                 _F(GROUP_MA=('MASA3','MBSA3',),
                                     CARA='M_TR_D_N',
                                     VALE=(156710.0,1020850.0,1071220.0,2092070.0,0.0,0.0,0.0,0.0,0.0,0.0,),),
-                                 _F(MAILLE=('MASA3','MBSA3',),
+                                 _F(GROUP_MA=('MASA3','MBSA3',),
                                     CARA='K_TR_D_N',
                                     VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),
-                                 _F(MAILLE=('MASA4','MBSA4',),
+                                 _F(GROUP_MA=('MASA4','MBSA4',),
                                     CARA='M_TR_D_N',
                                     VALE=(316970.0,1846700.0,1844020.0,3690720.0,0.0,0.0,0.0,0.0,0.0,0.0,),),
-                                 _F(MAILLE=('MASA4','MBSA4',),
+                                 _F(GROUP_MA=('MASA4','MBSA4',),
                                     CARA='K_TR_D_N',
                                     VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),
                                  ),);
@@ -129,7 +129,7 @@ CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
 
 
 CHA2=AFFE_CHAR_MECA(MODELE=MODELE,
-                    FORCE_NODALE=_F(NOEUD='NA1',
+                    FORCE_NODALE=_F(GROUP_NO='NA1',
                                     FY=10000.0,),)
 
 
@@ -229,7 +229,7 @@ dyph = DYNA_LINE(MODELE=MODELE,
 DYA1_2=RECU_FONCTION(RESULTAT=dyph,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DY',
-                     NOEUD='NA1',)
+                     GROUP_NO='NA1',)
 
 MDYA1_2=CALC_FONCTION(EXTRACTION=_F(FONCTION=DYA1_2,
                                     PARTIE='MODULE',),)
@@ -237,7 +237,7 @@ MDYA1_2=CALC_FONCTION(EXTRACTION=_F(FONCTION=DYA1_2,
 DYB1_2=RECU_FONCTION(RESULTAT=dyph,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DY',
-                     NOEUD='NB1',)
+                     GROUP_NO='NB1',)
 
 MDYB1_2=CALC_FONCTION(EXTRACTION=_F(FONCTION=DYB1_2,
                                     PARTIE='MODULE',),)

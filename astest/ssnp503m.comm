@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -116,18 +116,18 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                    INFO=1);
 
 CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
-                   DDL_IMPO=(_F(NOEUD=('N21','N22','N23','N24'),
+                   DDL_IMPO=(_F(GROUP_NO=('N21','N22','N23','N24'),
                                 DX=DEPX,
                                 ),
                              ),
                    # CONDITIONS IMPOSEES A LA MAIN
                    # POUR LES MAILLES XFEM INFERIEURE
                    # ET SUPERIEURE
-                   LIAISON_DDL=(_F(NOEUD=('N20','N20'),
+                   LIAISON_DDL=(_F(GROUP_NO=('N20','N20'),
                                    DDL=('DX','H1X'),
                                    COEF_MULT=(1,-2),
                                    COEF_IMPO=DEPX),
-                                _F(NOEUD=('N25','N25'),
+                                _F(GROUP_NO=('N25','N25'),
                                    DDL=('DX','H1X'),
                                    COEF_MULT=(1,2),
                                    COEF_IMPO=DEPX),

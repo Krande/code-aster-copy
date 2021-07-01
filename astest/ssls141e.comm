@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -223,7 +223,7 @@ tb1  = CREA_TABLE (
                 NUME_ORDRE=(1,),
                                 RESULTAT=RESU2A,
                                 NOM_CHAM='SIEF_ELGA',
-                                MAILLE='M801',
+                                GROUP_MA='M801',
                                 ),
                   );
 IMPR_TABLE ( TABLE = tb1)
@@ -236,7 +236,7 @@ tb3  = CREA_TABLE (
                 NUME_ORDRE=(1,),
                                 RESULTAT=RESU2A,
                                 NOM_CHAM='SIEF_ELGA',
-                                MAILLE='M880',
+                                GROUP_MA='M880',
                                 ),
                  );
 IMPR_TABLE ( TABLE = tb3)

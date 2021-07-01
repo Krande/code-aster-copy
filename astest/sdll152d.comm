@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,10 +32,10 @@ DEBUT( CODE=_F(NIV_PUB_WEB='INTRANET'),DEBUG=_F(SDVERI='NON'))
 
 TUBE=LIRE_MAILLAGE(FORMAT='ASTER')
 MODI_MAILLAGE(reuse=TUBE, MAILLAGE=TUBE,
-              ABSC_CURV=_F(NOEUD_ORIG='N001',
+              ABSC_CURV=_F(GROUP_NO_ORIG='N001',
                            TOUT='OUI'))
 
-DEFI_GROUP(reuse=TUBE, MAILLAGE=TUBE, CREA_GROUP_NO=_F(NOM='GN100', NOEUD='N100'))
+DEFI_GROUP(reuse=TUBE, MAILLAGE=TUBE, CREA_GROUP_NO=_F(NOM='GN100', GROUP_NO='N100'))
 
 MODEL=AFFE_MODELE(MAILLAGE=TUBE,
                    AFFE    =(_F(GROUP_MA     = 'BEAM',
@@ -62,7 +62,7 @@ DEFI_FICHIER(ACTION='ASSOCIER', FICHIER=KA, ACCES='NEW', UNITE=71)
 
 TYPEFL1=DEFI_FLUI_STRU(GRAPPE=_F(COUPLAGE = 'OUI',
                                  GRAPPE_2 = 'ASC_CEN',
-                                 NOEUD = 'N100',
+                                 GROUP_NO = 'N100',
                                  CARA_ELEM = CARA,
                                  MODELE = MODEL,
                                  COEF_MASS_AJOU = 0.,
@@ -80,7 +80,7 @@ TYPEFL2=DEFI_FLUI_STRU(GRAPPE=_F(COUPLAGE = 'OUI',
 
 TYPEFL3=DEFI_FLUI_STRU(GRAPPE=_F(COUPLAGE = 'OUI',
                                  GRAPPE_2 = 'DES_CEN',
-                                 NOEUD = 'N100',
+                                 GROUP_NO = 'N100',
                                  CARA_ELEM = CARA,
                                  MODELE = MODEL,
                                  COEF_MASS_AJOU = 0.,
@@ -88,7 +88,7 @@ TYPEFL3=DEFI_FLUI_STRU(GRAPPE=_F(COUPLAGE = 'OUI',
 
 TYPEFL4=DEFI_FLUI_STRU(GRAPPE=_F(COUPLAGE = 'OUI',
                                  GRAPPE_2 = 'DES_EXC',
-                                 NOEUD = 'N100',
+                                 GROUP_NO = 'N100',
                                  CARA_ELEM = CARA,
                                  MODELE = MODEL,
                                  COEF_MASS_AJOU = 0.,
@@ -182,7 +182,7 @@ SPECTRE1=DEFI_SPEC_TURB(
                    RHO_FLUI = 1000.,
                    CARA_ELEM = CARA,
                    MODELE = MODEL,
-                   NOEUD = 'N100',)
+                   GROUP_NO = 'N100',)
 )
 
 SPRJ1=PROJ_SPEC_BASE(
@@ -211,7 +211,7 @@ RPP01=REST_SPEC_PHYS(
                  NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                    OPTION='TOUT_TOUT',
-                    NOEUD=('N024', )
+                    GROUP_NO=('N024', )
                 )
 
 DYN01=POST_DYNA_ALEA(INTERSPECTRE=_F(
@@ -303,7 +303,7 @@ RPP02=REST_SPEC_PHYS(
                  NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                    OPTION='TOUT_TOUT',
-                    NOEUD=('N024', )
+                    GROUP_NO=('N024', )
                 )
 
 DYN02=POST_DYNA_ALEA(INTERSPECTRE=_F(
@@ -366,7 +366,7 @@ SPECTRE3=DEFI_SPEC_TURB(
                    RHO_FLUI = 1000.,
                    CARA_ELEM = CARA,
                    MODELE = MODEL,
-                   NOEUD = 'N100',)
+                   GROUP_NO = 'N100',)
 )
 
 SPRJ3=PROJ_SPEC_BASE(
@@ -395,7 +395,7 @@ RPP03=REST_SPEC_PHYS(
                  NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                    OPTION='TOUT_TOUT',
-                    NOEUD=('N024', )
+                    GROUP_NO=('N024', )
                 )
 
 DYN03=POST_DYNA_ALEA(INTERSPECTRE=_F(
@@ -457,7 +457,7 @@ SPECTRE4=DEFI_SPEC_TURB(
                    RHO_FLUI = 1000.,
                    CARA_ELEM = CARA,
                    MODELE = MODEL,
-                   NOEUD = 'N100',)
+                   GROUP_NO = 'N100',)
 )
 
 SPRJ4=PROJ_SPEC_BASE(
@@ -486,7 +486,7 @@ RPP04=REST_SPEC_PHYS(
                  NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                    OPTION='TOUT_TOUT',
-                    NOEUD=('N024', )
+                    GROUP_NO=('N024', )
                 )
 
 DYN04=POST_DYNA_ALEA(INTERSPECTRE=_F(

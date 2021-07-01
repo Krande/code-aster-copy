@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ CL=AFFE_CHAR_MECA(MODELE=MOD,
 RACC=AFFE_CHAR_MECA(MODELE=MOD,
                     LIAISON_ELEM=_F(OPTION='3D_POU',
                                     GROUP_MA_1='RACC',
-                                    NOEUD_2='N1332',),);
+                                    GROUP_NO_2='N1332',),);
 
 ASSEMBLAGE(MODELE=MOD,
            CHAM_MATER=CHMAT,

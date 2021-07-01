@@ -37,19 +37,19 @@ MAILLAGE = LIRE_MAILLAGE(FORMAT='IDEAS',
 
 #
 MAILLAGE=DEFI_GROUP( reuse=MAILLAGE,  MAILLAGE=MAILLAGE,CREA_GROUP_NO=(
-                          _F( NOM = 'ND2',  NOEUD = 'N42'),
-                          _F( NOM = 'ND3',  NOEUD = 'N31'),
-                          _F( NOM = 'ND4',  NOEUD = 'N36'),
-                          _F( NOM = 'ND5',  NOEUD = 'N22'),
-                          _F( NOM = 'ND6',  NOEUD = 'N28'),
-                          _F( NOM = 'ND7',  NOEUD = 'N26'),
-                          _F( NOM = 'ND8',  NOEUD = 'N24'),
-                          _F( NOM = 'ND9',  NOEUD = 'N11'),
-                          _F( NOM = 'ND10', NOEUD = 'N16'),
-                          _F( NOM = 'ND11', NOEUD = 'N2'),
-                          _F( NOM = 'ND12', NOEUD = 'N8'),
-                          _F( NOM = 'ND13', NOEUD = 'N6'),
-                          _F( NOM = 'ND14', NOEUD = 'N4'))
+                          _F( NOM = 'ND2',  GROUP_NO = 'N42'),
+                          _F( NOM = 'ND3',  GROUP_NO = 'N31'),
+                          _F( NOM = 'ND4',  GROUP_NO = 'N36'),
+                          _F( NOM = 'ND5',  GROUP_NO = 'N22'),
+                          _F( NOM = 'ND6',  GROUP_NO = 'N28'),
+                          _F( NOM = 'ND7',  GROUP_NO = 'N26'),
+                          _F( NOM = 'ND8',  GROUP_NO = 'N24'),
+                          _F( NOM = 'ND9',  GROUP_NO = 'N11'),
+                          _F( NOM = 'ND10', GROUP_NO = 'N16'),
+                          _F( NOM = 'ND11', GROUP_NO = 'N2'),
+                          _F( NOM = 'ND12', GROUP_NO = 'N8'),
+                          _F( NOM = 'ND13', GROUP_NO = 'N6'),
+                          _F( NOM = 'ND14', GROUP_NO = 'N4'))
                         )
 
 #

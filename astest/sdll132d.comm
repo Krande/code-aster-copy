@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -126,7 +126,7 @@ INER=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
 DEPL = AFFE_CHAR_MECA(
    MODELE= MO,
    DDL_IMPO= (
-      _F( NOEUD= 'G00802',
+      _F( GROUP_NO= 'G00802',
         DX =  0.000000e+00,
         DY =  0.000000e+00,
         DZ =  0.000000e+00,
@@ -134,7 +134,7 @@ DEPL = AFFE_CHAR_MECA(
         DRY=  0.000000e+00,
         DRZ=  0.000000e+00,
          ),
-      _F( NOEUD= 'G00702',
+      _F( GROUP_NO= 'G00702',
         DX =  0.000000e+00,
         DY =  0.000000e+00,
         DZ =  0.000000e+00,
@@ -142,7 +142,7 @@ DEPL = AFFE_CHAR_MECA(
         DRY=  0.000000e+00,
         DRZ=  0.000000e+00,
          ),
-      _F( NOEUD= 'G00401',
+      _F( GROUP_NO= 'G00401',
         DX =  0.000000e+00,
         DY =  0.000000e+00,
         DZ =  0.000000e+00,
@@ -150,7 +150,7 @@ DEPL = AFFE_CHAR_MECA(
         DRY=  0.000000e+00,
         DRZ=  0.000000e+00,
          ),
-      _F( NOEUD= 'G00302',
+      _F( GROUP_NO= 'G00302',
         DX =  0.000000e+00,
         DY =  0.000000e+00,
         DZ =  0.000000e+00,

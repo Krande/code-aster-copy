@@ -1,3 +1,7 @@
+ TITRE
+ME-30-JUIN-2021 09:21:54                                                        
+ FINSF
+ %
  COOR_2D
  N1        0.00000000000000E+00  0.00000000000000E+00
  N2        1.00000000000000E+00  0.00000000000000E+00
@@ -6,56 +10,69 @@
  FINSF
  %
  QUAD4   
-  M1      N1       N2       N3       N4      
+ M1       N1       N2       N3       N4      
  FINSF
  %
  SEG2    
-  M2      N4       N1      
-  M3      N1       N2      
-  M4      N2       N3      
-  M5      N3       N4      
+ M2       N4       N1      
+ M3       N1       N2      
+ M4       N2       N3      
+ M5       N3       N4      
  FINSF
  %
  GROUP_NO
- D        N4      
+ D                       
+ N4      
  FINSF
  %
  GROUP_NO
- C        N3      
+ C                       
+ N3      
  FINSF
  %
  GROUP_NO
- A        N1      
+ A                       
+ N1      
  FINSF
  %
  GROUP_NO
- B        N2      
+ B                       
+ N2      
+ FINSF
+ %
+ GROUP_NO
+ N1                      
+ N1      
  FINSF
  %
  GROUP_MA
-   AB      
+ AB                      
  M3      
  FINSF
  %
  GROUP_MA
-   BC      
+ BC                      
  M4      
  FINSF
  %
  GROUP_MA
-   CD      
+ CD                      
  M5      
  FINSF
  %
  GROUP_MA
-   DA      
+ DA                      
  M2      
  FINSF
  %
  GROUP_MA
-   TOUT      
+ TOUT                    
+ M1       M2       M3       M4       M5      
+ FINSF
+ %
+ GROUP_MA
+ M1                      
  M1      
- M2       M3       M4       M5      
  FINSF
  %
  FIN

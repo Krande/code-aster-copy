@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -191,7 +191,7 @@ U = MACRO_BASCULE_SCHEMA(MODELE=MODE,
 VITECONT=RECU_FONCTION(RESULTAT=U,
                        NOM_CHAM='VITE',
                        NOM_CMP='DZ',
-                       NOEUD='N5',
+                       GROUP_NO='N5',
                        TITRE='VITE',)
 
 VC=CALC_FONCTION(COMB=_F(FONCTION=VITECONT,
@@ -202,25 +202,25 @@ MVC=CALC_FONCTION(INTEGRE=_F(FONCTION=VC,),)
 DE100=RECU_FONCTION(RESULTAT=U,
                     NOM_CHAM='DEPL',
                     NOM_CMP='DZ',
-                    NOEUD='N100',
+                    GROUP_NO='N100',
                     TITRE='DEPL',)
 
 VI100=RECU_FONCTION(RESULTAT=U,
                     NOM_CHAM='VITE',
                     NOM_CMP='DZ',
-                    NOEUD='N100',
+                    GROUP_NO='N100',
                     TITRE='VITE',)
 
 DE5=RECU_FONCTION(RESULTAT=U,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  NOEUD='N5',
+                  GROUP_NO='N5',
                   TITRE='DEPL',)
 
 VI5=RECU_FONCTION(RESULTAT=U,
                   NOM_CHAM='VITE',
                   NOM_CMP='DZ',
-                  NOEUD='N5',
+                  GROUP_NO='N5',
                   TITRE='VITE',)
 
 

@@ -50,6 +50,20 @@ THERDEP=LIRE_RESU(
                    INFO      = 2,
                    TYPE_RESU = 'EVOL_THER' )
 
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M16', MAILLE = 'M16'),
+                                     ),
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N1', NOEUD = 'N1'),
+                                        _F( NOM = 'N685', NOEUD = 'N685'),
+                                        _F( NOM = 'N1240', NOEUD = 'N1240'),
+                                        _F( NOM = 'N16', NOEUD = 'N16'),
+                                        _F( NOM = 'N96', NOEUD = 'N96'),
+                                        _F( NOM = 'N377', NOEUD = 'N377'),
+                                     ),
+         )
+
 
 
 #
@@ -111,7 +125,7 @@ _F(TOUT='OUI',EVOL=THERDEP,NOM_VARC='TEMP',PROL_GAUCHE='CONSTANT',
 MECATERM=AFFE_CHAR_MECA(    MODELE=MODEMECA,
                       DDL_IMPO=(
                       _F( GROUP_NO = 'GNP1',  DX = 0.0),
-                      _F( NOEUD = 'N1',    DY = 0.0))
+                      _F( GROUP_NO = 'N1',    DY = 0.0))
                          )
 
 L_INST=DEFI_LIST_REEL(    DEBUT=0.0,INTERVALLE=(
@@ -141,22 +155,22 @@ CALC_CHAMP(reuse=MECATER,RESULTAT=MECATER,LIST_INST=L_INST,CONTRAINTE=('SIGM_ELN
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=MECATER,
                    NOM_CHAM='DEPL',
-                   NOEUD='N96',
+                   GROUP_NO='N96',
                    NOM_CMP='DX',
                    VALE_CALC=-1.2492318842756E-4,),
                 _F(NUME_ORDRE=1,
                    RESULTAT=MECATER,
                    NOM_CHAM='DEPL',
-                   NOEUD='N96',
+                   GROUP_NO='N96',
                    NOM_CMP='DY',
                    VALE_CALC=4.2661610881366E-05,),
                 _F(NUME_ORDRE=21,
                    RESULTAT=MECATER,
                    NOM_CHAM='SIGM_ELNO',
-                   NOEUD='N377',
+                   GROUP_NO='N377',
                    NOM_CMP='SIYY',
                    VALE_CALC=2.5622778110179E5,
-                   MAILLE='M16',),
+                   GROUP_MA='M16',),
                 ),
           )
 
@@ -181,15 +195,15 @@ THER_1=LIRE_CHAMP( MAILLAGE=MA,
                    )
 
 
-TEST_RESU(CHAM_NO=(_F(NOEUD='N1240',
+TEST_RESU(CHAM_NO=(_F(GROUP_NO='N1240',
                       NOM_CMP='TEMP',
                       CHAM_GD=THER_1,
                       VALE_CALC=1.0,),
-                   _F(NOEUD='N685',
+                   _F(GROUP_NO='N685',
                       NOM_CMP='TEMP',
                       CHAM_GD=THER_1,
                       VALE_CALC=1.0,),
-                   _F(NOEUD='N16',
+                   _F(GROUP_NO='N16',
                       NOM_CMP='TEMP',
                       CHAM_GD=THER_1,
                       VALE_CALC=1.0,),

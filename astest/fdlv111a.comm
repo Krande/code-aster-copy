@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -228,7 +228,7 @@ TEST_TABLE(
 TEST_RESU(RESU=_F(NUME_ORDRE=960,
                   RESULTAT=DYN,
                   NOM_CHAM='VITE',
-                  NOEUD='N46',
+                  GROUP_NO='N46',
                   NOM_CMP='DY',
                   VALE_CALC=-1.41484969548E-05,
                   ),
@@ -256,19 +256,19 @@ TEST_TABLE(
 # --- FIN TEST SUR LES ENERGIES -----------------------------------------------
 
 PN16=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
-                        RESULTAT=DYN,   NOEUD='N16',
+                        RESULTAT=DYN,   GROUP_NO='N16',
                         NOM_CHAM='DEPL',
                         NOM_CMP='PRES'
                       )
 
 PN18=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
-                        RESULTAT=DYN,   NOEUD='N18',
+                        RESULTAT=DYN,   GROUP_NO='N18',
                         NOM_CHAM='DEPL',
                         NOM_CMP='PRES'
                       )
 
 PN47=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
-                        RESULTAT=DYN,   NOEUD='N47',
+                        RESULTAT=DYN,   GROUP_NO='N47',
                         NOM_CHAM='DEPL',
                         NOM_CMP='PRES'
                       )
@@ -430,19 +430,19 @@ TEST_TABLE(
 # --- FIN TEST SUR LES ENERGIES -----------------------------------------------
 
 PNA16=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                        RESULTAT=DYNA,   NOEUD='N16',
+                        RESULTAT=DYNA,   GROUP_NO='N16',
                         NOM_CHAM='DEPL',
                         NOM_CMP='PRES'
                       )
 
 PNA18=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                        RESULTAT=DYNA,   NOEUD='N18',
+                        RESULTAT=DYNA,   GROUP_NO='N18',
                         NOM_CHAM='DEPL',
                         NOM_CMP='PRES'
                       )
 
 PNA47=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                        RESULTAT=DYNA,   NOEUD='N47',
+                        RESULTAT=DYNA,   GROUP_NO='N47',
                         NOM_CHAM='DEPL',
                         NOM_CMP='PRES'
                       )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -276,7 +276,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='MXX',
                   VALE_CALC=-2.50000000E+05,
                   VALE_REFE=-2.50000E5,
-                  MAILLE='M10',),
+                  GROUP_MA='M10',),
           )
 
 # Point B
@@ -288,7 +288,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='MXX',
                   VALE_CALC=-5.00000000E+05,
                   VALE_REFE=-5.E5,
-                  MAILLE='M12',),
+                  GROUP_MA='M12',),
           )
 
 #---------------------------------------------------------------------------------------
@@ -301,15 +301,15 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 CACOQU=CREA_CHAMP(TYPE_CHAM='CART_CACOQU', OPERATION='EXTR', CARA_ELEM=CARA,
                NOM_CHAM='.CARCOQUE', INFO=2,)
 TEST_RESU(CARTE=_F(REFERENCE='ANALYTIQUE', NOM_CMP='EP',  VALE_REFE=8.0E-2,
-          VALE_CALC=8.0E-2, MAILLE='M14', CHAM_GD=CACOQU,))
+          VALE_CALC=8.0E-2, GROUP_MA='M14', CHAM_GD=CACOQU,))
 TEST_RESU(CARTE=_F(REFERENCE='ANALYTIQUE', NOM_CMP='KAPPA', VALE_REFE=8.333333E-01,
-          VALE_CALC=8.333333E-01, MAILLE='M14', CHAM_GD=CACOQU,))
+          VALE_CALC=8.333333E-01, GROUP_MA='M14', CHAM_GD=CACOQU,))
 
 # On verifie egalement que la carte peut etre imprimee au format MED pour etre visualisee :
 IMPR_RESU(FORMAT='MED',  UNITE=80, RESU=(_F(CHAM_GD=CACOQU,)))
 
 # On verifie egalement que la carte extraite peut etre transformee en table :
-TABCOQ=CREA_TABLE(RESU=_F(CHAM_GD=CACOQU, MAILLE=('M13','M14'), TOUT_CMP='OUI',),)
+TABCOQ=CREA_TABLE(RESU=_F(CHAM_GD=CACOQU, GROUP_MA=('M13','M14'), TOUT_CMP='OUI',),)
 #IMPR_TABLE(TABLE=TABCOQ)
 TEST_TABLE(REFERENCE='ANALYTIQUE',NOM_PARA='EP',TABLE=TABCOQ,
            FILTRE=_F(NOM_PARA='MAILLE',VALE_K='M14',),
@@ -338,7 +338,7 @@ TEST_RESU(CARTE=_F(REFERENCE='ANALYTIQUE', NOM_CMP='FZ', VALE_CALC=-2.E5, VALE_R
           GROUP_MA='MA13', CHAM_GD=F1D3D,))
 
 # On verifie egalement que la carte extraite peut etre transformee en table :
-TABF13=CREA_TABLE(RESU=_F(CHAM_GD=F1D3D, MAILLE=('M13','M14'), TOUT_CMP='OUI',),)
+TABF13=CREA_TABLE(RESU=_F(CHAM_GD=F1D3D, GROUP_MA=('M13','M14'), TOUT_CMP='OUI',),)
 #IMPR_TABLE(TABLE=TABF13)
 TEST_TABLE(REFERENCE='ANALYTIQUE',NOM_PARA='FZ',TABLE=TABF13,
            FILTRE=_F(NOM_PARA='MAILLE',VALE_K='M13',),
@@ -389,12 +389,12 @@ RES0=MECA_STATIQUE(MODELE=MODEL,
                           _F(CHARGE=FORCE,),),);
 RESU=CALC_CHAMP(reuse=RESU, RESULTAT=RESU,ENERGIE=('EPOT_ELEM',))
 RES0=CALC_CHAMP(reuse=RES0, RESULTAT=RES0,ENERGIE=('EPOT_ELEM',))
-IMPR_RESU(FORMAT="RESULTAT",UNITE=6, RESU=_F(RESULTAT=RESU,NOM_CHAM='EPOT_ELEM',NUME_ORDRE=1,MAILLE='M1'))
-IMPR_RESU(FORMAT="RESULTAT",UNITE=6, RESU=_F(RESULTAT=RES0,NOM_CHAM='EPOT_ELEM',NUME_ORDRE=1,MAILLE='M1'))
+IMPR_RESU(FORMAT="RESULTAT",UNITE=6, RESU=_F(RESULTAT=RESU,NOM_CHAM='EPOT_ELEM',NUME_ORDRE=1,GROUP_MA='M1'))
+IMPR_RESU(FORMAT="RESULTAT",UNITE=6, RESU=_F(RESULTAT=RES0,NOM_CHAM='EPOT_ELEM',NUME_ORDRE=1,GROUP_MA='M1'))
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='EPOT_ELEM',
                   NOM_CMP='TOTALE',
-                  MAILLE = 'M1',
+                  GROUP_MA = 'M1',
                   #REFERENCE='AUTRE_ASTER',
                   RESULTAT=RES0,
                   VALE_CALC= 2.52206300715673E+03,
@@ -403,7 +403,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='EPOT_ELEM',
                   NOM_CMP='TOTALE',
-                  MAILLE = 'M1',
+                  GROUP_MA = 'M1',
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=RESU,
                   VALE_CALC= 2.52206300715673E+03,

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -159,6 +159,13 @@ TABL_MAS=POST_ELEM(MASS_INER= _F(GROUP_MA=('FLUID1','FLUID2','FACELATE','IFLUSTR
 #
 #-----------------------------------------------------------------------------------
 #
+
+MAILLA2 = DEFI_GROUP( reuse = MAILLA2, MAILLAGE = MAILLA2,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N3119', NOEUD = 'N3119'),
+                                        _F( NOM = 'N145', NOEUD = 'N145'),
+                                     ),
+         )
 
 vnorFunc = DEFI_CONSTANTE(VALE=0.0)
 CONDLIM=AFFE_CHAR_MECA_F(MODELE=MODELE,
@@ -420,7 +427,7 @@ RESUST=DYNA_NON_LINE(MODELE=MODELEST,
 TEST_RESU(RESU=_F(INST=0.80000000000000004,
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
-                  NOEUD='N145',
+                  GROUP_NO='N145',
                   NOM_CMP='DX',
                   VALE_CALC=0.000516241366017,
                   TOLE_MACHINE=5.0000000000000004E-06,
@@ -431,7 +438,7 @@ TEST_RESU(RESU=_F(INST=0.80000000000000004,
 TEST_RESU(RESU=_F(INST=1.3999999999999999,
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
-                  NOEUD='N145',
+                  GROUP_NO='N145',
                   NOM_CMP='DX',
                   VALE_CALC=0.000149700312457,
                   TOLE_MACHINE=6.9999999999999999E-06,
@@ -442,7 +449,7 @@ TEST_RESU(RESU=_F(INST=1.3999999999999999,
 TEST_RESU(RESU=_F(INST=2.0,
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
-                  NOEUD='N145',
+                  GROUP_NO='N145',
                   NOM_CMP='DX',
                   VALE_CALC=-0.000239275068185,
                   TOLE_MACHINE=5.0000000000000004E-06,
@@ -453,7 +460,7 @@ TEST_RESU(RESU=_F(INST=2.0,
 TEST_RESU(RESU=_F(INST=1.0,
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
-                  NOEUD='N3119',
+                  GROUP_NO='N3119',
                   NOM_CMP='DX',
                   VALE_CALC=-0.000997363322829,
                   TOLE_MACHINE=5.0000000000000004E-06,
@@ -464,7 +471,7 @@ TEST_RESU(RESU=_F(INST=1.0,
 TEST_RESU(RESU=_F(INST=1.6000000000000001,
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
-                  NOEUD='N3119',
+                  GROUP_NO='N3119',
                   NOM_CMP='DX',
                   VALE_CALC=-0.000878550646071,
                   TOLE_MACHINE=5.0000000000000004E-06,
@@ -475,7 +482,7 @@ TEST_RESU(RESU=_F(INST=1.6000000000000001,
 TEST_RESU(RESU=_F(INST=2.0,
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
-                  NOEUD='N3119',
+                  GROUP_NO='N3119',
                   NOM_CMP='DX',
                   VALE_CALC=-0.000239292606743,
                   TOLE_MACHINE=5.0000000000000004E-06,

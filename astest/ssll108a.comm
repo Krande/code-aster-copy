@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,9 +52,9 @@ CELEM=AFFE_CARA_ELEM(   MODELE=MOD,
 CH=AFFE_CHAR_MECA(
             MODELE=MOD,
 #
-     DDL_IMPO=_F( NOEUD = 'P1',  DX = 0., DY = 0., ),
+     DDL_IMPO=_F( GROUP_NO = 'P1',  DX = 0., DY = 0., ),
 #
-     FORCE_NODALE=_F( NOEUD = 'P11',  FX = 10.,)
+     FORCE_NODALE=_F( GROUP_NO = 'P11',  FX = 10.,)
                                        )
 
 
@@ -98,7 +98,7 @@ DEP2=STAT_NON_LINE(MODELE=MOD,
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=DEP2,
                    NOM_CHAM='DEPL',
-                   NOEUD='P6',
+                   GROUP_NO='P6',
                    NOM_CMP='DX',
                    VALE_CALC=0.050000000000000,
                    VALE_REFE=0.050000000000000003,
@@ -109,7 +109,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 _F(NUME_ORDRE=1,
                    RESULTAT=DEP2,
                    NOM_CHAM='DEPL',
-                   NOEUD='P11',
+                   GROUP_NO='P11',
                    NOM_CMP='DX',
                    VALE_CALC=0.100000000000000,
                    VALE_REFE=0.10000000000000001,
@@ -126,7 +126,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_REFE=10.0,
                    REFERENCE = 'ANALYTIQUE',
                    PRECISION=1.E-3,
-                   MAILLE='S10',),
+                   GROUP_MA='S10',),
                 _F(NUME_ORDRE=1,
                    POINT=1,
                    RESULTAT=DEP2,
@@ -136,11 +136,11 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_REFE=10.0,
                    REFERENCE = 'ANALYTIQUE',
                    PRECISION=1.E-3,
-                   MAILLE='S5',),
+                   GROUP_MA='S5',),
                 _F(NUME_ORDRE=1,
                    RESULTAT=DEP,
                    NOM_CHAM='DEPL',
-                   NOEUD='P6',
+                   GROUP_NO='P6',
                    NOM_CMP='DX',
                    VALE_CALC=0.050000000000000,
                    VALE_REFE=0.050000000000000003,
@@ -151,7 +151,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 _F(NUME_ORDRE=1,
                    RESULTAT=DEP,
                    NOM_CHAM='DEPL',
-                   NOEUD='P11',
+                   GROUP_NO='P11',
                    NOM_CMP='DX',
                    VALE_CALC=0.100000000000000,
                    VALE_REFE=0.10000000000000001,
@@ -168,7 +168,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_REFE=10.0,
                    REFERENCE = 'ANALYTIQUE',
                    PRECISION=1.E-3,
-                   MAILLE='S10',),
+                   GROUP_MA='S10',),
                 _F(NUME_ORDRE=1,
                    POINT=1,
                    RESULTAT=DEP,
@@ -178,7 +178,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_REFE=10.0,
                    REFERENCE = 'ANALYTIQUE',
                    PRECISION=1.E-3,
-                   MAILLE='S5',),
+                   GROUP_MA='S5',),
                 ),
           )
 

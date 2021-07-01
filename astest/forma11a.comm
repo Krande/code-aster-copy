@@ -75,7 +75,7 @@ IMPR_TABLE(TABLE=TABL_MAS);
 
 # CL D'ENCASTREMENT
 CH1=AFFE_CHAR_MECA(MODELE=MO,
-                   DDL_IMPO=_F(NOEUD='A',
+                   DDL_IMPO=_F(GROUP_NO='A',
                                DX=0.0,
                                DY=0.0,
                                DZ=0.0,

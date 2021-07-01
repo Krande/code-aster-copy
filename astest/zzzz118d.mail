@@ -1,68 +1,347 @@
-TITRE    
-ZZZZ118D : 49 MAILLES IDENTIQUES - UNITES MILLIMETRES
-FINSF
-%
-COOR_2D    N
-  N1        0.00000000E-03  0.10000000E-02
-  N2        0.10000000E-02  0.10000000E-02
-  N3        0.00000000E-03  0.00000000E-03
-  N4        0.10000000E-02  0.00000000E-03
-FINSF
-%
-QUAD4
-  M1     N3      N4      N2      N1
-  M2     N3      N4      N2      N1
-  M3     N3      N4      N2      N1
-  M4     N3      N4      N2      N1
-  M5     N3      N4      N2      N1
-  M6     N3      N4      N2      N1
-  M7     N3      N4      N2      N1
-  M8     N3      N4      N2      N1
-  M9     N3      N4      N2      N1
-  M10    N3      N4      N2      N1
-  M11    N3      N4      N2      N1
-  M12    N3      N4      N2      N1
-  M13    N3      N4      N2      N1
-  M14    N3      N4      N2      N1
-  M15    N3      N4      N2      N1
-  M16    N3      N4      N2      N1
-  M17    N3      N4      N2      N1
-  M18    N3      N4      N2      N1
-  M19    N3      N4      N2      N1
-  M20    N3      N4      N2      N1
-  M21    N3      N4      N2      N1
-  M22    N3      N4      N2      N1
-  M23    N3      N4      N2      N1
-  M24    N3      N4      N2      N1
-  M25    N3      N4      N2      N1
-  M26    N3      N4      N2      N1
-  M27    N3      N4      N2      N1
-  M28    N3      N4      N2      N1
-  M29    N3      N4      N2      N1
-  M30    N3      N4      N2      N1
-  M31    N3      N4      N2      N1
-  M32    N3      N4      N2      N1
-  M33    N3      N4      N2      N1
-  M34    N3      N4      N2      N1
-  M35    N3      N4      N2      N1
-  M36    N3      N4      N2      N1
-  M37    N3      N4      N2      N1
-  M38    N3      N4      N2      N1
-  M39    N3      N4      N2      N1
-  M40    N3      N4      N2      N1
-  M41    N3      N4      N2      N1
-  M42    N3      N4      N2      N1
-  M43    N3      N4      N2      N1
-  M44    N3      N4      N2      N1
-  M45    N3      N4      N2      N1
-  M46    N3      N4      N2      N1
-  M47    N3      N4      N2      N1
-  M48    N3      N4      N2      N1
-  M49    N3      N4      N2      N1
-  M50    N3      N4      N2      N1
-  M51    N3      N4      N2      N1
-  M52    N3      N4      N2      N1
-FINSF
-%
-
-FIN
+ TITRE
+ZZZZ118D : 49 MAILLES IDENTIQUES - UNITES MILLIMETRES                           
+ FINSF
+ %
+ COOR_2D
+ N1        0.00000000000000E+00  1.00000000000000E-03
+ N2        1.00000000000000E-03  1.00000000000000E-03
+ N3        0.00000000000000E+00  0.00000000000000E+00
+ N4        1.00000000000000E-03  0.00000000000000E+00
+ FINSF
+ %
+ QUAD4   
+ M1       N3       N4       N2       N1      
+ M2       N3       N4       N2       N1      
+ M3       N3       N4       N2       N1      
+ M4       N3       N4       N2       N1      
+ M5       N3       N4       N2       N1      
+ M6       N3       N4       N2       N1      
+ M7       N3       N4       N2       N1      
+ M8       N3       N4       N2       N1      
+ M9       N3       N4       N2       N1      
+ M10      N3       N4       N2       N1      
+ M11      N3       N4       N2       N1      
+ M12      N3       N4       N2       N1      
+ M13      N3       N4       N2       N1      
+ M14      N3       N4       N2       N1      
+ M15      N3       N4       N2       N1      
+ M16      N3       N4       N2       N1      
+ M17      N3       N4       N2       N1      
+ M18      N3       N4       N2       N1      
+ M19      N3       N4       N2       N1      
+ M20      N3       N4       N2       N1      
+ M21      N3       N4       N2       N1      
+ M22      N3       N4       N2       N1      
+ M23      N3       N4       N2       N1      
+ M24      N3       N4       N2       N1      
+ M25      N3       N4       N2       N1      
+ M26      N3       N4       N2       N1      
+ M27      N3       N4       N2       N1      
+ M28      N3       N4       N2       N1      
+ M29      N3       N4       N2       N1      
+ M30      N3       N4       N2       N1      
+ M31      N3       N4       N2       N1      
+ M32      N3       N4       N2       N1      
+ M33      N3       N4       N2       N1      
+ M34      N3       N4       N2       N1      
+ M35      N3       N4       N2       N1      
+ M36      N3       N4       N2       N1      
+ M37      N3       N4       N2       N1      
+ M38      N3       N4       N2       N1      
+ M39      N3       N4       N2       N1      
+ M40      N3       N4       N2       N1      
+ M41      N3       N4       N2       N1      
+ M42      N3       N4       N2       N1      
+ M43      N3       N4       N2       N1      
+ M44      N3       N4       N2       N1      
+ M45      N3       N4       N2       N1      
+ M46      N3       N4       N2       N1      
+ M47      N3       N4       N2       N1      
+ M48      N3       N4       N2       N1      
+ M49      N3       N4       N2       N1      
+ M50      N3       N4       N2       N1      
+ M51      N3       N4       N2       N1      
+ M52      N3       N4       N2       N1      
+ FINSF
+ %
+ GROUP_NO
+ N3                      
+ N3      
+ FINSF
+ %
+ GROUP_NO
+ N2                      
+ N2      
+ FINSF
+ %
+ GROUP_NO
+ N4                      
+ N4      
+ FINSF
+ %
+ GROUP_NO
+ N1                      
+ N1      
+ FINSF
+ %
+ GROUP_MA
+ M42                     
+ M42     
+ FINSF
+ %
+ GROUP_MA
+ M39                     
+ M39     
+ FINSF
+ %
+ GROUP_MA
+ M31                     
+ M31     
+ FINSF
+ %
+ GROUP_MA
+ M5                      
+ M5      
+ FINSF
+ %
+ GROUP_MA
+ M8                      
+ M8      
+ FINSF
+ %
+ GROUP_MA
+ M38                     
+ M38     
+ FINSF
+ %
+ GROUP_MA
+ M3                      
+ M3      
+ FINSF
+ %
+ GROUP_MA
+ M48                     
+ M48     
+ FINSF
+ %
+ GROUP_MA
+ M44                     
+ M44     
+ FINSF
+ %
+ GROUP_MA
+ M45                     
+ M45     
+ FINSF
+ %
+ GROUP_MA
+ M35                     
+ M35     
+ FINSF
+ %
+ GROUP_MA
+ M20                     
+ M20     
+ FINSF
+ %
+ GROUP_MA
+ M30                     
+ M30     
+ FINSF
+ %
+ GROUP_MA
+ M6                      
+ M6      
+ FINSF
+ %
+ GROUP_MA
+ M9                      
+ M9      
+ FINSF
+ %
+ GROUP_MA
+ M17                     
+ M17     
+ FINSF
+ %
+ GROUP_MA
+ M13                     
+ M13     
+ FINSF
+ %
+ GROUP_MA
+ M23                     
+ M23     
+ FINSF
+ %
+ GROUP_MA
+ M51                     
+ M51     
+ FINSF
+ %
+ GROUP_MA
+ M37                     
+ M37     
+ FINSF
+ %
+ GROUP_MA
+ M1                      
+ M1      
+ FINSF
+ %
+ GROUP_MA
+ M4                      
+ M4      
+ FINSF
+ %
+ GROUP_MA
+ M15                     
+ M15     
+ FINSF
+ %
+ GROUP_MA
+ M22                     
+ M22     
+ FINSF
+ %
+ GROUP_MA
+ M10                     
+ M10     
+ FINSF
+ %
+ GROUP_MA
+ M34                     
+ M34     
+ FINSF
+ %
+ GROUP_MA
+ M36                     
+ M36     
+ FINSF
+ %
+ GROUP_MA
+ M47                     
+ M47     
+ FINSF
+ %
+ GROUP_MA
+ M49                     
+ M49     
+ FINSF
+ %
+ GROUP_MA
+ M12                     
+ M12     
+ FINSF
+ %
+ GROUP_MA
+ M11                     
+ M11     
+ FINSF
+ %
+ GROUP_MA
+ M27                     
+ M27     
+ FINSF
+ %
+ GROUP_MA
+ M29                     
+ M29     
+ FINSF
+ %
+ GROUP_MA
+ M21                     
+ M21     
+ FINSF
+ %
+ GROUP_MA
+ M33                     
+ M33     
+ FINSF
+ %
+ GROUP_MA
+ M7                      
+ M7      
+ FINSF
+ %
+ GROUP_MA
+ M25                     
+ M25     
+ FINSF
+ %
+ GROUP_MA
+ M16                     
+ M16     
+ FINSF
+ %
+ GROUP_MA
+ M26                     
+ M26     
+ FINSF
+ %
+ GROUP_MA
+ M46                     
+ M46     
+ FINSF
+ %
+ GROUP_MA
+ M52                     
+ M52     
+ FINSF
+ %
+ GROUP_MA
+ M32                     
+ M32     
+ FINSF
+ %
+ GROUP_MA
+ M41                     
+ M41     
+ FINSF
+ %
+ GROUP_MA
+ M24                     
+ M24     
+ FINSF
+ %
+ GROUP_MA
+ M43                     
+ M43     
+ FINSF
+ %
+ GROUP_MA
+ M28                     
+ M28     
+ FINSF
+ %
+ GROUP_MA
+ M2                      
+ M2      
+ FINSF
+ %
+ GROUP_MA
+ M18                     
+ M18     
+ FINSF
+ %
+ GROUP_MA
+ M50                     
+ M50     
+ FINSF
+ %
+ GROUP_MA
+ M40                     
+ M40     
+ FINSF
+ %
+ GROUP_MA
+ M14                     
+ M14     
+ FINSF
+ %
+ GROUP_MA
+ M19                     
+ M19     
+ FINSF
+ %
+ FIN

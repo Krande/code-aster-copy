@@ -1,23 +1,34 @@
+ TITRE
+ME-30-JUIN-2021 09:21:54                                                        
+ FINSF
+ %
  COOR_2D
  N1        0.00000000000000E+00  0.00000000000000E+00
  N4        0.00000000000000E+00  1.00000000000000E+00
- N6        0.00000000000000E+00  0.50000000000000E+00
+ N6        0.00000000000000E+00  5.00000000000000E-01
  FINSF
  %
  SEG3    
-  M1      N1  N4  N6     
+ M1       N1       N4       N6      
  FINSF
  %
  GROUP_NO
- A        N1      
+ A                       
+ N1      
  FINSF
  %
  GROUP_NO
- B        N4      
+ B                       
+ N4      
  FINSF
  %
  GROUP_MA
-   TOUT      
+ TOUT                    
+ M1      
+ FINSF
+ %
+ GROUP_MA
+ M1                      
  M1      
  FINSF
  %

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ MAYA=LIRE_MAILLAGE(FORMAT="ASTER", )
 
 STRUCTUR=AFFE_MODELE(    MAILLAGE=MAYA,
                                
-                                    AFFE=_F(  MAILLE = 'M1',
+                                    AFFE=_F(  GROUP_MA = 'M1',
                                       PHENOMENE = 'MECANIQUE', 
                                       MODELISATION = 'DIS_TR'))
 
@@ -38,12 +38,12 @@ STRUCTUR=AFFE_MODELE(    MAILLAGE=MAYA,
 CARA=AFFE_CARA_ELEM(    MODELE=STRUCTUR,DISCRET=(
 
              _F(  CARA = 'K_TR_D_N',
-                       MAILLE = 'M1',
+                       GROUP_MA = 'M1',
                        REPERE = 'GLOBAL',
                   VALE = ( 160.,180.,1280.,180.,1280.,1960.,)),
 
                      _F(  CARA = 'M_TR_D_N',
-                       MAILLE = 'M1',      
+                       GROUP_MA = 'M1',      
                        REPERE = 'GLOBAL', 
                   VALE = ( 10.,10.,10.,10.,0.,0.,0.,0.,0.,0., )))
 

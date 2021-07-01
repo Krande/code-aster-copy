@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -85,6 +85,15 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
                IGNORE_ALARM=('PREPOST4_27')),
 
 CUBE = LIRE_MAILLAGE(FORMAT='MED', )
+
+CUBE = DEFI_GROUP( reuse = CUBE, MAILLAGE = CUBE,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M60', MAILLE = 'M60'),
+                                     ),
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N1', NOEUD = 'N1'),
+                                     ),
+         )
 
 CUBE=DEFI_GROUP(reuse = CUBE,
                 ALARME='OUI',
@@ -246,7 +255,7 @@ SOL_NL = CALC_CHAMP(reuse=SOL_NL,
                     DEFORMATION=('EPSI_NOEU','EPSP_NOEU'),);
 
 TABSIGM=POST_RELEVE_T(ACTION=_F(INTITULE='SIGMA_XX',
-                                NOEUD = 'N1',
+                                GROUP_NO = 'N1',
                                 RESULTAT=SOL_NL,
                                 TOUT_ORDRE='OUI',
                                 TOUT_CMP='OUI',
@@ -255,7 +264,7 @@ TABSIGM=POST_RELEVE_T(ACTION=_F(INTITULE='SIGMA_XX',
 IMPR_TABLE(TABLE=TABSIGM);
 
 TABEPS=POST_RELEVE_T(ACTION=_F(INTITULE='EPS_XX',
-                                NOEUD = 'N1',
+                                GROUP_NO = 'N1',
                                 RESULTAT=SOL_NL,
                                 TOUT_ORDRE='OUI',
                                 TOUT_CMP='OUI',
@@ -264,7 +273,7 @@ TABEPS=POST_RELEVE_T(ACTION=_F(INTITULE='EPS_XX',
 IMPR_TABLE(TABLE=TABEPS);
 
 TABEPSP=POST_RELEVE_T(ACTION=_F(INTITULE='EPSP_XX',
-                                NOEUD = 'N1',
+                                GROUP_NO = 'N1',
                                 RESULTAT=SOL_NL,
                                 TOUT_ORDRE='OUI',
                                 TOUT_CMP='OUI',
@@ -353,7 +362,7 @@ for i in range(NBPR) :
 
     for j in range(6) :
         crit2 = 'RELATIF' if RESU[j + 6*i] != 0. else 'ABSOLU'
-        TEST_RESU(CHAM_NO=_F(NOEUD='N1',
+        TEST_RESU(CHAM_NO=_F(GROUP_NO='N1',
                      REFERENCE='ANALYTIQUE',
                      NOM_CMP=NPRS[j],
                      CHAM_GD=FATN[i],
@@ -389,7 +398,7 @@ for i in range(NBPR) :
                         POINT=3,
                         NOM_CMP=NPRS[j],
                         PRECISION=0.004,
-                        MAILLE='M60',
+                        GROUP_MA='M60',
                         CHAM_GD=FATM[i],
                         VALE_REFE=RESU[j+ 6*i],
                         VALE_CALC=RESC[j+ 6*i],

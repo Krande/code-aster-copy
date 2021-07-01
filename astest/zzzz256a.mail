@@ -1,12 +1,18 @@
  TITRE
- % TEST
+ % TEST                                                                         
  FINSF
  %
  COOR_2D
- N1        0.00000000000000D-00  0.00000000000000D-00
+ N1        0.00000000000000E+00  0.00000000000000E+00
  FINSF
  %
- POI1
- P1       N1
+ POI1    
+ P1       N1      
  FINSF
+ %
+ GROUP_NO
+ N1                      
+ N1      
+ FINSF
+ %
  FIN

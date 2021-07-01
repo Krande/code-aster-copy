@@ -38,7 +38,7 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
 #-----------------------------------------------------------------------
 CH=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
                                  _F(  GROUP_NO = 'GRNM5', DY = 0.),
-                                          _F(  NOEUD = 'N451', DX = 0.)),
+                                          _F(  GROUP_NO = 'N451', DX = 0.)),
                             FORCE_CONTOUR=_F(  GROUP_MA = 'GRMA1', FY = 1.) )
 
 #-----------------------------------------------------------------------
@@ -51,7 +51,7 @@ FOND=DEFI_FOND_FISS( MAILLAGE=MA,
                      SYME='OUI',
                      CONFIG_INIT='DECOLLEE',
                      NORMALE=(0.0,1.0,0.0),
-                     LEVRE_SUP=_F(MAILLE='M306'),
+                     LEVRE_SUP=_F(GROUP_MA='M306'),
                    )
 G1=CALC_G(              RESULTAT=CHAMDEPL,
                         THETA=_F(

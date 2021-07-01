@@ -165,9 +165,9 @@ for icomp,comp in enumerate(compor) :
 
 
     vmis[icomp]=RECU_FONCTION(RESULTAT=resu[icomp],NOM_CHAM='SIEQ_ELGA',
-                              NOM_CMP='VMIS',MAILLE='M2',POINT=1,);
+                              NOM_CMP='VMIS',GROUP_MA='M2',POINT=1,);
     epsg[icomp]=RECU_FONCTION(RESULTAT=resu[icomp],NOM_CHAM='EPSG_ELGA',
-                              NOM_CMP='EPYY',MAILLE='M2',POINT=1,);
+                              NOM_CMP='EPYY',GROUP_MA='M2',POINT=1,);
 
     TEST_FONCTION(VALEUR=(_F(VALE_CALC=valec[icomp][0],
                              VALE_REFE=1125.0,

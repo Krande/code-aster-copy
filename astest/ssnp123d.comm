@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -177,18 +177,18 @@ TEST_RESU(RESU=_F(INST=1.0,
                   NOM_CMP='NUEST',
                   VALE_CALC=0.149802122154,
                   CRITERE='RELATIF',
-                  MAILLE='M1294',
+                  GROUP_MA='M1294',
                   ),
           )
 
 TEST_RESU(RESU=_F(INST=1.0,
                   RESULTAT=RESU,
                   NOM_CHAM='ERME_ELNO',
-                  NOEUD='N5',
+                  GROUP_NO='N5',
                   NOM_CMP='ERREST',
                   VALE_CALC=0.0106039819546,
                   CRITERE='RELATIF',
-                  MAILLE='M1294',
+                  GROUP_MA='M1294',
                   ),
           )
 
@@ -199,22 +199,22 @@ TEST_RESU(RESU=_F(INST=1.0,
 TEST_RESU(RESU=_F(INST=1.0,
                   RESULTAT=RESU,
                   NOM_CHAM='SIGM_ELNO',
-                  NOEUD='N5',
+                  GROUP_NO='N5',
                   NOM_CMP='SIYY',
                   VALE_CALC=440.201870874,
                   CRITERE='RELATIF',
-                  MAILLE='M1294',
+                  GROUP_MA='M1294',
                   ),
           )
 
 TEST_RESU(RESU=_F(INST=1.0,
                   RESULTAT=RESU,
                   NOM_CHAM='SIGM_ELNO',
-                  NOEUD='N5',
+                  GROUP_NO='N5',
                   NOM_CMP='SIXX',
                   VALE_CALC=-0.24192753668,
                   CRITERE='RELATIF',
-                  MAILLE='M1294',
+                  GROUP_MA='M1294',
                   ),
           )
 

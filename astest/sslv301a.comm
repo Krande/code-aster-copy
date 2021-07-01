@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -140,7 +140,7 @@ NOM_CHAM='DEPL', RESULTAT=DEF_2,
 #
 TEST_RESU(RESU=(_F(RESULTAT=U_1,
                    NOM_CHAM='DEPL',
-                   NOEUD='N3',
+                   GROUP_NO='N3',
                    NOM_CMP='DX',
                    VALE_CALC=-1.54839425E-03,
                    VALE_REFE=-1.552E-3,
@@ -149,7 +149,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U_1,
                    PRECISION=3.0000000000000001E-3,),
                 _F(RESULTAT=U_2,
                    NOM_CHAM='DEPL',
-                   NOEUD='N3',
+                   GROUP_NO='N3',
                    NOM_CMP='DX',
                    VALE_CALC=-1.54839431E-03,
                    VALE_REFE=-1.552E-3,
@@ -158,24 +158,24 @@ TEST_RESU(RESU=(_F(RESULTAT=U_1,
                    PRECISION=3.0000000000000001E-3,),
                 _F(RESULTAT=U_1,
                    NOM_CHAM='SIGM_ELNO',
-                   NOEUD='N2',
+                   GROUP_NO='N2',
                    NOM_CMP='SIYY',
                    VALE_CALC= 1.68731203E+08,
                    VALE_REFE=1.69800000E8,
                    REFERENCE='NON_DEFINI',
                    ANGLE=0.0,
                    PRECISION=8.9999999999999993E-3,
-                   MAILLE='M3',),
+                   GROUP_MA='M3',),
                 _F(RESULTAT=U_2,
                    NOM_CHAM='SIGM_ELNO',
-                   NOEUD='N2',
+                   GROUP_NO='N2',
                    NOM_CMP='SIYY',
                    VALE_CALC= 1.68593863E+08,
                    VALE_REFE=1.69800000E8,
                    REFERENCE='NON_DEFINI',
                    ANGLE=0.0,
                    PRECISION=8.9999999999999993E-3,
-                   MAILLE='M3',),
+                   GROUP_MA='M3',),
                 ),
           )
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,6 +43,12 @@ MAIL0=LIRE_MAILLAGE(FORMAT='MED');
 # TRANSFORME EN MAILLAGE QUADRATIQUE
 #-------------------------------------------------------------
 MAIL=CREA_MAILLAGE(MAILLAGE  = MAIL0, LINE_QUAD = _F(TOUT='OUI'));
+
+MAIL = DEFI_GROUP( reuse = MAIL, MAILLAGE = MAIL,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'NS76', NOEUD = 'NS76'),
+                                     ),
+         )
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
@@ -399,7 +405,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V7',
                   VALE_CALC=9.0998171083362E-03,
-                  MAILLE='M114',),
+                  GROUP_MA='M114',),
           )
 
 TEST_RESU(RESU=_F(INST=1.0,
@@ -408,7 +414,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIGN',
                   VALE_CALC=940.24205167886,
-                  MAILLE='M114',),
+                  GROUP_MA='M114',),
           )
 
 # TESTS DES EXTRAPOLATIONS NODALES
@@ -417,7 +423,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   NOM_CHAM='VARI_NOEU',
                   NOM_CMP='V7',
                   VALE_CALC=0.010345531595503,
-                  NOEUD='NS76'
+                  GROUP_NO='NS76'
                   ),
           )
 
@@ -426,7 +432,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   NOM_CHAM='SIEF_NOEU',
                   NOM_CMP='SIGN',
                   VALE_CALC=840.30059940748,
-                  NOEUD='NS76'
+                  GROUP_NO='NS76'
                   ),
           )
 

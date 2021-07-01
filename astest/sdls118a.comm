@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -454,7 +454,7 @@ RN11X=REST_SPEC_PHYS( MODE_MECA=BAMO,
                      TOUT_ORDRE = 'OUI',
                      INTE_SPEC_GENE = RESU1X,
                      NOM_CHAM='DEPL',
-                     NOEUD=( 'N11'  ),
+                     GROUP_NO=( 'N11'  ),
                      NOM_CMP=('DX', ),
                      OPTION='TOUT_TOUT'   );
 
@@ -462,7 +462,7 @@ RN11Z=REST_SPEC_PHYS( MODE_MECA=BAMO,
                      TOUT_ORDRE = 'OUI',
                      INTE_SPEC_GENE = RESU1Z,
                      NOM_CHAM='DEPL',
-                     NOEUD=( 'N11'  ),
+                     GROUP_NO=( 'N11'  ),
                      NOM_CMP=('DZ', ),
                      OPTION='TOUT_TOUT'   );
 

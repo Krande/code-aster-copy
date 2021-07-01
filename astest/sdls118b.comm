@@ -270,14 +270,14 @@ ssi_1_a = DYNA_ISS_VARI(
 ssi_1=RECU_FONCTION(RESU_GENE=ssi_1_a,
                        NOM_CHAM='ACCE',
                        NOM_CMP='DX',
-                       NOEUD=( 'N11'  ),
+                       GROUP_NO=( 'N11'  ),
                        INTERPOL='LIN',
                        TITRE='ACCELERATION AU CENTRE BAS DU RADIER',);
 
 DX11_1a = RECU_FONCTION(RESU_GENE=ssi_1_a,
                        NOM_CHAM='DEPL',
                        NOM_CMP='DX',
-                       NOEUD=( 'N11'  ),
+                       GROUP_NO=( 'N11'  ),
                        INTERPOL='LIN',
                        TITRE='DEPLACEMENT AU CENTRE BAS DU RADIER',);
 
@@ -332,7 +332,7 @@ ssi_1_b = DYNA_ISS_VARI(
 ssi_1b=RECU_FONCTION(RESU_GENE=ssi_1_b,
                        NOM_CHAM='ACCE',
                        NOM_CMP='DX',
-                       NOEUD=( 'N11'  ),
+                       GROUP_NO=( 'N11'  ),
                        INTERPOL='LIN',
                        TITRE='ACCELERATION AU CENTRE BAS DU RADIER',);
 
@@ -340,7 +340,7 @@ ssi_1b=RECU_FONCTION(RESU_GENE=ssi_1_b,
 DX11_1b = RECU_FONCTION(RESU_GENE=ssi_1_b,
                        NOM_CHAM='DEPL',
                        NOM_CMP='DX',
-                       NOEUD=( 'N11'  ),
+                       GROUP_NO=( 'N11'  ),
                        INTERPOL='LIN',
                        TITRE='DEPLACEMENT AU CENTRE BAS DU RADIER',);
 
@@ -405,7 +405,7 @@ ssi_2_a = DYNA_ISS_VARI(
 ssi_2a=RECU_FONCTION(RESU_GENE=ssi_2_a,
                        NOM_CHAM='ACCE',
                        NOM_CMP='DX',
-                       NOEUD=( 'N11'  ),
+                       GROUP_NO=( 'N11'  ),
                        INTERPOL='LIN',
                        TITRE='ACCELERATION AU CENTRE BAS DU RADIER',);
 
@@ -441,7 +441,7 @@ ssi_2_b = DYNA_ISS_VARI(
 ssi_2b=RECU_FONCTION(RESU_GENE=ssi_2_b,
                        NOM_CHAM='ACCE',
                        NOM_CMP='DX',
-                       NOEUD=( 'N11'  ),
+                       GROUP_NO=( 'N11'  ),
                        INTERPOL='LIN',
                        TITRE='ACCELERATION AU CENTRE BAS DU RADIER',);
 
@@ -626,7 +626,7 @@ ssi_4_c = DYNA_ISS_VARI(
 ssi_4a=RECU_FONCTION(RESU_GENE=ssi_4_a,
                        NOM_CHAM='ACCE',
                        NOM_CMP='DX',
-                       NOEUD=( 'N11'  ),
+                       GROUP_NO=( 'N11'  ),
                        INTERPOL='LIN',
                        TITRE='ACCELERATION AU CENTRE BAS DU RADIER',);
 
@@ -636,7 +636,7 @@ SRADBX4a=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ssi_4a, LIST_FREQ = L_FREQ,
 ssi_4b=RECU_FONCTION(RESU_GENE=ssi_4_b,
                        NOM_CHAM='ACCE',
                        NOM_CMP='DX',
-                       NOEUD=( 'N11'  ),
+                       GROUP_NO=( 'N11'  ),
                        INTERPOL='LIN',
                        TITRE='ACCELERATION AU CENTRE BAS DU RADIER',);
 
@@ -646,7 +646,7 @@ SRADBX4b=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ssi_4b, LIST_FREQ = L_FREQ,
 ssi_4c=RECU_FONCTION(RESU_GENE=ssi_4_c,
                        NOM_CHAM='ACCE',
                        NOM_CMP='DX',
-                       NOEUD=( 'N11'  ),
+                       GROUP_NO=( 'N11'  ),
                        INTERPOL='LIN',
                        TITRE='ACCELERATION AU CENTRE BAS DU RADIER',);
 

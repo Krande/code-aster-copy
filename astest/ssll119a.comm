@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -329,10 +329,10 @@ for mode in ['POU_D_E','POU_D_T','POU_D_TG','POU_D_EM','POU_D_TGM',]:
    # TEST_RESU
    TEST_RESU(
       RESU=(
-         _F(NUME_ORDRE = 1, RESULTAT=RES_MX, NOM_CHAM='REAC_NODA', NOEUD='N1',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_MX, NOM_CHAM='REAC_NODA', GROUP_NO='N1',
             NOM_CMP='DRX', VALE_REFE = -1500.0, VALE_CALC = r_non_reg[mode]['MX'][0],
             REFERENCE = 'ANALYTIQUE', ),
-         _F(NUME_ORDRE = 1, RESULTAT=RES_MT, NOM_CHAM='REAC_NODA', NOEUD='N1',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_MT, NOM_CHAM='REAC_NODA', GROUP_NO='N1',
             NOM_CMP='DRX', VALE_REFE =  -1500.0, VALE_CALC =r_non_reg[mode]['MX'][0],
             REFERENCE = 'ANALYTIQUE', ),
       ),
@@ -340,22 +340,22 @@ for mode in ['POU_D_E','POU_D_T','POU_D_TG','POU_D_EM','POU_D_TGM',]:
 
    TEST_RESU(
       RESU=(
-         _F(NUME_ORDRE = 1, RESULTAT=RES_MY, NOM_CHAM='REAC_NODA', NOEUD='N1',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_MY, NOM_CHAM='REAC_NODA', GROUP_NO='N1',
             NOM_CMP='DZ', VALE_REFE = -1625.0, VALE_CALC = r_non_reg[mode]['MY'][0],
             REFERENCE = 'ANALYTIQUE', ),
-         _F(NUME_ORDRE = 1, RESULTAT=RES_MY, NOM_CHAM='REAC_NODA', NOEUD='N1',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_MY, NOM_CHAM='REAC_NODA', GROUP_NO='N1',
             NOM_CMP='DRY', VALE_REFE = 125.0, VALE_CALC = r_non_reg[mode]['MY'][1],
             REFERENCE = 'ANALYTIQUE', ),
-         _F(NUME_ORDRE = 1, RESULTAT=RES_MY, NOM_CHAM='REAC_NODA', NOEUD='N2',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_MY, NOM_CHAM='REAC_NODA', GROUP_NO='N2',
             NOM_CMP='DZ', VALE_REFE = 1625.0, VALE_CALC = r_non_reg[mode]['MY'][2],
             REFERENCE = 'ANALYTIQUE', ),
-         _F(NUME_ORDRE = 1, RESULTAT=RES_MFY, NOM_CHAM='REAC_NODA', NOEUD='N1',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_MFY, NOM_CHAM='REAC_NODA', GROUP_NO='N1',
             NOM_CMP='DZ', VALE_REFE = -1625.0, VALE_CALC = r_non_reg[mode]['MY'][0],
             REFERENCE = 'ANALYTIQUE', ),
-         _F(NUME_ORDRE = 1, RESULTAT=RES_MFY, NOM_CHAM='REAC_NODA', NOEUD='N1',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_MFY, NOM_CHAM='REAC_NODA', GROUP_NO='N1',
             NOM_CMP='DRY', VALE_REFE = 125.0, VALE_CALC = r_non_reg[mode]['MY'][1],
             REFERENCE = 'ANALYTIQUE', ),
-         _F(NUME_ORDRE = 1, RESULTAT=RES_MFY, NOM_CHAM='REAC_NODA', NOEUD='N2',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_MFY, NOM_CHAM='REAC_NODA', GROUP_NO='N2',
             NOM_CMP='DZ', VALE_REFE = 1625.0, VALE_CALC = r_non_reg[mode]['MY'][2],
             REFERENCE = 'ANALYTIQUE', ),
       ),
@@ -363,22 +363,22 @@ for mode in ['POU_D_E','POU_D_T','POU_D_TG','POU_D_EM','POU_D_TGM',]:
 
    TEST_RESU(
       RESU=(
-         _F(NUME_ORDRE = 1, RESULTAT=RES_MZ, NOM_CHAM='REAC_NODA', NOEUD='N1',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_MZ, NOM_CHAM='REAC_NODA', GROUP_NO='N1',
             NOM_CMP='DY', VALE_REFE = 1625.0, VALE_CALC = r_non_reg[mode]['MZ'][0],
             REFERENCE = 'ANALYTIQUE', ),
-         _F(NUME_ORDRE = 1, RESULTAT=RES_MZ, NOM_CHAM='REAC_NODA', NOEUD='N1',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_MZ, NOM_CHAM='REAC_NODA', GROUP_NO='N1',
             NOM_CMP='DRZ', VALE_REFE = 125.0, VALE_CALC = r_non_reg[mode]['MZ'][1],
             REFERENCE = 'ANALYTIQUE', ),
-         _F(NUME_ORDRE = 1, RESULTAT=RES_MZ, NOM_CHAM='REAC_NODA', NOEUD='N2',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_MZ, NOM_CHAM='REAC_NODA', GROUP_NO='N2',
             NOM_CMP='DY', VALE_REFE = -1625.0, VALE_CALC = r_non_reg[mode]['MZ'][2],
             REFERENCE = 'ANALYTIQUE',),
-         _F(NUME_ORDRE = 1, RESULTAT=RES_MFZ, NOM_CHAM='REAC_NODA',NOEUD='N1',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_MFZ, NOM_CHAM='REAC_NODA',GROUP_NO='N1',
             NOM_CMP='DY', VALE_REFE = 1625.0, VALE_CALC = r_non_reg[mode]['MZ'][0],
             REFERENCE = 'ANALYTIQUE', ),
-         _F(NUME_ORDRE = 1, RESULTAT=RES_MFZ, NOM_CHAM='REAC_NODA', NOEUD='N1',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_MFZ, NOM_CHAM='REAC_NODA', GROUP_NO='N1',
             NOM_CMP='DRZ', VALE_REFE = 125.0, VALE_CALC = r_non_reg[mode]['MZ'][1],
             REFERENCE = 'ANALYTIQUE', ),
-         _F(NUME_ORDRE = 1, RESULTAT=RES_MFZ, NOM_CHAM='REAC_NODA', NOEUD='N2',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_MFZ, NOM_CHAM='REAC_NODA', GROUP_NO='N2',
             NOM_CMP='DY', VALE_REFE = -1625.0, VALE_CALC = r_non_reg[mode]['MZ'][2],
             REFERENCE = 'ANALYTIQUE', ),
       ),
@@ -386,10 +386,10 @@ for mode in ['POU_D_E','POU_D_T','POU_D_TG','POU_D_EM','POU_D_TGM',]:
 
    TEST_RESU(
       RESU=(
-         _F(NUME_ORDRE = 1, RESULTAT=RES_CMX, NOM_CHAM='REAC_NODA', NOEUD='N1',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_CMX, NOM_CHAM='REAC_NODA', GROUP_NO='N1',
             NOM_CMP='DRX', VALE_REFE = -1000.0, VALE_CALC = -1000.0,
             REFERENCE = 'ANALYTIQUE', ),
-         _F(NUME_ORDRE = 1, RESULTAT=RES_CMT, NOM_CHAM='REAC_NODA', NOEUD='N1',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_CMT, NOM_CHAM='REAC_NODA', GROUP_NO='N1',
             NOM_CMP='DRX', VALE_REFE = -1000.0, VALE_CALC = -1000.0,
             REFERENCE = 'ANALYTIQUE', ),
       ),
@@ -397,48 +397,48 @@ for mode in ['POU_D_E','POU_D_T','POU_D_TG','POU_D_EM','POU_D_TGM',]:
 
    TEST_RESU(
       RESU=(
-         _F(NUME_ORDRE = 1, RESULTAT=RES_CMFY, NOM_CHAM='REAC_NODA', NOEUD='N1',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_CMFY, NOM_CHAM='REAC_NODA', GROUP_NO='N1',
             NOM_CMP='DZ', VALE_REFE = -1000.0,  VALE_CALC = -1000.0,
             REFERENCE = 'ANALYTIQUE',),
-         _F(NUME_ORDRE = 1, RESULTAT=RES_CMFY, NOM_CHAM='REAC_NODA', NOEUD='N1',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_CMFY, NOM_CHAM='REAC_NODA', GROUP_NO='N1',
             NOM_CMP='DRY', VALE_REFE = 0.0,    VALE_CALC = 0.0,
             REFERENCE = 'ANALYTIQUE',
             CRITERE = 'ABSOLU', ),
-         _F(NUME_ORDRE = 1, RESULTAT=RES_CMFY, NOM_CHAM='REAC_NODA', NOEUD='N2',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_CMFY, NOM_CHAM='REAC_NODA', GROUP_NO='N2',
             NOM_CMP='DZ', VALE_REFE = 1000.0, VALE_CALC = 1000.0,
             REFERENCE = 'ANALYTIQUE', ),
-         _F(NUME_ORDRE = 1, RESULTAT=RES_CMY, NOM_CHAM='REAC_NODA', NOEUD='N1',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_CMY, NOM_CHAM='REAC_NODA', GROUP_NO='N1',
             NOM_CMP='DZ', VALE_REFE =-1000.0,  VALE_CALC = -1000.0,
             REFERENCE = 'ANALYTIQUE',),
-         _F(NUME_ORDRE = 1, RESULTAT=RES_CMY, NOM_CHAM='REAC_NODA', NOEUD='N1',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_CMY, NOM_CHAM='REAC_NODA', GROUP_NO='N1',
             NOM_CMP='DRY', VALE_REFE = 0.0,    VALE_CALC = 0.0,
             REFERENCE = 'ANALYTIQUE',
             CRITERE = 'ABSOLU', ),
-         _F(NUME_ORDRE = 1, RESULTAT=RES_CMY, NOM_CHAM='REAC_NODA', NOEUD='N2',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_CMY, NOM_CHAM='REAC_NODA', GROUP_NO='N2',
             NOM_CMP='DZ', VALE_REFE = 1000.0, VALE_CALC = 1000.0,
             REFERENCE = 'ANALYTIQUE', ),
       ),
    )
    TEST_RESU(
       RESU=(
-         _F(NUME_ORDRE = 1, RESULTAT=RES_CMFZ, NOM_CHAM='REAC_NODA', NOEUD='N1',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_CMFZ, NOM_CHAM='REAC_NODA', GROUP_NO='N1',
             NOM_CMP='DY', VALE_REFE = 1000.0,  VALE_CALC = 1000.0,
             REFERENCE = 'ANALYTIQUE',),
-         _F(NUME_ORDRE = 1, RESULTAT=RES_CMFZ, NOM_CHAM='REAC_NODA', NOEUD='N1',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_CMFZ, NOM_CHAM='REAC_NODA', GROUP_NO='N1',
             NOM_CMP='DRZ', VALE_REFE = 0.0,    VALE_CALC = 0.0,
             REFERENCE = 'ANALYTIQUE',
             CRITERE = 'ABSOLU', ),
-         _F(NUME_ORDRE = 1, RESULTAT=RES_CMFZ, NOM_CHAM='REAC_NODA', NOEUD='N2',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_CMFZ, NOM_CHAM='REAC_NODA', GROUP_NO='N2',
             NOM_CMP='DY', VALE_REFE = -1000.0, VALE_CALC = -1000.0,
             REFERENCE = 'ANALYTIQUE', ),
-         _F(NUME_ORDRE = 1, RESULTAT=RES_CMZ, NOM_CHAM='REAC_NODA', NOEUD='N1',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_CMZ, NOM_CHAM='REAC_NODA', GROUP_NO='N1',
             NOM_CMP='DY', VALE_REFE = 1000.0,  VALE_CALC = 1000.0,
             REFERENCE = 'ANALYTIQUE',),
-         _F(NUME_ORDRE = 1, RESULTAT=RES_CMZ, NOM_CHAM='REAC_NODA', NOEUD='N1',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_CMZ, NOM_CHAM='REAC_NODA', GROUP_NO='N1',
             NOM_CMP='DRZ', VALE_REFE = 0.0,    VALE_CALC = 0.0,
             REFERENCE = 'ANALYTIQUE',
             CRITERE = 'ABSOLU', ),
-         _F(NUME_ORDRE = 1, RESULTAT=RES_CMZ, NOM_CHAM='REAC_NODA', NOEUD='N2',
+         _F(NUME_ORDRE = 1, RESULTAT=RES_CMZ, NOM_CHAM='REAC_NODA', GROUP_NO='N2',
             NOM_CMP='DY', VALE_REFE = -1000.0, VALE_CALC = -1000.0,
             REFERENCE = 'ANALYTIQUE', ),
       ),

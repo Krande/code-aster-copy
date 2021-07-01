@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -75,6 +75,15 @@ MA = CREA_MAILLAGE(
     PREF_MAILLE = 'MJ',
     )
   )
+
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'MJ38', MAILLE = 'MJ38'),
+                                     ),
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N5', NOEUD = 'N5'),
+                                     ),
+         )
 
 IMPR_RESU(
   FORMAT  = 'RESULTAT',
@@ -262,7 +271,7 @@ IMPR_RESU(
   RESU=_F(
           RESULTAT = EVOL,
           NOM_CHAM = 'VARI_ELGA',
-          MAILLE  = 'MJ38',
+          GROUP_MA  = 'MJ38',
     ))
 
 IMPR_TABLE(TABLE=DEP_NO,);
@@ -276,7 +285,7 @@ TEST_RESU(RESU=(_F(INST=6.0007000000000001,
                    NOM_CMP='V7',
                    VALE_CALC=0.769747263,
                    VALE_REFE=0.76974699999999996,
-                   MAILLE='MJ38',),
+                   GROUP_MA='MJ38',),
                 _F(INST=12.000400000000001,
                    REFERENCE='ANALYTIQUE',
                    POINT=1,
@@ -285,7 +294,7 @@ TEST_RESU(RESU=(_F(INST=6.0007000000000001,
                    NOM_CMP='V7',
                    VALE_CALC=0.434934953,
                    VALE_REFE=0.43493500000000002,
-                   MAILLE='MJ38',),
+                   GROUP_MA='MJ38',),
                 _F(INST=19.333369999999999,
                    REFERENCE='ANALYTIQUE',
                    POINT=1,
@@ -294,12 +303,12 @@ TEST_RESU(RESU=(_F(INST=6.0007000000000001,
                    NOM_CMP='V7',
                    VALE_CALC=0.128483218,
                    VALE_REFE=0.12848300000000001,
-                   MAILLE='MJ38',),
+                   GROUP_MA='MJ38',),
                 _F(INST=12.000400000000001,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=EVOL,
                    NOM_CHAM='DEPL',
-                   NOEUD='N5',
+                   GROUP_NO='N5',
                    NOM_CMP='DY',
                    VALE_CALC=1.576741531,
                    VALE_REFE=1.57674,),

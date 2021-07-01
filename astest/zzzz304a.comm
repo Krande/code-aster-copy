@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 # 
 # code_aster is free software: you can redistribute it and/or modify
@@ -119,8 +119,8 @@ TEST_RESU(
     CHAM_ELEM=(
         _F(
             CHAM_GD=CH2,
-            MAILLE='M9',
-            NOEUD='N36',
+            GROUP_MA='M9',
+            GROUP_NO='N36',
             NOM_CMP='HYDR',
             PRECISION=1e-10,
             REFERENCE='ANALYTIQUE',
@@ -128,8 +128,8 @@ TEST_RESU(
             VALE_REFE=0.8
         ), _F(
             CHAM_GD=CH2,
-            MAILLE='M10',
-            NOEUD='N36',
+            GROUP_MA='M10',
+            GROUP_NO='N36',
             NOM_CMP='HYDR',
             PRECISION=1e-10,
             REFERENCE='ANALYTIQUE',

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -320,7 +320,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 REFERENCE='ANALYTIQUE',
                 RESULTAT=cal1,
                 NOM_CHAM='DEPL',
-                NOEUD='N104',
+                GROUP_NO='N104',
                 NOM_CMP='PRE2',
                 VALE_CALC=992.859156677,
                 VALE_REFE=889.31760999999995,
@@ -333,7 +333,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 REFERENCE='ANALYTIQUE',
                 RESULTAT=cal1,
                 NOM_CHAM='DEPL',
-                NOEUD='N103',
+                GROUP_NO='N103',
                 NOM_CMP='PRE2',
                 VALE_CALC=992.859156678,
                 VALE_REFE=889.31760999999995,
@@ -347,7 +347,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 REFERENCE='NON_DEFINI',
                 RESULTAT=cal1,
                 NOM_CHAM='DEPL',
-                NOEUD='N104',
+                GROUP_NO='N104',
                 NOM_CMP='PRE2',
                 VALE_CALC=992.859156677,
                 VALE_REFE=992.85915667740005,
@@ -360,7 +360,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                 REFERENCE='NON_DEFINI',
                 RESULTAT=cal1,
                 NOM_CHAM='DEPL',
-                NOEUD='N103',
+                GROUP_NO='N103',
                 NOM_CMP='PRE2',
                 VALE_CALC=992.859156678,
                 VALE_REFE=992.85915667759002,

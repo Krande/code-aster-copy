@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,12 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
+MAIL = DEFI_GROUP( reuse = MAIL, MAILLAGE = MAIL,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M1', MAILLE = 'M1'),
+                                     ),
+         )
+
 MODL=AFFE_MODELE(MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
@@ -38,7 +44,7 @@ RES_PRES=LIRE_RESU(TYPE_RESU='EVOL_CHAR',INFO=2,
                    TOUT_ORDRE='OUI',)
 
 TEST_RESU(RESU=_F(NUME_ORDRE=142001,
-                  MAILLE='M1',
+                  GROUP_MA='M1',
                   REFERENCE='NON_DEFINI',
                   RESULTAT=RES_PRES,
                   NOM_CHAM='FSUR_3D',

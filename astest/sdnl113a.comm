@@ -49,6 +49,17 @@ MA=CREA_MAILLAGE(MAILLAGE=M1,
                  MODI_MAILLE=_F(GROUP_MA=('POUTRES','COUDES',),
                                 OPTION='SEG3_4',),);
 
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M10', MAILLE = 'M10'),
+                                     ),
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'N10', NOEUD = 'N10'),
+                                        _F( NOM = 'N160', NOEUD = 'N160'),
+                                        _F( NOM = 'N1', NOEUD = 'N1'),
+                                     ),
+         )
+
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=(_F(GROUP_MA=('PATBIELA','PATBIELC','PATVAN','BIELA','BIELB','BIELC',),
                         PHENOMENE='MECANIQUE',
@@ -251,7 +262,7 @@ RESULT=DYNA_NON_LINE(MODELE=MO,
 D_XVAN=RECU_FONCTION(RESULTAT=RESULT,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DX',
-                     NOEUD='N160',
+                     GROUP_NO='N160',
                      INTERPOL='LIN',);
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=4.303804E-06,
@@ -270,7 +281,7 @@ RESULT=CALC_CHAMP(reuse =RESULT,
 REAC=RECU_FONCTION(RESULTAT=RESULT,
                    NOM_CHAM='REAC_NODA',
                    NOM_CMP='DX',
-                   NOEUD='N1',);
+                   GROUP_NO='N1',);
 
 TEST_RESU(RESU=(_F(GROUP_NO='L',
                    INST=1.E-2,
@@ -299,11 +310,11 @@ TEST_RESU(RESU=(_F(GROUP_NO='L',
                    SOUS_POINT=25,
                    RESULTAT=RESULT,
                    NOM_CHAM='VARI_ELNO',
-                   NOEUD='N10',
+                   GROUP_NO='N10',
                    NOM_CMP='V1',
                    VALE_CALC=4.11504278249E-05,
                    CRITERE='RELATIF',
-                   MAILLE='M10',
+                   GROUP_MA='M10',
                    ),
                 ),
           )

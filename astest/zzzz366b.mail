@@ -31,13 +31,98 @@ MAILLAGE_SDASTER
  M2       N1       N2       N3       N4       N5       N6      
  FINSF
  %
+ GROUP_NO
+ N1                      
+ N1      
+ FINSF
+ %
+ GROUP_NO
+ N7                      
+ N7      
+ FINSF
+ %
+ GROUP_NO
+ N9                      
+ N9      
+ FINSF
+ %
+ GROUP_NO
+ N5                      
+ N5      
+ FINSF
+ %
+ GROUP_NO
+ N6                      
+ N6      
+ FINSF
+ %
+ GROUP_NO
+ N12                     
+ N12     
+ FINSF
+ %
+ GROUP_NO
+ N13                     
+ N13     
+ FINSF
+ %
+ GROUP_NO
+ N2                      
+ N2      
+ FINSF
+ %
+ GROUP_NO
+ N10                     
+ N10     
+ FINSF
+ %
+ GROUP_NO
+ N14                     
+ N14     
+ FINSF
+ %
+ GROUP_NO
+ N15                     
+ N15     
+ FINSF
+ %
+ GROUP_NO
+ N3                      
+ N3      
+ FINSF
+ %
+ GROUP_NO
+ N8                      
+ N8      
+ FINSF
+ %
+ GROUP_NO
+ N11                     
+ N11     
+ FINSF
+ %
+ GROUP_NO
+ N4                      
+ N4      
+ FINSF
+ %
  GROUP_MA
- Penta15               
+ Penta15                 
  M1      
  FINSF
  %
  GROUP_MA
- Penta6                
+ Penta6                  
+ M2      
+ FINSF
+ %
+ GROUP_MA
+ M1                      
+ M1      
+ FINSF
+ %
+ GROUP_MA
+ M2                      
  M2      
  FINSF
  %

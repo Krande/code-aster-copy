@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -192,7 +192,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC= 1.79115065E+06,
                   VALE_REFE=1.900000E6,
                   PRECISION=0.15,
-                  MAILLE='M184',),
+                  GROUP_MA='M184',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -204,7 +204,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC= 1.84436484E+06,
                   VALE_REFE=1.550000E6,
                   PRECISION=0.2,
-                  MAILLE='M184',),
+                  GROUP_MA='M184',),
           )
 
 #
@@ -256,7 +256,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC= 1.79115065E+06,
                    VALE_REFE=1.68E6,
                    PRECISION=0.1,
-                   MAILLE='M184',),
+                   GROUP_MA='M184',),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='F',
                    REFERENCE='ANALYTIQUE',
@@ -266,7 +266,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=1.84436484E+06,
                    VALE_REFE=1.80E6,
                    PRECISION=0.1,
-                   MAILLE='M184',),
+                   GROUP_MA='M184',),
                 ),
           )
 
@@ -284,7 +284,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='SIGM_ELGA',
                   NOM_CMP='SIXX',
                   VALE_CALC=1.8199294623515999E6,
-                  MAILLE='M184',),
+                  GROUP_MA='M184',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -296,7 +296,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC=1.8199294624E+06,
                   VALE_REFE=1.8199294623515999E6,
                   PRECISION=1.E-10,
-                  MAILLE='M184',),
+                  GROUP_MA='M184',),
           )
 
 #-----------------------------------------------------------------------------------------

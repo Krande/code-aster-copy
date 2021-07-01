@@ -94,13 +94,13 @@ U1=CALC_CHAMP(reuse =U1,RESULTAT = U1,DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_N
 TEST_RESU(RESU=(_F(INST=1800.0,
                    RESULTAT=U1,
                    NOM_CHAM='EPSI_NOEU',
-                   NOEUD='N5',
+                   GROUP_NO='N5',
                    NOM_CMP='EPXX',
                    VALE_CALC=1.4519999999992E-3,),
                 _F(INST=1800.0,
                    RESULTAT=U1,
                    NOM_CHAM='SIGM_NOEU',
-                   NOEUD='N5',
+                   GROUP_NO='N5',
                    NOM_CMP='SIYY',
                    VALE_CALC=-1.3794000000007001E8,),
                 ),
@@ -122,13 +122,13 @@ U2=CALC_CHAMP(reuse =U2,RESULTAT = U2,DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_N
 TEST_RESU(RESU=(_F(INST=1800.0,
                    RESULTAT=U2,
                    NOM_CHAM='EPSI_NOEU',
-                   NOEUD='N5',
+                   GROUP_NO='N5',
                    NOM_CMP='EPXX',
                    VALE_CALC=1.4519999999986E-3,),
                 _F(INST=1800.0,
                    RESULTAT=U2,
                    NOM_CHAM='SIGM_NOEU',
-                   NOEUD='N5',
+                   GROUP_NO='N5',
                    NOM_CMP='SIYY',
                    VALE_CALC=-2.6208600000007001E8,),
                 ),
@@ -168,7 +168,7 @@ DETRUIRE(NOM=(TAB1),)
 #---------------------------------------------------------------------------------------------------------
 CM1B=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI', MATER=BETON1, ),
-                 AFFE_VARC=( _F(MAILLE=('M1','M3'),EVOL=TEMP1,NOM_VARC='TEMP',NOM_CHAM='TEMP',VALE_REF=20),),
+                 AFFE_VARC=( _F(GROUP_MA=('M1','M3'),EVOL=TEMP1,NOM_VARC='TEMP',NOM_CHAM='TEMP',VALE_REF=20),),
                  )
 
 is_ok = 0
@@ -260,7 +260,7 @@ DETRUIRE(NOM=(TAB1),)
 #--------------------------------------------------------------------------------------------
 CM2C=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI', MATER=BETON2, ),
-                 AFFE_VARC=(  _F(MAILLE=('M1','M3'),EVOL=SECH1,NOM_VARC='SECH',NOM_CHAM='TEMP',VALE_REF=100),
+                 AFFE_VARC=(  _F(GROUP_MA=('M1','M3'),EVOL=SECH1,NOM_VARC='SECH',NOM_CHAM='TEMP',VALE_REF=100),
                               _F(TOUT='OUI',EVOL=TEMP1,NOM_VARC='TEMP',NOM_CHAM='TEMP',VALE_REF=20),
                               ))
 
@@ -292,7 +292,7 @@ DETRUIRE(NOM=(TAB1),)
 CM2D=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI', MATER=BETON2, ),
                  AFFE_VARC=(  _F(TOUT='OUI',EVOL=SECH1,NOM_VARC='SECH',NOM_CHAM='TEMP',VALE_REF=100),
-                              _F(MAILLE=('M1','M3'),EVOL=TEMP1,NOM_VARC='TEMP',NOM_CHAM='TEMP',VALE_REF=20),
+                              _F(GROUP_MA=('M1','M3'),EVOL=TEMP1,NOM_VARC='TEMP',NOM_CHAM='TEMP',VALE_REF=20),
                               ))
 
 is_ok = 0

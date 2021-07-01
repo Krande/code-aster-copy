@@ -7,5 +7,5 @@ P testlist ci verification sequential
 
 F comm ssnl502d.comm D 1
 F datg ssnl502d.datg D 16
-F libr ssnl502d.17 D 17
-F libr ssnl502d.18 D 18
+F mmed ssnl502d.17 D 17
+F mmed ssnl502d.18 D 18

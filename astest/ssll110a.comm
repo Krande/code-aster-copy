@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -72,51 +72,51 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=STATIQU1,
                   NOM_CHAM='EFGE_ELNO',
-                  NOEUD='N1',
+                  GROUP_NO='N1',
                   NOM_CMP='N',
                   VALE_CALC= 4.00008800E+05,
                   VALE_REFE=4.E5,
-                  MAILLE='M1',),
+                  GROUP_MA='M1',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=STATIQU1,
                   NOM_CHAM='EFGE_ELNO',
-                  NOEUD='N4',
+                  GROUP_NO='N4',
                   NOM_CMP='N',
                   VALE_CALC= 4.00008800E+05,
                   VALE_REFE=4.E5,
-                  MAILLE='M3',),
+                  GROUP_MA='M3',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=STATIQU1,
                   NOM_CHAM='EPSI_ELNO',
-                  NOEUD='N1',
+                  GROUP_NO='N1',
                   NOM_CMP='EPXX',
                   VALE_CALC= 2.00004400E-06,
                   VALE_REFE=1.9999999999999999E-06,
-                  MAILLE='M1',),
+                  GROUP_MA='M1',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=STATIQU1,
                   NOM_CHAM='EPSI_ELNO',
-                  NOEUD='N4',
+                  GROUP_NO='N4',
                   NOM_CMP='EPXX',
                   VALE_CALC= 2.00004400E-06,
                   VALE_REFE=1.9999999999999999E-06,
-                  MAILLE='M3',),
+                  GROUP_MA='M3',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=STATIQU1,
                   NOM_CHAM='DEPL',
-                  NOEUD='N2',
+                  GROUP_NO='N2',
                   NOM_CMP='DY',
                   VALE_CALC=-2.00004400E-05,
                   VALE_REFE=-2.0000000000000002E-05,),
@@ -126,7 +126,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=STATIQU1,
                   NOM_CHAM='DEPL',
-                  NOEUD='N3',
+                  GROUP_NO='N3',
                   NOM_CMP='DY',
                   VALE_CALC=-2.00004400E-05,
                   VALE_REFE=-2.0000000000000002E-05,),
@@ -140,11 +140,11 @@ XX1=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
 XX2=CREA_CHAMP(OPERATION='DISC', TYPE_CHAM='NOEU_SIEF_R',  INFO=2,
                      MODELE=MODELE,   CHAM_GD=XX1)
 
-TEST_RESU(CHAM_NO=(_F(NOEUD='N3',
+TEST_RESU(CHAM_NO=(_F(GROUP_NO='N3',
                       NOM_CMP='N',
                       CHAM_GD=XX2,
                       VALE_CALC=2.0000440014521001E5,),
-                   _F(NOEUD='N4',
+                   _F(GROUP_NO='N4',
                       NOM_CMP='N',
                       CHAM_GD=XX2,
                       VALE_CALC=4.0000880029041E5,),

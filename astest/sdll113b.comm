@@ -77,11 +77,11 @@ CARA=AFFE_CARA_ELEM(  MODELE=POUTRE,
 GUIDAGE=AFFE_CHAR_MECA(    MODELE=POUTRE,DDL_IMPO=(
                            _F( TOUT = 'OUI',
                                      DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.),
-                           _F( NOEUD = 'A',    DX = 0.)))
+                           _F( GROUP_NO = 'A',    DX = 0.)))
 
 #
 CHARTRAN=AFFE_CHAR_MECA(        MODELE=POUTRE,
-                           FORCE_NODALE=_F( NOEUD = 'N10',  FX = -100.))
+                           FORCE_NODALE=_F( GROUP_NO = 'N10',  FX = -100.))
 
 #
 K_ELEM=CALC_MATR_ELEM(      MODELE=POUTRE,
@@ -204,7 +204,7 @@ TEST_RESU(RESU=_F(INST=0.0195,
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=RESULT1,
                   NOM_CHAM='DEPL',
-                  NOEUD='N10',
+                  GROUP_NO='N10',
                   NOM_CMP='DX',
                   VALE_CALC=-9.5488174916312E-07,
                   VALE_REFE=-9.54882E-07,
@@ -217,7 +217,7 @@ TEST_RESU(RESU=_F(INST=0.0195,
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=RESULT1,
                   NOM_CHAM='VITE',
-                  NOEUD='N10',
+                  GROUP_NO='N10',
                   NOM_CMP='DX',
                   VALE_CALC=1.2218964215031E-03,
                   VALE_REFE=1.2219E-3,
@@ -230,7 +230,7 @@ TEST_RESU(RESU=_F(INST=0.0195,
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=RESULT1,
                   NOM_CHAM='ACCE',
-                  NOEUD='N10',
+                  GROUP_NO='N10',
                   NOM_CMP='DX',
                   VALE_CALC=-1.9171162907526,
                   VALE_REFE=-1.91712,
@@ -504,6 +504,12 @@ SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
                             _F( NOM = 'COTE2',
                                         TOUT = 'OUI')))
 
+SQUEL = DEFI_GROUP( reuse = SQUEL, MAILLAGE = SQUEL,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'NO12', NOEUD = 'NO12'),
+                                     ),
+         )
+
 #
 TRAN_GLO=REST_SOUS_STRUC(  RESU_GENE=TRANGENE,
                             TOUT_CHAM='OUI',
@@ -522,7 +528,7 @@ TRAN_SS2=REST_SOUS_STRUC(   RESU_GENE=TRANGENE,
 TEST_RESU(RESU=_F(NUME_ORDRE=12,
                   RESULTAT=TRAN_GLO,
                   NOM_CHAM='DEPL',
-                  NOEUD='NO12',
+                  GROUP_NO='NO12',
                   NOM_CMP='DX',
                   VALE_REFE=-9.54882E-07,
                   VALE_CALC=-9.5488174916312E-07,
@@ -536,7 +542,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=12,
 TEST_RESU(RESU=_F(NUME_ORDRE=12,
                   RESULTAT=TRAN_GLO,
                   NOM_CHAM='VITE',
-                  NOEUD='NO12',
+                  GROUP_NO='NO12',
                   NOM_CMP='DX',
                   VALE_REFE=1.2219E-3,
                   VALE_CALC=1.2218964215031E-3,
@@ -550,7 +556,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=12,
 TEST_RESU(RESU=_F(NUME_ORDRE=12,
                   RESULTAT=TRAN_GLO,
                   NOM_CHAM='ACCE',
-                  NOEUD='NO12',
+                  GROUP_NO='NO12',
                   NOM_CMP='DX',
                   VALE_REFE=-1.91712,
                   VALE_CALC=-1.9171162907526,

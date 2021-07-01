@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -197,7 +197,7 @@ CALC_CHAMP(reuse=DEP, RESULTAT=DEP, DEFORMATION=('EPSI_ELNO', 'EPME_ELNO', 'EPVC
            GROUP_MA='GEOA')
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=DEP, NOM_CHAM=('EPSI_ELGA', 'EPME_ELGA', 'EPVC_ELGA','EPSP_ELGA'), 
-                  INST = 1., MAILLE = 'M107'))
+                  INST = 1., GROUP_MA = 'M107'))
 
 DEPB=CALC_CHAMP(reuse =DEPB,
                 RESULTAT=DEPB,
@@ -207,7 +207,7 @@ DEPB=CALC_CHAMP(reuse =DEPB,
 # TEST DE EPME_ELGA, EPVC_ELGA ET EPSP_ELGA SUR LES GRILLE_MEMBRANE
 
 TEST_RESU(RESU=(
-                _F(MAILLE='M107',
+                _F(GROUP_MA='M107',
                    POINT = 1,
                    INST=1.0,
                    RESULTAT=DEP,
@@ -215,7 +215,7 @@ TEST_RESU(RESU=(
                    NOM_CMP='EXX',
                    VALE_CALC= 5.68067753827888E-04,
                    ),
-                _F(MAILLE='M107',
+                _F(GROUP_MA='M107',
                    POINT = 1,
                    INST=1.0,
                    REFERENCE='ANALYTIQUE',
@@ -225,7 +225,7 @@ TEST_RESU(RESU=(
                    VALE_CALC= 1.00000000000000E-03,
                    VALE_REFE=1.00000000000000E-03,
                    ),
-                _F(MAILLE='M107',
+                _F(GROUP_MA='M107',
                    POINT = 1,
                    INST=1.0,
                    RESULTAT=DEP,
@@ -233,7 +233,7 @@ TEST_RESU(RESU=(
                    NOM_CMP='EXX',
                    VALE_CALC=-4.31932246172112E-04,
                    ),
-                _F(MAILLE='M107',
+                _F(GROUP_MA='M107',
                    POINT = 1,
                    INST=1.0,
                    REFERENCE='ANALYTIQUE',
@@ -356,7 +356,7 @@ CALC_CHAMP(reuse=DEP2, RESULTAT=DEP2, DEFORMATION=('EPME_ELGA','EPSP_ELGA'),
 
 
 TEST_RESU(RESU=(
-                _F(MAILLE='M107',
+                _F(GROUP_MA='M107',
                    POINT = 1,
                    INST=1.0,
                    RESULTAT=DEP2,
@@ -364,7 +364,7 @@ TEST_RESU(RESU=(
                    NOM_CMP='SIXX',
                    VALE_CALC= -43272304.9744,
                    ),
-                _F(MAILLE='M107',
+                _F(GROUP_MA='M107',
                    POINT = 1,
                    INST=1.0,
                    RESULTAT=DEP2,
@@ -372,7 +372,7 @@ TEST_RESU(RESU=(
                    NOM_CMP='EXX',
                    VALE_CALC= -0.000715446099488,
                    ),
-                _F(MAILLE='M107',
+                _F(GROUP_MA='M107',
                    POINT = 1,
                    INST=1.0,
                    RESULTAT=DEP2,

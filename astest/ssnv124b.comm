@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -121,11 +121,11 @@ TEST_TABLE(
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=RESU,
                   NOM_CHAM='EPSI_ELNO',
-                  NOEUD='N1',
+                  GROUP_NO='N1',
                   NOM_CMP='EPXX',
                   VALE_CALC=0.048076920000000002,
                   CRITERE='RELATIF',
-                  MAILLE='MA1',),
+                  GROUP_MA='MA1',),
           )
 
 #---------------------------------------------------------------
@@ -140,18 +140,18 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='NUEST',
                   VALE_CALC=16.016085020799999,
                   CRITERE='RELATIF',
-                  MAILLE='MA1',
+                  GROUP_MA='MA1',
                   ),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=RESU,
                   NOM_CHAM='ERME_ELNO',
-                  NOEUD='N1',
+                  GROUP_NO='N1',
                   NOM_CMP='ERREST',
                   VALE_CALC=3.6963973431800001,
                   CRITERE='RELATIF',
-                  MAILLE='MA1',
+                  GROUP_MA='MA1',
                   ),
           )
 

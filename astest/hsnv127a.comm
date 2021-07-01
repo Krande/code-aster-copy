@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -310,7 +310,7 @@ TRACTION=AFFE_CHAR_MECA(
                       MODELE=MO,
 
                 FORCE_FACE=_F(
-                MAILLE = 'GAUCHE',
+                GROUP_MA = 'GAUCHE',
                 FX = -1.)
               )
 
@@ -318,20 +318,20 @@ CISAIL=AFFE_CHAR_MECA(
 
                       MODELE=MO,FORCE_FACE=(
 
-                _F( MAILLE = 'GAUCHE',          FY = -1.),
-                _F( MAILLE = 'DROITE',          FY = 1.),
-                _F( MAILLE = 'HAUT',    FX = 1.),
-                _F( MAILLE = 'BAS',     FX = -1.))
+                _F( GROUP_MA = 'GAUCHE',          FY = -1.),
+                _F( GROUP_MA = 'DROITE',          FY = 1.),
+                _F( GROUP_MA = 'HAUT',    FX = 1.),
+                _F( GROUP_MA = 'BAS',     FX = -1.))
               )
 
 LIAISON=AFFE_CHAR_MECA(
 
                MODELE=MO,DDL_IMPO=(
 
-                _F( NOEUD = 'NO4',     DX = 0.,  DY = 0.),
-                _F( NOEUD = 'NO8',     DX = 0.,  DY = 0.,  DZ = 0.),
-                _F( NOEUD = 'NO2',     DX = 0.),
-                _F( NOEUD = 'NO6',     DX = 0.))
+                _F( GROUP_NO = 'NO4',     DX = 0.,  DY = 0.),
+                _F( GROUP_NO = 'NO8',     DX = 0.,  DY = 0.,  DZ = 0.),
+                _F( GROUP_NO = 'NO2',     DX = 0.),
+                _F( GROUP_NO = 'NO6',     DX = 0.))
               )
 
 L_INST=DEFI_LIST_REEL(   DEBUT=0.,
@@ -382,7 +382,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    VALE_CALC=0.010683827,
                    VALE_REFE=0.0106503,
                    PRECISION=5.0000000000000001E-3,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=10.0,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -392,7 +392,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    VALE_CALC=0.010683827,
                    VALE_REFE=0.0106503,
                    PRECISION=5.0000000000000001E-3,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=10.0,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -402,7 +402,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    VALE_CALC=0.00944280104223,
                    VALE_REFE=0.00940933274213,
                    PRECISION=5.0000000000000001E-3,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=10.0,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -411,7 +411,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    NOM_CMP='EPTHER_L',
                    VALE_CALC=-3.64952904749E-18,
                    VALE_REFE=0.0,
-                   MAILLE='CUBE',
+                   GROUP_MA='CUBE',
                    CRITERE='ABSOLU',
                    ORDRE_GRANDEUR = 1.E-6),
                 _F(INST=10.0,
@@ -423,7 +423,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    VALE_CALC= 9.51867808E-03,
                    VALE_REFE=9.4883999999999993E-3,
                    PRECISION=5.0000000000000001E-3,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=10.0,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -433,7 +433,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    VALE_CALC=0.00951867807806,
                    VALE_REFE=0.00948839064946,
                    PRECISION=5.0000000000000001E-3,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=10.0,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -443,7 +443,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    VALE_CALC=0.00854534474483,
                    VALE_REFE=0.00851505731623,
                    PRECISION=5.0000000000000001E-3,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=60.0,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -453,7 +453,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    VALE_CALC=0.027678509,
                    VALE_REFE=0.027626000000000001,
                    PRECISION=5.0000000000000001E-3,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=60.0,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -463,7 +463,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    VALE_CALC=0.0276785088359,
                    VALE_REFE=0.0276261944777,
                    PRECISION=5.0000000000000001E-3,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=60.0,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -473,7 +473,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    VALE_CALC=0.0264374831949,
                    VALE_REFE=0.0263851692124,
                    PRECISION=5.0000000000000001E-3,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=60.0,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -483,7 +483,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    VALE_CALC=0.024898163,
                    VALE_REFE=0.024851000000000002,
                    PRECISION=5.0000000000000001E-3,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=60.0,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -493,7 +493,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    VALE_CALC=0.0248981631667,
                    VALE_REFE=0.0248508208343,
                    PRECISION=5.0000000000000001E-3,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 _F(INST=60.0,
                    REFERENCE='AUTRE_ASTER',
                    POINT=1,
@@ -503,7 +503,7 @@ TEST_RESU(RESU=(_F(INST=10.0,
                    VALE_CALC=0.0239248298334,
                    VALE_REFE=0.023877487841,
                    PRECISION=5.0000000000000001E-3,
-                   MAILLE='CUBE',),
+                   GROUP_MA='CUBE',),
                 ),
           )
 

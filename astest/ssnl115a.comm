@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -105,42 +105,42 @@ stnl=STAT_NON_LINE(
 LTemp =[ 0.0, -30.0,     -500.0, -1000.0 ]
 TEST_RESU(
     RESU=_F(RESULTAT=stnl, NOM_CHAM='SIEF_ELGA', INST=1.0,
-            NOM_CMP='N',MAILLE='M1',POINT=1,
+            NOM_CMP='N',GROUP_MA='M1',POINT=1,
             REFERENCE='ANALYTIQUE',
             VALE_REFE=-Young*Alpha*Scable*LTemp[1],
             VALE_CALC=-Young*Alpha*Scable*LTemp[1],),
 )
 TEST_RESU(
     RESU=_F(RESULTAT=stnl, NOM_CHAM='SIEF_ELGA', INST=2.0,
-            NOM_CMP='N',MAILLE='M1',POINT=1,
+            NOM_CMP='N',GROUP_MA='M1',POINT=1,
             REFERENCE='ANALYTIQUE',
             VALE_REFE=-Young*Alpha*Scable*LTemp[1],
             VALE_CALC=-Young*Alpha*Scable*LTemp[1],),
 )
 TEST_RESU(
     RESU=_F(RESULTAT=stnl, NOM_CHAM='SIEF_ELGA', INST=3.0,
-            NOM_CMP='N',MAILLE='M1',POINT=1,
+            NOM_CMP='N',GROUP_MA='M1',POINT=1,
             REFERENCE='ANALYTIQUE',
             VALE_REFE=-Young*Alpha*Scable*LTemp[2],
             VALE_CALC=-Young*Alpha*Scable*LTemp[2],),
 )
 TEST_RESU(
     RESU=_F(RESULTAT=stnl, NOM_CHAM='SIEF_ELGA', INST=4.0,
-            NOM_CMP='N',MAILLE='M1',POINT=1,
+            NOM_CMP='N',GROUP_MA='M1',POINT=1,
             REFERENCE='ANALYTIQUE',
             VALE_REFE=-Young*Alpha*Scable*LTemp[1],
             VALE_CALC=-Young*Alpha*Scable*LTemp[1],),
 )
 TEST_RESU(
     RESU=_F(RESULTAT=stnl, NOM_CHAM='SIEF_ELGA', INST=5.0,
-            NOM_CMP='N',MAILLE='M1',POINT=1,
+            NOM_CMP='N',GROUP_MA='M1',POINT=1,
             REFERENCE='ANALYTIQUE',
             VALE_REFE=-Young*Alpha*Scable*LTemp[1],
             VALE_CALC=-Young*Alpha*Scable*LTemp[1],),
 )
 TEST_RESU(
     RESU=_F(RESULTAT=stnl, NOM_CHAM='SIEF_ELGA', INST=6.0,
-            NOM_CMP='N',MAILLE='M1',POINT=1,
+            NOM_CMP='N',GROUP_MA='M1',POINT=1,
             REFERENCE='ANALYTIQUE',
             VALE_REFE=-Young*Alpha*Scable*LTemp[3],
             VALE_CALC=-Young*Alpha*Scable*LTemp[3],),

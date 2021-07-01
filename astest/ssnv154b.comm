@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -77,21 +77,21 @@ CHMAT=AFFE_MATERIAU(    MAILLAGE=MAILLAGE,
 #***********************************************************************
 
 CHAR_U1=AFFE_CHAR_MECA(    MODELE=MODELE,
-                              PRES_REP=_F(   MAILLE = ( 'M5', 'M6', ),
+                              PRES_REP=_F(   GROUP_MA = ( 'M5', 'M6', ),
                                           PRES = 1.)
                        )
 
 CHAR_U2=AFFE_CHAR_MECA(    MODELE=MODELE,
-                             PRES_REP=_F(   MAILLE = ( 'M3', ),
+                             PRES_REP=_F(   GROUP_MA = ( 'M3', ),
                                          PRES = 1.)
                         )
 
 DEPL_1=AFFE_CHAR_MECA(    MODELE=MODELE,FACE_IMPO=(
-                              _F(  MAILLE = ( 'M2', ),
+                              _F(  GROUP_MA = ( 'M2', ),
                                           DNOR = 0.),
-                              _F(  MAILLE = ( 'M7', ),
+                              _F(  GROUP_MA = ( 'M7', ),
                                           DNOR = 0.),
-                              _F(  MAILLE = ( 'M4', ),
+                              _F(  GROUP_MA = ( 'M4', ),
                                           DNOR = 0.))
                            )
 
@@ -185,7 +185,7 @@ NOM_CHAM='VARI_ELGA', RESULTAT=U1,
                       )
 
 DEPL_2=AFFE_CHAR_MECA(    MODELE=MODELE,
-                              FACE_IMPO=_F(  MAILLE = ( 'M3', ),
+                              FACE_IMPO=_F(  GROUP_MA = ( 'M3', ),
                                           DNOR = 1.)
                            )
 

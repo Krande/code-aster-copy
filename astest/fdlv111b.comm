@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -129,13 +129,13 @@ DYN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                         )
 
 PN10=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
-                        RESULTAT=DYN,   NOEUD='N10',
+                        RESULTAT=DYN,   GROUP_NO='N10',
                         NOM_CHAM='DEPL',
                         NOM_CMP='PRES'
                       )
 
 PN7=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
-                        RESULTAT=DYN,   NOEUD='N7',
+                        RESULTAT=DYN,   GROUP_NO='N7',
                         NOM_CHAM='DEPL',
                         NOM_CMP='PRES'
                       )
@@ -198,13 +198,13 @@ DYNA=DYNA_NON_LINE(     MODELE=MODELE,   CHAM_MATER=CHAMPMAT,
                         )
 
 PNA10=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                        RESULTAT=DYNA,   NOEUD='N10',
+                        RESULTAT=DYNA,   GROUP_NO='N10',
                         NOM_CHAM='DEPL',
                         NOM_CMP='PRES'
                       )
 
 PNA7=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                        RESULTAT=DYNA,   NOEUD='N7',
+                        RESULTAT=DYNA,   GROUP_NO='N7',
                         NOM_CHAM='DEPL',
                         NOM_CMP='PRES'
                       )

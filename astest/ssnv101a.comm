@@ -52,7 +52,7 @@ ACIER=DEFI_MATERIAU(
                                              ))
 
 MAT=AFFE_MATERIAU(            MAILLAGE=CUBE,
-                                    AFFE=_F(  MAILLE = 'MA1',
+                                    AFFE=_F(  GROUP_MA = 'MA1',
                                            MATER = ACIER,
                                            ))
 
@@ -63,14 +63,14 @@ LINST=DEFI_LIST_REEL(              DEBUT=0.,INTERVALLE=(
 
 TR_CS=AFFE_CHAR_MECA(
             MODELE=TROISD,DDL_IMPO=(
-           _F( NOEUD = 'NO4', DX = 0.,DY = 0.),
-                    _F( NOEUD = 'NO8', DX = 0.,DY = 0.,DZ = 0.),
-                    _F( NOEUD = 'NO2', DX = 0.),
-                    _F( NOEUD = 'NO6', DX = 0.)),FORCE_NODALE=(
-           _F( NOEUD = ('NO3', 'NO7',),  FX = -50.,  FY = -25.),
-                        _F( NOEUD = ('NO4', 'NO8',),  FX = -25.,  FY = 25.),
-                        _F( NOEUD = ('NO2', 'NO6',),  FX = 25.,  FY = 25.),
-                        _F( NOEUD = ('NO1', 'NO5',),           FY = -25.)) )
+           _F( GROUP_NO = 'NO4', DX = 0.,DY = 0.),
+                    _F( GROUP_NO = 'NO8', DX = 0.,DY = 0.,DZ = 0.),
+                    _F( GROUP_NO = 'NO2', DX = 0.),
+                    _F( GROUP_NO = 'NO6', DX = 0.)),FORCE_NODALE=(
+           _F( GROUP_NO = ('NO3', 'NO7',),  FX = -50.,  FY = -25.),
+                        _F( GROUP_NO = ('NO4', 'NO8',),  FX = -25.,  FY = 25.),
+                        _F( GROUP_NO = ('NO2', 'NO6',),  FX = 25.,  FY = 25.),
+                        _F( GROUP_NO = ('NO1', 'NO5',),           FY = -25.)) )
 
 COEF=DEFI_FONCTION(      NOM_PARA='INST',
                             PROL_DROITE='LINEAIRE',
@@ -110,42 +110,42 @@ SOLNL=CALC_CHAMP(reuse=SOLNL,RESULTAT=SOLNL,CONTRAINTE=('SIGM_ELNO'),VARI_INTERN
 TEST_RESU(RESU=(_F(INST=1.4350000000000001,
                    RESULTAT=SOLNL,
                    NOM_CHAM='SIGM_ELNO',
-                   NOEUD='NO1',
+                   GROUP_NO='NO1',
                    NOM_CMP='SIXX',
                    VALE_CALC=143.5,
                    VALE_REFE=143.5,
                    REFERENCE='SOURCE_EXTERNE',
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 _F(INST=1.4350000000000001,
                    RESULTAT=SOLNL,
                    NOM_CHAM='EPSI_ELNO',
-                   NOEUD='NO1',
+                   GROUP_NO='NO1',
                    NOM_CMP='EPXX',
                    VALE_CALC=0.096063293855236,
                    VALE_REFE=0.097089999999999996,
                    REFERENCE='SOURCE_EXTERNE',
                    PRECISION=0.011,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 _F(INST=1.4350000000000001,
                    RESULTAT=SOLNL,
                    NOM_CHAM='EPSI_ELNO',
-                   NOEUD='NO1',
+                   GROUP_NO='NO1',
                    NOM_CMP='EPXY',
                    VALE_CALC=0.14389728238065,
                    VALE_REFE=0.1454,
                    REFERENCE='SOURCE_EXTERNE',
                    PRECISION=0.011,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 _F(INST=1.4350000000000001,
                    RESULTAT=SOLNL,
                    NOM_CHAM='VARI_ELNO',
-                   NOEUD='NO1',
+                   GROUP_NO='NO1',
                    NOM_CMP='V1',
                    VALE_CALC=0.19015000369194,
                    VALE_REFE=0.19220000000000001,
                    REFERENCE='SOURCE_EXTERNE',
                    PRECISION=0.011,
-                   MAILLE='MA1',),
+                   GROUP_MA='MA1',),
                 ),
           )
 

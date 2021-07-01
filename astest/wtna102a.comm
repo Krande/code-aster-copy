@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -306,7 +306,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=60,
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=U0,
                   NOM_CHAM='DEPL',
-                  NOEUD='N12',
+                  GROUP_NO='N12',
                   NOM_CMP='PRE2',
                   VALE_CALC= 8099.2071944928,
                   VALE_REFE=7900.0,
@@ -318,7 +318,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   REFERENCE='AUTRE_ASTER',
                   RESULTAT=U0,
                   NOM_CHAM='DEPL',
-                  NOEUD='N12',
+                  GROUP_NO='N12',
                   NOM_CMP='PRE2',
                   VALE_CALC= 9755.2758420026,
                   VALE_REFE=9500.0,
@@ -329,7 +329,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
 TEST_RESU(RESU=_F(NUME_ORDRE=60,
                   RESULTAT=U0,
                   NOM_CHAM='DEPL',
-                  NOEUD='N12',
+                  GROUP_NO='N12',
                   NOM_CMP='PRE2',
                   VALE_CALC=8099.2071944928,
                   CRITERE='RELATIF',
@@ -339,7 +339,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=60,
 TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   RESULTAT=U0,
                   NOM_CHAM='DEPL',
-                  NOEUD='N12',
+                  GROUP_NO='N12',
                   NOM_CMP='PRE2',
                   VALE_CALC=9755.2758420026,
                   CRITERE='RELATIF',

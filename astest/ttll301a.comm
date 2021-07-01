@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -69,8 +69,8 @@ MOTH=AFFE_MODELE(  MAILLAGE=MAIL,
                                    PHENOMENE = 'THERMIQUE'))
 
 CHTH=AFFE_CHAR_THER_F(MODELE=MOTH,TEMP_IMPO=(
-          _F( NOEUD = ('N1', 'N2', ), TEMP = TIMPO),
-          _F( NOEUD = ('N21','N22',), TEMP = TSINUS))
+          _F( GROUP_NO = ('N1', 'N2', ), TEMP = TIMPO),
+          _F( GROUP_NO = ('N21','N22',), TEMP = TSINUS))
          )
 
 # DEFINITION DE LA STATEGIE DE CALCUL -----------------------------
@@ -104,14 +104,14 @@ TEMP_32=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
 NOM_CHAM='TEMP', RESULTAT=TEMPE,
             INST=32.0 )
 
-TEST_RESU(CHAM_NO=(_F(NOEUD='N17',
+TEST_RESU(CHAM_NO=(_F(GROUP_NO='N17',
                       NOM_CMP='TEMP',
                       PRECISION=0.035000000000000003,
                       CHAM_GD=TEMP_32,
                       VALE_CALC=37.873832135,
                       VALE_REFE=36.600000000000001,
                       REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='N18',
+                   _F(GROUP_NO='N18',
                       NOM_CMP='TEMP',
                       PRECISION=0.02,
                       CHAM_GD=TEMP_32,

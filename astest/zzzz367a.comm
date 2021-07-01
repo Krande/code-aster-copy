@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -127,7 +127,7 @@ MOMECA1 = AFFE_MODELE (MAILLAGE = MAIL,
                       );
 
 CHMECA1 = AFFE_CHAR_MECA (MODELE   = MOMECA1,
-                          DDL_IMPO = _F(NOEUD = ('NO1', 'NO2', 'NO5', 'NO6'),
+                          DDL_IMPO = _F(GROUP_NO = ('NO1', 'NO2', 'NO5', 'NO6'),
                                         DY       = 0.,
                                        ), 
                          );
@@ -241,10 +241,10 @@ ACIERME1 = DEFI_MATERIAU (ELAS_FO      = _F(E              = E,
                          )  
 
 CHMATM0 = AFFE_MATERIAU (MAILLAGE  = MAIL,
-                         AFFE      = (_F(MAILLE  = 'M1',
+                         AFFE      = (_F(GROUP_MA  = 'M1',
                                         MATER = ACIERME0,
                                        ),
-                                     _F(MAILLE  = 'M2',
+                                     _F(GROUP_MA  = 'M2',
                                         MATER = ACIERME1,
                                        ),),
                          AFFE_VARC = _F(TOUT     = 'OUI',
@@ -260,12 +260,12 @@ U1 =  STAT_NON_LINE (MODELE       = MOMECA1,
                      EXCIT        = _F(CHARGE = CHMECA1,),
                      COMPORTEMENT = (_F(RELATION    ='VMIS_ISOT_LINE',
                                        DEFORMATION = 'PETIT_REAC',
-                                       MAILLE      = 'M1',
+                                       GROUP_MA      = 'M1',
                                        POST_INCR   = 'REST_ECRO',
                                       ),
                                      _F(RELATION    ='VMIS_ISOT_LINE',
                                        DEFORMATION = 'PETIT_REAC',
-                                       MAILLE   = 'M2',
+                                       GROUP_MA   = 'M2',
                                       ),
                                     ),
                      INCREMENT    = _F(LIST_INST     = LLPAS,
@@ -299,7 +299,7 @@ TEST_RESU (RESU = (
                 _F(INST           = 89.0,
                    RESULTAT       = U1,
                    NOM_CHAM       = 'VARI_NOEU',
-                   NOEUD          = 'NO1',
+                   GROUP_NO          = 'NO1',
                    NOM_CMP        = 'V1',
                    VALE_CALC      = 0.0,
                    VALE_REFE      = 0.0,
@@ -310,21 +310,21 @@ TEST_RESU (RESU = (
                 _F(INST           = 89.0,
                    RESULTAT       = U1,
                    NOM_CHAM       = 'VARI_NOEU',
-                   NOEUD          = 'NO6',
+                   GROUP_NO          = 'NO6',
                    NOM_CMP        = 'V1',
                    VALE_CALC      = 0.0176801469516,
                   ),
                 _F(INST      = 200.0,
                    RESULTAT  = U1,
                    NOM_CHAM  = 'SIEF_NOEU',
-                   NOEUD  = 'NO1',
+                   GROUP_NO  = 'NO1',
                    NOM_CMP   = 'SIYY',
                    VALE_CALC = 234075425.693,
                   ),
                 _F(INST      = 200.0,
                    RESULTAT  = U1,
                    NOM_CHAM  = 'SIEF_NOEU',
-                   NOEUD  = 'NO6',
+                   GROUP_NO  = 'NO6',
                    NOM_CMP   = 'SIYY',
                    VALE_CALC = 457230130.708,
                   ),

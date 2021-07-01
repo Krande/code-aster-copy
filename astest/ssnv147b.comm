@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,12 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 MA = LIRE_MAILLAGE(FORMAT='GIBI',
                    UNITE=19,
                    )
+
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M1', MAILLE = 'M1'),
+                                     ),
+         )
 
 MA=DEFI_GROUP( reuse=MA,
                MAILLAGE=MA,
@@ -64,7 +70,7 @@ CHMAT=AFFE_MATERIAU(
                     _F(
                 GROUP_MA = 'BLOC',
                 MATER = CALCAIRE), _F(
-                MAILLE = 'M1',
+                GROUP_MA = 'M1',
                 MATER = CAL_FAIB))
               )
 
@@ -153,14 +159,14 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=7,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIYY',
                    VALE_CALC=0.5,
-                   MAILLE='M1',),
+                   GROUP_MA='M1',),
                 _F(NUME_ORDRE=7,
                    POINT=1,
                    RESULTAT=REPONSE,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V1',
                    VALE_CALC=0.90000000171,
-                   MAILLE='M1',),
+                   GROUP_MA='M1',),
                 ),
           )
 

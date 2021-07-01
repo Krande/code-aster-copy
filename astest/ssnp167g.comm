@@ -620,7 +620,7 @@ IMPR_RESU(FORMAT='MED',
 ##
 
 DEP_1 = POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                NOEUD=('N78','N198','N1151'),
+                                GROUP_NO=('N78','N198','N1151'),
                                 RESULTAT=RESU,
                                 NOM_CHAM='DEPL',
                                 NUME_ORDRE=1,
@@ -719,7 +719,7 @@ TEST_TABLE(       TABLE=DEP_1,
 ##
 
 DEP_2 = POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                NOEUD=('N82','N202','N1139'),
+                                GROUP_NO=('N82','N202','N1139'),
                                 RESULTAT=RESU,
                                 NOM_CHAM='DEPL',
                                 NUME_ORDRE=1,
@@ -818,7 +818,7 @@ TEST_TABLE(       TABLE=DEP_2,
 ##
 
 DEP_3 = POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                NOEUD=('N85','N205','N1130'),
+                                GROUP_NO=('N85','N205','N1130'),
                                 RESULTAT=RESU,
                                 NOM_CHAM='DEPL',
                                 NUME_ORDRE=1,

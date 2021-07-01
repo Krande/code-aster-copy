@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ POUTRE=LIRE_MAILLAGE(FORMAT="ASTER", )
 
 #
 MODELE=AFFE_MODELE(  MAILLAGE=POUTRE,
-                      AFFE=_F(  MAILLE = 'EL1',  PHENOMENE = 'MECANIQUE',
+                      AFFE=_F(  GROUP_MA = 'EL1',  PHENOMENE = 'MECANIQUE',
                              MODELISATION = 'DIS_T'))
 
 #
@@ -54,21 +54,21 @@ MATCHO=DEFI_MATERIAU(
 
 #
 CHMAT=AFFE_MATERIAU(  MAILLAGE=POUTRE,
-              AFFE=_F(  MAILLE = 'EL1',  MATER = MATCHO)
+              AFFE=_F(  GROUP_MA = 'EL1',  MATER = MATCHO)
                      )
 
 #
 CHAMPCAR=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
-                _F(  MAILLE = 'EL1',  CARA = 'K_T_D_N',  VALE = ( K, K, K, )),
-                        _F(  MAILLE = 'EL1',  CARA = 'M_T_D_N',  VALE = M)),
-                ORIENTATION=_F(  MAILLE = 'EL1',  CARA = 'VECT_X_Y',
+                _F(  GROUP_MA = 'EL1',  CARA = 'K_T_D_N',  VALE = ( K, K, K, )),
+                        _F(  GROUP_MA = 'EL1',  CARA = 'M_T_D_N',  VALE = M)),
+                ORIENTATION=_F(  GROUP_MA = 'EL1',  CARA = 'VECT_X_Y',
                               VALE = ( 0., 0., -1., 0., 1., 0., )) )
 
 #
 mANG=-ANG
 CHARGE=AFFE_CHAR_MECA(  MODELE=MODELE,
-             DDL_IMPO=_F(  NOEUD = 'NO1',  DZ = 0.),
-             LIAISON_DDL=_F(  NOEUD = ( 'NO1',  'NO1', ),
+             DDL_IMPO=_F(  GROUP_NO = 'NO1',  DZ = 0.),
+             LIAISON_DDL=_F(  GROUP_NO = ( 'NO1',  'NO1', ),
                            DDL = ('DX', 'DY', ),
                            COEF_MULT = ( ANG, mANG, ),
                            COEF_IMPO = 0.))
@@ -88,7 +88,7 @@ U1=U0 * ANG
 DEPLINI=CREA_CHAMP( OPERATION='AFFE', PROL_ZERO='OUI', TYPE_CHAM='NOEU_DEPL_R',
 MAILLAGE=POUTRE,
                          NUME_DDL=NUME,
-                         AFFE=_F(  NOEUD = 'NO1',
+                         AFFE=_F(  GROUP_NO = 'NO1',
                                 NOM_CMP = ('DX', 'DY',),
                                 VALE = ( U1,   U1, )))
 
@@ -111,7 +111,7 @@ TRAN_DI=DYNA_NON_LINE(
                 ETAT_INIT=_F(  INST = 0.,
                                DEPL = DEPLINI),
                 COMPORTEMENT=_F(  RELATION = 'DIS_CHOC',
-                           MAILLE = 'EL1'),
+                           GROUP_MA = 'EL1'),
                 INCREMENT=_F(  LIST_INST = DEFLIST),
                 SCHEMA_TEMPS=_F(SCHEMA='HHT', MODI_EQUI='NON',
                                 FORMULATION='DEPLACEMENT',
@@ -130,7 +130,7 @@ TRAN_DI=DYNA_NON_LINE(
 TEST_RESU(RESU=(_F(INST=0.0315,
                    RESULTAT=TRAN_DI,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO1',
+                   GROUP_NO='NO1',
                    NOM_CMP='DX',
                    VALE_REFE=-4.596E-4,
                    VALE_CALC=-4.5855226696626E-4,
@@ -140,7 +140,7 @@ TEST_RESU(RESU=(_F(INST=0.0315,
                 _F(INST=0.063,
                    RESULTAT=TRAN_DI,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO1',
+                   GROUP_NO='NO1',
                    NOM_CMP='DX',
                    VALE_REFE=3.173E-4,
                    VALE_CALC=3.1733081967066E-4,
@@ -150,7 +150,7 @@ TEST_RESU(RESU=(_F(INST=0.0315,
                 _F(INST=0.0945,
                    RESULTAT=TRAN_DI,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO1',
+                   GROUP_NO='NO1',
                    NOM_CMP='DX',
                    VALE_REFE=-1.754E-04,
                    VALE_CALC=-1.7548163530351E-4,
@@ -160,7 +160,7 @@ TEST_RESU(RESU=(_F(INST=0.0315,
                 _F(NUME_ORDRE=251,
                    RESULTAT=TRAN_DI,
                    NOM_CHAM='DEPL',
-                   NOEUD='NO1',
+                   GROUP_NO='NO1',
                    NOM_CMP='DX',
                    VALE_REFE=3.55E-05,
                    VALE_CALC=3.5495594193909E-05,

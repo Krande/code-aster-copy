@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -38,8 +38,8 @@ POUTRE0=DEFI_GROUP(reuse =POUTRE0,
 #
 POUTRE=CREA_MAILLAGE(MAILLAGE=POUTRE0,
     CREA_POI1=(
-        _F(NOM_GROUP_MA='N1', NOEUD = 'N1',),
-        _F(NOM_GROUP_MA='N101', NOEUD = 'N101',),
+        _F(NOM_GROUP_MA='N1', GROUP_NO = 'N1',),
+        _F(NOM_GROUP_MA='N101', GROUP_NO = 'N101',),
     ),
 )
 
@@ -89,11 +89,11 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=POUTRE,
 #-------------------------
 
 CHARG=AFFE_CHAR_MECA(MODELE=MODELE,
-                     DDL_IMPO=(_F(NOEUD='N1',
+                     DDL_IMPO=(_F(GROUP_NO='N1',
                                   DX=0.0,
                                   DY=0.0,
                                   DZ=0.0,),
-                               _F(NOEUD='N101',
+                               _F(GROUP_NO='N101',
                                   DX=0.0,
                                   DZ=0.0,),
                                _F(TOUT='OUI',
@@ -141,7 +141,7 @@ MATM=ASSE_MATRICE(MATR_ELEM=MELM,
 #------------------
 
 TENSION=AFFE_CHAR_MECA(MODELE=MODELE,
-                       FORCE_NODALE=_F(NOEUD='N101',
+                       FORCE_NODALE=_F(GROUP_NO='N101',
                                        FX=0.0,
                                        FY=-23.7,
                                        FZ=0.0,

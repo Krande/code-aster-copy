@@ -65,19 +65,19 @@ RES_STAT=CALC_CHAMP(reuse=RES_STAT,CRITERES=('SIEQ_ELGA','SIEQ_ELNO'),CONTRAINTE
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=RES_STAT,
                   NOM_CHAM='SIEQ_ELNO',
-                  NOEUD='N111',
+                  GROUP_NO='N111',
                   NOM_CMP='VMIS_SG',
                   VALE_CALC=307.71251493866,
-                  MAILLE='M294',),
+                  GROUP_MA='M294',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=RES_STAT,
                   NOM_CHAM='SIEQ_ELNO',
-                  NOEUD='N111',
+                  GROUP_NO='N111',
                   NOM_CMP='VMIS',
                   VALE_CALC=307.71251493866,
-                  MAILLE='M294',),
+                  GROUP_MA='M294',),
           )
 
 #
@@ -110,37 +110,37 @@ MODE=CALC_CHAMP(reuse=MODE,CRITERES=('SIEQ_ELGA','SIEQ_ELNO'),CONTRAINTE=('SIEF_
 TEST_RESU(RESU=_F(NUME_MODE=1,
                   RESULTAT=MODE,
                   NOM_CHAM='SIEQ_ELNO',
-                  NOEUD='N111',
+                  GROUP_NO='N111',
                   NOM_CMP='VMIS_SG',
                   VALE_CALC=9.8002549473086,
-                  MAILLE='M294',),
+                  GROUP_MA='M294',),
           )
 
 TEST_RESU(RESU=_F(NUME_MODE=2,
                   RESULTAT=MODE,
                   NOM_CHAM='SIEQ_ELNO',
-                  NOEUD='N111',
+                  GROUP_NO='N111',
                   NOM_CMP='VMIS_SG',
                   VALE_CALC=-31.150885035073,
-                  MAILLE='M294',),
+                  GROUP_MA='M294',),
           )
 
 TEST_RESU(RESU=_F(NUME_MODE=1,
                   RESULTAT=MODE,
                   NOM_CHAM='SIEQ_ELNO',
-                  NOEUD='N111',
+                  GROUP_NO='N111',
                   NOM_CMP='VMIS',
                   VALE_CALC=9.8002549473086,
-                  MAILLE='M294',),
+                  GROUP_MA='M294',),
           )
 
 TEST_RESU(RESU=_F(NUME_MODE=2,
                   RESULTAT=MODE,
                   NOM_CHAM='SIEQ_ELNO',
-                  NOEUD='N111',
+                  GROUP_NO='N111',
                   NOM_CMP='VMIS',
                   VALE_CALC=31.150885035073,
-                  MAILLE='M294',),
+                  GROUP_MA='M294',),
           )
 
 #
@@ -172,10 +172,10 @@ D_MOD1=CALC_FATIGUE( TYPE_CALCUL = 'FATIGUE_VIBR',
                        INFO        = 1
                      )
 
-TEST_RESU(CHAM_ELEM=_F(NOEUD='N111',
+TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N111',
                        REFERENCE='ANALYTIQUE',
                        NOM_CMP='DOMA',
-                       MAILLE='M294',
+                       GROUP_MA='M294',
                        CHAM_GD=D_MOD1,
                        VALE_CALC=35.319871206588,
                        VALE_REFE=35.32,),
@@ -202,10 +202,10 @@ D_MOD1b=CALC_FATIGUE( TYPE_CALCUL = 'FATIGUE_VIBR',
                        INFO        = 1
                      )
 
-TEST_RESU(CHAM_ELEM=_F(NOEUD='N111',
+TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N111',
                        REFERENCE='ANALYTIQUE',
                        NOM_CMP='DOMA',
-                       MAILLE='M294',
+                       GROUP_MA='M294',
                        CHAM_GD=D_MOD1b,
                        VALE_CALC=46.188237602877,
                        VALE_REFE=46.18,),
@@ -249,10 +249,10 @@ D_MOD12=CALC_FATIGUE( TYPE_CALCUL = 'FATIGUE_VIBR',
                      )
 
 
-TEST_RESU(CHAM_ELEM=_F(NOEUD='N111',
+TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N111',
                        REFERENCE='ANALYTIQUE',
                        NOM_CMP='DOMA',
-                       MAILLE='M294',
+                       GROUP_MA='M294',
                        CHAM_GD=D_MOD12,
                        VALE_CALC=13.640757776617,
                        VALE_REFE=13.64,),
@@ -286,10 +286,10 @@ D_MOD12b=CALC_FATIGUE( TYPE_CALCUL = 'FATIGUE_VIBR',
                      )
 
 
-TEST_RESU(CHAM_ELEM=_F(NOEUD='N111',
+TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N111',
                        REFERENCE='ANALYTIQUE',
                        NOM_CMP='DOMA',
-                       MAILLE='M294',
+                       GROUP_MA='M294',
                        CHAM_GD=D_MOD12b,
                        VALE_CALC=17.838189657729,
                        VALE_REFE=17.83,),

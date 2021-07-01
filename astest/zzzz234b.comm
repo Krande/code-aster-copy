@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -163,7 +163,7 @@ SELG01=CREA_CHAMP(
 TEST_RESU(CHAM_ELEM=_F(REFERENCE='ANALYTIQUE',
                        POINT=1,
                        NOM_CMP='N',
-                       MAILLE='M1',
+                       GROUP_MA='M1',
                        CHAM_GD=SELG01,
                        VALE_CALC=-4.00000000E+03,
                        VALE_REFE=-4000.0,),
@@ -202,10 +202,10 @@ SELN01=CREA_CHAMP(
    MODELE=MO_BAR,  PROL_ZERO='OUI',
    ASSE=_F( TOUT='OUI',   CHAM_GD = VELN01, NOM_CMP = ('X1'), NOM_CMP_RESU = ('N'),), )
 
-TEST_RESU(CHAM_ELEM=_F(NOEUD='N2',
+TEST_RESU(CHAM_ELEM=_F(GROUP_NO='N2',
                        REFERENCE='ANALYTIQUE',
                        NOM_CMP='N',
-                       MAILLE='M1',
+                       GROUP_MA='M1',
                        CHAM_GD=SELN01,
                        VALE_CALC=-4.00000000E+03,
                        VALE_REFE=-4000.0,),
@@ -245,7 +245,7 @@ SNOE01=CREA_CHAMP(
    ASSE=_F( TOUT='OUI',   CHAM_GD = VNOE01, NOM_CMP = ('X1',  ), NOM_CMP_RESU = ('N'),), )
 
 
-TEST_RESU(CHAM_NO=_F(NOEUD='N2',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='N2',
                      REFERENCE='ANALYTIQUE',
                      NOM_CMP='N',
                      CHAM_GD=SNOE01,

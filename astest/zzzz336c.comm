@@ -240,7 +240,7 @@ CALC_CHAMP(reuse=U_POU,RESULTAT=U_POU,DEFORMATION=('EPSI_ELGA', 'EPME_ELGA', 'EP
 CALC_CHAMP(reuse=U_POU,RESULTAT=U_POU,DEFORMATION=('EPSI_ELNO', 'EPME_ELNO', 'EPVC_ELNO',))
 
 #IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT = U_POU, NOM_CHAM=('EPSI_ELGA', 'EPME_ELGA', 'EPVC_ELGA'),
-          #MAILLE='M1',
+          #GROUP_MA='M1',
           #))
 
 IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT = U_POU, NOM_CHAM='DEPL', GROUP_NO = 'P3'))
@@ -272,7 +272,7 @@ TEST_RESU(RESU=(_F(INST=2.,
 TEST_RESU(RESU=(_F(INST=2.,
                    RESULTAT=U_POU,
                    NOM_CHAM='EPSI_ELGA',
-                   MAILLE='M1',
+                   GROUP_MA='M1',
                    POINT = 1,
                    SOUS_POINT = 8,
                    NOM_CMP='EPXX',
@@ -282,7 +282,7 @@ TEST_RESU(RESU=(_F(INST=2.,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U_POU,
                    NOM_CHAM='EPVC_ELGA',
-                   MAILLE='M1',
+                   GROUP_MA='M1',
                    POINT = 1,
                    SOUS_POINT = 8,
                    NOM_CMP='EPTHER_L',
@@ -293,7 +293,7 @@ TEST_RESU(RESU=(_F(INST=2.,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U_POU,
                    NOM_CHAM='EPME_ELGA',
-                   MAILLE='M1',
+                   GROUP_MA='M1',
                    POINT = 1,
                    SOUS_POINT = 8,
                    NOM_CMP='EPXX',
@@ -511,7 +511,7 @@ U_POU3=STAT_NON_LINE(MODELE=MOPOU,
 
 CALC_CHAMP(reuse=U_POU3,RESULTAT=U_POU3,DEFORMATION=('EPME_ELGA', 'EPVC_ELGA','EPSP_ELGA'))
 
-IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=U_POU3, NOM_CHAM='SIEF_ELGA', INST = 2.0, MAILLE = 'M1'))
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=U_POU3, NOM_CHAM='SIEF_ELGA', INST = 2.0, GROUP_MA = 'M1'))
 
 
 TEST_RESU(RESU=(
@@ -519,7 +519,7 @@ TEST_RESU(RESU=(
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U_POU3,
                    NOM_CHAM='SIEF_ELGA',
-                   MAILLE='M10',
+                   GROUP_MA='M10',
                    POINT=1,
                    SOUS_POINT=1,
                    NOM_CMP='SIXX',
@@ -532,7 +532,7 @@ TEST_RESU(RESU=(
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U_POU3,
                    NOM_CHAM='SIEF_ELGA',
-                   MAILLE='M10',
+                   GROUP_MA='M10',
                    POINT=1,
                    SOUS_POINT=9,
                    NOM_CMP='SIXX',
@@ -548,7 +548,7 @@ TEST_RESU(RESU=(
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U_POU3,
                    NOM_CHAM='EPVC_ELGA',
-                   MAILLE='M1',
+                   GROUP_MA='M1',
                    POINT = 1,
                    SOUS_POINT = 8,
                    NOM_CMP='EPTHER_L',
@@ -559,7 +559,7 @@ TEST_RESU(RESU=(
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U_POU3,
                    NOM_CHAM='EPME_ELGA',
-                   MAILLE='M1',
+                   GROUP_MA='M1',
                    POINT = 1,
                    SOUS_POINT = 8,
                    NOM_CMP='EPXX',
@@ -570,7 +570,7 @@ TEST_RESU(RESU=(
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=U_POU3,
                    NOM_CHAM='EPSP_ELGA',
-                   MAILLE='M1',
+                   GROUP_MA='M1',
                    POINT = 1,
                    SOUS_POINT = 8,
                    NOM_CMP='EPXX',

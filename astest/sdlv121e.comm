@@ -123,17 +123,17 @@ DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                         SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                         )
 
-DXN26=RECU_FONCTION(     RESULTAT=DYNA,   NOEUD='N26',
+DXN26=RECU_FONCTION(     RESULTAT=DYNA,   GROUP_NO='N26',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DX'
                        )
 
-DYN26=RECU_FONCTION(     RESULTAT=DYNA,   NOEUD='N26',
+DYN26=RECU_FONCTION(     RESULTAT=DYNA,   GROUP_NO='N26',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DY'
                        )
 
-DZN26=RECU_FONCTION(     RESULTAT=DYNA,   NOEUD='N26',
+DZN26=RECU_FONCTION(     RESULTAT=DYNA,   GROUP_NO='N26',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DZ'
                        )
@@ -206,19 +206,19 @@ DYNB=DYNA_NON_LINE(     MODELE=MODELE,
                         )
 
 DXNB26=RECU_FONCTION(   LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                         RESULTAT=DYNB,   NOEUD='N26',
+                         RESULTAT=DYNB,   GROUP_NO='N26',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DX'
                        )
 
 DYNB26=RECU_FONCTION(   LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                         RESULTAT=DYNB,   NOEUD='N26',
+                         RESULTAT=DYNB,   GROUP_NO='N26',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DY'
                        )
 
 DZNB26=RECU_FONCTION(   LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                         RESULTAT=DYNB,   NOEUD='N26',
+                         RESULTAT=DYNB,   GROUP_NO='N26',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DZ'
                        )

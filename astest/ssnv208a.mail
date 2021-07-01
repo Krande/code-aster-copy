@@ -3,81 +3,86 @@
  FINSF
  %
  COOR_2D
- N1        0.00000000000000D+00  0.00000000000000D+00  
- N2        1.00000000000000D+00  0.00000000000000D+00  
- N3        1.00000000000000D+00  1.00000000000000D+00  
- N4        0.00000000000000D+00  1.00000000000000D+00  
- N5        5.00000000000000D-01  0.00000000000000D+00  
- N6        1.00000000000000D+00  5.00000000000000D-01  
- N7        5.00000000000000D-01  1.00000000000000D+00  
- N8        0.00000000000000D+00  5.00000000000000D-01   
+ N1        0.00000000000000E+00  0.00000000000000E+00
+ N2        1.00000000000000E+00  0.00000000000000E+00
+ N3        1.00000000000000E+00  1.00000000000000E+00
+ N4        0.00000000000000E+00  1.00000000000000E+00
+ N5        5.00000000000000E-01  0.00000000000000E+00
+ N6        1.00000000000000E+00  5.00000000000000E-01
+ N7        5.00000000000000E-01  1.00000000000000E+00
+ N8        0.00000000000000E+00  5.00000000000000E-01
  FINSF
  %
  QUAD8   
  M1       N1       N2       N3       N4       N5       N6       N7      
-          N8     
+          N8      
  FINSF
  %
- SEG3  
- S1       N1       N2       N5       
- S2       N2       N3       N6
- S3       N3       N4       N7
- S4       N4       N1       N8
+ SEG3    
+ S1       N1       N2       N5      
+ S2       N2       N3       N6      
+ S3       N3       N4       N7      
+ S4       N4       N1       N8      
  FINSF
  %
  GROUP_NO
- D       
+ D                       
  N4      
  FINSF
  %
  GROUP_NO
- C       
+ C                       
  N3      
  FINSF
  %
  GROUP_NO
- A       
+ A                       
  N1      
  FINSF
  %
  GROUP_NO
- B       
+ B                       
  N2      
  FINSF
  %
  GROUP_MA
- BLOC   
- M1     
+ BLOC                    
+ M1      
  FINSF
  %
  GROUP_MA
- HAUT    
+ HAUT                    
  S3      
  FINSF
  %
  GROUP_MA
- BAS     
+ BAS                     
  S1      
  FINSF
  %
  GROUP_MA
- DROIT   
+ DROIT                   
  S2      
  FINSF
  %
  GROUP_MA
- GAUCHE  
+ GAUCHE                  
  S4      
  FINSF
  %
  GROUP_MA
- COTE    
+ COTE                    
  S2       S4      
  FINSF
  %
  GROUP_MA
- APPUI   
+ APPUI                   
  S1      
+ FINSF
+ %
+ GROUP_MA
+ M1                      
+ M1      
  FINSF
  %
  FIN

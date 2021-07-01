@@ -6,8 +6,8 @@ P mpi_nbnoeud 1
 P testlist ci verification sequential
 
 F comm sslv07a.comm D 1
-F libr sslv07a.19 D 19
-F libr sslv07a.23 D 23
+F mail sslv07a.19 D 19
+F mail sslv07a.23 D 23
 F libr sslv07a.40 D 40
 F libr sslv07a.41 D 41
 F libr sslv07a.42 D 42

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,12 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 nom='SECT1'
 
-TCARS =MACR_CARA_POUTRE(FORMAT='ASTER',GROUP_MA_BORD='LCERC', NOEUD='N1',NOM=nom,)
+TCARS =MACR_CARA_POUTRE(FORMAT='ASTER',GROUP_MA_BORD='LCERC', GROUP_NO='N1',NOM=nom,)
 IMPR_TABLE( TABLE=TCARS )
 
 # ON CREE TCARS2 POUR TESTER LA LECTURE DE LA TABLE PAR AFFE_CARA_ELEM
 # QUAND ON A TABLE_CARA='OUI'
-TCARS2=MACR_CARA_POUTRE(FORMAT='ASTER',GROUP_MA_BORD='LCERC', NOEUD='N1',TABLE_CARA='OUI',NOM='BIDUL')
+TCARS2=MACR_CARA_POUTRE(FORMAT='ASTER',GROUP_MA_BORD='LCERC', GROUP_NO='N1',TABLE_CARA='OUI',NOM='BIDUL')
 IMPR_TABLE( TABLE=TCARS2 )
 #
 # --- VALEURS DE REFERENCE: OPERATEUR AFFE_CARA_ELEM

@@ -1,10 +1,30 @@
-COOR_2D
-N1 0. 0.
-N2 1. 0.
-N3 0. 1.
-FINSF
-
-TRIA3
-      M1 N1 N2 N3
-FINSF
-FIN
+ TITRE
+JE-01-JUIL-2021 10:19:11                                                        
+ FINSF
+ %
+ COOR_2D
+ N1        0.00000000000000E+00  0.00000000000000E+00
+ N2        1.00000000000000E+00  0.00000000000000E+00
+ N3        0.00000000000000E+00  1.00000000000000E+00
+ FINSF
+ %
+ TRIA3   
+ M1       N1       N2       N3      
+ FINSF
+ %
+ GROUP_NO
+ N3                      
+ N3      
+ FINSF
+ %
+ GROUP_NO
+ N2                      
+ N2      
+ FINSF
+ %
+ GROUP_NO
+ N1                      
+ N1      
+ FINSF
+ %
+ FIN

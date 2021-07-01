@@ -1,149 +1,138 @@
-TITRE
-%MAILLAGE
-FINSF
-% coordonnees des noeuds
-COOR_3D NOBJ=11
-N1Z1 0.000000E+00 0.000000E+00 0.000000E+00
-N2Z1 0.000000E+00 0.000000E+00 2.500000E-01
-N3Z1 0.000000E+00 0.000000E+00 5.000000E-01
-N4Z1 0.000000E+00 0.000000E+00 7.500000E-01
-N5Z1 0.000000E+00 0.000000E+00 1.000000E+00
-N6Z1 0.000000E+00 0.000000E+00 1.250000E+00
-N7Z1 0.000000E+00 0.000000E+00 1.500000E+00
-N8Z1 0.000000E+00 0.000000E+00 1.750000E+00
-N9Z1 0.000000E+00 0.000000E+00 2.000000E+00
-P1 1.000000E-05 0.000000E+00 0.000000E+00
-P2 1.000000E-05 0.000000E+00 2.000000E+00
-FINSF
-%
-% definition des mailles
-SEG2 NOBJ=10
-E1Z1 N1Z1 N2Z1
-E2Z1 N2Z1 N3Z1
-E3Z1 N3Z1 N4Z1
-E4Z1 N4Z1 N5Z1
-E5Z1 N5Z1 N6Z1
-E6Z1 N6Z1 N7Z1
-E7Z1 N7Z1 N8Z1
-E8Z1 N8Z1 N9Z1
-SP1 P1 N1Z1
-SP2 P2 N9Z1
-FINSF
-
-
-% definition POI1
-POI1
-FINSF
-
-
-%Groupe de mailles pour la gravite
-GROUP_MA NOM=GRPGRAV
-E1Z1
-E2Z1
-E3Z1
-E4Z1
-E5Z1
-E6Z1
-E7Z1
-E8Z1
-FINSF
-
-
-%Groupe de mailles de la ligne d'arbres
-GROUP_MA NOM=MA_AR
-E1Z1
-E2Z1
-E3Z1
-E4Z1
-E5Z1
-E6Z1
-E7Z1
-E8Z1
-FINSF
-
-
-%Groupe de mailles pour les masses ajoutees
-% Le groupe de maille est vide MA_MAS
-
-%Groupe de mailles des discrets
-GROUP_MA NOM=MA_DISTR
-SP1
-SP2
-FINSF
-
-
-%Groupe de mailles pour materiau : MAT
-GROUP_MA NOM=MAT1
-E1Z1
-E2Z1
-E3Z1
-E4Z1
-E5Z1
-E6Z1
-E7Z1
-E8Z1
-FINSF
-
-
-%Groupe de mailles pour de la zone Z Poutres uniquement
-GROUP_MA NOM=GMAPZ1
-E1Z1
-E2Z1
-E3Z1
-E4Z1
-E5Z1
-E6Z1
-E7Z1
-E8Z1
-FINSF
-
-
-%Groupe de noeuds de la ligne d'arbres
-GROUP_NO NOM=NO_AR
-N1Z1
-N2Z1
-N3Z1
-N4Z1
-N5Z1
-N6Z1
-N7Z1
-N8Z1
-N9Z1
-FINSF
-
-
-%Groupe de noeuds encastres
-GROUP_NO NOM=NOENCAS
-P1
-P2
-FINSF
-
-
-%Groupe de noeuds paliers cote support
-GROUP_NO NOM=NO_PAL
-P1
-P2
-FINSF
-
-
-%Groupe de noeuds paliers cote rotor
-GROUP_NO NOM=NOPALAR
-N1Z1
-N9Z1
-FINSF
-
-
-%Groupe de noeuds pour la zone Z (poutres uniquement)
-GROUP_NO NOM=GNOPZ1
-N1Z1
-N2Z1
-N3Z1
-N4Z1
-N5Z1
-N6Z1
-N7Z1
-N8Z1
-N9Z1
-FINSF
-
-FIN
+ TITRE
+%MAILLAGE                                                                       
+ FINSF
+ %
+ COOR_3D
+ N1Z1      0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ N2Z1      0.00000000000000E+00  0.00000000000000E+00  2.50000000000000E-01
+ N3Z1      0.00000000000000E+00  0.00000000000000E+00  5.00000000000000E-01
+ N4Z1      0.00000000000000E+00  0.00000000000000E+00  7.50000000000000E-01
+ N5Z1      0.00000000000000E+00  0.00000000000000E+00  1.00000000000000E+00
+ N6Z1      0.00000000000000E+00  0.00000000000000E+00  1.25000000000000E+00
+ N7Z1      0.00000000000000E+00  0.00000000000000E+00  1.50000000000000E+00
+ N8Z1      0.00000000000000E+00  0.00000000000000E+00  1.75000000000000E+00
+ N9Z1      0.00000000000000E+00  0.00000000000000E+00  2.00000000000000E+00
+ P1        1.00000000000000E-05  0.00000000000000E+00  0.00000000000000E+00
+ P2        1.00000000000000E-05  0.00000000000000E+00  2.00000000000000E+00
+ FINSF
+ %
+ SEG2    
+ E1Z1     N1Z1     N2Z1    
+ E2Z1     N2Z1     N3Z1    
+ E3Z1     N3Z1     N4Z1    
+ E4Z1     N4Z1     N5Z1    
+ E5Z1     N5Z1     N6Z1    
+ E6Z1     N6Z1     N7Z1    
+ E7Z1     N7Z1     N8Z1    
+ E8Z1     N8Z1     N9Z1    
+ SP1      P1       N1Z1    
+ SP2      P2       N9Z1    
+ FINSF
+ %
+ GROUP_NO
+ NO_AR                   
+ N1Z1     N2Z1     N3Z1     N4Z1     N5Z1     N6Z1     N7Z1    
+ N8Z1     N9Z1    
+ FINSF
+ %
+ GROUP_NO
+ NOENCAS                 
+ P1       P2      
+ FINSF
+ %
+ GROUP_NO
+ NO_PAL                  
+ P1       P2      
+ FINSF
+ %
+ GROUP_NO
+ NOPALAR                 
+ N1Z1     N9Z1    
+ FINSF
+ %
+ GROUP_NO
+ GNOPZ1                  
+ N1Z1     N2Z1     N3Z1     N4Z1     N5Z1     N6Z1     N7Z1    
+ N8Z1     N9Z1    
+ FINSF
+ %
+ GROUP_MA
+ GRPGRAV                 
+ E1Z1     E2Z1     E3Z1     E4Z1     E5Z1     E6Z1     E7Z1    
+ E8Z1    
+ FINSF
+ %
+ GROUP_MA
+ MA_AR                   
+ E1Z1     E2Z1     E3Z1     E4Z1     E5Z1     E6Z1     E7Z1    
+ E8Z1    
+ FINSF
+ %
+ GROUP_MA
+ MA_DISTR                
+ SP1      SP2     
+ FINSF
+ %
+ GROUP_MA
+ MAT1                    
+ E1Z1     E2Z1     E3Z1     E4Z1     E5Z1     E6Z1     E7Z1    
+ E8Z1    
+ FINSF
+ %
+ GROUP_MA
+ GMAPZ1                  
+ E1Z1     E2Z1     E3Z1     E4Z1     E5Z1     E6Z1     E7Z1    
+ E8Z1    
+ FINSF
+ %
+ GROUP_MA
+ E4Z1                    
+ E4Z1    
+ FINSF
+ %
+ GROUP_MA
+ E2Z1                    
+ E2Z1    
+ FINSF
+ %
+ GROUP_MA
+ SP1                     
+ SP1     
+ FINSF
+ %
+ GROUP_MA
+ E1Z1                    
+ E1Z1    
+ FINSF
+ %
+ GROUP_MA
+ E8Z1                    
+ E8Z1    
+ FINSF
+ %
+ GROUP_MA
+ E3Z1                    
+ E3Z1    
+ FINSF
+ %
+ GROUP_MA
+ E6Z1                    
+ E6Z1    
+ FINSF
+ %
+ GROUP_MA
+ SP2                     
+ SP2     
+ FINSF
+ %
+ GROUP_MA
+ E5Z1                    
+ E5Z1    
+ FINSF
+ %
+ GROUP_MA
+ E7Z1                    
+ E7Z1    
+ FINSF
+ %
+ FIN

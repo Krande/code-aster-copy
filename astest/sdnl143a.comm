@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ cara=AFFE_CARA_ELEM(MODELE=mo,
                                );
 
 encas14=AFFE_CHAR_MECA(MODELE=mo,
-                       DDL_IMPO=_F(NOEUD=('N0001','N0050',),
+                       DDL_IMPO=_F(GROUP_NO=('N0001','N0050',),
                                    DX=0.,
                                    DY=0.,
                                    DZ=0.,
@@ -162,7 +162,7 @@ IMPR_RESU(MODELE=mo,
           RESU=_F(RESULTAT=stat,
                   NOM_CHAM='DEPL',
                   INST=0.0,
-                  NOEUD='N0002',),);
+                  GROUP_NO='N0002',),);
 
 
 tfin = 21.8
@@ -197,7 +197,7 @@ DYNA01=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='F1_TIME',
                                RESULTAT=test,
                                NOM_CHAM='REAC_NODA',
-                               NOEUD='N0001',
+                               GROUP_NO='N0001',
                                TOUT_CMP='OUI',),);
 
 

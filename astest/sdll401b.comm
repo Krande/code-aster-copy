@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -77,14 +77,14 @@ F2=DEFI_FONCTION(
 #
 
 BLODDL1=AFFE_CHAR_MECA(MODELE=MO,
-                       DDL_IMPO=(_F(NOEUD='N01',
+                       DDL_IMPO=(_F(GROUP_NO='N01',
                                     DX=0.,
                                     DY=0.,
                                     DZ=0.,
                                     DRX=0.,
                                     DRY=0.,
                                     DRZ=0.,),
-                                 _F(NOEUD='N03',
+                                 _F(GROUP_NO='N03',
                                     DX=0.,
                                     DY=0.,
                                     DZ=0.,
@@ -162,14 +162,14 @@ DYN_FX=CALC_CHAMP(MODELE=MO,
 TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   RESULTAT=DYN_FX,
                   NOM_CHAM='EFGE_ELNO',
-                  NOEUD='N01',
+                  GROUP_NO='N01',
                   NOM_CMP='N',
                   VALE_REFE=472.478,
                   VALE_CALC=472.478,
                   PRECISION=1.E-05,
                   REFERENCE='ANALYTIQUE',
                   CRITERE='RELATIF',
-                  MAILLE='S01',),
+                  GROUP_MA='S01',),
           )
 
 #
@@ -178,14 +178,14 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
 TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   RESULTAT=DYN_FX,
                   NOM_CHAM='EFGE_ELNO',
-                  NOEUD='N01',
+                  GROUP_NO='N01',
                   NOM_CMP='N',
                   VALE_REFE=392.944,
                   VALE_CALC=392.94400000000002,
                   PRECISION=1.E-05,
                   REFERENCE='ANALYTIQUE',
                   CRITERE='RELATIF',
-                  MAILLE='S01',),
+                  GROUP_MA='S01',),
           )
 
 #
@@ -196,11 +196,11 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
 TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   RESULTAT=DYN_FX,
                   NOM_CHAM='EFGE_ELNO',
-                  NOEUD='N02',
+                  GROUP_NO='N02',
                   NOM_CMP='N',
                   VALE_CALC=0.0,
                   CRITERE='ABSOLU',
-                  MAILLE='S01',),
+                  GROUP_MA='S01',),
           )
 
 #
@@ -209,11 +209,11 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
 TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   RESULTAT=DYN_FX,
                   NOM_CHAM='EFGE_ELNO',
-                  NOEUD='N02',
+                  GROUP_NO='N02',
                   NOM_CMP='N',
                   VALE_CALC=0.0,
                   CRITERE='ABSOLU',
-                  MAILLE='S01',),
+                  GROUP_MA='S01',),
           )
 
 FIN();

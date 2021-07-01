@@ -1,20 +1,39 @@
-TITRE
-%  F I C H I E R  M A I L L A G E
-FINSF
-COOR_3D
-N1  0.000000000000E+00 0.000000000000E+00 0.000000000000E+00
-N2  1.000000000000E+00 0.000000000000E+00 0.000000000000E+00
-FINSF
-SEG2
-M1 N1 N2
-FINSF
-GROUP_MA    NOM=POUTRE
-M1
-FINSF
-GROUP_NO    NOM=ENCAST
-N1
-FINSF
-GROUP_NO    NOM=APPUI
-N2
-FINSF
-FIN
+ TITRE
+%  F I C H I E R  M A I L L A G E                                               
+ FINSF
+ %
+ COOR_3D
+ N1        0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ N2        1.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ FINSF
+ %
+ SEG2    
+ M1       N1       N2      
+ FINSF
+ %
+ GROUP_NO
+ ENCAST                  
+ N1      
+ FINSF
+ %
+ GROUP_NO
+ APPUI                   
+ N2      
+ FINSF
+ %
+ GROUP_NO
+ N1                      
+ N1      
+ FINSF
+ %
+ GROUP_NO
+ N2                      
+ N2      
+ FINSF
+ %
+ GROUP_MA
+ POUTRE                  
+ M1      
+ FINSF
+ %
+ FIN

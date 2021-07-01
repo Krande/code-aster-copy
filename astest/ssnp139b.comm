@@ -71,6 +71,16 @@ MA0 = LIRE_MAILLAGE(FORMAT='GMSH',
 
 MA = CREA_MAILLAGE(MAILLAGE  = MA0, LINE_QUAD = _F(TOUT='OUI'))
 
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'M9791', MAILLE = 'M9791'),
+                                        _F( NOM = 'M9790', MAILLE = 'M9790'),
+                                        _F( NOM = 'M9788', MAILLE = 'M9788'),
+                                        _F( NOM = 'M9789', MAILLE = 'M9789'),
+                                        _F( NOM = 'M9792', MAILLE = 'M9792'),
+                                     ),
+         )
+
 MA  =  DEFI_GROUP(
     reuse  = MA,
     MAILLAGE = MA,
@@ -309,7 +319,7 @@ TEST_RESU(RESU=_F(INST=5,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V7',
                   VALE_CALC=6.2033102168082E-05,
-                  MAILLE='M9788',),
+                  GROUP_MA='M9788',),
           )
 
 IMPR_TABLE(TABLE = DEPLA);
@@ -317,7 +327,7 @@ IMPR_TABLE(TABLE = FORC);
 IMPR_RESU(FORMAT='RESULTAT',RESU=(_F(RESULTAT=U,
                                      NOM_CHAM='VARI_ELGA',
                                      INST=tfin,
-                                     MAILLE=('M9788','M9789','M9790','M9791','M9792'),
+                                     GROUP_MA=('M9788','M9789','M9790','M9791','M9792'),
                                      NOM_CMP=('V3','V7'))))
 
 

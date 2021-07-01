@@ -148,17 +148,17 @@ CHMTH=AFFE_MATERIAU(MAILLAGE=MA,
 
 LIAISON1=AFFE_CHAR_MECA(MODELE=MOMECA,
                        DDL_IMPO=(
-                                  _F(NOEUD=('N1','N2','N3','N4'),
+                                  _F(GROUP_NO=('N1','N2','N3','N4'),
                                      DX=0.0),
-                                  _F(NOEUD=('N1','N2',),
+                                  _F(GROUP_NO=('N1','N2',),
                                      DY=0.0,),
                                     ),);
 
 LIAISON=AFFE_CHAR_MECA(MODELE=MOMECA,
                        DDL_IMPO=(
-                                  _F(NOEUD=('N1','N2','N3','N4'),
+                                  _F(GROUP_NO=('N1','N2','N3','N4'),
                                      DX=0.0),
-                                  _F(NOEUD=('N1','N2','N3','N4'),
+                                  _F(GROUP_NO=('N1','N2','N3','N4'),
                                      DY=0.0,),
                                     ),);
 
@@ -179,11 +179,11 @@ U=STAT_NON_LINE(MODELE=MOMECA,
 U=CALC_CHAMP(reuse=U,RESULTAT=U,CRITERES=('SIEQ_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
 
-#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=U,NOM_CHAM='SIEQ_ELNO',MAILLE='M1',NOEUD='N1',NOM_CMP=('VMIS','TRSIG')))
+#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=U,NOM_CHAM='SIEQ_ELNO',GROUP_MA='M1',GROUP_NO='N1',NOM_CMP=('VMIS','TRSIG')))
 
 Vmis=POST_RELEVE_T(ACTION=_F(INTITULE='VMIS_N1',
-                                NOEUD='N1',
-                                MAILLE = 'M1',
+                                GROUP_NO='N1',
+                                GROUP_MA = 'M1',
                                 RESULTAT=U,
                                 NOM_CHAM='SIEQ_ELNO',
                                 TOUT_CMP='OUI',
@@ -269,14 +269,14 @@ for i in range(NCAL):
 
           LIAISON2=AFFE_CHAR_MECA(MODELE=MOMECA,
                        DDL_IMPO=(
-                                  _F(NOEUD=('N1','N4'),
+                                  _F(GROUP_NO=('N1','N4'),
                                      DX=0.0),
-                                  _F(NOEUD=('N1','N2'),
+                                  _F(GROUP_NO=('N1','N2'),
                                      DY=0.0,),
                                     ),);
 
           CHRGE[i]=AFFE_CHAR_MECA_F(MODELE=MOMECA,
-                       DDL_IMPO=(_F(NOEUD=('N2','N3'),
+                       DDL_IMPO=(_F(GROUP_NO=('N2','N3'),
                                     DX=epsimp,),),);
 
 
@@ -336,7 +336,7 @@ for i in range(NCAL):
           RESU[i]=CALC_CHAMP(reuse=RESU[i],RESULTAT=RESU[i],CRITERES=('SIEQ_ELNO'),CONTRAINTE=('SIEF_ELNO'))
 
 
-          #IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RESU[i],NOM_CHAM='SIEQ_ELNO',MAILLE='M1',NOEUD='N1',NOM_CMP=('VMIS','TRSIG')))
+          #IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=RESU[i],NOM_CHAM='SIEQ_ELNO',GROUP_MA='M1',GROUP_NO='N1',NOM_CMP=('VMIS','TRSIG')))
 
 
           EM  = CREA_CHAMP(  TYPE_CHAM = 'NOEU_DEPL_R',
@@ -364,8 +364,8 @@ for i in range(NCAL):
           DETRUIRE(NOM =LIAISON2);
 
           SVMIS[i]=POST_RELEVE_T(ACTION=_F(INTITULE='VMIS_N1',
-                                NOEUD='N1',
-                                MAILLE = 'M1',
+                                GROUP_NO='N1',
+                                GROUP_MA = 'M1',
                                 RESULTAT=RESU[i],
                                 NOM_CHAM='SIEQ_ELNO',
                                 NOM_CMP='PRIN_1',

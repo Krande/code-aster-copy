@@ -1,15 +1,29 @@
  TITRE
- HSNV124E
+ HSNV124E                                                                       
  FINSF
-
-COOR_3D
-  N3  0 0 0
-  N7  0 0 1
-FINSF
-
-SEG2
-  M1    N3 N7
-FINSF
-
-
-FIN
+ %
+ COOR_3D
+ N3        0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ N7        0.00000000000000E+00  0.00000000000000E+00  1.00000000000000E+00
+ FINSF
+ %
+ SEG2    
+ M1       N3       N7      
+ FINSF
+ %
+ GROUP_NO
+ N3                      
+ N3      
+ FINSF
+ %
+ GROUP_NO
+ N7                      
+ N7      
+ FINSF
+ %
+ GROUP_MA
+ M1                      
+ M1      
+ FINSF
+ %
+ FIN

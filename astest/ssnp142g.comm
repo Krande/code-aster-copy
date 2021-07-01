@@ -49,6 +49,13 @@ MA0=LIRE_MAILLAGE(FORMAT='MED');
 
 MA=CREA_MAILLAGE(MAILLAGE  = MA0, LINE_QUAD = _F(TOUT='OUI'))
 
+MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
+                      CREA_GROUP_NO= (
+                                        _F( NOM = 'NS276', NOEUD = 'NS276'),
+                                        _F( NOM = 'NS275', NOEUD = 'NS275'),
+                                     ),
+         )
+
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
 
@@ -171,8 +178,8 @@ pavj = FORMULE(VALE='max(rho_e*ap*(niv_av(INST)),0.0)',
                NOM_PARA=['Y', 'INST'],)
 
 # ON UTILISE AFFE_CHAR_CINE CAR PLUS ROBUSTE POUR LES CALCULS AVEC EJ ET SOLVEUR MUMPS
-P_AM_J = AFFE_CHAR_CINE_F(MODELE = MO,MECA_IMPO = (_F(NOEUD='NS275', PRE1=pamj )))
-P_AV_J = AFFE_CHAR_CINE_F(MODELE = MO,MECA_IMPO = (_F(NOEUD='NS276', PRE1=pavj )))
+P_AM_J = AFFE_CHAR_CINE_F(MODELE = MO,MECA_IMPO = (_F(GROUP_NO='NS275', PRE1=pamj )))
+P_AV_J = AFFE_CHAR_CINE_F(MODELE = MO,MECA_IMPO = (_F(GROUP_NO='NS276', PRE1=pavj )))
 
 # LISTE D'INSTANTS
 LR=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(_F(JUSQU_A=3, NOMBRE=1),_F(JUSQU_A=tfin, NOMBRE=5)));

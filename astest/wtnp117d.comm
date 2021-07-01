@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -388,7 +388,7 @@ IMPR_TABLE ( TABLE =  TRB0  ,
 TEST_RESU(RESU=_F(INST=100.0,
                RESULTAT=cal1,
                NOM_CHAM='DEPL',
-               NOEUD='N111',
+               GROUP_NO='N111',
                NOM_CMP='PRE1',
                VALE_CALC= 3.75690502E+04,
                REFERENCE='NON_DEFINI',
@@ -400,7 +400,7 @@ TEST_RESU(RESU=_F(INST=100.0,
 TEST_RESU(RESU=_F(INST=100.0,
                RESULTAT=cal1,
                NOM_CHAM='DEPL',
-               NOEUD='N111',
+               GROUP_NO='N111',
                NOM_CMP='PRE2',
                VALE_CALC=-6.53555041E+03,
                REFERENCE='NON_DEFINI',
@@ -413,7 +413,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=110,
                REFERENCE='AUTRE_ASTER',
                RESULTAT=cal1,
                NOM_CHAM='DEPL',
-               NOEUD='N111',
+               GROUP_NO='N111',
                NOM_CMP='PRE1',
                VALE_CALC= 4.48570609E+06,
                VALE_REFE=4.485706E6,
@@ -425,7 +425,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=110,
                REFERENCE='AUTRE_ASTER',
                RESULTAT=cal1,
                NOM_CHAM='DEPL',
-               NOEUD='N111',
+               GROUP_NO='N111',
                NOM_CMP='PRE2',
                VALE_CALC=-1.24133535E+04,
                VALE_REFE=-1.241335E4,

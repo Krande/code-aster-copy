@@ -31,6 +31,12 @@ MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLE,
                                      GROUP_NO='NOTORS',),),);
 #IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MAILLAGE), UNITE=6)
 
+MAILLAGE = DEFI_GROUP( reuse = MAILLAGE, MAILLAGE = MAILLAGE,
+                      CREA_GROUP_MA= (
+                                        _F( NOM = 'N13629', MAILLE = 'N13629'),
+                                     ),
+         )
+
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
                     CREA_GROUP_NO=(_F(GROUP_MA='VTUBE',),
@@ -121,7 +127,7 @@ CHARBLO=AFFE_CHAR_MECA(MODELE=MODELE,
                        LIAISON_ELEM=(_F(OPTION='3D_POU',
                                         GROUP_MA_1='SLAT_NEG',
                                      #  GROUP_NO_2='NOBLOC',),
-                                        MAILLE_2='N13629',),
+                                        GROUP_MA_2='N13629',),
                                      _F(OPTION='3D_POU',
                                         GROUP_MA_1='SLAT_POS',
                                         GROUP_MA_2='NOTORS',),),

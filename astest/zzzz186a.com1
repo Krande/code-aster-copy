@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -666,7 +666,7 @@ KDIS1 = 3.12E6;
 tab24 = POST_RELEVE_T(ACTION = _F(
                                     INTITULE = 'test',
                                     GROUP_MA='LIGNE',
-                                    NOEUD = ('N1','N2','N3','N4','N5','N6','N7','N8','N9',
+                                    GROUP_NO = ('N1','N2','N3','N4','N5','N6','N7','N8','N9',
                                              'N10','N11','N12','N13','N14','N15','N16','N17','N18','N19',
                                              'N20','N21','N22','N23','N24','N25','N26','N27','N28','N29',
                                              'N30','N31','N32','N33','N34','N35','N36','N37','N38','N39',
@@ -690,16 +690,16 @@ IMPR_OAR(TYPE_CALC = 'TUYAUTERIE',
 
 # md5 = 2979eea4671ff79c37fdabac2a3c9ef7
 TEST_FICHIER(FICHIER='fort.38',
-             NB_VALE=876,
-             VALE_CALC=1.10056966719E4,
-             VALE_CALC_K='218e41469273321fc1b7a75fd790ba1a',
+             NB_VALE=612,
+             VALE_CALC=8171.556601948119,
+             VALE_CALC_K='8b578066eb6b638ef46c0fc53864ba89',
              TOLE_MACHINE=1.E-3)
 
 
 tab25 = POST_RELEVE_T(ACTION = _F(
                                     INTITULE = 'test',
                                     GROUP_MA='LIGNE',
-                                    NOEUD = ('N1','N2','N3','N4','N5','N6','N7','N8','N9',
+                                    GROUP_NO = ('N1','N2','N3','N4','N5','N6','N7','N8','N9',
                                              'N10','N11','N12','N13','N14','N15','N16','N17','N18','N19',
                                              'N20','N21','N22','N23','N24','N25','N26','N27','N28','N29',
                                              'N30','N31','N32','N33','N34','N35','N36','N37','N38','N39',
@@ -725,9 +725,9 @@ IMPR_OAR(TYPE_CALC='TUYAUTERIE',
 
 # md5 = a5b0d49bec94dddbee12071bd2b4da5f
 TEST_FICHIER(FICHIER='fort.38',
-             NB_VALE=1752,
-             VALE_CALC=4.54819042387E4,
-             VALE_CALC_K='acda10a804104216eaab3937140bcfb2',
+             NB_VALE=1224,
+             VALE_CALC=3.3776468077e+04,
+             VALE_CALC_K='c0c37e55437d53e5a3572a4604a165b6',
              TOLE_MACHINE=1.E-3)
 
 FIN();
