@@ -200,7 +200,7 @@ NUMEDDL=NUME_DDL(    MATR_RIGI=RIGI_ELE)
 #--------------------------------------------------------------------------------
 VECT_EL1=CALC_VECT_ELEM(INST=5.E-3, OPTION='CHAR_MECA', CHAM_MATER=CHAMPMAT, CHARGE=ONDE)
 VECA1=ASSE_VECTEUR(VECT_ELEM=VECT_EL1, NUME_DDL=NUMEDDL)
-TEST_RESU(CHAM_NO=_F(NOEUD='N41',
+TEST_RESU(CHAM_NO=_F(GROUP_NO='N41',
                      NOM_CMP='DY',
                      CHAM_GD=VECA1,
                      VALE_CALC=-7.6231708412726098,),
@@ -243,17 +243,17 @@ DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                         SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                         )
 
-DXN22=RECU_FONCTION(     RESULTAT=DYNA,   NOEUD='N22',
+DXN22=RECU_FONCTION(     RESULTAT=DYNA,   GROUP_NO='N22',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DX'
                        )
 
-DYN22=RECU_FONCTION(     RESULTAT=DYNA,   NOEUD='N22',
+DYN22=RECU_FONCTION(     RESULTAT=DYNA,   GROUP_NO='N22',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DY'
                        )
 
-DZN22=RECU_FONCTION(     RESULTAT=DYNA,   NOEUD='N22',
+DZN22=RECU_FONCTION(     RESULTAT=DYNA,   GROUP_NO='N22',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DZ'
                        )
@@ -365,17 +365,17 @@ DYNAC=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                         SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                         )
 
-DXN22C=RECU_FONCTION(     RESULTAT=DYNAC,   NOEUD='N22',
+DXN22C=RECU_FONCTION(     RESULTAT=DYNAC,   GROUP_NO='N22',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DX'
                        )
 
-DYN22C=RECU_FONCTION(     RESULTAT=DYNAC,   NOEUD='N22',
+DYN22C=RECU_FONCTION(     RESULTAT=DYNAC,   GROUP_NO='N22',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DY'
                        )
 
-DZN22C=RECU_FONCTION(     RESULTAT=DYNAC,   NOEUD='N22',
+DZN22C=RECU_FONCTION(     RESULTAT=DYNAC,   GROUP_NO='N22',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DZ'
                        )
@@ -448,19 +448,19 @@ DYNB=DYNA_NON_LINE(     MODELE=MODELE,
                         )
 
 DXNB22=RECU_FONCTION(   LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                         RESULTAT=DYNB,   NOEUD='N22',
+                         RESULTAT=DYNB,   GROUP_NO='N22',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DX'
                        )
 
 DYNB22=RECU_FONCTION(   LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                         RESULTAT=DYNB,   NOEUD='N22',
+                         RESULTAT=DYNB,   GROUP_NO='N22',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DY'
                        )
 
 DZNB22=RECU_FONCTION(   LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                         RESULTAT=DYNB,   NOEUD='N22',
+                         RESULTAT=DYNB,   GROUP_NO='N22',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DZ'
                        )
@@ -520,19 +520,19 @@ DYND=DYNA_NON_LINE(     MODELE=MODELE,
                         )
 
 DXNB22D=RECU_FONCTION(   LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                         RESULTAT=DYND,   NOEUD='N22',
+                         RESULTAT=DYND,   GROUP_NO='N22',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DX'
                        )
 
 DYNB22D=RECU_FONCTION(   LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                         RESULTAT=DYND,   NOEUD='N22',
+                         RESULTAT=DYND,   GROUP_NO='N22',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DY'
                        )
 
 DZNB22D=RECU_FONCTION(   LIST_INST=TEMLI2,   PRECISION=1.E-4,
-                         RESULTAT=DYND,   NOEUD='N22',
+                         RESULTAT=DYND,   GROUP_NO='N22',
                          NOM_CHAM='DEPL',
                          NOM_CMP='DZ'
                        )
