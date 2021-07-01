@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ character(len=19), intent(in) :: compor_info
 !         v_info(4) = nt_vari    
 !          => total number of internal variables
 !       INFO.VARI = Collection of nb_zone (from CARTE) x Vecteur_Info
-!       For each zone   : Vector_Info is list of nb_vari name of internal variables (K16)
+!       For each zone   : Vector_Info is list of nbVari name of internal variables (K16)
 !       INFO.ZONE = list on nb_zone (from CARTE)
 !       For each zone   : number of elements with this comportement
 !       INFO.RELA = list on nb_zone (from CARTE) * 8
@@ -95,15 +95,15 @@ character(len=19), intent(in) :: compor_info
     integer, pointer :: v_zone(:) => null()
     integer, pointer :: v_zone_read(:) => null()
     integer, pointer :: v_model_elem(:) => null()
-    character(len=16), pointer :: v_vari(:) => null()
+    character(len=16), pointer :: infoVari(:) => null()
     character(len=16), pointer :: v_rela(:) => null()
     character(len=16), pointer :: v_compor_vale(:) => null()
     integer, pointer :: v_compor_desc(:) => null()
     integer, pointer :: v_compor_lima(:) => null()
     integer, pointer :: v_compor_lima_lc(:) => null()
     integer, pointer :: v_compor_ptma(:) => null()
-    integer :: nb_vale, nb_cmp_max, nb_zone, nb_vari, nt_vari, nb_vari_maxi, nb_zone_acti, nb_zone2
-    integer :: i_zone, i_elem, nb_elem_mesh, iret, nutyel, nb_vari_meca
+    integer :: nb_vale, nb_cmp_max, nb_zone, nbVari, nt_vari, nb_vari_maxi, nb_zone_acti, nb_zone2
+    integer :: i_zone, i_elem, nb_elem_mesh, iret, nutyel, nbVariMeca
     character(len=16) :: post_iter, vari_excl, regu_visc
     character(len=16) :: rela_comp, defo_comp, kit_comp(4), type_cpla, type_comp
     character(len=255) :: libr_name, subr_name
@@ -219,10 +219,10 @@ character(len=19), intent(in) :: compor_info
                 kit_comp(3)  = v_compor_vale(nb_cmp_max*(i_zone-1)+KIT3_NAME)
                 kit_comp(4)  = v_compor_vale(nb_cmp_max*(i_zone-1)+KIT4_NAME)
                 post_iter    = v_compor_vale(nb_cmp_max*(i_zone-1)+POSTITER)
-                read (v_compor_vale(nb_cmp_max*(i_zone-1)+NVAR),'(I16)') nb_vari
-                nb_vari_meca = 0
+                read (v_compor_vale(nb_cmp_max*(i_zone-1)+NVAR),'(I16)') nbVari
+                nbVariMeca = 0
                 if (v_compor_vale(nb_cmp_max*(i_zone-1)+MECA_NVAR) .ne. 'VIDE') then
-                    read (v_compor_vale(nb_cmp_max*(i_zone-1)+MECA_NVAR),'(I16)') nb_vari_meca
+                    read (v_compor_vale(nb_cmp_max*(i_zone-1)+MECA_NVAR),'(I16)') nbVariMeca
                 endif
                 regu_visc    = v_compor_vale(nb_cmp_max*(i_zone-1)+REGUVISC)
             else
@@ -235,10 +235,10 @@ character(len=19), intent(in) :: compor_info
                 kit_comp(3)  = compor_list_(KIT3_NAME)
                 kit_comp(4)  = compor_list_(KIT4_NAME)
                 post_iter    = compor_list_(POSTITER)
-                read (compor_list_(NVAR),'(I16)') nb_vari
-                nb_vari_meca = 0
+                read (compor_list_(NVAR),'(I16)') nbVari
+                nbVariMeca = 0
                 if (compor_list_(MECA_NVAR) .ne. 'VIDE') then
-                    read (compor_list_(MECA_NVAR),'(I16)') nb_vari_meca
+                    read (compor_list_(MECA_NVAR),'(I16)') nbVariMeca
                 endif
                 regu_visc    = compor_list_(REGUVISC)
             endif
@@ -266,24 +266,28 @@ character(len=19), intent(in) :: compor_info
             model_mfront   = v_paraExte(i_zone)%model_mfront
             model_dim      = v_paraExte(i_zone)%model_dim
             l_prot_comp    = l_mfront_proto .or. l_umat
-! --------- Exception for name of internal variables
-            call comp_meca_exc2(l_cristal, l_prot_comp, l_pmf, &
+
+! --------- Exception for name of internal state variables
+            call comp_meca_exc2(l_cristal, l_pmf, &
                                 l_excl   , vari_excl)
+
 ! --------- Save names of relation
             v_rela(4*(i_zone-1) + 1) = rela_comp
             v_rela(4*(i_zone-1) + 2) = defo_comp
             v_rela(4*(i_zone-1) + 3) = type_cpla
             v_rela(4*(i_zone-1) + 4) = regu_visc
-! --------- Save name of internal variables
-            call jeecra(jexnum(compor_info(1:19)//'.VARI', i_zone), 'LONMAX', nb_vari)
-            call jeveuo(jexnum(compor_info(1:19)//'.VARI', i_zone), 'E', vk16 = v_vari)
-            call comp_meca_name(nb_vari   , nb_vari_meca,&
-                                l_excl    , vari_excl   ,&
-                                l_kit_meta, l_kit_thm   , l_mfront_offi,&
+
+! --------- Get names of internal state variables
+            call jeecra(jexnum(compor_info(1:19)//'.VARI', i_zone), 'LONMAX', nbVari)
+            call jeveuo(jexnum(compor_info(1:19)//'.VARI', i_zone), 'E', vk16 = infoVari)
+            call comp_meca_name(nbVari   , nbVariMeca,&
+                                l_excl    , vari_excl,&
+                                l_kit_meta, l_mfront_offi, l_prot_comp,&
                                 rela_comp , defo_comp   , kit_comp     ,&
                                 type_cpla , post_iter   , regu_visc    ,&
                                 libr_name , subr_name   , model_mfront , model_dim,&
-                                v_vari)
+                                infoVari)
+
 ! --------- Save current zone
             v_zone_read(i_zone) = 1
             nb_zone_acti        = nb_zone_acti + 1

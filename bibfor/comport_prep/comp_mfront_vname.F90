@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,127 +17,102 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_mfront_vname(nb_vari    , &
-                             defo_comp  , type_cpla  , post_iter,&
+subroutine comp_mfront_vname(nbVariMeca , &
                              libr_name  , subr_name  , model_mfront, model_dim,&
-                             vari_begin , v_vari_name)
+                             infoVari)
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/lcinfo.h"
-#include "asterc/lcvari.h"
-#include "asterc/lcdiscard.h"
 #include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/comp_meca_code.h"
 #include "asterfort/lxlgut.h"
 #include "asterc/mfront_get_number_of_internal_state_variables.h"
 #include "asterc/mfront_get_internal_state_variables.h"
 #include "asterc/mfront_get_internal_state_variables_types.h"
 !
-integer, intent(in) :: nb_vari
-character(len=16), intent(in) :: defo_comp
-character(len=16), intent(in) :: type_cpla
-character(len=16), intent(in) :: post_iter
-character(len=255), intent(in) :: libr_name
-character(len=255), intent(in) :: subr_name
+integer, intent(in) :: nbVariMeca
+character(len=255), intent(in) :: libr_name, subr_name
 character(len=16), intent(in) :: model_mfront
 integer, intent(in) :: model_dim
-integer, intent(in) :: vari_begin
-character(len=16), pointer :: v_vari_name(:)
+character(len=16), pointer :: infoVari(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Preparation of comportment (mechanics)
 !
-! Name of internal variables
+! Name of internal variables for MFront
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  nb_vari          : number of internal variables 
-! In  l_excl           : .true. if exception case (no names for internal variables)
-! In  vari_excl        : name of internal variables if l_excl
-! In  l_kit_meta       : .true. if metallurgy
-! In  defo_comp        : DEFORMATION comportment
-! In  comp_code_py     : composite coded comportment (coding in Python)
-! In  rela_code_py     : coded comportment for RELATION (coding in Python)
-! In  meta_code_py     : coded comportment for metallurgy (coding in Python)
-! In  v_vari_name      : pointer to names of internal variables
+! In  nbVariMeca       : number of internal state variables for mechanical part of behaviour
+! In  libr_name        : name of library
+! In  subr_name        : name of comportement in library
+! In  model_mfront     : type of modelisation MFront
+! In  model_dim        : dimension of modelisation (2D or 3D)
+! Ptr infoVari         : pointer to names of internal state variables
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_vari_type, i_vari_type, i_vari, i_dime, nb_vari_mfr, nb_vari_supp, i, leng
-    character(len=16) :: vari_name, m_vari_name, m_vari_type, comp_code_py
-    character(len=80), pointer :: v_varim_name(:) => null()
-    character(len=80), pointer :: v_varim_type(:) => null()
-    character(len=16), pointer :: v_vari_supp(:) => null()
+    integer :: nbVariType, iVariType, iVari, iTens, leng
+    character(len=16) :: vari_name, variName, variType
+    character(len=80), pointer :: variNameList(:) => null()
+    character(len=80), pointer :: variTypeList(:) => null()
     character(len=2), parameter :: cmpv_name(6) = (/'XX','YY','ZZ','XY','XZ','YZ'/)
     character(len=2), parameter :: cmpt_name(9) = (/'F0','F1','F2','F3','F4','F5','F6','F7','F8'/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call mfront_get_number_of_internal_state_variables(libr_name   , subr_name,&
-                                                       model_mfront, nb_vari_type)
-    call comp_meca_code(defo_comp_    = defo_comp,&
-                        type_cpla_    = type_cpla,&
-                        post_iter_    = post_iter,&
-                        comp_code_py_ = comp_code_py)
-    if ( nb_vari .ne. 0 ) then
-        AS_ALLOCATE(vk80 = v_varim_name, size = nb_vari_type)
-        AS_ALLOCATE(vk80 = v_varim_type, size = nb_vari_type)
+                                                       model_mfront, nbVariType)
+    if ( nbVariMeca .ne. 0 ) then
+        AS_ALLOCATE(vk80 = variNameList, size = nbVariType)
+        AS_ALLOCATE(vk80 = variTypeList, size = nbVariType)
         call mfront_get_internal_state_variables(libr_name, subr_name,&
-                                                 model_mfront, v_varim_name,&
-                                                 nb_vari_type)
+                                                 model_mfront, variNameList,&
+                                                 nbVariType)
         call mfront_get_internal_state_variables_types(libr_name, subr_name,&
-                                                       model_mfront, v_varim_type)
-        i_vari = 0
-        do i_vari_type = 1, nb_vari_type
-            m_vari_name = v_varim_name(i_vari_type)(1:16)
-            m_vari_type = v_varim_type(i_vari_type)(1:16)
-            leng        = lxlgut(m_vari_name)
-            if (m_vari_type .eq. 'scalar') then
-                i_vari = i_vari + 1
-                v_vari_name(vari_begin-1+i_vari) = m_vari_name
-            elseif (m_vari_type .eq. 'vector') then
-                do i_dime = 1, 2*model_dim
+                                                       model_mfront, variTypeList)
+        iVari = 0
+        do iVariType = 1, nbVariType
+            variName = variNameList(iVariType)(1:16)
+            variType = variTypeList(iVariType)(1:16)
+            leng     = lxlgut(variName)
+            if (variType .eq. 'scalar') then
+                iVari = iVari + 1
+                infoVari(iVari) = variName
+
+            elseif (variType .eq. 'vector') then
+                do iTens = 1, 2*model_dim
                     if (leng .le. 14) then
-                        vari_name = m_vari_name(1:leng)//cmpv_name(i_dime)
+                        vari_name = variName(1:leng)//cmpv_name(iTens)
                     else
-                        vari_name = m_vari_name(1:14)//cmpv_name(i_dime)
+                        vari_name = variName(1:14)//cmpv_name(iTens)
                     endif
-                    i_vari = i_vari + 1
-                    v_vari_name(vari_begin-1+i_vari) = vari_name
+                    iVari = iVari + 1
+                    infoVari(iVari) = vari_name
                 end do
-            elseif (m_vari_type .eq. 'tensor') then
-                do i_dime = 1, 9
+
+            elseif (variType .eq. 'tensor') then
+                do iTens = 1, 9
                     if (leng .le. 14) then
-                        vari_name = m_vari_name(1:leng)//cmpt_name(i_dime)
+                        vari_name = variName(1:leng)//cmpt_name(iTens)
                     else
-                        vari_name = m_vari_name(1:14)//cmpt_name(i_dime)
+                        vari_name = variName(1:14)//cmpt_name(iTens)
                     endif
-                    i_vari = i_vari + 1
-                    v_vari_name(vari_begin-1+i_vari) = vari_name
+                    iVari = iVari + 1
+                    infoVari(iVari) = vari_name
                 end do
+
             else
-                ASSERT(.False.)
+                ASSERT(ASTER_FALSE)
+
             endif
         end do
-        nb_vari_mfr  = i_vari
-        nb_vari_supp = nb_vari-nb_vari_mfr
-        if (nb_vari_mfr .ne. nb_vari) then
-            AS_ALLOCATE(vk16 = v_vari_supp, size = nb_vari_supp)
-            call lcvari(comp_code_py, nb_vari_supp, v_vari_supp)
-            do i = 1, nb_vari_supp
-               v_vari_name(vari_begin-1+i+nb_vari_mfr) = v_vari_supp(i)
-            end do
-            AS_DEALLOCATE(vk16 = v_vari_supp)
-        endif
-        AS_DEALLOCATE(vk80 = v_varim_name)
-        AS_DEALLOCATE(vk80 = v_varim_type)   
+        AS_DEALLOCATE(vk80 = variNameList)
+        AS_DEALLOCATE(vk80 = variTypeList)   
+        ASSERT(nbVariMeca .eq. iVari)
     endif
-    call lcdiscard(comp_code_py)
 !
 end subroutine

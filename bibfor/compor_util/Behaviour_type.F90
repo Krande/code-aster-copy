@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -156,38 +156,42 @@ implicit none
 ! 
     type Behaviour_Para
 ! ----- Keyword RELATION
-        character(len=16) :: rela_comp       = ' '
+        character(len=16) :: rela_comp = ' '
 ! ----- Keyword DEFORMATION
-        character(len=16) :: defo_comp       = ' '
+        character(len=16) :: defo_comp = ' '
 ! ----- Keyword COMP_INCR/COMP_ELAS
-        character(len=16) :: type_comp       = ' '
+        character(len=16) :: type_comp = ' '
 ! ----- Keyword DEBORST
-        character(len=16) :: type_cpla       = ' '
+        character(len=16) :: type_cpla = ' '
 ! ----- Keyword KIT
-        character(len=16) :: kit_comp(4)     = ' '
+        character(len=16) :: kit_comp(4) = ' '
 ! ----- Keyword COMPOR
-        character(len=16) :: mult_comp       = ' '
+        character(len=16) :: mult_comp = ' '
 ! ----- Keyword POST_ITER
-        character(len=16) :: post_iter       = ' '
+        character(len=16) :: post_iter = ' '
 ! ----- Type of strain transmitted to the behaviour law : 'OLD', 'MECANIQUE' or 'TOTALE'
-        character(len=16) :: defo_ldc        = ' '
+        character(len=16) :: defo_ldc = ' '
 ! ----- Total number of internal state variables
-        integer           :: nb_vari         = 0
+        integer           :: nb_vari  = 0
 ! ----- Number of internal state variables for kit
         integer           :: nb_vari_comp(4) = 0
 ! ----- Index of law for kit
-        integer           :: nume_comp(4)    = 0
+        integer           :: nume_comp(4)  = 0
 ! ----- Keyword RIGI_GEOM
-        character(len=16) :: rigi_geom       = ' '
+        character(len=16) :: rigi_geom = ' '
 ! ----- Keyword REGU_VISC
-        character(len=16) :: regu_visc       = ' '
+        character(len=16) :: regu_visc = ' '
+! ----- Mechanical part of behaviour
+        character(len=16) :: meca_comp = ' '
     end type Behaviour_Para
 !
 ! - Behaviour - Preparation - Criteria for behaviour
 ! 
     type Behaviour_Crit
 ! ----- Keyword RELATION
-        character(len=16)         :: rela_comp = ' '
+        character(len=16) :: rela_comp = ' '
+! ----- Mechanical part of behaviour
+        character(len=16) :: meca_comp = ' '
 ! ----- Parameters for external behaviours
         type(Behaviour_ParaExte)  :: paraExte
         integer                   :: type_matr_t      = 0

@@ -17,10 +17,9 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_meca_code(rela_comp_   , defo_comp_   , type_cpla_   , kit_comp_    ,&
-                          meca_comp_   , post_iter_   , l_implex_    , regu_visc_   ,&
-                          comp_code_py_, rela_code_py_, defo_code_py_, meta_code_py_,&
-                          meca_code_py_)
+subroutine comp_meca_code(rela_comp_   , defo_comp_   , type_cpla_   , kit_comp_,&
+                          post_iter_   , regu_visc_   , l_implex_    , &
+                          comp_code_py_, rela_code_py_, meta_code_py_)
 !
 implicit none
 !
@@ -28,19 +27,10 @@ implicit none
 #include "asterc/lccree.h"
 #include "asterfort/comp_meca_l.h"
 !
-character(len=16), optional, intent(in) :: rela_comp_
-character(len=16), optional, intent(in) :: defo_comp_
-character(len=16), optional, intent(in) :: type_cpla_
-character(len=16), optional, intent(in) :: kit_comp_(4)
-character(len=16), optional, intent(in) :: meca_comp_
-character(len=16), optional, intent(in) :: post_iter_
+character(len=16), optional, intent(in) :: rela_comp_, defo_comp_, type_cpla_, kit_comp_(4)
+character(len=16), optional, intent(in) :: post_iter_, regu_visc_
 aster_logical, optional, intent(in) :: l_implex_
-character(len=16), optional, intent(in) :: regu_visc_
-character(len=16), optional, intent(out) :: comp_code_py_
-character(len=16), optional, intent(out) :: rela_code_py_
-character(len=16), optional, intent(out) :: defo_code_py_
-character(len=16), optional, intent(out) :: meta_code_py_
-character(len=16), optional, intent(out) :: meca_code_py_
+character(len=16), optional, intent(out) :: comp_code_py_, rela_code_py_, meta_code_py_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,24 +44,21 @@ character(len=16), optional, intent(out) :: meca_code_py_
 ! In  defo_comp        : DEFORMATION comportment
 ! In  type_cpla        : plane stress method
 ! In  kit_comp         : KIT comportment
-! In  meca_comp        : relation for mechanical part
 ! In  post_iter        : type of post_treatment
 ! In  l_implex         : .true. if IMPLEX method
 ! In  regu_visc        : keyword for viscuous regularization
 ! Out comp_code_py     : composite coded comportment (coding in Python)
 ! Out rela_code_py     : coded comportment for RELATION (coding in Python)
-! Out defo_code_py     : coded comportment for DEFORMATION (coding in Python)
 ! Out meta_code_py     : coded comportment for metallurgy (coding in Python)
-! Out meca_code_py     : coded comportment for mechanical part (coding in Python)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_comp_elem, ikit
     character(len=16) :: comp_elem(20), rela_meta
-    character(len=16) :: meta_code_py, rela_code_py, defo_code_py, meca_code_py, comp_code_py
+    character(len=16) :: meta_code_py, rela_code_py, comp_code_py
     aster_logical :: l_kit_meta, l_kit_thm, l_implex
     character(len=16) :: post_iter
-    character(len=16) :: rela_comp, defo_comp, kit_comp(4), type_cpla, meca_comp, regu_visc
+    character(len=16) :: rela_comp, defo_comp, kit_comp(4), type_cpla, regu_visc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,10 +69,6 @@ character(len=16), optional, intent(out) :: meca_code_py_
     defo_comp = 'VIDE'
     if (present(defo_comp_)) then
         defo_comp = defo_comp_
-    endif
-    meca_comp = 'VIDE'
-    if (present(meca_comp_)) then
-        meca_comp = meca_comp_
     endif
     type_cpla = 'VIDE'
     if (present(type_cpla_)) then
@@ -146,21 +129,11 @@ character(len=16), optional, intent(out) :: meca_code_py_
         rela_meta = kit_comp(1)
         call lccree(1, rela_meta, meta_code_py)
     endif
-!
+
 ! - Coding only RELATION (Python)
-!
     call lccree(1, rela_comp, rela_code_py)
-!
-! - Coding only DEFORMATION (Python)
-!
-    call lccree(1, defo_comp, defo_code_py)
-!
-! - Coding only mechanical part (Python)
-!
-    call lccree(1, meca_comp, meca_code_py)
-!
+
 ! - Coding composite comportment (Python)
-!
     call lccree(nb_comp_elem, comp_elem, comp_code_py)
 !
     if (present(meta_code_py_)) then
@@ -168,12 +141,6 @@ character(len=16), optional, intent(out) :: meca_code_py_
     endif
     if (present(rela_code_py_)) then
         rela_code_py_ = rela_code_py
-    endif
-    if (present(defo_code_py_)) then
-        defo_code_py_ = defo_code_py
-    endif
-    if (present(meca_code_py_)) then
-        meca_code_py_ = meca_code_py
     endif
     if (present(comp_code_py_)) then
         comp_code_py_ = comp_code_py

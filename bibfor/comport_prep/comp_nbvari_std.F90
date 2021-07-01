@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -109,8 +109,8 @@ integer, optional, intent(out) :: nume_comp_(4)
 !
     call comp_meca_code(rela_comp_  = rela_comp, defo_comp_  = defo_comp ,&
                         type_cpla_  = type_cpla, kit_comp_   = kit_comp,&
-                        post_iter_  = post_iter, l_implex_   = l_implex,&
-                        regu_visc_  = regu_visc,&
+                        post_iter_  = post_iter, regu_visc_  = regu_visc,&
+                        l_implex_   = l_implex,&
                         comp_code_py_ = comp_code_py, rela_code_py_ = rela_code_py)
 !
 ! - Get number of variables

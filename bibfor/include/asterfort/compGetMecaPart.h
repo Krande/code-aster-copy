@@ -18,12 +18,8 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine comp_meca_code(rela_comp_   , defo_comp_   , type_cpla_   , kit_comp_    ,&
-                              post_iter_   , regu_visc_   , l_implex_    , &
-                              comp_code_py_, rela_code_py_, meta_code_py_)
-        character(len=16), optional, intent(in) :: rela_comp_, defo_comp_, type_cpla_, kit_comp_(4)
-        character(len=16), optional, intent(in) :: post_iter_, regu_visc_
-        aster_logical, optional, intent(in) :: l_implex_
-        character(len=16), optional, intent(out) :: comp_code_py_, rela_code_py_, meta_code_py_
-    end subroutine comp_meca_code
+    subroutine compGetMecaPart(rela_comp, kit_comp, meca_comp)
+        character(len=16), intent(in) :: rela_comp, kit_comp(4)
+        character(len=16), intent(out) :: meca_comp
+    end subroutine compGetMecaPart
 end interface

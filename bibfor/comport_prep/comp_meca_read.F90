@@ -32,6 +32,7 @@ implicit none
 #include "asterfort/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/compGetMecaPart.h"
 #include "asterfort/comp_meca_incr.h"
 #include "asterfort/comp_meca_deflc.h"
 #include "asterfort/getExternalBehaviourPara.h"
@@ -58,12 +59,10 @@ character(len=8), intent(in), optional :: model
 !
     character(len=16), parameter:: keywordfact = 'COMPORTEMENT'
     character(len=8) :: mesh
-    integer :: i_comp, nb_comp, model_dim, iret
-    character(len=16) :: defo_comp, rela_comp, type_cpla, mult_comp, type_comp
-    character(len=16) :: post_iter, model_mfront, defo_ldc, rigi_geom, regu_visc
+    integer :: i_comp, nb_comp, iret
+    character(len=16) :: defo_comp, rela_comp, type_cpla, mult_comp, type_comp, meca_comp
+    character(len=16) :: post_iter, defo_ldc, rigi_geom, regu_visc
     character(len=16) :: kit_comp(4), answer
-    character(len=255) :: libr_name, subr_name
-    integer :: unit_comp, nb_vari_umat
     aster_logical :: l_cristal, l_kit, lNonIncr
     aster_logical :: l_comp_external
     integer, pointer :: v_model_elem(:) => null()
@@ -84,46 +83,38 @@ character(len=8), intent(in), optional :: model
 ! - Read informations
 !
     do i_comp = 1, nb_comp
-        libr_name      = ' '
-        subr_name      = ' '
-        model_mfront   = ' '
-        model_dim      = 0
-        nb_vari_umat   = 0
-        unit_comp      = 0
-        rela_comp      = 'VIDE'
-        defo_comp      = 'VIDE'
-        mult_comp      = ' '
-        type_cpla      = 'VIDE'
-        libr_name      = ' '
-        post_iter      = ' '
-        defo_ldc       = ' '
-        kit_comp(1:4)  = 'VIDE'
-        rigi_geom      = ' '
-        regu_visc      = 'VIDE'
 ! ----- Get RELATION from command file
+        rela_comp = 'VIDE'
         call getvtx(keywordfact, 'RELATION', iocc = i_comp, scal = rela_comp)
         call deprecated_behavior(rela_comp)
+
 ! ----- Detection of specific cases
         call comp_meca_l(rela_comp, 'KIT'    , l_kit)
         call comp_meca_l(rela_comp, 'CRISTAL', l_cristal)
+
 ! ----- Get DEFORMATION from command file
+        defo_comp = 'VIDE'
         call getvtx(keywordfact, 'DEFORMATION', iocc = i_comp, scal = defo_comp)
+
 ! ----- Get RIGI_GEOM from command file
+        rigi_geom = ' '
         if (getexm(keywordfact,'RIGI_GEOM') .eq. 1) then
             call getvtx(keywordfact, 'RIGI_GEOM', iocc = i_comp, scal=rigi_geom, nbret=iret)
             if (iret .eq. 0) then
-                rigi_geom = ' '
+                rigi_geom = 'VIDE'
             end if
         end if
 
 ! ----- Damage post-treatment
+        post_iter = 'VIDE'
         if (getexm(keywordfact,'POST_ITER') .eq. 1) then
             call getvtx(keywordfact, 'POST_ITER', iocc = i_comp, scal=post_iter, nbret=iret)
             if (iret .eq. 0) then
-                post_iter = ' '
+                post_iter = 'VIDE'
             endif
         endif
 ! ----- Viscuous regularization
+        regu_visc = 'VIDE'
         if (getexm(keywordfact,'REGU_VISC') .eq. 1) then
             call getvtx(keywordfact, 'REGU_VISC', iocc = i_comp, scal=answer)
             if (answer .eq. 'OUI') then
@@ -134,41 +125,56 @@ character(len=8), intent(in), optional :: model
                 ASSERT(ASTER_FALSE)
             endif
         endif
+
 ! ----- For KIT
+        kit_comp = 'VIDE'
         if (l_kit) then
             call comp_meca_rkit(keywordfact, i_comp, rela_comp, kit_comp, l_etat_init)
         endif
+
+! ----- Get mechanical part of behaviour
+        meca_comp = 'VIDE'
+        call compGetMecaPart(rela_comp, kit_comp, meca_comp)
+
 ! ----- Get multi-comportment *CRISTAL
+        mult_comp = 'VIDE'
         if (l_cristal) then
             call getvid(keywordfact, 'COMPOR', iocc = i_comp, scal = mult_comp)
         endif
+
 ! ----- Get parameters for external programs (MFRONT/UMAT)
+        type_cpla = 'VIDE'
         call getExternalBehaviourPara(mesh           , v_model_elem, rela_comp, kit_comp,&
                                       l_comp_external, ds_compor_prep%v_paraExte(i_comp),&
                                       keywordfact    , i_comp,&
                                       type_cpla_out_ = type_cpla)
-! ----- Select type of comportment (incremental or total)
+
+! ----- Select type of behaviour (incremental or total)
+        type_comp = 'VIDE'
         call comp_meca_incr(rela_comp, defo_comp, type_comp, l_etat_init)
         if (type_comp .eq. 'COMP_ELAS') then
             lNonIncr = ASTER_TRUE
         endif
+
 ! ----- Select type of strain (mechanical or total) from catalog
+        defo_ldc = 'VIDE'
         call comp_meca_deflc(rela_comp, defo_comp, defo_ldc)
+
 ! ----- Save parameters
-        ds_compor_prep%v_para(i_comp)%rela_comp   = rela_comp
-        ds_compor_prep%v_para(i_comp)%defo_comp   = defo_comp
-        ds_compor_prep%v_para(i_comp)%type_comp   = type_comp
-        ds_compor_prep%v_para(i_comp)%type_cpla   = type_cpla
-        ds_compor_prep%v_para(i_comp)%kit_comp(:) = kit_comp(:)
-        ds_compor_prep%v_para(i_comp)%mult_comp   = mult_comp
-        ds_compor_prep%v_para(i_comp)%post_iter   = post_iter
-        ds_compor_prep%v_para(i_comp)%defo_ldc    = defo_ldc
-        ds_compor_prep%v_para(i_comp)%rigi_geom   = rigi_geom
-        ds_compor_prep%v_para(i_comp)%regu_visc   = regu_visc
+        ds_compor_prep%v_para(i_comp)%rela_comp = rela_comp
+        ds_compor_prep%v_para(i_comp)%meca_comp = meca_comp
+        ds_compor_prep%v_para(i_comp)%defo_comp = defo_comp
+        ds_compor_prep%v_para(i_comp)%type_comp = type_comp
+        ds_compor_prep%v_para(i_comp)%type_cpla = type_cpla
+        ds_compor_prep%v_para(i_comp)%kit_comp  = kit_comp
+        ds_compor_prep%v_para(i_comp)%mult_comp = mult_comp
+        ds_compor_prep%v_para(i_comp)%post_iter = post_iter
+        ds_compor_prep%v_para(i_comp)%defo_ldc  = defo_ldc
+        ds_compor_prep%v_para(i_comp)%rigi_geom = rigi_geom
+        ds_compor_prep%v_para(i_comp)%regu_visc = regu_visc
     end do
-!
+
 ! - Is at least ONE behaviour is not incremental ?
-!
     ds_compor_prep%lNonIncr = lNonIncr
 !
 end subroutine

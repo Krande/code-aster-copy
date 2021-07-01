@@ -17,45 +17,47 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_meca_exc2(l_cristal, l_pmf,&
-                          l_excl   , vari_excl)
+subroutine compGetMecaPart(rela_comp, kit_comp, meca_comp)
 !
 implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/comp_meca_l.h"
 !
-aster_logical, intent(in) :: l_cristal, l_pmf
-aster_logical, intent(out) :: l_excl
-character(len=16), intent(out) :: vari_excl
-!
-! --------------------------------------------------------------------------------------------------
-!
-! Preparation of comportment (mechanics)
-!
-! Exception for name of internal variables
+character(len=16), intent(in) :: rela_comp, kit_comp(4)
+character(len=16), intent(out) :: meca_comp
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  l_cristal        : .true. if *CRISTAL comportment
-! In  l_pmf            : .true. if PMF
-! Out l_excl           : .true. if exception case (no names for internal variables)
-! Out vari_excl        : name of internal variables if l_excl
+! Preparation of comportment (mechanics) - Utility
+!
+! Get relation for mechanical part of behaviour
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_excl    = ASTER_FALSE
-    vari_excl = ' '
+! In  rela_comp        : RELATION comportment
+! In  kit_comp         : KIT comportment
+! Out meca_comp        : mecanical part of behaviour
+!
+! --------------------------------------------------------------------------------------------------
+!
+    aster_logical :: l_kit_thm, l_kit_ddi
+!
+! --------------------------------------------------------------------------------------------------
+!
+    meca_comp = ' '
+    call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
+    call comp_meca_l(rela_comp, 'KIT_DDI', l_kit_ddi)
+    if (l_kit_thm) then
+        meca_comp = kit_comp(1)
 
-! - Multiple comportment (PMF)
-    if (l_pmf) then
-        l_excl    = ASTER_TRUE
-        vari_excl = '&&MULT_PMF'
-    endif
+    elseif (l_kit_ddi) then
+        meca_comp = kit_comp(1)
 
-! - Multiple comportment
-    if (l_cristal) then
-        l_excl    = ASTER_TRUE
-        vari_excl = '&&MULT_COMP'
+    else
+        meca_comp = rela_comp
+
     endif
 !
 end subroutine

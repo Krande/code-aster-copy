@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ type(Behaviour_PrepPara), intent(inout) :: ds_compor_prep
 !
 ! Preparation of behaviour (mechanics)
 !
-! Count all internal variables
+! Count all internal state variables
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,9 +41,9 @@ type(Behaviour_PrepPara), intent(inout) :: ds_compor_prep
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_comp, nb_comp
+    integer :: iComp, nb_comp
     character(len=16) :: keywordfact
-    character(len=16) :: post_iter
+    character(len=16) :: post_iter, meca_comp
     character(len=16) :: rela_comp, defo_comp, mult_comp, kit_comp(4), type_cpla, regu_visc
     integer :: nume_comp(4), nb_vari, nb_vari_comp(4), nb_vari_umat, model_dim
     character(len=255) :: libr_name, subr_name
@@ -54,37 +54,38 @@ type(Behaviour_PrepPara), intent(inout) :: ds_compor_prep
 !
     keywordfact = 'COMPORTEMENT'
     nb_comp     = ds_compor_prep%nb_comp
-!
-! - Loop on occurrences of COMPORTEMENT
-!
-    do i_comp = 1, nb_comp
-        nb_vari           = 0
-        nume_comp(1:4)    = 0
-        nb_vari_comp(1:4) = 0
-! ----- Options
-        rela_comp    = ds_compor_prep%v_para(i_comp)%rela_comp
-        defo_comp    = ds_compor_prep%v_para(i_comp)%defo_comp
-        type_cpla    = ds_compor_prep%v_para(i_comp)%type_cpla
-        kit_comp(:)  = ds_compor_prep%v_para(i_comp)%kit_comp(:)
-        mult_comp    = ds_compor_prep%v_para(i_comp)%mult_comp
-        post_iter    = ds_compor_prep%v_para(i_comp)%post_iter
-        regu_visc    = ds_compor_prep%v_para(i_comp)%regu_visc
-        libr_name    = ds_compor_prep%v_paraExte(i_comp)%libr_name
-        subr_name    = ds_compor_prep%v_paraExte(i_comp)%subr_name
-        nb_vari_umat = ds_compor_prep%v_paraExte(i_comp)%nb_vari_umat
-        model_mfront = ds_compor_prep%v_paraExte(i_comp)%model_mfront
-        model_dim    = ds_compor_prep%v_paraExte(i_comp)%model_dim
+    do iComp = 1, nb_comp
+        nb_vari      = 0
+        nume_comp    = 0
+        nb_vari_comp = 0
+
+! ----- Get parameters
+        rela_comp    = ds_compor_prep%v_para(iComp)%rela_comp
+        defo_comp    = ds_compor_prep%v_para(iComp)%defo_comp
+        meca_comp    = ds_compor_prep%v_para(iComp)%meca_comp
+        type_cpla    = ds_compor_prep%v_para(iComp)%type_cpla
+        kit_comp     = ds_compor_prep%v_para(iComp)%kit_comp(:)
+        mult_comp    = ds_compor_prep%v_para(iComp)%mult_comp
+        post_iter    = ds_compor_prep%v_para(iComp)%post_iter
+        regu_visc    = ds_compor_prep%v_para(iComp)%regu_visc
+        libr_name    = ds_compor_prep%v_paraExte(iComp)%libr_name
+        subr_name    = ds_compor_prep%v_paraExte(iComp)%subr_name
+        nb_vari_umat = ds_compor_prep%v_paraExte(iComp)%nb_vari_umat
+        model_mfront = ds_compor_prep%v_paraExte(iComp)%model_mfront
+        model_dim    = ds_compor_prep%v_paraExte(iComp)%model_dim
         l_implex     = ds_compor_prep%l_implex
+
 ! ----- Count internal variables
         call comp_nbvari(rela_comp   , defo_comp, type_cpla   , kit_comp ,&
-                         post_iter   , mult_comp, libr_name,&
+                         post_iter   , meca_comp, mult_comp   , libr_name,&
                          subr_name   , model_dim, model_mfront, nb_vari  ,&
                          nb_vari_umat, l_implex , regu_visc,&
                          nb_vari_comp, nume_comp)
+
 ! ----- Save informations
-        ds_compor_prep%v_para(i_comp)%nb_vari         = nb_vari
-        ds_compor_prep%v_para(i_comp)%nb_vari_comp(:) = nb_vari_comp(:)
-        ds_compor_prep%v_para(i_comp)%nume_comp(:)    = nume_comp(:)
+        ds_compor_prep%v_para(iComp)%nb_vari         = nb_vari
+        ds_compor_prep%v_para(iComp)%nb_vari_comp(:) = nb_vari_comp(:)
+        ds_compor_prep%v_para(iComp)%nume_comp(:)    = nume_comp(:)
     end do
 !
 end subroutine

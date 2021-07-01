@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,23 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine comp_mfront_vname(nb_vari   , &
-                                 defo_comp , type_cpla  , post_iter   ,&
-                                 libr_name , subr_name  , model_mfront, model_dim,&
-                                 vari_begin, v_vari_name)
-        integer, intent(in) :: nb_vari
-        character(len=16), intent(in) :: defo_comp
-        character(len=16), intent(in) :: type_cpla
-        character(len=16), intent(in) :: post_iter
-        character(len=255), intent(in) :: libr_name
-        character(len=255), intent(in) :: subr_name
+    subroutine comp_mfront_vname(nbVariMeca , &
+                                 libr_name  , subr_name  , model_mfront, model_dim,&
+                                 infoVari)
+        integer, intent(in) :: nbVariMeca
+        character(len=255), intent(in) :: libr_name, subr_name
         character(len=16), intent(in) :: model_mfront
         integer, intent(in) :: model_dim
-        integer, intent(in) :: vari_begin
-        character(len=16), pointer :: v_vari_name(:)
+        character(len=16), pointer :: infoVari(:)
     end subroutine comp_mfront_vname
 end interface

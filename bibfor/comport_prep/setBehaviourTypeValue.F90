@@ -51,7 +51,7 @@ character(len=16), pointer, optional :: v_compor_(:)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i_comp
-    aster_logical :: l_pmf, l_kit_thm, l_kit_ddi, l_kit_meta, l_kit_cg
+    aster_logical :: l_pmf, l_kit_thm, l_kit_ddi, l_kit_meta, l_kit_cg, l_exte_comp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,6 +65,7 @@ character(len=16), pointer, optional :: v_compor_(:)
     call comp_meca_l(v_para(i_comp)%rela_comp, 'KIT_DDI' , l_kit_ddi)
     call comp_meca_l(v_para(i_comp)%rela_comp, 'KIT_META', l_kit_meta)
     call comp_meca_l(v_para(i_comp)%rela_comp, 'KIT_CG'  , l_kit_cg)
+    call comp_meca_l(v_para(i_comp)%rela_comp, 'EXTE_COMP', l_exte_comp)
 !
     if (present(v_compor_)) then
         v_compor_(1:COMPOR_SIZE) = 'VIDE'
@@ -117,6 +118,9 @@ character(len=16), pointer, optional :: v_compor_(:)
             write (v_compor_(CABLE_NVAR),'(I16)') v_para(i_comp)%nb_vari_comp(1)
             write (v_compor_(SHEATH_NVAR),'(I16)')  v_para(i_comp)%nb_vari_comp(2)
         endif
+        if (l_exte_comp) then
+            write (v_compor_(MECA_NVAR),'(I16)') v_para(i_comp)%nb_vari_comp(4)
+        endif
     endif
     if (present(l_compor_)) then
         l_compor_(1:COMPOR_SIZE) = 'VIDE'
@@ -157,6 +161,9 @@ character(len=16), pointer, optional :: v_compor_(:)
             write (l_compor_(SHEATH_NUME),'(I16)')  v_para(i_comp)%nume_comp(3)
             write (l_compor_(CABLE_NVAR),'(I16)') v_para(i_comp)%nb_vari_comp(1)
             write (l_compor_(SHEATH_NVAR),'(I16)')  v_para(i_comp)%nb_vari_comp(2)
+        endif
+        if (l_exte_comp) then
+            write (l_compor_(MECA_NVAR),'(I16)') v_para(i_comp)%nb_vari_comp(4)
         endif
     endif
 !

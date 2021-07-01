@@ -33,6 +33,7 @@ implicit none
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_meca_rkit.h"
 #include "asterfort/comp_read_mesh.h"
+#include "asterfort/compGetMecaPart.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exicp.h"
 #include "asterfort/getBehaviourAlgo.h"
@@ -141,20 +142,20 @@ aster_logical, intent(in), optional :: l_implex_
     if (present(l_implex_)) then
         l_implex = l_implex_
     endif
-!
+
 ! - Pointer to list of elements in model
-!
+    mesh = ' '
     if ( present(model_) ) then
         call jeveuo(model_//'.MAILLE', 'L', vi = v_model_elem)
-        call dismoi('NOM_MAILLA', model_, 'MODELE', repk=mesh)
+        call dismoi('NOM_MAILLA', model_, 'MODELE', repk = mesh)
     endif
-!
+
 ! - Read informations
-!
     do i_comp = 1, nb_comp
 ! ----- Get parameters
         call getvtx(keywordfact, 'RELATION'   , iocc = i_comp, scal = rela_comp)
         call getvtx(keywordfact, 'DEFORMATION', iocc = i_comp, scal = defo_comp)
+
 ! ----- Detection of specific cases
         call comp_meca_l(rela_comp, 'KIT'         , l_kit)
         call comp_meca_l(rela_comp, 'KIT_THM'     , l_kit_thm)
@@ -164,21 +165,15 @@ aster_logical, intent(in), optional :: l_implex_
         if (l_kit_thm) then
             l_exist_thm = ASTER_TRUE
         endif
+
 ! ----- For KIT
         if (l_kit) then
             call comp_meca_rkit(keywordfact, i_comp, rela_comp, kit_comp)
         endif
-! ----- Get mechanics part
-        if (l_kit_thm) then
-            meca_comp = kit_comp(1)
-            hydr_comp = kit_comp(2)
-            ther_comp = kit_comp(3)
-            thmc_comp = kit_comp(4)
-        elseif (l_kit_ddi) then
-            meca_comp = kit_comp(1)
-        else
-            meca_comp = rela_comp
-        endif
+
+! ----- Get mechanical part of behaviour
+        call compGetMecaPart(rela_comp, kit_comp, meca_comp)
+
 ! ----- Coding comportment (Python)
         call lccree(1, rela_comp, rela_code_py)
         call lccree(1, defo_comp, defo_code_py)
@@ -361,7 +356,9 @@ aster_logical, intent(in), optional :: l_implex_
         call lcdiscard(rela_code_py)
         call lcdiscard(defo_code_py)
 
-! ----- Save options in list
+! ----- Save parameters
+        ds_compor_para%v_crit(i_comp)%rela_comp        = rela_comp
+        ds_compor_para%v_crit(i_comp)%meca_comp        = meca_comp
         ds_compor_para%v_crit(i_comp)%type_matr_t      = type_matr_t
         ds_compor_para%v_crit(i_comp)%parm_theta       = parm_theta
         ds_compor_para%v_crit(i_comp)%iter_inte_pas    = iter_inte_pas
@@ -372,7 +369,6 @@ aster_logical, intent(in), optional :: l_implex_
         ds_compor_para%v_crit(i_comp)%ipostiter        = ipostiter
         ds_compor_para%v_crit(i_comp)%ipostincr        = ipostincr
         ds_compor_para%v_crit(i_comp)%iveriborne       = iveriborne
-        ds_compor_para%v_crit(i_comp)%rela_comp        = rela_comp
         ds_compor_para%v_crit(i_comp)%l_matr_unsymm    = l_matr_unsymm
         ds_compor_para%v_crit(i_comp)%algo_inte_r      = algo_inte_r
         ds_compor_para%v_crit(i_comp)%resi_inte_rela   = resi_inte_rela
@@ -387,9 +383,8 @@ aster_logical, intent(in), optional :: l_implex_
         ds_compor_para%v_crit(i_comp)%exte_strain      = exte_strain
         ds_compor_para%v_crit(i_comp)%paraExte         = paraExte
     end do
-!
-! - Read SCHEMA_THM
 
+! - Get SCHEMA_THM parameters
     if (l_exist_thm) then
         keywordfact    = 'SCHEMA_THM'
         parm_theta_thm = 1.d0
@@ -399,9 +394,8 @@ aster_logical, intent(in), optional :: l_implex_
         ds_compor_para%parm_theta_thm = parm_theta_thm
         ds_compor_para%parm_alpha_thm = parm_alpha_thm
     endif
-!
+
 ! - Get HHO parameters
-!
     call getHHOPara(ds_compor_para)
 !
 end subroutine
