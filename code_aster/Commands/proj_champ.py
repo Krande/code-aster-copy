@@ -62,7 +62,7 @@ class FieldProjector(ExecuteCommand):
 
         if "RESULTAT" in keywords:
             if "MODELE_2" in keywords:
-                self._result.appendModelOnAllRanks(keywords["MODELE_2"])
+                self._result.setModel(keywords["MODELE_2"])
             if "MAILLAGE_2" in keywords:
                 self._result.setMesh(keywords["MAILLAGE_2"])
             self._result.build()

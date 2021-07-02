@@ -54,31 +54,32 @@
  */
 class Result : public DataStructure, public ListOfTables {
   private:
-    typedef std::vector< FieldOnNodesRealPtr > VectorOfFieldsNodes;
-    typedef std::vector< FieldOnCellsRealPtr > VectorOfFieldsCells;
+    typedef std::vector< FieldOnNodesRealPtr > VectorOfFieldOnNodesReal;
+    typedef std::vector< FieldOnCellsRealPtr > VectorOfFieldOnCellsReal;
 
     /** @typedef std::map d'une chaine et des pointers vers toutes les DataStructure */
-    typedef std::map< std::string, VectorOfFieldsNodes > mapStrVOFN;
+    typedef std::map< std::string, VectorOfFieldOnNodesReal > mapStrVOFN;
     /** @typedef Iterateur sur le std::map */
     typedef mapStrVOFN::iterator mapStrVOFNIterator;
     /** @typedef Valeur contenue dans mapStrVOFN */
     typedef mapStrVOFN::value_type mapStrVOFNValue;
 
-    /** @typedef std::map du rang et des pointers vers ElementaryCharacteristicsPtr */
-    typedef std::map< int, ElementaryCharacteristicsPtr > mapRankCaraElem;
-    /** @typedef std::map du rang et des pointers vers ListOfLoadsPtr */
-    typedef std::map< int, ListOfLoadsPtr > mapRankLoads;
-    /** @typedef std::map du rang et des pointers vers MaterialFieldPtr */
-    typedef std::map< int, MaterialFieldPtr > mapRankMaterial;
-    /** @typedef std::map du rang et des pointers vers ModelPtr */
-    typedef std::map< int, ModelPtr > mapRankModel;
-
     /** @typedef std::map d'une chaine et des pointers vers toutes les DataStructure */
-    typedef std::map< std::string, VectorOfFieldsCells > mapStrVOFE;
+    typedef std::map< std::string, VectorOfFieldOnCellsReal > mapStrVOFE;
     /** @typedef Iterateur sur le std::map */
     typedef mapStrVOFE::iterator mapStrVOFEIterator;
     /** @typedef Valeur contenue dans mapStrVOFE */
     typedef mapStrVOFE::value_type mapStrVOFEValue;
+
+    /** @typedef std::map du rang et des pointers vers ElementaryCharacteristicsPtr */
+    typedef std::map< ASTERINTEGER, ElementaryCharacteristicsPtr > mapRankCaraElem;
+    /** @typedef std::map du rang et des pointers vers ListOfLoadsPtr */
+    typedef std::map< ASTERINTEGER, ListOfLoadsPtr > mapRankLoads;
+    /** @typedef std::map du rang et des pointers vers MaterialFieldPtr */
+    typedef std::map< ASTERINTEGER, MaterialFieldPtr > mapRankMaterial;
+    /** @typedef std::map du rang et des pointers vers ModelPtr */
+    typedef std::map< ASTERINTEGER, ModelPtr > mapRankModel;
+
     /** @brief Pointeur de nom Jeveux '.DESC' */
     NamesMapChar16 _symbolicNamesOfFields;
     /** @brief Collection '.TACH' */
@@ -90,7 +91,7 @@ class Result : public DataStructure, public ListOfTables {
     /** @brief Vecteur Jeveux '.ORDR' */
     JeveuxVectorLong _serialNumber;
     /** @brief Nombre de numéros d'ordre */
-    int _nbRanks;
+    ASTERINTEGER _nbRanks;
     /** @brief Vecteur Jeveux '.RSPI' */
     JeveuxVectorLong _rspi;
     /** @brief Vecteur Jeveux '.RSPR' */
@@ -105,9 +106,9 @@ class Result : public DataStructure, public ListOfTables {
     JeveuxVectorChar80 _title;
 
     /** @brief Liste des champs aux noeuds */
-    mapStrVOFN _dictOfVectorOfFieldsNodes;
+    mapStrVOFN _dictOfVectorOfFieldOnNodesReal;
     /** @brief Liste des champs aux éléments */
-    mapStrVOFE _dictOfVectorOfFieldsCells;
+    mapStrVOFE _dictOfVectorOfFieldOnCellsReal;
     /** @brief Liste des NUME_DDL */
     std::vector< BaseDOFNumberingPtr > _listOfDOFNum;
     /** @brief List of ElementaryCharacteristicsPtr */
@@ -124,6 +125,14 @@ class Result : public DataStructure, public ListOfTables {
     BaseMeshPtr _mesh;
     /** @brief Object to correctly manage fields and field descriptions */
     FieldBuilder _fieldBuidler;
+
+    /**
+     * @brief Get a name for field (wrap to rsexch.F90)
+     * @param name Symbolic name of the field
+     * @param rank Rank
+     */
+    std::pair< ASTERINTEGER, std::string> _getNewFieldName( const std::string& name,
+                                                            const ASTERINTEGER& rank ) const;
 
   public:
     /**
@@ -162,14 +171,14 @@ class Result : public DataStructure, public ListOfTables {
      * @param nbRanks nombre de numéro d'ordre
      * @return true si l'allocation s'est bien passée
      */
-    bool allocate( int nbRanks ) ;
+    bool allocate( ASTERINTEGER nbRanks ) ;
 
     /**
      * @brief Add elementary characteristics to container
      * @param rank
      */
-    void addElementaryCharacteristics( const ElementaryCharacteristicsPtr &,
-                                       int rank ) ;
+    void setElementaryCharacteristics( const ElementaryCharacteristicsPtr &,
+                                       ASTERINTEGER rank ) ;
 
     /**
      * @brief Add a existing FieldOnNodesDescription in _fieldBuidler
@@ -183,19 +192,19 @@ class Result : public DataStructure, public ListOfTables {
      * @brief Add elementary characteristics to container
      * @param rank
      */
-    void addListOfLoads( const ListOfLoadsPtr &, int rank ) ;
+    void setListOfLoads( const ListOfLoadsPtr &, ASTERINTEGER rank ) ;
 
     /**
      * @brief Add material definition
      * @param rank
      */
-    void addMaterialField( const MaterialFieldPtr &, int rank ) ;
+    void setMaterialField( const MaterialFieldPtr &, ASTERINTEGER rank ) ;
 
     /**
      * @brief Add model
      * @param rank
      */
-    void addModel( const ModelPtr &, int rank ) ;
+    void setModel( const ModelPtr &, ASTERINTEGER rank ) ;
 
     /**
      * @brief Set model
@@ -206,25 +215,25 @@ class Result : public DataStructure, public ListOfTables {
      * @brief Add time value for one rank
      * @param rank
      */
-    void addTimeValue( ASTERDOUBLE, int rank );
+    void setTimeValue( ASTERDOUBLE, ASTERINTEGER rank );
 
     /**
      * @brief Append a elementary characteristics on all rank of Result
      * @param ElementaryCharacteristicsPtr
      */
-    void appendElementaryCharacteristicsOnAllRanks( const ElementaryCharacteristicsPtr& );
+    void setElementaryCharacteristics( const ElementaryCharacteristicsPtr& );
 
     /**
      * @brief Append a material on all rank of Result
      * @param MaterialFieldPtr
      */
-    void appendMaterialFieldOnAllRanks( const MaterialFieldPtr & );
+    void setMaterialField( const MaterialFieldPtr & );
 
     /**
      * @brief Append a model on all rank of Result
      * @param ModelPtr
      */
-    void appendModelOnAllRanks( const ModelPtr & );
+    void setModel( const ModelPtr & );
 
     /**
      * @brief Obtenir un DOFNumbering à remplir
@@ -247,7 +256,7 @@ class Result : public DataStructure, public ListOfTables {
      * @return FieldOnNodesRealPtr pointant vers le champ
      */
     FieldOnNodesRealPtr getEmptyFieldOnNodesReal( const std::string name,
-                                                      const int rank ) ;
+                                                      const ASTERINTEGER rank ) ;
 
     /**
      * @brief Obtenir le dernier DOFNumbering
@@ -261,7 +270,7 @@ class Result : public DataStructure, public ListOfTables {
      * @brief Add elementary characteristics to container
      * @param rank
      */
-    ListOfLoadsPtr getListOfLoads( int rank ) ;
+    ListOfLoadsPtr getListOfLoads( ASTERINTEGER rank ) ;
 
     /**
      * @brief Get elementary characteristics
@@ -280,7 +289,7 @@ class Result : public DataStructure, public ListOfTables {
      * @param rank
      */
     ElementaryCharacteristicsPtr
-    getElementaryCharacteristics( int rank ) ;
+    getElementaryCharacteristics( ASTERINTEGER rank ) ;
 
     /**
      * @brief Get material
@@ -296,7 +305,7 @@ class Result : public DataStructure, public ListOfTables {
      * @brief Get material
      * @param rank
      */
-    MaterialFieldPtr getMaterialField( int rank ) ;
+    MaterialFieldPtr getMaterialField( ASTERINTEGER rank ) ;
 
     /**
      * @brief Get mesh
@@ -322,7 +331,7 @@ class Result : public DataStructure, public ListOfTables {
      * @brief Get model
      * @param rank
      */
-    ModelPtr getModel( int rank ) ;
+    ModelPtr getModel( ASTERINTEGER rank ) ;
 
     /**
      * @brief Obtenir un champ aux noeuds réel à partir de son nom et de son numéro d'ordre
@@ -330,8 +339,17 @@ class Result : public DataStructure, public ListOfTables {
      * @param rank numéro d'ordre
      * @return FieldOnCellsRealPtr pointant vers le champ
      */
-    FieldOnCellsRealPtr getFieldOnCellsReal( const std::string name, const int rank ) const
-        ;
+    FieldOnCellsRealPtr getFieldOnCellsReal( const std::string name, const ASTERINTEGER rank )
+    const;
+
+    /**
+     * @brief Ajouter un champ par éléments réel à partir de son nom et de son numéro d'ordre
+     * @param name nom Aster du champ
+     * @param rank numéro d'ordre
+     * @return FieldOnCellsRealPtr pointant vers le champ
+     */
+    bool setField( const FieldOnCellsRealPtr field, const std::string& name,
+        const ASTERINTEGER rank );
 
     /**
     * @brief Get dict of access variables and their values
@@ -357,8 +375,17 @@ class Result : public DataStructure, public ListOfTables {
      * @param rank numéro d'ordre
      * @return FieldOnNodesRealPtr pointant vers le champ
      */
-    FieldOnNodesRealPtr getFieldOnNodesReal( const std::string name, const int rank ) const
-        ;
+    FieldOnNodesRealPtr getFieldOnNodesReal( const std::string name, const ASTERINTEGER rank )
+    const;
+
+    /**
+     * @brief Ajouter un champ aux noeuds réel à partir de son nom et de son numéro d'ordre
+     * @param name nom Aster du champ
+     * @param rank numéro d'ordre
+     * @return FieldOnNodesRealPtr pointant vers le champ
+     */
+    bool setField( const FieldOnNodesRealPtr field,
+                          const std::string& name, const ASTERINTEGER rank );
 
     /**
      * @brief Impression de la sd au format MED
@@ -377,7 +404,7 @@ class Result : public DataStructure, public ListOfTables {
     * @brief Get the number of steps stored in the Result
     * @return nbRanks
     */
-    int getNumberOfRanks() const;
+    ASTERINTEGER getNumberOfRanks() const;
 
     /**
     * @brief Get the number of steps stored in the Result
@@ -389,7 +416,7 @@ class Result : public DataStructure, public ListOfTables {
     * @brief Print all the fields stored in the Result
     * @return nbRanks
     */
-    void listFields() const;
+    void printListOfFields() const;
 
     /**
     * @brief Print informations about the Result content
@@ -399,7 +426,8 @@ class Result : public DataStructure, public ListOfTables {
     /**
      * @brief Construire une sd_resultat à partir d'objet produit dans le Fortran
      * @return true si l'allocation s'est bien passée
-     * @todo revoir l'agrandissement de dictOfVectorOfFieldsNodes et dictOfVectorOfFieldsCells
+     * @todo revoir l'agrandissement de dictOfVectorOfFieldOnNodesReal et
+     *  dictOfVectorOfFieldOnCellsReal
      */
     bool build() ;
 };

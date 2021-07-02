@@ -101,18 +101,18 @@ class ResultCreator(ExecuteCommand):
         if fkw is not None:
             chamMater = fkw[0].get("CHAM_MATER")
             if chamMater is not None:
-                self._result.appendMaterialFieldOnAllRanks(chamMater)
+                self._result.setMaterialField(chamMater)
 
             modele = fkw[0].get("MODELE")
             chamGd = fkw[0].get("CHAM_GD")
             result = fkw[0].get("RESULTAT")
 
             if modele is not None:
-                self._result.appendModelOnAllRanks(modele)
+                self._result.setModel(modele)
             elif result is not None:
                 modele = result.getModel()
                 if modele is not None:
-                    self._result.appendModelOnAllRanks(modele)
+                    self._result.setModel(modele)
 
                 mesh = result.getMesh()
                 if mesh is not None:
@@ -120,7 +120,7 @@ class ResultCreator(ExecuteCommand):
             elif chamGd is not None:
                 try:
                     modele = chamGd.getModel()
-                    self._result.appendModelOnAllRanks(modele)
+                    self._result.setModel(modele)
                 except:
                     pass
                 try:

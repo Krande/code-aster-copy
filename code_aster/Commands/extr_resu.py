@@ -64,13 +64,13 @@ class ExtrResu(ExecuteCommand):
             cara_elem = resultat.getElementaryCharacteristics()
 
         if model is not None:
-            self._result.appendModelOnAllRanks(model)
+            self._result.setModel(model)
         if mesh is not None:
             self._result.setMesh(mesh)
         if mate is not None:
-            self._result.appendMaterialFieldOnAllRanks(mate)
+            self._result.setMaterialField(mate)
         if cara_elem is not None:
-            self._result.appendElementaryCharacteristicsOnAllRanks(cara_elem)
+            self._result.setElementaryCharacteristics(cara_elem)
 
         self._result.build()
 

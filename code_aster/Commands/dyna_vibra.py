@@ -67,7 +67,7 @@ class VibrationDynamics(ExecuteCommand):
         if keywords["BASE_CALCUL"] == "PHYS":
             massMatrix = keywords["MATR_MASS"]
             dofn = massMatrix.getDOFNumbering()
-            self._result.appendModelOnAllRanks(dofn.getModel())
+            self._result.setModel(dofn.getModel())
             self._result.setDOFNumbering(dofn)
             self._result.build()
         if keywords["BASE_CALCUL"] == "GENE":

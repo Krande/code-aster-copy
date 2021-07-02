@@ -34,9 +34,23 @@
 #include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
 
+
+std::pair< ASTERINTEGER, std::string>
+Result::_getNewFieldName( const std::string& name, const ASTERINTEGER& rank ) const
+{
+    auto trim_name = trim( name );
+    ASTERINTEGER retour;
+    retour = 0;
+    std::string null( " " );
+    std::string returnName( 19, ' ' );
+    CALLO_RSEXCH( null, getName(), trim_name, &rank, returnName, &retour );
+
+    return std::make_pair(retour, returnName);
+};
+
 void
-Result::addElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara,
-                                                        int rank ) {
+Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara,
+                                                        ASTERINTEGER rank ) {
 
     if( !cara )
       raiseAsterError( "ValueError: ElementaryCharacteristics is empty" );
@@ -47,16 +61,16 @@ Result::addElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara,
     CALLO_RSADPA_ZK8_WRAP( getName(), &rang, cara->getName(), type );
 };
 
-void Result::addListOfLoads( const ListOfLoadsPtr &load,
-                                               int rank ) {
+void Result::setListOfLoads( const ListOfLoadsPtr &load,
+                                               ASTERINTEGER rank ) {
     _mapLoads[rank] = load;
     ASTERINTEGER rang = rank;
     std::string type( "EXCIT" );
     CALLO_RSADPA_ZK24_WRAP( getName(), &rang, load->getName(), type );
 };
 
-void Result::addMaterialField( const MaterialFieldPtr &mater,
-                                                  int rank ) {
+void Result::setMaterialField( const MaterialFieldPtr &mater,
+                                                  ASTERINTEGER rank ) {
 
     if( !mater )
       raiseAsterError( "ValueError: MaterialField is empty" );
@@ -67,8 +81,8 @@ void Result::addMaterialField( const MaterialFieldPtr &mater,
     CALLO_RSADPA_ZK8_WRAP( getName(), &rang, mater->getName(), type );
 };
 
-void Result::addModel( const ModelPtr &model,
-                                         int rank ) {
+void Result::setModel( const ModelPtr &model,
+                                         ASTERINTEGER rank ) {
 
     if( !model )
       raiseAsterError( "ValueError: Model is empty" );
@@ -81,49 +95,54 @@ void Result::addModel( const ModelPtr &model,
     _fieldBuidler.addFiniteElementDescriptor( fed );
 };
 
-void Result::addTimeValue( ASTERDOUBLE value, int rank ) {
+void Result::setTimeValue( ASTERDOUBLE value, ASTERINTEGER rank ) {
     ASTERINTEGER rang = rank;
     std::string type( "INST" );
     CALLO_RSADPA_ZR_WRAP( getName(), &rang, &value, type );
 };
 
-bool Result::allocate( int nbRanks ) {
+bool Result::allocate( ASTERINTEGER nbRanks ) {
+
     std::string base( JeveuxMemoryTypesNames[getMemoryType()] );
     ASTERINTEGER nbordr = nbRanks;
     CALLO_RSCRSD( base, getName(), getType(), &nbordr );
     _nbRanks = nbRanks;
+
+    AS_ASSERT( _calculationParameter->build( true ) );
+    AS_ASSERT( _namesOfFields->build( true ) );
+
     return true;
 };
 
-void Result::appendElementaryCharacteristicsOnAllRanks
+void Result::setElementaryCharacteristics
     ( const ElementaryCharacteristicsPtr& cara )
 {
     _serialNumber->updateValuePointer();
     ASTERINTEGER nbRanks = _serialNumber->usedSize();
-    for ( int rank = 0; rank < nbRanks; ++rank ) {
+    for ( ASTERINTEGER rank = 0; rank < nbRanks; ++rank ) {
         const ASTERINTEGER iordr = ( *_serialNumber )[rank];
         if ( _mapElemCara.find( iordr ) == _mapElemCara.end() )
-            addElementaryCharacteristics( cara, iordr );
+            setElementaryCharacteristics( cara, iordr );
     }
 };
 
-void Result::appendMaterialFieldOnAllRanks( const MaterialFieldPtr &mater ) {
+void Result::setMaterialField( const MaterialFieldPtr &mater ) {
     _serialNumber->updateValuePointer();
     ASTERINTEGER nbRanks = _serialNumber->usedSize();
-    for ( int rank = 0; rank < nbRanks; ++rank ) {
+    for ( ASTERINTEGER rank = 0; rank < nbRanks; ++rank ) {
         const ASTERINTEGER iordr = ( *_serialNumber )[rank];
         if ( _mapMaterial.find( iordr ) == _mapMaterial.end() )
-            addMaterialField( mater, iordr );
+            setMaterialField( mater, iordr );
     }
 };
 
-void Result::appendModelOnAllRanks( const ModelPtr &model ) {
+void Result::setModel( const ModelPtr &model ) {
     _serialNumber->updateValuePointer();
     ASTERINTEGER nbRanks = _serialNumber->usedSize();
-    for ( int rank = 0; rank < nbRanks; ++rank ) {
+    for ( ASTERINTEGER rank = 0; rank < nbRanks; ++rank ) {
         const ASTERINTEGER iordr = ( *_serialNumber )[rank];
         if ( _mapModel.find( iordr ) == _mapModel.end() )
-            addModel( model, iordr );
+            setModel( model, iordr );
     }
 };
 
@@ -139,26 +158,21 @@ BaseDOFNumberingPtr Result::getEmptyDOFNumbering() {
 
 FieldOnNodesRealPtr
 Result::getEmptyFieldOnNodesReal( const std::string name,
-                                                      const int rank ) {
+                                                      const ASTERINTEGER rank ) {
 
     if ( rank > _nbRanks || rank <= 0 )
       raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' is out of range" );
 
-    ASTERINTEGER retour;
-    retour = 0;
-    const ASTERINTEGER rankLong = rank;
-    std::string null( " " );
-    std::string returnName( 19, ' ' );
-    CALLO_RSEXCH( null, getName(), name, &rankLong, returnName, &retour );
-    CALLO_RSNOCH( getName(), name, &rankLong );
-    std::string bis( returnName.c_str(), 19 );
-    FieldOnNodesRealPtr result( new FieldOnNodesReal( bis ) );
+    auto rschex = _getNewFieldName(name, rank);
+    CALLO_RSNOCH( getName(), name, &rank );
+    std::string bis( rschex.second.c_str(), 19 );
+    FieldOnNodesRealPtr result = boost::make_shared<FieldOnNodesReal>( bis );
 
-    auto curIter = _dictOfVectorOfFieldsNodes.find( name );
-    if ( curIter == _dictOfVectorOfFieldsNodes.end() ) {
-        _dictOfVectorOfFieldsNodes[name] = VectorOfFieldsNodes( _nbRanks );
+    auto curIter = _dictOfVectorOfFieldOnNodesReal.find( name );
+    if ( curIter == _dictOfVectorOfFieldOnNodesReal.end() ) {
+        _dictOfVectorOfFieldOnNodesReal[name] = VectorOfFieldOnNodesReal( _nbRanks );
     }
-    _dictOfVectorOfFieldsNodes[name][rank - 1] = result;
+    _dictOfVectorOfFieldOnNodesReal[name][rank - 1] = result;
     return result;
 };
 
@@ -168,7 +182,8 @@ BaseDOFNumberingPtr Result::getEmptyParallelDOFNumbering() {
     std::string name( "12345678.00000          " );
     ASTERINTEGER a = 10, b = 14;
     CALLO_GNOMSD( resuName, name, &a, &b );
-    ParallelDOFNumberingPtr retour( new ParallelDOFNumbering( name.substr( 0, 14 ) ) );
+    ParallelDOFNumberingPtr retour =
+                    boost::make_shared<ParallelDOFNumbering>( name.substr( 0, 14 ) );
     _listOfDOFNum.push_back( retour );
     return retour;
 };
@@ -191,14 +206,14 @@ ElementaryCharacteristicsPtr Result::getElementaryCharacteristics() {
 };
 
 ElementaryCharacteristicsPtr
-Result::getElementaryCharacteristics( int rank ) {
+Result::getElementaryCharacteristics( ASTERINTEGER rank ) {
     auto curIter = _mapElemCara.find( rank );
     if ( curIter == _mapElemCara.end() )
         throw std::runtime_error( "Rank not found" );
     return ( *curIter ).second;
 };
 
-ListOfLoadsPtr Result::getListOfLoads( int rank ) {
+ListOfLoadsPtr Result::getListOfLoads( ASTERINTEGER rank ) {
     auto curIter = _mapLoads.find( rank );
     if ( curIter == _mapLoads.end() )
         throw std::runtime_error( "Rank not found" );
@@ -221,7 +236,7 @@ MaterialFieldPtr Result::getMaterialField() {
 };
 
 MaterialFieldPtr
-Result::getMaterialField( int rank ) {
+Result::getMaterialField( ASTERINTEGER rank ) {
     auto curIter = _mapMaterial.find( rank );
     if ( curIter == _mapMaterial.end() )
         throw std::runtime_error( "Rank not found" );
@@ -271,7 +286,7 @@ ModelPtr Result::getModel() {
 
 };
 
-ModelPtr Result::getModel( int rank )
+ModelPtr Result::getModel( ASTERINTEGER rank )
 {
     auto curIter = _mapModel.find( rank );
     if ( curIter == _mapModel.end() )
@@ -279,7 +294,7 @@ ModelPtr Result::getModel( int rank )
     return ( *curIter ).second;
 };
 
-int Result::getNumberOfRanks() const
+ASTERINTEGER Result::getNumberOfRanks() const
 {
     return _serialNumber->usedSize();
 };
@@ -288,23 +303,23 @@ VectorLong Result::getRanks() const
 {
     VectorLong v;
     _serialNumber->updateValuePointer();
-    for ( int j = 0; j < _serialNumber->usedSize(); ++j ) {
+    for ( ASTERINTEGER j = 0; j < _serialNumber->usedSize(); ++j ) {
         v.push_back( ( *_serialNumber )[j] );
     }
     return v;
 };
 
 FieldOnCellsRealPtr Result::getFieldOnCellsReal( const std::string name,
-                                                                           const int rank ) const
+                                                 const ASTERINTEGER rank ) const
 {
-    if ( rank > _nbRanks || rank <= 0 )
+    if ( rank >= _nbRanks || rank < 0 )
       raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' is out of range" );
 
-    auto curIter = _dictOfVectorOfFieldsCells.find( trim( name ) );
-    if ( curIter == _dictOfVectorOfFieldsCells.end() )
+    auto curIter = _dictOfVectorOfFieldOnCellsReal.find( trim( name ) );
+    if ( curIter == _dictOfVectorOfFieldOnCellsReal.end() )
       raiseAsterError( "ValueError: Field " + name + " unknown in the results container" );
 
-    FieldOnCellsRealPtr toReturn = curIter->second[rank - 1];
+    FieldOnCellsRealPtr toReturn = curIter->second[rank];
     return toReturn;
 };
 
@@ -394,9 +409,9 @@ PyObject *Result::getAccessParameters() const
 VectorString Result::getFieldsOnNodesNames() const
 {
   VectorString names;
-  names.reserve( _dictOfVectorOfFieldsNodes.size());
+  names.reserve( _dictOfVectorOfFieldOnNodesReal.size());
 
-  for ( auto& it : _dictOfVectorOfFieldsNodes ) {
+  for ( auto& it : _dictOfVectorOfFieldOnNodesReal ) {
     std::string name = it.first;
     names.push_back(trim(name)) ;
   }
@@ -406,9 +421,9 @@ VectorString Result::getFieldsOnNodesNames() const
 VectorString Result::getFieldsOnCellsNames() const
 {
   VectorString names;
-  names.reserve( _dictOfVectorOfFieldsCells.size());
+  names.reserve( _dictOfVectorOfFieldOnCellsReal.size());
 
-  for ( auto& it : _dictOfVectorOfFieldsCells ) {
+  for ( auto& it : _dictOfVectorOfFieldOnCellsReal ) {
     std::string name = it.first;
     names.push_back(trim(name)) ;
   }
@@ -417,27 +432,96 @@ VectorString Result::getFieldsOnCellsNames() const
 
 
 FieldOnNodesRealPtr Result::getFieldOnNodesReal( const std::string name,
-                                                                     const int rank ) const
+                                                                     const ASTERINTEGER rank ) const
 {
 
-    if ( rank > _nbRanks || rank <= 0 )
+    if ( rank >= _nbRanks || rank < 0 )
       raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' is out of range" );
 
-    auto curIter = _dictOfVectorOfFieldsNodes.find( trim( name ) );
-    if ( curIter == _dictOfVectorOfFieldsNodes.end() )
+    auto curIter = _dictOfVectorOfFieldOnNodesReal.find( trim( name ) );
+    if ( curIter == _dictOfVectorOfFieldOnNodesReal.end() )
       raiseAsterError( "ValueError: Field " + name + " unknown in the results container" );
 
-    FieldOnNodesRealPtr toReturn = curIter->second[rank - 1];
+    FieldOnNodesRealPtr toReturn = curIter->second[rank];
     return toReturn;
 };
 
-void Result::listFields() const
+
+bool Result::setField( const FieldOnNodesRealPtr field,
+                          const std::string& name, const ASTERINTEGER rank )
+{
+    CALL_JEMARQ();
+
+    if( !field )
+      raiseAsterError( "ValueError: field is empty" );
+
+    if ( rank >= _nbRanks || rank < 0 )
+      raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' is out of range" );
+
+    auto trim_name = trim( name );
+    auto rschex = _getNewFieldName(trim_name, rank);
+    AS_ASSERT(rschex.first <= 100);
+
+    CALLO_RSNOCH( getName(), name, &rank );
+    std::string internalName( rschex.second.c_str(), 19 );
+    FieldOnNodesRealPtr result = boost::make_shared<FieldOnNodesReal>( internalName, *field );
+
+
+    auto curIter = _dictOfVectorOfFieldOnNodesReal.find( trim_name );
+    if ( curIter == _dictOfVectorOfFieldOnNodesReal.end() )
+    {
+        auto index = _symbolicNamesOfFields->getIndexFromString( trim_name );
+        _dictOfVectorOfFieldOnNodesReal[trim_name] = VectorOfFieldOnNodesReal(
+                            _nbRanks, FieldOnNodesRealPtr( nullptr ) );
+    }
+
+    _dictOfVectorOfFieldOnNodesReal[trim_name][rank] = result;
+
+
+    CALL_JEDEMA();
+    return true;
+};
+
+bool Result::setField( const FieldOnCellsRealPtr field,
+                          const std::string& name, const ASTERINTEGER rank )
+{
+    CALL_JEMARQ();
+
+    if( !field )
+      raiseAsterError( "ValueError: field is empty" );
+
+    if ( rank >= _nbRanks || rank < 0 )
+      raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' is out of range" );
+
+    auto trim_name = trim( name );
+    auto rschex = _getNewFieldName(trim_name, rank);
+    AS_ASSERT(rschex.first <= 100);
+
+    CALLO_RSNOCH( getName(), name, &rank );
+    std::string internalName( rschex.second.c_str(), 19 );
+    FieldOnCellsRealPtr result = boost::make_shared<FieldOnCellsReal>( internalName, *field );
+
+    auto curIter = _dictOfVectorOfFieldOnCellsReal.find( trim_name );
+    if ( curIter == _dictOfVectorOfFieldOnCellsReal.end() )
+    {
+        auto index = _symbolicNamesOfFields->getIndexFromString( trim_name );
+         _dictOfVectorOfFieldOnCellsReal[trim_name] = VectorOfFieldOnCellsReal(
+                            _nbRanks, FieldOnCellsRealPtr( nullptr ) );
+    }
+
+    _dictOfVectorOfFieldOnCellsReal[trim_name][rank] = result;
+
+    CALL_JEDEMA();
+    return true;
+};
+
+void Result::printListOfFields() const
 {
     std::cout << "Content of DataStructure : ";
-    for ( auto curIter : _dictOfVectorOfFieldsNodes ) {
+    for ( auto curIter : _dictOfVectorOfFieldOnNodesReal ) {
         std::cout << curIter.first << " - ";
     }
-    for ( auto curIter : _dictOfVectorOfFieldsCells ) {
+    for ( auto curIter : _dictOfVectorOfFieldOnCellsReal ) {
         std::cout << curIter.first << " - ";
     }
     std::cout << std::endl;
@@ -498,12 +582,12 @@ bool Result::build()
     else if ( _mesh != nullptr ){
         curMesh = _mesh;
     }
-    int cmpt = 1;
+    ASTERINTEGER cmpt = 1;
     for ( const auto curIter : _namesOfFields->getVectorOfObjects() ) {
         auto nomSymb = trim( _symbolicNamesOfFields->getStringFromIndex( cmpt ) );
         AS_ASSERT ( numberOfSerialNum <= curIter.size() );
 
-        for ( int rank = 0; rank < numberOfSerialNum; ++rank ) {
+        for ( ASTERINTEGER rank = 0; rank < numberOfSerialNum; ++rank ) {
             std::string name( trim( curIter[rank].toString() ) );
             if ( name != "" ) {
                 CALL_JEMARQ();
@@ -517,32 +601,32 @@ bool Result::build()
                 const std::string resu( trim( repk.toString() ) );
 
                 if ( resu == "NOEU" ) {
-                    const auto &iterField = _dictOfVectorOfFieldsNodes.find( nomSymb );
-                    if ( iterField == _dictOfVectorOfFieldsNodes.end() )
-                        _dictOfVectorOfFieldsNodes[nomSymb] = VectorOfFieldsNodes(
+                    const auto &iterField = _dictOfVectorOfFieldOnNodesReal.find( nomSymb );
+                    if ( iterField == _dictOfVectorOfFieldOnNodesReal.end() )
+                        _dictOfVectorOfFieldOnNodesReal[nomSymb] = VectorOfFieldOnNodesReal(
                             numberOfSerialNum, FieldOnNodesRealPtr( nullptr ) );
-                    else if ( int(iterField->second.size()) != numberOfSerialNum ) {
+                    else if ( ASTERINTEGER(iterField->second.size()) != numberOfSerialNum ) {
                         iterField->second.resize( numberOfSerialNum,
                                                  FieldOnNodesRealPtr( nullptr ) );
                     }
 
-                    ASTERINTEGER test2 = _dictOfVectorOfFieldsNodes[nomSymb][rank].use_count();
+                    ASTERINTEGER test2 = _dictOfVectorOfFieldOnNodesReal[nomSymb][rank].use_count();
                     if ( test2 == 0 ) {
                         FieldOnNodesRealPtr result =
                             _fieldBuidler.buildFieldOnNodes< ASTERDOUBLE >( name );
-                        _dictOfVectorOfFieldsNodes[nomSymb][rank] = result;
+                        _dictOfVectorOfFieldOnNodesReal[nomSymb][rank] = result;
                     }
                 } else if ( resu == "ELEM" || resu == "ELNO" || resu == "ELGA" ) {
-                    const auto &iterField = _dictOfVectorOfFieldsCells.find( nomSymb );
-                    if ( iterField == _dictOfVectorOfFieldsCells.end() )
-                        _dictOfVectorOfFieldsCells[nomSymb] = VectorOfFieldsCells(
+                    const auto &iterField = _dictOfVectorOfFieldOnCellsReal.find( nomSymb );
+                    if ( iterField == _dictOfVectorOfFieldOnCellsReal.end() )
+                        _dictOfVectorOfFieldOnCellsReal[nomSymb] = VectorOfFieldOnCellsReal(
                             numberOfSerialNum, FieldOnCellsRealPtr( nullptr ) );
-                    else if ( int(iterField->second.size()) != numberOfSerialNum ) {
+                    else if ( ASTERINTEGER(iterField->second.size()) != numberOfSerialNum ) {
                         iterField->second.resize( numberOfSerialNum,
                                                  FieldOnCellsRealPtr( nullptr ) );
                     }
 
-                    ASTERINTEGER test2 = _dictOfVectorOfFieldsCells[nomSymb][rank].use_count();
+                    ASTERINTEGER test2 = _dictOfVectorOfFieldOnCellsReal[nomSymb][rank].use_count();
                     if ( test2 == 0 ) {
                         AS_ASSERT( curMesh != nullptr );
                         FieldOnCellsRealPtr result =
@@ -556,7 +640,7 @@ bool Result::build()
                             if ( not(curModel->isEmpty()) )
                                 result->setModel(curModel);
                         }
-                        _dictOfVectorOfFieldsCells[nomSymb][rank] = result;
+                        _dictOfVectorOfFieldOnCellsReal[nomSymb][rank] = result;
 
                     }
                 }

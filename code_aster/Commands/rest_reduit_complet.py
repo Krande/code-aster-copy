@@ -41,11 +41,11 @@ class RestReduitComplet(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        self._result.appendModelOnAllRanks(keywords["MODELE"])
+        self._result.setModel(keywords["MODELE"])
         try:
             materField = keywords["RESULTAT_REDUIT"].getMaterialField()
             if materField:
-                self._result.appendMaterialFieldOnAllRanks(materField)
+                self._result.setMaterialField(materField)
         except RuntimeError:
             pass
         self._result.build()

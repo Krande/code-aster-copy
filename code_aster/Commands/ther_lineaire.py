@@ -45,8 +45,8 @@ class LinearThermalAnalysisBuild(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        self._result.appendModelOnAllRanks(keywords["MODELE"])
-        self._result.appendMaterialFieldOnAllRanks(keywords["CHAM_MATER"])
+        self._result.setModel(keywords["MODELE"])
+        self._result.setMaterialField(keywords["CHAM_MATER"])
         self._result.setMesh(keywords["MODELE"].getMesh())
         self._result.build()
 

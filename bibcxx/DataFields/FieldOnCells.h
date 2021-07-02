@@ -95,6 +95,31 @@ template < class ValueType > class FieldOnCells : public DataField {
           _valuesList( JeveuxVector< ValueType >( getName() + ".CELV" ) ), _model( nullptr ),
           _title( JeveuxVectorChar80( getName() + ".TITR" ) ){};
 
+     /**
+     * @brief Copy constructor
+     */
+    FieldOnCells( const std::string &name, const FieldOnCells &toCopy )
+        : DataField( name, "CHAM_ELEM", toCopy.getMemoryType() ),
+          _descriptor( JeveuxVectorLong( getName() + ".CELD" ) ),
+          _reference( JeveuxVectorChar24( getName() + ".CELK" ) ),
+          _valuesList( JeveuxVector< ValueType >( getName() + ".CELV" ) ),
+          _title( JeveuxVectorChar80( getName() + ".TITR" ) ){
+        // JeveuxVector to be duplicated
+        *( _descriptor ) = *( toCopy._descriptor );
+        *( _reference ) = *( toCopy._reference );
+        *( _valuesList ) = *( toCopy._valuesList );
+        *( _title ) = *( toCopy._title );
+        // Pointers to be copied
+        _dofDescription = toCopy._dofDescription;
+        _model = toCopy._model;
+    }
+
+    /**
+     * @brief Copy constructor
+     */
+    FieldOnCells( const FieldOnCells &toCopy )
+        : FieldOnCells(ResultNaming::getNewResultName(), toCopy) {};
+
     /**
      * @brief
      * @return

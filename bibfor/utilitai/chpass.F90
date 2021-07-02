@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,10 +69,10 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
     real(kind=8) :: coefr, lcoefr(2)
     complex(kind=8) :: coefc, lcoefc(2)
     character(len=8) :: kbid, modele, nomcmp
-    character(len=8) :: champ, nomgd, nomgd2, ma2
+    character(len=8) :: nomgd, nomgd2, ma2
     character(len=3) :: prol0, tsca
     character(len=16) :: limocl(5), tymocl(5), typem
-    character(len=19) :: chs1, chs2, nutrou, lichs(2), cesmod, option
+    character(len=19) :: chs1, chs2, nutrou, lichs(2), cesmod, option, champ
     character(len=19) :: chs3, ligrel
     character(len=24) :: cnom, valk(3)
 !
@@ -86,7 +86,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
     chs1 = '&&CHPASS.CHS1'
     chs2 = '&&CHPASS.CHS2'
     chs3 = '&&CHPASS.CHS3'
-    
+
     messConseil = ASTER_FALSE
 !
 !
@@ -150,6 +150,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
 !       ------------------------------------------------
         call getvid('ASSE', 'CHAM_GD', iocc=iocc, scal=champ, nbret=ib)
         zk24(lnom+iocc-1) = champ
+!
         call dismoi('TYPE_CHAMP', champ, 'CHAMP', repk=tych2)
         call dismoi('NOM_MAILLA', champ, 'CHAMP', repk=ma2)
         if (ma .ne. ma2) then
@@ -253,7 +254,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
             else
                 if (ncmpdisp > 0) licmp2(1:ncmp) = zk8(jlicmp:jlicmp-1+ncmp)
             endif
-            
+
             if (ncmpdisp > 0 .and. nomgd.ne. 'VARI_R') then
                 do i=1,ncmp
                     compOK = ASTER_FALSE
@@ -324,10 +325,10 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
 !
         else if (tych2(1:2).eq.'EL') then
             call celces(champ, 'V', chs1)
-            
+
             call jeveuo(chs1//'.CESD', 'L', jcesd)
             call jeveuo(chs1//'.CESC', 'L', jcesc)
-            
+
             if (nomgd2 .ne. 'VARI_R')then
                 do i=1,ncmp
                     compOK = ASTER_FALSE
@@ -342,7 +343,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
                     endif
                 enddo
             endif
-            
+
             call cesred(chs1, nbtrou, zi(jnutro), ncmp, zk8(jlicmp),&
                         'V', chs2)
 !
@@ -354,10 +355,10 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
                 call carces(champ, tychr, cesmod, 'V', chs1,&
                             'A', ib)
             endif
-            
+
             call jeveuo(chs1//'.CESD', 'L', jcesd)
             call jeveuo(chs1//'.CESC', 'L', jcesc)
-            
+
             if (nomgd2 .ne. 'VARI_R')then
                 do i=1,ncmp
                     compOK = ASTER_FALSE
@@ -372,7 +373,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
                     endif
                 enddo
             endif
-            
+
             call cesred(chs1, nbtrou, zi(jnutro), ncmp, zk8(jlicmp),&
                         'V', chs2)
 !
@@ -425,7 +426,7 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0,&
     else
         ASSERT(.false.)
     endif
-    
+
     if (messConseil) call utmess('A','UTILITAI_42')
 !
 !

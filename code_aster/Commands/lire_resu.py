@@ -74,16 +74,16 @@ class ResultsReader(ExecuteCommand):
             keywords (dict): User's keywords.
         """
         if "MODELE" in keywords:
-            self._result.appendModelOnAllRanks(keywords["MODELE"])
+            self._result.setModel(keywords["MODELE"])
             self._result.setMesh(keywords["MODELE"].getMesh())
         elif "MAILLAGE" in keywords:
             self._result.setMesh(keywords["MAILLAGE"])
 
         if "CHAM_MATER" in keywords:
-            self._result.appendMaterialFieldOnAllRanks(keywords["CHAM_MATER"])
+            self._result.setMaterialField(keywords["CHAM_MATER"])
 
         if "CARA_ELEM" in keywords:
-            self._result.appendElementaryCharacteristicsOnAllRanks(keywords["CARA_ELEM"])
+            self._result.setElementaryCharacteristics(keywords["CARA_ELEM"])
 
         self._result.build()
 

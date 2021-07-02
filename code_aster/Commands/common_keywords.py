@@ -61,10 +61,12 @@ def create_solver(solver_keyword):
             unsupported(solver_keyword, "", key, warning=True)
 
     method = solver_keyword["METHODE"]
-    renum = solver_keyword["RENUM"]
+    if "RENUM" in solver_keyword:
+        renum = solver_keyword["RENUM"]
+    else:
+        renum = 'AUTO'
 
     glossary = getGlossary()
-    solverInt = glossary.getSolver(method)
     renumInt = glossary.getRenumbering(renum)
 
     selected_solver = {"MULT_FRONT": MultFrontSolver, "LDLT": LdltSolver,

@@ -51,7 +51,7 @@ class PostChamp(ExecuteCommand):
             except:
                 pass
         if modele is not None:
-            self._result.appendModelOnAllRanks(modele)
+            self._result.setModel(modele)
         self._result.build()
 
 POST_CHAMP = PostChamp.run

@@ -28,8 +28,8 @@
 
 #include <assert.h>
 
-#include "astercxx.h"
 #include "aster_fort_superv.h"
+#include "astercxx.h"
 
 #include "DataFields/DataField.h"
 #include "DataFields/MeshCoordinatesField.h"
@@ -43,7 +43,6 @@
 #include "PythonBindings/LogicalUnitManager.h"
 #include "Supervis/CommandSyntax.h"
 
-
 /**
  * @struct AllowedFieldType
  * @brief Structure template permettant de limiter le type instanciable de JeveuxVector
@@ -55,8 +54,9 @@ template <> struct AllowedFieldType< ASTERINTEGER > {
     static const unsigned short numTypeJeveux = Integer;
 };
 
-template <> struct AllowedFieldType< ASTERDOUBLE >
-    { static const unsigned short numTypeJeveux = Real; };
+template <> struct AllowedFieldType< ASTERDOUBLE > {
+    static const unsigned short numTypeJeveux = Real;
+};
 
 template <> struct AllowedFieldType< ASTERCOMPLEX > {
     static const unsigned short numTypeJeveux = Complex;
@@ -113,8 +113,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @param memType Type of memory allocation
      */
     FieldOnNodes( const JeveuxMemory memType = Permanent )
-        : DataField( memType, "CHAM_NO" ),
-          _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
+        : DataField( memType, "CHAM_NO" ), _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
           _reference( JeveuxVectorChar24( getName() + ".REFE" ) ),
           _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ), _dofNum( nullptr ),
           _mesh( nullptr ), _dofDescription( nullptr ),
@@ -123,18 +122,18 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     /**
      * @brief Copy constructor
      */
-    FieldOnNodes( const FieldOnNodes &toCopy )
-        :DataField( toCopy.getMemoryType(), "CHAM_NO" ),
+    FieldOnNodes( const std::string &name, const FieldOnNodes &toCopy )
+        : DataField( name, "CHAM_NO", toCopy.getMemoryType() ),
           _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
           _reference( JeveuxVectorChar24( getName() + ".REFE" ) ),
           _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ), _dofNum( nullptr ),
           _mesh( nullptr ), _dofDescription( nullptr ),
           _title( JeveuxVectorChar80( getName() + ".TITR" ) ) {
         // JeveuxVector to be duplicated
-        *(_descriptor) = *(toCopy._descriptor);
-        *(_reference) = *(toCopy._reference);
-        *(_valuesList) = *(toCopy._valuesList);
-        *(_title) = *(toCopy._title);
+        *( _descriptor ) = *( toCopy._descriptor );
+        *( _reference ) = *( toCopy._reference );
+        *( _valuesList ) = *( toCopy._valuesList );
+        *( _title ) = *( toCopy._title );
         // Pointers to be copied
         _dofNum = toCopy._dofNum;
         _dofDescription = toCopy._dofDescription;
@@ -142,29 +141,31 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     }
 
     /**
+     * @brief Copy constructor
+     */
+    FieldOnNodes( const FieldOnNodes &toCopy )
+        : FieldOnNodes(ResultNaming::getNewResultName(), toCopy) {};
+
+    /**
      * @brief Constructor with DOFNumbering
      */
     FieldOnNodes( const BaseDOFNumberingPtr &dofNum, JeveuxMemory memType = Permanent )
-        : DataField( memType, "CHAM_NO" ),
-          _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
+        : DataField( memType, "CHAM_NO" ), _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
           _reference( JeveuxVectorChar24( getName() + ".REFE" ) ),
           _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ), _dofNum( dofNum ),
           _dofDescription( dofNum->getDescription() ), _mesh( dofNum->getMesh() ),
-          _title( JeveuxVectorChar80( getName() + ".TITR" ) )
-          {
-                if ( !_dofNum )
-                    throw std::runtime_error( "DOFNumering is empty" );
-                const int intType = AllowedFieldType< ValueType >::numTypeJeveux;
-                CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[getMemoryType()],
-                                JeveuxTypesNames[intType], _dofNum->getName() );
+          _title( JeveuxVectorChar80( getName() + ".TITR" ) ) {
+        if ( !_dofNum )
+            throw std::runtime_error( "DOFNumering is empty" );
+        const int intType = AllowedFieldType< ValueType >::numTypeJeveux;
+        CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[getMemoryType()],
+                           JeveuxTypesNames[intType], _dofNum->getName() );
     };
 
     /**
      * @brief Wrap of copy constructor
      */
-    FieldOnNodes duplicate() {
-        return *this;
-    }
+    FieldOnNodes duplicate() { return *this; }
 
     /**
      * @brief Constructeur from a MeshCoordinatesFieldPtr&
@@ -193,10 +194,10 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Check if fields are OK for +, +=, ...
      * @return true if compatible
      */
-    bool isSimilarTo(const FieldOnNodes< ValueType >  &tmp2 ) const {
-        bool similar = (this->_descriptor->size() == tmp2._descriptor->size());
-        similar = (similar && (this->_reference->size() == tmp2._reference->size()));
-        similar = (similar && (this->_valuesList->size() == tmp2._valuesList->size()));
+    bool isSimilarTo( const FieldOnNodes< ValueType > &tmp2 ) const {
+        bool similar = ( this->_descriptor->size() == tmp2._descriptor->size() );
+        similar = ( similar && ( this->_reference->size() == tmp2._reference->size() ) );
+        similar = ( similar && ( this->_valuesList->size() == tmp2._valuesList->size() ) );
         return similar;
     }
 
@@ -205,8 +206,9 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @return Updated field
      */
     FieldOnNodes< ValueType > &operator+=( FieldOnNodes< ValueType > const &rhs ) {
-        if (!this->isSimilarTo(rhs)) throw std::runtime_error("Fields have incompatible shapes");
-        const_cast<FieldOnNodes< ValueType >&> (rhs).updateValuePointers() ;
+        if ( !this->isSimilarTo( rhs ) )
+            throw std::runtime_error( "Fields have incompatible shapes" );
+        const_cast< FieldOnNodes< ValueType > & >( rhs ).updateValuePointers();
         bool retour = _valuesList->updateValuePointer();
         int taille = _valuesList->size();
         for ( int pos = 0; pos < taille; ++pos )
@@ -220,8 +222,9 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @todo ajouter une vérification sur la structure des champs
      */
     FieldOnNodes< ValueType > &operator-=( FieldOnNodes< ValueType > const &rhs ) {
-        if (!this->isSimilarTo(rhs)) throw std::runtime_error("Fields have incompatible shapes");
-        const_cast<FieldOnNodes< ValueType >&> (rhs).updateValuePointers() ;
+        if ( !this->isSimilarTo( rhs ) )
+            throw std::runtime_error( "Fields have incompatible shapes" );
+        const_cast< FieldOnNodes< ValueType > & >( rhs ).updateValuePointers();
         bool retour = _valuesList->updateValuePointer();
         int taille = _valuesList->size();
         for ( int pos = 0; pos < taille; ++pos )
@@ -264,7 +267,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @return New field
      */
     friend FieldOnNodes< ValueType > operator*( FieldOnNodes< ValueType > lhs,
-                                                     const ASTERDOUBLE &scal ) {
+                                                const ASTERDOUBLE &scal ) {
         bool retour = lhs.updateValuePointers();
         int taille = lhs._valuesList->size();
         for ( int pos = 0; pos < taille; ++pos )
@@ -277,7 +280,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @return New field
      */
     friend FieldOnNodes< ValueType > operator*( const ASTERDOUBLE &scal,
-                                                     FieldOnNodes< ValueType > rhs) {
+                                                FieldOnNodes< ValueType > rhs ) {
         return rhs * scal;
     };
 
@@ -285,9 +288,10 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Plus overloading
      * @return New field
      */
-    friend FieldOnNodes< ValueType > operator+(FieldOnNodes< ValueType > lhs,
-                                                    const FieldOnNodes< ValueType > &rhs ) {
-        if (!lhs.isSimilarTo(rhs)) throw std::runtime_error("Fields have incompatible shapes");
+    friend FieldOnNodes< ValueType > operator+( FieldOnNodes< ValueType > lhs,
+                                                const FieldOnNodes< ValueType > &rhs ) {
+        if ( !lhs.isSimilarTo( rhs ) )
+            throw std::runtime_error( "Fields have incompatible shapes" );
         lhs += rhs;
         return lhs;
     };
@@ -297,9 +301,10 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @return New field
      * @todo ajouter une vérification sur la structure des champs
      */
-    friend FieldOnNodes< ValueType > operator-(FieldOnNodes< ValueType > lhs,
-                                                    const FieldOnNodes< ValueType > &rhs ) {
-        if (!lhs.isSimilarTo(rhs)) throw std::runtime_error("Fields have incompatible shapes");
+    friend FieldOnNodes< ValueType > operator-( FieldOnNodes< ValueType > lhs,
+                                                const FieldOnNodes< ValueType > &rhs ) {
+        if ( !lhs.isSimilarTo( rhs ) )
+            throw std::runtime_error( "Fields have incompatible shapes" );
         lhs -= rhs;
         return lhs;
     };
@@ -353,8 +358,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             const auto name2 = _dofNum->getMesh()->getName();
             if ( name1 != name2 )
                 throw std::runtime_error( "Meshes inconsistents" );
-        }
-        else {
+        } else {
             _mesh = dofNum->getMesh();
         }
     };
@@ -364,12 +368,11 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      *
      * @param value Value to affect
      */
-    void setValues(const ValueType& value)
-    {
-         bool retour = _valuesList->updateValuePointer();
+    void setValues( const ValueType &value ) {
+        bool retour = _valuesList->updateValuePointer();
         const int taille = _valuesList->size();
 
-        for( int pos = 0; pos < taille; ++pos )
+        for ( int pos = 0; pos < taille; ++pos )
             ( *this )[pos] = value;
     };
 
@@ -377,10 +380,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Get values of the field
      *
      */
-    const JeveuxVector< ValueType >& getValues( ) const
-    {
-        return _valuesList;
-    }
+    const JeveuxVector< ValueType > &getValues() const { return _valuesList; }
 
     /**
      * @brief Set FieldOnNodes description
@@ -412,10 +412,9 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Comput norm
      * @param normType Type of norm ("NORM_1","NORM_2","NORM_INFINITY")
      */
-    ASTERDOUBLE norm(const std::string normType) const
-    {
+    ASTERDOUBLE norm( const std::string normType ) const {
         ASTERDOUBLE norme = 0.0;
-        bool retour =  _valuesList->updateValuePointer();
+        bool retour = _valuesList->updateValuePointer();
         int taille = _valuesList->size();
         const int rank = getMPIRank();
         if ( !_mesh )
@@ -427,49 +426,39 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             throw std::runtime_error( "Description is empty" );
         const VectorLong nodesId = _dofDescription->getNodesFromDOF();
 
-        if( normType == "NORM_1")
-        {
-            for( int pos = 0; pos < taille; ++pos )
-            {
-                const int node_id = std::abs(nodesId[pos]);
-                if( (*nodesRank)[node_id-1] == rank )
-                    norme += std::abs(( *this )[pos]);
+        if ( normType == "NORM_1" ) {
+            for ( int pos = 0; pos < taille; ++pos ) {
+                const int node_id = std::abs( nodesId[pos] );
+                if ( ( *nodesRank )[node_id - 1] == rank )
+                    norme += std::abs( ( *this )[pos] );
             }
-        }
-        else if( normType == "NORM_2")
-        {
-            for( int pos = 0; pos < taille; ++pos )
-            {
-                const int node_id = std::abs(nodesId[pos]);
-                if( (*nodesRank)[node_id-1] == rank )
+        } else if ( normType == "NORM_2" ) {
+            for ( int pos = 0; pos < taille; ++pos ) {
+                const int node_id = std::abs( nodesId[pos] );
+                if ( ( *nodesRank )[node_id - 1] == rank )
                     norme += ( *this )[pos] * ( *this )[pos];
             }
-        }
-        else if( normType == "NORM_INFINITY")
-        {
-            for( int pos = 0; pos < taille; ++pos )
-            {
-                const int node_id = std::abs(nodesId[pos]);
-                if( (*nodesRank)[node_id-1] == rank )
-                    norme = std::max(norme, std::abs(( *this )[pos]));
+        } else if ( normType == "NORM_INFINITY" ) {
+            for ( int pos = 0; pos < taille; ++pos ) {
+                const int node_id = std::abs( nodesId[pos] );
+                if ( ( *nodesRank )[node_id - 1] == rank )
+                    norme = std::max( norme, std::abs( ( *this )[pos] ) );
             }
-        }
-        else
+        } else
             throw std::runtime_error( "Unknown norm" );
 
 #ifdef ASTER_HAVE_MPI
-        if( _mesh->isParallel() )
-        {
+        if ( _mesh->isParallel() ) {
             ASTERDOUBLE norm2 = norme;
-            if( normType == "NORM_1" || normType == "NORM_2")
-                AsterMPI::all_reduce(norm2, norme, MPI_SUM);
+            if ( normType == "NORM_1" || normType == "NORM_2" )
+                AsterMPI::all_reduce( norm2, norme, MPI_SUM );
             else
-                AsterMPI::all_reduce(norm2, norme, MPI_MAX);
+                AsterMPI::all_reduce( norm2, norme, MPI_MAX );
         }
 #endif
 
-        if( normType == "NORM_2")
-            norme = std::sqrt(norme);
+        if ( normType == "NORM_2" )
+            norme = std::sqrt( norme );
 
         return norme;
     };
@@ -478,13 +467,12 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Dot product
      * @param tmp object FieldOnNodesDescriptionPtr
      */
-    ASTERDOUBLE dot( const FieldOnNodesPtr &tmp ) const
-    {
+    ASTERDOUBLE dot( const FieldOnNodesPtr &tmp ) const {
         bool retour = tmp->updateValuePointers();
         retour = ( retour && _valuesList->updateValuePointer() );
         const int taille = _valuesList->size();
 
-        if( !retour || taille != tmp->size())
+        if ( !retour || taille != tmp->size() )
             throw std::runtime_error( "Incompatible size" );
 
         if ( !_mesh )
@@ -499,18 +487,16 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         const int rank = getMPIRank();
 
         ASTERDOUBLE ret = 0.0;
-        for( int pos = 0; pos < taille; ++pos )
-        {
-            const int node_id = std::abs(nodesId[pos]);
-            if((*nodesRank)[node_id-1] == rank)
+        for ( int pos = 0; pos < taille; ++pos ) {
+            const int node_id = std::abs( nodesId[pos] );
+            if ( ( *nodesRank )[node_id - 1] == rank )
                 ret += ( *this )[pos] * ( *tmp )[pos];
         }
 
 #ifdef ASTER_HAVE_MPI
-        if( _mesh->isParallel() )
-        {
+        if ( _mesh->isParallel() ) {
             ASTERDOUBLE ret2 = ret;
-            AsterMPI::all_reduce(ret2, ret, MPI_SUM);
+            AsterMPI::all_reduce( ret2, ret, MPI_SUM );
         }
 #endif
 
@@ -520,26 +506,17 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     /**
      * @brief Size of the FieldOnNodes
      */
-    ASTERINTEGER size( void ) const
-    {
-        return _valuesList->size();
-    }
-
+    ASTERINTEGER size( void ) const { return _valuesList->size(); }
 
     /**
      * @brief Get DOFNumbering
      */
-    BaseDOFNumberingPtr getDOFNumbering( void ) {
-        return _dofNum;
-    };
+    BaseDOFNumberingPtr getDOFNumbering( void ) { return _dofNum; };
 
     /**
      * @brief Get FieldOnNodesDescription
      */
-    FieldOnNodesDescriptionPtr getDescription( void ) {
-        return _dofDescription;
-    };
-
+    FieldOnNodesDescriptionPtr getDescription( void ) { return _dofDescription; };
 
     /**
      * @brief Update field and build FieldOnNodesDescription if necessary

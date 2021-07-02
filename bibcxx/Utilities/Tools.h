@@ -65,9 +65,9 @@ unique(const std::vector<T>& vec)
 }
 
 // Get unique list of Aster Concept in a map (indexed by rank)
-template<typename T>
+template<typename T, typename T2>
 std::vector<T>
-unique(const std::map< int, T >& _map)
+unique(const std::map< T2, T >& _map)
 {
     std::map< std::string, T> unique_map;
     for(auto it : _map)

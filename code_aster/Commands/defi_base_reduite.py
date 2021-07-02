@@ -53,7 +53,7 @@ class ReducedBaseDefinition(ExecuteCommand):
             elif keywords.get("RESULTAT"):
                 model = keywords["RESULTAT"].getModel()
         if model:
-            self._result.appendModelOnAllRanks(model)
+            self._result.setModel(model)
         self._result.build()
 
 DEFI_BASE_REDUITE = ReducedBaseDefinition.run

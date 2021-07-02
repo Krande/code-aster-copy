@@ -62,7 +62,7 @@ class RestGenePhys(ExecuteCommand):
                 self._result.setDOFNumbering(dofNum)
                 modele = dofNum.getModel()
                 if modele is not None:
-                    self._result.appendModelOnAllRanks(modele)
+                    self._result.setModel(modele)
                     self._result.build()
             else:
                 geneDofNum = resu_gene.getGeneralizedDOFNumbering()
@@ -73,7 +73,7 @@ class RestGenePhys(ExecuteCommand):
                         if dofNum is not None:
                             modele = dofNum.getModel()
                             if modele is not None:
-                                self._result.appendModelOnAllRanks(modele)
+                                self._result.setModel(modele)
                                 self._result.build()
 
         elif isinstance(resu_gene, GeneralizedModeResult):

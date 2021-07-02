@@ -43,7 +43,7 @@ class CombFourier(ExecuteCommand):
         """
         model = keywords["RESULTAT"].getModel()
         if model is not None:
-            self._result.appendModelOnAllRanks(model)
+            self._result.setModel(model)
         self._result.build()
 
 

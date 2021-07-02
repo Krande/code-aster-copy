@@ -42,7 +42,7 @@ class LirePlexus(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        self._result.appendModelOnAllRanks(keywords["MODELE"])
+        self._result.setModel(keywords["MODELE"])
         self._result.build()
 
 LIRE_PLEXUS = LirePlexus.run

@@ -51,7 +51,7 @@ class XfemFieldPostprocessing(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        self._result.appendModelOnAllRanks(keywords["MODELE_VISU"])
+        self._result.setModel(keywords["MODELE_VISU"])
         self._result.build()
 
 

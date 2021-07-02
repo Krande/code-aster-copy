@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -193,7 +193,7 @@ def calc_modes_simult(self, stop_erreur, sturm, TYPE_RESU, OPTION, INFO, **args)
     for matrice in matrices.values():
         try:
             if matrice.getNumberOfElementaryMatrix() != 0:
-                modes.appendMaterialFieldOnAllRanks(matrice.getMaterialField())
+                modes.setMaterialField(matrice.getMaterialField())
                 break
         except: pass
 

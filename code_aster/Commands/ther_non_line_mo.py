@@ -45,7 +45,7 @@ class TherNonLineMo(ExecuteCommand):
         if("reuse" in keywords):
             self._result.build()
         else:
-            self._result.appendModelOnAllRanks(keywords["MODELE"])
+            self._result.setModel(keywords["MODELE"])
             self._result.build()
 
 

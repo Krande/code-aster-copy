@@ -29,7 +29,7 @@ from .calc_modes_inv import calc_modes_inv
 from .calc_modes_multi_bandes import calc_modes_multi_bandes
 from .calc_modes_post import calc_modes_post
 from .calc_modes_simult import calc_modes_simult
-from ...Messages import MasquerAlarme, RetablirAlarme, UTMESS 
+from ...Messages import MasquerAlarme, RetablirAlarme, UTMESS
 
 
 def calc_modes_ops(self, TYPE_RESU, OPTION, AMELIORATION, INFO, **args):
@@ -154,7 +154,7 @@ def calc_modes_ops(self, TYPE_RESU, OPTION, AMELIORATION, INFO, **args):
                 model = None
 
             if model is not None:
-                modes.appendModelOnAllRanks(model)
+                modes.setModel(model)
         else:
             modes.setDOFNumbering(matrRigi.getDOFNumbering())
         modes.setStiffnessMatrix(matrRigi)

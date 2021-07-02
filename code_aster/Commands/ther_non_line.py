@@ -48,10 +48,10 @@ class NonLinearThermalAnalysis(ExecuteCommand):
         if("reuse" in keywords):
             self._result.build()
         else:
-            self._result.appendModelOnAllRanks(keywords["MODELE"])
-            self._result.appendMaterialFieldOnAllRanks(keywords["CHAM_MATER"])
+            self._result.setModel(keywords["MODELE"])
+            self._result.setMaterialField(keywords["CHAM_MATER"])
             if "CARA_ELEM" in keywords:
-                self._result.appendElementaryCharacteristicsOnAllRanks(keywords["CARA_ELEM"])
+                self._result.setElementaryCharacteristics(keywords["CARA_ELEM"])
 
             self._result.build()
 

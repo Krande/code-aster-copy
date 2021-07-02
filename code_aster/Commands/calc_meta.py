@@ -51,7 +51,7 @@ class CalcMeta(ExecuteCommand):
         if modele is None:
             modele = keywords.get("MODELE")
         if modele is not None:
-            self._result.appendModelOnAllRanks(modele)
+            self._result.setModel(modele)
             self._result.build()
 
 CALC_META = CalcMeta.run

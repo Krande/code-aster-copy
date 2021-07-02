@@ -31,23 +31,41 @@ void exportResultToPython() {
 
     MaterialFieldPtr ( Result::*c1 )() =
         &Result::getMaterialField;
-    MaterialFieldPtr ( Result::*c2 )( int ) =
+    MaterialFieldPtr ( Result::*c2 )( ASTERINTEGER ) =
         &Result::getMaterialField;
 
     ModelPtr ( Result::*c3 )() =
         &Result::getModel;
-    ModelPtr ( Result::*c4 )( int ) =
+    ModelPtr ( Result::*c4 )( ASTERINTEGER ) =
         &Result::getModel;
 
     ElementaryCharacteristicsPtr ( Result::*c5 )() =
         &Result::getElementaryCharacteristics;
-    ElementaryCharacteristicsPtr ( Result::*c6 )( int ) =
+    ElementaryCharacteristicsPtr ( Result::*c6 )( ASTERINTEGER ) =
         &Result::getElementaryCharacteristics;
 
     bool ( Result::*c7 )( const std::string ) const =
         &Result::printMedFile;
     bool ( Result::*c8 )( const std::string, std::string ) const =
         &Result::printMedFile;
+
+    bool ( Result::*c9 )( const FieldOnNodesRealPtr,
+                          const std::string&, const ASTERINTEGER ) = &Result::setField;
+    bool ( Result::*c10 )( const FieldOnCellsRealPtr,
+                          const std::string&, const ASTERINTEGER ) = &Result::setField;
+
+    void ( Result::*c11 )( const ModelPtr & ) = &Result::setModel;
+    void ( Result::*c12 )( const ModelPtr &,  ASTERINTEGER ) = &Result::setModel;
+
+    void ( Result::*c13 )( const ElementaryCharacteristicsPtr & ) =
+        &Result::setElementaryCharacteristics;
+    void ( Result::*c14 )( const ElementaryCharacteristicsPtr &,  ASTERINTEGER ) =
+        &Result::setElementaryCharacteristics;
+
+    void ( Result::*c15 )( const MaterialFieldPtr & ) =
+        &Result::setMaterialField;
+    void ( Result::*c16 )( const MaterialFieldPtr &,  ASTERINTEGER ) =
+        &Result::setMaterialField;
 
     py::class_< Result, Result::ResultPtr,
             py::bases< DataStructure > >( "Result", py::no_init )
@@ -56,24 +74,84 @@ void exportResultToPython() {
         .def( "__init__",
               py::make_constructor(
                   &initFactoryPtr< Result, std::string, std::string >))
+        .def( "allocate", &Result::allocate, R"(
+Allocate result
+
+Arguments:
+    nb_rank [int] :  number of rank to allocate
+
+Returns:
+    bool: True if allocation is ok
+        )", ( py::arg("self" ), py::arg("nb_rank" )))
+        .def( "setTimeValue", &Result::setTimeValue, R"(
+Add time at the specified rank
+
+Arguments:
+    time [float] : time value to save
+    rank [int] :  rank where to save time value
+        )", ( py::arg("self" ), py::arg("time" ), py::arg("rank" )))
         .def( "addFieldOnNodesDescription", &Result::addFieldOnNodesDescription )
-        .def( "addMaterialField", &Result::addMaterialField )
-        .def( "addModel", &Result::addModel )
-        .def( "addElementaryCharacteristics", &Result::addElementaryCharacteristics )
-        .def( "appendElementaryCharacteristicsOnAllRanks",
-              &Result::appendElementaryCharacteristicsOnAllRanks )
-        .def( "appendMaterialFieldOnAllRanks",
-              &Result::appendMaterialFieldOnAllRanks )
-        .def( "appendModelOnAllRanks", &Result::appendModelOnAllRanks )
-        .def( "listFields", &Result::listFields )
+        .def( "setMaterialField", c15, R"(
+Set material field on all ranks
+
+Argument:
+    mater [MaterialFieldPtr]: material field to set.
+        )", ( py::arg("self" ), py::arg("mater")) )
+        .def( "setMaterialField", c16, R"(
+Set material field on the specified rank
+
+Argument:
+    mater [MaterialFieldPtr]: material field to set.
+    rank [rank]: rank to set
+        )", ( py::arg("self" ), py::arg("mater"), py::arg("rank")) )
+        .def( "setModel", c11, R"(
+Set model on all ranks
+
+Argument:
+    model [ModelPtr]: model to set.
+        )", ( py::arg("self" ), py::arg("model"))  )
+        .def( "setModel", c12, R"(
+Set model on the specified rank
+
+Argument:
+    model [ModelPtr]: model to set
+    rank [rank]: rank to set
+        )", ( py::arg("self" ), py::arg("model"), py::arg("rank"))  )
+        .def( "setElementaryCharacteristics", c13,  R"(
+Set elementary characterictics on all ranks
+
+Argument:
+    cara_elem [ElementaryCharacteristicsPtr]: elementary characterictics to set.
+        )", ( py::arg("self" ), py::arg("mater")) )
+        .def( "setElementaryCharacteristics", c14,  R"(
+Set elementary characterictics on the specified rank
+
+Argument:
+    cara_elem [ElementaryCharacteristicsPtr]: elementary characterictics to set.
+    rank [rank]: rank to set
+        )", ( py::arg("self" ), py::arg("cara_elem"), py::arg("rank")) )
+        .def( "printListOfFields", &Result::printListOfFields )
         .def( "getAllElementaryCharacteristics", &Result::getAllElementaryCharacteristics, R"(
 Return the list of all elementary characteristics used in the result
 
 Returns:
     list[ElementaryCharacteristicsPtr]: list of ElementaryCharacteristics.
         )", ( py::arg("self" )) )
-        .def( "getElementaryCharacteristics", c5 )
-        .def( "getElementaryCharacteristics", c6 )
+        .def( "getElementaryCharacteristics", c5, R"(
+Get elementary characterictics if only one is used else an execption is throw
+
+Return:
+    cara_elem [ElementaryCharacteristicsPtr]: a pointer to elementary characterictics.
+        )", ( py::arg("self" )) )
+        .def( "getElementaryCharacteristics", c6 , R"(
+Get elementary characterictics at the specfied rank
+
+Argument:
+    rank [int]: rank
+
+Return:
+    cara_elem [ElementaryCharacteristicsPtr]: a pointer to elementary characterictics.
+        )", ( py::arg("self" ), py::arg("rank")))
         .def( "getMaterialFields", &Result::getMaterialFields, R"(
 Return the list of all material fields used in the result
 
@@ -82,7 +160,12 @@ Returns:
         )", ( py::arg("self" )) )
         .def( "getMaterialField", c1 )
         .def( "getMaterialField", c2 )
-        .def( "getMesh", &Result::getMesh )
+        .def( "getMesh", &Result::getMesh, R"(
+Return a pointer to mesh
+
+Returns:
+    mesh [BaseMeshPtr]: a pointer to the mesh.
+        )", ( py::arg("self" )) )
         .def( "getModels", &Result::getModels, R"(
 Return the list of all models used in the result
 
@@ -118,7 +201,28 @@ Returns:
         .def( "setMesh", &Result::setMesh )
         .def( "build", &Result::build )
         .def( "printInfo", &Result::printInfo )
+        .def( "setField", c9, R"(
+Set a FieldOnNodes to result
 
+Arguments:
+    field [FieldOnNodesRealPtr] : field to set
+    name [str]: symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
+    rank [int]: rank to set the field
+
+Returns:
+    bool: True if ok else False.
+        )", ( py::arg("self"), py::arg("field"), py::arg("name"), py::arg("rank")) )
+        .def( "setField", c10, R"(
+Set a FieldOnCells to result
+
+Arguments:
+    field [FieldOnCellsRealPtr] : field to set
+    name [str]: symbolic name of the field in the result (ex: 'VARI_ELGA', 'SIEF_ELGA'...)
+    rank [int]: rank to set the field
+
+Returns:
+    bool: True if ok else False.
+        )", ( py::arg("self"), py::arg("field"), py::arg("name"), py::arg("rank")) )
         .def( "getTable", &ListOfTables::getTable, R"(
 Extract a Table from the datastructure.
 

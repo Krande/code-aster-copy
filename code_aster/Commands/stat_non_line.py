@@ -45,11 +45,11 @@ class NonLinearStaticAnalysis(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        self._result.appendModelOnAllRanks(keywords["MODELE"])
-        self._result.appendMaterialFieldOnAllRanks(keywords["CHAM_MATER"])
+        self._result.setModel(keywords["MODELE"])
+        self._result.setMaterialField(keywords["CHAM_MATER"])
         caraElem = keywords.get("CARA_ELEM")
         if caraElem is not None:
-            self._result.appendElementaryCharacteristicsOnAllRanks(caraElem)
+            self._result.setElementaryCharacteristics(caraElem)
 
         if self.exception and self.exception.id_message in ("MECANONLINE5_2", ):
             return

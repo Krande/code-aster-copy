@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,7 @@ def macr_ecla_pg_ops(self, RESULTAT, MAILLAGE, RESU_INIT, MODELE_INIT,
                       ECLA_PG=_F(
                       MODELE_INIT=MODELE_INIT, RESU_INIT=RESU_INIT, NOM_CHAM=NOM_CHAM,
                                 MAILLAGE=ma2, **motscles))
-    resu2.appendModelOnAllRanks(MODELE_INIT)
+    resu2.setModel(MODELE_INIT)
     self.register_result(resu2, RESULTAT)
     return
 #

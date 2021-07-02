@@ -51,7 +51,7 @@ class RestCondTran(ExecuteCommand):
         """
         modele = keywords["RESULTAT"].getModel()
         if modele is not None:
-            self._result.appendModelOnAllRanks(modele)
+            self._result.setModel(modele)
             self._result.build()
 
 REST_COND_TRAN = RestCondTran.run

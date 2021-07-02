@@ -94,11 +94,11 @@ class ResultStateBuilder(InternalStateBuilder):
         super().restore(result)
         for i, rank in enumerate(self._st["rank"]):
             if self._st["model"]:
-                result.addModel(self._st["model"][i], rank)
+                result.setModel(self._st["model"][i], rank)
             if self._st["mater"]:
-                result.addMaterialField(self._st["mater"][i], rank)
+                result.setMaterialField(self._st["mater"][i], rank)
             if self._st["cara_elem"]:
-                result.addElementaryCharacteristics(self._st["cara_elem"][i], rank)
+                result.setElementaryCharacteristics(self._st["cara_elem"][i], rank)
         if self._st["model"]:
             result.build()
 
