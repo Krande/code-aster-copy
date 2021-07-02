@@ -72,7 +72,7 @@ U2 = MECA_STATIQUE(MODELE=MO,
                  LIST_INST=LINST,
                  );
 
-fieldOnElem = U2.getFieldOnCellsReal("SIEF_ELGA", 31)
+fieldOnElem = U2.getFieldOnCellsReal("SIEF_ELGA", 30)
 
 sfon = fieldOnElem.exportToSimpleFieldOnCells()
 

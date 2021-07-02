@@ -70,7 +70,7 @@ resu = STAT_NON_LINE(CHAM_MATER=AFFMAT,
                      NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
                      SOLVEUR=_F(METHODE='PETSC',RESI_RELA=1.e-8,PRE_COND='LDLT_SP'),)
 
-MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 2)
+MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
 sfon = MyFieldOnNodes.exportToSimpleFieldOnNodes()
 
 test.assertAlmostEqual(sfon.getValue(0, 0), 1.0)
