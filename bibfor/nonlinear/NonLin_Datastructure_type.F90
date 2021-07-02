@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -446,93 +446,6 @@ implicit none
 ! ----- Table in results datastructures
         type(NL_DS_Table)     :: table
     end type NL_DS_Energy
-!
-! - Type: for external comportement
-!
-    type NL_DS_ComporExte
-! ----- Flag for UMAT law
-        aster_logical      :: l_umat         = ASTER_FALSE
-! ----- Flag for non-official MFront law
-        aster_logical      :: l_mfront_proto = ASTER_FALSE
-! ----- Flag for official MFront law
-        aster_logical      :: l_mfront_offi  = ASTER_FALSE
-! ----- Name of subroutine for external law
-        character(len=255) :: subr_name      = ' '
-! ----- Name of library for external law
-        character(len=255) :: libr_name      = ' '
-! ----- Model for MFront law
-        character(len=16)  :: model_mfront   = ' '
-! ----- Number of dimension for MFront law
-        integer            :: model_dim      = 0
-! ----- Number of internal variables for UMAT
-        integer            :: nb_vari_umat   = 0
-! ----- Identifier for strains model
-        integer            :: strain_model   = 0
-    end type NL_DS_ComporExte
-!
-! - Type: for comportement
-!
-    type NL_DS_Compor
-        character(len=16) :: rela_comp       = ' '
-        character(len=16) :: defo_comp       = ' '
-        character(len=16) :: type_comp       = ' '
-        character(len=16) :: type_cpla       = ' '
-        character(len=16) :: kit_comp(4)     = ' '
-        character(len=16) :: mult_comp       = ' '
-        character(len=16) :: post_iter       = ' '
-        character(len=16) :: defo_ldc        = ' '
-        character(len=16) :: rigi_geom       = ' '
-        integer           :: nb_vari         = 0
-        integer           :: nb_vari_comp(4) = 0
-        integer           :: nume_comp(4)    = 0
-    end type NL_DS_Compor
-!
-! - Type: for preparation of comportment
-!
-    type NL_DS_ComporPrep
-! ----- Number of comportements
-        integer                         :: nb_comp   = 0
-! ----- List of comportements
-        type(NL_DS_Compor), pointer     :: v_comp(:) => null()
-! ----- List of external comportements
-        type(NL_DS_ComporExte), pointer :: v_exte(:) => null()
-! ----- Flag for IMPLEX method
-        aster_logical                   :: l_implex  = ASTER_FALSE
-    end type NL_DS_ComporPrep
-!
-! - Type: for parameters for constitutive laws
-!
-    type NL_DS_ComporPara
-        aster_logical :: l_comp_external          = ASTER_FALSE
-        integer       :: type_matr_t              = 0
-        real(kind=8)  :: parm_theta               = 0.d0
-        integer       :: iter_inte_pas            = 0
-        real(kind=8)  :: vale_pert_rela           = 0.d0
-        real(kind=8)  :: resi_deborst_max         = 0.d0
-        integer       :: iter_deborst_max         = 0
-        real(kind=8)  :: resi_radi_rela           = 0.d0
-        integer       :: ipostiter                = 0
-        integer       :: ipostincr                = 0
-        integer       :: iveriborne               = 0
-        aster_logical :: l_matr_unsymm            = ASTER_FALSE
-        character(len=16)         :: rela_comp    = ' '
-        character(len=16)         :: meca_comp    = ' '
-        character(len=16)         :: defo_comp    = ' '
-        character(len=16)         :: kit_comp(4)  = ' '
-        type(NL_DS_ComporExte)    :: comp_exte
-    end type NL_DS_ComporPara
-!
-! - Type: for preparation of parameters for constitutive laws
-!
-    type NL_DS_ComporParaPrep
-! ----- Number of comportements
-        integer                         :: nb_comp        = 0
-! ----- Parameters for THM scheme
-        real(kind=8)                    :: parm_alpha_thm = 0.d0
-        real(kind=8)                    :: parm_theta_thm = 0.d0
-! ----- List of parameters
-        type(NL_DS_ComporPara), pointer :: v_para(:)      => null()
-    end type NL_DS_ComporParaPrep
 !
 ! - Type: constitutive laws management
 !
