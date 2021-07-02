@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ loi = LoiComportement(
     nom            = 'ZIRC',
     lc_type        = ('PHASE',),
     doc            =   """phases metallurgiques du zirconium"""            ,
-    num_lc         = 30000,
+    num_lc         = 0,
     nb_vari        = 3,
     nom_vari       = ('ZIRCALPH','ZIRCALBE','ZIRCBETA'),
     mc_mater       = ('META_ZIRC',),

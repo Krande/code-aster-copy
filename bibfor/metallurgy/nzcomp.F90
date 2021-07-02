@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,12 +66,12 @@ real(kind=8), intent(out) :: meta_curr(*)
 !
     select case (nume_comp)
 !
-    case (20002)
+    case (2)
         call zacier(metaPara%steel, nb_phase,&
                     tno0, tno1, tno2,&
                     dt10, dt21,&
                     meta_prev, meta_curr)
-    case (30001)
+    case (1)
         call zedgar(jv_mater, nb_phase,&
                     tno1, tno2,&
                     inst2, dt21,&
