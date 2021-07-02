@@ -109,7 +109,7 @@ loads.append(AFFE_CHAR_CINE(MODELE=model,
                               _F(GROUP_MA='GAUCHE',  DX=-1.0),
                               _F(GROUP_NO='DROIT',  DX=1.0),
                       ),))
-solvers = [ "MUMPS"]#, "PETSC"]
+solvers = [ "MUMPS", "PETSC"]
 for load in loads:
     for solver in solvers:
 
