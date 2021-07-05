@@ -104,6 +104,7 @@ def compress(path, verbose=False):
         with open(fname, 'rb') as f_in:
             with gzip.open(fname + ".gz", 'wb', compresslevel=6) as f_out:
                 shutil.copyfileobj(f_in, f_out)
+        os.remove(fname)
     return dest
 
 
@@ -127,6 +128,7 @@ def uncompress(path, verbose=False):
         with gzip.open(fname, 'rb') as f_in:
             with open(fname.rstrip(".gz"), 'wb') as f_out:
                 shutil.copyfileobj(f_in, f_out)
+        os.remove(fname)
     return dest
 
 

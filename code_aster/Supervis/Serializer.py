@@ -67,8 +67,8 @@ import numpy
 from .. import Objects
 from ..Objects import (DataStructure, InternalStateBuilder, ResultNaming,
                        WithEmbeddedObjects)
-from ..Utilities import (DEBUG, ExecutionParameter, Options,
-                         get_caller_context, logger, no_new_attributes, MPI)
+from ..Utilities import (DEBUG, MPI, ExecutionParameter, Options,
+                         get_caller_context, logger, no_new_attributes)
 
 ARGS = '_MARK_DS_ARGS_'
 STATE = '_MARK_DS_STATE_'
@@ -732,7 +732,7 @@ def read_signature(sha_file):
             sign.append(pickle.Unpickler(pick).load())
             sign.append(pickle.Unpickler(pick).load())
             sign.append(pickle.Unpickler(pick).load())
-    except (IOError, OSError):
+    except Exception:
         traceback.print_exc()
     logger.debug(f"pickled signatures: {sign}")
     return sign
@@ -754,6 +754,6 @@ def file_signature(filename, offset=0, bufsize=-1):
         with open(filename, 'rb') as fobj:
             fobj.seek(offset, 0)
             sign = sha256(fobj.read(bufsize)).hexdigest()
-    except (IOError, OSError):
+    except Exception:
         traceback.print_exc()
     return sign
