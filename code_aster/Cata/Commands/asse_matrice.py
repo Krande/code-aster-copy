@@ -41,6 +41,6 @@ ASSE_MATRICE=OPER(nom="ASSE_MATRICE",op=12,sd_prod=asse_matrice_prod,
                                typ=(matr_elem_depl_r,matr_elem_depl_c,matr_elem_temp_r,matr_elem_pres_c),max=1),
          NUME_DDL        =SIMP(statut='o',typ=nume_ddl_sdaster),
          SYME            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-         CHAR_CINE       =SIMP(statut='f',typ=(char_cine_meca,char_cine_ther,char_cine_acou) ),
+         CHAR_CINE       =SIMP(statut='f',typ=(char_cine_meca,char_cine_ther,char_cine_acou), max="**" ),
          INFO            =SIMP(statut='f',typ='I',into=(1,2) ),
 )  ;

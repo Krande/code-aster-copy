@@ -54,7 +54,9 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
 
 #   PB PLAN --- POINT A ENCASTRE
 CH2=AFFE_CHAR_CINE(  MODELE=MO,MECA_IMPO=(
-       _F(  TOUT = 'OUI', DZ = 0., DRX = 0., DRY = 0.),
+       _F(  TOUT = 'OUI', DZ = 0., DRX = 0., DRY = 0.),) )
+
+CH3=AFFE_CHAR_CINE(  MODELE=MO,MECA_IMPO=(
                 _F(  GROUP_NO = 'A',   DX = 0., DY = 0.,  DRZ = 0.)) )
 
 #--------------------------------------------------------------------
@@ -71,10 +73,10 @@ MELM2=CALC_MATR_ELEM(  MODELE=MO,
 NUM2=NUME_DDL(  MATR_RIGI=MELR2 )
 
 MATASSR2=ASSE_MATRICE(  MATR_ELEM=MELR2,   NUME_DDL=NUM2,
-                           CHAR_CINE=CH2 )
+                           CHAR_CINE=(CH2, CH3) )
 
 MATASSM2=ASSE_MATRICE(  MATR_ELEM=MELM2,   NUME_DDL=NUM2,
-                           CHAR_CINE=CH2)
+                           CHAR_CINE=(CH2, CH3))
 
 #--------------------------------------------------------------------
 
