@@ -77,6 +77,9 @@ except:
         def gather(self, data, root):
             return data
 
+        def allreduce(self, data, op):
+            return op(data)
+
     class MPI:
         """
         This class MPI is an encapsulation of mpi4py for sequential libraries.
@@ -85,5 +88,22 @@ except:
 
         It is equivalent to 'from mpi4py import MPI' of parallel libraries
         """
+
+        @staticmethod
+        def identity(data):
+            """ Identity operator
+
+                Argument:
+                    data : an object
+
+                Return:
+                    data : the same object
+            """
+            return data
+
+        MAX = identity
+        MIN = identity
+        SUM = identity
+        PROD = identity
 
         COMM_WORLD = FAKE_COMM_WORLD()

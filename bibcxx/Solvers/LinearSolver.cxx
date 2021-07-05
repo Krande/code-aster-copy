@@ -254,7 +254,7 @@ FieldOnNodesRealPtr BaseLinearSolver::solve(
     }
 
     if ( result->getName() == "" )
-        result = FieldOnNodesRealPtr( new FieldOnNodesReal( Permanent ) );
+        result = boost::make_shared< FieldOnNodesReal >( Permanent );
 
     try{
        if ( !result->getDOFNumbering() && currentRHS->getDOFNumbering()){
@@ -290,6 +290,12 @@ FieldOnNodesRealPtr BaseLinearSolver::solveWithDirichletBC(
 
     if ( result->getName().empty() )
         result = boost::make_shared< FieldOnNodesReal >( Permanent );
+
+    try{
+       if ( !result->getDOFNumbering() && currentRHS->getDOFNumbering()){
+            result->setDOFNumbering(currentRHS->getDOFNumbering());
+       }
+    } catch ( ... ) {}
 
     std::string blanc( " " );
     ASTERINTEGER nsecm = 0, istop = 0, iret = 0;
