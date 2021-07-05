@@ -47,8 +47,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=15.,
                         FONCTION=inter,),
              )
 
-
-
 # ----------- DATA ---------------
 pseed = 10000000
 xmin = -200
@@ -176,11 +174,6 @@ FONC_E  = DEFI_FONCTION ( NOM_RESU    = 'ACCE',  NOM_PARA    = 'INST',
             PROL_GAUCHE = 'CONSTANT',  PROL_DROITE  = 'CONSTANT',
             ABSCISSE        = X,
             ORDONNEE     = FM);
-
-
-
-
-
 # -------------- FONCTION 3D------------
 Lcz = 0.1*Lcx
 Lcy = 1.5 * Lcx
@@ -202,11 +195,6 @@ E_vari3 = DEFI_PROP_ALEA (
             NB_TERM_Z  = 30,
 
 )
-
-
-
-
-
 # ======================================================================
 # Exemple de visualisation du champ
 # ======================================================================
