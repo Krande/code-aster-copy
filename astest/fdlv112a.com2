@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,8 @@
 #
 # FLUIDES INCOMPRESSIBLES - MASSES AJOUTEES.
 
+# see #31118
+# aslint: disable=W2005
 
 POURSUITE(CODE='OUI',DEBUG=_F(SDVERI='OUI'))
 
@@ -268,9 +270,10 @@ TEST_TABLE(VALE_CALC=555.484543524,
           FILTRE=_F(NOM_PARA='FREQ',
                     VALE=1.0E+01,),
           )
-TEST_TABLE(VALE_CALC=-156.905105329 ,
+TEST_TABLE(VALE_CALC=-156.905320627526,
           NOM_PARA='Im_FX',
           TABLE=TABLE_A,
+          TOLE_MACHINE=1.5e-6,
           FILTRE=_F(NOM_PARA='FREQ',
                     VALE=1.0E+01,),
           )
@@ -280,9 +283,10 @@ TEST_TABLE(VALE_CALC=555.484543524 ,
           FILTRE=_F(NOM_PARA='FREQ',
                     VALE=1.0E+01,),
           )
-TEST_TABLE(VALE_CALC=-156.905105329 ,
+TEST_TABLE(VALE_CALC=-156.905320627526,
           NOM_PARA='Im_FX',
           TABLE=TABLE03,
+          TOLE_MACHINE=1.5e-6,
           FILTRE=_F(NOM_PARA='FREQ',
                     VALE=1.0E+01,),
           )
