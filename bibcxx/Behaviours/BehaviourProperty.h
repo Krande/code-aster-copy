@@ -31,14 +31,14 @@
 #include "Modeling/Model.h"
 #include "Materials/MaterialField.h"
 #include "DataFields/ConstantFieldOnCells.h"
-#include "DataStructures/TemporaryDataStructureNaming.h"
+#include "DataStructures/DataStructure.h"
 
 // TODO doit être une DataStructure
 /**
  * @class BehaviourProperty
  * @brief Class to define behaviour
  */
-class BehaviourProperty {
+class BehaviourProperty : public DataStructure {
   private:
     /** @brief Mesh */
     BaseMeshPtr _mesh;
@@ -48,9 +48,6 @@ class BehaviourProperty {
 
     /** @brief Material field */
     MaterialFieldPtr _materialField;
-
-    /** @brief Base name of the maps */
-    std::string _baseName;
 
     /** @brief Flag for initial state */
     bool _initialState;
@@ -75,6 +72,10 @@ class BehaviourProperty {
     void createObjects( );
 
   public:
+
+    /** @typedef Smart-pointer to behaviour class */
+    typedef boost::shared_ptr< BehaviourProperty > BehaviourPropertyPtr;
+
     /** @brief Constructor */
     BehaviourProperty(
       ModelPtr         model,
@@ -84,7 +85,7 @@ class BehaviourProperty {
     ~BehaviourProperty( ){};
 
     /** @brief Build object */
-    void build( );
+    bool build( );
 
     /** @brief Get model */
     ModelPtr getModel( ) const { return _model; }
@@ -100,6 +101,10 @@ class BehaviourProperty {
 
     /** @brief Set verbosity */
     void setVerbosity( const bool &value ) { _verbosity = value; };
+
+    /** @brief Set behavior ConstantField '.COMPOR' */
+    ConstantFieldOnCellsChar16Ptr getBehaviour( ) const
+    { return _COMPOR; };
 
 };
 

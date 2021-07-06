@@ -38,6 +38,7 @@
 #include "PythonBindings/BaseMaterialPropertyInterface.h"
 #include "PythonBindings/BaseMeshInterface.h"
 #include "PythonBindings/BehaviourDefinitionInterface.h"
+#include "PythonBindings/BehaviourPropertyInterface.h"
 #include "PythonBindings/BucklingModeResultInterface.h"
 #include "PythonBindings/CombinedFourierResultInterface.h"
 #include "PythonBindings/ConnectionMeshInterface.h"
@@ -303,4 +304,6 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportCreateEnthalpyToPython();
     exportDeleteTemporaryObjectsToPython();
     exportMatrixToPetscToPython();
+    exportBehaviourPropertyToPython();
+
 };

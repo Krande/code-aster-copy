@@ -33,40 +33,43 @@
 
 /** @brief Create objects (maps) */
 void BehaviourProperty ::createObjects() {
-    _COMPOR = ConstantFieldOnCellsChar16Ptr(
-        new ConstantFieldOnCellsChar16( _baseName + ".COMPOR", _mesh ) );
+    _COMPOR = boost::make_shared< ConstantFieldOnCellsChar16 >( getName() + ".COMPOR", _mesh );
 
-    _MULCOM = ConstantFieldOnCellsChar16Ptr(
-        new ConstantFieldOnCellsChar16( _baseName + ".MULCOM", _mesh ) );
+    _MULCOM = boost::make_shared< ConstantFieldOnCellsChar16 >( getName() + ".MULCOM", _mesh );
 
-    _CARCRI = ConstantFieldOnCellsRealPtr(
-        new ConstantFieldOnCellsReal( _baseName + ".CARCRI", _mesh ) );
+    _CARCRI = boost::make_shared< ConstantFieldOnCellsReal >( getName() + ".CARCRI", _mesh );
 };
 
 /** @brief Constructor */
 BehaviourProperty ::BehaviourProperty( ModelPtr model, MaterialFieldPtr materialField )
-    : _initialState( false ), _implex( false ), _verbosity( false ), _model( model ),
-      _materialField( materialField ) {
-    _mesh = _model->getMesh();
-    _baseName = TemporaryDataStructureNaming::getNewTemporaryName();
+    : DataStructure( ResultNaming::getNewResultName(), 8, "COMPOR", Permanent ),
+      _initialState( false ), _implex( false ), _verbosity( false ), _model( model ),
+      _materialField( materialField ), _mesh( model->getMesh() )
+{
     createObjects();
 };
 
 /** @brief Build objects (maps) */
-void BehaviourProperty ::build() {
+bool BehaviourProperty ::build() {
     std::string modelName = getModel()->getName();
     modelName.resize( 8, ' ' );
 
     std::string materialFieldName = getMaterialField()->getName();
     materialFieldName.resize( 8, ' ' );
 
-    std::string mapComporName = _COMPOR->getName();
-    mapComporName.resize( 19, ' ' );
+    std::string comporName = _COMPOR->getName();
+    comporName.resize( 19, ' ' );
 
     CALLO_NMDOCC( modelName, materialFieldName, (ASTERLOGICAL *)&_initialState,
-                  (ASTERLOGICAL *)&_implex, mapComporName, (ASTERLOGICAL *)&_verbosity );
+                  (ASTERLOGICAL *)&_implex, comporName, (ASTERLOGICAL *)&_verbosity );
 
     CALLO_NMDOCR( getModel()->getName(), _CARCRI->getName(), (ASTERLOGICAL *)&_implex );
 
     CALLO_NMDOCM( getModel()->getName(), _MULCOM->getName() );
+
+    AS_ASSERT(_COMPOR->updateValuePointers());
+    AS_ASSERT(_MULCOM->updateValuePointers());
+    AS_ASSERT(_CARCRI->updateValuePointers());
+
+    return true;
 };

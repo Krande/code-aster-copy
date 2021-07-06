@@ -45,9 +45,6 @@ class DiscreteProblem {
     /** @brief Etude definie par l'utilisateur */
     StudyDescriptionPtr _study;
 
-    /** @brief Behaviour properties */
-    BehaviourPropertyPtr _behaviourProp;
-
     /**
      * @brief Production d'un CommandSyntax pour CALC_MATR_ELEM
      */
@@ -163,12 +160,14 @@ class DiscreteProblem {
     StudyDescriptionPtr getStudyDescription() { return _study; };
 
     /**
-     * @brief Create maps for behaviours
+     * @brief Create ConstantFieldOnCell for behaviours
      */
-    void createBehaviour( PyObject *keywords, const std::string &initialState = "NON",
+    BehaviourPropertyPtr createBehaviour( PyObject *keywords,
+                          const std::string &initialState = "NON",
                           const std::string &implex = "NON", const int verbosity = 0 );
     // added for Python interface
-    void createBehaviour( PyObject *keywords ) { createBehaviour( keywords, "NON", "NON", 1 ); };
+    BehaviourPropertyPtr createBehaviour( PyObject *keywords )
+    { return createBehaviour( keywords, "NON", "NON", 1 ); };
 };
 
 /**
