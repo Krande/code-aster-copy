@@ -29,6 +29,7 @@
 #include "astercxx.h"
 
 #include "Results/TransientResult.h"
+#include "Contact/Contact.h"
 
 /**
  * @class NonLinearResult
@@ -38,6 +39,12 @@
  */
 class NonLinearResult : public TransientResult {
   private:
+    /** @typedef std::map du rang et des pointers vers ContactPtr */
+    typedef std::map< ASTERINTEGER, ContactPtr > mapRankContact;
+
+    /** @brief List of ContactPtr */
+    mapRankContact _mapContact;
+
   public:
     /**
      * @brief Constructeur
@@ -49,6 +56,10 @@ class NonLinearResult : public TransientResult {
      */
     NonLinearResult( const std::string name )
         : TransientResult( name, "EVOL_NOLI" ){};
+
+    void setContact( const ContactPtr contact);
+
+    void setContact( const ContactPtr contact, const ASTERINTEGER& rank);
 };
 
 /**

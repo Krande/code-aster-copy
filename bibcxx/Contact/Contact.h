@@ -41,6 +41,8 @@ class Contact : public DataStructure {
     bool _isEmpty;
     /** @brief Modele */
     ModelPtr _model;
+    /** @brief Ligel ".CHME.LIGRE" */
+    FiniteElementDescriptorPtr _FEDesc;
 
   public:
     /**
@@ -57,7 +59,38 @@ class Contact : public DataStructure {
      * @brief Constructeur
      */
     Contact( const std::string name )
-        : DataStructure( name, 8, "CHAR_CONTACT" ), _model( ModelPtr() ), _isEmpty( true ){};
+        : DataStructure( name, 8, "CHAR_CONTACT" ), _model( ModelPtr() ),
+            _isEmpty( true ){};
+
+    /**
+     * @brief Constructeur
+     */
+    Contact( const std::string name, const ModelPtr model )
+        : DataStructure( name, 8, "CHAR_CONTACT" ), _model( model ),
+            _FEDesc( boost::make_shared< FiniteElementDescriptor >( getName() + ".LIGRE",
+                                                                _model->getMesh() ) ),
+            _isEmpty( true ){};
+
+    /**
+     * @brief Constructeur
+     */
+    Contact( const ModelPtr model )
+        : Contact( ResultNaming::getNewResultName(),  model ){};
+
+    void setModel( const ModelPtr model)
+    {
+        _model = model;
+    }
+
+    ModelPtr getModel( ) const
+    {
+        return _model;
+    }
+
+    FiniteElementDescriptorPtr getFiniteElementDescriptor() const
+    {
+        return _FEDesc;
+    }
 };
 
 /**

@@ -29,11 +29,17 @@ namespace py = boost::python;
 
 void exportNonLinearResultToPython() {
 
+    void ( NonLinearResult::*c1 )( const ContactPtr  ) = &NonLinearResult::setContact;
+    void ( NonLinearResult::*c2 )( const ContactPtr , const ASTERINTEGER& )
+        = &NonLinearResult::setContact;
+
     py::class_< NonLinearResult, NonLinearResultPtr,
                 py::bases< TransientResult > >( "NonLinearResult",
                                                                       py::no_init )
         .def( "__init__",
               py::make_constructor(&initFactoryPtr< NonLinearResult >))
         .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< NonLinearResult, std::string >));
+                              &initFactoryPtr< NonLinearResult, std::string >))
+        .def( "setContact", c1 )
+        .def( "setContact", c2 );
 };

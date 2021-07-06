@@ -51,6 +51,10 @@ class NonLinearStaticAnalysis(ExecuteCommand):
         if caraElem is not None:
             self._result.appendElementaryCharacteristicsOnAllRanks(caraElem)
 
+        contact = keywords.get("CONTACT")
+        if contact is not None:
+            self._result.setContact(contact)
+
         if self.exception and self.exception.id_message in ("MECANONLINE5_2", ):
             return
         self._result.build()
