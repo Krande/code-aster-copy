@@ -422,16 +422,16 @@ ElementaryMatrixDisplacementRealPtr DiscreteProblem::computeMechanicalStiffnessM
     return computeMechanicalMatrix( "RIGI_MECA" );
 };
 
-void DiscreteProblem::createBehaviour( PyObject *keywords, const std::string &initialState,
+BehaviourPropertyPtr DiscreteProblem::createBehaviour( PyObject *keywords,
+                                            const std::string &initialState,
                                             const std::string &implex, const int info ) {
 
     // Create object for behaviour
-    BehaviourPropertyPtr _behavProp;
-    _behavProp = BehaviourPropertyPtr(
-        new BehaviourProperty( _study->getModel(), _study->getMaterialField() ) );
-    _behavProp->setInitialState( initialState == "OUI" );
-    _behavProp->setImplex( implex == "OUI" );
-    _behavProp->setVerbosity( info > 1 );
+    auto behaviourProp = boost::make_shared<BehaviourProperty>( _study->getModel(),
+                                                            _study->getMaterialField() );
+    behaviourProp->setInitialState( initialState == "OUI" );
+    behaviourProp->setImplex( implex == "OUI" );
+    behaviourProp->setVerbosity( info > 1 );
 
     // Check input PyObject
     if ( !PyDict_Check( keywords ) && !PyList_Check( keywords ) && !PyTuple_Check( keywords ) )
@@ -444,6 +444,8 @@ void DiscreteProblem::createBehaviour( PyObject *keywords, const std::string &in
     cmdSt.define( kwfact );
 
     // Build objects
-    _behavProp->build();
+    AS_ASSERT(behaviourProp->build());
     Py_DECREF( kwfact );
+
+    return behaviourProp;
 };

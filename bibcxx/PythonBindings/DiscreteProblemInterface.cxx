@@ -58,10 +58,10 @@ void exportDiscreteProblemToPython() {
               &DiscreteProblem::computeMechanicalStiffnessMatrix )
         .def( "computeMechanicalMassMatrix", &DiscreteProblem::computeMechanicalMassMatrix )
         .def( "getStudyDescription", &DiscreteProblem::getStudyDescription )
-
         .def( "createBehaviour",
-              static_cast< void ( DiscreteProblem::* )( PyObject *, const std::string &,
-                                                             const std::string &, const int ) >(
+              static_cast< BehaviourPropertyPtr ( DiscreteProblem::* )( PyObject *,
+                                                            const std::string &,
+                                                            const std::string &, const int ) >(
                   &DiscreteProblem::createBehaviour ),
               R"(
 Create constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
@@ -71,17 +71,23 @@ Arguments:
     SIGM_INIT (str): "OUI" if there is an initial stress field
     IMPLEX (str): "OUI" if Implex algorithm is used
     INFO (int): level of verbosity, 1 to have description of behaviour or 0 to be quiet
+
+Return:
+    BehaviourPropertyPtr: constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
         )",
               ( py::arg( "self" ), py::arg( "COMPORTEMENT" ), py::arg( "SIGM_INIT" ),
                 py::arg( "IMPLEX" ), py::arg( "INFO" ) ) )
         .def( "createBehaviour",
-              static_cast< void ( DiscreteProblem::* )( PyObject * ) >(
+              static_cast< BehaviourPropertyPtr ( DiscreteProblem::* )( PyObject * ) >(
                   &DiscreteProblem::createBehaviour ),
               R"(
 Create constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
 
 Arguments:
     COMPORTEMENT (list[dict]): keywords as provided to STAT_NON_LINE/COMPORTEMENT
+
+Return:
+    BehaviourPropertyPtr: constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
         )",
               ( py::arg( "self" ), py::arg( "COMPORTEMENT" ) ) );
 };
