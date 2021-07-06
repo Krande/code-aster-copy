@@ -41,7 +41,9 @@
 #include "MemoryManager/JeveuxVector.h"
 #include "Meshes/BaseMesh.h"
 #include "Supervis/CommandSyntax.h"
+#include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
+
 
 #ifdef ASTER_HAVE_PETSC4PY
 #include <petscmat.h>
@@ -333,6 +335,26 @@ class AssemblyMatrix : public DataStructure {
 
         return true;
     };
+
+
+    /**
+     * @brief Return True if CCID object exists for DirichletElimination
+     */
+    bool hasDirichletEliminationDOFs() const
+    {
+        return _ccid->exists();
+    }
+
+     /**
+     * @brief Return CCID object if exists for DirichletElimination
+     */
+    JeveuxVectorLong getDirichletEliminationDOFs() const
+    {
+        if( hasDirichletEliminationDOFs() )
+            return _ccid;
+
+        raiseAsterError( "JeveuxError: CCID not existing" );
+    }
 };
 
 /** @typedef Definition d'une matrice assemblee de double */
