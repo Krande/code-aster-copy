@@ -89,7 +89,7 @@ character(len=8), intent(in) :: mesh
 !
     integer :: k, kk, nuno1, nuno2, ino1, ino2, ndim, nocc, iocc
     integer :: ibid, nnomx, idmax, igeom
-    integer :: iagno2, nbma1, nbno2, nbno2t
+    integer :: jlinonu2, nbma1, nbno2, nbno2t
     integer :: nno1, lno
     integer :: jconb, jconu, jcocf, j2coco, idecal
     integer :: jconb1, jconu1, jcocf1, jcom11, ideca1
@@ -113,7 +113,7 @@ character(len=8), intent(in) :: mesh
     character(len=8)    :: kbeta, nono1, nono2, cmp, ddl2, listyp(8), elem_error
     character(len=16)   :: motfac, tymocl(4), motcle(4), corres, corre1, corre2, typrac
     character(len=19)   :: lisrel
-    character(len=24)   :: geom2, valk(2), list_node
+    character(len=24)   :: geom2, valk(2), list_nonu2
 !
     integer,            pointer :: limanu1(:)       => null()
     integer,            pointer :: ln(:)            => null()
@@ -130,7 +130,7 @@ character(len=8), intent(in) :: mesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer             :: ifonc, ier, ii, jgdefo, jginit, jlino, nbno1, nfonc, nnode
+    integer             :: ifonc, ier, ii, jgdefo, jginit, jlinonu1, nbno1, nfonc, nnode
     integer             :: unite, jgeomi, ifm, info
     real(kind=8)        :: vx(3)
     character(len=4)    :: kiocc
@@ -246,6 +246,7 @@ character(len=8), intent(in) :: mesh
 !
 !       1.2 RECUPERATION DES NOEUD_ESCL
 !       -------------------------------
+        list_nonu2 = '&&CALIRC.LINONU2'
         if (.not.dnor) then
 !           RECUPERATION DE LA LISTE DES NOEUD_ESCL :
 !           -----------------------------------------
@@ -258,8 +259,8 @@ character(len=8), intent(in) :: mesh
             motcle(4)='GROUP_MA_ESCL'
             tymocl(4)='GROUP_MA'
             call reliem(' ', mesh, 'NU_NOEUD', motfac, iocc, &
-                        4, motcle, tymocl, '&&CALIRC.LINONU2', nbno2)
-            call jeveuo('&&CALIRC.LINONU2', 'L', iagno2)
+                        4, motcle, tymocl, list_nonu2, nbno2)
+            call jeveuo(list_nonu2, 'L', jlinonu2)
         else
 !           RECUPERATION DE LA LISTE DES MAILLE_ESCL :
 !           ------------------------------------------
@@ -301,8 +302,8 @@ character(len=8), intent(in) :: mesh
 !
             call canort(mesh, nbma2, limanu2, ndim, nbno2, ln, 1)
             call jeveuo('&&CANORT.NORMALE', 'L', jnorm)
-            call jedupo('&&NBNLMA.LN', 'V', '&&CALIRC.LINONU2', .false._1)
-            call jeveuo('&&CALIRC.LINONU2', 'L', iagno2)
+            call jedupo('&&NBNLMA.LN', 'V', list_nonu2, .false._1)
+            call jeveuo(list_nonu2, 'L', jlinonu2)
         endif
 !
 !
@@ -314,7 +315,7 @@ character(len=8), intent(in) :: mesh
             kkno2=0
             AS_ALLOCATE(vi=linonu2bis, size=nbno2)
             do kno2 = 1, nbno2
-                nuno2=zi(iagno2-1+kno2)
+                nuno2=zi(jlinonu2-1+kno2)
 !               SI NUNO2 N'EST PAS ENCORE ELIMINE
                 if (elim(nuno2) .eq. 0) then
                     elim(nuno2)=1
@@ -324,10 +325,10 @@ character(len=8), intent(in) :: mesh
             enddo
             nbno2=kkno2
             if (nbno2.eq.0) call utmess('F','MODELISA8_48',si=iocc)
-            call jedetr('&&CALIRC.LINONU2')
-            call wkvect('&&CALIRC.LINONU2', 'V V I', nbno2, iagno2)
+            call jedetr(list_nonu2)
+            call wkvect(list_nonu2, 'V V I', nbno2, jlinonu2)
             do kno2 = 1, nbno2
-                zi(iagno2-1+kno2)=linonu2bis(kno2)
+                zi(jlinonu2-1+kno2)=linonu2bis(kno2)
             enddo
             AS_DEALLOCATE(vi=linonu2bis)
         endif
@@ -335,7 +336,7 @@ character(len=8), intent(in) :: mesh
 !       1.4 TRANSFORMATION DE LA GEOMETRIE
 !       ----------------------------------
         lrota = .false.
-!       Normalement seulement si MASSIF. MAIS :
+!       GEOM2 : Existe toujours
 !          - geom2 doit toujours pointer vers un maillage
 !               copie du maillage initial si pas de transformation
 !               maillage transformé dans le cas ou TRAN , CENTRE , ANGL_NAUT
@@ -343,11 +344,9 @@ character(len=8), intent(in) :: mesh
 !       Read transformation
         call char_read_tran(motfac, iocc, ndim, l_tran, tran, &
                             l_cent, cent, l_angl_naut, angl_naut)
-!
 !       Apply transformation
-        geom2     = '&&CALIRC.GEOM_TRANSF'
-        list_node = '&&CALIRC.LINONU2'
-        call calirg(mesh, nbno2, list_node, tran, cent, &
+        geom2 = '&&CALIRC.GEOM_TRANS2'
+        call calirg(mesh, nbno2, list_nonu2, tran, cent, &
                     l_angl_naut, angl_naut, geom2, lrota, mrota)
 !
 !       LROTA = .TRUE. : Si on a utilise le mot clef angl_naut ET même si les rotations sont nulles
@@ -382,7 +381,7 @@ character(len=8), intent(in) :: mesh
                 motcle(2)='GROUP_MA_MAIT'; tymocl(2)='GROUP_MA'
                 call reliem(model, mesh, 'NU_NOEUD', motfac, iocc, &
                             2, motcle, tymocl, '&&CALIRC.LINONU1', nbno1)
-                call jeveuo('&&CALIRC.LINONU1', 'L', jlino)
+                call jeveuo('&&CALIRC.LINONU1', 'L', jlinonu1)
 !               Modification des coordonnées des noeuds
                 geom1 = '&&CALIRC.GEOM_TRANS1'
                 call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nnomx)
@@ -391,7 +390,7 @@ character(len=8), intent(in) :: mesh
 !               Paramètres des fonctions
                 lparx(1)='X'; lparx(2)='Y'; lparx(3)='Z'
                 do ii=1,nbno1
-                    nnode = zi(jlino+ii-1)
+                    nnode = zi(jlinonu1+ii-1)
                     do ifonc=1,3
                         call fointe('F',lfonc(ifonc),3,lparx,zr(jginit+3*(nnode-1)),vx(ifonc),ier)
                         ASSERT(ier.eq.0)
@@ -412,14 +411,13 @@ character(len=8), intent(in) :: mesh
             if ( nfonc .ne. 0) then
                 ASSERT( nfonc.eq.3 )
 !               Modification des coordonnées des noeuds
-                geom2 = '&&CALIRC.GEOM_TRANS2'
-                call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nnomx)
-                call wkvect(geom2, 'V V R', 3*nnomx, jgdefo)
+                call jeveuo(geom2, 'E', jgdefo)
                 call jeveuo(mesh//'.COORDO    .VALE', 'L', jginit)
+
 !               Paramètres des fonctions
                 lparx(1)='X'; lparx(2)='Y'; lparx(3)='Z'
                 do ii=1,nbno2
-                    nnode = zi(iagno2+ii-1)
+                    nnode = zi(jlinonu2+ii-1)
                     do ifonc=1,3
                         call fointe('F',lfonc(ifonc),3,lparx,zr(jginit+3*(nnode-1)),vx(ifonc),ier)
                         ASSERT(ier.eq.0)
@@ -473,23 +471,23 @@ character(len=8), intent(in) :: mesh
         if (ndim .eq. 2) then
             ASSERT((typrac.eq.' ') .or. (typrac.eq.'MASSIF'))
             call pj2dco('PARTIE', model, model, nbma1, limanu1, &
-                        nbno2, zi( iagno2), ' ', geom2, corres, &
+                        nbno2, zi( jlinonu2), ' ', geom2, corres, &
                         l_dmax, dmax, dala)
         else if (ndim.eq.3) then
             if ((typrac.eq.' ') .or. (typrac.eq.'MASSIF')) then
                 call pj3dco('PARTIE', model, model, nbma1, limanu1, &
-                            nbno2, zi(iagno2), ' ', geom2, corres, &
+                            nbno2, zi(jlinonu2), ' ', geom2, corres, &
                             l_dmax, dmax, dala)
             else if (typrac.eq.'COQUE' .or. typrac.eq.'MASSIF_COQUE') then
                 call pj4dco('PARTIE', model, model, nbma1, limanu1, &
-                            nbno2, zi(iagno2), geom1, geom2, corres, &
+                            nbno2, zi(jlinonu2), geom1, geom2, corres, &
                             l_dmax, dmax, dala)
             else if (typrac.eq.'COQUE_MASSIF') then
                 call pj3dco('PARTIE', model, model, nbma1, limanu1, &
-                            nbno2, zi(iagno2), ' ', geom2, corres, &
+                            nbno2, zi(jlinonu2), ' ', geom2, corres, &
                             l_dmax, dmax, dala)
                 call wkvect('&&CALIRC.LISV1', 'V V R', 3*nnomx, jlisv1)
-                call calir3(model, nbma1, limanu1, nbno2, zi(iagno2), &
+                call calir3(model, nbma1, limanu1, nbno2, zi(jlinonu2), &
                             geom2, corre1, corre2, jlisv1, iocc)
             else
                 ASSERT(.false.)
@@ -766,11 +764,11 @@ character(len=8), intent(in) :: mesh
         call detrsd('CORRESP_2_MAILLA', corres)
         call detrsd('CORRESP_2_MAILLA', corre1)
         call detrsd('CORRESP_2_MAILLA', corre2)
-        call jedetr(geom2)
         call jedetr(geom1)
+        call jedetr(geom2)
         call jedetr('&&CALIRC.LIMANU1')
         call jedetr('&&CALIRC.LIMANU2')
-        call jedetr('&&CALIRC.LINONU2')
+        call jedetr(list_nonu2)
         call jedetr('&&CALIRC.LISTK')
         call jedetr('&&CALIRC.LISV1')
         AS_DEALLOCATE(vi=vindire)
