@@ -43,19 +43,10 @@ class ProdMatrCham(ExecuteCommand):
             keywords (dict): User's keywords.
         """
 
-        rhs = keywords["CHAM_NO"]
+        mat = keywords["MATR_ASSE"]
 
-        dofNum = rhs.getDOFNumbering()
-        if dofNum is not None:
-            self._result.setDOFNumbering(dofNum)
-        else:
-            mesh = rhs.getMesh()
-            if mesh is not None:
-                self._result.setMesh(mesh)
-
-            desc = rhs.getDescription()
-            if desc is not None:
-                self._result.setDescription(desc)
+        dofNum = mat.getDOFNumbering()
+        self._result.setDOFNumbering(dofNum)
 
         self._result.build()
 
