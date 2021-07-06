@@ -32,7 +32,6 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
@@ -90,7 +89,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
     integer :: jno, jma, kno, kma, iacnex, iem, nem, numno, nno, nma, nbenc
     integer :: ibid, ient, rank
     integer ::  itrma, ima, ino, nbma, nbno, nbnoma, imo, ier
-    integer :: lma, lno, itbma, itbno, iret, inoem, ntou, k, ifm, niv
+    integer :: lma, lno, itbma, itbno, inoem, ntou, k, ifm, niv
     character(len=8) :: type2, oui, noent, nomgd
     character(len=16) :: motfac, motcle, typmcl, phenom
     character(len=19) :: ligrel
@@ -144,10 +143,8 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
         end if
     end do
 !
-!     --- EN CAS D'EXISTENCE DE L'OBJET, ON LE DETRUIT ---
-!
-    call jeexin(litrou, iret)
-    if (iret .ne. 0) call jedetr(litrou)
+!   EN CAS D'EXISTENCE DE L'OBJET, ON LE DETRUIT
+    call jedetr(litrou)
 !
 !     --- CREATION DES TABLEAUX DE TRAVAIL ---
 !

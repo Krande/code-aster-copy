@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,18 +32,13 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/ltnotb.h"
 #include "asterfort/norlin.h"
 #include "asterfort/provec.h"
-#include "asterfort/tbliva.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
@@ -79,7 +74,7 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: dimcoo, i, ifonc, ibid, iret, jnorm, isom, in
+    integer :: dimcoo, i, ifonc, ibid, jnorm, isom, in
     integer :: idobj2,    ij, ino
     integer :: n, nocc, nno, nnos, nnn
     integer :: iinver, imail, numail, ityp, jdes, nn, numno, lino(9)
@@ -133,7 +128,6 @@ subroutine canort(noma, nbma, listma, ndim, nbno,&
     call cncinv(noma, listma, abs(nbma), 'V', coninv)
 !
     nomob2 = '&&CANORT.VECTEUR'
-    call jeexin(nomob2, iret)
     call jedetr(nomob2)
     isom = 0
     do i = 1, nbno
