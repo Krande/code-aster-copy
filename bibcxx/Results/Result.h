@@ -53,7 +53,7 @@
  * @author Nicolas Sellenet
  */
 class Result : public DataStructure, public ListOfTables {
-  private:
+  protected:
     typedef std::vector< FieldOnNodesRealPtr > VectorOfFieldOnNodesReal;
     typedef std::vector< FieldOnCellsRealPtr > VectorOfFieldOnCellsReal;
 
@@ -120,7 +120,6 @@ class Result : public DataStructure, public ListOfTables {
     /** @brief List of ModelPtr */
     mapRankModel _mapModel;
 
-  protected:
     /** @brief Maillage sur lequel repose la resultat */
     BaseMeshPtr _mesh;
     /** @brief Object to correctly manage fields and field descriptions */
