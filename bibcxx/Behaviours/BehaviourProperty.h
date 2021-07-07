@@ -77,6 +77,9 @@ class BehaviourProperty : public DataStructure {
     typedef boost::shared_ptr< BehaviourProperty > BehaviourPropertyPtr;
 
     /** @brief Constructor */
+    BehaviourProperty( );
+
+    /** @brief Constructor */
     BehaviourProperty(
       ModelPtr         model,
       MaterialFieldPtr materialField );
@@ -103,7 +106,7 @@ class BehaviourProperty : public DataStructure {
     void setVerbosity( const bool &value ) { _verbosity = value; };
 
     /** @brief Set behavior ConstantField '.COMPOR' */
-    ConstantFieldOnCellsChar16Ptr getBehaviour( ) const
+    ConstantFieldOnCellsChar16Ptr getBehaviourField( ) const
     { return _COMPOR; };
 
 };

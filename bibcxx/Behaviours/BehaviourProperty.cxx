@@ -32,7 +32,7 @@
  */
 
 /** @brief Create objects (maps) */
-void BehaviourProperty ::createObjects() {
+void BehaviourProperty::createObjects() {
     _COMPOR = boost::make_shared< ConstantFieldOnCellsChar16 >( getName() + ".COMPOR", _mesh );
 
     _MULCOM = boost::make_shared< ConstantFieldOnCellsChar16 >( getName() + ".MULCOM", _mesh );
@@ -41,16 +41,25 @@ void BehaviourProperty ::createObjects() {
 };
 
 /** @brief Constructor */
-BehaviourProperty ::BehaviourProperty( ModelPtr model, MaterialFieldPtr materialField )
+BehaviourProperty::BehaviourProperty( )
     : DataStructure( ResultNaming::getNewResultName(), 8, "COMPOR", Permanent ),
-      _initialState( false ), _implex( false ), _verbosity( false ), _model( model ),
-      _materialField( materialField ), _mesh( model->getMesh() )
+      _initialState( false ), _implex( false ), _verbosity( false ), _model( nullptr ),
+      _materialField( nullptr ), _mesh( nullptr )
 {
     createObjects();
 };
 
+/** @brief Constructor */
+BehaviourProperty::BehaviourProperty( ModelPtr model, MaterialFieldPtr materialField )
+    : BehaviourProperty()
+{
+    _model = model;
+    _mesh = model->getMesh();
+    _materialField = materialField;
+};
+
 /** @brief Build objects (maps) */
-bool BehaviourProperty ::build() {
+bool BehaviourProperty::build() {
     std::string modelName = getModel()->getName();
     modelName.resize( 8, ' ' );
 
