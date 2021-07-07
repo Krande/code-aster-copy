@@ -31,10 +31,26 @@ void exportBehaviourPropertyToPython() {
 
     py::class_< BehaviourProperty, BehaviourProperty::BehaviourPropertyPtr,
             py::bases< DataStructure > >( "BehaviourProperty", py::no_init )
+        .def( "__init__", py::make_constructor(&initFactoryPtr< BehaviourProperty >))
         .def( "__init__",
               py::make_constructor(
                   &initFactoryPtr< BehaviourProperty, ModelPtr, MaterialFieldPtr >))
-        .def("getModel", &BehaviourProperty::getModel)
-        .def("getMaterialField", &BehaviourProperty::getMaterialField)
-        .def("getBehaviour", &BehaviourProperty::getBehaviour);
+        .def("getModel", &BehaviourProperty::getModel, R"(
+Return a pointer to the model.
+
+Returns:
+    ModelPtr: model setted.
+        )", ( py::arg("self" )))
+        .def("getMaterialField", &BehaviourProperty::getMaterialField, R"(
+Return a pointer to the material field.
+
+Returns:
+    MaterialFieldPtr: material field setted.
+        )", ( py::arg("self" )))
+        .def("getBehaviourField", &BehaviourProperty::getBehaviourField, R"(
+Return a pointer to the field for behaviour.
+
+Returns:
+    ConstantFieldOnCellsChar16Ptr: behaviour.
+        )", ( py::arg("self" )));
 };

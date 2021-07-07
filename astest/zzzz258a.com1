@@ -44,6 +44,8 @@ behav = dProblem.createBehaviour(
     IMPLEX="NON",
     INFO=1)
 
+behavField=behav.getBehaviourField()
+
 with test.assertRaisesRegex(RuntimeError, "Unexpected value.*COMPORTEMENT"):
     dProblem.createBehaviour(COMPORTEMENT="ELAS")
 
