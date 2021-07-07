@@ -34,7 +34,6 @@ MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
                                         _F( NOM = 'BAS', MAILLE = 'BAS'),
                                         _F( NOM = 'DROITE', MAILLE = 'DROITE'),
                                         _F( NOM = 'GAUCHE', MAILLE = 'GAUCHE'),
-                                        _F( NOM = 'CUBE', MAILLE = 'CUBE'),
                                         _F( NOM = 'HAUT', MAILLE = 'HAUT'),
                                      ),
                       CREA_GROUP_NO= (

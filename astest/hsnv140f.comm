@@ -72,7 +72,7 @@ LLPAS = DEFI_LIST_REEL (DEBUT      = 0.0,
                        )
 L_INST1 = DEFI_LIST_INST(DEFI_LIST = _F(LIST_INST = LLPAS))
 #
-CHTH = CREA_CHAMP(OPERATION = 'AFFE', 
+CHTH = CREA_CHAMP(OPERATION = 'AFFE',
                   TYPE_CHAM = 'NOEU_TEMP_F',
                   MAILLAGE  = MAIL,
                   AFFE      = _F(TOUT = 'OUI',
@@ -80,7 +80,7 @@ CHTH = CREA_CHAMP(OPERATION = 'AFFE',
                                  VALE_F = TEMP1)
                   )
 #
-THER1 = CREA_RESU(OPERATION = 'AFFE', 
+THER1 = CREA_RESU(OPERATION = 'AFFE',
                   TYPE_RESU = 'EVOL_THER',
                   NOM_CHAM  = 'TEMP',
                   AFFE      = _F( CHAM_GD = CHTH, LIST_INST = LLPAS)
@@ -125,11 +125,11 @@ E = DEFI_FONCTION ( NOM_PARA = 'TEMP',
                                 1200.,  57000.E+6,
                                 1300.,  30000.E+6,
                                 1400.,   2000.E+6,
-                                1500.,   1000.E+6, 
+                                1500.,   1000.E+6,
                                ),
                     PROL_DROITE = 'CONSTANT',
                     PROL_GAUCHE = 'LINEAIRE',
-                  ) 
+                  )
 
 
 NU = DEFI_CONSTANTE ( VALE = 0.3, )
@@ -177,7 +177,7 @@ RINF = DEFI_FONCTION (NOM_PARA = 'TEMP',
                                   ),
                        PROL_DROITE = 'LINEAIRE',
                        PROL_GAUCHE = 'CONSTANT',
-                      ) ;                       
+                      ) ;
 C1 = DEFI_FONCTION (NOM_PARA = 'TEMP',
                        VALE     = (  20, 96063E+6,
                                     275, 60000E+6,
@@ -189,7 +189,7 @@ C1 = DEFI_FONCTION (NOM_PARA = 'TEMP',
                        PROL_DROITE = 'LINEAIRE',
                        PROL_GAUCHE = 'CONSTANT',
                       ) ;
-#                      
+#
 ZERO = DEFI_CONSTANTE(VALE=0.0,);
 UN   = DEFI_CONSTANTE(VALE=1.0,);
 G1   = DEFI_CONSTANTE(VALE=727.6,);
@@ -208,7 +208,7 @@ REST1 = DEFI_FONCTION (NOM_PARA    = 'TEMP',
 
 
 ACIERME0 = DEFI_MATERIAU (ELAS_FO      = _F(E              = E,
-                                            NU             = NU, 
+                                            NU             = NU,
                                             ALPHA          = ALPHA,
                                             TEMP_DEF_ALPHA = 20.00,
                                            ),
@@ -221,8 +221,8 @@ ACIERME0 = DEFI_MATERIAU (ELAS_FO      = _F(E              = E,
                                             G_0 = G1,
                                             A_I = ZERO,
                                            ),
-                          REST_ECRO    = _F(FONC_MULT = REST1), 
-                         ) 
+                          REST_ECRO    = _F(FONC_MULT = REST1),
+                         )
 
 CHMATM0 = AFFE_MATERIAU (MAILLAGE  = MAIL,
                          AFFE      = _F(TOUT  = 'OUI',
@@ -234,7 +234,7 @@ CHMATM0 = AFFE_MATERIAU (MAILLAGE  = MAIL,
                                         NOM_CHAM = 'TEMP',
                                         VALE_REF = 20.,
                                        ),
-                        ) 
+                        )
 
 U1 =  STAT_NON_LINE (MODELE       = MOMECA1,
                      CHAM_MATER   = CHMATM0,
