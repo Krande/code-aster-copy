@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm ssnv505l.comm D 1
-F mmed ssnv505k.mmed D 20
+F mmed ssnv505l.mmed D 20
