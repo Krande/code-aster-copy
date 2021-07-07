@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm sdlv135b.comm D 1
-F mail sdlv135a.mail D 20
+F mail sdlv135b.mail D 20

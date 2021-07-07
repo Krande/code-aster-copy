@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist ci verification sequential
 
 F comm zzzz355h.comm D 1
-F mmed zzzz354a.mmed D 20
+F mmed zzzz354g.mmed D 20

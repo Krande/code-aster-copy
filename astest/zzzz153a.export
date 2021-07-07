@@ -6,7 +6,7 @@ P mpi_nbnoeud 1
 P testlist verification sequential 
 
 F comm zzzz153a.comm D 1
-F comm sdnv138a.com1 D 1
+F comm sdnv138b.com1 D 1
 F comm zzzz153a.com2 D 1
 F mmed ssnp143b.mmed D 20
 
