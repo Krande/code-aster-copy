@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,31 +20,32 @@ subroutine ibimpr()
     implicit none
 !     DEFINITION DES UNITES LOGIQUES DES IMPRESSIONS
 !     ------------------------------------------------------------------
+!     Conserver la cohérence avec iunifi et ulopen.
+!     L'unité 15 est ouverte dans debut.
 !
-!     CONSERVER LA COHERENCE AVEC IUNIFI ET ULOPEN
 #include "asterfort/uldefi.h"
+!
     integer :: mximpr
     parameter   ( mximpr = 3)
     character(len=16) :: nompr (mximpr)
     integer :: unitpr (mximpr)
     character(len=1) :: autpr(mximpr)
-    integer :: i, passe
-    save          passe
-    data          passe  /    0     /
-    data          nompr  /'MESSAGE'  , 'RESULTAT', 'ERREUR'/
-    data          unitpr /    6      ,     8     ,      9  /
-    data          autpr /    'N'    ,     'O'     ,    'N' /
-!     ------------------------------------------------------------------
+    integer :: passe
+    save       passe
+    data       passe  /    0     /
+    data       nompr  /'MESSAGE'  , 'RESULTAT', 'ERREUR'/
+    data       unitpr /    6      ,     8     ,      9  /
+    data       autpr /    'N'    ,     'O'     ,    'N' /
+    integer :: i
+!   ------------------------------------------------------------------
     passe = passe + 1
 !
 ! --- DEFINITION DES UNITES STANDARDS
     if (passe .eq. 1) then
-        do 5 i = 1, mximpr
+        do i = 1, mximpr
             call uldefi(unitpr(i), ' ', nompr(i), 'A', 'N',&
                         autpr(i))
- 5      continue
+        enddo
     endif
-    call uldefi(15, ' ', 'CODE', 'A', 'A',&
-                'O')
 !
 end subroutine

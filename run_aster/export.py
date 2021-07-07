@@ -414,6 +414,9 @@ class Export(Store):
                 entry = File(path, filetype, unit, isdir,
                              "D" in drc, "R" in drc, "C" in drc)
                 self.add_file(entry)
+                if unit == "15" and filetype != "code":
+                    logger.error(f"Invalid entry: unit 15 is reserved for "
+                                 f"the 'code' file.\nLine: {entry!r}")
         if check:
             self.check()
 

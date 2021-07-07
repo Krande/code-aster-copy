@@ -18,13 +18,10 @@
 
 subroutine debut()
     implicit none
-!    DECODAGE DE LA COMMANDE DEBUT OU POURSUITE
-!     ------------------------------------------------------------------
-!     ROUTINE(S) UTILISEE(S) :
-!        IBBASE  IBCATA
-!     ------------------------------------------------------------------
+!   COMMANDE DEBUT OU POURSUITE
 !
 #include "asterc/getres.h"
+#include "asterc/jdcget.h"
 #include "asterc/prhead.h"
 #include "asterfort/dbg_base.h"
 #include "asterfort/foint0.h"
@@ -37,11 +34,12 @@ subroutine debut()
 #include "asterfort/ibtcpu.h"
 #include "asterfort/jvinfo.h"
 #include "asterfort/onerrf.h"
+#include "asterfort/uldefi.h"
 #include "asterfort/ulopen.h"
 #include "asterfort/utmess.h"
     character(len=8) :: k8b
     character(len=16) :: nomcmd, k16b
-    integer :: ier, n, dummy
+    integer :: icode, ier, n, dummy
     integer, save :: ipass=0
 !
     if (ipass .ne. 0) then
@@ -51,6 +49,11 @@ subroutine debut()
 !   to be set by 'ExecutionParameter().enable(Options.Debug)' or similar
     dummy = jvinfo(0)
 !
+    icode = jdcget('TestMode')
+    if (icode .ne. 0) then
+        call uldefi(15, ' ', 'CODE', 'A', 'A', 'O')
+    endif
+
 ! --- LECTURE DU MOT CLE FACTEUR DEBUG OU DE GESTION MEMOIRE DEMANDE
     call ibdbgs()
 !

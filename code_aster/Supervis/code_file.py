@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -28,11 +28,9 @@ import libaster
 
 from ..Cata.Language.SyntaxObjects import IDS
 from ..Cata.SyntaxUtils import value_is_sequence
-from ..Objects import DataStructure
-from ..Utilities import force_list, is_float, is_int
+from ..Utilities import is_float, is_int
 
 EMPTY = '--'
-FCODE = "fort.15"
 
 
 def track_coverage(command, name, keywords):
