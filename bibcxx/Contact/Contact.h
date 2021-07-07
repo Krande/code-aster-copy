@@ -59,7 +59,7 @@ class Contact : public DataStructure {
      * @brief Constructeur
      */
     Contact( const std::string name )
-        : DataStructure( name, 8, "CHAR_CONTACT" ), _model( ModelPtr() ),
+        : DataStructure( name, 8, "CHAR_CONTACT" ), _model( nullptr ),
             _isEmpty( true ){};
 
     /**
@@ -67,7 +67,7 @@ class Contact : public DataStructure {
      */
     Contact( const std::string name, const ModelPtr model )
         : DataStructure( name, 8, "CHAR_CONTACT" ), _model( model ),
-            _FEDesc( boost::make_shared< FiniteElementDescriptor >( getName() + ".LIGRE",
+            _FEDesc( boost::make_shared< FiniteElementDescriptor >( getName() + ".CHME.LIGRE",
                                                                 _model->getMesh() ) ),
             _isEmpty( true ){};
 
