@@ -32,25 +32,91 @@ namespace py = boost::python;
 #include "PythonBindings/FieldOnCellsInterface.h"
 
 void exportFieldOnCellsToPython() {
-    py::class_< FieldOnCellsReal, FieldOnCellsRealPtr,
+    py::class_<  FieldOnCellsReal, FieldOnCellsRealPtr,
             py::bases< DataField > >( "FieldOnCellsReal", py::no_init )
         .def( "__init__", py::make_constructor(&initFactoryPtr< FieldOnCellsReal >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< FieldOnCellsReal, std::string >))
+              py::make_constructor(&initFactoryPtr<  FieldOnCellsReal, std::string >) )
+        .def(py::init<const FieldOnCellsReal&>() )
         .def( "exportToSimpleFieldOnCells",
               &FieldOnCellsReal::exportToSimpleFieldOnCells )
         .def( "getModel", &FieldOnCellsReal::getModel )
         .def( "setDescription", &FieldOnCellsReal::setDescription )
         .def( "setModel", &FieldOnCellsReal::setModel )
         .def( "build", &FieldOnCellsReal::build )
+        .def( "transform", &FieldOnCellsReal::transform<ASTERDOUBLE> )
+        .def( "getValues", &FieldOnCellsReal::getValues,
+              py::return_value_policy<py::copy_const_reference>())
+        .def( "__getitem__",
+              +[]( const FieldOnCellsReal& v, ASTERINTEGER i ) { return v[i]; } )
+        .def( "__setitem__",
+              +[]( FieldOnCellsReal &v, ASTERINTEGER i, float f ) { return v.operator[]( i )=f; } )
+        .def( "__len__",
+              +[]( const FieldOnCellsReal& v ) { return v.size(); } )
+        .def( py::self + py::self)
+        .def( py::self - py::self)
+        .def( py::self += py::self )
+        .def( py::self -= py::self )
+        .def( py::self * float() )
+        .def( float() * py::self )
+        .def( - py::self )
         .def( "printMedFile", &FieldOnCellsReal::printMedFile, R"(
-Print the field in MED format.
+                  Print the field in MED format.
 
-Arguments:
-    filename (str): Path to the file to be printed.
+                  Arguments:
+                  filename (str): Path to the file to be printed.
 
-Returns:
-    bool: *True* if succeeds, *False* otherwise.
-        )",
-              ( py::arg( "self" ), py::arg( "filename" ) )  );
+                  Returns:
+                  bool: *True* if succeeds, *False* otherwise.
+                        )",
+                              ( py::arg( "self" ), py::arg( "filename" ) )  )
+        .def( "norm", &FieldOnCellsReal::norm<ASTERDOUBLE>,
+               R"(
+                  Return the euclidean norm of the field
+
+                  Argument:
+                  normType: "NORM_1", "NORM_2", "NORM_INFINITY"
+
+                  Returns:
+                  double: euclidean norm
+                        )" );
+
+
+    
+    py::class_< FieldOnCellsComplex, FieldOnCellsComplexPtr,
+            py::bases< DataField > >( "FieldOnCellsComplex", py::no_init )
+        .def( "__init__", py::make_constructor(&initFactoryPtr< FieldOnCellsComplex >) )
+        .def( "__init__",
+              py::make_constructor(&initFactoryPtr< FieldOnCellsComplex, std::string >) )
+        .def(py::init<const FieldOnCellsComplex&>() )
+        .def( "getModel", &FieldOnCellsComplex::getModel )
+        .def( "setDescription", &FieldOnCellsComplex::setDescription )
+        .def( "setModel", &FieldOnCellsComplex::setModel )
+        .def( "build", &FieldOnCellsComplex::build )
+        .def( "transform", &FieldOnCellsComplex::transform<ASTERCOMPLEX> )
+        .def( "getValues", &FieldOnCellsReal::getValues,
+               py::return_value_policy<py::copy_const_reference>())
+        .def( "__getitem__",
+              +[]( const FieldOnCellsComplex& v, int i ) { return v[i]; } )
+        .def( "__setitem__",
+              +[]( FieldOnCellsComplex &v, ASTERINTEGER i, ASTERCOMPLEX f )
+               { return v.operator[]( i )=f; } )
+        .def( "__len__",
+              +[]( const FieldOnCellsReal& v ) { return v.size(); } )
+        .def( py::self + py::self )
+        .def( py::self - py::self )
+        .def( py::self += py::self )
+        .def( py::self -= py::self )
+        .def( py::self * float() )
+        .def( float() * py::self )
+        .def( "printMedFile", &FieldOnCellsComplex::printMedFile, R"(
+                  Print the field in MED format.
+
+                  Arguments:
+                  filename (str): Path to the file to be printed.
+
+                  Returns:
+                  bool: *True* if succeeds, *False* otherwise.
+                        )",
+                  ( py::arg( "self" ), py::arg( "filename" ) )  );
 };

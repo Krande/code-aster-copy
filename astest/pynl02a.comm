@@ -385,34 +385,9 @@ VARI=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
 #            REALISATION DES TESTS
 #=========================================================
 
-# DIF_SIG = SIG_REF - SIGM
-DIF_SIG=CREA_CHAMP(OPERATION='ASSE',
-                   MODELE=MO,
-                   TYPE_CHAM='ELGA_SIEF_R',
-                   ASSE=(_F(CHAM_GD=SIG_REF,
-                            TOUT='OUI',
-                            CUMUL='OUI',
-                            COEF_R=1.),
-                         _F(CHAM_GD=SIGMA,
-                            TOUT='OUI',
-                            CUMUL='OUI',
-                            COEF_R=-1.),
-                        ))
+DIF_SIG = SIG_REF - SIGMA
 
-
-# DIF_VAR = VAR_REF - VARI
-DIF_VAR=CREA_CHAMP(OPERATION='ASSE',
-                   MODELE=MO,
-                   TYPE_CHAM='ELGA_VARI_R',
-                   ASSE=(_F(CHAM_GD=VAR_REF,
-                            TOUT='OUI',
-                            CUMUL='OUI',
-                            COEF_R=1.),
-                         _F(CHAM_GD=VARI,
-                            TOUT='OUI',
-                            CUMUL='OUI',
-                            COEF_R=-1.),
-                        ))
+DIF_VAR = VAR_REF - VARI
 
 TEST_RESU(CHAM_ELEM=(_F(CRITERE='ABSOLU',
                         REFERENCE='AUTRE_ASTER',
