@@ -385,16 +385,7 @@ Contactez le support technique.
 """),
 
     64 : _("""
-
- Le volume des données temporaires (objets de la base Volatile) écrites sur disque (%(r3).2f Mo)
- est plus de %(r1).2f fois supérieur au volume de données lues (%(r2).2f Mo).
-
-Risques et conseils :
- Ce déséquilibre n'a pas de conséquence sur les résultats de calcul, il indique simplement que
- certaines structures de données temporaires ont été écrites sur disque et détruites sans avoir
- été relues. C'est le cas lorsque vous utilisez le solveur MUMPS, car certaines structures de
- données sont volontairement déchargées pour maximiser la mémoire lors de la résolution.
-
+<INFO> Écriture de %(r1).2f Mo sur la base volatile, supérieur à %(r1).2f fois le volume lu (%(r2).2f Mo).
 """),
 
     65 : _("""

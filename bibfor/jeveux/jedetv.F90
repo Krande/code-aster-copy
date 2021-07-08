@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,7 +89,7 @@ subroutine jedetv()
     valr(2)= nbacce(2*ic-1)*longbl(ic)*lois/1024.d0
     valr(3)= nbacce(2*ic  )*longbl(ic)*lois/1024.d0
     if (valr(3) .gt. valr(1)*valr(2) .and. valr(2) .ne. 0) then
-        call utmess('A', 'JEVEUX1_64', nr=3, valr=valr)
+        call utmess('I', 'JEVEUX1_64', nr=3, valr=valr)
     endif
 !
     do jido = 1, nremax(ic)
