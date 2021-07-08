@@ -7,6 +7,36 @@ set_prefix() {
 
 set_prefix "$0"
 
+_get_abspath()
+{
+    printf $(cat << EOF | python3 - ${1}
+import sys; import os.path as osp
+print(osp.normpath(osp.realpath(osp.abspath(sys.argv[1]))))
+EOF
+)
+}
+
+_update_user_prefs()
+{
+    printf "\nvers : ${1}:${2}\n" >> ${HOME}/.astkrc/prefs
+}
+
+_update_user_config()
+{
+    cat << EOF | python3 -
+import json
+import os
+
+d = {"version": []}
+fcfg = "${HOME}/.config/aster/config.json"
+if os.path.isfile(fcfg):
+    d = json.load(open(fcfg))
+d["version"].append({"name": "${1}", "path": "${2}"})
+os.makedirs("${HOME}/.config/aster", exist_ok=True)
+json.dump(d, open(fcfg, "w"))
+EOF
+}
+
 wrkdir=$(mktemp -d /tmp/install_script.XXXXXX 2> /dev/null)
 iret=$?
 if [ $iret -ne 0 ]; then
@@ -15,38 +45,69 @@ if [ $iret -ne 0 ]; then
     printf "--bind <writable directory>:/tmp\n"
 fi
 
-printf "\nThe installation directory is the directory that contains the \n"
-printf "Singularity image and where few other files will be created to make \n"
-printf "the version available from salome_meca/asterstudy.\n\n"
+if [ $# -ne 1 ]; then
+    printf "\nThe installation directory is the directory that contains the \n"
+    printf "Singularity image and where few other files will be created to make \n"
+    printf "the version available from salome_meca/asterstudy.\n\n"
 
-read -p "Please enter the installation directory: " instdir
+    printf "It must be an absolute path outside the container.\n"
+    read -p "Please enter the installation directory: " instdir
+else
+    instdir="${1}"
+fi
+install=$(_get_abspath "@INST@")
 
+child=$( sed -e "s#$( pwd )##" <<< "${install}" )
+if [ "${child}" != "${install}" ]; then
+    printf "\nThis installation script can not be executed from a parent directory \n"
+    printf "of ${install}.\nPlease change to another directory and restart it.\n\n"
+    exit 1
+fi
 
 script=${wrkdir}/install.sh
 mkdir ${wrkdir}/data
 
-cp /scif/apps/aster/lib/aster/code_aster/Utilities/aster_pkginfo.py ${wrkdir}/data/aster_pkginfo.py
+cp ${install}/lib*/aster/aster_pkginfo.py ${wrkdir}/data/aster_pkginfo.py
 sed -e 's/\(BIN_.*|.*|.*|\).*$/\1 execute_codeaster/g' \
     -e 's/\(BUILD_TYPE .*$\)/\1 container/g' \
-    /scif/apps/aster/share/aster/config.txt > ${wrkdir}/data/config.txt
-cp /scif/apps/aster/share/aster/execute_codeaster ${wrkdir}/data/execute_codeaster
-cp -r /scif/apps/aster/lib/aster/code_aster ${wrkdir}/data/code_aster
+    -e "s#^REPMAT.*#REPMAT         | exec    | -     | ${install}/share/aster/materiau#g" \
+    -e "s#^REPDEX.*#REPDEX         | exec    | -     | ${install}/share/aster/datg#g" \
+    ${install}/share/aster/config.txt > ${wrkdir}/data/config.txt
+cp ${install}/share/aster/config.json ${wrkdir}/data/
+cp ${install}/share/aster/execute_codeaster ${wrkdir}/data/
+cp ${install}/share/aster/run_testcases ${wrkdir}/data/
+sed -e "s#@IMAGE@#${SINGULARITY_CONTAINER}#g" \
+    -e "s#@INSTDIR@#${instdir}#g" \
+    ${install}/share/aster/run_testcases.batch.verif \
+    > ${wrkdir}/data/run_testcases.batch.verif
+sed -e "s#@IMAGE@#${SINGULARITY_CONTAINER}#g" \
+    -e "s#@INSTDIR@#${instdir}#g" \
+    ${install}/share/aster/run_testcases.batch.valid \
+    > ${wrkdir}/data/run_testcases.batch.valid
+cp -r ${install}/lib*/aster/code_aster ${wrkdir}/data/code_aster
 
 cat << EOF > ${script}
 #!/bin/bash
 # this script is executed from outside the container
 
-cp ${wrkdir}/data/aster_pkginfo.py ${instdir}/
-cp ${wrkdir}/data/config.txt ${instdir}/
-cp ${wrkdir}/data/execute_codeaster ${instdir}/
-chmod 755 ${instdir}/execute_codeaster
-cp -r ${wrkdir}/data/code_aster ${instdir}/
-echo '# empty' > ${instdir}/profile.sh
+wrkdir=${wrkdir}
+instdir=${instdir}
 
-[ -f ${instdir}/image ] && rm -f ${instdir}/image
-ln -s ${SINGULARITY_CONTAINER} ${instdir}/image
+mkdir -p \${instdir}
+cp \${wrkdir}/data/aster_pkginfo.py \${instdir}/
+cp \${wrkdir}/data/config.txt \${instdir}/
+cp \${wrkdir}/data/config.json \${instdir}/
+cp \${wrkdir}/data/execute_codeaster \${instdir}/
+cp \${wrkdir}/data/run_testcases \${instdir}/
+cp \${wrkdir}/data/run_testcases.batch.* \${instdir}/
+chmod 755 \${instdir}/execute_codeaster \${instdir}/run_testcases
+cp -r \${wrkdir}/data/code_aster \${instdir}/
+echo '# empty' > \${instdir}/profile.sh
 
-rm -rf ${wrkdir}
+[ -f \${instdir}/image ] && rm -f \${instdir}/image
+ln -s ${SINGULARITY_CONTAINER} \${instdir}/image
+
+rm -rf \${wrkdir}
 EOF
 chmod 755 ${script}
 
@@ -60,7 +121,8 @@ case "${yn}" in
         printf "It must end with '_mpi' or '_MPI' for parallel versions.\n"
         printf "Enter a label: "
         read label
-        printf "\nvers : ${label}:${instdir}\n" >> ${HOME}/.astkrc/prefs
+        _update_user_prefs "${label}" "${instdir}"
+        _update_user_config "${label}" "${instdir}"
         ;;
 esac
 
