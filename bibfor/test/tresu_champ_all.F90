@@ -20,25 +20,28 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
                            refi, refr, refc, epsi, crit,&
                            llab, ssigne, ignore, compare)
     implicit none
+#include "asterc/ismaem.h"
+#include "asterc/r8maem.h"
+#include "asterc/r8miem.h"
 #include "asterf_types.h"
-#include "jeveux.h"
+#include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
+#include "asterfort/celces.h"
+#include "asterfort/cesred.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/tresu_print_all.h"
 #include "asterfort/utmess.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/isParallelMesh.h"
-#include "asterfort/asmpi_info.h"
-#include "asterfort/asmpi_comm_vect.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/wkvect.h"
-#include "asterc/ismaem.h"
-#include "asterc/r8maem.h"
-#include "asterc/r8miem.h"
+#include "jeveux.h"
 !
     character(len=*), intent(in) :: chamgd
     character(len=8), intent(in) :: typtes
@@ -67,6 +70,7 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
 ! OUT : IMPRESSION SUR LISTING
 ! ----------------------------------------------------------------------
     integer :: vali, jvale, neq, i, iret1, iret2, rank, jvale2, neq2
+    integer :: nbma, nbma_list
     real(kind=8) :: valr, ordgrd
     complex(kind=8) :: valc
     character(len=1) :: typrez
@@ -74,11 +78,12 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
     character(len=4) :: type
     character(len=8) :: mesh
     character(len=5) :: sufv
-    character(len=19) :: cham19, prof_chno
+    character(len=19) :: cham19, prof_chno, cnsin1, cnsinr
     aster_logical :: skip, l_parallel_mesh, cham_no
     mpi_int :: irank
     integer, pointer :: v_noex(:) => null()
     integer, pointer :: v_maex(:) => null()
+    integer, pointer :: v_list(:) => null()
     integer, pointer :: v_deeq(:) => null()
 !     ------------------------------------------------------------------
     if (present(ignore)) then
@@ -157,7 +162,24 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt,&
                 end if
             end do
         else
-            ASSERT(ASTER_FALSE)
+            cnsin1 = '&&TRESU_CH.CNSIN1'
+            cnsinr = '&&TRESU_CH.CNSINR'
+            call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbma)
+            call wkvect('&&TRESU_CH.LST', 'V V I', nbma, vi=v_list)
+            nbma_list = 0
+            do i = 1, nbma
+                if(v_maex(i) == rank) then
+                    nbma_list = nbma_list + 1
+                    v_list(nbma_list) = i
+                end if
+            end do
+            call celces(cham19, 'V', cnsin1)
+            call cesred(cnsin1, nbma_list, v_list, 0, ["XXX"], 'V', cnsinr)
+            call jeveuo(cnsinr//'.CESV', 'L', jvale2)
+            call jelira(cnsinr//'.CESV', 'LONMAX', neq2)
+            call detrsd('CHAM_ELEM_S', cnsin1)
+            call jedetr('&&TRESU_CH.LST')
+!
         end if
 !
         jvale = jvale2

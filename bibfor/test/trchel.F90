@@ -199,15 +199,16 @@ subroutine trchel(ific, nocc)
         l_parallel_mesh = isParallelMesh(mesh)
 !
         if (n1 .ne. 0) then
-            if (l_parallel_mesh) then
-                call utmess('F', 'MODELISA7_87')
-            endif
 !
             !EXCLUS('MAILLE' ou 'GROUP_MA') avec 'TYPE_TEST'
             call getvtx('RESU', 'MAILLE', iocc=iocc, scal=exclgr, nbret=n2)
             call getvtx('RESU', 'GROUP_MA', iocc=iocc, scal=exclgr, nbret=n3)
             if ((n2+n3) .gt. 0) then
                 call utmess('A', 'CALCULEL6_96')
+            endif
+
+            if (l_parallel_mesh .and. n2>0) then
+                call utmess('F', 'MODELISA7_86')
             endif
 
             nl1 = lxlgut(lign1)
