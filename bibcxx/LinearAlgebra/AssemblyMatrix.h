@@ -354,6 +354,8 @@ class AssemblyMatrix : public DataStructure {
             return _ccid;
 
         raiseAsterError( "JeveuxError: CCID not existing" );
+
+        return JeveuxVectorLong();
     }
 };
 
