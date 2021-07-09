@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -147,6 +147,7 @@ implicit none
 #include "asterfort/lc7051.h"
 #include "asterfort/lc7056.h"
 #include "asterfort/lc7058.h"
+#include "asterfort/lc7077.h"
 #include "asterfort/lc8028.h"
 #include "asterfort/lc8029.h"
 #include "asterfort/lc8057.h"
@@ -1138,6 +1139,13 @@ integer :: codret
                     neps    , epsm  , deps  , nsig  , sigm  ,&
                     nvi     , vim   , option, angmas,&
                     sigp    , vip   , dsidep, codret)
+    case (7077)
+        call lc7077(BEHinteg,&
+                    fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, neps, epsm,&
+                    deps, nsig, sigm, nvi, vim, option, angmas,&
+                    sigp, vip, typmod, icomp,&
+                    ndsde, dsidep, codret)
 !
 ! --------------------------------------------------------------------------------------------------
 ! - For KIT_DDI

@@ -79,6 +79,7 @@ def C_RELATION( COMMAND ):
                                         "CZM_LIN_REG",
                                         "CZM_OUV_MIX",
                                         "CZM_TAC_MIX",
+                                        "CZM_ELAS_MIX",
                                         "CZM_LAB_MIX",
                                         "CZM_TRA_MIX",
                                         "CZM_TURON",

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -93,6 +93,8 @@ aster_logical, intent(in) :: lMatr, lVect, lSigm
     real(kind=8) :: ddedt(6, 6), t1
     type(Behaviour_Integ) :: BEHinteg
 !
+! TODO: passer de(3) et ddedt(3,3) avec impact sur les lois de comportement
+! cf. exemple lc7077
 ! --------------------------------------------------------------------------------------------------
 !
     nddl   = nno1*2*ndim + nno2*ndim
@@ -146,7 +148,7 @@ aster_logical, intent(in) :: lMatr, lVect, lSigm
         call nmcomp(BEHinteg,&
                     'RIGI', g, 1, ndim, typmod,&
                     mat, compor, carcri, instam, instap,&
-                    3, mu, su, 1, rbid,&
+                    3, mu, su, 6, rbid,&
                     vim(1, g), option, rbid, &
                     de, vip(1, g), 36, ddedt, cod(g))
         if (cod(g) .eq. 1) then
