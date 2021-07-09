@@ -248,12 +248,19 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Unary Minus overloading
      * @return Updated field
      */
-    FieldOnNodes< ValueType > &operator-() {
+    FieldOnNodes< ValueType > operator-() {
         bool retour = _valuesList->updateValuePointer();
-        int taille = _valuesList->size();
-        for ( int pos = 0; pos < taille; ++pos )
-            ( *this )[pos] = -( *this )[pos];
-        return *this;
+        if(retour){
+            FieldOnNodes< ValueType > tmp(*this);
+            int taille = _valuesList->size();
+            for ( int pos = 0; pos < taille; ++pos ){
+                tmp[pos] = -( *this )[pos];
+            }              
+            return tmp;
+        }else{
+            throw std::runtime_error("Unable to update the FielsOnNodes object");
+        }
+
     };
 
     // NOTE ON FOLLOWING OPERATOR OVERLAODING
