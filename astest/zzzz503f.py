@@ -19,6 +19,7 @@
 
 import code_aster
 from code_aster.Commands import *
+import numpy as np
 
 code_aster.init("--test")
 
@@ -79,8 +80,14 @@ U2 = MECA_STATIQUE(MODELE=MO,
 fieldOnElem1 = U2.getFieldOnCellsReal("SIEF_ELGA", 31)
 fieldOnElem2 = U2.getFieldOnCellsReal("SIEF_ELGA", 30)
 
-# __len__
+# subscript operator __getitem__
+val0 = fieldOnElem1.getValues()[0]
+test.assertAlmostEqual(fieldOnElem1[0], val0)
+
+# __len__ and size()
 test.assertAlmostEqual(len(fieldOnElem1), 192)
+test.assertAlmostEqual(fieldOnElem1.size(), 192)
+
 
 fieldOnElem3 = fieldOnElem2 - fieldOnElem1
 test.assertAlmostEqual(fieldOnElem3[0], 1.742837573202337)
@@ -88,16 +95,19 @@ test.assertAlmostEqual(fieldOnElem3[0], 1.742837573202337)
 fieldOnElem3 = fieldOnElem2 + fieldOnElem1
 test.assertAlmostEqual(fieldOnElem3[0], -651.8212523776659)
 
-fieldOnElem3 = fieldOnElem1
-fieldOnElem3 += fieldOnElem1
-test.assertAlmostEqual(fieldOnElem3[0], -653.5640899508683)
+fieldOnElem3 = - fieldOnElem1
+test.assertAlmostEqual(fieldOnElem3[0], -fieldOnElem1[0])
 
-fieldOnElem3 = fieldOnElem2
+fieldOnElem3 = fieldOnElem1.duplicate()
+fieldOnElem3 += fieldOnElem1
+test.assertAlmostEqual(fieldOnElem3[0], 2*fieldOnElem1[0])
+
+fieldOnElem3 = fieldOnElem2.duplicate()
 fieldOnElem3 -= fieldOnElem1
-test.assertAlmostEqual(fieldOnElem3[0], 328.52488254863647)
+test.assertAlmostEqual(fieldOnElem3[0], fieldOnElem2[0] - fieldOnElem1[0])
 
 fieldOnElem3 = 10 * fieldOnElem2
-test.assertAlmostEqual(fieldOnElem3[0], 3285.2488254863647)
+test.assertAlmostEqual(fieldOnElem3[0], 10*fieldOnElem2[0])
 
 # __setitem__
 fieldOnElem3[0] = 100
@@ -113,7 +123,17 @@ def myfunc(x):
 
 
 fieldOnElem4 = fieldOnElem3.transform(myfunc)
-test.assertAlmostEqual(fieldOnElem4[0], -0.5063656411097588)
+test.assertAlmostEqual(fieldOnElem4[0], math.sin(100))
+
+#norms
+
+vals = np.array(fieldOnElem1.getValues())
+test.assertAlmostEqual(fieldOnElem1.norm("NORM_2"), np.sqrt(vals.dot(vals)))
+test.assertAlmostEqual(fieldOnElem1.norm("NORM_1"), np.sum(np.abs(vals)))
+test.assertAlmostEqual(fieldOnElem1.norm("NORM_INFINITY"), np.max(np.abs(vals)))
+
+# dot
+test.assertAlmostEqual(fieldOnElem1.dot(fieldOnElem1), vals.dot(vals))
 
 test.printSummary()
 

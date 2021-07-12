@@ -135,6 +135,11 @@ template < class ValueType > class FieldOnCells : public DataField {
     }
 
     /**
+     * @brief Wrap of copy constructor
+     */
+    FieldOnCells duplicate() { return *this; }
+
+    /**
      * @brief Copy constructor
      */
     FieldOnCells( const FieldOnCells &toCopy )
@@ -256,7 +261,8 @@ template < class ValueType > class FieldOnCells : public DataField {
                     type different from ASTERDOUBLE");
                     PyErr_Print();
                 }
-                Py_DECREF(res);
+                //Py_DECREF(res);
+                Py_XDECREF(res);
             }
             return tmp;
         }
@@ -285,7 +291,8 @@ template < class ValueType > class FieldOnCells : public DataField {
                     type different from ASTERCOMPLEX");
                 PyErr_Print();
             }
-            Py_DECREF(res);;
+            //Py_DECREF(res);
+            Py_XDECREF(res);
         }
         return tmp;
     };
@@ -500,12 +507,34 @@ template < class ValueType > class FieldOnCells : public DataField {
         }
         }else{
             throw std::runtime_error("Unable to use norm method: \
-             Maybe the FieldsOnCells Object is empty");
+             Maybe the FieldOnCells Object is empty");
         }
         // square root for l2 norm 
         if ( normType == "NORM_2" )  norme = std::sqrt( norme );
 
         return norme;
+    }
+
+
+    /**
+     * @brief Dot product
+     * @param tmp object FieldOnCellsPtr
+     */
+    template < class type = ValueType >
+    typename std::enable_if< std::is_same< type, ASTERDOUBLE >::value, ASTERDOUBLE>::type
+    dot( const FieldOnCellsPtr &tmp ) const {
+        bool retour = tmp->updateValuePointers();
+        retour = ( retour && _valuesList->updateValuePointer() );
+        ASTERINTEGER taille = _valuesList->size();
+
+        if ( !retour || taille != tmp->size() )
+            throw std::runtime_error( "Incompatible size" );
+
+        ASTERDOUBLE ret = 0.0;
+        for ( auto pos = 0; pos < taille; ++pos ) {
+                ret += ( *this )[pos] * ( *tmp )[pos];
+        }
+        return ret;
     }
 
     bool printMedFile( const std::string fileName ) const;

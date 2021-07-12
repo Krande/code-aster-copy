@@ -38,13 +38,13 @@ void exportFieldOnCellsToPython() {
         .def( "__init__",
               py::make_constructor(&initFactoryPtr<  FieldOnCellsReal, std::string >) )
         .def(py::init<const FieldOnCellsReal&>() )
+        .def( "duplicate", &FieldOnCellsReal::duplicate)
         .def( "exportToSimpleFieldOnCells",
               &FieldOnCellsReal::exportToSimpleFieldOnCells )
         .def( "getModel", &FieldOnCellsReal::getModel )
         .def( "setDescription", &FieldOnCellsReal::setDescription )
         .def( "setModel", &FieldOnCellsReal::setModel )
         .def( "build", &FieldOnCellsReal::build )
-        .def( "transform", &FieldOnCellsReal::transform<ASTERDOUBLE> )
         .def( "getValues", &FieldOnCellsReal::getValues,
               py::return_value_policy<py::copy_const_reference>())
         .def( "__getitem__",
@@ -60,6 +60,23 @@ void exportFieldOnCellsToPython() {
         .def( py::self * float() )
         .def( float() * py::self )
         .def( - py::self )
+        .def( "size", &FieldOnCellsReal::size, R"(
+                  Return the size of the field
+
+                  Return:
+                  int: number of element in the field
+                        )",
+                              ( py::arg( "self" ) ) )
+        .def( "transform", &FieldOnCellsReal::transform<ASTERDOUBLE>, R"(
+                  Apply Function to each value of _ValuesList of the FieldOnCells object.
+
+                  Arguments:
+                  Function: Callable Python object
+
+                  Returns:
+                  bool: New FieldOnCells object with the trasformed values
+                        )",
+                              ( py::arg( "self" ), py::arg( "Function" ) ) )
         .def( "printMedFile", &FieldOnCellsReal::printMedFile, R"(
                   Print the field in MED format.
 
@@ -70,8 +87,7 @@ void exportFieldOnCellsToPython() {
                   bool: *True* if succeeds, *False* otherwise.
                         )",
                               ( py::arg( "self" ), py::arg( "filename" ) )  )
-        .def( "norm", &FieldOnCellsReal::norm<ASTERDOUBLE>,
-               R"(
+        .def( "norm", &FieldOnCellsReal::norm<ASTERDOUBLE>, R"(
                   Return the euclidean norm of the field
 
                   Argument:
@@ -79,7 +95,17 @@ void exportFieldOnCellsToPython() {
 
                   Returns:
                   double: euclidean norm
-                        )" );
+                        )" )
+       .def( "dot", &FieldOnCellsReal::dot<ASTERDOUBLE>, R"(
+                  Return the dot product of two fields
+
+                  Argument:
+                  FieldOnNodes: field
+
+                  Returns:
+                  double: dot produc
+                              )",
+                  ( py::arg( "self"), py::arg( "field") ) );
 
 
     
@@ -89,12 +115,12 @@ void exportFieldOnCellsToPython() {
         .def( "__init__",
               py::make_constructor(&initFactoryPtr< FieldOnCellsComplex, std::string >) )
         .def(py::init<const FieldOnCellsComplex&>() )
+        .def( "duplicate", &FieldOnCellsComplex::duplicate)
         .def( "getModel", &FieldOnCellsComplex::getModel )
         .def( "setDescription", &FieldOnCellsComplex::setDescription )
         .def( "setModel", &FieldOnCellsComplex::setModel )
         .def( "build", &FieldOnCellsComplex::build )
-        .def( "transform", &FieldOnCellsComplex::transform<ASTERCOMPLEX> )
-        .def( "getValues", &FieldOnCellsReal::getValues,
+        .def( "getValues", &FieldOnCellsComplex::getValues,
                py::return_value_policy<py::copy_const_reference>())
         .def( "__getitem__",
               +[]( const FieldOnCellsComplex& v, int i ) { return v[i]; } )
@@ -102,13 +128,30 @@ void exportFieldOnCellsToPython() {
               +[]( FieldOnCellsComplex &v, ASTERINTEGER i, ASTERCOMPLEX f )
                { return v.operator[]( i )=f; } )
         .def( "__len__",
-              +[]( const FieldOnCellsReal& v ) { return v.size(); } )
+              +[]( const FieldOnCellsComplex& v ) { return v.size(); } )
         .def( py::self + py::self )
         .def( py::self - py::self )
         .def( py::self += py::self )
         .def( py::self -= py::self )
         .def( py::self * float() )
         .def( float() * py::self )
+        .def( "size", &FieldOnCellsComplex::size, R"(
+                  Return the size of the field
+
+                  Return:
+                  int: number of element in the field
+                        )",
+                              ( py::arg( "self" ) ) )
+        .def( "transform", &FieldOnCellsComplex::transform<ASTERCOMPLEX>, R"(
+                  Apply Function to each value of _ValuesList of the FieldOnCells object.
+
+                  Arguments:
+                  Function: Callable Python object
+
+                  Returns:
+                  bool: New FieldOnCells object with the trasformed values
+                        )",
+                              ( py::arg( "self" ), py::arg( "Function" ) ))
         .def( "printMedFile", &FieldOnCellsComplex::printMedFile, R"(
                   Print the field in MED format.
 
