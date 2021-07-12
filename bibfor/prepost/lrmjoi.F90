@@ -82,9 +82,15 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
 !
+! --- Il y a en dur le traitement des noms de joints sur 4 caractères. Il faudrait modifier
+!     partout pour ne plus être limité mais je pense qu'il y a pas mal d'endroit où on fait ça
+!     rechercher codent parait une bonne possibilité
+!
+    ASSERT(nbproc <= 9999)
+!
 ! --- Uniquement pour les ParallelMesh
 !
-    mesh = nomnoe(1:8)
+    mesh = nommail(1:8)
 !
 ! --- L'objet .NULOGL permet d'avoir la numérotation globale des noeuds
 !
@@ -96,7 +102,7 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
 !     Pour les noeuds joints, c'est un autre proc et il faut le trouver par lecture des joints
 !     Par défaut, tout les noeuds d'un domaine appartient au moins à ce domaine
 !
-    call wkvect(nommail(1:8)//'.NOEX', 'G V I', nbnoeu, vi=v_noext)
+    call wkvect(mesh//'.NOEX', 'G V I', nbnoeu, vi=v_noext)
     v_noext(1:nbnoeu) = rang
 !
     if ( nbproc > 1 ) then
