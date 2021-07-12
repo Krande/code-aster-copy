@@ -30,6 +30,7 @@ subroutine crnlgc(numddl)
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
+#include "asterfort/codlet.h"
 #include "asterfort/crnustd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
@@ -263,7 +264,7 @@ subroutine crnlgc(numddl)
             if (zi(jrecep1) > 0) then
                 call wkvect('&&CRNULG.NUM_DDL_GLOB_E', 'V V I', zi(jrecep1), jenvoi2)
                 call wkvect('&&CRNULG.NUM_DDL_GLOB_R', 'V V I', zi(jenvoi1), jrecep2)
-                call codent(iaux, 'G', chnbjo)
+                call codlet(iaux, 'G', chnbjo)
                 call wkvect(numddl//'.NUMEE'//chnbjo, 'G V I', zi(jrecep1), jnujoi1)
 !
                 nbddl = 0
