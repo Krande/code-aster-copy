@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmdocm(model, mult_comp)
+subroutine nmdocm(model, mult_comp, base)
 !
 use NonLin_Datastructure_type
 !
@@ -40,6 +40,7 @@ implicit none
 #include "asterfort/jexnum.h"
 !
 character(len=*), intent(in) :: model, mult_comp
+character(len=1), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,6 +52,7 @@ character(len=*), intent(in) :: model, mult_comp
 !
 ! In  model       : name of model
 ! In  mult_comp   : name of <CARTE> MULT_COMP
+! In  base        : Jeveux base G/V
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -86,7 +88,7 @@ character(len=*), intent(in) :: model, mult_comp
 !
 ! - Allocate <CARTE>
 !
-    call alcart('V', mult_comp, mesh, name_gd)
+    call alcart(base, mult_comp, mesh, name_gd)
 !
 ! - Acces to <CARTE>
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,10 @@
 !
 !
 interface
-    subroutine carc_init(mesh, carcri, nb_cmp)
+    subroutine carc_init(mesh, carcri, base, nb_cmp)
         character(len=8) , intent(in) :: mesh
         character(len=19) , intent(in) :: carcri
+        character(len=1), intent(in) :: base
         integer, intent(out) :: nb_cmp
     end subroutine carc_init
 end interface

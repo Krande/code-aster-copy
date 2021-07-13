@@ -52,5 +52,17 @@ Return a pointer to the field for behaviour.
 
 Returns:
     ConstantFieldOnCellsChar16Ptr: behaviour.
+        )", ( py::arg("self" )))
+        .def("getConvergenceCriteria", &BehaviourProperty::getConvergenceCriteria, R"(
+Return a pointer to the field for convergence criteria.
+
+Returns:
+    ConstantFieldOnCellsRealPtr: convergence criteria.
+        )", ( py::arg("self" )))
+        .def("getMultipleBehaviourField", &BehaviourProperty::getMultipleBehaviourField, R"(
+Return a pointer to the field for multiple behaviour like cristals.
+
+Returns:
+    ConstantFieldOnCellsChar16Ptr: multiple behaviour.
         )", ( py::arg("self" )));
 };

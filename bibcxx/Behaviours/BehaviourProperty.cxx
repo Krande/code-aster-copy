@@ -33,7 +33,7 @@
 
 /** @brief Create objects (maps) */
 void BehaviourProperty::createObjects() {
-    _COMPOR = boost::make_shared< ConstantFieldOnCellsChar16 >( getName() + ".COMPOR", _mesh );
+    _COMPOR = boost::make_shared< ConstantFieldOnCellsChar16 >( getName() + ".COMPOR    ", _mesh );
 
     _MULCOM = boost::make_shared< ConstantFieldOnCellsChar16 >( getName() + ".MULCOM", _mesh );
 
@@ -69,12 +69,14 @@ bool BehaviourProperty::build() {
     std::string comporName = _COMPOR->getName();
     comporName.resize( 19, ' ' );
 
+    std::string base("G");
+
     CALLO_NMDOCC( modelName, materialFieldName, (ASTERLOGICAL *)&_initialState,
-                  (ASTERLOGICAL *)&_implex, comporName, (ASTERLOGICAL *)&_verbosity );
+                  (ASTERLOGICAL *)&_implex, comporName, base, (ASTERLOGICAL *)&_verbosity );
 
-    CALLO_NMDOCR( getModel()->getName(), _CARCRI->getName(), (ASTERLOGICAL *)&_implex );
+    CALLO_NMDOCR( getModel()->getName(), _CARCRI->getName(), (ASTERLOGICAL *)&_implex, base );
 
-    CALLO_NMDOCM( getModel()->getName(), _MULCOM->getName() );
+    CALLO_NMDOCM( getModel()->getName(), _MULCOM->getName(), base );
 
     AS_ASSERT(_COMPOR->updateValuePointers());
     AS_ASSERT(_MULCOM->updateValuePointers());

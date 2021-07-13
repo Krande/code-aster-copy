@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -108,7 +108,7 @@ aster_logical, intent(out) :: incr
         endif
     else
 ! ----- Get COMPORTEMENT from command file
-        call nmdocc(modele, mate, l_etat_init, l_implex, compor)
+        call nmdocc(modele, mate, l_etat_init, l_implex, compor, 'V')
         if (niv .ge. 2) then
             call comp_info(modele, compor)
         endif
@@ -140,7 +140,7 @@ aster_logical, intent(out) :: incr
 !
     call gverlc(resu, compor, iord0)
 !
-! - Check COMPORTEMENT / RELATION in result for incremental comportement 
+! - Check COMPORTEMENT / RELATION in result for incremental comportement
 !
     if (incr) then
         call cgvein(compor)
