@@ -37,6 +37,10 @@ void exportFieldOnCellsToPython() {
         .def( "__init__", py::make_constructor(&initFactoryPtr< FieldOnCellsReal >))
         .def( "__init__",
               py::make_constructor(&initFactoryPtr<  FieldOnCellsReal, std::string >) )
+        .def( "__init__",
+              py::make_constructor(&initFactoryPtr< FieldOnCellsReal,
+                                                    ModelPtr, BehaviourPropertyPtr,
+                                                    std::string>))
         .def(py::init<const FieldOnCellsReal&>() )
         .def( "duplicate", &FieldOnCellsReal::duplicate)
         .def( "exportToSimpleFieldOnCells",
@@ -44,9 +48,7 @@ void exportFieldOnCellsToPython() {
         .def( "getModel", &FieldOnCellsReal::getModel )
         .def( "setDescription", &FieldOnCellsReal::setDescription )
         .def( "setModel", &FieldOnCellsReal::setModel )
-        .def( "build", &FieldOnCellsReal::build )
-        .def( "getValues", &FieldOnCellsReal::getValues,
-              py::return_value_policy<py::copy_const_reference>())
+        .def( "build", &FieldOnCellsReal::build)
         .def( "__getitem__",
               +[]( const FieldOnCellsReal& v, ASTERINTEGER i ) { return v[i]; } )
         .def( "__setitem__",
@@ -60,13 +62,27 @@ void exportFieldOnCellsToPython() {
         .def( py::self * float() )
         .def( float() * py::self )
         .def( - py::self )
+        .def( "setValues", &FieldOnCellsReal::setValues,
+               R"(
+                  Set values of the field
+                  Argument:
+                  float: value to set
+                  )",
+              ( py::arg( "self" ), py::arg( "value" ) ) )
+        .def( "getValues", &FieldOnCellsReal::getValues,
+        py::return_value_policy<py::copy_const_reference>(), R"(
+                  Return a list of values as (x1, y1, z1, x2, y2, z2...)
+                  Returns:
+                  list[float]: List of values.
+                  )",
+              ( py::arg( "self" ) ))
         .def( "size", &FieldOnCellsReal::size, R"(
                   Return the size of the field
 
                   Return:
                   int: number of element in the field
                         )",
-                              ( py::arg( "self" ) ) )
+                              ( py::arg( "self" ) ))
         .def( "transform", &FieldOnCellsReal::transform<ASTERDOUBLE>, R"(
                   Apply Function to each value of _ValuesList of the FieldOnCells object.
 
@@ -108,7 +124,7 @@ void exportFieldOnCellsToPython() {
                   ( py::arg( "self"), py::arg( "field") ) );
 
 
-    
+
     py::class_< FieldOnCellsComplex, FieldOnCellsComplexPtr,
             py::bases< DataField > >( "FieldOnCellsComplex", py::no_init )
         .def( "__init__", py::make_constructor(&initFactoryPtr< FieldOnCellsComplex >) )

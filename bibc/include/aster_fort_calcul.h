@@ -156,6 +156,15 @@ void DEFSSS( AFVARC, afvarc, const char *, STRING_SIZE, const char *, STRING_SIZ
 #define CALLO_CMTREF( a, b ) CALLOO( CMTREF, cmtref, a, b )
 void DEFSS( CMTREF, cmtref, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
+#define CALLO_CESVAR( a, b, c, d ) CALLOOOO( CESVAR, cesvar, a, b, c, d )
+void DEFSSSS( CESVAR, cesvar, const char *, STRING_SIZE, const char *, STRING_SIZE,
+              const char *, STRING_SIZE, const char *, STRING_SIZE);
+
+#define CALLO_ALCHML( a, b, c, d, e, f, g ) CALLOOOOOPO( ALCHML, alchml, a, b, c, d, e, f, g )
+void DEFSSSSSPS( ALCHML, alchml, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                 const char *, STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                 ASTERINTEGER *, const char *, STRING_SIZE );
+
 #ifdef __cplusplus
 }
 #endif

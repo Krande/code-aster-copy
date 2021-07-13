@@ -38,6 +38,7 @@
 #include "DataFields/SimpleFieldOnCells.h"
 #include "Modeling/Model.h"
 #include "Modeling/FiniteElementDescriptor.h"
+#include "Behaviours/BehaviourProperty.h"
 #include "PythonBindings/LogicalUnitManager.h"
 #include "Supervis/CommandSyntax.h"
 
@@ -94,7 +95,56 @@ template < class ValueType > class FieldOnCells : public DataField {
           _reference( JeveuxVectorChar24( getName() + ".CELK" ) ),
           _valuesList( JeveuxVector< ValueType >( getName() + ".CELV" ) ), _model( nullptr ),
           _title( JeveuxVectorChar80( getName() + ".TITR" ) ){};
-    
+
+
+    /**
+     * @brief Constructeur à partir d'une carte compor et d'un modèle
+     * @param model Modèle
+     * @param behaviour Carte Compor
+     * @param typcham Type de champ à calculer
+     * @param memType Mémoire d'allocation
+     */
+    FieldOnCells(const ModelPtr &model, const BehaviourPropertyPtr behaviour,
+                 const std::string& typcham, const JeveuxMemory memType = Permanent )
+        : FieldOnCells( memType){
+            std::string inName = getName();
+            std::string carele = " ";
+            std::string test;
+            std::string option;
+            std::string nompar;
+            test=typcham;
+            test.resize(4);
+
+            if (test=="ELGA"){
+                option="TOU_INI_ELGA";
+            }
+            else if(test=="ELNO"){
+                option="TOU_INI_ELNO";
+            }
+            else{
+                AS_ASSERT(false)
+            };
+            if (typcham==test+"_SIEF_R"){
+                nompar="PSIEF_R";
+            }
+            else if(typcham==test+"_VARI_R"){
+                nompar="PVARI_R";
+            }
+            else{
+                AS_ASSERT(false)
+            };
+
+            ASTERINTEGER iret = 0;
+            _model=model;
+            _dofDescription=model->getFiniteElementDescriptor();
+            auto fed = model->getFiniteElementDescriptor();
+            auto dcel = boost::make_shared<SimpleFieldOnCellsValueType>( getMemoryType() );
+            auto compor = behaviour->getBehaviourField();
+            CALLO_CESVAR(carele, compor->getName(), fed->getName(), dcel->getName());
+            CALLO_ALCHML(fed->getName(), option, nompar, JeveuxMemoryTypesNames[getMemoryType()],
+                         getName(),&iret, dcel->getName());
+            AS_ASSERT(iret==0);};
+
 
     /**
      * @brief Move constructor
@@ -106,7 +156,7 @@ template < class ValueType > class FieldOnCells : public DataField {
           _reference( JeveuxVectorChar24( getName() + ".CELK" ) ),
           _valuesList( JeveuxVector< ValueType >( getName() + ".CELV" ) ),
           _title( JeveuxVectorChar80( getName() + ".TITR" ) ){
-          
+
           _descriptor = toCopy._descriptor;
           _reference  = toCopy._reference;
           _valuesList = toCopy._valuesList;
@@ -236,9 +286,9 @@ template < class ValueType > class FieldOnCells : public DataField {
 
 
     /**
-     * @brief Transormer les valeurs de _valuesList en appliquant 
+     * @brief Transormer les valeurs de _valuesList en appliquant
      *         la fonction "func" à chaque valeur
-     * @return renvoie un nouveau objet de FieldOnCells 
+     * @return renvoie un nouveau objet de FieldOnCells
      *         avec les valeurs transformées
      */
     template < class type = ValueType >
@@ -296,7 +346,7 @@ template < class ValueType > class FieldOnCells : public DataField {
         }
         return tmp;
     };
-   
+
 
     // OVERLOADING C++ OPERATORS
 
@@ -325,7 +375,7 @@ template < class ValueType > class FieldOnCells : public DataField {
         if(ret){
             if (!this->isSimilarTo(rhs)){
                 throw std::runtime_error("Fields have incompatible shapes");
-            } 
+            }
             ASTERINTEGER size = _valuesList->size();
             for ( int pos = 0; pos < size; ++pos ) (*this )[pos] = ( *this )[pos] + rhs[pos];
             return *this;
@@ -344,11 +394,11 @@ template < class ValueType > class FieldOnCells : public DataField {
         if(_valuesList.isEmpty()) ret = updateValuePointers();
         if (rhs._valuesList.isEmpty()){
             ret = ret && const_cast<FieldOnCells< ValueType >&> (rhs).updateValuePointers();
-        } 
+        }
         if(ret){
             if (!this->isSimilarTo(rhs)){
                 throw std::runtime_error("Fields have incompatible shapes");
-            } 
+            }
             ASTERINTEGER size = _valuesList->size();
             for ( int pos = 0; pos < size; ++pos ) (*this )[pos] = ( *this )[pos] - rhs[pos];
             return *this;
@@ -363,7 +413,7 @@ template < class ValueType > class FieldOnCells : public DataField {
      * @param i subscript
      * @return value at position i
      */
-    ValueType &operator[]( int i ) { 
+    ValueType &operator[]( int i ) {
         if( 0 <= i  && i < this->size()){
             return _valuesList->operator[]( i );
         }else{
@@ -371,8 +421,8 @@ template < class ValueType > class FieldOnCells : public DataField {
         }
     };
 
-    const ValueType &operator[]( int i ) const {   
-      return const_cast<ValueType&>(const_cast<FieldOnCells<ValueType>*>(this)->operator[](i)); 
+    const ValueType &operator[]( int i ) const {
+      return const_cast<ValueType&>(const_cast<FieldOnCells<ValueType>*>(this)->operator[](i));
     };
 
     /**
@@ -385,7 +435,7 @@ template < class ValueType > class FieldOnCells : public DataField {
         if(_valuesList.isEmpty()) ret = updateValuePointers();
         if (rhs._valuesList.isEmpty()){
             ret = ret && const_cast<FieldOnCells< ValueType >&> (rhs).updateValuePointers();
-        } 
+        }
         if(ret){
             if (!tmp.isSimilarTo(rhs)) throw std::runtime_error("Fields have incompatible shapes");
             ASTERINTEGER size = rhs._valuesList->size();
@@ -409,7 +459,7 @@ template < class ValueType > class FieldOnCells : public DataField {
         if(_valuesList.isEmpty()) ret = updateValuePointers();
         if (rhs._valuesList.isEmpty()){
             ret = ret && const_cast<FieldOnCells< ValueType >&> (rhs).updateValuePointers();
-        } 
+        }
         ASTERINTEGER size = rhs._valuesList->size();
         if(ret){
             if (!tmp.isSimilarTo(rhs)) throw std::runtime_error("Fields have incompatible shapes");
@@ -422,18 +472,18 @@ template < class ValueType > class FieldOnCells : public DataField {
             Maybe one of the fieldOnCells objects is empty");
         }
     };
-    
+
     /**
      * @brief Multiply by a scalar on right overloading
      * @return New field
      */
-    
+
     friend FieldOnCells< ValueType > operator*(const FieldOnCells< ValueType >& lhs,
-                                                const ASTERDOUBLE& scal ) {    
+                                                const ASTERDOUBLE& scal ) {
         ASTERBOOL ret = true;
         if (lhs._valuesList.isEmpty()){
             ret = const_cast<FieldOnCells< ValueType >&> (lhs).updateValuePointers();
-        } 
+        }
         if(ret){
             ASTERINTEGER taille = lhs._valuesList->size();
             FieldOnCells< ValueType > tmp(lhs);
@@ -442,19 +492,19 @@ template < class ValueType > class FieldOnCells : public DataField {
         }else{
             throw  std::runtime_error("Unable to use the operator * :\
              Maybe the fieldOnCells object is empty");
-        }      
+        }
     };
 
     /**
      * @brief Multiply by a scalar on left overloading
      * @return New field
      */
-    
+
     friend FieldOnCells< ValueType > operator*( const ASTERDOUBLE &scal,
                                                 FieldOnCells< ValueType >& rhs ) {
         return rhs * scal;
     };
-    
+
 
     // some getters
 
@@ -468,13 +518,26 @@ template < class ValueType > class FieldOnCells : public DataField {
     }
 
     /**
+     * @brief Set the Values object
+     *
+     * @param value Value to affect
+     */
+    void setValues( const ValueType &value ) {
+        bool retour = _valuesList->updateValuePointer();
+        const int taille = _valuesList->size();
+
+        for ( int pos = 0; pos < taille; ++pos )
+            ( *this )[pos] = value;
+    };
+
+    /**
      * @brief Size of the FieldOnNodes
      */
     const ASTERINTEGER size( ) const
     {
         return _valuesList->size();
     }
-    
+
     // norm and dot methods
 
     /**
@@ -491,25 +554,25 @@ template < class ValueType > class FieldOnCells : public DataField {
             if( normType == "NORM_1"){
                 for( int pos = 0; pos < taille; ++pos ){
                     norme += std::abs(( *this )[pos]);
-                } 
+                }
             }
             else if( normType == "NORM_2"){
                 for( int pos = 0; pos < taille; ++pos ){
                     norme += ( *this )[pos] * ( *this )[pos];
-                } 
+                }
             }
 
             else if( normType == "NORM_INFINITY") {
                 for( int pos = 0; pos < taille; ++pos ){
                     norme = std::max(norme, std::abs(( *this )[pos]));
-                } 
-            
+                }
+
         }
         }else{
             throw std::runtime_error("Unable to use norm method: \
              Maybe the FieldOnCells Object is empty");
         }
-        // square root for l2 norm 
+        // square root for l2 norm
         if ( normType == "NORM_2" )  norme = std::sqrt( norme );
 
         return norme;

@@ -146,6 +146,15 @@
 
 
 ================================================================================
+:py:class:`~code_aster.Objects.BehaviourProperty` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.BehaviourProperty
+   :show-inheritance:
+   :members:
+
+
+================================================================================
 :py:class:`~code_aster.Objects.BucklingModeResult` object
 ================================================================================
 
@@ -402,6 +411,15 @@
 ================================================================================
 
 .. autoclass:: code_aster.Objects.FiberGeometry
+   :show-inheritance:
+   :members:
+
+
+================================================================================
+:py:class:`~code_aster.Objects.FieldOnCellsComplex` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.FieldOnCellsComplex
    :show-inheritance:
    :members:
 
