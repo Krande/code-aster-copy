@@ -103,7 +103,7 @@ resu_corr = LIRE_RESU(TYPE_RESU='DYNA_TRANS', FORMAT='MED', UNITE=81,
                           )                    
 # appel à POST_ROCHE
 
-resuPostRoche = POST_ROCHE(ZONE_ANALYSE=(_F(
+resuPostRoche = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                      GROUP_MA='TUYAU',
                                      GROUP_NO_ORIG = 'A',
                                     ),
@@ -146,7 +146,7 @@ resuPostRoche = POST_ROCHE(ZONE_ANALYSE=(_F(
 # 7- seisme inertiel + deplacement (SD)
 
 # 4- seisme inertiel (S)
-resuPostRoche_S = POST_ROCHE(ZONE_ANALYSE=(_F(
+resuPostRoche_S = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                      GROUP_MA='TUYAU',
                                      GROUP_NO_ORIG = 'A',
                                     ),
@@ -166,7 +166,7 @@ resuPostRoche_S = POST_ROCHE(ZONE_ANALYSE=(_F(
                     )
 
 # 5- seisme inertiel + pression (SP)
-resuPostRoche_SP = POST_ROCHE(ZONE_ANALYSE=(_F(
+resuPostRoche_SP = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                      GROUP_MA='TUYAU',
                                      GROUP_NO_ORIG = 'A',
                                     ),
@@ -192,7 +192,7 @@ resuPostRoche_SP = POST_ROCHE(ZONE_ANALYSE=(_F(
                     
                     
 # 6- seisme inertiel + pression + poids propre (SPG)
-resuPostRoche_SPG = POST_ROCHE(ZONE_ANALYSE=(_F(
+resuPostRoche_SPG = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                      GROUP_MA='TUYAU',
                                      GROUP_NO_ORIG = 'A',
                                     ),
@@ -221,7 +221,7 @@ resuPostRoche_SPG = POST_ROCHE(ZONE_ANALYSE=(_F(
                     )
                     
 # 7- seisme inertiel + deplacement (SD)
-resuPostRoche_SD = POST_ROCHE(ZONE_ANALYSE=(_F(
+resuPostRoche_SD = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                      GROUP_MA='TUYAU',
                                      GROUP_NO_ORIG = 'A',
                                     ),

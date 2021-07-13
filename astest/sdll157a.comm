@@ -416,7 +416,7 @@ sismique_dyn=CREA_RESU(OPERATION='AFFE',
 
 # appel à POST_ROCHE : tous chargements
 
-chPostRocheTout = POST_ROCHE(ZONE_ANALYSE=(_F(
+chPostRocheTout = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'ENCA1',
                                     ),
@@ -568,7 +568,7 @@ TEST_RESU(CHAM_ELEM=(
 # appel à POST_ROCHE : comparaison à CAST3M
 
 
-chPostRoche3M = POST_ROCHE(ZONE_ANALYSE=(_F(
+chPostRoche3M = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'ENCA1',
                                     ),

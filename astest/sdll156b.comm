@@ -108,7 +108,7 @@ resu_corr = LIRE_RESU(TYPE_RESU='DYNA_TRANS', FORMAT='MED', UNITE=81,
                           )  
 # appel à POST_ROCHE
 
-resuPostRoche = POST_ROCHE(ZONE_ANALYSE=(_F(GROUP_MA='RUN',
+resuPostRoche = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(GROUP_MA='RUN',
                                                GROUP_NO_ORIG = 'A',
                                               ),
                                             _F(GROUP_MA='BRANCH',
@@ -153,7 +153,7 @@ resuPostRoche = POST_ROCHE(ZONE_ANALYSE=(_F(GROUP_MA='RUN',
 # 7- seisme inertiel + deplacement (SD)
 
 # 4- seisme inertiel (S)
-resuPostRoche_S = POST_ROCHE(ZONE_ANALYSE=(_F(GROUP_MA='RUN',
+resuPostRoche_S = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(GROUP_MA='RUN',
                                                GROUP_NO_ORIG = 'A',
                                               ),
                                             _F(GROUP_MA='BRANCH',
@@ -175,7 +175,7 @@ resuPostRoche_S = POST_ROCHE(ZONE_ANALYSE=(_F(GROUP_MA='RUN',
                     )
 
 # 5- seisme inertiel + pression (SP)
-resuPostRoche_SP = POST_ROCHE(ZONE_ANALYSE=(_F(GROUP_MA='RUN',
+resuPostRoche_SP = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(GROUP_MA='RUN',
                                                GROUP_NO_ORIG = 'A',
                                               ),
                                             _F(GROUP_MA='BRANCH',
@@ -203,7 +203,7 @@ resuPostRoche_SP = POST_ROCHE(ZONE_ANALYSE=(_F(GROUP_MA='RUN',
                     
                     
 # 6- seisme inertiel + pression + poids propre (SPG)
-resuPostRoche_SPG = POST_ROCHE(ZONE_ANALYSE=(_F(GROUP_MA='RUN',
+resuPostRoche_SPG = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(GROUP_MA='RUN',
                                                GROUP_NO_ORIG = 'A',
                                               ),
                                             _F(GROUP_MA='BRANCH',
@@ -234,7 +234,7 @@ resuPostRoche_SPG = POST_ROCHE(ZONE_ANALYSE=(_F(GROUP_MA='RUN',
                     )
                     
 # 7- seisme inertiel + deplacement (SD)
-resuPostRoche_SD = POST_ROCHE(ZONE_ANALYSE=(_F(GROUP_MA='RUN',
+resuPostRoche_SD = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(GROUP_MA='RUN',
                                                GROUP_NO_ORIG = 'A',
                                               ),
                                             _F(GROUP_MA='BRANCH',

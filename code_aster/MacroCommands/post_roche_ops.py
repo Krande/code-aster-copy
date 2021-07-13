@@ -43,6 +43,7 @@ def post_roche_ops(self, **kwargs):
     PRCommon.checkZones()
     PRCommon.getCoudeValues()
     PRCommon.buildPression()
+    if PRCommon.lRCCM_RX : PRCommon.buildAlpha()
     PRCommon.classification()
     PRCommon.materAndBeamParams()
     PRCommon.calcGeomParams()
@@ -169,6 +170,14 @@ class PostRocheCommon():
             for j in kwargs.get('PRESSION'):
                 dPression.append(j.cree_dict_valeurs(j.mc_liste))
         self.dPression = dPression
+        
+        # alpha
+
+        dAlpha = []
+        if kwargs.get('ALPHA'):
+            for j in kwargs.get('ALPHA'):
+                dAlpha.append(j.cree_dict_valeurs(j.mc_liste))
+        self.dAlpha = dAlpha
 
         # Autres paramètres
         self.l_mc_inst  = ['NUME_ORDRE', 'INST', 'PRECISION', 'CRITERE']
@@ -186,6 +195,7 @@ class PostRocheCommon():
             Récupération du modèle
             Récupération des caracteristiques de poutre
             Récupération du champ de matériau
+            Valeur de RCCM_RX
         """
 
         if self.args.get('MODELE'):
@@ -214,6 +224,11 @@ class PostRocheCommon():
             self.chammaterName = self.chammater.getName()
         else:
             self.chammater = None
+        
+        if self.args.get('RCCM_RX') == 'OUI':
+            self.lRCCM_RX = True
+        else:
+            self.lRCCM_RX = False
 
     def checkZones(self,):
         """
@@ -305,7 +320,40 @@ class PostRocheCommon():
                                  PROL_ZERO='OUI',
                                  AFFE= affe)
         self.chPression  = chPression
+    
+    def buildAlpha(self):
+        """
+        Construction du champ de valeurs d'Alpha  ELNO_NEUT_R
+        
+        1 partout par defaut, utilisé uniquement si RCCM_RX=OUI
+        """
 
+        affe  = []
+        dicAffe = {'NOM_CMP'  : 'X1',}
+        dicAffe['TOUT'] = 'OUI'
+        dicAffe['VALE'] = 1.
+        affe.append(dicAffe)
+
+        for fact in self.dAlpha:
+
+            dicAffe = {'NOM_CMP'  : 'X1',}
+
+            if fact.get('TOUT'):
+                dicAffe['TOUT'] = 'OUI'
+            else:
+                dicAffe['GROUP_MA'] = fact.get('GROUP_MA')
+
+            dicAffe['VALE'] = fact.get('VALE')
+            affe.append(dicAffe)
+            
+
+        chAlpha = CREA_CHAMP(OPERATION='AFFE',
+                                 TYPE_CHAM='ELNO_NEUT_R',
+                                 MODELE=self.model,
+                                 PROL_ZERO='OUI',
+                                 AFFE= affe)
+        self.chAlpha  = chAlpha
+        
     def materAndBeamParams(self):
         """
         Récupération des paramètres matériau et des caractéristiques
@@ -929,98 +977,133 @@ class PostRocheCommon():
 
         # contrainte vraie
 
-        def fsolve(sigRef, e, k, n, r, nbIterMax,seuil):
+        # pour RCCM_RC = OUI
+        if self.lRCCM_RX:
+            
+            # ALPHA = X1
+            
+            
+            fSigVraieMax = FORMULE(NOM_PARA=('X1', 'RP02_MOY' ,'RP02_MIN', 'RM_MIN'),
+                                VALE='2*(0.426*RP02_MIN+0.032*RM_MIN)*RP02_MOY/RP02_MIN')
+            
+            
+            self.chFSigVraie = CREA_CHAMP(OPERATION='AFFE',
+                                    TYPE_CHAM='ELNO_NEUT_F',
+                                    MODELE=self.model,
+                                    PROL_ZERO='OUI',
+                                    AFFE= (_F(NOM_CMP=('X2'),
+                                              VALE_F=(fSigVraieMax),
+                                              **self.dicAllZones),))
 
-            """
-               resolution de _funcToSolve par algo de Newton
-            """
+        # pour RCCM_RC = NON
+        else:
+            
+            def fsolve(sigRef, e, k, n, r, nbIterMax,seuil):
 
-            if sigRef/e<seuil:
-                return 0.
+                """
+                   resolution de _funcToSolve par algo de Newton
+                """
 
-
-            def epsip(sig, e, k, n):
-                return k*pow(sig/e,1/n)
-
-
-            def funcToSolve(sigV):
-                return r*(sigV-sigRef)/e + sigV/e + epsip(sigV, e, k, n) - sigRef/e
-
-            # param
-            dSig = sigRef/1000
-            tol = 1e-6
-            # init
-            ratio = 1
-            sigVk = sigRef/2
-            f0 = funcToSolve(sigVk)
-            fk = f0
-            nbIter = 0
-
-            # print('f0',f0)
-
-            while ratio > tol and nbIter<=nbIterMax:
-                fkp = funcToSolve(sigVk+dSig)
-                dfk = (fkp-fk)/dSig
-
-                sigVk = sigVk - fk/dfk
-                fkp1    = funcToSolve(sigVk)
-
-                ratio = abs(fkp1/f0)
-                fk = fkp1
-                nbIter =nbIter+1
-                # print('nbIter',nbIter, 'ratio',ratio, 'fk',fk, 'sigVk',sigVk)
-
-            if ratio > tol :
-                return -1.
-            else:
-                return sigVk
+                if sigRef/e<seuil:
+                    return 0.
 
 
+                def epsip(sig, e, k, n):
+                    return k*pow(sig/e,1/n)
 
-        # calcul à partir de l'effet de ressort
 
-        # SigRef = N
-        # EspiMpRef = X1 : plus utilisé
-        # Ressort = X2
-        fSigVraie = FORMULE(NOM_PARA=('N', 'X2' ,'E', 'K_FACT', 'N_EXPO'),
-                            VALE='fsolve(N,E,K_FACT,N_EXPO,X2,nbIterMax,seuil)',
-                            fsolve=fsolve, nbIterMax=self.nbIterMax,
-                            seuil=self.seuilSigRef)
+                def funcToSolve(sigV):
+                    return r*(sigV-sigRef)/e + sigV/e + epsip(sigV, e, k, n) - sigRef/e
 
-        # calcul à partir de l'effet de ressort max
+                # param
+                dSig = sigRef/1000
+                tol = 1e-6
+                # init
+                ratio = 1
+                sigVk = sigRef/2
+                f0 = funcToSolve(sigVk)
+                fk = f0
+                nbIter = 0
 
-        # SigRef = N
-        # EspiMpRef = X1 : plus utilisé
-        # RessortMax = X3
+                # print('f0',f0)
 
-        fSigVraieMax = FORMULE(NOM_PARA=('N', 'X3' ,'E', 'K_FACT', 'N_EXPO'),
-                            VALE='fsolve(N,E,K_FACT,N_EXPO,X3,nbIterMax,seuil)',
-                            fsolve=fsolve, nbIterMax=self.nbIterMax,
-                            seuil=self.seuilSigRef)
+                while ratio > tol and nbIter<=nbIterMax:
+                    fkp = funcToSolve(sigVk+dSig)
+                    dfk = (fkp-fk)/dSig
 
-        self.chFSigVraie = CREA_CHAMP(OPERATION='AFFE',
-                                TYPE_CHAM='ELNO_NEUT_F',
-                                MODELE=self.model,
-                                PROL_ZERO='OUI',
-                                AFFE= (_F(NOM_CMP=('X1','X2'),
-                                          VALE_F=(fSigVraie,fSigVraieMax),
-                                          **self.dicAllZones),))
+                    sigVk = sigVk - fk/dfk
+                    fkp1    = funcToSolve(sigVk)
+
+                    ratio = abs(fkp1/f0)
+                    fk = fkp1
+                    nbIter =nbIter+1
+                    # print('nbIter',nbIter, 'ratio',ratio, 'fk',fk, 'sigVk',sigVk)
+
+                if ratio > tol :
+                    return -1.
+                else:
+                    return sigVk
+        
+            # calcul à partir de l'effet de ressort
+
+            # SigRef = N
+            # EspiMpRef = X1 : plus utilisé
+            # Ressort = X2
+            fSigVraie = FORMULE(NOM_PARA=('N', 'X2' ,'E', 'K_FACT', 'N_EXPO'),
+                                VALE='fsolve(N,E,K_FACT,N_EXPO,X2,nbIterMax,seuil)',
+                                fsolve=fsolve, nbIterMax=self.nbIterMax,
+                                seuil=self.seuilSigRef)
+
+            # calcul à partir de l'effet de ressort max
+
+            # SigRef = N
+            # EspiMpRef = X1 : plus utilisé
+            # RessortMax = X3
+
+            fSigVraieMax = FORMULE(NOM_PARA=('N', 'X3' ,'E', 'K_FACT', 'N_EXPO'),
+                                VALE='fsolve(N,E,K_FACT,N_EXPO,X3,nbIterMax,seuil)',
+                                fsolve=fsolve, nbIterMax=self.nbIterMax,
+                                seuil=self.seuilSigRef)
+
+            self.chFSigVraie = CREA_CHAMP(OPERATION='AFFE',
+                                    TYPE_CHAM='ELNO_NEUT_F',
+                                    MODELE=self.model,
+                                    PROL_ZERO='OUI',
+                                    AFFE= (_F(NOM_CMP=('X1','X2'),
+                                              VALE_F=(fSigVraie,fSigVraieMax),
+                                              **self.dicAllZones),))
         # epsilon vraie
         
-        fEpsVraie = FORMULE(NOM_PARA = ('X1', 'E', 'K_FACT', 'N_EXPO'),
-                          VALE     =  'X1/E+K_FACT*pow(X1/E,1/N_EXPO)')
+        if self.lRCCM_RX:
+            
+            fEpsVraieMax = FORMULE(NOM_PARA = ('X2', 'E', 'K_FACT', 'N_EXPO'),
+                              VALE     =  'X2/E+K_FACT*pow(X2/E,1/N_EXPO)')
+            
+            
+            self.chFEpsVraie = CREA_CHAMP(OPERATION='AFFE',
+                                    TYPE_CHAM='ELNO_NEUT_F',
+                                    MODELE=self.model,
+                                    PROL_ZERO='OUI',
+                                    AFFE= (_F(NOM_CMP=('X2'),
+                                              VALE_F=(fEpsVraieMax),
+                                              **self.dicAllZones),))
+
+        else:
         
-        fEpsVraieMax = FORMULE(NOM_PARA = ('X2', 'E', 'K_FACT', 'N_EXPO'),
-                          VALE     =  'X2/E+K_FACT*pow(X2/E,1/N_EXPO)')
-        
-        
-        self.chFEpsVraie = CREA_CHAMP(OPERATION='AFFE',
-                                TYPE_CHAM='ELNO_NEUT_F',
-                                MODELE=self.model,
-                                PROL_ZERO='OUI',
-                                AFFE= (_F(NOM_CMP=('X1','X2'),
-                                          VALE_F=(fEpsVraie,fEpsVraieMax),
-                                          **self.dicAllZones),))
+            fEpsVraie = FORMULE(NOM_PARA = ('X1', 'E', 'K_FACT', 'N_EXPO'),
+                              VALE     =  'X1/E+K_FACT*pow(X1/E,1/N_EXPO)')
+            
+            fEpsVraieMax = FORMULE(NOM_PARA = ('X2', 'E', 'K_FACT', 'N_EXPO'),
+                              VALE     =  'X2/E+K_FACT*pow(X2/E,1/N_EXPO)')
+            
+            
+            self.chFEpsVraie = CREA_CHAMP(OPERATION='AFFE',
+                                    TYPE_CHAM='ELNO_NEUT_F',
+                                    MODELE=self.model,
+                                    PROL_ZERO='OUI',
+                                    AFFE= (_F(NOM_CMP=('X1','X2'),
+                                              VALE_F=(fEpsVraie,fEpsVraieMax),
+                                              **self.dicAllZones),))
         
         # veriContrainte
 
@@ -1070,28 +1153,52 @@ class PostRocheCommon():
 
         # coefficient d'abattement
 
-        def coefAbat(sigRef, sigP, sigV):
-            if sigV == 0:
-                return 1.
-            if sigV <= sigP:
-                return 1.
-            else:
-                return (sigV-sigP)/(sigRef-sigP)
+        if self.lRCCM_RX:
+            
+            
+            def fepsiMP(sig, e, k, n) :
+                return k*pow(sig/E,1/n)
+            
+            # X1 = Pression
+            # X2 = sig Vraie
+            # X3 = coef ressort max
+            
+            fCoefAbatOpt = FORMULE(NOM_PARA=('X1', 'X2', 'X3','E', 'K_FACT','N_EXPO'),
+                                   VALE='(X2-X1)*(1+X3)/(E*(fepsiMP(X2,E,K_FACT,N_EXPO)-fepsiMP(X1,E,K_FACT,N_EXPO))+((X2-X1)*(1+X3)))', 
+                                   fepsiMP=fepsiMP)
+            
+            self.chFCoefAbat = CREA_CHAMP(OPERATION='AFFE',
+                                    TYPE_CHAM='ELNO_NEUT_F',
+                                    MODELE=self.model,
+                                    PROL_ZERO='OUI',
+                                    AFFE= (_F(NOM_CMP=('X2'),
+                                              VALE_F=(fCoefAbatOpt),
+                                              **self.dicAllZones),))
+            
+        else:
+        
+            def coefAbat(sigRef, sigP, sigV):
+                if sigV == 0:
+                    return 1.
+                if sigV <= sigP:
+                    return 1.
+                else:
+                    return (sigV-sigP)/(sigRef-sigP)
 
 
-        fCoefAbat = FORMULE(NOM_PARA=('N', 'X1', 'X2'),
-                            VALE='coefAbat(N, X1, X2)', coefAbat=coefAbat)
+            fCoefAbat = FORMULE(NOM_PARA=('N', 'X1', 'X2'),
+                                VALE='coefAbat(N, X1, X2)', coefAbat=coefAbat)
 
-        fCoefAbatOpt = FORMULE(NOM_PARA=('N', 'X1', 'X3'),
-                               VALE='coefAbat(N, X1, X3)', coefAbat=coefAbat)
+            fCoefAbatOpt = FORMULE(NOM_PARA=('N', 'X1', 'X3'),
+                                   VALE='coefAbat(N, X1, X3)', coefAbat=coefAbat)
 
-        self.chFCoefAbat = CREA_CHAMP(OPERATION='AFFE',
-                                TYPE_CHAM='ELNO_NEUT_F',
-                                MODELE=self.model,
-                                PROL_ZERO='OUI',
-                                AFFE= (_F(NOM_CMP=('X1','X2'),
-                                          VALE_F=(fCoefAbat,fCoefAbatOpt),
-                                          **self.dicAllZones),))
+            self.chFCoefAbat = CREA_CHAMP(OPERATION='AFFE',
+                                    TYPE_CHAM='ELNO_NEUT_F',
+                                    MODELE=self.model,
+                                    PROL_ZERO='OUI',
+                                    AFFE= (_F(NOM_CMP=('X1','X2'),
+                                              VALE_F=(fCoefAbat,fCoefAbatOpt),
+                                              **self.dicAllZones),))
 
     def combinaisons(self,):
         """
@@ -1494,39 +1601,47 @@ class PostRocheCalc():
             - à partir de l'effet de ressort max
         """
 
-        # assemblage de champs
-        # X1 = epsiMpRef => plus utilisé
-        # X2 = effet de ressort
-        # X3 = effet de ressort max
+        if self.param.lRCCM_RX:
+            chSigVraie = CREA_CHAMP(OPERATION='EVAL',
+                                    TYPE_CHAM='ELNO_NEUT_R',
+                                    CHAM_F=self.param.chFSigVraie,
+                                    CHAM_PARA=(self.param.chAlpha, self.param.chRochElno ))
 
-        chUtil= CREA_CHAMP(OPERATION = 'ASSE',
-                                MODELE=self.param.model,
-                                TYPE_CHAM = 'ELNO_NEUT_R',
-                                PROL_ZERO = 'OUI',
-                                ASSE      = (
-                                             # _F(CHAM_GD = self.chEpsiMp,
-                                               # TOUT = 'OUI',
-                                               # NOM_CMP = ('X1',),
-                                               # ),
-                                             _F(CHAM_GD = self.chRessort,
-                                               TOUT = 'OUI',
-                                               NOM_CMP = ('X1',),
-                                               NOM_CMP_RESU = ('X2',),
-                                               ),
-                                             _F(CHAM_GD = self.chRessMax,
-                                               TOUT = 'OUI',
-                                               NOM_CMP = ('X1',),
-                                               NOM_CMP_RESU = ('X3',),
-                                               ),
-                                             )
-                               )
+            self.chSigVraie = chSigVraie
+        else:
+            # assemblage de champs
+            # X1 = epsiMpRef => plus utilisé
+            # X2 = effet de ressort
+            # X3 = effet de ressort max
 
-        chSigVraie = CREA_CHAMP(OPERATION='EVAL',
-                                TYPE_CHAM='ELNO_NEUT_R',
-                                CHAM_F=self.param.chFSigVraie,
-                                CHAM_PARA=(self.chSigRef, chUtil, self.param.chRochElno ))
+            chUtil= CREA_CHAMP(OPERATION = 'ASSE',
+                                    MODELE=self.param.model,
+                                    TYPE_CHAM = 'ELNO_NEUT_R',
+                                    PROL_ZERO = 'OUI',
+                                    ASSE      = (
+                                                 # _F(CHAM_GD = self.chEpsiMp,
+                                                   # TOUT = 'OUI',
+                                                   # NOM_CMP = ('X1',),
+                                                   # ),
+                                                 _F(CHAM_GD = self.chRessort,
+                                                   TOUT = 'OUI',
+                                                   NOM_CMP = ('X1',),
+                                                   NOM_CMP_RESU = ('X2',),
+                                                   ),
+                                                 _F(CHAM_GD = self.chRessMax,
+                                                   TOUT = 'OUI',
+                                                   NOM_CMP = ('X1',),
+                                                   NOM_CMP_RESU = ('X3',),
+                                                   ),
+                                                 )
+                                   )
 
-        self.chSigVraie = chSigVraie
+            chSigVraie = CREA_CHAMP(OPERATION='EVAL',
+                                    TYPE_CHAM='ELNO_NEUT_R',
+                                    CHAM_F=self.param.chFSigVraie,
+                                    CHAM_PARA=(self.chSigRef, chUtil, self.param.chRochElno ))
+
+            self.chSigVraie = chSigVraie
         
         # calcul de epsilon vraie
         
@@ -1640,12 +1755,47 @@ class PostRocheCalc():
             Calcul des coefficients d'abattement g et g_opt
             - à partir de l'effet de ressort => g
             - à partir de l'effet de ressort max => g_opt
+            
+            pour RCCM_RX = OUI, on ne calcule que g_opt avec
+            une formule propre
         """
 
-        chCoefsAbat = CREA_CHAMP(OPERATION='EVAL',
-                                TYPE_CHAM='ELNO_NEUT_R',
-                                CHAM_F=self.param.chFCoefAbat,
-                                CHAM_PARA=(self.chSigRef, self.chSigPV,))
+        if self.param.lRCCM_RX:
+            # X1 = Pression
+            # X2 = sig Vraie
+            # X3 = coef ressort max
+            
+            chUtil3= CREA_CHAMP(OPERATION = 'ASSE',
+                                MODELE=self.param.model,
+                                TYPE_CHAM = 'ELNO_NEUT_R',
+                                PROL_ZERO = 'OUI',
+                                ASSE      = (_F(CHAM_GD = self.param.chPression,
+                                               TOUT = 'OUI',
+                                               NOM_CMP = ('X1',),
+                                               ),
+                                             _F(CHAM_GD = self.chSigVraie,
+                                                TOUT = 'OUI',
+                                                NOM_CMP = ('X2'),
+                                                NOM_CMP_RESU = ('X2',),
+                                               ),
+                                             _F(CHAM_GD = self.chRessMax,
+                                                   TOUT = 'OUI',
+                                                   NOM_CMP = ('X1',),
+                                                   NOM_CMP_RESU = ('X3',),
+                                                   ),
+                                             )
+                               )
+            chCoefsAbat = CREA_CHAMP(OPERATION='EVAL',
+                                    TYPE_CHAM='ELNO_NEUT_R',
+                                    CHAM_F=self.param.chFCoefAbat,
+                                    CHAM_PARA=(chUtil3, self.param.chRochElno,))
+        
+        else:
+
+            chCoefsAbat = CREA_CHAMP(OPERATION='EVAL',
+                                    TYPE_CHAM='ELNO_NEUT_R',
+                                    CHAM_F=self.param.chFCoefAbat,
+                                    CHAM_PARA=(self.chSigRef, self.chSigPV,))
 
         self.chCoefsAbat = chCoefsAbat
 

@@ -191,7 +191,7 @@ sismique = COMB_SISM_MODAL(MODE_MECA=modes_dyn,
                     
 # appel à POST_ROCHE
 
-chPostRocheTout = POST_ROCHE(ZONE_ANALYSE=(_F(
+chPostRocheTout = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'A',
                                     ),
@@ -230,7 +230,7 @@ IMPR_RESU(UNITE=6, FORMAT='RESULTAT',
                             'X7','X8','X9','X10','X11','X12',
                             'X13','X14','X15','X16','X17','X18','X19','X20')))
 
-chPostRocheGrMa = POST_ROCHE(ZONE_ANALYSE=(_F(
+chPostRocheGrMa = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      GROUP_MA='TUYAU',
                                      GROUP_NO_ORIG = 'A',
                                     ),
@@ -274,7 +274,7 @@ chPostRocheGrMa = POST_ROCHE(ZONE_ANALYSE=(_F(
 
 
 # 1- deplacement (D)
-chPostRocheTout_D = POST_ROCHE(ZONE_ANALYSE=(_F(
+chPostRocheTout_D = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'A',
                                     ),
@@ -291,7 +291,7 @@ chPostRocheTout_D = POST_ROCHE(ZONE_ANALYSE=(_F(
                     )
 
 # 2- deplacement + pression (DP)                    
-chPostRocheTout_DP = POST_ROCHE(ZONE_ANALYSE=(_F(
+chPostRocheTout_DP = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'A',
                                     ),
@@ -313,7 +313,7 @@ chPostRocheTout_DP = POST_ROCHE(ZONE_ANALYSE=(_F(
                     )                    
 
 # 3- deplacement + pression + poids propre (DPG)                   
-chPostRocheTout_DPG = POST_ROCHE(ZONE_ANALYSE=(_F(
+chPostRocheTout_DPG = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'A',
                                     ),
@@ -339,7 +339,7 @@ chPostRocheTout_DPG = POST_ROCHE(ZONE_ANALYSE=(_F(
                     )         
  
 # 4- seisme inertiel (S)               
-chPostRocheTout_S = POST_ROCHE(ZONE_ANALYSE=(_F(
+chPostRocheTout_S = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'A',
                                     ),
@@ -356,7 +356,7 @@ chPostRocheTout_S = POST_ROCHE(ZONE_ANALYSE=(_F(
                     )         
 
 # 5- seisme inertiel + pression (SP)
-chPostRocheTout_SP = POST_ROCHE(ZONE_ANALYSE=(_F(
+chPostRocheTout_SP = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'A',
                                     ),
@@ -378,7 +378,7 @@ chPostRocheTout_SP = POST_ROCHE(ZONE_ANALYSE=(_F(
                     )  
 
 # 6- seisme inertiel + pression + poids propre (SPG)
-chPostRocheTout_SPG = POST_ROCHE(ZONE_ANALYSE=(_F(
+chPostRocheTout_SPG = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'A',
                                     ),
@@ -404,7 +404,7 @@ chPostRocheTout_SPG = POST_ROCHE(ZONE_ANALYSE=(_F(
                     )  
                     
 # 7- seisme inertiel + deplacement (SD)
-chPostRocheTout_SD = POST_ROCHE(ZONE_ANALYSE=(_F(
+chPostRocheTout_SD = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'A',
                                     ),
@@ -459,7 +459,7 @@ sismique_lu = LIRE_RESU(TYPE_RESU='MODE_MECA', FORMAT='MED', UNITE=81,
 
 # 2nd appel à POST_ROCHE
 
-chLuPostRocheTout = POST_ROCHE(ZONE_ANALYSE=(_F(
+chLuPostRocheTout = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'A',
                                     ),
@@ -498,7 +498,7 @@ IMPR_RESU(UNITE=6, FORMAT='RESULTAT',
                             'X7','X8','X9','X10','X11','X12',
                             'X13','X14','X15','X16','X17','X18','X19','X20')))
 
-chLuPostRocheGrMa = POST_ROCHE(ZONE_ANALYSE=(_F(
+chLuPostRocheGrMa = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      GROUP_MA='TUYAU',
                                      GROUP_NO_ORIG = 'A',
                                     ),
@@ -542,7 +542,7 @@ chLuPostRocheGrMa = POST_ROCHE(ZONE_ANALYSE=(_F(
 
 
 # 1- deplacement (D)
-chLuPostRocheTout_D = POST_ROCHE(ZONE_ANALYSE=(_F(
+chLuPostRocheTout_D = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'A',
                                     ),
@@ -559,7 +559,7 @@ chLuPostRocheTout_D = POST_ROCHE(ZONE_ANALYSE=(_F(
                     )
 
 # 2- deplacement + pression (DP)                    
-chLuPostRocheTout_DP = POST_ROCHE(ZONE_ANALYSE=(_F(
+chLuPostRocheTout_DP = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'A',
                                     ),
@@ -581,7 +581,7 @@ chLuPostRocheTout_DP = POST_ROCHE(ZONE_ANALYSE=(_F(
                     )                    
 
 # 3- deplacement + pression + poids propre (DPG)                   
-chLuPostRocheTout_DPG = POST_ROCHE(ZONE_ANALYSE=(_F(
+chLuPostRocheTout_DPG = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'A',
                                     ),
@@ -607,7 +607,7 @@ chLuPostRocheTout_DPG = POST_ROCHE(ZONE_ANALYSE=(_F(
                     )         
  
 # 4- seisme inertiel (S)               
-chLuPostRocheTout_S = POST_ROCHE(ZONE_ANALYSE=(_F(
+chLuPostRocheTout_S = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'A',
                                     ),
@@ -624,7 +624,7 @@ chLuPostRocheTout_S = POST_ROCHE(ZONE_ANALYSE=(_F(
                     )         
 
 # 5- seisme inertiel + pression (SP)
-chLuPostRocheTout_SP = POST_ROCHE(ZONE_ANALYSE=(_F(
+chLuPostRocheTout_SP = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'A',
                                     ),
@@ -646,7 +646,7 @@ chLuPostRocheTout_SP = POST_ROCHE(ZONE_ANALYSE=(_F(
                     )  
 
 # 6- seisme inertiel + pression + poids propre (SPG)
-chLuPostRocheTout_SPG = POST_ROCHE(ZONE_ANALYSE=(_F(
+chLuPostRocheTout_SPG = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'A',
                                     ),
@@ -672,7 +672,7 @@ chLuPostRocheTout_SPG = POST_ROCHE(ZONE_ANALYSE=(_F(
                     )  
                     
 # 7- seisme inertiel + deplacement (SD)
-chLuPostRocheTout_SD = POST_ROCHE(ZONE_ANALYSE=(_F(
+chLuPostRocheTout_SD = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
                                      GROUP_NO_ORIG = 'A',
                                     ),
