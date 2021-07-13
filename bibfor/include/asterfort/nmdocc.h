@@ -21,12 +21,13 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdocc(model, chmate, l_etat_init, l_implex, compor, l_verbose)
+    subroutine nmdocc(model, chmate, l_etat_init, l_implex, compor, base, l_verbose)
         character(len=8), intent(in) :: model
         character(len=8), intent(in) :: chmate
         aster_logical, intent(in) :: l_etat_init
         aster_logical, intent(in) :: l_implex
         character(len=19), intent(in) :: compor
+        character(len=1), intent(in) :: base
         aster_logical, intent(in), optional :: l_verbose
     end subroutine nmdocc
 end interface

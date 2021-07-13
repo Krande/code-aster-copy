@@ -79,16 +79,16 @@ aster_logical, optional, intent(in) :: l_implex_
 !
 ! - Get parameters from COMPORTEMENT keyword and prepare COMPOR <CARTE>
 !
-    call nmdocc(model_, chmate_, l_etat_init, l_implex, compor_)
+    call nmdocc(model_, chmate_, l_etat_init, l_implex, compor_, 'V')
 !
 ! - Get parameters from COMPORTEMENT keyword and prepare CARCRI <CARTE>
 !
-    call nmdocr(model_, carcri, l_implex)
+    call nmdocr(model_, carcri, l_implex, 'V')
 !
 ! - Get parameters from COMPORTEMENT keyword and prepare MULT_COMP <CARTE> (for crystals)
 !
     if (present(mult_comp_)) then
-        call nmdocm(model_, mult_comp_)
+        call nmdocm(model_, mult_comp_, 'V')
     endif
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ use NonLin_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/assert.h"
 #include "asterfort/nmlect.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
@@ -70,7 +71,7 @@ integer, intent(out) :: nume_harm
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: result
-    aster_logical :: l_etat_init
+    aster_logical :: l_etat_init, verbose
     integer :: nocc
     character(len=19) :: ligrmo
 !
@@ -138,10 +139,25 @@ integer, intent(out) :: nume_harm
 ! - Prepare constitutive laws management datastructure
 !
     if (l_elem_nonl) then
-        call nmdorc(model, mate, l_etat_init,&
-                    ds_constitutive%compor, ds_constitutive%carcri, ds_constitutive%mult_comp,&
-                    l_implex_ = .false._1)
-        call nonlinDSConstitutiveInit(model, cara_elem, ds_constitutive)
+        call getvid('COMPORTEMENT', 'CARCRI', iocc =1, nbret = nocc)
+        if( nocc > 0 ) then
+            call getvid('COMPORTEMENT', 'CARCRI', iocc =1, nbret = nocc, &
+                scal = ds_constitutive%carcri)
+            ASSERT(nocc == 1)
+            call getvid('COMPORTEMENT', 'COMPOR', iocc =1, nbret = nocc, &
+                scal = ds_constitutive%compor)
+            ASSERT(nocc == 1)
+            call getvid('COMPORTEMENT', 'MULT_COMP', iocc =1, nbret = nocc, &
+                scal = ds_constitutive%mult_comp)
+            ASSERT(nocc == 1)
+            verbose = ASTER_FALSE
+        else
+            call nmdorc(model, mate, l_etat_init,&
+                        ds_constitutive%compor, ds_constitutive%carcri, ds_constitutive%mult_comp,&
+                        l_implex_ = .false._1)
+            verbose = ASTER_TRUE
+        end if
+        call nonlinDSConstitutiveInit(model, cara_elem, ds_constitutive, verbose)
     endif
 !
 end subroutine

@@ -109,6 +109,14 @@ class BehaviourProperty : public DataStructure {
     ConstantFieldOnCellsChar16Ptr getBehaviourField( ) const
     { return _COMPOR; };
 
+    /** @brief Set behavior ConstantField '.MULT_COMP' */
+    ConstantFieldOnCellsChar16Ptr getMultipleBehaviourField( ) const
+    { return _MULCOM; };
+
+    /** @brief Set behavior ConstantField '.CARCRI' */
+    ConstantFieldOnCellsRealPtr getConvergenceCriteria( ) const
+    { return _CARCRI; };
+
 };
 
 /** @typedef Smart-pointer to behaviour class */

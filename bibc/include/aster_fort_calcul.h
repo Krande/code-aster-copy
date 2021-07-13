@@ -139,15 +139,18 @@ void DEFSSSS( VRCREF, vrcref, const char *, STRING_SIZE, const char *, STRING_SI
 void DEFSSSS( VTCREB_WRAP, vtcreb_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
               const char *, STRING_SIZE, const char *, STRING_SIZE );
 
-#define CALLO_NMDOCC( a, b, c, d, e, f ) CALLOOPPOP( NMDOCC, nmdocc, a, b, c, d, e, f )
-void DEFSSPPSP( NMDOCC, nmdocc, const char *, STRING_SIZE, const char *, STRING_SIZE,
-                ASTERLOGICAL *, ASTERLOGICAL *, const char *, STRING_SIZE, ASTERLOGICAL * );
+#define CALLO_NMDOCC( a, b, c, d, e, f, g ) CALLOOPPOOP( NMDOCC, nmdocc, a, b, c, d, e, f, g )
+void DEFSSPPSSP( NMDOCC, nmdocc, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                ASTERLOGICAL *, ASTERLOGICAL *, const char *, STRING_SIZE,
+                const char *, STRING_SIZE, ASTERLOGICAL * );
 
-#define CALLO_NMDOCR( a, b, c ) CALLOOP( NMDOCR, nmdocr, a, b, c )
-void DEFSSP( NMDOCR, nmdocr, const char *, STRING_SIZE, const char *, STRING_SIZE, ASTERLOGICAL * );
+#define CALLO_NMDOCR( a, b, c, d ) CALLOOPO( NMDOCR, nmdocr, a, b, c, d )
+void DEFSSPS( NMDOCR, nmdocr, const char *, STRING_SIZE, const char *, STRING_SIZE, ASTERLOGICAL *,
+            const char *, STRING_SIZE );
 
-#define CALLO_NMDOCM( a, b ) CALLOO( NMDOCM, nmdocm, a, b )
-void DEFSS( NMDOCM, nmdocm, const char *, STRING_SIZE, const char *, STRING_SIZE );
+#define CALLO_NMDOCM( a, b, c ) CALLOOO( NMDOCM, nmdocm, a, b, c )
+void DEFSSS( NMDOCM, nmdocm, const char *, STRING_SIZE, const char *, STRING_SIZE,
+             const char *, STRING_SIZE );
 
 #define CALLO_AFVARC( a, b, c ) CALLOOO( AFVARC, afvarc, a, b, c )
 void DEFSSS( AFVARC, afvarc, const char *, STRING_SIZE, const char *, STRING_SIZE,

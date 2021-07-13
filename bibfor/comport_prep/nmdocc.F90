@@ -18,7 +18,7 @@
 ! aslint: disable=W1003
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmdocc(model, chmate, l_etat_init, l_implex, compor, l_verbose)
+subroutine nmdocc(model, chmate, l_etat_init, l_implex, compor, base, l_verbose)
 !
 use Behaviour_type
 !
@@ -43,6 +43,7 @@ implicit none
 character(len=8), intent(in) :: model, chmate
 aster_logical, intent(in) :: l_etat_init, l_implex
 character(len=19), intent(in) :: compor
+character(len=1), intent(in) :: base
 aster_logical, intent(in), optional :: l_verbose
 !
 ! --------------------------------------------------------------------------------------------------
@@ -58,6 +59,7 @@ aster_logical, intent(in), optional :: l_verbose
 ! In  l_etat_init      : .true. if initial state is defined
 ! In  l_implex         : .true. if IMPLEX method
 ! In  compor           : name of <CARTE> COMPOR
+! In  base             : permanent or temporary allocation
 ! In  l_verbose        : .true. to enable verbose mode
 !
 ! --------------------------------------------------------------------------------------------------
@@ -95,7 +97,7 @@ aster_logical, intent(in), optional :: l_verbose
     endif
 
 ! - Create COMPOR <CARTE>
-    call comp_init(mesh, compor, 'V', nb_cmp)
+    call comp_init(mesh, compor, base, nb_cmp)
 
 ! - Set ELASTIQUE COMPOR
     call comp_meca_elas(compor, nb_cmp, l_etat_init)

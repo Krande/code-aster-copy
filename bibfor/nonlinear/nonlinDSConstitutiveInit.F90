@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nonlinDSConstitutiveInit(model, cara_elem, ds_constitutive)
+subroutine nonlinDSConstitutiveInit(model, cara_elem, ds_constitutive, verbose_)
 !
 use NonLin_Datastructure_type
 !
@@ -38,6 +38,7 @@ implicit none
 character(len=24), intent(in) :: model
 character(len=24), intent(in) :: cara_elem
 type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
+aster_logical, intent(in), optional :: verbose_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,7 +55,7 @@ type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    aster_logical :: lLinear, lDisCtc
+    aster_logical :: lLinear, lDisCtc, verbose
     character(len=8) :: answer
     integer :: nb_affe, i_affe
     character(len=16), pointer :: v_compor_vale(:) => null()
@@ -66,6 +67,12 @@ type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
     if (niv .ge. 2) then
         call utmess('I', 'MECANONLINE13_2')
     endif
+!
+    if( present( verbose_ ) ) then
+        verbose = verbose_
+    else
+        verbose = ASTER_TRUE
+    end if
 !
 ! - Construct CHAM_ELEM_S
 !
@@ -119,7 +126,7 @@ type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
 !
 ! - Print informations about COMPORTEMENT keyword
 !
-    call comp_info(model, ds_constitutive%compor)
+    if( verbose ) call comp_info(model, ds_constitutive%compor)
 !
 ! - Preallocation of output stress field for prediction
 !

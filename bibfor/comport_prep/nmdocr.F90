@@ -18,7 +18,7 @@
 ! aslint: disable=W1003
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmdocr(model, carcri, l_implex)
+subroutine nmdocr(model, carcri, l_implex, base)
 !
 use Behaviour_type
 !
@@ -38,6 +38,7 @@ implicit none
 character(len=8), intent(in)  :: model
 character(len=24), intent(in) :: carcri
 aster_logical, intent(in) :: l_implex
+character(len=1), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,6 +51,7 @@ aster_logical, intent(in) :: l_implex
 ! In  model            : name of model
 ! In  carcri           : name of <CARTE> CARCRI
 ! In  l_implex         : .true. if IMPLEX method
+! In  base             : Jeveux base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,7 +77,7 @@ aster_logical, intent(in) :: l_implex
 !
 ! - Create CARCRI <CARTE>
 !
-    call carc_init(mesh, carcri, nb_cmp)
+    call carc_init(mesh, carcri, base, nb_cmp)
 !
 ! - Default CARCRI <CARTE> on all mesh
 !
