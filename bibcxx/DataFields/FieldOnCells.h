@@ -31,16 +31,17 @@
 
 #include "astercxx.h"
 #include "aster_fort_superv.h"
-
 #include "aster_fort_ds.h"
-#include "MemoryManager/JeveuxVector.h"
+
+#include "Behaviours/BehaviourProperty.h"
 #include "DataFields/DataField.h"
 #include "DataFields/SimpleFieldOnCells.h"
-#include "Modeling/Model.h"
+#include "MemoryManager/JeveuxVector.h"
 #include "Modeling/FiniteElementDescriptor.h"
-#include "Behaviours/BehaviourProperty.h"
+#include "Modeling/Model.h"
 #include "PythonBindings/LogicalUnitManager.h"
 #include "Supervis/CommandSyntax.h"
+#include "Supervis/Exceptions.h"
 
 
 /**
@@ -135,15 +136,19 @@ template < class ValueType > class FieldOnCells : public DataField {
             };
 
             ASTERINTEGER iret = 0;
-            _model=model;
-            _dofDescription=model->getFiniteElementDescriptor();
             auto fed = model->getFiniteElementDescriptor();
+
+            _model = model;
+            _dofDescription = fed;
             auto dcel = boost::make_shared<SimpleFieldOnCellsValueType>( getMemoryType() );
             auto compor = behaviour->getBehaviourField();
             CALLO_CESVAR(carele, compor->getName(), fed->getName(), dcel->getName());
             CALLO_ALCHML(fed->getName(), option, nompar, JeveuxMemoryTypesNames[getMemoryType()],
                          getName(),&iret, dcel->getName());
-            AS_ASSERT(iret==0);};
+            AS_ASSERT(iret==0);
+
+            AS_ASSERT(updateValuePointers());
+        };
 
 
     /**
@@ -163,6 +168,8 @@ template < class ValueType > class FieldOnCells : public DataField {
           _title      = toCopy._title;
           _dofDescription = toCopy._dofDescription;
           _model = toCopy._model;
+
+          AS_ASSERT(updateValuePointers());
     };
 
      /**
@@ -182,6 +189,8 @@ template < class ValueType > class FieldOnCells : public DataField {
         // Pointers to be copied
         _dofDescription = toCopy._dofDescription;
         _model = toCopy._model;
+
+        AS_ASSERT(updateValuePointers());
     }
 
     /**
@@ -236,8 +245,16 @@ template < class ValueType > class FieldOnCells : public DataField {
      */
     ModelPtr getModel() const {
         if (_model != nullptr && _model->isEmpty() )
-            throw std::runtime_error( "Model is empty" );
+            raiseAsterError( "Model is empty" );
+
         return _model;
+    };
+
+    /**
+     * @brief Get the mesh
+     */
+    BaseMeshPtr getMesh() const {
+        return _model->getMesh();
     };
 
     /**
@@ -246,7 +263,8 @@ template < class ValueType > class FieldOnCells : public DataField {
      */
     void setDescription( FiniteElementDescriptorPtr &curDesc ) {
         if ( _dofDescription )
-            throw std::runtime_error( "FiniteElementDescriptor already set" );
+            raiseAsterError( "FiniteElementDescriptor already set" );
+
         _dofDescription = curDesc;
     };
 
@@ -256,7 +274,8 @@ template < class ValueType > class FieldOnCells : public DataField {
      */
     ASTERBOOL setModel( ModelPtr &currentModel ) {
         if ( currentModel->isEmpty() )
-            throw std::runtime_error( "Model is empty" );
+            raiseAsterError( "Model is empty" );
+
         _model = currentModel;
         return true;
     };
@@ -267,7 +286,7 @@ template < class ValueType > class FieldOnCells : public DataField {
     ASTERBOOL build() {
         if ( _dofDescription == nullptr && updateValuePointers() ) {
             if ( _model == nullptr )
-                throw std::runtime_error( "Model is empty" );
+                raiseAsterError( "Model is empty" );
             _dofDescription = _model->getFiniteElementDescriptor();
         }
         return true;
@@ -277,7 +296,7 @@ template < class ValueType > class FieldOnCells : public DataField {
      * @brief Mise a jour des pointeurs Jeveux
      * @return renvoie true si la mise a jour s'est bien deroulee, false sinon
      */
-    ASTERBOOL updateValuePointers() {
+    ASTERBOOL updateValuePointers() const {
         bool retour = _descriptor->updateValuePointer();
         retour = ( retour && _reference->updateValuePointer() );
         retour = ( retour && _valuesList->updateValuePointer() );
@@ -294,39 +313,42 @@ template < class ValueType > class FieldOnCells : public DataField {
     template < class type = ValueType >
     typename std::enable_if<std::is_same< type,ASTERDOUBLE >::value,FieldOnCells<ValueType>>::type
     transform(PyObject* func) {
-        if(!PyCallable_Check(func)) throw std::runtime_error("Input parameter to the transform \
+        if(!PyCallable_Check(func))
+            raiseAsterError("Input parameter to the transform \
         method should be a callable Python object");
+
         FieldOnCells<ValueType> tmp(*this);
-        ASTERBOOL ret = true;
-        if(_valuesList.isEmpty()) ret = updateValuePointers();
-        if(ret){
-            ASTERINTEGER size =  _valuesList->size();
-            //vect.resize(size);
-            for(auto i=0;i<size;i++){
-                PyObject* res = PyObject_CallFunction(func, "d", (*_valuesList)[i]);
-                if(PyFloat_Check(res)){
-                    tmp[i] = (ASTERDOUBLE)PyFloat_AsDouble(res);
-                }else{
-                    PyErr_Format(PyExc_ValueError, "Returned value of \
-                    type different from ASTERDOUBLE");
-                    PyErr_Print();
-                }
-                //Py_DECREF(res);
-                Py_XDECREF(res);
+        AS_ASSERT( updateValuePointers() );
+
+        ASTERINTEGER size = _valuesList->size();
+        for(auto i=0;i<size;i++){
+            PyObject* res = PyObject_CallFunction(func, "d", (*_valuesList)[i]);
+            if(PyFloat_Check(res)){
+                tmp[i] = (ASTERDOUBLE)PyFloat_AsDouble(res);
             }
-            return tmp;
+            else{
+                PyErr_Format(PyExc_ValueError, "Returned value of \
+                    type different from ASTERDOUBLE");
+                PyErr_Print();
+            }
+            Py_XDECREF(res);
         }
+
+        return tmp;
     };
 
     template < class type = ValueType >
     typename std::enable_if<std::is_same< type,ASTERCOMPLEX>::value,FieldOnCells<ValueType>>::type
     transform(PyObject* func) {
-        if(!PyCallable_Check(func)) throw std::runtime_error("Input parameter to the transform \
+        if(!PyCallable_Check(func))
+            raiseAsterError("Input parameter to the transform \
         method should be a callable Python object");
+
         FieldOnCells<ValueType> tmp(*this);
-        if(_valuesList.isEmpty()) throw std::runtime_error("FieldOnCells of complex type is empty");
+        AS_ASSERT( _valuesList->updateValuePointer() );
+
         ASTERINTEGER size =  _valuesList->size();
-        //vect.resize(size);
+
         Py_complex val;
         for(auto i=0;i<size;i++){
             val.real = (*_valuesList)[i].real();
@@ -355,10 +377,10 @@ template < class ValueType > class FieldOnCells : public DataField {
      * @return Updated field
      */
     FieldOnCells< ValueType > operator-() const {
-        //ASTERBOOL ret = updateValuePointers();
         FieldOnCells<ValueType> tmp(*this);
+        AS_ASSERT( _valuesList->updateValuePointer() );
         ASTERINTEGER size = _valuesList->size();
-        for ( auto pos = 0; pos < size; ++pos )tmp[pos] = -(*this )[pos];
+        for ( auto pos = 0; pos < size; ++pos ) tmp[pos] = -(*this )[pos];
         return tmp;
     };
 
@@ -367,22 +389,18 @@ template < class ValueType > class FieldOnCells : public DataField {
      * @return Updated field
      */
     FieldOnCells< ValueType > &operator+=( const FieldOnCells< ValueType > &rhs ) {
-        ASTERBOOL ret = true;
-        if(_valuesList.isEmpty()) ret = updateValuePointers();
-        if (rhs._valuesList.isEmpty()) {
-            ret = ret && const_cast<FieldOnCells< ValueType >&> (rhs).updateValuePointers();
+        AS_ASSERT( _valuesList->updateValuePointer() );
+        AS_ASSERT( rhs.updateValuePointers() );
+
+        if (!this->isSimilarTo(rhs)){
+            raiseAsterError("Fields have incompatible shapes");
         }
-        if(ret){
-            if (!this->isSimilarTo(rhs)){
-                throw std::runtime_error("Fields have incompatible shapes");
-            }
-            ASTERINTEGER size = _valuesList->size();
-            for ( int pos = 0; pos < size; ++pos ) (*this )[pos] = ( *this )[pos] + rhs[pos];
-            return *this;
-        }else{
-            throw  std::runtime_error("Unable to use the operator+= : \
-            Maye one of the fieldOnCells objects is empty");
-        }
+
+        ASTERINTEGER size = _valuesList->size();
+        for ( int pos = 0; pos < size; ++pos )
+            (*this )[pos] += rhs[pos];
+
+        return *this;
     };
 
     /**
@@ -390,22 +408,18 @@ template < class ValueType > class FieldOnCells : public DataField {
      * @return Updated field
      */
     FieldOnCells< ValueType > &operator-=( const FieldOnCells< ValueType > &rhs ) {
-        ASTERBOOL ret = true;
-        if(_valuesList.isEmpty()) ret = updateValuePointers();
-        if (rhs._valuesList.isEmpty()){
-            ret = ret && const_cast<FieldOnCells< ValueType >&> (rhs).updateValuePointers();
+        AS_ASSERT( _valuesList->updateValuePointer() );
+        AS_ASSERT( rhs.updateValuePointers() );
+
+        if (!this->isSimilarTo(rhs)){
+            raiseAsterError("Fields have incompatible shapes");
         }
-        if(ret){
-            if (!this->isSimilarTo(rhs)){
-                throw std::runtime_error("Fields have incompatible shapes");
-            }
-            ASTERINTEGER size = _valuesList->size();
-            for ( int pos = 0; pos < size; ++pos ) (*this )[pos] = ( *this )[pos] - rhs[pos];
-            return *this;
-        }else{
-            throw  std::runtime_error("Unable to use the operator-= : Maybe \
-            one of the fieldOnCells objects is empty");
-        }
+
+        ASTERINTEGER size = _valuesList->size();
+        for ( int pos = 0; pos < size; ++pos )
+            (*this )[pos] -= rhs[pos];
+
+        return *this;
     };
 
     /**
@@ -414,11 +428,10 @@ template < class ValueType > class FieldOnCells : public DataField {
      * @return value at position i
      */
     ValueType &operator[]( int i ) {
-        if( 0 <= i  && i < this->size()){
-            return _valuesList->operator[]( i );
-        }else{
-            throw std::runtime_error("Index out of range");
-        }
+#ifdef ASTER_DEBUG_CXX
+        AS_ASSERT( 0 <= i && i < this->size() );
+#endif
+        return _valuesList->operator[]( i );
     };
 
     const ValueType &operator[]( int i ) const {
@@ -431,22 +444,18 @@ template < class ValueType > class FieldOnCells : public DataField {
      */
     FieldOnCells<ValueType> operator+(const FieldOnCells<ValueType>& rhs){
         FieldOnCells<ValueType> tmp(*this);
-        ASTERBOOL ret = true;
-        if(_valuesList.isEmpty()) ret = updateValuePointers();
-        if (rhs._valuesList.isEmpty()){
-            ret = ret && const_cast<FieldOnCells< ValueType >&> (rhs).updateValuePointers();
+        AS_ASSERT( _valuesList->updateValuePointer() );
+        AS_ASSERT( rhs.updateValuePointers() );
+
+        if (!tmp.isSimilarTo(rhs))
+            raiseAsterError("Fields have incompatible shapes");
+
+        ASTERINTEGER size = rhs._valuesList->size();
+        for(auto i=0;i<size;i++){
+            (*tmp._valuesList)[i] = (*_valuesList)[i] + (*rhs._valuesList)[i];
         }
-        if(ret){
-            if (!tmp.isSimilarTo(rhs)) throw std::runtime_error("Fields have incompatible shapes");
-            ASTERINTEGER size = rhs._valuesList->size();
-             for(auto i=0;i<size;i++){
-                (*tmp._valuesList)[i] = (*_valuesList)[i] + (*rhs._valuesList)[i];
-             }
-             return tmp;
-        }else{
-            throw  std::runtime_error("Unable to use the operator + : \
-            Maybe one of the fieldOnCells objects is empty");
-        }
+
+        return tmp;
     };
 
     /**
@@ -455,22 +464,18 @@ template < class ValueType > class FieldOnCells : public DataField {
      */
     FieldOnCells<ValueType> operator-(const FieldOnCells<ValueType>& rhs){
         FieldOnCells<ValueType> tmp(*this);
-        ASTERBOOL ret = true;
-        if(_valuesList.isEmpty()) ret = updateValuePointers();
-        if (rhs._valuesList.isEmpty()){
-            ret = ret && const_cast<FieldOnCells< ValueType >&> (rhs).updateValuePointers();
-        }
+        AS_ASSERT( _valuesList->updateValuePointer() );
+        AS_ASSERT( rhs.updateValuePointers() );
         ASTERINTEGER size = rhs._valuesList->size();
-        if(ret){
-            if (!tmp.isSimilarTo(rhs)) throw std::runtime_error("Fields have incompatible shapes");
-            for(auto i=0;i<size;i++){
-                (*tmp._valuesList)[i] = (*_valuesList)[i] - (*rhs._valuesList)[i];
-            }
-            return tmp;
-        }else{
-            throw  std::runtime_error("Unable to use the operator - :  \
-            Maybe one of the fieldOnCells objects is empty");
+
+        if (!tmp.isSimilarTo(rhs))
+            raiseAsterError("Fields have incompatible shapes");
+
+        for(auto i=0;i<size;i++){
+            (*tmp._valuesList)[i] = (*_valuesList)[i] - (*rhs._valuesList)[i];
         }
+
+        return tmp;
     };
 
     /**
@@ -480,19 +485,15 @@ template < class ValueType > class FieldOnCells : public DataField {
 
     friend FieldOnCells< ValueType > operator*(const FieldOnCells< ValueType >& lhs,
                                                 const ASTERDOUBLE& scal ) {
-        ASTERBOOL ret = true;
-        if (lhs._valuesList.isEmpty()){
-            ret = const_cast<FieldOnCells< ValueType >&> (lhs).updateValuePointers();
-        }
-        if(ret){
-            ASTERINTEGER taille = lhs._valuesList->size();
-            FieldOnCells< ValueType > tmp(lhs);
-            for ( int pos = 0; pos < taille; ++pos ) tmp[pos] = lhs[pos] * scal;
-            return tmp;
-        }else{
-            throw  std::runtime_error("Unable to use the operator * :\
-             Maybe the fieldOnCells object is empty");
-        }
+
+        AS_ASSERT( lhs.updateValuePointers() )
+
+        ASTERINTEGER taille = lhs._valuesList->size();
+        FieldOnCells< ValueType > tmp(lhs);
+        for ( int pos = 0; pos < taille; ++pos )
+            tmp[pos] = lhs[pos] * scal;
+
+        return tmp;
     };
 
     /**
@@ -523,7 +524,7 @@ template < class ValueType > class FieldOnCells : public DataField {
      * @param value Value to affect
      */
     void setValues( const ValueType &value ) {
-        bool retour = _valuesList->updateValuePointer();
+        AS_ASSERT( _valuesList->updateValuePointer() );
         const int taille = _valuesList->size();
 
         for ( int pos = 0; pos < taille; ++pos )
@@ -548,30 +549,34 @@ template < class ValueType > class FieldOnCells : public DataField {
     typename std::enable_if< std::is_same< type, ASTERDOUBLE >::value, ASTERDOUBLE>::type
     norm(const std::string normType) const{
         ASTERDOUBLE norme = 0.0;
-        ASTERBOOL ret =  _valuesList->updateValuePointer();
-        if(ret){
-            int taille = _valuesList->size();
-            if( normType == "NORM_1"){
-                for( int pos = 0; pos < taille; ++pos ){
-                    norme += std::abs(( *this )[pos]);
-                }
-            }
-            else if( normType == "NORM_2"){
-                for( int pos = 0; pos < taille; ++pos ){
-                    norme += ( *this )[pos] * ( *this )[pos];
-                }
-            }
+        AS_ASSERT( _valuesList->updateValuePointer() );
 
-            else if( normType == "NORM_INFINITY") {
-                for( int pos = 0; pos < taille; ++pos ){
-                    norme = std::max(norme, std::abs(( *this )[pos]));
-                }
+        if ( getMesh()->isParallel() ) {
+            AS_ASSERT(false);
+        }
 
+        int taille = _valuesList->size();
+        if( normType == "NORM_1"){
+            for( int pos = 0; pos < taille; ++pos ){
+                norme += std::abs(( *this )[pos]);
+            }
         }
-        }else{
-            throw std::runtime_error("Unable to use norm method: \
-             Maybe the FieldOnCells Object is empty");
+        else if( normType == "NORM_2"){
+            for( int pos = 0; pos < taille; ++pos ){
+                norme += ( *this )[pos] * ( *this )[pos];
+            }
         }
+        else if( normType == "NORM_INFINITY") {
+            for( int pos = 0; pos < taille; ++pos ){
+                norme = std::max(norme, std::abs(( *this )[pos]));
+            }
+        }
+        else
+        {
+            AS_ASSERT(false);
+        }
+
+
         // square root for l2 norm
         if ( normType == "NORM_2" )  norme = std::sqrt( norme );
 
@@ -586,16 +591,16 @@ template < class ValueType > class FieldOnCells : public DataField {
     template < class type = ValueType >
     typename std::enable_if< std::is_same< type, ASTERDOUBLE >::value, ASTERDOUBLE>::type
     dot( const FieldOnCellsPtr &tmp ) const {
-        bool retour = tmp->updateValuePointers();
-        retour = ( retour && _valuesList->updateValuePointer() );
+        AS_ASSERT( tmp->updateValuePointers());
+        AS_ASSERT( _valuesList->updateValuePointer() );
         ASTERINTEGER taille = _valuesList->size();
 
-        if ( !retour || taille != tmp->size() )
-            throw std::runtime_error( "Incompatible size" );
+        if( taille != tmp->size() )
+            raiseAsterError( "Incompatible size" );
 
         ASTERDOUBLE ret = 0.0;
         for ( auto pos = 0; pos < taille; ++pos ) {
-                ret += ( *this )[pos] * ( *tmp )[pos];
+            ret += ( *this )[pos] * ( *tmp )[pos];
         }
         return ret;
     }

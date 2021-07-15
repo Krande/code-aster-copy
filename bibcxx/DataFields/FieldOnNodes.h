@@ -26,7 +26,6 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <assert.h>
 
 #include "aster_fort_superv.h"
 #include "astercxx.h"
@@ -42,6 +41,7 @@
 #include "ParallelUtilities/AsterMPI.h"
 #include "PythonBindings/LogicalUnitManager.h"
 #include "Supervis/CommandSyntax.h"
+#include "Supervis/Exceptions.h"
 
 /**
  * @struct AllowedFieldType
@@ -156,7 +156,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
           _dofDescription( dofNum->getDescription() ), _mesh( dofNum->getMesh() ),
           _title( JeveuxVectorChar80( getName() + ".TITR" ) ) {
         if ( !_dofNum )
-            throw std::runtime_error( "DOFNumering is empty" );
+            raiseAsterError( "DOFNumering is empty" );
         const int intType = AllowedFieldType< ValueType >::numTypeJeveux;
         CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[getMemoryType()],
                            JeveuxTypesNames[intType], _dofNum->getName() );
@@ -207,7 +207,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     FieldOnNodes< ValueType > &operator+=( FieldOnNodes< ValueType > const &rhs ) {
         if ( !this->isSimilarTo( rhs ) )
-            throw std::runtime_error( "Fields have incompatible shapes" );
+            raiseAsterError( "Fields have incompatible shapes" );
         const_cast< FieldOnNodes< ValueType > & >( rhs ).updateValuePointers();
         bool retour = _valuesList->updateValuePointer();
         int taille = _valuesList->size();
@@ -223,7 +223,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     FieldOnNodes< ValueType > &operator-=( FieldOnNodes< ValueType > const &rhs ) {
         if ( !this->isSimilarTo( rhs ) )
-            throw std::runtime_error( "Fields have incompatible shapes" );
+            raiseAsterError( "Fields have incompatible shapes" );
         const_cast< FieldOnNodes< ValueType > & >( rhs ).updateValuePointers();
         bool retour = _valuesList->updateValuePointer();
         int taille = _valuesList->size();
@@ -255,10 +255,10 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             int taille = _valuesList->size();
             for ( int pos = 0; pos < taille; ++pos ){
                 tmp[pos] = -( *this )[pos];
-            }              
+            }
             return tmp;
         }else{
-            throw std::runtime_error("Unable to update the FielsOnNodes object");
+            raiseAsterError("Unable to update the FielsOnNodes object");
         }
 
     };
@@ -298,7 +298,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     friend FieldOnNodes< ValueType > operator+( FieldOnNodes< ValueType > lhs,
                                                 const FieldOnNodes< ValueType > &rhs ) {
         if ( !lhs.isSimilarTo( rhs ) )
-            throw std::runtime_error( "Fields have incompatible shapes" );
+            raiseAsterError( "Fields have incompatible shapes" );
         lhs += rhs;
         return lhs;
     };
@@ -311,7 +311,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     friend FieldOnNodes< ValueType > operator-( FieldOnNodes< ValueType > lhs,
                                                 const FieldOnNodes< ValueType > &rhs ) {
         if ( !lhs.isSimilarTo( rhs ) )
-            throw std::runtime_error( "Fields have incompatible shapes" );
+            raiseAsterError( "Fields have incompatible shapes" );
         lhs -= rhs;
         return lhs;
     };
@@ -357,14 +357,14 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     void setDOFNumbering( const BaseDOFNumberingPtr &dofNum ) {
         if ( _dofNum )
-            throw std::runtime_error( "DOFNumbering already set" );
+            raiseAsterError( "DOFNumbering already set" );
         _dofNum = dofNum;
         _dofDescription = dofNum->getDescription();
         if ( _mesh != nullptr ) {
             const auto name1 = _mesh->getName();
             const auto name2 = _dofNum->getMesh()->getName();
             if ( name1 != name2 )
-                throw std::runtime_error( "Meshes inconsistents" );
+                raiseAsterError( "Meshes inconsistents" );
         } else {
             _mesh = dofNum->getMesh();
         }
@@ -395,7 +395,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     void setDescription( const FieldOnNodesDescriptionPtr &desc ) {
         if ( _dofDescription )
-            throw std::runtime_error( "FieldOnNodesDescription already set" );
+            raiseAsterError( "FieldOnNodesDescription already set" );
         _dofDescription = desc;
     };
 
@@ -405,13 +405,13 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     void setMesh( const BaseMeshPtr &mesh ) {
         if ( _mesh )
-            throw std::runtime_error( "Mesh already set" );
+            raiseAsterError( "Mesh already set" );
         _mesh = mesh;
         if ( _dofNum != nullptr ) {
             const auto name1 = _mesh->getName();
             const auto name2 = _dofNum->getMesh()->getName();
             if ( name1 != name2 )
-                throw std::runtime_error( "Meshes inconsistents" );
+                raiseAsterError( "Meshes inconsistents" );
         }
     };
 
@@ -425,12 +425,12 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         int taille = _valuesList->size();
         const int rank = getMPIRank();
         if ( !_mesh )
-            throw std::runtime_error( "Mesh is empty" );
+            raiseAsterError( "Mesh is empty" );
         const JeveuxVectorLong nodesRank = _mesh->getNodesRank();
         retour = nodesRank->updateValuePointer();
 
         if ( !_dofDescription )
-            throw std::runtime_error( "Description is empty" );
+            raiseAsterError( "Description is empty" );
         const VectorLong nodesId = _dofDescription->getNodesFromDOF();
 
         if ( normType == "NORM_1" ) {
@@ -452,7 +452,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
                     norme = std::max( norme, std::abs( ( *this )[pos] ) );
             }
         } else
-            throw std::runtime_error( "Unknown norm" );
+            raiseAsterError( "Unknown norm" );
 
 #ifdef ASTER_HAVE_MPI
         if ( _mesh->isParallel() ) {
@@ -480,15 +480,15 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         const int taille = _valuesList->size();
 
         if ( !retour || taille != tmp->size() )
-            throw std::runtime_error( "Incompatible size" );
+            raiseAsterError( "Incompatible size" );
 
         if ( !_mesh )
-            throw std::runtime_error( "Mesh is empty" );
+            raiseAsterError( "Mesh is empty" );
         JeveuxVectorLong nodesRank = _mesh->getNodesRank();
         retour = nodesRank->updateValuePointer();
 
         if ( !_dofDescription )
-            throw std::runtime_error( "Description is empty" );
+            raiseAsterError( "Description is empty" );
         const VectorLong nodesId = _dofDescription->getNodesFromDOF();
 
         const int rank = getMPIRank();

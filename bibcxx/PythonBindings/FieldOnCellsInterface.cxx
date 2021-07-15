@@ -46,6 +46,7 @@ void exportFieldOnCellsToPython() {
         .def( "exportToSimpleFieldOnCells",
               &FieldOnCellsReal::exportToSimpleFieldOnCells )
         .def( "getModel", &FieldOnCellsReal::getModel )
+        .def( "getMesh", &FieldOnCellsReal::getMesh )
         .def( "setDescription", &FieldOnCellsReal::setDescription )
         .def( "setModel", &FieldOnCellsReal::setModel )
         .def( "build", &FieldOnCellsReal::build)
