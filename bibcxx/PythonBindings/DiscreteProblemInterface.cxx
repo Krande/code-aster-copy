@@ -30,6 +30,7 @@ namespace py = boost::python;
 #include <PythonBindings/factory.h>
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeDirichletBC_overloads, computeDirichletBC, 2, 2 )
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeDOFNumbering_overloads, computeDOFNumbering, 0, 1 )
 
 void exportDiscreteProblemToPython() {
 
@@ -51,7 +52,8 @@ void exportDiscreteProblemToPython() {
               &DiscreteProblem::computeElementaryJacobianMatrix )
         .def( "computeDirichletBC", &DiscreteProblem::computeDirichletBC,
               computeDirichletBC_overloads() )
-        .def( "computeDOFNumbering", &DiscreteProblem::computeDOFNumbering )
+        .def( "computeDOFNumbering", &DiscreteProblem::computeDOFNumbering,
+              computeDOFNumbering_overloads() )
         .def( "computeMechanicalDampingMatrix",
               &DiscreteProblem::computeMechanicalDampingMatrix )
         .def( "computeMechanicalStiffnessMatrix",
