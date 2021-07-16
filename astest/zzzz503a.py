@@ -105,6 +105,11 @@ numeDDL.setElementaryMatrix(matr_elem)
 numeDDL.computeNumbering()
 # numeDDL.debugPrint(6)
 test.assertEqual(numeDDL.getType(), "NUME_DDL_SDASTER")
+test.assertFalse(numeDDL.hasDirichletBC())
+
+ccid = numeDDL.getDirichletEliminationDOFs()
+test.assertEqual(sum(ccid), 0)
+test.assertEqual(len(ccid), numeDDL.getNumberOfDofs())
 
 # vectElem.debugPrint(6)
 test.assertEqual(vectElem.getType(), "VECT_ELEM_DEPL_R")

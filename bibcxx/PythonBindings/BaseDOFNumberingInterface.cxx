@@ -69,6 +69,13 @@ Returns:
     bool: *True* if used, *False* otherwise.
         )",
               ( py::arg( "self" ) )    );
+    c1.def( "hasDirichletBC", &BaseDOFNumbering::hasDirichletBC, R"(
+The list of loads used to build numbering contains Dirichlet BC.
+
+Returns:
+    bool: *True* if Dirichlet BC are present, *False* otherwise.
+        )",
+              ( py::arg( "self" ) )    );
     c1.def( "setElementaryMatrix", f1 );
     c1.def( "setElementaryMatrix", f2 );
     c1.def( "setElementaryMatrix", f3 );
@@ -86,6 +93,18 @@ Return the mesh
 
 Returns:
     MeshPtr: a pointer to the mesh
+        )",
+              ( py::arg( "self" ) ) );
+    c1.def( "getDirichletEliminationDOFs", &BaseDOFNumbering::getDirichletEliminationDOFs, R"(
+Return a vector which describes DOFs that are eliminated by Dirichlet BC.
+
+The vector has a size equals to the number of DOFs. For each dof, the value is equal to one
+if Dirichel BC is imposed to this DOF else zero
+
+Be carefull all Dirichlet BC have to be added before to call this function.
+
+Returns:
+    tuple(int): a list with dirichlet imposition.
         )",
               ( py::arg( "self" ) ) );
     addDirichletBCToInterface( c1 );

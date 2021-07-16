@@ -508,6 +508,8 @@ class BaseDOFNumbering : public DataStructure {
 
     ListOfLoadsPtr getListOfLoads( void ) const { return _listOfLoads; };
 
+    VectorLong getDirichletEliminationDOFs (void ) const;
+
     /**
      * @brief Methode permettant de definir le modele
      * @param currentModel Modele de la numerotation
@@ -519,6 +521,11 @@ class BaseDOFNumbering : public DataStructure {
         _model = currentModel;
         this->addFiniteElementDescriptor(_model->getFiniteElementDescriptor());
     };
+
+    bool hasDirichletBC() const
+    {
+        return _listOfLoads->hasDirichletBC();
+    }
 };
 
 

@@ -531,6 +531,11 @@ class ListOfLoads : public DataStructure {
                _listOfDirichletBCs.size();
         };
 
+    bool hasDirichletBC() const
+    {
+        return _listOfDirichletBCs.size() > 0;
+    }
+
     /**
      * @brief Check that all loads have the same model
      * @return True if all loads have the same model

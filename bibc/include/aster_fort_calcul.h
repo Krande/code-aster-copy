@@ -92,6 +92,11 @@ void DEFSPSS( NMDOCH_WRAP, nmdoch_wrap, const char *, STRING_SIZE, ASTERINTEGER 
 void DEFSPSS( NTDOCH_WRAP, ntdoch_wrap, const char *, STRING_SIZE, ASTERINTEGER *, const char *,
               STRING_SIZE, const char *, STRING_SIZE );
 
+#define CALLO_NUMCIMA( a, b, c, d )                                                      \
+    CALLOOOO( NUMCIMA, numcima, a, b, c, d)
+void DEFSSSS( NUMCIMA, numcima, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                const char *, STRING_SIZE, const char *, STRING_SIZE );
+
 #define CALLO_NUMERO_WRAP( a, b, c, d, e, f )                                                      \
     CALLOOOOOO( NUMERO_WRAP, numero_wrap, a, b, c, d, e, f )
 void DEFSSSSSS( NUMERO_WRAP, numero_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,

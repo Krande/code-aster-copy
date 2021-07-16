@@ -93,3 +93,15 @@ std::string BaseDOFNumbering::getPhysicalQuantity() const {
     JeveuxChar24 physicalQuantity = ( *_globalNumbering->_informations )[1];
     return physicalQuantity.rstrip();
 };
+
+VectorLong BaseDOFNumbering::getDirichletEliminationDOFs( void ) const
+{
+    JeveuxVectorLong ccid( "&&NUME_CCID" );
+    std::string base( "V" );
+
+    // Il faudrait eventuellement rajouter une liste de charge en plus donné par le user
+    CALLO_NUMCIMA(_listOfLoads->getName(), getName(), ccid->getName(), base);
+
+    ccid->updateValuePointer();
+    return ccid->toVector();
+};
