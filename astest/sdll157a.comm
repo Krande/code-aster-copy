@@ -67,6 +67,15 @@ acier=DEFI_MATERIAU(ELAS=_F(E = Young,
                             NU = 0.3),
                     POST_ROCHE=_F(RAMB_OSGO_FACT=K,
                                   RAMB_OSGO_EXPO=n,
+                                  )
+                    )
+                    
+acierCoude=DEFI_MATERIAU(ELAS=_F(E = Young,
+                            RHO = Rho,
+                            ALPHA = 1.2E-5,
+                            NU = 0.3),
+                    POST_ROCHE=_F(RAMB_OSGO_FACT=K,
+                                  RAMB_OSGO_EXPO=n,
                                   RP02_MIN = Sy)
                     )
 
@@ -96,7 +105,9 @@ ch_mater=AFFE_MATERIAU(MAILLAGE=maillage,
                                     NOM_VARC = 'TEMP',
                                     EVOL=resu_temp,
                                     VALE_REF=20.0,),
-                       AFFE=_F(TOUT="OUI", MATER = acier))
+                       AFFE=(_F(TOUT="OUI", MATER = acier),
+                             _F(GROUP_MA="COUDE", MATER = acierCoude,),
+                             ))
 
 cara_elem=AFFE_CARA_ELEM(MODELE=modele, 
                          POUTRE=_F(GROUP_MA="tuyau", SECTION = 'CERCLE',

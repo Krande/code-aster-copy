@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 import aster
-from math import sqrt, pi
+from math import sqrt, pi, isnan
 from ..Messages import UTMESS
 from ..Cata.Syntax import _F
 from ..Commands import (CREA_CHAMP, CALC_CHAM_ELEM, CREA_TABLE,
@@ -85,7 +85,7 @@ def post_roche_ops(self, **kwargs):
         calculS2.buildOutput()
 
 
-        PRCommon.calcContrainteEquiv(calcul.chOutput, calculS2.chOutput)
+        if not PRCommon.lRCCM_RX: PRCommon.calcContrainteEquiv(calcul.chOutput, calculS2.chOutput)
         PRCommon.calcContrainteEquiv(calcul.chOutput, calculS2.chOutput, opt=True)
 
         chOutPutComplet = PRCommon.buildOutput(calcul.chOutput, calculS2.chOutput)
@@ -360,20 +360,95 @@ class PostRocheCommon():
         de poutre au bon format
         """
 
-        # try except en attendant de pouvoir vérifier les modélisations
-        # par une méthode de la class model
-        try:
-            chRochElno = CALC_CHAM_ELEM(OPTION= 'ROCH_ELNO',
-                                         MODELE=self.model,
-                                         CHAM_MATER=self.chammater,
-                                         CARA_ELEM=self.caraelem,
-                                         **self.dicAllZones)
-        except:
-            UTMESS('F','POSTROCHE_10')
-
+        chRochElno = CALC_CHAM_ELEM(OPTION= 'ROCH_ELNO',
+                                     MODELE=self.model,
+                                     CHAM_MATER=self.chammater,
+                                     CARA_ELEM=self.caraelem,
+                                     **self.dicAllZones)
 
         self.chRochElno = chRochElno
+        
+        
+        def fveri_para(x):
+                if isnan(x):
+                    return 1
+                else:
+                    return 0
+                
+        # si RCCM_RX = 'OUI' on vérifie la présence de RP02_MIN, RM_MIN et RP02_MOY
+        if self.lRCCM_RX:
+            
+            frp02min = FORMULE(NOM_PARA=('RP02_MIN',),
+                                VALE='fveri_para(RP02_MIN)',fveri_para=fveri_para)
+            frp02moy = FORMULE(NOM_PARA=('RP02_MOY',),
+                                VALE='fveri_para(RP02_MOY)',fveri_para=fveri_para)
+            frmmin = FORMULE(NOM_PARA=('RM_MIN',),
+                                VALE='fveri_para(RM_MIN)',fveri_para=fveri_para)
+            
+            
+            chfpara = CREA_CHAMP(OPERATION='AFFE',
+                                    TYPE_CHAM='ELNO_NEUT_F',
+                                    MODELE=self.model,
+                                    PROL_ZERO='OUI',
+                                    AFFE= (_F(NOM_CMP=('X1','X2','X3'),
+                                              VALE_F=(frp02min, frp02moy, frmmin),
+                                              **self.dicAllZones),))
+            
+            chpara = CREA_CHAMP(OPERATION='EVAL',
+                                    TYPE_CHAM='ELNO_NEUT_R',
+                                    CHAM_F=chfpara,
+                                    CHAM_PARA=(self.chRochElno,))
 
+
+            tabpara=POST_ELEM(MINMAX=_F(MODELE=self.model,
+                                              CHAM_GD=chpara,
+                                              NOM_CMP=('X1','X2','X3'),
+                                              **self.dicAllZones,
+                                             ));
+
+            maxX1 = tabpara['MAX_X1',1]
+            maxX2 = tabpara['MAX_X2',1]
+            maxX3 = tabpara['MAX_X3',1]
+
+
+            if maxX1>0:
+                UTMESS('F','POSTROCHE_18',valk='RP02_MIN')
+            if maxX2>0:
+                UTMESS('F','POSTROCHE_18',valk='RP02_MOY')
+            if maxX3>0:
+                UTMESS('F','POSTROCHE_18',valk='RM_MIN')
+        
+        # pour les coudes, verification de la présence de RP02_MIN
+        elif self.lGrmaCoude != []:
+            
+            frp02min = FORMULE(NOM_PARA=('RP02_MIN',),
+                                VALE='fveri_para(RP02_MIN)',fveri_para=fveri_para)
+            
+            chfRp02min = CREA_CHAMP(OPERATION='AFFE',
+                                    TYPE_CHAM='ELNO_NEUT_F',
+                                    MODELE=self.model,
+                                    PROL_ZERO='OUI',
+                                    AFFE= (_F(NOM_CMP=('X1',),
+                                              VALE_F=(frp02min),
+                                              GROUP_MA=self.lGrmaCoude),))
+            
+            chRp02min = CREA_CHAMP(OPERATION='EVAL',
+                                    TYPE_CHAM='ELNO_NEUT_R',
+                                    CHAM_F=chfRp02min,
+                                    CHAM_PARA=(self.chRochElno,))
+
+
+            tabRp02min=POST_ELEM(MINMAX=_F(MODELE=self.model,
+                                              CHAM_GD=chRp02min,
+                                              NOM_CMP=('X1',),
+                                              GROUP_MA=self.lGrmaCoude
+                                             ));
+
+            maxX1 = tabRp02min['MAX_X1',1]
+
+
+            if maxX1>0:
+                UTMESS('F','POSTROCHE_17')
 
     def calcGeomParams(self):
         """
@@ -1157,7 +1232,7 @@ class PostRocheCommon():
             
             
             def fepsiMP(sig, e, k, n) :
-                return k*pow(sig/E,1/n)
+                return k*pow(sig/e,1/n)
             
             # X1 = Pression
             # X2 = sig Vraie
@@ -1374,7 +1449,35 @@ class PostRocheCommon():
         """
 
 
-        chOutput= CREA_CHAMP(OPERATION = 'ASSE',
+        if self.lRCCM_RX:
+            chOutput= CREA_CHAMP(OPERATION = 'ASSE',
+                                MODELE=self.model,
+                                TYPE_CHAM = 'ELNO_NEUT_R',
+                                PROL_ZERO = 'OUI',
+                                ASSE      = (_F(CHAM_GD = chVale,
+                                               TOUT = 'OUI',
+                                               NOM_CMP      = ('X1','X2','X3','X4','X5', 'X6', 'X7', 'X8', 'X9','X10','X11','X12','X13'),
+                                               NOM_CMP_RESU = ('X1','X3','X5','X7','X9','X11','X13','X17','X19','X21','X23','X25','X27'),
+                                               ),
+                                             _F(CHAM_GD = chValeS2,
+                                               TOUT = 'OUI',
+                                               NOM_CMP      = ('X1','X2','X3','X4', 'X5', 'X6', 'X7', 'X8', 'X9','X10','X11','X12','X13'),
+                                               NOM_CMP_RESU = ('X2','X4','X6','X8','X10','X12','X14','X18','X20','X22','X24','X26','X28'),
+                                               ),
+                                             # _F(CHAM_GD = self.chContEquiv,
+                                               # TOUT = 'OUI',
+                                               # NOM_CMP = ('X1',),
+                                               # NOM_CMP_RESU = ('X15',),
+                                               # ),
+                                             _F(CHAM_GD = self.chContEquivOpt,
+                                               TOUT = 'OUI',
+                                               NOM_CMP = ('X1',),
+                                               NOM_CMP_RESU = ('X16',),
+                                               ),
+                                             )
+                               )
+        else:
+            chOutput= CREA_CHAMP(OPERATION = 'ASSE',
                                 MODELE=self.model,
                                 TYPE_CHAM = 'ELNO_NEUT_R',
                                 PROL_ZERO = 'OUI',

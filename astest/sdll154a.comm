@@ -33,7 +33,11 @@ acier=DEFI_MATERIAU(ELAS=_F(E = 2.E11,
                             ALPHA = 1.2E-5,
                             NU = 0.3),
                     POST_ROCHE=_F(RAMB_OSGO_FACT=0.01,
-                                  RAMB_OSGO_EXPO=2)
+                                  RAMB_OSGO_EXPO=2,
+                                  RP02_MIN = 128E6,
+                                  RM_MIN = 410E6,
+                                  RP02_MOY = 163E6,
+                                  )
                     )
 
 
@@ -229,6 +233,49 @@ IMPR_RESU(UNITE=6, FORMAT='RESULTAT',
                    NOM_CMP=('X1','X2','X3','X4','X5','X6',
                             'X7','X8','X9','X10','X11','X12',
                             'X13','X14','X15','X16','X17','X18','X19','X20')))
+
+
+
+chPostRocheRCCMRX = POST_ROCHE(RCCM_RX='OUI',ZONE_ANALYSE=(_F(
+                                     TOUT='OUI',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_mater,
+                    RESU_MECA=(
+                               _F(TYPE_CHAR='POIDS',
+                                 RESULTAT=poids_propre,
+                                 NUME_ORDRE=1,
+                                 ),
+                               _F(TYPE_CHAR='DILAT_THERM',
+                                 RESULTAT=dilatation_thermique,
+                                 NUME_ORDRE=1,
+                                 ),
+                               _F(TYPE_CHAR='DEPLACEMENT',
+                                 RESULTAT=deplacement_impose,
+                                 NUME_ORDRE=1,
+                                 ),
+                                _F(TYPE_CHAR='SISM_INER_SPEC',
+                                 RESULTAT=sismique,
+                                 DIRECTION='COMBI',
+                                 ),
+                                ),
+                     PRESSION=(_F(
+                                     TOUT='OUI',
+                                     VALE = 1E6,
+                                    ),
+                                  ),
+                     ALPHA=(_F(
+                                     TOUT='OUI',
+                                     VALE = 1,
+                                    ),
+                                  ),
+                    )
+
+
+
 
 chPostRocheGrMa = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      GROUP_MA='TUYAU',

@@ -75,11 +75,12 @@ subroutine te0113(option, nomte)
     nexpo = valres(2)
     rp02_min = valres(3) ! nan si absent
     rm_min = valres(4)   ! nan si absent
-    if (icodre(5).eq.0)then
-        rp02_moy = valres(5)
-    elseif (icodre(3).eq.0)then
+    
+    
+    if (icodre(3).eq.0 .and. icodre(5).ne.0)then
         rp02_moy = 1.25d0*rp02_min
-    ! nan sinon
+    else
+        rp02_moy = valres(5) ! nan si absent et si rp02_min absent
     endif
     
 !   caractéristiques de poutre
