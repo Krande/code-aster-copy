@@ -1,0 +1,574 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+# caracteristiques materiaux
+
+B=1.4191e-20
+Sy=133e6
+m=8.0362
+Young=176500000000.0
+Rho=9734.
+
+n=1/m
+K=B*(Young/1.e6)**(1/n)
+
+# geometrie
+
+Dext=0.1143
+hc=0.0135
+
+# maillage, modele, caraelem
+
+maillage = LIRE_MAILLAGE()
+
+
+maillage=MODI_MAILLAGE(reuse =maillage,
+           MAILLAGE=maillage,
+           ABSC_CURV=_F(
+                TOUT='OUI',
+                GROUP_NO_ORIG=('ENCA1',),),
+                );
+
+CHABSC = CREA_CHAMP(OPERATION = 'EXTR' , TYPE_CHAM = 'CART_ABSC_R',
+                     NOM_CHAM = 'ABSC_CURV' , MAILLAGE = maillage , )
+
+TAB_ABSC=CREA_TABLE(RESU=_F(CHAM_GD=CHABSC,
+            TOUT='OUI',
+            TOUT_CMP='OUI',),)
+
+
+
+modele = AFFE_MODELE(MAILLAGE = maillage,
+                    AFFE = _F(MODELISATION = "POU_D_T",
+                              PHENOMENE = "MECANIQUE",
+                              TOUT = "OUI",))
+                    
+acier=DEFI_MATERIAU(ELAS=_F(E = Young,
+                            RHO = Rho,
+                            ALPHA = 1.2E-5,
+                            NU = 0.3),
+                    POST_ROCHE=_F(RAMB_OSGO_FACT=K,
+                                  RAMB_OSGO_EXPO=n,
+                                  RP02_MIN = Sy,
+                                  RM_MIN=410E6,
+                                  RP02_MOY=163E6 )
+                    )
+
+t_ini=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='AFFE',
+                 MODELE=modele,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE=20,),)
+
+t_final=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                   OPERATION='AFFE',
+                   MODELE=modele,
+                   AFFE=_F(TOUT='OUI',
+                           NOM_CMP='TEMP',
+                           VALE=120.0,),)
+
+resu_temp = CREA_RESU(TYPE_RESU = 'EVOL_THER',
+                        NOM_CHAM='TEMP',
+                        OPERATION='AFFE',
+                        AFFE=(
+                            _F(CHAM_GD=t_ini, INST=0.0),
+                            _F(CHAM_GD=t_final, INST=1.0),))
+
+ch_mater=AFFE_MATERIAU(MAILLAGE=maillage,
+                       AFFE_VARC=_F(TOUT='OUI',
+                                    NOM_VARC = 'TEMP',
+                                    EVOL=resu_temp,
+                                    VALE_REF=20.0,),
+                       AFFE=(_F(TOUT="OUI", MATER = acier),
+                             ))
+
+cara_elem=AFFE_CARA_ELEM(MODELE=modele, 
+                         POUTRE=_F(GROUP_MA="tuyau", SECTION = 'CERCLE',
+                                   CARA = ('R', 'EP'),
+                                   VALE = (Dext/2, hc)))
+
+# conditions aux limites
+
+blocage = AFFE_CHAR_MECA(MODELE=modele,
+                         DDL_IMPO=(_F(GROUP_NO=('ENCA1','ENCA2'),
+                                      DX=0,DY=0,DZ=0,DRX=0, DRY=0, DRZ=0)))
+
+deplacement = AFFE_CHAR_MECA(MODELE=modele,
+                             DDL_IMPO=(_F(GROUP_NO='ENCA1',
+                                          DX=0,DY=0,DZ=0,DRX=0, DRY=0, DRZ=0),
+                                       _F(GROUP_NO='ENCA2',
+                                          DX=0.01, DY=0.01, DZ=0.01)))
+
+poids = AFFE_CHAR_MECA(MODELE=modele,
+                       PESANTEUR=_F(GRAVITE=9.81,DIRECTION=( 0., 0., -1.),)
+                       )
+
+spectre02=LIRE_FONCTION(UNITE=21,
+                        NOM_PARA='FREQ', INTERPOL='LOG',
+                        PROL_GAUCHE='CONSTANT',
+                        PROL_DROITE='CONSTANT',)
+
+spectre99=LIRE_FONCTION(UNITE=22,
+                        NOM_PARA='FREQ', INTERPOL='LOG',
+                        PROL_GAUCHE='CONSTANT',
+                        PROL_DROITE='CONSTANT',)
+
+sro02=DEFI_NAPPE(NOM_PARA='AMOR',
+                 PARA=0.02,
+                 FONCTION=spectre02)
+
+sro99=DEFI_NAPPE(NOM_PARA='AMOR',
+                 PARA=0.99,
+                 FONCTION=spectre99)
+
+# modes
+
+ASSEMBLAGE(MODELE=modele,
+           CHAM_MATER=ch_mater,
+           CARA_ELEM=cara_elem,
+           CHARGE=blocage,
+           NUME_DDL=CO('nddl'),
+           MATR_ASSE=(_F(MATRICE=CO('matrice_rigi'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('matrice_mass'),
+                         OPTION='MASS_MECA',),),);
+modes_dyn=CALC_MODES(OPTION='BANDE',
+                     MATR_RIGI=matrice_rigi,
+                     MATR_MASS=matrice_mass,
+                     CALC_FREQ=_F(FREQ=(0.0,100.0,),),)
+modes_dyn=CALC_CHAMP(reuse=modes_dyn,
+                     RESULTAT=modes_dyn,
+                     CONTRAINTE='EFGE_ELNO')
+
+modes_sta=MODE_STATIQUE(MATR_RIGI=matrice_rigi,
+                        MATR_MASS=matrice_mass,
+                        PSEUDO_MODE=_F(  AXE = ( 'X',  'Y',  'Z', )))
+modes_sta=CALC_CHAMP(reuse=modes_sta,
+                     RESULTAT=modes_sta,
+                     CONTRAINTE='EFGE_ELNO')
+
+# resultats
+
+poids_propre = MECA_STATIQUE(MODELE=modele,
+                             CHAM_MATER=ch_mater,
+                             CARA_ELEM=cara_elem,
+                             EXCIT=(_F(CHARGE=blocage),
+                                    _F(CHARGE=poids)),
+                             INST = 0.0)
+poids_propre = CALC_CHAMP(reuse=poids_propre,
+                            RESULTAT=poids_propre,
+                            CONTRAINTE='EFGE_ELNO')
+                            
+# Validation de POST_RCCM/OPTION='MOMENT_EQUIVALENT' / RESULTAT / TOUT
+
+TAB_MEQ = POST_RCCM(TYPE_RESU_MECA='B3600',
+                    OPTION = 'MOMENT_EQUIVALENT',
+                    ZONE_ANALYSE=_F(TOUT='OUI', ),
+                    RESU_MECA=_F(RESULTAT=poids_propre,
+                                 NOM_CHAM='EFGE_ELNO',
+                                 TOUT_ORDRE='OUI',
+                                 )
+                    )
+# IMPR_RESU(UNITE=6, FORMAT='RESULTAT',RESU=_F(RESULTAT=poids_propre, NOM_CHAM='EFGE_ELNO',))
+# IMPR_TABLE(TABLE=TAB_MEQ, UNITE=6)
+
+# -- on construit les résultats de référence pour un couple maille/noeud
+TABMO = CREA_TABLE(RESU=_F(RESULTAT=poids_propre, 
+                           NOM_CMP=('MT', 'MFY', 'MFZ'),
+                           NOM_CHAM='EFGE_ELNO',
+                           TOUT='OUI', 
+                           TOUT_ORDRE='OUI'))
+
+
+
+TABM575N4 = CALC_TABLE(TABLE=TABMO,
+                     ACTION=(_F(OPERATION='FILTRE',
+                                NOM_PARA='MAILLE',
+                                VALE_K ='M575'),
+                             _F(OPERATION='FILTRE',
+                                NOM_PARA='NOEUD',
+                                VALE_K ='N4'),
+                            ) 
+                    )
+# IMPR_TABLE(UNITE=6, TABLE=TABM575N4)
+
+
+MOMEQ_FO = FORMULE(VALE='sqrt(MT*MT+MFY*MFY+MFZ*MFZ)',
+                 NOM_PARA=('MT', 'MFY', 'MFZ'),)
+
+TABM575N4 = CALC_TABLE(TABLE=TABM575N4,reuse=TABM575N4,
+                     ACTION=(_F(OPERATION='OPER',
+                                FORMULE=MOMEQ_FO,
+                                NOM_PARA='MEQ',
+                                NOM_COLONNE=('MT', 'MFY', 'MFZ'),),
+                            ) 
+                    )
+                    
+TABM575N4MAX = CALC_TABLE(TABLE=TABM575N4,
+                     ACTION=(_F(OPERATION='CALCUL',
+                                NOM_PARA=('MT', 'MFY', 'MFZ','MEQ'),
+                                TYPE_CALCUL = 'MAXI_ABS'),
+                            ) 
+                    )
+
+TEST_TABLE(  TABLE=TABM575N4MAX,
+             NOM_PARA='MT',
+             VALE_CALC=112.05420713101194,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQ,
+             NOM_PARA='MT',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M575',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='N4',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=112.05420713101194, 
+             VALE_CALC=112.05420713101194,
+             )
+
+
+
+TEST_TABLE(  TABLE=TABM575N4MAX,
+             NOM_PARA='MFY',
+             VALE_CALC=110.46486673381823,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQ,
+             NOM_PARA='MFY',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M575',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='N4',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=110.46486673381823, 
+             VALE_CALC=110.46486673381823,
+             )
+             
+TEST_TABLE(  TABLE=TABM575N4MAX,
+             NOM_PARA='MFZ',
+             VALE_CALC=125.72354337381876,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQ,
+             NOM_PARA='MFZ',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M575',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='N4',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=125.72354337381876, 
+             VALE_CALC=125.72354337381876,
+             )
+
+TEST_TABLE(  TABLE=TABM575N4MAX,
+             NOM_PARA='MEQ',
+             VALE_CALC=201.40764999559582,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQ,
+             NOM_PARA='MEQ',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M575',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='N4',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=201.40764999559582, 
+             VALE_CALC=201.40764999559582,
+             )
+
+# N4 est le premier noeud de la maille M575
+TEST_TABLE(  TABLE=TAB_ABSC,
+             NOM_PARA='ABSC1',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M575',
+                       ),
+                    ),
+             VALE_CALC=1.9887184282676795,
+             )
+
+TEST_TABLE(  TABLE=TAB_MEQ,
+             NOM_PARA='ABSC_CURV',
+             FILTRE=(_F(NOM_PARA='MAILLE',
+                       VALE_K='M575',
+                       ),
+                     _F(NOM_PARA='NOEUD',
+                       VALE_K='N4',
+                       ),
+                    ),
+             REFERENCE='AUTRE_ASTER',
+             VALE_REFE=1.9887184282676795, 
+             VALE_CALC=1.9887184282676795,
+             )
+
+
+
+deplacement_impose = MECA_STATIQUE(MODELE=modele,
+                                   CHAM_MATER=ch_mater,
+                                   CARA_ELEM=cara_elem,
+                                   EXCIT=(_F(CHARGE=deplacement)),
+                                   INST = 0.0)
+deplacement_impose = CALC_CHAMP(reuse=deplacement_impose,
+                                RESULTAT=deplacement_impose,
+                                CONTRAINTE='EFGE_ELNO')
+
+dilatation_thermique = MECA_STATIQUE(MODELE=modele,
+                                     CHAM_MATER=ch_mater,
+                                     CARA_ELEM=cara_elem,
+                                     EXCIT=(_F(CHARGE=blocage,)),
+                                     INST = 1.0)
+dilatation_thermique = CALC_CHAMP(reuse=dilatation_thermique,
+                                  RESULTAT=dilatation_thermique,
+                                  CONTRAINTE='EFGE_ELNO')
+
+sismique_tot = COMB_SISM_MODAL(MODE_MECA=modes_dyn,
+                           AMOR_REDUIT=0.02,
+                           CORR_FREQ='NON',
+                           MODE_CORR=modes_sta,
+                           MONO_APPUI = 'OUI',
+                           EXCIT=_F(TRI_AXE=(1.,1.,1.),
+                                    SPEC_OSCI=sro02,
+                                    ECHELLE=90.09,),
+                           COMB_MODE=_F(TYPE='CQC'),
+                           COMB_DIRECTION=_F(TYPE='QUAD'),
+                           OPTION=('EFGE_ELNO')
+                          )
+
+sismique_qs = COMB_SISM_MODAL(MODE_MECA=modes_dyn,
+                           AMOR_REDUIT=0.99,
+                           CORR_FREQ='NON',
+                           MODE_CORR=modes_sta,
+                           MONO_APPUI = 'OUI',
+                           EXCIT=_F(TRI_AXE=(1.,1.,1.),
+                                    SPEC_OSCI=sro99,
+                                    ECHELLE=90.09,),
+                           COMB_MODE=_F(TYPE='CQC'),
+                           COMB_DIRECTION=_F(TYPE='QUAD'),
+                           OPTION=('EFGE_ELNO')
+                          )
+
+# sismique_dyn = sismique_tot - sismique_qs
+
+ch_tot= CREA_CHAMP (OPERATION = 'EXTR',
+                       TYPE_CHAM = 'ELNO_SIEF_R',
+                       RESULTAT  = sismique_tot, 
+                       NOM_CHAM  = 'EFGE_ELNO',
+                       NUME_ORDRE=4,)
+
+ch_qs= CREA_CHAMP (OPERATION = 'EXTR',
+                       TYPE_CHAM = 'ELNO_SIEF_R',
+                       RESULTAT  = sismique_qs, 
+                       NOM_CHAM  = 'EFGE_ELNO',
+                       NUME_ORDRE=4,)
+
+
+ch_dyn = CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
+                     OPERATION='ASSE',
+                     MODELE=modele,
+                     ASSE=(_F(TOUT="OUI",
+                              CHAM_GD=ch_tot,
+                              CUMUL="OUI"),
+                           _F(TOUT="OUI",
+                              CHAM_GD=ch_qs,
+                              CUMUL="OUI",
+                              COEF_R=-1.))
+                              )
+
+# on affecte le champ 4 fois pour obtenir un numero d'ordre 4
+# NUME_ORDRE n'est pas disponible dans CREA_RESU
+sismique_dyn=CREA_RESU(OPERATION='AFFE',
+                    TYPE_RESU='MODE_MECA',
+                    NOM_CHAM='EFGE_ELNO',
+                    AFFE=(_F(CHAM_GD=ch_dyn,NUME_MODE=1,MODELE=modele),
+                          _F(CHAM_GD=ch_dyn,NUME_MODE=2,MODELE=modele),
+                          _F(CHAM_GD=ch_dyn,NUME_MODE=3,MODELE=modele),
+                          _F(CHAM_GD=ch_dyn,NUME_MODE=4,MODELE=modele),
+                          ),
+                    )
+
+# appel à POST_ROCHE : tous chargements
+
+chPostRocheTout = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     TOUT='OUI',
+                                     GROUP_NO_ORIG = 'ENCA1',
+                                    ),
+                                  ),
+                    RESU_MECA=(
+                               _F(TYPE_CHAR='POIDS',
+                                 RESULTAT=poids_propre,
+                                 NUME_ORDRE=1,
+                                 ),
+                               _F(TYPE_CHAR='DILAT_THERM',
+                                 RESULTAT=dilatation_thermique,
+                                 NUME_ORDRE=1,
+                                 ),
+                               _F(TYPE_CHAR='DEPLACEMENT',
+                                 RESULTAT=deplacement_impose,
+                                 NUME_ORDRE=1,
+                                 ),
+                                _F(TYPE_CHAR='SISM_INER_SPEC',
+                                 RESULTAT=sismique_dyn,
+                                 DIRECTION='COMBI',
+                                 TYPE_RESU='DYN'
+                                 ),
+                                _F(TYPE_CHAR='SISM_INER_SPEC',
+                                 RESULTAT=sismique_qs,
+                                 DIRECTION='COMBI',
+                                 TYPE_RESU='QS'
+                                 ),
+                                ),
+                     PRESSION=(_F(
+                                     TOUT='OUI',
+                                     VALE = 1E6,
+                                    ),
+                                  ),
+                     COUDE=(_F(GROUP_MA = 'Arc_1',
+                               ANGLE    = 90,
+                               RCOURB   = 0.152,),
+                            _F(GROUP_MA = 'Arc_2',
+                               ANGLE    = 90,
+                               RCOURB   = 0.152,),
+                            _F(GROUP_MA = 'Arc_3',
+                               ANGLE    = 90,
+                               RCOURB   = 0.152,),
+                            _F(GROUP_MA = 'Arc_4',
+                               ANGLE    = 90,
+                               RCOURB   = 0.152,),
+                            _F(GROUP_MA = 'Arc_5',
+                               ANGLE    = 90,
+                               RCOURB   = 0.152,),
+                            _F(GROUP_MA = 'Arc_6',
+                               ANGLE    = 90,
+                               RCOURB   = 0.152,),
+                           )
+                    )
+
+# TEST_RESU
+
+TEST_RESU(CHAM_ELEM=(
+                    # X13 = coefficient d'abattement optimisé gOpt
+                     _F(TYPE_TEST="MAX",
+                        CHAM_GD=chPostRocheTout,
+                        NOM_CMP='X13',
+                        VALE_CALC=0.9999999999945832),
+                    # X14 = coefficient d'abattement optimisé gsOpt
+                     _F(TYPE_TEST="MAX",
+                        CHAM_GD=chPostRocheTout,
+                        NOM_CMP='X14',
+                        VALE_CALC=0.9797215653800634),
+                    # X16 = contrainte équivalente optimisée
+                     _F(TYPE_TEST="MAX",
+                        REFERENCE="AUTRE_ASTER",
+                        CHAM_GD=chPostRocheTout,
+                        NOM_CMP='X16',
+                        VALE_CALC=260845949.74637172,
+                        PRECISION=0.09,
+                        VALE_REFE=240.2e6),
+                    )
+        )
+
+# appel à POST_ROCHE : comparaison à CAST3M
+
+
+chPostRoche3M = POST_ROCHE(ZONE_ANALYSE=(_F(
+                                     TOUT='OUI',
+                                     GROUP_NO_ORIG = 'ENCA1',
+                                    ),
+                                  ),
+                    CHAM_MATER=ch_mater,
+                    CARA_ELEM=cara_elem,
+                    RESU_MECA=(
+                                _F(TYPE_CHAR='SISM_INER_SPEC',
+                                 RESULTAT=sismique_dyn,
+                                 DIRECTION='COMBI',
+                                 TYPE_RESU='DYN'
+                                 ),
+                                _F(TYPE_CHAR='SISM_INER_SPEC',
+                                 RESULTAT=sismique_qs,
+                                 DIRECTION='COMBI',
+                                 TYPE_RESU='QS'
+                                 ),
+                                ),
+                     PRESSION=(_F(
+                                     TOUT='OUI',
+                                     VALE = 7.5E5,
+                                    ),
+                                  ),
+                     COUDE=(_F(GROUP_MA = 'Arc_1',
+                               ANGLE    = 90,
+                               RCOURB   = 0.152,),
+                            _F(GROUP_MA = 'Arc_2',
+                               ANGLE    = 90,
+                               RCOURB   = 0.152,),
+                            _F(GROUP_MA = 'Arc_3',
+                               ANGLE    = 90,
+                               RCOURB   = 0.152,),
+                            _F(GROUP_MA = 'Arc_4',
+                               ANGLE    = 90,
+                               RCOURB   = 0.152,),
+                            _F(GROUP_MA = 'Arc_5',
+                               ANGLE    = 90,
+                               RCOURB   = 0.152,),
+                            _F(GROUP_MA = 'Arc_6',
+                               ANGLE    = 90,
+                               RCOURB   = 0.152,),
+                           )
+                    )
+
+# TEST_RESU
+
+TEST_RESU(CHAM_ELEM=(
+                    # X13 = coefficient d'abattement optimisé gOpt
+                     _F(TYPE_TEST="MAX",
+                        CHAM_GD=chPostRoche3M,
+                        NOM_CMP='X13',
+                        VALE_CALC=1.0),
+                    # X14 = coefficient d'abattement optimisé gsOpt
+                     _F(TYPE_TEST="MAX",
+                        CHAM_GD=chPostRoche3M,
+                        NOM_CMP='X14',
+                        VALE_CALC=0.9797773732024181),
+                    # X16 = contrainte équivalente
+                     _F(TYPE_TEST="MAX",
+                        REFERENCE="SOURCE_EXTERNE",
+                        CHAM_GD=chPostRoche3M,
+                        NOM_CMP='X16',
+                        VALE_CALC=274469505.1176244,
+                        PRECISION=0.26,
+                        VALE_REFE=366.2e6),
+                    )
+        )
+
+
+FIN()
