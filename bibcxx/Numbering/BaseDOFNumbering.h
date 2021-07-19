@@ -508,7 +508,7 @@ class BaseDOFNumbering : public DataStructure {
 
     ListOfLoadsPtr getListOfLoads( void ) const { return _listOfLoads; };
 
-    VectorLong getDirichletEliminationDOFs (void ) const;
+    VectorLong getDirichletBCDOFs (void ) const;
 
     /**
      * @brief Methode permettant de definir le modele

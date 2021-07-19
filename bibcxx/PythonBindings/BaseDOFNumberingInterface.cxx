@@ -95,8 +95,8 @@ Returns:
     MeshPtr: a pointer to the mesh
         )",
               ( py::arg( "self" ) ) );
-    c1.def( "getDirichletEliminationDOFs", &BaseDOFNumbering::getDirichletEliminationDOFs, R"(
-Return a vector which describes DOFs that are eliminated by Dirichlet BC.
+    c1.def( "getDirichletBCDOFs", &BaseDOFNumbering::getDirichletBCDOFs, R"(
+Return a vector which describes DOFs that are imposed by Dirichlet BC.
 
 The vector has a size equals to the number of DOFs. For each dof, the value is equal to one
 if Dirichel BC is imposed to this DOF else zero

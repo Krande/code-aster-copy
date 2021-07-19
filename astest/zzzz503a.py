@@ -107,7 +107,7 @@ numeDDL.computeNumbering()
 test.assertEqual(numeDDL.getType(), "NUME_DDL_SDASTER")
 test.assertFalse(numeDDL.hasDirichletBC())
 
-ccid = numeDDL.getDirichletEliminationDOFs()
+ccid = numeDDL.getDirichletBCDOFs()
 test.assertEqual(sum(ccid), 0)
 test.assertEqual(len(ccid), numeDDL.getNumberOfDofs())
 

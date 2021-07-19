@@ -94,7 +94,7 @@ std::string BaseDOFNumbering::getPhysicalQuantity() const {
     return physicalQuantity.rstrip();
 };
 
-VectorLong BaseDOFNumbering::getDirichletEliminationDOFs( void ) const
+VectorLong BaseDOFNumbering::getDirichletBCDOFs( void ) const
 {
     JeveuxVectorLong ccid( "&&NUME_CCID" );
     std::string base( "V" );
