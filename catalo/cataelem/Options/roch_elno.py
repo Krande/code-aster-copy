@@ -22,15 +22,17 @@ import cataelem.Commons.physical_quantities as PHY
 import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
+PVARCPR  = InputParameter(phys=PHY.VARI_R, container='VOLA!&&CCPARA.VARI_INT_N',
+comment=""" External state variables at end of current time step """)
 
-
-PROCHRR  = OutputParameter(phys=PHY.ROCH_R, type='ELNO')
+PROCHRR  = OutputParameter(phys=PHY.ROCH_R, type='ELNO', )
 
 ROCH_ELNO = Option(
     para_in=(
         SP.PMATERC,
         SP.PCAGNPO,
         SP.PCAGEPO,
+        PVARCPR,
     ),
     para_out=(
         PROCHRR,

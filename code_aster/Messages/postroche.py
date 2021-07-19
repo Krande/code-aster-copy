@@ -95,4 +95,7 @@ Ce paramètre est absent sur au moins une maille.
 être présent sur les parties du modèle déclarées dans ZONE_ANALYSE.
 Ce paramètre est absent sur au moins une maille.
 """),
+
+   19 : _("""Le paramètre %(k1)s a une valeur négative : %(r1)f.
+"""),
 }

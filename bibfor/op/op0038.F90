@@ -30,6 +30,7 @@ implicit none
 #include "asterfort/cesvar.h"
 #include "asterfort/chpver.h"
 #include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlima.h"
 #include "asterfort/getvid.h"
@@ -45,6 +46,7 @@ implicit none
 #include "asterfort/rcmfmc.h"
 #include "asterfort/sdmpic.h"
 #include "asterfort/utmess.h"
+#include "asterfort/vrcins.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,14 +57,16 @@ implicit none
     integer :: ierd, iret, nh, nbRet
     real(kind=8) :: time, rundf
     character(len=1), parameter :: base = 'G'
+    character(len=2) :: chdret
     character(len=8) :: model, caraElem, temp, mesh, kmpic, chmate
     character(len=8) :: lpain(8), lpaout(1)
     character(len=16) :: type, oper, option, phenom
     character(len=19) :: chelem, press, ligrel
     character(len=24) :: chgeom, chcara(18), chharm, mateco
-    character(len=24) :: chtemp, chtime, chflug, chpres
+    character(len=24) :: chtemp, chtime, chflug, chpres, chvarc
     character(len=24) :: lchin(8), lchout(1)
     aster_logical :: exitim, l_ther
+    parameter   (chvarc = '&&OP0038.CHVARC')
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -188,17 +192,24 @@ implicit none
                     'OUI')
 
     else if (option .eq. 'ROCH_ELNO') then
+        call vrcins(model, chmate , caraElem, time, chvarc(1:19),&
+                chdret)
+        
+        
         lchin(1)=mateco
         lpain(1)='PMATERC'
         lchin(2)=chcara(6)
         lpain(2)='PCAGNPO'
         lchin(3)=chcara(5)
         lpain(3)='PCAGEPO'
+        lchin(4)= chvarc(1:19)
+        lpain(4)='PVARCPR'
         lchout(1)=chelem
         lpaout(1)='PROCHRR'
-        call calcul('S', option, ligrel, 3, lchin,&
+        call calcul('S', option, ligrel, 4, lchin,&
                     lpain, 1, lchout, lpaout, base,&
                     'OUI')
+        call detrsd('CHAMP_GD', chvarc)
 
     else if (option .eq. 'PRAC_ELNO') then
         lpain(1)='PPRESSC'

@@ -541,7 +541,8 @@ class MECA_POU_D_T(Element):
         ),
 
         OP.ROCH_ELNO(te=113,
-            para_in=((SP.PMATERC, LC.CMATERC),(SP.PCAGNPO, CCAGNPO),(SP.PCAGEPO, CCAGEPO),),
+            para_in=((SP.PMATERC, LC.CMATERC),(SP.PCAGNPO, CCAGNPO),(SP.PCAGEPO, CCAGEPO),
+                     (OP.ROCH_ELNO.PVARCPR, LC.ZVARCPG),),
             para_out=((OP.ROCH_ELNO.PROCHRR, ENROCH_R), ),
         ),
         

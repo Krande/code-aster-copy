@@ -229,6 +229,8 @@ class PostRocheCommon():
             self.lRCCM_RX = True
         else:
             self.lRCCM_RX = False
+        
+        self.time = self.args.get('TIME')
 
     def checkZones(self,):
         """
@@ -364,10 +366,10 @@ class PostRocheCommon():
                                      MODELE=self.model,
                                      CHAM_MATER=self.chammater,
                                      CARA_ELEM=self.caraelem,
+                                     INST=self.time,
                                      **self.dicAllZones)
 
         self.chRochElno = chRochElno
-        
         
         def fveri_para(x):
                 if isnan(x):

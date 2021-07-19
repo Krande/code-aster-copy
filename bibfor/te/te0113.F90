@@ -49,6 +49,8 @@ subroutine te0113(option, nomte)
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno)
     ASSERT(nno.eq.2)
     
+    call jevech('PVARCPR', 'L', imate)
+    
     call jevech('PMATERC', 'L', imate)
     call jevech('PROCHRR', 'E', ival)
     
@@ -69,10 +71,11 @@ subroutine te0113(option, nomte)
     nomres(5) = 'RP02_MOY'
     call rcvalb('FPG1', 1, 1, '+', zi(imate),&
                 ' ', 'POST_ROCHE', 0, '', [0.d0],&
-                5, nomres, valres, icodre, 0)
+                5, nomres, valres, icodre, 1)
     if (icodre(1).ne.0) call utmess('F','POSTROCHE_16')
     k = valres(1)
     nexpo = valres(2)
+    if (nexpo.lt.0.d0) call utmess('F','POSTROCHE_19', sk=nomres(2), sr=nexpo)
     rp02_min = valres(3) ! nan si absent
     rm_min = valres(4)   ! nan si absent
     

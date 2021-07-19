@@ -28,6 +28,28 @@ modele = AFFE_MODELE(MAILLAGE = maillage,
                               PHENOMENE = "MECANIQUE",
                               TOUT = "OUI",))
 
+
+FK1 = FORMULE(NOM_PARA=('TEMP',),
+            VALE='0.01+55-TEMP')
+FK2 = FORMULE(NOM_PARA=('TEMP',),
+            VALE='0.01+75-TEMP')
+FN1 = FORMULE(NOM_PARA=('TEMP',),
+            VALE='2+55-TEMP')
+FN2 = FORMULE(NOM_PARA=('TEMP',),
+            VALE='2+75-TEMP')
+FRP02MIN1 = FORMULE(NOM_PARA=('TEMP',),
+                   VALE='128E6+(55-TEMP)*1E6')
+FRP02MIN2 = FORMULE(NOM_PARA=('TEMP',),
+                   VALE='128E6+(75-TEMP)*1E6')
+FRMMIN1 = FORMULE(NOM_PARA=('TEMP',),
+                   VALE='410E6+(55-TEMP)*1E6')
+FRMMIN2 = FORMULE(NOM_PARA=('TEMP',),
+                   VALE='410E6+(75-TEMP)*1E6')
+FRP02MOY1 = FORMULE(NOM_PARA=('TEMP',),
+                   VALE='163E6+(55-TEMP)*1E6')
+FRP02MOY2 = FORMULE(NOM_PARA=('TEMP',),
+                   VALE='163E6+(75-TEMP)*1E6')
+
 acier=DEFI_MATERIAU(ELAS=_F(E = 2.E11,
                             RHO = 7800,
                             ALPHA = 1.2E-5,
@@ -37,6 +59,31 @@ acier=DEFI_MATERIAU(ELAS=_F(E = 2.E11,
                                   RP02_MIN = 128E6,
                                   RM_MIN = 410E6,
                                   RP02_MOY = 163E6,
+                                  )
+                    )
+
+
+acier1=DEFI_MATERIAU(ELAS=_F(E = 2.E11,
+                            RHO = 7800,
+                            ALPHA = 1.2E-5,
+                            NU = 0.3),
+                    POST_ROCHE_FO=_F(RAMB_OSGO_FACT=FK1,
+                                  RAMB_OSGO_EXPO=FN1,
+                                  RP02_MIN = FRP02MIN1,
+                                  RM_MIN = FRMMIN1,
+                                  RP02_MOY = FRP02MOY1,
+                                  )
+                    )
+
+acier2=DEFI_MATERIAU(ELAS=_F(E = 2.E11,
+                            RHO = 7800,
+                            ALPHA = 1.2E-5,
+                            NU = 0.3),
+                    POST_ROCHE_FO=_F(RAMB_OSGO_FACT=FK2,
+                                  RAMB_OSGO_EXPO=FN2,
+                                  RP02_MIN = FRP02MIN2,
+                                  RM_MIN = FRMMIN2,
+                                  RP02_MOY = FRP02MOY2,
                                   )
                     )
 
@@ -60,6 +107,22 @@ resu_temp = CREA_RESU(TYPE_RESU = 'EVOL_THER',
 ch_mater=AFFE_MATERIAU(MAILLAGE=maillage,
                        AFFE_VARC=_F(TOUT='OUI',NOM_VARC = 'TEMP',EVOL=resu_temp,VALE_REF=20.0,),
                        AFFE=_F(TOUT="OUI", MATER = acier))
+
+
+tbid=CREA_CHAMP(
+                            TYPE_CHAM='NOEU_TEMP_R', OPERATION='AFFE', MODELE=modele,
+                            AFFE=(_F(GROUP_MA='M1', NOM_CMP='TEMP', VALE=35.0,),
+                                  _F(GROUP_MA='M2', NOM_CMP='TEMP', VALE=75.0,),
+                                 )
+                )
+
+ch_materfo=AFFE_MATERIAU(MAILLAGE=maillage,
+                         AFFE_VARC=_F(TOUT='OUI',NOM_VARC = 'TEMP',CHAM_GD=tbid, VALE_REF=0.0,
+                         ),
+                         AFFE=(_F(GROUP_MA="M1", MATER = acier1),
+                               _F(GROUP_MA="M2", MATER = acier2),
+                              )
+                        )
 
 cara_elem=AFFE_CARA_ELEM(MODELE=modele, INFO=2,
                          POUTRE=_F(GROUP_MA="TUYAU", SECTION = 'CERCLE',
@@ -188,9 +251,6 @@ sismique = COMB_SISM_MODAL(MODE_MECA=modes_dyn,
                            COMB_DIRECTION=_F(  TYPE = 'QUAD'),
                            OPTION=('EFGE_ELNO')
                           )
-
-                          
-                      
                         
                     
 # appel à POST_ROCHE
@@ -513,22 +573,22 @@ chLuPostRocheTout = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                   ),
                     MODELE = modele,
                     CARA_ELEM=cara_elem,
-                    CHAM_MATER=ch_mater,
+                    CHAM_MATER=ch_materfo,
                     RESU_MECA=(
                                _F(TYPE_CHAR='POIDS',
-                                 RESULTAT=poids_propre,
+                                 RESULTAT=poids_propre_lu,
                                  NUME_ORDRE=1,
                                  ),
                                _F(TYPE_CHAR='DILAT_THERM',
-                                 RESULTAT=dilatation_thermique,
+                                 RESULTAT=dilatation_thermique_lu,
                                  NUME_ORDRE=1,
                                  ),
                                _F(TYPE_CHAR='DEPLACEMENT',
-                                 RESULTAT=deplacement_impose,
+                                 RESULTAT=deplacement_impose_lu,
                                  NUME_ORDRE=1,
                                  ),
                                 _F(TYPE_CHAR='SISM_INER_SPEC',
-                                 RESULTAT=sismique,
+                                 RESULTAT=sismique_lu,
                                  DIRECTION='COMBI',
                                  ),
                                 ),
@@ -539,11 +599,51 @@ chLuPostRocheTout = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                   ),
                     )
 
+
 IMPR_RESU(UNITE=6, FORMAT='RESULTAT', 
            RESU=_F(CHAM_GD=chLuPostRocheTout, 
                    NOM_CMP=('X1','X2','X3','X4','X5','X6',
                             'X7','X8','X9','X10','X11','X12',
                             'X13','X14','X15','X16','X17','X18','X19','X20')))
+
+
+
+chLuPostRocheRCCMRX = POST_ROCHE(RCCM_RX='OUI',ZONE_ANALYSE=(_F(
+                                     TOUT='OUI',
+                                     GROUP_NO_ORIG = 'A',
+                                    ),
+                                  ),
+                    MODELE = modele,
+                    CARA_ELEM=cara_elem,
+                    CHAM_MATER=ch_materfo,
+                    RESU_MECA=(
+                               _F(TYPE_CHAR='POIDS',
+                                 RESULTAT=poids_propre_lu,
+                                 NUME_ORDRE=1,
+                                 ),
+                               _F(TYPE_CHAR='DILAT_THERM',
+                                 RESULTAT=dilatation_thermique_lu,
+                                 NUME_ORDRE=1,
+                                 ),
+                               _F(TYPE_CHAR='DEPLACEMENT',
+                                 RESULTAT=deplacement_impose_lu,
+                                 NUME_ORDRE=1,
+                                 ),
+                                _F(TYPE_CHAR='SISM_INER_SPEC',
+                                 RESULTAT=sismique_lu,
+                                 DIRECTION='COMBI',
+                                 ),
+                                ),
+                     PRESSION=(_F(
+                                     TOUT='OUI',
+                                     VALE = 1E6,
+                                    ),
+                                  ),
+                    )
+
+
+
+
 
 chLuPostRocheGrMa = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                      GROUP_MA='TUYAU',
