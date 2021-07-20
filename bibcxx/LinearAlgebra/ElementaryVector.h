@@ -111,34 +111,41 @@ class ElementaryVector : public DataStructure {
     void setType( const std::string newType ) { DataStructure::setType( newType ); };
 
     /**
-     * @brief Assembler les vecteurs elementaires en se fondant sur currentNumerotation
-     * @param currentNumerotation objet DOFNumbering
-     * @todo prendre en compte les fonctions multiplicatrices
+     * @brief Assembler les vecteurs elementaires en se fondant sur dofNume
+     * @param dofNume objet DOFNumbering
      */
     FieldOnNodesRealPtr
-    assemble( const DOFNumberingPtr &currentNumerotation ) {
-        return assemble( currentNumerotation, 0., Permanent );
+    assemble( const DOFNumberingPtr &dofNume ) {
+        return assemble( dofNume, 0., Permanent );
+    };
+
+    FieldOnNodesRealPtr
+    assemble( const DOFNumberingPtr &dofNume, const ASTERDOUBLE& time ) {
+        return assemble( dofNume, time, Permanent );
     };
 
 /**
- * @brief Assembler les vecteurs elementaires en se fondant sur currentNumerotation
- * @param currentNumerotation objet DOFNumbering
- * @todo prendre en compte les fonctions multiplicatrices
+ * @brief Assembler les vecteurs elementaires en se fondant sur dofNume
+ * @param dofNume objet DOFNumbering
  */
 #ifdef ASTER_HAVE_MPI
     FieldOnNodesRealPtr assemble(
-        const ParallelDOFNumberingPtr &currentNumerotation ) {
-        return assemble( currentNumerotation, 0., Permanent );
+        const ParallelDOFNumberingPtr &dofNume ) {
+        return assemble( dofNume, 0., Permanent );
+    };
+
+    FieldOnNodesRealPtr assemble(
+        const ParallelDOFNumberingPtr &dofNume, const ASTERDOUBLE& time ) {
+        return assemble( dofNume, time, Permanent );
     };
 #endif /* ASTER_HAVE_MPI */
 
     /**
-     * @brief Assembler les vecteurs elementaires en se fondant sur currentNumerotation
-     * @param currentNumerotation objet DOFNumbering
-     * @todo prendre en compte les fonctions multiplicatrices
+     * @brief Assembler les vecteurs elementaires en se fondant sur dofNume
+     * @param dofNume objet DOFNumbering
      */
     FieldOnNodesRealPtr
-    assemble( const BaseDOFNumberingPtr &currentNumerotation, const double &time = 0.,
+    assemble( const BaseDOFNumberingPtr &dofNume, const ASTERDOUBLE &time = 0.,
                     const JeveuxMemory memType = Permanent ) ;
 
     /**
@@ -198,7 +205,7 @@ class TemplateElementaryVector: public ElementaryVector
                                       const JeveuxMemory memType = Permanent ):
         ElementaryVector( name, memType,
             "VECT_ELEM_" + std::string( PhysicalQuantityNames[PhysicalQuantity] ) +
-            ( typeid( ValueType ) == typeid(double)? "_R" : "_C" ) )
+            ( typeid( ValueType ) == typeid(ASTERDOUBLE)? "_R" : "_C" ) )
     {};
 
     /**

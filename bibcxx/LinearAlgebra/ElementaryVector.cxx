@@ -48,16 +48,17 @@
 #include "Supervis/CommandSyntax.h"
 
 FieldOnNodesRealPtr
-ElementaryVector::assemble( const BaseDOFNumberingPtr &currentNumerotation,
-                                          const ASTERDOUBLE &time,
-                                          const JeveuxMemory memType ) {
+ElementaryVector::assemble( const BaseDOFNumberingPtr &dofNume,
+                            const ASTERDOUBLE &time,
+                            const JeveuxMemory memType ) {
     if ( _isEmpty )
         throw std::runtime_error( "The ElementaryVector is empty" );
 
-    if ( ( !currentNumerotation ) || currentNumerotation->isEmpty() )
+    if ( ( !dofNume ) || dofNume->isEmpty() )
         throw std::runtime_error( "Numerotation is empty" );
 
-    FieldOnNodesRealPtr vectTmp( new FieldOnNodesReal( memType ) );
+    FieldOnNodesRealPtr field = boost::make_shared<FieldOnNodesReal>( memType );
+    field->setDOFNumbering( dofNume );
     std::string name( " " );
     name.resize( 24, ' ' );
 
@@ -84,7 +85,7 @@ ElementaryVector::assemble( const BaseDOFNumberingPtr &currentNumerotation,
     /**/
 
     std::string typres( "R" );
-    CALLO_ASASVE( getName(), currentNumerotation->getName(), typres, name );
+    CALLO_ASASVE( getName(), dofNume->getName(), typres, name );
 
     std::string detr( "D" );
     std::string fomult( " " );
@@ -97,12 +98,12 @@ ElementaryVector::assemble( const BaseDOFNumberingPtr &currentNumerotation,
     vectTmp2->updateValuePointer();
     std::string name2( ( *vectTmp2 )[0].toString(), 0, 19 );
     FieldOnNodesRealPtr vectTmp3( new FieldOnNodesReal( name2 ) );
-    vectTmp->allocateFrom( *vectTmp3 );
+    field->allocateFrom( *vectTmp3 );
     std::string base = JeveuxMemoryTypesNames[memType];
 
-    CALLO_ASCOVA( detr, name, fomult, param, &time, typres, vectTmp->getName(), base);
+    CALLO_ASCOVA( detr, name, fomult, param, &time, typres, field->getName(), base);
 
-    return vectTmp;
+    return field;
 };
 
 bool ElementaryVector::build()

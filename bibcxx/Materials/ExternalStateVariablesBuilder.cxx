@@ -26,6 +26,16 @@
 #include "Materials/BaseExternalStateVariables.h"
 #include "Materials/ExternalStateVariablesBuilder.h"
 
+ExternalStateVariablesBuilder::ExternalStateVariablesBuilder() :
+    DataStructure( "VARI_COM", Permanent, 14 ),
+        _varInst( new FieldOnCellsReal( getName() + ".TOUT" ) ),
+        _timeValue(
+          new ConstantFieldOnCellsReal( getName() + ".INST", _model->getMesh() ) ),
+        _currentTime( -1.0 ), _pTot( false ),
+        _hydr( false ),
+        _sech( false ),
+        _temp( false ){};
+
 ExternalStateVariablesBuilder::ExternalStateVariablesBuilder(
     const ModelPtr &model, const MaterialFieldPtr &mater,
     const ElementaryCharacteristicsPtr &cara, const CodedMaterialPtr &codMater ):

@@ -67,6 +67,11 @@ class ExternalStateVariablesBuilder : public DataStructure {
     /**
      * @brief Constructeur
      */
+    ExternalStateVariablesBuilder( );
+
+    /**
+     * @brief Constructeur
+     */
     ExternalStateVariablesBuilder( const ModelPtr &model, const MaterialFieldPtr &mater,
                                        const ElementaryCharacteristicsPtr &cara,
                                        const CodedMaterialPtr &codMater );

@@ -65,7 +65,7 @@
 #include "PythonBindings/ElementaryMatrixInterface.h"
 #include "PythonBindings/ElementaryVectorInterface.h"
 #include "PythonBindings/EmpiricalModeResultInterface.h"
-#include "PythonBindings/ListOfExternalStateVariablesInterface.h"
+#include "PythonBindings/ExternalStateVariablesBuilderInterface.h"
 #include "PythonBindings/ExternalStateVariablesResultInterface.h"
 #include "PythonBindings/FiberGeometryInterface.h"
 #include "PythonBindings/FieldOnCellsInterface.h"
@@ -92,6 +92,7 @@
 #include "PythonBindings/InterspectralMatrixInterface.h"
 #include "PythonBindings/LinearSolverInterface.h"
 #include "PythonBindings/LinearStaticAnalysisInterface.h"
+#include "PythonBindings/ListOfExternalStateVariablesInterface.h"
 #include "PythonBindings/ListOfFloatsInterface.h"
 #include "PythonBindings/ListOfIntegersInterface.h"
 #include "PythonBindings/LoadResultInterface.h"
@@ -300,6 +301,7 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportListOfExternalStateVariablesToPython();
     exportEmpiricalModeResultToPython();
     exportExternalStateVariablesResultToPython();
+    exportExternalStateVariablesBuilderToPython();
     exportMaterialFieldBuilderToPython();
     exportCreateEnthalpyToPython();
     exportDeleteTemporaryObjectsToPython();
