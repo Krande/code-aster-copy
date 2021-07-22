@@ -101,6 +101,44 @@ void Result::setTimeValue( ASTERDOUBLE value, ASTERINTEGER rank ) {
     CALLO_RSADPA_ZR_WRAP( getName(), &rang, &value, type );
 };
 
+ASTERDOUBLE Result::getTimeValue( ASTERINTEGER rank ) {
+
+    _serialNumber->updateValuePointer();
+    _rspr->updateValuePointer();
+
+    ASTERINTEGER nb_ranks = _serialNumber->usedSize();
+
+    AS_ASSERT(rank <= nb_ranks);
+
+    auto& calcParam = _calculationParameter->getVectorOfObjects();
+    auto nbParam = calcParam.size();
+
+    for ( int i = 0; i < nbParam; ++i ) {
+        const auto item = calcParam[i];
+        auto typevar = trim(item[3].toString());
+
+        if (typevar == "ACCES"){
+            auto var_name = trim(_accessVariables->getStringFromIndex( i+1 ));
+            if (var_name == "INST")
+            {
+                auto nosuff = trim(item[0].toString());
+                auto ivar = std::stoi(trim(item[1].toString()));
+                auto nmax = std::stoi(trim(item[2].toString()));
+
+                AS_ASSERT(nosuff == ".RSPR")
+
+                auto index = nmax*rank+ivar -1;
+
+                return (*_rspr)[index];
+            }
+        }
+    }
+
+    AS_ASSERT(false);
+    return 0.0;
+
+};
+
 bool Result::allocate( ASTERINTEGER nbRanks ) {
 
     std::string base( JeveuxMemoryTypesNames[getMemoryType()] );
@@ -319,8 +357,19 @@ FieldOnCellsRealPtr Result::getFieldOnCellsReal( const std::string name,
     if ( curIter == _dictOfVectorOfFieldOnCellsReal.end() )
       raiseAsterError( "ValueError: Field " + name + " unknown in the results container" );
 
-    FieldOnCellsRealPtr toReturn = curIter->second[rank];
-    return toReturn;
+    return curIter->second[rank];
+};
+
+ConstantFieldOnCellsChar16Ptr Result::getConstantFieldOnCellsChar16( const std::string name,
+                                                 const ASTERINTEGER rank ) const
+{
+    if ( rank >= _nbRanks || rank < 0 )
+      raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' is out of range" );
+
+    auto curIter = _dictOfVectorOfConstantFieldOnCellsChar16.find( trim( name ) );
+    if ( curIter == _dictOfVectorOfConstantFieldOnCellsChar16.end() )
+      raiseAsterError( "ValueError: Field " + name + " unknown in the results container" );
+    return curIter->second[rank];
 };
 
 PyObject *Result::getAccessParameters() const
@@ -430,6 +479,18 @@ VectorString Result::getFieldsOnCellsNames() const
   return names;
 };
 
+VectorString Result::getConstantFieldsOnCellsNames() const
+{
+  VectorString names;
+  names.reserve(_dictOfVectorOfConstantFieldOnCellsChar16.size());
+
+  for ( auto& it : _dictOfVectorOfConstantFieldOnCellsChar16 ) {
+    std::string name = it.first;
+    names.push_back(trim(name)) ;
+  }
+  return names;
+};
+
 
 FieldOnNodesRealPtr Result::getFieldOnNodesReal( const std::string name,
                                                                      const ASTERINTEGER rank ) const
@@ -442,8 +503,7 @@ FieldOnNodesRealPtr Result::getFieldOnNodesReal( const std::string name,
     if ( curIter == _dictOfVectorOfFieldOnNodesReal.end() )
       raiseAsterError( "ValueError: Field " + name + " unknown in the results container" );
 
-    FieldOnNodesRealPtr toReturn = curIter->second[rank];
-    return toReturn;
+    return curIter->second[rank];
 };
 
 
@@ -515,6 +575,39 @@ bool Result::setField( const FieldOnCellsRealPtr field,
     return true;
 };
 
+bool Result::setField( const ConstantFieldOnCellsChar16Ptr field,
+                          const std::string& name, const ASTERINTEGER rank )
+{
+    CALL_JEMARQ();
+
+    if( !field )
+      raiseAsterError( "ValueError: field is empty" );
+
+    if ( rank >= _nbRanks || rank < 0 )
+      raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' is out of range" );
+
+    auto trim_name = trim( name );
+    auto rschex = _getNewFieldName(trim_name, rank);
+    AS_ASSERT(rschex.first <= 100);
+
+    CALLO_RSNOCH( getName(), name, &rank );
+    std::string internalName( rschex.second.c_str(), 19 );
+    auto result = boost::make_shared<ConstantFieldOnCellsChar16>( internalName, *field );
+
+    auto curIter = _dictOfVectorOfConstantFieldOnCellsChar16.find( trim_name );
+    if ( curIter == _dictOfVectorOfConstantFieldOnCellsChar16.end() )
+    {
+        auto index = _symbolicNamesOfFields->getIndexFromString( trim_name );
+         _dictOfVectorOfConstantFieldOnCellsChar16[trim_name] = VectorOfConstantFieldOnCellsChar16(
+                            _nbRanks, ConstantFieldOnCellsChar16Ptr( nullptr ) );
+    }
+
+    _dictOfVectorOfConstantFieldOnCellsChar16[trim_name][rank] = result;
+
+    CALL_JEDEMA();
+    return true;
+};
+
 void Result::printListOfFields() const
 {
     std::cout << "Content of DataStructure : ";
@@ -522,6 +615,9 @@ void Result::printListOfFields() const
         std::cout << curIter.first << " - ";
     }
     for ( auto curIter : _dictOfVectorOfFieldOnCellsReal ) {
+        std::cout << curIter.first << " - ";
+    }
+    for ( auto curIter : _dictOfVectorOfConstantFieldOnCellsChar16 ) {
         std::cout << curIter.first << " - ";
     }
     std::cout << std::endl;
@@ -643,6 +739,31 @@ bool Result::build()
                         _dictOfVectorOfFieldOnCellsReal[nomSymb][rank] = result;
 
                     }
+                }
+                else if ( resu == "CART" ){
+                    const auto &iterField =
+                        _dictOfVectorOfConstantFieldOnCellsChar16.find( nomSymb );
+                    if ( iterField == _dictOfVectorOfConstantFieldOnCellsChar16.end() )
+                        _dictOfVectorOfConstantFieldOnCellsChar16[nomSymb] =
+                            VectorOfConstantFieldOnCellsChar16(
+                                numberOfSerialNum, ConstantFieldOnCellsChar16Ptr( nullptr ) );
+                    else if ( ASTERINTEGER(iterField->second.size()) != numberOfSerialNum ) {
+                        iterField->second.resize( numberOfSerialNum,
+                                                 ConstantFieldOnCellsChar16Ptr( nullptr ) );
+                    }
+
+                    ASTERINTEGER test2 =
+                        _dictOfVectorOfConstantFieldOnCellsChar16[nomSymb][rank].use_count();
+                    if ( test2 == 0 ) {
+                        AS_ASSERT( curMesh != nullptr );
+                        ConstantFieldOnCellsChar16Ptr result =
+                        _fieldBuidler.buildConstantFieldOnCells< JeveuxChar16 >( name, curMesh );
+                        _dictOfVectorOfConstantFieldOnCellsChar16[nomSymb][rank] = result;
+
+                    }
+                }
+                else{
+                    std::cout << "Field not build : " << name << " (" << resu << ")" << std::endl;
                 }
                 CALL_JEDEMA();
             }

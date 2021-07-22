@@ -292,6 +292,27 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
           _mesh( ligrel->getMesh() ), _FEDesc( ligrel ), _isAllocated( false ),
           _componentNames( getName() + ".NCMP" ), _valuesListTmp( getName() + ".VALV" ){};
 
+    /**
+     * @brief Constructeur
+     * @param ligrel Ligrel support
+     * @param name Nom Jeveux de la carte
+     */
+    ConstantFieldOnCells( const std::string& name, const ConstantFieldOnCells& toCopy,
+                               const JeveuxMemory memType = Permanent )
+        : ConstantFieldOnCells(name, toCopy.getMesh(), memType){
+            *( _meshName ) = *( toCopy._meshName );
+            *( _descriptor ) = *( toCopy._descriptor );
+            *( _valuesList ) = *( toCopy._valuesList );
+            *( _nameOfLigrels ) = *( toCopy._nameOfLigrels );
+            *( _listOfMeshCells ) = *( toCopy._listOfMeshCells );
+            *( _componentNames ) = *( toCopy._componentNames );
+            *( _valuesListTmp ) = *( toCopy._valuesListTmp );
+            _FEDesc = toCopy._FEDesc;
+            _isAllocated = toCopy._isAllocated;
+
+            AS_ASSERT(updateValuePointers());
+        };
+
     typedef boost::shared_ptr< ConstantFieldOnCells< ValueType > >
         ConstantFieldOnCellsValueTypePtr;
 

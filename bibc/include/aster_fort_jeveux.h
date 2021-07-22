@@ -87,6 +87,10 @@ extern void DEFSP( JENONU, jenonu, const char *, STRING_SIZE, ASTERINTEGER * );
 #define CALLO_JENUNO( a, b ) CALLOO( JENUNO, jenuno, a, b )
 extern void DEFSS( JENUNO, jenuno, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
+#define CALLO_JEDUPO( a, b, c, d) CALLOOOP( JEDUPO, jedupo, a, b, c, d )
+void DEFSSSP( JEDUPO, jedupo, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                 const char *, STRING_SIZE,  ASTERLOGICAL * );
+
 /* char functions: the first two arguments is the result */
 #define CALLO_JEXNUM( a, b, c ) CALLVOP( JEXNUM, jexnum, a, b, c )
 extern void DEFVSP( JEXNUM, jexnum, const char *, STRING_SIZE, const char *, STRING_SIZE,

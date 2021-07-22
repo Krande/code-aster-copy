@@ -37,6 +37,8 @@
 #include "MemoryManager/NamesMap.h"
 #include "Utilities/Tools.h"
 
+#include "aster_fort_jeveux.h"
+
 #include <list>
 #include <map>
 #include <string>
@@ -629,6 +631,20 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
         if ( _isEmpty )
             return -1;
         return _listObjects.size();
+    };
+
+
+    /**
+     * @brief Surcharge de l'operateur =
+     */
+    JeveuxCollectionClass &operator=( JeveuxCollectionClass< ValueType, AccessType > &toCopy ) {
+
+        std::string base( "G" );
+        bool dupcol = true;
+        CALLO_JEDUPO(toCopy.getName(), base, getName(), (ASTERLOGICAL *)&dupcol);
+        AS_ASSERT(build());
+
+        return *this;
     };
 };
 

@@ -56,6 +56,8 @@ class Result : public DataStructure, public ListOfTables {
   protected:
     typedef std::vector< FieldOnNodesRealPtr > VectorOfFieldOnNodesReal;
     typedef std::vector< FieldOnCellsRealPtr > VectorOfFieldOnCellsReal;
+    typedef std::vector< ConstantFieldOnCellsChar16Ptr > VectorOfConstantFieldOnCellsChar16;
+
 
     /** @typedef std::map d'une chaine et des pointers vers toutes les DataStructure */
     typedef std::map< std::string, VectorOfFieldOnNodesReal > mapStrVOFN;
@@ -70,6 +72,13 @@ class Result : public DataStructure, public ListOfTables {
     typedef mapStrVOFE::iterator mapStrVOFEIterator;
     /** @typedef Valeur contenue dans mapStrVOFE */
     typedef mapStrVOFE::value_type mapStrVOFEValue;
+
+        /** @typedef std::map d'une chaine et des pointers vers toutes les DataStructure */
+    typedef std::map< std::string, VectorOfConstantFieldOnCellsChar16 > mapStrVOCF16;
+    /** @typedef Iterateur sur le std::map */
+    typedef mapStrVOCF16::iterator mapStrVOCF16Iterator;
+    /** @typedef Valeur contenue dans mapStrVOFE */
+    typedef mapStrVOCF16::value_type mapStrVOCF16Value;
 
     /** @typedef std::map du rang et des pointers vers ElementaryCharacteristicsPtr */
     typedef std::map< ASTERINTEGER, ElementaryCharacteristicsPtr > mapRankCaraElem;
@@ -109,6 +118,8 @@ class Result : public DataStructure, public ListOfTables {
     mapStrVOFN _dictOfVectorOfFieldOnNodesReal;
     /** @brief Liste des champs aux éléments */
     mapStrVOFE _dictOfVectorOfFieldOnCellsReal;
+    /** @brief Liste des cartes K16 */
+    mapStrVOCF16 _dictOfVectorOfConstantFieldOnCellsChar16;
     /** @brief Liste des NUME_DDL */
     std::vector< BaseDOFNumberingPtr > _listOfDOFNum;
     /** @brief List of ElementaryCharacteristicsPtr */
@@ -215,6 +226,8 @@ class Result : public DataStructure, public ListOfTables {
      * @param rank
      */
     void setTimeValue( ASTERDOUBLE, ASTERINTEGER rank );
+
+    ASTERDOUBLE getTimeValue( ASTERINTEGER rank );
 
     /**
      * @brief Append a elementary characteristics on all rank of Result
@@ -342,12 +355,31 @@ class Result : public DataStructure, public ListOfTables {
     const;
 
     /**
+     * @brief Obtenir un champ aux noeuds réel à partir de son nom et de son numéro d'ordre
+     * @param name nom Aster du champ
+     * @param rank numéro d'ordre
+     * @return FieldOnCellsRealPtr pointant vers le champ
+     */
+    ConstantFieldOnCellsChar16Ptr getConstantFieldOnCellsChar16(
+        const std::string name, const ASTERINTEGER rank )
+    const;
+
+    /**
      * @brief Ajouter un champ par éléments réel à partir de son nom et de son numéro d'ordre
      * @param name nom Aster du champ
      * @param rank numéro d'ordre
      * @return FieldOnCellsRealPtr pointant vers le champ
      */
     bool setField( const FieldOnCellsRealPtr field, const std::string& name,
+        const ASTERINTEGER rank );
+
+     /**
+     * @brief Ajouter un champ par éléments réel à partir de son nom et de son numéro d'ordre
+     * @param name nom Aster du champ
+     * @param rank numéro d'ordre
+     * @return FieldOnCellsRealPtr pointant vers le champ
+     */
+    bool setField( const ConstantFieldOnCellsChar16Ptr field, const std::string& name,
         const ASTERINTEGER rank );
 
     /**
@@ -367,6 +399,12 @@ class Result : public DataStructure, public ListOfTables {
     * @return std::vector< string >
     */
     VectorString getFieldsOnCellsNames() const;
+
+    /**
+    * @brief Get the list of constant fields on cells
+    * @return std::vector< string >
+    */
+    VectorString getConstantFieldsOnCellsNames() const;
 
     /**
      * @brief Obtenir un champ aux noeuds réel à partir de son nom et de son numéro d'ordre

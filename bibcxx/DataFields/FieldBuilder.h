@@ -74,9 +74,9 @@ class FieldBuilder {
         typedef FiniteElementDescriptor FEDDesc;
         typedef FiniteElementDescriptorPtr FEDDescP;
 
-        boost::shared_ptr< FieldOnCells< ValueType > > result(
-            new FieldOnCellsReal( name ) );
-        result->updateValuePointers();
+        boost::shared_ptr< FieldOnCells< ValueType > > result =
+            boost::make_shared< FieldOnCells< ValueType > >( name );
+        AS_ASSERT(result->updateValuePointers());
 
         const std::string name2 = trim( ( *( *result )._reference )[0].toString() );
 
@@ -85,10 +85,24 @@ class FieldBuilder {
         if ( curIter != _mapLigrel.end() )
             curDesc = curIter->second;
         else {
-            curDesc = FEDDescP( new FEDDesc( name2, mesh, result->getMemoryType() ) );
+            curDesc = boost::make_shared< FEDDesc >( name2, mesh, result->getMemoryType() ) ;
             _mapLigrel[name2] = curDesc;
         }
         result->setDescription( curDesc );
+
+        return result;
+    };
+
+    /**
+     * @brief Build a ConstantFieldOnCells with a FiniteElementDescriptor
+     */
+    template < typename ValueType >
+    boost::shared_ptr< ConstantFieldOnCells< ValueType > >
+    buildConstantFieldOnCells( const std::string &name, const BaseMeshPtr mesh ) {
+
+        boost::shared_ptr< ConstantFieldOnCells< ValueType > > result =
+            boost::make_shared<  ConstantFieldOnCells< ValueType > >( name, mesh ) ;
+        AS_ASSERT(result->updateValuePointers());
 
         return result;
     };
@@ -101,9 +115,9 @@ class FieldBuilder {
         typedef FieldOnNodesDescription FONDesc;
         typedef FieldOnNodesDescriptionPtr FONDescP;
 
-        boost::shared_ptr< FieldOnNodes< ValueType > > result(
-            new FieldOnNodesReal( name ) );
-        result->updateValuePointers();
+        boost::shared_ptr< FieldOnNodes< ValueType > > result =
+            boost::make_shared<  FieldOnNodes< ValueType > >( name );
+        AS_ASSERT(result->updateValuePointers());
 
         const std::string name2 = trim( ( *( *result )._reference )[1].toString() );
 
@@ -112,7 +126,7 @@ class FieldBuilder {
         if ( curIter != _mapProfChno.end() )
             curDesc = curIter->second;
         else {
-            curDesc = FONDescP( new FONDesc( name2, result->getMemoryType() ) );
+            curDesc = boost::make_shared< FONDesc >( name2, result->getMemoryType() );
             _mapProfChno[name2] = curDesc;
         }
         result->setDescription( curDesc );

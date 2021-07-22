@@ -53,6 +53,8 @@ void exportResultToPython() {
                           const std::string&, const ASTERINTEGER ) = &Result::setField;
     bool ( Result::*c10 )( const FieldOnCellsRealPtr,
                           const std::string&, const ASTERINTEGER ) = &Result::setField;
+    bool ( Result::*c21 )( const ConstantFieldOnCellsChar16Ptr,
+                          const std::string&, const ASTERINTEGER ) = &Result::setField;
 
     void ( Result::*c11 )( const ModelPtr & ) = &Result::setModel;
     void ( Result::*c12 )( const ModelPtr &,  ASTERINTEGER ) = &Result::setModel;
@@ -90,6 +92,15 @@ Arguments:
     time [float] : time value to save
     rank [int] :  rank where to save time value
         )", ( py::arg("self" ), py::arg("time" ), py::arg("rank" )))
+        .def( "getTimeValue", &Result::getTimeValue, R"(
+Get time at the specified rank
+
+Arguments:
+    rank [int] :  rank where to save time value
+
+Returns
+    [float] : time value
+        )", ( py::arg("self" ), py::arg("rank" )))
         .def( "addFieldOnNodesDescription", &Result::addFieldOnNodesDescription )
         .def( "setMaterialField", c15, R"(
 Set material field on all ranks
@@ -210,9 +221,21 @@ Return the names of the fields on cells as Python list.
 Returns:
     list[str]: List of names of the fields on cells.
         )", ( py::arg("self" )))
-        .def( "getRanks", &Result::getRanks )
+        .def( "getConstantFieldsOnCellsNames", &Result::getConstantFieldsOnCellsNames, R"(
+Return the names of the contant fields on cells as Python list.
+
+Returns:
+    list[str]: List of names of the contant fields on cells.
+        )", ( py::arg("self" )))
+        .def( "getRanks", &Result::getRanks, R"(
+Return the list of ranks used to store fields
+
+Returns:
+    list[int]: List of ranks used to store fields.
+        )", ( py::arg("self" )) )
         .def( "getFieldOnNodesReal", &Result::getFieldOnNodesReal )
         .def( "getFieldOnCellsReal", &Result::getFieldOnCellsReal )
+        .def( "getConstantFieldOnCellsChar16", &Result::getConstantFieldOnCellsChar16 )
         .def( "printMedFile", c7 )
         .def( "printMedFile", c8 )
         .def( "setMesh", &Result::setMesh )
@@ -235,6 +258,17 @@ Set a FieldOnCells to result
 Arguments:
     field [FieldOnCellsRealPtr] : field to set
     name [str]: symbolic name of the field in the result (ex: 'VARI_ELGA', 'SIEF_ELGA'...)
+    rank [int]: rank to set the field
+
+Returns:
+    bool: True if ok else False.
+        )", ( py::arg("self"), py::arg("field"), py::arg("name"), py::arg("rank")) )
+        .def( "setField", c21, R"(
+Set a ConstantFieldOnCellsChar16 to result
+
+Arguments:
+    field [ConstantFieldOnCellsChar16] : field to set
+    name [str]: symbolic name of the field in the result (ex: 'COMPOR', ...)
     rank [int]: rank to set the field
 
 Returns:

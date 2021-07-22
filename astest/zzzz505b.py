@@ -86,37 +86,64 @@ nbRank = SOLUT.getNumberOfRanks()
 SOLUN = code_aster.NonLinearResult()
 
 SOLUN.allocate(nbRank)
+
 for rank in range(nbRank):
     SOLUN.setModel( SOLUT.getModel(rank), rank )
     SOLUN.setMaterialField( SOLUT.getMaterialField(rank), rank )
     SOLUN.setField( SOLUT.getFieldOnNodesReal("DEPL", rank), "DEPL", rank )
     SOLUN.setField( SOLUT.getFieldOnCellsReal("SIEF_ELGA", rank), "SIEF_ELGA", rank )
     SOLUN.setField( SOLUT.getFieldOnCellsReal("VARI_ELGA", rank), "VARI_ELGA", rank )
+    compor = SOLUT.getConstantFieldOnCellsChar16("COMPORTEMENT", rank)
+    SOLUN.setField( compor, "COMPORTEMENT", rank )
+    SOLUN.setTimeValue( SOLUT.getTimeValue(rank), rank)
+
+list_field = []
+list_field += SOLUN.getFieldsOnNodesNames()
+list_field += SOLUN.getFieldsOnCellsNames()
+list_field += SOLUN.getConstantFieldsOnCellsNames()
+
+test.assertSequenceEqual( sorted(list_field), sorted(["DEPL", "VARI_ELGA", "SIEF_ELGA", "COMPORTEMENT"]))
+
 
 #=======================================================
 #             IMPR_RESU et LIRE_RESU
 #=======================================================
 
-SOLUR = SOLUN
+IMPR_RESU(
+        FORMAT='MED',UNITE=81,
+        RESU=_F(RESULTAT=SOLUT,),
+    )
 
-# Pas possibler car il manque la carte de comportement pour le moment
-# IMPR_RESU(
-#         FORMAT='MED',UNITE=80,
-#         RESU=_F(RESULTAT=SOLUN,),
-#     )
+IMPR_RESU(
+        FORMAT='MED',UNITE=80,
+        RESU=_F(RESULTAT=SOLUN, NOM_RESU_MED = "SOLUN",),
+    )
 
-# SOLUR = LIRE_RESU(MODELE=model,
-#                  FORMAT='MED',
-#                  UNITE=80,
-#                  TYPE_RESU='EVOL_NOLI',
-#                  COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
-#                  CHAM_MATER=mater,
-#                  EXCIT=(_F(CHARGE=encast,FONC_MULT=RAMPE),
-#                            _F(CHARGE=depl,FONC_MULT=RAMPE),),
-#                  FORMAT_MED=(_F(NOM_RESU="SOLUN", NOM_CHAM='DEPL'),
-#                              _F(NOM_RESU="SOLUN", NOM_CHAM='SIEF_ELGA'),
-#                              _F(NOM_RESU="SOLUN", NOM_CHAM='VARI_ELGA')),
-#                  TOUT_ORDRE="OUI")
+SOLUT = LIRE_RESU(MODELE=model,
+                 FORMAT='MED',
+                 UNITE=81,
+                 TYPE_RESU='EVOL_NOLI',
+                 COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
+                 CHAM_MATER=mater,
+                 EXCIT=(_F(CHARGE=encast,FONC_MULT=RAMPE),
+                           _F(CHARGE=depl,FONC_MULT=RAMPE),),
+                 FORMAT_MED=(_F(NOM_RESU="SOLUT", NOM_CHAM='DEPL'),
+                             _F(NOM_RESU="SOLUT", NOM_CHAM='SIEF_ELGA'),
+                             _F(NOM_RESU="SOLUT", NOM_CHAM='VARI_ELGA')),
+                 TOUT_ORDRE="OUI")
+
+SOLUR = LIRE_RESU(MODELE=model,
+                 FORMAT='MED',
+                 UNITE=80,
+                 TYPE_RESU='EVOL_NOLI',
+                 COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
+                 CHAM_MATER=mater,
+                 EXCIT=(_F(CHARGE=encast,FONC_MULT=RAMPE),
+                           _F(CHARGE=depl,FONC_MULT=RAMPE),),
+                 FORMAT_MED=(_F(NOM_RESU="SOLUN", NOM_CHAM='DEPL'),
+                             _F(NOM_RESU="SOLUN", NOM_CHAM='SIEF_ELGA'),
+                             _F(NOM_RESU="SOLUN", NOM_CHAM='VARI_ELGA')),
+                 TOUT_ORDRE="OUI")
 
 #=========================================================
 #            REALISATION DES TESTS
