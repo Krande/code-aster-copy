@@ -81,7 +81,7 @@ matrAsse.addDirichletBC(charCine)
 matrAsse.build()
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 
-retour = vect_elem.assemble( numeDDL )
+retour = vect_elem.assembleWithMultiplicatveFunction( numeDDL )
 
 monSolver.factorize( matrAsse )
 

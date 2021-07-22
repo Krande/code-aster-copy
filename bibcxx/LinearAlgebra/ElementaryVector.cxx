@@ -46,16 +46,52 @@
 #include "aster_fort_calcul.h"
 #include "LinearAlgebra/ElementaryVector.h"
 #include "Supervis/CommandSyntax.h"
+#include "Supervis/Exceptions.h"
+#include "Utilities/Tools.h"
+
 
 FieldOnNodesRealPtr
-ElementaryVector::assemble( const BaseDOFNumberingPtr &dofNume,
+ElementaryVector::assemble( const BaseDOFNumberingPtr dofNume )  const
+{
+    if ( _isEmpty )
+        raiseAsterError( "The ElementaryVector is empty" );
+
+    if ( ( !dofNume ) || dofNume->isEmpty() )
+        raiseAsterError( "Numerotation is empty" );
+
+    FieldOnNodesRealPtr field = boost::make_shared<FieldOnNodesReal>( Permanent );
+    field->setDOFNumbering( dofNume );
+
+    VectorString vect_elem(1, getName());
+
+    char *tabNames = vectorStringAsFStrArray( vect_elem, 19 );
+
+    ASTERDOUBLE list_coef = 1.0;
+    ASTERINTEGER typscal = 1;
+    ASTERINTEGER nbElem = 1;
+
+
+    std::string base( "G" );
+    std::string blanc( "        " );
+    std::string zero( "ZERO" );
+
+    CALL_ASSVEC(base.c_str(), field->getName().c_str(), &nbElem, tabNames, &list_coef,
+     dofNume->getName().c_str(), blanc.c_str(), zero.c_str(), &typscal);
+
+    FreeStr( tabNames );
+
+    return field;
+};
+
+FieldOnNodesRealPtr
+ElementaryVector::assembleWithMultiplicatveFunction( const BaseDOFNumberingPtr &dofNume,
                             const ASTERDOUBLE &time,
                             const JeveuxMemory memType ) {
     if ( _isEmpty )
-        throw std::runtime_error( "The ElementaryVector is empty" );
+        raiseAsterError( "The ElementaryVector is empty" );
 
     if ( ( !dofNume ) || dofNume->isEmpty() )
-        throw std::runtime_error( "Numerotation is empty" );
+        raiseAsterError( "Numerotation is empty" );
 
     FieldOnNodesRealPtr field = boost::make_shared<FieldOnNodesReal>( memType );
     field->setDOFNumbering( dofNume );

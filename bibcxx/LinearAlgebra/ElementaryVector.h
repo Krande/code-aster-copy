@@ -115,28 +115,31 @@ class ElementaryVector : public DataStructure {
      * @param dofNume objet DOFNumbering
      */
     FieldOnNodesRealPtr
-    assemble( const DOFNumberingPtr &dofNume ) {
-        return assemble( dofNume, 0., Permanent );
+    assembleWithMultiplicatveFunction( const DOFNumberingPtr &dofNume ) {
+        return assembleWithMultiplicatveFunction( dofNume, 0., Permanent );
     };
 
     FieldOnNodesRealPtr
-    assemble( const DOFNumberingPtr &dofNume, const ASTERDOUBLE& time ) {
-        return assemble( dofNume, time, Permanent );
+    assembleWithMultiplicatveFunction( const DOFNumberingPtr &dofNume, const ASTERDOUBLE& time ) {
+        return assembleWithMultiplicatveFunction( dofNume, time, Permanent );
     };
+
+    FieldOnNodesRealPtr
+    assemble( const BaseDOFNumberingPtr dofNume ) const;
 
 /**
  * @brief Assembler les vecteurs elementaires en se fondant sur dofNume
  * @param dofNume objet DOFNumbering
  */
 #ifdef ASTER_HAVE_MPI
-    FieldOnNodesRealPtr assemble(
+    FieldOnNodesRealPtr assembleWithMultiplicatveFunction(
         const ParallelDOFNumberingPtr &dofNume ) {
-        return assemble( dofNume, 0., Permanent );
+        return assembleWithMultiplicatveFunction( dofNume, 0., Permanent );
     };
 
-    FieldOnNodesRealPtr assemble(
+    FieldOnNodesRealPtr assembleWithMultiplicatveFunction(
         const ParallelDOFNumberingPtr &dofNume, const ASTERDOUBLE& time ) {
-        return assemble( dofNume, time, Permanent );
+        return assembleWithMultiplicatveFunction( dofNume, time, Permanent );
     };
 #endif /* ASTER_HAVE_MPI */
 
@@ -145,8 +148,9 @@ class ElementaryVector : public DataStructure {
      * @param dofNume objet DOFNumbering
      */
     FieldOnNodesRealPtr
-    assemble( const BaseDOFNumberingPtr &dofNume, const ASTERDOUBLE &time = 0.,
-                    const JeveuxMemory memType = Permanent ) ;
+    assembleWithMultiplicatveFunction( const BaseDOFNumberingPtr &dofNume,
+                                        const ASTERDOUBLE &time = 0.,
+                                        const JeveuxMemory memType = Permanent ) ;
 
     /**
      * @brief Methode permettant de savoir si les matrices elementaires sont vides

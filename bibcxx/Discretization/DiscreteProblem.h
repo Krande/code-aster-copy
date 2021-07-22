@@ -88,6 +88,9 @@ class DiscreteProblem {
      */
     ElementaryVectorDisplacementRealPtr computeElementaryDirichletVector( ASTERDOUBLE time = 0. );
 
+    FieldOnNodesRealPtr
+    computeDirichlet( BaseDOFNumberingPtr dofNume,  ASTERDOUBLE time = 0.);
+
     /**
      * @brief Fonction permettant de calculer les vecteurs élémentaires pour les
               chargements de Dirichlet
@@ -97,10 +100,18 @@ class DiscreteProblem {
     ElementaryVectorDisplacementRealPtr
     computeElementaryDirichletReactionVector( FieldOnNodesRealPtr lagr_curr );
 
+    FieldOnNodesRealPtr
+    computeDirichletReaction( BaseDOFNumberingPtr dofNume,  FieldOnNodesRealPtr lagr_curr);
+
+
 
     ElementaryVectorDisplacementRealPtr
     computeElementaryDualizedDirichletVector( FieldOnNodesRealPtr disp_curr,
                                               ASTERDOUBLE scaling = 1.0 );
+
+    FieldOnNodesRealPtr
+    computeDualizedDirichlet( BaseDOFNumberingPtr dofNume,  FieldOnNodesRealPtr disp_curr,
+                              ASTERDOUBLE scaling = 1.0);
 
     /**
      * @brief Fonction permettant de calculer les vecteurs élémentaires pour les
@@ -118,6 +129,10 @@ class DiscreteProblem {
      */
     ElementaryVectorDisplacementRealPtr computeElementaryNeumannVector( const VectorReal time,
                                                       ExternalStateVariablesBuilderPtr );
+
+    FieldOnNodesRealPtr
+    computeNeumann( BaseDOFNumberingPtr dofNume,  const VectorReal time,
+                                                  ExternalStateVariablesBuilderPtr);
 
     /**
      * @brief Fonction permettant de calculer les matrices élémentaires de rigidité

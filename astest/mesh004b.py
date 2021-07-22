@@ -85,7 +85,7 @@ matrAsse.build()
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 #matrAsse.debugPrint()
 
-retour = vect_elem.assemble( numeDDL )
+retour = vect_elem.assembleWithMultiplicatveFunction( numeDDL )
 
 monSolver.factorize( matrAsse )
 resu = monSolver.solve( matrAsse, retour )

@@ -54,6 +54,16 @@ void DEFPSSSSSSPS( ASMATR, asmatr, ASTERINTEGER *, const char *, STRING_SIZE, co
                    STRING_SIZE, const char *, STRING_SIZE, ASTERINTEGER *, const char *,
                    STRING_SIZE );
 
+#define CALL_ASSVEC( a, b, c, d, e, f, g, h, i )                                                   \
+    CALLSSPSPSSSP( ASSVEC, assvec, a, b, c, d, e, f, g, h, i )
+void DEFSSPSPSSSP( ASSVEC, assvec, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                    ASTERINTEGER *, const char *, STRING_SIZE,
+                    ASTERDOUBLE *, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                    const char *, STRING_SIZE, ASTERINTEGER * );
+
+#define CALLO_AP_ASSEMBLY_VECTOR( a ) CALLO( AP_ASSEMBLY_VECTOR, ap_assembly_vector, a )
+void DEFS( AP_ASSEMBLY_VECTOR, ap_assembly_vector, const char *, STRING_SIZE );
+
 #define CALLO_CACHVC( a, b, c, d, e, f, g, h, i, j, k, l )                                         \
     CALLOOOOOOOOPPPP( CACHVC, cachvc, a, b, c, d, e, f, g, h, i, j, k, l )
 void DEFSSSSSSSSPPPP( CACHVC, cachvc, const char *, STRING_SIZE, const char *, STRING_SIZE,

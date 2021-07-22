@@ -51,23 +51,22 @@ void StaticMechanicalAlgorithm::oneStep( const CurrentContext &ctx ) {
     }
 
     // Build Dirichlet loads
-    ElementaryVectorPtr vectElem1 =
-        ctx._discreteProblem->computeElementaryDirichletVector( ctx._time );
-    FieldOnNodesRealPtr chNoDir = vectElem1->assemble( dofNum1, ctx._time, Temporary );
+    FieldOnNodesRealPtr chNoDir =
+        ctx._discreteProblem->computeDirichlet( dofNum1, ctx._time );
 
     // Build Laplace forces
     ElementaryVectorPtr vectElem2 = ctx._discreteProblem->computeElementaryLaplaceVector();
-    FieldOnNodesRealPtr chNoLap = vectElem2->assemble( dofNum1, ctx._time, Temporary );
+    FieldOnNodesRealPtr chNoLap =
+        vectElem2->assembleWithMultiplicatveFunction( dofNum1, ctx._time, Temporary );
 
     // Build Neumann loads
     VectorReal times;
     times.push_back( ctx._time );
     times.push_back( 0. );
     times.push_back( 0. );
-    ElementaryVectorPtr vectElem3 = ctx._discreteProblem->computeElementaryNeumannVector( times,
-                                                                                        ctx._varCom
-                                                                                      );
-    FieldOnNodesRealPtr chNoNeu = vectElem3->assemble( dofNum1, ctx._time, Temporary );
+
+    FieldOnNodesRealPtr chNoNeu =
+        ctx._discreteProblem->computeNeumann( dofNum1, times, ctx._varCom );
 
     *chNoDir += *chNoLap;
     *chNoDir += *chNoNeu;

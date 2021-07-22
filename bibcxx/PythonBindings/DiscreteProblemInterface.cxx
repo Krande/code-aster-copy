@@ -33,6 +33,8 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeDirichletBC_overloads, computeDir
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeDOFNumbering_overloads, computeDOFNumbering, 0, 1 )
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeElementaryDualizedDirichletVector_overloads,
     computeElementaryDualizedDirichletVector, 1, 2 )
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeDualizedDirichlet_overloads,
+    computeDualizedDirichlet, 2, 3 )
 
 void exportDiscreteProblemToPython() {
 
@@ -45,13 +47,21 @@ void exportDiscreteProblemToPython() {
               &DiscreteProblem::computeElementaryMechanicalLoadsVector )
         .def( "computeElementaryDirichletVector",
               &DiscreteProblem::computeElementaryDirichletVector )
+        .def( "computeDirichlet",
+              &DiscreteProblem::computeDirichlet )
         .def( "computeElementaryDirichletReactionVector",
               &DiscreteProblem::computeElementaryDirichletReactionVector )
+        .def( "computeDirichletReaction",
+              &DiscreteProblem::computeDirichletReaction )
         .def( "computeElementaryDualizedDirichletVector",
               &DiscreteProblem::computeElementaryDualizedDirichletVector,
               computeElementaryDualizedDirichletVector_overloads() )
+        .def( "computeDualizedDirichlet",
+              &DiscreteProblem::computeDualizedDirichlet,
+              computeDualizedDirichlet_overloads() )
         .def( "computeElementaryLaplaceVector", &DiscreteProblem::computeElementaryLaplaceVector )
         .def( "computeElementaryNeumannVector", &DiscreteProblem::computeElementaryNeumannVector )
+        .def( "computeNeumann", &DiscreteProblem::computeNeumann )
         .def( "computeElementaryStiffnessMatrix",
               &DiscreteProblem::computeElementaryStiffnessMatrix )
         .def( "computeElementaryTangentMatrix", &DiscreteProblem::computeElementaryTangentMatrix )

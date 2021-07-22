@@ -114,7 +114,7 @@ test.assertEqual(len(ccid), numeDDL.getNumberOfDofs())
 # vectElem.debugPrint(6)
 test.assertEqual(vectElem.getType(), "VECT_ELEM_DEPL_R")
 
-retour = vectElem.assemble( numeDDL )
+retour = vectElem.assembleWithMultiplicatveFunction( numeDDL )
 
 matrAsse = code_aster.AssemblyMatrixDisplacementReal()
 matrAsse.appendElementaryMatrix(matr_elem)

@@ -65,6 +65,13 @@ DiscreteProblem::computeElementaryDirichletVector( ASTERDOUBLE time ) {
     return retour;
 };
 
+FieldOnNodesRealPtr
+DiscreteProblem::computeDirichlet( BaseDOFNumberingPtr dofNume, ASTERDOUBLE time ) {
+    auto vect_elem = computeElementaryDirichletVector(time);
+
+    return vect_elem->assembleWithMultiplicatveFunction(dofNume, time);
+};
+
 ElementaryVectorDisplacementRealPtr
 DiscreteProblem::computeElementaryDirichletReactionVector(FieldOnNodesRealPtr lagr_curr ) {
     ElementaryVectorDisplacementRealPtr retour =
@@ -95,6 +102,15 @@ DiscreteProblem::computeElementaryDirichletReactionVector(FieldOnNodesRealPtr la
     return retour;
 };
 
+FieldOnNodesRealPtr
+DiscreteProblem::computeDirichletReaction( BaseDOFNumberingPtr dofNume,
+                                          FieldOnNodesRealPtr lagr_curr )
+{
+    auto vect_elem = computeElementaryDirichletReactionVector(lagr_curr);
+
+    return vect_elem->assemble(dofNume);
+};
+
 
 ElementaryVectorDisplacementRealPtr
 DiscreteProblem::computeElementaryDualizedDirichletVector( FieldOnNodesRealPtr disp_curr,
@@ -119,6 +135,21 @@ DiscreteProblem::computeElementaryDualizedDirichletVector( FieldOnNodesRealPtr d
 
     retour->setListOfLoads( listOfLoads );
     return retour;
+};
+
+FieldOnNodesRealPtr
+DiscreteProblem::computeDualizedDirichlet( BaseDOFNumberingPtr dofNume,
+                                FieldOnNodesRealPtr disp_curr,
+                               ASTERDOUBLE scaling )
+{
+    auto vect_elem = computeElementaryDualizedDirichletVector(disp_curr, scaling);
+
+    auto bume = vect_elem->assemble(dofNume);
+
+    if( _study->getMesh()->isParallel() )
+        CALLO_AP_ASSEMBLY_VECTOR(bume->getName());
+
+    return bume;
 };
 
 ElementaryVectorDisplacementRealPtr
@@ -197,6 +228,16 @@ DiscreteProblem::computeElementaryNeumannVector( const VectorReal time,
 
     retour->setListOfLoads( _study->getListOfLoads() );
     return retour;
+};
+
+FieldOnNodesRealPtr
+DiscreteProblem::computeNeumann( BaseDOFNumberingPtr dofNume,
+                                const VectorReal time,
+                                ExternalStateVariablesBuilderPtr varCom)
+{
+    auto vect_elem = computeElementaryNeumannVector(time, varCom);
+
+    return vect_elem->assembleWithMultiplicatveFunction(dofNume, time[0] + time[1]);
 };
 
 ElementaryMatrixDisplacementRealPtr
