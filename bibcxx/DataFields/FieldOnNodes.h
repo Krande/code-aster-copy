@@ -250,17 +250,16 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     FieldOnNodes< ValueType > operator-() {
         bool retour = _valuesList->updateValuePointer();
-        if(retour){
-            FieldOnNodes< ValueType > tmp(*this);
-            int taille = _valuesList->size();
-            for ( int pos = 0; pos < taille; ++pos ){
-                tmp[pos] = -( *this )[pos];
-            }
-            return tmp;
-        }else{
-            raiseAsterError("Unable to update the FielsOnNodes object");
-        }
 
+        if(!retour)
+            raiseAsterError("Unable to update the FielsOnNodes object");
+
+        FieldOnNodes< ValueType > tmp(*this);
+        auto taille = _valuesList->size();
+        for ( int pos = 0; pos < taille; ++pos )
+            tmp[pos] = -( *this )[pos];
+
+        return tmp;
     };
 
     // NOTE ON FOLLOWING OPERATOR OVERLAODING
