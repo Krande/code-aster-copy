@@ -29,19 +29,19 @@ namespace py = boost::python;
 
 void exportResultToPython() {
 
-    MaterialFieldPtr ( Result::*c1 )() =
+    MaterialFieldPtr ( Result::*c1 )() const =
         &Result::getMaterialField;
-    MaterialFieldPtr ( Result::*c2 )( ASTERINTEGER ) =
+    MaterialFieldPtr ( Result::*c2 )( ASTERINTEGER ) const =
         &Result::getMaterialField;
 
-    ModelPtr ( Result::*c3 )() =
+    ModelPtr ( Result::*c3 )() const =
         &Result::getModel;
-    ModelPtr ( Result::*c4 )( ASTERINTEGER ) =
+    ModelPtr ( Result::*c4 )( ASTERINTEGER ) const =
         &Result::getModel;
 
-    ElementaryCharacteristicsPtr ( Result::*c5 )() =
+    ElementaryCharacteristicsPtr ( Result::*c5 )() const =
         &Result::getElementaryCharacteristics;
-    ElementaryCharacteristicsPtr ( Result::*c6 )( ASTERINTEGER ) =
+    ElementaryCharacteristicsPtr ( Result::*c6 )( ASTERINTEGER ) const =
         &Result::getElementaryCharacteristics;
 
     bool ( Result::*c7 )( const std::string ) const =
@@ -104,6 +104,13 @@ Argument:
     mater [MaterialFieldPtr]: material field to set.
     rank [rank]: rank to set
         )", ( py::arg("self" ), py::arg("mater"), py::arg("rank")) )
+        .def( "setListOfLoads", &Result::setListOfLoads, R"(
+Set list of loads on the specified rank
+
+Argument:
+    load [ListOfLoadsPtr]: list of loads to set.
+    rank [rank]: rank to set
+        )", ( py::arg("self" ), py::arg("load"), py::arg("rank")) )
         .def( "setModel", c11, R"(
 Set model on all ranks
 
@@ -160,6 +167,16 @@ Returns:
         )", ( py::arg("self" )) )
         .def( "getMaterialField", c1 )
         .def( "getMaterialField", c2 )
+        .def( "getListOfLoads", &Result::getListOfLoads, R"(
+Get list of loads on the specified rank
+
+Argument:
+    rank [rank]: rank to get
+
+Return:
+    ListOfLoadsPtr: a pointer to list of loads.
+
+        )", ( py::arg("self" ),  py::arg("rank")) )
         .def( "getMesh", &Result::getMesh, R"(
 Return a pointer to mesh
 

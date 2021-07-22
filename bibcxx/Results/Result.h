@@ -269,13 +269,13 @@ class Result : public DataStructure, public ListOfTables {
      * @brief Add elementary characteristics to container
      * @param rank
      */
-    ListOfLoadsPtr getListOfLoads( ASTERINTEGER rank ) ;
+    ListOfLoadsPtr getListOfLoads( ASTERINTEGER rank ) const;
 
     /**
      * @brief Get elementary characteristics
      */
     ElementaryCharacteristicsPtr
-    getElementaryCharacteristics() ;
+    getElementaryCharacteristics() const;
 
     /**
      * @brief Get elementary characteristics
@@ -288,7 +288,7 @@ class Result : public DataStructure, public ListOfTables {
      * @param rank
      */
     ElementaryCharacteristicsPtr
-    getElementaryCharacteristics( ASTERINTEGER rank ) ;
+    getElementaryCharacteristics( ASTERINTEGER rank ) const;
 
     /**
      * @brief Get material
@@ -298,23 +298,23 @@ class Result : public DataStructure, public ListOfTables {
     /**
      * @brief Get material
      */
-    MaterialFieldPtr getMaterialField() ;
+    MaterialFieldPtr getMaterialField() const;
 
     /**
      * @brief Get material
      * @param rank
      */
-    MaterialFieldPtr getMaterialField( ASTERINTEGER rank ) ;
+    MaterialFieldPtr getMaterialField( ASTERINTEGER rank ) const;
 
     /**
      * @brief Get mesh
      */
-    BaseMeshPtr getMesh();
+    BaseMeshPtr getMesh() const;
 
     /**
      * @brief check for multiple models
      */
-    bool hasMultipleModel() ;
+    bool hasMultipleModel() const;
 
     /**
      * @brief Get models
@@ -324,13 +324,13 @@ class Result : public DataStructure, public ListOfTables {
     /**
      * @brief Get model
      */
-    ModelPtr getModel() ;
+    ModelPtr getModel() const;
 
     /**
      * @brief Get model
      * @param rank
      */
-    ModelPtr getModel( ASTERINTEGER rank ) ;
+    ModelPtr getModel( ASTERINTEGER rank ) const;
 
     /**
      * @brief Obtenir un champ aux noeuds réel à partir de son nom et de son numéro d'ordre

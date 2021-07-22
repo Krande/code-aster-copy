@@ -88,6 +88,15 @@ Returns:
     Bool: True if success
         )",
               ( py::arg( "self" ) )   );
+    c1.def( "getListOfLoads",
+        &StudyDescription::getListOfLoads,
+        py::return_value_policy<py::copy_const_reference>(), R"(
+Return list of loads.
+
+Returns:
+    ListOfLoads: a pointer to list of loads
+        )",
+              ( py::arg( "self" ) )   );
     c1.def( "getListOfDirichletBCs",
         &StudyDescription::getListOfDirichletBCs,
         py::return_value_policy<py::copy_const_reference>(), R"(

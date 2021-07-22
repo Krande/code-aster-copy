@@ -195,7 +195,7 @@ Result::getAllElementaryCharacteristics() const
     return unique(_mapElemCara);
 };
 
-ElementaryCharacteristicsPtr Result::getElementaryCharacteristics() {
+ElementaryCharacteristicsPtr Result::getElementaryCharacteristics() const {
     const auto cara = getAllElementaryCharacteristics();
     AS_ASSERT(cara.size() <= 1);
 
@@ -206,17 +206,17 @@ ElementaryCharacteristicsPtr Result::getElementaryCharacteristics() {
 };
 
 ElementaryCharacteristicsPtr
-Result::getElementaryCharacteristics( ASTERINTEGER rank ) {
+Result::getElementaryCharacteristics( ASTERINTEGER rank ) const {
     auto curIter = _mapElemCara.find( rank );
     if ( curIter == _mapElemCara.end() )
-        throw std::runtime_error( "Rank not found" );
+        raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' not found" );
     return ( *curIter ).second;
 };
 
-ListOfLoadsPtr Result::getListOfLoads( ASTERINTEGER rank ) {
+ListOfLoadsPtr Result::getListOfLoads( ASTERINTEGER rank ) const {
     auto curIter = _mapLoads.find( rank );
     if ( curIter == _mapLoads.end() )
-        throw std::runtime_error( "Rank not found" );
+        raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' not found" );
     return ( *curIter ).second;
 };
 
@@ -225,7 +225,7 @@ std::vector< MaterialFieldPtr > Result::getMaterialFields() const
     return unique(_mapMaterial);
 };
 
-MaterialFieldPtr Result::getMaterialField() {
+MaterialFieldPtr Result::getMaterialField() const {
     const auto mate = getMaterialFields();
     AS_ASSERT(mate.size() <= 1);
 
@@ -236,14 +236,14 @@ MaterialFieldPtr Result::getMaterialField() {
 };
 
 MaterialFieldPtr
-Result::getMaterialField( ASTERINTEGER rank ) {
+Result::getMaterialField( ASTERINTEGER rank ) const {
     auto curIter = _mapMaterial.find( rank );
     if ( curIter == _mapMaterial.end() )
-        throw std::runtime_error( "Rank not found" );
+        raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' not found" );
     return ( *curIter ).second;
 };
 
-BaseMeshPtr Result::getMesh()
+BaseMeshPtr Result::getMesh() const
 {
     if( _mesh != nullptr )
         return _mesh;
@@ -253,7 +253,7 @@ BaseMeshPtr Result::getMesh()
     return nullptr;
 };
 
-bool Result::hasMultipleModel()
+bool Result::hasMultipleModel() const
 {
     std::string name( "" );
     for ( const auto &curIter : _mapModel ) {
@@ -271,9 +271,9 @@ std::vector< ModelPtr > Result::getModels() const
     return unique(_mapModel);
 };
 
-ModelPtr Result::getModel() {
+ModelPtr Result::getModel() const {
     if ( hasMultipleModel() ){
-        throw std::runtime_error( "Error: multiple models" );
+        raiseAsterError( "Error: multiple models" );
     }
 
     const auto models = getModels();
@@ -286,11 +286,11 @@ ModelPtr Result::getModel() {
 
 };
 
-ModelPtr Result::getModel( ASTERINTEGER rank )
+ModelPtr Result::getModel( ASTERINTEGER rank ) const
 {
     auto curIter = _mapModel.find( rank );
     if ( curIter == _mapModel.end() )
-        throw std::runtime_error( "Rank not found" );
+        raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' not found" );
     return ( *curIter ).second;
 };
 

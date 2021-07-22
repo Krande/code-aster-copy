@@ -77,6 +77,7 @@ void exportDiscreteProblemToPython() {
               &DiscreteProblem::computeMechanicalStiffnessMatrix )
         .def( "computeMechanicalMassMatrix", &DiscreteProblem::computeMechanicalMassMatrix )
         .def( "getStudyDescription", &DiscreteProblem::getStudyDescription )
+        .def( "getListOfLoads", &DiscreteProblem::getListOfLoads )
         .def( "createBehaviour",
               static_cast< BehaviourPropertyPtr ( DiscreteProblem::* )( PyObject *,
                                                             const std::string &,

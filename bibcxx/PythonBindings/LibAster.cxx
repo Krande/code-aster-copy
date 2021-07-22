@@ -95,6 +95,7 @@
 #include "PythonBindings/ListOfExternalStateVariablesInterface.h"
 #include "PythonBindings/ListOfFloatsInterface.h"
 #include "PythonBindings/ListOfIntegersInterface.h"
+#include "PythonBindings/ListOfLoadsInterface.h"
 #include "PythonBindings/LoadResultInterface.h"
 #include "PythonBindings/MaterialFieldBuilderInterface.h"
 #include "PythonBindings/MaterialFieldInterface.h"
@@ -307,5 +308,6 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportDeleteTemporaryObjectsToPython();
     exportMatrixToPetscToPython();
     exportBehaviourPropertyToPython();
+    exportListOfLoadsToPython();
 
 };

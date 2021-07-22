@@ -71,8 +71,11 @@ charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dx, 0., "COTE_B")
 charCine.build()
 
 study = code_aster.StudyDescription(model, affectMat)
+study.addDirichletBC(charCine)
 dProblem = code_aster.DiscreteProblem(study)
 matr_elem = dProblem.computeMechanicalStiffnessMatrix()
+
+listLoads = study.getListOfLoads()
 
 monSolver = code_aster.MumpsSolver(code_aster.Renumbering.Metis)
 

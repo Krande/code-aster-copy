@@ -186,7 +186,9 @@ class DiscreteProblem {
      * @brief Récupération de l'étude
      * @return Numérotation du problème discret
      */
-    StudyDescriptionPtr getStudyDescription() { return _study; };
+    StudyDescriptionPtr getStudyDescription() const { return _study; };
+
+    ListOfLoadsPtr getListOfLoads() const { return _study->getListOfLoads(); };
 
     /**
      * @brief Create ConstantFieldOnCell for behaviours
