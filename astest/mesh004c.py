@@ -83,7 +83,7 @@ matrAsse.build()
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_TEMP_R")
 # matrAsse.debugPrint()
 
-# retour = vect_elem.assembleWithMultiplicatveFunction( numeDDL )
+# retour = vect_elem.assembleWithLoadFunctions( numeDDL )
 vecass = ASSE_VECTEUR(VECT_ELEM=vect_elem, NUME_DDL=numeDDL)
 vcine = CALC_CHAR_CINE(NUME_DDL=numeDDL,
                        CHAR_CINE=charCine,)

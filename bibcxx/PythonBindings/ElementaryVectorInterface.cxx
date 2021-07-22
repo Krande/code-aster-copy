@@ -32,15 +32,15 @@ namespace py = boost::python;
 void exportElementaryVectorToPython() {
 
     FieldOnNodesRealPtr ( ElementaryVector::*c10 )( const DOFNumberingPtr & ) =
-        &ElementaryVector::assembleWithMultiplicatveFunction;
+        &ElementaryVector::assembleWithLoadFunctions;
     FieldOnNodesRealPtr ( ElementaryVector::*c11 )( const DOFNumberingPtr &, const ASTERDOUBLE& ) =
-        &ElementaryVector::assembleWithMultiplicatveFunction;
+        &ElementaryVector::assembleWithLoadFunctions;
 #ifdef ASTER_HAVE_MPI
     FieldOnNodesRealPtr ( ElementaryVector::*c20 )( const ParallelDOFNumberingPtr & ) =
-        &ElementaryVector::assembleWithMultiplicatveFunction;
+        &ElementaryVector::assembleWithLoadFunctions;
     FieldOnNodesRealPtr ( ElementaryVector::*c21 )
         ( const ParallelDOFNumberingPtr & , const ASTERDOUBLE& ) =
-        &ElementaryVector::assembleWithMultiplicatveFunction;
+        &ElementaryVector::assembleWithLoadFunctions;
 #endif /* ASTER_HAVE_MPI */
 
     void ( ElementaryVector::*c3 )( const MechanicalLoadRealPtr & ) =
@@ -53,12 +53,12 @@ void exportElementaryVectorToPython() {
               py::make_constructor(&initFactoryPtr< ElementaryVector, std::string >))
         .def( "addLoad", c3 )
         .def( "assemble", &ElementaryVector::assemble )
-        .def( "assembleWithMultiplicatveFunction", c10 )
-        .def( "assembleWithMultiplicatveFunction", c11 )
+        .def( "assembleWithLoadFunctions", c10 )
+        .def( "assembleWithLoadFunctions", c11 )
         .def( "setType", &ElementaryVector::setType )
 #ifdef ASTER_HAVE_MPI
-        .def( "assembleWithMultiplicatveFunction", c20 )
-        .def( "assembleWithMultiplicatveFunction", c21 )
+        .def( "assembleWithLoadFunctions", c20 )
+        .def( "assembleWithLoadFunctions", c21 )
 #endif /* ASTER_HAVE_MPI */
         .def( "setListOfLoads", &ElementaryVector::setListOfLoads )
         .def( "build", &ElementaryVector::build );

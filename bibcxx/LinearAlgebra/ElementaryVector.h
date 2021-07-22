@@ -115,13 +115,13 @@ class ElementaryVector : public DataStructure {
      * @param dofNume objet DOFNumbering
      */
     FieldOnNodesRealPtr
-    assembleWithMultiplicatveFunction( const DOFNumberingPtr &dofNume ) {
-        return assembleWithMultiplicatveFunction( dofNume, 0., Permanent );
+    assembleWithLoadFunctions( const DOFNumberingPtr &dofNume ) {
+        return assembleWithLoadFunctions( dofNume, 0., Permanent );
     };
 
     FieldOnNodesRealPtr
-    assembleWithMultiplicatveFunction( const DOFNumberingPtr &dofNume, const ASTERDOUBLE& time ) {
-        return assembleWithMultiplicatveFunction( dofNume, time, Permanent );
+    assembleWithLoadFunctions( const DOFNumberingPtr &dofNume, const ASTERDOUBLE& time ) {
+        return assembleWithLoadFunctions( dofNume, time, Permanent );
     };
 
     FieldOnNodesRealPtr
@@ -132,14 +132,14 @@ class ElementaryVector : public DataStructure {
  * @param dofNume objet DOFNumbering
  */
 #ifdef ASTER_HAVE_MPI
-    FieldOnNodesRealPtr assembleWithMultiplicatveFunction(
+    FieldOnNodesRealPtr assembleWithLoadFunctions(
         const ParallelDOFNumberingPtr &dofNume ) {
-        return assembleWithMultiplicatveFunction( dofNume, 0., Permanent );
+        return assembleWithLoadFunctions( dofNume, 0., Permanent );
     };
 
-    FieldOnNodesRealPtr assembleWithMultiplicatveFunction(
+    FieldOnNodesRealPtr assembleWithLoadFunctions(
         const ParallelDOFNumberingPtr &dofNume, const ASTERDOUBLE& time ) {
-        return assembleWithMultiplicatveFunction( dofNume, time, Permanent );
+        return assembleWithLoadFunctions( dofNume, time, Permanent );
     };
 #endif /* ASTER_HAVE_MPI */
 
@@ -148,7 +148,7 @@ class ElementaryVector : public DataStructure {
      * @param dofNume objet DOFNumbering
      */
     FieldOnNodesRealPtr
-    assembleWithMultiplicatveFunction( const BaseDOFNumberingPtr &dofNume,
+    assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofNume,
                                         const ASTERDOUBLE &time = 0.,
                                         const JeveuxMemory memType = Permanent ) ;
 

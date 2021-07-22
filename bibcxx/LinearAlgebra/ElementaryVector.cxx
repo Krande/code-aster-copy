@@ -84,7 +84,7 @@ ElementaryVector::assemble( const BaseDOFNumberingPtr dofNume )  const
 };
 
 FieldOnNodesRealPtr
-ElementaryVector::assembleWithMultiplicatveFunction( const BaseDOFNumberingPtr &dofNume,
+ElementaryVector::assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofNume,
                             const ASTERDOUBLE &time,
                             const JeveuxMemory memType ) {
     if ( _isEmpty )

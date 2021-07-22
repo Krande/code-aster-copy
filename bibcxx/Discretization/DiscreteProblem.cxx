@@ -69,7 +69,7 @@ FieldOnNodesRealPtr
 DiscreteProblem::computeDirichlet( BaseDOFNumberingPtr dofNume, ASTERDOUBLE time ) {
     auto vect_elem = computeElementaryDirichletVector(time);
 
-    return vect_elem->assembleWithMultiplicatveFunction(dofNume, time);
+    return vect_elem->assembleWithLoadFunctions(dofNume, time);
 };
 
 ElementaryVectorDisplacementRealPtr
@@ -237,7 +237,7 @@ DiscreteProblem::computeNeumann( BaseDOFNumberingPtr dofNume,
 {
     auto vect_elem = computeElementaryNeumannVector(time, varCom);
 
-    return vect_elem->assembleWithMultiplicatveFunction(dofNume, time[0] + time[1]);
+    return vect_elem->assembleWithLoadFunctions(dofNume, time[0] + time[1]);
 };
 
 ElementaryMatrixDisplacementRealPtr
@@ -350,9 +350,6 @@ BaseDOFNumberingPtr DiscreteProblem::computeDOFNumbering( BaseDOFNumberingPtr do
 
 ElementaryVectorDisplacementRealPtr DiscreteProblem::computeElementaryMechanicalLoadsVector() {
     ElementaryVectorDisplacementRealPtr retour( new ElementaryVectorDisplacementReal( Permanent ) );
-
-    // Comme on calcul RIGI_MECA, il faut preciser le type de la sd
-    retour->setType( retour->getType() + "_DEPL_R" );
 
     CommandSyntax cmdSt( "CALC_VECT_ELEM" );
     cmdSt.setResult( retour->getName(), retour->getType() );

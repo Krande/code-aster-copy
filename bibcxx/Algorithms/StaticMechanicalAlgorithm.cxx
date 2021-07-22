@@ -57,7 +57,7 @@ void StaticMechanicalAlgorithm::oneStep( const CurrentContext &ctx ) {
     // Build Laplace forces
     ElementaryVectorPtr vectElem2 = ctx._discreteProblem->computeElementaryLaplaceVector();
     FieldOnNodesRealPtr chNoLap =
-        vectElem2->assembleWithMultiplicatveFunction( dofNum1, ctx._time, Temporary );
+        vectElem2->assembleWithLoadFunctions( dofNum1, ctx._time, Temporary );
 
     // Build Neumann loads
     VectorReal times;
