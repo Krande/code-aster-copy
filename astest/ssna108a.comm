@@ -195,6 +195,25 @@ WEIBLOG=POST_ELEM(
                                     OPTION = 'SIGM_ELGA',
                                     CORR_PLAST = 'NON')
                    )
+
+
+
+IMPR_TABLE(TABLE=WEIBLOG)
+
+#SSNA108A = os.path.join(os.getenv("HOME"), "execspace", "weibulltrunk",
+#                        "aster", "ssna108a")
+
+
+
+BEREMIN=POST_BEREMIN(RESULTAT=ULOG,
+             DEFORMATION="GDEF_LOG",
+             GROUP_MA="COUL_7",
+             OPTION="SIGM_ELMOY",)
+            # UNITE=21 
+#)
+
+IMPR_TABLE(TABLE=BEREMIN)
+
 # WEIBULL AVEC OPTION SIGM_ELMOY ET COOR_PLAST = NON
 WEIB2=POST_ELEM(
                       RESULTAT=U,

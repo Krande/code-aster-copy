@@ -439,4 +439,27 @@ POST_K1_K2_K3 : Cet opérateur est incompatible avec les modélisations incompre
 CALC_G : On ne peut pas calculer les dérivées des fonctions singulières car on se trouve sur le fond de fissure. 
 """),
 
+    80: _("""
+RESULTAT et fichier MED d'entrée doivent avoir la même liste d'instant
+"""),
+    81: _("""
+Un seul maillage est autorisé en entrée 
+"""),
+    82: _("""
+La modélisation doit être mécanique
+"""),
+    83: _("""
+On ne sait pas traiter le cas déformation='SIMO_MIEHE'
+"""),
+    84: _("""
+VARI_ELGA_NOMME non trouvé 1 fois exactement
+"""),
+    85: _("""
+SIEF_ELGA non trouvé 1 fois exactement
+"""),
+    86: _("""
+VARI_ELGA_NOMME non trouvé 1 fois exactement
+"""),
+    
 }
+
