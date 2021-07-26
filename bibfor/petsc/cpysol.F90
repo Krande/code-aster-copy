@@ -28,6 +28,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
+#include "asterfort/codlet.h"
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -118,10 +119,10 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
     do iaux = 0, nbjoin - 1
         numpro = zi(jnbjoi + iaux + 1)
         if (numpro .ne. -1) then
-            call codent(iaux, 'G', chnbjo)
+            call codlet(iaux, 'G', chnbjo)
 !
-            nojoinr = numddl//'.NUMER'//chnbjo(1:3)
-            nojoine = numddl//'.NUMEE'//chnbjo(1:3)
+            nojoinr = numddl//'.NUMER'//chnbjo(1:4)
+            nojoine = numddl//'.NUMEE'//chnbjo(1:4)
             call jeexin(nojoine, iret1)
             call jeexin(nojoinr, iret2)
             if ((iret1 + iret2) .ne. 0) then

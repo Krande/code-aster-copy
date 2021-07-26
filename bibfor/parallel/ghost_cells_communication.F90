@@ -25,7 +25,7 @@ subroutine ghost_cells_communication(numddl, rsolu)
 #include "jeveux.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
-#include "asterfort/codent.h"
+#include "asterfort/codlet.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -68,12 +68,12 @@ subroutine ghost_cells_communication(numddl, rsolu)
     do iaux = 0, nbjoin - 1
         numpro = zi(jnbjoi + iaux + 1)
         if (numpro .ne. -1) then
-            call codent(iaux, 'G', chnbjo)
+            call codlet(iaux, 'G', chnbjo)
 !
-            nojoinr = numddl//'.NUMER'//chnbjo(1:3)
+            nojoinr = numddl//'.NUMER'//chnbjo(1:4)
             call jeveuo(nojoinr, 'L', jjointr)
             call jelira(nojoinr, 'LONMAX', lgrecep, k8bid)
-            nojoine = numddl//'.NUMEE'//chnbjo(1:3)
+            nojoine = numddl//'.NUMEE'//chnbjo(1:4)
             call jeveuo(nojoine, 'L', jjointe)
             call jelira(nojoine, 'LONMAX', lgenvo, k8bid)
             ASSERT(lgenvo .gt. 0 .and. lgrecep .gt. 0)
