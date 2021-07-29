@@ -106,6 +106,9 @@ ConnectionMesh::ConnectionMesh( const std::string &name,
     /* The proc Nodes that are part of the ConnectionMesh we are building */
     VectorLong nodesToSend;
     nodesToSend.reserve( numberOfMeshNodes );
+    VectorLong outerNodesToSend;
+    outerNodesToSend.reserve( mesh->getOuterNodes().size() );
+
     /* Tags related to the proc nodes used to build future numbering */
     VectorBool boolNodesToSend( numberOfMeshNodes, false );
     /* Outer nodes whose future numbering needs checking in other procs */
@@ -132,6 +135,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name,
     std::map< long, long> numNodesGloLoc, numCellsGloLoc, renumNodes;
 
     int totalNumberOfNodes = 0, totalNumberOfCells = 0, numOwner = 0;
+    long pos = 0;
 
     const auto& connecExp = mesh->getConnectivityExplorer();
 
@@ -322,10 +326,18 @@ ConnectionMesh::ConnectionMesh( const std::string &name,
         for (const auto vertex : cell )
         {
             const auto nodeId = vertex - 1;
-            if ( !boolNodesToSend[nodeId] && ( *rankOfNodes )[nodeId] == rank )
+            if( !boolNodesToSend[nodeId] )
             {
-                nodesToSend.push_back( vertex );
-                ++numberOfNodesToSend;
+                if ( ( *rankOfNodes )[nodeId] == rank )
+                {
+                    nodesToSend.push_back( vertex );
+                    ++numberOfNodesToSend;
+                }
+                else
+                {
+                    outerNodesToSend.push_back(globalNodeIds[nodeId]);
+                    outerNodesToSend.push_back((*rankOfNodes)[nodeId]);
+                }
             }
             boolNodesToSend[nodeId] = true;
         }
@@ -346,6 +358,42 @@ ConnectionMesh::ConnectionMesh( const std::string &name,
         }
     }
     cellsToCheck.clear();
+
+    /* Some nodes can be not marked if they are not owned by the current proc
+    * We have to collect and mark them
+    * */
+
+    outerNodesToSend.shrink_to_fit();
+    VectorLong outerNodesToGathered;
+    AsterMPI::all_gather( outerNodesToSend, outerNodesToGathered );
+    outerNodesToSend.clear();
+
+    std::map< long, long > inverseGlobalNodeIds;
+    pos = 0;
+    for(auto globalId : globalNodeIds)
+    {
+        inverseGlobalNodeIds[globalId] = pos++;
+    }
+
+    const auto nbOuterNodes = outerNodesToGathered.size() / 2;
+    for(int i = 0; i < nbOuterNodes; i++)
+    {
+        const auto globalNodeId = outerNodesToGathered[2*i];
+        const auto ownerRank = outerNodesToGathered[2*i+1];
+        if( rank == ownerRank )
+        {
+            const auto localNodeId = inverseGlobalNodeIds[globalNodeId];
+            if( !boolNodesToSend[localNodeId] )
+            {
+                nodesToSend.push_back( localNodeId + 1 );
+                ++numberOfNodesToSend;
+                boolNodesToSend[localNodeId] = true;
+            }
+        }
+    }
+
+    outerNodesToGathered.clear();
+    inverseGlobalNodeIds.clear();
 
     boolNodesToSend.clear();
     boolCellsToSend.clear();
@@ -437,8 +485,8 @@ ConnectionMesh::ConnectionMesh( const std::string &name,
         renumNodes[globalNum] = i;
     }
 
-    int pos = 0;
-    VectorInt renumNodesLocNew(totalNumberOfNodes, -1);
+    pos = 0;
+    VectorLong renumNodesLocNew(totalNumberOfNodes, -1);
     for ( auto& it : renumNodes )
     {
         renumNodesLocNew[it.second] = pos;
