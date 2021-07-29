@@ -78,7 +78,7 @@ class DiscreteProblem {
     /**
      * @brief Calcul des matrices elementaires pour l'option CHAR_MECA
      */
-    ElementaryVectorPtr computeElementaryMechanicalLoadsVector();
+    ElementaryVectorDisplacementRealPtr computeElementaryMechanicalLoadsVector();
 
     /**
      * @brief Fonction permettant de calculer les vecteurs élémentaires pour les
@@ -86,14 +86,28 @@ class DiscreteProblem {
      * @param time Instant de calcul
      * @return Vecteur élémentaire
      */
-    ElementaryVectorPtr computeElementaryDirichletVector( ASTERDOUBLE time = 0. );
+    ElementaryVectorDisplacementRealPtr computeElementaryDirichletVector( ASTERDOUBLE time = 0. );
+
+    /**
+     * @brief Fonction permettant de calculer les vecteurs élémentaires pour les
+              chargements de Dirichlet
+     * @param time Instant de calcul
+     * @return Vecteur élémentaire
+     */
+    ElementaryVectorDisplacementRealPtr
+    computeElementaryDirichletReactionVector( FieldOnNodesRealPtr lagr_curr );
+
+
+    ElementaryVectorDisplacementRealPtr
+    computeElementaryDualizedDirichletVector( FieldOnNodesRealPtr disp_curr,
+                                              ASTERDOUBLE scaling = 1.0 );
 
     /**
      * @brief Fonction permettant de calculer les vecteurs élémentaires pour les
               forces de Laplace
      * @return Vecteur élémentaire
      */
-    ElementaryVectorPtr computeElementaryLaplaceVector();
+    ElementaryVectorDisplacementRealPtr computeElementaryLaplaceVector();
 
     /**
      * @brief Fonction permettant de calculer les vecteurs élémentaires pour les
@@ -102,7 +116,7 @@ class DiscreteProblem {
      theta
      * @return Vecteur élémentaire
      */
-    ElementaryVectorPtr computeElementaryNeumannVector( const VectorReal time,
+    ElementaryVectorDisplacementRealPtr computeElementaryNeumannVector( const VectorReal time,
                                                       ExternalStateVariablesBuilderPtr );
 
     /**

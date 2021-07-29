@@ -348,7 +348,7 @@ class AssemblyMatrix : public DataStructure {
      /**
      * @brief Return CCID object if exists for DirichletElimination
      */
-    JeveuxVectorLong getDirichletEliminationDOFs() const
+    JeveuxVectorLong getDirichletBCDOFs() const
     {
         if( hasDirichletEliminationDOFs() )
             return _ccid;
@@ -356,6 +356,19 @@ class AssemblyMatrix : public DataStructure {
         raiseAsterError( "JeveuxError: CCID not existing" );
 
         return JeveuxVectorLong();
+    }
+
+    ASTERDOUBLE
+    getLagrangeScaling() const
+    {
+        if( _scaleFactorLagrangian->exists() )
+        {
+            ASTERDOUBLE scaling = 0.0;
+            CALLO_CONLAG(getName(), &scaling);
+            return scaling;
+        }
+
+        return 1.0;
     }
 };
 

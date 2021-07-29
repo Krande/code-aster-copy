@@ -62,6 +62,9 @@ void DEFSSSSSSSSPPPP( CACHVC, cachvc, const char *, STRING_SIZE, const char *, S
                       const char *, STRING_SIZE, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *,
                       ASTERINTEGER * );
 
+#define CALLO_CONLAG( a, b ) CALLOP( CONLAG, conlag, a, b )
+void DEFSP( CONLAG, conlag, const char *, STRING_SIZE, ASTERDOUBLE * );
+
 #define CALLO_CORICH( a, b, c, d ) CALLOOPP( CORICH, corich, a, b, c, d )
 void DEFSSPP( CORICH, corich, const char *, STRING_SIZE, const char *, STRING_SIZE, ASTERINTEGER *,
               ASTERINTEGER * );
@@ -125,6 +128,16 @@ void DEFSSSSPSSSSS( VECHME_WRAP, vechme_wrap, const char *, STRING_SIZE, const c
 #define CALLO_VEDIME( a, b, c, d, e, f ) CALLOOOPOO( VEDIME, vedime, a, b, c, d, e, f )
 void DEFSSSPSS( VEDIME, vedime, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
                 STRING_SIZE, ASTERDOUBLE *, const char *, STRING_SIZE, const char *, STRING_SIZE );
+
+#define CALLO_VEBTLA( a, b, c, d, e, f, g ) CALLOOOOOOO( VEBTLA, vebtla, a, b, c, d, e, f, g )
+void DEFSSSSSSS( VEBTLA, vebtla, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                const char *, STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                const char *, STRING_SIZE, const char *, STRING_SIZE );
+
+#define CALLO_VEBUME( a, b, c, d, e, f ) CALLOOOOPO( VEBUME, vebume, a, b, c, d, e, f )
+void DEFSSSSPS( VEBUME, vebume, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                const char *, STRING_SIZE, const char *, STRING_SIZE,
+                const ASTERDOUBLE *, const char *, STRING_SIZE );
 
 #define CALLO_VELAME( a, b, c, d, e ) CALLOOOOO( VELAME, velame, a, b, c, d, e )
 void DEFSSSSS( VELAME, velame, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,

@@ -34,23 +34,22 @@
 #include "Numbering/ParallelDOFNumbering.h"
 #include "aster_fort_calcul.h"
 #include "aster_fort_superv.h"
+#include "Utilities/Tools.h"
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-ElementaryVectorPtr DiscreteProblem::computeElementaryDirichletVector( ASTERDOUBLE time ) {
-    ElementaryVectorPtr retour( new ElementaryVector( Permanent ) );
+ElementaryVectorDisplacementRealPtr
+DiscreteProblem::computeElementaryDirichletVector( ASTERDOUBLE time ) {
+    ElementaryVectorDisplacementRealPtr retour =
+        boost::make_shared< ElementaryVectorDisplacementReal >( Permanent ) ;
 
-    ModelPtr curModel = _study->getModel();
-    std::string modelName = curModel->getName();
-    modelName.resize( 24, ' ' );
+    std::string modelName = ljust(_study->getModel()->getName(), 24);
 
     JeveuxVectorChar24 jvListOfLoads = _study->getListOfLoads()->getListVector();
-    std::string nameLcha = jvListOfLoads->getName();
-    nameLcha.resize( 24, ' ' );
+    std::string nameLcha = ljust(jvListOfLoads->getName(), 24);
 
     JeveuxVectorLong jvInfo = _study->getListOfLoads()->getInformationVector();
-    std::string nameInfc = jvInfo->getName();
-    nameInfc.resize( 24, ' ' );
+    std::string nameInfc = ljust(jvInfo->getName(), 24);
 
     std::string typres( "R" );
     std::string resultName( retour->getName() );
@@ -66,8 +65,66 @@ ElementaryVectorPtr DiscreteProblem::computeElementaryDirichletVector( ASTERDOUB
     return retour;
 };
 
-ElementaryVectorPtr DiscreteProblem::computeElementaryLaplaceVector() {
-    ElementaryVectorPtr retour( new ElementaryVector( Permanent ) );
+ElementaryVectorDisplacementRealPtr
+DiscreteProblem::computeElementaryDirichletReactionVector(FieldOnNodesRealPtr lagr_curr ) {
+    ElementaryVectorDisplacementRealPtr retour =
+        boost::make_shared< ElementaryVectorDisplacementReal >( Permanent ) ;
+
+    std::string modelName = ljust(_study->getModel()->getName(), 24);
+    std::string materName = ljust(_study->getMaterialField()->getName(), 24);
+
+    auto curCaraElem = _study->getElementaryCharacteristics();
+    std::string caraName( " ");
+    if( curCaraElem )
+        caraName = curCaraElem->getName();
+    caraName.resize( 24, ' ' );
+
+    auto listOfLoads = _study->getListOfLoads();
+    std::string listLoadsName = ljust(listOfLoads->getName(), 19);
+
+    std::string resultName( retour->getName() );
+    const std::string base( "G" );
+
+    std::string lagrName = lagr_curr->getName();
+
+    CALLO_VEBTLA(base, modelName, materName, caraName, lagrName, listLoadsName, resultName);
+
+    retour->isEmpty( false );
+
+    retour->setListOfLoads( listOfLoads );
+    return retour;
+};
+
+
+ElementaryVectorDisplacementRealPtr
+DiscreteProblem::computeElementaryDualizedDirichletVector( FieldOnNodesRealPtr disp_curr,
+                                                            ASTERDOUBLE scaling )
+{
+    ElementaryVectorDisplacementRealPtr retour =
+        boost::make_shared< ElementaryVectorDisplacementReal >( Permanent ) ;
+
+    std::string modelName = _study->getModel()->getName();
+    std::string dispName = disp_curr->getName();
+
+    auto listOfLoads = _study->getListOfLoads();
+    std::string listLoadsName = ljust(listOfLoads->getName(), 19);
+
+    std::string resultName( retour->getName() );
+    const std::string base( "G" );
+    const ASTERDOUBLE const_scaling = scaling;
+
+    CALLO_VEBUME(modelName, dispName, listLoadsName, resultName, &const_scaling, base);
+
+    retour->isEmpty( false );
+
+    retour->setListOfLoads( listOfLoads );
+    return retour;
+};
+
+ElementaryVectorDisplacementRealPtr
+DiscreteProblem::computeElementaryLaplaceVector() {
+    ElementaryVectorDisplacementRealPtr retour =
+        boost::make_shared< ElementaryVectorDisplacementReal >( Permanent ) ;
 
     ModelPtr curModel = _study->getModel();
     std::string modelName = curModel->getName();
@@ -95,13 +152,14 @@ ElementaryVectorPtr DiscreteProblem::computeElementaryLaplaceVector() {
     return retour;
 };
 
-ElementaryVectorPtr
+ElementaryVectorDisplacementRealPtr
 DiscreteProblem::computeElementaryNeumannVector( const VectorReal time,
                                                     ExternalStateVariablesBuilderPtr varCom ) {
     if ( time.size() != 3 )
         throw std::runtime_error( "Invalid number of parameter" );
 
-    ElementaryVectorPtr retour( new ElementaryVector( Permanent ) );
+    ElementaryVectorDisplacementRealPtr retour =
+        boost::make_shared< ElementaryVectorDisplacementReal >( Permanent ) ;
     const auto &curCodedMater = _study->getCodedMaterial()->getCodedMaterialField();
     const auto &curMater = _study->getCodedMaterial()->getMaterialField();
 
@@ -249,8 +307,8 @@ BaseDOFNumberingPtr DiscreteProblem::computeDOFNumbering( BaseDOFNumberingPtr do
     return dofNum;
 };
 
-ElementaryVectorPtr DiscreteProblem::computeElementaryMechanicalLoadsVector() {
-    ElementaryVectorPtr retour( new ElementaryVector( Permanent ) );
+ElementaryVectorDisplacementRealPtr DiscreteProblem::computeElementaryMechanicalLoadsVector() {
+    ElementaryVectorDisplacementRealPtr retour( new ElementaryVectorDisplacementReal( Permanent ) );
 
     // Comme on calcul RIGI_MECA, il faut preciser le type de la sd
     retour->setType( retour->getType() + "_DEPL_R" );

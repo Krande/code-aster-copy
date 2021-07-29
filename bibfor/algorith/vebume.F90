@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine vebume(model_, matass_, disp_, list_load, vect_elemz)
+subroutine vebume(model_, disp_, list_load, vect_elemz, scaling, base)
 !
 implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
-#include "asterfort/conlag.h"
 #include "asterfort/corich.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
@@ -42,10 +41,11 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: model_
-    character(len=*), intent(in) :: matass_
     character(len=*), intent(in) :: disp_
     character(len=19), intent(in) :: list_load
     character(len=*), intent(in) :: vect_elemz
+    real(kind=8), intent(in) :: scaling
+    character(len=1), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,8 +58,8 @@ implicit none
 ! In  model            : name of model
 ! In  list_load        : name of datastructure for list of loads
 ! In  disp             : displacements
-! In  matass           : matrix
 ! In  vect_elem        : name of vect_elem result
+! In  scaling          : scaling factor for Lagrange
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,9 +74,8 @@ implicit none
     aster_logical :: load_empty
     character(len=8) :: load_name, newnom, model
     character(len=16) :: option
-    character(len=19) :: disp, vect_elem, matass, resu_elem
+    character(len=19) :: disp, vect_elem, resu_elem
     character(len=24) :: ligrch, chalph
-    real(kind=8) :: alpha
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,7 +84,6 @@ implicit none
 ! - Initializations
 !
     vect_elem = vect_elemz
-    matass    = matass_
     model     = model_
     disp      = disp_
     newnom    = '.0000000'
@@ -108,9 +106,8 @@ implicit none
 !
 ! - Cart for Lagrange conditionner
 !
-    call conlag(matass, alpha)
-    call mecact('V', chalph, 'MODELE', model, 'NEUT_R  ',&
-                ncmp=1, nomcmp='X1', sr=alpha)
+    call mecact(base, chalph, 'MODELE', model, 'NEUT_R  ',&
+                ncmp=1, nomcmp='X1', sr=scaling)
 !
 ! - Allocate result
 !

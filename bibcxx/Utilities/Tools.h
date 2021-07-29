@@ -30,6 +30,9 @@
 #include "astercxx.h"
 
 std::string trim( const std::string &str, const std::string &whitespace = " \t" );
+std::string ljust( const std::string &str, const ASTERINTEGER& length,
+                  char fillchar = ' ' );
+
 
 /**
  * @brief irange Create a vector of integer from begin to end (included).

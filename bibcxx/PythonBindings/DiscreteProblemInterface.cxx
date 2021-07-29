@@ -31,6 +31,8 @@ namespace py = boost::python;
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeDirichletBC_overloads, computeDirichletBC, 2, 2 )
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeDOFNumbering_overloads, computeDOFNumbering, 0, 1 )
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeElementaryDualizedDirichletVector_overloads,
+    computeElementaryDualizedDirichletVector, 1, 2 )
 
 void exportDiscreteProblemToPython() {
 
@@ -43,6 +45,11 @@ void exportDiscreteProblemToPython() {
               &DiscreteProblem::computeElementaryMechanicalLoadsVector )
         .def( "computeElementaryDirichletVector",
               &DiscreteProblem::computeElementaryDirichletVector )
+        .def( "computeElementaryDirichletReactionVector",
+              &DiscreteProblem::computeElementaryDirichletReactionVector )
+        .def( "computeElementaryDualizedDirichletVector",
+              &DiscreteProblem::computeElementaryDualizedDirichletVector,
+              computeElementaryDualizedDirichletVector_overloads() )
         .def( "computeElementaryLaplaceVector", &DiscreteProblem::computeElementaryLaplaceVector )
         .def( "computeElementaryNeumannVector", &DiscreteProblem::computeElementaryNeumannVector )
         .def( "computeElementaryStiffnessMatrix",

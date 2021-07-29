@@ -26,17 +26,18 @@ use NonLin_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/vebume.h"
-#include "asterfort/assvec.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmtime.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/utmess.h"
-#include "asterfort/nmdebg.h"
 #include "asterfort/ap_assembly_vector.h"
+#include "asterfort/assert.h"
+#include "asterfort/assvec.h"
+#include "asterfort/conlag.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/infdbg.h"
 #include "asterfort/isParallelMesh.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdebg.h"
+#include "asterfort/nmtime.h"
+#include "asterfort/utmess.h"
+#include "asterfort/vebume.h"
 !
 character(len=19), intent(in) :: list_load
 character(len=24), intent(in) :: model, nume_dof
@@ -67,6 +68,7 @@ character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
     integer :: ifm, niv
     character(len=19) :: vebudi, cnbudi
     character(len=8) :: mesh
+    real(kind=8) :: alpha
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,7 +89,8 @@ character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
 !
 ! - Compute
 !
-    call vebume(model, matr_asse, disp, list_load, vebudi)
+    call conlag(matr_asse, alpha)
+    call vebume(model, disp, list_load, vebudi, alpha, 'V')
     call assvec('V', cnbudi, 1, vebudi, [1.d0],&
                 nume_dof, ' ', 'ZERO', 1)
 !

@@ -118,8 +118,8 @@ Return:
     bool: True if matrix has some DOFs eliminated by Dirichlet boundaries conditions else False
         )")
 // -------------------------------------------------------------------------------------------------
-        .def( "getDirichletEliminationDOFs",
-            &AssemblyMatrixDisplacementReal::getDirichletEliminationDOFs, R"(
+        .def( "getDirichletBCDOFs",
+            &AssemblyMatrixDisplacementReal::getDirichletBCDOFs, R"(
 Return a vector with DOFs eliminated by Dirichlet boundaries conditions (if it exists)
 
 Return:
@@ -128,6 +128,15 @@ Return:
 
             tuple(ieq = 0, neq - 1) = 1 then DOF eliminated else 0
             tuple(neq) = number of DOFs eliminated
+        )")
+// -------------------------------------------------------------------------------------------------
+        .def( "getLagrangeScaling",
+            &AssemblyMatrixDisplacementReal::getLagrangeScaling, R"(
+Return the scaling used for Lagrange multipliers. It returns 1 if no Lagrange.
+
+Return:
+    double: scaling used for Lagrange multipliers. It returns 1 if no Lagrange
+    are present.
         )")
 // -------------------------------------------------------------------------------------------------
         .def( "print", static_cast<void (AssemblyMatrixDisplacementReal::*) () const>
