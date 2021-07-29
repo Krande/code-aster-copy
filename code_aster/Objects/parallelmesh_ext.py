@@ -22,13 +22,14 @@
 :py:class:`ParallelMesh` --- Assignment of parallel mesh
 ************************************************************************
 """
+from collections import Counter
 
-from ..Utilities import ExecutionParameter, Options, injector, logger
+from ..Utilities import ExecutionParameter, Options, injector, logger, MPI
 from ..Messages import UTMESS
 from .datastructure_ext import OnlyParallelObject
 
 try:
-    from libaster import ParallelMesh
+    from libaster import ParallelMesh, Mesh
 
     from ..Utilities.MedUtils.MEDPartitioner import MEDPartitioner
 
@@ -87,7 +88,50 @@ class ExtendedParallelMesh:
 
         return self._readPartitionedMedFile(filename_partitioned)
 
+    def checkConsistency(self, filename):
+        """Check that the partitioned mesh is consistent, i.e. that all nodes,
+           cells and groups are present.
+
+           This method is memory consumption since the sequential mesh is loaded
+
+        Arguments:
+            filename (string): name of the full MED file
+
+        Returns:
+            bool: True if the partitioned mesh is consistent
+        """
+
+        # read std mesh
+        mesh = Mesh()
+        mesh.readMedFile(filename)
+
+        # tests
+        group_no_std = mesh.getGroupsOfNodes(local=False)
+        group_no_gl  = self.getGroupsOfNodes(local=False)
+        if sorted(group_no_std) != sorted(group_no_gl):
+            return False
+
+        group_ma_std = mesh.getGroupsOfCells(local=False)
+        group_ma_gl  = self.getGroupsOfCells(local=False)
+        if sorted(group_ma_std) != sorted(group_ma_gl):
+            return False
+
+        nb_nodes_std = mesh.getNumberOfNodes()
+        nb_nodes_lc = len(self.getInnerNodes())
+        nb_nodes_gl = MPI.COMM_WORLD.allreduce(nb_nodes_lc, MPI.SUM)
+        if nb_nodes_std != nb_nodes_gl:
+            return False
+
+        rank = MPI.COMM_WORLD.Get_rank()
+        nb_cells_std = mesh.getNumberOfCells()
+        cells_rank = self.getCellsRank()
+        nb_cells_lc = Counter(cells_rank)[rank]
+        nb_cells_gl = MPI.COMM_WORLD.allreduce(nb_cells_lc, MPI.SUM)
+        if nb_cells_std != nb_cells_gl:
+            return False
+
+        return True
 
 @injector(ConnectionMesh)
-class ExtendedGenericConnectionMesh:
+class ExtendedConnectionMesh:
     cata_sdj = "SD.sd_maillage.sd_connection_mesh"

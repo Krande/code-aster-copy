@@ -63,14 +63,17 @@ ms.writeMesh(meshFolder)
 # 1) File by File after partioning (need a preliminary partioning )
 pMesh1 = code_aster.ParallelMesh()
 pMesh1.readMedFile(ms.writedFilename(), True)
+pMesh1.checkConsistency("ssnv187a.mmed")
 
 # 2) From a folder (need a preliminary partioning )
 pMesh2 = code_aster.ParallelMesh()
 pMesh2.readMedFile(meshFolder+"/ssnv187a_new_%d.med"%rank, True)
+pMesh2.checkConsistency("ssnv187a.mmed")
 
 # 3) Directely from a file (without preliminary partioning )
 pMesh3 = code_aster.ParallelMesh()
 pMesh3.readMedFile("ssnv187a.mmed")
+pMesh3.checkConsistency("ssnv187a.mmed")
 
 # 4) With LIRE_MAILLAGE (internal partitioning)
 pMesh4 = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH", INFO_MED=2)

@@ -84,20 +84,22 @@ for line in list_mesh:
         group_ma_std = mesh.getGroupsOfCells(local=False)
         group_ma_gl  = pmesh.getGroupsOfCells(local=False)
         # il manque des point1
-        # test.assertSequenceEqual(sorted(group_ma_std), sorted(group_ma_gl))
+        #test.assertSequenceEqual(sorted(group_ma_std), sorted(group_ma_gl))
 
         nb_nodes_std = mesh.getNumberOfNodes()
         nb_nodes_lc = len(pmesh.getInnerNodes())
         nb_nodes_gl = MPI.COMM_WORLD.allreduce(nb_nodes_lc, MPI.SUM)
         # il manque des noeuds
-        # test.assertEqual(nb_nodes_std, nb_nodes_gl)
+        #test.assertEqual(nb_nodes_std, nb_nodes_gl)
 
         nb_cells_std = mesh.getNumberOfCells()
         cells_rank = pmesh.getCellsRank()
         nb_cells_lc = Counter(cells_rank)[rank]
         nb_cells_gl = MPI.COMM_WORLD.allreduce(nb_cells_lc, MPI.SUM)
         # il manque des mailles
-        # test.assertEqual(nb_cells_std, nb_cells_gl)
+        #test.assertEqual(nb_cells_std, nb_cells_gl)
+
+        #test.assertTrue(pmesh.checkConsistency(mesh_name))
 
 
         test.assertTrue(pmesh.getNumberOfNodes() > 0)
