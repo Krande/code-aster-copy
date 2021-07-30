@@ -18,6 +18,9 @@
 # --------------------------------------------------------------------
 # person_in_charge: mickael.abbas at edf.fr
 
+import code_aster
+import libaster
+
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
 
 mesh=LIRE_MAILLAGE(FORMAT='MED',);
@@ -76,6 +79,11 @@ stnl=STAT_NON_LINE(MODELE=model,
 stnl=CALC_CHAMP(reuse=stnl,
                 RESULTAT=stnl,
                 CONTRAINTE='SIEF_NOEU',);
+
+try:
+    stnl.getElementaryCharacteristics(1)
+except libaster.AsterError:
+    pass
 
 
 # Create base (DEPL)

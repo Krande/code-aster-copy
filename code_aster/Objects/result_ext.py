@@ -24,7 +24,7 @@
 """
 
 import aster
-from libaster import Result
+from libaster import Result, AsterError
 
 from ..Utilities import injector, logger
 from .Serialization import InternalStateBuilder
@@ -54,16 +54,17 @@ class ResultStateBuilder(InternalStateBuilder):
         for i in self._st["rank"]:
             try:
                 self._st["model"].append(result.getModel(i))
-            except RuntimeError:
+            except AsterError:
                 pass
             try:
                 self._st["mater"].append(result.getMaterialField(i))
-            except RuntimeError:
+            except AsterError:
                 pass
             try:
                 self._st["cara_elem"].append(result.getElementaryCharacteristics(i))
-            except RuntimeError:
+            except AsterError:
                 pass
+
         if len(self._st["rank"]) != len(self._st["model"]):
             logger.debug(
                 f"Inconsistent definition of models: "
@@ -76,7 +77,7 @@ class ResultStateBuilder(InternalStateBuilder):
                 f"{len(self._st['rank'])} ranks, {len(self._st['mater'])} materials"
             )
             self._st["mater"] = []
-        if len(self._st["rank"]) != len(self._st["cara_elem"]):
+        if len(self._st["cara_elem"]) > 0 and len(self._st["rank"]) != len(self._st["cara_elem"]):
             logger.debug(
                 f"Inconsistent definition of elementary characteristics fields: "
                 f"{len(self._st['rank'])} ranks, {len(self._st['cara_elem'])} elementary characteristics"
@@ -97,7 +98,7 @@ class ResultStateBuilder(InternalStateBuilder):
                 result.setModel(self._st["model"][i], rank)
             if self._st["mater"]:
                 result.setMaterialField(self._st["mater"][i], rank)
-            if self._st["cara_elem"]:
+            if len(self._st["cara_elem"]) > 0 and self._st["cara_elem"]:
                 result.setElementaryCharacteristics(self._st["cara_elem"][i], rank)
         if self._st["model"]:
             result.build()
