@@ -49,6 +49,7 @@ class NonLinearThermalAnalysis(ExecuteCommand):
             self._result.build()
         else:
             self._result.setModel(keywords["MODELE"])
+            self._result.setMesh(keywords["MODELE"].getMesh())
             self._result.setMaterialField(keywords["CHAM_MATER"])
             if "CARA_ELEM" in keywords:
                 self._result.setElementaryCharacteristics(keywords["CARA_ELEM"])
