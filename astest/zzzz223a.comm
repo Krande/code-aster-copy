@@ -209,9 +209,9 @@ os.system("cat fort.17")
 
 TEST_FICHIER(FICHIER="./fort.17",
              NB_VALE_I=18,
-             VALE_CALC_I=1703,
+             VALE_CALC_I=2431,
              NB_VALE=62,
-             VALE_CALC=3807.24,
+             VALE_CALC=5523.239999999999,
              VALE_CALC_K="11db4c9176961e1ef1d0c7974e270018",
 )
 
@@ -219,9 +219,9 @@ IMPR_CO(UNITE=18,NIVEAU=0, CONCEPT=_F(NOM=U2),)
 
 TEST_FICHIER(FICHIER="./fort.18",
              NB_VALE_I=18,
-             VALE_CALC_I=1717,
+             VALE_CALC_I=2445,
              NB_VALE=62,
-             VALE_CALC=3840.24,
+             VALE_CALC=5556.24,
              VALE_CALC_K="11db4c9176961e1ef1d0c7974e270018"
 )
 FIN()
