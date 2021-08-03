@@ -22,7 +22,9 @@ subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
     implicit none
 !
 #include "asterc/getexm.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -88,7 +90,7 @@ subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
     character(len=24) :: keyword
     character(len=8) :: model_name, suffix_name
     aster_logical :: l_keep_prop
-    integer :: nb_mocl
+    integer :: nb_mocl, nb_elem_gl
     integer :: nb_lect, nb_excl, nb_elim
     integer :: nume_lect, nume_excl
     integer :: i_lect, i_excl, i_elem
@@ -205,7 +207,12 @@ subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
 !
 ! - If no elements
 !
-    if (stop_void .ne. ' ' .and. nb_elem .eq. 0) then
+    nb_elem_gl = nb_elem
+    if( isParallelMesh(mesh) ) then
+        call asmpi_comm_vect('MPI_SUM', 'I', sci=nb_elem_gl)
+    end if
+!
+    if (stop_void .ne. ' ' .and. nb_elem_gl .eq. 0) then
         call utmess(stop_void, 'UTILITY_3', sk=keywordfact)
     endif
 !
