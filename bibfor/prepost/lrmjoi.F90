@@ -35,6 +35,7 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
+#include "asterfort/decode_join.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -60,7 +61,7 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
 !
 ! ---------------------------------------------------------------------------------------------
 !
-    character(len=4) :: chrang, chnbjo, chdomdis
+    character(len=8) :: chnbjo, chdomdis
     character(len=8) :: mesh
     character(len=24) :: nonulg, nojoin, nojoin_old, nojoin_new, connex
     character(len=MED_NAME_SIZE) :: nomjoi, nommad
@@ -68,7 +69,7 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
     integer :: rang, nbproc, nbjoin, domdis, nstep, ncorre
     integer :: icor, entlcl, geolcl, entdst, geodst, ncorr2
     integer :: jnlogl, codret, i_join, ino, numno, deca
-    integer :: ima, nbma, node_id, nbnoma
+    integer :: ima, nbma, node_id, nbnoma, dom1, dom2
     mpi_int :: mrank, msize
     integer, pointer :: v_noext(:) => null()
     integer, pointer :: v_nojoin(:) => null()
@@ -82,11 +83,7 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
 !
-! --- Il y a en dur le traitement des noms de joints sur 4 caractères. Il faudrait modifier
-!     partout pour ne plus être limité mais je pense qu'il y a pas mal d'endroit où on fait ça
-!     rechercher codent parait une bonne possibilité
-!
-    ASSERT(nbproc <= 9999)
+    ASSERT(nbproc <= 10d8)
 !
 ! --- Uniquement pour les ParallelMesh
 !
@@ -110,7 +107,6 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
 ! --- Récupération de la numérotation globale des noeuds
 !
         call as_mmhgnr(fid, nomam2, MED_NODE, MED_NONE, zi(jnlogl), nbnoeu, codret)
-        call codent(rang, 'G', chrang)
 !
 ! --- Récupération du nombre de joints
 !
@@ -127,7 +123,6 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
 !     des comm pour le savoir
 !
         if(nbjoin > 0) then
-            ASSERT(nbjoin <= 9999)
             call wkvect(mesh//'.DOMJOINTS', 'G V I', nbjoin, vi=v_joint)
             v_joint = -1
 !
@@ -142,10 +137,12 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
                 do icor = 1, ncorre
                     call as_msdszi(fid, nomam2, nomjoi, MED_NO_DT, MED_NO_IT, icor, entlcl, &
                                 geolcl, entdst, geodst, ncorr2, codret)
+
+                    call decode_join(nomjoi, dom1, dom2)
 !
                     if ( entlcl.eq.MED_NODE.and.geolcl.eq.MED_NONE ) then
                         call codent(domdis, 'G', chnbjo)
-                        if ( nomjoi(1:4).eq.chrang ) then
+                        if ( dom1.eq.rang ) then
                             nojoin = mesh//'.RT'//chnbjo
                         else
                             nojoin = mesh//'.ET'//chnbjo
@@ -160,7 +157,7 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
 !
 ! --- On récupère le numéro du sous-domaine pour les noeuds partagés
 !
-                        if(nomjoi(1:4).eq.chrang) then
+                        if(dom1.eq.rang) then
                             deca = 1
                             do ino = 1, ncorr2
                                 numno = v_nojoin(deca)
@@ -183,9 +180,10 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
                                 nommad, nstep, ncorre, codret)
                     ASSERT(domdis <= nbproc)
                     ASSERT(ncorre == 1)
+                    call decode_join(nomjoi, dom1, dom2)
 !
                     call codent(domdis, 'G', chdomdis)
-                    if ( nomjoi(1:4).eq.chrang ) then
+                    if ( dom1.eq.rang ) then
                         nojoin_old = mesh//".RT"//chdomdis
                         nojoin_new = mesh//".R"//chdomdis
                     else

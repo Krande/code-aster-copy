@@ -71,6 +71,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
     mpi_int :: mrank, msize, iermpi, mpicou
 !
     character(len=4) :: chnbjo
+    character(len=8) :: chnbjo2
     character(len=8) :: k8bid, noma
     character(len=19) :: nomlig
     character(len=24) :: nonbjo, nojoinr, nojoine, nonulg, join
@@ -119,6 +120,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
     do iaux = 0, nbjoin - 1
         numpro = zi(jnbjoi + iaux + 1)
         if (numpro .ne. -1) then
+            ASSERT(iaux < 1679616)
             call codlet(iaux, 'G', chnbjo)
 !
             nojoinr = numddl//'.NUMER'//chnbjo(1:4)
@@ -197,9 +199,9 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
                 if (numpro .ne. -1) then
                     numpr4 = numpro
                     num4 = ijoin
-                    call codent(numpro, 'G', chnbjo)
-                    nojoine = nomlig//'.E'//chnbjo
-                    nojoinr = nomlig//'.R'//chnbjo
+                    call codent(numpro, 'G', chnbjo2)
+                    nojoine = nomlig//'.E'//chnbjo2
+                    nojoinr = nomlig//'.R'//chnbjo2
 
                     call jeexin(nojoine, iret1)
                     if (iret1 .ne. 0) then

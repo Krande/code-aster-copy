@@ -49,7 +49,7 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
 ! ---------------------------------------------------------------------------------------------
 !
     character(len=8) :: k8bid
-    character(len=4) :: chnbjo
+    character(len=8) :: chnbjo
     character(len=24) :: nojoie, nojoir
     integer :: rang, nbproc, nbjoin, domdis, iret
     integer :: i_join, nbnoee, nbnoer, i_no, numno

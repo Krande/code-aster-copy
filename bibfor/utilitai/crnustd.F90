@@ -90,7 +90,7 @@ subroutine crnustd(numddl)
     integer, pointer :: v_deeg(:) => null()
     integer, pointer :: v_linulg(:) => null()
 !
-    character(len=4) :: chnbjo
+    character(len=8) :: chnbjo
     character(len=8) :: k8bid, mesh, nomgdr
     character(len=19) :: nomlig
     character(len=24) :: owner, nojoie, nojoir, join, linulg

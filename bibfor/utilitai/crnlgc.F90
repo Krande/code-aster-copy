@@ -88,6 +88,7 @@ subroutine crnlgc(numddl)
     integer, pointer :: v_nuls(:) => null()
 !
     character(len=4) :: chnbjo
+    character(len=8) :: chnbjo2
     character(len=8) :: mesh, k8bid, nomgdr
     character(len=19) :: nomlig
     character(len=24) :: nojoie, nojoir, nonulg, join
@@ -214,9 +215,9 @@ subroutine crnlgc(numddl)
         if (numpro .ne. -1) then
             ASSERT(iaux+1 == v_mask(rang*nbproc + numpro + 1))
             num = iaux+1
-            call codent(numpro, 'G', chnbjo)
-            nojoie = mesh//'.E'//chnbjo
-            nojoir = mesh//'.R'//chnbjo
+            call codent(numpro, 'G', chnbjo2)
+            nojoie = mesh//'.E'//chnbjo2
+            nojoir = mesh//'.R'//chnbjo2
             call jelira(nojoie, 'LONMAX', nbnoee, k8bid)
             call jeveuo(nojoir, 'L', jjoinr)
             call jelira(nojoir, 'LONMAX', nbnoer, k8bid)
@@ -264,6 +265,7 @@ subroutine crnlgc(numddl)
             if (zi(jrecep1) > 0) then
                 call wkvect('&&CRNULG.NUM_DDL_GLOB_E', 'V V I', zi(jrecep1), jenvoi2)
                 call wkvect('&&CRNULG.NUM_DDL_GLOB_R', 'V V I', zi(jenvoi1), jrecep2)
+                ASSERT(iaux < 1679616)
                 call codlet(iaux, 'G', chnbjo)
                 call wkvect(numddl//'.NUMEE'//chnbjo, 'G V I', zi(jrecep1), jnujoi1)
 !
@@ -349,9 +351,9 @@ subroutine crnlgc(numddl)
                 if (numpro .ne. -1) then
                     numpr4 = numpro
                     num4 = ijoin
-                    call codent(numpro, 'G', chnbjo)
-                    nojoie = nomlig//'.E'//chnbjo
-                    nojoir = nomlig//'.R'//chnbjo
+                    call codent(numpro, 'G', chnbjo2)
+                    nojoie = nomlig//'.E'//chnbjo2
+                    nojoir = nomlig//'.R'//chnbjo2
 
                     call jeexin(nojoie, iret1)
                     if (iret1 .ne. 0) then

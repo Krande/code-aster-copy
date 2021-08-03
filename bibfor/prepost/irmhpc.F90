@@ -66,7 +66,7 @@ implicit none
     integer, pointer :: v_dojoin(:) => null()
     mpi_int :: mrank, msize
 !
-    character(len=4) :: chrang, chdomdis
+    character(len=8) :: chrang, chdomdis
     character(len=8) :: k8bid
     character(len=24) :: nonulg, domjoin, nojoin
     character(len=MED_NAME_SIZE) :: nomjoi
@@ -118,18 +118,18 @@ implicit none
             nojoin = " "
             if( .not. v_ldomj(domdis+1) ) then
                 if( rang < domdis) then
-                    nomjoi(1:8) = chrang // chdomdis
+                    nomjoi = chrang // ' ' // chdomdis
                     nojoin = nomast//'.R'//chdomdis
                 else
-                    nomjoi(1:8) = chdomdis // chrang
+                    nomjoi = chdomdis // ' ' // chrang
                     nojoin = nomast//'.E'//chdomdis
                 end if
             else
                 if( rang < domdis) then
-                    nomjoi(1:8) = chdomdis // chrang
+                    nomjoi = chdomdis // ' ' // chrang
                     nojoin = nomast//'.E'//chdomdis
                 else
-                    nomjoi(1:8) = chrang // chdomdis
+                    nomjoi = chrang // ' ' // chdomdis
                     nojoin = nomast//'.R'//chdomdis
                 end if
             endif

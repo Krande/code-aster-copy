@@ -677,19 +677,18 @@ class MedJoints:
     def write(self):
         size = MPI.COMM_WORLD.size
         rank = MPI.COMM_WORLD.rank
-        format = "%-4d"
         for procId in range(size):
             if procId == rank:
                 continue
             otherLocNodes = self.__getExtLocNodesRecvByProc()[procId]
             thisLocNodes = self.__getExtLocNodesToSendByProc()[procId]
             if not otherLocNodes.empty():
-                jointName = (format%rank + " " + format%procId).strip()
+                jointName = (str(rank) + " " + str(procId)).strip()
                 self.__push(jointName, procId, thisLocNodes, otherLocNodes)
             otherLocNodes = self.__getIntLocNodesRecvByProc()[procId]
             thisLocNodes = self.__getIntLocNodesToSendByProc()[procId]
             if not otherLocNodes.empty():
-                jointName = (format%procId + " " + format%rank).strip()
+                jointName = (str(procId) + " " + str(rank)).strip()
                 self.__push(jointName, procId, thisLocNodes, otherLocNodes)
         self.__set()
     def setGlobalNumField(self):
