@@ -16,14 +16,17 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine asmpi_comm_logical(op, svl)
+subroutine asmpi_comm_logical(op, nbval, scl, vl)
 !
 implicit none
 #include "asterf_types.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 !
-    aster_logical, intent(inout) :: svl
+    aster_logical, intent(inout), optional :: scl, vl(*)
+    integer, intent(in), optional :: nbval
     character(len=*), intent(in) :: op
 !
 !
@@ -31,6 +34,8 @@ implicit none
 !  FONCTION REALISEE : SUR-COUCHE MPI
 !
 !  FAIRE UN ECHANGE SUR UN LOGICAL
+!
+! POUR UN VECTEUR ON APPLIQUE PAR COMPOSANTE
 !
 ! Arguments d'appels
 ! in optmpi :
@@ -40,35 +45,65 @@ implicit none
 #ifdef ASTER_HAVE_MPI
 !
     integer :: i
+    integer, pointer :: vi(:) => null()
 !
-    if(svl) then
-        i = 1
-    else
-        i = 0
-    end if
+    if( present(scl) ) then
+        if(scl) then
+            i = 1
+        else
+            i = 0
+        end if
 !
-    if( op == "MPI_LAND" ) then
-        call asmpi_comm_vect('MPI_MIN', 'I', sci=i)
-        if(i == 0) then
-            svl = ASTER_FALSE
+        if( op == "MPI_LAND" ) then
+            call asmpi_comm_vect('MPI_MIN', 'I', sci=i)
+        elseif( op == "MPI_LOR" ) then
+            call asmpi_comm_vect('MPI_MAX', 'I', sci=i)
         else
-            svl = ASTER_TRUE
+            ASSERT(ASTER_FALSE)
         end if
-    elseif( op == "MPI_LOR" ) then
-        call asmpi_comm_vect('MPI_MAX', 'I', sci=i)
+!
         if(i == 0) then
-            svl = ASTER_FALSE
+            scl = ASTER_FALSE
         else
-            svl = ASTER_TRUE
+            scl = ASTER_TRUE
         end if
     else
-        ASSERT(ASTER_FALSE)
+        ASSERT(present(vl))
+        ASSERT(present(nbval))
+        AS_ALLOCATE(vi=vi, size=nbval)
+        do i = 1, nbval
+            if(vl(i)) then
+                vi(i) = 1
+            else
+                vi(i) = 0
+            end if
+        end do
+!
+        if( op == "MPI_LAND" ) then
+            call asmpi_comm_vect('MPI_MIN', 'I', nbval=nbval, vi=vi)
+        elseif( op == "MPI_LOR" ) then
+            call asmpi_comm_vect('MPI_MAX', 'I', nbval=nbval, vi=vi)
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+!
+        do i = 1, nbval
+            if(vi(i) == 0) then
+                vl(i) = ASTER_FALSE
+            else
+                vl(i) = ASTER_TRUE
+            end if
+        end do
+!
+        AS_DEALLOCATE(vi=vi)
     end if
 #else
     aster_logical :: tmp
     character(len=8) :: kbid
 
-    tmp = svl
+    tmp = present(nbval)
+    tmp = present(scl)
+    tmp = present(vl)
     kbid = op
 #endif
 !

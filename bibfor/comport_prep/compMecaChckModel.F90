@@ -169,10 +169,10 @@ aster_logical, intent(out) :: lElasByDefault, lNeedDeborst
 !
 ! - Comm for MPI
 !
-    call asmpi_comm_logical("MPI_LAND", lAllCellAreBound)
-    call asmpi_comm_logical("MPI_LOR", lAtOneCellAffect)
-    call asmpi_comm_logical("MPI_LOR", lNeedDeborst)
-    call asmpi_comm_logical("MPI_LOR", lElasByDefault)
+    call asmpi_comm_logical("MPI_LAND", scl=lAllCellAreBound)
+    call asmpi_comm_logical("MPI_LOR", scl=lAtOneCellAffect)
+    call asmpi_comm_logical("MPI_LOR", scl=lNeedDeborst)
+    call asmpi_comm_logical("MPI_LOR", scl=lElasByDefault)
 !
 ! - Error when nothing is affected by the behavior
 !

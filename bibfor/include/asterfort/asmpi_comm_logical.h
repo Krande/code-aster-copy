@@ -19,8 +19,9 @@
 !
 !
 interface
-    subroutine asmpi_comm_logical(op, svl)
-        aster_logical, intent(inout) :: svl
+    subroutine asmpi_comm_logical(op, nbval, scl, vl)
+        aster_logical, intent(inout), optional :: scl, vl(*)
+        integer, intent(in), optional :: nbval
         character(len=*), intent(in) :: op
     end subroutine asmpi_comm_logical
 end interface

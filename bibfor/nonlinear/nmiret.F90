@@ -127,9 +127,7 @@ character(len=19) :: codret
 !
     call dismoi('NOM_MAILLA', codret, 'CHAM_ELEM', repk = mesh)
     if( isParallelMesh(mesh) ) then
-        do iret = 1, 10
-            call asmpi_comm_logical("MPI_LOR", tabret(iret))
-        end do
+        call asmpi_comm_logical("MPI_LOR", nbval=10, vl=tabret)
     end if
 !
     do iret = 1, 10
