@@ -7,7 +7,6 @@ P mpi_nbnoeud 1
 P testlist ci verification parallel
 
 F comm mesh002s.py D 1
-F nom mesh002t.30 D 0
 F nom ssls120a.mmed D 0
 F nom ssls120b.mmed D 0
 F nom ssls120c.mmed D 0
