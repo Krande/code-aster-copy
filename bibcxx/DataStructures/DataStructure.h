@@ -58,6 +58,8 @@ class DataStructure {
     JeveuxMemory _memoryType;
     /** @brief Object that stores the DataStructure type for jeveux requests */
     JeveuxVectorChar24 _tco;
+    /** @brief Object that stores the title of the DataStructure */
+    JeveuxVectorChar80 _title;
     /** @brief Vector which contains reference to other DataStructure */
     std::vector< DataStructurePtr > _depsVector;
 

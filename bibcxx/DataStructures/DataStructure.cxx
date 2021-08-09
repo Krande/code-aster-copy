@@ -46,6 +46,9 @@ DataStructure::DataStructure( const std::string name, const int nameLength, cons
         else
             ( *_tco )[0] = type;
     }
+
+    // title
+    _title = JeveuxVectorChar80( name19 + ".TITR" );
 }
 
 DataStructure::DataStructure( const std::string type, const JeveuxMemory memType, int nameLength )
@@ -71,6 +74,7 @@ DataStructure::~DataStructure() {
 #endif
     // Destruction
     _tco->deallocate();
+    _title->deallocate();
 #ifdef ASTER_DEBUG_CXX
     std::string base( " " );
     ASTERINTEGER pos = 1;

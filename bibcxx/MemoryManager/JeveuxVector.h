@@ -203,6 +203,8 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
 // #endif
         if ( _name != "" && get_sh_jeveux_status() == 1 )
             CALLO_JEDETR( _name );
+
+        _valuePtr = NULL;
 // #ifdef ASTER_DEBUG_CXX
 //         std::cout << "DEBUG: JeveuxVector.dealloc: " << _name << std::endl;
 // #endif
