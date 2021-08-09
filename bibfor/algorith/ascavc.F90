@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ascavc(lchar , infcha   , fomult, numedd, inst, vci,&
+subroutine ascavc(lchar , infcha   , fomult, numedd, inst, vci, dlci_, &
                   l_hho_, hhoField_, basez)
 !
 use HHO_type
@@ -46,6 +46,7 @@ implicit none
 character(len=24) :: lchar, infcha, fomult
 character(len=*) :: vci, numedd
 real(kind=8) :: inst
+character(len=*), optional :: dlci_
 aster_logical, intent(in), optional :: l_hho_
 type(HHO_Field), intent(in), optional :: hhoField_
 character(len=1), intent(in), optional :: basez
@@ -70,10 +71,10 @@ character(len=1), intent(in), optional :: basez
     character(len=1) :: base
     character(len=8) :: newnom
     character(len=19) :: charci, chamno, vci2
-    character(len=24) :: vachci
+    character(len=24) :: vachci, dlci
     character(len=8) :: charge
     aster_logical :: l_hho
-    integer, pointer :: dlci(:) => null()
+    integer, pointer :: v_dlci(:) => null()
     data chamno/'&&ASCAVC.???????'/
     data vachci/'&&ASCAVC.LISTE_CI'/
     data charci/'&&ASCAVC.LISTE_CHI'/
@@ -91,6 +92,12 @@ character(len=1), intent(in), optional :: basez
         base = basez
     else
         base = 'V'
+    end if
+!
+    if(present(dlci_)) then
+        dlci = dlci_
+    else
+        dlci = '&&ASCAVC.DLCI'
     end if
 !
     newnom='.0000000'
@@ -138,7 +145,7 @@ character(len=1), intent(in), optional :: basez
 !
         ichci = 0
         call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
-        call wkvect(vci2//'.DLCI', base//' V I', neq, jdlci2)
+        call wkvect(dlci, base//' V I', neq, jdlci2)
         do ichar = 1, nchtot
             charge=zk24(idchar-1+ichar)(1:8)
             icine = zi(jinfc+ichar)
@@ -155,20 +162,20 @@ character(len=1), intent(in), optional :: basez
                     call calvci(chamno, numedd, 1, charge, inst, &
                                 'V',l_hho)
                 endif
-                call jeveuo(chamno//'.DLCI', 'L', vi=dlci)
+                call jeveuo(chamno//'.DLCI', 'L', vi=v_dlci)
 !           --- COMBINAISON DES DLCI (OBJET CONTENANT DES 0 OU DES 1),
 !           --- LES 1 ETANT POUR LES DDL CONTRAINT
 !           --- LE RESTE DE L OBJECT VCI2 EST CREE PAR ASCOVA
                 do ieq = 1, neq
 !             -- ON REGARDE SI UN DDL N'EST PAS ELIMINE PLUSIEURS FOIS:
-                    if (zi(jdlci2-1+ieq) .gt. 0 .and. dlci(ieq) .gt. 0) ieqmul=ieq
+                    if (zi(jdlci2-1+ieq) .gt. 0 .and. v_dlci(ieq) .gt. 0) ieqmul=ieq
 !
-                    zi(jdlci2-1+ieq)=max(zi(jdlci2-1+ieq),dlci(&
+                    zi(jdlci2-1+ieq)=max(zi(jdlci2-1+ieq),v_dlci(&
                     ieq))
                 end do
+                call jedetr(chamno//'.DLCI')
             endif
         end do
-        call jedetr(chamno//'.DLCI')
     endif
 !
 !     -- SI UN DDL A ETE ELIMINE PLUSIEURS FOIS :
@@ -189,6 +196,10 @@ character(len=1), intent(in), optional :: basez
 !        FAIRE LE MENAGE
     if (nchci .eq. 0) call detrsd('CHAMP_GD', chamno(1:19))
     call jedetr(charci)
+!
+    if(.not.present(dlci_)) then
+        call jedetr(dlci)
+    end if
 !
     call jedema()
 end subroutine
