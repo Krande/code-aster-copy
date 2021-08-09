@@ -201,7 +201,7 @@ subroutine chflch(rigthe, vec2nd,infcha)
 !   --- Cinematique
     cnchci = ' '
     call ascavc(charge, infoch, fomult, numedd, tpsthe(1),&
-                cnchci, ASTER_FALSE)
+                cnchci, l_hho_=ASTER_FALSE)
 !   --- Other
     call vechth('STAT',modele, charge, infoch, carele, mate, ' ', &
                 tpsthe(1), ' ', ' ', vechtp)

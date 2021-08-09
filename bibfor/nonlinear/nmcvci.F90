@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,28 +37,29 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/vtcmbl.h"
 #include "asterfort/vtcreb.h"
-#include "asterfort/dismoi.h"
 
 character(len=24), intent(in) :: model
 type(HHO_Field), intent(in) :: hhoField
     character(len=24) :: charge, infoch, fomult, numedd
     character(len=19) :: depmoi, cncine
-    character(len=24) :: l2cnci(2), cncinm, cncinp
+    character(len=24) :: l2cnci(2), cncinm, cncinp, dlci
     character(len=8) :: char1, answer
     real(kind=8) :: instap, coefr(2)
     integer :: neq, ieq, neq2, iret, jinfc, ichar
     integer :: nbchar, jlchar
     character(len=1) :: typch(2)
     aster_logical :: lvcine, l_hho
-    integer, pointer :: dlci(:) => null()
+    integer, pointer :: v_dlci(:) => null()
     real(kind=8), pointer :: cncim(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !----------------------------------------------------------------------
@@ -73,7 +74,7 @@ type(HHO_Field), intent(in) :: hhoField
     call exisd('CHAMP_GD', cncine, iret)
     if (iret .eq. 0) then
         call vtcreb(cncine, 'V', 'R', nume_ddlz = numedd, nb_equa_outz = neq)
-    endif    
+    endif
     call jelira(cncine(1:19)//'.VALE', 'LONMAX', ival=neq)
     call jelira(depmoi(1:19)//'.VALE', 'LONMAX', ival=neq2)
     ASSERT(neq.eq.neq2)
@@ -105,17 +106,18 @@ type(HHO_Field), intent(in) :: hhoField
 !     -----------------------------------------------------------------
     cncinm='&&NMCHAR.CNCIMM'
     cncinp='&&NMCHAR.CNCIMP'
+    dlci  ='&&NMCHAR.DLCI'
 !
 !
 !     CALCUL DE UIMP+ :
 !     ---------------------
     if (l_hho) then
-        call ascavc(charge, infoch  , fomult, numedd, instap, cncinp,&
+        call ascavc(charge, infoch  , fomult, numedd, instap, cncinp, dlci, &
                     l_hho , hhoField)
     else
-        call ascavc(charge, infoch, fomult, numedd, instap, cncinp)
+        call ascavc(charge, infoch, fomult, numedd, instap, cncinp, dlci_=dlci)
     endif
-    call jeveuo(cncinp(1:19)//'.DLCI', 'L', vi=dlci)
+    call jeveuo(dlci, 'L', vi=v_dlci)
 !
 !
 !     CALCUL DE UIMP- : C'EST U- LA OU ON IMPOSE LE DEPLACEMENT
@@ -124,7 +126,7 @@ type(HHO_Field), intent(in) :: hhoField
     call copisd('CHAMP_GD', 'V', depmoi, cncinm)
     call jeveuo(cncinm(1:19)//'.VALE', 'E', vr=cncim)
     do ieq = 1, neq
-        if (dlci(ieq) .eq. 0) then
+        if (v_dlci(ieq) .eq. 0) then
             cncim(ieq)=0.d0
         endif
     end do
@@ -144,6 +146,7 @@ type(HHO_Field), intent(in) :: hhoField
 !     ---------
     call detrsd('CHAM_NO', cncinm)
     call detrsd('CHAM_NO', cncinp)
+    call jedetr(dlci)
 !
 999 continue
     call jedema()
