@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank,&
+subroutine asmpi_comm_mvect(optmpi, typsca, nbval, bcrank,&
                             vi, vi4, vr, vc, sci,&
                             sci4, scr, scc)
 ! person_in_charge: jacques.pellet at edf.fr
@@ -39,7 +39,6 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank,&
 !
 ! in    typsca : /'I' /'S' /'R' /'C'
 ! in    nbval  : longueur du vecteur v* (optionnel, 1 si absent)
-! in    jtrav  : adresse d'un objet de travail de longueur suffisante
 ! in    bcrank : rang du processus mpi d'ou emane le bcast
 !-si nbval > 1:
 ! inout vi(*)  : vecteur d'entiers a echanger    (si typsca='I')
@@ -54,9 +53,6 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank,&
 !----------------------------------------------------------------------
     implicit none
 !
-#include "asterf.h"
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/asmpi_allreduce_c.h"
 #include "asterc/asmpi_allreduce_i.h"
 #include "asterc/asmpi_allreduce_i4.h"
@@ -71,19 +67,19 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank,&
 #include "asterc/asmpi_reduce_i4.h"
 #include "asterc/asmpi_reduce_r.h"
 #include "asterc/loisem.h"
+#include "asterf_types.h"
+#include "asterf.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jxveri.h"
-#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "jeveux.h"
 !
     character(len=*), intent(in) :: optmpi
     character(len=*), intent(in) :: typsca
     integer, intent(in), optional :: nbval
-    integer, intent(in), optional :: jtrav
     integer, intent(in), optional :: bcrank
     integer, intent(inout), optional :: vi(*)
     integer(kind=4), intent(inout), optional :: vi4(*)
@@ -104,7 +100,7 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank,&
     integer(kind=4) :: vi42(tpetit), wki4(1)
     real(kind=8) :: vr2(tpetit), wkr(1)
     complex(kind=8) :: vc2(tpetit), wkc(1)
-    integer :: k, nbv
+    integer :: k, nbv, jtrav
     mpi_int :: lr8, lint, nbv4, lopmpi, nbpro4, mpicou, lc8, bcrank4, proc
     mpi_int, parameter :: pr0=0
     aster_logical :: scal
@@ -155,6 +151,25 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank,&
         lopmpi=MPI_SUM4
     endif
 !
+!   -- allocation d'un vecteur de travail :
+!   ---------------------------------------
+    jtrav=0
+    if (optmpi .ne. 'BCAST') then
+        if (nbv .gt. tpetit) then
+            if (typsc1 .eq. 'R') then
+                call wkvect('&&ASMPI_COMM_VECT.TRAV', 'V V R', nbv, jtrav)
+            else if (typsc1.eq.'C') then
+                call wkvect('&&ASMPI_COMM_VECT.TRAV', 'V V C', nbv, jtrav)
+            else if (typsc1.eq.'I') then
+                call wkvect('&&ASMPI_COMM_VECT.TRAV', 'V V I', nbv, jtrav)
+            else if (typsc1.eq.'S') then
+                call wkvect('&&ASMPI_COMM_VECT.TRAV', 'V V S', nbv, jtrav)
+            else
+                ASSERT(ASTER_FALSE)
+            endif
+        endif
+    endif
+!
 !   Si reduce ou allreduce (inutile si bcast), il faut un 2eme buffer
 !    - si nbv <= tpetit : on utilise un tableau statique
 !    - sinon on utilise le vecteur jeveux alloué par asmpi_comm_vect
@@ -169,7 +184,7 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank,&
         else if (typsc1.eq.'S') then
             vi42(1) = sci4
         else
-            ASSERT(.false.)
+            ASSERT(ASTER_FALSE)
         endif
     else if (optmpi .ne. 'BCAST') then
         if (nbv .le. tpetit) then
@@ -190,7 +205,7 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank,&
                     vi42(k)=vi4(k)
                 end do
             else
-                ASSERT(.false.)
+                ASSERT(ASTER_FALSE)
             endif
         else
             if (typsc1 .eq. 'R') then
@@ -214,7 +229,7 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank,&
                     zi4(jtrav-1+k)=vi4(k)
                 end do
             else
-                ASSERT(.false.)
+                ASSERT(ASTER_FALSE)
             endif
         endif
     endif
@@ -253,7 +268,7 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank,&
                 call asmpi_bcast_i4(vi4, nbv4, bcrank4, mpicou)
             endif
         else
-            ASSERT(.false.)
+            ASSERT(ASTER_FALSE)
         endif
 !
     else if (optmpi.eq.'REDUCE') then
@@ -319,7 +334,7 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank,&
             endif
 !
         else
-            ASSERT(.false.)
+            ASSERT(ASTER_FALSE)
         endif
 !
     else if (optmpi(1:4).eq.'MPI_') then
@@ -361,14 +376,15 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank,&
                 call asmpi_allreduce_i4(zi4(jtrav), vi4, nbv4, lopmpi, mpicou)
             endif
         else
-            ASSERT(.false.)
+            ASSERT(ASTER_FALSE)
         endif
 !
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     endif
 !
     if (nbv .gt. tpetit) then
+        call jedetr('&&ASMPI_COMM_VECT.TRAV')
     endif
 !
 999 continue
@@ -377,6 +393,7 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank,&
 #else
     character(len=1) :: kdummy
     integer :: idummy
+    integer(kind=4) :: i4dummy
     real(kind=8) :: rdummy
     complex(kind=8) :: cdummy
 !
@@ -387,9 +404,11 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, jtrav, bcrank,&
         idummy = nbval
         idummy = bcrank
         idummy = vi(1)
+        i4dummy = vi4(1)
         rdummy = vr(1)
         cdummy = vc(1)
         idummy = sci
+        i4dummy = sci4
         rdummy = scr
         cdummy = scc
     endif

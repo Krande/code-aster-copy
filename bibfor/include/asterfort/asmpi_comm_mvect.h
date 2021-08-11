@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,12 @@
 
 !
 !
-          interface 
-            subroutine asmpi_comm_mvect(optmpi,typsca,nbval,jtrav,bcrank&
+          interface
+            subroutine asmpi_comm_mvect(optmpi,typsca,nbval,bcrank&
      &,vi,vi4,vr,vc,sci,sci4,scr,scc)
               character(len=*), intent(in) :: optmpi
               character(len=*), intent(in) :: typsca
               integer ,optional, intent(in) :: nbval
-              integer ,optional, intent(in) :: jtrav
               integer ,optional, intent(in) :: bcrank
               integer ,optional, intent(inout) :: vi(*)
               integer(kind=4) ,optional, intent(inout) :: vi4(*)
@@ -35,4 +34,4 @@
               real(kind=8) ,optional, intent(inout) :: scr
               complex(kind=8) ,optional, intent(inout) :: scc
             end subroutine asmpi_comm_mvect
-          end interface 
+          end interface
