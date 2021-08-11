@@ -253,7 +253,7 @@ int aster_mpi_allreduce(void *sendbuf, void *recvbuf, int count,
                         MPI_Datatype sendtype, MPI_Op op, aster_comm_t *node) {
     /*! Reduces a message and distributes the result to all other processes */
 #ifdef ASTER_HAVE_MPI
-    DEBUG_MPI("MPI_Allreduce: send %d values from proc #%d\n", count, root);
+    DEBUG_MPI("MPI_Allreduce: send %d values to all %s\n", count, " ");
     AS_MPICHECK(MPI_Allreduce(sendbuf, recvbuf, count, sendtype, op, node->id));
 #endif
     return 0;
@@ -303,7 +303,7 @@ int aster_mpi_allgatherv(void *sendbuf, int sendcnt, MPI_Datatype sendtype,
                         aster_comm_t *node) {
     /*! Gathers together values from a group of processes */
 #ifdef ASTER_HAVE_MPI
-    DEBUG_MPI("MPI_AllGather: %d gathered values by all %s\n", sendcnt, " ");
+    DEBUG_MPI("MPI_AllGatherv: %d gathered values by all %s\n", sendcnt, " ");
     AS_MPICHECK(MPI_Allgatherv(sendbuf, sendcnt, sendtype,
                           recvbuf, recvcnt, displs, recvtype,
                           node->id));
