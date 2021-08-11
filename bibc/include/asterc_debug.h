@@ -33,6 +33,9 @@ to enable DEBUG_ASSERT
 
 to add all traces
 #define ASTER_DEBUG_ALL
+
+to debug MPI
+#define ASTER_DEBUG_MPI
 */
 
 /*! print the filename and line where the error occurred */
