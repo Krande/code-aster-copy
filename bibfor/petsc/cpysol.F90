@@ -25,6 +25,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 #include "asterf_petsc.h"
 #include "asterf_types.h"
 #include "asterf.h"
+#include "asterf_debug.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
@@ -100,6 +101,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
     call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
+    DEBUG_MPI('cpysol', rang, nbproc)
 !
     nonbjo = numddl//'.NUME.NBJO'
     call jeveuo(nonbjo, 'L', jnbjoi)

@@ -31,6 +31,9 @@
 ! If the flag is not defined, the function must be empty macro.
 !
 ! to add all traces, define ASTER_DEBUG_ALL
+! to debug MPI (add to asterc_debug.h too), #define ASTER_DEBUG_MPI
+!
+
 #ifdef ASTER_DEBUG_ALL
 #   define ASTER_DEBUG_ALLOCATE
 #   define ASTER_DEBUG_MPI

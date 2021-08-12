@@ -22,6 +22,7 @@ subroutine ghost_cells_communication(numddl, rsolu)
 #include "asterf_config.h"
 #include "asterf.h"
 #include "asterf_types.h"
+#include "asterf_debug.h"
 #include "jeveux.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
@@ -58,6 +59,7 @@ subroutine ghost_cells_communication(numddl, rsolu)
     call asmpi_info(rank = mrank, size = msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
+    DEBUG_MPI('ghost_cells_communication', rang, nbproc)
 !
     nonbjo = numddl//'.NUME.NBJO'
     call jeveuo(nonbjo, 'L', jnbjoi)

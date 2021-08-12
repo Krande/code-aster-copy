@@ -24,6 +24,7 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_recv_i4.h"
 #include "asterc/asmpi_send_i4.h"
+#include "asterf_debug.h"
 #include "asterf_types.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
@@ -67,6 +68,7 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
     call asmpi_info(rank = mrank, size = msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
+    DEBUG_MPI('addPhantomNodesFromCells', rang, nbproc)
 !
 ! --- Lecture des joints
     call jeexin(mesh//'.DOMJOINTS', iret)
