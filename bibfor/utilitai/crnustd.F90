@@ -23,6 +23,7 @@ subroutine crnustd(numddl)
 #include "asterc/asmpi_recv_i.h"
 #include "asterc/asmpi_send_i.h"
 #include "asterf_config.h"
+#include "asterf_debug.h"
 #include "asterf_types.h"
 #include "asterf.h"
 #include "asterfort/asmpi_comm_vect.h"
@@ -114,6 +115,7 @@ subroutine crnustd(numddl)
     call asmpi_info(rank = mrank, size = msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
+    DEBUG_MPI('crnustd', rang, nbproc)
 !
     call jeveuo(numddl//'.NUME.REFN', 'L', jrefn)
     mesh = zk24(jrefn)

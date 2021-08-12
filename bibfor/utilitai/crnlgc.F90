@@ -24,6 +24,7 @@ subroutine crnlgc(numddl)
 #include "asterc/asmpi_send_i.h"
 #include "asterc/loisem.h"
 #include "asterf_config.h"
+#include "asterf_debug.h"
 #include "asterf_types.h"
 #include "asterf.h"
 #include "asterfort/asmpi_comm_vect.h"
@@ -114,6 +115,7 @@ subroutine crnlgc(numddl)
     call asmpi_info(rank=mrank, size=mnbproc)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(mnbproc)
+    DEBUG_MPI('crnlgc', rang, nbproc)
     ASSERT(nbproc .lt. 9999)
 
 !   RECUPERATION DU NOM DU MAILLAGE DANS LE BUT D'OBTENIR LE JOINT

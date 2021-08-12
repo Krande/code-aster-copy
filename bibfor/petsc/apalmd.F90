@@ -29,6 +29,7 @@ use petsc_data_module
     implicit none
 
 #include "jeveux.h"
+#include "asterf_debug.h"
 #include "asterc/asmpi_comm.h"
 #include "asterfort/apbloc.h"
 #include "asterfort/asmpi_comm_point.h"
@@ -95,6 +96,7 @@ use petsc_data_module
     call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
+    DEBUG_MPI('apalmd', rang, nbproc)
 !
 !     -- LECTURE DU COMMUN
     nomat = nomat_courant

@@ -84,9 +84,6 @@ class BehaviourProperty : public DataStructure {
       ModelPtr         model,
       MaterialFieldPtr materialField );
 
-    /** @brief Destructor */
-    ~BehaviourProperty( ){};
-
     /** @brief Build object */
     bool build( );
 

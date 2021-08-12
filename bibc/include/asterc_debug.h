@@ -34,7 +34,7 @@ to enable DEBUG_ASSERT
 to add all traces
 #define ASTER_DEBUG_ALL
 
-to debug MPI
+to debug MPI (add to asterf_debug.h too)
 #define ASTER_DEBUG_MPI
 */
 

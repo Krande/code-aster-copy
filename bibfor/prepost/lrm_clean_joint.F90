@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ subroutine lrm_clean_joint(rang, domdis, nbproc, v_noex, name_join_old, name_joi
 !
     implicit none
 #include "asterf.h"
+#include "asterf_debug.h"
 #include "asterf_types.h"
 #include "jeveux.h"
 !
@@ -65,6 +66,7 @@ subroutine lrm_clean_joint(rang, domdis, nbproc, v_noex, name_join_old, name_joi
     call jemarq()
 !
     call asmpi_comm('GET', mpicou)
+    DEBUG_MPI('lrm_clean_joint', rang, nbproc)
 !
     if(name_join_old(10:10) == "R") then
         l_send = ASTER_FALSE
