@@ -21,8 +21,10 @@ subroutine cargeo(mailla)
 #include "jeveux.h"
 !
 #include "asterc/r8gaem.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -60,6 +62,7 @@ subroutine cargeo(mailla)
     character(len=1) :: bas1
     character(len=19) :: nomt19
     character(len=24) :: nodime, connex, coordo, typmai
+    aster_logical :: l_pmesh
 !
     data nopara / 'X_MIN' , 'X_MAX' , 'Y_MIN' , 'Y_MAX' , 'Z_MIN' ,&
      &              'Z_MAX' , 'AR_MIN' , 'AR_MAX' /
@@ -75,6 +78,7 @@ subroutine cargeo(mailla)
     connex = ma//'.CONNEX         '
     coordo = ma//'.COORDO    .VALE'
     typmai = ma//'.TYPMAIL        '
+    l_pmesh = isParallelMesh(ma)
 !
     call jelira(nodime, 'CLAS', cval=bas1)
     ASSERT(bas1.eq.'G' .or. bas1.eq.'V')
@@ -98,6 +102,16 @@ subroutine cargeo(mailla)
         zmax = max ( zmax , zr(jvale+3*(i-1)+2) )
         zmin = min ( zmin , zr(jvale+3*(i-1)+2) )
     end do
+!
+    if( l_pmesh ) then
+        call asmpi_comm_vect("MPI_MIN", 'R', scr=xmin)
+        call asmpi_comm_vect("MPI_MIN", 'R', scr=ymin)
+        call asmpi_comm_vect("MPI_MIN", 'R', scr=zmin)
+        call asmpi_comm_vect("MPI_MAX", 'R', scr=xmax)
+        call asmpi_comm_vect("MPI_MAX", 'R', scr=ymax)
+        call asmpi_comm_vect("MPI_MAX", 'R', scr=zmax)
+    end if
+!
     d1 = max( (xmax-xmin) , (ymax-ymin) , 1.d-100 )
     vale(1) = xmin
     vale(2) = xmax
@@ -243,6 +257,10 @@ subroutine cargeo(mailla)
             armax = max ( armax , d1 , d2 , d3 , d4 )
         endif
     end do
+    if( l_pmesh ) then
+        call asmpi_comm_vect("MPI_MIN", 'R', scr=armin)
+        call asmpi_comm_vect("MPI_MAX", 'R', scr=armax)
+    end if
     if (armin .eq. r8gaem()) armin = 0.d0
     vale(7) = sqrt( armin )
     vale(8) = sqrt( armax )

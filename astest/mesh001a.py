@@ -18,6 +18,7 @@
 # --------------------------------------------------------------------
 
 import code_aster
+from code_aster.Commands import RECU_TABLE
 import numpy as np
 
 code_aster.init("--test")
@@ -34,6 +35,17 @@ test.assertFalse(mesh.isQuadratic())
 test.assertEqual(mesh.getDimension(), 3)
 test.assertEqual(mesh.getNumberOfNodes(), 27)
 test.assertEqual(mesh.getNumberOfCells(), 56)
+
+# test dimension
+TABG=RECU_TABLE(CO=mesh, NOM_TABLE='CARA_GEOM',)
+test.assertAlmostEqual(TABG['X_MIN',1], 0.0)
+test.assertAlmostEqual(TABG['X_MAX',1], 1.0)
+test.assertAlmostEqual(TABG['Y_MIN',1], 0.0)
+test.assertAlmostEqual(TABG['Y_MAX',1], 1.0)
+test.assertAlmostEqual(TABG['Z_MIN',1], 0.0)
+test.assertAlmostEqual(TABG['Z_MAX',1], 1.0)
+test.assertAlmostEqual(TABG['AR_MIN',1], 0.5)
+test.assertAlmostEqual(TABG['AR_MAX',1], 0.5)
 
 # test groups
 # do the same thing (compatibily with ParallelMesh)

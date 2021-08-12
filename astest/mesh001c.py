@@ -19,7 +19,7 @@
 
 import code_aster
 
-from code_aster.Commands import LIRE_MAILLAGE, DEFI_GROUP
+from code_aster.Commands import LIRE_MAILLAGE, DEFI_GROUP, RECU_TABLE
 
 code_aster.init("--test")
 
@@ -37,6 +37,27 @@ pmesh=DEFI_GROUP( reuse=pmesh, MAILLAGE=pmesh,
 
 test.assertTrue(pmesh.isParallel())
 test.assertEqual(pmesh.getDimension(), 3)
+
+# test dimension
+TABG=RECU_TABLE(CO=mesh, NOM_TABLE='CARA_GEOM',)
+test.assertAlmostEqual(TABG['X_MIN',1], -1.0)
+test.assertAlmostEqual(TABG['X_MAX',1], 6.0)
+test.assertAlmostEqual(TABG['Y_MIN',1], -6.0)
+test.assertAlmostEqual(TABG['Y_MAX',1], 0.0)
+test.assertAlmostEqual(TABG['Z_MIN',1], -1.0)
+test.assertAlmostEqual(TABG['Z_MAX',1], 6.0)
+test.assertAlmostEqual(TABG['AR_MIN',1], 0.3)
+test.assertAlmostEqual(TABG['AR_MAX',1], 1.0)
+
+TABGP=RECU_TABLE(CO=pmesh, NOM_TABLE='CARA_GEOM',)
+test.assertAlmostEqual(TABG['X_MIN',1], TABGP['X_MIN',1])
+test.assertAlmostEqual(TABG['X_MAX',1], TABGP['X_MAX',1])
+test.assertAlmostEqual(TABG['Y_MIN',1], TABGP['Y_MIN',1])
+test.assertAlmostEqual(TABG['Y_MAX',1], TABGP['Y_MAX',1])
+test.assertAlmostEqual(TABG['Z_MIN',1], TABGP['Z_MIN',1])
+test.assertAlmostEqual(TABG['Z_MAX',1], TABGP['Z_MAX',1])
+test.assertAlmostEqual(TABG['AR_MIN',1], TABGP['AR_MIN',1])
+test.assertAlmostEqual(TABG['AR_MAX',1], TABGP['AR_MAX',1])
 
 global_grp = mesh.getGroupsOfCells()
 test.assertSequenceEqual(sorted(pmesh.getGroupsOfNodes()), sorted(global_grp))
