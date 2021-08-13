@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,16 +58,16 @@ character(len=19) :: codi
 !
     nommats = '&chpoint'
 
-    call jedetr(nommats//'.MATE_CODE.GRP')
-    call jedetr(nommats//'.MATE_CODE.NGRP')
-    call wkvect(nommats//'.MATE_CODE.GRP', 'V V K8', nbmat, igrp)
-    call wkvect(nommats//'.MATE_CODE.NGRP', 'V V I', 1, ingrp)
+    call jedetr(nommats//'.MATE_CODE .GRP')
+    call jedetr(nommats//'.MATE_CODE .NGRP')
+    call wkvect(nommats//'.MATE_CODE .GRP', 'V V K8', nbmat, igrp)
+    call wkvect(nommats//'.MATE_CODE .NGRP', 'V V I', 1, ingrp)
     do i=1,nbmat
         zk8(igrp-1+i)=nommat(i)
     enddo
     zi(ingrp)=1
 !
-    call jeveut(nommats//'.MATE_CODE.GRP', 'L', igrp)
+    call jeveut(nommats//'.MATE_CODE .GRP', 'L', igrp)
 !
     codi=' '
     indmat=0
