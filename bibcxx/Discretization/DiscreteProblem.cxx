@@ -242,8 +242,8 @@ DiscreteProblem::computeNeumann( BaseDOFNumberingPtr dofNume,
 
 ElementaryMatrixDisplacementRealPtr
 DiscreteProblem::computeElementaryStiffnessMatrix( ASTERDOUBLE time ) {
-    ElementaryMatrixDisplacementRealPtr retour(
-        new ElementaryMatrixDisplacementReal( Permanent ) );
+    ElementaryMatrixDisplacementRealPtr retour =
+        boost::make_shared< ElementaryMatrixDisplacementReal >( Permanent ) ;
     ModelPtr curModel = _study->getModel();
     retour->setModel( curModel );
     MaterialFieldPtr curMater = _study->getMaterialField();
@@ -284,6 +284,7 @@ DiscreteProblem::computeElementaryStiffnessMatrix( ASTERDOUBLE time ) {
                        caraName, &time, compor->getName(), retour->getName(), &nh,
                        JeveuxMemoryTypesNames[0] );
 
+    retour->build();
     retour->isEmpty( false );
     return retour;
 };
@@ -478,6 +479,7 @@ DiscreteProblem::computeMechanicalMatrix( const std::string &optionName ) {
     } catch ( ... ) {
         throw;
     }
+    retour->build();
     retour->isEmpty( false );
 
     return retour;
@@ -506,7 +508,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteProblem::computeMechanicalDampingMat
         throw;
     }
     retour->isEmpty( false );
-
+    retour->build();
     return retour;
 };
 
