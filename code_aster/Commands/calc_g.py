@@ -61,6 +61,10 @@ def calc_g_with_co(self, **args):
                 TABLE=_result_calc_g, NOM_PARA='NOM_SD',
                 FILTRE=_F(NOM_PARA='NOM_OBJET', VALE_K='CHAM_THETA'),
             )
+    _cham_theta_no.setMesh(args["RESULTAT"].getMesh())
+    _cham_theta_no.build()
+
+
     if "CHAM_THETA" in args["THETA"]:
         # number of CHAM_THETA fields
         self.register_result(_cham_theta_no, args["THETA"]["CHAM_THETA"])
