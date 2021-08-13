@@ -40,8 +40,25 @@ typedef VectorReal::const_iterator VectorRealCIter;
  */
 class TimeStepper : public DataStructure, public GenericStepper {
   private:
-    /** @brief Liste des instants */
+    /** @brief Liste des instants '.LIST'*/
     JeveuxVectorReal _values;
+    /** @brief '.LIST.DITR' */
+    JeveuxVectorReal _ditr;
+    /** @brief '.LIST.INFOR' */
+    JeveuxVectorReal _infor;
+    /** @brief '.ECHE.EVENR' */
+    JeveuxVectorReal _evenr;
+    /** @brief '.ECHE.EVENK' */
+    JeveuxVectorChar16 _evenk;
+    /** @brief '.ECHE.SUBDR' */
+    JeveuxVectorReal _subdr;
+    /** @brief '.ADAP.EVENR' */
+    JeveuxVectorReal _aevenr;
+    /** @brief '.ADAP.TPLUK' */
+    JeveuxVectorChar16 _tpluk;
+    /** @brief '.ADAP.TPLUR' */
+    JeveuxVectorReal _tplur;
+
 
   public:
     /**
@@ -54,7 +71,12 @@ class TimeStepper : public DataStructure, public GenericStepper {
      * @brief Constructeur
      */
     TimeStepper( const std::string name, const JeveuxMemory memType = Permanent )
-        : DataStructure( name, 8, "LIST_INST", memType ), _values( getName() + ".LIST" ){};
+        : DataStructure( name, 8, "LIST_INST", memType ), _values( getName() + ".LIST" ),
+        _ditr( getName() + ".LIST.DITR" ), _infor( getName() + ".LIST.INFOR" ),
+        _evenr( getName() + ".ECHE.EVENR" ), _evenk( getName() + ".ECHE.EVENK" ),
+        _subdr( getName() + ".ECHE.SUBDR" ),
+        _aevenr( getName() + ".ADAP.EVENR" ), _tpluk( getName() + ".ADAP.TPLUK" ),
+        _tplur( getName() + ".ADAP.TPLUR" ){};
 
     /**
      * @brief Constructeur
