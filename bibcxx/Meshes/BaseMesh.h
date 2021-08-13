@@ -281,6 +281,11 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @return true
      */
     bool printMedFile( const std::string fileName ) const ;
+
+    bool build()
+    {
+        return update_tables();
+    }
 };
 
 /**

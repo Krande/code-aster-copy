@@ -37,6 +37,13 @@ void exportBaseMeshToPython() {
         "BaseMesh", py::no_init )
         // fake initFactoryPtr: created by subclass
         // fake initFactoryPtr: created by subclass
+        .def( "build", &BaseMesh::build, R"(
+Build list of Tables based on the mesh
+
+Returns:
+    bool: true if building is ok
+        )",
+              ( py::arg( "self" ) ) )
         .def( "getNumberOfNodes", &BaseMesh::getNumberOfNodes, R"(
 Return the number of nodes of the mesh.
 
