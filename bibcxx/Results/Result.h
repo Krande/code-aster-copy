@@ -111,8 +111,6 @@ class Result : public DataStructure, public ListOfTables {
     JeveuxVectorChar16 _rs16;
     /** @brief Vecteur Jeveux '.RS24' */
     JeveuxVectorChar24 _rs24;
-    /** @brief jeveux vector '.TITR' */
-    JeveuxVectorChar80 _title;
 
     /** @brief Liste des champs aux noeuds */
     mapStrVOFN _dictOfVectorOfFieldOnNodesReal;
@@ -173,7 +171,7 @@ class Result : public DataStructure, public ListOfTables {
           _rsp8( JeveuxVectorChar8( getName() + ".RSP8" ) ),
           _rs16( JeveuxVectorChar16( getName() + ".RS16" ) ),
           _rs24( JeveuxVectorChar24( getName() + ".RS24" ) ),
-          _title( JeveuxVectorChar80( getName() + ".TITR" ) ), _mesh( nullptr ),
+          _mesh( nullptr ),
           _fieldBuidler( FieldBuilder() ){};
 
     /**
