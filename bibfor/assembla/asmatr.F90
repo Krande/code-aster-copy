@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -135,6 +135,9 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, &
 !   -- menage :
 !   -----------
     call jedetr('&&ASMATR.LICOEF')
+    call jedetr(matas//'.&INT')
+    call jedetr(matas//'.&IN2')
+    call jedetr(matas//'.LILI')
 
     call jedbg2(ibid, idbgav)
     call jedema()

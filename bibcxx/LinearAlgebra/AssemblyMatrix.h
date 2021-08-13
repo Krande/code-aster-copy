@@ -139,6 +139,9 @@ class AssemblyMatrix : public DataStructure {
 #ifdef ASTER_DEBUG_CXX
         std::cout << "DEBUG: AssemblyMatrix.destr: " << this->getName() << std::endl;
 #endif
+        // two temporary objects to delete
+        CALLO_JEDETR( getName() + ".&INT" );
+        CALLO_JEDETR( getName() + ".&IN2" );
         this->deleteFactorizedMatrix();
     };
 
