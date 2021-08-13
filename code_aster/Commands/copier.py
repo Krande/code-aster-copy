@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,7 +19,7 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import Model, PrestressingCable, Result
+from ..Objects import Model, PrestressingCable, Result, Mesh
 from ..Supervis import ExecuteCommand
 
 
@@ -49,6 +49,16 @@ class Copier(ExecuteCommand):
             self._result = Model(other.getMesh())
         else:
             self._result = type(other)()
+
+    def post_exec(self, keywords):
+        """Post execution the result.
+
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords.
+        """
+        other = keywords['CONCEPT']
+        if isinstance(other, Mesh):
+            self._result.build()
 
     def add_dependencies(self, keywords):
         """Do not keep any references to original objects.
