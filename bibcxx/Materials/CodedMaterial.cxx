@@ -30,11 +30,11 @@
 
 CodedMaterial::CodedMaterial( const std::string &name, const MaterialFieldPtr &mater,
                                         const ModelPtr &model )
-    : _name( name ), _type( "MATER_CODE" ), _mater( mater ), _model( model ),
-      _field( new ConstantFieldOnCellsLong( getName() + ".MATE_CODE", _model->getMesh(),
-                                                 Permanent ) ),
-      _grp( JeveuxVectorChar8( getName() + ".MATE_CODE.GRP" ) ),
-      _nGrp( JeveuxVectorLong( getName() + ".MATE_CODE.NGRP" ) ){};
+    : DataStructure( name, 19, "MATER_CODE" ), _mater( mater ), _model( model ),
+      _field( boost::make_shared< ConstantFieldOnCellsLong >
+        ( getName() , _model->getMesh(), Permanent ) ),
+      _grp( JeveuxVectorChar8( getName() + ".GRP" ) ),
+      _nGrp( JeveuxVectorLong( getName() + ".NGRP" ) ){};
 
 bool CodedMaterial::allocate( bool force ) {
     if ( !force && _field->exists() )
@@ -54,7 +54,7 @@ bool CodedMaterial::allocate( bool force ) {
     bool thm( _model->existsThm() );
     // TODO existsTher ?
     bool ther( false );
-    std::string strJeveuxBase( "V" );
+    std::string strJeveuxBase( "G" );
     CALLO_RCMFMC( materName, mate, (ASTERLOGICAL *)&thm, (ASTERLOGICAL *)&ther, getName(),
                   strJeveuxBase );
 

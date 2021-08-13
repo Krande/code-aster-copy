@@ -27,9 +27,10 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "astercxx.h"
+#include "DataFields/ConstantFieldOnCells.h"
+#include "DataStructures/DataStructure.h"
 #include "Materials/MaterialField.h"
 #include "Modeling/Model.h"
-#include "DataFields/ConstantFieldOnCells.h"
 #include "Supervis/ResultNaming.h"
 
 /**
@@ -37,11 +38,9 @@
  * @brief Coded material
  * @author Nicolas Sellenet
  */
-class CodedMaterial
+class CodedMaterial : public DataStructure
 {
 private:
-    std::string                       _name;
-    std::string                       _type;
     MaterialFieldPtr                  _mater;
     ModelPtr                          _model;
     ConstantFieldOnCellsLongPtr       _field;
@@ -70,15 +69,8 @@ public:
 
 
     CodedMaterial( const MaterialFieldPtr& mater, const ModelPtr& model ):
-                    CodedMaterial(ResultNaming::getNewResultName(), mater, model){};
+                    CodedMaterial(ResultNaming::getNewResultName() + ".MATE_CODE", mater, model){};
 
-    /**
-     * @brief Destructeur
-     */
-    ~CodedMaterial()
-    {
-        return;
-    };
 
     /**
      * @brief Function to allocate the coded material
@@ -98,24 +90,6 @@ public:
     {
         _field->updateValuePointers();
         return _field;
-    };
-
-    /**
-     * @brief Function membre getName
-     * @return une chaine contenant le nom de la sd
-     */
-    const std::string& getName() const
-    {
-        return _name;
-    };
-
-    /**
-     * @brief Function membre getType
-     * @return le type de la sd
-     */
-    const std::string getType() const
-    {
-        return _type;
     };
 
     /**
