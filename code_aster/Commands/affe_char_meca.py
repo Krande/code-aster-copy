@@ -31,8 +31,11 @@ class MechanicalLoadDefinition(ExecuteCommand):
     """Command that defines :class:`~code_aster.Objects.MechanicalLoadReal`.
     """
     command_name = "AFFE_CHAR_MECA"
-    neumannLoads = ['PESANTEUR', 'ROTATION', 'FORCE_FACE', 'FORCE_ARETE', 'FORCE_CONTOUR', 'FORCE_INTERNE', 'PRE_SIGM', 'PRES_REP', 'EFFE_FOND', 'PRE_EPSI', 'FORCE_POUTRE', \
-                    'FORCE_TUYAU', 'FORCE_COQUE', 'FORCE_ELEC', 'INTE_ELEC', 'VITE_FACE', 'ONDE_FLUI', 'FLUX_THM_REP', 'FORCE_SOL', 'FORCE_NODALE', 'EVOL_CHAR', 'VECT_ASSE']
+    neumannLoads = ['PESANTEUR', 'ROTATION', 'FORCE_FACE', 'FORCE_ARETE', 'FORCE_CONTOUR', \
+                    'FORCE_INTERNE', 'PRE_SIGM', 'PRES_REP', 'EFFE_FOND', 'PRE_EPSI', 'FORCE_POUTRE', \
+                    'FORCE_TUYAU', 'FORCE_COQUE', 'FORCE_ELEC', 'INTE_ELEC', 'VITE_FACE', \
+                    'ONDE_FLUI', 'ONDE_PLANE', 'FLUX_THM_REP', 'FORCE_SOL', 'FORCE_NODALE', \
+                    'EVOL_CHAR', 'VECT_ASSE']
     dirichletLoads = ['DDL_IMPO', 'DDL_POUTRE', 'FACE_IMPO', 'CHAMNO_IMPO', 'ARETE_IMPO', 'LIAISON_DDL', 'LIAISON_OBLIQUE', 'LIAISON_GROUP', 'LIAISON_MAIL', 'LIAISON_PROJ', \
                       'LIAISON_CYCL', 'LIAISON_SOLIDE', 'LIAISON_ELEM', 'LIAISON_UNIF', 'LIAISON_CHAMNO', 'LIAISON_RBE3', 'LIAISON_INTERF', 'LIAISON_COQUE', \
                       'RELA_CINE_BP', 'IMPE_FACE']
