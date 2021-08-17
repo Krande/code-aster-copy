@@ -101,11 +101,13 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi,&
 !
 !   -- verification rendez-vous - a voir si on garde car beacuoup de comm
     iret=1
-    ! call asmpi_check(iret)
-    ! if (iret .ne. 0) then
-    !     call utmess('I', 'APPELMPI_83', sk=optmpi)
-    !     goto 999
-    ! endif
+#ifdef ASTER_DEBUG_MPI
+    call asmpi_check(iret)
+    if (iret .ne. 0) then
+        call utmess('I', 'APPELMPI_83', sk=optmpi)
+        goto 999
+    endif
+#endif
 !
 !
 !   -- Calcul de typsc1 :
