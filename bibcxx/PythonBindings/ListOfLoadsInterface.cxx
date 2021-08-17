@@ -33,5 +33,12 @@ void exportListOfLoadsToPython() {
     py::class_< ListOfLoads, ListOfLoadsPtr,
             py::bases< DataStructure > >( "ListOfLoads",
                                                               py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ListOfLoads >));
+        .def( "__init__", py::make_constructor(&initFactoryPtr< ListOfLoads >))
+        .def( "isEmpty", &ListOfLoads::isEmpty, R"(
+            The list of loads is empty or not.
+
+            Return:
+                bool : True if empty
+        )",
+              ( py::arg( "self" ) )   );
 };

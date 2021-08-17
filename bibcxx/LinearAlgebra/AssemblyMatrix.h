@@ -300,23 +300,6 @@ class AssemblyMatrix : public DataStructure {
     void setDOFNumbering( const BaseDOFNumberingPtr currentNum ) { _dofNum = currentNum; };
 
     /**
-     * @brief Methode permettant de definir la numerotation
-     * @param currentNum objet ParallelDOFNumbering
-     */
-    // #ifdef ASTER_HAVE_MPI
-    //         void setDOFNumbering( const ParallelDOFNumberingPtr& currentNum )
-    //         {
-    //             _dofNum = currentNum;
-    //         };
-    // #endif /* ASTER_HAVE_MPI */
-
-    /**
-     * @brief Methode permettant de definir la liste de chargement
-     * @param lLoads objet de type ListOfLoadsPtr
-     */
-    void setListOfLoads( const ListOfLoadsPtr &lLoads ) { _listOfLoads = lLoads; };
-
-    /**
      * @brief Function to set the solver name (MUMS or PETSc)
      * @param sName name of solver ("MUMPS" or "PETSC")
      * @todo delete this function and the attribute _solverName
@@ -372,6 +355,21 @@ class AssemblyMatrix : public DataStructure {
         }
 
         return 1.0;
+    }
+
+
+    ListOfLoadsPtr getListOfLoads() const { return _listOfLoads; }
+
+    /**
+     * @brief Methode permettant de definir la liste de chargement
+     * @param lLoads objet de type ListOfLoadsPtr
+     */
+    void setListOfLoads(const ListOfLoadsPtr load)
+    {
+        if( !load )
+            raiseAsterError("Empty load");
+
+        _listOfLoads = load;
     }
 };
 
@@ -434,7 +432,7 @@ AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix(
       _ccll( JeveuxVectorLong( getName() + ".CCLL" ) ),
       _ccva( JeveuxVector< ValueType >( getName() + ".CCVA" ) ),
       _ccii( JeveuxVectorLong( getName() + ".CCII" ) ), _isEmpty( true ), _isFactorized( false ),
-      _listOfLoads( ListOfLoadsPtr( new ListOfLoads( memType ) ) ){};
+      _listOfLoads( boost::make_shared< ListOfLoads >( memType ) ){};
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( const std::string &name )
@@ -454,7 +452,7 @@ AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( const std::string
       _ccll( JeveuxVectorLong( getName() + ".CCLL" ) ),
       _ccva( JeveuxVector< ValueType >( getName() + ".CCVA" ) ),
       _ccii( JeveuxVectorLong( getName() + ".CCII" ) ), _isEmpty( true ), _isFactorized( false ),
-      _listOfLoads( ListOfLoadsPtr( new ListOfLoads() ) ){};
+      _listOfLoads( boost::make_shared< ListOfLoads >( ) ){};
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 bool AssemblyMatrix< ValueType, PhysicalQuantity >::build() {
@@ -467,7 +465,10 @@ bool AssemblyMatrix< ValueType, PhysicalQuantity >::build() {
     ASTERINTEGER typscal = 2;
     if ( typeid( ValueType ) == typeid( ASTERDOUBLE ) )
         typscal = 1;
+
+    ASTERINTEGER nbMatrElem = _elemMatrix.size();
     VectorString names;
+    names.reserve( nbMatrElem );
     for ( const auto elemIt : _elemMatrix )
         names.push_back( elemIt->getName() );
 
@@ -476,13 +477,17 @@ bool AssemblyMatrix< ValueType, PhysicalQuantity >::build() {
     std::string base( "G" );
     std::string blanc( " " );
     std::string cumul( "ZERO" );
+
+    _listOfLoads->isEmpty();
     if ( _listOfLoads->isEmpty() && _listOfLoads->getNumberOfLoads() != 0 )
         _listOfLoads->build();
-    ASTERINTEGER nbMatrElem = 1;
+
     CALL_ASMATR( &nbMatrElem, tabNames, blanc.c_str(), _dofNum->getName().c_str(),
                  _listOfLoads->getName().c_str(), cumul.c_str(), base.c_str(), &typscal,
                  getName().c_str() );
     _isEmpty = false;
+
+    // free matr_elem string
     FreeStr( tabNames );
 
     return true;

@@ -84,6 +84,8 @@ class StudyDescription {
 
         if( _model->getMesh()->getName() != _materialField->getMesh()->getName())
             throw std::runtime_error("Inconsistent mesh");
+
+        _listOfLoads->setModel(_model);
     };
 
     ~StudyDescription(){};
@@ -105,36 +107,41 @@ class StudyDescription {
     /**
      * @brief Get elementary characteristics
      */
-    const ElementaryCharacteristicsPtr &getElementaryCharacteristics() const { return _elemChara; };
+    ElementaryCharacteristicsPtr getElementaryCharacteristics() const { return _elemChara; };
 
     /**
      * @brief Get the build coded material
      */
-    const CodedMaterialPtr &getCodedMaterial() const { return _codedMater; };
+    CodedMaterialPtr getCodedMaterial() const { return _codedMater; };
 
     /**
      * @brief Obtenir la liste des chargements cinematiques
      */
-    const ListDiriBC &getListOfDirichletBCs() const {
+    ListDiriBC getListOfDirichletBCs() const {
         return _listOfLoads->getListOfDirichletBCs();
     };
 
     /**
      * @brief Renvoit la liste de chargements
      */
-    const ListOfLoadsPtr &getListOfLoads() const { return _listOfLoads; };
+    ListOfLoadsPtr getListOfLoads() const
+    {
+        if(!_listOfLoads)
+            throw std::runtime_error("Empty Loads");
+        return _listOfLoads;
+    };
 
     /**
      * @brief Obtenir la liste des chargements mecaniques
      */
-    const ListMecaLoadReal &getListOfMechanicalLoadsReal() const {
+    ListMecaLoadReal getListOfMechanicalLoadsReal() const {
         return _listOfLoads->getListOfMechanicalLoadsReal();
     };
 
     /**
      * @brief Obtenir la liste des chargements mecaniques
      */
-    const ListMecaLoadFunction &getListOfMechanicalLoadsFunction() const {
+    ListMecaLoadFunction getListOfMechanicalLoadsFunction() const {
         return _listOfLoads->getListOfMechanicalLoadsFunction();
     };
 
@@ -142,14 +149,14 @@ class StudyDescription {
     /**
      * @brief Obtenir la liste des chargements mecaniques
      */
-    const ListParaMecaLoadReal &getListOfParallelMechanicalLoadsReal() const {
+    ListParaMecaLoadReal getListOfParallelMechanicalLoadsReal() const {
         return _listOfLoads->getListOfParallelMechanicalLoadsReal();
     };
 
     /**
      * @brief Obtenir la liste des chargements mecaniques
      */
-    const ListParaMecaLoadFunction &getListOfParallelMechanicalLoadsFunction() const {
+    ListParaMecaLoadFunction getListOfParallelMechanicalLoadsFunction() const {
         return _listOfLoads->getListOfParallelMechanicalLoadsFunction();
     };
 #endif /* ASTER_HAVE_MPI */
@@ -158,25 +165,25 @@ class StudyDescription {
      * @brief Function de récupération de la liste des charges thermiques
      * @return _listOfThermalLoads
      */
-    const ListTherLoadReal &getListOfThermalLoadsReal() const
+    ListTherLoadReal getListOfThermalLoadsReal() const
     { return _listOfLoads->getListOfThermalLoadsReal(); };
 
     /**
      * @brief Function de récupération de la liste des charges thermiques
      * @return _listOfThermalLoads
      */
-    const ListTherLoadFunction &getListOfThermalLoadsFunction() const
+    ListTherLoadFunction getListOfThermalLoadsFunction() const
     { return _listOfLoads->getListOfThermalLoadsFunction(); };
 
     /**
      * @brief Obtenir le matériau affecté
      */
-    const MaterialFieldPtr &getMaterialField() const { return _materialField; };
+    MaterialFieldPtr getMaterialField() const { return _materialField; };
 
     /**
      * @brief Obtenir le modèle de l'étude
      */
-    const ModelPtr &getModel() const { return _model; };
+    ModelPtr getModel() const { return _model; };
 
     /**
      * @brief Obtenir le maillage de l'étude

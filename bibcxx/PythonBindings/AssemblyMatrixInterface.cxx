@@ -76,6 +76,22 @@ Returns:
         )",
               ( py::arg( "self" ) ) )
 // -------------------------------------------------------------------------------------------------
+        .def( "getListOfLoads", &AssemblyMatrixDisplacementReal::getListOfLoads, R"(
+Return the list of loads.
+
+Returns:
+    ListOfLoadsPtr: a pointer to the list of loads
+        )",
+              ( py::arg( "self" )))
+// -------------------------------------------------------------------------------------------------
+        .def( "setListOfLoads", &AssemblyMatrixDisplacementReal::setListOfLoads, R"(
+Set the list of loads.
+
+Arguments:
+    ListOfLoadsPtr: a pointer to the list of loads to set
+        )",
+              ( py::arg( "self" ), py::arg( "load" )))
+// -------------------------------------------------------------------------------------------------
         .def( "getMaterialField", &AssemblyMatrixDisplacementReal::getMaterialField )
 // -------------------------------------------------------------------------------------------------
         .def( "isEmpty", &AssemblyMatrixDisplacementReal::isEmpty, R"(

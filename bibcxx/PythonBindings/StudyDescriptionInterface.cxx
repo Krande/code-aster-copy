@@ -40,8 +40,7 @@ void exportStudyDescriptionToPython() {
             py::make_constructor(
                 &initFactoryPtr< StudyDescription, ModelPtr, MaterialFieldPtr,
                                 ElementaryCharacteristicsPtr >));
-    c1.def( "getModel", &StudyDescription::getModel,
-        py::return_value_policy<py::copy_const_reference>(), R"(
+    c1.def( "getModel", &StudyDescription::getModel, R"(
 Return the model
 
 Returns:
@@ -55,16 +54,14 @@ Returns:
     MeshPtr: a pointer to the mesh
         )",
               ( py::arg( "self" ) )   );
-    c1.def( "getMaterialField", &StudyDescription::getMaterialField,
-        py::return_value_policy<py::copy_const_reference>(), R"(
+    c1.def( "getMaterialField", &StudyDescription::getMaterialField, R"(
 Return the material field
 
 Returns:
     MaterialFieldPtr: a pointer to the material field
         )",
               ( py::arg( "self" ) )   );
-    c1.def( "getCodedMaterial", &StudyDescription::getCodedMaterial,
-        py::return_value_policy<py::copy_const_reference>(), R"(
+    c1.def( "getCodedMaterial", &StudyDescription::getCodedMaterial, R"(
 Return the coded material
 
 Returns:
@@ -72,8 +69,7 @@ Returns:
         )",
               ( py::arg( "self" ) )   );
     c1.def( "getElementaryCharacteristics",
-        &StudyDescription::getElementaryCharacteristics,
-        py::return_value_policy<py::copy_const_reference>(), R"(
+        &StudyDescription::getElementaryCharacteristics, R"(
 Return the elementary charateristics
 
 Returns:
@@ -89,17 +85,15 @@ Returns:
         )",
               ( py::arg( "self" ) )   );
     c1.def( "getListOfLoads",
-        &StudyDescription::getListOfLoads,
-        py::return_value_policy<py::copy_const_reference>(), R"(
+        &StudyDescription::getListOfLoads, R"(
 Return list of loads.
 
 Returns:
-    ListOfLoads: a pointer to list of loads
+    ListOfLoadsPtr: a pointer to list of loads
         )",
               ( py::arg( "self" ) )   );
     c1.def( "getListOfDirichletBCs",
-        &StudyDescription::getListOfDirichletBCs,
-        py::return_value_policy<py::copy_const_reference>(), R"(
+        &StudyDescription::getListOfDirichletBCs, R"(
 Return list of DirichletBCs
 
 Returns:
@@ -107,8 +101,7 @@ Returns:
         )",
               ( py::arg( "self" ) )   );
     c1.def( "getListOfMechanicalLoadsReal",
-        &StudyDescription::getListOfMechanicalLoadsReal,
-        py::return_value_policy<py::copy_const_reference>(), R"(
+        &StudyDescription::getListOfMechanicalLoadsReal, R"(
 Return list of real mechanical loads
 
 Returns:
@@ -116,8 +109,7 @@ Returns:
         )",
               ( py::arg( "self" ) )   );
     c1.def( "getListOfMechanicalLoadsFunction",
-        &StudyDescription::getListOfMechanicalLoadsFunction,
-        py::return_value_policy<py::copy_const_reference>(), R"(
+        &StudyDescription::getListOfMechanicalLoadsFunction, R"(
 Return list of Function mechanical loads
 
 Returns:
@@ -126,8 +118,7 @@ Returns:
               ( py::arg( "self" ) )   );
 #ifdef ASTER_HAVE_MPI
     c1.def( "getListOfParallelMechanicalLoadsReal",
-        &StudyDescription::getListOfParallelMechanicalLoadsReal,
-        py::return_value_policy<py::copy_const_reference>(), R"(
+        &StudyDescription::getListOfParallelMechanicalLoadsReal, R"(
 Return list of real parallel mechanical loads
 
 Returns:
@@ -135,8 +126,7 @@ Returns:
         )",
               ( py::arg( "self" ) )   );
     c1.def( "getListOfParallelMechanicalLoadsFunction",
-        &StudyDescription::getListOfParallelMechanicalLoadsFunction,
-        py::return_value_policy<py::copy_const_reference>(), R"(
+        &StudyDescription::getListOfParallelMechanicalLoadsFunction, R"(
 Return list of function parallel mechanical loads
 
 Returns:

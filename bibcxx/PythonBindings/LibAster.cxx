@@ -220,6 +220,7 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportFluidStructureInteractionToPython();
     exportTurbulentSpectrumToPython();
     exportGenericFunctionToPython();
+    exportListOfLoadsToPython();
     exportFunctionToPython();
     exportFormulaToPython();
     exportFortranToPython();
@@ -308,6 +309,5 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportDeleteTemporaryObjectsToPython();
     exportMatrixToPetscToPython();
     exportBehaviourPropertyToPython();
-    exportListOfLoadsToPython();
 
 };
