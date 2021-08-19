@@ -208,20 +208,20 @@ os.system("ls -ltr fort.17")
 os.system("cat fort.17")
 
 TEST_FICHIER(FICHIER="./fort.17",
-             NB_VALE_I=18,
-             VALE_CALC_I=2431,
+             NB_VALE_I=65,
+             VALE_CALC_I=266,
              NB_VALE=62,
-             VALE_CALC=5523.239999999999,
-             VALE_CALC_K="11db4c9176961e1ef1d0c7974e270018",
+             VALE_CALC=309.239999999999,
+             VALE_CALC_K="e64c338bafd21f93934098e9d9957b64",
 )
 
 IMPR_CO(UNITE=18,NIVEAU=0, CONCEPT=_F(NOM=U2),)
 
 TEST_FICHIER(FICHIER="./fort.18",
-             NB_VALE_I=18,
-             VALE_CALC_I=2445,
-             NB_VALE=62,
-             VALE_CALC=5556.24,
-             VALE_CALC_K="11db4c9176961e1ef1d0c7974e270018"
+             NB_VALE_I=51,
+             VALE_CALC_I=140,
+             NB_VALE=29,
+             VALE_CALC=240.00001199999997,
+             VALE_CALC_K="e6c54f20e5373ff783bb15697dfd98a5"
 )
 FIN()
