@@ -49,7 +49,6 @@ character(len=16), intent(in) :: option, nomte
 ! Elementary computation
 !
 ! Elements: 3D_INCO_UPG, AXIS_INCO_UPG, D_PLAN_INCO_UPG
-!           3D_INCO_UPGB, AXIS_INCO_UPGB, D_PLAN_INCO_UPGB
 ! Options: FULL_MECA, FULL_MECA_ELAS
 !          RAPH_MECA
 !          RIGI_MECA_ELAS, RIGI_MECA_TANG
@@ -113,7 +112,7 @@ character(len=16), intent(in) :: option, nomte
 !
     nddl = nno1*ndim + nno2 + nno3
 !
-! - Modelling 
+! - Modelling
 !
     if (ndim .eq. 2 .and. lteatt('AXIS','OUI')) then
         typmod(1) = 'AXIS'

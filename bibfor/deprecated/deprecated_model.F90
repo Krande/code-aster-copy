@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,15 +42,9 @@ character(len=*), intent(in) :: model
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (model .eq. '3D_INCO_UPGB') then
-        vali = 15
-        valk    = "MODELISATION='3D_INCO_UPGB'"
-    else if (model .eq. 'AXIS_INCO_UPGB') then
-        vali = 15
-        valk    = "MODELISATION='AXIS_INCO_UPGB'"
-    else if (model .eq. 'D_PLAN_INCO_UPGB') then
-        vali = 15
-        valk    = "MODELISATION='D_PLAN_INCO_UPGB'"
+    if (model .eq. 'MON_MODELE') then
+        vali = 16
+        valk = "MODELISATION='MON_MODELE'"
     else
         goto 999
     endif
