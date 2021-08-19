@@ -59,7 +59,7 @@ ElementaryVector::assemble( const BaseDOFNumberingPtr dofNume )  const
     if ( ( !dofNume ) || dofNume->isEmpty() )
         raiseAsterError( "Numerotation is empty" );
 
-    FieldOnNodesRealPtr field = boost::make_shared<FieldOnNodesReal>( Permanent );
+    FieldOnNodesRealPtr field = boost::make_shared<FieldOnNodesReal>();
     field->setDOFNumbering( dofNume );
 
     VectorString vect_elem(1, getName());
@@ -85,15 +85,14 @@ ElementaryVector::assemble( const BaseDOFNumberingPtr dofNume )  const
 
 FieldOnNodesRealPtr
 ElementaryVector::assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofNume,
-                            const ASTERDOUBLE &time,
-                            const JeveuxMemory memType ) {
+                            const ASTERDOUBLE &time ) {
     if ( _isEmpty )
         raiseAsterError( "The ElementaryVector is empty" );
 
     if ( ( !dofNume ) || dofNume->isEmpty() )
         raiseAsterError( "Numerotation is empty" );
 
-    FieldOnNodesRealPtr field = boost::make_shared<FieldOnNodesReal>( memType );
+    FieldOnNodesRealPtr field = boost::make_shared<FieldOnNodesReal>();
     field->setDOFNumbering( dofNume );
     std::string name( " " );
     name.resize( 24, ' ' );
@@ -135,7 +134,7 @@ ElementaryVector::assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofNume,
     std::string name2( ( *vectTmp2 )[0].toString(), 0, 19 );
     FieldOnNodesRealPtr vectTmp3( new FieldOnNodesReal( name2 ) );
     field->allocateFrom( *vectTmp3 );
-    std::string base = JeveuxMemoryTypesNames[memType];
+    std::string base = "G";
 
     CALLO_ASCOVA( detr, name, fomult, param, &time, typres, field->getName(), base);
 

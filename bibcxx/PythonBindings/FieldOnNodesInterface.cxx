@@ -43,9 +43,6 @@ void exportFieldOnNodesToPython() {
         .def( "__init__",
               py::make_constructor(&initFactoryPtr< FieldOnNodesReal,
                                                     BaseDOFNumberingPtr>))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< FieldOnNodesReal,
-                                                    BaseDOFNumberingPtr, JeveuxMemory >))
         .def( "exportToSimpleFieldOnNodes",
               &FieldOnNodesReal::exportToSimpleFieldOnNodes )
         .def( "getMesh", &FieldOnNodesReal::getMesh )

@@ -26,7 +26,7 @@
 #include "Crack/CrackTip.h"
 
 CrackTip::CrackTip( const std::string name )
-    : DataStructure( name, 8, "FOND_FISS", Permanent ),
+    : DataStructure( name, 8, "FOND_FISS" ),
       _info( JeveuxVectorChar8( getName() + ".INFO" ) ),
       _fondFiss( JeveuxVectorReal( getName() + ".FONDFISS" ) ),
       _fondType( JeveuxVectorChar8( getName() + ".FOND.TYPE" ) ),

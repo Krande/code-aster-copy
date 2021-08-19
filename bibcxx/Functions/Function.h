@@ -62,7 +62,7 @@ class BaseFunction : public GenericFunction {
     /**
      * @brief Allocate function
      */
-    virtual void allocate( JeveuxMemory mem, ASTERINTEGER size );
+    virtual void allocate( ASTERINTEGER size );
 
     /**
      * @brief Deallocate function
@@ -204,7 +204,7 @@ class FunctionComplex : public BaseFunction {
     /**
      * @brief Allocate function
      */
-    void allocate( JeveuxMemory mem, ASTERINTEGER size ) ;
+    void allocate( ASTERINTEGER size ) ;
 
     /**
      * @brief Return the number of points of the function

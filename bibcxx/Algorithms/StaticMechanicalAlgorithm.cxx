@@ -57,7 +57,7 @@ void StaticMechanicalAlgorithm::oneStep( const CurrentContext &ctx ) {
     // Build Laplace forces
     ElementaryVectorPtr vectElem2 = ctx._discreteProblem->computeElementaryLaplaceVector();
     FieldOnNodesRealPtr chNoLap =
-        vectElem2->assembleWithLoadFunctions( dofNum1, ctx._time, Temporary );
+        vectElem2->assembleWithLoadFunctions( dofNum1, ctx._time );
 
     // Build Neumann loads
     VectorReal times;
@@ -80,7 +80,7 @@ void StaticMechanicalAlgorithm::oneStep( const CurrentContext &ctx ) {
     cmdSt.setResult( ctx._results->getName(), ctx._results->getType() );
 
     FieldOnNodesRealPtr diriBCsFON =
-        ctx._discreteProblem->computeDirichletBC( dofNum1, ctx._time, Temporary );
+        ctx._discreteProblem->computeDirichletBC( dofNum1, ctx._time );
 
     FieldOnNodesRealPtr resultField =
         ctx._results->getEmptyFieldOnNodesReal( "DEPL", ctx._rank );

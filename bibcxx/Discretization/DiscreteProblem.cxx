@@ -41,7 +41,7 @@
 ElementaryVectorDisplacementRealPtr
 DiscreteProblem::computeElementaryDirichletVector( ASTERDOUBLE time ) {
     ElementaryVectorDisplacementRealPtr retour =
-        boost::make_shared< ElementaryVectorDisplacementReal >( Permanent ) ;
+        boost::make_shared< ElementaryVectorDisplacementReal >() ;
 
     std::string modelName = ljust(_study->getModel()->getName(), 24);
 
@@ -75,7 +75,7 @@ DiscreteProblem::computeDirichlet( BaseDOFNumberingPtr dofNume, ASTERDOUBLE time
 ElementaryVectorDisplacementRealPtr
 DiscreteProblem::computeElementaryDirichletReactionVector(FieldOnNodesRealPtr lagr_curr ) {
     ElementaryVectorDisplacementRealPtr retour =
-        boost::make_shared< ElementaryVectorDisplacementReal >( Permanent ) ;
+        boost::make_shared< ElementaryVectorDisplacementReal >() ;
 
     std::string modelName = ljust(_study->getModel()->getName(), 24);
     std::string materName = ljust(_study->getMaterialField()->getName(), 24);
@@ -117,7 +117,7 @@ DiscreteProblem::computeElementaryDualizedDirichletVector( FieldOnNodesRealPtr d
                                                             ASTERDOUBLE scaling )
 {
     ElementaryVectorDisplacementRealPtr retour =
-        boost::make_shared< ElementaryVectorDisplacementReal >( Permanent ) ;
+        boost::make_shared< ElementaryVectorDisplacementReal >() ;
 
     std::string modelName = _study->getModel()->getName();
     std::string dispName = disp_curr->getName();
@@ -155,7 +155,7 @@ DiscreteProblem::computeDualizedDirichlet( BaseDOFNumberingPtr dofNume,
 ElementaryVectorDisplacementRealPtr
 DiscreteProblem::computeElementaryLaplaceVector() {
     ElementaryVectorDisplacementRealPtr retour =
-        boost::make_shared< ElementaryVectorDisplacementReal >( Permanent ) ;
+        boost::make_shared< ElementaryVectorDisplacementReal >() ;
 
     ModelPtr curModel = _study->getModel();
     std::string modelName = curModel->getName();
@@ -190,7 +190,7 @@ DiscreteProblem::computeElementaryNeumannVector( const VectorReal time,
         throw std::runtime_error( "Invalid number of parameter" );
 
     ElementaryVectorDisplacementRealPtr retour =
-        boost::make_shared< ElementaryVectorDisplacementReal >( Permanent ) ;
+        boost::make_shared< ElementaryVectorDisplacementReal >() ;
     const auto &curCodedMater = _study->getCodedMaterial()->getCodedMaterialField();
     const auto &curMater = _study->getCodedMaterial()->getMaterialField();
 
@@ -243,7 +243,7 @@ DiscreteProblem::computeNeumann( BaseDOFNumberingPtr dofNume,
 ElementaryMatrixDisplacementRealPtr
 DiscreteProblem::computeElementaryStiffnessMatrix( ASTERDOUBLE time ) {
     ElementaryMatrixDisplacementRealPtr retour =
-        boost::make_shared< ElementaryMatrixDisplacementReal >( Permanent ) ;
+        boost::make_shared< ElementaryMatrixDisplacementReal >() ;
     ModelPtr curModel = _study->getModel();
     retour->setModel( curModel );
     MaterialFieldPtr curMater = _study->getMaterialField();
@@ -302,8 +302,7 @@ DiscreteProblem::computeElementaryJacobianMatrix( ASTERDOUBLE time ) {
 };
 
 FieldOnNodesRealPtr DiscreteProblem::computeDirichletBC( const BaseDOFNumberingPtr &curDOFNum,
-                                                            const ASTERDOUBLE &time,
-                                                            const JeveuxMemory &memType ) const {
+                                                            const ASTERDOUBLE &time ) const {
     const auto &_listOfLoad = _study->getListOfLoads();
     const auto &list = _listOfLoad->getListVector();
     const auto &loadInformations = _listOfLoad->getInformationVector();
@@ -312,7 +311,7 @@ FieldOnNodesRealPtr DiscreteProblem::computeDirichletBC( const BaseDOFNumberingP
         _listOfLoad->build( _study->getModel() );
     //         throw std::runtime_error( "ListOfLoads is empty" );
 
-    FieldOnNodesRealPtr retour = boost::make_shared< FieldOnNodesReal >( memType );
+    FieldOnNodesRealPtr retour = boost::make_shared< FieldOnNodesReal >();
     std::string resuName = retour->getName();
     std::string dofNumName = curDOFNum->getName();
 
@@ -322,9 +321,9 @@ FieldOnNodesRealPtr DiscreteProblem::computeDirichletBC( const BaseDOFNumberingP
     infLoadName.resize( 24, ' ' );
     std::string funcLoadName = listOfFunctions->getName();
     funcLoadName.resize( 24, ' ' );
+    std::string base( "G" );
 
-    CALLO_ASCAVC_WRAP( lLoadName, infLoadName, funcLoadName, dofNumName, &time, resuName,
-                       JeveuxMemoryTypesNames[memType] );
+    CALLO_ASCAVC_WRAP( lLoadName, infLoadName, funcLoadName, dofNumName, &time, resuName, base );
 
     retour->setDOFNumbering( curDOFNum );
     retour->build();
@@ -350,7 +349,7 @@ BaseDOFNumberingPtr DiscreteProblem::computeDOFNumbering( BaseDOFNumberingPtr do
 };
 
 ElementaryVectorDisplacementRealPtr DiscreteProblem::computeElementaryMechanicalLoadsVector() {
-    ElementaryVectorDisplacementRealPtr retour( new ElementaryVectorDisplacementReal( Permanent ) );
+    ElementaryVectorDisplacementRealPtr retour( new ElementaryVectorDisplacementReal() );
 
     CommandSyntax cmdSt( "CALC_VECT_ELEM" );
     cmdSt.setResult( retour->getName(), retour->getType() );
@@ -463,7 +462,7 @@ SyntaxMapContainer DiscreteProblem::computeMatrixSyntax( const std::string &opti
 ElementaryMatrixDisplacementRealPtr
 DiscreteProblem::computeMechanicalMatrix( const std::string &optionName ) {
     ElementaryMatrixDisplacementRealPtr retour(
-        new ElementaryMatrixDisplacementReal( Permanent ) );
+        new ElementaryMatrixDisplacementReal() );
     retour->setModel( _study->getModel() );
 
     // Definition du bout de fichier de commande correspondant a CALC_MATR_ELEM
@@ -489,7 +488,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteProblem::computeMechanicalDampingMat
     const ElementaryMatrixDisplacementRealPtr &rigidity,
     const ElementaryMatrixDisplacementRealPtr &mass ) {
     ElementaryMatrixDisplacementRealPtr retour(
-        new ElementaryMatrixDisplacementReal( Permanent ) );
+        new ElementaryMatrixDisplacementReal() );
     retour->setModel( rigidity->getModel() );
 
     // Definition du bout de fichier de commande correspondant a CALC_MATR_ELEM

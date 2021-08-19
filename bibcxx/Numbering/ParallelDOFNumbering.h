@@ -52,15 +52,15 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
     /**
      * @brief Constructeur
      */
-    ParallelDOFNumbering( const JeveuxMemory memType = Permanent )
-        : BaseDOFNumbering( "NUME_DDL_P", memType ){};
+    ParallelDOFNumbering(  )
+        : BaseDOFNumbering( "NUME_DDL_P" ){};
 
     /**
      * @brief Constructeur
      * @param name nom souhaité de la sd (utile pour le BaseDOFNumbering d'une sd_resu)
      */
-    ParallelDOFNumbering( const std::string name, const JeveuxMemory memType = Permanent )
-        : BaseDOFNumbering( name, "NUME_DDL_P", memType ){};
+    ParallelDOFNumbering( const std::string name )
+        : BaseDOFNumbering( name, "NUME_DDL_P" ){};
 
     /**
      * @brief Methode permettant de savoir si l'objet est parallel

@@ -83,8 +83,7 @@ public:
      * @brief Constructeur
      */
     FiniteElementDescriptor( const std::string& name,
-                                     const BaseMeshPtr mesh,
-                                     const JeveuxMemory memType = Permanent );
+                             const BaseMeshPtr mesh );
 
     /**
      * @brief Destructor

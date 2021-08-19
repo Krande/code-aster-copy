@@ -268,7 +268,7 @@ bool TableContainer::build() {
                         new ElementaryVectorTemperatureReal( sdName ) );
             } else if ( type == "CHAM_GD_SDASTER" ) {
                 if ( _mapGDF[name] == nullptr )
-                    _mapGDF[name] = DataFieldPtr( new DataField( sdName ) );
+                    _mapGDF[name] = DataFieldPtr( new DataField( sdName, "CHAM_GD" ) );
             } else if ( type == "CHAM_NO_SDASTER" ) {
                 if ( _mapFOND[name] == nullptr )
                     _mapFOND[name] = FieldOnNodesRealPtr( new FieldOnNodesReal( sdName ) );

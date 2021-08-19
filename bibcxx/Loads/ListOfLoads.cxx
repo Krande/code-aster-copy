@@ -29,9 +29,8 @@
 #include "Loads/ListOfLoads.h"
 #include "Supervis/CommandSyntax.h"
 
-ListOfLoads::ListOfLoads( const JeveuxMemory memType )
-    : DataStructure( DataStructureNaming::getNewName( memType, 8 ) + ".LIST_LOAD", 19, "L_CHARGES",
-                     memType ),
+ListOfLoads::ListOfLoads( )
+    : DataStructure( DataStructureNaming::getNewName( 8 ) + ".LIST_LOAD", 19, "L_CHARGES" ),
       _loadInformations( JeveuxVectorLong( getName() + ".INFC" ) ),
       _list( JeveuxVectorChar24( getName() + ".LCHA" ) ),
       _listOfFunctions( JeveuxVectorChar24( getName() + ".FCHA" ) ),

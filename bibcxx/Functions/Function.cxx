@@ -40,15 +40,14 @@ BaseFunction::BaseFunction( const std::string type,
                                       const std::string type2 )
     : BaseFunction::BaseFunction( ResultNaming::getNewResultName(), type, type2 ) {}
 
-void BaseFunction::allocate( JeveuxMemory mem,
-                                     ASTERINTEGER size ) {
+void BaseFunction::allocate( ASTERINTEGER size ) {
     if ( _property->exists() )
         _property->deallocate();
     propertyAllocate();
 
     if ( _value->exists() )
         _value->deallocate();
-    _value->allocate( mem, 2 * size );
+    _value->allocate( 2 * size );
 }
 
 void BaseFunction::deallocate()
@@ -57,8 +56,7 @@ void BaseFunction::deallocate()
     _value->deallocate();
 }
 
-void FunctionComplex::allocate( JeveuxMemory mem,
-                                        ASTERINTEGER size ) {
+void FunctionComplex::allocate( ASTERINTEGER size ) {
     throw std::runtime_error( "Not yet implemented!" );
 }
 
@@ -69,7 +67,7 @@ void BaseFunction::setValues( const VectorReal &absc,
 
     // Create Jeveux vector ".VALE"
     const int nbpts = absc.size();
-    _value->allocate( Permanent, 2 * nbpts );
+    _value->allocate( 2 * nbpts );
 
     // Loop on the points
     VectorReal::const_iterator abscIt = absc.begin();
@@ -117,7 +115,7 @@ void FunctionComplex::setValues( const VectorReal &absc,
 
     // Create Jeveux vector ".VALE"
     const int nbpts = absc.size();
-    _value->allocate( Permanent, 3 * nbpts );
+    _value->allocate( 3 * nbpts );
 
     // Loop on the points
     VectorReal::const_iterator abscIt = absc.begin();

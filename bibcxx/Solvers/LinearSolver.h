@@ -292,7 +292,7 @@ class BaseLinearSolver : public DataStructure {
     solve( const AssemblyMatrixDisplacementRealPtr &currentMatrix,
                              const FieldOnNodesRealPtr &currentRHS,
                              FieldOnNodesRealPtr result = FieldOnNodesRealPtr(
-                                 new FieldOnNodesReal( Permanent ) ) ) const;
+                                 new FieldOnNodesReal() ) ) const;
 
     /**
      * @brief Inversion du systeme lineaire
@@ -306,7 +306,7 @@ class BaseLinearSolver : public DataStructure {
         const AssemblyMatrixDisplacementRealPtr &currentMatrix,
         const FieldOnNodesRealPtr &dirichletBCField, const FieldOnNodesRealPtr &currentRHS,
         FieldOnNodesRealPtr result =
-            FieldOnNodesRealPtr( new FieldOnNodesReal( Permanent ) ) ) const;
+            FieldOnNodesRealPtr( new FieldOnNodesReal() ) ) const;
 
     void disablePreprocessing() {
         if ( _linearSolver != Mumps )

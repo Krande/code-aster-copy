@@ -47,8 +47,8 @@ class NamesMapClass : public JeveuxObjectClass, private AllowedJeveuxType< Value
      * @brief Constructeur
      * @param name Nom Jeveux de l'objet
      */
-    NamesMapClass( std::string name, JeveuxMemory mem = Permanent )
-        : JeveuxObjectClass( name, mem ), _size( 0 ){};
+    NamesMapClass( std::string name )
+        : JeveuxObjectClass( name ), _size( 0 ){};
 
     /**
      * @brief Destructeur
@@ -73,16 +73,12 @@ class NamesMapClass : public JeveuxObjectClass, private AllowedJeveuxType< Value
 
     /**
      * @brief Allocation
-     * @param mem Mémoire d'allocation
      * @param size Taille
      * @return vrai en cas d'allocation
      */
-    bool allocate( JeveuxMemory mem, int size ) {
-        _mem = mem;
+    bool allocate( int size ) {
         if ( _name != "" && size > 0 ) {
-            std::string strJeveuxBase( "V" );
-            if ( mem == Permanent )
-                strJeveuxBase = "G";
+            std::string strJeveuxBase = JeveuxMemoryTypesNames[_mem];
             ASTERINTEGER taille = size;
             const int intType = AllowedJeveuxType< ValueType >::numTypeJeveux;
             std::string carac = strJeveuxBase + " N " + JeveuxTypesNames[intType];

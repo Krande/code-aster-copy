@@ -62,7 +62,7 @@ class BehaviourDefinition : public DataStructure {
      * @brief Constructeur
      */
     BehaviourDefinition( const std::string &name )
-        : DataStructure( name, 19, "COMPOR", Permanent ),
+        : DataStructure( name, 19, "COMPOR"),
           _cprk( JeveuxVectorChar24( getName() + ".CPRK" ) ),
           _cprr( JeveuxVectorReal( getName() + ".CPRR" ) ),
           _cpri( JeveuxVectorLong( getName() + ".CPRI" ) ){};

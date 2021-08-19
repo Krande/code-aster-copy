@@ -219,9 +219,7 @@ bool BaseLinearSolver::factorize( AssemblyMatrixDisplacementRealPtr currentMatri
         build();
 
     const std::string solverName( getName() + "           " );
-    std::string base( "V" );
-    if ( currentMatrix->getMemoryType() == Permanent )
-        base = std::string( "G" );
+    std::string base( "G" );
     ASTERINTEGER cret = 0, npvneg = 0, istop = -9999;
     const std::string matpre( _matrixPrec->getName() );
     const std::string matass = currentMatrix->getName();
@@ -254,7 +252,7 @@ FieldOnNodesRealPtr BaseLinearSolver::solve(
     }
 
     if ( result->getName() == "" )
-        result = boost::make_shared< FieldOnNodesReal >( Permanent );
+        result = boost::make_shared< FieldOnNodesReal >();
 
     try{
        if ( !result->getDOFNumbering() && currentRHS->getDOFNumbering()){
@@ -289,7 +287,7 @@ FieldOnNodesRealPtr BaseLinearSolver::solveWithDirichletBC(
     }
 
     if ( result->getName().empty() )
-        result = boost::make_shared< FieldOnNodesReal >( Permanent );
+        result = boost::make_shared< FieldOnNodesReal >();
 
     try{
        if ( !result->getDOFNumbering() && currentRHS->getDOFNumbering()){

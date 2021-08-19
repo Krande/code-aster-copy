@@ -60,7 +60,7 @@ class GenericModalBasis : public DataStructure {
      * @brief Constructeur
      */
     GenericModalBasis( const std::string name )
-        : DataStructure( name, 8, "MODE_MECA", Permanent ), _isEmpty( true ){};
+        : DataStructure( name, 8, "MODE_MECA"), _isEmpty( true ){};
 
   protected:
     CapyConvertibleContainer _container;

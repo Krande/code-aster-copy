@@ -155,8 +155,7 @@ class DiscreteProblem {
      * @return Booleen indiquant que tout s'est bien passe
      */
     FieldOnNodesRealPtr computeDirichletBC( const BaseDOFNumberingPtr &curDOFNum,
-                                          const ASTERDOUBLE &time,
-                                          const JeveuxMemory &memType = Permanent ) const;
+                                          const ASTERDOUBLE &time ) const;
 
     /**
      * @brief Détermination de la numérotation de ddl

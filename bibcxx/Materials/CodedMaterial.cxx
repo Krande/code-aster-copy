@@ -32,7 +32,7 @@ CodedMaterial::CodedMaterial( const std::string &name, const MaterialFieldPtr &m
                                         const ModelPtr &model )
     : DataStructure( name, 19, "MATER_CODE" ), _mater( mater ), _model( model ),
       _field( boost::make_shared< ConstantFieldOnCellsLong >
-        ( getName() , _model->getMesh(), Permanent ) ),
+        ( getName() , _model->getMesh()) ),
       _grp( JeveuxVectorChar8( getName() + ".GRP" ) ),
       _nGrp( JeveuxVectorLong( getName() + ".NGRP" ) ){};
 
@@ -69,8 +69,7 @@ bool CodedMaterial::allocate( bool force ) {
         JeveuxChar24 nothing( " " );
         CALLO_JELSTC( base, nameWithoutBlanks, &pos, &nbval2, nothing, &retour );
         if ( retour != 0 ) {
-            JeveuxVectorChar24 test( "&&TMP" );
-            test->allocate( Temporary, -retour );
+            JeveuxVectorChar24 test( -retour );
             ASTERINTEGER nbval2 = -retour;
             CALLO_JELSTC( base, nameWithoutBlanks, &pos, &nbval2, ( *test )[0], &retour );
             for ( int i = 0; i < retour; ++i ) {

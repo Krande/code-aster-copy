@@ -59,7 +59,7 @@ class JeveuxObjectClass {
   protected:
     /** @brief Nom de l'objet Jeveux */
     std::string _name;
-    /** @brief Mémoire d'allocation */
+    /** @brief Mémoire d'allocation - Toujours globale en c++ */
     JeveuxMemory _mem;
 
   public:
@@ -67,8 +67,8 @@ class JeveuxObjectClass {
      * @brief Constructeur
      * @param name Nom jeveux du vecteur
      */
-    JeveuxObjectClass( const std::string &nom, JeveuxMemory mem = Permanent )
-        : _name( nom ), _mem( mem ){};
+    JeveuxObjectClass( const std::string &nom)
+        : _name( nom ), _mem( Permanent ){};
 
     /**
      * @brief Destructeur

@@ -53,7 +53,7 @@ class Formula : public GenericFunction {
 
     void propertyAllocate() {
         // Create Jeveux vector ".PROL"
-        _property->allocate( Permanent, 6 );
+        _property->allocate( 6 );
         ( *_property )[0] = "INTERPRE";
         ( *_property )[1] = "INTERPRE";
         ( *_property )[2] = "";

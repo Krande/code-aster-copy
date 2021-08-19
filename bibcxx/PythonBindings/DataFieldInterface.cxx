@@ -36,5 +36,9 @@ void exportDataFieldToPython() {
         "DataField", py::no_init )
         .def( "__init__", py::make_constructor(&initFactoryPtr< DataField >))
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< DataField, std::string >));
+              py::make_constructor(&initFactoryPtr< DataField >))
+        .def( "__init__",
+              py::make_constructor(&initFactoryPtr< DataField, std::string >))
+        .def( "__init__",
+              py::make_constructor(&initFactoryPtr< DataField, std::string, std::string >));
 };

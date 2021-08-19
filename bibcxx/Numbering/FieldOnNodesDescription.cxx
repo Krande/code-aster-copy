@@ -23,15 +23,8 @@
 
 #include "Numbering/FieldOnNodesDescription.h"
 
-FieldOnNodesDescription::FieldOnNodesDescription( const JeveuxMemory memType )
-    : DataStructure( ResultNaming::getNewResultName(), 19, "PROF_CHNO", memType ),
-      _componentsOnNodes( getName() + ".PRNO" ), _namesOfGroupOfCells( getName() + ".LILI" ),
-      _indexationVector( getName() + ".NUEQ" ),
-      _nodeAndComponentsNumberFromDOF( getName() + ".DEEQ" ){};
-
-FieldOnNodesDescription::FieldOnNodesDescription( const std::string name,
-                                                            const JeveuxMemory memType )
-    : DataStructure( name, 19, "PROF_CHNO", memType ), _componentsOnNodes( getName() + ".PRNO" ),
+FieldOnNodesDescription::FieldOnNodesDescription( const std::string name )
+    : DataStructure( name, 19, "PROF_CHNO" ), _componentsOnNodes( getName() + ".PRNO" ),
       _namesOfGroupOfCells( getName() + ".LILI" ), _indexationVector( getName() + ".NUEQ" ),
       _nodeAndComponentsNumberFromDOF( getName() + ".DEEQ" ){};
 

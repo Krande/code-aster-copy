@@ -88,14 +88,9 @@ template < class ValueType > class FieldOnCells : public DataField {
 
     /**
      * @brief Constructeur
-     * @param memType Mémoire d'allocation
      */
-    FieldOnCells( const JeveuxMemory memType = Permanent )
-        : DataField( memType, "CHAM_ELEM" ),
-          _descriptor( JeveuxVectorLong( getName() + ".CELD" ) ),
-          _reference( JeveuxVectorChar24( getName() + ".CELK" ) ),
-          _valuesList( JeveuxVector< ValueType >( getName() + ".CELV" ) ), _model( nullptr ),
-          _title( JeveuxVectorChar80( getName() + ".TITR" ) ){};
+    FieldOnCells( )
+        : FieldOnCells( ResultNaming::getNewResultName() ){};
 
 
     /**
@@ -103,11 +98,10 @@ template < class ValueType > class FieldOnCells : public DataField {
      * @param model Modèle
      * @param behaviour Carte Compor
      * @param typcham Type de champ à calculer
-     * @param memType Mémoire d'allocation
      */
     FieldOnCells(const ModelPtr &model, const BehaviourPropertyPtr behaviour,
-                 const std::string& typcham, const JeveuxMemory memType = Permanent )
-        : FieldOnCells( memType){
+                 const std::string& typcham)
+        : FieldOnCells( ){
             std::string inName = getName();
             std::string carele = " ";
             std::string test;
@@ -140,7 +134,7 @@ template < class ValueType > class FieldOnCells : public DataField {
 
             _model = model;
             _dofDescription = fed;
-            auto dcel = boost::make_shared<SimpleFieldOnCellsValueType>( getMemoryType() );
+            auto dcel = boost::make_shared<SimpleFieldOnCellsValueType>();
             auto compor = behaviour->getBehaviourField();
             CALLO_CESVAR(carele, compor->getName(), fed->getName(), dcel->getName());
             CALLO_ALCHML(fed->getName(), option, nompar, JeveuxMemoryTypesNames[getMemoryType()],
@@ -156,11 +150,7 @@ template < class ValueType > class FieldOnCells : public DataField {
      * @param tocopy FieldOnCells object
      */
     FieldOnCells(FieldOnCells&& toCopy )
-        : DataField( toCopy.getMemoryType(), "CHAM_ELEM" ),
-          _descriptor( JeveuxVectorLong( getName() + ".CELD" ) ),
-          _reference( JeveuxVectorChar24( getName() + ".CELK" ) ),
-          _valuesList( JeveuxVector< ValueType >( getName() + ".CELV" ) ),
-          _title( JeveuxVectorChar80( getName() + ".TITR" ) ){
+        : FieldOnCells(){
 
           _descriptor = toCopy._descriptor;
           _reference  = toCopy._reference;
@@ -176,11 +166,7 @@ template < class ValueType > class FieldOnCells : public DataField {
      * @brief Copy constructor
      */
     FieldOnCells( const std::string &name, const FieldOnCells &toCopy )
-        : DataField( name, "CHAM_ELEM", toCopy.getMemoryType() ),
-          _descriptor( JeveuxVectorLong( getName() + ".CELD" ) ),
-          _reference( JeveuxVectorChar24( getName() + ".CELK" ) ),
-          _valuesList( JeveuxVector< ValueType >( getName() + ".CELV" ) ),
-          _title( JeveuxVectorChar80( getName() + ".TITR" ) ){
+        : FieldOnCells( name ){
         // JeveuxVector to be duplicated
         *( _descriptor ) = *( toCopy._descriptor );
         *( _reference ) = *( toCopy._reference );
@@ -194,15 +180,16 @@ template < class ValueType > class FieldOnCells : public DataField {
     }
 
     /**
-     * @brief Wrap of copy constructor
-     */
-    FieldOnCells duplicate() { return *this; }
-
-    /**
      * @brief Copy constructor
      */
     FieldOnCells( const FieldOnCells &toCopy )
         : FieldOnCells(ResultNaming::getNewResultName(), toCopy) {};
+
+    /**
+     * @brief Wrap of copy constructor
+     */
+    FieldOnCells duplicate() { return *this; }
+
 
     /**
      * @brief
@@ -220,7 +207,7 @@ template < class ValueType > class FieldOnCells : public DataField {
      */
     SimpleFieldOnCellsValueTypePtr exportToSimpleFieldOnCells() {
         SimpleFieldOnCellsValueTypePtr toReturn(
-            new SimpleFieldOnCellsValueType( getMemoryType() ) );
+            new SimpleFieldOnCellsValueType() );
         const std::string resultName = toReturn->getName();
         const std::string inName = getName();
         const std::string copyNan( "OUI" );

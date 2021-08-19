@@ -29,6 +29,7 @@
 #include "astercxx.h"
 
 #include "DataStructures/DataStructure.h"
+#include "DataStructures/DataStructureNaming.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/NamesMap.h"
@@ -50,22 +51,25 @@ class FieldOnNodesDescription : public DataStructure {
     JeveuxVectorLong _nodeAndComponentsNumberFromDOF;
 
   public:
+
+      /**
+     * @brief Constructeur
+     * @param name nom souhaité de la sd (utile pour le FieldOnNodesDescription d'une
+     * sd_resu)
+     */
+    FieldOnNodesDescription( const std::string name );
+
     /**
      * @brief Constructeur
      */
-    FieldOnNodesDescription( const JeveuxMemory memType = Permanent );
+    FieldOnNodesDescription( ) : FieldOnNodesDescription(DataStructureNaming::getNewName()){};
 
     /**
      * @brief Destructor
      */
     ~FieldOnNodesDescription(){};
 
-    /**
-     * @brief Constructeur
-     * @param name nom souhaité de la sd (utile pour le FieldOnNodesDescription d'une
-     * sd_resu)
-     */
-    FieldOnNodesDescription( const std::string name, const JeveuxMemory memType = Permanent );
+
 
     /**
      * @brief Returns a vector of information of the numbering

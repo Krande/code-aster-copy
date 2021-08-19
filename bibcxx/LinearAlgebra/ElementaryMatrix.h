@@ -63,9 +63,8 @@ protected:
      * @brief Constructor with a name
      */
     BaseElementaryMatrix( const std::string name,
-                                  const JeveuxMemory memType = Permanent,
                                   const std::string type = "MATR_ELEM" ):
-        DataStructure( name, 19, type, memType ),
+        DataStructure( name, 19, type ),
         _description( JeveuxVectorChar24( getName() + ".RERR" ) ),
         _listOfElementaryTerms( JeveuxVectorChar24( getName() + ".RELR" ) ),
         _isEmpty( true ),
@@ -75,9 +74,8 @@ protected:
     /**
      * @brief Constructor
      */
-    BaseElementaryMatrix( const JeveuxMemory memType = Permanent,
-                                  const std::string type = "MATR_ELEM" ):
-        BaseElementaryMatrix( ResultNaming::getNewResultName(), memType, type )
+    BaseElementaryMatrix( const std::string type = "MATR_ELEM" ):
+        BaseElementaryMatrix( ResultNaming::getNewResultName(), type )
     {};
 
 
@@ -182,8 +180,8 @@ class ElementaryMatrix : public BaseElementaryMatrix
     /**
      * @brief Constructor with a name
      */
-    ElementaryMatrix( const std::string name,  const JeveuxMemory memType = Permanent ):
-        BaseElementaryMatrix( name, memType,
+    ElementaryMatrix( const std::string name ):
+        BaseElementaryMatrix( name,
             "MATR_ELEM_" + std::string( PhysicalQuantityNames[PhysicalQuantity] ) +
             ( typeid( ValueType ) == typeid(double)? "_R" : "_C" ) )
     {};
@@ -191,8 +189,8 @@ class ElementaryMatrix : public BaseElementaryMatrix
     /**
      * @brief Constructor
      */
-    ElementaryMatrix( const JeveuxMemory memType = Permanent ):
-        ElementaryMatrix( ResultNaming::getNewResultName(), memType )
+    ElementaryMatrix():
+        ElementaryMatrix( ResultNaming::getNewResultName() )
     {};
 
     /**

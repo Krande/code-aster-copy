@@ -75,19 +75,18 @@ class ElementaryVector : public DataStructure {
      * @brief Constructeur
      */
     ElementaryVector( const std::string name,
-                              const JeveuxMemory memType = Permanent,
                               const std::string type = "VECT_ELEM" )
-        : DataStructure( name, 19, type, memType ),
+        : DataStructure( name, 19, type ),
           _description( JeveuxVectorChar24( getName() + ".RERR" ) ),
           _listOfElementaryTerms( JeveuxVectorChar24( getName() + ".RELR" ) ), _isEmpty( true ),
-          _listOfLoads( new ListOfLoads( memType ) ),
+          _listOfLoads( new ListOfLoads( ) ),
           _corichRept( NamesMapChar24( "&&CORICH." + getName8() + ".REPT" ) ){};
 
     /**
      * @brief Constructeur
      */
-    ElementaryVector( const JeveuxMemory memType = Permanent )
-        : ElementaryVector( ResultNaming::getNewResultName(), memType ){};
+    ElementaryVector( )
+        : ElementaryVector( ResultNaming::getNewResultName() ){};
 
     /* FIXME: temporay for _corich .REPT initialiezation! */
     const std::string getName8() const {
@@ -115,42 +114,19 @@ class ElementaryVector : public DataStructure {
      * @param dofNume objet DOFNumbering
      */
     FieldOnNodesRealPtr
-    assembleWithLoadFunctions( const DOFNumberingPtr &dofNume ) {
-        return assembleWithLoadFunctions( dofNume, 0., Permanent );
-    };
-
-    FieldOnNodesRealPtr
-    assembleWithLoadFunctions( const DOFNumberingPtr &dofNume, const ASTERDOUBLE& time ) {
-        return assembleWithLoadFunctions( dofNume, time, Permanent );
-    };
-
-    FieldOnNodesRealPtr
-    assemble( const BaseDOFNumberingPtr dofNume ) const;
-
-/**
- * @brief Assembler les vecteurs elementaires en se fondant sur dofNume
- * @param dofNume objet DOFNumbering
- */
-#ifdef ASTER_HAVE_MPI
-    FieldOnNodesRealPtr assembleWithLoadFunctions(
-        const ParallelDOFNumberingPtr &dofNume ) {
-        return assembleWithLoadFunctions( dofNume, 0., Permanent );
-    };
-
-    FieldOnNodesRealPtr assembleWithLoadFunctions(
-        const ParallelDOFNumberingPtr &dofNume, const ASTERDOUBLE& time ) {
-        return assembleWithLoadFunctions( dofNume, time, Permanent );
-    };
-#endif /* ASTER_HAVE_MPI */
+    assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofNume, const ASTERDOUBLE& time );
 
     /**
      * @brief Assembler les vecteurs elementaires en se fondant sur dofNume
      * @param dofNume objet DOFNumbering
      */
     FieldOnNodesRealPtr
-    assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofNume,
-                                        const ASTERDOUBLE &time = 0.,
-                                        const JeveuxMemory memType = Permanent ) ;
+    assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofNume ) {
+        return assembleWithLoadFunctions( dofNume, 0.);
+    };
+
+    FieldOnNodesRealPtr
+    assemble( const BaseDOFNumberingPtr dofNume ) const;
 
     /**
      * @brief Methode permettant de savoir si les matrices elementaires sont vides
@@ -205,9 +181,8 @@ class TemplateElementaryVector: public ElementaryVector
     /**
      * @brief Constructor with a name
      */
-    TemplateElementaryVector( const std::string name,
-                                      const JeveuxMemory memType = Permanent ):
-        ElementaryVector( name, memType,
+    TemplateElementaryVector( const std::string name ):
+        ElementaryVector( name,
             "VECT_ELEM_" + std::string( PhysicalQuantityNames[PhysicalQuantity] ) +
             ( typeid( ValueType ) == typeid(ASTERDOUBLE)? "_R" : "_C" ) )
     {};
@@ -215,8 +190,8 @@ class TemplateElementaryVector: public ElementaryVector
     /**
      * @brief Constructor
      */
-    TemplateElementaryVector( const JeveuxMemory memType = Permanent ):
-        TemplateElementaryVector( ResultNaming::getNewResultName(), memType )
+    TemplateElementaryVector( ):
+        TemplateElementaryVector( ResultNaming::getNewResultName() )
     {};
 };
 

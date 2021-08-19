@@ -33,6 +33,7 @@
 
 #include "MemoryManager/JeveuxAllowedTypes.h"
 #include "MemoryManager/JeveuxObject.h"
+#include "Supervis/ResultNaming.h"
 
 /**
  * @class JeveuxVectorClass
@@ -53,8 +54,8 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      *   Attention, le pointeur est mis a zero. Avant d'utiliser ce vecteur,
      *   il faut donc faire appel a JeveuxVectorClass::updateValuePointer
      */
-    JeveuxVectorClass( const std::string &nom, JeveuxMemory mem = Permanent )
-        : JeveuxObjectClass( nom, mem ), _valuePtr( nullptr ){};
+    JeveuxVectorClass( const std::string &nom )
+        : JeveuxObjectClass( nom ), _valuePtr( nullptr ){};
 
     /**
      * @brief Destructeur
@@ -72,7 +73,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
     JeveuxVectorClass &operator=( JeveuxVectorClass< ValueType > &toCopy ) {
         if ( this->size() != 0 )
             this->deallocate();
-        this->allocate( _mem, toCopy.size() );
+        this->allocate( toCopy.size() );
         toCopy.updateValuePointer();
         for ( int i = 0; i < toCopy.size(); ++i )
             this->operator[]( i ) = toCopy[i];
@@ -88,7 +89,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
     JeveuxVectorClass &operator=( const std::vector< ValueType > &toCopy ) {
         if ( this->size() != 0 )
             this->deallocate();
-        this->allocate( _mem, toCopy.size() );
+        this->allocate( toCopy.size() );
         for ( int i = 0; i < int(toCopy.size()); ++i )
             this->operator[]( i ) = toCopy[i];
         return *this;
@@ -145,43 +146,15 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
 
     /**
      * @brief Fonction d'allocation d'un vecteur Jeveux
-     * @param jeveuxBase Base sur laquelle doit etre allouee le vecteur : 'G' ou 'V'
-     * @param length Longueur du vecteur Jeveux a allouer
-     * @return true si l'allocation s'est bien passee
-     */
-    bool allocate( JeveuxMemory jeveuxBase, ASTERINTEGER length ) {
-        if ( _name != "" && length > 0 ) {
-            std::string strJeveuxBase( "V" );
-            if ( jeveuxBase == Permanent )
-                strJeveuxBase = "G";
-            ASTERINTEGER taille = length;
-            const int intType = AllowedJeveuxType< ValueType >::numTypeJeveux;
-            std::string carac = strJeveuxBase + " V " + JeveuxTypesNames[intType];
-            CALLO_WKVECTC( _name, carac, &taille, (void *)( &_valuePtr ) );
-            if ( _valuePtr == NULL )
-                return false;
-        } else
-            return false;
-        updateValuePointer();
-// #ifdef ASTER_DEBUG_CXX
-//         std::cout << "DEBUG: JeveuxVector.alloc: " << _name << std::endl;
-// #endif
-        return true;
-    };
-
-    /**
-     * @brief Fonction d'allocation d'un vecteur Jeveux
      * @param length Longueur du vecteur Jeveux a allouer
      * @return true si l'allocation s'est bien passee
      */
     bool allocate( ASTERINTEGER length ) {
         if ( _name != "" && length > 0 ) {
-            std::string strJeveuxBase( "V" );
-            if ( _mem == Permanent )
-                strJeveuxBase = "G";
-            ASTERINTEGER taille = length;
+            std::string strJeveuxBase = JeveuxMemoryTypesNames[_mem];
             const int intType = AllowedJeveuxType< ValueType >::numTypeJeveux;
             std::string carac = strJeveuxBase + " V " + JeveuxTypesNames[intType];
+            ASTERINTEGER taille = length;
             CALLO_WKVECTC( _name, carac, &taille, (void *)( &_valuePtr ) );
             if ( _valuePtr == NULL )
                 return false;
@@ -352,6 +325,15 @@ template < class ValueType > class JeveuxVector {
         {
             (*_jeveuxVectorPtr) = vect;
         };
+
+    JeveuxVector( std::string nom, const ASTERINTEGER size )
+        : _jeveuxVectorPtr( new JeveuxVectorClass< ValueType >( nom ) )
+        {
+            _jeveuxVectorPtr->allocate( size );
+        };
+
+    JeveuxVector( const ASTERINTEGER size )
+        : JeveuxVector( ResultNaming::getNewResultName(), size){};
 
     ~JeveuxVector(){};
 

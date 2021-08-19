@@ -257,17 +257,18 @@ class BaseDOFNumbering : public DataStructure {
     std::set< std::string > _FEDNames;
 
   protected:
-    /**
-     * @brief Constructeur
-     */
-    BaseDOFNumbering( const std::string &type, const JeveuxMemory memType = Permanent );
 
     /**
      * @brief Constructeur
      * @param name nom souhaité de la sd (utile pour le BaseDOFNumbering d'une sd_resu)
      */
-    BaseDOFNumbering( const std::string name, const std::string &type,
-                           const JeveuxMemory memType = Permanent );
+    BaseDOFNumbering( const std::string name, const std::string &type);
+
+    /**
+     * @brief Constructeur
+     */
+    BaseDOFNumbering( const std::string &type ) :
+     BaseDOFNumbering( ResultNaming::getNewResultName(), type){};
 
   public:
     /**

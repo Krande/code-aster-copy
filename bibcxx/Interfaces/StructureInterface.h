@@ -111,7 +111,7 @@ class StructureInterface : public DataStructure {
      */
 
     StructureInterface( const std::string name )
-        : DataStructure( name, 8, "INTERF_DYNA_CLAS", Permanent ), _frequency( 1. ),
+        : DataStructure( name, 8, "INTERF_DYNA_CLAS" ), _frequency( 1. ),
           _isEmpty( true ), _codingNumbers( JeveuxCollectionLong( getName() + ".IDC_DDAC" ) ),
           _numbering( JeveuxVectorLong( getName() + ".IDC_DEFO" ) ),
           _description( JeveuxVectorLong( getName() + ".IDC_DESC" ) ),
@@ -132,7 +132,7 @@ class StructureInterface : public DataStructure {
      */
 
     StructureInterface( const std::string name, const DOFNumberingPtr &curDof )
-        : DataStructure( name, 8, "INTERF_DYNA_CLAS", Permanent ), _frequency( 1. ),
+        : DataStructure( name, 8, "INTERF_DYNA_CLAS" ), _frequency( 1. ),
           _isEmpty( true ), _codingNumbers( JeveuxCollectionLong( getName() + ".IDC_DDAC" ) ),
           _numbering( JeveuxVectorLong( getName() + ".IDC_DEFO" ) ),
           _description( JeveuxVectorLong( getName() + ".IDC_DESC" ) ),

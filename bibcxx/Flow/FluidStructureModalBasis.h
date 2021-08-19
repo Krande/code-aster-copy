@@ -71,7 +71,7 @@ class FluidStructureModalBasis : public DataStructure, public ListOfTables {
      * @brief Constructeur
      */
     FluidStructureModalBasis( const std::string name )
-        : DataStructure( name, 8, "MELASFLU", Permanent ),
+        : DataStructure( name, 8, "MELASFLU"),
           ListOfTables( name ),
           _remf( JeveuxVectorChar8( getName() + ".REMF" ) ),
           _desc( JeveuxVectorChar16( getName() + ".DESC" ) ),

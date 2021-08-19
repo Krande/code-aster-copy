@@ -59,11 +59,14 @@ class GeneralizedFieldOnNodesDescription : public DataStructure {
     JeveuxCollectionLong _orig;
 
   public:
-    /**
+
+      /**
      * @brief Constructeur
+     * @param name nom souhaité de la sd (utile pour le GeneralizedFieldOnNodesDescription
+     * d'une sd_resu)
      */
-    GeneralizedFieldOnNodesDescription( const JeveuxMemory memType = Permanent )
-        : DataStructure( ResultNaming::getNewResultName(), 19, "PROF_GENE", memType ),
+    GeneralizedFieldOnNodesDescription( const std::string name  )
+        : DataStructure( name, 19, "PROF_GENE" ),
           _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
           _nequ( JeveuxVectorLong( getName() + ".NEQU" ) ),
           _refn( JeveuxVectorChar24( getName() + ".REFN" ) ),
@@ -73,29 +76,19 @@ class GeneralizedFieldOnNodesDescription : public DataStructure {
           _nueq( JeveuxVectorLong( getName() + ".NUEQ" ) ),
           _prno( JeveuxCollectionLong( getName() + ".PRNO" ) ),
           _orig( JeveuxCollectionLong( getName() + ".ORIG" ) ){};
+
+    /**
+     * @brief Constructeur
+     */
+    GeneralizedFieldOnNodesDescription(  )
+        : GeneralizedFieldOnNodesDescription( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Destructor
      */
     ~GeneralizedFieldOnNodesDescription(){};
 
-    /**
-     * @brief Constructeur
-     * @param name nom souhaité de la sd (utile pour le GeneralizedFieldOnNodesDescription
-     * d'une sd_resu)
-     */
-    GeneralizedFieldOnNodesDescription( const std::string name,
-                                                const JeveuxMemory memType = Permanent )
-        : DataStructure( name, 19, "PROF_GENE", memType ),
-          _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
-          _nequ( JeveuxVectorLong( getName() + ".NEQU" ) ),
-          _refn( JeveuxVectorChar24( getName() + ".REFN" ) ),
-          _deeq( JeveuxVectorLong( getName() + ".DEEQ" ) ),
-          _delg( JeveuxVectorLong( getName() + ".DELG" ) ),
-          _lili( JeveuxVectorChar24( getName() + ".LILI" ) ),
-          _nueq( JeveuxVectorLong( getName() + ".NUEQ" ) ),
-          _prno( JeveuxCollectionLong( getName() + ".PRNO" ) ),
-          _orig( JeveuxCollectionLong( getName() + ".ORIG" ) ){};
+
 };
 typedef boost::shared_ptr< GeneralizedFieldOnNodesDescription >
     GeneralizedFieldOnNodesDescriptionPtr;

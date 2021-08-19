@@ -64,7 +64,7 @@ class TurbulentSpectrum : public DataStructure {
      * @brief Constructeur
      */
     TurbulentSpectrum( const std::string name )
-        : DataStructure( name, 19, "SPECTRE", Permanent ),
+        : DataStructure( name, 19, "SPECTRE"),
           _vain( JeveuxVectorLong( getName() + ".REFE" ) ),
           _vare( JeveuxVectorReal( getName() + ".DISC" ) ),
           _vate( JeveuxVectorChar16( getName() + ".VALE" ) ),

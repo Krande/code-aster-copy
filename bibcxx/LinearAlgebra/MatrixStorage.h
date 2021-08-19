@@ -44,7 +44,7 @@ class MatrixStorage : public DataStructure {
      * @brief Constructeur
      */
     MatrixStorage( const std::string &name )
-        : DataStructure( name, 19, "STOCKAGE", Permanent ){};
+        : DataStructure( name, 19, "STOCKAGE"){};
 };
 
 /**

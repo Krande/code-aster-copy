@@ -27,20 +27,8 @@
 #include "Supervis/ResultNaming.h"
 
 
-BaseDOFNumbering::BaseDOFNumbering( const std::string &type, const JeveuxMemory memType )
-    : DataStructure( ResultNaming::getNewResultName(), 14, type, memType ),
-      _nameOfSolverDataStructure( JeveuxVectorChar24( getName() + ".NSLV" ) ),
-      _globalNumbering( new GlobalEquationNumbering( getName() + ".NUME" ) ),
-      _dofDescription( new FieldOnNodesDescription( getName() + ".NUME" ) ),
-      _localNumbering( new LocalEquationNumbering( getName() + ".NUML" ) ),
-      _model( ModelPtr( nullptr ) ), _listOfLoads( new ListOfLoads() ),
-      _smos( new MorseStorage( getName() + ".SMOS" ) ),
-      _slcs( new LigneDeCiel( getName() + ".SLCS" ) ),
-      _mltf( new MultFrontGarbage( getName() + ".MLTF" ) ), _isEmpty( true ){};
-
-BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &type,
-                                              const JeveuxMemory memType )
-    : DataStructure( name, 14, type, memType ),
+BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &type )
+    : DataStructure( name, 14, type ),
       _nameOfSolverDataStructure( JeveuxVectorChar24( getName() + ".NSLV" ) ),
       _globalNumbering( new GlobalEquationNumbering( getName() + ".NUME" ) ),
       _dofDescription( new FieldOnNodesDescription( getName() + ".NUME" ) ),

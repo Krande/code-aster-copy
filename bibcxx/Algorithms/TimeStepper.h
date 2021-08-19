@@ -70,8 +70,8 @@ class TimeStepper : public DataStructure, public GenericStepper {
     /**
      * @brief Constructeur
      */
-    TimeStepper( const std::string name, const JeveuxMemory memType = Permanent )
-        : DataStructure( name, 8, "LIST_INST", memType ), _values( getName() + ".LIST" ),
+    TimeStepper( const std::string name )
+        : DataStructure( name, 8, "LIST_INST" ), _values( getName() + ".LIST" ),
         _ditr( getName() + ".LIST.DITR" ), _infor( getName() + ".LIST.INFOR" ),
         _evenr( getName() + ".ECHE.EVENR" ), _evenk( getName() + ".ECHE.EVENK" ),
         _subdr( getName() + ".ECHE.SUBDR" ),
@@ -81,8 +81,8 @@ class TimeStepper : public DataStructure, public GenericStepper {
     /**
      * @brief Constructeur
      */
-    TimeStepper( JeveuxMemory memType = Permanent )
-        : TimeStepper( DataStructureNaming::getNewName( memType, 8 ), memType ){};
+    TimeStepper( )
+        : TimeStepper( DataStructureNaming::getNewName( 8 ) ){};
 
     /**
      * @brief Destructeur

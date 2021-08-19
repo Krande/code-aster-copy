@@ -113,7 +113,7 @@ bool Material::build() {
         throw std::runtime_error( "Bad number of material properties" );
 
     // Creation du vecteur Jeveux ".MATERIAU.NOMRC"
-    _materialBehaviourNames->allocate( Permanent, nbMCF );
+    _materialBehaviourNames->allocate( nbMCF );
     int num = 0;
     // Boucle sur les GenericMaterialPropertyPtr
     for ( const auto &curIter : _vecMatBehaviour ) {

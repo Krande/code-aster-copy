@@ -27,7 +27,7 @@
 #include "Materials/ExternalStateVariablesBuilder.h"
 
 ExternalStateVariablesBuilder::ExternalStateVariablesBuilder() :
-    DataStructure( "VARI_COM", Permanent, 14 ),
+    DataStructure( "VARI_COM", 14 ),
         _varInst( new FieldOnCellsReal( getName() + ".TOUT" ) ),
         _timeValue(
           new ConstantFieldOnCellsReal( getName() + ".INST", _model->getMesh() ) ),
@@ -39,7 +39,7 @@ ExternalStateVariablesBuilder::ExternalStateVariablesBuilder() :
 ExternalStateVariablesBuilder::ExternalStateVariablesBuilder(
     const ModelPtr &model, const MaterialFieldPtr &mater,
     const ElementaryCharacteristicsPtr &cara, const CodedMaterialPtr &codMater ):
-        DataStructure( "VARI_COM", Permanent, 14 ), _model( model ), _mater( mater ),
+        DataStructure( "VARI_COM", 14 ), _model( model ), _mater( mater ),
         _codMater( codMater ), _elemCara( cara ),
         _varRef( new FieldOnCellsReal( _model->getName() + ".CHVCREF" ) ),
         _varInst( new FieldOnCellsReal( getName() + ".TOUT" ) ),
@@ -71,7 +71,7 @@ void ExternalStateVariablesBuilder::build( const ASTERDOUBLE &time )
     CALLO_VRCINS_WRAP( modName, matName, carName, &time, _varInst->getName(), out );
 
     std::string comp( "INST_R" );
-    _timeValue->allocate( Permanent, comp );
+    _timeValue->allocate( comp );
     ConstantFieldOnZone a( _model->getMesh() );
     ConstantFieldValues< ASTERDOUBLE > b( {"INST"}, {time} );
     _timeValue->setValueOnZone( a, b );

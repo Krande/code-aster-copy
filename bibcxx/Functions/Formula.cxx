@@ -44,7 +44,7 @@ Formula::Formula( const std::string name )
 Formula::Formula()
     : Formula::Formula( ResultNaming::getNewResultName() ) {
     propertyAllocate();
-    _pointers->allocate( Permanent, 2 );
+    _pointers->allocate( 2 );
 }
 
 Formula::~Formula() {
@@ -54,7 +54,7 @@ Formula::~Formula() {
 
 void Formula::setVariables( const VectorString &names ) {
     const int nbvar = names.size();
-    _variables->allocate( Permanent, nbvar );
+    _variables->allocate( nbvar );
 
     VectorString::const_iterator varIt = names.begin();
     int idx = 0;

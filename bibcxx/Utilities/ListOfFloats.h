@@ -64,7 +64,7 @@ class ListOfFloats : public DataStructure {
      * @brief Constructeur
      */
     ListOfFloats( const std::string name )
-        : DataStructure( name, 19, "LISTR8", Permanent ),
+        : DataStructure( name, 19, "LISTR8"),
           _bint( JeveuxVectorReal( getName() + ".BINT" ) ),
           _lpas( JeveuxVectorReal( getName() + ".LPAS" ) ),
           _nbPa( JeveuxVectorLong( getName() + ".NBPA" ) ),

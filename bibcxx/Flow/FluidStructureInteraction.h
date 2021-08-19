@@ -74,7 +74,7 @@ class FluidStructureInteraction : public DataStructure {
      * @brief Constructeur
      */
     FluidStructureInteraction( const std::string name )
-        : DataStructure( name, 8, "TYPE_FLUI_STRU", Permanent ),
+        : DataStructure( name, 8, "TYPE_FLUI_STRU"),
           _fsic( JeveuxVectorLong( getName() + "           .FSIC" ) ),
           _fsvi( JeveuxVectorLong( getName() + "           .FSVI" ) ),
           _fsvk( JeveuxVectorChar8( getName() + "           .FSVK" ) ),

@@ -40,6 +40,9 @@ class DataStructureNaming {
      */
     static std::string getNewName( JeveuxMemory memoryType,
                                    const int lengthName = 8 );
+
+    static std::string getNewName( const int lengthName = 8 )
+    { return getNewName(Permanent, lengthName) ; };
 };
 
 #endif /* DATASTRUCTURENAMING_H_ */

@@ -43,6 +43,7 @@
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
 
+
 /**
  * @struct AllowedFieldType
  * @brief Structure template permettant de limiter le type instanciable de JeveuxVector
@@ -110,25 +111,16 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
     /**
      * @brief Constructor
-     * @param memType Type of memory allocation
+
      */
-    FieldOnNodes( const JeveuxMemory memType = Permanent )
-        : DataField( memType, "CHAM_NO" ), _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
-          _reference( JeveuxVectorChar24( getName() + ".REFE" ) ),
-          _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ), _dofNum( nullptr ),
-          _mesh( nullptr ), _dofDescription( nullptr ),
-          _title( JeveuxVectorChar80( getName() + ".TITR" ) ){};
+    FieldOnNodes( )
+        : FieldOnNodes(DataStructureNaming::getNewName()) {};
 
     /**
      * @brief Copy constructor
      */
     FieldOnNodes( const std::string &name, const FieldOnNodes &toCopy )
-        : DataField( name, "CHAM_NO", toCopy.getMemoryType() ),
-          _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
-          _reference( JeveuxVectorChar24( getName() + ".REFE" ) ),
-          _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ), _dofNum( nullptr ),
-          _mesh( nullptr ), _dofDescription( nullptr ),
-          _title( JeveuxVectorChar80( getName() + ".TITR" ) ) {
+        : FieldOnNodes(name) {
         // JeveuxVector to be duplicated
         *( _descriptor ) = *( toCopy._descriptor );
         *( _reference ) = *( toCopy._reference );
@@ -144,19 +136,21 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Copy constructor
      */
     FieldOnNodes( const FieldOnNodes &toCopy )
-        : FieldOnNodes(ResultNaming::getNewResultName(), toCopy) {};
+        : FieldOnNodes(DataStructureNaming::getNewName(), toCopy) {};
 
     /**
      * @brief Constructor with DOFNumbering
      */
-    FieldOnNodes( const BaseDOFNumberingPtr &dofNum, JeveuxMemory memType = Permanent )
-        : DataField( memType, "CHAM_NO" ), _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
-          _reference( JeveuxVectorChar24( getName() + ".REFE" ) ),
-          _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ), _dofNum( dofNum ),
-          _dofDescription( dofNum->getDescription() ), _mesh( dofNum->getMesh() ),
-          _title( JeveuxVectorChar80( getName() + ".TITR" ) ) {
+    FieldOnNodes( const BaseDOFNumberingPtr &dofNum )
+        : FieldOnNodes()
+    {
+        _dofNum = dofNum;
+        _dofDescription = dofNum->getDescription();
+        _mesh = dofNum->getMesh();
+
         if ( !_dofNum )
             raiseAsterError( "DOFNumering is empty" );
+
         const int intType = AllowedFieldType< ValueType >::numTypeJeveux;
         CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[getMemoryType()],
                            JeveuxTypesNames[intType], _dofNum->getName() );
@@ -171,7 +165,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Constructeur from a MeshCoordinatesFieldPtr&
      */
     FieldOnNodes( MeshCoordinatesFieldPtr &toCopy )
-        : DataField( toCopy->getMemoryType(), "CHAM_NO" ), _descriptor( toCopy->_descriptor ),
+        : DataField( "CHAM_NO" ), _descriptor( toCopy->_descriptor ),
           _reference( toCopy->_reference ), _valuesList( toCopy->_valuesList ), _dofNum( nullptr ),
           _dofDescription( nullptr ), _title( JeveuxVectorChar80( getName() + ".TITR" ) ),
           _mesh( nullptr ){};
@@ -324,9 +318,9 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         this->_reference->deallocate();
         this->_valuesList->deallocate();
 
-        this->_descriptor->allocate( getMemoryType(), tmp._descriptor->size() );
-        this->_reference->allocate( getMemoryType(), tmp._reference->size() );
-        this->_valuesList->allocate( getMemoryType(), tmp._valuesList->size() );
+        this->_descriptor->allocate( tmp._descriptor->size() );
+        this->_reference->allocate( tmp._reference->size() );
+        this->_valuesList->allocate( tmp._valuesList->size() );
         return true;
     };
 
@@ -336,7 +330,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     SimpleFieldOnNodesValueTypePtr exportToSimpleFieldOnNodes() {
         SimpleFieldOnNodesValueTypePtr toReturn(
-            new SimpleFieldOnNodesValueType( getMemoryType() ) );
+            new SimpleFieldOnNodesValueType(  ) );
         const std::string resultName = toReturn->getName();
         const std::string inName = getName();
         CALLO_CNOCNS( inName, JeveuxMemoryTypesNames[getMemoryType()], resultName );
@@ -536,7 +530,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             typedef FieldOnNodesDescriptionPtr FONDescP;
 
             const std::string name2 = trim( ( *_reference )[1].toString() );
-            _dofDescription = FONDescP( new FONDesc( name2, getMemoryType() ) );
+            _dofDescription = FONDescP( new FONDesc( name2 ) );
         }
         return true;
     };

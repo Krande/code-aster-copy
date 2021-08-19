@@ -26,14 +26,12 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <string>
-#include <assert.h>
-#include "Utilities/Tools.h"
 
 #include "astercxx.h"
 
 #include "MemoryManager/JeveuxVector.h"
 #include "DataStructures/DataStructure.h"
+#include "Utilities/Tools.h"
 
 /**
  * @class SimpleFieldOnNodes
@@ -78,15 +76,10 @@ template < class ValueType > class SimpleFieldOnNodes : public DataStructure {
 
     /**
      * @brief Constructeur
-     * @param memType Mémoire d'allocation
+
      */
-    SimpleFieldOnNodes( const JeveuxMemory memType = Permanent )
-        : DataStructure( "CHAM_NO_S", memType, 19 ),
-          _descriptor( JeveuxVectorChar8( getName() + ".CNSK" ) ),
-          _size( JeveuxVectorLong( getName() + ".CNSD" ) ),
-          _component( JeveuxVectorChar8( getName() + ".CNSC" ) ),
-          _values( JeveuxVector< ValueType >( getName() + ".CNSV" ) ),
-          _allocated( JeveuxVectorLogical( getName() + ".CNSL" ) ), _nbNodes( 0 ), _nbComp( 0 ){};
+    SimpleFieldOnNodes(  )
+        : SimpleFieldOnNodes( DataStructureNaming::getNewName() ){};
 
 
     /**

@@ -82,7 +82,7 @@ class GeneralizedDOFNumbering : public DataStructure {
      * @brief Constructeur
      */
     GeneralizedDOFNumbering( const std::string name ):
-        DataStructure( name, 14, "NUME_DDL_GENE", Permanent ),
+        DataStructure( name, 14, "NUME_DDL_GENE"),
         _base( JeveuxVectorReal( getName() + ".ELIM.BASE" ) ),
         _noms( JeveuxVectorChar8( getName() + ".ELIM.NOMS" ) ),
         _tail( JeveuxVectorLong( getName() + ".ELIM.TAIL" ) ),

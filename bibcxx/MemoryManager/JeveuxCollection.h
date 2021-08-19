@@ -342,15 +342,13 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
     /**
      * @brief Allocation
      */
-    bool genericAllocation( JeveuxMemory mem, int size, JeveuxCollectionAccessType access = Named,
+    bool genericAllocation( int size, JeveuxCollectionAccessType access = Named,
                             JeveuxCollectionMemoryStorageType storage = Sparse,
                             JeveuxCollectionObjectSizes objectSizes = Variable,
                             const std::string &name = "", int totalSize = 0 ) {
         ASTERINTEGER taille = size;
         _size = size;
-        std::string strJeveuxBase( "V" );
-        if ( mem == Permanent )
-            strJeveuxBase = "G";
+        const std::string strJeveuxBase = "G";
         const int intType = AllowedJeveuxType< ValueType >::numTypeJeveux;
         std::string carac( strJeveuxBase + " V " + JeveuxTypesNames[intType] );
 
@@ -452,59 +450,55 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
 
     /**
      * @brief Allocation
-     * @param mem memory allocation
      * @param size number of objets in collection
      * @param access type of access
      * @param objectSizes size of objects (constant or variable)
      */
     template < typename T1 = AccessType, typename = IsNotSame< T1, int > >
     typename std::enable_if< !std::is_same< T1, int >::value, bool >::type
-    allocate( JeveuxMemory mem, int size, JeveuxCollectionObjectSizes objectSizes = Variable ) {
+    allocate( int size, JeveuxCollectionObjectSizes objectSizes = Variable ) {
         if ( !_namesMap->exists() )
-            _namesMap->allocate( mem, size );
+            _namesMap->allocate( size );
         if ( _namesMap->size() != size )
             throw std::runtime_error( "Sizes do not match" );
 
-        return genericAllocation( mem, size, Named, Sparse, objectSizes, _namesMap->getName() );
+        return genericAllocation( size, Named, Sparse, objectSizes, _namesMap->getName() );
     };
 
     /**
      * @brief Allocation
-     * @param mem memory allocation
      * @param size number of objets in collection
      * @param totalSize total size of the collection
      * @param objectSizes size of objects (constant or variable)
      */
     template < typename T1 = AccessType, typename = IsNotSame< T1, int > >
     typename std::enable_if< !std::is_same< T1, int >::value, bool >::type
-    allocateContiguous( JeveuxMemory mem, int size, int totalSize,
+    allocateContiguous( int size, int totalSize,
                         JeveuxCollectionObjectSizes objectSizes = Variable ) {
         if ( !_namesMap->exists() )
-            _namesMap->allocate( mem, size );
+            _namesMap->allocate( size );
         if ( _namesMap->size() != size )
             throw std::runtime_error( "Sizes do not match" );
 
-        return genericAllocation( mem, size, Named, Contiguous, objectSizes, _namesMap->getName(),
+        return genericAllocation( size, Named, Contiguous, objectSizes, _namesMap->getName(),
                                   totalSize );
     };
 
     /**
      * @brief Allocation
-     * @param mem memory allocation
      * @param size number of objets in collection
      * @param access type of access
      * @param objectSizes size of objects (constant or variable)
      */
     template < typename T1 = AccessType, typename = IsSame< T1, int > >
     typename std::enable_if< std::is_same< T1, int >::value, bool >::type
-    allocate( JeveuxMemory mem, int size, JeveuxCollectionAccessType access = Named,
+    allocate( int size, JeveuxCollectionAccessType access = Named,
               JeveuxCollectionObjectSizes objectSizes = Variable ) {
-        return genericAllocation( mem, size, access, Sparse, objectSizes, "" );
+        return genericAllocation( size, access, Sparse, objectSizes, "" );
     };
 
     /**
      * @brief Allocation
-     * @param mem memory allocation
      * @param size number of objets in collection
      * @param totalSize total size of the collection
      * @param access type of access
@@ -512,10 +506,10 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
      */
     template < typename T1 = AccessType, typename = IsSame< T1, int > >
     typename std::enable_if< std::is_same< T1, int >::value, bool >::type
-    allocateContiguous( JeveuxMemory mem, int size, int totalSize,
+    allocateContiguous( int size, int totalSize,
                         JeveuxCollectionAccessType access = Named,
                         JeveuxCollectionObjectSizes objectSizes = Variable ) {
-        return genericAllocation( mem, size, access, Contiguous, objectSizes, "", totalSize );
+        return genericAllocation( size, access, Contiguous, objectSizes, "", totalSize );
     };
 
     /**

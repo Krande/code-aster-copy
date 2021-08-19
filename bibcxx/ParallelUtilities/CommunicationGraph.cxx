@@ -83,7 +83,7 @@ CommunicationGraph::CommunicationGraph( const std::string &name, const JeveuxVec
             ++nbJVer;
         }
     }
-    _graph->allocate( Permanent, nMatch );
+    _graph->allocate( nMatch );
     for ( int i = 0; i < nMatch; ++i )
         ( *_graph )[i] = joinList[i];
 };

@@ -42,7 +42,7 @@ void BehaviourProperty::createObjects() {
 
 /** @brief Constructor */
 BehaviourProperty::BehaviourProperty( )
-    : DataStructure( ResultNaming::getNewResultName(), 8, "COMPOR", Permanent ),
+    : DataStructure( ResultNaming::getNewResultName(), 8, "COMPOR"),
       _initialState( false ), _implex( false ), _verbosity( false ), _model( nullptr ),
       _materialField( nullptr ), _mesh( nullptr )
 {

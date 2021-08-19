@@ -67,7 +67,7 @@ class GenericGeneralizedAssemblyMatrix: public DataStructure
      * @brief Constructeur
      */
     GenericGeneralizedAssemblyMatrix( const std::string name ):
-        DataStructure( name, 19, "MATR_ASSE_GENE", Permanent ),
+        DataStructure( name, 19, "MATR_ASSE_GENE"),
         _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
         _refe( JeveuxVectorChar24( getName() + ".REFE" ) ),
         _dofNum( nullptr ),

@@ -496,9 +496,9 @@ ConnectionMesh::ConnectionMesh( const std::string &name,
 
 
     /* Add numbering */
-    _nodesLocalNumbering->allocate( Permanent, totalNumberOfNodes );
-    _nodesGlobalNumbering->allocate( Permanent, totalNumberOfNodes );
-    _nodesOwner->allocate( Permanent, totalNumberOfNodes );
+    _nodesLocalNumbering->allocate( totalNumberOfNodes );
+    _nodesGlobalNumbering->allocate( totalNumberOfNodes );
+    _nodesOwner->allocate( totalNumberOfNodes );
 
     for ( int i = 0; i < totalNumberOfNodes; ++i )
     {
@@ -513,7 +513,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name,
     *_coordinates->getDescriptor() = *mesh->getCoordinates()->getDescriptor();
     *_coordinates->getReference() = *mesh->getCoordinates()->getReference();
     auto values = _coordinates->getValues();
-    values->allocate( Permanent, numberOfConnectionMeshCoordinates );
+    values->allocate( numberOfConnectionMeshCoordinates );
     values->updateValuePointer();
     for ( int i = 0; i < totalNumberOfNodes; ++i )
     {
@@ -523,7 +523,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name,
     }
 
     /* Add nodes */
-    _nameOfNodes->allocate( Permanent, totalNumberOfNodes );
+    _nameOfNodes->allocate( totalNumberOfNodes );
     for ( int i = 0; i < totalNumberOfNodes; ++i )
     {
         std::stringstream sstream;
@@ -535,7 +535,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name,
     /* Add group of nodes */
     if( groupsOfNodesToFind.size() > 0 )
     {
-        _groupsOfNodes->allocate( Permanent, groupsOfNodesToFind.size() );
+        _groupsOfNodes->allocate( groupsOfNodesToFind.size() );
 
         for ( const auto &nameOfTheGroup : groupsOfNodesToFind ) {
             const auto &toCopy = groupsOfNodesGathered[nameOfTheGroup];
@@ -556,11 +556,11 @@ ConnectionMesh::ConnectionMesh( const std::string &name,
     }
 
     /* Add cells */
-    _cellsLocalNumbering->allocate( Permanent, totalNumberOfCells );
-    _cellsOwner->allocate( Permanent, totalNumberOfCells );
-    _nameOfCells->allocate( Permanent, totalNumberOfCells );
-    _cellsType->allocate( Permanent, totalNumberOfCells );
-    _connectivity->allocateContiguous( Permanent, totalNumberOfCells,
+    _cellsLocalNumbering->allocate( totalNumberOfCells );
+    _cellsOwner->allocate( totalNumberOfCells );
+    _nameOfCells->allocate( totalNumberOfCells );
+    _cellsType->allocate( totalNumberOfCells );
+    _connectivity->allocateContiguous( totalNumberOfCells,
                                          connectivitiesGathered.size(), Numbered );
 
     int offset = 0;
@@ -595,7 +595,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name,
     /* Add group of nodes */
     if( groupsOfCellsToFind.size() > 0 )
     {
-        _groupsOfCells->allocate( Permanent, groupsOfCellsToFind.size() );
+        _groupsOfCells->allocate( groupsOfCellsToFind.size() );
 
         for ( const auto &nameOfTheGroup : groupsOfCellsToFind ) {
             const auto &toCopy = groupsOfCellsGathered[nameOfTheGroup];
@@ -619,7 +619,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name,
     }
 
     /* Update information about the mesh */
-    _dimensionInformations->allocate( Permanent, 6 );
+    _dimensionInformations->allocate( 6 );
     ( *_dimensionInformations )[0] = totalNumberOfNodes;
     ( *_dimensionInformations )[2] = totalNumberOfCells;
     ( *_dimensionInformations )[5] = mesh->getDimension();

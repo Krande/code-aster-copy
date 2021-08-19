@@ -31,16 +31,15 @@
 #include "MemoryManager/JeveuxString.h"
 #include "Utilities/Tools.h"
 
-DataStructure::DataStructure( const std::string name, const int nameLength, const std::string type,
-                              const JeveuxMemory memType )
-    : _name( name ), _memoryType( memType ) {
+DataStructure::DataStructure( const std::string name, const int nameLength, const std::string type )
+    : _name( name ), _memoryType( Permanent ) {
     _name.resize( nameLength, ' ' );
 
     std::string name19( _name );
     name19.resize( 19, ' ' );
     _tco = JeveuxVectorChar24( name19 + "._TCO" );
     if ( !_tco->isAllocated() && name != "" ) {
-        _tco->allocate( _memoryType, 1 );
+        _tco->allocate( 1 );
         if ( type.size() <= 8 && type != "FORMULE" )
             ( *_tco )[0] = std::string( trim( type ) + "_SDASTER" );
         else
@@ -51,9 +50,9 @@ DataStructure::DataStructure( const std::string name, const int nameLength, cons
     _title = JeveuxVectorChar80( name19 + ".TITR" );
 }
 
-DataStructure::DataStructure( const std::string type, const JeveuxMemory memType, int nameLength )
-    : DataStructure::DataStructure( DataStructureNaming::getNewName( memType, nameLength ),
-                                    nameLength, type, memType ) {}
+DataStructure::DataStructure( const int nameLength, const std::string type )
+    : DataStructure::DataStructure( DataStructureNaming::getNewName( nameLength ),
+                                    nameLength, type ) {}
 
 DataStructure::~DataStructure() {
     // user/main datastructures aka 'concept' (== without ".").

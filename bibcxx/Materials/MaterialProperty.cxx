@@ -48,7 +48,7 @@ bool MaterialProperty::computeTractionFunction( FunctionPtr &doubleValues ) cons
                 resName = curIter.second.getValue()->getResultName();
             }
         }
-        doubleValues->allocate( Permanent, maxSize );
+        doubleValues->allocate( maxSize );
         doubleValues->setParameterName( "EPSI" );
         doubleValues->setResultName( resName );
     }

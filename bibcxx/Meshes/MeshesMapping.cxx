@@ -26,7 +26,7 @@
 #include "Meshes/MeshesMapping.h"
 
 MeshesMapping::MeshesMapping( const std::string name )
-    : DataStructure( name, 16, "CORRESP_2_MAILLA", Permanent ),
+    : DataStructure( name, 16, "CORRESP_2_MAILLA" ),
       _pjxxK1( JeveuxVectorChar24( getName() + ".PJXX_K1" ) ),
       _pjefNb( JeveuxVectorLong( getName() + ".PJEF_NB" ) ),
       _pjefNu( JeveuxVectorLong( getName() + ".PJEF_NU" ) ),

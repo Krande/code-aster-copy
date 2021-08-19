@@ -26,7 +26,7 @@
 #include "Crack/Crack.h"
 
 Crack::Crack( const std::string name )
-    : DataStructure( name, 8, "FOND_FISSURE", Permanent ),
+    : DataStructure( name, 8, "FOND_FISSURE" ),
       _levreInfMail( JeveuxVectorChar8( getName() + ".LEVREINF.MAIL" ) ),
       _normale( JeveuxVectorReal( getName() + ".NORMALE" ) ),
       _fondNoeu( JeveuxVectorChar8( getName() + ".FOND.NOEUD" ) ),

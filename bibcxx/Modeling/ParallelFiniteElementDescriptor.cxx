@@ -29,8 +29,8 @@
 
 ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor
     ( const std::string& name, const FiniteElementDescriptorPtr& FEDesc,
-      const ConnectionMeshPtr& mesh, const ModelPtr& model, const JeveuxMemory memType ):
-                    FiniteElementDescriptor( name, model->getMesh(), memType ),
+      const ConnectionMeshPtr& mesh, const ModelPtr& model ):
+                    FiniteElementDescriptor( name, model->getMesh() ),
                     _joins( JeveuxVectorLong( getName() + ".DOMJ" ) ),
                     _owner( JeveuxVectorLong( getName() + ".PNOE" ) ),
                     _multiplicity( JeveuxVectorLong( getName() + ".MULT" ) ),
@@ -136,9 +136,9 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor
     // Si des noeuds tardifs sont a conserver, on peut creer le ligrel
     if( nbVirtualNodes > 0 )
     {
-        _owner->allocate( Permanent, nbVirtualNodes );
-        _multiplicity->allocate( Permanent, nbVirtualNodes );
-        _outerMultiplicity->allocate( Permanent, nbVirtualNodes );
+        _owner->allocate( nbVirtualNodes );
+        _multiplicity->allocate( nbVirtualNodes );
+        _outerMultiplicity->allocate( nbVirtualNodes );
         int i = 0, nbJoins = 0, j = 0;
         std::vector< VectorLong > toSend( nbProcs );
         std::vector< VectorLong > toReceive( nbProcs );
@@ -167,7 +167,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor
             throw std::runtime_error( "Out of bound error" );
 
         // Creation numérotation globale pour les noeuds tardifs
-        _globalNumberingVirtualNodes->allocate(Permanent, nbVirtualNodes);
+        _globalNumberingVirtualNodes->allocate( nbVirtualNodes);
         int count = 0;
         for(int iNode = 0; iNode < nbOldVirtualNodes; iNode++)
         {
@@ -204,7 +204,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor
 
         // Allocation du .NEMA
         _delayedNumberedConstraintElementsDescriptor->allocateContiguous
-            ( memType, -nbElemToKeep, totalSizeToKeep-nbElemToKeep, Numbered );
+            ( -nbElemToKeep, totalSizeToKeep-nbElemToKeep, Numbered );
 
         // Remplissage du .NEMA avec les elements tardifs a conserver
         int posInCollection = 1;
@@ -253,7 +253,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor
             }
         }
 
-        _listOfGroupOfCells->allocateContiguous( memType, nbCollObj,
+        _listOfGroupOfCells->allocateContiguous( nbCollObj,
                                                     totalCollSize+nbCollObj, Numbered );
         posInCollection = 1;
         for( const auto& vec : toLiel )
@@ -267,15 +267,15 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor
         }
     }
     else
-        _listOfGroupOfCells->allocateContiguous( memType, 1, 1, Numbered );
+        _listOfGroupOfCells->allocateContiguous( 1, 1, Numbered );
 
     // Remplissage du .NBNO avec le nouveau nombre de noeuds tardifs
-    _numberOfDelayedNumberedConstraintNodes->allocate( memType, 1 );
+    _numberOfDelayedNumberedConstraintNodes->allocate( 1 );
     (*_numberOfDelayedNumberedConstraintNodes)[0] = nbVirtualNodes;
 
     const auto param = FEDesc->getParameters();
     // Creation du .LGRF en y mettant les noms du maillage et modele d'origine
-    _parameters->allocate( memType, 3 );
+    _parameters->allocate( 3 );
     const auto& pMesh = mesh->getParallelMesh();
     (*_parameters)[0] = pMesh->getName();
     (*_parameters)[1] = model->getName();
@@ -286,7 +286,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor
 
     // Creation du .PRNM sur les noeuds du getParallelMesh
     // Recopie en position locale
-    _dofDescriptor->allocate( memType, (pMesh->getNumberOfNodes())*nec );
+    _dofDescriptor->allocate( (pMesh->getNumberOfNodes())*nec );
     for( int i = 0; i < nbPartialNodes; ++i )
     {
         if( meshNodesToKeep[i] == rank )
@@ -300,8 +300,8 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor
     {
         // Creation des .LGNS et .PRNM
         // Recopie des valeurs sur les noeuds tardifs du nouveau ligrel
-        _virtualNodesNumbering->allocate( memType, nbVirtualNodes+2 );
-        _dofOfDelayedNumberedConstraintNodes->allocate( memType, nbVirtualNodes*nec );
+        _virtualNodesNumbering->allocate( nbVirtualNodes+2 );
+        _dofOfDelayedNumberedConstraintNodes->allocate( nbVirtualNodes*nec );
         const auto& dNodesComp = FEDesc->getVirtualNodesComponentDescriptor();
         const auto& numbering = FEDesc->getVirtualNodesNumbering();
         for( ASTERINTEGER num = 0; num < nbOldVirtualNodes; ++num )

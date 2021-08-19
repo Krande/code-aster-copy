@@ -82,16 +82,10 @@ template < class ValueType > class SimpleFieldOnCells : public DataStructure {
 
     /**
      * @brief Constructeur
-     * @param memType Mémoire d'allocation
+
      */
-    SimpleFieldOnCells( const JeveuxMemory memType = Permanent )
-        : DataStructure( "CHAM_NO_S", memType, 19 ),
-          _descriptor( JeveuxVectorChar8( getName() + ".CESK" ) ),
-          _size( JeveuxVectorLong( getName() + ".CESD" ) ),
-          _component( JeveuxVectorChar8( getName() + ".CESC" ) ),
-          _values( JeveuxVector< ValueType >( getName() + ".CESV" ) ),
-          _allocated( JeveuxVectorLogical( getName() + ".CESL" ) ), _nbNodes( 0 ), _nbComp( 0 ),
-          _nbPt( 0 ), _nbSpt( 0 ){};
+    SimpleFieldOnCells(  )
+        : SimpleFieldOnCells( DataStructureNaming::getNewName( 19 ) ){};
 
     /**
      * @brief Surcharge de l'operateur []

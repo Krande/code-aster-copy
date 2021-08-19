@@ -72,7 +72,7 @@ class StaticMechanicalContext {
         : _discreteProblem( curPb ), _linearSolver( linSolv ),
           _listOfLoads( _discreteProblem->getStudyDescription()->getListOfLoads() ),
           _results( container ), _time( 0. ), _rank( 1 ),
-          _aMatrix( new AssemblyMatrixDisplacementReal( Temporary ) ),
+          _aMatrix( new AssemblyMatrixDisplacementReal() ),
           _isConst( _discreteProblem->getStudyDescription()->getCodedMaterial()->constant() ),
           _varCom( new ExternalStateVariablesBuilder(
               _discreteProblem->getStudyDescription()->getModel(),

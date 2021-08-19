@@ -127,7 +127,7 @@ class AssemblyMatrix : public DataStructure {
     /**
      * @brief Constructeur
      */
-    AssemblyMatrix( const JeveuxMemory memType = Permanent );
+    AssemblyMatrix( );
 
     /**
      * @brief Constructeur
@@ -414,11 +414,9 @@ typedef boost::shared_ptr< AssemblyMatrixPressureComplex >
     AssemblyMatrixPressureComplexPtr;
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
-AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix(
-    const JeveuxMemory memType )
-    : DataStructure( "MATR_ASSE_" + std::string( PhysicalQuantityNames[PhysicalQuantity] ) +
-                         ( typeid( ValueType ) == typeid( ASTERDOUBLE ) ? "_R" : "_C" ),
-                     memType, 19 ),
+AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( )
+    : DataStructure( 19, "MATR_ASSE_" + std::string( PhysicalQuantityNames[PhysicalQuantity] ) +
+                         ( typeid( ValueType ) == typeid( ASTERDOUBLE ) ? "_R" : "_C" )),
       _description( JeveuxVectorChar24( getName() + ".REFA" ) ),
       _matrixValues( JeveuxCollection< ValueType >( getName() + ".VALM" ) ),
       _scaleFactorLagrangian( JeveuxVectorReal( getName() + ".CONL" ) ),
@@ -432,7 +430,7 @@ AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix(
       _ccll( JeveuxVectorLong( getName() + ".CCLL" ) ),
       _ccva( JeveuxVector< ValueType >( getName() + ".CCVA" ) ),
       _ccii( JeveuxVectorLong( getName() + ".CCII" ) ), _isEmpty( true ), _isFactorized( false ),
-      _listOfLoads( boost::make_shared< ListOfLoads >( memType ) ){};
+      _listOfLoads( boost::make_shared< ListOfLoads >( ) ){};
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( const std::string &name )

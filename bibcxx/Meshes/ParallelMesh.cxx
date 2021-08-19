@@ -56,7 +56,7 @@ bool ParallelMesh::updateGlobalGroupOfNodes( void ) {
     if(_globalGroupOfNodes->isAllocated())
         _globalGroupOfNodes->deallocate();
 
-    _globalGroupOfNodes->allocate( Permanent, _setOfAllGON.size() );
+    _globalGroupOfNodes->allocate( _setOfAllGON.size() );
     int num = 0;
     for ( auto &nameOfGrp : _setOfAllGON ) {
         ( *_globalGroupOfNodes )[num] = nameOfGrp;
@@ -79,7 +79,7 @@ bool ParallelMesh::updateGlobalGroupOfCells( void ) {
     if(_globalGroupOfCells->isAllocated())
         _globalGroupOfCells->deallocate();
 
-    _globalGroupOfCells->allocate( Permanent, _setOfAllGOE.size() );
+    _globalGroupOfCells->allocate( _setOfAllGOE.size() );
     int num = 0;
     for ( auto &nameOfGrp : _setOfAllGOE ) {
         ( *_globalGroupOfCells )[num] = nameOfGrp;

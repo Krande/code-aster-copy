@@ -44,7 +44,7 @@ class GenericFunction : public DataStructure {
 
     void propertyAllocate() {
         // Create Jeveux vector ".PROL"
-        _property->allocate( Permanent, 6 );
+        _property->allocate( 6 );
         ( *_property )[0] = _funct_type;
         ( *_property )[1] = "LIN LIN";
         ( *_property )[2] = "";
@@ -73,7 +73,7 @@ class GenericFunction : public DataStructure {
     /**
      * @brief Allocate function
      */
-    virtual void allocate( JeveuxMemory mem, ASTERINTEGER size ) {};
+    virtual void allocate( ASTERINTEGER size ) {};
 
     /**
      * @brief Return the properties of the function

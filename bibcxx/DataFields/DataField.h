@@ -46,17 +46,22 @@ class DataField : public DataStructure {
      * @brief Constructor
      * @param name Jeveux name
      */
-    DataField( const std::string name, const std::string type = "CHAM_GD",
-                              const JeveuxMemory memType = Permanent )
-        : DataStructure( name, 19, type, memType ){};
+    DataField( const std::string name, const std::string type )
+        : DataStructure( name, 19, type ){};
 
     /**
      * @brief Constructor
-     * @param memType allocation memory
+
      */
-    DataField( const JeveuxMemory memType = Permanent,
-                              const std::string type = "CHAM_GD" )
-        : DataStructure( type, memType, 19 ){};
+    DataField( const std::string type )
+        : DataStructure( 19, type ){};
+
+    /**
+     * @brief Constructor
+
+     */
+    DataField( )
+        : DataStructure( 19, "CHAM_GD" ){};
 };
 
 /**

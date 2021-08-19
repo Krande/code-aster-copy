@@ -68,8 +68,8 @@ public:
     ParallelFiniteElementDescriptor( const std::string& name,
                                              const FiniteElementDescriptorPtr& FEDesc,
                                              const ConnectionMeshPtr& mesh,
-                                             const ModelPtr& model,
-                                             const JeveuxMemory memType = Permanent );
+                                             const ModelPtr& model
+                                              );
 
     /**
      * @brief Get vector of delayed elements keeped from the base FiniteElementDescriptor

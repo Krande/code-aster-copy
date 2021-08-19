@@ -50,7 +50,7 @@ class GenericGeneralizedAssemblyVector : public DataStructure {
      * @brief Constructeur
      */
     GenericGeneralizedAssemblyVector( const std::string name )
-        : DataStructure( name, 19, "VECT_ASSE_GENE", Permanent ),
+        : DataStructure( name, 19, "VECT_ASSE_GENE"),
           _desc( JeveuxVectorLong( getName() + ".DISC" ) ),
           _refe( JeveuxVectorChar24( getName() + ".REFE" ) ){};
 };

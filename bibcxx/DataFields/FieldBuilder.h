@@ -85,7 +85,7 @@ class FieldBuilder {
         if ( curIter != _mapLigrel.end() )
             curDesc = curIter->second;
         else {
-            curDesc = boost::make_shared< FEDDesc >( name2, mesh, result->getMemoryType() ) ;
+            curDesc = boost::make_shared< FEDDesc >( name2, mesh) ;
             _mapLigrel[name2] = curDesc;
         }
         result->setDescription( curDesc );
@@ -126,7 +126,7 @@ class FieldBuilder {
         if ( curIter != _mapProfChno.end() )
             curDesc = curIter->second;
         else {
-            curDesc = boost::make_shared< FONDesc >( name2, result->getMemoryType() );
+            curDesc = boost::make_shared< FONDesc >( name2 );
             _mapProfChno[name2] = curDesc;
         }
         result->setDescription( curDesc );

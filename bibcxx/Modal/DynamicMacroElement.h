@@ -117,7 +117,7 @@ class DynamicMacroElement : public DataStructure {
         : DynamicMacroElement( ResultNaming::getNewResultName() ){};
 
     DynamicMacroElement( const std::string name )
-        : DataStructure( name, 8, "MACR_ELEM_DYNA", Permanent ),
+        : DataStructure( name, 8, "MACR_ELEM_DYNA"),
           _desm( JeveuxVectorLong( getName() + ".DESM" ) ),
           _refm( JeveuxVectorChar8( getName() + ".REFM" ) ),
           _conx( JeveuxVectorLong( getName() + ".CONX" ) ),

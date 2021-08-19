@@ -78,7 +78,7 @@ class InterspectralMatrix : public DataStructure {
      * @brief Constructeur
      */
     InterspectralMatrix( const std::string name )
-        : DataStructure( name, 8, "INTERSPECTRE", Permanent ),
+        : DataStructure( name, 8, "INTERSPECTRE"),
           _refe( JeveuxVectorChar16( getName() + ".REFE" ) ),
           _disc( JeveuxVectorReal( getName() + ".DISC" ) ),
           _vale( JeveuxCollectionReal( getName() + ".VALE" ) ),

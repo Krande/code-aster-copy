@@ -31,9 +31,8 @@
 #include "ParallelUtilities/AsterMPI.h"
 
 FiniteElementDescriptor::FiniteElementDescriptor( const std::string &name,
-                                                            const BaseMeshPtr mesh,
-                                                            const JeveuxMemory memType )
-    : DataStructure( name, 19, "LIGREL", memType ),
+                                                            const BaseMeshPtr mesh)
+    : DataStructure( name, 19, "LIGREL" ),
       _numberOfDelayedNumberedConstraintNodes( getName() + ".NBNO" ),
       _parameters( getName() + ".LGRF" ), _dofDescriptor( getName() + ".PRNM" ),
       _listOfGroupOfCells( getName() + ".LIEL" ),
@@ -210,7 +209,7 @@ void FiniteElementDescriptor::transferListOfGroupOfCellFrom( FiniteElementDescri
         totalSize += grel.size();
     }
 
-    _listOfGroupOfCells->allocateContiguous(Permanent, listOfGrel.size(), totalSize, Numbered);
+    _listOfGroupOfCells->allocateContiguous(listOfGrel.size(), totalSize, Numbered);
     int posInCollection = 1;
     for( auto& grel : listOfGrel)
     {

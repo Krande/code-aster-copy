@@ -61,7 +61,7 @@ class ProjMesu : public DataStructure {
      * @brief Constructeur
      */
     ProjMesu( const std::string &name )
-        : DataStructure( name, 18, "PROJ_MESU", Permanent ),
+        : DataStructure( name, 18, "PROJ_MESU"),
           _pjmno( JeveuxVectorLong( getName() + ".PJMNO" ) ),
           _pjmrg( JeveuxVectorChar8( getName() + ".PJMRG" ) ),
           _pjmbp( JeveuxVectorReal( getName() + ".PJMBP" ) ),
@@ -124,7 +124,7 @@ class StaticMacroElement : public DataStructure {
      * @brief Constructeur
      */
     StaticMacroElement( const std::string name = ResultNaming::getNewResultName() )
-        : DataStructure( name, 8, "MACR_ELEM_STAT", Permanent ),
+        : DataStructure( name, 8, "MACR_ELEM_STAT"),
           _desm( JeveuxVectorLong( getName() + ".DESM" ) ),
           _lino( JeveuxVectorLong( getName() + ".LINO" ) ),
           _refm( JeveuxVectorChar8( getName() + ".REFM" ) ),

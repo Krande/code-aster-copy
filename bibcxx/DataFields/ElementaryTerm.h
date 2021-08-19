@@ -29,6 +29,7 @@
 #include "DataStructures/DataStructure.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "MemoryManager/JeveuxCollection.h"
+#include "Supervis/ResultNaming.h"
 
 /**
  * @class ElementaryTerm
@@ -55,22 +56,18 @@ template < class ValueType > class ElementaryTerm : public DataStructure {
      * @brief Constructor
      * @param name Jeveux name
      */
-    ElementaryTerm( const std::string name, const std::string type = "RESUELEM",
-                              const JeveuxMemory memType = Permanent )
-        : DataStructure( name, 19, type, memType ),
+    ElementaryTerm( const std::string name  )
+        : DataStructure( name, 19, "RESUELEM" ),
           _noli( JeveuxVectorChar24( getName() + ".NOLI" ) ),
           _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
           _resl( JeveuxCollection< ValueType >( getName() + ".RESL" ) ){};
 
     /**
      * @brief Constructor
-     * @param memType allocation memory
+
      */
-    ElementaryTerm( const JeveuxMemory memType = Permanent,
-                              const std::string type = "RESUELEM" )
-        : DataStructure( type, memType, 19 ), _noli( JeveuxVectorChar24( getName() + ".NOLI" ) ),
-          _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
-          _resl( JeveuxCollection< ValueType >( getName() + ".RESL" ) ){};
+    ElementaryTerm()
+        : ElementaryTerm(ResultNaming::getNewResultName()) {};
 };
 
 /**

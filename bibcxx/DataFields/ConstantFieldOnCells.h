@@ -236,9 +236,8 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
      * @param name Nom Jeveux de la carte
      * @param mesh Maillage
      */
-    ConstantFieldOnCells( const std::string &name, const BaseMeshPtr &mesh,
-                               const JeveuxMemory memType = Permanent )
-        : DataField( name, "CARTE", memType ),
+    ConstantFieldOnCells( const std::string &name, const BaseMeshPtr &mesh )
+        : DataField( name, "CARTE" ),
           _meshName( JeveuxVectorChar8( getName() + ".NOMA" ) ),
           _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
           _nameOfLigrels( JeveuxVectorChar24( getName() + ".NOLI" ) ),
@@ -252,54 +251,35 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
      * @param name Nom Jeveux de la carte
      * @param ligrel Ligrel support
      */
-    ConstantFieldOnCells( std::string name, const FiniteElementDescriptorPtr &ligrel,
-                               const JeveuxMemory memType = Permanent )
-        : DataField( name, "CARTE", memType ),
-          _meshName( JeveuxVectorChar8( getName() + ".NOMA" ) ),
-          _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
-          _nameOfLigrels( JeveuxVectorChar24( getName() + ".NOLI" ) ),
-          _listOfMeshCells( JeveuxCollectionLong( getName() + ".LIMA" ) ),
-          _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ),
-          _mesh( ligrel->getMesh() ), _FEDesc( ligrel ), _isAllocated( false ),
-          _componentNames( getName() + ".NCMP" ), _valuesListTmp( getName() + ".VALV" ){};
+    ConstantFieldOnCells( std::string name, const FiniteElementDescriptorPtr &ligrel )
+        : ConstantFieldOnCells( name, ligrel->getMesh() )
+          {
+            _FEDesc = ligrel;
+          };
 
     /**
      * @brief Constructeur
      * @param mesh Maillage
      * @param name Nom Jeveux de la carte
      */
-    ConstantFieldOnCells( const BaseMeshPtr &mesh, const JeveuxMemory memType = Permanent )
-        : DataField( memType, "CARTE" ), _meshName( JeveuxVectorChar8( getName() + ".NOMA" ) ),
-          _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
-          _nameOfLigrels( JeveuxVectorChar24( getName() + ".NOLI" ) ),
-          _listOfMeshCells( JeveuxCollectionLong( getName() + ".LIMA" ) ),
-          _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ), _mesh( mesh ),
-          _FEDesc( FiniteElementDescriptorPtr() ), _isAllocated( false ),
-          _componentNames( getName() + ".NCMP" ), _valuesListTmp( getName() + ".VALV" ){};
+    ConstantFieldOnCells( const BaseMeshPtr &mesh )
+        : ConstantFieldOnCells( ResultNaming::getNewResultName(), mesh){};
 
     /**
      * @brief Constructeur
      * @param ligrel Ligrel support
      * @param name Nom Jeveux de la carte
      */
-    ConstantFieldOnCells( const FiniteElementDescriptorPtr &ligrel,
-                               const JeveuxMemory memType = Permanent )
-        : DataField( memType, "CARTE" ), _meshName( JeveuxVectorChar8( getName() + ".NOMA" ) ),
-          _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
-          _nameOfLigrels( JeveuxVectorChar24( getName() + ".NOLI" ) ),
-          _listOfMeshCells( JeveuxCollectionLong( getName() + ".LIMA" ) ),
-          _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ),
-          _mesh( ligrel->getMesh() ), _FEDesc( ligrel ), _isAllocated( false ),
-          _componentNames( getName() + ".NCMP" ), _valuesListTmp( getName() + ".VALV" ){};
+    ConstantFieldOnCells( const FiniteElementDescriptorPtr &ligrel )
+        : ConstantFieldOnCells( ResultNaming::getNewResultName(), ligrel){};
 
     /**
      * @brief Constructeur
      * @param ligrel Ligrel support
      * @param name Nom Jeveux de la carte
      */
-    ConstantFieldOnCells( const std::string& name, const ConstantFieldOnCells& toCopy,
-                               const JeveuxMemory memType = Permanent )
-        : ConstantFieldOnCells(name, toCopy.getMesh(), memType){
+    ConstantFieldOnCells( const std::string& name, const ConstantFieldOnCells& toCopy )
+        : ConstantFieldOnCells(name, toCopy.getMesh()){
             *( _meshName ) = *( toCopy._meshName );
             *( _descriptor ) = *( toCopy._descriptor );
             *( _valuesList ) = *( toCopy._valuesList );
@@ -325,13 +305,11 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
      * @brief Allocation de la carte
      * @return true si l'allocation s'est bien deroulee, false sinon
      */
-    void allocate( const JeveuxMemory jeveuxBase, const std::string componant ) {
+    void allocate( const std::string componant ) {
         if ( _mesh.use_count() == 0 || _mesh->isEmpty() )
             throw std::runtime_error( "Mesh is empty" );
 
-        std::string strJeveuxBase( "V" );
-        if ( jeveuxBase == Permanent )
-            strJeveuxBase = "G";
+        std::string strJeveuxBase( "G" );;
         fortranAllocate( strJeveuxBase, componant );
         _isAllocated = true;
     };
@@ -340,11 +318,9 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
      * @brief Allocation de la carte
      * @return true si l'allocation s'est bien deroulee, false sinon
      */
-    void allocate( const JeveuxMemory jeveuxBase, const ConstantFieldOnCellsValueTypePtr &model ) {
+    void allocate( const ConstantFieldOnCellsValueTypePtr &model ) {
         auto componant = model->getPhysicalQuantityName();
-        std::string strJeveuxBase( "V" );
-        if ( jeveuxBase == Permanent )
-            strJeveuxBase = "G";
+        std::string strJeveuxBase( "G" );
         fortranAllocate( strJeveuxBase, componant );
         _isAllocated = true;
     };
@@ -504,7 +480,7 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
         const std::string mode( " " );
         const ASTERINTEGER nbMa = 0;
         JeveuxVectorLong limanu( "empty" );
-        limanu->allocate( Temporary, 1 );
+        limanu->allocate( 1 );
         fortranAddValues( code, grp, mode, nbMa, limanu, component, values );
         return true;
     };
@@ -527,7 +503,7 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
         const std::string mode( "NUM" );
         const ASTERINTEGER nbMa = 0;
         JeveuxVectorLong limanu( "&&TEMPORARY" );
-        limanu->allocate( Temporary, grp.size() );
+        limanu->allocate( grp.size() );
         for ( ASTERINTEGER pos = 0; pos < grp.size(); ++pos )
             ( *limanu )[pos] = grp[pos];
         fortranAddValues( code, grp2, mode, nbMa, limanu, component, values );
@@ -553,7 +529,7 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
         const std::string mode( " " );
         const ASTERINTEGER nbMa = 0;
         JeveuxVectorLong limanu( "empty" );
-        limanu->allocate( Temporary, 1 );
+        limanu->allocate( 1 );
         fortranAddValues( code, grp.getName(), mode, nbMa, limanu, component, values );
         return true;
     };
@@ -576,21 +552,21 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
         JeveuxVectorLong limanu( "&&TEMPORARY" );
         if ( zone.getLocalizationType() == ConstantFieldOnZone::AllMesh ) {
             code = 1;
-            limanu->allocate( Temporary, 1 );
+            limanu->allocate( 1 );
         } else if ( zone.getLocalizationType() == ConstantFieldOnZone::AllDelayedCells ) {
             code = -1;
-            limanu->allocate( Temporary, 1 );
+            limanu->allocate( 1 );
         } else if ( zone.getLocalizationType() == ConstantFieldOnZone::OnGroupOfCells ) {
             code = 2;
             grp = zone.getGroup()->getName();
-            limanu->allocate( Temporary, 1 );
+            limanu->allocate( 1 );
         } else if ( zone.getLocalizationType() == ConstantFieldOnZone::ListOfCells ) {
             code = 3;
             mode = "NUM";
             const auto &vecTmp = zone.getListOfCells();
             nbMa = vecTmp.size();
             // si taille 1 on doit pouvoir préallouer
-            limanu->allocate( Temporary, nbMa );
+            limanu->allocate( nbMa );
             for ( ASTERINTEGER pos = 0; pos < nbMa; ++pos )
                 ( *limanu )[pos] = vecTmp[pos];
         } else if ( zone.getLocalizationType() == ConstantFieldOnZone::ListOfDelayedCells ) {
@@ -599,7 +575,7 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
             const auto &vecTmp = zone.getListOfCells();
             nbMa = vecTmp.size();
             // si taille 1 on doit pouvoir préallouer
-            limanu->allocate( Temporary, nbMa );
+            limanu->allocate( nbMa );
             for ( ASTERINTEGER pos = 0; pos < nbMa; ++pos )
                 ( *limanu )[pos] = vecTmp[pos];
         }

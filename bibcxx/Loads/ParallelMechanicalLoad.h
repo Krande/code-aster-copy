@@ -61,7 +61,7 @@ private:
         const auto& toKeep = _FEDesc->getVirtualCellsToKeep();
 
         std::string savedName( "" );
-        fieldOut->allocate( Permanent, fieldIn );
+        fieldOut->allocate( fieldIn );
         const auto sizeFieldIn = (*fieldIn).size();
         const auto vect_resu = fieldIn->getValues();
 
@@ -147,9 +147,9 @@ public:
         auto typeLoadStd = load->getType();
         typeLoadStd->updateValuePointer();
 
-        _type->allocate( Permanent, 1 );
+        _type->allocate( 1 );
         (*_type)[0] = (*typeLoadStd)[0];
-        _modelName->allocate( Permanent, 1 );
+        _modelName->allocate( 1 );
         (*_modelName)[0] = model->getName();
 
         transferConstantFieldOnCells(

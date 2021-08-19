@@ -187,8 +187,8 @@ bool BaseMesh::printMedFile( const std::string fileName ) const
 };
 
 const JeveuxCollectionLong BaseMesh::getInverseConnectivity() const {
-    JeveuxChar24 objv( DataStructureNaming::getNewName( Permanent, 24 ) );
-    std::string base( JeveuxMemoryTypesNames[Permanent] );
+    JeveuxChar24 objv( DataStructureNaming::getNewName( 24 ) );
+    std::string base( "G" );
 
     ASTERINTEGER listCell;
     ASTERINTEGER nbCell = 0;

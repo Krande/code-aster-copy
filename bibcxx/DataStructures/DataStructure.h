@@ -69,18 +69,17 @@ class DataStructure {
      * @param name Name of the jeveux datastructure
      * @param nameLength Length of the jeveux basename
      * @param type code_aster type of the datastructure
-     * @param memType Jeveux memory type
+
      */
-    DataStructure( const std::string name, const int nameLength, const std::string type = "",
-                   const JeveuxMemory memType = Permanent );
+    DataStructure( const std::string name, const int nameLength, const std::string type = "" );
 
     /**
      * @brief Constructeur
      * @param type code_aster type of the datastructure
-     * @param memType Jeveux memory type
+
      * @param nameLength Length of the jeveux basename
      */
-    DataStructure( const std::string type, const JeveuxMemory memType, int nameLength );
+    DataStructure( const int nameLength, const std::string type );
 
     /**
      * @brief Destructeur

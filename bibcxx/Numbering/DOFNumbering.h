@@ -73,15 +73,15 @@ class DOFNumbering : public BaseDOFNumbering {
     /**
      * @brief Constructeur
      */
-    DOFNumbering( const JeveuxMemory memType = Permanent )
-        : BaseDOFNumbering( "NUME_DDL", memType ){};
+    DOFNumbering(  )
+        : BaseDOFNumbering( "NUME_DDL" ){};
 
     /**
      * @brief Constructeur
      * @param name nom souhaité de la sd (utile pour le BaseDOFNumbering d'une sd_resu)
      */
-    DOFNumbering( const std::string name, const JeveuxMemory memType = Permanent )
-        : BaseDOFNumbering( name, "NUME_DDL", memType ){};
+    DOFNumbering( const std::string name )
+        : BaseDOFNumbering( name, "NUME_DDL" ){};
 
     /**
      * @brief Methode permettant de definir les matrices elementaires

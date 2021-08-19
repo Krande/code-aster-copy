@@ -34,20 +34,20 @@ bool GenericMaterialProperty::buildJeveuxVectors(
     std::vector< JeveuxVectorChar8 > &userFunctions )
 {
     const int nbOfMaterialProperties = getNumberOfPropertiesWithValue();
-    complexValues->allocate( Permanent, nbOfMaterialProperties );
-    doubleValues->allocate( Permanent, nbOfMaterialProperties );
-    char16Values->allocate( Permanent, 2 * nbOfMaterialProperties );
+    complexValues->allocate( nbOfMaterialProperties );
+    doubleValues->allocate( nbOfMaterialProperties );
+    char16Values->allocate( 2 * nbOfMaterialProperties );
 
     typedef std::map< std::string, int > MapStrInt;
     MapStrInt mapTmp;
     bool bOrdr = false;
     if ( _vectOrdr.size() != 0 ) {
-        ordr->allocate( Permanent, _vectOrdr.size() );
+        ordr->allocate( _vectOrdr.size() );
         for ( int i = 0; i < int(_vectOrdr.size()); ++i ) {
             ( *ordr )[i] = _vectOrdr[i];
             mapTmp[_vectOrdr[i]] = i + 1;
         }
-        kOrd->allocate( Permanent, 2 + 4 * nbOfMaterialProperties );
+        kOrd->allocate( 2 + 4 * nbOfMaterialProperties );
         ( *kOrd )[0] = _vectOrdr.size();
         ( *kOrd )[1] = nbOfMaterialProperties;
         bOrdr = true;
@@ -167,7 +167,7 @@ bool GenericMaterialProperty::buildJeveuxVectors(
             ( *char16Values )[position2] = userReals[position3]->getName();
 
             auto values = curIter.second.getValue();
-            userReals[position3]->allocate( Permanent, values.size() );
+            userReals[position3]->allocate( values.size() );
             ( *userReals[position3] ) = values;
             ++position;
             ++position2;
@@ -189,7 +189,7 @@ bool GenericMaterialProperty::buildJeveuxVectors(
             ( *char16Values )[position2] = userFunctions[0]->getName();
 
             auto values = curIter.second.getValue();
-            userFunctions[0]->allocate( Permanent, values.size() );
+            userFunctions[0]->allocate( values.size() );
             for ( int i = 0; i < int(values.size()); ++i )
                 ( *userFunctions[0] )[i] = values[i]->getName();
             ++position;
