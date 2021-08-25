@@ -29,18 +29,22 @@ MESH=CREA_MAILLAGE(MAILLAGE     = MESH0,
 
 # Material parameters
 alpha = 6.5E-6
+tempRefe = 20.
+nu = 0.3
+young = 30.E+06
+
 funcYoung=DEFI_FONCTION(NOM_PARA='Z',
                      PROL_DROITE='CONSTANT',
                      PROL_GAUCHE='CONSTANT',
-                     VALE=(0.   , 30.E+06,
-                           0.125, 30.E+06,
-                           0.25 , 30.E+06,),)
+                     VALE=(0.   , young,
+                           0.125, young,
+                           0.25 , young,),)
 
 funcNu=DEFI_FONCTION(NOM_PARA='Z',
                       PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT',
-                      VALE=(0.  , 0.3,
-                            0.25, 0.3),)
+                      VALE=(0.  , nu,
+                            0.25, nu),)
 
 funcAlpha=DEFI_CONSTANTE(VALE=alpha);
 
@@ -48,7 +52,7 @@ funcAlpha=DEFI_CONSTANTE(VALE=alpha);
 MATfunc=DEFI_MATERIAU(ELAS_FO = _F(E              = funcYoung,
                                    NU             = funcNu,
                                    ALPHA          = funcAlpha,
-                                   TEMP_DEF_ALPHA = 20.0,)
+                                   TEMP_DEF_ALPHA = tempRefe,)
                      )
 
 # Select finite elements
@@ -105,24 +109,22 @@ tempFieldNode = CREA_CHAMP(MODELE    = MODEL,
                                           NOM_CMP      = ('X1',),
                                           NOM_CMP_RESU = ('TEMP',),
                                          ),
-                           INFO      = 1,
                            )
 
+tempFieldInit = CREA_CHAMP(MODELE    = MODEL,
+                           OPERATION = 'AFFE',
+                           AFFE      = _F(NOM_CMP = ('TEMP', ),
+                                          TOUT    = 'OUI',
+                                          VALE    = tempRefe,),
+                           TYPE_CHAM = 'CART_TEMP_R')
 
-MATERIAL=AFFE_MATERIAU(MAILLAGE  = MESH,
-                       AFFE      = _F(GROUP_MA = 'Plaque',
-                                      MATER    = MATfunc,
-                                   ),
-                       AFFE_VARC = (_F(NOM_VARC = 'TEMP', 
-                                       CHAM_GD  = tempFieldNode,
-                                       VALE_REF = 20.,
-                                      ),
-                                    _F(NOM_VARC = 'GEOM',
-                                       CHAM_GD  = geomFieldNode,
-                                      ),
-                                   ),
-                       INFO      = 1,
-                      )
+evolTher = CREA_RESU(AFFE      = (_F(CHAM_GD = tempFieldInit,
+                                     INST    = 0.0,),
+                                  _F(CHAM_GD = tempFieldNode,
+                                     INST    = 1.0,),),
+                     NOM_CHAM  = 'TEMP',
+                     OPERATION = 'AFFE',
+                     TYPE_RESU = 'EVOL_THER')
 
 # Boundary conditions and loads
 kineCondition=AFFE_CHAR_CINE(MODELE    = MODEL,
@@ -135,8 +137,19 @@ kineCondition=AFFE_CHAR_CINE(MODELE    = MODEL,
                              )
 
 # Static linear
+MATLine=AFFE_MATERIAU(MAILLAGE  = MESH,
+                       AFFE      = _F(GROUP_MA = 'Plaque',
+                                      MATER    = MATfunc,
+                                   ),
+                       AFFE_VARC = (_F(NOM_VARC = 'TEMP',
+                                       CHAM_GD  = tempFieldNode,
+                                       VALE_REF = tempRefe),
+                                    _F(NOM_VARC = 'GEOM',
+                                       CHAM_GD  = geomFieldNode,),
+                                   ),)
+
 resuLinear=MECA_STATIQUE(MODELE     = MODEL,
-                         CHAM_MATER = MATERIAL,
+                         CHAM_MATER = MATLine,
                          EXCIT      = _F(CHARGE=kineCondition,),
                          SOLVEUR    = _F(RESI_RELA = 1.E-5),
                         )
@@ -147,14 +160,54 @@ resuLinear=CALC_CHAMP(reuse       = resuLinear,
                       DEFORMATION = ('EPVC_ELGA',),
                       CRITERES    = ('SIEQ_ELGA', 'EPEQ_ELGA', ),)
 
+# Output
+IMPR_RESU(RESU=_F(RESULTAT = resuLinear,))
+
+# Static linear with non-linear operator
+MATSNL=AFFE_MATERIAU(MAILLAGE  = MESH,
+                     AFFE      = _F(GROUP_MA = 'Plaque',
+                                    MATER    = MATfunc,
+                                 ),
+                     AFFE_VARC = (_F(NOM_VARC = 'TEMP',
+                                     EVOL     = evolTher,
+                                     VALE_REF = tempRefe,
+                                    ),
+                                  _F(NOM_VARC = 'GEOM',
+                                     CHAM_GD  = geomFieldNode,
+                                    ),
+                                 ),)
+
+
+ramp = DEFI_FONCTION(NOM_PARA = 'INST',
+                     VALE     = (0.0, 0.0, 1.0, 1.0))
+
+listReal = DEFI_LIST_REEL(DEBUT      = 0.0,
+                          INTERVALLE = _F(JUSQU_A = 1.0,
+                                          NOMBRE  = 1))
+
+resuLinearSNL = STAT_NON_LINE(MODELE     = MODEL,
+                              CHAM_MATER = MATSNL,
+                              EXCIT      = _F(CHARGE    = kineCondition,
+                                              FONC_MULT = ramp,),
+                              INCREMENT  = _F(LIST_INST=listReal,),)
+
+# Post-treatement
+resuLinearSNL=CALC_CHAMP(reuse       = resuLinearSNL,
+                         RESULTAT    = resuLinearSNL,
+                         DEFORMATION = ('EPVC_ELGA',),
+                         CRITERES    = ('SIEQ_ELGA', 'EPEQ_ELGA', ),)
+
+
 # Tests
 deplRefe = 0.1033
-deplTole = 0.01 * 2.6
-sixxCalc = -29353.841211187533
-siyyCalc =  9842.17151363325
 epvcRefe = -alpha * 70.
+
+# For MECA_STATIQUE
+sixxCalcMecaStatique = 4771.158788228305
+siyyCalcMecaStatique = -4782.828485833447
+epeqCalcMecaStatique = 0.00013783350361187808
+deplTole = 0.01 * 2.6
 epvcTole = 0.01 * 1.E-6
-epeqCalc = 0.00013783350362816372
 
 TEST_RESU(RESU=(_F(RESULTAT   = resuLinear,
                    NUME_ORDRE = 1,
@@ -172,7 +225,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = resuLinear,
                    POINT      = 5,
                    NOM_CHAM   = 'SIEF_ELGA',
                    NOM_CMP    = 'SIXX',
-                   VALE_CALC  = sixxCalc,),),)
+                   VALE_CALC  = sixxCalcMecaStatique,),),)
 
 TEST_RESU(RESU=(_F(RESULTAT   = resuLinear,
                    NUME_ORDRE = 1,
@@ -180,7 +233,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = resuLinear,
                    POINT      = 1,
                    NOM_CHAM   = 'SIEF_ELGA',
                    NOM_CMP    = 'SIYY',
-                   VALE_CALC  = siyyCalc,),),)
+                   VALE_CALC  = siyyCalcMecaStatique,),),)
 
 TEST_RESU(RESU=(_F(RESULTAT   = resuLinear,
                    NUME_ORDRE = 1,
@@ -199,9 +252,70 @@ TEST_RESU(RESU=(_F(RESULTAT   = resuLinear,
                    POINT      = 5,
                    NOM_CHAM   = 'EPEQ_ELGA',
                    NOM_CMP    = 'INVA_2',
-                   VALE_CALC  = epeqCalc,),),)
+                   VALE_CALC  = epeqCalcMecaStatique,),),)
 
-# Output
-IMPR_RESU(RESU=_F(RESULTAT = resuLinear,))
+# For STAT_NON_LINE
+sixxRefe = sixxCalcMecaStatique
+siyyRefe = siyyCalcMecaStatique
+epeqRefe = epeqCalcMecaStatique
+deplTole = 0.01 * 2.6
+sixxTole = 0.01 * 1.E-6
+siyyTole = 0.01 * 1.E-6
+epvcTole = 0.01 * 1.E-6
+epeqTole = 0.01 * 1.E-6
+
+TEST_RESU(RESU=(_F(RESULTAT   = resuLinearSNL,
+                   NUME_ORDRE = 1,
+                   GROUP_NO   = 'NodeASup',
+                   NOM_CHAM   = 'DEPL',
+                   NOM_CMP    = 'DZ',
+                   REFERENCE  = 'SOURCE_EXTERNE',
+                   VALE_CALC  = 0.10070334414523618,
+                   VALE_REFE  = deplRefe,
+                   PRECISION  = deplTole,),),)
+
+TEST_RESU(RESU=(_F(RESULTAT   = resuLinearSNL,
+                   NUME_ORDRE = 1,
+                   GROUP_MA   = 'CellTest',
+                   POINT      = 5,
+                   NOM_CHAM   = 'SIEF_ELGA',
+                   NOM_CMP    = 'SIXX',
+                   REFERENCE  = 'AUTRE_ASTER',
+                   VALE_REFE  = sixxRefe,
+                   VALE_CALC  = 4771.158788424951,
+                   PRECISION  = sixxTole,),),)
+
+TEST_RESU(RESU=(_F(RESULTAT   = resuLinearSNL,
+                   NUME_ORDRE = 1,
+                   GROUP_MA   = 'CellTest',
+                   POINT      = 1,
+                   NOM_CHAM   = 'SIEF_ELGA',
+                   NOM_CMP    = 'SIYY',
+                   REFERENCE  = 'AUTRE_ASTER',
+                   VALE_REFE  = siyyRefe,
+                   VALE_CALC  = -4782.828485971404,
+                   PRECISION  = siyyTole,),),)
+
+TEST_RESU(RESU=(_F(RESULTAT   = resuLinearSNL,
+                   NUME_ORDRE = 1,
+                   GROUP_MA   = 'CellTest',
+                   POINT      = 5,
+                   NOM_CHAM   = 'EPVC_ELGA',
+                   NOM_CMP    = 'EPTHER_L',
+                   REFERENCE  = 'ANALYTIQUE',
+                   VALE_CALC  = -0.00045499999999999995,
+                   VALE_REFE  = epvcRefe,
+                   PRECISION  = epvcTole,),),)
+
+TEST_RESU(RESU=(_F(RESULTAT   = resuLinearSNL,
+                   NUME_ORDRE = 1,
+                   GROUP_MA   = 'CellTest',
+                   POINT      = 5,
+                   NOM_CHAM   = 'EPEQ_ELGA',
+                   NOM_CMP    = 'INVA_2',
+                   REFERENCE  = 'AUTRE_ASTER',
+                   VALE_CALC  = 0.00013783350361676113,
+                   VALE_REFE  = epeqRefe,
+                   PRECISION  = epeqTole,),),)
 
 FIN()

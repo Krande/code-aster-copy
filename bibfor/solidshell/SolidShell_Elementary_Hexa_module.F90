@@ -171,6 +171,8 @@ subroutine compSiefElgaHexa(elemProp, cellGeom, matePara, disp,&
     type(SSH_KINE_HEXA) :: kineHexa
     real(kind=8) :: zeta, epsi(SSH_SIZE_TENS)
     integer :: nbIntePoint, kpg, jvCoor
+    character(len=16), parameter :: option = 'EPVC_ELGA'
+    real(kind=8) :: epvcElga(SSH_NBPG_MAX, SSH_SIZE_TENS)
 !   ------------------------------------------------------------------------------------------------
 !
     nbIntePoint = elemProp%elemInte%nbIntePoint
@@ -190,6 +192,9 @@ subroutine compSiefElgaHexa(elemProp, cellGeom, matePara, disp,&
     call compBCartMatrHexa(geomHexa, kineHexa)
     if (SSH_DBG_KINE) call dbgObjKineHexa(kineHexa, smallCstPart_ = ASTER_TRUE)
 
+! - Compute strains from external state variables
+    call compEpvcElgaHexa(elemProp, matePara, option, epvcElga)
+
 ! - Loop on Gauss points
     do kpg = 1, nbIntePoint
         zeta  = zr(jvCoor-1+3*kpg)
@@ -203,6 +208,7 @@ subroutine compSiefElgaHexa(elemProp, cellGeom, matePara, disp,&
 
 ! ----- Compute small strains
         call compEpsiHexa(kineHexa, disp, epsi)
+        epsi = epsi - epvcElga(kpg, :)
 
 ! ----- Compute stresses
         siefElga(1+(kpg-1)*SSH_SIZE_TENS:SSH_SIZE_TENS*kpg) = matmul(matePara%elemHookeMatrix, epsi)
