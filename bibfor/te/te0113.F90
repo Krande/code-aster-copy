@@ -36,25 +36,26 @@ subroutine te0113(option, nomte)
 !       ELEMENTS POU_D_T
 ! ---------------------------------------------------------------------
 !
-    integer :: icodre(5), iret
+    integer, parameter :: nbparaPR = 6
+    integer :: icodre(nbparaPR), iret
     integer :: imate, nno, nbcmp, ino, ival, ndim, ino2
+    
 !
-    real(kind=8) :: valres(5), young, k, nexpo, rp02_min, rm_min, rp02_moy 
+    real(kind=8) :: valres(nbparaPR), young, k, nexpo, rp02_min, rm_min
+    real(kind=8) :: rp02_moy, alpha
     real(kind=8) :: caragene(4), carageo(4)
     character(len=8)  :: valp(4)
-    character(len=16) :: nomres(5)
+    character(len=16) :: nomres(nbparaPR)
 !
 ! ----------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno)
     ASSERT(nno.eq.2)
     
-    call jevech('PVARCPR', 'L', imate)
-    
     call jevech('PMATERC', 'L', imate)
     call jevech('PROCHRR', 'E', ival)
     
-    nbcmp = 13
+    nbcmp = 1+nbparaPR+7
 
 !   parametres elastique
     nomres(1) = 'E'
@@ -63,15 +64,16 @@ subroutine te0113(option, nomte)
                 1, nomres, valres, icodre, 1)
     young = valres(1)
 
-!   parametres de RAMBERG_OSGOOD
+!   parametres de materiau POST_ROCHE
     nomres(1) = 'RAMB_OSGO_FACT'
     nomres(2) = 'RAMB_OSGO_EXPO'
     nomres(3) = 'RP02_MIN'
     nomres(4) = 'RM_MIN'
     nomres(5) = 'RP02_MOY'
+    nomres(6) = 'ALPHA'
     call rcvalb('FPG1', 1, 1, '+', zi(imate),&
                 ' ', 'POST_ROCHE', 0, '', [0.d0],&
-                5, nomres, valres, icodre, 1)
+                nbparaPR, nomres, valres, icodre, 0)
     if (icodre(1).ne.0) call utmess('F','POSTROCHE_16')
     k = valres(1)
     nexpo = valres(2)
@@ -85,6 +87,8 @@ subroutine te0113(option, nomte)
     else
         rp02_moy = valres(5) ! nan si absent et si rp02_min absent
     endif
+    
+    alpha = valres(6)
     
 !   caractéristiques de poutre
     valp = ['A1 ','IY1','A2 ','IY2']
@@ -104,21 +108,22 @@ subroutine te0113(option, nomte)
         zr(ival+(ino-1)*nbcmp-1+4) = rp02_min
         zr(ival+(ino-1)*nbcmp-1+5) = rm_min
         zr(ival+(ino-1)*nbcmp-1+6) = rp02_moy
+        zr(ival+(ino-1)*nbcmp-1+7) = alpha
 !       A
-        zr(ival+(ino-1)*nbcmp-1+7) = caragene(2*(ino-1)+1)
+        zr(ival+(ino-1)*nbcmp-1+nbparaPR+2) = caragene(2*(ino-1)+1)
 !       I
-        zr(ival+(ino-1)*nbcmp-1+8) = caragene(2*(ino-1)+2)
+        zr(ival+(ino-1)*nbcmp-1+nbparaPR+3) = caragene(2*(ino-1)+2)
 !       R
-        zr(ival+(ino-1)*nbcmp-1+9) = carageo(2*(ino-1)+1)
+        zr(ival+(ino-1)*nbcmp-1+nbparaPR+4) = carageo(2*(ino-1)+1)
 !       EP
-        zr(ival+(ino-1)*nbcmp-1+10) = carageo(2*(ino-1)+2)
+        zr(ival+(ino-1)*nbcmp-1+nbparaPR+5) = carageo(2*(ino-1)+2)
 !       valeur de l'autre noeud pour réduction
 !       I2
-        zr(ival+(ino-1)*nbcmp-1+11) = caragene(2*(ino2-1)+2)
+        zr(ival+(ino-1)*nbcmp-1+nbparaPR+6) = caragene(2*(ino2-1)+2)
 !       R2
-        zr(ival+(ino-1)*nbcmp-1+12) = carageo(2*(ino2-1)+1)
+        zr(ival+(ino-1)*nbcmp-1+nbparaPR+7) = carageo(2*(ino2-1)+1)
 !       EP        
-        zr(ival+(ino-1)*nbcmp-1+13) = carageo(2*(ino2-1)+2)
+        zr(ival+(ino-1)*nbcmp-1+nbparaPR+8) = carageo(2*(ino2-1)+2)
     enddo
 ! ----------------------------------------------------------------------
 end subroutine

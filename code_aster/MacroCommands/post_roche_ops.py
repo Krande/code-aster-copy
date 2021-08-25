@@ -43,7 +43,6 @@ def post_roche_ops(self, **kwargs):
     PRCommon.checkZones()
     PRCommon.getCoudeValues()
     PRCommon.buildPression()
-    if PRCommon.lRCCM_RX : PRCommon.buildAlpha()
     PRCommon.classification()
     PRCommon.materAndBeamParams()
     PRCommon.calcGeomParams()
@@ -170,14 +169,6 @@ class PostRocheCommon():
             for j in kwargs.get('PRESSION'):
                 dPression.append(j.cree_dict_valeurs(j.mc_liste))
         self.dPression = dPression
-        
-        # alpha
-
-        dAlpha = []
-        if kwargs.get('ALPHA'):
-            for j in kwargs.get('ALPHA'):
-                dAlpha.append(j.cree_dict_valeurs(j.mc_liste))
-        self.dAlpha = dAlpha
 
         # Autres paramètres
         self.l_mc_inst  = ['NUME_ORDRE', 'INST', 'PRECISION', 'CRITERE']
@@ -322,39 +313,6 @@ class PostRocheCommon():
                                  PROL_ZERO='OUI',
                                  AFFE= affe)
         self.chPression  = chPression
-    
-    def buildAlpha(self):
-        """
-        Construction du champ de valeurs d'Alpha  ELNO_NEUT_R
-        
-        1 partout par defaut, utilisé uniquement si RCCM_RX=OUI
-        """
-
-        affe  = []
-        dicAffe = {'NOM_CMP'  : 'X1',}
-        dicAffe['TOUT'] = 'OUI'
-        dicAffe['VALE'] = 1.
-        affe.append(dicAffe)
-
-        for fact in self.dAlpha:
-
-            dicAffe = {'NOM_CMP'  : 'X1',}
-
-            if fact.get('TOUT'):
-                dicAffe['TOUT'] = 'OUI'
-            else:
-                dicAffe['GROUP_MA'] = fact.get('GROUP_MA')
-
-            dicAffe['VALE'] = fact.get('VALE')
-            affe.append(dicAffe)
-            
-
-        chAlpha = CREA_CHAMP(OPERATION='AFFE',
-                                 TYPE_CHAM='ELNO_NEUT_R',
-                                 MODELE=self.model,
-                                 PROL_ZERO='OUI',
-                                 AFFE= affe)
-        self.chAlpha  = chAlpha
         
     def materAndBeamParams(self):
         """
@@ -1057,11 +1015,9 @@ class PostRocheCommon():
         # pour RCCM_RC = OUI
         if self.lRCCM_RX:
             
-            # ALPHA = X1
             
-            
-            fSigVraieMax = FORMULE(NOM_PARA=('X1', 'RP02_MOY' ,'RP02_MIN', 'RM_MIN'),
-                                VALE='2*(0.426*RP02_MIN+0.032*RM_MIN)*RP02_MOY/RP02_MIN')
+            fSigVraieMax = FORMULE(NOM_PARA=('ALPHA', 'RP02_MOY' ,'RP02_MIN', 'RM_MIN'),
+                                VALE='2*ALPHA*(0.426*RP02_MIN+0.032*RM_MIN)*RP02_MOY/RP02_MIN')
             
             
             self.chFSigVraie = CREA_CHAMP(OPERATION='AFFE',
@@ -1710,7 +1666,7 @@ class PostRocheCalc():
             chSigVraie = CREA_CHAMP(OPERATION='EVAL',
                                     TYPE_CHAM='ELNO_NEUT_R',
                                     CHAM_F=self.param.chFSigVraie,
-                                    CHAM_PARA=(self.param.chAlpha, self.param.chRochElno ))
+                                    CHAM_PARA=(self.param.chRochElno ))
 
             self.chSigVraie = chSigVraie
         else:

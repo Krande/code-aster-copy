@@ -131,14 +131,4 @@ POST_ROCHE=MACRO(nom="POST_ROCHE",
          ),
          
          RCCM_RX         =SIMP(statut='f',typ='TXM',into=("OUI","NON",), defaut=("OUI") ),
-         b_rccm_rx =BLOC(condition = """equal_to("RCCM_RX", 'OUI') """,
-            ALPHA        =FACT(statut='f',
-                                  regles=(UN_PARMI('TOUT','GROUP_MA',),),
-                TOUT         =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-                GROUP_MA     =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-                VALE         =SIMP(statut='o',typ='R',val_min=1.),
-         ),
-            ),
-         
-         
 )
