@@ -67,8 +67,12 @@ def evaluate_KL2D(X1, X2, DIM, RANGE, XLISTE, Ux, beta, mediane, pseed ):
         U2 = [np.interp(x2, XLISTE[1], term)  for term in Ux[1]]
         U1 = np.array(U1).reshape((nb1, 1))
         U2 = np.array(U2).reshape((1, nb2))
-        rand = np.random.normal(0., 1., nb1 * nb2)
-        Ux_12 = mediane * np.exp(beta * np.sum((U1 * U2).ravel() * rand))
+        KL_terms = (U1 * U2).ravel()
+        if Ux[2][0] != 'All':         
+            KL_terms = np.array(KL_terms)[Ux[2]]
+
+        rand = np.random.normal(0., 1., len(KL_terms))
+        Ux_12 = mediane * np.exp(beta * np.sum(KL_terms * rand))
         return Ux_12
 
 
@@ -86,8 +90,11 @@ def evaluate_KL3D(X1, X2, X3, DIM, RANGE, XLISTE, Ux, beta, mediane, pseed ):
         U1 = np.array(U1).reshape((nb1, 1, 1))
         U2 = np.array(U2).reshape((1, nb2, 1))
         U3 = np.array(U3).reshape((1, 1, nb3))
-        rand = np.random.normal(0., 1., nb1 * nb2 * nb3)
-        Ux_123 = mediane * np.exp(beta * np.sum((U1 * U2 * U3).ravel() * rand))
+        if Ux[3][0] != 'All':         
+            KL_terms = np.array(KL_terms)[Ux[3]]
+
+        rand = np.random.normal(0., 1., len(KL_terms))
+        Ux_123 = mediane * np.exp(beta * np.sum(KL_terms * rand))
         return Ux_123
 
 
@@ -103,6 +110,9 @@ class Randomfield(object):
         self.cov = kwargs.get('COEF_VARI')
         self.beta = sqrt(log(1.+self.cov**2))
         self.cas =  None
+        self.nbtot =  None
+        self.precision = None
+
         cdict = {'RANGE': [] ,    'NBTERMS' : [], 'DIM' : [],
                        'LONG_CORR' : [],  'COORD' : None, 'XLISTE' : []}
         # XYZKeys
@@ -140,6 +150,14 @@ class Randomfield(object):
             cdict['XLISTE'].append(zliste)
             liste_coord.append('Z')
 
+        if len(liste_coord) > 1:
+            if  'PRECISION' in kwargs:
+                self.precision = kwargs.get('PRECISION')
+            if 'NB_TERM' in kwargs: 
+                nbtot = np.prod(cdict['NBTERMS'])
+                assert(kwargs.get('NB_TERM') <= nbtot, 'NB_TERM must be smaller than the total number of terms computed' )
+                self.nbtot = kwargs.get('NB_TERM')
+
         cdict['COORD'] = liste_coord
         self.coord = liste_coord
         self.cas = str(len(liste_coord)) + 'D'
@@ -174,6 +192,9 @@ class Generator(object):
         self.beta = params.beta
         self.seed = params.seed
         self.coord = params.coord
+        self.nbtot =  params.nbtot
+        self.precision = params.precision
+        self.KL_terms = ['All']
 
     def compute_KL(self):
         """specific to each method"""
@@ -207,7 +228,7 @@ class Generator(object):
             troots = self.find_roots(v, veck)
         roots = troots[:nbmod]
         lamk = 2. * Lc * (1. + np.array(roots)**2 * Lc**2)**(-1)
-        print('NUMBER of ROOTS:', len(troots), 'RETAINED EIGENVALUES', nbmod)
+        print('NUMBER of ROOTS:', len(troots), 'RETAINED EIGENVALUES:', nbmod)
         phik =[]
         for (ii, vk) in enumerate(roots):
             if self.is_even(ii): # %even
@@ -215,6 +236,7 @@ class Generator(object):
             else:          # %odd
                 phik.append( np.sin(vk * (x - 0.5)) / np.sqrt(0.5 * (1. - np.sin(vk) / vk )) )
         return list(zip(lamk, phik))
+
 
 
 class Generator1(Generator):
@@ -272,12 +294,48 @@ class Generator2(Generator):
 
         KL_data1  = self.eval_eigfunc(self.data['XLISTE'][0], Lcx1/dimx1, nbmod1)
         self.Ux1 = [ np.sqrt(leig) * np.array(veig)  for (leig, veig) in KL_data1 ]
+        eig1, vec = zip(*KL_data1)
 
         KL_data2  = self.eval_eigfunc(self.data['XLISTE'][1], Lcx2/dimx2, nbmod2)
         self.Ux2 = [ np.sqrt(leig) * np.array(veig)  for (leig, veig) in KL_data2 ]
+        eig2, vec = zip(*KL_data2)
+
+        self.eigs = [eig1, eig2]
+
+
+
+    def select_KL_terms(self):
+        eig1 = np.array(self.eigs[0]).reshape((len(self.eigs[0]), 1))
+        eig2 = np.array(self.eigs[1]).reshape((1, len(self.eigs[1])))
+        eig12 = (eig1 * eig2).ravel()
+        ind = np.flip(np.argsort(eig12),0)
+        eig12 = np.flip(np.sort(eig12),0)
+
+
+#        print('squared sorted eigs')
+#        print(eig12)
+#        print('squared sorted summed eigs')
+#        print(np.cumsum(eig12))
+
+        if self.precision :
+            ind_cut = np.searchsorted(np.cumsum(eig12), self.precision * np.sum(eig12), side='right')
+            cutindlist = ind[:ind_cut]
+#            print('precision')
+#            print(ind, ind_cut, cutindlist)
+        elif self.nbtot :
+            cutindlist = ind[:self.nbtot]
+#            print('nbtot')
+#            print(cutindlist, self.nbtot)
+
+        print('TOTAL NUMBER OF RETAINED EIGENVALUES:', len(cutindlist))
+        self.KL_terms = cutindlist
+
 
     def run(self):
         self.compute_KL()
+        if self.precision or self.nbtot:
+            self.select_KL_terms()
+            
 
         print('X,Y', self.coord)
         if self.coord == ['X', 'Y']:
@@ -285,21 +343,21 @@ class Generator2(Generator):
                 'X', 'Y'), VALE="user_func(X,Y,DIM,RANGE,XLISTE,Ux,beta,mediane, seed)",
                 user_func=evaluate_KL2D, XLISTE=self.data['XLISTE'],
                 DIM=self.data['DIM'],  RANGE=self.data['RANGE'], Ux=(
-                    self.Ux1, self.Ux2),
+                    self.Ux1, self.Ux2, self.KL_terms),
                 mediane=self.mediane, beta=self.beta, seed=self.seed)
         elif self.coord == ['X', 'Z']:
             formule_out = FORMULE(NOM_PARA=(
                 'X', 'Z'), VALE="user_func(X,Z,DIM,RANGE,XLISTE,Ux,beta,mediane, seed)",
                 user_func=evaluate_KL2D, XLISTE=self.data['XLISTE'],
                 DIM=self.data['DIM'],  RANGE=self.data['RANGE'], Ux=(
-                    self.Ux1, self.Ux2),
+                    self.Ux1, self.Ux2, self.KL_terms),
                 mediane=self.mediane, beta=self.beta, seed=self.seed)
         elif self.coord == ['Y', 'Z']:
             formule_out = FORMULE(NOM_PARA=(
                 'Y', 'Z'), VALE="user_func(Y,Z,DIM,RANGE,XLISTE,Ux,beta,mediane, seed)",
                 user_func=evaluate_KL2D, XLISTE=self.data['XLISTE'],
                 DIM=self.data['DIM'],  RANGE=self.data['RANGE'], Ux=(
-                    self.Ux1, self.Ux2),
+                    self.Ux1, self.Ux2, self.KL_terms),
                 mediane=self.mediane, beta=self.beta, seed=self.seed)
         else:
             raise ValueError('unknown configuration')
@@ -326,22 +384,57 @@ class Generator3(Generator):
         KL_data1  = self. eval_eigfunc(self.data['XLISTE'][0],
                                 Lcx1/dimx1, nbmod1)
         self.Ux1 = [ np.sqrt(leig) * np.array(veig)  for (leig, veig) in KL_data1 ]
+        eig1, vec = zip(*KL_data1)
 
         KL_data2  = self.eval_eigfunc(self.data['XLISTE'][1],
                                  Lcx2/dimx2, nbmod2)
         self.Ux2 = [ np.sqrt(leig) * np.array(veig)  for (leig, veig) in KL_data2 ]
+        eig2, vec = zip(*KL_data2)
 
         KL_data3  = self.eval_eigfunc(self.data['XLISTE'][2],
                                  Lcx3/dimx3, nbmod3)
         self.Ux3 = [ np.sqrt(leig) * np.array(veig)  for (leig, veig) in KL_data3 ]
+        eig3, vec = zip(*KL_data3)
+
+        self.eigs = [eig1, eig2, eig3]
+
+
+    def select_KL_terms(self):
+        eig1 = np.array(self.eigs[0]).reshape((len(self.eigs[0]), 1, 1))
+        eig2 = np.array(self.eigs[1]).reshape((1, len(self.eigs[1]), 1))
+        eig3 = np.array(self.eigs[2]).reshape((1, 1, len(self.eigs[2])))
+        eig123 = (eig1 * eig2 * eig3).ravel()
+        ind = np.flip(np.argsort(eig123),0)
+        eig123 = np.flip(np.sort(eig123),0)
+
+        print('squared sorted summed eigs')
+        print(np.cumsum(eig123))
+
+        if self.precision :
+            ind_cut = np.searchsorted(np.cumsum(eig123), self.precision * np.sum(eig123), side='right')
+            cutindlist = ind[:ind_cut]
+            print('precision')
+            print(ind, ind_cut, cutindlist)
+        elif self.nbtot :
+            cutindlist = ind[:self.nbtot]
+            print('nbtot')
+            print(cutindlist, self.nbtot)
+
+        print('TOTAL NUMBER OF RETAINED EIGENVALUES:', len(cutindlist))
+        self.KL_terms = cutindlist
+
+
+
 
     def run(self):
         self.compute_KL()
+        if self.precision or self.nbtot:
+            self.select_KL_terms()
 
         formule_out = FORMULE(NOM_PARA=(
             'X', 'Y', 'Z'), VALE="user_func(X, Y, Z, DIM, RANGE, XLISTE, Ux, beta, mediane, seed)",
             user_func=evaluate_KL3D, XLISTE=self.data['XLISTE'],
             DIM=self.data['DIM'],  RANGE=self.data['RANGE'], Ux=(
-                self.Ux1, self.Ux2, self.Ux3),
+                self.Ux1, self.Ux2, self.Ux3, self.KL_terms),
             mediane=self.mediane, beta=self.beta, seed=self.seed)
         return formule_out
