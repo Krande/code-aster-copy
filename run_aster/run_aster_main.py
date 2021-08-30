@@ -292,8 +292,12 @@ def main(argv=None):
     if args.ctest:
         args.test = True
         basename = osp.splitext(osp.basename(args.export))[0]
-        mess = File(osp.abspath(basename + ".mess"), filetype="mess", unit=6, resu=True)
-        export.add_file(mess)
+        add = {6: "mess", 15:"code"}
+        for unit, typ in add.items():
+            export.add_file(File(osp.abspath(basename + "." + typ),
+                                 filetype=typ,
+                                 unit=unit,
+                                 resu=True))
     if args.time_limit:
         export.set_time_limit(args.time_limit)
     # use FACMTPS from environment
