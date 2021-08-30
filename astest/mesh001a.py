@@ -133,6 +133,10 @@ test.assertSequenceEqual(medconn[49 - 1], conn_med)
 test.assertEqual(npcoord.min(), 0.)
 test.assertEqual(npcoord.max(), 1.)
 
+# refine the mesh
+mesh2 = mesh.refine(2)
+test.assertEqual(mesh2.getNumberOfNodes(), 729)
+
 # read a HEXA27 from ASTER format
 mail = code_aster.Mesh()
 mail.readAsterFile("zzzz366a.mail")
@@ -176,6 +180,10 @@ coord = mail.getCoordinates()
 test.assertEqual(coord[3], 1.0)
 values = coord.getValues()
 test.assertEqual(len(values), 22 * 3)
+
+# refine the mesh
+mail2 = mail.refine(2)
+test.assertEqual(mail2.getNumberOfNodes(), 505)
 
 # # from GMSH format
 gmsh = code_aster.Mesh()

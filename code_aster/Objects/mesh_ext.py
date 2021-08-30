@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
+# aslint: disable=C4008
 
 # person_in_charge: mathieu.courtois@edf.fr
 """
@@ -56,6 +57,25 @@ class ExtendedMesh:
             dim = max([dimama[ma - 1] for ma in dic_gpma[grp]])
             ngpma.append((grp.strip(), len(dic_gpma[grp]), dim))
         return ngpma
+
+    def refine(self, ntimes=1):
+        """Refine the mesh uniformly. Each edge is split in two.
+
+        Params:
+            ntimes [int] : the number of times the mesh is to be refined.
+        Returns:
+            mesh: the refined mesh.
+        """
+        from ..Supervis import CO
+        from ..Commands import MACR_ADAP_MAIL
+        newMesh = self
+        for i in range(ntimes):
+            resu = MACR_ADAP_MAIL(__use_namedtuple__=True,
+                                  ADAPTATION='RAFFINEMENT_UNIFORME',
+                                  MAILLAGE_N=newMesh,
+                                  MAILLAGE_NP1=CO('newMesh'))
+            newMesh = resu.newMesh
+        return newMesh
 
     def createMedCouplingMesh(self):
         """Returns the MEDCoupling unstructured mesh associated to the current mesh.
