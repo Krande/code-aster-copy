@@ -1016,8 +1016,8 @@ class PostRocheCommon():
         if self.lRCCM_RX:
             
             
-            fSigVraieMax = FORMULE(NOM_PARA=('ALPHA', 'RP02_MOY' ,'RP02_MIN', 'RM_MIN'),
-                                VALE='2*ALPHA*(0.426*RP02_MIN+0.032*RM_MIN)*RP02_MOY/RP02_MIN')
+            fSigVraieMax = FORMULE(NOM_PARA=('COEF', 'RP02_MOY' ,'RP02_MIN', 'RM_MIN'),
+                                VALE='2*COEF*(0.426*RP02_MIN+0.032*RM_MIN)*RP02_MOY/RP02_MIN')
             
             
             self.chFSigVraie = CREA_CHAMP(OPERATION='AFFE',

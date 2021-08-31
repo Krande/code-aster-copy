@@ -54,7 +54,7 @@ resu_temp = CREA_RESU(TYPE_RESU = 'EVOL_THER',
 
 
 ch_mater=AFFE_MATERIAU(MAILLAGE=maillage,
-                       AFFE_VARC=_F(TOUT='OUI',NOM_VARC = 'TEMP',EVOL=resu_temp,VALE_REF=20.0,),
+                       # AFFE_VARC=_F(TOUT='OUI',NOM_VARC = 'TEMP',EVOL=resu_temp,VALE_REF=20.0,),
                        AFFE=_F(TOUT="OUI", MATER = acier))
 
 cara_elem=AFFE_CARA_ELEM(MODELE=modele, INFO=2,

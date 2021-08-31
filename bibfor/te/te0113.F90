@@ -42,7 +42,7 @@ subroutine te0113(option, nomte)
     
 !
     real(kind=8) :: valres(nbparaPR), young, k, nexpo, rp02_min, rm_min
-    real(kind=8) :: rp02_moy, alpha
+    real(kind=8) :: rp02_moy, coef
     real(kind=8) :: caragene(4), carageo(4)
     character(len=8)  :: valp(4)
     character(len=16) :: nomres(nbparaPR)
@@ -70,7 +70,7 @@ subroutine te0113(option, nomte)
     nomres(3) = 'RP02_MIN'
     nomres(4) = 'RM_MIN'
     nomres(5) = 'RP02_MOY'
-    nomres(6) = 'ALPHA'
+    nomres(6) = 'COEF'
     call rcvalb('FPG1', 1, 1, '+', zi(imate),&
                 ' ', 'POST_ROCHE', 0, '', [0.d0],&
                 nbparaPR, nomres, valres, icodre, 0)
@@ -88,7 +88,7 @@ subroutine te0113(option, nomte)
         rp02_moy = valres(5) ! nan si absent et si rp02_min absent
     endif
     
-    alpha = valres(6)
+    coef = valres(6)
     
 !   caractéristiques de poutre
     valp = ['A1 ','IY1','A2 ','IY2']
@@ -108,7 +108,7 @@ subroutine te0113(option, nomte)
         zr(ival+(ino-1)*nbcmp-1+4) = rp02_min
         zr(ival+(ino-1)*nbcmp-1+5) = rm_min
         zr(ival+(ino-1)*nbcmp-1+6) = rp02_moy
-        zr(ival+(ino-1)*nbcmp-1+7) = alpha
+        zr(ival+(ino-1)*nbcmp-1+7) = coef
 !       A
         zr(ival+(ino-1)*nbcmp-1+nbparaPR+2) = caragene(2*(ino-1)+1)
 !       I

@@ -1103,7 +1103,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",
              RP02_MIN           = SIMP(statut='f',typ='R',),
              RM_MIN             = SIMP(statut='f',typ='R',),
              RP02_MOY           = SIMP(statut='f',typ='R',), # 1.25*RP02_MIN par défaut
-             ALPHA              = SIMP(statut='f',typ='R',defaut=1., val_min=1.),
+             COEF               = SIMP(statut='f',typ='R',defaut=1., val_min=1.),
            ),
            POST_ROCHE_FO   =FACT(statut='f',
              RAMB_OSGO_FACT     = SIMP(statut='o',typ=(fonction_sdaster,formule),),
@@ -1111,7 +1111,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",
              RP02_MIN           = SIMP(statut='f',typ=(fonction_sdaster,formule),),
              RM_MIN             = SIMP(statut='f',typ=(fonction_sdaster,formule),),
              RP02_MOY           = SIMP(statut='f',typ=(fonction_sdaster,formule),), # 1.25*RP02_MIN par défaut
-             ALPHA              = SIMP(statut='f',typ='R',defaut=1., val_min=1.),
+             COEF               = SIMP(statut='f',typ='R',defaut=1., val_min=1.),
            ),
 # Uniquement pour POST_FM
            RUPT_FM      =FACT(statut='f',

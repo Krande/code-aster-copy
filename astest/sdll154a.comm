@@ -59,7 +59,7 @@ acier=DEFI_MATERIAU(ELAS=_F(E = 2.E11,
                                   RP02_MIN = 128E6,
                                   RM_MIN = 410E6,
                                   RP02_MOY = 163E6,
-                                  ALPHA = 1.
+                                  COEF = 1.
                                   )
                     )
 
