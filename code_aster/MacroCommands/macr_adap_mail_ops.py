@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,7 @@
 """
 Traitement des macros MACR_ADAP_MAIL/MACR_INFO_MAIL
 """
-__revision__ = "V3.1"
-#
+
 import os
 import pickle
 import shutil
@@ -63,14 +62,16 @@ class HomardInfo:
     When it is required, *DataStructure* objects are injected to make the data
     used as in legacy operator.
     """
-    _objects = {}
-    _run_params = []
-    _run_idx = 0
 
-    @classmethod
-    def new_run(cls):
-        cls._run_idx += 1
-        return cls._run_idx
+    def __init__(self):
+        self._objects = {}
+        self._run_params = []
+        self._run_idx = 0
+
+    def new_run(self):
+        """Initialize variables for a new run."""
+        self._run_idx += 1
+        return self._run_idx
 
     @property
     def objects(self):
