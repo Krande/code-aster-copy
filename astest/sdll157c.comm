@@ -22,7 +22,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 # caracteristiques materiaux
 
 B=1.4191e-20
-Sy=133e6
+Sy=128e6
 m=8.0362
 Young=176500000000.0
 Rho=9734.
@@ -481,19 +481,19 @@ TEST_RESU(CHAM_ELEM=(
                      _F(TYPE_TEST="MAX",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X13',
-                        VALE_CALC=0.9999999999945832),
+                        VALE_CALC=0.317176916262855),
                     # X14 = coefficient d'abattement optimisé gsOpt
                      _F(TYPE_TEST="MAX",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X14',
-                        VALE_CALC=0.9797215653800634),
+                        VALE_CALC=0.33062692610901584),
                     # X16 = contrainte équivalente optimisée
                      _F(TYPE_TEST="MAX",
                         REFERENCE="AUTRE_ASTER",
                         CHAM_GD=chPostRocheTout,
                         NOM_CMP='X16',
-                        VALE_CALC=260845949.74637172,
-                        PRECISION=0.09,
+                        VALE_CALC=238120401.2525945,
+                        PRECISION=9E-3,
                         VALE_REFE=240.2e6),
                     )
         )
@@ -553,19 +553,19 @@ TEST_RESU(CHAM_ELEM=(
                      _F(TYPE_TEST="MAX",
                         CHAM_GD=chPostRoche3M,
                         NOM_CMP='X13',
-                        VALE_CALC=1.0),
+                        VALE_CALC=0.0682139198339482),
                     # X14 = coefficient d'abattement optimisé gsOpt
                      _F(TYPE_TEST="MAX",
                         CHAM_GD=chPostRoche3M,
                         NOM_CMP='X14',
-                        VALE_CALC=0.9797773732024181),
+                        VALE_CALC=0.3309497773074754),
                     # X16 = contrainte équivalente
                      _F(TYPE_TEST="MAX",
                         REFERENCE="SOURCE_EXTERNE",
                         CHAM_GD=chPostRoche3M,
                         NOM_CMP='X16',
-                        VALE_CALC=274469505.1176244,
-                        PRECISION=0.26,
+                        VALE_CALC=269064134.57237786,
+                        PRECISION=0.27,
                         VALE_REFE=366.2e6),
                     )
         )
