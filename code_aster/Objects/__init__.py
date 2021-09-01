@@ -20,7 +20,7 @@
 # person_in_charge: mathieu.courtois@edf.fr
 
 """
-This module imports BoostPython DataStructures and low level objects.
+This module provides BoostPython DataStructures and low level objects.
 """
 
 from libaster import *

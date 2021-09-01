@@ -4,34 +4,38 @@
 Pure Python extensions for :py:class:`~code_aster.Objects.DataStructure`
 ########################################################################
 
-********************
-Detailed description
-********************
+
+.. automodule:: code_aster.ObjectsExt
+   :show-inheritance:
+   :members:
+   :special-members: __init__
+
+
+.. automodule:: code_aster.ObjectsExt.fieldoncells_ext
+
+.. autoclass:: code_aster.ObjectsExt.fieldoncells_ext.post_comp_cham_el
+   :show-inheritance:
+   :members:
+
+.. automodule:: code_aster.ObjectsExt.fieldonnodes_ext
+
+.. autoclass:: code_aster.ObjectsExt.fieldonnodes_ext.post_comp_cham_no
+   :show-inheritance:
+   :members:
+
+.. automodule:: code_aster.ObjectsExt.listoffloats_ext
+
+.. autoclass:: code_aster.ObjectsExt.listoffloats_ext.ListOfFloats
+   :show-inheritance:
+   :members:
+
 
 .. automodule:: code_aster.Objects
    :show-inheritance:
    :members:
    :special-members: __init__
 
-.. automodule:: code_aster.Objects.fieldoncells_ext
-
-.. autoclass:: code_aster.Objects.fieldoncells_ext.post_comp_cham_el
-   :show-inheritance:
-   :members:
-
-.. automodule:: code_aster.Objects.fieldonnodes_ext
-
-.. autoclass:: code_aster.Objects.fieldonnodes_ext.post_comp_cham_no
-   :show-inheritance:
-   :members:
-
-.. automodule:: code_aster.Objects.listoffloats_ext
-
-.. autoclass:: code_aster.Objects.listoffloats_ext.ListOfFloats
-   :show-inheritance:
-   :members:
-
-.. automodule:: code_aster.Objects.datastructure_ext
+.. automodule:: code_aster.Objects.datastructure_py
 
 .. autoclass:: code_aster.Objects.PyDataStructure
    :show-inheritance:

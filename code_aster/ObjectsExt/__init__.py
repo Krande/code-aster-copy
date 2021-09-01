@@ -20,7 +20,7 @@
 # person_in_charge: mathieu.courtois@edf.fr
 
 """
-This module imports extensions to BoostPython objects with pure
+This module provides extensions to BoostPython objects with pure
 Python functions.
 """
 
