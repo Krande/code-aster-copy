@@ -25,8 +25,8 @@
 
 import aster
 from libaster import Table, TableContainer, TableOfFunctions
-from .table_py import Table as TablePy
 
+from ..Objects.table_py import Table as TablePy
 from ..Utilities import injector
 
 

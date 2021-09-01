@@ -24,4 +24,50 @@ This module imports extensions to BoostPython objects with pure
 Python functions.
 """
 
+# ensure DataStructure is extended first
+from .datastructure_ext import DataStructure
+
+# extend DataStructures using metaclasses
+from .acousticload_ext import AcousticLoadComplex
+from .assemblymatrix_ext import (AssemblyMatrixDisplacementComplex,
+                                 AssemblyMatrixDisplacementReal)
+from .constantfieldoncells_ext import ConstantFieldOnCellsReal
+from .dirichletbc_ext import (MechanicalDirichletBC,
+                              ThermalDirichletBC, AcousticDirichletBC)
+from .discreteproblem_ext import DiscreteProblem
+from .dofnumbering_ext import DOFNumbering
+from .dynamicmacroelement_ext import DynamicMacroElement
+from .dynamicresults_ext import TransientGeneralizedResult
+from .elementarycharacteristics_ext import ElementaryCharacteristics
+from .elementarymatrix_ext import (ElementaryMatrixDisplacementComplex,
+                                   ElementaryMatrixDisplacementReal,
+                                   ElementaryMatrixPressureComplex,
+                                   ElementaryMatrixTemperatureReal)
+from .fieldoncells_ext import FieldOnCellsReal
+from .fieldonnodes_ext import FieldOnNodesReal
+from .formula_ext import Formula
+from .function2d_ext import Function2D
+from .function_ext import Function
+from .generalizedassemblymatrix_ext import (GeneralizedAssemblyMatrixComplex,
+                                            GeneralizedAssemblyMatrixReal)
+from .generalizedassemblyvector_ext import (GeneralizedAssemblyVectorComplex,
+                                            GeneralizedAssemblyVectorReal)
+from .generalizedmodel_ext import GeneralizedModel
+from .listoffloats_ext import ListOfFloats
+from .listofintegers_ext import ListOfIntegers
+from .material_ext import Material
+from .materialfield_ext import MaterialField
+from .mechanicalload_ext import (MechanicalLoadReal,
+                                 MechanicalLoadFunction, MechanicalLoadComplex,
+                                 ParallelMechanicalLoadReal,
+                                 ParallelMechanicalLoadFunction)
 from .mesh_ext import Mesh
+from .meshcoordinatesfield_ext import MeshCoordinatesField
+from .model_ext import Model
+from .parallelmesh_ext import ConnectionMesh, ParallelMesh
+from .prestressingcable_ext import PrestressingCable
+from .result_ext import Result
+from .table_ext import Table
+from .thermalload_ext import ThermalLoadReal, ThermalLoadFunction
+from .transientgeneralizedresultscontainer_ext import TransientGeneralizedResult
+from .xfemcrack_ext import XfemCrack

@@ -27,7 +27,7 @@ import aster
 from libaster import Result, AsterError
 
 from ..Utilities import injector, logger
-from .Serialization import InternalStateBuilder
+from ..Objects.Serialization import InternalStateBuilder
 
 
 class ResultStateBuilder(InternalStateBuilder):

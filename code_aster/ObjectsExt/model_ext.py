@@ -26,13 +26,6 @@
 from libaster import Model
 
 from ..Utilities import injector
-from .datastructure_ext import OnlyParallelObject
-
-try:
-    from libaster import ParallelFiniteElementDescriptor
-except ImportError:
-    class ParallelFiniteElementDescriptor(OnlyParallelObject):
-        pass
 
 
 @injector(Model)

@@ -27,13 +27,11 @@ import os
 from math import pi
 
 import numpy as NP
-
-import aster
 from libaster import Function, FunctionComplex
 
+from ..Objects.function_py import t_fonction, t_fonction_c
+from ..Objects.table_graph import Graph
 from ..Utilities import accept_array, injector
-from .function_py import t_fonction, t_fonction_c
-from .table_graph import Graph
 
 
 @injector(Function)

@@ -24,29 +24,16 @@
 """
 from collections import Counter
 
-from ..Utilities import ExecutionParameter, Options, injector, logger, MPI
 from ..Messages import UTMESS
-from .datastructure_ext import OnlyParallelObject
+from ..Objects import ConnectionMesh, ParallelMesh
+from ..Utilities import MPI, ExecutionParameter, Options, injector, logger
 
 try:
-    from libaster import ParallelMesh, Mesh
-
     from ..Utilities.MedUtils.MEDPartitioner import MEDPartitioner
 
     HAS_MEDCOUPLING = True
 except ImportError:
     HAS_MEDCOUPLING = False
-
-    class ParallelMesh(OnlyParallelObject):
-        pass
-
-
-try:
-    from libaster import ConnectionMesh
-except ImportError:
-
-    class ConnectionMesh(OnlyParallelObject):
-        pass
 
 
 @injector(ParallelMesh)

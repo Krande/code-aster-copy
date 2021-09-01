@@ -20,61 +20,16 @@
 # person_in_charge: mathieu.courtois@edf.fr
 
 """
-This module imports BoostPython DataStructures and extends them with pure
-Python functions.
+This module imports BoostPython DataStructures and low level objects.
 """
 
 from libaster import *
 
-# ensure DataStructure is extended first
-from .datastructure_ext import (AsFloat, AsInteger, DataStructure,
-                                OnlyParallelObject, PyDataStructure)
-
-# extend DataStructures using metaclasses
-from .acousticload_ext import AcousticLoadComplex
-from .assemblymatrix_ext import (AssemblyMatrixDisplacementComplex,
-                                 AssemblyMatrixDisplacementReal)
-from .constantfieldoncells_ext import ConstantFieldOnCellsReal
-from .dirichletbc_ext import (MechanicalDirichletBC,
-                              ThermalDirichletBC, AcousticDirichletBC)
-from .dofnumbering_ext import DOFNumbering, ParallelDOFNumbering
-from .dynamicmacroelement_ext import DynamicMacroElement
-from .dynamicresults_ext import TransientGeneralizedResult
-from .elementarycharacteristics_ext import ElementaryCharacteristics
-from .elementarymatrix_ext import (ElementaryMatrixDisplacementComplex,
-                                   ElementaryMatrixDisplacementReal,
-                                   ElementaryMatrixPressureComplex,
-                                   ElementaryMatrixTemperatureReal)
-from .fieldoncells_ext import FieldOnCellsReal
-from .fieldonnodes_ext import FieldOnNodesReal
-from .formula_ext import Formula
-from .function2d_ext import Function2D
-from .function_ext import Function
-from .generalizedassemblymatrix_ext import (GeneralizedAssemblyMatrixComplex,
-                                            GeneralizedAssemblyMatrixReal)
-from .generalizedassemblyvector_ext import (GeneralizedAssemblyVectorComplex,
-                                            GeneralizedAssemblyVectorReal)
-from .generalizedmodel_ext import GeneralizedModel
-from .listoffloats_ext import ListOfFloats
-from .listofintegers_ext import ListOfIntegers
-from .material_ext import Material
-from .materialfield_ext import MaterialField
-from .mechanicalload_ext import (MechanicalLoadReal,
-                                 MechanicalLoadFunction, MechanicalLoadComplex,
-                                 ParallelMechanicalLoadReal,
-                                 ParallelMechanicalLoadFunction)
-from .meshcoordinatesfield_ext import MeshCoordinatesField
-from .model_ext import Model, ParallelFiniteElementDescriptor
-from .parallelmesh_ext import ConnectionMesh, ParallelMesh
-from .prestressingcable_ext import PrestressingCable
-from .result_ext import Result
-from .table_ext import Table
-from .thermalload_ext import ThermalLoadReal, ThermalLoadFunction
-from .transientgeneralizedresultscontainer_ext import TransientGeneralizedResult
-from .xfemcrack_ext import XfemCrack
-
-# pickling
+from .datastructure_py import (AsFloat, AsInteger, OnlyParallelObject,
+                               PyDataStructure)
+from .parallel_py import (ConnectionMesh, ParallelDOFNumbering,
+                          ParallelFiniteElementDescriptor,
+                          ParallelMechanicalLoadFunction,
+                          ParallelMechanicalLoadReal, ParallelMesh)
 from .Serialization import InternalStateBuilder
-
-# user extensions
 from .user_extensions import WithEmbeddedObjects

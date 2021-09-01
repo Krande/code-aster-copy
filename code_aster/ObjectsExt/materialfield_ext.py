@@ -27,7 +27,7 @@ import aster
 from libaster import EntityType, MaterialField
 
 from ..Utilities import injector
-from .Serialization import InternalStateBuilder
+from ..Objects.Serialization import InternalStateBuilder
 
 
 class MaterialFieldStateBuilder(InternalStateBuilder):

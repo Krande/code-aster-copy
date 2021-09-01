@@ -286,7 +286,7 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportGeneralizedModeResultToPython();
 
 #ifdef ASTER_HAVE_MPI
-    /* These objects must be declared in Objects/__init__.py as
+    /* These objects must be declared in ObjectsExt/* as
        OnlyParallelObject for sequential version. */
     exportParallelMeshToPython();
     exportParallelDOFNumberingToPython();

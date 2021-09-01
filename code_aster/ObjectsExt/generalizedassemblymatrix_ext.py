@@ -30,7 +30,7 @@ from libaster import (GeneralizedAssemblyMatrixComplex,
                       GeneralizedAssemblyMatrixReal)
 
 from ..Utilities import injector
-from .Serialization import InternalStateBuilder
+from ..Objects.Serialization import InternalStateBuilder
 
 
 def VALM_triang2array(dict_VALM, dim, dtype=None):

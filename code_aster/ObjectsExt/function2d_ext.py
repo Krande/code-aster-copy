@@ -23,8 +23,7 @@
 **********************************************
 """
 
-import aster
-from .function_py import t_fonction, t_nappe
+from ..Objects.function_py import t_fonction, t_nappe
 from libaster import DataStructure, Function2D
 
 from ..Utilities import injector

@@ -23,27 +23,12 @@
 *******************************************************************
 """
 
-import aster
-from libaster import MechanicalLoadReal, MechanicalLoadFunction, MechanicalLoadComplex
+from libaster import (MechanicalLoadComplex, MechanicalLoadFunction,
+                      MechanicalLoadReal)
 
+from ..Objects import (ParallelMechanicalLoadFunction,
+                       ParallelMechanicalLoadReal)
 from ..Utilities import injector
-from .datastructure_ext import OnlyParallelObject
-
-try:
-    from libaster import ParallelMechanicalLoadReal
-
-except ImportError:
-
-    class ParallelMechanicalLoadReal(OnlyParallelObject):
-        pass
-
-try:
-    from libaster import ParallelMechanicalLoadFunction
-
-except ImportError:
-
-    class ParallelMechanicalLoadFunction(OnlyParallelObject):
-        pass
 
 
 @injector(MechanicalLoadReal)

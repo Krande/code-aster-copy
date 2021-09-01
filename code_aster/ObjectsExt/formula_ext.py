@@ -29,7 +29,7 @@ from pickle import dumps, loads
 from libaster import Formula
 
 from ..Utilities import force_list, initial_context, injector, logger
-from .Serialization import InternalStateBuilder
+from ..Objects.Serialization import InternalStateBuilder
 
 
 class FormulaStateBuilder(InternalStateBuilder):

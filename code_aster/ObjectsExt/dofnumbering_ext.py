@@ -23,19 +23,10 @@
 *****************************************
 """
 
-import aster
 from libaster import DOFNumbering
 
+from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import injector
-from .Serialization import InternalStateBuilder
-from .datastructure_ext import OnlyParallelObject
-
-try:
-    from libaster import ParallelDOFNumbering
-except ImportError:
-
-    class ParallelDOFNumbering(OnlyParallelObject):
-        pass
 
 
 class DOFNumberingStateBuilder(InternalStateBuilder):

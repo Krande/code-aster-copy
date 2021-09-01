@@ -36,7 +36,7 @@ from libaster import (
 
 from ..SD.sd_stoc_morse import sd_stoc_morse
 from ..Utilities import injector
-from .Serialization import InternalStateBuilder
+from ..Objects.Serialization import InternalStateBuilder
 
 
 class AssemblyMatrixStateBuilder(InternalStateBuilder):

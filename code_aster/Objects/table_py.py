@@ -30,8 +30,8 @@ from copy import copy
 import numpy
 
 from ..Messages import UTMESS
-from ..Utilities import (cut_long_lines, is_complex, is_float, is_int,
-                         is_number, is_sequence, is_str, transpose)
+from ..Utilities import (cut_long_lines, is_float, is_number, is_sequence,
+                         is_str, transpose)
 from ..Utilities.misc import fmtF2PY
 
 # formats de base (identiques à ceux du module Graph)
