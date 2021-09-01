@@ -63,7 +63,6 @@ from .mechanicalload_ext import (MechanicalLoadReal,
                                  MechanicalLoadFunction, MechanicalLoadComplex,
                                  ParallelMechanicalLoadReal,
                                  ParallelMechanicalLoadFunction)
-from .mesh_ext import Mesh
 from .meshcoordinatesfield_ext import MeshCoordinatesField
 from .model_ext import Model, ParallelFiniteElementDescriptor
 from .parallelmesh_ext import ConnectionMesh, ParallelMesh

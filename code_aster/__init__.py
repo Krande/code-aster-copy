@@ -69,6 +69,7 @@ try:
     from .Commands.debut import init
     from .Commands.fin import FIN as close
     from .Objects import *
+    import ObjectsExt
     from .Supervis import (AsterError, ContactError, ConvergenceError,
                            IntegrationError, SolverError,
                            TimeLimitError, saveObjects)
