@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -284,7 +284,7 @@ class LogicalUnitFile(object):
         if to_register:
             cls.register(unit, fileobj.filename, Action.Close)
         if unit in cls._used_unit:
-            if unit not in RESERVED_UNIT:
+            if unit not in RESERVED_UNIT and 0 < unit < 100:
                 cls._free_number.append(unit)
             del cls._used_unit[unit]
 
