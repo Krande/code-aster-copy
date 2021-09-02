@@ -137,9 +137,9 @@ int main(void){
         vers = mat and mat.group('vers')
         major, minor, sub, patch = [int(i) for i in vers.split('.')]
         vers = '%d.%d.%dp%d' % (major, minor, sub, patch)
-        if major < 3 or (major == 3 and minor < 9):
+        if major < 3 or (major == 3 and minor < 15):
             self.end_msg("unsupported petsc version: {0} "
-                         "(expected 3.9.* or newer)".format(vers), 'RED')
+                         "(expected 3.15 or newer)".format(vers), 'RED')
             raise Errors.ConfigurationError
         self.define('ASTER_PETSC_VERSION', vers)
     except:

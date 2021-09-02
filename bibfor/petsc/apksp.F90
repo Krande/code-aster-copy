@@ -135,7 +135,7 @@ use petsc_data_module
 !     --------------------------------------
     if (niv .ge. 2) then
         call PetscViewerAndFormatCreate(PETSC_VIEWER_STDOUT_WORLD, PETSC_VIEWER_DEFAULT, vf,ierr)
-        call KSPMonitorSet(ksp,KSPMonitorTrueResidualNorm, vf, PetscViewerAndFormatDestroy,&
+        call KSPMonitorSet(ksp,KSPMonitorTrueResidual, vf, PetscViewerAndFormatDestroy,&
                             ierr)
         ASSERT(ierr.eq.0)
     endif

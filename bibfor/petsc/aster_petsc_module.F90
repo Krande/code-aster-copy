@@ -169,15 +169,15 @@ end interface
 !
 ! PC and KSP routines
 !
-interface
-    subroutine PCBJacobiGetSubKSP(pc, nlocal, first, subksp, ierr)
-        use petsckspdef
-        PC :: pc
-        PetscInt :: nlocal, first
-        KSP :: subksp(*)
-        PetscErrorCode, intent(out) :: ierr
-    end subroutine PCBJacobiGetSubKSP
-end interface
+! interface
+!     subroutine PCBJacobiGetSubKSP(pc, nlocal, first, subksp, ierr)
+!         use petsckspdef
+!         PC :: pc
+!         PetscInt :: nlocal, first
+!         KSP :: subksp(*)
+!         PetscErrorCode, intent(out) :: ierr
+!     end subroutine PCBJacobiGetSubKSP
+! end interface
 interface
      subroutine PCFactorSetMatOrderingType( pc, ordering, ierr)
          use petsckspdef
