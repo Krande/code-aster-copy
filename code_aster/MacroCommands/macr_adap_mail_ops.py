@@ -24,7 +24,6 @@ Traitement des macros MACR_ADAP_MAIL/MACR_INFO_MAIL
 """
 
 import os
-import pickle
 import shutil
 import tarfile
 from glob import glob
@@ -34,13 +33,68 @@ import aster
 from ..Cata.Syntax import _F
 from ..Commands import (DEFI_FICHIER, EXEC_LOGICIEL, IMPR_RESU, LIRE_CHAMP,
                         LIRE_MAILLAGE)
-from ..Helpers.UniteAster import UniteAster
 from ..Messages import UTMESS, MasquerAlarme, RetablirAlarme
 from ..Supervis import Serializer
 from ..Utilities import ExecutionParameter, logger
 from .Utils import creation_donnees_homard
 
 EnumTypes = (list, tuple)
+
+
+class HomardInfoStack:
+    """Stack of *HomardInfo* objects.
+
+    These global informations are required by Homard during successive calls.
+
+    If a feature needs to call MACR_ADAP_MAIL, it must manage the life cycle
+    of these informations:
+
+    - Create an object to store the feature-specific values with `HOMARD_INFOS.new()`.
+
+    - Call MACR_ADAP_MAIL...
+
+    If the informations will not be reused, just forget them by calling
+    `HOMARD_INFOS.pop()`.
+    Otherwise:
+
+    - Save these informations for further: `infos = HOMARD_INFOS.pop()`.
+
+    - On the next step, assign them using `HOMARD_INFOS.use(infos)`.
+    """
+
+    def __init__(self) -> None:
+        self._stack = []
+        self._count = 0
+        self.new()
+
+    @property
+    def current(self):
+        """Attribute that holds the current object."""
+        return self._stack[-1]
+
+    def new(self):
+        """Create a new *HomardInfo* and use it."""
+        self._count += 1
+        self.use(HomardInfo(self._count))
+
+    def use(self, info):
+        """Set the *HomardInfo* object to be used.
+
+        Arguments:
+            info (*HomardInfo*): object to be used.
+        """
+        self._stack.append(info)
+
+    def pop(self):
+        """Get the last created object (and remove it) from the stack.
+
+        Returns:
+            *HomardInfo*: Last created object.
+        """
+        obj = self._stack.pop()
+        if not self._stack:
+            self.new()
+        return obj
 
 
 class HomardInfo:
@@ -63,15 +117,39 @@ class HomardInfo:
     used as in legacy operator.
     """
 
-    def __init__(self):
+    def __init__(self, identifier):
+        self._id = identifier
+        self._dir = "."
         self._objects = {}
         self._run_params = []
         self._run_idx = 0
+
+    def __del__(self):
+        """Cleanup"""
+        self.clean()
 
     def new_run(self):
         """Initialize variables for a new run."""
         self._run_idx += 1
         return self._run_idx
+
+    def set_wrkdir(self, path):
+        """Define the working directory.
+
+        Arguments:
+            path (str): Existing working directory.
+        """
+        self._dir = path
+
+    @property
+    def archive_name(self):
+        """Attribute that holds the archive filename."""
+        return os.path.join(self._dir, "pick.homard-{0}.tar".format(self._id))
+
+    def clean(self):
+        """Remove file related to this object."""
+        if os.path.isfile(self.archive_name):
+            os.remove(self.archive_name)
 
     @property
     def objects(self):
@@ -157,13 +235,13 @@ class HomardInfo:
         """Return fields properties with *DataStructure* objects."""
         return [self.field_data_to_object(data) for data in data_with_names]
 
-    def load_runs(self, Rep_Calc_ASTER):
+    def load_runs(self):
         """Load the previously stored data."""
         wrkdir = os.getcwd()
         #   On prend le fichier pickle du 1er répertoire (ce sont tous les memes),
         #   puis on recupere la liste des passages
         base = glob("*_ADAP_*")[0]
-        os.chdir(os.path.join(Rep_Calc_ASTER, base))
+        os.chdir(os.path.join(self._dir, base))
         context = {}
         Serializer(context).load()
         os.chdir(wrkdir)
@@ -193,28 +271,26 @@ class HomardInfo:
             wrkdir = os.getcwd()
             os.chdir(Rep_Calc_HOMARD_global)
             context = {}
-            context['objects'] = ginfos.objects
-            context['runs'] = ginfos.run_params
+            context['objects'] = self.objects
+            context['runs'] = self.run_params
             pickler = Serializer(context)
             pickler.save()
             logger.info("Saved objects for homard history:")
-            for obj in ginfos.objects.values():
+            for obj in self.objects.values():
                 logger.info(f"{obj.getName():<24s} {obj}")
 
             os.chdir(wrkdir)
         return dirs
 
-    def init_run_params(self, INFO, fichier_archive, Rep_Calc_ASTER):
+    def init_run_params(self, INFO):
         """Initialisation de la liste des passages, eventuellement apres
         extraction de l'archive.
 
         Arguments:
             INFO : niveau d'information pour la macro-commande
-            fichier_archive : nom de l'eventuel fichier d'archive des cas precedents
-            Rep_Calc_ASTER : répertoire de calcul d'Aster
         """
         if INFO >= 3:
-            print("\nDans init_run_params, fichier_archive :", fichier_archive)
+            print("\nDans init_run_params, archive :", self.archive_name)
         #
         # A.0. A priori, la liste est vide
         #
@@ -222,18 +298,18 @@ class HomardInfo:
         #      appel apres une 'poursuite' ou un 'debut' avec les historiques.
         #      On recupere les répertoires qui auraient pu etre archives au calcul precedent.
         #
-        if os.path.isfile(fichier_archive):
+        if os.path.isfile(self.archive_name):
         #
         # A.1.1 Extraction  des fichiers selon leur type
         # Remarque : a partir de python 2.5 on pourra utiliser extractall
         #
-            with tarfile.open(fichier_archive, "r") as tar:
+            with tarfile.open(self.archive_name, "r") as tar:
                 tar.extractall()
 
             if INFO >= 3:
-                print(os.listdir(Rep_Calc_ASTER))
+                print(os.listdir(self._dir))
 
-            self.load_runs(Rep_Calc_ASTER)
+            self.load_runs()
         else:
             if INFO >= 3:
                 print("Fichier inconnu.")
@@ -1111,7 +1187,8 @@ def post_traitement(INFO, mode_homard, dico_configuration, Rep_Calc_ASTER):
 # ======================================================================
 #
 
-ginfos = HomardInfo()
+# stack of global informations
+HOMARD_INFOS = HomardInfoStack()
 
 
 def macr_adap_mail_ops(self,
@@ -1192,7 +1269,9 @@ def macr_adap_mail_ops(self,
 # 1.2. ==> Initialisations de parametres Aster
 #
 #
+    ginfos = HOMARD_INFOS.current
     Rep_Calc_ASTER = os.getcwd()
+    ginfos.set_wrkdir(Rep_Calc_ASTER)
     if INFO >= 3:
         print("Contenu du répertoire de calcul d'Aster", Rep_Calc_ASTER)
         print(os.listdir(Rep_Calc_ASTER))
@@ -1207,17 +1286,14 @@ def macr_adap_mail_ops(self,
 #
 # 1.4.2. ==> C'est le fichier contenu dans la base : son nom est pick.homard.tar (cf.11.2.1)
 #
-    fichier_archive = os.path.join(Rep_Calc_ASTER, "pick.homard.tar")
-#
-    fichier_archive = os.path.normpath(fichier_archive)
     if INFO >= 4:
-        print("fichier_archive =", fichier_archive)
-        # os.system("ls -la "+fichier_archive)
+        print("archive =", ginfos.archive_name)
+        # os.system("ls -la " + ginfos.archive_name)
 #
 # 1.5. ==> Au tout premier passage, initialisation de la liste des passages
 #
     if numero_passage_fonction == 1:
-        ginfos.init_run_params(INFO, fichier_archive, Rep_Calc_ASTER)
+        ginfos.init_run_params(INFO)
 #
     if INFO >= 3:
         print("1.4. run_params =", ginfos.run_params)
@@ -1828,7 +1904,6 @@ def macr_adap_mail_ops(self,
 #
     if INFO >= 3:
         print(os.listdir(Rep_Calc_ASTER))
-        print("Archivage dans", fichier_archive)
 #
 # 11.1. Archivage de chacun des passages
 #
@@ -1842,9 +1917,7 @@ def macr_adap_mail_ops(self,
 #         Remarque : le nom pick.homard.tar est obligatoire car ASTK rapatrie
 #                    dans la base tous les fichiers en pick.*
 #
-        fichier_archive = os.path.join(Rep_Calc_ASTER, "pick.homard.tar")
-#
-        file = tarfile.open(fichier_archive, "w")
+        file = tarfile.open(ginfos.archive_name, "w")
         for rep in laux:
             if INFO >= 3:
                 print(".. Insertion de", rep)

@@ -146,8 +146,8 @@ test.assertEqual(npcoord.min(), 0.)
 test.assertEqual(npcoord.max(), 1.)
 
 # refine the mesh
-mesh2 = mesh.refine(2)
-test.assertEqual(mesh2.getNumberOfNodes(), 729)
+mesh = mesh.refine(2)
+test.assertEqual(mesh.getNumberOfNodes(), 729)
 
 # read a HEXA27 from ASTER format
 mail = code_aster.Mesh()
@@ -194,10 +194,10 @@ values = coord.getValues()
 test.assertEqual(len(values), 22 * 3)
 
 # refine the mesh
-mail2 = mail.refine(2)
-test.assertEqual(mail2.getNumberOfNodes(), 505)
+mail = mail.refine(2)
+test.assertEqual(mail.getNumberOfNodes(), 505)
 
-# # from GMSH format
+# from GMSH format
 gmsh = code_aster.Mesh()
 gmsh.readGmshFile("ssnv187a.msh")
 

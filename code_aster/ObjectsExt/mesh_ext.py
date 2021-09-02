@@ -26,6 +26,7 @@
 import aster
 
 from ..Commands import MACR_ADAP_MAIL
+from ..MacroCommands.macr_adap_mail_ops import HOMARD_INFOS
 from ..Objects import Mesh
 from ..Supervis import CO
 from ..Utilities import injector
@@ -66,14 +67,16 @@ class ExtendedMesh:
             ntimes [int] : the number of times the mesh is to be refined.
 
         Returns:
-            mesh: the refined mesh.
+            Mesh: the refined mesh.
         """
         newMesh = self
-        for i in range(ntimes):
+        for _ in range(ntimes):
+            HOMARD_INFOS.new()
             resu = MACR_ADAP_MAIL(__use_namedtuple__=True,
                                   ADAPTATION='RAFFINEMENT_UNIFORME',
                                   MAILLAGE_N=newMesh,
                                   MAILLAGE_NP1=CO('newMesh'))
+            HOMARD_INFOS.pop()
             newMesh = resu.newMesh
         return newMesh
 
@@ -81,7 +84,7 @@ class ExtendedMesh:
         """Returns the MEDCoupling unstructured mesh associated to the current mesh.
 
         Returns:
-            mesh: The MEDCoupling unstructured mesh associated to the current mesh.
+            Mesh: The MEDCoupling unstructured mesh associated to the current mesh.
         """
 
         return convertMesh2MedCoupling(self)
