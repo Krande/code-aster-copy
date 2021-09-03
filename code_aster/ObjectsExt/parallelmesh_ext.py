@@ -25,7 +25,7 @@
 from collections import Counter
 
 from ..Messages import UTMESS
-from ..Objects import ConnectionMesh, ParallelMesh
+from ..Objects import ConnectionMesh, Mesh, ParallelMesh
 from ..Utilities import MPI, ExecutionParameter, Options, injector, logger
 
 try:
