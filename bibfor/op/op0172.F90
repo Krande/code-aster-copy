@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -411,6 +411,14 @@ subroutine op0172()
     call wkvect('&&OP0172.AMOMOD', 'V V R', nbmode, iamomo)
 !
     valek(1) = 'NUME_ORDRE'
+    valek(2) = 'ENTITE'
+    im = zi(jnume)
+    call tbliva(enerpo, 2, valek, [im], [r8b],&
+                [c16b], 'TOUT', 'RELA', [1.d-03], 'POUR_CENT',&
+                k8b, ibid, poucen, c16b, k8b, iret)
+    if (iret .ge. 2) then
+        call utmess('F', 'PREPOST4_16')
+    endif
     do imod = 1, nbmode
 !
         im = zi(jnume+imod-1)
