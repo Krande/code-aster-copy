@@ -142,13 +142,6 @@ class Coeur(object):
     def get_index(self,letter) :
         return self.ALPHA_MAC.index(letter)
 
-    def get_XY(self,position) :
-        raise NotImplementedError
-
-    def get_outGraceXY(self) :
-        return self.dAxeGrace
-
-
     def init_from_table(self, tab, mater=True):
         """Initialise le coeur à partir d'une table."""
         self.nbac = len(tab)
