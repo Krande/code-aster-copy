@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,6 +60,13 @@ MATE = DEFI_MATERIAU(
         SY = 10*young*epsend,
         D_SIGM_EPSI = 0.5*young,
         ),
+    ENDO_LOCA_EXP = _F(
+        SIGC          = 10*young*epsend,
+        SIG0          = 10*young*epsend,
+        KAPPA         = 5.0,
+        P             = 1.0,
+        REST_RIGIDITE = 1.e4,
+        ),
     VISC_ELAS = _F(
         K   = k,
         TAU = tau,
@@ -88,120 +95,130 @@ HISTORY = DEFI_FONCTION(
 ZERO  = DEFI_CONSTANTE( VALE =  0.0 )
 
 
-EVOL_DP = SIMU_POINT_MAT( 
-    SUPPORT       = 'ELEMENT',
-    MODELISATION  = 'D_PLAN',
-    COMPORTEMENT  = _F( 
-        RELATION       = 'VMIS_ISOT_LINE',
-        REGU_VISC      = 'OUI',
-        ),
-    MATER      = MATE,
-    INCREMENT  = _F( LIST_INST=DEFLIST1,),
-    NEWTON     = _F( MATRICE='TANGENTE', REAC_ITER=1),
-    CONVERGENCE= _F( RESI_GLOB_MAXI = 1.E-6, ITER_GLOB_MAXI = 10),
-    ARCHIVAGE  = _F(LIST_INST = TEMPS1),
-    EPSI_IMPOSE= _F( 
-        EPXX = HISTORY,
-        EPYY = ZERO,
-        EPZZ = ZERO,
-        EPXY = ZERO,
-        ),
-    )
+for ldc in ('VMIS_ISOT_LINE','ENDO_LOCA_EXP'):
+
+    EVOL_DP = SIMU_POINT_MAT( 
+        SUPPORT       = 'ELEMENT',
+        MODELISATION  = 'D_PLAN',
+        COMPORTEMENT  = _F( 
+            RELATION       = ldc,
+            REGU_VISC      = 'OUI',
+            ),
+        MATER      = MATE,
+        INCREMENT  = _F( LIST_INST=DEFLIST1,),
+        NEWTON     = _F( MATRICE='TANGENTE', REAC_ITER=1),
+        CONVERGENCE= _F( RESI_GLOB_MAXI = 1.E-6, ITER_GLOB_MAXI = 10),
+        ARCHIVAGE  = _F(LIST_INST = TEMPS1),
+        EPSI_IMPOSE= _F( 
+            EPXX = HISTORY,
+            EPYY = ZERO,
+            EPZZ = ZERO,
+            EPXY = ZERO,
+            ),
+        )
 
 
-#----------------------------------------------------------------#
-# TESTS PAR RAPPORT AUX RESULTAT ANALYTIQUE                      #
-#----------------------------------------------------------------#
+    #----------------------------------------------------------------#
+    # TESTS PAR RAPPORT AUX RESULTAT ANALYTIQUE                      #
+    #----------------------------------------------------------------#
 
 
-TEST_TABLE(
-    TABLE     = EVOL_DP,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = 1.E-6,
-    VALE_CALC = sigend,
-    VALE_REFE = sigend,
-    NOM_PARA  = 'SIXX',
-    FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = tend,
+    # Determination des numeros de variables internes requis (8 dernieres: viscosite)
+    col  = list(EVOL_DP.EXTR_TABLE().values().keys())
+    nbvi = 0
+    while 'V'+repr(nbvi+1) in col:
+        nbvi += 1
+    idx_visc = nbvi-8    
+
+
+    TEST_TABLE(
+        TABLE     = EVOL_DP,
         CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+        REFERENCE = 'ANALYTIQUE',
+        PRECISION = 1.E-6,
+        VALE_CALC = sigend,
+        VALE_REFE = sigend,
+        NOM_PARA  = 'SIXX',
+        FILTRE=_F(
+            NOM_PARA  = 'INST',
+            CRIT_COMP = 'EQ',
+            VALE      = tend,
+            CRITERE   = 'RELATIF',
+            PRECISION = 1.E-08,
+            ),
+        )
 
 
-TEST_TABLE(
-    TABLE     = EVOL_DP,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = 1.E-6,
-    VALE_CALC = sigtrv,
-    VALE_REFE = sigtrv,
-    NOM_PARA  = 'SIYY',
-    FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = tend,
+    TEST_TABLE(
+        TABLE     = EVOL_DP,
         CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+        REFERENCE = 'ANALYTIQUE',
+        PRECISION = 1.E-6,
+        VALE_CALC = sigtrv,
+        VALE_REFE = sigtrv,
+        NOM_PARA  = 'SIYY',
+        FILTRE=_F(
+            NOM_PARA  = 'INST',
+            CRIT_COMP = 'EQ',
+            VALE      = tend,
+            CRITERE   = 'RELATIF',
+            PRECISION = 1.E-08,
+            ),
+        )
 
 
-TEST_TABLE(
-    TABLE     = EVOL_DP,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = 1.E-6,
-    VALE_CALC = siv,
-    VALE_REFE = siv,
-    NOM_PARA  = 'V3',
-    FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = tend,
+    TEST_TABLE(
+        TABLE     = EVOL_DP,
         CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+        REFERENCE = 'ANALYTIQUE',
+        PRECISION = 1.E-6,
+        VALE_CALC = siv,
+        VALE_REFE = siv,
+        NOM_PARA  = 'V' + repr(idx_visc+1), # vi visqueuse no 1
+        FILTRE=_F(
+            NOM_PARA  = 'INST',
+            CRIT_COMP = 'EQ',
+            VALE      = tend,
+            CRITERE   = 'RELATIF',
+            PRECISION = 1.E-08,
+            ),
+        )
 
 
-TEST_TABLE(
-    TABLE     = EVOL_DP,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = 1.E-6,
-    VALE_CALC = welas,
-    VALE_REFE = welas,
-    NOM_PARA  = 'V9',
-    FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = tend,
+    TEST_TABLE(
+        TABLE     = EVOL_DP,
         CRITERE   = 'RELATIF',
-        PRECISION = 1.E-08,
-        ),
-    )
+        REFERENCE = 'ANALYTIQUE',
+        PRECISION = 1.E-6,
+        VALE_CALC = welas,
+        VALE_REFE = welas,
+        NOM_PARA  = 'V' + repr(idx_visc+7), # vi visqueuse no 7
+        FILTRE=_F(
+            NOM_PARA  = 'INST',
+            CRIT_COMP = 'EQ',
+            VALE      = tend,
+            CRITERE   = 'RELATIF',
+            PRECISION = 1.E-08,
+            ),
+        )
 
 
-TEST_TABLE(
-    TABLE     = EVOL_DP,
-    CRITERE   = 'RELATIF',
-    REFERENCE = 'ANALYTIQUE',
-    PRECISION = 1.e-4,
-    VALE_CALC = 7614714.643956427,
-    VALE_REFE = wdiss,
-    NOM_PARA  = 'V10',
-    FILTRE=_F(
-        NOM_PARA  = 'INST',
-        CRIT_COMP = 'EQ',
-        VALE      = tend,
+    TEST_TABLE(
+        TABLE     = EVOL_DP,
         CRITERE   = 'RELATIF',
-        PRECISION = 1.E-8,
-        ),
-    )
+        REFERENCE = 'ANALYTIQUE',
+        PRECISION = 1.e-4,
+        VALE_CALC = 7614714.643956427,
+        VALE_REFE = wdiss,
+        NOM_PARA  = 'V' + repr(idx_visc+8), # vi visqueuse no 8
+        FILTRE=_F(
+            NOM_PARA  = 'INST',
+            CRIT_COMP = 'EQ',
+            VALE      = tend,
+            CRITERE   = 'RELATIF',
+            PRECISION = 1.E-8,
+            ),
+        )
 
 
 

@@ -1251,6 +1251,7 @@ integer :: codret
         ASSERT (typmod(2).eq.' ' .or. typmod(2).eq.'GRADVARI') 
         ASSERT(neps.ge.ndimsi)
         ASSERT(nsig.ge.ndimsi)
+        ASSERT(neps*nsig.eq.ndsde)
         call lcvisc(fami, kpg, ksp, ndim, imate,&
             instam, instap, deps(1:ndimsi), vim(idx_regu_visc:idx_regu_visc+nvi_regu_visc-1), &
             option, sigp(1:ndimsi), vip(idx_regu_visc:idx_regu_visc+nvi_regu_visc-1), &

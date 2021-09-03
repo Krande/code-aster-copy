@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,6 +31,7 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
+#include "asterfort/assert.h"
 #include "asterfort/lcvali.h"
 #include "asterfort/nmcpl1.h"
 #include "asterfort/nmcpl2.h"
@@ -172,6 +173,7 @@ aster_logical, optional, intent(in) :: l_epsi_varc_
 !       VERIFIER LA CONVERGENCE DES CONTRAINTES PLANES ET
 !       SORTIR DE LA BOUCLE SI NECESSAIRE
         if (cp) then
+            ASSERT(ndsde.eq.36)
             call nmcpl3(compor, option, carcri, deps, dsidep,&
                         ndim, sigp, vip, cpl, icp,&
                         convcp)
@@ -186,6 +188,7 @@ aster_logical, optional, intent(in) :: l_epsi_varc_
 !     CONTRAINTES PLANES METHODE DE BORST
     if (cp) then
         if (codret .eq. 0) then
+            ASSERT(ndsde.eq.36)
             call nmcpl2(compor, typmod, option, optio2, cpl,&
                         nvv, carcri, deps, dsidep, ndim,&
                         sigp, vip, codret)
