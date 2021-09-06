@@ -170,10 +170,117 @@ bet  = np.std(np.log(FM))
 print('X2D: mean median E vari', moy, med,bet)
 #X2D: mean median log std E vari 18148893896.2 18046666092.3 0.176371239856
 
-FONC_E  = DEFI_FONCTION ( NOM_RESU    = 'ACCE',  NOM_PARA    = 'INST',
-            PROL_GAUCHE = 'CONSTANT',  PROL_DROITE  = 'CONSTANT',
-            ABSCISSE        = X,
-            ORDONNEE     = FM);
+
+# -------------- FONCTION 2D avec selection de N termes les plus energétiques------------
+
+lc = 0.1
+nbterm = 7000
+prec = 0.95
+E_vari2a = DEFI_PROP_ALEA (
+            INIT_ALEA       = pseed,
+            MEDIANE         = Am_E,
+            COEF_VARI       =  cov_E,
+            LONG_CORR_X     = lc,
+            LONG_CORR_Y     = lc,
+            X_MINI     = 0.,
+            X_MAXI     = 1.0,
+            NB_TERM_X  = 1000,
+            Y_MINI     = 0.0,
+            Y_MAXI     = 1.0 ,
+            NB_TERM_Y  = 1000,
+)
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.062122537854E+10 ,
+                        VALE_REFE= 2.062122537854E+10 ,
+                        VALE_PARA= (0.5, 0.6),
+                        REFERENCE='SOURCE_EXTERNE',
+                        NOM_PARA= ('X','Y'),
+                        FONCTION= E_vari2a,),
+              )
+
+
+
+E_vari2b = DEFI_PROP_ALEA (
+            INIT_ALEA       = pseed,
+            MEDIANE         = Am_E,
+            COEF_VARI       =  cov_E,
+            LONG_CORR_X     = lc,
+            LONG_CORR_Y     = lc,
+            X_MINI     = 0.,
+            X_MAXI     = 1.0,
+            NB_TERM_X  = 1000,
+            Y_MINI     = 0.0,
+            Y_MAXI     = 1.0 ,
+            NB_TERM_Y  = 1000,
+            NB_TERM    = nbterm,
+)
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC= 2.079711727101E+10 ,
+                        VALE_REFE= 2.062122537854E+10 ,
+                        VALE_PARA= (0.5, 0.6),
+                        PRECISION=0.01,
+                        REFERENCE='AUTRE_ASTER',
+                        NOM_PARA= ('X','Y'),
+                        FONCTION= E_vari2b,),
+              )
+
+
+
+E_vari2c = DEFI_PROP_ALEA (
+            INIT_ALEA       = pseed,
+            MEDIANE         = Am_E,
+            COEF_VARI       =  cov_E,
+            LONG_CORR_X     = lc,
+            LONG_CORR_Y     = lc,
+            X_MINI     = 0.,
+            X_MAXI     = 1.0,
+            NB_TERM_X  = 1000,
+            Y_MINI     = 0.0,
+            Y_MAXI     = 1.0 ,
+            NB_TERM_Y  = 1000,
+            PRECISION    = prec,
+)
+
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC= 2.054604391594E+10,
+                        VALE_REFE= 2.062122537854E+10 ,
+                        VALE_PARA= (0.5, 0.6),
+                        PRECISION=0.01,
+                        REFERENCE='AUTRE_ASTER',
+                        NOM_PARA= ('X','Y'),
+                        FONCTION= E_vari2c,),
+              )
+
+nbterm2 = int(np.sqrt(nbterm))
+E_vari2d = DEFI_PROP_ALEA (
+            INIT_ALEA       = pseed,
+            MEDIANE         = Am_E,
+            COEF_VARI       =  cov_E,
+            LONG_CORR_X     = lc,
+            LONG_CORR_Y     = lc,
+            X_MINI     = 0.,
+            X_MAXI     = 1.0,
+            NB_TERM_X  = nbterm2 ,
+            Y_MINI     = 0.0,
+            Y_MAXI     = 1.0 ,
+            NB_TERM_Y  = nbterm2 ,
+)
+
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC= 1.498236241959E+10  ,
+                        VALE_PARA= (0.5, 0.6),
+                        NOM_PARA= ('X','Y'),
+                        FONCTION= E_vari2d,),
+              )
+
+
+
+
+#FONC_E  = DEFI_FONCTION ( NOM_RESU    = 'ACCE',  NOM_PARA    = 'INST',
+#            PROL_GAUCHE = 'CONSTANT',  PROL_DROITE  = 'CONSTANT',
+#            ABSCISSE        = X,
+#            ORDONNEE     = FM);
+
 # -------------- FONCTION 3D------------
 Lcz = 0.1*Lcx
 Lcy = 1.5 * Lcx
@@ -195,6 +302,48 @@ E_vari3 = DEFI_PROP_ALEA (
             NB_TERM_Z  = 30,
 
 )
+
+E_vari3_1 = DEFI_PROP_ALEA (
+            INIT_ALEA       = pseed,
+            MEDIANE         = Am_E,
+            COEF_VARI       =  cov_E,
+            LONG_CORR_X     = Lcx,
+            LONG_CORR_Y     = Lcy,
+            LONG_CORR_Z     = Lcz,
+            X_MINI     = xmin,
+            X_MAXI     = xmax,
+            NB_TERM_X  = 20,
+            Y_MINI     = ymin,
+            Y_MAXI     = ymax ,
+            NB_TERM_Y  = 30,
+            Z_MINI     = 0.0,
+            Z_MAXI     = 50. ,
+            NB_TERM_Z  = 35,
+            NB_TERM  = 20,
+
+)
+
+E_vari3_2 = DEFI_PROP_ALEA (
+            INIT_ALEA       = pseed,
+            MEDIANE         = Am_E,
+            COEF_VARI       =  cov_E,
+            LONG_CORR_X     = Lcx,
+            LONG_CORR_Y     = Lcy,
+            LONG_CORR_Z     = Lcz,
+            X_MINI     = xmin,
+            X_MAXI     = xmax,
+            NB_TERM_X  = 30,
+            Y_MINI     = ymin,
+            Y_MAXI     = ymax ,
+            NB_TERM_Y  = 20,
+            Z_MINI     = 0.0,
+            Z_MAXI     = 50. ,
+            NB_TERM_Z  = 30,
+            PRECISION  = 0.8,
+
+)
+
+
 # ======================================================================
 # Exemple de visualisation du champ
 # ======================================================================

@@ -68,10 +68,12 @@ def evaluate_KL2D(X1, X2, DIM, RANGE, XLISTE, Ux, beta, mediane, pseed ):
         U1 = np.array(U1).reshape((nb1, 1))
         U2 = np.array(U2).reshape((1, nb2))
         KL_terms = (U1 * U2).ravel()
+        rand = np.random.normal(0., 1., len(KL_terms))
         if Ux[2][0] != 'All':         
             KL_terms = np.array(KL_terms)[Ux[2]]
+            rand = rand[Ux[2]]
 
-        rand = np.random.normal(0., 1., len(KL_terms))
+#        rand = np.random.normal(0., 1., len(KL_terms))
         Ux_12 = mediane * np.exp(beta * np.sum(KL_terms * rand))
         return Ux_12
 
@@ -154,9 +156,14 @@ class Randomfield(object):
             if  'PRECISION' in kwargs:
                 self.precision = kwargs.get('PRECISION')
             if 'NB_TERM' in kwargs: 
-                nbtot = np.prod(cdict['NBTERMS'])
-                assert(kwargs.get('NB_TERM') <= nbtot, 'NB_TERM must be smaller than the total number of terms computed' )
+                nbprod = int(np.prod(cdict['NBTERMS']))
+                print('NB_TERM kwargs', kwargs.get('NB_TERM'), nbprod)
+                if int(kwargs.get('NB_TERM')) > nbprod:
+                    UTMESS('F','GENERIC_1', valk= "NB_TERM must be smaller than the total number of terms computed")
                 self.nbtot = kwargs.get('NB_TERM')
+        elif len(liste_coord) == 1:
+            if  'PRECISION' or 'NB_TERM' in kwargs:
+                    UTMESS('A','GENERIC_1', valk= "This is a 1D case. Keywords NB_TERM / PRECISION are used only for 2D or 3D fields")
 
         cdict['COORD'] = liste_coord
         self.coord = liste_coord
