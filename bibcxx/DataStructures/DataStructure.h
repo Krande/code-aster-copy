@@ -54,8 +54,6 @@ class DataStructure {
     std::string _name;
     /** @brief User variable name */
     std::string _user_name;
-    /** @brief Type of memory allocation */
-    JeveuxMemory _memoryType;
     /** @brief Object that stores the DataStructure type for jeveux requests */
     JeveuxVectorChar24 _tco;
     /** @brief Object that stores the title of the DataStructure */
@@ -112,12 +110,6 @@ class DataStructure {
      * @brief Function membre debugPrint
      */
     void debugPrint() const { debugPrint( 6 ); };
-
-    /**
-     * @brief Function membre getMemoryType
-     * @return le type de mémoire (globale ou volatile)
-     */
-    const JeveuxMemory &getMemoryType() const { return _memoryType; };
 
     /**
      * @brief Function membre getName

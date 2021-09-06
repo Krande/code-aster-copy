@@ -32,7 +32,7 @@
 #include "Utilities/Tools.h"
 
 DataStructure::DataStructure( const std::string name, const int nameLength, const std::string type )
-    : _name( name ), _memoryType( Permanent ) {
+    : _name( name ) {
     _name.resize( nameLength, ' ' );
 
     std::string name19( _name );

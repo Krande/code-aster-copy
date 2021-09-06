@@ -81,7 +81,7 @@ bool ListOfLoads::build( ModelPtr model ) {
     name.resize( 19, ' ' );
     std::string blank( " " );
     blank.resize( 19, ' ' );
-    std::string base( JeveuxMemoryTypesNames[(int)getMemoryType()] );
+    std::string base( JeveuxMemoryTypesNames[(int)Permanent] );
 
     SyntaxMapContainer dict;
     ListSyntaxMapContainer listeExcit;

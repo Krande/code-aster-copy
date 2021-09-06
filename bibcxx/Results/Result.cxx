@@ -141,7 +141,7 @@ ASTERDOUBLE Result::getTimeValue( ASTERINTEGER rank ) {
 
 bool Result::allocate( ASTERINTEGER nbRanks ) {
 
-    std::string base( JeveuxMemoryTypesNames[getMemoryType()] );
+    std::string base( JeveuxMemoryTypesNames[Permanent] );
     ASTERINTEGER nbordr = nbRanks;
     CALLO_RSCRSD( base, getName(), getType(), &nbordr );
     _nbRanks = nbRanks;

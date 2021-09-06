@@ -137,7 +137,7 @@ template < class ValueType > class FieldOnCells : public DataField {
             auto dcel = boost::make_shared<SimpleFieldOnCellsValueType>();
             auto compor = behaviour->getBehaviourField();
             CALLO_CESVAR(carele, compor->getName(), fed->getName(), dcel->getName());
-            CALLO_ALCHML(fed->getName(), option, nompar, JeveuxMemoryTypesNames[getMemoryType()],
+            CALLO_ALCHML(fed->getName(), option, nompar, JeveuxMemoryTypesNames[Permanent],
                          getName(),&iret, dcel->getName());
             AS_ASSERT(iret==0);
 
@@ -211,7 +211,7 @@ template < class ValueType > class FieldOnCells : public DataField {
         const std::string resultName = toReturn->getName();
         const std::string inName = getName();
         const std::string copyNan( "OUI" );
-        CALLO_CELCES_WRAP( inName, JeveuxMemoryTypesNames[getMemoryType()], resultName );
+        CALLO_CELCES_WRAP( inName, JeveuxMemoryTypesNames[Permanent], resultName );
         toReturn->updateValuePointers();
         return toReturn;
     };

@@ -152,7 +152,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             raiseAsterError( "DOFNumering is empty" );
 
         const int intType = AllowedFieldType< ValueType >::numTypeJeveux;
-        CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[getMemoryType()],
+        CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[Permanent],
                            JeveuxTypesNames[intType], _dofNum->getName() );
     };
 
@@ -333,7 +333,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             new SimpleFieldOnNodesValueType(  ) );
         const std::string resultName = toReturn->getName();
         const std::string inName = getName();
-        CALLO_CNOCNS( inName, JeveuxMemoryTypesNames[getMemoryType()], resultName );
+        CALLO_CNOCNS( inName, JeveuxMemoryTypesNames[Permanent], resultName );
         toReturn->updateValuePointers();
         return toReturn;
     };

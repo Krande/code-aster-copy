@@ -265,7 +265,7 @@ FieldOnNodesRealPtr BaseLinearSolver::solve(
     ASTERINTEGER nsecm = 0, istop = 0, iret = 0;
     ASTERDOUBLE rdummy = 0., cdummy = 0.;
     bool prepos( true );
-    std::string base( JeveuxMemoryTypesNames[result->getMemoryType()] );
+    std::string base( JeveuxMemoryTypesNames[Permanent] );
 
     CALLO_RESOUD( currentMatrix->getName(), _matrixPrec->getName(), getName(), blanc, &nsecm,
                   currentRHS->getName(), result->getName(), base, &rdummy, &cdummy, blanc,
@@ -299,7 +299,7 @@ FieldOnNodesRealPtr BaseLinearSolver::solveWithDirichletBC(
     ASTERINTEGER nsecm = 0, istop = 0, iret = 0;
     ASTERDOUBLE rdummy = 0., cdummy = 0.;
     bool prepos( true );
-    std::string base( JeveuxMemoryTypesNames[result->getMemoryType()] );
+    std::string base( JeveuxMemoryTypesNames[Permanent] );
 
     CALLO_RESOUD( currentMatrix->getName(), _matrixPrec->getName(), getName(),
                   dirichletBCField->getName(), &nsecm, currentRHS->getName(), result->getName(),
