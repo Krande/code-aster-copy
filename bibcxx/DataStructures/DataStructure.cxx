@@ -86,7 +86,7 @@ DataStructure::~DataStructure() {
     CALLO_JELSTC( base, nameWithoutBlanks, &pos, &nbval2, nothing, &retour );
     if ( retour != 0 ) {
         JeveuxVectorChar24 test( "&&TMP" );
-        test->allocate( Temporary, -retour );
+        test->allocate( -retour );
         ASTERINTEGER nbval2 = -retour;
         CALLO_JELSTC( base, nameWithoutBlanks, &pos, &nbval2, ( *test )[0], &retour );
         std::cout << "DEBUG: Remaining jeveux objects in " << _name << std::endl;
