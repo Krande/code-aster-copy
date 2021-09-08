@@ -36,7 +36,7 @@ DEFI_PROP_ALEA = MACRO(nom="DEFI_PROP_ALEA",
         LONG_CORR_Y     = SIMP(statut='f', typ='R', fr=tr("Longueur de corrélation en Y"),),
         LONG_CORR_Z     = SIMP(statut='f', typ='R', fr=tr("Longueur de corrélation en Z"),),
 
-        PRECISION       =SIMP(statut='f',typ='R', min=0.0, max=1.0,fr=tr("Pourcentage de l'energie à retenir"),),
+        PRECISION       =SIMP(statut='f',typ='R', val_min=0.00001, val_max=1.,fr=tr("Pourcentage de l'energie à retenir"),),
         NB_TERM         = SIMP(statut='f', typ='I',  fr=tr("Nombre total de termes de KL"), ),
 #
         a_data_x   = BLOC(condition="""exists('LONG_CORR_X')""",
