@@ -82,6 +82,54 @@ test.assertAlmostEqual(len(refe1.getValues()), len(testfield1.getValues()))
 test.assertAlmostEqual(len(refe2.getValues()), len(testfield2.getValues()))
 test.assertAlmostEqual(refe1.getValues(), testfield1.getValues())
 test.assertAlmostEqual(refe2.getValues(), testfield2.getValues())
-test.printSummary()
 
+
+
+# Test constructeur avec le caraelem
+
+
+MAIL=LIRE_MAILLAGE(UNITE=18, FORMAT='MED',);
+
+MODELE=AFFE_MODELE(
+    MAILLAGE=MAIL,
+    AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='TUYAU_3M',),
+)
+
+CAREL=AFFE_CARA_ELEM(
+    MODELE=MODELE,
+    POUTRE=(
+        _F(SECTION='CERCLE', GROUP_MA='TOUT', CARA=('R','EP',), VALE=(0.10,0.05,),
+           TUYAU_NSEC=8, TUYAU_NCOU=3,),
+    ),)
+
+
+MAT = DEFI_MATERIAU(ELAS=_F(E=2.1e+11, NU=0.3, RHO=7800.0,),)
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT='OUI', MATER=MAT,),)
+
+value = 10
+
+refe1=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+           OPERATION='AFFE',
+           AFFE_SP= _F(CARA_ELEM=CAREL ,),
+           MODELE=MODELE,
+           AFFE=_F(TOUT='OUI',
+           NOM_CMP=('SIXX','SIYY','SIZZ',
+                    'SIXY','SIYZ','SIXZ',),
+           VALE=(value,value,value,value,value,value,),),)
+
+study = code_aster.StudyDescription(MODELE, CHMAT)
+dProblem = code_aster.DiscreteProblem(study)
+
+behav = dProblem.createBehaviour(
+    COMPORTEMENT=(
+        _F(RELATION="VMIS_ISOT_LINE",
+           TOUT="OUI"),))
+
+testfield1 = code_aster.FieldOnCellsReal(MODELE, behav, "ELGA_SIEF_R", CAREL)
+
+# TEST LENGTH EQUALITY
+test.assertAlmostEqual(len(refe1.getValues()), len(testfield1.getValues()))
+
+test.printSummary()
 code_aster.close()

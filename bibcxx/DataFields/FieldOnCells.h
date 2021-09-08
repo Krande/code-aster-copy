@@ -34,6 +34,7 @@
 #include "aster_fort_ds.h"
 
 #include "Behaviours/BehaviourProperty.h"
+#include "Discretization/ElementaryCharacteristics.h"
 #include "DataFields/DataField.h"
 #include "DataFields/SimpleFieldOnCells.h"
 #include "MemoryManager/JeveuxVector.h"
@@ -100,7 +101,7 @@ template < class ValueType > class FieldOnCells : public DataField {
      * @param typcham Type de champ à calculer
      */
     FieldOnCells(const ModelPtr &model, const BehaviourPropertyPtr behaviour,
-                 const std::string& typcham)
+                 const std::string& typcham,const ElementaryCharacteristicsPtr carael = nullptr)
         : FieldOnCells( ){
             std::string inName = getName();
             std::string carele = " ";
@@ -128,6 +129,8 @@ template < class ValueType > class FieldOnCells : public DataField {
             else{
                 AS_ASSERT(false)
             };
+
+            if(carael) carele = carael->getName();
 
             ASTERINTEGER iret = 0;
             auto fed = model->getFiniteElementDescriptor();
@@ -178,6 +181,7 @@ template < class ValueType > class FieldOnCells : public DataField {
 
         AS_ASSERT(updateValuePointers());
     }
+
 
     /**
      * @brief Copy constructor

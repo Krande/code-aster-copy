@@ -39,8 +39,11 @@ void exportFieldOnCellsToPython() {
               py::make_constructor(&initFactoryPtr<  FieldOnCellsReal, std::string >) )
         .def( "__init__",
               py::make_constructor(&initFactoryPtr< FieldOnCellsReal,
-                                                    ModelPtr, BehaviourPropertyPtr,
-                                                    std::string>))
+                                    ModelPtr, BehaviourPropertyPtr,
+                                    std::string, ElementaryCharacteristicsPtr>,
+                                    py::default_call_policies(),
+                                    (py::arg("model"), py::arg("behaviour"), py::arg("typcham"), 
+                                    py::arg("carael")=py::object())))
         .def(py::init<const FieldOnCellsReal&>() )
         .def( "duplicate", &FieldOnCellsReal::duplicate)
         .def( "exportToSimpleFieldOnCells",
