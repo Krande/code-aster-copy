@@ -171,7 +171,7 @@ real(kind=8) :: instam, instap
 real(kind=8) :: epsm(neps), deps(neps)
 real(kind=8) :: sigm_all(nsig), sigp(nsig)
 real(kind=8) :: vim(nvi_all), vip(nvi_all)
-real(kind=8) :: dsidep(nsig,neps)
+real(kind=8) :: dsidep(merge(nsig,6,nsig*neps.eq.ndsde),merge(neps,6,nsig*neps.eq.ndsde))
 character(len=16) :: compor(*), option
 character(len=16), intent(in) :: mult_comp
 character(len=8) :: typmod(*)
@@ -1251,7 +1251,7 @@ integer :: codret
         ASSERT (typmod(2).eq.' ' .or. typmod(2).eq.'GRADVARI') 
         ASSERT(neps.ge.ndimsi)
         ASSERT(nsig.ge.ndimsi)
-        ASSERT(neps*nsig.eq.ndsde)
+        ASSERT(neps*nsig.eq.ndsde .or. (ndsde.eq.36 .and. neps*nsig.le.36))
         call lcvisc(fami, kpg, ksp, ndim, imate,&
             instam, instap, deps(1:ndimsi), vim(idx_regu_visc:idx_regu_visc+nvi_regu_visc-1), &
             option, sigp(1:ndimsi), vip(idx_regu_visc:idx_regu_visc+nvi_regu_visc-1), &

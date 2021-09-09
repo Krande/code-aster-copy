@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ interface
         real(kind=8) :: epsm(neps), deps(neps)
         real(kind=8) :: sigm_all(nsig), sigp(nsig)
         real(kind=8) :: vim(nvi_all), vip(nvi_all)
-        real(kind=8) :: dsidep(nsig,neps)
+        real(kind=8) :: dsidep(merge(nsig,6,nsig*neps.eq.ndsde),merge(neps,6,nsig*neps.eq.ndsde))
         character(len=16) :: compor(*), option
         character(len=16), intent(in) :: mult_comp
         character(len=8) :: typmod(*)
