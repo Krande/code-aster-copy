@@ -55,6 +55,8 @@ class FieldBuilder {
      * @brief Add a existing FieldOnNodesDescription in FieldBuilder
      */
     void addFieldOnNodesDescription( const FieldOnNodesDescriptionPtr &fond ) {
+        AS_ASSERT(fond);
+
         _mapProfChno[trim( fond->getName() )] = fond;
     };
 
@@ -62,6 +64,8 @@ class FieldBuilder {
      * @brief Add a existing FiniteElementDescriptor in FieldBuilder
      */
     void addFiniteElementDescriptor( const FiniteElementDescriptorPtr &fed ) {
+        AS_ASSERT(fed);
+
         _mapLigrel[trim( fed->getName() )] = fed;
     };
 
