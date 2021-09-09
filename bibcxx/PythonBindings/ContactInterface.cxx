@@ -33,14 +33,10 @@ void exportContactToPython() {
 
     py::class_< Contact, Contact::ContactPtr,
             py::bases< DataStructure > >( "Contact", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< Contact >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< Contact, std::string >))
         .def( "__init__",
               py::make_constructor(&initFactoryPtr< Contact, std::string, ModelPtr >))
         .def( "__init__",
               py::make_constructor(&initFactoryPtr< Contact, ModelPtr >))
-        .def( "setModel", &Contact::setModel )
         .def( "getModel", &Contact::getModel )
         .def( "getFiniteElementDescriptor", &Contact::getFiniteElementDescriptor );
 };

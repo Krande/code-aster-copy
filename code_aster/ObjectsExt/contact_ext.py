@@ -17,23 +17,22 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: mathieu.courtois@edf.fr
 """
-:py:class:`Model` --- Modeling definition
+:py:class:`Contact` --- Contact definition
 *****************************************
 """
 
-from libaster import Model
+from libaster import Contact
 
 from ..Utilities import injector
 
 
-@injector(Model)
-class ExtendedModel:
-    cata_sdj = "SD.sd_modele.sd_modele"
+@injector(Contact)
+class ExtendedContact:
+    cata_sdj = "SD.sd_contact.sd_contact"
 
     def __getinitargs__(self):
         """Returns the argument required to reinitialize a
-        Model object during unpickling.
+        Contact object during unpickling.
         """
-        return (self.getName(), self.getMesh())
+        return (self.getName(), self.getModel())

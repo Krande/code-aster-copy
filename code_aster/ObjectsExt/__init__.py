@@ -32,6 +32,7 @@ from .acousticload_ext import AcousticLoadComplex
 from .assemblymatrix_ext import (AssemblyMatrixDisplacementComplex,
                                  AssemblyMatrixDisplacementReal)
 from .constantfieldoncells_ext import ConstantFieldOnCellsReal
+from .contact_ext import Contact
 from .dirichletbc_ext import (MechanicalDirichletBC,
                               ThermalDirichletBC, AcousticDirichletBC)
 from .discreteproblem_ext import DiscreteProblem
