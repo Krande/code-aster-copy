@@ -101,4 +101,9 @@ void StaticMechanicalAlgorithm::oneStep( const CurrentContext &ctx ) {
     if ( cara != nullptr ) {
         ctx._results->addElementaryCharacteristics( cara, ctx._rank );
     }
+
+    std::cout << std::scientific
+              << "   Champ stocké <DEPL> à l'instant "
+              <<   ctx._time
+              <<  " pour le numéro d'ordre " <<  ctx._rank  << std::endl;
 };
