@@ -2724,7 +2724,7 @@ ROCH_R   = PhysicalQuantity(type='R',
        RP02_MIN : limite conventionnelle d'élasticité min à 0,2% de défo
        RM_MIN :   résistance à la traction minimale
        RP02_MOY : limite conventionnelle d'élasticité moy à 0,2% de défo
-       COEF : Coefficien adimentionnel
+       COEF : Coefficient adimensionnel
        A : aire de la section
        I : Inertie de la section
        R : Rayon extérieur de la section

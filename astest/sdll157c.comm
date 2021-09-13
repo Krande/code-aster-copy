@@ -104,7 +104,16 @@ ch_mater=AFFE_MATERIAU(MAILLAGE=maillage,
 cara_elem=AFFE_CARA_ELEM(MODELE=modele, 
                          POUTRE=_F(GROUP_MA="tuyau", SECTION = 'CERCLE',
                                    CARA = ('R', 'EP'),
-                                   VALE = (Dext/2, hc)))
+                                   VALE = (Dext/2, hc)),
+                         ORIENTATION=(
+                            _F(GROUP_MA = 'Arc_1',CARA='VECT_Y',VALE =(0,0,-1)),
+                            _F(GROUP_MA = 'Arc_2',CARA='VECT_Y',VALE =(0,0,1)),
+                            _F(GROUP_MA = 'Arc_3',CARA='VECT_Y',VALE =(0,-1,0)),
+                            _F(GROUP_MA = 'Arc_4',CARA='VECT_Y',VALE =(-1,0,0)),
+                            _F(GROUP_MA = 'Arc_5',CARA='VECT_Y',VALE =(-1,0,0)),
+                            _F(GROUP_MA = 'Arc_6',CARA='VECT_Y',VALE =(0,-1,0)),
+                           )
+                        )
 
 # conditions aux limites
 

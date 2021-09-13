@@ -109,10 +109,65 @@ ch_mater=AFFE_MATERIAU(MAILLAGE=maillage,
                              _F(GROUP_MA="COUDE", MATER = acierCoude,),
                              ))
 
+# calculer les bonnes orientations pour les coudes (pour POST_ROCHE selon RCCM_RX)
+
+# 1- creation des groupes de noeuds de coude ordonnés 
+maillage=DEFI_GROUP(reuse =maillage,
+                MAILLAGE=maillage,
+                CREA_GROUP_NO=(_F(OPTION='NOEUD_ORDO',
+                                 NOM='Arc_1_ordo',
+                                 GROUP_MA='Arc_1',
+                                 GROUP_NO_ORIG='Arc_1_Orig',),
+                               _F(OPTION='NOEUD_ORDO',
+                                 NOM='Arc_3_ordo',
+                                 GROUP_MA='Arc_3',
+                                 GROUP_NO_ORIG='Arc_3_Orig',),
+                               ),
+                    );
+# 2- récupération des numéros de noeuds
+nodesArc1 = maillage.getNodes('Arc_1_ordo')
+nodesArc3 = maillage.getNodes('Arc_3_ordo')
+
+# 3- calcul du vect_y du coude en question pour correspondre à 
+# la norme RCCM_RX des moments dans le plan et hors plan du coude
+def calc_vectY(maillage, groupNoOrdo):
+    import numpy as np
+    nodes = maillage.getNodes(groupNoOrdo)
+    nbNodes = len(nodes)
+    dime  = maillage.getDimension()
+    coord = maillage.getCoordinates().getValues()
+    n1 = nodes[0]
+    n2 = nodes[nbNodes//2]
+    n3 = nodes[-1]
+    coord1 = np.array(coord[dime*(n1-1):dime*(n1-1)+3])
+    coord2 = np.array(coord[dime*(n2-1):dime*(n2-1)+3])
+    coord3 = np.array(coord[dime*(n3-1):dime*(n3-1)+3])
+    
+    v1 = coord2-coord1
+    v2 = coord3-coord1
+    vect_y = np.cross(v1,v2)
+    normy = np.linalg.norm(vect_y,2)
+    vect_y=vect_y/normy
+
+    return vect_y
+    
+vect_y_Arc1 = calc_vectY(maillage, 'Arc_1_ordo')
+vect_y_Arc3 = calc_vectY(maillage, 'Arc_3_ordo')
+
+
 cara_elem=AFFE_CARA_ELEM(MODELE=modele, 
                          POUTRE=_F(GROUP_MA="tuyau", SECTION = 'CERCLE',
                                    CARA = ('R', 'EP'),
-                                   VALE = (Dext/2, hc)))
+                                   VALE = (Dext/2, hc)),
+                         ORIENTATION=(
+                            _F(GROUP_MA = 'Arc_1',CARA='VECT_Y',VALE =vect_y_Arc1),
+                            _F(GROUP_MA = 'Arc_2',CARA='VECT_Y',VALE =(0,0,1)),
+                            _F(GROUP_MA = 'Arc_3',CARA='VECT_Y',VALE =vect_y_Arc3),
+                            _F(GROUP_MA = 'Arc_4',CARA='VECT_Y',VALE =(-1,0,0)),
+                            _F(GROUP_MA = 'Arc_5',CARA='VECT_Y',VALE =(-1,0,0)),
+                            _F(GROUP_MA = 'Arc_6',CARA='VECT_Y',VALE =(0,-1,0)),
+                           )
+                        )
 
 # conditions aux limites
 
