@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -95,6 +95,18 @@ cata_msg = {
  utiliser OPERATION = SOUS_STRUC
 """),
 
+    17: _(""" 
+ noeud %(k1)s trop éloigné de la normale au segment
+ distance = %(r1)12.5e
+ 
+ Cette alarme est associée au mot-clé PREC_NORM de la commande DEFI_FOND_FISS.
+ Elle n'a de sens que dans un calcul 3D de K avec POST_K1_K2_K3. 
+ Elle indique que l’appariement des nœuds pour le calcul des sauts de déplacement 
+ manque de précision, ce qui peut dégrader la précision du K calculé.
+
+ Plus d'information dans la documentation de DEFI_FOND_FISS et POST_K1_K2_K3.
+"""),
+
     20: _("""
  vecteur nul pour l'orientation
 """),
@@ -103,17 +115,15 @@ cata_msg = {
  critère inconnu
 """),
 
-    22: _("""
+    22: _(""" 
  noeud %(k1)s trop éloigné de la normale au segment
- distance = %(r1)f
+ distance = %(r1)12.5e
  
  si vous rencontrez cette alarme dans le cadre de l'utilisation de la 
  commande DEFI_GROUP, elle est associée au mot-clé PRECISION de 
  l'option SEGM_DROI_ORDO.
  si vous rencontrez cette alarme dans le cadre de l'utilisation de la 
  commande POST_RELEVE_T, elle est associée au mot-clé PRECISION.
- si vous rencontrez cette alarme dans le cadre de l'utilisation de la 
- commande DEFI_FOND_FISS, elle est associée au mot-clé PREC_NORM.
 """),
 
     23: _("""

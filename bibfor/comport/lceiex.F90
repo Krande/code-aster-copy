@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -182,7 +182,8 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 ! !
 !     1 - DETERMINATION DE BORNES BMIN ET BMAX POUR NEWTON, AINSI
 !         QUE D UN POINT D INITIALISATION JUDICIEUX  (solution de la bi-lineaire)
-!
+!         0.22 - approximation de 2/9 qui correspond au point de changement de pente
+!         dans la loi bi-linéaire par Petersson     
         dc1=dc*0.22
         dn = (tn-sc)/(r-(sc*3)/(3.2*dc))
         if (dn >= dc1) then
