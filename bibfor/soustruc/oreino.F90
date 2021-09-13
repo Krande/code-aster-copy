@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,6 +40,9 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
 !-----------------------------------------------------------------------
 !     I/O : LNOEUD: NUMEROS DES NOEUDS
 !     IN  : NBNO  : NOMBRE DE NOEUDS
+!     IN  : IREA  : INDICATEUR DE COMMANDE : 1-DEFI_GROUP/SEGM_DROI_ORDO
+!                                            2-POST_RELEVE_T/PRECISION
+!                                            3-DEFI_FOND_FISS/PREC_NORM
 !     IN  : NORI  : NUMERO DU NOEUD ORIGINE
 !     IN  : NEXT  : NUMERO DU NOEUD EXTREMITE
 !     IN  : COOR  : COORDONNEES DES NOEUDS
@@ -59,7 +62,6 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
     nomnoe = noma//'.NOMNOE         '
 !
     ier  = 0
-    iera = 0
 !
     xa = coor(3*(nori-1)+1)
     ya = coor(3*(nori-1)+2)
@@ -112,11 +114,10 @@ subroutine oreino(noma, lnoeud, nbno, nori, next,&
         if (r8b .gt. prec) then
             v2 = sqrt( v2 )
             call jenuno(jexnum(nomnoe, inod), nomn)
-            if (iera .eq. 0) then
-                call utmess('A', 'SOUSTRUC_22', sk=nomn, sr=v2)
-                iera = iera+1
+            if (iera .eq. 3) then
+                call utmess('A', 'SOUSTRUC_17', sk=nomn, sr=v2)
             else
-                call utmess('I', 'SOUSTRUC_22', sk=nomn, sr=v2)
+                call utmess('A', 'SOUSTRUC_22', sk=nomn, sr=v2)
             endif
             ier = ier + 1
         endif

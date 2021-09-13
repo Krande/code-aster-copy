@@ -76,6 +76,8 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
     nrepgn = nmaila//'.GROUPENO'
     nrepnd = nmaila//'.NOMNOE'
     libre = 1
+!   INDICATEUR DE COMMANDE POUR OREINO: 2-POST_RELEVE_T/PRECISION 
+    iera = 2
 !
 ! --- RECUPERATION DES ENTITES
 !
@@ -186,7 +188,6 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
     if (ny .ne. 0) then
 !        VERIFICATIONS PRELIMINAIRES
         if ((nbneud.ge.2.and.nbrgpn.eq.0) .or. ( nbneud.eq.0.and.nbrgpn.eq.1)) then
-            iera = 0
             if (nbrgpn .eq. 1) then
                 nomgrn = zk24(agrpn + 1-1)
                 call jelira(jexnom(nrepgn, nomgrn), 'LONMAX', nbn)
