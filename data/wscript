@@ -210,6 +210,10 @@ def build(self):
         files = data_node.ant_glob('tests_data/*')
         self.install_files(dest, files)
 
+        dest = osp.join(self.env.ASTERDATADIR, 'tests_data', 'mac3c')
+        files = data_node.ant_glob('tests_data/mac3c/*')
+        self.install_files(dest, files)
+
 
 SRCTEST_TMPL = """SRCTEST        | src     | -     | %s"""
 
