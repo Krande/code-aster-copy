@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -65,6 +65,22 @@ TWEIB45=POST_ELEM(WEIBULL=_F(GROUP_MA='CT',
                   RESULTAT=UP245B,
                   TITRE='Weibull post-treatment, norder, INST, SIGw, Pf ',);
 
+
+
+
+IMPR_TABLE(TABLE=TWEIB45)
+
+
+BERE=POST_BEREMIN(RESULTAT=UP245B,
+             DEFORMATION="PETIT",
+             GROUP_MA="CT",
+             FILTRE_SIGM="SIGM_ELMOY",
+             COEF_MULT=50.8,)
+
+IMPR_TABLE(TABLE=BERE)
+
+
+
 # extraction of the python tables from the Aster tables
 ### first we output the full table because it can contain usefull informations
 ### for the user
@@ -96,5 +112,23 @@ TEST_TABLE(
            FILTRE=_F(NOM_PARA='INST',
                      VALE=49.993923025000001,),
            )
+
+
+
+#TEST_TABLE(VALE_CALC=0.783625250054,
+#           NOM_PARA='proba_weibull',
+#           TABLE=BERE,
+#           TOLE_MACHINE=5.0,
+#           FILTRE=(_F(NOM_PARA='nume_ordre',
+#                      VALE_I=20,
+#                      PRECISION=0.001,),
+#                   _F(NOM_PARA='lieu',
+#                      VALE_K='CT',),
+#                   ),
+#           )
+
+
+
+
 
 FIN()

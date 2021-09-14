@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -139,7 +139,7 @@ TLOG=STAT_NON_LINE(
                 CHARGE = CHARG),
                          COMPORTEMENT=_F(
                 RELATION = 'VMIS_ISOT_TRAC',
-                DEFORMATION='GDEF_LOG',),
+                DEFORMATION='PETIT_REAC',),
                          INCREMENT=_F(
                 LIST_INST = L_INST,
                 NUME_INST_FIN = 10),
@@ -180,6 +180,30 @@ WEIB=POST_ELEM(
                                     CORR_PLAST = 'NON')
                    )
 
+IMPR_TABLE(TABLE=WEIB)
+IMPR_TABLE(TABLE=WEIB,
+           FORMAT='NUMPY',
+           NOM_PARA=("NUME_ORDRE", "INST", "SIGMA_WEIBULL", "PROBA_WEIBULL",
+                     "SIGMA_WEIBULL**M"),
+           UNITE=59)
+
+
+
+BERE=POST_BEREMIN(RESULTAT=U,
+             DEFORMATION="PETIT",
+             GROUP_MA="COUL_7",
+             FILTRE_SIGM="SIGM_ELGA")
+
+IMPR_TABLE(TABLE=BERE)
+IMPR_TABLE(TABLE=BERE,
+           FORMAT='NUMPY',
+           NOM_PARA=("nume_ordre", "inst", "sigma_weibull", "proba_weibull",
+                     "sigma_weibull**m"),
+           UNITE=60)
+                      
+
+
+
 WEIBSM=POST_ELEM(
                       RESULTAT=USM,
                       NUME_ORDRE=(1,2,3,4,5,6,7,8,9,10),
@@ -188,6 +212,8 @@ WEIBSM=POST_ELEM(
                                     CORR_PLAST = 'NON')
                    )
                    
+
+
 WEIBLOG=POST_ELEM(
                       RESULTAT=ULOG,
                       NUME_ORDRE=(1,2,3,4,5,6,7,8,9,10),
@@ -196,23 +222,26 @@ WEIBLOG=POST_ELEM(
                                     CORR_PLAST = 'NON')
                    )
 
-
-
 IMPR_TABLE(TABLE=WEIBLOG)
+IMPR_TABLE(TABLE=WEIBLOG,
+           FORMAT='NUMPY',
+           NOM_PARA=("NUME_ORDRE", "INST", "SIGMA_WEIBULL", "PROBA_WEIBULL",
+                     "SIGMA_WEIBULL**M"),
+           UNITE=61)
 
-#SSNA108A = os.path.join(os.getenv("HOME"), "execspace", "weibulltrunk",
-#                        "aster", "ssna108a")
 
-
-
-BEREMIN=POST_BEREMIN(RESULTAT=ULOG,
-             DEFORMATION="GDEF_LOG",
+BERELOG=POST_BEREMIN(RESULTAT=ULOG,
+             DEFORMATION="PETIT_REAC",
              GROUP_MA="COUL_7",
-             OPTION="SIGM_ELMOY",)
-            # UNITE=21 
-#)
+             FILTRE_SIGM="SIGM_ELGA")
 
-IMPR_TABLE(TABLE=BEREMIN)
+IMPR_TABLE(TABLE=BERELOG,
+           FORMAT='NUMPY',
+           NOM_PARA=("nume_ordre", "inst", "sigma_weibull", "proba_weibull",
+                     "sigma_weibull**m"),
+           UNITE=63)
+
+
 
 # WEIBULL AVEC OPTION SIGM_ELMOY ET COOR_PLAST = NON
 WEIB2=POST_ELEM(
@@ -222,6 +251,27 @@ WEIB2=POST_ELEM(
                                     OPTION = 'SIGM_ELMOY',
                                     CORR_PLAST = 'NON')
                    )
+
+IMPR_TABLE(TABLE=WEIB2,
+           FORMAT='NUMPY',
+           NOM_PARA=("NUME_ORDRE", "INST", "SIGMA_WEIBULL", "PROBA_WEIBULL",
+                     "SIGMA_WEIBULL**M"),
+           UNITE=63)
+
+
+BERE2=POST_BEREMIN(RESULTAT=U,
+             DEFORMATION="PETIT",
+             GROUP_MA="COUL_7",
+             FILTRE_SIGM="SIGM_ELMOY",)
+
+
+IMPR_TABLE(TABLE=BERE2,
+           FORMAT='NUMPY',
+           NOM_PARA=("nume_ordre", "inst", "sigma_weibull", "proba_weibull",
+                     "sigma_weibull**m"),
+           UNITE=64)
+
+
 
 # WEIBULL AVEC OPTION SIGM_ELMOY ET COOR_PLAST = OUI
 WEIB3=POST_ELEM(
@@ -256,15 +306,6 @@ TEST_TABLE(VALE_CALC=1407.53403673,
 TEST_TABLE(VALE_CALC=1404.61024322,
            NOM_PARA='SIGMA_WEIBULL',
            TABLE=WEIBSM,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=2,),
-                   _F(NOM_PARA='LIEU',
-                      VALE_K='00000001',),
-                   ),
-           )
-TEST_TABLE(VALE_CALC=1404.42658281,
-           NOM_PARA='SIGMA_WEIBULL',
-           TABLE=WEIBLOG,
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',
                       VALE_I=2,),
                    _F(NOM_PARA='LIEU',
@@ -322,6 +363,7 @@ TEST_TABLE(VALE_CALC=1406.28037174,
                       VALE_K='00000001',),
                    ),
            )
+
 
 TEST_TABLE(VALE_CALC=2488.72079771,
            NOM_PARA='SIGMA_WEIBULL',
@@ -411,6 +453,116 @@ TEST_TABLE(VALE_CALC=4003.81872251,
                       VALE_I=10,),
                    _F(NOM_PARA='LIEU',
                       VALE_K='00000001',),
+                   ),
+           )
+
+# TEST BEREMIN
+
+
+TEST_TABLE(VALE_CALC=1407.53403673,
+           NOM_PARA='sigma_weibull',
+           TABLE=BERE,
+           TOLE_MACHINE=0.05,
+           FILTRE=(_F(NOM_PARA='nume_ordre',
+                      VALE_I=2,
+                      PRECISION=0.001,),
+                   _F(NOM_PARA='lieu',
+                      VALE_K='COUL_7',),
+                   ),
+           )
+
+
+TEST_TABLE(VALE_CALC=1404.42658281,
+           NOM_PARA='sigma_weibull',
+           TABLE=BERELOG,
+           TOLE_MACHINE=0.05,  
+           FILTRE=(_F(NOM_PARA='nume_ordre',
+                      VALE_I=2,),
+                   _F(NOM_PARA='lieu',
+                      VALE_K='COUL_7',),
+                  ),
+           )
+
+
+TEST_TABLE(VALE_CALC=2496.61331174,
+           NOM_PARA='sigma_weibull',
+           TABLE=BERE,
+           TOLE_MACHINE=0.05,
+           FILTRE=(_F(NOM_PARA='nume_ordre',
+                      VALE_I=4,),
+                   _F(NOM_PARA='lieu',
+                      VALE_K='COUL_7',),
+                   ),
+           )
+
+TEST_TABLE(VALE_CALC=3333.27614652 ,
+           NOM_PARA='sigma_weibull',
+           TABLE=BERE,
+           TOLE_MACHINE=0.05,
+           FILTRE=(_F(NOM_PARA='nume_ordre',
+                      VALE_I=6,),
+                   _F(NOM_PARA='lieu',
+                      VALE_K='COUL_7',),
+                   ),
+           )
+
+TEST_TABLE(VALE_CALC=3753.58246426,
+           NOM_PARA='sigma_weibull',
+           TABLE=BERE,
+           TOLE_MACHINE=0.05,
+           FILTRE=(_F(NOM_PARA='nume_ordre',
+                      VALE_I=8,),
+                   _F(NOM_PARA='lieu',
+                      VALE_K='COUL_7',),
+                   ),
+           )
+
+
+TEST_TABLE(VALE_CALC=1406.28037174,
+           NOM_PARA='sigma_weibull',
+           TABLE=BERE2,
+           TOLE_MACHINE=0.1,
+           FILTRE=(_F(NOM_PARA='nume_ordre',
+                      VALE_I=2,),
+                   _F(NOM_PARA='lieu',
+                      VALE_K='COUL_7',),
+                   ),
+           )
+
+
+TEST_TABLE(VALE_CALC=2488.72079771,
+           NOM_PARA='sigma_weibull',
+           TABLE=BERE2,
+           TOLE_MACHINE=0.1,
+           FILTRE=(_F(NOM_PARA='nume_ordre',
+                      VALE_I=4,),
+                   _F(NOM_PARA='lieu',
+                      VALE_K='COUL_7',),
+                   ),
+           )
+
+
+TEST_TABLE(VALE_CALC=3325.55620691,
+           NOM_PARA='sigma_weibull',
+           TABLE=BERE2,
+           TOLE_MACHINE=0.2,
+           FILTRE=(_F(NOM_PARA='nume_ordre',
+                      VALE_I=6,),
+                   _F(NOM_PARA='lieu',
+                      VALE_K='COUL_7',),
+                   ),
+           )
+
+
+
+TEST_TABLE(VALE_CALC=3744.29558422,
+           NOM_PARA='sigma_weibull',
+           TABLE=BERE2,
+           TOLE_MACHINE=0.2,
+           FILTRE=(_F(NOM_PARA='nume_ordre',
+                      VALE_I=8,),
+                   _F(NOM_PARA='lieu',
+                      VALE_K='COUL_7',),
                    ),
            )
 

@@ -460,6 +460,9 @@ SIEF_ELGA non trouvé 1 fois exactement
     86: _("""
 VARI_ELGA_NOMME non trouvé 1 fois exactement
 """),
-    
+    87: _("""
+Un seul GROUP_MA est autorisé
+"""),
+   
 }
 

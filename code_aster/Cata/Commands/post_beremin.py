@@ -37,7 +37,7 @@ POST_BEREMIN = MACRO(
     DEFORMATION=SIMP(statut="o", typ="TXM", into=("PETIT", "PETIT_REAC",
                                                   "GDEF_LOG"),
                      fr=tr("Type de déformation du résultat mécanique")),
-    OPTION=SIMP(statut="o", typ="TXM", into=("SIGM_ELGA", "SIGM_ELMOY"),
+    FILTRE_SIGM=SIMP(statut="o", typ="TXM", into=("SIGM_ELGA", "SIGM_ELMOY"),
                      fr=tr("Option de moyennation des contraintes")),
     COEF_MULT=SIMP(statut="f", typ="R", defaut=1., fr=tr(
         "Coefficient à renseigner selon u4.81.22")),

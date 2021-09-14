@@ -25,9 +25,6 @@ WARNING: (TEMPORARY) FILE TO PUT IN
 
 Compute the Beremin probability of failure
 
-- Input data is read by a MED file. It will change in 2021 when
-  aster and medcoupling can communicate other than by files
-  (see aster ticket 29852)
 - Aboubakr Amzil filters are not yet implemented
 - Optimization is probably possible if we loop through the
   times (could be useful for Charpy tests for example)
@@ -64,14 +61,12 @@ from ..Messages import UTMESS
 _FB = False
 
 def post_beremin_ops(self, RESULTAT, GROUP_MA,
-                     DEFORMATION, OPTION, 
-                     #CSV_FILENAME_OUT, 
-                     #MED_FILENAME_OUT,
+                     DEFORMATION, FILTRE_SIGM, 
                      COEF_MULT=None
                      ,UNITE=None
                     ):
     """
-    Beremin post-treatment
+    Beremin post-processor
 
     Inputs :
     ========
@@ -81,16 +76,16 @@ def post_beremin_ops(self, RESULTAT, GROUP_MA,
     - GROUP_MA: mesh cells group on which Beremin post-treatment is carried out
                 Only 1 mesh cells group authorized
     - DEFORMATION: "PETIT", "PETIT_REAC", "GDEF_LOG" or "SIMO_MIEHE"
-    - OPTION: "SIGM_ELGA" or "SIGM_ELMOY".
+    - FILTRE_SIGM: "SIGM_ELGA" or "SIGM_ELMOY".
                  SIGM: FIELD WITH 4 OR 6 STRESSES COMPONENTS
     - COEF_MULT: as explained in doc aster u4.81.22 (weibull) p.15
 
     Outputs :
     =========
-    - CSV_FILENAME_OUT : Output CSV table containing code_aster historical
+    - TABLE : Through IMPR_TABLE is available 
                          information (Weibull stress and probability of failure)
-    - MED_FILENAME_OUT : MED filename containing maximum of major principal
-                         stress by where the plasticity is active
+    - MED file : MED filename containing maximum of major principal
+                         stress by where the plasticity is active (possible if UNITE=number is given in command file)
                          Result of type ELGA (apply ElgaFieldToSurface filter
                          in Paraview to see it)
     """
@@ -104,7 +99,7 @@ def post_beremin_ops(self, RESULTAT, GROUP_MA,
     
     tab_out = [["nume_ordre","inst","lieu","entite",
               "sigma_weibull","proba_weibull","sigma_weibull**m"
-              ]]#$
+              ]]
     
     MED_FILENAME_IN = os.path.join(os.getcwd(), "tmp.med")
     DEFI_FICHIER(UNITE=46,
@@ -117,15 +112,16 @@ def post_beremin_ops(self, RESULTAT, GROUP_MA,
 
     DEFI_FICHIER(ACTION="LIBERER", UNITE=46)
 
-    for grma in GROUP_MA:
 
-        data_in = get_data(RESULTAT, MED_FILENAME_IN, DEFORMATION, grma)
+    if len(GROUP_MA)>1:UTMESS('F', 'RUPTURE1_87')
+    grma = GROUP_MA[0]
+    data_in = get_data(RESULTAT, MED_FILENAME_IN, DEFORMATION, grma)
 
-        if [elt[2] for elt in mc.GetAllFieldIterations(
+    if [elt[2] for elt in mc.GetAllFieldIterations(
                 MED_FILENAME_IN, data_in[
                     "stress_fieldname"])] != RESULTAT.LIST_VARI_ACCES()["INST"]:
             UTMESS('F', 'RUPTURE1_80')
-        for disct in mc.GetAllFieldIterations(MED_FILENAME_IN,
+    for disct in mc.GetAllFieldIterations(MED_FILENAME_IN,
                                               data_in["stress_fieldname"]):
 
             stress = mc.ReadFieldGauss(MED_FILENAME_IN,
@@ -140,7 +136,7 @@ def post_beremin_ops(self, RESULTAT, GROUP_MA,
             if _FB:
                 data_in["MED_FILENAME_IN"] = MED_FILENAME_IN
             sigw.setArray(weibull_stress(
-                grma, DEFORMATION, OPTION, data_in, stress, array_cmp(
+                grma, DEFORMATION, FILTRE_SIGM, data_in, stress, array_cmp(
                     mc.ReadFieldGauss(
                         MED_FILENAME_IN,
                         mc.GetMeshNamesOnField(
@@ -152,19 +148,18 @@ def post_beremin_ops(self, RESULTAT, GROUP_MA,
             sigw.checkConsistencyLight()
 
             if data_in["first"]:
-                #mc.WriteField(MED_FILENAME_OUT, sigw, True)
                 mc.WriteField(nomfich, sigw, True)
                 data_in["first"] = False
             else:
-                #mc.WriteFieldUsingAlreadyWrittenMesh(MED_FILENAME_OUT, sigw)
                 mc.WriteFieldUsingAlreadyWrittenMesh(nomfich, sigw)
             
             _1 = sigweibull_proba(grma, COEF_MULT, data_in, sigw)
-
             tab_out.append((
                 disct[1], disct[2], grma, "GROUP_MA",
                 _1[0], _1[1], _1[0]**data_in["wb_kwd"][grma]["M"]
             ))
+            del _1
+
     #$
     class csv:
         def __init__(self, t_out):
@@ -178,10 +173,10 @@ def post_beremin_ops(self, RESULTAT, GROUP_MA,
     csvO = csv(tab_out)
     
     tabout = CREA_TABLE(LISTE=(
-        _F(PARA=csvO.getname(0), LISTE_R=csvO.getvals(0)),
+        _F(PARA=csvO.getname(0), LISTE_I=csvO.getvals(0)),
         _F(PARA=csvO.getname(1), LISTE_R=csvO.getvals(1)),
-        #_F(PARA=csvO.getname(2), LISTE_R=csvO.getvals(2)),
-        #_F(PARA=csvO.getname(3), LISTE_R=csvO.getvals(3)),
+        _F(PARA=csvO.getname(2), LISTE_K=csvO.getvals(2)),
+        _F(PARA=csvO.getname(3), LISTE_K=csvO.getvals(3)),
         _F(PARA=csvO.getname(4), LISTE_R=csvO.getvals(4)),
         _F(PARA=csvO.getname(5), LISTE_R=csvO.getvals(5)),
         _F(PARA=csvO.getname(6), LISTE_R=csvO.getvals(6)),
@@ -189,13 +184,13 @@ def post_beremin_ops(self, RESULTAT, GROUP_MA,
 
     return tabout
 
-def weibull_stress(GROUP_MA, DEFORMATION, OPTION, data_in, stress, plas, disct):
+def weibull_stress(GROUP_MA, DEFORMATION, FILTRE_SIGM, data_in, stress, plas, disct):
     """
     Inputs :
     - GROUP_MA: mesh cells group on which Beremin post-treatment is carried out
                 Only 1 mesh cells group authorized
     - DEFORMATION:  "PETIT", "PETIT_REAC", "GDEF_LOG"
-    - OPTION: "SIGM_ELGA" or "SIGM_ELMOY".
+    - FILTRE_SIGM: "SIGM_ELGA" or "SIGM_ELMOY".
     - data_in: dictionary of useful data
     - stress: stress field at instant disct[2]
     - plas: cumulated plastic strain field and plasticity indicator
@@ -211,7 +206,7 @@ def weibull_stress(GROUP_MA, DEFORMATION, OPTION, data_in, stress, plas, disct):
         sig.meldWith(zero)
         sig.meldWith(zero)
 
-    if data_in["first"] & (OPTION == "SIGM_ELMOY"):
+    if data_in["first"] & (FILTRE_SIGM == "SIGM_ELMOY"):
         for idcell in range(data_in["nbofcells"]):
             data_in["l_idcell"].append(
                 stress.computeTupleIdsToSelectFromCellIds(idcell))
@@ -239,9 +234,9 @@ def weibull_stress(GROUP_MA, DEFORMATION, OPTION, data_in, stress, plas, disct):
             fb_sigma_u_t(GROUP_MA, stress, data_in, disct[2])
 
 
-    if OPTION == "SIGM_ELGA":
+    if FILTRE_SIGM == "SIGM_ELGA":
         smax = maxsig1_elga(sig)
-    elif OPTION == "SIGM_ELMOY":
+    elif FILTRE_SIGM == "SIGM_ELMOY":
         smax = maxsig1_elmoy(sig, data_in)
 
     # Points to be taken into account regarding plasticity state
@@ -274,28 +269,19 @@ def maxsig1_elga(sig):
 
     output :
     - smax : maximum des valeurs propres pour tous les points de Gauss
-    TODO :
-    - utiliser la fonction MEDCoupling eigenValues (cf fiche REX Salomé 22126)
-    - à paralléliser, si possible ?
     """
     sig_np = sig.toNumPyArray()
-    smax = mc.DataArrayDouble(len(sig))    
-    s__max = mc.DataArrayDouble(len(sig))##    
+    smax = mc.DataArrayDouble(len(sig))
     
     for numline in range(len(sig)):
         sig_ptga = sig_np[numline, :]
-#        smax[numline] = np.max(np.linalg.eigvalsh(np.array(
-#            [[sig_ptga[0], sig_ptga[3], sig_ptga[4]],
-#             [sig_ptga[3], sig_ptga[1], sig_ptga[5]],
-#             [sig_ptga[4], sig_ptga[5], sig_ptga[2]]])))
         
-        d = mc.DataArrayDouble(1, 6)##
+        d = mc.DataArrayDouble(1, 6)
         for _1 in range(6):
             d[0,_1] = sig_ptga[_1]
-        s__max[numline] = d.eigenValues().maxPerTuple()[0]
-        #print(smax[numline], s__max[numline])
+        smax[numline] = d.eigenValues().maxPerTuple()[0]
     
-    return s__max
+    return smax
 
 def maxsig1_elmoy(sig, data_in):
     """
@@ -308,15 +294,12 @@ def maxsig1_elmoy(sig, data_in):
 
     output :
     - smax : maximum des valeurs propres pour tous les points de Gauss
-    TODO : à paralléliser, si possible ou utiliser la fonction MEDCoupling
-           eigenValues (cf fiche REX Salomé 22126)
     """
     sig_np = sig.toNumPyArray()
     smax = mc.DataArrayDouble(len(sig))
     meansig = mc.DataArrayDouble(data_in["nbofcells"],
                                  sig.getNumberOfComponents())
     s1max_np = []
-    s1_max_np = []
     for idcell in range(data_in["nbofcells"]):
         for idcmp in range(sig.getNumberOfComponents()):
             meancell = 0.
@@ -325,21 +308,14 @@ def maxsig1_elmoy(sig, data_in):
             meansig[idcell, idcmp] = meancell/len(
                 data_in["l_idcell"][idcell])
 
-  #      s1max_np.append(np.max(np.linalg.eigvalsh(np.array([
-  #          [meansig[idcell, 0], meansig[idcell, 3], meansig[idcell, 4]],
-  #          [meansig[idcell, 3], meansig[idcell, 1], meansig[idcell, 5]],
-  #          [meansig[idcell, 4], meansig[idcell, 5], meansig[idcell, 2]]]))))
-        
         d = mc.DataArrayDouble(1, 6)##
         for _1 in range(6):
             d[0,_1] = meansig[idcell, _1]
-        s1_max_np.append(d.eigenValues().maxPerTuple()[0])
+        s1max_np.append(d.eigenValues().maxPerTuple()[0])
     
-    #import pdb; pdb.set_trace(); 
     for idcell in range(data_in["nbofcells"]):
         for idptga in data_in["l_idcell"][idcell]:
-            #smax[idptga] = s1max_np[idcell]
-            smax[idptga] = s1_max_np[idcell]
+            smax[idptga] = s1max_np[idcell]
 
     return smax
 
