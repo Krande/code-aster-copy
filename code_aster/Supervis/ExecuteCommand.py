@@ -209,7 +209,8 @@ class ExecuteCommand(object):
         if ExecutionParameter().option & Options.TestMode:
             track_coverage(self._cata, self.command_name, keywords)
         self.create_result(keywords)
-        if hasattr(self._result, "userName"):
+        if not getattr(self._result, "userName", "n/a"):
+            # attribute does exist but is not defined
             self._result.userName = get_user_name(
                 self.command_name, self._caller["filename"], self._caller["lineno"]
             )
