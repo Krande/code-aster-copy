@@ -1,0 +1,75 @@
+#!/usr/bin/env python
+
+###
+### This file is generated automatically by SALOME v9.4.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+import salome_notebook
+notebook = salome_notebook.NoteBook()
+
+###
+### SHAPER component
+###
+
+###
+### GEOM component
+###
+
+import GEOM
+from salome.geom import geomBuilder
+import math
+import SALOMEDS
+
+
+geompy = geomBuilder.New()
+
+O = geompy.MakeVertex(0, 0, 0)
+OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+geomObj_1 = geompy.MakeMarker(0, 0, 0, 1, 0, 0, 0, 1, 0)
+sk = geompy.Sketcher2D()
+sk.addPoint(0.000000, 0.000000)
+sk.addArcAngleRadiusLength(0, -25.000000, 40.000000)
+sk.addSegmentPerpLength(0.250000)
+sk.addArcPerpRadiusLength(25.250000, 40.000000)
+sk.addSegmentAbsolute(0.000000, 0.000000)
+sk.close()
+Sketch_1 = sk.wire(geomObj_1)
+Face_1 = geompy.MakeFaceWires([Sketch_1], 1)
+Extrusion_1 = geompy.MakePrismVecH(Face_1, OZ, 25)
+Sext = geompy.CreateGroup(Extrusion_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(Sext, [20])
+Srigide = geompy.CreateGroup(Extrusion_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(Srigide, [33])
+Syz = geompy.CreateGroup(Extrusion_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(Syz, [27])
+Sxy = geompy.CreateGroup(Extrusion_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(Sxy, [31])
+e = geompy.CreateGroup(Extrusion_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(e, [29, 18, 30, 19])
+A = geompy.CreateGroup(Extrusion_1, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(A, [16, 9])
+C = geompy.CreateGroup(Extrusion_1, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(C, [23, 6])
+geompy.DifferenceIDs(A, [16, 9])
+geompy.UnionIDs(A, [16])
+geompy.addToStudy( O, 'O' )
+geompy.addToStudy( OX, 'OX' )
+geompy.addToStudy( OY, 'OY' )
+geompy.addToStudy( OZ, 'OZ' )
+geompy.addToStudy( Sketch_1, 'Sketch_1' )
+geompy.addToStudy( Face_1, 'Face_1' )
+geompy.addToStudy( Extrusion_1, 'Extrusion_1' )
+geompy.addToStudyInFather( Extrusion_1, Sext, 'Sext' )
+geompy.addToStudyInFather( Extrusion_1, Srigide, 'Srigide' )
+geompy.addToStudyInFather( Extrusion_1, Syz, 'Syz' )
+geompy.addToStudyInFather( Extrusion_1, Sxy, 'Sxy' )
+geompy.addToStudyInFather( Extrusion_1, e, 'e' )
+geompy.addToStudyInFather( Extrusion_1, A, 'A' )
+geompy.addToStudyInFather( Extrusion_1, C, 'C' )
+

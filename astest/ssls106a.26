@@ -1,0 +1,101 @@
+#!/usr/bin/env python
+
+###
+### This file is generated automatically by SALOME v9.4.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+import salome_notebook
+notebook = salome_notebook.NoteBook()
+
+###
+### SHAPER component
+###
+
+###
+### GEOM component
+###
+
+import GEOM
+from salome.geom import geomBuilder
+import math
+import SALOMEDS
+
+
+geompy = geomBuilder.New()
+
+O = geompy.MakeVertex(0, 0, 0)
+OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+geomObj_1 = geompy.MakeMarker(0, 0, 0, 1, 0, 0, 0, 1, 0)
+Vertex_1 = geompy.MakeVertex(9.98, 0, 0)
+Vertex_2 = geompy.MakeVertex(10.02, 0, 0)
+Multi_Rotation_1 = geompy.MultiRotate1DByStep(Vertex_1, OZ, 72*math.pi/180.0, 2)
+Multi_Rotation_2 = geompy.MultiRotate1DByStep(Vertex_2, OZ, 72*math.pi/180.0, 2)
+geomObj_2 = geompy.MakeMarker(0, 0, 0, 1, 0, 0, 0, 1, 0)
+geomObj_3 = geompy.MakeMarker(0, 0, 0, 1, 0, 0, 0, 1, 0)
+sk = geompy.Sketcher2D()
+sk.addPoint(9.980000, 0.000000)
+sk.addSegmentAbsolute(10.020000, 0.000000)
+sk.addArcCenterAbsolute(0.000000, 0.000000, 3.096350, 9.529586, 0, 0)
+sk.addSegmentAbsolute(3.083990, 9.491544)
+sk.addArcCenterAbsolute(0.000000, 0.000000, 9.980000, 0.000000, 0, 0)
+sk.close()
+Sketch_1 = sk.wire(geomObj_3)
+Face_1 = geompy.MakeFaceWires([Sketch_1], 1)
+Revolution_1 = geompy.MakeRevolution(Face_1, OY, -90*math.pi/180.0)
+Rext = geompy.CreateGroup(Revolution_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(Rext, [19, 18])
+Rint = geompy.CreateGroup(Revolution_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(Rint, [29, 30])
+Rbext = geompy.CreateGroup(Revolution_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(Rbext, [8])
+Rbint = geompy.CreateGroup(Revolution_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(Rbint, [5])
+Rhext = geompy.CreateGroup(Revolution_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(Rhext, [15])
+Rhint = geompy.CreateGroup(Revolution_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(Rhint, [22])
+e = geompy.CreateGroup(Revolution_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(e, [26, 25, 11, 12])
+Vol = geompy.CreateGroup(Revolution_1, geompy.ShapeType["SOLID"])
+geompy.UnionIDs(Vol, [1])
+Surfext = geompy.CreateGroup(Revolution_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(Surfext, [13])
+Surfint = geompy.CreateGroup(Revolution_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(Surfint, [27])
+Syz = geompy.CreateGroup(Revolution_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(Syz, [33])
+Sxy = geompy.CreateGroup(Revolution_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(Sxy, [31])
+Sxz = geompy.CreateGroup(Revolution_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(Sxz, [3])
+geompy.addToStudy( O, 'O' )
+geompy.addToStudy( OX, 'OX' )
+geompy.addToStudy( OY, 'OY' )
+geompy.addToStudy( OZ, 'OZ' )
+geompy.addToStudy( Vertex_1, 'Vertex_1' )
+geompy.addToStudy( Vertex_2, 'Vertex_2' )
+geompy.addToStudy( Multi_Rotation_1, 'Multi-Rotation_1' )
+geompy.addToStudy( Multi_Rotation_2, 'Multi-Rotation_2' )
+geompy.addToStudy( Sketch_1, 'Sketch_1' )
+geompy.addToStudy( Face_1, 'Face_1' )
+geompy.addToStudy( Revolution_1, 'Revolution_1' )
+geompy.addToStudyInFather( Revolution_1, Rext, 'Rext' )
+geompy.addToStudyInFather( Revolution_1, Rint, 'Rint' )
+geompy.addToStudyInFather( Revolution_1, Rbext, 'Rbext' )
+geompy.addToStudyInFather( Revolution_1, Rbint, 'Rbint' )
+geompy.addToStudyInFather( Revolution_1, Rhext, 'Rhext' )
+geompy.addToStudyInFather( Revolution_1, Rhint, 'Rhint' )
+geompy.addToStudyInFather( Revolution_1, e, 'e' )
+geompy.addToStudyInFather( Revolution_1, Vol, 'Vol' )
+geompy.addToStudyInFather( Revolution_1, Surfext, 'Surfext' )
+geompy.addToStudyInFather( Revolution_1, Surfint, 'Surfint' )
+geompy.addToStudyInFather( Revolution_1, Syz, 'Syz' )
+geompy.addToStudyInFather( Revolution_1, Sxy, 'Sxy' )
+geompy.addToStudyInFather( Revolution_1, Sxz, 'Sxz' )
+

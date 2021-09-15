@@ -1,0 +1,78 @@
+#!/usr/bin/env python
+
+###
+### This file is generated automatically by SALOME v9.4.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+import salome_notebook
+notebook = salome_notebook.NoteBook()
+
+###
+### SHAPER component
+###
+
+###
+### GEOM component
+###
+
+import GEOM
+from salome.geom import geomBuilder
+import math
+import SALOMEDS
+
+
+geompy = geomBuilder.New()
+
+O = geompy.MakeVertex(0, 0, 0)
+OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+Vertex_1 = geompy.MakeVertex(5, 0, 0)
+Vertex_2 = geompy.MakeVertex(4.906, 0, 0)
+Line_1 = geompy.MakeLineTwoPnt(Vertex_2, Vertex_1)
+Revolution_1 = geompy.MakeRevolution(Line_1, OZ, 90*math.pi/180.0)
+Extrusion_1 = geompy.MakePrismVecH(Revolution_1, OZ, 5.175)
+Sxz = geompy.CreateGroup(Extrusion_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(Sxz, [23])
+Syz = geompy.CreateGroup(Extrusion_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(Syz, [27])
+e = geompy.CreateGroup(Extrusion_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(e, [30, 29, 25, 26])
+Sext = geompy.CreateGroup(Extrusion_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(Sext, [13])
+L = geompy.CreateGroup(Extrusion_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(L, [15, 5, 18, 8])
+Scyl = geompy.CreateGroup(Extrusion_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(Scyl, [31])
+Ae = geompy.CreateGroup(Extrusion_1, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(Ae, [16])
+Ai = geompy.CreateGroup(Extrusion_1, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(Ai, [6])
+Be = geompy.CreateGroup(Extrusion_1, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(Be, [19])
+Ce = geompy.CreateGroup(Extrusion_1, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(Ce, [20])
+geompy.addToStudy( O, 'O' )
+geompy.addToStudy( OX, 'OX' )
+geompy.addToStudy( OY, 'OY' )
+geompy.addToStudy( OZ, 'OZ' )
+geompy.addToStudy( Vertex_1, 'Vertex_1' )
+geompy.addToStudy( Vertex_2, 'Vertex_2' )
+geompy.addToStudy( Line_1, 'Line_1' )
+geompy.addToStudy( Revolution_1, 'Revolution_1' )
+geompy.addToStudy( Extrusion_1, 'Extrusion_1' )
+geompy.addToStudyInFather( Extrusion_1, Sxz, 'Sxz' )
+geompy.addToStudyInFather( Extrusion_1, Syz, 'Syz' )
+geompy.addToStudyInFather( Extrusion_1, e, 'e' )
+geompy.addToStudyInFather( Extrusion_1, Ai, 'Ai' )
+geompy.addToStudyInFather( Extrusion_1, Be, 'Be' )
+geompy.addToStudyInFather( Extrusion_1, Sext, 'Sext' )
+geompy.addToStudyInFather( Extrusion_1, Ce, 'Ce' )
+geompy.addToStudyInFather( Extrusion_1, Scyl, 'Scyl' )
+geompy.addToStudyInFather( Extrusion_1, Ae, 'Ae' )
+geompy.addToStudyInFather( Extrusion_1, L, 'L' )
+

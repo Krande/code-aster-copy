@@ -1,0 +1,98 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+# Coarse mesh: unit 25 
+# Python dump of geometry from salome: unit 26
+mesh = LIRE_MAILLAGE(UNITE=20)
+
+mesh1 = CREA_MAILLAGE(COQUE_SOLIDE=_F(GROUP_MA=('Vol', ),
+                                      GROUP_MA_SURF=('Ssup', ),
+                                      PREF_NOEUD='NS',
+                                      PREF_NUME=1),
+                      MAILLAGE=mesh)
+
+model = AFFE_MODELE(AFFE=_F(MODELISATION='COQUE_SOLIDE',
+                            PHENOMENE='MECANIQUE',
+                            TOUT='OUI'),
+                    MAILLAGE=mesh1)
+
+mater = DEFI_MATERIAU(ELAS=_F(COEF_AMOR=1.0,
+                              E=29000000.0,
+                              NU=0.22))
+
+fieldmat = AFFE_MATERIAU(AFFE=_F(MATER=(mater, ),
+                                 TOUT='OUI'),
+                         MAILLAGE=mesh1)
+
+load1 = AFFE_CHAR_MECA(DDL_IMPO=_F(BLOCAGE=('DEPLACEMENT', ),
+                                   GROUP_MA=('Sencastre', )),
+                       FORCE_NODALE=_F(FZ=-0.5,
+                                       GROUP_NO=('N', )),
+                       MODELE=model)
+
+load2 = AFFE_CHAR_MECA(DDL_IMPO=_F(BLOCAGE=('DEPLACEMENT', ),
+                                   GROUP_MA=('Sencastre', )),
+                       FORCE_NODALE=_F(FX=0.5,
+                                       GROUP_NO=('N', )),
+                       MODELE=model)
+
+reslin1 = MECA_STATIQUE(CHAM_MATER=fieldmat,
+                        EXCIT=_F(CHARGE=load1,),
+                        MODELE=model,
+                        SOLVEUR=_F(RESI_RELA=1e-05))
+
+reslin2 = MECA_STATIQUE(CHAM_MATER=fieldmat,
+                        EXCIT=_F(CHARGE=load2,),
+                        MODELE=model,
+                        SOLVEUR=_F(RESI_RELA=1e-05))
+
+deplRef1 = -1.387
+deplCal1 = -1.3866819858110226
+deplTol1 = 0.03 * 1.E-2
+
+TEST_RESU(RESU=_F(GROUP_NO=('P', ),
+                  INST=0.0,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  PRECISION=deplTol1,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=reslin1,
+                  VALE_ABS='NON',
+                  VALE_CALC=(deplCal1, ),
+                  VALE_REFE=(deplRef1, )))
+
+deplRef2 = 0.343
+deplCal2 = 0.3424428468632799
+deplTol2 = 0.17 * 1.E-2
+
+TEST_RESU(RESU=_F(GROUP_NO=('P', ),
+                  INST=0.0,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  PRECISION=deplTol2,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=reslin2,
+                  VALE_ABS='NON',
+                  VALE_CALC=(deplCal2, ),
+                  VALE_REFE=(deplRef2, )))
+
+FIN()
