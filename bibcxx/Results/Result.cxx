@@ -28,8 +28,8 @@
 #include "aster_fort_superv.h"
 #include "aster_fort_utils.h"
 
-#include "Results/Result.h"
 #include "PythonBindings/LogicalUnitManager.h"
+#include "Results/Result.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
@@ -316,12 +316,13 @@ PyObject *Result::getAccessParameters() const
   int ivar, nmax, index;
 
   CALL_JEMARQ();
-  _serialNumber->updateValuePointer();
+  AS_ASSERT( _serialNumber->updateValuePointer() );
   _rspr->updateValuePointer();
   _rspi->updateValuePointer();
   _rsp8->updateValuePointer();
   _rs16->updateValuePointer();
   _rs24->updateValuePointer();
+  AS_ASSERT( _calculationParameter->build() );
 
   ASTERINTEGER nb_ranks = _serialNumber->usedSize();
 
