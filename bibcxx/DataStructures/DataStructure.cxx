@@ -36,6 +36,12 @@ DataStructure::DataStructure( const std::string name, const int nameLength, cons
     : _name( name ), _memoryType( memType ) {
     _name.resize( nameLength, ' ' );
 
+// #ifdef ASTER_DEBUG_CXX
+//     std::cout << "Creating " << trim( this->getName() )
+//             << " <" << type << "> "
+//             << this->getUserName() << std::endl;
+// #endif
+
     std::string name19( _name );
     name19.resize( 19, ' ' );
     _tco = JeveuxVectorChar24( name19 + "._TCO" );

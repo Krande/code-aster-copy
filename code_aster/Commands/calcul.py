@@ -52,6 +52,15 @@ class Compute(ExecuteCommand):
         """
         self._result.build()
 
+    def add_dependencies(self, keywords):
+        """Register input *DataStructure* objects as dependencies.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+
+        # Do nothing because there is no dependency to add
+
 _CALCUL_ = Compute.run
 
 

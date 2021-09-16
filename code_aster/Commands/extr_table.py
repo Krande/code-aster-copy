@@ -107,4 +107,13 @@ class ExtrTable(ExecuteCommand):
                         'CHAM_NO_SDASTER' ):
             self._result.build()
 
+    def add_dependencies(self, keywords):
+        """Register input *DataStructure* objects as dependencies.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+        super().add_dependencies(keywords)
+        self.remove_dependencies(keywords, "TABLE")
+
 EXTR_TABLE = ExtrTable.run
