@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -59,7 +59,19 @@ class AssembleMatrixOperator(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
-        self._result.appendElementaryMatrix(keywords['MATR_ELEM'])
+        # Do not MATR_ELEM howewer there are not deleted
+        #self._result.appendElementaryMatrix(keywords['MATR_ELEM'])
         self._result.setDOFNumbering(keywords['NUME_DDL'])
+
+
+    def add_dependencies(self, keywords):
+        """Register input *DataStructure* objects as dependencies.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+        super().add_dependencies(keywords)
+        self.remove_dependencies(keywords, "MATR_ELEM")
+        self.remove_dependencies(keywords, "CHAR_CINE")
 
 ASSE_MATRICE = AssembleMatrixOperator.run

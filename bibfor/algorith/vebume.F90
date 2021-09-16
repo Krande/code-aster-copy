@@ -106,15 +106,15 @@ implicit none
 !
 ! - Cart for Lagrange conditionner
 !
-    call mecact(base, chalph, 'MODELE', model, 'NEUT_R  ',&
+    call mecact('V', chalph, 'MODELE', model, 'NEUT_R  ',&
                 ncmp=1, nomcmp='X1', sr=scaling)
 !
 ! - Allocate result
 !
     call detrsd('VECT_ELEM', vect_elem)
-    call memare('V', vect_elem, model, ' ', ' ',&
+    call memare(base, vect_elem, model, ' ', ' ',&
                 'CHAR_MECA')
-    call reajre(vect_elem, ' ', 'V')
+    call reajre(vect_elem, ' ', base)
 !
 ! - Input fields
 !
@@ -161,7 +161,7 @@ implicit none
 !
 ! --------- Copying output field
 !
-            call reajre(vect_elem, lchout(1), 'V')
+            call reajre(vect_elem, lchout(1), base)
         endif
     end do
 !
