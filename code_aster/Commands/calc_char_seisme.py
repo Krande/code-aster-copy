@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -31,7 +31,19 @@ class SismicLoading(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
+
         self._result = FieldOnNodesReal()
+
+    def post_exec(self, keywords):
+        """Build.
+
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords.
+        """
+
+        nume_ddl = keywords["MATR_MASS"].getDOFNumbering()
+        self._result.setDOFNumbering(nume_ddl)
+        self._result.build()
 
 
 CALC_CHAR_SEISME = SismicLoading.run

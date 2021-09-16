@@ -35,5 +35,14 @@ class AssembleVectorOperator(ExecuteCommand):
         """
         self._result = FieldOnNodesReal(keywords["NUME_DDL"])
 
+    def post_exec(self, keywords):
+        """Build.
+
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords.
+        """
+
+        self._result.build()
+
 
 ASSE_VECTEUR = AssembleVectorOperator.run

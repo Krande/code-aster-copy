@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -38,7 +38,6 @@ class FieldReader(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         location = keywords["TYPE_CHAM"][:5]
-        typ = keywords["TYPE_CHAM"][10:]
 
         if location == "CART_":
             if "MAILLAGE" in keywords:
@@ -51,6 +50,18 @@ class FieldReader(ExecuteCommand):
         else:
             # ELGA_
             self._result = FieldOnCellsReal()
+
+    def post_exec(self, keywords):
+        """Set member.
+
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords.
+        """
+        location = keywords["TYPE_CHAM"][:5]
+
+        if location == "NOEU_":
+            self._result.setMesh(keywords["MAILLAGE"])
+            self._result.build()
 
 
 
