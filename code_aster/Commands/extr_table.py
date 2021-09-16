@@ -103,7 +103,8 @@ class ExtrTable(ExecuteCommand):
 
         typeResu = keywords['TYPE_RESU']
         if typeResu in ('VECT_ELEM_DEPL_R', 'VECT_ELEM_TEMP_R', \
-                        'MATR_ELEM_DEPL_R', 'MATR_ELEM_TEMP_R'):
+                        'MATR_ELEM_DEPL_R', 'MATR_ELEM_TEMP_R',\
+                        'CHAM_NO_SDASTER' ):
             self._result.build()
 
 EXTR_TABLE = ExtrTable.run

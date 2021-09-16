@@ -33,7 +33,16 @@ class DirichletBCComputation(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        self._result = FieldOnNodesReal()
+        self._result = FieldOnNodesReal(keywords["NUME_DDL"])
+
+    def post_exec(self, keywords):
+        """Build.
+
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords.
+        """
+
+        self._result.build()
 
 
 CALC_CHAR_CINE = DirichletBCComputation.run
