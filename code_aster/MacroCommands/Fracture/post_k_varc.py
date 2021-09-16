@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,5 +46,15 @@ class PostKVarc(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         self._result = FieldOnNodesReal()
+
+    def post_exec(self, keywords):
+        """Build FieldOnNodes.
+
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords, changed
+            in place.
+        """
+
+        self._result.build()
 
 POST_K_VARC = PostKVarc.run
