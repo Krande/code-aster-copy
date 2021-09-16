@@ -6,7 +6,7 @@
  * @brief Fichier entete permettant de decrire un fichier sur unité logique
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -25,6 +25,7 @@
  */
 
 // TODO: Refactor LogicalUnit.py in C++
+#include "astercxx.h"
 #include "logical_unit.h"
 
 enum FileType { Ascii, Binary, Free };

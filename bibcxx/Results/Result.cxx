@@ -28,16 +28,14 @@
 #include "aster_fort_superv.h"
 #include "aster_fort_utils.h"
 
-#include "Results/Result.h"
 #include "PythonBindings/LogicalUnitManager.h"
+#include "Results/Result.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
 
-
-std::pair< ASTERINTEGER, std::string>
-Result::_getNewFieldName( const std::string& name, const ASTERINTEGER& rank ) const
-{
+std::pair< ASTERINTEGER, std::string > Result::_getNewFieldName( const std::string &name,
+                                                                 const ASTERINTEGER &rank ) const {
     auto trim_name = trim( name );
     ASTERINTEGER retour;
     retour = 0;
@@ -45,15 +43,14 @@ Result::_getNewFieldName( const std::string& name, const ASTERINTEGER& rank ) co
     std::string returnName( 19, ' ' );
     CALLO_RSEXCH( null, getName(), trim_name, &rank, returnName, &retour );
 
-    return std::make_pair(retour, returnName);
+    return std::make_pair( retour, returnName );
 };
 
-void
-Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara,
-                                                        ASTERINTEGER rank ) {
+void Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara,
+                                           ASTERINTEGER rank ) {
 
-    if( !cara )
-      raiseAsterError( "ValueError: ElementaryCharacteristics is empty" );
+    if ( !cara )
+        raiseAsterError( "ValueError: ElementaryCharacteristics is empty" );
 
     _mapElemCara[rank] = cara;
     ASTERINTEGER rang = rank;
@@ -61,19 +58,17 @@ Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara,
     CALLO_RSADPA_ZK8_WRAP( getName(), &rang, cara->getName(), type );
 };
 
-void Result::setListOfLoads( const ListOfLoadsPtr &load,
-                                               ASTERINTEGER rank ) {
+void Result::setListOfLoads( const ListOfLoadsPtr &load, ASTERINTEGER rank ) {
     _mapLoads[rank] = load;
     ASTERINTEGER rang = rank;
     std::string type( "EXCIT" );
     CALLO_RSADPA_ZK24_WRAP( getName(), &rang, load->getName(), type );
 };
 
-void Result::setMaterialField( const MaterialFieldPtr &mater,
-                                                  ASTERINTEGER rank ) {
+void Result::setMaterialField( const MaterialFieldPtr &mater, ASTERINTEGER rank ) {
 
-    if( !mater )
-      raiseAsterError( "ValueError: MaterialField is empty" );
+    if ( !mater )
+        raiseAsterError( "ValueError: MaterialField is empty" );
 
     _mapMaterial[rank] = mater;
     ASTERINTEGER rang = rank;
@@ -81,11 +76,10 @@ void Result::setMaterialField( const MaterialFieldPtr &mater,
     CALLO_RSADPA_ZK8_WRAP( getName(), &rang, mater->getName(), type );
 };
 
-void Result::setModel( const ModelPtr &model,
-                                         ASTERINTEGER rank ) {
+void Result::setModel( const ModelPtr &model, ASTERINTEGER rank ) {
 
-    if( !model )
-      raiseAsterError( "ValueError: Model is empty" );
+    if ( !model )
+        raiseAsterError( "ValueError: Model is empty" );
 
     _mapModel[rank] = model;
     ASTERINTEGER rang = rank;
@@ -108,35 +102,33 @@ ASTERDOUBLE Result::getTimeValue( ASTERINTEGER rank ) {
 
     ASTERINTEGER nb_ranks = _serialNumber->usedSize();
 
-    AS_ASSERT(rank <= nb_ranks);
+    AS_ASSERT( rank <= nb_ranks );
 
-    auto& calcParam = _calculationParameter->getVectorOfObjects();
+    auto &calcParam = _calculationParameter->getVectorOfObjects();
     auto nbParam = calcParam.size();
 
     for ( int i = 0; i < nbParam; ++i ) {
         const auto item = calcParam[i];
-        auto typevar = trim(item[3].toString());
+        auto typevar = trim( item[3].toString() );
 
-        if (typevar == "ACCES"){
-            auto var_name = trim(_accessVariables->getStringFromIndex( i+1 ));
-            if (var_name == "INST")
-            {
-                auto nosuff = trim(item[0].toString());
-                auto ivar = std::stoi(trim(item[1].toString()));
-                auto nmax = std::stoi(trim(item[2].toString()));
+        if ( typevar == "ACCES" ) {
+            auto var_name = trim( _accessVariables->getStringFromIndex( i + 1 ) );
+            if ( var_name == "INST" ) {
+                auto nosuff = trim( item[0].toString() );
+                auto ivar = std::stoi( trim( item[1].toString() ) );
+                auto nmax = std::stoi( trim( item[2].toString() ) );
 
-                AS_ASSERT(nosuff == ".RSPR")
+                AS_ASSERT( nosuff == ".RSPR" )
 
-                auto index = nmax*rank+ivar -1;
+                auto index = nmax * rank + ivar - 1;
 
-                return (*_rspr)[index];
+                return ( *_rspr )[index];
             }
         }
     }
 
-    AS_ASSERT(false);
+    AS_ASSERT( false );
     return 0.0;
-
 };
 
 bool Result::allocate( ASTERINTEGER nbRanks ) {
@@ -152,9 +144,7 @@ bool Result::allocate( ASTERINTEGER nbRanks ) {
     return true;
 };
 
-void Result::setElementaryCharacteristics
-    ( const ElementaryCharacteristicsPtr& cara )
-{
+void Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara ) {
     _serialNumber->updateValuePointer();
     ASTERINTEGER nbRanks = _serialNumber->usedSize();
     for ( ASTERINTEGER rank = 0; rank < nbRanks; ++rank ) {
@@ -194,17 +184,16 @@ BaseDOFNumberingPtr Result::getEmptyDOFNumbering() {
     return retour;
 };
 
-FieldOnNodesRealPtr
-Result::getEmptyFieldOnNodesReal( const std::string name,
+FieldOnNodesRealPtr Result::getEmptyFieldOnNodesReal( const std::string name,
                                                       const ASTERINTEGER rank ) {
 
     if ( rank > _nbRanks || rank <= 0 )
-      raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' is out of range" );
+        raiseAsterError( "IndexError: Rank '" + std::to_string( rank ) + "' is out of range" );
 
-    auto rschex = _getNewFieldName(name, rank);
+    auto rschex = _getNewFieldName( name, rank );
     CALLO_RSNOCH( getName(), name, &rank );
     std::string bis( rschex.second.c_str(), 19 );
-    FieldOnNodesRealPtr result = boost::make_shared<FieldOnNodesReal>( bis );
+    FieldOnNodesRealPtr result = boost::make_shared< FieldOnNodesReal >( bis );
 
     auto curIter = _dictOfVectorOfFieldOnNodesReal.find( name );
     if ( curIter == _dictOfVectorOfFieldOnNodesReal.end() ) {
@@ -221,78 +210,71 @@ BaseDOFNumberingPtr Result::getEmptyParallelDOFNumbering() {
     ASTERINTEGER a = 10, b = 14;
     CALLO_GNOMSD( resuName, name, &a, &b );
     ParallelDOFNumberingPtr retour =
-                    boost::make_shared<ParallelDOFNumbering>( name.substr( 0, 14 ) );
+        boost::make_shared< ParallelDOFNumbering >( name.substr( 0, 14 ) );
     _listOfDOFNum.push_back( retour );
     return retour;
 };
 #endif /* ASTER_HAVE_MPI */
 
-std::vector< ElementaryCharacteristicsPtr >
-Result::getAllElementaryCharacteristics() const
-{
-    return unique(_mapElemCara);
+std::vector< ElementaryCharacteristicsPtr > Result::getAllElementaryCharacteristics() const {
+    return unique( _mapElemCara );
 };
 
 ElementaryCharacteristicsPtr Result::getElementaryCharacteristics() const {
     const auto cara = getAllElementaryCharacteristics();
-    AS_ASSERT(cara.size() <= 1);
+    AS_ASSERT( cara.size() <= 1 );
 
-    if( cara.size() == 1 )
+    if ( cara.size() == 1 )
         return cara[0];
 
     return ElementaryCharacteristicsPtr( nullptr );
 };
 
-ElementaryCharacteristicsPtr
-Result::getElementaryCharacteristics( ASTERINTEGER rank ) const {
+ElementaryCharacteristicsPtr Result::getElementaryCharacteristics( ASTERINTEGER rank ) const {
     auto curIter = _mapElemCara.find( rank );
     if ( curIter == _mapElemCara.end() )
-        raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' not found" );
+        raiseAsterError( "IndexError: Rank '" + std::to_string( rank ) + "' not found" );
     return ( *curIter ).second;
 };
 
 ListOfLoadsPtr Result::getListOfLoads( ASTERINTEGER rank ) const {
     auto curIter = _mapLoads.find( rank );
     if ( curIter == _mapLoads.end() )
-        raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' not found" );
+        raiseAsterError( "IndexError: Rank '" + std::to_string( rank ) + "' not found" );
     return ( *curIter ).second;
 };
 
-std::vector< MaterialFieldPtr > Result::getMaterialFields() const
-{
-    return unique(_mapMaterial);
+std::vector< MaterialFieldPtr > Result::getMaterialFields() const {
+    return unique( _mapMaterial );
 };
 
 MaterialFieldPtr Result::getMaterialField() const {
     const auto mate = getMaterialFields();
-    AS_ASSERT(mate.size() <= 1);
+    AS_ASSERT( mate.size() <= 1 );
 
-    if( mate.size() == 1 )
+    if ( mate.size() == 1 )
         return mate[0];
 
     return MaterialFieldPtr( nullptr );
 };
 
-MaterialFieldPtr
-Result::getMaterialField( ASTERINTEGER rank ) const {
+MaterialFieldPtr Result::getMaterialField( ASTERINTEGER rank ) const {
     auto curIter = _mapMaterial.find( rank );
     if ( curIter == _mapMaterial.end() )
-        raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' not found" );
+        raiseAsterError( "IndexError: Rank '" + std::to_string( rank ) + "' not found" );
     return ( *curIter ).second;
 };
 
-BaseMeshPtr Result::getMesh() const
-{
-    if( _mesh != nullptr )
+BaseMeshPtr Result::getMesh() const {
+    if ( _mesh != nullptr )
         return _mesh;
     const auto model = getModel();
-    if( model != nullptr )
+    if ( model != nullptr )
         return model->getMesh();
     return nullptr;
 };
 
-bool Result::hasMultipleModel() const
-{
+bool Result::hasMultipleModel() const {
     std::string name( "" );
     for ( const auto &curIter : _mapModel ) {
         if ( name == "" ) {
@@ -304,41 +286,32 @@ bool Result::hasMultipleModel() const
     return false;
 }
 
-std::vector< ModelPtr > Result::getModels() const
-{
-    return unique(_mapModel);
-};
+std::vector< ModelPtr > Result::getModels() const { return unique( _mapModel ); };
 
 ModelPtr Result::getModel() const {
-    if ( hasMultipleModel() ){
+    if ( hasMultipleModel() ) {
         raiseAsterError( "Error: multiple models" );
     }
 
     const auto models = getModels();
-    AS_ASSERT(models.size() <= 1 );
+    AS_ASSERT( models.size() <= 1 );
 
-    if(models.size() == 1)
+    if ( models.size() == 1 )
         return models[0];
 
     return ModelPtr( nullptr );
-
 };
 
-ModelPtr Result::getModel( ASTERINTEGER rank ) const
-{
+ModelPtr Result::getModel( ASTERINTEGER rank ) const {
     auto curIter = _mapModel.find( rank );
     if ( curIter == _mapModel.end() )
-        raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' not found" );
+        raiseAsterError( "IndexError: Rank '" + std::to_string( rank ) + "' not found" );
     return ( *curIter ).second;
 };
 
-ASTERINTEGER Result::getNumberOfRanks() const
-{
-    return _serialNumber->usedSize();
-};
+ASTERINTEGER Result::getNumberOfRanks() const { return _serialNumber->usedSize(); };
 
-VectorLong Result::getRanks() const
-{
+VectorLong Result::getRanks() const {
     VectorLong v;
     _serialNumber->updateValuePointer();
     for ( ASTERINTEGER j = 0; j < _serialNumber->usedSize(); ++j ) {
@@ -348,225 +321,207 @@ VectorLong Result::getRanks() const
 };
 
 FieldOnCellsRealPtr Result::getFieldOnCellsReal( const std::string name,
-                                                 const ASTERINTEGER rank ) const
-{
+                                                 const ASTERINTEGER rank ) const {
     if ( rank >= _nbRanks || rank < 0 )
-      raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' is out of range" );
+        raiseAsterError( "IndexError: Rank '" + std::to_string( rank ) + "' is out of range" );
 
     auto curIter = _dictOfVectorOfFieldOnCellsReal.find( trim( name ) );
     if ( curIter == _dictOfVectorOfFieldOnCellsReal.end() )
-      raiseAsterError( "ValueError: Field " + name + " unknown in the results container" );
+        raiseAsterError( "ValueError: Field " + name + " unknown in the results container" );
 
     return curIter->second[rank];
 };
 
-ConstantFieldOnCellsChar16Ptr Result::getConstantFieldOnCellsChar16( const std::string name,
-                                                 const ASTERINTEGER rank ) const
-{
+ConstantFieldOnCellsChar16Ptr
+Result::getConstantFieldOnCellsChar16( const std::string name, const ASTERINTEGER rank ) const {
     if ( rank >= _nbRanks || rank < 0 )
-      raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' is out of range" );
+        raiseAsterError( "IndexError: Rank '" + std::to_string( rank ) + "' is out of range" );
 
     auto curIter = _dictOfVectorOfConstantFieldOnCellsChar16.find( trim( name ) );
     if ( curIter == _dictOfVectorOfConstantFieldOnCellsChar16.end() )
-      raiseAsterError( "ValueError: Field " + name + " unknown in the results container" );
+        raiseAsterError( "ValueError: Field " + name + " unknown in the results container" );
     return curIter->second[rank];
 };
 
-PyObject *Result::getAccessParameters() const
-{
+PyObject *Result::getAccessParameters() const {
 
-  PyObject *returnDict = PyDict_New();
-  std::string var_name, str_val, typevar, nosuff;
-  int ivar, nmax, index;
+    PyObject *returnDict = PyDict_New();
+    std::string var_name, str_val, typevar, nosuff;
+    int ivar, nmax, index;
 
-  CALL_JEMARQ();
-  _serialNumber->updateValuePointer();
-  _rspr->updateValuePointer();
-  _rspi->updateValuePointer();
-  _rsp8->updateValuePointer();
-  _rs16->updateValuePointer();
-  _rs24->updateValuePointer();
+    CALL_JEMARQ();
+    AS_ASSERT( _serialNumber->updateValuePointer() );
+    _rspr->updateValuePointer();
+    _rspi->updateValuePointer();
+    _rsp8->updateValuePointer();
+    _rs16->updateValuePointer();
+    _rs24->updateValuePointer();
+    AS_ASSERT( _calculationParameter->build() );
 
-  ASTERINTEGER nb_ranks = _serialNumber->usedSize();
+    ASTERINTEGER nb_ranks = _serialNumber->usedSize();
 
-  var_name = "NUME_ORDRE";
-  PyObject *listValues = PyList_New( nb_ranks );
-  for ( int j = 0; j < nb_ranks; ++j ) {
-    PyList_SetItem(listValues, j, PyLong_FromLong( ( *_serialNumber )[j] ));
-  }
-  PyDict_SetItemString( returnDict, var_name.c_str(), listValues );
-  Py_DECREF( listValues );
-
-  for ( int i = 0; i < (_calculationParameter->getVectorOfObjects()).size(); ++i ) {
-    const auto item = _calculationParameter->getVectorOfObjects()[i];
-    typevar = trim(item[3].toString());
-
-    if (typevar == "ACCES"){
-      var_name = trim(_accessVariables->getStringFromIndex( i+1 ));
-      nosuff = trim(item[0].toString());
-      ivar = std::stoi(trim(item[1].toString()));
-      nmax = std::stoi(trim(item[2].toString()));
-
-      PyObject *listValues = PyList_New( nb_ranks );
-
-      if (nosuff == ".RSPI") {
-        for ( int j = 0; j < nb_ranks; ++j ) {
-          index = nmax*(j)+ivar -1;
-          PyList_SetItem( listValues, j, PyLong_FromLong( ( *_rspi )[index] ));
-        }
-      }
-
-      else if (nosuff == ".RSPR") {
-        for ( int j = 0; j < nb_ranks; ++j ) {
-          index = nmax*(j)+ivar -1;
-          PyList_SetItem( listValues, j, PyFloat_FromDouble( ( *_rspr )[index] ));
-        }
-      }
-
-      else {
-        for ( int j = 0; j < nb_ranks; ++j ) {
-          index = nmax*(j)+ivar -1;
-          if (nosuff == ".RSP8") {
-            str_val = trim((( *_rsp8 )[index]).toString());
-          }
-          else if (nosuff == ".RS16") {
-            str_val = trim((( *_rs16 )[index]).toString());
-          }
-          else if (nosuff == ".RS24") {
-            str_val = trim((( *_rs24 )[index]).toString());
-          }
-          else {
-            AS_ASSERT( false );
-          }
-
-          if (str_val.length()==0){
-            PyList_SetItem( listValues, j, Py_None);
-          }
-          else {
-            PyList_SetItem( listValues, j, PyUnicode_FromString( str_val.c_str()));
-          }
-        }
-      }
-      PyDict_SetItemString( returnDict, var_name.c_str(), listValues );
-      Py_DECREF( listValues );
+    var_name = "NUME_ORDRE";
+    PyObject *listValues = PyList_New( nb_ranks );
+    for ( int j = 0; j < nb_ranks; ++j ) {
+        PyList_SetItem( listValues, j, PyLong_FromLong( ( *_serialNumber )[j] ) );
     }
-  }
-  CALL_JEDEMA();
-  return returnDict;
+    PyDict_SetItemString( returnDict, var_name.c_str(), listValues );
+    Py_DECREF( listValues );
+
+    for ( int i = 0; i < ( _calculationParameter->getVectorOfObjects() ).size(); ++i ) {
+        const auto item = _calculationParameter->getVectorOfObjects()[i];
+        typevar = trim( item[3].toString() );
+
+        if ( typevar == "ACCES" ) {
+            var_name = trim( _accessVariables->getStringFromIndex( i + 1 ) );
+            nosuff = trim( item[0].toString() );
+            ivar = std::stoi( trim( item[1].toString() ) );
+            nmax = std::stoi( trim( item[2].toString() ) );
+
+            PyObject *listValues = PyList_New( nb_ranks );
+
+            if ( nosuff == ".RSPI" ) {
+                for ( int j = 0; j < nb_ranks; ++j ) {
+                    index = nmax * ( j ) + ivar - 1;
+                    PyList_SetItem( listValues, j, PyLong_FromLong( ( *_rspi )[index] ) );
+                }
+            }
+
+            else if ( nosuff == ".RSPR" ) {
+                for ( int j = 0; j < nb_ranks; ++j ) {
+                    index = nmax * ( j ) + ivar - 1;
+                    PyList_SetItem( listValues, j, PyFloat_FromDouble( ( *_rspr )[index] ) );
+                }
+            }
+
+            else {
+                for ( int j = 0; j < nb_ranks; ++j ) {
+                    index = nmax * ( j ) + ivar - 1;
+                    if ( nosuff == ".RSP8" ) {
+                        str_val = trim( ( ( *_rsp8 )[index] ).toString() );
+                    } else if ( nosuff == ".RS16" ) {
+                        str_val = trim( ( ( *_rs16 )[index] ).toString() );
+                    } else if ( nosuff == ".RS24" ) {
+                        str_val = trim( ( ( *_rs24 )[index] ).toString() );
+                    } else {
+                        AS_ASSERT( false );
+                    }
+
+                    if ( str_val.length() == 0 ) {
+                        PyList_SetItem( listValues, j, Py_None );
+                    } else {
+                        PyList_SetItem( listValues, j, PyUnicode_FromString( str_val.c_str() ) );
+                    }
+                }
+            }
+            PyDict_SetItemString( returnDict, var_name.c_str(), listValues );
+            Py_DECREF( listValues );
+        }
+    }
+    CALL_JEDEMA();
+    return returnDict;
 }
 
-VectorString Result::getFieldsOnNodesNames() const
-{
-  VectorString names;
-  names.reserve( _dictOfVectorOfFieldOnNodesReal.size());
+VectorString Result::getFieldsOnNodesNames() const {
+    VectorString names;
+    names.reserve( _dictOfVectorOfFieldOnNodesReal.size() );
 
-  for ( auto& it : _dictOfVectorOfFieldOnNodesReal ) {
-    std::string name = it.first;
-    names.push_back(trim(name)) ;
-  }
-  return names;
+    for ( auto &it : _dictOfVectorOfFieldOnNodesReal ) {
+        std::string name = it.first;
+        names.push_back( trim( name ) );
+    }
+    return names;
 };
 
-VectorString Result::getFieldsOnCellsNames() const
-{
-  VectorString names;
-  names.reserve( _dictOfVectorOfFieldOnCellsReal.size());
+VectorString Result::getFieldsOnCellsNames() const {
+    VectorString names;
+    names.reserve( _dictOfVectorOfFieldOnCellsReal.size() );
 
-  for ( auto& it : _dictOfVectorOfFieldOnCellsReal ) {
-    std::string name = it.first;
-    names.push_back(trim(name)) ;
-  }
-  return names;
+    for ( auto &it : _dictOfVectorOfFieldOnCellsReal ) {
+        std::string name = it.first;
+        names.push_back( trim( name ) );
+    }
+    return names;
 };
 
-VectorString Result::getConstantFieldsOnCellsNames() const
-{
-  VectorString names;
-  names.reserve(_dictOfVectorOfConstantFieldOnCellsChar16.size());
+VectorString Result::getConstantFieldsOnCellsNames() const {
+    VectorString names;
+    names.reserve( _dictOfVectorOfConstantFieldOnCellsChar16.size() );
 
-  for ( auto& it : _dictOfVectorOfConstantFieldOnCellsChar16 ) {
-    std::string name = it.first;
-    names.push_back(trim(name)) ;
-  }
-  return names;
+    for ( auto &it : _dictOfVectorOfConstantFieldOnCellsChar16 ) {
+        std::string name = it.first;
+        names.push_back( trim( name ) );
+    }
+    return names;
 };
-
 
 FieldOnNodesRealPtr Result::getFieldOnNodesReal( const std::string name,
-                                                                     const ASTERINTEGER rank ) const
-{
+                                                 const ASTERINTEGER rank ) const {
 
     if ( rank >= _nbRanks || rank < 0 )
-      raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' is out of range" );
+        raiseAsterError( "IndexError: Rank '" + std::to_string( rank ) + "' is out of range" );
 
     auto curIter = _dictOfVectorOfFieldOnNodesReal.find( trim( name ) );
     if ( curIter == _dictOfVectorOfFieldOnNodesReal.end() )
-      raiseAsterError( "ValueError: Field " + name + " unknown in the results container" );
+        raiseAsterError( "ValueError: Field " + name + " unknown in the results container" );
 
     return curIter->second[rank];
 };
 
-
-bool Result::setField( const FieldOnNodesRealPtr field,
-                          const std::string& name, const ASTERINTEGER rank )
-{
+bool Result::setField( const FieldOnNodesRealPtr field, const std::string &name,
+                       const ASTERINTEGER rank ) {
     CALL_JEMARQ();
 
-    if( !field )
-      raiseAsterError( "ValueError: field is empty" );
+    if ( !field )
+        raiseAsterError( "ValueError: field is empty" );
 
     if ( rank >= _nbRanks || rank < 0 )
-      raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' is out of range" );
+        raiseAsterError( "IndexError: Rank '" + std::to_string( rank ) + "' is out of range" );
 
     auto trim_name = trim( name );
-    auto rschex = _getNewFieldName(trim_name, rank);
-    AS_ASSERT(rschex.first <= 100);
+    auto rschex = _getNewFieldName( trim_name, rank );
+    AS_ASSERT( rschex.first <= 100 );
 
     CALLO_RSNOCH( getName(), name, &rank );
     std::string internalName( rschex.second.c_str(), 19 );
-    FieldOnNodesRealPtr result = boost::make_shared<FieldOnNodesReal>( internalName, *field );
-
+    FieldOnNodesRealPtr result = boost::make_shared< FieldOnNodesReal >( internalName, *field );
 
     auto curIter = _dictOfVectorOfFieldOnNodesReal.find( trim_name );
-    if ( curIter == _dictOfVectorOfFieldOnNodesReal.end() )
-    {
+    if ( curIter == _dictOfVectorOfFieldOnNodesReal.end() ) {
         auto index = _symbolicNamesOfFields->getIndexFromString( trim_name );
-        _dictOfVectorOfFieldOnNodesReal[trim_name] = VectorOfFieldOnNodesReal(
-                            _nbRanks, FieldOnNodesRealPtr( nullptr ) );
+        _dictOfVectorOfFieldOnNodesReal[trim_name] =
+            VectorOfFieldOnNodesReal( _nbRanks, FieldOnNodesRealPtr( nullptr ) );
     }
 
     _dictOfVectorOfFieldOnNodesReal[trim_name][rank] = result;
-
 
     CALL_JEDEMA();
     return true;
 };
 
-bool Result::setField( const FieldOnCellsRealPtr field,
-                          const std::string& name, const ASTERINTEGER rank )
-{
+bool Result::setField( const FieldOnCellsRealPtr field, const std::string &name,
+                       const ASTERINTEGER rank ) {
     CALL_JEMARQ();
 
-    if( !field )
-      raiseAsterError( "ValueError: field is empty" );
+    if ( !field )
+        raiseAsterError( "ValueError: field is empty" );
 
     if ( rank >= _nbRanks || rank < 0 )
-      raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' is out of range" );
+        raiseAsterError( "IndexError: Rank '" + std::to_string( rank ) + "' is out of range" );
 
     auto trim_name = trim( name );
-    auto rschex = _getNewFieldName(trim_name, rank);
-    AS_ASSERT(rschex.first <= 100);
+    auto rschex = _getNewFieldName( trim_name, rank );
+    AS_ASSERT( rschex.first <= 100 );
 
     CALLO_RSNOCH( getName(), name, &rank );
     std::string internalName( rschex.second.c_str(), 19 );
-    FieldOnCellsRealPtr result = boost::make_shared<FieldOnCellsReal>( internalName, *field );
+    FieldOnCellsRealPtr result = boost::make_shared< FieldOnCellsReal >( internalName, *field );
 
     auto curIter = _dictOfVectorOfFieldOnCellsReal.find( trim_name );
-    if ( curIter == _dictOfVectorOfFieldOnCellsReal.end() )
-    {
+    if ( curIter == _dictOfVectorOfFieldOnCellsReal.end() ) {
         auto index = _symbolicNamesOfFields->getIndexFromString( trim_name );
-         _dictOfVectorOfFieldOnCellsReal[trim_name] = VectorOfFieldOnCellsReal(
-                            _nbRanks, FieldOnCellsRealPtr( nullptr ) );
+        _dictOfVectorOfFieldOnCellsReal[trim_name] =
+            VectorOfFieldOnCellsReal( _nbRanks, FieldOnCellsRealPtr( nullptr ) );
     }
 
     _dictOfVectorOfFieldOnCellsReal[trim_name][rank] = result;
@@ -575,31 +530,29 @@ bool Result::setField( const FieldOnCellsRealPtr field,
     return true;
 };
 
-bool Result::setField( const ConstantFieldOnCellsChar16Ptr field,
-                          const std::string& name, const ASTERINTEGER rank )
-{
+bool Result::setField( const ConstantFieldOnCellsChar16Ptr field, const std::string &name,
+                       const ASTERINTEGER rank ) {
     CALL_JEMARQ();
 
-    if( !field )
-      raiseAsterError( "ValueError: field is empty" );
+    if ( !field )
+        raiseAsterError( "ValueError: field is empty" );
 
     if ( rank >= _nbRanks || rank < 0 )
-      raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' is out of range" );
+        raiseAsterError( "IndexError: Rank '" + std::to_string( rank ) + "' is out of range" );
 
     auto trim_name = trim( name );
-    auto rschex = _getNewFieldName(trim_name, rank);
-    AS_ASSERT(rschex.first <= 100);
+    auto rschex = _getNewFieldName( trim_name, rank );
+    AS_ASSERT( rschex.first <= 100 );
 
     CALLO_RSNOCH( getName(), name, &rank );
     std::string internalName( rschex.second.c_str(), 19 );
-    auto result = boost::make_shared<ConstantFieldOnCellsChar16>( internalName, *field );
+    auto result = boost::make_shared< ConstantFieldOnCellsChar16 >( internalName, *field );
 
     auto curIter = _dictOfVectorOfConstantFieldOnCellsChar16.find( trim_name );
-    if ( curIter == _dictOfVectorOfConstantFieldOnCellsChar16.end() )
-    {
+    if ( curIter == _dictOfVectorOfConstantFieldOnCellsChar16.end() ) {
         auto index = _symbolicNamesOfFields->getIndexFromString( trim_name );
-         _dictOfVectorOfConstantFieldOnCellsChar16[trim_name] = VectorOfConstantFieldOnCellsChar16(
-                            _nbRanks, ConstantFieldOnCellsChar16Ptr( nullptr ) );
+        _dictOfVectorOfConstantFieldOnCellsChar16[trim_name] = VectorOfConstantFieldOnCellsChar16(
+            _nbRanks, ConstantFieldOnCellsChar16Ptr( nullptr ) );
     }
 
     _dictOfVectorOfConstantFieldOnCellsChar16[trim_name][rank] = result;
@@ -608,8 +561,7 @@ bool Result::setField( const ConstantFieldOnCellsChar16Ptr field,
     return true;
 };
 
-void Result::printListOfFields() const
-{
+void Result::printListOfFields() const {
     std::cout << "Content of DataStructure : ";
     for ( auto curIter : _dictOfVectorOfFieldOnNodesReal ) {
         std::cout << curIter.first << " - ";
@@ -628,9 +580,7 @@ void Result::printInfo() const {
     CALLO_RSINFO( getName(), &umess );
 }
 
-bool Result::printMedFile( const std::string fileName,
-                                std::string medName ) const
-{
+bool Result::printMedFile( const std::string fileName, std::string medName ) const {
     LogicalUnitFile a( fileName, Binary, New );
     ASTERINTEGER retour = a.getLogicalUnit();
     CommandSyntax cmdSt( "IMPR_RESU" );
@@ -643,8 +593,8 @@ bool Result::printMedFile( const std::string fileName,
     SyntaxMapContainer dict2;
     dict2.container["RESULTAT"] = getName();
     dict2.container["TOUT_ORDRE"] = "OUI";
-    if(!medName.empty())
-        dict2.container["NOM_RESU_MED"] = medName.substr(0,8);
+    if ( !medName.empty() )
+        dict2.container["NOM_RESU_MED"] = medName.substr( 0, 8 );
     listeResu.push_back( dict2 );
     dict.container["RESU"] = listeResu;
 
@@ -654,14 +604,13 @@ bool Result::printMedFile( const std::string fileName,
         ASTERINTEGER op = 39;
         CALL_EXECOP( &op );
     } catch ( ... ) {
-        AS_ASSERT(false);
+        AS_ASSERT( false );
     }
 
     return true;
 };
 
-bool Result::build()
-{
+bool Result::build() {
     CALL_JEMARQ();
     _serialNumber->updateValuePointer();
 
@@ -672,16 +621,15 @@ bool Result::build()
     _nbRanks = numberOfSerialNum;
     BaseMeshPtr curMesh( nullptr );
     const ASTERINTEGER iordr = ( *_serialNumber )[_nbRanks - 1];
-    if ( _mapModel.find( iordr ) != _mapModel.end() ){
+    if ( _mapModel.find( iordr ) != _mapModel.end() ) {
         curMesh = _mapModel[iordr]->getMesh();
-    }
-    else if ( _mesh != nullptr ){
+    } else if ( _mesh != nullptr ) {
         curMesh = _mesh;
     }
     ASTERINTEGER cmpt = 1;
     for ( const auto curIter : _namesOfFields->getVectorOfObjects() ) {
         auto nomSymb = trim( _symbolicNamesOfFields->getStringFromIndex( cmpt ) );
-        AS_ASSERT ( numberOfSerialNum <= curIter.size() );
+        AS_ASSERT( numberOfSerialNum <= curIter.size() );
 
         for ( ASTERINTEGER rank = 0; rank < numberOfSerialNum; ++rank ) {
             std::string name( trim( curIter[rank].toString() ) );
@@ -701,9 +649,9 @@ bool Result::build()
                     if ( iterField == _dictOfVectorOfFieldOnNodesReal.end() )
                         _dictOfVectorOfFieldOnNodesReal[nomSymb] = VectorOfFieldOnNodesReal(
                             numberOfSerialNum, FieldOnNodesRealPtr( nullptr ) );
-                    else if ( ASTERINTEGER(iterField->second.size()) != numberOfSerialNum ) {
+                    else if ( ASTERINTEGER( iterField->second.size() ) != numberOfSerialNum ) {
                         iterField->second.resize( numberOfSerialNum,
-                                                 FieldOnNodesRealPtr( nullptr ) );
+                                                  FieldOnNodesRealPtr( nullptr ) );
                     }
 
                     ASTERINTEGER test2 = _dictOfVectorOfFieldOnNodesReal[nomSymb][rank].use_count();
@@ -717,9 +665,9 @@ bool Result::build()
                     if ( iterField == _dictOfVectorOfFieldOnCellsReal.end() )
                         _dictOfVectorOfFieldOnCellsReal[nomSymb] = VectorOfFieldOnCellsReal(
                             numberOfSerialNum, FieldOnCellsRealPtr( nullptr ) );
-                    else if ( ASTERINTEGER(iterField->second.size()) != numberOfSerialNum ) {
+                    else if ( ASTERINTEGER( iterField->second.size() ) != numberOfSerialNum ) {
                         iterField->second.resize( numberOfSerialNum,
-                                                 FieldOnCellsRealPtr( nullptr ) );
+                                                  FieldOnCellsRealPtr( nullptr ) );
                     }
 
                     ASTERINTEGER test2 = _dictOfVectorOfFieldOnCellsReal[nomSymb][rank].use_count();
@@ -727,29 +675,27 @@ bool Result::build()
                         AS_ASSERT( curMesh != nullptr );
                         FieldOnCellsRealPtr result =
                             _fieldBuidler.buildFieldOnCells< ASTERDOUBLE >( name, curMesh );
-                        auto iterModel = _mapModel.find(( *_serialNumber )[rank]);
+                        auto iterModel = _mapModel.find( ( *_serialNumber )[rank] );
                         if ( iterModel != _mapModel.end() )
-                            if ( not((( *iterModel ).second)->isEmpty()) )
-                                result->setModel(( *iterModel ).second);
-                        else if (not(hasMultipleModel())){
-                            ModelPtr curModel = getModel();
-                            if ( not(curModel->isEmpty()) )
-                                result->setModel(curModel);
-                        }
+                            if ( not( ( ( *iterModel ).second )->isEmpty() ) )
+                                result->setModel( ( *iterModel ).second );
+                            else if ( not( hasMultipleModel() ) ) {
+                                ModelPtr curModel = getModel();
+                                if ( not( curModel->isEmpty() ) )
+                                    result->setModel( curModel );
+                            }
                         _dictOfVectorOfFieldOnCellsReal[nomSymb][rank] = result;
-
                     }
-                }
-                else if ( resu == "CART" ){
+                } else if ( resu == "CART" ) {
                     const auto &iterField =
                         _dictOfVectorOfConstantFieldOnCellsChar16.find( nomSymb );
                     if ( iterField == _dictOfVectorOfConstantFieldOnCellsChar16.end() )
                         _dictOfVectorOfConstantFieldOnCellsChar16[nomSymb] =
                             VectorOfConstantFieldOnCellsChar16(
                                 numberOfSerialNum, ConstantFieldOnCellsChar16Ptr( nullptr ) );
-                    else if ( ASTERINTEGER(iterField->second.size()) != numberOfSerialNum ) {
+                    else if ( ASTERINTEGER( iterField->second.size() ) != numberOfSerialNum ) {
                         iterField->second.resize( numberOfSerialNum,
-                                                 ConstantFieldOnCellsChar16Ptr( nullptr ) );
+                                                  ConstantFieldOnCellsChar16Ptr( nullptr ) );
                     }
 
                     ASTERINTEGER test2 =
@@ -757,12 +703,11 @@ bool Result::build()
                     if ( test2 == 0 ) {
                         AS_ASSERT( curMesh != nullptr );
                         ConstantFieldOnCellsChar16Ptr result =
-                        _fieldBuidler.buildConstantFieldOnCells< JeveuxChar16 >( name, curMesh );
+                            _fieldBuidler.buildConstantFieldOnCells< JeveuxChar16 >( name,
+                                                                                     curMesh );
                         _dictOfVectorOfConstantFieldOnCellsChar16[nomSymb][rank] = result;
-
                     }
-                }
-                else{
+                } else {
                     std::cout << "Field not build : " << name << " (" << resu << ")" << std::endl;
                 }
                 CALL_JEDEMA();
