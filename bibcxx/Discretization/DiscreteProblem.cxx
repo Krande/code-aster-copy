@@ -97,8 +97,9 @@ DiscreteProblem::computeElementaryDirichletReactionVector(FieldOnNodesRealPtr la
     CALLO_VEBTLA(base, modelName, materName, caraName, lagrName, listLoadsName, resultName);
 
     retour->isEmpty( false );
-
     retour->setListOfLoads( listOfLoads );
+    retour->build();
+
     return retour;
 };
 
