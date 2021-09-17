@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,10 @@ subroutine uimpba(clas, iunmes)
     implicit none
 #include "jeveux.h"
 !
-#include "asterfort/gettco.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
+#include "asterfort/gettco.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedetr.h"
@@ -33,9 +35,8 @@ subroutine uimpba(clas, iunmes)
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/split_string.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     character(len=*) :: clas
     integer :: iunmes
 ! person_in_charge: jacques.pellet at edf.fr
@@ -45,13 +46,15 @@ subroutine uimpba(clas, iunmes)
 !
 !  IN    CLAS  : NOM DE LA BASE : 'G', 'V', ..(' ' -> TOUTES LES BASES)
 ! ----------------------------------------------------------------------
-    character(len=8) :: k8
-    character(len=24) :: kbid, obj
+    character(len=8) :: root
     character(len=16) :: typcon
+    character(len=19) :: key
+    character(len=24) :: kbid, obj
     real(kind=8) :: rlong, mega, taitot
-    integer :: i, nbobj, nbval, iexi, nbcon,   nbsv
+    integer :: i, nbobj, nbval, idx, nbcon,   nbsv
     integer ::     nstot
     character(len=24), pointer :: liste_obj(:) => null()
+    character(len=24), pointer :: types(:) => null()
     integer, pointer :: vnbobj(:) => null()
     integer, pointer :: nbsvc(:) => null()
     integer, pointer :: nbsvo(:) => null()
@@ -68,7 +71,7 @@ subroutine uimpba(clas, iunmes)
     call jelstc(clas, ' ', 0, nbobj, kbid,&
                 nbval)
     ASSERT(nbval.le.0)
-    if (nbval .eq. 0) goto 9999
+    if (nbval .eq. 0) goto 999
     nbobj=-nbval
     AS_ALLOCATE(vk24=liste_obj, size=nbobj+1)
     call jelstc(clas, ' ', 0, nbobj, liste_obj,&
@@ -90,39 +93,50 @@ subroutine uimpba(clas, iunmes)
     end do
 !
 !
-!     -- 3 : .LCONK8 = LISTE DES CONCEPTS (K8) DE .LISTE_OBJ
+!     -- 3 : .LSTCON = LISTE DES CONCEPTS (K8) DE .LISTE_OBJ
 !     -----------------------------------------------------------
-    call jecreo('&&UIMPBA.LCONK8', 'V N K8')
-    call jeecra('&&UIMPBA.LCONK8', 'NOMMAX', nbobj)
+    call jecreo('&&UIMPBA.LSTCON', 'V N K24')
+    call jeecra('&&UIMPBA.LSTCON', 'NOMMAX', nbobj)
     do i=1,nbobj
-        obj=liste_obj(i)
-        k8=obj(1:8)
-        call jenonu(jexnom('&&UIMPBA.LCONK8', k8), iexi)
-        if (iexi .eq. 0) then
-            call jecroc(jexnom('&&UIMPBA.LCONK8', k8))
+        obj = liste_obj(i)
+        call split_string(obj, ".", root)
+        call jenonu(jexnom('&&UIMPBA.LSTCON', root), idx)
+        if (idx .eq. 0) then
+            call jecroc(jexnom('&&UIMPBA.LSTCON', root))
         endif
     end do
-!
-!
-!     -- 4 : .TAILCON = TAILLE DES CONCEPTS
-!     -----------------------------------------------------------
-    call jelira('&&UIMPBA.LCONK8', 'NOMUTI', nbcon)
+    !
+    !
+    !     -- 4 : .TAILCON = TAILLE DES CONCEPTS
+    !     -----------------------------------------------------------
+    call jelira('&&UIMPBA.LSTCON', 'NOMUTI', nbcon)
     AS_ALLOCATE(vr=tailcon, size=nbcon)
     AS_ALLOCATE(vi=nbsvc, size=nbcon)
     AS_ALLOCATE(vi=vnbobj, size=nbcon)
+    AS_ALLOCATE(vk24=types, size=nbcon)
+    types = " "
     taitot=0.d0
     nstot=0
     do i=1,nbobj
-        obj=liste_obj(i)
-        k8=obj(1:8)
-        call jenonu(jexnom('&&UIMPBA.LCONK8', k8), iexi)
-        ASSERT(iexi.gt.0)
-        ASSERT(iexi.le.nbcon)
-        tailcon(iexi)=tailcon(iexi)+taille(i)
-        taitot=taitot+taille(i)
-        nbsvc(iexi)=nbsvc(iexi)+nbsvo(i)
-        vnbobj(iexi)=vnbobj(iexi)+1
-        nstot=nstot+nbsvo(i)
+        obj = liste_obj(i)
+        call split_string(obj, ".", root)
+        call jenonu(jexnom('&&UIMPBA.LSTCON', root), idx)
+        ASSERT(idx.gt.0)
+        ASSERT(idx.le.nbcon)
+        if (types(idx) .eq. " ") then
+            call gettco(root, types(idx), errstop=ASTER_FALSE)
+            if (types(idx) .eq. " ") then
+                call gettco(obj(1:19), typcon, errstop=ASTER_FALSE)
+                if (typcon .ne. " ") then
+                    types(idx) = "*"//typcon
+                endif
+            endif
+        endif
+        tailcon(idx) = tailcon(idx) + taille(i)
+        taitot = taitot + taille(i)
+        nbsvc(idx) = nbsvc(idx) + nbsvo(i)
+        vnbobj(idx) = vnbobj(idx) + 1
+        nstot = nstot + nbsvo(i)
     end do
 !
 !
@@ -131,40 +145,39 @@ subroutine uimpba(clas, iunmes)
     write(iunmes,*) '-----------------------------------------------',&
      &                '----------------------------'
     write(iunmes,*) 'Concepts de la base: ',clas
-    write(iunmes,*) '   Nom       Type                 Taille (Mo)',&
+    write(iunmes,*) '   Nom        Type                Taille (Mo)',&
      &                '         Nombre      Nombre de'
     write(iunmes,*) '                                            ',&
      &                '        d''objets       segments'
 !
-    write(iunmes,1000) 'TOTAL   ',' ',taitot/mega,nbobj,nstot
+    write(iunmes,100) 'TOTAL   ',' ',taitot/mega,nbobj,nstot
     write(iunmes,*) ' '
 !
 !     -- ON IMPRIME D'ABORD LES CONCEPTS UTILISATEUR :
-    do i=1,nbcon
-        call jenuno(jexnum('&&UIMPBA.LCONK8', i), k8)
-        call gettco(k8, typcon, errstop=ASTER_FALSE)
-        if (typcon .eq. ' ') cycle
-        write(iunmes,1000) k8,typcon,tailcon(i)/mega, vnbobj(i),nbsvc(i)
+    do i = 1, nbcon
+        if (types(i) .eq. ' ') cycle
+        call jenuno(jexnum('&&UIMPBA.LSTCON', i), key)
+        write(iunmes,100) key, types(i), tailcon(i) / mega, vnbobj(i), nbsvc(i)
     end do
 
 !     -- ON IMPRIME ENSUITE LES CONCEPTS CACHES  :
-    do i=1,nbcon
-        call jenuno(jexnum('&&UIMPBA.LCONK8', i), k8)
-        call gettco(k8, typcon, errstop=ASTER_FALSE)
-        if (typcon .ne. ' ') cycle
-        write(iunmes,1000) k8,typcon,tailcon(i)/mega, vnbobj(i),nbsvc(i)
+    do i = 1, nbcon
+        if (types(i) .ne. ' ') cycle
+        call jenuno(jexnum('&&UIMPBA.LSTCON', i), key)
+        write(iunmes,100) key, types(i), tailcon(i) / mega, vnbobj(i), nbsvc(i)
     end do
+    write(iunmes,*) '(*) sous-objets non accessible directement'
     write(iunmes,*) '-----------------------------------------------',&
      &                '----------------------------'
 !
 !
-9999  continue
+999  continue
     AS_DEALLOCATE(vk24=liste_obj)
     AS_DEALLOCATE(vr=taille)
-    call jedetr('&&UIMPBA.LCONK8')
+    call jedetr('&&UIMPBA.LSTCON')
     AS_DEALLOCATE(vr=tailcon)
     AS_DEALLOCATE(vi=nbsvo)
     AS_DEALLOCATE(vi=nbsvc)
     AS_DEALLOCATE(vi=vnbobj)
-    1000 format (4x,a8,3x,a16,3x,f12.2,3x,i12,3x,i12)
+    100 format (4x,a8,3x,a16,3x,f12.2,3x,i12,3x,i12)
 end subroutine
