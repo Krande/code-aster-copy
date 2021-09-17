@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -113,8 +113,8 @@ subroutine te0214(nomopt, nomte)
         y(i) = zr(igeom+2*(i-1)+2-1)
         z(i) = 0.d0
     end do
-    c2(1) = 0.5d0*(x(2)-x(1)+x(3)-x(4))
-    c2(2) = 0.5d0*(y(2)-y(1)+y(3)-y(4))
+    c2(1) = x(2)-x(1)
+    c2(2) = y(2)-y(1)
     surf=ddot(2,c2,1,c2,1)
     c2(1)=c2(1)/sqrt(surf)
     c2(2)=c2(2)/sqrt(surf)
@@ -151,7 +151,7 @@ subroutine te0214(nomopt, nomte)
             call jevech('PVARIPG', 'L', ivari)
             if (irigi .ne. 0) then
                 if (ins .ne. 0 .and. irns .ne. 0) then
-                    do i3 = 1, 2
+                    do i3 = 1, 2   
                         do j = 1, 2
                             i=2*(i3-1)+j
                             i2=i+10-4*i3
