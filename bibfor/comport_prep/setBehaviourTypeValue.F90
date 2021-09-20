@@ -82,10 +82,10 @@ character(len=16), pointer, optional :: v_compor_(:)
         v_compor_(RIGI_GEOM) = v_para(i_comp)%rigi_geom
         v_compor_(REGUVISC) = v_para(i_comp)%regu_visc
         if (l_kit_thm) then
-            v_compor_(THMC_NAME) = v_para(i_comp)%kit_comp(1)
-            v_compor_(THER_NAME) = v_para(i_comp)%kit_comp(2)
-            v_compor_(HYDR_NAME) = v_para(i_comp)%kit_comp(3)
-            v_compor_(MECA_NAME) = v_para(i_comp)%kit_comp(4)
+            v_compor_(MECA_NAME) = v_para(i_comp)%kit_comp(1)
+            v_compor_(HYDR_NAME) = v_para(i_comp)%kit_comp(2)
+            v_compor_(THER_NAME) = v_para(i_comp)%kit_comp(3)
+            v_compor_(THMC_NAME) = v_para(i_comp)%kit_comp(4)
             write (v_compor_(THMC_NUME),'(I16)') v_para(i_comp)%nume_comp(1)
             write (v_compor_(THER_NUME),'(I16)') v_para(i_comp)%nume_comp(2)
             write (v_compor_(HYDR_NUME),'(I16)') v_para(i_comp)%nume_comp(3)
@@ -133,6 +133,9 @@ character(len=16), pointer, optional :: v_compor_(:)
         l_compor_(DEFO_LDC) = v_para(i_comp)%defo_ldc
         l_compor_(RIGI_GEOM) = v_para(i_comp)%rigi_geom
         l_compor_(REGUVISC) = v_para(i_comp)%regu_visc
+        if (l_kit_thm) then
+            ASSERT(ASTER_FALSE)
+        endif
         if (l_kit_ddi) then
             l_compor_(CREEP_NAME) = v_para(i_comp)%kit_comp(1)
             l_compor_(PLAS_NAME)  = v_para(i_comp)%kit_comp(2)

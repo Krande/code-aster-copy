@@ -177,10 +177,10 @@ aster_logical, intent(in), optional :: l_implex_
         endif
 ! ----- Get mechanics part
         if (l_kit_thm) then
-            thmc_comp = kit_comp(1)
-            ther_comp = kit_comp(2)
-            hydr_comp = kit_comp(3)
-            meca_comp = kit_comp(4)
+            meca_comp = kit_comp(1)
+            hydr_comp = kit_comp(2)
+            ther_comp = kit_comp(3)
+            thmc_comp = kit_comp(4)
         elseif (l_kit_ddi) then
             meca_comp = kit_comp(1)
         else

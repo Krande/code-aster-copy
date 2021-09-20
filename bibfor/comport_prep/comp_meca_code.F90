@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,6 @@ character(len=16), optional, intent(out) :: meca_code_py_
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_comp_elem, ikit
-    character(len=16) :: rela_thmc, rela_hydr, rela_meca, rela_ther
     character(len=16) :: comp_elem(20), rela_meta
     character(len=16) :: meta_code_py, rela_code_py, defo_code_py, meca_code_py, comp_code_py
     aster_logical :: l_kit_meta, l_kit_thm, l_implex
@@ -131,19 +130,6 @@ character(len=16), optional, intent(out) :: meca_code_py_
     if (post_iter.ne.' ') then
         nb_comp_elem = nb_comp_elem + 1
         comp_elem(nb_comp_elem) = post_iter
-    endif
-!
-! - Reorder THM behaviours
-!
-    if (l_kit_thm) then
-        rela_thmc = comp_elem(4)
-        rela_ther = comp_elem(5)
-        rela_hydr = comp_elem(6)
-        rela_meca = comp_elem(7)
-        comp_elem(4) = rela_meca
-        comp_elem(5) = rela_hydr
-        comp_elem(6) = rela_ther
-        comp_elem(7) = rela_thmc
     endif
 !
 ! - Implex

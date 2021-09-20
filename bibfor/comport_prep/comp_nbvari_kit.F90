@@ -83,10 +83,10 @@ aster_logical, intent(out) :: l_meca_mfront
 ! - Number of internal variables for KIT THM
 !
     if (l_kit_thm) then
-        rela_thmc = kit_comp(1)
-        rela_ther = kit_comp(2)
-        rela_hydr = kit_comp(3)
-        rela_meca = kit_comp(4)
+        rela_meca = kit_comp(1)
+        rela_hydr = kit_comp(2)
+        rela_ther = kit_comp(3)
+        rela_thmc = kit_comp(4)
         call thm_kit_nvar(rela_thmc     , rela_hydr     , rela_meca     , rela_ther     ,&
                           nb_vari_thmc  , nb_vari_hydr  , nb_vari_meca  , nb_vari_ther  ,&
                           nume_comp_thmc, nume_comp_hydr, nume_comp_meca, nume_comp_ther)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -155,7 +155,7 @@ integer, optional, intent(out) :: nume_comp_(4)
                              l_kit_meta, l_kit_thm   , l_kit_ddi   , l_kit_cg     ,&
                              nb_vari   , nb_vari_comp, nume_comp   , l_meca_mfront)
         if (l_meca_mfront) then
-            rela_meca = kit_comp(4)
+            rela_meca = kit_comp(1)
             call comp_meca_l(rela_meca, 'EXTE_COMP'   , l_exte_comp)
             call comp_meca_l(rela_meca, 'MFRONT_PROTO', l_mfront_proto)
             call comp_meca_l(rela_meca, 'MFRONT_OFFI' , l_mfront_offi)

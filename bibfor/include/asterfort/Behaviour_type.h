@@ -71,17 +71,19 @@
 #define KIT4_NAME    12
 #define KIT1_NUME    13
 #define KIT2_NUME    14
-#define KIT1_NVAR    15
-#define KIT2_NVAR    16
-#define KIT3_NVAR    17
-#define KIT4_NVAR    18
+#define KIT3_NUME    15
+#define KIT4_NUME    16
+#define KIT1_NVAR    17
+#define KIT2_NVAR    18
+#define KIT3_NVAR    19
+#define KIT4_NVAR    20
 !
 ! Slots: for KIT_THM
 !
-#define THMC_NAME    9
-#define THER_NAME    10
-#define HYDR_NAME    11
-#define MECA_NAME    12
+#define MECA_NAME    9
+#define HYDR_NAME    10
+#define THER_NAME    11
+#define THMC_NAME    12
 #define THMC_NUME    13
 #define THER_NUME    14
 #define HYDR_NUME    15

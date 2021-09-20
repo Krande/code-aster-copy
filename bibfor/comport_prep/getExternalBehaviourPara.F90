@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ character(len=16), optional, intent(out) :: type_cpla_out_
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_kit_thm
-    character(len=16) :: rela_comp_ask, keywf
+    character(len=16) :: relaMeca, keywf
     integer :: i_comp
     aster_logical :: l_mfront_proto, l_mfront_offi, l_umat
     character(len=255) :: libr_name, subr_name
@@ -106,27 +106,26 @@ character(len=16), optional, intent(out) :: type_cpla_out_
         keywf       = keywf_
         i_comp      = i_comp_
     endif  
-!
-! - Select comportement
-!
+
+! - Get mechanical part of behaviour (required for KIT_THM)
     call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
     if (l_kit_thm) then
-        rela_comp_ask = kit_comp(4)
+        relaMeca = kit_comp(1)
     else
-        rela_comp_ask = rela_comp
+        relaMeca = rela_comp
     endif
 !
 ! - Detect type
 !
-    call comp_meca_l(rela_comp_ask, 'UMAT'        , l_umat)
-    call comp_meca_l(rela_comp_ask, 'MFRONT_OFFI' , l_mfront_offi)
-    call comp_meca_l(rela_comp_ask, 'MFRONT_PROTO', l_mfront_proto)
+    call comp_meca_l(relaMeca, 'UMAT'        , l_umat)
+    call comp_meca_l(relaMeca, 'MFRONT_OFFI' , l_mfront_offi)
+    call comp_meca_l(relaMeca, 'MFRONT_PROTO', l_mfront_proto)
 !
 ! - Get parameters for external programs (MFRONT/UMAT)
 !
-    call comp_read_exte(rela_comp_ask, keywf         , i_comp       ,&
-                        l_umat       , l_mfront_proto, l_mfront_offi,&
-                        libr_name    , subr_name     , nb_vari_umat)
+    call comp_read_exte(relaMeca , keywf         , i_comp       ,&
+                        l_umat   , l_mfront_proto, l_mfront_offi,&
+                        libr_name, subr_name     , nb_vari_umat)
 !
 ! - Get model for MFRONT
 !

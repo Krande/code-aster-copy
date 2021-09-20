@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -113,6 +113,8 @@ implicit none
         v_compor_valv(POSTITER) = post_iter
         write (v_compor_valv(KIT1_NUME),'(I16)') nume_comp(2)
         write (v_compor_valv(KIT2_NUME),'(I16)') nume_comp(3)
+        write (v_compor_valv(KIT3_NUME),'(I16)') 0
+        write (v_compor_valv(KIT4_NUME),'(I16)') 0
         write (v_compor_valv(KIT1_NVAR),'(I16)') nb_vari_comp(1)
         write (v_compor_valv(KIT2_NVAR),'(I16)') nb_vari_comp(2)
         write (v_compor_valv(KIT3_NVAR),'(I16)') nb_vari_comp(3)
