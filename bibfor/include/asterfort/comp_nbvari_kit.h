@@ -19,10 +19,10 @@
 !
 interface
     subroutine comp_nbvari_kit(kit_comp  ,&
-                               l_kit_meta, l_kit_thm   , l_kit_ddi, l_kit_cg,&
-                               nbVariKit , nb_vari_comp, nume_comp)
+                               l_kit_meta   , l_kit_thm, l_kit_ddi, l_kit_cg,&
+                               nbVariFromKit, nbVariKit, numeLawKit)
         character(len=16), intent(in) :: kit_comp(4)
         aster_logical, intent(in) :: l_kit_meta, l_kit_thm, l_kit_ddi, l_kit_cg
-        integer, intent(out) :: nbVariKit, nume_comp(4), nb_vari_comp(4)
+        integer, intent(out) :: nbVariFromKit, numeLawKit(4), nbVariKit(4)
     end subroutine comp_nbvari_kit
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1003
 !
-subroutine pmdorc(compor, carcri, nb_vari, type_comp, mult_comp)
+subroutine pmdorc(compor, carcri, nbVari, type_comp, mult_comp)
 !
 use Behaviour_type
 !
@@ -44,9 +44,9 @@ implicit none
 #include "asterfort/setBehaviourParaValue.h"
 #include "asterfort/Behaviour_type.h"
 !
-character(len=16), intent(out) :: compor(*)
-real(kind=8), intent(out) :: carcri(*)
-integer, intent(out) :: nb_vari
+character(len=16), intent(out) :: compor(COMPOR_SIZE)
+real(kind=8), intent(out) :: carcri(CARCRI_SIZE)
+integer, intent(out) :: nbVari
 character(len=16), intent(out) :: type_comp, mult_comp
 !
 ! --------------------------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ character(len=16), intent(out) :: type_comp, mult_comp
 !
 ! Out compor           : name of <CARTE> COMPOR
 ! Out carcri           : name of <CARTE> CARCRI
-! Out nb_vari          : number of internal variables
+! Out nbVari           : number of internal variables
 ! Out type_comp        : type of comportment (INCR/ELAS)
 ! Out mult_comp        : multi-comportment (DEFI_COMPOR for PMF)
 !
@@ -78,7 +78,7 @@ character(len=16), intent(out) :: type_comp, mult_comp
 !
 ! - Initializations
 !
-    nb_vari               = 0
+    nbVari               = 0
     type_comp             = ' '
     compor_info           = '&&PMDORC.LIST_VARI'
     keywordfact           = 'COMPORTEMENT'
@@ -109,7 +109,7 @@ character(len=16), intent(out) :: type_comp, mult_comp
 !
 ! - Some properties
 !
-    nb_vari   = prepPara%v_para(1)%nb_vari
+    nbVari    = prepPara%v_para(1)%nbVari
     rela_comp = prepPara%v_para(1)%rela_comp
     type_comp = prepPara%v_para(1)%type_comp
     mult_comp = prepPara%v_para(1)%mult_comp

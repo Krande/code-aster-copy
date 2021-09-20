@@ -19,15 +19,11 @@
 !
 interface
     subroutine comp_nbvari_std(rela_comp, defo_comp, type_cpla,&
-                               kit_comp , post_iter, mult_comp,&
-                               regu_visc,&
-                               l_cristal, l_implex ,&
-                               nb_vari  , nume_comp)
+                               kit_comp , post_iter, regu_visc,&
+                               l_implex , nbVari   , numeLaw)
         character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla
-        character(len=16), intent(in) :: kit_comp(4), post_iter
-        character(len=16), intent(in) :: mult_comp, regu_visc
-        aster_logical, intent(in) :: l_cristal, l_implex
-        integer, intent(inout) :: nume_comp(4)
-        integer, intent(out) :: nb_vari
+        character(len=16), intent(in) :: kit_comp(4), post_iter, regu_visc
+        aster_logical, intent(in) :: l_implex
+        integer, intent(out) :: nbVari, numeLaw
     end subroutine comp_nbvari_std
 end interface

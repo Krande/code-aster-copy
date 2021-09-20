@@ -18,8 +18,8 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine comp_nbvari_kit(kit_comp  ,&
-                           l_kit_meta, l_kit_thm   , l_kit_ddi, l_kit_cg,&
-                           nbVariKit , nb_vari_comp, nume_comp)
+                           l_kit_meta   , l_kit_thm, l_kit_ddi, l_kit_cg,&
+                           nbVariFromKit, nbVariKit, numeLawKit)
 !
 implicit none
 !
@@ -32,7 +32,7 @@ implicit none
 !
 character(len=16), intent(in) :: kit_comp(4)
 aster_logical, intent(in) :: l_kit_meta, l_kit_thm, l_kit_ddi, l_kit_cg
-integer, intent(out) :: nbVariKit, nume_comp(4), nb_vari_comp(4)
+integer, intent(out) :: nbVariFromKit, numeLawKit(4), nbVariKit(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,9 +47,9 @@ integer, intent(out) :: nbVariKit, nume_comp(4), nb_vari_comp(4)
 ! In  l_kit_thm        : .true. if kit THM
 ! In  l_kit_ddi        : .true. if kit DDI
 ! In  l_kit_cg         : .true. if kit CG
-! Out nbVariKit        : total number of internal state variables from kit
-! Out nume_comp        : number LCxxxx subroutine
-! Out nb_vari_comp     : number of internal variables kit comportment
+! Out nbVariFromKit    : total number of internal state variables from kit
+! Out numeLawKit       : index of subroutine for components in kit
+! Out nbVariKit        : number of internal state variables for components in kit
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,9 +66,9 @@ integer, intent(out) :: nbVariKit, nume_comp(4), nb_vari_comp(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbVariKit    = 0
-    nb_vari_comp = 0
-    nume_comp    = 0
+    nbVariFromKit = 0
+    nbVariKit     = 0
+    numeLawKit    = 0
 
 ! - Number of internal state variables for KIT THM
     if (l_kit_thm) then
@@ -79,14 +79,14 @@ integer, intent(out) :: nbVariKit, nume_comp(4), nb_vari_comp(4)
         call thm_kit_nvar(rela_thmc     , rela_hydr     , rela_meca     , rela_ther     ,&
                           nb_vari_thmc  , nb_vari_hydr  , nb_vari_meca  , nb_vari_ther  ,&
                           nume_comp_thmc, nume_comp_hydr, nume_comp_meca, nume_comp_ther)
-        nb_vari_comp(1) = nb_vari_thmc
-        nb_vari_comp(2) = nb_vari_ther
-        nb_vari_comp(3) = nb_vari_hydr
-        nb_vari_comp(4) = nb_vari_meca
-        nume_comp(1) = nume_comp_thmc
-        nume_comp(2) = nume_comp_ther
-        nume_comp(3) = nume_comp_hydr
-        nume_comp(4) = nume_comp_meca
+        nbVariKit(1) = nb_vari_thmc
+        nbVariKit(2) = nb_vari_ther
+        nbVariKit(3) = nb_vari_hydr
+        nbVariKit(4) = nb_vari_meca
+        numeLawKit(1) = nume_comp_thmc
+        numeLawKit(2) = nume_comp_ther
+        numeLawKit(3) = nume_comp_hydr
+        numeLawKit(4) = nume_comp_meca
     endif
 
 ! - Number of internal state variables for KIT META
@@ -96,10 +96,10 @@ integer, intent(out) :: nbVariKit, nume_comp(4), nb_vari_comp(4)
         metaGlob = kit_comp(3)
         call meta_kit_nvar(metaPhas, metaRela, metaGlob,&
                            nbMetaPhas, nbVariMetaRela, nbVariMetaGlob)
-        nb_vari_comp(1) = nbVariMetaRela
-        nb_vari_comp(2) = nbMetaPhas
-        nb_vari_comp(3) = nbVariMetaGlob
-        nbVariKit = nbVariMetaGlob + nbVariMetaRela*(nbMetaPhas+1)
+        nbVariKit(1) = nbVariMetaRela
+        nbVariKit(2) = nbMetaPhas
+        nbVariKit(3) = nbVariMetaGlob
+        nbVariFromKit = nbVariMetaGlob + nbVariMetaRela*(nbMetaPhas +1)
     endif
 
 ! - Number of internal state variables for KIT DDI
@@ -111,12 +111,12 @@ integer, intent(out) :: nbVariKit, nume_comp(4), nb_vari_comp(4)
         call ddi_kit_nvar(rela_flua     , rela_plas   , rela_cpla   , rela_coup   ,&
                           nb_vari_flua  , nb_vari_plas, nb_vari_cpla, nb_vari_coup,&
                           nume_comp_plas, nume_comp_flua)
-        nb_vari_comp(1) = nb_vari_flua
-        nb_vari_comp(2) = nb_vari_plas
-        nb_vari_comp(3) = nb_vari_cpla
-        nb_vari_comp(4) = nb_vari_coup
-        nume_comp(2)    = nume_comp_plas
-        nume_comp(3)    = nume_comp_flua
+        nbVariKit(1) = nb_vari_flua
+        nbVariKit(2) = nb_vari_plas
+        nbVariKit(3) = nb_vari_cpla
+        nbVariKit(4) = nb_vari_coup
+        numeLawKit(1) = nume_comp_flua
+        numeLawKit(2) = nume_comp_plas
     endif
 
 ! - Number of internal state variables for KIT CG
@@ -124,10 +124,10 @@ integer, intent(out) :: nbVariKit, nume_comp(4), nb_vari_comp(4)
         rela_comp_cg(1) = kit_comp(1)
         rela_comp_cg(2) = kit_comp(2)
         call cg_kit_nvar(rela_comp_cg, nb_vari_cg, numeCompCG)
-        nb_vari_comp(1) = nb_vari_cg(1)
-        nb_vari_comp(2) = nb_vari_cg(2)
-        nume_comp(2)    = numeCompCG(1)
-        nume_comp(3)    = numeCompCG(2)
+        nbVariKit(1) = nb_vari_cg(1)
+        nbVariKit(2) = nb_vari_cg(2)
+        numeLawKit(1) = numeCompCG(1)
+        numeLawKit(2) = numeCompCG(2)
     endif
 !
 end subroutine

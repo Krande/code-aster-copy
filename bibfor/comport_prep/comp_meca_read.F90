@@ -85,7 +85,7 @@ character(len=8), intent(in), optional :: model
     do i_comp = 1, nb_comp
 ! ----- Get RELATION from command file
         rela_comp = 'VIDE'
-        call compGetRelation(i_comp, rela_comp)
+        call compGetRelation(keywordfact, i_comp, rela_comp)
 
 ! ----- Detection of specific cases
         call comp_meca_l(rela_comp, 'KIT'    , l_kit)

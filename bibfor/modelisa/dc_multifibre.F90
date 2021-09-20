@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,8 +33,9 @@ subroutine dc_multifibre(nbocci, sdcomp)
 #include "asterc/lctest.h"
 #include "asterc/lcdiscard.h"
 #include "asterfort/assert.h"
-#include "asterfort/comp_meca_rkit.h"
-#include "asterfort/comp_nbvari.h"
+#include "asterfort/comp_nbvari_std.h"
+#include "asterfort/compGetRelation.h"
+#include "asterfort/comp_meca_l.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
@@ -50,15 +51,16 @@ subroutine dc_multifibre(nbocci, sdcomp)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: idbor, imi, jcprk, iocc, irett
+    aster_logical, parameter :: l_implex = ASTER_FALSE
+    integer :: nbDeborst, imi, jcprk, iocc, irett
     integer :: ibid, nbg, nbgrfib, jnmgrfib, ig, ig1, jnbfig, iaff
-    integer :: nbvf, nbv, icp
+    integer :: nbVariMax, nbVari, icp, numeLaw
     character(len=8) :: materi, sdgf, mator
-    character(len=16) :: rela_comp, defo_comp, algo1d, rela_comp_py, kit_comp(4)
-    character(len=16) :: moclef
+    character(len=16) :: rela_comp, defo_comp, type_cpla, rela_comp_py, kit_comp(4)
+    character(len=16) :: regu_visc, post_iter
+    character(len=16), parameter :: keywordfact='MULTIFIBRE'
     character(len=24) :: vnbfig, vnmfig, kgroup
-    aster_logical :: l_kit, l_auto_deborst
-!
+    aster_logical :: l_kit, l_cristal
     integer :: valmi(5)
     character(len=80) :: valmk(5)
 !
@@ -68,9 +70,8 @@ subroutine dc_multifibre(nbocci, sdcomp)
 ! --------------------------------------------------------------------------------------------------
 !   on récupère les renseignements dans la sd_group_fibre
 !       noms de tous les groupes, nb maxi de groupes, nb de fibres par groupe
-    nbvf=0
-    moclef='MULTIFIBRE'
-    l_auto_deborst = .false.
+    nbVariMax=0
+    
 !
     call getvid(' ', 'GEOM_FIBRE', scal=sdgf, nbret=ibid)
     vnbfig = sdgf//'.NB_FIBRE_GROUPE'
@@ -84,46 +85,50 @@ subroutine dc_multifibre(nbocci, sdcomp)
     do ig = 1, nbgrfib
         zi(iaff-1+ig) = 0
     enddo
-    idbor = 0
+    nbDeborst = 0
 !
     do iocc = 1, nbocci
-        call getvtx(moclef, 'GROUP_FIBRE', iocc=iocc, nbval=0, nbret=nbg)
+        call getvtx(keywordfact, 'GROUP_FIBRE', iocc=iocc, nbval=0, nbret=nbg)
         nbg=-nbg
         if ( nbg.gt.nbgrfib ) then
             valmi(1) = iocc
             valmi(2) = nbg
             valmi(3) = nbgrfib
-            valmk(1) = moclef//' / GROUP_FIBRE'
+            valmk(1) = keywordfact//' / GROUP_FIBRE'
             call utmess('F', 'MODELISA8_19', ni=3 , vali=valmi, nk=1, valk=valmk)
         endif
-        call getvtx(moclef, 'GROUP_FIBRE', iocc=iocc, nbval = nbg, vect = zk24(jnmgrfib))
-        call getvid(moclef, 'MATER', iocc=iocc, scal = materi)
-        call getvtx(moclef, 'RELATION', iocc=iocc, scal = rela_comp)
-        defo_comp = 'VIDE'
-        algo1d = 'ANALYTIQUE'
-!
-!       Coding comportment (Python)
+        call getvtx(keywordfact, 'GROUP_FIBRE', iocc=iocc, nbval = nbg, vect = zk24(jnmgrfib))
+        call getvid(keywordfact, 'MATER', iocc=iocc, scal = materi)
+
+! ----- Get name of RELATION
+        call compGetRelation(keywordfact, iocc, rela_comp)
+        call comp_meca_l(rela_comp, 'KIT'     , l_kit)
+        call comp_meca_l(rela_comp, 'CRISTAL' , l_cristal)
+        ASSERT(.not. l_kit)
+        ASSERT(.not. l_cristal)
+
+! ----- Select unidimensional algorithm
         call lccree(1, rela_comp, rela_comp_py)
-!       ALGO1D
         call lctest(rela_comp_py, 'MODELISATION', '1D', irett)
-        call lcdiscard(rela_comp_py)
+        type_cpla = 'ANALYTIQUE'
         if (irett .eq. 0) then
-            l_auto_deborst = .true.
-            algo1d = 'DEBORST'
-            idbor = idbor+1
+            type_cpla = 'DEBORST'
+            nbDeborst = nbDeborst + 1
         endif
-!       Get number of internal variables
-        if (rela_comp(1:4) .eq. 'KIT_') then
-            ASSERT(rela_comp.eq.'KIT_DDI')
-        endif
-        kit_comp(:) = 'VIDE'
-        l_kit = (rela_comp.eq.'KIT')
-        if (l_kit) then
-            call comp_meca_rkit(moclef, iocc, rela_comp, kit_comp)
-        endif
-        call comp_nbvari(rela_comp, defo_comp, algo1d, kit_comp_ = kit_comp,&
-                         nb_vari_ = nbv)
-!
+        call lcdiscard(rela_comp_py)
+
+! ----- Other parameters
+        defo_comp = 'VIDE'
+        kit_comp  = 'VIDE'
+        post_iter = 'VIDE'
+        regu_visc = 'VIDE'
+
+! ----- Get number of internal state variables
+        call comp_nbvari_std(rela_comp, defo_comp, type_cpla,&
+                             kit_comp , post_iter,&
+                             regu_visc, l_implex ,&
+                             nbVari   , numeLaw)
+
         do ig = 1, nbg
 !           Numéro correspondant au nom
             call jenonu(jexnom(vnmfig, zk24(jnmgrfib+ig-1)), ig1)
@@ -134,18 +139,18 @@ subroutine dc_multifibre(nbocci, sdcomp)
             zk24(icp+1) = zk24(jnmgrfib+ig-1)
             zk24(icp+2) = materi
             zk24(icp+3) = rela_comp
-            zk24(icp+4) = algo1d
+            zk24(icp+4) = type_cpla
             zk24(icp+5) = defo_comp
             write(zk24(icp+6),'(I24)') zi(jnbfig-1+ig1)
             zi(iaff-1+ig1) = 1
         enddo
 !       on met à jour le nombre de variables internes maxi
-        nbvf=max(nbvf,nbv)
+        nbVariMax = max(nbVariMax, nbVari)
     enddo
 !
 !   vérification de l'utilisation de COMP_1D
     if (nbocci .gt. 1) then
-        if (idbor .ge. 1) then
+        if (nbDeborst .ge. 1) then
             call utmess('F', 'COMPOR5_30')
         endif
     endif
@@ -158,7 +163,7 @@ subroutine dc_multifibre(nbocci, sdcomp)
             zk24(icp+2) = 'VIDE'
         endif
     enddo
-    if (l_auto_deborst) then
+    if (nbDeborst .ge. 1) then
         call utmess('I', 'COMPOR5_20')
     endif
 !   on récupère le nom du matériau pour la torsion, mis à la fin
@@ -167,7 +172,7 @@ subroutine dc_multifibre(nbocci, sdcomp)
     call wkvect(sdcomp//'.CPRI', 'G V I', 3, imi)
 !   type 3 = MULTIFIBRE
     zi(imi) = 3
-    zi(imi+1) = nbvf
+    zi(imi+1) = nbVariMax
     zi(imi+2) = nbgrfib
 !
     call jedema()

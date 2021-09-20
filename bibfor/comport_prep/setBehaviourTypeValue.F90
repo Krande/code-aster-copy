@@ -70,12 +70,12 @@ character(len=16), pointer, optional :: v_compor_(:)
     if (present(v_compor_)) then
         v_compor_(1:COMPOR_SIZE) = 'VIDE'
         v_compor_(RELA_NAME) = v_para(i_comp)%rela_comp
-        write (v_compor_(NVAR),'(I16)') v_para(i_comp)%nb_vari
+        write (v_compor_(NVAR),'(I16)') v_para(i_comp)%nbVari
         v_compor_(DEFO) = v_para(i_comp)%defo_comp
         v_compor_(INCRELAS) = v_para(i_comp)%type_comp
         v_compor_(PLANESTRESS) = v_para(i_comp)%type_cpla
         if (.not.l_pmf) then
-            write (v_compor_(NUME),'(I16)') v_para(i_comp)%nume_comp(1)
+            write (v_compor_(NUME),'(I16)') v_para(i_comp)%numeLaw
         endif
         v_compor_(MULTCOMP) = v_para(i_comp)%mult_comp
         v_compor_(POSTITER) = v_para(i_comp)%post_iter
@@ -87,24 +87,24 @@ character(len=16), pointer, optional :: v_compor_(:)
             v_compor_(HYDR_NAME) = v_para(i_comp)%kit_comp(2)
             v_compor_(THER_NAME) = v_para(i_comp)%kit_comp(3)
             v_compor_(THMC_NAME) = v_para(i_comp)%kit_comp(4)
-            write (v_compor_(THMC_NUME),'(I16)') v_para(i_comp)%nume_comp(1)
-            write (v_compor_(THER_NUME),'(I16)') v_para(i_comp)%nume_comp(2)
-            write (v_compor_(HYDR_NUME),'(I16)') v_para(i_comp)%nume_comp(3)
-            write (v_compor_(MECA_NUME),'(I16)') v_para(i_comp)%nume_comp(4)
-            write (v_compor_(THMC_NVAR),'(I16)') v_para(i_comp)%nb_vari_comp(1)
-            write (v_compor_(THER_NVAR),'(I16)') v_para(i_comp)%nb_vari_comp(2)
-            write (v_compor_(HYDR_NVAR),'(I16)') v_para(i_comp)%nb_vari_comp(3)
-            write (v_compor_(MECA_NVAR),'(I16)') v_para(i_comp)%nb_vari_comp(4)
+            write (v_compor_(THMC_NUME),'(I16)') v_para(i_comp)%numeLawKit(1)
+            write (v_compor_(THER_NUME),'(I16)') v_para(i_comp)%numeLawKit(2)
+            write (v_compor_(HYDR_NUME),'(I16)') v_para(i_comp)%numeLawKit(3)
+            write (v_compor_(MECA_NUME),'(I16)') v_para(i_comp)%numeLawKit(4)
+            write (v_compor_(THMC_NVAR),'(I16)') v_para(i_comp)%nbVariKit(1)
+            write (v_compor_(THER_NVAR),'(I16)') v_para(i_comp)%nbVariKit(2)
+            write (v_compor_(HYDR_NVAR),'(I16)') v_para(i_comp)%nbVariKit(3)
+            write (v_compor_(MECA_NVAR),'(I16)') v_para(i_comp)%nbVariKit(4)
         endif
         if (l_kit_ddi) then
             v_compor_(CREEP_NAME) = v_para(i_comp)%kit_comp(1)
             v_compor_(PLAS_NAME)  = v_para(i_comp)%kit_comp(2)
             v_compor_(COUPL_NAME) = v_para(i_comp)%kit_comp(3)
             v_compor_(CPLA_NAME)  = v_para(i_comp)%kit_comp(4)
-            write (v_compor_(CREEP_NUME),'(I16)') v_para(i_comp)%nume_comp(3)
-            write (v_compor_(PLAS_NUME),'(I16)')  v_para(i_comp)%nume_comp(2)
-            write (v_compor_(CREEP_NVAR),'(I16)') v_para(i_comp)%nb_vari_comp(1)
-            write (v_compor_(PLAS_NVAR),'(I16)')  v_para(i_comp)%nb_vari_comp(2)
+            write (v_compor_(CREEP_NUME),'(I16)') v_para(i_comp)%numeLawKit(1)
+            write (v_compor_(PLAS_NUME),'(I16)')  v_para(i_comp)%numeLawKit(2)
+            write (v_compor_(CREEP_NVAR),'(I16)') v_para(i_comp)%nbVariKit(1)
+            write (v_compor_(PLAS_NVAR),'(I16)')  v_para(i_comp)%nbVariKit(2)
         endif
         v_compor_(KIT1_NAME) = v_para(i_comp)%kit_comp(1)
         if (l_kit_meta) then
@@ -115,24 +115,24 @@ character(len=16), pointer, optional :: v_compor_(:)
         if (l_kit_cg) then
             v_compor_(CABLE_NAME)   = v_para(i_comp)%kit_comp(1)
             v_compor_(SHEATH_NAME)  = v_para(i_comp)%kit_comp(2)
-            write (v_compor_(CABLE_NUME),'(I16)') v_para(i_comp)%nume_comp(2)
-            write (v_compor_(SHEATH_NUME),'(I16)')  v_para(i_comp)%nume_comp(3)
-            write (v_compor_(CABLE_NVAR),'(I16)') v_para(i_comp)%nb_vari_comp(1)
-            write (v_compor_(SHEATH_NVAR),'(I16)')  v_para(i_comp)%nb_vari_comp(2)
+            write (v_compor_(CABLE_NUME),'(I16)') v_para(i_comp)%numeLawKit(1)
+            write (v_compor_(SHEATH_NUME),'(I16)')  v_para(i_comp)%numeLawKit(2)
+            write (v_compor_(CABLE_NVAR),'(I16)') v_para(i_comp)%nbVariKit(1)
+            write (v_compor_(SHEATH_NVAR),'(I16)')  v_para(i_comp)%nbVariKit(2)
         endif
         if (l_exte_comp) then
-            write (v_compor_(MECA_NVAR),'(I16)') v_para(i_comp)%nb_vari_comp(4)
+            write (v_compor_(MECA_NVAR),'(I16)') v_para(i_comp)%nbVariKit(4)
         endif
     endif
     if (present(l_compor_)) then
         l_compor_(1:COMPOR_SIZE) = 'VIDE'
         l_compor_(RELA_NAME) = v_para(i_comp)%rela_comp
-        write (l_compor_(NVAR),'(I16)') v_para(i_comp)%nb_vari
+        write (l_compor_(NVAR),'(I16)') v_para(i_comp)%nbVari
         l_compor_(DEFO) = v_para(i_comp)%defo_comp
         l_compor_(INCRELAS) = v_para(i_comp)%type_comp
         l_compor_(PLANESTRESS) = v_para(i_comp)%type_cpla
         if (.not.l_pmf) then
-            write (l_compor_(NUME),'(I16)') v_para(i_comp)%nume_comp(1)
+            write (l_compor_(NUME),'(I16)') v_para(i_comp)%numeLaw
         endif
         l_compor_(MULTCOMP) = v_para(i_comp)%mult_comp
         l_compor_(POSTITER) = v_para(i_comp)%post_iter
@@ -147,10 +147,10 @@ character(len=16), pointer, optional :: v_compor_(:)
             l_compor_(PLAS_NAME)  = v_para(i_comp)%kit_comp(2)
             l_compor_(COUPL_NAME) = v_para(i_comp)%kit_comp(3)
             l_compor_(CPLA_NAME)  = v_para(i_comp)%kit_comp(4)
-            write (l_compor_(CREEP_NUME),'(I16)') v_para(i_comp)%nume_comp(3)
-            write (l_compor_(PLAS_NUME),'(I16)')  v_para(i_comp)%nume_comp(2)
-            write (l_compor_(CREEP_NVAR),'(I16)') v_para(i_comp)%nb_vari_comp(1)
-            write (l_compor_(PLAS_NVAR),'(I16)')  v_para(i_comp)%nb_vari_comp(2)
+            write (l_compor_(CREEP_NUME),'(I16)') v_para(i_comp)%numeLawKit(1)
+            write (l_compor_(PLAS_NUME),'(I16)')  v_para(i_comp)%numeLawKit(2)
+            write (l_compor_(CREEP_NVAR),'(I16)') v_para(i_comp)%nbVariKit(1)
+            write (l_compor_(PLAS_NVAR),'(I16)')  v_para(i_comp)%nbVariKit(2)
         endif
         l_compor_(KIT1_NAME) = v_para(i_comp)%kit_comp(1)
         if (l_kit_meta) then
@@ -161,13 +161,13 @@ character(len=16), pointer, optional :: v_compor_(:)
         if (l_kit_cg) then
             l_compor_(CABLE_NAME)   = v_para(i_comp)%kit_comp(1)
             l_compor_(SHEATH_NAME)  = v_para(i_comp)%kit_comp(2)
-            write (l_compor_(CABLE_NUME),'(I16)') v_para(i_comp)%nume_comp(2)
-            write (l_compor_(SHEATH_NUME),'(I16)')  v_para(i_comp)%nume_comp(3)
-            write (l_compor_(CABLE_NVAR),'(I16)') v_para(i_comp)%nb_vari_comp(1)
-            write (l_compor_(SHEATH_NVAR),'(I16)')  v_para(i_comp)%nb_vari_comp(2)
+            write (l_compor_(CABLE_NUME),'(I16)') v_para(i_comp)%numeLawKit(1)
+            write (l_compor_(SHEATH_NUME),'(I16)')  v_para(i_comp)%numeLawKit(2)
+            write (l_compor_(CABLE_NVAR),'(I16)') v_para(i_comp)%nbVariKit(1)
+            write (l_compor_(SHEATH_NVAR),'(I16)')  v_para(i_comp)%nbVariKit(2)
         endif
         if (l_exte_comp) then
-            write (l_compor_(MECA_NVAR),'(I16)') v_para(i_comp)%nb_vari_comp(4)
+            write (l_compor_(MECA_NVAR),'(I16)') v_para(i_comp)%nbVariKit(4)
         endif
     endif
 !

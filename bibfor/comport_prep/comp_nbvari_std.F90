@@ -18,33 +18,27 @@
 ! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine comp_nbvari_std(rela_comp, defo_comp, type_cpla,&
-                           kit_comp , post_iter, mult_comp,&
-                           regu_visc,&
-                           l_cristal, l_implex ,&
-                           nb_vari  , nume_comp)
+                           kit_comp , post_iter, regu_visc,&
+                           l_implex , nbVari   , numeLaw)
 !
 implicit none
 !
 #include "asterf_types.h"
 #include "asterc/lcinfo.h"
-#include "asterc/lccree.h"
 #include "asterc/lcdiscard.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_code.h"
-#include "asterfort/jeveuo.h"
 !
 character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla
-character(len=16), intent(in) :: kit_comp(4), post_iter
-character(len=16), intent(in) :: mult_comp, regu_visc
-aster_logical, intent(in) :: l_cristal, l_implex
-integer, intent(inout) :: nume_comp(4)
-integer, intent(out) :: nb_vari
+character(len=16), intent(in) :: kit_comp(4), post_iter, regu_visc
+aster_logical, intent(in) :: l_implex
+integer, intent(out) :: nbVari, numeLaw
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Preparation of comportment (mechanics)
 !
-! Get number of internal variables for standard constitutive laws
+! Get number of internal state variables for standard constitutive laws
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,23 +47,20 @@ integer, intent(out) :: nb_vari
 ! In  type_cpla        : plane stress method
 ! In  kit_comp         : KIT comportment
 ! In  post_iter        : type of post_treatment
-! In  mult_comp        : multi-comportment
-! In  l_cristal        : .true. if *CRISTAL comportment
+! In  regu_visc        : keyword for viscuous regularization
 ! In  l_implex         : .true. if IMPLEX method
-! IO  nume_comp        : number LCxxxx subroutine
-! Out nb_vari          : number of internal variables
+! Out nbVari           : number of internal state variables
+! Out numeLaw          : index of subroutine for behaviour
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: comp_code_py
     integer :: idummy
-    character(len=8) :: sdcomp
-    integer :: nb_vari_cris
-    integer, pointer :: v_cpri(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_vari = 0
+    nbVari = 0
+    numeLaw = 0
 
 ! - Coding composite comportment (Python)
     call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp,&
@@ -77,18 +68,7 @@ integer, intent(out) :: nb_vari
                         comp_code_py)
 
 ! - Get number of total internal state variables and index of law
-    call lcinfo(comp_code_py, nume_comp(1), nb_vari, idummy)
-
-! - Special for CRISTAL
-    if (l_cristal) then
-        sdcomp = mult_comp(1:8)
-        call jeveuo(sdcomp//'.CPRI', 'L', vi=v_cpri)
-        nb_vari_cris = v_cpri(3)
-        nb_vari      = nb_vari + nb_vari_cris
-        if (defo_comp .eq. 'SIMO_MIEHE') then
-            nb_vari = nb_vari + 3 + 9
-        endif
-    endif
+    call lcinfo(comp_code_py, numeLaw, nbVari, idummy)
 
 ! - End of encoding
     call lcdiscard(comp_code_py)

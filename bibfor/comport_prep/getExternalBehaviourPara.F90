@@ -74,7 +74,7 @@ character(len=16), optional, intent(out) :: type_cpla_out_
     integer :: i_comp
     aster_logical :: l_mfront_proto, l_mfront_offi, l_umat
     character(len=255) :: libr_name, subr_name
-    integer :: nb_vari_umat
+    integer :: nbVariUMAT
     character(len=16) :: model_mfront, type_cpla_out, type_cpla_in
     integer :: model_dim, elem_type, strain_model
 !
@@ -87,7 +87,7 @@ character(len=16), optional, intent(out) :: type_cpla_out_
     i_comp         = 0
     libr_name      = ' '
     subr_name      = ' '
-    nb_vari_umat   = 0
+    nbVariUMAT   = 0
     model_mfront   = ' '
     model_dim      = 0
     type_cpla_out  = 'VIDE'
@@ -125,7 +125,7 @@ character(len=16), optional, intent(out) :: type_cpla_out_
 !
     call comp_read_exte(relaMeca , keywf         , i_comp       ,&
                         l_umat   , l_mfront_proto, l_mfront_offi,&
-                        libr_name, subr_name     , nb_vari_umat)
+                        libr_name, subr_name     , nbVariUMAT)
 !
 ! - Get model for MFRONT
 !
@@ -162,7 +162,7 @@ character(len=16), optional, intent(out) :: type_cpla_out_
     comp_exte%subr_name      = subr_name
     comp_exte%model_mfront   = model_mfront
     comp_exte%model_dim      = model_dim
-    comp_exte%nb_vari_umat   = nb_vari_umat
+    comp_exte%nbVariUMAT     = nbVariUMAT
     comp_exte%l_umat         = l_umat
     comp_exte%l_mfront_proto = l_mfront_proto
     comp_exte%l_mfront_offi  = l_mfront_offi

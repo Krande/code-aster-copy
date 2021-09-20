@@ -154,7 +154,7 @@ aster_logical, intent(in), optional :: l_implex_
 ! - Read informations
     do i_comp = 1, nb_comp
 ! ----- Get RELATION from command file
-        call compGetRelation(i_comp, rela_comp)
+        call compGetRelation(keywordfact, i_comp, rela_comp)
 
 ! ----- Get DEFORMATION from command file
         call getvtx(keywordfact, 'DEFORMATION', iocc = i_comp, scal = defo_comp)

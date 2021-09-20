@@ -164,6 +164,9 @@ character(len=16), pointer :: infoVari(:)
                     call lcdiscard(compCodePy)
                 endif
             else
+                call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp,&
+                                    post_iter, regu_visc, l_implex,&
+                                    compCodePy)
                 call lcvari(compCodePy, nbVari, infoVari)
                 call lcdiscard(compCodePy)
             endif

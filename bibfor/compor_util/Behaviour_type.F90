@@ -128,9 +128,8 @@ implicit none
 ! Behaviour: types for preparation of behaviour (maps COMPOR and CARCRI)
 !
 ! --------------------------------------------------------------------------------------------------
-!
+
 ! - Behaviour - Preparation - Parameters for external behaviours
-! 
     type Behaviour_ParaExte
 ! ----- Flag for UMAT law
         aster_logical      :: l_umat         = ASTER_FALSE
@@ -147,13 +146,12 @@ implicit none
 ! ----- Number of dimension for MFront law
         integer            :: model_dim      = 0
 ! ----- Number of internal variables for UMAT
-        integer            :: nb_vari_umat   = 0
+        integer            :: nbVariUMAT    = 0
 ! ----- Identifier for strains model
         integer            :: strain_model   = 0
     end type Behaviour_ParaExte
-!
+
 ! - Behaviour - Preparation - Parameters for behaviour
-! 
     type Behaviour_Para
 ! ----- Keyword RELATION
         character(len=16) :: rela_comp = ' '
@@ -171,12 +169,14 @@ implicit none
         character(len=16) :: post_iter = ' '
 ! ----- Type of strain transmitted to the behaviour law : 'OLD', 'MECANIQUE' or 'TOTALE'
         character(len=16) :: defo_ldc = ' '
+! ----- Index of law 
+        integer           :: numeLaw = 0
 ! ----- Total number of internal state variables
-        integer           :: nb_vari  = 0
+        integer           :: nbVari = 0
 ! ----- Number of internal state variables for kit
-        integer           :: nb_vari_comp(4) = 0
+        integer           :: nbVariKit(4) = 0
 ! ----- Index of law for kit
-        integer           :: nume_comp(4)  = 0
+        integer           :: numeLawKit(4) = 0
 ! ----- Keyword RIGI_GEOM
         character(len=16) :: rigi_geom = ' '
 ! ----- Keyword REGU_VISC
@@ -184,9 +184,8 @@ implicit none
 ! ----- Mechanical part of behaviour
         character(len=16) :: meca_comp = ' '
     end type Behaviour_Para
-!
+
 ! - Behaviour - Preparation - Criteria for behaviour
-! 
     type Behaviour_Crit
 ! ----- Keyword RELATION
         character(len=16) :: rela_comp = ' '
@@ -194,6 +193,7 @@ implicit none
         character(len=16) :: meca_comp = ' '
 ! ----- Parameters for external behaviours
         type(Behaviour_ParaExte)  :: paraExte
+! ----- Criteria
         integer                   :: type_matr_t      = 0
         real(kind=8)              :: parm_theta       = 0.d0
         integer                   :: iter_inte_pas    = 0
@@ -217,9 +217,8 @@ implicit none
         integer                   :: jvariext2        = 0
         integer                   :: exte_strain      = 0
     end type Behaviour_Crit
-!
+
 ! - Behaviour - Preparation - Map for criteria of behaviours (CARCRI)
-! 
     type Behaviour_PrepCrit
 ! ----- Number of factor keywords
         integer                           :: nb_comp = 0
@@ -233,9 +232,8 @@ implicit none
 ! ----- List of criteria (by keyword COMPORTEMENT)
         type(Behaviour_Crit), pointer     :: v_crit(:)
     end type Behaviour_PrepCrit
-!
+
 ! - Behaviour - Preparation - Map for parameters of behaviours (COMPOR)
-!
     type Behaviour_PrepPara
 ! ----- Number of factor keywords
         integer                             :: nb_comp = 0

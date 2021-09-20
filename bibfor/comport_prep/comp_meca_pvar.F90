@@ -280,7 +280,7 @@ character(len=19), intent(in) :: compor_info
 ! --------- Get names of internal state variables
             call jeecra(jexnum(compor_info(1:19)//'.VARI', i_zone), 'LONMAX', nbVari)
             call jeveuo(jexnum(compor_info(1:19)//'.VARI', i_zone), 'E', vk16 = infoVari)
-            call comp_meca_name(nbVari   , nbVariMeca,&
+            call comp_meca_name(nbVari    , nbVariMeca,&
                                 l_excl    , vari_excl,&
                                 l_kit_meta, l_mfront_offi, l_prot_comp,&
                                 rela_comp , defo_comp   , kit_comp     ,&

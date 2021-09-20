@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,17 +40,19 @@ type(Behaviour_Para), intent(out) :: ds_comporPara
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ds_comporPara%rela_comp       = 'VIDE'
-    ds_comporPara%defo_comp       = 'VIDE'
-    ds_comporPara%type_comp       = 'VIDE'
-    ds_comporPara%type_cpla       = 'VIDE'
-    ds_comporPara%kit_comp(:)     = 'VIDE'
-    ds_comporPara%mult_comp       = 'VIDE'
-    ds_comporPara%post_iter       = 'VIDE'
-    ds_comporPara%defo_ldc        = 'VIDE'
-    ds_comporPara%rigi_geom       = 'VIDE'
-    ds_comporPara%nb_vari         = 0
-    ds_comporPara%nb_vari_comp(:) = 0
-    ds_comporPara%nume_comp(:)    = 0
+    ds_comporPara%rela_comp  = 'VIDE'
+    ds_comporPara%defo_comp  = 'VIDE'
+    ds_comporPara%type_comp  = 'VIDE'
+    ds_comporPara%type_cpla  = 'VIDE'
+    ds_comporPara%kit_comp   = 'VIDE'
+    ds_comporPara%mult_comp  = 'VIDE'
+    ds_comporPara%post_iter  = 'VIDE'
+    ds_comporPara%defo_ldc   = 'VIDE'
+    ds_comporPara%rigi_geom  = 'VIDE'
+    ds_comporPara%regu_visc  = 'VIDE'
+    ds_comporPara%nbVari     = 0
+    ds_comporPara%numeLaw    = 0
+    ds_comporPara%nbVariKit  = 0
+    ds_comporPara%numeLawKit = 0
 !
 end subroutine

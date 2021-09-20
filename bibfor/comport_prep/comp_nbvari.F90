@@ -17,11 +17,12 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_nbvari(rela_comp    , defo_comp , type_cpla    , kit_comp_ ,&
-                       post_iter_   , meca_comp_, mult_comp_   , libr_name_,&
-                       subr_name_   , model_dim_, model_mfront_, nb_vari_  ,&
-                       nb_vari_umat_, l_implex_ , regu_visc_   ,&
-                       nb_vari_comp_, nume_comp_)
+subroutine comp_nbvari(rela_comp, defo_comp, type_cpla, kit_comp ,&
+                       post_iter, meca_comp, mult_comp, regu_visc,&
+                       l_implex ,&
+                       libr_name, subr_name, model_dim, model_mfront,&
+                       nbVariUMAT,&
+                       nbVari, numeLaw, nbVariKit, numeLawKit)
 !
 implicit none
 !
@@ -31,153 +32,108 @@ implicit none
 #include "asterfort/comp_nbvari_std.h"
 #include "asterfort/comp_nbvari_kit.h"
 #include "asterfort/comp_nbvari_ext.h"
+#include "asterfort/jeveuo.h"
 !
 character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla
-character(len=16), optional, intent(in) :: kit_comp_(4), post_iter_, meca_comp_
-character(len=16), optional, intent(in) :: mult_comp_, regu_visc_
-character(len=255), optional, intent(in) :: libr_name_, subr_name_
-integer, optional, intent(in) :: model_dim_
-character(len=16), optional, intent(in) :: model_mfront_
-integer, optional, intent(out) :: nb_vari_
-integer, optional, intent(in) :: nb_vari_umat_
-aster_logical, optional, intent(in) :: l_implex_
-integer, optional, intent(out) :: nb_vari_comp_(4), nume_comp_(4)
+character(len=16), intent(in) :: kit_comp(4), post_iter, meca_comp
+character(len=16), intent(in) :: mult_comp, regu_visc
+aster_logical, intent(in) :: l_implex
+character(len=255), intent(in) :: libr_name, subr_name
+integer, intent(in) :: model_dim
+character(len=16), intent(in) :: model_mfront
+integer, intent(in) :: nbVariUMAT
+integer, intent(out) :: nbVari, numeLaw, nbVariKit(4), numeLawKit(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Preparation of comportment (mechanics)
 !
-! Count the number of internal variables
+! Count the number of internal state variables and index of behaviours
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  rela_comp        : RELATION comportment
 ! In  defo_comp        : DEFORMATION comportment
 ! In  type_cpla        : plane stress method
-! Out nb_vari          : number of internal variables
 ! In  kit_comp         : KIT comportment
 ! In  post_iter        : type of post_treatment
-! In  meca_comp        : mecanical part of behaviour
-! In  mult_comp        : multi-comportment
-! In  nb_vari_umat     : number of internal variables for UMAT
+! In  regu_visc        : keyword for viscuous regularization
+! In  l_implex         : .true. if IMPLEX method
+! In  mult_comp        : multi-comportment (for crystal)
+! In  nbVariUMAT       : number of internal state variables for UMAT
 ! In  libr_name        : name of library if UMAT or MFront
 ! In  subr_name        : name of comportement in library if UMAT or MFront
 ! In  model_dim        : dimension of modelisation (2D or 3D)
 ! In  model_mfront     : type of modelisation MFront
 ! In  l_implex         : .true. if IMPLEX method
-! Out nb_vari_comp     : number of internal variables kit comportment
-! Out nume_comp        : number LCxxxx subroutine
+! Out nbVari           : number of internal state variables
+! Out numeLaw          : index of subroutine for behaviour
+! Out nbVariKit        : number of internal state variables for components in kit
+! Out numeLawKit       : index of subroutine for components in kit
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_vari, nbVariKit
-    aster_logical :: l_cristal, l_kit_meta, l_kit_thm, l_kit_ddi, l_kit_cg, l_exte_comp
-    aster_logical :: l_kit, l_meca_mfront
-    aster_logical :: l_mfront_proto, l_mfront_offi, l_umat, l_implex
-    character(len=16) :: kit_comp(4), post_iter, mult_comp, meca_comp, regu_visc
-    integer :: nb_vari_exte, nume_comp(4), nb_vari_comp(4)
-    integer :: nb_vari_umat, model_dim
-    character(len=255) :: libr_name, subr_name
-    character(len=16) :: model_mfront
+    integer :: nbVariExte, nbVariFromKit, nbVariCrystal
+    aster_logical :: l_cristal, l_kit_meta, l_kit_thm, l_kit_ddi, l_kit_cg, l_kit
+    aster_logical :: l_exte_comp, l_mfront_proto, l_mfront_offi, l_umat
+    integer, pointer :: cpri(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    kit_comp(1:4) = 'VIDE'
-    meca_comp     = 'VIDE'
-    post_iter     = 'VIDE'
-    mult_comp     = 'VIDE'
-    regu_visc     = 'VIDE'
-    nb_vari_umat  = 0
-    nb_vari_exte  = 0
-    nb_vari       = 0
-    l_implex      = .false.
-    l_meca_mfront = .false.
-    nume_comp(:)  = 0
-    nb_vari_comp(:)=0
-    if (present(kit_comp_)) then
-        kit_comp(1:4) = kit_comp_(1:4)
-    endif
-    if (present(meca_comp_)) then
-        meca_comp = meca_comp_
-    endif
-    if (present(post_iter_)) then
-        post_iter = post_iter_
-    endif
-    if (present(mult_comp_)) then
-        mult_comp = mult_comp_
-    endif
-    if (present(nb_vari_umat_)) then
-        nb_vari_umat = nb_vari_umat_
-    endif
-    if (present(libr_name_)) then
-        libr_name = libr_name_
-    endif
-    if (present(subr_name_)) then
-        subr_name = subr_name_
-    endif
-    if (present(model_dim_)) then
-        model_dim = model_dim_
-    endif
-    if (present(model_mfront_)) then
-        model_mfront = model_mfront_
-    endif
-    if (present(l_implex_)) then
-        l_implex = l_implex_
-    endif
-    if (present(regu_visc_)) then
-        regu_visc = regu_visc_
-    endif
+    nbVari = 0
+    numeLaw = 0
+    nbVariKit = 0
+    numeLawKit = 0
 
 ! - Detection of specific cases
-    call comp_meca_l(rela_comp, 'KIT'         , l_kit)
-    call comp_meca_l(rela_comp, 'CRISTAL'     , l_cristal)
-    call comp_meca_l(rela_comp, 'KIT_META'    , l_kit_meta)
-    call comp_meca_l(rela_comp, 'KIT_THM'     , l_kit_thm)
-    call comp_meca_l(rela_comp, 'KIT_DDI'     , l_kit_ddi)
-    call comp_meca_l(rela_comp, 'KIT_CG'      , l_kit_cg)
+    call comp_meca_l(rela_comp, 'KIT'     , l_kit)
+    call comp_meca_l(rela_comp, 'CRISTAL' , l_cristal)
+    call comp_meca_l(rela_comp, 'KIT_META', l_kit_meta)
+    call comp_meca_l(rela_comp, 'KIT_THM' , l_kit_thm)
+    call comp_meca_l(rela_comp, 'KIT_DDI' , l_kit_ddi)
+    call comp_meca_l(rela_comp, 'KIT_CG'  , l_kit_cg)
 
 ! - Get number of internal state variables for KIT
-    nbVariKit = 0
+    nbVariFromKit = 0
     if (l_kit) then
-        call comp_nbvari_kit(kit_comp  ,&
-                             l_kit_meta, l_kit_thm   , l_kit_ddi, l_kit_cg,&
-                             nbVariKit , nb_vari_comp, nume_comp)
+        call comp_nbvari_kit(kit_comp,&
+                             l_kit_meta   , l_kit_thm   , l_kit_ddi, l_kit_cg,&
+                             nbVariFromKit, nbVariKit, numeLawKit)
+    endif
+
+! - Special for CRISTAL
+    nbVariCrystal = 0
+    if (l_cristal) then
+        call jeveuo(mult_comp(1:8)//'.CPRI', 'L', vi=cpri)
+        nbVariCrystal = cpri(3)
+        if (defo_comp .eq. 'SIMO_MIEHE') then
+            nbVariCrystal = nbVariCrystal + 3 + 9
+        endif
     endif
 
 ! - Get number of internal state variables
     call comp_nbvari_std(rela_comp, defo_comp, type_cpla,&
-                         kit_comp , post_iter, mult_comp,&
-                         regu_visc,&
-                         l_cristal, l_implex ,&
-                         nb_vari  , nume_comp)
-    nb_vari = nbVariKit + nb_vari
+                         kit_comp , post_iter, regu_visc,&
+                         l_implex , nbVari   , numeLaw)
 
 ! - Get number of internal state variables for external behaviours
+    nbVariExte = 0
     call comp_meca_l(meca_comp, 'EXTE_COMP'   , l_exte_comp)
     call comp_meca_l(meca_comp, 'MFRONT_PROTO', l_mfront_proto)
     call comp_meca_l(meca_comp, 'MFRONT_OFFI' , l_mfront_offi)
     call comp_meca_l(meca_comp, 'UMAT'        , l_umat)
     if (l_exte_comp) then
-        call comp_nbvari_ext(l_umat        , nb_vari_umat ,&
+        call comp_nbvari_ext(l_umat        , nbVariUMAT   ,&
                              l_mfront_proto, l_mfront_offi,&
                              libr_name     , subr_name    ,&
                              model_dim     , model_mfront ,&
-                             nb_vari_exte)
-        nb_vari_comp(4) = nb_vari_exte
+                             nbVariExte)
+        nbVariKit(4) = nbVariExte
     endif
 
 ! - Total number of internal state variables
-    nb_vari = nb_vari_exte + nb_vari
-
-! - Output
-    if (present(nb_vari_)) then
-        nb_vari_ = nb_vari
-    endif
-    if (present(nume_comp_)) then
-        nume_comp_(1:4) = nume_comp(1:4)
-    endif
-    if (present(nb_vari_comp_)) then
-        nb_vari_comp_(1:4) = nb_vari_comp(1:4)
-    endif
+    nbVari = nbVariFromKit + nbVari
+    nbVari = nbVariCrystal + nbVari
+    nbVari = nbVariExte + nbVari
 !
 end subroutine

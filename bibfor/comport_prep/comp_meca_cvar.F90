@@ -45,7 +45,7 @@ type(Behaviour_PrepPara), intent(inout) :: ds_compor_prep
     character(len=16) :: keywordfact
     character(len=16) :: post_iter, meca_comp
     character(len=16) :: rela_comp, defo_comp, mult_comp, kit_comp(4), type_cpla, regu_visc
-    integer :: nume_comp(4), nb_vari, nb_vari_comp(4), nb_vari_umat, model_dim
+    integer :: numeLawKit(4), nbVari, nbVariKit(4), numeLaw, nbVariUMAT, model_dim
     character(len=255) :: libr_name, subr_name
     character(len=16) :: model_mfront
     aster_logical :: l_implex
@@ -55,37 +55,40 @@ type(Behaviour_PrepPara), intent(inout) :: ds_compor_prep
     keywordfact = 'COMPORTEMENT'
     nb_comp     = ds_compor_prep%nb_comp
     do iComp = 1, nb_comp
-        nb_vari      = 0
-        nume_comp    = 0
-        nb_vari_comp = 0
+        nbVari     = 0
+        numeLaw    = 0
+        nbVariKit  = 0
+        numeLawKit = 0
 
 ! ----- Get parameters
         rela_comp    = ds_compor_prep%v_para(iComp)%rela_comp
         defo_comp    = ds_compor_prep%v_para(iComp)%defo_comp
         meca_comp    = ds_compor_prep%v_para(iComp)%meca_comp
         type_cpla    = ds_compor_prep%v_para(iComp)%type_cpla
-        kit_comp     = ds_compor_prep%v_para(iComp)%kit_comp(:)
+        kit_comp     = ds_compor_prep%v_para(iComp)%kit_comp
         mult_comp    = ds_compor_prep%v_para(iComp)%mult_comp
         post_iter    = ds_compor_prep%v_para(iComp)%post_iter
         regu_visc    = ds_compor_prep%v_para(iComp)%regu_visc
         libr_name    = ds_compor_prep%v_paraExte(iComp)%libr_name
         subr_name    = ds_compor_prep%v_paraExte(iComp)%subr_name
-        nb_vari_umat = ds_compor_prep%v_paraExte(iComp)%nb_vari_umat
+        nbVariUMAT   = ds_compor_prep%v_paraExte(iComp)%nbVariUMAT
         model_mfront = ds_compor_prep%v_paraExte(iComp)%model_mfront
         model_dim    = ds_compor_prep%v_paraExte(iComp)%model_dim
         l_implex     = ds_compor_prep%l_implex
 
-! ----- Count internal variables
-        call comp_nbvari(rela_comp   , defo_comp, type_cpla   , kit_comp ,&
-                         post_iter   , meca_comp, mult_comp   , libr_name,&
-                         subr_name   , model_dim, model_mfront, nb_vari  ,&
-                         nb_vari_umat, l_implex , regu_visc,&
-                         nb_vari_comp, nume_comp)
+! ----- Count the number of internal state variables and index of behaviours
+        call comp_nbvari(rela_comp, defo_comp, type_cpla, kit_comp ,&
+                         post_iter, meca_comp, mult_comp, regu_visc,&
+                         l_implex ,&
+                         libr_name, subr_name, model_dim, model_mfront,&
+                         nbVariUMAT,&
+                         nbVari, numeLaw, nbVariKit, numeLawKit)
 
 ! ----- Save informations
-        ds_compor_prep%v_para(iComp)%nb_vari         = nb_vari
-        ds_compor_prep%v_para(iComp)%nb_vari_comp(:) = nb_vari_comp(:)
-        ds_compor_prep%v_para(iComp)%nume_comp(:)    = nume_comp(:)
+        ds_compor_prep%v_para(iComp)%nbVari     = nbVari
+        ds_compor_prep%v_para(iComp)%nbVariKit  = nbVariKit
+        ds_compor_prep%v_para(iComp)%numeLaw    = numeLaw
+        ds_compor_prep%v_para(iComp)%numeLawKit = numeLawKit
     end do
 !
 end subroutine

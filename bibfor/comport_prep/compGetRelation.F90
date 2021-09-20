@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine compGetRelation(iComp, rela_comp)
+subroutine compGetRelation(keywordfact, iComp, rela_comp)
 !
 implicit none
 !
@@ -25,6 +25,7 @@ implicit none
 #include "asterfort/deprecated_behavior.h"
 #include "asterfort/getvtx.h"
 !
+character(len=16), intent(in) :: keywordfact
 integer, intent(in) :: iComp
 character(len=16), intent(out) :: rela_comp
 !
@@ -38,10 +39,6 @@ character(len=16), intent(out) :: rela_comp
 !
 ! In  iComp            : factor keyword index
 ! Out rela_comp        : name of behaviour relation
-!
-! --------------------------------------------------------------------------------------------------
-!
-    character(len=16), parameter :: keywordfact = 'COMPORTEMENT'
 !
 ! --------------------------------------------------------------------------------------------------
 !

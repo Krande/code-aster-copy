@@ -18,20 +18,20 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine comp_nbvari(rela_comp  , defo_comp , type_cpla    , kit_comp_ ,&
-                           post_iter_ , meca_comp_, mult_comp_   , libr_name_,&
-                           subr_name_ , model_dim_, model_mfront_, nb_vari_  ,&
-                           nb_vari_umat_, l_implex_ , regu_visc_,&
-                           nb_vari_comp_, nume_comp_)
+    subroutine comp_nbvari(rela_comp, defo_comp, type_cpla, kit_comp ,&
+                           post_iter, meca_comp, mult_comp, regu_visc,&
+                           l_implex ,&
+                           libr_name, subr_name, model_dim, model_mfront,&
+                           nbVariUMAT,&
+                           nbVari, numeLaw, nbVariKit, numeLawKit)
         character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla
-        character(len=16), optional, intent(in) :: kit_comp_(4), post_iter_, meca_comp_
-        character(len=16), optional, intent(in) :: mult_comp_, regu_visc_
-        character(len=255), optional, intent(in) :: libr_name_, subr_name_
-        integer, optional, intent(in) :: model_dim_
-        character(len=16), optional, intent(in) :: model_mfront_
-        integer, optional, intent(out) :: nb_vari_
-        integer, optional, intent(in) :: nb_vari_umat_
-        aster_logical, optional, intent(in) :: l_implex_
-        integer, optional, intent(out) :: nb_vari_comp_(4), nume_comp_(4)
+        character(len=16), intent(in) :: kit_comp(4), post_iter, meca_comp
+        character(len=16), intent(in) :: mult_comp, regu_visc
+        aster_logical, intent(in) :: l_implex
+        character(len=255), intent(in) :: libr_name, subr_name
+        integer, intent(in) :: model_dim
+        character(len=16), intent(in) :: model_mfront
+        integer, intent(in) :: nbVariUMAT
+        integer, intent(out) :: nbVari, numeLaw, nbVariKit(4), numeLawKit(4)
     end subroutine comp_nbvari
 end interface
