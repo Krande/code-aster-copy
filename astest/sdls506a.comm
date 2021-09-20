@@ -1,0 +1,220 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+
+# Python dump of geometry from salome: unit 26
+mesh = LIRE_MAILLAGE(UNITE=20)
+
+mesh1 = CREA_MAILLAGE(COQUE_SOLIDE=_F(GROUP_MA=('Box_1', ),
+                                      GROUP_MA_SURF=('Ssup', ),),
+                      MAILLAGE=mesh)
+
+model = AFFE_MODELE(AFFE=_F(MODELISATION='COQUE_SOLIDE',
+                            PHENOMENE='MECANIQUE',
+                            TOUT='OUI'),
+                    MAILLAGE=mesh1)
+
+dse = 200E7
+sy = 200E6
+
+steel = DEFI_MATERIAU(ECRO_LINE=_F(D_SIGM_EPSI=dse,
+                                   SY=sy),
+                      ELAS=_F(COEF_AMOR=1.0,
+                              E=200000000000.0,
+                              NU=0.3,
+                              RHO=8000.0))
+
+fieldmat = AFFE_MATERIAU(AFFE=_F(MATER=(steel, ),
+                                 TOUT='OUI'),
+                         MAILLAGE=mesh1)
+
+dt = 0.0005
+
+listr = DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=_F(JUSQU_A=0.5,
+                                     PAS=dt))
+
+formula = FORMULE(NOM_PARA=('INST', ),
+                  VALE='sin(2*pi*15*INST)')
+
+clamp = AFFE_CHAR_MECA(DDL_IMPO=_F(BLOCAGE=('DEPLACEMENT', ),
+                                   GROUP_MA=('ENCAS', )),
+                       MODELE=model)
+
+gravity = AFFE_CHAR_MECA(MODELE=model,
+                         PESANTEUR=_F(DIRECTION=(-1.0, 0.0, 1.0),
+                                      GRAVITE=300.0))
+
+restran = DYNA_LINE(BASE_CALCUL='PHYS',
+                    CHAM_MATER=fieldmat,
+                    CHARGE=(clamp, ),
+                    EXCIT=_F(CHARGE=gravity,
+                             FONC_MULT=formula),
+                    INCREMENT=_F(INST_FIN=0.5,
+                                 PAS=dt),
+                    MODELE=model,
+                    SCHEMA_TEMPS=_F(BETA=0.25,
+                                    GAMMA=0.5,
+                                    SCHEMA='NEWMARK'),
+                    TYPE_CALCUL='TRAN')
+
+dispRef1 = 0.14537012
+dispCal1 = 0.14640622360368874
+dispTol1 = 0.72 * 0.01
+timeTes1 = 0.05
+
+TEST_RESU(RESU=_F(GROUP_NO=('P', ),
+                  INST=timeTes1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  PRECISION=dispTol1,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=restran,
+                  VALE_ABS='NON',
+                  VALE_CALC=(dispCal1, ),
+                  VALE_REFE=(dispRef1, )))
+
+# Calcul sur base physique 
+resgene = DYNA_LINE(BANDE_ANALYSE=(100.0, ),
+                    BASE_CALCUL='GENE',
+                    CHAM_MATER=fieldmat,
+                    CHARGE=(clamp, ),
+                    ENRI_STAT='OUI',
+                    EXCIT=_F(CHARGE=gravity,
+                             FONC_MULT=formula),
+                    INCREMENT=_F(INST_FIN=0.5,
+                                 PAS=dt),
+                    MODELE=model,
+                    SCHEMA_TEMPS=_F(BETA=0.25,
+                                    GAMMA=0.5,
+                                    SCHEMA='NEWMARK'),
+                    TYPE_CALCUL='TRAN')
+
+dispRef2 = 0.14537012
+dispCal2 = 0.1471203825182522
+dispTol2 = 1.25 * 0.01
+timeTes2 = 0.05
+
+TEST_RESU(RESU=_F(GROUP_NO=('P', ),
+                  INST=timeTes2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  PRECISION=dispTol2,
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=resgene,
+                  VALE_ABS='NON',
+                  VALE_CALC=(dispCal2, ),
+                  VALE_REFE=(dispRef2, )))
+
+# Reference with 3D case (HEXA27) => too long 
+'''tfin = 0.1'''
+tfin = 0.01
+dtN = 0.002
+
+LIST2 = DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=_F(JUSQU_A=tfin,
+                                     PAS=dtN))
+
+LISTN = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LIST2),
+                       ECHEC=_F(ACTION='DECOUPE',
+                                EVENEMENT='ERREUR',
+                                SUBD_METHODE='MANUEL',
+                                SUBD_NIVEAU=3,
+                                SUBD_PAS=4,
+                                SUBD_PAS_MINI=0.0),
+                       METHODE='MANUEL')
+
+DYNADNL = DYNA_NON_LINE(CHAM_MATER=fieldmat,
+                        COMPORTEMENT=_F(DEFORMATION='PETIT',
+                                        ITER_CPLAN_MAXI=1,
+                                        ITER_INTE_MAXI=20,
+                                        ITER_INTE_PAS=0,
+                                        PARM_THETA=1.0,
+                                        REGU_VISC='NON',
+                                        RELATION='VMIS_CINE_LINE',
+                                        RESI_CPLAN_RELA=1e-06,
+                                        RESI_INTE_RELA=1e-06,
+                                        TOUT='OUI'),
+                        ENERGIE=_F(CALCUL='OUI'),
+                        EXCIT=(_F(CHARGE=clamp,
+                                  MULT_APPUI='NON',
+                                  TYPE_CHARGE='FIXE_CSTE'),
+                               _F(CHARGE=gravity,
+                                  FONC_MULT=formula,
+                                  MULT_APPUI='NON',
+                                  TYPE_CHARGE='FIXE_CSTE')),
+                        INCREMENT=_F(LIST_INST=LISTN,
+                                     PRECISION=1e-06),
+                        MODELE=model,
+                        MODE_VIBR=_F(COEF_DIM_ESPACE=5,
+                                     CRITERE='RELATIF',
+                                     INST=(tfin, ),
+                                     MATR_RIGI='ELASTIQUE',
+                                     NMAX_FREQ=1,
+                                     OPTION='PLUS_PETITE',
+                                     PRECISION=1e-06),
+                        SCHEMA_TEMPS=_F(BETA=0.25,
+                                        COEF_MASS_SHIFT=0.0,
+                                        FORMULATION='DEPLACEMENT',
+                                        GAMMA=0.5,
+                                        SCHEMA='NEWMARK'))
+
+TAMAS = POST_ELEM(CHAM_MATER=fieldmat,
+                  MASS_INER=_F(TOUT='OUI'),
+                  MODELE=model)
+
+DYNADNL = CALC_CHAMP(reuse=DYNADNL,
+                     CRITERES=('SIEQ_ELGA', 'EPEQ_ELGA'),
+                     DEFORMATION=('EPSI_ELGA', ),
+                     RESULTAT=DYNADNL)
+
+DEPL_DZ = RECU_FONCTION(GROUP_NO=('P', ),
+                        NOM_CHAM='DEPL',
+                        NOM_CMP='DZ',
+                        RESULTAT=DYNADNL)
+
+# Reference with 3D case (HEXA27) => too long 
+'''dispRef3 = 0.14511192651534
+dispCal3 = 0.14505042018335
+dispTol3 = 0.05 * 0.01
+timeTes3 = 0.05
+
+TEST_FONCTION(VALEUR=_F(FONCTION=DEPL_DZ,
+                        PRECISION=dispTol3,
+                        REFERENCE='AUTRE_ASTER',
+                        VALE_CALC=(dispCal3, ),
+                        VALE_PARA=(timeTes3, ),
+                        VALE_REFE=(dispRef3, )))'''
+
+dispRef3 = 3.253E-03
+dispCal3 = 3.253386824715E-03
+dispTol3 = 0.05 * 0.01
+timeTes3 = 0.01
+
+TEST_FONCTION(VALEUR=_F(FONCTION=DEPL_DZ,
+                        PRECISION=dispTol3,
+                        REFERENCE='AUTRE_ASTER',
+                        VALE_CALC=(dispCal3, ),
+                        VALE_PARA=(timeTes3, ),
+                        VALE_REFE=(dispRef3, )))
+
+
+FIN()

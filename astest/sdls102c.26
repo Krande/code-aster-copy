@@ -1,0 +1,311 @@
+#!/usr/bin/env python
+
+###
+### This file is generated automatically by SALOME v9.4.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+import salome_notebook
+notebook = salome_notebook.NoteBook()
+sys.path.insert(0, r'/home/A86451/Bureau/EnCours/NGC/Aube')
+
+###
+### GEOM component
+###
+
+import GEOM
+from salome.geom import geomBuilder
+import math
+import SALOMEDS
+
+
+geompy = geomBuilder.New()
+
+O = geompy.MakeVertex(0, 0, 0)
+OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+geomObj_1 = geompy.MakeMarker(0, 0, 0, 1, 0, 0, 0, 1, 0)
+geomObj_2 = geompy.MakeMarker(0, 0, 0, 1, 0, 0, 0, 1, 0)
+geomObj_3 = geompy.MakeMarker(0, 0, 0, 1, 0, 0, 0, 1, 0)
+geomObj_4 = geompy.MakeMarker(0, 0, 0, 1, 0, 0, 0, 1, 0)
+geomObj_5 = geompy.MakeMarker(0, 0, 0, 1, 0, 0, 0, 1, 0)
+geomObj_6 = geompy.MakeMarker(0, 0, 0, 1, 0, 0, 0, 1, 0)
+geomObj_7 = geompy.MakeMarker(0, 0, 0, 1, 0, 0, 0, 1, 0)
+sk = geompy.Sketcher2D()
+sk.addPoint(0.000000, 0.608076)
+sk.addSegmentAbsolute(0.000000, 0.611124)
+sk.addArcPerpRadiusLength(0.611124, -28.648000)
+sk.addSegmentPerpLength(-0.003048)
+sk.addArcPerpRadiusLength(-0.608076, -28.648000)
+sk.close()
+Sketch_1 = sk.wire(geomObj_7)
+Face_1 = geompy.MakeFaceWires([Sketch_1], 1)
+Extrusion_1 = geompy.MakePrismVecH2Ways(Face_1, OZ, 0.1524)
+Ssup = geompy.CreateGroup(Extrusion_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(Ssup, [13])
+Senc = geompy.CreateGroup(Extrusion_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(Senc, [31])
+e = geompy.CreateGroup(Extrusion_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(e, [25, 26, 12, 11])
+geompy.addToStudy( O, 'O' )
+geompy.addToStudy( OX, 'OX' )
+geompy.addToStudy( OY, 'OY' )
+geompy.addToStudy( OZ, 'OZ' )
+geompy.addToStudy( Sketch_1, 'Sketch_1' )
+geompy.addToStudy( Face_1, 'Face_1' )
+geompy.addToStudy( Extrusion_1, 'Extrusion_1' )
+geompy.addToStudyInFather( Extrusion_1, Ssup, 'Ssup' )
+geompy.addToStudyInFather( Extrusion_1, Senc, 'Senc' )
+geompy.addToStudyInFather( Extrusion_1, e, 'e' )
+
+###
+### SMESH component
+###
+
+import  SMESH, SALOMEDS
+from salome.smesh import smeshBuilder
+
+smesh = smeshBuilder.New()
+#smesh.SetEnablePublish( False ) # Set to False to avoid publish in study if not needed or in some particular situations:
+                                 # multiples meshes built in parallel, complex and numerous mesh edition (performance)
+
+Number_of_Segments_1 = smesh.CreateHypothesis('NumberOfSegments')
+Regular_1D = smesh.CreateHypothesis('Regular_1D')
+Quadrangle_2D = smesh.CreateHypothesis('Quadrangle_2D')
+Number_of_Segments_2 = smesh.CreateHypothesis('NumberOfSegments')
+Number_of_Segments_2.SetNumberOfSegments( 15 )
+Number_of_Segments_1_1 = smesh.CreateHypothesis('NumberOfSegments')
+Number_of_Segments_1_1.SetNumberOfSegments( 15 )
+Number_of_Segments_3 = smesh.CreateHypothesis('NumberOfSegments')
+Number_of_Segments_3.SetNumberOfSegments( 6 )
+Mesh_1 = smesh.Mesh(Extrusion_1)
+status = Mesh_1.AddHypothesis(Regular_1D)
+status = Mesh_1.AddHypothesis(Quadrangle_2D)
+Hexa_3D = Mesh_1.Hexahedron(algo=smeshBuilder.Hexa)
+Number_of_Segments_1.SetNumberOfSegments( 1 )
+status = Mesh_1.AddHypothesis(Regular_1D,e)
+status = Mesh_1.AddHypothesis(Number_of_Segments_1,e)
+Extrusion_1_1 = Mesh_1.GroupOnGeom(Extrusion_1,'Extrusion_1',SMESH.VOLUME)
+Ssup_1 = Mesh_1.GroupOnGeom(Ssup,'Ssup',SMESH.FACE)
+Senc_1 = Mesh_1.GroupOnGeom(Senc,'Senc',SMESH.FACE)
+e_1 = Mesh_1.GroupOnGeom(e,'e',SMESH.EDGE)
+[ Extrusion_1_1, Ssup_1, Senc_1, e_1 ] = Mesh_1.GetGroups()
+smesh.SetName(Mesh_1, 'Mesh_1')
+try:
+  Mesh_1.ExportMED(r'/home/a78579/Documents/stage/test_sb9/dyna/modes/sdls102/sdls102c_Files/RunCase_1/Result-Stage_1/_ExportedFromSalomeObject_0_1_2_6.med',auto_groups=0,minor=-1,overwrite=1,meshPart=None,autoDimension=1)
+  pass
+except:
+  print('ExportMED() failed. Invalid file name?')
+Number_of_Segments_4 = smesh.CreateHypothesis('NumberOfSegments')
+Number_of_Segments_4.SetNumberOfSegments( 15 )
+[ Extrusion_1_1, Ssup_1, Senc_1, e_1 ] = Mesh_1.GetGroups()
+smesh.SetName(Mesh_1, 'Mesh_1')
+try:
+  Mesh_1.ExportMED(r'/home/a78579/Documents/stage/test_sb9/dyna/modes/sdls102/sdls102c_Files/RunCase_2/Result-Stage_1/_ExportedFromSalomeObject_0_1_2_6.med',auto_groups=0,minor=-1,overwrite=1,meshPart=None,autoDimension=1)
+  pass
+except:
+  print('ExportMED() failed. Invalid file name?')
+Number_of_Segments_5 = smesh.CreateHypothesis('NumberOfSegments')
+Number_of_Segments_5.SetNumberOfSegments( 48 )
+[ Extrusion_1_1, Ssup_1, Senc_1, e_1 ] = Mesh_1.GetGroups()
+smesh.SetName(Mesh_1, 'Mesh_1')
+try:
+  Mesh_1.ExportMED(r'/home/a78579/Documents/stage/test_sb9/dyna/modes/sdls102/sdls102c_Files/RunCase_3/Result-Stage_1/_ExportedFromSalomeObject_0_1_2_6.med',auto_groups=0,minor=-1,overwrite=1,meshPart=None,autoDimension=1)
+  pass
+except:
+  print('ExportMED() failed. Invalid file name?')
+smesh.SetName(Mesh_1, 'Mesh_1')
+try:
+  Mesh_1.ExportMED(r'/home/a78579/Documents/stage/test_sb9/dyna/modes/sdls102/sdls102c_Files/RunCase_4/Result-Stage_1/_ExportedFromSalomeObject_0_1_2_6.med',auto_groups=0,minor=-1,overwrite=1,meshPart=None,autoDimension=1)
+  pass
+except:
+  print('ExportMED() failed. Invalid file name?')
+smesh.SetName(Mesh_1, 'Mesh_1')
+try:
+  Mesh_1.ExportMED(r'/home/a78579/Documents/cas_test/Vibration_aube/Vibration_aube_Files/RunCase_1/Result-Stage_1/_ExportedFromSalomeObject_0_1_2_6.med',auto_groups=0,minor=-1,overwrite=1,meshPart=None,autoDimension=1)
+  pass
+except:
+  print('ExportMED() failed. Invalid file name?')
+smesh.SetName(Mesh_1, 'Mesh_1')
+try:
+  Mesh_1.ExportMED(r'/home/a78579/Documents/cas_test/Vibration_aube/Vibration_aube_Files/RunCase_1/Result-Stage_1/_ExportedFromSalomeObject_0_1_2_6.med',auto_groups=0,minor=-1,overwrite=1,meshPart=None,autoDimension=1)
+  pass
+except:
+  print('ExportMED() failed. Invalid file name?')
+smesh.SetName(Mesh_1, 'Mesh_1')
+try:
+  Mesh_1.ExportMED(r'/home/a78579/Documents/cas_test/Vibration_aube/Vibration_aube_Files/RunCase_2/Result-Stage_1/_ExportedFromSalomeObject_0_1_2_6.med',auto_groups=0,minor=-1,overwrite=1,meshPart=None,autoDimension=1)
+  pass
+except:
+  print('ExportMED() failed. Invalid file name?')
+[ Extrusion_1_1, Ssup_1, Senc_1, e_1 ] = Mesh_1.GetGroups()
+Number_of_Segments_6 = smesh.CreateHypothesis('NumberOfSegments')
+Number_of_Segments_6.SetNumberOfSegments( 6 )
+[ Extrusion_1_1, Ssup_1, Senc_1, e_1 ] = Mesh_1.GetGroups()
+smesh.SetName(Mesh_1, 'Mesh_1')
+try:
+  Mesh_1.ExportMED(r'/home/a78579/Documents/cas_test/Vibration_aube/Vibration_aube_Files/RunCase_3/Result-Stage_1/_ExportedFromSalomeObject_0_1_2_6.med',auto_groups=0,minor=-1,overwrite=1,meshPart=None,autoDimension=1)
+  pass
+except:
+  print('ExportMED() failed. Invalid file name?')
+[ Extrusion_1_1, Ssup_1, Senc_1, e_1 ] = Mesh_1.GetGroups()
+Number_of_Segments_7 = smesh.CreateHypothesis('NumberOfSegments')
+Number_of_Segments_7.SetNumberOfSegments( 12 )
+[ Extrusion_1_1, Ssup_1, Senc_1, e_1 ] = Mesh_1.GetGroups()
+smesh.SetName(Mesh_1, 'Mesh_1')
+try:
+  Mesh_1.ExportMED(r'/home/a78579/Documents/cas_test/Vibration_aube/Vibration_aube_Files/RunCase_4/Result-Stage_1/_ExportedFromSalomeObject_0_1_2_6.med',auto_groups=0,minor=-1,overwrite=1,meshPart=None,autoDimension=1)
+  pass
+except:
+  print('ExportMED() failed. Invalid file name?')
+Number_of_Segments_8 = smesh.CreateHypothesis('NumberOfSegments')
+Number_of_Segments_8.SetNumberOfSegments( 18 )
+[ Extrusion_1_1, Ssup_1, Senc_1, e_1 ] = Mesh_1.GetGroups()
+Number_of_Segments_9 = smesh.CreateHypothesis('NumberOfSegments')
+Number_of_Segments_9.SetNumberOfSegments( 20 )
+[ Extrusion_1_1, Ssup_1, Senc_1, e_1 ] = Mesh_1.GetGroups()
+Number_of_Segments_10 = smesh.CreateHypothesis('NumberOfSegments')
+Number_of_Segments_10.SetNumberOfSegments( 24 )
+[ Extrusion_1_1, Ssup_1, Senc_1, e_1 ] = Mesh_1.GetGroups()
+Number_of_Segments_11 = smesh.CreateHypothesis('NumberOfSegments')
+Number_of_Segments_11.SetNumberOfSegments( 21 )
+[ Extrusion_1_1, Ssup_1, Senc_1, e_1 ] = Mesh_1.GetGroups()
+Number_of_Segments_12 = smesh.CreateHypothesis('NumberOfSegments')
+Number_of_Segments_12.SetNumberOfSegments( 12 )
+[ Extrusion_1_1, Ssup_1, Senc_1, e_1 ] = Mesh_1.GetGroups()
+Number_of_Segments_13 = smesh.CreateHypothesis('NumberOfSegments')
+Number_of_Segments_13.SetNumberOfSegments( 6 )
+[ Extrusion_1_1, Ssup_1, Senc_1, e_1 ] = Mesh_1.GetGroups()
+Number_of_Segments_14 = smesh.CreateHypothesis('NumberOfSegments')
+Number_of_Segments_14.SetNumberOfSegments( 10 )
+[ Extrusion_1_1, Ssup_1, Senc_1, e_1 ] = Mesh_1.GetGroups()
+Number_of_Segments_15 = smesh.CreateHypothesis('NumberOfSegments')
+Number_of_Segments_15.SetNumberOfSegments( 8 )
+[ Extrusion_1_1, Ssup_1, Senc_1, e_1 ] = Mesh_1.GetGroups()
+smesh.SetName(Mesh_1, 'Mesh_1')
+try:
+  Mesh_1.ExportMED(r'/home/a78579/Documents/cas_test/Vibration_aube/Vibration_aube_Files/RunCase_5/Result-Stage_1/_ExportedFromSalomeObject_0_1_2_6.med',auto_groups=0,minor=-1,overwrite=1,meshPart=None,autoDimension=1)
+  pass
+except:
+  print('ExportMED() failed. Invalid file name?')
+Number_of_Segments_16 = smesh.CreateHypothesis('NumberOfSegments')
+Number_of_Segments_16.SetNumberOfSegments( 21 )
+[ Extrusion_1_1, Ssup_1, Senc_1, e_1 ] = Mesh_1.GetGroups()
+smesh.SetName(Mesh_1, 'Mesh_1')
+try:
+  Mesh_1.ExportMED(r'/home/a78579/Documents/cas_test/Vibration_aube/Vibration_aube_Files/RunCase_6/Result-Stage_1/_ExportedFromSalomeObject_0_1_2_6.med',auto_groups=0,minor=-1,overwrite=1,meshPart=None,autoDimension=1)
+  pass
+except:
+  print('ExportMED() failed. Invalid file name?')
+Number_of_Segments_17 = smesh.CreateHypothesis('NumberOfSegments')
+Number_of_Segments_17.SetNumberOfSegments( 48 )
+[ Extrusion_1_1, Ssup_1, Senc_1, e_1 ] = Mesh_1.GetGroups()
+smesh.SetName(Mesh_1, 'Mesh_1')
+try:
+  Mesh_1.ExportMED(r'/home/a78579/Documents/cas_test/Vibration_aube/Vibration_aube_Files/RunCase_7/Result-Stage_1/_ExportedFromSalomeObject_0_1_2_6.med',auto_groups=0,minor=-1,overwrite=1,meshPart=None,autoDimension=1)
+  pass
+except:
+  print('ExportMED() failed. Invalid file name?')
+[ Extrusion_1_1, Ssup_1, Senc_1, e_1 ] = Mesh_1.GetGroups()
+Number_of_Segments_18 = smesh.CreateHypothesis('NumberOfSegments')
+Number_of_Segments_18.SetNumberOfSegments( 21 )
+status = Mesh_1.AddHypothesis(Number_of_Segments_18)
+isDone = Mesh_1.Compute()
+[ Extrusion_1_1, Ssup_1, Senc_1, e_1 ] = Mesh_1.GetGroups()
+smesh.SetName(Mesh_1, 'Mesh_1')
+try:
+  Mesh_1.ExportMED(r'/home/a78579/Documents/cas_test/Vibration_aube/Vibration_aube_Files/RunCase_1/Result-Stage_1/_ExportedFromSalomeObject_0_1_2_6.med',auto_groups=0,minor=-1,overwrite=1,meshPart=None,autoDimension=1)
+  pass
+except:
+  print('ExportMED() failed. Invalid file name?')
+[ Extrusion_1_1, Ssup_1, Senc_1, e_1 ] = Mesh_1.GetGroups()
+smesh.SetName(Mesh_1, 'Mesh_1')
+try:
+  Mesh_1.ExportMED(r'/home/A86451/Bureau/EnCours/NGC/Aube/Aube_Files/RunCase_1/Result-Stage_1/_ExportedFromSalomeObject_0_1_2_6.med',auto_groups=0,minor=-1,overwrite=1,meshPart=None,autoDimension=1)
+  pass
+except:
+  print('ExportMED() failed. Invalid file name?')
+smesh.SetName(Mesh_1, 'Mesh_1')
+try:
+  Mesh_1.ExportMED(r'/home/A86451/Bureau/EnCours/NGC/Aube/Aube_Files/RunCase_2/Result-Stage_1/_ExportedFromSalomeObject_0_1_2_6.med',auto_groups=0,minor=-1,overwrite=1,meshPart=None,autoDimension=1)
+  pass
+except:
+  print('ExportMED() failed. Invalid file name?')
+smesh.SetName(Mesh_1, 'Mesh_1')
+try:
+  Mesh_1.ExportMED(r'/home/A86451/Bureau/EnCours/NGC/Aube/Aube_Files/RunCase_3/Result-Stage_1/_ExportedFromSalomeObject_0_1_2_6.med',auto_groups=0,minor=-1,overwrite=1,meshPart=None,autoDimension=1)
+  pass
+except:
+  print('ExportMED() failed. Invalid file name?')
+smesh.SetName(Mesh_1, 'Mesh_1')
+try:
+  Mesh_1.ExportMED(r'/home/A86451/Bureau/EnCours/NGC/Aube/Aube_Files/RunCase_4/Result-Stage_1/_ExportedFromSalomeObject_0_1_2_6.med',auto_groups=0,minor=-1,overwrite=1,meshPart=None,autoDimension=1)
+  pass
+except:
+  print('ExportMED() failed. Invalid file name?')
+smesh.SetName(Mesh_1, 'Mesh_1')
+try:
+  Mesh_1.ExportMED(r'/home/A86451/Bureau/EnCours/NGC/Aube/Aube_Files/RunCase_5/Result-Stage_1/_ExportedFromSalomeObject_0_1_2_6.med',auto_groups=0,minor=-1,overwrite=1,meshPart=None,autoDimension=1)
+  pass
+except:
+  print('ExportMED() failed. Invalid file name?')
+smesh.SetName(Mesh_1, 'Mesh_1')
+try:
+  Mesh_1.ExportMED(r'/home/A86451/Bureau/EnCours/NGC/Aube/Aube_Files/RunCase_6/Result-Stage_1/_ExportedFromSalomeObject_0_1_2_6.med',auto_groups=0,minor=-1,overwrite=1,meshPart=None,autoDimension=1)
+  pass
+except:
+  print('ExportMED() failed. Invalid file name?')
+smesh.SetName(Mesh_1, 'Mesh_1')
+try:
+  Mesh_1.ExportMED(r'/home/A86451/Bureau/EnCours/NGC/Aube/_ExportedFromSalomeObject_0_1_2_6.med',auto_groups=0,minor=-1,overwrite=1,meshPart=None,autoDimension=1)
+  pass
+except:
+  print('ExportMED() failed. Invalid file name?')
+Sub_mesh_1 = Mesh_1.GetSubMesh( e, 'Sub-mesh_1' )
+
+
+## Set names of Mesh objects
+smesh.SetName(Regular_1D, 'Regular_1D')
+smesh.SetName(Hexa_3D.GetAlgorithm(), 'Hexa_3D')
+smesh.SetName(Quadrangle_2D, 'Quadrangle_2D')
+smesh.SetName(Number_of_Segments_2, 'Number of Segments_2')
+smesh.SetName(Number_of_Segments_1_1, 'Number of Segments_1')
+smesh.SetName(Number_of_Segments_1, 'Number of Segments_1')
+smesh.SetName(Number_of_Segments_5, 'Number of Segments_5')
+smesh.SetName(Number_of_Segments_6, 'Number of Segments_6')
+smesh.SetName(Number_of_Segments_3, 'Number of Segments_3')
+smesh.SetName(Number_of_Segments_4, 'Number of Segments_4')
+smesh.SetName(Number_of_Segments_7, 'Number of Segments_7')
+smesh.SetName(Number_of_Segments_8, 'Number of Segments_8')
+smesh.SetName(Mesh_1.GetMesh(), 'Mesh_1')
+smesh.SetName(Extrusion_1_1, 'Extrusion_1')
+smesh.SetName(Sub_mesh_1, 'Sub-mesh_1')
+smesh.SetName(Number_of_Segments_12, 'Number of Segments_12')
+smesh.SetName(Number_of_Segments_11, 'Number of Segments_11')
+smesh.SetName(Number_of_Segments_10, 'Number of Segments_10')
+smesh.SetName(Number_of_Segments_9, 'Number of Segments_9')
+smesh.SetName(Number_of_Segments_16, 'Number of Segments_16')
+smesh.SetName(Number_of_Segments_15, 'Number of Segments_15')
+smesh.SetName(Number_of_Segments_14, 'Number of Segments_14')
+smesh.SetName(Number_of_Segments_13, 'Number of Segments_13')
+smesh.SetName(Number_of_Segments_18, 'Number of Segments_18')
+smesh.SetName(Number_of_Segments_17, 'Number of Segments_17')
+smesh.SetName(Ssup_1, 'Ssup')
+smesh.SetName(Senc_1, 'Senc')
+smesh.SetName(e_1, 'e')
+
+###
+### ASTERSTUDY component
+###
+
+###
+### PARAVIS component
+###
+
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser()

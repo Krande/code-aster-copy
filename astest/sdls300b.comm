@@ -1,0 +1,134 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+mesh = LIRE_MAILLAGE(FORMAT='MED',
+                      UNITE=20)
+
+mesh1 = CREA_MAILLAGE(COQUE_SOLIDE=_F(GROUP_MA=('TOUT_extruded', ),
+                                      GROUP_MA_SURF=('TOUT_top', ),),
+                      MAILLAGE=mesh)
+
+model = AFFE_MODELE(AFFE=_F(MODELISATION='COQUE_SOLIDE',
+                            PHENOMENE='MECANIQUE',
+                            TOUT='OUI'),
+                    MAILLAGE=mesh1)
+
+concrete = DEFI_MATERIAU(ELAS=_F(COEF_AMOR=1.0,
+                                 E=27600000000.0,
+                                 NU=0.166,
+                                 RHO=2244.0))
+
+fieldmat = AFFE_MATERIAU(AFFE=_F(MATER=(concrete, ),
+                                 TOUT='OUI'),
+                         MAILLAGE=mesh1)
+
+clamp = AFFE_CHAR_MECA(DDL_IMPO=_F(BLOCAGE=('DEPLACEMENT', ),
+                                   GROUP_MA=('Senc', )),
+                       MODELE=model)
+
+rigiElem = CALC_MATR_ELEM(CHAM_MATER=fieldmat,
+                          CHARGE=(clamp, ),
+                          MODELE=model,
+                          OPTION='RIGI_MECA')
+
+massElem = CALC_MATR_ELEM(CHAM_MATER=fieldmat,
+                          CHARGE=(clamp, ),
+                          MODELE=model,
+                          OPTION='MASS_MECA')
+
+number = NUME_DDL(MATR_RIGI=(rigiElem, ))
+
+rigiAsse = ASSE_MATRICE(MATR_ELEM=rigiElem,
+                        NUME_DDL=number)
+
+massAsse = ASSE_MATRICE(MATR_ELEM=massElem,
+                        NUME_DDL=number)
+
+modes = CALC_MODES(CALC_FREQ=_F(FREQ=(2.0, 6.0),
+                                NMAX_ITER_SHIFT=3,
+                                PREC_SHIFT=0.05,
+                                SEUIL_FREQ=0.01),
+                   MATR_MASS=massAsse,
+                   MATR_RIGI=rigiAsse,
+                   OPTION='BANDE')
+
+modes = NORM_MODE(reuse=modes,
+                  MODE=modes,
+                  NORME='TRAN_ROTA')
+
+mode1 = EXTR_MODE(FILTRE_MODE=_F(CRIT_EXTR='MASS_EFFE_UN',
+                                 MODE=modes,
+                                 SEUIL=0.001),
+                  IMPRESSION=_F( CUMUL = 'OUI' ))
+
+freqRefe1 = 2.80058
+freqCalc1 = 2.8069466674104677
+freqTole1 = 0.23 * 0.01
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='FREQ',
+                  PRECISION=freqTole1,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=mode1,
+                  VALE_ABS='NON',
+                  VALE_CALC=(freqCalc1, ),
+                  VALE_REFE=(freqRefe1, )))
+
+freqRefe2 = 2.80058
+freqCalc2 = 2.8069466674104677
+freqTole2 = 0.23 * 0.01
+
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  PARA='FREQ',
+                  PRECISION=freqTole2,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=mode1,
+                  VALE_ABS='NON',
+                  VALE_CALC=(freqCalc2, ),
+                  VALE_REFE=(freqRefe2, )))
+
+freqRefe3 = 5.92549
+freqCalc3 = 5.933607190759366
+freqTole3 = 0.14 * 0.01
+
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  PARA='FREQ',
+                  PRECISION=freqTole3,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=mode1,
+                  VALE_ABS='NON',
+                  VALE_CALC=(freqCalc3, ),
+                  VALE_REFE=(freqRefe3, )))
+
+freqRefe4 = 5.92549
+freqCalc4 = 5.933607190777755
+freqTole4 = 0.14 * 0.01
+
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  PARA='FREQ',
+                  PRECISION=freqTole4,
+                  REFERENCE='SOURCE_EXTERNE',
+                  RESULTAT=mode1,
+                  VALE_ABS='NON',
+                  VALE_CALC=(freqCalc4, ),
+                  VALE_REFE=(freqRefe4, )))
+
+FIN()

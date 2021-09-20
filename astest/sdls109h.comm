@@ -1,0 +1,159 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+MESH0 = LIRE_MAILLAGE(FORMAT='MED',
+                      UNITE=20)
+
+MAIL = CREA_MAILLAGE(COQUE_SOLIDE=_F(GROUP_MA=['volu'],
+                                     GROUP_MA_SURF=['ori'],),
+                     MAILLAGE=MESH0)
+
+model = AFFE_MODELE(AFFE=_F(MODELISATION='COQUE_SOLIDE',
+                            PHENOMENE='MECANIQUE',
+                            TOUT='OUI'),
+                    MAILLAGE=MAIL)
+
+steel = DEFI_MATERIAU(ELAS=_F(COEF_AMOR=1.0,
+                              E=185000000000.0,
+                              NU=0.3,
+                              RHO=7800.0))
+
+CHAM_MAT = AFFE_MATERIAU(AFFE=_F(GROUP_MA=['volu'],
+                                 MATER=[steel]),
+                         MAILLAGE=MAIL)
+
+rigiElem = CALC_MATR_ELEM(CHAM_MATER=CHAM_MAT,
+                          MODELE=model,
+                          OPTION='RIGI_MECA')
+
+massElem = CALC_MATR_ELEM(CHAM_MATER=CHAM_MAT,
+                          MODELE=model,
+                          OPTION='MASS_MECA')
+
+numeDof = NUME_DDL(MATR_RIGI=rigiElem)
+
+rigiAsse = ASSE_MATRICE(MATR_ELEM=rigiElem,
+                        NUME_DDL=numeDof)
+
+massAsse = ASSE_MATRICE(MATR_ELEM=massElem,
+                        NUME_DDL=numeDof)
+
+mode = CALC_MODES(CALC_FREQ=_F(FREQ=(200.0, 800.0),),
+                  MATR_MASS=massAsse,
+                  MATR_RIGI=rigiAsse,
+                  OPTION='BANDE',)
+
+freqRef1 = 205.89
+freqRef2 = 205.89
+freqRef3 = 210.55
+freqRef4 = 210.55
+freqRef5 = 587.92
+freqRef6 = 587.92
+freqRef7 = 588.88
+freqRef8 = 588.88
+
+freqCal1 = 209.66583065214112
+freqCal2 = 209.6658306692303
+freqCal3 = 210.07201614862745
+freqCal4 = 210.07201616242799
+freqCal5 = 585.8691140669524
+freqCal6 = 585.8691140669737
+freqCal7 = 596.9911301863068
+freqCal8 = 596.991130186424
+
+freqTol1 = 1.9 * 0.01
+freqTol2 = 1.9 * 0.01
+freqTol3 = 0.3 * 0.01
+freqTol4 = 0.3 * 0.01
+freqTol5 = 0.4 * 0.01
+freqTol6 = 0.4 * 0.01
+freqTol7 = 1.4 * 0.01
+freqTol8 = 1.4 * 0.01
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   PARA='FREQ',
+                   PRECISION=freqTol1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=mode,
+                   VALE_ABS='NON',
+                   VALE_CALC=(freqCal1, ),
+                   VALE_REFE=(freqRef1, )),
+                _F(NUME_ORDRE=2,
+                   PARA='FREQ',
+                   PRECISION=freqTol2,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=mode,
+                   VALE_ABS='NON',
+                   VALE_CALC=(freqCal2, ),
+                   VALE_REFE=(freqRef2, ))))
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=3,
+                   PARA='FREQ',
+                   PRECISION=freqTol3,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=mode,
+                   VALE_ABS='NON',
+                   VALE_CALC=(freqCal3, ),
+                   VALE_REFE=(freqRef3, )),
+                _F(NUME_ORDRE=4,
+                   PARA='FREQ',
+                   PRECISION=freqTol4,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=mode,
+                   VALE_ABS='NON',
+                   VALE_CALC=(freqCal4, ),
+                   VALE_REFE=(freqRef4, ))))
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=5,
+                   PARA='FREQ',
+                   PRECISION=freqTol5,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=mode,
+                   VALE_ABS='NON',
+                   VALE_CALC=(freqCal5, ),
+                   VALE_REFE=(freqRef5, )),
+                _F(NUME_ORDRE=6,
+                   PARA='FREQ',
+                   PRECISION=freqTol6,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=mode,
+                   VALE_ABS='NON',
+                   VALE_CALC=(freqCal6, ),
+                   VALE_REFE=(freqRef6, ))))
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=7,
+                   PARA='FREQ',
+                   PRECISION=freqTol7,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=mode,
+                   VALE_ABS='NON',
+                   VALE_CALC=(freqCal7, ),
+                   VALE_REFE=(freqRef7, )),
+                _F(NUME_ORDRE=8,
+                   PARA='FREQ',
+                   PRECISION=freqTol8,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=mode,
+                   VALE_ABS='NON',
+                   VALE_CALC=(freqCal8, ),
+                   VALE_REFE=(freqRef8, ))))
+
+FIN()

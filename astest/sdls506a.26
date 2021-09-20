@@ -1,0 +1,54 @@
+#!/usr/bin/env python
+
+###
+### This file is generated automatically by SALOME v9.4.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+import salome_notebook
+notebook = salome_notebook.NoteBook()
+
+###
+### GEOM component
+###
+
+import GEOM
+from salome.geom import geomBuilder
+import math
+import SALOMEDS
+
+
+geompy = geomBuilder.New()
+
+O = geompy.MakeVertex(0, 0, 0)
+OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+Box_1 = geompy.MakeBoxDXDYDZ(2, 2, 0.03)
+ENCAS = geompy.CreateGroup(Box_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(ENCAS, [3])
+P = geompy.CreateGroup(Box_1, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(P, [19])
+e = geompy.CreateGroup(Box_1, geompy.ShapeType["EDGE"])
+geompy.UnionIDs(e, [20, 15, 10, 5])
+Ssup = geompy.CreateGroup(Box_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(Ssup, [33])
+geompy.DifferenceIDs(P, [19])
+geompy.UnionIDs(P, [16])
+geompy.DifferenceIDs(P, [16])
+geompy.UnionIDs(P, [19])
+geompy.DifferenceIDs(ENCAS, [3])
+geompy.UnionIDs(ENCAS, [23])
+geompy.addToStudy( O, 'O' )
+geompy.addToStudy( OX, 'OX' )
+geompy.addToStudy( OY, 'OY' )
+geompy.addToStudy( OZ, 'OZ' )
+geompy.addToStudy( Box_1, 'Box_1' )
+geompy.addToStudyInFather( Box_1, ENCAS, 'ENCAS' )
+geompy.addToStudyInFather( Box_1, P, 'P' )
+geompy.addToStudyInFather( Box_1, e, 'e' )
+geompy.addToStudyInFather( Box_1, Ssup, 'Ssup' )
+
