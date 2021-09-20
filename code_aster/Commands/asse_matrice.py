@@ -71,6 +71,7 @@ class AssembleMatrixOperator(ExecuteCommand):
             keywords (dict): User's keywords.
         """
         super().add_dependencies(keywords)
+        self.remove_dependencies(keywords, "MATR_ELEM")
         self.remove_dependencies(keywords, "CHAR_CINE")
 
 ASSE_MATRICE = AssembleMatrixOperator.run
