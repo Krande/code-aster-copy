@@ -586,6 +586,12 @@ class Coeur(object):
 
         return _MA
 
+    def check_groups(self, mesh):
+        cu_groups = [i for i in mesh.getGroupsOfCells() if i.startswith('CU_')]
+        if not set(cu_groups) == set(self.get_contactCuve()):
+            return False
+        return True
+    
     def recuperation_donnees_geom(self, MAILL):
         """recuperation de donnees géometrique a partir du maillage"""
 

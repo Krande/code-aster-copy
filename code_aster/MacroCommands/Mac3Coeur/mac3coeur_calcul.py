@@ -161,6 +161,8 @@ class Mac3CoeurCalcul(object):
         """Prepare the data for the calculation"""
         coeur = self.coeur
         coeur.recuperation_donnees_geom(self.mesh)
+        if not coeur.check_groups(self.mesh):
+            UTMESS('F', 'COEUR0_5', valk=('CU_*',))
         # force the computation of the times to ensure it is done first
         # Note that times depends on niv_fluence and subdivis.
         self.times

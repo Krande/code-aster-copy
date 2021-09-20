@@ -38,5 +38,8 @@ Permutation de l'assemblage %(k1)s en position %(k2)s
     4 : _("""
 Il faut renseigner au moins un des mots-clés MAILLAGE_N ou RESU_INIT.
 """),
+    5 : _("""
+Le maillage est obsolète : les groupes %(k1)s ne sont pas conformes aux orientations de la cuve.
+"""),
 
 }
