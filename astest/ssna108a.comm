@@ -139,7 +139,7 @@ TLOG=STAT_NON_LINE(
                 CHARGE = CHARG),
                          COMPORTEMENT=_F(
                 RELATION = 'VMIS_ISOT_TRAC',
-                DEFORMATION='PETIT_REAC',),
+                DEFORMATION='GDEF_LOG',),
                          INCREMENT=_F(
                 LIST_INST = L_INST,
                 NUME_INST_FIN = 10),
@@ -171,21 +171,19 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
           )
 
 
-# WEIBULL AVEC OPTION SIGM_ELGA
+# WEIBULL ET BEREMIN AVEC OPTION SIGM_ELGA, PETIT DEF, SANS CORRECTION DE PLASTICITE
+
 WEIB=POST_ELEM(
                       RESULTAT=U,
                       NUME_ORDRE=(1,2,3,4,5,6,7,8,9,10),
                        WEIBULL=_F(  TOUT = 'OUI',
                                     OPTION = 'SIGM_ELGA',
-                                    CORR_PLAST = 'NON')
-                   )
+                                    CORR_PLAST = 'NON'),)
 
 IMPR_TABLE(TABLE=WEIB)
-IMPR_TABLE(TABLE=WEIB,
-           FORMAT='NUMPY',
-           NOM_PARA=("NUME_ORDRE", "INST", "SIGMA_WEIBULL", "PROBA_WEIBULL",
-                     "SIGMA_WEIBULL**M"),
-           UNITE=59)
+F_WEIB=RECU_FONCTION(TABLE=WEIB,
+                   PARA_X='INST',
+                   PARA_Y='SIGMA_WEIBULL',);
 
 
 
@@ -193,16 +191,33 @@ BERE=POST_BEREMIN(RESULTAT=U,
              DEFORMATION="PETIT",
              GROUP_MA="COUL_7",
              FILTRE_SIGM="SIGM_ELGA")
-
 IMPR_TABLE(TABLE=BERE)
-IMPR_TABLE(TABLE=BERE,
-           FORMAT='NUMPY',
-           NOM_PARA=("nume_ordre", "inst", "sigma_weibull", "proba_weibull",
-                     "sigma_weibull**m"),
-           UNITE=60)
-                      
+F_BERE=RECU_FONCTION(TABLE=BERE,
+                   PARA_X='inst',
+                   PARA_Y='sigma_weibull',);
 
 
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+             PILOTE='',
+             LEGENDE_X = 'inst', 
+             LEGENDE_Y = 'sigma weibull', 
+             COURBE=(
+                  _F(FONCTION = F_WEIB, 
+                      COULEUR= 4,
+                       STYLE = 2, 
+                       MARQUEUR = 5,
+                       LEGENDE= 'POST_ELEM',),
+                    _F(FONCTION = F_BERE, 
+                        COULEUR= 2,
+                       STYLE = 5, 
+                       MARQUEUR = 8,
+                      LEGENDE= 'POST_BEREMIN',),),
+                      UNITE=28,
+             TITRE="Trace de sigma weibull avec SIGM_ELGA, PETIT deformation");
+
+
+# WEIBULL AVEC OPTION SIGM_ELGA, SIMO_MIEHE, SANS CORRECTION DE PLASTICITE
 
 WEIBSM=POST_ELEM(
                       RESULTAT=USM,
@@ -212,38 +227,57 @@ WEIBSM=POST_ELEM(
                                     CORR_PLAST = 'NON')
                    )
                    
-
+# WEIBULL ET BEREMIN AVEC OPTION SIGM_ELGA, GDEF_LOG, SANS CORRECTION DE PLASTICITE
 
 WEIBLOG=POST_ELEM(
                       RESULTAT=ULOG,
                       NUME_ORDRE=(1,2,3,4,5,6,7,8,9,10),
                        WEIBULL=_F(  TOUT = 'OUI',
                                     OPTION = 'SIGM_ELGA',
-                                    CORR_PLAST = 'NON')
-                   )
+                                    CORR_PLAST = 'NON'),)
 
 IMPR_TABLE(TABLE=WEIBLOG)
-IMPR_TABLE(TABLE=WEIBLOG,
-           FORMAT='NUMPY',
-           NOM_PARA=("NUME_ORDRE", "INST", "SIGMA_WEIBULL", "PROBA_WEIBULL",
-                     "SIGMA_WEIBULL**M"),
-           UNITE=61)
+F_WEIBLOG=RECU_FONCTION(TABLE=WEIBLOG,
+                   PARA_X='INST',
+                   PARA_Y='SIGMA_WEIBULL',);
+
+
 
 
 BERELOG=POST_BEREMIN(RESULTAT=ULOG,
-             DEFORMATION="PETIT_REAC",
+             DEFORMATION="GDEF_LOG",
              GROUP_MA="COUL_7",
              FILTRE_SIGM="SIGM_ELGA")
 
-IMPR_TABLE(TABLE=BERELOG,
-           FORMAT='NUMPY',
-           NOM_PARA=("nume_ordre", "inst", "sigma_weibull", "proba_weibull",
-                     "sigma_weibull**m"),
-           UNITE=63)
+IMPR_TABLE(TABLE=BERELOG)
+F_BERELOG=RECU_FONCTION(TABLE=BERELOG,
+                   PARA_X='inst',
+                   PARA_Y='sigma_weibull',);
 
 
 
-# WEIBULL AVEC OPTION SIGM_ELMOY ET COOR_PLAST = NON
+IMPR_FONCTION(FORMAT='XMGRACE',
+            PILOTE='',
+            LEGENDE_X = 'inst',
+            LEGENDE_Y = 'sigma weibull',
+            COURBE=(
+                   _F(FONCTION = F_WEIBLOG,
+                      COULEUR= 4,
+                      STYLE = 2,
+                      MARQUEUR = 5,
+                      LEGENDE= 'POST_ELEM',),
+                   _F(FONCTION = F_BERELOG,
+                       COULEUR= 2,
+                       STYLE = 5,
+                       MARQUEUR = 8,
+                       LEGENDE= 'POST_BEREMIN',),),
+                       UNITE=29,
+              TITRE="Trace de sigma weibull avec SIGM_ELGA, GDEF_LOG");
+
+
+
+
+# WEIBULL ET BEREMIN AVEC OPTION SIGM_ELMOY, PETIT DEF ET COOR_PLAST = NON
 WEIB2=POST_ELEM(
                       RESULTAT=U,
                       NUME_ORDRE=(1,2,3,4,5,6,7,8,9,10),
@@ -252,11 +286,12 @@ WEIB2=POST_ELEM(
                                     CORR_PLAST = 'NON')
                    )
 
-IMPR_TABLE(TABLE=WEIB2,
-           FORMAT='NUMPY',
-           NOM_PARA=("NUME_ORDRE", "INST", "SIGMA_WEIBULL", "PROBA_WEIBULL",
-                     "SIGMA_WEIBULL**M"),
-           UNITE=63)
+IMPR_TABLE(TABLE=WEIB2)
+F_WEIB2=RECU_FONCTION(TABLE=WEIB2,
+                   PARA_X='INST',
+                   PARA_Y='SIGMA_WEIBULL',);
+
+
 
 
 BERE2=POST_BEREMIN(RESULTAT=U,
@@ -264,12 +299,32 @@ BERE2=POST_BEREMIN(RESULTAT=U,
              GROUP_MA="COUL_7",
              FILTRE_SIGM="SIGM_ELMOY",)
 
+IMPR_TABLE(TABLE=BERE2)
+F_BERE2=RECU_FONCTION(TABLE=BERE2,
+                   PARA_X='inst',
+                   PARA_Y='sigma_weibull',);
 
-IMPR_TABLE(TABLE=BERE2,
-           FORMAT='NUMPY',
-           NOM_PARA=("nume_ordre", "inst", "sigma_weibull", "proba_weibull",
-                     "sigma_weibull**m"),
-           UNITE=64)
+
+
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+             PILOTE='',
+             LEGENDE_X = 'inst',
+             LEGENDE_Y = 'sigma weibull',
+             COURBE=(
+                    _F(FONCTION = F_WEIB2,
+                      COULEUR= 4,
+                      STYLE = 2,
+                      MARQUEUR = 5,
+                      LEGENDE= 'POST_ELEM',),
+                   _F(FONCTION = F_BERE2,
+                       COULEUR= 2,
+                       STYLE = 5,
+                       MARQUEUR = 8,
+                       LEGENDE= 'POST_BEREMIN',),),
+                       UNITE=30,
+              TITRE="Trace de sigma weibull avec SIGM_ELMOY, PETIT deformation");
+
 
 
 
@@ -281,6 +336,9 @@ WEIB3=POST_ELEM(
                                     OPTION = 'SIGM_ELMOY',
                                     CORR_PLAST = 'OUI')
                    )
+
+
+
 
 # RICE ET TRACEY
 RET=POST_ELEM(
@@ -456,24 +514,18 @@ TEST_TABLE(VALE_CALC=4003.81872251,
                    ),
            )
 
+
+
 # TEST BEREMIN
 
 
-TEST_TABLE(VALE_CALC=1407.53403673,
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_REFE = 1407.53403673,
+           VALE_CALC=1428.6444903,
+           PRECISION = 0.02,
+           REFERENCE='AUTRE_ASTER',
            NOM_PARA='sigma_weibull',
            TABLE=BERE,
-           FILTRE=(_F(NOM_PARA='nume_ordre',
-                      VALE_I=2,
-                      PRECISION=0.001,),
-                   _F(NOM_PARA='lieu',
-                      VALE_K='COUL_7',),
-                   ),
-           )
-
-
-TEST_TABLE(VALE_CALC=1404.42658281,
-           NOM_PARA='sigma_weibull',
-           TABLE=BERELOG,
            FILTRE=(_F(NOM_PARA='nume_ordre',
                       VALE_I=2,),
                    _F(NOM_PARA='lieu',
@@ -481,8 +533,11 @@ TEST_TABLE(VALE_CALC=1404.42658281,
                   ),
            )
 
-
-TEST_TABLE(VALE_CALC=2496.61331174,
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_REFE = 2496.61331174,
+           VALE_CALC=2498.581806,
+           PRECISION = 0.02,
+           REFERENCE='AUTRE_ASTER',
            NOM_PARA='sigma_weibull',
            TABLE=BERE,
            FILTRE=(_F(NOM_PARA='nume_ordre',
@@ -492,7 +547,11 @@ TEST_TABLE(VALE_CALC=2496.61331174,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=3333.27614652 ,
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_REFE = 3333.27614652,
+           VALE_CALC=3333.999581 ,
+           PRECISION = 0.02,
+           REFERENCE='AUTRE_ASTER',
            NOM_PARA='sigma_weibull',
            TABLE=BERE,
            FILTRE=(_F(NOM_PARA='nume_ordre',
@@ -502,7 +561,12 @@ TEST_TABLE(VALE_CALC=3333.27614652 ,
                    ),
            )
 
-TEST_TABLE(VALE_CALC=3753.58246426,
+
+TEST_TABLE(CRITERE='RELATIF',
+             VALE_REFE = 3753.58246426,
+           VALE_CALC=3754.091195,
+           PRECISION = 0.02,
+           REFERENCE='AUTRE_ASTER',
            NOM_PARA='sigma_weibull',
            TABLE=BERE,
            FILTRE=(_F(NOM_PARA='nume_ordre',
@@ -513,18 +577,13 @@ TEST_TABLE(VALE_CALC=3753.58246426,
            )
 
 
-TEST_TABLE(VALE_CALC=1406.28037174,
-           NOM_PARA='sigma_weibull',
-           TABLE=BERE2,
-           FILTRE=(_F(NOM_PARA='nume_ordre',
-                      VALE_I=2,),
-                   _F(NOM_PARA='lieu',
-                      VALE_K='COUL_7',),
-                   ),
-           )
 
 
-TEST_TABLE(VALE_CALC=2488.72079771,
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_REFE = 2488.7207977,
+           VALE_CALC=2487.839118,
+           PRECISION = 0.02,
+           REFERENCE='AUTRE_ASTER',
            NOM_PARA='sigma_weibull',
            TABLE=BERE2,
            FILTRE=(_F(NOM_PARA='nume_ordre',
@@ -535,7 +594,12 @@ TEST_TABLE(VALE_CALC=2488.72079771,
            )
 
 
-TEST_TABLE(VALE_CALC=3325.55620691,
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_REFE = 3325.55620691,
+           VALE_CALC=3330.766165,
+           PRECISION = 0.02,
+           REFERENCE='AUTRE_ASTER',
            NOM_PARA='sigma_weibull',
            TABLE=BERE2,
            FILTRE=(_F(NOM_PARA='nume_ordre',
@@ -547,13 +611,17 @@ TEST_TABLE(VALE_CALC=3325.55620691,
 
 
 
-TEST_TABLE(VALE_CALC=3744.29558422,
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_REFE = 3744.29558422,
+           VALE_CALC=3752.267916,
+           PRECISION = 0.02,
+           REFERENCE='AUTRE_ASTER',
            NOM_PARA='sigma_weibull',
            TABLE=BERE2,
            FILTRE=(_F(NOM_PARA='nume_ordre',
                       VALE_I=8,),
                    _F(NOM_PARA='lieu',
-                      VALE_K='COUL_7',),
+                     VALE_K='COUL_7',),
                    ),
            )
 
