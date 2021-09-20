@@ -59,8 +59,8 @@ class AssembleMatrixOperator(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
-        # Do not MATR_ELEM howewer there are not deleted
-        #self._result.appendElementaryMatrix(keywords['MATR_ELEM'])
+
+        self._result.appendElementaryMatrix(keywords['MATR_ELEM'])
         self._result.setDOFNumbering(keywords['NUME_DDL'])
 
 
@@ -71,7 +71,6 @@ class AssembleMatrixOperator(ExecuteCommand):
             keywords (dict): User's keywords.
         """
         super().add_dependencies(keywords)
-        self.remove_dependencies(keywords, "MATR_ELEM")
         self.remove_dependencies(keywords, "CHAR_CINE")
 
 ASSE_MATRICE = AssembleMatrixOperator.run
