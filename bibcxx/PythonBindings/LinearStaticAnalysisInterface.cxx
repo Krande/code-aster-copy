@@ -46,4 +46,5 @@ void exportLinearStaticAnalysisToPython() {
     c1.def( "execute", &LinearStaticAnalysis::execute );
     c1.def( "setLinearSolver", &LinearStaticAnalysis::setLinearSolver );
     c1.def( "setTimeStepManager", &LinearStaticAnalysis::setTimeStepManager );
+    c1.def( "setStressComputation", &LinearStaticAnalysis::setStressComputation );
 };

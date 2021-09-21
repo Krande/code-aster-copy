@@ -100,7 +100,7 @@ Contactez le support technique.
 """),
 
     19 : _("""
- Le nom d'un objet ne doit pas commencer par un blanc.
+ Le nom d'un objet ne doit pas commencer par un blanc (%(k1)s).
 Ce message est un message d'erreur développeur.
 Contactez le support technique.
 """),

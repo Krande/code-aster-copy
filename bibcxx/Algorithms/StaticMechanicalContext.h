@@ -52,13 +52,17 @@ class StaticMechanicalContext {
     /** @brief Pas de temps courant */
     ASTERDOUBLE _time;
     /** @brief rank */
-    int _rank;
+    ASTERINTEGER _rank;
     /** @brief Assembly matrix */
     AssemblyMatrixDisplacementRealPtr _aMatrix;
     /** @brief Are elastic properties constant */
     bool _isConst;
     /** @brief Input variables */
     ExternalStateVariablesBuilderPtr _varCom;
+    /** @brief Compute SIEF_ELGA */
+    bool _sief_elga;
+    /** @brief Timer */
+    std::map< std::string, ASTERDOUBLE > _timer;
 
   public:
     /**
@@ -68,7 +72,7 @@ class StaticMechanicalContext {
      * @param ResultPtr Résultat pour le stockage des déplacements
      */
     StaticMechanicalContext( const DiscreteProblemPtr &curPb, const BaseLinearSolverPtr linSolv,
-                             const ResultPtr container )
+                             const ResultPtr container, const bool sief_elga )
         : _discreteProblem( curPb ), _linearSolver( linSolv ),
           _listOfLoads( _discreteProblem->getStudyDescription()->getListOfLoads() ),
           _results( container ), _time( 0. ), _rank( 1 ),
@@ -78,14 +82,17 @@ class StaticMechanicalContext {
               _discreteProblem->getStudyDescription()->getModel(),
               _discreteProblem->getStudyDescription()->getMaterialField(),
               _discreteProblem->getStudyDescription()->getElementaryCharacteristics(),
-              _discreteProblem->getStudyDescription()->getCodedMaterial() ) ){};
+              _discreteProblem->getStudyDescription()->getCodedMaterial() ) ),
+         _sief_elga( sief_elga ),
+         _timer( { {"Matrix", 0.0}, {"Rhs", 0.0}, {"Facto", 0.0}, {"Solve", 0.0}, {"Post", 0.0} })
+         {};
 
     /**
      * @brief Function to set the "position" of the context
      * @param time time value
      * @param rank number of iteration
      */
-    void setStep( const ASTERDOUBLE &time, const int &rank ) {
+    void setStep( const ASTERDOUBLE &time, const ASTERINTEGER &rank ) {
         _time = time;
         _rank = rank;
     };
@@ -93,6 +100,11 @@ class StaticMechanicalContext {
     AssemblyMatrixDisplacementRealPtr getStiffnessMatrix(void)
     {
         return _aMatrix;
+    }
+
+    std::map< std::string, ASTERDOUBLE> getTimer()
+    {
+        return _timer;
     }
 
     friend class StaticMechanicalAlgorithm;

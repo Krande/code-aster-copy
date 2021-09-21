@@ -38,7 +38,7 @@ LinearStaticAnalysis::LinearStaticAnalysis(
     const ModelPtr &model, const MaterialFieldPtr &mater,
     const ElementaryCharacteristicsPtr &cara )
     : _model( model ), _materialField( mater ), _linearSolver( BaseLinearSolverPtr() ),
-      _timeStep( boost::make_shared< TimeStepper >()  ),
+      _timeStep( boost::make_shared< TimeStepper >()  ), _sief_elga(true),
       _study( boost::make_shared< StudyDescription >( _model, _materialField, cara ) ) {
     _timeStep->setValues( VectorReal( 1, 0. ) );
 };
@@ -76,7 +76,7 @@ ElasticResultPtr LinearStaticAnalysis::execute() {
         dofNum1 = resultC->getEmptyDOFNumbering();
     dofNum1 = dProblem->computeDOFNumbering( dofNum1 );
 
-    StaticMechanicalContext currentContext( dProblem, _linearSolver, resultC );
+    StaticMechanicalContext currentContext( dProblem, _linearSolver, resultC, _sief_elga );
     typedef Algorithm< TimeStepper, StaticMechanicalContext, StaticMechanicalAlgorithm >
         MSAlgo;
     MSAlgo::runAllStepsOverAlgorithm( *_timeStep, currentContext );
@@ -85,5 +85,26 @@ ElasticResultPtr LinearStaticAnalysis::execute() {
     const std::string matass_name = currentContext.getStiffnessMatrix()->getName();
     CALLO_DETMATRIX(matass_name);
 
+    auto timer = currentContext.getTimer();
+
+    std::cout << std::scientific
+              << "Temps CPU consommé dans le calcul "
+              <<   timer["Matrix"] + timer["Rhs"] + timer["Solve"] + timer["Post "] + timer["Facto"]
+              << "s dont:" << std::endl;
+    std::cout << std::scientific
+              << "*Calcul et assemblage de la matrice en "
+              <<   timer["Matrix"]  << "s" << std::endl;
+    std::cout << std::scientific
+              << "*Calcul et assemblage du second membre en "
+              <<   timer["Rhs"]  << "s" << std::endl;
+     std::cout << std::scientific
+              << "*Factorisation de la matrice en "
+              <<   timer["Facto"]  << "s" << std::endl;
+    std::cout << std::scientific
+              << "*Résolution du système linéaire en "
+              <<   timer["Solve"]  << "s" << std::endl;
+    std::cout << std::scientific
+              << "*Post-traitements en "
+              <<   timer["Post "]  << "s" << std::endl;
     return resultC;
 };

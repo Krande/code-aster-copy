@@ -47,7 +47,19 @@ class StaticMechanicalAlgorithm {
     /**
      * @brief Avancer d'un pas dans un algorithme
      */
-    static void oneStep( const CurrentContext & );
+    static void oneStep( CurrentContext & );
+
+  private:
+
+    static void _computeMatrix( CurrentContext & );
+
+    static FieldOnNodesRealPtr _computeRhs( CurrentContext & );
+
+    static void _computeStress( CurrentContext & );
+
+    static void _storeFields( CurrentContext & );
+
+    static void _solve( CurrentContext &, const FieldOnNodesRealPtr );
 };
 
 #endif /* STATICMECHANICALGORITHM_H_ */

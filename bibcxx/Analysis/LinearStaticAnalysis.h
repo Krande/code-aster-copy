@@ -52,6 +52,8 @@ class LinearStaticAnalysis : public GenericAnalysis {
     TimeStepperPtr _timeStep;
     /** @brief Study */
     StudyDescriptionPtr _study;
+    /** @brief Compute SIEF_ELGA */
+    bool _sief_elga;
 
   public:
     /**
@@ -84,6 +86,11 @@ class LinearStaticAnalysis : public GenericAnalysis {
      * @param curVec Liste de pas de temps
      */
     void setTimeStepManager( const VectorReal &curVec ) { *_timeStep = curVec; };
+
+    void setStressComputation( const bool& comput)
+    {
+        _sief_elga = comput;
+    }
 };
 
 /**

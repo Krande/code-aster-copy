@@ -84,6 +84,8 @@ class MechanicalSolver(ExecuteCommand):
         for curDict in fkw:
             self._addLoad(mechaSolv, curDict)
 
+        mechaSolv.setStressComputation( keywords["OPTION"] == "SIEF_ELGA" )
+
         solver = create_solver(keywords.get("SOLVEUR"))
         mechaSolv.setLinearSolver(solver)
         self._result = mechaSolv.execute()
@@ -94,19 +96,9 @@ class MechanicalSolver(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        if self._result is not None:
-            contrainte = []
-            if keywords["MODELE"].existsMultiFiberBeam():
-                contrainte.append("STRX_ELGA")
-            if keywords.get("OPTION") == "SIEF_ELGA":
-                contrainte.append("SIEF_ELGA")
 
-            if contrainte:
-                CALC_CHAMP(reuse=self._result,
-                        RESULTAT=self._result,
-                        CONTRAINTE=contrainte)
-            else:
-                self._result.build()
+        if self._result is not None:
+            self._result.build()
 
 
     def add_dependencies(self, keywords):
