@@ -1104,7 +1104,7 @@ def get_propmat_varc_fem(self, RESULTAT, MAILLAGE, MATER, MODELISATION, Lnofon, 
         coefg = 1. / e
         coefg3 = unpnu / e
 
-    return (coefd, coefd3, coefg, coefg3)
+    return (coefd, coefd3, coefg, coefg3, valpar)
 
 #-------------------------------------------------------------------------
 
@@ -1194,7 +1194,6 @@ def get_propmat_varc_xfem(self, args, RESULTAT, MAILLAGE, MATER, MODELISATION, F
     valres, _ = MATER.RCVALE('ELAS', nompar, valpar, nomres, 2)
     e = valres[0]
     nu = valres[1]
-
     coefd3 = 0.
     coefd = e * NP.sqrt(2. * pi)
     unmnu2 = 1. - nu ** 2
@@ -1217,7 +1216,7 @@ def get_propmat_varc_xfem(self, args, RESULTAT, MAILLAGE, MATER, MODELISATION, F
         coefg = 1. / e
         coefg3 = unpnu / e
 
-    return (coefd, coefd3, coefg, coefg3)
+    return (coefd, coefd3, coefg, coefg3, valpar)
 
 #-------------------------------------------------------------------------
 
@@ -1618,6 +1617,12 @@ def get_erreur(self, ndim, __tabi, type_para):
     if ('ABSC_CURV' in __tabi.EXTR_TABLE().para):
         params = params + ('ABSC_CURV',)
 
+    if ('TEMP' in __tabi.EXTR_TABLE().para):
+        params = params + ('TEMP',)
+
+    if ('NEUT1' in __tabi.EXTR_TABLE().para):
+        params = params + ('NEUT1',)
+
     params = params + ('K1', 'ERR_K1', 'K2', 'ERR_K2',)
     if ndim == 3:
         params = params + ('K3', 'ERR_K3', 'G',)
@@ -1636,7 +1641,7 @@ def get_erreur(self, ndim, __tabi, type_para):
 
 def get_tabout(
     self, kg, args, TITRE, FOND_FISS, MODELISATION, FISSURE, ndim, ino, inst, iord,
-        Lnofon, dicoF, absfon, Nnoff, tabout, type_para, nume):
+        Lnofon, dicoF, absfon, Nnoff, tabout, type_para, nume, para_fonc, para):
     """retourne la table de sortie"""
 
 
@@ -1677,6 +1682,9 @@ def get_tabout(
     mcfact.append(_F(PARA='G_MAX', LISTE_R=kg[6].tolist()))
     mcfact.append(_F(PARA='G_MIN', LISTE_R=kg[7].tolist()))
 
+    if para_fonc:
+        mcfact.append(_F(PARA=para_fonc, LISTE_R=[para,] * 3))
+
     if (ino == 0 and iord == 0) and inst is None:
         tabout = CREA_TABLE(LISTE=mcfact, TITRE=titre)
         tabout = get_erreur(self, ndim, tabout, type_para)
@@ -1697,6 +1705,8 @@ def get_tabout(
             npara.append('NOEUD_FOND')
         elif FISSURE and MODELISATION == '3D':
             npara.append('NUM_PT')
+        if para:
+            npara.append(para_fonc)
 
         tabout2 = get_erreur(self, ndim, __tabi, type_para)
         tabout = CALC_TABLE(reuse=tabout,
@@ -1928,7 +1938,7 @@ def post_k1_k2_k3_ops(self, RESULTAT, FOND_FISS =None, FISSURE=None, MATER=None,
             coefd = coefd / 8.
             coefg = 1. / e
             coefg3 = unpnu / e
-
+        para_fonc = None
     try:
         TYPE_MAILLAGE = args.get('TYPE_MAILLAGE')
     except KeyError:
@@ -2193,6 +2203,7 @@ def post_k1_k2_k3_ops(self, RESULTAT, FOND_FISS =None, FISSURE=None, MATER=None,
 #        TESTS NOMBRE DE NOEUDS
             nbval = len(abscs)
 
+            para = None
             if nbval < 3:
 
                 UTMESS('A+', 'RUPTURE0_46')
@@ -2205,7 +2216,9 @@ def post_k1_k2_k3_ops(self, RESULTAT, FOND_FISS =None, FISSURE=None, MATER=None,
                 kg2 = [0.] * 8
                 kg3 = [0.] * 8
                 liste_noeu_a_extr.append(ino)
-
+                if mater_fonc :
+                    para = 0.
+                
             else:
 
 #           SI NBVAL >= 3 :
@@ -2213,10 +2226,10 @@ def post_k1_k2_k3_ops(self, RESULTAT, FOND_FISS =None, FISSURE=None, MATER=None,
 #            récupération des valeurs des propriétés materiau fonctions des variables de commande
                 if mater_fonc :
                     if FOND_FISS:
-                        (coefd, coefd3, coefg, coefg3) = get_propmat_varc_fem(
+                        (coefd, coefd3, coefg, coefg3, para) = get_propmat_varc_fem(
                             self, RESULTAT, MAILLAGE, MATER, MODELISATION, Lnofon, ino, inst, para_fonc)
                     elif FISSURE:
-                        (coefd, coefd3, coefg, coefg3) = get_propmat_varc_xfem(
+                        (coefd, coefd3, coefg, coefg3, para) = get_propmat_varc_xfem(
                             self, args, RESULTAT, MAILLAGE, MATER, MODELISATION, FISSURE,
                             ndim, ino, inst, para_fonc)
 
@@ -2244,7 +2257,7 @@ def post_k1_k2_k3_ops(self, RESULTAT, FOND_FISS =None, FISSURE=None, MATER=None,
 
             tabout = get_tabout(
                 self, kg, args, TITRE, FOND_FISS, MODELISATION, FISSURE, ndim, ino, inst, iord,
-                Lnofon, dicoF, absfon, Nnoff, tabout, type_para, nume)
+                Lnofon, dicoF, absfon, Nnoff, tabout, type_para, nume, para_fonc, para)
 
 #     Fin de la boucle sur les instants
 
