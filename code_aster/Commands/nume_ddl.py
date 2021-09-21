@@ -77,5 +77,14 @@ class NumberingCreation(ExecuteCommand):
 
         self._result.computeNumbering()
 
+    def add_dependencies(self, keywords):
+        """Register input *DataStructure* objects as dependencies.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+
+        # Add no dependencies since everything is done in c++ directly
+
 
 NUME_DDL = NumberingCreation.run

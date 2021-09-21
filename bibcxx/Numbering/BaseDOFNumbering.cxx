@@ -69,6 +69,8 @@ bool BaseDOFNumbering::computeNumbering() {
         }
 
         CALLO_NUME_DDL_MATR(getName(), jvListOfMatr->getName(), &nb_matr);
+
+        _matrix.clear();
     } else
         throw std::runtime_error( "No matrix or model defined" );
     _isEmpty = false;
