@@ -205,60 +205,22 @@ def expand_values(self, tabout, liste_noeu_a_extr, titre, type_para):
             G[i] = G[k_retenu[0]]
             liste_noeu_a_extr.remove(points_expand[i] - 1)
 
-    if 'FISSURE' in extrtabout.values().keys():
-        tabout = CREA_TABLE(
-            TITRE=titre, LISTE=(_F(LISTE_K=extrtabout.values()['FISSURE'],
-                                   PARA='FISSURE'),
-                                _F(LISTE_I=extrtabout.values()['NUME_FOND'],
-                                   PARA='NUME_FOND'),
-                                _F(LISTE_R=extrtabout.values()[type_para],
-                                   PARA=type_para),
-                                _F(LISTE_I=extrtabout.values()['NUM_PT'],
-                                   PARA='NUM_PT'),
-                                _F(LISTE_R=extrtabout.values()['ABSC_CURV'],
-                                   PARA='ABSC_CURV'),
-                                _F(LISTE_R=K1,
-                                   PARA='K1'),
-                                _F(LISTE_R=ERR_K1,
-                                   PARA='ERR_K1'),
-                                _F(LISTE_R=K2,
-                                   PARA='K2'),
-                                _F(LISTE_R=ERR_K2,
-                                   PARA='ERR_K2'),
-                                _F(LISTE_R=K3,
-                                   PARA='K3'),
-                                _F(LISTE_R=ERR_K3,
-                                   PARA='ERR_K3'),
-                                _F(LISTE_R=G,
-                                   PARA='G'),))
-    else:
-        tabout = CREA_TABLE(
-            TITRE=titre, LISTE=(_F(LISTE_K=extrtabout.values()['FOND_FISS'],
-                                   PARA='FOND_FISS'),
-                                _F(LISTE_I=extrtabout.values()['NUME_FOND'],
-                                   PARA='NUME_FOND'),
-                                _F(LISTE_R=extrtabout.values()[type_para],
-                                   PARA=type_para),
-                                _F(LISTE_K=extrtabout.values()['NOEUD_FOND'],
-                                   PARA='NOEUD_FOND'),
-                                _F(LISTE_I=extrtabout.values()['NUM_PT'],
-                                   PARA='NUM_PT'),
-                                _F(LISTE_R=extrtabout.values()['ABSC_CURV'],
-                                   PARA='ABSC_CURV'),
-                                _F(LISTE_R=K1,
-                                   PARA='K1'),
-                                _F(LISTE_R=ERR_K1,
-                                   PARA='ERR_K1'),
-                                _F(LISTE_R=K2,
-                                   PARA='K2'),
-                                _F(LISTE_R=ERR_K2,
-                                   PARA='ERR_K2'),
-                                _F(LISTE_R=K3,
-                                   PARA='K3'),
-                                _F(LISTE_R=ERR_K3,
-                                   PARA='ERR_K3'),
-                                _F(LISTE_R=G,
-                                   PARA='G'),))
+    liste = []
+    for para, typ in zip(('FISSURE', 'FOND_FISS', 'NUME_FOND', 'INST', 'FREQ', 'NUME_ORDRE', 'NOEUD_FOND', 'NUM_PT', 'ABSC_CURV', \
+                    'TEMP', 'NEUT1', 'COOR_X', 'COOR_Y', 'COOR_Z'), \
+                         ('K', 'K', 'I', 'R', 'R', 'I', 'K', 'I', 'R', 'R', 'R', 'R', 'R', 'R')):
+        if para in extrtabout.para:
+            liste.append({"LISTE_%s"%typ: extrtabout.values()[para], "PARA": para})
+
+    liste.append({"LISTE_R": K1, "PARA": "K1"})
+    liste.append({"LISTE_R": ERR_K1, "PARA": "ERR_K1"})
+    liste.append({"LISTE_R": K2, "PARA": "K2"})
+    liste.append({"LISTE_R": ERR_K2, "PARA": "ERR_K2"})
+    liste.append({"LISTE_R": K3, "PARA": "K3"})
+    liste.append({"LISTE_R": ERR_K3, "PARA": "ERR_K3"})
+    liste.append({"LISTE_R": G, "PARA": "G"})
+
+    tabout = CREA_TABLE(TITRE=titre, LISTE=liste)
 
     return tabout
 
@@ -436,7 +398,7 @@ def get_direction(Nnoff, ndim, Lnoff, FOND_FISS, MAILLAGE):
 #-------------------------------------------------------------------------
 
 
-def get_tab_dep(self, Lnocal, Nnocal, d_coorf, dicVDIR, RESULTAT, MODEL,
+def get_tab_dep(self, Lnocal, Nnocal, d_coor, dicVDIR, RESULTAT, MODEL,
                 ListmaS, ListmaI, NB_NOEUD_COUPE, hmax, syme_char, PREC_VIS_A_VIS):
     """ retourne les tables des deplacements sup et inf pour les noeuds perpendiculaires pour
     tous les points du fond de fissure"""
@@ -447,7 +409,7 @@ def get_tab_dep(self, Lnocal, Nnocal, d_coorf, dicVDIR, RESULTAT, MODEL,
 
     mcfact = []
     for i in range(Nnocal):
-        Porig = NP.array(d_coorf[Lnocal[i]])
+        Porig = NP.array(d_coor[Lnocal[i]])
         Pextr = Porig - hmax * dicVDIR[Lnocal[i]]
 
         mcfact.append(_F(NB_POINTS=NB_NOEUD_COUPE,
@@ -1594,40 +1556,18 @@ def get_erreur(self, ndim, __tabi, type_para):
         _F(OPERATION='COMB', NOM_PARA='G_MIN', TABLE=__tini)), INFO=1)
 
     # remove kj_min + sort data
-    params = ()
-    if ('FISSURE' in __tabi.EXTR_TABLE().para):
-        params = ('FISSURE',)
-    elif ('FOND_FISS' in __tabi.EXTR_TABLE().para):
-        params = ('FOND_FISS',)
+    params = []
+    tabi_para = __tabi.EXTR_TABLE().para
+    for para in ('FISSURE', 'FOND_FISS', 'NUME_FOND', type_para, 'NUME_ORDRE', 'NOEUD_FOND', 'NUM_PT', 'ABSC_CURV', \
+                    'TEMP', 'NEUT1', 'COOR_X', 'COOR_Y', 'COOR_Z'):
+        if para in tabi_para:
+            params.append(para)
 
-    if ('NUME_FOND' in __tabi.EXTR_TABLE().para):
-        params = params + ('NUME_FOND',)
-
-    if (type_para in __tabi.EXTR_TABLE().para):
-        params = params + (type_para,)
-
-    if ('NUME_ORDRE' in __tabi.EXTR_TABLE().para):
-        params = params + ('NUME_ORDRE',)
-
-    if ('NOEUD_FOND' in __tabi.EXTR_TABLE().para):
-        params = params + ('NOEUD_FOND',)
-    if ('NUM_PT' in __tabi.EXTR_TABLE().para):
-        params = params + ('NUM_PT',)
-
-    if ('ABSC_CURV' in __tabi.EXTR_TABLE().para):
-        params = params + ('ABSC_CURV',)
-
-    if ('TEMP' in __tabi.EXTR_TABLE().para):
-        params = params + ('TEMP',)
-
-    if ('NEUT1' in __tabi.EXTR_TABLE().para):
-        params = params + ('NEUT1',)
-
-    params = params + ('K1', 'ERR_K1', 'K2', 'ERR_K2',)
+    params.extend(['K1', 'ERR_K1', 'K2', 'ERR_K2'])
     if ndim == 3:
-        params = params + ('K3', 'ERR_K3', 'G',)
+        params.extend(['K3', 'ERR_K3', 'G'])
     else:
-        params = params + ('G',)
+        params.append('G')
 
     __tabi = CALC_TABLE(TABLE=__tabi,
                         reuse=__tabi, ACTION=(
@@ -1641,7 +1581,7 @@ def get_erreur(self, ndim, __tabi, type_para):
 
 def get_tabout(
     self, kg, args, TITRE, FOND_FISS, MODELISATION, FISSURE, ndim, ino, inst, iord,
-        Lnofon, dicoF, absfon, Nnoff, tabout, type_para, nume, para_fonc, para):
+        Lnofon, dicoF, absfon, Nnoff, tabout, type_para, nume, para_fonc, para, d_coor):
     """retourne la table de sortie"""
 
 
@@ -1685,6 +1625,12 @@ def get_tabout(
     if para_fonc:
         mcfact.append(_F(PARA=para_fonc, LISTE_R=[para,] * 3))
 
+    if d_coor:
+        coor = d_coor[Lnofon[ino]]
+        mcfact.append(_F(PARA="COOR_X", LISTE_R=[coor[0],] * 3))
+        mcfact.append(_F(PARA="COOR_Y", LISTE_R=[coor[1],] * 3))
+        mcfact.append(_F(PARA="COOR_Z", LISTE_R=[coor[2],] * 3))
+        
     if (ino == 0 and iord == 0) and inst is None:
         tabout = CREA_TABLE(LISTE=mcfact, TITRE=titre)
         tabout = get_erreur(self, ndim, tabout, type_para)
@@ -2013,8 +1959,7 @@ def post_k1_k2_k3_ops(self, RESULTAT, FOND_FISS =None, FISSURE=None, MATER=None,
                 ListmaI = FOND_FISS.sdj.LEVREINF_MAIL.get()
 
 #        Dictionnaire des coordonnees des noeuds du fond
-            d_coorf = get_coor_libre(self, Lnoff, RESULTAT, ndim)
-
+            d_coor = get_coor_libre(self, Lnoff, RESULTAT, ndim)
 #        Dictionnaire des vecteurs normaux (allant de la levre inf vers la levre sup) et
 #        dictionnaire des vecteurs de propagation
             (dicVDIR, dicVNOR) = get_direction(
@@ -2022,12 +1967,12 @@ def post_k1_k2_k3_ops(self, RESULTAT, FOND_FISS =None, FISSURE=None, MATER=None,
 
 #        Abscisse curviligne du fond
             if ndim == 3:
-                dicoF = get_absfon(Lnoff, Nnoff, d_coorf)
+                dicoF = get_absfon(Lnoff, Nnoff, d_coor)
 
 #        Extraction dep sup/inf sur les normales
             MODEL = RESULTAT.getModel()
 
-            (__TlibS, __TlibI) = get_tab_dep(self, Lnocal, Nnocal, d_coorf, dicVDIR, RESULTAT, MODEL,
+            (__TlibS, __TlibI) = get_tab_dep(self, Lnocal, Nnocal, d_coor, dicVDIR, RESULTAT, MODEL,
                                              ListmaS, ListmaI, NB_NOEUD_COUPE, hmax, syme_char, PREC_VIS_A_VIS)
 
 #        A eclaircir
@@ -2048,7 +1993,6 @@ def post_k1_k2_k3_ops(self, RESULTAT, FOND_FISS =None, FISSURE=None, MATER=None,
 #        Dictionnaire des coordonnees et tableau des deplacements
             (d_coor, __tabl_depl) = get_coor_regle(
                 self, RESULTAT, ndim, Lnoff, Lnocal, dicoS, syme_char, dicoI)
-
 #        Dictionnaire des vecteurs normaux (allant de la levre inf vers la levre sup) et
 #        dictionnaire des vecteurs de propagation
             (dicVDIR, dicVNOR) = get_direction(
@@ -2257,11 +2201,12 @@ def post_k1_k2_k3_ops(self, RESULTAT, FOND_FISS =None, FISSURE=None, MATER=None,
 
             tabout = get_tabout(
                 self, kg, args, TITRE, FOND_FISS, MODELISATION, FISSURE, ndim, ino, inst, iord,
-                Lnofon, dicoF, absfon, Nnoff, tabout, type_para, nume, para_fonc, para)
+                Lnofon, dicoF, absfon, Nnoff, tabout, type_para, nume, para_fonc, para, d_coor)
 
 #     Fin de la boucle sur les instants
 
 #  Fin de la boucle sur les noeuds du fond de fissure
+
 
 # Si le nombre de noeuds dans la direction normale au fond de fissure est
 # insuffisant, on extrapole
