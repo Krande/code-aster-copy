@@ -108,4 +108,14 @@ class MechanicalSolver(ExecuteCommand):
             else:
                 self._result.build()
 
+
+    def add_dependencies(self, keywords):
+        """Register input *DataStructure* objects as dependencies.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+
+        # Add no dependencies since everything is done in c++ directly
+
 MECA_STATIQUE = MechanicalSolver.run
