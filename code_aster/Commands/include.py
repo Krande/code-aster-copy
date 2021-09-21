@@ -46,7 +46,7 @@ class Include(ExecuteCommand):
         """Execute the file to be included in the parent context."""
         context = get_caller_context(3)
 
-        if keywords.get("ALARME", "OUI"):
+        if keywords.get("ALARME", "OUI") == "OUI":
             UTMESS('A', 'SUPERVIS_25', valk=("AsterStudy", "import"))
         if keywords.get("UNITE"):
             filename = 'fort.{0}'.format(keywords["UNITE"])
@@ -55,7 +55,7 @@ class Include(ExecuteCommand):
             filename = osp.join(rcdir, 'tests_data', keywords["DONNEE"])
 
         option = ExecutionParameter().option
-        show = (keywords.get("INFO", 0) >= 2 and
+        show = (keywords.get("INFO", 0) >= 1 and
                 not option & Options.ShowChildCmd)
         if show:
             ExecutionParameter().enable(Options.ShowChildCmd)
