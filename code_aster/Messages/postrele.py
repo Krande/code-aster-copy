@@ -317,12 +317,12 @@ Le champ fourni doit être issu de l'option EFGE_ELNO et non %(k1)s.
 
     50 : _("""
  occurrence %(i1)d du mot clé facteur ACTION
- le groupe de noeuds %(k1)s ne fait pas parti du maillage sous-jacent au champ à traiter.
+ le groupe de noeuds %(k1)s ne fait pas partie du maillage sous-jacent au champ à traiter.
 """),
 
     51 : _("""
  occurrence %(i1)d du mot clé facteur ACTION
- le noeud %(k1)s ne fait pas parti du maillage sous-jacent au champ à traiter.
+ le noeud %(k1)s ne fait pas partie du maillage sous-jacent au champ à traiter.
 """),
 
     52 : _("""
