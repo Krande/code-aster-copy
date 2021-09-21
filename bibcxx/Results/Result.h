@@ -465,6 +465,12 @@ class Result : public DataStructure, public ListOfTables {
      *  dictOfVectorOfFieldOnCellsReal
      */
     bool build() ;
+
+    /**
+    * @brief Update the  Result's size 
+    */
+    ASTERBOOL resize(ASTERINTEGER nbRanks);
+
 };
 
 /**

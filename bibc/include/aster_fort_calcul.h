@@ -196,6 +196,9 @@ void DEFSSSSSPS( ALCHML, alchml, const char *, STRING_SIZE, const char *, STRING
                  const char *, STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE,
                  ASTERINTEGER *, const char *, STRING_SIZE );
 
+#define CALLO_RSAGSD( a, b ) CALLOP( RSAGSD, rsagsd, a, b)
+void DEFSP( RSAGSD, rsagsd, const char *, STRING_SIZE, ASTERINTEGER *);
+
 #ifdef __cplusplus
 }
 #endif

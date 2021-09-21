@@ -241,6 +241,15 @@ Returns:
         .def( "setMesh", &Result::setMesh )
         .def( "build", &Result::build )
         .def( "printInfo", &Result::printInfo )
+        .def( "resize", &Result::resize, R"(
+           Update the Result size to nbRanks
+Arguments:
+    nbRanks [int]
+
+Returns:
+    bool: True if ok else False.
+
+        )" )
         .def( "setField", c9, R"(
 Set a FieldOnNodes to result
 
@@ -284,5 +293,6 @@ Returns:
     Table: Table stored with the given identifier.
         )",
               ( py::arg( "self" ), py::arg( "identifier" ) ) )
+        
         ;
 };

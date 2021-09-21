@@ -250,4 +250,20 @@ for rank in range(SOLUT.getNumberOfRanks()):
                             VALE_ABS='OUI',),
             ))
 
+#=========================================================
+#            TEST RESIZE METHOD
+#=========================================================
+
+nbRank = SOLUN.getNumberOfRanks()
+SOLUN.resize(nbRank + 1 )
+SOLUN.setModel(SOLUN.getModel(nbRank-1), nbRank)
+SOLUN.setMaterialField(SOLUN.getMaterialField(nbRank-1), nbRank )
+SOLUN.setField(SOLUN.getFieldOnNodesReal("DEPL", nbRank-1), "DEPL", nbRank )
+
+# CHECK THAT the fields are properly copied
+test.assertEqual(SOLUN.getModel(nbRank-1), SOLUN.getModel(nbRank))
+test.assertEqual(SOLUN.getMaterialField(nbRank-1), SOLUN.getMaterialField(nbRank-1))
+test.assertEqual(SOLUN.getFieldOnNodesReal("DEPL", nbRank-1).getValues(),
+                 SOLUN.getFieldOnNodesReal("DEPL", nbRank).getValues())
+
 FIN()

@@ -489,8 +489,11 @@ bool Result::setField( const FieldOnNodesRealPtr field, const std::string &name,
     auto curIter = _dictOfVectorOfFieldOnNodesReal.find( trim_name );
     if ( curIter == _dictOfVectorOfFieldOnNodesReal.end() ) {
         auto index = _symbolicNamesOfFields->getIndexFromString( trim_name );
-        _dictOfVectorOfFieldOnNodesReal[trim_name] =
-            VectorOfFieldOnNodesReal( _nbRanks, FieldOnNodesRealPtr( nullptr ) );
+        _dictOfVectorOfFieldOnNodesReal[trim_name] = VectorOfFieldOnNodesReal(
+                            _nbRanks, FieldOnNodesRealPtr( nullptr ) );
+    }else if(_dictOfVectorOfFieldOnNodesReal[trim_name].size() != _nbRanks){
+         _dictOfVectorOfFieldOnNodesReal[trim_name].resize(
+                            _nbRanks, FieldOnNodesRealPtr( nullptr ) );
     }
 
     _dictOfVectorOfFieldOnNodesReal[trim_name][rank] = result;
@@ -520,8 +523,11 @@ bool Result::setField( const FieldOnCellsRealPtr field, const std::string &name,
     auto curIter = _dictOfVectorOfFieldOnCellsReal.find( trim_name );
     if ( curIter == _dictOfVectorOfFieldOnCellsReal.end() ) {
         auto index = _symbolicNamesOfFields->getIndexFromString( trim_name );
-        _dictOfVectorOfFieldOnCellsReal[trim_name] =
-            VectorOfFieldOnCellsReal( _nbRanks, FieldOnCellsRealPtr( nullptr ) );
+         _dictOfVectorOfFieldOnCellsReal[trim_name] = VectorOfFieldOnCellsReal(
+                            _nbRanks, FieldOnCellsRealPtr( nullptr ) );
+    }else if(_dictOfVectorOfFieldOnCellsReal[trim_name].size() != _nbRanks){
+        _dictOfVectorOfFieldOnCellsReal[trim_name].resize(
+                            _nbRanks, FieldOnCellsRealPtr( nullptr ) );
     }
 
     _dictOfVectorOfFieldOnCellsReal[trim_name][rank] = result;
@@ -551,8 +557,11 @@ bool Result::setField( const ConstantFieldOnCellsChar16Ptr field, const std::str
     auto curIter = _dictOfVectorOfConstantFieldOnCellsChar16.find( trim_name );
     if ( curIter == _dictOfVectorOfConstantFieldOnCellsChar16.end() ) {
         auto index = _symbolicNamesOfFields->getIndexFromString( trim_name );
-        _dictOfVectorOfConstantFieldOnCellsChar16[trim_name] = VectorOfConstantFieldOnCellsChar16(
-            _nbRanks, ConstantFieldOnCellsChar16Ptr( nullptr ) );
+         _dictOfVectorOfConstantFieldOnCellsChar16[trim_name] = VectorOfConstantFieldOnCellsChar16(
+                            _nbRanks, ConstantFieldOnCellsChar16Ptr( nullptr ) );
+    }else if(_dictOfVectorOfConstantFieldOnCellsChar16[trim_name].size() != _nbRanks){
+         _dictOfVectorOfConstantFieldOnCellsChar16[trim_name].resize(
+                            _nbRanks, ConstantFieldOnCellsChar16Ptr( nullptr ) );
     }
 
     _dictOfVectorOfConstantFieldOnCellsChar16[trim_name][rank] = result;
@@ -719,3 +728,15 @@ bool Result::build() {
     CALL_JEDEMA();
     return update_tables();
 };
+
+ASTERBOOL Result::resize(ASTERINTEGER nbRanks){
+    try{
+        _nbRanks = nbRanks;
+        CALLO_RSAGSD( getName(), &nbRanks );
+        return true;
+    }catch(const std::exception& e){
+        std::cout << e.what() << std::endl;
+        return false;
+    }
+
+}
