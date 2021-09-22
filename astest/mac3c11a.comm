@@ -17,7 +17,33 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'), IMPR_MACRO='NON')
+import json
+import os.path as osp
+import numpy as np
+
+from code_aster.Commands import *
+from code_aster.Utilities import ExecutionParameter
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'),
+      IMPR_MACRO='NON')
+
+testname = 'mac3c11a'
+
+mac3c = osp.join(ExecutionParameter().get_option('rcdir'), 'tests_data', 'mac3c')
+with open(osp.join(mac3c, '%s.json'%testname)) as f:
+    testconfig = json.load(f)
+
+conception = testconfig['conception']
+u20 = osp.join(mac3c, testconfig['unit20'])
+u32 = osp.join(mac3c, testconfig['unit32'])
+u38 = '%s.38'%testname
+
+with open(osp.join(mac3c, 'mac3c00a.38')) as fin, open(u38, 'w') as fout:
+    fout.write(fin.read()%conception)
+
+DEFI_FICHIER(ACTION = 'ASSOCIER', UNITE = 20, FICHIER = u20)
+DEFI_FICHIER(ACTION = 'ASSOCIER', UNITE = 32, FICHIER = u32)
+DEFI_FICHIER(ACTION = 'ASSOCIER', UNITE = 38, FICHIER = u38)
 
 tabn = LIRE_TABLE(UNITE      = 38,
                   FORMAT     = 'LIBRE',
@@ -37,7 +63,7 @@ FLEXLOCK = CALC_MAC3COEUR(TYPE_COEUR  = 'MONO_FROID',
                           DEFORMATION = _F(UNITE_THYC   = 32,
                                            NIVE_FLUENCE = 0.,
                                            TYPE_MAINTIEN = 'FORCE',
-                                           FORCE_MAINTIEN = 9000.,
+                                           FORCE_MAINTIEN = testconfig['compression'],
                                            MAINTIEN_GRILLE = 'OUI',
                                            ARCHIMEDE      = 'NON'))
 
@@ -57,7 +83,7 @@ FLEX = CALC_MAC3COEUR(TYPE_COEUR  = 'MONO_FROID',
                       DEFORMATION = _F(UNITE_THYC   = 32,
                                        NIVE_FLUENCE = 0.,
                                        TYPE_MAINTIEN = 'FORCE',
-                                       FORCE_MAINTIEN =9000.,
+                                       FORCE_MAINTIEN = testconfig['compression'],
                                        MAINTIEN_GRILLE = 'NON',
                                        ARCHIMEDE      = 'NON'))
 

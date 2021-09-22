@@ -1,0 +1,224 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import json
+import os.path as osp
+import numpy as np
+
+from code_aster.Commands import *
+from code_aster.Utilities import ExecutionParameter
+
+POURSUITE(CODE='OUI',
+          IMPR_MACRO='NON')
+
+mac3c = osp.join(ExecutionParameter().get_option('rcdir'), 'tests_data', 'mac3c')
+with open(osp.join(mac3c, '%s.json'%testname)) as f:
+    testconfig = json.load(f)
+
+conception = testconfig['conception']
+
+u20 = osp.join(mac3c, testconfig['unit20'])
+DEFI_FICHIER(ACTION = 'ASSOCIER', UNITE = 20, FICHIER = u20)
+
+u21 = osp.join(mac3c, testconfig['unit21'])
+DEFI_FICHIER(ACTION = 'ASSOCIER', UNITE = 21, FICHIER = u21)
+
+u32 = osp.join(mac3c, testconfig['unit32'])
+DEFI_FICHIER(ACTION = 'ASSOCIER', UNITE = 32, FICHIER = u32)
+
+u38 = '%s.38'%testname
+with open(osp.join(mac3c, 'mac3c00a.38')) as fin, open(u38, 'w') as fout:
+    fout.write(fin.read()%conception)
+DEFI_FICHIER(ACTION = 'ASSOCIER', UNITE = 38, FICHIER = u38)
+
+################################################################################################
+DATAMAC = LIRE_TABLE(UNITE      = 38,
+                     FORMAT     = 'LIBRE',
+                     SEPARATEUR = '\t')
+DEFI_FICHIER(ACTION='LIBERER', UNITE=38)
+
+################################################################################################
+MA = LIRE_MAILLAGE(FORMAT = 'MED',
+                   UNITE = 20)
+DEFI_FICHIER(ACTION='LIBERER', UNITE=20)
+
+################################################################################################
+RESU = CALC_MAC3COEUR(TYPE_COEUR  = 'MONO_FROID',
+                      TABLE_N     =  DATAMAC,
+                      MAILLAGE_N  =  MA,
+                      TYPE_DEFORMATION = 'RIGI_GEOM',
+                      DEFORMATION = _F(UNITE_THYC   = 32,
+                                       NIVE_FLUENCE = 0.,
+                                       TYPE_MAINTIEN = 'FORCE',
+                                       FORCE_MAINTIEN = testconfig['compression'],
+                                       ARCHIMEDE      = 'NON',
+                      ))
+DEFI_FICHIER(ACTION='LIBERER', UNITE=32)
+
+RESU = CALC_CHAMP(reuse = RESU,
+                  RESULTAT = RESU,
+                  PRECISION=1e-08,
+                  FORCE = ('FORC_NODA'))
+
+################################################################################################
+POST1 = POST_RELEVE_T(ACTION = _F(OPERATION = 'EXTRACTION',
+                                  INTITULE = 'DX',
+                                  RESULTAT  = RESU,
+                                  PRECISION=1e-08,
+                                  NOM_CHAM  = 'DEPL',
+                                  GROUP_NO = 'PEBO_S',
+                                  NOM_CMP = 'DX'))
+
+POST2 = POST_RELEVE_T(ACTION = _F(OPERATION = 'EXTRACTION',
+                                  INTITULE = 'FORCES',
+                                  RESULTAT = RESU,
+                                  PRECISION=1e-08,
+                                  NOM_CHAM = 'FORC_NODA',
+                                  GROUP_NO = ('PMNT_S'),
+                                  RESULTANTE = ('DX','DY','DZ'),
+                                  REPERE = 'GLOBAL'))
+
+POST3= POST_RELEVE_T(ACTION = _F(OPERATION = 'MOYENNE',
+                                 INTITULE = 'DX',
+                                 RESULTAT = RESU,
+                                 PRECISION=1e-08,
+                                 NOM_CHAM = 'DEPL',
+                                 GROUP_NO = 'GRIL_%s'%testconfig["g_post_comp"],
+                                 NOM_CMP = ('DX')))
+
+POST3 = CALC_TABLE(reuse = POST3,
+                   TABLE = POST3,
+                   ACTION = _F(OPERATION='FILTRE',
+                               NOM_PARA='QUANTITE',
+                               VALE_K='MOMENT_0'))
+
+POSTRESU = POST3 if "RFA" in testconfig["conception"] else POST1
+
+################################################################################################
+ESSAI_CH = LIRE_FONCTION(UNITE = 21,
+                         NOM_PARA = 'DX',
+                         PROL_DROITE = 'CONSTANT',
+                         PROL_GAUCHE = 'CONSTANT')
+DEFI_FICHIER(ACTION='LIBERER', UNITE=21)
+dx_exp_ch, force_exp_ch = ESSAI_CH.Valeurs()
+
+if testconfig['has_unload'] == True:
+    u22 = osp.join(mac3c, testconfig['unit22'])
+    DEFI_FICHIER(ACTION = 'ASSOCIER', UNITE = 22, FICHIER = u22)
+
+    ESSAI_DCH = LIRE_FONCTION(UNITE = 22,
+                              NOM_PARA = 'DX',
+                              PROL_DROITE = 'CONSTANT',
+                              PROL_GAUCHE = 'CONSTANT')
+
+    DEFI_FICHIER(ACTION='LIBERER', UNITE=22)
+    dx_exp_dch, force_exp_dch = ESSAI_DCH.Valeurs()
+
+################################################################################################
+insts_calcul = POSTRESU.EXTR_TABLE().INST.values()
+dx_calc = np.array(POSTRESU.EXTR_TABLE().DX.values())
+dx_calc = -1.*(dx_calc - dx_calc[2]) # on decale sur 0. l'origine de la table POST1  pour retrancher le deplacement du a la pesanteur.
+
+force_calc = np.array(POST2.EXTR_TABLE().DX.values())
+force_calc*=-1
+
+# Selection de la partie charge
+idx_min_ch = 5
+idx_max_ch = 16
+
+inst_ch = insts_calcul[idx_min_ch:idx_max_ch]
+dx_ch = dx_calc[idx_min_ch:idx_max_ch]
+force_ch = force_calc[idx_min_ch:idx_max_ch]
+
+# Calcul de la difference avec l'essai
+dx_exp_ch_interp = np.interp(force_ch, force_exp_ch, dx_exp_ch)
+diff_dx_ch = np.around(dx_ch - dx_exp_ch_interp,12)
+
+# Selection de la partie decharge
+idx_min_dch = 109
+idx_max_dch = 130
+
+if testconfig['has_unload'] == True:
+    inst_dch = insts_calcul[idx_min_dch:idx_max_dch]
+    dx_dch = dx_calc[idx_min_dch:idx_max_dch]
+    force_dch = force_calc[idx_min_dch:idx_max_dch]
+    dx_exp_dch_interp = np.interp(force_dch, force_exp_dch,dx_exp_dch)
+    diff_dx_dch = np.around(dx_dch - dx_exp_dch_interp,12)
+
+    insts_exp = list(inst_ch) + list(inst_dch)
+    dx = list(dx_ch) + list(dx_dch)
+    fx = list(force_ch) + list(force_dch)
+    dx_exp_interp = list(dx_exp_ch_interp) + list(dx_exp_dch_interp)
+    delta_dx = list(diff_dx_ch) + list(diff_dx_dch)
+    insts_post = [5.500E-4, 7.500E-4, 8.000E-4, 9.000E-4, 1.000E-3, 8.050E-3, 8.1E-3, 8.2E-3, 8.3E-3, 8.400E-3, 8.500E-3]
+
+else:
+    insts_exp = list(inst_ch)
+    dx = list(dx_ch)
+    fx = list(force_ch)
+    dx_exp_interp = list(dx_exp_ch_interp)
+    delta_dx = list(diff_dx_ch)
+    insts_post = [5.500E-4, 7.500E-4, 8.000E-4, 9.000E-4, 1.000E-3]
+
+################################################################################################
+force_ref = np.around(np.interp(insts_post, insts_exp, fx), 12)
+depl_ref = np.around(np.interp(insts_post, insts_exp, dx_exp_interp), 12)
+
+TAB = CREA_TABLE(LISTE=(
+    _F(PARA = 'INST', LISTE_R = insts_exp),
+    _F(PARA = 'DX', LISTE_R = dx),
+    _F(PARA = 'FX', LISTE_R = fx),
+    _F(PARA = 'DX_EXP', LISTE_R = dx_exp_interp),
+    _F(PARA = 'DELTA_DX', LISTE_R = delta_dx),
+))
+
+DEPLC = RECU_FONCTION(TABLE=TAB,
+                      PARA_X='INST',
+                      PARA_Y='DX',
+                      PROL_DROITE='CONSTANT',
+                      PROL_GAUCHE='CONSTANT')
+
+FORCC = RECU_FONCTION(TABLE=TAB,
+                      PARA_X='INST',
+                      PARA_Y='FX',
+                      PROL_DROITE='CONSTANT',
+                      PROL_GAUCHE='CONSTANT')
+
+INCLUDE(ALARME='NON',
+        DONNEE=osp.join(mac3c, testconfig['tests']))
+
+################################################################################################
+if testconfig['has_unload'] == True:
+    IMPR_FONCTION(FORMAT='XMGRACE',UNITE=29,
+                  COURBE=(_F(FONCTION=ESSAI_CH ,LEGENDE='Essai compression : Charge'  ,MARQUEUR =   0,COULEUR =    2,STYLE = 1),
+                          _F(FONCTION=ESSAI_DCH,LEGENDE='Essai compression : Decharge',MARQUEUR =   0,COULEUR =    2,STYLE = 1),
+                          _F(FONC_X=DEPLC,FONC_Y=FORCC,LEGENDE='Calcul',MARQUEUR =   0,COULEUR =    4,STYLE = 1),
+                  ),
+                  BORNE_X=(0.,2.E-3),BORNE_Y=(0.,50000.),ECHELLE_X='LIN',ECHELLE_Y='LIN',GRILLE_X=0.2E-3,GRILLE_Y=10000.,LEGENDE_X='DX(mm)',LEGENDE_Y='Effort (N)',
+                  TITRE='Recalage essai de compression %s'%conception)
+
+else:
+    IMPR_FONCTION(FORMAT='XMGRACE',UNITE=29,
+                  COURBE=(_F(FONCTION=ESSAI_CH ,LEGENDE='Essai compression : Charge'  ,MARQUEUR =   0,COULEUR =    2,STYLE = 1,),
+                          _F(FONC_X=DEPLC,FONC_Y=FORCC,LEGENDE='Calcul',MARQUEUR =   0,COULEUR =    4,STYLE = 1,),
+                  ),
+                  BORNE_X=(0.,2.E-3),BORNE_Y=(0.,50000.),ECHELLE_X='LIN',ECHELLE_Y='LIN',GRILLE_X=0.2E-3,GRILLE_Y=10000.,LEGENDE_X='DX(m)',LEGENDE_Y='Effort (N)',
+                  TITRE='Recalage essai de compression %s'%conception)
+
+FIN()
