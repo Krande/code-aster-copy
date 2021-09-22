@@ -6,3 +6,4 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm mac3c13b.comm D 1
+F comm mac3c04b.com1 D 1
