@@ -187,6 +187,7 @@ class PostRocheCommon():
             Récupération des caracteristiques de poutre
             Récupération du champ de matériau
             Valeur de RCCM_RX
+            Valeur de INST_TEMP
         """
 
         if self.args.get('MODELE'):
@@ -221,7 +222,7 @@ class PostRocheCommon():
         else:
             self.lRCCM_RX = False
         
-        self.time = self.args.get('TIME')
+        self.inst_temp = self.args.get('INST_TEMP')
 
     def checkZones(self,):
         """
@@ -324,7 +325,7 @@ class PostRocheCommon():
                                      MODELE=self.model,
                                      CHAM_MATER=self.chammater,
                                      CARA_ELEM=self.caraelem,
-                                     INST=self.time,
+                                     INST=self.inst_temp,
                                      **self.dicAllZones)
 
         self.chRochElno = chRochElno

@@ -57,7 +57,7 @@ POST_ROCHE=MACRO(nom="POST_ROCHE",
 #        pour le cas ou il n'y a que des CHAM_GD
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
-         INST_VARC       =SIMP(statut='f',typ='R', defaut=0. ),
+         INST_TEMP       =SIMP(statut='f',typ='R', defaut=0. ),
          
          RESU_MECA       =FACT(statut='f', max='**',
                                

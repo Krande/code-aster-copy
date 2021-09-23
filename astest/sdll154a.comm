@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'), IMPR_MACRO='OUI')
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 # maillage, modele, caraelem
 
@@ -62,7 +62,6 @@ acier=DEFI_MATERIAU(ELAS=_F(E = 2.E11,
                                   COEF = 1.
                                   )
                     )
-
 
 acier1=DEFI_MATERIAU(ELAS=_F(E = 2.E11,
                             RHO = 7800,
@@ -116,9 +115,31 @@ tbid=CREA_CHAMP(
                                   _F(GROUP_MA='M2', NOM_CMP='TEMP', VALE=75.0,),
                                  )
                 )
+tbid2=CREA_CHAMP(
+                            TYPE_CHAM='NOEU_TEMP_R', OPERATION='AFFE', MODELE=modele,
+                            AFFE=(_F(GROUP_MA='M1', NOM_CMP='TEMP', VALE=35.0,),
+                                  _F(GROUP_MA='M2', NOM_CMP='TEMP', VALE=75.001,),
+                                 )
+                )
+
+resu_temp_fo = CREA_RESU(TYPE_RESU = 'EVOL_THER',
+                        NOM_CHAM='TEMP',
+                        OPERATION='AFFE',
+                        AFFE=(
+                            _F(CHAM_GD=tbid, INST=1.0),
+                            _F(CHAM_GD=tbid2, INST=0.0),))
+# l'instant 0 provoque des NOOK, comme attendu 
+
 
 ch_materfo=AFFE_MATERIAU(MAILLAGE=maillage,
-                         AFFE_VARC=_F(TOUT='OUI',NOM_VARC = 'TEMP',CHAM_GD=tbid, VALE_REF=0.0,
+                         AFFE_VARC=_F(TOUT='OUI',NOM_VARC = 'TEMP',
+#                        il est conseillé d'utiliser CHAM_GD plutôt qu'EVOL
+#                        pour déclarer le champ de température lié à POST_ROCHE_FO
+#                        cela évite le recours au mot-clé INST_TEMP de la macro-commande POST_ROCHE
+#                        On utilise EVOL ici, uniquement pour couverture du mot-clé INST_TEMP
+                         # CHAM_GD=tbid, 
+                         EVOL = resu_temp_fo,
+                         VALE_REF=0.0,
                          ),
                          AFFE=(_F(GROUP_MA="M1", MATER = acier1),
                                _F(GROUP_MA="M2", MATER = acier2),
@@ -570,6 +591,8 @@ chLuPostRocheTout = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                     MODELE = modele,
                     CARA_ELEM=cara_elem,
                     CHAM_MATER=ch_materfo,
+                    # INST_TEMP n'est pas utile si on utilise CHAM_GD plutôt qu'EVOL dans AFFE_MATERIAU/AFFE_VARC
+                    INST_TEMP = 1,
                     RESU_MECA=(
                                _F(TYPE_CHAR='POIDS',
                                  RESULTAT=poids_propre_lu,
@@ -612,6 +635,8 @@ chLuPostRocheRCCMRX = POST_ROCHE(RCCM_RX='OUI',ZONE_ANALYSE=(_F(
                     MODELE = modele,
                     CARA_ELEM=cara_elem,
                     CHAM_MATER=ch_materfo,
+                    # INST_TEMP n'est pas utile si on utilise CHAM_GD plutôt qu'EVOL dans AFFE_MATERIAU/AFFE_VARC
+                    INST_TEMP = 1.,
                     RESU_MECA=(
                                _F(TYPE_CHAR='POIDS',
                                  RESULTAT=poids_propre_lu,
