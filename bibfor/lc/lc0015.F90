@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! aslint: disable=W1504,W0104
 !
-subroutine lc30015(fami, kpg, ksp, ndim, imate,&
+subroutine lc0015(fami, kpg, ksp, ndim, imate,&
                   compor, carcri, instam, instap, epsm,&
                   deps, sigm, vim, option, angmas,&
                   sigp, vip, typmod, icomp,&
@@ -26,8 +26,11 @@ subroutine lc30015(fami, kpg, ksp, ndim, imate,&
 implicit none
 !
 #include "asterfort/assert.h"
+#include "asterfort/nzcifw.h"
+#include "asterfort/nzisfw.h"
 #include "asterfort/nzedga.h"
 #include "asterfort/nzcizi.h"
+#include "asterfort/metaGetMechanism.h"
 #include "asterfort/Behaviour_type.h"
 !
 character(len=*), intent(in) :: fami
@@ -35,8 +38,8 @@ integer, intent(in) :: kpg
 integer, intent(in) :: ksp
 integer, intent(in) :: ndim
 integer, intent(in) :: imate
-character(len=16), intent(in) :: compor(*)
-real(kind=8), intent(in) :: carcri(*)
+character(len=16), intent(in) :: compor(COMPOR_SIZE)
+real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
 real(kind=8), intent(in) :: instam
 real(kind=8), intent(in) :: instap
 real(kind=8), intent(in) :: epsm(*)
@@ -57,22 +60,48 @@ integer, intent(out) :: codret
 !
 ! Behaviour
 !
-! 'META_*' for zircaloy
+! KIT_META
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (compor(RELA_NAME)(8:8) .eq. 'I') then
-        call nzedga(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, sigp,&
-                    vip, dsidep, codret)
-    else if (compor(RELA_NAME)(8:8).eq.'C') then
-        call nzcizi(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, sigp,&
-                    vip, dsidep, codret)
+    character(len=16) :: metaRela, metaGlob, metaPhas
+    aster_logical :: l_hard_kine
+!
+! --------------------------------------------------------------------------------------------------
+!
+    metaPhas = compor(META_PHAS)
+    metaRela = compor(META_RELA)
+    metaGlob = compor(META_GLOB)
+    call metaGetMechanism(metaRela, metaGlob, l_hard_kine = l_hard_kine)
+
+    if (l_hard_kine) then
+        if (metaPhas .eq. 'ACIER') then
+            call nzcifw(fami, kpg, ksp, ndim, imate,&
+                        compor, carcri, instam, instap, epsm,&
+                        deps, sigm, vim, option, sigp,&
+                        vip, dsidep, codret)
+        elseif (metaPhas .eq. 'ZIRC') then
+            call nzcizi(fami, kpg, ksp, ndim, imate,&
+                        compor, carcri, instam, instap, epsm,&
+                        deps, sigm, vim, option, sigp,&
+                        vip, dsidep, codret)
+        else
+            ASSERT(ASTER_FALSE)
+        endif
     else
-        ASSERT(ASTER_FALSE)
+        if (metaPhas .eq. 'ACIER') then
+            call nzisfw(fami, kpg, ksp, ndim, imate,&
+                        compor, carcri, instam, instap, epsm,&
+                        deps, sigm, vim, option, sigp,&
+                        vip, dsidep, codret)
+        elseif (metaPhas .eq. 'ZIRC') then
+            call nzedga(fami, kpg, ksp, ndim, imate,&
+                        compor, carcri, instam, instap, epsm,&
+                        deps, sigm, vim, option, sigp,&
+                        vip, dsidep, codret)
+        else
+            ASSERT(ASTER_FALSE)
+        endif
     endif
 !
 end subroutine

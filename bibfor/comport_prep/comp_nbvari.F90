@@ -70,7 +70,7 @@ integer, optional, intent(out) :: nb_vari_comp_(4), nume_comp_(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_vari_rela, nb_vari
+    integer :: nb_vari, nbVariKit
     aster_logical :: l_cristal, l_kit_meta, l_kit_thm, l_kit_ddi, l_kit_cg, l_exte_comp
     aster_logical :: l_kit, l_meca_mfront
     aster_logical :: l_mfront_proto, l_mfront_offi, l_umat, l_implex
@@ -135,31 +135,28 @@ integer, optional, intent(out) :: nb_vari_comp_(4), nume_comp_(4)
     call comp_meca_l(rela_comp, 'KIT_THM'     , l_kit_thm)
     call comp_meca_l(rela_comp, 'KIT_DDI'     , l_kit_ddi)
     call comp_meca_l(rela_comp, 'KIT_CG'      , l_kit_cg)
-    call comp_meca_l(rela_comp, 'EXTE_COMP'   , l_exte_comp)
-    call comp_meca_l(rela_comp, 'MFRONT_PROTO', l_mfront_proto)
-    call comp_meca_l(rela_comp, 'MFRONT_OFFI' , l_mfront_offi)
-    call comp_meca_l(rela_comp, 'UMAT'        , l_umat)
 
-! - Get number of internal state variables
-    call comp_nbvari_std(rela_comp, defo_comp   , type_cpla  , nb_vari  ,&
-                         kit_comp , post_iter   , mult_comp,&
-                         l_cristal, l_implex    , regu_visc,&
-                         nume_comp, nb_vari_rela)
-
-! - Get number of internal variables for KIT
+! - Get number of internal state variables for KIT
+    nbVariKit = 0
     if (l_kit) then
-        call comp_nbvari_kit(kit_comp  , defo_comp   , nb_vari_rela,&
-                             l_kit_meta, l_kit_thm   , l_kit_ddi   , l_kit_cg     ,&
-                             nb_vari   , nb_vari_comp, nume_comp   , l_meca_mfront)
-        if (l_meca_mfront) then
-            call comp_meca_l(meca_comp, 'EXTE_COMP'   , l_exte_comp)
-            call comp_meca_l(meca_comp, 'MFRONT_PROTO', l_mfront_proto)
-            call comp_meca_l(meca_comp, 'MFRONT_OFFI' , l_mfront_offi)
-            call comp_meca_l(meca_comp, 'UMAT'        , l_umat)
-        endif
+        call comp_nbvari_kit(kit_comp  ,&
+                             l_kit_meta, l_kit_thm   , l_kit_ddi, l_kit_cg,&
+                             nbVariKit , nb_vari_comp, nume_comp)
     endif
 
-! - Get number of internal state  variables for external behaviours
+! - Get number of internal state variables
+    call comp_nbvari_std(rela_comp, defo_comp, type_cpla,&
+                         kit_comp , post_iter, mult_comp,&
+                         regu_visc,&
+                         l_cristal, l_implex ,&
+                         nb_vari  , nume_comp)
+    nb_vari = nbVariKit + nb_vari
+
+! - Get number of internal state variables for external behaviours
+    call comp_meca_l(meca_comp, 'EXTE_COMP'   , l_exte_comp)
+    call comp_meca_l(meca_comp, 'MFRONT_PROTO', l_mfront_proto)
+    call comp_meca_l(meca_comp, 'MFRONT_OFFI' , l_mfront_offi)
+    call comp_meca_l(meca_comp, 'UMAT'        , l_umat)
     if (l_exte_comp) then
         call comp_nbvari_ext(l_umat        , nb_vari_umat ,&
                              l_mfront_proto, l_mfront_offi,&

@@ -17,21 +17,19 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: sofiane.hendili at edf.fr
-
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'META_V_INL_RE',
-    lc_type        = ('KIT_META',),
-    doc            =   """Loi de comportement elasto-visco-plastique à écrouissage isotrope non linéaire,
-   prenant en compte la métallurgie, la restauration"""              ,
-    num_lc         = 15,
+    nom            = 'META_V_ISOT_LINE',
+    lc_type        = ('MECANIQUE',),
+    doc            = """Loi de comportement elasto-visco-plastique à écrouissage isotrope linéaire,
+   prenant en compte la métallurgie""",
+    num_lc         = 0,
     nb_vari        = 1,
     nom_vari       = ('EPSPEQ',),
-    mc_mater       = ('ELAS_META','META_VISC','META_TRACTION','META_RE',),
+    mc_mater       = ('ELAS_META','META_VISC','META_ECRO_LINE',),
     modelisation   = ('3D','AXIS','D_PLAN',),
-    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP','SIMO_MIEHE'),
+    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP'),
     algo_inte      = ('SPECIFIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,

@@ -22,16 +22,15 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'META_P_INL',
-    lc_type        = ('KIT_META',),
-    doc            =   """Loi de comportement elastoplastique à écrouissage isotrope non linéaire,
-   prenant en compte la métallurgie"""              ,
-    num_lc         = 15,
+    nom            = 'META_G_CINE',
+    lc_type        = ('META_G_CINE',),
+    doc            =  """Loi de comportement prenant en compte la métallurgie - Ecrouissage cinématique""" ,
+    num_lc         = 0,
     nb_vari        = 1,
-    nom_vari       = ('EPSPEQ',),
-    mc_mater       = ('ELAS_META','META_TRACTION',),
+    nom_vari       = ('INDIPLAS',),
+    mc_mater       = None,
     modelisation   = ('3D','AXIS','D_PLAN',),
-    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP','SIMO_MIEHE'),
+    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP', 'SIMO_MIEHE'),
     algo_inte      = ('SPECIFIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,

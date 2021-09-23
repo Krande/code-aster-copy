@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -22,17 +22,15 @@
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'META_V_CL',
-    lc_type        = ('KIT_META',),
-    doc            =   """Loi de comportement elasto-visco-plastique à écrouissage cinématique linéaire,
-   prenant en compte la métallurgie"""              ,
-    num_lc         = 15,
-    nb_vari        = 6,
-    nom_vari       = ('XCINXX','XCINYY','XCINZZ','XCINXY','XCINXZ',
-        'XCINYZ',),
-    mc_mater       = ('ELAS_META','META_VISC','META_ECRO_LINE',),
+    nom            = 'META_G_CINE_PT',
+    lc_type        = ('META_G_CINE_PT',),
+    doc            =   """Loi de comportement prenant en compte la métallurgie - Ecrouissage cinématique avec plastiicité de transformation""",
+    num_lc         = 0,
+    nb_vari        = 1,
+    nom_vari       = ('INDIPLAS',),
+    mc_mater       = None,
     modelisation   = ('3D','AXIS','D_PLAN',),
-    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
+    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP', 'SIMO_MIEHE'),
     algo_inte      = ('SPECIFIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,

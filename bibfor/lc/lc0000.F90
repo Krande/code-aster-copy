@@ -44,6 +44,7 @@ implicit none
 #include "asterfort/lc0009.h"
 #include "asterfort/lc0012.h"
 #include "asterfort/lc0014.h"
+#include "asterfort/lc0015.h"
 #include "asterfort/lc0016.h"
 #include "asterfort/lc0017.h"
 #include "asterfort/lc0018.h"
@@ -153,10 +154,6 @@ implicit none
 #include "asterfort/lc8057.h"
 #include "asterfort/lc8146.h"
 #include "asterfort/lc8331.h"
-#include "asterfort/lc20015.h"
-#include "asterfort/lc21015.h"
-#include "asterfort/lc30015.h"
-#include "asterfort/lc31015.h"
 #include "asterfort/lc9999.h"
 #include "asterfort/lcvisc.h"
 #include "asterfort/utmess.h"
@@ -405,6 +402,15 @@ integer :: codret
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, typmod, icomp,&
                     nvi, dsidep, codret)
+
+    case (15)
+! ----- KIT_META
+        call lc0015(fami, kpg, ksp, ndim, imate,&
+                     compor, carcri, instam, instap, epsm,&
+                     deps, sigm, vim, option, angmas,&
+                     sigp, vip, typmod, icomp,&
+                     nvi, dsidep, codret)
+
     case (16)
 !     DRUCK_PRAGER
         call lc0016(fami, kpg, ksp, ndim, imate,&
@@ -898,7 +904,7 @@ integer :: codret
                     dsidep, codret)
 
     case (1015)
-!     META_XXX
+! ----- KIT_META
         call lc1015(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
                     deps, sigm, vim, option, angmas,&
@@ -1190,42 +1196,7 @@ integer :: codret
                     epsm, deps, nsig, sigm, vim,&
                     option, angmas,sigp, nvi, vip, &
                     typmod, icomp, ndsde, dsidep, codret)
-!
-! --------------------------------------------------------------------------------------------------
-! - For metallurgy/steel
-! --------------------------------------------------------------------------------------------------
-!
-    case (20015)
-        call lc20015(fami, kpg, ksp, ndim, imate,&
-                     compor, carcri, instam, instap, epsm,&
-                     deps, sigm, vim, option, angmas,&
-                     sigp, vip, typmod, icomp,&
-                     nvi, dsidep, codret)
-    case (21015)
-! ----- SIMO_MIEHE
-        call lc21015(fami, kpg, ksp, ndim, imate,&
-                     compor, carcri, instam, instap, epsm,&
-                     deps, sigm, vim, option, angmas,&
-                     sigp, vip, typmod, icomp,&
-                     nvi, dsidep, codret)
-!
-! --------------------------------------------------------------------------------------------------
-! - For metallurgy/zircaloy
-! --------------------------------------------------------------------------------------------------
-!
-    case (30015)
-        call lc30015(fami, kpg, ksp, ndim, imate,&
-                     compor, carcri, instam, instap, epsm,&
-                     deps, sigm, vim, option, angmas,&
-                     sigp, vip, typmod, icomp,&
-                     nvi, dsidep, codret)
-    case (31015)
-! ----- SIMO_MIEHE
-        call lc31015(fami, kpg, ksp, ndim, imate,&
-                     compor, carcri, instam, instap, epsm,&
-                     deps, sigm, vim, option, angmas,&
-                     sigp, vip, typmod, icomp,&
-                     nvi, dsidep, codret)
+
 ! --------------------------------------------------------------------------------------------------
 ! - Error
 ! --------------------------------------------------------------------------------------------------

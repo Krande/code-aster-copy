@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,24 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine comp_nbvari_std(rela_comp , defo_comp    , type_cpla , nb_vari,&
-                               kit_comp_ , post_iter_   , mult_comp_,&
-                               l_cristal_, l_implex_    , regu_visc_,&
-                               nume_comp_, nb_vari_rela_)
-        character(len=16), intent(in) :: rela_comp
-        character(len=16), intent(in) :: defo_comp
-        character(len=16), intent(in) :: type_cpla
+    subroutine comp_nbvari_std(rela_comp, defo_comp, type_cpla,&
+                               kit_comp , post_iter, mult_comp,&
+                               regu_visc,&
+                               l_cristal, l_implex ,&
+                               nb_vari  , nume_comp)
+        character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla
+        character(len=16), intent(in) :: kit_comp(4), post_iter
+        character(len=16), intent(in) :: mult_comp, regu_visc
+        aster_logical, intent(in) :: l_cristal, l_implex
+        integer, intent(inout) :: nume_comp(4)
         integer, intent(out) :: nb_vari
-        character(len=16), optional, intent(in) :: kit_comp_(4)
-        character(len=16), optional, intent(in) :: post_iter_
-        character(len=16), optional, intent(in) :: mult_comp_, regu_visc_
-        aster_logical, optional, intent(in) :: l_cristal_
-        aster_logical, optional, intent(in) :: l_implex_
-        integer, optional, intent(out) :: nb_vari_rela_
-        integer, optional, intent(out) :: nume_comp_(4)
     end subroutine comp_nbvari_std
 end interface

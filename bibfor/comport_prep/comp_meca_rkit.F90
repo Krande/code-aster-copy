@@ -50,51 +50,92 @@ aster_logical, optional, intent(in) :: l_etat_init_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nocc, nb_rela_kit
+    integer :: nocc
     character(len=16) :: rela_thmc, rela_hydr, rela_meca, rela_ther
     character(len=16) :: rela_flua, rela_plas, rela_cpla, rela_coup
-    character(len=16) :: rela_cg(2), rela_meta
-    aster_logical :: l_etat_init
+    character(len=16) :: rela_cg(2)
+    character(len=16) :: metaPhas, metaRela, relaCompMeta, metaGlob
+    aster_logical :: l_etat_init, lIsot, lCine
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_rela_kit   = 0
     kit_comp(1:4) = 'VIDE'
     l_etat_init   = .false.
     if (present(l_etat_init_)) then
         l_etat_init = l_etat_init_
     endif
 !
-    if (rela_comp(1:4) .eq. 'META') then
-        if (rela_comp.eq.'META_LEMA_ANI') then
-            kit_comp(1) = 'VIDE'
+    if (rela_comp .eq. 'KIT_META') then
+        metaPhas = 'VIDE'
+        call getvtx(keywordfact, 'RELATION_KIT', iocc = iocc, &
+                    nbval = 1, vect = metaPhas, nbret = nocc)
+        ASSERT(nocc .eq. 1)
+
+        call getvtx(keywordfact, 'RELATION', iocc = iocc, scal = relaCompMeta)
+
+        metaRela = 'VIDE'
+        lIsot = ASTER_FALSE
+        lCine = ASTER_FALSE
+        if (relaCompMeta(1:9) .eq. 'META_P_CL') then
+            metaRela = 'META_P_CINE_LINE'
+            lCine = ASTER_TRUE
+        elseif (relaCompMeta(1:9) .eq. 'META_P_IL') then
+            metaRela = 'META_P_ISOT_LINE'
+            lIsot = ASTER_TRUE
+        elseif (relaCompMeta(1:10) .eq. 'META_P_INL') then
+            metaRela = 'META_P_ISOT_TRAC'
+            lIsot = ASTER_TRUE
+        elseif (relaCompMeta(1:9) .eq. 'META_V_CL') then
+            metaRela = 'META_V_CINE_LINE'
+            lCine = ASTER_TRUE
+        elseif (relaCompMeta(1:9) .eq. 'META_V_IL') then
+            metaRela = 'META_V_ISOT_LINE'
+            lIsot = ASTER_TRUE
+        elseif (relaCompMeta(1:10) .eq. 'META_V_INL') then
+            metaRela = 'META_V_ISOT_TRAC'
+            lIsot = ASTER_TRUE
         else
-            nb_rela_kit = 1
-            call getvtx(keywordfact, 'RELATION_KIT', iocc = iocc, &
-                        nbval = nb_rela_kit, vect = rela_meta, nbret = nocc)
-            ASSERT(nocc.eq.1)
-            kit_comp(1) = rela_meta
+            ASSERT(ASTER_FALSE)
         endif
 
-    else if (rela_comp.eq.'KIT_DDI') then
+        metaGlob = 'VIDE'
+        if (lIsot) then
+            metaGlob = 'META_G_ISOT'
+        elseif (lCine) then
+            metaGlob = 'META_G_CINE'
+        else
+            ASSERT(ASTER_FALSE)
+        endif
+        if ((relaCompMeta(11:13) .eq. 'PT ' ).or. (relaCompMeta(12:14) .eq. 'PT ')) then
+            metaGlob(12:16) = '_PT  '
+        endif
+        if ((relaCompMeta(11:15) .eq. 'PT_RE') .or. (relaCompMeta(12:16) .eq. 'PT_RE')) then
+            metaGlob(12:16) = '_PTRE'
+        else if ((relaCompMeta(11:13) .eq. 'RE') .or. (relaCompMeta(12:14) .eq. 'RE')) then
+            metaGlob(12:16) = '_RE  '
+        endif
+        kit_comp(1) = metaPhas
+        kit_comp(2) = metaRela
+        kit_comp(3) = metaGlob
+
+    else if (rela_comp .eq. 'KIT_DDI') then
         call ddi_kit_read(keywordfact, iocc     , l_etat_init,&
-                          rela_flua  , rela_plas, rela_cpla  , rela_coup)
+                          rela_flua  , rela_plas, rela_cpla, rela_coup)
         kit_comp(1) = rela_flua
         kit_comp(2) = rela_plas
         kit_comp(3) = rela_coup 
         kit_comp(4) = rela_cpla
 
-    else if (rela_comp.eq.'KIT_CG') then
-        nb_rela_kit = 2
+    else if (rela_comp .eq. 'KIT_CG') then
         call getvtx(keywordfact, 'RELATION_KIT', iocc = iocc, &
-                    nbval = nb_rela_kit, vect = rela_cg, nbret = nocc)
-        ASSERT(nocc.eq.2)
+                    nbval = 2, vect = rela_cg, nbret = nocc)
+        ASSERT(nocc .eq. 2)
         kit_comp(1) = rela_cg(1)
         kit_comp(2) = rela_cg(2)
 
-    elseif ((rela_comp(1:5).eq.'KIT_H') .or. (rela_comp(1:6).eq.'KIT_TH')) then
+    elseif ((rela_comp(1:5) .eq. 'KIT_H') .or. (rela_comp(1:6) .eq. 'KIT_TH')) then
         call thm_kit_read(keywordfact, iocc     ,&
-                          rela_comp  , rela_thmc, rela_hydr  , rela_meca  , rela_ther)
+                          rela_comp  , rela_thmc, rela_hydr, rela_meca, rela_ther)
         kit_comp(1) = rela_meca
         kit_comp(2) = rela_hydr
         kit_comp(3) = rela_ther
@@ -103,5 +144,4 @@ aster_logical, optional, intent(in) :: l_etat_init_
     else
         ASSERT(ASTER_FALSE)
     endif
-!
 end subroutine

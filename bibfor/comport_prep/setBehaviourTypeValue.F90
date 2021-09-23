@@ -108,7 +108,9 @@ character(len=16), pointer, optional :: v_compor_(:)
         endif
         v_compor_(KIT1_NAME) = v_para(i_comp)%kit_comp(1)
         if (l_kit_meta) then
-            v_compor_(META_NAME)  = v_para(i_comp)%kit_comp(1)
+            v_compor_(META_PHAS)  = v_para(i_comp)%kit_comp(1)
+            v_compor_(META_RELA)  = v_para(i_comp)%kit_comp(2)
+            v_compor_(META_GLOB)  = v_para(i_comp)%kit_comp(3)
         endif
         if (l_kit_cg) then
             v_compor_(CABLE_NAME)   = v_para(i_comp)%kit_comp(1)
@@ -152,7 +154,9 @@ character(len=16), pointer, optional :: v_compor_(:)
         endif
         l_compor_(KIT1_NAME) = v_para(i_comp)%kit_comp(1)
         if (l_kit_meta) then
-            l_compor_(META_NAME)  = v_para(i_comp)%kit_comp(1)
+            l_compor_(META_PHAS)  = v_para(i_comp)%kit_comp(1)
+            l_compor_(META_RELA)  = v_para(i_comp)%kit_comp(2)
+            l_compor_(META_GLOB)  = v_para(i_comp)%kit_comp(3)
         endif
         if (l_kit_cg) then
             l_compor_(CABLE_NAME)   = v_para(i_comp)%kit_comp(1)

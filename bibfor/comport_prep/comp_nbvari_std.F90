@@ -17,32 +17,28 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine comp_nbvari_std(rela_comp , defo_comp    , type_cpla ,&
-                           nb_vari   ,&
-                           kit_comp_ , post_iter_   , mult_comp_,&
-                           l_cristal_, l_implex_    , regu_visc_,&
-                           nume_comp_, nb_vari_rela_)
+subroutine comp_nbvari_std(rela_comp, defo_comp, type_cpla,&
+                           kit_comp , post_iter, mult_comp,&
+                           regu_visc,&
+                           l_cristal, l_implex ,&
+                           nb_vari  , nume_comp)
 !
 implicit none
 !
 #include "asterf_types.h"
 #include "asterc/lcinfo.h"
+#include "asterc/lccree.h"
 #include "asterc/lcdiscard.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_code.h"
 #include "asterfort/jeveuo.h"
 !
-character(len=16), intent(in) :: rela_comp
-character(len=16), intent(in) :: defo_comp
-character(len=16), intent(in) :: type_cpla
+character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla
+character(len=16), intent(in) :: kit_comp(4), post_iter
+character(len=16), intent(in) :: mult_comp, regu_visc
+aster_logical, intent(in) :: l_cristal, l_implex
+integer, intent(inout) :: nume_comp(4)
 integer, intent(out) :: nb_vari
-character(len=16), optional, intent(in) :: kit_comp_(4)
-character(len=16), optional, intent(in) :: post_iter_
-character(len=16), optional, intent(in) :: mult_comp_, regu_visc_
-aster_logical, optional, intent(in) :: l_cristal_
-aster_logical, optional, intent(in) :: l_implex_
-integer, optional, intent(out) :: nb_vari_rela_
-integer, optional, intent(out) :: nume_comp_(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,71 +51,35 @@ integer, optional, intent(out) :: nume_comp_(4)
 ! In  rela_comp        : RELATION comportment
 ! In  defo_comp        : DEFORMATION comportment
 ! In  type_cpla        : plane stress method
-! Out nb_vari          : number of internal variables
 ! In  kit_comp         : KIT comportment
 ! In  post_iter        : type of post_treatment
 ! In  mult_comp        : multi-comportment
 ! In  l_cristal        : .true. if *CRISTAL comportment
 ! In  l_implex         : .true. if IMPLEX method
-! Out nb_vari_rela     : number of internal variables for RELATION
-! Out nume_comp        : number LCxxxx subroutine
+! IO  nume_comp        : number LCxxxx subroutine
+! Out nb_vari          : number of internal variables
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: kit_comp(4), post_iter, mult_comp, regu_visc
-    aster_logical :: l_cristal, l_implex
-    integer :: nb_vari_rela, nume_comp(4)
-    character(len=16) :: comp_code_py, rela_code_py
-    integer :: idummy, idummy2
+    character(len=16) :: comp_code_py
+    integer :: idummy
     character(len=8) :: sdcomp
     integer :: nb_vari_cris
     integer, pointer :: v_cpri(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    kit_comp(:) = 'VIDE'
-    if (present(kit_comp_)) then
-        kit_comp(:) = kit_comp_(:)
-    endif
-    post_iter = 'VIDE'
-    if (present(post_iter_)) then
-        post_iter = post_iter_
-    endif
-    mult_comp = 'VIDE'
-    if (present(mult_comp_)) then
-        mult_comp = mult_comp_
-    endif
-    l_cristal = .false.
-    if (present(l_cristal_)) then
-        l_cristal = l_cristal_
-    endif
-    l_implex  = .false.
-    if (present(l_implex_)) then
-        l_implex = l_implex_
-    endif
-    regu_visc = 'VIDE'
-    if (present(regu_visc_)) then
-        regu_visc = regu_visc_
-    endif
-    nb_vari      = 0
-    nb_vari_rela = 0
-    nume_comp(:) = 0
-!
+    nb_vari = 0
+
 ! - Coding composite comportment (Python)
-!
-    call comp_meca_code(rela_comp_  = rela_comp, defo_comp_  = defo_comp ,&
-                        type_cpla_  = type_cpla, kit_comp_   = kit_comp,&
-                        post_iter_  = post_iter, regu_visc_  = regu_visc,&
-                        l_implex_   = l_implex,&
-                        comp_code_py_ = comp_code_py, rela_code_py_ = rela_code_py)
-!
-! - Get number of variables
-!
-    call lcinfo(rela_code_py, idummy, nb_vari_rela, idummy2)
-    call lcinfo(comp_code_py, nume_comp(1), nb_vari, idummy2)
-!
+    call comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp,&
+                        post_iter, regu_visc, l_implex,&
+                        comp_code_py)
+
+! - Get number of total internal state variables and index of law
+    call lcinfo(comp_code_py, nume_comp(1), nb_vari, idummy)
+
 ! - Special for CRISTAL
-!
     if (l_cristal) then
         sdcomp = mult_comp(1:8)
         call jeveuo(sdcomp//'.CPRI', 'L', vi=v_cpri)
@@ -129,19 +89,8 @@ integer, optional, intent(out) :: nume_comp_(4)
             nb_vari = nb_vari + 3 + 9
         endif
     endif
-!
+
 ! - End of encoding
-!
     call lcdiscard(comp_code_py)
-    call lcdiscard(rela_code_py)
-!
-! - Copy
-!
-    if (present(nume_comp_)) then
-        nume_comp_(1:4) = nume_comp(1:4)
-    endif
-    if (present(nb_vari_rela_)) then
-        nb_vari_rela_ = nb_vari_rela
-    endif
 !
 end subroutine

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine metaGetMechanism(rela_comp,&
+subroutine metaGetMechanism(metaRela, metaGlob,&
                             l_plas, l_visc,&
                             l_hard_isotline, l_hard_isotnlin,&
                             l_hard_kine, l_hard_line, l_anneal,&
@@ -26,7 +26,7 @@ implicit none
 !
 #include "asterf_types.h"
 !
-character(len=16), intent(in) :: rela_comp
+character(len=16), intent(in) :: metaRela, metaGlob
 aster_logical, optional, intent(out) :: l_plas
 aster_logical, optional, intent(out) :: l_visc
 aster_logical, optional, intent(out) :: l_hard_isotline, l_hard_isotnlin
@@ -43,7 +43,8 @@ aster_logical, optional, intent(out) :: l_plas_tran
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  rela_comp    : comportment relation
+! In  metaRela     : behaviour for each phase
+! In  metaGlob     : global behaviour
 ! Out l_plas       : ASTER_TRUE if plasticity
 ! Out l_visc       : ASTER_TRUE if visco-plasticity
 ! Out l_hard_isot  : ASTER_TRUE if isotropic hardening
@@ -56,76 +57,56 @@ aster_logical, optional, intent(out) :: l_plas_tran
 !
     if (present(l_plas)) then
         l_plas      = ASTER_FALSE
-        if (rela_comp(6:6) .eq. 'P') then
+        if (metaRela(6:6) .eq. 'P') then
             l_plas = ASTER_TRUE
         endif
     endif
 !
     if (present(l_visc)) then
         l_visc      = ASTER_FALSE
-        if (rela_comp(6:6) .eq. 'V') then
+        if (metaRela(6:6) .eq. 'V') then
             l_visc = ASTER_TRUE
         endif
     endif
 !
     if (present(l_anneal)) then
         l_anneal = ASTER_FALSE
-        if (rela_comp(1:12) .eq. 'META_P_IL_RE'     .or.&
-            rela_comp(1:15) .eq. 'META_P_IL_PT_RE'  .or.&
-            rela_comp(1:12) .eq. 'META_V_IL_RE'     .or.&
-            rela_comp(1:15) .eq. 'META_V_IL_PT_RE'  .or.&
-            rela_comp(1:13) .eq. 'META_P_INL_RE'    .or.&
-            rela_comp(1:16) .eq. 'META_P_INL_PT_RE' .or.&
-            rela_comp(1:13) .eq. 'META_V_INL_RE'    .or.&
-            rela_comp(1:16) .eq. 'META_V_INL_PT_RE' ) then
+        if (metaGlob(12:16) .eq. '_RE  ' .or. metaGlob(12:16) .eq. '_PTRE') then
             l_anneal = ASTER_TRUE
         endif
     endif
 !
     if (present(l_plas_tran)) then
         l_plas_tran = ASTER_FALSE
-        if (rela_comp(1:12) .eq. 'META_P_IL_PT'     .or.&
-            rela_comp(1:13) .eq. 'META_P_INL_PT'    .or.&
-            rela_comp(1:15) .eq. 'META_P_IL_PT_RE'  .or.&
-            rela_comp(1:16) .eq. 'META_P_INL_PT_RE' .or.&
-            rela_comp(1:12) .eq. 'META_V_IL_PT'     .or.&
-            rela_comp(1:13) .eq. 'META_V_INL_PT'    .or.&
-            rela_comp(1:15) .eq. 'META_V_IL_PT_RE'  .or.&
-            rela_comp(1:16) .eq. 'META_V_INL_PT_RE') then
+        if (metaGlob(12:16) .eq. '_PT  ' .or. metaGlob(12:16) .eq. '_PTRE') then
             l_plas_tran = ASTER_TRUE
         endif
     endif
 !
     if (present(l_hard_isotline)) then
         l_hard_isotline = ASTER_FALSE
-        if (rela_comp(1:9) .eq. 'META_P_IL' .or.&
-            rela_comp(1:9) .eq. 'META_V_IL') then
+        if (metaRela(8:16) .eq. 'ISOT_LINE') then
             l_hard_isotline = ASTER_TRUE
         endif
     endif
 !
     if (present(l_hard_isotnlin)) then
         l_hard_isotnlin = ASTER_FALSE
-        if (rela_comp(1:10) .eq. 'META_P_INL' .or.&
-            rela_comp(1:10) .eq. 'META_V_INL') then
+        if (metaRela(8:16) .eq. 'ISOT_TRAC') then
             l_hard_isotnlin = ASTER_TRUE
         endif
     endif
 !
     if (present(l_hard_kine)) then
         l_hard_kine = ASTER_FALSE
-        if (rela_comp(1:9) .eq. 'META_P_CL' .or.&
-            rela_comp(1:9) .eq. 'META_V_CL') then
+        if (metaRela(8:16) .eq. 'CINE_LINE') then
             l_hard_kine = ASTER_TRUE
         endif
     endif
 !
     if (present(l_hard_line)) then
         l_hard_line = ASTER_FALSE
-        if (rela_comp(1:9) .eq. 'META_P_IL' .or.&
-            rela_comp(1:9) .eq. 'META_V_IL' .or.&
-            rela_comp(1:9) .eq. 'META_P_CL' .or.&
-            rela_comp(1:9) .eq. 'META_V_CL') then
+        if (metaRela(8:16) .eq. 'ISOT_LINE' .or. metaRela(8:16) .eq. 'CINE_LINE') then
             l_hard_line = ASTER_TRUE
         endif
     endif

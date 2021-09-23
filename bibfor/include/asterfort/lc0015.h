@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "asterfort/Behaviour_type.h"
 !
 interface
-    subroutine lc20015(fami, kpg, ksp, ndim, imate,&
+    subroutine lc0015(fami, kpg, ksp, ndim, imate,&
                        compor, carcri, instam, instap, epsm,&
                        deps, sigm, vim, option, angmas,&
                        sigp, vip, typmod, icomp,&
@@ -27,8 +28,8 @@ interface
         integer, intent(in) :: ksp
         integer, intent(in) :: ndim
         integer, intent(in) :: imate
-        character(len=16), intent(in) :: compor(*)
-        real(kind=8), intent(in) :: carcri(*)
+        character(len=16), intent(in) :: compor(COMPOR_SIZE)
+        real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
         real(kind=8), intent(in) :: instam
         real(kind=8), intent(in) :: instap
         real(kind=8), intent(in) :: epsm(*)
@@ -44,5 +45,5 @@ interface
         integer, intent(in) :: nvi
         real(kind=8), intent(out) :: dsidep(*)
         integer, intent(out) :: codret
-    end subroutine lc20015
+    end subroutine lc0015
 end interface

@@ -30,10 +30,11 @@ implicit none
 #include "asterc/lcsymm.h"
 #include "asterc/lctest.h"
 #include "asterfort/assert.h"
+#include "asterfort/compGetMecaPart.h"
+#include "asterfort/compGetRelation.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_meca_rkit.h"
 #include "asterfort/comp_read_mesh.h"
-#include "asterfort/compGetMecaPart.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exicp.h"
 #include "asterfort/getBehaviourAlgo.h"
@@ -152,8 +153,10 @@ aster_logical, intent(in), optional :: l_implex_
 
 ! - Read informations
     do i_comp = 1, nb_comp
-! ----- Get parameters
-        call getvtx(keywordfact, 'RELATION'   , iocc = i_comp, scal = rela_comp)
+! ----- Get RELATION from command file
+        call compGetRelation(i_comp, rela_comp)
+
+! ----- Get DEFORMATION from command file
         call getvtx(keywordfact, 'DEFORMATION', iocc = i_comp, scal = defo_comp)
 
 ! ----- Detection of specific cases

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -389,61 +389,6 @@ class KIT(Base):
         if 'mfront' in typs:
             return 'mfront'
         return self._ldctype
-
-
-class KIT_META(KIT):
-
-    """Définit un assemblage de loi de comportement par KIT par un 'nom' et une
-    liste de comportements"""
-
-    def __init__(self, nom, *list_comport):
-        """Initialisations"""
-        if len(list_comport) != 2:
-            raise CataComportementError("KIT_META : il faut 2 comportements")
-        elif not list_comport[0].nom.startswith('META_'):
-            raise CataComportementError("KIT_META : le premier doit être un "
-                                        "comportement META_xx")
-        KIT.__init__(self, nom, *list_comport)
-
-        self.init_nb_vari()
-
-    def init_nb_vari(self):
-        """Composition des variables internes"""
-        meta, mat = self.list_comport
-        # variables internes
-        self._nb_vari = meta.nb_vari * mat.nb_vari + meta.nb_vari + 1
-        self._nom_vari = []
-        # variables internes pour chaque phase
-        for phase in mat.nom_vari:
-            for vari in meta.nom_vari:
-                self._nom_vari.append('%s_%s' % (vari, phase))
-
-        # si écrouissage isotrope, l'indicateur de plasticité arrive avant !
-        if meta.nb_vari == 1:
-            self._nom_vari.append('INDICAT')
-
-        # variables internes moyennes (écrouissage moyen)
-        for vari in meta.nom_vari:
-            self._nom_vari.append('%s_MOYEN' % vari)
-
-        # si écrouissage cinématique, l'indicateur de plasticité arrive après !
-        if meta.nb_vari > 1:
-            self._nom_vari.append('INDICAT')
-
-        if len(self._nom_vari) != self._nb_vari:
-            raise CataComportementError("Nombre de variables internes = %d, incohérent avec la liste des variables internes %s" % (
-                self._nb_vari, self._nom_vari))
-
-    def get_nb_vari(self):
-        return self._nb_vari or 0
-
-    nb_vari = property(get_nb_vari, "nb_vari")
-
-    def get_nom_vari(self):
-        return self._nom_vari
-
-    nom_vari = property(get_nom_vari, "nom_vari")
-
 
 class CataLoiComportement(metaclass=Singleton):
 

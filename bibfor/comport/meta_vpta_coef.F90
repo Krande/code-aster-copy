@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine meta_vpta_coef(rela_comp, lgpg      , fami     , kpg      , j_mater  ,&
+subroutine meta_vpta_coef(metaRela, metaGlob,&
+                          lgpg     , fami     , kpg      , j_mater  ,&
                           l_temp   , temp      , meta_type, nb_phasis, phas_prev,&
                           phas_curr, zcold_curr, young    , deuxmu   , coef     ,&
                           trans)
@@ -34,8 +35,9 @@ implicit none
 #include "asterfort/metaGetParaHardTrac.h"
 #include "asterfort/metaGetParaHardLine.h"
 #include "asterfort/Metallurgy_type.h"
+#include "asterfort/Behaviour_type.h"
 !
-character(len=16), intent(in) :: rela_comp
+character(len=16), intent(in) :: metaRela, metaGlob
 integer, intent(in) :: lgpg 
 character(len=4), intent(in) :: fami
 integer, intent(in) :: kpg
@@ -61,7 +63,8 @@ real(kind=8), intent(out) :: trans
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  rela_comp     : comportment relation
+! In  metaRela      : behaviour for each phase
+! In  metaGlob      : global behaviour
 ! In  lgpg          : length of integration point
 ! In  fami          : integration point type
 ! In  kpg           : integration point number
@@ -125,7 +128,7 @@ real(kind=8), intent(out) :: trans
 !
 ! - Mechanisms of comportment law
 !
-    call metaGetMechanism(rela_comp,&
+    call metaGetMechanism(metaRela, metaGlob,&
                           l_visc = l_visc,&
                           l_hard_line = l_hard_line, l_plas_tran = l_plas_tran)
 !

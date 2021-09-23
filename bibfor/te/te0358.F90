@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ character(len=16), intent(in) :: nomte
     real(kind=8) :: sigmo
     character(len=4) :: fami
     integer :: j_compor
-    character(len=16) :: type_phas, rela_comp, valk(2)
+    character(len=16) :: metaPhasName, rela_comp, valk(2)
     integer :: j_mate, j_mater
     integer :: meta_type, nb_phasis
     real(kind=8) :: young, nu, deuxmu
@@ -71,6 +71,7 @@ character(len=16), intent(in) :: nomte
     real(kind=8) :: phas_prev(5), phas_curr(5), temp
     aster_logical :: l_temp
     character(len=16) :: elas_keyword
+    character(len=16) :: metaRela, metaGlob
     real(kind=8), parameter :: kron(6) = (/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -94,17 +95,19 @@ character(len=16), intent(in) :: nomte
 !
     call jevech('PCOMPOR', 'L', j_compor)
     rela_comp = zk16(j_compor-1+RELA_NAME)
+    metaRela = zk16(j_compor-1+META_RELA)
+    metaGlob = zk16(j_compor-1+META_GLOB)
 !
 ! - Cannot evaluate command variables effect for Mfront behaviors
 !
-    if ((rela_comp.eq.'MFRONT').or.(rela_comp.eq.'AnisoLemaitre')&
-        .or.(rela_comp(1:4).eq.'Meta')) then
+    if ((metaRela.eq.'MFRONT').or.(metaRela.eq.'AnisoLemaitre')&
+        .or.(metaRela(1:4).eq.'Meta')) then
         goto 99
     endif
 !
 ! - Get type of phasis
 !
-    type_phas = zk16(j_compor-1+META_NAME)
+    metaPhasName = zk16(j_compor-1+META_PHAS)
     call metaGetType(meta_type, nb_phasis)
     ASSERT(nb_phasis.le.5)
     if ((meta_type .eq. META_NONE).or.(rela_comp.eq.'META_LEMA_ANI')) then
@@ -113,13 +116,13 @@ character(len=16), intent(in) :: nomte
 !
 ! - Check type of phasis
 !
-    valk(1) = type_phas
-    if (type_phas.eq.'ACIER') then
+    valk(1) = metaPhasName
+    if (metaPhasName .eq. 'ACIER') then
         if (meta_type .ne. META_STEEL) then
             valk(2) = 'ZIRC'
             call utmess('F', 'COMPOR3_8', nk = 2, valk = valk)
         endif
-    elseif (type_phas.eq.'ZIRC') then
+    elseif (metaPhasName .eq. 'ZIRC') then
         if (meta_type .ne. META_ZIRC) then
             valk(2) = 'ACIER'
             call utmess('F', 'COMPOR3_8', nk = 2, valk = valk)
@@ -185,7 +188,8 @@ character(len=16), intent(in) :: nomte
 !
 ! ----- Compute coefficients for second member
 !
-        call meta_vpta_coef(rela_comp, lgpg      , fami     , ipg      , j_mater  ,&
+        call meta_vpta_coef(metaRela, metaGlob,&
+                            lgpg      , fami     , ipg      , j_mater  ,&
                             l_temp   , temp      , meta_type, nb_phasis, phas_prev,&
                             phas_curr, zcold_curr, young    , deuxmu   , coef     ,&
                             trans)

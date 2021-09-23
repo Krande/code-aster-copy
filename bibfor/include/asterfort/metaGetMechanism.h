@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,12 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine metaGetMechanism(rela_comp,&
+    subroutine metaGetMechanism(metaRela, metaGlob,&
                                 l_plas, l_visc,&
                                 l_hard_isotline, l_hard_isotnlin,&
                                 l_hard_kine, l_hard_line, l_anneal,&
                                 l_plas_tran)
-        character(len=16), intent(in) :: rela_comp
+        character(len=16), intent(in) :: metaRela, metaGlob
         aster_logical, optional, intent(out) :: l_plas
         aster_logical, optional, intent(out) :: l_visc
         aster_logical, optional, intent(out) :: l_hard_isotline, l_hard_isotnlin

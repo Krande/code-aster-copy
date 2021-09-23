@@ -17,51 +17,39 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine meta_kit_nvar(metaPhas, metaRela, metaGlob,&
-                         nbMetaPhas, nbVariMetaRela, nbVariMetaGlob)
+subroutine compGetRelation(iComp, rela_comp)
 !
 implicit none
 !
-#include "asterc/lccree.h"
-#include "asterc/lcinfo.h"
-#include "asterc/lcdiscard.h"
+#include "asterf_types.h"
+#include "asterfort/deprecated_behavior.h"
+#include "asterfort/getvtx.h"
 !
-character(len=16), intent(in) :: metaPhas, metaRela, metaGlob
-integer, intent(out) :: nbMetaPhas, nbVariMetaRela, nbVariMetaGlob
-!
-! --------------------------------------------------------------------------------------------------
-!
-! META_*
-!
-! Number of internal state variables
+integer, intent(in) :: iComp
+character(len=16), intent(out) :: rela_comp
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  metaPhas         : name of phase
-! In  metaRela         : name of relation for each phase
-! In  metaGlob         : name of relation for global behaviour
-! Out nbMetaPhas       : number of phases
-! Out nbVariMetaRela   : number of internal state variables for each phase
-! Out nbVariMetaGlob   : number of internal state variables for global behaviour
+! Preparation of behaviour (mechanics)
+!
+! Get type of relation
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: metaPhasPy, metaRelaPy, metaGlobPy
-    integer :: idummy, idummy2
+! In  iComp            : factor keyword index
+! Out rela_comp        : name of behaviour relation
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbMetaPhas = 0
-    nbVariMetaRela = 0
-    nbVariMetaGlob = 0
-    call lccree(1, metaPhas, metaPhasPy)
-    call lccree(1, metaRela, metaRelaPy)
-    call lccree(1, metaGlob, metaGlobPy)
-    call lcinfo(metaPhasPy, idummy, nbMetaPhas, idummy2)
-    call lcinfo(metaRelaPy, idummy, nbVariMetaRela, idummy2)
-    call lcinfo(metaGlobPy, idummy, nbVariMetaGlob, idummy2)
-    call lcdiscard(metaPhasPy)
-    call lcdiscard(metaRelaPy)
-    call lcdiscard(metaGlobPy)
+    character(len=16), parameter :: keywordfact = 'COMPORTEMENT'
+!
+! --------------------------------------------------------------------------------------------------
+!
+    rela_comp = ' '
+    call getvtx(keywordfact, 'RELATION', iocc = iComp, scal = rela_comp)
+    call deprecated_behavior(rela_comp)
+    if ( (rela_comp(1:4) .eq. 'META') .and. (rela_comp .ne. 'META_LEMA_ANI')) then
+        rela_comp = 'KIT_META'
+    endif
 !
 end subroutine

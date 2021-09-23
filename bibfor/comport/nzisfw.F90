@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,14 +41,15 @@ implicit none
 #include "asterfort/metaGetParaAnneal.h"
 #include "asterfort/metaGetParaElas.h"
 #include "asterfort/Metallurgy_type.h"
+#include "asterfort/Behaviour_type.h"
 !
 character(len=*), intent(in) :: fami
 integer, intent(in) :: kpg
 integer, intent(in) :: ksp
 integer, intent(in) :: ndim
 integer, intent(in) :: imat
-character(len=16), intent(in) :: compor(*)
-real(kind=8), intent(in) :: carcri(*)
+character(len=16), intent(in) :: compor(COMPOR_SIZE)
+real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
 real(kind=8), intent(in) :: instam
 real(kind=8), intent(in) :: instap
 real(kind=8), intent(in) :: epsm(*)
@@ -114,6 +115,7 @@ integer, intent(out) :: iret
     aster_logical :: resi, rigi, l_temp
     aster_logical :: l_visc, l_plas, l_anneal, l_plas_tran, l_hard_isotline, l_hard_isotnlin
     real(kind=8), parameter :: kron(6) = (/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
+    character(len=16) :: metaRela, metaGlob
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -123,6 +125,10 @@ integer, intent(out) :: iret
     rigi               = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
     dt                 = instap-instam
     precr              = r8prem()
+
+! - Behaviour in kit
+    metaRela = compor(META_RELA)
+    metaGlob = compor(META_GLOB)
 !
 ! - Get metallurgy type
 !
@@ -157,7 +163,7 @@ integer, intent(out) :: iret
 !
 ! - Mechanisms of comportment law
 !
-    call metaGetMechanism(compor(1),&
+    call metaGetMechanism(metaRela, metaGlob,&
                           l_plas          = l_plas,&
                           l_visc          = l_visc,&
                           l_anneal        = l_anneal,&

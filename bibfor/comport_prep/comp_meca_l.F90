@@ -56,7 +56,7 @@ character(len=16), optional, intent(in) :: post_iter
     if (what .eq. 'CRISTAL') then
         l_detec = (rela_comp .eq. 'MONOCRISTAL') .or. (rela_comp .eq.'POLYCRISTAL')
     else if (what .eq. 'KIT_META') then
-        l_detec = (rela_comp(1:4).eq.'META').and.(rela_comp.ne.'META_LEMA_ANI')
+        l_detec = (rela_comp.eq.'KIT_META')
     else if (what .eq. 'KIT_THM') then
         l_detec = ((rela_comp(1:5).eq.'KIT_H') .or. (rela_comp(1:6).eq.'KIT_TH'))
     else if (what .eq. 'KIT_DDI') then
@@ -64,7 +64,7 @@ character(len=16), optional, intent(in) :: post_iter
     else if (what .eq. 'KIT_CG') then
         l_detec = (rela_comp.eq.'KIT_CG')
     else if (what .eq. 'KIT') then
-        l_detec = (rela_comp(1:4).eq.'KIT_').or.(rela_comp(1:4).eq.'META')
+        l_detec = (rela_comp(1:4).eq.'KIT_')
     else if (what .eq. 'UMAT') then
         l_detec = (rela_comp .eq. 'UMAT')
     else if (what .eq. 'MFRONT_OFFI') then
@@ -91,8 +91,7 @@ character(len=16), optional, intent(in) :: post_iter
         l_detec = post_iter .eq. 'CRIT_RUPT'
     else
         write(6,*) 'What: ',rela_comp,what,whatz
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     endif
-!
 !
 end subroutine

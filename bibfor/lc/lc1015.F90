@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ subroutine lc1015(fami, kpg, ksp, ndim, imate,&
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/lcgdpm.h"
 #include "asterfort/nzgdzi.h"
@@ -36,8 +37,8 @@ integer, intent(in) :: kpg
 integer, intent(in) :: ksp
 integer, intent(in) :: ndim
 integer, intent(in) :: imate
-character(len=16), intent(in) :: compor(*)
-real(kind=8), intent(in) :: carcri(*)
+character(len=16), intent(in) :: compor(COMPOR_SIZE)
+real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
 real(kind=8), intent(in) :: instam
 real(kind=8), intent(in) :: instap
 real(kind=8), intent(in) :: epsm(*)
@@ -62,18 +63,18 @@ integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (compor(META_NAME) .eq. 'ACIER') then
+    if (compor(META_PHAS) .eq. 'ACIER') then
         call lcgdpm(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
                     deps, sigm, vim, option, sigp,&
                     vip, dsidep, codret)
-    else if (compor(META_NAME) .eq. 'ZIRC') then
+    else if (compor(META_PHAS) .eq. 'ZIRC') then
         call nzgdzi(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
                     deps, sigm, vim, option, sigp,&
                     vip, dsidep, codret)
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     endif
     call postsm(option, epsm, deps, sigm, sigp, dsidep)
 !

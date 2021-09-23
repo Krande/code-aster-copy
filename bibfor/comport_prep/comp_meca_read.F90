@@ -26,13 +26,13 @@ implicit none
 #include "asterf_types.h"
 #include "asterc/getexm.h"
 #include "asterc/mfront_get_nbvari.h"
-#include "asterfort/deprecated_behavior.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/compGetMecaPart.h"
+#include "asterfort/compGetRelation.h"
 #include "asterfort/comp_meca_incr.h"
 #include "asterfort/comp_meca_deflc.h"
 #include "asterfort/getExternalBehaviourPara.h"
@@ -85,8 +85,7 @@ character(len=8), intent(in), optional :: model
     do i_comp = 1, nb_comp
 ! ----- Get RELATION from command file
         rela_comp = 'VIDE'
-        call getvtx(keywordfact, 'RELATION', iocc = i_comp, scal = rela_comp)
-        call deprecated_behavior(rela_comp)
+        call compGetRelation(i_comp, rela_comp)
 
 ! ----- Detection of specific cases
         call comp_meca_l(rela_comp, 'KIT'    , l_kit)

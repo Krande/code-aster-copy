@@ -106,7 +106,9 @@
 !
 ! Slots: for KIT_META
 !
-#define META_NAME    9
+#define META_PHAS    9
+#define META_RELA    10
+#define META_GLOB    11
 !
 ! Slots: for KIT_CG
 !
