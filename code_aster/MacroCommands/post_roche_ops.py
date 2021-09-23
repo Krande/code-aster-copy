@@ -329,87 +329,42 @@ class PostRocheCommon():
                                      **self.dicAllZones)
 
         self.chRochElno = chRochElno
-        
-        def fveri_para(x):
-                if isnan(x):
-                    return 1
-                else:
-                    return 0
                 
         # si RCCM_RX = 'OUI' on vérifie la présence de RP02_MIN, RM_MIN et RP02_MOY
+        # si ces paramètres n'ont pas été fournis par l'utilisateur leurs valeurs
+        # sont négatives
         if self.lRCCM_RX:
-            
-            frp02min = FORMULE(NOM_PARA=('RP02_MIN',),
-                                VALE='fveri_para(RP02_MIN)',fveri_para=fveri_para)
-            frp02moy = FORMULE(NOM_PARA=('RP02_MOY',),
-                                VALE='fveri_para(RP02_MOY)',fveri_para=fveri_para)
-            frmmin = FORMULE(NOM_PARA=('RM_MIN',),
-                                VALE='fveri_para(RM_MIN)',fveri_para=fveri_para)
-            
-            
-            chfpara = CREA_CHAMP(OPERATION='AFFE',
-                                    TYPE_CHAM='ELNO_NEUT_F',
-                                    MODELE=self.model,
-                                    PROL_ZERO='OUI',
-                                    AFFE= (_F(NOM_CMP=('X1','X2','X3'),
-                                              VALE_F=(frp02min, frp02moy, frmmin),
-                                              **self.dicAllZones),))
-            
-            chpara = CREA_CHAMP(OPERATION='EVAL',
-                                    TYPE_CHAM='ELNO_NEUT_R',
-                                    CHAM_F=chfpara,
-                                    CHAM_PARA=(self.chRochElno,))
-
 
             tabpara=POST_ELEM(MINMAX=_F(MODELE=self.model,
-                                              CHAM_GD=chpara,
-                                              NOM_CMP=('X1','X2','X3'),
+                                              CHAM_GD=self.chRochElno,
+                                              NOM_CMP=('RP02_MIN','RP02_MOY','RM_MIN'),
                                               **self.dicAllZones,
                                              ));
 
-            maxX1 = tabpara['MAX_X1',1]
-            maxX2 = tabpara['MAX_X2',1]
-            maxX3 = tabpara['MAX_X3',1]
+            minRP02_MIN = tabpara['MIN_RP02_MIN',1]
+            minRP02_MOY = tabpara['MIN_RP02_MOY',1]
+            minRM_MIN = tabpara['MIN_RM_MIN',1]
 
-
-            if maxX1>0:
+            if minRP02_MIN<0:
                 UTMESS('F','POSTROCHE_18',valk='RP02_MIN')
-            if maxX2>0:
+            if minRP02_MOY<0:
                 UTMESS('F','POSTROCHE_18',valk='RP02_MOY')
-            if maxX3>0:
+            if minRM_MIN<0:
                 UTMESS('F','POSTROCHE_18',valk='RM_MIN')
         
         # pour les coudes, verification de la présence de RP02_MIN
         elif self.lGrmaCoude != []:
-            
-            frp02min = FORMULE(NOM_PARA=('RP02_MIN',),
-                                VALE='fveri_para(RP02_MIN)',fveri_para=fveri_para)
-            
-            chfRp02min = CREA_CHAMP(OPERATION='AFFE',
-                                    TYPE_CHAM='ELNO_NEUT_F',
-                                    MODELE=self.model,
-                                    PROL_ZERO='OUI',
-                                    AFFE= (_F(NOM_CMP=('X1',),
-                                              VALE_F=(frp02min),
-                                              GROUP_MA=self.lGrmaCoude),))
-            
-            chRp02min = CREA_CHAMP(OPERATION='EVAL',
-                                    TYPE_CHAM='ELNO_NEUT_R',
-                                    CHAM_F=chfRp02min,
-                                    CHAM_PARA=(self.chRochElno,))
-
 
             tabRp02min=POST_ELEM(MINMAX=_F(MODELE=self.model,
-                                              CHAM_GD=chRp02min,
-                                              NOM_CMP=('X1',),
+                                              CHAM_GD=self.chRochElno,
+                                              NOM_CMP=('RP02_MIN',),
                                               GROUP_MA=self.lGrmaCoude
                                              ));
 
-            maxX1 = tabRp02min['MAX_X1',1]
+            minRP02_MIN = tabRp02min['MIN_RP02_MIN',1]
 
-
-            if maxX1>0:
-                UTMESS('F','POSTROCHE_17')
+            if minRP02_MIN<0:
+                UTMESS('F','POSTROCHE_17',valk='RP02_MIN')
 
     def calcGeomParams(self):
         """

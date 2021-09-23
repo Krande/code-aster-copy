@@ -1098,11 +1098,11 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",
            ),
 #  Uniquement pour POST_ROCHE
            POST_ROCHE      =FACT(statut='f',
-             RAMB_OSGO_FACT     = SIMP(statut='o',typ='R',),
+             RAMB_OSGO_FACT     = SIMP(statut='o',typ='R',val_min=0.E+0),
              RAMB_OSGO_EXPO     = SIMP(statut='o',typ='R',val_min=0.E+0),
-             RP02_MIN           = SIMP(statut='f',typ='R',),
-             RM_MIN             = SIMP(statut='f',typ='R',),
-             RP02_MOY           = SIMP(statut='f',typ='R',), # 1.25*RP02_MIN par défaut
+             RP02_MIN           = SIMP(statut='f',typ='R',val_min=0.E+0),
+             RM_MIN             = SIMP(statut='f',typ='R',val_min=0.E+0),
+             RP02_MOY           = SIMP(statut='f',typ='R',val_min=0.E+0), # 1.25*RP02_MIN par défaut
              COEF               = SIMP(statut='f',typ='R',defaut=1., val_min=1.),
            ),
            POST_ROCHE_FO   =FACT(statut='f',

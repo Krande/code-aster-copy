@@ -76,16 +76,33 @@ subroutine te0113(option, nomte)
                 nbparaPR, nomres, valres, icodre, 0)
     if (icodre(1).ne.0) call utmess('F','POSTROCHE_16')
     k = valres(1)
+    if (k.lt.0.d0) call utmess('F','POSTROCHE_19', sk=nomres(1), sr=k)
     nexpo = valres(2)
     if (nexpo.lt.0.d0) call utmess('F','POSTROCHE_19', sk=nomres(2), sr=nexpo)
-    rp02_min = valres(3) ! nan si absent
-    rm_min = valres(4)   ! nan si absent
     
+!   pour les paramètres facultatifs, on les mets à une valeur négative si absent
+!   afin d'émettre les messages d'erreur dans POST_ROCHE s'ils étaient nécessaires
+!   voir issue30703
+    if (icodre(3).ne.0)then
+        rp02_min = -1d0
+    else
+        if (valres(3).lt.0.d0) call utmess('F','POSTROCHE_19', sk=nomres(3), sr=valres(3))
+        rp02_min = valres(3)
+    endif
+    if (icodre(4).ne.0)then
+        rm_min = -1d0
+    else
+        if (valres(4).lt.0.d0) call utmess('F','POSTROCHE_19', sk=nomres(4), sr=valres(4))
+        rm_min = valres(4)
+    endif
     
     if (icodre(3).eq.0 .and. icodre(5).ne.0)then
         rp02_moy = 1.25d0*rp02_min
+    elseif (icodre(5).ne.0)then
+        rp02_moy = -1d0
     else
-        rp02_moy = valres(5) ! nan si absent et si rp02_min absent
+        if (valres(5).lt.0.d0) call utmess('F','POSTROCHE_19', sk=nomres(5), sr=valres(5))
+        rp02_moy = valres(5)
     endif
     
     coef = valres(6)

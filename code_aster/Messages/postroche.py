@@ -87,15 +87,15 @@ parvenir à vérifier le critère de convergence lors du calcul de %(k1)s .
    16 : _("""Le matériau POST_ROCHE est absent.
 """),
 
-   17 : _("""Le paramètre RP02_MIN du matériau RAMBERG_OSGOOD doit être présent sur les parties déclarées comme coudes.
+   17 : _("""Le paramètre %(k1)s du matériau POST_ROCHE doit être présent sur les parties déclarées comme coudes.
 Ce paramètre est absent sur au moins une maille.
 """),
 
-   18 : _("""Si RCCM_RX = OUI, le paramètre %(k1)s du matériau RAMBERG_OSGOOD doit 
+   18 : _("""Si RCCM_RX = OUI, le paramètre %(k1)s du matériau POST_ROCHE doit 
 être présent sur les parties du modèle déclarées dans ZONE_ANALYSE.
 Ce paramètre est absent sur au moins une maille.
 """),
 
-   19 : _("""Le paramètre %(k1)s a une valeur négative : %(r1)f.
+   19 : _("""Le paramètre %(k1)s a une valeur négative : %(r1)f. Cela est interdit.
 """),
 }
