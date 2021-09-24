@@ -27,11 +27,17 @@ model=AFFE_MODELE(MAILLAGE=mail,
       _F(GROUP_MA='POUTRE',   PHENOMENE='MECANIQUE', MODELISATION='POU_D_E',),
    ),
 )
+
+# Special section for [issue31337] Shielding of an FPE for homothetic beam sections
 carelm=AFFE_CARA_ELEM(
    MODELE=model,
-   POUTRE=_F(GROUP_MA='POUTRE',SECTION='CERCLE',CARA=('R','EP'),VALE=(0.1,0.1),),
+   POUTRE=_F(GROUP_MA='POUTRE',
+             SECTION='CERCLE',
+             VARI_SECT='HOMOTHETIQUE',
+             CARA=('R_DEBUT','R_FIN','EP_DEBUT','EP_FIN'),
+             VALE=(0.1,0.1,0.1,0.0999),
+             ),
 )
-
 
 matcoeff=PROJ_CHAMP(
    PROJECTION='NON', METHODE='COLLOCATION',
