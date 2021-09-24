@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine lcinit(fami, kpg, ksp, loi, typess,&
-                  essai, mod, nmat, materd, materf,&
+! aslint: disable=W1504
+subroutine lcinit(fami, kpg, ksp, rela_comp, typess,&
+                  essai, mod, nmat, materf,&
                   timed, timef, intg, nr, nvi,&
-                  yd, epsd, deps, dy, comp,&
+                  yd, epsd, deps, dy, compor,&
                   nbcomm, cpmono, pgl, nfs, nsg,&
                   toutms, vind, sigd, sigf, epstr,&
                   bnews, mtrac, indi, iret)
-! aslint: disable=W1504
+
     implicit none
 !       ROUTINE AIGUILLAGE
 !       ----------------------------------------------------------------
@@ -62,50 +62,50 @@ subroutine lcinit(fami, kpg, ksp, loi, typess,&
 #include "asterfort/lcmmin.h"
 #include "asterfort/lklini.h"
 #include "asterfort/srlini.h"
-#include "asterfort/vecini.h"
+#include "asterfort/Behaviour_type.h"
     integer :: typess, nmat, nr, nvi, kpg, ksp, nfs, nsg
     integer :: nbcomm(nmat, 3), iret, indi(7), intg
     real(kind=8) :: deps(6), epsd(6), essai
     real(kind=8) :: yd(*), dy(*)
-    real(kind=8) :: materf(nmat, 2), materd(nmat, 2)
+    real(kind=8) :: materf(nmat, 2)
     real(kind=8) :: timed, timef
     real(kind=8) :: pgl(3, 3)
     real(kind=8) :: vind(*), sigd(6), epstr(6)
     real(kind=8) :: toutms(nfs, nsg, 6), sigf(6)
     character(len=*) :: fami
     character(len=8) :: mod
-    character(len=16) :: loi
-    character(len=16) :: comp(*)
+character(len=16), intent(in) :: rela_comp
+    character(len=16), intent(in) :: compor(COMPOR_SIZE)
     character(len=24) :: cpmono(5*nmat+1)
     aster_logical :: bnews(3), mtrac
 !       ----------------------------------------------------------------
 !
     iret=0
 !
-    if (loi(1:9) .eq. 'VISCOCHAB') then
+    if (rela_comp .eq. 'VISCOCHAB') then
         call cvmini(typess, essai, mod, nmat, materf,&
                     timed, timef, yd, epsd, deps,&
                     dy)
 !
-    else if ((loi(1:8) .eq. 'MONOCRIS') .or. (loi(1:8) .eq. 'MONO2RIS')) then
+    else if (rela_comp .eq. 'MONOCRISTAL') then
         call lcmmin(typess, essai, mod, nmat, materf,&
                     nr, nvi, yd, deps, dy,&
-                    comp, nbcomm, cpmono, pgl, nfs,&
+                    compor, nbcomm, cpmono, pgl, nfs,&
                     nsg, toutms, timed, timef, vind,&
                     sigd, epstr)
 !
-    else if (loi(1:7) .eq. 'IRRAD3M') then
+    else if (rela_comp .eq. 'IRRAD3M') then
         call irrini(fami, kpg, ksp, typess, essai,&
                     mod, nmat, materf, yd, deps,&
                     dy)
 !
-    else if (loi(1:4) .eq. 'LETK') then
+    else if (rela_comp .eq. 'LETK') then
         call lklini(sigf, nr, yd, dy)
 !
-    else if (loi(1:3) .eq. 'LKR') then
+    else if (rela_comp .eq. 'LKR') then
         call srlini(sigf,nr,yd,dy)
 !
-    else if (loi(1:6).eq.'HUJEUX') then
+    else if (rela_comp .eq. 'HUJEUX') then
         call hujini(mod, nmat, materf, intg, deps,&
                     nr, yd, nvi, vind, sigd,&
                     sigf, bnews, mtrac, dy, indi,&
@@ -113,7 +113,7 @@ subroutine lcinit(fami, kpg, ksp, loi, typess,&
 !
     else
 !        SOLUTION INITIALE = ZERO
-        call vecini(nr, 0.d0, dy)
+        dy(1:nr) = 0.d0
         if (mod(1:6) .eq. 'C_PLAN') then
             deps(3) = 0.d0
         endif

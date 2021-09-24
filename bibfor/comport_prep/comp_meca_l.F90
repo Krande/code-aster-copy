@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! person_in_charge: mickael.abbas at edf.fr
+!
 recursive subroutine comp_meca_l(rela_comp, whatz, l_detec, post_iter)
 !
 implicit none
@@ -26,12 +27,10 @@ implicit none
 #include "asterc/lctype.h"
 #include "asterc/lcdiscard.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=16), intent(in) :: rela_comp
-    character(len=*), intent(in) :: whatz
-    aster_logical, intent(out) :: l_detec
-    character(len=16), optional, intent(in) :: post_iter
+character(len=16), intent(in) :: rela_comp
+character(len=*), intent(in) :: whatz
+aster_logical, intent(out) :: l_detec
+character(len=16), optional, intent(in) :: post_iter
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,8 +54,7 @@ implicit none
     what = whatz
     l_detec = .false.
     if (what .eq. 'CRISTAL') then
-        l_detec = (rela_comp .eq. 'MONOCRISTAL') .or. (rela_comp .eq. 'MONO2RISTAL') &
-        .or. (rela_comp .eq.'POLYCRISTAL')
+        l_detec = (rela_comp .eq. 'MONOCRISTAL') .or. (rela_comp .eq.'POLYCRISTAL')
     else if (what .eq. 'KIT_META') then
         l_detec = (rela_comp(1:4).eq.'META').and.(rela_comp.ne.'META_LEMA_ANI')
     else if (what .eq. 'KIT_THM') then

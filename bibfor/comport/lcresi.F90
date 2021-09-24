@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,33 +74,33 @@ subroutine lcresi(fami, kpg, ksp, rela_comp, typmod,&
 !       ----------------------------------------------------------------
 !
     iret=0
-    if (rela_comp(1:9) .eq. 'VISCOCHAB') then
+    if (rela_comp .eq. 'VISCOCHAB') then
         call cvmres(typmod, nmat, materd, materf, timed,&
                     timef, yd, yf, epsd, deps,&
                     dy, r)
 !
-    else if ((rela_comp(1:8) .eq. 'MONOCRIS') .or. (rela_comp(1:8) .eq. 'MONO2RIS')) then
+    else if (rela_comp .eq. 'MONOCRISTAL') then
         call lcmmre(typmod, nmat, materd, materf, &
                     nbcomm, cpmono, pgl, nfs, nsg,&
                     toutms, hsr, nr, nvi, vind,&
                     itmax, toler, timed, timef, yd,&
                     yf, deps, dy, r, iret)
-    else if (rela_comp(1:7) .eq. 'IRRAD3M') then
+    else if (rela_comp .eq. 'IRRAD3M') then
         call irrres(fami, kpg, ksp, typmod, nmat,&
                     materd, materf, yd, yf, deps,&
                     dy, r)
-    else if (rela_comp(1:4) .eq. 'LETK') then
+    else if (rela_comp .eq. 'LETK') then
         call lkresi(typmod, nmat, materf, timed, timef,&
                     nvi, vind, vinf, yd, yf,&
                     deps, nr, r)
-    else if (rela_comp(1:3).eq.'LKR') then
+    else if (rela_comp.eq.'LKR') then
         call srresi(nmat,materf,timed,timef,&
                     nvi,vind,vinf,yd,yf,deps,nr,r)
-    else if (rela_comp(1:8) .eq. 'HAYHURST') then
+    else if (rela_comp .eq. 'HAYHURST') then
         call hayres(typmod, nmat, materd, materf, timed,&
                     timef, yd, yf, deps, dy,&
                     r, crit, iret)
-    else if (rela_comp(1:6) .eq. 'HUJEUX') then
+    else if (rela_comp .eq. 'HUJEUX') then
         call huresi(typmod, nmat, materf, indi, deps,&
                     nr, yd, yf, nvi, vind,&
                     r, iret)

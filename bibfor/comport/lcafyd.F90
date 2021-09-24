@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,11 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcafyd(comp, materd, materf, nbcomm, cpmono,&
+subroutine lcafyd(compor, materd, materf, nbcomm, cpmono,&
                   nmat, mod, nvi, vind, vinf,&
                   sigd, nr, yd, bnews, mtrac)
-! person_in_charge: jean-michel.proix at edf.fr
     implicit none
+
+
 !     CHOIX DES VALEURS DE VIND A AFFECTER A YD
 !     CAS PARTICULIER DU  MONOCRISTAL  :
 !     ON GARDE 1 VARIABLE INTERNE PAR SYSTEME DE GLISSEMENT SUR 3
@@ -52,14 +53,17 @@ subroutine lcafyd(comp, materd, materf, nbcomm, cpmono,&
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
+#include "asterfort/Behaviour_type.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
+
     integer :: ndt, nvi, nmat, ndi, ns, i, nbcomm(nmat, 3), nr
     real(kind=8) :: yd(*), materd(nmat, 2), materf(nmat, 2), vind(*)
     real(kind=8) :: id(3, 3), hookf(6, 6), dkooh(6, 6), epsegl(6), fe(3, 3)
     real(kind=8) :: dtot, vinf(nvi), sigd(6)
-    character(len=16) :: loi, comp(*), necoul
-    character(len=24) :: cpmono(5*nmat+1)
+    character(len=16), intent(in) :: compor(COMPOR_SIZE)
+    character(len=16) :: rela_comp
+    character(len=24) :: cpmono(5*nmat+1), necoul
     character(len=8) :: mod
     aster_logical :: bnews(3), mtrac
     common /tdim/   ndt  , ndi
@@ -69,14 +73,14 @@ subroutine lcafyd(comp, materd, materf, nbcomm, cpmono,&
 !     ----------------------------------------------------------------
 !
 !     INITIALISATION DE YD EN IMPLICITE
-    loi=comp(1)
+    rela_comp=compor(RELA_NAME)
 !
 !
 !     AFFECTATION DE YD = ( SIGD , VIND , (EPSD(3)) )
 !
     call lceqvn(ndt, sigd, yd)
 !
-    if ((loi(1:8) .eq. 'MONOCRIS') .or. (loi(1:8) .eq. 'MONO2RIS')) then
+    if (rela_comp .eq. 'MONOCRISTAL') then
 ! ATTENTION !         NS=(NVI-8)/3
         ns=nr-ndt
         irr=0
@@ -118,13 +122,13 @@ subroutine lcafyd(comp, materd, materf, nbcomm, cpmono,&
                 call lcopli('ORTHOTRO', mod, materf(1, 1), hookf)
             endif
 ! Y contient H*(FeT.Fe-Id)/2, ce ne sont pas exactement les PK2
-! Y contient ensuite les ns alpha_s ou gamma_s suivant la loi
+! Y contient ensuite les ns alpha_s ou gamma_s suivant la rela_comp
             call lcprmv(hookf, epsegl, yd)
         endif
 !
 !
 !
-    else if (loi(1:7) .eq. 'IRRAD3M') then
+    else if (rela_comp .eq. 'IRRAD3M') then
 !        CORRESPONDANCE ENTRE LES VARIABLES INTERNES ET LES EQUATIONS
 !        DU SYSTEME DIFFERENTIEL
 !        DEFORMATION PLASTIQUE CUMULEE
@@ -136,7 +140,7 @@ subroutine lcafyd(comp, materd, materf, nbcomm, cpmono,&
 !        DEFORMATION DE GONFLEMENT
         yd(ndt+4) = vind(4)
 !
-    else if (loi(1:4) .eq. 'LETK') then
+    else if (rela_comp .eq. 'LETK') then
 ! --- INITIALISATION A ZERO DU MULTIPLICATEUR PLASTIQUE
         yd(ndt+1) = 0.d0
 ! --- INITIALISATION A XIP
@@ -144,7 +148,7 @@ subroutine lcafyd(comp, materd, materf, nbcomm, cpmono,&
 ! --- INITIALISATION A XIVP
         yd(ndt+3) = vind(3)
 !
-    else if (loi(1:3).eq.'LKR') then
+    else if (rela_comp .eq. 'LKR') then
 ! --- INITIALISATION A ZERO DU MULTIPLICATEUR PLASTIQUE
         yd(ndt+1)=0.d0
 ! --- INITIALISATION A XIP
@@ -152,7 +156,7 @@ subroutine lcafyd(comp, materd, materf, nbcomm, cpmono,&
 ! --- INITIALISATION A XIVP
         yd(ndt+3)=vind(3)
 !
-    else if (loi .eq. 'HAYHURST') then
+    else if (rela_comp .eq. 'HAYHURST') then
         call lcopil('ISOTROPE', mod, materd(1, 1), dkooh)
 !        DEFORMATION ELASTIQUE INSTANT PRECEDENT
         call lcprmv(dkooh, sigd, yd)
@@ -170,7 +174,7 @@ subroutine lcafyd(comp, materd, materf, nbcomm, cpmono,&
 !        D
         yd(ndt+4) = vind(11)
 !
-    else if (loi(1:6).eq.'HUJEUX') then
+    else if (rela_comp .eq. 'HUJEUX') then
         call hujayd(nmat, materf, nvi, vind, vinf,&
                     nr, yd, bnews, mtrac)
 !

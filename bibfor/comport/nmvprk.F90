@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -233,7 +233,7 @@ implicit none
 !
 ! --  CALCUL DES CONTRAINTES
 !
-    if ((rela_comp(1:8).eq.'MONO2RIS') .and. (gdef.eq.1)) then
+    if ((rela_comp.eq.'MONOCRISTAL') .and. (gdef.eq.1)) then
         call lcrksg(rela_comp, nvi, vinf, epsd, detot,&
                     nmat, coel, sigf)
     else
@@ -248,7 +248,7 @@ implicit none
 !
 900 continue
 !
-    if (opt(1:10) .eq. 'RIGI_MECA_' .and. gdef .eq. 1 .and. rela_comp .eq. 'MONO2RISTAL') then
+    if (opt(1:10) .eq. 'RIGI_MECA_' .and. gdef .eq. 1 .and. rela_comp .eq. 'MONOCRISTAL') then
         call lcsmelas(epsdt, depst, dsde,&
                       nmat = nmat, materd_ = materd)
         iret = 0

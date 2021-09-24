@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ subroutine te0338(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
+#include "asterfort/Behaviour_type.h"
 !
     character(len=*) :: option, nomte
 !     FONCTION REALISEE :
@@ -61,6 +62,7 @@ subroutine te0338(option, nomte)
     integer :: jgano, ipoids, ivf, idfde, npg, nno, nnos
     integer :: imate, igeom, icong, ivarig, issopt, iweib, idefg, nbvp
     integer :: isigie, isigis, jtab(7), iret
+    character(len=16) :: rela_comp
 !
 !======================== CORPS DU PROGRAMME ===========================
 !
@@ -79,13 +81,12 @@ subroutine te0338(option, nomte)
     call jevech('PVARIPG', 'L', ivarig)
     call jevech('PSOUSOP', 'L', issopt)
     call jevech('PDOMMAG', 'L', isigie)
-    call tecach('OOO', 'PVARIPG', 'L', iret, nval=7,&
-                itab=jtab)
+    call tecach('OOO', 'PVARIPG', 'L', iret, nval=7, itab=jtab)
     nbvari = max(jtab(6),1)*jtab(7)
     call jevech('PCOMPOR', 'L', icompo)
-!     READ (ZK16(ICOMPO+1),'(I16)') NBVARI
+    rela_comp = zk16(icompo-1+RELA_NAME)
 !
-    call psvari(zk16(icompo), nbvari, '3D', ipopp, ipoppt)
+    call psvari(rela_comp, nbvari, ipopp, ipoppt)
 !
 !     1.3 CHAMPS OUT
 !     --------------
@@ -131,10 +132,8 @@ subroutine te0338(option, nomte)
     vkp = 0.d0
     vkpact = 0.d0
     sigwk = 0.d0
-    do 10,i = 1,6,1
-    sigm(i) = 0.d0
-    epsg(i) = 0.d0
-    10 end do
+    sigm = 0.d0
+    epsg = 0.d0
 ! -CRITERE PLASTIQUE
     ppt = 0.d0
     pp = 0.d0
@@ -165,7 +164,7 @@ subroutine te0338(option, nomte)
             tmoy = tmoy + tg * dvpg
         endif
 ! VOLUME PLASTIQUE ACTIF
-        if ((zk16(icompo).eq.'LEMAITRE') .and. (pp.ge.seuil)) then
+        if (rela_comp.eq.'LEMAITRE' .and. (pp.ge.seuil)) then
             ppt = 1.d0
         else
             ppt =zr(ivarig+nbvari*(kp-1)+ipoppt-1)
@@ -234,7 +233,7 @@ subroutine te0338(option, nomte)
             tmoy = tmoy + tg * dvpg
         endif
 ! VOLUME PLASTIQUE ACTIF
-        if ((zk16(icompo).eq.'LEMAITRE') .and. (pp.ge.seuil)) then
+        if (rela_comp.eq.'LEMAITRE' .and. (pp.ge.seuil)) then
             ppt = 1.d0
         else
             ppt =zr(ivarig+nbvari*(kp-1)+ipoppt-1)
@@ -288,7 +287,7 @@ subroutine te0338(option, nomte)
             call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
                         poids)
             dvpg = poids
-            if ((zk16(icompo).eq.'LEMAITRE') .and. (pp.ge.seuil)) then
+            if ((rela_comp.eq.'LEMAITRE') .and. (pp.ge.seuil)) then
                 ppt = 1.d0
             else
                 ppt =zr(ivarig+nbvari*(kp-1)+ipoppt-1)
@@ -326,7 +325,7 @@ subroutine te0338(option, nomte)
             call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
                         poids)
             dvpg = poids
-            if ((zk16(icompo).eq.'LEMAITRE') .and. (pp.ge.seuil)) then
+            if ((rela_comp.eq.'LEMAITRE') .and. (pp.ge.seuil)) then
                 ppt = 1.d0
             else
                 ppt =zr(ivarig+nbvari*(kp-1)+ipoppt-1)

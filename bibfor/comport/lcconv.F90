@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine lcconv(loi, yd, dy, ddy, ye,&
+! aslint: disable=W1504
+!
+subroutine lcconv(rela_comp, yd, dy, ddy, ye,&
                   nr, itmax, toler, iter, intg,&
                   nmat, mater, r, rini, epstr,&
                   typess, essai, icomp, nvi, vind,&
                   vinf, vind1, indi, bnews, mtrac,&
                   lreli, iret)
-! aslint: disable=W1504
+
     implicit none
 !     ROUTINE D AIGUILLAGE
 !     ----------------------------------------------------------------
@@ -77,39 +78,39 @@ subroutine lcconv(loi, yd, dy, ddy, ye,&
     real(kind=8) :: toler, essai, ddy(*), dy(*), r(*), rini(*), yd(*)
     real(kind=8) :: mater(nmat, 2), epstr(6), vinf(nvi), vind1(nvi)
     real(kind=8) :: ye(nr), vind(nvi)
-    character(len=16) :: loi
+character(len=16), intent(in) :: rela_comp
     aster_logical :: bnews(3), mtrac, lreli
 !     ----------------------------------------------------------------
 !
-    if (loi(1:9) .eq. 'VISCOCHAB') then
+    if (rela_comp .eq. 'VISCOCHAB') then
 !
         call cvmcvg(dy, ddy, nr, itmax, toler,&
                     iter, intg, typess, essai, icomp,&
                     iret)
 !
-    else if ((loi(1:8) .eq. 'MONOCRIS') .or. (loi(1:8) .eq. 'MONO2RIS')) then
+    else if (rela_comp .eq. 'MONOCRISTAL') then
 !
         call lcmmcv(yd, dy, ddy, nr, itmax,&
                     toler, iter, r, rini, epstr,&
                     iret)
 !
-    else if (loi(1:7) .eq. 'IRRAD3M') then
+    else if (rela_comp .eq. 'IRRAD3M') then
 !
         call irrcvg(dy, ddy, nr, nmat, mater,&
                     itmax, toler, iter, r, rini,&
                     iret)
 !
-    else if (loi(1:4) .eq. 'LETK') then
+    else if (rela_comp .eq. 'LETK') then
 !
         call lkicvg(nr, itmax, toler, iter, r,&
                     nvi, vinf, dy, iret)
 !
-    else if (loi(1:3).eq.'LKR') then
+    else if (rela_comp .eq. 'LKR') then
 !
         call sricvg(nr,itmax,toler,iter,r,&
                     nvi,vinf,dy,iret)
 ! 
-    else if (loi(1:6) .eq. 'HUJEUX') then
+    else if (rela_comp .eq. 'HUJEUX') then
 !
         call hujcvg(nmat, mater, nvi, vind, vinf,&
                     vind1, nr, yd, dy, r,&

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
+#include "asterfort/Behaviour_type.h"
 !
 interface
-    subroutine lcafyd(comp, materd, materf, nbcomm, cpmono,&
+    subroutine lcafyd(compor, materd, materf, nbcomm, cpmono,&
                       nmat, mod, nvi, vind, vinf,&
                       sigd, nr, yd, bnews, mtrac)
         integer :: nvi
         integer :: nmat
-        character(len=16) :: comp(*)
+        character(len=16), intent(in) :: compor(COMPOR_SIZE)
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)
         integer :: nbcomm(nmat, 3)

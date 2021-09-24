@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -88,11 +88,7 @@ Arrêt suite à l'échec de l'intégration de la loi de comportement.
 """),
 
     89 : _("""
- le paramètre A doit être >=0
-"""),
-
-    91 : _("""
- stop, RIGI_MECA_TANG non disponible
+ le paramètre A doit être positif ou nul
 """),
 
     92 : _("""

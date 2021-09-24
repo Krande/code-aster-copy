@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lccnvx(fami, kpg, ksp, loi, mod,&
-                  imat, nmat, materd, materf, sigd,&
+subroutine lccnvx(fami, kpg, ksp, rela_comp, mod,&
+                  imat, nmat, materf, sigd,&
                   sigf, deps, vind, vinf, nbcomm,&
                   cpmono, pgl, nvi, vp, vecp,&
                   hsr, nfs, nsg, toutms, timed,&
-                  timef, nr, yd, yf, toler,&
+                  timef, &
                   seuil, iret)
 ! aslint: disable=W1504
     implicit  none
@@ -45,7 +45,6 @@ subroutine lccnvx(fami, kpg, ksp, loi, mod,&
 ! --- : MOD    :  TYPE DE MODELISATION ---------------------------------
 ! --- : TIMED  :  INSTANT T --------------------------------------------
 ! --- : TIMEF  :  INSTANT T+DT -----------------------------------------
-! --- : NR     :  DIMENSION VECTEUR INCONNUES --------------------------
 ! OUT : VP     :  VALEURS PROPRES DU DEVIATEUR ELASTIQUE (HOEK-BROWN) --
 ! --- : VECP   :  VECTEURS PROPRES DU DEVIATEUR ELASTIQUE (HOEK-BROWN) -
 ! --- : SEUIL  :  SEUIL  ELASTICITE  A T+DT ----------------------------
@@ -63,55 +62,53 @@ subroutine lccnvx(fami, kpg, ksp, loi, mod,&
 #include "asterfort/lkcnvx.h"
 #include "asterfort/srcnvx.h"
 #include "asterfort/rslcvx.h"
-    integer :: nmat, imat, nvi, kpg, ksp, nfs, nsg, nr, iret
+    integer :: nmat, imat, nvi, kpg, ksp, nfs, nsg, iret
     character(len=*) :: fami
-    real(kind=8) :: materf(nmat, 2), materd(nmat, 2), seuil
-    real(kind=8) :: timed, timef, toler, deps(6), vinf(*)
+    real(kind=8) :: materf(nmat, 2), seuil
+    real(kind=8) :: timed, timef, deps(6), vinf(*)
     real(kind=8) :: sigd(6), sigf(6), vind(*), hsr(nsg, nsg)
-    character(len=16) :: loi
+    character(len=16), intent(in) :: rela_comp
     integer :: nbcomm(nmat, 3)
     real(kind=8) :: pgl(3, 3), vp(3), vecp(3, 3), toutms(nfs, nsg, 6)
-    real(kind=8) :: yd(nr), yf(nr)
     character(len=24) :: cpmono(5*nmat+1)
     character(len=8) :: mod
 ! ======================================================================
-    if (loi(1:8) .eq. 'ROUSS_PR') then
+    if (rela_comp  .eq. 'ROUSS_PR') then
         call rslcvx(fami, kpg, ksp, imat, nmat,&
                     materf, sigf, vind, seuil)
 ! ======================================================================
-    else if (loi(1:10) .eq. 'ROUSS_VISC') then
+    else if (rela_comp  .eq. 'ROUSS_VISC') then
         call rslcvx(fami, kpg, ksp, imat, nmat,&
                     materf, sigf, vind, seuil)
 ! ======================================================================
-    else if (loi(1:9) .eq. 'VISCOCHAB') then
+    else if (rela_comp .eq. 'VISCOCHAB') then
         call cvmcvx(nmat, materf, sigf, vind, seuil)
 ! ======================================================================
-    else if (loi(1:6) .eq. 'LAIGLE') then
+    else if (rela_comp .eq. 'LAIGLE') then
         call lglcvx(sigf, vind, nmat, materf, seuil)
 ! ======================================================================
-        elseif (( loi(1:10) .eq. 'HOEK_BROWN').or. ( loi(1:14) .eq.&
-    'HOEK_BROWN_EFF')) then
+    elseif (( rela_comp .eq. 'HOEK_BROWN').or. ( rela_comp .eq. 'HOEK_BROWN_EFF')) then
         call hbrcvx(sigf, vind, nmat, materf, seuil,&
                     vp, vecp)
 ! ======================================================================
-    else if ((loi(1:8) .eq. 'MONOCRIS') .or. (loi(1:8) .eq. 'MONO2RIS')) then
+    else if (rela_comp.eq. 'MONOCRISTAL') then
         call lcmmvx(sigf, vind, nmat, materf, nbcomm,&
                     cpmono, pgl, nvi, hsr, nfs,&
                     nsg, toutms, timed, timef, deps,&
                     seuil)
 ! ======================================================================
-    else if (loi(1:7) .eq. 'IRRAD3M') then
+    else if (rela_comp .eq. 'IRRAD3M') then
         call irrcvx(fami, kpg, ksp, nmat, materf,&
                     sigf, vind, seuil)
 ! ======================================================================
-    else if (loi(1:4) .eq. 'LETK') then
+    else if (rela_comp .eq. 'LETK') then
         call lkcnvx(sigd, sigf, nvi, vind, nmat,&
                     materf, seuil, vinf)
 ! ======================================================================
-    else if (loi(1:3).eq.'LKR') then
+    else if (rela_comp .eq. 'LKR') then
         call srcnvx(sigd,sigf,nvi,vind,nmat,materf,seuil,vinf)
 ! ======================================================================
-    else if (loi(1:6) .eq. 'HUJEUX') then
+    else if (rela_comp .eq. 'HUJEUX') then
         call hujcvx(mod, nmat, materf, vinf, deps,&
                     sigd, sigf, seuil, iret)
 ! ======================================================================

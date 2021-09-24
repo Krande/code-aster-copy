@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine lcjela(loi, mod, nmat, mater, vin,&
+subroutine lcjela(rela_comp, mod, nmat, mater, vin,&
                   dsde)
     implicit   none
 !       MATRICE SYMETRIQUE DE COMPORTEMENT TANGENT ELASTIQUE A T+DT OU T
@@ -34,13 +34,13 @@ subroutine lcjela(loi, mod, nmat, mater, vin,&
     real(kind=8) :: vin(*)
     real(kind=8) :: mater(nmat, 2)
     character(len=8) :: mod
-    character(len=16) :: loi
+    character(len=16), intent(in) :: rela_comp
 !       ----------------------------------------------------------------
-    if (loi(1:8) .eq. 'ROUSS_PR' .or. loi(1:10) .eq. 'ROUSS_VISC') then
+    if (rela_comp .eq. 'ROUSS_PR' .or. rela_comp .eq. 'ROUSS_VISC') then
         call rslpli('ISOTROPE', mod, mater, dsde, nmat,&
                     vin)
 !
-    else if ((loi(1:8) .eq. 'MONOCRIS') .or. (loi(1:8) .eq. 'MONO2RIS')) then
+    else if (rela_comp .eq. 'MONOCRISTAL') then
 !
         if (mater(nmat,1) .eq. 0) then
             call lcopli('ISOTROPE', mod, mater(1, 1), dsde)

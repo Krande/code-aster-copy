@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,11 +78,11 @@ subroutine gerpas(fami, kpg, ksp, rela_comp, mod,&
 !      UTILISE SEULEMENT POUR POLYCRISTAL LCMMOP
     real(kind=8) :: toutms(nbphas*nfs*nsg*7)
 !
-    if (rela_comp(1:8) .eq. 'POLYCRIS') then
+    if (rela_comp .eq. 'POLYCRISTAL') then
         call calcms(nbphas, nbcomm, cpmono, nmat, pgl,&
                     coeff, angmas, nfs, nsg, toutms)
     endif
-    if ((rela_comp(1:8) .eq. 'MONOCRIS') .or. (rela_comp(1:8) .eq. 'MONO2RIS')) then
+    if (rela_comp .eq. 'MONOCRISTAL') then
         irota=0
         call calcmm(nbcomm, cpmono, nmat, pgl, nfs,&
                     nsg, toutms, nvi, y,&

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,16 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "asterfort/Behaviour_type.h"
 !
 interface
     subroutine lcplnl(BEHinteg, &
                       fami, kpg, ksp, rela_comp, toler,&
                       itmax, mod, imat, nmat, materd,&
                       materf, nr, nvi, timed, timef,&
-                      deps, epsd, sigd, vind, comp,&
+                      deps, epsd, sigd, vind, compor,&
                       nbcomm, cpmono, pgl, nfs, nsg,&
                       toutms, hsr, sigf, vinf, icomp,&
-                      codret, drdy, crit)
+                      codret, drdy, carcri)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
         common/tdim/ ndt,ndi
@@ -38,7 +39,6 @@ interface
         character(len=*) :: fami
         integer :: kpg
         integer :: ksp
-        character(len=16) :: rela_comp
         real(kind=8) :: toler
         integer :: itmax
         character(len=8) :: mod
@@ -51,7 +51,9 @@ interface
         real(kind=8) :: epsd(*)
         real(kind=8) :: sigd(6)
         real(kind=8) :: vind(*)
-        character(len=16) :: comp(*)
+        character(len=16), intent(in) :: rela_comp
+        character(len=16), intent(in) :: compor(COMPOR_SIZE)
+        real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
         integer :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
         real(kind=8) :: pgl(3, 3)
@@ -62,6 +64,5 @@ interface
         integer :: icomp
         integer :: codret
         real(kind=8) :: drdy(nr, nr)
-        real(kind=8) :: crit(*)
     end subroutine lcplnl
 end interface

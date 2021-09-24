@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@ subroutine lcplnl(BEHinteg, &
                   fami, kpg, ksp, rela_comp, toler,&
                   itmax, mod, imat, nmat, materd,&
                   materf, nr, nvi, timed, timef,&
-                  deps, epsd, sigd, vind, comp,&
+                  deps, epsd, sigd, vind, compor,&
                   nbcomm, cpmono, pgl, nfs, nsg,&
                   toutms, hsr, sigf, vinf, icomp,&
-                  codret, drdy, crit)
+                  codret, drdy, carcri)
 !
 use Behaviour_type
 !
@@ -104,11 +104,12 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 #include "asterfort/mgauss.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utlcal.h"
+#include "asterfort/Behaviour_type.h"
     integer :: imat, nmat, icomp
     integer :: typess, itmax, iret, kpg, ksp
     integer :: nr, ndt, ndi, nvi, iter
 !
-    real(kind=8) :: toler, essai, rbid, crit(*)
+    real(kind=8) :: toler, essai, rbid
     real(kind=8) :: epsd(*), deps(*)
     real(kind=8) :: sigd(6), sigf(6)
     real(kind=8) :: vind(*), vinf(*)
@@ -121,7 +122,9 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
     aster_logical :: lreli
 !
     character(len=8) :: mod
-    character(len=16) :: rela_comp, comp(*)
+    character(len=16), intent(in) :: rela_comp
+    character(len=16), intent(in) :: compor(COMPOR_SIZE)
+    real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     character(len=*) :: fami
 !
     common /tdim/   ndt  , ndi
@@ -141,7 +144,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 !
 !     ACTIVATION OU PAS DE LA RECHERCHE LINEAIRE
     lreli = .false.
-    call utlcal('VALE_NOM', algo, crit(6))
+    call utlcal('VALE_NOM', algo, carcri(6))
     if (algo .eq. 'NEWTON_RELI') lreli = .true.
 !
 !     VERIFICATION DE LA MATRICE JACOBIENNE
@@ -172,7 +175,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 !
 !
 !     CHOIX DES VALEURS DE VIND A AFFECTER A YD
-    call lcafyd(comp, materd, materf, nbcomm, cpmono,&
+    call lcafyd(compor, materd, materf, nbcomm, cpmono,&
                 nmat, mod, nvi, vind, vinf,&
                 sigd, nr1, yd, bnews, mtrac)
 !
@@ -200,9 +203,9 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 !
 !     CALCUL DE LA SOLUTION D ESSAI INITIALE DU SYSTEME NL EN DY
     call lcinit(fami, kpg, ksp, rela_comp, typess,&
-                essai, mod, nmat, materd, materf,&
+                essai, mod, nmat, materf,&
                 timed, timef, intg, nr1, nvi,&
-                yd, epsd, deps, dy, comp,&
+                yd, epsd, deps, dy, compor,&
                 nbcomm, cpmono, pgl, nfs, nsg,&
                 toutms, vind, sigd, sigf, epstr,&
                 bnews, mtrac, indi, iret)
@@ -235,7 +238,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
                     toutms, hsr, nr, nvi, vind,&
                     vinf, itmax, toler, timed, timef,&
                     yd, yf, deps, epsd, dy,&
-                    r, iret, crit, indi)
+                    r, iret, carcri, indi)
 !
         if (iret .ne. 0) then
             goto 3
@@ -249,12 +252,12 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
     if (verjac .ne. 2) then
 !         CALCUL DU JACOBIEN DU SYSTEME A T+DT = DRDY(DY)
         call lcjacb(fami, kpg, ksp, rela_comp, mod,&
-                    nmat, materd, materf, timed, timef,&
+                    nmat, materf, timed, timef,&
                     yf, deps, itmax, toler, nbcomm,&
                     cpmono, pgl, nfs, nsg, toutms,&
                     hsr, nr, nvi, vind,&
                     vinf, epsd, yd, dy, ye,&
-                    crit, indi, vind1, bnews, mtrac,&
+                    carcri, indi, vind1, bnews, mtrac,&
                     drdy, iret)
         if (iret .ne. 0) then
             goto 3
@@ -268,7 +271,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
                     deps, epsd, vind, vinf, yd,&
                     nbcomm, cpmono, pgl, nfs,&
                     nsg, toutms, hsr, dy, r,&
-                    drdy, verjac, drdyb, iret, crit,&
+                    drdy, verjac, drdyb, iret, carcri,&
                     indi)
         if (iret .ne. 0) goto 3
     endif
@@ -295,7 +298,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
                     toutms, hsr, nr, nvi, vind,&
                     vinf, itmax, toler, timed, timef,&
                     yd, yf, deps, epsd, dy,&
-                    r, ddy, iret, crit, indi)
+                    r, ddy, iret, carcri, indi)
         if (iret .ne. 0) goto 3
     endif
     if (mod(1:6) .eq. 'C_PLAN') deps(3) = dy(nr)

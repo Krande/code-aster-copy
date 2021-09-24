@@ -16,12 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine psvari(compor, nbvari, dimens, ipop1, ipop2)
+subroutine psvari(rela_comp, nbvari, ipop1, ipop2)
     implicit none
-#include "asterfort/utmess.h"
-    character(len=2) :: dimens
-    character(len=16) :: compor
-    integer :: ipop1, ipop2, nbvari
+#include "asterfort/assert.h"
+character(len=16), intent(in) :: rela_comp
+integer, intent(in) :: nbvari
+integer, intent(out) :: ipop1, ipop2
 !
 !     FONCTION REALISEE :
 !
@@ -33,7 +33,6 @@ subroutine psvari(compor, nbvari, dimens, ipop1, ipop2)
 !
 ! ENTREE  --->  COMPOR : NOM DE LA RELATION DE COMPORTEMENT
 !         --->  NBVARI : NOMBRE DE VARIABLES INTERNES
-!         --->  DIMENS : DIMENSION DU PROBLEME '2D', '3D'
 !
 ! SORTIE
 !         --->  IPOS1  : POSITION DE LA DEFORMATION PLASTIQUE CUMULEE
@@ -41,31 +40,31 @@ subroutine psvari(compor, nbvari, dimens, ipop1, ipop2)
 !
 !     ------------------------------------------------------------------
 !
-!
-    if ((compor.eq.'LEMAITRE' ) .or. (compor.eq.'VMIS_ECMI_TRAC') .or.&
-        (compor.eq.'VMIS_ECMI_LINE') .or. (compor.eq.'VMIS_CIN1_CHAB') .or.&
-        (compor.eq.'VMIS_CIN2_CHAB') .or. (compor.eq.'VISC_CIN1_CHAB') .or.&
-        (compor.eq.'VISC_CIN2_CHAB') .or. (compor.eq.'VMIS_ISOT_TRAC') .or.&
-        (compor.eq.'VMIS_ISOT_LINE') .or. (compor.eq.'VISC_ISOT_TRAC') .or.&
-        (compor.eq.'VISC_ISOT_LINE')) then
+    ipop1 = 0
+    ipop2 = 0
+    if ((rela_comp.eq.'LEMAITRE' ) .or. (rela_comp.eq.'VMIS_ECMI_TRAC') .or.&
+        (rela_comp.eq.'VMIS_ECMI_LINE') .or. (rela_comp.eq.'VMIS_CIN1_CHAB') .or.&
+        (rela_comp.eq.'VMIS_CIN2_CHAB') .or. (rela_comp.eq.'VISC_CIN1_CHAB') .or.&
+        (rela_comp.eq.'VISC_CIN2_CHAB') .or. (rela_comp.eq.'VMIS_ISOT_TRAC') .or.&
+        (rela_comp.eq.'VMIS_ISOT_LINE') .or. (rela_comp.eq.'VISC_ISOT_TRAC') .or.&
+        (rela_comp.eq.'VISC_ISOT_LINE')) then
         ipop1=1
         ipop2=2
-    else if ((compor.eq.'ROUSSELIER')) then
+    else if ((rela_comp.eq.'ROUSSELIER')) then
         ipop1 = 1
         ipop2 = 3
-        else if ( (compor.eq.'ROUSS_PR') .or.(compor.eq.'ROUSS_VISC') )&
+        else if ( (rela_comp.eq.'ROUSS_PR') .or.(rela_comp.eq.'ROUSS_VISC') )&
     then
         ipop1=1
         ipop2=nbvari
-    else if (compor.eq.'MONOCRISTAL' .or. compor .eq. 'MONO2RISTAL') then
+    else if (rela_comp.eq.'MONOCRISTAL') then
         ipop1 = nbvari-1
         ipop2 = nbvari
-    else if (compor.eq.'POLYCRISTAL') then
+    else if (rela_comp.eq.'POLYCRISTAL') then
         ipop1 = 7
         ipop2 = nbvari
     else
-!
-        call utmess('F', 'ELEMENTS2_45')
+        ASSERT(ASTER_FALSE)
 !
     endif
 !

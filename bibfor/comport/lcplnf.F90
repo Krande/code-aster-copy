@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,7 +88,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 !     MISE A JOUR DE SIGF , VINF
     call lceqvn(ndt, yf(1), sigf)
 !
-    if ((rela_comp(1:8) .eq. 'MONOCRIS') .or. (rela_comp(1:8) .eq. 'MONO2RIS')) then
+    if (rela_comp .eq. 'MONOCRISTAL') then
 ! ---    DEFORMATION PLASTIQUE EQUIVALENTE CUMULEE MACROSCOPIQUE
         call lcdpec(BEHinteg, &
                     vind, nbcomm, nmat, ndt, cpmono,&
@@ -98,13 +98,13 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
                     sigf, deps, nr, mod,&
                     codret)
 !
-    else if (rela_comp(1:7).eq.'IRRAD3M') then
+    else if (rela_comp .eq.'IRRAD3M') then
         call irrlnf(nmat, materf, yf(ndt+1), 1.0d0, vinf)
-    else if (rela_comp(1:4) .eq. 'LETK') then
+    else if (rela_comp .eq. 'LETK') then
         call lkilnf(nvi, vind, nmat, materf, dt,&
                     sigd, nr, yd, yf, deps,&
                     vinf)
-    else if (rela_comp(1:3).eq.'LKR') then
+    else if (rela_comp .eq.'LKR') then
         call srilnf(nvi,vind,nmat,materf,dt,&
                     nr,yf,deps,vinf)
     else if (rela_comp .eq. 'HAYHURST') then
@@ -129,7 +129,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
             vinf(i) = yf(i)
         end do
         vinf(nvi) = iter
-    else if (rela_comp(1:6) .eq. 'HUJEUX') then
+    else if (rela_comp .eq. 'HUJEUX') then
         call hujlnf(toler, nmat, materf, nvi, vind,&
                     vinf, vins, nr, yd, yf,&
                     sigd, sigf, indi, codret)

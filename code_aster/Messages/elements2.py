@@ -79,10 +79,6 @@ cata_msg = {
   option de matrice de masse  %(k1)s  inconnue
 """),
 
-    45 : _("""
-On n'a pas trouvé de variable interne correspondante à la déformation plastique équivalente cumulée.
-"""),
-
     46 : _("""
  on ne traite pas les moments
 """),

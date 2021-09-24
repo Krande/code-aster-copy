@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
     subroutine lcjacb(fami, kpg, ksp, rela_comp, mod,&
-                      nmat, materd, materf, timed, timef,&
+                      nmat, materf, timed, timef,&
                       yf, deps, itmax, toler, nbcomm,&
                       cpmono, pgl, nfs, nsg, toutms,&
                       hsr, nr, nvi, vind,&
@@ -39,7 +36,6 @@ interface
         integer :: ksp
         character(len=16) :: rela_comp
         character(len=8) :: mod
-        real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: timed
         real(kind=8) :: timef

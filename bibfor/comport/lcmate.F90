@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -112,17 +112,17 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
     endif
     rela_comp = comp(1)
     read (comp(2),'(I16)') nvi
-    if (rela_comp(1:8) .eq. 'ROUSS_PR') then
+    if (rela_comp .eq. 'ROUSS_PR') then
         call rslmat(fami, kpg, ksp, mod, imat,&
                     nmat, materd, materf, matcst, ndt,&
                     ndi, nr, nvi, vind)
 !
-    else if (rela_comp(1:10) .eq. 'ROUSS_VISC') then
+    else if (rela_comp .eq. 'ROUSS_VISC') then
         call rsvmat(fami, kpg, ksp, mod, imat,&
                     nmat, materd, materf, matcst, ndt,&
                     ndi, nr, nvi, vind)
 !
-    else if (rela_comp(1:9) .eq. 'VISCOCHAB') then
+    else if (rela_comp .eq. 'VISCOCHAB') then
         call cvmmat(fami, kpg, ksp, mod, imat,&
                     nmat, materd, materf, matcst, typma,&
                     ndt, ndi, nr, crit, vind,&
@@ -138,12 +138,12 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
                     materf, matcst, ndt, ndi, nr,&
                     nvi)
 !
-    elseif (( rela_comp(1:10) .eq. 'HOEK_BROWN' ).or. ( rela_comp(1:14) .eq. 'HOEK_BROWN_EFF' ))then
+    elseif (( rela_comp .eq. 'HOEK_BROWN' ).or. ( rela_comp .eq. 'HOEK_BROWN_EFF' ))then
         call hbrmat(mod, imat, nmat, tempd, materd,&
                     materf, matcst, ndt, ndi, nr,&
                     nvi)
 !
-    else if (rela_comp(1:8) .eq. 'MONOCRIS' .or. rela_comp(1:8) .eq. 'MONO2RIS') then
+    else if (rela_comp .eq. 'MONOCRISTAL') then
         ASSERT(mult_comp .ne. ' ')
         call lcmmat(fami, kpg, ksp, mult_comp, mod,&
                     imat, nmat, angmas, pgl, materd,&
@@ -156,7 +156,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
             sigd(6)=0.d0
         endif
 !
-    else if (rela_comp(1:8) .eq. 'POLYCRIS') then
+    else if (rela_comp .eq. 'POLYCRISTAL') then
         ASSERT(mult_comp .ne. ' ')
         call lcmmap(fami, kpg, ksp, mult_comp, mod,&
                     imat, nmat, angmas, pgl, materd,&
@@ -165,22 +165,22 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
                     nhsr, numhsr, hsr)
         typma='COHERENT'
 !
-    else if (rela_comp(1:7) .eq. 'IRRAD3M') then
+    else if (rela_comp .eq. 'IRRAD3M') then
         call irrmat(fami, kpg, ksp, mod, imat,&
                     nmat, itmax, toler, materd, materf,&
                     matcst, ndt, ndi, nr, nvi)
 !
-    else if (rela_comp(1:4) .eq. 'LETK') then
+    else if (rela_comp .eq. 'LETK') then
         call lkimat(mod, imat, nmat, materd, materf,&
                     matcst, ndt, ndi, nvi, nr)
         typma='COHERENT'
 !
-    else if (rela_comp(1:3).eq.'LKR') then
+    else if (rela_comp.eq.'LKR') then
         call srimat(mod,imat,nmat,tempd,tempf,tref,materd,materf,&
                     matcst,ndt,ndi,nvi,nr)
         typma='COHERENT'
 !
-    else if (rela_comp(1:8) .eq. 'HAYHURST') then
+    else if (rela_comp .eq. 'HAYHURST') then
         call haymat(fami, kpg, ksp, mod, imat,&
                     nmat, '-', materd(1, 1), materd(1, 2), nvi,&
                     nr)
@@ -190,7 +190,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
         call matect(materd, materf, nmat, matcst)
         typma='COHERENT'
 !
-    else if (rela_comp(1:6) .eq. 'HUJEUX') then
+    else if (rela_comp .eq. 'HUJEUX') then
         call hujma2(fami, kpg, ksp, mod, imat,&
                     nmat, tempf, angmas, sigd, vind,&
                     materd, materf, ndt, ndi, nvi,&

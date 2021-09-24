@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,12 +42,13 @@ implicit none
 #include "asterfort/lcsmelas.h"
 #include "asterfort/get_varc.h"
 #include "blas/dcopy.h"
+#include "asterfort/Behaviour_type.h"
 !
 type(Behaviour_Integ), intent(in) :: BEHinteg
 character(len=*), intent(in) :: fami
 integer, intent(in) :: kpg, ksp, imate
-character(len=16), intent(in) :: compor(*)
-real(kind=8), intent(in) :: carcri(*)
+character(len=16), intent(in) :: compor(COMPOR_SIZE)
+real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
 real(kind=8), intent(in) :: instam, instap
 real(kind=8), intent(in) :: epsdt(9), depst(9)
 real(kind=8), intent(in) :: sigm(6), vim(*)
@@ -154,7 +155,7 @@ character(len=16), optional, intent(in) :: mult_compor_
     character(len=3) :: matcst
     character(len=7) :: etatd, etatf
     character(len=8) :: mod, typma
-    character(len=16) :: rela_compor, defo_compor, mult_compor
+    character(len=16) :: rela_comp, defo_comp, mult_comp
     character(len=24) :: cpmono(5*nmat+1)
     aster_logical :: l_temp
     integer :: ndt, ndi, nr, itmax, irtet
@@ -166,7 +167,6 @@ character(len=16), optional, intent(in) :: mult_compor_
     real(kind=8) :: toutms(nfs, nsg, 6), hsr(nsg, nsg), drdy(nrm*nrm)
     real(kind=8) :: tempd, tempf, tref
 !     POUR BETON_BURGER - ATTENTION DIMENSION MAXI POUR CE MODELE
-    real(kind=8) :: yd(21), yf(21)
     parameter  ( epsi = 1.d-15 )
     aster_logical :: resi, rigi
     common /tdim/   ndt  , ndi
@@ -178,18 +178,18 @@ character(len=16), optional, intent(in) :: mult_compor_
     itmax = int(carcri(1))
     toler = carcri(3)
     theta = carcri(4)
-    rela_compor = compor(1)
-    defo_compor = compor(3)
-    mult_compor = ' '
+    rela_comp = compor(RELA_NAME)
+    defo_comp = compor(DEFO)
+    mult_comp = ' '
     if (present(mult_compor_)) then
-        mult_compor = mult_compor_
+        mult_comp = mult_compor_
     endif
     mod = typmod(1)
     dt = instap - instam
     resi = option(1:9).eq.'RAPH_MECA' .or. option(1:9).eq.'FULL_MECA'
     rigi = option(1:9).eq.'RIGI_MECA' .or. option(1:9).eq.'FULL_MECA'
     gdef = 0
-    if (defo_compor .eq. 'SIMO_MIEHE') gdef=1
+    if (defo_comp .eq. 'SIMO_MIEHE') gdef=1
     numhsr(1)=1
 !
     typma = 'VITESSE '
@@ -201,7 +201,7 @@ character(len=16), optional, intent(in) :: mult_compor_
 !
 ! - Glute pour LKR
 !
-    if (.not.l_temp .and. compor(1).eq.'LKR') then
+    if (.not.l_temp .and. rela_comp .eq.'LKR') then
         tempd = 0.d0
         tempf = 0.d0
         tref  = 0.d0
@@ -216,7 +216,7 @@ character(len=16), optional, intent(in) :: mult_compor_
                 nbcomm, cpmono, angmas, pgl, itmax,&
                 toler, ndt, ndi, nr, carcri,&
                 nvi, vim, nfs, nsg, toutms,&
-                1, numhsr, sigm, mult_compor)
+                1, numhsr, sigm, mult_comp)
 !
 !
     if (gdef .eq. 1) then
@@ -247,7 +247,7 @@ character(len=16), optional, intent(in) :: mult_compor_
     endif
 !
     if (option(1:10) .eq. 'RIGI_MECA_' .and. gdef .eq. 1 .and.&
-        compor(1) .eq. 'MONO2RISTAL') then
+        rela_comp .eq. 'MONOCRISTAL') then
         call lcsmelas(epsd, deps, dsidep,&
                       nmat = nmat, materd_ = materd)
         codret = 0
@@ -265,7 +265,7 @@ character(len=16), optional, intent(in) :: mult_compor_
             seuil=1.d0
         else
 ! --        INTEGRATION ELASTIQUE SUR DT
-            call lcelas(fami, kpg, ksp, rela_compor, mod,&
+            call lcelas(fami, kpg, ksp, rela_comp, mod,&
                         imate, nmat, materd, materf, matcst,&
                         nvi, angmas, deps, sigm, vim,&
                         sigp, vip, theta, etatd, carcri,&
@@ -274,12 +274,12 @@ character(len=16), optional, intent(in) :: mult_compor_
 !
 ! --        PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
             seuil=1.d0
-            call lccnvx(fami, kpg, ksp, rela_compor, mod,&
-                        imate, nmat, materd, materf, sigm,&
+            call lccnvx(fami, kpg, ksp, rela_comp, mod,&
+                        imate, nmat, materf, sigm,&
                         sigp, deps, vim, vip, nbcomm,&
                         cpmono, pgl, nvi, vp, vecp,&
                         hsr, nfs, nsg, toutms, instam,&
-                        instap, nr, yd, yf, toler,&
+                        instap,&
                         seuil, iret)
 !
             if (iret .ne. 0) goto 1
@@ -290,7 +290,7 @@ character(len=16), optional, intent(in) :: mult_compor_
             etatf = 'PLASTIC'
 !
             call lcplas(BEHinteg,&
-                        fami, kpg, ksp, rela_compor, toler,&
+                        fami, kpg, ksp, rela_comp, toler,&
                         itmax, mod, imate, nmat, materd,&
                         materf, nr, nvi, instam, instap,&
                         deps, epsd, sigm, vim, sigp,&
@@ -310,12 +310,12 @@ character(len=16), optional, intent(in) :: mult_compor_
             etatf = 'ELASTIC'
 ! ---       MISE A JOUR DE VINF EN FONCTION DE LA LOI
 !           ET POST-TRAITEMENTS POUR DES LOIS PARTICULIERES
-            call lcelpl(rela_compor, nmat, materf,&
+            call lcelpl(rela_comp, nmat, materf,&
                         deps, nvi, vim, vip)
         endif
 !
 !        POST-TRAITEMENTS PARTICULIERS
-        call lcpopl(rela_compor, angmas, nmat, materd, materf,&
+        call lcpopl(rela_comp, angmas, nmat, materd, materf,&
                     mod, deps, sigm, sigp, vim,&
                     vip)
 !
@@ -330,7 +330,7 @@ character(len=16), optional, intent(in) :: mult_compor_
 !
     if (rigi) then
         call lcotan(option, angmas, etatd, etatf, fami,&
-                    kpg, ksp, rela_compor, mod, imate,&
+                    kpg, ksp, rela_comp, mod, imate,&
                     nmat, materd, materf, epsd, deps,&
                     sigm, sigp, nvi, vim, vip,&
                     drdy, vp, vecp, theta, dt,&

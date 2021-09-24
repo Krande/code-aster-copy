@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,6 @@ subroutine lcrkin(ndim, opt, rela_comp, materf, nbcomm,&
 #include "asterfort/assert.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
     integer :: ndt, nvi, nmat, ndi, nbcomm(nmat, 3), icp, ndim, iret, ifl
@@ -71,10 +70,10 @@ subroutine lcrkin(ndim, opt, rela_comp, materf, nbcomm,&
 !
 ! --    DEBUT TRAITEMENT DE VENDOCHAB --
 !     ROUTINE DE DECROISSANCE DES CONTRAINTES QUAND D>MAXDOM
-    if (rela_comp(1:9) .eq. 'VENDOCHAB') then
+    if (rela_comp .eq. 'VENDOCHAB') then
 !
         if (opt .eq. 'RIGI_MECA_TANG') then
-            call utmess('F', 'ALGORITH8_91')
+            ASSERT(ASTER_FALSE)
         endif
         if (vind(9) .ge. maxdom) then
 !
@@ -105,7 +104,7 @@ subroutine lcrkin(ndim, opt, rela_comp, materf, nbcomm,&
 !
     call dcopy(nvi, vind, 1, vinf, 1)
 !
-    if (rela_comp(1:9) .eq. 'VENDOCHAB') then
+    if (rela_comp .eq. 'VENDOCHAB') then
 !        INITIALISATION DE VINF(8) A UNE VALEUR NON NULLE
 !        POUR EVITER LES 1/0 DANS RKDVEC
         if (vinf(8) .le. (1.0d-8)) then
@@ -118,10 +117,10 @@ subroutine lcrkin(ndim, opt, rela_comp, materf, nbcomm,&
     decirr=0
     nbsyst=0
     decal=0
-    if ((rela_comp(1:8) .eq. 'MONOCRIS') .or. (rela_comp(1:8) .eq. 'MONO2RIS')) then
+    if (rela_comp .eq. 'MONOCRISTAL') then
         if (gdef .eq. 1) then
             if (opt .ne. 'RAPH_MECA') then
-                call utmess('F', 'ALGORITH8_91')
+                ASSERT(ASTER_FALSE)
             endif
             call dcopy(9, vind(nvi-3-18+1), 1, fp, 1)
             call daxpy(9, 1.d0, id, 1, fp,&
@@ -149,7 +148,7 @@ subroutine lcrkin(ndim, opt, rela_comp, materf, nbcomm,&
 !      POUR POLYCRISTAL
 !     INITIALISATION DE NBPHAS
     nbphas=nbcomm(1,1)
-    if (rela_comp(1:8) .eq. 'POLYCRIS') then
+    if (rela_comp .eq. 'POLYCRISTAL') then
 !        RECUPERATION DU NOMBRE DE PHASES
         nbphas=nbcomm(1,1)
         nsfv=7+6*nbphas

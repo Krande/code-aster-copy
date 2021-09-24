@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ subroutine te0331(option, nomte)
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
 #include "asterfort/vpri2d.h"
+#include "asterfort/Behaviour_type.h"
 !
     character(len=*) :: option, nomte
 !     FONCTION REALISEE :
@@ -63,6 +64,7 @@ subroutine te0331(option, nomte)
     integer :: igeom, icong, ivarig
     integer :: isigie, isigis, icompo, nbvari
     aster_logical :: laxi
+    character(len=16) :: rela_comp
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -94,22 +96,19 @@ subroutine te0331(option, nomte)
     call jevech('PWEIBUL', 'E', iweib)
     call jevech('PSIGISG', 'E', isigis)
 !
-    call tecach('OOO', 'PVARIPG', 'L', iret, nval=7,&
-                itab=jtab)
+    call tecach('OOO', 'PVARIPG', 'L', iret, nval=7, itab=jtab)
     nbvari = max(jtab(6),1)*jtab(7)
     call jevech('PCOMPOR', 'L', icompo)
-!     READ (ZK16(ICOMPO+1),'(I16)') NBVARI
+    rela_comp = zk16(icompo-1+RELA_NAME)
 !
-    call psvari(zk16(icompo), nbvari, '2D', ipopp, ipoppt)
+    call psvari(rela_comp, nbvari, ipopp, ipoppt)
 !
     optcal(1) = zk24(issopt)(1:16)
     optcal(2) = zk24(issopt)(17:19)
 !
-!
-    do 150 ii = 1, 4
-        cong(ii)=0.d0
-        epsq(ii)=0.d0
-150 end do
+    cong = 0.d0
+    epsq = 0.d0
+
 ! -FONCTION SEUIL
     ppt = 0.d0
     pp = 0.d0
@@ -144,15 +143,15 @@ subroutine te0331(option, nomte)
 !=================================================================
 !=================================================================
     if ((optcal(1).eq.'SIGM_ELMOY') .and. (optcal(2).eq.'NON')) then
-        do 200 kp = 1, npg
+        do kp = 1, npg
             k=(kp-1)*nno
             r=0.d0
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                         poids, dfdx, dfdy)
             if (laxi) then
-                do 160 ii = 1, nno
+                do  ii = 1, nno
                     r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
-160             continue
+                end do
                 poids=poids*r
             endif
 ! VOLUME PLASTIFIE
@@ -160,17 +159,16 @@ subroutine te0331(option, nomte)
             if (pp .ge. seuil) then
                 dvol=poids
                 volume=volume+dvol
-                do 165 ii = 1, 4
+                do ii = 1, 4
                     cong(ii)=cong(ii)+dvol*zr(icong+4*kp+ii-5)
-165             continue
+                end do
 !           --- TEMPERATURE MOYENNE
-                call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
-                            1, tg, iret)
+                call rcvarc(' ', 'TEMP', '+', 'RIGI', kp, 1, tg, iret)
                 if (iret .ne. 0) tg = 0.d0
                 tmoy = tmoy + tg*dvol
             endif
 ! VOLUME PLASTIQUE ACTIF
-            if ((zk16(icompo).eq.'LEMAITRE') .and. (pp.ge.seuil)) then
+            if (rela_comp .eq. 'LEMAITRE' .and. (pp.ge.seuil)) then
                 ppt = 1.d0
             else
                 ppt =zr(ivarig+nbvari*(kp-1)+ipoppt-1)
@@ -179,7 +177,7 @@ subroutine te0331(option, nomte)
                 dvol=poids
                 volact=volact+dvol
             endif
-200     continue
+        end do
 !
         sigi = 0.d0
         if ((volact.ne.0.d0) .and. (volume.ne.0.d0)) then
@@ -207,27 +205,26 @@ subroutine te0331(option, nomte)
         dsigwb=volume/v0*(sigi**m)
 !=================================================================
 !=================================================================
-        elseif ((optcal(1).eq.'SIGM_ELGA').and.(optcal(2).eq.'OUI'))&
-    then
-        do 300 kp = 1, npg
+    elseif ((optcal(1).eq.'SIGM_ELGA').and.(optcal(2).eq.'OUI')) then
+        do kp = 1, npg
             r=0.d0
             k=(kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                         poids, dfdx, dfdy)
             if (laxi) then
-                do 170 ii = 1, nno
+                do ii = 1, nno
                     r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
-170             continue
+                end do
                 poids=poids*r
             endif
             volume=poids
             call jevech('PDEFORR', 'L', idefg)
-            do 180 ii = 1, 4
+            do ii = 1, 4
                 cong(ii)=zr(icong+4*kp+ii-5)
                 epsq(ii)=zr(idefg+4*kp+ii-5)
-180         continue
+            end do
             pp=zr(ivarig+nbvari*(kp-1)+ipopp-1)
-            if ((zk16(icompo).eq.'LEMAITRE') .and. (pp.ge.seuil)) then
+            if (rela_comp.eq.'LEMAITRE' .and. (pp.ge.seuil)) then
                 ppt = 1.d0
             else
                 ppt =zr(ivarig+nbvari*(kp-1)+ipoppt-1)
@@ -268,21 +265,20 @@ subroutine te0331(option, nomte)
             signew=zr(isigis+kp-1)
             dsigwb=dsigwb+volume*(signew**m)/v0
 !
-300     continue
+        end do
 !=================================================================
 !=================================================================
-        elseif ((optcal(1).eq.'SIGM_ELMOY').and.(optcal(2).eq.'OUI'))&
-    then
+      elseif ((optcal(1).eq.'SIGM_ELMOY').and.(optcal(2).eq.'OUI')) then
 !
-        do 400 kp = 1, npg
+        do kp = 1, npg
             r=0.d0
             k=(kp-1)*nno
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                         poids, dfdx, dfdy)
             if (laxi) then
-                do 210 ii = 1, nno
+                do ii = 1, nno
                     r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
-210             continue
+                end do
                 poids=poids*r
             endif
 ! VOL PLASTIFIE
@@ -291,10 +287,10 @@ subroutine te0331(option, nomte)
             if (pp .ge. seuil) then
                 dvol=poids
                 volume=volume+dvol
-                do 220 ii = 1, 4
+                do ii = 1, 4
                     cong(ii)=cong(ii)+dvol*zr(icong+4*kp+ii-5)
                     epsq(ii)=epsq(ii)+dvol*zr(idefg+4*kp+ii-5)
-220             continue
+                end do
 !           --- TEMPERATURE MOYENNE
                 call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
                             1, tg, iret)
@@ -302,7 +298,7 @@ subroutine te0331(option, nomte)
                 tmoy = tmoy + tg*dvol
             endif
 ! VOL PLASTIQUE ACTIF
-            if ((zk16(icompo).eq.'LEMAITRE') .and. (pp.ge.seuil)) then
+            if (rela_comp.eq.'LEMAITRE' .and. (pp.ge.seuil)) then
                 ppt = 1.d0
             else
                 ppt =zr(ivarig+nbvari*(kp-1)+ipoppt-1)
@@ -311,8 +307,7 @@ subroutine te0331(option, nomte)
                 dvol=poids
                 volact=volact+dvol
             endif
-!
-400     continue
+        end do
 !
         signew = 0.d0
         if ((volact.ne.(0.d0)) .and. (volume.ne.0.d0)) then
@@ -347,27 +342,26 @@ subroutine te0331(option, nomte)
         dsigwb=volume*(signew**m)/v0
 !=================================================================
 !=================================================================
-        elseif ((optcal(1).eq.'SIGM_ELGA').and.(optcal(2).eq.'NON'))&
-    then
-        do 100 kp = 1, npg
+    elseif ((optcal(1).eq.'SIGM_ELGA').and.(optcal(2).eq.'NON')) then
+        do kp = 1, npg
             k=(kp-1)*nno
             r=0.d0
-            do 175 ii = 1, 4
+            do ii = 1, 4
                 cong(ii)=zr(icong+(4*kp)-5+ii)
-175         continue
+            end do
             call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
                         poids, dfdx, dfdy)
             if (laxi) then
-                do 240 ii = 1, nno
+                do ii = 1, nno
                     r=r+zr(igeom+2*ii-2)*zr(ivf+k+ii-1)
-240             continue
+                end do
                 poids=poids*r
             endif
             volume=poids
 !
             sigi = 0.d0
             pp=zr(ivarig+nbvari*(kp-1)+ipopp-1)
-            if ((zk16(icompo).eq.'LEMAITRE') .and. (pp.ge.seuil)) then
+            if (rela_comp.eq.'LEMAITRE' .and. (pp.ge.seuil)) then
                 ppt = 1.d0
             else
                 ppt =zr(ivarig+nbvari*(kp-1)+ipoppt-1)
@@ -389,9 +383,7 @@ subroutine te0331(option, nomte)
             endif
             sigi=zr(isigis+kp-1)
             dsigwb=dsigwb+volume*(sigi**m)/v0
-!
-100     continue
-!
+        end do
     else
 !        OPTION DE CALCUL NON VALIDE
         ASSERT(.false.)

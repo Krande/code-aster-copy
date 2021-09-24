@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -85,7 +85,7 @@ integer, intent(out) :: codret
                     neps, epsm, deps, sigm, vim,&
                     option, angmas, sigp, vip, dsidep,&
                     codret, mult_comp)
-    elseif (compor(1).eq.'MONO2RISTAL') then
+    elseif (compor(1).eq.'MONOCRISTAL') then
         call utlcal('VALE_NOM', algo_inte, carcri(6))
         if (algo_inte(1:6) .eq. 'NEWTON') then
             meting = algo_inte(1:11)
@@ -103,6 +103,9 @@ integer, intent(out) :: codret
                         neps, epsm, deps, sigm, vim,&
                         option, angmas, sigp, vip, dsidep,&
                         codret, mult_comp)
+        else
+            write(6,*) 'ALGOInte:',algo_inte
+            ASSERT(ASTER_FALSE)
         endif
     else
         ASSERT(ASTER_FALSE)

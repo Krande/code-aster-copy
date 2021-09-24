@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine lcjela(loi, mod, nmat, mater, vin,&
+    subroutine lcjela(rela_comp, mod, nmat, mater, vin,&
                       dsde)
         integer :: nmat
-        character(len=16) :: loi
+        character(len=16), intent(in) :: rela_comp
         character(len=8) :: mod
         real(kind=8) :: mater(nmat, 2)
         real(kind=8) :: vin(*)

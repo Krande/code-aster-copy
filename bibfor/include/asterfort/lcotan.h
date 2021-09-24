@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,16 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
+#include "asterfort/Behaviour_type.h"
 !
 interface
     subroutine lcotan(opt, angmas, etatd, etatf, fami,&
-                      kpg, ksp, loi, mod, imat,&
+                      kpg, ksp, rela_comp, mod, imat,&
                       nmat, materd, materf, epsd, deps,&
                       sigd, sigf, nvi, vind, vinf,&
                       drdy, vp, vecp, theta, dt,&
-                      devg, devgii, timed, timef, comp,&
+                      devg, devgii, timed, timef, compor,&
                       nbcomm, cpmono, pgl, nfs, nsg,&
                       toutms, hsr, nr, itmax, toler,&
                       typma, dsde, codret)
@@ -38,7 +37,8 @@ interface
         character(len=*) :: fami
         integer :: kpg
         integer :: ksp
-        character(len=16) :: loi
+        character(len=16), intent(in) :: rela_comp
+        character(len=16), intent(in) :: compor(COMPOR_SIZE)
         character(len=8) :: mod
         integer :: imat
         real(kind=8) :: materd(nmat, 2)
@@ -59,7 +59,6 @@ interface
         real(kind=8) :: devgii
         real(kind=8) :: timed
         real(kind=8) :: timef
-        character(len=16) :: comp(*)
         integer :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
         real(kind=8) :: pgl(3, 3)

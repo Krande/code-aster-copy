@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine psvari(compor, nbvari, dimens, ipop1, ipop2)
-        character(len=16) :: compor
-        integer :: nbvari
-        character(len=2) :: dimens
-        integer :: ipop1
-        integer :: ipop2
+    subroutine psvari(rela_comp, nbvari, ipop1, ipop2)
+        character(len=16), intent(in) :: rela_comp
+        integer, intent(in) :: nbvari
+        integer, intent(out) :: ipop1, ipop2
     end subroutine psvari
 end interface

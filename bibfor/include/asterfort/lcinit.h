@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,16 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine lcinit(fami, kpg, ksp, loi, typess,&
-                      essai, mod, nmat, materd, materf,&
+    subroutine lcinit(fami, kpg, ksp, rela_comp, typess,&
+                      essai, mod, nmat, materf,&
                       timed, timef, intg, nr, nvi,&
-                      yd, epsd, deps, dy, comp,&
+                      yd, epsd, deps, dy, compor,&
                       nbcomm, cpmono, pgl, nfs, nsg,&
                       toutms, vind, sigd, sigf, epstr,&
                       bnews, mtrac, indi, iret)
@@ -34,11 +31,10 @@ interface
         character(len=*) :: fami
         integer :: kpg
         integer :: ksp
-        character(len=16) :: loi
+        character(len=16), intent(in) :: rela_comp
         integer :: typess
         real(kind=8) :: essai
         character(len=8) :: mod
-        real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: timed
         real(kind=8) :: timef
@@ -49,7 +45,7 @@ interface
         real(kind=8) :: epsd(6)
         real(kind=8) :: deps(6)
         real(kind=8) :: dy(*)
-        character(len=16) :: comp(*)
+        character(len=16), intent(in) :: compor(COMPOR_SIZE)
         integer :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
         real(kind=8) :: pgl(3, 3)

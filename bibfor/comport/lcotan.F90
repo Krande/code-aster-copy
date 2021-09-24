@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,16 @@
 ! --------------------------------------------------------------------
 
 subroutine lcotan(opt, angmas, etatd, etatf, fami,&
-                  kpg, ksp, loi, mod, imat,&
+                  kpg, ksp, rela_comp, mod, imat,&
                   nmat, materd, materf, epsd, deps,&
                   sigd, sigf, nvi, vind, vinf,&
                   drdy, vp, vecp, theta, dt,&
-                  devg, devgii, timed, timef, comp,&
+                  devg, devgii, timed, timef, compor,&
                   nbcomm, cpmono, pgl, nfs, nsg,&
                   toutms, hsr, nr, itmax, toler,&
                   typma, dsde, codret)
 ! aslint: disable=W1504
     implicit none
-! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
 !
 !     CALCUL DE L'OPERATEUR TANGENT = DS/DE(T+DT) OU DS/DE(T)
@@ -40,16 +39,10 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
 !     IN FAMI    FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
 !        KPG,KSP NUMERO DU (SOUS)POINT DE GAUSS
 !        IMAT    ADRESSE DU MATERIAU CODE
-!        COMP    COMPORTEMENT DE L ELEMENT
+!        COMPOR  COMPORTEMENT DE L ELEMENT
 !                COMP(1) = RELATION DE COMPORTEMENT (ROUSSELIER.)
 !                COMP(2) = NB DE VARIABLES INTERNES
 !                COMP(3) = TYPE DE DEFORMATION (PETIT,JAUMANN...)
-!        CRIT    CRITERES  LOCAUX
-!                CRIT(1) = NOMBRE D ITERATIONS MAXI (ITER_INTE_MAXI)
-!                CRIT(3) = TOLERANCE DE CONVERGENCE(RESI_INTE_RELA)
-!                CRIT(4) = THETA
-!                CRIT(5) = ITER_INTE_PAS (UTILISE PAR REDECE EN AMONT)
-!                CRIT(6) = ALGO_INTE(NEWTON, NEWTON_PERT, NEWTON_RELI)
 !        TIMED   INSTANT T
 !        TIMEF   INSTANT T+DT
 !        TEMPD   TEMPERATURE A T           POUR LA THM
@@ -79,12 +72,15 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
 #include "asterfort/lcjela.h"
 #include "asterfort/lcjpla.h"
 #include "asterfort/lcjplc.h"
+#include "asterfort/Behaviour_type.h"
     integer :: nmat, nsg, nfs, nbcomm(nmat, 3)
 !
     character(len=*) :: fami
     character(len=7) :: etatd, etatf
     character(len=8) :: mod, typma
-    character(len=16) :: comp(*), opt, loi
+        character(len=16), intent(in) :: rela_comp
+        character(len=16), intent(in) :: compor(COMPOR_SIZE)
+    character(len=16) :: opt
     character(len=24) :: cpmono(5*nmat+1)
 !
     integer :: imat, ndt, ndi, nr, nvi, itmax, kpg, ksp, codret, k, l
@@ -109,40 +105,39 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
 !
     if (opt(1:9) .eq. 'RIGI_MECA') then
 !
-        if (loi.eq.'LAIGLE') then
+        if (rela_comp .eq. 'LAIGLE') then
 !
-            call lcjela(loi, mod, nmat, materd, vind,&
+            call lcjela(rela_comp, mod, nmat, materd, vind,&
                         dsde)
 !
-        else if (((etatd.eq.'PLASTIC').and.(loi.eq.'MONOCRISTAL')) .or. &
-        ((etatd.eq.'PLASTIC').and.(loi.eq.'MONO2RISTAL'))) then
+        else if ((etatd.eq.'PLASTIC').and.(rela_comp.eq.'MONOCRISTAL')) then
 !
-            call lcjplc(loi, mod, angmas, imat, nmat,&
-                        materf, timed, timef, comp, nbcomm,&
+            call lcjplc(rela_comp, mod, angmas, imat, nmat,&
+                        materf, timed, timef, compor, nbcomm,&
                         cpmono, pgl, nfs, nsg, toutms,&
                         hsr, nr, nvi, epsd, deps,&
                         itmax, toler, sigd, vind, sigd,&
                         vind, dsde, drdy, opt, codret,&
                         fami, kpg, ksp)
-            if (codret .ne. 0) goto 9999
+            if (codret .ne. 0) goto 999
 !
         else if ((etatd.eq.'PLASTIC').and.(typma.eq.'VITESSE ')) then
-            if ((loi(1:10).eq.'HOEK_BROWN') .or. (loi(1:14) .eq.'HOEK_BROWN_EFF')) then
+            if ((rela_comp .eq. 'HOEK_BROWN') .or. (rela_comp .eq. 'HOEK_BROWN_EFF')) then
 ! ---              HOEK-BROWN : CALCUL DES VALEURS ET VECTEURS PROPRES
 ! ---                           DU DEVIATEUR ELASTIQUE
                 call lchbvp(sigd, vp, vecp)
             endif
-            call lcjpla(fami, kpg, ksp, loi, mod,&
+            call lcjpla(fami, kpg, ksp, rela_comp, mod,&
                         nr, imat, nmat, materd, nvi,&
                         deps, sigd, vind, dsde, sigd,&
                         vind, vp, vecp, theta, dt,&
                         devg, devgii, codret)
-            if (codret .ne. 0) goto 9999
+            if (codret .ne. 0) goto 999
 !
         else
 !
 !           CAS GENERAL : ELASTICITE LINEAIRE ISOTROPE OU ANISOTROPE
-            call lcjela(loi, mod, nmat, materd, vind,&
+            call lcjela(rela_comp, mod, nmat, materd, vind,&
                         dsde)
 !
         endif
@@ -151,27 +146,27 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
     else if (opt(1:9) .eq. 'FULL_MECA') then
 !
         if (etatf .eq. 'ELASTIC') then
-            call lcjela(loi, mod, nmat, materf, vinf, dsde)
+            call lcjela(rela_comp, mod, nmat, materf, vinf, dsde)
 !
         else if (etatf .eq. 'PLASTIC') then
 !   --->    ELASTOPLASTICITE ==>  TYPMA = 'VITESSE '
 !   --->    VISCOPLASTICITE  ==>  TYPMA = 'COHERENT '
             if (typma .eq. 'COHERENT') then
-                call lcjplc(loi, mod, angmas, imat, nmat,&
-                            materf, timed, timef, comp, nbcomm,&
+                call lcjplc(rela_comp, mod, angmas, imat, nmat,&
+                            materf, timed, timef, compor, nbcomm,&
                             cpmono, pgl, nfs, nsg, toutms,&
                             hsr, nr, nvi, epsd, deps,&
                             itmax, toler, sigf, vinf, sigd,&
                             vind, dsde, drdy, opt, codret,&
                             fami, kpg, ksp)
-                if (codret .ne. 0) goto 9999
+                if (codret .ne. 0) goto 999
             else if (typma .eq. 'VITESSE ') then
-                call lcjpla(fami, kpg, ksp, loi, mod,&
+                call lcjpla(fami, kpg, ksp, rela_comp, mod,&
                             nr, imat, nmat, materd, nvi,&
                             deps, sigf, vinf, dsde, sigd,&
                             vind, vp, vecp, theta, dt,&
                             devg, devgii, codret)
-                if (codret .ne. 0) goto 9999
+                if (codret .ne. 0) goto 999
             endif
         endif
 !
@@ -180,14 +175,14 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
 ! -   MODIFICATION EN CONTRAINTE PLANES POUR TENIR COMPTE DE
 !     SIG3=0 ET DE LA CONSERVATION DE L'ENERGIE
     if (mod(1:6) .eq. 'C_PLAN') then
-        do 136 k = 1, ndt
-            if (k .eq. 3) goto 136
-            do 137 l = 1, ndt
-                if (l .eq. 3) goto 137
+        do k = 1, ndt
+            if (k .eq. 3) cycle
+            do l = 1, ndt
+                if (l .eq. 3) cycle
                 dsde(k,l) = dsde(k,l) - 1.d0/dsde(3,3)*dsde(k,3)*dsde( 3,l)
-137          continue
-136      continue
+            end do
+        end do
     endif
 !
-9999  continue
+999  continue
 end subroutine
