@@ -242,19 +242,20 @@ Returns:
         .def( "build", &Result::build )
         .def( "printInfo", &Result::printInfo )
         .def( "resize", &Result::resize, R"(
-           Update the Result size to nbRanks
+Resize the object.
+
 Arguments:
-    nbRanks [int]
+    nbRanks [int]: new expected size. Should be greater than the current size,
+        otherwise the size is unchanged.
 
 Returns:
     bool: True if ok else False.
-
         )" )
         .def( "setField", c9, R"(
-Set a FieldOnNodes to result
+Set a FieldOnNodes to result.
 
 Arguments:
-    field [FieldOnNodesRealPtr] : field to set
+    field [FieldOnNodesRealPtr]: field to set
     name [str]: symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
     rank [int]: rank to set the field
 
@@ -293,6 +294,6 @@ Returns:
     Table: Table stored with the given identifier.
         )",
               ( py::arg( "self" ), py::arg( "identifier" ) ) )
-        
+
         ;
 };
