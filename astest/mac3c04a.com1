@@ -17,9 +17,17 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import os
 import json
 import os.path as osp
 import numpy as np
+
+try :
+    import matplotlib.pyplot as plt
+    HAS_MATPLOTLIB = True
+
+except ImportError:
+    HAS_MATPLOTLIB = False
 
 from code_aster.Commands import *
 from code_aster.Utilities import ExecutionParameter
@@ -204,21 +212,24 @@ INCLUDE(ALARME='NON',
         DONNEE=osp.join(mac3c, testconfig['tests']))
 
 ################################################################################################
-if testconfig['has_unload'] == True:
-    IMPR_FONCTION(FORMAT='XMGRACE',UNITE=29,
-                  COURBE=(_F(FONCTION=ESSAI_CH ,LEGENDE='Essai compression : Charge'  ,MARQUEUR =   0,COULEUR =    2,STYLE = 1),
-                          _F(FONCTION=ESSAI_DCH,LEGENDE='Essai compression : Decharge',MARQUEUR =   0,COULEUR =    2,STYLE = 1),
-                          _F(FONC_X=DEPLC,FONC_Y=FORCC,LEGENDE='Calcul',MARQUEUR =   0,COULEUR =    4,STYLE = 1),
-                  ),
-                  BORNE_X=(0.,2.E-3),BORNE_Y=(0.,50000.),ECHELLE_X='LIN',ECHELLE_Y='LIN',GRILLE_X=0.2E-3,GRILLE_Y=10000.,LEGENDE_X='DX(mm)',LEGENDE_Y='Effort (N)',
-                  TITRE='Recalage essai de compression %s'%conception)
+if HAS_MATPLOTLIB:
 
-else:
-    IMPR_FONCTION(FORMAT='XMGRACE',UNITE=29,
-                  COURBE=(_F(FONCTION=ESSAI_CH ,LEGENDE='Essai compression : Charge'  ,MARQUEUR =   0,COULEUR =    2,STYLE = 1,),
-                          _F(FONC_X=DEPLC,FONC_Y=FORCC,LEGENDE='Calcul',MARQUEUR =   0,COULEUR =    4,STYLE = 1,),
-                  ),
-                  BORNE_X=(0.,2.E-3),BORNE_Y=(0.,50000.),ECHELLE_X='LIN',ECHELLE_Y='LIN',GRILLE_X=0.2E-3,GRILLE_Y=10000.,LEGENDE_X='DX(m)',LEGENDE_Y='Effort (N)',
-                  TITRE='Recalage essai de compression %s'%conception)
+    fig, ax = plt.subplots(1, 1, figsize=(8,6))
+
+    ax.set_title('Recalage essai de compression %s'%conception)
+    ax.set_xlabel('DX(mm)')
+    ax.set_xlim(0., 2.)
+    ax.set_ylabel('Effort (N)')
+    ax.set_ylim(0., 50000.)
+
+    ax.plot([i*1000 for i in dx_exp_interp], fx, color='crimson', label='Essai')
+    ax.plot([i*1000 for i in dx], fx, color='darkblue', label='Calcul')
+
+    ax.grid()
+    ax.legend(loc=2)
+
+    # Modifier '' pour sauvegarder l'image sur un emplacement du disque
+    savedir = '' or os.getcwd()
+    plt.savefig(osp.join(savedir, '%s_compression.png'%testname))
 
 FIN()

@@ -17,9 +17,17 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import os
 import json
 import os.path as osp
 import numpy as np
+
+try :
+    import matplotlib.pyplot as plt
+    HAS_MATPLOTLIB = True
+
+except ImportError:
+    HAS_MATPLOTLIB = False
 
 from code_aster.Commands import *
 from code_aster.Utilities import ExecutionParameter
@@ -229,20 +237,24 @@ INCLUDE(ALARME='NON',
         DONNEE=osp.join(mac3c, testconfig['tests']))
 
 ################################################################################################
-if testconfig['has_unload'] == True:
-    IMPR_FONCTION(FORMAT='XMGRACE',UNITE=29,
-                  COURBE=(_F(FONCTION=ESSAI_CH ,LEGENDE='Essai de flexion : Charge'  ,MARQUEUR =   0,COULEUR =    2,STYLE = 1),
-                          _F(FONCTION=ESSAI_DCH,LEGENDE='Essai de flexion : Decharge',MARQUEUR =   0,COULEUR =    2,STYLE = 1),
-                          _F(FONC_X=DEPLF,FONC_Y=FORCF,LEGENDE='Calcul',MARQUEUR =   0,COULEUR =    4,STYLE = 1),
-                  ),
-                  BORNE_X=(0.,0.04),BORNE_Y=(0.,2500.),ECHELLE_X='LIN',ECHELLE_Y='LIN',GRILLE_X=0.004,GRILLE_Y=200.,LEGENDE_X='DY(m)',LEGENDE_Y='Effort (N)',
-                  TITRE='Recalage essai de flexion %s'%conception)
-else:
-    IMPR_FONCTION(FORMAT='XMGRACE',UNITE=29,
-                  COURBE=(_F(FONCTION=ESSAI_CH ,LEGENDE='Essai de flexion : Charge'  ,MARQUEUR =   0,COULEUR =    2,STYLE = 1),
-                          _F(FONC_X=DEPLF,FONC_Y=FORCF,LEGENDE='Calcul',MARQUEUR =   0,COULEUR =    4,STYLE = 1),
-                  ),
-                  BORNE_X=(0.,0.04),BORNE_Y=(0.,2500.),ECHELLE_X='LIN',ECHELLE_Y='LIN',GRILLE_X=0.004,GRILLE_Y=200.,LEGENDE_X='DY(m)',LEGENDE_Y='Effort (N)',
-                  TITRE='Recalage essai de flexion %s'%conception)
+if HAS_MATPLOTLIB:
+
+    fig, ax = plt.subplots(1, 1, figsize=(8,6))
+
+    ax.set_title('Recalage essai de flexion %s'%conception)
+    ax.set_xlabel('DY(mm)')
+    ax.set_xlim(0., 40.)
+    ax.set_ylabel('Effort (N)')
+    ax.set_ylim(0., 2500.)
+
+    ax.plot([i*1000 for i in dy_exp_interp], fy, color='crimson', label='Essai')
+    ax.plot([i*1000 for i in dy], fy, color='darkblue', label='Calcul')
+
+    ax.grid()
+    ax.legend(loc=2)
+
+    # Modifier '' pour sauvegarder l'image sur un emplacement du disque
+    savedir = '' or os.getcwd()
+    plt.savefig(osp.join(savedir, '%s_flexion.png'%testname))
 
 FIN()
