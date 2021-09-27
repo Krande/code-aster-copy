@@ -61,9 +61,9 @@ COMP=DEFI_FONCTION(    NOM_PARA='EPSI',
 
 
 ACIER=DEFI_MATERIAU(
-               ELAS=_F(  E = 210000.,  NU = 0.3,  ALPHA = 0.),
+               ELAS=_F(  E = 200000.,  NU = 0.3,  ALPHA = 0.),
                TRACTION=_F(  SIGM = COMP),
-               WEIBULL=_F( M = 20., VOLU_REFE = 1.25E-4, SIGM_REFE = 2750.0E0)
+               WEIBULL=_F( M = 8., VOLU_REFE = 1.25E-4, SIGM_REFE = 2630.0E0)
              )
 
 
@@ -106,7 +106,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.,
 
 #CALCUL MECANIQUE 
 
-T=STAT_NON_LINE(
+U=STAT_NON_LINE(
                             MODELE=MO,
                         CHAM_MATER=CM,
                              EXCIT=(_F(CHARGE = CHARG), 
@@ -117,26 +117,12 @@ T=STAT_NON_LINE(
                 LIST_INST = L_INST,
                 NUME_INST_FIN = 10),
                        CONVERGENCE=_F(
-                RESI_GLOB_RELA = 1.0E-04,
+                RESI_GLOB_RELA = 1.0E-06,
                 ITER_GLOB_MAXI = 25)
               )
 
 
-U=CALC_CHAMP(reuse=T,
-             RESULTAT=T,
-             CONTRAINTE=('SIGM_ELNO'),
-             VARI_INTERNE=('VARI_ELNO'),
-             DEFORMATION=('EPSG_ELGA','EPSL_ELGA'))
-
-# WEIBULL ET BEREMIN AVEC OPTION SIGM_ELGA, PETIT DEF, SANS CORRECTION DE PLASTICITE
-
-
-WEIB=POST_ELEM(WEIBULL=_F(GROUP_MA='s_tout',
-                          OPTION='SIGM_ELGA',
-                          CORR_PLAST='NON',
-                          COEF_MULT=1),
-                          RESULTAT=U)
-
+# POST_BEREMIN AVEC OPTION SIGM_ELGA, PETIT DEF, SANS CORRECTION DE PLASTICITE
 
 BERE=POST_BEREMIN(RESULTAT=U,
              COEF_MULT = 1,
@@ -146,13 +132,7 @@ BERE=POST_BEREMIN(RESULTAT=U,
 
 
 
-# WEIBULL ET BEREMIN AVEC OPTION SIGM_ELMOY, PETIT DEF, SANS CORRECTION DE PLASTICITE
-
-WEIB2=POST_ELEM(WEIBULL=_F(GROUP_MA='s_tout',
-                          OPTION='SIGM_ELMOY',
-                          CORR_PLAST='NON',
-                           COEF_MULT=1),
-                           RESULTAT=U)
+# POST_BEREMIN AVEC OPTION SIGM_ELMOY, PETIT DEF, SANS CORRECTION DE PLASTICITE
 
 BERE2=POST_BEREMIN(RESULTAT=U,
              COEF_MULT = 1,
@@ -161,25 +141,11 @@ BERE2=POST_BEREMIN(RESULTAT=U,
              FILTRE_SIGM="SIGM_ELMOY")
 
 
-#TESTS POST_ELEM ET POST_BEREMIN
+#TESTS POST_BEREMIN
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_REFE = 2272.59737,
-           VALE_CALC=2272.59737,
-           PRECISION = 0.01,
-           REFERENCE='AUTRE_ASTER',
-           NOM_PARA='SIGMA_WEIBULL',
-           TABLE=WEIB,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=4,),
-                   _F(NOM_PARA='LIEU',
-                      VALE_K='s_tout',),
-                   ),)
-
-
-TEST_TABLE(CRITERE='RELATIF',
-           VALE_REFE = 2272.59737,
-           VALE_CALC= 2272.59737,
+           VALE_REFE = 4459.172269,
+           VALE_CALC= 4459.172269,
            PRECISION = 0.01,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='sigma_weibull',
@@ -190,5 +156,22 @@ TEST_TABLE(CRITERE='RELATIF',
                       VALE_K='s_tout',),
                   ),
            )
+
+
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_REFE = 4459.172269,
+           VALE_CALC= 4459.172269,
+           PRECISION = 0.01,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='sigma_weibull',
+           TABLE=BERE2,
+           FILTRE=(_F(NOM_PARA='nume_ordre',
+                      VALE_I=4,),
+                   _F(NOM_PARA='lieu',
+                      VALE_K='s_tout',),
+                  ),
+           )
+
 
 FIN( )
