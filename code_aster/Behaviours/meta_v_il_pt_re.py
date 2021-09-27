@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ loi = LoiComportement(
     mc_mater       = ('ELAS_META','META_VISC','META_ECRO_LINE','META_PT','META_RE',
         ),
     modelisation   = ('3D','AXIS','D_PLAN',),
-    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP'),
+    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP','SIMO_MIEHE'),
     algo_inte      = ('SPECIFIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,

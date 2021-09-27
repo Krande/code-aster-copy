@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,8 +56,8 @@ character(len=8), intent(in), optional :: model
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=16), parameter:: keywordfact = 'COMPORTEMENT'
     character(len=8) :: mesh
-    character(len=16) :: keywordfact
     integer :: i_comp, nb_comp, model_dim, iret
     character(len=16) :: defo_comp, rela_comp, type_cpla, mult_comp, type_comp
     character(len=16) :: post_iter, model_mfront, defo_ldc, rigi_geom, regu_visc
@@ -65,15 +65,14 @@ character(len=8), intent(in), optional :: model
     character(len=255) :: libr_name, subr_name
     integer :: unit_comp, nb_vari_umat
     aster_logical :: l_cristal, l_kit, lNonIncr
-    aster_logical :: l_comp_external, l_ldc_sm
+    aster_logical :: l_comp_external
     integer, pointer :: v_model_elem(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    keywordfact = 'COMPORTEMENT'
-    nb_comp     = ds_compor_prep%nb_comp
-    mesh        = ' '
-    lNonIncr     = ASTER_FALSE
+    nb_comp  = ds_compor_prep%nb_comp
+    mesh     = ' '
+    lNonIncr = ASTER_FALSE
 !
 ! - Pointer to list of elements in model
 !
@@ -116,15 +115,7 @@ character(len=8), intent(in), optional :: model
                 rigi_geom = ' '
             end if
         end if
-! ----- If SIMO_MIEHE, switch to a specific version of the behaviour catalog for some laws
-        l_ldc_sm = ((rela_comp .eq. 'MFRONT')  .or. &
-                    (rela_comp .eq. 'VISC_ISOT_TRAC') .or.&
-                    (rela_comp .eq. 'VISC_ISOT_LINE') .or.&
-                    (rela_comp .eq. 'ROUSSELIER') .or.&
-                    (rela_comp .eq. 'SIMO_MIEHE'))
-        if ((defo_comp .eq. 'SIMO_MIEHE') .and. (.not. l_ldc_sm)) then
-            rela_comp = rela_comp(1:4)//'2'//rela_comp(6:len(rela_comp))
-        endif
+
 ! ----- Damage post-treatment
         if (getexm(keywordfact,'POST_ITER') .eq. 1) then
             call getvtx(keywordfact, 'POST_ITER', iocc = i_comp, scal=post_iter, nbret=iret)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! person_in_charge: astrid.filiot at edf.fr
+!
 subroutine comp_meca_deflc(rela_comp, defo_comp, defo_ldc)
 !
 implicit none
@@ -26,11 +27,9 @@ implicit none
 #include "asterc/lcdiscard.h"
 #include "asterfort/assert.h"
 !
-! person_in_charge: astrid.filiot at edf.fr
-!
-    character(len=16), intent(in) :: rela_comp
-    character(len=16), intent(in) :: defo_comp
-    character(len=16), intent(out) :: defo_ldc
+character(len=16), intent(in) :: rela_comp
+character(len=16), intent(in) :: defo_comp
+character(len=16), intent(out) :: defo_ldc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,7 +45,8 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: rela_code_py
+    character(len=16) :: rela_code_py, defo_code_py
+    character(len=16) :: defo_ldc_rela, defo_ldc_defo
     aster_logical :: l_deformlc
 !
 ! --------------------------------------------------------------------------------------------------
@@ -54,16 +54,28 @@ implicit none
 ! Attribute "deform_ldc" from behaviour catalog can be 'MECANIQUE', 'TOTALE' or 'OLD' only
 !
     call lccree(1, rela_comp, rela_code_py)
-    call lcdeformldc(rela_code_py, defo_ldc)
-    ASSERT((defo_ldc .eq. 'MECANIQUE') .or. (defo_ldc .eq. 'TOTALE') .or. (defo_ldc .eq. 'OLD'))
+    call lcdeformldc(rela_code_py, defo_ldc_rela)
+    call lccree(1, defo_comp, defo_code_py)
+    call lcdeformldc(defo_code_py, defo_ldc_defo)
+
+    if (defo_ldc_defo .eq. 'TOTALE') then
+        defo_ldc = 'TOTALE'
+    else if (defo_ldc_defo .eq. 'MECANIQUE') then
+        defo_ldc = defo_ldc_rela
+    else
+        ASSERT(ASTER_FALSE)
+    endif
 !
 ! deform_ldc should not be 'MECANIQUE' if the kinematik is 'SIMO_MIEHE'
 ! MFRONT is the only exception
 !
-    l_deformlc = (defo_ldc .eq. 'MECANIQUE') .and. (defo_comp .eq. 'SIMO_MIEHE') &
+    l_deformlc = (defo_ldc_rela .eq. 'MECANIQUE') .and. (defo_comp .eq. 'SIMO_MIEHE') &
     .and. (rela_comp .ne. 'MFRONT')
     ASSERT(.not.l_deformlc)
+
+    ASSERT((defo_ldc .eq. 'MECANIQUE') .or. (defo_ldc .eq. 'TOTALE') .or. (defo_ldc .eq. 'OLD'))
 !
     call lcdiscard(rela_code_py)
+    call lcdiscard(defo_code_py)
 !
 end subroutine

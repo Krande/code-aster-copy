@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: david.haboussa at edf.fr
+# person_in_charge: mickael.abbas at edf.fr
 
 from .cata_comportement import LoiComportement
 
@@ -37,6 +37,6 @@ loi = LoiComportement(
     proprietes     = None,
     syme_matr_tang = ('No',),
     exte_vari      = None,
-    deform_ldc     = ('OLD',),
+    deform_ldc     = ('TOTALE',),
     regu_visc      = ('No',),
 )
