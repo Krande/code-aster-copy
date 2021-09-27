@@ -20,9 +20,17 @@
 # UTILISATION : COMPARAISON DE LA SIMULATION NUMERIQUE D'UN ASSEMBLAGE
 #               COMBUSTIBLE EN FLEXION AVEC LES RESULTATS EXPERIMENTAUX
 
+import os
 import json
 import os.path as osp
 import numpy as np
+
+try :
+    import matplotlib.pyplot as plt
+    HAS_MATPLOTLIB = True
+
+except ImportError:
+    HAS_MATPLOTLIB = False
 
 from code_aster.Commands import *
 from code_aster.Utilities import ExecutionParameter
@@ -163,14 +171,25 @@ FORCF2 = RECU_FONCTION(TABLE=POST22,
                        PARA_X='INST',
                        PARA_Y='DY')
 
-IMPR_FONCTION(FORMAT='XMGRACE',
-              UNITE=29,
-              COURBE=(
-                  _F(FONC_X=DEPLF, FONC_Y=FORCF, LEGENDE='Calcul cuisson plus flexion', MARQUEUR = 0,COULEUR = 3, STYLE = 1),
-                  _F(FONC_X=DEPLF2, FONC_Y=FORCF2, LEGENDE='Calcul flexion avec irradiation initiale', MARQUEUR = 0,COULEUR = 4, STYLE = 1),
-              ),
-              BORNE_X=(0.,0.08), BORNE_Y=(0.,1200.), ECHELLE_X='LIN', ECHELLE_Y='LIN', GRILLE_X=0.004, GRILLE_Y=200., LEGENDE_X='DY(m)', LEGENDE_Y='Effort (N)',
-              TITRE='Comparaison cuisson puis flexion et flexion avec irradiation initiale')
+if HAS_MATPLOTLIB:
+
+    fig, ax = plt.subplots(1, 1, figsize=(8,6))
+
+    ax.set_title('Comparaison flexion 2nd cycle %s'%conception)
+    ax.set_xlabel('DY(mm)')
+    ax.set_xlim(0., 80.)
+    ax.set_ylabel('Effort (N)')
+    ax.set_ylim(0., 1200.)
+
+    ax.plot([i*1000 for i in DEPLF.Valeurs()[1]], FORCF.Valeurs()[1], color='crimson', label='Calcul cuisson plus flexion')
+    ax.plot([i*1000 for i in DEPLF2.Valeurs()[1]], FORCF2.Valeurs()[1], color='darkblue', label='Calcul flexion avec irradiation initiale')
+
+    ax.grid()
+    ax.legend(loc=2)
+
+    # Modifier '' pour sauvegarder l'image sur un emplacement du disque
+    savedir = '' or os.getcwd()
+    plt.savefig(osp.join(savedir, '%s_cuisson_flexion.png'%testname))
 
 DEFI_FICHIER(ACTION='LIBERER', UNITE=20)
 DEFI_FICHIER(ACTION='LIBERER', UNITE=32)
