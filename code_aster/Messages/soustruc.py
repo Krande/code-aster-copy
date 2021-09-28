@@ -392,6 +392,13 @@ Cette fonctionnalité n'est pas disponible pour les modes complexes.
  Noeud utilisé pour réaliser l'opération demandée :  %(k2)s
 """),
 
+    88: _("""
+ Le groupe de mailles '%(k1)s' existe déjà.
+
+ Conseil :
+    Si vous souhaitez utiliser un nom de groupe existant, il suffit
+    de le détruire avec DEFI_GROUP / DETR_GROUP_MA.
+"""),
 
     93: _("""
     pour le mode no : %(i1)d taux de flexibilité locale   :  %(r1)f

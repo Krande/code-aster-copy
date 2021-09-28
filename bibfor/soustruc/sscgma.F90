@@ -475,7 +475,8 @@ implicit none
                     end if
                 endif
             endif
-        endif
+        endif 
+        
 !
 !       -- CREATION ET AFFECTATION DU GROUP_MA :
 !       ----------------------------------

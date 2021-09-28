@@ -37,6 +37,18 @@ DEFI_GROUP(reuse=pMesh,
                              RAYON = 0.2),),)
 pMesh.debugPrint(30+rank)
 
+
+DEFI_GROUP(reuse=pMesh,
+           MAILLAGE=pMesh,
+           CREA_GROUP_MA=(_F(NOM='BLABLA',
+                             OPTION='SPHERE',
+                             POINT=(0.2, 0.2, 0.2),
+                             RAYON = 0.2),),)
+
+list_cells = pMesh.getCells( 'BLABLA' )
+nb_cells = [ 72 , 4 , 0, 4]
+test.assertEqual(len(list_cells), nb_cells[rank])
+
 monModel = code_aster.Model(pMesh)
 monModel.addModelingOnMesh(code_aster.Physics.Mechanics,
                               code_aster.Modelings.Tridimensional)
