@@ -159,7 +159,7 @@ const VectorLong ParallelMesh::getCells( const std::string name ) const {
     {
         return irange(long(1), long(getNumberOfCells()));
     }
-    else if ( !hasGroupOfCells( name ) ) {
+    else if ( !hasGroupOfCells( name, true ) ) {
         return VectorLong();
     }
 
@@ -174,7 +174,7 @@ const {
     {
         listOfNodes = irange(long(1), long(getNumberOfNodes()));
     }
-    else if ( !hasGroupOfNodes( name ) ) {
+    else if ( !hasGroupOfNodes( name, true ) ) {
         return VectorLong();
     }
     else
@@ -203,7 +203,7 @@ const VectorLong ParallelMesh::getNodes( const std::string name, const bool loca
     {
         listOfNodes = irange(long(1), long(getNumberOfNodes()));
     }
-    else if ( !hasGroupOfNodes( name ) ) {
+    else if ( !hasGroupOfNodes( name, true ) ) {
         return VectorLong();
     }
     else

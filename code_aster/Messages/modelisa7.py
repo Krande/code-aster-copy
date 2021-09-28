@@ -56,10 +56,6 @@ Contactez le support technique.
  la liste de noms doit être de même longueur que la liste de GROUP_MA
 """),
 
-    9: _("""
- le GROUP_NO :  %(k1)s  existe déjà, on ne le crée donc pas.
-"""),
-
     10: _("""
  le nom  %(k1)s  existe déjà
 """),
