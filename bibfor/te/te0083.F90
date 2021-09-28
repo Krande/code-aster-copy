@@ -55,9 +55,9 @@ subroutine te0083(option, nomte)
         mfy = zr(jin+nbcompin*(i-1)-1+5)
         mfz = zr(jin+nbcompin*(i-1)-1+6)
         meq = sqrt(mt*mt+mfy*mfy+mfz*mfz)
-        zr(jout+nbcompout*(i-1)-1+1) = mt
-        zr(jout+nbcompout*(i-1)-1+2) = mfy
-        zr(jout+nbcompout*(i-1)-1+3) = mfz
+        zr(jout+nbcompout*(i-1)-1+1) = abs(mt)
+        zr(jout+nbcompout*(i-1)-1+2) = abs(mfy)
+        zr(jout+nbcompout*(i-1)-1+3) = abs(mfz)
         zr(jout+nbcompout*(i-1)-1+4) = meq
     enddo
 !
