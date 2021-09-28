@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine compStressField(result, model, mater, mateco, cara_elem, list_load, &
-                           l_sief_elga, l_strx_elga, rank, time)
+                           l_sief_elga, l_strx_elga, nbrank, times)
 !
 implicit none
 !
@@ -45,8 +45,8 @@ implicit none
 !
     character(len=*), intent(in) :: model, cara_elem, list_load, result, mater, mateco
     aster_logical, intent(in) :: l_sief_elga, l_strx_elga
-    integer, intent(in) :: rank
-    real(kind=8), intent(in) :: time
+    integer, intent(in) :: nbrank
+    real(kind=8), intent(in) :: times(*)
 
 !
 ! --------------------------------------------------------------------------------------------------
@@ -56,8 +56,8 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nchar, jchar, nh, jfonc
-    integer :: iocc, nfon, iret, nbchre
-    real(kind=8) :: alpha, rundf
+    integer :: iocc, nfon, iret, nbchre, rank
+    real(kind=8) :: alpha, rundf, time
     character(len=1) :: base, typcoe
     character(len=2) :: codret
     character(len=8) :: k8bla, nomode, kstr
@@ -103,8 +103,35 @@ implicit none
     fomult = list_load//'.FCHA'
 !
 !
+    call mecham(' ', nomode, cara_elem, nh, chgeom, chcara, chharm, iret)
+    call vrcref(model(1:8), mater(1:8), cara_elem(1:8), chvref(1:19))
+    if (iret .ne. 0) goto 999
+!
 !   A-t-on des POU_D_EM qui utilisent le champ STRX_ELGA en lineaire
     call dismoi('EXI_STR2', nomode, 'MODELE', repk=kstr)
+    call dismoi('EXI_POUX', model, 'MODELE', repk=k8bla)
+    if (k8bla(1:3) .eq. 'OUI') exipou = .true.
+!
+    if (exipou) then
+        call jeveuo(charge, 'L', jchar)
+        call jelira(charge, 'LONMAX', nchar)
+        call cochre(zk24(jchar), nchar, nbchre, iocc)
+        if (nbchre .gt. 1) then
+            call utmess('F', 'MECASTATIQUE_2')
+        endif
+
+        typcoe = 'R'
+        alpha = 1.d0
+        if (iocc .gt. 0) then
+            charep = zk24(jchar-1+iocc)
+            call jelira(fomult, 'LONMAX', nfon)
+            if( nfon > 0) then
+                ASSERT(nfon >= iocc)
+                call jeveuo(fomult, 'L', jfonc)
+                nomfon = zk24(jfonc-1+iocc)
+            endif
+        end if
+    end if
 !
 !   A-t-on des VARC
     call dismoi('EXI_VARC', mater, 'CHAM_MATER', repk=k8bla)
@@ -115,71 +142,53 @@ implicit none
 !
 ! - Compute field
 !
-    call rsexch(' ', result, 'DEPL', rank, chamgd, iret)
-    if (iret .gt. 0) goto 999
+    do rank = 1, nbrank
+        call rsexch(' ', result, 'DEPL', rank, chamgd, iret)
+        if (iret .gt. 0) goto 999
+
 !
-    call mecham(' ', nomode, cara_elem, nh, chgeom,&
-        chcara, chharm, iret)
-    if (iret .ne. 0) goto 999
+        time = times(rank)
+        call mechti(chgeom(1:8), time, rundf, rundf, chtime)
+        call vrcins(model, mater, cara_elem, time, chvarc(1:19), codret)
 !
-    call mechti(chgeom(1:8), time, rundf, rundf, chtime)
-    call vrcins(model, mater, cara_elem, time, chvarc(1:19), codret)
-    call vrcref(model(1:8), mater(1:8), cara_elem(1:8), chvref(1:19))
-!
-    if ( l_strx_elga ) then
-        call rsexch(' ', result, 'STRX_ELGA', rank, chstrx, iret)
+        if ( l_strx_elga ) then
+            call rsexch(' ', result, 'STRX_ELGA', rank, chstrx, iret)
 !         -- SI LE CHAMP A DEJA ETE CALCULE :
-        if (iret .ne. 0) then
+            if (iret .ne. 0) then
 !
-            call dismoi('EXI_POUX', model, 'MODELE', repk=k8bla)
-            if (k8bla(1:3) .eq. 'OUI') exipou = .true.
-!
-            if (exipou) then
-                call jeveuo(charge, 'L', jchar)
-                call jelira(charge, 'LONMAX', nchar)
-                call cochre(zk24(jchar), nchar, nbchre, iocc)
-                if (nbchre .gt. 1) then
-                    call utmess('F', 'MECASTATIQUE_2')
-                endif
-!
-                typcoe = 'R'
-                alpha = 1.d0
-                if (iocc .gt. 0) then
-                    charep = zk24(jchar-1+iocc)
-                    call jelira(fomult, 'LONMAX', nfon)
-                    if( nfon > 0) then
-                        ASSERT(nfon >= iocc)
-                        call jeveuo(fomult, 'L', jfonc)
-                        nomfon = zk24(jfonc-1+iocc)
+                if (exipou) then
+                    if (iocc .gt. 0 .and. nfon > 0) then
                         call fointe('F ', nomfon, 1, ['INST'], [time], alpha, iret)
-                    end if
+                    endif
                 endif
-            endif
 !
-            call compStrx(nomode, ligrel, compor,&
-                        chamgd, chgeom, mateco  , chcara ,&
-                        chvarc, chvref, &
-                        base  , chstrx, iret  ,&
-                        exipou, charep, typcoe, alpha, calpha)
+                call compStrx(nomode, ligrel, compor,&
+                            chamgd, chgeom, mateco  , chcara ,&
+                            chvarc, chvref, &
+                            base  , chstrx, iret  ,&
+                            exipou, charep, typcoe, alpha, calpha)
 !
-            call rsnoch(result, 'STRX_ELGA', rank)
-        end if
-    endif
-    if ( l_sief_elga ) then
-        call rsexch(' ', result, 'SIEF_ELGA', rank, chamel, iret)
+                call rsnoch(result, 'STRX_ELGA', rank)
+            end if
+        endif
+        if ( l_sief_elga ) then
+            call rsexch(' ', result, 'SIEF_ELGA', rank, chamel, iret)
 !           -- SI LE CHAMP A DEJE ETE CALCULE :
-        if (iret .ne. 0) then
-            call compStress(nomode, ligrel, compor,&
-                            chamgd, chgeom, mateco  ,&
-                            chcara, chtime, chharm,&
-                            chvarc, chvref, chstrx,&
-                            base  , chamel, iret  )
-            call rsnoch(result, 'SIEF_ELGA', rank)
-        end if
-    endif
+            if (iret .ne. 0) then
+                call compStress(nomode, ligrel, compor,&
+                                chamgd, chgeom, mateco  ,&
+                                chcara, chtime, chharm,&
+                                chvarc, chvref, chstrx,&
+                                base  , chamel, iret  )
+                call rsnoch(result, 'SIEF_ELGA', rank)
+            end if
+        endif
+    end do
 !
     call detrsd("CHAM_ELEM", chvarc)
     call detrsd("CHAM_ELEM", chvref)
+    call detrsd("CARTE", chharm)
+    call detrsd("CARTE", chtime)
 !
 999 continue
 !

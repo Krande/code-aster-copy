@@ -21,10 +21,9 @@
 
 from ..Objects import ( MechanicalLoadReal, DirichletBC, MechanicalLoadFunction,
                         ParallelMechanicalLoadReal, ParallelMechanicalLoadFunction,
-                        LinearStaticAnalysis)
+                        LinearStaticAnalysis, ElasticResult)
 from ..Supervis import ExecuteCommand
-from ..Utilities import force_list, unsupported
-from .calc_champ import CALC_CHAMP
+from ..Utilities import force_list
 from .common_keywords import create_solver
 
 
@@ -33,7 +32,8 @@ class MechanicalSolver(ExecuteCommand):
     command_name = "MECA_STATIQUE"
 
     def create_result(self, keywords):
-        """Does nothing, creating by *exec*."""
+        """Create Result"""
+        self._result = ElasticResult()
 
     @staticmethod
     def _addLoad(mechaSolv, fkw):
@@ -88,7 +88,7 @@ class MechanicalSolver(ExecuteCommand):
 
         solver = create_solver(keywords.get("SOLVEUR"))
         mechaSolv.setLinearSolver(solver)
-        self._result = mechaSolv.execute()
+        self._result = mechaSolv.execute( self._result )
 
     def post_exec(self, keywords):
         """Execute the command.

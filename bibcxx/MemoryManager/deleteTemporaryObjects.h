@@ -28,5 +28,8 @@
 /** @brief delete temporary Jeveux objects */
 bool deleteTemporaryObjects( void ) ;
 
+bool cleanJeveuxMemory( void ) ;
+
+
 
 #endif /* DELETE_TEMPORARY_OBJECTS_H_ */

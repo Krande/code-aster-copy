@@ -59,8 +59,8 @@ class StaticMechanicalContext {
     bool _isConst;
     /** @brief Input variables */
     ExternalStateVariablesBuilderPtr _varCom;
-    /** @brief Compute SIEF_ELGA */
-    bool _sief_elga;
+
+  public:
     /** @brief Timer */
     std::map< std::string, ASTERDOUBLE > _timer;
 
@@ -72,7 +72,7 @@ class StaticMechanicalContext {
      * @param ResultPtr Résultat pour le stockage des déplacements
      */
     StaticMechanicalContext( const DiscreteProblemPtr &curPb, const BaseLinearSolverPtr linSolv,
-                             const ResultPtr container, const bool sief_elga )
+                             const ResultPtr container )
         : _discreteProblem( curPb ), _linearSolver( linSolv ),
           _listOfLoads( _discreteProblem->getStudyDescription()->getListOfLoads() ),
           _results( container ), _time( 0. ), _rank( 1 ),
@@ -83,7 +83,6 @@ class StaticMechanicalContext {
               _discreteProblem->getStudyDescription()->getMaterialField(),
               _discreteProblem->getStudyDescription()->getElementaryCharacteristics(),
               _discreteProblem->getStudyDescription()->getCodedMaterial() ) ),
-         _sief_elga( sief_elga ),
          _timer( { {"Matrix", 0.0}, {"Rhs", 0.0}, {"Facto", 0.0}, {"Solve", 0.0}, {"Post", 0.0} })
          {};
 
@@ -106,6 +105,14 @@ class StaticMechanicalContext {
     {
         return _timer;
     }
+
+    DiscreteProblemPtr getDiscreteProblem()
+    {
+        return _discreteProblem;
+    }
+
+    ResultPtr getResult()
+    { return _results;}
 
     friend class StaticMechanicalAlgorithm;
 };

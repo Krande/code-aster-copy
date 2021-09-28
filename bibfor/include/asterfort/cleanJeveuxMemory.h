@@ -16,14 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine compStressField(result, model, mater, mateco, cara_elem, list_load, &
-                           l_sief_elga, l_strx_elga, nbrank, times)
-        character(len=*), intent(in) :: model, cara_elem, list_load, result, mater, mateco
-        aster_logical, intent(in) :: l_sief_elga, l_strx_elga
-        integer, intent(in) :: nbrank
-        real(kind=8), intent(in) :: times(*)
-    end subroutine compStressField
+    subroutine cleanJeveuxMemory( )
+! Empty
+    end subroutine cleanJeveuxMemory
 end interface

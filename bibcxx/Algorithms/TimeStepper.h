@@ -163,6 +163,11 @@ class TimeStepper : public DataStructure, public GenericStepper {
      */
     ASTERINTEGER size() const { return _values->size(); };
 
+    VectorReal getValues()
+    {
+        return _values->toVector();
+    };
+
     /**
      * @brief Fonction permettant de mettre a jour le stepper
      * @return true si tout s'est bien passé

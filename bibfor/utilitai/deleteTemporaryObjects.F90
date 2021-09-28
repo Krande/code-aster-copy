@@ -34,13 +34,8 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!   Delete matrix and their mumps/petsc associated instances
-    call detmat()
-!   Free objects kept in memory using jeveut
-    call jelibz('G')
 !   Delete objects on the volatile database
     call jedetv()
     call jereou('V', 0.01d0)
-    call jerecu('G')
 !
 end subroutine

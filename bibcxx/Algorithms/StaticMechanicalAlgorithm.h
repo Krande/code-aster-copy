@@ -55,8 +55,6 @@ class StaticMechanicalAlgorithm {
 
     static FieldOnNodesRealPtr _computeRhs( CurrentContext & );
 
-    static void _computeStress( CurrentContext & );
-
     static void _storeFields( CurrentContext & );
 
     static void _solve( CurrentContext &, const FieldOnNodesRealPtr );

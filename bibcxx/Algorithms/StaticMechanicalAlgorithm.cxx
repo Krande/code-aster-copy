@@ -131,38 +131,6 @@ void StaticMechanicalAlgorithm::_solve( CurrentContext &ctx, const FieldOnNodesR
     ctx._timer["Solve"] += std::chrono::duration<ASTERDOUBLE>(finish - start).count();
 }
 
-void StaticMechanicalAlgorithm::_computeStress( CurrentContext &ctx ) {
-    auto start = std::chrono::high_resolution_clock::now();
-
-    const auto &study = ctx._discreteProblem->getStudyDescription();
-    const auto &model = study->getModel();
-    const auto &mater = study->getMaterialField();
-    const auto &load = study->getListOfLoads();
-    const auto &cara = study->getElementaryCharacteristics();
-    const auto &mateco = study->getCodedMaterial();
-
-    bool l_sief_elga = false, l_strx_elga = false;
-    if( model->existsMultiFiberBeam() )
-        l_strx_elga = true;
-    if( ctx._sief_elga )
-        l_sief_elga = true;
-
-    ASTERINTEGER rank = ctx._rank;
-    ASTERDOUBLE time = ctx._time;
-
-    std::string caraName = "        ";
-    if( cara )
-        caraName = cara->getName();
-
-    CALLO_COMPSTRESSFIELD(ctx._results->getName(), model->getName(), mater->getName(),
-                          mateco->getName(), caraName, load->getName(),
-                          (ASTERLOGICAL *)&l_sief_elga, (ASTERLOGICAL *)&l_strx_elga,
-                          &rank, &time);
-
-    auto finish = std::chrono::high_resolution_clock::now();
-    ctx._timer["Post"] += std::chrono::duration<ASTERDOUBLE>(finish - start).count();
-}
-
 void StaticMechanicalAlgorithm::oneStep( CurrentContext &ctx ) {
 
     ctx._varCom->build( ctx._time );
@@ -183,5 +151,4 @@ void StaticMechanicalAlgorithm::oneStep( CurrentContext &ctx ) {
 
     _storeFields(ctx);
 
-    _computeStress(ctx);
 };

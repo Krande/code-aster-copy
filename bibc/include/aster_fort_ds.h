@@ -43,6 +43,9 @@ void DEFSSS( CELCES_WRAP, celces_wrap, const char *, STRING_SIZE, const char *, 
 void DEFSSS( CNOCNS, cnocns, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
              STRING_SIZE );
 
+#define CALL_CLEAN_JEVEUX_MEMORY( ) CALL0( CLEANJEVEUXMEMORY, cleanjeveuxmemory )
+void DEF0( CLEANJEVEUXMEMORY, cleanjeveuxmemory);
+
 #define CALL_DETMAT() CALL0( DETMAT, detmat )
 extern void DEF0( DETMAT, detmat );
 

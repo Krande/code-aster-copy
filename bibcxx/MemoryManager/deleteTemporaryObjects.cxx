@@ -36,3 +36,11 @@ bool deleteTemporaryObjects( void )
 
     return true;
 };
+
+bool cleanJeveuxMemory( void )
+{
+
+    CALL_CLEAN_JEVEUX_MEMORY();
+
+    return true;
+};

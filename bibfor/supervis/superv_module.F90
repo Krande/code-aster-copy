@@ -34,7 +34,7 @@ module superv_module
 #include "asterc/asmpi_comm.h"
 #include "asterfort/assert.h"
 #include "asterfort/check_aster_allocate.h"
-#include "asterfort/deleteTemporaryObjects.h"
+#include "asterfort/cleanJeveuxMemory.h"
 #include "asterfort/foint0.h"
 #include "asterfort/jermxd.h"
 #include "asterfort/utgtme.h"
@@ -127,7 +127,7 @@ contains
         endif
 !
 ! Delete all temporary Jeveux objects
-        call deleteTemporaryObjects()
+        call cleanJeveuxMemory()
     end subroutine superv_after
 
 !>  Return the current maximum number of available threads

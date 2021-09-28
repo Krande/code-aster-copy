@@ -27,8 +27,9 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 #include "astercxx.h"
 
+#include "Algorithms/StaticMechanicalContext.h"
 #include "Algorithms/TimeStepper.h"
-#include "Solvers/LinearSolver.h"
+#include "Analysis/GenericAnalysis.h"
 #include "Loads/DirichletBC.h"
 #include "Loads/ListOfLoads.h"
 #include "Loads/MechanicalLoad.h"
@@ -36,9 +37,9 @@
 #include "Materials/MaterialField.h"
 #include "Modeling/Model.h"
 #include "Results/ElasticResult.h"
-#include "Supervis/Exceptions.h"
-#include "Analysis/GenericAnalysis.h"
+#include "Solvers/LinearSolver.h"
 #include "Studies/StudyDescription.h"
+#include "Supervis/Exceptions.h"
 
 class LinearStaticAnalysis : public GenericAnalysis {
   private:
@@ -54,6 +55,8 @@ class LinearStaticAnalysis : public GenericAnalysis {
     StudyDescriptionPtr _study;
     /** @brief Compute SIEF_ELGA */
     bool _sief_elga;
+
+    void _computeStress( StaticMechanicalContext & );
 
   public:
     /**
@@ -71,7 +74,7 @@ class LinearStaticAnalysis : public GenericAnalysis {
     /**
      * @brief Lancement de la resolution
      */
-    ElasticResultPtr execute();
+    ElasticResultPtr execute( ElasticResultPtr );
 
     /**
      * @brief Methode permettant de definir le solveur lineaire
