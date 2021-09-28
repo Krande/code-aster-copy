@@ -23,7 +23,7 @@ subroutine nmltev(sderro, typevt, nombcl, levent)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/asmpi_comm_logical.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -102,16 +102,7 @@ subroutine nmltev(sderro, typevt, nombcl, levent)
 !
 ! --- Share error for HPC
 !
-    ieven = 0
-    if(levent) then
-        ieven = 1
-    end if
-    call asmpi_comm_vect('MPI_MAX', 'I', sci=ieven)
-    if(ieven == 1) then
-        levent = ASTER_TRUE
-    else
-        levent = ASTER_FALSE
-    end if
+    call asmpi_comm_logical('MPI_LOR', scl=levent)
 !
     call jedema()
 end subroutine
