@@ -74,12 +74,7 @@ void LinearStaticAnalysis::_computeStress( StaticMechanicalContext &ctx ) {
     ctx._timer["Post"] += std::chrono::duration<ASTERDOUBLE>(finish - start).count();
 }
 
-ElasticResultPtr LinearStaticAnalysis::execute( ElasticResultPtr result = nullptr) {
-    ElasticResultPtr resultC;
-    if( result )
-        resultC = result;
-    else
-        resultC = boost::make_shared< ElasticResult >();
+ElasticResultPtr LinearStaticAnalysis::execute( ElasticResultPtr resultC ) {
 
     _study->getCodedMaterial()->allocate(true);
 

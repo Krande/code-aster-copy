@@ -74,7 +74,7 @@ class LinearStaticAnalysis : public GenericAnalysis {
     /**
      * @brief Lancement de la resolution
      */
-    ElasticResultPtr execute( ElasticResultPtr );
+    ElasticResultPtr execute( ElasticResultPtr resultC = boost::make_shared< ElasticResult >() );
 
     /**
      * @brief Methode permettant de definir le solveur lineaire
