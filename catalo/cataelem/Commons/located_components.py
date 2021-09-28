@@ -643,9 +643,6 @@ NFOR3DR = LocatedComponents(phys=PHY.FORC_R, type='ELNO',
 DDL_NOZ1 = LocatedComponents(phys=PHY.SIZZ_R, type='ELNO',
                              components=('SIZZ',))
 
-E1NNEUT = LocatedComponents(phys=PHY.NEUT_R, type='ELNO',
-                            components=('X1',))
-
 E3NEUT_R = LocatedComponents(phys=PHY.NEUT_R, type='ELNO',
                              components=('X[3]',))
 
@@ -838,9 +835,6 @@ EGFC3DR = LocatedComponents(phys=PHY.FACY_R, type='ELGA', location='RIGI',
 # Field for time
 EGINST_R = LocatedComponents(phys=PHY.INST_R, type='ELGA', location='RIGI',
                              components=('INST',))
-
-E1GNEUT = LocatedComponents(phys=PHY.NEUT_R, type='ELGA', location='RIGI',
-                            components=('X1',))
 
 EDERAPG = LocatedComponents(phys=PHY.DERA_R, type='ELGA', location='RIGI',
                             components=(

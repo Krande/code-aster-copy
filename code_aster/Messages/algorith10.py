@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,6 @@
 from ..Utilities import _
 
 cata_msg = {
-
-    1 : _("""
- la variable  %(k1)s  n'existe pas dans la loi  %(k2)s
-"""),
-
 
     11 : _("""
  le champ de déplacement n'a pas été calculé

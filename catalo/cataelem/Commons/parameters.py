@@ -1556,12 +1556,6 @@ PVARC_R = OutputParameter(phys=PHY.VARC_R, type='ELGA',
                           comment=""" VARIABLES DE COMMANDE (NOMMEES)
 """)
 
-PVARIGS = OutputParameter(phys=PHY.NEUT_R, type='ELGA',
-                          comment="""""")
-
-PVARINS = OutputParameter(phys=PHY.NEUT_R, type='ELNO',
-                          comment="""""")
-
 PVECTR1 = OutputParameter(phys=PHY.VSIZ_R, type='RESL',
                           comment="""  PVECTR1 : VECTEUR SECOND MEMBRE ELEMENTAIRE POUR LA COMPOSANTE 1
 """)

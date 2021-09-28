@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -201,12 +201,6 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  tr("Contraintes équivalentes aux noeuds"), ),
         }
         d['VARI_INTERNE'] = {
-            "VAEX_ELGA":        ( ("nonlin", "dyna"),
-                                 tr("Extraction d'une variable interne aux points de Gauss"), ),
-            "VAEX_ELNO":        ( ("nonlin", "dyna"),
-                                 tr("Extraction d'une variable interne aux noeuds pas élément"), ),
-            "VAEX_NOEU":        ( ("nonlin", "dyna"),
-                                 tr("Extraction d'une variable interne aux noeuds"), ),
             "VARC_ELGA":        ( ("lin", "nonlin", "dyna"),
                                  tr("Variables de commande aux points de Gauss"), ),
             "VARI_ELNO":        ( ("nonlin", "dyna"),

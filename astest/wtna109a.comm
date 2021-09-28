@@ -289,41 +289,6 @@ U0=CALC_CHAMP(reuse =U0,
 #                  GROUP_NO=('BO',),),);
 #################################################
 
-DPVP=CALC_CHAMP(RESULTAT=U0,VARI_INTERNE=('VAEX_ELNO'),NOM_VARI='DPVP')
-
-DPVP=CALC_CHAMP(reuse=DPVP,RESULTAT=DPVP,VARI_INTERNE='VAEX_NOEU',NOM_VARI='DPVP')
-
-SATLIQ=CALC_CHAMP(RESULTAT=U0,VARI_INTERNE=('VAEX_ELNO'),NOM_VARI='SATLIQ')
-
-
-SATLIQ=CALC_CHAMP(reuse=SATLIQ,
-       RESULTAT=SATLIQ,
-       VARI_INTERNE='VAEX_NOEU',NOM_VARI='SATLIQ'
-       );
-
-TEST_RESU(RESU=(_F(INST=10.0,
-                   RESULTAT=DPVP,
-                   NOM_CHAM='VAEX_ELNO',
-                   GROUP_NO='N1',
-                   NOM_CMP='X1',
-                   VALE_CALC=54.132800290201,
-                   GROUP_MA='M9',),
-                _F(INST=1.E4,
-                   RESULTAT=DPVP,
-                   NOM_CHAM='VAEX_NOEU',
-                   GROUP_NO='N2',
-                   NOM_CMP='X1',
-                   VALE_CALC=-3304.9656747079,
-                   ),
-                _F(INST=1.E4,
-                   RESULTAT=SATLIQ,
-                   NOM_CHAM='VAEX_NOEU',
-                   GROUP_NO='N2',
-                   NOM_CMP='X1',
-                   VALE_CALC=0.50002653706864,
-                   ),
-                ),
-          )
 
 TEST_RESU(RESU=(_F(INST=1.E4,
                    RESULTAT=U0,

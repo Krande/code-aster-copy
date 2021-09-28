@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -225,22 +225,6 @@ class H_HEXA20S(Element):
         OP.TOU_INI_ELNO(te=99,
                         para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
                         ),
-
-        OP.VAEX_ELGA(te=549,
-                     para_in=(
-                         (OP.VAEX_ELGA.PCOMPOR, LC.CCOMPOR), (
-                             SP.PNOVARI, E1NEUTK),
-                     (SP.PVARIGR, ZVARIPG), ),
-                     para_out=((SP.PVARIGS, LC.E1GNEUT), ),
-                     ),
-
-        OP.VAEX_ELNO(te=549,
-                     para_in=(
-                         (OP.VAEX_ELNO.PCOMPOR, LC.CCOMPOR), (
-                             SP.PNOVARI, E1NEUTK),
-                     (OP.VAEX_ELNO.PVARINR, LC.ZVARINO), ),
-                     para_out=((SP.PVARINS, LC.E1NNEUT), ),
-                     ),
 
         OP.VARI_ELNO(te=600,
                      para_in=(

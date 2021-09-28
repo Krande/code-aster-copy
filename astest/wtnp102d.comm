@@ -316,18 +316,6 @@ U0=CALC_CHAMP(reuse =U0,
              VARI_INTERNE='VARI_NOEU',
              RESULTAT=U0,);
 
-DPVP=CALC_CHAMP(RESULTAT=U0,VARI_INTERNE=('VAEX_ELNO'),NOM_VARI='DPVP')
-
-DPVP=CALC_CHAMP(reuse=DPVP,
-             RESULTAT=DPVP,
-             VARI_INTERNE='VAEX_NOEU',NOM_VARI='DPVP'
-             )
-
-SATLIQ=CALC_CHAMP(RESULTAT=U0,VARI_INTERNE=('VAEX_ELNO'),NOM_VARI='SATLIQ')
-
-SATLIQ=CALC_CHAMP(reuse=SATLIQ,RESULTAT=SATLIQ,VARI_INTERNE='VAEX_NOEU',NOM_VARI='SATLIQ')
-SATEAU=CALC_CHAMP(RESULTAT=U0,VARI_INTERNE=('VAEX_ELGA'),NOM_VARI='SATLIQ')
-
 
 #################################################
 #IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=U0,
@@ -339,37 +327,6 @@ SATEAU=CALC_CHAMP(RESULTAT=U0,VARI_INTERNE=('VAEX_ELGA'),NOM_VARI='SATLIQ')
 #                  GROUP_NO=('BO',),),);
 #################################################
 
-TEST_RESU(RESU=(_F(INST=1000.0,
-                   RESULTAT=DPVP,
-                   NOM_CHAM='VAEX_ELNO',
-                   GROUP_NO='N2',
-                   NOM_CMP='X1',
-                   VALE_CALC=10435.52626398,
-                   GROUP_MA='M2',),
-                _F(INST=1.E4,
-                   RESULTAT=DPVP,
-                   NOM_CHAM='VAEX_NOEU',
-                   GROUP_NO='N2',
-                   NOM_CMP='X1',
-                   VALE_CALC=4.5974186012026E+05,
-                   ),
-                _F(INST=1.E4,
-                   RESULTAT=SATLIQ,
-                   NOM_CHAM='VAEX_NOEU',
-                   GROUP_NO='N2',
-                   NOM_CMP='X1',
-                   VALE_CALC=0.49915844067163,
-                   ),
-                _F(INST=1.E4,
-                   POINT=1,
-                   RESULTAT=SATEAU,
-                   NOM_CHAM='VAEX_ELGA',
-                   NOM_CMP='X1',
-                   VALE_CALC=0.49933851500354,
-                   GROUP_MA='M1',
-                   ),
-                ),
-          )
 
 TEST_RESU(RESU=(_F(INST=1.E4,
                    RESULTAT=U0,

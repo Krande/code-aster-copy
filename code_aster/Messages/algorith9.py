@@ -226,18 +226,6 @@ Les matrices ne possèdent pas toutes la même numérotation.
  non convergence à la maille:  %(k1)s
 """),
 
-    96 : _("""
- la saturation n'est pas une variable interne pour la loi de couplage  %(k1)s
-"""),
-
-    97 : _("""
- la pression de vapeur n'est pas une variable interne pour la loi de couplage  %(k1)s
-"""),
-
-    99 : _("""
- la variable  %(k1)s  n'existe pas dans la loi CJS en 2D
-"""),
-
     100 : _("""
  Vous ne pouvez pas mélanger deux modélisations avec et sans dépendance
 des paramètres matériau à la température (mots-clés ELAS, ELAS_FO).

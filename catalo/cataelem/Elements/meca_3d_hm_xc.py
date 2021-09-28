@@ -455,18 +455,6 @@ class TemplateElement(Element):
                      ),
         ),
 
-        OP.VAEX_ELGA(te=549,
-            para_in=((OP.VAEX_ELGA.PCOMPOR, LC.CCOMPOR), (SP.PNOVARI, E1NEUTK),
-                     (SP.PVARIGR, ZVARIPG), ),
-            para_out=((SP.PVARIGS, LC.E1GNEUT), ),
-        ),
-
-        OP.VAEX_ELNO(te=549,
-            para_in=((OP.VAEX_ELNO.PCOMPOR, LC.CCOMPOR), (SP.PNOVARI, E1NEUTK),
-                     (OP.VAEX_ELNO.PVARINR, LC.ZVARINO), ),
-            para_out=((SP.PVARINS, LC.E1NNEUT), ),
-        ),
-
     )
 
 

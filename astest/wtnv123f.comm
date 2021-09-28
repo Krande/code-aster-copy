@@ -305,53 +305,37 @@ U1=CALC_CHAMP(reuse=U1,
               CONTRAINTE=('SIGM_ELNO','SIGM_NOEU',),
               VARI_INTERNE=('VARI_ELNO','VARI_NOEU',),);
 
-PCR=CALC_CHAMP(RESULTAT=U1,
-               VARI_INTERNE=('VAEX_ELNO','VAEX_NOEU'),
-               NOM_VARI='PCR');
-
-INDETA=CALC_CHAMP(RESULTAT=U1,
-                  VARI_INTERNE=('VAEX_ELNO','VAEX_NOEU'),
-                  NOM_VARI='IND_ETA');
-
-SEUIL=CALC_CHAMP(RESULTAT=U1,
-                 VARI_INTERNE=('VAEX_ELNO','VAEX_NOEU'),
-                 NOM_VARI='SEUIL_HYD');
-
-INDHYD=CALC_CHAMP(RESULTAT=U1,
-                  VARI_INTERNE=('VAEX_ELNO','VAEX_NOEU'),
-                  NOM_VARI='IND_HYD');
-
 #
 #-------------------------
 #    TEST_RESU
 #-------------------------
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   RESULTAT=PCR,
-                   NOM_CHAM='VAEX_ELNO',
+                   RESULTAT=U1,
+                   NOM_CHAM='VARI_ELNO',
                    GROUP_NO='NO1',
-                   NOM_CMP='X1',
+                   NOM_CMP='V1',
                    VALE_CALC=3.2142422845624E+05,
                    GROUP_MA='MA1',),
                 _F(INST=3.0,
-                   RESULTAT=PCR,
-                   NOM_CHAM='VAEX_NOEU',
+                   RESULTAT=U1,
+                   NOM_CHAM='VARI_NOEU',
                    GROUP_NO='NO8',
-                   NOM_CMP='X1',
+                   NOM_CMP='V1',
                    VALE_CALC=3.2142422845624E+05,
                    ),
                 _F(NUME_ORDRE=1,
-                   RESULTAT=SEUIL,
-                   NOM_CHAM='VAEX_ELNO',
+                  RESULTAT=U1,
+                   NOM_CHAM='VARI_ELNO',
                    GROUP_NO='NO1',
-                   NOM_CMP='X1',
+                   NOM_CMP='V3',
                    VALE_CALC=3.0E+05,
                    GROUP_MA='MA1',),
                 _F(INST=3.0,
-                   RESULTAT=SEUIL,
-                   NOM_CHAM='VAEX_NOEU',
+                   RESULTAT=U1,
+                   NOM_CHAM='VARI_NOEU',
                    GROUP_NO='NO8',
-                   NOM_CMP='X1',
+                   NOM_CMP='V3',
                    VALE_CALC=3.0E+05,
                    ),
                 ),

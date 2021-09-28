@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -122,9 +122,9 @@ def calc_thermeca_mult_ops(self,TEMP_FIN,TEMP_INIT, RESU_MECA_UNIT,RESU_SUPL_THE
                                           'DURT_ELNO': 'ELNO_DURT_R', 'ENDO_ELNO': 'NOEU_SIEF_R', 'DISS_ELNO': 'ELNO_DISS_R', 'EPFP_NOEU': 'NOEU_EPSI_R', 
                                           'EPVC_ELNO': 'ELNO_EPSI_R', 'DEPL_ABSOLU': 'NOEU_DEPL_R', 'EFGE_ELNO': 'ELNO_SIEF_R', 'GEOMETRIE': 'NOEU_GEOM_R', 
                                           'TEMP': 'NOEU_TEMP_R', 'CONT_NOEU': 'NOEU_INFC_R', 'EPSI_NOEU': 'NOEU_EPSI_R', 'DISS_ELEM': 'ELEM_DISS_R', 
-                                          'VAEX_NOEU': 'NOEU_NEUT_R', 'EFGE_ELGA': 'ELGA_SIEF_R', 'EPVC_ELGA': 'ELGA_EPSI_R', 'MODE_STAB': 'NOEU_DEPL_R', 
+                                          'EFGE_ELGA': 'ELGA_SIEF_R', 'EPVC_ELGA': 'ELGA_EPSI_R', 'MODE_STAB': 'NOEU_DEPL_R', 
                                           'REAC_NODA': 'NOEU_DEPL_R', 'ETHE_ELEM': 'ELEM_ENER_R', 'SIEF_NOEU': 'NOEU_SIEF_R', 'SIEF_ELNO': 'ELNO_SIEF_R', 
-                                          'DERA_NOEU': 'NOEU_DERA_R', 'DURT_NOEU': 'NOEU_DURT_R', 'VAEX_ELGA': 'ELGA_NEUT_R', 'FLUX_NOEU': 'NOEU_FLUX_R', 
+                                          'DERA_NOEU': 'NOEU_DERA_R', 'DURT_NOEU': 'NOEU_DURT_R', 'FLUX_NOEU': 'NOEU_FLUX_R', 
                                           'ERME_NOEU': 'NOEU_ERRE_R', 'SIEQ_ELGA': 'ELGA_SIEF_R', 'ERTH_ELEM': 'ELEM_ERRE_R', 'QIZ2_ELEM': 'ELEM_ERRE_R', 
                                           'FORC_LIAI': 'NOEU_DEPL_R', 'PRME_ELNO': 'ELNO_PRME_R', 'DEGE_NOEU': 'NOEU_EPSI_R', 'EPEQ_NOEU': 'NOEU_EPSI_R', 
                                           'EPMQ_NOEU': 'NOEU_EPSI_R', 'SING_ELEM': 'ELEM_SING_R', 'PTOT': 'NOEU_DEPL_R', 'UTXX_NOEU': 'RIEN', 'EPOT_ELEM': 
@@ -140,7 +140,7 @@ def calc_thermeca_mult_ops(self,TEMP_FIN,TEMP_INIT, RESU_MECA_UNIT,RESU_SUPL_THE
                                           'EPSG_ELNO': 'ELNO_EPSI_R', 'SIRO_ELEM': 'ELEM_SIEF_R', 'SIZ2_NOEU': 'NOEU_SIEF_R', 'ACCE': 'NOEU_DEPL_R', 
                                           'ETOT_ELEM': 'ELEM_ENER_R', 'INDC_ELEM': 'ELEM_NEUT_I', 'FORC_AMOR': 'NOEU_DEPL_R', 'ENDO_NOEU': 'ELNO_SIEF_R', 
                                           'ENEL_ELEM': 'ELEM_ENER_R', 'VARI_ELGA': 'ELGA_VARI_R', 'EPFP_ELGA': 'ELGA_EPSI_R', 'EPMG_ELGA': 'ELGA_EPSI_R', 
-                                          'QIRE_ELEM': 'ELEM_ERRE_R', 'DEPL_VIBR': 'NOEU_DEPL_R', 'VAEX_ELNO': 'ELNO_NEUT_R', 'DERA_ELGA': 'ELGA_DERA_R', 
+                                          'QIRE_ELEM': 'ELEM_ERRE_R', 'DEPL_VIBR': 'NOEU_DEPL_R', 'DERA_ELGA': 'ELGA_DERA_R', 
                                           'EPFD_ELNO': 'ELNO_EPSI_R', 'INTE_ELNO': 'ELNO_INTE_R', 'DISS_NOEU': 'NOEU_DISS_R', 'EFGE_NOEU': 'NOEU_SIEF_R', 
                                           'EPMG_NOEU': 'NOEU_EPSI_R', 'ERME_ELEM': 'ELEM_ERRE_R', 'FERRAILLAGE': 'ELEM_FER2_R', 'DERA_ELNO': 'ELNO_DERA_R', 
                                           'EPSI_ELGA': 'ELGA_EPSI_R', 'QIRE_ELNO': 'ELNO_ERRE_R', 'FLUX_ELNO': 'ELNO_FLUX_R', 'STRX_ELGA': 'ELGA_STRX_R', 

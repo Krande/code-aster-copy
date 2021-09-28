@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -218,18 +218,6 @@ class TR7_DP_2D(Element):
             para_out=((OP.TOU_INI_ELNO.PGEOM_R, ENGEOM_R), (OP.TOU_INI_ELNO.PINST_R, LC.ENINST_R),
                      (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F), (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R),
                      ),
-        ),
-
-        OP.VAEX_ELGA(te=549,
-            para_in=((OP.VAEX_ELGA.PCOMPOR, LC.CCOMPOR), (SP.PNOVARI, E1NEUTK),
-                     (SP.PVARIGR, ZVARIPG), ),
-            para_out=((SP.PVARIGS, LC.E1GNEUT), ),
-        ),
-
-        OP.VAEX_ELNO(te=549,
-            para_in=((OP.VAEX_ELNO.PCOMPOR, LC.CCOMPOR), (SP.PNOVARI, E1NEUTK),
-                     (OP.VAEX_ELNO.PVARINR, LC.ZVARINO), ),
-            para_out=((SP.PVARINS, LC.E1NNEUT), ),
         ),
 
         OP.VARI_ELNO(te=4,
