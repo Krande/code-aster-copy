@@ -94,7 +94,7 @@ RESUTRQ2=LIRE_RESU(
               CHAM_MATER=MATETEST,
               TYPE_RESU='EVOL_ELAS',
               FORMAT='MED',
-              FORMAT_MED=_F( NOM_CHAM_MED=RESUTRQU.getName() + 'DEPL',
+              FORMAT_MED=_F( NOM_RESU = "RESUTRQU",
                              NOM_CHAM  ='DEPL' ),
               UNITE=70,
               TOUT_ORDRE ='OUI',);

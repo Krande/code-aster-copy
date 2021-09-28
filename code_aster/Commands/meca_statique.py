@@ -97,7 +97,7 @@ class MechanicalSolver(ExecuteCommand):
             keywords (dict): User's keywords.
         """
 
-        if self._result is not None:
+        if self._result is not None and self._result.getNumberOfRanks() > 0:
             self._result.build()
 
 
